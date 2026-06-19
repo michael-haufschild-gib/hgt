@@ -66,13 +66,16 @@ cohomology-with-Frobenius.
 ## Status
 - Everything here is **IMPORT** under Door-2 (a parent — algebraic geometry — proves it). Its value is
   **Door-5 validation**: it shows the field's architecture *recovers known mathematics on the overlap*
-  (charter C6) and pinpoints the ℚ-obstruction as the single archimedean place. It is the calibration,
-  not the native content.
+  (charter C6 — now MET via the explicit border functor `S_ff`,
+  `../pipeline/2-fully-proven/c6-specialization-functors.md`) and pinpoints the ℚ-obstruction as the
+  single archimedean place. It is the calibration, not the native content.
 
 ## Open core / the work package
-**Prove G1–G5 over `F_q(t)` in the field's own vocabulary** (not merely cite Deligne) — a Door-5
-exercise that would establish C6 (the faithful bridge) concretely and isolate, by difference, exactly
-what the archimedean place must supply over ℚ.
+**Prove G1–G5 over `F_q(t)` in the field's own vocabulary** (not merely cite Deligne). **C6 (the faithful
+bridge) is now MET** (bridge level, 2026-06-19) via the three border functors
+(`../pipeline/2-fully-proven/c6-specialization-functors.md`, whose function-field functor `S_ff` recovers
+the imports cited here); this from-scratch reproof is the *deeper* function-field extension and would
+isolate, by difference, exactly what the archimedean place must supply over ℚ.
 
 ## Cross-references
 - [[bucket-the-seam-archimedean-obstruction]] — the ℚ-obstruction = exactly what `F_q` lacks.

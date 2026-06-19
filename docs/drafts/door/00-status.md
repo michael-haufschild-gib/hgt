@@ -45,7 +45,7 @@ C5 is earned it is a *programme*, not a *branch*. (Charter Part IV.)
 **The seven branchhood criteria:**
 | C1 ontology | C2 category | C3 invariant | C4 problem | **C5 irreducible thm** | C6 bridge | C7 autonomy |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| ✅ MET | ✅ MET | ◐ PARTIAL | ✅ MET | ❌ **NOT MET (the gap)** | ◐ PARTIAL | ❌ NOT MET |
+| ✅ MET | ✅ MET | ◐ PARTIAL | ✅ MET | ❌ **NOT MET (the gap)** | ✅ **MET** (bridge) | ❌ NOT MET |
 
 **The doors (the litmus tests):**
 | Door-1 object | **Door-2 load-bearing (master key)** | Door-3 native invariant | Door-4 native zone | Door-5 faithful restriction |
@@ -58,6 +58,15 @@ C5 is earned it is a *programme*, not a *branch*. (Charter Part IV.)
 > factorization, none of it the native simultaneous-`σ_p` apparatus. They are **BRIDGE**, not NATIVE;
 > **C5 is still unearned.** A real C5 theorem must use the `σ_p` jointly and irreducibly. See rows
 > #6, #23, #50 and [[door-C5-irreducibility-and-door-2-retest]].
+
+> **C6 (faithful bridge) resolved 2026-06-19 → MET (bridge level).** The three border specialization
+> functors are built and verified (`../pipeline/2-fully-proven/c6-specialization-functors.md`): each
+> recovers its parent on the overlap (single-prime = van der Put–Singer; function-field =
+> Deligne–Papanikolas–Deligne–Katz; diagonal = Bohr–Kronecker), and `𝓜` **strictly extends** the
+> single-prime border via the **proven** difference-Hölder theorem (G1: ζ is finite-base-holonomic at
+> every finite truncation yet non-holonomic in the limit). This satisfies the charter's literal C6 test
+> (recover **and** strictly extend). The *native/irreducible* strict extension (the cleanest one) = C5★,
+> still open — so C6 is MET at bridge level, C5 stays the gap. See rows #47, #116.
 
 **Gatekeeper scoreboard — how many foundational conjectures are theorems:**
 | Gate | What | Best status today |
@@ -82,6 +91,26 @@ To actually work an item, open a card for it in the **pipeline** (`../pipeline/`
 `../pipeline/_card-template.md`) and move it `0-backlog → … → 4-publication-ready`. Several backlog
 cards already exist.
 
+**Milestone 1 — "this is actually a branch."** Branchhood = all seven of C1–C7 MET (§A). C1/C2/C4 are
+MET; **C6 is now MET (bridge level, 2026-06-19, below)**. The criteria each have a pipeline card:
+- **C5** (irreducible theorem — the keystone, NOT MET): **in work** at
+  `../pipeline/1-in-progress/combination-mode-baker-reducibility.md` (C5★) with the carrier pinned at
+  `../pipeline/1-in-progress/finite-free-convolution-flow.md` (degree-`d` finite-free/Hankel section;
+  bounded-degree ∧ RH-relevant; Baker load-bearing at each `d`, the `d→∞` uniform edge = the open crux).
+- **C3** (native invariant, PARTIAL): **reduced to C5 (resolved 2026-06-19).** Cheap invariants proven
+  BRIDGE (`../pipeline/2-fully-proven/c3-gluing-invariants-bridge.md`): joint gluing invariants exist
+  (per-prime-equal yet jointly-distinct modules) but are all character-variety pullbacks; the only
+  Door-3-surviving invariant is the arithmetic layer = **C5★**, so **C3-native ⟺ C5★** and closing C5
+  closes C3. The independent-C3 goal failed (`../pipeline/5-failed/c3-native-invariant-door3.md`).
+- **C6** (faithful bridge): **MET (bridge level), resolved 2026-06-19**
+  (`../pipeline/2-fully-proven/c6-specialization-functors.md`). The three border functors are built and
+  each recovers its parent (single-prime = vdPS / function-field = Deligne–Papanikolas–Deligne–Katz /
+  diagonal = Bohr–Kronecker); `𝓜` strictly extends the single-prime border via the **proven** difference-
+  Hölder theorem (G1: ζ finite-base-holonomic but non-holonomic in the limit). The native/irreducible
+  strict extension = **C5★**, still open.
+- **C7** (autonomy, NOT MET): `../pipeline/0-backlog/c7-autonomy-foundational-core.md` — axiomatized
+  N1–N4 + one native structural theorem. *(C5 and C7 are coupled.)*
+
 **Most leverage (a few sessions, not a lifetime):**
 - **#6 / #23 / #50 — Door-2 re-test of §59/§60: DONE (2026-06-19).** Both FAIL → **BRIDGE**; C5 still
   unearned. The next C5 attempt must use the `σ_p` jointly and irreducibly (not the single shift
@@ -90,8 +119,8 @@ cards already exist.
   Nesterenko→DSS as Lean `Prop`s. The change-of-basis is already in Lean.
 
 **Bite-size & tractable (good single-session targets):**
-- **#104 — finite-free convolution flow:** run the numerical test (finite-free cumulants of `J^{d,n}`
-  vs `Σ_p κ_k(p)`). New coordinates, MSS toolkit.
+- **#104 — finite-free convolution flow:** now the **pinned C5★ carrier** (in-progress). Bite-size piece
+  remaining = the numerical test (finite-free cumulants of `J^{d,n}` vs `Σ_p κ_k(p)`; runpod).
 - **#59 — erosion threshold (G19):** write up `½ = the marginal-variance locus`; the hard analytics
   (Selberg/Ingham) are already theorems (#60).
 - **#95 — is `Λ` (the dBN constant) a period?** A PSLQ probe + a writeup.
@@ -156,11 +185,11 @@ instead.
 | 41 | the infinite passage (lift finite carrier to actual ξ) | [[G5-unitarity-gatekeeper]] | OPEN CORE | FIELDS MEDAL |
 | 42 | C1 native ontology — **MET** | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
 | 43 | C2 native category — **MET** | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
-| 44 | C3 native invariant — **PARTIAL** (`G_L` = `𝕋^∞⋊σ` relabeled) | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
+| 44 | C3 native invariant — **PARTIAL → reduced to C5** (resolved 2026-06-19): cheap invariants proven BRIDGE (#115); native invariant ⟺ C5★; independent goal failed (`../pipeline/5-failed/c3-native-invariant-door3.md`) | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
 | 45 | C4 native problem — **MET** | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
-| 46 | C5 irreducible theorem — **NOT MET** (the gap) | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
-| 47 | C6 faithful bridge — **PARTIAL** | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
-| 48 | C7 autonomy — **NOT MET** | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
+| 46 | C5 irreducible theorem — **NOT MET** (the gap); in work `../pipeline/1-in-progress/combination-mode-baker-reducibility.md` (C5★) | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
+| 47 | C6 faithful bridge — **MET** (bridge level, 2026-06-19): three border functors built; recover vdPS / Deligne–Papanikolas–Deligne–Katz / Bohr–Kronecker; `𝓜` strictly extends single-prime via proven G1 (#116); native extension = C5★ (`../pipeline/2-fully-proven/c6-specialization-functors.md`) | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
+| 48 | C7 autonomy — **NOT MET**; ticket `../pipeline/0-backlog/c7-autonomy-foundational-core.md` | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
 | 49 | σ-parity = FE-parity weld (candidate native theorem) | [[door-C5-irreducibility-and-door-2-retest]] | THEOREM (Lean) | FOUNDATIONAL |
 | 50 | Door-2 re-test of §59/§60 — **DONE: both BRIDGE; C5 open** | [[door-C5-irreducibility-and-door-2-retest]] | STRUCTURAL | FOUNDATIONAL |
 | 51 | carrier germ: RH = global type, DSS = infinite jet (one object) | [[bucket-A1-A2-unification-the-carrier]] | CONJECTURE | FIELDS MEDAL |
@@ -171,7 +200,7 @@ instead.
 | 56 | `Z_n ≻ A_n` (Ω_∞≻Π) ⟺ RH (explicit Li coords) | [[bucket-A1-A2-unification-the-carrier]] | CONJECTURE+numeric | FIELDS MEDAL |
 | 57 | μ pseudorandom = RH + LI (one statement) | [[bucket-A1-A2-unification-the-carrier]] | CONJECTURE | FIELDS MEDAL |
 | 58 | both finite layers ledgered (`κ₋` + esymm indep) | [[bucket-A1-A2-unification-the-carrier]] | THEOREM (Lean) | FOUNDATIONAL |
-| 59 | `½` = erosion threshold of the ∞-frequency cocycle (G19) | [[bucket-time-and-non-holonomic-time]] | CANDIDATE | FUTURE |
+| 59 | `½` = erosion threshold of the ∞-frequency cocycle (G19) — **in progress**; backbone (#110) + 19a cocycle reducibility (#111) proven; open: 19b | [[bucket-time-and-non-holonomic-time]] | CONJECTURE | FUTURE |
 | 60 | marginal regime = Selberg CLT / Keating–Snaith | [[bucket-time-and-non-holonomic-time]] | IMPORT | FUTURE |
 | 61 | non-holonomic = no native clock (Hölder = WDW timelessness) | [[bucket-time-and-non-holonomic-time]] | FRAMING | FUTURE |
 | 62 | HP = a **constraint**, not a Hamiltonian | [[bucket-time-and-non-holonomic-time]] | FRAMING | FUTURE |
@@ -216,37 +245,44 @@ instead.
 | 101 | Tate–prime rigidity weld (G12) | [[bucket-new-sibling-conjectures]] | CANDIDATE | FUTURE |
 | 102 | live motivic period tower (SEED-U) | [[bucket-new-sibling-conjectures]] | CANDIDATE | FUTURE |
 | 103 | friable Dirichlet polynomial = native auxiliary (N5) | [[bucket-new-sibling-conjectures]] | CANDIDATE | FUTURE |
-| 104 | finite-free convolution flow ⟹ RH-stability (SEED-AB) | [[bucket-new-sibling-conjectures]] | CANDIDATE | FUTURE |
+| 104 | finite-free convolution flow ⟹ RH-stability — **pinned C5★ carrier** (degree-`d` finite-free/Hankel section; power-sums axis-mode, Hankel-PSD condition combination-mode, support ≤ d; bounded-degree ∧ RH-relevant) | [[door-C5-irreducibility-and-door-2-retest]] | CONJECTURE | FOUNDATIONAL |
 | 105 | positive direction strength = exactly 1 (Tamagawa, SEED-B) | [[bucket-new-sibling-conjectures]] | CANDIDATE | FUTURE |
 | 106 | seam firewall: finite-place ⊥ archimedean positivity (SEED-A) | [[bucket-new-sibling-conjectures]] | CANDIDATE | FOUNDATIONAL |
 | 107 | transcendence ⟹ GUE statistics (B11) | [[bucket-new-sibling-conjectures]] | CANDIDATE | FUTURE |
 | 108 | HP operator "can't be too algebraic" (B18) | [[bucket-new-sibling-conjectures]] | CANDIDATE | FUTURE |
 | 109 | a profinite Galois group acts on the zeros (B24) | [[bucket-new-sibling-conjectures]] | FALSIFIED | — |
+| 110 | Re=½ = abscissa of a.s. convergence of the random Euler product (G19 backbone) | [[bucket-time-and-non-holonomic-time]] | THEOREM (paper) | FUTURE |
+| 111 | Euler cocycle reducible (L²-coboundary) over 𝕋^∞ iff σ≥½ (G19/19a; Door-2 BRIDGE, axis-mode) | [[bucket-time-and-non-holonomic-time]] | THEOREM (paper) | FUTURE |
+| 112 | Baker load-bearing for mixed-sign combination-mode reducibility (finite base; Liouville counterexample) | [[door-C5-irreducibility-and-door-2-retest]] | THEOREM (paper) | FOUNDATIONAL |
+| 113 | C5★ (refined): bounded-degree finite-free reducibility — carrier pinned (#104); Baker load-bearing at each d (edge); d→∞ uniform edge control = near-zero distribution of `{Σ a_p log p}` beyond Baker's floor (the open native crux) | [[door-C5-irreducibility-and-door-2-retest]] | CONJECTURE | FOUNDATIONAL |
+| 114 | Hankel ↔ combination-mode degree lemma: under axis-mode secular data, the degree-d real-rootedness certificate (det H_j) has Fourier support ≤ j ≤ d, attained — **not axis-mode for d≥2** (genuine mixed-sign cross-prime modes); fixed-d Baker exponent (≤d logs) | [[door-C5-irreducibility-and-door-2-retest]] | THEOREM (paper) | FOUNDATIONAL |
+| 115 | joint gluing invariants exist (per-prime-equal yet jointly-distinct modules; rank-2 two-prime witness) but all are character-variety pullbacks ⟹ BRIDGE; native invariant ⟺ C5★ (the C3 dividing line) | [[door-C5-irreducibility-and-door-2-retest]] | THEOREM (paper) | FOUNDATIONAL |
+| 116 | three border specialization functors (C6 MET, bridge): each recovers its parent (single-prime=vdPS / function-field=Deligne–Papanikolas–Deligne–Katz / diagonal=Bohr–Kronecker); `𝓜` strictly extends single-prime via proven G1 (finite-base-holonomic but non-holonomic limit); native extension = C5★ | [[bucket-function-field-proving-ground]] | THEOREM (paper) | FOUNDATIONAL |
 
 ---
 
-## §D Tally (counted from §C with `grep` — 109 rows; the table is the source of truth)
+## §D Tally (counted from §C with `grep` — 116 rows; the table is the source of truth)
 
 A few rows carry a **compound** tag (e.g. #92 `IMPORT (half) + CONJECTURE`, #56/#93 `…+numeric/cert`),
-so these counts overlap slightly and sum to a little above 109 — they are "rows mentioning each tag,"
+so these counts overlap slightly and sum to a little above 116 — they are "rows mentioning each tag,"
 not a strict partition.
 
 | Type | Count |
 |---|---:|
 | THEOREM (Lean) — machine-checked | 10 |
-| THEOREM (paper) — difference category / draft | 17 |
+| THEOREM (paper) — difference category / draft | 23 |
 | IMPORT — borrowed classical theorems | 10 |
 | LEMMA | 2 |
-| CONJECTURE — open & stated (pickable) | 27 |
-| CANDIDATE — new ideas to shape | 15 |
+| CONJECTURE — open & stated (pickable) | 30 |
+| CANDIDATE — new ideas to shape | 13 |
 | OPEN CORE — the walls | 6 |
 | FALSIFIED | 1 |
 | FRAMING — embassy / not math | 6 |
 | BRANCH STATUS / STRUCTURAL | 15 |
 
-*Reading it:* we have **real proven content** — **29 native proven statements** (10 machine-checked in
-Lean + 17 paper + 2 lemmas), resting on **10 imported** classical theorems — and a large, well-located
-**frontier**: **27 stated conjectures + 15 candidates + 6 walls (open cores)**. The proven content is
+*Reading it:* we have **real proven content** — **35 proven statements** (10 machine-checked in
+Lean + 23 paper + 2 lemmas), resting on **10 imported** classical theorems — and a large, well-located
+**frontier**: **30 stated conjectures + 13 candidates + 6 walls (open cores)**. The proven content is
 the *scaffolding*; **zero of it is yet certified NATIVE/C5** — the two leading candidates (§59/§60) were
 re-tested and came back **BRIDGE**, so earning a first irreducible (C5) theorem is the highest-leverage
 open problem.

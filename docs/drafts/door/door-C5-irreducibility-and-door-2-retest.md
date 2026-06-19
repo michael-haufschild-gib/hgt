@@ -34,7 +34,8 @@ construct a theorem that uses the `σ_p` **jointly and irreducibly** — not the
 
 ### The verdict on the field (charter Part IV)
 - C1, C2, C4 **MET** (definitionally); C3 **PARTIAL** (`G_L` is, in built work, the Bohr–Kronecker
-  `𝕋^∞⋊σ` relabeled); **C5 NOT MET — the gap**; C6 **PARTIAL**; **C7 NOT MET**.
+  `𝕋^∞⋊σ` relabeled); **C5 NOT MET — the gap**; **C6 MET** (bridge level, 2026-06-19: three border
+  functors built + G1 strict extension); **C7 NOT MET**.
 - **Verdict:** a well-posed **proto-branch** — native definitions + faithful borders, but failing the
   keystone C5 and autonomy C7. *"A vocabulary with conjectures and a precisely-located problem — not
   yet a distinct branch."* Until C5 is earned, the project is a **programme**, not a "field/branch."
@@ -101,11 +102,79 @@ The re-test is done. **Neither §59 nor §60 is NATIVE; C5 is not yet earned.**
   uniform over all L). But a reframing a parent proves is not irreducible (the §42 trap). The two
   difference-category theorems are genuine and useful; they are not the keystone.
 
-**What a real C5 theorem needs (forward).** Use the `σ_p` **jointly and irreducibly** — a statement
-whose proof does NOT factor through (the single shift `s↦s+1`) + (Kronecker–Weyl on `𝕋^∞`). The places
-to look are the multi-`q` connection's curvature / integrability (the joint structure of the `{σ_p}`,
-not one diagonal shift) or the joint group `G_L`'s monoidality class `ω`
-([[G4-multi-q-picard-vessiot-and-langlands-group]]) — not the diagonal's hypertranscendence.
+**What a real C5 theorem needs (forward), sharpened by the 19a cocycle analysis.** A Door-2-surviving
+theorem must use the `σ_p` **jointly**, and there is now a concrete criterion. View objects by their
+Fourier support on `𝕋^∞`:
+- **Axis modes** `kδ_p` (one prime each) ⟹ the object **decouples prime-by-prime** into `𝕋^1` /
+  single-shift problems ⟹ a parent proves it ⟹ **BRIDGE.** This is exactly what sinks §59, §60, and the
+  19a erosion cocycle: the Euler product, the diagonal `log ζ`, and the `s`-monodromy are all additive
+  in the primes, hence axis-mode.
+- **Combination modes** `m = m_pδ_p + m_qδ_q + …` (≥ 2 nonzero prime entries) are where the joint
+  structure is load-bearing: the proof must use **(a)** `m·ℓ ≠ 0` for `m ≠ 0` (unique factorization, no
+  resonance) and **(b)** `|m·ℓ| ≥ Baker(|m|)` (linear forms in logs, the small-divisor bound),
+  `ℓ = (log p)_p`.
+
+So the C5 search should leave the additive/`log` world and target **cross-prime** objects: the
+curvature / integrability class `F_{pq}` (§16, which couples `p` and `q`), Rankin–Selberg `⊗` and the
+`n`-level correlations (#79/#86), and the joint `G_L` monoidality class `ω`
+([[G4-multi-q-picard-vessiot-and-langlands-group]]). The multiplicative/product world (`ζ²`, `⊗`,
+moments) carries combination modes; the additive world does not. *(Derivation:
+`../pipeline/2-fully-proven/erosion-cocycle-reducibility.md`.)*
+
+**First instance (2026-06-19).** On mixed-sign combination modes (the near-resonances `p^a ≈ q^b`)
+Baker **is** load-bearing: the cohomological equation `Dh=g` is solvable for the prime frequencies
+`(log p)` and *unsolvable* for Liouville frequencies (proved, with the Liouville counterexample —
+`../pipeline/1-in-progress/combination-mode-baker-reducibility.md`, Lemma R). The **finite-base** case
+is BRIDGE (`𝕋^d` KAM + Baker, two parents); the **infinite-base uniform** version — *Conjecture C5★*,
+infinite-`d` Baker–KAM reducibility on the prime-frequency `𝕋^∞` flow — is the **first genuine C5
+candidate**: it uses the `σ_p` jointly (cross-prime mixed-sign modes), needs Baker essentially, and
+sits outside every single parent (finite-`d` KAM does not reach it). Open.
+
+**C5★ refined (2026-06-19, after attacking it).** The *naive* infinite-support C5★ is **killed**:
+Baker–Wüstholz's constant `C(s)` grows super-exponentially in the support size `s`, and Dirichlet
+pigeonhole shows `(log p)_∞` is **not polynomially Diophantine** over unbounded-support modes — so
+standard (fixed-exponent) KAM cannot close it. C5★ must therefore be **bounded-degree** (support `≤ d`,
+`d → ∞` taken after the Diophantine control).
+
+**C5★ carrier pinned + Baker verdict (2026-06-19).** The bounded-degree↔RH-relevance tension is
+**resolved** by the **degree-`d` finite-free / Hankel section** of `Ξ`
+(`../pipeline/1-in-progress/finite-free-convolution-flow.md`): its power-sums `P_k` are axis-mode, but
+real-rootedness ⟺ the **Hankel form `H_d=(P_{i+j})` PSD**, a *nonlinear* condition whose `det H_j` carries
+**mixed-sign combination modes of support `≤ d`** — so the section is **bounded-degree ∧ RH-relevant** at
+once (RH ⟺ all sections hyperbolic, Pólya–Jensen / GORZ), exactly what the flat `F_{pq}` and the
+unbounded-support RS moment could not be. **Baker-necessity verdict** (bulk/edge split): the `d → ∞`
+reducibility splits into a **bulk** (moments concentrate by the finite-free CLT — soft, BRIDGE) and an
+**edge** (`det H_d = 0`, the degenerations = zeros). At **each fixed `d`** Baker is genuinely load-bearing
+on the edge (fixed `#`-logs ⟹ fixed Diophantine exponent; the Liouville substitute diverges — Lemma R at
+bounded support). The **`d → ∞`** uniform edge control needs **more than Baker** — Baker's floor degrades
+super-exponentially, so the limit is governed by the **near-zero distribution of bounded-support
+`{Σ a_p log p}`**, a metric statement about `⟨log p⟩` strictly stronger than the floor. **That is the
+native C5 crux**; GORZ = the bulk half proven, the C5 work = the uniform edge half. Details:
+`../pipeline/1-in-progress/combination-mode-baker-reducibility.md`, `../pipeline/1-in-progress/finite-free-convolution-flow.md`.
+
+**C3 folds into C5 (2026-06-19).** Working the C3 ticket to its end showed the **native invariant is not
+independent of the native theorem**. The joint-vs-per-prime *gluing* of multi-`q` modules is genuinely
+finer than per-prime data (explicit rank-2 two-prime witness: per-prime conjugate, `tr(A_pA_q)` differs),
+so a joint invariant exists — **but every gauge-combinatorial one** (curvature `[A_p,A_q]`, joint
+conjugacy, word-traces) is a **character-variety pullback** (Procesi), with the `σ_p` inert and `(log p)`
+absent ⟹ BRIDGE (the same failure as corank #23). The arithmetic of the primes enters the module
+classification **only** through the *quantitative* trivialization of cocycles (transfer-function
+regularity) = the combination-mode object of **C5★**. Hence **C3-native ⟺ C5★**: closing C5 closes C3,
+and there is no cheaper native invariant. Proven:
+`../pipeline/2-fully-proven/c3-gluing-invariants-bridge.md`; the independent-C3 goal failed:
+`../pipeline/5-failed/c3-native-invariant-door3.md`. *(Consequence for the milestone: C3 and C7 both
+reduce/couple to C5 — with **C6 now MET** (bridge level; see below), the branch hinges on C5 (C3
+reduces to it, C7 couples to it).)*
+
+**C6 resolved → MET (bridge level, 2026-06-19).** The three border specialization functors are built and
+verified (`../pipeline/2-fully-proven/c6-specialization-functors.md`): single-prime `S_p` recovers van der
+Put–Singer; function-field `S_ff` recovers Deligne / Grothendieck / Papanikolas / Deligne–Katz; diagonal
+`S_diag` recovers Bohr–Kronecker (#9). And `𝓜` **strictly extends** the single-prime border via the
+**proven** difference-Hölder theorem (G1: ζ finite-base-holonomic at every truncation yet non-holonomic in
+the limit — the §59 "faithful bridge" value made functorial). That satisfies the literal C6 test (recover
+**and** strictly extend), so **C6 is MET at bridge level**. The *native/irreducible* strict extension (the
+cleanest one, where the apparatus genuinely adds content) = **C5★**, still open — closing C6 does **not**
+close C5; the branch still hinges on C5.
 
 ## Open core / the work package
 1. **Door-2 re-test of §59/§60 — DONE: both FAIL (BRIDGE).** C5 remains open (see the verdict above).

@@ -30,7 +30,7 @@ session can pick one up.
 
 | Bucket | Scope | Work package |
 |---|---|---|
-| [[door-C5-irreducibility-and-door-2-retest]] | C1–C7, Door-1..5, the proto-branch verdict, the §59/§60 NATIVE-candidate worklist | **run the Door-2 re-test** — could earn the field's first C5 theorem |
+| [[door-C5-irreducibility-and-door-2-retest]] | C1–C7, Door-1..5, the proto-branch verdict, the §59/§60 NATIVE-candidate worklist | **Door-2 re-test DONE** (§59/§60 → BRIDGE); **C3 folded into C5** (gluing invariants proven BRIDGE, native ⟺ C5★); live C5 work = **C5★** (combination-mode / finite-free) |
 
 ## The cross-cutting buckets (the leftover, sorted)
 
@@ -39,7 +39,7 @@ session can pick one up.
 | [[bucket-A1-A2-unification-the-carrier]] | RH & DSS = two readings of one object (carrier germ / Π / boundary rep) | **A1 ∧ A2** | the unified-conjecture brick; the single rigidity feeding both |
 | [[bucket-time-and-non-holonomic-time]] | non-holonomic = no native clock; HP = constraint not Hamiltonian; erosion threshold; dBN = arrow of time | **A2** | develop **G19 (erosion threshold)**; the constraint reframe |
 | [[bucket-the-seam-archimedean-obstruction]] | both faces = ONE archimedean obstruction = period/non-period divide = missing Frobenius (F₁) | A1 ∧ A2 | one rigidity bound on the Γ-factor/`s=1` data; compute `ω` |
-| [[bucket-function-field-proving-ground]] | over `F_q(C)` all gatekeepers are theorems (Door-5) | C6 bridge | **prove G1–G5 over `F_q(t)`** in the field's vocabulary |
+| [[bucket-function-field-proving-ground]] | over `F_q(C)` all gatekeepers are theorems (Door-5) | C6 bridge | **C6 MET** (bridge, 2026-06-19): three border functors built, recover + G1 strict extension (`../pipeline/2-fully-proven/c6-specialization-functors.md`); remaining: **prove G1–G5 over `F_q(t)`** in the field's vocabulary |
 | [[bucket-realization-and-fake-family]] | genuineness = the Euler cut, not positivity; the realization converse | A1 (qualifies it) | settle the **realization problem** (is Euler⟺two-faces an IFF?) |
 | [[bucket-the-no-margin]] | `λ_min→0` everywhere; = faithfulness / criticality / exceptional point | A1↔A2 hinge | the one missing uniform bound; is `Λ` a period? |
 | [[bucket-new-sibling-conjectures]] | the genuinely-new candidate conjectures (Lee–Yang, finite-free, family-DSS, Koszul, …) | new objects | promote the shortlist (erosion, finite-free, Lee–Yang) to draft bricks |
