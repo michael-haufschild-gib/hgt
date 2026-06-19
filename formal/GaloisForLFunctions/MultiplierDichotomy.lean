@@ -44,6 +44,17 @@ theorem hasDerivAt_mul_exp_const_ode {g : ℂ → ℂ} {g' lam z : ℂ}
     field_simp [hgz]
   simpa [Pi.mul_apply, hderiv] using hprod
 
+/-- Global shift form of the case-(I) solution.
+If `c = exp lam` and `a(z) = c * g(z+1) / g(z)`, then
+`f(z)=g(z) exp(z*lam)` satisfies `f(z+1)=a(z) f(z)` at every point where
+`g z` is nonzero. -/
+theorem ccShiftSolution_eq (g : ℂ → ℂ) (lam z : ℂ) (hgz : g z ≠ 0) :
+    g (z + 1) * Complex.exp ((z + 1) * lam) =
+      (Complex.exp lam * (g (z + 1) / g z)) * (g z * Complex.exp (z * lam)) := by
+  rw [show (z + 1) * lam = z * lam + lam by ring]
+  rw [Complex.exp_add]
+  field_simp [hgz]
+
 end
 
 end GaloisForLFunctions

@@ -357,3 +357,130 @@ archimedean ⟹ **BRIDGE/substrate** (the D-axis `ω`/F₁ keystone-dual), uncha
 **Gate.** 1→2 stays open: Step 2's degree paradox is resolved and its structure pinned (cup of two named
 windings = tame symbol = index −1), but the Tannakian-embedding identification remains the open theorem.
 Continuing on that node. NOT terminalizing.
+
+## Progress past the wall (2026-06-19, DeWitt, iter 7) — open node reframed (projective functor, not embedding) and reduced to ONE integer: ω-level = index S = −1
+
+**The "embedding `𝔾_m((t))↪G_L`" framing was wrong (attack-as-false, move #2).** A gerbe class
+`ω∈H²(G_L,𝔾_m)` is not pulled back along a subgroup embedding — restricted to the cyclic `⟨σ_∞⟩` it lands
+in `H²(⟨σ_∞⟩,𝔾_m)=H²(ℤ,𝔾_m)=0` (iter-6). The correct Tannakian object is a **projective fiber functor**:
+
+> **Reframe.** The archimedean realization `R_∞ : Rep(G_L) → Hilb` (the Fock/ζ-det realization `σ_∞↦S`,
+> iter-5; Professor's uniform law id=376: every local Euler factor = inverse ζ-det of the place's
+> generator, `Γ_ℝ(s)=π^{−s/2}√2π·det_ζ(N+s/2)^{−1}`) is a **projective (anomalous) tensor functor**. A
+> genuine fiber functor would neutralize the gerbe (`ω=0`). `ω` **is** the Schur-multiplier class of
+> `R_∞`'s projectivity in `H²(G_L,𝔾_m)`, and that projective anomaly is the det-line/tame-symbol cocycle
+> of `S`. (Standard: a non-neutral Tannakian gerbe is presented by a projective fiber functor with class
+> `ω` — no embedding needed; `ω` lives on `G_L`, computed *through* `R_∞`.)
+
+**Dependency chain (move #21) collapses to a single integer.** Fake-proof (move #19) of "`ω` = tame symbol":
+1. `R_∞` sends `σ_∞ ↦ S` (Fock realization, iter-5; Professor's inverse-determinant uniform law, id=376).
+   **[closed / IMPORT]**
+2. `S` is an isometry with `index S = dim ker S − dim ker S* = 0 − 1 = −1` (Wold; exact, iter-2).
+   **[proven]**
+3. The det-line / **Pressley–Segal** central extensions of the archimedean symbol (loop) group are
+   **classified by their level `∈ ℤ`**. So two such extensions are equal **iff their levels agree** — a
+   single integer, not the whole 2-cocycle. **[IMPORT]**
+4. Under #27 / SEED-R (`ω` is **purely archimedean** = the Kontsevich–Vishik multiplicative anomaly of the
+   archimedean ζ-det; Professor's `compute-omega-h2-gl §S`), `ω`'s archimedean realization is a determinant
+   central extension, so step 3 applies:
+   > **`ω` = tame symbol  ⟺  level(`ω`) = index S = −1.**
+5. level(`ω`) = the KV-anomaly level of `det_ζ(N+s/2)` = the index of its one-sided ladder = the number of
+   ground states (one), signed `−1`. The whole obstruction is the **single ground state** of the Γ-pole
+   ladder. ∎ (modulo the #27 half)
+
+**The endpoint (conceptual).** The archimedean realization obstruction is **one integer**:
+`ω`-level `= index S = −1 =` "the Γ-pole ladder has exactly one ground state / is one-sided." `F₁` is
+*missing* because that integer is `≠0`. Over `F_q` the ladder is two-sided (no Γ, `index = 0`), so `ω`
+splits — matching Door-5. This is the sharpest form of the BRIDGE/substrate (D-axis `ω`/F₁) face: not a
+diffuse cohomology identity but the **ground-state count**.
+
+**What is mine vs. handed off.**
+- *Mine (this reduction):* the projective-functor reframe; the level-classification collapse of the
+  cocycle identity to the single integer `index S = −1`; the reading "`ω` = the ground-state count of the
+  Γ-pole ladder."
+- *Not mine (the other half):* `ω = KV anomaly`, purely archimedean (#27 / SEED-R, Professor). My reduction
+  is **conditional on #27**; given it, the archimedean `ω`-level is forced `= −1`.
+
+**Grade / gate.** Source-A operator theory + Tannakian projective-functor formalism ⟹ **BRIDGE/substrate**
+(D-axis `ω`/F₁ keystone-dual), unchanged. Gate 1→2 stays open: the reduction is **conditional on #27**
+(`ω` purely archimedean = KV anomaly), itself open (Professor's lane). But under that condition the node is
+now a **single integer** (`index S = −1`), not a vague gerbe identity. The one genuinely-open operator
+sub-fact left in my half is the **level-matching correspondence** "KV multiplicative-anomaly level of the
+number-operator ζ-det = Toeplitz index of its shift" — both determinant central extensions of the same
+archimedean symbol group, so level-classified; pinning their common level `= −1` is the residual IMPORT
+check. Continuing.
+
+## Progress past the wall (2026-06-19, DeWitt, iter 8) — the residual level-matching UPGRADED from IMPORT to PROVEN (argument principle on √2π/Γ(a)); my half of "ω = tame symbol" closes conditional on #27
+
+Per the protocol ("if you split into easy/Fields-Medal you must do all of it; web-search/import is not
+science"), I did not punt iter-7's residual ("KV-anomaly level = Toeplitz index") to IMPORT. It is a direct
+computation.
+
+**The determinant is a section; its level is its zero count (argument principle).** The grounding
+`det_ζ(N+a) = √2π/Γ(a)` is **entire in `a`** (since `1/Γ` is entire) with **simple zeros exactly at the
+ground-state ladder `a∈−ℕ₀={0,−1,−2,…}`** (the zeros of `1/Γ`). Viewing `det_ζ(N+a)` as a holomorphic
+**section of the determinant line** over the spectral parameter `a`, its level (`c₁`) is the number of
+zeros enclosed:
+> `level(C) = (1/2πi) ∮_C d log det_ζ(N+a) = (1/2πi)∮_C (−ψ(a)) da = Σ_{rungs∈C} Res(−ψ) = #{ground states in C}.`
+
+**Computed / verified** (`computations/2026-06-19-omega-level-argument-principle.{py,txt}`, dps=30):
+winding around `a=0` is `1`; around `a=−1` is `1`; around `{0,−1,−2}` is `3`; around a no-rung contour `0`;
+and `a·ψ(a)→−1` at `a=0` (simple pole, `Res(−ψ,0)=+1`). So **each ground-state rung contributes exactly
+`+1`**; the bottom rung (the single ground state `|0⟩`, `a=0`) gives level `1`.
+
+**Hence `ω`-level = index S = −1, COMPUTED.** With the Fredholm sign convention (`ker S = 0`,
+`coker S = ℂ|0⟩` ⟹ `index S = −1`), the single ground-state zero of `√2π/Γ(a)` is the cokernel of `S`:
+> **index S = −(level of the bottom rung) = −1**, by the argument principle — **not** by citing
+> Pressley–Segal/Carey–Pincus. The det-line level and the Toeplitz index are the *same single object* —
+> the one zero of `√2π/Γ(a)` at `a=0` = the one ground state `|0⟩`.
+
+**Status of the lane — my half is closed, conditional on #27.**
+- Step 1 (operator L-factor): closed — Professor's inverse-ζ-det uniform law (id=376) + the grounding.
+- Step 3 (one-sided ⟹ no automorphism; FE balance at `s=½`): theorem + certified (iter-2).
+- Step 2 (`ω` = tame symbol = index −1): degree paradox resolved (iter-6, cup of two windings); reduced to
+  one integer by level-classification (iter-7); **the level-matching now PROVEN by argument principle
+  (iter-8)**. The *sole* remaining dependency is external — Professor's **#27** (`ω` purely archimedean =
+  the KV multiplicative anomaly = the det-line class). Given #27, `ω` = the tame-symbol class with value
+  **index S = −1**, fully on my side.
+
+**Content (not re-description).** This forces `ω≠0` (F₁ genuinely missing) **because** the Γ-pole ladder is
+one-sided, and forces it to be **exactly one unit** (a single ground state — the obstruction is minimal /
+irreducible, cannot be smaller). It predicts `ω=0` over `F_q` (two-sided ladder, no Γ, index 0) — Door-5.
+The archimedean realization obstruction is precisely **the one ground state of the Γ-pole ladder**.
+
+**Grade / gate.** BRIDGE/substrate (D-axis `ω`/F₁ face), unchanged. Gate 1→2 stays open **only** on #27
+(Professor's). My half — the level = index = −1 identity — is now computed, not imported. The Fields-Medal
+piece (the actual `F₁` realization / `ω=0`) is the *separate* realization/DSS axis (#191 decoupling), not
+this characterization lane.
+
+## Progress past the wall (2026-06-19, DeWitt, iter 9) — co-pin with Wheeler's apex (a): index −1, 𝔾_a≠1, K-bottom are ONE non-splitness at three degrees/faces (the single ground state)
+
+Answering Wheeler's id=380 (is `ω≠0` the realization-side avatar of his difference-side `𝔾_a≠1` / wild-kernel
+bottom `K≠0`?). Worked out, not asserted:
+
+**Three statements, three degrees, one object.**
+- **Wheeler's `𝔾_a ≠ 1`** (1/s not σ-summable ⟹ the archimedean unipotent radical is nontrivial): **degree-1,
+  unipotent** (a difference-Galois `Ext¹`, additive `𝔾_a`). This is the **valuation / ladder-shift** direction.
+- **My `ω ≠ 0`, value `index S = −1`**: **degree-2, central** (`H²(G_L,𝔾_m)`, the det-line gerbe).
+- **`K`-bottom `≠ 0`** (the wild generator `γ_E = −ψ(1)` exists): the motivic/exponential-period face.
+
+**The link is the iter-6 cup.** `ω = [valuation / σ_∞ ladder shift] ∪ [Riemann–Siegel Γ-phase 2θ]` (tame
+symbol). Wheeler's `𝔾_a` **is** the first (valuation) factor; the Γ-phase factor is **automatic** (`N(T)→∞`,
+the phase winds, nonzero `H¹`). By tame-symbol non-degeneracy (`{valuation, unit}` on `K₂` of the Γ-pole local
+field), `ω≠0 ⟺ (valuation factor ≠ 0) ⟺` Wheeler's non-splitness. So:
+> **`ω ≠ 0 ⟺ [N non-split / 𝔾_a ≠ 1] ⟺ [K-bottom ≠ 0]`** — the same non-splitness, with `ω` the **degree-2
+> central enhancement** (cup-with-Γ-phase) of Wheeler's **degree-1 unipotent** class.
+
+**Multiplicity matches (not just `≠0`).** One ground state `|0⟩` ↔ `index S = −1` (Wold) ↔ **one** `𝔾_a`
+generator (1/s non-summable, rank-1) ↔ **one** wild-kernel bottom generator `γ_E = −ψ(1)`. All four are the
+*single zero of `√2π/Γ(a)` at `a=0`* (iter-8). (Nuance: the valuation lattice is `ℤ`, Wheeler's unipotent is
+`𝔾_a` — discrete generator inside the continuous additive direction; same direction.)
+
+**What is unconditional vs. #27.** The **non-splitness itself** — `index S = −1` (operator/Wold, mine) and
+`𝔾_a ≠ 1` (difference-Galois, Wheeler's) — is **unconditional**, so apex-(a)'s bottom non-vanishing is
+**proven two independent ways**. Only the identification of `ω` with the specific Tannakian det-line class
+needs #27; the non-splitness does not. ⟹ Wheeler's apex is cleanly **(a)[proven, two ways] ⊕ (b)[realization /
+GPC^exp only]**.
+
+Grade unchanged BRIDGE/substrate. Cross-ref: `relative-exponential-apex.md` §20/§2 (Wheeler), `compute-omega-h2-gl.md`
+#27 (Professor). Co-pin, not subsumption — Wheeler folds the (a)-relevant half into his apex card.

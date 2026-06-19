@@ -948,3 +948,125 @@ constraint-theoretic (difference non-summability), not a Hodge weight.
   Hodge weight is on the Tate line and W₁ cannot separate. **Promoted W₂ (exponential filtration) +
   the §2 difference-summability obstruction** as the live separator — constraint-theoretic, not Hodge — the
   constraint-not-flow reading on the nose. Apex stays 1-in-progress / FIELDS-MEDAL.
+
+## §20 The §18.2 domain-grading obstruction is an artifact of the wrong grading; the correct separator is the wild-kernel unipotent weight `[Prop 20.1 PROVEN structural; resolves §18.2's open sub-question; the reduction is to weight-graded realization]`
+
+§18.2 left an explicit open sub-question: *does a domain-grading `W` on `𝒫^{exp}` separating `γ_E` from the
+Tate line / regular base `𝓡` exist?* — the candidate W₂ ("number of `E`-factors") being suspect because
+`E^{-x}⊗E^{-y}=E^{-(x+y)}` keeps a single `E` (degree not additive), so `gr` need not be a domain. Attacking
+this directly (methods #7 strip to essentials, #8 find the right theorem, #12 find the invariant, #22 locate
+where it breaks): **the obstruction is an artifact of formalizing "wild degree" the wrong way.** Resolved here.
+
+**Prop 20.1 (the correct grading exists and is automatically a domain-grading) `[PROVEN, structural — char-0 pro-unipotent]`.**
+The separator is **not** the `E`-factor count but the **unipotent weight of the wild kernel** `K = ker(G^{exp} ↠ G^{mot})`.
+- `1 → K → G^{exp} → G^{mot} → 1` with `K` the pro-unipotent kernel (the wild part; §9/#178). The regular base
+  `𝓡` is exactly the period algebra pulled back along the surjection, i.e. `𝓡 = ρ(𝒪(G^{mot})) =` **kernel-weight `0`**.
+- Over a field of characteristic `0`, a (pro-)unipotent affine group scheme is, as a variety, `exp : Lie(K) ≅ K`,
+  so `𝒪(K) ≅ Sym(Lie(K)^∨)` is a **polynomial algebra — a domain** — and the lower-central-series / motivic weight
+  makes it a **graded** polynomial domain `𝒪(K) = ⊕_{n≥0} 𝒪(K)_n`, `𝒪(K)_0 = ℚ`. (Standard: the coordinate
+  ring of the motivic pro-unipotent fundamental group is a graded polynomial Hopf algebra — Deligne–Goncharov,
+  Brown. The `E`-collapse `E^{-x}⊗E^{-y}=E^{-(x+y)}` concerns the **additive family of objects** `{E^{-cx}}_c`,
+  **not** the weight grading of the **fixed** kernel `K` — it never enters the grading of `𝒪(K)`.)
+
+> **So §18.2's open sub-question is answered AFFIRMATIVELY and unconditionally:** a domain-grading separating
+> the wild part from `𝓡` exists — it is the kernel weight, automatic in char 0. W₂-as-`E`-count was the wrong
+> formalization; W₂-as-kernel-weight is the right one and carries no domain obstruction.
+
+**Cor 20.2 (motivic transcendence of `[γ_E]` is automatic; the content is NOT there).** `[γ_E]` lies in
+kernel-weight `≥ 1` iff `K` is non-trivial in its bottom piece — i.e. iff the wild generator exists
+(`H_1(Lie K) ≠ 0` at the bottom), which is DeWitt's `H₁` count, half **(a)**, candidate-unconditional via
+cosmic-Galois/Fresán–Jossen freeness. Granting (a), **Lemma 18.1 applies on the motivic side with `B = 𝒪(K)`,
+`A = 𝒪(K)_0 ⊇ 𝓡`, `w(γ_E) ≥ 1 ∉ (W_𝓡)⊗ℚ = {0}`** — giving `[γ_E]` transcendental over `𝓡` **in `𝒪(K)`**. But
+this is *near-tautological*: a positive-weight element of a graded polynomial domain is always transcendental
+over weight `0`. **The graded-transcendence engine therefore supplies NO arithmetic content on the motivic
+side — all the content is the realization map.**
+
+**Cor 20.3 (the honest reduction: the no-relations half (b) = weight-graded period injectivity; bottom rung =
+`γ_E`-irrationality).** The period map `ρ : 𝒪(K) → ℂ` is not a priori graded (`ℂ` carries no grading). The apex's
+no-relations half **(b)** = `GPC^{exp}` is exactly the statement that `ρ` is **injective compatibly with the
+weight grading** (no inhomogeneous period relation collapses distinct weights). The grading **reorganizes** (b)
+into **weight-by-weight injectivity**, and its **bottom rung** is the single linear statement
+> `ρ` does not collapse the kernel-weight-`1` line `ℚ·[γ_E]` into the regular periods of equal Ext-degree —
+> i.e. `γ_E ∉ ℚ\text{-span}\{1, 2πi, \log p, ζ(2k+1)\}` (the degree-1 / `Ext^1` regular periods),
+whose absolute floor is `γ_E ∉ ℚ` (irrationality, **open since Euler 1734**). **This is precisely the slice E2
+(§18) probes numerically** (PSLQ on `{1, γ_E, ζ(3), ζ(5), π², \log p, …}` → NONE to height `10^{12}`): E2 is the
+arithmetic face of §20's bottom rung. So E2 and the structure meet on the same object.
+
+**Cor 20.4 (no grading trick crosses the realization — both separators live on the function/motivic side).**
+The kernel-weight grading (Prop 20.1) **and** the §19 difference-summability separator (`1/s` non-`σ`-summable
+⟹ `γ_E` a difference-non-summable constant, while `2πi, \log p, ζ(\text{odd})` are not) are **both invariants of
+the motivic/function side**, not of the complex number `γ_E ∈ ℂ`. Descending either to the value *is* the period
+injectivity (b). Hence:
+> **There is no purely structural (grading / difference-summability) bypass of `GPC^{exp}`.** The grading is
+> automatic and free of obstruction; it organizes (b) by weight and exposes the minimal rung, but it does not
+> eliminate the realization gap. The apex's no-relations half is cleanly **(a) free graded kernel structure
+> [candidate-unconditional] ⊕ (b) weight-graded realization injectivity [the sole wall, bottom rung =
+> `γ_E`-irrationality]**.
+
+**Honest grade.** Prop 20.1 is a proven structural fact (char-0 pro-unipotent ⟹ graded polynomial domain;
+standard). Cor 20.2–20.4 are rigorous consequences. **New content:** (i) resolves §18.2's explicitly-open
+domain-grading sub-question (affirmative, via the correct grading — a *located* fix of a wrong formalization,
+method #22); (ii) proves the grading gives **no** shortcut past `GPC^{exp}` (corrects §18.2's over-optimistic
+"reframes (b) as a weight computation" — the weight computation is automatic and empty on the motivic side);
+(iii) identifies the **minimal first milestone** (the weight-1 rung, floor = `γ_E ∉ ℚ`) and ties it to E2.
+This is BRIDGE-grade technique (unipotent-group + period-conjecture standard), load-bearing for the apex's
+logic. **Apex unchanged: FIELDS MEDAL, open** — but the no-relations half is now logically clean and the
+realization gap (b) is the sole, correctly-localized target (no structural detour exists).
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **§20 added (Prop 20.1 PROVEN structural).** Attacked §18.2's open domain-grading
+  sub-question directly: the naive "`E`-factor count" grading collapses (`E^{-x}⊗E^{-y}=E^{-(x+y)}`) only because
+  it formalizes "wild degree" wrongly; the **correct grading is the unipotent weight of the wild kernel
+  `K=ker(G^{exp}↠G^{mot})`**, and in char 0 `𝒪(K)≅Sym(Lie(K)^∨)` is an **automatic graded polynomial domain**
+  (`𝒪(K)_0=ℚ`, `𝓡=` kernel-weight 0). So the sub-question is resolved AFFIRMATIVELY and unconditionally. But
+  Cor 20.2: motivic transcendence of `[γ_E]` over `𝓡` in `𝒪(K)` is then **near-tautological** (positive-weight
+  element of a graded domain), so the grading supplies **no** arithmetic content — Cor 20.4: **no grading /
+  difference-summability trick bypasses `GPC^{exp}`** (both separators are function/motivic-side invariants;
+  descending to the value `γ_E` IS the realization gap (b)). Cor 20.3: the grading reorganizes (b) into
+  weight-by-weight period injectivity, **bottom rung = `γ_E ∉ ℚ`-span of the `Ext^1` regular periods**, floor
+  `γ_E∉ℚ` — exactly the slice **E2** probes (PSLQ NONE to `10^{12}`). Net: no-relations half = (a) free graded
+  structure [candidate-unconditional] ⊕ (b) weight-graded realization [sole wall]. Corrects §18.2's
+  over-optimistic weight-shortcut reading. Apex unchanged (FIELDS MEDAL).
+
+## §21 Full-orbit coset rigidity — every rational digamma value is `−γ_E + 𝓡̄`; the σ-shift completes §19's Gauss orbit `[PROVEN, extends §19; unifies the multiplicative and additive symmetries]`
+
+§19 proved the **Gauss/multiplicative** orbit `{ψ(p/q) : p/q ∈ ℚ∩(0,1)} ⊂ −γ_E + 𝓡̄`. The field's **difference
+structure** — the σ-shift `ψ(s+1)−ψ(s)=1/s`, the Source-A operator itself — completes this to the FULL rational
+orbit, welding the multiplicative (Gauss) and additive (σ) symmetries of `ψ` into **one coset**.
+
+**Proposition 21.1 (full-orbit coset rigidity).** For every rational `r ∈ ℚ` that is not a non-positive
+integer, `ψ(r) ∈ −γ_E + 𝓡̄`. Equivalently the **`γ_E`-residue** `ψ(r)+γ_E ∈ 𝓡̄` for all such `r` — a single
+coset, independent of `r`.
+
+*Proof.* Write `r = r_0 + n` with `r_0 ∈ ℚ∩(0,1]` and `n ∈ ℤ`. Telescoping the σ-recurrence,
+`ψ(r_0+n) = ψ(r_0) + Σ_{k=0}^{n−1} 1/(r_0+k)` for `n≥0` (and the sign-mirror for `n<0`, which avoids the poles
+at the non-positive integers precisely because `r` is not one). Each summand `1/(r_0+k) = q/(p+kq) ∈ ℚ`, so the
+telescoped correction is **rational**. By §19 (Gauss digamma), `ψ(r_0) ∈ −γ_E + 𝓡̄` (and `ψ(1)=−γ_E` directly).
+Hence `ψ(r) ∈ −γ_E + (𝓡̄+ℚ) = −γ_E + 𝓡̄`. ∎
+
+**Consequence — the apex bottom atom is rigid under the FULL arithmetic of arguments.**
+`γ_E ∉ 𝓡̄  ⟺  ψ(r) ∉ 𝓡̄` for **any/every** rational `r`. Both the Gauss/multiplicative structure (§19) and the
+σ/additive structure fix the single coset, never producing a second independent atom or an easier
+representative. This completes §19's "no easier rational point" (method #22) to the σ-direction: the difference
+shift — the field's own Source-A generator — also keeps `ψ` in the coset. So **no choice of rational argument
+(translated, reflected, or Gauss-multiplied) escapes `γ_E`**; the bottom rung is irreducibly the single atom,
+confirming §20's localization (no structural / argument-choice shortcut survives; only the realization (b)
+remains).
+
+**Reading (constraint-not-flow, on the digamma).** The σ-shift moves `ψ` by a *rational* amount — a flow within
+`ℚ` — while the **constant of the recurrence**, `γ_E`, is fixed across the entire orbit. The orbit flows; the
+obstruction-constant does not. The apex's bottom rung is thus a literal instance of "the object is fixed by a
+constraint, not propagated by a flow": `γ_E` is the σ-non-summability constant, invariant under the σ-flow it
+obstructs.
+
+**Door grade.** BRIDGE (Gauss digamma reflection/multiplication formula + elementary σ-telescoping). The
+content is the *unification* (one coset for both symmetries) and the *definitive closure* of the
+special-argument-value attack surface. Apex unchanged (FIELDS MEDAL); only the realization (b) remains.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **§21 added (Prop 21.1 PROVEN):** the σ-shift completes §19's Gauss orbit to the FULL
+  rational orbit — `ψ(r) ∈ −γ_E + 𝓡̄` for every rational `r` (not a non-positive integer), one coset for both
+  the multiplicative (Gauss) and additive (σ) symmetries. Consequence: `γ_E∉𝓡̄ ⟺ ψ(r)∉𝓡̄` for every rational
+  `r` — no argument-choice shortcut of any kind; the apex bottom atom is irreducibly `γ_E`. Reading: the orbit
+  flows (rational σ-shifts), the obstruction-constant `γ_E` is fixed — constraint-not-flow on the digamma.
+  BRIDGE; unifies σ + Gauss; closes the special-argument-value sub-route; apex (realization (b)) unchanged.
