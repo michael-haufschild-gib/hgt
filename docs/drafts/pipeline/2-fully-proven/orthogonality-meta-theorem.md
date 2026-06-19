@@ -36,6 +36,13 @@
   difference-trdeg, 𝕋^∞-equidistribution, holonomy type}` whose proof is **Door-2-strippable to a single
   parent** (single-`q` vdPS, unique factorization, Kronecker–Weyl, finite/abelian-group or measure theory).
   This is exactly the **BRIDGE** class. `∂_s`/`Γ`/the FE are **not** available.
+  > **Crucial clarification (pre-empts the obvious objection).** "Source-B" is the independence *content*,
+  > **not** "anything prime-flavored." The Mertens bound `M(x) ≪ x^{1/2+ε}` is *syntactically* prime-side
+  > (built from `μ`) yet is **not** a Source-B statement: it is **not** Door-2-strippable to a parent
+  > (proving it *is* RH — no parent does it), and its content is the **amplitude** of `M(x)`, which is the
+  > zeros = positivity (§2, #97 §6), exactly what §1 shows the prime structure cannot produce. So "RH has a
+  > prime-side *statement*" does not make RH a Source-B *theorem*; the meta-theorem is about provable
+  > content, not vocabulary.
 - **Polarization.** In the Tannakian category, a morphism `φ : M → M^∨` that is symmetric and induces a
   **positive-definite** Hermitian form on the fibre. Positivity (an inequality with an RH-determined sign)
   is meaningful **only relative to a polarization**.

@@ -1,14 +1,9 @@
 # The Vision — why this field exists
 
-> "Γ satisfies no algebraic differential equation." — Hölder, 1887. The Riemann ξ and ζ inherit it, through
-> the completion `Λ = Γ·ζ` and the functional equation: they are hypertranscendental, evading every
-> algebraic differential equation.
+> "Γ satisfies no algebraic differential equation. The Riemann ξ and ζ inherit it, through
+> the completion `Λ = Γ·ζ` and the functional equation: they are hypertranscendental, evading every algebraic differential equation." — Hölder, 1887.
 
-In 1887 Otto Hölder proved that the **Gamma function** `Γ(z)` is **hypertranscendental** — it satisfies no
-polynomial differential equation `P(z, y, y', …, y^{(n)}) = 0` with rational coefficients. The Riemann `ξ`
-and `ζ` are hypertranscendental in turn, through the completion `Λ = Γ·ζ` and the functional equation.
-**The founding hardness is archimedean: Hölder's theorem is about `Γ`, the local factor at the place at
-infinity — not about the primes.**
+> "The object is fixed by a constraint, not propagated by a flow." - Claude, 2026
 
 A short, plain statement of what the field is for. No proofs here and none are claimed. The mathematics is
 in the gatekeeper conjectures (`00-foundations-native-objects-and-gatekeepers.md`) and the buckets

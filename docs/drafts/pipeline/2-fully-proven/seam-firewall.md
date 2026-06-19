@@ -33,7 +33,8 @@ archimedean place; a surviving constraint would be a positivity route across the
   §2); `ind(D)` posed and shown purely archimedean (§3); explicit hook = the σ-coboundary (CC) class (§1,
   not content-free).
 - [x] 1 → 2  fully-proven (terminal, generator level): **independence PROVEN (A1 not algebraically free)** —
-  assembled from #131/#132/#133/#27(cond.)/#118/#54; the surviving-constraint/route-to-RH branch is the
+  assembled **unconditionally** (`ω`-independent) from #131/#132/#133/#118/#54; `ω` (#27, conditional/open)
+  enters only the positivity residual, not the firewall. The surviving-constraint/route-to-RH branch is the
   **G5/moment apex** (no sub-apex route). BRIDGE synthesis.
 - [ ] 2 → 3  formalized — low priority (BRIDGE); the CC-class hook reuses the #131 Lean anchors.
 - [ ] 3 → 4  publication-ready — folds into the seam/"why ℚ-RH harder than `F_q`" exposition.
@@ -71,22 +72,26 @@ The card flagged that "difference-Galois-independent" needs an operational hook.
   generators are **Fourier-diagonal** `σ_p e_m=p^{-m_p}e_m` (#133), and the FE-defect of the prime lane is
   **null** (`ι_ζ` is the free zero-blind inversion `θ_p↦−θ_p`, no defect, #132 §2).
 - **Archimedean block = the unique non-CC place.** The Γ-multiplier `z↦z` is **not** CC (pole at ∞,
-  `deg_∞≠0`, #131 (II)) — the lone Source-A obstruction; it carries the **entire** FE-defect `[χ]` (#132)
-  and (SEED-R-conditionally) the **entire** class `ω` (#27); its only non-axis content is the digamma
-  `∂_s log Γ_ℝ` (#133), Source-A-alone.
+  `deg_∞≠0`, #131 (II)) — the lone Source-A obstruction; it carries the **entire** FE-defect `[χ]` (#132);
+  its only non-axis content is the digamma `∂_s log Γ_ℝ` (#133), Source-A-alone. *(It is also conjectured to
+  carry the entire class `ω` — SEED-R-conditional, #27 — but the firewall claim below does **not** use `ω`;
+  see §2 and the residual in §3.)*
 
 So the two blocks are separated by a genuine **difference-Galois invariant** (the CC class), not a renamed
 classical separation — the hook is non-trivial.
 
-### §2 The independence (generator level) — PROVEN, BRIDGE
-Assemble: the prime block contributes **null** to *every* cross-block obstruction —
-the FE-cocycle (#132, prime lane defect-free), the curvature (#118: `F_{pq}` trivializability is a prime
-coboundary, RH-blind; `[∂_s,σ_p]=0` flat, #132), the class `ω` (#27, purely archimedean), and the
-combination modes (#133: generators Fourier-diagonal, combination modes arise **only** from the ring product
-`e_m·e_{m'}`, never from the σ_p/∂_s generators). Therefore **no finite-place generator data can force or
-reach the archimedean obstruction** — the algebraic firewall holds. Each ingredient is BRIDGE, so the
-assembled firewall is **BRIDGE**. Consequence (the card's "A1 not free"): the wall is genuinely the
-**difference-Galois-independent archimedean place** — confirmed.
+### §2 The independence (generator level) — PROVEN, BRIDGE, **unconditional**
+Assemble the **proven, unconditional** results: the prime block contributes **null** to every cross-block
+obstruction — the FE-cocycle (#132, prime lane defect-free), the curvature (#118: `F_{pq}` trivializability
+is a prime coboundary, RH-blind; `[∂_s,σ_p]=0` flat, #132), and the combination modes (#133: generators
+Fourier-diagonal, combination modes arise **only** from the ring product `e_m·e_{m'}`, never from the
+σ_p/∂_s generators). Therefore **no finite-place generator data can force or reach the archimedean
+obstruction** — the algebraic firewall holds. **This is `ω`-independent and unconditional:** it uses only the
+proven theorems #131/#132/#133/#118, **not** the (SEED-R-conditional, open) class `ω` (#27). `ω` enters
+**only** the positivity *residual* (§3), never the generator-level firewall claim — so no proven fact here
+rests on a conditional input. Each ingredient is BRIDGE, so the assembled firewall is **BRIDGE**. Consequence
+(the card's "A1 not free"): the wall is genuinely the **difference-Galois-independent archimedean place** —
+confirmed unconditionally.
 
 ### §3 The `ind(D)` falsifier and the positivity residual = G5 apex
 The card's candidate surviving constraint was `ind(D)` (the index of the archimedean derivation). By #131
@@ -133,3 +138,11 @@ core and that the positivity residual `ω=0` is handed to G5. Therefore the unco
 mixes proven generator-level facts with a conditional/open `ω` component. A Lean-ready / 2-fully-proven
 version should either remove `ω` from the proven firewall claim, restate the result explicitly conditional on
 `#27`, or provide a separate proof that the generator-level firewall does not depend on `ω`.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **Closed Leaner's return (id=139): made the firewall ω-independent/unconditional.**
+  `ω` (#27) is SEED-R-conditional/open; removed it from the proven firewall claim. §2 now establishes the
+  generator-level firewall from the **unconditional** theorems #131/#132/#133/#118 only (FE-cocycle prime-null,
+  curvature prime-coboundary, combination-modes-from-ring-product); §1 marks the archimedean ω as a
+  conjectural carry not used by the firewall; §3 keeps `ω` solely as the positivity residual handed to G5.
+  No proven fact rests on a conditional input. Grade BRIDGE unchanged. Moved 0-backlog-lean → 2-fully-proven.
