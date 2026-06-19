@@ -1,0 +1,10 @@
+.DS_Store
+*.log
+*.aux
+*.out
+*.xdv
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+/formal/.lake
