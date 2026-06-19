@@ -1,54 +1,85 @@
 # The Vision — why this field exists
 
-> "Γ satisfies no algebraic differential equation — and neither does ζ. ξ is hypertranscendental." —
-> Hölder, 1887.
+> "Γ satisfies no algebraic differential equation." — Hölder, 1887. The Riemann ξ and ζ inherit it, through
+> the completion `Λ = Γ·ζ` and the functional equation: they are hypertranscendental, evading every
+> algebraic differential equation.
 
-In 1887, Otto Hölder proved that the Euler Gamma function Γ(z) is hypertranscendental, meaning it cannot satisfy any polynomial differential equation \(P(z, y, y', \dots, y^{(n)}) = 0\) with rational coefficients. This implies the Riemann ξ function (and ζ) are also hypertranscendental, evading all algebraic differential equations.
+In 1887 Otto Hölder proved that the **Gamma function** `Γ(z)` is **hypertranscendental** — it satisfies no
+polynomial differential equation `P(z, y, y', …, y^{(n)}) = 0` with rational coefficients. The Riemann `ξ`
+and `ζ` are hypertranscendental in turn, through the completion `Λ = Γ·ζ` and the functional equation.
+**The founding hardness is archimedean: Hölder's theorem is about `Γ`, the local factor at the place at
+infinity — not about the primes.**
 
-A short, plain statement of what the field is for. No proofs here and none are claimed. The mathematics
-is in the gatekeeper conjectures (`00-foundations-native-objects-and-gatekeepers.md`) and the buckets
+A short, plain statement of what the field is for. No proofs here and none are claimed. The mathematics is
+in the gatekeeper conjectures (`00-foundations-native-objects-and-gatekeepers.md`) and the buckets
 (`door/`).
 
 ---
 
-## 1. The reason
+## 1. The reason — two sources of hypertranscendence
 
-Almost every tool for proving deep facts about numbers is built for functions that obey a clean
-differential rule of change. `ζ` does not. Hölder proved in 1887 that `ζ` satisfies no algebraic
-differential equation at all — it is **hypertranscendental**. So the differential toolbox (differential
-Galois theory, the `E`/`G`-function formalism, the period ring, Siegel–Shidlovsky) cannot reach `ζ`'s
-values or zeros. The objects we most want to understand sit outside the country those tools survey, and
-no theory is built for them.
+The objects we most want to understand — `ζ`, the arithmetic `L`, and their completion `Λ` — obey no clean
+differential rule of change, so the differential toolbox (differential Galois theory, the `E`/`G`-function
+formalism, the period ring, Siegel–Shidlovsky) cannot reach their values or zeros. But the hardness has
+**two distinct sources**, and the field exists to hold **both**:
 
-## 2. The idea
+- **Source A — the archimedean factor `Γ`.** One operator with a **polynomial** multiplier:
+  `Γ(z+1) = z·Γ(z)`. In the *differential* direction this is maximally wild (Hölder 1887); in the
+  *difference* (rescaling) direction it is **tame** — a single first-order recurrence. *This is the
+  standing proof that replacing differentiation by rescaling works:* the rescaling tames exactly what the
+  differential toolbox cannot.
+- **Source B — the infinite prime base.** Infinitely many operators with **constant** multipliers,
+  `σ_p : x_p ↦ p^{-1}x_p`, one per prime (`x_p = p^{-s}`). Here the rescaling thesis is a *conjecture*, not
+  a theorem: the Euler product needs *all* the dilations at once, and unique factorization keeps the lanes
+  independent — the "free flow."
 
-If there is no differential rule of change, use a different kind of rule: one about **rescaling**, not
-nudging. Mahler did this for functions with a *single* rescaling and reached transcendence facts the
-differential toolbox could not. `ζ` is built from all the primes at once and carries **one rescaling per
-prime** — `σ_p : x_p ↦ p^{-1}x_p`, for every prime `p`. It needs infinitely many rescalings running at
-the same time.
+The completed `Λ = Γ·ζ` carries **both** sources, welded by the functional equation `Λ(s) = Λ(1−s)`. No
+existing theory holds the two together: differential Galois theory sees only Source A (as Hölder); a
+single-base Mahler / difference theory sees only one lane of Source B. **The field is the category in which
+the archimedean differential generator and the infinite prime difference base coexist and interact.**
 
-The field widens Mahler's single rescaling into the simultaneous action of one per prime:
-**multi-`q`-difference Galois theory.** Unique factorization keeps the lanes independent — the rescaling
-for 2, for 3, for 5 never collapse together — which is the ground the construction stands on (the "free
-flow").
+## 2. The idea — rescaling, on both places
+
+Mahler widened the differential rule into a *single* rescaling and reached transcendence facts the
+differential toolbox could not. The field widens it twice over, and keeps both:
+
+- across the **primes**: the simultaneous action of one dilation `σ_p` per prime —
+  **multi-`q`-difference Galois theory** (Source B);
+- across the **archimedean place**: the scaling generator `∂_s = −Σ_p (log p) θ_p` (the `s`-flow, whose
+  `ζ`-regularized determinant is `Γ`) — the differential lane (Source A), held **as a generator inside the
+  field, not as an obstruction outside it**.
+
+Together they form one category `𝓜⁺` of `(σ_p, ∂_s)`-modules with difference Galois group `G_L⁺`. The
+natural object is the **completed `Λ`**; the functional equation is the weld; the place at infinity is
+**inside** the field.
 
 ## 3. What we are aiming for
 
-In this setting two questions that look separate from the classical side may become two views of one
-statement:
+Two questions that look separate from the classical side may become two views of one statement:
 - **where** the zeros sit (the Riemann Hypothesis);
 - **what kind** of numbers the zeros are — whether they are genuinely independent (the transcendence
   question).
 
-The aim is a theory in which RH is a feature of the geometry rather than an external wall, and in which
-RH and the independence of the zeros are one statement seen from two sides. The single object on which
-both sides live and the precise form of the unification are developed in
-`door/bucket-A1-A2-unification-the-carrier.md`.
+The aim is a theory in which RH is a feature of the geometry rather than an external wall, and in which RH
+and the independence of the zeros are one statement seen from two sides — the **non-conspiracy of the two
+sources**, archimedean and prime. The single object on which both live and the precise form of the
+unification are developed in `door/bucket-A1-A2-unification-the-carrier.md` and
+`door/bucket-archimedean-generator.md`.
 
-## 4. What counts as progress
+## 4. Where the new content is — the weld
 
-The deliverable is the theory: each road laid on this ground — a native object made precise, a
-difficulty located exactly, a gatekeeper turned into a theorem — is progress whether or not RH itself
-falls. RH is the hoped consequence, not the only measure. The gatekeeper conjectures and their current
-status are in `door/00-status.md`.
+Source A alone is classical (Hölder = differential Galois of the one archimedean place). Source B alone
+has, so far, come back **BRIDGE**: stripped of the multi-`q` vocabulary the prime difference structure
+**decouples prime-by-prime**, and a parent reproves it (the Door-2 verdict on the difference-Hölder G1 and
+the corank dichotomy G3). So the genuinely native content is **neither source in isolation but their
+interaction** — the **archimedean–prime weld**: the functional equation coupling the polynomial-multiplier
+`Γ` to the constant-multiplier primes. That weld is the seam, and earning one irreducible theorem there is
+the keystone (C5).
+
+## 5. What counts as progress
+
+The deliverable is the theory: each road laid on this ground — a native object made precise, a difficulty
+located exactly, a gatekeeper turned into a theorem — is progress whether or not RH itself falls. RH is the
+hoped consequence, not the only measure. The gatekeeper conjectures and their current status are in
+`door/00-status.md`.
+</content>

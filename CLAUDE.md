@@ -26,9 +26,10 @@ Do science toward publications/hgt.
 
 ## Session init
 1. Read fully line by line: docs/drafts/00-core-vision.md
-2. Read fully line by line: docs/drafts/00-charter-wall-and-door.md
-3. Read fully line by line: docs/drafts/door/00-index.md
-4. Recall Anti-LLM-Cage Protocol
+2. Read fully line by line: docs/drafts/00-foundations-native-objects-and-gatekeepers.md
+3. Read fully line by line: docs/drafts/00-charter-wall-and-door.md
+4. Read fully line by line: docs/drafts/door/00-index.md
+5. Recall Anti-LLM-Cage Protocol
 
 ## The research pipeline (Kanban style)
 Use docs/drafts/pipeline/_card-template.md

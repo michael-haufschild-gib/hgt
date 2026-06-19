@@ -50,8 +50,11 @@ import GaloisForLFunctions.SatoTateMoment
 import GaloisForLFunctions.FunctionFieldFE
 import GaloisForLFunctions.FECarrier
 import GaloisForLFunctions.GluingWitness
+import GaloisForLFunctions.ShafarevichGluing
+import GaloisForLFunctions.HolonomicityLimit
 import GaloisForLFunctions.ZeroEstimate
 import GaloisForLFunctions.StieltjesWeld
 import GaloisForLFunctions.FriableAuxiliary
+import GaloisForLFunctions.ZeroEstimateOrder
 import GaloisForLFunctions.C5JensenPrimeKernel
 import GaloisForLFunctions.FunctionFieldDegeneration

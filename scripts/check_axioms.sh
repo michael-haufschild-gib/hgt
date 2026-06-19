@@ -240,8 +240,11 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.gluing_trace_ne
 #print axioms GaloisForLFunctions.gluing_not_jointly_conjugate
 #print axioms GaloisForLFunctions.gluing_per_prime_same_but_joint_distinct
+#print axioms GaloisForLFunctions.diagonalKer_mul_eq_sum_ker
+#print axioms GaloisForLFunctions.monotoneNat_eventually_constant_of_bddAbove
 #print axioms GaloisForLFunctions.vandermonde_moments_eq_zero_of_injective
 #print axioms GaloisForLFunctions.vandermonde_initial_moment_nonzero_of_nonzero_coeff
+#print axioms GaloisForLFunctions.exponentialSum_has_nonzero_iteratedDeriv_lt_card
 #print axioms GaloisForLFunctions.stieltjes_pairing_cauchy_j
 #print axioms GaloisForLFunctions.iteratedDeriv_exp_neg_mul_log
 #print axioms GaloisForLFunctions.exp_neg_real_log_nat
@@ -269,8 +272,8 @@ NORMALIZED="$(printf '%s\n' "$OUT" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]
 AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "depends on axioms: \\[[^]]*\\]" || true; })"
 NO_AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "does not depend on any axioms" || true; })"
 AUDITED_COUNT="$(printf '%s\n%s\n' "$AXIOM_LINES" "$NO_AXIOM_LINES" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [ "$AUDITED_COUNT" -ne 245 ]; then
-  echo "FAIL: expected 245 audited theorem outputs" >&2
+if [ "$AUDITED_COUNT" -ne 248 ]; then
+  echo "FAIL: expected 248 audited theorem outputs" >&2
   exit 1
 fi
 BAD_AXIOMS="$(printf '%s\n' "$AXIOM_LINES" \
@@ -303,4 +306,4 @@ if [ -n "$SORRY_HITS" ]; then
   exit 1
 fi
 
-echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (245 theorem outputs audited)."
+echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (248 theorem outputs audited)."

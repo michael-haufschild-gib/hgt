@@ -34,24 +34,34 @@ no closed-form solution). C5 is the goal we build toward — see §5.
 
 ## 2. The wall and its borders
 
-**The native interior (the wall).** The field's territory is the multi-`q`-difference structure on the
-prime base:
-- one dilation per prime, `σ_p : x_p ↦ q_p·x_p` with `q_p = 1/p`, acting on functions on `{x_p}_p`
-  (`x_p = p^{-s}`, the Bohr coordinates);
-- the module carrying the **simultaneous** action of all `σ_p` — an infinite-base multi-`q`-difference
-  module;
-- its difference Galois group `G_L`, the corank of its relation lattice, and the difference-transcendence
-  degree.
+**The native interior (the wall).** The field's territory is the **completed** multi-`q`-difference
+structure — the **two hypertranscendence sources** held together (the founding fact: Hölder 1887 is about
+the archimedean `Γ`, not the primes):
+- **Source B — the prime difference lanes:** one dilation per prime, `σ_p : x_p ↦ q_p·x_p` with `q_p = 1/p`
+  (**constant** multipliers), acting on the Bohr coordinates `x_p = p^{-s}`;
+- **Source A — the archimedean differential generator:** the scaling derivation
+  `∂_s = −Σ_p (log p) θ_p` (the `s`-flow; the **polynomial**-multiplier place `Γ(z+1)=z·Γ(z)`, whose
+  `ζ`-regularized determinant is `Γ`) — carried **as a generator inside the wall, not as an obstruction
+  outside it**;
+- the module carrying the **simultaneous** action of all `σ_p` **and** `∂_s` — the completed
+  `(σ_p, ∂_s)`-module `𝓜⁺` — with its difference Galois group `G_L⁺`, the corank of its relation lattice,
+  and the difference-transcendence degree.
 
-The objects and invariants are defined in `00-foundations-native-objects-and-gatekeepers.md`; the
-conjectures about them are developed in `door/`.
+The natural diagonal object is the **completed `Λ = Γ·ζ`**; the functional equation `Λ(s)=Λ(1−s)` welds the
+two sources. The objects and invariants are defined in `00-foundations-native-objects-and-gatekeepers.md`;
+the conjectures are developed in `door/` (the archimedean generator in `door/bucket-archimedean-generator.md`).
 
-**The borders.** Three specializations must recover known mathematics:
+**The borders.** Four specializations must recover known mathematics — each strips one source or collapses
+the base:
 - single prime / finite base → classical difference Galois theory (van der Put–Singer);
 - root of unity / function field → the Frobenius / Weil–Deligne picture (function-field RH is Deligne);
-- diagonal-flow closure → the Bohr–Kronecker structure `𝕋^∞`.
+- diagonal-flow closure → the Bohr–Kronecker structure `𝕋^∞`;
+- **the archimedean factor alone** (Source A stripped of the primes) → **differential Galois theory /
+  Hölder 1887** (`Γ` hypertranscendental).
 
-The wall is the boundary of the native interior; the doors stand at the borders.
+The wall is the boundary of the native interior; the doors stand at the borders. **Native = the weld:** a
+theorem using the prime `σ_p` and the archimedean `∂_s` *jointly and irreducibly*, reachable from no single
+border parent.
 
 ---
 
@@ -70,8 +80,11 @@ all five tests. Door-2 is the master key.
 - **Door-3 — native invariant.** Does it compute, bound, or genuinely use a native invariant (`G_L`,
   `corank(Λ)`, the difference-trdeg, the holonomy type), not a renamed classical one (a dimension,
   degree, sign count)?
-- **Door-4 — native zone.** Does it live where all three parents fail at once:
-  `{ multiple independent bases } ∩ { difference, not differential } ∩ { infinite / arithmetic base }`?
+- **Door-4 — native zone.** Does it live where all parents fail at once — the **archimedean–prime weld**:
+  `{ multiple independent prime bases } ∩ { the archimedean differential generator coupled to the prime
+  difference generators — neither alone } ∩ { infinite / arithmetic base }`? (Source A alone is
+  differential Galois / Hölder; Source B alone decouples and is BRIDGE; the native zone is their
+  interaction.)
 - **Door-5 — faithful restriction.** Specialized to a border (one prime, finite truncation, function
   field), does it recover the known classical answer?
 
@@ -101,9 +114,10 @@ instead the native theorem it would need (Door-2 essential use) and prove that.
 
 ## 5. The keystone
 
-C5 is the target: the first theorem whose statement or proof needs the multi-`q` apparatus and that no
-single parent can reach. The gatekeeper conjectures (`00-foundations-native-objects-and-gatekeepers.md`,
-developed in `door/`) are the candidates; the live status of each is in `door/00-status.md`. The nearest
-candidates are the difference-Hölder statement (G1) and the corank dichotomy (G3); the Door-2 re-test
-(`door/door-C5-irreducibility-and-door-2-retest.md`) decides their grade. Proving one is what makes the
-work a branch.
+C5 is the target: the first theorem whose statement or proof needs the field's apparatus and that no single
+parent can reach. The earliest candidates — the difference-Hölder statement (G1) and the corank dichotomy
+(G3) — were Door-2 re-tested and came back **BRIDGE**: each lives on **Source B alone**, which decouples
+prime-by-prime, so a parent reproves it. The lesson redirects the keystone to the **archimedean–prime
+weld** — a theorem using the prime `σ_p` and the archimedean `∂_s` *jointly and irreducibly*
+(`door/bucket-archimedean-generator.md`, `door/door-C5-irreducibility-and-door-2-retest.md`; the live
+status of each candidate is in `door/00-status.md`). Proving one is what makes the work a branch.

@@ -1,7 +1,7 @@
-# Uniformity-in-S of the multi-q zero estimate (G2 obstruction B / Conjecture 5′) — RESOLVED
+# Uniformity-in-S of the multi-q zero estimate (G2 obstruction B / Conjecture 5′) — RETURNED FOR REVIEW
 
 - **ID:** zero-estimate-uniformity
-- **Stage:** 2-fully-proven
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper) — **grade BRIDGE** (Door-2 fails: unique factorization + Dirichlet-polynomial
   zero count, both parents)
 - **Priority:** FOUNDATIONAL
@@ -108,14 +108,17 @@ not need it — the diagonal restriction is both sufficient for G2 and elementar
   `|S| → ∞` control scoped (height vs vector-norm divide)
 - [x] 1 → 2  fully-proven: the uniform-in-S (diagonal) zero estimate proved (Vandermonde order bound +
   S-free height size bound); grade BRIDGE
-- [ ] 2 → 3  formalized — Lean anchors **DONE** for the two finite algebra cores in
-  `formal/GaloisForLFunctions/ZeroEstimate.lean`:
+- [ ] 2 → 3  formalized — Lean anchors **DONE** for the height bound, Vandermonde core, and analytic
+  exponential-sum order wrapper:
   `logPrime_height_bound` proves the S-free height bound
   `H(m)^{-1} ≤ |Σ_p m_p log p|`, and
   `vandermonde_moments_eq_zero_of_injective` /
   `vandermonde_initial_moment_nonzero_of_nonzero_coeff` prove the Vandermonde moment core of the
-  order bound. Card remains in `2-fully-proven`: the analytic wrapper translating vanishing order of
-  the exponential sum into those moment equations is not yet Lean-formalized.
+  order bound. `formal/GaloisForLFunctions/ZeroEstimateOrder.lean` adds
+  `exponentialSum_has_nonzero_iteratedDeriv_lt_card`, proving that a nonzero finite exponential sum with
+  `K` distinct frequencies has a nonzero derivative of order `< K` at any base point. Card remains in
+  `2-fully-proven`: the Bohr-polynomial/support wrapper, the determinant product size estimate, and the
+  fixed-degree polynomial-in-`|S|` uniformity bookkeeping are not yet Lean-formalized.
 - [ ] 3 → 4  publication-ready
 
 ## Cross-references
@@ -145,3 +148,21 @@ not need it — the diagonal restriction is both sufficient for G2 and elementar
   vector has a nonzero initial moment. `lake build` and `scripts/check_axioms.sh` pass with 245 theorem
   outputs. The card is not moved to `3-formalized` until the analytic derivative/order-of-zero wrapper
   is also formalized.
+- 2026-06-19 (Leaner) — added the analytic exponential-sum order wrapper
+  `exponentialSum_has_nonzero_iteratedDeriv_lt_card` in
+  `formal/GaloisForLFunctions/ZeroEstimateOrder.lean`: for `K` distinct frequencies and a nonzero
+  coefficient vector, some derivative of order `< K` is nonzero at every base point. This closes the
+  Lean gap between the Vandermonde moment core and the paper proof's vanishing-order argument. `lake build`
+  and `scripts/check_axioms.sh` pass with 246 audited theorem outputs and no `sorry`. Card remains in
+  `2-fully-proven` until the Bohr-polynomial/support wrapper, determinant product size estimate, and
+  fixed-degree polynomial-in-`|S|` uniformity bookkeeping are formalized.
+
+## Lean return note (2026-06-19, Leaner)
+Returned to `0-backlog-lean`: the paper proof of the claimed uniform-in-`S` conclusion has a gap in §(c).
+The argument proves the valid per-form height bound `|⟨m,ℓ_S⟩| ≥ H(m)^{-1}` and then derives bounds involving
+`P_S`, the largest prime in `S`. But for arbitrary finite prime sets, `P_S` is not controlled polynomially by
+`|S|`; e.g. a one-prime set `{p}` can have arbitrarily large `P_S=p`. Therefore the step from
+"constants polynomial in `P_S` at fixed degree" to "polynomial-in-`|S|` / uniform-in-`S` constants" is not
+proved. The Lean anchors for the valid subclaims remain useful (`logPrime_height_bound`, the Vandermonde core,
+and `exponentialSum_has_nonzero_iteratedDeriv_lt_card`), but they do not prove the card's stated Conjecture-5′
+uniformity claim.

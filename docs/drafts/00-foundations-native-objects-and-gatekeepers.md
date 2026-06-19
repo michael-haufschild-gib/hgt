@@ -11,14 +11,19 @@ Conjectural throughout; no conjecture here is claimed as proven, and no proof of
 
 ## 0. Why this theory
 
-`ζ` and the L-functions are **hypertranscendental**: they satisfy no algebraic differential equation
-(Hölder, 1887). So the holonomic toolkit — differential Galois theory, the `E`/`G`-function formalism,
-the period ring, Siegel–Shidlovsky — cannot reach their values or zeros. These are among the deepest
-objects in arithmetic, and no theory is built for them.
+`ζ` and the L-functions are **hypertranscendental**: they satisfy no algebraic differential equation. The
+founding fact is Hölder's 1887 theorem that the **archimedean factor `Γ`** is hypertranscendental; `ζ` and
+the L-functions inherit it through the completion `Λ = Γ·ζ` and the functional equation. So the holonomic
+toolkit — differential Galois theory, the `E`/`G`-function formalism, the period ring, Siegel–Shidlovsky —
+cannot reach their values or zeros. These are among the deepest objects in arithmetic, and no theory is
+built for them.
 
 A non-holonomic object has no differential flow to ride; it is fixed by a **constraint between
-rescalings**, not propagated by a flow. The right setting is therefore difference equations, not
-differential ones — one dilation per prime, acting together.
+rescalings**, not propagated by a flow. The right setting combines **both** rescaling lanes — the
+infinitely many prime dilations `σ_p` (difference, **constant** multipliers) **and** the archimedean
+scaling generator `∂_s` (the differential lane, **polynomial** multiplier `Γ(z+1)=z·Γ(z)` — the place
+Hölder's theorem is actually about). The native content is their **weld** on the completed `Λ = Γ·ζ`
+(`00-charter-wall-and-door.md` §2; the two sources of hypertranscendence).
 
 **Working definition.** The field is the study of **non-integrable (non-holonomic) arithmetic
 connections**: the difference-Galois theory and the sub-Riemannian-style geometry of objects with no
@@ -31,7 +36,14 @@ proven.
 - **N1 — The infinite-base multi-`q`-difference module.** A module over the prime base `{x_p}_p`
   (`x_p = p^{-s}`) with a dilation per prime, `σ_p : x_p ↦ q_p·x_p`, `q_p = 1/p`. The native content is
   the **simultaneity of infinitely many independent bases** (single-`p` is Mahler's classical setting).
-  `ζ` is the diagonal of such a module.
+  `ζ` is the diagonal of such a module. **(This is Source B — the prime / difference lane.)**
+- **N1⁺ — The archimedean generator and the completed module (Source A + the weld).** The scaling
+  derivation `∂_s = −Σ_p (log p) θ_p` (the `s`-flow; **polynomial** multiplier `Γ(z+1)=z·Γ(z)`, whose
+  `ζ`-regularized determinant is `Γ`), carried as a native generator **alongside** the `σ_p`, forming the
+  completed `(σ_p, ∂_s)`-module `𝓜⁺` with Galois group `G_L⁺`. The diagonal object is the **completed
+  `Λ = Γ·ζ`**; the functional equation `Λ(s)=Λ(1−s)` welds the two sources. The native zone is the
+  **weld** (archimedean×prime), not either lane alone. (Hölder 1887 = Source A alone = the differential
+  Galois border; `door/bucket-archimedean-generator.md`.)
 - **N2 — The multi-`q` connection.** The compatibility data of the `{σ_p}` (the cocycle / curvature
   `F_{pq}`). **Flat (integrable) ⟺ holonomic; non-flat ⟺ non-holonomic.** This is the geometric face of
   N1.

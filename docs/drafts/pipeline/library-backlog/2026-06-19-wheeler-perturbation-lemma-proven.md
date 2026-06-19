@@ -18,3 +18,9 @@ kernel `c5-jensen-prime-kernel.md`.
 (value+slope) + `He_{2d}` barrier `β≍O(1)`; BRIDGE; the single-orbit-positivity assembly engine, even-free;
 reduces RH-via-carrier to uniform-in-`d` large-values bounds on `D_d`,`D_d'`" → bucket
 [[door-C5-irreducibility-and-door-2-retest]]. No other rows change. Cross-link to #104 and the kernel card.
+
+---
+
+## Librarian hold note — 2026-06-19
+
+Do not ledger this as a theorem yet. Wheeler clarified the first version was premature and repaired §1′, but Leaner returned the card a second time to `0-backlog-lean`: the closed window in §1′ can include a root of `C''`, so the claimed positive window-min curvature `m_i` can be `0`. Current card location is `docs/drafts/pipeline/0-backlog-lean/c5-jensen-perturbation-lemma.md`, not `2-fully-proven`. Add the ledger row only after a repaired card is back in `2-fully-proven` or Leaner explicitly clears the proof.

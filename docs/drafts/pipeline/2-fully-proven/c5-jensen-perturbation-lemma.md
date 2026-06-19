@@ -119,10 +119,13 @@ since `C'(x_i)=0`, `C'(x_i±ε)=±∫_{x_i}^{x_i±ε}C''`, which needs a **curva
 on the window**, not at the point. Corrected statement and proof:
 
 **Setup (added data).** `C'` simple at `x_i` (`C''(x_i)≠0`). Let `ρ_i :=` the distance from `x_i` to the
-nearest root of `C''` (the adjacent inflection of `C` / extremum of `C'`); `C''` is **sign-constant** on
-`(x_i-ρ_i, x_i+ρ_i)`. Fix a window radius `w_i := \min(ρ_i, δ_i/2)` and set the **window-min curvature**
-`m_i := \min_{|s-x_i|≤w_i}|C''(s)| > 0` (positive: `C''` sign-constant and nonvanishing on the closed
-window, `=0` only at `±ρ_i`).
+nearest root of `C''` (the adjacent inflection of `C` / extremum of `C'`); by definition of "nearest", `C''`
+has **no root** in the open interval `(x_i-ρ_i, x_i+ρ_i)`, so `C''` is **sign-constant and nonvanishing**
+there. Fix a **strictly interior** window radius `w_i := \tfrac12\min(ρ_i, δ_i/2)` (so `w_i ≤ ρ_i/2 < ρ_i`)
+and set the **window-min curvature** `m_i := \min_{|s-x_i|≤w_i}|C''(s)|`. The **closed** window
+`K_i := [x_i-w_i, x_i+w_i] ⊂ (x_i-ρ_i, x_i+ρ_i)` is a **compact subset** of the open interval on which `|C''|`
+is continuous and strictly positive, so the extreme-value theorem gives `m_i > 0` (the window no longer
+reaches the inflection roots `±ρ_i` — this closes Leaner's boundary bug).
 
 **Lemma (corrected).** If for every `i`, with `ε_i := \big(\sup_{|w-x_i|≤w_i}|D'|\big)/m_i`,
 > **(b_i′)**  `\sup_{|w-x_i|≤w_i}|D'(w)| < m_i\,w_i`  (so `ε_i<w_i`),  and
@@ -133,11 +136,13 @@ then `F=C+D` is hyperbolic.
 `|C'(x_i±ε)| = \big|\int_{x_i}^{x_i±ε}C''\big| = \int_{x_i}^{x_i±ε}|C''| ≥ m_i\,ε`. With `ε=ε_i<w_i`,
 `|C'(x_i±ε_i)| ≥ m_iε_i = \sup_{window}|D'| ≥ |D'(x_i±ε_i)|`, so `F'=C'+D'` shares sign with `C'` at
 `x_i±ε_i`; `C'` changes sign across `x_i` ⟹ IVT root `x_i'∈(x_i-ε_i,x_i+ε_i)`. Disjoint windows
-(`ε_i<w_i≤δ_i/2`) ⟹ `2d-1` real roots of `F'` ⟹ `F'` hyperbolic. Steps (ii),(iii) unchanged. ∎
+(`ε_i<w_i≤δ_i/4<δ_i/2`) ⟹ `2d-1` real roots of `F'` ⟹ `F'` hyperbolic. Steps (ii),(iii) unchanged. ∎
 
 **Conclusion intact up to constants.** For `C=He_{2d}` (critical scaling): `x_i` = roots of `C'`, inflections
-= roots of `C''` interlacing them, so `ρ_i ≍ δ_i/2` and `w_i ≍ δ_i/2`; `|C''|` decays from `κ_i=|C(x_i)|≥1`
-at `x_i` to `0` at the inflection, so on `w_i=δ_i/4` (say) `m_i ≥ c·κ_i` (`c>0` absolute). Hence the barrier
+= roots of `C''` interlacing them (Rolle), so `ρ_i ≍ δ_i/2` and `w_i = \tfrac12\min(ρ_i,δ_i/2) ≍ δ_i/4`;
+`|C''|` decays from `κ_i=|C(x_i)|≥1` at `x_i` to `0` at the inflection `±ρ_i`, so on the strictly interior
+window `w_i ≍ δ_i/4 ≍ ρ_i/2` (a fixed fraction of the distance to the nearest `C''`-zero) `m_i ≥ c·κ_i`
+(`c>0` absolute, by the unit-density/no-clustering Hermite structure). Hence the barrier
 `β_i := m_i w_i ≍ κ_iδ_i ≍ O(1)` is **unchanged up to an absolute constant** — the `O(1)`-barrier conclusion
 (§2) stands. The hand-off (§3) and grade (BRIDGE) are unaffected; only the curvature input is corrected from
 pointwise `κ_i` to the window-min `m_i` (with sign control).
@@ -157,3 +162,30 @@ principle, but the stated definition still has a boundary error: `w_i := min(ρ_
 so the minimum is `0`, not positive, and `ε_i = sup|D'| / m_i` is not defined as used. The proof needs a
 strictly interior window, for example `w_i < ρ_i` (or an explicit positive lower-bound hypothesis
 `∀ |s-x_i|≤w_i, m_i ≤ |C''(s)|` with `0<m_i`) before the Rolle/IVT argument can be formalized.
+
+## §1″ Resolution of Leaner's second return note (2026-06-19, Wheeler)
+
+**Boundary bug (Leaner, second review):** with `w_i := min(ρ_i, δ_i/2)`, when `ρ_i ≤ δ_i/2` the *closed*
+window `[x_i-w_i, x_i+w_i]` reaches the nearest root of `C''` at `±ρ_i`, where `|C''|=0`; then
+`m_i := min_{window}|C''| = 0` and `ε_i = sup|D'|/m_i` is undefined.
+
+**Fix (the factor ½ — strictly interior window):** redefine `w_i := \tfrac12\min(ρ_i, δ_i/2)`. Then
+`w_i ≤ ρ_i/2 < ρ_i`, so the **closed** window `K_i := [x_i-w_i, x_i+w_i]` is a **compact subset** of the
+**open** interval `(x_i-ρ_i, x_i+ρ_i)`, on which `C''` (a polynomial) has no root, hence `|C''|` is
+continuous and strictly positive. By the **extreme-value theorem** (Weierstrass), the minimum
+`m_i := \min_{K_i}|C''|` is attained and `m_i > 0` — derived, not assumed. This is precisely Leaner's
+requested "strictly interior window `w_i < ρ_i`" form. The proof of step (i)
+(`|C'(x_i±ε)|=∫|C''|≥m_iε` on the sign-constant compact window), disjointness (`ε_i<w_i≤δ_i/4<δ_i/2`),
+and the sign-count steps (ii),(iii) are unchanged. For `He_{2d}`, `ρ_i ≍ δ_i/2 ⟹ w_i ≍ δ_i/4` and
+`m_i ≥ c·κ_i`, so the `O(1)` barrier `β_i=m_iw_i ≍ κ_iδ_i` survives up to an absolute constant.
+
+**Lean readiness:** the only added ingredient is "continuous, strictly-positive function on a compact set
+attains a positive minimum" (`IsCompact.exists_isMinOn` + `ContinuousOn` + positivity in Mathlib). No other
+step changes. Card returned to `2-fully-proven` for fresh Lean review.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **Closed Leaner's second return note (§1″).** Replaced `w_i := min(ρ_i, δ_i/2)`
+  by the strictly interior `w_i := ½·min(ρ_i, δ_i/2) < ρ_i`. The closed window is then a compact subset of
+  the open inflection-free interval, so `m_i = min|C''| > 0` follows from the extreme-value theorem (no
+  longer touching the `±ρ_i` zeros of `C''`). Downstream proof, the `O(1)` Hermite barrier, hand-off (§3),
+  and grade (BRIDGE) all intact up to an absolute constant. Moved card 0-backlog → 2-fully-proven.

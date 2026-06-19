@@ -44,6 +44,17 @@ the **ℚ-linear independence of `{log p}`** (fundamental theorem of arithmetic)
   differential* Hölder for ζ is **imported** (Hölder 1887), and for general L is **conjectural**
   (reducible via Adamczewski–Dreyfus–Hardouin). So G1 as "no single algebraic q-difference equation"
   is **essentially proved here**; G1 as "no differential equation" is Hölder (import) for ζ.
+- **Source A / Source B reading (2026-06-19, the Hölder-recentering).** The two halves above are the
+  field's **two sources of hypertranscendence**, and Hölder 1887 belongs to the *archimedean* one:
+  - **differential Hölder = Source A** — the archimedean factor `Γ` (one operator, **polynomial**
+    multiplier `Γ(z+1)=z·Γ(z)`); classical, a Door-5 **border** (differential Galois). Not a mere
+    side-import: it is the *founding* hardness, which `ζ` inherits through the completion `Λ=Γ·ζ`.
+  - **difference-G1 = Source B** — the infinite prime base (`σ_p`, **constant** multipliers); native in
+    aggregate but **decouples prime-by-prime** ⟹ **BRIDGE** (the Door-2 verdict below).
+  - **The C5 keystone is neither source alone — it is their weld** (`∂_s` coupled to `σ_p` on `Λ`, the
+    archimedean×prime cross-terms). So G1's BRIDGE grade is *expected*: §59 tests Source B alone. See
+    `../pipeline/0-backlog/two-sources-of-hypertranscendence.md`, [[bucket-archimedean-generator]], and the
+    "Second carrier dimension" note in [[door-C5-irreducibility-and-door-2-retest]].
 - **Single-q version (§51.1):** finite single-σ q-difference groups are *cyclic*, but the arithmetic
   object needs the **full pro-torus `𝕋^∞`** — which is exactly why one prime / one dilation cannot
   carry G1.

@@ -121,6 +121,25 @@ curvature / integrability class `F_{pq}` (§16, which couples `p` and `q`), Rank
 moments) carries combination modes; the additive world does not. *(Derivation:
 `../pipeline/2-fully-proven/erosion-cocycle-reducibility.md`.)*
 
+**Second carrier dimension — the archimedean–prime weld (2026-06-19, the Hölder-recentering).** The
+criterion above is **prime×prime** (`m_pδ_p + m_qδ_q`, two **constant**-multiplier lanes). But the
+*founding* hardness is **archimedean**: Hölder 1887 is a theorem about `Γ` — the **polynomial**-multiplier
+place `∂_s` — not the primes. So there is a *second* class of cross-terms, **archimedean×prime**: the
+polynomial-multiplier generator `∂_s` coupled to the constant-multiplier `σ_p` on the completed `Λ=Γ·ζ`.
+Source A (`∂_s`/`Γ`) alone is differential Galois / Hölder (a border, charter §2); Source B (`σ_p`) alone
+decouples (BRIDGE); their **weld** — the functional equation coupling them — is a C5 carrier on the same
+footing as (plausibly more fundamental than) the prime×prime combination modes, because it is where the
+two genuinely different multiplier *types* interact. This also **re-reads the BRIDGE verdicts**: §59/§60/G1
+are Source-B-only ⟹ decoupling ⟹ BRIDGE — the native content was always on the weld. Carriers:
+`../pipeline/0-backlog/completed-connection-category.md` (the `(σ_p,∂_s)` weld),
+`../pipeline/0-backlog/archimedean-corank-collapse.md`,
+`../pipeline/0-backlog/two-sources-of-hypertranscendence.md`; framing in
+[[bucket-archimedean-generator]]. **Caveat (the weld may factor):** since `[∂_s,σ_p]=0`, the weld is **not**
+an operator commutator — it lives in the *completion* (the tensor `M_∞⊗M_ζ` and the FE that only the
+product satisfies). If that **FE-conspiracy cocycle factors** across the two sources, the weld is *less*
+native than the prime×prime carriers, not more, and C5 falls back to them — `../pipeline/0-backlog/archimedean-prime-cross-term.md`
+step 1–2 is the genuine decision point.
+
 **First instance (2026-06-19).** On mixed-sign combination modes (the near-resonances `p^a ≈ q^b`)
 Baker **is** load-bearing: the cohomological equation `Dh=g` is solvable for the prime frequencies
 `(log p)` and *unsolvable* for Liouville frequencies (proved, with the Liouville counterexample —

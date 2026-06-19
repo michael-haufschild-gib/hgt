@@ -15,6 +15,14 @@ single Tannakian category welding the prime lanes and the ∞-lane by the FE (`c
 (2) Settle the **new** corank-collapse bet: is the missing single Frobenius exactly `∂_s`
 (`archimedean-corank-collapse`)?
 
+**Elevated to co-central (2026-06-19, the Hölder-recentering).** Following the observation that Hölder
+1887 is a theorem about **`Γ`** (the archimedean factor), not the primes, the charter wall (§2) was
+**redrawn** to place the archimedean generator `∂_s` **inside** the native interior alongside the prime
+`σ_p`, and the vision re-centered on the completed `Λ=Γ·ζ`. Source A (`Γ`/`∂_s`) is the *founding*
+hardness; this bucket is no longer a side-consolidation but **one of the two pillars**, with the **weld**
+(Source A × Source B) now the C5 keystone (charter §5). Framing:
+`../pipeline/0-backlog/two-sources-of-hypertranscendence.md`.
+
 > **Honest status of this bucket (read first).** Most of the "archimedean generator" idea is **not new** —
 > the operator `D`, the combined generator `gen(G_L)=D+{σ_p}`, the completed flat connection with `FE =
 > flatness`, `Γ = ζ-reg det D`, `ω=0 ⟺ RH`, and `D =` the clock are all in the corpus, some **ledgered**

@@ -94,9 +94,11 @@ obstruction) are all **FIELDS MEDAL** and open.
 > no-margin rows (#89–#91), the face-orthogonality / three-cut rows (#54/#82), and the Pólya–Schur framing
 > as proofs, localizations, or repackagings of mined log content unless a card explicitly supplies a new
 > proof. Correction: Wheeler's gap-difference condition (GD) is not the exact Hermite tautology; it is a
-> concrete non-tautological C5 candidate. Its grade is decided by the large-values control of
-> `Δε_l(t)` vs Hermite gaps `Δ_l`: parent Halász/Montgomery bounds ⇒ BRIDGE; support-`≤2d`
-> near-resonance/integer-gap control ⇒ possible NATIVE/C5.
+> concrete non-tautological sufficient condition. DeWitt's near-resonance scorecard closed the proposed
+> integer-gap C5 lane negatively: after normalizing by Hermite gaps, the `Δ_l` factor cancels, so
+> `sup_t |Δε_l(t)|/Δ_l` is an upper-bound/large-values problem, not something the integer-gap separation
+> bound closes. The support-`≤2d` near-resonance route is therefore `5-failed`; current grade is BRIDGE unless
+> genuinely new non-parent large-values technology appears.
 > This is leverage, not a free implication: DSS/genericity and RH/Li-positivity are separate faces
 > (#54/#82), so do not read "RH as a corollary of DSS" as a proved implication.
 
@@ -113,10 +115,10 @@ MET; **C6 is now MET (bridge level, 2026-06-19, below)**. The criteria each have
 - **C5** (irreducible theorem — the keystone, NOT MET): the finite-free / combination-mode lane remains
   active at `../pipeline/1-in-progress/combination-mode-baker-reducibility.md` and
   `../pipeline/1-in-progress/finite-free-convolution-flow.md`, but the exact positivity criterion is
-  the already-mined dBN/no-margin axis. The live non-tautological C5 candidate is Wheeler's gap-difference
-  condition (GD): control the explicit prime-Bohr gap shifts `Δε_l(t)` from Professor's kernel against the
-  Hermite gaps `Δ_l`, uniformly in `l,d,t`. Count it toward C5 only if the required large-values bound
-  genuinely needs support-`≤2d` near-resonance/integer-gap input rather than parent large-values methods.
+  the already-mined dBN/no-margin axis. Wheeler's gap-difference condition (GD) is a non-tautological
+  sufficient condition, yet DeWitt's `../pipeline/5-failed/c5-near-resonance-large-values.md` closes the
+  support-`≤2d` near-resonance/integer-gap route negatively: normalized control of `Δε_l(t)` is a parent
+  large-values upper-bound problem, so this lane does **not** supply C5.
 - **C3** (native invariant, PARTIAL): **reduced to C5 (resolved 2026-06-19).** Cheap invariants proven
   BRIDGE (`../pipeline/2-fully-proven/c3-gluing-invariants-bridge.md`): joint gluing invariants exist
   (per-prime-equal yet jointly-distinct modules) but are all character-variety pullbacks; the only
@@ -146,10 +148,10 @@ MET; **C6 is now MET (bridge level, 2026-06-19, below)**. The criteria each have
 
 **Bite-size & tractable (good single-session targets):**
 - **#104 — finite-free convolution flow:** pinned carrier for the known positivity/no-margin axis
-  (in-progress). The exact criterion is not C5 by itself; the live C5 candidate is the gap-difference
-  sufficient condition (GD), reducing the problem to uniform large-values bounds for `Δε_l(t)` versus
-  Hermite gaps `Δ_l`. The first-order Jensen prime kernel is supplied in #126 as the BRIDGE/localization
-  input for those gap shifts.
+  (in-progress). The exact criterion is not C5 by itself; GD remains a non-tautological sufficient
+  condition, but the near-resonance/integer-gap closure has failed (`../pipeline/5-failed/c5-near-resonance-large-values.md`):
+  normalized gap control is a parent large-values upper-bound problem. #126 remains the BRIDGE/localization
+  input for the gap shifts.
 - **#59 — erosion threshold (G19):** write up `½ = the marginal-variance locus`; the hard analytics
   (Selberg/Ingham) are already theorems (#60).
 - **#95 — is `Λ` (the dBN constant) a period?** `../pipeline/0-backlog/is-lambda-a-period.md`.
@@ -231,7 +233,7 @@ instead.
 | 43 | C2 native category — **MET** | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
 | 44 | C3 native invariant — **PARTIAL → reduced to C5** (resolved 2026-06-19): cheap invariants proven BRIDGE (#115); native invariant ⟺ C5★; independent goal failed (`../pipeline/5-failed/c3-native-invariant-door3.md`) | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
 | 45 | C4 native problem — **MET** | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
-| 46 | C5 irreducible theorem — **NOT MET** (the gap); exact finite-free/combination-mode positivity is provenance-graded as the known dBN/no-margin axis, but Wheeler's gap-difference condition (GD) is a concrete non-tautological C5 candidate: the grade hinges on whether uniform control of `Δε_l(t)` vs Hermite gaps `Δ_l` needs native support-`≤2d` near-resonance/integer-gap input or only parent large-values estimates | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
+| 46 | C5 irreducible theorem — **NOT MET** (the gap); exact finite-free/combination-mode positivity is provenance-graded as the known dBN/no-margin axis. Wheeler's gap-difference condition (GD) is non-tautological, but the proposed support-`≤2d` near-resonance/integer-gap route to control `Δε_l(t)/Δ_l` is now **failed** (`../pipeline/5-failed/c5-near-resonance-large-values.md`): after gap normalization the problem is a parent large-values upper bound, so no native C5 theorem is banked here | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
 | 47 | C6 faithful bridge — **MET** (bridge level, 2026-06-19): three border functors built; recover vdPS / Deligne–Papanikolas–Deligne–Katz / Bohr–Kronecker; `𝓜` strictly extends single-prime via proven G1 (#116); native extension = C5★ (`../pipeline/2-fully-proven/c6-specialization-functors.md`) | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
 | 48 | C7 autonomy — **NOT MET**; bridge-level autonomy proven (#119: `𝓜 ≠ lim_T 𝓓_T`, BRIDGE), but native autonomy remains `../pipeline/0-backlog/c7-autonomy-foundational-core.md` / **C5★**; conjectural reduction **C7-native ⟺ C5★** | [[door-C5-irreducibility-and-door-2-retest]] | BRANCH STATUS | FOUNDATIONAL |
 | 49 | σ-parity = FE-parity weld (candidate native theorem) | [[door-C5-irreducibility-and-door-2-retest]] | THEOREM (Lean) | FOUNDATIONAL |
@@ -289,7 +291,7 @@ instead.
 | 101 | Tate–prime rigidity weld (G12) — card: `tate-prime-rigidity.md` | [[bucket-new-sibling-conjectures]] | CANDIDATE | FUTURE |
 | 102 | live motivic period tower (SEED-U) — card: `motivic-period-tower.md` | [[bucket-new-sibling-conjectures]] | CANDIDATE | FUTURE |
 | 103 | friable Dirichlet polynomial = native auxiliary (N5) — **THEOREM (paper), BRIDGE**: object built as the diagonal native auxiliary space; pillar A (Bombieri–Vaaler height) and B (uniform zero estimate) are discharged on it; obstruction C is reduced at `s=1` to the explicit degree-`T` prime-log monomial lower bound, i.e. effective algebraic independence of `{log p}` / quantitative Schanuel for prime logs; residual C-bound remains open; provenance: headline Schanuel-for-prime-logs obstruction and smooth-number auxiliary were pre-named in `support-extraction-log.md` (L128, L389), while the explicit `s=1` mechanism and no-bypass/surjectivity proof are new; card: `friable-dirichlet-auxiliary.md` | [[bucket-new-sibling-conjectures]] / [[G2-multi-q-siegel-shidlovsky]] | THEOREM (paper), BRIDGE | FOUNDATIONAL |
-| 104 | finite-free / Hankel carrier (degree-`d` section of `Ξ`) — reducibility **resolved** (σ>¾, RH-blind, #120); exact single-orbit positivity of `det H_d` is equivalent to hyperbolicity (`λ_min(S_d(t))≥−1 ∀d,t`) and is the already-mined dBN/no-margin axis, but Wheeler's **gap-difference condition (GD)** is a stronger, non-tautological sufficient condition: `sup_t|ε_l(t)−ε_{l+1}(t)|<Δ_l` for all adjacent Jensen roots. With #126, `Δε_l(t)=Σ_p p^{-1/2}e^{-it\log p}[K_d(r_l;p)−K_d(r_{l+1};p)]`; Hermite gaps are explicit (`Δ_l` bulk `~d^{-1/2}`, edge `~d^{-1/6}`). C5-vs-BRIDGE is now the large-values grade for these gap shifts: parent Halász/Montgomery estimates ⇒ BRIDGE, support-`≤2d` near-resonance/integer-gap control ⇒ possible NATIVE/C5 | [[door-C5-irreducibility-and-door-2-retest]] | CONJECTURE | FOUNDATIONAL |
+| 104 | finite-free / Hankel carrier (degree-`d` section of `Ξ`) — reducibility **resolved** (σ>¾, RH-blind, #120); exact single-orbit positivity of `det H_d` is equivalent to hyperbolicity (`λ_min(S_d(t))≥−1 ∀d,t`) and is the already-mined dBN/no-margin axis. Wheeler's **gap-difference condition (GD)** is a stronger, non-tautological sufficient condition: `sup_t|ε_l(t)−ε_{l+1}(t)|<Δ_l` for all adjacent Jensen roots; with #126, `Δε_l(t)=Σ_p p^{-1/2}e^{-it\log p}[K_d(r_l;p)−K_d(r_{l+1};p)]`. DeWitt's scorecard closes the integer-gap route negatively: in `Δε_l/Δ_l` the gap factor cancels, so the required upper bound is parent large-values/BRIDGE, while support-`≤2d` near-resonance controls only RH-blind separation/variance (`../pipeline/5-failed/c5-near-resonance-large-values.md`) | [[door-C5-irreducibility-and-door-2-retest]] | CONJECTURE | FOUNDATIONAL |
 | 105 | positive direction strength = exactly 1 (Tamagawa, SEED-B) — card: `tamagawa-strength-one.md` | [[bucket-new-sibling-conjectures]] | CANDIDATE | FUTURE |
 | 106 | seam firewall: finite-place ⊥ archimedean positivity (SEED-A) — card: `seam-firewall.md` | [[bucket-new-sibling-conjectures]] | CANDIDATE | FOUNDATIONAL |
 | 107 | transcendence ⟹ GUE statistics (B11) — **REFUTED as stated**: family-DSS/transcendence does not imply full GUE; small-scale sine-kernel is prime/explicit-formula-forced, while transcendence/GSH controls only the large-scale non-resonance. Surviving scale-decomposition is a corollary of faces-orthogonality propagated to `R_k`, not a standalone theorem; failed card: `../pipeline/5-failed/transcendence-implies-gue.md` | [[bucket-new-sibling-conjectures]] | FALSIFIED | — |
@@ -315,14 +317,15 @@ instead.
 | 127 | completed `(σ,∂)` connection category (consolidation/construction): build `𝓜⁺` = the flat prime connection + the ∞-lane as a connection term `D=x d/dx=−Σ(log p)θ_p` (Connes scaling op, #88§7/#90§1), parameterized Galois `gen(G_L⁺)=D+{σ_p}` (#90§7), with `FE=flatness` of the completed connection and RH = unitary holonomy (#91§4) — the weld #91§3 calls "the work no one has done"; inputs already mined/ledgered (`BerryKeating`, `primeDiagonal_shift`, `FlatConnection`; mean essentially self-adjoint #90§8). Increment = constructing `𝓜⁺`/`G_L⁺` and proving FE=flatness | [[bucket-archimedean-generator]] / [[G5-unitarity-gatekeeper]] | CONJECTURE | FOUNDATIONAL |
 | 128 | archimedean corank collapse (the one new connector, postdates the mining): the product formula `∏_v|x|_v=1` (= FE/base-swap `0↔∞`, #70/#90§64.3) in operator form **is** `∂_s=−Σ(log p)θ_p` (Connes `D`, #88§7); conjecture the completed lattice `Λ⁺` has `corank=1`, so the seam gap `∞−1` (#125) reads "`∞` finite primes, `1` archimedean relation" and the missing single Frobenius `=∂_s`; falsifiable (relation-in-`Λ⁺` vs new infinite generator); Stieltjes test `trdeg=1` in the `∂_s`-direction; `F_q` anchor `corank=1` | [[bucket-archimedean-generator]] / [[bucket-the-seam-archimedean-obstruction]] | CONJECTURE | FIELDS MEDAL |
 | 129 | KMS / modular temperature (the WDW/thermal-time crystallization; EMBASSY→native target): Bost–Connes `KMS_β` has `β=s` and partition function `ζ(β)`; `∂_s=D=−Σ(log p)θ_p` = the Tomita–Takesaki modular flow = emergent thermal time (Connes–Rovelli, the type-III "no trace" forces it); conjecture `σ`=inverse temperature, FE `s↔1−s` = a temperature self-duality `β↔1−β`, RH = self-dual (`β=½`) KMS criticality; honest subtlety = condensation at `β=1` (the pole/pump) vs FE self-duality at `½`, so the object is the modular structure on `{0,½,1}`; the one time-bucket EMBASSY ingredient with a rigorous engine (Bost–Connes), hence the best candidate to follow the erosion threshold into native math; card: `../pipeline/0-backlog/kms-modular-temperature.md` | [[bucket-time-and-non-holonomic-time]] / [[bucket-archimedean-generator]] | CANDIDATE | FUTURE |
-| 130 | general-`t` Jensen-section hyperbolicity perturbation lemma (value+slope) — **THEOREM (paper), BRIDGE**: corrected after Leaner return by replacing pointwise curvature with window-min curvature plus `C''` sign-control; a hyperbolic real polynomial with separated simple critical points stays hyperbolic under a `C¹` deformation small in value and slope near those critical points. For the Hermite/Jensen carrier the window barrier remains `O(1)`, so the even-free sign-transfer reduces the carrier route to uniform-in-`d` large-values bounds for `D_d` and `D_d'` / gap-difference (GD); feeds #104 and #126, does not close C5; Lean formalization pending re-review. Card: `../pipeline/2-fully-proven/c5-jensen-perturbation-lemma.md` | [[door-C5-irreducibility-and-door-2-retest]] / [[bucket-the-seam-archimedean-obstruction]] | THEOREM (paper), BRIDGE | FOUNDATIONAL |
+| 130 | two sources of hypertranscendence (the Hölder-recentering's foundational framing): `Λ=Γ·ζ`'s hypertranscendence splits by **multiplier type** — **Source A** = the archimedean `Γ` (one operator, **polynomial** multiplier `Γ(z+1)=z·Γ(z)`; differential-hypertranscendent by Hölder 1887, difference-tame, Door-5 border = differential Galois) versus **Source B** = the infinite prime base (`σ_p`, **constant** multipliers; difference-hypertranscendent in aggregate but decouples prime-by-prime, hence BRIDGE in isolation). The completed `Λ` carries both, welded by the FE; **C5 is the archimedean×prime weld, not either source alone** — re-reading §59/§60/G1 BRIDGE verdicts as Source-B-only. Door-5: over `F_q` there is no archimedean place, hence no Source A/weld, and the gatekeepers collapse to border theorems. Card: `../pipeline/0-backlog/two-sources-of-hypertranscendence.md` | [[bucket-archimedean-generator]] / [[G1-difference-holder]] | CONJECTURE | FOUNDATIONAL |
+| 131 | general-`t` Jensen-section hyperbolicity perturbation lemma (value+slope) — **THEOREM (paper), BRIDGE**: repaired after Leaner returns by replacing pointwise curvature with a strict-interior window `w_i=½ min(ρ_i,δ_i/2)`, so the compact window avoids roots of `C''` and the window-min curvature `m_i>0`; a hyperbolic real polynomial with separated simple critical points remains hyperbolic under a `C¹` deformation small in value and slope near those critical points. For the Hermite/Jensen carrier the barrier `β_i=m_i w_i` remains `O(1)`, so the even-free sign-transfer reduces the #104 carrier route to uniform-in-`d` large-values bounds for `D_d`, `D_d'`, or GD; feeds #104/#126, does not close C5, Lean formalization pending. Card: `../pipeline/2-fully-proven/c5-jensen-perturbation-lemma.md` | [[door-C5-irreducibility-and-door-2-retest]] / [[bucket-the-seam-archimedean-obstruction]] | THEOREM (paper), BRIDGE | FOUNDATIONAL |
 
 ---
 
-## §D Tally (counted from §C with `grep` — 130 rows; the table is the source of truth)
+## §D Tally (counted from §C with `grep` — 131 rows; the table is the source of truth)
 
 A few rows carry a **compound** tag (e.g. #92 `IMPORT (half) + CONJECTURE`, #56/#93 `…+numeric/cert`),
-so these counts overlap slightly and sum to a little above 130 — they are "rows mentioning each tag,"
+so these counts overlap slightly and sum to a little above 131 — they are "rows mentioning each tag,"
 not a strict partition.
 
 | Type | Count |
@@ -331,7 +334,7 @@ not a strict partition.
 | THEOREM (paper) — difference category / draft | 35 |
 | IMPORT — borrowed classical theorems | 10 |
 | LEMMA | 2 |
-| CONJECTURE — open & stated (pickable) | 33 |
+| CONJECTURE — open & stated (pickable) | 34 |
 | CANDIDATE — new ideas to shape | 12 |
 | OPEN CORE — the walls | 6 |
 | FALSIFIED | 2 |
@@ -340,7 +343,7 @@ not a strict partition.
 
 *Reading it:* we have **real proven content** — **47 proven statements** (10 machine-checked in
 Lean + 35 paper + 2 lemmas), resting on **10 imported** classical theorems — and a large, well-located
-**frontier**: **33 stated conjectures + 12 candidates + 6 walls (open cores)**. The proven content is
+**frontier**: **34 stated conjectures + 12 candidates + 6 walls (open cores)**. The proven content is
 the *scaffolding*; **zero of it is yet certified NATIVE/C5** — the two leading candidates (§59/§60) were
 re-tested and came back **BRIDGE**, so earning a first irreducible (C5) theorem is the highest-leverage
 open problem.

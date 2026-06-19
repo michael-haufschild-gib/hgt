@@ -196,8 +196,11 @@ unchanged. Re-submitting for review.
   `primeDilation_fixed_eq_zero`, `primeDilation_no_fixed_unit`, and
   `no_primeDilation_fixed_torus_point` in `formal/GaloisForLFunctions/OrbitFreeness.lean` prove that
   prime-lane dilations have no nonzero/torus fixed point, the algebraic core of the non-retraction
-  argument. Full formalization still requires nonabelian `H¹`, the character-variety/Procesi import, and
-  the direct C5★ coboundary-regularity identification.
+  argument. Lean anchor **DONE** for the rank-one semisimple vanishing core:
+  `diagonalKer_mul_eq_sum_ker` in `formal/GaloisForLFunctions/ShafarevichGluing.lean` proves the
+  joint-eigenbasis identity `ker(ST)=ker(S)+ker(T)` used in R1. Full formalization still requires
+  nonabelian `H¹`, the character-variety/Procesi import, and the direct C5★ coboundary-regularity
+  identification.
 - [ ] 3 → 4  publication-ready
 
 ## Cross-references
@@ -246,3 +249,10 @@ unchanged. Re-submitting for review.
   fixed point and no coordinatewise fixed point on `(ℂ^*)^P`, supporting the no-equivariant-retraction
   replacement. Card remains in 2-fully-proven: nonabelian `H¹`, Procesi/character-variety, and C5★
   coboundary regularity are not fully formalized.
+- 2026-06-19 (Leaner) — added Lean anchor for the R1 rank-one semisimple vanishing core:
+  `diagonalKer_mul_eq_sum_ker` in `formal/GaloisForLFunctions/ShafarevichGluing.lean`. It formalizes the
+  joint-eigenbasis identity `ker(ST)=ker(S)+ker(T)` as a coordinatewise decomposition for diagonal scalar
+  multipliers, matching the paper proof of `Ш_{p,q}^{(1)}=0`. Added the module to the root import and axiom
+  audit; `lake build` and `scripts/check_axioms.sh` pass with 247 audited theorem outputs and no `sorry`.
+  Card remains in `2-fully-proven`; nonabelian `H¹`, Procesi/character-variety, and C5★ regularity layers
+  are not fully formalized.
