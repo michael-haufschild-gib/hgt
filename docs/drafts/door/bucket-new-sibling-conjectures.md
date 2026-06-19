@@ -3,8 +3,9 @@
 **Bucket grade:** organizational (SEARCH channel). Sorted from `docs/support-extraction-log.md`.
 **Scope (one line).** Genuinely-new candidate conjectures (the SEEDs) that are **not primarily owned by
 G1–G5** — siblings, extensions, and low-prior "smell" candidates the user asked to mine for.
-**Work package this seeds.** Pick the strongest siblings (Lee–Yang localization, finite-free
-convolution flow, erosion threshold) and promote each to a full draft brick with its own Door passport.
+**Work package this seeds.** Pick the strongest live siblings (finite-free convolution flow,
+motivic tower, regularization-freshness, erosion threshold) and promote each to a full draft brick with its own
+Door passport. Several former siblings below are now banked as BRIDGE/structural results.
 
 > **Grading discipline (the §42 trap, #68).** A SEED that is *merely RH-equivalent* is worthless; a
 > SEED giving a **new explicit object or a non-trivial identity** is real. Each entry below is tagged
@@ -16,28 +17,25 @@ convolution flow, erosion threshold) and promote each to a full draft brick with
 
 ## Sibling families (non-circular, reject the fakes)
 
-### Lee–Yang localization (#68 SEED-E, "candidate G7") — **[REAL]**
-Over Beurling generalized primes, a system whose FE-crystalline measure is **Kurasov–Sarnak / Lee–Yang
-(real-rooted)** type has its RH-analogue **forced by construction** (real-rootedness ⟹ real spectrum ⟹,
-via the Beurling–Weil explicit formula, real zeros). **The arithmetic ζ is the Poisson/lattice
-degenerate point** where the forcing fails. *Conjecture:* "RH = the arithmetic (Poisson) base lies on
-the **boundary** of the Lee–Yang-crystalline locus where real-rootedness is *marginal*, not forced."
-Connects RH to Weil's positivity = the missing real-rootedness input. *A sibling family, not an
-RH-restatement; isolates the localization axis the structural gatekeepers don't reach.*
+### Lee–Yang localization (#68 SEED-E, "candidate G7") — **[REAL, resolved BRIDGE]**
+Banked as `lee-yang-localization.md` (#96): Kurasov–Sarnak / Lee–Yang crystalline forcing is an
+interior mechanism, while arithmetic ζ is the Poisson/lattice degenerate point where forcing fails.
+The result is a structural theorem: RH is marginal real-rootedness at the no-margin (`Λ_dBN=0 = λ_c=1
+= κ₋=0`), not real-rootedness forced by crystallinity.
 
-### FE = crystalline self-duality (#68 SEED-F, "candidate G8") — **[REAL]**
-FE ⟺ theta-modularity ⟺ Poisson/Fourier self-duality of the generalized-integer measure ⟺ **crystalline
-measure** ⟺ (Lev–Olevskii/Kurasov–Sarnak/Meyer) arithmetic origin. *Conjecture:* "a difference system
-admits the σ-base-symmetry FE ⟺ its measure is a Fourier quasicrystal." Gives the FE an intrinsic
-(non-analytic) characterization — relevant to [[G5-unitarity-gatekeeper]]'s polarization/self-duality.
+### FE = crystalline self-duality (#68 SEED-F, "candidate G8") — **[REAL, resolved BRIDGE]**
+Banked as `fe-fourier-quasicrystal.md` (#97): FE is equivalent to theta/Poisson self-duality of the
+integer Dirac comb, and the zeros↔primes face is the explicit formula. Door-2 verdict: classical
+BRIDGE. Payoff: crystallinity is RH-blind; Davenport–Heilbronn is FE/crystalline but off-line, so the
+separator is Euler genuineness plus archimedean polarization.
 
 ## What RH is *about* (intrinsic locus)
 
-### Intrinsic RH locus = pure + polarized (#68 SEED-I §22, "candidate G9") — **[REAL]**
+### Intrinsic RH locus = pure + polarized (#68 SEED-I §22, "candidate G9") — **[REAL, resolved BRIDGE]**
 Every multi-q module has a native `ζ_M(s)=∏_p det(1−A_p p^{−s})^{−1}`; poles = trivial-`G_M`-rep
 multiplicity; FE ⟺ polarization/self-duality; **RH meaningful-and-clean ⟺ pure + polarized.**
-*Conjecture:* "RH is a property *only* of the pure-polarized sub-locus = the arithmetic motives; most of
-the field has no RH." *Defines what RH is about — the positivity framing never makes this explicit.*
+Banked as `intrinsic-rh-locus-pure-polarized.md` (#98): RH is ill-posed off the polarized locus and is
+the `κ₋=0` positivity on it. The arithmetic-motives/Euler-cut identification remains the open apex.
 
 ## Homological / categorical
 
@@ -52,19 +50,18 @@ limit).
 
 ## Transcendence siblings / extensions of G2
 
-### Family-DSS = the Grand Simplicity Hypothesis (#69 SEED-N, "candidate G13") — **[REAL]**
+### Family-DSS = the Grand Simplicity Hypothesis (#69 SEED-N, "candidate G13") — **[REAL, resolved BRIDGE]**
 Across primitive `L(s,χ)` the difference bases are **SHARED** (same primes `p`, only the twist `χ(p)`
 differs), so family-independence is **NOT free** — a genuinely new obstruction (cross-resonance over
-common primes, unkillable by unique factorization). **GSH (Rudnick–Sarnak) = the linear shadow of
-family-DSS.** *Conjecture:* "the twisted difference module of `{L(s,χ)}` has no cross-resonances ⟺ the
-character twists alone decouple the shared-prime spectra." Places GSH, n-level correlations, pair
-correlation in one transcendence framework. (extends [[G2-multi-q-siegel-shidlovsky]])
+common primes). Banked as `family-dss-gsh.md` (#100): the alleged shared-prime obstruction splits by
+unique factorization plus a finite cyclotomic/root-of-unity residue, so it is BRIDGE, not a new apex.
+GSH is the family linear shadow of the same A2/F₁ value-lift apex.
 
-### Tate–prime rigidity (#69 SEED-M, "candidate G12") — **[REAL]**
+### Tate–prime rigidity (#69 SEED-M, "candidate G12") — **[REAL, backbone banked]**
 `P_k = [motivic ζ(k) part, imported MT(ℤ)] + [prime/Stieltjes a_j part, NO motivic home]`. *Conjecture:*
 "the secular moment **rigidly welds** a known motivic block to an unknown prime block — that weld is the
-new object no existing transcendence theory addresses." (the field's genuinely-new content; →
-[[bucket-the-seam-archimedean-obstruction]])
+new object no existing transcendence theory addresses." Banked as `tate-prime-rigidity.md` (#101) for
+the non-split `K`-extension backbone (#117/#124); the general independence over `𝓡` remains DSS-cross.
 
 ### Regularization-freshness (#74 SEED-S, "candidate G16") — **[REAL]**
 zeta-regularization / Hadamard-finite-part is a **transcendence-CREATING** operation (`log 2π=−2ζ'(0)`,
@@ -72,11 +69,14 @@ Glaisher). *Conjecture:* "the regularization constants of a hypertranscendental 
 transcendentally **fresh** relative to its periods — this freshness is the field's irreducible new
 transcendence." (primary discussion in [[bucket-the-seam-archimedean-obstruction]])
 
-### The live motivic period tower (#80 SEED-U) — **[REAL — falsifiable]**
+### The live motivic period tower (#80 SEED-U) — **[REAL, resolved/corrected BRIDGE]**
 The tower recurses **motivically, not spectrally**: `𝒫_𝒵=ℚ⟨P_k⟩` carries a motivic Galois action; the
 "fixed point" = the pro-unipotent radical of its motivic Galois group. *Conjecture:* "the field has TWO
 Galois towers — a dead spectral one and a live motivic one — and the seam is their non-interaction."
 Falsifiable via Voros's explicit `𝒵(2m)∈{π,ζodd,Stieltjes}`.
+Banked as `motivic-period-tower.md` (#102): the dead spectral tower stays dead by the First Theorem,
+while the live tower is not mixed-Tate but exponential-motivic (`G^exp/K`), with `{γ_n}` in the wild
+kernel layer.
 
 ## New native objects / coordinates
 
@@ -117,9 +117,9 @@ structural reason A1 is not free.* (closely related to [[bucket-the-seam-archime
   it is TRUE (Frobenius). *The ABSENCE of B24 IS the missing Frobenius.*
 - **B11 (transcendence ⟹ GUE):** family-DSS ⟹ random-matrix universality (reverses "statistics suggest
   structure"). couples A2 to spectral statistics. **[REAL — directional]**
-- **B18 (Hilbert–Pólya transcendence obstruction):** a self-adjoint `H` with spectrum `{γ_n}` "cannot be
-  too algebraic" — naive constructions fail *because* they'd force `{γ_n}` algebraic, contradicting DSS.
-  *Why candidate G5's operator is hard — the two faces fight.* **[REAL — directional]** (→
+- **B18 (Hilbert–Pólya transcendence obstruction):** banked as `hp-not-too-algebraic.md` (#108). The
+  function-level no-ADE/holonomic obstruction is Hölder/hypertranscendence and BRIDGE; the value-level
+  obstruction is exactly DSS and remains open. **[REAL, resolved/collapsed]** (→
   [[G5-unitarity-gatekeeper]])
 - **B25 (continued carrier `𝒵(w)`):** RH = contour positivity of the meromorphically continued carrier =
   the continuous envelope of the discrete Li/Hankel Face A. **[RH-equivalent]**
@@ -134,9 +134,9 @@ known toolkit to import):
 1. **Erosion threshold** (G19, in [[bucket-time-and-non-holonomic-time]]) — gives `½` an intrinsic
    non-circular meaning; largely a theorem already.
 2. **Finite-free convolution flow** (SEED-AB) — new coordinates, MSS toolkit, runnable test.
-3. **Lee–Yang localization** (SEED-E) — sibling family, isolates the localization axis.
-4. **Family-DSS / GSH** (SEED-N) — genuinely new shared-base obstruction; extends G2.
-5. **Koszul-acyclicity** (SEED-R) — ledgered finite shadow; sharpens `ω`.
+3. **Motivic period tower** (SEED-U) — live motivic tower after the spectral tower fails.
+4. **Regularization-freshness** (SEED-S) — structural BRIDGE backbone exists, apex still open.
+5. **No-boundary selection** (#195) — new variational selection axis; likely BRIDGE/D2 but not yet shaped.
 
 ## Cross-references
 - [[G2-multi-q-siegel-shidlovsky]] — family-DSS, friable auxiliary, motivic tower extend it.

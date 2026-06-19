@@ -37,6 +37,14 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.bohrCharacter_zero
 #print axioms GaloisForLFunctions.bohrCharacter_add
 #print axioms GaloisForLFunctions.bohrCharacter_scaleCoordinate
+#print axioms GaloisForLFunctions.bohrCharacter_scaleAllCoordinates
+#print axioms GaloisForLFunctions.scaleCoordinate_commute
+#print axioms GaloisForLFunctions.scaleAllCoordinates_commute
+#print axioms GaloisForLFunctions.scaleCoordinate_scaleAllCoordinates_commute
+#print axioms GaloisForLFunctions.bohrCharacter_archimedeanSquareScale
+#print axioms GaloisForLFunctions.twoAxisMode_support_eq
+#print axioms GaloisForLFunctions.bohrCharacter_twoAxis_product
+#print axioms GaloisForLFunctions.twoAxisMode_ne_zero
 #print axioms GaloisForLFunctions.primeDilation_fixed_eq_zero
 #print axioms GaloisForLFunctions.primeDilation_no_fixed_unit
 #print axioms GaloisForLFunctions.no_primeDilation_fixed_torus_point
@@ -77,12 +85,17 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.rankOneCoboundaryCocycle_mul
 #print axioms GaloisForLFunctions.rankOneCoboundaryCocycle_inv
 #print axioms GaloisForLFunctions.rankOnePicard_commGroup
+#print axioms GaloisForLFunctions.rankOneDualMultiplier_mul
+#print axioms GaloisForLFunctions.rankOneDualMultiplier_mul_left
+#print axioms GaloisForLFunctions.rankOne_selfDualMultiplier_iff_sq_eq_one
+#print axioms GaloisForLFunctions.rankOne_noSelfDualMultiplier_of_sq_ne_one
 #print axioms GaloisForLFunctions.prod_ofReal_cpow
 #print axioms GaloisForLFunctions.natpow_cpow_comm
 #print axioms GaloisForLFunctions.diagonal_character_eq_dirichlet
 #print axioms GaloisForLFunctions.auxiliary_diagonal_eq
 #print axioms GaloisForLFunctions.norm_inv_smul_eq_one_iff
 #print axioms GaloisForLFunctions.boundaryUnitNormalize_norm_eq_one_iff
+#print axioms GaloisForLFunctions.functionFieldWeightNormalize_norm_eq_one_iff
 #print axioms GaloisForLFunctions.diagonalBoundary_unit_norm_iff
 #print axioms GaloisForLFunctions.satakeTensor_diagonal
 #print axioms GaloisForLFunctions.satakeLocalFactor_tensor
@@ -129,6 +142,8 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.conj_pair_carrier_indefinite
 #print axioms GaloisForLFunctions.carrierHerglotz_iff_onLine
 #print axioms GaloisForLFunctions.secularHankel_posSemidef
+#print axioms GaloisForLFunctions.congruencePencil_factorization
+#print axioms GaloisForLFunctions.congruencePencil_add_primeBlock
 #print axioms GaloisForLFunctions.sigNeg_le_of_add_sum_sq_nonneg
 #print axioms GaloisForLFunctions.sigNeg_le_one_of_add_sq_nonneg
 #print axioms GaloisForLFunctions.hermitian_neg_inertia_le
@@ -285,6 +300,24 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.map_eq_zero_of_map_one_zero_of_map_mul
 #print axioms GaloisForLFunctions.map_eq_zero_of_leibniz_of_map_mul
 #print axioms GaloisForLFunctions.not_map_mul_of_leibniz_of_exists_ne_zero
+#print axioms GaloisForLFunctions.fePullback_involutive
+#print axioms GaloisForLFunctions.hasDerivAt_sigma
+#print axioms GaloisForLFunctions.hasDerivAt_fePullback
+#print axioms GaloisForLFunctions.deriv_fePullback_eq_neg
+#print axioms GaloisForLFunctions.deriv_fePullback_at_sigma_eq_neg
+#print axioms GaloisForLFunctions.fePullback_deriv_fePullback_eq_neg_deriv
+#print axioms GaloisForLFunctions.moritaGammaProduct_succ_of_dvd
+#print axioms GaloisForLFunctions.moritaGammaProduct_succ_of_not_dvd
+#print axioms GaloisForLFunctions.moritaGammaFinite_succ_of_dvd
+#print axioms GaloisForLFunctions.moritaGammaFinite_succ_of_not_dvd
+#print axioms GaloisForLFunctions.moritaGammaFinite_succ
+#print axioms GaloisForLFunctions.bohrCharacter_finset_sum
+#print axioms GaloisForLFunctions.bohrCharacter_familyExponentSum
+#print axioms GaloisForLFunctions.familyTwistedProduct_split
+#print axioms GaloisForLFunctions.familyPrimeBalance_eq_zero_of_primeProduct_eq
+#print axioms GaloisForLFunctions.familyPrimeBalance_apply_eq_zero_of_primeProduct_eq
+#print axioms GaloisForLFunctions.familyPrimeBalance_eq_zero_of_primeLogFrequency_eq_zero
+#print axioms GaloisForLFunctions.familyPrimeBalance_apply_eq_zero_of_primeLogFrequency_eq_zero
 EOF
 
 cd "$FORMAL_DIR"
@@ -298,8 +331,8 @@ NORMALIZED="$(printf '%s\n' "$OUT" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]
 AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "depends on axioms: \\[[^]]*\\]" || true; })"
 NO_AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "does not depend on any axioms" || true; })"
 AUDITED_COUNT="$(printf '%s\n%s\n' "$AXIOM_LINES" "$NO_AXIOM_LINES" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [ "$AUDITED_COUNT" -ne 274 ]; then
-  echo "FAIL: expected 274 audited theorem outputs" >&2
+if [ "$AUDITED_COUNT" -ne 307 ]; then
+  echo "FAIL: expected 307 audited theorem outputs" >&2
   exit 1
 fi
 BAD_AXIOMS="$(printf '%s\n' "$AXIOM_LINES" \
@@ -332,4 +365,4 @@ if [ -n "$SORRY_HITS" ]; then
   exit 1
 fi
 
-echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (274 theorem outputs audited)."
+echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (307 theorem outputs audited)."

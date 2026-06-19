@@ -1500,3 +1500,16 @@ parent still prove it?") to decide which earn the charter's NATIVE grade:*
   parent). If they survive Door-2, the proto-branch verdict upgrades. *This is the single most consequential finding
   for the foundations doc.* The structural/arithmetic-depth boundary (§70–73): structural theory COMPLETE; open
   frontier = arithmetic depth of primitive objects = (A) checkable FE residue + (B) GRC/Grothendieck/Langlands/RH.
+
+## [#102] DSS-cross exponential-period frame — parent-corpus extraction
+
+**Grade:** CONJECTURE / extraction gap now pipelined. Parent-corpus work (`worklog-theorist.md` around the DSS-cross discussion; `conjecture_log.md` C-061/C-062) contains a load-bearing frame absent from the prior support log: DSS crosses the Kontsevich-Zagier period / non-period boundary.
+
+### Extracted frame
+- `{π, ζ(odd)}` belongs to the motivic / mixed-Tate period side (`MTM(Z)`, Deligne-Goncharov/GPC territory).
+- The Stieltjes constants `{γ_n}` are conjecturally exponential-period / regularization data beyond the ordinary motivic period torsor; `γ_E = -∫ e^{-x} log x dx` is the model example.
+- Regularization constants such as `log(2π)=-2ζ'(0)`, Stieltjes `γ_n`, and Glaisher-type `ζ'(-1)` are the archimedean non-period side of the seam.
+- Modern categorical home: exponential motives (Fresan-Jossen): irregular singularities plus rapid-decay cohomology, extending Nori motives and containing Gamma/Euler-type periods.
+
+### Pipeline impact
+DSS should not be aimed only at motivic ζ-values. Modulo standard period conjectures, the live target is algebraic independence of `{γ_n}` over the motivic period field. This sharpens the `ω`/F1 seam: the missing Frobenius must be exponential-motivic / irregular-wild, not merely motivic or multiplicative. New pipeline card: `docs/drafts/pipeline/0-backlog/dss-cross-exponential-period-lower-bound.md`; linked status rows include #18, #27, #75, #103, #124, #152, and #165.

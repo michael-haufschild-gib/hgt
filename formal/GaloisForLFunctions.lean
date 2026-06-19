@@ -13,6 +13,7 @@ import GaloisForLFunctions.SecularMoments
 import GaloisForLFunctions.SecularNewton
 import GaloisForLFunctions.SmoothNumbers
 import GaloisForLFunctions.RankOneCohomology
+import GaloisForLFunctions.RankOneDuality
 import GaloisForLFunctions.DiagonalCharacter
 import GaloisForLFunctions.BoundaryModulus
 import GaloisForLFunctions.MultiplicityEstimate
@@ -26,6 +27,7 @@ import GaloisForLFunctions.MomentReconstruction
 import GaloisForLFunctions.CarrierPickKernel
 import GaloisForLFunctions.CarrierCauchy
 import GaloisForLFunctions.SecularHankel
+import GaloisForLFunctions.CongruencePencil
 import GaloisForLFunctions.KoszulCohomology
 import GaloisForLFunctions.MultiplierScaling
 import GaloisForLFunctions.FieldConjectures
@@ -65,3 +67,6 @@ import GaloisForLFunctions.OrbitBalance
 import GaloisForLFunctions.C5JensenPrimeKernel
 import GaloisForLFunctions.FunctionFieldDegeneration
 import GaloisForLFunctions.DifferentialABP
+import GaloisForLFunctions.PTInvolution
+import GaloisForLFunctions.MoritaGamma
+import GaloisForLFunctions.FamilyCrossResonance

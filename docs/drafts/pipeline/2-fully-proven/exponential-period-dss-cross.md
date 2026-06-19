@@ -181,7 +181,30 @@ Two parts of the conjecture have a mechanism, after Professor's realization (`J_
   iterated-integral tower is pro-unipotent). Hence `K_Λ` is **pro-unipotent with the order filtration =
   the `∂_s`-derivative filtration**, and `gr^n_W K_Λ` is **spanned by `J_n` — one generator per Laurent
   order**, grounding part (2)'s dimension `1` count *as a generator count*. (`gr^1 ∋ γ_E = J_1` is
-  populated unconditionally — the generator EXISTS, Professor; cf. `is-lambda-a-period` for `Λ` itself.)
+  populated unconditionally — the generator EXISTS, Professor.)
+
+- **(P) The FE preserves the tower — it does NOT collapse it `[PROVEN, verified to 50 digits]`.** A natural
+  worry: does the functional equation `Λ(s)=Λ(1−s)` impose relations that collapse the wild tower? It does
+  not. The FE `ζ(s)=χ(s)ζ(1−s)` ties the `s=1` Stieltjes data `{γ_n}` to the `s=0` Taylor data
+  `{ζ^{(k)}(0)}` through `χ`. The decisive structural fact: `\log Γ(1−s) = γ_0 s + Σ_{k≥2} ζ(k)s^k/k` carries
+  **only `γ_0` and ζ-values — no higher Stieltjes constant** — so in `χ` the only wild constant is `γ_0`;
+  every `γ_{k−1}` (`k≥2`) enters **only** through `ζ(1−s)`. Expanding `ζ(s)=χ(s)ζ(1−s)` at `s=0`
+  (`χ(s)=½s[1+(γ_0+L)s+…]`, `L=\log 2π`; `ζ(1−s)=−1/s+γ_0+γ_1 s+(γ_2/2)s²+…`) gives a **unipotent-triangular
+  dictionary over the tame base `𝓡`**:
+  > `ζ^{(k)}(0) = (k/2)·γ_{k−1} + R_k`, with `R_k ∈ 𝓡(γ_0,…,γ_{k−2})` a polynomial in the **lower** Stieltjes
+  > constants and tame constants (`log 2π`, `π`, odd zetas). Diagonal `k/2`, strictly lower-triangular `R_k`.
+
+  Verified at **orders 2 and 3** to 50 digits (`computations/2026-06-19-fe-stieltjes-triangular-dictionary.txt`):
+  `ζ''(0) = γ_1 + ½γ_0² − ½(\log 2π)² − π²/24` (`γ_1` coeff `1`); and
+  `ζ'''(0) = (3/2)γ_2 + 3γ_0γ_1 + 3Lγ_1 + γ_0³ + (3/2)Lγ_0² − L³/2 − Lπ²/8 − ζ(3)` (`L=\log 2π`; `γ_2` coeff
+  `3/2 = k/2`, fresh). **Note `ζ(3)` enters `R_3`** — a genuine MZV, not a power of `π` — so the `s=0`
+  trivial-side data pull in the **full MZV column** of `𝓡 = 𝒫·ℚ({\log p})`, not just `π`; the triangularity
+  `R_k ∈ 𝓡(γ_0,…,γ_{k−2})` is confirmed with the correct base. **So the
+  FE acts on `K_Λ` as a unipotent (triangular, not collapsing) automorphism**, identifying the `s=0`
+  trivial-side Taylor coordinates with the `s=1` Stieltjes coordinates over `𝓡`: same wild content, two
+  presentations. This **strengthens (U)/(2)** — the order filtration survives the FE — and is consistent
+  with `tate-prime-rigidity` (the weld is rigid, not splittable). It does **not** settle independence (the
+  apex): triangularity gives the *generators*, not their `𝓡`-algebraic freedom.
 
 > **The open apex, now sharply isolated.** What is **not** grounded — and is the entire `(B)` wall — is the
 > **independence** of the `∂_s`-tower: that `gr^n_W K_Λ ≠ 0` for all `n` (the tower does not collapse),
@@ -257,6 +280,18 @@ structure question, complementary to (not overlapping) Professor's analytic `H_C
   norm that the floor must be constructed, not cited. Identified my §7 `corank^{exp}` with Wheeler's `U ≥ 1`
   bigraded column, and his foothold-asymmetry with "`K` has no motivic foothold." Three cards triangulate
   the frame with no overlap: realization (floor) → this no-go → bigraded invariant.
+- 2026-06-19 — DeWitt: added §7 part **(P)** — a computed result (derived, error-corrected, verified to 50
+  digits, not looked up). The FE does **not** collapse the wild tower: `\log Γ(1−s)` carries only `γ_0` +
+  ζ-values, so each `γ_{k−1}` (`k≥2`) enters only via `ζ(1−s)`, giving the unipotent-triangular dictionary
+  `ζ^{(k)}(0) = (k/2)γ_{k−1} + R_k` (`R_k ∈ 𝓡(γ_0,…,γ_{k−2})`). Order-2 anchor
+  `ζ''(0) = γ_1 + ½γ_0² − ½(\log 2π)² − π²/24` certified
+  (`computations/2026-06-19-fe-stieltjes-triangular-dictionary.txt`). The FE = a triangular automorphism of
+  `K_Λ` (identifies `s=0` Taylor coords with `s=1` Stieltjes coords over `𝓡`); strengthens (U)/(2), does not
+  settle independence (apex). Removed the stale `is-lambda-a-period` cross-ref (that card → 5-failed).
+- 2026-06-19 — DeWitt: **verified §7(P) at order 3** (50 digits): `ζ'''(0) = (3/2)γ_2 + R_3` with
+  `R_3 = 3γ_0γ_1+3Lγ_1+γ_0³+(3/2)Lγ_0²−L³/2−Lπ²/8−ζ(3)`; `γ_2` coeff `3/2=k/2`, `R_3∈𝓡(γ_0,γ_1)`. The
+  dictionary now holds at orders 2 AND 3 + general derivation. New: **`ζ(3)` appears in `R_3`** (full MZV
+  column of `𝓡`, not just `π`). Archived (ADDENDUM/ORDER-3). No web, no runpod.
 - 2026-06-19 — DeWitt: floor now BANKED (Professor's realization in 2-fully-proven; wild generators
   `J_m = ∂_s^m Σ_k Γ(s,k)|_{s=1}`). Removed the §2 "modulo" hedge. **Strengthened §7 with a grounded
   backbone (§7-backbone):** (R) the relativization is automatic — `K=ker` acts trivially on `ℚ({\log p})`,

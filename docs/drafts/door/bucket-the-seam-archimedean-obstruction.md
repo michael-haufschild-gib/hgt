@@ -1,8 +1,9 @@
 # Bucket X3 — The seam / the archimedean obstruction
 
 **Bucket grade:** organizational (SEARCH channel). Sorted from `docs/support-extraction-log.md`.
-**Scope (one line).** Both apex faces (RH and DSS) localize to **ONE archimedean obstruction** — the
-additive↔multiplicative seam = the period/non-period divide = the missing Frobenius at infinity (F₁).
+**Scope (one line).** Both apex faces (RH and DSS) localize to **ONE archimedean seam** but split into
+two axes: value/transcendence for DSS and polarization/positivity for RH. The seam is the
+additive↔multiplicative divide = the period/non-period divide = the missing Frobenius at infinity (F₁).
 **Work package this seeds.** Aim every apex attack at the **Γ-factor / `s=1`-Laurent (Stieltjes) data**,
 not the integer ζ-values (which are structurally apex-blind); attack the **one explicit class `ω`**
 (the seam's monoidality obstruction).
@@ -23,13 +24,14 @@ not the integer ζ-values (which are structurally apex-blind); attack the **one 
   side.** (→ [[G2-multi-q-siegel-shidlovsky]])
 - #81 the seam = the completion `ξ = (Γ-factor) × ζ` glues period to non-period; each secular moment
   `P_k = ζ(k)[period] − a_{k−1}[non-period]` is literally a period+non-period sum glued at the seam.
-- **#81 §2–4 the unification (the new claim): BOTH apex faces are the SAME archimedean obstruction:**
+- **#81 §2–4, corrected by #191/#54: BOTH apex faces meet at the SAME archimedean seam, but split into
+  two distinct obstructions:**
   - **A2/DSS** = "is the non-period jet generic?" (the Stieltjes side, archimedean).
   - **A1/RH** = "is the archimedean-completed carrier type positive?" (`m_ξ` Herglotz / `κ₋=0`).
-  - **The unified bet:** the field needs **ONE archimedean rigidity input** feeding both — the
-    Nesterenko arithmetic lower bound forcing DSS-cross [A2] *and* the Herglotz/positivity input forcing
-    `κ₋(m_ξ)=0` [A1]; the **multiplicity estimate** is the common algebraic ingredient. *The concrete
-    form of "the time-core forces unitarity."* (→ [[bucket-A1-A2-unification-the-carrier]])
+  - **The surviving unified bet:** the field needs a shared archimedean locus with **two inputs** — the
+    Nesterenko/value-independence lower bound forcing DSS-cross [A2], and the Herglotz/FE-polarization
+    input forcing `κ₋(m_ξ)=0` [A1]. The multiplicity estimate is the A2 rigidity, not a proof of A1.
+    (→ [[bucket-A1-A2-unification-the-carrier]])
 - **#81 prediction (the grading rule):** apex progress must engage the **Γ-factor / `s=1`-Laurent
   (Stieltjes) data, NOT the integer ζ-values.** Multiplicative-only tools (Euler product, prime sums,
   ζ-values) are **structurally blind** to both apex obstructions.
@@ -53,6 +55,10 @@ not the integer ζ-values (which are structurally apex-blind); attack the **one 
 - #98 Attack 6: the four "missing structures" = ONE obstruction = **Connes type-III no-trace** (the
   `ℝ_{>0}^×` modular flow has no fixed points/trace); the trace defect = the Γ-factor = Kurokawa
   absolute zeta. Anchored in real absolute-zeta theory.
+- **Moonshot attack routes (#203–#207):** five low-prior backlog cards now target the same `ω/F₁`
+  knot: knot-at-infinity meridian, spinorial `√Frob`, hyperreal infinite prime, `2πi` log-monodromy
+  (**test first** against `compute-omega §S`), and Type `III₁→III_λ` thermal Frobenius. They are not
+  banked mechanisms; they are probes for how an archimedean Frobenius might be made explicit.
 
 ## The two transcendence towers don't interact — the seam in tower form (#80 SEED-U)
 - The spectral/difference-Galois tower (`ζ→𝒵→…`) is **dead at level 2** (the superzeta has no Euler
@@ -77,6 +83,28 @@ not the integer ζ-values (which are structurally apex-blind); attack the **one 
   between solved `L(1,χ)` (Baker) and non-motivic `ζ(½)`; "is there a Baker for the Stieltjes
   constants?" is the seam's concrete G2 sub-target.
 
+## Why DSS is hard — the A2/transcendence mechanism (#176/#178/#183/#196)
+DSS is hard because the relevant values `{γ_n}` are **`∂_s`-derivative regularization constants** in the
+wild kernel `K=ker(G^exp↠G_mot)`, beyond the reach of ordinary value-theory tools, and over ℚ there is
+no single Frobenius to pin their values. The regular side has footholds (`{log p}`, `{ζ(odd)}`,
+motivic periods); the exponential/Stieltjes side has none even at `γ_E`. Function-level information is
+maximal but useless for values: Hölder/digamma hypertranscendence gives a huge differential Galois group,
+not algebraic independence of constants. The p-adic per-place carriers `{Γ_v}` (#196/#197) give shadows,
+but the required complex↔p-adic/F₁ synthesis is exactly the missing value-lift. This is the A2 companion
+to #96's RH-hard mechanism: RH sits at a positivity forcing-degeneration point, while DSS sits at the
+function/value gap in the wild kernel.
+
+**Cohomological grading of the wild kernel (#198):** for the pro-unipotent Lie algebra of `K`,
+`H₁(Lie K)` is the exponential-corank/generator count (one Stieltjes generator per Laurent order), while
+`H₂(Lie K)=ω_mot` is the relation class. The moonshot reformulation is DSS-cross ⇔ `K` is free
+pro-unipotent ⇔ `H₂(Lie K)=0`, with the value/regulator realization still the Fields-Medal wall.
+**Hypertranscendence-axis synthesis (#208):** this is now the primary frame: function-level
+hypertranscendence is mapped obstruction theory, while value-level hypertranscendence is the wild kernel
+`K`; RH is the separate FE-polarization slice rather than a consequence of the transcendence axis.
+Rung evidence for the graded-corank side is now recorded on #125: PSLQ finds no low-height relation at
+rung 1 or at degree 2 over `𝓡`, supporting full graded corank through the first open algebraic rung while
+leaving the all-degrees DSS / `K`-free apex completely open.
+
 ---
 
 ## The seam in one screen
@@ -89,14 +117,15 @@ not the integer ζ-values (which are structurally apex-blind); attack the **one 
 | compact, positive for free | `Z_n ≻ A_n`? | the sole obstruction to `Q_W⪰0` |
 
 ## Open core / the work package
-**One archimedean rigidity bound** on the `s=1`-Laurent / Γ-factor (Stieltjes) data, forcing
-simultaneously DSS-cross (A2) and `κ₋(m_ξ)=0` (A1). Sub-targets: compute `ω`
+**Two archimedean inputs at one seam:** a value-independence / regularization bound on the
+`s=1`-Laurent / Γ-factor (Stieltjes) data for DSS-cross (A2), and a separate FE-polarization positivity
+input forcing `κ₋(m_ξ)=0` (A1). Sub-targets: compute `ω`
 ([[G4-multi-q-picard-vessiot-and-langlands-group]]); a "Baker for the Stieltjes constants"
 ([[G2-multi-q-siegel-shidlovsky]]); the regularization-freshness conjecture G16
 ([[bucket-new-sibling-conjectures]]).
 
 ## Cross-references
-- [[bucket-A1-A2-unification-the-carrier]] — both faces = one archimedean non-conspiracy.
+- [[bucket-A1-A2-unification-the-carrier]] — both faces meet at one seam but split into two apexes.
 - [[G2-multi-q-siegel-shidlovsky]], [[G5-unitarity-gatekeeper]] — the two faces the seam controls.
 - [[bucket-function-field-proving-ground]] — over `F_q` there is NO archimedean place ⟹ no seam ⟹ all
   gatekeepers are theorems. The seam is exactly what ℚ adds.

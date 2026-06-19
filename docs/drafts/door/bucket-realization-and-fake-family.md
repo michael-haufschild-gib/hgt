@@ -49,6 +49,9 @@ two-faces an IFF?), and bake the **fake-family filter** into every positivity/un
   Face B genericity ∧ FE) ⟹ realized by an Euler product* = **the realization problem (grand conjecture
   #7):** `∃ source-built g with g⋆g* = Ω_∞ − prime-comb`. **"Is the organizing law an IFF?"** Directly
   the A1/A2 unification as a realization statement (a `g` realizing both positivity and genericity).
+- **No-boundary selection (#195):** `no-boundary-selection-of-zeta.md` adds the variational face:
+  Euler-cut/no-boundary compactness selects ζ over fake-family points, and RH is the absence of unstable
+  modes (`κ₋=0`) at that selected extremum. This is a selection question, not a new proof of positivity.
 - #98 Attack 5 / synthesis: **RH ⟺ ξ ∈ LP ⟺ ξ is an LP-limit** — RH is a
   **closedness/identification problem, not a positivity one** (positivity is automatic along the LP
   family, each step a Pólya–Schur multiplier `e^{x/p}`; the content is that the *arithmetic* limit

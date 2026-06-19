@@ -58,6 +58,17 @@ that emergent clock preserves a norm.
   zero = spacelike/tachyonic mode (KG-norm flips at `δ=π/4aγ`); `κ₋` = the DeWitt inertia. Brick #1
   signature **(1|∞)** derived from the place count; `𝔇(h,h)=Q_W(h)` CERTIFIED (1.1e-31) = the same Weil
   form as #88 §8, read as a Klein–Gordon/DeWitt pairing. (→ [[bucket-the-no-margin]])
+- **GR-lens follow-up seeds (#195):** `no-boundary-selection-of-zeta.md` splits out the variational
+  selection question (Euler-cut as no-boundary/compactness; RH as no unstable mode), while
+  `dewitt-gr-lens-conjectures.md` Seed E locates any hypersurface-deformation/algebroid obstruction at
+  the moment/ring-product level, not the already-flat generator level.
+- **Topological texture moonshot (#201):** `moonshot-prime-skyrmion-no-clock.md` reads the no-global-clock
+  obstruction as a skyrmion/no-combing charge of the prime-phase field on `𝕋^∞`; this is a low-prior
+  A2 moonshot, not a banked mechanism.
+- **Thermal Frobenius moonshot (#207):** `moonshot-type-iii1-thermal-frobenius.md` reads Type `III₁`
+  aperiodicity as the missing Frobenius and asks whether a `III_λ` deformation recovers a period
+  `log λ` in the `λ→1`/F₁ limit. It inherits the KMS/modular-temperature adjacency and the warning from
+  the failed modular route; it targets `ω/F₁`, not RH-positivity.
 
 ## The scaling clock = the archimedean Frobenius `D=x d/dx` (#90, #91)
 - #90 §1: `D=x d/dx` = the **scaling/dilation generator** (the `q→1` limit of the prime dilations
@@ -158,8 +169,9 @@ line (the most promising non-EMBASSY item here), and write the **constraint-not-
 into the foundations' candidate-G5 reflection. Tie both to the carrier germ ([[bucket-A1-A2-unification-the-carrier]]).
 **New (2026-06-19):** settle the **emergent-time = corank-∞** weld via the time-face of
 `archimedean-corank-collapse` (#128); and pursue **M1 (the KMS / modular-temperature crystallization,
-`kms-modular-temperature.md`)** — the one EMBASSY ingredient with a rigorous engine (Bost–Connes `β=s`),
-hence the best candidate to follow the erosion threshold from metaphor into native math.
+`kms-modular-temperature.md`)** plus the related Type `III₁→III_λ` Frobenius moonshot — the one EMBASSY
+ingredient with a rigorous engine (Bost–Connes `β=s`), hence the best candidate to follow the erosion
+threshold from metaphor into native math.
 
 ## Cross-references
 - [[bucket-A1-A2-unification-the-carrier]] — A2 is the time content; the carrier's jet = the clock.

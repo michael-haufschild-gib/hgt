@@ -3,12 +3,12 @@
 **Bucket grade:** organizational (SEARCH channel). Sorted from `docs/support-extraction-log.md`. The
 **single richest bucket** — RH appears in ~7 concrete, mutually-reinforcing unitarity/positivity
 forms, several with axiom-clean Lean footholds.
-**Scope (one line).** The non-integrable multi-q connection has **unitary holonomy on the σ-fixed
-locus ⟺ spectrum real ⟺ RH.** This is the bridge that would unify "time" (A2) with "RH-byproduct"
-(A1).
+**Scope (one line).** The completed multi-q connection has **unitary/PT-unbroken holonomy on the
+σ-fixed locus ⟺ spectrum real ⟺ RH.** This is the polarization/positivity apex, now separated from the
+DSS/value-lift apex by #191.
 **Work package this seeds.** State candidate G5 **in carrier form** — `RH ⟺ m_ξ = −Ξ′/Ξ is Herglotz
-(κ₋=0) on ℂ⁺` — and pursue the **one archimedean rigidity bound** (the multiplicity estimate on `G_L`)
-that would force it; the multiplicative side is already fully diagonalized.
+(κ₋=0) on ℂ⁺` — and pursue the archimedean FE-polarization positivity input; the multiplicative side is
+already fully diagonalized.
 
 ---
 
@@ -103,10 +103,11 @@ faces; they are all "the σ-fixed locus carries a norm-preserving (self-adjoint 
 - **Avila cocycle / dynamical localization (#68 SEED-D, #87 §5):** "unitary holonomy" = "`L=0`
   reducible cocycle"; RH = self-dual Avila-criticality everywhere; FE = Aubry duality `λ↔1/λ`;
   no-margin = no almost-reducibility strip (no spectral gap). Numeric: critical AMO `λ=1` has `L=0`.
-- **Unitary holonomy of the completed flat connection (#91 §4):** adjoin the ∞-lane (Γ-weight =
-  connection term) to the flat prime connection; **the FE IS the flatness of the completed
-  connection;** RH = its boundary holonomy (on `Re=½`, `|w|=1`) is **UNITARY**. Candidate G5 verbatim,
-  with flatness FORCED by the FE; candidate G3 made concrete. (→ [[G3-holonomy-dichotomy]])
+- **Unitary/PT holonomy of the completed flat connection (#91 §4, banked as #127):** adjoin the ∞-lane
+  (Γ-weight = connection term) to the flat prime connection; **the FE is the PT-involution** of the
+  completed connection (`∂_s↦−∂_s`, prime parity `θ_p↦−θ_p`). RH = its boundary holonomy on
+  `Re=½` is **UNITARY/PT-unbroken**. Candidate G5 verbatim, with flatness/FE structure now built as
+  BRIDGE; the infinite positivity/holonomy conclusion remains open. (→ [[G3-holonomy-dichotomy]])
 - **Hodge-index (1,∞) signature (#89 §7):** explicit formula = an Arakelov intersection pairing
   `⟨Z, prime divisors⟩`; **RH ⟺ Hodge-index signature (1,∞)** = Weil/Bogomolov positivity = the team's
   `n₊=1` / `scForm_sigNeg` / CKS `±b²` core. RH = Bogomolov height-minimality of the spectrum (§1–4,

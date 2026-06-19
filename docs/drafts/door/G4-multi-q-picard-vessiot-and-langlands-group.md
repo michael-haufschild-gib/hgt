@@ -4,9 +4,10 @@
 **Scope (one line).** The multi-q Picard–Vessiot correspondence that makes `G_L` a theorem-grade
 object (charter autonomy / C7), and its endpoint: a candidate construction of the **Langlands group
 as a difference-Galois group**.
-**Work package this seeds.** Decide the **monoidality obstruction `ω ∈ H²(G_L)`**: `ω=0 ⟺ G_L is
-Tannakian ⟺ a genuine motive exists ⟺ the zero-realization succeeds`. The autonomy/C7 gatekeeper and
-G5's zero-realization are this one explicit class.
+**Work package this seeds.** Decide the **monoidality obstruction `ω ∈ H²(G_L)`** after the #191/#198
+split: `ω_mot` controls the Tannakian/motive/value-lift/DSS axis, while `ω_pol` controls the separate
+polarization/RH axis. The autonomy/C7 and realization gatekeeper live on the motivic face; G5 positivity
+is not forced by that face alone.
 
 ---
 
@@ -37,9 +38,10 @@ G5's zero-realization are this one explicit class.
 
 ### The monoidality obstruction (#73 §4 — the one explicit class)
 - §4: the de Branges `⊗↦⊕` (foundations §11) vs the cup product `∧` disagree by a 2-cocycle
-  `ω ∈ H²(G_L)`; **`ω=0 ⟺ G_L is Tannakian ⟺ a genuine motive exists ⟺ the zero-realization
-  succeeds.`** This locates G4's autonomy gap (and [[G5-unitarity-gatekeeper]]'s zero-realization) as
-  ONE explicit H² class. *Not computed — whether `ω=0` is the open core.*
+  `ω ∈ H²(G_L)`. **Corrected by #191/#198:** the class splits into a motivic/value face
+  (`ω_mot=0 ⟺ G_L` Tannakian / motive exists / DSS value-lift succeeds) and a polarization face
+  (`ω_pol=0 ⟺ Weil/G5 positivity / RH`). This locates G4's autonomy gap in one explicit H² class
+  without collapsing RH and DSS into one statement.
 - SEED-R (#73 §6 [SPEC]): candidate `ω = the Koszul homology class of the prime lattice in the ∏_p
   limit`; `ω=0 ⟺ the ∞-prime Koszul complex stays acyclic`. Finite Euler shadow = the `e–h` duality
   `Σ_{i+j=k}(−1)^i e_i h_j = 0` (ledger-proven, `EHKoszulDuality.lean`). (→ [[bucket-new-sibling-conjectures]] G15 Koszul-acyclicity)
@@ -72,19 +74,21 @@ G5's zero-realization are this one explicit class.
 | infinite-base Galois correspondence | **`[PROVED HERE]`** (mod n=1 lemmas; likely IMPORT under Door-2) | #68 §43.1 |
 | inverse-Galois `R_multi={G:π₀ finite abelian}` | **`[PROVED HERE]`** (likely IMPORT) | #68 §55 |
 | Satake-side λ-ring algebra (⊗, ⊕, Adams, plethysm, e–h) | **ledger-proven** (axiom-clean) | #79 |
-| `ω=0` (Tannakian / motive exists / realization) | **OPEN core** — uncomputed H² class | #73 §4 |
+| `ω_mot=0` (Tannakian / motive exists / value realization) | **OPEN core** — wild-kernel freeness / H² face | #73 §4, #198 |
+| `ω_pol=0` (polarization / Weil positivity / RH) | **OPEN G5 face** — separate from motive existence | #191/#198 |
 | `G_𝒜 = L_ℚ` (Langlands group = difference-Galois group) | **conjecture** (RS-half is a theorem) | #86 §4 |
 | over `F_q(C)`: G4 = Deligne–Katz | **THEOREM** | #88 §4 |
 
 ## Open core / the work package
-**Compute (or bound) `ω ∈ H²(G_L)`.** `ω=0` simultaneously gives autonomy/C7 (Tannakian `G_L`), a
-genuine motive, and the zero-realization that [[G5-unitarity-gatekeeper]] needs. The SEED-R route reads
-`ω` as **Koszul homology of the prime lattice in the `∏_p` limit** — a homological "fourth language"
-for the renormalization wall. Test: does the finite `e–h` acyclicity (ledgered) survive the limit?
+**Compute (or bound) the split class `ω=ω_mot⊕ω_pol`.** The motivic face asks whether the wild
+exponential kernel `K` is free pro-unipotent / whether the missing F₁ value-lift exists; the polarization
+face is G5/Weil positivity. The SEED-R route reads the motivic face as Koszul homology of the prime
+lattice in the `∏_p` limit — a homological "fourth language" for the renormalization wall. Test: does
+the finite `e–h` acyclicity (ledgered) survive the limit in the wild kernel?
 
 ## Cross-references
-- [[G5-unitarity-gatekeeper]] — the zero-realization (`ω=0`) is shared with G5.
+- [[G5-unitarity-gatekeeper]] — the polarization face `ω_pol` is the G5/RH axis.
 - [[bucket-realization-and-fake-family]] — `ω=0`/realization is the converse of the First Theorem.
-- [[bucket-new-sibling-conjectures]] — G15 (Koszul-acyclicity) is the SEED-R sharpening of `ω`.
+- [[bucket-new-sibling-conjectures]] — G15 (Koszul-acyclicity) is the SEED-R sharpening of the motivic `ω` face.
 - [[bucket-function-field-proving-ground]] — over `F_q(C)`, G4 is Deligne–Katz.
 - [[bucket-ledger-footholds]] — the Satake-side λ-ring half is largely in Lean.

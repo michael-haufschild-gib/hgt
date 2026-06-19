@@ -1,14 +1,17 @@
 # Bucket X1 — The A1/A2 unification (the carrier)
 
 **Bucket grade:** organizational (SEARCH channel). Sorted from `docs/support-extraction-log.md`.
-**Scope (one line).** RH (A1) and DSS/transcendence (A2) are **two readings of ONE object** — the
-carrier germ `m_ξ` / the period matrix `Π=[p^{iγ}]` / the boundary representation of `G_L`.
-**Work package this seeds.** State the **unified conjecture** ("one object, two readings") as a draft
-brick, and pursue the **single rigidity statement** that, applied to the one germ, forces both faces.
+**Scope (one line).** RH (A1) and DSS/transcendence (A2) are **two readings of one shared object** — the
+carrier germ `m_ξ` / the period matrix `Π=[p^{iγ}]` / the boundary representation of `G_L` — but #191/#54
+separate their forcing inputs.
+**Work package this seeds.** State the **weak unified conjecture** ("one object, two readings, two
+rigidities") as a draft brick: RH needs FE-polarization positivity, while DSS needs value-independence.
 
 > **The two guiding assumptions.** **A1** = RH becomes a natural byproduct. **A2** = the core tells us
-> something about *time*. This bucket is the evidence that A1 and A2 are the *same* statement about a
-> *single* native object — the deepest result the program names.
+> something about *time*. This bucket now records the weak form: A1 and A2 share a native object and
+> archimedean seam, but are not the same forcing statement.
+> The hypertranscendence-axis synthesis (#208) sharpens this: value-level hypertranscendence/DSS is the
+> wider wild-kernel axis, while RH is one orthogonal FE-polarization slice on the shared locus.
 
 ---
 
@@ -83,7 +86,8 @@ brick, and pursue the **single rigidity statement** that, applied to the one ger
 - `M(x)/√x ≈ Σ_γ e^{iγ log x}/(ρζ'(ρ)) + c.c.` is DETERMINISTIC almost-periodic (frequencies = the
   zeros); it only LOOKS random because the γ are ℚ-LI (Baker), so it equidistributes (Kronecker–Weyl).
   **μ's pseudorandomness = RH (γ real ⟹ bounded) + LI (γ independent ⟹ equidistribution).** *A1 and A2
-  unified as a single statement — "μ is pseudorandom."* The LIL overshoot (te Riele, `limsup>1.06`) =
+  meet in one analytic signal, but #191 separates their forcing inputs: RH is positivity, LI/DSS is
+  genericity.* The LIL overshoot (te Riele, `limsup>1.06`) =
   Kronecker–Weyl resonance of ℚ-independent frequencies, NOT coin-flip stochasticity. *Caveat: soft
   (correlation-randomness) methods are amplitude-blind, structurally cannot reach RH.*
 
@@ -100,17 +104,21 @@ brick, and pursue the **single rigidity statement** that, applied to the one ger
 | no-margin | knife-edge positivity | = faithfulness / no gap | #92 |
 
 **The single sentence:** *the two places of `G_L` do not conspire — not in sign (A1/RH), not in algebra
-(A2/DSS); both non-conspiracies are the SAME archimedean rigidity on one computed object.*
+(A2/DSS); both non-conspiracies meet at the same archimedean seam, but #191/#54 show they are two
+distinct rigidities, not one forcing statement.*
 
 ## Open core / the work package
-Write the **unified conjecture brick** (one object, two readings) and identify the **single rigidity
-statement** — the multiplicity estimate on `G_L` — that would force both faces simultaneously. This is
-the program's deepest target: "make RH and time one statement." The obstruction is archimedean
+Write the **weak unified conjecture brick** (one object, two readings, two forcing inputs): the carrier
+germ `m_ξ` is the shared archimedean locus, while `κ₋=0` / FE-polarization positivity is the A1/RH input
+and the multiplicity/value-independence estimate on `G_L` is the A2/DSS input. The obstruction is
+archimedean, but it bifurcates into positivity and transcendence
 ([[bucket-the-seam-archimedean-obstruction]]).
+Use `../pipeline/0-backlog/hypertranscendence-axis-synthesis.md` as the current organizing frame:
+hypertranscendence is wider than RH, not a theorem that should be gated by RH.
 
 ## Cross-references
 - [[G5-unitarity-gatekeeper]] — the A1 face (unitary) made concrete.
 - [[G2-multi-q-siegel-shidlovsky]] — the A2 face (faithful / DSS).
 - [[bucket-time-and-non-holonomic-time]] — A2 *is* the time content; the carrier's jet = the clock.
 - [[bucket-the-no-margin]] — the no-margin is the unification's hinge (= faithfulness).
-- [[bucket-the-seam-archimedean-obstruction]] — both faces = one archimedean non-conspiracy.
+- [[bucket-the-seam-archimedean-obstruction]] — both faces meet at one seam but split into two apexes.

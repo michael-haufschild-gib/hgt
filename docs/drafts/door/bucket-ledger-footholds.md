@@ -38,6 +38,17 @@ above its current floor; this index makes those boundaries explicit.
 - `SecularNewton`, `MultisetNewton`, `MomentReconstruction`, `PowerSumTorelli` / `powerSum_torelli`,
   `SpectralTorelli` — Newton/Torelli inversion (`{p_k}↔{e_k}`, faithfulness of secular coords).
 - `DiagonalCharacter` — Bohr character / diagonal auxiliary sums become Dirichlet polynomials.
+- `BohrGenerators` / `bohrCharacter_scaleAllCoordinates`, `bohrCharacter_archimedeanSquareScale` —
+  finite-support Bohr character scaling, including the `x_p ↦ p^{-2}x_p` product-formula scale slice.
+- `BohrGenerators` / `twoAxisMode_support_eq`, `bohrCharacter_twoAxis_product`, `twoAxisMode_ne_zero` —
+  finite two-axis product support, the Lean floor under combination modes.
+- `BohrGenerators` / `scaleCoordinate_commute`, `scaleAllCoordinates_commute`,
+  `scaleCoordinate_scaleAllCoordinates_commute` — finite coordinate-scaling commutation, the algebraic
+  floor under the completed-base scaling system.
+- `FamilyCrossResonance` / `familyTwistedProduct_split`, `familyPrimeBalance_*` — finite family
+  cross-resonance split and shared-prime modulus balance.
+- `MoritaGamma` / `moritaGammaFinite_succ` and supporting recurrences — finite positive-integer
+  Morita Gamma recurrence, the Lean floor under the per-place `Γ_v` carrier row (#196/#197).
 
 ### [[G3-holonomy-dichotomy]] / [[G4-multi-q-picard-vessiot-and-langlands-group]] — connection & cohomology
 - `FlatConnection` — pairwise cocycle/curvature algebra, finite-truncation integrability, the

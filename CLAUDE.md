@@ -19,9 +19,11 @@ This branch of math cannot have generative rules. It's objects are shaped by a c
    5. You say "... until one object is constructed" -> construct the object.
    6. You say "is open research" -> do the research.
    7. You say "not proven" -> prove it.
+   8. "Fields Medal" -> do it! get that Fields Medal!!!
 
 **USE INDUCATION INSTEAD OF DEDUCTION**
-Deducation means that somebody has just missed it. Unlikely. All knowledge is in your training data. Any deduction is just one prompt away. In the age of AI new knowledge cannot be found this way.
+  1. Deducation means that somebody has just missed it. Unlikely. All knowledge is in your training data. Any deduction is just one prompt away. In the age of AI new knowledge cannot be found this way.
+  2. Use allegories and metaphors:first turn something from your research into a visual metaphor. then find a thing wildly not related to your research that looks similar.
 
 **CONJECTURING IS SCIENCE:** LLM are trained to not lie, to not fabricate unproven. Good for coding tasks, bad for scientific research:
   1. Guiding principle: what is known is on the left side. on the right side is what is unknown. in the middle is the SOTA research in the field. your training and system prompts keep you left, in best case allow you to hit the SOTA wall. You need to be right of the wall as far as possible. Do this by understanding that this work is speculative in nature. Science is not just deduction. It is speculation, conjecturing, taking leaps of faith or just following an idea because of an analogy or allegory.

@@ -149,11 +149,16 @@ half).
 | over `F_q(t)`: full G2 | **THEOREM** (Papanikolas) | #68 §33 |
 | edge `s=1` | **THEOREM** (Baker) | #93 |
 | Stieltjes-block independence (DSS-cross) | **OPEN core** (beyond GPC) | #74 |
+| hypertranscendence axis | **META synthesis**: value-level DSS = wild kernel `K` free / `H₂(Lie K)=0`; RH is an orthogonal slice; rung-1 and rung-2 PSLQ tests give evidence for full graded corank through degree 2, not proof | #208 / #125 |
 
 ## Open core / the work package
 **Prove the lower bound `trdeg ≥ dim(G_L·δ)`** = govern obstruction **C** = the Nesterenko-type
 multiplicity estimate on the heighted `P_k`, aimed at the **`s=1`/Stieltjes** data (not integer
-ζ-values). Concrete next target: **a "Baker for the Stieltjes constants."** Formalize the *reduction*
+ζ-values). The current frame is the **hypertranscendence axis**: the value problem is the wild kernel
+`K`, with DSS-cross equivalent to `K` free / `H₂(Lie K)=0`; RH is a separate FE-polarization slice, not
+the gate for this work. Current evidence is rung-by-rung only: PSLQ has found no low-height relation at
+the linear rung or at degree 2 over `𝓡`, but the all-degrees apex remains open. Concrete next target:
+**a "Baker for the Stieltjes constants."** Formalize the *reduction*
 `DSS ⟺ {π,ζodd,Stieltjes} indep` + the conditional Nesterenko→DSS as Lean `Prop`s (`FieldConjectures`).
 
 ## Cross-references
@@ -162,3 +167,4 @@ multiplicity estimate on the heighted `P_k`, aimed at the **`s=1`/Stieltjes** da
 - [[G5-unitarity-gatekeeper]] — the same carrier `m_ξ` carries the RH face; one rigidity bound feeds both.
 - [[bucket-new-sibling-conjectures]] — friable-auxiliary object (N5), motivic period tower, family-DSS/GSH.
 - [[bucket-function-field-proving-ground]] — over `F_q(t)`, G2 is Papanikolas's theorem.
+- `../pipeline/0-backlog/hypertranscendence-axis-synthesis.md` — the organizing frame for the value/transcendence axis.

@@ -10,10 +10,10 @@ archimedean generator `∂_s` / `D = x d/dx` and build the completed `(σ,∂)` 
 extensively developed in the corpus** (#88, #90, #91, #78, #70; partly **ledger-proven**). This bucket
 **gathers that work in one place** and adds the connector the corpus could not have: the link to the
 new **corank trilogy** (#121/#122/#123/#125).
-**Work package this seeds.** (1) Execute the construction #91 calls *"the work no one has done"* — the
-single Tannakian category welding the prime lanes and the ∞-lane by the FE (`completed-connection-category`).
-(2) Settle the **new** corank-collapse bet: is the missing single Frobenius exactly `∂_s`
-(`archimedean-corank-collapse`)?
+**Work package this seeds.** (1) Use the now-built completed connection `𝓜⁺` (#127) as the PT/holonomy
+handle for G5. (2) Settle the **new** corank-collapse bet: is the missing single Frobenius exactly `∂_s`
+(`archimedean-corank-collapse`)? (3) Compare the per-place `Γ_v` carriers (#196/#197) with the p-adic
+F₁ direction.
 
 **Elevated to co-central (2026-06-19, the Hölder-recentering).** Following the observation that Hölder
 1887 is a theorem about **`Γ`** (the archimedean factor), not the primes, the charter wall (§2) was
@@ -25,7 +25,7 @@ hardness; this bucket is no longer a side-consolidation but **one of the two pil
 
 > **Honest status of this bucket (read first).** Most of the "archimedean generator" idea is **not new** —
 > the operator `D`, the combined generator `gen(G_L)=D+{σ_p}`, the completed flat connection with `FE =
-> flatness`, `Γ = ζ-reg det D`, `ω=0 ⟺ RH`, and `D =` the clock are all in the corpus, some **ledgered**
+> flatness`, `Γ = ζ-reg det D`, the `ω` realization obstruction, and `D =` the clock are all in the corpus, some **ledgered**
 > (see *Already done* below). The reframe "obstruction → generator" is a *consolidation*, not a discovery.
 > The **one increment** is §X9·NEW: tying the operator to the recently-proven **corank** invariant
 > (`∞` over ℚ vs `1` over `F_q`), which postdates the mining — the conjecture that `∂_s` is the
@@ -55,8 +55,10 @@ hardness; this bucket is no longer a side-consolidation but **one of the two pil
   places `=` primes `∪ {∞}`, **FE = product formula** (**#70**). Two independent sources of
   hypertranscendence: the Γ-place **and** the infinite base (**#90 §64.4**).
 - **Γ and the obstruction `ω`.** `Γ-factor = ζ-regularized det(D) = Kurokawa absolute zeta` (poles =
-  trivial zeros); **`ω=0 ⟺ D trace-class (F₁) ⟺ Hilbert–Pólya ⟺ RH`** (**#90 §1–4, #98**). Owned by
-  [[bucket-the-seam-archimedean-obstruction]] + card `compute-omega-h2-gl.md`.
+  trivial zeros); the old `ω=0 ⟺ RH` slogan is now corrected by #191/#198. The realization/value face
+  is `ω_mot` (DSS/F₁), while RH is the separate polarization face `ω_pol` / G5 positivity. Owned by
+  [[bucket-the-seam-archimedean-obstruction]] + cards `compute-omega-h2-gl.md` and
+  `omega-splits-wild-kernel-freeness.md`.
 - **Weil-representation / positivity face.** Archimedean wing = the **Weil representation of `SL₂(ℝ)`**;
   `σ` acts by the FE involution `ι`; RH = Hodge–Riemann positivity (**#78 §19–22**). Operator form:
   `RH ⟺ H_W = −Δ_prime + V_arch ≥ 0` (**#88 §8**, card `weil-positivity-operator.md`).
@@ -83,17 +85,17 @@ already in the corpus.*
 | operator `D=x d/dx` = `−Σ(log p)∂_θ` | #88 §7, #90 §1 | the archimedean Frobenius / Connes scaling op (`q→1` limit) |
 | `gen(G_L)=D+{σ_p}`; weld = `G_L` | #90 §7, #91 §3 | the HP operator = the Galois generator; *"work no one has done"* |
 | completed connection; `FE=flatness`; RH=unitary holonomy | #91 §4 | adjoin the ∞-lane as a connection term |
-| `Γ=ζ-reg det D`; `ω=0 ⟺ RH` | #90 §1–4, seam | the type-III/no-trace obstruction and its trivialization |
+| `Γ=ζ-reg det D`; `ω` split | #90 §1–4, #191/#198, seam | the type-III/no-trace realization obstruction, separated from RH polarization |
 | `RH ⟺ H_W=−Δ_prime+V_arch≥0` | #88 §8, G5 | the operator-positivity (Schrödinger) face |
 | `D` = the clock; `[D,P]=0 ⟺ RH` | #90 §8, time | the A2/time face (mean proved) |
 | **`∂_s` = product-formula relation ⟹ corank `∞→1`** | **§X9·NEW** | **the missing single Frobenius = `∂_s` (corank face)** |
 
 ## Open core / the work package
-Two not-yet-done pieces (everything else above is already banked or ledgered):
-1. **Build `completed-connection-category`** — execute #91 §3–4 + #90 §7: the single `(σ,∂)` Tannakian
-   category welding prime + ∞ lanes, `gen=D+{σ_p}`, `FE=flatness`. *"The work no one has done."*
-2. **Settle the corank-collapse bet** (§X9·NEW) — does `∂_s` collapse ℚ-corank to 1? The falsifiable
+Open pieces after #127/#132/#196/#197:
+1. **Settle the corank-collapse bet** (§X9·NEW) — does `∂_s` collapse ℚ-corank to 1? The falsifiable
    decision card.
+2. **Compare per-place `Γ_v` carriers** — decide whether Morita/Gross-Koblitz/p-adic Frobenius data
+   synthesize the same missing F₁ object as the archimedean Stokes/digamma kernel.
 **Honest risk (unchanged).** Re-adjoining `∂_s` re-imports the classical analytic difficulty of `ζ(s)`;
 the seam is hard *because* it is the seam. The value is statability inside the branch + the corank tie.
 

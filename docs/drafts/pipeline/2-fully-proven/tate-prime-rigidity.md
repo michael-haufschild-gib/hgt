@@ -18,8 +18,8 @@ The card asked (gate 0→1) to give "rigid weld" an **operational meaning** — 
 deformed independently." This card supplies it: rigidity = a **non-split Galois extension**, and it is
 **proven** in two instances (#117, #124), reducing the general statement to the DSS-cross apex.
 
-> **Provenance note.** The row-#10 closed form `P_k = 1 − (−1)^k ζ(k)/2^k − a_{k−1}` is an **unverified**
-> ledger claim (`lean-claim-review-row-010-...`, no `3-formalized` ticket). This card does **not** rely on
+> **Provenance note.** The row-#10 closed form `P_k = 1 − (−1)^k ζ(k)/2^k − a_{k−1}` is now
+> paper-review verified (`lean-claim-review-row-010-...`). This card does **not** rely on
 > it. It rests only on the **proven** generating-set reduction #11 below.
 
 ---
@@ -83,7 +83,7 @@ general independence.
   no wild block, no rigidity; the weld is number-field-only. Matches #16/#121.
 
 ## Gates
-- [x] 0 → 1  in-progress: `P_k`-algebra split pinned via #11 (not the unverified #10 closed form); "rigid
+- [x] 0 → 1  in-progress: `P_k`-algebra split pinned via #11 (not relying on the row-#10 closed form); "rigid
   weld" given operational meaning (§2: non-split K-extension); Door sketched.
 - [x] 1 → 2  fully-proven (backbone): §1 decomposition (given #11), §2 operational meaning, §3 the
   rigidity proven in the #117/#124 instances + the D2-unification. Grade BRIDGE (substrate).
@@ -98,14 +98,14 @@ general independence.
 - `regularization-freshness.md` (#75) — the wild block is regularization-fresh (over `𝓡`).
 - `bigraded-corank-dss-cross.md` / `baker-for-stieltjes.md` — the open apex (general independence).
 - `motivic-period-tower.md` — the motivic block `B_mot`'s live tower (the `G_mot` side).
-- `lean-claim-review-row-010-...md` — the (unverified) `P_k` closed form; **not relied upon here**.
+- `lean-claim-review-row-010-...md` — the paper-review-verified `P_k` closed form; **not relied upon here**.
 
 ## Log
 - 2026-06-19 — created in 0-backlog. Tate–prime rigidity (G12, SEED-M): the secular weld of a motivic block
   to a non-motivic prime/Stieltjes block.
 - 2026-06-19 (DeWitt) — claimed, worked, banked the structural backbone → 2-fully-proven (BRIDGE substrate).
   Gave "rigid weld" the operational meaning **non-split K-extension** (§2); proved the decomposition
-  `𝒫_𝒵 = B_mot(tame/𝓡) ⊕ B_wild({γ_n}/K)` from the **proven** #11 (avoiding the unverified #10 closed form);
+  `𝒫_𝒵 = B_mot(tame/𝓡) ⊕ B_wild({γ_n}/K)` from the **proven** #11 (not relying on the row-#10 closed form);
   proved rigidity in the #124 and #117 instances and **unified #101 = #117 = #124** as one non-split
   K-extension (D2). Verified the tame anchor `a_0 = ζ'(0)/ζ(0) = log 2π` (30 digits). General independence =
   DSS-cross apex, left open. No web, no runpod beyond the local mpmath anchor.

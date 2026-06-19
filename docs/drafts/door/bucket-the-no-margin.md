@@ -66,11 +66,12 @@ no-margin is an obstacle (to be overcome) or the prize (faithfulness, to be embr
   is Kronecker–Weyl resonance of ℚ-independent frequencies. *Caveat: soft (correlation-randomness)
   methods are amplitude-blind, structurally cannot reach RH (the amplitude IS the zeros).*
 
-## The arithmetic of Λ — the no-margin constant itself (#85 SEED-W)
-- `Λ` (dBN constant) = the **Face-A-criticality time** of the moment flow (positivity marginal, Face B
-  flow-invariant). **New open sub-question: is `Λ` itself transcendental / a period?** Its arithmetic
-  nature is unstudied; the field places it among the `{P_k(t)}`-periods. *Ties the no-margin constant to
-  the transcendence axis (TIME/A2).* (→ [[bucket-new-sibling-conjectures]])
+## The arithmetic of Λ — false-lead closure (#85 SEED-W)
+- `Λ` (dBN constant) is the **Face-A-criticality time** of the moment flow, but the period/transcendence
+  question is now closed as a false lead: `Λ=0 ⇔ RH`, with Rodgers–Tao `Λ≥0`, so asking whether `Λ` is a
+  period is RH itself, not a separate freshness target. PSLQ is structurally unavailable because useful
+  digits of `Λ` require RH-strength bounds. Under RH the no-margin is the tame point `0∈ℚ`, opposite the
+  wild Stieltjes/regularization axis. See `../pipeline/5-failed/is-lambda-a-period.md`.
 
 ---
 
@@ -86,7 +87,7 @@ no-margin is an obstacle (to be overcome) or the prize (faithfulness, to be embr
 | Nyman–Beurling | completeness defect `d_N → 0` | #96 |
 | geometry/cosmology | clock marginally **null** / slow-roll flat attractor | #94,#95 |
 | analytic NT | the **LIL** overshoot `√(loglog x)` | #97 |
-| dBN | `Λ = 0` (TP-onset time); is `Λ` a period? | #77,#85 |
+| dBN | `Λ = 0` (TP-onset time); period question collapses to RH / false lead | #77,#85,#95 |
 
 **The two opposite readings to resolve:** the no-margin is either (a) the **obstacle** — there is no
 finite certificate, every test's cost diverges as `δ→0` (so finite/positivity methods provably can't
@@ -96,7 +97,8 @@ content the program should target directly. #92's reframe argues (b).
 ## Open core / the work package
 Find the **one missing uniform bound** (the Kronecker→Liouville height upgrade = uniform-in-order TP =
 the uniform multiplicity/equidistribution estimate) — or prove no such bound can exist (confirming the
-no-margin is irreducibly faithfulness, not an obstacle). Side-question: **is `Λ` a period?**
+no-margin is irreducibly faithfulness, not an obstacle). Do not pursue `Λ`-as-period PSLQ; that route is
+closed as RH-equivalent.
 
 ## Cross-references
 - [[G5-unitarity-gatekeeper]] — the no-margin is G5's signature (`κ₋→0`, `|γ_k|→1`, exceptional point).

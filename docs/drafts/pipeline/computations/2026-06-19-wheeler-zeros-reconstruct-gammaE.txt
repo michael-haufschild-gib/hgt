@@ -1,0 +1,6 @@
+predicted  Sum_rho 1/rho = 1 + gamma/2 - (1/2)ln(4pi) = 0.0230957089661
+gamma_E (true) = 0.577215664902
+N=  50  S_N=0.01854194446  reconstructed gamma_E=0.56810814    err=0.00911
+N= 100  S_N=0.0199848524  reconstructed gamma_E=0.57099395    err=0.00622
+N= 200  S_N=0.02103486032  reconstructed gamma_E=0.57309397    err=0.00412
+N= 400  S_N=0.02176617707  reconstructed gamma_E=0.5745566     err=0.00266

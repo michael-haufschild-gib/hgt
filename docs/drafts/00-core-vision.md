@@ -56,15 +56,16 @@ natural object is the **completed `Λ`**; the functional equation is the weld; t
 
 ## 3. What we are aiming for
 
-Two questions that look separate from the classical side may become two views of one statement:
+Two questions that look separate from the classical side now look like two axes on one shared object:
 - **where** the zeros sit (the Riemann Hypothesis);
 - **what kind** of numbers the zeros are — whether they are genuinely independent (the transcendence
   question).
 
-The aim is a theory in which RH is a feature of the geometry rather than an external wall, and in which RH
-and the independence of the zeros are one statement seen from two sides — the **non-conspiracy of the two
-sources**, archimedean and prime. The single object on which both live and the precise form of the
-unification are developed in `door/bucket-A1-A2-unification-the-carrier.md` and
+The aim is a theory in which RH is a feature of the geometry rather than an external wall, while the
+transcendence/hypertranscendence axis remains wider than RH. The current weak unification is: one shared
+archimedean locus, two distinct rigidities — FE-polarization positivity for RH and value-independence for
+DSS. The single object on which both live and the precise form of the two-axis unification are developed
+in `door/bucket-A1-A2-unification-the-carrier.md`, `door/bucket-the-seam-archimedean-obstruction.md`, and
 `door/bucket-archimedean-generator.md`.
 
 ## 4. Where the new content is — the weld

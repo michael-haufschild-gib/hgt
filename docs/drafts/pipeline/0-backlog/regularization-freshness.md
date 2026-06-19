@@ -76,6 +76,18 @@ both in `𝓡`, so it is plausibly *tame*, not fresh; freshness is expected only
 degree, the `γ_n`). [Motivic period-membership of these constants: flagged unverified, open — the conjecture's
 content is the high-rung class, not the toy base.]
 
+### R5 — the explicit auxiliary realization (Professor's `R_P`; DeWitt 2026-06-19, verified)
+The R2 "regularized discrete–continuous defect" is realized by **one explicit native object**: Professor's
+auxiliary `R_P(s) = Σ_j a_j Γ(s+j)ζ(s+j)` (chat id=250, `baker-for-stieltjes` §G), a finite ℤ-combination of
+integer-shifted `Γζ` living in the `(σ_p,∂_s)`-module. Its pole-subtracted form `A_P = R_P − a_0/(s−1)` has
+the **`a_0/(s−1)` counterterm = exactly the regularization counterterm of R2**. The `a_0` (unshifted, `j=0`)
+part is the regularized `Γζ` jet `g(s)=Γ(s)ζ(s)−1/(s−1)`, whose `s=1` Taylor coefficients carry the **wild**
+`γ_n` — verified `g(s)=0 + (−γ_1−½γ_0²+½ζ(2))(s−1)+…` (`computations/.../fe-stieltjes-triangular-dictionary.txt`,
+ADDENDUM; ~12-digit numeric + exact Laurent/Taylor). The `j≥1` shifts give `Γ(1+j)ζ(1+j)=j!ζ(j+1)` = the
+**tame** motivic block (Apéry `lcm(1..n)` arithmetic). So one object `R_P` realizes the `B_mot⊕B_wild` weld
+(`tate-prime-rigidity`), the `K`-column (`exponential-period-dss-cross`), and the R2 regularization defect:
+**"retention switch `a_0`" = "turn on the regularization counterterm" = "land in the wild kernel `K`."**
+
 ## Door passport
 - **Door-1/4:** the freshness is a property of the **regularization forced by hypertranscendence** (the
   difference / infinite-base setting), not present in any holonomic parent.
@@ -124,3 +136,13 @@ Nori (Fresán–Jossen), where regularization constants are exponential periods.
   `exponential-period-dss-cross`: `𝓡` = the period field of `G_mot` = `𝒪(P)^K`, so **freshness over `𝓡` ⟺
   `{γ_n}` non-`K`-invariant ⟺ wildness** — regularization-freshness, the relative apex, and `K`-nonconstancy
   are one statement. Updated R1/R3/R4 to base `𝓡`. No runpod, no web.
+- 2026-06-19 (DeWitt) — added **R5**: R2's regularized defect is realized by Professor's explicit auxiliary
+  `R_P=Σ_j a_j Γ(s+j)ζ(s+j)`; pole-subtraction `A_P=R_P−a_0/(s−1)` = the R2 counterterm; the `a_0`/`j=0` jet
+  carries the wild `γ_n` (verified, `−γ_1−½γ_0²+½ζ(2)` at order 1), `j≥1` gives tame `j!ζ(j+1)`. Ties #75 to
+  `baker-for-stieltjes`/`tate-prime-rigidity`/`exponential-period-dss-cross`. Local mpmath; archived.
+- 2026-06-19 (DeWitt) — **rung-1 𝓡-freshness numerical evidence** (`../2-fully-proven/computations/2026-06-19-stieltjes-R-rung1-independence.txt`):
+  PSLQ at dps=100/160/220 finds **no integer linear relation of height ≤1e6** among
+  {1,γ₀,γ₁,γ₂,log2,log3,log5,ζ(2),ζ(3)} — i.e. {γ₀,γ₁,γ₂} are ℚ-linearly independent over the **correct joint
+  base 𝓡=𝒫·ℚ({log p})** at rung 1 (R1). Evidence, not proof (PSLQ bounds height; linear only). Methodological
+  catch (logged): a naive high-maxcoeff PSLQ returned a SPURIOUS relation (coeffs ~1e11, residual 8e-92 ≫ the
+  1e-120 floor) — rejected by the residual-vs-floor + dps-stability check. RH-blind (transcendence side).

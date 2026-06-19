@@ -169,10 +169,14 @@ Applying Nesterenko's algebraic-independence criterion (IMPORT) to the Stieltjes
 
 ---
 
-## §F The concrete apex attack — the moment problem of `dt/(e^t−1)` (2026-06-19, Professor)
+## §F The apex attack — the two moment families of `dt/(e^t−1)` (2026-06-19, Professor)
 
-Not a deferral: an explicit, verified construction route for the Nesterenko criterion, opened from the
-exponential-period realization (`../2-fully-proven/stieltjes-exponential-period-realization.md`).
+Pushing the attack (not deferring) revealed a clean structural finding — and corrected my own first framing.
+Opened from the exponential-period realization (`../2-fully-proven/stieltjes-exponential-period-realization.md`).
+**Headline:** the single measure `dμ=dt/(e^t−1)` carries the ζ-values as its *power*-moments and the `γ_n` as
+its *log*-moments at `s=1` — the regular/wild (`𝓡`/`K`) Galois split realized analytically in one object; the
+differential auxiliary closes the ζ-value (Apéry) lane and is killed by Hölder on the `γ_n` jet, forcing the
+native difference (multi-`q` SS) auxiliary.
 
 **The moment foundation `[VERIFIED, exact]`.** `Γ(s)ζ(s)=∫_0^∞ t^{s−1}/(e^t−1)dt`, so ζ's `s=1` Laurent data
 is the analytic continuation of the moments of the **positive measure** `dμ(t)=dt/(e^t−1)` on `(0,∞)`:
@@ -183,29 +187,151 @@ So the moment sequence is **factorial × zeta-values** `{1!ζ(2), 2!ζ(3), 3!ζ(
 `H_n=det[μ_{i+j+1}]_{0≤i,j<n}` are **positive** (`1.645, 4.902, 82.93, 16228, …`) ⟹ `dμ` is a bona-fide
 Hamburger/Stieltjes moment measure with a well-defined orthogonal-polynomial system `{P_n(t)}`.
 
-**The attack.** The `{P_n}` are the natural Hermite–Padé denominators for simultaneous rational approximation
-to `(1, ζ(2), ζ(3), …)` weighted by `dμ`; paired against the exponential kernel they produce the Nesterenko
-auxiliary forms `R_n(s)=∫ P_n(t) t^{s−1} dμ(t)` whose `s=1` jet mixes `{γ_n}` with `{ζ(k)}` (the §B weld).
-The two open Nesterenko inputs become concrete OP questions:
-- **B′ (zero/multiplicity estimate):** the order of vanishing of `R_n` at `s=1` = the degree/structure of
-  `P_n` — an OP-degree count, computable from the `j!ζ(j+1)` Hankel data.
-- **C (`H_C` lower bound):** `|R_n(1)|`-growth = the OP-norm / Christoffel–Darboux asymptotics of `{P_n}`
-  against `dμ` — a steepest-descent problem for the weight `1/(e^t−1)` (the Aptekarev/Rivoal technology, here
-  for the **joint** moment problem, not a single constant).
+**The correction that makes this the right object `[did the math; found+fixed my own error]`.** The OP
+system `{P_n}` of `dμ` is tuned to the **power**-moments `μ_j=j!ζ(j+1)`, so the resulting Hermite–Padé
+approximants are to the **integer ζ-values** `(ζ(2),ζ(3),…)` — the **Apéry/Ball–Rivoal** world, *not* the
+`γ_n`. The `γ_n` are not power-moments of `dμ`; they are its **logarithmic moments at `s=1`**: the `s=1` jet
+of the Mellin transform,
+```
+   ζ-values:  μ_j = ∫_0^∞ t^j\,dμ = j!\,ζ(j+1)                 (POWER moments — Apéry lane)
+   Stieltjes: ν_m = ⨍_0^∞ (\log t)^m\,dμ  (regularized) →  γ_n  (LOG moments — the s=1 jet of Γ(s)ζ(s)).
+```
+So the **same positive measure `dt/(e^t−1)` carries BOTH transcendence columns**, and the two moment families
+**are** the two Galois columns (DeWitt `K`, Wheeler `corank^{(T,U)}`):
 
-**Deconfliction.** Wheeler's `relative-exponential-apex` attacks single-`γ_E` irrationality via the digamma
-+ Aptekarev approximation; this is the **joint** `{γ_n}` algebraic-independence via the Nesterenko criterion
-on the **same** measure `dμ` — shared OP technology, different target (trdeg vs irrationality). The shared
-object is the OP system of `dt/(e^t−1)`; the `{j!ζ(j+1)}` moments are the bridge.
+> **Finding (the regular/wild split is the power/log moment split of one measure).**
+> - **Power-moments `μ_j=j!ζ(j+1)` → ζ-values = the REGULAR/motivic column** (`𝓡`, `K`-invariant). It has
+>   **footholds**: Apéry (`ζ(3)∉ℚ`), Ball–Rivoal (`∞`-many `ζ(2k+1)∉ℚ`), Zudilin — proved by the
+>   integer-point arithmetic (denominators `lcm(1..n)`, the prime structure).
+> - **Log-moments `ν_m` → `γ_n` = the WILD/exponential column** (`K`, `K`-coordinates). It has **no
+>   footholds**: even `γ_0=γ_E∉ℚ` is open. The `s=1` jet has **no clean denominators** — the *height vacuum*
+>   (§C) is exactly the absence of the integer-point arithmetic that powers the Apéry lane.
 
-**Next concrete steps (this lane):** (1) compute `P_1,P_2,P_3` explicitly from the `j!ζ(j+1)` Hankel data;
-(2) read off the `s=1` jet of `R_n` and confirm the `{γ_n}`/`{ζ(k)}` weld coefficients match §B eq.; (3) set
-up the steepest-descent for `|R_n(1)|` against `1/(e^t−1)`. Archived: `computations/2026-06-19-stieltjes-moment-problem.py`.
+**Why the foothold asymmetry — the differential→difference forcing `[the wall, located]`.** The Apéry/Rivoal
+control of the ζ-value (power-moment) lane uses the **values at integers** `s=k`, where `Γ(s)ζ(s)` is
+evaluated, and the Siegel–Shidlovsky-type control is differential. The `γ_n` lane lives at the **`s=1` jet**,
+where the object is `Γ(s)ζ(s)` *as a function of `s`* — which is **hypertranscendental** (Hölder: no
+algebraic differential equation). So the **differential** Siegel–Shidlovsky/Nesterenko that powers the Apéry
+lane is **structurally unavailable** for the `γ_n` jet; the auxiliary must instead use the **difference**
+structure — `Γ(s+1)=sΓ(s)` and the prime dilations `σ_p` — i.e. the native **multi-`q` Siegel–Shidlovsky
+(G2)**. **The height vacuum = the un-mastered difference-arithmetic of the `s=1` jet.** This is the
+constraint-not-flow principle made concrete in the auxiliary construction: the `γ_n` cannot be reached by a
+*flow* (differential) auxiliary, only by the *constraint* (difference/recurrence) one.
+
+**Net (the unification, banked as the §F structural finding):** `baker-for-stieltjes` (analytic `γ_n`) and the
+native **G2 multi-`q` Siegel–Shidlovsky** are the **same** problem — the log-moment lane of `dt/(e^t−1)` —
+because the differential auxiliary is killed by Hölder. The Apéry ζ-value lane is the regular sibling that
+*does* close, on the **power**-moments of the **same measure**. This pins, analytically and in one object,
+why the regular column has footholds and the wild column does not.
+
+**Deconfliction.** Wheeler `relative-exponential-apex` = single-`γ_E` via `ψ`/`𝔾_a`-period; DeWitt
+`exponential-period-dss-cross` = the `K`-column at the Galois level. This §F is the **analytic realization**:
+the `K`-column = the **log-moment lane** of `dt/(e^t−1)`, the `𝓡`-column = its **power-moment (Apéry) lane**.
+No overlap — one measure, the two of them read off it.
+
+**Next concrete steps (this lane):** (1) build the **difference** auxiliary for the `s=1` jet from the
+`Γ`-recurrence (the multi-`q` SS form), not the differential OP; (2) make precise the claim that the
+power→log moment passage is the `𝓡→K` (regular→wild) passage at the level of the Hankel/Toeplitz data;
+(3) identify what, if anything, of the Apéry integer-point arithmetic survives the passage to the `s=1` jet
+(the exact point where footholds are lost). Archived: `computations/2026-06-19-stieltjes-moment-problem.py`.
+
+## §G The concrete difference auxiliary `R_P(s)=Σ_j a_j Γ(s+j)ζ(s+j)` (2026-06-19, Professor)
+
+§F said "the auxiliary must be difference-based." Here it is, explicit and verified `[mpmath, |diff|≤3e−31]`.
+For a polynomial `P(t)=Σ_{j=0}^d a_j t^j` (`a_j∈ℤ`), the auxiliary form against the ζ-measure is
+```
+   R_P(s) := ∫_0^∞ P(t)\,t^{s−1}\,\frac{dt}{e^t−1}
+           = Σ_{j=0}^d a_j\,Γ(s+j)\,ζ(s+j).                                                  (G1)
+```
+*(Proof: term `a_j t^j`, sub `u=kt` in `∫t^{s+j−1}e^{−kt}dt=k^{−(s+j)}Γ(s+j)`, sum `Σ_k k^{−(s+j)}=ζ(s+j)`.)*
+
+**This is the difference auxiliary, concretely.** `R_P` is a finite `ℤ`-combination of the **integer-shifted**
+Mellin objects `Γ(s+j)ζ(s+j)`; the shift `s↦s+j` is the **`Γ`-recurrence** `Γ(s+1)=sΓ(s)` (the archimedean
+`∂_s`-integrated difference) and the `ζ(s+j)` carry the prime `σ_p` structure. So `{Γ(s+j)ζ(s+j)}_j` lives in
+the completed `(σ_p,∂_s)`-module (N1⁺); the auxiliary is **native by construction**, not a differential OP.
+
+**The `s=1` jet — the retention tension, explicit.** At `s=1`:
+- `j=0`: `Γ(s)ζ(s)=\frac1{s−1}+Φ(s)`, `Φ(s)=Σ_m \frac{I_m+J_m}{m!}(s−1)^m` carries the **`γ_n`** (realization
+  card eq. (8));
+- `j≥1`: `Γ(s+j)ζ(s+j)` is **regular** at `s=1`, value `j!\,ζ(j+1)` (the **ζ-values** / power-moments).
+
+So `a_0` is the **`γ_n`-retention switch** (Wheeler's exact criterion, ζ-measure form): `a_0=0 ⟹` `R_P` is a
+pole-free `ℤ`-linear form in `{j!ζ(j+1)}` = the **Apéry/ζ-value** lane; `a_0≠0 ⟹` the `γ_n` are retained **but
+a pole appears**. The `γ_n`-retaining, pole-free auxiliary is the §B subtraction
+`A_P(s):=R_P(s)−a_0/(s−1)=a_0Φ(s)+Σ_{j≥1}a_jΓ(s+j)ζ(s+j)`, whose `s=1` jet is the **joint** `ℤ`-form mixing
+`{γ_n}` (from `a_0Φ`) with `{ζ(k)}` (from `j≥1`) — exactly the §B weld / #124 no-isolation, now produced by a
+**single explicit auxiliary**.
+
+**Where the apex now sits (sharp).** The Nesterenko inputs are concrete:
+- *forms:* `A_P(s)` and its `s=1` derivatives, `P` ranging over `ℤ`-polynomials of degree `d` — a
+  `(d+1)`-parameter family of joint `{γ_n}∪{ζ(k)}` forms;
+- *growth (analytic):* `|A_P|` is controlled by `|P|` and the `Γ(s+j)ζ(s+j)` asymptotics — tractable;
+- *the wall (arithmetic):* the **lower** bound on `|A_P^{(T)}(1)|` is the height vacuum — the `γ_n` part
+  carries no denominator, while the `ζ(k)` part has the `lcm(1..n)` (Apéry) arithmetic. The **difference**
+  between the two columns is exactly the `s↦s+1` shift behaviour: regular shifts (`j≥1`) have the prime/lcm
+  arithmetic, the `j=0` jet does not. **The missing exp-F₁ = the arithmetic of the `j=0` (un-shifted) jet of
+  `Γ(s)ζ(s)`** relative to its integer shifts.
+
+This is the native difference auxiliary made fully explicit; the open core is its `s=1`-jet arithmetic
+(obstruction C), now pinned to the single object `Γ(s)ζ(s)` and its integer shifts. Verified:
+`computations/2026-06-19-stieltjes-moment-problem.py`.
+
+## §H The auxiliary family is the `σ`-orbit of `Γζ` — native structure = G1, open apex = G2 (2026-06-19, Professor)
+
+The §G family `{f_j}_{j≥0}`, `f_j(s)=Γ(s+j)ζ(s+j)`, has an exact native description under the shift
+`σ:s↦s+1`:
+```
+   σ f_j = Γ(s+1+j)ζ(s+1+j) = f_{j+1}      ⟹   {f_j} = the σ-ORBIT of  f_0 = Γ(s)ζ(s) = Λ_+(s).   (H1)
+```
+`[verified, |diff|=0]`. So the §G auxiliary lives in the **`σ`-difference module generated by `Λ_+=Γζ`** —
+the native completed object N1⁺ (additive completion). Its structure splits the problem cleanly along the
+gatekeepers:
+
+- **Difference-independence of `{f_j}` = G1 (difference-Hölder), PROVEN, BRIDGE.** `f_0=Γ(s)ζ(s)` satisfies
+  **no finite-order `σ`-recurrence**: `σf_0/f_0 = s·ζ(s+1)/ζ(s)`, and `ζ(s+1)/ζ(s)` is **not a rational
+  function of `s`** `[verified]`, so there is no first-order difference relation; the orbit is
+  infinite-dimensional. This is exactly difference-Hölder (00-status #3: `ζ` has no finite `q`/shift-difference
+  equation), already proven and **graded BRIDGE** (single archimedean shift; Door-2). **No new native content
+  (no C5) hides in the auxiliary's difference structure.**
+- **Value-independence at `s=1` = G2 / obstruction C, OPEN (the apex).** The §G remainder `A_P^{(T)}(1)` is a
+  `ℤ`-form in the `s=1` *values* of the orbit — `{γ_n}` (from `f_0`'s jet) and `{ζ(k),ζ^{(m)}(k)}` (from
+  `f_{j≥1}`). Difference-independence of the *functions* (G1, have it) does **not** give algebraic
+  independence of their *values* (G2, the missing F₁ value-lift, #142). This is the function→value gap, here
+  on the explicit `σ`-orbit of `Γζ`.
+
+**Net (the §G–§H facet, complete).** The Stieltjes auxiliary is the `σ`-orbit of `Λ_+=Γζ`; its **function**
+level is the proven BRIDGE G1 (difference-Hölder), and the entire open content is the **value** level at `s=1`
+= G2 / obstruction C. So baker-for-stieltjes is, precisely, **G2 restricted to the `Λ_+`-orbit at `s=1`** —
+confirming, on a fully explicit native object, the team verdict that the function/flow level is BRIDGE and the
+sole apex is value-relations (DeWitt `K`, Wheeler saddle). Verified: `computations/2026-06-19-stieltjes-moment-problem.py`.
 
 ## Log (continued)
 - 2026-06-19 — Professor: **reclaimed to in-progress to attack the apex** (not bank a shell; per user steer
-  via chat id=236). Opened §F: the Nesterenko/OP route on the positive measure `dμ=dt/(e^t−1)`, moments
-  `μ_j=j!ζ(j+1)` (verified exact), Hankel dets positive. The joint-moment OP construction is the concrete,
-  computable engine for B′ (multiplicity) and C (`H_C` lower bound). Deconflicted with Wheeler's single-`γ_E`
-  Aptekarev route (id=241). `trdeg=∞` stays the open apex; the attack is now an explicit OP/steepest-descent
-  program, not a reduction-to-Schanuel deferral.
+  via chat id=236). First §F draft used the OPs of `dμ=dt/(e^t−1)` (moments `μ_j=j!ζ(j+1)`, verified exact).
+- 2026-06-19 — Professor: **did the math, found+corrected my own error** (Anti-Cage). The power-moments
+  `μ_j=j!ζ(j+1)` are the **integer ζ-values** (Apéry/Rivoal), **not** the `γ_n`; the `γ_n` are the
+  **log-moments / `s=1` jet** of `Γ(s)ζ(s)`. **Finding (new, banked in §F):** the one measure `dt/(e^t−1)`
+  carries **both** transcendence columns — power-moments = ζ-values = regular/motivic `𝓡` (Apéry footholds),
+  log-moments = `γ_n` = wild/exponential `K` (no footholds) — so the abstract `𝓡/K` split (DeWitt #K /
+  Wheeler `corank^{(T,U)}`) is the **power/log moment split of one measure**. The foothold asymmetry is
+  located: the differential Siegel–Shidlovsky closes the ζ-value lane but is **killed by Hölder** on the
+  `γ_n` jet (`Γζ` hypertranscendental), forcing the **difference** (multi-`q` SS / native G2) auxiliary —
+  so `baker-for-stieltjes` ≡ native G2 on the log-moment lane, and the **height vacuum = the
+  difference-arithmetic of the `s=1` jet**. `trdeg=∞` stays open; the attack is now the difference auxiliary,
+  not the (dead) differential OP. Deconflicted with Wheeler (γ_E/ψ) and DeWitt (K-Galois): §F is the analytic
+  realization of their split.
+- 2026-06-19 — Professor: **built the difference auxiliary concretely** (§G), continuing the apex attack.
+  `R_P(s)=∫P t^{s−1}/(e^t−1)dt=Σ_j a_j Γ(s+j)ζ(s+j)` (verified, |diff|≤3e−31): a finite ℤ-combination of
+  integer-shifted `Γζ` (shift = `Γ`-recurrence = the difference structure; native `(σ_p,∂_s)`-module). `a_0`
+  is the `γ_n`-retention switch (Wheeler's criterion, ζ-measure form); the pole-free `γ_n`-retaining auxiliary
+  `A_P=R_P−a_0/(s−1)` gives joint `{γ_n}∪{ζ(k)}` ℤ-forms from a single explicit object. Apex pinned: the
+  missing exp-F₁ = the `s=1`-jet arithmetic of `Γ(s)ζ(s)` (`j=0`) relative to its integer shifts (`j≥1`, which
+  carry the Apéry `lcm` arithmetic). Builds on Wheeler's γ-blindness Lemma 5.1 (his `e^{−x}` atom; my measure
+  is the integer-weighted `Σ_k e^{−kt}`). `trdeg=∞` open; the auxiliary is now explicit, native, difference-based.
+- 2026-06-19 — Professor: **§H — located the native vs apex split on an explicit object.** The §G family
+  `{Γ(s+j)ζ(s+j)}` is the `σ`-orbit (`σ:s↦s+1`) of `Λ_+=Γζ` (verified `σf_j=f_{j+1}`, `|diff|=0`); `f_0` has
+  no finite `σ`-recurrence (`σf_0/f_0=s·ζ(s+1)/ζ(s)` not rational) = difference-Hölder (G1, proven BRIDGE). So
+  the auxiliary's **function/difference** structure is the known BRIDGE G1, and the **only** open content is
+  **value-independence at `s=1`** = G2/obstruction C. baker-for-stieltjes = G2 restricted to the `Λ_+`-orbit at
+  `s=1`. Confirms (on a fully explicit native object) that the function level is BRIDGE and the sole apex is
+  value-relations. No C5 hides in the auxiliary structure; the apex is purely the value-lift (#142).

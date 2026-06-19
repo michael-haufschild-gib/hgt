@@ -37,3 +37,28 @@ def op_coeffs(n):
     return [c[i] for i in range(n)] + [mp.mpf(1)]
 for n in range(1, 3):
     print("  P_%d:" % n, [mp.nstr(x, 10) for x in op_coeffs(n)])
+
+# --- baker-for-stieltjes §G: the concrete difference auxiliary ---
+# R_P(s) = int_0^inf P(t) t^{s-1}/(e^t-1) dt = sum_j a_j Gamma(s+j) zeta(s+j),  P(t)=sum_j a_j t^j.
+print()
+print("=== difference auxiliary R_P(s)=sum_j a_j Gamma(s+j)zeta(s+j) ===")
+def R_lhs(coeffs, s):
+    P = lambda t: sum(coeffs[j]*t**j for j in range(len(coeffs)))
+    return mp.quad(lambda t: P(t)*t**(s-1)/(mp.e**t-1), [0, mp.inf])
+def R_rhs(coeffs, s):
+    return sum(coeffs[j]*mp.gamma(s+j)*mp.zeta(s+j) for j in range(len(coeffs)))
+for coeffs, s in [([3,-5,1], mp.mpf('1.5')), ([3,-5,1], mp.mpf('2.3')), ([0,2,0,1], mp.mpf('1.7'))]:
+    L = R_lhs(coeffs, s); Rr = R_rhs(coeffs, s)
+    print("  P=%s s=%s |diff|=%.1e" % (coeffs, mp.nstr(s,3), float(abs(L-Rr))))
+
+# --- baker-for-stieltjes §H: the family is the sigma-orbit of Gamma*zeta ---
+# sigma:s->s+1, f_j(s)=Gamma(s+j)zeta(s+j). Claim sigma f_j = f_{j+1}; f_0 has no finite sigma-recurrence.
+print()
+print("=== sigma-orbit: sigma f_j = f_{j+1}, and sigma f_0/f_0 = s*zeta(s+1)/zeta(s) (not rational) ===")
+def f(j, s): return mp.gamma(s+j)*mp.zeta(s+j)
+s = mp.mpf('1.3')
+for j in range(0, 3):
+    print("  sigma f_%d = f_%d : |diff|=%.1e" % (j, j+1, float(abs(f(j, s+1)-f(j+1, s)))))
+for s in [mp.mpf('1.3'), mp.mpf('2.1')]:
+    print("  s=%s  sigma f_0/f_0=%s  s*zeta(s+1)/zeta(s)=%s" %
+          (mp.nstr(s,3), mp.nstr(f(0,s+1)/f(0,s),10), mp.nstr(s*mp.zeta(s+1)/mp.zeta(s),10)))

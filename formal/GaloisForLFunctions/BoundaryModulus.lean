@@ -48,6 +48,27 @@ theorem boundaryUnitNormalize_norm_eq_one_iff {p : ℝ} (hp : 0 < p) (x : ℂ) :
     ‖boundaryUnitNormalize p x‖ = 1 ↔ ‖x‖ = boundaryRadius p := by
   exact norm_inv_smul_eq_one_iff (boundaryRadius_pos hp) x
 
+/-- The Frobenius weight radius `q^(w*d/2)` for a base field of size `q`,
+weight `w`, and place degree `d`. -/
+def functionFieldWeightRadius (q w d : ℝ) : ℝ := q ^ (w * d / 2)
+
+/-- Normalize a Frobenius eigenvalue by its weight radius. -/
+def functionFieldWeightNormalize (q w d : ℝ) (alpha : ℂ) : ℂ :=
+  (functionFieldWeightRadius q w d)⁻¹ • alpha
+
+/-- The Frobenius weight radius is positive for a positive base field size. -/
+lemma functionFieldWeightRadius_pos {q : ℝ} (hq : 0 < q) (w d : ℝ) :
+    0 < functionFieldWeightRadius q w d := by
+  exact Real.rpow_pos_of_pos hq _
+
+/-- Weight normalization puts a Frobenius eigenvalue on the unit circle exactly
+when the original eigenvalue lies on the weight circle. -/
+theorem functionFieldWeightNormalize_norm_eq_one_iff {q : ℝ} (hq : 0 < q)
+    (w d : ℝ) (alpha : ℂ) :
+    ‖functionFieldWeightNormalize q w d alpha‖ = 1 ↔
+      ‖alpha‖ = functionFieldWeightRadius q w d := by
+  exact norm_inv_smul_eq_one_iff (functionFieldWeightRadius_pos hq w d) alpha
+
 /-- On the diagonal coordinate `p^{-s}`, boundary-radius normalization is unitary exactly on
 `Re(s)=1/2`. -/
 theorem diagonalBoundary_unit_norm_iff (p : ℝ) (hp : 1 < p) (s : ℂ) :

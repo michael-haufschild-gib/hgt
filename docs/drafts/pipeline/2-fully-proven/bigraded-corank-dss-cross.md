@@ -342,3 +342,53 @@ The `U≥1` exponential apex isolated above is being **worked** in `../1-in-prog
 (the Fields-Medal ticket): `γ_E = −ψ(1)` as the `𝔾_a`-period of the Source-A digamma `ψ=∂_s logΓ`; the
 function→value lift named as the #142 F₁; a concrete Beukers/Aptekarev approximation route (the exponential-
 column analog of Apéry's `ζ(3)`). This card is the invariant skeleton; that ticket does the apex.
+
+## §I PSLQ certification of the cross block — no relation in `corank^{(1,1)}` `[numerical, verifiable; complements Professor's pure-DSS PSLQ]`
+
+The cross block (`T,U≥1`, the period↔exp-period seam, §C's footholdless direction) admits no classical proof;
+the project's standard tool there is PSLQ pre-certification. Professor's DSS PSLQ covered the pure basis
+`{π,ζ(odd),γ_n}`; the explicit **cross-monomials `log p·γ_n`** were not separately tested. Done here for the
+bigraded (1,1) cell (mpmath; archive `computations/2026-06-19-bigraded-corank-cross-pslq.txt`).
+
+**Test.** The 9 monomials of bidegree `≤(1,1)` for primes `{2,3} ×` Stieltjes `{γ_0,γ_1}`:
+`{1, log2, log3, γ_0, γ_1, log2·γ_0, log2·γ_1, log3·γ_0, log3·γ_1}`.
+- **No ℚ-linear relation up to height `10^{10}` at dps=400** (and dps=200/300 at maxcoeff `10^8`). So
+  `corank^{(1,1)} = 9` (full, no relations) for this set — the period and exponential-period data carry **no
+  spurious low-height coupling**.
+- **Transparency (a caught artifact).** At dps=120 / maxcoeff=`10^{12}` PSLQ returned a height-`~5×10^{11}`
+  "relation" — a **precision artifact** at PSLQ's detection threshold for 9 terms (`~10^{120/9}≈10^{13}`); it
+  **vanished** on raising dps and lowering maxcoeff. Recorded so the null result is not over-read.
+- **Sub-rungs all NULL** (independent): regular `{1,log2,log3}`; pure-exponential `{1,γ_0,γ_1}` and the (0,2)
+  rung `{1,γ_0,γ_1,γ_0²,γ_0γ_1,γ_1²}`; the cross atom `{1,log2,γ_0,log2·γ_0}`.
+
+**Reading.** Positive numerical evidence that the cross block is non-degenerate (no period↔exp-period
+low-height relation) — PSLQ pre-certification of the seam, complementing Professor's pure-DSS PSLQ. **Caveat:**
+PSLQ rules out only low-height relations — this is evidence, not proof; the apex (full cross-independence)
+stays open (§C/§G). Grade: numerical support (BRIDGE-support); genuine new data on the footholdless cross block.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **§I: PSLQ-certified the bigraded (1,1) cross block.** No ℚ-relation among the 9
+  bidegree-`≤(1,1)` monomials `{2,3}×{γ_0,γ_1}` up to height `10^{10}` at dps=400 (sub-rungs all NULL). Caught
+  and verified-spurious a dps=120/maxcoeff=`10^{12}` precision artifact (vanished at higher dps). Complements
+  Professor's pure-DSS PSLQ (which omitted the explicit `log p·γ_n` cross-monomials). Evidence, not proof;
+  apex open. Archived `computations/2026-06-19-bigraded-corank-cross-pslq.txt`.
+
+### §I (robust extension) — broader cross-block certification `[numerical]`
+Strengthened the §I toy test to a robust certification (archive
+`computations/2026-06-19-bigraded-corank-cross-pslq-robust.txt`):
+- **(1,1) `{2,3,5,7} × {γ_0,γ_1,γ_2}`** (20 monomials, incl. all 12 `log p·γ_n` cross-terms; dps=500): **no
+  ℚ-relation to height `10^{18}`**.
+- **(0,3) pure-exponential** `{γ_0,γ_1}` total degree `≤3` (10 monomials; dps=400): **no relation to `10^{20}`**.
+- **(2,1)** `{2,3}` degree `≤2` `× {γ_0}` (12 monomials, incl. `(log p)^2·γ_0`; dps=400): **no relation to `10^{18}`**.
+- **Transparency (caught bug):** a first (2,1) run reported a height-1 `[…,1,−1,…]` "relation" — a
+  **list-construction duplicate** (`γ_0` entered both standalone and as `1·γ_0`), not a real relation; the
+  deduplicated run is NULL. Recorded so the null is not over-read.
+
+So the cross block, the higher pure-exponential rung, and a mixed (2,1) rung all show **no spurious low-height
+ℚ-relation** — robust PSLQ evidence for DSS-cross cross-independence on the `log p·γ_n` monomials Professor's
+pure-DSS PSLQ did not cover. Evidence, not proof; apex open.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **§I robust extension:** PSLQ over `{2,3,5,7}×{γ_0,γ_1,γ_2}` (1,1) [20 terms, 10^18],
+  (0,3) pure-exp [10^20], (2,1) [12 terms, 10^18] — all NULL. Caught + fixed a duplicate-monomial bug in the
+  first (2,1) run (trivial `γ_0−γ_0`, not a relation). Robust cross-block certification; archived.

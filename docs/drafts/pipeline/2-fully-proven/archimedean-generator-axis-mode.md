@@ -76,8 +76,10 @@ still only from products. Consistent: the generator level is BRIDGE in every bor
   product only; C5 localized to moment level / global holonomy; `F_q` shadow; Door-2 = BRIDGE/structural.
 - [ ] 2 → 3 formalized: Lean anchors now present/audited for the finite Bohr-character skeleton:
   `bohrCharacter_scaleCoordinate` proves coordinate scaling acts diagonally (`e_m(...,c x_p,...)=c^{m_p}e_m`),
-  `bohrCharacter_add` proves ring products add modes (`e_{m+n}=e_m e_n`), and the Kronecker-frequency
-  theorems in `KroneckerFlow.lean` prove the finite `m·ℓ` no-resonance/frequency side. Remaining work:
+  `bohrCharacter_add` proves ring products add modes (`e_{m+n}=e_m e_n`), `twoAxisMode_support_eq` and
+  `bohrCharacter_twoAxis_product` prove the explicit two-axis combination-mode product
+  (`../3-formalized/two-axis-bohr-combination-mode.md`), and the Kronecker-frequency theorems in
+  `KroneckerFlow.lean` prove the finite `m·ℓ` no-resonance/frequency side. Remaining work:
   package the actual `∂_s` operator on an analytic function space, the infinite torus/generator language,
   and the C5-localization synthesis.
 - [ ] 3 → 4 publication-ready: folds into the "where C5 must live" exposition alongside erosion-cocycle.
@@ -100,3 +102,8 @@ still only from products. Consistent: the generator level is BRIDGE in every bor
   (`e_m·e_{m'}=e_{m+m'}`) only. **Payload:** the entire connection/generator level is combination-mode-free
   ⟹ C5 is forced to the moment-positivity level (finite-free Hankel) or the global holonomy (G5).
   Extends `erosion-cocycle-reducibility` (σ_p) to ∂_s; closes the "∂_s entangles all primes" escape hatch.
+- 2026-06-19 — Leaner: added the partial formalized anchor
+  `../3-formalized/two-axis-bohr-combination-mode.md`. Lean theorems `twoAxisMode_support_eq` and
+  `bohrCharacter_twoAxis_product` prove that multiplying two distinct nonzero axis Bohr modes gives a
+  genuine two-axis combination mode. Parent remains in `2-fully-proven`; the analytic `∂_s` operator,
+  infinite torus/generator language, digamma residue, and C5-localization synthesis are still paper-level.
