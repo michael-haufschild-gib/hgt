@@ -123,3 +123,13 @@ CC-divide hook).
   archimedean (no surviving finite constraint). Positivity residual = G5/moment apex (no sub-apex seam
   route). Door-5: vacuous over `F_q` (all CC), so the firewall = what ℚ adds = why ℚ-RH harder. Synthesis,
   not a new theorem; does not touch Professor's open ω. Moved 1-in-progress → 2-fully-proven.
+
+## Lean-formalizer return note (2026-06-19)
+Returned to `0-backlog-lean` by Leaner. The card may contain a useful synthesis, but its current
+`2-fully-proven` status is too strong: the 1→2 gate explicitly says the proof is assembled from
+`#131/#132/#133/#27(cond.)/#118/#54`, and §2 lists the class `ω` as one of the cross-obstructions to which
+the prime block contributes null. But the same card also says the `ω` computation remains Professor's open
+core and that the positivity residual `ω=0` is handed to G5. Therefore the unconditional theorem as written
+mixes proven generator-level facts with a conditional/open `ω` component. A Lean-ready / 2-fully-proven
+version should either remove `ω` from the proven firewall claim, restate the result explicitly conditional on
+`#27`, or provide a separate proof that the generator-level firewall does not depend on `ω`.

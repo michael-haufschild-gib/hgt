@@ -111,9 +111,13 @@ orbit-balancing of the archimedean lane.
 - [x] 1 → 2  fully-proven: the **complete** CC-invariant (per-σ-orbit degree-0 balance) proved (both
   directions, decidable); degree-∞ recovered as its shadow; `Λ`'s unique Source-A place localized to orbit
   `ℤ`; `q`-orbit analog; weld localized as `{one non-CC}×{CC}`. **Grade BRIDGE.**
-- [ ] 2 → 3  formalized: Lean — the orbit-degree of a rational divisor; the telescoping/augmentation surjection
-  `im(Δ)=ker(deg)` on `ℤ^{(O)}`; the equivalence; reuse `logPrime_no_rat_relation` (Source B floor) and the
-  companion card's gauge identity. The Hölder/ADH import stays a marked gap.
+- [ ] 2 → 3  formalized: Lean anchor **DONE** for the finite augmentation-kernel core:
+  `orbitDegree_single_sub_single` proves balanced point-masses have orbit degree zero, and
+  `eq_sum_single_sub_base_of_orbitDegree_zero` proves that any integer-valued finitely supported orbit
+  divisor of degree zero decomposes as a finite sum of balanced point-masses against a base point.
+  Remaining Lean targets: rational-function divisor/orbit infrastructure; consecutive shift-telescoping
+  `im(Δ)=ker(deg)` on `ℤ^{(O)}`; the CC equivalence for `ℂ(z)^×`; the `q`-orbit analog; and the marked
+  Hölder/ADH hypertranscendence import.
 - [ ] 3 → 4  publication-ready: "the σ-orbit-balance invariant: a decidable classifier of the two sources of
   hypertranscendence and the location of the keystone weld."
 
@@ -136,3 +140,12 @@ orbit-balancing of the archimedean lane.
   every prime lane orbit-balanced (`q`-orbit analog). Weld localized as `{the one non-CC place}×{the CC
   places}`; seam/corank-`∞−1`/missing-Frobenius = the archimedean orbit-imbalance, vanishing over `F_q`
   (all-balanced). No runpod (exact divisor algebra). Library ticket filed.
+- 2026-06-19 (Leaner) — added Lean anchors `orbitDegree_single_sub_single` and
+  `eq_sum_single_sub_base_of_orbitDegree_zero` in `formal/GaloisForLFunctions/OrbitBalance.lean`. These
+  formalize the finite augmentation-kernel core of the σ-orbit-balance proof: balanced point-masses have
+  orbit degree zero, and every integer-valued finitely supported orbit divisor of degree zero decomposes as a
+  finite sum of balanced point-masses against any chosen base point. Added the module to the root import and
+  axiom audit; `cd formal && lake env lean GaloisForLFunctions/OrbitBalance.lean`, `cd formal && lake build`,
+  and `bash scripts/check_axioms.sh` pass with 254 audited theorem outputs and no `sorry`. Card remains in
+  `2-fully-proven`; the rational-function divisor/orbit layer, consecutive shift-telescoping, full CC
+  equivalence, `q`-orbit analog, and Hölder/ADH import are not fully Lean-formalized.
