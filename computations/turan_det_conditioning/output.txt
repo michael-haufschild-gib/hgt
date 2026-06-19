@@ -1,0 +1,10 @@
+# pod 157.157.221.29:39437, python3.13 (mpmath 1.4.1, numpy 2.4.6), 2026-06-19
+# Conditioning of V=(n^{-i gamma_j})_{j,n=1..L}: zeta zeros vs equispaced vs random controls.
+  L |   zeta smin   zeta cond |   equi smin   equi cond |   rand smin   rand cond
+  5 |   2.321e-01   1.390e+01 |   2.322e-01   1.370e+01 |   4.651e-01   7.213e+00
+ 10 |   2.302e-02   2.170e+02 |   4.700e-02   1.056e+02 |   3.057e-02   1.724e+02
+ 20 |   6.492e-05   1.128e+05 |   2.085e-04   3.437e+04 |   2.021e-04   3.861e+04
+ 30 |   9.174e-08   9.932e+07 |   6.510e-08   1.376e+08 |   7.920e-15   1.687e+15
+ 40 |   9.348e-11   1.168e+11 |   4.516e-11   2.459e+11 |   5.711e-14   2.693e+14
+# FINDING: zeta zeros condition like EQUISPACED (regular), 4 orders better than RANDOM (which clumps).
+# The det criterion sees the zeros' level-repulsion. Conditioning degrades as bandwidth log L << L points.

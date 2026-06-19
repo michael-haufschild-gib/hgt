@@ -1,0 +1,12 @@
+=== RH-true: poles {±γ_n} all real ===
+  (n+,n-) = (12, 0)  κ₋ expect 0
+
+=== k off-line zeros, FE-correct QUADRUPLE {γ±iδ, -γ±iδ} per zero; predict κ₋ = 2k ===
+  k=1 off-line: (n+,n-) = (11,2)  -> κ₋ = 2  (expect 2k = 2)
+  k=2 off-line: (n+,n-) = (11,3)  -> κ₋ = 3  (expect 2k = 4)
+  k=3 off-line: (n+,n-) = (10,4)  -> κ₋ = 4  (expect 2k = 6)
+=== k off-line zeros, FE quadruple; nodes placed NEAR pole heights ±γ_i + small i·η ===
+  k=1: #nodes=12 (n+,n-)=(10,2) κ₋=2 expect 2k=2; smallest eigs=[-6.4072e+00 -6.0120e+00  0.0000e+00  1.0000e-04  4.1000e-03  5.3200e-02]
+  k=2: #nodes=16 (n+,n-)=(12,4) κ₋=4 expect 2k=4; smallest eigs=[-7.0909 -6.7219 -5.52   -5.258   0.      0.    ]
+  k=3: #nodes=20 (n+,n-)=(13,6) κ₋=6 expect 2k=6; smallest eigs=[-7.8179 -7.4936 -6.1956 -5.8843 -4.6989 -4.5176]
+  k=4: #nodes=24 (n+,n-)=(15,8) κ₋=8 expect 2k=8; smallest eigs=[-8.1398 -7.8348 -6.5874 -6.3072 -5.6245 -5.4077]

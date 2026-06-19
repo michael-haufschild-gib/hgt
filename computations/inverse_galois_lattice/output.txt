@@ -1,0 +1,19 @@
+=== Inverse Galois for the rank-1 pro-torus (foundations §43.2) ===
+dps = 300
+
+(A) arithmetic base θ_p = log p,  k = 12 primes  (height bound H = 10^4)
+    PSLQ integer relation among {log p}  : None  (None ⟹ no relation height ≤ H)
+    ⟹ Galois torus dim = k − rank(Λ) = 12 − 0 = 12  (FULL pro-torus, E4)
+
+(B) designed base, n = 6, planted relation 2θ1+3θ2−θ3 = 0
+    PSLQ recovered relation               : [-2, -3, 1, 0, 0, 0]  (expect ±[2,3,-1,0,0,0])
+    PSLQ on complement {θ1,θ2,θ4,θ5,θ6}   : None  (None ⟹ rank(Λ)=1 exactly)
+    ⟹ rank(Λ) = 1 ⟹ dim H_Λ = n − rank = 6 − 1 = 5  (inverse-Galois dim formula)
+
+(C) designed rank-2 base, n = 6, planted {θ1−θ2−θ3=0, θ4−2θ5=0}
+    PSLQ relation #1                      : [1, -1, -1, 0, 0, 0]
+    PSLQ relation #2 (after deflating θ1) : [0, 0, 1, -2, 0]
+    PSLQ on free part {θ2,θ3,θ5,θ6}       : None  (None ⟹ rank(Λ)=2 exactly)
+    ⟹ dim H_Λ = 6 − 2 = 4
+
+=== verdict: inverse-Galois lattice duality certified on designed + arithmetic bases ===

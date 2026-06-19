@@ -1,0 +1,29 @@
+=== on the critical line: xi REAL (balanced handshake / standing wave) ===
+    reporting |Im xi| (the standing-wave residual, should be ~1e-30):
+  t=   1:  xi = (0.48575743 + 5.7829687e-32j)   |Im xi| = 5.783e-32
+  t=   5:  xi = (0.27555 + 2.4331678e-32j)   |Im xi| = 2.433e-32
+  t=  10:  xi = (0.03796785 + 5.5699848e-33j)   |Im xi| = 5.57e-33
+  t=  20:  xi = (-3.6655428e-5 - 2.0646211e-35j)   |Im xi| = 2.065e-35
+  t=  30:  xi = (-1.5016622e-8 - 1.2689357e-38j)   |Im xi| = 1.269e-38
+  t=  50:  xi = (3.1621951e-15 + 4.2270768e-45j)   |Im xi| = 4.227e-45
+
+=== off the line: xi genuinely COMPLEX (traveling wave / unbalanced handshake) at t=10 ===
+  sigma=0.5:  xi = (0.03796785 + 5.5699848e-33j)   |Im xi|/|xi| = 1.46703e-31
+  sigma=0.6:  xi = (0.037921639 + 0.0022447398j)   |Im xi|/|xi| = 0.0590907
+  sigma=0.7:  xi = (0.037782978 + 0.0044876138j)   |Im xi|/|xi| = 0.117944
+  sigma=0.8:  xi = (0.037551781 + 0.0067267504j)   |Im xi|/|xi| = 0.176326
+  sigma=0.9:  xi = (0.037227904 + 0.0089602668j)   |Im xi|/|xi| = 0.234004
+
+=== the standing->traveling transition vs distance |sigma-1/2| (t=10) ===
+  |sigma-1/2| =    0.0:  |Im xi|/|xi| = 1.46703e-31
+  |sigma-1/2| =   0.05:  |Im xi|/|xi| = 0.0295602
+  |sigma-1/2| =    0.1:  |Im xi|/|xi| = 0.0590907
+  |sigma-1/2| =   0.15:  |Im xi|/|xi| = 0.088562
+  |sigma-1/2| =    0.2:  |Im xi|/|xi| = 0.117944
+  |sigma-1/2| =   0.25:  |Im xi|/|xi| = 0.147209
+  |sigma-1/2| =    0.3:  |Im xi|/|xi| = 0.176326
+
+VERDICT: xi is real on the line (|Im xi| ~ 1e-30 = standing wave = balanced past-future
+         handshake); off the line |Im xi|/|xi| grows monotonically with distance (traveling
+         wave = unbalanced handshake). The critical line is the absorber/standing-wave locus;
+         RH = every zero is a node of the balanced handshake (= no incomplete transactions). OPEN.

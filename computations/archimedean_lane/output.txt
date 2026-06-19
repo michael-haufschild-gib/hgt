@@ -1,0 +1,23 @@
+=== The archimedean lane: rescaling rule, the weld, the diagonal ===
+
+(1) infinity-lane difference rule  Gamma_R(s+2) = (s/2pi) Gamma_R(s):
+   s=    (1.3 + 0.7j):  |LHS-RHS| = 1.6e-42
+   s=  (0.5 + 14.13j):  |LHS-RHS| = 1.75e-46
+   s=   (-0.4 + 3.1j):  |LHS-RHS| = 1.6e-42
+
+(2) the weld (functional equation)  xi(s) = xi(1-s):
+   s=      (2.0 + 0.0j):  |xi(s)-xi(1-s)| = 1.15e-41
+   s=  (0.5 + 14.1347j):  |xi(s)-xi(1-s)| = 6.17e-50
+   s=      (0.3 + 5.0j):  |xi(s)-xi(1-s)| = 5.96e-42
+   s=     (-1.2 + 2.4j):  |xi(s)-xi(1-s)| = 2.87e-42
+
+(3) shift s->s+1 = simultaneous prime rescalings  p^{-(s+1)} = (1/p) p^{-s}:
+   p=2:  |p^-(s+1) - (1/p)p^-s| = 0.0
+   p=3:  |p^-(s+1) - (1/p)p^-s| = 0.0
+   p=5:  |p^-(s+1) - (1/p)p^-s| = 1.6e-42
+   p=7:  |p^-(s+1) - (1/p)p^-s| = 7.17e-43
+
+(4) first zero on the shore: xi(rho)=0 and |w_rho|=1 (w=1-1/rho):
+   |xi(rho)| = 6.32e-22   |w_rho| = 1.0
+
+# infinity-lane rule, weld, and shift=diagonal all hold to ~1e-38; the genuine zero sits on the unit circle.

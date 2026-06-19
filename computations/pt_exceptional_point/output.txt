@@ -1,0 +1,28 @@
+=== PT phases of H(a,b=1): real spectrum -> exceptional point -> conjugate pair ===
+     a    a/b |   eigenvalues lambda = +/- sqrt(b^2-a^2) |          gap | phase / zeta meaning
+   0.0    0.0 |        (1.0 + 0.0j) ,     (-1.0 + 0.0j) |          2.0 | PT UNBROKEN (real) = zeros ON line
+   0.5    0.5 |  (0.8660254 + 0.0j) , (-0.8660254 + 0.0j) |      1.73205 | PT UNBROKEN (real) = zeros ON line
+   0.9    0.9 | (0.43588989 + 0.0j) , (-0.43588989 + 0.0j) |      0.87178 | PT UNBROKEN (real) = zeros ON line
+  0.99   0.99 | (0.14106736 + 0.0j) , (-0.14106736 + 0.0j) |     0.282135 | PT UNBROKEN (real) = zeros ON line
+ 0.999  0.999 | (0.044710178 + 0.0j) , (-0.044710178 + 0.0j) |    0.0894204 | PT UNBROKEN (real) = zeros ON line
+   1.0    1.0 |        (0.0 + 0.0j) ,      (0.0 + 0.0j) |          0.0 | EXCEPTIONAL POINT = the NO-MARGIN
+ 1.001  1.001 | (0.0 + 0.044732538j) , (0.0 - 0.044732538j) |    0.0894651 | PT BROKEN (conj pair) = OFF line
+   1.1    1.1 | (0.0 + 0.45825757j) , (0.0 - 0.45825757j) |     0.916515 | PT BROKEN (conj pair) = OFF line
+   1.5    1.5 |   (0.0 + 1.118034j) , (0.0 - 1.118034j) |      2.23607 | PT BROKEN (conj pair) = OFF line
+
+=== eigenvector coalescence -> 1 at the exceptional point (overlap = a/b, exact) ===
+  a/b=    0.0:  |<v+|v->|/(|v+||v-|) = 0.0   (predicted a/b = 0.0)
+  a/b=    0.5:  |<v+|v->|/(|v+||v-|) = 0.5   (predicted a/b = 0.5)
+  a/b=    0.9:  |<v+|v->|/(|v+||v-|) = 0.9   (predicted a/b = 0.9)
+  a/b=   0.99:  |<v+|v->|/(|v+||v-|) = 0.99   (predicted a/b = 0.99)
+  a/b=  0.999:  |<v+|v->|/(|v+||v-|) = 0.999   (predicted a/b = 0.999)
+  a/b= 0.9999:  |<v+|v->|/(|v+||v-|) = 0.9999   (predicted a/b = 0.9999)
+
+=== the exceptional point a=b: defective / non-diagonalizable (single eigenvector) ===
+  a=b=1: eigenvalues = (0.0 + 0.0j), (0.0 + 0.0j) (degenerate at 0)
+         eigenvector overlap -> 1: matrix is DEFECTIVE (Jordan block) = the no-margin singularity
+
+VERDICT: the on-line / no-margin / off-line trichotomy of the zeros is, structurally, the
+         PT-unbroken / exceptional-point / PT-broken trichotomy of a PT-symmetric operator.
+         The NO-MARGIN (lambda_min -> 0, eigenvalues + eigenvectors coalescing) is an
+         EXCEPTIONAL POINT. RH = the operator stays PT-unbroken, pinned at the threshold. OPEN.

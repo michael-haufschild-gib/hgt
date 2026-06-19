@@ -1,0 +1,8 @@
+# pod 157.157.221.29:39437, python3.13, mpmath 2026-06-19
+# PSLQ-discovered + directly verified (dps=80) closed forms for the prime-period constants
+# a_j = [s^j](zeta'/zeta)(0):
+a_0 = log(2*pi)                                            (residual 0)
+a_1 = zeta(2)/2 - gamma_E^2 - 2*gamma_1                    (residual 2.1e-81)
+a_2 = zeta(3) - gamma_E^3 - 3*gamma_E*gamma_1 - (3/2)*gamma_2   (residual 0)
+# gamma_n = Stieltjes constants. CONCLUSION: the field's "prime-period block" {a_j} is the
+# STIELTJES-CONSTANTS block; secular moments P_k are explicit polys in {zeta-values, gamma_E, Stieltjes gamma_n}.

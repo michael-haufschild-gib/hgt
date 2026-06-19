@@ -1,0 +1,28 @@
+=== Root number factorization over places (Dirichlet L), grounding §64.3 ===
+
+-- q = 5 --
+  m= 1 parity a=1 : |eps|=1.000000  eps=0.8507+0.5257i  eps_inf*eps_fin=0.8507+0.5257i  match=YES
+  m= 2 parity a=0 : |eps|=1.000000  eps=1.0000-0.0000i  eps_inf*eps_fin=1.0000-0.0000i  match=YES
+  m= 3 parity a=1 : |eps|=1.000000  eps=0.8507-0.5257i  eps_inf*eps_fin=0.8507-0.5257i  match=YES
+
+-- q = 7 --
+  m= 1 parity a=1 : |eps|=1.000000  eps=0.3865+0.9223i  eps_inf*eps_fin=0.3865+0.9223i  match=YES
+  m= 2 parity a=0 : |eps|=1.000000  eps=0.8960-0.4441i  eps_inf*eps_fin=0.8960-0.4441i  match=YES
+  m= 3 parity a=1 : |eps|=1.000000  eps=1.0000-0.0000i  eps_inf*eps_fin=1.0000-0.0000i  match=YES
+  m= 4 parity a=0 : |eps|=1.000000  eps=0.8960+0.4441i  eps_inf*eps_fin=0.8960+0.4441i  match=YES
+  m= 5 parity a=1 : |eps|=1.000000  eps=0.3865-0.9223i  eps_inf*eps_fin=0.3865-0.9223i  match=YES
+
+-- q = 13 --
+  m= 1 parity a=1 : |eps|=1.000000  eps=0.5222+0.8528i  eps_inf*eps_fin=0.5222+0.8528i  match=YES
+  m= 2 parity a=0 : |eps|=1.000000  eps=0.8595+0.5111i  eps_inf*eps_fin=0.8595+0.5111i  match=YES
+  m= 3 parity a=1 : |eps|=1.000000  eps=0.2898+0.9571i  eps_inf*eps_fin=0.2898+0.9571i  match=YES
+  m= 4 parity a=0 : |eps|=1.000000  eps=0.2526+0.9676i  eps_inf*eps_fin=0.2526+0.9676i  match=YES
+  m= 5 parity a=1 : |eps|=1.000000  eps=-0.0386-0.9993i  eps_inf*eps_fin=-0.0386-0.9993i  match=YES
+  m= 6 parity a=0 : |eps|=1.000000  eps=1.0000-0.0000i  eps_inf*eps_fin=1.0000-0.0000i  match=YES
+  m= 7 parity a=1 : |eps|=1.000000  eps=-0.0386+0.9993i  eps_inf*eps_fin=-0.0386+0.9993i  match=YES
+  m= 8 parity a=0 : |eps|=1.000000  eps=0.2526-0.9676i  eps_inf*eps_fin=0.2526-0.9676i  match=YES
+  m= 9 parity a=1 : |eps|=1.000000  eps=0.2898-0.9571i  eps_inf*eps_fin=0.2898-0.9571i  match=YES
+  m=10 parity a=0 : |eps|=1.000000  eps=0.8595-0.5111i  eps_inf*eps_fin=0.8595-0.5111i  match=YES
+  m=11 parity a=1 : |eps|=1.000000  eps=0.5222-0.8528i  eps_inf*eps_fin=0.5222-0.8528i  match=YES
+
+=== verdict: |eps|=1 and eps factors as eps_infty(Gamma-place) * eps_finite(Gauss) ===

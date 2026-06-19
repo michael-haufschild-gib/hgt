@@ -1,0 +1,29 @@
+=== (A) the pairing IS the Weil explicit formula (place-split = spectral sum) ===
+zeros summed: 6   prime-powers summed up to: 47
+LHS  spectral   Sum_rho h(gamma_rho) : 0.00009175670097147148537045
+RHS  places     timelike - spacelike : (0.00009175670097147148537045 + 0.0j)
+|LHS - RHS| : 1.124e-31  (-> 0 certifies the construction = Weil form)
+
+=== (B) Lorentzian signature: archimedean timelike vs prime spacelike ===
+  pole                       : (2.02515690308126875 + 0.0j)
+  archimedean integral term  : -0.465084550095332046
+  -g(0) log pi               : -1.44415260195752349
+  TIMELIKE block (arch+pole) : (0.115919751028413215 + 0.0j)  (>0: scale-clock direction)
+  SPACELIKE block (primes)   : 0.115827994327441744  (indefinite matter directions)
+  Q_W(h)=timelike-spacelike  : (0.0000917567009714714854 + 0.0j)  (>0 => clock timelike for this h)
+
+=== (C) off-line modes are tachyonic (negative Klein-Gordon norm) ===
+first-zero height gamma = 14.1347251417
+on-line (delta=0): 4 e^{-a gamma^2} = 0.000183512388498  (> 0, positive frequency)
+  delta= 0.2: contrib = 0.000176581097296  amp e^(a d^2)=1.002002  [positive]
+  delta= 0.5: contrib = 0.00014131389422  amp e^(a d^2)=1.012578  [positive]
+  delta= 1.0: contrib = 3.02260622773e-5  amp e^(a d^2)=1.051271  [positive]
+  delta= 1.1: contrib =  3.1146197676e-6  amp e^(a d^2)=1.062368  [positive]
+  delta= 1.2: contrib = -2.4659957151e-5  amp e^(a d^2)=1.074655  [NEGATIVE (tachyonic)]
+  delta= 1.5: contrib = -0.000107238056617  amp e^(a d^2)=1.119072  [NEGATIVE (tachyonic)]
+first off-line delta with NEGATIVE KG-norm: 1.112   (predicted pi/(4 a gamma) = 1.1113031 )
+
+VERDICT: the DeWitt pairing is constructed (= Weil form, certified in A),
+         its signature is Lorentzian with the scale-clock timelike (B),
+         and off-line modes carry negative KG-norm (C). RH = the true spectrum
+         is entirely positive-frequency = the clock is timelike everywhere (OPEN).

@@ -1,0 +1,51 @@
+# Archived output of secular_heat_dbn.py
+# Run 2026-06-19 on pod 157.157.221.30:27383, python3.13 + mpmath 1.4.1, dps=60.
+# Verbatim stdout:
+
+=== true secular coefficients (M=16, dps=60) ===
+  c_0=xi(1/2)=0.497120778188  c_1/c_0=0.023104993115419  secondzeta(2)=0.023104993115419
+  heat-series convergence at (t=0.1,n=3): |K=6 - K=4| = 5.13e-16 (small => converged)
+
+=== (A) genuine detectors at t=0 (RH-consistent; margins shrink in n = no-margin) ===
+  n= 1: Turan margin=1.1497   J3 disc >=0
+  n= 2: Turan margin=0.59412   J3 disc >=0
+  n= 3: Turan margin=0.40574   J3 disc >=0
+  n= 4: Turan margin=0.31006   J3 disc >=0
+  n= 5: Turan margin=0.25186   J3 disc >=0
+  n= 6: Turan margin=0.21257   J3 disc >=0
+  n= 7: Turan margin=0.1842   J3 disc >=0
+  n= 8: Turan margin=0.16271   J3 disc >=0
+  n= 9: Turan margin=0.14585   J3 disc >=0
+
+=== (B) heat flow: min Turan margin and #J3-hyperbolic vs t ===
+  t=0.30  : min Turan margin=     0.14656   J3-hyperbolic 8/8
+  t=0.15  : min Turan margin=      0.1462   J3-hyperbolic 8/8
+  t=0.08  : min Turan margin=     0.14604   J3-hyperbolic 8/8
+  t=0.04  : min Turan margin=     0.14594   J3-hyperbolic 8/8
+  t=0.02  : min Turan margin=      0.1459   J3-hyperbolic 8/8
+  t=0.00  : min Turan margin=     0.14585   J3-hyperbolic 8/8
+  t=-0.02 : min Turan margin=      0.1458   J3-hyperbolic 8/8
+  t=-0.04 : min Turan margin=     0.14576   J3-hyperbolic 8/8
+  t=-0.08 : min Turan margin=     0.14566   J3-hyperbolic 8/8
+  t=-0.15 : min Turan margin=      0.1455   J3-hyperbolic 8/8
+  t=-0.30 : min Turan margin=     0.14516   J3-hyperbolic 8/8
+
+=== (C) TP-onset time t*(N): worst detector among n<=N crosses 0 (expect t*->0^- as N grows) ===
+  N=3: t* < -0.6 (detectors still positive)
+  N=4: t* < -0.6 (detectors still positive)
+  N=5: t* < -0.6 (detectors still positive)
+  N=6: t* < -0.6 (detectors still positive)
+  N=7: t* < -0.6 (detectors still positive)
+  N=8: t* < -0.6 (detectors still positive)
+  N=9: t* < -0.6 (detectors still positive)
+
+# Interpretation (honest):
+#  - Hadamard identity c_1/c_0 = secondzeta(2) reconfirmed to 14 digits; heat series converges (5e-16).
+#  - genuine detectors all >=0 with Turan margins DECREASING in n (1.15 -> 0.146) -- the no-margin trend.
+#  - heat flow is MONOTONE in t: forward (t>0) strengthens TP (0.14585 -> 0.14656),
+#    backward (t<0) weakens it (-> 0.14516) -- the de Bruijn-Newman direction is confirmed.
+#  - BUT the low-order detectors (n<=9) are deep-interior (margin >= 0.146); the boundary Lambda is
+#    NOT reached at any accessible order -- t*(N) stays < -0.6. Lambda is an ASYMPTOTIC (n->inf)
+#    object, invisible to finite-order secular data. This is the precise sense in which the RH-residue
+#    is "uniformity over ALL orders": no finite secular computation can locate Lambda (cf. Polymath15,
+#    which used zeros at large height, not low-n Taylor coefficients).

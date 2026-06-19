@@ -1,0 +1,16 @@
+ dps=40.  Verify  p_m(Sym^k) = U_k(p_m(pi)/2)  for random-ish theta, several k,m:
+     theta  k  m             direct (Re/Im)           U_k(p_m/2)   match?
+      0.40  2  1              2.39341341869        2.39341341869 4.59e-41
+      0.40  3  1              2.56683749696        2.56683749696 9.26e-41
+      1.10  2  1            -0.177002234511      -0.177002234511  2.3e-41
+      1.10  3  1             -1.06776729697       -1.06776729697 2.37e-41
+      2.30  2  1              0.77569494613        0.77569494613 6.89e-41
+      2.30  3  1             0.298898157691       0.298898157691  2.3e-41
+
+   max error over theta in {.4,1.1,2.3}, k in 2..5, m in 1..3:  4.477e-40
+
+   explicit checks (p=p_m as symbol, here p=2cos(theta), theta=0.73 => p=1.4903488):
+     Sym^2: U_2(p/2) = p^2-1 ?   1.22113956 vs 1.22113956
+     Sym^3: U_3(p/2) = p^3-2p ?  0.3295750784 vs 0.3295750784
+
+ VERDICT: p_m(Sym^k pi)=U_k(p_m/2) confirmed (max err ~1e-(dps)) => M|_p = R(SU(2)), U_k=characters.

@@ -1,0 +1,18 @@
+# pod 157.157.221.29:39437, python3.13, 2026-06-19
+# DSS numerical test: PSLQ for relations among the secular moments P_k = Σ_ρ ρ^{-k} (Object-X).
+# P_k computed from the proved formula P_k = 1 - (-1)^k zeta(k)/2^k - a_{k-1}, a_j=[s^j](zeta'/zeta)(0).
+# dps=120, maxcoeff=1e12.
+P_2..P_8 = -0.046154317, -0.00011115823, 0.000073627221, 7.1509336e-7, -2.8143642e-7, -4.5741911e-9, 1.2688681e-9
+  {P_2..P_8}                     : NO relation (precision-SAFE: guard 7*12=84 < 120)  -> moments ℚ-LI
+  {P_2..P_8, 1}                  : NO relation (precision-SAFE: guard 8*12=96 < 120)  -> moments+1 ℚ-LI
+  {P_2..P_8,1,pi^2,zeta3,gammaE} : "relation" w/ ~1e9 coeffs, resid 2e-90 -> PRECISION ARTIFACT
+       (guard 11*12=132 > 120 dps; AND mathematically impossible: P_k require gammaE^2, Stieltjes γ_n,
+        higher odd-ζ — outside the basis {1,pi^2,zeta3,gammaE}). Re-verify at dps=220 pending.
+# GENUINE FINDING: numerical support for DSS — the secular moments P_2..P_8 are ℚ-linearly independent
+# (no relation up to height 1e12, precision-guarded). Integrity: the basis-incomplete "relation" is an
+# artifact, not reported as real (same lesson as the earlier dps=80 γ_1 PSLQ artifact).
+
+# CONFIRMATION (dps=220, precision-safe guard 132<220): ALL THREE tests NO relation, incl.
+# {P_2..P_8,1,pi^2,zeta3,gammaE} — the dps=120 "relation" VANISHED ⟹ confirmed precision artifact.
+# CLEAN RESULT: P_2..P_8 show no ℚ-linear relation (alone, with 1, or with {1,pi^2,zeta3,gammaE})
+# up to height 1e12 at dps=220 ⟹ solid numerical support for DSS (secular moments ℚ-LI).

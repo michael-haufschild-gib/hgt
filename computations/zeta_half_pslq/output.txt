@@ -1,0 +1,13 @@
+ dps=260
+ zeta(1/2) = -1.46035450880958681288949915252
+
+ (A) LINEAR  span{1,pi,log2pi,gamma_E,zeta(3),zeta(5),Catalan}:
+     PSLQ: NO integer relation up to height 1e14  =>  zeta(1/2) NOT a Q-linear combo of the mixed-Tate basis.
+
+ (B) ALGEBRAIC over Q(pi) (degree<=3 monomials in z=zeta(1/2), pi):
+     PSLQ: NO relation up to height 1e12  =>  zeta(1/2) NOT degree<=3 algebraic over Q(pi).
+
+ (C) sanity control  [zeta(2), pi^2, 1]:  PSLQ = [-6, 1, 0]   (expect [6,-1,0] i.e. 6*zeta(2)=pi^2)
+
+ VERDICT: (A),(B) NULL + (C) finds pi^2/6  =>  machinery sound AND zeta(1/2) shows no low-height
+          motivic relation => numeric support for a NEW non-motivic central period (Attack 3).

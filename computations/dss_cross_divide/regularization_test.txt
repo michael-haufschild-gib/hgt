@@ -1,0 +1,11 @@
+=== meta-principle test: are regularized/derivative constants free of periods? ===
+
+--- dps=150, maxcoeff=1e12 ---
+  regularized set {1,γ0,γ1,log2π,ζ'(-1)}: NO relation  (n=5, guard≈60, precision-safe)
+  sanity ζ'(0)+½log2π = 0 (known)        : RELATION [2, 1]  (n=2, guard≈24, precision-safe)
+  CROSS {1,γ0,log2π,ζ'(-1),π²,ζ3,ζ5}     : NO relation  (n=7, guard≈84, precision-safe)
+
+--- dps=300, maxcoeff=1e12 ---
+  regularized set {1,γ0,γ1,log2π,ζ'(-1)}: NO relation  (n=5, guard≈60, precision-safe)
+  sanity ζ'(0)+½log2π = 0 (known)        : RELATION [-2, -1]  (n=2, guard≈24, precision-safe)
+  CROSS {1,γ0,log2π,ζ'(-1),π²,ζ3,ζ5}     : NO relation  (n=7, guard≈84, precision-safe)

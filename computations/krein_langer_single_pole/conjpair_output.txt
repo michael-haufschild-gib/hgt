@@ -1,0 +1,27 @@
+conjugate-pair carrier  m(z)=1/(t-z)+1/(tbar-z),  t= (0.5+1j)
+=== signature over random ℂ⁺ nodes ===
+N= 2: worst-case (n+,n-,n0) = (1, 1, 0)
+N= 3: worst-case (n+,n-,n0) = (1, 1, 1)
+N= 4: worst-case (n+,n-,n0) = (1, 1, 2)
+N= 6: worst-case (n+,n-,n0) = (1, 1, 4)
+N= 8: worst-case (n+,n-,n0) = (1, 1, 6)
+N=12: worst-case (n+,n-,n0) = (1, 1, 10)
+N=16: worst-case (n+,n-,n0) = (1, 1, 14)
+
+=== rank-1 v probe (does P + v v* become PSD?), N=8 ===
+eigs: [-8.34455 -0.      -0.      -0.       0.       0.       0.      12.04593]
+min eig after +v v*: -0.0 (>=0 ⟹ one rank-1 suffices ⟹ κ₋=1)
+phase-invariant alignment |cos| of v_neg:
+  0.639717  u=1/(t-z)
+  0.639717  1/(tbar-z)
+  0.364510  Blaschke (z-t)/(z-tbar)
+  0.731402  u-ub
+  0.542558  u+ub
+  0.639717  u*bl
+  0.465751  u/bl
+  0.731402  u-ub over (z-tbar)?
+Verify explicit factorization  P = ½(e+a)(e+a)* - ½(e-a)(e-a)*,  v=(e-a)/√2
+  max |P - reconstruction|         = 2.141e-14   (≈0 ⟹ identity holds)
+  min eigenvalue of P + v v*       = -1.601e-14   (≥0 ⟹ PSD ⟹ κ₋≤1)
+  max |P + v v* - ½(e+a)(e+a)*|    = 5.594e-17
+  eigs of P+v v*: [-0.       -0.        0.        0.        0.        1.279369] (rank-1 PSD)

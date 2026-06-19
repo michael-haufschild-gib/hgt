@@ -1,0 +1,39 @@
+# Archived output of scripts/secular_hankel.py
+# Run 2026-06-19 on pod 157.157.221.30:27383, python3.13 + mpmath 1.4.1, dps=30 (block 5: dps=80).
+# Verbatim stdout:
+
+=== (0) unit test of Hermite/Jacobi on synthetic squared-zeros ===
+  3 real (PD)           : sign-changes=0  predicted #conj-pairs=0  OK
+  1 conj pair + reals   : sign-changes=1  predicted #conj-pairs=1  OK
+  2 conj pairs+reals    : sign-changes=2  predicted #conj-pairs=2  OK
+
+=== computing first N=120 nontrivial zeros (dps=30) ===
+  gamma_1=14.1347251417  gamma_N=269.970449024  scale=g1^2=199.790454832
+
+=== (1) secular constant cross-check (s_1 = sum tau^-2) ===
+  s_1 (truncated N=120 zeros)      = -0.0406113446323779
+  -2*secondzeta(2) (all zeros)     = -0.0462099862308379
+  Im(s_1) (should be ~0)           = 0.0
+
+=== (2) S0: genuine on-line spectrum ===
+  leading-minor signs: ++++++++++++++
+  sign-changes = 0  (predict 0 => PD => RH-consistent)
+  lambda_min(H0) = 3.89478e-26  (>0 => PD => RH-consistent; tiny = no-margin)
+  Hankel det D_K = 2.15979e-121  (>0; simplicity tested at saturation in block 5)
+
+=== (3) S1: zero k=1 pushed off-line by delta=0.30 ===
+  leading-minor signs: +++++---------
+  sign-changes = 1  (>=1 => indefinite => off-line DETECTED)
+  lambda_min(H1) = -0.963528  (<0 expected)
+
+=== (4) no-margin: lambda_min vs off-line displacement delta (zero k=1) ===
+  delta=0.50    sign-changes=1  lambda_min=-3.88728
+  delta=0.20    sign-changes=1  lambda_min=-0.337306
+  delta=0.05    sign-changes=1  lambda_min=-0.0121465
+  delta=0.01    sign-changes=1  lambda_min=-0.000287766
+  delta=0.001   sign-changes=1  lambda_min=-1.24781e-6
+
+=== (5) rank/simplicity (saturated Hankel, small spectrum) ===
+  6 distinct squared-zeros: saturated det D_5 = 1.7984e-20  (!=0 => SIMPLE)
+  one coincident (double) zero:  saturated det D_5 = 0  (->0 => rank drop)
+  => simplicity of zeros = nonsingularity of the secular Hankel (the transcendence byproduct).

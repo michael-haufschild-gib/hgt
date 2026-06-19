@@ -1,0 +1,23 @@
+# Archived output of firewall.py
+# Run 2026-06-19 on pod 157.157.221.30:27383, python3.13 + mpmath 1.4.1.
+# First-Theorem (EulerProduct.lean) firewall on real examples, pre-spectral. Verbatim stdout:
+
+GENUINE (multiplicative ⟹ Euler ⟹ on-line, secular-CMV-PD):
+  ζ  (a_n=1):        all 7 coprime pairs a_{mn}=a_m a_n  ⟹ MULTIPLICATIVE
+  β=L(χ_4):          all 7 pairs hold (e.g. a_15=-1=a_3 a_5)  ⟹ MULTIPLICATIVE
+  Δ  (a_n=τ(n)):     all 7 pairs hold (τ(6)=-6048=τ(2)τ(3); τ(36)=1.6728e8=τ(4)τ(9))  ⟹ MULTIPLICATIVE
+FAKE (Davenport–Heilbronn-type ½(L(χ)+L(χ̄)), χ order-4 mod 5, a_n=Re χ(n)):
+  a_1..a_10 = 1,0,0,-1,0,1,0,0,-1,0
+  a_6=1 ≠ a_2·a_3=0   (NON-MULT, firewall fires)
+  a_14=-1 ≠ a_2·a_7=0 (NON-MULT)
+  a_21=1 ≠ a_3·a_7=0  (NON-MULT)
+  ⟹ NOT multiplicative (no Euler product ⟹ FAKE)
+
+# FINDINGS:
+#  - The field's First Theorem firewall (EulerProduct.lean: isMultiplicative_iff_bohr_factorization,
+#    fake_fails_factorization) holds on REAL examples: the three genuine L's (ζ, β, Δ — the same ones
+#    whose secular CMV face is PD/on-circle) are multiplicative (Euler product); the canonical reducible
+#    fake (DH-type sum) is non-multiplicative, failing a_{mn}=a_m a_n at FINITE n (n=6,14,21).
+#  - PRE-spectral firewall (finite-n multiplicativity) and SPECTRAL firewall (secular CMV off-circle)
+#    AGREE: genuine ⟺ Euler product ⟺ on-line; fake ⟺ no Euler ⟺ reducible (sum) ⟺ off-line zeros
+#    (interference, First Theorem corollary). Two independent firewalls, one verdict — on real L's.

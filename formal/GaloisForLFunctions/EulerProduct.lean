@@ -68,6 +68,34 @@ theorem fake_fails_factorization (f : ArithmeticFunction ℂ)
   push Not at h
   exact hnm ((isMultiplicative_iff_bohr_factorization f).mpr ⟨h1, h⟩)
 
+/-- The real part of the primitive order-4 Dirichlet character modulo `5`, as used
+in the Davenport-Heilbronn-style fake-family witness: residues `1,4` have real
+parts `1,-1`, and residues `0,2,3` have real part `0`. -/
+def davenportHeilbronnFakeCoeffInt (n : ℕ) : ℤ :=
+  match n % 5 with
+  | 1 => 1
+  | 4 => -1
+  | _ => 0
+
+/-- The corresponding normalized arithmetic-function coefficient model over `ℂ`.
+This is only the finite coefficient firewall witness, not a formalization of the
+Davenport-Heilbronn function, its functional equation, or its zeros. -/
+def davenportHeilbronnFakeCoeff : ArithmeticFunction ℂ :=
+  ZeroHom.mk (fun n => (davenportHeilbronnFakeCoeffInt n : ℂ)) (by
+    norm_num [davenportHeilbronnFakeCoeffInt])
+
+/-- **Concrete fake-family firewall witness.** The mod-5 Davenport-Heilbronn-style
+coefficient model is not multiplicative: `a_6 = 1` but `a_2 a_3 = 0`. This is the
+finite, pre-spectral obstruction behind the chat computation; it examines no zeros
+and proves no RH/GRH localization statement. -/
+theorem davenportHeilbronnFakeCoeff_not_isMultiplicative :
+    ¬ davenportHeilbronnFakeCoeff.IsMultiplicative := by
+  intro hmul
+  have h23 : davenportHeilbronnFakeCoeff (2 * 3)
+      = davenportHeilbronnFakeCoeff 2 * davenportHeilbronnFakeCoeff 3 :=
+    hmul.2 (by norm_num : Nat.Coprime 2 3)
+  norm_num [davenportHeilbronnFakeCoeff, davenportHeilbronnFakeCoeffInt] at h23
+
 end
 
 end GaloisForLFunctions

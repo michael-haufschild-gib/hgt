@@ -1,0 +1,49 @@
+# Archived output of scripts/secular_tp.py
+# Run 2026-06-19 on pod 157.157.221.30:27383, python3.13 + mpmath 1.4.1, dps=60.
+# Verbatim stdout:
+
+=== (0) machinery: PF vs Stieltjes-not-PF ===
+  PF  prod(1+w/k): min Toeplitz minor order 2 = 0  (>=0 expected)
+  PF  prod(1+w/k): min Toeplitz minor order 3 = 0  (>=0 expected)
+  PF  prod(1+w/k): min Toeplitz minor order 4 = 0  (>=0 expected)
+  Stieltjes(1+4^n): Hankel leading minors = ['2.0', '9.0', '0', '0']  (>=0, PSD; rank 2 = #atoms)
+  Stieltjes(1+4^n): min Toeplitz minor order 2 = -3969.0  (<0 => NOT PF; moment+ does NOT give RH)
+
+=== (1) TRUE secular coefficients c_n = xi^(2n)(1/2)/(2n)!  (contour-Taylor) ===
+  c_0 = xi(1/2)            = 0.4971207781883141   (expect 0.4971207781883)
+  c_1/c_0                  = 0.02310499311541897
+  secondzeta(2)=sum 1/g^2  = 0.02310499311541897   (Hadamard: c_1/c_0 = sum 1/gamma^2)
+
+=== (2) free rungs (what the FE/arithmetic forces unconditionally) ===
+  TP1: all c_n > 0 ?  YES  (Polya: Phi>0)
+  TP2 Turan/log-concavity  c_n^2 - c_{n-1}c_{n+1}  and scale-free margin:
+    n= 1: log-concavity=7.056e-5 (>=0)  margin=1.15
+    n= 2: log-concavity=5.68e-9 (>=0)  margin=0.5941
+    n= 3: log-concavity=2.0e-13 (>=0)  margin=0.4057
+    n= 4: log-concavity=3.772e-18 (>=0)  margin=0.3101
+    n= 5: log-concavity=4.298e-23 (>=0)  margin=0.2519
+    n= 6: log-concavity=3.203e-28 (>=0)  margin=0.2126
+    n= 7: log-concavity=1.653e-33 (>=0)  margin=0.1842
+    n= 8: log-concavity=6.17e-39 (>=0)  margin=0.1627
+    n= 9: log-concavity=1.722e-44 (>=0)  margin=0.1459
+    n=10: log-concavity=3.693e-50 (>=0)  margin=0.1323
+    n=11: log-concavity=6.223e-56 (>=0)  margin=0.121
+  Stieltjes/Hankel of mu_(2n)=(2n)!c_n (size 7): leading minors all > 0 ? YES  (FREE moment positivity = Phi>0)
+
+=== (3) Toeplitz total positivity of the TRUE secular coefficients (genuine = RH-consistent) ===
+  min Toeplitz minor order 2 = 0  (>=0 => TP_2 holds)
+  min Toeplitz minor order 3 = 0  (>=0 => TP_3 holds)
+  min Toeplitz minor order 4 = 0  (>=0 => TP_4 holds)
+
+=== (4) perturbation: push one zero strongly off-line -> Toeplitz TP must break ===
+  genuine deg-7 product (all real-negative roots): min minor over orders 2..6 = 0 (order 2; >=0 => PF/TP)
+  off-line displacement delta (zero #1), most-negative Toeplitz minor over orders 2..6:
+    delta=12.0 : #complex roots= 2  most-neg minor=-4.9565e-18 (order 5)  TP BROKEN
+    delta=6.0  : #complex roots= 2  most-neg minor=-1.4825e-13 (order 5)  TP BROKEN
+    delta=2.0  : #complex roots= 2  most-neg minor=0 (order 2)  still >=0
+    delta=0.5  : #complex roots= 2  most-neg minor=0 (order 2)  still >=0
+    delta=0.1  : #complex roots= 2  most-neg minor=0 (order 2)  still >=0
+
+# Interpretation: off-line zeros always give complex squared-zeros (#complex=2 confirmed by polyroots);
+# TP is broken, but the first violated minor migrates to higher order and vanishing magnitude as the
+# zero approaches the line -> no fixed-order TP test certifies RH (the no-margin, made exact).

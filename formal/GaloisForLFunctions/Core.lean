@@ -4,7 +4,7 @@ import Mathlib
 # Infinite-base difference Galois for L-functions: Tier A core
 
 This file formalizes the elementary Tier A facts from
-`docs/publications/drafts/infinite-base-difference-galois-for-L-functions.md`.
+`docs/drafts/infinite-base-difference-galois-for-L-functions.md`.
 It deliberately contains no axioms or placeholders for the conjectural
 difference-Galois field, RH, LI, or the boundary/archimedean program.
 -/

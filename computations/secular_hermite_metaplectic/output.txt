@@ -1,0 +1,33 @@
+# Archived output of secular_hermite.py
+# Run 2026-06-19 on pod 157.157.221.30:27383, python3.13 + mpmath 1.4.1, dps=30.
+# ξ in the metaplectic 𝔰𝔩₂ weight basis: Hermite/oscillator coefficients β_n = ∫ Ξ_R(x) h_n(x) dx.
+# Verbatim stdout:
+
+=== Hermite/oscillator (metaplectic 𝔰𝔩₂ weight-basis) coefficients of Ξ_R (dps=30) ===
+  XiR(0)=ξ(½)=0.497120778188
+  β_{2m} = ∫ Ξ_R h_{2m} (odd vanish by evenness):
+    β_ 0 =     0.9150241443   sign +
+    β_ 2 =     0.5896067077   sign +
+    β_ 4 =     0.4650166429   sign +
+    β_ 6 =     0.3863447565   sign +
+    β_ 8 =     0.3286915009   sign +
+    β_10 =      0.283414085   sign +
+    β_12 =     0.2464509482   sign +
+    β_14 =     0.2155369936   sign +
+    β_16 =     0.1892602391   sign +
+    β_18 =     0.1666690208   sign +
+    β_20 =     0.1470840406   sign +
+
+  sign pattern (m=0..10): +++++++++++
+  |β_{2m}| ratios: 0.6444, 0.7887, 0.8308, 0.8508, 0.8623, 0.8696, 0.8746, 0.8781, 0.8806, 0.8825
+
+# FINDINGS:
+#  - ALL metaplectic-weight (Hermite) coefficients β_{2m} of Ξ_R are POSITIVE (m=0..10), with ratios
+#    smoothly rising 0.64→0.88 (→ slowly; consistent with Ξ_R ~ e^{-π|x|/4}, slower than Gaussian, so
+#    heavy oscillator tails). This grounds §20: ξ's coordinates in the metaplectic 𝔰𝔩₂ weight basis.
+#  - HONEST interpretation: h_n are Fourier eigenfunctions, so β_{2m} ∝ (−1)^m·(Hermite coeff of Φ);
+#    the all-positive pattern is most likely the FREE positivity (from Φ>0 + the FT structure), NOT
+#    the RH/Hodge–Riemann signature. Consistent with §20's split: the metaplectic basis and the
+#    coefficient-positivity are free/structural; RH is the separate Hodge–Riemann SIGNATURE of Q_W.
+#  - So this is a clean grounding of the metaplectic frame, with the free positivity manifest in the
+#    oscillator basis; it does NOT by itself carry RH (which is the signature, not the coeff sign).
