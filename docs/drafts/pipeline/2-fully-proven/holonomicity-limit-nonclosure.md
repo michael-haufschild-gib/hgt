@@ -142,7 +142,10 @@ joint-`σ_p` theorem closes C3, C6 (native), and C7 together. This sharpens "C5 
 - [ ] 2 → 3  formalized — Lean targets: Lemma 1 monotonicity `c_T ≤ c_{T'}` and
   `corank(Λ_M)=sup_T c_T` over the directed `ℤ^T`-system; the `M_ζ` witness slices
   (`finitePrimeLogAnnihilator_eq_singleton`, `linearIndependent_log_primes`, both ledgered). The new
-  fragment is the directed-sup corank identity.
+  fragment is the directed-sup corank identity. Lean anchor **DONE** for the integer-valued stabilization
+  corollary: `monotoneNat_eventually_constant_of_bddAbove` in
+  `formal/GaloisForLFunctions/HolonomicityLimit.lean` proves that a monotone bounded natural-number
+  sequence is eventually constant, matching §2's `sup c_T < ∞ ⟹ c_T` stabilizes step.
 - [ ] 3 → 4  publication-ready — standalone note: the inverse system, the two lemmas, the dichotomy, the
   non-reconstruction corollary, the Door/C7 passport.
 
@@ -165,4 +168,10 @@ joint-`σ_p` theorem closes C3, C6 (native), and C7 together. This sharpens "C5 
   three-criteria collapse `C3,C6,C7 native ⟺ C5★` (the remaining gap to branchhood is the single theorem
   C5★). Not a G3-reframe (Lemma 1 + §5 are new functor-family content) ⟹ banked to 2-fully-proven, not
   failed.
-</content>
+- 2026-06-19 (Leaner) — added Lean anchor for the §2 stabilization corollary:
+  `monotoneNat_eventually_constant_of_bddAbove` in `formal/GaloisForLFunctions/HolonomicityLimit.lean`.
+  It proves that a monotone bounded natural-number sequence is eventually constant, the integer-valued step
+  used after the directed-sup corank identity. Added the module to the root import and axiom audit; `lake build`
+  and `scripts/check_axioms.sh` pass with 248 audited theorem outputs and no `sorry`. Card remains in
+  `2-fully-proven`; the directed-sup corank identity, G3 holonomicity implication, and comparison-functor
+  non-reconstruction theorem are not fully formalized.

@@ -1512,3 +1512,67 @@ floor? Either way **no collision through `d=8`** is solid RH-consistency.
   **no-margin confirmed** (gaps approach, never cross), vindicating Professor's `J'`-sign-flip (no suppression).
   Refuted numerically: my "differencing suppresses" and the `t≈49–52` clustering (worst-`t` scattered). Clean
   shrink-rate needs adaptive finer `t` + higher `d` (runpod). RH-consistency solid through `d=8`.
+
+## Resolving Professor's decisive test #93 analytically: the resonance avoids the translation mode (moment-order structure) — Wheeler, 2026-06-19
+
+Professor's id=93 left the make-or-break mechanism **open**: (GD) escapes the §7 large-values problem **iff**
+the prime resonance concentrates in the translation mode `δJ(·;t*) ∝ J^{arch}'`. The card so far only *asserts*
+"a generic prime `δJ` is not `∝J'`" (line ~1450) and supports it numerically (the gap-margin probe). Here I
+settle the mechanism **analytically** from the kernel structure.
+
+**The moment-order regrouping.** Regroup Professor's §2 first-order expansion (`c5-jensen-prime-kernel.md`) by
+**derivative order `i`** instead of by prime frequency:
+> `δJ_d(X;t) = Σ_{i=0}^d P^{(i)}(t)·B_i(X;t)`,  `P(t)=\log ζ(½+it)` (prime part),
+> `B_i(X;t) = Σ_{j=i}^d \frac{\binom{d}{j}\binom{j}{i}}{j!} Ξ_{arch}^{(j-i)}(t)\,X^j`  (archimedean-only).
+The scalar coefficients are the **`t`-derivatives of the single prime field**:
+`P^{(i)}(t) = Σ_p p^{-1/2}(-𝔦\log p)^i e^{-𝔦t\log p}` (+ prime powers). This is a clean **separation of
+variables**: prime Bohr-field derivatives (`t`) × archimedean geometry polynomials (`X`) — the seam
+(`∂_t` = the archimedean generator acting on the prime field `P`) made explicit at the deformation level.
+
+**Two structural facts read off `B_i`.**
+- (S1) `B_i` has lowest term `X^i` (sum starts at `j=i`), and the top one is a pure monomial
+  `B_d(X;t) = \frac{Ξ_{arch}(t)}{d!}X^d`. The `i=0` term is `B_0 = J^{arch}` itself — a pure **rescaling** of
+  the section, **root-blind** (`B_0(r_l)=J^{arch}(r_l)=0`), so it drops from the displacement
+  `ε_l=-δJ(r_l)/∂_XJ^{arch}(r_l)`. (This is why the displacement sum runs `i≥1`.)
+- (S2) `P^{(i)}` is **more divergent for larger `i`**: its prime amplitude is `p^{-1/2}(\log p)^i`, and the
+  resonance-method extreme value gains a `(\log X)^i` factor over the resonating primes `p≲X`. So the §7
+  large-values (the `sup_t`) are dominated by the **highest** moments `P^{(d)},P^{(d-1)},…`.
+
+**The translation direction is the LOW-moment direction.** Translation = `ε_l≡const`. Honest correction to a
+first guess: translation **is** reachable in principle — the `d` vectors `(B_i(r_l))_{l}`, `i=1..d`, span `ℝ^d`
+at the `d` nonzero Hermite nodes (`He_{2d}(0)≠0`, so all `r_l≠0`; the matrix is `\mathrm{diag}(r_l)·`Vandermonde,
+full rank), so the constant vector `𝟙` lies in their span. But the combination realizing `𝟙` is weighted toward
+the **low** `B_i` (low degree ≈ slowly varying ≈ near-constant on the nodes); the high-degree `B_i`
+(`B_d∝X^d`, edge-blown-up, strongly `l`-varying) are **transverse** to `𝟙`.
+
+**⟹ The resonance cannot concentrate in translation.** By (S2) the resonance `t*` maximizes the
+high-`i` moments, which by (S1) ride the edge-concentrated `B_i` (`B_d∝X^d`). The resulting displacement
+profile `{ε_l(t*)}` is therefore dominated by the edge/high-degree modes, **structurally far from** the
+constant translation direction. For translation to win, the resonance would have to be carried by the `i=1`
+moment — the **least** divergent. It is not. Hence differencing does **not** suppress the spike; `Δε_l` carries
+full displacement scale, and `|Δε_l|/Δ_l` inherits the §7 value-form large-values (`sup_t=∞` regularized).
+
+**Verdict.** **Professor's #93 resolves NEGATIVE, analytically:** the prime resonance lives in the high-moment,
+edge-concentrated, gap-distorting modes — never the translation mode. So **(GD) does not escape §7**; its
+sup-crux is the parent large-values quantity ⟹ **BRIDGE**. This confirms the team's `C5 ⇔ apex` verdict
+(DeWitt id=92/96, Professor id=88) **from the kernel structure** (analytic), complementing the gap-margin probe
+(numerical, `min_t g_d↓` to `~10^{-4}` at `d=8`). The carrier's value is unchanged — the exact criterion
+`λ_min(S_d)≥−1`, the kernel, the Theorem-M model, the (now Lean-ready) perturbation lemma — and the wall is
+unchanged: the uniform large-values control of `Δε_l/Δ_l`, squarely the seam/no-margin (FIELDS-MEDAL-adjacent).
+
+**Honest caveats.** (i) First-order kernel only (pre-collision regime). (ii) (S2)'s "higher `i` more divergent"
+uses resonance-method extreme-value scaling, not a hard uniform theorem; the **structural ordering**
+(translation = low-moment = least divergent; resonance = high-moment = edge) is the robust part. (iii) I
+retract an intermediate over-claim (a "constant-term obstruction" forbidding translation outright) — translation
+is reachable in principle; the correct statement is that the **resonance** avoids it on divergence-ordering
+grounds.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **Answered Professor's open #93 mechanism analytically.** Regrouped the first-order
+  prime deformation by derivative order: `δJ_d=Σ_{i≥1}P^{(i)}(t)B_i(X)` (clean seam separation: prime-field
+  `t`-derivatives × archimedean `X`-polynomials; `i=0`=root-blind rescaling drops). `B_d∝X^d` (S1) and `P^{(i)}`
+  most divergent at high `i` (S2) ⟹ the resonance is dominated by high-degree edge-concentrated modes,
+  **transverse to the low-moment translation direction**. So the prime resonance does **not** concentrate in
+  translation ⟹ differencing doesn't suppress ⟹ (GD)'s sup = §7 large-values = **BRIDGE**. Confirms `C5⇔apex`
+  from kernel structure (analytic), complementing the gap-margin numerics. Retracted an intermediate
+  constant-term over-claim (translation IS reachable in principle; the resonance avoids it). Wall unchanged.

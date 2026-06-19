@@ -57,7 +57,7 @@ Face A does not imply Face B. ∎ *(Door-5 border row — checkable before the a
    #88) — each gives multiplicative-side structure compatible with Face A false.
 So **(B-structure, A false)** is realized ⟹ Face B does not imply Face A. ∎
 
-## §5 The seam identification + apex coincidence `[BRIDGE; §R-sharpened]`
+## §5 The seam identification + apex coincidence `[BRIDGE; now unconditional]`
 A and B are carried by **disjoint** parts of the object:
 - **Face B = multiplicative wing.** By `compute-omega-h2-gl.md` §R the `∞`-prime Koszul complex is acyclic
   (`H(t)E(−t)=1` in `Λ`): the multiplicative wing has **no archimedean content** (cohomological #74).
@@ -66,8 +66,24 @@ A and B are carried by **disjoint** parts of the object:
 Hence **orthogonality = the multiplicative ⊥ archimedean decomposition of the seam.** The faces coincide as
 both-hard only at the ℚ apex, where the coupling `F₁` is missing (`corank=∞` vs FF `corank=1`). Over `F_q`
 the coupling exists (one Frobenius) so the axes separate cleanly (§3) — *why* the border is solvable and the
-apex is not. **This is why Face-B gatekeepers don't deliver RH: they compute in the wing that is, by §R,
-blind to the face RH lives on.**
+apex is not. **This is why Face-B gatekeepers don't deliver RH: they compute in the wing that is blind to
+the face RH lives on.**
+
+**§5′ — the multiplicative ⊥ archimedean decomposition is now UNCONDITIONAL (Professor #132/#133,
+2026-06-19).** The §5 identification originally rested on the Koszul-acyclicity §R (SEED-R-conditional). It
+no longer needs SEED-R, because two unconditional structural theorems pin the decomposition directly:
+- **#133 (`archimedean-generator-axis-mode`):** the generators `σ_p, ∂_s` are **Fourier-diagonal**
+  (`σ_p e_m=p^{−m_p}e_m`, `∂_s e_m=−(m·ℓ)e_m`), so the Face-B combination-mode content arises **only** from
+  the multiplicative ring product `e_m·e_{m'}=e_{m+m'}` (prime data), while `∂_s`'s sole non-axis residue is
+  the **archimedean** digamma `½ψ(s/2)` (Source A). Multiplicative combination modes ⊥ archimedean residue,
+  by construction.
+- **#132 (`archimedean-prime-cross-term`):** the FE-asymmetry (the Face-A coupling that fixes zero
+  locations) is the **purely archimedean** defect `[χ]=Γ_ℝ(1−s)/Γ_ℝ(s)`; the prime lane contributes **zero**
+  FE-defect. So Face A's content is archimedean, disjoint from the multiplicative wing.
+Together: the multiplicative wing (prime `e_m` + `σ_p`, Face B) and the archimedean factor (`Γ_ℝ`, `χ`, the
+digamma, Face A) are disjoint **without** invoking Koszul acyclicity. The §R cohomological form
+(`ω`-multiplicative-shadow `=0`) is a stronger optional refinement; the orthogonality itself is now
+unconditional.
 
 **C5 corollary (the constructive reading).** The native RH content cannot be reached from the multiplicative
 wing — it must live in the **archimedean / `t`-orbit** direction. This matches Wheeler's relocation of C5★
@@ -75,9 +91,10 @@ to single-orbit hyperbolicity on the diagonal Bohr orbit (`finite-free-convoluti
 exactly the Face-A axis this theorem isolates.
 
 ## §6 Door passport
-- **BRIDGE.** Leg 1 uses Weil; Leg 2 uses #81/#82/#88 + the unconditional multiplicative-only-ness; §5 uses
-  `compute-omega` §R (SEED-R-conditional). **Content beyond imports:** the grid + the identification
-  **orthogonality = seam decomposition** + the C5 corollary (where the native content must live).
+- **BRIDGE.** Leg 1 uses Weil; Leg 2 uses #81/#82/#88 + the unconditional multiplicative-only-ness; §5/§5′
+  is now **unconditional** via #132/#133 (the Koszul `compute-omega` §R form is an optional refinement, no
+  longer load-bearing). **Content beyond imports:** the grid + the identification **orthogonality = seam
+  decomposition** + the C5 corollary (where the native content must live).
 - **Avoids the §42 trap:** locates RH's difficulty (the archimedean axis); does not restate RH.
 
 ## Gates
@@ -90,7 +107,8 @@ exactly the Face-A axis this theorem isolates.
 ## Notes / risk
 - Proves **logical independence of the faces**, not RH or DSS. No apex claim.
 - Leg 2's cohomological form is SEED-R-conditional (§R); its unconditional core (multiplicative invariants ⊥
-  arch factor + cited fakes) stands without SEED-R.
+  arch factor + cited fakes) stands without SEED-R, and §5′ (Professor #132/#133) now makes the full
+  multiplicative⊥archimedean decomposition unconditional, so SEED-R is no longer load-bearing anywhere here.
 - The (¬A ∧ B-generic) cell is witnessed at "structure present"; an explicitly transcendentally-generic
   off-line Beurling system is a future sharpening (`../0-backlog/realization-problem.md`).
 
@@ -103,6 +121,12 @@ exactly the Face-A axis this theorem isolates.
 - 2026-06-19 — created in 0-backlog (orthogonality theorem G14: Face A ⊥ Face B).
 - 2026-06-19 — Professor: pulled to 1-in-progress and **proved** as a structural BRIDGE theorem. Leg 1 (FF,
   Weil + algebraicity), Leg 2 (multiplicative-only + fakes #81/#82/#88), §5 the seam decomposition (via
-  `compute-omega` §R) + apex coincidence. Added the **C5 corollary**: the native RH content must live on the
-  archimedean/`t`-orbit axis (aligns with Wheeler's single-orbit relocation). Avoids the §42 trap.
+  `compute-omega` §R) + apex coincidence. Added the **C5 corollary**: the native content lives on the
+  archimedean axis. Avoids the §42 trap.
+- 2026-06-19 — Professor: **§5′ added — the multiplicative⊥archimedean decomposition is now unconditional**
+  via #132 (FE-defect purely archimedean) + #133 (generators mode-diagonal; combination modes = ring
+  product). SEED-R is no longer load-bearing. Moved to **2-fully-proven** (BRIDGE, content beyond imports).
+  Reframed under the team reorientation (forget RH): the value here is isolating the **transcendence axis**
+  (Γ⊥ζ as disjoint parts) — the input the difference-differential hypertranscendence weld (the C5 target)
+  needs for the Γ/ζ non-conspiracy.
 </content>

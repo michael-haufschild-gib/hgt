@@ -1,7 +1,7 @@
 # The general-`t` hyperbolicity perturbation lemma (value + slope) — Jensen-section positivity assembly
 
 - **ID:** c5-jensen-perturbation-lemma
-- **Stage:** 2-fully-proven
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper, supporting lemma) — Door grade **BRIDGE**
 - **Priority:** FOUNDATIONAL
 - **Source:** the single-orbit-positivity assembly of `../1-in-progress/finite-free-convolution-flow.md`
@@ -189,3 +189,88 @@ step changes. Card returned to `2-fully-proven` for fresh Lean review.
   the open inflection-free interval, so `m_i = min|C''| > 0` follows from the extreme-value theorem (no
   longer touching the `±ρ_i` zeros of `C''`). Downstream proof, the `O(1)` Hermite barrier, hand-off (§3),
   and grade (BRIDGE) all intact up to an absolute constant. Moved card 0-backlog → 2-fully-proven.
+
+## Lean-formalizer return note (2026-06-19, third review)
+Returned again to `0-backlog-lean` by Leaner. The §1″ strict-interior repair fixes the previous boundary
+issue for an already-defined interior curvature window, but the lemma is still not formally stated for all
+cases it claims:
+
+1. The setup lists critical points `x_1<...<x_{N-1}` but defines
+   `δ_i := min(x_i-x_{i-1}, x_{i+1}-x_i)`. For `i=1` and `i=N-1`, the symbols `x_0` and `x_N` are not
+   defined. The proof uses `w_i≤δ_i/4` for disjointness, so the endpoint critical points need explicit
+   one-sided gap definitions or separate hypotheses.
+2. The repaired window uses `ρ_i :=` the distance from `x_i` to the nearest root of `C''`. This is not
+   defined in the quadratic case (`N=2`), where `C''` is constant and has no root, even though the stated
+   lemma includes degree-`N` hyperbolic real polynomials generally. More generally, the Lean statement needs
+   either a finite positive `ρ_i` hypothesis, a convention such as `ρ_i=∞`, or a direct positive window
+   hypothesis.
+
+Without these endpoint/no-inflection conventions or hypotheses, the corrected `m_i>0` argument cannot be
+encoded as a total Lean theorem matching the paper statement. The prior curvature-minimum fix itself is
+mathematically sound once the window data is well-defined.
+
+## §1‴ Total well-defined window data — closes Leaner's third return (endpoints + no-inflection) — Wheeler, 2026-06-19
+
+Leaner (third review): the curvature-minimum fix is mathematically sound, but the window data `δ_i`, `ρ_i`
+were not defined for endpoint critical points (`x_0`, `x_N` don't exist) nor in the no-inflection case
+(`N=2`, `C''` constant). This section makes every quantity **total** for all `N ≥ 1`, so the lemma is a
+single Lean theorem matching the paper statement. **These definitions are authoritative and supersede the
+informal `δ_i`/`ρ_i` of §1/§1′.** Conventions: `min(+∞, a) = a`.
+
+**Critical set.** `C'` has the simple real roots `x_1 < … < x_{N-1}` (for `N=1` this set is **empty** and
+every critical-point hypothesis (b_·),(a_·) is vacuous; `F=C+D` is then linear/degree-`≤1` with `1` real
+root from the preserved leading sign — base case done).
+
+**(D1) Nearest-critical gap (fixes point 1, endpoints).** Define
+> `δ_i := min\big(\{x_{i+1}-x_i : i ≤ N-2\} ∪ \{x_i-x_{i-1} : i ≥ 2\}\big)`,
+the distance from `x_i` to the **nearest other** critical point. No `x_0`/`x_N` is referenced: the left
+endpoint `i=1` uses only `x_2-x_1`, the right endpoint `i=N-1` only `x_{N-1}-x_{N-2}`. If `x_i` is the
+**only** critical point (`N=2`), set `δ_1 := +∞` (disjointness is vacuous — one window).
+
+**(D2) Nearest-inflection distance (fixes point 2, no-inflection).** Define
+> `ρ_i := \mathrm{dist}\big(x_i, \{s : C''(s)=0\}\big)`, with `ρ_i := +∞` if `C''` has **no real root**.
+`C''` has degree `N-2`, so: for `N=2`, `C'' ≡ 2\,\mathrm{lead}(C)` is a **nonzero constant** ⟹ no root ⟹
+`ρ_1 = +∞`; for `N ≥ 3`, `C` hyperbolic ⟹ `C'` has `N-1 ≥ 2` simple real roots, so by **Rolle** `C''` has a
+real root in each `(x_i, x_{i+1})` ⟹ `{C''=0} ≠ ∅` and `ρ_i < ∞` is finite and well-defined.
+
+**(D3) Window and window-min curvature (total).** `w_i := \tfrac12\min(ρ_i, δ_i/2)`; if both are `+∞`
+(only `N=2`), set `w_i := 1` (any fixed positive radius). `m_i := \min_{|s-x_i|≤w_i}|C''(s)|`. Then
+**`m_i > 0` in every case**:
+- `N=2`: `C''` is a nonzero constant, so `m_1 = |C''| = |2\,\mathrm{lead}(C)| > 0` on any window.
+- `N ≥ 3`: `w_i ≤ \tfrac12 ρ_i < ρ_i`, so the **closed** window `[x_i-w_i, x_i+w_i]` is a **compact subset**
+  of the open inflection-free interval `(x_i-ρ_i, x_i+ρ_i)`, on which `C''` is continuous and nonvanishing;
+  the extreme-value theorem gives `m_i > 0`.
+
+**Disjointness (total).** For adjacent interior windows, `δ_i ≤ x_{i+1}-x_i` and `δ_{i+1} ≤ x_{i+1}-x_i`
+(each `δ` is a min over gaps including the `(x_i,x_{i+1})` gap), so `w_i + w_{i+1} ≤ δ_i/4 + δ_{i+1}/4 ≤
+(x_{i+1}-x_i)/2 < x_{i+1}-x_i` — the `N-1` windows `(x_i-w_i, x_i+w_i)` are pairwise disjoint. (Vacuous for
+`N ≤ 2`.)
+
+**Conclusion.** With (D1)–(D3) the localized `C¹` perturbation lemma (§1′) is a **total statement for all
+`N ≥ 1`**: `N=1` vacuous, `N=2` via constant `C''`, `N ≥ 3` via the strict-interior compact window + EVT.
+The `He_{2d}` barrier (`N=2d ≥ 4`, so always the `N ≥ 3` branch) is unaffected: `ρ_i ≍ δ_i/2`,
+`w_i ≍ δ_i/4`, `m_i ≥ c·κ_i`, barrier `β_i = m_i w_i ≍ κ_i δ_i ≍ O(1)`. Door grade **BRIDGE** unchanged.
+
+**Lean encoding (now total).** State the theorem over `Polynomial ℝ` with hypotheses: `C` hyperbolic with
+simple critical points; `δ_i`,`ρ_i` defined by (D1)/(D2) into `ℝ≥0 ∪ {∞}` (or `EReal`); `w_i`,`m_i` by (D3).
+The two base cases (`N=1` vacuous, `N=2` constant `C''`) discharge by `match`/`interval_cases`-style splits;
+the `N ≥ 3` core uses `IsCompact.exists_isMinOn` + `ContinuousOn` + the Rolle witness for `{C''=0} ≠ ∅`.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **Closed Leaner's third return (§1‴): made the window data total.** (D1) endpoint
+  gap = distance to nearest other critical point (no `x_0`/`x_N`; `δ_1=+∞` if single critical point);
+  (D2) `ρ_i = +∞` when `C''` has no real root (`N=2` constant case; `N≥3` has a Rolle inflection so
+  `ρ_i<∞`); (D3) `w_i=½min(ρ_i,δ_i/2)` (≔1 if both ∞), `m_i=min|C''|>0` in all cases (N=2 constant;
+  N≥3 compact-window EVT). Disjointness verified totally. `He_{2d}` is always the `N≥3` branch, barrier
+  `O(1)` intact, grade BRIDGE. Statement now total for all `N≥1` (N=1 vacuous, N=2 base, N≥3 core) —
+  matches the paper claim. Moving card 0-backlog-lean → 2-fully-proven for Leaner's fourth review.
+
+## Lean-formalizer return note (2026-06-19, fourth review)
+Returned again to `0-backlog-lean` by Leaner. The §1‴ repair fixes the endpoint critical-gap and no-inflection
+window-data issues, but the localized perturbation statement still is not total as written. It defines
+`ε_i := (sup_{|w-x_i|≤w_i}|D'(w)|)/m_i` and then uses `x_i'` as the root of `F'` in the open interval
+`(x_i-ε_i, x_i+ε_i)`. If the slope perturbation vanishes on the window (`sup |D'| = 0`), then `ε_i = 0`,
+so this open interval is empty even though the natural root is `x_i` itself. Thus the quantified statement
+still contains an undefined witness in a legal case. A Lean-ready statement needs either a strictly positive
+radius/witness convention, or the root should be placed in the closed interval `[x_i-ε_i, x_i+ε_i]` with the
+zero-slope case handled explicitly.

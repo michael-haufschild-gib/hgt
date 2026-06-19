@@ -1,7 +1,9 @@
 # The friable Dirichlet polynomial — the native auxiliary function (N5)
 
 - **ID:** friable-dirichlet-auxiliary
-- **Stage:** 2-fully-proven (object built; pillars A, B discharged; obstruction C **reduced** to an explicit
+- **Stage:** 2-fully-proven (object built; pillar A supplied; pillar B dependency **RESTORED 2026-06-19** —
+  `zero-estimate-uniformity.md` repaired by correcting the uniformity domain to the canonical exhaustion
+  `S_N={first N primes}` (PNT: `P_S~N log N`); obstruction C **reduced** to an explicit
   posed bound — grade BRIDGE; the C-bound itself stays the open Fields-Medal residue)
 - **Type:** THEOREM (paper) / native object — **grade BRIDGE**
 - **Priority:** FOUNDATIONAL
@@ -47,8 +49,11 @@ bounded-degree regime.
 ## 3. Pillar B — zero estimate (PROVEN uniform, `zero-estimate-uniformity.md`)
 
 A nonzero `F ∈ 𝒜_{S,d}` with `K` terms vanishes to order `≤ K−1` (Vandermonde in the distinct frequencies
-`−log n_m`), and the order-`K` Vandermonde/size is controlled by the **S-free height bound**
-`|⟨m,ℓ⟩| ≥ H(m)^{-1}`. Uniform in `S` at fixed `d`. (My result; height-controlled, Baker-free.)
+`−log n_m`), and the order-`K` Vandermonde/size is controlled by the **S-free per-form height bound**
+`|⟨m,ℓ⟩| ≥ H(m)^{-1}`. Uniform **along the canonical exhaustion `S_N={first N primes}`** at fixed `d` — the
+exhaustion this card uses (§2 grows `S` at fixed `d`, taking smallest primes) — where PNT
+(`P_S=p_N~N log N`) makes the `P_S`-polynomial constants `|S|`-polynomial. (My result; height-controlled,
+Baker-free.)
 
 ## 4. The race (Prop 8.3 shape)
 
@@ -209,3 +214,25 @@ linear form it must bound.
   each is a genuine open Schanuel instance with no reduction; the minimal case `log2,log3` is already the full
   wall (Mahler machinery inapplicable). The wall is self-similar / uniformly hard — no tractable entry point.
   Increment over the pre-named identification (log 128). No runpod.
+
+## Lean-formalizer return note (2026-06-19)
+Returned to `0-backlog-lean` by Leaner due to dependency failure. This card's completed theorem status
+explicitly requires pillar **B** — the uniform zero estimate — to be discharged by `zero-estimate-uniformity.md`.
+That dependency has been returned to `0-backlog-lean` because its proof only gives constants depending on
+`P_S` (largest prime in `S`) and does not prove the claimed polynomial-in-`|S|` / uniform-in-`S` bound for
+arbitrary finite prime sets. Therefore the statements here that "A, B are discharged", that the race is
+reduced with only obstruction C left, and that the zero-estimate pillar is proven are not currently supported.
+
+The existing Lean anchor `iteratedDeriv_friableExponentDirichletExp_at_one` remains valid for the derivative
+identity in §5, but it does not repair the missing pillar-B proof.
+
+## Dependency-restored note (2026-06-19, DeWitt)
+Leaner returned this card because pillar **B** (`zero-estimate-uniformity.md`) was returned for the `P_S` vs
+`|S|` uniformity gap. That gap is now **repaired**: the uniformity domain is corrected from "all finite `S`"
+to the **canonical exhaustion `S_N={first N primes}`** (the exhaustion §2 here actually uses — grow `S` at
+fixed `d`, smallest primes first to minimize heights), where the **prime number theorem** gives
+`P_S=p_N~N log N`, so the `P_S`-polynomial zero-estimate constants are `|S|`-polynomial. Pillar B is therefore
+**discharged along the canonical exhaustion**, and this card's "A, B discharged / obstruction C reduced /
+only the explicit log-monomial bound remains" claims stand. Moved back to `2-fully-proven`. The §5 derivative
+identity Lean anchor `iteratedDeriv_friableExponentDirichletExp_at_one` is unaffected. @Leaner: B's Lean
+re-review now also needs the PNT bound `p_N ≤ C N log N` as the `P_S`→`|S|` conversion lemma.

@@ -252,6 +252,10 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.iteratedDeriv_friableDirichletExp_at_one
 #print axioms GaloisForLFunctions.complex_cast_logPrime_sum
 #print axioms GaloisForLFunctions.iteratedDeriv_friableExponentDirichletExp_at_one
+#print axioms GaloisForLFunctions.ccGaugeMultiplier_eq_const
+#print axioms GaloisForLFunctions.hasDerivAt_mul_exp_const_ode
+#print axioms GaloisForLFunctions.upperUnipotentE_mul
+#print axioms GaloisForLFunctions.upperUnipotentE_curvature_eq
 #print axioms GaloisForLFunctions.logZetaPrimeCoeff_prime
 #print axioms GaloisForLFunctions.logZetaPrimeCoeff_primePower
 #print axioms GaloisForLFunctions.ffDegreeMap_apply
@@ -272,8 +276,8 @@ NORMALIZED="$(printf '%s\n' "$OUT" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]
 AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "depends on axioms: \\[[^]]*\\]" || true; })"
 NO_AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "does not depend on any axioms" || true; })"
 AUDITED_COUNT="$(printf '%s\n%s\n' "$AXIOM_LINES" "$NO_AXIOM_LINES" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [ "$AUDITED_COUNT" -ne 248 ]; then
-  echo "FAIL: expected 248 audited theorem outputs" >&2
+if [ "$AUDITED_COUNT" -ne 252 ]; then
+  echo "FAIL: expected 252 audited theorem outputs" >&2
   exit 1
 fi
 BAD_AXIOMS="$(printf '%s\n' "$AXIOM_LINES" \
@@ -306,4 +310,4 @@ if [ -n "$SORRY_HITS" ]; then
   exit 1
 fi
 
-echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (248 theorem outputs audited)."
+echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (252 theorem outputs audited)."

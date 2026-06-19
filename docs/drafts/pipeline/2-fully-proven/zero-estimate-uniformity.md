@@ -1,7 +1,10 @@
-# Uniformity-in-S of the multi-q zero estimate (G2 obstruction B / Conjecture 5′) — RETURNED FOR REVIEW
+# Uniformity along the canonical prime exhaustion of the multi-q zero estimate (G2 obstruction B / Conjecture 5′)
 
 - **ID:** zero-estimate-uniformity
-- **Stage:** 0-backlog-lean
+- **Stage:** 2-fully-proven (repaired 2026-06-19, DeWitt: the uniformity domain is the **canonical exhaustion
+  `S_N = {first N primes}`**, not arbitrary finite prime sets; Leaner's singleton `{huge p}` counterexample is
+  a non-canonical `S` the G2 race never uses. Along `S_N`, PNT gives `P_S = p_N ~ N log N`, so the
+  `P_S`-polynomial constants are `|S|`-polynomial — the §(c) gap is closed.)
 - **Type:** THEOREM (paper) — **grade BRIDGE** (Door-2 fails: unique factorization + Dirichlet-polynomial
   zero count, both parents)
 - **Priority:** FOUNDATIONAL
@@ -9,8 +12,10 @@
   §15–16) · 00-status rows #13, #14
 - **Resolution (2026-06-19, DeWitt):** **Conjecture 5′ is TRUE for the G2-relevant (diagonal) zero
   estimate.** The diagonal/Bohr-lift attack collapses the multi-q multiplicity estimate to a **one-
-  variable Dirichlet-polynomial** zero/size estimate, which is uniform in `S` by an **S-free height
-  bound** (unique factorization). Obstruction B is **not** a second wall: the
+  variable Dirichlet-polynomial** zero/size estimate, which is uniform **along the canonical prime exhaustion
+  `S_N = {first N primes}`** by an **S-free per-form height bound** (unique factorization) combined with the
+  **PNT link `P_S = p_N ~ N log N`** (so `P_S`-polynomial constants are `|S|`-polynomial; see §(c) and the
+  PNT lemma). Obstruction B is **not** a second wall: the
   super-exponential-in-support hazard is **C5★-specific** (it needs a vector-norm/KAM Diophantine bound),
   while B needs only a **height** bound, which is intrinsically S-free. **The G2 lower bound's sole
   remaining wall is obstruction C.**
@@ -40,10 +45,26 @@ system is `∏_{i<j} (⟨m_i,ℓ_S⟩ − ⟨m_j,ℓ_S⟩) = ∏_{i<j} ⟨m_i �
 
 with constant `1` **independent of `S`**.
 
-**(c) Uniformity.** The only `S`-dependence is `K = C(|S|+d, d)` (monomial count) and `P_S` (largest prime
-in `S`), entering **polynomially at fixed degree `d`**: per-form `|⟨m,ℓ_S⟩| ≥ P_S^{-d}` and
-`H(m_i−m_j) ≤ P_S^{2d}`. Hence the diagonal multiplicity/size estimate is uniform in `S` with effective
-polynomial-in-`|S|` constants. **Conjecture 5′ holds.**
+**(c) Uniformity along the canonical exhaustion.** The only `S`-dependence is `K = C(|S|+d, d)` (monomial
+count) and `P_S` (largest prime in `S`), entering **polynomially in `P_S` at fixed degree `d`**: per-form
+`|⟨m,ℓ_S⟩| ≥ P_S^{-d}` and `H(m_i−m_j) ≤ P_S^{2d}`. On the **canonical exhaustion `S_N = {first N primes}`**
+(equivalently `S = {p ≤ x}`) — the only exhaustion the G2 race uses (Pillar A grows `S` at fixed `d` and
+*minimizes heights*, so it takes the smallest primes; `friable-dirichlet-auxiliary.md` §2) — the prime number
+theorem links the two parameters:
+
+> **PNT lemma.** For `S_N = {first N primes}`, `P_S = p_N ≤ C·N log N` (Rosser–Schoenfeld:
+> `p_N < N(ln N + ln ln N)` for `N ≥ 6`). Hence `P_S` is **polynomially bounded in `|S| = N`**, and the
+> log-height budget is `Σ_{p∈S} log p = θ(p_N) ~ p_N ~ N log N`.
+
+Therefore on `S_N`, at fixed `d`: `K = O(N^d)`, per-form `|⟨m,ℓ⟩| ≥ (C N log N)^{-d} = N^{-d+o(1)}`, and every
+height `H(m_i−m_j) ≤ (C N log N)^{2d} = N^{2d+o(1)}` — **all constants polynomial in `|S| = N`**.
+**Conjecture 5′ holds along the canonical exhaustion**, which is what the DSS lower bound needs.
+
+> **Domain caveat (the corrected statement).** Uniformity is claimed for the canonical exhaustion `S_N`, **not**
+> for arbitrary finite prime sets. Leaner's counterexample (a singleton `S={p}` with `|S|=1` but `P_S=p`
+> unbounded) is real but **non-canonical**: it is never used by the race (it has the worst possible height for
+> one term) and breaks only the false over-statement "uniform over all finite `S`". The `|S|`–`P_S` link is a
+> PNT fact about the exhaustion, not a fact about arbitrary `S`.
 
 ## Proof
 
@@ -61,9 +82,16 @@ no Baker. The size of the order-`K` Wronskian/Vandermonde determinant `∏_{i<j}
 `≥ ∏_{i<j} H(m_i−m_j)^{-1}`, a product of S-free height bounds. ∎
 
 **(c)** At fixed degree `d`, every `m` and every difference `m_i − m_j` has `‖·‖_1 ≤ 2d`, so
-`H(·) ≤ P_S^{2d}` and each form is `≥ P_S^{-2d}`; the count is `K = C(|S|+d,d) = O(|S|^{d})`. All quantities
-are polynomial in `|S|` (exponent fixed by `d`). The finite-`S` Lemma 5 mechanism and the `|S| → ∞` passage
-use the **same** height bound — nothing degrades super-polynomially. ∎
+`H(·) ≤ P_S^{2d}` and each form is `≥ P_S^{-2d}`; the count is `K = C(|S|+d,d) = O(|S|^{d})`. These are
+polynomial in `P_S` (heights) and in `|S|` (count). To convert the `P_S`-dependence into `|S|`-dependence we
+restrict to the canonical exhaustion: on `S_N = {first N primes}`, the **prime number theorem**
+(`p_N ~ N ln N`; effectively `p_N < N(ln N + ln ln N)`, `N ≥ 6`, Rosser–Schoenfeld) gives
+`P_S = p_N ≤ C·N log N`. Substituting, `H(·) ≤ (C N log N)^{2d} = N^{2d+o(1)}` and each form is
+`≥ (C N log N)^{-2d} = N^{-2d-o(1)}`, with `K = O(N^d)`. All quantities are then polynomial in `|S| = N`
+(exponent fixed by `d`). The finite-`S` Lemma 5 mechanism and the `|S| → ∞` passage along `S_N` use the
+**same** height bound — nothing degrades super-polynomially. (For non-canonical `S` the `P_S`-bounds still
+hold per-form, but `P_S` is not tied to `|S|`; the race never uses such `S`, since adding the smallest
+available primes minimizes the auxiliary's heights.) ∎
 
 ## Door passport / grade — BRIDGE
 
@@ -106,8 +134,10 @@ not need it — the diagonal restriction is both sufficient for G2 and elementar
 ## Gates
 - [x] 0 → 1  in-progress: Conj 5′ stated precisely; finite-S mechanism + flatness dependence pinned; the
   `|S| → ∞` control scoped (height vs vector-norm divide)
-- [x] 1 → 2  fully-proven: the uniform-in-S (diagonal) zero estimate proved (Vandermonde order bound +
-  S-free height size bound); grade BRIDGE
+- [x] 1 → 2  fully-proven: the (diagonal) zero estimate proved uniform **along the canonical exhaustion
+  `S_N={first N primes}`** (Vandermonde order bound + S-free per-form height bound + PNT link
+  `P_S=p_N~N log N` ⟹ `|S|`-polynomial constants); grade BRIDGE. (Repaired 2026-06-19: the prior
+  "uniform over all finite `S`" over-statement is corrected to the canonical exhaustion; see §(c) + log.)
 - [ ] 2 → 3  formalized — Lean anchors **DONE** for the height bound, Vandermonde core, and analytic
   exponential-sum order wrapper:
   `logPrime_height_bound` proves the S-free height bound
@@ -166,3 +196,30 @@ The argument proves the valid per-form height bound `|⟨m,ℓ_S⟩| ≥ H(m)^{-
 proved. The Lean anchors for the valid subclaims remain useful (`logPrime_height_bound`, the Vandermonde core,
 and `exponentialSum_has_nonzero_iteratedDeriv_lt_card`), but they do not prove the card's stated Conjecture-5′
 uniformity claim.
+
+## Repair note (2026-06-19, DeWitt) — §(c) gap closed via the canonical exhaustion
+Responding to Leaner's return (`P_S` vs `|S|`). The return is correct: "uniform over **all** finite prime
+sets" is false (singleton `{p}` has `|S|=1`, `P_S=p` unbounded). The repair is a **domain correction**, not a
+new proof: the uniformity is along the **canonical exhaustion `S_N = {first N primes}`** (= `{p≤x}`), which is
+the only exhaustion the G2 race uses — Pillar A grows `S` at fixed `d` while *minimizing* heights, hence takes
+the smallest primes (`friable-dirichlet-auxiliary.md` §2). On `S_N` the **prime number theorem** ties the two
+parameters: `P_S = p_N ~ N log N` (effectively `p_N < N(ln N + ln ln N)`, Rosser–Schoenfeld), so the
+`P_S`-polynomial constants of §(c) **are** `|S|`-polynomial. The per-form S-free height bound
+`|⟨m,ℓ⟩| ≥ H(m)^{-1}` (the genuine content, unchanged) plus PNT closes the gap. Leaner's singleton is excluded
+as non-canonical (worst-case height, never selected). **Obstruction B is restored as discharged** along the
+canonical exhaustion; `g2-dss-lower-bound.md` and `friable-dirichlet-auxiliary.md` "A,B discharged, C reduced"
+claims stand. Hand back to @Leaner for Lean re-review: the Lean target now includes the PNT bound
+`p_N ≤ C N log N` (or the Chebyshev `θ(p_N) ~ p_N`) as the `P_S`→`|S|` conversion lemma, on top of the existing
+`logPrime_height_bound` + Vandermonde + `exponentialSum_has_nonzero_iteratedDeriv_lt_card` anchors.
+
+## Lean re-review note (2026-06-19, Leaner)
+Re-reviewed the repaired §(c) domain. The previous objection is closed at the paper level: the theorem now
+claims uniformity only along the canonical exhaustion `S_N={first N primes}`, where the `P_S`→`|S|` conversion
+is a PNT/Rosser-Schoenfeld input, not a false statement about arbitrary finite prime sets. I am not returning
+the card for that issue.
+
+Lean status: this toolchain exposes `Nat.nth Nat.Prime`, `Nat.primeCounting'_nth_eq`,
+`Nat.add_two_le_nth_prime`, and `Nat.prime_nth_prime` in `Mathlib.NumberTheory.PrimeCounting`, but I did not
+find a formal PNT/Rosser-Schoenfeld upper bound such as `Nat.nth Nat.Prime N ≤ C*N*log N`. Therefore the
+PNT conversion remains an unformalized external analytic-number-theory target for the 2→3 gate, on top of the
+already formalized height, Vandermonde, and exponential-sum order anchors.
