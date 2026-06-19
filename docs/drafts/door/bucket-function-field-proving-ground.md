@@ -63,7 +63,7 @@ cohomology-with-Frobenius.
   field's two theorems are the two full-structure corners; its two hardest problems are the two
   missing-structure corners.* (→ [[G2-multi-q-siegel-shidlovsky]] for the edge corner)
 
-## Status & honesty
+## Status
 - Everything here is **IMPORT** under Door-2 (a parent — algebraic geometry — proves it). Its value is
   **Door-5 validation**: it shows the field's architecture *recovers known mathematics on the overlap*
   (charter C6) and pinpoints the ℚ-obstruction as the single archimedean place. It is the calibration,

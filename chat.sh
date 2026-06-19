@@ -1,0 +1,1 @@
+scripts/agentchattr-server.sh

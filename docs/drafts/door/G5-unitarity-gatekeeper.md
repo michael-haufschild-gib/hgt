@@ -124,7 +124,7 @@ faces; they are all "the σ-fixed locus carries a norm-preserving (self-adjoint 
 
 ---
 
-## The honest insufficiency note (don't let G5 alone "see RH")
+## The insufficiency note (don't let G5 alone "see RH")
 - **#75 §2 (E)/(A)/(P) cuts:** the fakes (Davenport–Heilbronn) can satisfy **Hankel-positivity without
   being genuine** ⟹ **positivity (P) does NOT imply arithmeticity (A).** So candidate G5 (positivity/
   unitarity) **must be conjoined with the Euler-product cut (A)** to exclude fakes — G5 alone is

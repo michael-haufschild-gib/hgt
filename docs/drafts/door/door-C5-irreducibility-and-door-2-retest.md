@@ -2,12 +2,11 @@
 
 **Bucket grade:** organizational (SEARCH channel). Sorted from `00-charter-wall-and-door.md` +
 `docs/support-extraction-log.md`.
-**Scope (one line).** The charter's branchhood criteria (C1–C7), the five Door tests, the honest
-proto-branch verdict, and the **concrete worklist** that could move the verdict: the §59/§60 Door-2
-re-test.
-**Work package this seeds.** Run the **Door-2 re-test** on §59 (difference-Hölder) and §60 (corank
-dichotomy). If either survives ("strip the multi-q vocabulary — does a parent still prove it?"), the
-field earns its **first NATIVE / C5 theorem** and the proto-branch verdict upgrades.
+**Scope (one line).** The charter's branchhood criteria (C1–C7), the five Door tests, the proto-branch
+verdict, and the **concrete worklist** that could move the verdict: the §59/§60 Door-2 re-test.
+**Status (resolved 2026-06-19).** The **Door-2 re-test** of §59 (difference-Hölder) and §60 (corank
+dichotomy) is **done: both FAIL → BRIDGE**, so C5 stays open (see Verdict below). The next step is to
+construct a theorem that uses the `σ_p` **jointly and irreducibly** — not the single shift `s↦s+1`.
 
 ---
 
@@ -33,7 +32,7 @@ field earns its **first NATIVE / C5 theorem** and the proto-branch verdict upgra
 - **The one-line Door:** *Remove the new vocabulary. If a parent still proves it, it never came
   through the door.*
 
-### The honest verdict on the field (charter Part IV)
+### The verdict on the field (charter Part IV)
 - C1, C2, C4 **MET** (definitionally); C3 **PARTIAL** (`G_L` is, in built work, the Bohr–Kronecker
   `𝕋^∞⋊σ` relabeled); **C5 NOT MET — the gap**; C6 **PARTIAL**; **C7 NOT MET**.
 - **Verdict:** a well-posed **proto-branch** — native definitions + faithful borders, but failing the
@@ -50,14 +49,14 @@ field earns its **first NATIVE / C5 theorem** and the proto-branch verdict upgra
 ## The worklist that can move the verdict — the Door-2 re-test (#68 implication, #101 action item)
 
 The mining found that the charter's "0 proven native theorems" verdict may be **too pessimistic**: two
-difference-category theorems inside the corpus *essentially use* the infinite-base s-monodromy closure
-and are plausibly **Door-2-surviving**.
+difference-category theorems inside the corpus were the leading C5 candidates. They have now been
+re-tested; the verdict (below) is that **both are BRIDGE**.
 
-### The two strongest NATIVE candidates (re-test these first)
+### The two candidates (re-tested — verdict below)
 1. **§59 — difference-Hölder (= G1).** Holonomic diagonal ⟹ finite-dim s-difference-Galois group, but
    the arithmetic s-monodromy `g=(p^{−1})_p` has infinite-dim Zariski closure when `Λ=0` ⟹ no
-   finite-order difference equation. *Essentially uses the infinite-base apparatus; unlikely
-   Door-2-removable.* See [[G1-difference-holder]].
+   finite-order difference equation. *Verdict: BRIDGE — the proof reduces to single-operator difference
+   Galois + Kronecker–Weyl on `𝕋^∞` + unique factorization (see Verdict below).* See [[G1-difference-holder]].
 2. **§60 — corank dichotomy (= G3 = C6).** Holonomic ⟺ `corank(Λ)<∞`, via `dim⟨g⟩-closure =
    corank(Λ)`. See [[G3-holonomy-dichotomy]].
    - Supporting native-invariant candidate (#101 7b/§43.2): the pro-torus inverse problem
@@ -86,14 +85,34 @@ and are plausibly **Door-2-surviving**.
 
 ---
 
+## Verdict (2026-06-19): §59 and §60 both FAIL Door-2 → BRIDGE
+
+The re-test is done. **Neither §59 nor §60 is NATIVE; C5 is not yet earned.**
+
+- **§59 (difference-Hölder).** Stripped of multi-`q` vocabulary the proof is: single-operator difference
+  Galois on the one shift `s↦s+1` (van der Put–Singer — the source draft cites them, and §49.3 names
+  ADH as the tool) + the closure of `⟨g⟩` in `𝕋^∞` having dimension `= corank` (Kronecker–Weyl /
+  harmonic analysis on `𝕋^∞`, a *named* Door-2 parent) + `{log p}` ℚ-independent (unique factorization).
+  The native simultaneous-`σ_p` group `G_L` is never used. A parent proves it intact ⟹ **fails Door-2.**
+- **§60 (corank dichotomy).** (⟹) = §59's argument; (⟸) = §49.2 + Lipshitz 1988 (the diagonal of a
+  `D`-finite series is `D`-finite — an explicit import). Its invariant `corank(Λ)` is the dimension of a
+  torus-subgroup closure, a classical algebraic-group invariant renamed ⟹ also **fails Door-3.** BRIDGE.
+- **Their real value:** a faithful bridge (C6) and a clean reframing of Hölder (infinite-corank base,
+  uniform over all L). But a reframing a parent proves is not irreducible (the §42 trap). The two
+  difference-category theorems are genuine and useful; they are not the keystone.
+
+**What a real C5 theorem needs (forward).** Use the `σ_p` **jointly and irreducibly** — a statement
+whose proof does NOT factor through (the single shift `s↦s+1`) + (Kronecker–Weyl on `𝕋^∞`). The places
+to look are the multi-`q` connection's curvature / integrability (the joint structure of the `{σ_p}`,
+not one diagonal shift) or the joint group `G_L`'s monoidality class `ω`
+([[G4-multi-q-picard-vessiot-and-langlands-group]]) — not the diagonal's hypertranscendence.
+
 ## Open core / the work package
-1. **Door-2 re-test of §59 and §60** — the single most consequential charter action. Outcome: either
-   the field's first NATIVE/C5 theorem (verdict upgrades) or a confirmed IMPORT (verdict stands,
-   honestly). Either is a real result.
-2. **Re-test the §3 σ-parity=FE-parity weld** as a secondary candidate.
-3. **Re-grade and update** `00-manifest-wall-census.md` and `00-charter` Part IV with the verdict.
-4. **The decades (task #66):** if §59/§60 fail Door-2, the C5-earning work is to *construct* the first
-   irreducible theorem — the "only thing that turns a vocabulary into a branch."
+1. **Door-2 re-test of §59/§60 — DONE: both FAIL (BRIDGE).** C5 remains open (see the verdict above).
+2. **Re-test the §3 σ-parity = FE-parity weld** as the next candidate: does tying the cohomology grading
+   to the FE reduce to a parent, or does it genuinely need the prime-lattice apparatus?
+3. **The decades (task #66):** construct a genuinely irreducible theorem along the "forward" line above —
+   the only thing that turns the programme into a branch.
 
 ## Cross-references
 - [[G1-difference-holder]], [[G3-holonomy-dichotomy]] — the two re-test subjects.

@@ -8,3 +8,9 @@
 *.fls
 *.fdb_latexmk
 /formal/.lake
+
+agentchattr/
+logs/
+docs/prompts/
+docs/reports/
+docs/plans/

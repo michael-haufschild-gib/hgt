@@ -8,7 +8,7 @@ machine-checked floor.
 **Work package this seeds.** For each bucket, the **next Lean target** is the first Tier-A/B fragment
 above its current floor; this index makes those boundaries explicit.
 
-> **Honesty note on the count.** The audit gate is `scripts/check_axioms.sh` (it counts
+> **Note on the count.** The audit gate is `scripts/check_axioms.sh` (it counts
 > `#print axioms` lines and requires the allowed axiom subset `[propext, Classical.choice,
 > Quot.sound]`). The corpus cites **conflicting totals** (CLAUDE.md "19 theorems"; testing.md "69";
 > #99 "28 + 35 computations"; #102 "203 axiom-clean outputs"). *Do not quote a single number as fact* —

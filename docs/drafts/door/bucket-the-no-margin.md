@@ -23,7 +23,7 @@ no-margin is an obstacle (to be overcome) or the prize (faithfulness, to be embr
   unblocks all four.*
 - #70 SEED-Q the **two-rate failure signature:** `margin ~ δ`, `detection-cost ~ log(1/δ)`. Every
   `B_wall` coordinate (height / total-positivity / discrepancy / explicit-formula) shows it. *The
-  field's honest meta-finding: it FACTORS the wall (free vs the one wall), it does not break it.*
+  field's meta-finding: it FACTORS the wall (free vs the one wall), it does not break it.*
 
 ## The exact no-margin theorems (#77)
 - §4 **Thm 6 (PROVED HERE):** a Stieltjes moment sequence need NOT be Pólya-frequency (witness

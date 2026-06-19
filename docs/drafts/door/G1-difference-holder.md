@@ -48,16 +48,14 @@ the **ℚ-linear independence of `{log p}`** (fundamental theorem of arithmetic)
   object needs the **full pro-torus `𝕋^∞`** — which is exactly why one prime / one dilation cannot
   carry G1.
 
-### The Door-2 re-test worklist (#101 §59/§60 — the action item)
-- §59 (difference-Hölder) and §60 (corank dichotomy → [[G3-holonomy-dichotomy]]) are the **two
-  strongest NATIVE candidates in the whole corpus** — they *essentially use* the infinite-base
-  s-monodromy closure, plausibly **unreachable by any single parent** (Door-2-surviving).
-- Action flagged repeatedly (#68 implication, #101 action item): **re-test §59 against Door-2**
-  ("strip the multi-q vocabulary — does a parent prove it?"). If it survives, the field has its first
-  **NATIVE theorem** and the charter's "0 proven native theorems / FAILS C5" verdict (`00-charter`
-  Part IV, `00-manifest`) **upgrades.** *Caveat: most other "PROVED HERE" theorems (inverse-Galois
-  §55, λ-subring §56) lean on classical imports and likely FAIL Door-2 — the two genuine candidates
-  are §59 and §60.*
+### The Door-2 re-test — DONE (2026-06-19): BRIDGE
+- §59 and §60 were the leading C5 candidates. **Verdict: both BRIDGE, not NATIVE.** Stripped of the
+  multi-q vocabulary, §59's proof is single-operator difference Galois (the one shift `s↦s+1`, van der
+  Put–Singer; ADH the named tool) + closure-of-`⟨g⟩`-in-`𝕋^∞` `= corank` (Kronecker–Weyl) + `{log p}`
+  ℚ-independent (unique factorization). The native simultaneous-`σ_p` group `G_L` is never used, so a
+  parent proves it ⟹ **fails Door-2.** Full reasoning: [[door-C5-irreducibility-and-door-2-retest]].
+- So §59 is a genuine **BRIDGE** (it internalizes and generalizes Hölder — C6), not the C5 keystone;
+  the charter's C5 gap stands. A real C5 theorem must use the `σ_p` jointly and irreducibly.
 
 ---
 
@@ -70,12 +68,13 @@ the **ℚ-linear independence of `{log p}`** (fundamental theorem of arithmetic)
 | difference-category Hölder for ζ + all arithmetic L | **`[PROVED HERE]`** (difference category) | #68 §59 |
 | literal *differential* Hölder for ζ | **import** (Hölder 1887) | #68 §61.3 |
 | differential Hölder for general L | **open / conjectural** (ADH-reducible) | #68 §61.3 |
-| §59 earns charter NATIVE/C5 | **OPEN — the Door-2 re-test** | #101 |
+| §59 Door-2 grade (re-tested 2026-06-19) | **BRIDGE** — proof reduces to parents; not C5 | — |
 
 ## Open core / the work package
 
-1. **The Door-2 re-test of §59** (and §60, in [[G3-holonomy-dichotomy]]). Verdict decides whether the
-   field has its first irreducible (C5) theorem. See [[door-C5-irreducibility-and-door-2-retest]].
+1. **Door-2 re-test of §59 — DONE: BRIDGE** (not the C5 keystone; see
+   [[door-C5-irreducibility-and-door-2-retest]]). The next C5 attempt must use the `σ_p` jointly and
+   irreducibly, not the diagonal's hypertranscendence.
 2. **General-L differential Hölder** via the Adamczewski–Dreyfus–Hardouin reduction (the import→native
    upgrade for the differential statement).
 

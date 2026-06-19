@@ -96,7 +96,7 @@ that emergent clock preserves a norm.
 
 ---
 
-## Status & honesty
+## Status
 - **NATIVE / largely-proven:** the erosion threshold + marginal regime (#87 §11–12: Selberg/Ingham/
   Keating–Snaith are theorems; `σ=½`-as-marginal-variance is a *new non-circular meaning* for the line).
 - **EMBASSY (framing, fails Door-1):** the WDW / cosmology / PT / time-crystal readings (#94–96). They

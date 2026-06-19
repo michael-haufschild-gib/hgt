@@ -22,8 +22,10 @@ the field's two best NATIVE / C5 candidates; and integrate the **DMR-solvability
   as §59 / [[G1-difference-holder]]). **G3 is essentially DONE** in the difference category. The sharp
   invariant is `corank(Λ)`, not support cardinality. *(Caveat §61.3: difference-category.)*
 - Arithmetic `Λ=0` ⟹ corank `∞` ⟹ difference-hypertranscendental — i.e. §60 *feeds* G1.
-- #101 §60: one of the **two strongest NATIVE candidates** (with §59) — essentially uses the
-  infinite-base s-monodromy closure, plausibly Door-2-surviving.
+- #101 §60: was a leading C5 candidate. **Door-2 re-test (2026-06-19): BRIDGE** — (⟹) is §59's argument
+  (single shift + Kronecker–Weyl on `𝕋^∞` + unique factorization); (⟸) is §49.2 + Lipshitz 1988
+  (import); and `corank(Λ)` is a renamed torus-closure dimension, so it **also fails Door-3.** See
+  [[door-C5-irreducibility-and-door-2-retest]].
 - #101 §43.2 (P3 solved): closed subgroups ↔ relation sublattices, `dim = corank`, arithmetic = the
   `Λ=0` full-torus vertex. (the pro-torus inverse problem)
 
@@ -54,11 +56,12 @@ the field's two best NATIVE / C5 candidates; and integrate the **DMR-solvability
 | holonomic ⟺ `corank(Λ)<∞` (difference cat.) | **`[PROVED HERE]`** | #68 §60.2 |
 | pro-torus inverse problem `dim=corank` (P3) | **`[PROVED HERE]`** | #68 §43.2 |
 | solvability (not abelianness) = `L=0` (DMR) | **`[PROVED HERE]`** (self-correction #5) | #87 §10 |
-| §60 earns charter NATIVE/C5 | **OPEN — the Door-2 re-test** | #101 |
+| §60 Door-2 grade (re-tested 2026-06-19) | **BRIDGE** (also fails Door-3); not C5 | — |
 | the completed (primes+∞) connection / `G_L` | conjecture / Tier C | #91 §3 |
 
 ## Open core / the work package
-1. **Door-2 re-test of §60** (with §59). See [[door-C5-irreducibility-and-door-2-retest]].
+1. **Door-2 re-test of §60 — DONE: BRIDGE** (also fails Door-3). See
+   [[door-C5-irreducibility-and-door-2-retest]]. C5 remains open.
 2. **Build the single Tannakian category** holding both Galois classes (prime-lane q-difference +
    ∞-lane shift/Γ), welded by the FE — this is `G_L` itself and overlaps
    [[G4-multi-q-picard-vessiot-and-langlands-group]].
