@@ -195,6 +195,7 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.spectralPoly_coeff_zero
 #print axioms GaloisForLFunctions.selfDual_spectralPoly_coeff_real
 #print axioms GaloisForLFunctions.spectrum_esymm_algIndep
+#print axioms GaloisForLFunctions.algebraicIndependent_sumElim_intermediateField_iff
 #print axioms GaloisForLFunctions.fe_centered_odd_moment_vanish
 #print axioms GaloisForLFunctions.exteriorPower_map_smul_id
 #print axioms GaloisForLFunctions.exteriorPower_map_neg_id
@@ -297,8 +298,8 @@ NORMALIZED="$(printf '%s\n' "$OUT" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]
 AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "depends on axioms: \\[[^]]*\\]" || true; })"
 NO_AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "does not depend on any axioms" || true; })"
 AUDITED_COUNT="$(printf '%s\n%s\n' "$AXIOM_LINES" "$NO_AXIOM_LINES" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [ "$AUDITED_COUNT" -ne 273 ]; then
-  echo "FAIL: expected 273 audited theorem outputs" >&2
+if [ "$AUDITED_COUNT" -ne 274 ]; then
+  echo "FAIL: expected 274 audited theorem outputs" >&2
   exit 1
 fi
 BAD_AXIOMS="$(printf '%s\n' "$AXIOM_LINES" \
@@ -331,4 +332,4 @@ if [ -n "$SORRY_HITS" ]; then
   exit 1
 fi
 
-echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (273 theorem outputs audited)."
+echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (274 theorem outputs audited)."

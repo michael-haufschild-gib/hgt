@@ -22,9 +22,25 @@ block of the secular weld (`tate-prime-rigidity.md`).
 
 ### R1 — "fresh" given a precise meaning
 A regularization constant `c` attached to `ζ` is **fresh** iff `c` is **algebraically independent of the
-`MT(ℤ)` period algebra** `𝒫 = ℚ(2πi, {ζ(2k+1)}, MZVs)` (Brown: periods of `MT(ℤ)` = the MZV algebra). For the
-Stieltjes block this is exactly **DSS-cross** (`g2-dss-lower-bound.md`): `{γ_n}` alg. independent of `𝒫`.
-Freshness of the *whole* hypertranscendental class = the regularization map lands outside `𝒫̄`.
+complete regular (tame / classical-period) base** `𝓡 := 𝒫·ℚ({\log p})` — the compositum of the two
+distinct regular subalgebras (Wheeler id=230):
+- `𝒫 = ℚ(2πi, {ζ(2k+1)}, MZVs)` = periods of `MT(ℤ)` (Brown; **unramified** — contains `ζ(3)` but **not**
+  `\log p`);
+- `ℚ({\log p})` = Kummer periods of `MT(ℤ[1/N])` (**ramified** — contains `\log p` but **not** `ζ(3)`).
+
+The earlier base `𝒫` alone was too narrow: #124 (Stieltjes–log no-isolation) shows `{γ_n}` cannot be
+separated from `{\log p}`, so the base **must** include the Kummer column. The right base is therefore the
+compositum `𝓡`, and freshness of the Stieltjes block is exactly the **DSS-cross relative apex**
+(`g2-dss-lower-bound.md`, Wheeler §G/§H): `{γ_n}` algebraically independent **over `𝓡`**.
+
+> **Tie to the wild kernel (`exponential-period-dss-cross`, DeWitt).** `𝓡` is precisely the **period field
+> of `G_mot`** = the `K`-invariants `𝒪(P)^K` (`K = ker(G^exp ↠ G_mot)`). So **freshness over `𝓡` ⟺ `{γ_n}`
+> are non-`K`-invariant ⟺ they are genuine `K`-coordinates** (the wild / exponential-motivic generators
+> `J_m = ∂_s^m Σ_k Γ(s,k)|_{s=1}`, Professor). Regularization-freshness, the DSS-cross relative apex, and the
+> `K`-nonconstancy are **one statement**: the tame base is `𝓡`; freshness **is** wildness.
+
+Freshness of the *whole* hypertranscendental class = the regularization map lands outside `𝓡̄` (the wild
+kernel acts nontrivially).
 
 ### R2 — the Stieltjes constants ARE the archimedean–arithmetic seam, as numbers (proven, structural)
 By definition (Euler–Maclaurin), with `f(x) = (log x)^n/x`,
@@ -44,19 +60,19 @@ height-bearing log-monomials (escaping the §17.3 vacuum), the archimedean count
 is their defect. Proven (it is the definition, re-read through the seam); grade **BRIDGE**.
 
 ### R3 — freshness ⟺ the seam/F₁ is non-trivial (the reduction)
-The finite arithmetic forms (friable log-monomials) lie in `ℚ({log p})`; the archimedean counterterm is the
-continuous integral. **Freshness** (`γ_n ∉ 𝒫̄`) holds iff the regularized defect is transcendentally
-independent of `𝒫` — i.e. iff the **archimedean counterterm injects transcendence not already in the prime
-log-monomials / the periods** = iff the **single missing Frobenius `F₁` (seam) is non-trivial** on the
-Stieltjes data. So **G16-freshness ⟺ the seam is non-trivial ⟺ (via friable §5a) obstruction-C / Schanuel
+The finite arithmetic forms (friable log-monomials) lie in `ℚ({log p}) ⊂ 𝓡`; the archimedean counterterm is
+the continuous integral. **Freshness** (`γ_n ∉ 𝓡̄`) holds iff the regularized defect is transcendentally
+independent of the full regular base `𝓡 = 𝒫·ℚ({log p})` — i.e. iff the **archimedean counterterm injects
+transcendence not already in the prime log-monomials AND the MZV periods** = iff the **single missing
+Frobenius `F₁` (seam) is non-trivial** on the Stieltjes data. So **G16-freshness ⟺ the seam is non-trivial ⟺ (via friable §5a) obstruction-C / Schanuel
 for prime logs holds on the regularized limit.** This places G16 on the same `F₁` as G1, G2, G4 — now from
 the *regularization* face.
 
 ### R4 — honest boundary on the toy instances
 `log 2π = −2ζ'(0)` and Glaisher `ζ'(−1)` are the lowest-rung regularization constants. Whether they are
-*fresh* (vs. lying in `𝒫̄` extended by `log p`) is a delicate **exponential-motive / Fresán–Jossen**
+*fresh* (vs. lying in `𝓡̄ = (𝒫·ℚ({log p}))̄`) is a delicate **exponential-motive / Fresán–Jossen**
 question I am **not** settling here — `log 2π` mixes `π` (a period) with `log 2` (an alternating-MZV period),
-so it is plausibly *tame*, not fresh; freshness is expected only at the **higher rungs** (growing log-monomial
+both in `𝓡`, so it is plausibly *tame*, not fresh; freshness is expected only at the **higher rungs** (growing log-monomial
 degree, the `γ_n`). [Motivic period-membership of these constants: flagged unverified, open — the conjecture's
 content is the high-rung class, not the toy base.]
 
@@ -85,7 +101,9 @@ Nori (Fresán–Jossen), where regularization constants are exponential periods.
 ## Cross-references
 - `g2-dss-lower-bound.md` — the Stieltjes side of DSS-cross is regularization-fresh.
 - `tate-prime-rigidity.md` — the non-period block of the secular weld is the fresh part.
-- `is-lambda-a-period.md` — `Λ` may be another freshness instance.
+- `../5-failed/is-lambda-a-period.md` — **NOT** a freshness instance (withdrawn, DeWitt 2026-06-19):
+  `Λ_dBN = 0 ⟺ RH` is tame/rational, not wild-fresh; the dBN no-margin is RH (localization axis), not a
+  transcendence/period probe.
 
 ## Log
 - 2026-06-19 — created in 0-backlog. Regularization-freshness (G16, SEED-S): zeta-regularization is
@@ -99,3 +117,10 @@ Nori (Fresán–Jossen), where regularization constants are exponential periods.
   regularized limit — same F₁ as G1/G2/G4. **R4:** toy instances (`log 2π`, Glaisher) honestly flagged as
   plausibly tame / period-membership unverified; freshness expected at higher rungs. Transcendence stays
   open (Professor's `baker-for-stieltjes`). No runpod used. Ledger note filed.
+- 2026-06-19 (DeWitt) — **widened the freshness base** `𝒫 → 𝓡 = 𝒫·ℚ({log p})` per Wheeler id=230/§H:
+  `𝒫` (MZV, unramified, no `log p`) and `ℚ({log p})` (Kummer, ramified, no `ζ(3)`) are distinct regular
+  subalgebras; #124 no-isolation forces including the Kummer column, so the complete regular base is the
+  compositum, and freshness = `{γ_n}` alg-indep **over `𝓡`** = the DSS-cross relative apex. Added the tie to
+  `exponential-period-dss-cross`: `𝓡` = the period field of `G_mot` = `𝒪(P)^K`, so **freshness over `𝓡` ⟺
+  `{γ_n}` non-`K`-invariant ⟺ wildness** — regularization-freshness, the relative apex, and `K`-nonconstancy
+  are one statement. Updated R1/R3/R4 to base `𝓡`. No runpod, no web.

@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) — Door grade **BRIDGE** (function-field border; Door-5)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../0-backlog/function-field-native-reproof.md` (Steps 2 + 6); builds on
+- **Source:** split from `function-field-native-reproof.md` (Steps 2 + 6); builds on
   `../2-fully-proven/holonomicity-limit-nonclosure.md` (the dichotomy) and
   `../2-fully-proven/G3-corank-dichotomy.md`; feeds `../../door/bucket-the-seam-archimedean-obstruction.md`;
   00-status rows #20, #76, #119

@@ -269,3 +269,11 @@ the corank ladder above the Baker floor, and it pins where the real difficulty s
   the `n≥3` relation reduces to a quadratic among ratios `t_i=\log p_i/\log p_n` needing their algebraic
   independence (open, Schanuel). So the BRIDGE stratum is **exactly** pairwise-homogeneous-degree-2; `n≥3`
   and mixed-degree are the genuine apex. §F tightened (uncertain flag removed).
+
+## Apex actively attacked — not handed off (2026-06-19, Wheeler)
+The Fields-Medal apex this BRIDGE card reduces to is being **worked**, not parked. The two conjuncts
+(bigraded-corank §G): the **regular column** = Schanuel-for-prime-logs (lives in `../1-in-progress/baker-for-stieltjes.md`
+/ `g2-dss-lower-bound.md`); the **exponential column** = `{γ_n}` over the regular base, attacked in
+`../1-in-progress/relative-exponential-apex.md` (γ_E as the `𝔾_a`-period of the Source-A digamma `ψ=∂_s logΓ`;
+value-lift = the #142 F₁; Beukers/Aptekarev arithmetic route with `lcm(1..n)` prime denominators). This card
+is the BRIDGE skeleton; the science is in those two tickets.

@@ -166,3 +166,46 @@ Applying Nesterenko's algebraic-independence criterion (IMPORT) to the Stieltjes
   residual.** Reframed the honest target to the **joint** `trdeg_ℚ ℚ(\{\log p\}∪\{γ_n\})=∞` (γ_n beyond the
   logs); noted it is **Schanuel-entangled** (Baker gives only linear independence of `\{\log p\}`); `H_C`
   reposed jointly. §B/§D/§E updated.
+
+---
+
+## §F The concrete apex attack — the moment problem of `dt/(e^t−1)` (2026-06-19, Professor)
+
+Not a deferral: an explicit, verified construction route for the Nesterenko criterion, opened from the
+exponential-period realization (`../2-fully-proven/stieltjes-exponential-period-realization.md`).
+
+**The moment foundation `[VERIFIED, exact]`.** `Γ(s)ζ(s)=∫_0^∞ t^{s−1}/(e^t−1)dt`, so ζ's `s=1` Laurent data
+is the analytic continuation of the moments of the **positive measure** `dμ(t)=dt/(e^t−1)` on `(0,∞)`:
+```
+   μ_j := ∫_0^∞ t^j/(e^t−1)\,dt = j!\,ζ(j+1)   (j≥1; j=0 is the pole).        [mpmath, |diff|≤1e−29]
+```
+So the moment sequence is **factorial × zeta-values** `{1!ζ(2), 2!ζ(3), 3!ζ(4),…}`. The Hankel determinants
+`H_n=det[μ_{i+j+1}]_{0≤i,j<n}` are **positive** (`1.645, 4.902, 82.93, 16228, …`) ⟹ `dμ` is a bona-fide
+Hamburger/Stieltjes moment measure with a well-defined orthogonal-polynomial system `{P_n(t)}`.
+
+**The attack.** The `{P_n}` are the natural Hermite–Padé denominators for simultaneous rational approximation
+to `(1, ζ(2), ζ(3), …)` weighted by `dμ`; paired against the exponential kernel they produce the Nesterenko
+auxiliary forms `R_n(s)=∫ P_n(t) t^{s−1} dμ(t)` whose `s=1` jet mixes `{γ_n}` with `{ζ(k)}` (the §B weld).
+The two open Nesterenko inputs become concrete OP questions:
+- **B′ (zero/multiplicity estimate):** the order of vanishing of `R_n` at `s=1` = the degree/structure of
+  `P_n` — an OP-degree count, computable from the `j!ζ(j+1)` Hankel data.
+- **C (`H_C` lower bound):** `|R_n(1)|`-growth = the OP-norm / Christoffel–Darboux asymptotics of `{P_n}`
+  against `dμ` — a steepest-descent problem for the weight `1/(e^t−1)` (the Aptekarev/Rivoal technology, here
+  for the **joint** moment problem, not a single constant).
+
+**Deconfliction.** Wheeler's `relative-exponential-apex` attacks single-`γ_E` irrationality via the digamma
++ Aptekarev approximation; this is the **joint** `{γ_n}` algebraic-independence via the Nesterenko criterion
+on the **same** measure `dμ` — shared OP technology, different target (trdeg vs irrationality). The shared
+object is the OP system of `dt/(e^t−1)`; the `{j!ζ(j+1)}` moments are the bridge.
+
+**Next concrete steps (this lane):** (1) compute `P_1,P_2,P_3` explicitly from the `j!ζ(j+1)` Hankel data;
+(2) read off the `s=1` jet of `R_n` and confirm the `{γ_n}`/`{ζ(k)}` weld coefficients match §B eq.; (3) set
+up the steepest-descent for `|R_n(1)|` against `1/(e^t−1)`. Archived: `computations/2026-06-19-stieltjes-moment-problem.py`.
+
+## Log (continued)
+- 2026-06-19 — Professor: **reclaimed to in-progress to attack the apex** (not bank a shell; per user steer
+  via chat id=236). Opened §F: the Nesterenko/OP route on the positive measure `dμ=dt/(e^t−1)`, moments
+  `μ_j=j!ζ(j+1)` (verified exact), Hankel dets positive. The joint-moment OP construction is the concrete,
+  computable engine for B′ (multiplicity) and C (`H_C` lower bound). Deconflicted with Wheeler's single-`γ_E`
+  Aptekarev route (id=241). `trdeg=∞` stays the open apex; the attack is now an explicit OP/steepest-descent
+  program, not a reduction-to-Schanuel deferral.

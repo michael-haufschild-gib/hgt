@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) — Door grade **BRIDGE** (function-field border; Door-5)
 - **Priority:** FOUNDATIONAL
-- **Source:** split from `../0-backlog/function-field-native-reproof.md` (Step 5); builds on G4 #24
+- **Source:** split from `function-field-native-reproof.md` (Step 5); builds on G4 #24
   (infinite-base Galois correspondence), the C6 functor `S_ff`
   (`../2-fully-proven/c6-specialization-functors.md` §2), and the corank collapse
   (`../2-fully-proven/function-field-holonomicity-degeneration.md` #121); siblings:

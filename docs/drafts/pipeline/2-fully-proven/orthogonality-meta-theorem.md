@@ -1,7 +1,7 @@
 # The orthogonality meta-theorem — RH-positivity is not definable on the independent prime structure (Source B)
 
 - **ID:** orthogonality-meta-theorem
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper, meta-structural) — Door grade **BRIDGE** (locating theorem; imports Weil positivity + Tannakian duality)
 - **Priority:** FOUNDATIONAL
 - **Source:** the user's observation (every `2-fully-proven` theorem is BRIDGE, zero NATIVE; `5-failed/c5-near-resonance-large-values.md`,
@@ -156,7 +156,8 @@ over ℚ."*
   > **Conjecture (universal orthogonality).** There is no positive-definite polarization on any object of `𝓜`
   > whose positivity is equivalent to RH.
   Every known criterion confirms it (§2); a counterexample would be a prime-side positivity criterion for RH —
-  none is known in 150 years. This card claims the **located** theorem, not the universal.
+  none is known in 150 years. This card claims the **located** theorem, not the universal. The universal
+  conjecture is carded for follow-up at `../0-backlog/universal-prime-side-orthogonality.md`.
 - **Scope of "no native Source-B theorem".** The meta-theorem forbids RH-bearing Source-B theorems. It does
   **not** forbid an RH-**blind** native Source-B theorem (a transcendence/`A2` one). But the corpus pattern
   (C3-native ⟺ C5★, the §59/§60 BRIDGE verdicts, G2's lower bound routing to obstruction C) suggests even
@@ -183,6 +184,7 @@ empirical "all BRIDGE" into a structural reason and **pins the entire RH-relevan
   archimedean polarization."
 
 ## Cross-references
+- `../0-backlog/universal-prime-side-orthogonality.md` — the §6 universal residual, carded for follow-up.
 - `../0-backlog/archimedean-prime-cross-term.md` (#134) — the weld where RH-bearing C5 must live (this card
   proves *that it must*).
 - `../2-fully-proven/erosion-cocycle-reducibility.md` — axis-mode decoupling = the additive special case.

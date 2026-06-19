@@ -45,6 +45,7 @@ import GaloisForLFunctions.PowerSumTorelli
 import GaloisForLFunctions.ExteriorSatake
 import GaloisForLFunctions.CompleteHomogeneous
 import GaloisForLFunctions.SpectrumGenericity
+import GaloisForLFunctions.BigradedCorank
 import GaloisForLFunctions.EHKoszulDuality
 import GaloisForLFunctions.SatakeSymPower
 import GaloisForLFunctions.SuperzetaResolvent

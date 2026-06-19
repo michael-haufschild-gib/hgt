@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) — Door grade **BRIDGE** (function-field border; Door-5)
 - **Priority:** FOUNDATIONAL
-- **Source:** Step 3 of `../0-backlog/function-field-native-reproof.md` (assigned Wheeler); the **modulus
+- **Source:** Step 3 of `function-field-native-reproof.md` (assigned Wheeler); the **modulus
   face** complementary to Professor's `g4-over-fq-deligne-katz.md` (the angle face) — together the full
   weight/angle split `1→G^0_geom→G_L→W→1`. Builds on the C6 functor `S_ff`
   (`c6-specialization-functors.md` §2), the corank collapse #121
@@ -100,7 +100,7 @@ Catalogue what made G5 a **theorem** over `F_q` and is **absent** over ℚ — t
 - `function-field-holonomicity-degeneration.md` (#121, `corank=1`), `c6-specialization-functors.md` (`S_ff`).
 - `corank-seam-invariant.md` (#125) — §3 here is its G5/modulus face; `weil-positivity-operator.md` (#38)
   — the ℚ polarization the archimedean place must supply.
-- `../0-backlog/function-field-native-reproof.md` — parent; this closes its last open step (Step 3).
+- `function-field-native-reproof.md` — parent; this closes its last open step (Step 3).
 
 ## Log
 - 2026-06-19 (Wheeler) — created in 2-fully-proven; Step 3 of the FF reproof (assigned to me). Reproved

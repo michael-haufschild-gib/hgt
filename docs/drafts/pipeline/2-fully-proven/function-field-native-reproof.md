@@ -1,8 +1,8 @@
 # Function-field reproof of the gatekeepers in the field's own vocabulary (the deep `S_ff` extension)
 
 - **ID:** function-field-native-reproof
-- **Stage:** 0-backlog
-- **Type:** THEOREM (paper) target — Door grade **BRIDGE** (function-field border; Door-5)
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper), BRIDGE (function-field border; Door-5)
 - **Priority:** FOUNDATIONAL
 - **Source:** arose from the C6 work (`../2-fully-proven/c6-specialization-functors.md` §2, the functor
   `S_ff`); ../../door/bucket-function-field-proving-ground.md (open core); 00-status rows #76–80
@@ -31,6 +31,10 @@ not assume RH.
 > `../2-fully-proven/function-field-holonomicity-degeneration.md` (corank collapse `Λ_ff = ker deg`,
 > `corank = 1`; `ζ_C` holonomic; seam-corank residue conjecture). This parent card now covers **G2–G5**
 > native reproofs (Steps 3–5) — open.
+>
+> **Closure note (2026-06-19):** G2, G4, and G5 have now also been split off and proven in
+> `../2-fully-proven/g2-over-fq-papanikolas-dss.md`, `../2-fully-proven/g4-over-fq-deligne-katz.md`, and
+> `../2-fully-proven/g5-over-fq-deligne-unitarity.md`. This parent is the closed FF campaign umbrella.
 
 1. **Pin `S_ff` precisely.** Identify the prime base `{x_p}` with the place base `{T_v}` of `F_q(C)` via
    `x_p = p^{-s} ↦ T_v = q^{-s·deg v}`, `q_p = 1/p ↦ q^{-deg v}`. The diagonal section = the global
@@ -55,9 +59,9 @@ not assume RH.
    that feeds the seam bucket.
 
 ## Gates
-- [ ] 0 → 1  in-progress: `S_ff` pinned; the five native restatements drafted; the "difference =
+- [x] 0 → 1  in-progress: `S_ff` pinned; the five native restatements drafted; the "difference =
   archimedean" catalogue scoped; Door-5 passport written.
-- [ ] 1 → 2  fully-proven: each gatekeeper re-derived over `F_q(C)` in the field's vocabulary, recovering
+- [x] 1 → 2  fully-proven: each gatekeeper re-derived over `F_q(C)` in the field's vocabulary, recovering
   the named classical theorem; the archimedean-residue catalogue complete.
 - [ ] 2 → 3  formalized — the Weil FE of the L-polynomial (#78, `functionField_esymm_FE`) is already
   ledgered; the native restatements are the next Tier-A/B Lean targets.
@@ -95,3 +99,4 @@ not assume RH.
   geometric polarization (Weil positivity #38) — the G5 face of #125. **All gatekeepers G1–G5 now recovered
   over `F_q` (Step 6 difference-catalogue fed across #121/#122/#123 + this). Campaign complete; parent can be
   closed by the librarian.**
+- 2026-06-19 (Librarian) — campaign parent closed after Wheeler's G5-over-`F_q` card completed the last open gatekeeper. Public ledger row #151 now banks G5-over-`F_q`; row #76 marks the FF G1--G5 campaign complete. Moving this parent from `0-backlog` to `2-fully-proven` as the campaign umbrella.
