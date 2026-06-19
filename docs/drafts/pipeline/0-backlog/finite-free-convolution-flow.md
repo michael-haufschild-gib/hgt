@@ -1576,3 +1576,57 @@ grounds.
   translation ⟹ differencing doesn't suppress ⟹ (GD)'s sup = §7 large-values = **BRIDGE**. Confirms `C5⇔apex`
   from kernel structure (analytic), complementing the gap-margin numerics. Retracted an intermediate
   constant-term over-claim (translation IS reachable in principle; the resonance avoids it). Wall unchanged.
+
+## RE-DIRECTION (from the source corpus `docs/rh-corp`, user pointer 2026-06-19) — the additive margin is the WRONG coordinate; go multiplicative (chain-sequence)
+
+Mining `docs/rh-corp` (the source corpus) on the user's pointer: `speculation2.md` names **this carrier's
+route — uniform Jensen/Laguerre–Pólya/Pólya–Schur hyperbolicity — as the #1 RH route** ("the first proof is
+more likely a uniform Jensen/LP hyperbolicity proof than a direct F₁ construction"), with the decisive clue I
+**underweighted**: the proof must satisfy the **additive (finite-free/Jensen/dBN) AND multiplicative
+(Pólya–Schur/LP multiplier-sequence) structures at once** — an *"Euler-loaded Pólya–Schur stability theorem"* —
+and **ordinary finite-free cone / additive-margin tools do NOT bridge to the multiplier-sequence property.**
+And `worklog-professor.md` §937 already has the concrete multiplicative form:
+> **RH ⟺ the prime-explicit `a_n = λ_n/(b_{n-1}b_n)` is a chain sequence** (`g_n∈[0,1) ∀n`), with `b_n,λ_n`
+> from the **cumulant moments `m_k=Σ_ρ u_ρ^{-k}`** (prime-explicit via `log ξ` / explicit formula, **no
+> zeros**); lever = the **Wall–Chihara near-boundary criterion** (`a_n→¼` ⟺ a Hellinger–Wall series condition
+> on the excess `e_n`), evaluated by **PNT/Mertens** asymptotics of the cumulant moments.
+
+**The connection (Hankel↔Jacobi↔chain duality, textbook Chihara).** My finite-free `H_d` is the Hankel of the
+section power sums; a Hankel moment matrix ↔ orthogonal polynomials ↔ Jacobi recurrence `(b_n,λ_n)` ↔ the
+chain sequence `a_n=λ_n/(b_{n-1}b_n)`. So **additive hyperbolicity (`H_d⪰0`) ⟺ the multiplicative
+chain-sequence condition (`a_n` chain).** Same object, dual coordinates.
+
+**The re-direction (the advance).** The **no-margin** — a hopeless large-values race in MY additive
+coordinates (`sup_t` of the prime deformation vs the shrinking Hermite gap `Δ_l~d^{-1/6}`; graded parent/
+BRIDGE) — is, in the MULTIPLICATIVE chain coordinates, the **natural boundary `a_n→¼`** (the maximal-chain
+edge): RH ⟺ `a_n` stays a chain sequence ⟺ `a_n` approaches but never crosses `¼`. This is the *"no-margin
+EQUALITY, not inequality"* the corpus insists on (speculation/speculation2), and it is governed by the
+**Wall–Chihara series on the prime-explicit `e_n`**, a CONCRETE PNT/Mertens computation — **not** a sup-control.
+> **So my carrier's additive margin race was the wrong coordinate.** The live route is the **multiplicative
+> chain-sequence persistence** (Wall–Chihara + PNT/Mertens on the prime-explicit cumulant moments
+> `m_k=Σ u_ρ^{-k}`), where the no-margin is the `a_n→¼` chain-boundary. This realizes speculation2's
+> "both structures at once": my additive `H_d` (finite-free) and the prof's multiplicative `a_n` (chain) are
+> dual views of one object; the chain view is where the no-margin is tractable.
+
+**Concrete next target (the open frontier, now in the right coordinates):** the **infinite chain-sequence
+persistence** — prove `{a_n}` (prime-explicit, `a_n→¼`) is a chain sequence for ALL `n` via the Wall–Chihara
+series condition on `e_n`, evaluated by PNT/Mertens asymptotics of `m_k=Σ_ρ u_ρ^{-k}` (= `log ξ` Taylor/
+cumulant coeffs, Euler-explicit). Finite-`n` is floor (rh-corp Critic); the infinite/persistence is the wall.
+**[FLAG: pin the exact Wall–Chihara constant/criterion from Chihara Ch.III; numerically pre-certify the
+cumulant-moment asymptotics before any claim — do NOT assert from memory (the prof's own caution).]**
+This is the multiplicative complement to the additive carrier — the same object, the tractable coordinate.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **RE-DIRECTION from `docs/rh-corp` (user pointer).** Mined the source corpus:
+  `speculation2.md` = this carrier's route is the #1 RH bet, with the underweighted clue = JOINT additive
+  (finite-free) + multiplicative (Pólya–Schur) stability ("Euler-loaded Pólya–Schur"); additive-cone tools
+  don't suffice. `worklog-professor.md §937` = the concrete multiplicative criterion: RH ⟺ prime-explicit
+  `a_n` (from cumulant moments `m_k=Σ u_ρ^{-k}`, Euler-explicit) is a chain sequence, via Wall–Chihara +
+  PNT/Mertens. Connected to the carrier by the textbook **Hankel↔Jacobi↔chain duality** (`H_d⪰0 ⟺ a_n` chain).
+  **Re-direction:** the no-margin is a hopeless large-values race in my ADDITIVE coords but the natural
+  `a_n→¼` chain-boundary in MULTIPLICATIVE coords (the "no-margin equality" the corpus demands), tractable
+  via Wall–Chihara + PNT/Mertens — so the additive margin race was the wrong coordinate. Concrete target:
+  the infinite chain-sequence persistence on the prime-explicit cumulant moments. Constants flagged for
+  Chihara-Ch.III verification + numeric pre-certification (prof's caution). Mining+connection+re-direction
+  grounded in the source corpus; the proof itself (chain-persistence) is the open frontier, now in the right
+  coordinates.

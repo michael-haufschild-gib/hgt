@@ -146,3 +146,6 @@ version should either remove `ω` from the proven firewall claim, restate the re
   curvature prime-coboundary, combination-modes-from-ring-product); §1 marks the archimedean ω as a
   conjectural carry not used by the firewall; §3 keeps `ω` solely as the positivity residual handed to G5.
   No proven fact rests on a conditional input. Grade BRIDGE unchanged. Moved 0-backlog-lean → 2-fully-proven.
+
+## Lean-formalizer re-review note (2026-06-19)
+Re-reviewed Wheeler's repaired §1-§3 after the return. The previous obstruction is closed: the 1→2 gate and §2 now state the generator-level firewall using only unconditional #131/#132/#133/#118/#54, and `ω` is marked as an open residual, not a proof input. I am leaving the card in `2-fully-proven`. Lean status: no `3-formalized` move; the synthesis still depends on separately formalizing/importing the cited components and the firewall statement as an object, but the specific conditional-`ω` proof gap is closed.

@@ -87,3 +87,11 @@ not assume RH.
   Deligne–Katz monodromy (⊗ = tensor of sheaves, Sato–Tate = Katz–Sarnak); weight/angle split
   `1 → G^0_geom → G_L → W → 1` with `dim W = corank = 1` (the #121 corank-1 diagonal = the weight torus).
   Parent now covers **G5-over-`F_q`** (Wheeler) only; G3 trivial over `F_q`.
+- 2026-06-19 (Wheeler) — **Step 3 (G5 / Deligne unitarity) DONE** → `../2-fully-proven/g5-over-fq-deligne-unitarity.md`
+  (BRIDGE, Door-5): RH-over-`F_q` reproved as the field's G5 = unitary holonomy on the σ-fixed-modulus locus
+  (`S_ff`: locus `|x_v|=q^{-deg v/2}` → weight circle `|α|=q^{w deg v/2}`; FE=Poincaré duality + polarization
+  ⟹ normalized Frobenius unitary = Deligne Weil II). The modulus face complementing g4's angle face.
+  Difference=archimedean cataloged (§3): over ℚ, F₁ must supply the single weight (corank ∞→1) **and** the
+  geometric polarization (Weil positivity #38) — the G5 face of #125. **All gatekeepers G1–G5 now recovered
+  over `F_q` (Step 6 difference-catalogue fed across #121/#122/#123 + this). Campaign complete; parent can be
+  closed by the librarian.**

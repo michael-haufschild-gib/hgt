@@ -10,6 +10,12 @@ in the gatekeeper conjectures (`00-foundations-native-objects-and-gatekeepers.md
 (`door/`).
 
 ---
+## 0. There is no founding principle
+  "Having a founding principle" — a generative rule from which everything follows by deduction — is "satisfying an algebraic differential equation." And hypertranscendence is precisely the absence of one. The request is self-defeating: a function with a generative founding principle is, by definition, not hypertranscendental.
+
+  So Hölder 1887 isn't a missing founding principle — it is the founding theorem, and it's
+  negative: it certifies that no generative rule exists. The math of hypertranscendental functions cannot be a theory of generative rules; it can only be a theory of obstructions (why no rule exists) and relations among values (transcendence theory). That's exactly what difference-Galois Siegel–Shidlovsky + DSS are.
+
 
 ## 1. The reason — two sources of hypertranscendence
 

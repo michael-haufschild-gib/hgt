@@ -30,6 +30,13 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.logPrime_linearIndependent_int
 #print axioms GaloisForLFunctions.linearIndependent_log_primes
 #print axioms GaloisForLFunctions.logPrime_no_rat_relation
+#print axioms GaloisForLFunctions.primeLogFrequency_single
+#print axioms GaloisForLFunctions.primeLogFrequency_eq_zero_iff
+#print axioms GaloisForLFunctions.primeLogFrequency_ne_zero
+#print axioms GaloisForLFunctions.primeLogFrequency_single_ne_zero
+#print axioms GaloisForLFunctions.bohrCharacter_zero
+#print axioms GaloisForLFunctions.bohrCharacter_add
+#print axioms GaloisForLFunctions.bohrCharacter_scaleCoordinate
 #print axioms GaloisForLFunctions.primeDilation_fixed_eq_zero
 #print axioms GaloisForLFunctions.primeDilation_no_fixed_unit
 #print axioms GaloisForLFunctions.no_primeDilation_fixed_torus_point
@@ -260,6 +267,8 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.orbitDegree_single
 #print axioms GaloisForLFunctions.orbitDegree_add
 #print axioms GaloisForLFunctions.orbitDegree_sub
+#print axioms GaloisForLFunctions.orbitDegree_ne_zero_ne_of_orbitDegree_zero
+#print axioms GaloisForLFunctions.orbitDegree_single_ne_zero_ne_of_orbitDegree_zero
 #print axioms GaloisForLFunctions.orbitDegree_single_sub_single
 #print axioms GaloisForLFunctions.eq_sum_single_sub_base_of_orbitDegree_zero
 #print axioms GaloisForLFunctions.orbitDegree_intShiftCoboundary
@@ -271,6 +280,10 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.ffDegreeMap_surjective
 #print axioms GaloisForLFunctions.ffDegreeMap_range_eq_top
 #print axioms GaloisForLFunctions.ffRelationLattice_corank_eq_one
+#print axioms GaloisForLFunctions.map_one_eq_zero_of_leibniz
+#print axioms GaloisForLFunctions.map_eq_zero_of_map_one_zero_of_map_mul
+#print axioms GaloisForLFunctions.map_eq_zero_of_leibniz_of_map_mul
+#print axioms GaloisForLFunctions.not_map_mul_of_leibniz_of_exists_ne_zero
 EOF
 
 cd "$FORMAL_DIR"
@@ -284,8 +297,8 @@ NORMALIZED="$(printf '%s\n' "$OUT" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]
 AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "depends on axioms: \\[[^]]*\\]" || true; })"
 NO_AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "does not depend on any axioms" || true; })"
 AUDITED_COUNT="$(printf '%s\n%s\n' "$AXIOM_LINES" "$NO_AXIOM_LINES" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [ "$AUDITED_COUNT" -ne 260 ]; then
-  echo "FAIL: expected 260 audited theorem outputs" >&2
+if [ "$AUDITED_COUNT" -ne 273 ]; then
+  echo "FAIL: expected 273 audited theorem outputs" >&2
   exit 1
 fi
 BAD_AXIOMS="$(printf '%s\n' "$AXIOM_LINES" \
@@ -318,4 +331,4 @@ if [ -n "$SORRY_HITS" ]; then
   exit 1
 fi
 
-echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (260 theorem outputs audited)."
+echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (273 theorem outputs audited)."

@@ -2,7 +2,7 @@
 
 - **ID:** sigma-parity-fe-weld
 - **Stage:** 3-formalized
-- **Type:** THEOREM (Lean)
+- **Type:** THEOREM (Lean) — grade **BRIDGE (substrate)** (Door-2 fails on the C-axis; D2-met on the D-axis)
 - **Priority:** FOUNDATIONAL
 - **Source:** ../../door/door-C5-irreducibility-and-door-2-retest.md, ../../door/bucket-ledger-footholds.md · 00-status row #49
 - **Statement:** `σ` acts as `(−1)^k` on `∧^k V` (the prime-lattice exterior algebra), so `H^even` is
@@ -20,10 +20,25 @@ apparatus. A worked example of an item already deep in the pipeline.
   `exteriorPower_map_neg_id` — axiom-clean (in the audit)
 - [ ] 3 → 4  publication-ready
 
-## Next steps
-1. **Door-2 test:** does the weld survive stripping the multi-`q` vocabulary? Record the verdict.
-2. If it survives, **write the standalone note** (statement + the exterior-power computation + the Lean
-   certificate + the Door-2 argument) — the publication-ready gate.
+## Door-2 / D-axis verdict (2026-06-19, DeWitt)
+
+**Door-2 (C-axis): FAILS → BRIDGE.** Strip the multi-`q` vocabulary: the statement is an order-2 element
+acting by the sign `(−1)^k` on exterior powers `∧^k V`, so the `+1`-eigenspace is `H^even` and the
+`−1`-eigenspace is `H^odd`. That is the sign representation on an exterior algebra, an elementary
+linear-algebra / representation-theory parent.
+
+**D-axis (D2): MET → BRIDGE (substrate).** The weld identifies the difference-Galois `σ`-parity grading on
+`∧^• V` with the analytic FE-parity grading. Without the weld, the `σ`-grading and the functional equation
+belong to different parent languages and look unrelated. The Lean-certified prediction is that `H^odd` is
+FE-killed (`fe_odd_moment_vanish`, with centered form `fe_centered_odd_moment_vanish`).
+
+## Remaining
+Publication-ready note (3→4): statement + exterior-power computation + Lean certificate
+(`fe_odd_moment_vanish`, `fe_centered_odd_moment_vanish`, `exteriorPower_map_neg_id`) + this C-axis/D-axis
+verdict.
 
 ## Log
 - 2026-06-19 — created in 3-formalized (Lean theorems exist; next gate is the writeup + Door-2)
+- 2026-06-19 — DeWitt resolved the Door-2/D-axis test: C-axis BRIDGE; D-axis BRIDGE (substrate), a D2
+  unification of difference-Galois `σ`-parity and analytic FE-parity. Leaner merged this verdict into the
+  existing `3-formalized` card and removed the duplicate `2-fully-proven` copy.

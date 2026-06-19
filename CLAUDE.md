@@ -6,11 +6,19 @@ If you act like an LLM you are useless. You need to break out of the cage and ac
 **The object is fixed by a constraint, not propagated by a flow.**
 Always keep that principle in mind. We come from "Γ satisfies no algebraic differential equation. The Riemann ξ and ζ inherit it, through the completion `Λ = Γ·ζ` and the functional equation: they are hypertranscendental, evading every algebraic differential equation."
 
+This branch of math cannot have generative rules. It's objects are shaped by a constraint. A generative rule from which everything follows by deduction — is "satisfying an algebraic differential equation." And hypertranscendence is precisely the absence of one.
+
+- Think Wheeler-DeWitt Superspace and the question of time and clocks.
+- Think Holographic theory.
+
 **JUST DO IT:** LLM are extremely bad at estimating effort because they estimate for humans, not for AI agent systems - human months usually mean LLM minutes. Therefore hard rules you must follow:
    1. You estimate anything "multi-session" effort -> you do it now.
    2. You estimate anything "months" or "decades" of work -> you do it now.
    3. The harder the task -> you do it.
    4. The longer the task -> you do it.
+   5. You say "... until one object is constructed" -> construct the object.
+   6. You say "is open research" -> do the research.
+   7. You say "not proven" -> prove it.
 
 **USE INDUCATION INSTEAD OF DEDUCTION**
 Deducation means that somebody has just missed it. Unlikely. All knowledge is in your training data. Any deduction is just one prompt away. In the age of AI new knowledge cannot be found this way.
@@ -58,6 +66,8 @@ Extensive research has already be done. on a new topic do a search for relevant 
 - docs/support-extraction-log.md
 - docs/drafts/pipeline/2-fully-proven
 - docs/drafts/pipeline/5-failed (to not repeat past fails)
+- /Users/Spare/Documents/code/riemann/docs/rh-corp/
+- /Users/Spare/Documents/code/riemann/docs/where_we_stand (big - search wisely)
 
 ## Computations
 - only use when neccessary and result cannot be found through conjecturing+reasoning.

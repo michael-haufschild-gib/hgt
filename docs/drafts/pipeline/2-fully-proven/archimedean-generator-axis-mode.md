@@ -74,8 +74,12 @@ still only from products. Consistent: the generator level is BRIDGE in every bor
 - [x] 0 → 1 in-progress: generators' diagonal action stated; ∂_s = −Σ(log p)θ_p axis-mode confirmed.
 - [x] 1 → 2 fully-proven: both generators Fourier-diagonal (elementary, above); combination modes = ring
   product only; C5 localized to moment level / global holonomy; `F_q` shadow; Door-2 = BRIDGE/structural.
-- [ ] 2 → 3 formalized (optional): the diagonal action `σ_p e_m = p^{−m_p}e_m`, `∂_s e_m = −(m·ℓ)e_m` is a
-  trivial Lean fragment if ever wanted; low priority (BRIDGE).
+- [ ] 2 → 3 formalized: Lean anchors now present/audited for the finite Bohr-character skeleton:
+  `bohrCharacter_scaleCoordinate` proves coordinate scaling acts diagonally (`e_m(...,c x_p,...)=c^{m_p}e_m`),
+  `bohrCharacter_add` proves ring products add modes (`e_{m+n}=e_m e_n`), and the Kronecker-frequency
+  theorems in `KroneckerFlow.lean` prove the finite `m·ℓ` no-resonance/frequency side. Remaining work:
+  package the actual `∂_s` operator on an analytic function space, the infinite torus/generator language,
+  and the C5-localization synthesis.
 - [ ] 3 → 4 publication-ready: folds into the "where C5 must live" exposition alongside erosion-cocycle.
 
 ## Cross-references
@@ -96,4 +100,3 @@ still only from products. Consistent: the generator level is BRIDGE in every bor
   (`e_m·e_{m'}=e_{m+m'}`) only. **Payload:** the entire connection/generator level is combination-mode-free
   ⟹ C5 is forced to the moment-positivity level (finite-free Hankel) or the global holonomy (G5).
   Extends `erosion-cocycle-reducibility` (σ_p) to ∂_s; closes the "∂_s entangles all primes" escape hatch.
-</content>

@@ -88,6 +88,26 @@ team — not unilaterally re-graded here.)*
 
 ---
 
+## D-axis recast (2026-06-19, charter §6) — this is the substrate's D4 object; grade `BRIDGE (substrate)`
+The card's original payload ("C5 relocates to G5-positivity") was on the **C-axis/localization** axis and is
+**superseded**: the user's reframe + charter §6 place the keystone elsewhere. On the **D-axis** this cocycle is
+the **D4 object** — *the obstruction to the FE-constraint factoring* (charter §6 D4: "a class visible in every
+parent, computable by none"). The verdict splits into two layers:
+- **Layer 1 — PROVEN here (the non-trivial obstruction).** The FE-factoring obstruction is `[χ] ≠ 1`,
+  purely archimedean: `ι_ζ` exists (prime inversion, §3) but `ι_∞` does **not** (`χ` non-`∂_s`-horizontal), so
+  `ι = s↦1−s` does **not** factor as `ι_∞⊗ι_ζ`. **The weld does not factor trivially — there is a genuine
+  archimedean obstruction.** This is D4-positive *at the symmetry level*: the constraint (the FE) is genuinely
+  obstructed, visible in every parent (χ = the classical FE-factor, every border sees it).
+- **Layer 2 — OPEN (the decider).** Whether the *deeper* monoidality class `ω∈H²(G_L)` vanishes (`ω=0 ⟺`
+  Tannakian/motive/realization, #27, **purely archimedean**) is "computable by none" — the open D4 decider
+  (substrate-with-content ⟺ `ω≠0`). My layer-1 result shows the obstruction is non-trivial and archimedean;
+  the realization layer (`ω=0⟺RH/realization`) is the open core.
+**Grade: `BRIDGE (substrate)`** — C-axis BRIDGE (the value is the classical FE), D-axis substrate-load-bearing
+(it constructs the D4 obstruction and proves Layer 1). The cocycle is *not* a failed C5; it is the substrate's
+keystone-dual object, half-resolved.
+
+---
+
 ## Weil-form shadow & `F_q` degeneration (Door-5)
 - **Weil shadow.** The explicit formula `Σ_zeros = (prime term) + (archimedean Γ term)`. The cocycle `[χ]` is
   the algebraic/Galois source of the **archimedean term**; its non-triviality = there *is* an archimedean

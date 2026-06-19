@@ -49,6 +49,24 @@ theorem orbitDegree_sub {α : Type*} (D E : α →₀ ℤ) :
   rw [orbitDegree]
   exact Finsupp.sum_sub_index (h := fun _ n => n) (by intro a b c; rfl)
 
+/-- A finite divisor with nonzero orbit degree cannot equal a degree-zero
+divisor. This is the algebraic core of the "non-CC is not in the CC subgroup"
+separation after passing to the orbit-degree classifier. -/
+theorem orbitDegree_ne_zero_ne_of_orbitDegree_zero {α : Type*} {D E : α →₀ ℤ}
+    (hD : orbitDegree D ≠ 0) (hE : orbitDegree E = 0) : D ≠ E := by
+  intro h
+  exact hD (by rw [h, hE])
+
+/-- A nonzero point-mass on one orbit cannot equal any degree-zero finite
+divisor. The degree-one case models the archimedean `Γ` orbit imbalance against
+zero-degree prime/CC classes. -/
+theorem orbitDegree_single_ne_zero_ne_of_orbitDegree_zero {α : Type*}
+    (a : α) {n : ℤ} (hn : n ≠ 0) {E : α →₀ ℤ} (hE : orbitDegree E = 0) :
+    Finsupp.single a n ≠ E := by
+  have hdeg : orbitDegree (Finsupp.single a n) ≠ 0 := by
+    simpa [orbitDegree_single] using hn
+  exact orbitDegree_ne_zero_ne_of_orbitDegree_zero hdeg hE
+
 /-- A balanced point-mass `n[a]-n[b]` has orbit degree zero. -/
 theorem orbitDegree_single_sub_single {α : Type*} [DecidableEq α] (a b : α) (n : ℤ) :
     orbitDegree (Finsupp.single a n - Finsupp.single b n) = 0 := by
