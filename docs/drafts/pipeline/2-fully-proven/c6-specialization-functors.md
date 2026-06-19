@@ -137,7 +137,7 @@ finite-base specialization holonomic yet is itself non-holonomic — a statement
 pose. Therefore the charter's two-part C6 test ("recover on the overlap **and** strictly extend them") is
 satisfied: **C6 (faithful bridge) is MET** (bridge level). ∎
 
-**Honest scope of the grade.**
+**Scope of the grade.**
 - C6 is MET via *recovery on all three borders + one proven strict extension* (Theorem B), exactly the
   shape of the differential-Galois calibration (whose C6 rests on the single Airy=SL₂ extension).
 - The **other two** strict extensions are the field's open frontier and are recorded as conjectural, not

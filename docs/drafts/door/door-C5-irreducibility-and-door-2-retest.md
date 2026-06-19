@@ -142,14 +142,21 @@ standard (fixed-exponent) KAM cannot close it. C5★ must therefore be **bounded
 real-rootedness ⟺ the **Hankel form `H_d=(P_{i+j})` PSD**, a *nonlinear* condition whose `det H_j` carries
 **mixed-sign combination modes of support `≤ d`** — so the section is **bounded-degree ∧ RH-relevant** at
 once (RH ⟺ all sections hyperbolic, Pólya–Jensen / GORZ), exactly what the flat `F_{pq}` and the
-unbounded-support RS moment could not be. **Baker-necessity verdict** (bulk/edge split): the `d → ∞`
-reducibility splits into a **bulk** (moments concentrate by the finite-free CLT — soft, BRIDGE) and an
-**edge** (`det H_d = 0`, the degenerations = zeros). At **each fixed `d`** Baker is genuinely load-bearing
-on the edge (fixed `#`-logs ⟹ fixed Diophantine exponent; the Liouville substitute diverges — Lemma R at
-bounded support). The **`d → ∞`** uniform edge control needs **more than Baker** — Baker's floor degrades
-super-exponentially, so the limit is governed by the **near-zero distribution of bounded-support
-`{Σ a_p log p}`**, a metric statement about `⟨log p⟩` strictly stronger than the floor. **That is the
-native C5 crux**; GORZ = the bulk half proven, the C5 work = the uniform edge half. Details:
+unbounded-support RS moment could not be.
+
+**C5★ resolved (2026-06-19) — reducibility threshold `σ = ¾`, RH-blind; RH relocated to single-orbit
+positivity.** The `d → ∞` limit was **worked to conclusion**. The edge coboundary norm
+`Σ_m |ĝ(m)|²/|m·ℓ|²` (explicit-formula coefficient model) converges **iff `σ > ¾`**; the controlling
+small-divisor bound is the **elementary integer-gap** `|\log(n_+/n_-)| ≥ |n_+−n_-|/\max` — **not Baker**
+(Baker rules only the toy `e^{−ρ|m|}` profile of Lemma R) — and the obstruction in `(½,¾]` is the
+**consecutive-/balanced-coprime-integer** near-resonances `(M, M−1)`. Crucially this norm is a
+`𝕋^∞`-variance (`L²`) quantity, so by the **A1/A2 split** (Weyl: `L²` controls the typical fluctuation, not
+the single-orbit sign) it is **RH-blind** — `σ = ½` sits deep in the non-reducible zone. **So
+reducibility ⟺ RH is refuted, and the cocycle-reducibility framing is the wrong handle.** The RH content
+relocates to the **single-orbit hyperbolicity** of the section (positivity of `det H_d` along the diagonal
+= Pólya–Jensen / GORZ) — a **positivity/sign** statement, the project's recurring wall, now in a sharp
+finite-free form (its Door-2 status is the next gate). The structural lemma and Lemma R stand as proven;
+only the reducibility-as-RH conjecture is refuted. Details:
 `../pipeline/1-in-progress/combination-mode-baker-reducibility.md`, `../pipeline/1-in-progress/finite-free-convolution-flow.md`.
 
 **C3 folds into C5 (2026-06-19).** Working the C3 ticket to its end showed the **native invariant is not
@@ -164,7 +171,11 @@ and there is no cheaper native invariant. Proven:
 `../pipeline/2-fully-proven/c3-gluing-invariants-bridge.md`; the independent-C3 goal failed:
 `../pipeline/5-failed/c3-native-invariant-door3.md`. *(Consequence for the milestone: C3 and C7 both
 reduce/couple to C5 — with **C6 now MET** (bridge level; see below), the branch hinges on C5 (C3
-reduces to it, C7 couples to it).)*
+reduces to it, C7 couples to it).)* **Follow-ups spawned (0-backlog):**
+`../pipeline/0-backlog/multi-q-shafarevich-gluing-group.md` (the gluing invariant's native home `Ш` =
+per-prime-trivial joint classes; `Ш_arith` vs C5★) and
+`../pipeline/0-backlog/cross-prime-curvature-reducibility.md` (the curvature-language C5★ carrier —
+coordinate-dependent `F_{pq}`, sibling of the finite-free carrier).
 
 **C6 resolved → MET (bridge level, 2026-06-19).** The three border specialization functors are built and
 verified (`../pipeline/2-fully-proven/c6-specialization-functors.md`): single-prime `S_p` recovers van der

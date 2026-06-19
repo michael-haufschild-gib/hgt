@@ -100,4 +100,7 @@ simultaneously DSS-cross (A2) and `κ₋(m_ξ)=0` (A1). Sub-targets: compute `ω
 - [[G2-multi-q-siegel-shidlovsky]], [[G5-unitarity-gatekeeper]] — the two faces the seam controls.
 - [[bucket-function-field-proving-ground]] — over `F_q` there is NO archimedean place ⟹ no seam ⟹ all
   gatekeepers are theorems. The seam is exactly what ℚ adds.
-- [[bucket-time-and-non-holonomic-time]] — the archimedean place `D` is the scaling clock.
+- [[bucket-time-and-non-holonomic-time]] — the archimedean place `D` is the scaling clock; the **trace
+  defect** (no trace / type III / `ω≠0`) = the **arrow of time**, and **corank ∞ = the WDW emergence of
+  time** (over ℚ no single Frobenius = no global clock; over `F_q` corank 1 = a static universe). The
+  `∞−1` seam gap = the missing *global clock*.

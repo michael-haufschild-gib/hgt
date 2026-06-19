@@ -92,6 +92,10 @@ above its current floor; this index makes those boundaries explicit.
   ⟹ vanishing odd / centered-odd moments.
 - `ExteriorParity` / `exteriorPower_map_neg_id` — `∧ⁿ(−id)=(−1)ⁿ·id` (the genuine exterior-power level
   of the σ-parity weld; the candidate native theorem to re-test against Door-2).
+- `GluingWitness` / `gluing_per_prime_same_but_joint_distinct` — the C3 bridge witness: two rank-2,
+  two-prime rational matrix pairs have identical per-prime conjugacy data but no simultaneous joint
+  conjugacy, detected by `tr(A₂A₃)=3 ≠ 5/2=tr(B₂B₃)`. This formalizes the finite witness only; the
+  Procesi/Artin generation and C5★ reduction remain paper/import-level.
 
 ### Statement-level (no conjecture axioms)
 - `FieldConjectures` — Lean `Prop`s for DSS and the realization problem, plus the proved finite alias

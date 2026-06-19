@@ -40,11 +40,24 @@ Use docs/drafts/pipeline/_card-template.md
 
 ## Workmode
 1. Always work in the pipeline when advancing scientific research: docs/drafts/pipeline
-2. Keep docs/drafts/door/00-status.md and docs/drafts/door/00-index.md up to date
+2. Submit updates of docs/drafts/door/00-index.md and docs/drafts/door/00-status.md an informal ticket in docs/drafts/pipeline/library-backlog/ - an agent will handle the updates to prevent edit races.
 3. Computations are to avoid. If run their results must be archived in computations.
 4. Keep your own working log in logs/. Do not pollute the pipeline with logging that adds nothing to the research.
 5. Keep updates in the pipeline concise, clear to read, no history or folklore, just factual and complete.
 6. Follow Anti-LLM-Cage Protocol
+
+## Check prior research
+Extensive research has already be done. on a new topic do a search for relevant results in:
+- docs/drafts/pipeline/3-formalized
+- docs/support-extraction-log.md
+- docs/drafts/pipeline/2-fully-proven
+- docs/drafts/pipeline/5-failed (to not repeat past fails)
+
+## Computations
+- only use when neccessary and result cannot be found through conjecturing+reasoning.
+- if no runpod is available to you, ask user in chat
+- optimize and specify scripts, so they don't run for too long.
+- never wait for results but keep working while computations run.
 
 ## Lean discipline
 - Verify names against THIS toolchain by scratch file

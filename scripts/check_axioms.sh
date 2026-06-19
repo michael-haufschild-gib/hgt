@@ -30,11 +30,16 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.logPrime_linearIndependent_int
 #print axioms GaloisForLFunctions.linearIndependent_log_primes
 #print axioms GaloisForLFunctions.logPrime_no_rat_relation
+#print axioms GaloisForLFunctions.primeDilation_fixed_eq_zero
+#print axioms GaloisForLFunctions.primeDilation_no_fixed_unit
+#print axioms GaloisForLFunctions.no_primeDilation_fixed_torus_point
 #print axioms GaloisForLFunctions.diagonalResonant_of_coordinateResonant
 #print axioms GaloisForLFunctions.coordinateResonant_eq_zero_of_no_coordinate_torsion
 #print axioms GaloisForLFunctions.logPrime_diagonalResonant_eq_zero
 #print axioms GaloisForLFunctions.primeLog_diagonalRelationLattice_eq_singleton
 #print axioms GaloisForLFunctions.finitePrimeLogAnnihilator_eq_singleton
+#print axioms GaloisForLFunctions.logPrime_int_sum_eq_log_pos_sub_log_neg
+#print axioms GaloisForLFunctions.logPrime_height_bound
 #print axioms GaloisForLFunctions.pairCancel_diagonalResonant
 #print axioms GaloisForLFunctions.pairCancel_not_coordinateResonant
 #print axioms GaloisForLFunctions.discreteCurvature_eq_one_iff_cocycleCondition
@@ -55,6 +60,7 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.secular_newton
 #print axioms GaloisForLFunctions.secular_moment_newton
 #print axioms GaloisForLFunctions.boundedExponentVectorEquivSmooth
+#print axioms GaloisForLFunctions.log_nat_eq_sum_factorization
 #print axioms GaloisForLFunctions.primeProduct_isBoundedSmooth_iff
 #print axioms GaloisForLFunctions.diagonalMonomial_eq_frequency
 #print axioms GaloisForLFunctions.diagonalAuxiliaryForm_eq_dirichletPolynomial
@@ -226,6 +232,30 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.multiset_esymm_map_mul
 #print axioms GaloisForLFunctions.functionField_esymm_FE
 #print axioms GaloisForLFunctions.functionField_localFactor_FE
+#print axioms GaloisForLFunctions.gluingH_mul_Hinv
+#print axioms GaloisForLFunctions.gluingHinv_mul_H
+#print axioms GaloisForLFunctions.gluingB3_eq_conj
+#print axioms GaloisForLFunctions.gluing_trace_A2A3
+#print axioms GaloisForLFunctions.gluing_trace_B2B3
+#print axioms GaloisForLFunctions.gluing_trace_ne
+#print axioms GaloisForLFunctions.gluing_not_jointly_conjugate
+#print axioms GaloisForLFunctions.gluing_per_prime_same_but_joint_distinct
+#print axioms GaloisForLFunctions.vandermonde_moments_eq_zero_of_injective
+#print axioms GaloisForLFunctions.vandermonde_initial_moment_nonzero_of_nonzero_coeff
+#print axioms GaloisForLFunctions.stieltjes_pairing_cauchy_j
+#print axioms GaloisForLFunctions.iteratedDeriv_exp_neg_mul_log
+#print axioms GaloisForLFunctions.exp_neg_real_log_nat
+#print axioms GaloisForLFunctions.iteratedDeriv_nat_dirichlet_at_one
+#print axioms GaloisForLFunctions.iteratedDeriv_friableDirichletExp_at_one
+#print axioms GaloisForLFunctions.complex_cast_logPrime_sum
+#print axioms GaloisForLFunctions.iteratedDeriv_friableExponentDirichletExp_at_one
+#print axioms GaloisForLFunctions.logZetaPrimeCoeff_prime
+#print axioms GaloisForLFunctions.logZetaPrimeCoeff_primePower
+#print axioms GaloisForLFunctions.ffDegreeMap_apply
+#print axioms GaloisForLFunctions.ffRelationLattice_mem_iff
+#print axioms GaloisForLFunctions.ffDegreeMap_surjective
+#print axioms GaloisForLFunctions.ffDegreeMap_range_eq_top
+#print axioms GaloisForLFunctions.ffRelationLattice_corank_eq_one
 EOF
 
 cd "$FORMAL_DIR"
@@ -239,8 +269,8 @@ NORMALIZED="$(printf '%s\n' "$OUT" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]
 AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "depends on axioms: \\[[^]]*\\]" || true; })"
 NO_AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "does not depend on any axioms" || true; })"
 AUDITED_COUNT="$(printf '%s\n%s\n' "$AXIOM_LINES" "$NO_AXIOM_LINES" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [ "$AUDITED_COUNT" -ne 215 ]; then
-  echo "FAIL: expected 215 audited theorem outputs" >&2
+if [ "$AUDITED_COUNT" -ne 245 ]; then
+  echo "FAIL: expected 245 audited theorem outputs" >&2
   exit 1
 fi
 BAD_AXIOMS="$(printf '%s\n' "$AXIOM_LINES" \
@@ -273,4 +303,4 @@ if [ -n "$SORRY_HITS" ]; then
   exit 1
 fi
 
-echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (215 theorem outputs audited; 214 with axiom dependencies)."
+echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (245 theorem outputs audited)."

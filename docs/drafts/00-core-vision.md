@@ -3,6 +3,8 @@
 > "Γ satisfies no algebraic differential equation — and neither does ζ. ξ is hypertranscendental." —
 > Hölder, 1887.
 
+In 1887, Otto Hölder proved that the Euler Gamma function Γ(z) is hypertranscendental, meaning it cannot satisfy any polynomial differential equation \(P(z, y, y', \dots, y^{(n)}) = 0\) with rational coefficients. This implies the Riemann ξ function (and ζ) are also hypertranscendental, evading all algebraic differential equations.
+
 A short, plain statement of what the field is for. No proofs here and none are claimed. The mathematics
 is in the gatekeeper conjectures (`00-foundations-native-objects-and-gatekeepers.md`) and the buckets
 (`door/`).

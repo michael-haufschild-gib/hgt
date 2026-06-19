@@ -159,16 +159,36 @@ The refined-C5★ carrier is now pinned — full statement in `finite-free-convo
   super-exponentially, so the limit is governed by the **near-zero distribution of bounded-support
   `{Σ a_p log p}`** — strictly stronger than the floor. **That metric statement about `⟨log p⟩` is the
   native C5 crux.**
-- **Answer to the test.** Yes — `d → ∞` reducibility genuinely needs the bounded-degree Baker control (no
-  single parent supplies the edge at any `d`); Baker is necessary but not sufficient for the uniform limit.
-  GORZ = the bulk half proven; the C5 crux = the uniform edge half.
+- **Answer to the test (UPDATED — see resolution below).** The `d → ∞` limit is now **worked to
+  conclusion**, and it overturns the "needs Baker" reading: the controlling small-divisor bound is the
+  **elementary integer-gap** one, not Baker, and the reducibility threshold is **`σ > ¾`** — RH-blind. See
+  "C5★ resolved" below.
+
+## C5★ resolved (2026-06-19): reducibility threshold `σ = ¾`, RH-blind — RH = single-orbit positivity
+
+Worked to conclusion in `finite-free-convolution-flow.md` (Steps 1–4). Outcome:
+- **Threshold.** Under the explicit-formula coefficient model, the edge coboundary norm
+  `N_∞(σ) = Σ_m |ĝ(m)|²/|m·ℓ|²` converges **iff `σ > ¾`**. The controlling bound is the **elementary
+  integer-gap** `|\log(n_+/n_-)| ≥ |n_+−n_-|/\max` — **not Baker.** (Baker is the sharp/essential input only
+  for the toy `e^{−ρ|m|}` profile of Lemma R; for the physical `∏ p^{−2|a|σ}` profile, integer gaps rule.)
+  The obstruction in `(½, ¾]` is the **consecutive-/balanced-coprime-integer** near-resonances `(M, M−1)`.
+- **RH-blind.** `N_∞` is a `𝕋^∞`-variance (`L²`) quantity; by the A1/A2 split it cannot see RH, which is the
+  **single-orbit sign** `det H_d(θ_{diag}(t)) ≥ 0` (Pólya–Jensen / GORZ). `σ = ½` sits deep in the
+  non-reducible zone, so **reducibility ⟺ RH is refuted.**
+- **Relocation.** The reducibility/cocycle framing was the **wrong handle** (it measures the average, not
+  the single-orbit sign). The live native object is **single-orbit hyperbolicity** (positivity of `det H_d`
+  along the diagonal) — the project's recurring positivity wall, now in a sharp GORZ-connected finite-free
+  form. Lemma R (Baker load-bearing, toy profile) and the structural lemma (combination-mode support `≤ d`)
+  both stand as proven; only the C5★-as-reducibility conjecture is refuted-and-relocated.
 
 ## Gates
 - [x] 0 → 1  in-progress: object identified; Lemma R (Baker load-bearing, finite base) **proven** with
   a Liouville counterexample; C5★ stated, attacked, and **refined to bounded degree** (Part 1 killed the
   naive infinite-support version).
-- [ ] 1 → 2  fully-proven: the naive infinite-support C5★ is **killed** (Part 1); the live target is the
-  **bounded-degree** C5★ (degree-`d` finite-free section, `d → ∞`), still open.
+- [~] 1 → 2  fully-proven (split): naive infinite-support C5★ **killed** (Part 1); the bounded-degree
+  reducibility **threshold `σ > ¾` is PROVEN** (RH-blind, integer-gap-driven — see "C5★ resolved");
+  reducibility⟺RH **refuted**. The live RH target is **relocated** to single-orbit positivity
+  (`finite-free-convolution-flow.md`), open.
 - [ ] 2 → 3  formalized
 - [ ] 3 → 4  publication-ready
 
@@ -178,12 +198,11 @@ The refined-C5★ carrier is now pinned — full statement in `finite-free-convo
    unbounded support (Part 1). Naive infinite-support C5★ is dead; **bounded degree is forced.**
 2. ~~Resolve the bounded-degree ↔ RH-relevance tension (Part 3)~~ **DONE (2026-06-19):** carrier pinned
    as the **degree-`d` finite-free / Hankel section** (`finite-free-convolution-flow.md`) — bounded-degree
-   ∧ RH-relevant; reducible at each fixed `d` (Baker load-bearing on the edge). The **live native crux** is
-   now the `d → ∞` uniform edge control = the **near-zero distribution of `{Σ_{|S|≤d} a_p log p}`** beyond
-   Baker's floor.
-3. **Track `C(d)` and the height growth** so the `d → ∞` passage is uniform — the irremovable
-   infinite-base step (the Door-2 native crux). Numerically: compute the smallest `|Σ_{p∈S} m_p log p|`
-   over bounded `S, |m|` (runpod) to see the degradation rate empirically.
+   ∧ RH-relevant.
+3. ~~Track `C(d)`, the `d → ∞` near-zero distribution crux~~ **RESOLVED (2026-06-19):** threshold
+   `σ > ¾`, integer-gap-driven (not Baker), RH-blind — see "C5★ resolved". The work now moves to the
+   **relocated** target in `finite-free-convolution-flow.md`: **single-orbit positivity** of `det H_d`
+   (its Door-2 status, and whether a positivity parent reaches it).
 
 ## Log
 - 2026-06-19 — created in 1-in-progress. Ran the test: `F_pq` (flat/free) and RS-`log` (axis-mode) do
@@ -203,3 +222,9 @@ The refined-C5★ carrier is now pinned — full statement in `finite-free-convo
   bounded-degree↔RH-relevance tension.** Baker-necessity **verdict** (bulk/edge split): load-bearing at
   every fixed `d`, the `d → ∞` limit governed by the near-zero distribution of bounded-support
   `{Σ a_p log p}` beyond Baker's floor (the native crux). GORZ = bulk half; crux = uniform edge half.
+- 2026-06-19 — **C5★ resolved (`d → ∞` worked to conclusion).** Edge coboundary norm converges **iff
+  `σ > ¾`** (explicit-formula coefficient model); controlling bound = **elementary integer-gap**, not Baker;
+  obstruction = consecutive-/balanced-coprime-integer resonances `(M,M−1)`. The norm is a `𝕋^∞`-variance,
+  so **RH-blind** (A1/A2) — `σ=½` non-reducible ⟹ reducibility⟺RH **refuted**. RH content **relocated** to
+  single-orbit positivity of `det H_d` (Pólya–Jensen/GORZ). Lemma R + the structural lemma stand; only the
+  reducibility-as-RH conjecture is refuted. Full analysis: `finite-free-convolution-flow.md`.

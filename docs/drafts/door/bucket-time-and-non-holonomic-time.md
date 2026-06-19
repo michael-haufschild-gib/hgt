@@ -94,6 +94,49 @@ that emergent clock preserves a norm.
   causality = analyticity (Kramers–Kronig): off-line zero = an acausal pole. §5 causal set: arithmetic
   = number+order; RH = the reconstructed ζ-geometry is flat.
 
+## Emergent time = corank ∞ — the native weld (2026-06-19), and the missing physics ingredients
+
+> **The native weld (NOT EMBASSY — it rests on a proven invariant).** The WDW/holography readings above
+> are EMBASSY (Door-1 metaphor). One statement among them is now **native**, because the corank trilogy
+> (#121/#122/#123/#125) post-dates the original mining:
+> **emergent time = corank ∞ = the missing single Frobenius.**
+> - Over `F_q`: corank `1` = one global Frobenius = a **global timelike Killing vector** = a *static*
+>   universe. Time is **given** (the Frobenius is the clock — discrete, trace-class); **no WDW problem of
+>   time**, and every gatekeeper is a theorem (Door-5).
+> - Over `ℚ`: corank `∞` = no single Frobenius = **no global Killing vector** = generic GR = the **WDW
+>   problem of time**; time must **emerge relationally**, the emergent clock being `∂_s` (Connes
+>   modular/thermal flow = the archimedean generator).
+>
+> So the WDW "no external time" (SEED-Y) **is** the corank-∞ / trace-defect / seam — not an analogy to
+> it. "Why time must emerge" and "why ζ is non-holonomic / RH is hard" are the **same fact**. This is the
+> **time-face of `archimedean-corank-collapse` (#128)**: the `∞−1` seam gap = the missing single Frobenius
+> = the missing *global clock*. (→ [[bucket-archimedean-generator]], [[bucket-the-seam-archimedean-obstruction]])
+
+### The missing physics ingredients (EMBASSY → native targets)
+- **(M1) The KMS / modular-temperature structure — the strongest native-able gap.** Bost–Connes is a
+  *rigorous* `KMS_β` system with **β = s** and partition function `ζ(β)`; `∂_s` is its Tomita–Takesaki
+  **modular flow** = the emergent thermal time (Connes–Rovelli). The corpus has only "Hawking temp =
+  Bost–Connes seam temp" (#96 §3) and never uses `β=s`. **Missing:** `σ` = inverse temperature; the FE
+  `s↔1−s` = a **temperature duality**; RH = criticality of the **self-dual modular state**. *Honest
+  subtlety:* Bost–Connes condenses at `β=1` (the pole), while the FE is self-dual at `½` — so the object
+  is the modular structure on the special temperatures `{0,½,1}` (the no-margin pump `L_∞(1)·Res ζ = 1`
+  already sits at `β=1`). The **one physics analogy with a rigorous engine**, so the best candidate to go
+  native. Card: `../pipeline/0-backlog/kms-modular-temperature.md`. (→ [[bucket-archimedean-generator]]:
+  `∂_s` = the modular flow; [[bucket-the-no-margin]]: the `{0,1}` pump.)
+- **(M2) Modern holography — only the RT/entanglement/QEC face is missing.** *Already present:* explicit
+  formula = bulk↔boundary (Selberg trace), RH = unitary boundary CFT, no-margin = **MSS chaos-bound**
+  saturation, prime/μ = a **SYK-like** object (#97 §2–4, #96 §3). *Genuinely absent:* **Ryu–Takayanagi /
+  entanglement-entropy / quantum-error-correction.** Candidate dictionary: a window of zeros = a boundary
+  interval; **pair correlation (Montgomery) = its entanglement two-point function**; **GUE = the
+  maximally-entangled code subspace**; the explicit formula = the QEC **encoding map** writing the prime
+  bulk redundantly on the zero boundary. This is where the *statistics* face (GUE / moments — the C5
+  multiplicative world) meets the gravity picture. [EMBASSY; needs a native object before promotion.]
+- **(M3) The c-theorem / RG monotone.** `Re(s)` is a scale/RG direction; the dBN heat flow is already
+  "the arrow of time, attractor = critical line" (#95) — but the corpus never names the **monotone**. A
+  `c`-function along the `s`-flow whose monotonicity `= Λ_dBN ≥ 0` would upgrade "RH is dynamical, not
+  fine-tuned" toward a theorem-shape (RG irreversibility = the arrow = the attractor). [EMBASSY; the dBN
+  flow supplies a concrete candidate monotone.]
+
 ---
 
 ## Status
@@ -104,16 +147,26 @@ that emergent clock preserves a norm.
   reduce to certified Weil-form facts (the DeWitt pairing = `Q_W`, 1.1e-31).
 - **The genuine TIME stones to keep:** (1) non-holonomic = no native clock (SEED-Y); (2) HP =
   constraint, not Hamiltonian (SEED-Z); (3) `½` = the erosion threshold (G19); (4) `Λ_dBN` = the arrow
-  of time / transcendence clock; (5) the no-margin = clock marginally null / exceptional point.
+  of time / transcendence clock; (5) the no-margin = clock marginally null / exceptional point; **(6)
+  emergent time = corank ∞ = the missing single Frobenius** — the *native* weld (rests on the proven
+  corank trilogy; time-face of `archimedean-corank-collapse` #128), upgrading the WDW reading from
+  EMBASSY to a statement about a proven invariant.
 
 ## Open core / the work package
 Develop **G19 (erosion threshold)** as the field's native dynamical characterization of the critical
 line (the most promising non-EMBASSY item here), and write the **constraint-not-Hamiltonian** reframe
 into the foundations' candidate-G5 reflection. Tie both to the carrier germ ([[bucket-A1-A2-unification-the-carrier]]).
+**New (2026-06-19):** settle the **emergent-time = corank-∞** weld via the time-face of
+`archimedean-corank-collapse` (#128); and pursue **M1 (the KMS / modular-temperature crystallization,
+`kms-modular-temperature.md`)** — the one EMBASSY ingredient with a rigorous engine (Bost–Connes `β=s`),
+hence the best candidate to follow the erosion threshold from metaphor into native math.
 
 ## Cross-references
 - [[bucket-A1-A2-unification-the-carrier]] — A2 is the time content; the carrier's jet = the clock.
 - [[G5-unitarity-gatekeeper]] — HP = the clock's generator; "RH = the clock preserves a norm."
 - [[bucket-the-no-margin]] — the clock is marginally null / the exceptional point.
-- [[bucket-the-seam-archimedean-obstruction]] — the clock `D` is the archimedean place.
+- [[bucket-the-seam-archimedean-obstruction]] — the clock `D` is the archimedean place; the trace defect
+  (no trace / type III) = the **arrow of time** = corank ∞.
+- [[bucket-archimedean-generator]] — `∂_s` = the emergent modular/thermal clock; `archimedean-corank-collapse`
+  (#128) = the **problem-of-time** face (corank ∞ ⟺ no global Killing/Frobenius time); M1 KMS card.
 - [[G3-holonomy-dichotomy]] — the boundary cocycle's reducibility (Avila/DMR) is the dynamics dichotomy.

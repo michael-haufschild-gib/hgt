@@ -11,11 +11,13 @@
   degenerations of the marginal (`σ = ½`) cocycle.
 
 ## What is already proven (the backbone)
-`../2-fully-proven/critical-line-abscissa-of-convergence.md`: `Re = ½` **is** the abscissa of a.s.
-convergence of the random Euler product, and the variance `V(σ) = Σ_p Σ_k p^{-2kσ}/k²` is finite for
-`σ > ½`, `∝ log(1/(2σ−1))` as `σ → ½⁺`, and `~ ½ log log X` at `σ = ½` (Selberg). That is the
-**rigorous, non-circular** core of "erosion," graded BRIDGE. The open work below is to turn it into a
-genuinely **dynamical / native** statement.
+`../0-backlog-lean/critical-line-abscissa-of-convergence.md` (**review fixes applied 2026-06-19 — proven
+on paper, ready for Lean**): `Re = ½` **is** the abscissa of a.s. convergence of the random Euler product,
+and the total second moment `V(σ) = Σ_pΣ_k p^{-2kσ}/k²` is finite for `σ > ½`, blows up like
+`log(1/(2σ−1))` as `σ → ½⁺`, and `~ log log X` at `σ = ½`; the real-part variance `Var(Re 𝓛) = ½V`
+carries the `½` (= Selberg's `½ log log X` for `log|ζ|`). That is the **rigorous, non-circular** core of
+"erosion," graded BRIDGE. The open work below is to turn it into a genuinely **dynamical / native**
+statement.
 
 ## The dynamical reading (the open native content)
 
@@ -89,9 +91,16 @@ Erosion is a statement about the **whole `𝕋^∞`** (a.s. / in distribution), 
 ## Log
 - 2026-06-19 — created in 0-backlog.
 - 2026-06-19 — moved to 1-in-progress. Backbone (`Re=½` = abscissa of a.s. convergence + variance
-  dichotomy) **proven** and split to `../2-fully-proven/critical-line-abscissa-of-convergence.md`.
+  dichotomy) split to `../2-fully-proven/critical-line-abscissa-of-convergence.md`.
   Native conjecture sharpened into 19a (`L=0` above ½) + 19b (zeros = marginal-field degenerations);
   added the A1/A2 / single-realization note.
+- 2026-06-19 — Lean formalizer returned the backbone card to
+  `../0-backlog-lean/critical-line-abscissa-of-convergence.md`: the displayed variance `V(σ)` has
+  `log(1/(2σ−1))` blow-up, while the factor `½` applies to `Re 𝓛`.
+- 2026-06-19 — backbone **review fixes applied**: `V ~ log(1/(2σ−1))` (no ½), the `½` moved to
+  `Var(Re 𝓛)=½V` (exact); divergence direction made explicit via Mertens. Numerically certified
+  (`../../../../computations/2026-06-19-abscissa-normalization-check.txt`). Card now THEOREM (paper) in
+  `0-backlog-lean`, ready for Lean.
 - 2026-06-19 — 19a **proved** and split to `../2-fully-proven/erosion-cocycle-reducibility.md`: the
   Euler cocycle is a bounded `L²`-coboundary iff `σ ≥ ½` (sharp pinch at the line). Door-2 = BRIDGE
   (axis-mode decoupling); the proof yields the **combination-mode C5 criterion**. Open here: 19b.

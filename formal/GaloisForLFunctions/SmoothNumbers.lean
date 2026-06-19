@@ -41,6 +41,19 @@ lemma primeProduct_primeExponentVector {n : ℕ} (hn : n ≠ 0) :
     · rw [Nat.factorization_eq_zero_of_not_prime _ hq,
         Nat.factorization_eq_zero_of_not_prime _ hq]
 
+/-- The logarithm of a nonzero natural number is the finite sum of its prime
+factorization exponents times the corresponding prime logarithms. This is the
+formal version of `log k = Σ_p v_p(k) log p` used in the Stieltjes/continuation
+block card. -/
+theorem log_nat_eq_sum_factorization {n : ℕ} (hn : n ≠ 0) :
+    Real.log (n : ℝ) =
+      (primeExponentVector n).sum fun p k => (k : ℝ) * Real.log (p : ℕ) := by
+  calc
+    Real.log (n : ℝ) = Real.log (primeProduct (primeExponentVector n) : ℝ) := by
+      rw [primeProduct_primeExponentVector hn]
+    _ = (primeExponentVector n).sum fun p k => (k : ℝ) * Real.log (p : ℕ) :=
+      log_primeProduct (primeExponentVector n)
+
 /-- An exponent vector supported on a finite prime set `S`, with every exponent at most `N`. -/
 def supportedBounded (S : Finset Nat.Primes) (N : ℕ) (m : Nat.Primes →₀ ℕ) : Prop :=
   m.support ⊆ S ∧ ∀ p : Nat.Primes, m p ≤ N

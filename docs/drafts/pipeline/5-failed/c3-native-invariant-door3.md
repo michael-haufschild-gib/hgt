@@ -39,9 +39,16 @@ The independent native invariant does **not** exist. Worked out in full
   proven BRIDGE; native closure ⟺ C5★."
 
 ## What this rules out (so it is not retried)
-Do **not** re-open C3 as a standalone target via: the curvature `F_{pq}`, the joint conjugacy / character
-variety, word-traces, or the qualitative `Λ={0}` gluing class. All are character-variety / `ℤ^{(P)}`-
-cohomology parents (BRIDGE). The only live route is the quantitative arithmetic layer = C5★.
+Do **not** re-open C3 as a standalone target via: the *constant-matrix* curvature `F_{pq}`, the joint
+conjugacy / character variety, word-traces, or the qualitative `Λ={0}` gluing class. All are
+character-variety / `ℤ^{(P)}`-cohomology parents (BRIDGE). The only live route is the quantitative
+arithmetic layer = C5★.
+
+**What is allowed (follow-ups, 0-backlog):** the *structural* packaging
+`../0-backlog/multi-q-shafarevich-gluing-group.md` (`Ш` — study the object, its arithmetic part vs C5★)
+and the *coordinate-dependent* curvature `../0-backlog/cross-prime-curvature-reducibility.md` (where the
+arithmetic actually lives). Neither contradicts the BRIDGE finding — they target `Ш_arith`/C5★, not the
+combinatorial layer.
 
 ## Log
 - 2026-06-19 — created in 0-backlog (branchhood criterion C3).

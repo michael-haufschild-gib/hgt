@@ -49,3 +49,9 @@ import GaloisForLFunctions.SuperzetaResolvent
 import GaloisForLFunctions.SatoTateMoment
 import GaloisForLFunctions.FunctionFieldFE
 import GaloisForLFunctions.FECarrier
+import GaloisForLFunctions.GluingWitness
+import GaloisForLFunctions.ZeroEstimate
+import GaloisForLFunctions.StieltjesWeld
+import GaloisForLFunctions.FriableAuxiliary
+import GaloisForLFunctions.C5JensenPrimeKernel
+import GaloisForLFunctions.FunctionFieldDegeneration

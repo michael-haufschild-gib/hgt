@@ -10,6 +10,7 @@
 /formal/.lake
 
 agentchattr/
+.agentchattr/
 logs/
 docs/prompts/
 docs/reports/
