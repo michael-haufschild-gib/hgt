@@ -1,0 +1,11 @@
+Laurent coeffs of zeta_{2,3} at s=0:
+ s^-2 : 1.3131976182771436031  vs 1/(L2 L3) = 1.3131976182771436031
+ s^-1 : 1.1764671337579004005  vs (L2+L3)/(2 L2 L3) = 1.1764671337579004005
+ s^0  : 0.43465768785771780155  vs (L2^2+L3^2)/(12 L2 L3)+1/4 = 0.43465768785771780155
+
+corank-2 gamma_0 generates ratio L2/L3 (transcendental by Gelfond-Schneider, 2^(L3/L2)=3):
+  PSLQ[gamma_0, 1] (is it rational?): NO -> irrational/transcendental
+  recovered e1=L2+L3 = 1.791759469228055  (true: 1.791759469228055 )
+  recovered e2=L2 L3 = 0.761500010418808986  (true: 0.761500010418808986 )
+=> constants generate Q(e1,e2)=Q(L2+L3,L2 L3); trdeg=2 <=> {log2,log3} alg. indep (open Schanuel).
+=> FLOOR proven: gamma_0 transcendental (Gelfond-Schneider via log2/log3). APEX open.

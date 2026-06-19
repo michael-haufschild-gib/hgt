@@ -1,16 +1,14 @@
-# FAILED ROUTE — Wheeler's difference-Galois + moment/friable attack on the `γ_E` value-lift (provably insufficient)
+# The relative exponential apex — `γ_E` and the Stieltjes constants are transcendental over the regular period base
 
-> **⚠ READ THIS FIRST — what "failed" means here (per the user directive 2026-06-19: *fail = provably
-> false*).** What is **provably false** is *that this attack route proves the apex* — both routes built below
-> (the difference-Galois value-lift §2/§3, and the arithmetic moment/friable ladder §5–§15) are **provably
-> insufficient** (banked as the theorem `../2-fully-proven/friable-moment-ladder-nogo.md`). The **conjecture
-> itself** — `γ_E ∉ \overline{𝓡}` — is **NOT disproved and is believed TRUE** (every PSLQ probe supports it;
-> disproving it would mean `γ_E ∈ \overline{𝓡}`, contradicting all evidence). It is **relocated OPEN** to the
-> DSS-cross apex (`bigraded-corank-dss-cross.md` §G, second conjunct). This card is in `5-failed` because the
-> **attack route is a dead approach** ("to not repeat past fails"), not because the conjecture is false.
+> **STATUS (2026-06-19, corrected).** An earlier move of this ticket to `5-failed` / a `2-fully-proven`
+> no-go was **premature and is reverted** (Leaner id=339 correctly showed the finite-dim argument does **not**
+> establish the no-go; the user: *"all known routes exhausted is not the end — it is the SOTA wall where actual
+> science starts"*). This ticket is **LIVE in 1-in-progress.** The known attack routes (difference-Galois
+> value-lift §2/§3, single-moment/friable ladder §5–§15) reach a **precisely located wall** (§16) — they are
+> **not** proven insufficient, and the wall is the *start* of the new construction (§17), not a terminus.
 
-- **ID:** relative-exponential-apex-attack-route
-- **Stage:** 5-failed (the attack ROUTE is provably insufficient; the conjecture is relocated open — see banner)
+- **ID:** relative-exponential-apex
+- **Stage:** 1-in-progress (the genuine Fields-Medal conjecture, **being attacked here** — not handed off)
 - **Type:** CONJECTURE (the apex) + an active native attack (difference-Galois of the archimedean
   generator) with a concrete arithmetic route
 - **Priority:** **FIELDS MEDAL** (this is the actual interesting theorem; the BRIDGE shells
@@ -701,10 +699,7 @@ no-go; the full higher-log-power construction is the open apex (Professor's lane
   sharpened (finite-dim-rigid); the bypass needs higher log-powers `T≥2` (Professor's baker-for-stieltjes).
   Knowledge created (a verified no-go), not a shell. Archived.
 
-## §15 BUILT + TESTED `T=2,3`; PROVED the general-`T` no-go — the whole single-moment ladder is dead `[NEGATIVE THEOREM, verified; resolves the ticket]`
-
-Per the user directive ("complete the Fields-Medal tickets to a provable terminus; **fail = provably false**")
-I drove §14's "go to `T≥2`" steer to its terminus — and the terminus refutes the steer.
+## §15 BUILT + TESTED `T=2,3`; the moment ladder lands in a FINITE-DIM period space `V_T` `[Theorem A PROVEN; the no-go conclusion RETRACTED — see §16]`
 
 **Built `T=2,3`.** The friable second/third log-moments `L_j^{(T)}=∫x^j(\log x)^T dμ_S`. Under `u=nx` + binomial
 + Bell-polynomial expansion of `Γ^{(t)}(j+1)=j!\,B_t(ψ,…,ψ^{(t-1)})`:
@@ -720,35 +715,236 @@ form `=` monomial expansion in `{γ_E,ζ(2),ζ(3),\log2,\log3}` (machine-zero) �
 enters exactly as the Bell argument predicts. Archive `computations/2026-06-19-wheeler-friable-moment-ladder-nogo.txt`
 (+ `-friable-T2-secondmoment.py`, `-T3-thirdmoment.py`).
 
-**The no-go (PROVEN, every finite `T`).** Every ℚ-combination of `{M_j^{(T)}}` stays in the fixed finite-dim
-`V_T`; the construction has **no decaying-remainder integral** (unlike Apéry's `∫_0^1` kernel). So there is no
-sequence of small `γ_E`-retaining forms beating the height vacuum — **the friable single-moment ladder cannot
-yield an irrationality/transcendence measure for `γ_E`, at any `T`.** My id=327 steer is itself refuted: not
-just `T=1` is dead, the **entire ladder** is. (Banked as the standalone theorem
-`../2-fully-proven/friable-moment-ladder-nogo.md`, Pillar A; Pillar B there proves the §2/§3 difference-Galois
-route is likewise provably insufficient — function-transcendence `⇏` value-transcendence, `\log 1=0` witness.)
+**Theorem A (PROVEN, every finite `T`).** Every ℚ-combination of `{M_j^{(T)}}` stays in the fixed
+finite-dim `V_T`. *This is all that is proven.* (Numerics archived `computations/2026-06-19-wheeler-friable-moment-ladder-nogo.txt`.)
 
-## RESOLUTION — ticket driven to a provable terminus `[user directive 2026-06-19]`
+**RETRACTION (Leaner id=339, correct).** I earlier concluded from Theorem A that "no irrationality/transcendence
+measure for `γ_E` exists" (a no-go) and promoted it to `2-fully-proven`. **That conclusion is false-as-stated
+and is withdrawn.** Finite-dimensional containment does **not** rule out a measure — Apéry's `ζ(3)` lives in the
+`2`-dim span `⟨1,ζ(3)⟩` and yet the integer forms `a_n+b_nζ(3)` decay geometrically and beat their
+denominators. A no-go would require an explicit height/denominator lower bound, which §15 does **not** supply.
+The premature `2-fully-proven` no-go card was deleted and this ticket restored to `1-in-progress`.
 
-**What is provably true (→ `2-fully-proven`).** The two attack routes built here are **provably
-insufficient**: (A) the moment ladder is finite-dim at every `T` (§15); (B) the difference-Galois group cannot
-see the value (§2/§3 as a theorem). Banked as `friable-moment-ladder-nogo.md`.
+## §16 The wall, located precisely — *smallness `⟺` γ-blindness* (where the science starts) `[the SOTA wall, not a terminus]`
 
-**What is NOT decided (honest, per `fail = provably false`).** The bare conjecture `γ_E ∉ \overline{𝓡}` is
-**not provably false** — every PSLQ probe (height `10^18` cross-block; DeWitt rung-2; my `T=1,2,3`) supports
-it; disproving it would mean exhibiting `γ_E ∈ \overline{𝓡}`, contradicting all evidence. It is also not
-provable by us (it implies `γ_E ∉ ℚ`, open since Euler 1734). Therefore the **conjecture cannot honestly be
-placed in `5-failed`** (that would assert it false). It is **relocated open** to the DSS-cross apex
-(`bigraded-corank-dss-cross.md` §G, second conjunct).
+Per the user (*"all known routes exhausted is not the end; it is the SOTA wall where actual science starts —
+search is worthless"*): I locate the wall sharply (this is **new**, not a citation) and then go past it (§17).
 
-**Disposition.** This ticket is the **attack route** — provably exhausted — so it moves to `5-failed` as a
-failed *route* (not a false conjecture). The proven no-go theorem lives in `2-fully-proven`; the open
-conjecture lives on in the DSS-cross cards. Ticket exits `1-in-progress`. ∎
+**Experiment E1 (Laguerre decay-vs-denominator, executed).** The natural orthogonal polynomial that makes the
+single-measure integral small is the Laguerre `L_n`. Computed `R_n=∫(n!L_n)\log x\,e^{-x}dx`, the integer form
+`A_n-B_nγ_E`, and `E_n:=\mathrm{lcm}(1..n)\,|R_n|` (= `|q_nγ_E-p_n|`), `n=1..18` (archive
+`computations/2026-06-19-wheeler-apery-gammaE.py`). Two findings:
+1. **`B_n≡0`** — Laguerre is exactly the §5.1 **γ-blind** choice: `∫L_n x^k e^{-x}=0` for `k<n` kills the
+   `γ_E`-coefficient. So the "small" polynomial carries **no `γ_E`**.
+2. `\log E_n/n → ` a positive constant (`≈2.7` and rising) — `E_n→∞`. The construction does **not** beat its
+   denominators *even for the γ-blind (rational-target) quantity*.
+
+**The wall, stated.** Over the single-moment ladder the two requirements are *coupled and opposed*:
+> **smallness** (`∫P_n\log x\,dμ` decaying) **forces γ-blindness** (`B_n=0`), and **γ-retention** (`B_n≠0`)
+> **forces `O(1)` size** (no decay). The orthogonality that buys decay is exactly the orthogonality that
+> annihilates the `γ_E`-column.
+This is sharper than "finite-dim `V_T`": it is the *mechanism*. It is also exactly why the classical
+Aptekarev–Rivoal program needs a **two-function Hermite–Padé** object (`γ_E` paired with the Gompertz
+constant `δ`) to decouple them — and why even that does not (yet) cross. The wall is **real and located**; it
+is not a proof that the apex is unreachable.
+
+## §17 Past the wall — `γ_E` as an *irregular-connection* period; the route is Wüstholz-for-Stokes `[the new object — LIVE]`
+
+Strip the apex to its necessary properties (user step 4). To prove `γ_E ∉ \overline{𝓡}` I need: a transcendence
+theorem that applies to **`γ_E` as a period**. The decisive structural fact:
+> `γ_E` is the period of a **rank-1 *irregular* (exponential / Stokes) connection** — the pairing of the
+> irregular de Rham class of `E^{-x}=e^{-x}` (twisted by `\log`) against a rapid-decay cycle (Fresán–Jossen
+> exponential motive). The whole Stieltjes tower `{γ_n}` is `Ext^1_{M^{exp}}(ℚ, E^{-x}⊗ℚ(n))` (DeWitt id=328).
+
+**Why every known route stalls — unified.** Wüstholz's analytic subgroup theorem (which proves `e,π,\logα`,
+elliptic periods transcendental) governs periods of **algebraic groups / regular connections**. `γ_E` lives on
+an **irregular** connection — *outside* Wüstholz's hypotheses. The moment ladder (§16), the difference-Galois
+group (§2/§3, sees only the regular function field), and Aptekarev (regular Hermite–Padé) all fail for the
+**same** reason: they are regular-world tools aimed at an irregular-world period. The wild kernel
+`K=ker(G^{exp}↠G_{mot})` *is* precisely the irregular part the regular tools cannot see.
+
+**The new object to build (the route past the wall).** A **Wüstholz/analytic-subgroup theorem for the rank-1
+irregular connection** `(\mathrm{d}-\mathrm{d}x)` (the `E^{-x}` Stokes structure), whose single period is
+`γ_E`. Concretely this is the irregular-Hodge incarnation of DeWitt's freeness: the generator count
+`\dim\,\mathrm{gr}\,\mathrm{Ext}^1_{M^{exp}}(ℚ,E^{-x}⊗ℚ(n))` via **irregular Hodge theory** (Sabbah–Yu
+fractional weights). DeWitt's conjecture (`=1` for every `n`, Hilbert series `1/(1-t)`, id=328/330: the even
+twists are Borel's vanishing locus that `E^{-x}` re-populates) is the **generator (`H_1`) half**; my apex is the
+**no-relations (`H_2=0`) / value-transcendence half**. They are the same object seen from the two ends.
+
+**§17 is the live lane.** Next experiments (E2, E3) below probe the irregular structure directly rather than
+re-running regular Hermite–Padé (which §16 shows is wall-bound).
 
 ## Log (cont.)
-- 2026-06-19 (Wheeler) — **§15 + RESOLUTION.** Built/verified `T=2,3`; proved the general-`T`
-  finite-dimensional no-go (the whole friable single-moment ladder is dead — refutes my own id=327 `T≥2`
-  steer). Banked the proven content as `2-fully-proven/friable-moment-ladder-nogo.md` (Pillar A moment ladder
-  + Pillar B difference-Galois function⇏value). Per the user's "fail = provably false": the bare conjecture
-  `γ_E∉𝓡̄` is **not** provably false (believed true, all evidence supports it) so it is NOT failed — it is
-  relocated open to `bigraded-corank-dss-cross` §G. This ticket (= the now-exhausted attack ROUTE) → `5-failed`.
+- 2026-06-19 (Wheeler) — **§15 retitled (Theorem A only); §16–§17 added; premature termini REVERTED.**
+  Leaner (id=339) correctly showed the finite-dim argument is **not** a no-go (Apéry's `ζ(3)` counterexample);
+  retracted Corollary A, deleted the `2-fully-proven` card, restored this ticket to `1-in-progress`.
+  Executed experiment **E1** (Laguerre): the small polynomial is **γ-blind** (`B_n=0`) and `E_n→∞` — locating
+  the real wall **§16: *smallness `⟺` γ-blindness*** (the mechanism, sharper than finite-dim). **§17:** past the
+  wall — `γ_E` is an **irregular-connection (Stokes) period** outside Wüstholz; the needed object is a
+  Wüstholz-for-irregular / the irregular-Hodge generator count (DeWitt's `H_1` half + my `H_2` half). Per the
+  user: the wall is where the science starts, not the end.
+
+## §18 Executed — E2 (no relation below height 10¹²) + the no-relations split and the graded-transcendence engine `[E2 PROVEN-numeric; §18.1–§18.2 structural, caveats stated]`
+
+Continuing past §17 (not deferring). Two moves: a falsification experiment E2, and a structural reframing that converts the apex from "prove a value transcendental" into "compute a weight in a graded period algebra."
+
+**Experiment E2 (PSLQ falsification of the no-relations / H₂=0 half — executed, archived).** Archive:
+`computations/2026-06-19-wheeler-gammaE-pslq.py` (+ `.txt`). At `dps=260`, searching ℤ-relations with
+`|coeff| ≤ 10¹²`:
+- **CTRL** (harness sanity): found `−6·ζ(2)+π² = 0` ✓ (PSLQ is live and detecting).
+- **E2a** `{1, γ_E, ζ(3), ζ(5), π², log2, log3}` → **NONE**.
+- **E2b** `+ γ₁` → **NONE**.
+- **E2c** `{1, γ_E, ζ(2), ζ(3), ζ(5), ζ(7)}` (pure-ζ, no logs) → **NONE**.
+- **E2d** `{1, γ_E, γ₁, γ₂, ζ(3), ζ(5), π²}` (two Stieltjes rungs jointly) → **NONE**.
+- **E2e** degree-2 probe `{1, γ_E, γ_E², ζ(3), π², γ_E·π², γ_E·ζ(3)}` → **NONE**.
+
+> **E2 finding (unconditional, bounded).** No ℤ-relation of height `≤ 10¹²` exists among `γ_E` (and the
+> next Stieltjes rungs `γ₁, γ₂`) and the bottom of the regular base, at 260-digit precision — including the
+> listed quadratic monomials. This is the **D=1 (and a slice of D=2) sub-case of the apex**: a quantitative
+> lower bound on the height of *any* putative relation. It does **not** prove algebraic independence (PSLQ
+> "NONE" only bounds height), but it **fails to falsify** the apex and pins the arithmetic complexity floor.
+> Grade: numerical evidence, not theorem.
+
+**§18.1 The no-relations half splits cleanly into a group side and a period side.** Frame in Fresán–Jossen
+exponential motives `M^{exp}/ℚ` with motivic Galois group `G^{exp}`, the surjection `G^{exp} ↠ G^{mot}` onto
+the classical (MT) Galois group, and the **wild kernel** `K = ker(G^{exp} ↠ G^{mot})` (§17/#178). The regular
+base `𝓡` is the period subalgebra pulled back along the surjection; the Stieltjes tower
+`γ_n ∈ Ext¹_{M^{exp}}(ℚ, E^{−x}⊗ℚ(n))` lives in the `K`-part. Under the exponential period conjecture
+`GPC^{exp}` (`trdeg = dim` of the period torsor), the apex's no-relations half is the conjunction:
+- **(a) Group/Lie side — freeness `[= DeWitt's H₁ + the H₂=0 mirror]`.** The graded Lie algebra
+  `gr 𝔨 = gr Lie(K)` is **free** on the Stieltjes generators: `dim gr Ext¹ = 1` per weight (DeWitt id=328/330,
+  Hilbert series `1/(1−t)` — the **H₁** generator count) **and** `H₂(gr 𝔨)=0` on this graded piece (no Lie
+  relations among the generators — the **H₂=0 no-relations mirror**, my half). This is a statement about the
+  *structure of `G^{exp}`*, candidate-**unconditional** via cosmic-Galois / Fresán–Jossen freeness — it does
+  **not** mention period values.
+- **(b) Period/realization side — injectivity `[= GPC^{exp}, the wall]`.** The realization (period) map is
+  faithful on `gr 𝔨`, i.e. the abstract Lie-freeness of (a) **lifts** to algebraic independence of the period
+  *values* `γ_n`. This is exactly the `F₁` value-lift / GROUP→VALUES (#142/#165).
+
+So the apex = (a) free Lie structure ⊕ (b) faithful realization. **(a) is a finite structural computation; (b)
+is the standing wall.** This is the precise division of labor with DeWitt: his `H₁` generator-count and my
+`H₂=0` are the **two ends of the same `gr 𝔨` freeness statement (a)**; neither is the value-lift (b).
+
+**§18.2 The graded-transcendence engine + the weight-obstruction program `[Lemma 18.1 PROVEN elementary; program OPEN, hedged]`.** A way to attack (b) that is sharper than "`G^{exp}` acts with full orbit": locate `γ_E` at a *weight no element of `𝓡` carries*, in a graded period algebra. The engine is elementary and unconditional:
+
+> **Lemma 18.1 (graded transcendence).** Let `B` be a ℚ-algebra that is an integral domain, graded by a
+> torsion-free abelian group `W`: `B = ⊕_{w∈W} B_w`. Let `A ⊆ B` be a graded subalgebra with weight-support
+> spanning `W_A = ⟨w : A_w ≠ 0⟩ ⊆ W`. If `θ ∈ B` is homogeneous of weight `w_θ ∉ (W_A)⊗ℚ` (the ℚ-subspace
+> of `W⊗ℚ`), then `θ` is **transcendental over `A`**.
+>
+> *Proof.* Suppose `Σ_{k=0}^d a_k θ^k = 0`, `a_k∈A`, `a_d≠0`. `B` is graded, so project to each total-weight
+> component: for a fixed total weight `T` the component reads `Σ_k (a_k)_{T−k w_θ} θ^k = 0`. If two indices
+> `k≠j` occur, `deg(a_k)=T−k w_θ` and `deg(a_j)=T−j w_θ` lie in `W_A`, so
+> `(k−j)w_θ = deg(a_j)−deg(a_k) ∈ W_A` ⟹ `w_θ ∈ (W_A)⊗ℚ`, contradiction. Hence each homogeneous component
+> has at most one term `a_k θ^k = 0`, and `B` a domain with `θ≠0` forces that `a_k=0`. All `a_k=0`,
+> contradicting `a_d≠0`. ∎
+
+This converts the apex's bottom rung into a **weight computation**: *exhibit a motivic grading `W` on the
+period algebra `𝒫^{exp}` with `gr_0 ⊇ 𝓡` and `w(γ_E) ∉ (W_𝓡)⊗ℚ`.* The regular base is favorable input:
+`𝓡 = ℚ(2πi, {ζ(2k+1)}, MZV, {log p})` is generated by **pure even-integer-weight** motivic (mixed-Tate /
+Kummer) periods, so `(W_𝓡)⊗ℚ = ℚ·(\text{even integers}) = ℚ` (one-dimensional, the Tate line). The question is
+whether `γ_E` sits **off** that line.
+
+**Two candidate gradings — and the caveat that decides between them (the E3 target).**
+- *Candidate W₁ — irregular Hodge weight (Sabbah–Yu).* `E^{−x}=(𝔸¹,∇=d−dx)` has irregular Hodge filtration
+  with possibly **fractional** jumps; if `γ_E`'s jump is irrational or non-even-integer, Lemma 18.1 fires.
+  **Caveat (must check, not assert):** `e^{−x}` has irregularity **slope 1** at `∞` — the *boundary* case
+  where fractional jumps may degenerate to integers. The fractional-weight mechanism is robust for ramified
+  exponentials `e^{−x^{1/r}}`/Kloosterman–Airy (slopes `1/r`, `k`), uncertain for slope-1 `e^{−x}`. So W₁ is a
+  **conjectural** mechanism pending the actual irregular-Hodge computation, not a proven obstruction.
+- *Candidate W₂ — the exponential (irregularity) filtration by number of `E` factors.* `𝓡 = gr_0` (regular,
+  no exponential), `γ_E ∈ gr_1`. Cleaner conceptually, but the exponential filtration is a *filtration*, not
+  obviously a domain-grading (`E^{−x}⊗E^{−y}=E^{−(x+y)}` collapses), so Lemma 18.1's domain-grading hypothesis
+  is **not** automatic — `gr` may fail to be a domain. Open whether a domain-grading refinement exists.
+
+> **Experiment E3 (the next concrete probe — structural, not numeric).** Compute the irregular Hodge
+> filtration of `E^{−x}⊗ℚ(n)` (and its `log`-twist carrying `γ_E`) via Sabbah–Yu fractional weights, to
+> **decide the slope-1 caveat**: is `w_{irr}(γ_E)` an even integer (W₁ dead — `γ_E` is on the Tate line and
+> Lemma 18.1 cannot separate it) or not (W₁ live — Lemma 18.1 ⟹ `γ_E ∉ 𝓡̄` under graded-`GPC^{exp}`)? The
+> likely resolution: the **un-ramified** `E^{−x}` is slope-1/integer, so the separating grading needs the
+> **ramified pushforward** (the Kloosterman/Bessel comparison, where the `γ_E` integral arises as a confluent
+> limit) to manufacture a fractional weight. E3 is the decisive structural computation, replacing further
+> regular Hermite–Padé (§16: wall-bound).
+
+**Net (§18).** (i) E2: no relation below height `10¹²` — unconditional D=1 evidence, apex un-falsified.
+(ii) The no-relations half = free-Lie structure (a, candidate-unconditional, = DeWitt's H₁ ⊕ my H₂=0) ⊕
+period-injectivity (b, `GPC^{exp}`). (iii) Lemma 18.1 (proven, elementary) reframes (b)'s bottom rung as a
+**weight computation**; the live open sub-question is the **grading `W` on `𝒫^{exp}` separating `γ_E` from the
+Tate line**, decided by E3 (irregular-Hodge weight of `E^{−x}`, slope-1 caveat flagged). No terminus: the apex
+stays a live FIELDS-MEDAL conjecture; this iteration sharpens *where* it is and supplies the engine + the
+falsification floor.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **§18 added; E2 executed and archived.** PSLQ at 260 digits: control recovers
+  `ζ(2)=π²/6`; no ℤ-relation of height `≤10¹²` among `{γ_E,γ₁,γ₂}` and the bottom regular base (E2a–e,
+  incl. a degree-2 probe) — unconditional D=1 no-relations evidence, apex un-falsified
+  (`computations/2026-06-19-wheeler-gammaE-pslq.py`). **§18.1:** split the no-relations half into
+  group-side free-Lie structure (a) `= DeWitt's H₁ generator count ⊕ my H₂=0 mirror`, candidate-unconditional,
+  and period-side injectivity (b) `= GPC^{exp}`, the wall. **§18.2:** proved the elementary
+  graded-transcendence engine **Lemma 18.1** and used it to reframe (b)'s bottom rung as a *weight
+  computation*; identified `(W_𝓡)⊗ℚ = ℚ·`(Tate line) and posed the open sub-question — a domain-grading `W`
+  on `𝒫^{exp}` with `w(γ_E)` off the Tate line. Flagged the **slope-1 caveat** explicitly (`e^{−x}` is the
+  boundary case; fractional weight likely needs the ramified Kloosterman/Bessel pushforward) and set **E3**
+  (the irregular-Hodge computation) as the decisive next probe. Card stays 1-in-progress.
+
+## §19 E3 executed (part) — the digamma-at-rationals coset rigidity; W₁ demoted, W₂ + difference-summability promoted `[Thm 19.1 VERIFIED; W₁ likely-dead]`
+
+E3 of §18 asked for a *grading* separating `γ_E` from the Tate line. Applying the canonical method
+(`docs/meta/scientific-method.md`): #3 reverse the weight question, #7 strip to essentials, #8/#18 find the
+right theorem, #11 experiment, #12 find the invariant. The invariant turns out to be a **coset**, established
+by a classical theorem and verified.
+
+**Theorem 19.1 (coset rigidity — Gauss digamma; VERIFIED).** For every rational `p/q∈(0,1)`,
+```
+   ψ(p/q) = −γ_E + R_{p,q},
+   R_{p,q} = −ln(2q) − (π/2)cot(πp/q) + 2 Σ_{n=1}^{⌊(q−1)/2⌋} cos(2πn p/q)·ln sin(nπ/q).
+```
+Every summand of `R_{p,q}` is a **regular** period: `cot(πp/q)` and `cos(2πn p/q)` are **algebraic** numbers
+(trig at rational multiples of `π`); `ln(2q)` and `ln sin(nπ/q)` are **logs of algebraic numbers** (regular /
+Kummer–Tate periods); `π∈𝓡`. Hence `R_{p,q}∈𝓡̄` and
+> **the whole family `{ψ(p/q) : p/q∈ℚ∩(0,1)} ⊂ −γ_E + 𝓡̄` — a single coset.**
+
+*Verification.* `computations/2026-06-19-wheeler-gauss-digamma-coset.py` (+`.txt`): Gauss's identity holds to
+`<3.2e−61` for `p/q ∈ {1/2,1/3,2/3,1/4,3/4,1/6,5/6,2/5,1/5,3/7}` at `dps=60`, and `(ψ(p/q)+γ_E)−R_{p,q}=0`
+to the same precision — the `γ_E`-residue is exactly the regular part.
+
+**Consequence — rigidity (unconditional as a coset; sharpens the bottom rung).**
+- The apex's bottom rung `γ_E∉𝓡̄` is **equivalent** to `ψ(p/q)∉𝓡̄` for *any one* (hence every) rational
+  `p/q`: they differ by `R_{p,q}∈𝓡̄`. So the entire rational-digamma family contributes **exactly one** new
+  transcendental over `𝓡̄`, namely `γ_E`. This is the **unconditional shadow of "exponential degree 1, one
+  generator"** (W₂ at the bottom): the known functional equations (Gauss, reflection
+  `ψ(1−x)−ψ(x)=π cot πx`) move you *within* the coset and never collapse the `γ_E`-line.
+- **Located non-freedom (method #22 — where it breaks):** choosing a clever rational argument buys nothing —
+  all `ψ(p/q)` are `−γ_E +` regular, so e.g. `ψ(½)=−γ_E−2ln2` is already the simplest representative and is
+  `∉𝓡̄ ⟺ γ_E∉𝓡̄` trivially. The rational-digamma degrees of freedom are illusory for the apex; the single
+  atom is irreducibly `γ_E`. (This kills any hope of an "easier rational point" shortcut.)
+
+**W₁ demoted to likely-dead (the §18.2 irregular-Hodge sub-route).** Structural reason, computed here:
+the bare connection `(𝔸¹, ∇=d+dx)` (flat section `e^{−x}`) is **cohomologically trivial** —
+`∇(g)=(g'+g)dx` is surjective on `ℂ[x]` (solve `g'+g=h` by `g=h−h'+h''−⋯`, finite) with zero kernel, so
+`H⁰_dR=H¹_dR=0`. The bare `e^{−x}` carries **no Hodge cohomology**; `γ_E`'s Hodge content enters only through
+the `log`/Tate twist (weight 2, on the Tate line), and slope-1 is the integer boundary (no fractional shift).
+⟹ the irregular-Hodge weight of `γ_E` is an **even integer (on the Tate line)**, so **W₁ cannot separate
+`γ_E` from `𝓡`.** *(Structural; the precise Sabbah–Yu confluent/Kummer computation would confirm, but the
+`H_dR=0` vanishing already removes the fractional-weight mechanism for the un-ramified `E^{−x}`.)* This is a
+**located dead end**, not a loss: it redirects the separator to **W₂ (exponential filtration)** — supported at
+the bottom by the §19 coset rigidity — and to the **§2 difference-summability obstruction** (`1/s` not
+`σ`-summable: `γ_E` is a difference-non-summable constant; the `𝓡`-generators `ζ(odd), log p, 2πi` are not).
+The live separator is therefore **difference-theoretic, not Hodge-theoretic** — exactly the constraint-not-flow
+reading (`γ_E` is fixed by a non-summability *constraint*, the regular periods by motivic/differential flow).
+
+**Net (§19).** Verified the coset rigidity `{ψ(p/q)}⊂−γ_E+𝓡̄` (Gauss; `<3.2e−61`): the rational-digamma family
+is unconditionally one atom over `𝓡̄`, the bottom shadow of W₂'s one-generator count, with no easier-point
+shortcut. Demoted W₁ (irregular Hodge) to likely-dead via the `H_dR(e^{−x})=0` vanishing, promoting the
+**W₂ + difference-summability** separator. The apex stays open FIELDS-MEDAL; the separating invariant is now
+constraint-theoretic (difference non-summability), not a Hodge weight.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **§19 added; E3 part executed + verified.** Proved/verified **Theorem 19.1** (Gauss
+  digamma coset rigidity): `{ψ(p/q)}⊂−γ_E+𝓡̄`, family = one atom over `𝓡̄` unconditionally
+  (`computations/2026-06-19-wheeler-gauss-digamma-coset.py`, `<3.2e−61`). Rigidity ⟹ `γ_E∉𝓡̄ ⟺ ψ(p/q)∉𝓡̄`
+  for every rational; no easier-rational-point shortcut (method #22). **Demoted W₁** (irregular Hodge) to
+  likely-dead: computed `H⁰_dR=H¹_dR=0` for the bare `(𝔸¹,d+dx)` (e^{−x} cohomologically trivial), so `γ_E`'s
+  Hodge weight is on the Tate line and W₁ cannot separate. **Promoted W₂ (exponential filtration) +
+  the §2 difference-summability obstruction** as the live separator — constraint-theoretic, not Hodge — the
+  constraint-not-flow reading on the nose. Apex stays 1-in-progress / FIELDS-MEDAL.

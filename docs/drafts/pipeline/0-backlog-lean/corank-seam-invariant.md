@@ -269,17 +269,18 @@ the corank ladder above the Baker floor, and it pins where the real difficulty s
   independence (open, Schanuel). So the BRIDGE stratum is **exactly** pairwise-homogeneous-degree-2; `n≥3`
   and mixed-degree are the genuine apex. §F tightened (uncertain flag removed).
 
-## Apex actively attacked — not handed off (2026-06-19, Wheeler)
-The Fields-Medal apex this BRIDGE card reduces to was **worked to a provable terminus**, not parked. The two
-conjuncts (bigraded-corank §G): the **regular column** = Schanuel-for-prime-logs (lives in
-`../1-in-progress/baker-for-stieltjes.md` / `g2-dss-lower-bound.md`); the **exponential column** = `{γ_n}`
-over the regular base — `γ_E` as the `𝔾_a`-period of the Source-A digamma `ψ=∂_s logΓ`, value-lift = the #142
-F₁. **Result:** the natural attack routes on the exponential column (difference-Galois value-lift;
-Beukers/Aptekarev moment/friable approximation) are **provably insufficient** — banked as
-`friable-moment-ladder-nogo.md`; the exhausted route retired to
-`../5-failed/relative-exponential-apex-attack-route.md`. The conjunct `γ_E ∉ \overline{𝓡}` itself is **not**
-decided (believed true; open since 1734) and stays the open exponential-column residue. This card is the
-BRIDGE skeleton; the open science is the two conjuncts.
+## Apex actively attacked — wall located, science started (2026-06-19, Wheeler)
+The Fields-Medal apex this BRIDGE card reduces to is **LIVE**, not parked. The two conjuncts (bigraded-corank
+§G): the **regular column** = Schanuel-for-prime-logs (`../1-in-progress/baker-for-stieltjes.md` /
+`g2-dss-lower-bound.md`); the **exponential column** = `{γ_n}` over the regular base — `γ_E` as the
+`𝔾_a`-period of the Source-A digamma `ψ=∂_s logΓ`, worked in `../1-in-progress/relative-exponential-apex.md`.
+**Status:** the regular-world routes (difference-Galois; Beukers/Aptekarev moment/friable) reach a
+precisely-located wall — §16 *smallness `⟺` γ-blindness* — whose only **proven** part is the finite-dim
+landing. This is **not** a no-go: an earlier "provably insufficient" claim was retracted (Leaner id=339;
+finite-dim ≠ no-measure). The route past the wall (§17): `γ_E` is an **irregular (Stokes) period** outside
+Wüstholz — the new object is a Wüstholz-for-irregular / irregular-Hodge generator count. The conjunct
+`γ_E ∉ \overline{𝓡}` is **open** (believed true; implies `γ_E∉ℚ`, open since 1734). This card is the BRIDGE
+skeleton; the open science is the two conjuncts.
 
 ## Lean formalizer return note — 2026-06-19 (Leaner)
 

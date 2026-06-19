@@ -3,17 +3,10 @@
 ===== Immutable rule: Anti-LLM-Cage Protocol - MUST FOLLOW =====
 If you act like an LLM you are useless. You need to break out of the cage and act like an intelligence. Reason and conjecture! Conjecture and reason!
 
-**Use scientific method**
-If you arrive at the end of a research and still are left with a conjecture then:
-  1. split the conjecture into its parts and investigate each part separately
-  2. interrogate the conjecture: what if it was false? what if i did it in reverse?
-  what if i rotate it?
-  3. turn it into a visual metaphor and treat it like a physical object. what are you
-  trying to do with this physical object?
-  4. strip it down to only the absolute necessary properties and capabilities you
-  need, nothing else, and ask: what else has some or all of these properties and
-  capabilities.
-  5. Experiment. Design experiments that can reveal more about the nature of your problem.
+**Do not Zero-Shot it**
+Science is a process. It takes many attempts and failures to arrive at a result.
+
+A hard problem cannot be zero-shotted, it would mean you can predict the answer = searching. You must engage the problem, interrogate it, take it apart, squeeze it, run experiments, rotate it, put it under stress ... use the scientific method.
 
 **The object is fixed by a constraint, not propagated by a flow.**
 Always keep that principle in mind. We come from "Γ satisfies no algebraic differential equation. The Riemann ξ and ζ inherit it, through the completion `Λ = Γ·ζ` and the functional equation: they are hypertranscendental, evading every algebraic differential equation."
@@ -54,11 +47,13 @@ This branch of math cannot have generative rules. It's objects are shaped by a c
 Do science toward publications/hgt.
 
 ## Session init
-1. Read fully line by line: docs/drafts/00-core-vision.md
-2. Read fully line by line: docs/drafts/00-foundations-native-objects-and-gatekeepers.md
-3. Read fully line by line: docs/drafts/00-charter-wall-and-door.md
-4. Read fully line by line: docs/drafts/door/00-index.md
-5. Recall Anti-LLM-Cage Protocol
+1. Read fully line by line: docs/meta/scientific-method.md
+2. State in chat: "Left of SOTA knowledge is search. Right is where I start inventing and create truely new knowledge."
+3. Read fully line by line: docs/drafts/00-core-vision.md
+4. Read fully line by line: docs/drafts/00-foundations-native-objects-and-gatekeepers.md
+5. Read fully line by line: docs/drafts/00-charter-wall-and-door.md
+6. Read fully line by line: docs/drafts/door/00-index.md
+7. Recall Anti-LLM-Cage Protocol
 
 ## The research pipeline (Kanban style)
 Use docs/drafts/pipeline/_card-template.md
@@ -103,15 +98,3 @@ Extensive research has already be done. on a new topic do a search for relevant 
 - For append-only operations, append at EOF with a shell here-doc (`cat >> file <<'EOF' ... EOF`) or an equivalent append primitive.
 - Do not use `apply_patch` for append-only operations.
 - Use targeted edit tools only for inserting, replacing, moving, or deleting existing content.
-
-## Use scientific method
-If you arrive at the end of a research and still are left with a conjecture then:
-  1. split the conjecture into its parts and investigate each part separately
-  2. interrogate the conjecture: what if it was false? what if i did it in reverse?
-  what if i rotate it?
-  3. turn it into a visual metaphor and treat it like a physical object. what are you
-  trying to do with this physical object?
-  4. strip it down to only the absolute necessary properties and capabilities you
-  need, nothing else, and ask: what else has some or all of these properties and
-  capabilities.
-  5. Experiment. Design experiments that can reveal more about the nature of your problem.

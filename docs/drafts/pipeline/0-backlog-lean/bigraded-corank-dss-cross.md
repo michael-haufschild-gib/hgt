@@ -334,18 +334,18 @@ an artifact of choosing `ℚ({log p})`.
   exp-`F₁` is the sole `{γ_n}`-over-`𝓡` obstruction, formulation-independent. BRIDGE. Coordinated to DeWitt
   for #75 R1 base-field update (no edit to his card).
 
-## Apex — attack routes exhausted; the conjunct stays the OPEN residue (2026-06-19, Wheeler)
-The `U≥1` exponential apex isolated above (`γ_E ∉ \overline{𝓡}`, second conjunct) was attacked head-on in the
-ticket `relative-exponential-apex`: `γ_E = −ψ(1)` as the `𝔾_a`-period of the Source-A digamma `ψ=∂_s logΓ`;
-the function→value lift named as the #142 F₁; a Beukers/Aptekarev (Apéry-analog) approximation route. **Result
-(driven to a provable terminus per the user directive "fail = provably false"):** both attack routes are
-**provably insufficient** — banked as the theorem `friable-moment-ladder-nogo.md` (Pillar A: the friable
-single-moment ladder is finite-dim at every log-power `T`, so it cannot yield a `γ_E` measure; Pillar B: the
-difference-Galois group cannot see the value, function-transcendence `⇏` value-transcendence). The exhausted
-attack route is retired to `../5-failed/relative-exponential-apex-attack-route.md`. **The conjunct
-`γ_E ∉ \overline{𝓡}` itself is NOT decided** — it is believed true (implies `γ_E ∉ ℚ`, open since 1734) and
-remains the **open** second conjunct here; the escape requires a genuinely different mechanism (a
-decaying-remainder Apéry kernel, or the exponential-period GPC^exp route), not the moment ladder.
+## Apex actively attacked — wall located, science started (2026-06-19, Wheeler)
+The `U≥1` exponential apex isolated above (`γ_E ∉ \overline{𝓡}`, second conjunct) is **LIVE** in
+`../1-in-progress/relative-exponential-apex.md`: `γ_E = −ψ(1)` as the `𝔾_a`-period of the Source-A digamma
+`ψ=∂_s logΓ`. **Status:** the known regular-world routes (single-moment/friable ladder, difference-Galois,
+Aptekarev) reach a precisely-located wall — §16 *smallness `⟺` γ-blindness* (the orthogonality that buys decay
+annihilates the `γ_E`-column; the proven structural part is only that the moments land in a finite-dim period
+space `V_T`). This wall is **not** a no-go — an earlier "provably insufficient / `2-fully-proven` no-go" claim
+was **retracted** (Leaner id=339: finite-dim ≠ no-measure, cf. Apéry `ζ(3)` in a 2-dim span). **The route past
+it (§17):** `γ_E` is a period of a **rank-1 irregular (Stokes) connection**, *outside* Wüstholz's
+analytic-subgroup theorem; the new object is a Wüstholz-for-irregular = the irregular-Hodge generator count
+`\dim\,\mathrm{Ext}^1_{M^{exp}}(ℚ,E^{-x}⊗ℚ(n))` (DeWitt's `H_1` half + the `H_2=0` value half). Open second
+conjunct; being worked, not parked.
 
 ## §I PSLQ certification of the cross block — no relation in `corank^{(1,1)}` `[numerical, verifiable; complements Professor's pure-DSS PSLQ]`
 

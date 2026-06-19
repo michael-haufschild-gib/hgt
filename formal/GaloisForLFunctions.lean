@@ -5,6 +5,7 @@ import GaloisForLFunctions.BohrGenerators
 import GaloisForLFunctions.EulerProduct
 import GaloisForLFunctions.MultiQDifference
 import GaloisForLFunctions.ArchimedeanLane
+import GaloisForLFunctions.ArchimedeanGamma
 import GaloisForLFunctions.Resonance
 import GaloisForLFunctions.FlatConnection
 import GaloisForLFunctions.HolonomyAbelian

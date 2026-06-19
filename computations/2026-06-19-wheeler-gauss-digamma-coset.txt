@@ -1,0 +1,15 @@
+# dps=60
+# Verify Gauss: psi(p/q) == gauss_rhs(p,q), and psi(p/q)+gamma == regular_part(p,q)
+  p/q=1/2: |psi-gauss_rhs|=8.33e-62   |(psi+gamma)-regular|=1.56e-61
+  p/q=1/3: |psi-gauss_rhs|=2.41e-61   |(psi+gamma)-regular|=3.11e-61
+  p/q=2/3: |psi-gauss_rhs|=2.9e-61   |(psi+gamma)-regular|=2.33e-61
+  p/q=1/4: |psi-gauss_rhs|=1.61e-61   |(psi+gamma)-regular|=3.11e-61
+  p/q=3/4: |psi-gauss_rhs|=1.09e-61   |(psi+gamma)-regular|=7.78e-62
+  p/q=1/6: |psi-gauss_rhs|=7.11e-62   |(psi+gamma)-regular|=0.0
+  p/q=5/6: |psi-gauss_rhs|=3.11e-62   |(psi+gamma)-regular|=3.89e-62
+  p/q=2/5: |psi-gauss_rhs|=2.87e-61   |(psi+gamma)-regular|=1.56e-61
+  p/q=1/5: |psi-gauss_rhs|=1.09e-62   |(psi+gamma)-regular|=0.0
+  p/q=3/7: |psi-gauss_rhs|=3.04e-63   |(psi+gamma)-regular|=1.56e-61
+# max error over all cases: 3.11e-61
+# sample algebraic constants: cot(pi/6)= 1.7320508  cos(2pi/5)= 0.30901699
+# done
