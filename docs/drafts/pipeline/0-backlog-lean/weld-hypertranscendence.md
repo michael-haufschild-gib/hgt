@@ -1,7 +1,7 @@
 # weld-hypertranscendence — MERGED into `lambda-difference-differential-hypertranscendence` (duplicate)
 
 - **ID:** weld-hypertranscendence
-- **Stage:** 2-fully-proven (retired/merged — not a separate result)
+- **Stage:** 0-backlog-lean (retired/merged — not a separate result)
 - **Type:** REDIRECT — duplicate of the canonical resolved card
 - **Priority:** FOUNDATIONAL
 

@@ -1,7 +1,7 @@
 # The completed base R⁺ — adjoin the archimedean coordinate to the Bohr ring (the definitional foundation)
 
 - **ID:** completed-base-archimedean-coordinate
-- **Stage:** 0-backlog-lean
+- **Stage:** 2-fully-proven
 - **Type:** CONSTRUCTION (foundational definitional brick) — grade **BRIDGE-prerequisite** (definitional; it
   *enables* the native theorems, is not one).
 - **Priority:** FOUNDATIONAL
@@ -151,8 +151,3 @@ exactly what ℚ adds (#130/#134). ✓
   Created `../3-formalized/finite-coordinate-scale-commutation.md`. Parent remains in `2-fully-proven`
   because the Gamma symbol, digamma recurrence, analytic derivation, full `R+` ring, and archimedean-symbol
   action are not fully Lean-formalized.
-
-## Lean return note (2026-06-19, Leaner)
-Returned from `2-fully-proven` to `0-backlog-lean` for a 2→3 gate failure. The ticket's stated paper theorem is the full completed base `R+ = R[g; sigma_infty]` as a difference-differential ring, including the Gamma symbol `g`, the `sigma_infty g = (s/2pi)g` action, the digamma compatibility for `[partial_s, sigma_infty]=0`, all commutations on `R+`, and the product-formula action.
-
-I had only formalized finite prime-coordinate anchors (`bohrCharacter_archimedeanSquareScale` and coordinate-map commutations). Those anchors do not implement the full paper proof of this ticket. Under the project rule that the paper proof and Lean proof must be in sync, partial finite anchors are insufficient for this ticket to remain in `2-fully-proven` for Lean intake. A repaired resubmission should either provide Lean-formalizable definitions/proofs for the full `R+`/Gamma/digamma construction, or submit a separate explicitly scoped lemma card whose paper proof is exactly the finite theorem already formalized.

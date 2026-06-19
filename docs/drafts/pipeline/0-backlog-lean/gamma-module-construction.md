@@ -1,7 +1,7 @@
 # The Γ-module M_∞ — the archimedean Euler factor as a rank-1 polynomial-multiplier difference module
 
 - **ID:** gamma-module-construction
-- **Stage:** 2-fully-proven
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper) / CONSTRUCTION — Door grade **BRIDGE** (Source A alone; the weld is where it turns native)
 - **Priority:** FOUNDATIONAL (the Source-A object of the completed constraint module `M_Λ=M_∞⊗M_ζ`)
 - **Source:** the Hölder-recentering (Source A = Γ; `00-foundations` N1⁺); `#90 §64` (`Γ_ℝ(s+2)=(s/2π)Γ_ℝ(s)`,

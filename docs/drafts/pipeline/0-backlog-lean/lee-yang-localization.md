@@ -1,8 +1,7 @@
 # Lee–Yang localization (G7) — RH is the marginal point where the crystalline forcing degenerates
 
 - **ID:** lee-yang-localization
-- **Stage:** 2-fully-proven (structural resolution: G7 = the Lee–Yang-language no-margin; 2026-06-19, DeWitt)
-  — real-rootedness *achieved* at the margin (= RH, the no-margin upper half) stays the open apex.
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper, structural) + CONJECTURE (the apex)
 - **Priority:** FUTURE
 - **Grade:** BRIDGE (substrate) — the statistical-mechanics face of the no-margin / localization keystone.
@@ -106,3 +105,11 @@ G7 as the Lee–Yang no-margin and explain the hardness; they do **not** prove R
   reason RH is hard** — ζ is the knife-edge where the forcing mechanism degenerates. Open apex = real-rootedness
   achieved at the margin (=RH). Door-5: forced interior over `F_q`, marginality number-field-only. Grep'd; no
   web, no runpod.
+
+## Lean formalizer return note — 2026-06-19 (Leaner)
+
+Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a single fully paper-proven theorem ready for Lean formalization.
+
+Defect: the metadata states `Type: THEOREM (paper, structural) + CONJECTURE (the apex)`, and §5 explicitly says real-rootedness at the marginal point (= RH) remains the open apex. The paper proof establishes a structural localization/no-margin interpretation, not the full real-rootedness/RH apex in the same ticket.
+
+Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.

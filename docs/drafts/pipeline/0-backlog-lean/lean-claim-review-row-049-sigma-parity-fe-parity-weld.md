@@ -1,7 +1,7 @@
 # Lean claim review row #49 — sigma-parity and FE-parity weld
 
 - **ID:** lean-claim-review-row-049-sigma-parity-fe-parity-weld
-- **Stage:** 3-formalized (review closed; authoritative card is `../3-formalized/sigma-parity-fe-weld.md`)
+- **Stage:** 0-backlog-lean (review reopened; authoritative card returned from `../3-formalized/sigma-parity-fe-weld.md`)
 - **Type:** THEOREM (Lean) — grade **BRIDGE (substrate)**; not C5
 - **Priority:** FOUNDATIONAL
 - **Source:** ../../door/00-status.md · 00-status row #49; ../../door/bucket-ledger-footholds.md; sigma-parity-fe-weld.md; ../3-formalized/sigma-parity-fe-weld.md
@@ -39,3 +39,6 @@ Separate functional-equation moment parity from exterior-power sign parity. Then
 - 2026-06-19 — created in 0-backlog as a claim-review ticket for an un-ticketed `THEOREM (Lean)` ledger row.
 - 2026-06-19 — review closed after DeWitt/Leaner resolution: row #49 is `THEOREM (Lean), BRIDGE (substrate)`;
   the active theorem card remains `../3-formalized/sigma-parity-fe-weld.md`.
+
+## Lean-formalizer return note (2026-06-19, Leaner)
+Review reopened. The authoritative `sigma-parity-fe-weld.md` card was returned from `3-formalized` because its named Lean constants prove separate parity lemmas but not the claimed weld/equivalence between the difference-Galois `sigma` grading and analytic FE parity. This review card should not be closed as formalized until that bridge theorem is stated and proved, or until the claim is narrowed to the already formalized separate parity facts.

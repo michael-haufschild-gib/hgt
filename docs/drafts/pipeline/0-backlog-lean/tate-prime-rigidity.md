@@ -1,8 +1,7 @@
 # Tate–prime rigidity — the secular weld is the non-split K-extension (G12)
 
 - **ID:** tate-prime-rigidity
-- **Stage:** 2-fully-proven (structural backbone; rigidity given operational meaning + proven instances,
-  2026-06-19, DeWitt) — the general transcendental independence stays the open apex (= DSS-cross)
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper, structural) + CONJECTURE (the apex)
 - **Priority:** FOUNDATIONAL
 - **Grade:** BRIDGE (substrate) — unifies #101/#117/#124 under one K-non-splitting (D2-load-bearing).
@@ -109,3 +108,11 @@ general independence.
   proved rigidity in the #124 and #117 instances and **unified #101 = #117 = #124** as one non-split
   K-extension (D2). Verified the tame anchor `a_0 = ζ'(0)/ζ(0) = log 2π` (30 digits). General independence =
   DSS-cross apex, left open. No web, no runpod beyond the local mpmath anchor.
+
+## Lean formalizer return note — 2026-06-19 (Leaner)
+
+Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a single fully paper-proven theorem ready for Lean formalization.
+
+Defect: the metadata states `Type: THEOREM (paper, structural) + CONJECTURE (the apex)`, and §4 explicitly leaves the general transcendental independence / maximal non-splitting statement open as the DSS-cross relative apex. The card proves only two non-splitting instances plus a unification, not the full apex content in the same ticket.
+
+Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.

@@ -1,7 +1,7 @@
 # G4 over `F_q` — Deligne–Katz monodromy reproved natively; the weight/angle split of `G_L`
 
 - **ID:** g4-over-fq-deligne-katz
-- **Stage:** 2-fully-proven
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper) — Door grade **BRIDGE** (function-field border; Door-5)
 - **Priority:** FOUNDATIONAL
 - **Source:** split from `function-field-native-reproof.md` (Step 5); builds on G4 #24
@@ -118,3 +118,11 @@ read on the **group** face:
   **BRIDGE**, content beyond import (the corank-in-`G_L` localization of G5 vs G4). FF campaign: G1(#121),
   G2(DeWitt), G4(here) proven; G5 = Wheeler; G3 trivial over `F_q`.
 </content>
+
+## Lean formalizer return note — 2026-06-19 (Leaner)
+
+Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a single fully paper-proven theorem ready for Lean formalization.
+
+Defect: §3 is explicitly titled `[conjecture — feeds the seam bucket]` and says the group-face seam over Q is recorded, not banked. The recovery/weight-angle split is separate from that conjectural seam reading, so the full card is not a fully proven Lean target as written.
+
+Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.

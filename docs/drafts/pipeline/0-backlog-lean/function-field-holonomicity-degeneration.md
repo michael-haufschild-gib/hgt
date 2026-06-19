@@ -1,7 +1,7 @@
 # Function-field degeneration of holonomicity — corank collapse to a single base, and the archimedean residue
 
 - **ID:** function-field-holonomicity-degeneration
-- **Stage:** 2-fully-proven
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper) — Door grade **BRIDGE** (function-field border; Door-5)
 - **Priority:** FOUNDATIONAL
 - **Source:** split from `function-field-native-reproof.md` (Steps 2 + 6); builds on
@@ -127,3 +127,11 @@ recorded as conjecture, not banked.)*
   relation lattice has `Module.rank ℤ = 1`. Added root import and axiom audit entries; `lake build` and
   `scripts/check_axioms.sh` pass with 243 theorem outputs. Not moved to `3-formalized` because the G3/Weil
   imports and #119 directed-sup corank fragment are not fully Lean-formalized in this card.
+
+## Lean formalizer return note — 2026-06-19 (Leaner)
+
+Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a single fully paper-proven theorem ready for Lean formalization.
+
+Defect: §3 is explicitly titled `[conjecture — seam]` and the Notes say §3 is conjectural and not banked. The proved degree-collapse/corank-1 component is a Lean target, but the card as written includes the unproved seam-corank identity/residue.
+
+Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.

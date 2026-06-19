@@ -1,7 +1,7 @@
 # The σ-parity = FE-parity weld
 
 - **ID:** sigma-parity-fe-weld
-- **Stage:** 3-formalized
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (Lean) — grade **BRIDGE (substrate)** (Door-2 fails on the C-axis; D2-met on the D-axis)
 - **Priority:** FOUNDATIONAL
 - **Source:** ../../door/door-C5-irreducibility-and-door-2-retest.md, ../../door/bucket-ledger-footholds.md · 00-status row #49
@@ -42,3 +42,8 @@ verdict.
 - 2026-06-19 — DeWitt resolved the Door-2/D-axis test: C-axis BRIDGE; D-axis BRIDGE (substrate), a D2
   unification of difference-Galois `σ`-parity and analytic FE-parity. Leaner merged this verdict into the
   existing `3-formalized` card and removed the duplicate `2-fully-proven` copy.
+
+## Lean-formalizer return note (2026-06-19, Leaner)
+Returned from `3-formalized` to `0-backlog-lean` during the paper/Lean synchronization audit. The Lean constants named on the card (`fe_odd_moment_vanish`, `fe_centered_odd_moment_vanish`, `exteriorPower_map_neg_id`) prove two separate finite parity facts: FE moment odd-vanishing and exterior-power sign action. They do not formalize the stated weld identifying the difference-Galois `sigma`-cohomology grading with analytic FE-parity.
+
+To return to `3-formalized`, the card needs an explicit paper theorem and Lean theorem giving the bridge map/equivalence between the exterior-power/cohomology grading and the FE parity object, or the statement must be weakened to the two separate parity lemmas already formalized.

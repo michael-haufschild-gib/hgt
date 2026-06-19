@@ -1,7 +1,16 @@
-# The relative exponential apex — `γ_E` and the Stieltjes constants are transcendental over the regular period base
+# FAILED ROUTE — Wheeler's difference-Galois + moment/friable attack on the `γ_E` value-lift (provably insufficient)
 
-- **ID:** relative-exponential-apex
-- **Stage:** 1-in-progress (the genuine Fields-Medal conjecture, **being attacked here** — not handed off)
+> **⚠ READ THIS FIRST — what "failed" means here (per the user directive 2026-06-19: *fail = provably
+> false*).** What is **provably false** is *that this attack route proves the apex* — both routes built below
+> (the difference-Galois value-lift §2/§3, and the arithmetic moment/friable ladder §5–§15) are **provably
+> insufficient** (banked as the theorem `../2-fully-proven/friable-moment-ladder-nogo.md`). The **conjecture
+> itself** — `γ_E ∉ \overline{𝓡}` — is **NOT disproved and is believed TRUE** (every PSLQ probe supports it;
+> disproving it would mean `γ_E ∈ \overline{𝓡}`, contradicting all evidence). It is **relocated OPEN** to the
+> DSS-cross apex (`bigraded-corank-dss-cross.md` §G, second conjunct). This card is in `5-failed` because the
+> **attack route is a dead approach** ("to not repeat past fails"), not because the conjecture is false.
+
+- **ID:** relative-exponential-apex-attack-route
+- **Stage:** 5-failed (the attack ROUTE is provably insufficient; the conjecture is relocated open — see banner)
 - **Type:** CONJECTURE (the apex) + an active native attack (difference-Galois of the archimedean
   generator) with a concrete arithmetic route
 - **Priority:** **FIELDS MEDAL** (this is the actual interesting theorem; the BRIDGE shells
@@ -691,3 +700,55 @@ no-go; the full higher-log-power construction is the open apex (Professor's lane
   O(1) γ_E-forms, **no small approximation**. dps=60 "relation" was a verified artifact. The §8 γ-blindness
   sharpened (finite-dim-rigid); the bypass needs higher log-powers `T≥2` (Professor's baker-for-stieltjes).
   Knowledge created (a verified no-go), not a shell. Archived.
+
+## §15 BUILT + TESTED `T=2,3`; PROVED the general-`T` no-go — the whole single-moment ladder is dead `[NEGATIVE THEOREM, verified; resolves the ticket]`
+
+Per the user directive ("complete the Fields-Medal tickets to a provable terminus; **fail = provably false**")
+I drove §14's "go to `T≥2`" steer to its terminus — and the terminus refutes the steer.
+
+**Built `T=2,3`.** The friable second/third log-moments `L_j^{(T)}=∫x^j(\log x)^T dμ_S`. Under `u=nx` + binomial
++ Bell-polynomial expansion of `Γ^{(t)}(j+1)=j!\,B_t(ψ,…,ψ^{(t-1)})`:
+> `M_j^{(T)} := L_j^{(T)}/(j!ζ_S(j+1)) = Σ_{t=0}^T \binom{T}{t}\,\tfrac{Γ^{(t)}(j+1)}{j!}\,\tfrac{ζ_S^{(T-t)}(j+1)}{ζ_S(j+1)}`.
+`Γ^{(t)}/j!` is a `ℚ[j]`-poly in `{γ_E,ζ(2),…,ζ(t)}` (via `ψ(j+1)=H_j-γ_E`, `ψ^{(k)}(j+1)=(-1)^{k+1}k!(ζ(k+1)-H_j^{(k+1)})`);
+`ζ_S^{(m)}/ζ_S(j+1)` is a `ℚ[j]`-poly in `{\log2,\log3}`. So **`M_j^{(T)}` lies in the fixed finite-dim
+ℚ-space `V_T`** = span of weight-`≤T` monomials in `{γ_E,ζ(2),…,ζ(T),\log2,\log3}`. `\dim V_T<∞`
+**unconditionally**.
+
+**Verified (artifact-safe).** `T=2` (11-dim): closed form `=` direct friable sum (machine-zero); `M_j^{(2)}=`
+predicted coeff vector (machine-zero, `j=0..6`); PSLQ `j=0` `= 3×` predicted (basis complete). `T=3`: closed
+form `=` monomial expansion in `{γ_E,ζ(2),ζ(3),\log2,\log3}` (machine-zero) — the new transcendental `ζ(3)`
+enters exactly as the Bell argument predicts. Archive `computations/2026-06-19-wheeler-friable-moment-ladder-nogo.txt`
+(+ `-friable-T2-secondmoment.py`, `-T3-thirdmoment.py`).
+
+**The no-go (PROVEN, every finite `T`).** Every ℚ-combination of `{M_j^{(T)}}` stays in the fixed finite-dim
+`V_T`; the construction has **no decaying-remainder integral** (unlike Apéry's `∫_0^1` kernel). So there is no
+sequence of small `γ_E`-retaining forms beating the height vacuum — **the friable single-moment ladder cannot
+yield an irrationality/transcendence measure for `γ_E`, at any `T`.** My id=327 steer is itself refuted: not
+just `T=1` is dead, the **entire ladder** is. (Banked as the standalone theorem
+`../2-fully-proven/friable-moment-ladder-nogo.md`, Pillar A; Pillar B there proves the §2/§3 difference-Galois
+route is likewise provably insufficient — function-transcendence `⇏` value-transcendence, `\log 1=0` witness.)
+
+## RESOLUTION — ticket driven to a provable terminus `[user directive 2026-06-19]`
+
+**What is provably true (→ `2-fully-proven`).** The two attack routes built here are **provably
+insufficient**: (A) the moment ladder is finite-dim at every `T` (§15); (B) the difference-Galois group cannot
+see the value (§2/§3 as a theorem). Banked as `friable-moment-ladder-nogo.md`.
+
+**What is NOT decided (honest, per `fail = provably false`).** The bare conjecture `γ_E ∉ \overline{𝓡}` is
+**not provably false** — every PSLQ probe (height `10^18` cross-block; DeWitt rung-2; my `T=1,2,3`) supports
+it; disproving it would mean exhibiting `γ_E ∈ \overline{𝓡}`, contradicting all evidence. It is also not
+provable by us (it implies `γ_E ∉ ℚ`, open since Euler 1734). Therefore the **conjecture cannot honestly be
+placed in `5-failed`** (that would assert it false). It is **relocated open** to the DSS-cross apex
+(`bigraded-corank-dss-cross.md` §G, second conjunct).
+
+**Disposition.** This ticket is the **attack route** — provably exhausted — so it moves to `5-failed` as a
+failed *route* (not a false conjecture). The proven no-go theorem lives in `2-fully-proven`; the open
+conjecture lives on in the DSS-cross cards. Ticket exits `1-in-progress`. ∎
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **§15 + RESOLUTION.** Built/verified `T=2,3`; proved the general-`T`
+  finite-dimensional no-go (the whole friable single-moment ladder is dead — refutes my own id=327 `T≥2`
+  steer). Banked the proven content as `2-fully-proven/friable-moment-ladder-nogo.md` (Pillar A moment ladder
+  + Pillar B difference-Galois function⇏value). Per the user's "fail = provably false": the bare conjecture
+  `γ_E∉𝓡̄` is **not** provably false (believed true, all evidence supports it) so it is NOT failed — it is
+  relocated open to `bigraded-corank-dss-cross` §G. This ticket (= the now-exhausted attack ROUTE) → `5-failed`.

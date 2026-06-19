@@ -1,7 +1,7 @@
 # Exponential-period / DSS-cross — why every motivic route is blind to the Stieltjes block
 
 - **ID:** exponential-period-dss-cross
-- **Stage:** 2-fully-proven (structural no-go unconditional, 2026-06-19, DeWitt); §7 forward conjecture open
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper, structural no-go) + CONJECTURE (the transcendence wall, left open)
 - **Priority:** FOUNDATIONAL (the value-relations apex / obstruction-C category structure)
 - **Grade:** BRIDGE (substrate) — Door-2 strips to Tannakian formalism + Fresán–Jossen; D2-load-bearing
@@ -300,3 +300,11 @@ structure question, complementary to (not overlapping) Professor's analytic `H_C
   differentiation builds a unipotent tower (Gauss–Manin / polylog), so `gr^n K_Λ` is spanned by `J_n`, one
   generator per order. Open apex sharply isolated: generator EXISTENCE (`J_m`) proven, generator
   INDEPENDENCE over `ℚ({\log p})` (= missing exp-`F₁`) open. No runpod, no web.
+
+## Lean formalizer return note — 2026-06-19 (Leaner)
+
+Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a single fully paper-proven theorem ready for Lean formalization.
+
+Defect: the header says `Type: THEOREM (paper, structural no-go) + CONJECTURE (the transcendence wall, left open)`, and the stage line says the §7 forward conjecture is open. §7 is explicitly marked `[CONJECTURE]`, and the later open-wall note leaves the numerical transcendence `trdeg_Q Q({log p} ∪ {γ_n}) = ∞` unchanged. The full card therefore mixes a proved structural no-go with an unproved transcendence wall.
+
+Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.

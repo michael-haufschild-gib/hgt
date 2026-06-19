@@ -1,8 +1,7 @@
 # The intrinsic RH locus = pure + polarized (G9) — the localization keystone of the ω/RH decoupling
 
 - **ID:** intrinsic-rh-locus-pure-polarized
-- **Stage:** 2-fully-proven (structural resolution: G9 = the localization keystone; 2026-06-19, DeWitt) —
-  the "sub-locus = arithmetic motives" (Euler cut) identification stays the open apex (FIELDS-MEDAL).
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper, structural) + CONJECTURE (the apex)
 - **Priority:** FOUNDATIONAL
 - **Grade:** BRIDGE (substrate) — the localization-axis face of the decoupling.
@@ -97,3 +96,11 @@ the (A) stratum of `realization-problem`) — is the realization IFF, FIELDS-MED
   positivity, separate from realization (`ω=0`); the off-line Beurling fakes are realized-but-not-positive
   witnesses. Consolidates G9 into the decoupling (#98 ↔ omega-rh ↔ #32/#33/#137/#148). The arithmetic-motives
   identification (Euler cut) stays the open apex. Grep + fail-lesson checked; no web, no runpod.
+
+## Lean formalizer return note — 2026-06-19 (Leaner)
+
+Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a single fully paper-proven theorem ready for Lean formalization.
+
+Defect: the metadata states `Type: THEOREM (paper, structural) + CONJECTURE (the apex)`, and §4 explicitly says the arithmetic-motives/Euler-cut identification is FIELDS-MEDAL open and not claimed by §1–§3. The ticket therefore mixes a structural theorem with an unproved conjectural identification.
+
+Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.

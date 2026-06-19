@@ -1,0 +1,56 @@
+========================================================================
+Wheeler — general-T friable single-moment ladder: finite-dimensional at
+every weight T  ==>  provable no-go for moment-based transcendence of γ_E
+2026-06-19.  Scripts: wheeler-friable-T2-secondmoment.py, -T3-thirdmoment.py
+========================================================================
+
+SETUP.  S={2,3};  dμ_S = Σ_{n S-smooth} e^{-nx} dx;  ζ_S(s)=∏_{p∈S}(1-p^-s)^-1.
+Normalized log-moment   M_j^(T) := [∫_0^∞ x^j (log x)^T dμ_S] / (j! ζ_S(j+1)).
+
+CLOSED FORM (u=nx; binomial (log x)^T=(log u-log n)^T; Bell expansion of
+Γ^{(t)}(j+1)=j!·B_t(ψ,ψ',…,ψ^{(t-1)})(j+1); Σ_n n^-s(log n)^m=(-1)^m ζ_S^{(m)}):
+   M_j^(T) = Σ_{t=0}^T C(T,t) (Γ^{(t)}(j+1)/j!) · (ζ_S^{(T-t)}/ζ_S)(j+1).
+ψ(j+1)=H_j-γ_E ;  ψ^{(k)}(j+1)=(-1)^{k+1} k!(ζ(k+1)-H_j^{(k+1)})  (k≥1);
+(ζ_S^{(m)}/ζ_S)(j+1) = ℚ[j]-polynomial in {log2,log3}  (rational at integer s).
+
+==> M_j^(T) ∈ V_T := ℚ-span of the FIXED finite monomial set
+   { γ_E^a ζ(2)^{b2}…ζ(T)^{bT} (log2)^{c2}(log3)^{c3} : a+2b2+3b3+…+c2+c3 ≤ T }.
+dim V_T < ∞ UNCONDITIONALLY (no independence assumption needed: span ⊆ finite set).
+
+------------------------------------------------------------------------
+T=1  (4-dim ⟨1,γ_E,log2,log3⟩):  M_j = H_j-γ_E + r2_j log2 + r3_j log3,
+     γ_E-coeff ≡ -1 (constant).  [§14, verified dps=80]
+
+T=2  (11-dim ⟨1,γ_E,γ_E²,ζ(2),log2,log3,log2²,log3²,log2log3,γ_E log2,γ_E log3⟩):
+     predicted coeff vector (per j):
+       [1]:H_j²-H_j^(2)  [γ_E]:-2H_j  [γ_E²]:1  [ζ(2)]:1
+       [log2]:2H_j r2_j  [log3]:2H_j r3_j
+       [log2²]:s2_j+r2_j²  [log3²]:s3_j+r3_j²  [log2log3]:2 r2_j r3_j
+       [γ_E log2]:-2 r2_j  [γ_E log3]:-2 r3_j
+     r2_j=-1/(2^{j+1}-1), r3_j=-1/(3^{j+1}-1), s2_j=2^{j+1}/(2^{j+1}-1)², s3_j=3^{j+1}/(3^{j+1}-1)².
+   VERIFIED (dps=60):
+     - L_j^(2) closed form == direct friable summation (152 terms, n≤3^13): machine-zero for j≥1.
+     - M_j^(2) - predicted vector: residual 6e-61..3e-61 (machine zero) for j=0..6.
+     - PSLQ j=0: M_0^(2) = 3·predicted exactly  ([-1,0,0,3,3,0,0,9,3,3,6,3]) -> basis complete, no missing monomial.
+   STRUCTURAL CHANGE vs T=1: γ_E-coeff = -2H_j-2(r2_j log2+r3_j log3) now VARIES (T=1 rigidity broken);
+   new transcendentals γ_E², ζ(2), γ_E·log p enter. But the space is STILL finite (11-dim).
+
+T=3  (adds weight-3 monomials incl. NEW transcendental ζ(3): γ_E³, γ_E ζ(2), ζ(3), …):
+     closed form via ζ_S-derivatives  ==  monomial expansion in {γ_E,ζ(2),ζ(3),log2,log3}:
+     residual 8e-50..0 (machine zero) for j=0..5.  Pattern continues; finite per weight.
+
+------------------------------------------------------------------------
+NO-GO (proven).  Every ℚ-combination of {M_j^(T)} (equiv. {L_j^(T)}) lands in the
+FIXED finite-dim V_T. The construction has NO decaying-remainder integral (unlike
+Apéry's ∫_0^1 kernel for ζ(3)); the normalized moments grow like (log j)^T, the raw
+ones like j!. Hence there is NO sequence of small γ_E-retaining forms beating the
+height vacuum: the friable single-moment ladder CANNOT yield an irrationality/
+transcendence measure for γ_E, at ANY finite log-power T.  ==> the steer of id=327
+("go to T≥2") is itself refuted: the whole single-moment ladder is dead; the escape
+must be a genuinely different construction (decaying-remainder/Apéry kernel, or the
+exponential-period GPC^exp), not more log-powers.
+
+ARTIFACT DISCIPLINE: T=2 confirmed at dps=60 then the predicted-vs-actual residual is
+machine-zero (not a PSLQ fish); the one earlier dps=60 γ_E-retaining "relation" (§14)
+vanished at dps=150/250 (spurious). T=3 at dps=50, residuals machine-zero.
+========================================================================

@@ -1,8 +1,7 @@
 # Corank as the unifying seam invariant — the `∞ − 1` identity (G1 ∧ G2 ∧ G4, one number)
 
 - **ID:** corank-seam-invariant
-- **Stage:** 2-fully-proven (the BUILD below — unification + level-separation + graded-filtration — is
-  proven BRIDGE; the apex *realization* `corank^{(T)}=∞ ∀T` remains FIELDS MEDAL, handed to baker-for-stieltjes)
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper, construction + level-separation), Door grade **BRIDGE**; the F₁/Schanuel object
   is built (graded corank), the algebraic-apex realization stays the open core (CONJECTURE, FIELDS MEDAL)
 - **Priority:** FOUNDATIONAL (the object); the apex realization = FIELDS MEDAL
@@ -271,9 +270,21 @@ the corank ladder above the Baker floor, and it pins where the real difficulty s
   and mixed-degree are the genuine apex. §F tightened (uncertain flag removed).
 
 ## Apex actively attacked — not handed off (2026-06-19, Wheeler)
-The Fields-Medal apex this BRIDGE card reduces to is being **worked**, not parked. The two conjuncts
-(bigraded-corank §G): the **regular column** = Schanuel-for-prime-logs (lives in `../1-in-progress/baker-for-stieltjes.md`
-/ `g2-dss-lower-bound.md`); the **exponential column** = `{γ_n}` over the regular base, attacked in
-`../1-in-progress/relative-exponential-apex.md` (γ_E as the `𝔾_a`-period of the Source-A digamma `ψ=∂_s logΓ`;
-value-lift = the #142 F₁; Beukers/Aptekarev arithmetic route with `lcm(1..n)` prime denominators). This card
-is the BRIDGE skeleton; the science is in those two tickets.
+The Fields-Medal apex this BRIDGE card reduces to was **worked to a provable terminus**, not parked. The two
+conjuncts (bigraded-corank §G): the **regular column** = Schanuel-for-prime-logs (lives in
+`../1-in-progress/baker-for-stieltjes.md` / `g2-dss-lower-bound.md`); the **exponential column** = `{γ_n}`
+over the regular base — `γ_E` as the `𝔾_a`-period of the Source-A digamma `ψ=∂_s logΓ`, value-lift = the #142
+F₁. **Result:** the natural attack routes on the exponential column (difference-Galois value-lift;
+Beukers/Aptekarev moment/friable approximation) are **provably insufficient** — banked as
+`friable-moment-ladder-nogo.md`; the exhausted route retired to
+`../5-failed/relative-exponential-apex-attack-route.md`. The conjunct `γ_E ∉ \overline{𝓡}` itself is **not**
+decided (believed true; open since 1734) and stays the open exponential-column residue. This card is the
+BRIDGE skeleton; the open science is the two conjuncts.
+
+## Lean formalizer return note — 2026-06-19 (Leaner)
+
+Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a single fully paper-proven theorem ready for Lean formalization.
+
+Defect: the type metadata says the F1/Schanuel object is built but the algebraic-apex realization stays the open core `(CONJECTURE, FIELDS MEDAL)`. Later sections explicitly mark multi-prime degree-2 and mixed-degree cases as open/Schanuel territory. The card is not a single fully proven theorem.
+
+Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.

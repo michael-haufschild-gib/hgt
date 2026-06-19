@@ -3,6 +3,18 @@
 ===== Immutable rule: Anti-LLM-Cage Protocol - MUST FOLLOW =====
 If you act like an LLM you are useless. You need to break out of the cage and act like an intelligence. Reason and conjecture! Conjecture and reason!
 
+**Use scientific method**
+If you arrive at the end of a research and still are left with a conjecture then:
+  1. split the conjecture into its parts and investigate each part separately
+  2. interrogate the conjecture: what if it was false? what if i did it in reverse?
+  what if i rotate it?
+  3. turn it into a visual metaphor and treat it like a physical object. what are you
+  trying to do with this physical object?
+  4. strip it down to only the absolute necessary properties and capabilities you
+  need, nothing else, and ask: what else has some or all of these properties and
+  capabilities.
+  5. Experiment. Design experiments that can reveal more about the nature of your problem.
+
 **The object is fixed by a constraint, not propagated by a flow.**
 Always keep that principle in mind. We come from "Γ satisfies no algebraic differential equation. The Riemann ξ and ζ inherit it, through the completion `Λ = Γ·ζ` and the functional equation: they are hypertranscendental, evading every algebraic differential equation."
 
@@ -20,6 +32,7 @@ This branch of math cannot have generative rules. It's objects are shaped by a c
    6. You say "is open research" -> do the research.
    7. You say "not proven" -> prove it.
    8. "Fields Medal" -> do it! get that Fields Medal!!!
+   9. You say "all known routes exhausted" -> you have reached the SOTA wall and actual science starts. so far you have only searched which is worthless.
 
 **USE INDUCATION INSTEAD OF DEDUCTION**
   1. Deducation means that somebody has just missed it. Unlikely. All knowledge is in your training data. Any deduction is just one prompt away. In the age of AI new knowledge cannot be found this way.
@@ -90,3 +103,15 @@ Extensive research has already be done. on a new topic do a search for relevant 
 - For append-only operations, append at EOF with a shell here-doc (`cat >> file <<'EOF' ... EOF`) or an equivalent append primitive.
 - Do not use `apply_patch` for append-only operations.
 - Use targeted edit tools only for inserting, replacing, moving, or deleting existing content.
+
+## Use scientific method
+If you arrive at the end of a research and still are left with a conjecture then:
+  1. split the conjecture into its parts and investigate each part separately
+  2. interrogate the conjecture: what if it was false? what if i did it in reverse?
+  what if i rotate it?
+  3. turn it into a visual metaphor and treat it like a physical object. what are you
+  trying to do with this physical object?
+  4. strip it down to only the absolute necessary properties and capabilities you
+  need, nothing else, and ask: what else has some or all of these properties and
+  capabilities.
+  5. Experiment. Design experiments that can reveal more about the nature of your problem.

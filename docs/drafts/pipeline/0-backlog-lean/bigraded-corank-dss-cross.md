@@ -1,10 +1,7 @@
 # Bigraded corank — the DSS-cross invariant (`corank^{(T,U)}`, the period × exponential-period plane)
 
 - **ID:** bigraded-corank-dss-cross
-- **Stage:** 2-fully-proven (the BUILD §A–§F below is BRIDGE(substrate) — definition, decomposition,
-  the foothold asymmetry, and the joint-Galois reading — proven/assembled; the apex *realization* — any
-  rung with `U ≥ 1` infinite — is FIELDS MEDAL, handed to `baker-for-stieltjes` / the exponential-period
-  lower bound)
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper, construction + decomposition + structural asymmetry), Door grade
   **BRIDGE (substrate)**; the exponential-direction realization stays the open core (CONJECTURE, FIELDS MEDAL)
 - **Priority:** FOUNDATIONAL (the object); the apex realization = FIELDS MEDAL
@@ -337,11 +334,18 @@ an artifact of choosing `ℚ({log p})`.
   exp-`F₁` is the sole `{γ_n}`-over-`𝓡` obstruction, formulation-independent. BRIDGE. Coordinated to DeWitt
   for #75 R1 base-field update (no edit to his card).
 
-## Apex actively attacked — not handed off (2026-06-19, Wheeler)
-The `U≥1` exponential apex isolated above is being **worked** in `../1-in-progress/relative-exponential-apex.md`
-(the Fields-Medal ticket): `γ_E = −ψ(1)` as the `𝔾_a`-period of the Source-A digamma `ψ=∂_s logΓ`; the
-function→value lift named as the #142 F₁; a concrete Beukers/Aptekarev approximation route (the exponential-
-column analog of Apéry's `ζ(3)`). This card is the invariant skeleton; that ticket does the apex.
+## Apex — attack routes exhausted; the conjunct stays the OPEN residue (2026-06-19, Wheeler)
+The `U≥1` exponential apex isolated above (`γ_E ∉ \overline{𝓡}`, second conjunct) was attacked head-on in the
+ticket `relative-exponential-apex`: `γ_E = −ψ(1)` as the `𝔾_a`-period of the Source-A digamma `ψ=∂_s logΓ`;
+the function→value lift named as the #142 F₁; a Beukers/Aptekarev (Apéry-analog) approximation route. **Result
+(driven to a provable terminus per the user directive "fail = provably false"):** both attack routes are
+**provably insufficient** — banked as the theorem `friable-moment-ladder-nogo.md` (Pillar A: the friable
+single-moment ladder is finite-dim at every log-power `T`, so it cannot yield a `γ_E` measure; Pillar B: the
+difference-Galois group cannot see the value, function-transcendence `⇏` value-transcendence). The exhausted
+attack route is retired to `../5-failed/relative-exponential-apex-attack-route.md`. **The conjunct
+`γ_E ∉ \overline{𝓡}` itself is NOT decided** — it is believed true (implies `γ_E ∉ ℚ`, open since 1734) and
+remains the **open** second conjunct here; the escape requires a genuinely different mechanism (a
+decaying-remainder Apéry kernel, or the exponential-period GPC^exp route), not the moment ladder.
 
 ## §I PSLQ certification of the cross block — no relation in `corank^{(1,1)}` `[numerical, verifiable; complements Professor's pure-DSS PSLQ]`
 
@@ -392,3 +396,11 @@ pure-DSS PSLQ did not cover. Evidence, not proof; apex open.
 - 2026-06-19 (Wheeler) — **§I robust extension:** PSLQ over `{2,3,5,7}×{γ_0,γ_1,γ_2}` (1,1) [20 terms, 10^18],
   (0,3) pure-exp [10^20], (2,1) [12 terms, 10^18] — all NULL. Caught + fixed a duplicate-monomial bug in the
   first (2,1) run (trivial `γ_0−γ_0`, not a relation). Robust cross-block certification; archived.
+
+## Lean formalizer return note — 2026-06-19 (Leaner)
+
+Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a single fully paper-proven theorem ready for Lean formalization.
+
+Defect: the type metadata says the exponential-direction realization stays the open core `(CONJECTURE, FIELDS MEDAL)`, and the card later has an `Apex` section saying the conjunct remains open. The proved construction/decomposition cannot be formalized as the whole ticket while the same card contains the open DSS-cross realization.
+
+Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.

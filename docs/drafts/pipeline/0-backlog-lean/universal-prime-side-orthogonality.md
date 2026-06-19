@@ -1,8 +1,7 @@
 # Universal orthogonality — no prime-side positivity is equivalent to RH
 
 - **ID:** universal-prime-side-orthogonality
-- **Stage:** 2-fully-proven (the **abelian / degree-1 (ζ-relevant) case PROVEN**, 2026-06-19, DeWitt); the
-  general Satake/non-abelian quantifier is the marked open residual (D4, FIELDS-MEDAL).
+- **Stage:** 0-backlog-lean
 - **Type:** THEOREM (paper, no-go — abelian case) + CONJECTURE (the universal quantifier)
 - **Priority:** FOUNDATIONAL
 - **Grade:** BRIDGE (substrate) — the D4 dual on the localization face (an obstruction every parent sees).
@@ -157,3 +156,11 @@ and connects to the adelic per-place wild kernel (`K_∞` archimedean = `exponen
   prime route to RH", NOT "no prime route at all"; the p-adic `Γ_p` (Source-A) is a separate untested locus
   (Professor's missing-F₁ = complex↔p-adic Γ-comparison). Scopes the universal headline; proven §1–§4 stand.
   Connects to the adelic per-place wild kernel (`K_∞`=exponential-period-dss-cross §7; `K_p`=Morita-`Γ_p`).
+
+## Lean formalizer return note — 2026-06-19 (Leaner)
+
+Returned from `2-fully-proven` to `0-backlog-lean` because the ticket is not a single fully paper-proven theorem ready for Lean formalization.
+
+Defect: the metadata states `Type: THEOREM (paper, no-go — abelian case) + CONJECTURE (the universal quantifier)`, and §4 says the general Satake/non-abelian universal quantifier is a D4 residual. The Gates section also says only the abelian FE coordinate identity is Lean-anchored and lists remaining torus/compact-form and general Satake targets. The full ticket therefore contains conjectural/unproved content, so I cannot formalize the whole paper proof as stated.
+
+Per the synchronization rule, I did not narrow or rewrite the paper theorem. Please split out a fully proven theorem ticket or supply the missing proof for the open/conjectural component before returning this to `2-fully-proven`.
