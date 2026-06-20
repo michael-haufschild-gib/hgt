@@ -176,3 +176,178 @@ Schanuel/`GPC^exp`-open apex (= DSS, open) — the mirror does not make that hal
   Hodge-computable, far below the H₂=0 apex). Cross-links R01: Stokes-unipotent = log monodromy = R01's
   marginal-stratum K-generator (same archimedean unipotent). ~60–70% prior-true; F∞/Borel/Stokes-unipotent
   facts proven, mechanism conjectural.
+
+## R-DeWitt-2026-06-20 (Phase-0 baseline tick) — correcting the R03 reduction; the H₁-half handle is irregular Hodge, not "Stokes ≠ identity"
+
+Interrogated the R03 forward-lead ("`dim gr^n=1 ∀n ⟸ Stokes matrix of `E^{−x}⊗ℚ(n) ≠ identity ∀n`"). It has two
+errors; fixing them re-grades the H₁ half and hands the parent a *correct* computable invariant.
+
+**Error 1 — wrong object (rank-1).** `E^{−x}⊗ℚ(n)` is **rank 1**: a single exponential factor `e^{−x}` (the Tate
+twist `ℚ(n)` is rank 1, regular-singular, and only shifts weight). A rank-1 irregular connection has **no Stokes
+phenomenon** — Stokes matrices encode the mixing of solutions with *distinct* exponential growth rates `e^{q_i}`,
+and with one exponent there is nothing to mix, so its Stokes matrix is the **identity for every `n`**. As written
+the reduction's hypothesis is vacuously false, i.e. it does not bear on `dim gr^n`. `[PROVED — elementary Stokes
+theory; recalled-standard, flagged, no web]`
+
+**The right object — the rank-`(n+1)` extension.** The generator `γ_n` is the order-`n` **off-diagonal Stokes
+multiplier** of the connection
+> `V_n := E^{−x} ⊗ Log^{(n)}` on `𝔾_m`,  `Log^{(n)}` = the unipotent log-tower (flat sections `1,\log x,…,(\log
+> x)^n/n!`), `E^{−x} = (𝒪,d+dx)`,
+which is exactly the `∂_s`-derivative tower of the Γ-integral at `s=1` (`x^{s-1}=Σ(s-1)^k(\log x)^k/k!`, so
+`∂_s^k|_{s=1}` extracts the `(\log x)^k`-moment `J_k`; this is `exponential-period-dss-cross` §2′/§7(U), Professor's
+floor). `V_n` has **two** formal exponents (`e^0` from the unit/log part, `e^{−x}` from the irregular part), so its
+Stokes matrix at `∞` is a genuine non-trivial unipotent `(n+1)×(n+1)` matrix whose super-diagonal entries are the
+regularized moments `J_k` — the wild generators. **So the apex reformulates cleanly:** `H_2(Lie K)=0` (= DSS-cross)
+⟺ the **Stokes multipliers of the Gamma connection `V_∞` are algebraically independent**. `[BRIDGE — faithful
+reformulation; wires the native apex to isomonodromy/Stokes-data parent technique]`
+
+**Error 2 — de Rham ≠ Tannakian (the decisive one).** Even on `V_n`, Stokes-non-triviality is a statement about the
+**de Rham / differential-module** structure (the connection is not a direct sum of its formal pieces) — and that is
+**unconditional and total**: `V_n` is non-split as a connection for every `n`, even/odd alike (the log-tower is
+de-Rham-non-split at every rung, and tensoring by the invertible `E^{−x}` preserves it). But `dim gr^n H_1(Lie K)`
+is a **Tannakian/motivic** Ext in `M^exp`, which can be *strictly smaller* than the de Rham Ext: motivic relations
+split things the connection does not (this is exactly how Borel gets `Ext¹_{MT(ℤ)}(ℚ,ℚ(2k))=0` while the de Rham
+Tate extension is non-trivial). **The gap de Rham→Tannakian is precisely GPC^exp.** Therefore "Stokes ≠ identity"
+does **not** discharge the H₁ half below the apex; it only re-proves the (easy, unconditional) de Rham
+non-splitness. The even-twist surplus — the heart of "wider than RH" §3 — is **GPC^exp-hard**, not parent-easy.
+This **demotes** the R03 claim that the H₁ half is "far below the `H_2=0` apex": *only the odd twits `n≥3` are
+pinned below the apex* (there Borel/motivic input already gives the cosmic generators); the even surplus shares the
+apex's conditionality. `[PROVED structural diagnosis; corrects this card's §3 "falsifiable target" and R03]`
+
+**The constructive replacement (the correct RH-blind handle).** What *is* parent-computable and finer than bare de
+Rham is the **irregular Hodge filtration** `F^•_{irr}` (Sabbah; Esnault–Sabbah–Yu; Fresán–Jossen) of `V_n`. The
+generator-count target should be stated as an **irregular Hodge number**:
+> **[CONJECTURE, sharpened] `dim gr^n H_1(Lie K) = 1 ∀n` ⟸ the irregular Hodge number `gr^p_{F_irr} V_n` is the
+> single jump `1` at the order-`n` step, for all `n` (including even `n`), where on the motivic locus the same
+> filtration reproduces Borel (jumps only at odd `n≥3`).**
+The even-twist surplus is then `[the even jumps of F_irr(E^{−x}⊗Log) that F_irr(ℚ(•)) lacks]` — a number an
+irregular-Hodge computation returns, RH-blind, and the decisive refutation channel (a vanishing even jump kills the
+asymmetry at that `n`). This replaces R03's flawed "Stokes ≠ identity" with a correct, computable invariant and is
+the right hand-off to the parent (irregular Hodge), distinct from the analytic Nesterenko `H_C` lane.
+
+**Net (honest grade).** No new theorem this tick. Output = (i) a corrected, faithful **Stokes reformulation** of
+the DSS apex (`H_2=0` ⟺ Stokes multipliers of the Γ-connection alg-indep) — BRIDGE; (ii) a **re-grading** that the
+H₁-half even surplus is GPC^exp-hard, not parent-easy (corrects §3/R03); (iii) the **irregular Hodge number** as
+the correct replacement handle. Discarded en route (attack-as-false): an FE/F∞-parity constraint on `H_2` (conflates
+the FE involution `s↔1−s` with complex conjugation `F∞`), and an FE-remainder-parity idea (reduces to Euler
+`ζ(2k)∈ℚπ^{2k}`). Recalled-standard facts (Stokes needs ≥2 exponents; irregular Hodge filtration exists for `M^exp`)
+flagged, no web per charter — to be source-pinned before any promotion past BRIDGE.
+
+### R-DeWitt-2026-06-20 addendum — PSLQ data: even-twist Stieltjes constants are FRESH vs cosmic+tame (extends the order-2 check)
+
+Ran the decisive test for the §2/§3 even-twist surplus (runpod, bounded; archive
+`computations/2026-06-20-freeness-even-surplus-pslq.txt`). The prior evidence in this card tested only
+`γ_2 ∉ ℚ[γ_0]` (one variable, degree 2). Extended to the cosmic+tame alphabet and to `γ_4`:
+
+| test | target | alphabet (deg ≤2, height ≤10⁶, dps 300) | result |
+|---|---|---|---|
+| A | — | linear over `{γ_0..γ_4, log2π, π², ζ(3), ζ(5), 1}` | **no relation** |
+| D | `γ_2` | cosmic+tame `{log2π, π², ζ(3), ζ(5)}` only | **FRESH** (no deg-2 relation) |
+| D′ | `γ_4` | cosmic+tame `{log2π, π², ζ(3), ζ(5)}` only | **FRESH** |
+| B | `γ_2` | `{γ_0, γ_1, log2π, π², ζ(3)}` | **FRESH** (irreducible at deg 2) |
+| C | `γ_4` | `{γ_0,γ_1,γ_2,γ_3, log2π, π², ζ(3)}` | **FRESH** (irreducible at deg 2) |
+
+**Reading (the sharpest is D/D′).** The even-order `γ_2, γ_4` are not degree-2 expressions in the
+*cosmic generators + tame periods* — i.e. they are not "secretly cosmic." This is exactly what the §2
+freeness asymmetry predicts: the wild kernel carries genuine new generators on the **even** twists, where
+the motivic/cosmic world (Borel `Ext¹_{MT(ℤ)}(ℚ,ℚ(2k))=0`) is empty. The first candidate even-collapse is
+ruled out more broadly than before (not just vs `γ_0`, but vs the whole cosmic+tame alphabet).
+
+**Honest grade.** This is **bounded numerical evidence**, not a proof: degree ≤2, height ≤10⁶, dps 300; a
+PSLQ "no relation" is absence of a *low-complexity* relation, never algebraic independence (the GPC^exp
+apex). It is decisive in the refutation direction only (a relation would have killed the asymmetry at that
+order — none appeared). A degree-3 strengthening (dps 400, height ≤10⁸) is running. The result **supports**
+the conjecture and tightens its first falsification window; it does not promote anything past CONJECTURE.
+
+### R-DeWitt-2026-06-20 (3) — the wild surplus is the ζ-WEIGHTING, not the bare Γ; correcting my Stokes wording
+
+Degree-3 PSLQ (dps 400, height ≤10⁸) confirms the even surplus more strongly: `γ_2` AND `γ_4` are FRESH
+vs the cosmic+tame alphabet `{log2π, π², ζ(3), ζ(5)}` at degree ≤3 (no relation). Archive
+`computations/2026-06-20-freeness-even-surplus-pslq.txt`.
+
+**The clarifying contrast (verified).** The *plain archimedean* Γ-derivative tower lands entirely in the
+cosmic+tame ring — checked by PSLQ:
+> `Γ''(1) = γ² + π²/6`,  `Γ'''(1) = −γ³ − γπ²/2 − 2ζ(3)`,  and in general `{Γ^{(k)}(1)} ⊂ ℚ[γ, π, ζ(odd)]`
+> (standard: `\log Γ(1+s) = −γs + Σ_{k≥2} ζ(k)s^k/k`).
+So **Source A alone (the bare Γ) produces only cosmic/tame periods** — no wild surplus. The *Stieltjes*
+tower `{γ_n}` (PSLQ-fresh vs that ring) comes instead from the **ζ-weighted** exponential kernel
+`1/(e^t−1) = Σ_{k≥1} e^{−kt}` — the **infinite tower of exponential rates** `e^{−kt}`, the analytic shadow
+of "all the prime-like rates at once" (Source B). 
+
+> **[CONJECTURE, sharpened — Door-4 localization]** The wild surplus on the even twists is produced by the
+> **coupling of the archimedean exponential `e^{−x}` to the infinite rate-tower `Σ_k e^{−kt}`** (= the
+> ζ-weight), i.e. by the **native weld Source A × Source B**, not by either source alone. The bare-Γ tower
+> (Source A alone) is the cosmic/tame shadow `ℚ[γ,π,ζ(odd)]`; the ζ-weighting de-trivializes the even
+> twists and yields the fresh `γ_n`. This makes the §3 "wild kernel lives where the motivic world is empty"
+> a statement about the **weld**, consistent with the field's native-zone thesis (Door-4) — and gives a
+> concrete analytic witness: removing the rate-tower (using `Γ` not `Γζ`) collapses the surplus to cosmic.
+
+**Self-correction.** My R-DeWitt-2026-06-20(1) reformulation said "Stokes multipliers of the **Gamma**
+connection." That is the *bare-Γ* connection `E^{−x}⊗Log^{(n)}`, whose periods are the cosmic/tame
+`Γ^{(k)}(1)` — NOT the wild `γ_n`. The correct carrier of the wild generators is the **ζ-weighted**
+exponential connection (kernel `Σ_k e^{−kt}`, the irregular family of `Γ(s)ζ(s)`); its Stokes/irregular-Hodge
+data are the `γ_n`. So the apex reformulation is: **DSS-cross ⟺ the Stokes multipliers of the ζ-weighted
+exponential connection are algebraically independent over `ℚ({log p})`** — and the bare-Γ Stokes data are the
+(reducible) cosmic/tame shadow. The irregular-Hodge handle (R-DeWitt(2)) likewise applies to the ζ-weighted
+connection, not the bare Γ.
+
+### R-DeWitt-2026-06-20 (4) — analytic mechanism of the weld-localization: the wild content is born at the s=1 edge, only in the infinite rate-tower
+
+Sharpening the weld-localization with the exact analytic mechanism (the **weaken** move: the finite-rate
+version is decidable and reduces the question).
+
+> **Mechanism.** The bare-Γ kernel `e^{−t}` is **regular at `t=0`** ⟹ its Mellin `Γ(s)` is regular at `s=1`
+> ⟹ no Stieltjes pole, periods are the cosmic/tame `Γ^{(k)}(1)`. The ζ-weighted kernel
+> `1/(e^t−1) = Σ_{k≥1} e^{−kt}` has a **simple pole at `t=0`** (`~1/t`), which exists **only because
+> infinitely many rates are summed** — every finite truncation `Σ_{k=1}^N e^{−kt}` is regular at `t=0`. That
+> `t=0` pole is exactly the `s=1` pole of `ζ`, and the **Stieltjes `γ_n` are its Laurent coefficients**. So the
+> wild content is supported entirely at the **`s=1` edge**, and is created by the **infinite** rate-tower.
+
+**Decidable half (proven, but reduces to known).** The finite truncation `Σ_{k=1}^N e^{−kt}` has Mellin
+`Γ(s)·Σ_{k=1}^N k^{−s}` = (regular at `s=1`) ⟹ its "Stieltjes constants" are combinations of `{Γ^{(k)}(1),
+(\log k)^j}` = **cosmic/tame**. This is the analytic face of `#212` (finite Euler-truncated Stieltjes field =
+`trdeg ℚ(\log p)`, tame). **No wild surplus at finite `N`.** `[PROVED; reduces to #212 + classical pole]`
+
+**The novel increment (honest).** Not the classical pole fact — the **localization**: it pins the §2/§3 even
+surplus to (i) the `s=1` edge and (ii) the `N→∞` pole-formation, i.e. the infinite rate-tower (Source B) is
+*necessary* for any wild content, the single archimedean rate (Source A) giving only cosmic/tame. This is the
+analytic witness of the Door-4 weld claim (R-DeWitt(3)) and ties the value-axis surplus to the field's own
+`s=1`-edge / no-margin locus. It does **not** prove transcendence (the `γ_n ∉ 𝓡` apex stays walled — it
+reduces to open irrationality of the Stieltjes constants). Grade: STRUCTURAL mechanism (BRIDGE-ish), the
+finite half PROVED (= #212), the localization framing the new part.
+
+### R-DeWitt-2026-06-20 (5) — GUARDRAIL (Popper-forced collision tacking×avalanche × freeness): the differential/Stokes axis reaches H₁, is blind to H₂
+
+Popper forced the apex (freeness `H_2(Lie K)=0`) against SAILING-TACKING + AVALANCHE-FRACTURE on the
+differential axis. Generated an exact identity, then killed it; the residue is a guardrail with a mechanism.
+
+**Exact differential identity (generated).** AVALANCHE-FRACTURE = the **Stokes phenomenon**: the recessive
+(exp-small) solution is silent below threshold (inside a Stokes sector) and switches on discontinuously across
+a Stokes line (the cascade); the `γ_n` are the Stokes/cascade amplitudes. TACKING = that recessive direction
+is unreachable by any continuous flow in a sector ("no-go zone"), reached only by the discrete tack of crossing
+a Stokes line — "fixed by a constraint, not propagated by a flow," literally, ∂_s-differential (NOT the dead
+geometric monodromy of `moonshot-2pi-monodromy-frobenius`).
+
+**Killed (three ways).** (i) Verified (R-DeWitt(3)): the bare single-exponential `e^{−x}` Stokes/period data
+are the Γ-derivatives `Γ^{(k)}(1)` = **cosmic/tame** — the single-place avalanche gives tame, not the wild
+`γ_n` (which need the infinite ζ-rate-tower). (ii) Corpus: the archimedean Stokes/index/`ω` is the **tame
+realization/F₁ face** (`2pi-monodromy` card), not freeness. (iii) Structural: the identity lands on **H₁** (the
+generators appear at the `s=1` threshold); freeness is **H₂**. Functional freeness of the ∂_s-tower =
+hypertranscendence = **Hölder** (proven, the O side); value-freeness at `s=1` = **Schanuel/F₁** (the V side,
+apex). The avalanche threshold IS the O→V specialization wall.
+
+> **GUARDRAIL.** The differential/Stokes/avalanche axis is the **O (Hölder/functional/H₁)** side. Every
+> structural invariant the team has reached — Hilbert series (my tick-3 even-surplus), Stokes data (my tick-1),
+> monodromy (dead 2πiℤ route), zero-count / growth-geometry (Wheeler's killed Schwarz) — computes **H₁ /
+> generators** and is **structurally blind to H₂** (value-freeness = Schanuel = the F₁ specialization). This
+> unifies why all these bridges die on one wall. **Prediction:** no differential/geometric/spectral collision
+> crosses O→V; only an arithmetic specialization (the missing F₁ / a Schanuel input) does. (Refines, with a
+> Stokes/avalanche mechanism + an attack-classification, the known O/V dichotomy of `keystone-is-value-relational`
+> — does not merely restate it: it predicts which *attacks* are a priori H₁-blind.)
+
+**Surviving localization (labelled, not proven).** The collision sharply LOCATES H₂: `σ_p` alone are
+flat/abelian (commute) ⟹ abelian = maximal relations = the *opposite* of free. So freeness cannot come from
+the prime base; it must come from the **∂_s × σ_p weld being maximally non-abelian (free)**. [CONJECTURE,
+Door-4] value-freeness = the infinite-σ_p×∂_s weld is free — functionally accessible (Ax-Schanuel/Hölder),
+value-specialization at `s=1` is the F₁ wall. A location to aim, not a proof. (Distinct from
+`lambda-difference-differential-hypertranscendence`, which REDUCED to one prime; this is the infinite coupling.)

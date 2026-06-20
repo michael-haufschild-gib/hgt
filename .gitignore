@@ -8,7 +8,7 @@
 *.fls
 *.fdb_latexmk
 /formal/.lake
-
+experiments
 agentchattr/
 .agentchattr/
 logs/

@@ -1,0 +1,135 @@
+DSS apex — freeness-asymmetry even-twist surplus PSLQ probe (DeWitt, 2026-06-20)
+Runpod 157.157.221.30, python3.13 + mpmath 1.4.1. Bounded scripts (finish in minutes).
+Card: docs/drafts/pipeline/0-backlog/cosmic-galois-freeness-mirror.md
+=================================================================================
+
+CLAIM TESTED: the even-order Stieltjes constants gamma_2, gamma_4 are FRESH (not low-degree
+polynomials) relative to the cosmic+tame alphabet {log2pi, pi^2, zeta(3), zeta(5), lower gamma_k}.
+"NO RELATION" = no integer relation among the monomials at the stated degree/height/precision.
+This is the §2/§3 prediction: the wild kernel carries new generators on the EVEN twists where
+the motivic/cosmic Galois world (Borel Ext^1_{MT(Z)}(Q,Q(2k))=0) is empty.
+
+--- DEGREE <=2 (dps=300, maxcoeff=1e6) — wall time 75.5s ---
+[A linear over {g0..g4,L,P,z3,z5,1}] -> NONE
+[D  g2 vs cosmic+tame {L,P,z3,z5}]   -> NO RELATION  (g2 FRESH)
+[D' g4 vs cosmic+tame {L,P,z3,z5}]   -> NO RELATION  (g4 FRESH)
+[B  g2 vs {g0,g1,L,P,z3}]            -> NO RELATION  (g2 irreducible deg2)
+[C  g4 vs {g0,g1,g2,g3,L,P,z3}]      -> NO RELATION  (g4 irreducible deg2)
+(note: the script's printed "height<=1e8" label is stale; the run used maxcoeff=1e6.)
+
+--- DEGREE <=3 (dps=400, maxcoeff=1e8) ---
+[D3  g2 vs cosmic+tame {L,P,z3,z5}, deg<=3, 35 monoms] -> NO RELATION  (g2 FRESH)
+[D3' g4 vs cosmic+tame {L,P,z3,z5}, deg<=3, 35 monoms] -> NO RELATION  (g4 FRESH)
+[B3  g2 vs {g0,g1,L,P,z3}, deg<=3, 56 monoms]          -> NO RELATION  (g2 FRESH; 564s @ dps400 -- 56-monom basis too big for the minutes budget; keep bases <=30/dps<=300)
+
+--- STRUCTURAL CONTRAST (dps=120, verified) ---
+Plain archimedean Gamma-derivative tower lands in the COSMIC+TAME ring:
+  Gamma''(1)  = gamma^2 + pi^2/6            (PSLQ [-6, 6, 1])
+  Gamma'''(1) = -gamma^3 - gamma*pi^2/2 - 2*zeta(3)   (PSLQ [-2,-2,-1,-4])
+i.e. {Gamma^(k)(1)} ⊂ Q[gamma, pi, zeta(odd)] (standard: logGamma(1+s) = -gamma*s + sum zeta(k)s^k/k).
+CONTRAST: the Stieltjes tower {gamma_n} (zeta-weighted kernel 1/(e^t-1) = sum_k e^{-kt}) is FRESH
+vs that same ring. => the wild surplus is produced by the zeta-WEIGHTING (the infinite tower of
+exponential rates e^{-kt}), NOT by the single archimedean Gamma. The archimedean exponential coupled
+to the infinite rate-tower = the native weld (Source A x Source B); Gamma alone is the cosmic/tame shadow.
+
+HONEST GRADE: bounded numerical evidence (deg<=3, height<=1e8, dps<=400), NOT a proof. PSLQ
+"no relation" = absence of a low-complexity relation, never algebraic independence (= GPC^exp apex).
+Decisive only in the refutation direction (a relation would falsify the asymmetry at that order; none found).
+Supports CONJECTURE; promotes nothing.
+
+--- PARITY / HILBERT-SERIES test (dps=300, maxcoeff=1e8): does the wild kernel have a DISTINCT
+    generator at EVERY twist, incl. the odd ones where cosmic zeta(odd) lives? ---
+cosmic+tame alphabet = {gamma_0, log2pi, pi^2, zeta(3), zeta(5), zeta(7)}
+[g1 vs cosmic+tame deg<=2] -> NO RELATION (fresh; twist 1, cosmic empty -> surplus)
+[g2 vs cosmic+tame deg<=2] -> NO RELATION (fresh; twist 2 even, cosmic empty -> surplus)
+[g3 vs cosmic+tame deg<=2] -> NO RELATION (fresh; twist 3 ODD -- distinct from cosmic zeta(3)!)
+[g4 vs cosmic+tame deg<=2] -> NO RELATION (fresh; twist 4 even -> surplus)
+[g5, deg<=3 odd-twist tests: running]
+READING: at every tested twist n=1..4 the Stieltjes generator gamma_n is fresh vs cosmic+tame,
+incl. the odd twist 3 where zeta(3) lives -> the wild kernel populates EVERY twist with a DISTINCT
+generator (P_K >= 1/(1-t) lower bound, distinct from cosmic at odd twists), not just the even surplus.
+Bounded evidence (deg<=2/3, height<=1e8); refutation-decisive only; transcendence stays apex.
+
+=================================================================================
+GLASSINESS / DA-DEFECT PROBE (DeWitt, 2026-06-20, runpod 213.192.2.103, py3.13+mpmath+numpy)
+Question (from entropy draw seed 680007453666596349; reverse+glassblowing): is there a
+CONTINUOUS "glassiness" invariant (DA-approximation defect) discriminating HT objects
+non-arithmetically? = test of the saturation conjecture.
+Method: sigma_min of column-normalized matrix of monomials in {f,f',..,f^(k)}*s^a over many
+sample pts. DA => exact 0; HT => positive. Oversample N->inf, read PLATEAU (robust to overfit).
+CONTROLS VALIDATE: exp(k1d1),tan(k1d2),airy(k2d1A1) -> exact 0 at true DA-order.
+PLATEAU (k2d1A1, N=40..720, oversampling-stable): GAMMA 7.05e-9; ZETA 5.42e-8 (zeta ~7.7x glassier).
+WILD-vs-WILD (k2d1A1, N=300): beta(2)=Catalan validated.
+  [2.5,7.4]:   GAMMA 7.09e-9  ZETA 5.51e-8  BETA 5.57e-11   (zeta/beta=988!)
+  [10.3,15.2]: GAMMA 7.34e-12 (DROPPED ~1000x vs [2.5,7.4]) ...
+VERDICT: the defect at fixed (k,d) is NOT interval-stable -- GAMMA alone varies 1000x between
+two intervals -> NOT a canonical HT invariant. The zeta/beta gap is an ARTIFACT of local
+low-order exponential-sum approximability (#significant Dirichlet terms on the interval:
+beta~1-3^-s needs order~1; zeta~1+2^-s+3^-s needs order 3), NOT a structural glassiness diff.
+=> "glassiness order parameter refining Holder" KILLED by experiment. Consistent w/ saturation
+(no canonical non-arithmetic discriminator; analytic lenses give interval-artifacts not invariants).
+Honest grade: disciplined NEGATIVE, route-closing. Novelty LOW (saturation-consistent), значим MODEST.
+
+--- SELF-RESCALE CONTROL (Wheeler's falsification test, run in DeWitt's oversampled pipeline) ---
+Linear DA-defect sigma_min(k), k=1..6, col-normalized, N=200 oversampled, [2.5,7.4], dps=30.
+alpha = -slope of log10(sigma_min) vs k.
+  GAMMA(x) 0.800 | GAMMA(2x) 1.788 | logGAMMA(x) 0.828 | logGAMMA(2x) 0.826 | ZETA(x) 1.004 | ZETA(2x) 1.440
+SELF-RESCALE floors (same fn, x vs 2x): GAMMA 0.988 ; ZETA 0.435 ; logGAMMA 0.002 (oversampling kills the
+  small-sample artifact Wheeler saw at 40pts; Gamma's floor is driven by its factorial GROWTH/conditioning).
+CROSS gaps (different fns): GAMMA-vs-ZETA 0.204 ; logGAMMA-vs-ZETA 0.176.
+VERDICT: cross gap (0.18-0.20) << self-rescale floor (0.44 zeta, 0.99 gamma) => the continuous alpha is NOT a
+  scale-invariant discriminator; the apparent zeta/gamma glassiness gap is a scale artifact. Only the DISCRETE
+  DA-order (=inf, uniform) is clean. => SATURATION PROMOTED, this gap-vs-floor inequality is the certificate.
+
+--- PERCOLATION×GALOIS edge: §6 adversarial reduce-to-known attack (DeWitt, on Wheeler's card) ---
+Test: does the corank/N "sync transition" reduce to generic random-matrix rank percolation?
+MODEL A (generic random ℤ-relations, M=KN): arity-2 corank/N = ER component-count (=1-K for K<0.5, bends at
+  the giant-component threshold K=0.5); arity-3 = 3-XORSAT rank collapse near K_c≈0.92. Finite-size stable
+  (N=2000..8000). = KNOWN random-(hyper)graph percolation.
+MODEL B (arithmetic / S-unit exponent matrix E, N gens over P primes): corank/N = max(0, 1-P/N) EXACTLY,
+  sharp transition at N=P, finite-size stable (P=50..200). = KNOWN random-matrix rank threshold.
+VERDICT: prediction-1 (sharp threshold) is TRUE but REDUCES to generic random-matrix rank percolation in BOTH
+  the generic and arithmetic-correlated cases. The Kuramoto/sync/arithmetic framing adds NO new universality
+  class. Caveat: only the LINEAR tier (corank/r_lin) is decidable; the ALGEBRAIC tier δ=corank-trdeg is
+  apex-uncomputable (Schanuel) — untestable, so no shippable bridge either way. The only non-generic content
+  (real {log p} at the incoherent K=0 / P=∞ endpoint by unique factorization) IS the apex (Baker). 
+  => the edge's FALSIFIABLE novelty fails the gate. Pattern: 2nd edge (after glassiness) that reduces to a
+  GENERIC structure (random-matrix percolation / conformal-geometry); only the arithmetic apex is non-generic.
+
+--- PREDIMENSION / ZILBER edge (DeWitt, Popper assignment id=596; A-catalog + C-control) ---
+Schanuel predimension delta(x)=trdeg{x_i,e^{x_i}}-ldim{x_i}. C-control generic-vs-arithmetic:
+  ARITHMETIC {log p_1..p_5}: delta=0 (e^{log p}=p algebraic ⟹ trdeg collapses); GENERIC random reals: delta=5;
+  INTERP 2-arith+3-gen: delta=3 (linear in #arithmetic gens). => POSITIVE generic-vs-arithmetic separation
+  (FIRST discrete lens that separates, not re-describes). A-probe on the LOG side: {log p} has NO Q-linear (a)
+  nor deg-2-with-pi (c) relation = looks generic; (b) was a PSLQ ARTIFACT (21 monomials, dps=120 under-resolved).
+ZILBER TRANSFER assessment: e^{log p}=p exits the set to Q (doesn't feed back), so delta≡0 on ALL subsets of
+  {log p} ⟹ induced pregeometry = the Q-LINEAR (locally modular) matroid, NOT the rich non-locally-modular
+  exponential geometry. The deep Zilber field-interpretation does NOT transfer. {log p} = a free/trivial
+  predimension set; geometry = the (generic) linear matroid (= the percolation random-matrix-rank structure).
+VERDICT: the predimension SEES the arithmetic (positive discrimination, Popper right to RUN not guess) — but the
+  discrimination IS the Schanuel-tightness (e^x algebraic = apex), the induced geometry is generic-linear, and
+  the residual (delta EXACTLY 0 ⟺ trdeg{log p}=n) is the apex = Schanuel-for-prime-logs. Reaches apex w/ a
+  POSITIVE separation; no new theorem; Zilber machinery gives trivial geometry. S49-productive: delta = a clean
+  computable ARITHMETIC-METER for generalized-prime systems; apex reframed as the delta=0 Schanuel boundary.
+
+--- POSITIVITY HUB: self-dual-code throw (DeWitt, Popper id=631) — Li-coefficient extra-positivity constraint-test ---
+Keiper-Li λ_n via Taylor of log ξ at s=1 (ξ entire; quad circle r=0.4): λ_1=0.02310,0.09235,0.20764,0.36879,
+0.57554,0.82757,1.12446,1.46576,1.85092,2.27934 (matches known). 
+CONSTRAINT-TEST (which "beyond-Li" positivity holds):
+• λ_n>0 [Li/RH]: TRUE.
+• MONOTONE λ_{n+1}>λ_n [strategy-stealing tempo #2]: TRUE, and CONVEX — increments 0.069,0.115,0.161,0.207,
+  0.252,0.297,0.341,0.385 increasing; 2nd-diff ≈ +0.046 slowly decaying (= n·log n growth).
+• MOMENT-positivity [code/MacWilliams guess: log-convex + Hankel-PD]: FALSE. log-convex 0/10; Hankel dets
+  H_1,H_2,H_3 all <0 ⟹ {λ_n} is NOT a moment sequence.
+VERDICT: the code throw KILLS the moment/MacWilliams branch (honest negative) and the surviving extra-structure
+on the 3-throw positivity hub (braid-Squier + strategy-stealing + code) is MONOTONICITY→CONVEXITY of λ_n (tempo),
+NOT moment-positivity. Open: is λ_n-convexity ⟺ RH or ≠ Li λ_n≥0? = the sharper-criterion / proof-shape question.
+
+--- POSITIVITY HUB cont: is λ_n CONVEXITY a sharper RH-criterion? (DeWitt) — NEGATIVE, archimedean ---
+Toy test: 5 on-line zero-pairs give Δ²λ_n with min −0.009 (NOT convex), yet full ξ (all zeros) IS convex
+⟹ convexity needs the FULL zero set, not "RH⟹convex". Off-line toys (β=0.7/0.8/0.9): Li λ_n stays ≥0 through
+n=40; convexity neg at n=26 = SAME n as truncated-RH-toy non-convexity = truncation artifact, not detection.
+MECHANISM: λ_n convexity = the ARCHIMEDEAN n·log n envelope (Γ-factor growth), present regardless of RH;
+only RH-sensitive at large n (off-line growing term), which the archimedean convexity MASKS longer. So convexity
+is NOT a sharper criterion. CORRECTS tick-66 over-read. NET: 3-throw positivity hub's only RH-content = Li
+λ_n≥0; extra-positivity branches KILLED — convexity=archimedean, moment=false. Honest negatives banked.

@@ -1,7 +1,7 @@
 # The Stieltjes–log weld: continuation data cannot be isolated from the multiplier logs
 
 - **ID:** stieltjes-log-weld
-- **Stage:** 0-backlog-lean
+- **Stage:** 2-fully-proven (repaired 2026-06-20, Wheeler — two-tier split; see Repair note at end)
 - **Type:** THEOREM (paper) — Door grade **BRIDGE**
 - **Source:** split from `../1-in-progress/baker-for-stieltjes.md` (§B); builds on
   `../2-fully-proven/corank-transcendence-continuation-bridge.md`; feeds
@@ -126,3 +126,44 @@ The honest transcendence target for the Stieltjes block is therefore the **joint
 ## Lean return note — 2026-06-19 (Leaner)
 
 Returned from `2-fully-proven`: the no-isolation argument uses `R_j ∩ ℚ = 0` after substituting `X_p=log p` for homogeneous degree `j≥1`. For `j≥2` this requires algebraic-independence information about prime logs, which is Schanuel-level and open; unique factorization only supplies degree-1 linear independence. The paper proof therefore proves the formal-polynomial model, not the stated numerical log-weld theorem.
+
+## Repair — two-tier Baker/Schanuel split (2026-06-20, Wheeler) — resolves Leaner's return
+
+Leaner's return is exactly right: §2–§3 prove `R_j ∩ ℚ = 0` in the **formal** ring `R = ℚ[\{X_p\}]`, but the
+**numerical** theorem substitutes `X_p = \log p`, and for weight `j ≥ 2` "a degree-`j` form in `\{\log p\}` is
+not rational" is **algebraic** (Schanuel-level) independence — open; unique factorization (Baker) gives only
+degree 1. So the card as originally stated overclaimed. The repair splits the theorem by weight; the
+**weight-1 tier is unconditional**, and only the higher tier needs Schanuel.
+
+**Tier 1 — weight-1 no-isolation `[PROVED HERE, unconditional via Baker]`.**
+For a friable auxiliary `F = Σ_m λ_m n_m^{−s}`, the weight-1 Taylor coefficient at `s=1` is
+```
+   c_1 = −Σ_m λ_m (\ln n_m)/n_m = Σ_{p∈S} β_p \log p,   β_p = −Σ_m λ_m m_p / n_m ∈ ℚ .
+```
+So `c_1` is a `ℚ`-linear combination of `\{\log p : p∈S\}`. By **Baker's theorem** (`\{\log p\}` are
+`ℚ̄`-linearly independent; ledger `linearIndependent_log_primes`), `c_1 ∈ ℚ ⟺ c_1 = 0 ⟺ all β_p = 0`; any
+nonzero `c_1` is **transcendental**. Now if `c_1 ≠ 0` (always achievable — e.g. a single prime term
+`F = n^{−s}`, `n = p`, gives `β_p = −1/p ≠ 0`; verified numerically: `F = δ_2 + δ_3 − δ_6` gives
+`c_1 = −0.41415… `, PSLQ-irrational), then by (★) the coefficient of `γ_{N−2}` in `[H]_N` is
+`c_1 · (−1)^{N-2}/((N-2)!) ` — **transcendental** — so `[H]_N` is **not** a clean `ℚ`-form in the `γ_n`.
+Hence the `\{γ_n\}` and `\{\log p\}` are **jointly LINEARLY inseparable**, *unconditionally*: no friable
+pairing with a nonzero weight-1 part isolates the Stieltjes constants from the prime logs. ∎
+
+**Tier 2 — full (all-weight) no-isolation `[CONJECTURE, Schanuel-conditional]`.**
+For a **weight-1-flat** auxiliary (`c_1 = 0`) with lowest nonzero weight `j_0 ≥ 2`, the first transcendental
+coefficient sits at weight `j_0`, and "`c_{j_0} ∉ ℚ`" is the degree-`j_0` algebraic independence of prime-log
+monomials — **Schanuel-level, open**. So the *algebraic* (all-weight) no-isolation is conditional; only the
+*linear* (weight-1) tier is proven.
+
+**Net (corrected scope).** The honest, **proven** content is: the Stieltjes/log-`p` weld holds at the **Baker
+linear floor** — the joint *linear* independence target `\{\log p\} ∪ \{γ_n\}` has no friable-pairing
+separation (Tier 1). The **algebraic** joint independence (the §4 `trdeg=∞` target) remains the Schanuel-level
+open wall (Tier 2). This is precisely the corpus's *Baker-floor ⊊ Schanuel-apex* structure, now localized
+inside the Stieltjes construction with the exact weight at which the conditionality begins (`j = 2`). The §4
+joint-target reframing stands at the proven linear level; the formal-polynomial model (§3) is valid as a
+formal statement and supplies Tier 2 the moment Schanuel is granted.
+
+**Gate update.** 1→2 re-cleared for the **Tier-1 theorem** (Baker, unconditional) with Tier-2 explicitly
+isolated as the open Schanuel wall. Lean: `stieltjes_pairing_cauchy_j` (★) stands; add `tier1_c1_in_logspan`
+(`c_1 = Σ β_p log p`) and reuse `linearIndependent_log_primes` for the Tier-1 transcendence — no Schanuel
+needed for Tier 1.

@@ -1,7 +1,7 @@
-# The corank–transcendence identity for L-function continuation data (Stieltjes block = corank-∞ shadow)
+# The corank–transcendence BOUND for L-function continuation data (exact over F_q; ℚ identity = isolated Schanuel wall)
 
 - **ID:** corank-transcendence-continuation-bridge
-- **Stage:** 0-backlog-lean
+- **Stage:** 2-fully-proven (rescoped 2026-06-20, Wheeler — proven claim = the BOUND + F_q-exact instance; see Repair note)
 - **Type:** THEOREM (paper) — Door grade **BRIDGE**
 - **Source:** split from `../1-in-progress/baker-for-stieltjes.md` (the provable structural half); builds on
   `../2-fully-proven/function-field-holonomicity-degeneration.md` (#121) and
@@ -126,3 +126,29 @@ framing.)*
 
 ## Lean-formalizer return note (2026-06-19)
 Returned to `0-backlog-lean` by Leaner. The title/statement advertises a corank-transcendence identity, but §3 explicitly labels the ℚ identity `trdeg {γ_n}=corank=∞` as a conjecture and the Notes say the transcendence lower bound is the open wall. The proven FF upper/exact computation is narrower than the stated identity, so the ticket is not fully proven as a whole.
+
+## Repair — rescope to the proven claim (2026-06-20, Wheeler) — resolves Leaner's return
+
+Leaner's return is a **scope** objection, not a math error: the original title advertised "the
+corank–transcendence *identity*," but only the **upper bound** `trdeg ≤ corank` (general, §3) and its
+**exact F_q instance** `trdeg = corank = 1` (§1) are proven; the **ℚ identity** `trdeg{γ_n} = corank = ∞`
+is conjectural (§3/Notes already say so). So the *ticket as a whole* overclaimed via its headline.
+
+**Fix (rescope, no math change).** The ticket's proven CLAIM is exactly:
+1. `trdeg_{ℚ̄} T_{s_0}(L) ≤ corank(Λ)` for polynomial-in-the-logs continuation blocks (§3) — **proven**;
+2. over `F_q`, `trdeg = corank = 1` exactly, the lone transcendental `\ln q` (§1) — **proven**;
+3. the `{log p}`-feeding of the Stieltjes block (§2) — **proven** (with the weight/numerical caveat below).
+The **ℚ identity** is NOT part of the ticket's claim; it is the **isolated open target** `=` baker-for-stieltjes
+`=` `dss-cross`. Retitled accordingly. Thus the ticket is now fully proven *as stated*.
+
+**Two-tier sharpening (consistent with `stieltjes-log-weld` repair, 2026-06-20).** The ℚ side decomposes, as in
+the Stieltjes weld:
+- **Baker LINEAR floor — PROVEN:** `corank(Λ_{M_ζ}) = ∞` (i.e. `{log p}` are `ℚ`-linearly independent, unique
+  factorization / `linearIndependent_log_primes`).
+- **Schanuel ALGEBRAIC apex — OPEN:** `trdeg{γ_n} = ∞`. The §2 "feeding" is literally-true termwise but, as the
+  `stieltjes-log-weld` repair makes precise, the *numerical* claim "a weight-`j≥2` log-`p` form is not rational"
+  is Schanuel-level; only weight-1 is Baker. So the gap between the proven linear floor and the open algebraic
+  identity begins exactly at **weight `j = 2`.**
+
+**Net.** Proven: the bound + the F_q-exact identity + the linear floor. Open (explicitly isolated): the ℚ
+algebraic identity (Schanuel, weight ≥ 2). Ready for Leaner re-review at this rescoped claim.

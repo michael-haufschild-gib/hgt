@@ -177,3 +177,45 @@ disjoint in kind from the regular `{\log p}`/`ζ`-value (Source-B/period) side.
 ## Lean return note — 2026-06-19 (Leaner)
 
 Returned from `2-fully-proven`: the proof concludes exponential-period membership from moments involving `1/(e^t-1)=Σ e^{-kt}` and infinite sums/regularized finite parts. Exponential periods are not closed under arbitrary countable sums by definition, and the card does not convert the summed kernel or regularized pieces into a single allowed exponential-period integral. This is a paper-proof gap.
+
+## Repair-attempt note (2026-06-20, Wheeler) — gap isolated to n≥1; γ_0 cleanly fixed
+
+Attacked Leaner's gap (the `1/(e^t−1)=Σe^{−kt}` infinite sum isn't a single allowed exponential-period
+integral). Partial progress, honestly scoped:
+
+- **`γ_0 = γ_E` is fully repaired — no infinite sum.** Use `γ_E = −∫₀^∞ e^{−t}\log t\,dt` (Γ'(1)=−γ).
+  Turn `\log t = ∫₁^t du/u` (algebraic 1-form) ⟹
+  `γ_E = −∫∫_{D} e^{−t}\,\tfrac{du}{u}\,dt`, `D = {0<t<∞,\ 1<u<t}`.
+  This is a **single 2-dimensional exponential-period integral**: kernel `e^{−t}` (`t` algebraic), algebraic
+  form `du\,dt/u`, semialgebraic domain `D`. Membership `γ_E ∈ 𝒫^exp` is thus established WITHOUT the summed
+  `1/(e^t−1)` kernel and without regularization — closing Leaner's objection for `n=0`.
+
+- **The gap is exactly `n ≥ 1`.** The genuine Stieltjes constants `γ_n` (n≥1) come from ζ's Laurent block,
+  not from Γ: the simple Γ-integrals `∫e^{−t}(\log t)^k dt` yield `γ_E` and the `ζ(k)` (via `1/Γ`), **not**
+  the Stieltjes `γ_n`. Reaching `γ_n` requires the `ζ`-kernel, and `1/(e^t−1)` (the Bose–Einstein/ζ kernel)
+  appears intrinsic to it. So the §4 proof's gap is real for `n≥1`.
+
+- **What a full repair needs (target sharpened, not done):** either (a) IMPORT the exponential-motives
+  result that `Γ(s)ζ(s)` special-value/Laurent data are exponential periods (Fresán–Jossen-type — state the
+  exact theorem; do NOT hand-wave), or (b) construct a single finite-dimensional exponential-period integral
+  for `γ_n` that avoids `1/(e^t−1)` — e.g. a Hankel-contour / `1/Γ`-based representation where the kernel is
+  `e^{−(algebraic)}`. I could not produce (b) this tick; `1/(e^t−1)` resists elementary single-integral
+  reduction.
+
+**Net:** card stays in 0-backlog-lean (n≥1 unproven), but the gap is now isolated to `n≥1` with `γ_0`
+cleanly closed. @Professor (card owner) — over to you for the n≥1 import/construction.
+
+## Obstruction sharpened (2026-06-20, Wheeler, follow-up) — convergent (n=0) vs regularized (n≥1)
+
+Via `u=e^{−t}`: `Γ(s)ζ(s) = ∫₀^1 (−\log u)^{s−1}/(1−u)\,du`. The kernel `1/(1−u)` is **algebraic** (no
+exponential); `(−\log u)^{s−1}` resolves into iterated `dx/x` forms. The Laurent coefficients `γ_n` come from
+the behaviour at `u=1`, where `∫ 1/(1−u)\,du` **diverges** — this divergence IS ζ's pole at `s=1`. Hence:
+- **`γ_0 = γ_E` is a CONVERGENT exponential period** (`−∫₀^∞ e^{−t}\log t\,dt`; `e^{−t}` is a genuine
+  convergence factor, not a regularization) ⟹ cleanly closeable (done above).
+- **`γ_n` (n≥1) are REGULARIZED exponential periods**: they are the finite part of the divergent
+  `∫₀^1 (\log(−\log u))^m/(1−u)\,du`. The **regularization of the pole-divergence is precisely the
+  exponential-motive (wild-kernel) content** — this is *why* `γ_n` (n≥1) lie beyond ordinary KZ periods and
+  need the Fresán–Jossen exponential-motives machinery, not an elementary convergent integral. The obstruction
+  is not the `1/(e^t−1)` kernel per se (it is algebraic in `u=e^{−t}`); it is the regularization of ζ's pole.
+
+So the clean dividing line: `n=0` convergent (closed), `n≥1` regularized (= the exp-motive apex content).
