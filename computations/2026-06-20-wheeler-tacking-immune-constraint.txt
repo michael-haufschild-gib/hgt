@@ -1,0 +1,29 @@
+
+[SYMMETRIC polar v=sin(theta): exact reflection symmetry about the optimum]  unconstrained optimum theta* = 45.000 deg, VMG*=0.50000
+    w(deg) | #optima |        tack headings (deg) |      sum |      VMG | symmetry pair?
+       0.0 |       1 |         [np.float64(45.0)] |   45.000 |  0.50000 | False
+       1.0 |       2 | [np.float64(44.0), np.float64(46.0)] |   90.000 |  0.49969 | True
+       3.0 |       2 | [np.float64(42.0), np.float64(48.0)] |   90.000 |  0.49725 | True
+       7.0 |       2 | [np.float64(38.0), np.float64(52.0)] |   90.000 |  0.48513 | True
+      15.0 |       2 | [np.float64(30.0), np.float64(60.0)] |   90.000 |  0.43300 | True
+
+[BROKEN polar eps=0.15: reflection symmetry of the constraint broken]  unconstrained optimum theta* = 46.339 deg, VMG*=0.55365
+    w(deg) | #optima |        tack headings (deg) |      sum |      VMG | symmetry pair?
+       0.0 |       1 |        [np.float64(46.34)] |   46.339 |  0.55365 | False
+       1.0 |       1 |        [np.float64(45.34)] |   45.338 |  0.55331 | False
+       3.0 |       1 |        [np.float64(43.34)] |   43.336 |  0.55054 | False
+       7.0 |       1 |        [np.float64(39.34)] |   39.335 |  0.53687 | False
+      15.0 |       1 |        [np.float64(31.34)] |   31.338 |  0.47887 | False
+
+[BROKEN polar eps=0.4: reflection symmetry of the constraint broken]  unconstrained optimum theta* = 47.950 deg, VMG*=0.64508
+    w(deg) | #optima |        tack headings (deg) |      sum |      VMG | symmetry pair?
+       0.0 |       1 |        [np.float64(47.95)] |   47.950 |  0.64508 | False
+       1.0 |       1 |        [np.float64(46.95)] |   46.949 |  0.64465 | False
+       3.0 |       1 |        [np.float64(44.95)] |   44.947 |  0.64129 | False
+       7.0 |       1 |        [np.float64(40.95)] |   40.946 |  0.62476 | False
+      15.0 |       1 |        [np.float64(32.95)] |   32.949 |  0.55571 | False
+
+READ: when the forbidden (self) band sits on the symmetry axis, the single optimum is DELETED and
+      forced into a REFLECTION-SYMMETRIC PAIR straddling the axis (sum = 2*axis) -> a TACK between
+      two equal-VMG headings. Exact polar-symmetry <=> exact pairing (sum invariant). Breaking the
+      polar symmetry (eps) UNBALANCES the pair (sum drifts, one tack preferred).

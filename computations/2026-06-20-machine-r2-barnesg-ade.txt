@@ -1,0 +1,15 @@
+
+==== dps=80  (smin/smax; small => GLOBAL algebraic relation EXISTS at that (R,D)) ====
+func          (1,1)    (1,2)    (2,1)    (2,2)    
+exp           2.3e-82  7.5e-83  1.2e-163  0.0e+00  
+logGamma      1.5e-03  1.9e-11  1.8e-04  9.6e-19  
+logBarnesG    1.6e-02  1.3e-10  2.1e-04  1.6e-19  
+
+==== dps=120  (smin/smax; small => GLOBAL algebraic relation EXISTS at that (R,D)) ====
+func          (1,1)    (1,2)    (2,1)    (2,2)    
+exp           5.6e-122  1.6e-122  1.6e-243  0.0e+00  
+logGamma      1.5e-03  1.9e-11  1.8e-04  9.6e-19  
+logBarnesG    1.6e-02  1.3e-10  2.1e-04  1.6e-19  
+
+READ: exp -> ~0 at (1,1) [catch]. logGamma -> conditioning floor [resist].
+      logBarnesG: CATCH if << logGamma floor & drops at dps120; RESIST if ~= logGamma floor & dps-stable.

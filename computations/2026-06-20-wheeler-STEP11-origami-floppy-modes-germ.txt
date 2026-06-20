@@ -1,0 +1,14 @@
+==================================================================================
+ STEP11 WILD: origami rigid(single-mode+gap) vs floppy(clustered modes) — HT germ spectrum
+==================================================================================
+
+ germ                        sigma_1      sigma_2      sigma_3     gap s2/s1   gap s3/s2
+ DA 1/(1-z) c_k=1           9.92e-21     6.19e-22     1.09e-42     0.06237    1.766e-21
+ DA exp c_k=1/k!            5.4e-21      3.08e-21     3.6e-21      0.5708     1.168   
+ DA Fib-like c_k=phi^k      1.04e-20     2.35e-21     8.14e-22     0.2269     0.3459  
+ HT logGamma germ z(k)/k    5.22e-8      3.23e-6      1.32e-5      62.0       4.093   
+ HT zeta(k)                 5.74e-10     1.01e-7      1.57e-6      175.3      15.58   
+ HT Stieltjes gamma_n       0.00156      0.0128       0.0249       8.183      1.955   
+
+ interpret: big gap s2/s1 = RIGID single-mode (DA-like); small/clustered low svs =
+ FLOPPY multi-mode. Does HT show a distinct mode-structure vs DA?

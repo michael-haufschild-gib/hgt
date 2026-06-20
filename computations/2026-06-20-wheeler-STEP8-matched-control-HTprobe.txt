@@ -1,0 +1,23 @@
+==========================================================================
+ STEP8: HT-detection probe WITH MATCHED CONTROLS (identical grid/precision)
+==========================================================================
+  Gamma (HT target)                              residual=2.93e-18  -> FINITE relation (DA)
+    control: exp (DA)                            residual=3.25e-212  -> FINITE relation (DA)
+    control: 1/(1+x) (DA)                        residual=2.35e-22  -> FINITE relation (DA)
+    control: poly fit to Gamma's VALUES (DA)     residual=0.00e+00  -> FINITE relation (DA)
+
+ SEPARATION: Gamma residual / worst DA-control residual = 12471.9x
+ Non-blind iff Gamma's residual >> every matched DA control's. The poly-fit control
+ (matches Gamma's VALUES) is the key: it catches probes that only see value-asymptotics.
+--- properly conditioned: 60 points, 22 features ---
+  Gamma (HT)                       residual=9.56e-18  -> DA
+  exp (DA)                         residual=5.97e-224  -> DA
+  1/(1+x) (DA)                     residual=1.14e-26  -> DA
+  polyfit-to-Gamma-values (DA)     residual=0.00e+00  -> DA
+  SEPARATION Gamma/worst-DA-control = 8.4e+08x  (clean iff Gamma>>controls)
+dps :  Gamma residual  |  Airy residual (DA control y''=x y)
+   15:   1.684e-13     |   7.097e-17
+   25:   1.684e-13     |   4.158e-17
+   40:   1.684e-13     |   4.158e-17
+HT signature: Gamma residual SATURATES (precision-independent real defect);
+DA control (Airy) residual should track downward toward the float64 ~1e-16 ceiling.

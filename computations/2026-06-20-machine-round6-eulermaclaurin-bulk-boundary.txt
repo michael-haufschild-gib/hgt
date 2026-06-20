@@ -1,0 +1,23 @@
+zeta(2.5) true = 1.34148725725091718
+
+(a) BULK+BOUNDARY reconstruction (N=8), increasing K boundary-correction terms:
+  K= 0  err=1.433e-04
+  K= 1  err=5.824e-07
+  K= 2  err=7.660e-09
+  K= 3  err=1.881e-10
+  K= 5  err=4.065e-13
+  K= 8  err=3.807e-16
+  K=12  err=6.238e-19
+  K=18  err=3.023e-21
+  K=25  err=6.313e-22
+
+(b) boundary-correction term magnitudes -> least term at k=25 (optimal truncation),
+    then DIVERGE: |term_k| for k=1..12: 1.4e-04, 5.9e-07, 7.8e-09, 2.0e-10, 7.7e-12, 4.4e-13, 3.4e-14, 3.4e-15, 4.4e-16, 7.0e-17, 1.3e-17, 3.0e-18
+    min |term|=1.2e-21  ;  term[25]=1.2e-21 (blown up) => ASYMPTOTIC series confirmed.
+
+=== STEP 8 self-curate ===
+(a) surprising? NO. (b) shows something about zeta I didn't know? NO.
+  This is the TEXTBOOK Euler-Maclaurin continuation of zeta: bulk=pole 1/(s-1), boundary=Bernoulli
+  endpoint corrections, asymptotic with optimal truncation. The 'bulk+boundary' holographic reframing
+  is on-mission but = known zeta-regularization. EM is zeta's own computational backbone (in-field node).
+  => DEAD END. Bank; advance the walk's current-node so next tick wanders out of the field.

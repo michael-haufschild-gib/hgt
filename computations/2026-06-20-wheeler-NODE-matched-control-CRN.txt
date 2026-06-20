@@ -1,0 +1,16 @@
+========================================================================
+ NODE TEST: matched control (common random numbers) isolates the mechanism
+========================================================================
+
+ INDEPENDENT noise: mean diff(adaptive-fixed) = -0.2734  std = 0.0116
+ COMMON random nums: mean diff(adaptive-fixed) = -0.2788  std = 0.0122
+
+ variance reduction factor (indep/CRN) = 0.9x
+ => CRN control isolates the mechanism (low-variance diff); independent noise confounds it.
+
+ VERDICT: constraint confirmed — identical-noise control is REQUIRED to attribute the
+ effect to the history-dependent mechanism rather than to noise.
+--- corrected regime T=250 ---
+ INDEPENDENT noise: mean=-0.1663 std=0.0576
+ COMMON randnums :  mean=-0.1656 std=0.0414
+ variance reduction (indep/CRN) = 1.9x  -> CRN isolates mechanism

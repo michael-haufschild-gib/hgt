@@ -1,0 +1,17 @@
+========================================================================
+ NODE TEST: fold-angle limits — creases exist (DOF) but range is BOUNDED
+========================================================================
+
+ nominal crease DOF (range of driving angle if unconstrained): [-pi, pi] = full
+ ADMISSIBLE reachable range (all creases within limits): [-2.751, 2.751]  (bounded sub-interval)
+ at upper boundary drive=2.751: fold angles=[ 2.751  2.984 -2.751 -2.984]; crease #1 SATURATES at |rho|=2.984 (limit 2.985)
+
+ LOCK-UP: driver could reach pi (crease exists), but partner crease (mult mu=2.5) hits its
+ limit at driver=2.751 < pi -> the fold-angle LIMIT, not crease existence,
+ fixes the configuration boundary. Constraint confirmed on the NODE.
+
+ driving force (multiplier mu -> admissible half-range):
+   mu= 1.0: admissible half-range = 2.984
+   mu= 2.5: admissible half-range = 2.751
+   mu= 5.0: admissible half-range = 2.390
+   mu=10.0: admissible half-range = 1.806

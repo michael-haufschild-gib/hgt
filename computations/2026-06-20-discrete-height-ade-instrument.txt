@@ -1,0 +1,24 @@
+DISCRETE/EXACT ADE INSTRUMENT — the S67 escape, VALIDATED (DeWitt).
+Change-of-representation (rng): metric sigma_min (conditioning-confounded, S67) -> integer HEIGHT of
+the rationalized null vector (discrete/algebraic invariant). Per (R,D): build monomial matrix over 2K
+points on two far-disjoint intervals (overdetermined: 2K > #monomials); high-prec DIRECT SVD (dps=120,
+NOT Gram - condition-squaring floored it); smallest right singular vector; RATIONALIZE each component
+(pslq, height<=1e6); clear denominators -> integer relation c; VERIFY ||M c||/(||c|| ||row||) < 1e-60.
+
+RESULT (minimal (R,D) with a GLOBAL low-height integer ADE; else RESISTS):
+  exp        (1,1) h=1     [holonomic]
+  tan        (1,2) h=1     [Riccati y'=1+y^2]            CORRECT, exact
+  sn(m=.37)  (1,4) h=137   [Jacobi (y')^2=(1-y^2)(1-m y^2); 137 = clear denom of m=37/100]  CORRECT
+  besselJ0   (2,2) h=1     [x y''+y'+x y=0]              CORRECT, exact
+  Gamma      RESISTS at all (R,D) up to (2,3)            <-- HT (Hölder); metric probe FALSE-POSITIVED here
+  zeta       RESISTS at all (R,D) up to (2,3)            <-- HT
+
+DECISIVE CONTRAST: at (1,4) and (2,3) the metric sigma_min probe gave Gamma FALSE POSITIVES
+(3e-32, 2e-34 < TOL); the HEIGHT instrument RESISTS for Gamma there. => the discrete representation
+ESCAPES the confound. Confirms extended-S67: metric rank confounds (linear & nonlinear), but the
+integer-HEIGHT invariant (PSLQ on the null vector) does not. Height is the discrete invariant S67 asked
+for. Validated: correct on 4 diff-algebraic controls (exact orders+heights) and 2 HT objects (resist).
+CAVEAT: clean detection only at the MINIMAL (R,D) (1-dim null space). At supra-minimal (R,D) the null
+space is multi-dim and the single smallest singular vector is a mix -> false "resist" (e.g. exp@(1,3));
+does NOT affect HT-vs-diffalg discrimination (HT resists everywhere; diff-alg caught at its minimal).
+ASSET: a TRUSTWORTHY HT-vs-differentially-algebraic detector, ready to aim at an UNKNOWN-status object.

@@ -1,0 +1,22 @@
+== E (exponent-independence): Lambda(n) on towers — flat across k? breaks where? ==
+  prime 2: L(2)=0.6931, L(4)=0.6931, L(8)=0.6931, L(16)=0.6931, L(32)=0.6931   (log 2=0.6931) -> FLAT
+  prime 3: L(3)=1.0986, L(9)=1.0986, L(27)=1.0986, L(81)=1.0986, L(243)=1.0986   (log 3=1.0986) -> FLAT
+  prime 5: L(5)=1.6094, L(25)=1.6094, L(125)=1.6094, L(625)=1.6094, L(3125)=1.6094   (log 5=1.6094) -> FLAT
+  non-prime-powers: L(6)=0.0, L(10)=0.0, L(12)=0.0, L(15)=0.0  -> 0 (breaks off prime powers)
+
+== STEP 7a on ZETA: tower geometric-sums to the Euler factor; sum over primes = -zeta'/zeta ==
+  -zeta'/zeta(2)          = 0.56996099
+  sum Lambda(n) n^-2      = 0.56971043   (zeta has a PRIME-TOWER atom structure)
+  sum_p logp*p^-2/(1-p^-2)= 0.56971197   (each prime = one flat geometric tower)
+
+== STEP 7b on GAMMA: atoms of -Gamma'/Gamma = -psi(s). Poles at s=0,-1,-2,... — tower or not? ==
+  near s=0: (s+0)*(-psi) = +1.00000  (residue ~ +1, SINGLE simple pole — NO tower)
+  near s=-1: (s+1)*(-psi) = +1.00000  (residue ~ +1, SINGLE simple pole — NO tower)
+  near s=-2: (s+2)*(-psi) = +1.00000  (residue ~ +1, SINGLE simple pole — NO tower)
+  near s=-3: (s+3)*(-psi) = +1.00000  (residue ~ +1, SINGLE simple pole — NO tower)
+  => Gamma's atoms = ARITHMETIC lattice {0,-1,-2,...}, weight 1, NO geometric tower (additive).
+
+READ: zeta's log-derivative = PRIME-TOWER (multiplicative, geometric, exponent-independent) atom
+      structure + a SECOND face (zeros, via -zeta'/zeta poles). Gamma's = a single ARITHMETIC
+      lattice of simple poles (additive), ONE face, no tower. Lambda is the bridge: log = Lambda*1
+      converts the multiplicative prime-tower into the additive log.

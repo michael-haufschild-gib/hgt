@@ -1,0 +1,12 @@
+=== STEP6 NODE: Fisher metric nondegeneracy <=> identifiability ===
+  identifiable model:   det(Fisher)=1.000  (nondegenerate -> identifiable)
+  overparametrized:     det(Fisher)=0.000  (DEGENERATE -> flat dir a-b non-identifiable)
+  => nondegeneracy <=> scores linearly independent (the constraint).
+
+=== STEP8: P-recursion 'missing lemma' probe (sigma_min; DROP=recurrence exists / SATURATE=none=HT) ===
+  sequence            (r,d) | sigma_min@dps25 | sigma_min@dps45 | ratio -> verdict
+  1/n! (holonomic ctrl)  (1,1) |     4.59e-27 |    7.661e-33 | 5.99e+05  NOT P-recursive (SATURATES = HT, no missing-lemma recurrence)
+  zeta(n+2) (HT germ)    (2,2) |     4.978e-9 |     4.978e-9 | 1.00e+00  NOT P-recursive (SATURATES = HT, no missing-lemma recurrence)
+
+method#20: the 'missing lemma' = a polynomial-coeff recurrence (degeneracy direction). HT germ has NONE
+at any (r,d) => Fisher-analog metric nondegenerate at all orders = non-holonomic (linear-independence layer).

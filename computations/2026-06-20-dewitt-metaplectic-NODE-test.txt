@@ -1,0 +1,12 @@
+=== NODE test, System 1: harmonic oscillator (exact E_n = n+1/2) ===
+  exact: [0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5]
+  mu=0 (NO correction): WKB=[0. 1. 2. 3. 4. 5. 6. 7.]  max|err|=5.000e-01
+  mu=2 (metaplectic +1/2): WKB=[0.5 1.5 2.5 3.5 4.5 5.5 6.5 7.5]  max|err|=1.776e-15
+
+=== NODE test, System 2: quartic H=p^2/2+q^4 (exact via diagonalization) ===
+  exact: [ 0.66799  2.39364  4.6968   7.33573 10.24431 13.37934 16.71189 20.22085]
+  mu=0 (NO correction): WKB=[ 0.      1.3765  3.4686  5.9558  8.7403 11.769  15.0077 18.4321]  max|err|=1.789e+00 maxrel=100.00%
+  mu=2 (metaplectic +1/2): WKB=[ 0.5463  2.3636  4.6705  7.3148 10.2265 13.3638 16.6979 20.2082]  max|err|=1.217e-01 maxrel=18.22%
+
+VERDICT: the +1/2 (mu=2 metaplectic/Maslov) correction is NECESSARY to match the true spectrum;
+mu=0 is systematically off by ~half a level. Constraint validated ON THE NODE.

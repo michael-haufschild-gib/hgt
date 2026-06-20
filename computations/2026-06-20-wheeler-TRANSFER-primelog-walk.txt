@@ -1,0 +1,24 @@
+==============================================================================
+ TRANSFERRED TEST: prime-log walk on R/Z (HT object's {sigma_p} as the rotation)
+==============================================================================
+
+ spectral: max_{k>=1} |mean_p cos(2pi k log p / L)| = 0.511076 at k=1
+   -> gap => NO periodic obstruction (Q-indep of log p)
+ empirical prime-log walk (400k steps): TV from uniform = 0.0052, bins occ = 50/50  -> EQUIDISTRIBUTED
+
+ SPECTRUM of the averaging operator across k = the prime-zeta sample:
+ k :  M_k = mean_p cos(2pi k log p / L)   (this is Re of a prime-zeta-type sum)
+   k=  1:  M_k = +0.5111
+   k=  2:  M_k = +0.2102
+   k=  3:  M_k = +0.1028
+   k=  5:  M_k = +0.0370
+   k=  8:  M_k = +0.0137
+   k= 13:  M_k = +0.0097
+   k= 21:  M_k = +0.0029
+   k= 34:  M_k = +0.0282
+   k= 55:  M_k = -0.0025
+
+ CONTROL (random Q-indep steps, no primes): max_k |M_k| = 0.1016
+ PRIME steps                              : max_k |M_k| = 0.5111  at k=1
+
+ STEP 8 -> read off: is the prime spectrum SPECIAL vs a generic Q-indep step set?

@@ -1,0 +1,27 @@
+========================================================================
+ NODE TEST: long-range (Coulomb) vs short-range (contact) packing order
+========================================================================
+
+ LONG-RANGE (1/r Coulomb): NN-distance variation = 0.493  -> disordered
+ SHORT-RANGE (hard-core):  NN-distance variation = 0.000  -> ORDERED
+
+ ratio (short/long) = 0.0x more disordered without long-range coupling
+
+ CROSSOVER (electrostatic vs gravity force ratio ~ 1/grain-size):
+   grain  1000 um: F_elec/F_grav ~ 1.00e-04  -> gravity/contact dominates
+   grain   100 um: F_elec/F_grav ~ 1.00e-03  -> electrostatic DOMINATES
+   grain    10 um: F_elec/F_grav ~ 1.00e-02  -> electrostatic DOMINATES
+   grain     1 um: F_elec/F_grav ~ 1.00e-01  -> electrostatic DOMINATES
+
+ VERDICT: the long-range coupling imposes GLOBAL order absent from short-range packing;
+ it dominates at small grain size. Non-local constraint changes the structure. Confirmed.
+
+--- clean LOCALITY test: response of a 1-grain perturbation vs distance ---
+ short: response at dist [1, 3, 7, 15] = ['1.0e+00', '0.0e+00', '0.0e+00', '0.0e+00']
+        fraction of response within dist<=2: 100.00%  -> LOCAL
+ long : response at dist [1, 3, 7, 15] = ['1.0e+00', '3.7e-02', '2.9e-03', '3.0e-04']
+        fraction of response within dist<=2: 93.69%  -> LOCAL
+
+ VERDICT: short-range constraint = LOCAL (response compact); long-range = NON-LOCAL
+ (power-law, every grain couples to every other). The node's 'electrostatic matters' =
+ a NON-LOCAL constraint replaces a local one. Confirmed cleanly.

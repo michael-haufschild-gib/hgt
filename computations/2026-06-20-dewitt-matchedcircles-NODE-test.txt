@@ -1,0 +1,11 @@
+=== NODE test: matched-circle center-pair angle vs deck-transformation twist ===
+  rotation angle phi | center-pair angle (180=antipodal) | deviation from antipodal
+   phi=  0 deg     |   180.000 deg                  |  0.000 deg
+   phi= 15 deg     |   165.000 deg                  |  15.000 deg
+   phi= 30 deg     |   150.000 deg                  |  30.000 deg
+   phi= 45 deg     |   135.000 deg                  |  45.000 deg
+   phi= 90 deg     |    90.000 deg                  |  90.000 deg
+   phi=120 deg     |    60.000 deg                  |  120.000 deg
+   phi=180 deg     |     0.000 deg                  |  180.000 deg
+  READ: phi=0 (pure translation) -> 180 deg ANTIPODAL; phi>0 (screw twist) -> NON-antipodal.
+  The center-pair geometry is fixed by g's rotational part = the identification's twist (constraint).

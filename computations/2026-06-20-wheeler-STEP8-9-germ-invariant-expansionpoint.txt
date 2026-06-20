@@ -1,0 +1,16 @@
+================================================================================
+ STEP8+9(method12): invariant of HT germ under EXPANSION-POINT translation
+================================================================================
+
+ function / x0                resid(dps30)  resid(dps55)  ratio   class
+ DA 1/(2-x) @0.3              3.733e-16    1.056e-28    3.54e+12 DA(drops)
+ DA 1/(2-x) @0.8              4.206e-16    4.669e-29    9.01e+12 DA(drops)
+ DA 1/(2-x) @1.6              9.363e-16    1.679e-28    5.58e+12 DA(drops)
+ DA 1/(2-x) @2.7              1.012e-15    2.42e-28     4.18e+12 DA(drops)
+ HT logGamma @0.3             2.446e-11    2.446e-11    1.0    HT(saturates)
+ HT logGamma @0.8             9.451e-7     9.451e-7     1.0    HT(saturates)
+ HT logGamma @1.6             7.509e-7     7.509e-7     1.0    HT(saturates)
+ HT logGamma @2.7             1.499e-8     1.499e-8     1.0    HT(saturates)
+
+ method-12 read: INVARIANT under x0 = the binary saturates/floors class? Does the
+ magnitude vary with x0 (singularity proximity) while the HT/DA class stays fixed?

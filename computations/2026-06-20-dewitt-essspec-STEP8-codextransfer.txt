@@ -1,0 +1,13 @@
+=== NODE test: essential-spectrum threshold with hypertranscendental-style bulk (V_inf=0) ===
+L (domain half-width) | #eig in [-1,0) (BELOW thresh) | #eig in [0,1) (ABOVE=continuum) | #bound
+  L=  20  below(discrete)=  1   above(continuum)=  11   total_bound=  2   above/L=0.550
+  L=  40  below(discrete)=  1   above(continuum)=  24   total_bound=  2   above/L=0.600
+  L=  80  below(discrete)=  1   above(continuum)=  49   total_bound=  2   above/L=0.613
+  EXPECT: below/bound counts ~L-INDEPENDENT; above count ~proportional to L.
+
+=== driving force: threshold MOVES with the at-infinity value V_inf ===
+  V_inf= -2.0: total bound states (eig<V_inf)=  2; min eig=-4.538; sigma_ess starts ~ -2.0
+  V_inf=  0.0: total bound states (eig<V_inf)=  2; min eig=-2.538; sigma_ess starts ~ 0.0
+  V_inf=  3.0: total bound states (eig<V_inf)=  2; min eig=0.462; sigma_ess starts ~ 3.0
+  => essential spectrum bottom tracks V_inf, even with a hypertranscendental-style bulk well.
+     Constraint validated ON NODE.

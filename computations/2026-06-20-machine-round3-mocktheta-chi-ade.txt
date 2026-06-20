@@ -1,0 +1,33 @@
+VERIFY chi3 analytic jet vs mp.diff:
+  q=0.17 chi=1.198928 relerr f'=0.0e+00 f''=5.3e-51 OK
+  q=0.33 chi=1.440605 relerr f'=3.2e-51 f''=2.1e-51 OK
+  q=0.55 chi=1.894175 relerr f'=0.0e+00 f''=1.6e-51 OK
+
+=== dps=80 TOL=1e-18 sigma_min/sigma_max ; [E]=catch ===
+func               (1,1)    (1,2)    (1,3)    (2,1)    (2,2)    
+exp[CTRL catch]    2e-83E 3e-248E 2e-247E 1e-164E 0e+00E 
+Gamma[CTRL resist] 8e-03  4e-08  3e-17  2e-03  1e-13  
+chi3[TARGET]       2e-03  6e-09  4e-17  2e-04  5e-13  
+
+=== dps=120 TOL=1e-18 sigma_min/sigma_max ; [E]=catch ===
+func               (1,1)    (1,2)    (1,3)    (2,1)    (2,2)    
+exp[CTRL catch]    2e-123E 0e+00E 0e+00E 1e-244E 0e+00E 
+Gamma[CTRL resist] 8e-03  4e-08  3e-17  2e-03  1e-13  
+chi3[TARGET]       2e-03  6e-09  4e-17  2e-04  5e-13  
+
+-- dps-STABILITY (80 vs 120) chi3[TARGET] --
+  (1,1): dps80=1.92e-03 dps120=1.92e-03 STABLE
+  (1,2): dps80=5.69e-09 dps120=5.69e-09 STABLE
+  (1,3): dps80=4.41e-17 dps120=4.41e-17 STABLE
+  (2,1): dps80=1.51e-04 dps120=1.51e-04 STABLE
+  (2,2): dps80=4.77e-13 dps120=4.77e-13 STABLE
+
+-- DISCRETE-HEIGHT cross-check on chi3[TARGET] @dps120 (integer ADE? else resist) --
+  (1,1): resist
+  (1,2): resist
+  (1,3): resist
+
+-- MINIMAL (R,D) catch else RESISTS @dps120 --
+exp[CTRL catch]    CATCH at (1, 1)
+Gamma[CTRL resist] RESISTS up to (2, 2)
+chi3[TARGET]       RESISTS up to (2, 2)

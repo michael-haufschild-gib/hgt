@@ -1,0 +1,24 @@
+============================================================================
+ NODE TEST: finite differential-algebraic closure vs hypertranscendental behavior
+============================================================================
+
+ f(x) = exp(x) (DIFFERENTIAL-ALGEBRAIC: f' - f = 0)
+   signature: smallest normalized relation residual = 1.030e-17, condition spike = 4.218e-01, dominant term = f^2*f^3  -> NO LOW RELATION => HYPERTRANSCENDENTAL-LIKE OBSTRUCTION
+   empirical windows: worst residual = 6.893e-18, drift ratio = 6.893e-03, leaders = ['f^2*f^3', 'f^1*f^3']  -> UNSTABLE / not closed
+
+ f(x) = sin(x) (DIFFERENTIAL-ALGEBRAIC: f'' + f = 0)
+   signature: smallest normalized relation residual = 1.036e-17, condition spike = 4.038e-01, dominant term = f*f^2  -> NO LOW RELATION => HYPERTRANSCENDENTAL-LIKE OBSTRUCTION
+   empirical windows: worst residual = 1.294e-17, drift ratio = 1.294e-02, leaders = ['f*f^2', 'f^1*f^3']  -> UNSTABLE / not closed
+
+ f(x) = Airy-like numeric solution y'' = x*y (closed by ODE)
+   signature: smallest normalized relation residual = 6.739e-17, condition spike = 2.264e+02, dominant term = x  -> LOW RELATION => finite closure
+   empirical windows: worst residual = 2.204e-17, drift ratio = 2.204e-02, leaders = ['x', 'x']  -> STABLE / closed
+
+ f(x) = toy hypertranscendental candidate (no low relation expected)
+   signature: smallest normalized relation residual = 1.580e-17, condition spike = 7.439e+05, dominant term = x  -> LOW RELATION => finite closure
+   empirical windows: worst residual = 4.030e-17, drift ratio = 4.030e-02, leaders = ['x', 'x']  -> STABLE / closed
+
+============================================================================
+ VERDICT: low-complexity differential relations are recovered for closed examples,
+ while the toy candidate fails the finite-closure smoke test. This is runnable,
+ numerical, and only a test harness -- not a mathematical proof.

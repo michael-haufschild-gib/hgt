@@ -1,0 +1,19 @@
+JOINT differential-algebraic (in)dependence instrument (DeWitt) — extends the height-detector to two
+functions; variables (x, f,f',...,f^R, g,g',...,g^R). A GLOBAL low-height integer relation involving
+BOTH an f-deriv and a g-deriv = a genuine COUPLING. dps=120, direct SVD, rationalize+verify, HMAX=1e6.
+
+REVERSE-VALIDATION (instrument catches known couplings, ignores self-relations):
+  {J0,J1}   COUPLING (1,1) h=1   [J0'+J1=0, Bessel]                        CORRECT
+  {Gam,psi} COUPLING (1,2) h=1   [psi = Gamma'/Gamma -> Gamma'-psi*Gamma=0] CORRECT
+  {exp,Gam} f-only (1,1) h=1     [exp'-exp=0; correctly NOT flagged a coupling] CORRECT
+
+TARGET:
+  {Gamma, zeta}  NO COUPLING up to (R=2, D=3, height 1e6)
+  => Gamma and zeta are differential-algebraically INDEPENDENT to this bound (no joint ADE coupling
+     {x,Gamma,Gamma',zeta,zeta',...}). [CONJECTURE] (resist = evidence to the bound, not a proof).
+
+GRADE: instrument = validated, reusable asset (the joint/weld coupling detector). The Gamma-zeta
+result is a concrete weld datum but LIKELY reduces-to-known (individual HT-ness of Gamma,zeta is
+classical; joint differential independence is a natural, probably-settled or derivable question; the
+s<->1-s functional equation is a reflection, NOT a local ADE coupling, consistent with independence).
+Not promoted. The non-reducing use of BOTH instruments needs an object of genuinely-OPEN DA-status.

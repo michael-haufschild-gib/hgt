@@ -1,0 +1,28 @@
+==========================================================================
+ STEP8 (minimal edit): tightness of zeta value-distribution family {mu_sigma}, sigma->1/2
+==========================================================================
+
+ sigma=1.5: std(log|zeta|)=0.300
+   centered tail sup mu(|x-med|>R): R=1:0.000, R=3:0.000, R=8:0.000
+
+ sigma=1.0: std(log|zeta|)=0.486
+   centered tail sup mu(|x-med|>R): R=1:0.023, R=3:0.000, R=8:0.000
+
+ sigma=0.75: std(log|zeta|)=0.665
+   centered tail sup mu(|x-med|>R): R=1:0.137, R=3:0.000, R=8:0.000
+
+ sigma=0.6: std(log|zeta|)=0.862
+   centered tail sup mu(|x-med|>R): R=1:0.283, R=3:0.000, R=8:0.000
+
+ sigma=0.52: std(log|zeta|)=1.066
+   centered tail sup mu(|x-med|>R): R=1:0.325, R=3:0.018, R=8:0.000
+
+ W1 between consecutive sigma (family Cauchy => tight limit; growing => NOT tight):
+   W1(mu_1.5, mu_1.0) = 0.153
+   W1(mu_1.0, mu_0.75) = 0.153
+   W1(mu_0.75, mu_0.6) = 0.173
+   W1(mu_0.6, mu_0.52) = 0.160
+
+ std trend as sigma->1/2: ['0.300', '0.486', '0.665', '0.862', '1.066']
+ VERDICT: read whether the value-distribution family stays tight (bounded std) or its
+ spread blows up as sigma->1/2 (loss of tightness at the special line).

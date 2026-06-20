@@ -31,6 +31,25 @@ holonomic flow. "Theory of hypertranscendental functions" and "non-holonomic geo
 one notion — *not integrable*. This becomes the field's settled definition once a gatekeeper below is
 proven.
 
+**Operational criterion (the two axes, computationally — confirms §0, does not weaken it).** Each
+hypertranscendence axis is a concrete test on a function's jet, via the smallest singular value of a
+jet-monomial matrix (nonlinear: jet-degree `>1` allowed; the linear/spectral tests are *blind* to
+hypertranscendence, since Hölder is a nonlinear statement). (i) *Differential axis (Hölder / "flow"):*
+does `f` satisfy an algebraic differential equation `P(x,f,…,f^{(w)})=0`? — Hölder-HT objects (`Γ, ζ, Λ`)
+**resist at every order**; an object with a finite ADE is **caught** at its order. (ii) *Difference axis
+("constraint"):* the same test on shifts `{f(x),f(x+1),…}` — `Γ` is **caught** at first order
+(`Γ(z+1)=z·Γ(z)`), the FE/constraint the objects *do* possess. So the native cell is
+**differential-resist × difference-caught = "constraint, not flow,"** i.e. exactly the weld
+`𝓜⁺ = (σ_p, ∂_s)`: `∂_s` the absent differential flow, `{σ_p}` the present difference constraint.
+
+This makes one boundary precise: *differentially-algebraic but classically-irreducible* objects —
+**Painlevé transcendents** (satisfy the Painlevé ADE) and **modular forms** (`E₂, η`, partitions: satisfy
+the Chazy–Ramanujan ADE) — are **caught** by the differential test, hence are **not** hypertranscendental
+in Hölder's sense and lie **outside** this field's class, despite being "transcendental." The charter's
+class is the strictly smaller `{f : resists every ADE}` = `{Γ, ζ, L, Λ}`. (All classical: Hölder 1887,
+the Painlevé/Chazy equations; the singular-value test is the numerical witness, verified at dps 80 in
+`computations/2026-06-20-wheeler-nonlinear-ade-probe.py`.)
+
 ## 1. The native objects
 
 - **N1 — The infinite-base multi-`q`-difference module.** A module over the prime base `{x_p}_p`

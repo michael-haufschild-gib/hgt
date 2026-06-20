@@ -1,0 +1,24 @@
+(a) GAUGE IDENTITY = distribution relation  sum_k zeta(s,(a+k)/m) = m^s zeta(s,a):
+    m=2  rel-residual=4.08e-32
+    m=3  rel-residual=1.37e-31
+    m=4  rel-residual=4.08e-32
+    m=5  rel-residual=1.87e-31
+    m=6  rel-residual=9.66e-32
+
+(b) QUOTIENT dimension (no overcounting / no Gribov-extra relations):  sum_{d|m} phi(d) =?= m
+    m=  6  sum_d|m phi(d)=6  m=6  CLEAN (no extra relations)
+    m= 12  sum_d|m phi(d)=12  m=12  CLEAN (no extra relations)
+    m= 30  sum_d|m phi(d)=30  m=30  CLEAN (no extra relations)
+
+(c) FE-slice s->1-s, Gribov horizon = fixed locus:
+    s=          (0.5+7j) -> 1-s=          (0.5-7j)  ON horizon Re=1/2
+    s=         (0.25+7j) -> 1-s=         (0.75-7j)  off horizon
+
+=== STEP 8 self-curate ===
+(a) surprising? NO. (b) new about Gamma/zeta? NO.
+  Gauge-redundancy transferred = the CLASSICAL Dirichlet-L theory of Hurwitz-zeta at rationals:
+  the distribution/Kubert relations are the 'gauge identities' (verified ~1e-30); the gauge-invariant
+  quotient = conductor-graded primitive Dirichlet-L pieces (sum_{d|m} phi(d)=m EXACTLY => no overcounting,
+  no Gribov-extra relations); the FE-slice fixed locus = critical line (= R7's finding). All KNOWN.
+  On-mission note (value-relations pillar): zeta-at-rationals carries NO relations beyond distribution+
+  conductor grading = 'maximally independent modulo the gauge'. => DEAD END. Walk -> gauge-orbits.

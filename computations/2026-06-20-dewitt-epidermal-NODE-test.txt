@@ -1,0 +1,15 @@
+=== NODE test: boundary (epidermis) determines bulk; interior carries only boundary modes ===
+  surface modes present: [5, 8, 13]
+  r=1.00: interior angular modes with power = [5, 8, 13] ; mode-13 amp=0.4000 (= a*r^13)
+  r=0.80: interior angular modes with power = [5, 8, 13] ; mode-13 amp=0.0220 (= a*r^13)
+  r=0.50: interior angular modes with power = [5, 8, 13] ; mode-13 amp=0.0000 (= a*r^13)
+  r=0.20: interior angular modes with power = [5] ; mode-13 amp=0.0000 (= a*r^13)
+  READ: interior contains ONLY the surface modes {5,8,13}; NONE new; high modes decay fastest inward
+  (r^13 << r^5) => the EPIDERMIS dominates the near-surface visible pattern. Bulk is slaved.
+
+=== driving force: interior depth does NOT change the surface mode content ===
+  domain radius 1.0: surface modes still [5, 8, 13] (boundary-determined, bulk slaved)
+  domain radius 2.0: surface modes still [5, 8, 13] (boundary-determined, bulk slaved)
+  domain radius 5.0: surface modes still [5, 8, 13] (boundary-determined, bulk slaved)
+
+Constraint validated ON NODE: boundary data uniquely fixes the bulk; no independent interior pattern.

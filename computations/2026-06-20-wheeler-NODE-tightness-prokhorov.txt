@@ -1,0 +1,23 @@
+==========================================================================
+ NODE TEST: tightness (Prokhorov) = uniform tail decay + subsequential convergence
+==========================================================================
+
+ A tight: samples from fixed N(0,1)
+   uniform tail sup_N mu_N(|x|>R): R=5:0.000, R=20:0.000, R=100:0.000  -> TIGHT (decays)
+   W1(mu_800, mu_3200) = 0.070  (Cauchy=>limit exists)
+
+ B NOT tight: N(m_N,1), m_N=N (mean escapes)
+   uniform tail sup_N mu_N(|x|>R): R=5:1.000, R=20:1.000, R=100:1.000  -> NOT TIGHT (mass escapes)
+   W1(mu_800, mu_3200) = 2399.972  (no subsequential limit)
+
+ C tight: deterministic profile i/N on [0,1]
+   uniform tail sup_N mu_N(|x|>R): R=5:0.000, R=20:0.000, R=100:0.000  -> TIGHT (decays)
+   W1(mu_800, mu_3200) = 0.000  (Cauchy=>limit exists)
+
+ D NOT tight: heavy spread, std=N
+   uniform tail sup_N mu_N(|x|>R): R=5:0.999, R=20:0.996, R=100:0.977  -> NOT TIGHT (mass escapes)
+   W1(mu_800, mu_3200) = 2000.497  (no subsequential limit)
+
+==========================================================================
+ VERDICT: tight families show uniform tail decay + Cauchy subsequences (precompact);
+ non-tight families leak mass to infinity. Prokhorov constraint confirmed on NODE.

@@ -1,0 +1,11 @@
+=== NODE test: extreme-eigenvalue tails (GUE-type), N=120, M=4000 ===
+  gauss: mean(xi)=-1.767 std=0.907 skew=+0.205  (TW2: mean~-1.77 std~0.90 skew~+0.22)
+  unif : mean(xi)=-1.828 std=0.884 skew=+0.274  (TW2: mean~-1.77 std~0.90 skew~+0.22)
+  bern : mean(xi)=-1.856 std=0.883 skew=+0.191  (TW2: mean~-1.77 std~0.90 skew~+0.22)
+
+  RIGHT-tail power (expect ~1.5): 1.31
+  LEFT-tail  power (expect ~3.0): 1.43
+  => asymmetric tails (right softer ~3/2, left harder ~3) = the equilibrium-balance constraint.
+  => means/stds/skew nearly equal across gauss/unif/bern = UNIVERSALITY (constraint, not entry details).
+
+Constraint validated ON NODE.

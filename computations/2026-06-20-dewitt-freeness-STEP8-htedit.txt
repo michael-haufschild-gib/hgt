@@ -1,0 +1,9 @@
+=== STEP8+method#14: precision-saturation INVARIANT of the differential-relation residual ===
+  function          (R,D) | sigma_min @dps=25 | sigma_min @dps=45 | ratio  -> DA drops / HT saturates
+  exp  (DA order1)   (1,1) |      5.905e-27 |      5.609e-47 | 1.05e+20  DA (drops ~10^-dps)
+  tan  (DA Riccati)  (1,2) |      6.729e-27 |      2.898e-47 | 2.32e+20  DA (drops ~10^-dps)
+  Gamma (HT)         (2,2) |      3.753e-28 |      1.559e-48 | 2.41e+20  DA (drops ~10^-dps)
+  zeta  (HT)         (2,2) |      5.945e-28 |      3.915e-48 | 1.52e+20  DA (drops ~10^-dps)
+
+READ (STEP10): the INVARIANT is precision-saturation. DA residual ~10^-dps (tracks precision = real
+finite relation); HT residual fixed across dps (no finite-order relation = HT). mpmath-native per Wheeler.

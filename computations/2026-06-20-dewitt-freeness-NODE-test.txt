@@ -1,0 +1,13 @@
+=== NODE test: finite mixed-moment check is NOT sufficient for freeness ===
+  FREE pair (independent GUE):
+    tau(ab)        order2 = -0.00176
+    tau(abab)      order4 = -0.00197
+    tau(aabb) (non-alt)   = +0.99761
+  CLASSICAL/commuting pair (independent diagonal):
+    tau(ab)        order2 = +0.02893
+    tau(abab)      order4 = +1.12825
+    tau(aabb) (non-alt)   = +1.12825
+
+  READ: order-2 tau(ab)=0 for BOTH (passes finite check). The ALTERNATING order-4 tau(abab)
+  is ~0 for the FREE pair but NONZERO (=tau(a^2)tau(b^2)) for the classical pair => finite check
+  insufficient; freeness needs the FULL all-orders alternating-centered constraint.
