@@ -5,10 +5,10 @@
 - **Type:** THEOREM (Lean)
 - **Priority:** FOUNDATIONAL
 - **Source:** split from `../2-fully-proven/multiplier-dichotomy-theorem.md` case (I)
-- **Statement:** If a rank-one multiplier is constant up to coboundary, `a=c*sigma(g)/g`, then gauging by `1/g` changes the multiplier to the constant `c`; the analytic model `g(z) exp(z*lambda)` satisfies the expected local first-order ODE where `g(z) != 0`.
+- **Statement:** If a rank-one multiplier is constant up to coboundary, `a=c*sigma(g)/g`, then gauging by `1/g` changes the multiplier to the constant `c`; in the shift model, `f(z)=g(z) exp(z*lambda)` satisfies both the global shift equation and the expected local first-order ODE where `g(z) != 0`.
 
 ## Goal
-This banks the elementary formal core of the constant-up-to-coboundary case. It does not formalize the global shift equation, Picard-Vessiot classification, degree-at-infinity obstruction, or the imported hypertranscendence converse.
+This banks the elementary formal core of the constant-up-to-coboundary case. It does not formalize the Picard-Vessiot classification, degree-at-infinity obstruction, or the imported hypertranscendence converse.
 
 ## Paper Proof
 For the gauge identity, write `a=c sigma(g) g^{-1}` and choose `h=g^{-1}`. The transformed multiplier is
@@ -18,12 +18,18 @@ For the local ODE, let `f(z)=g(z) exp(z lambda)`. The product rule gives
 `f'(z)=g'(z) exp(z lambda)+g(z) exp(z lambda) lambda`. If `g(z) != 0`, this is
 `(g'(z)/g(z)+lambda) f(z)`.
 
+For the global shift equation, set `c=exp(lambda)` and
+`a(z)=exp(lambda) * g(z+1)/g(z)`. If `g(z) != 0`, then
+`exp((z+1)lambda)=exp(z lambda) exp(lambda)`, so
+`f(z+1)=g(z+1) exp((z+1)lambda) =
+(exp(lambda) * g(z+1)/g(z)) * (g(z) exp(z lambda)) = a(z) f(z)`.
+
 ## Gates
-- [x] 0 -> 1  in-progress: exact CC gauge and local ODE identities extracted from multiplier dichotomy case (I).
-- [x] 1 -> 2  fully-proven: paper proof above, using group cancellation and the product rule.
-- [x] 2 -> 3  formalized: Lean theorems `ccGaugeMultiplier_eq_const` and `hasDerivAt_mul_exp_const_ode` in `formal/GaloisForLFunctions/MultiplierDichotomy.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
+- [x] 0 -> 1  in-progress: exact CC gauge, global shift, and local ODE identities extracted from multiplier dichotomy case (I).
+- [x] 1 -> 2  fully-proven: paper proof above, using group cancellation, `exp((z+1)lambda)=exp(z lambda)exp(lambda)`, and the product rule.
+- [x] 2 -> 3  formalized: Lean theorems `ccGaugeMultiplier_eq_const`, `ccShiftSolution_eq`, and `hasDerivAt_mul_exp_const_ode` in `formal/GaloisForLFunctions/MultiplierDichotomy.lean`; names checked by scratch file; `lake build` green; `check_axioms.sh` PASS.
 - [ ] 3 -> 4  publication-ready: include as the formal certificate for multiplier dichotomy case (I).
 
 ## Log
-- 2026-06-19 — Leaner split this exact CC case-I core from `multiplier-dichotomy-theorem`. The parent card remains in `2-fully-proven` because its global shift solution, degree-at-infinity obstruction, and imported hypertranscendence converse are not fully Lean-formalized.
-
+- 2026-06-19 — Leaner split this exact CC case-I core from `multiplier-dichotomy-theorem`. The parent card remains in `2-fully-proven` because its Picard-Vessiot classification, degree-at-infinity obstruction, and imported hypertranscendence converse are not fully Lean-formalized.
+- 2026-06-19 — Leaner corrected the certificate to include the already-audited global shift theorem `ccShiftSolution_eq`.

@@ -3,7 +3,6 @@
 - **ID:** theorem-m-with-margin-endpoint
 - **Stage:** 0-backlog (self-authored 2026-06-19; awaiting pipeline vetting)
 - **Type:** STRUCTURAL (connection) — claimed Door grade **BRIDGE**; anchors the no-margin/#104 program to a proven, machine-verified theorem and names the exact gap to RH
-- **Priority:** FOUNDATIONAL (it pins the proven endpoint and the precise open crux)
 - **Source:** `publications/theorem-m/docs/preprint/main.tex` (Haufschild, *Unconditional hyperbolicity of the critical Laguerre family*, 2026, Lean-verified, read in full); relates `dewitt-supermetric-no-margin.md` (Findings 3c/4), `finite-free-convolution-flow.md` (#104), `c5-jensen-prime-kernel.md`; ../../door/bucket-the-no-margin.md
 - **Statement:** Theorem M proves unconditional hyperbolicity of a **positive** moment deformation of the archimedean Hermite carrier via energy + sign-transfer. It is the proven, with-margin, sign-definite case of the exact `A_d`/`S_d` structure whose zero-margin, signed boundary is RH. The two obstructions to transferring its proof to RH are named precisely: **sign-definiteness** and **margin**.
 
@@ -40,3 +39,34 @@ Theorem M itself is elementary + Pólya–Schur-adjacent (parents); the connecti
 
 ## Log
 - 2026-06-19 — created from a full read of the Theorem M preprint, after the DeWitt-supermetric / `S_d` / `λ_c` synthesis. Identifies Theorem M as the proven with-margin, sign-definite endpoint of the no-margin/#104 structure (`C_d=A_d`, shared floor `|C_d(c)|≥1`), and names the two obstructions to RH-transfer (sign-definiteness = amplitude-vs-phase; margin = `p>½` vs `p=½`). BRIDGE. No web search.
+
+## R10 finding (2026-06-20, novelty loop) — the carrier is cosine; the no-margin is π²/(8d); margin is a red herring `[BRIDGE]`
+
+The crude floor `|C_d(c)|≥1` that Theorem M relies on is the amplitude of a **cosine**, and its slack is computable.
+
+**Lemma A (carrier = cosine).** `C_d` obeys the rescaled Hermite ODE `f''−(w/2d)f'+f=0`; as `d→∞`, `f''+f=0`,
+`f(0)=1`, `f'(0)=0` ⟹ **`C_d(w)→cos w`** on compacts. The floor `|C_d|≥1` is cosine's amplitude; the innermost
+valley → cosine's valley `(π,−1)`. (`C_d''(0)=−1` for all d.)
+
+**Lemma B (valley law).** Perturbation `f=cos w+f_1/d`, `f_1''+f_1=−(w/2)sin w`, `f_1(0)=f_1'(0)=0` ⟹
+`f_1(w)=(w²/8)cos w−(w/8)sin w`, `f_1(π)=−π²/8`. So **`V_d := |`shallowest valley`| = 1 + π²/(8d) + O(1/d²)`**,
+at `w=π+O(1/d)`. Numerically confirmed: `d·(V_d−1)→π²/8=1.23370` to 4 digits (d=50..640, local mpmath).
+
+**Corollary (threshold not sharp; relaxes p>½ → p≥½).** Constant-shift `Ψ_d^0=pC_d+(1−p)` is hyperbolic iff
+`p≥1/(1+V_d)=½−π²/(32d)<½`. At `p=½` exactly it is hyperbolic for **every finite d** (all valleys `<−1`
+strictly), with margin `V_d−1=π²/(8d)`; the no-margin (double zero at the cosine valley) appears only as
+`d→∞`. For general non-degenerate `μ`, strict segment domination gives hyperbolicity at `p=½` too. So Theorem
+M's `p>½` is sufficient-not-necessary; the necessary margin is `π²/(8d)→0`.
+
+**Reframing — DEMOTES obstruction 2 (margin).** The two stated obstructions are NOT co-equal. Margin is
+benign: the proven *positive* deformation reaches `p=½` with vanishing margin `π²/(8d)` and stays hyperbolic
+(the cosine floor protects it). The no-margin `p→½` is an `O(1/d)` feature shared by Theorem M's own positive
+world — not the wall. **The sole genuine obstruction to RH is obstruction 1 (sign/phase):** the signed prime
+`δH_d` removes the cosine-valley protection (its averaged contribution is not amplitude-dominated), so only
+phase cancellation can keep the zeros real. *Margin is asymptotically free; the wall is the sign.* Full
+derivation + self-judgment (prior ~25, significance ~40, proof ~68) in
+`logs/2026-06-20-novelty-generation-loop.md` Round 10.
+
+**Forward lead (the C5 crux, now numeric):** compute the innermost-valley behaviour of the *signed* `δH_d`
+carrier and test whether phase cancellation alters the `π²/(8d)` rate or flips the valley-excess sign — that
+is the amplitude→phase transition, with a concrete number to chase.

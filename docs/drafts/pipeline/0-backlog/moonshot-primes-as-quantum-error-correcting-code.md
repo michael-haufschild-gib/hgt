@@ -3,7 +3,6 @@
 - **ID:** moonshot-primes-as-quantum-error-correcting-code
 - **Stage:** 0-backlog
 - **Type:** MOONSHOT CONJECTURE (wild; ~10% true; far beyond SOTA)
-- **Priority:** FIELDS MEDAL (+)
 - **Source:** user directive 2026-06-19 (wild moonshots; "Think Holographic theory"); the M2
   RT/entanglement/QEC-holography ingredient (`bucket-time-and-non-holonomic-time`); the no-margin =
   faithfulness/saturation (#89–92), the ridgeline (#92).

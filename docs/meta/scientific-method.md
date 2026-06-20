@@ -23,4 +23,3 @@ When stuck on a conjecture:
 21. **Build a dependency chain.** Ask: “What would be enough to prove this?” until you reach something manageable.
 22. **Compare nearby false statements.** Change assumptions until it breaks; the breaking point reveals the structure.
 23. **Classify boundary cases.** Study when equality, failure, or sharpness occurs.
-24. **Leave it and return later.** Let the structure settle; hard problems often need incubation.

@@ -2,8 +2,7 @@
 
 - **ID:** substrate-hypothesis
 - **Stage:** 0-backlog
-- **Type:** META / FRAMING (the project's self-understanding) — the research target (D5/F_1) is **FIELDS MEDAL**
-- **Priority:** FOUNDATIONAL
+- **Type:** META / FRAMING (the project's self-understanding) — the research target (D5/F_1) is **open**
 - **Source:** the 2026-06-19 meta-analysis (every `2-fully-proven` theorem is BRIDGE; the orthogonality
   meta-theorem `../2-fully-proven/orthogonality-meta-theorem.md`; constraint-not-flow); grounds the charter
   **D-axis** (`../../00-charter-wall-and-door.md` §6); the F_1 thread is the corpus's "missing single
@@ -84,7 +83,7 @@ new-foundation work and the field's deepest open problem.
 - **C-axis:** FAILS (no C5; BRIDGE monoculture, proven structurally by the orthogonality meta-theorem).
 - **D-axis:** D1 ✓ (universal reducibility), D2 ✓ (corank + orthogonality unifications, predictions), D3 ✓
   (constraint not flow); **D4 OPEN** (= #134, the weld's irreducibility), **D5 OPEN** (= `F_1` foundation).
-- **Grade:** META (self-understanding). Its research target (D5, the `F_1` foundation) is FIELDS-MEDAL; its
+- **Grade:** META (self-understanding). Its research target (D5, the `F_1` foundation) is open; its
   decider (D4) is #134.
 
 ## §6 Working out D4 — the weld factorization, computed `[BRIDGE; numerically certified]`

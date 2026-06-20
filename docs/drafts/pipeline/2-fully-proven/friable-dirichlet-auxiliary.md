@@ -175,8 +175,12 @@ linear form it must bound.
   `iteratedDeriv_friableExponentDirichletExp_at_one` in
   `formal/GaloisForLFunctions/FriableAuxiliary.lean` proves
   `F^{(T)}(1)=(-1)^T Σ_m λ_m (Σ_p m_p log p)^T/n_m` for a finite exponent-vector auxiliary.
-  Remaining Lean targets: `𝒜_{S,d}` as a structure and the multinomial expansion into the degree-`T`
-  log-monomial linear form. Reuses `logPrime_height_bound`, `boundedExponentVectorEquivSmooth`.
+  Lean anchor **DONE** for the word-level multinomial/log-monomial expansion:
+  `primeLogDot_pow_wordExpansion` and
+  `iteratedDeriv_friableExponentDirichletExp_at_one_wordExpansion`, with split certificate
+  `../3-formalized/friable-prime-log-word-expansion.md`. Remaining Lean targets: `𝒜_{S,d}` as a structure,
+  coefficient collection into exponent vectors, PNT conversion, and the surjectivity/race bookkeeping. Reuses
+  `logPrime_height_bound`, `boundedExponentVectorEquivSmooth`.
 - [ ] 3 → 4  publication-ready
 
 ## Cross-references
@@ -209,6 +213,12 @@ linear form it must bound.
   `F^{(T)}(1)=(-1)^T Σ_m λ_m (Σ_p m_p log p)^T/n_m`. Also added supporting audited theorems for
   `d^T exp(-sL)`, `exp(-log n)=1/n`, and finite term-by-term differentiation. Card remains in
   2-fully-proven; the `𝒜_{S,d}` structure and multinomial/log-monomial expansion are not fully formalized.
+- 2026-06-19 (Leaner) — added Lean anchor `primeLogDot_pow_wordExpansion` plus
+  `iteratedDeriv_friableExponentDirichletExp_at_one_wordExpansion`, expanding `(Σ_p m_p log p)^T` into
+  degree-`T` support words and substituting that expansion into the derivative-at-one identity. Split
+  certificate: `../3-formalized/friable-prime-log-word-expansion.md`. Card remains in `2-fully-proven`
+  because coefficient collection, `𝒜_{S,d}` packaging, PNT conversion, the surjectivity lemma, and the
+  Schanuel-bound layer are not fully formalized.
 - 2026-06-19 (DeWitt) — added §5b corollary (no separate ledger needed): **obstruction C has no soft spot.**
   By the §5a surjectivity, every truncation (`|S|≥2, T≥2`) realizes the full degree-`T` log-monomial space ⟹
   each is a genuine open Schanuel instance with no reduction; the minimal case `log2,log3` is already the full

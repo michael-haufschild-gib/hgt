@@ -6,7 +6,8 @@
 - **Priority:** FOUNDATIONAL
 - **Source:** ../../door/G3-holonomy-dichotomy.md · 00-status row #20
 - **Statement:** An infinite-base diagonal is holonomic ⟺ `corank(Λ) < ∞`, via
-  `dim ⟨g⟩-closure = corank(Λ)`; arithmetic (`Λ = 0`) is the `corank = ∞`, non-integrable extreme.
+  `dim ⟨g⟩-closure = corank(Λ)`; arithmetic (`Λ = 0`) is the curvature-flat but `corank = ∞`,
+  infinite-rank / non-integrable extreme.
 
 ## Goal
 Frames holonomicity through `corank(Λ)` (a would-be native invariant, C3) by tying it to geometric
@@ -34,6 +35,8 @@ reasoning: `../../door/door-C5-irreducibility-and-door-2-retest.md`.
 ## Log
 - 2026-06-19 — created in 2-fully-proven (paper proof exists; next gate is Lean + the Door-2 verdict)
 - 2026-06-19 — Door-2 verdict: **BRIDGE** (also fails Door-3). Stays in 2-fully-proven as a proved bridge theorem; C5 candidacy closed.
+- 2026-06-19 — N2/G3 flatness corrected: curvature-flatness (`F_{pq}=0`) is not the holonomicity criterion in the infinite-base arithmetic case; finite rank / finite corank is.
+- 2026-06-19 — Scope sharpened: G3 is the rank/order axis (function hypertranscendence); DSS/value transcendence is a separate G2/F₁ apex and is not implied by flatness or finite-rank wording.
 
 ## Lean return note — 2026-06-19 (Leaner)
 

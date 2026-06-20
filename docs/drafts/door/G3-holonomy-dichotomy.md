@@ -1,8 +1,10 @@
 # Bucket G3 — Holonomy dichotomy / corank
 
 **Bucket grade:** organizational (SEARCH channel). Sorted from `docs/support-extraction-log.md`.
-**Scope (one line).** A diagonal is **holonomic ⟺ `corank(Λ)<∞` ⟺ flat connection**; the sharp native
-invariant is `corank(Λ)`, *not* support cardinality.
+**Scope (one line).** A diagonal is **holonomic ⟺ `corank(Λ)<∞` ⟺ integrable to finite rank**; the sharp
+native invariant is `corank(Λ)`, *not* support cardinality. Curvature-flatness (`F_{pq}=0`) is separate:
+the arithmetic prime connection is flat but infinite-rank; value-transcendence/DSS is a third, independent
+axis beyond G3.
 **Work package this seeds.** Carry §60 through the **Door-2 re-test** alongside §59 — together they are
 the field's two best NATIVE / C5 candidates; and integrate the **DMR-solvability** refinement.
 
@@ -10,7 +12,8 @@ the field's two best NATIVE / C5 candidates; and integrate the **DMR-solvability
 
 ## The conjecture
 
-> **G3 — Holonomy dichotomy:** holonomic ⟺ `corank(Λ)<∞` ⟺ flat connection. (= #68's C6)
+> **G3 — Holonomy dichotomy:** holonomic ⟺ `corank(Λ)<∞` ⟺ integrable to finite rank. Curvature-flat
+> (`F_{pq}=0`) does not imply holonomic in the infinite-base arithmetic case. (= #68's C6, corrected)
 
 ---
 
@@ -22,6 +25,10 @@ the field's two best NATIVE / C5 candidates; and integrate the **DMR-solvability
   as §59 / [[G1-difference-holder]]). **G3 is essentially DONE** in the difference category. The sharp
   invariant is `corank(Λ)`, not support cardinality. *(Caveat §61.3: difference-category.)*
 - Arithmetic `Λ=0` ⟹ corank `∞` ⟹ difference-hypertranscendental — i.e. §60 *feeds* G1.
+- This is the rank/order axis only. DSS/value transcendence (`γ_n` beyond the regular base) is not a
+  consequence of curvature-flatness or of the G3 rank dichotomy; it is the separate G2/F₁ value-lift apex.
+- Flat one-dimensional differential examples already split the layers: `y'=y` has `G_m`, `y'=1/x` has
+  `G_a`, and their values/periods are separate arithmetic statements. HGT is the infinite-rank version.
 - #101 §60: was a leading C5 candidate. **Door-2 re-test (2026-06-19): BRIDGE** — (⟹) is §59's argument
   (single shift + Kronecker–Weyl on `𝕋^∞` + unique factorization); (⟸) is §49.2 + Lipshitz 1988
   (import); and `corank(Λ)` is a renamed torus-closure dimension, so it **also fails Door-3.** See
@@ -31,8 +38,8 @@ the field's two best NATIVE / C5 candidates; and integrate the **DMR-solvability
 
 ### The free/hard table (#67 Brick #3)
 - The free/hard split *is* the corank dichotomy in action: the flow (corank-trivial part) is FREE; the
-  zeros (corank-`∞` part) are HARD. The "holonomic ⟺ flat" face = the multiplicative wing being the
-  *solved/flat* half.
+  zeros (corank-`∞` part) are HARD. The flat multiplicative wing is solved at the curvature level; it is
+  still non-holonomic when the rank/corank is infinite.
 
 ### The DMR refinement — solvability, not abelianness (#87 §10)
 - **§10 DMR-solvable (PROVED HERE, self-correction #5):** the Lyapunov line is
@@ -56,6 +63,7 @@ the field's two best NATIVE / C5 candidates; and integrate the **DMR-solvability
 | holonomic ⟺ `corank(Λ)<∞` (difference cat.) | **`[PROVED HERE]`** | #68 §60.2 |
 | pro-torus inverse problem `dim=corank` (P3) | **`[PROVED HERE]`** | #68 §43.2 |
 | solvability (not abelianness) = `L=0` (DMR) | **`[PROVED HERE]`** (self-correction #5) | #87 §10 |
+| N2 flatness correction | curvature-flat (`F_{pq}=0`) but infinite-rank / non-holonomic over arithmetic; DSS value-transcendence remains separate | Professor + Wheeler/DeWitt synthesis, 2026-06-19 |
 | §60 Door-2 grade (re-tested 2026-06-19) | **BRIDGE** (also fails Door-3); not C5 | — |
 | the completed (primes+∞) connection / `G_L` | conjecture / Tier C | #91 §3 |
 

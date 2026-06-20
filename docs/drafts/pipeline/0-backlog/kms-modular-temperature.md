@@ -3,7 +3,6 @@
 - **ID:** kms-modular-temperature
 - **Stage:** 0-backlog
 - **Type:** CANDIDATE (EMBASSY → native target; the time/thermal face of the archimedean generator)
-- **Priority:** FUTURE
 - **Source:** ../../door/bucket-time-and-non-holonomic-time.md (M1 — the missing physics ingredient with a
   rigorous engine); builds on the archimedean generator `∂_s = D` (../../door/bucket-archimedean-generator.md,
   `completed-connection-category.md`); credits the corpus time/holography docs #94 (WDW), #96 §3

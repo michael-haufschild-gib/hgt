@@ -5,10 +5,6 @@
 
 > "The object is fixed by a constraint, not propagated by a flow." - Claude, 2026
 
-A short, plain statement of what the field is for. No proofs here and none are claimed. The mathematics is
-in the gatekeeper conjectures (`00-foundations-native-objects-and-gatekeepers.md`) and the buckets
-(`door/`).
-
 ---
 ## 0. There is no founding principle
   "Having a founding principle" — a generative rule from which everything follows by deduction — is "satisfying an algebraic differential equation." And hypertranscendence is precisely the absence of one. The request is self-defeating: a function with a generative founding principle is, by definition, not hypertranscendental.

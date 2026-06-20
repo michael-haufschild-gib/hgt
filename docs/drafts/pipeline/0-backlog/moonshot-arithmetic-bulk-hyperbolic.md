@@ -3,7 +3,6 @@
 - **ID:** moonshot-arithmetic-bulk-hyperbolic
 - **Stage:** 0-backlog
 - **Type:** MOONSHOT CONJECTURE (wild; ~10% true; far beyond SOTA)
-- **Priority:** FIELDS MEDAL (+)
 - **Source:** user directive 2026-06-19 (wild moonshots; "Think Holographic theory", CLAUDE.md); the explicit
   formula as a trace formula (#139), constraint-not-flow (#138), Connes' adele class space.
 - **The wild claim.** The primes are a **boundary**; the zeros are a **bulk**; the explicit formula is a
@@ -81,3 +80,42 @@ surface** (`N~λ`) or **3D manifold** (`N~λ^{3/2}`) Laplacian spectrum — a fu
   quantum-chaotic system = the Hilbert–Pólya operator D=∂_s** (#127), RH = its PT-unbrokenness. "Chaotic, not
   integrable" is also the spectral-statistics echo of B18 (`hp-not-too-algebraic`: an algebraic/integrable HP
   operator would give Poisson). Computation: `computations/2026-06-19-zero-spacing-gue.py`.
+
+## R16 finding (2026-06-20, novelty loop) — the bulk is 2D (H²=AdS₂ = the proven Fisher metric), not 3D and not 1D; the Weyl test measured the BOUNDARY `[dimension correction; connects two tickets]`
+
+**Attack.** (1) 3D refuted (the Weyl test). (2) **"1D bulk" is a holographic category error:** bulk = boundary
++ 1, and the Weyl test measured the *zero spectrum* (zeros on a line = the **boundary**). 1D boundary ⟹ **2D
+bulk**. This also dissolves the "1D + GUE" tension (a GUE 1D *boundary* is NAdS₂/SYK-type holography).
+
+**The bulk is the already-proven Fisher metric.** The 2D quantum-Fisher metric over complex `s` is Kähler, so
+`g=(logζ)''(2σ)(dσ²+dτ²)∼(dσ²+dτ²)/(2σ−1)²` = the **Poincaré metric = H² = AdS₂**, conformal boundary at
+`σ=½`. The σ-slice was already PROVEN hyperbolic (`../2-fully-proven/critical-line-fisher-signature-wall`,
+R09). **The moonshot's "hidden hyperbolic bulk" is the Fisher supermetric — two tickets, one object.**
+
+**RH = representation theory.** H² Laplacian spectrum is `[¼,∞)` (gap `((d−1)/2)²=¼`, d=2) — so `spec(Δ)≥¼`
+was always H², the 3-manifold was the error. Zeros at `λ=¼+γ²` = the **principal series `Δ=½+iγ`** of
+`SL(2,ℝ)=Isom(H²)`. **RH ⟺ every zero is a principal (unitary) series rep; off-line zero = complementary
+(non-unitary) series.** `¼` = H² gap = SL(2,ℝ) Casimir threshold = AdS₂ BF bound; `½` = principal-series real
+part. (Rejected: SYK proper — its DOS grows `sinh√E`, the zeros grow `log E`; it is bare H²/principal-series,
+not SYK.)
+
+Cross-round: R09 (Fisher hyperbolic) + R14 (zeros = 2D `s`-plane Coulomb gas) + R16 (bulk = 2D H²/AdS₂) = one
+object; boundary 1D (Berry–Keating/GUE), bulk 2D. Full derivation + self-judgment (prior ~16, significance
+~40, proof ~55) in `logs/2026-06-20-novelty-generation-loop.md` Round 16.
+
+**Forward lead:** off-line (complementary-series) zeros = bound states below the H² continuous spectrum
+(`λ<¼`); test whether `κ₋` (#32) = a count of SL(2,ℝ) complementary/discrete modes — tying R13 (flux) / R14
+(vortices) / R16 (complementary series) to one defect count.
+
+## R26 finding (2026-06-20, novelty loop) — corrects the R16 SL(2,ℝ) dictionary: generic off-line = complex-λ RESONANCE (not complementary series); complementary series = real Siegel-type zeros `[BRIDGE]`
+
+Using `λ=ρ(1−ρ)=(¼+γ²)+i·γ(1−2β)` (R20): the SL(2,ℝ) complementary series needs **real `λ∈(0,¼)`** ⟹ `γ(1−2β)=0`
+with `λ<¼` ⟹ **`ρ` real in `(0,1)\{½}`** = a **real exceptional (Siegel-type) zero**. So:
+- on-line `½+iγ`: real `λ≥¼` = **principal unitary series**;
+- **real zero in (0,1): real `λ∈(0,¼)` = complementary series = Siegel zero** (PURELY RADIAL in `p^{ρ−½}`: γ=0);
+- generic off-line `β≠½,γ≠0`: **COMPLEX `λ` = resonance** (R20), NOT a complementary series.
+**R16 conflated the last two.** The "¼" = principal/complementary boundary = Siegel threshold; "no `λ<¼`" = no
+complementary series = no Siegel zero = the ζ shadow of **Selberg's ¼-eigenvalue conjecture** (ζ has no real zero
+in (0,1) ⟹ gap exactly ¼). RH = the stronger "no complex resonances." Ties to R24/R25: complementary series =
+the purely-radial deviations (radial spread, zero angular). Novelty ~30, sig ~35, proof ~58. Full:
+`logs/2026-06-20-novelty-generation-loop.md` R26.

@@ -1,0 +1,14 @@
+Delta(sigma,t) for sigma in (0.5,1], scan for off-line zeros / sign changes:
+  t=     1: Delta strictly incr on (.5,1]=False, all>=0=False, min Delta on (.5,1]=-9.6218e-01, Delta(1,t)=-0.96218
+  t=    10: Delta strictly incr on (.5,1]=True, all>=0=True, min Delta on (.5,1]=+1.1607e-02, Delta(1,t)=+0.23235
+  t=    50: Delta strictly incr on (.5,1]=True, all>=0=True, min Delta on (.5,1]=+5.1853e-02, Delta(1,t)=+1.03707
+  t=   100: Delta strictly incr on (.5,1]=True, all>=0=True, min Delta on (.5,1]=+6.9182e-02, Delta(1,t)=+1.38365
+  t=   300: Delta strictly incr on (.5,1]=True, all>=0=True, min Delta on (.5,1]=+9.6648e-02, Delta(1,t)=+1.93295
+  t=  1000: Delta strictly incr on (.5,1]=True, all>=0=True, min Delta on (.5,1]=+1.2675e-01, Delta(1,t)=+2.53494
+  t=  5000: Delta strictly incr on (.5,1]=True, all>=0=True, min Delta on (.5,1]=+1.6698e-01, Delta(1,t)=+3.33966
+
+ g'(sigma)= -1/2 log pi + 1/2 Re psi((sigma+it)/2) at sigma=0.5:
+  t=     1: g'(0.5)=-1.01257  (sign of how |Gamma_R| moves at the line)
+  t=    50: g'(0.5)=+1.03706  (sign of how |Gamma_R| moves at the line)
+  t=  1000: g'(0.5)=+2.53494  (sign of how |Gamma_R| moves at the line)
+  t=  5000: g'(0.5)=+3.33966  (sign of how |Gamma_R| moves at the line)

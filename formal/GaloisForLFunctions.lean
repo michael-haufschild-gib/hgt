@@ -6,6 +6,8 @@ import GaloisForLFunctions.EulerProduct
 import GaloisForLFunctions.MultiQDifference
 import GaloisForLFunctions.ArchimedeanLane
 import GaloisForLFunctions.ArchimedeanGamma
+import GaloisForLFunctions.ArchimedeanCorank
+import GaloisForLFunctions.ArchimedeanAxisMode
 import GaloisForLFunctions.Resonance
 import GaloisForLFunctions.FlatConnection
 import GaloisForLFunctions.HolonomyAbelian
@@ -17,6 +19,7 @@ import GaloisForLFunctions.RankOneCohomology
 import GaloisForLFunctions.RankOneDuality
 import GaloisForLFunctions.DiagonalCharacter
 import GaloisForLFunctions.BoundaryModulus
+import GaloisForLFunctions.SusceptibilityBalance
 import GaloisForLFunctions.MultiplicityEstimate
 import GaloisForLFunctions.SatakeTensor
 import GaloisForLFunctions.SatakeInterval
@@ -66,6 +69,7 @@ import GaloisForLFunctions.MultiplierDichotomy
 import GaloisForLFunctions.CrossPrimeCurvature
 import GaloisForLFunctions.OrbitBalance
 import GaloisForLFunctions.C5JensenPrimeKernel
+import GaloisForLFunctions.C5JensenPerturbation
 import GaloisForLFunctions.FunctionFieldDegeneration
 import GaloisForLFunctions.DifferentialABP
 import GaloisForLFunctions.PTInvolution

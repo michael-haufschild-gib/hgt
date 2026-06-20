@@ -3,7 +3,6 @@
 - **ID:** realization-problem
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE (native)
-- **Priority:** FIELDS MEDAL
 - **Source:** ../../door/bucket-realization-and-fake-family.md (#85 SEED-V, #75, #84, #98) · 00-status rows #84, #86
 - **Statement:** Is the organizing law **`Euler product ⟺ two-faces (positivity ∧ genericity ∧ FE)`** an
   **IFF**? The field's **First Theorem** gives the forward direction (Euler product ⟹ the two-faces

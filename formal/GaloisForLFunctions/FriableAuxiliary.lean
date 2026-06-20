@@ -120,6 +120,20 @@ lemma complex_cast_logPrime_sum (m : Nat.Primes →₀ ℕ) :
       ∑ p ∈ m.support, (m p : ℂ) * (Real.log (p : ℕ) : ℂ)
   simp
 
+/-- Multinomial word expansion of a finite prime-log dot product.
+
+This is the Lean form of expanding `(Σ_p m_p log p)^T` into degree-`T`
+prime-log monomials. The words `w : Fin T → Nat.Primes` encode the usual
+multinomial coefficients by repetition before collecting like monomials. -/
+theorem primeLogDot_pow_wordExpansion (m : Nat.Primes →₀ ℕ) (T : ℕ) :
+    (m.sum fun p k => (k : ℂ) * (Real.log (p : ℕ) : ℂ)) ^ T =
+      ∑ w ∈ Fintype.piFinset (fun _ : Fin T => m.support),
+        ∏ i : Fin T, ((m (w i) : ℂ) * (Real.log (w i : ℕ) : ℂ)) := by
+  change (∑ p ∈ m.support, (m p : ℂ) * (Real.log (p : ℕ) : ℂ)) ^ T =
+      ∑ w ∈ Fintype.piFinset (fun _ : Fin T => m.support),
+        ∏ i : Fin T, ((m (w i) : ℂ) * (Real.log (w i : ℕ) : ℂ))
+  exact Finset.sum_pow' m.support (fun p => (m p : ℂ) * (Real.log (p : ℕ) : ℂ)) T
+
 /-- Friable auxiliary represented directly by prime-exponent vectors. -/
 def friableExponentDirichletExp (P : (Nat.Primes →₀ ℕ) →₀ ℂ) (s : ℂ) : ℂ :=
   P.sum fun m c => c * Complex.exp (-(s * (Real.log (primeProduct m : ℝ) : ℂ)))
@@ -159,6 +173,23 @@ theorem iteratedDeriv_friableExponentDirichletExp_at_one
   · intro m hm
     have hc : ContDiffAt ℂ (T : WithTop ℕ∞) (fun _z : ℂ => P m) 1 := contDiffAt_const
     exact hc.mul (contDiff_exp_neg_mul_log T (Real.log (primeProduct m : ℝ) : ℂ) 1)
+
+/-- The derivative-at-one identity with the prime-log power expanded into explicit
+degree-`T` word monomials. This is the formal algebraic step after
+`iteratedDeriv_friableExponentDirichletExp_at_one` and before collecting equal
+words into multinomial coefficient vectors. -/
+theorem iteratedDeriv_friableExponentDirichletExp_at_one_wordExpansion
+    (T : ℕ) (P : (Nat.Primes →₀ ℕ) →₀ ℂ) :
+    iteratedDeriv T (fun z : ℂ => friableExponentDirichletExp P z) 1 =
+      (-1 : ℂ) ^ T * P.sum (fun m c =>
+        c * (∑ w ∈ Fintype.piFinset (fun _ : Fin T => m.support),
+          ∏ i : Fin T, ((m (w i) : ℂ) * (Real.log (w i : ℕ) : ℂ))) *
+          ((primeProduct m : ℂ)⁻¹)) := by
+  rw [iteratedDeriv_friableExponentDirichletExp_at_one]
+  congr 1
+  apply Finsupp.sum_congr
+  intro m _hm
+  rw [primeLogDot_pow_wordExpansion m T]
 
 end
 

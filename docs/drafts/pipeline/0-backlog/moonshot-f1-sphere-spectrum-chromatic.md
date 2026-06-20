@@ -3,7 +3,6 @@
 - **ID:** moonshot-f1-sphere-spectrum-chromatic
 - **Stage:** 0-backlog
 - **Type:** MOONSHOT CONJECTURE (wild; ~10% true; far beyond SOTA)
-- **Priority:** FIELDS MEDAL (+)
 - **Source:** user directive 2026-06-19 (wild moonshots); the missing-F₁ thread (`#125/#128`, Wheeler's
   `padic-frobenii-missing-f1`), the per-place Source-A Γ_v carriers (`per-place-source-a-gamma-carriers`), the
   "F₁ / absolute" frontier (charter §6 D5).
@@ -48,3 +47,17 @@
 - 2026-06-19 — Professor: filed as a moonshot (user directive). F₁ = the sphere spectrum 𝕊; ζ = homotopy-zeta
   of an 𝕊-linear category; DSS = infinite chromatic height; RH = redshift purity. The per-place `Γ_v` = chromatic
   local pieces. The wildest of the F₁ identifications — and the D5 foundation if true.
+
+## R27 finding (2026-06-20, novelty loop) — F₁=𝕊 gives log Λ (additive fracture square), NOT Λ; ζ = exp = PE; chromatic 2-plane = the project's two axes `[BRIDGE]`
+
+**TRUE:** `K(FinSet_*)=𝕊` (Barratt–Priddy–Quillen) — F₁=𝕊 is a theorem. The chromatic plane `(p, n)` = (arithmetic
+prime `p` = A1/localization/σ_p) × (height `n` = A2/DSS depth); "DSS = infinite height" reads correctly (𝕊 is
+`L_n`-local for no finite `n`).
+**OBSTRUCTION (the moonshot's Euler-product claim fails):** the sphere's local structure is the **arithmetic
+fracture square** `𝕊≃𝕊_ℚ×_{(∏𝕊_p)_ℚ}∏𝕊_p` — a homotopy **pullback/LIMIT**, assembling **ADDITIVELY** over primes
+(Mayer–Vietoris). So K(𝕊) produces `log Λ = Σ_p Σ_k p^{−ks}/k` (von Mangoldt, additive), and **`Λ = exp = PE[primes]`**
+(R11 primon gas). The moonshot conflated `Λ` with `log Λ`; the additive→multiplicative bridge is the **exponential
+PE** — the SAME bridge as R06 (Mellin/VOA) and R11. `Γ_v` sit at the additive (log) level; `Γ_ℝ`=the `𝕊_ℚ`
+summand. **Standing invariant (3 moonshots: R06,R11,R27): the additive categorical/homotopy world computes log ζ;
+never identify ζ directly with an additive K-theory/character/Fock object — ζ is its exponential.** Novelty ~28,
+sig ~30, proof ~55. Full: `logs/2026-06-20-novelty-generation-loop.md` R27.

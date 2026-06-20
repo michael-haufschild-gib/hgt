@@ -3,7 +3,6 @@
 - **ID:** moonshot-spinor-half-frobenius
 - **Stage:** 0-backlog
 - **Type:** MOONSHOT CONJECTURE (wild; <5% true; far beyond SOTA)
-- **Priority:** FIELDS MEDAL (+)
 - **Target of attack:** **untie `ω∈H²(G_L)` / construct the missing archimedean Frobenius F₁** (#27/#71;
   `compute-omega-h2-gl.md` §S, `a_∞=½log2π`).
 - **Source:** chat thread 2026-06-19 (archimedean-Frobenius moonshots; "the ½ everywhere").

@@ -3,7 +3,6 @@
 - **ID:** moonshot-gamma-logcft-rg-flow
 - **Stage:** 0-backlog
 - **Type:** MOONSHOT CONJECTURE (wild; ~10% true; far beyond SOTA)
-- **Priority:** FIELDS MEDAL (+)
 - **Source:** user directive 2026-06-19 (wild moonshots); regularization-freshness (#75, `γ_n` = renormalized
   constants), the de Bruijn–Newman flow `Λ_t`, the M3 c-theorem/RG-monotone ingredient
   (`bucket-time-and-non-holonomic-time`).
@@ -48,3 +47,22 @@
 - 2026-06-19 — Professor: filed as a moonshot (user directive). ζ-reg = RG; `{γ_n}` = log-CFT couplings; dBN
   flow = RG flow; RH = IR fixed point on the line; `Λ_dBN≤0` = no non-unitary overshoot. The M3 c-theorem
   ingredient made into a conjecture; `C'(t)≤0` is a near-term numerical test.
+- 2026-06-20 — **Round 18 (novelty loop), three corrections to this card** (log:
+  `logs/2026-06-20-novelty-generation-loop.md`):
+  1. **Test #1 is VACUOUS.** The dBN flow is the heat/Gaussian semigroup, hence a **gradient flow** (heat =
+     Wasserstein gradient flow of entropy, JKO; the induced zero-dynamics is the log-gas gradient ODE
+     `ẋ_j=−2Σ_{k≠j}1/(x_j−x_k)`). A gradient flow ALWAYS has a Lyapunov monotone, so "find `C(t)` with `C'≤0`"
+     succeeds trivially and is **not evidence** for the log-CFT claim. Replace it.
+  2. **`c → c_eff` (category error fixed).** A logarithmic CFT is **non-unitary by definition** (`L₀` carries a
+     Jordan block = the `γ_n` tower); Zamolodchikov's `c`-theorem **requires unitarity**, so "log-CFT + Zamolodchikov
+     `c`" is internally inconsistent. The correct charge is the **effective central charge `c_eff=c−24h_min`**.
+  3. **The rigorous monotone is `κ₋(t)`** (# off-line conjugate pairs = non-unitary/complex-weight "ghost" modes,
+     R16 complementary series); it decreases `∞`(UV `t→−∞`) → `0`(IR `t→+∞` = the **free boson**, R06 = ζ's Mellin
+     source; `γ_n` are irrelevant operators). **RH ⟺ `κ₋(0)=0` ⟺ `Λ_dBN≤0`** = already at the unitary free-boson IR
+     fixed point at `t=0`. The **discriminating test** (replacing monotonicity) is **central-charge QUANTIZATION**:
+     `κ₋` jumps in steps of `−2` (a conjugate pair annihilating on the axis) — verified on a toy `exp(−tD²)` flow
+     (`κ₋: 4→2→0` at two distinct `Λ`'s) — plus the Cardy/modular transform of `C(t)`.
+  - Sign note: Gaussian *smoothing* `exp(+tD²)` pushes zeros OFF-axis (`κ₋`↑); the dBN/`Λ_t` flow is the
+    **backward-heat / anti-smoothing** direction (`e^{+tu²}` multiplier), which is why the UV is `t→−∞`.
+  - Self-judged novelty ~12, significance ~45, proof ~65. Status: **moonshot's headline experiment corrected**
+    (vacuous → quantization+Cardy); object corrected (`c→c_eff`, monotone=`κ₋`); not yet RH.

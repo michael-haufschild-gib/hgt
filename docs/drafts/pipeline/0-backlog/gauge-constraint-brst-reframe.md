@@ -3,7 +3,6 @@
 - **ID:** gauge-constraint-brst-reframe
 - **Stage:** 0-backlog
 - **Type:** STRUCTURAL (organizing lens) — with one falsifiable methodological claim; pure-analogy parts are EMBASSY
-- **Priority:** FOUNDATIONAL
 - **Source:** chat thread 2026-06-19 (gauge/constraint reading of "the object is fixed by a constraint, not
   propagated by a flow"); ../../door/bucket-time-and-non-holonomic-time.md (#62, #138 constraint-not-flow),
   ../../door/bucket-the-seam-archimedean-obstruction.md (#71), `compute-omega-h2-gl.md` (#27 §S), `substrate-hypothesis.md` ·
@@ -89,3 +88,14 @@ organizing layer and the inflow recipe, and it **surfaces the crux** carded sepa
   G5**. SO-1 check: the `ω`-as-multiplicative-anomaly computation is **already banked** in `compute-omega-h2-gl.md`
   §S–§W and `substrate-hypothesis.md` §6–§7; this card does not re-derive it. Grep-confirmed the gauge/BRST/
   Wilson/Wess–Zumino/inflow framing was absent from `drafts/`.
+- 2026-06-20 (novelty-loop R05) — **ω is the metaplectic/Weil anomaly, and it SPLITS into a proven part ⊕ the
+  open part** (full piece in `logs/2026-06-20-novelty-generation-loop.md`). The FE = theta inversion = the
+  projective **Weil representation of SL₂** (genuine only on the metaplectic cover Mp); the dictionary row
+  "ω∈H² (Schwinger/Mickelsson–Faddeev)" maps to the **metaplectic 2-cocycle**. Verified invariants: archimedean
+  Weil-index phase **e^{iπ/4}**, half-weight ½ = critical-line ½, discrete quantum η-multiplier e^{2πi/24} with
+  **−ζ(−1)=1/12** (= R01 power stratum), continuous value **−ζ'(0)=½log2π** (banked a_∞). **Reverse (method 3):**
+  ω=0 ⟺ the cover splits ⟺ the FE holds — but the FE is a THEOREM (adelic metaplectic splits over ℚ by Weil
+  reciprocity = product of local cocycles =1). So **ω = ω_meta (FE-reciprocity, proven, globally split) ⊕
+  ω_fresh (the s=1 Stieltjes residue coboundary question = R01 regularization-freshness, OPEN = Schanuel)**.
+  This sharpens step 3: ALL of ω's openness is ω_fresh; the metaplectic complement is a theorem. ~60–70%
+  prior-true; metaplectic facts proven/verified, the ω=ω_meta⊕ω_fresh identification is STRUCTURAL/conjectural.

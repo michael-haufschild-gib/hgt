@@ -3,7 +3,6 @@
 - **ID:** no-margin-uniform-bound
 - **Stage:** 0-backlog
 - **Type:** OPEN CORE
-- **Priority:** FOUNDATIONAL
 - **Source:** ../../door/bucket-the-no-margin.md (#89 §8, #70 SEED-Q, #92 §3) · 00-status rows #89, #90
 - **Statement:** Find the **one missing uniform bound** — the **Kronecker→Liouville height upgrade** =
   uniform-in-order total positivity = the uniform multiplicity/equidistribution estimate — a uniform

@@ -1,0 +1,112 @@
+Regular-column degree-2 PSLQ floor for DSS-cross = Schanuel-for-prime-logs
+==========================================================================
+Ticket : ../1-in-progress/dss-cross-equals-schanuel-prime-logs.md  §E
+Runpod : root@154.54.102.101 (python3.13, mpmath 1.4.1), 2026-06-19
+Scripts: /tmp/pslq_floor.py (floor), /tmp/pslq_verify.py (artifact check)
+
+PURPOSE
+  corank-seam-invariant.md §F proved the PAIRWISE-homogeneous degree-2 rung by
+  Gelfond-Schneider and left the multi-prime (n>=3) homogeneous and mixed-degree
+  cases OPEN (Schanuel territory). This is the empirical floor under those open
+  rungs: PSLQ certification of NO integer relation up to large height among the
+  degree-2 prime-log monomials. Numerics cannot prove transcendence; this only
+  rules out small-height surprises.
+
+FLOOR RUN (pslq_floor.py)
+  [homog-deg2 {2,3,5}]      n=6  dps=220 : reported height-898 relation  <-- SPURIOUS (see below)
+  [homog-deg2 {2,3,5,7}]    n=10 dps=320 : NO relation up to maxcoeff 1e14
+  [homog-deg2 {2,3,5,7,11}] n=15 dps=420 : NO relation up to maxcoeff 1e12
+  [mixed-le2  {2,3,5}]      n=10 dps=300 : NO relation up to maxcoeff 1e14
+  [mixed-le2  {2,3,5,7}]    n=15 dps=420 : NO relation up to maxcoeff 1e12
+
+ARTIFACT CHECK (pslq_verify.py) -- decisive
+  Suspected coeffs [-898, 3, -592, 508, 268, 1] on
+    {(log2)^2, log2 log3, log2 log5, (log3)^2, log3 log5, (log5)^2}
+  Residual |sum| at dps=400 = 1.55e-13   (a TRUE relation would be ~1e-390)
+  pslq re-run {2,3,5} homog-deg2 at dps=300/400/500 (maxcoeff 1e8/1e10/1e12): NO relation, all three.
+  Cross-check: the {2,3,5} monomials are a subset of the {2,3,5,7} set, which showed NO relation
+  up to height 1e14 at dps=320 -- a real height-898 relation would have appeared there. It did not.
+
+CONCLUSION
+  No integer relation among the degree-2 prime-log monomials in ANY tested configuration once
+  precision is adequate. The dps=220 {2,3,5} line was a precision artifact (a combination small
+  to ~1e-13 but nonzero). Empirical floor consistent with corank^(2)=infinity (the open rung);
+  it does NOT prove it (Schanuel). Structural content of the ticket (spectral reformulation §A,
+  freeness-agnosticism no-go §B) does not depend on this run.
+
+==========================================================================
+LLL BEST-APPROXIMATION EXPONENT (added 2026-06-19; ticket §J/§M, the apex re-opening)
+Script /tmp/lll_approx.py (pure-python exact LLL on python3.13).
+For monomials of (log2,log3) of degree<=D, smallest |Q(log2,log3)| over integer Q
+of height H, exponent mu = -ln|Q|/ln H. Generic (no relation) ~ M = #monomials.
+
+  D=2 M=6  K=1e20: H=5243      |Q|=9.2e-18  mu=4.58
+  D=2 M=6  K=1e30: H=9.2e7     |Q|=1.3e-24  mu=3.00
+  D=2 M=6  K=1e40: H=8.9e7     |Q|=6.3e-34  mu=4.18
+  D=3 M=10 K=1e20: H=69        |Q|=1.3e-19  mu=10.27
+  D=3 M=10 K=1e30: H=825       |Q|=4.0e-29  mu=9.74
+  D=3 M=10 K=1e40: H=8628      |Q|=1.6e-37  mu=9.35
+
+READING: mu stays bounded ~M, NO blow-up => no hidden degree-<=3 relation, AND a single
+form cannot beat mu~M (the generic Dirichlet rate). So the WALL is measured: any proof of
+trdeg>=2 must use a structured SEQUENCE of forms over the rank-r lattice (large-transcendence-
+degree method), not one form. Consistent with the apex open; quantifies why single constructions
+fail (mirrors relative-exponential-apex §8 for the exponential column).
+(Degree-4 / 3-prime extension /tmp/lll_deg4.py launched; heavy, not load-bearing.)
+
+DEGREE-4 / 3-PRIME EXTENSION (/tmp/lll_deg4.py, completed):
+  primes=[2,3]   D=4 M=15 K=1e40: H=386     |Q|=1.0e-40  mu=15.46
+  primes=[2,3]   D=4 M=15 K=1e60: H=6261    |Q|=2.7e-58  mu=15.16
+  primes=[2,3,5] D=2 M=10 K=1e40: H=8731    |Q|=1.2e-38  mu=9.63
+  primes=[2,3,5] D=2 M=10 K=1e60: H=7.3e5   |Q|=1.2e-55  mu=9.37
+  => mu ~ M at degree 4 and at 3 primes; genericity stable, no hidden relation.
+
+==========================================================================
+ORACLE FACTS (ticket §N, 2026-06-19; scripts /tmp/cfprobe.py, /tmp/newknow.py, /tmp/newknow2.py)
+
+§N.1 CF of log2/log3 (dps=200): [0;1,1,1,2,2,3,1,5,2,23,2,2,1,1,55,1,4,3,1,1,15,1,9,2,5,7,...]
+     geo-mean a_1..a_50 = 2.778 (Khinchin 2.6854); max PQ 55. => Diophantine-GENERIC.
+     => first rung (log2,log3) has no approximation-level structure; difficulty is degree>=2.
+
+§N.2 zero-kernel K(x)=sum_{g>0} cos(g x) exp(-(g/25)^2), first 50 zeros:
+     K(log n) NEGATIVE at primes (mean -0.69), POSITIVE at non-prime-powers (mean +0.79), gap ~1.5;
+     prime powers collapse/flip: K(log4)=-0.24, K(log8)=+0.24, K(log9)=+0.10, K(log16)~0.
+     => 50 zeros resolve PRIMES but NOT their powers (signal log p / p^{k/2} below background).
+        Refutes naive "K<0 at all prime powers."
+
+§N.3 prime-pairing matrix G_{jk}=(p_j p_k)^{-1/2} sum_{g>0} cos(g log(p_j/p_k)) exp(-(g/20)^2),
+     primes<=13, 40 zeros: positive-definite (AUTOMATIC, real Gram matrix -- not a discovery),
+     eigenvalues {0.028,0.102,0.132,0.264,0.430,0.889}, non-monotone (G_{2,5}=0.207>G_{2,3}=0.108).
+     NOTE: "G additive => degree-2-blind => K-leap refuted" is FALSE (exp*K nonlinear). K-leap NOT refuted.
+     PSLQ over {1,log2,log3,log5,gammaE,stieltjes1,stieltjes2,pi,zeta3}: NO relation (artifacts only,
+     residual 1e-61 at dps80, unstable across maxcoeff).
+
+==========================================================================
+§O WHY-LOOP on the zero-kernel (scripts /tmp/why_kernel.py, why2.py, why3.py, why4.py):
+  Conj1 (poly bg - B*Lam/sqrtn): R^2=0.48, B not universal -> REFUTED.
+  Conj2 (subtract analytic density A(x)): A(x)~0 for x>0; prime fit R^2=0.40, prime powers WRONG SIGN -> REFUTED.
+  Conj3 (full Gaussian-smeared prime sum): R^2=0.18, misses positive excursions -> REFUTED.
+  WORKS: K dominated by lowest zeros; gamma_1=14.1347 is 62% of |K| (median);
+         corr(K(log n), cos(gamma_1 log n))=0.74 > corr(K, -Lambda/sqrtn)=0.67.
+  WHY: prime info is FREQUENCY-GRADED by zero height. Low zeros = low-freq prime content
+       (small primes, loud); prime powers = high-freq + p^{-k/2}-faint (invisible at low res).
+       => N.2's clean separation is the LOW-RESOLUTION shadow; corrects the first reading.
+  APEX SYNTHESIS (conjecture): additive {log p} loud on BOTH prime side (unique factorization, ticket
+       §B) and zero side (lowest zeros); multiplicative {log p log q} faint on both (native-absent §B;
+       high-freq + p^{-k/2} on zeros). The degree-2 apex lives in the faint sector -> why no natural
+       structure yields it. Falsifiable: need ~T logT zeros with T >> p^{k/2} to see prime-power dips.
+
+==========================================================================
+§P PREDICTION CONFIRMED (/tmp/dip_test.py, 200 zeros gamma<=396, T sweep):
+  T:    25     50     80     120
+  R^2:  0.13   0.40   0.59   0.70     (rising toward 1; grid undersamples sharp peaks at high T)
+  K(log8):  +0.24  -0.32  -1.35  -2.74
+  K(log9):  +0.10  -1.08  -2.63  -4.70
+  K(log25): +0.22  +0.13  -1.13  -2.95
+  K(log27): +0.25  +0.87  +0.21  -0.98
+  K(log2):  -1.14  -2.87  -4.94  -7.71
+  K(log3):  -1.41  -3.64  -6.33  -9.91
+  At T=120 dip depths rank-order EXACTLY by log p/p^{k/2}: 9(-4.70)>25(-2.95)>8(-2.74)>27(-0.98)
+    vs weights 9:0.366>25:0.322>8:0.245>27:0.211. Primes deeper (weights 0.49,0.63).
+  => CONFIRMS the frequency-grading WHY (§O): prime-power content is high-freq, p^{-k/2}-weighted,
+     emerges with zero count. The "8,9 positive" (§N.2) was a low-resolution artifact.

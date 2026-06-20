@@ -120,3 +120,12 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+## Lean anchor update — 2026-06-19 (Leaner)
+
+Added the finite-support integer-mode derivative anchor `deriv_archimedeanPrimeMode` in
+`formal/GaloisForLFunctions/ArchimedeanAxisMode.lean` and created split certificate
+`../3-formalized/archimedean-prime-mode-derivative.md`. This formalizes the prime-side finite-mode formula
+`d/ds exp(-s(m·ell)) = -(m·ell) exp(-s(m·ell))`. The parent card remains in `2-fully-proven`: the infinite
+torus/generator packaging, Gamma/digamma residue, and C5-localization synthesis are not yet formalized as a
+single Lean theorem.

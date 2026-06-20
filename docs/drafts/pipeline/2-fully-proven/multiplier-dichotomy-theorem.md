@@ -183,8 +183,9 @@ the missing single Frobenius with the missing non-CC place.
 - [ ] 2 → 3  formalized: Lean anchors **DONE** for (I)'s gauge multiplier identity and local DA-ODE:
   `ccGaugeMultiplier_eq_const` in `formal/GaloisForLFunctions/MultiplierDichotomy.lean` proves
   `a·σ(1/g)/(1/g)=c` when `a=c·σ(g)/g`, and `hasDerivAt_mul_exp_const_ode` proves the local derivative
-  identity for `f(z)=g(z) exp(z*lam)`, i.e. `f'=(g'/g+lam)f` where `g z ≠ 0`. Remaining Lean targets:
-  the global shift solution equation `σf=a·f`; (II) `g(z+1)/g(z) → 1` for rational `g` ⟹ deg-∞
+  identity for `f(z)=g(z) exp(z*lam)`, i.e. `f'=(g'/g+lam)f` where `g z ≠ 0`. The global shift equation
+  `σf=a·f` is also Lean-backed by `ccShiftSolution_eq`. Remaining Lean targets: Picard-Vessiot
+  classification for the rank-one constant module; (II) `g(z+1)/g(z) → 1` for rational `g` ⟹ deg-∞
   obstruction; reuse the prime-lane floor (`localEulerFactor_q_difference`, `logPrime_no_rat_relation`).
   Case (III) is an import gap — mark it.
 - [ ] 3 → 4  publication-ready: "the multiplier-coboundary dichotomy of rank-1 difference modules: the
@@ -215,8 +216,13 @@ the missing single Frobenius with the missing non-CC place.
   case-(I) gauge identity `a·σ(1/g)/(1/g)=c` from `a=c·σ(g)/g` in abstract commutative group notation and
   the local analytic ODE identity for `f(z)=g(z) exp(z*lam)`. Added the module to the root import and axiom
   audit; `lake build` and `scripts/check_axioms.sh` pass with 250 audited theorem outputs and no `sorry`.
-  Card remains in `2-fully-proven`; the global shift solution equation, degree-at-infinity obstruction, and
+  Card remains in `2-fully-proven`; the Picard-Vessiot classification, degree-at-infinity obstruction, and
   imported hypertranscendence converse are not fully formalized.
+- 2026-06-19 (Leaner) — corrected Lean status: `ccShiftSolution_eq` already formalizes the global shift
+  equation for the case-(I) solution `f(z)=g(z) exp(z*lam)`. Updated
+  `../3-formalized/cc-gauge-trivialization-identity.md` to keep the paper proof and Lean certificate in sync.
+  Remaining unformalized pieces are Picard-Vessiot classification, the rational degree-at-infinity obstruction,
+  and the imported Hölder/ADH hypertranscendence converse.
 
 ## Lean return note — 2026-06-19 (Leaner)
 

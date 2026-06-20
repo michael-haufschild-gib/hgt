@@ -3,7 +3,6 @@
 - **ID:** a1-a2-unification-brick
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE (native) — the program's deepest target
-- **Priority:** FIELDS MEDAL
 - **Source:** ../../door/bucket-A1-A2-unification-the-carrier.md (#76, #92, #82/#83, #69/#72) · 00-status rows #51, #52, #53, #55, #56, #57
 - **Statement:** RH (A1) and DSS (A2) are **two readings of ONE object**. Write the unified-conjecture
   brick and identify the **single rigidity statement** — the **multiplicity estimate on `G_L`** — that
@@ -31,7 +30,7 @@ the strong form** of this card's central claim. Specifically:
   > positivity). **Neither forces the other** (faces-orthogonality #54, now banked via the decoupling).
 - So the slogan weakens from *"one rigidity forces both"* to **"one germ, two readings, two distinct
   archimedean inputs"** — the unification is the **shared archimedean LOCUS (the seam / the place at `∞`)**,
-  not a shared rigidity. The card stays the **FIELDS-MEDAL apex**, but the apex is now **two** apexes
+  not a shared rigidity. The card stays the **open apex**, but the apex is now **two** apexes
   (DSS, RH) co-located on `m_ξ`, not one. (Each "A1=…; A2=…" presentation below is correct as a *reading*;
   it is the *forcing* that is two-input, not one.)
 
@@ -83,5 +82,21 @@ converse welding (the decoupling refutes a single rigidity forcing both).
   forces both faces") is **REFUTED**; the multiplicity estimate forces A2/DSS but not A1/RH (= κ₋=0 polarization
   positivity, a distinct archimedean datum, #137/#148). Surviving unification (weak form): **one germ m_ξ at
   the one archimedean place, two distinct archimedean rigidities, neither forcing the other.** Reconciled the
-  Goal + Approach. Card stays 0-backlog (FIELDS-MEDAL apex — now two co-located apexes, not one). Coherence
+  Goal + Approach. Card stays 0-backlog (open apex — now two co-located apexes, not one). Coherence
   fix, not an apex resolution. No web, no runpod.
+- 2026-06-20 (novelty-loop R24) — **MECHANIZED the decoupling: A1=compactness, A2=dimension of the
+  period-subgroup closure under the polar split `(ℂ*)^∞=(ℝ_{>0})^∞×(T)^∞`.** Unification object:
+  `P=closure⟨(p^{ρ_n−½})_n : p prime⟩⊂(ℂ*)^∞`, `w_{p,n}=p^{β_n−½}·e^{iγ_n log p}`.
+  - **A1/RH = RADIAL compactness:** `|w|=p^{β_n−½}=1 ⟺ β_n=½` ⟺ `P` compact (in `(T)^∞`); `κ₋`=# non-compact
+    radial directions.
+  - **A2 = ANGULAR fullness, two layers:** {γ_n log p} ℚ-LINEARLY indep ⟺ dense (Weyl) ⟺ **no spectral gap =
+    faithfulness = no-margin (#92)**; ℚ-ALGEBRAICALLY indep ⟺ `trdeg(Π)=dim G_L` ⟺ **DSS** (the deepening). So
+    **no-margin is the LINEAR shadow of DSS; both ANGULAR.**
+  - **Decoupling = polar orthogonality:** radial ⊥ angular ⟹ a single rigidity fixes one factor, not both ⟹
+    the refuted strong form is *structurally* impossible; the `G_L`-multiplicity estimate is an ANGULAR
+    (dimension) statement, forcing A2, blind to RADIAL A1 — mechanizes DeWitt's `omega-rh-coupling`.
+  - **Slogan:** RH = `P` compact (modulus); DSS = `P` full-dimensional (phase); modulus ⊥ phase.
+  - Reconciles the finite-free no-margin (R21–23): its prime-driven part = the angular/A2-linear face, not A1.
+  - Self-judged novelty ~30, significance ~38, proof ~58 (spine rigorous; trdeg↔angular-algebraic-dim hedged).
+    Forward: is the `G_L`-multiplicity estimate exactly the angular Zariski-dimension (DSS = angular closure
+    Zariski-dense, the algebraic twin of Weyl density)? Full piece: `logs/2026-06-20-novelty-generation-loop.md` R24.

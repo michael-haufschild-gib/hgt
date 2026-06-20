@@ -3,7 +3,6 @@
 - **ID:** no-boundary-selection-of-zeta
 - **Stage:** 0-backlog
 - **Type:** CANDIDATE → CONJECTURE (native); Door grade flagged EMBASSY / D2-candidate per the GR-lens discipline
-- **Priority:** FUTURE (A1 / realization-selection axis)
 - **Source:** chat thread 2026-06-19 (GR-superspace lens — "which entire configurations are admissible?");
   `dewitt-gr-lens-conjectures.md` Seed D; ../../door/bucket-realization-and-fake-family.md (#81/#84/#85/#86),
   ../../door/bucket-the-no-margin.md (#89–#94) · 00-status rows #81, #84, #85, #86, #89, #92
@@ -78,3 +77,28 @@ Báez-Duarte membership in the corpus is flagged unverified — grep at the 0→
   are **not** re-filed. The genuinely-new content is the **variational selection** ("why ζ", a no-boundary
   action) sharpening the realization bucket, with **Nyman–Beurling / Báez-Duarte** as the classical anchor.
   Grep-confirmed "Hartle" / "no-boundary" absent from `drafts/`. No web, no runpod.
+- 2026-06-20 (novelty-loop R04) — **Answers the Door-2 question (selection = stability?) NO, via a minimal
+  counterexample** (full piece in `logs/2026-06-20-novelty-generation-loop.md`). σ₁(n)=Σ_{d|n}d has
+  Dirichlet series **ζ(s)ζ(s−1)** — a genuine Euler product (passes the no-boundary/Euler-cut filter) yet
+  has a zero at **Re=3/2** (verified |ζ(s)ζ(s−1)|≈2e-19 at s=3/2+14.13i). So **Euler-product ⇏ RH**;
+  selection and stability are not one statement. Resolution: the real no-boundary condition is **PURITY
+  (single weight ⟺ single critical line ⟺ entire ξ)**; the **weight filtration is the boundary** (σ₁ is
+  mixed, weights {0,1}, two critical lines). Split: **selection = purity (discrete) ⊕ stability = positivity
+  (κ₋=0, metric)**; over F_q Deligne gives purity⟹RH free, so the gap is **archimedean-only** (Door-5 / #137).
+  Two-apex reading: ζ's **poles = boundary = wild γ_n (R01, A2/DSS)**; **ξ's zeros = interior = RH (A1)**.
+  ~60–70% prior-true; σ₁ identity / off-line zero / F_q purity⟹RH proven, synthesis conjectural.
+
+## R25 finding (2026-06-20, novelty loop) — no-boundary/purity = the RADIAL LOCATION of the period subgroup; selection ≠ stability = location ⊥ spread `[BRIDGE]`
+
+Refines R04 (selection≠stability) via R24's period subgroup `P⊂(ℂ*)^∞=(ℝ_{>0})^∞×(T)^∞`, `w_{p,n}=p^{β_n−½}
+e^{iγ_n log p}`. The radial multiset `{β_n−½}` carries TWO data:
+- **no-boundary / purity / selection = SINGLE radial LOCATION** (one weight = one critical line). σ₁=ζ(s)ζ(s−1)
+  (R04) has TWO locations (lines ½, 3/2) = mixed = "boundary."
+- **RH / stability / A1 = ZERO radial SPREAD** (all β_n=½, κ₋=0).
+- (DSS/A2 = full ANGULAR dimension, R24.)
+So **selection = location, stability = spread; location ⊥ spread (mean ⊥ variance)** ⟹ selection cannot force
+stability — the mechanism behind R04's split. **Door-5 re-derived:** over F_q, Weil II pins modulus `q^{w/2}`
+⟹ location WELDS spread (purity⟹RH); over ℚ no single Frobenius ⟹ location/spread UN-weld = the archimedean gap.
+**Net three-datum framing of `P`:** radial location=1 (purity), radial spread=0 (RH), angular dim full (DSS) —
+three independent structural data, one object. Self-judged novelty ~32, sig ~38, proof ~55. Full:
+`logs/2026-06-20-novelty-generation-loop.md` R25.

@@ -156,9 +156,11 @@ monoculture; it is **substrate-load-bearing**: `BRIDGE (substrate)`.
 - [ ] 2 → 3 formalized: Lean targets reuse the banked anchors — `∂_s e_m=−(m·ℓ)e_m` (the Bohr-character
   diagonalization `bohrCharacter_scaleCoordinate`/`bohrCharacter_add`, #136), the orbit-degree algebra and
   `eq_sum_single_sub_base_of_orbitDegree_zero` (#130, `OrbitBalance.lean`), `linearIndependent_log_primes`
-  (#1). The new statement to formalize is the *non-membership* `τ∉⟨σ_p⟩` as `non-CC ∉ CC-subgroup` — a group
-  fact over the orbit-degree classifier (CC = `∀O, deg_O=0`; the constant prime multipliers have all
-  `deg_O=0`, the Γ-multiplier has `deg_ℤ=+1`).
+  (#1). The abstract orbit-degree separation behind *non-CC ∉ CC-subgroup* is Lean-backed by
+  `orbitDegree_ne_zero_ne_of_orbitDegree_zero` and `orbitDegree_single_ne_zero_ne_of_orbitDegree_zero`:
+  a nonzero orbit-degree class cannot equal a degree-zero class. Remaining Lean work is the actual
+  multiplier-class assembly for `τ∉⟨σ_p⟩` (CC = `∀O, deg_O=0`; the constant prime multipliers have all
+  `deg_O=0`, the Γ-multiplier has `deg_ℤ=+1`) and the tensor/two-lattice packaging.
 - [ ] 3 → 4 publication-ready: standalone note *"two lattices of the completed connection: the product
   formula as a spectral shadow that does not lift, and the digamma residue as the seam."*
 

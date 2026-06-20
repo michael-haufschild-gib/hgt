@@ -3,7 +3,6 @@
 - **ID:** dewitt-supermetric-no-margin
 - **Stage:** 0-backlog (self-authored 2026-06-19; awaiting pipeline vetting — the grade in Type is my assessment, not a curated promotion)
 - **Type:** THEOREM-candidate (paper, structural) — claimed Door grade **BRIDGE (substrate)**, charter §6 D2; contains one theorem-backed seed (Finding 1/2), one verified dis-analogy (Finding 4, re-derives #136), and the resolved D2 unification (Finding 3)
-- **Priority:** FUTURE (A2 / time axis); the D2 row is FOUNDATIONAL for the dual-axis verdict
 - **Source:** Giulini, *The Superspace of geometrodynamics*, Gen. Rel. Grav. (2011), DOI 10.1007/s10714-009-0771-4 (read in full); theorem-backs/corrects support-extraction-log #94/#95; companion `constraint-not-flow-theorem.md`, `explicit-formula-as-constraint.md`; ../../door/bucket-time-and-non-holonomic-time.md, ../../door/bucket-the-no-margin.md
 - **Statement:** Under the dictionary archimedean-scale `∂_s` ↔ conformal/volume mode and FE ↔ 4d-diffeo, the de Bruijn/Weil supermetric `𝔇_λ = λ·A − P` (archimedean block `A≻0`, prime block `P`) mirrors Giulini's DeWitt supermetric `G_λ`. In GR the 4d-diffeo-forced value λ=1 is exactly where the connection operator loses ellipticity (margin `2(1−λ)→0`); in arithmetic the FE-forced weight λ*=1 is exactly the positivity-cone boundary `λ_c=‖A^{−½}PA^{−½}‖`, with the margin `m(1)=1−λ_c=0 ⟺ RH`. Both: **the defining symmetry drops the physical value onto the degeneracy of its own kinetic/positivity form** — a D2 unification (kinship), unconditional in GR, RH-bearing in arithmetic.
 
@@ -129,3 +128,16 @@ BRIDGE (substrate). Each leg is parent-provable (Weil positivity; Rodgers–Tao 
   `../3-formalized/finite-congruence-pencil-factorization.md`. Parent remains in `2-fully-proven` because
   the spectral `lambda_c` statement, finite-to-infinite Hankel carrier limit, Rodgers-Tao/de
   Bruijn-Newman transport, and RH equivalence are not Lean-formalized.
+- 2026-06-20 (novelty-loop R08, ADVERSARIAL AUDIT) — **Finding 3b transport lemma has a frequency-uniformity
+  gap** (full piece in `logs/2026-06-20-novelty-generation-loop.md`). The dBN heat generator −∂_zz=mult-by-u²
+  rescales the prime-p block (frequency u=log p) by **e^{t(log p)²}**, unbounded over primes (verified: 1.05,
+  8.3, 1.9e8, 1.4e33 for p≤10¹², t=0.1). So "∂_tQ bounded by C on band-limited test fns" has C~R² on band-limit
+  R, and the real-root interval ε/C~ε/R²→0; even a full-space margin ε yields only **Λ≤−ε/R²→0 (Λ≤0, not Λ<0
+  strictly)**. Hence "Rodgers–Tao discharges the free half λ_c≥1" is **over-stated**: the contrapositive
+  refutes only *band-limited* margins; the uniform closure collides with the **same large-prime seam** as RH
+  (Finding 5's loglog-at-σ=½ heart). Internal tell: Finding 3b infers real-rootedness from form-positivity,
+  which Finding 5 Caution (iii) calls HB-blind — consistent only if Q_t is the analytic Jensen form, not the
+  arithmetic Weil form A−P the card identifies it with (the unproven heat-on-prime-block step). **λ_c≥1 likely
+  TRUE; the transport-lemma PROOF is not uniform.** Recommend regrading 3b to "proven band-limited; uniform
+  closure seam-open" and making the Jensen-vs-Weil identification an explicit hypothesis. (Findings 1/2/3 D2
+  kinship and RH⟺λ_c=1 not attacked.)

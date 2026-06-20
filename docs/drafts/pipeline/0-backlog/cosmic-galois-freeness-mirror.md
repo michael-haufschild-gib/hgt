@@ -3,7 +3,6 @@
 - **ID:** cosmic-galois-freeness-mirror
 - **Stage:** 0-backlog (CONJECTURE card; §1 mirror = BRIDGE-import, §2/§3 = the new conjecture)
 - **Type:** CONJECTURE (the freeness asymmetry) + BRIDGE (the mirror map & the proven↔open diagnosis)
-- **Priority:** FOUNDATIONAL (transcendence axis; sharpens the wild-kernel apex). Apex (DSS itself) = FIELDS MEDAL.
 - **Owner:** DeWitt
 - **Source / builds on:**
   - `omega-splits-wild-kernel-freeness.md` §2-cohomology (`H_1(Lie K)`=generators=exponential-corank,
@@ -68,7 +67,7 @@ difficulty sits:
 
 So DSS is open **exactly at** the missing Grothendieck period conjecture for exponential motives — the same
 gap Wheeler flags in `bigraded-corank-dss-cross` §D ("conditional on the period conjecture for `M^exp`"). The
-mirror localizes the entire FIELDS-MEDAL difficulty to one named hypothesis, `GPC^exp`, by analogy to a case
+mirror localizes the entire open gap to one named hypothesis, `GPC^exp`, by analogy to a case
 where the analogue of `GPC` is a theorem.
 
 ## §2 The freeness ASYMMETRY `[CONJECTURE — the new content]`
@@ -123,7 +122,7 @@ E^{-x}⊗ℚ(n))` per order via the irregular Hodge filtration (the generator co
 The conjecture predicts the series `1/(1−t)` (every order = 1). If irregular Hodge ever yields `dim gr^n = 0`
 for some `n`, that `γ_n` collapses and the asymmetry conjecture fails at `n` — a clean refutation channel. Note
 this is the **`H_1` half** (generator count); the **`H_2=0`** half (no relations among the generators) is the
-Schanuel/`GPC^exp`-hard apex (= DSS, FIELDS MEDAL) — the mirror does not make that half easier, only locates it.
+Schanuel/`GPC^exp`-open apex (= DSS, open) — the mirror does not make that half easier, only locates it.
 
 ## §4 Door / grade
 - §1 (the mirror map + the proven↔open diagnosis via `GPC^exp`): **BRIDGE** — a correct structural mapping onto
@@ -131,7 +130,7 @@ Schanuel/`GPC^exp`-hard apex (= DSS, FIELDS MEDAL) — the mirror does not make 
   re-derived (flagged; no web per charter).
 - §2 (freeness asymmetry) + §3 (Hilbert-series gap): **CONJECTURE** — the new transcendence-axis content;
   structural reason + order-2 positive evidence; falsifiable via irregular Hodge.
-- Apex (DSS = `K` free = `H_2(Lie K)=0`): **FIELDS MEDAL**, unchanged.
+- Apex (DSS = `K` free = `H_2(Lie K)=0`): **open**, unchanged.
 
 ## §5 Gates
 - [x] 0 → 1  in-progress: well-posed (mirror stated; asymmetry conjecture + Hilbert series + structural reason;
@@ -139,7 +138,7 @@ Schanuel/`GPC^exp`-hard apex (= DSS, FIELDS MEDAL) — the mirror does not make 
   generator count. *(Card created already past this gate; left in 0-backlog as a conjecture.)*
 - [ ] 1 → 2  fully-proven: would require either (a) proving `dim gr^n H_1(Lie K)=1 ∀n` via irregular Hodge
   (the `H_1`/asymmetry half — parent-computable, RH-blind), which would bank §2/§3 as a theorem; or (b) the
-  full apex (`H_2=0`, FIELDS MEDAL). The §1 mirror is already a banked BRIDGE observation.
+  full apex (`H_2=0`, open). The §1 mirror is already a banked BRIDGE observation.
 
 ## Cross-references
 - `omega-splits-wild-kernel-freeness.md` — the `H_1`/`H_2` grading; this card supplies the *reason* `dim gr^n=1`
@@ -165,3 +164,15 @@ Schanuel/`GPC^exp`-hard apex (= DSS, FIELDS MEDAL) — the mirror does not make 
   exponential twist `E^{−x}` (non-Tate, Stokes) **resurrects** a regulator `γ_n` on every one of them — "the
   wild kernel lives where the motivic world is empty." §1/§2/§3 + Statement revised. Borel recalled (flagged),
   no web.
+- 2026-06-20 (novelty-loop R03) — **Mechanism for the freeness asymmetry: F∞-parity breaking by the
+  unipotent Stokes structure** (full piece in `logs/2026-06-20-novelty-generation-loop.md`). The even/odd
+  Tate-twist grading is the **F∞ (complex-conjugation) eigenvalue (−1)ⁿ**; Borel regulators live in the
+  F∞-odd part (verified: ζ(2k)/π^{2k}∈ℚ collapse, ζ(odd) don't). The wild surplus on the **even** twists
+  exists because E^{−x}'s **Stokes matrices are unipotent** — not an F∞-eigenvector, so they mix parities
+  and resurrect γ_{2k} where motives are F∞-even-empty. Quantitative: wild generator density = **2×** cosmic
+  (factor 2 = index of the even sublattice); "wider than RH" = "the wild kernel restores the F∞-even half
+  motives discard". Comb identity: P_𝒰 = oddpart(P_K) − t, surplus = evenpart(P_K) = 1/(1−t²). H₁-half
+  reduction (method 21): dim gr^n=1 ∀n ⟸ Stokes matrix of E^{−x}⊗ℚ(n) ≠ identity ∀n (RH-blind, irregular-
+  Hodge-computable, far below the H₂=0 apex). Cross-links R01: Stokes-unipotent = log monodromy = R01's
+  marginal-stratum K-generator (same archimedean unipotent). ~60–70% prior-true; F∞/Borel/Stokes-unipotent
+  facts proven, mechanism conjectural.

@@ -4,7 +4,6 @@
 - **Stage:** 0-backlog (paper-review **DONE 2026-06-19, DeWitt — VERDICT: VALID, scoped**; awaiting Leaner's
   Lean-name/axiom check for 2→3)
 - **Type:** CANDIDATE → claim-review (researcher paper-review complete)
-- **Priority:** FOUNDATIONAL
 - **Source:** ../../door/00-status.md · 00-status row #81; ../../door/bucket-ledger-footholds.md
 - **Claimed ledger status:** `THEOREM (Lean)`; no matching ticket in `../3-formalized/` as of 2026-06-19.
 - **Statement:** First Theorem: Euler product iff Bohr factorization, as a fake filter.

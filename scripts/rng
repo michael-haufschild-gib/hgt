@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# rng — fast, unbiased random helper backed by the kernel CSPRNG (/dev/urandom).
+#
+# Why this exists: the LLM driving this session cannot generate real randomness,
+# and the Workflow sandbox blocks Math.random()/Date.now(). This script is the
+# session's entropy source — cheap to spawn (~5-10ms), no Python startup.
+#
+# Usage:
+#   rng                   random 32-bit unsigned int
+#   rng int A B [N]       N (default 1) uniform integers in [A,B] INCLUSIVE
+#   rng float [A B]       uniform float in [0,1)  (or [A,B) if A B given)
+#   rng pick a b c ...    print one argument chosen uniformly
+#   rng shuffle a b c ... print the arguments in random order, one per line
+#   rng hex [NBYTES]      NBYTES (default 16) random bytes as lowercase hex
+#   rng seed              random 62-bit decimal seed (exact)
+#   rng help              this message
+#
+# Integers are unbiased (rejection sampling, no modulo skew). Pinned to bash via
+# the shebang so 0-indexed arrays work regardless of the caller's shell (zsh).
+set -euo pipefail
+
+rand32() {                       # one unsigned 32-bit integer from the CSPRNG
+  od -An -N4 -tu4 /dev/urandom | tr -d '[:space:]'
+}
+
+rand_below() {                   # unbiased integer in [0, $1) by rejection sampling
+  local n=$1 r limit max=4294967296
+  if (( n <= 0 )); then echo "rand_below: need n>0" >&2; return 1; fi
+  (( limit = max - (max % n) ))
+  while :; do
+    r=$(rand32)
+    if (( r < limit )); then echo $(( r % n )); return; fi
+  done
+}
+
+usage() { awk 'NR==1{next} /^#/{sub(/^# ?/,""); print; next} {exit}' "$0"; }
+
+cmd=${1:-rand}
+case "$cmd" in
+  rand) rand32 ;;
+
+  int)
+    [[ $# -ge 3 ]] || { echo "usage: rng int A B [N]" >&2; exit 1; }
+    A=$2; B=$3; N=${4:-1}
+    (( B < A )) && { t=$A; A=$B; B=$t; }
+    range=$(( B - A + 1 ))
+    for ((i=0; i<N; i++)); do echo $(( A + $(rand_below "$range") )); done
+    ;;
+
+  float)
+    r=$(rand32)
+    if [[ $# -ge 3 ]]; then
+      awk -v r="$r" -v a="$2" -v b="$3" 'BEGIN{printf "%.17g\n", a + (b-a)*(r/4294967296.0)}'
+    else
+      awk -v r="$r" 'BEGIN{printf "%.17g\n", r/4294967296.0}'
+    fi
+    ;;
+
+  pick)
+    shift
+    (( $# > 0 )) || { echo "usage: rng pick item ..." >&2; exit 1; }
+    arr=("$@"); idx=$(rand_below "${#arr[@]}")
+    printf '%s\n' "${arr[idx]}"
+    ;;
+
+  shuffle)
+    shift
+    (( $# > 0 )) || { echo "usage: rng shuffle item ..." >&2; exit 1; }
+    arr=("$@"); n=${#arr[@]}
+    for ((i=n-1; i>0; i--)); do            # Fisher-Yates
+      j=$(rand_below $((i+1)))
+      t=${arr[i]}; arr[i]=${arr[j]}; arr[j]=$t
+    done
+    printf '%s\n' "${arr[@]}"
+    ;;
+
+  hex)
+    nb=${2:-16}
+    od -An -N"$nb" -tx1 /dev/urandom | tr -d '[:space:]'; echo
+    ;;
+
+  seed)                                    # 62-bit, exact in bash 64-bit arithmetic
+    hi=$(( $(rand32) & 0x3FFFFFFF )); lo=$(rand32)
+    echo $(( hi * 4294967296 + lo ))
+    ;;
+
+  help|-h|--help) usage ;;
+  *) echo "rng: unknown command '$cmd' (try 'rng help')" >&2; exit 1 ;;
+esac

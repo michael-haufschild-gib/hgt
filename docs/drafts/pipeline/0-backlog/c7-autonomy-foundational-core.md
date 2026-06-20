@@ -3,7 +3,6 @@
 - **ID:** c7-autonomy-foundational-core
 - **Stage:** 0-backlog
 - **Type:** THEOREM (paper) target — structural
-- **Priority:** FOUNDATIONAL
 - **Source:** ../../00-charter-wall-and-door.md (C7), ../../door/00-status.md row #48,
   ../../00-foundations-native-objects-and-gatekeepers.md (N1–N4, G4),
   ../../door/G4-multi-q-picard-vessiot-and-langlands-group.md,

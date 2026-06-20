@@ -3,7 +3,6 @@
 - **ID:** moonshot-rh-spectral-flow-index
 - **Stage:** 0-backlog
 - **Type:** MOONSHOT CONJECTURE (wild; ~10% true; far beyond SOTA)
-- **Priority:** FIELDS MEDAL (+)
 - **Source:** user directive 2026-06-19 (wild moonshots); builds on `completed-connection-category.md` (#127,
   the FE=PT-involution, RH=PT-unbroken), `κ₋`=#off-line pairs (#32, Lean), no-margin=PT-exceptional-point (#93),
   the de Bruijn–Newman flow `Λ_t` (#92/#110).

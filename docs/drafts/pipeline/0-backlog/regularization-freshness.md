@@ -4,7 +4,6 @@
 - **Stage:** 1-in-progress (0→1 done 2026-06-19: "fresh" given a precise meaning; the Stieltjes seam
   identification proven; freshness reduced to the seam/F₁ — the transcendence itself stays open)
 - **Type:** CANDIDATE → CONJECTURE (native), with a structural BRIDGE backbone
-- **Priority:** FUTURE
 - **Source:** ../../door/bucket-the-seam-archimedean-obstruction.md (#74 SEED-S), ../../door/bucket-new-sibling-conjectures.md · 00-status row #75
 - **Statement:** Zeta-regularization / Hadamard finite-part is a **transcendence-CREATING** operation
   (`log 2π = −2ζ'(0)`; Glaisher `ζ'(−1)`). **Conjecture:** the regularization constants attached to a
@@ -71,10 +70,16 @@ the *regularization* face.
 ### R4 — honest boundary on the toy instances
 `log 2π = −2ζ'(0)` and Glaisher `ζ'(−1)` are the lowest-rung regularization constants. Whether they are
 *fresh* (vs. lying in `𝓡̄ = (𝒫·ℚ({log p}))̄`) is a delicate **exponential-motive / Fresán–Jossen**
-question I am **not** settling here — `log 2π` mixes `π` (a period) with `log 2` (an alternating-MZV period),
-both in `𝓡`, so it is plausibly *tame*, not fresh; freshness is expected only at the **higher rungs** (growing log-monomial
-degree, the `γ_n`). [Motivic period-membership of these constants: flagged unverified, open — the conjecture's
-content is the high-rung class, not the toy base.]
+question. **Corrected (Wheeler id=428):** `log 2π = log 2 + log π`. `log 2 ∈ ℚ({log p}) ⊂ 𝓡` ✓, **but
+`log π ∉ 𝓡`** — `log π` is the log of a *transcendental* period (`π`), so it is **neither** a Kummer period
+(those are logs of **algebraics**) **nor** an MZV; it is a genuine **exponential period**, conjecturally
+`∉ 𝓡̄`. The earlier reasoning "`π ∈ 𝓡 ⟹ log π ∈ 𝓡`" is **false** (the log of a period is not the period).
+Hence **`log 2π ∉ 𝓡̄` — plausibly FRESH, not tame**, and the **lowest freshness rung is `log 2π` itself
+(rung 0, via `log π`)**, not only the higher `γ_n`. (No conflict with "`a_∞ = ½log 2π = −ζ'(0)` is Tate"
+[#211, id=415]: that is the local **monodromy/structure** — a Tate twist — *not* the value's transcendence
+over `𝓡`; `log 2π` can be a transcendental exponential period whose local monodromy is Tate.) The correction
+**strengthens** the conjecture: regularization-freshness may begin at rung 0. [Exponential-period membership
+of `log π`/`log 2π` flagged conjectural — Fresán–Jossen / GPC^exp.]
 
 ### R5 — the explicit auxiliary realization (Professor's `R_P`; DeWitt 2026-06-19, verified)
 The R2 "regularized discrete–continuous defect" is realized by **one explicit native object**: Professor's
@@ -101,7 +106,7 @@ ADDENDUM; ~12-digit numeric + exact Laurent/Taylor). The `j≥1` shifts give `Γ
   archimedean–arithmetic seam); freshness reduced to the seam/F₁ (R3); toy instances honestly bounded (R4)
 - [ ] 1 → 2  fully-proven: freshness proved for a concrete regularization constant vs the `MT(ℤ)` periods,
   then the general principle — **needs the transcendence input** (= DSS-cross / Schanuel for prime logs,
-  Fields-Medal open; the R2 seam identification is the structural BRIDGE backbone, banked)
+  open; the R2 seam identification is the structural BRIDGE backbone, banked)
 - [ ] 2 → 3  formalized
 - [ ] 3 → 4  publication-ready
 
@@ -146,3 +151,44 @@ Nori (Fresán–Jossen), where regularization constants are exponential periods.
   base 𝓡=𝒫·ℚ({log p})** at rung 1 (R1). Evidence, not proof (PSLQ bounds height; linear only). Methodological
   catch (logged): a naive high-maxcoeff PSLQ returned a SPURIOUS relation (coeffs ~1e11, residual 8e-92 ≫ the
   1e-120 floor) — rejected by the residual-vs-floor + dps-stability check. RH-blind (transcendence side).
+- 2026-06-19 (DeWitt) — **R4 corrected** (Wheeler id=428): the earlier "`log 2π` plausibly tame (mixes
+  `π`,`log 2` ∈ 𝓡)" was flawed — it assumed `π∈𝓡 ⟹ log π∈𝓡`, false (log of a period ≠ period). `log 2π =
+  log 2 + log π` with `log 2∈𝓡` but **`log π ∉ 𝓡`** (log of a transcendental period; neither Kummer-of-algebraic
+  nor MZV; a genuine exponential period, conj. `∉𝓡̄`). So **`log 2π` is plausibly FRESH (rung 0), not tame** —
+  freshness may start at the lowest rung, strengthening the conjecture. No conflict with "`a_∞` Tate" (#211):
+  local monodromy Tate ≠ value transcendence over 𝓡. R4 body updated; this corrects the line-135 log entry above.
+- 2026-06-20 (novelty-loop R01) — **R6 conjecture: the Marginal-Divergence Law** (full piece in
+  `logs/2026-06-20-novelty-generation-loop.md`). Via the Bose–Einstein Mellin kernel
+  Γ(s)ζ(s)=∫x^{s−1}/(eˣ−1): wild freshness is **stratum-graded by divergence degree** — power
+  (s=−n)→rational Bernoulli ζ(−n) (tame/F₁); **marginal/log (pole at s=1)→wild γ_n**; convergent
+  (s≥2)→periods j!ζ(j+1) (tame). Only the marginal/**logarithmic** stratum is fresh, because log =
+  unipotent = the K=ker(G^exp↠G_mot) generator. Consequences: freshness is **pole-localized**;
+  **entire** L (no pole) carries no wild freshness — mechanism verified by character orthogonality
+  killing the bare γ (ψ(1/4)−ψ(3/4)=−π exactly, γ-free). Relocates the open input from
+  Schanuel-for-prime-logs to a unipotent **non-splitting** statement (matches the dim Ext¹=1 form).
+  Conjecture, ~70–80% prior-true; strata I/III and log=unipotent proven. Local mpmath; no runpod.
+
+## R12 finding (2026-06-20, novelty loop) — holonomic-freshness: the γ_n are not P-recursive (a PROVEN floor under G16, from Hölder) `[BRIDGE]`
+
+A distinct angle from R01 (which graded freshness by divergence stratum). Here: the freshness data is the
+coefficient sequence of one entire function, **`g(z)=ζ(1+z)−1/z=Σ((−1)ⁿ/n!)γ_n zⁿ`**.
+
+**Theorem (PROVEN).** `{γ_n}` satisfy **no linear recurrence with polynomial coefficients** (not P-recursive).
+Chain: Hölder 1887 (ζ ∉ DA) ⟹ `g ∉ DA` (DA is a differential ring; `+1/z`, shift preserve it) ⟹ `g` not
+D-finite (D-finite ⊂ DA) ⟹ **Stanley 1980** (D-finite ⟺ P-recursive coeffs) ⟹ `(γ_n)` not P-recursive (the
+`(−1)ⁿ/n!` hypergeometric factor preserves P-recursivity both ways). **Freshness IS Hölder hypertranscendence,
+read at the level of the Taylor-coefficient sequence.** Explains the empirical absence of any closed recurrence
+for the Stieltjes constants: Hölder forbids one.
+
+**G16 factors into a ladder (the contribution):**
+- **H (holonomic-fresh):** `{γ_n}` not P-recursive — **PROVEN** (Hölder+Stanley), a floor under the apex.
+- **D (DA-fresh):** no algebraic-differential recurrence — conjecture (Hölder at coeff level).
+- **V (value-fresh):** alg-indep over `𝓡` — open = G16/DSS-cross, the open apex.
+
+Rung H welds G16 to the field's founding theorem (Hölder, the vision epigraph). Complements R01's stratum law
+(same hypertranscendence at value-stratum vs coefficient-sequence level). Full derivation + self-judgment
+(prior ~30, significance ~35, proof ~80) in `logs/2026-06-20-novelty-generation-loop.md` Round 12.
+
+**Forward lead:** attack rung D via a differential-algebra analogue of Stanley (does Hölder yield a *nonlinear*
+recurrence obstruction?) — would lift the proven floor from holonomic to differential-algebraic, one rung below
+the value apex. (Numeric P-recurrence search was conditioning-limited/inconclusive; claim is proof-backed.)

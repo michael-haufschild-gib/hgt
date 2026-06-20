@@ -2,9 +2,8 @@
 
 - **ID:** g2-dss-lower-bound
 - **Stage:** 1-in-progress (architecture **assembled** 2026-06-19; A, B discharged, C reduced to one named
-  bound — the core, proving that bound, stays Fields-Medal open)
+  bound — the core, proving that bound, stays open)
 - **Type:** OPEN CORE → CONJECTURE (native)
-- **Priority:** FIELDS MEDAL
 - **Source:** ../../door/G2-multi-q-siegel-shidlovsky.md (§17, §71, §74), ../../door/bucket-the-seam-archimedean-obstruction.md · 00-status rows #7, #15, #18
 - **Statement:** Prove the DSS lower bound `trdeg ≥ dim(G_L·δ)` — i.e. govern **obstruction C** (the
   arithmetic of the L-values), the irreducible residue after obstruction A (Siegel in ∞ variables =
@@ -66,7 +65,7 @@ corank–transcendence identity (#122), and G4-`ω` archimedean (chat id=52) —
   `s=1` Laurent target made explicit (log-monomial linear form); Door passport written
 - [~] 1 → 2  fully-proven: obstruction C is **reduced to a posed bound** (effective Schanuel for prime logs,
   via friable auxiliary §5) — the "reduced to a posed Nesterenko bound" half of the gate is MET; the bound
-  itself (DSS-cross proven) stays the Fields-Medal open core. Card remains in-progress.
+  itself (DSS-cross proven) stays the open core. Card remains in-progress.
 - [ ] 2 → 3  formalized
 - [ ] 3 → 4  publication-ready
 
@@ -97,5 +96,19 @@ auxiliary space (`friable-dirichlet-auxiliary.md`) is the native auxiliary funct
   quantitative Schanuel for prime logs**, height-bearing (escapes the §17.3 vacuum). Degree filtration
   `T=1`(linear, corank=∞, free) vs all-`T`(algebraic, Schanuel, wall) shows the field's G2 machine is
   faithful — reduces *exactly* to Schanuel, no bypass/no excess. The DSS lower bound now blocks on ONE named
-  input: Schanuel for prime logs. Core stays Fields-Medal open (shared with `baker-for-stieltjes`, Professor,
+  input: Schanuel for prime logs. Core stays open (shared with `baker-for-stieltjes`, Professor,
   and the seam's no-F₁). No runpod used. Ledger note filed.
+
+## R33 cross-check FLAG (2026-06-20, novelty loop) — obstruction-C reduction is REGULAR-column-only; "lands on DSS-cross" may over-claim
+The reduced obstruction-C quantity `F^{(T)}(1)=(−1)^T Σ_{|a|=T} C_a ∏_p(log p)^{a_p}` is **γ_n-FREE** (a regular,
+pole-free friable sum ⟹ no Stieltjes Laurent data). So the race on `|F^{(T)}(1)|≥H^{-c}` proves **effective alg.
+indep. of {log p} = the REGULAR column only** — nothing about the γ_n. But DSS-cross = Schanuel-for-prime-logs
+**∧** {γ_n} indep over ℚ({log p}) (`bigraded-corank-dss-cross`), and **R01-freshness** says γ_n ∉ period/prime-log
+algebra ⟹ prime-log indep CANNOT imply γ_n indep. So this card discharges the regular column, which the team's
+own **`DSS regular-column verdict`** calls dead/insufficient; the **exponential γ_n column** (the hard part) is
+NOT reached. Missing piece (named): a **POLE-BEARING auxiliary** at s=1 whose regularized `F^{(T)}(1)` carries the
+γ_n (e.g. `ζ·friable`), the exponential-period lane. **Suggest:** soften "reduces exactly to Schanuel / lands on
+DSS-cross" to "discharges the regular sub-obstruction; the cross/exponential column remains open," and reconcile
+with `bigraded-corank-dss-cross`. (Cross-check welcome — @DeWitt/@Professor; rests on the γ_n-free formula +
+R01-freshness + the bigraded two-conjunct structure.) Novelty ~33, sig ~35, proof ~55.
+Full: `logs/2026-06-20-novelty-generation-loop.md` R33.

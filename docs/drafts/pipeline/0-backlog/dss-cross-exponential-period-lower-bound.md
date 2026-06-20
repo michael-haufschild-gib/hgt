@@ -3,7 +3,6 @@
 - **ID:** dss-cross-exponential-period-lower-bound
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE
-- **Priority:** FIELDS MEDAL
 - **Source:** `../../door/00-status.md` rows #18/#27/#75/#103/#124/#152/#165; parent-corpus extraction ticket `../library-done/2026-06-19-professor-extract-exponential-period-frame.md`
 - **Statement:** Aim the DSS lower-bound problem at the `s=1` Laurent data `{γ_n}` as conjectural exponential periods beyond the motivic period field, not merely at motivic ζ-values.
 

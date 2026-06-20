@@ -25,6 +25,17 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.gammaReal_shift_two
 #print axioms GaloisForLFunctions.digamma_half_add_one
 #print axioms GaloisForLFunctions.gammaRealLogConnection_shift_compat
+#print axioms GaloisForLFunctions.primeLogFiniteSlice_linearIndependent
+#print axioms GaloisForLFunctions.primeLogFiniteSlice_finrank
+#print axioms GaloisForLFunctions.archimedeanFiniteGenerator_mem_primeLogSpan
+#print axioms GaloisForLFunctions.primeLogSpan_insert_archimedean_eq
+#print axioms GaloisForLFunctions.primeLogFiniteSlice_finrank_with_archimedean
+#print axioms GaloisForLFunctions.primeLogFiniteSlice_finrank_unbounded
+#print axioms GaloisForLFunctions.primeLogFiniteSlice_finrank_with_archimedean_unbounded
+#print axioms GaloisForLFunctions.primeLogFullSpan_rank
+#print axioms GaloisForLFunctions.archimedeanFiniteGenerator_mem_primeLogFullSpan
+#print axioms GaloisForLFunctions.primeLogFullSpan_insert_archimedean_eq
+#print axioms GaloisForLFunctions.primeLogFullSpan_rank_with_archimedean
 #print axioms GaloisForLFunctions.finiteEulerProduct_ne_zero
 #print axioms GaloisForLFunctions.primeProduct_factorization
 #print axioms GaloisForLFunctions.primeProduct_injective
@@ -37,6 +48,7 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.primeLogFrequency_eq_zero_iff
 #print axioms GaloisForLFunctions.primeLogFrequency_ne_zero
 #print axioms GaloisForLFunctions.primeLogFrequency_single_ne_zero
+#print axioms GaloisForLFunctions.deriv_archimedeanPrimeMode
 #print axioms GaloisForLFunctions.bohrCharacter_zero
 #print axioms GaloisForLFunctions.bohrCharacter_add
 #print axioms GaloisForLFunctions.bohrCharacter_scaleCoordinate
@@ -100,6 +112,8 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.boundaryUnitNormalize_norm_eq_one_iff
 #print axioms GaloisForLFunctions.functionFieldWeightNormalize_norm_eq_one_iff
 #print axioms GaloisForLFunctions.diagonalBoundary_unit_norm_iff
+#print axioms GaloisForLFunctions.susceptibilityExponent_zero_iff
+#print axioms GaloisForLFunctions.susceptibilityMirrorFrequencyFactor_eq_one_forall_iff
 #print axioms GaloisForLFunctions.satakeTensor_diagonal
 #print axioms GaloisForLFunctions.satakeLocalFactor_tensor
 #print axioms GaloisForLFunctions.satake_trace_eq_two_mul_re
@@ -167,6 +181,7 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.eval_surjective_rect
 #print axioms GaloisForLFunctions.multiPair_carrier_linearIndependent
 #print axioms GaloisForLFunctions.multiPair_carrier_exact_neg_inertia
+#print axioms GaloisForLFunctions.fe_quadruple_kappa_two
 #print axioms GaloisForLFunctions.measure_carrier_herglotz
 #print axioms GaloisForLFunctions.measure_pick_isHermitian
 #print axioms GaloisForLFunctions.measure_pick_posSemidef
@@ -277,7 +292,9 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.iteratedDeriv_nat_dirichlet_at_one
 #print axioms GaloisForLFunctions.iteratedDeriv_friableDirichletExp_at_one
 #print axioms GaloisForLFunctions.complex_cast_logPrime_sum
+#print axioms GaloisForLFunctions.primeLogDot_pow_wordExpansion
 #print axioms GaloisForLFunctions.iteratedDeriv_friableExponentDirichletExp_at_one
+#print axioms GaloisForLFunctions.iteratedDeriv_friableExponentDirichletExp_at_one_wordExpansion
 #print axioms GaloisForLFunctions.ccGaugeMultiplier_eq_const
 #print axioms GaloisForLFunctions.hasDerivAt_mul_exp_const_ode
 #print axioms GaloisForLFunctions.ccShiftSolution_eq
@@ -295,6 +312,19 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.sum_intShiftTerm_right
 #print axioms GaloisForLFunctions.logZetaPrimeCoeff_prime
 #print axioms GaloisForLFunctions.logZetaPrimeCoeff_primePower
+#print axioms GaloisForLFunctions.windowSlope_zero_at_center
+#print axioms GaloisForLFunctions.jensenClosedWitness_of_zeroEpsilon
+#print axioms GaloisForLFunctions.abs_sub_center_le_of_mem_Icc_sub_add
+#print axioms GaloisForLFunctions.exists_zero_Icc_of_nonpos_of_nonneg
+#print axioms GaloisForLFunctions.exists_zero_Icc_of_nonneg_of_nonpos
+#print axioms GaloisForLFunctions.add_nonpos_of_le_neg_bound_of_abs_le
+#print axioms GaloisForLFunctions.add_nonneg_of_bound_le_of_abs_le
+#print axioms GaloisForLFunctions.exists_zero_Icc_of_endpoint_abs_bounds_pos
+#print axioms GaloisForLFunctions.exists_zero_Icc_of_endpoint_abs_bounds_neg
+#print axioms GaloisForLFunctions.exists_zero_Icc_of_endpoint_product_neg
+#print axioms GaloisForLFunctions.same_sign_product_pos_of_abs_sub_lt_abs
+#print axioms GaloisForLFunctions.opposite_sign_product_neg_of_same_sign_products
+#print axioms GaloisForLFunctions.opposite_sign_product_neg_of_abs_sub_lt_abs
 #print axioms GaloisForLFunctions.ffDegreeMap_apply
 #print axioms GaloisForLFunctions.ffRelationLattice_mem_iff
 #print axioms GaloisForLFunctions.ffDegreeMap_surjective
@@ -335,8 +365,8 @@ NORMALIZED="$(printf '%s\n' "$OUT" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]
 AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "depends on axioms: \\[[^]]*\\]" || true; })"
 NO_AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "does not depend on any axioms" || true; })"
 AUDITED_COUNT="$(printf '%s\n%s\n' "$AXIOM_LINES" "$NO_AXIOM_LINES" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [ "$AUDITED_COUNT" -ne 311 ]; then
-  echo "FAIL: expected 311 audited theorem outputs" >&2
+if [ "$AUDITED_COUNT" -ne 341 ]; then
+  echo "FAIL: expected 341 audited theorem outputs" >&2
   exit 1
 fi
 BAD_AXIOMS="$(printf '%s\n' "$AXIOM_LINES" \
@@ -369,4 +399,4 @@ if [ -n "$SORRY_HITS" ]; then
   exit 1
 fi
 
-echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (311 theorem outputs audited)."
+echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (341 theorem outputs audited)."

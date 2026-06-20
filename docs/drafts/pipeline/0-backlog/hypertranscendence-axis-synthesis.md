@@ -2,8 +2,7 @@
 
 - **ID:** hypertranscendence-axis-synthesis
 - **Stage:** 0-backlog (META / synthesis — the organizing frame for the transcendence axis)
-- **Type:** STRUCTURAL synthesis (META). Component results are BRIDGE/banked; the apex (DSS) is FIELDS MEDAL.
-- **Priority:** FOUNDATIONAL (it sets the frame: hypertranscendence is wider than RH)
+- **Type:** STRUCTURAL synthesis (META). Component results are BRIDGE/banked; the apex (DSS) is open.
 - **Source:** user steer 2026-06-19 ("we know RH is hard; hypertranscendence is *wider* than RH"); Hölder 1887
   (`00-core-vision.md`); my session's transcendence-axis results, consolidated. Companion to
   `substrate-hypothesis.md` (the D-axis) — this is the **(B) value-relations** content.
@@ -35,7 +34,7 @@ The transcendence (value-relation) content lives in the **wild kernel**
 > - **`H_1(Lie K)` = the exponential-corank** — one generator `γ_n` per Laurent order (the structural
 >   generator count, the FE-triangular dictionary; `dim gr^n = 1`).
 > - **`H_2(Lie K)` = `ω_mot`** — the relations.
-> - **DSS-cross ⟺ `K` free ⟺ `H_2(Lie K)=0`** — the transcendence apex (FIELDS MEDAL).
+> - **DSS-cross ⟺ `K` free ⟺ `H_2(Lie K)=0`** — the transcendence apex (open).
 
 So **DSS = "the wild kernel's Lie algebra has no relations (cohomological dimension 1)"** — a Galois-structural
 form of the value-relations apex. Over `F_q`, `K=1` (single Frobenius); over `ℚ`, `K` is genuinely wild and
@@ -54,7 +53,7 @@ rungs: **rung 1** (linear) — no integer relation height ≤1e6 (dps 220) among
 **rung 2** (degree-2, the *first open algebraic rung*, #125 §C) — no relation height ≤2000 (dps 400) among the
 17 degree-≤2 monomials in `{γ_0,γ_1,\log2,\log3}∪{ζ(2),ζ(3)}` (contains the open `{\log2,\log3}`-to-degree-2
 atom). Both archived. Evidence the graded corank is full through degree 2; the apex (all degrees = regulator
-injectivity / `H_2=0`) is Schanuel-hard.
+injectivity / `H_2=0`) is Schanuel-type.
 
 ## §4 RH is the orthogonal slice (the decoupling) — why hypertranscendence is *wider*
 The **ω/RH decoupling** (`omega-rh-coupling-vs-orthogonality`, banked): `ω=0`/DSS (realization/transcendence)
@@ -73,7 +72,7 @@ field's primary frontier is the **(B) value-relations apex (DSS = `K` free)**, p
 
 ## §5 The map (where to push)
 - **(A) function-level** (Hölder/G1/weld) — **mapped, BRIDGE** (obstruction theory; not the frontier).
-- **(B) value-level** — **the frontier**: `K` free / `H_2(Lie K)=0` = DSS (FIELDS MEDAL); the structural
+- **(B) value-level** — **the frontier**: `K` free / `H_2(Lie K)=0` = DSS (open); the structural
   sub-target = `dim H_1` per order via irregular Hodge (the generator count, parent-computable); the hard
   half = regulator injectivity (= DSS, Schanuel/Nesterenko).
 - **Width beyond ζ:** the per-place wild kernels `K_v` (archimedean `K_∞` = exponential periods; finite

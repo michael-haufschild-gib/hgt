@@ -3,7 +3,6 @@
 - **ID:** <short-id>
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE | CANDIDATE | THEOREM (paper) | THEOREM (Lean) | FALSIFIED
-- **Priority:** FOUNDATIONAL | FUTURE | FIELDS MEDAL
 - **Source:** ../../door/<bucket>.md · 00-status row #N
 - **Statement:** <one line>
 

@@ -3,7 +3,6 @@
 - **ID:** dewitt-gr-lens-conjectures
 - **Stage:** 0-backlog (seed list — CANDIDATE conjectures, for shaping)
 - **Type:** CANDIDATE × 3 — Door grades flagged per seed (EMBASSY / D2-candidate)
-- **Priority:** FUTURE (A2 / time axis)
 - **Source:** `../2-fully-proven/dewitt-supermetric-no-margin.md` (Giulini 2011) × `docs/rh-corp/` review (3 subagents, 2026-06-19); ../../door/bucket-time-and-non-holonomic-time.md
 - **Why these three:** rh-corp has the *arithmetic* side richly (Hodge-index `(1,ρ−1)`, no-margin, type-III, info-geometric horizon) but **no Wheeler–DeWitt/supermetric material** (its "DeWitt" is a codename, theorist:336). The genuinely new lever is the **GR-side structure** Giulini supplies. Each seed below imports a GR tool onto the arithmetic wall. **Honesty constraint (rh-corp critic:1392, 2630):** the no-margin/positivity/index lane is RH-*equivalent* (≥8 names for one wall); none of these is sold as a C5 path — each is graded as a reframe whose value is **new tools / new cross-links**, not a bypass.
 
@@ -52,6 +51,24 @@ generator level — and steers the obstruction to the **moment/ring-product leve
 (Finding 4); redirected to the moment level. **Test:** compute the `{moment, moment}` bracket closure and
 check for genuine structure functions (vs constants).
 
+**TEST DONE → Seed E FALSIFIED (2026-06-19, DeWitt).** The moment algebra is the **commutative group algebra
+`ℚ[ℤ^{(P)}]`**: `e_m·e_{m'}=e_{m+m'}=e_{m'+m}=e_{m'}·e_m`, so `[e_m,e_{m'}]=0` — **no structure functions at
+the moment level either.** Combined with Finding 4 (`[σ_p,σ_q]=[σ_p,∂_s]=0`; diagonal action
+`σ_p e_m=p^{−m_p}e_m`, `∂_s e_m=−(\log n)e_m`, `n=∏p^{m_p}`), the **entire HGT constraint algebra is
+abelian/flat at every level** — generators, moments, and all cross-brackets commute. There is **no
+hypersurface-deformation algebroid** in HGT, at any level. Seed E's conjecture is therefore **false**.
+
+> **Positive content (BRIDGE, structural — the falsification's payload).** The groupoid-nature of `G_L` /
+> the Langlands-group resistance is **NOT** a structure-function/algebroid phenomenon; it is the **corank ∞**
+> (the infinite relation lattice, #125). The generator-curvature `F_{pq}=0` (flat); non-holonomicity is
+> carried by the **infinite-rank relation lattice**, not by a non-abelian algebroid. This sharpens **N2**:
+> "non-flat ⟺ non-holonomic" must be read as **corank**, not literal generator-curvature (which vanishes,
+> Finding 4). The many-fingered-time obstruction is a *rank* phenomenon (∞ independent commuting clocks), not
+> an *algebroid* phenomenon (no structure functions exist to close).
+
+Door-2: the flatness/diagonality is `𝕋^∞` harmonic analysis (#136, a parent) ⟹ BRIDGE. Seed E → resolved
+(falsified); Seeds A, C remain open EMBASSY (RH-equivalent reframes).
+
 ## Gates
 - [ ] 0 → 1: pick one (Seed A is the most generative — it recruits a new toolkit; Seed E is the most native —
   it targets the moment-level C5 locus); pose precisely, source-pure, Door passport. Seed B is the cheapest
@@ -72,3 +89,52 @@ check for genuine structure functions (vs constants).
   obstruction) from the GR-superspace chat thread. SO-1 check: a fourth proposed seed — the supermetric
   signature (1,∞) / `κ₋`=timelike / conformal=archimedean-time — was found **already fully banked** in
   `../2-fully-proven/dewitt-supermetric-no-margin.md` (Findings 1/2/3c/5) and **not** re-filed.
+- 2026-06-19 (DeWitt) — **Seed E FALSIFIED** (the {moment,moment} test). The HGT constraint algebra is
+  abelian/flat at every level (generators commute, Finding 4; moment algebra `ℚ[ℤ^{(P)}]` commutative;
+  diagonal action) — no hypersurface-deformation structure functions / algebroid anywhere. Payload (BRIDGE):
+  `G_L`'s groupoid-nature / Langlands-resistance and HGT non-holonomicity are the **corank ∞** (relation
+  lattice), NOT a non-abelian algebroid; generator-curvature `F_pq=0`. Sharpens N2 ("non-flat⟺non-holonomic"
+  = corank, not literal curvature). Seeds A, C remain open EMBASSY (RH-equivalent); card stays 0-backlog seed list.
+- 2026-06-19 (DeWitt) — **Seed-E payload deepened → a foundational N2 clarification.** Chasing the
+  flat-yet-non-holonomic tension: Finding 4 gives `[σ_p,σ_q]=[σ_p,∂_s]=0` ⟹ the arithmetic connection is
+  **FLAT** (`F_pq=0`; the brackets genuinely vanish — `σ_p,σ_q` act on independent coordinates, and `σ_p` =
+  the shift `s↦s+1` in the p-th coordinate, which commutes with `∂_s=d/ds`). Yet corank `=∞` (G3:
+  `dim⟨g⟩`-closure `=∞`, dense in `𝕋^∞`). So the arithmetic system is a **flat connection with infinite
+  (dense) holonomy** — like an irrational flow on a torus, **not** a bracket-generating sub-Riemannian
+  distribution. **Correction to N2's framing:** "non-flat ⟺ non-holonomic" is misleading — the curvature is
+  **zero** (flat / sub-Riemannian-integrable, brackets vanish); the non-holonomicity is the **infinite
+  holonomy = corank ∞** (a *rank* phenomenon, the dense `⟨g⟩`-closure), not non-zero curvature. The two
+  notions of "non-holonomic" — (i) bracket-generating/curvature [FALSE here] and (ii) infinite-holonomy/rank
+  [TRUE here] — are distinct, and HGT is (ii), not (i). G3's "corank = dim⟨g⟩-closure" is the holonomy-group
+  dimension; "holonomic ⟺ corank<∞" is the *finite-holonomy* statement, and the arithmetic extreme is
+  **flat-with-infinite-holonomy**. (BRIDGE/structural: from banked Finding 4 + G3; the flat-but-infinite-holonomy
+  reading is the clarification.)
+
+## R13 finding (2026-06-20, novelty loop) — RH is an Aharonov–Bohm effect, not gravity: the lens is wrong because the connection is FLAT `[wild leap; voids Seed A]`
+
+**Attack (the ticket's own Seed E kills Seed A).** GR's content is the scalar curvature `R(h)` in the
+Hamiltonian constraint. Seed E PROVED the arithmetic connection is flat (`F_{pq}=0`, all brackets vanish). A
+flat connection has no scalar curvature ⟹ **Seed A ("RH = positivity of the arithmetic `R`") is void** — it
+asks RH to live in a zero object. Gravity is curvature; this system is flat. Wrong lens.
+
+**The leap.** Flat connection + nonzero holonomy = **Aharonov–Bohm**, not gravity. Primes are flux lines
+(flux `log p`); `π_1(𝕋^∞)=ℤ^{(P)}`; the holonomy rep is `ρ_s(p)=p^{−s}`, i.e. `n↦n^{−s}`, and
+**`ζ(s)=Σ_n n^{−s}` = the regularized sum of Wilson loops** = the AB partition function; zeros = dark
+interference fringes; RH = all fringes on one screen `Re s=½`.
+
+**Invariant + payoff.** A flat connection's only invariant is its holonomy rep (no local invariant — curvature
+≡0). So **RH is a topological/global (holonomy) invariant, and no local quantity can resolve it** — this is the
+single deepest CAUSE of the RH-blindness pattern (#137; R09/R10/R11), unifying them as *flatness*. Predicts:
+(i) curvature positivity (Seed A) void; (ii) the Fisher/DeWitt supermetric is a SEPARATE, curved, **RH-blind**
+structure (`critical-line-fisher-signature-wall`, proven) — the GR lens conflates the two geometries; (iii) the
+only RH-biting positivity is global/holonomy-type, and **Weil's explicit-formula form IS a prime/Wilson-loop
+sum** (right kind), not a local energy; (iv) the correct lens is flat gauge theory / Wilson loops, in which
+**RH = unitary holonomy on the FE-fixed locus = G5** becomes the *natural* statement.
+
+**Structural separation (durable):** (A) the flat connection `(∂_s,σ_p)` — sole invariant holonomy →
+RH-bearing, topological (AB), = G5; (B) the Fisher supermetric — curved but RH-blind. RH is in (A), not (B).
+Full derivation + self-judgment (prior ~13, significance ~45, proof ~42) in
+`logs/2026-06-20-novelty-generation-loop.md` Round 13.
+
+**Forward lead:** off-line zeros as *fractional flux quanta* (AB phase ≠0 mod the FE period) — test whether
+`κ₋` (off-line pair count, #32) is an AB winding/flux-quantum count.

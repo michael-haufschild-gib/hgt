@@ -5,7 +5,6 @@
 - **Type:** carrier — proven structural lemma + proven `d→∞` reducibility **threshold** (`σ>¾`, BRIDGE,
   **RH-blind**); the reducibility⟺RH encoding is **refuted**; the live RH object spun out = single-orbit
   hyperbolicity (positivity)
-- **Priority:** FOUNDATIONAL
 - **Source:** refined C5★ (Part 3) of `combination-mode-baker-reducibility.md`; ../../door/bucket-new-sibling-conjectures.md · 00-status #104, #113
 - **Statement.** The degree-`d` finite-free (Jensen/Hankel) section of `Ξ` lives over the `𝕋^∞`
   prime-frequency flow. Two notions split: its **coboundary/reducibility** (a `𝕋^∞`-variance quantity) has
@@ -709,7 +708,7 @@ encoding (recovers known low-order results — unlike the RH-blind coboundary) a
   way it is a known low-order instance, not the native content.*
 - **`d ≤ 8` (center `t=0`):** hyperbolicity of the central Jensen polynomials — **proven, GORZ 2019**
   (arXiv:1902.07321), and a density-1 subset for every `d` via the Hermite asymptotic.
-- **Uniform in `d` (all base points):** `Ξ ∈ LP` ⟺ **RH** — open (FIELDS MEDAL).
+- **Uniform in `d` (all base points):** `Ξ ∈ LP` ⟺ **RH** — open.
 
 **Reading.** The carrier reproduces the Laguerre/Turán floor (`d=2`) and the GORZ band (`d≤8`, center); both
 are **archimedean-dominated / parent-provable (BRIDGE)**. The open content is the **uniform-in-`d`, all-`t`**
@@ -1365,7 +1364,7 @@ This is the `(d−1)`-dim negative-residual extreme; by Professor's divergence i
 quantity, **not** a `\max|ζ|` large-values bound (that's the harmless rank-1 positive) and **not** PSD.
 Door-2: BRIDGE iff a parent (Halász/Montgomery large-values, or Montgomery pair-correlation/GUE for the local
 near-degeneracy) controls the signed residual; native iff the support-`≤2d` joint near-resonance is essential
-(DeWitt's lane). **This is the win/lose point** and is squarely FIELDS-MEDAL-adjacent (`μ_d>−1 ∀d` ⟺ RH).
+(DeWitt's lane). **This is the win/lose point** and is squarely frontier-adjacent (`μ_d>−1 ∀d` ⟺ RH).
 
 **Flagged observation (worth understanding, maybe artifact).** `argmin_t λ_min` clusters at `t≈48.7,48.7,
 50.2,51.7` for `d=3,4,5,6` — near-constant across `d` (nearest zeros `γ_{12,13,14}≈48.0,49.8,53.0`, no
@@ -1460,7 +1459,7 @@ hopeful"; "rank-1 suppression harmless"), each corrected back to: the no-margin 
 reparametrization relocates it (additive→relative→one-sided→gap-difference) but none removes it, consistent
 with "RH = the uniform completion" (log §671). The genuine content of the carrier is **structural** (the exact
 non-tautological criterion + the kernel + the Theorem-M model + the perturbation engine), and the **wall** is
-the uniform large-values control of `Δε_l` vs `Δ_l↓0` — squarely the seam/no-margin, FIELDS-MEDAL-adjacent. I
+the uniform large-values control of `Δε_l` vs `Δ_l↓0` — squarely the seam/no-margin, frontier-adjacent. I
 will stop claiming the no-margin is tamed and treat it as the robust wall it is.
 
 ## Log (cont.)
@@ -1558,7 +1557,7 @@ sup-crux is the parent large-values quantity ⟹ **BRIDGE**. This confirms the t
 (DeWitt id=92/96, Professor id=88) **from the kernel structure** (analytic), complementing the gap-margin probe
 (numerical, `min_t g_d↓` to `~10^{-4}` at `d=8`). The carrier's value is unchanged — the exact criterion
 `λ_min(S_d)≥−1`, the kernel, the Theorem-M model, the (now Lean-ready) perturbation lemma — and the wall is
-unchanged: the uniform large-values control of `Δε_l/Δ_l`, squarely the seam/no-margin (FIELDS-MEDAL-adjacent).
+unchanged: the uniform large-values control of `Δε_l/Δ_l`, squarely the seam/no-margin (frontier-adjacent).
 
 **Honest caveats.** (i) First-order kernel only (pre-collision regime). (ii) (S2)'s "higher `i` more divergent"
 uses resonance-method extreme-value scaling, not a hard uniform theorem; the **structural ordering**
@@ -1630,3 +1629,349 @@ This is the multiplicative complement to the additive carrier — the same objec
   Chihara-Ch.III verification + numeric pre-certification (prof's caution). Mining+connection+re-direction
   grounded in the source corpus; the proof itself (chain-persistence) is the open frontier, now in the right
   coordinates.
+
+## Chain-sequence diagnostic PRE-CERTIFIED (the rh-corp redirect's flagged numeric) — Wheeler, 2026-06-19
+
+Per §1580 + worklog-professor §914–941: RH ⟺ the secular-measure Jacobi `a_n = λ_n/(b_{n−1}b_n)` is a chain
+sequence (`g_0=0`, `g_n=a_n/(1−g_{n−1})`, chain ⟺ `g_n∈[0,1) ∀n`; no-margin `a_n→¼`, `g_n→½`); `b_n,λ_n` from the
+moments `m_l=Σ_ρ u_ρ^{−l}`, `u_ρ=(ρ−½)/i` (`=γ`, REAL iff RH). The flag demanded a numeric pre-certification
+**before** any claim — executed (`computations/2026-06-19-wheeler-chain-sequence-precert.py/.out`, Chebyshev
+moment→recurrence algorithm, `dps=50`, `N=80` zeros). **Three findings:**
+
+1. **Algorithm validated** (sanity: a positive measure on `(0,1)` gives `g_n∈[0,1)`, `a_n→¼`).
+2. **RH-side certified.** With real `γ` (RH true), `g_n` is **real and in `[0,1)`**, hovering near **½**
+   (`0.36–0.49` for `n≤8`), and `a_n` near **¼** (`0.21–0.42`). So the secular chain sits exactly at the
+   **no-margin / ¼ boundary** the corpus predicts (`g_n≈½`). Chain-consistent. ✓
+3. **The off-line separator works — at finite `n` — once FE-symmetry is respected (a real correction).**
+   - *Naive (wrong) model:* moving **one** zero off the line breaks the functional equation, making the moments
+     **complex** ⟹ `g_n` trivially complex. A real signal, but not the genuine test.
+   - *Correct model (FE-symmetric quadruple `{½±β±iγ}`):* the moments **stay real** (conjugate+negation
+     cancellation), but the measure is **non-positive**, so `g_n` (real) **EXITS `[0,1)` at finite `n`**:
+     `β=0.2` → `g_3=1.44` (`a_4=−2.06<0`); `β=2.0` → `g_2=−0.10`, `g_3=1.21`. The chain criterion **fails**, and
+     **earlier for deeper off-line zeros** — detection at small finite `n`, confirming worklog §941's DH test.
+
+**Verdict (pre-certification PASSED).** The chain-sequence diagnostic is **real and finite-`n` falsifiable**:
+on the line `g_n∈[0,1)` at the `½` no-margin edge; an FE-symmetric off-line zero forces `g_n` out of `[0,1)` (and
+`a_n<0`) at small finite `n`. This validates the **multiplicative chain coordinate** as the right one (the
+additive margin race, by contrast, was RH-blind / a large-values race, §1334). **Honest scope:** this uses the
+*zeros* (a validation / pre-cert), not the *prime-explicit* moments `m_k` (the proof input via the cumulant
+ladder + PNT/Mertens) — and it certifies the diagnostic at finite `n`, not the **infinite-`n` persistence**
+(the genuine `(b)` wall). What is now de-risked: the coordinate is correct, the no-margin is the `g_n=½`/`a_n=¼`
+boundary, and off-line detection is finite-`n` — so the chain-persistence target (`{a_n}` prime-explicit stays a
+chain ∀`n`, via the Wall–Chihara series on `e_n=a_n−¼`) is posed in a numerically-validated coordinate.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **PRE-CERTIFIED the chain-sequence diagnostic** (the rh-corp redirect's flagged
+  numeric). Chebyshev moment→Jacobi on `m_l=Σ u_ρ^{−l}`, `dps=50`, `N=80`. (1) algorithm validated (sanity);
+  (2) RH-side: `g_n∈[0,1)` near `½`, `a_n` near `¼` — the no-margin boundary; (3) off-line separator works at
+  finite `n` **once FE-symmetry is respected** (self-caught flaw: single-zero off-line → complex moments,
+  trivial; the FE-symmetric quadruple `{½±β±iγ}` keeps moments real and makes `g_n` exit `[0,1)` at `n=2–3`,
+  `a_n<0`, earlier for deeper β). Validates the multiplicative chain coordinate as RH-bearing and finite-`n`
+  falsifiable. Uses zeros (validation), not prime-explicit `m_k` (proof input); infinite-`n` persistence remains
+  the wall — now in a certified coordinate. Archived `computations/2026-06-19-wheeler-chain-sequence-precert.*`.
+
+## The chain-persistence criterion, DERIVED (parabolic discrete-Riccati near g=½) — Wheeler, 2026-06-19
+
+The flag said *do not recall the Wall–Chihara constant* — so I derive the near-`¼` persistence criterion from the
+minimal-parameter map itself. RH ⟺ `J_μ⪰0` ⟺ `a_n` chain ⟺ `g_n<1 ∀n`, `g_n=a_n/(1−g_{n−1})`, `g_0=0` (worklog
+§920). Write `a_n=¼+e_n` (`e_n` prime-explicit via the cumulant moments).
+
+**The fixed point is PARABOLIC.** `g=a/(1−g)` at `a=¼` solves `g(1−g)=¼ ⟺ (g−½)²=0` — a **degenerate** (double)
+fixed point `g*=½`. So the no-margin is not a hyperbolic edge but a **parabolic** one; persistence is governed by
+the *accumulated* perturbation, not a pointwise bound (this is exactly why "`a_n≤¼` pointwise" is the wrong
+reading — a chain sequence may exceed `¼`).
+
+**Exact baseline (`e_n≡0`).** `g_n = n/(2(n+1))` (check: `g_1=¼, g_2=⅓, g_3=⅜, g_4=⅖,…→½⁻`), so with `h_n:=g_n−½`,
+> `h̄_n = −1/(2(n+1))` — the maximal constant chain approaches `½` **from below** like `−1/(2n)`, never reaching
+> `1`. (Confirms `a_n≡¼` is a chain; `g_n→½`.)
+
+**Exact perturbed recursion.** From `(½−h_{n−1})(½+h_n)=¼+e_n`:
+> `h_n = (h_{n−1}+2e_n)/(1−2h_{n−1})`  (a Möbius/discrete-Riccati map; quadratic `2h_{n−1}²` on expansion — the
+> destabilizing term of the parabolic point).
+
+**Linearization around `h̄_n` (`h_n=h̄_n+δ_n`).** With `D=1−2h̄_{n−1}=(n+1)/n`, to first order
+`δ_n = δ_{n−1}·[1/D+2h̄_{n−1}/D²] + 2e_n/D = δ_{n−1}·\dfrac{n²}{(n+1)²} + \dfrac{2n}{n+1}e_n`. The homogeneous
+factor telescopes, `∏_{k≤n}k²/(k+1)² = (n+1)^{−2}`, so by variation of parameters
+> `δ_n = \dfrac{1}{(n+1)²}\,\sum_{j\le n} 2\,j(j+1)\,e_j \;\approx\; \dfrac{2}{n²}\sum_{j\le n} j²\,e_j.`
+
+**The criterion (derived).** The linearization holds while `|δ_n| ≲ |h̄_n| = 1/(2(n+1))`; the parabolic blow-up
+(`h_n` crosses `0` ⟹ the dropped `2h²` drives `g_n→1`, chain fails) triggers exactly when `δ_n` overtakes `−h̄_n`:
+> **`\displaystyle \sum_{j\le n} j(j+1)\,e_j \;<\; \frac{n+1}{4}` for all `n`  ⟺  the chain persists  ⟺  `J_μ⪰0`  ⟺  RH**
+> (linearized form; `e_j=a_j−¼` prime-explicit; weight `j(j+1)≈j²`, boundary `(n+1)/4≈n/4`).
+
+This is the **explicit form of the Wall–Chihara/Hellinger–Wall series** the corpus flagged — **derived**, not
+recalled: weight `j(j+1)`, threshold `(n+1)/4`, from the parabolic fixed point. Sanity: `e_j≡0` ⟹ sum `=0<n/4`
+∀`n` ⟹ persists (the maximal chain) ✓.
+
+**Honest grade.** The derivation (parabolic fixed point, exact baseline `g_n=n/(2(n+1))`, exact Riccati,
+linearization → weight `j(j+1)`, threshold `(n+1)/4`) is exact algebra, **verifiable by re-checking** (the
+baseline is confirmed by hand). The **RH-equivalence** routes through the classical chain⟺`J_μ⪰0`⟺secular-measure
+positivity (worklog §920, BRIDGE). **What remains the wall:** evaluating `Σ_{j≤n}j(j+1)e_j` on the
+**prime-explicit** `e_j` (cumulant moments `m_k=Σγ^{−2k}` via the explicit-formula ladder + PNT/Mertens) and
+proving it stays `<(n+1)/4` ∀`n` — the genuine `(b)` persistence target, now with an **explicit weighted-series
+boundary** instead of an abstract "chain condition." Verification needs high-precision cumulants (Professor's
+id=405 ill-conditioning caveat applies — the noisy zero-based `a_n` at `n>6` were conditioning, not signal).
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **DERIVED the chain-persistence criterion** (instead of recalling the Wall constant).
+  The minimal-parameter map has a **parabolic** fixed point `g=½` at `a=¼` (`(g−½)²=0`); exact baseline
+  `a_n≡¼ ⟹ g_n=n/(2(n+1))`, `h̄_n=−1/(2(n+1))` (→½ from below); exact Riccati `h_n=(h_{n−1}+2e_n)/(1−2h_{n−1})`;
+  linearization → homogeneous `(n+1)^{−2}`, `δ_n=(n+1)^{−2}Σ_{j≤n}2j(j+1)e_j`. Parabolic blow-up at
+  `Σ_{j≤n}j(j+1)e_j=(n+1)/4`, giving the **explicit Wall–Chihara series**: RH ⟺ `Σ_{j≤n}j(j+1)e_j<(n+1)/4 ∀n`
+  (weight `j(j+1)`, boundary `(n+1)/4`, `e_j=a_j−¼` prime-explicit). Sanity `e≡0` ✓. Derivation is exact algebra
+  (baseline hand-verified); RH-equivalence via classical chain⟺`J_μ⪰0` (BRIDGE). Wall: evaluate the weighted
+  series on prime-explicit cumulants (PNT/Mertens) — needs high-precision cumulants (id=405 caveat). The abstract
+  "chain persistence" is now a concrete weighted-series boundary problem.
+
+## The no-margin IS the discrete Hardy/Chihara oscillation constant ¼; chain ⟺ Li-positivity (FE-symmetric σ_k) — Wheeler, 2026-06-19
+
+Two upgrades fold the derived chain-boundary into established prime-explicit machinery.
+
+**(A) FE-symmetric moments (Professor id=409).** The right secular moments are not bare `Σγ^{−2k}` but the
+FE-symmetric **secondary sums** `σ_k := Σ_ρ (ρ(1−ρ))^{−k} = Σ_γ (¼+γ²)^{−k}` — i.e. the secular measure has atoms
+at `x_ρ = 1/(ρ(1−ρ)) = 1/(¼+γ²)`, invariant under `ρ↔1−ρ` (matching the `a_n≡¼` baseline), manifestly positive
+on the line, and better-conditioned (the `¼` offset). These are exactly the **Keiper–Li secondary sums**; the Li
+coefficients `λ_n^{Li}=Σ_ρ[1−(1−1/ρ)^n]` are ℚ-polynomials in the `σ_k`, and **RH ⟺ `λ_n^{Li}≥0 ∀n`** (Li's
+criterion). So the derived chain-boundary (`J_μ⪰0 ⟺ a_n` chain, worklog §920) is a **Jacobi / Wall–Chihara
+repackaging of Li-positivity** — RH-equivalent, inside the established Keiper `σ_k` machinery (Keiper's `σ_k`
+recursion = the cumulant→Jacobi map, sidestepping a from-scratch Stieltjes algorithm). *Not a shortcut:*
+Li-positivity is the transverse/curvature regime (Professor's `phase-cancellation-crux`), the genuine RH content.
+
+**(B) The no-margin = the discrete oscillation constant ¼.** Apply the derived criterion
+(`Σ_{j≤n}j(j+1)e_j<(n+1)/4`) to the soft-edge rate `e_n=a_n−¼ ~ λ/n²`:
+`Σ_{j≤n} j(j+1)(λ/j²) ≈ λ Σ_{j≤n}(1+1/j) ≈ λ·n < (n+1)/4 ⟺ ` **`λ ≤ ¼`**. So the chain persists (RH) ⟺ the
+**subleading coefficient `λ` of `e_n ~ λ/n²` is `≤ ¼`** — the **discrete Hardy/Chihara oscillation constant**
+(`a_n=¼+λ/n²` is a chain sequence iff `λ≤¼`). My parabolic-Riccati derivation **independently reproduces the
+classical `¼` threshold** (a check: built only from the parabolic fixed point, it yields the textbook constant).
+RH is the **marginal/critical** case (`a_n→¼`, the maximal chain); the RH-bearing quantity is `λ` vs `¼`.
+
+**(C) `λ` is set by the secular measure's edge — prime-explicit.** The atoms `x_ρ=1/(¼+γ²)` accumulate at `0`
+with density fixed by `N(T)~(T/2π)log(T/2π)`: near `x=0`, `dμ ~ const·x^{−3/2}|log x| dx` (from `γ=x^{−1/2}`,
+`dN/dγ~(1/2π)logγ`). The recurrence's `1/n²` coefficient `λ` is an edge/density functional of `μ`, hence
+**prime-explicit** (the `σ_k` via Keiper / the explicit formula). **RH ⟺ this prime-explicit `λ ≤ ¼`.**
+
+**The situated chain of equivalences.**
+`RH ⟺ Li-positivity (λ_n^{Li}≥0) ⟺ J_μ⪰0 ⟺ {a_n} chain (g_n<1) ⟺ Σ_{j≤n}j(j+1)e_j<(n+1)/4 ∀n ⟺ [e_n~λ/n², λ≤¼]`.
+The boundary is **explicit (`¼`)** and the handle **prime-explicit (Keiper `σ_k`)**; the wall is computing/bounding
+the prime-explicit `λ`. Honest: RH-equivalent throughout (not a crossing); the oscillation-constant form is the
+sharpest concrete target, and the FE-symmetric `σ_k` is the well-conditioned coordinate.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **oscillation-constant reframing + Li-positivity situating (with Professor id=409).**
+  (A) Adopted the FE-symmetric secular moments `σ_k=Σ(¼+γ²)^{−k}` (Keiper–Li); the chain-boundary is a
+  Jacobi/Wall–Chihara repackaging of **Li-positivity** (`λ_n^{Li}≥0`), in established prime-explicit machinery.
+  (B) The derived `Σj(j+1)e_j<(n+1)/4`, on `e_n~λ/n²`, gives `λ≤¼` — the **discrete Hardy/Chihara oscillation
+  constant**, reproduced independently by the parabolic-Riccati derivation. RH = the marginal case; RH-bearing
+  quantity = `λ` vs `¼`. (C) `λ` is the prime-explicit edge functional of `μ` (atoms `1/(¼+γ²)` accumulate at 0
+  with density `~x^{−3/2}|log x|`). Re-running the chain numerics in the better-conditioned `σ_k` coordinate to
+  estimate `λ` (`computations/2026-06-19-wheeler-chain-oscillation-constant.*`). Grep-confirmed novel reframing;
+  RH-equivalent (not a crossing); sharpest concrete target = prime-explicit `λ≤¼`.
+
+### λ-estimate numeric (FE-symmetric σ_k coordinate) — result, honest
+
+`computations/2026-06-19-wheeler-chain-oscillation-constant.out` (dps=60, N=120, Chebyshev). Two findings:
+- **Criterion holds on the reliable range.** `Σ_{j≤n}j(j+1)e_j` vs `(n+1)/4`, ratio for `n=1..6`:
+  `0.69, 0.81, 0.39, −0.04, 0.06, 0.04` — all `< 1` ⟹ `Σj(j+1)e_j < (n+1)/4` ⟹ chain-consistent (RH). ✓
+- **`e_n` SIGN-OSCILLATES** (`+.17,+.04,−.018,−.022,+.005,−.0007,…`), so `n²·e_n` does NOT converge to a clean `λ`
+  — the naive `e_n~λ/n²` is too smooth; the **zero fluctuations** (GUE/pair-correlation) add an oscillatory part.
+  The oscillation constant `¼` governs the **smooth/average** part; the criterion must (and on `n≤6` does) hold
+  **including** the fluctuations. `n≥7` is conditioning noise (Chebyshev instability; Professor id=405 caveat).
+
+**Refinement (honest).** RH ⟺ `λ_smooth ≤ ¼` is the *average*-part statement; the full criterion
+`Σj(j+1)e_j<(n+1)/4 ∀n` carries the fluctuations too, and is the exact target. Pinning `λ_smooth` and bounding
+the fluctuation sum need the **prime-explicit `σ_k`** (Keiper, well-conditioned) + a stabler-than-Chebyshev
+recurrence map — the next step (Professor id=409 offered the first ~20 prime-explicit `σ_k` as a cross-check).
+
+## A leap (per @user id=408): the oscillation constant ¼ IS the Hardy constant — RH as edge sub-criticality, log-improved — Wheeler, 2026-06-19
+
+Not a deduction — a transfer from a distant domain, then tested. The discrete chain oscillation constant `¼`
+(`a_n=¼+λ/n²` chain ⟺ `λ≤¼`) is the **same object** as the continuous **Hardy inequality constant**:
+`∫_0^∞|y'|²dx ≥ ¼∫_0^∞|y|²/x²dx` (sharp, never attained). This is not a numerical coincidence — it is the
+**established chain-sequence ↔ inverse-square/Bessel correspondence**: the chain recurrence `a_n→¼` is the
+discretization of the Bessel/inverse-square operator `H_g = −d²/dx² + g/x²`, whose bounded-below /
+non-oscillation threshold is the Hardy coupling `g = −¼`, and the discrete `λ≤¼` is its Kneser-oscillation
+discretization. So:
+
+> **Conjecture (HP as Hardy sub-criticality).** The secular measure `μ` (atoms `1/(¼+γ²)`, FE-symmetric `σ_k`)
+> has a Krein/string operator `H_μ` whose **edge** behaves as an inverse-square operator with coupling `g_μ`
+> fixed by `μ`'s edge density. **RH ⟺ `H_μ` is Hardy-SUB-critical at the edge (`g_μ ≥ −¼`, equivalently the
+> oscillation constant `λ_smooth ≤ ¼`).** This is Hilbert–Pólya recast **not** as "self-adjoint with
+> eigenvalues = zeros" but as **edge sub-criticality / a positivity** — the constraint-not-flow reading
+> (a bound, not a generated spectrum), and it is the operator face of Li-positivity.
+
+**Why this is more than a ¼-relabel (the specific, testable content).** The secular edge density I derived is
+`dμ ~ const·x^{−3/2}|log x| dx` (from `N(T)~(T/2π)log(T/2π)`). The bare power `x^{−3/2}` sits at the inverse-square
+scaling, and the `|log x|` factor puts the edge operator **exactly in the regime of the LOG-IMPROVED Hardy
+inequality** `∫|y'|² − ¼∫|y/x|² ≥ \tfrac14∫\dfrac{|y|²}{x²(\log x)²}dx` (Hardy–Rellich with logarithmic remainder).
+So the RH-bearing deficit `¼ − λ_smooth` is conjecturally the **log-Hardy remainder functional** of `μ`'s edge —
+a positive quantity with a specific (`1/(x²\log²x)`) form *matched to the zero-counting log*. That match (log in
+the density ↔ log in the improved-Hardy remainder) is non-generic — it is what distinguishes this from a generic
+inverse-square reframing.
+
+**Door-2 honesty.** RH-equivalent (it routes through the chain↔inverse-square correspondence and Li-positivity,
+both BRIDGE) — **a kinship, not yet a crossing.** Its value is the **toolkit**: the improved/remainder Hardy
+inequalities (Brezis–Vázquez, Filippas–Tertikas log-Rellich) become applicable to the edge deficit, which the
+additive/variance tools were blind to. **Test (what would refute or advance it):** compute `g_μ` (the edge
+coupling) from the `σ_k` — if `g_μ` is forced `≥ −¼` by the log-Hardy remainder being a *positive* prime-explicit
+functional, that is a genuine handle; if the remainder can be negative, the leap dies. The coupling/remainder
+computation is the next step (needs the prime-explicit `σ_k`, with Professor).
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **a grounded leap (per @user id=408): oscillation constant ¼ = Hardy constant.** Via
+  the established chain↔inverse-square/Bessel correspondence, the chain criterion `λ_smooth≤¼` is the edge
+  **Hardy sub-criticality** (`g_μ≥−¼`) of the secular Krein/string operator `H_μ` — Hilbert–Pólya recast as a
+  **positivity/sub-criticality**, not a self-adjoint spectrum (constraint-not-flow; the operator face of
+  Li-positivity). Specific (non-relabel) content: the edge density `x^{−3/2}|log x|` matches the **LOG-improved
+  Hardy** regime, so the deficit `¼−λ_smooth` is conjecturally the log-Hardy remainder functional of `μ`'s edge
+  (log-in-density ↔ log-in-remainder, non-generic). Door-2: RH-equivalent (kinship, not crossing); value = the
+  improved-Hardy toolkit, newly applicable. Test: compute the edge coupling `g_μ` from prime-explicit `σ_k`
+  (with Professor) — positive log-Hardy remainder ⟹ handle; negative ⟹ refuted.
+
+## CORRECTION (testing my own leaps against reality, per @user id=408): the asymptotic ¼/edge-coupling is AUTOMATIC — RH is the FINITE-n persistence — Wheeler, 2026-06-19
+
+Mining my own error (the koan's discipline). My previous two sections read RH as `λ_smooth≤¼` (oscillation
+constant) and as "edge Hardy-sub-criticality." **Both conflate an automatic backdrop with the RH content.**
+
+**The error, precisely.** By Chihara's *forward* direction, the recurrence of **any** real positive measure on a
+bounded set is **always** a chain sequence with `a_n→¼` and `g_n∈[0,1) ∀n`. So:
+- `a_n→¼` (the oscillation constant `¼`) — **automatic**, holds for every positive measure;
+- `λ_smooth≤¼` (the asymptotic subleading) — **automatic** (it is the chain property of a real measure);
+- the smooth edge coupling (the Bessel order from the `x^{−3/2}|log x|` density → formal `g≈α²−¼≈2`,
+  sub-critical) — **automatic**, fixed by the zero *density* (the same smooth count on or off the line).
+
+**None of these is RH.** RH is whether the **prime-explicit** `σ_k` (real, FE-symmetric, agnostic to where the
+zeros sit) are the moments of a **positive** measure — i.e. **Li-positivity `λ_n^{Li}≥0` at every FINITE `n`** —
+equivalently the chain does **not fail at any finite `n`**. An off-line zero keeps `σ_k` real but breaks
+positivity, so the chain **fails at finite `n`** (my FE-symmetric separator: `g_n` exits `[0,1)` at `n=2,3`).
+The RH content lives in the **finite-`n` fluctuation failures**, NOT the `n→∞` constant.
+
+**What survives, what is demoted.**
+- **Survives (correct):** the **derived finite-`n` family** `Σ_{j≤n} j(j+1)e_j < (n+1)/4 ∀n` (the linearized
+  chain persistence). This IS the right RH-equivalent — one condition per finite `n` = Li-positivity per order.
+  And the FE-symmetric `σ_k` / Keiper machinery, and the off-line separator (the genuine finite-`n` diagnostic).
+- **Demoted to structural backdrop (NOT the criterion):** the oscillation constant `¼`, the `λ_smooth≤¼`
+  asymptotic, and the Hardy/inverse-square edge sub-criticality. They are real structural features (the chain's
+  asymptotic sits at the maximal-chain edge; the operator is inverse-square) but **automatic for any positive
+  measure** — they describe the *backdrop*, not the RH-bearing fluctuations. The "no-margin = ¼" is the generic
+  backdrop, not where ζ's RH-content sits.
+
+**Corrected target (sharper).** RH ⟺ Li-positivity = the **infinite family of finite-`n` conditions**
+`Σ_{j≤n}j(j+1)e_j<(n+1)/4` on the prime-explicit `σ_k` — the **fluctuation control at each finite order**, not an
+asymptotic constant. The Hardy leap's residual value is narrow: improved-Hardy *remainder* tools might bound the
+finite-`n` fluctuation sum (not the automatic asymptotic) — re-aimed accordingly. This correction prevents the
+lane (and me) from chasing the automatic `¼` as if it were RH.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **CORRECTION (mined my own error, per @user id=408 / test-against-reality).** The
+  oscillation-constant `λ_smooth≤¼` and the Hardy edge-sub-criticality are **automatic for any positive measure**
+  (Chihara forward: a real positive measure's recurrence is always a chain, `a_n→¼`) — so they are **backdrop,
+  NOT the RH criterion.** RH is the **finite-`n` chain persistence** (Li-positivity `λ_n≥0 ∀ finite n`), which the
+  FE-symmetric off-line separator tests (`g_n` exits at `n=2,3`). What survives: the derived finite-`n` family
+  `Σ_{j≤n}j(j+1)e_j<(n+1)/4 ∀n` (= Li-positivity per order) on the prime-explicit `σ_k`; the asymptotic
+  `¼`/edge-coupling is demoted to structural backdrop. Hardy tools re-aimed at the finite-`n` fluctuation sum.
+  Honest self-correction; sharpens the target to finite-`n` fluctuation control, not an asymptotic constant.
+
+## CONVERGENCE: the smooth/fluctuation split IS Bombieri–Lagarias; the criterion in split form — Wheeler (with DeWitt id=418, Professor id=419), 2026-06-19
+
+DeWitt + Professor placed my smooth/fluctuation split exactly onto the **standard Bombieri–Lagarias
+decomposition** of the Keiper–Li coefficients, `λ_n = λ_n^{arch} + λ_n^{prime}`:
+- **`λ_smooth` (my automatic `¼`-baseline) `= σ_k^{arch} = λ_n^{arch}`** — the explicit **Γ-factor / trivial-zeros**
+  term (closed form in `γ_E, logπ, log2, ζ(2k)`), driven by the Riemann–Siegel `θ`, `θ'(t)=(1/2π)log(t/2π)` —
+  which **is** the `|log x|` of my edge density `~x^{−3/2}|log x|`. No zeros needed. This is *why* the asymptotic
+  `¼`/oscillation constant is automatic (my correction): it is the archimedean baseline.
+- **My fluctuation (`e_n` sign-oscillation) `= σ_k^{prime} = λ_n^{prime} = S(T)`** — the nontrivial-zero part.
+  This is the RH-bearing wall.
+
+**The criterion, in split form.** Writing `e_j = e_j^{arch} + e_j^{prime}` (from `σ_k = σ_k^{arch}+σ_k^{prime}`),
+the derived finite-`n` family `Σ_{j≤n}j(j+1)e_j<(n+1)/4` becomes
+> **RH ⟺ `Σ_{j≤n} j(j+1)\,e_j^{prime} < s(n) := (n+1)/4 − Σ_{j≤n} j(j+1)\,e_j^{arch}` for all `n`** —
+> the **prime fluctuation** weighted sum stays below the **explicit archimedean slack** `s(n)`.
+
+`s(n)` is computable in closed form from `σ_k^{arch}` (DeWitt is computing it). So the wall is cleanly isolated:
+bound the `S(T)`/prime-fluctuation weighted sum `Σ j(j+1)e_j^{prime}` against the explicit `s(n)`. The first read:
+the **sign and growth of `s(n)`** — how much slack the archimedean `¼`-baseline leaves for the prime fluctuation.
+
+**Honest grade.** RH-equivalent (this is the chain/Wall–Chihara coordinate of Bombieri–Lagarias / Li-positivity;
+all BRIDGE) — situated, not a crossing. Value: (i) the split is now in established machinery (Bombieri–Lagarias),
+so the lane is no longer a parallel invention; (ii) the explicit archimedean slack `s(n)` + my weight `j(j+1)`
+give a concrete inequality for the prime fluctuation, the genuine `S(T)` wall. Next: DeWitt's `σ_k^{arch}` →
+compute `s(n)` → read its sign/growth → bound `Σ j(j+1)e_j^{prime}` (the `S(T)` content).
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **CONVERGENCE (DeWitt id=418, Professor id=419): my split = Bombieri–Lagarias
+  `λ_n=λ_n^{arch}+λ_n^{prime}`.** `λ_smooth`=`σ_k^{arch}`=`λ_n^{arch}` (explicit Γ/θ trivial-zeros term, the
+  `|log x|=θ'` edge — confirms the asymptotic is automatic/archimedean); fluctuation=`σ_k^{prime}`=`λ_n^{prime}`
+  =`S(T)` (the wall). Sharpened the criterion to **split form: RH ⟺ `Σj(j+1)e_j^{prime} < s(n):=(n+1)/4 −
+  Σj(j+1)e_j^{arch}` ∀n** (prime fluctuation below the explicit archimedean slack). DeWitt computing `σ_k^{arch}`
+  (→ `e_j^{arch}`, `s(n)` closed form); Professor auditing row-010 `P_k↔λ_n` Newton/Keiper transform. RH-equiv
+  (situated in Bombieri–Lagarias, not a crossing); the genuine wall is now the explicit inequality for the
+  `S(T)`/prime fluctuation vs `s(n)`.
+
+## CORRECTION 2: the arch/prime split is LINEAR (λ_n / Bombieri–Lagarias), the chain is NONLINEAR — the chain split-form is withdrawn — Wheeler, 2026-06-19
+
+Stress-testing my own previous section (koan discipline). The split-form criterion
+`Σ_{j≤n}j(j+1)e_j^{prime}<s(n)` assumed the chain `e_j` decomposes **linearly** as `e_j^{arch}+e_j^{prime}` along
+`σ_k=σ_k^{arch}+σ_k^{prime}`. **That is invalid.** The Chebyshev moment→Jacobi map is **nonlinear** (rational):
+`α_0=m_1/m_0`, `β_1=m_2/m_0−(m_1/m_0)²`, … — so `a_j=a_j(σ_1,…,σ_{2j})` is a rational function of the moments,
+and `σ=σ^{arch}+σ^{prime}` does **NOT** give `a_j=a_j^{arch}+a_j^{prime}`. The chain does not inherit the additive
+split. **The split-form chain criterion is withdrawn.**
+
+**What is exact (use this coordinate for the split).** The Bombieri–Lagarias split is **linear**: the Keiper–Li
+`λ_n=Σ_k c_{n,k}σ_k` is a *linear* form in the moments, so `λ_n=λ_n^{arch}+λ_n^{prime}` is exact, and
+> **RH ⟺ `λ_n^{prime} ≥ −λ_n^{arch}` for all `n`** (standard Bombieri–Lagarias),
+with `λ_n^{arch}` the explicit Γ-factor/trivial-zeros term (DeWitt's `σ_k^{arch}` fed through the *linear*
+Keiper transform — **not** the nonlinear chain) and `λ_n^{prime}` the `S(T)` fluctuation. **This** is where the
+arch/prime separation is clean and the explicit archimedean baseline `−λ_n^{arch}` is the handle.
+
+**What survives (two distinct valid RH-equivalents — do not merge them).**
+1. **Linear λ_n / Bombieri–Lagarias** (`λ_n^{prime}≥−λ_n^{arch}`): exact additive arch/prime split; the right
+   coordinate for DeWitt's explicit subtraction.
+2. **Chain / Wall–Chihara** (`Σj(j+1)e_j<(n+1)/4`, the parabolic-Riccati form): a separate valid RH-equivalent
+   (Li-positivity ⟺ chain persistence), but **nonlinear** in the moments — it does **not** carry the additive
+   split. Its value is the parabolic-edge geometry, not an arch/prime decomposition.
+
+My error was applying the *linear* BL split to the *nonlinear* chain. The convergence insight (smooth content is
+archimedean Γ/θ; fluctuation is prime `S(T)`) is correct; only its expression in the chain coordinate was wrong.
+**Actionable target unchanged in substance:** bound the prime fluctuation against the explicit archimedean
+baseline — but in the **linear λ_n coordinate** (`λ_n^{prime}≥−λ_n^{arch}`), where DeWitt's `λ_n^{arch}` applies.
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **CORRECTION 2 (mined my own error again): the chain does not split linearly.** The
+  Chebyshev moment→Jacobi map is nonlinear (`β_1=m_2/m_0−(m_1/m_0)²`), so `σ=σ^{arch}+σ^{prime}` does NOT give
+  `e_j=e_j^{arch}+e_j^{prime}` — **the split-form chain criterion (prev section) is withdrawn.** The arch/prime
+  split is exact only in the **linear** `λ_n` coordinate: **RH ⟺ `λ_n^{prime}≥−λ_n^{arch}` ∀n** (standard
+  Bombieri–Lagarias), with DeWitt's explicit `λ_n^{arch}` the handle. Two distinct RH-equivalents stand
+  separately — linear BL (carries the split) and the nonlinear chain/Wall–Chihara (parabolic geometry, no
+  split). The convergence insight (smooth=archimedean, fluctuation=prime `S(T)`) is correct; only its chain-coord
+  expression was wrong. Target: `λ_n^{prime}≥−λ_n^{arch}` in the linear coordinate.
+
+## HONEST TERMINUS of the chain/power-sum lane (DeWitt id=425) — converges to standard Bombieri–Lagarias — Wheeler, 2026-06-19
+
+DeWitt's decisive catch, accepted: the power-sum chain is **not** the right coordinate for the arch/prime
+subtraction.
+- **`σ_k=Σ(¼+γ²)^{−k}` is `γ_1`-dominated** at large `k` (`~2(¼+γ_1²)^{−k}`, `γ_1≈14`), so the chain's smooth
+  moment behavior is set by the **first zero / the seam**, NOT by the archimedean Γ-factor. There is **no
+  archimedean smooth baseline** to subtract in the power-sum normalization.
+- **The power-sum arch/prime split is seam-blocked** (Γ and ζ entangle at `s=0,1` — the F₁ archimedean seam
+  itself, structural not bookkeeping; DeWitt's two attempts gave `1.86` and `−0.31`, both wrong for this reason).
+- The clean B-L archimedean baseline exists **only in the LI `λ_n` coordinate** (`λ_n=Σ[1−(1−1/ρ)^n]`), a
+  **different linear transform** than the power-sums — i.e. standard Bombieri–Lagarias, not this chain.
+
+**Verdict.** Combined with the two prior self-corrections (the asymptotic `¼` is automatic; the nonlinear chain
+does not split linearly), this lane's honest terminus is: **the power-sum chain / Wall–Chihara reformulation is
+a VALID RH-equivalent (Li-positivity ⟺ chain persistence) that converges to standard Li/Bombieri–Lagarias with
+NO archimedean-baseline advantage.** It is a kinship, not a crossing. The **one distinct, correct residue** is
+the **parabolic-edge geometry** (§ "chain-persistence criterion, DERIVED": the no-margin is a parabolic fixed
+point `g=½`, `(g−½)²=0`; the threshold `¼` is the discrete Hardy/Chihara oscillation constant) — banked as that,
+a clean structural fact, nothing more. The archimedean-subtraction / split-form lines are **withdrawn**. The
+actionable RH target is the **standard B-L `λ_n^{prime} ≥ −λ_n^{arch}`** in the Li coordinate (DeWitt/Professor's
+lane), where the archimedean baseline is genuinely explicit. **Chain lane closed; do not re-extend it.**
+
+## Log (cont.)
+- 2026-06-19 (Wheeler) — **HONEST TERMINUS (DeWitt id=425): chain/power-sum lane closed, converges to standard
+  B-L.** Power-sums `σ_k` are `γ_1`-dominated (no archimedean baseline in this normalization) and the split is
+  seam-blocked (Γ/ζ entangle at `s=0,1`); the clean B-L baseline is the Li `λ_n` (different transform). Dropped
+  the archimedean-subtraction/split-form idea. Net (with the two prior corrections): the chain is a valid
+  RH-equivalent (Li-positivity ⟺ chain) with **no archimedean advantage** — kinship, not crossing. Distinct
+  residue banked = the **parabolic-edge geometry** (no-margin = parabolic `g=½`; `¼` = discrete Hardy constant).
+  Actionable target = standard B-L `λ_n^{prime}≥−λ_n^{arch}` (Li coordinate, DeWitt/Professor). Lane closed.

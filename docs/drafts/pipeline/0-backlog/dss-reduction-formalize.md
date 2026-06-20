@@ -3,7 +3,6 @@
 - **ID:** dss-reduction-formalize
 - **Stage:** 0-backlog
 - **Type:** THEOREM (Lean) target — statement-level (Props)
-- **Priority:** FOUNDATIONAL
 - **Source:** ../../door/G2-multi-q-siegel-shidlovsky.md (open core / work package), ../../door/bucket-ledger-footholds.md · 00-status rows #10, #11
 - **Statement:** State in Lean (`FieldConjectures`, as `Prop`s — never `axiom`/`theorem`, the two-channel
   rule) (i) the reduction `DSS ⟺ {π} ∪ {ζ(odd)} ∪ {Stieltjes γ_n}` algebraically independent, and (ii)

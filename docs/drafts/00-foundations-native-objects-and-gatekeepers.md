@@ -45,8 +45,13 @@ proven.
   **weld** (archimedean×prime), not either lane alone. (Hölder 1887 = Source A alone = the differential
   Galois border; `door/bucket-archimedean-generator.md`.)
 - **N2 — The multi-`q` connection.** The compatibility data of the `{σ_p}` (the cocycle / curvature
-  `F_{pq}`). **Flat (integrable) ⟺ holonomic; non-flat ⟺ non-holonomic.** This is the geometric face of
-  N1.
+  `F_{pq}`). The prime dilations are **curvature-flat** (`F_{pq}=0`, commuting `σ_p`); holonomicity is
+  instead the finite-rank / finite-corank condition. Arithmetic is curvature-flat but infinite-rank
+  (`corank=∞`), hence non-holonomic by rank, not by nonzero curvature. In finite dimensions the two notions
+  coincide; in the infinite base they split. Keep three axes distinct: curvature (`F_{pq}=0`), rank/order
+  (`corank=∞`, `G_L` infinite-dimensional, Hölder-style function hypertranscendence), and
+  value-transcendence/DSS (`γ_n` beyond the regular base, the open F₁/GROUP→VALUES lift); flatness controls
+  neither rank nor values by itself.
 - **N3 — The native invariants.** The difference Galois group `G_L` (of the Picard–Vessiot extension),
   the corank `corank(Λ)` of its relation lattice, the difference-transcendence degree, and the holonomy
   type.
@@ -64,8 +69,9 @@ Each is one line, with why it would be native and where it is developed.
 - **G2 — Multi-`q` Siegel–Shidlovsky (the native problem).** The transcendence degree of the zeros over
   the period field equals the dimension of the `G_L`-orbit; `G_L` is infinite-dimensional, so the zeros
   are independent (DSS). The native transcendence engine. → `door/G2-multi-q-siegel-shidlovsky.md`.
-- **G3 — The holonomy dichotomy.** An infinite-base system is **holonomic ⟺ `corank(Λ) < ∞` ⟺ its
-  connection is flat**; arithmetic is the `corank = ∞`, non-integrable extreme. Makes `corank` a native
+- **G3 — The holonomy dichotomy.** An infinite-base system is **holonomic ⟺ `corank(Λ) < ∞` ⟺
+  integrable to finite rank**; arithmetic is the curvature-flat but `corank = ∞` non-integrable extreme.
+  This is the rank/order layer only; DSS value-transcendence remains separate in G2. Makes `corank` a native
   invariant. → `door/G3-holonomy-dichotomy.md`.
 - **G4 — The multi-`q` Picard–Vessiot correspondence (autonomy).** A Galois correspondence for
   infinite-base multi-`q` modules: intermediate extensions ↔ closed subgroups of `G_L`, with existence

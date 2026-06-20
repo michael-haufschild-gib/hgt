@@ -1,7 +1,7 @@
 # The Γ-module M_∞ — the archimedean Euler factor as a rank-1 polynomial-multiplier difference module
 
 - **ID:** gamma-module-construction
-- **Stage:** 0-backlog-lean
+- **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / CONSTRUCTION — Door grade **BRIDGE** (Source A alone; the weld is where it turns native)
 - **Priority:** FOUNDATIONAL (the Source-A object of the completed constraint module `M_Λ=M_∞⊗M_ζ`)
 - **Source:** the Hölder-recentering (Source A = Γ; `00-foundations` N1⁺); `#90 §64` (`Γ_ℝ(s+2)=(s/2π)Γ_ℝ(s)`,
@@ -61,8 +61,12 @@ diagonal section; the FE `Λ(s)=Λ(1−s)` acts on it. `M_∞` is the rigorous a
 - [x] 1 → 2 fully-proven: recurrence (multiplier `s/2π`) and connection (digamma) **proved + verified ≥30
   digits**; `Γ_ℝ` = **inverse** ζ-reg det via **Lerch** (`det_ζ(N+s/2)=√2π/Γ(s/2)`; import, verified ≥35
   digits); `M_Λ=M_∞⊗M_ζ` diagonal `=Λ`; `F_q` degeneration. Grade BRIDGE (Source A alone).
-- [ ] 2 → 3 formalized: the multiplier `a(s)=s/2π` (rank-1 recurrence) is a clean Lean fragment; the Lerch
-  inverse-ζ-reg-det `Γ(a)·exp(−ζ_H'(0,a))=√2π` is an import (flag for the Lean gate). Tier-A candidate.
+- [ ] 2 → 3 formalized: Lean anchors **DONE** for the scalar Gamma recurrence and connection compatibility:
+  `gammaReal_shift_two`, `digamma_half_add_one`, and `gammaRealLogConnection_shift_compat` in
+  `formal/GaloisForLFunctions/ArchimedeanGamma.lean`, with split certificate
+  `../3-formalized/archimedean-gamma-shift-connection.md`. Remaining Lean targets are the full rank-one
+  `(σ∞, ∂s)` module packaging, the Lerch inverse-ζ-reg-det import
+  `Γ(a)·exp(−ζ_H'(0,a))=√2π`, and the completed object `M_Λ`.
 - [ ] 3 → 4 publication-ready: "the archimedean Euler factor as a polynomial-multiplier difference module."
 
 ## Cross-references
@@ -100,3 +104,12 @@ ladder `Γ(a)·det_ζ(N+a)=√2π` (DeWitt #347/#357). Verified ≥35 digits inc
 (`computations/2026-06-19-gamma-module-invdet.py`: det−reciprocal ≤8e−36, Γ·det−√2π ≤2e−40). Re-banked to
 `2-fully-proven`. Grade BRIDGE (Source A alone) unchanged. Downstream (`lambda-…`, `archimedean-prime-cross-term`)
 should read M_∞'s determinant as **inverse** ζ-det where they cite it.
+
+## Lean certification update — 2026-06-19 (Leaner)
+
+The scalar recurrence/connection part of Result (1)-(2) is already Lean-backed by
+`../3-formalized/archimedean-gamma-shift-connection.md`: `gammaReal_shift_two`,
+`digamma_half_add_one`, and `gammaRealLogConnection_shift_compat` are in
+`formal/GaloisForLFunctions/ArchimedeanGamma.lean` and audited in `scripts/check_axioms.sh`.
+The parent ticket remains in `2-fully-proven` because the full rank-one module construction,
+Lerch inverse determinant import, and completed-object wiring are not formalized as Lean theorems.

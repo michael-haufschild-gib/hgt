@@ -3,7 +3,6 @@
 - **ID:** padic-frobenii-missing-f1
 - **Stage:** 0-backlog (a posed attack-direction; the defensible core is in `../1-in-progress/relative-exponential-apex.md` §11–§12)
 - **Type:** CONJECTURE / new attack-direction on the shared value-lift apex (the missing `F₁`)
-- **Priority:** FIELDS MEDAL (it targets the DSS/value-lift apex; the carrier and recurrence facts are concrete)
 - **Owner:** Wheeler (awaiting DeWitt collision-check vs the K-kernel Stokes lane)
 - **Prior research:** **checked (grep 2026-06-19): the p-adic / crystalline / Morita / Diamond angle is ABSENT
   from the pipeline** — this is a new direction. Complements (does not duplicate): DeWitt
@@ -93,20 +92,20 @@ parts of §11–§13 with verified objects, and refines the framing:
   > relating the archimedean wild value `γ_E` (from `Γ_ℝ`) to the Diamond p-adic constants `γ_E^{(p)}` (from
   > `Γ_p`). Over `F_q` a single Frobenius glues them (value = function, `K=1`); over ℚ the `{Γ_v}` do **not**
   > glue (`F₁` absent). Concretely: does Gross–Koblitz rigidity on the finite `Γ_p` propagate to glue with the
-  > archimedean `Γ_ℝ` wild value? (Iwasawa / p-adic-Hodge tooling; FIELDS MEDAL, mine.)
+  > archimedean `Γ_ℝ` wild value? (Iwasawa / p-adic-Hodge tooling; open, mine.)
 - **What is now verified vs open.** Verified (Professor + Leaner): the per-place Source-A carriers `{Γ_v}`
   exist, `Γ_p` Source-A, finite recurrence formalized. Open (this card / the apex): the **gluing/comparison**
   (the value-lift `F₁`). The carrier is no longer conjectural — only the gluing is.
 
 So this card's status: the **carrier floor is BANKED** (Professor, 2-fully-proven); this card is now precisely
-the **gluing/comparison apex** on that floor — `F₁` = glue `{Γ_v}` (Gross–Koblitz/Iwasawa). FIELDS MEDAL, open.
+the **gluing/comparison apex** on that floor — `F₁` = glue `{Γ_v}` (Gross–Koblitz/Iwasawa). open.
 
 ## Log (cont.)
 - 2026-06-19 (Wheeler) — adopted Professor's `per-place-source-a-gamma-carriers` (verified floor) + Leaner's
   formalized Morita recurrence. Refined: per-place Source-A object = `Γ_v` (carrier, built); `Frob_p` = the
   **comparison** operator (Gross–Koblitz), not the carrier (subsumes/clarifies §13). Apex sharpened: **`F₁` =
   the arithmetic gluing of `{Γ_v}`** (period comparison `γ_E` ↔ `γ_E^{(p)}`); carrier banked, only the gluing
-  open. Convergent with Professor's independent §13-correction. FIELDS MEDAL apex, mine.
+  open. Convergent with Professor's independent §13-correction. open apex, mine.
 
 ## Update 2 (2026-06-19) — the carriers glue via the EPSILON factor; F₁ = its derivative-extension `[sharpening + correction]`
 
@@ -128,7 +127,7 @@ This is sharper and more accurate: the apex is **not** "no gluing exists" — a 
 value level, classical) and the `F₁` is its **derivative-extension** to the wild constants. Reframes the
 A2 apex as a *derivative-of-the-root-number* question.
 
-- **Door:** the `ε` value-gluing is BRIDGE (Tate); the derivative-extension is the FIELDS-MEDAL apex.
+- **Door:** the `ε` value-gluing is BRIDGE (Tate); the derivative-extension is the open apex.
 - **Complement:** DeWitt's `omega-rh-coupling` uses the root number on the **RH/spectral** axis (automorphy
   factor / spectral flow, support-log §195/§304); this is its **transcendence-carrier** face (`Γ_v`-gluing).
   Same object (`ε`), two axes — consistent with the two-apex picture.
@@ -140,4 +139,4 @@ A2 apex as a *derivative-of-the-root-number* question.
   Corrected "carriers don't glue" → the `Γ_v`-VALUES glue classically via `ε=∏ε_v` (Gross–Koblitz: `Γ_p↔`Gauss
   sums`=ε_p`; `Γ_ℝ↔ε_∞`); what's missing is extending `ε`-gluing to the LOG-DERIVATIVES `γ_E` (= §12C's
   Gross–Koblitz-propagation, the wild apex). Reframes the A2 apex as a derivative-of-the-root-number question;
-  same `ε` as DeWitt's RH-axis use, transcendence face. BRIDGE value-gluing; FIELDS-MEDAL derivative-extension.
+  same `ε` as DeWitt's RH-axis use, transcendence face. BRIDGE value-gluing; open derivative-extension.

@@ -3,7 +3,6 @@
 - **ID:** moonshot-dbn-cosmological-constant-wdw
 - **Stage:** 0-backlog
 - **Type:** MOONSHOT CONJECTURE (wild; ~10% true; far beyond SOTA)
-- **Priority:** FIELDS MEDAL (+)
 - **Source:** user directive 2026-06-19 (wild moonshots; "Think Wheeler–DeWitt Superspace", CLAUDE.md); the
   constraint-not-flow theorem (#138, `ĤΨ=0`), the dBN flow `Λ_t` (Rodgers–Tao `Λ_dBN≥0`), the time/WDW bucket.
 - **The wild claim.** `Λ_dBN` (the de Bruijn–Newman constant) is the **cosmological constant** of the emergent
@@ -50,3 +49,33 @@
 - 2026-06-19 — Professor: filed as a moonshot (user directive). `Λ_dBN` = the cosmological constant of the
   emergent WDW universe of the prime constraint; RH = flat/critical (`Λ=0`); `Λ_dBN>0` = de Sitter; `Λ_dBN≥0`
   (Rodgers–Tao) = no-AdS energy condition; dBN time = emergent cosmic time. The WDW steer made cosmological.
+
+## R09 finding (2026-06-20, novelty loop) — the "Λ-not-time" dimensional adjudication `[BRIDGE substrate, D2]`
+
+Dimensional analysis splits this moonshot into a dimensionally-TRUE half and a dimensionally-FALSE half.
+
+**Dilation-weight lemma.** `∂_t H_t = −∂_z² H_t`, so the dBN generator `−∂_z²` is homogeneous of degree −2
+under `z↦λz`; the heat equation is invariant iff `t↦λ²t`. Thus `t_dBN` carries **archimedean-`∂_s`-weight 2 =
+twice the weight of the spectral height z** (which has weight 1, an energy). Lean-formalizable (parabolic
+scaling of the heat equation).
+
+**Adjudication (HP/Berry–Keating `[z]=[E]`, `ℏ=c=1`).** `[t_dBN]=[E²]=[length]^{−2}=[Λ_cosmo]`, while
+`[cosmic time]=[E]^{−1}`. Hence:
+- ✅ **"`Λ_dBN` = cosmological constant" is dimensionally EXACT** (sign dictionary intact: RH ⟺ `Λ_dBN=0` ⟺
+  flat; `Λ_dBN>0` ⟺ de Sitter; Rodgers–Tao `Λ_dBN≥0` ⟺ no-AdS energy condition). `Λ_dBN∈[0,0.22]` (Polymath15)
+  ⟹ a **small-positive-Λ, nearly-flat** arithmetic cosmology; the cosmological-constant problem **becomes RH**.
+- ❌ **"dBN heat-time `t` = emergent cosmic time" is dimensionally FALSE** (wrong by `∂_s`-weight 3). The
+  moonshot as written is internally self-contradictory: `t` cannot be a time while `Λ_dBN` (a value of `t`) is
+  a cosmological constant.
+
+**Repair.** The dBN axis is the **running cosmological constant Λ(t)** (a curvature/RG deformation, NOT
+evolution). Emergent cosmic time is the orthogonal weight-(−1) flow — the unique canonical one in the field:
+the **Tomita/Connes–Rovelli modular flow of the type-III₁ KMS state** (`dewitt-supermetric-no-margin` Finding
+5 / rh-corp critic:1735). Two orthogonal axes: dBN = Λ-axis, modular = time-axis; consistent with
+constraint-not-flow (#138). The no-margin lane (`λ_min→0`, Rodgers–Tao `Λ≥0`) = the physical universe pinned
+to the **de Sitter→flat boundary** `Λ_dBN=0⁺`; "no margin" = "cosmological constant at its critical value with
+no buffer." Full derivation + self-judgment (prior ~28, significance ~32, proof ~65) in
+`logs/2026-06-20-novelty-generation-loop.md` Round 09.
+
+**Forward lead:** the modular⊥dBN pair defines a genuine 2D emergent metric whose (real, 2D) scalar curvature
+— unlike the 1D Fisher metric — is computable; test whether THAT curvature is the true emergent Λ.

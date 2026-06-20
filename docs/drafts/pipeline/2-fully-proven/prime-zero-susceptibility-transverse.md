@@ -160,3 +160,18 @@ finite `m`**. So the **FE-balance ⟺ RH** characterization holds for every zero
 Verified: `computations/2026-06-19-prime-zero-susceptibility-multiplicity.py` (double-zero split ratio `1.00000`,
 `n∈{2,3,5}`). Lean-ready: the `m=1` implicit-function lemma + the `(1−2β)/m` exponent (the `m≥2` case is
 Weierstrass-prep/Puiseux, formalizable separately). Card returned to `2-fully-proven`. Door BRIDGE unchanged.
+
+## Lean anchor update — 2026-06-19 (Leaner)
+
+Formalized the algebraic mirror-frequency balance step in Lean:
+`formal/GaloisForLFunctions/SusceptibilityBalance.lean` proves
+`susceptibilityExponent_zero_iff` and
+`susceptibilityMirrorFrequencyFactor_eq_one_forall_iff`, i.e. for finite
+multiplicity `m ≠ 0`, the exponent `(1 - 2 beta) / m` vanishes iff
+`beta = 1/2`, and the factor `n^((1 - 2 beta) / m)` is identically `1` for
+all real probe frequencies `n > 1` iff `beta = 1/2`.
+
+Split certificate: `../3-formalized/susceptibility-mirror-frequency-balance.md`.
+The parent ticket remains in `2-fully-proven`: the implicit-function/Puiseux
+zero-splitting, zeta functional-equation leading-coefficient match, and
+curvature-hierarchy identification still require additional Lean infrastructure.
