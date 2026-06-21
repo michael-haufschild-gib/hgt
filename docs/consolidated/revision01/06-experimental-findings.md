@@ -136,6 +136,39 @@ random-phase surrogate, and the `σ>1` collapse control.
   `0.057→0.014` with `u` and `~10⁻⁵` with the on-line `p_d`. RH-sensitivity lives in a **new** direction at
   the off-line atom's coordinate, *not* the always-cancelled pole `u` — so Part A (pole cancellation, RH-
   independent) and Part B (the RH-sensitive off-line direction) act on essentially orthogonal subspaces.
+- **`[fused four-way split: even-ζ protects the residual, β/Catalan cancels it, prime closes the gap]`**
+  `[verified, d=4..8]`: splitting zero-side `S_k` into `POLE=2^{2k+1}`, `ZETA=−½(2^{2k}−1)ζ(2k)`,
+  `BETA=−2^{2k−1}β(2k)`, `PRIME=(−1)^kT_k−`(arch) and evaluating on the genuine residual direction
+  (`λ_min` of `H_d^(0)|_{u^⊥}`, `p(−4)=0` ⟹ `Q_pole→0` `~10⁻¹³⁴`): the even-`ζ` term is the **sole positive**
+  contributor, the **β/Catalan term nearly cancels it** (`d=6`: `Q_ζ=+5.201·10⁻⁵`, `Q_β=−5.201·10⁻⁵`), and the
+  **prime is sub-dominant** (`Q_prime=−1.7·10⁻⁹`, matching only the arch-even net `Q_ζ+Q_β`). Two-stage cascade:
+  `ζ`-vs-`β`(Catalan) at `10⁻⁵` → arch-even surplus `10⁻⁹` → prime cancels it → `λ_min~10⁻³³`. So the residual
+  delicacy is **arch-even (`ζ`-vs-Catalan), prime as closing correction** — distinct from the *pole* direction
+  `p_d≈0.97u`, where the four are in clean ratio `POLE:ZETA:BETA:PRIME=−4:1:1:2` and the prime is dominant.
+  (Arch closed form cross-checked to polygamma at `1e-121`; four pieces sum to `λ_min`.)
+- **`[Q_ζ+Q_β is positive-definite — the ζ-vs-β opposition is a residue-class artifact]`** `[verified d=4,6,8]`:
+  `inertia(H^{ζ+β}) = (d+1,0)` (PD), and `Q_ζ+Q_β = 4p(−4)² + R_d^A[p]` (cross-checked `1e-81`) — the pole-square
+  plus the trivial-zero budget. The `ζ`/`β` halves are that one PD object split by character mod 4 (`β=L(·,χ₄)`),
+  individually large and oppositely signed but summing PD. So the apparent "`ζ`-vs-`β` battlefield" is not real;
+  the sole RH content is `Q_prime` vs `R_d^A`, and it is tight (prime saturates the budget).
+- **`[character (mod 4) decomposition is the wrong representation — route demoted]`** `[evaluated, d=4,6,8]`:
+  splitting the budget by Dirichlet character mod 4 gives `inertia(H^ζ)=(d+1,0)` (PD, all-odd-integer principal
+  sector) but `inertia(H^β)=`indefinite (`≈(d−1,⌈d/2⌉)`, stable `min`-eig `≈−0.226`); the `χ₄=L(·,χ₄)` sector is
+  genuinely indefinite. Since the `1`-mod-`4` residue-class budget is PD only as a *positive measure*, the
+  character split breaks manifest positivity (PD-principal must dominate an indefinite `χ₄`). Positivity lives in
+  the measure cone, not the character basis ⟹ the proof must use square test functions over the actual divisor,
+  not a Dirichlet decomposition. (Hurwitz identities `ζ(2k,¼)±ζ(2k,¾)` and `ZETA=−2^{2k−1}Σ_{odd}m^{−2k}` verified.)
+- **`[the prime/arch-budget relation is ONE-sided, not a sandwich]`** `[verified d=4,6,8]`: testing `|Q_prime|≤
+  Q_ζ+Q_β`, the lower side `H^{ζβ}+H^prime⪰0` holds (`min`-eig `+7.8·10⁻³³`, = the bridge/RH side) but the upper
+  side `H^{ζβ}−H^prime` is **not** PSD (`min`-eig `−5.2·10⁻¹¹`, stable). So `Q_prime` can *overshoot* the arch
+  budget on the positive side; only the one-sided `Q_prime≥−(Q_ζ+Q_β)` (= RH, tight) is the content — the prime
+  is not two-sided-bounded by the budget. (`H^prime` itself is indefinite, inertia `(2,3)/(2,5)/(3,6)`.)
+- **`[FID has none of the arch/pole/β structure — RH lives in the structure, not the numerics]`** `[verified d≤8]`:
+  the RH-empty integer divisor `H_FID=[ζ(2(i+j)+3)]` is **strictly PD** `(d+1,0)` for all `d`, and `Q_FID[u]`
+  (`u_i=(−4)^i`) is **positive** (`+4.2·10⁴→+2.7·10⁹`) — no `s=1` pole, no `−uuᵀ` direction, no `(d,1)`. So the
+  entire arch/pole/trivial-zero/`β`/`χ₄` structure is **zero-divisor (completed-ζ) specific**, absent from FID.
+  FID shares only the hard-edge *conditioning* (the earlier calibration), none of the *structure* — confirming the
+  RH content is structural, not numerical.
 - **`[Q_0 obstruction is broad / auto-deflating]`** `[verified, d=6]`: the most-dangerous polynomial (`λ_min`
   eigenvector of `H_d^(0)`) is the degree-`d` orthogonal polynomial with roots exactly on the dominant atoms
   `y_1..y_5` (auto-deflation — why explicit deflation fails), and its residual mass is mid-range (atoms

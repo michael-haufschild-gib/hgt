@@ -1,0 +1,23 @@
+# sign transfer, N=250, d=10, gamma0=20.0, dps=170 (cache 300@170)
+## C: off-line crossing -- how many eigenvalues of G_d go negative?
+#  beta     #neg eig   two smallest eigenvalues of G_d
+    0.0     0       7.1488e-50  ,  1.8183e-34
+   0.02     1       -5.3953e-34  ,  4.4977e-48
+   0.05     1       -1.0154e-32  ,  3.4413e-48
+    0.1     1       -4.2778e-24  ,  3.3303e-48
+    0.2     1       -2.4339e-21  ,  3.3041e-48
+    0.4     1       -9.4228e-8  ,  3.2987e-48
+## D: Cholesky pivots of G_d (beta=0) vs per-step margin ratios gamma_n^-exp
+#  n   pivot              gamma_n     log(pivot)/log(1/gamma_n)
+   0       0.154396    14.135    -
+   1    0.000118197    21.022    2.969
+   2       2.534e-7    25.011    4.718
+   3    7.69021e-10    30.425    6.145
+   4     4.0444e-12    32.935    7.507
+   5    3.83186e-14    37.586    8.518
+   6    3.56376e-16    40.919    9.584
+   7    3.50214e-18    43.327    10.66
+   8    6.30396e-20    48.005    11.42
+   9    1.40747e-21    49.774    12.29
+  10    3.10921e-23     52.97    13.06
+EXIT=0

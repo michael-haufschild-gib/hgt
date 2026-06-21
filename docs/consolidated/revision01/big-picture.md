@@ -108,7 +108,14 @@ These are not rival theories; they are complementary projections of one object.
    object at all — it is the **value/arithmetic apex (Conjecture A)**, and none has been found. This
    unifies the two-apex picture at the **divisor**: its **geometry** (positions as a set → source
    confinement) is the positivity/bridge axis; its **arithmetic** (relations among the positions) is the
-   value axis.
+   value axis. *Quantitative confirmation `[verified]`:* PSLQ relation searches on the seam moments
+   `S_k = 2Σγ_n^{−2k}` against `{π^{2k}, β(2k)}` separate **only** arithmetic simplicity, not `ζ`-arithmetic
+   — the arithmetic-progression divisor (`γ_n=n`, `S_k=2ζ(2k)∈ℚ(π)`) is detected at the Bernoulli heights
+   `3,45,945,4725,93555`, while `ζ`, **same-density random**, and jittered-`ζ` zeros are **all
+   indistinguishable** (no relation in `ℚ(π,β)`; the prime part of `S_k(ζ)` obstructs). So an `S_k`-only
+   detector sees genericity-vs-simplicity, not the zeta arithmetic; the genuine `A`-axis detector must use the
+   prime-side explicit-formula data (which separates only tautologically), and its non-tautological core is
+   Schanuel-for-prime-logs (Conjecture A, open).
 
 2. **The carrier's status is resolved (deflationary): it is not a native-hypertranscendence detector.**
    The decisive adversary the carrier would need — a functional-equation-exact, zero-exact,

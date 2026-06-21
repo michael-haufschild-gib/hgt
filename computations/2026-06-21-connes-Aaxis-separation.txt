@@ -1,0 +1,26 @@
+# A-axis separation, N=5, dps=80 (cache 300@170)
+## zeta
+   k=1: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=2: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=3: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=4: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=5: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+## AP(integer n)
+   k=1: pslq[S_k,pi^2k]=      ht=3   pslq[S_k,pi^2k,beta]=ht=3
+   k=2: pslq[S_k,pi^2k]=     ht=45   pslq[S_k,pi^2k,beta]=ht=45
+   k=3: pslq[S_k,pi^2k]=    ht=945   pslq[S_k,pi^2k,beta]=ht=945
+   k=4: pslq[S_k,pi^2k]=   ht=4725   pslq[S_k,pi^2k,beta]=ht=4725
+   k=5: pslq[S_k,pi^2k]=  ht=93555   pslq[S_k,pi^2k,beta]=ht=93555
+## random(same-density)
+   k=1: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=2: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=3: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=4: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=5: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+## jittered-zeta
+   k=1: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=2: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=3: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=4: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+   k=5: pslq[S_k,pi^2k]=      none   pslq[S_k,pi^2k,beta]=none
+EXIT=0

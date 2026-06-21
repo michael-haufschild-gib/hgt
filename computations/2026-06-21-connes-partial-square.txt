@@ -1,0 +1,18 @@
+# partial square identity, N=200, d=4, dps=120 (cache 300@170)
+inertia(H^0)            = (5,0)  min=3.333e-26   (PD under RH)
+inertia(M^A=mu_triv)    = (5,0)  min=7.823e-15   (PD: positive measure)
+inertia(R^P prime resid)= (1,4)  min=-0.2565 max=3.038e-8   <-- obstruction shape
+# on dangerous residual dir: Q_0=1.0242e-19  mu_triv-square=2.5447e-6  R^P=-2.5447e-6
+#   (Q_0 = mu_triv-square + R^P; R^P nearly cancels the positive trivial-zero square)
+# partial square identity, N=200, d=6, dps=120 (cache 300@170)
+inertia(H^0)            = (7,0)  min=1.027e-39   (PD under RH)
+inertia(M^A=mu_triv)    = (7,0)  min=2.71e-24   (PD: positive measure)
+inertia(R^P prime resid)= (2,5)  min=-0.2565 max=3.038e-8   <-- obstruction shape
+# on dangerous residual dir: Q_0=7.8065e-33  mu_triv-square=1.717e-9  R^P=-1.717e-9
+#   (Q_0 = mu_triv-square + R^P; R^P nearly cancels the positive trivial-zero square)
+# partial square identity, N=200, d=8, dps=120 (cache 300@170)
+inertia(H^0)            = (9,0)  min=6.262e-54   (PD under RH)
+inertia(M^A=mu_triv)    = (9,0)  min=9.289e-35   (PD: positive measure)
+inertia(R^P prime resid)= (2,7)  min=-0.2565 max=3.038e-8   <-- obstruction shape
+# on dangerous residual dir: Q_0=7.2053e-47  mu_triv-square=1.1467e-12  R^P=-1.1467e-12
+#   (Q_0 = mu_triv-square + R^P; R^P nearly cancels the positive trivial-zero square)

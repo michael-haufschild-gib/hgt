@@ -108,7 +108,42 @@ and the observation that falsifies it.
     yet renormalizing its infinite zeroth moment to `0` leaves `[[0,1],[1,1]]`, determinant `−1` (not
     PSD). So the bridge cannot proceed by "cancel the `s=1` pole, then test PSD" — it must establish
     positivity **directly in the shifted `k≥1` moment space** (square test functions), consistent with
-    the `T_0=∞` exclusion in §3.
+    the `T_0=∞` exclusion in §3. *Form-level no-go (sharper):* with `H^A=I−2uuᵀ`, `H^P=2uuᵀ−3I` the poles
+    cancel yet `H^A+H^P=−2I≺0`, so pole cancellation `⇏` positivity at the quadratic-form level; and since
+    `H_d^0=R_d^A+R_d^P` is *already* pole-free (`H^A=R^A−2uuᵀ`, `H^P=+2uuᵀ+R^P`), there is **no** reduced
+    residual: the correct pole-quotient is the Schur complement `Schur_u(H_d^0)`, and `Schur_u⪰0 ⟺ H_d^0⪰0`.
+    So `R_d:=H_d^0` and `R_d⪰0` *is* the `Q_0` wall, not a reduction of it.
+  - *The `ζ`-vs-`β` opposition is a residue-class artifact, not a battlefield. `[verified d=4,6,8]`* In the fused
+    split `Q_arch=Q_pole+Q_ζ+Q_β`, the pair `Q_ζ+Q_β` is **positive-definite** (inertia `(d+1,0)`, `= 4p(−4)²+
+    R_d^A`); the `ζ`/`β` halves are `R_d^A`(+pole square) split by character mod 4 (`β=L(·,χ₄)`), individually
+    signed but summing PD. So the only RH content is `Q_prime` vs `R_d^A` (the named `u^⊥` inequality above), and
+    it is **tight** (the prime saturates the budget to `~24` digits on the worst residual direction; no soft bound
+    `Q_prime≥−(1−ε)R_d^A` survives). *Candidate proof shapes for the tight residual (proof must be exact):*
+    (1) a **square identity** `R_d[p]=∫|𝒦_p|²dμ`; (2) a **positive transfer** integer/prime-side→zero-side (not
+    FID, which is RH-empty); (3) a **Weil-form pullback** — a test function `h_p` with `Q_0[p]=Q_W[h_p]` and the
+    completed explicit formula giving `Q_W[h_p]≥0`; (4) a **source-built index** `Q_ξ` with `neg(Q_ξ)=#`off-line
+    pairs, then `Q_ξ⪰0`.
+  - *Square identity (cand. 1), pushed: it is only PARTIAL from source `[DERIVED + verified d=4,6,8]`.* A full
+    `Q_0[p]=∫|p|²dμ` (`μ≥0`) is RH. But `R_d^A=∫|p|²dμ_triv` (`μ_triv=Σ_{j≥1}(2j+½)^{−2}δ_{y_j}`, an explicit
+    **positive** measure, `M^A` verified PD), so the proved split gives `Q_0[p]=∫|p|²dμ_triv + R^P[p]` — an explicit
+    positive-measure square **plus** the prime residual `R^P:=H_d^0−M^A`, which carries all RH content. `R^P` is
+    **high-rank and predominantly negative** (inertia `(1,4)/(2,5)/(2,7)` at `d=4/6/8`, only `1–2` tiny-positive
+    modes, stable `min`-eig `≈−0.2565`) — *not* a low-rank correction. And for polynomial tests `R^P` is fixed by
+    the explicit formula (nontrivial- minus trivial-zero moments): the prime side supplies **no second positive
+    measure**, so the square cannot be completed from source without `μ_0≥0` (= RH). The honest target is a measure
+    /transfer proof that the (small, hard-edge) trivial-zero square `M^A` dominates the full-dimensional negative
+    `R^P` everywhere — exactly, per the tightness.
+  - *The `χ₄`/character-decomposition route is DEMOTED `[evaluated, d=4,6,8]`.* `β=L(2k,χ₄)` and the arch budget is
+    the quarter-integer Hurwitz tower `S_k^A=2^{2k+1}−2^{−2k}ζ(2k,¼)`, whose mod-4 split is principal `ζ` (all odd
+    integers) `+` `χ₄` `β` (`ζ(2k,¼)±ζ(2k,¾)`). But character decomposition **breaks** the manifest positivity:
+    `inertia(H^ζ)=(d+1,0)` (PD, the all-odd-integer budget) while `inertia(H^β)=`indefinite (`≈(d−1,⌈d/2⌉)`, stable
+    `min`-eig `≈−0.226`); their sum (the `1`-mod-`4` residue-class budget) is PD only because it is a *positive
+    measure*. So splitting by character turns "a positive measure has a PSD Hankel" (trivial) into "a PD principal
+    sector dominates an indefinite `χ₄` sector" (harder). **Positivity lives in the residue-class measure cone, not
+    the character/spectral basis** — the Dirichlet split is a dual operation that does not respect the
+    positive-measure cone. Mild salvage: the regrouping `Q_0^{res}=Q_ζ(all-odd PD) + (Q_β+Q_prime)` is cleaner than
+    `ζ`-vs-`β`, but still RH-equivalent and tight. So the proof must stay in the **measure/support** representation
+    (square test functions over the actual divisor), not a character basis.
   - *Quantifier reduction (forward coordinate). `[THEOREM]`* "`D₂(R)=0` for **every** admissible window"
     is equivalent to "`D₂(R)=0` on a **countable basis of rational rectangles** whose boundaries avoid
     zeros": for a discrete divisor, any off-seam zero's atomic mass `m_ρ(β−½)²>0` is isolated by such a

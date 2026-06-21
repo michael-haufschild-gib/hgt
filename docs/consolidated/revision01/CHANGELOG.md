@@ -762,3 +762,178 @@ in-doc history logs; read before editing.
 - STATUS: Part A (archimedean rank-one / form-level entireness) is now CLOSED. The entire RH content is Part B
   — the residual inequality ∀p with p(−4)=0: Q_prime[p] + Σ_{j≥1}(2j+½)^{−2}p(−(2j+½)^{−2})² ≥ 0.
 - Upgraded markers to [PROVED, all d]: bridge-theorem §5b, formula 184, 08 §2 route (d).
+
+### 46. Fused four-way split of p_d: even-ζ protects the residual, β/Catalan cancels it, prime closes the gap
+- Decomposed the dangerous direction's Q_0 by the fused seam formula into POLE=2^{2k+1}, ZETA=−½(2^{2k}−1)ζ(2k),
+  BETA=−2^{2k−1}β(2k), PRIME=(−1)^kT_k−(arch). (Corrected an earlier note: the ζ/β arch form is NOT
+  mis-transcribed — it is the orbit (−½) normalization, = ½ the all-ρ polygamma S_k^A; both verified to 1e-121.)
+- On the genuine residual direction (λ_min of H_0|u^⊥, p(−4)=0 ⟹ Q_pole→0 ~10⁻¹³⁴), for every d∈{4..8}: even-ζ is
+  the SOLE positive contributor (d=6: Q_ζ=+5.201·10⁻⁵), β/Catalan is large and nearly equal-and-opposite
+  (Q_β=−5.201·10⁻⁵), prime is sub-dominant (Q_prime=−1.7·10⁻⁹, matching only the arch-even net Q_ζ+Q_β). Two-stage
+  cascade: ζ-vs-β(Catalan) at 10⁻⁵ → arch-even surplus 10⁻⁹ → prime cancels it → λ_min~10⁻³³.
+- So the residual delicacy is ARCH-EVEN (ζ-vs-Catalan), prime as a small closing correction — distinct from the
+  pole direction p_d≈0.97u, where the four are in clean ratio POLE:ZETA:BETA:PRIME=−4:1:1:2 and the prime is
+  dominant (that is the pole cancellation = Part A). This refines "prime-delicate": prime-delicacy is on the pole
+  direction; on the RH-bearing residual it is ζ-vs-β delicacy.
+- Folded: bridge-theorem §5b, 06 §II, formula 185. Script: computations/2026-06-21-connes-fused-split-pd.py.
+
+### 47. Canonical reading of the fused split: prime SATURATES the trivial-zero budget (tightness)
+- The ζ/β split is not canonical: ZETA+BETA = the proved-positive trivial-zero budget R_d^A, split by residue
+  class mod 4 (Hurwitz). The invariant statement: on the worst residual direction Q_prime=−1.72e-9 nearly
+  saturates R_d^A=+1.72e-9, sum = λ_min=+7.8e-33 (~24-digit cancellation, d=4..8). The prime consumes ~all of
+  the budget, margin ~10⁻²⁴ of it.
+- Consequence for the proof: the bridge inequality Q_prime + R_d^A ≥ 0 is TIGHT, not slack — no soft bound
+  Q_prime ≥ −(1−ε)R_d^A with fixed ε>0 holds; the proof must be exact/equality-grade, not order-of-magnitude.
+  Folded: bridge-theorem §5b.
+
+### 48. Incorporated gpt/proof3 + gpt/31; verified Q_ζ+Q_β is PD (the "ζ-vs-β battlefield" is an artifact)
+- proof3/31 ratify the session (rank-one pole, residual = the wall, fused split). Incorporated the meaningful
+  structural items: the full A/P split H^A=R^A−2uuᵀ, H^P=+2uuᵀ+R^P ⟹ H^0=R^A+R^P is pole-free, so "R_d⪰0" IS the
+  Q_0 wall (no reduction); the correct pole-quotient is the Schur complement Schur_u(H^0)⪰0 ⟺ H^0⪰0; the
+  form-level no-go (H^A=I−2uuᵀ, H^P=2uuᵀ−3I cancel poles yet sum=−2I≺0: cancellation ⇏ positivity); the four
+  candidate proof shapes (square identity / positive transfer / Weil pullback Q_0[p]=Q_W[h_p] / source-built index).
+- CORRECTED gpt/31's over-claim: the "ζ-vs-β battlefield" is not real. Verified inertia(H^{ζ+β})=(d+1,0) PD for
+  d=4,6,8 and Q_ζ+Q_β = 4p(−4)²+R_d^A (cross-check 1e-81). The ζ/β halves are one PD object split by character
+  mod 4 (β=L(·,χ₄)); only Q_prime-vs-R_d^A is RH content, and it is tight. NEW lead: a Dirichlet-character
+  (trivial vs χ₄) decomposed positivity may be the natural route.
+- Folded: bridge-theorem §5b (two paragraphs), 08 §2 (no-go sharpened + proof-shape candidates + χ₄ lead),
+  06 §II. Script: computations/2026-06-21-connes-zeta-beta-sum-psd.py.
+
+### 49. χ₄/character-decomposition lead pushed analytically — DEMOTED (positivity ≠ character basis)
+- Derived the arch budget's exact mod-4 character split (Hurwitz: ζ(2k,¼)±ζ(2k,¾) = principal-odd ζ-tower /
+  χ₄=β-tower; ZETA=−2^{2k−1}Σ_{odd}m^{−2k}, BETA=−2^{2k−1}β(2k)). Verified identities to machine precision.
+- Tested whether the character split helps positivity: inertia(H^ζ)=(d+1,0) PD (all-odd-integer principal sector),
+  but inertia(H^β)=INDEFINITE (≈(d−1,⌈d/2⌉), stable min-eig ≈−0.226) for d=4,6,8. The 1-mod-4 residue-class budget
+  is PD only as a positive measure; splitting by character breaks that manifest positivity into PD-principal +
+  indefinite-χ₄. So decomposing turns a trivial statement (positive measure ⟹ PSD Hankel) into a harder one
+  (PD sector dominates an indefinite sector).
+- VERDICT: character decomposition is the wrong representation — positivity lives in the residue-class measure
+  cone, not the character/spectral basis. The proof must stay in measure/support (square test functions over the
+  divisor). Demotes gpt/31's χ₄ "natural route." Mild salvage: regrouping Q_0^res = Q_ζ(all-odd PD)+(Q_β+Q_prime)
+  is cleaner but still RH-equivalent/tight.
+- Folded: bridge-theorem (canonical reading already notes χ₄=L), 08 §2 (lead → demoted verdict), 06 §II, formula
+  186. Script: computations/2026-06-21-connes-character-sectors.py.
+
+### 50. Square identity (08 cand.1) pushed: PARTIAL from source; the prime residual R^P is high-rank negative
+- A full square Q_0[p]=∫|p|²dμ (μ≥0) is RH (Weil/Stieltjes). But half is explicit: R_d^A=∫|p|²dμ_triv with
+  μ_triv=Σ_{j≥1}(2j+½)^{−2}δ_{y_j} the trivial-zero divisor (positive measure, M^A verified PD). So the proved
+  split gives the PARTIAL square identity Q_0[p]=∫|p|²dμ_triv + R^P[p], R^P:=H^0−M^A the prime residual.
+- NEW (the obstruction's shape): R^P is high-rank and predominantly NEGATIVE — inertia (1,4)/(2,5)/(2,7) at
+  d=4/6/8, only 1–2 tiny-positive modes (max-eig ~3e-8), stable min-eig ≈ −0.2565. Not a low-rank correction.
+  On the dangerous direction μ_triv-square=+1.7e-9 vs R^P=−1.7e-9 (the tightness, reframed).
+- For polynomial tests R^P=H^0−M^A is fixed by the explicit formula (nontrivial− trivial-zero moments): the
+  prime side gives NO independent positive measure, so the square can't be completed from source without μ_0≥0
+  (=RH). Target: a measure/transfer proof that the small hard-edge trivial-zero square M^A dominates the
+  full-dimensional negative R^P everywhere.
+- Folded: bridge-theorem §5b, 08 §2 cand.1. Script: computations/2026-06-21-connes-partial-square.py.
+
+### 51. Ran the remaining gpt/31 §8 computations (C, E); §8 now complete
+- C (does prime close the surplus / |Q_prime|≤Q_ζ+Q_β?): the relation is ONE-sided. Lower side H^{ζβ}+H^prime⪰0
+  holds (min-eig +7.8e-33, the bridge/RH side); upper side H^{ζβ}−H^prime is NOT PSD (min-eig −5.2e-11, stable
+  d=4,6,8). So Q_prime can overshoot the arch budget positively; only Q_prime≥−(Q_ζ+Q_β) (=RH, tight) is content.
+  H^prime indefinite (2,3)/(2,5)/(3,6).
+- E (compare FID): H_FID=[ζ(2(i+j)+3)] strictly PD (d+1,0) all d; Q_FID[u]>0 (+4e4→+2.7e9), no pole, no −uuᵀ,
+  no (d,1). The arch/pole/trivial-zero/β/χ₄ structure is zero-divisor-specific, absent from FID. FID shares only
+  the hard-edge conditioning, none of the structure ⟹ RH content is structural, not numerical.
+- 31 §8 status: A,B (Q_ζ+Q_β PD, §46/§48), C (here), D (character demoted, §49), E (here) — all run.
+- Folded: 06 §II (two bullets). Script: computations/2026-06-21-connes-31CE.py.
+
+### 52. The discriminant attack — det H_1 PROVED unconditional; RH localized to the d→∞ hard-edge limit
+- Used the Gram/Heine identity: det H_d = (1/(d+1)!) Σ_tuples ∏(2y_ρ) ∏_{i<j}(y_ρi−y_ρj)² (verified d=1,2 to 8
+  digits). Makes positivity manifest termwise; the ONLY negativity is a tuple with an off-line pair {y,ȳ},
+  self-term −4|y|²(Im y)²<0.
+- THEOREM [PROVED]: det H_1 = T_1T_3−T_2² > 0 unconditionally. In the reciprocal coord an off-line pair at height
+  γ₀ has Re y=(γ₀²−β'²)/|w|⁴>0, |y|≤γ₀⁻²; negative self-weight ≥−4γ₀⁻⁸ but positive cross-term with each bulk zero
+  y_n is 8y_n Re(y(y−y_n)²)>0 ~γ_n⁻⁴γ₀⁻²; cross/self ~γ₁⁻⁴γ₀⁶→∞. Numerically: deep pair γ₀=50,β'=0.25 self −2e-17
+  vs bulk cross +3.8e-10 (bulk wins 5e7×); low pair γ₀=16,β'=0.49 wins 700×.
+- LOCALIZATION: off-line points above verification height H≈3e12 have weight ≲H⁻²≈1e-25 ≪ on-line bulk
+  discriminant; so det H_d>0 unconditionally for all d ≲ H/3 ≈ 1e12 (matches injected d*≈γ₀/3). RH ⟺ bulk
+  domination survives d→∞ (infinitely many on-line zeros accumulating at hard edge y→0⁺, Vandermonde (Δy)²→0).
+  The open core is now an ASYMPTOTIC statement about on-line zero spacing near the hard edge — attackable with
+  known zero-density, not a generic positivity claim.
+- Folded: bridge-theorem §5b. Script: computations/2026-06-21-connes-discriminant-attack.py.
+
+### 53. Incorporated gpt/32; ran the relative-operator computation — λ_max(K_d)→1⁻ super-exponentially
+- gpt/32 ratifies the partial-square/31CE results and crystallizes the bridge as the ONE-SIDED Loewner
+  domination: −R^P ⪯ M_triv ⟺ λ_max(K_d)≤1, K_d=M_triv^{−1/2}(−R^P)M_triv^{−1/2}. (Named: Trivial-Zero
+  Domination Theorem.) Finalized protector/threat language: protector=μ_triv (positive measure), threat=R^P
+  (high-rank negative), RH=protector dominates threat one-sidedly. Character/ζ-vs-β framing superseded.
+- Ran §9 (the relative operator): λ_max(K_d) ↗ 1⁻ with margin 1−λ_max ≈ 2e-9,4e-19,2e-29,2e-40 at d=2,4,6,8
+  — super-exponential ~10^{−5d}≈γ₁^{−4d}; extremizing polynomial = the dangerous direction p_d (overlap 1.0,
+  0.97 u). The margin 1−λ_max(K_d) = generalized λ_min(Q_0,M_triv) = the discriminant margin (§52), so the
+  relative-operator and discriminant pictures coincide. RH = λ_max(K_d)<1 ∀d (slack stays >0 as d→∞).
+- Folded: bridge-theorem §5b. Script: computations/2026-06-21-connes-relative-operator.py.
+
+### 54. The race quantified: margin decay law + height-linear detection law ⟹ det H_d>0 unconditional to d~10^12
+- (1) on-line margin 1-lambda_max(K_d) decays super-exponentially with INCREASING rate: dlog10/dd −4.7→−6.3
+  over d=3..16 (hard-edge: each degree resolves deeper where zeros are denser).
+- (2) off-line detection threshold d*(gamma0) grows ~LINEARLY in height: d*=8,14,>16 at gamma0=20,30,45
+  (slope ~0.4 at beta=0.1), NOT in zero-count N(gamma0)~gamma0 log gamma0.
+- THEOREM (verification-conditional, but unconditional in d-range): det H_d>0 for every d ≲ 0.4·H ≈ 10^12,
+  H=RH verification height ≈3e12 — an off-line zero is above H so its detection threshold d*≳0.4H, below which
+  the lowest-(d+1)-zeros bulk discriminant strictly dominates. RH = the d→∞ tail (margin stays >0 as the hard-edge
+  cluster is fully resolved). The race is balanced by faithfulness (detection at d*≈0.4 gamma0).
+- Bankable new content: discriminant+bulk-domination mechanism, PROVED d=1 case (§52), explicit 10^12-degree
+  unconditional range, measured height-linear detection law. Folded: bridge-theorem §5b. Script:
+  computations/2026-06-21-connes-detection-law.py.
+
+### 55. gpt/33 computations: the no-margin law is a product over the zeros; K_d corner-concentrated; off-line detector
+- #1 (no-margin law): fitting 1−λ_max(K_d) to d=20 (margin ~10^{−113}), per-degree ratio ≈ γ_d^{−3.40}, exponent
+  STABLE at 3.40 ∀d ⟹ 1−λ_max(K_d) ≈ C·∏_{n=1}^d γ_n^{−3.40} (~(d!)^{−3.4}, super-exp). The slack is an explicit
+  product over the on-line zero heights — >0 factor-by-factor because each γ_n is real/finite; an off-line γ_n
+  corrupts its factor. Cleanest "RH = slack stays positive" = reality of the zeros read off the product.
+- #3 (K_d structure): in the μ_triv-orthonormal basis K_d is corner-concentrated (NOT Jacobi/Toeplitz/compact);
+  entries explode toward the deepest index (K[8,8]≈−6e4, ~4×/step), λ_max≈1 = one dominant direction at the
+  deepest hard-edge scale.
+- #7 (off-line under K_d): M_triv fixed ⟹ λ_max(K_d)>1 ⟺ off-line detected. d=10>d*(20)=8: quartet at γ0=20 pushes
+  λ_max>1 ∀β>0; d=4<d*: λ_max<1 ∀β (finite-degree blindness in operator form). K_d is the clean detector.
+- gpt/33 otherwise ratifies the discriminant + relative-operator anatomy (one-sided domination −R^P ⪯ M_triv).
+  Folded: bridge-theorem §5b. Scripts: computations/2026-06-21-connes-K-asymptotics.py, -K-offline.py.
+
+### 56. Derived the no-margin exponent: density-determined (→4), generic — RH is in the SIGN not the rate
+- Densities (derived): nu' (zeros, weight 2y_rho) ~ |log y| y^{-1/2} at 0+; mu_triv ~ |y|^{-1/2} at 0- — same
+  hard-edge class. Extremal p_d (roots on lowest zeros) ⟹ per-step margin ratio ~ y_{d+1}y_d/c² ~ gamma_d^{-4}:
+  exponent 4 from the reciprocal-square weight 2y_rho~gamma^{-2}. Measured ≈3.40 = 4 − 0.6, the 0.6 a log
+  correction from the zero density N(T)~T log T.
+- CHECK (synthetic zeros, M_triv fixed): exponent tracks the density — linear gamma_n=g1 n gives 3.36→3.50↗4;
+  sqrt gives 3.31→3.45; quad (sparse) gives 3.55→3.64; all drift toward the universal 4. So the exponent is
+  GENERIC to any reciprocal-squared hard-edge measure, not zeta-specific (deepest form of the FID lesson).
+- CONCLUSION: RH is NOT in the no-margin rate/exponent (generic); it is ONLY in whether the product prod
+  gamma_n^{-exp} stays positive = reality of the zeros, factor by factor. The rate is generic, the sign is RH.
+- Folded: bridge-theorem §5b. Scripts: computations/2026-06-21-connes-exponent-derivation.py, -exponent-synthetic.py.
+
+### 57. gpt/34 (A-axis detector menu): ran the load-bearing separation test — confirms the no-go quantitatively
+- gpt/34 is A-axis (transcendence detector), not the B/C bridge. Its menu A–J: most are tautological (D: E_k(ζ)=0
+  IS the explicit formula), Schanuel-hard (E prime-log shell minima — gpt admits open), or rank-reducible (F).
+  Ran the load-bearing core (A+B): does any S_k detector separate ζ from same-density random?
+- Result: PSLQ on S_k=2Σγ_n^{−2k} vs {π^{2k}, β(2k)} detects AP(γ_n=n, S_k=2ζ(2k)∈ℚ(π)) at Bernoulli heights
+  3,45,945,4725,93555, but ζ, same-density random, and jittered-ζ are ALL "none" (indistinguishable). So
+  S_k-only detects simplicity-vs-genericity, NOT zeta-arithmetic — confirms the established A-axis no-go
+  quantitatively. The genuine detector needs prime-side data (separates only tautologically via the explicit
+  formula); the non-tautological core is Schanuel-for-prime-logs (Conjecture A, open).
+- Folded: big-picture §1 (A-axis). Script: computations/2026-06-21-connes-Aaxis-separation.py.
+
+### 58. gpt/35 sign-transfer computations: off-line zero flips EXACTLY ONE eigenvalue; clean factorization closed
+- gpt/35 ratifies the exponent result (rate generic, sign is RH) and refocuses on sign transfer (demoting all
+  rate/asymptotics/conditioning/deflation work). Ran #C and #D.
+- #C (decisive): tracking all generalized eigenvalues of (Q_0,M_triv)=I−K_d as a zero goes off-line — at β=0
+  zero negative (λ_min=+7e-50); at β>0 EXACTLY ONE turns negative (smallest, →−9e-8), second-smallest stays
+  +3e-48. So an off-line zero flips precisely the deepest hard-edge mode: RH ⟺ λ_min(Q_0,M_triv)>0 ∀d, factor
+  by factor (single eigenvalue carries the sign).
+- #D: Cholesky pivots of I−K_d exist (PD) but exponents GROW (2.97→13.06) — they are OP-norms, NOT the γ_n^{-3.40}
+  margin factors. So gpt/35 B's clean determinant/L*L factorization does not materialize; the product law lives in
+  the λ_min spectral flow. Proof target: sign-preserving transfer keeping the single deepest eigenvalue positive.
+- Folded: bridge-theorem §5b. Script: computations/2026-06-21-connes-sign-transfer.py.
+
+### 59. gpt/36 + operator-K computations: domination is cross-scale (single-point protector); edge mode not universal
+- gpt/36 ratifies the spectral bridge (RH ⟺ λ_min(Q_0,M_triv)>0 ∀d ⟺ λ_max(K_d)≤1) and proposes the operator-K
+  proof shape: K_d = P_d K P_d^* compressions of a limiting K with K⪯I. Corner-concentration of K_d ⟹ K likely
+  NOT compact (λ_max→1 essential-spectrum-like) ⟹ proof is operator monotonicity, not a finite eigenvalue bound.
+- #4 (extremizing mode): the deepest eigenvector has NO universal hard-edge profile — rescaled to ξ=y/y_d the
+  degree-d mode gains oscillations with d; L2 distance of rescaled profiles GROWS 0.72→1.45→1.62 (d=6,8,10,12).
+  Closes the "universal edge state" route.
+- #7 (band domination): on the dangerous mode p_d, protector M_triv mass sits ENTIRELY at j=1 (coarsest trivial
+  zero |y|=0.16; j≥4 <1e-21), threat Q_0 mass at the deep hard edge (peak n*=6, y≈7e-4) — scales ~226x apart.
+  Domination is cross-scale, NOT bandwise (scale-local/dyadic proof dead). On the dangerous direction the protector
+  reduces to a single evaluation (2.5)^{-2} p(-0.16)^2 at the coarsest trivial zero.
+- Folded: bridge-theorem §5b. Scripts: computations/2026-06-21-connes-edge-mode.py, -band-domination.py.

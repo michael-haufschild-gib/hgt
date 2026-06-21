@@ -1,0 +1,26 @@
+# detection law, N=250, DMAX=16, dps=150, beta=0.1 (cache 300@170)
+## (1) on-line margin 1-lambda_max(K_d):
+   d=2: margin=1.98967e-9
+   d=3: margin=3.70699e-14  dlog10/dd=-4.73
+   d=4: margin=4.38652e-19  dlog10/dd=-4.927
+   d=5: margin=4.188e-24  dlog10/dd=-5.02
+   d=6: margin=2.01432e-29  dlog10/dd=-5.318
+   d=7: margin=5.78895e-35  dlog10/dd=-5.542
+   d=8: margin=1.84698e-40  dlog10/dd=-5.496
+   d=9: margin=4.68076e-46  dlog10/dd=-5.596
+   d=10: margin=7.87358e-52  dlog10/dd=-5.774
+   d=11: margin=1.05759e-57  dlog10/dd=-5.872
+   d=12: margin=9.34332e-64  dlog10/dd=-6.054
+   d=13: margin=9.61616e-70  dlog10/dd=-5.987
+   d=14: margin=8.68023e-76  dlog10/dd=-6.044
+   d=15: margin=4.88598e-82  dlog10/dd=-6.25
+   d=16: margin=2.44761e-88  dlog10/dd=-6.3
+## (2) detection threshold d*(gamma0)  [inject off-line quartet, find first d with lambda_min<0]:
+   gamma0=  20: d*=8      gamma0/3=6.667  N(gamma0)=1.377
+   gamma0=  30: d*=14     gamma0/3=10.0  N(gamma0)=3.565
+   gamma0=  45: d*>16     gamma0/3=15.0  N(gamma0)=7.813
+   gamma0=  60: d*>16     gamma0/3=20.0  N(gamma0)=12.87
+   gamma0=  80: d*>16     gamma0/3=26.67  N(gamma0)=20.54
+   gamma0= 110: d*>16     gamma0/3=36.67  N(gamma0)=33.48
+   gamma0= 150: d*>16     gamma0/3=50.0  N(gamma0)=52.75
+EXIT=0

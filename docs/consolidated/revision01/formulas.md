@@ -904,3 +904,14 @@ form-level archimedean weld (trivial-zero + pole decomposition):   Q_arch[p] = �
 - exhibits the sig(d,1) explicitly: positive squares over the trivial-zero divisor (y_j=−(2j+½)^{−2}, tight cluster in (−0.16,0)) minus one rank-1 square at the pole image y=−4 (coefficient −4 = y·mass), negative direction p↦p(−4)=⟨c,u⟩
 - names the arch budget: RH on u^⊥ ⟺ ∀p with p(−4)=0, Q_prime[p] + Σ_{j≥1}(2j+½)^{−2}p(−(2j+½)^{−2})² ≥ 0 — the prime form absorbed by the trivial-zero square-sum
 - PROVED all d: R_d^A ≻ 0 (a nonzero deg-d poly cannot vanish at the infinitely many distinct y_j) ⟹ at most one negative eigenvalue; uᵀH_d^A u = uᵀR_d^A u − 4(uᵀu)² < 1−4 < 0 ⟹ at least one; so inertia (d,1), single neg dir = u. Identity cross-checked Hankel-vs-decomposition to 1e-62 (computations/2026-06-21-connes-arch-trivialzero-decomp.py). Orbit normalization (−½ folded) halves to H_d^A=½Σa_n v_nv_nᵀ−2uuᵀ, a_n=4/(4n+1)²
+
+**Formula 185**
+fused four-way split of the zero-side seam power sum:   S_k = POLE_k + ZETA_k + BETA_k + PRIME_k,   POLE_k = 2^{2k+1},   ZETA_k = −½(2^{2k}−1)ζ(2k),   BETA_k = −2^{2k−1}β(2k),   PRIME_k = (−1)^k T_k − (POLE+ZETA+BETA)_k = −(2k−1)!^{−1}(ζ'/ζ)^{(2k−1)}(½)   (all-ρ; orbit normalization halves each)
+- POLE+ZETA+BETA = S_k^A (archimedean), cross-checked to the polygamma form (Formula 183/184) at 1e-121; PRIME = S_k^P (prime / log-derivative of ζ at the seam)
+- β = Dirichlet beta, β(2k) = 4^{−2k}(ζ(2k,¼)−ζ(2k,¾)) (Hurwitz); ζ(2k) even zeta value; T_k from the zero divisor
+- evaluated on the genuine residual direction (λ_min of [T_{i+j+1}]|_{u^⊥}, p(−4)=0 ⟹ Q_pole→0), d=4..8: even-ζ is the sole positive protector, β/Catalan is ~equal-and-opposite, prime is sub-dominant (matches only the arch-even net) — a two-stage ζ-vs-β cancellation closed by the prime, surviving positivity = λ_min. On the pole direction p_d≈0.97u the four are in ratio −4:1:1:2 (the pole cancellation). Script: computations/2026-06-21-connes-fused-split-pd.py
+
+**Formula 186**
+character (mod 4) decomposition of the arch budget:   S_k^A = 2^{2k+1} − 2^{−2k}ζ(2k,¼);   ζ(2k,¼)±ζ(2k,¾) = 4^{2k}(1−2^{−2k})ζ(2k) [principal, all odd] resp. 4^{2k}β(2k) [χ₄];   so ZETA_k = −2^{2k−1}Σ_{m odd}m^{−2k} (principal), BETA_k = −2^{2k−1}β(2k) (χ₄)
+- ζ(s,a) = Hurwitz zeta; the trivial-zero tower sits at the 1-mod-4 reciprocal points (|w|=(4j+1)/2); β(2k)=L(2k,χ₄), χ₄ the odd character mod 4; identities verified to machine precision
+- the residue-class (1 mod 4) budget R_d^A is PD (positive measure), but the character split is NOT termwise positive: inertia(H^ζ)=(d+1,0) PD (all-odd-integer budget) while inertia(H^β)=indefinite (≈(d−1,⌈d/2⌉), stable min eig ≈ −0.226). So decomposing by character breaks manifest positivity — positivity lives in the residue-class measure cone, not the character basis. Script: computations/2026-06-21-connes-character-sectors.py

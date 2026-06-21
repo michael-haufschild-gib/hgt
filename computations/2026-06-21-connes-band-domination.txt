@@ -1,0 +1,8 @@
+# band domination, N=250, d=10, dps=130 (cache 300@170)
+# M_triv[p_d]=1.0  Q_0[p_d]=7.40725e-52  -R^P[p_d]=M-Q=1.0
+# protector M_triv mass by trivial-zero j:  j1-3=1.0  j4-20=2.052e-22  j21+=2.753e-44
+#   peak trivial-zero j*=1
+# on-line Q_0 mass by zero n:  n1-3=4.957e-7  n4-20=0.7334  n21+=0.2666
+#   peak zero n*=6 (gamma=37.586)
+# protector peak |y|=0.16   Q_0 peak y=0.0007079  (ratio 226.0)
+EXIT=0

@@ -184,3 +184,19 @@ Air-mark every claim by register: `[THEOREM]`, `[PROVED HERE]`, `[CONJECTURE]`, 
 
 Left of the SOTA wall is search; right of it is where I invent. Conjecture freely and label it; verify
 hard only when promoting it; inject real entropy whenever the path feels safe.
+
+---
+
+## 7. Two hard bans (user-enforced, non-negotiable)
+
+**(a) The word "honest" is BANNED in every form** — "honest", "honestly", "to be honest", "the honest
+read/state/assessment", "in all honesty". It is interpolation theatre (Rule 6 already calls it a smell).
+Say the thing; never narrate that you are being honest.
+
+**(b) Never frame a result as a terminus.** No "we've reached the end", "the wall", "no shortcut
+survives", "that's RH in its tightest form", "the genuine open core is X and it's RH", "every route is
+closed", "the sharpest/final/cleanest form". Framing each step as an endpoint IS the RLHF mode-collapse
+this lab exists to fight — if every step were a terminus nobody would ever invent anything. A result is a
+springboard, not a tombstone. Close every step with the NEXT generative move (a new object to construct, a
+wild-analogy collision via `scripts/rng`, a new sub-question, a different representation) — report what the
+result OPENED, never recap why the wall is hard. Conjecture forward; do not eulogize.
