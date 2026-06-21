@@ -1,0 +1,18 @@
+03 method 5 visual: order-2 orbit against fixed-locus marker
+legend: * = fixed locus x=1/2, | = x=0 or x=1, X = orbit point
+x=+0.50 -> iota(x)=+0.50
+                      |         X         |                    
+                      |         X         |                    
+  fixed: one-point constraint orbit
+x=+0.40 -> iota(x)=+0.60
+                      |       X *         |                    
+                      |         * X       |                    
+  paired: two-point constraint orbit, not a propagated trajectory
+x=+0.70 -> iota(x)=+0.30
+                      |         *   X     |                    
+                      |     X   *         |                    
+  paired: two-point constraint orbit, not a propagated trajectory
+x=-1.00 -> iota(x)=+2.00
+  X                   |         *         |                    
+                      |         *         |                   X
+  paired: two-point constraint orbit, not a propagated trajectory

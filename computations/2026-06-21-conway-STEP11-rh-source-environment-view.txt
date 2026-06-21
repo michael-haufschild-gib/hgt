@@ -1,0 +1,23 @@
+STEP 11 METHOD 4: CHANGE THE VIEWPOINT
+Viewpoint change: source-centered non-equivalence -> neighboring-source environment explanation.
+Question: are equal-source neighborhood differences mostly predicted by nearby zero spacing, hence reducible to local source geometry?
+
+zero=03 t=25.010858 gaps=L3.9888/R5.4140 completed_mean=0.58588 neighbor_mean=0.11081 completed_ud=0.019251 neighbor_ud=0.01536
+zero=04 t=30.424876 gaps=L5.4140/R2.5102 completed_mean=0.95551 neighbor_mean=0.35855 completed_ud=0.032443 neighbor_ud=0.028311
+zero=05 t=32.935062 gaps=L2.5102/R4.6511 completed_mean=0.46565 neighbor_mean=0.15933 completed_ud=0.034449 neighbor_ud=0.030364
+zero=06 t=37.586178 gaps=L4.6511/R3.3325 completed_mean=0.83875 neighbor_mean=0.15807 completed_ud=0.029312 neighbor_ud=0.024745
+zero=07 t=40.918719 gaps=L3.3325/R2.4084 completed_mean=0.85764 neighbor_mean=0.16946 completed_ud=0.043496 neighbor_ud=0.038614
+zero=08 t=43.327073 gaps=L2.4084/R4.6781 completed_mean=0.44964 neighbor_mean=0.21481 completed_ud=0.040614 neighbor_ud=0.035532
+zero=09 t=48.005151 gaps=L4.6781/R1.7687 completed_mean=1.1987 neighbor_mean=0.45673 completed_ud=0.059651 neighbor_ud=0.053895
+zero=10 t=49.773832 gaps=L1.7687/R3.1965 completed_mean=0.42603 neighbor_mean=0.25895 completed_ud=0.064432 neighbor_ud=0.058727
+zero=11 t=52.970321 gaps=L3.1965/R3.4759 completed_mean=0.65361 neighbor_mean=0.04864 completed_ud=0.03954 neighbor_ud=0.033427
+zero=12 t=56.446248 gaps=L3.4759/R2.9008 completed_mean=0.88548 neighbor_mean=0.15066 completed_ud=0.043626 neighbor_ud=0.037127
+zero=13 t=59.347044 gaps=L2.9008/R1.4847 completed_mean=1.1265 neighbor_mean=0.2838 completed_ud=0.085304 neighbor_ud=0.077468
+zero=14 t=60.831779 gaps=L1.4847/R4.2808 completed_mean=0.14802 neighbor_mean=0.72609 completed_ud=0.080679 neighbor_ud=0.071349
+
+corr(completed_mean, neighbor_mean)=-0.17253
+corr(completed_ud, neighbor_ud)=0.99911
+corr(completed_mean, gap_intensity)=0.03489
+pairwise_distance_corr(completed_signature, neighbor_signature)=0.42238
+
+Interpretation: if correlations are high, the false missing lemma is not new RH Translation content. It says equal unit source mass does not erase the surrounding source environment, which is already the local pole/source-measure picture.

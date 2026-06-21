@@ -1,0 +1,24 @@
+STEP8 HT hidden-intermediate resolution
+STEP9 method: 3 = Reverse it
+Selected lowest-Levenshtein attempt: zero-shadow
+Reverse question: when do unresolved true zero/pole shadows make finite/smooth readout masquerade as true?
+window=[100.0,170.0] prime_count=160 fine_count=2400 coarse_count=140
+attempt distances:
+  zero-shadow: levenshtein=93 SELECTED; Treat near-zero valleys as hidden transient species and test whether finite resolution misidentifies them as smooth background wells.
+  bohr-frequency: levenshtein=102 not-selected; Treat log-prime frequencies as spectral lines and test whether finite Euler frequency peaks masquerade as a continuous analytic spectrum.
+  strip-rank: levenshtein=120 not-selected; Replace wavelength by sigma and chemical time by height t; use SVD rank resolution on continuum matrices of log(1+|Gamma_infty+P|) and phase-defect readouts.
+
+Zero-shadow resolution
+columns: sigma kind fine_q99 coarse_q99 fine_max coarse_max peak_capture finite_masquerade
+sigma=0.3 true   fine_q99=2.0576 coarse_q99=2.0407 fine_max=2.1001 coarse_max=2.0589 peak_capture=0.98037 finite_masquerade=0
+sigma=0.3 finite fine_q99=2.9127 coarse_q99=2.9546 fine_max=3.0072 coarse_max=2.999 peak_capture=0.99728 finite_masquerade=0
+sigma=0.3 true_above_finite99_frac=0 median_nearest_coarse_dt=0 miss_frac=0
+sigma=0.5 true   fine_q99=4.6834 coarse_q99=3.0417 fine_max=9.7191 coarse_max=4.793 peak_capture=0.49315 finite_masquerade=0
+sigma=0.5 finite fine_q99=1.9843 coarse_q99=1.9856 fine_max=2.0203 coarse_max=2.0116 peak_capture=0.99567 finite_masquerade=0
+sigma=0.5 true_above_finite99_frac=0.16042 median_nearest_coarse_dt=0.13855 miss_frac=0
+sigma=0.7 true   fine_q99=1.5781 coarse_q99=1.5461 fine_max=1.654 coarse_max=1.6322 peak_capture=0.98684 finite_masquerade=0
+sigma=0.7 finite fine_q99=1.3625 coarse_q99=1.3628 fine_max=1.4097 coarse_max=1.3704 peak_capture=0.97209 finite_masquerade=0
+sigma=0.7 true_above_finite99_frac=0.16417 median_nearest_coarse_dt=0.13897 miss_frac=0
+sigma=1.2 true   fine_q99=0.73288 coarse_q99=0.73887 fine_max=0.76502 coarse_max=0.75312 peak_capture=0.98444 finite_masquerade=0
+sigma=1.2 finite fine_q99=0.73053 coarse_q99=0.73215 fine_max=0.76065 coarse_max=0.75555 peak_capture=0.9933 finite_masquerade=0
+sigma=1.2 true_above_finite99_frac=0.010833 median_nearest_coarse_dt=0.10213 miss_frac=0

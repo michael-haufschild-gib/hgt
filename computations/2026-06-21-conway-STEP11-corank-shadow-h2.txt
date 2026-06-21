@@ -1,0 +1,25 @@
+NODE simulation: high-dimensional fitness spaces mislead 2D/3D diagrams
+dims projected_best_rank true_best_rank projected_gap hidden_epistasis
+   4                   1              1        0.0000          0.5015
+   8                   1           1585        4.1223          0.3419
+  16                   1            386        3.5351          0.5062
+  32                   1           1246        8.6401          0.4618
+
+STEP8 Levenshtein transfer candidates
+1 distance=56 ratio=0.7179 corank one number shadow hides value arithmeticity dimension
+2 distance=61 ratio=0.7821 seam one number hides algebraic dimension behind linear corank
+3 distance=57 ratio=0.7308 linear corank landscape hides high dimensional value relations
+selected=1 corank one number shadow hides value arithmeticity dimension
+
+STEP7 formula check: fitness projection/rank formulas are NODE-side diagnostics. Unchanged use is corank-blind and not promoted.
+
+Standing-order consolidated target: corank infinity-minus-one, seam as one number
+STEP8 transfer: corank one-number shadow hides value-arithmeticity dimension
+STEP9 method 1: split into subclaims
+Subclaim A: linear relation search sees both examples as rank-2 over Q at small height.
+Subclaim B: quadratic relation search separates algebraic from generic-looking values.
+Subclaim C: therefore one-number linear corank is blind to value-arithmeticity.
+height=2
+case linear_best_err linear_coeffs quadratic_best_err quadratic_coeffs
+algebraic    4.988805e-02 (-2, -1, 2)              4.216879e-81 (-2, 0, 0, 1, 0, 0)
+generic      1.533783e-01 (-1, -2, 2)              2.700226e-03 (-2, -2, 2, -1, 1, 0)

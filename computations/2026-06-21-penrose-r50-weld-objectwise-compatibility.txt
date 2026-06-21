@@ -1,0 +1,19 @@
+Penrose R50: objectwise compatibility passport for native weld category M+
+NODE: boundaries of basins of attraction may be crossed by fluctuations long before mean behavior changes
+NODE noise-induced basin crossing test
+sigma=0.45 ever_crossed_rate=0.209 final_positive_rate=0.106 mean_final_x=-0.719919 median_final_x=-0.897780
+NODE verdict: many paths cross the basin boundary while the mean state remains in the original basin.
+
+STEP8 transfer attempts by Levenshtein distance
+distance= 70  change viewpoint from mean weld residual to fiberwise naturality squares
+distance= 71  M+ needs objectwise Gamma-prime compatibility not ensemble mean commutation
+distance= 76  weld category boundary crossings hide under averaged commutator defects
+
+STEP9 method #4: change the viewpoint
+from ensemble-mean compatibility to objectwise/fiberwise naturality squares
+
+HGT transfer: objectwise weld-compatibility audit
+family mean_comm_norm mean_object_norm p95_object_norm boundary_cross_rate median_object_norm
+rare_balanced 2.786971e-03 3.795139e-02 4.256454e-01 0.059 7.958454e-03
+small_control 2.349727e-04 9.147294e-03 2.266142e-02 0.000 7.705699e-03
+passport_rule=M+ compatibility must be certified objectwise or by a tail bound; ensemble-zero Gamma/prime commutator is not a weld

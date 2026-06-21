@@ -1,0 +1,54 @@
+R34 OBSERVED_VOLUME_TRAJECTORY
+NODE_RESULT
+  final_reward_equal=True
+  sum_equal=True
+  pv_early_high=20.29465882900745
+  pv_late_high=18.343129979464226
+  pv_gap=1.951528849543223
+  weights_early=[0.9361308642916188, 0.8302735949819326, 0.772016002920944, 0.7227080080613442, 0.6347950265708924]
+  weights_late=[0.9617507091463667, 0.9125613161520112, 0.7918070821364149, 0.6653530346632043, 0.5874449988941033]
+STEP8_LEVENSHTEIN
+  C_reward_memory_kernel_to_sigma: 88
+  B_endpoint_amplitude_comparison: 90
+  A_observed_volume_trajectory_covariance: 100
+  chosen=C_reward_memory_kernel_to_sigma
+HGT_TRANSFER_RESULT
+  sigma=0.30
+    base_cov_speed=0.199163918 base_corr_speed=0.800291886
+    base_lag1_o=0.971360473 base_lag1_speed=0.906274024
+    sorted_cov_speed=0.188997889 sorted_corr_speed=0.330119956
+    sorted_lag1_o=0.89225141 sorted_lag1_speed=0.581848808
+    random_median_cov=0.295109131 random_corr_range=(0.491652983,0.714550799)
+  sigma=0.50
+    base_cov_speed=3.30820101 base_corr_speed=0.677573468
+    base_lag1_o=0.877660398 base_lag1_speed=0.538020163
+    sorted_cov_speed=0.980430284 sorted_corr_speed=0.335134203
+    sorted_lag1_o=0.344121543 sorted_lag1_speed=0.564013155
+    random_median_cov=3.78253054 random_corr_range=(0.784584531,0.854158357)
+  sigma=0.70
+    base_cov_speed=0.199163918 base_corr_speed=0.800291886
+    base_lag1_o=0.971360473 base_lag1_speed=0.906274024
+    sorted_cov_speed=0.188997889 sorted_corr_speed=0.330119956
+    sorted_lag1_o=0.89225141 sorted_lag1_speed=0.581848808
+    random_median_cov=0.292702955 random_corr_range=(0.474509248,0.698454349)
+  sigma=1.30
+    base_cov_speed=0.00499289829 base_corr_speed=0.709836708
+    base_lag1_o=0.984736614 base_lag1_speed=0.984132521
+    sorted_cov_speed=0.00320307624 sorted_corr_speed=0.0639068896
+    sorted_lag1_o=0.978380694 sorted_lag1_speed=-0.157917732
+    random_median_cov=0.010234267 random_corr_range=(0.0817433358,0.416547687)
+STEP9_METHOD_RESULT
+  method=4 change the viewpoint
+  viewpoint_change=endpoint/final amplitude -> reward-memory / trajectory value-volume covariance
+STEP12_FOLLOWUP
+  sigma=0.30 signs(base,sorted,random_median)=(+1,+1,+1)
+  sigma=0.50 signs(base,sorted,random_median)=(+1,+1,+1)
+  sigma=0.70 signs(base,sorted,random_median)=(+1,+1,+1)
+  sigma=1.30 signs(base,sorted,random_median)=(+1,+1,+1)
+  sigma=0.30 base_over_random_cov=0.674882 lag1_o_base=0.971360 lag1_o_sorted=0.892251
+  sigma=0.50 base_over_random_cov=0.874600 lag1_o_base=0.877660 lag1_o_sorted=0.344122
+  sigma=0.70 base_over_random_cov=0.680430 lag1_o_base=0.971360 lag1_o_sorted=0.892251
+  sigma=1.30 base_over_random_cov=0.487861 lag1_o_base=0.984737 lag1_o_sorted=0.978381
+  critical_base_positive=3/3
+INTERPRETATION
+  Observed-volume covariance is not an endpoint-amplitude statistic, but the sign alone is too weak: random reorders preserve the positive sign and can inflate covariance. The measure-invariant claim needs a memory/effect-size passport, not only marginal value or sign controls.

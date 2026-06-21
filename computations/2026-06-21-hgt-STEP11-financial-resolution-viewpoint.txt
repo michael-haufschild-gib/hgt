@@ -1,0 +1,27 @@
+STEP11 cross-border-resolution viewpoint change
+method=4 change-viewpoint; original vs transposed exposures, high vs low stress seeds
+kind window orientation seed_band defaults_q50 defaults_q90 loss_q50 loss_q90
+true-lambda  [100,170] original  high     2.000000     2.000000  0.851129  1.154375
+true-lambda  [100,170] original  low      2.000000     2.000000  0.476816  0.526496
+true-lambda  [100,170] transpose high     2.000000     2.000000  0.851129  1.154375
+true-lambda  [100,170] transpose low      2.000000     2.000000  0.476816  0.526496
+finite-euler [100,170] original  high     1.000000     1.000000  0.115301  0.141831
+finite-euler [100,170] original  low      1.000000     1.000000  0.060394  0.066544
+finite-euler [100,170] transpose high     1.000000     1.000000  0.115301  0.141831
+finite-euler [100,170] transpose low      1.000000     1.000000  0.060394  0.066544
+random-phase [100,170] original  high     1.000000     1.000000  0.151202  0.183731
+random-phase [100,170] original  low      1.000000     1.000000  0.074734  0.089826
+random-phase [100,170] transpose high     1.000000     1.000000  0.151202  0.183731
+random-phase [100,170] transpose low      1.000000     1.000000  0.074734  0.089826
+true-lambda  [500,570] original  high     2.000000     2.000000  0.781333  1.097336
+true-lambda  [500,570] original  low      2.000000     2.000000  0.547739  0.585369
+true-lambda  [500,570] transpose high     2.000000     2.000000  0.781333  1.097336
+true-lambda  [500,570] transpose low      2.000000     2.000000  0.547739  0.585369
+finite-euler [500,570] original  high     1.000000     1.000000  0.122880  0.146030
+finite-euler [500,570] original  low      1.000000     1.000000  0.051189  0.056106
+finite-euler [500,570] transpose high     1.000000     1.000000  0.122880  0.146030
+finite-euler [500,570] transpose low      1.000000     1.000000  0.051189  0.056106
+random-phase [500,570] original  high     1.000000     1.000000  0.139973  0.163690
+random-phase [500,570] original  low      1.000000     1.000000  0.079340  0.095263
+random-phase [500,570] transpose high     1.000000     1.000000  0.139973  0.163690
+random-phase [500,570] transpose low      1.000000     1.000000  0.079340  0.095263

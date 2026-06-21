@@ -1,0 +1,39 @@
+Penrose R38: external catalyst accumulation audit for reset occupation
+ResearchNode: #31 Reset occupation (reclassified bridge diagnostic)
+NODE: misidentifying exponential growth as autocatalysis without ruling out external catalyst accumulation
+STEP 5/6 NODE TEST: exponential growth vs external catalyst accumulation
+Constraint: a log-linear growth segment is insufficient evidence for autocatalysis unless an external catalyst/feed alternative is ruled out.
+autocatalytic_seeded    growth_segment_slope=+1.3222 late_slope_8_12=-0.0000 final_x=17.8063
+external_feed           growth_segment_slope=+0.9601 late_slope_8_12=+1.0210 final_x=8.0951
+external_feed_disabled  growth_segment_slope=+nan late_slope_8_12=-0.1462 final_x=0.0027
+seed=0.005 auto_final=0.0000 external_final=8.0695
+seed=0.020 auto_final=0.0000 external_final=8.0476
+seed=0.080 auto_final=17.8063 external_final=8.0951
+seed=0.200 auto_final=19.4602 external_final=8.1574
+NODE verdict: exponential-looking growth is ambiguous; seed and external-feed-removal controls distinguish true self-amplification from accumulated catalyst/feed.
+
+STEP 7 FORMULA CHECK
+Autocatalytic growth formulas do not transfer as equations. The only non-reducing transfer is the control logic: test whether a claimed reset-occupation excess survives an external-feed explanation.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=78 normalized=0.7800: reset occupation excess may be external source accumulation not lane self-reset
+2. distance=76 normalized=0.7600: critical reset occupation needs a shared divisor-feed counterexample audit
+3. distance=71 normalized=0.7100: autocatalysis control becomes external-feed subtraction for reset occupation
+chosen=3: autocatalysis control becomes external-feed subtraction for reset occupation
+
+STEP 9 METHOD 16: MINIMAL COUNTEREXAMPLE
+Counterexample target: fit the center lane from an external common source proxy `0.5*(X_.3+X_.7)`. If this external-feed model reproduces the reset-occupation center excess, R15 reduces to source accumulation.
+case q events true_excess affine_external rich_external affine_residual rich_residual finite_excess affine_R2 rich_R2
+low  0.80 034 -0.0303 -0.0000 -0.2506 -0.4456 +0.3572 +0.0768 0.7571 0.8542
+low  0.85 034 -0.2354 -0.0000 -0.3326 -0.7747 +0.0859 +0.0488 0.7571 0.8542
+low  0.90 034 -0.3957 -0.0000 -0.3203 -1.0243 -0.3136 +0.0355 0.7571 0.8542
+high 0.80 049 -0.2506 -0.0000 -0.1514 -0.7470 -0.5071 -0.0791 0.6530 0.7084
+high 0.85 049 -0.4269 -0.0000 -0.1743 -0.9850 -0.7441 -0.0586 0.6530 0.7084
+high 0.90 049 -0.5214 -0.0000 -0.1323 -1.0598 -0.9067 -0.0559 0.6530 0.7084
+
+EXTERNAL_CAPTURES_TRUE_EXCESS 0/6
+RICH_EXTERNAL_CAPTURES_TRUE_EXCESS 3/6
+RESIDUAL_KEEPS_TRUE_EXCESS 6/6
+RICH_RESIDUAL_KEEPS_TRUE_EXCESS 5/6
+FINITE_MATCHES_TRUE_EXCESS 1/6
+Interpretation: the shared external-feed model is a required counterexample audit. If it fails while the residual keeps the excess, reset occupation is not explained by common source accumulation alone.

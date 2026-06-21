@@ -1,0 +1,40 @@
+Hidden-support extreme-case audit
+========================================
+source A
+matrix=
+[[-1.  0.]
+ [ 0.  2.]]
+eigenvalues=[-1.  2.]
+inertia(neg,zero,pos)=(1, 0, 1)
+
+uncoupled A direct-sum hidden support
+matrix=
+[[ -1.   0.   0.]
+ [  0.   2.   0.]
+ [  0.   0. 100.]]
+eigenvalues=[ -1.   2. 100.]
+inertia(neg,zero,pos)=(1, 0, 2)
+
+coupled completed A+R
+matrix=
+[[1. 0.]
+ [0. 2.]]
+eigenvalues=[1. 2.]
+inertia(neg,zero,pos)=(0, 0, 2)
+
+hidden support R
+matrix=
+[[2. 0.]
+ [0. 0.]]
+eigenvalues=[0. 2.]
+inertia(neg,zero,pos)=(0, 1, 1)
+
+Arbitrary PSD support can force any finite symmetric form PSD:
+sample 0: lambda_min(A)=-2.765650, alpha=2.765651, inertia(A)=(2, 0, 2), inertia(A+alpha I)=(0, 0, 4)
+sample 1: lambda_min(A)=-2.554233, alpha=2.554234, inertia(A)=(3, 0, 1), inertia(A+alpha I)=(0, 0, 4)
+sample 2: lambda_min(A)=-2.490261, alpha=2.490262, inertia(A)=(2, 0, 2), inertia(A+alpha I)=(0, 0, 4)
+sample 3: lambda_min(A)=-1.245565, alpha=1.245566, inertia(A)=(2, 0, 2), inertia(A+alpha I)=(0, 0, 4)
+sample 4: lambda_min(A)=-1.543416, alpha=1.543417, inertia(A)=(2, 0, 2), inertia(A+alpha I)=(0, 0, 4)
+
+Transfer check:
+PSD of A+R gives no PSD information about A unless R is canonical source data. Uncoupled hidden support preserves the negative visible principal subform; coupled support changes the source form itself.

@@ -1,0 +1,35 @@
+NODE: hidden/overlapped transient intermediate spectroscopy
+noise=0.003
+columns: sep hidden threshold overlap hidden_snr rank2_snr rank_ratio hidden_corr peak_ratio merged_plausible hidden_recovered
+case sep=0.34 hidden=0.20 threshold=0.000 overlap=0.1124 hidden_snr=66.667 rank2_snr=32.751 rank_ratio=0.0907 hidden_corr=1.000 peak_ratio=0.997 merged=0 recovered=1
+case sep=0.18 hidden=0.20 threshold=0.000 overlap=0.5420 hidden_snr=66.667 rank2_snr=27.182 rank_ratio=0.0737 hidden_corr=1.000 peak_ratio=0.999 merged=0 recovered=1
+case sep=0.08 hidden=0.20 threshold=0.000 overlap=0.8860 hidden_snr=66.667 rank2_snr=14.745 rank_ratio=0.0394 hidden_corr=1.000 peak_ratio=0.992 merged=0 recovered=1
+case sep=0.08 hidden=0.06 threshold=0.000 overlap=0.8860 hidden_snr=20.000 rank2_snr=4.579 rank_ratio=0.0126 hidden_corr=0.997 peak_ratio=0.999 merged=1 recovered=0
+case sep=0.08 hidden=0.06 threshold=0.006 overlap=0.8860 hidden_snr=6.667 rank2_snr=4.622 rank_ratio=0.0127 hidden_corr=0.997 peak_ratio=1.019 merged=1 recovered=0
+case sep=0.04 hidden=0.03 threshold=0.006 overlap=0.9702 hidden_snr=3.333 rank2_snr=1.428 rank_ratio=0.0040 hidden_corr=0.955 peak_ratio=1.090 merged=1 recovered=0
+case sep=0.04 hidden=0.02 threshold=0.010 overlap=0.9702 hidden_snr=1.538 rank2_snr=1.427 rank_ratio=0.0040 hidden_corr=0.922 peak_ratio=1.263 merged=1 recovered=0
+
+Grid: M=merged plausible, R=hidden recovered, .=ambiguous/unrecovered
+threshold=0.000
+rows hidden=0.22,0.12,0.06,0.03,0.015; cols sep=0.34,0.24,0.16,0.10,0.06,0.04
+hidden=0.220: RRRRRR
+hidden=0.120: RRRRRM
+hidden=0.060: RRRRMM
+hidden=0.030: MMMMMM
+hidden=0.015: MMMMMM
+threshold=0.004
+rows hidden=0.22,0.12,0.06,0.03,0.015; cols sep=0.34,0.24,0.16,0.10,0.06,0.04
+hidden=0.220: RRRRRR
+hidden=0.120: RRRRRM
+hidden=0.060: RRRRMM
+hidden=0.030: MMMMMM
+hidden=0.015: MMMMMM
+threshold=0.008
+rows hidden=0.22,0.12,0.06,0.03,0.015; cols sep=0.34,0.24,0.16,0.10,0.06,0.04
+hidden=0.220: RRRRRR
+hidden=0.120: RRRRRM
+hidden=0.060: RRRRMM
+hidden=0.030: MMMMMM
+hidden=0.015: MMMMMM
+
+Interpretation: recovery requires spectral separation, above-threshold transient amplitude, and a detectable second rank.

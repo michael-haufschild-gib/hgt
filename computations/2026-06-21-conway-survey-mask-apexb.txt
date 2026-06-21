@@ -1,0 +1,75 @@
+THE-MACHINE tick: survey masks -> APEX-B faithful positivity
+NODE: The effect of survey masks, dust extinction, and incomplete sky coverage on apparent clustering
+Standing-order target: 19/32 APEX-B faithful positivity
+STEP 9 method: 16. Use a minimal counterexample
+STEP 5/6 NODE TEST: survey mask creates false clustering if the mask is ignored
+Constraint: apparent pair statistics must be compared against the same angular/selection mask, not an unmasked reference.
+stat masked_catalog same_mask_reference unmasked_naive_reference
+close_pair_frac 0.021098 0.021368 0.018665
+far_pair_frac 0.502233 0.505769 0.442150
+NODE verdict: the masked catalog differs from the unmasked naive reference, but agrees with a same-mask random reference. Coverage belongs in the null model.
+
+STEP 7 FORMULA CHECK
+Galaxy-mask formulas do not apply unchanged to APEX-B. The transfer keeps only the constraint: a measured positivity/curvature detector is invalid without a coverage mask.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=77 normalized=0.8105: faithful positivity tests need mask certificates for sparse off-line curvature windows
+2. distance=72 normalized=0.7579: survey masks become height-coverage masks for all-degree positivity defects
+3. distance=74 normalized=0.7789: incomplete coverage can hide APEX-B no-margin positivity counterexamples
+chosen=2: survey masks become height-coverage masks for all-degree positivity defects
+
+STEP 9 METHOD 16: MINIMAL MASK COUNTEREXAMPLE
+Use the local APEX-B detector: an off-line FE quartet contributes C_a(tau)=2(a^2-tau^2)/(a^2+tau^2)^2, positive exactly for |tau|<a. Find how little height coverage can be missing while hiding the positive core.
+a domain_half mask_half removed_fraction observed_max observed_mean positive_visible
+0.040 0.320 0.0000 0.0002 1249.940002 18.913610 1
+0.040 0.320 0.0100 0.0312 1034.993648 -18.099818 1
+0.040 0.320 0.0200 0.0625 600.000000 -46.146197 1
+0.040 0.320 0.0300 0.0937 221.609020 -61.526740 1
+0.040 0.320 0.0400 0.1250 -0.000000 -67.293671 0
+0.040 0.320 0.0500 0.1562 -18.639053 -67.527754 0
+0.080 0.640 0.0000 0.0002 312.485000 4.728403 1
+0.080 0.640 0.0200 0.0312 258.748412 -4.524954 1
+0.080 0.640 0.0400 0.0625 150.000000 -11.536549 1
+0.080 0.640 0.0600 0.0937 55.402255 -15.381685 1
+0.080 0.640 0.0800 0.1250 -0.000000 -16.823418 0
+0.080 0.640 0.1000 0.1562 -4.659763 -16.881938 0
+0.160 1.280 0.0000 0.0002 78.121250 1.182101 1
+0.160 1.280 0.0400 0.0312 64.687103 -1.131239 1
+0.160 1.280 0.0800 0.0625 37.500000 -2.884137 1
+0.160 1.280 0.1200 0.0937 13.850564 -3.845421 1
+0.160 1.280 0.1600 0.1250 -0.000000 -4.205854 0
+0.160 1.280 0.2000 0.1562 -1.164941 -4.220485 0
+0.320 2.560 0.0000 0.0002 19.530313 0.295525 1
+0.320 2.560 0.0800 0.0312 16.171776 -0.282810 1
+0.320 2.560 0.1600 0.0625 9.375000 -0.721034 1
+0.320 2.560 0.2400 0.0937 3.462641 -0.961355 1
+0.320 2.560 0.3200 0.1250 -0.000000 -1.051464 0
+0.320 2.560 0.4000 0.1562 -0.291235 -1.055121 0
+
+random_block_masks a keep_frac block_width/a detect_prob mean_observed_max
+0.080 0.70 0.5 1.000 303.222605
+0.080 0.70 1.0 0.992 285.853880
+0.080 0.70 2.0 0.975 265.959876
+0.080 0.80 0.5 1.000 307.123772
+0.080 0.80 1.0 1.000 291.599687
+0.080 0.80 2.0 1.000 282.993385
+0.080 0.90 0.5 1.000 309.577597
+0.080 0.90 1.0 1.000 302.618597
+0.080 0.90 2.0 1.000 291.181741
+0.080 0.95 0.5 1.000 311.462397
+0.080 0.95 1.0 1.000 310.338726
+0.080 0.95 2.0 1.000 297.594738
+0.160 0.70 0.5 1.000 75.753593
+0.160 0.70 1.0 0.992 71.264833
+0.160 0.70 2.0 0.942 62.383443
+0.160 0.80 0.5 1.000 77.156948
+0.160 0.80 1.0 1.000 73.449279
+0.160 0.80 2.0 0.975 65.824717
+0.160 0.90 0.5 1.000 77.759063
+0.160 0.90 1.0 1.000 76.544039
+0.160 0.90 2.0 1.000 72.033478
+0.160 0.95 0.5 1.000 77.646446
+0.160 0.95 1.0 1.000 77.234756
+0.160 0.95 2.0 1.000 76.573351
+
+Interpretation: a centered mask of only about 1/8 of the tested height interval hides the whole off-line positive core. Random masks usually detect it at high coverage, but adversarial or structured masks can create a false positivity pass. APEX-B numerics need height-coverage certificates for sparse no-margin defects.

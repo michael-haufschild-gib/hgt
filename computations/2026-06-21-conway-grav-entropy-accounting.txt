@@ -1,0 +1,36 @@
+NODE simulation: ordinary density entropy and gravitational clumping entropy disagree
+uniform matter_entropy=2.4849 gravitational_clumping=0.0000
+clumped matter_entropy=0.2788 gravitational_clumping=11.5000
+
+STEP8 transfer attempts by Levenshtein distance
+B_zero_shadow_topology_entropy     distance=37
+C_sigma_lane_record_entropy        distance=37
+A_phase_clumping_entropy           distance=38
+selected=B_zero_shadow_topology_entropy
+
+STEP8/9 HT transfer: amplitude entropy vs phase-structure entropy
+kind window sigma amp_entropy structure_entropy median_defect run_count
+true   [100,170] 0.3 2.3836 -0.0000 0.4398 1
+finite [100,170] 0.3 2.1895 3.9899 0.0068 58
+random [100,170] 0.3 2.3836 4.0496 -0.1094 67
+true   [100,170] 0.5 1.3858 3.4835 0.2547 36
+finite [100,170] 0.5 2.1594 3.6511 0.0054 44
+random [100,170] 0.5 1.3858 3.9584 -0.1443 60
+true   [100,170] 0.7 2.2764 3.3358 -0.0028 32
+finite [100,170] 0.7 2.2995 3.2860 -0.0749 32
+random [100,170] 0.7 2.2764 3.9245 -0.1629 60
+true   [100,170] 1.2 2.3192 2.9847 -0.0742 22
+finite [100,170] 1.2 2.2902 2.9886 -0.0725 22
+random [100,170] 1.2 2.3192 4.0452 -0.0383 65
+true   [500,570] 0.3 2.4446 -0.0000 0.5099 1
+finite [500,570] 0.3 1.9171 4.0265 -0.0135 59
+random [500,570] 0.3 2.4446 4.0102 -0.0748 66
+true   [500,570] 0.5 1.1472 3.6789 0.2803 45
+finite [500,570] 0.5 1.8877 3.7274 -0.0476 48
+random [500,570] 0.5 1.1472 4.0054 -0.1155 63
+true   [500,570] 0.7 2.2036 3.6532 -0.0403 44
+finite [500,570] 0.7 1.8880 3.5944 -0.2028 42
+random [500,570] 0.7 2.2036 3.9990 -0.2383 63
+true   [500,570] 1.2 2.3368 2.9103 -0.0485 22
+finite [500,570] 1.2 2.3324 2.9370 -0.0473 23
+random [500,570] 1.2 2.3368 3.8803 -0.0390 58

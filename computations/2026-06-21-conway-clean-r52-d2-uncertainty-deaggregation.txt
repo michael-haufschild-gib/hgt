@@ -1,0 +1,19 @@
+NODE: source-model and ground-motion uncertainties both propagate into final risk
+case mean q95 q99 exceed_3x
+plug_in      1.0000 1.0000 1.0000 0.0000
+source_only  1.4798 3.1395 4.5673 0.0590
+motion_only  1.4798 3.6654 5.9280 0.0860
+both         1.4791 4.2929 7.9220 0.1075
+constraint: a point hazard curve is not a risk estimate unless uncertainty is propagated and deaggregated
+
+TRANSFER: ResearchNode #7 local source-width detector D2
+method #17 change representation: scalar D2 -> distribution over source and measurement models
+case point_D2 mean_D2 q05_D2 q95_D2 false_seam_prob source_only_false measurement_only_false
+interior_clear       0.003200 0.003202 0.002442 0.004039 0.004 0.005 0.000
+boundary_membership  0.003200 0.001867 0.000000 0.003892 0.420 0.419 0.000
+measurement_close    0.001152 0.001348 0.000101 0.003265 0.437 0.005 0.434
+both_uncertain       0.001152 0.000784 0.000000 0.002837 0.673 0.418 0.434
+
+GATE SUMMARY
+near the seam, D2 should be reported as a deaggregated uncertainty distribution, not as one scalar moment
+source-membership uncertainty and measurement/quadrature uncertainty can dominate different false-seam regimes, so guard bands alone are not a full passport

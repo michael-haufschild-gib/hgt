@@ -1,0 +1,10 @@
+Step 9 method 2: attack projection-blindness as false
+Try scalar passports richer than base branch-value count.
+passport=(fixed sheets, nontrivial cycles, moved sheets, total defect)
+
+degree=6: scalar passport collisions found
+  passport=(0, 2, 6, 4): cycle_types=[(4, 2), (3, 3)]
+
+degree-6 explicit collision:
+  cycle_type=(4, 2), passport=(0, 2, 6, 4)
+  cycle_type=(3, 3), passport=(0, 2, 6, 4)

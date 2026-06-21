@@ -1,0 +1,16 @@
+NODE validation: epigenetic switched states can be metastable, not permanently locked
+case p_loss p_gain surv20 surv_end median_escape q90_escape not_escaped_by_end
+permanent_lock     p_loss=0.00000 p_gain=0.00000 surv20=1.0000 surv_end=1.0000 median_escape=241.0 q90_escape=241.0 not_escaped_by_end=1.0000
+metastable_slow    p_loss=0.00600 p_gain=0.00050 surv20=0.8860 surv_end=0.2693 median_escape=116.0 q90_escape=241.0 not_escaped_by_end=0.2356
+washout_feedback   p_loss=0.03500 p_gain=0.00000 surv20=0.4905 surv_end=0.0002 median_escape=20.0 q90_escape=65.0 not_escaped_by_end=0.0002
+plastic_state      p_loss=0.04500 p_gain=0.02000 surv20=0.4860 surv_end=0.3067 median_escape=16.0 q90_escape=51.0 not_escaped_by_end=0.0000
+
+Barrier/maintenance sweep
+barrier p_loss expected_lifetime observed_median_escape surv100
+2.0 0.010827 92.4 64.0 0.3490
+3.0 0.003983 251.1 161.0 0.6809
+4.0 0.001465 682.5 161.0 0.8669
+5.0 0.000539 1855.2 161.0 0.9481
+6.0 0.000198 5042.9 161.0 0.9807
+
+Read: metastable states can look locked over short assays but show finite escape on long horizons or after maintenance washout. Barrier height tunes lifetime continuously; permanent locking is the singular p_loss=0 case.

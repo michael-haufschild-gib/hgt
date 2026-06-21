@@ -1,0 +1,11 @@
+NODE: developmental canalization hides cryptic variation until stress exposes it
+NODE_ROW normal_var=0.02097 stress_var=0.45951 normal_tail=0.00000 stress_tail=0.36450
+
+TRANSFER: ResearchNode 16 positivity vs realization
+method #22: compare nearby false statements
+false statement A: FE/realization symmetry implies positivity
+false statement B: FE plus low-order bulk moment implies positivity
+ROW a=0.020 p2_gap=0.000e+00 p4_gap=2.560e+00 FE_off=1.78e-15 FE_on=0.00e+00 off_curv_max=+6.249e+02 off_curv_min=-5.000e+03 on_curv_max=+9.230e+08 on_curv_min=+3.124e+02
+ROW a=0.050 p2_gap=2.274e-13 p4_gap=1.600e+01 FE_off=1.78e-15 FE_on=0.00e+00 off_curv_max=+9.999e+01 off_curv_min=-8.000e+02 on_curv_max=+2.540e+08 on_curv_min=+4.997e+01
+ROW a=0.100 p2_gap=2.274e-13 p4_gap=6.400e+01 FE_off=1.78e-15 FE_on=0.00e+00 off_curv_max=+2.500e+01 off_curv_min=-2.000e+02 on_curv_max=+2.968e+07 on_curv_min=+1.249e+01
+ROW a=0.200 p2_gap=0.000e+00 p4_gap=2.560e+02 FE_off=3.55e-15 FE_on=0.00e+00 off_curv_max=+6.251e+00 off_curv_min=-5.000e+01 on_curv_max=+1.990e+06 on_curv_min=+3.118e+00

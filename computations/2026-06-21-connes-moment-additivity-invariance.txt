@@ -1,0 +1,26 @@
+==========================================================================
+(A) REFINEMENT-INVARIANCE of M_2: 3 differently-shaped rectangles, SAME enclosed zeros
+==========================================================================
+  rect#1 ('-1.0', '2.0', '-22.0', '22.0')   Re(M2)=-1767.6579  (exact -1767.6579)
+  rect#2 ('-0.3', '1.3', '-24.0', '24.0')   Re(M2)=-1767.6579  (exact -1767.6579)
+  rect#3 ('-2.0', '3.0', '-21.5', '21.5')   Re(M2)=-1767.6579  (exact -1767.6579)
+  => identical (residue theorem): M_k passes the refinement-history-invariance gate (Conway 832).
+  contrast (per-side winding SHAPE): uniform-split L1 vs stratified-split L1 differ: 6.78e-21 != 0  => shapes are NOT refinement-invariant.
+
+==========================================================================
+(B) WINDOW-ADDITIVITY of D2  (=> local detection composes to the global apex)
+==========================================================================
+  D2(W1)=0.005  D2(W2)=0.0  D2(W1)+D2(W2)=0.005
+  D2(W1 u W2)=0.005   => additive. Global D2 = sum over ALL windows = sum_rho (beta-1/2)^2.
+  Hence Lemma 2 (global confinement) == 'D2=0 on every window' == regularized sum_rho(beta-1/2)^2=0 == RH.
+
+==========================================================================
+(C) global D2 accumulator: real zeta (on-line) vs one off-line zero
+==========================================================================
+  first 8 zeta pairs (T~24): D2(T)=0.0  (=0, RH-local; additive in T)
+  first 12 zeta pairs (T~37): D2(T)=0.0  (=0, RH-local; additive in T)
+  + one off-line FE-quartet (a=0.07): D2=0.0196 (=4a^2=0.0196); off-line content accumulates monotonically.
+
+  SYNTHESIS (Lemma 4): M_k is a refinement-invariant, finitely-additive functional of the enclosed
+  divisor. So the contour-moment instrument passes Conway 832's gate by construction, and the local
+  D2-detector composes EXACTLY into the global apex: RH <=> regularized sum_rho(beta-1/2)^2 = 0.

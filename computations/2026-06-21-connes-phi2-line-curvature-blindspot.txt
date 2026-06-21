@@ -1,0 +1,11 @@
+# far-off-line a=0.45 quartet; 2/a^2=9.88; >0 = detected
+   g0=   60  maxPhi2=     5.8432   detected
+   g0=  120  maxPhi2=     8.2458   detected
+   g0=  180  maxPhi2=    -2.9994   NOT detected
+   g0=  240  maxPhi2=     3.7401   detected
+   g0=  260  maxPhi2=    -4.0442   NOT detected
+   g0=  261  maxPhi2=    -2.1117   NOT detected
+   g0=  262  maxPhi2=     8.1014   detected
+   g0=  263  maxPhi2=     6.1683   detected
+   g0=  264  maxPhi2=     4.0786   detected
+   g0=  265  maxPhi2=     5.5158   detected

@@ -1,0 +1,58 @@
+THE-MACHINE tick: stochastic-resonance rate matching -> Layers Of The Landscape
+NODE: in bistable systems stochastic resonance often depends on matching the noise driven hopping rate to roughly half the period of the weak periodic forcing
+Standing-order target: 25/32 Layers Of The Landscape
+STEP 6 NODE TEST: stochastic resonance requires rate-period matching
+A two-state process has weak periodic forcing. The response is best when the mean noise-driven residence time is close to half the forcing period.
+rate mean_residence half_period_ratio response_corr transition_count
+0.0030 252.632 6.316 +0.0042 0019
+0.0060 154.839 3.871 +0.0264 0031
+0.0125 77.419 1.935 +0.0377 0062
+0.0250 39.669 0.992 +0.0389 0121
+0.0500 19.355 0.484 +0.3081 0248
+0.1000 9.877 0.247 +0.3586 0486
+0.2000 5.594 0.140 +0.3395 0858
+0.4000 2.604 0.065 +0.3453 1843
+0.8000 1.396 0.035 +0.2450 3439
+NODE verdict: the response is nonmonotone in hopping rate; a tuned rate can look special even when too little or too much noise fails.
+
+STEP 7 FORMULA CHECK
+Kramers-rate formulas do not apply unchanged to the landscape. The transfer keeps the constraint: one tuned perturbation level can create a false optimum, so layer claims need a sweep across perturbation levels and across scalar/phase/cross-lane layers.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=112 normalized=0.7368: landscape layer evidence can be falsely optimized by tuning perturbation hopping scale
+2. distance=110 normalized=0.7237: noise matched controls can imitate one landscape layer while failing the others
+3. distance=111 normalized=0.7303: layers of the landscape need a noise sweep not one tuned perturbation level
+chosen=2: noise matched controls can imitate one landscape layer while failing the others
+
+STEP 9 METHOD 22: COMPARE NEARBY FALSE STATEMENTS
+F1: more perturbation always worsens a layer match
+F2: an intermediate optimum in one layer proves landscape structure
+F3: a tuned perturbation that matches scalarH must also match phaseDelta and C4
+case eta scalarH_corr scalarP_corr phaseDelta_corr c4_top_ratio lane_power_diff scalar_only_false_match
+critical_low  0.00 +0.4398 +0.5825 +0.4835 0.6057 0.9483 0
+critical_low  0.10 +0.4508 +0.5997 +0.4837 0.6048 0.9492 0
+critical_low  0.20 +0.4608 +0.6146 +0.4862 0.5976 0.9434 0
+critical_low  0.35 +0.4721 +0.6294 +0.4902 0.5889 0.9520 0
+critical_low  0.55 +0.4867 +0.6491 +0.4728 0.5498 0.9172 0
+critical_low  0.85 +0.4859 +0.6615 +0.4430 0.4620 0.9295 0
+critical_low  1.20 +0.4861 +0.6860 +0.4062 0.3429 0.9697 0
+critical_low  1.70 +0.4680 +0.7098 +0.2858 0.2901 1.0146 0
+critical_high 0.00 +0.3572 +0.6028 +0.4671 0.6749 0.9195 0
+critical_high 0.10 +0.3939 +0.6464 +0.4703 0.6758 0.9327 0
+critical_high 0.20 +0.4052 +0.6584 +0.4770 0.6908 0.9235 0
+critical_high 0.35 +0.4254 +0.6740 +0.4576 0.6305 0.9265 0
+critical_high 0.55 +0.4470 +0.7024 +0.4842 0.6370 0.8990 0
+critical_high 0.85 +0.4377 +0.7117 +0.4664 0.4859 0.9711 0
+critical_high 1.20 +0.4303 +0.7363 +0.3792 0.3664 0.9958 0
+critical_high 1.70 +0.4331 +0.7648 +0.3060 0.3173 0.9835 0
+right_low     0.00 +0.9995 +0.9989 +0.9994 0.9991 0.0146 0
+right_low     0.10 +0.9995 +0.9989 +0.9994 0.9990 0.0155 0
+right_low     0.20 +0.9995 +0.9988 +0.9993 0.9991 0.0157 0
+right_low     0.35 +0.9994 +0.9987 +0.9993 0.9992 0.0155 0
+right_low     0.55 +0.9993 +0.9986 +0.9991 0.9987 0.0254 0
+right_low     0.85 +0.9990 +0.9981 +0.9990 0.9986 0.0206 0
+right_low     1.20 +0.9988 +0.9970 +0.9986 0.9989 0.0276 0
+right_low     1.70 +0.9977 +0.9955 +0.9968 0.9956 0.0495 0
+
+SCALAR_ONLY_FALSE_MATCHES 0/24
+Provisional interpretation: if scalarH has an intermediate high-correlation optimum while phaseDelta/C4 fail, stochastic-resonance tuning is a layer-confound, not landscape evidence.

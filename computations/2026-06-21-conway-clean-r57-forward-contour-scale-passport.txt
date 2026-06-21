@@ -1,0 +1,38 @@
+NODE validation: CME volume scaling changes counts and propensities
+Omega count_A correct_birth correct_dimer naive_dimer naive/correct
+   10      40         7.000         7.800       78.000          10.0
+   40     160        28.000        31.800     1272.000          40.0
+  160     640       112.000       127.800    20448.000         160.0
+Interpretation: treating volume as noise-only misses the count scaling and the volume factor in bimolecular propensities.
+
+Forward contour check on a completed symmetric toy divisor
+scale k count exact.real contour.real abs_error
+1.00 0     4    4.000000     4.000000  1.46e-07
+1.00 2     4   -2.502400    -2.502399  1.31e-06
+1.00 4     4    1.418045     1.418059  1.34e-05
+1.40 0     6    6.000000     6.000000  1.83e-07
+1.40 2     6   -5.882400    -5.882399  1.02e-06
+1.40 4     6    7.130245     7.130312  6.64e-05
+2.00 0    10   10.000000    10.000001  8.56e-07
+2.00 2    10  -18.682400   -18.682401  1.03e-06
+2.00 4    10   46.016645    46.016948  3.03e-04
+2.60 0    12   12.000000    12.000001  1.24e-06
+2.60 2    12  -30.202400   -30.202403  2.53e-06
+2.60 4    12  112.371845   112.372715  8.70e-04
+
+Scale-decomposition passport for normalized moments N_k(L)=M_k(L)/L^k
+k scale count N.real delta.real retained.real influx.real cancellation_ratio
+0 1.00     4   4.0000     0.0000        0.0000      4.0000             0.0000
+0 1.40     6   6.0000     2.0000        0.0000      2.0000             1.0000
+0 2.00    10  10.0000     4.0000        0.0000      4.0000             1.0000
+0 2.60    12  12.0000     2.0000        0.0000      2.0000             1.0000
+2 1.00     4  -2.5024     0.0000        0.0000     -2.5024             0.0000
+2 1.40     6  -3.0012    -0.4988        1.2257     -1.7245             0.1691
+2 2.00    10  -4.6706    -1.6694        1.5306     -3.2000             0.3529
+2 2.60    12  -4.4678     0.2028        1.9069     -1.7041             0.0562
+4 1.00     4   1.4180     0.0000        0.0000      1.4180             0.0000
+4 1.40     6   1.8561     0.4380       -1.0489      1.4869             0.1727
+4 2.00    10   2.8760     1.0200       -1.4104      2.4304             0.2656
+4 2.60    12   2.4590    -0.4170       -1.8691      1.4520             0.1256
+
+Interpretation: nested forward moments must deaggregate contour-scale changes into retained-source reweighting and new-source influx. A small change in normalized M_k can be cancellation between those two effects, not evidence that the contour moment is scale-invariant or noise-stable.

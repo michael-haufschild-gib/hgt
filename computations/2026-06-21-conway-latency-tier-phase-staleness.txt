@@ -1,0 +1,72 @@
+NODE simulation: latency-tier staleness in displayed liquidity
+latency displayed_fill executable_fill stale_positive_frac
+      1 1.000 1.000 0.000
+      2 1.000 0.856 0.144
+      4 1.000 0.657 0.343
+      8 1.000 0.434 0.566
+     16 1.000 0.216 0.784
+     32 1.000 0.057 0.943
+
+STEP8 transfer attempts by Levenshtein distance
+C_zero_shadow_latency    distance=15
+B_amplitude_staleness    distance=26
+A_phase_staleness        distance=27
+selected=C_zero_shadow_latency
+
+STEP8/9 HT transfer: selected zero-shadow latency tier
+samples=960 finite_prime_count=160 valley_quantile=0.10
+kind sigma latency displayed executable stale_frac
+true   0.3  1 0.100 0.100 0.000
+true   0.3  2 0.100 0.083 0.166
+true   0.3  4 0.101 0.057 0.438
+true   0.3  8 0.103 0.022 0.790
+true   0.3 16 0.089 0.000 1.000
+true   0.3 32 0.067 0.000 1.000
+finite 0.3  1 0.100 0.100 0.000
+finite 0.3  2 0.101 0.082 0.192
+finite 0.3  4 0.090 0.046 0.496
+finite 0.3  8 0.094 0.019 0.790
+finite 0.3 16 0.100 0.006 0.944
+finite 0.3 32 0.100 0.000 1.000
+random 0.3  1 0.100 0.100 0.000
+random 0.3  2 0.101 0.019 0.811
+random 0.3  4 0.111 0.000 1.000
+random 0.3  8 0.094 0.000 1.000
+random 0.3 16 0.089 0.000 1.000
+random 0.3 32 0.111 0.000 1.000
+true   0.5  1 0.100 0.100 0.000
+true   0.5  2 0.101 0.062 0.386
+true   0.5  4 0.101 0.019 0.818
+true   0.5  8 0.081 0.003 0.972
+true   0.5 16 0.100 0.000 1.000
+true   0.5 32 0.078 0.000 1.000
+finite 0.5  1 0.100 0.100 0.000
+finite 0.5  2 0.101 0.079 0.218
+finite 0.5  4 0.099 0.047 0.518
+finite 0.5  8 0.092 0.014 0.848
+finite 0.5 16 0.106 0.006 0.933
+finite 0.5 32 0.100 0.000 1.000
+random 0.5  1 0.100 0.100 0.000
+random 0.5  2 0.103 0.019 0.812
+random 0.5  4 0.099 0.001 0.986
+random 0.5  8 0.092 0.000 1.000
+random 0.5 16 0.094 0.000 1.000
+random 0.5 32 0.067 0.000 1.000
+true   1.2  1 0.100 0.100 0.000
+true   1.2  2 0.100 0.092 0.083
+true   1.2  4 0.100 0.074 0.263
+true   1.2  8 0.103 0.047 0.544
+true   1.2 16 0.106 0.011 0.892
+true   1.2 32 0.111 0.000 1.000
+finite 1.2  1 0.100 0.100 0.000
+finite 1.2  2 0.100 0.092 0.083
+finite 1.2  4 0.101 0.075 0.258
+finite 1.2  8 0.106 0.047 0.549
+finite 1.2 16 0.106 0.011 0.892
+finite 1.2 32 0.111 0.000 1.000
+random 1.2  1 0.100 0.100 0.000
+random 1.2  2 0.099 0.021 0.789
+random 1.2  4 0.094 0.003 0.969
+random 1.2  8 0.086 0.000 1.000
+random 1.2 16 0.089 0.000 1.000
+random 1.2 32 0.100 0.000 1.000

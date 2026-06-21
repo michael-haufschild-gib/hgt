@@ -1,0 +1,24 @@
+NODE simulation: Hofmeister rankings do not transfer across endpoints
+endpoint spearman_with_surface top4_overlap values_by_ion
+protein  -0.455 0 F:-0.35,Cl:-1.17,Br:1.04,I:-0.55,SO4:0.45,SCN:-1.50,ClO4:-0.80,NO3:0.54,Ac:1.49,Gdn:-0.79,Li:0.06,Cs:0.30
+membrane  0.622 3 F:-0.11,Cl:0.41,Br:0.15,I:0.28,SO4:-1.68,SCN:2.22,ClO4:1.77,NO3:0.27,Ac:-1.55,Gdn:-0.38,Li:-0.89,Cs:1.03
+polymer  -0.350 1 F:1.64,Cl:-0.08,Br:-0.61,I:0.27,SO4:-0.44,SCN:0.51,ClO4:-1.39,NO3:-0.69,Ac:-0.56,Gdn:-1.20,Li:-0.26,Cs:-0.30
+
+STEP8 Levenshtein transfer candidates
+1 distance=40 ratio=0.4444 bulk amplitude ranking does not automatically transfer to phase run defect endpoints
+2 distance=41 ratio=0.4556 surface zero shadow bridge ranking does not automatically transfer to topology endpoints
+3 distance=41 ratio=0.4556 ion prime coefficient ranking does not automatically transfer to finite euler endpoints
+selected=1 bulk amplitude ranking does not automatically transfer to phase run defect endpoints
+
+STEP8/9 HT transfer: endpoint ranking non-transfer
+threshold=1.000 samples_per_window=180 prime_count=160
+kind sigma corr_surface_phase corr_surface_run corr_surface_variance top4_phase top4_run top4_variance transfer_lemma surface_range phase_range run_range
+true   0.3 -0.750 -0.562 -0.826 0 0 0 fails -0.041:1.731 0.0000:0.3583 0.00:2.00
+finite 0.3 -0.791 -0.456 -0.976 0 1 0 fails 1.421:2.533 0.0000:0.0250 0.00:1.50
+random 0.3 -0.724 -0.012 -0.782 0 1 0 fails 0.774:1.625 0.0028:0.0778 1.00:1.50
+true   0.5 -0.385 -0.315 -0.565 0 0 0 fails 0.672:1.710 0.0000:0.2333 0.00:1.25
+finite 0.5 -0.800  0.668 -0.929 0 2 0 fails 0.717:1.661 0.0056:0.1222 1.00:1.12
+random 0.5  0.397  0.576 -0.029 0 2 0 fails 0.933:1.633 0.0167:0.0694 1.00:1.14
+true   1.2  0.453  0.476  0.365 2 2 2 fails 0.699:0.709 0.0000:0.0111 0.00:1.00
+finite 1.2  0.456  0.479  0.400 2 2 2 fails 0.699:0.709 0.0000:0.0139 0.00:1.25
+random 1.2  0.421  0.447  0.482 3 3 3 fails 0.699:0.725 0.0000:0.0111 0.00:3.00

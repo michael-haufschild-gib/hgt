@@ -1,0 +1,32 @@
+NODE test: inner-sphere and outer-sphere reorganization energies are distinct
+lambda_total = lambda_inner + lambda_outer; components scale differently.
+
+scale | inner | outer | total
+------|-------|-------|------
+  1.0 | 10.00 |  0.75 | 10.75
+  2.0 | 20.00 |  3.00 | 23.00
+  4.0 | 40.00 | 12.00 | 52.00
+  8.0 | 80.00 | 48.00 | 128.00
+
+ResearchNode mutation: height-baseline subtraction for off-seam width
+Raw second signal = height_inner + height_outer + off_seam_width.
+Wrong model subtracts only the inner linear baseline.
+
+case | scale | true width | wrong residual | component-resolved residual
+-----|-------|------------|----------------|----------------------------
+pure baseline |   1.0 |      0.000 |          0.750 |                      0.000
+pure baseline |   8.0 |      0.000 |         48.000 |                      0.000
+small width   |   2.0 |      0.500 |          3.500 |                      0.500
+mixed         |   4.0 |      1.000 |         13.000 |                      1.000
+mixed         |   8.0 |      1.000 |         49.000 |                      1.000
+
+Step-12 extreme-case verdict:
+  Pure-baseline at scale 8 creates wrong residual 48.0 if outer baseline is not
+  subtracted. Component-resolved subtraction recovers zero in pure-baseline cases
+  and the true width in mixed cases.
+
+Finding:
+  Height-baseline subtraction needs a component passport. A lumped or single-scaling
+  baseline can convert source height structure into fake off-seam width. The width
+  claim should report which baseline components were subtracted and how each scales
+  with the contour/window.

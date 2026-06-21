@@ -1,0 +1,19 @@
+# most dangerous polynomial p_d, d=6, N=80, dps=90
+# lambda_min(H_d^(0)) = 1.02727e-39;  y_1=5.0052e-03  y_hardedge≈2.47e-05
+# p_d coeffs: ['-1.528e-19', '5.916e-15', '-2.924e-11', '4.855e-8', '-3.39e-5', '0.01006', '-0.9999']
+# real roots of p_d: ['3.0076e-05', '3.2751e-04', '8.7633e-04', '1.5634e-03', '2.2617e-03', '5.0052e-03']  (compare atoms y_1..y_5 = ['5.005e-03', '2.263e-03', '1.599e-03', '1.080e-03', '9.219e-04'])
+# cumulative share of Q_0[p_d] by atom (tot=9.2485e-40):
+    atom n=  1 (y=5.005e-03): contrib=   6.738e-48  cum_share=7.2855e-9
+    atom n=  2 (y=2.263e-03): contrib=   7.639e-43  cum_share=0.00082601
+    atom n=  3 (y=1.599e-03): contrib=   4.184e-41  cum_share=0.04607
+    atom n=  4 (y=1.080e-03): contrib=   2.819e-40  cum_share=0.35091
+    atom n=  5 (y=9.219e-04): contrib=   1.325e-41  cum_share=0.36524
+    atom n=  6 (y=7.079e-04): contrib=   8.716e-41  cum_share=0.45948
+    atom n=  7 (y=5.972e-04): contrib=   1.094e-40  cum_share=0.57779
+    atom n=  8 (y=5.327e-04): contrib=   8.501e-41  cum_share=0.6697
+    atom n= 10 (y=4.036e-04): contrib=   1.435e-41  cum_share=0.71543
+    atom n= 15 (y=2.359e-04): contrib=   1.132e-41  cum_share=0.74001
+    atom n= 20 (y=1.680e-04): contrib=    1.63e-41  cum_share=0.8236
+    atom n= 30 (y=9.742e-05): contrib=    6.88e-42  cum_share=0.945
+    atom n= 50 (y=4.883e-05): contrib=   5.038e-43  cum_share=0.99743
+    atom n= 80 (y=2.469e-05): contrib=   2.803e-44  cum_share=1.0

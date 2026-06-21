@@ -1,0 +1,33 @@
+NODE validation: feedback transfer distorts reconstructed primordial power
+alpha small_scale_suppression inferred_tilt_shift
+ 0.0                  1.0000              0.0000
+ 0.2                  0.8050             -0.0643
+ 0.4                  0.6100             -0.1571
+ 0.6                  0.4150             -0.3048
+ 0.8                  0.2200             -0.5879
+Interpretation: increasing feedback monotonically suppresses small-scale power and biases the inferred primordial tilt if not deconvolved.
+
+Synthetic no-native-coupling lane test
+alpha observed_offdiag deconvolved_offdiag condition_number
+ 0.0         0.002862            0.002862            1.000
+ 0.2         0.008971            0.002862            1.681
+ 0.4         0.013181            0.002862            5.117
+ 0.6         0.014867            0.002862           44.067
+native_offdiag=0.002862
+
+HT transfer: cross-lane feedback-deconvolution passport
+kind alpha native_offdiag observed_offdiag deconvolved_offdiag condition_number
+true    0.0       0.143012         0.143012             0.143012            1.000
+true    0.2       0.143012         0.143729             0.143012            1.681
+true    0.4       0.143012         0.144036             0.143012            5.117
+true    0.6       0.143012         0.143933             0.143012           44.067
+finite  0.0       0.099935         0.099935             0.099935            1.000
+finite  0.2       0.099935         0.101263             0.099935            1.681
+finite  0.4       0.099935         0.102036             0.099935            5.117
+finite  0.6       0.099935         0.102253             0.099935           44.067
+random  0.0       0.007378         0.007378             0.007378            1.000
+random  0.2       0.007378         0.012534             0.007378            1.681
+random  0.4       0.007378         0.016046             0.007378            5.117
+random  0.6       0.007378         0.017587             0.007378           44.067
+
+Interpretation: a sigma-lane kernel claim needs a feedback-deconvolution passport: raw observed K, feedback operator or admissible family, deconvolved K, and the condition number/noise amplification. This is separate from common-time-field conditioning.

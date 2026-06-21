@@ -1,0 +1,20 @@
+NODE: stochastic resonance can improve detectability while degrading waveform fidelity
+noise detection_rate waveform_corr
+0.00 0.000 1.000
+0.15 1.000 0.968
+0.30 1.000 0.891
+0.50 1.000 0.753
+0.80 1.000 0.590
+1.20 1.000 0.463
+
+TRANSFER: ResearchNode 15 Uniform Jensen/Hankel positivity
+method #11 run experiments: PSD detection can be improved by ridge noise while Hankel fidelity degrades
+ridge min_eig psd_pass rel_frobenius_error profile_error
+0.00 -1.8612e-09 0 1.507e-05 1.507e-05
+0.25 -1.4566e-09 0 1.309e-05 1.189e-05
+0.50 -1.0520e-09 0 1.419e-05 9.061e-06
+0.75 -6.4739e-10 0 1.781e-05 6.996e-06
+1.00 -2.4277e-10 0 2.278e-05 6.483e-06
+1.25 +1.6185e-10 1 2.840e-05 7.833e-06
+2.00 +1.3757e-09 1 4.674e-05 1.664e-05
+4.00 +4.6126e-09 1 9.817e-05 4.478e-05

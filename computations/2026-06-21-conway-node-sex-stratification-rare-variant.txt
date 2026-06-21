@@ -1,0 +1,14 @@
+RARE-VARIANT EFFECT: POOLED VS SEX-STRATIFIED
+
+same positive effect in each stratum, carrier-rate imbalance
+  pooled: risk-diff=+0.0415, carriers=664, noncarriers=119336
+  male  : risk-diff=+0.0948, carriers=611, noncarriers=59389
+  female: risk-diff=+0.0651, carriers=53, noncarriers=59947
+  carrier male share=0.920; population male share=0.500
+
+stronger baseline imbalance: pooled effect diluted by composition
+  pooled: risk-diff=+0.0143, carriers=959, noncarriers=119041
+  male  : risk-diff=+0.1088, carriers=891, noncarriers=59109
+  female: risk-diff=+0.1778, carriers=68, noncarriers=59932
+  carrier male share=0.929; population male share=0.500
+

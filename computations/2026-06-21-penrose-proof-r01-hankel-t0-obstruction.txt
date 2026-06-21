@@ -1,0 +1,33 @@
+ResearchNode: prove uniform all-order PSD for [T_{i+j}]
+NODE constraint: white-noise covariance can be positive only as a generalized object,
+not as an ordinary trace-class/function-valued covariance.
+
+Split subclaims for reciprocal seam moments:
+  A. T_0 is finite.
+  B. T_k for k>=1 are finite.
+  C. shifted Hankels [T_{i+j+1}] can be ordinary finite PSD matrices.
+  D. unshifted Hankels [T_{i+j}] with i,j=0 are ordinary finite PSD matrices.
+
+Toy seam atom model y_n=1/n^2: infinite mass accumulating at 0, finite positive moments.
+N | T0(N) | T1(N) | T2(N) | det [[T1,T2],[T2,T3]]
+--|-------|-------|-------|-------------------------
+   10 |    10 | 1.54977 | 1.08204 |          0.405839879539
+  100 |   100 | 1.63498 | 1.08232 |          0.491916655844
+ 1000 |  1000 | 1.64393 | 1.08232 |          0.501021844259
+10000 | 10000 | 1.64483 | 1.08232 |          0.501936948880
+
+Limits for toy model:
+  T1 -> zeta(2) = 1.644934066848
+  T2 -> zeta(4) = 1.082323233711
+  T0 -> infinity
+
+Quadratic-form boundary:
+  p(y)=1 gives sum 1 = T0 = infinity.
+  p(y)=y gives sum y^2 = T2 < infinity.
+
+Finding:
+  The unshifted Hankel tower [T_{i+j}] in the proof route is not an ordinary
+  finite Stieltjes moment matrix unless T0 is replaced, regularized, or the
+  domain is restricted to test polynomials vanishing at 0. The natural ordinary
+  finite tower is the shifted one [T_{i+j+1}], corresponding to the finite
+  measure dnu=y dmu.

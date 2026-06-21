@@ -1,0 +1,43 @@
+STEP12 BATTERY: width/center/finite-prime sensitivity for Weld transitivity first bridge
+set kind prime_count width centers left center right mean_orientation mean_max_score
+zeros     finite        80 0.25  8  7  0  1 +0.072293 0.004546
+zeros     finite        80 0.45  8  1  0  7 -0.021907 0.034037
+zeros     finite        80 0.75  8  0  0  8 -0.035275 0.120679
+zeros     true         180 0.25  8  8  0  0 +0.083236 0.152819
+zeros     finite       180 0.25  8  6  1  1 +0.042139 0.007168
+zeros     random_phase 180 0.25  8  2  0  6 -0.014388 0.106696
+zeros     phase_only   180 0.25  8  8  0  0 +0.080635 0.626217
+zeros     true         180 0.45  8  8  0  0 +0.037083 0.178495
+zeros     finite       180 0.45  8  1  0  7 -0.037321 0.038435
+zeros     random_phase 180 0.45  8  1  0  7 -0.013495 0.138426
+zeros     phase_only   180 0.45  8  8  0  0 +0.054365 0.588410
+zeros     true         180 0.75  8  8  0  0 +0.012692 0.235864
+zeros     finite       180 0.75  8  0  0  8 -0.052679 0.149769
+zeros     random_phase 180 0.75  8  0  0  8 -0.011826 0.192788
+zeros     phase_only   180 0.75  8  8  0  0 +0.034716 0.571603
+zeros     finite       320 0.25  8  6  0  2 +0.047403 0.009318
+zeros     finite       320 0.45  8  1  0  7 -0.028267 0.048676
+zeros     finite       320 0.75  8  0  0  8 -0.046463 0.158900
+midpoints finite        80 0.25  7  0  0  7 -0.065412 0.399468
+midpoints finite        80 0.45  7  0  0  7 -0.054705 0.423790
+midpoints finite        80 0.75  7  0  1  6 -0.054273 0.415490
+midpoints true         180 0.25  7  7  0  0 +0.016076 0.603824
+midpoints finite       180 0.25  7  1  0  6 -0.076675 0.372487
+midpoints random_phase 180 0.25  7  7  0  0 +0.012683 0.284852
+midpoints phase_only   180 0.25  7  4  0  3 +0.000240 0.721698
+midpoints true         180 0.45  7  7  0  0 +0.015856 0.589984
+midpoints finite       180 0.45  7  1  0  6 -0.069814 0.428340
+midpoints random_phase 180 0.45  7  6  1  0 +0.011253 0.288616
+midpoints phase_only   180 0.45  7  4  0  3 +0.001561 0.709294
+midpoints true         180 0.75  7  7  0  0 +0.014319 0.558078
+midpoints finite       180 0.75  7  0  0  7 -0.068214 0.421725
+midpoints random_phase 180 0.75  7  6  1  0 +0.006845 0.289378
+midpoints phase_only   180 0.75  7  6  0  1 +0.003409 0.686704
+midpoints finite       320 0.25  7  0  0  7 -0.078505 0.419270
+midpoints finite       320 0.45  7  0  0  7 -0.072572 0.437363
+midpoints finite       320 0.75  7  0  0  7 -0.069809 0.424382
+
+STEP12 MIRROR-SIGN CHECK: true score orientation should flip if sigma coordinate is mirrored after scoring
+width=0.25 true_mean_orientation=+0.083236 coordinate_mirror=-0.083236
+width=0.45 true_mean_orientation=+0.037083 coordinate_mirror=-0.037083
+width=0.75 true_mean_orientation=+0.012692 coordinate_mirror=-0.012692

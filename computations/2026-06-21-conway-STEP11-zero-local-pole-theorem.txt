@@ -1,0 +1,15 @@
+STEP11 right theorem: local pole/source transverse curvature near zeros
+samples=120 prime_count=160
+kind width mean_peak max_peak
+true_xi     0.80  2204.6078  2204.9147
+finite_xi   0.80    36.7349   108.3391
+gamma_only  0.80     0.0003     0.0004
+true_xi     0.40  3054.2559  3054.5697
+finite_xi   0.40     9.5403    17.3526
+gamma_only  0.40     0.0003     0.0004
+true_xi     0.20  3915.3695  3915.6870
+finite_xi   0.20     6.5140    10.0630
+gamma_only  0.20     0.0003     0.0004
+true_xi     0.10  4779.9295  4780.2491
+finite_xi   0.10     5.9242     8.5617
+gamma_only  0.10     0.0003     0.0004

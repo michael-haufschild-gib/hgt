@@ -1,0 +1,11 @@
+Step 9 small cases: faithful integer index versus measured off-line density
+toy divisor: many on-line zeros plus one off-line FE pair
+
+N_on=   10  measured_offline_density=1.666667e-01  local_contour_winding=2.000000  kappa_minus=1
+N_on=  100  measured_offline_density=1.960784e-02  local_contour_winding=2.000000  kappa_minus=1
+N_on= 1000  measured_offline_density=1.996008e-03  local_contour_winding=2.000000  kappa_minus=1
+N_on=10000  measured_offline_density=1.999600e-04  local_contour_winding=2.000000  kappa_minus=1
+
+control: remove the off-line pair
+N_on=   10  local_contour_winding=0.000000  kappa_minus=0
+N_on= 1000  local_contour_winding=0.000000  kappa_minus=0

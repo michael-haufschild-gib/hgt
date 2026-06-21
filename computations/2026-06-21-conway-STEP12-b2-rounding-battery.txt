@@ -1,0 +1,68 @@
+STEP 12 B2 finite-size rounding battery
+Question: can one-scale source smoothing distinguish true seam source from symmetric off-seam pair?
+kernel weight_ratio false_seam_count total contour_small_zero_count resolved_count
+gaussian 1.00  21  36  36  15
+gaussian 1.25  15  36  36  15
+gaussian 2.00  14  36  36  15
+gaussian 4.00  10  36  36  15
+laplace  1.00   0  36  36  36
+laplace  1.25   5  36  36  31
+laplace  2.00   8  36  36  26
+laplace  4.00   8  36  36  21
+cauchy   1.00  14  36  36  22
+cauchy   1.25  14  36  36  21
+cauchy   2.00  11  36  36  21
+cauchy   4.00  10  36  36  15
+
+TRUE SEAM CONTROL
+kernel width peaks mode std
+gaussian 0.003 1 0.500000 0.003000
+gaussian 0.005 1 0.500000 0.005000
+gaussian 0.010 1 0.500000 0.010000
+gaussian 0.020 1 0.500000 0.020000
+gaussian 0.050 1 0.500000 0.050000
+gaussian 0.100 1 0.500000 0.099999
+laplace  0.003 1 0.500000 0.004241
+laplace  0.005 1 0.500000 0.007070
+laplace  0.010 1 0.500000 0.014142
+laplace  0.020 1 0.500000 0.028284
+laplace  0.050 1 0.500000 0.070614
+laplace  0.100 1 0.500000 0.132769
+cauchy   0.003 1 0.500000 0.030819
+cauchy   0.005 1 0.500000 0.039713
+cauchy   0.010 1 0.500000 0.055901
+cauchy   0.020 1 0.500000 0.078320
+cauchy   0.050 1 0.500000 0.120407
+cauchy   0.100 1 0.500000 0.162523
+
+BOUNDARY ROWS FOR EQUAL PAIR
+kernel delta width delta_over_width peaks mode std false_seam contour_small contour_large
+gaussian 0.005 0.005 1.00 1 0.500000 0.007071 1 0 2
+gaussian 0.005 0.020 0.25 1 0.500000 0.020616 1 0 2
+gaussian 0.005 0.050 0.10 1 0.500000 0.050249 1 0 2
+gaussian 0.020 0.005 4.00 2 0.480000 0.020616 0 0 2
+gaussian 0.020 0.020 1.00 1 0.500000 0.028284 1 0 2
+gaussian 0.020 0.050 0.40 1 0.500000 0.053852 1 0 2
+gaussian 0.050 0.005 10.00 2 0.450000 0.050249 0 0 2
+gaussian 0.050 0.020 2.50 2 0.450000 0.053852 0 0 2
+gaussian 0.050 0.050 1.00 1 0.500000 0.070711 1 0 2
+laplace  0.005 0.005 1.00 2 0.495000 0.008660 0 0 2
+laplace  0.005 0.020 0.25 2 0.495000 0.028723 0 0 2
+laplace  0.005 0.050 0.10 2 0.495000 0.070791 0 0 2
+laplace  0.020 0.005 4.00 2 0.480000 0.021213 0 0 2
+laplace  0.020 0.020 1.00 2 0.480000 0.034641 0 0 2
+laplace  0.020 0.050 0.40 2 0.480000 0.073385 0 0 2
+laplace  0.050 0.005 10.00 2 0.450000 0.050497 0 0 2
+laplace  0.050 0.020 2.50 2 0.450000 0.057446 0 0 2
+laplace  0.050 0.050 1.00 2 0.450000 0.086482 0 0 2
+cauchy   0.005 0.005 1.00 2 0.504500 0.040023 0 0 2
+cauchy   0.005 0.020 0.25 1 0.500000 0.078471 1 0 2
+cauchy   0.005 0.050 0.10 1 0.500000 0.120497 1 0 2
+cauchy   0.020 0.005 4.00 2 0.480000 0.044408 0 0 2
+cauchy   0.020 0.020 1.00 2 0.481750 0.080706 0 0 2
+cauchy   0.020 0.050 0.40 1 0.500000 0.121843 1 0 2
+cauchy   0.050 0.005 10.00 2 0.450000 0.063601 0 0 2
+cauchy   0.050 0.020 2.50 2 0.450250 0.092222 0 0 2
+cauchy   0.050 0.050 1.00 2 0.454500 0.129118 0 0 2
+
+Interpretation: equal-weight off-seam pairs have a stable false-seam regime across smoothing kernels when width is comparable to or larger than separation. Any contour with half-width below separation has zero charge, while a larger contour sees charge 2. Therefore one-scale B2 evidence is insufficient; B2 needs a multiscale contour/splitting gate.

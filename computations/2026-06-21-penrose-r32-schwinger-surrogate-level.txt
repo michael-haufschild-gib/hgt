@@ -1,0 +1,52 @@
+R32 SCHWINGER_SURROGATE_LEVEL
+NODE_RESULT
+  true_level_fit=2.9998755220574593
+  fake_level_fit=3.0798755220574594
+  true_integer_residue=0.00012447794254066835
+  fake_integer_residue=0.0798755220574594
+  true_local_rmse=0.01906269856202666
+  fake_local_rmse=0.019062698562026494
+  fake_vs_true_local_rmse=0.5881769152280482
+STEP8_LEVENSHTEIN
+  A_FE_even_nonvanishing_level_fake: 96
+  C_random_phase_integer_snap: 108
+  B_finite_euler_cutoff_level: 115
+  chosen=A_FE_even_nonvanishing_level_fake
+HGT_TRANSFER_RESULT
+  c median_delta_gap max_delta_gap median_FE_residual max_FE_residual median_level_estimate
+  c=0 median_delta_gap=0 max_delta_gap=0 median_FE_residual=5.294e-17 max_FE_residual=5.071e-16 level=0
+  c=0.0001 median_delta_gap=0.00195885226 max_delta_gap=0.018188783 median_FE_residual=4.594e-17 max_FE_residual=5.012e-16 level=0.0001
+  c=0.0005 median_delta_gap=0.00975619716 max_delta_gap=0.095088059 median_FE_residual=4.561e-17 max_FE_residual=4.786e-16 level=0.0005
+  c=0.001 median_delta_gap=0.0194183315 max_delta_gap=0.202128972 median_FE_residual=5.226e-17 max_FE_residual=4.525e-16 level=0.001
+  c=0.005 median_delta_gap=0.0925099372 max_delta_gap=4.04601751 median_FE_residual=3.153e-17 max_FE_residual=3.245e-16 level=0.005
+  stability_windows c=0.001
+  window=18.0-24.0 median_level=0.001 spread=1.670e-17
+  window=24.0-30.0 median_level=0.001 spread=3.534e-17
+  window=30.0-36.0 median_level=0.001 spread=1.065e-16
+STEP9_METHOD_RESULT
+  method=14 weaken the conjecture
+  weakened_claim=finite local carrier tests are vulnerable to FE-even zero-preserving level fakes
+  c=0.001
+  median_delta_gap=0.019418331493365505
+  median_level_estimate=0.0009999999999999996
+STEP12_FOLLOWUP
+  c=1.0e-04 tol=1.0e-02 median_delta_pass=True max_delta_pass=False
+  c=1.0e-04 tol=5.0e-03 median_delta_pass=True max_delta_pass=False
+  c=1.0e-04 tol=1.0e-03 median_delta_pass=False max_delta_pass=False
+  c=1.0e-04 tol=5.0e-04 median_delta_pass=False max_delta_pass=False
+  c=5.0e-04 tol=1.0e-02 median_delta_pass=True max_delta_pass=False
+  c=5.0e-04 tol=5.0e-03 median_delta_pass=False max_delta_pass=False
+  c=5.0e-04 tol=1.0e-03 median_delta_pass=False max_delta_pass=False
+  c=5.0e-04 tol=5.0e-04 median_delta_pass=False max_delta_pass=False
+  c=1.0e-03 tol=1.0e-02 median_delta_pass=False max_delta_pass=False
+  c=1.0e-03 tol=5.0e-03 median_delta_pass=False max_delta_pass=False
+  c=1.0e-03 tol=1.0e-03 median_delta_pass=False max_delta_pass=False
+  c=1.0e-03 tol=5.0e-04 median_delta_pass=False max_delta_pass=False
+  c=5.0e-03 tol=1.0e-02 median_delta_pass=False max_delta_pass=False
+  c=5.0e-03 tol=5.0e-03 median_delta_pass=False max_delta_pass=False
+  c=5.0e-03 tol=1.0e-03 median_delta_pass=False max_delta_pass=False
+  c=5.0e-03 tol=5.0e-04 median_delta_pass=False max_delta_pass=False
+  nearby_false=FE-exact and zero-preserving do not imply carrier-equivalent
+  minimal_counterexample=nonvanishing FE-even exponential factor with c != 0
+INTERPRETATION
+  FE-exact, zero-preserving nonvanishing factors form an epsilon-ladder for local carrier statistics: small c can pass finite median-delta tolerances while carrying a stable nonzero level coefficient. Surrogate ladders need a scale-stable level/growth gate, not only FE and correct-zero checks.

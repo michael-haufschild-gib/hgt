@@ -1,0 +1,5 @@
+03 orbit-length spectrum: order-2 constraint vs generated flow
+x=+0.50 involution_orbit=[0.5] orbit_size=1 flow_prefix=[0.5, 0.7, 0.8999999999999999, 1.0999999999999999]
+x=+0.40 involution_orbit=[0.4, 0.6] orbit_size=2 flow_prefix=[0.4, 0.6000000000000001, 0.8, 1.0]
+x=+0.70 involution_orbit=[0.3, 0.7] orbit_size=2 flow_prefix=[0.7, 0.8999999999999999, 1.0999999999999999, 1.2999999999999998]
+x=-1.00 involution_orbit=[-1.0, 2.0] orbit_size=2 flow_prefix=[-1.0, -0.8, -0.6000000000000001, -0.4000000000000001]

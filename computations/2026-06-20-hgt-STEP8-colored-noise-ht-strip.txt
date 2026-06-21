@@ -1,0 +1,36 @@
+STEP8 HT colored-noise strip transfer
+NODE kept: low-frequency noise may escape shallow basins but induce slow drift.
+HT change: colored horizontal drift around Re(s)=1/2; measure roughness and mirror imbalance of dlog fields.
+function       tau   roughness   mirror_imbalance
+lambda          0.0     2.15449         0.00000
+lambda          1.0     2.15521         0.00000
+lambda          2.0     2.15896         0.00000
+lambda          4.0     2.15618         0.00000
+lambda          8.0     2.14378         0.00000
+lambda         16.0     2.14830         0.00000
+lambda         32.0     2.16596         0.00000
+lambda         64.0     2.17139         0.00000
+zeta            0.0     2.51031         0.11064
+zeta            1.0     2.51039         0.11148
+zeta            2.0     2.51345         0.11296
+zeta            4.0     2.50888         0.11547
+zeta            8.0     2.49579         0.11684
+zeta           16.0     2.50301         0.11284
+zeta           32.0     2.52490         0.10636
+zeta           64.0     2.53330         0.10177
+gamma-factor    0.0     1.84169         0.00035
+gamma-factor    1.0     1.84169         0.00035
+gamma-factor    2.0     1.84169         0.00035
+gamma-factor    4.0     1.84169         0.00035
+gamma-factor    8.0     1.84169         0.00035
+gamma-factor   16.0     1.84169         0.00034
+gamma-factor   32.0     1.84169         0.00033
+gamma-factor   64.0     1.84169         0.00032
+finite-euler    0.0     2.39769         0.22416
+finite-euler    1.0     2.39778         0.22678
+finite-euler    2.0     2.39905         0.22974
+finite-euler    4.0     2.40051         0.23352
+finite-euler    8.0     2.40086         0.23583
+finite-euler   16.0     2.39976         0.22897
+finite-euler   32.0     2.39753         0.21604
+finite-euler   64.0     2.39418         0.20832

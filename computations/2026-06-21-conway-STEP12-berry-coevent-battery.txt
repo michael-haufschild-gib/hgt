@@ -1,0 +1,26 @@
+STEP12 battery: Berry switch co-event gate
+phase observable: mirror anti-phase; independent observable: mirror magnitude balance
+DELTA 0.06
+  completed_xi phase=123/123 mag=123/123 co=123/123 phase_only=0 mag_only=0 mean_resid=0.0000
+  bare_zeta phase=89/123 mag=123/123 co=89/123 phase_only=0 mag_only=34 mean_resid=0.0786
+  gamma_only phase=0/123 mag=123/123 co=0/123 phase_only=0 mag_only=123 mean_resid=0.6239
+  finite60_completed phase=0/123 mag=0/123 co=0/123 phase_only=0 mag_only=0 mean_resid=0.9344
+  phase_scrambled_completed phase=5/123 mag=102/123 co=5/123 phase_only=0 mag_only=97 mean_resid=0.6489
+DELTA 0.12
+  completed_xi phase=123/123 mag=123/123 co=123/123 phase_only=0 mag_only=0 mean_resid=0.0000
+  bare_zeta phase=89/123 mag=123/123 co=89/123 phase_only=0 mag_only=34 mean_resid=0.1007
+  gamma_only phase=0/123 mag=123/123 co=0/123 phase_only=0 mag_only=123 mean_resid=0.6239
+  finite60_completed phase=0/123 mag=0/123 co=0/123 phase_only=0 mag_only=0 mean_resid=0.9408
+  phase_scrambled_completed phase=4/123 mag=70/123 co=3/123 phase_only=1 mag_only=67 mean_resid=0.6729
+DELTA 0.2
+  completed_xi phase=123/123 mag=123/123 co=123/123 phase_only=0 mag_only=0 mean_resid=0.0000
+  bare_zeta phase=89/123 mag=41/123 co=41/123 phase_only=48 mag_only=0 mean_resid=0.1363
+  gamma_only phase=0/123 mag=123/123 co=0/123 phase_only=0 mag_only=123 mean_resid=0.6239
+  finite60_completed phase=0/123 mag=0/123 co=0/123 phase_only=0 mag_only=0 mean_resid=0.9532
+  phase_scrambled_completed phase=7/123 mag=53/123 co=4/123 phase_only=3 mag_only=49 mean_resid=0.6756
+DELTA 0.3
+  completed_xi phase=123/123 mag=123/123 co=123/123 phase_only=0 mag_only=0 mean_resid=0.0000
+  bare_zeta phase=89/123 mag=0/123 co=0/123 phase_only=89 mag_only=0 mean_resid=0.1848
+  gamma_only phase=0/123 mag=123/123 co=0/123 phase_only=0 mag_only=123 mean_resid=0.6240
+  finite60_completed phase=0/123 mag=0/123 co=0/123 phase_only=0 mag_only=0 mean_resid=0.9703
+  phase_scrambled_completed phase=6/123 mag=35/123 co=2/123 phase_only=4 mag_only=33 mean_resid=0.6657

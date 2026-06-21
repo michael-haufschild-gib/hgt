@@ -1,0 +1,43 @@
+NODE: social/economic feedbacks can reinforce ecological degradation
+gamma final_degraded final_lockin verdict
+0.0 0.017 0.047 recovered
+0.8 0.991 0.995 locked
+1.6 1.000 0.999 locked
+2.4 1.000 0.999 locked
+3.2 0.999 0.999 locked
+4.0 0.996 0.997 locked
+constraint: reversing the ecological driver is insufficient after feedback lock-in crosses a boundary
+
+TRANSFER: ResearchNode #1/#16 Conjecture E, scoped no prime-built generative flow
+method #23 classify boundary cases: positive/reversible prime-lane feedback may stabilize an internal regime; test whether it improves or worsens zero-spectral fit
+sigma beta entropy spectral_gap affine_zero_mse spacing_mse lockin_score
+0.3 00.0 0.980 1.2977e+00 0.105 0.963 2.98
+0.3 01.0 0.947 1.1415e+00 0.102 0.989 5.78
+0.3 02.0 0.891 1.0490e+00 0.099 1.048 11.24
+0.3 04.0 0.716 1.0336e+00 0.092 1.168 42.40
+0.3 07.0 0.434 1.3549e+00 0.083 1.291 310.76
+0.3 10.0 0.266 1.6912e+00 0.077 1.252 2277.45
+0.5 00.0 0.937 1.1709e+00 0.096 1.082 6.16
+0.5 01.0 0.864 1.0414e+00 0.095 1.114 14.24
+0.5 02.0 0.754 1.0053e+00 0.093 1.141 32.90
+0.5 04.0 0.494 1.1908e+00 0.090 1.227 175.67
+0.5 07.0 0.237 1.7709e+00 0.091 1.190 2167.43
+0.5 10.0 0.131 2.1288e+00 0.111 0.968 26739.56
+0.8 00.0 0.824 1.1107e+00 0.081 1.163 18.34
+0.8 01.0 0.700 1.0586e+00 0.081 1.183 47.20
+0.8 02.0 0.551 1.1243e+00 0.082 1.211 121.48
+0.8 04.0 0.296 1.5729e+00 0.085 1.257 804.78
+0.8 07.0 0.119 2.3143e+00 0.105 0.894 13722.07
+0.8 10.0 0.055 3.1982e+00 0.245 0.869 233963.94
+1.1 00.0 0.680 1.1729e+00 0.064 1.193 54.57
+1.1 01.0 0.539 1.2047e+00 0.066 1.192 145.65
+1.1 02.0 0.395 1.3680e+00 0.067 1.197 388.71
+1.1 04.0 0.191 1.9686e+00 0.072 1.121 2768.62
+1.1 07.0 0.066 3.0556e+00 0.114 0.743 52628.79
+1.1 10.0 0.025 4.9026e+00 0.463 0.734 1000416.31
+
+BOUNDARY SUMMARY
+sigma=0.3 best_zero_beta=10.0 best_zero_mse=0.077 strongest_lock_beta=10.0 strongest_lock_mse=0.077 strongest_lock_entropy=0.266
+sigma=0.5 best_zero_beta=4.0 best_zero_mse=0.090 strongest_lock_beta=10.0 strongest_lock_mse=0.111 strongest_lock_entropy=0.131
+sigma=0.8 best_zero_beta=0.0 best_zero_mse=0.081 strongest_lock_beta=10.0 strongest_lock_mse=0.245 strongest_lock_entropy=0.055
+sigma=1.1 best_zero_beta=0.0 best_zero_mse=0.064 strongest_lock_beta=10.0 strongest_lock_mse=0.463 strongest_lock_entropy=0.025

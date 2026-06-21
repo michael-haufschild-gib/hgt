@@ -1,0 +1,45 @@
+NODE: allometric exponent sensitivity to taxonomic range, body-size range, and life stage
+seed=20260621
+criterion: a clean universal-slope null should be stable; biological offsets and slope heterogeneity should make subset-dependent fits
+
+MODEL clean_universal_slope_control: all=0.7450 slope_range=0.0510 slope_sd=0.0148
+all                0.7450
+clade_large        0.7283
+clade_meso         0.7723
+clade_micro        0.7485
+size_tertile_1     0.7413
+size_tertile_2     0.7638
+size_tertile_3     0.7213
+stage_adult        0.7459
+stage_juvenile     0.7436
+
+MODEL universal_slope_with_offsets: all=0.8921 slope_range=0.1764 slope_sd=0.0616
+all                0.8921
+clade_large        0.7461
+clade_meso         0.7725
+clade_micro        0.7682
+size_tertile_1     0.8211
+size_tertile_2     0.9225
+size_tertile_3     0.8304
+stage_adult        0.8932
+stage_juvenile     0.8937
+
+MODEL heterogeneous_clade_stage: all=1.0171 slope_range=0.3611 slope_sd=0.1186
+all                1.0171
+clade_large        0.9526
+clade_meso         0.7919
+clade_micro        0.7645
+size_tertile_1     0.8321
+size_tertile_2     1.0120
+size_tertile_3     1.0690
+stage_adult        0.9571
+stage_juvenile     1.1255
+
+SLOPE HETEROGENEITY SWEEP
+spread all_slope subset_range subset_sd juvenile adult micro meso large
+ 0.00    0.9546       0.2980    0.0937   1.0747   0.8907   0.7767   0.8243   0.8029
+ 0.25    0.9580       0.3205    0.0976   1.0837   0.8977   0.7632   0.8192   0.8297
+ 0.50    0.9801       0.3312    0.1024   1.1000   0.9198   0.7688   0.8051   0.9005
+ 0.75    0.9972       0.3580    0.1120   1.1137   0.9346   0.7557   0.7876   0.8971
+ 1.00    1.0168       0.3299    0.1121   1.1170   0.9565   0.7870   0.8276   0.9382
+ 1.25    1.0311       0.4466    0.1492   1.1527   0.9680   0.7060   0.8217   0.9817

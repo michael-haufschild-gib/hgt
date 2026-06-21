@@ -1,0 +1,21 @@
+FINITE-WINDOW TIME AVERAGE VS ENSEMBLE AVERAGE
+initial state is in the negative component; stationary ensemble is symmetric
+
+epsilon=0.02
+  stationary ensemble mean=+0.000000
+  spectral gap=0.04; mixing scale~25.0
+  median first exit from initial component=35
+  T=   25: mean(time avg)=-0.6403, std=0.5681, P(|avg-ensemble|>0.5)=0.805
+  T=  100: mean(time avg)=-0.2368, std=0.5634, P(|avg-ensemble|>0.5)=0.507
+  T=  500: mean(time avg)=-0.0580, std=0.2975, P(|avg-ensemble|>0.5)=0.100
+  T= 2000: mean(time avg)=-0.0116, std=0.1539, P(|avg-ensemble|>0.5)=0.001
+
+epsilon=0.002
+  stationary ensemble mean=+0.000000
+  spectral gap=0.004; mixing scale~250.0
+  median first exit from initial component=342
+  T=   25: mean(time avg)=-0.9570, std=0.2312, P(|avg-ensemble|>0.5)=0.979
+  T=  100: mean(time avg)=-0.8284, std=0.4430, P(|avg-ensemble|>0.5)=0.912
+  T=  500: mean(time avg)=-0.4368, std=0.6151, P(|avg-ensemble|>0.5)=0.671
+  T= 2000: mean(time avg)=-0.1257, std=0.4541, P(|avg-ensemble|>0.5)=0.326
+

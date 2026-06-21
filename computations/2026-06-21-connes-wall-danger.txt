@@ -1,0 +1,8 @@
+# SA cross-check (polygamma vs Taylor[A]) max rel err = 1.05e-121
+# mode=danger N=200 DMAX=6 dps=120 (cache 300@170)
+d=2: lmin=2.2296e-13 |<p_d,u>|=0.969588 Qa=-1026.6 Qp=1026.6 Q0=2.2296e-13 |Qa|/|Qp|=1.0 -> PRIME-DELICATE
+d=3: lmin=1.0841e-19 |<p_d,u>|=0.969903 Qa=-16440.0 Qp=16440.0 Q0=1.0841e-19 |Qa|/|Qp|=1.0 -> PRIME-DELICATE
+d=4: lmin=3.3328e-26 |<p_d,u>|=0.970182 Qa=-2.6319e+5 Qp=2.6319e+5 Q0=3.3328e-26 |Qa|/|Qp|=1.0 -> PRIME-DELICATE
+d=5: lmin=8.2549e-33 |<p_d,u>|=0.970433 Qa=-4.2133e+6 Qp=4.2133e+6 Q0=8.2549e-33 |Qa|/|Qp|=1.0 -> PRIME-DELICATE
+d=6: lmin=1.0274e-39 |<p_d,u>|=0.970635 Qa=-6.744e+7 Qp=6.744e+7 Q0=1.0274e-39 |Qa|/|Qp|=1.0 -> PRIME-DELICATE
+EXIT=0

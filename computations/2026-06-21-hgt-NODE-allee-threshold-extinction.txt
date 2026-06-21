@@ -1,0 +1,38 @@
+NODE: Allee threshold extinction-risk cliff
+reps=7000 steps=160
+
+Initial-abundance sweep; same mean growth scale, with vs without Allee threshold
+initial allee_extinct noallee_extinct allee_med_t noallee_med_t allee_final_median noallee_final_median
+   18.0       0.88686         0.00871           9             6            0.00000             114.02878
+   22.0       0.79143         0.00386          11             9            0.00000             115.03611
+   25.0       0.70700         0.00086          12             6            0.00000             114.80287
+   27.0       0.64014         0.00129          12             9            0.00000             114.35190
+   29.0       0.57071         0.00100          13             9            0.00000             114.79791
+   30.0       0.53114         0.00114          13            10            0.00000             114.70016
+   31.0       0.50214         0.00057          13           7.5            0.00000             114.75098
+   33.0       0.43914         0.00043          14             7           92.53230             115.07063
+   36.0       0.33814         0.00029          15           9.5          102.15080             115.17934
+   42.0       0.17729         0.00014          15             6          109.10650             114.46374
+max_adjacent_extinction_jump_allee=0.16086
+max_adjacent_extinction_jump_noallee=0.00486
+
+Threshold-location sweep at fixed initial abundance
+threshold extinct_frac median_extinction_time final_median
+     22.0      0.19071                     14     109.84424
+     25.0      0.28129                     14     106.72315
+     28.0      0.38643                     13      98.74242
+     30.0      0.45857                     14      87.92857
+     32.0      0.54157                     14       0.00000
+     34.0      0.62286                     14       0.00000
+     36.0      0.67457                     14       0.00000
+     38.0      0.73100                     14       0.00000
+max_adjacent_threshold_jump=0.10514
+
+Noise-strength boundary cases
+env_sigma extinct_below_A extinct_at_A extinct_above_A cliff_jump
+    0.000         0.63100      0.52014        0.42614    0.11086
+    0.025         0.62700      0.52529        0.40529    0.12000
+    0.055         0.62329      0.52814        0.43100    0.09714
+    0.100         0.66571      0.58157        0.48386    0.09771
+
+Interpretation: the constraint is validated if the Allee model has a much sharper adjacent extinction-risk jump than the no-Allee control, and if moving the threshold across the same initial abundance flips risk.

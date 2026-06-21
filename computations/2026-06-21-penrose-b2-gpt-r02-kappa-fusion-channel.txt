@@ -1,0 +1,17 @@
+NODE test: fusion channel is part of anyon state data
+  intermediate_1: {'dimension': 1, 'total_tau_allowed': True, 'total_1_allowed': False}
+  intermediate_tau: {'dimension': 1, 'total_tau_allowed': True, 'total_1_allowed': True}
+  Same type list tau,tau,tau; intermediate channel changes the state space.
+
+ResearchNode mutation: kappa_- construction needs a fusion/channel passport
+  scalar diagonal reporter A=[1.0, 1.0, 1.0, 1.0], B=[1.0, 1.0, 1.0, 1.0]
+  traces A/B=4.000/4.000
+  Frobenius norms A/B=2.692582/2.500000
+  channel_A inertia neg/zero/pos=(1, 0, 3), eigenvalues=-0.250, 0.750, 1.250, 2.250
+  channel_B inertia neg/zero/pos=(0, 0, 4), eigenvalues=0.250, 0.250, 1.750, 1.750
+  offdiag absolute mass A/B=3.000/3.000
+
+Finding:
+  Same source labels and diagonal data can have different kappa_- depending on fusion/channel
+  wiring. A source-built index must report the channel map from Euler/Gamma/pole/FE data into
+  a congruence class of forms; marginal source labels or scalar reporters are not enough.

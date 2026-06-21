@@ -1,0 +1,15 @@
+Step 8 transfer attempts by Levenshtein distance
+reciprocal_tail_classes_t0: 71
+finite_prefix_shifted_hankel: 71
+combined_sector_positivity: 72
+chosen_transfer: reciprocal_tail_classes_t0
+
+Reciprocal atoms y_n=e^{-n}, weights a_n; T_k(N)=sum_{n<=N} a_n y_n^k
+harmonic_log: T0(200)=5.87803, T1(200)=0.458675145387, T2(200)=0.145413457869
+linear: T0(200)=200, T1(200)=0.581976706869, T2(200)=0.15651764275
+stretched_exp: T0(200)=3.71346e+07, T1(200)=2.08804390792, T2(200)=0.460215423713
+forbidden_exp control: a_n=e^n gives T0(30)=1.69058e+13, T1(30)=30 (T1 diverges linearly)
+svg_plot=computations/2026-06-21-penrose-proof-r12-t0-tail-classes.svg
+
+Interpretation:
+All three admissible classes have T0 diverging and T1,T2 converging, but the T0 partial masses grow like log N, N, and stretched exponential in sqrt(N). Thus shifted finite towers do not select a unique T0 regularization rate. The proof route should remain shifted/rate-free unless a separate source theorem supplies the near-zero tail class.

@@ -1,0 +1,28 @@
+NODE simulation: population immunity rotates favored antigenic direction
+no_memory_choice=0 no_memory_angle=0.0
+direction_index fraction
+0 0.150
+1 0.458
+2 0.000
+3 0.000
+4 0.392
+dominant_with_memory=1 rotation_angle_deg=60.00
+
+STEP8 transfer attempts by Levenshtein distance
+A_phase_memory_direction     distance=21
+B_amplitude_memory_direction distance=21
+C_zero_memory_direction      distance=25
+selected=A_phase_memory_direction
+
+STEP8/9 HT transfer: history-conditioned phase-selection direction
+samples=260 finite_prime_count=160
+kind window raw_left feedback_left raw_entropy choice_entropy mean_rotation switch_rate
+true   [14,84] 0.638 0.508 0.830 1.580 0.1477 0.799
+true   [100,170] 0.754 0.619 0.806 1.488 0.1012 0.683
+true   [500,570] 0.750 0.692 0.864 1.363 0.0644 0.718
+finite [14,84] 0.442 0.412 1.519 1.606 0.0594 0.795
+finite [100,170] 0.542 0.423 1.439 1.608 0.0815 0.846
+finite [500,570] 0.569 0.438 1.306 1.606 0.1129 0.880
+random [14,84] 0.454 0.396 1.578 1.606 0.0377 0.811
+random [100,170] 0.438 0.400 1.603 1.608 0.0329 0.826
+random [500,570] 0.381 0.373 1.606 1.606 0.0367 0.811

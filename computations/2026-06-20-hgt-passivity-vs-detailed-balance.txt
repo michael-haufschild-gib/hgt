@@ -1,0 +1,16 @@
+NODE: passivity vs detailed balance
+Constraint: passivity is state/Hamiltonian work-extraction; detailed balance is rate-level reversibility.
+case              passive  ergotropy   detailed_balance  db_error
+gibbs+db          True       0.00000   True             0
+inverted+db       False      1.20000   True             0
+passive+nondb     True       0.00000   False            0.54977
+inverted+nondb    False      1.20000   False            0.54977
+
+STEP8/9 HT transfer
+Minimal edit: detailed balance -> FE mirror pairing; passivity -> no off-line zero directions.
+Method #23 classify boundary cases.
+case              FE_balance  passive_line  off_line_count  kappa_minus_proxy
+rh+fe             True        True                      0                  0
+off_line_fe       True        False                     4                  2
+rh_no_fe          False       True                      0                  0
+off_line_no_fe    False       False                     3                  1

@@ -1,0 +1,19 @@
+=== Ward/mirror residual  W_f(s) = H_f(s) + H_f(1-s)  ===
+  point                      |W_xi|        |W_S|        |W_S - W_xi|
+           (0.8 + 18.0j)     1.23e-32     1.23e-32          0.0
+           (0.5 + 27.0j)     1.22e-32     1.22e-32          0.0
+           (0.7 + 35.0j)     1.23e-32     1.23e-32          0.0
+           (0.4 + 12.0j)     1.23e-32     1.23e-32          0.0
+  -> W_xi ~ 0 (FE) AND W_S = W_xi: the Ward residual cannot separate xi from the surrogate.
+
+=== source measure: Laplacian of Re(q),  q = c(s-1/2)^2  (must be 0 => mu_S = mu_xi) ===
+  max |Laplacian Re(q)| over points: 3.16e-18  (0 => source measure unchanged)
+
+=== winding of the surrogate level:  oint dq around a closed rectangle ( = 0 ) ===
+  |oint dq| = 2.16e-32  (0 => event-holonomy / winding unchanged)
+
+=== verdict ===
+  All four T_xi components (event-holonomy, source tomography, Ward residual, passport) are
+  INVARIANT under the rung-1 surrogate e^{q}xi. T_xi is a function of {zeros, FE, source measure}
+  only => it is a SOURCE-GEOMETRY / FE detector (the BRIDGE / positivity axis, Conjecture C),
+  NOT a transcendence detector. The GPT 'hidden variables 2 (source) + 3 (FE)' are the verdict.

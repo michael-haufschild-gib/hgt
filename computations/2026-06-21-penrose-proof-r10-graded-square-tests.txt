@@ -1,0 +1,33 @@
+NODE experiment: same ungraded spectrum, different Witten index
+model_A_ungraded=[0, 1, 1, 2, 2]
+model_B_ungraded=[0, 1, 1, 2, 2]
+same_ungraded=True
+model_A_witten_index=1
+model_B_witten_index=-1
+
+Step 8 transfer attempts by Levenshtein distance
+combined_vs_sector_shifted_forms: 31
+support_only_multiplicity: 49
+finite_prefix_obstruction: 49
+chosen_transfer: combined_vs_sector_shifted_forms
+
+Transferred all-order graded square-test witness
+{'witness': 'even', 'd': 1, 'H0_inertia': (0, 0, 2), 'H1_inertia': (1, 0, 1), 'H0_plus_H1_inertia': (0, 1, 1), 'combined_is_all_ones': True}
+{'witness': 'even', 'd': 2, 'H0_inertia': (0, 1, 2), 'H1_inertia': (1, 1, 1), 'H0_plus_H1_inertia': (0, 2, 1), 'combined_is_all_ones': True}
+{'witness': 'even', 'd': 3, 'H0_inertia': (0, 2, 2), 'H1_inertia': (1, 2, 1), 'H0_plus_H1_inertia': (0, 3, 1), 'combined_is_all_ones': True}
+{'witness': 'even', 'd': 4, 'H0_inertia': (0, 3, 2), 'H1_inertia': (1, 3, 1), 'H0_plus_H1_inertia': (0, 4, 1), 'combined_is_all_ones': True}
+{'witness': 'even', 'd': 5, 'H0_inertia': (0, 4, 2), 'H1_inertia': (1, 4, 1), 'H0_plus_H1_inertia': (0, 5, 1), 'combined_is_all_ones': True}
+{'witness': 'even', 'd': 6, 'H0_inertia': (0, 5, 2), 'H1_inertia': (1, 5, 1), 'H0_plus_H1_inertia': (0, 6, 1), 'combined_is_all_ones': True}
+{'witness': 'even', 'd': 7, 'H0_inertia': (0, 6, 2), 'H1_inertia': (1, 6, 1), 'H0_plus_H1_inertia': (0, 7, 1), 'combined_is_all_ones': True}
+{'witness': 'even', 'd': 8, 'H0_inertia': (0, 7, 2), 'H1_inertia': (1, 7, 1), 'H0_plus_H1_inertia': (0, 8, 1), 'combined_is_all_ones': True}
+{'witness': 'shifted_even', 'd': 1, 'H0_inertia': (1, 0, 1), 'H1_inertia': (0, 0, 2), 'H0_plus_H1_inertia': (0, 1, 1), 'combined_is_all_ones': True}
+{'witness': 'shifted_even', 'd': 2, 'H0_inertia': (1, 1, 1), 'H1_inertia': (0, 1, 2), 'H0_plus_H1_inertia': (0, 2, 1), 'combined_is_all_ones': True}
+{'witness': 'shifted_even', 'd': 3, 'H0_inertia': (1, 2, 1), 'H1_inertia': (0, 2, 2), 'H0_plus_H1_inertia': (0, 3, 1), 'combined_is_all_ones': True}
+{'witness': 'shifted_even', 'd': 4, 'H0_inertia': (1, 3, 1), 'H1_inertia': (0, 3, 2), 'H0_plus_H1_inertia': (0, 4, 1), 'combined_is_all_ones': True}
+{'witness': 'shifted_even', 'd': 5, 'H0_inertia': (1, 4, 1), 'H1_inertia': (0, 4, 2), 'H0_plus_H1_inertia': (0, 5, 1), 'combined_is_all_ones': True}
+{'witness': 'shifted_even', 'd': 6, 'H0_inertia': (1, 5, 1), 'H1_inertia': (0, 5, 2), 'H0_plus_H1_inertia': (0, 6, 1), 'combined_is_all_ones': True}
+{'witness': 'shifted_even', 'd': 7, 'H0_inertia': (1, 6, 1), 'H1_inertia': (0, 6, 2), 'H0_plus_H1_inertia': (0, 7, 1), 'combined_is_all_ones': True}
+{'witness': 'shifted_even', 'd': 8, 'H0_inertia': (1, 7, 1), 'H1_inertia': (0, 7, 2), 'H0_plus_H1_inertia': (0, 8, 1), 'combined_is_all_ones': True}
+
+Interpretation:
+The NODE shows that ungraded spectral data can be identical while the graded index changes sign. The shifted square-test transfer has the same failure mode: for every d tested, the combined form H0+H1 is the all-ones PSD form while one graded sector is indefinite. Thus the Layer B theorem cannot be weakened to positivity of Q0+Q1; it must prove sectorwise positivity of Q0 and Q1.

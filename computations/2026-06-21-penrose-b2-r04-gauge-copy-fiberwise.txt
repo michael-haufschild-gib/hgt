@@ -1,0 +1,22 @@
+NODE test: gauge copy selection can preserve global mean while spoiling sector averages
+  global gauge-variant mean=+0.002600
+  sector=0 mean=+0.185939
+  sector=1 mean=+0.190381
+  sector=2 mean=-0.191076
+  sector=3 mean=-0.174845
+  Same gauge condition, uneven copy selection: global average hides sector bias.
+
+ResearchNode mutation: native weld category objectwise/fiberwise compatibility
+  base commutator norm=1.051190
+  ensemble signed mean commutator norm=2.488257e-03
+  mean objectwise commutator norm=1.045726
+  p95 objectwise commutator norm=1.127413
+  copy-sector + mean norm=1.043237
+  copy-sector - mean norm=1.048214
+  tolerance-filter artifact:
+    full mean/p95=0.322426/0.973783; kept mean/p95=0.254421/0.308195; dropped=18
+
+Finding:
+  Ensemble-zero compatibility can be a copy-selection artifact. A native weld category needs
+  a copy-resolved fiberwise passport: per-object commutator norm, copy-sector means, and
+  tolerance/dropout accounting, not just the signed ensemble average.

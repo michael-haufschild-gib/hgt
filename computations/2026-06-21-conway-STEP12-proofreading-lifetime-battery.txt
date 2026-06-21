@@ -1,0 +1,59 @@
+STEP12 battery: kinetic-proofreading phase-lifetime
+samples=220
+
+A. threshold stress at sigma=0.3, prime_count=160 (mean across windows)
+threshold kind occupancy entry_rate off_hazard median_run survive_8 survive_16 survive_32
+0.00 true   0.942 0.024 0.0238 150.33 0.929 0.738 0.690
+0.00 finite 0.497 0.268 0.5371 2.00 0.000 0.000 0.000
+0.00 random 0.430 0.232 0.5347 1.67 0.007 0.000 0.000
+0.10 true   0.879 0.044 0.0525 82.67 0.733 0.610 0.444
+0.10 finite 0.338 0.236 0.6963 1.00 0.000 0.000 0.000
+0.10 random 0.342 0.218 0.6376 1.00 0.000 0.000 0.000
+0.25 true   0.729 0.100 0.1437 7.33 0.369 0.152 0.061
+0.25 finite 0.117 0.076 0.6445 1.33 0.000 0.000 0.000
+0.25 random 0.253 0.185 0.7328 1.00 0.000 0.000 0.000
+0.50 true   0.450 0.156 0.3395 3.00 0.015 0.000 0.000
+0.50 finite 0.044 0.033 0.7675 1.00 0.000 0.000 0.000
+0.50 random 0.133 0.112 0.8277 1.00 0.000 0.000 0.000
+
+B. sigma boundary at threshold=0.0, prime_count=160 (mean across windows)
+sigma true_entry finite_entry true_off finite_off true_survive8 finite_survive8 random_survive8
+0.2 0.015 0.285 0.0121 0.5739 0.958 0.000 0.000
+0.3 0.024 0.268 0.0238 0.5371 0.929 0.000 0.000
+0.4 0.042 0.247 0.0495 0.4908 0.738 0.000 0.000
+0.5 0.152 0.220 0.2058 0.4353 0.189 0.006 0.006
+0.7 0.148 0.156 0.2947 0.3512 0.076 0.044 0.007
+0.9 0.133 0.135 0.2933 0.3155 0.079 0.076 0.000
+1.2 0.094 0.092 0.2274 0.2270 0.123 0.124 0.000
+
+C. finite-Euler prime-count stress at sigma=0.3, threshold=0.0
+prime_count finite_entry finite_off finite_survive8 finite_survive16 true_survive16
+ 30 0.198 0.4448 0.000 0.000 0.738
+ 80 0.241 0.4823 0.000 0.000 0.738
+160 0.268 0.5371 0.000 0.000 0.738
+240 0.295 0.5758 0.000 0.000 0.738
+
+D. method ledger for scientific-method moves
+1 split: entry/on-rate and off-hazard/lifetime are reported separately.
+2 attack-false: high occupancy alone is insufficient; true often has lower entry but longer survival.
+3 reverse: finite controls can match occupancy but not long-run survival at sigma=0.3.
+4 viewpoint: pointwise Delta is re-represented as a run-length survival process.
+5 visual: proofreading depth becomes the length of a visible uninterrupted positive-defect run.
+6 action: repeated rejection tests phase persistence, not amplitude size.
+7 essentials: binary positive-defect runs are enough for the lifetime discriminator.
+8 similar objects: finite Euler and random-phase controls are the similar objects.
+9 small cases: finite prime_count=30 already has short-run behavior.
+10 extremes: threshold=0.5 and sigma=1.2 are boundary stresses.
+11 experiments: threshold, sigma, and prime-count sweeps are the probes.
+12 invariant: true left-strip survival-depth advantage persists across windows.
+13 monotone: survival advantage decreases moving right in sigma.
+14 weaken: claim only left-strip lifetime/off-rate advantage.
+15 strengthen: universal-depth or right-strip claim is false.
+16 minimal counterexample: sigma=1.2 gives true and finite similar lifetimes.
+17 representation: run-length survival is the required representation change.
+18 theorem-tool resemblance: needs a persistence/hazard bound for phase-defect sign.
+19 fake-proof gap: positive median Delta does not imply long-run survival without dependence control.
+20 missing lemma: left-strip positive-defect run-length tail lower bound for true zeta.
+21 dependency: prove entry/off decomposition, then survival-tail separation, then finite-control bound.
+22 nearby false: more amplitude or more finite primes does not create true-like long survival.
+23 boundary cases: left strip survives; right strip and high thresholds delimit the claim.

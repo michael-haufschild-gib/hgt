@@ -1,0 +1,13 @@
+NODE: phase-slip detection / independent observable validation
+NODE phase-only jumps=4 validated_by_amplitude=3
+NODE jumps=[180, 300, 420, 610]
+NODE validated=[180, 420, 610]
+
+TRANSFER: ResearchNode 35 Berry switch
+minimal change: phase slip -> anti-phase mirror switch; independent observable -> mirror magnitude balance
+method #3 reverse: test phase->magnitude and magnitude->phase, not only one direction
+ROW completed_xi phase_hits=243/243 mag_hits=243/243 co_hits=243/243 phase_only=0 mag_only=0 mean_resid=0.0000 max_resid=0.0000
+ROW bare_zeta phase_hits=176/243 mag_hits=243/243 co_hits=176/243 phase_only=0 mag_only=67 mean_resid=0.1004 max_resid=0.2379
+ROW gamma_only phase_hits=0/243 mag_hits=243/243 co_hits=0/243 phase_only=0 mag_only=243 mean_resid=0.6239 max_resid=0.6976
+ROW finite60_completed phase_hits=0/243 mag_hits=0/243 co_hits=0/243 phase_only=0 mag_only=0 mean_resid=0.9416 max_resid=1.0000
+ROW phase_scrambled_completed phase_hits=12/243 mag_hits=65/243 co_hits=6/243 phase_only=6 mag_only=59 mean_resid=0.6888 max_resid=1.0000

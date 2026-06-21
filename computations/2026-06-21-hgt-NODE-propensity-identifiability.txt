@@ -1,0 +1,16 @@
+NODE validation: count histograms do not identify propensity mechanism
+target_NB mean=18.000 shape=4.500 p=0.20000 n=120000
+model count_mean count_var js_to_target js_to_other q50 q90 q99
+extrinsic_gamma_propensity  17.9918 89.3834 0.00973 0.01252 17.0 31.0 46.0
+bursty_birth_propensity     17.9633 89.5854 0.00974 0.01252 17.0 31.0 46.0
+
+Same endpoint counts, different hidden event structure
+model jump_mean jump_q90 multi_jump_fraction
+extrinsic  1.0000 1.0 0.0000
+bursty     4.9782 11.0 0.8017
+
+ABC histogram-fit ambiguity
+accepted_extrinsic=1 accepted_bursty=3 tolerance=0.035
+distance_median=0.11794 distance_q10=0.06238
+
+Read: snapshot count data can be fit by two different propensity mechanisms. The equivalence breaks only after observing event/jump structure, so the constraint is identifiability of the observation map, not just parameter fitting.

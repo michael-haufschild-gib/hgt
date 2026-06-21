@@ -1,0 +1,24 @@
+NODE test: nematic half-charge is a quotient-manifold fact
+  polar-vector lifted charge=0.500000 (not a closed vector loop)
+  tensor/order-parameter winding=1.000000
+  polar representative nonclosure error=1.999995
+  line-field closure error under n~-n=0.004363
+  The same visual defect is well-defined only after declaring the order-parameter quotient.
+
+ResearchNode mutation: carrier status under exact representative changes
+  Synthetic source connection H=1/z + d(q), q=a z^2.
+  Winding/source charge should stay 1; representative-sensitive carrier proxies may move.
+    gauge=0.00 charge=1.000000822468 charge_err=8.22e-07 mean_proxy=+0.000000 max_proxy=+0.000000
+    gauge=0.20 charge=1.000000822468 charge_err=8.22e-07 mean_proxy=-0.000000 max_proxy=+0.295711
+    gauge=0.50 charge=1.000000822468 charge_err=8.22e-07 mean_proxy=+0.000000 max_proxy=+1.021622
+    gauge=0.78 charge=1.000000822468 charge_err=8.22e-07 mean_proxy=-0.000183 max_proxy=+5.648034
+    gauge=1.00 charge=1.000000822468 charge_err=8.22e-07 mean_proxy=+0.000000 max_proxy=+1.519754
+    gauge=2.00 charge=1.000000822468 charge_err=8.22e-07 mean_proxy=-0.000000 max_proxy=+0.495318
+    gauge=5.00 charge=1.000000822468 charge_err=8.22e-07 mean_proxy=-0.000000 max_proxy=+0.169898
+  max-proxy drift across exact gauges=5.648034
+
+Finding:
+  The carrier-status statement needs an order-parameter/quotient passport. Source charge and
+  contour moments are invariant under exact representative changes, so they are geometry diagnostics.
+  Any representative-sensitive phase proxy must be demoted unless it first proves quotient invariance;
+  if it is quotient-invariant, it still detects source geometry rather than HT.

@@ -1,0 +1,27 @@
+NODE test: multiplicity of a crystallographic position is orbit-stabilizer data
+group=D4, |G|=8
+
+generic
+  point=(Fraction(1, 5), Fraction(3, 10))
+  stabilizer=['id']  |Stab|=1
+  orbit_size=8  |G|/|Stab|=8
+  orbit=[(Fraction(-3, 10), Fraction(-1, 5)), (Fraction(-3, 10), Fraction(1, 5)), (Fraction(-1, 5), Fraction(-3, 10)), (Fraction(-1, 5), Fraction(3, 10)), (Fraction(1, 5), Fraction(-3, 10)), (Fraction(1, 5), Fraction(3, 10)), (Fraction(3, 10), Fraction(-1, 5)), (Fraction(3, 10), Fraction(1, 5))]
+
+diagonal_special
+  point=(Fraction(1, 4), Fraction(1, 4))
+  stabilizer=['id', 'mdiag']  |Stab|=2
+  orbit_size=4  |G|/|Stab|=4
+  orbit=[(Fraction(-1, 4), Fraction(-1, 4)), (Fraction(-1, 4), Fraction(1, 4)), (Fraction(1, 4), Fraction(-1, 4)), (Fraction(1, 4), Fraction(1, 4))]
+
+axis_special
+  point=(Fraction(0, 1), Fraction(2, 5))
+  stabilizer=['id', 'my']  |Stab|=2
+  orbit_size=4  |G|/|Stab|=4
+  orbit=[(Fraction(-2, 5), Fraction(0, 1)), (Fraction(0, 1), Fraction(-2, 5)), (Fraction(0, 1), Fraction(2, 5)), (Fraction(2, 5), Fraction(0, 1))]
+
+center_special
+  point=(Fraction(0, 1), Fraction(0, 1))
+  stabilizer=['id', 'r90', 'r180', 'r270', 'mx', 'my', 'mdiag', 'manti']  |Stab|=8
+  orbit_size=1  |G|/|Stab|=1
+  orbit=[(Fraction(0, 1), Fraction(0, 1))]
+

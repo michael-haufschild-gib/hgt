@@ -1,0 +1,11 @@
+[setup] dps=50  random M=4000 zeros (same density, jittered arithmetic)
+  sanity: S_2  AP=1.082323234  zeta=3.717259929e-5  rand=1.569939899e-5
+
+pi-period relation  c0*pi^{2k} + c1*S_k = 0  (PSLQ, height<=1e6):
+ k |         AP (expect relation) |     zeta (expect none) |      random (the test)
+ 2 |        ([1, -90], 90, '0.0') |                   None |                   None
+ 3 |  ([1, 945], 945, '1.37e-48') |                   None |                   None
+ 4 |    ([1, -9450], 9450, '0.0') |                   None |                   None
+
+[reading] AP finds relations; if BOTH zeta and random find NONE, the detector separates
+          arithmetically-simple (pi-period) from generic, but NOT zeta from same-density random.

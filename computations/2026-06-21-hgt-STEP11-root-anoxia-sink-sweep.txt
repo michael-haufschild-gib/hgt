@@ -1,0 +1,13 @@
+STEP11 root-anoxia alternate-sink sweep
+method=13 find-a-monotone-quantity; scalar relief can rise while phase function stays deficient
+window alpha relief_proxy phase_function
+[100,170] 0.00 2.331672 0.000000
+[100,170] 0.25 2.581672 0.000000
+[100,170] 0.50 2.831672 0.000000
+[100,170] 1.00 3.331672 0.000000
+[100,170] 2.00 4.331672 0.000000
+[500,570] 0.00 2.615364 0.000000
+[500,570] 0.25 2.865364 0.000000
+[500,570] 0.50 3.115364 0.000000
+[500,570] 1.00 3.615364 0.000000
+[500,570] 2.00 4.615364 0.000000

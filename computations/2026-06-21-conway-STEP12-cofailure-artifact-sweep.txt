@@ -1,0 +1,27 @@
+STEP12 battery: co-failure artifact-channel sweep
+THR 0.12 true_exI=+0.230 finite_exI=-0.022
+ count=1 width=16 mixed_exI=+0.036 mixed_vis=0.650 art_only_exI=+0.000 art_only_vis=0.000
+ count=1 width=40 mixed_exI=+0.004 mixed_vis=0.664 art_only_exI=+0.000 art_only_vis=0.000
+ count=1 width=72 mixed_exI=+0.011 mixed_vis=0.736 art_only_exI=+0.000 art_only_vis=0.000
+ count=2 width=16 mixed_exI=+0.056 mixed_vis=0.671 art_only_exI=+0.000 art_only_vis=0.000
+ count=2 width=40 mixed_exI=+0.028 mixed_vis=0.707 art_only_exI=+0.000 art_only_vis=0.000
+ count=2 width=72 mixed_exI=+0.017 mixed_vis=0.786 art_only_exI=+0.000 art_only_vis=0.000
+ count=3 width=16 mixed_exI=+0.056 mixed_vis=0.671 art_only_exI=+0.099 art_only_vis=0.100
+ count=3 width=40 mixed_exI=+0.047 mixed_vis=0.743 art_only_exI=+0.250 art_only_vis=0.271
+ count=3 width=72 mixed_exI=+0.014 mixed_vis=0.821 art_only_exI=+0.367 art_only_vis=0.500
+ count=5 width=16 mixed_exI=+0.057 mixed_vis=0.679 art_only_exI=+0.106 art_only_vis=0.114
+ count=5 width=40 mixed_exI=+0.030 mixed_vis=0.750 art_only_exI=+0.202 art_only_vis=0.286
+ count=5 width=72 mixed_exI=-0.034 mixed_vis=0.829 art_only_exI=+0.154 art_only_vis=0.514
+THR 0.2 true_exI=+0.186 finite_exI=-0.030
+ count=1 width=16 mixed_exI=+0.008 mixed_vis=0.800 art_only_exI=+0.000 art_only_vis=0.000
+ count=1 width=40 mixed_exI=-0.009 mixed_vis=0.814 art_only_exI=+0.000 art_only_vis=0.000
+ count=1 width=72 mixed_exI=-0.019 mixed_vis=0.850 art_only_exI=+0.000 art_only_vis=0.000
+ count=2 width=16 mixed_exI=+0.004 mixed_vis=0.800 art_only_exI=+0.000 art_only_vis=0.000
+ count=2 width=40 mixed_exI=+0.010 mixed_vis=0.843 art_only_exI=+0.000 art_only_vis=0.000
+ count=2 width=72 mixed_exI=+0.016 mixed_vis=0.900 art_only_exI=+0.000 art_only_vis=0.000
+ count=3 width=16 mixed_exI=+0.006 mixed_vis=0.800 art_only_exI=+0.099 art_only_vis=0.100
+ count=3 width=40 mixed_exI=+0.015 mixed_vis=0.857 art_only_exI=+0.250 art_only_vis=0.271
+ count=3 width=72 mixed_exI=+0.002 mixed_vis=0.907 art_only_exI=+0.367 art_only_vis=0.500
+ count=5 width=16 mixed_exI=+0.009 mixed_vis=0.807 art_only_exI=+0.106 art_only_vis=0.114
+ count=5 width=40 mixed_exI=+0.016 mixed_vis=0.871 art_only_exI=+0.202 art_only_vis=0.286
+ count=5 width=72 mixed_exI=-0.016 mixed_vis=0.914 art_only_exI=+0.154 art_only_vis=0.514

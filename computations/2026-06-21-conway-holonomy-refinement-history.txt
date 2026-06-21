@@ -1,0 +1,16 @@
+NODE: small initial advantages compound through reinforcement
+NODE_ROW neutral_mean=0.496 red_shock_mean=0.755 blue_shock_mean=0.254 red_minus_blue=0.501 red_q10_q90=(0.480,0.972)
+
+TRANSFER: ResearchNode #4/#5/#6 cohomology of carrier holonomy modulo passport
+method #20 name the missing lemma: a Master-1 holonomy class must be invariant under refinement history, not only under total passport size
+window schedule budgets winding_real winding_imag raw_L1_vs_uniform mean_L1_vs_uniform
+[100,170] uniform      [180, 180, 180, 180] +34.8107 +0.0000 0.000 0.000
+[100,170] bottom_shock [258, 34, 189, 239] +34.4675 -4.2155 0.287 0.035
+[100,170] right_shock  [83, 275, 197, 165] +34.9980 +0.0376 0.136 0.001
+[100,170] top_shock    [45, 192, 129, 354] +34.9774 -0.0023 0.399 0.001
+[100,170] left_shock   [187, 317, 89, 127] +34.9043 +0.1528 0.473 0.002
+[500,570] uniform      [180, 180, 180, 180] +49.9608 -0.0000 0.000 0.000
+[500,570] bottom_shock [555, 51, 55, 59] +49.5657 +2.6932 1.039 0.010
+[500,570] right_shock  [344, 286, 49, 41] +51.2612 +1.4205 0.860 0.011
+[500,570] top_shock    [52, 112, 400, 156] +49.9076 +0.1365 0.615 0.002
+[500,570] left_shock   [243, 69, 51, 357] +49.7919 +0.3264 0.771 0.005

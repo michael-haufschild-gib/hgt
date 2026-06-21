@@ -1,0 +1,4 @@
+NODE: membrane compartments as dynamic probability zones, not fixed boxes
+case soft_occ_mean soft_occ_std hard_occ_mean hard_occ_std fuzzy_boundary_mean hard_crossing_mean
+fixed_box         0.555792 0.083995 0.604865 0.098510 0.192763 0.028519
+dynamic_soft_zone 0.481280 0.160944 0.441151 0.080384 0.191763 0.042448

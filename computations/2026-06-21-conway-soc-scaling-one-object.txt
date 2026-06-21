@@ -1,0 +1,42 @@
+THE-MACHINE tick: SOC multiple scaling relations -> The one object
+NODE: multiple scaling relations should be checked together not just one fitted exponent
+Standing-order target: 1/32 The one object
+STEP 6 NODE TEST: one exponent can be faked while scaling relations fail
+Good data and fake data share the same size sample. The fake shuffles sizes against durations, preserving the size exponent but breaking the duration relation.
+case alpha_size alpha_duration gamma_size_vs_duration scaling_residual
+consistent 0.7642 1.1893 1.5355 0.0158
+shuffled   0.7642 1.1893 0.0146 1.1781
+NODE verdict: a single fitted exponent is insufficient; the action is compatibility among several scaling relations.
+
+STEP 7 FORMULA CHECK
+SOC exponent formulas do not apply unchanged to HGT. The transfer keeps the NODE constraint: a candidate one-object field should be judged by compatibility among event-component scaling relations, not by one exponent or raw event count.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=58 normalized=0.7073: the one object must pass joint event size duration scaling not one exponent
+2. distance=60 normalized=0.7317: H equals A plus P should be tested by compatible scaling relations together
+3. distance=57 normalized=0.6951: single scalar exponent cannot choose the completed object H A plus P
+chosen=3: single scalar exponent cannot choose the completed object H A plus P
+
+STEP 9 METHOD 6: ASK WHAT ACTION IS HAPPENING
+Action: extract event components, fit size and duration tails, then check alpha_T ≈ gamma alpha_S.
+case object components alpha_size alpha_duration gamma residual span_mean event_cells
+zero_low      A        0005 nan nan nan nan 9.000 03240
+zero_low      P        0107 2.9710 2.7302 0.9529 0.1008 7.168 03240
+zero_low      H        0110 4.0792 5.1431 1.4484 0.7651 8.264 03240
+zero_low      Delta    0110 2.0769 2.7632 1.5150 0.3834 7.227 03240
+zero_low      finiteH  0120 1.1142 1.3829 1.3327 0.1020 2.833 03240
+zero_low      randomH  0357 1.0967 1.9970 1.7714 0.0544 3.104 03240
+critical_low  A        0005 nan nan nan nan 9.000 03240
+critical_low  P        0158 2.4626 2.4360 0.9679 0.0525 6.127 03240
+critical_low  H        0174 4.1013 5.0056 1.4380 0.8922 7.397 03240
+critical_low  Delta    0166 2.0048 3.0099 1.5021 0.0014 6.367 03240
+critical_low  finiteH  0160 1.5157 1.8949 1.3792 0.1957 2.619 03240
+critical_low  randomH  0354 1.3810 2.0784 1.4993 0.0079 3.401 03240
+critical_high A        0005 nan nan nan nan 9.000 03240
+critical_high P        0210 2.1603 2.2526 1.0018 0.0886 5.338 03240
+critical_high H        0242 2.6008 3.2808 1.3579 0.2509 6.413 03240
+critical_high Delta    0231 2.0668 3.0905 1.4445 0.1049 5.628 03240
+critical_high finiteH  0126 1.1183 1.4497 1.2418 0.0610 2.444 03240
+critical_high randomH  0502 1.5333 2.2967 1.5087 0.0166 2.966 03240
+
+Provisional interpretation: a low residual is only meaningful if it selects H over A/P/finite/random and persists across windows. Otherwise multiple-scaling checks are instrument hygiene, not a one-object theorem.

@@ -1,0 +1,74 @@
+THE-MACHINE tick: residual compactness -> The Weld
+NODE: residual operators not always being compact in noncompact or incomplete settings
+Standing-order target: 24/32 The Weld
+STEP 6 NODE TEST: smoothing residual compactness on compact vs expanding domains
+Gaussian convolution is smoothing. On a fixed compact interval its effective Fourier rank stabilizes as resolution increases. On an expanding periodic interval with fixed mesh, the number of significant singular values grows with volume, so the smoothing residual is not compact in the infinite-volume limit.
+case L dx n threshold_rank entropy_rank top_sv tail_sv
+compact_refine   20.0 0.20   100   55   37.585 1.000 2.733e-07
+compact_refine   20.0 0.10   200   55   37.585 1.000 5.576e-27
+compact_refine   20.0 0.05   400   55   37.585 1.000 9.667e-106
+expanding        20.0 0.10   200   55   37.585 1.000 5.576e-27
+expanding        40.0 0.10   400  111   75.171 1.000 5.576e-27
+expanding        80.0 0.10   800  221  150.342 1.000 5.576e-27
+expanding       160.0 0.10  1600  441  300.683 1.000 5.576e-27
+NODE verdict: smoothing/residual form does not imply compactness without a compact-domain hypothesis.
+
+STEP 7 FORMULA CHECK
+Parametrix/residual compactness criteria do not apply unchanged to the Weld. The transfer uses the phase-weld defect trace and changes representation to a Hankel operator over expanding t-windows.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=41 normalized=0.5125: weld residual operators are not always compact in expanding t windows
+2. distance=51 normalized=0.6375: smoothing away weld residual can fail compactness on incomplete seam windows
+3. distance=55 normalized=0.6875: pointwise small weld remainders may have noncompact transport rank
+chosen=1: weld residual operators are not always compact in expanding t windows
+
+STEP 9 METHOD 17: CHANGE REPRESENTATION
+Pointwise trace -> Hankel operator. A compact-looking residual should have stable effective singular rank as the t-window grows.
+sigma length kind mean_abs threshold_rank entropy_rank top_sv s10_ratio
+0.5   40.0 true              0.60565   53   45.457 25.457 0.41253
+0.5   40.0 finite            0.27517   53   47.993 5.8537 0.80281
+0.5   40.0 random            0.26806   53   50.905 8.4132 0.71286
+0.5   40.0 true_minus_finite 0.48614   53   46.619 22.564 0.38290
+0.5   40.0 true_minus_random 0.64338   53   46.769 28.595 0.42731
+0.5   80.0 true              0.61561   64   56.422 35.839 0.51162
+0.5   80.0 finite            0.28721   64   59.512 11.006 0.80209
+0.5   80.0 random            0.26195   64   62.143 9.7199 0.81019
+0.5   80.0 true_minus_finite 0.48486   64   59.160 28.394 0.50101
+0.5   80.0 true_minus_random 0.65452   64   58.708 36.466 0.53662
+0.5  160.0 true              0.62706   64   58.181 43.332 0.60921
+0.5  160.0 finite            0.29913   64   59.891 16.111 0.84825
+0.5  160.0 random            0.28995   64   63.192 14.939 0.85185
+0.5  160.0 true_minus_finite 0.49124   64   60.376 34.5 0.64018
+0.5  160.0 true_minus_random 0.64711   64   60.881 43.591 0.64601
+0.8   40.0 true              0.28755   53   33.408 9.8691 0.61423
+0.8   40.0 finite            0.30924   53   42.301 9.9323 0.60729
+0.8   40.0 random            0.35247   53   50.500 8.1841 0.79024
+0.8   40.0 true_minus_finite 0.07199   53   41.641 2.9407 0.59997
+0.8   40.0 true_minus_random 0.39857   53   47.983 14.01 0.52522
+0.8   80.0 true              0.28332   64   41.317 13.52 0.75664
+0.8   80.0 finite            0.30127   64   51.284 13.561 0.74894
+0.8   80.0 random            0.32544   64   62.423 10.717 0.80827
+0.8   80.0 true_minus_finite 0.06425   64   51.797 3.9816 0.61738
+0.8   80.0 true_minus_random 0.35711   64   60.230 16.529 0.70743
+0.8  160.0 true              0.27815   64   42.690 17.371 0.87556
+0.8  160.0 finite            0.29458   64   52.533 17.343 0.88065
+0.8  160.0 random            0.29900   64   62.960 14.847 0.91909
+0.8  160.0 true_minus_finite 0.05990   64   53.705 4.7667 0.74591
+0.8  160.0 true_minus_random 0.32998   64   62.120 22.779 0.77173
+1.2   40.0 true              0.13963   53   26.179 4.857 0.65945
+1.2   40.0 finite            0.13984   53   26.920 4.8562 0.65983
+1.2   40.0 random            0.14395   53   50.439 3.4648 0.73523
+1.2   40.0 true_minus_finite 0.00227   53   41.363 0.12835 0.49171
+1.2   40.0 true_minus_random 0.15569   53   48.357 5.3839 0.57206
+1.2   80.0 true              0.13358   64   32.669 7.4637 0.66262
+1.2   80.0 finite            0.13371   64   33.227 7.4631 0.66321
+1.2   80.0 random            0.14026   64   61.517 4.4797 0.80599
+1.2   80.0 true_minus_finite 0.00206   64   52.070 0.16642 0.51516
+1.2   80.0 true_minus_random 0.15030   64   57.421 7.5573 0.80469
+1.2  160.0 true              0.12689   64   33.422 10.747 0.61649
+1.2  160.0 finite            0.12702   64   33.965 10.736 0.61781
+1.2  160.0 random            0.11365   64   62.892 4.9995 0.86125
+1.2  160.0 true_minus_finite 0.00197   64   54.780 0.2193 0.56463
+1.2  160.0 true_minus_random 0.13098   64   58.622 9.5979 0.78551
+
+Provisional verdict: promote only if true-minus-control residual rank grows in the critical/weld region but collapses on the right side; otherwise this is a generic noncompact-window warning.

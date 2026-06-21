@@ -1,0 +1,45 @@
+NODE: hidden execution/evaluation flags can affect output
+example=sum of repeated [1e16, 1, -1e16]
+sequential_python_sum=10000.0
+compensated_math_fsum=10000.0
+grouped_reassociated_sum=16384.0
+constraint: a claimed numerical fact needs an execution/tolerance passport when the computation is non-associative or ill-conditioned
+
+TRANSFER: ResearchNode #34 Conjecture E kill gate
+method #17 change representation: same prime-wave residual source, different solver/tolerance representations
+positive margins mean the fitted correction improves over the smooth Riemann-von Mangoldt inverse baseline
+K features cond flag flag_value beta_norm ordinate_margin spacing_margin ordinate_improvement_rate
+08 18   138.09 rcond None    0.5902 +0.198810 +0.304063 0.700
+08 18   138.09 rcond 0.01    0.5447 +0.198442 +0.304182 0.700
+08 18   138.09 rcond  0.1    0.5447 +0.198442 +0.304182 0.700
+08 18   138.09 ridge 1e-08    0.5902 +0.198810 +0.304063 0.700
+08 18   138.09 ridge 1e-04    0.5882 +0.198803 +0.304066 0.700
+08 18   138.09 ridge 1e-01    0.5431 +0.199026 +0.304526 0.700
+13 28   204.49 rcond None    0.5491 +0.195514 +0.302178 0.650
+13 28   204.49 rcond 0.01    0.5421 +0.195422 +0.302202 0.650
+13 28   204.49 rcond  0.1    0.5421 +0.195422 +0.302202 0.650
+13 28   204.49 ridge 1e-08    0.5491 +0.195514 +0.302178 0.650
+13 28   204.49 ridge 1e-04    0.5486 +0.195510 +0.302180 0.650
+13 28   204.49 ridge 1e-01    0.5402 +0.195929 +0.302692 0.650
+20 42   241.08 rcond None    0.6270 +0.198871 +0.299590 0.700
+20 42   241.08 rcond 0.01    0.5777 +0.198881 +0.299653 0.650
+20 42   241.08 rcond  0.1    0.5777 +0.198881 +0.299653 0.650
+20 42   241.08 ridge 1e-08    0.6270 +0.198871 +0.299590 0.700
+20 42   241.08 ridge 1e-04    0.6220 +0.198875 +0.299595 0.700
+20 42   241.08 ridge 1e-01    0.5721 +0.200098 +0.301365 0.800
+30 62   303.14 rcond None    1.0271 -0.097889 -0.071029 0.450
+30 62   303.14 rcond 0.01    0.9704 -0.102102 -0.077417 0.450
+30 62   303.14 rcond  0.1    0.5222 +0.130780 +0.211913 0.600
+30 62   303.14 ridge 1e-08    1.0271 -0.097889 -0.071029 0.450
+30 62   303.14 ridge 1e-04    1.0173 -0.096923 -0.070087 0.450
+30 62   303.14 ridge 1e-01    0.5958 +0.165679 +0.234156 0.650
+34 70   640.01 rcond None    7.0967 -3.883132 -5.770250 0.100
+34 70   640.01 rcond 0.01    0.6667 +0.041837 +0.113296 0.500
+34 70   640.01 rcond  0.1    0.5251 +0.093756 +0.189026 0.550
+34 70   640.01 ridge 1e-08    7.0964 -3.882996 -5.770049 0.100
+34 70   640.01 ridge 1e-04    5.3372 -2.867789 -4.292943 0.100
+34 70   640.01 ridge 1e-01    0.5769 +0.096325 +0.176030 0.500
+
+GATE SUMMARY
+for K=34, the untruncated least-squares representation fails badly (ordinate -3.883, spacing -5.770), while rcond=0.01 or ridge=1e-1 turns the same source into an apparent pass
+Conjecture E kill gates must therefore include a representation passport: solver, precision, truncation, ridge/tolerance, condition number, and a pass/fail stability strip

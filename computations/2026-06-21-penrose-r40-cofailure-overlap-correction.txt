@@ -1,0 +1,55 @@
+Penrose R40: inner-filter overlap correction for co-failure sheets
+ResearchNode: #24 Co-failure sheets
+NODE: apparent quenching caused by simple absorbance overlap rather than true excited-state deactivation
+STEP 5/6 NODE TEST: overlap quenching vs deactivation
+Constraint: absorbance overlap can reduce measured intensity without true excited-state deactivation. Lifetime is an invariant that should not change for pure inner-filter overlap.
+case intensity_ratio lifetime_ratio
+dynamic_quench 2.4000 2.4000
+overlap_filter 3.9811 1.0000
+NODE verdict: intensity loss alone cannot certify quenching; an overlap-invariant channel such as lifetime is needed.
+
+STEP 7 FORMULA CHECK
+Stern-Volmer / inner-filter correction formulas do not transfer literally. The transferable constraint is an invariant split: apparent failure caused by magnitude overlap must be subtracted before claiming source-lane co-failure.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=57 normalized=0.5816: co-failure sheets may be simple amplitude-overlap not source deactivation
+2. distance=71 normalized=0.7245: subtract inner-filter overlap before claiming source-lane co-failure
+3. distance=73 normalized=0.7449: co-failure invariant is residual angle cancellation after overlap correction
+chosen=1: co-failure sheets may be simple amplitude-overlap not source deactivation
+
+STEP 9 METHOD 12: FIND AN INVARIANT
+Invariant candidate: phase co-failure should survive after subtracting the magnitude-overlap/inner-filter component `min(|Gamma|,|P|)/max(...)`. Residual co-failure is the angle/source part.
+ABSOLUTE_RESERVE_BASELINE
+window kind visible excess_indep excess_shift mean_lows_given
+low  true         0.393 +0.188 +0.192 4.273
+low  finite       0.807 -0.024 -0.021 4.513
+low  random-phase 0.764 -0.011 -0.003 4.206
+high true         0.321 +0.214 +0.219 3.244
+high finite       0.779 -0.099 -0.103 4.743
+high random-phase 0.793 +0.037 +0.036 4.090
+window kind score visible excess_indep excess_shift mean_lows_given
+low  true         phase    0.193 +0.160 +0.159 4.778
+low  true         overlap  0.200 +0.168 +0.169 3.250
+low  true         residual 0.186 +0.156 +0.155 4.731
+low  finite       phase    0.193 +0.158 +0.158 3.963
+low  finite       overlap  0.143 +0.109 +0.112 3.800
+low  finite       residual 0.179 +0.146 +0.145 4.080
+low  random-phase phase    0.071 +0.040 +0.038 3.200
+low  random-phase overlap  0.200 +0.164 +0.168 3.250
+low  random-phase residual 0.071 +0.042 +0.040 3.200
+high true         phase    0.193 +0.160 +0.162 4.667
+high true         overlap  0.179 +0.146 +0.150 3.600
+high true         residual 0.200 +0.167 +0.167 4.071
+high finite       phase    0.179 +0.146 +0.150 4.240
+high finite       overlap  0.157 +0.124 +0.124 3.591
+high finite       residual 0.193 +0.156 +0.158 4.222
+high random-phase phase    0.050 +0.017 +0.018 3.286
+high random-phase overlap  0.179 +0.144 +0.147 3.600
+high random-phase residual 0.064 +0.031 +0.032 3.222
+
+ABS_TRUE_PHASE_POSITIVE 2/2
+ABS_FINITE_PHASE_POSITIVE 0/2
+TRUE_RESIDUAL_COFAILURE_POSITIVE 2/2
+FINITE_RESIDUAL_COFAILURE_POSITIVE 2/2
+OVERLAP_ONLY_POSITIVE_ROWS 6/6
+Interpretation: if the absolute-reserve baseline separates true from finite but rank-normalized overlap/residual rows do not, the invariant is not residualization alone; absolute source-reserve calibration is load-bearing.

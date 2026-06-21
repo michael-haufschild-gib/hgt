@@ -1,0 +1,30 @@
+STEP8/9 phase Hurst-estimation boundary cases
+samples=768 prime_count=160 method=23 classify_boundary_cases
+kind sigma window clean noisy aggregate shift artifact_spread
+true   0.3 [100,170] clean=0.3830 noisy=0.3582 aggregate=0.0304 shift=0.3857 artifact_spread=0.3553
+finite 0.3 [100,170] clean=0.1469 noisy=0.1310 aggregate=0.0086 shift=0.1524 artifact_spread=0.1437
+random 0.3 [100,170] clean=0.0081 noisy=0.0055 aggregate=0.0230 shift=0.0115 artifact_spread=0.0175
+true   0.5 [100,170] clean=0.2003 noisy=0.1773 aggregate=0.0055 shift=0.2036 artifact_spread=0.1981
+finite 0.5 [100,170] clean=0.1632 noisy=0.1464 aggregate=-0.0011 shift=0.1676 artifact_spread=0.1687
+random 0.5 [100,170] clean=-0.0018 noisy=0.0030 aggregate=0.0015 shift=-0.0008 artifact_spread=0.0049
+true   0.7 [100,170] clean=0.3637 noisy=0.3384 aggregate=0.0332 shift=0.3677 artifact_spread=0.3346
+finite 0.7 [100,170] clean=0.2022 noisy=0.1776 aggregate=0.0149 shift=0.2066 artifact_spread=0.1917
+random 0.7 [100,170] clean=0.0008 noisy=0.0024 aggregate=-0.0050 shift=0.0034 artifact_spread=0.0085
+true   1.2 [100,170] clean=0.4991 noisy=0.4748 aggregate=0.1174 shift=0.5037 artifact_spread=0.3863
+finite 1.2 [100,170] clean=0.4967 noisy=0.4704 aggregate=0.1168 shift=0.5014 artifact_spread=0.3845
+random 1.2 [100,170] clean=0.0210 noisy=0.0132 aggregate=0.0404 shift=0.0247 artifact_spread=0.0272
+true   0.3 [500,570] clean=0.3025 noisy=0.2792 aggregate=0.0148 shift=0.3024 artifact_spread=0.2878
+finite 0.3 [500,570] clean=0.1509 noisy=0.1301 aggregate=0.0285 shift=0.1527 artifact_spread=0.1242
+random 0.3 [500,570] clean=0.0084 noisy=0.0078 aggregate=0.0098 shift=0.0103 artifact_spread=0.0025
+true   0.5 [500,570] clean=0.1015 noisy=0.0900 aggregate=-0.0048 shift=0.1021 artifact_spread=0.1069
+finite 0.5 [500,570] clean=0.1653 noisy=0.1446 aggregate=0.0148 shift=0.1655 artifact_spread=0.1507
+random 0.5 [500,570] clean=0.0147 noisy=0.0110 aggregate=0.0121 shift=0.0163 artifact_spread=0.0052
+true   0.7 [500,570] clean=0.2935 noisy=0.2671 aggregate=0.0185 shift=0.2941 artifact_spread=0.2756
+finite 0.7 [500,570] clean=0.1550 noisy=0.1388 aggregate=0.0057 shift=0.1558 artifact_spread=0.1501
+random 0.7 [500,570] clean=0.0006 noisy=-0.0058 aggregate=0.0112 shift=0.0025 artifact_spread=0.0170
+true   1.2 [500,570] clean=0.4803 noisy=0.4546 aggregate=0.0981 shift=0.4805 artifact_spread=0.3824
+finite 1.2 [500,570] clean=0.4773 noisy=0.4488 aggregate=0.0973 shift=0.4776 artifact_spread=0.3803
+random 1.2 [500,570] clean=0.0269 noisy=0.0232 aggregate=0.0888 shift=0.0290 artifact_spread=0.0656
+
+reduction gate
+Promote nothing if H-like estimates are artifact-sensitive for true and controls alike, or if right-strip true/finite collapse.

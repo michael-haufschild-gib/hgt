@@ -1,0 +1,19 @@
+NODE: mass-transfer limitation can mimic intrinsic catalytic hot spots
+sites=600
+case rate_median surface_median corr_app_k corr_app_h top_k_enrichment top_h_enrichment mt_limited_frac top_k_median top_h_median
+uniform_k_variable_transport       0.498191 0.498191 nan 0.994282 1.000000 1.349108 0.516667 1.000000 1.339381
+variable_k_uniform_transport       0.487664 0.512336 0.996607 nan 1.326605 1.000000 0.308333 1.262720 1.000000
+variable_k_and_transport           0.473100 0.518052 0.830933 0.903655 1.302096 1.349108 0.320000 1.239391 1.339381
+high_transport_low_k_control       0.499089 0.497286 -0.985167 0.946655 0.860948 1.349108 0.516667 0.864068 1.339381
+uniform_no_transport_gradient      0.500000 0.500000 nan nan 1.000000 1.000000 0.000000 1.000000 1.000000
+
+Boundary sweep: increase intrinsic turnover at fixed transport
+k_scale rate_median surface_median apparent_gain mt_limited_frac
+   0.10    0.090849       0.908491      1.000000        0.000000
+   0.30    0.230383       0.767944      2.535887        0.000000
+   1.00    0.498191       0.498191      5.483718        0.516667
+   3.00    0.745937       0.248646      8.210724        1.000000
+  10.00    0.903128       0.090313      9.940969        1.000000
+  30.00    0.960988       0.032033     10.577845        1.000000
+
+Interpretation: the NODE is validated if apparent hot spots correlate with transport supply under uniform intrinsic activity, and if increasing intrinsic turnover saturates under mass-transfer limitation.

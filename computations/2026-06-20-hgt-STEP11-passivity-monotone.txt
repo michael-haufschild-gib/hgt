@@ -1,0 +1,15 @@
+STEP11 passivity-vs-detailed-balance monotone
+Method #13: find a monotone quantity.
+FE balance is held fixed; horizontal off-line displacement a controls the passivity/ergotropy proxy.
+a       FE_balance  off_line_count  ergotropy_proxy
+0.000   True                    0      0.00000000
+0.025   True                    4      0.00250000
+0.050   True                    4      0.01000000
+0.075   True                    4      0.02250000
+0.100   True                    4      0.04000000
+0.125   True                    4      0.06250000
+0.150   True                    4      0.09000000
+0.175   True                    4      0.12250000
+0.200   True                    4      0.16000000
+0.225   True                    4      0.20250000
+0.250   True                    4      0.25000000

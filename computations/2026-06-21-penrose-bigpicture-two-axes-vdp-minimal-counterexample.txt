@@ -1,0 +1,4 @@
+Minimal counterexample to 'negative resistance alone stabilizes'
+vdp_sign_balance         final_radius=  1.721448 max_radius=  2.829961 net_dE=   +1.477090 escaped_at=None
+all_negative_resistance  final_radius= 50.405213 max_radius= 50.405213 net_dE=+1305.001999 escaped_at=6.075
+all_positive_resistance  final_radius=  0.000006 max_radius=  0.100000 net_dE=   -0.005000 escaped_at=None

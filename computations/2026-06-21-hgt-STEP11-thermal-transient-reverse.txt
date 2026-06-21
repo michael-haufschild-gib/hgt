@@ -1,0 +1,25 @@
+STEP11 method #3: reverse transient/steady branch metaphor
+persistent criterion: long median > 0.18 and positive fraction > 0.70
+kind sigma window long_med long_pos persistent short_hits short_total miss_fraction
+true              0.3 [100,170] 0.431024 0.990909 1 23 23 0.000000
+finite            0.3 [100,170] 0.007642 0.431818 0 0 23 1.000000
+ampmatched-finite 0.3 [100,170] 0.000000 0.400000 0 0 23 1.000000
+random-phase      0.3 [100,170] 0.000000 0.409091 0 0 23 1.000000
+gamma-only        0.3 [100,170] 0.000000 0.000000 0 0 23 1.000000
+true              0.3 [500,570] 0.530177 1.000000 1 23 23 0.000000
+finite            0.3 [500,570] 0.000000 0.431818 0 0 23 1.000000
+ampmatched-finite 0.3 [500,570] 0.000000 0.400000 0 0 23 1.000000
+random-phase      0.3 [500,570] 0.000000 0.431818 0 0 23 1.000000
+gamma-only        0.3 [500,570] 0.000000 0.000000 0 0 23 1.000000
+true              0.5 [100,170] 0.247735 0.645455 0 4 23 0.826087
+finite            0.5 [100,170] 0.000296 0.477273 0 1 23 0.956522
+ampmatched-finite 0.5 [100,170] 0.000000 0.436364 0 0 23 1.000000
+random-phase      0.5 [100,170] 0.000000 0.340909 0 0 23 1.000000
+gamma-only        0.5 [100,170] 0.000000 0.000000 0 0 23 1.000000
+true              1.2 [100,170] 0.000000 0.381818 0 0 23 1.000000
+finite            1.2 [100,170] 0.000000 0.381818 0 0 23 1.000000
+ampmatched-finite 1.2 [100,170] 0.000000 0.381818 0 0 23 1.000000
+random-phase      1.2 [100,170] 0.000000 0.422727 0 0 23 1.000000
+gamma-only        1.2 [100,170] 0.000000 0.000000 0 0 23 1.000000
+
+Interpretation key: if the reverse experiment only recovers the known persistent left-strip phase-defect band for true zeta, it is a useful diagnostic but not a new transient/steady theorem.

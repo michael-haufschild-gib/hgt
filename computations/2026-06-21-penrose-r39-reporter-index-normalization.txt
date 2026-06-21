@@ -1,0 +1,32 @@
+Penrose R39: reporter-normalization passport for index equivalence
+ResearchNode: #14 Index equivalence / source-built kappa_-
+NODE: interpreting reporter fluorescence as quorum sensing output without correcting for growth rate, plasmid copy number, maturation time, or metabolic burden
+STEP 5/6 NODE TEST: reporter fluorescence is not raw QS output
+Constraint: raw reporter fluorescence equals response convolved with growth, copy number, maturation, and burden; it is not the biological quorum-sensing output without corrections.
+strain raw_end od_norm_end full_norm_end true_signal_end
+A 17.9904 0.5485 0.9173 0.9987
+B 185.8196 1.0016 0.6505 0.7199
+rank raw=B>A full_norm=A>B true=A>B
+NODE verdict: raw fluorescence can invert or distort the biological response ranking; normalization provenance is part of the measurement.
+
+STEP 7 FORMULA CHECK
+Reporter kinetics do not transfer as biology. The transferable constraint is representational: a measured scalar reporter is not a faithful signed index unless its normalization is a congruence or has an explicit correction back to one.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=108 normalized=0.7059: source-built kappa reporters need growth copy maturation burden normalization
+2. distance=110 normalized=0.7190: index equivalence must distinguish faithful inertia from reporter projection
+3. distance=116 normalized=0.7582: change scalar reporter readout into a signed quadratic-form passport
+chosen=1: source-built kappa reporters need growth copy maturation burden normalization
+
+STEP 9 METHOD 17: CHANGE REPRESENTATION
+Change representation from scalar reporter vector to signed quadratic form. Positive growth/copy/burden corrections are safe only as congruence; diagonal reporter projection and maturation smoothing are not faithful index operations.
+TRIALS 80
+TRUE_NEGATIVE_INDEX 80/80
+CONGRUENCE_PRESERVES_INDEX 80/80
+RAW_DIAGONAL_REPORTER_SEES_NEGATIVE 0/80
+MATURED_REPORTER_SEES_NEGATIVE 0/80
+PROJECTED_REPORTER_INERTIA_MATCHES 0/80
+CORRECTED_CONGRUENCE_INERTIA_RECOVERS 80/80
+MEDIAN_MIN_EIG projected=+0.802022 corrected=-0.045000
+WORST_PROJECTED_MIN_EIG +0.108953 with true_min=-0.045000
+Interpretation: the faithful negative square survives every reporter normalization that is a congruence, but scalar reporter/projection representations can report positivity in all trials.

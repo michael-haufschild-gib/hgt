@@ -1,0 +1,8 @@
+STEP 11 Palm reduced-self jitter control
+case true_ratio best_jitter best_ratio abs_diff ratios_by_jitter verdict
+low   0.0281 0.16 0.0038 0.0243 [0.00:0.000,0.03:0.000,0.06:0.000,0.10:0.000,0.16:0.004,0.25:0.065,0.40:0.347] 1
+mid   0.0485 0.25 0.0724 0.0240 [0.00:0.000,0.03:0.000,0.06:0.000,0.10:0.001,0.16:0.015,0.25:0.072,0.40:0.386] 1
+high  0.0725 0.25 0.0961 0.0236 [0.00:0.000,0.03:0.000,0.06:0.000,0.10:0.001,0.16:0.017,0.25:0.096,0.40:0.321] 1
+
+TRUE_REDUCED_PALM_MATCHED_BY_JITTERED_LATTICE 3/3
+Interpretation: matching by lightly jittered lattice controls means the reduced-Palm signal is spacing regularity/repulsion after self-atom removal, not new source-location geometry.

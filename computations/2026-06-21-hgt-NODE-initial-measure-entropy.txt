@@ -1,0 +1,18 @@
+NODE: entropy/association gates for initial measures
+seed=20260621 reps=8000 reference_rho=0.5
+criterion: same one-site density but bad global correlations should keep O(1) empirical fluctuations
+product_good       N=  100 mean=0.4998 var=0.002508 Nvar=0.2508 q05=0.4200 q50=0.5000 q95=0.5800 entropy_density=0.0000 distant_cov_limit=0.0000
+block_mixture      N=  100 mean=0.5008 var=0.046748 Nvar=4.6748 q05=0.1700 q50=0.5000 q95=0.8400 entropy_density=0.1927 distant_cov_limit=0.0000
+global_mixture     N=  100 mean=0.4930 var=0.091844 Nvar=9.1844 q05=0.1500 q50=0.2800 q95=0.8500 entropy_density=0.1927 distant_cov_limit=0.0900
+product_good       N=  400 mean=0.5002 var=0.000636 Nvar=0.2546 q05=0.4600 q50=0.5000 q95=0.5425 entropy_density=0.0000 distant_cov_limit=0.0000
+block_mixture      N=  400 mean=0.4992 var=0.011615 Nvar=4.6460 q05=0.3275 q50=0.5000 q95=0.6725 entropy_density=0.1927 distant_cov_limit=0.0000
+global_mixture     N=  400 mean=0.5023 var=0.090194 Nvar=36.0775 q05=0.1750 q50=0.7475 q95=0.8250 entropy_density=0.1927 distant_cov_limit=0.0900
+product_good       N= 1600 mean=0.5002 var=0.000157 Nvar=0.2515 q05=0.4800 q50=0.5000 q95=0.5212 entropy_density=0.0000 distant_cov_limit=0.0000
+block_mixture      N= 1600 mean=0.5006 var=0.002839 Nvar=4.5424 q05=0.4125 q50=0.5012 q95=0.5869 entropy_density=0.1927 distant_cov_limit=0.0000
+global_mixture     N= 1600 mean=0.4984 var=0.090158 Nvar=144.2533 q05=0.1869 q50=0.2263 q95=0.8119 entropy_density=0.1927 distant_cov_limit=0.0900
+product_good       N= 6400 mean=0.4999 var=0.000039 Nvar=0.2501 q05=0.4897 q50=0.5000 q95=0.5103 entropy_density=0.0000 distant_cov_limit=0.0000
+block_mixture      N= 6400 mean=0.4999 var=0.000701 Nvar=4.4862 q05=0.4561 q50=0.5003 q95=0.5436 entropy_density=0.1927 distant_cov_limit=0.0000
+global_mixture     N= 6400 mean=0.4987 var=0.090095 Nvar=576.6069 q05=0.1934 q50=0.2135 q95=0.8066 entropy_density=0.1927 distant_cov_limit=0.0900
+
+interpretation
+Product data has Var(empirical density) ~ 1/N. Global-mixture data has the same mean density but Var stays O(1), exposing why entropy/association assumptions are load-bearing.

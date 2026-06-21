@@ -1,0 +1,14 @@
+Step 8 transfer attempts scored by Levenshtein distance
+Original NODE test:
+Position multiplicity is constrained by orbit-stabilizer: generic points have full orbit, special positions have larger stabilizer and smaller multiplicity.
+
+A_relation_stabilizer: distance=75
+Divisor arithmetic is constrained by relation-stabilizer: generic values have full algebraic orbit, special value tuples have larger relation stabilizer.
+
+B_fe_orbit_multiplicity: distance=86
+Zero geometry is constrained by FE orbit multiplicity: generic off-line zeros have full quartet orbit, seam zeros have folded multiplicity.
+
+C_corank_trdeg_collapse: distance=101
+Value arithmetic is constrained by corank-trdeg collapse: generic multiplier logs have trdeg equal corank, special arithmetic logs have algebraic stabilizers.
+
+Chosen transfer by minimum distance: A_relation_stabilizer

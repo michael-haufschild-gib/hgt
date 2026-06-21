@@ -1,0 +1,47 @@
+NODE simulation: apparent partition coefficient depends on density normalization
+normalizer mean cv corr_with_dry_mass corr_with_binding_sites
+dry_mass        3.7296   0.4128  -0.0717   0.4679
+volume          4.2125   0.6127  -0.0717   0.2849
+surface         2.7497   0.4496   0.3508   0.8249
+binding_sites   4.0000   0.0000      nan      nan
+constraint: binding-site normalization recovers the invariant coefficient; bulk density bases do not.
+
+STEP8 Levenshtein transfer candidates
+1 distance=12 ratio=0.1429 apparent phase partition coefficients depend strongly on strip density normalization
+2 distance=34 ratio=0.4250 phase defect coefficient depends on sigma lane normalization
+3 distance=36 ratio=0.4500 zero shadow partition ratios depend on carrier density normalization
+selected=1 apparent phase partition coefficients depend strongly on strip density normalization
+
+STEP7 formula check: K_app = sorbed / (C_free * density_basis). Applied unchanged to HT it is generic normalization arithmetic, not continuum/differential weld content.
+
+Standing-order consolidated target: The Weld
+Target content: Source A archimedean term A and Source B prime term P held together in H=A+P.
+STEP8 transfer: apparent weld partition coefficients under strip-density normalizers
+STEP9 method 15: strengthen the conjecture.
+Strengthened gate: a non-reducing weld finding must keep true/control separation under time, event, component, prime-amplitude, and weld-amplitude normalizations.
+samples_per_window=220 prime_count=160
+kind sigma window bound free k_time k_event k_component k_prime_amp k_weld_amp swing event_to_time component_to_event
+true   0.3 100-170   21.9251  235.4239 0.000423 0.001578 0.003104 0.000299 0.000396   10.394    3.729    1.967
+finite 0.3 100-170    2.1743  478.8976 0.000021 0.001513 0.001513 0.000009 0.000009  161.191   73.333    1.000
+random 0.3 100-170    7.7731  324.1030 0.000109 0.001332 0.001411 0.000077 0.000074   19.065   12.222    1.059
+true   0.5 100-170   47.3615  278.5488 0.000773 0.002882 0.005313 0.000514 0.000610   10.333    3.729    1.844
+finite 0.5 100-170    5.8634  314.0441 0.000085 0.001037 0.001245 0.000058 0.000059   21.355   12.222    1.200
+random 0.5 100-170    6.7589  350.8759 0.000088 0.001605 0.001605 0.000058 0.000055   29.240   18.333    1.000
+true   0.7 100-170   12.0612  235.4239 0.000233 0.001507 0.002696 0.000232 0.000218   12.391    6.471    1.789
+finite 0.7 100-170   17.4796  237.7719 0.000334 0.001885 0.002723 0.000330 0.000309    8.806    5.641    1.444
+random 0.7 100-170   12.2749  252.9430 0.000221 0.002311 0.002554 0.000219 0.000192   13.313   10.476    1.105
+true   1.2 100-170    0.0000  222.6593 0.000000 0.000000 0.000000 0.000000 0.000000    1.000    0.000    0.000
+finite 1.2 100-170    0.0000  222.6621 0.000000 0.000000 0.000000 0.000000 0.000000    1.000    0.000    0.000
+random 1.2 100-170    0.0000  219.7139 0.000000 0.000000 0.000000 0.000000 0.000000    1.000    0.000    0.000
+true   0.3 500-570   19.3388  277.2172 0.000317 0.001144 0.001885 0.000186 0.000252   10.147    3.607    1.649
+finite 0.3 500-570    1.6136  547.5944 0.000013 0.001473 0.001473 0.000005 0.000005  274.613  110.000    1.000
+random 0.3 500-570    2.7178  377.1180 0.000033 0.000901 0.000901 0.000019 0.000019   47.140   27.500    1.000
+true   0.5 500-570   57.4165  305.9397 0.000853 0.002760 0.004171 0.000498 0.000613    8.381    3.235    1.511
+finite 0.5 500-570   12.1353  360.3723 0.000153 0.001604 0.001772 0.000092 0.000093   19.265   10.476    1.105
+random 0.5 500-570    9.2771  389.9135 0.000108 0.001190 0.001487 0.000063 0.000061   24.370   11.000    1.250
+true   0.7 500-570    8.0164  277.2171 0.000131 0.001157 0.001807 0.000120 0.000104   17.326    8.800    1.562
+finite 0.7 500-570   13.4215  279.0761 0.000219 0.001551 0.002091 0.000203 0.000172   12.134    7.097    1.348
+random 0.7 500-570    8.0027  300.5037 0.000121 0.001664 0.001664 0.000111 0.000089   18.781   13.750    1.000
+true   1.2 500-570    0.0000  268.3319 0.000000 0.000000 0.000000 0.000000 0.000000    1.000    0.000    0.000
+finite 1.2 500-570    0.0000  268.3327 0.000000 0.000000 0.000000 0.000000 0.000000    1.000    0.000    0.000
+random 1.2 500-570    0.0000  266.9524 0.000000 0.000000 0.000000 0.000000 0.000000    1.000    0.000    0.000

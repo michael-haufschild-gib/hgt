@@ -1,0 +1,21 @@
+NODE: HMM forward/backward scaling/log-space underflow
+NODE_ROW raw_final_sum=3.963e-308 raw_zero_at=None loglike=-707.819 arbitrary_gauge_log_shift=2.250e+03 max_posterior_diff=2.220e-16
+
+TRANSFER: ResearchNode 5 Cohomology target
+method #4 change viewpoint: HMM scaling constants are a 0-cochain/gauge; cohomology lives after quotienting exact gauges.
+test: add exact analytic gauges d(lam*s+mu*s^2) to dlog xi; loop residue should survive, scalar boundary energies should not.
+RECT contains_zero
+ GAUGE lam=+0.0 mu=+0.0 count=+1.000012 count_drift=0.00e+00 energy_ratio=1.000 max_abs_ratio=1.000
+ GAUGE lam=+3.0 mu=+0.0 count=+1.000012 count_drift=2.68e-51 energy_ratio=1.023 max_abs_ratio=1.150
+ GAUGE lam=+0.0 mu=+0.7 count=+1.000012 count_drift=3.28e-51 energy_ratio=1.844 max_abs_ratio=1.648
+ GAUGE lam=-2.0 mu=+0.4 count=+1.000012 count_drift=8.02e-51 energy_ratio=1.279 max_abs_ratio=1.330
+RECT gap
+ GAUGE lam=+0.0 mu=+0.0 count=-0.000006 count_drift=0.00e+00 energy_ratio=1.000 max_abs_ratio=1.000
+ GAUGE lam=+3.0 mu=+0.0 count=-0.000006 count_drift=1.56e-51 energy_ratio=1.585 max_abs_ratio=1.356
+ GAUGE lam=+0.0 mu=+0.7 count=-0.000006 count_drift=3.27e-51 energy_ratio=4.384 max_abs_ratio=2.985
+ GAUGE lam=-2.0 mu=+0.4 count=-0.000006 count_drift=2.55e-51 energy_ratio=2.563 max_abs_ratio=1.941
+RECT near_shadow
+ GAUGE lam=+0.0 mu=+0.0 count=+0.241885 count_drift=0.00e+00 energy_ratio=1.000 max_abs_ratio=1.000
+ GAUGE lam=+3.0 mu=+0.0 count=+0.241885 count_drift=0.00e+00 energy_ratio=1.074 max_abs_ratio=1.002
+ GAUGE lam=+0.0 mu=+0.7 count=+0.241885 count_drift=4.29e-51 energy_ratio=1.489 max_abs_ratio=1.028
+ GAUGE lam=-2.0 mu=+0.4 count=+0.241885 count_drift=5.09e-51 energy_ratio=1.162 max_abs_ratio=1.015

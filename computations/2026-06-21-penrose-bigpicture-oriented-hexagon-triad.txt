@@ -1,0 +1,4 @@
+Benard hexagon triad: scalar passport vs oriented closure
+hexagonal_120_triad      angles=[0, 120, 240]    closure=0.00000000 energy=3.000 avg_len=1.000 rot60_err=0.000000 rot120_err=0.000000 field_mean=+0.012346 field_std=1.196980
+three_equal_nonclosing   angles=[0, 90, 210]     closure=0.51763809 energy=3.000 avg_len=1.000 rot60_err=1.059557 rot120_err=1.104415 field_mean=-0.010497 field_std=1.330374
+roll_like_duplicate      angles=[0, 0, 180]      closure=1.00000000 energy=3.000 avg_len=1.000 rot60_err=1.392984 rot120_err=1.425883 field_mean=+0.037037 field_std=2.134053

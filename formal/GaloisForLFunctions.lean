@@ -34,6 +34,7 @@ import GaloisForLFunctions.SecularHankel
 import GaloisForLFunctions.CongruencePencil
 import GaloisForLFunctions.KoszulCohomology
 import GaloisForLFunctions.MultiplierScaling
+import GaloisForLFunctions.ConsolidatedBridges
 import GaloisForLFunctions.FieldConjectures
 import GaloisForLFunctions.MeasureCarrier
 import GaloisForLFunctions.AdamsOperations

@@ -1,0 +1,9 @@
+# SA cross-check (polygamma vs Taylor[A]) max rel err = 1.05e-121
+# mode=offline N=200 DMAX=6 dps=120 (cache 300@170)
+# push atom m=1 (gamma=14.1347)
+beta=0.0: lmin=1.0274e-39 inertia=(7,0) |<neg,u>|=0.97063 |<neg,p_d>|=1.0
+beta=0.05: lmin=-5.6258e-26 inertia=(6,1) |<neg,u>|=0.057057 |<neg,p_d>|=2.4961e-5
+beta=0.1: lmin=-4.1255e-25 inertia=(6,1) |<neg,u>|=0.057496 |<neg,p_d>|=1.6927e-5
+beta=0.2: lmin=-7.396e-23 inertia=(6,1) |<neg,u>|=0.053908 |<neg,p_d>|=1.5352e-5
+beta=0.4: lmin=-3.9506e-19 inertia=(6,1) |<neg,u>|=0.014405 |<neg,p_d>|=7.0567e-8
+EXIT=0

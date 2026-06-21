@@ -1,0 +1,21 @@
+NODE test: one spanning cluster at one scale does not certify percolation threshold
+ResearchNode mutation: final bridge theorem needs projective Stieltjes extension, not isolated slabs
+
+Base moments: uniform measure on [1,2], m_k=(2^(k+1)-1)/(k+1).
+For each d, H0_d and H1_{d-1} use moments only through m_{2d};
+then we set the first unseen moment m_{2d+1} just below the PSD extension frontier.
+
+d | min_eig H0_d | min_eig H1_{d-1} | true m_next - frontier | failed next min_eig
+--|--------------|------------------|------------------------|-------------------
+2 |    3.735e-04 |        3.462e-02 |              8.077e-03 |        -6.862e-10
+3 |    4.726e-06 |        5.218e-04 |              5.199e-04 |        -4.110e-10
+4 |    5.610e-08 |        6.628e-06 |              3.302e-05 |        -2.467e-10
+5 |    6.432e-10 |        7.879e-08 |              2.085e-06 |        -1.497e-10
+6 |    7.209e-12 |        9.039e-10 |              1.313e-07 |        -1.009e-10
+7 |    1.031e-13 |        1.014e-11 |              8.164e-09 |        -9.640e-10
+
+Finding:
+  A finite positive slab can have genuine positive margins and still give no certificate
+  for the first unseen Stieltjes extension. The final bridge theorem therefore needs an
+  extension-frontier passport: at each scale, the completed weld must place the next
+  reciprocal moment inside the projectively compatible PSD cone with controlled slack.

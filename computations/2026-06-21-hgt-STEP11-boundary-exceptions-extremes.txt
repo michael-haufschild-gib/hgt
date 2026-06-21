@@ -1,0 +1,55 @@
+STEP11 method #10: extreme cases for boundary-exception debt
+samples=260 finite_prime_count=160
+regime kind sigma window max_debt crises subdramatic_count
+baseline                    true                0.3 [100,170] 2.159 0 167
+baseline                    finite              0.3 [100,170] 1.722 0 114
+baseline                    random-phase        0.3 [100,170] 2.734 0 80
+baseline                    true-shuffled       0.3 [100,170] 1.860 0 167
+baseline                    true-clipped-sorted 0.3 [100,170] 4.035 24 259
+permissive_no_reset         true                0.3 [100,170] 5.232 48 259
+permissive_no_reset         finite              0.3 [100,170] 4.503 5 123
+permissive_no_reset         random-phase        0.3 [100,170] 4.704 14 111
+permissive_no_reset         true-shuffled       0.3 [100,170] 5.345 48 259
+permissive_no_reset         true-clipped-sorted 0.3 [100,170] 4.146 34 259
+strict_every_positive_reset true                0.3 [100,170] 0.000 0 0
+strict_every_positive_reset finite              0.3 [100,170] 0.021 0 1
+strict_every_positive_reset random-phase        0.3 [100,170] 0.021 0 1
+strict_every_positive_reset true-shuffled       0.3 [100,170] 0.000 0 0
+strict_every_positive_reset true-clipped-sorted 0.3 [100,170] 0.000 0 0
+low_debt_trigger            true                0.3 [100,170] 1.746 9 167
+low_debt_trigger            finite              0.3 [100,170] 1.643 2 114
+low_debt_trigger            random-phase        0.3 [100,170] 1.708 3 80
+low_debt_trigger            true-shuffled       0.3 [100,170] 1.815 8 167
+low_debt_trigger            true-clipped-sorted 0.3 [100,170] 1.880 83 259
+high_debt_trigger           true                0.3 [100,170] 2.159 0 167
+high_debt_trigger           finite              0.3 [100,170] 1.722 0 114
+high_debt_trigger           random-phase        0.3 [100,170] 2.734 0 80
+high_debt_trigger           true-shuffled       0.3 [100,170] 1.860 0 167
+high_debt_trigger           true-clipped-sorted 0.3 [100,170] 8.064 5 259
+baseline                    true                1.2 [100,170] 3.015 0 93
+baseline                    finite              1.2 [100,170] 3.002 0 93
+baseline                    random-phase        1.2 [100,170] 2.625 0 115
+baseline                    true-shuffled       1.2 [100,170] 2.010 0 93
+baseline                    true-clipped-sorted 1.2 [100,170] 4.082 5 99
+permissive_no_reset         true                1.2 [100,170] 3.936 5 99
+permissive_no_reset         finite              1.2 [100,170] 3.938 5 100
+permissive_no_reset         random-phase        1.2 [100,170] 4.100 5 121
+permissive_no_reset         true-shuffled       1.2 [100,170] 4.354 4 99
+permissive_no_reset         true-clipped-sorted 1.2 [100,170] 4.159 7 99
+strict_every_positive_reset true                1.2 [100,170] 0.000 0 0
+strict_every_positive_reset finite              1.2 [100,170] 0.000 0 0
+strict_every_positive_reset random-phase        1.2 [100,170] 0.000 0 0
+strict_every_positive_reset true-shuffled       1.2 [100,170] 0.000 0 0
+strict_every_positive_reset true-clipped-sorted 1.2 [100,170] 0.000 0 0
+low_debt_trigger            true                1.2 [100,170] 1.917 8 93
+low_debt_trigger            finite              1.2 [100,170] 1.915 8 93
+low_debt_trigger            random-phase        1.2 [100,170] 1.772 5 115
+low_debt_trigger            true-shuffled       1.2 [100,170] 1.973 5 93
+low_debt_trigger            true-clipped-sorted 1.2 [100,170] 1.888 19 99
+high_debt_trigger           true                1.2 [100,170] 3.015 0 93
+high_debt_trigger           finite              1.2 [100,170] 3.002 0 93
+high_debt_trigger           random-phase        1.2 [100,170] 2.625 0 115
+high_debt_trigger           true-shuffled       1.2 [100,170] 2.010 0 93
+high_debt_trigger           true-clipped-sorted 1.2 [100,170] 7.920 0 99
+
+Interpretation: permissive/no-reset and clipped/sorted cases turn the statistic into total positive phase-defect mass. Strict reset kills all cases. Right-strip true/finite collapse means the metaphor has no independent HT-native boundary law.

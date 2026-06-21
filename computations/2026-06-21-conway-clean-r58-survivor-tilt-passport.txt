@@ -1,0 +1,65 @@
+NODE validation: chemical potential shifts a two-phase boundary
+Free energies: F_A=0, F_B=DeltaE - T*DeltaS - mu*DeltaQ
+mu T_critical phase_at_T1.0
+-1.50     1.5250 A
+-0.50     1.1750 A
+ 0.00     1.0000 A
+ 0.50     0.8250 B
+ 1.50     0.4750 B
+Interpretation: the same temperature/control can select a different phase after the conserved-charge chemical potential is changed.
+
+HT transfer: survivor-spine ensemble tilt passport
+distribution: p(bin) proportional to success(bin) * exp(lambda * standardized_reserve)
+kind sigma window lambda occupancy top_share entropy mean_charge tv_from_neutral top_bin
+true   0.3 [100,170]  -2.0 1.000 0.377 0.680 -1.306 0.553  4
+true   0.3 [100,170]  -1.0 1.000 0.149 0.894 -0.801 0.349  4
+true   0.3 [100,170]   0.0 1.000 0.031 1.000 -0.000 0.000  0
+true   0.3 [100,170]   1.0 1.000 0.161 0.845 1.073 0.404 16
+true   0.3 [100,170]   2.0 1.000 0.327 0.555 1.776 0.708 16
+finite 0.3 [100,170]  -2.0 0.512 0.146 0.812 -0.941 0.509 26
+finite 0.3 [100,170]  -1.0 0.512 0.075 0.934 -0.602 0.319  1
+finite 0.3 [100,170]   0.0 0.512 0.042 0.996 0.112 0.000  2
+finite 0.3 [100,170]   1.0 0.512 0.273 0.775 1.371 0.464 16
+finite 0.3 [100,170]   2.0 0.512 0.585 0.425 2.167 0.741 16
+random 0.3 [100,170]  -2.0 0.367 0.234 0.756 -1.142 0.609 11
+random 0.3 [100,170]  -1.0 0.367 0.095 0.940 -0.577 0.351 18
+random 0.3 [100,170]   0.0 0.367 0.048 0.984 0.254 0.000  2
+random 0.3 [100,170]   1.0 0.367 0.304 0.761 1.389 0.403 16
+random 0.3 [100,170]   2.0 0.367 0.718 0.354 2.323 0.736 16
+true   0.5 [100,170]  -2.0 0.686 0.157 0.774 -1.090 0.581  4
+true   0.5 [100,170]  -1.0 0.686 0.081 0.926 -0.668 0.359  4
+true   0.5 [100,170]   0.0 0.686 0.046 0.996 0.159 0.000 16
+true   0.5 [100,170]   1.0 0.686 0.220 0.805 1.194 0.397 16
+true   0.5 [100,170]   2.0 0.686 0.444 0.511 1.838 0.679 16
+finite 0.5 [100,170]  -2.0 0.518 0.178 0.758 -1.154 0.619 26
+finite 0.5 [100,170]  -1.0 0.518 0.085 0.935 -0.628 0.356 18
+finite 0.5 [100,170]   0.0 0.518 0.057 0.990 0.235 0.000 16
+finite 0.5 [100,170]   1.0 0.518 0.368 0.719 1.518 0.449 16
+finite 0.5 [100,170]   2.0 0.518 0.741 0.310 2.384 0.767 16
+random 0.5 [100,170]  -2.0 0.398 0.201 0.758 -1.203 0.631  8
+random 0.5 [100,170]  -1.0 0.398 0.107 0.934 -0.613 0.379 18
+random 0.5 [100,170]   0.0 0.398 0.054 0.983 0.254 0.000 29
+random 0.5 [100,170]   1.0 0.398 0.137 0.857 0.914 0.331  1
+random 0.5 [100,170]   2.0 0.398 0.241 0.715 1.221 0.499  1
+true   1.2 [100,170]  -2.0 0.406 0.110 0.849 -0.452 0.478 30
+true   1.2 [100,170]  -1.0 0.406 0.074 0.915 -0.159 0.296 28
+true   1.2 [100,170]   0.0 0.406 0.077 0.925 0.540 0.000 16
+true   1.2 [100,170]   1.0 0.406 0.365 0.649 1.792 0.481 16
+true   1.2 [100,170]   2.0 0.406 0.634 0.344 2.425 0.720 16
+finite 1.2 [100,170]  -2.0 0.404 0.111 0.850 -0.451 0.480 30
+finite 1.2 [100,170]  -1.0 0.404 0.067 0.917 -0.156 0.296 28
+finite 1.2 [100,170]   0.0 0.404 0.077 0.925 0.545 0.000 16
+finite 1.2 [100,170]   1.0 0.404 0.365 0.649 1.792 0.480 16
+finite 1.2 [100,170]   2.0 0.404 0.634 0.344 2.424 0.718 16
+random 1.2 [100,170]  -2.0 0.447 0.263 0.747 -1.195 0.615 21
+random 1.2 [100,170]  -1.0 0.447 0.096 0.933 -0.613 0.341 21
+random 1.2 [100,170]   0.0 0.447 0.048 0.987 0.179 0.000  1
+random 1.2 [100,170]   1.0 0.447 0.172 0.820 1.127 0.397  3
+random 1.2 [100,170]   2.0 0.447 0.353 0.547 1.764 0.698  4
+
+Stress summaries
+middle-strip positive tilt can over-concentrate finite controls: true top_share=0.444, tv=0.679; finite top_share=0.741, tv=0.767
+right-strip collapse under the same tilt: true top_share=0.634, tv=0.720; finite top_share=0.634, tv=0.718
+same true window, opposite chemical-potential signs select different spines: top_bin_minus=4, top_share_minus=0.157; top_bin_plus=16, top_share_plus=0.444
+
+Fake-proof gap: uniqueness under a survivor ensemble does not prove a native completed-field descendant path unless the ensemble's implicit tilt is fixed or swept. Report neutral, positive-tilt, negative-tilt, finite/random controls, and right-strip collapse.

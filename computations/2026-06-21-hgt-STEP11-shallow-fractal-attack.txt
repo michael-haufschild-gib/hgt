@@ -1,0 +1,33 @@
+STEP11 attack phase-catalog depth-drift as false
+samples=768 span=260.0 prime_count=160 shallow=128 deep=768
+sigma t0 q threshold true_drift finite_drift random_drift max_control verdict
+0.3   100 0.70 0.750727 0.0319 nan 0.3858 nan sparse_control_not_evidence
+0.3   100 0.80 0.963303 0.0507 nan 0.3890 nan sparse_control_not_evidence
+0.3   100 0.90 1.19558 0.0828 nan nan nan sparse_control_not_evidence
+0.3   260 0.70 0.770558 0.0885 nan 0.4562 nan sparse_control_not_evidence
+0.3   260 0.80 0.952194 0.1340 nan nan nan sparse_control_not_evidence
+0.3   260 0.90 1.1849 0.1683 nan nan nan sparse_control_not_evidence
+0.3   500 0.70 0.777242 0.1030 nan nan nan sparse_control_not_evidence
+0.3   500 0.80 0.926552 0.1330 nan nan nan sparse_control_not_evidence
+0.3   500 0.90 1.15383 0.0271 nan nan nan sparse_control_not_evidence
+0.5   100 0.70 0.75235 0.0378 0.3572 0.2704 0.3572 control_or_small
+0.5   100 0.80 1.14315 0.1127 0.5916 0.2922 0.5916 control_or_small
+0.5   100 0.90 1.8896 0.2545 nan nan nan sparse_control_not_evidence
+0.5   260 0.70 0.744721 0.0122 0.2816 0.1455 0.2816 control_or_small
+0.5   260 0.80 1.08176 0.0299 0.0159 0.3496 0.3496 control_or_small
+0.5   260 0.90 1.77007 0.0072 nan nan nan sparse_control_not_evidence
+0.5   500 0.70 0.743019 0.1473 0.0922 0.3130 0.3130 control_or_small
+0.5   500 0.80 1.17406 0.1309 nan 0.6630 nan sparse_control_not_evidence
+0.5   500 0.90 1.92998 0.3057 nan nan nan sparse_control_not_evidence
+1.2   100 0.70 0.0872066 0.1599 0.1606 0.0578 0.1606 control_or_small
+1.2   100 0.80 0.198073 0.0627 0.0684 0.3117 0.3117 control_or_small
+1.2   100 0.90 0.337314 0.1316 0.0202 0.0231 0.0231 control_or_small
+1.2   260 0.70 0.0797427 0.1054 0.0850 0.0863 0.0863 control_or_small
+1.2   260 0.80 0.167116 0.2494 0.2292 0.0181 0.2292 control_or_small
+1.2   260 0.90 0.299379 0.4339 0.4417 0.0691 0.4417 control_or_small
+1.2   500 0.70 0.0558062 0.0380 0.0786 0.2568 0.2568 control_or_small
+1.2   500 0.80 0.1447 0.0917 0.0940 0.3397 0.3397 control_or_small
+1.2   500 0.90 0.267538 0.2158 0.2256 0.6511 0.6511 control_or_small
+
+SURVIVAL_COUNT true_specific=0 finite_trials=27
+reduction gate: zero or control-matched survival means the shallow-catalog metaphor does not produce new HT content.

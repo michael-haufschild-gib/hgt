@@ -1,0 +1,20 @@
+NODE: descendant environmental tolerance can misrepresent extinct relatives
+columns: drift adaptation survivor_frac corr_ancestor_modern mean_ancestor mean_modern infer_bias
+drift=0.0 adaptation=-0.8 survivor_frac=0.3000 corr_ancestor_modern=+0.88464 mean_ancestor=+0.49433 mean_modern=-0.16633 infer_bias=-0.66066
+drift=0.0 adaptation=+0.0 survivor_frac=0.3000 corr_ancestor_modern=+1.00000 mean_ancestor=+0.49433 mean_modern=+0.49433 infer_bias=+0.00000
+drift=0.0 adaptation=+0.8 survivor_frac=0.3000 corr_ancestor_modern=+0.77273 mean_ancestor=+0.49433 mean_modern=+1.15499 infer_bias=+0.66066
+drift=0.4 adaptation=-0.8 survivor_frac=0.3000 corr_ancestor_modern=+0.84296 mean_ancestor=+0.49433 mean_modern=-0.16584 infer_bias=-0.66017
+drift=0.4 adaptation=+0.0 survivor_frac=0.3000 corr_ancestor_modern=+0.91724 mean_ancestor=+0.49433 mean_modern=+0.49186 infer_bias=-0.00247
+drift=0.4 adaptation=+0.8 survivor_frac=0.3000 corr_ancestor_modern=+0.71179 mean_ancestor=+0.49433 mean_modern=+1.15508 infer_bias=+0.66075
+drift=0.9 adaptation=-0.8 survivor_frac=0.3000 corr_ancestor_modern=+0.72540 mean_ancestor=+0.49433 mean_modern=-0.16253 infer_bias=-0.65686
+drift=0.9 adaptation=+0.0 survivor_frac=0.3000 corr_ancestor_modern=+0.71817 mean_ancestor=+0.49433 mean_modern=+0.49888 infer_bias=+0.00455
+drift=0.9 adaptation=+0.8 survivor_frac=0.3000 corr_ancestor_modern=+0.55560 mean_ancestor=+0.49433 mean_modern=+1.15889 infer_bias=+0.66456
+drift=1.5 adaptation=-0.8 survivor_frac=0.3000 corr_ancestor_modern=+0.57534 mean_ancestor=+0.49433 mean_modern=-0.16706 infer_bias=-0.66139
+drift=1.5 adaptation=+0.0 survivor_frac=0.3000 corr_ancestor_modern=+0.52658 mean_ancestor=+0.49433 mean_modern=+0.50022 infer_bias=+0.00589
+drift=1.5 adaptation=+0.8 survivor_frac=0.3000 corr_ancestor_modern=+0.40818 mean_ancestor=+0.49433 mean_modern=+1.15120 infer_bias=+0.65687
+
+Boundary controls
+source_corr_ancestor_refuge=-0.00448
+survivor_corr_ancestor_refuge=-0.32185
+nonsurvivor_mean_ancestor=-0.21522
+survivor_mean_ancestor=+0.49433

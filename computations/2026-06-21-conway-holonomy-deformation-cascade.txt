@@ -1,0 +1,16 @@
+NODE: stop-order clustering amplifies short-term price cascades
+case mean_triggered mean_drop mean_max_step
+uniform   260.0 1.516 0.083
+clustered 260.0 1.516 0.214
+
+TRANSFER: ResearchNode #4/#5/#6 holonomy/cohomology deformation stability
+method #23 classify boundary cases: contour shape readouts must not avalanche under small deformations at fixed winding
+half_width winding event_count event_side_share L1_from_prev max_score min_abs_xi
+0.025 +1.000 044 [0.00,0.50,0.00,0.50] 0.000 0.051 3.46e-05
+0.035 +1.000 044 [0.00,0.50,0.00,0.50] 0.000 0.036 4.84e-05
+0.050 +1.000 044 [0.00,0.50,0.00,0.50] 0.000 0.025 6.91e-05
+0.075 +1.000 044 [0.00,0.50,0.00,0.50] 0.000 0.017 1.04e-04
+0.110 +1.000 044 [1.00,0.00,0.00,0.00] 2.000 0.012 1.43e-04
+0.160 +1.000 044 [1.00,0.00,0.00,0.00] 0.000 0.018 1.43e-04
+0.240 +1.000 044 [1.00,0.00,0.00,0.00] 0.000 0.026 1.43e-04
+0.340 +1.000 044 [0.77,0.00,0.23,0.00] 0.455 0.038 1.43e-04

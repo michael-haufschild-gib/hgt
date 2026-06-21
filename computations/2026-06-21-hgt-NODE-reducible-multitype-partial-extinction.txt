@@ -1,0 +1,10 @@
+NODE: reducible multi-type branching partial extinction
+mu_A mu_B transfer A_survival B_survival global_survival partial_B_only partial_A_only mean_A_final mean_B_final
+0.78 1.10 0.02 0.000000 0.048750 0.048750 0.048750 0.000000 0.000000 10.486667
+0.78 1.10 0.08 0.000000 0.177500 0.177500 0.177500 0.000000 0.000000 43.327917
+0.78 1.10 0.18 0.000000 0.321667 0.321667 0.321667 0.000000 0.000000 93.051250
+0.98 1.10 0.08 0.075417 0.377083 0.377500 0.302083 0.000417 1.179167 105.402500
+1.08 0.78 0.08 0.385000 0.381250 0.388333 0.003333 0.007083 80.684583 21.612083
+1.08 1.08 0.00 0.385417 0.000000 0.385417 0.000000 0.385417 77.337500 0.000000
+
+Interpretation key: partial_B_only demonstrates partial extinction: type A died but global extinction did not occur because type B survived.

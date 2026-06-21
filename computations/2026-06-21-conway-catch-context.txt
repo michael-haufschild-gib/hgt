@@ -1,0 +1,71 @@
+NODE simulation: context changes catch/slip classification
+context class peak_force peak_ratio lifetimes
+cofactor_on     catch   8.0    5.417 0.608,0.834,1.132,1.962,2.896,3.293,2.866,1.739,0.932
+ion_low         slip    0.0    0.021 2.410,1.990,1.601,1.000,0.613,0.374,0.227,0.108,0.051
+pH_shift        catch   6.0    1.812 0.823,0.983,1.154,1.451,1.491,1.189,0.771,0.334,0.134
+glyco_mask      slip    0.0    0.012 1.681,1.303,1.000,0.581,0.335,0.193,0.111,0.048,0.021
+membrane_anchor catch  13.0    7.878 0.468,0.597,0.760,1.210,1.859,2.666,3.410,3.690,2.930
+
+STEP8 Levenshtein transfer candidates
+1 distance=40 ratio=0.3810 context dependent phase cancellation lifetime under force with sigma phase weight membrane anchoring
+2 distance=48 ratio=0.4571 context dependent zero shadow bridge topology under force with sigma phase weight membrane anchoring
+3 distance=44 ratio=0.4190 context dependent prime rebinding markov lifetime under force with sigma phase weight membrane anchoring
+selected=1 context dependent phase cancellation lifetime under force with sigma phase weight membrane anchoring
+
+STEP8/9 HT transfer: context-modulated phase-cancellation lifetime
+threshold=1.000 samples_per_window=180 prime_count=160
+kind sigma context frac_class frac_peak_force frac_peak_metric run_class run_peak_force run_peak_metric fractions runs
+true   0.3 cofactor_on     emerg 3.75   0.314 emerg 3.75   1.468 0.0000,0.0000,0.0472,0.1583,0.2417,0.3139,0.2667,0.1389,0.0000 0.00,0.00,1.00,1.00,1.12,1.47,1.41,1.35,0.00
+true   0.3 ion_low         mixed 6.00   1.472 mixed 5.25   1.500 0.2000,0.2167,0.2222,0.2472,0.2472,0.2444,0.2833,0.2861,0.2944 1.11,1.10,1.16,1.20,1.20,1.29,1.59,1.66,1.66
+true   0.3 pH_shift        emerg 3.75   0.278 emerg 4.50   1.475 0.0000,0.0000,0.0417,0.1583,0.2111,0.2778,0.2417,0.1389,0.0028 0.00,0.00,1.00,1.00,1.06,1.45,1.47,1.43,1.00
+true   0.3 glyco_mask      emerg 3.00   0.003 emerg 3.00   1.000 0.0000,0.0000,0.0000,0.0000,0.0028,0.0028,0.0000,0.0000,0.0000 0.00,0.00,0.00,0.00,1.00,1.00,0.00,0.00,0.00
+true   0.3 membrane_anchor emerg 3.75   0.194 emerg 4.50   1.261 0.0000,0.0000,0.0000,0.0056,0.1167,0.1944,0.1611,0.0056,0.0000 0.00,0.00,0.00,1.00,1.00,1.17,1.26,1.00,0.00
+SUMMARY true   0.3 max_frac=0.3139 max_run=1.66 response_word=cofactor_on:emerg/emerg|ion_low:mixed/mixed|pH_shift:emerg/emerg|glyco_mask:emerg/emerg|membrane_anchor:emerg/emerg
+finite 0.3 cofactor_on     catch 1.50   3.875 mixed 3.75   1.143 0.0222,0.0750,0.0861,0.0556,0.0306,0.0222,0.0083,0.0028,0.0083 1.00,1.00,1.00,1.00,1.00,1.14,1.00,1.00,1.00
+finite 0.3 ion_low         mixed 0.00   1.000 mixed 3.75   1.055 0.0444,0.0389,0.0333,0.0333,0.0278,0.0250,0.0278,0.0278,0.0278 1.07,1.08,1.09,1.09,1.11,1.12,1.11,1.11,1.11
+finite 0.3 pH_shift        catch 1.50   3.300 mixed 3.00   1.059 0.0278,0.0611,0.0917,0.0556,0.0500,0.0167,0.0056,0.0056,0.0028 1.00,1.00,1.00,1.00,1.06,1.00,1.00,1.00,1.00
+finite 0.3 glyco_mask      mixed 0.00   1.000 slip  0.00   1.000 0.0583,0.0389,0.0306,0.0222,0.0083,0.0056,0.0083,0.0056,0.0056 1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00
+finite 0.3 membrane_anchor emerg 2.25   0.094 emerg 3.75   1.143 0.0000,0.0028,0.0500,0.0944,0.0472,0.0222,0.0028,0.0056,0.0083 0.00,1.00,1.00,1.00,1.00,1.14,1.00,1.00,1.00
+SUMMARY finite 0.3 max_frac=0.0944 max_run=1.14 response_word=cofactor_on:catch/mixed|ion_low:mixed/mixed|pH_shift:catch/mixed|glyco_mask:mixed/slip|membrane_anchor:emerg/emerg
+random 0.3 cofactor_on     emerg 3.75   0.064 emerg 5.25   1.200 0.0000,0.0000,0.0056,0.0361,0.0528,0.0639,0.0361,0.0167,0.0000 0.00,0.00,1.00,1.00,1.00,1.15,1.08,1.20,0.00
+random 0.3 ion_low         mixed 4.50   1.700 slip  0.00   1.000 0.0278,0.0306,0.0278,0.0306,0.0333,0.0389,0.0472,0.0417,0.0472 1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00
+random 0.3 pH_shift        emerg 3.75   0.081 emerg 4.50   1.077 0.0000,0.0000,0.0056,0.0306,0.0472,0.0806,0.0778,0.0417,0.0028 0.00,0.00,1.00,1.00,1.00,1.04,1.08,1.07,1.00
+random 0.3 glyco_mask      catch 4.50   3.000 mixed 6.00   1.100 0.0194,0.0306,0.0444,0.0500,0.0500,0.0500,0.0583,0.0444,0.0306 1.00,1.00,1.00,1.06,1.00,1.00,1.05,1.07,1.10
+random 0.3 membrane_anchor emerg 3.75   0.075 emerg 4.50   1.111 0.0000,0.0000,0.0000,0.0028,0.0500,0.0750,0.0556,0.0194,0.0000 0.00,0.00,0.00,1.00,1.00,1.08,1.11,1.00,0.00
+SUMMARY random 0.3 max_frac=0.0806 max_run=1.20 response_word=cofactor_on:emerg/emerg|ion_low:mixed/slip|pH_shift:emerg/emerg|glyco_mask:catch/mixed|membrane_anchor:emerg/emerg
+true   0.5 cofactor_on     emerg 5.25   0.214 emerg 5.25   1.262 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.1972,0.2139,0.1306 0.00,0.00,0.00,0.00,0.00,0.00,1.22,1.26,1.04
+true   0.5 ion_low         null  0.00   0.000 null  0.00   0.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00
+true   0.5 pH_shift        emerg 5.25   0.242 emerg 5.25   1.225 0.0000,0.0000,0.0000,0.0000,0.0000,0.0167,0.2139,0.2417,0.1306 0.00,0.00,0.00,0.00,0.00,1.00,1.15,1.23,1.12
+true   0.5 glyco_mask      catch 2.25   1.577 mixed 5.25   1.083 0.0722,0.1028,0.1111,0.1139,0.1111,0.1111,0.0722,0.0361,0.0083 1.00,1.00,1.00,1.00,1.00,1.00,1.04,1.08,1.00
+true   0.5 membrane_anchor emerg 4.50   0.206 emerg 4.50   1.156 0.0000,0.0000,0.0000,0.0000,0.0000,0.0167,0.2056,0.1667,0.0000 0.00,0.00,0.00,0.00,0.00,1.00,1.16,1.13,0.00
+SUMMARY true   0.5 max_frac=0.2417 max_run=1.26 response_word=cofactor_on:emerg/emerg|ion_low:null/null|pH_shift:emerg/emerg|glyco_mask:catch/mixed|membrane_anchor:emerg/emerg
+finite 0.5 cofactor_on     emerg 3.75   0.092 emerg 5.25   1.059 0.0000,0.0000,0.0000,0.0194,0.0611,0.0917,0.0778,0.0500,0.0361 0.00,0.00,0.00,1.00,1.00,1.00,1.04,1.06,1.00
+finite 0.5 ion_low         mixed 6.00   2.143 slip  0.00   1.000 0.0389,0.0417,0.0528,0.0583,0.0667,0.0750,0.0778,0.0778,0.0833 1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00
+finite 0.5 pH_shift        emerg 3.75   0.097 emerg 5.25   1.214 0.0000,0.0000,0.0000,0.0111,0.0667,0.0972,0.0750,0.0472,0.0194 0.00,0.00,0.00,1.00,1.00,1.00,1.08,1.21,1.00
+finite 0.5 glyco_mask      catch 3.00  10.000 slip  0.00   1.000 0.0083,0.0194,0.0472,0.0694,0.0833,0.0722,0.0389,0.0361,0.0194 1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00
+finite 0.5 membrane_anchor emerg 3.75   0.092 mixed 3.00   1.000 0.0000,0.0000,0.0000,0.0000,0.0444,0.0917,0.0444,0.0361,0.0278 0.00,0.00,0.00,0.00,1.00,1.00,1.00,1.00,1.00
+SUMMARY finite 0.5 max_frac=0.0972 max_run=1.21 response_word=cofactor_on:emerg/emerg|ion_low:mixed/slip|pH_shift:emerg/emerg|glyco_mask:catch/slip|membrane_anchor:emerg/mixed
+random 0.5 cofactor_on     catch 5.25   9.500 slip  0.00   1.000 0.0056,0.0083,0.0111,0.0222,0.0194,0.0306,0.0361,0.0528,0.0194 1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00
+random 0.5 ion_low         mixed 0.00   1.000 slip  0.00   1.000 0.0222,0.0194,0.0194,0.0194,0.0167,0.0167,0.0139,0.0167,0.0167 1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00
+random 0.5 pH_shift        catch 5.25  17.500 mixed 2.25   1.125 0.0056,0.0028,0.0083,0.0250,0.0361,0.0472,0.0944,0.0972,0.0417 1.00,1.00,1.00,1.12,1.08,1.06,1.06,1.09,1.07
+random 0.5 glyco_mask      mixed 5.25  30.000 mixed 4.50   1.190 0.0028,0.0056,0.0139,0.0139,0.0306,0.0333,0.0694,0.0833,0.0778 1.00,1.00,1.00,1.00,1.00,1.00,1.19,1.15,1.12
+random 0.5 membrane_anchor catch 4.50  27.000 catch 5.25   1.200 0.0028,0.0028,0.0056,0.0139,0.0167,0.0361,0.0750,0.0500,0.0000 1.00,1.00,1.00,1.00,1.00,1.00,1.12,1.20,0.00
+SUMMARY random 0.5 max_frac=0.0972 max_run=1.20 response_word=cofactor_on:catch/slip|ion_low:mixed/slip|pH_shift:catch/mixed|glyco_mask:mixed/mixed|membrane_anchor:catch/catch
+true   1.2 cofactor_on     mixed 6.00   0.011 mixed 6.00   1.333 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0111 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.33
+true   1.2 ion_low         null  0.00   0.000 null  0.00   0.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00
+true   1.2 pH_shift        mixed 6.00   0.011 mixed 6.00   1.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0111 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.00
+true   1.2 glyco_mask      null  0.00   0.000 null  0.00   0.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00
+true   1.2 membrane_anchor mixed 6.00   0.028 mixed 6.00   1.111 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0278 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.11
+SUMMARY true   1.2 max_frac=0.0278 max_run=1.33 response_word=cofactor_on:mixed/mixed|ion_low:null/null|pH_shift:mixed/mixed|glyco_mask:null/null|membrane_anchor:mixed/mixed
+finite 1.2 cofactor_on     mixed 6.00   0.011 mixed 6.00   1.333 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0111 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.33
+finite 1.2 ion_low         null  0.00   0.000 null  0.00   0.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00
+finite 1.2 pH_shift        mixed 6.00   0.011 mixed 6.00   1.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0111 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.00
+finite 1.2 glyco_mask      null  0.00   0.000 null  0.00   0.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00
+finite 1.2 membrane_anchor mixed 6.00   0.028 mixed 6.00   1.111 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0278 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.11
+SUMMARY finite 1.2 max_frac=0.0278 max_run=1.33 response_word=cofactor_on:mixed/mixed|ion_low:null/null|pH_shift:mixed/mixed|glyco_mask:null/null|membrane_anchor:mixed/mixed
+random 1.2 cofactor_on     mixed 6.00   0.019 mixed 5.25   1.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0028,0.0194 0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.00,1.00
+random 1.2 ion_low         null  0.00   0.000 null  0.00   0.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00
+random 1.2 pH_shift        mixed 6.00   0.006 mixed 6.00   1.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0056 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.00
+random 1.2 glyco_mask      null  0.00   0.000 null  0.00   0.000 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00
+random 1.2 membrane_anchor mixed 6.00   0.033 mixed 6.00   1.200 0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0333 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,1.20
+SUMMARY random 1.2 max_frac=0.0333 max_run=1.20 response_word=cofactor_on:mixed/mixed|ion_low:null/null|pH_shift:mixed/mixed|glyco_mask:null/null|membrane_anchor:mixed/mixed

@@ -1,0 +1,23 @@
+STEP 8 Levenshtein transfer attempts
+==========================================
+A: distance=35, attempt=change moment variable normalization y to cy and observe Hankel scale
+B: distance=50, attempt=normalize Hankel kernel to unit diagonal and observe conditioning
+C: distance=35, attempt=change support endpoint normalization and compare integer versus zero scale
+chosen=A by minimum distance
+
+NODE sanity: Wigner entry normalization changes spectral scale
+================================================================
+denom=1.000000: min=-19.8110, max=+20.4546, std=10.5255
+denom=14.832397: min=-1.3357, max=+1.3790, std=0.7096
+denom=20.976177: min=-0.9445, max=+0.9751, std=0.5018
+
+STEP 9 method 15: strengthen from PSD to determinants/conditioning
+========================================================================
+base: min_eig=8.1174704e-17, max_eig=7.0456973, cond=8.6796711e+16, log10det=-45.2550287381
+c=0.01: min_eig=2.7546296e-40, cond=4.3640944e+39, log10det=-129.255028738, det/(c^42det0)=1.0, congruence_err=2.454e-18
+c=0.1: min_eig=2.6979693e-28, cond=4.488916e+27, log10det=-87.2550287381, det/(c^42det0)=1.0, congruence_err=1.970e-17
+c=10.0: min_eig=3.1150129e-8, cond=3.2426865e+19, log10det=-3.25502873815, det/(c^42det0)=1.0, congruence_err=2.167e-05
+c=100.0: min_eig=0.00035053778, cond=2.8530449e+27, log10det=38.7449712619, det/(c^42det0)=1.0, congruence_err=1.639e+04
+
+Interpretation:
+Moment-scale normalization changes determinant size and conditioning by diagonal congruence while preserving PSD. For PS12 this repeats the known FID lesson: reconditioning is not RH content without a source-built integer-to-zero support transfer.

@@ -1,0 +1,27 @@
+STEP11 concrete memory theorem-boundary test
+method=18 look-for-right-theorem; vary hysteresis memory strength
+window kind memory_strength tail_growth final_state
+[100,170] true-zeta    0.02 0.001101 0.000000
+[100,170] true-zeta    0.04 0.001106 0.000000
+[100,170] true-zeta    0.06 0.001173 0.000000
+[100,170] true-zeta    0.08 0.002872 0.000000
+[100,170] true-zeta    0.10 0.004630 0.450671
+[100,170] true-zeta    0.14 0.004065 0.797577
+[100,170] finite-euler 0.02 0.001100 0.000000
+[100,170] finite-euler 0.04 0.001100 0.000000
+[100,170] finite-euler 0.06 0.001101 0.000000
+[100,170] finite-euler 0.08 0.001103 0.000000
+[100,170] finite-euler 0.10 0.001135 0.000000
+[100,170] finite-euler 0.14 0.005976 0.539651
+[500,570] true-zeta    0.02 0.001108 0.000000
+[500,570] true-zeta    0.04 0.001272 0.000000
+[500,570] true-zeta    0.06 0.002814 0.044116
+[500,570] true-zeta    0.08 0.003856 0.457801
+[500,570] true-zeta    0.10 0.003872 0.668708
+[500,570] true-zeta    0.14 0.003051 0.852524
+[500,570] finite-euler 0.02 0.001100 0.000000
+[500,570] finite-euler 0.04 0.001100 0.000000
+[500,570] finite-euler 0.06 0.001101 0.000000
+[500,570] finite-euler 0.08 0.001102 0.000000
+[500,570] finite-euler 0.10 0.001109 0.000000
+[500,570] finite-euler 0.14 0.005065 0.195262

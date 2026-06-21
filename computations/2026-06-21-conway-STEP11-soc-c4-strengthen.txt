@@ -1,0 +1,12 @@
+STEP 11 METHOD 15: STRENGTHEN THE CONJECTURE
+Strengthened gate: at gap=0, every q in {0.70,0.78,0.85} and every window must have true_span=7 and true_area > 1.5*finite_area and > 5*random_area.
+passes=6/12
+failures:
+window=[14,84] q=0.85 true_span=6 finite_span=5 random_span=4 true_area=34 finite_area=19 random_area=6
+window=[100,170] q=0.85 true_span=6 finite_span=4 random_span=3 true_area=31 finite_area=12 random_area=3
+window=[260,330] q=0.78 true_span=6 finite_span=4 random_span=3 true_area=35 finite_area=13 random_area=4
+window=[260,330] q=0.85 true_span=6 finite_span=4 random_span=3 true_area=27 finite_area=11 random_area=4
+window=[500,570] q=0.78 true_span=6 finite_span=6 random_span=3 true_area=33 finite_area=16 random_area=6
+window=[500,570] q=0.85 true_span=6 finite_span=5 random_span=3 true_area=24 finite_area=11 random_area=5
+
+Verdict: strengthened threshold-uniform C4 avalanche gate fails. The observed event-sheet signal is threshold-sensitive and cannot be promoted as a new C4 result.

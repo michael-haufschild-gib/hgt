@@ -1,0 +1,36 @@
+NODE simulation: ball-in-cup projection hides high-dimensional basin membership
+hidden_weight projection_accuracy full_accuracy ambiguous_projection_frac
+         0.00              1.0000        1.0000                    0.0000
+         0.80              0.8012        1.0000                    0.4130
+         1.60              0.6972        1.0000                    0.4416
+         2.40              0.6395        1.0000                    0.4505
+
+STEP8 Levenshtein transfer candidates
+1 distance=41 ratio=0.5541 critical line diagram hides zero source geometry is transverse dimensional
+2 distance=48 ratio=0.7869 seam projection hides where zeros live in transverse geometry
+3 distance=47 ratio=0.7344 one dimensional zero profile hides high dimensional source basin
+selected=1 critical line diagram hides zero source geometry is transverse dimensional
+
+STEP7 formula check: low-dimensional projection accuracy formulas are NODE-side diagnostics; unchanged use is geometry-blind.
+
+Standing-order consolidated target: Where the zeros live in the geometry
+STEP8 transfer: seam projection hides where zeros live in transverse geometry
+STEP9 method 11: run experiments
+samples=420
+offseam_a smooth profile_corr profile_l2 curvature_peak curvature_sign_changes projection_blind
+    0.020  0.020     0.992642   0.121310       500.4018                    0 1
+    0.020  0.050     0.999666   0.025841       231.9054                    0 1
+    0.020  0.100     0.999977   0.006716        83.7745                    0 1
+    0.020  0.180     0.999998   0.002035        29.0838                    0 0
+    0.050  0.020     0.943018   0.337586       209.6610                    2 0
+    0.050  0.050     0.992801   0.119988        54.4537                    0 1
+    0.050  0.100     0.999273   0.038132        49.0447                    0 0
+    0.050  0.180     0.999924   0.012310        24.2354                    0 0
+    0.100  0.020     0.859712   0.529695        93.9698                    2 0
+    0.100  0.050     0.962731   0.273018        45.9963                    2 0
+    0.100  0.100     0.993099   0.117482        12.7562                    0 0
+    0.100  0.180     0.999017   0.044342        12.6452                    0 0
+    0.180  0.020     0.770839   0.676995        30.4114                    2 0
+    0.180  0.050     0.907315   0.430546        24.8347                    2 0
+    0.180  0.100     0.971308   0.239552        12.2424                    2 0
+    0.180  0.180     0.993643   0.112754         3.8817                    0 0

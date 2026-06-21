@@ -1,0 +1,153 @@
+## window 14-84 logfd
+NODE: measurement can perturb chemical computation
+Subclaims: consuming readout changes the state; stronger readout changes the computation; nonconsuming readout is a control.
+measure_rate  consuming_final_X  consuming_Y  nonconsuming_final_X  nonconsuming_Y
+      0.000         1.00000     16.50000             1.00000       16.50000
+      0.020         0.54878     12.40610             1.00000       16.50000
+      0.050         0.22305      8.54222             1.00000       16.50000
+      0.100         0.04971      5.22136             1.00000       16.50000
+      0.200         0.00246      2.73774             1.00000       16.50000
+      0.400         0.00001      1.36949             1.00000       16.50000
+
+STEP8/9 HT transfer
+Minimal edit: chemical readout strength -> finite-difference measurement strength h on d/ds log f(s).
+Method #1 split: compare h-sensitivity by function and strip location against href.
+function       sigma       h      median_delta   q95_delta   samples
+lambda         0.30       0.1     0.00202964   0.0636683        90
+lambda         0.30      0.03    0.000180378  0.00528253        90
+lambda         0.30      0.01    2.00483e-05 0.000582867        90
+lambda         0.50       0.1     0.00300482    0.490519        90
+lambda         0.50      0.03    0.000273405   0.0807179        90
+lambda         0.50      0.01    3.04051e-05  0.00989345        90
+lambda         0.70       0.1     0.00202964   0.0576784        90
+lambda         0.70      0.03    0.000180378  0.00493166        90
+lambda         0.70      0.01    2.00483e-05 0.000545259        90
+zeta           0.30       0.1     0.00231274   0.0564773        90
+zeta           0.30      0.03    0.000200973  0.00468264        90
+zeta           0.30      0.01    2.23423e-05 0.000516643        90
+zeta           0.50       0.1     0.00202947    0.485082        90
+zeta           0.50      0.03     0.00018442   0.0801267        90
+zeta           0.50      0.01    2.05068e-05  0.00982589        90
+zeta           0.70       0.1    0.000691314   0.0687455        90
+zeta           0.70      0.03    6.22723e-05  0.00591218        90
+zeta           0.70      0.01    6.91901e-06 0.000653999        90
+gamma-factor   0.30       0.1    1.16979e-07 6.51789e-07        90
+gamma-factor   0.30      0.03    1.05377e-08 5.86594e-08        90
+gamma-factor   0.30      0.01    1.18015e-09 6.51575e-09        90
+gamma-factor   0.50       0.1    1.17934e-07 6.85956e-07        90
+gamma-factor   0.50      0.03    1.06083e-08 6.17354e-08        90
+gamma-factor   0.50      0.01    1.17308e-09 6.85855e-09        90
+gamma-factor   0.70       0.1    1.18902e-07 7.19805e-07        90
+gamma-factor   0.70      0.03    1.07039e-08 6.47802e-08        90
+gamma-factor   0.70      0.01    1.19186e-09 7.19521e-09        90
+finite-euler   0.30       0.1      0.0227181   0.0544556        90
+finite-euler   0.30      0.03     0.00197283  0.00486882        90
+finite-euler   0.30      0.01    0.000217498 0.000540003        90
+finite-euler   0.50       0.1      0.0103514   0.0235401        90
+finite-euler   0.50      0.03    0.000931636  0.00208859        90
+finite-euler   0.50      0.01    0.000103295 0.000231827        90
+finite-euler   0.70       0.1     0.00617133   0.0115335        90
+finite-euler   0.70      0.03    0.000551983  0.00103649        90
+finite-euler   0.70      0.01    6.12604e-05  0.00011514        90
+## window 100-170 logfd
+NODE: measurement can perturb chemical computation
+Subclaims: consuming readout changes the state; stronger readout changes the computation; nonconsuming readout is a control.
+measure_rate  consuming_final_X  consuming_Y  nonconsuming_final_X  nonconsuming_Y
+      0.000         1.00000     16.50000             1.00000       16.50000
+      0.020         0.54878     12.40610             1.00000       16.50000
+      0.050         0.22305      8.54222             1.00000       16.50000
+      0.100         0.04971      5.22136             1.00000       16.50000
+      0.200         0.00246      2.73774             1.00000       16.50000
+      0.400         0.00001      1.36949             1.00000       16.50000
+
+STEP8/9 HT transfer
+Minimal edit: chemical readout strength -> finite-difference measurement strength h on d/ds log f(s).
+Method #1 split: compare h-sensitivity by function and strip location against href.
+function       sigma       h      median_delta   q95_delta   samples
+lambda         0.30       0.1     0.00497664    0.898349        90
+lambda         0.30      0.03    0.000439101  0.00487167        90
+lambda         0.30      0.01    4.77103e-05 0.000385309        90
+lambda         0.50       0.1     0.00970582    0.411738        90
+lambda         0.50      0.03    0.000884032   0.0419341        90
+lambda         0.50      0.01    9.83216e-05  0.00417856        90
+lambda         0.70       0.1     0.00482349   0.0361105        90
+lambda         0.70      0.03    0.000429812  0.00332832        90
+lambda         0.70      0.01    4.77103e-05 0.000370044        90
+zeta           0.30       0.1     0.00459558     0.83405        90
+zeta           0.30      0.03    0.000432724  0.00420977        90
+zeta           0.30      0.01    4.55007e-05 0.000277832        90
+zeta           0.50       0.1     0.00549408    0.401699        90
+zeta           0.50      0.03    0.000504236   0.0417263        90
+zeta           0.50      0.01    5.61192e-05  0.00401578        90
+zeta           0.70       0.1    0.000991701    0.053116        90
+zeta           0.70      0.03    9.51016e-05  0.00479407        90
+zeta           0.70      0.01    1.05962e-05 0.000532236        90
+gamma-factor   0.30       0.1    1.48768e-08 2.57711e-08        90
+gamma-factor   0.30      0.03    1.36053e-09 2.29604e-09        90
+gamma-factor   0.30      0.01    1.54278e-10 2.61676e-10        90
+gamma-factor   0.50       0.1    1.48617e-08 2.58698e-08        90
+gamma-factor   0.50      0.03    1.33916e-09 2.33016e-09        90
+gamma-factor   0.50      0.01    1.55427e-10 2.65797e-10        90
+gamma-factor   0.70       0.1    1.49014e-08 2.59331e-08        90
+gamma-factor   0.70      0.03    1.33789e-09 2.32965e-09        90
+gamma-factor   0.70      0.01    1.49957e-10 2.61335e-10        90
+finite-euler   0.30       0.1      0.0199278   0.0627925        90
+finite-euler   0.30      0.03     0.00175485  0.00529634        90
+finite-euler   0.30      0.01    0.000195183 0.000584826        90
+finite-euler   0.50       0.1      0.0114307   0.0201144        90
+finite-euler   0.50      0.03     0.00102676  0.00181154        90
+finite-euler   0.50      0.01    0.000114054 0.000201275        90
+finite-euler   0.70       0.1     0.00692886   0.0132491        90
+finite-euler   0.70      0.03    0.000624073  0.00118955        90
+finite-euler   0.70      0.01    6.93399e-05 0.000132135        90
+## window 500-570 logfd
+NODE: measurement can perturb chemical computation
+Subclaims: consuming readout changes the state; stronger readout changes the computation; nonconsuming readout is a control.
+measure_rate  consuming_final_X  consuming_Y  nonconsuming_final_X  nonconsuming_Y
+      0.000         1.00000     16.50000             1.00000       16.50000
+      0.020         0.54878     12.40610             1.00000       16.50000
+      0.050         0.22305      8.54222             1.00000       16.50000
+      0.100         0.04971      5.22136             1.00000       16.50000
+      0.200         0.00246      2.73774             1.00000       16.50000
+      0.400         0.00001      1.36949             1.00000       16.50000
+
+STEP8/9 HT transfer
+Minimal edit: chemical readout strength -> finite-difference measurement strength h on d/ds log f(s).
+Method #1 split: compare h-sensitivity by function and strip location against href.
+function       sigma       h      median_delta   q95_delta   samples
+lambda         0.30       0.1     0.00786013   0.0642334        90
+lambda         0.30      0.03    0.000636148  0.00497418        90
+lambda         0.30      0.01    7.06089e-05 0.000549034        90
+lambda         0.50       0.1      0.0240435     0.62913        90
+lambda         0.50      0.03     0.00225676     0.14418        90
+lambda         0.50      0.01    0.000251672   0.0191539        90
+lambda         0.70       0.1      0.0071455   0.0595892        90
+lambda         0.70      0.03    0.000636149  0.00497418        90
+lambda         0.70      0.01    7.06092e-05 0.000549034        90
+zeta           0.30       0.1     0.00914255   0.0475593        90
+zeta           0.30      0.03    0.000749462  0.00365047        90
+zeta           0.30      0.01    8.23491e-05 0.000402694        90
+zeta           0.50       0.1      0.0126052    0.577981        90
+zeta           0.50      0.03     0.00118788    0.143161        90
+zeta           0.50      0.01    0.000132525   0.0190598        90
+zeta           0.70       0.1     0.00681096   0.0940235        90
+zeta           0.70      0.03    0.000661237  0.00788693        90
+zeta           0.70      0.01    7.41378e-05 0.000871521        90
+gamma-factor   0.30       0.1    8.02963e-10 9.43488e-10        90
+gamma-factor   0.30      0.03    5.70298e-11 1.48255e-10        90
+gamma-factor   0.30      0.01    4.10472e-11 1.12723e-10        90
+gamma-factor   0.50       0.1    8.83719e-10 1.02046e-09        90
+gamma-factor   0.50      0.03    1.34243e-10 2.26014e-10        90
+gamma-factor   0.50      0.01    6.81536e-11 1.55901e-10        90
+gamma-factor   0.70       0.1    8.08991e-10 9.32167e-10        90
+gamma-factor   0.70      0.03    6.37008e-11 1.49024e-10        90
+gamma-factor   0.70      0.01    4.02905e-11 1.12674e-10        90
+finite-euler   0.30       0.1      0.0201499   0.0453403        90
+finite-euler   0.30      0.03     0.00182339  0.00398847        90
+finite-euler   0.30      0.01    0.000202369 0.000442711        90
+finite-euler   0.50       0.1      0.0109369   0.0229589        90
+finite-euler   0.50      0.03    0.000986855  0.00206697        90
+finite-euler   0.50      0.01    0.000109662  0.00022965        90
+finite-euler   0.70       0.1     0.00706052   0.0142785        90
+finite-euler   0.70      0.03    0.000636754   0.0012816        90
+finite-euler   0.70      0.01    7.07566e-05 0.000142353        90

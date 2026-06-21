@@ -1,0 +1,54 @@
+Step 8 transfer: critical-line Xi confluent Wronskian
+function: Xi_line(t)=xi(1/2+i t), real part
+matrix rows: derivatives order 0..n-1; columns: coalescing t-nodes
+
+case t0=10.0 n=4
+  expected Vandermonde exponent=6
+  confluent Wronskian target=2.754136572285243e-13
+  eps raw_abs normalized rel_error
+     0.1 1.01497332225e-17  2.114527754679204e-13 0.232236
+    0.05 1.81203030634e-19  2.416040408451181e-13 0.122759
+    0.02 8.03109566452e-22  2.614288953294262e-13 0.0507773
+    0.01 1.2880443879e-23  2.683425808122841e-13 0.0256744
+   0.005 2.03893700184e-25  2.718582669122406e-13 0.0129093
+  estimated raw slope=5.919567853
+  nearby false normalizations at smallest eps:
+    exponent 5: 1.35929133456e-15  (false -> 0)
+    exponent 6: 2.71858266912e-13  (correct)
+    exponent 7: 5.43716533824e-11  (false -> blows up)
+
+case t0=14.13 n=4
+  expected Vandermonde exponent=6
+  confluent Wronskian target=1.554133083752619e-16
+  eps raw_abs normalized rel_error
+     0.1 5.12980945987e-21  1.068710304139787e-16 0.312343
+    0.05 9.67675812408e-23  1.290234416543793e-16 0.169804
+    0.02 4.43302543848e-25  1.443042134920415e-16 0.071481
+    0.01 7.18860491062e-27  1.497626023045776e-16 0.0363592
+   0.005 1.14422648747e-28  1.525635316633032e-16 0.0183368
+  estimated raw slope=5.886011731
+  nearby false normalizations at smallest eps:
+    exponent 5: 7.62817658317e-19  (false -> 0)
+    exponent 6: 1.52563531663e-16  (correct)
+    exponent 7: 3.05127063327e-14  (false -> blows up)
+
+case t0=20.0 n=4
+  expected Vandermonde exponent=6
+  confluent Wronskian target=2.88936511346646e-22
+  eps raw_abs normalized rel_error
+     0.1 8.86105058196e-27  1.846052204575978e-22 0.361087
+    0.05 1.73543811157e-28  2.313917482097356e-22 0.199161
+    0.02 8.12525064542e-31  2.644938361140556e-22 0.0845953
+    0.01 1.32703531537e-32  2.764656907014154e-22 0.0431611
+   0.005 2.11978169985e-34  2.826375599798604e-22 0.0218005
+  estimated raw slope=5.8636522
+  nearby false normalizations at smallest eps:
+    exponent 5: 1.4131877999e-24  (false -> 0)
+    exponent 6: 2.8263755998e-22  (correct)
+    exponent 7: 5.6527511996e-20  (false -> blows up)
+
+Interpretation key:
+  If the only effect is Vandermonde collapse with a stable Wronskian limit,
+  then the transfer reduces to classical confluent determinant calculus.
+  A non-reducing signal would have to appear in the Wronskian target landscape,
+  not in the raw coalescing determinant.

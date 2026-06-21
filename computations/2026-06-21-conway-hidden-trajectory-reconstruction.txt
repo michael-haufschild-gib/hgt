@@ -1,0 +1,29 @@
+NODE simulation: same observed work can hide different reconstructed heat
+observed_work=-13.492691 heat_model_A=200.0 heat_model_B=262.0 hidden_flip_rate=0.190
+
+STEP8 transfer attempts by Levenshtein distance
+A_amplitude_work_hidden_phase_heat     distance=20
+B_zero_shadow_work_hidden_path         distance=21
+C_sigma_lane_work_hidden_switches      distance=21
+selected=A_amplitude_work_hidden_phase_heat
+
+STEP8/9 HT transfer: observed amplitude work vs hidden phase heat
+kind sigma window amp_work amp_var phase_heat defect_heat hidden_ratio median_defect
+true   0.3 [100,170] +1.0633 57.8309 72.6348 72.9630 1.256 0.4398
+finite 0.3 [100,170] +1.2540 80.3419 359.4801 59.4212 4.474 0.0068
+random 0.3 [100,170] +1.0633 57.8309 389.5921 132.7748 6.737 -0.1349
+true   0.3 [500,570] +0.3859 60.8615 73.3573 73.9972 1.205 0.5099
+finite 0.3 [500,570] +0.4405 72.1545 378.2947 53.4932 5.243 -0.0135
+random 0.3 [500,570] +0.3859 60.8615 432.0103 121.2822 7.098 -0.1541
+true   0.5 [100,170] +1.7424 152.9030 188.4566 185.8597 1.233 0.2547
+finite 0.5 [100,170] +1.3336 68.5734 276.5122 104.0850 4.032 0.0054
+random 0.5 [100,170] +1.7424 152.9030 411.1239 149.0593 2.689 -0.1245
+true   0.5 [500,570] +1.3729 207.0352 246.3853 206.2664 1.190 0.2803
+finite 0.5 [500,570] +0.0753 55.2493 308.5023 121.0216 5.584 -0.0476
+random 0.5 [500,570] +1.3729 207.0352 407.2433 148.9401 1.967 -0.1458
+true   1.2 [100,170] +0.3622 14.7439 144.6106 28.2130 9.808 -0.0742
+finite 1.2 [100,170] +0.3585 14.7501 146.4590 27.9763 9.929 -0.0725
+random 1.2 [100,170] +0.3622 14.7439 430.7979 71.9411 29.219 -0.0331
+true   1.2 [500,570] -0.0531 16.8154 140.1668 20.5430 8.336 -0.0485
+finite 1.2 [500,570] -0.0465 16.7892 140.4576 20.4404 8.366 -0.0473
+random 1.2 [500,570] -0.0531 16.8154 389.8405 44.2448 23.184 -0.0291

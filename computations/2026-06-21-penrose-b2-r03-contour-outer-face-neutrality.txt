@@ -1,0 +1,27 @@
+NODE test: outer face in a finite planar map is a root/drawing choice
+  Same embedded map can report outer-face degree in [3, 4].
+  Face-degree multiset is intrinsic: [3, 3, 4]; selected outer degree is not.
+
+ResearchNode mutation: contour-moment source-width tomography
+  Synthetic divisor: [1j, 1.8j, (0.12+2.85j), (-0.12+2.85j)]
+  exact M2=-20.4562000000+0.0000000000i, exact D2=0.028800
+  Root-side-starved quadrature: same contour, one designated side gets only 5 panels.
+    root_side=bottom approx_M2=-20.4576699561-0.0000000000i abs_error=1.470e-03
+    root_side=right  approx_M2=-20.6453440182+0.2504484132i abs_error=3.138e-01
+    root_side=top    approx_M2=-20.4757755357-0.0000000000i abs_error=1.958e-02
+    root_side=left   approx_M2=-20.6453440182-0.2504484132i abs_error=3.138e-01
+  side artifact ratio worst/best=213.51 (left vs bottom)
+  Monotone side-balanced refinement check:
+    panels_per_side=  8 abs_error=4.750e-02 
+    panels_per_side= 16 abs_error=2.300e-02 down
+    panels_per_side= 32 abs_error=5.775e-03 down
+    panels_per_side= 64 abs_error=1.445e-03 down
+    panels_per_side=128 abs_error=3.612e-04 down
+    panels_per_side=256 abs_error=9.031e-05 down
+    panels_per_side=512 abs_error=2.258e-05 down
+
+Finding:
+  Contour moments are exact outer-face/root invariant residues, but numerical/event readouts can
+  acquire an artificial outer face when one side is privileged. Source-width tomography should
+  carry an outer-face neutrality certificate: rotate the root side and require side-balanced
+  monotone refinement before interpreting M_k/D2 as divisor geometry.

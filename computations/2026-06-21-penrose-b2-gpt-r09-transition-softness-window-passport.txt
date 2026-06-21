@@ -1,0 +1,44 @@
+NODE test: tidal stripping changes apparent halo mass and subhalo survival
+Hernquist cumulative mass M(<r)=r^2/(r+1)^2; stripping truncates at r_t.
+
+r_t | survival M(<r_t) | M_app@0.5 | M_app@1 | M_app@2 | M_app@5
+----|------------------|-----------|---------|---------|--------
+0.4 |         0.081633 |  0.081633 | 0.081633 | 0.081633 | 0.081633
+0.8 |         0.197531 |  0.111111 | 0.197531 | 0.197531 | 0.197531
+1.5 |         0.360000 |  0.111111 | 0.250000 | 0.360000 | 0.360000
+3.0 |         0.562500 |  0.111111 | 0.250000 | 0.444444 | 0.562500
+10.0 |         0.826446 |  0.111111 | 0.250000 | 0.444444 | 0.694444
+
+ResearchNode mutation: transition softness under nested windows
+A locally soft Delta=0 crossing can hide switch-like components outside the small window.
+
+window | slope@0 | TV(derivative) | max |curvature| | profile
+-------|---------|----------------|-----------------|------------------------------------------
+  0.08 |  1.0000 |       0.000032 |           0.001 |      ....:::::----=====++++*****####%%%%
+  0.16 |  1.0000 |       0.019007 |           0.738 |      ....:::::----=====++++*****####%%%%
+  0.28 |  1.0000 |      10.840741 |          98.525 |    ..:::::-------=======+++++++*****##%%
+  0.40 |  1.0000 |      12.799284 |          98.526 |       ..:::------=======++++++***##%%%%%
+  0.70 |  1.0000 |      12.799496 |          98.526 |       .....:::----=====++++***#####%%%%%
+
+Step-12 follow-up sweeps:
+amp at center=0.25, window=0.40 | slope@0 | TV(derivative)
+--------------------------------|---------|---------------
+                          0.00 |  1.0000 |      0.000000
+                          0.02 |  1.0000 |      3.199821
+                          0.05 |  1.0000 |      7.999552
+                          0.08 |  1.0000 |     12.799284
+                          0.12 |  1.0000 |     19.198926
+
+center with amp=0.08, window=0.40 | slope@0 | TV(derivative)
+---------------------------------|---------|---------------
+                           0.08 |  1.0424 |     12.714859
+                           0.16 |  1.0001 |     12.799348
+                           0.25 |  1.0000 |     12.799284
+                           0.40 |  1.0000 |      6.400068
+                           0.60 |  1.0000 |      0.000003
+
+Finding:
+  A soft local zero crossing can be an aperture artifact: small windows see only the
+  reversible core, while larger windows recover stripped switch-like curvature.
+  Transition-softness claims need a nested-window persistence passport before being
+  promoted to theorem-level regularity.

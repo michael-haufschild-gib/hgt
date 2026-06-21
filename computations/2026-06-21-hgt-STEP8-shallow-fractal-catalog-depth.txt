@@ -1,0 +1,138 @@
+STEP8/9 phase catalog scaling-depth test
+samples=1024 span=320.0 prime_count=160
+dependency_chain=trace->fixed_threshold->count_exponent->depth_drift->controls
+
+CASE sigma=0.3 t0=100 threshold_true_q80=0.966603
+kind depth event_count exponent label
+true      96          20   1.1108 linear_like
+true     160          30   1.0348 linear_like
+true     256          48   0.9756 linear_like
+true     384          74   0.9470 linear_like
+true     640         125   0.9527 linear_like
+true    1024         205   0.9648 linear_like
+finite    96           1      nan too_sparse
+finite   160           4      nan too_sparse
+finite   256           6   0.7370 linear_like
+finite   384           6   0.5653 sublinear
+finite   640           6   0.4120 sublinear
+finite  1024           8   0.2412 sublinear
+random    96           8   0.4888 sublinear
+random   160          17   0.7517 linear_like
+random   256          24   0.8468 linear_like
+random   384          31   0.8661 linear_like
+random   640          49   0.9319 linear_like
+random  1024          64   0.9298 linear_like
+DEPTH_DRIFT true=0.0700 finite=nan random=0.1781
+
+CASE sigma=0.3 t0=500 threshold_true_q80=0.932324
+kind depth event_count exponent label
+true      96          19   1.0795 linear_like
+true     160          33   1.0941 linear_like
+true     256          53   1.0969 linear_like
+true     384          77   1.1019 linear_like
+true     640         127   1.0810 linear_like
+true    1024         205   1.0055 linear_like
+finite    96           0      nan too_sparse
+finite   160           0      nan too_sparse
+finite   256           0      nan too_sparse
+finite   384           2      nan too_sparse
+finite   640           5      nan too_sparse
+finite  1024           7   0.8989 linear_like
+random    96           4   0.5272 sublinear
+random   160           5   0.7978 linear_like
+random   256           8   0.7638 linear_like
+random   384          13   0.8210 linear_like
+random   640          24   0.9418 linear_like
+random  1024          41   0.9872 linear_like
+DEPTH_DRIFT true=0.0886 finite=nan random=0.1894
+
+CASE sigma=0.5 t0=100 threshold_true_q80=1.13136
+kind depth event_count exponent label
+true      96          18   1.0024 linear_like
+true     160          30   1.0461 linear_like
+true     256          48   1.0364 linear_like
+true     384          76   1.0570 linear_like
+true     640         127   1.0879 linear_like
+true    1024         205   1.0339 linear_like
+finite    96           4   1.0456 linear_like
+finite   160           9   1.2793 superlinear
+finite   256          14   1.2515 superlinear
+finite   384          21   1.2343 superlinear
+finite   640          32   1.1380 linear_like
+finite  1024          47   1.0454 linear_like
+random    96           9   0.9185 linear_like
+random   160          12   0.7794 linear_like
+random   256          16   0.6442 sublinear
+random   384          25   0.6194 sublinear
+random   640          38   0.6929 sublinear
+random  1024          63   0.7834 linear_like
+DEPTH_DRIFT true=0.0122 finite=0.2339 random=0.0040
+
+CASE sigma=0.5 t0=500 threshold_true_q80=1.14077
+kind depth event_count exponent label
+true      96          20   1.2100 superlinear
+true     160          33   1.1362 linear_like
+true     256          52   1.1038 linear_like
+true     384          81   1.0710 linear_like
+true     640         131   1.0292 linear_like
+true    1024         205   0.9825 linear_like
+finite    96           5   0.9656 linear_like
+finite   160           7   0.9440 linear_like
+finite   256          11   0.9043 linear_like
+finite   384          18   0.8416 linear_like
+finite   640          29   0.8817 linear_like
+finite  1024          44   0.9170 linear_like
+random    96           6      nan too_sparse
+random   160           9   1.0658 linear_like
+random   256          14   0.9863 linear_like
+random   384          22   1.1014 linear_like
+random   640          40   1.0839 linear_like
+random  1024          56   1.0506 linear_like
+DEPTH_DRIFT true=0.1537 finite=0.0270 random=0.0152
+
+CASE sigma=1.2 t0=100 threshold_true_q80=0.18325
+kind depth event_count exponent label
+true      96          21   1.1168 linear_like
+true     160          38   1.1069 linear_like
+true     256          59   1.1299 linear_like
+true     384          89   1.0777 linear_like
+true     640         138   1.0269 linear_like
+true    1024         205   0.9561 linear_like
+finite    96          22   1.1731 linear_like
+finite   160          39   1.1338 linear_like
+finite   256          61   1.1451 linear_like
+finite   384          91   1.0874 linear_like
+finite   640         140   1.0259 linear_like
+finite  1024         209   0.9407 linear_like
+random    96          26   1.2237 superlinear
+random   160          44   1.1891 linear_like
+random   256          58   1.1264 linear_like
+random   384          86   1.0504 linear_like
+random   640         132   0.9198 linear_like
+random  1024         196   0.8465 linear_like
+DEPTH_DRIFT true=0.1508 finite=0.1931 random=0.3426
+
+CASE sigma=1.2 t0=500 threshold_true_q80=0.138734
+kind depth event_count exponent label
+true      96          22   0.9848 linear_like
+true     160          32   0.9363 linear_like
+true     256          55   0.9411 linear_like
+true     384          84   0.9098 linear_like
+true     640         134   0.9496 linear_like
+true    1024         205   0.9318 linear_like
+finite    96          22   0.9848 linear_like
+finite   160          32   0.9363 linear_like
+finite   256          56   0.9450 linear_like
+finite   384          85   0.9151 linear_like
+finite   640         135   0.9550 linear_like
+finite  1024         207   0.9361 linear_like
+random    96          23   1.2435 superlinear
+random   160          34   1.1683 linear_like
+random   256          55   1.0897 linear_like
+random   384          78   0.9805 linear_like
+random   640         137   0.9373 linear_like
+random  1024         198   0.8967 linear_like
+DEPTH_DRIFT true=0.0045 finite=0.0003 random=0.2717
+
+reduction gate
+A depth-drift signal is not promoted if finite Euler or random-phase controls have comparable drift, or if true/finite collapse in the right strip.

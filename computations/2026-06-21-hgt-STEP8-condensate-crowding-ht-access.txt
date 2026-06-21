@@ -1,0 +1,46 @@
+STEP8 transfer attempts by Levenshtein distance
+amplitude-crowding-phase-access  distance=70
+partition-coefficient-strip      distance=75
+condensate-diffusion-smoothing   distance=76
+selected=amplitude-crowding-phase-access
+
+STEP9 method #13: find a monotone quantity
+amplitude=enrichment/crowding proxy; access=phase-carrier accessibility; penalized=access/(1+amplitude^2)
+sigma window kind prime_count amp access penalized
+0.3 [100,170] true         160 1.312177 0.431024 0.146487
+0.3 [100,170] finite        20 1.832274 0.000000 0.000000
+0.3 [100,170] finite        40 2.098898 0.000000 0.000000
+0.3 [100,170] finite        80 2.174607 0.007642 0.001529
+0.3 [100,170] finite       160 2.331672 0.000000 0.000000
+0.3 [100,170] finite       320 2.562842 0.010060 0.001028
+0.3 [100,170] random-phase 160 1.312177 0.000000 0.000000
+0.3 [500,570] true         160 1.673014 0.530177 0.131719
+0.3 [500,570] finite        20 1.804140 0.000000 0.000000
+0.3 [500,570] finite        40 2.178863 0.000000 0.000000
+0.3 [500,570] finite        80 2.349648 0.000000 0.000000
+0.3 [500,570] finite       160 2.615364 0.000000 0.000000
+0.3 [500,570] finite       320 2.689226 0.000000 0.000000
+0.3 [500,570] random-phase 160 1.673014 0.000000 0.000000
+0.7 [100,170] true         160 0.943088 0.014969 0.008423
+0.7 [100,170] finite        20 0.966591 0.000000 0.000000
+0.7 [100,170] finite        40 1.017007 0.000000 0.000000
+0.7 [100,170] finite        80 1.031529 0.000000 0.000000
+0.7 [100,170] finite       160 1.040251 0.000000 0.000000
+0.7 [100,170] finite       320 1.016221 0.000000 0.000000
+0.7 [100,170] random-phase 160 0.943088 0.000000 0.000000
+1.2 [100,170] true         160 0.435048 0.000000 0.000000
+1.2 [100,170] finite        20 0.434991 0.000000 0.000000
+1.2 [100,170] finite        40 0.432248 0.000000 0.000000
+1.2 [100,170] finite        80 0.437149 0.000000 0.000000
+1.2 [100,170] finite       160 0.438535 0.000000 0.000000
+1.2 [100,170] finite       320 0.436054 0.000000 0.000000
+1.2 [100,170] random-phase 160 0.435048 0.000970 0.000907
+
+Finite-prime monotone summary
+sigma window amp_monotone_up access_monotone_up penalized_monotone_up amp_values access_values penalized_values
+0.3 [100,170] 1 0 0 1.8323,2.0989,2.1746,2.3317,2.5628 0.0000,0.0000,0.0076,0.0000,0.0101 0.0000,0.0000,0.0015,0.0000,0.0010
+0.3 [500,570] 1 1 1 1.8041,2.1789,2.3496,2.6154,2.6892 0.0000,0.0000,0.0000,0.0000,0.0000 0.0000,0.0000,0.0000,0.0000,0.0000
+0.7 [100,170] 0 1 1 0.9666,1.0170,1.0315,1.0403,1.0162 0.0000,0.0000,0.0000,0.0000,0.0000 0.0000,0.0000,0.0000,0.0000,0.0000
+1.2 [100,170] 0 1 1 0.4350,0.4322,0.4371,0.4385,0.4361 0.0000,0.0000,0.0000,0.0000,0.0000 0.0000,0.0000,0.0000,0.0000,0.0000
+
+Interpretation key: if this only says finite Euler amplitude rises while phase access stays low, it reduces to the existing specificity/promiscuity and amplitude-vs-phase results.

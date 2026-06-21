@@ -1,0 +1,30 @@
+NODE: redshift-space distortion changes inferred clustering dimension
+seed=20260621 n_points=4900 n_pairs=260000
+real_space             D_hat=1.7114 r2=0.9802 median_pair=1.2810 z_xy_aniso=0.9916
+finger_0.08            D_hat=1.7178 r2=0.9818 median_pair=1.2955 z_xy_aniso=1.0552
+DELTA mode=finger strength=0.08 delta_D=+0.0064 aniso=1.0552
+finger_0.16            D_hat=1.8348 r2=0.9868 median_pair=1.2821 z_xy_aniso=1.0488
+DELTA mode=finger strength=0.16 delta_D=+0.1234 aniso=1.0488
+finger_0.28            D_hat=1.9465 r2=0.9951 median_pair=1.3044 z_xy_aniso=1.2037
+DELTA mode=finger strength=0.28 delta_D=+0.2351 aniso=1.2037
+finger_0.42            D_hat=2.0033 r2=0.9977 median_pair=1.3345 z_xy_aniso=1.4101
+DELTA mode=finger strength=0.42 delta_D=+0.2919 aniso=1.4101
+compression_0.08       D_hat=1.7331 r2=0.9799 median_pair=1.2477 z_xy_aniso=0.8393
+DELTA mode=compression strength=0.08 delta_D=+0.0217 aniso=0.8393
+compression_0.16       D_hat=1.6974 r2=0.9781 median_pair=1.2115 z_xy_aniso=0.6997
+DELTA mode=compression strength=0.16 delta_D=-0.0140 aniso=0.6997
+compression_0.28       D_hat=1.7407 r2=0.9808 median_pair=1.1541 z_xy_aniso=0.5141
+DELTA mode=compression strength=0.28 delta_D=+0.0293 aniso=0.5141
+compression_0.42       D_hat=1.8142 r2=0.9855 median_pair=1.0910 z_xy_aniso=0.3336
+DELTA mode=compression strength=0.42 delta_D=+0.1027 aniso=0.3336
+mixed_0.08             D_hat=1.7278 r2=0.9836 median_pair=1.2731 z_xy_aniso=0.9293
+DELTA mode=mixed strength=0.08 delta_D=+0.0164 aniso=0.9293
+mixed_0.16             D_hat=1.7266 r2=0.9697 median_pair=1.2583 z_xy_aniso=0.9293
+DELTA mode=mixed strength=0.16 delta_D=+0.0152 aniso=0.9293
+mixed_0.28             D_hat=1.7871 r2=0.9844 median_pair=1.2606 z_xy_aniso=0.9375
+DELTA mode=mixed strength=0.28 delta_D=+0.0757 aniso=0.9375
+mixed_0.42             D_hat=1.5546 r2=0.9706 median_pair=1.3254 z_xy_aniso=1.2757
+DELTA mode=mixed strength=0.42 delta_D=-0.1568 aniso=1.2757
+
+criterion
+If D_hat changes while the real-space catalog is fixed, the dimension estimate is conditional on redshift-space distortion modeling.

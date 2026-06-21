@@ -1,0 +1,22 @@
+# fused split of the dangerous directions, N=200, d=6, dps=120 (cache 300@170)
+# arch cross-check POLE+ZETA+BETA vs polygamma S_k^A: max rel err = 2.09e-121
+--- p_d = lambda_min eigvec of full H_0 (=0.97 u, pole-dominated) ---
+  Q_0          = 1.0274e-39
+  Q_pole       = -1.3488089e+8
+  Q_zeta       = 33720222.0
+  Q_beta       = 33720222.0
+  Q_prime      = 67440443.0
+  sum 4        = 1.0273978e-39  (vs Q_0)
+  residual Q_0-Q_pole = zeta+beta+prime = 1.3488089e+8
+  within residual shares: zeta/|res|=0.25 beta=0.25 prime=0.5
+--- p_d^perp = lambda_min of H_0|u^perp  (p(-4)=0, the genuine residual / Part B) ---
+  Q_0          = 7.80647e-33
+  Q_pole       = -5.9140063e-115
+  Q_zeta       = 5.2010205e-5
+  Q_beta       = -5.2008488e-5
+  Q_prime      = -1.7170343e-9
+  sum 4        = 7.8064684e-33  (vs Q_0)
+  residual Q_0-Q_pole = zeta+beta+prime = 7.8064684e-33
+  within residual shares: zeta/|res|=6.6625e+27 beta=-6.6622e+27 prime=-2.1995e+23
+#   check p(-4)=<pperp,u_unnorm> = -2.131e-118 (should be ~0)
+EXIT=0

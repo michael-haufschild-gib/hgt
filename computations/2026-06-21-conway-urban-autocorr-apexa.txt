@@ -1,0 +1,27 @@
+THE-MACHINE tick: urban spatial autocorrelation -> APEX-A
+NODE: spatial autocorrelation violates the independence assumptions of many fitted models
+Standing-order target: 18/32 APEX-A Schanuel-for-prime-logs
+STEP 6 NODE TEST: spatial autocorrelation survives a fitted scaling law
+case beta_hat residual_moran_I naive_se autocorr_se_inflated
+iid_errors      1.15026 +0.00667 0.00051 0.00051
+autocorr_errors 1.15048 +0.96061 0.00051 0.00360
+NODE verdict: a fitted exponent can look ordinary while residual autocorrelation violates the independent-sample assumption.
+
+STEP 7 FORMULA CHECK
+Urban Moran-I formulas do not apply unchanged to APEX-A. The transfer keeps the invariant: audit whether finite monomial coordinates have dependence induced by shared prime supports.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=73 normalized=0.7300: prime log monomial supports have autocorrelation so relation coordinates are not independent samples
+2. distance=64 normalized=0.7711: APEX A finite monomial tests need shared prime support autocorrelation audits
+3. distance=69 normalized=0.8023: Schanuel prime log searches should block by shared prime support not naive coordinates
+chosen=2: APEX A finite monomial tests need shared prime support autocorrelation audits
+
+STEP 9 METHOD 12: FIND AN INVARIANT
+n_primes nodes graph_edges moran_I shuffled_mean shuffled_sd z_score effective_independent_fraction
+08 0036 000448 +0.36289 -0.02937 0.04796 +8.18 0.4675
+12 0078 001584 +0.40208 -0.01420 0.03087 +13.49 0.4264
+16 0136 003840 +0.42324 -0.00723 0.02072 +20.78 0.4052
+24 0300 013248 +0.44468 -0.00380 0.01080 +41.52 0.3844
+32 0528 031744 +0.45561 -0.00253 0.00778 +58.87 0.3740
+
+Provisional interpretation: degree-2 prime-log monomials have strong support autocorrelation under the shared-prime graph. This is an audit invariant for finite APEX-A experiments, but by itself it is dependence hygiene, not Schanuel content.

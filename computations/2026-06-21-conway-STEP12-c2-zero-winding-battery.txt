@@ -1,0 +1,18 @@
+STEP 12 C2 zero-winding centered-holonomy battery
+family kind all_mean_abs zero_winding_mean_abs zero_winding_count winding_nonzero_frac true_finite_zero_gap true_random_zero_gap verdict
+critical_small    true   14.298104 12.656533 14 0.417 +10.565654 -1.327582 0
+critical_small    finite 2.533971 2.090879 20 0.167 +10.565654 -1.327582 0
+critical_small    random 9.753597 13.984115 04 0.833 +10.565654 -1.327582 0
+critical_medium   true   20.245946 21.658296 14 0.417 +13.895867 +16.257798 1
+critical_medium   finite 5.504648 7.762429 12 0.500 +13.895867 +16.257798 1
+critical_medium   random 4.620245 5.400498 06 0.750 +13.895867 +16.257798 1
+critical_offseam  true   6.985057 6.985057 24 0.000 -2.918487 -2.442988 0
+critical_offseam  finite 4.899520 9.903544 08 0.667 -2.918487 -2.442988 0
+critical_offseam  random 6.364332 9.428045 03 0.875 -2.918487 -2.442988 0
+right_medium      true   0.095253 0.095253 24 0.000 -0.000067 -0.174781 1
+right_medium      finite 0.095320 0.095320 24 0.000 -0.000067 -0.174781 1
+right_medium      random 0.270034 0.270034 24 0.000 -0.000067 -0.174781 1
+
+CRITICAL_ZERO_WINDING_TRUE_SEPARATES 1/3
+RIGHT_ZERO_WINDING_COLLAPSE 1/1
+Interpretation: zero-winding centered holonomy is the non-argument-principle gate. If it separates in critical loops and collapses on the right, C2 loop tests should include this centered/zero-winding battery.

@@ -1,0 +1,14 @@
+Step 8 transfer attempts scored by Levenshtein distance
+Original NODE test:
+Gibbs rare states have invariant probability p, recurrence time about 1/p, and finite trajectories miss them with probability (1-p)^N.
+
+A_sparse_resonance_sampling: distance=83
+Sparse positivity resonances have effective weight p, detection scale about 1/p, and finite grids miss them without a lower-bound guard.
+
+C_adaptive_event_contours: distance=106
+Rare defects require adaptive event-certified contours; fixed samples miss them even when the all-scale index is nonzero.
+
+B_source_measure_average: distance=109
+The zero source measure has rare charged regions; ensemble averages exist, but time averages cannot replace a source-built positivity transfer.
+
+Chosen transfer by minimum distance: A_sparse_resonance_sampling

@@ -1,0 +1,36 @@
+NODE test: compact U(1) can have large-gauge copies even in an Abelian theory
+Gauge condition dA=0 is satisfied by every constant representative a+n on S^1.
+
+n | representative a+n | |holonomy(a+n)-holonomy(a)| | in fundamental [0,1)?
+--|--------------------|-----------------------------|----------------------
+-2 |              -1.63 |                   1.337e-15 |                False
+-1 |              -0.63 |                   2.483e-16 |                False
+ 0 |               0.37 |                   0.000e+00 |                 True
+ 1 |               1.37 |                   6.280e-16 |                False
+ 2 |               2.37 |                   4.003e-16 |                False
+
+ResearchNode mutation: fused closed form under branch/sector copies
+Local derivative checks cannot see additive 2*pi*i branch sectors.
+
+n | derivative check | value error versus principal
+--|------------------|----------------------------
+-2 |             True |            12.566370614359
+-1 |             True |             6.283185307180
+ 0 |             True |             0.000000000000
+ 1 |             True |             6.283185307180
+ 2 |             True |            12.566370614359
+
+Step-12 follow-up: certification strength
+n | derivative only accepts? | derivative + basepoint accepts?
+--|--------------------------|-------------------------------
+-2 |                     True |                         False
+-1 |                     True |                         False
+ 0 |                     True |                          True
+ 1 |                     True |                         False
+ 2 |                     True |                         False
+
+Finding:
+  A theorem-grade fused closed form needs a sector passport: branch choices,
+  large-gauge/winding constants, contour homotopy class, and residue conventions.
+  Matching derivatives, asymptotics, or local expansions does not certify exact
+  equality of the fused value.

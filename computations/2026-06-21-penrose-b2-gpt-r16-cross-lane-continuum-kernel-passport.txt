@@ -1,0 +1,25 @@
+NODE test: finite/discrete spectra can create recurrence artifacts
+ResearchNode mutation: finite sigma-lane matrices need a continuum-kernel passport
+
+Compare true interval kernel exp(-|s-s'|/ell) with cyclic finite-lane kernel.
+The cyclic kernel is a recurrence/boundary artifact if sigma lanes live on an interval.
+
+N lanes | true edge K(0,1) | cyclic edge K(0,1) | max cyclic error
+--------|------------------|--------------------|-----------------
+      5 |         0.006738 |           1.000000 |        0.993262
+      9 |         0.006738 |           1.000000 |        0.993262
+     17 |         0.006738 |           1.000000 |        0.993262
+     33 |         0.006738 |           1.000000 |        0.993262
+
+Step-12 follow-up: correct topology under refinement
+N lanes | max interval-sampled error against itself
+--------|-----------------------------------------
+      5 |                                0.000000
+      9 |                                0.000000
+     17 |                                0.000000
+     33 |                                0.000000
+
+Finding:
+  A cross-lane association matrix is not yet a continuum operator K(sigma,sigma').
+  It needs a continuum-kernel passport: boundary topology, refinement behavior,
+  recurrence/alias tests, and convergence of kernel values under lane densification.

@@ -1,0 +1,27 @@
+Negative-real atom isolation
+  coefficients:
+    c_0 = 0.274725274725 + 0.000e+00i
+    c_1 = -1.37362637363 + 0.000e+00i
+    c_2 = 1.0989010989 + 0.000e+00i
+  max imaginary coefficient residue = 0.000e+00
+  Q0[p] = -0.4 + 0.000e+00i
+  expected sign: negative, from weight*y at y=-0.4
+
+Non-real conjugate-pair isolation
+  coefficients:
+    c_0 = -0.120964859868 + -8.950e-17i
+    c_1 = 0.632651218289 + 0.000e+00i
+    c_2 = -0.0889630768681 + 0.000e+00i
+    c_3 = -0.250857589441 + 0.000e+00i
+  max imaginary coefficient residue = 8.950e-17
+  chosen phase z gives Re(y*z^2) = -1.17046999107
+  Q0[p] = -2.34093998214 + 2.442e-16i
+  expected finite-pair contribution = -2.34093998214
+  expected sign: negative, so H^(0) cannot be PSD
+
+Conclusion:
+  In finite divisor models, any bad reciprocal atom has a real polynomial
+  witness with Q0[p] < 0.  The infinite divisor proof replaces exact
+  interpolation by real-symmetric polynomial approximation on the compact
+  reciprocal support, with summability of sum weight*|y| giving passage
+  to the Q0 limit.

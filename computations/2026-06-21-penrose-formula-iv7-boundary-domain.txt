@@ -1,0 +1,24 @@
+STEP 8 Levenshtein transfer attempts
+==========================================
+A: distance=42, attempt=test compactified Bohr coordinate boundary x_p equals zero
+B: distance=47, attempt=test critical modulus shell after boundary unit normalization
+C: distance=42, attempt=test nearby false statements with x_p not in C-star
+chosen=A by minimum distance
+
+NODE toy: boundary steady state at zero
+============================================
+x0=0.050000, x_end=0.000543, min=0.000543
+The boundary state x=0 is invariant but not an interior positive state.
+
+STEP 9 method 22: nearby false statements
+======================================================
+s=(0.25+4j): |p^-s|=0.759835685652, target=0.577350269190, Re(s)=0.25
+s=(0.5+4j): |p^-s|=0.577350269190, target=0.577350269190, Re(s)=0.50
+s=(0.75+4j): |p^-s|=0.438691337651, target=0.577350269190, Re(s)=0.75
+
+compactified x=0j: no logarithmic coordinate (ValueError)
+compactified x=(inf+0j): recovered s=(-inf-0j)
+compactified x=(nan+nanj): recovered s=(nan+nanj)
+
+Interpretation:
+IV7 is an interior C* statement for x_p=p^{-s}. Boundary or compactified states such as x_p=0 do not supply counterexamples; they leave the logarithmic s-coordinate chart. This is the existing boundary-modulus critical-line lemma, not new content.

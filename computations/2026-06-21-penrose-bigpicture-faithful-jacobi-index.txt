@@ -1,0 +1,4 @@
+Jacobi conjugate point index vs curvature summaries
+constant    intK=6.0000 l2K=3.6000 conjugate_count=2 zeros=[4.055, 8.111] final_y=+1.283471
+pulsed      intK=6.0060 l2K=18.0180 conjugate_count=2 zeros=[2.218, 6.024] final_y=+36.541669
+alternating intK=6.0080 l2K=34.0320 conjugate_count=2 zeros=[2.017, 5.875] final_y=+119.102839

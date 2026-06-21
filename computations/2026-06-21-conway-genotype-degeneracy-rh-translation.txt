@@ -1,0 +1,46 @@
+THE-MACHINE tick: genotype-phenotype degeneracy -> RH Translation
+NODE: multiple genotypes can map to the same phenotype without being equivalent in robustness evolvability or mutational neighborhood
+Standing-order target: 32/32 RH Translation
+STEP 6 NODE TEST
+Constraint: same focal phenotype must not be treated as equality of robustness/evolvability/mutational neighborhood.
+
+NODE map=structured_degenerate
+phenotype=0 count=64 robustness_min_med_max=0.000/0.188/0.375 alternatives=2-3 signature_types=35 max_signature_l1=12
+phenotype=1 count=64 robustness_min_med_max=0.000/0.188/0.375 alternatives=2-3 signature_types=38 max_signature_l1=12
+phenotype=2 count=64 robustness_min_med_max=0.000/0.188/0.375 alternatives=2-3 signature_types=35 max_signature_l1=12
+phenotype=3 count=64 robustness_min_med_max=0.000/0.188/0.375 alternatives=2-3 signature_types=38 max_signature_l1=12
+
+NODE map=constant_control
+phenotype=0 count=256 robustness_min_med_max=1.000/1.000/1.000 alternatives=0-0 signature_types=1 max_signature_l1=0
+
+NODE verdict: the structured map validates the constraint: every phenotype class is degenerate, but classes contain different local robustness and neighborhood signatures. The constant map is the existence-of-equivalence extreme.
+
+STEP 7 FORMULA CHECK
+NODE formulas are finite graph-neighborhood counts: robustness, alternative-neighbor count, and neighborhood signature. Applied unchanged to RH Translation they are only generic graph statistics, not source-measure or d log xi content. No unchanged formula is promoted.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=73 normalized=0.5748: same RH source phenotype can hide different robustness evolvability and canonical transport neighborhoods
+2. distance=88 normalized=0.6929: unit defects of d log xi can have equal source mass but different canonical observable neighborhoods
+3. distance=70 normalized=0.5512: multiple source defects can map to the same RH translation class without equivalent off seam transport neighborhoods
+chosen=3: multiple source defects can map to the same RH translation class without equivalent off seam transport neighborhoods
+
+STEP 9 METHOD 20: NAME THE MISSING LEMMA
+Missing lemma candidate: same-source-mass neighborhood equivalence. If two simple source-carrying defects of d log xi have the same source mass and lie on the RH seam, then after translation by height their canonical observable neighborhoods are equivalent.
+Test: for the first seam zeros, confirm the same source phenotype by argument-principle winding around small rectangles, then compare the translated residual neighborhood H(s)-1/(s-rho).
+
+RH TRANSLATION TEST
+zero=01 t=14.134725 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.57964/0.0031658/3.7007e-17/0.0078967/0.58644 residual_to_pole=0.024842
+zero=02 t=21.022040 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.75502/0.0064977/7.4015e-17/0.016207/0.76904 residual_to_pole=0.032358
+zero=03 t=25.010858 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.58588/0.0077188/1.1102e-16/0.019251/0.60227 residual_to_pole=0.025109
+zero=04 t=30.424876 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.95551/0.013011/1.1102e-16/0.032443/0.98384 residual_to_pole=0.04095
+zero=05 t=32.935062 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.46565/0.013826/2.2204e-16/0.034449/0.49446 residual_to_pole=0.019956
+zero=06 t=37.586178 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.83875/0.011752/1.1102e-16/0.029312/0.86401 residual_to_pole=0.035946
+zero=07 t=40.918719 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.85764/0.017441/1.4803e-16/0.043496/0.89523 residual_to_pole=0.036756
+zero=08 t=43.327073 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.44964/0.016305/2.9606e-16/0.040614/0.48354 residual_to_pole=0.01927
+zero=09 t=48.005151 source_count_stability=1.000 residual_mean/std/lr/ud/max=1.1987/0.023934/1.4803e-16/0.059651/1.2514 residual_to_pole=0.051374
+zero=10 t=49.773832 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.42603/0.025922/4.6259e-16/0.064432/0.47902 residual_to_pole=0.018258
+zero=11 t=52.970321 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.65361/0.015857/1.8504e-16/0.03954/0.68722 residual_to_pole=0.028012
+zero=12 t=56.446248 source_count_stability=1.000 residual_mean/std/lr/ud/max=0.88548/0.017492/1.8504e-16/0.043626/0.92298 residual_to_pole=0.037949
+same_source_pairwise_signature_distance min/median/max=0.020487/0.37225/1.0926
+pure_pole_control: after subtracting the universal simple-pole term, a translated pure-pole model has zero residual signature and pairwise distance 0 by construction.
+RH verdict before Step 11: the too-strong missing lemma is false for raw canonical neighborhoods. Equal source count is stable, but the completed background around each source is not translation-equivalent. This is an instrument warning unless it survives reduction to known local pole plus surrounding-zero/background effects.

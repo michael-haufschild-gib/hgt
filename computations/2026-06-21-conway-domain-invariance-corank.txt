@@ -1,0 +1,62 @@
+THE-MACHINE tick: domain invariance -> corank infinity-minus-one
+NODE: domain issues for the unbounded operator D are not cosmetic invariance of dense domains under algebra actions often matters
+Standing-order target: 4/32 corank infinity-minus-one
+STEP 6 NODE TEST: bounded action vs domain-breaking action
+Hilbert model: D e_n = n e_n. A good shift S maps Dom(D) to itself and has bounded commutator. A bounded sparse map B e_n = e_{n^2}/sqrt(n) has bounded operator norm but its commutator grows with cutoff, signaling domain failure.
+N norm_S comm_S norm_B comm_B test_Dx test_DBx
+016 1.000 1.000 1.000 60.000 1.7418 2.4579
+032 1.000 1.000 1.000 175.362 1.7611 2.7565
+064 1.000 1.000 1.000 504.000 1.7743 3.1202
+128 1.000 1.000 1.000 1436.841 1.7838 3.5817
+256 1.000 1.000 1.000 4080.000 1.7909 4.1832
+NODE verdict: finite cutoffs can hide the issue if one only checks boundedness of the action. The growing commutator/domain image is the real constraint.
+
+STEP 7 FORMULA CHECK
+The NODE domain-invariance test does not apply unchanged to corank: the transfer must use the prime-log relation/monomial domain, not a generic operator cutoff.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=54 normalized=0.4390: finite corank windows are not cosmetic invariance under prime log algebra actions matters
+2. distance=83 normalized=0.6748: corank one number shadow must preserve the domain under prime multiplication
+3. distance=85 normalized=0.6911: finite prime log relation domains can look closed but leak under the unbounded seam action
+chosen=1: finite corank windows are not cosmetic invariance under prime log algebra actions matters
+
+STEP 9 METHOD 4: CHANGE THE VIEWPOINT
+Old viewpoint: finite graded corank window reports a rank/corank inside a box of N prime logs and degree <= T. New viewpoint: treat that box as a domain and ask whether multiplication by prime-log generators leaves it invariant.
+N T dim_window internal_existing_prime leak_existing_prime leak_new_prime boundary_regime
+002 01          3 0.333333 0.666667 1.0 prime-first-boundary
+002 02          6 0.500000 0.500000 1.0 degree-rich
+002 03         10 0.600000 0.400000 1.0 degree-rich
+002 05         21 0.714286 0.285714 1.0 degree-rich
+002 10         66 0.833333 0.166667 1.0 degree-rich
+003 01          4 0.250000 0.750000 1.0 prime-first-boundary
+003 02         10 0.400000 0.600000 1.0 prime-first-boundary
+003 03         20 0.500000 0.500000 1.0 degree-rich
+003 05         56 0.625000 0.375000 1.0 degree-rich
+003 10        286 0.769231 0.230769 1.0 degree-rich
+005 01          6 0.166667 0.833333 1.0 prime-first-boundary
+005 02         21 0.285714 0.714286 1.0 prime-first-boundary
+005 03         56 0.375000 0.625000 1.0 prime-first-boundary
+005 05        252 0.500000 0.500000 1.0 degree-rich
+005 10       3003 0.666667 0.333333 1.0 degree-rich
+010 01         11 0.090909 0.909091 1.0 prime-first-boundary
+010 02         66 0.166667 0.833333 1.0 prime-first-boundary
+010 03        286 0.230769 0.769231 1.0 prime-first-boundary
+010 05       3003 0.333333 0.666667 1.0 prime-first-boundary
+010 10     184756 0.500000 0.500000 1.0 degree-rich
+020 01         21 0.047619 0.952381 1.0 prime-first-boundary
+020 02        231 0.090909 0.909091 1.0 prime-first-boundary
+020 03       1771 0.130435 0.869565 1.0 prime-first-boundary
+020 05      53130 0.200000 0.800000 1.0 prime-first-boundary
+020 10   30045015 0.333333 0.666667 1.0 prime-first-boundary
+050 01         51 0.019608 0.980392 1.0 prime-first-boundary
+050 02       1326 0.038462 0.961538 1.0 prime-first-boundary
+050 03      23426 0.056604 0.943396 1.0 prime-first-boundary
+050 05    3478761 0.090909 0.909091 1.0 prime-first-boundary
+050 10 75394027566 0.166667 0.833333 1.0 prime-first-boundary
+100 01        101 0.009901 0.990099 1.0 prime-first-boundary
+100 02       5151 0.019608 0.980392 1.0 prime-first-boundary
+100 03     176851 0.029126 0.970874 1.0 prime-first-boundary
+100 05   96560646 0.047619 0.952381 1.0 prime-first-boundary
+100 10 46897636623981 0.090909 0.909091 1.0 prime-first-boundary
+
+Transfer verdict before Step 11: for fixed degree T, the internal fraction under existing-prime multiplication is T/(N+T), so the leak tends to 1 as N grows. Finite graded corank windows are therefore boundary-dominated domains unless degree grows with prime cutoff.

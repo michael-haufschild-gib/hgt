@@ -1,0 +1,22 @@
+NODE: condensate crowding enrichment versus active-site accessibility
+points=81
+strength optimum_crowding max_rate rate_at_high enrichment_high accessibility_high first_rate_decrease monotone_enrichment monotone_accessibility_decrease
+    0.00            1.300  3.33269      1.25576         6.33333            1.00000                  14                   1                                 1
+    0.04            1.100  3.15493      0.25732         6.33333            0.20491                  12                   1                                 1
+    0.10            0.900  2.99184      0.11735         6.33333            0.09345                  10                   1                                 1
+    0.22            0.800  2.78347      0.05621         6.33333            0.04476                   9                   1                                 1
+    0.45            0.600  2.55984      0.02812         6.33333            0.02240                   7                   1                                 1
+    0.90            0.500  2.31559      0.01422         6.33333            0.01132                   6                   1                                 1
+
+Sample curve for nonspecific_strength=0.22
+crowding enrichment diffusion accessibility rate
+   0.000    1.00000   1.00000       1.00000   1.00000
+   0.500    3.00000   0.92305       0.95431   2.64262
+   1.000    4.00000   0.81967       0.81967   2.68745
+   2.000    5.00000   0.63268       0.49730   1.57316
+   3.000    5.50000   0.49402       0.28847   0.78381
+   4.500    5.90909   0.35627       0.14248   0.29996
+   6.000    6.14286   0.27006       0.08108   0.13451
+   8.000    6.33333   0.19828       0.04476   0.05621
+
+Interpretation: the NODE is validated if enrichment is monotone while accessibility is monotone decreasing and total rate has an optimum/decline under nonspecific interactions.

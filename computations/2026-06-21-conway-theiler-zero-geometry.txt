@@ -1,0 +1,83 @@
+THE-MACHINE tick: Theiler windows -> zero geometry
+NODE: Ignoring Theiler windows when estimating dimensions, entropies, or neighbor statistics
+Standing-order target: 6/32 Where the zeros live in the geometry
+STEP 9 method: 20. Name the missing lemma
+STEP 5/6 NODE TEST: Theiler exclusion in delay reconstruction
+Constraint: nearest-neighbor estimates in reconstructed dynamics are inflated if temporally adjacent points are allowed as neighbors.
+theiler mean_dist median_sep leak_frac_sep_le_10 pred_corr
+000 0.027613 984.0 0.0607 0.999538
+005 0.028509 1053.0 0.0054 0.999521
+020 0.028637 1054.0 0.0000 0.999518
+060 0.028648 1054.0 0.0000 0.999518
+NODE verdict: increasing the Theiler window removes near-time neighbor leakage and changes the neighbor-distance/prediction statistics.
+
+STEP 7 FORMULA CHECK
+Delay-reconstruction dimension formulas do not apply unchanged to zero geometry. The transfer keeps the constraint: nearest-neighbor source statistics must exclude trivial same-trajectory temporal neighbors.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=66 normalized=0.7674: zero geometry neighbor statistics need a Theiler exclusion in height
+2. distance=67 normalized=0.7791: source-neighborhood reconstruction must exclude same-trajectory temporal neighbors
+3. distance=59 normalized=0.6860: zeros live where source geometry survives temporal-neighbor exclusion
+chosen=3: zeros live where source geometry survives temporal-neighbor exclusion
+
+STEP 9 METHOD 20: NAME THE MISSING LEMMA
+Missing lemma: zero-neighbor Theiler invariance. A zero/source geometry neighbor statistic should retain its true-vs-control separation after excluding a temporal neighborhood in height.
+case region kind theiler mean_dist median_sep leak_frac pred_corr
+zero_strip    critical true         000 0.056770 205.0 0.0344 0.991457
+zero_strip    critical true         010 0.056960 205.0 0.0000 0.991441
+zero_strip    critical true         030 0.057945 205.0 0.0000 0.991449
+zero_strip    critical true         060 0.058869 208.0 0.0000 0.989877
+zero_strip    critical finite       000 0.111603 191.0 0.0773 0.973930
+zero_strip    critical finite       010 0.116895 209.0 0.0000 0.972517
+zero_strip    critical finite       030 0.118735 228.0 0.0000 0.971158
+zero_strip    critical finite       060 0.121171 242.0 0.0000 0.972039
+zero_strip    critical random_phase 000 0.149157 168.0 0.0356 0.806840
+zero_strip    critical random_phase 010 0.150102 171.0 0.0000 0.806088
+zero_strip    critical random_phase 030 0.153151 180.0 0.0000 0.804566
+zero_strip    critical random_phase 060 0.157881 206.0 0.0000 0.804959
+critical_low  critical true         000 0.066606 273.0 0.0000 0.990406
+critical_low  critical true         010 0.066606 273.0 0.0000 0.990406
+critical_low  critical true         030 0.066894 277.0 0.0000 0.990467
+critical_low  critical true         060 0.067640 282.0 0.0000 0.990443
+critical_low  critical finite       000 0.114843 243.0 0.0135 0.972546
+critical_low  critical finite       010 0.115804 246.0 0.0000 0.974043
+critical_low  critical finite       030 0.117209 264.0 0.0000 0.974290
+critical_low  critical finite       060 0.118052 275.0 0.0000 0.974607
+critical_low  critical random_phase 000 0.162003 252.0 0.0417 0.764472
+critical_low  critical random_phase 010 0.164140 265.0 0.0000 0.760680
+critical_low  critical random_phase 030 0.167732 272.0 0.0000 0.753508
+critical_low  critical random_phase 060 0.171072 286.0 0.0000 0.753801
+critical_high critical true         000 0.110412 217.0 0.0000 0.906482
+critical_high critical true         010 0.110412 217.0 0.0000 0.906482
+critical_high critical true         030 0.111957 262.0 0.0000 0.906279
+critical_high critical true         060 0.114579 282.0 0.0000 0.886112
+critical_high critical finite       000 0.132362 259.0 0.0454 0.958707
+critical_high critical finite       010 0.135449 281.0 0.0000 0.956437
+critical_high critical finite       030 0.136353 299.0 0.0000 0.956622
+critical_high critical finite       060 0.139097 320.0 0.0000 0.958263
+critical_high critical random_phase 000 0.202803 256.0 0.0160 0.612440
+critical_high critical random_phase 010 0.203276 256.0 0.0000 0.610056
+critical_high critical random_phase 030 0.206572 280.0 0.0000 0.606696
+critical_high critical random_phase 060 0.211646 297.0 0.0000 0.603795
+right_low     right    true         000 0.062303 205.0 0.0982 0.997681
+right_low     right    true         010 0.068254 210.0 0.0000 0.997147
+right_low     right    true         030 0.070103 222.0 0.0000 0.996873
+right_low     right    true         060 0.070399 222.0 0.0000 0.996877
+right_low     right    finite       000 0.062652 205.0 0.0920 0.997499
+right_low     right    finite       010 0.068791 210.0 0.0000 0.996827
+right_low     right    finite       030 0.070543 222.0 0.0000 0.996474
+right_low     right    finite       060 0.071103 229.0 0.0000 0.996566
+right_low     right    random_phase 000 0.235628 189.0 0.0417 0.072519
+right_low     right    random_phase 010 0.241570 195.0 0.0000 0.053044
+right_low     right    random_phase 030 0.250753 210.0 0.0000 0.058840
+right_low     right    random_phase 060 0.257904 222.0 0.0000 0.020391
+
+case pred_gap_w0 pred_gap_w30 retention_w30 true_leak_w0 true_leak_w30 verdict
+zero_strip    0.017527 0.020291 1.1577 0.0344 0.0000 0
+critical_low  0.017860 0.016177 0.9058 0.0000 0.0000 0
+critical_high 0.052225 0.050343 0.9640 0.0000 0.0000 1
+right_low     0.000181 0.000399 2.2018 0.0982 0.0000 1
+
+CRITICAL_THEILER_GAP_SURVIVES 1/3
+RIGHT_THEILER_FINITE_COLLAPSE 1/1
+Interpretation: passing means the zero/source reconstruction statistic is not only successive-height continuity. Failure means the apparent geometry was temporal-neighbor leakage.

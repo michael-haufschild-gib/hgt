@@ -1,0 +1,50 @@
+STEP12 battery: margin-neutralized phase-carrier
+samples=180
+
+A. sigma sweep, amp-only neutralization: mean true-random residual gap across windows
+sigma mean_gap min_gap mean_true_pos mean_random_pos
+0.2 +0.58437 +0.47495 0.963 0.413
+0.3 +0.55615 +0.45197 0.911 0.385
+0.4 +0.47601 +0.40751 0.820 0.356
+0.5 +0.37101 +0.31010 0.698 0.389
+0.7 +0.21355 +0.10180 0.496 0.383
+0.9 +0.06905 -0.00523 0.439 0.400
+1.2 +0.00545 -0.02502 0.430 0.435
+
+B. feature-boundary test at sigma=0.3, window=[100,170]
+feature_set true_med finite_med random_med gap_true_random true_pos finite_pos random_pos
+amp        +0.34783 -0.00227 -0.11093 +0.45876 0.972 0.494 0.450
+amp_total  -0.03776 -0.00487 -0.01627 -0.02149 0.311 0.467 0.394
+amp_phase  +0.02706 -0.03497 -0.06052 +0.08758 0.528 0.450 0.344
+
+C. finite-Euler prime-count stress at sigma=0.3, window=[100,170], amp-only
+prime_count true_med finite_med random_med gap_true_random finite_pos
+ 30 +0.38057 -0.06167 -0.07235 +0.45292 0.406
+ 80 +0.36343 -0.00852 -0.10190 +0.46533 0.489
+160 +0.34783 -0.00227 -0.11093 +0.45876 0.494
+240 +0.34649 +0.00107 -0.11156 +0.45805 0.506
+
+D. method ledger for scientific-method moves
+1 split: raw defect vs amplitude residual vs phase-included residual are separated in B.
+2 attack-false: amp_total and amp_phase are overcontrols; they remove the signal by including the answer.
+3 reverse: controls fitted first do not predict true left-strip residuals under amp-only features.
+4 viewpoint: sigma sweep shows the effect is a left-strip residual, not a global property.
+5 visual/action: margin-call metaphor becomes common-amplitude neutralization.
+6 action: the action is neutralizing common collateral amplitude, not amplifying raw magnitude.
+7 essentials: amp-only features suffice for the control; |G+P| is not an allowed essential input.
+8 similar objects: finite Euler and random-phase controls are the nearby objects.
+9 small cases: prime_count=30 already leaves finite residual near zero in C.
+10 extremes: sigma=1.2 collapses the residual gap in A.
+11 experiments: A-C are the runnable probes.
+12 invariant: positive gap persists across three windows for sigma<=0.5 in A.
+13 monotone: the mean gap decreases as sigma moves rightward in A.
+14 weaken: claim only left-strip, amplitude-neutralized residual positivity.
+15 strengthen: universal-sigma claim is false by sigma=1.2.
+16 minimal counterexample: adding |G+P| or phase cosine is the minimal overcontrol that kills it.
+17 representation: regression residual representation distinguishes phase from amplitude.
+18 theorem-tool resemblance: would need a phase-distribution bound, not a magnitude bound.
+19 fake-proof gap: cannot prove from amplitude moments; phase alignment is the missing step.
+20 missing lemma: left-strip positive residual phase-defect lower bound after amplitude conditioning.
+21 dependency: define amplitude sigma-algebra -> condition Delta -> prove positive conditional median.
+22 nearby false: amp_total/phase-conditioned residual positivity is false by construction.
+23 boundary cases: left strip survives; far right and overcontrolled features collapse.

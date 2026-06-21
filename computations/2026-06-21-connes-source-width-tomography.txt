@@ -1,0 +1,31 @@
+==============================================================================
+CHUNK A — passport (M0,M1) collapse vs M2 discrimination  [closed form]
+==============================================================================
+  off-seam quartet  M0=(4.0 + 0.0j)  M1=(-8.47e-22 + 0.0j)  Re(M2)=-1767.7  D2=0.04
+  on-seam  quartet  M0=(4.0 + 0.0j)  M1=(0.0 + 0.0j)  Re(M2)=-1767.7  D2=0.0
+  => M0,M1 IDENTICAL (passport blind); D2 = sum(beta-1/2)^2 separates: off=0.04 (=4a^2=0.04) vs seam=0
+
+==============================================================================
+CHUNK B — contour-moment IS source-accountable + the B2 smoothing gate
+==============================================================================
+  off-seam pair@height: contour M0=2.0 (exact 2.0), contour Re(M2)=-883.8 (exact -883.8)
+  on-seam  pair@height: contour M0=2.0 (exact 2.0), contour Re(M2)=-883.8 (exact -883.8)
+  => the moments are recovered FROM THE CONNECTION by contour integration (no zeros handed in).
+  smoothing width w=0.05 (a=0.1): one-scale profile single-peaked at seam? False   | thin-strip charge (half-width 0.05<a) = 0 ; M2-distance D2 = 0.02 > 0
+  smoothing width w=0.1 (a=0.1): one-scale profile single-peaked at seam? True   | thin-strip charge (half-width 0.05<a) = 0 ; M2-distance D2 = 0.02 > 0
+  smoothing width w=0.2 (a=0.1): one-scale profile single-peaked at seam? True   | thin-strip charge (half-width 0.05<a) = 0 ; M2-distance D2 = 0.02 > 0
+  => one-scale smoothing MERGES the off-seam pair into a false seam peak (w>=a); the contour
+     M2/thin-strip tomography SEPARATES it. (Confirms Conway B2 + Penrose R30 source-accountability.)
+
+==============================================================================
+CHUNK C — real zeta zeros (on-line => D2=0) vs one inserted off-line zero
+==============================================================================
+  first 10 zeta zero-pairs (all on the seam): D2 = sum(beta-1/2)^2 = 0.0  (== 0, RH-local)
+  + one inserted off-line FE-quartet (a=0.08): D2 = 0.0256  (= 4a^2 = 0.0256 > 0)
+
+  VERDICT: source-width tomography (the contour 2nd moment D2 = sum(beta-1/2)^2) is a working
+  Lemma-1 / Conjecture-C detector: it sees off-seam source charge that the passport (M0,M1) and
+  one-scale smoothing miss. It is the right job for the relocated phase/holonomy program.
+  OPEN (Lemma 2 / APEX-B): the LOCAL D2(R)=0 per window is detection; the GLOBAL all-scale
+  confinement (regularized sum over ALL rho = 0 <=> RH) is the Weil explicit-formula positivity,
+  the open apex — NOT delivered by tomography alone.

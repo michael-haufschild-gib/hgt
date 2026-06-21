@@ -1,0 +1,8 @@
+STEP 11 zero-survivor similar-object controls
+method=8 look for similar objects
+control n_absorbers alive mean_abs_seam_dist near_seam_frac right_frac
+true_zeros        064 0.0072 0.0939 0.2448 0.4685
+equal_seam        064 0.0039 0.1125 0.1282 0.5513
+jitter_seam       064 0.0072 0.1041 0.2153 0.4931
+half_density_true 032 0.0316 0.0866 0.3671 0.4858
+Interpretation: similar seam absorber sets produce the same survivor-ensemble depletion. The survivor view is a censoring artifact, not zero-specific geometry.

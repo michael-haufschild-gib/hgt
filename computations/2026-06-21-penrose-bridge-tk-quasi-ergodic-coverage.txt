@@ -1,0 +1,36 @@
+
+Step 8 transfer attempts
+------------------------
+A: distance=34 :: dense y support does not certify reciprocal moment averages
+B: distance=48 :: low order T_k windows do not replace all order shifted Hankel tests
+C: distance=50 :: time average bias becomes atom weight bias in the T_k sequence
+chosen=A, distance=34
+
+NODE test: coverage is not averaging
+------------------------------------
+uniform_coverage       coverage=1.000 mean_x=0.500000 mean_cos=-0.000000 mass_x_lt_0.1=0.100000
+biased_full_coverage   coverage=1.000 mean_x=0.140032 mean_cos=0.750688 mass_x_lt_0.1=0.820000
+constraint_check: both paths visit every coarse cell, but the time-average measure is different.
+
+Bridge transfer: low-degree windows can miss a small off-axis atom
+------------------------------------------------------------------
+positive bulk: 80 atoms on [0.02,1.0]; off-axis pair: y=-1/(0.1+i)^2 and conjugate
+eps=1e-01 first_failure=(2, 1, -0.001693570272711581)
+eps=1e-02 first_failure=(5, 1, -3.144703225268431e-07)
+eps=1e-03 first_failure=(6, 1, -8.250893461015422e-10)
+eps=1e-04 first_failure=(8, 1, -2.2282893328795865e-10)
+
+low-degree prefix for eps=1e-02:
+degree= 0 min_eig_Q0=+5.294e-01 min_eig_Q1=+3.602e-01
+degree= 1 min_eig_Q0=+1.967e-02 min_eig_Q1=+7.833e-03
+degree= 2 min_eig_Q0=+5.158e-04 min_eig_Q1=+1.329e-04
+degree= 3 min_eig_Q0=+8.403e-06 min_eig_Q1=+4.086e-06
+degree= 4 min_eig_Q0=+1.651e-06 min_eig_Q1=+2.977e-08
+degree= 5 min_eig_Q0=-3.145e-07 min_eig_Q1=-1.969e-06
+degree= 6 min_eig_Q0=-5.262e-06 min_eig_Q1=-1.285e-05
+
+Right theorem
+-------------
+Coverage/density is the wrong theorem. The bridge node {T_k} needs the Hamburger-Stieltjes all-order square-test: Q_0[p]>=0 and Q_1[p]>=0 for every polynomial p.
+The experiment reproduces the bridge-theorem guardrail: finite or coverage-like evidence can miss a small off-axis contribution, while all-order shifted moment positivity is faithful.
+verdict_hint: reduce-to-known unless a new source-built all-order positivity mechanism appears.

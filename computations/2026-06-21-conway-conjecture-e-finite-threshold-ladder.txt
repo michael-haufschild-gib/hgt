@@ -1,0 +1,71 @@
+NODE: asymptotic tilt can fail at finite thresholds
+threshold tilt exact estimate rel_se ess
+2.0 2.0 2.275013e-02 2.251967e-02 0.007 14879.0
+2.0 6.0 2.275013e-02 2.696697e-02 0.324 13.4
+3.0 3.0 1.349898e-03 1.361273e-03 0.008 11456.8
+3.0 6.0 1.349898e-03 1.232168e-03 0.065 195.8
+6.0 6.0 9.865876e-10 9.834850e-10 0.012 6449.3
+6.0 6.0 9.865876e-10 1.004859e-09 0.012 6415.2
+constraint: a change of measure tuned for an extreme tail can have poor finite-threshold effective sample size even when it is sensible asymptotically
+
+TRANSFER: ResearchNode #34 Conjecture E kill gate
+method #10 test extreme cases: finite-window ladder
+training_window=[30,99] K=34 features=70 condition=640.01
+model window ordinate_margin spacing_margin ordinate_improvement_rate
+untruncated [100,119] -3.883132 -5.770250 0.100
+untruncated [120,139] -7.517390 -8.681738 0.000
+untruncated [140,159] -3.262402 -3.680478 0.050
+untruncated [160,179] -2.535924 -2.386029 0.050
+untruncated [180,199] -6.491057 -5.168246 0.050
+untruncated [200,219] -5.542760 -3.727123 0.000
+untruncated [240,259] -1.527696 -1.170141 0.050
+untruncated [280,299] -1.107344 -0.906439 0.100
+untruncated [320,339] -4.960603 -0.770705 0.050
+untruncated [360,379] -7.910747 -0.960276 0.000
+untruncated [390,409] -4.166346 -0.790419 0.050
+
+rcond_0.01  [100,119] +0.041837 +0.113296 0.500
+rcond_0.01  [120,139] -0.008886 +0.116561 0.400
+rcond_0.01  [140,159] +0.142294 +0.207593 0.750
+rcond_0.01  [160,179] +0.119668 +0.116303 0.750
+rcond_0.01  [180,199] +0.077031 +0.145300 0.600
+rcond_0.01  [200,219] -0.043720 +0.014546 0.500
+rcond_0.01  [240,259] -0.021767 +0.133215 0.450
+rcond_0.01  [280,299] +0.061821 +0.113028 0.700
+rcond_0.01  [320,339] +0.037595 +0.053912 0.650
+rcond_0.01  [360,379] +0.032487 +0.010637 0.450
+rcond_0.01  [390,409] +0.021610 +0.092404 0.500
+
+rcond_0.10  [100,119] +0.093756 +0.189026 0.550
+rcond_0.10  [120,139] +0.043011 +0.115678 0.550
+rcond_0.10  [140,159] +0.171208 +0.223974 0.800
+rcond_0.10  [160,179] +0.099418 +0.170377 0.700
+rcond_0.10  [180,199] +0.136088 +0.276673 0.700
+rcond_0.10  [200,219] +0.082577 +0.144152 0.550
+rcond_0.10  [240,259] +0.046378 +0.178066 0.550
+rcond_0.10  [280,299] +0.090594 +0.189570 0.650
+rcond_0.10  [320,339] +0.113919 +0.196509 0.700
+rcond_0.10  [360,379] +0.056764 +0.087227 0.600
+rcond_0.10  [390,409] +0.065407 +0.183327 0.600
+
+ridge_1e-1  [100,119] +0.096325 +0.176030 0.500
+ridge_1e-1  [120,139] +0.048964 +0.126457 0.600
+ridge_1e-1  [140,159] +0.178958 +0.255195 0.850
+ridge_1e-1  [160,179] +0.152896 +0.209057 0.800
+ridge_1e-1  [180,199] +0.130920 +0.228547 0.650
+ridge_1e-1  [200,219] +0.100598 +0.135622 0.650
+ridge_1e-1  [240,259] +0.050938 +0.170318 0.600
+ridge_1e-1  [280,299] +0.119558 +0.161233 0.700
+ridge_1e-1  [320,339] +0.070865 +0.129955 0.700
+ridge_1e-1  [360,379] +0.083709 +0.091528 0.750
+ridge_1e-1  [390,409] +0.073600 +0.174926 0.600
+
+FINITE-LADDER FAILURES
+untruncated 11/11
+rcond_0.01  3/11
+rcond_0.10  0/11
+ridge_1e-1  0/11
+
+GATE SUMMARY
+`rcond_0.01` passes the first checked window but fails 3/11 finite windows; `untruncated` fails 11/11; stronger truncation/ridge passes this ladder
+Conjecture E evidence should therefore require a finite-threshold ladder, not a single high-window or asymptotic-looking pass

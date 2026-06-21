@@ -1,0 +1,11 @@
+NODE: colored noise can escape shallow basins but drift around optima
+Minimal counterexample: tilted double well, same marginal noise variance, varied correlation time tau.
+tau     escape_frac   mean_tail_x   drift_std
+  0.0        0.0000       -0.9513      0.0918
+  1.0        0.0250       -0.9068      0.1468
+  2.0        0.2167       -0.6529      0.2566
+  4.0        0.6542       -0.1329      0.4244
+  8.0        0.8958        0.1765      0.5623
+ 16.0        0.9583        0.1743      0.6526
+ 32.0        0.9708        0.1119      0.6998
+ 64.0        0.9292        0.0698      0.6746

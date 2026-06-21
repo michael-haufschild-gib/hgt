@@ -1,0 +1,49 @@
+THE-MACHINE tick: Hawkes edge correction -> C3
+NODE: Edge correction matters because events before the observation window can still excite observed events
+Standing-order target: 11/32 C3 H1/Sobolev
+STEP 9 method: 20. Name the missing lemma
+STEP 5/6 NODE TEST: Hawkes window-edge correction
+Constraint: the conditional intensity on [0,T] is not determined by observed-window events alone; pre-window events leave an excitation tail.
+params mu=0.250 alpha=0.828 beta=1.150 branching=0.720 pre_events=36 obs_events=41
+segment mean_full mean_truncated mean_missing rel_missing max_missing
+00.0-05.0 1.124621 1.092534 0.032086 0.0285 0.175110
+05.0-15.0 0.538494 0.538443 0.000051 0.0001 0.000552
+15.0-60.0 0.739979 0.739979 0.000000 0.0000 0.000000
+compensator_full=44.307381 compensator_truncated=44.154943 diff=0.152438
+NODE verdict: truncating history creates a largest error near the left edge, but the compensator error is a global likelihood/residual error, not just a visual boundary blip.
+
+STEP 7 FORMULA CHECK
+The Hawkes compensator formula does not apply unchanged to C3; phase regularity is continuous in t and has no event-intensity offspring model. Direct transfer would be HT-blind.
+Minimal transfer: keep the constraint that window-local statistics can be biased by history just outside the interval. For C3, test whether the phase-Sobolev gap survives guard-band deletion.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=79 normalized=0.7822: pre-window excitation becomes guard-band phase energy in the C3 Sobolev statistic
+2. distance=75 normalized=0.7426: C3 phase regularity needs edge correction before measuring long-run coherence
+3. distance=75 normalized=0.7426: events before the window become phase history before the t-interval
+chosen=2: C3 phase regularity needs edge correction before measuring long-run coherence
+
+STEP 9 METHOD 20: NAME THE MISSING LEMMA
+Missing lemma: C3 guard-band invariance. If the phase-Sobolev gap is intrinsic, then deleting a fixed-width edge guard should not erase the true-vs-control gap or invert the run-length relation.
+case region kind h1_full h1_interior edge_frac runs_full runs_interior mean_run_i max_run_i
+zero_strip    critical true         6.311651 6.361655 0.1761 000 000 0.0000 0.0000
+zero_strip    critical finite       5.998967 5.953167 0.2115 056 045 0.4447 0.7786
+zero_strip    critical random_phase 10.971144 11.114938 0.1704 219 173 0.1746 0.6229
+critical_low  critical true         7.903890 7.836670 0.2065 000 000 0.0000 0.0000
+critical_low  critical finite       5.474722 5.558647 0.1748 055 045 0.5191 1.5573
+critical_low  critical random_phase 12.170871 12.199306 0.1945 194 155 0.2080 0.8565
+critical_high critical true         9.515170 9.411831 0.2125 000 000 0.0000 0.0000
+critical_high critical finite       5.738728 5.625407 0.2305 057 045 0.5987 1.3237
+critical_high critical random_phase 14.261628 13.672627 0.2637 213 165 0.1859 1.0122
+right_low     right    true         0.370014 0.378710 0.1589 001 001 56.0623 56.0623
+right_low     right    finite       0.370314 0.378821 0.1599 001 001 56.0623 56.0623
+right_low     right    random_phase 2.000556 2.101430 0.1162 003 003 18.6355 52.1691
+
+case full_gap(true-finite) interior_gap(true-finite) gap_retention true_edge_frac verdict
+zero_strip    0.312685 0.408488 1.3064 0.1761 1
+critical_low  2.429168 2.278023 0.9378 0.2065 1
+critical_high 3.776442 3.786424 1.0026 0.2125 1
+right_low     0.000300 0.000111 0.3698 0.1589 1
+
+CRITICAL_GUARD_BAND_GAP_SURVIVES 3/3
+RIGHT_GUARD_BAND_FINITE_COLLAPSE 1/1
+Interpretation: a positive result is not C3 itself. It only says the measured phase-Sobolev gap is not dominated by interval-edge energy in these windows. A failure would make C3 vulnerable to Hawkes-style missing-history artifacts.

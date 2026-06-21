@@ -1,0 +1,9 @@
+Nearby false statements for Rayleigh/faithful-index positivity
+statement A: positive trace implies positive definite
+statement B: positive mean plus small variance implies positive definite
+statement C: nonnegative Rayleigh minimum implies no negative index
+all positive                           trace=+4.000000 mean=+1.000000 var=0.00000000 min= +1.000000 inertia=(0, 0, 4)
+one tiny negative, positive mean       trace=+2.999999 mean=+0.750000 var=0.18750038 min= -0.000001 inertia=(1, 0, 3)
+one large negative, zero trace         trace=+0.000000 mean=+0.000000 var=3.00000000 min= -3.000000 inertia=(1, 0, 3)
+zero minimum, positive mean            trace=+3.000000 mean=+0.750000 var=0.18750000 min= +0.000000 inertia=(0, 1, 3)
+two signed directions, positive mean   trace=+1.800000 mean=+0.450000 var=0.30250000 min= -0.100000 inertia=(2, 0, 2)

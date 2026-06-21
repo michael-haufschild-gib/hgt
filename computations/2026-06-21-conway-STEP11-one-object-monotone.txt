@@ -1,0 +1,28 @@
+STEP 11 one-object monotone-threshold check
+method=13 find a monotone quantity
+case q best_object best_residual H_residual H_rank residuals
+zero_low      0.65 Delta    0.0258 nan 5 P:0.487,H:nan,Delta:0.026,finiteH:0.039,randomH:0.210
+zero_low      0.70 randomH  0.1262 nan 5 P:1.110,H:nan,Delta:0.424,finiteH:0.362,randomH:0.126
+zero_low      0.75 randomH  0.2418 nan 5 P:0.690,H:nan,Delta:0.413,finiteH:0.357,randomH:0.242
+zero_low      0.80 randomH  0.0452 nan 5 P:nan,H:nan,Delta:1.128,finiteH:0.425,randomH:0.045
+zero_low      0.85 finiteH  0.3293 nan 5 P:nan,H:nan,Delta:0.593,finiteH:0.329,randomH:1.005
+zero_low      0.90 finiteH  0.1304 nan 3 P:nan,H:nan,Delta:nan,finiteH:0.130,randomH:nan
+zero_low      H_residual_monotone_nonincreasing=0
+critical_low  0.65 randomH  0.0638 0.6882 5 P:0.416,H:0.688,Delta:0.520,finiteH:0.293,randomH:0.064
+critical_low  0.70 randomH  0.1355 0.6489 5 P:0.209,H:0.649,Delta:0.571,finiteH:0.590,randomH:0.135
+critical_low  0.75 randomH  0.0354 nan 5 P:0.365,H:nan,Delta:0.386,finiteH:0.735,randomH:0.035
+critical_low  0.80 finiteH  0.1124 nan 5 P:0.983,H:nan,Delta:0.561,finiteH:0.112,randomH:0.379
+critical_low  0.85 Delta    0.0566 nan 5 P:nan,H:nan,Delta:0.057,finiteH:0.336,randomH:1.350
+critical_low  0.90 finiteH  0.3003 nan 3 P:nan,H:nan,Delta:nan,finiteH:0.300,randomH:nan
+critical_low  H_residual_monotone_nonincreasing=0
+critical_high 0.65 finiteH  0.0565 0.4062 4 P:0.372,H:0.406,Delta:0.908,finiteH:0.057,randomH:0.121
+critical_high 0.70 P        0.2101 nan 5 P:0.210,H:nan,Delta:0.268,finiteH:0.235,randomH:0.219
+critical_high 0.75 randomH  0.0106 0.8899 4 P:0.958,H:0.890,Delta:0.688,finiteH:0.569,randomH:0.011
+critical_high 0.80 finiteH  0.0873 1.7740 5 P:0.952,H:1.774,Delta:0.209,finiteH:0.087,randomH:0.526
+critical_high 0.85 finiteH  0.0816 nan 4 P:0.951,H:nan,Delta:nan,finiteH:0.082,randomH:0.505
+critical_high 0.90 finiteH  0.0382 nan 4 P:nan,H:nan,Delta:nan,finiteH:0.038,randomH:0.176
+critical_high H_residual_monotone_nonincreasing=0
+
+H_BEST_THRESHOLD_ROWS 0/18
+H_MONOTONE_CASES 0/3
+Interpretation: no monotone-threshold rescue appears if H is rarely best-ranked and its residual does not improve monotonically under threshold tightening.

@@ -1,0 +1,26 @@
+Equal-integral Jacobi pulse search: int K ~= 6
+count=0 start=0.00 width=0.25 amp=24.000 intK=6.0480 zeros=[] final_y=+3.4841
+count=1 start=0.00 width=0.50 amp=12.000 intK=6.0240 zeros=[2.262] final_y=-1.2512
+count=1 start=0.00 width=1.00 amp=6.000 intK=6.0120 zeros=[1.338] final_y=-6.6733
+count=1 start=0.00 width=2.00 amp=3.000 intK=6.0060 zeros=[1.812] final_y=-7.7691
+count=1 start=0.50 width=0.25 amp=24.000 intK=6.0480 zeros=[0.932] final_y=-17.8555
+count=1 start=0.50 width=0.50 amp=12.000 intK=6.0240 zeros=[1.108] final_y=-16.6316
+count=1 start=0.50 width=1.00 amp=6.000 intK=6.0120 zeros=[1.42] final_y=-13.3037
+count=1 start=0.50 width=2.00 amp=3.000 intK=6.0060 zeros=[1.9] final_y=-5.7033
+count=1 start=1.00 width=0.25 amp=24.000 intK=6.0480 zeros=[1.372] final_y=-36.8882
+count=1 start=1.00 width=0.50 amp=12.000 intK=6.0240 zeros=[1.534] final_y=-30.3031
+count=1 start=1.00 width=1.00 amp=6.000 intK=6.0120 zeros=[1.798] final_y=-19.1540
+count=1 start=1.00 width=2.00 amp=3.000 intK=6.0060 zeros=[2.208] final_y=-3.9130
+count=1 start=2.00 width=0.25 amp=24.000 intK=6.0480 zeros=[2.346] final_y=-68.0326
+count=1 start=2.00 width=0.50 amp=12.000 intK=6.0240 zeros=[2.494] final_y=-52.5193
+count=1 start=2.00 width=1.00 amp=6.000 intK=6.0120 zeros=[2.722] final_y=-28.5144
+count=1 start=2.00 width=2.00 amp=3.000 intK=6.0060 zeros=[3.068] final_y=-1.1587
+count=1 start=4.00 width=0.25 amp=24.000 intK=6.0480 zeros=[4.334] final_y=-102.6374
+count=1 start=4.00 width=0.50 amp=12.000 intK=6.0240 zeros=[4.472] final_y=-76.4444
+count=1 start=4.00 width=1.00 amp=6.000 intK=6.0120 zeros=[4.682] final_y=-37.8749
+count=2 start=0.00 width=4.00 amp=1.500 intK=6.0030 zeros=[2.564, 8.314] final_y=+0.3131
+count=2 start=0.50 width=4.00 amp=1.500 intK=6.0030 zeros=[2.616, 5.4] final_y=+3.6222
+count=2 start=1.00 width=4.00 amp=1.500 intK=6.0030 zeros=[2.84, 5.442] final_y=+6.3296
+count=2 start=2.00 width=4.00 amp=1.500 intK=6.0030 zeros=[3.598, 6.166] final_y=+9.9395
+count=2 start=4.00 width=2.00 amp=3.000 intK=6.0060 zeros=[4.988, 9.166] final_y=+1.0448
+count=2 start=4.00 width=4.00 amp=1.500 intK=6.0030 zeros=[5.446, 8.01] final_y=+9.9395

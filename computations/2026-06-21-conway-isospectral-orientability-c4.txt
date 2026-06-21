@@ -1,0 +1,39 @@
+THE-MACHINE tick: isospectral orientability -> C4 cross-lane correlation
+NODE: orientability may not be determined by the spectrum in general settings
+Standing-order target: 12/32 C4 cross-lane correlation
+STEP 6 NODE TEST: finite signed-cycle orientability analogue
+Constraint: scalar spectra can erase an orientation/twist datum; an orientation-sensitive operator is needed.
+n=06 scalar_spectrum_diff=0 connection_spectrum_diff=1.000000 lowest_plus/minus=-0.000000/0.267949
+n=10 scalar_spectrum_diff=0 connection_spectrum_diff=0.618034 lowest_plus/minus=-0.000000/0.097887
+n=14 scalar_spectrum_diff=0 connection_spectrum_diff=0.445042 lowest_plus/minus=-0.000000/0.050144
+NODE verdict: the scalar spectrum is identical by construction, while the Z/2 connection spectrum detects the hidden twist. This validates the NODE constraint in a small finite model.
+
+STEP 7 FORMULA CHECK
+NODE spectral/orientation formulas apply unchanged only as finite linear-algebra diagnostics. The C4 transfer must use the phase-weld field and cross-sigma association, not a generic graph spectrum.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=39 normalized=0.5493: cross lane orientation may not be determined by per lane spectra
+2. distance=48 normalized=0.6761: C4 weld orientability is not audible from scalar lane spectra
+3. distance=55 normalized=0.7746: cross sigma correlation length is hidden from lanewise spectra
+chosen=1: cross lane orientation may not be determined by per lane spectra
+
+STEP 9 METHOD 9: TEST SMALL CASES
+Small cases: compare the true phase-weld lane field with per-lane isospectral surrogates. Circular shifts and Fourier phase scrambling preserve each lane's scalar power spectrum, but may destroy C4 cross-lane orientation/correlation.
+case kind power_diff top_eig adj_mean xi_sigma span20 top_eig_drop_vs_true
+critical_low true    0.000e+00 4.5451 0.9570 2.9497 5 0.0000
+critical_low shifted 4.844e-16 1.0527 -0.0285 3.5562 5 3.4924
+critical_low fourier 5.315e-16 0.7393 -0.1476 3.8881 5 3.8057
+critical_low finite  0.000e+00 2.8194 0.8034 2.2690 4 1.7256
+critical_low random  0.000e+00 0.2289 0.0347 3.0738 0 4.3162
+critical_mid true    0.000e+00 4.4851 0.9505 2.9516 5 0.0000
+critical_mid shifted 4.258e-16 0.6149 0.0276 2.7632 0 3.8702
+critical_mid fourier 4.269e-16 0.7159 -0.0114 4.0365 4 3.7692
+critical_mid finite  0.000e+00 2.9893 0.7860 2.4278 5 1.4959
+critical_mid random  0.000e+00 0.1604 0.0213 3.2507 0 4.3247
+right_side   true    0.000e+00 4.9214 0.9976 2.9732 5 0.0000
+right_side   shifted 3.978e-16 0.6434 -0.0431 5.0000 0 4.2780
+right_side   fourier 4.021e-16 0.7432 0.1619 1.0000 0 4.1782
+right_side   finite  0.000e+00 4.9159 0.9973 2.9714 5 0.0055
+right_side   random  0.000e+00 0.5990 0.0918 3.1397 0 4.3224
+
+Provisional interpretation: a non-reducing C4 increment would be a large true-vs-isospectral-surrogate drop in the critical strip that is not reproduced on the right side and not merely a threshold/marginal artifact.

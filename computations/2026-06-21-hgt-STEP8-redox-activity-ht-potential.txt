@@ -1,0 +1,27 @@
+STEP8 three HT-transfer attempts by Levenshtein from NODE test
+attempt=phase-activity-potential levenshtein= 36 normalized=0.3025 SELECTED
+attempt=gamma-activity-coeff     levenshtein= 82 normalized=0.6891 rejected
+attempt=prime-ionic-strength     levenshtein= 85 normalized=0.7143 rejected
+
+STEP8/9 redox activity-corrected HT potential
+method=2 attack-as-false; finite-Euler and random-phase controls test whether shifts are just phase-defect artifacts
+finite_prime_count=160
+sigma window kind ideal_med active_med shift_med frac_shift_lt_-0.5
+0.3 [100,170] true-zeta    0.457185 0.057616 -0.431024 0.440909
+0.3 [100,170] finite-euler 1.684055 1.641554 0.006310 0.040909
+0.3 [100,170] random-phase 0.457185 0.720656 0.156046 0.104545
+0.5 [100,170] true-zeta    0.248147 -0.011643 -0.213920 0.363636
+0.5 [100,170] finite-euler 0.812290 0.676458 0.049733 0.195455
+0.5 [100,170] random-phase 0.248147 0.586373 0.101753 0.172727
+0.7 [100,170] true-zeta    -0.113617 0.057930 0.207051 0.154545
+0.7 [100,170] finite-euler 0.065045 0.260292 0.234435 0.177273
+0.7 [100,170] random-phase -0.113617 0.392087 0.413126 0.127273
+0.3 [500,570] true-zeta    0.608519 0.096068 -0.530177 0.518182
+0.3 [500,570] finite-euler 1.679997 1.645475 0.019685 0.027273
+0.3 [500,570] random-phase 0.608519 0.773876 0.062148 0.163636
+0.5 [500,570] true-zeta    0.279063 0.068052 -0.313426 0.404545
+0.5 [500,570] finite-euler 0.692784 0.747513 0.071381 0.200000
+0.5 [500,570] random-phase 0.279063 0.648626 0.129163 0.104545
+0.7 [500,570] true-zeta    -0.207918 0.096120 0.368719 0.118182
+0.7 [500,570] finite-euler -0.182710 0.261571 0.417771 0.131818
+0.7 [500,570] random-phase -0.207918 0.224773 0.460802 0.131818

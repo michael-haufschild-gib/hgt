@@ -1,0 +1,32 @@
+STEP8 transfer attempts by Levenshtein distance
+strip-temperature-calibration   distance=13 normalized=0.1757
+prime-thermal-cutoff            distance=50 normalized=0.6757
+zero-thermal-relaxation         distance=57 normalized=0.7703
+selected=strip-temperature-calibration
+
+STEP9 method #23: classify boundary cases
+reference calibration lane: sigma=0.5; hidden SOC analogue=phase defect; voltage analogue=amplitude+history
+signal threshold: full_error >= 0.05
+kind sigma window defect_med defect_pos ref_gain target_gain full_error ocv_only_error hysteresis_only_error signal
+true              0.3 [100,170] 0.449920 1.000000 0.144885 0.232464 0.328883 0.230237 0.310306 1
+finite            0.3 [100,170] 0.000000 0.475000 0.054163 0.030000 0.024651 0.024651 0.049451 0
+ampmatched-finite 0.3 [100,170] 0.000000 0.433333 0.030000 0.030000 0.000000 0.000000 0.001975 0
+random-phase      0.3 [100,170] 0.000000 0.366667 0.030000 0.030000 0.046123 0.046123 0.090782 0
+gamma-only        0.3 [100,170] 0.000000 0.000000 0.030000 0.030000 0.000000 0.000000 0.000000 0
+true              0.3 [500,570] 0.515117 1.000000 0.153690 0.261803 0.347918 0.327102 0.347918 1
+finite            0.3 [500,570] 0.000000 0.433333 0.030000 0.030000 0.000000 0.000000 0.000000 0
+ampmatched-finite 0.3 [500,570] 0.000000 0.391667 0.030000 0.030000 0.000000 0.000000 0.000000 0
+random-phase      0.3 [500,570] 0.000000 0.366667 0.030000 0.030000 0.018819 0.018819 0.098792 0
+gamma-only        0.3 [500,570] 0.000000 0.000000 0.030000 0.030000 0.000000 0.000000 0.000000 0
+true              0.7 [100,170] 0.106777 0.525000 0.144885 0.078050 0.164906 0.170760 0.170389 1
+finite            0.7 [100,170] 0.000000 0.458333 0.054163 0.030000 0.208430 0.187157 0.068867 1
+ampmatched-finite 0.7 [100,170] 0.000000 0.475000 0.030000 0.030000 0.042948 0.042948 0.051031 0
+random-phase      0.7 [100,170] 0.000000 0.350000 0.030000 0.030000 0.020364 0.020364 0.059711 0
+gamma-only        0.7 [100,170] 0.000000 0.000000 0.030000 0.030000 0.000000 0.000000 0.000000 0
+true              1.2 [100,170] 0.000000 0.408333 0.144885 0.030000 0.297232 0.177622 0.244759 1
+finite            1.2 [100,170] 0.000000 0.400000 0.054163 0.030000 0.258767 0.295468 0.089273 1
+ampmatched-finite 1.2 [100,170] 0.000000 0.400000 0.030000 0.030000 0.082209 0.082209 0.079355 1
+random-phase      1.2 [100,170] 0.000000 0.416667 0.030000 0.030000 0.105629 0.105629 0.106783 1
+gamma-only        1.2 [100,170] 0.000000 0.000000 0.030000 0.030000 0.000000 0.000000 0.000000 0
+
+Interpretation key: if calibration failure is large only where phase defect is already large, or if random/amplitude controls also fail, the temperature metaphor reduces to known phase-defect/calibration artifacts.

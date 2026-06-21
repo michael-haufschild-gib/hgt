@@ -1,0 +1,35 @@
+NODE simulation: open doubling map saddle skeleton
+period survivor_grid_fraction periodic_word_survivors topological_rate
+ 4 0.60004      8 0.51986
+ 6 0.43732     28 0.55537
+ 8 0.31610     64 0.51986
+10 0.22589    204 0.53181
+12 0.16766    560 0.52733
+
+STEP8 Levenshtein transfer candidates
+1 distance=37 ratio=0.5692 phase recurrence skeletons govern transient defect dynamics
+2 distance=33 ratio=0.5077 zero shadow periodic bridges govern transient topology dynamics
+3 distance=34 ratio=0.5231 amplitude envelope recurrences govern transient bulk dynamics
+selected=2 zero shadow periodic bridges govern transient topology dynamics
+
+STEP8/9 HT transfer: zero-shadow / phase-defect recurrence skeleton
+threshold=1.000 quantile=0.90 samples_per_window=260 prime_count=160
+mode kind sigma cutoff density best_lag best_lift top_lags
+fixed    true   0.3 1.0000 0.1673   1 2.828 1:2.83,58:1.70,16:1.70,88:1.66,31:1.61
+quantile true   0.3 1.1843 0.1000   1 3.668 1:3.67,37:2.49,85:2.30,16:2.19,74:2.02
+fixed    finite 0.3 1.0000 0.0096  62 23.667 62:23.67,60:23.56,56:23.36,90:0.00,89:0.00
+quantile finite 0.3 0.2631 0.1000   1 3.475 1:3.47,30:1.64,89:1.63,26:1.62,81:1.60
+fixed    random 0.3 1.0000 0.0385  48 4.306 48:4.31,46:4.29,10:3.98,87:3.13,65:2.98
+quantile random 0.3 0.6413 0.1000  23 2.218 23:2.22,20:2.00,46:1.90,33:1.85,57:1.73
+fixed    true   0.5 1.0000 0.2269  31 1.671 31:1.67,37:1.57,1:1.50,73:1.48,63:1.45
+quantile true   0.5 1.9053 0.1000  68 2.217 68:2.22,15:2.18,31:2.05,74:2.02,22:2.01
+fixed    finite 0.5 1.0000 0.0577  67 2.659 67:2.66,44:2.53,35:2.48,28:2.45,1:2.32
+quantile finite 0.5 0.7303 0.1000  48 2.335 48:2.34,89:1.86,22:1.81,1:1.74,44:1.68
+fixed    random 0.5 1.0000 0.0808  57 2.654 57:2.65,34:2.53,80:2.44,20:2.15,88:2.13
+quantile random 0.5 0.8441 0.1000  57 2.381 57:2.38,34:2.06,75:2.03,71:2.01,58:1.95
+fixed    true   1.2 1.0000 0.0000   0 0.000 90:0.00,89:0.00,88:0.00,87:0.00,86:0.00
+quantile true   1.2 0.3078 0.1000   1 6.564 1:6.56,68:4.66,2:4.26,67:3.98,69:3.78
+fixed    finite 1.2 1.0000 0.0000   0 0.000 90:0.00,89:0.00,88:0.00,87:0.00,86:0.00
+quantile finite 1.2 0.3079 0.1000   1 6.564 1:6.56,68:4.66,2:4.26,67:3.98,69:3.78
+fixed    random 1.2 1.0000 0.0000   0 0.000 90:0.00,89:0.00,88:0.00,87:0.00,86:0.00
+quantile random 1.2 0.3082 0.1000   3 2.132 3:2.13,2:1.93,84:1.84,87:1.62,82:1.60

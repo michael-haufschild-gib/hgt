@@ -1,0 +1,67 @@
+THE-MACHINE tick: finite-size rounding -> B2 two-lemma bridge
+NODE: finite size rounding can make separate transitions look like a single multicritical point
+Standing-order target: 16/32 B2 two-lemma bridge
+STEP 6 NODE TEST: finite-size rounding of two nearby transitions
+Two genuine transition peaks at +/-d are observed through a finite-size rounding width w. The constraint is that peak-count at one resolution does not decide true multicriticality.
+d width d_over_width peak_count apparent_peak_positions verdict
+0.02 0.02 1.00 1 0.000 merged
+0.02 0.05 0.40 1 0.000 merged
+0.02 0.10 0.20 1 0.000 merged
+0.02 0.20 0.10 1 0.000 merged
+0.05 0.02 2.50 2 -0.050,0.050 resolved
+0.05 0.05 1.00 1 0.000 merged
+0.05 0.10 0.50 1 0.000 merged
+0.05 0.20 0.25 1 0.000 merged
+0.10 0.02 5.00 2 -0.100,0.100 resolved
+0.10 0.05 2.00 2 -0.100,0.100 resolved
+0.10 0.10 1.00 1 0.000 merged
+0.10 0.20 0.50 1 0.000 merged
+0.20 0.02 10.00 2 -0.200,0.200 resolved
+0.20 0.05 4.00 2 -0.200,0.200 resolved
+0.20 0.10 2.00 2 -0.200,0.200 resolved
+0.20 0.20 1.00 1 0.000 merged
+0.40 0.02 20.00 2 -0.400,0.400 resolved
+0.40 0.05 8.00 2 -0.400,0.400 resolved
+0.40 0.10 4.00 2 -0.400,0.400 resolved
+0.40 0.20 2.00 2 -0.400,0.400 resolved
+NODE verdict: if d/w is small, two transitions are falsely counted as one.
+
+STEP 7 FORMULA CHECK
+Finite-size peak-rounding formulas are NODE-side diagnostics. Applied unchanged they are smoothing arithmetic, not B2 source transport. The transfer changes the observable to a smoothed source-measure profile for an off-seam symmetric source pair.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=53 normalized=0.5955: finite resolution can make separate off seam source defects look like one B2 seam defect
+2. distance=69 normalized=0.7753: B2 detect confine tests need multiscale resolution against rounded defect clusters
+3. distance=69 normalized=0.7753: off line transport defects can be merged by smoothing into apparent seam confinement
+chosen=1: finite resolution can make separate off seam source defects look like one B2 seam defect
+
+STEP 9 METHOD 10: TEST EXTREME CASES
+Extreme B2 surrogate: two off-seam simple sources at 0.5 +/- delta. A smoothed one-resolution source profile can look like a single seam source; contour charge with half-width < delta detects the split.
+delta smooth_width delta_over_width peak_count mean_sigma std_sigma seam_band_mass off_band_mass contour_hw_half_delta contour_hw_2delta apparent
+0.005 0.005 1.00 1 0.500000 0.007071 0.4545 0.5455 0 2 false_seam_single
+0.005 0.010 0.50 1 0.500000 0.011180 0.6125 0.3875 0 2 false_seam_single
+0.005 0.020 0.25 1 0.500000 0.020616 0.6617 0.3383 0 2 false_seam_single
+0.005 0.050 0.10 1 0.500000 0.050249 0.6803 0.3197 0 2 false_seam_single
+0.005 0.100 0.05 1 0.500000 0.100124 0.6833 0.3167 0 2 false_seam_single
+0.010 0.005 2.00 2 0.500000 0.011180 0.1452 0.8548 0 2 resolved_or_offseam
+0.010 0.010 1.00 1 0.500000 0.014142 0.4659 0.5341 0 2 false_seam_single
+0.010 0.020 0.50 1 0.500000 0.022361 0.6186 0.3814 0 2 false_seam_single
+0.010 0.050 0.20 1 0.500000 0.050990 0.6731 0.3269 0 2 false_seam_single
+0.010 0.100 0.10 1 0.500000 0.100498 0.6815 0.3185 0 2 false_seam_single
+0.020 0.005 4.00 2 0.500000 0.020616 0.0011 0.9989 0 2 resolved_or_offseam
+0.020 0.010 2.00 2 0.500000 0.022361 0.1512 0.8488 0 2 resolved_or_offseam
+0.020 0.020 1.00 1 0.500000 0.028284 0.4716 0.5284 0 2 false_seam_single
+0.020 0.050 0.40 1 0.500000 0.053852 0.6450 0.3550 0 2 false_seam_single
+0.020 0.100 0.20 1 0.500000 0.101979 0.6743 0.3257 0 2 false_seam_single
+0.050 0.005 10.00 2 0.500000 0.050249 0.0000 1.0000 0 2 resolved_or_offseam
+0.050 0.010 5.00 2 0.500000 0.050990 0.0000 1.0000 0 2 resolved_or_offseam
+0.050 0.020 2.50 2 0.500000 0.053852 0.0650 0.9350 0 2 resolved_or_offseam
+0.050 0.050 1.00 1 0.500000 0.070711 0.4772 0.5228 0 2 false_seam_single
+0.050 0.100 0.50 1 0.500000 0.111799 0.6259 0.3741 0 2 false_seam_single
+0.100 0.005 20.00 2 0.500000 0.100125 0.0000 1.0000 0 2 resolved_or_offseam
+0.100 0.010 10.00 2 0.500000 0.100499 0.0000 1.0000 0 2 resolved_or_offseam
+0.100 0.020 5.00 2 0.500000 0.101980 0.0000 1.0000 0 2 resolved_or_offseam
+0.100 0.050 2.00 2 0.500000 0.111803 0.1573 0.8427 0 2 resolved_or_offseam
+0.100 0.100 1.00 1 0.500000 0.141393 0.4784 0.5216 0 2 false_seam_single
+
+B2 provisional verdict: a one-scale smoothed source observable can misclassify symmetric off-seam pairs as seam-confined. The detect half of B2 needs a scale gate: either contour charge below the off-seam separation or a multiscale split test.

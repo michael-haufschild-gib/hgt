@@ -1,0 +1,9 @@
+N=140 frac=0.65 t=0.015
+regional mass=1.00000000 boundary=0.139985 center=2.616488 row_edge=5.544e-13 row_center=-5.613e-13
+restricted mass=0.92901215 boundary=0.082462 center=2.468320 row_edge=479.5 row_center=3.788
+spectral mass=0.96564170 boundary=0.010193 center=3.537113 row_edge=623.4 row_center=2.098
+eig regional 1.30517e-13 9.45698 26.0319 46.1133 68.4345
+eig restricted 9.70707 27.4016 47.8431 70.3731 94.3543
+eig spectral 4.42889 10.9052 18.4736 26.8518 35.8885
+restricted_minus_regional_diag_edge 479.4522059118974
+restricted_minus_regional_diag_center 3.7884215315107213

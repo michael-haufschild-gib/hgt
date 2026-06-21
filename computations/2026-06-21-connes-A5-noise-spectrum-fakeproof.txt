@@ -1,0 +1,4 @@
+N=150: shuffle-noise=2.860  iid-noise=5.589  ratio=0.51
+N=300: shuffle-noise=4.144  iid-noise=7.074  ratio=0.59
+N=600: shuffle-noise=6.133  iid-noise=10.920  ratio=0.56
+GAP: ratio>1 means gap-shuffle noise is super-iid (retained gap structure), breaking the fake proof's sqrt(N).

@@ -1,0 +1,111 @@
+THE-MACHINE tick: Grote-Hynes memory friction -> C4
+NODE: Grote-Hynes corrections may be needed when friction has memory
+Standing-order target: 12/32 C4 cross-lane correlation
+STEP 9 method: 19. Write the fake proof
+STEP 5/6 NODE TEST: memory friction is not scalar friction
+Constraint: with exponential bath memory, the escape prefactor is fixed by the frequency-dependent friction gamma_hat(lambda), not only by integrated gamma.
+omega gamma tau omega_tau lambda_markov lambda_GH kappa_markov kappa_GH rel_rate_lift
+0.70 0.40 0.00000 0.000 0.528011 0.528011 0.754301 0.754301 +0.000000
+0.70 0.40 0.07143 0.050 0.528011 0.533369 0.754301 0.761955 +0.010147
+0.70 0.40 0.35714 0.250 0.528011 0.552619 0.754301 0.789456 +0.046606
+0.70 0.40 1.42857 1.000 0.528011 0.600584 0.754301 0.857978 +0.137447
+0.70 0.40 5.71429 4.000 0.528011 0.659305 0.754301 0.941864 +0.248657
+0.70 1.50 0.00000 0.000 0.275914 0.275914 0.394163 0.394163 +0.000000
+0.70 1.50 0.07143 0.050 0.275914 0.279918 0.394163 0.399882 +0.014510
+0.70 1.50 0.35714 0.250 0.275914 0.296458 0.394163 0.423512 +0.074458
+0.70 1.50 1.42857 1.000 0.275914 0.362760 0.394163 0.518229 +0.314758
+0.70 1.50 5.71429 4.000 0.275914 0.540127 0.394163 0.771610 +0.957589
+0.70 5.00 0.00000 0.000 0.096151 0.096151 0.137359 0.137359 +0.000000
+0.70 5.00 0.07143 0.050 0.096151 0.096791 0.137359 0.138273 +0.006655
+0.70 5.00 0.35714 0.250 0.096151 0.099433 0.137359 0.142047 +0.034129
+0.70 5.00 1.42857 1.000 0.096151 0.110656 0.137359 0.158080 +0.150854
+0.70 5.00 5.71429 4.000 0.096151 0.188969 0.137359 0.269955 +0.965333
+1.00 0.40 0.00000 0.000 0.819804 0.819804 0.819804 0.819804 +0.000000
+1.00 0.40 0.05000 0.050 0.819804 0.826212 0.819804 0.826212 +0.007817
+1.00 0.40 0.25000 0.250 0.819804 0.848522 0.819804 0.848522 +0.035031
+1.00 0.40 1.00000 1.000 0.819804 0.900275 0.819804 0.900275 +0.098159
+1.00 0.40 4.00000 4.000 0.819804 0.959515 0.819804 0.959515 +0.170420
+1.00 1.50 0.00000 0.000 0.500000 0.500000 0.500000 0.500000 +0.000000
+1.00 1.50 0.05000 0.050 0.500000 0.507513 0.500000 0.507513 +0.015027
+1.00 1.50 0.25000 0.250 0.500000 0.537656 0.500000 0.537656 +0.075312
+1.00 1.50 1.00000 1.000 0.500000 0.642737 0.500000 0.642737 +0.285473
+1.00 1.50 4.00000 4.000 0.500000 0.843070 0.500000 0.843070 +0.686141
+1.00 5.00 0.00000 0.000 0.192582 0.192582 0.192582 0.192582 +0.000000
+1.00 5.00 0.05000 0.050 0.192582 0.194318 0.192582 0.194318 +0.009012
+1.00 5.00 0.25000 0.250 0.192582 0.201544 0.192582 0.201544 +0.046533
+1.00 5.00 1.00000 1.000 0.192582 0.233229 0.192582 0.233229 +0.211063
+1.00 5.00 4.00000 4.000 0.192582 0.446051 0.192582 0.446051 +1.316156
+1.60 0.40 0.00000 0.000 1.412452 1.412452 0.882782 0.882782 +0.000000
+1.60 0.40 0.03125 0.050 1.412452 1.419917 0.882782 0.887448 +0.005286
+1.60 0.40 0.15625 0.250 1.412452 1.445139 0.882782 0.903212 +0.023142
+1.60 0.40 0.62500 1.000 1.412452 1.500104 0.882782 0.937565 +0.062057
+1.60 0.40 2.50000 4.000 1.412452 1.559698 0.882782 0.974811 +0.104249
+1.60 1.50 0.00000 0.000 1.017060 1.017060 0.635662 0.635662 +0.000000
+1.60 1.50 0.03125 0.050 1.017060 1.030657 0.635662 0.644161 +0.013369
+1.60 1.50 0.15625 0.250 1.017060 1.082302 0.635662 0.676439 +0.064148
+1.60 1.50 0.62500 1.000 1.017060 1.231357 0.635662 0.769598 +0.210703
+1.60 1.50 2.50000 4.000 1.017060 1.445694 0.635662 0.903559 +0.421445
+1.60 5.00 0.00000 0.000 0.468164 0.468164 0.292603 0.292603 +0.000000
+1.60 5.00 0.03125 0.050 0.468164 0.473986 0.292603 0.296241 +0.012434
+1.60 5.00 0.15625 0.250 0.468164 0.498332 0.292603 0.311458 +0.064439
+1.60 5.00 0.62500 1.000 0.468164 0.604730 0.292603 0.377956 +0.291705
+1.60 5.00 2.50000 4.000 0.468164 1.053715 0.292603 0.658572 +1.250736
+NODE verdict: tau=0 collapses to Kramers/Markov. At fixed integrated friction, memory can change the prefactor by order-one factors when omega_b*tau is not small.
+
+STEP 7 FORMULA CHECK
+The Grote-Hynes molecular formula does not apply unchanged to C4: C4 has no molecular barrier, solvent friction, or Kramers rate. Direct use would be HT-blind.
+Minimal transfer: keep only the constraint that scalar friction is insufficient when the coupling has memory. Replace bath memory by the positive cross-sigma correlation kernel of the phase-weld field.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=47 normalized=0.6267: Grote-Hynes memory friction becomes a cross-lane sigma memory kernel for C4
+2. distance=57 normalized=0.7500: frequency dependent friction correction becomes frequency dependent xi_sigma
+3. distance=53 normalized=0.6463: a scalar lane correlation length is insufficient when cross-sigma memory has shape
+chosen=1: Grote-Hynes memory friction becomes a cross-lane sigma memory kernel for C4
+
+STEP 9 METHOD 19: FAKE PROOF AND GAP
+Fake proof: C4 would follow from a large scalar xi_sigma, because xi_sigma would summarize all cross-lane rigidity.
+Gap exposed by the NODE: a memory correction depends on the full Laplace transform of the lane kernel, not only on mass and first moment.
+kernel gamma0 xi markov_lambda memory_lambda rel_lift
+split_1_5 1.000 3.000 0.618034 0.901135 +0.458067
+point_3   1.000 3.000 0.618034 0.973402 +0.574998
+Same gamma0 and xi, different memory lift. Missing lemma: xi_sigma alone determines frequency-dependent C4 response. The lemma is false in this finite kernel model.
+
+STEP 9 C4 MEMORY-KERNEL EXPERIMENT
+case region kind power_diff top_eig gamma0 xi tail_frac markov_lam memory_lam rel_lift curve_area kernel verdict
+critical_low  critical true    0.00e+00 5.4691 5.3968 3.4583 0.8216 0.179335 0.582999 +2.250886 +4.326964 [0.963,0.910,0.858,0.898,0.893,0.874] critical_sep
+critical_low  critical finite  0.00e+00 3.3127 2.5404 2.5755 0.6810 0.346404 0.745018 +1.150718 +2.029228 [0.810,0.638,0.447,0.282,0.190,0.173] 
+critical_low  critical random  0.00e+00 0.2450 0.0486 2.6637 1.0000 0.976008 0.997394 +0.021911 +0.045674 [0.000,0.038,0.000,0.000,0.011,0.000] 
+critical_low  critical shifted 3.72e-16 0.9554 1.0908 5.4016 0.9389 0.593668 0.983060 +0.655910 +1.333220 [0.067,0.038,0.000,0.055,0.056,0.874] 
+critical_low  critical fourier 6.50e-16 0.4956 0.1739 3.1500 0.7779 0.916842 0.990553 +0.080396 +0.168420 [0.039,0.000,0.084,0.000,0.052,0.000] 
+critical_high critical true    0.00e+00 5.2724 5.2536 3.5026 0.8234 0.183907 0.611307 +2.324006 +4.277703 [0.928,0.857,0.793,0.888,0.898,0.890] critical_sep
+critical_high critical finite  0.00e+00 3.5584 2.9978 2.8825 0.7214 0.302957 0.730696 +1.411882 +2.447919 [0.835,0.629,0.491,0.429,0.325,0.289] 
+critical_high critical random  0.00e+00 0.4088 0.1900 3.2080 0.8053 0.909502 0.989161 +0.087586 +0.183349 [0.037,0.029,0.077,0.000,0.000,0.047] 
+critical_high critical shifted 3.96e-16 0.6164 0.2678 4.0675 0.8078 0.875045 0.989414 +0.130702 +0.276742 [0.051,0.000,0.000,0.056,0.148,0.012] 
+critical_high critical fourier 7.17e-16 0.5018 0.4731 3.7879 0.9469 0.791036 0.983988 +0.243922 +0.502164 [0.025,0.125,0.070,0.011,0.189,0.053] 
+right_low     right    true    0.00e+00 5.8535 5.7633 3.4456 0.8270 0.168582 0.535717 +2.177793 +4.532734 [0.997,0.989,0.976,0.959,0.937,0.906] right_collapse
+right_low     right    finite  0.00e+00 5.8483 5.7552 3.4438 0.8268 0.168805 0.536252 +2.176762 +4.526668 [0.997,0.988,0.975,0.958,0.935,0.903] 
+right_low     right    random  0.00e+00 0.6116 0.6954 4.4712 0.8754 0.711012 0.976650 +0.373604 +0.768613 [0.087,0.077,0.006,0.056,0.191,0.279] 
+right_low     right    shifted 4.27e-16 0.8076 0.2434 4.3231 0.9938 0.885664 0.994571 +0.122967 +0.259304 [0.002,0.056,0.041,0.000,0.055,0.090] 
+right_low     right    fourier 7.25e-16 0.7610 0.2317 5.7243 1.0000 0.890848 0.999459 +0.121918 +0.262611 [0.000,0.000,0.000,0.032,0.000,0.200] 
+right_high    right    true    0.00e+00 5.7826 5.6511 3.4193 0.8238 0.171739 0.542499 +2.158861 +4.446142 [0.995,0.983,0.964,0.938,0.906,0.865] right_collapse
+right_high    right    finite  0.00e+00 5.7742 5.6374 3.4159 0.8235 0.172132 0.543322 +2.156428 +4.435566 [0.995,0.983,0.963,0.936,0.902,0.859] 
+right_high    right    random  0.00e+00 0.5795 0.4422 2.9296 0.8119 0.803039 0.972804 +0.211403 +0.430619 [0.083,0.127,0.057,0.088,0.087,0.000] 
+right_high    right    shifted 5.62e-16 0.6147 0.4825 4.6445 1.0000 0.787450 0.995123 +0.263729 +0.552758 [0.000,0.035,0.000,0.221,0.073,0.154] 
+right_high    right    fourier 8.18e-16 1.0453 0.0756 1.0000 0.0000 0.962904 0.985994 +0.023979 +0.051925 [0.076,0.000,0.000,0.000,0.000,0.000] 
+
+CRITICAL_TRUE_MEMORY_SEPARATES 2/2
+RIGHT_TRUE_FINITE_MEMORY_COLLAPSE 2/2
+
+STEP 11 WILD METAPHOR EXPERIMENT: barrier-frequency scan
+Metaphor: C4 is not just a rigid rod across sigma-lanes; it is a bath with memory. Probe it with fictitious barrier frequencies and draw the relative memory lift curve.
+case kind curve
+critical_low  true    ############################ +0.089 +0.207 +0.706 +2.300 +2.410 +1.869 +1.199
+critical_low  finite  ############################ +0.162 +0.375 +0.915 +1.094 +0.887 +0.682 +0.447
+critical_low  random  ####........................ +0.084 +0.066 +0.048 +0.037 +0.026 +0.020 +0.013
+critical_high true    ############################ +0.087 +0.201 +0.675 +2.257 +2.449 +1.905 +1.224
+critical_high finite  ############################ +0.136 +0.321 +0.981 +1.431 +1.214 +0.931 +0.604
+critical_high random  ####........................ +0.057 +0.053 +0.045 +0.039 +0.030 +0.024 +0.017
+right_low     true    ############################ +0.081 +0.184 +0.598 +2.177 +2.627 +2.057 +1.324
+right_low     finite  ############################ +0.081 +0.184 +0.599 +2.176 +2.623 +2.054 +1.322
+right_low     random  ######################...... +0.400 +0.344 +0.252 +0.194 +0.130 +0.097 +0.064
+Interpretation: if the critical true curve separates while right-side true/finite collapse, C4 needs a full cross-lane memory-kernel gate. A scalar xi_sigma gate is a fake-proof gap, not a complete discriminator.

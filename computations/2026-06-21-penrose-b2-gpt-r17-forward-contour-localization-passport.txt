@@ -1,0 +1,24 @@
+NODE test: community boundaries can trap oscillatory energy
+Two weakly coupled communities; a localized mode can be mistaken for a global mode.
+
+localized mode energy: left=2.000, right=0.000, participation=2.000
+
+ResearchNode mutation: forward contour moments and local pocket dominance
+zeros/proxy positions: [1.0, 2.0, 3.0, 10.0]
+k | M_k global | largest contribution share | participation
+--|------------|----------------------------|--------------
+1 |     16.000 |                   0.625000 |     2.245614
+2 |    114.000 |                   0.877193 |     1.286988
+3 |   1036.000 |                   0.965251 |     1.072444
+4 |  10098.000 |                   0.990295 |     1.019627
+5 | 100276.000 |                   0.997248 |     1.005522
+
+Step-12 follow-up: partition additivity
+k=2: local-window=14.000, pocket-window=100.000, sum=114.000
+k=4: local-window=98.000, pocket-window=10000.000, sum=10098.000
+
+Finding:
+  Forward contour moments are exact local sums, but their scalar values can be
+  dominated by a localized pocket. A contour-moment claim needs a localization
+  passport: window partition, boundary guard, contribution shares, and additivity
+  checks before local moments are interpreted as global divisor information.

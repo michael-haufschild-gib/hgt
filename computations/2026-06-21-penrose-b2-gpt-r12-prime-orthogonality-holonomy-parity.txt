@@ -1,0 +1,24 @@
+NODE test: orientation-reversing holonomy can close only after two traversals
+ResearchNode mutation: Source-B-only even positivity can miss one-pass signed holonomy
+
+case | one-pass defect | two-pass defect | even magnitude reporter
+-----|-----------------|-----------------|----------------------
+orientable H=+1      |        0.000000 |        0.000000 |               1.000000
+quarter-turn H=i     |        1.414214 |        2.000000 |               1.000000
+third-turn           |        1.000000 |        1.732051 |               1.000000
+nonorientable H=-1   |        2.000000 |        0.000000 |               1.000000
+
+Step-12 boundary sweep: two-pass false closure
+phi/pi | one-pass defect | two-pass defect
+-------|-----------------|----------------
+  0.00 |        0.000000 |       0.000000
+  0.25 |        0.765367 |       1.414214
+  0.50 |        1.414214 |       2.000000
+  0.75 |        1.847759 |       1.414214
+  1.00 |        2.000000 |       0.000000
+
+Finding:
+  A prime-side-only positive reporter that is even under holonomy can certify
+  two-pass closure while missing one-pass orientation reversal. Prime-side
+  orthogonality should require a holonomy-parity passport: either preserve the
+  odd/one-pass sector or prove it vanishes before claiming RH-equivalence.

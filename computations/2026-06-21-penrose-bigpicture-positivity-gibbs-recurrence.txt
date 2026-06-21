@@ -1,0 +1,29 @@
+NODE test: Gibbs rare states and recurrence scale
+rare state probability p = exp(-beta DeltaE) / (1 + exp(-beta DeltaE))
+
+beta_DeltaE= 2  p=1.192e-01  mean_return≈8.389e+00
+  samples=    1000  miss_probability≈7.514e-56
+  samples=  100000  miss_probability≈0.000e+00
+  samples=10000000  miss_probability≈0.000e+00
+beta_DeltaE= 5  p=6.693e-03  mean_return≈1.494e+02
+  samples=    1000  miss_probability≈1.212e-03
+  samples=  100000  miss_probability≈2.270e-292
+  samples=10000000  miss_probability≈0.000e+00
+beta_DeltaE=10  p=4.540e-05  mean_return≈2.203e+04
+  samples=    1000  miss_probability≈9.556e-01
+  samples=  100000  miss_probability≈1.067e-02
+  samples=10000000  miss_probability≈6.840e-198
+beta_DeltaE=15  p=3.059e-07  mean_return≈3.269e+06
+  samples=    1000  miss_probability≈9.997e-01
+  samples=  100000  miss_probability≈9.699e-01
+  samples=10000000  miss_probability≈4.693e-02
+beta_DeltaE=20  p=2.061e-09  mean_return≈4.852e+08
+  samples=    1000  miss_probability≈1.000e+00
+  samples=  100000  miss_probability≈9.998e-01
+  samples=10000000  miss_probability≈9.796e-01
+
+finite sampling certificate
+p_min=1e-02  samples_for_95_percent_hit≈299
+p_min=1e-04  samples_for_95_percent_hit≈29956
+p_min=1e-06  samples_for_95_percent_hit≈2995731
+p_min=1e-08  samples_for_95_percent_hit≈299573226

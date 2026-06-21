@@ -1,0 +1,18 @@
+NODE: temperature changes battery hysteresis and OCV-SOC calibration
+same_soc_voltage_spread_charge=0.073587
+same_soc_voltage_spread_discharge=0.169287
+temp mode median_abs_soc_error active_error rest_error hysteresis_gain resistance
+ -10.0 full            0.054958 0.059628 0.026937 0.051250 0.047589
+ -10.0 ocv_only        0.054009 0.058193 0.032664 0.051250 0.047589
+ -10.0 hysteresis_only 0.014513 0.013728 0.015235 0.051250 0.047589
+   0.0 full            0.043353 0.047847 0.018611 0.041750 0.036047
+   0.0 ocv_only        0.042976 0.046925 0.023539 0.041750 0.036047
+   0.0 hysteresis_only 0.011990 0.011146 0.013244 0.041750 0.036047
+  25.0 full            0.005244 0.005178 0.005553 0.018000 0.018000
+  25.0 ocv_only        0.005244 0.005178 0.005553 0.018000 0.018000
+  25.0 hysteresis_only 0.005244 0.005178 0.005553 0.018000 0.018000
+  45.0 full            0.260000 0.293213 0.037279 0.003400 0.010328
+  45.0 ocv_only        0.271359 0.308913 0.049770 0.003400 0.010328
+  45.0 hysteresis_only 0.009432 0.015104 0.001018 0.003400 0.010328
+
+Interpretation: the NODE is validated if same-SOC voltages spread with temperature and a 25C voltage-to-SOC calibration fails off-temperature. The OCV-only and hysteresis-only ablations separate the two sources.

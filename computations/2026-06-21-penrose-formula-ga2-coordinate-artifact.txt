@@ -1,0 +1,22 @@
+STEP 8 Levenshtein transfer attempts
+==========================================
+A: distance=33, attempt=separate half-coordinate 2/s artifact from unit-step digamma recurrence
+B: distance=48, attempt=separate gamma multiplier log-derivative from parameter s artifact
+C: distance=44, attempt=separate Fisher metric coordinate terms from invariant recurrence residue
+chosen=A by minimum distance
+
+NODE model: Fisher information changes coordinates by pullback
+==============================================================
+I(theta)=1/theta^2 at theta=1.7: 0.346020761246
+I(phi=log theta) via pullback: 1.0
+The component changes; the line element is the invariant object.
+
+STEP 9 method 8: similar scaled-coordinate digamma recurrences
+======================================================================
+a=1: psi(s/a+1)-psi(s/a)=(0.0401697032394389448 - 0.231113361103621326j), a/s=(0.0401697032394389448 - 0.231113361103621326j), (1/a)diff=(0.0401697032394389448 - 0.231113361103621326j), 1/s=(0.0401697032394389448 - 0.231113361103621326j), err=0.0
+a=2: psi(s/a+1)-psi(s/a)=(0.0803394064788778896 - 0.462226722207242653j), a/s=(0.0803394064788778896 - 0.462226722207242653j), (1/a)diff=(0.0401697032394389448 - 0.231113361103621326j), 1/s=(0.0401697032394389448 - 0.231113361103621326j), err=2.7167e-82
+a=3: psi(s/a+1)-psi(s/a)=(0.120509109718316834 - 0.693340083310863979j), a/s=(0.120509109718316834 - 0.693340083310863979j), (1/a)diff=(0.0401697032394389426 - 0.231113361103621313j), 1/s=(0.0401697032394389448 - 0.231113361103621326j), err=1.3022e-17
+a=5: psi(s/a+1)-psi(s/a)=(0.200848516197194724 - 1.15556680551810663j), a/s=(0.200848516197194724 - 1.15556680551810663j), (1/a)diff=(0.040169703239438947 - 0.231113361103621339j), 1/s=(0.0401697032394389448 - 0.231113361103621326j), err=1.3022e-17
+
+Interpretation:
+The coefficient 2/s in GA2 is the s-coordinate expression of the unit-step recurrence in z=s/2. The invariant archimedean compatibility is already the log-derivative of the Gamma_R shift multiplier: 1/2*(psi(s/2+1)-psi(s/2)) = d_s log(s/2pi) = 1/s.

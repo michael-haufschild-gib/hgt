@@ -1,0 +1,25 @@
+NODE: spatially correlated environments erase metapopulation rescue
+rho all_extinct any_survives mean_survivor_patches
+0.00 0.9067 0.0933 0.101
+0.35 0.9113 0.0887 0.097
+0.70 0.9307 0.0693 0.086
+0.92 0.9550 0.0450 0.086
+constraint: patch replication only supplies rescue when failures are not driven by one common environment
+
+TRANSFER: ResearchNode #6 two axes at the divisor
+same-geometry fake ladder: translate all zero ordinates by delta; gap and pair geometry are preserved, prime-log arithmetic changes
+delta geometry_l2 arithmetic_l2 resonance_rate_vector
+00.0 0.000e+00 0.000000 [0.0091,0.0136,0.0091,0.0136,0.0091,0.0091]
+00.1 5.102e-15 0.033013 [0.0091,0.0091,0.0091,0.0227,0.0182,0.0045]
+00.5 0.000e+00 0.245620 [0.0182,0.0227,0.0227,0.0273,0.0273,0.0364]
+01.0 0.000e+00 0.679810 [0.0318,0.0227,0.0409,0.0318,0.0455,0.0545]
+02.0 0.000e+00 0.715706 [0.0364,0.0318,0.0227,0.0591,0.0455,0.0182]
+03.0 4.441e-16 0.528721 [0.0364,0.0182,0.0273,0.0227,0.0318,0.0182]
+05.0 1.776e-15 0.588732 [0.0318,0.0136,0.0318,0.0182,0.0091,0.0045]
+08.0 3.972e-15 0.616723 [0.0364,0.0182,0.0273,0.0227,0.0091,0.0273]
+13.0 3.972e-15 0.573142 [0.0409,0.0409,0.0455,0.0318,0.0182,0.0364]
+random_shift_arithmetic_l2_quantiles [0.039282 0.525466 0.60736  0.696836 0.829579 0.843281]
+
+GATE SUMMARY
+divisor-geometry tests are common-environment coupled: many windows can agree because they share the same zero geometry
+a value-axis detector must include a same-geometry/different-arithmetic fake ladder; otherwise divisor geometry is being mistaken for divisor arithmetic

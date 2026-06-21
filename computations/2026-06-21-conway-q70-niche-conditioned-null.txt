@@ -1,0 +1,14 @@
+NODE: extrinsic niche variation can be mistaken for intrinsic stochastic fate choice
+NODE_ROW raw_niche_var=0.07805 shuffled_var=0.00831 raw_over_shuffle=9.39
+
+TRANSFER: ResearchNode 23 q70 association gate
+method #23 classify boundary cases: raw q70 association vs time-count-conditioned niche null
+ROW true window=(100.0, 170.0) raw_top=1.43737 niche_null_mean=1.43311 niche_null_q95=1.43365 excess=+0.00426 above_q95=1 mean_active_lanes=2.700
+ROW true window=(500.0, 570.0) raw_top=1.35173 niche_null_mean=1.35128 niche_null_q95=1.35184 excess=+0.00045 above_q95=0 mean_active_lanes=2.700
+ROW true window=(900.0, 970.0) raw_top=1.37939 niche_null_mean=1.37751 niche_null_q95=1.37820 excess=+0.00188 above_q95=1 mean_active_lanes=2.700
+ROW finite window=(100.0, 170.0) raw_top=1.04971 niche_null_mean=1.04218 niche_null_q95=1.04385 excess=+0.00753 above_q95=1 mean_active_lanes=2.700
+ROW finite window=(500.0, 570.0) raw_top=1.22571 niche_null_mean=1.21797 niche_null_q95=1.21952 excess=+0.00774 above_q95=1 mean_active_lanes=2.700
+ROW finite window=(900.0, 970.0) raw_top=1.29551 niche_null_mean=1.29104 niche_null_q95=1.29220 excess=+0.00447 above_q95=1 mean_active_lanes=2.700
+ROW random window=(100.0, 170.0) raw_top=0.06803 niche_null_mean=0.07246 niche_null_q95=0.09671 excess=-0.00443 above_q95=0 mean_active_lanes=2.700
+ROW random window=(500.0, 570.0) raw_top=0.06136 niche_null_mean=0.07346 niche_null_q95=0.09809 excess=-0.01210 above_q95=0 mean_active_lanes=2.700
+ROW random window=(900.0, 970.0) raw_top=0.08803 niche_null_mean=0.07524 niche_null_q95=0.09788 excess=+0.01279 above_q95=0 mean_active_lanes=2.700

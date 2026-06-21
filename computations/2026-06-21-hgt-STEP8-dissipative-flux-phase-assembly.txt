@@ -1,0 +1,27 @@
+STEP8/9 continuous phase-flux assembly
+samples=360 prime_count=180
+kind sigma window flux_med flux_q90 continuous cutoff_tail cutoff_ratio shuffled
+true   0.3 [100,170] flux_med=0.4233 flux_q90=1.2680 continuous=5.3876 cutoff_tail=0.0162 cutoff_ratio=0.0030 shuffled=4.8073
+finite 0.3 [100,170] flux_med=0.0069 flux_q90=0.2851 continuous=2.1744 cutoff_tail=0.0066 cutoff_ratio=0.0031 shuffled=1.6637
+random 0.3 [100,170] flux_med=0.0000 flux_q90=0.6138 continuous=4.1903 cutoff_tail=0.0237 cutoff_ratio=0.0057 shuffled=4.9044
+true   0.3 [500,570] flux_med=0.5265 flux_q90=1.1468 continuous=4.3781 cutoff_tail=0.0121 cutoff_ratio=0.0028 shuffled=4.3405
+finite 0.3 [500,570] flux_med=0.0000 flux_q90=0.2414 continuous=2.6042 cutoff_tail=0.0045 cutoff_ratio=0.0017 shuffled=1.6649
+random 0.3 [500,570] flux_med=0.0000 flux_q90=0.6595 continuous=4.1181 cutoff_tail=0.0149 cutoff_ratio=0.0036 shuffled=3.3675
+true   0.5 [100,170] flux_med=0.2403 flux_q90=1.6665 continuous=10.7656 cutoff_tail=0.0269 cutoff_ratio=0.0025 shuffled=8.1363
+finite 0.5 [100,170] flux_med=0.0210 flux_q90=0.8153 continuous=5.3777 cutoff_tail=0.0167 cutoff_ratio=0.0031 shuffled=5.8187
+random 0.5 [100,170] flux_med=0.0000 flux_q90=0.6813 continuous=4.9352 cutoff_tail=0.0158 cutoff_ratio=0.0032 shuffled=3.8562
+true   0.5 [500,570] flux_med=0.2973 flux_q90=1.8289 continuous=9.8749 cutoff_tail=0.0331 cutoff_ratio=0.0033 shuffled=11.8425
+finite 0.5 [500,570] flux_med=0.0000 flux_q90=0.7360 continuous=6.3827 cutoff_tail=0.0162 cutoff_ratio=0.0025 shuffled=6.2209
+random 0.5 [500,570] flux_med=0.0000 flux_q90=0.7215 continuous=4.5858 cutoff_tail=0.0148 cutoff_ratio=0.0032 shuffled=3.3209
+true   0.7 [100,170] flux_med=0.0189 flux_q90=1.0170 continuous=6.4981 cutoff_tail=0.0210 cutoff_ratio=0.0032 shuffled=6.2769
+finite 0.7 [100,170] flux_med=0.0000 flux_q90=1.1433 continuous=7.1517 cutoff_tail=0.0227 cutoff_ratio=0.0032 shuffled=7.5350
+random 0.7 [100,170] flux_med=0.0000 flux_q90=0.8213 continuous=5.5523 cutoff_tail=0.0162 cutoff_ratio=0.0029 shuffled=7.5470
+true   0.7 [500,570] flux_med=0.0000 flux_q90=0.8670 continuous=6.1594 cutoff_tail=0.0167 cutoff_ratio=0.0027 shuffled=5.7562
+finite 0.7 [500,570] flux_med=0.0000 flux_q90=0.9817 continuous=6.2249 cutoff_tail=0.0174 cutoff_ratio=0.0028 shuffled=5.5370
+random 0.7 [500,570] flux_med=0.0000 flux_q90=0.9541 continuous=8.0498 cutoff_tail=0.0136 cutoff_ratio=0.0017 shuffled=7.1851
+true   1.2 [100,170] flux_med=0.0000 flux_q90=0.3494 continuous=1.9465 cutoff_tail=0.0092 cutoff_ratio=0.0047 shuffled=2.2081
+finite 1.2 [100,170] flux_med=0.0000 flux_q90=0.3571 continuous=1.9504 cutoff_tail=0.0092 cutoff_ratio=0.0047 shuffled=2.2115
+random 1.2 [100,170] flux_med=0.0000 flux_q90=0.3693 continuous=2.4081 cutoff_tail=0.0098 cutoff_ratio=0.0041 shuffled=2.4357
+true   1.2 [500,570] flux_med=0.0000 flux_q90=0.2804 continuous=1.7351 cutoff_tail=0.0034 cutoff_ratio=0.0019 shuffled=1.5047
+finite 1.2 [500,570] flux_med=0.0000 flux_q90=0.2804 continuous=1.7318 cutoff_tail=0.0034 cutoff_ratio=0.0020 shuffled=1.4977
+random 1.2 [500,570] flux_med=0.0000 flux_q90=0.2376 continuous=1.2846 cutoff_tail=0.0035 cutoff_ratio=0.0027 shuffled=1.6357

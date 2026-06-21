@@ -1,0 +1,26 @@
+
+Step 8 transfer attempts
+------------------------
+A: distance=42 :: cycle reset changes conserved level to test seam origin reset
+B: distance=44 :: off center recentering breaks FE pair folding in w coordinate
+C: distance=51 :: rare shock in orbit becomes shifted seam coordinate c not equal one half
+chosen=A, distance=42
+
+NODE test: rare shock jumps the Lotka-Volterra invariant
+--------------------------------------------------------
+unshocked invariant range: min=1.709152834023 max=1.709152834448 drift=4.249e-10
+shock invariant: before=1.709152834315 after=1.360764252996 jump=-0.348389
+post-shock full-run invariant range: min=1.360764252995 max=1.709152834448
+
+Bridge transfer: resetting the seam center breaks FE folding
+------------------------------------------------------------
+eps=+0.000 |y_plus-y_minus|=0.000000e+00 formula_error=0.000e+00 odd1=+0.000000e+00+0.00e+00i odd3=+0.000000e+00+0.00e+00i
+eps=+0.010 |y_plus-y_minus|=1.417296e-05 formula_error=1.114e-18 odd1=-2.000000e-02+0.00e+00i odd3=+1.197624e+01-3.90e-01i
+eps=+0.050 |y_plus-y_minus|=7.086309e-05 formula_error=6.581e-19 odd1=-1.000000e-01+0.00e+00i odd3=+5.988095e+01-1.95e+00i
+eps=-0.050 |y_plus-y_minus|=7.086309e-05 formula_error=6.581e-19 odd1=+1.000000e-01+0.00e+00i odd3=-5.988095e+01+1.95e+00i
+
+Weakened theorem
+----------------
+For a nonzero FE pair +/-w, the shifted-center reciprocal atoms -(w-eps)^(-2) and -(-w-eps)^(-2) are equal iff eps=0. The same condition makes all odd centered pair sums vanish.
+Thus w=rho-1/2 is not a resettable origin for the bridge coordinate; it is forced by the FE fixed seam.
+verdict_hint: likely reduce-to-known via FE centered parity / Xi(w) even, unless treated as a separate bridge-coordinate guardrail.

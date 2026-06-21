@@ -1,0 +1,17 @@
+HD1 P_1 finite-part audit
+============================================
+P_1^Had = -b = 1 + gamma/2 - log(2 sqrt(pi))
+           0.0230957089661210338143102479065
+
+N   paired partial sum 2 Re(1/rho_n)      abs partial sum 2|1/rho_n|
+  5    0.01086019272025038626122139017      0.442913069462892537075584337
+ 10    0.01353519954423225882125720459     0.6729902549749735831316844094
+ 20     0.0159593677567823733489868469     0.9821318224869941490855601736
+ 50    0.01854194445661436497859507708      1.530368653297602712002633613
+100    0.01998485240392380530030045023      2.062165472477434051250106609
+
+Read:
+  The paired symmetric sum drifts toward the finite part.
+  The unpaired absolute sum keeps growing, so P_1 is not an
+  ordinary absolutely convergent zero sum.
+  For k >= 2, dyadic zero counting gives absolute convergence.

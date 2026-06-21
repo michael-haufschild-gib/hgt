@@ -1,0 +1,16 @@
+NODE test: null-set modification of an irrational rotation
+T(x)=x+alpha mod 1; T'(0)=0 and T'(x)=T(x) otherwise
+The maps differ only at one point, but the orbit of that point changes.
+
+x0=0.00000
+  first five original=[0.0, 0.6180339887498949, 0.2360679774997898, 0.8541019662496847, 0.4721359549995796]
+  first five modified=[0.0, 0.0, 0.0, 0.0, 0.0]
+  bin-count L1 difference per sample=1.899000
+  occupied_bins original=20 modified=1
+
+x0=0.12345
+  first five original=[0.12345, 0.741483988749895, 0.35951797749978986, 0.9775519662496848, 0.5955859549995797]
+  first five modified=[0.12345, 0.741483988749895, 0.35951797749978986, 0.9775519662496848, 0.5955859549995797]
+  bin-count L1 difference per sample=0.000000
+  occupied_bins original=20 modified=20
+

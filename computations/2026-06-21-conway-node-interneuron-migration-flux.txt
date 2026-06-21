@@ -1,0 +1,32 @@
+NODE: interneuron migration affects local density and tissue organization
+Constraint tested: equal total cell input does not determine local organization without flux/retention.
+
+case: local_growth_only_same_total
+  total_mass=1.000000000000
+  center_of_mass=0.500000
+  max_density=1.000000
+  roughness=0.000000
+  peak_count=0
+
+case: migration_anterior_retention
+  total_mass=1.000000000000
+  center_of_mass=0.280244
+  max_density=6.761507
+  roughness=832.982669
+  peak_count=1
+
+case: migration_posterior_retention
+  total_mass=1.000000000000
+  center_of_mass=0.560069
+  max_density=5.007746
+  roughness=456.991803
+  peak_count=1
+
+case: migration_dual_retention
+  total_mass=1.000000000000
+  center_of_mass=0.399987
+  max_density=5.290152
+  roughness=725.037517
+  peak_count=2
+
+conclusion: matching total density is insufficient; migratory flux plus stopping profile constrains organization.

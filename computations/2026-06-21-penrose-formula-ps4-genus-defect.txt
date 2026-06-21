@@ -1,0 +1,43 @@
+
+Step 8 transfer attempts
+------------------------
+A: distance=53 :: test singularity delta between arithmetic and geometric genus for Li binomial transform
+B: distance=52 :: test full versus truncated power sums as arithmetic versus geometric chart
+C: distance=53 :: test normalization defect correction before applying Li positivity
+chosen=B, distance=52, research_node=PS4 lambda_n = -sum C(n,j)(-1)^j P_j
+
+NODE constraint: genus defect
+-----------------------------
+smooth cubic             degree=3 p_a=1 sum_delta=0 g=1
+nodal cubic              degree=3 p_a=1 sum_delta=1 g=0
+cuspidal cubic           degree=3 p_a=1 sum_delta=1 g=0
+quartic with two nodes   degree=4 p_a=3 sum_delta=2 g=1
+quartic with one node    degree=4 p_a=3 sum_delta=1 g=2
+constraint_check: same p_a can hide different local defects; normalization/geometric genus needs the defect subtraction.
+
+PS4 single-coordinate defect propagation
+----------------------------------------
+n= 1 delta_lambda=   0 formula_ok=True
+n= 2 delta_lambda=   0 formula_ok=True
+n= 3 delta_lambda=   1 formula_ok=True
+n= 4 delta_lambda=   4 formula_ok=True
+n= 5 delta_lambda=  10 formula_ok=True
+n= 6 delta_lambda=  20 formula_ok=True
+n= 7 delta_lambda=  35 formula_ok=True
+n= 8 delta_lambda=  56 formula_ok=True
+n= 9 delta_lambda=  84 formula_ok=True
+n=10 delta_lambda= 120 formula_ok=True
+n=11 delta_lambda= 165 formula_ok=True
+n=12 delta_lambda= 220 formula_ok=True
+exact_rule: delta P_m changes all lambda_n with n>=m by (-1)^(m+1) binom(n,m) delta.
+
+Method 22: nearby false statements
+----------------------------------
+false_1: a defect in P_m affects only lambda_m :: counterexample diffs n=1..8 = ['0', '0', '1', '4', '10', '20', '35', '56']
+false_2: a finite Li window rules out hidden higher P defects :: lambda_1..lambda_8 diffs = ['0', '0', '0', '0', '0', '0', '0', '0'], lambda_9 diff = 5
+false_3: the sign of a P_m defect alternates with n :: for fixed m=3, signs stay ['+', '+', '+', '+', '+', '+', '+', '+']
+
+Interpretation
+--------------
+The NODE analogy is real but elementary: local genus defects must be subtracted before comparing arithmetic and geometric genus; likewise a missing P_m correction must be fixed before PS4/Li positivity is read. PS4 then spreads the defect nonlocally across the Li tail.
+novelty_check: this is a direct corollary of the already banked triangular Li/secular transform and is close to the existing PS4 HD3 gauge-ghost-power-sums card. Verdict: reduce-to-known unless a future node supplies a source-built, non-gauge defect.

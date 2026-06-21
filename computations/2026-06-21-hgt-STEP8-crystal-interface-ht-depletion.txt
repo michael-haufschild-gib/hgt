@@ -1,0 +1,17 @@
+STEP8 three HT-transfer attempts by Levenshtein from NODE test
+attempt=bulk-interface-strip     levenshtein= 42 normalized=0.3206 SELECTED
+attempt=zero-boundary-layer      levenshtein= 80 normalized=0.6250 rejected
+attempt=prime-diffusion-depletion levenshtein= 89 normalized=0.7236 rejected
+
+STEP8/9 crystal interface-depletion HT transfer
+method=15 strengthen-the-conjecture; require side-specific interface/bulk asymmetry, not a raw ratio
+finite_prime_count=160
+kind window left_ratio left_depleted left_enriched center_ratio right_ratio right_depleted
+gamma-only   [100,170] 1.000188 0.000000 0.000000 1.000000 0.999813 0.000000
+true-zeta    [100,170] 2.039604 0.044444 0.616667 0.932642 0.000000 0.788889
+finite-euler [100,170] 0.000000 0.805556 0.138889 0.000000 0.000000 0.633333
+random-phase [100,170] 0.000000 0.700000 0.227778 0.000000 0.000000 0.694444
+gamma-only   [500,570] 1.000023 0.000000 0.000000 1.000000 0.999977 0.000000
+true-zeta    [500,570] 1.832676 0.005556 0.688889 0.936575 0.000000 0.900000
+finite-euler [500,570] 0.000000 0.811111 0.100000 0.000000 0.000000 0.705556
+random-phase [500,570] 0.000000 0.711111 0.233333 0.000000 0.000000 0.616667

@@ -1,0 +1,27 @@
+STEP8 transfer attempts by Levenshtein distance
+functional-equation-return-point   distance=53 normalized=0.7067
+prime-cutoff-coercivity            distance=57 normalized=0.7600
+strip-minor-loop-reversal          distance=63 normalized=0.8400
+selected=functional-equation-return-point
+
+STEP9 method #10: test extreme cases
+selected branch: completed functional-equation return point under sigma reversal
+residual = median_t log(1 + |L(s) + L(1-s)|) for completed log-derivative variants
+kind window major_med major_q90 minor_med minor_q90 minor_lookup_rmse sigma_half_return
+true-completed     [14,54] 0.00000001 0.00000001 0.00000001 0.00000001 0.00000000 0.00000001
+finite-completed   [14,54] 1.60993613 2.73327529 1.74873224 2.56319935 0.04228856 1.20530150
+ampmatched-finite  [14,54] 0.70894908 0.95137180 0.76642324 0.91107344 0.01488713 0.47309781
+random-phase       [14,54] 1.19623597 1.28062975 1.20554406 1.27559719 0.12373279 1.03676157
+gamma-only         [14,54] 0.98880263 0.98882833 0.98880517 0.98882379 0.00000139 0.98879684
+true-completed     [100,140] 0.00000004 0.00000004 0.00000004 0.00000004 0.00000000 0.00000004
+finite-completed   [100,140] 2.17462484 2.96229814 2.26896908 2.82361919 0.05306581 1.68512302
+ampmatched-finite  [100,140] 1.61387724 1.62368870 1.60066015 1.61065693 0.00485492 1.62368870
+random-phase       [100,140] 1.67016364 1.79108562 1.67465021 1.81802577 0.14917258 1.55513314
+gamma-only         [100,140] 1.37360923 1.37361040 1.37360934 1.37361019 0.00000006 1.37360896
+true-completed     [500,540] 0.00000014 0.00000015 0.00000014 0.00000015 0.00000000 0.00000014
+finite-completed   [500,540] 2.09532607 3.01296995 2.10483808 2.82753615 0.09373077 2.03078168
+ampmatched-finite  [500,540] 2.15510755 2.16022890 2.14979514 2.15506729 0.02790567 2.15510755
+random-phase       [500,540] 2.00758303 2.15254221 2.00032565 2.09153207 0.16633472 1.95188381
+gamma-only         [500,540] 1.68934830 1.68934834 1.68934831 1.68934834 0.00000000 1.68934829
+
+Interpretation key: if the selected transfer only says the completed true object has near-zero FE mirror residual while finite/random/gamma controls do not, it reduces to the known functional equation and is not a new minor-loop memory invariant.

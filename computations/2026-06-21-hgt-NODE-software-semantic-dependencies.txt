@@ -1,0 +1,6 @@
+NODE: semantic dependencies can dominate package imports
+mutated_modules import_closure_q50 import_closure_q90 semantic_closure_q50 semantic_closure_q90 silent_semantic_ratio_q50
+              1           1.000000           3.000000             74.000000             78.000000                 69.000000
+              2           3.000000           6.000000             74.000000             78.000000                 24.333333
+              4           6.000000           9.000000             75.000000             78.000000                 11.666667
+              8          11.000000          16.000000             75.000000             78.000000                  5.454545

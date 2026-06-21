@@ -1,0 +1,9 @@
+Step 9 method 7: stripped rare-event detector
+miss probability = (1-p)^N ~= exp(-N p); only Np matters
+Np= 0.01  miss≈9.900498e-01  hit≈9.950166e-03
+Np= 0.10  miss≈9.048374e-01  hit≈9.516258e-02
+Np= 1.00  miss≈3.678794e-01  hit≈6.321206e-01
+Np= 3.00  miss≈4.978707e-02  hit≈9.502129e-01
+Np=10.00  miss≈4.539993e-05  hit≈9.999546e-01
+Np=30.00  miss≈9.357623e-14  hit≈1.000000e+00
+95 percent hit requires Np≈ 2.995732273553991

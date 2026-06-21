@@ -1,0 +1,30 @@
+AFFINE PASSPORT VS GENERATED LATTICE INDEX
+passport P(S)=(|S|, sum S); invariant tested: index of <S-S> in Z^2
+
+grid=[0,2]^2 size=3
+  mixed passport fibers: 21
+  first mixed passport: (3, (1, 2)); fiber size=2
+    signature=('rank2_index', 1): ((0, 0), (0, 1), (1, 1))
+    signature=('rank2_index', 2): ((0, 0), (0, 2), (1, 0))
+
+grid=[0,3]^2 size=3
+  mixed passport fibers: 60
+  first mixed passport: (3, (1, 2)); fiber size=2
+    signature=('rank2_index', 1): ((0, 0), (0, 1), (1, 1))
+    signature=('rank2_index', 2): ((0, 0), (0, 2), (1, 0))
+
+grid=[0,3]^2 size=4
+  mixed passport fibers: 77
+  first mixed passport: (4, (2, 3)); fiber size=3
+    signature=('rank2_index', 1): ((0, 0), (0, 1), (1, 0), (1, 2))
+    signature=('rank2_index', 2): ((0, 0), (0, 1), (0, 2), (2, 0))
+
+explicit same-passport witness in [0,2]^2:
+  P=(3, (1, 2)), signature=('rank2_index', 1), S=((0, 0), (0, 1), (1, 1))
+    generator matrix columns=[(0, 1), (1, 1)]
+    nonzero 2x2 minors=[-1]
+    orbit on (Z/2Z)^2=[(0, 0), (0, 1), (1, 0), (1, 1)]
+  P=(3, (1, 2)), signature=('rank2_index', 2), S=((0, 0), (0, 2), (1, 0))
+    generator matrix columns=[(0, 2), (1, 0)]
+    nonzero 2x2 minors=[-2]
+    orbit on (Z/2Z)^2=[(0, 0), (1, 0)]

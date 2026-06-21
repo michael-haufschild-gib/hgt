@@ -1,0 +1,12 @@
+c[n,1] = n**2
+c[n,2] = -n**2*(n**2 + 2)/12
+
+Checks against direct Taylor expansion:
+n=1: c1=1, formula=1, c2=-1/4, formula=-1/4
+n=2: c1=4, formula=4, c2=-2, formula=-2
+n=3: c1=9, formula=9, c2=-33/4, formula=-33/4
+n=4: c1=16, formula=16, c2=-24, formula=-24
+n=5: c1=25, formula=25, c2=-225/4, formula=-225/4
+n=6: c1=36, formula=36, c2=-114, formula=-114
+n=7: c1=49, formula=49, c2=-833/4, formula=-833/4
+n=8: c1=64, formula=64, c2=-352, formula=-352

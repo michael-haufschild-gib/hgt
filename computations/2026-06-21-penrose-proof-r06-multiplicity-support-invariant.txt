@@ -1,0 +1,22 @@
+NODE invariant: same distinct spectrum, different multiplicities
+support: (1, 3)
+multiplicities A: (1, 1)
+multiplicities B: (2, 1)
+spectral moments A: [2, 4, 10, 28, 82, 244]
+spectral moments B: [3, 5, 11, 29, 83, 245]
+
+Step 8 transfer attempts by Levenshtein distance
+reciprocal_moment_weights: 50
+heat_trace_coefficients: 67
+projection_rank_kernel: 73
+chosen_transfer: reciprocal_moment_weights
+
+Transferred invariant: same reciprocal support, different divisor weights
+support: {1, -1/2+i, -1/2-i}; real atom weight fixed at 2
+pair_weight=1
+{'moments': ['4', '1', '1/2', '19/4'], 'H0': [['4', '1'], ['1', '1/2']], 'H1': [['1', '1/2'], ['1/2', '19/4']], 'det_H0': '1', 'det_H1': '9/2', 'eig_H0': [0.2344355629253626, 4.265564437074637], 'eig_H1': [0.934478162967497, 4.815521837032503], 'PSD_pair': True}
+pair_weight=2
+{'moments': ['6', '0', '-1', '15/2'], 'H0': [['6', '0'], ['0', '-1']], 'H1': [['0', '-1'], ['-1', '15/2']], 'det_H0': '-6', 'det_H1': '-1', 'eig_H0': [-1.0, 6.0], 'eig_H1': [-0.13104367406500592, 7.6310436740650065], 'PSD_pair': False}
+
+Interpretation:
+The distinct support is invariant in both transferred cases, but changing only the conjugate-pair multiplicity flips the first shifted square-test status. With pair weight 1, both H0 and H1 are positive definite. With pair weight 2, both fail. Therefore the proof-route sums must retain the divisor multiplicities m_rho; support-only reciprocal data are not enough to certify Layer B positivity.

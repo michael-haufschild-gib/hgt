@@ -1,0 +1,11 @@
+NODE validation: backward ancestry is size-biased under survival conditioning
+All cases have comparable mean; variance should drive the backward-spine lift.
+case       mean variance survived capped direct_mean spine_mean theory_original theory_sizebiased
+binomial   mean=1.300 variance=0.878 survived=1299 capped=  0 direct_mean=1.2996 spine_mean=1.8927 theory_original=1.3000 theory_sizebiased=1.9750
+           TV(direct,original)=0.0013 TV(direct,sizebiased)=0.2994 TV(spine,original)=0.2602 TV(spine,sizebiased)=0.0396 lift=0.5927 theory_lift=0.6750
+poisson    mean=1.300 variance=1.300 survived=1075 capped=  0 direct_mean=1.3032 spine_mean=2.1652 theory_original=1.3000 theory_sizebiased=2.3000
+           TV(direct,original)=0.0021 TV(direct,sizebiased)=0.3536 TV(spine,original)=0.3050 TV(spine,sizebiased)=0.0493 lift=0.8652 theory_lift=1.0000
+geometric  mean=1.300 variance=2.990 survived= 570 capped=  0 direct_mean=1.3018 spine_mean=3.3180 theory_original=1.3000 theory_sizebiased=3.5988
+           TV(direct,original)=0.0036 TV(direct,sizebiased)=0.4907 TV(spine,original)=0.4669 TV(spine,sizebiased)=0.0520 lift=2.0181 theory_lift=2.3000
+
+Read: direct forward event samples stay near the original law, while terminal backward spines move toward the size-biased law. The lift tracks variance/mean, so survival-conditioned ancestry is an active constraint, not a cosmetic relabeling of forward growth.

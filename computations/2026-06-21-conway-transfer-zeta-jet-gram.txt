@@ -1,0 +1,24 @@
+Step 8 transfer: zeta/completed-xi derivative jet Gram
+sigma=0.6, t-window=[10.0, 30.0], samples=81, max_order=5
+
+pairwise absolute correlations:
+  1.000 0.449 0.097 0.148 0.184 0.200
+  0.449 1.000 0.737 0.599 0.591 0.625
+  0.097 0.737 1.000 0.933 0.866 0.851
+  0.148 0.599 0.933 1.000 0.975 0.945
+  0.184 0.591 0.866 0.975 1.000 0.989
+  0.200 0.625 0.851 0.945 0.989 1.000
+
+prefix Gram condition reports after per-jet normalization:
+  size min_eig max_eig condition det
+     2 +5.506038e-01 +1.449396e+00 2.632376e+00 +7.980430e-01
+     3 +1.732601e-01 +1.905805e+00 1.099968e+01 +3.040927e-01
+     4 +3.005949e-02 +2.610597e+00 8.684768e+01 +2.551701e-02
+     5 +3.673426e-03 +3.438138e+00 9.359488e+02 +3.972178e-04
+     6 +4.185550e-04 +4.334871e+00 1.035675e+04 +1.117415e-06
+
+nearby false shortcut:
+  max off-diagonal pairwise correlation=0.989045
+  full Gram min eigenvalue=4.185550e-04
+  full Gram condition=1.035675e+04
+  Pairwise checks see only correlations; multi-jet Gram sees closure/conditioning.

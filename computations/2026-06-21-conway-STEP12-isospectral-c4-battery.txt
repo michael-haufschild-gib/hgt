@@ -1,0 +1,13 @@
+STEP 12 isospectral C4 battery
+samples=260 finite_counts=[30, 80, 160, 320]
+case region true_eig shifted_eig fourier_eig random_eig max_finite_eig iso_gap finite_gap power_shift power_fourier adj_true xi_true span_true finite_eigs verdict
+critical_zeros critical 5.5882 0.5832 0.9966 0.2609 3.6116 4.5916 1.9766 3.76e-16 5.92e-16 0.9704 3.4542 6 N30:3.612,N80:3.469,N160:3.144,N320:2.835 1
+critical_low   critical 5.3875 0.6568 0.8154 0.1840 3.9020 4.5722 1.4855 4.77e-16 5.22e-16 0.9507 3.4737 6 N30:3.902,N80:3.178,N160:3.280,N320:2.982 1
+critical_mid   critical 5.4428 1.2527 0.5723 0.3275 3.9447 4.1901 1.4981 5.21e-16 5.10e-16 0.9573 3.4787 6 N30:3.945,N80:3.681,N160:3.114,N320:3.469 1
+critical_high  critical 5.2798 0.4947 0.4592 0.2322 3.8807 4.7850 1.3991 4.87e-16 7.11e-16 0.9304 3.4997 6 N30:3.881,N80:3.749,N160:3.571,N320:3.544 1
+right_low      right    5.8542 1.1172 0.9908 0.4949 5.8527 4.7370 0.0015 6.10e-16 3.91e-16 0.9969 3.4461 6 N30:5.816,N80:5.838,N160:5.848,N320:5.853 1
+right_high     right    5.7823 1.3829 0.6884 0.5128 5.7771 4.3993 0.0052 3.38e-16 5.38e-16 0.9955 3.4191 6 N30:5.752,N80:5.762,N160:5.773,N320:5.777 1
+
+CRITICAL_SURVIVAL 4/4
+RIGHT_FINITE_COLLAPSE_WITH_ISOSPECTRAL_BREAK 2/2
+Interpretation: C4 is not audible from lane scalar spectra. The isospectral lane surrogates preserve each lane's Fourier power but collapse the cross-sigma operator. The critical-strip finite-control gap remains, while on the right side finite Euler matches true even though isospectral surrogates still destroy the joint orientation.

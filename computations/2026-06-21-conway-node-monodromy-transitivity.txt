@@ -1,0 +1,23 @@
+NODE: monodromy transitivity is connectedness
+enumerated triples in S4 with product identity: 576
+number of local cycle-type profiles with both connected and disconnected examples: 1
+
+shared local cycle-type passport: ((3, 1), (3, 1), (3, 1))
+transitive example:
+  g1 type=(3, 1) (1->1 2->3 3->4 4->2)
+  g2 type=(3, 1) (1->2 2->4 3->3 4->1)
+  g3 type=(3, 1) (1->4 2->2 3->1 4->3)
+  product identity: True
+  generated group size=12 orbit_of_1=[1, 2, 3, 4]
+
+non-transitive example:
+  g1 type=(3, 1) (1->1 2->3 3->4 4->2)
+  g2 type=(3, 1) (1->1 2->3 3->4 4->2)
+  g3 type=(3, 1) (1->1 2->3 3->4 4->2)
+  product identity: True
+  generated group size=3 orbit_of_1=[1]
+
+Interpretation:
+  The local branch passport and product-one relation do not determine
+  connectedness.  The missing global constraint is transitivity of the
+  generated monodromy action on sheets.

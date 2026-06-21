@@ -1,0 +1,50 @@
+THE-MACHINE tick: observation sequence -> two-clock layer
+NODE: Bayesian updating still requires a defined observation sequence; ambiguous, interactive, or agent-dependent data streams need extra formalization
+Standing-order target: 30/32 Two-Clock Layer
+STEP 9 method: 16. Use a minimal counterexample
+STEP 5/6 NODE TEST: updating requires a data stream
+Constraint: if the next observation channel is chosen by an agent/policy, a posterior is not defined by the multiset of possible observations alone.
+sequence posterior
+A_plus_only_unspecified_next 0.750000
+A_plus_then_confirmatory_B 0.923077
+A_plus_then_adversarial_B 0.512195
+spread_from_sequence_choice 0.410882
+NODE verdict: the same first observation does not define the update once the stream is interactive. The observation sequence/policy is part of the model.
+
+STEP 7 FORMULA CHECK
+Solomonoff/Bayesian sequence formulas do not apply unchanged to two-clock HGT data. The transfer keeps only the constraint: the statistic must specify its observation sequence.
+
+STEP 8 LEVENSHTEIN TRANSFER CANDIDATES
+1. distance=102 normalized=0.7034: two-clock evidence needs an explicit observation sequence before updating the sign
+2. distance=104 normalized=0.7172: finite-prime gate and analytic tension are ambiguous data streams until sequenced
+3. distance=112 normalized=0.7724: agent-dependent sampling can flip a two-clock seam statistic unless counterexample-free
+chosen=1: two-clock evidence needs an explicit observation sequence before updating the sign
+
+STEP 9 METHOD 16: MINIMAL COUNTEREXAMPLE SEARCH
+Counterexample target: find a reasonable observation sequence in which the critical two-clock sign is not anti-timed, or the right-side sign is not synchronized.
+case region q uniform_corr gate_event_delta high_tension_gate_delta lag_min lag_max lag_absmax corr_absmax verdict
+critical_low_s03  critical 0.40 -0.1271 -0.2595 -0.0722 -0.2284 +0.2134 +02 -0.2284 0
+critical_low_s03  critical 0.50 -0.1746 -0.3492 -0.1222 -0.2782 +0.1968 +02 -0.2782 1
+critical_low_s03  critical 0.60 -0.1723 -0.3517 -0.1222 -0.2826 +0.1910 +02 -0.2826 1
+critical_low_s05  critical 0.40 -0.3014 -0.6152 -0.1944 -0.4709 +0.2525 +03 -0.4709 1
+critical_low_s05  critical 0.50 -0.3211 -0.6421 -0.2056 -0.5271 +0.2890 +03 -0.5271 1
+critical_low_s05  critical 0.60 -0.3376 -0.6892 -0.2222 -0.5377 +0.2925 +02 -0.5377 1
+critical_low_s07  critical 0.40 -0.1088 -0.2221 -0.0722 -0.2063 +0.1122 +04 -0.2063 0
+critical_low_s07  critical 0.50 -0.1201 -0.2401 -0.0722 -0.2054 +0.0840 +04 -0.2054 0
+critical_low_s07  critical 0.60 -0.1391 -0.2840 -0.0722 -0.2115 +0.0683 +03 -0.2115 0
+critical_high_s03 critical 0.40 -0.2303 -0.4702 -0.1722 -0.3725 +0.2001 +02 -0.3725 1
+critical_high_s03 critical 0.50 -0.2653 -0.5306 -0.2278 -0.4116 +0.2124 +02 -0.4116 1
+critical_high_s03 critical 0.60 -0.2539 -0.5183 -0.2167 -0.4204 +0.2187 +02 -0.4204 1
+critical_high_s05 critical 0.40 -0.3425 -0.6991 -0.2333 -0.5912 +0.3470 +03 -0.5912 1
+critical_high_s05 critical 0.50 -0.3829 -0.7659 -0.2889 -0.6243 +0.3743 +02 -0.6243 1
+critical_high_s05 critical 0.60 -0.3441 -0.7024 -0.2611 -0.6096 +0.3720 +02 -0.6096 1
+right_low_s12     right    0.40 +0.3131 +0.6391 +0.2944 +0.0680 +0.3834 +05 +0.3834 1
+right_low_s12     right    0.50 +0.3438 +0.6877 +0.3167 +0.0565 +0.4394 +05 +0.4394 1
+right_low_s12     right    0.60 +0.4079 +0.8325 +0.3556 +0.1124 +0.4883 +04 +0.4883 1
+right_high_s12    right    0.40 +0.2595 +0.5296 +0.2222 -0.0276 +0.3272 +05 +0.3272 1
+right_high_s12    right    0.50 +0.3009 +0.6017 +0.2611 -0.0151 +0.3712 +04 +0.3712 1
+right_high_s12    right    0.60 +0.3181 +0.6493 +0.2611 +0.0191 +0.4018 +05 +0.4018 1
+
+CRITICAL_SEQUENCE_SIGN_STABLE 11/15
+RIGHT_SEQUENCE_SIGN_STABLE 6/6
+Interpretation: passing means the two-clock sign is not merely an artifact of sampling at uniform clock time; gate-event and high-tension-event sequences see the same sign. Failure would be a minimal observation-sequence counterexample.

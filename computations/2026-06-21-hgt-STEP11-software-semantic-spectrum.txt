@@ -1,0 +1,11 @@
+STEP11 software semantic-dependency spectrum
+method=17 change-representation; closure graph -> Laplacian spectrum
+kind window edges components largest_component lambda2 lambda90
+gamma-only   [100,170] 554          2               100 0.000000 8.429839
+true-lambda  [100,170] 193         30                92 -0.000000 4.803730
+finite-euler [100,170] 171         74                91 -0.000000 4.784688
+random-phase [100,170] 263         33               161 -0.000000 6.015265
+gamma-only   [500,570] 554          2               100 0.000000 8.429839
+true-lambda  [500,570] 186         36                88 -0.000000 4.706229
+finite-euler [500,570] 184         72                55 -0.000000 5.436272
+random-phase [500,570] 226         53                77 -0.000000 5.393749

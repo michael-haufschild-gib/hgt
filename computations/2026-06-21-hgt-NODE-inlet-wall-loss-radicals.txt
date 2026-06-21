@@ -1,0 +1,34 @@
+NODE: wall loss and inlet chemistry bias atmospheric radical measurements
+columns: residence wall convert species median_ratio min_ratio max_ratio sign_flip_frac
+residence=0.02 wall=0.20 convert=0.00 OH  median_ratio=0.9685 min_ratio=0.9685 max_ratio=0.9685 sign_flip_frac=0.495
+residence=0.02 wall=0.20 convert=0.00 HO2 median_ratio=0.9916 min_ratio=0.9916 max_ratio=0.9916 sign_flip_frac=0.495
+residence=0.02 wall=0.20 convert=0.00 RO2 median_ratio=0.9944 min_ratio=0.9944 max_ratio=0.9944 sign_flip_frac=0.495
+residence=0.02 wall=0.20 convert=0.00 NO3 median_ratio=0.9822 min_ratio=0.9822 max_ratio=0.9822 sign_flip_frac=0.495
+summary residence=0.02 wall=0.20 convert=0.00 relative_error=0.0252 inlet_condition=1.0268
+residence=0.08 wall=0.20 convert=0.00 OH  median_ratio=0.8799 min_ratio=0.8799 max_ratio=0.8799 sign_flip_frac=0.495
+residence=0.08 wall=0.20 convert=0.00 HO2 median_ratio=0.9670 min_ratio=0.9670 max_ratio=0.9670 sign_flip_frac=0.495
+residence=0.08 wall=0.20 convert=0.00 RO2 median_ratio=0.9778 min_ratio=0.9778 max_ratio=0.9778 sign_flip_frac=0.495
+residence=0.08 wall=0.20 convert=0.00 NO3 median_ratio=0.9305 min_ratio=0.9305 max_ratio=0.9305 sign_flip_frac=0.495
+summary residence=0.08 wall=0.20 convert=0.00 relative_error=0.0963 inlet_condition=1.1114
+residence=0.20 wall=0.20 convert=0.00 OH  median_ratio=0.7261 min_ratio=0.7261 max_ratio=0.7261 sign_flip_frac=0.495
+residence=0.20 wall=0.20 convert=0.00 HO2 median_ratio=0.9194 min_ratio=0.9194 max_ratio=0.9194 sign_flip_frac=0.495
+residence=0.20 wall=0.20 convert=0.00 RO2 median_ratio=0.9455 min_ratio=0.9455 max_ratio=0.9455 sign_flip_frac=0.495
+residence=0.20 wall=0.20 convert=0.00 NO3 median_ratio=0.8353 min_ratio=0.8353 max_ratio=0.8353 sign_flip_frac=0.495
+summary residence=0.20 wall=0.20 convert=0.00 relative_error=0.2205 inlet_condition=1.3021
+residence=0.08 wall=0.20 convert=0.80 OH  median_ratio=0.9294 min_ratio=0.9155 max_ratio=1.1859 sign_flip_frac=0.680
+residence=0.08 wall=0.20 convert=0.80 HO2 median_ratio=1.0084 min_ratio=0.9969 max_ratio=1.0280 sign_flip_frac=0.402
+residence=0.08 wall=0.20 convert=0.80 RO2 median_ratio=0.9797 min_ratio=0.9783 max_ratio=1.1951 sign_flip_frac=0.804
+residence=0.08 wall=0.20 convert=0.80 NO3 median_ratio=0.9305 min_ratio=0.9305 max_ratio=0.9305 sign_flip_frac=0.495
+summary residence=0.08 wall=0.20 convert=0.80 relative_error=0.0663 inlet_condition=1.1592
+residence=0.20 wall=0.20 convert=0.80 OH  median_ratio=0.8408 min_ratio=0.8083 max_ratio=1.4285 sign_flip_frac=0.680
+residence=0.20 wall=0.20 convert=0.80 HO2 median_ratio=1.0218 min_ratio=0.9921 max_ratio=1.0643 sign_flip_frac=0.443
+residence=0.20 wall=0.20 convert=0.80 RO2 median_ratio=0.9497 min_ratio=0.9466 max_ratio=1.4518 sign_flip_frac=0.804
+residence=0.20 wall=0.20 convert=0.80 NO3 median_ratio=0.8353 min_ratio=0.8353 max_ratio=0.8353 sign_flip_frac=0.495
+summary residence=0.20 wall=0.20 convert=0.80 relative_error=0.1512 inlet_condition=1.4465
+residence=0.20 wall=0.60 convert=0.80 OH  median_ratio=0.4609 min_ratio=0.4389 max_ratio=0.8626 sign_flip_frac=0.495
+residence=0.20 wall=0.60 convert=0.80 HO2 median_ratio=0.8610 min_ratio=0.8349 max_ratio=0.8966 sign_flip_frac=0.495
+residence=0.20 wall=0.60 convert=0.80 RO2 median_ratio=0.8487 min_ratio=0.8462 max_ratio=1.2473 sign_flip_frac=0.629
+residence=0.20 wall=0.60 convert=0.80 NO3 median_ratio=0.5827 min_ratio=0.5827 max_ratio=0.5827 sign_flip_frac=0.495
+summary residence=0.20 wall=0.60 convert=0.80 relative_error=0.4519 inlet_condition=2.3169
+
+Interpretation: the instrument reports exp(A*tau) applied to ambient radicals, not the ambient state itself.

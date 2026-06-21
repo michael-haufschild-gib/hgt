@@ -1,0 +1,4 @@
+Rayleigh quotient: measured trace vs faithful negative index
+n= 10 trace=  8.999000 mean= 0.899900 var=0.09018009 lambda_min= -0.001000 inertia=(1, 0, 9) sample_min= +0.106544 negative_hits=0
+n= 50 trace= 48.999000 mean= 0.979980 var=0.01963922 lambda_min= -0.001000 inertia=(1, 0, 49) sample_min= +0.725190 negative_hits=0
+n=200 trace=198.999000 mean= 0.994995 var=0.00498495 lambda_min= -0.001000 inertia=(1, 0, 199) sample_min= +0.914057 negative_hits=0

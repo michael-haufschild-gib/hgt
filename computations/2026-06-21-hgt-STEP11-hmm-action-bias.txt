@@ -1,0 +1,39 @@
+STEP11 HMM action test, method 6 = ask what action is happening
+Action candidates: deleting events, merging events, or creating false persistence.
+columns: sigma kind blur events_before events_after on_before on_after dwell_before dwell_after transitions_before transitions_after action
+sigma=0.3 true         blur= 3 events_before= 31 events_after= 25 on_before=105 on_after= 98 dwell_before=3.39 dwell_after=3.92 transitions_before= 62 transitions_after= 50 action=delete
+sigma=0.3 true         blur= 7 events_before= 31 events_after= 15 on_before=105 on_after= 81 dwell_before=3.39 dwell_after=5.4 transitions_before= 62 transitions_after= 30 action=delete
+sigma=0.3 true         blur=13 events_before= 31 events_after=  4 on_before=105 on_after= 30 dwell_before=3.39 dwell_after=7.5 transitions_before= 62 transitions_after=  8 action=delete
+sigma=0.3 finite       blur= 3 events_before= 51 events_after= 30 on_before=105 on_after= 90 dwell_before=2.06 dwell_after=3 transitions_before=102 transitions_after= 60 action=delete
+sigma=0.3 finite       blur= 7 events_before= 51 events_after= 14 on_before=105 on_after= 85 dwell_before=2.06 dwell_after=6.07 transitions_before=102 transitions_after= 28 action=delete
+sigma=0.3 finite       blur=13 events_before= 51 events_after=  7 on_before=105 on_after= 87 dwell_before=2.06 dwell_after=12.4 transitions_before=102 transitions_after= 14 action=delete
+sigma=0.3 random-phase blur= 3 events_before= 78 events_after= 36 on_before=105 on_after=108 dwell_before=1.35 dwell_after=3 transitions_before=156 transitions_after= 72 action=merge
+sigma=0.3 random-phase blur= 7 events_before= 78 events_after= 20 on_before=105 on_after=111 dwell_before=1.35 dwell_after=5.55 transitions_before=156 transitions_after= 40 action=merge
+sigma=0.3 random-phase blur=13 events_before= 78 events_after= 15 on_before=105 on_after=103 dwell_before=1.35 dwell_after=6.87 transitions_before=156 transitions_after= 30 action=delete
+sigma=0.5 true         blur= 3 events_before= 34 events_after= 32 on_before=105 on_after=116 dwell_before=3.09 dwell_after=3.62 transitions_before= 68 transitions_after= 64 action=merge
+sigma=0.5 true         blur= 7 events_before= 34 events_after= 19 on_before=105 on_after=112 dwell_before=3.09 dwell_after=5.89 transitions_before= 68 transitions_after= 38 action=merge
+sigma=0.5 true         blur=13 events_before= 34 events_after=  8 on_before=105 on_after= 54 dwell_before=3.09 dwell_after=6.75 transitions_before= 68 transitions_after= 16 action=delete
+sigma=0.5 finite       blur= 3 events_before= 49 events_after= 29 on_before=105 on_after= 96 dwell_before=2.14 dwell_after=3.31 transitions_before= 98 transitions_after= 57 action=delete
+sigma=0.5 finite       blur= 7 events_before= 49 events_after= 16 on_before=105 on_after= 77 dwell_before=2.14 dwell_after=4.81 transitions_before= 98 transitions_after= 31 action=delete
+sigma=0.5 finite       blur=13 events_before= 49 events_after=  6 on_before=105 on_after= 58 dwell_before=2.14 dwell_after=9.67 transitions_before= 98 transitions_after= 12 action=delete
+sigma=0.5 random-phase blur= 3 events_before= 79 events_after= 46 on_before=105 on_after=152 dwell_before=1.33 dwell_after=3.3 transitions_before=158 transitions_after= 91 action=merge
+sigma=0.5 random-phase blur= 7 events_before= 79 events_after= 29 on_before=105 on_after=179 dwell_before=1.33 dwell_after=6.17 transitions_before=158 transitions_after= 57 action=merge
+sigma=0.5 random-phase blur=13 events_before= 79 events_after= 26 on_before=105 on_after=186 dwell_before=1.33 dwell_after=7.15 transitions_before=158 transitions_after= 52 action=merge
+sigma=0.7 true         blur= 3 events_before= 28 events_after= 22 on_before=105 on_after= 99 dwell_before=3.75 dwell_after=4.5 transitions_before= 55 transitions_after= 44 action=delete
+sigma=0.7 true         blur= 7 events_before= 28 events_after= 15 on_before=105 on_after= 85 dwell_before=3.75 dwell_after=5.67 transitions_before= 55 transitions_after= 30 action=delete
+sigma=0.7 true         blur=13 events_before= 28 events_after=  5 on_before=105 on_after= 47 dwell_before=3.75 dwell_after=9.4 transitions_before= 55 transitions_after= 10 action=delete
+sigma=0.7 finite       blur= 3 events_before= 36 events_after= 29 on_before=105 on_after=113 dwell_before=2.92 dwell_after=3.9 transitions_before= 71 transitions_after= 58 action=merge
+sigma=0.7 finite       blur= 7 events_before= 36 events_after= 15 on_before=105 on_after= 99 dwell_before=2.92 dwell_after=6.6 transitions_before= 71 transitions_after= 30 action=delete
+sigma=0.7 finite       blur=13 events_before= 36 events_after=  7 on_before=105 on_after= 59 dwell_before=2.92 dwell_after=8.43 transitions_before= 71 transitions_after= 14 action=delete
+sigma=0.7 random-phase blur= 3 events_before= 87 events_after= 41 on_before=105 on_after=147 dwell_before=1.21 dwell_after=3.59 transitions_before=172 transitions_after= 80 action=merge
+sigma=0.7 random-phase blur= 7 events_before= 87 events_after= 23 on_before=105 on_after=141 dwell_before=1.21 dwell_after=6.13 transitions_before=172 transitions_after= 45 action=merge
+sigma=0.7 random-phase blur=13 events_before= 87 events_after= 20 on_before=105 on_after=137 dwell_before=1.21 dwell_after=6.85 transitions_before=172 transitions_after= 40 action=merge
+sigma=1.2 true         blur= 3 events_before= 17 events_after= 16 on_before=105 on_after=101 dwell_before=6.18 dwell_after=6.31 transitions_before= 33 transitions_after= 31 action=delete
+sigma=1.2 true         blur= 7 events_before= 17 events_after= 13 on_before=105 on_after= 98 dwell_before=6.18 dwell_after=7.54 transitions_before= 33 transitions_after= 26 action=delete
+sigma=1.2 true         blur=13 events_before= 17 events_after=  7 on_before=105 on_after= 85 dwell_before=6.18 dwell_after=12.1 transitions_before= 33 transitions_after= 14 action=delete
+sigma=1.2 finite       blur= 3 events_before= 17 events_after= 17 on_before=105 on_after=102 dwell_before=6.18 dwell_after=6 transitions_before= 33 transitions_after= 33 action=mixed
+sigma=1.2 finite       blur= 7 events_before= 17 events_after= 13 on_before=105 on_after= 98 dwell_before=6.18 dwell_after=7.54 transitions_before= 33 transitions_after= 26 action=delete
+sigma=1.2 finite       blur=13 events_before= 17 events_after=  7 on_before=105 on_after= 84 dwell_before=6.18 dwell_after=12 transitions_before= 33 transitions_after= 14 action=delete
+sigma=1.2 random-phase blur= 3 events_before= 68 events_after= 30 on_before=105 on_after= 89 dwell_before=1.54 dwell_after=2.97 transitions_before=134 transitions_after= 59 action=delete
+sigma=1.2 random-phase blur= 7 events_before= 68 events_after= 14 on_before=105 on_after= 74 dwell_before=1.54 dwell_after=5.29 transitions_before=134 transitions_after= 28 action=delete
+sigma=1.2 random-phase blur=13 events_before= 68 events_after= 11 on_before=105 on_after= 66 dwell_before=1.54 dwell_after=6 transitions_before=134 transitions_after= 22 action=delete

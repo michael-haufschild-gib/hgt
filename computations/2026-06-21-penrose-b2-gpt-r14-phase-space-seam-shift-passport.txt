@@ -1,0 +1,35 @@
+NODE test: environment can shift a conical-intersection seam, not merely damp dynamics
+Model gap=2*damping*sqrt((x-shift)^2+y^2).
+
+env shift | true min x | damping-only min x | location error
+----------|------------|--------------------|---------------
+    -0.40 |     -0.400 |              0.000 |         0.400
+    -0.15 |     -0.150 |              0.000 |         0.150
+     0.00 |      0.000 |              0.000 |         0.000
+     0.25 |      0.250 |              0.000 |         0.250
+     0.55 |      0.550 |              0.000 |         0.550
+
+Step-12 follow-up: damping sweep at fixed shifted seam x=0.35
+damping | min x | min gap
+--------|-------|--------
+   1.00 | 0.350 | 2.220e-16
+   0.70 | 0.350 | 1.554e-16
+   0.40 | 0.350 | 8.882e-17
+   0.10 | 0.350 | 2.220e-17
+
+ResearchNode mutation: finite-prime phase as wrong momentum coordinate
+Assume canonical momentum p_true = p_prime + k*(sigma-1/2).
+
+sigma | required momentum shift | residual if p_prime used
+------|-------------------------|-------------------------
+ 0.50 |                0.000000 |                0.000000
+ 0.55 |                0.150000 |                0.150000
+ 0.65 |                0.450000 |                0.450000
+ 0.80 |                0.900000 |                0.900000
+ 1.00 |                1.500000 |                1.500000
+
+Finding:
+  The nearby false statement is 'environment only damps'. The seam-shift model
+  separates damping from coordinate displacement. A phase-space lift needs a
+  seam/momentum-shift passport across sigma lanes; otherwise finite-prime phase
+  can be the wrong momentum coordinate even when its amplitude trend looks useful.

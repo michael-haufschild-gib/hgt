@@ -1,0 +1,83 @@
+STEP8/9 phase-histogram identifiability transfer
+samples=420 prime_count=180
+Same marginal phase histogram is forced by quantile mapping; hidden transition statistics are then tested.
+
+CASE sigma=0.3 window=[100,170]
+series hist_js occupancy run_med run_q90 acf1 acf8 trans_entropy edge_events edge_soft_med edge_soft_mean
+true                 0.0000 0.500 6.0 9.6 +0.877 -0.400 0.917 69 18.76 376811615.30
+finite_raw           0.5729 0.036 1.0 2.0 +0.503 -0.047 0.500 22 1000000000.00 545454589.49
+random_raw           0.5066 0.152 1.0 2.0 +0.110 -0.051 0.877 98 1000000000.00 1040816333.68
+finite_histmatched   0.0000 0.500 3.0 5.0 +0.533 +0.030 1.055 119 1000000000.00 781512634.02
+random_histmatched   0.0000 0.500 1.0 3.0 +0.067 +0.051 1.165 170 1000000000.00 888235316.63
+true_shuffled        0.0000 0.500 1.0 3.8 -0.009 +0.008 1.380 224 1000000000.00 821428586.64
+dependency_chain hist_ok_finite=0.0000 hist_ok_random=0.0000 true_run_q90=9.6
+
+CASE sigma=0.3 window=[500,570]
+series hist_js occupancy run_med run_q90 acf1 acf8 trans_entropy edge_events edge_soft_med edge_soft_mean
+true                 0.0000 0.500 4.0 7.0 +0.813 +0.019 0.980 94 1000000000.00 659575417.76
+finite_raw           0.6997 0.033 2.0 2.0 +0.524 -0.011 0.250 18 1000000000.00 888888890.29
+random_raw           0.5787 0.148 1.0 2.0 +0.103 +0.012 0.836 94 1000000000.00 893617027.37
+finite_histmatched   0.0000 0.500 3.0 4.0 +0.556 +0.046 1.042 121 1000000000.00 785124030.10
+random_histmatched   0.0000 0.500 1.0 3.0 +0.138 +0.055 1.150 159 1000000000.00 918239001.65
+true_shuffled        0.0000 0.500 1.0 3.0 -0.089 -0.053 1.378 226 1000000000.00 845132747.85
+dependency_chain hist_ok_finite=0.0000 hist_ok_random=0.0000 true_run_q90=7.0
+
+CASE sigma=0.5 window=[100,170]
+series hist_js occupancy run_med run_q90 acf1 acf8 trans_entropy edge_events edge_soft_med edge_soft_mean
+true                 0.0000 0.500 6.0 9.6 +0.553 -0.264 0.752 69 14.91 275362328.35
+finite_raw           0.1914 0.357 2.5 5.1 +0.518 -0.118 0.729 99 59.98 545454625.27
+random_raw           0.2277 0.243 1.0 2.0 +0.153 +0.008 0.756 155 1000000000.00 1122580655.83
+finite_histmatched   0.0000 0.500 3.0 8.4 +0.508 -0.109 0.847 93 1000000000.00 559139866.72
+random_histmatched   0.0000 0.500 1.0 3.0 +0.112 +0.013 1.035 168 1000000000.00 845238115.81
+true_shuffled        0.0000 0.500 2.0 4.0 +0.058 +0.108 1.074 200 1000000000.00 875000014.36
+dependency_chain hist_ok_finite=0.0000 hist_ok_random=0.0000 true_run_q90=9.6
+
+CASE sigma=0.5 window=[500,570]
+series hist_js occupancy run_med run_q90 acf1 acf8 trans_entropy edge_events edge_soft_med edge_soft_mean
+true                 0.0000 0.500 4.0 7.1 +0.437 +0.202 1.081 100 14.82 460000004.40
+finite_raw           0.1992 0.319 2.0 6.0 +0.496 -0.001 0.943 96 1000000000.00 604166717.46
+random_raw           0.2471 0.205 1.0 2.0 +0.027 -0.011 1.032 144 1000000000.00 1076388901.02
+finite_histmatched   0.0000 0.500 3.0 7.0 +0.499 +0.011 0.925 89 1000000000.00 696629263.62
+random_histmatched   0.0000 0.500 1.0 3.0 +0.015 -0.033 1.122 163 1000000000.00 791411059.85
+true_shuffled        0.0000 0.500 1.0 4.0 -0.027 -0.078 1.384 207 1000000000.00 763285042.63
+dependency_chain hist_ok_finite=0.0000 hist_ok_random=0.0000 true_run_q90=7.1
+
+CASE sigma=0.7 window=[100,170]
+series hist_js occupancy run_med run_q90 acf1 acf8 trans_entropy edge_events edge_soft_med edge_soft_mean
+true                 0.0000 0.500 6.0 11.0 +0.860 -0.374 0.704 63 589.87 253968778.90
+finite_raw           0.1085 0.445 5.0 10.9 +0.545 -0.265 0.740 63 1794.70 428574644.48
+random_raw           0.1269 0.400 1.0 3.0 +0.108 +0.007 0.981 202 361.09 420792355.92
+finite_histmatched   0.0000 0.500 6.0 12.0 +0.657 -0.314 0.756 60 3626.22 416675064.11
+random_histmatched   0.0000 0.500 1.0 3.0 +0.093 +0.035 1.054 172 2797.96 494186131.39
+true_shuffled        0.0000 0.500 1.5 4.0 +0.049 -0.011 1.077 199 492.71 427135853.26
+dependency_chain hist_ok_finite=0.0000 hist_ok_random=0.0000 true_run_q90=11.0
+
+CASE sigma=0.7 window=[500,570]
+series hist_js occupancy run_med run_q90 acf1 acf8 trans_entropy edge_events edge_soft_med edge_soft_mean
+true                 0.0000 0.479 4.0 8.0 +0.797 -0.063 0.485 88 1662.79 420454983.66
+finite_raw           0.1432 0.395 3.0 7.9 +0.566 -0.046 0.507 84 812.84 380952783.80
+random_raw           0.1456 0.426 1.0 3.0 -0.081 -0.000 0.600 222 433.59 427928126.91
+finite_histmatched   0.0000 0.479 3.0 8.0 +0.638 -0.035 0.510 73 9839.46 493151057.48
+random_histmatched   0.0000 0.479 1.0 3.0 -0.083 -0.015 0.629 198 4374.51 494949570.19
+true_shuffled        0.0000 0.479 1.0 3.0 -0.093 +0.093 0.633 230 253.07 452173952.81
+dependency_chain hist_ok_finite=0.0000 hist_ok_random=0.0000 true_run_q90=8.0
+
+CASE sigma=1.2 window=[100,170]
+series hist_js occupancy run_med run_q90 acf1 acf8 trans_entropy edge_events edge_soft_med edge_soft_mean
+true                 0.0000 0.410 7.5 12.9 +0.940 -0.211 0.346 43 14907.23 302330961.00
+finite_raw           0.0382 0.407 7.5 12.9 +0.939 -0.213 0.347 43 10388.76 325586986.02
+random_raw           0.0962 0.426 1.0 3.0 +0.129 -0.042 0.615 207 2231.06 454106644.32
+finite_histmatched   0.0000 0.410 7.0 12.8 +0.939 -0.213 0.346 44 11915.67 318187633.58
+random_histmatched   0.0000 0.410 1.0 3.0 +0.129 -0.041 0.627 203 1566.02 443350178.08
+true_shuffled        0.0000 0.410 1.0 3.0 +0.059 +0.050 0.631 196 1456.08 448979947.87
+dependency_chain hist_ok_finite=0.0000 hist_ok_random=0.0000 true_run_q90=12.9
+
+CASE sigma=1.2 window=[500,570]
+series hist_js occupancy run_med run_q90 acf1 acf8 trans_entropy edge_events edge_soft_med edge_soft_mean
+true                 0.0000 0.383 6.0 11.9 +0.930 -0.168 0.363 44 14752.50 250015129.98
+finite_raw           0.0278 0.381 6.0 11.9 +0.929 -0.169 0.362 44 14155.73 250027058.26
+random_raw           0.1139 0.457 1.0 4.0 +0.167 +0.092 0.699 218 1496.70 412844783.88
+finite_histmatched   0.0000 0.383 6.0 11.8 +0.930 -0.169 0.363 45 16065.90 266689215.51
+random_histmatched   0.0000 0.383 1.0 3.0 +0.199 +0.097 0.631 204 2152.10 416668213.42
+true_shuffled        0.0000 0.383 1.0 3.0 -0.020 +0.039 0.631 200 1753.13 415001086.49
+dependency_chain hist_ok_finite=0.0000 hist_ok_random=0.0000 true_run_q90=11.9

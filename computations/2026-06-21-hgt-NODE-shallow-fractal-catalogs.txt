@@ -1,0 +1,41 @@
+NODE: shallow catalog depth can change inferred fractal scaling
+seed=20260621 n_points=180000 R_max=1000.0 fractal_D=2.0 transition_R=300.0
+criterion: finite-transition model should be depth-sensitive; pure controls should be depth-stable
+
+MODEL homogeneous
+depth=  90.0 n_obs=   139 D_all= 2.620 D_outer= 2.620 label_outer=transition
+depth= 150.0 n_obs=   611 D_all= 2.770 D_outer= 2.770 label_outer=homogeneous_like
+depth= 240.0 n_obs=  2466 D_all= 2.844 D_outer= 2.923 label_outer=homogeneous_like
+depth= 360.0 n_obs=  8412 D_all= 2.892 D_outer= 2.971 label_outer=homogeneous_like
+depth= 520.0 n_obs= 25427 D_all= 2.916 D_outer= 3.007 label_outer=homogeneous_like
+depth= 760.0 n_obs= 79359 D_all= 2.935 D_outer= 3.015 label_outer=homogeneous_like
+depth=1000.0 n_obs=180000 D_all= 2.971 D_outer= 3.008 label_outer=homogeneous_like
+depth_sensitivity_outer=0.238
+
+MODEL pure_fractal
+depth=  90.0 n_obs=  1448 D_all= 1.874 D_outer= 2.007 label_outer=fractal_like
+depth= 150.0 n_obs=  4036 D_all= 1.915 D_outer= 2.015 label_outer=fractal_like
+depth= 240.0 n_obs= 10483 D_all= 1.953 D_outer= 2.015 label_outer=fractal_like
+depth= 360.0 n_obs= 23378 D_all= 2.005 D_outer= 2.022 label_outer=fractal_like
+depth= 520.0 n_obs= 48714 D_all= 2.009 D_outer= 2.008 label_outer=fractal_like
+depth= 760.0 n_obs=103829 D_all= 2.009 D_outer= 1.993 label_outer=fractal_like
+depth=1000.0 n_obs=180000 D_all= 2.005 D_outer= 1.994 label_outer=fractal_like
+depth_sensitivity_outer=0.021
+
+MODEL finite_fractal_to_homogeneous
+depth=  90.0 n_obs=   424 D_all= 2.080 D_outer= 1.959 label_outer=fractal_like
+depth= 150.0 n_obs=  1145 D_all= 2.038 D_outer= 1.970 label_outer=fractal_like
+depth= 240.0 n_obs=  3063 D_all= 2.037 D_outer= 2.010 label_outer=fractal_like
+depth= 360.0 n_obs=  8392 D_all= 2.053 D_outer= 2.115 label_outer=fractal_like
+depth= 520.0 n_obs= 25345 D_all= 2.121 D_outer= 2.423 label_outer=transition
+depth= 760.0 n_obs= 79081 D_all= 2.285 D_outer= 2.768 label_outer=homogeneous_like
+depth=1000.0 n_obs=180000 D_all= 2.420 D_outer= 2.956 label_outer=homogeneous_like
+depth_sensitivity_outer=0.986
+
+TRANSITION SCALE SWEEP
+r_transition shallow_D_outer deep_D_outer sensitivity shallow_label deep_label
+       150.0           1.850        3.007       1.157 fractal_like  homogeneous_like
+       220.0           2.082        2.989       0.907 fractal_like  homogeneous_like
+       300.0           1.954        2.960       1.006 fractal_like  homogeneous_like
+       450.0           2.021        2.623       0.602 fractal_like  transition   
+       650.0           1.953        2.261       0.308 fractal_like  fractal_like 

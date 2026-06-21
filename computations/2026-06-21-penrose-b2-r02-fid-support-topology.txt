@@ -1,0 +1,23 @@
+NODE test: local self-avoidance versus global winding/topology
+  no_wind_square: self_avoiding=True min_nonadj_vertex_dist=2.828 winding_about_origin=0
+  wind_one_square: self_avoiding=True min_nonadj_vertex_dist=5.657 winding_about_origin=1
+  Local excluded-volume passes both; only winding sees the global constraint.
+
+ResearchNode mutation: FID integer divisor versus zero reciprocal-seam divisor
+  Stieltjes PSD check (small Hankel towers):
+    d=3: FID_min_eig=5.049e-04 zero_recip_min_eig=2.088e-13
+    d=4: FID_min_eig=1.144e-06 zero_recip_min_eig=1.005e-19
+    d=5: FID_min_eig=9.906e-10 zero_recip_min_eig=3.082e-26
+    d=6: FID_min_eig=3.933e-13 zero_recip_min_eig=7.561e-33
+  Endpoint/support ratio estimates m_{k+1}/m_k:
+    FID: 0.862628, 0.972439, 0.993712, 0.998489, 0.999629, 0.999908, 0.999977, 0.999994
+    zero: 1.728444e-03, 3.878666e-03, 4.598832e-03, 4.846924e-03, 4.940446e-03, 4.977866e-03, 4.993431e-03, 5.000074e-03
+  FID endpoint tends to 1 because the integer divisor has support point y=1.
+  zero endpoint tends to 1/gamma_1^2=5.005244e-03.
+  observed endpoint-compression factor at k=10: 199.831
+
+Finding:
+  FID positivity is local excluded-volume: it verifies that the integer-divisor moments are Stieltjes.
+  The zero divisor is also Stieltjes under RH, but it lives in a different support class: endpoint
+  near 1/gamma_1^2 rather than 1. A successor FID route therefore needs a support-transport
+  passport for the explicit-formula map, not another PSD check of zeta(odd).

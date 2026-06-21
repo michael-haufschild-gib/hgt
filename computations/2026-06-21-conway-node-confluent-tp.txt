@@ -1,0 +1,31 @@
+NODE: confluent determinant limit for K(x,y)=exp(x*y)
+ordered xs=[0.2, 0.8, 1.4, 2.1]
+coalescing y_j = 0.3 + eps*[0.0, 1.0, 2.0, 4.0]
+expected raw determinant exponent: eps^6
+confluent derivative determinant target: 2.401015947327024e-01
+
+eps det raw_det_abs normalized_det rel_error
+1.0e-01 +2.547780848798830e-05 2.547780848798830e-05 +5.307876768330897e-01 1.211e+00
+5.0e-02 +2.673556516339946e-07 2.673556516339946e-07 +3.564742021786591e-01 4.847e-01
+2.0e-02 +8.636113773272566e-10 8.636113773272566e-10 +2.811234952237165e-01 1.709e-01
+1.0e-02 +1.246987642564925e-11 1.246987642564925e-11 +2.597890922010261e-01 8.200e-02
+5.0e-03 +1.873108548466196e-13 1.873108548466196e-13 +2.497478064621582e-01 4.018e-02
+2.0e-03 +7.493028795438781e-16 7.493028795438781e-16 +2.439136977681882e-01 1.588e-02
+1.0e-03 +1.161599615293866e-17 1.161599615293866e-17 +2.419999198528874e-01 7.906e-03
+
+estimated log-log raw determinant slope: 6.149369
+
+exact duplicate-node check:
+  ys=[0.3, 0.3, 0.31, 0.32]
+  det=-9.051501719278473e-22
+
+ordering check:
+  raw ordered sign=+1
+  raw adjacent-swap sign=-1
+  normalized ordered=+2.419999198528874e-01
+  normalized adjacent-swap=+2.419999200179831e-01
+
+Interpretation:
+  Multiple nodes are not harmless duplicates.  The determinant collapses
+  exactly at the Vandermonde rate, and the sign-stable object is the
+  confluent derivative determinant after order-aware normalization.

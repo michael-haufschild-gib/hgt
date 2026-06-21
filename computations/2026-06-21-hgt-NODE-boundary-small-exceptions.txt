@@ -1,0 +1,16 @@
+NODE: repeated small boundary exceptions versus one dramatic violation
+reps=12000
+sequence total_severity collapse_frac mean_collapse_step final_debt max_debt access_expectation consequences
+one_dramatic_1x1.0                1.000       0.00492              1.000    0.02408  0.02408            0.04817      0.97592
+five_medium_5x0.2                 1.000       0.00258              5.000    0.82645  0.86610            1.47594      0.09133
+twenty_small_20x0.05              1.000       0.00000                inf    0.58365  0.58946            1.35641      0.02450
+forty_tiny_40x0.025               1.000       0.00000                inf    0.37962  0.38106            1.26110      0.01483
+two_dramatic_repaired             1.700       0.00042              2.000    0.12837  0.23762            0.32901      1.72042
+mixed_small_then_large            1.200       0.03042             15.000    0.56790  0.74318            1.26492      0.45175
+
+Operational-definition control: lower trigger so even small exceptions are consistently enforced
+sequence collapse_frac final_debt max_debt access_expectation consequences
+twenty_small_20x0.05           0.00000    0.10806  0.24246            0.27294      5.51242
+forty_tiny_40x0.025            0.00000    0.08702  0.19201            0.23615      7.70567
+
+Interpretation: the NODE constraint is validated if repeated below-trigger exceptions create more precedent debt/access expectation and more collapse than a single dramatic violation with comparable total severity, and if operationally enforcing small exceptions removes the effect.

@@ -1,0 +1,32 @@
+PS4 inverse of the HD3 Li gauge shift delta lambda_n = c n^2
+======================================================================
+j   delta P_j / c
+ 1     1
+ 2    -2
+ 3     0
+ 4     0
+ 5     0
+ 6     0
+ 7     0
+ 8     0
+ 9     0
+10     0
+
+Nonzero ghost support:
+  delta P_1 = (1) c
+  delta P_2 = (-2) c
+
+Forward check using only delta P_1=c and delta P_2=-2c:
+n   recovered delta lambda_n / c   n^2
+ 1       1                      1
+ 2       4                      4
+ 3       9                      9
+ 4      16                     16
+ 5      25                     25
+ 6      36                     36
+ 7      49                     49
+ 8      64                     64
+ 9      81                     81
+10     100                    100
+
+Interpretation: a zero-free HD3 gauge produces no divisor change, but blind PS4 inversion reads its Li shift as ghost ordinary power sums P_1 and P_2.

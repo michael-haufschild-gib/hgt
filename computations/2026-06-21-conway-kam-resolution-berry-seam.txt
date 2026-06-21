@@ -1,0 +1,61 @@
+NODE simulation: finite resolution mistakes sticky chaotic layers for intact tori
+jump_rate samples rotation_var jumps_seen classified_regular
+   0.0005    32     0.000005          0 1
+   0.0005   128     0.000008          0 1
+   0.0005   512     0.000101          1 1
+   0.0005  2048     0.022147          1 0
+   0.0020    32     0.000007          0 1
+   0.0020   128     0.000023          2 1
+   0.0020   512     0.000152          1 1
+   0.0020  2048     0.022802          2 0
+   0.0080    32     0.000006          0 1
+   0.0080   128     0.000061          2 1
+   0.0080   512     0.000352          2 0
+   0.0080  2048     0.025962         16 0
+
+STEP8 Levenshtein transfer candidates
+1 distance=32 ratio=0.4156 finite resolution can mistake berry seam layers for intact equalization
+2 distance=48 ratio=0.6234 low resolution can mistake berry lane imbalance for seam equalization
+3 distance=48 ratio=0.6234 sampling resolution can hide two path berry seam breakup
+selected=1 finite resolution can mistake berry seam layers for intact equalization
+
+STEP7 formula check: Greene/KAM residue and resolution tests are NODE-side diagnostics. Unchanged use would be generic numerical classification, not Berry seam geometry.
+
+Standing-order consolidated target: Berry Seam Layer
+STEP8 transfer: finite resolution can mistake Berry seam layers for intact equalization
+STEP9 method 15: strengthen the test
+Strengthened gate: seam equalization must be resolution-stable, off-seam broken, and not reproduced by finite/random controls.
+prime_count=160
+kind center samples mean_imbalance max_imbalance mean_phase false_equalized
+bare      0.50    24       0.161768      0.200868   3.065081 0
+bare      0.50    48       0.161746      0.200841   3.065093 0
+bare      0.50    96       0.161734      0.200825   3.065099 0
+bare      0.50   192       0.161727      0.200817   3.065103 0
+xi        0.50    24       0.000000      0.000000   2.776137 0
+xi        0.50    48       0.000000      0.000000   2.776186 0
+xi        0.50    96       0.000000      0.000000   2.776213 0
+xi        0.50   192       0.000000      0.000000   2.776228 0
+finite_xi 0.50    24       0.425047      0.494880   0.202928 0
+finite_xi 0.50    48       0.425081      0.494916   0.202936 0
+finite_xi 0.50    96       0.425100      0.494936   0.202941 0
+finite_xi 0.50   192       0.425111      0.494947   0.202944 0
+random_xi 0.50    24       0.434344      0.727473   1.799294 0
+random_xi 0.50    48       0.199020      0.377293   0.909031 0
+random_xi 0.50    96       0.239171      0.328595   0.541979 0
+random_xi 0.50   192       0.161747      0.334950   0.263947 0
+bare      0.58    24       0.402783      0.436071   3.057544 0
+bare      0.58    48       0.402806      0.436088   3.057559 0
+bare      0.58    96       0.402801      0.436081   3.057567 0
+bare      0.58   192       0.402798      0.436077   3.057571 0
+xi        0.58    24       0.242379      0.246744   2.774452 0
+xi        0.58    48       0.242432      0.246797   2.774512 0
+xi        0.58    96       0.242440      0.246804   2.774538 0
+xi        0.58   192       0.242444      0.246808   2.774552 0
+finite_xi 0.58    24       0.384735      0.441091   0.182967 0
+finite_xi 0.58    48       0.384770      0.441130   0.182976 0
+finite_xi 0.58    96       0.384790      0.441152   0.182981 0
+finite_xi 0.58   192       0.384800      0.441163   0.182985 0
+random_xi 0.58    24       0.297853      0.526396   1.403460 0
+random_xi 0.58    48       0.164652      0.424191   0.981579 0
+random_xi 0.58    96       0.405589      0.764422   1.392757 0
+random_xi 0.58   192       0.302963      0.485498   1.186876 0

@@ -1,0 +1,8 @@
+STEP11 biofilm-detachment missing lemma falsifier
+method=20 name-the-missing-lemma; lemma would require true burstiness > controls across thresholds
+threshold true_cv finite_cv random_cv true_dominates
+0.35 1.122689 2.239545 2.177556 0
+0.45 1.278817 2.391414 2.251327 0
+0.55 1.442351 2.587684 2.359143 0
+0.65 1.605500 2.784023 2.514366 0
+0.75 1.828073 2.961835 2.697579 0

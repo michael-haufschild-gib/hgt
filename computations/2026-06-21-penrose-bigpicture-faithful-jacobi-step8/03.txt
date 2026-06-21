@@ -1,0 +1,7 @@
+03 finite sampling can miss narrow faithful zero events
+step=0.500 detected_sign_changes=1
+step=0.100 detected_sign_changes=1
+step=0.050 detected_sign_changes=1
+step=0.020 detected_sign_changes=1
+step=0.005 detected_sign_changes=3
+true_roots=[1.003, 1.017, 2.5]

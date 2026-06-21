@@ -1,0 +1,17 @@
+STEP8 three HT-transfer attempts by Levenshtein from NODE test
+attempt=soft-strip-membership    levenshtein= 40 normalized=0.3509 SELECTED
+attempt=curvature-sorting-map    levenshtein= 87 normalized=0.7982 rejected
+attempt=raft-lifetime-excursions levenshtein= 93 normalized=0.7440 rejected
+
+STEP8/9 membrane probability-zone HT transfer
+method=2 attack-as-false; gamma-only and random-phase controls must not reproduce the claimed soft-zone structure
+finite_prime_count=160
+kind window soft_occ_mean soft_occ_std hard_occ_mean hard_occ_std fuzzy_mean center_std left_center_frac
+gamma-only   [100,170] 0.500000 0.000000 0.000000 0.000000 1.000000 0.000000 1.000000
+true-zeta    [100,170] 0.431631 0.079097 0.343651 0.129273 0.614286 0.129271 0.761111
+finite-euler [100,170] 0.450684 0.068045 0.090476 0.128571 0.707937 0.214086 0.577778
+random-phase [100,170] 0.502315 0.094199 0.122222 0.103370 0.598413 0.205885 0.433333
+gamma-only   [500,570] 0.500000 0.000000 0.000000 0.000000 1.000000 0.000000 1.000000
+true-zeta    [500,570] 0.387679 0.056488 0.398413 0.062067 0.418254 0.120538 0.811111
+finite-euler [500,570] 0.458896 0.058193 0.078571 0.128019 0.770635 0.201412 0.572222
+random-phase [500,570] 0.500883 0.099104 0.129365 0.111369 0.593651 0.199895 0.472222

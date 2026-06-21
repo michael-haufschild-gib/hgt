@@ -1,0 +1,18 @@
+NODE: mixing order changes pathway/final material state in prion-like LCD assemblies
+all orders have final totals protein=1, rna=1, salt=1
+order liquid gel fiber soluble free_protein free_rna class
+protein-rna-salt           0.317087 0.169343 0.185819 0.017130 0.310621 0.599968 liquid
+protein-salt-rna           0.283823 0.071537 0.291652 0.010675 0.342313 0.685188 fiber
+rna-protein-salt           0.341635 0.224486 0.061820 0.018919 0.353140 0.564872 liquid
+rna-salt-protein           0.333395 0.158245 0.061002 0.013064 0.434293 0.624612 liquid
+salt-protein-rna           0.308954 0.107276 0.184701 0.011852 0.387217 0.654848 liquid
+salt-rna-protein           0.333395 0.158245 0.061002 0.013064 0.434293 0.624612 liquid
+simultaneous               0.323195 0.239453 0.079300 0.020921 0.337131 0.559903 liquid
+
+Validation metrics
+distinct_classes=2
+max_pairwise_L1_material_distance=0.448837
+fiber_range=0.061002,0.291652
+gel_range=0.071537,0.224486
+simultaneous_class=liquid
+Interpretation: the NODE constraint is validated if identical final composition produces multiple final material classes or a large material distance solely because the addition path changed.

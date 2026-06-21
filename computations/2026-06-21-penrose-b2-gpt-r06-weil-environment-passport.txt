@@ -1,0 +1,26 @@
+NODE test: type soundness needs a well-formed environment
+ResearchNode mutation: Weil-chart positivity needs an admissible test-function environment
+
+Fake proof:
+  Project every chart vector to E=span(e_positive), where Q=diag(1,-1) is PSD.
+  Conclude Q_W >= 0.
+
+Counter-test: keep the same projected vector but allow an unproved leakage into
+the negative boundary/pole direction.
+
+leak ratio r | projected Q | actual Q on (1,r)
+-------------|-------------|----------------
+        0.00 |       1.000 |          1.000
+        0.25 |       1.000 |          0.938
+        0.50 |       1.000 |          0.750
+        0.90 |       1.000 |          0.190
+        1.00 |       1.000 |          0.000
+        1.05 |       1.000 |         -0.103
+        1.25 |       1.000 |         -0.562
+        1.50 |       1.000 |         -1.250
+
+Finding:
+  A Weil-to-moment chart proof needs an environment passport: the exact test space,
+  boundary/pole exclusions, and a theorem that the chart transform lands inside it.
+  Positivity of the projected/admissible component is not a positivity theorem for
+  the unresolved chart vector.

@@ -1,0 +1,11 @@
+FULL HESSIAN VS GAUSS-NEWTON
+loss L=1/2*(x^2-1)^2
+  negative full-Hessian samples=115/301
+  negative Gauss-Newton samples=0/301
+  full Hessian min=-2.000 at x=+0.000
+  Gauss-Newton at that x=+0.000
+  x=-0.8: full_H=+1.840, GN=+2.560, dropped=-0.720
+  x=-0.4: full_H=-1.040, GN=+0.640, dropped=-1.680
+  x=+0.0: full_H=-2.000, GN=+0.000, dropped=-2.000
+  x=+0.4: full_H=-1.040, GN=+0.640, dropped=-1.680
+  x=+0.8: full_H=+1.840, GN=+2.560, dropped=-0.720

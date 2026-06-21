@@ -1,0 +1,16 @@
+NODE validation: absolute irreversibility changes the integral fluctuation identity
+case lambda <exp(-sigma)>_finite corrected ordinary_error finite_entropy
+full_support       lambda=0.0000 <exp(-sigma)>_finite=1.0000 corrected=1.0000 ordinary_error=0.0000 finite_entropy=0.2322
+one_impossible_rev lambda=0.3500 <exp(-sigma)>_finite=0.6500 corrected=0.6500 ordinary_error=0.3500 finite_entropy=0.7430
+many_impossible_rev lambda=0.3500 <exp(-sigma)>_finite=0.6500 corrected=0.6500 ordinary_error=0.3500 finite_entropy=0.5063
+
+Support-loss sweep
+dropped_forward_states lambda finite_identity corrected
+                     0 0.0000 1.0000 1.0000
+                     1 0.2849 0.7151 0.7151
+                     2 0.1153 0.8847 0.8847
+                     4 0.5546 0.4454 0.4454
+                     7 0.6023 0.3977 0.3977
+                    10 0.8987 0.1013 0.1013
+
+Read: when reverse support is missing, the finite-support exponential average equals reverse support mass, not one. The lost mass lambda is a constraint on the observation/protocol support, not a small perturbative correction.

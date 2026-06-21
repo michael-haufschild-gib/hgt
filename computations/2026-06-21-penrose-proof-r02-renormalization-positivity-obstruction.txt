@@ -1,0 +1,26 @@
+ResearchNode: bridge theorem completion + explicit formula + pole cancellation => Stieltjes
+NODE constraint: renormalization is a positivity-preserving change of description,
+not merely subtraction of infinities.
+
+Essential countermodel:
+  cutoff positive measure mu_L = L*delta_0 + delta_1
+  raw moments: m0=L+1, m1=1, m2=1
+  raw Hankel [[m0,m1],[m1,m2]] is PSD for every L>0.
+  naive pole cancellation subtracts the divergent zeroth mass and sets m0^ren=0.
+
+L | raw eigmin | ren eigmin | ren determinant
+--|------------|------------|----------------
+   1 |   0.381966 |  -0.618034 |      -1.000000
+  10 |   0.900980 |  -0.618034 |      -1.000000
+ 100 |   0.990001 |  -0.618034 |      -1.000000
+1000 |   0.999000 |  -0.618034 |      -1.000000
+
+Quadratic form check for p(y)=a+b*y:
+  raw Q_L(1,-1)=L >= 0
+  ren Q(1,-1)=0 - 2 + 1 = -1
+
+Finding:
+  Pole cancellation/finiteness alone does not imply Stieltjes positivity.
+  A bridge theorem must prove that the completion/explicit-formula cancellation
+  acts as a positive map on squares, or it must work in the shifted finite
+  moment space where the infinite mass at y=0 has been removed before testing.

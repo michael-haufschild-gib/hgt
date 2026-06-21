@@ -1,0 +1,31 @@
+NODE test: symmetry reductions can merge distinct chaotic-scattering escape channels
+Attack as false: quotienting is safe only when merged channels are payload-identical.
+
+safe quotient control
+  full channels={'A': 1.0, 'B': 1.0, 'C': -2.0, 'D': -2.0}
+  quotient sums={'L': 2.0, 'R': -4.0}
+  within-orbit variance={'L': 0.0, 'R': 0.0}
+  full energy=10.000, quotient energy=20.000
+unsafe quotient / hidden distinct channels
+  full channels={'A': 1.0, 'B': -1.0, 'C': 2.0, 'D': -2.0}
+  quotient sums={'L': 0.0, 'R': 0.0}
+  within-orbit variance={'L': 1.0, 'R': 4.0}
+  full energy=10.000, quotient energy=0.000
+
+Step-12 boundary sweep: add antisymmetric payload inside each quotient orbit
+epsilon | quotient energy | within-orbit variance sum | full energy
+--------|-----------------|---------------------------|------------
+   0.00 |        0.000000 |                  0.000000 |   0.000000
+   0.10 |        0.000000 |                  0.050000 |   0.100000
+   0.25 |        0.000000 |                  0.312500 |   0.625000
+   0.50 |        0.000000 |                  1.250000 |   2.500000
+   1.00 |        0.000000 |                  5.000000 |  10.000000
+
+ResearchNode mutation: HT detector under FE/sign/conjugacy quotient
+  If arithmetic channels cancel inside a symmetry orbit, a quotient detector reports
+  zero even though the full channel data has nonzero arithmetic content.
+
+Finding:
+  A value/HT detector needs a symmetry-quotient passport: prove each quotient orbit
+  is arithmetic-payload homogeneous, or retain orbit-resolved residuals. Otherwise
+  the detector can erase precisely the relation channel it is supposed to detect.

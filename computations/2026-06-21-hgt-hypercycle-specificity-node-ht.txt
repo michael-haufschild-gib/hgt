@@ -1,0 +1,23 @@
+NODE hypercycle catalytic specificity minimal counterexample
+leak final_coop_sum final_parasite min_coop peak_parasite verdict
+ 0.00       1.000000       0.000000  0.333300      0.000101 cycle
+ 0.02       1.000000       0.000000  0.333300      0.000101 cycle
+ 0.04       1.000000       0.000000  0.333300      0.000101 cycle
+ 0.06       1.000000       0.000000  0.333300      0.000101 cycle
+ 0.08       0.999998       0.000002  0.333300      0.000101 cycle
+ 0.10       0.999985       0.000015  0.333300      0.000101 cycle
+ 0.14       0.999168       0.000832  0.333056      0.000832 cycle
+ 0.18       0.957128       0.042872  0.319043      0.042872 cycle
+ 0.24       0.312874       0.687126  0.104291      0.687126 collapse
+ 0.32       0.101394       0.898606  0.033798      0.898606 collapse
+ 0.45       0.045257       0.954743  0.015086      0.954743 collapse
+ 0.60       0.027258       0.972742  0.009086      0.972742 collapse
+
+minimal counterexample: leak=0.00 preserves cooperation; sufficient broad leakage lets a tiny parasite dominate.
+STEP8/9 hypercycle specificity phase-gate transfer
+samples=220 finite_prime_count=160
+case phase_raw amp_raw phase_norm amp_norm final_phase_competition final_amp_competition
+sigma=0.3 window=(100.0, 170.0) phase_raw=0.431,0,0 amp_raw=1.312,2.332,1.312 phase_norm=1.000,0.000,0.000 amp_norm=0.000,1.000,0.000 phase_final=1.000,0.000,0.000 amp_final=0.000,1.000,0.000
+sigma=0.5 window=(100.0, 170.0) phase_raw=0.2477,0.03942,0 amp_raw=1.166,1.562,1.166 phase_norm=1.000,0.159,0.000 amp_norm=0.000,1.000,0.000 phase_final=1.000,0.000,0.000 amp_final=0.000,1.000,0.000
+sigma=0.7 window=(100.0, 170.0) phase_raw=0.01497,0,0 amp_raw=1.027,1.041,1.027 phase_norm=1.000,0.000,0.000 amp_norm=0.000,1.000,0.000 phase_final=1.000,0.000,0.000 amp_final=0.000,1.000,0.000
+sigma=0.3 window=(500.0, 570.0) phase_raw=0.5302,0,0 amp_raw=1.673,2.615,1.673 phase_norm=1.000,0.000,0.000 amp_norm=0.000,1.000,0.000 phase_final=1.000,0.000,0.000 amp_final=0.000,1.000,0.000

@@ -1,0 +1,14 @@
+Step 8 transfer attempts scored by Levenshtein distance
+Original NODE test:
+Continue a log germ around a closed chain by overlapping power series; valid overlaps recover the integer monodromy, invalid jumps diverge, and the same endpoint may carry a different germ.
+
+A_contour_winding: distance=103
+Continue d log xi around a closed contour; valid contours recover an integer winding/off-line count, invalid zero-crossing jumps break the certificate, and the same endpoint may carry different holonomy.
+
+B_matrix_cover: distance=134
+Glue a cover of local finite carrier matrices; require Sylvester negative inertia to agree on overlaps, then read a global kappa index instead of a trace.
+
+C_density_defect: distance=138
+Scan density windows with one rare inserted defect; compare averaged density with an integer defect counter and test whether the density misses the defect.
+
+Chosen transfer by minimum distance: A_contour_winding

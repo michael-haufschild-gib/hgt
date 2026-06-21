@@ -1,0 +1,32 @@
+[setup] dps=50  K=4
+==============================================================================
+
+--- k=1 ---   S_k(zeta)=-0.0231049931154   S_k(AP)=-1.64493406685
+  T1 pi-period [pi^2k, S_k]:  AP-> rel=[1, 6] (h,res)=(6, '0.0')  | zeta-> rel=None (h,res)=None
+  T3 fused [1, zeta(2k), beta(2k), S_k^P, S_k] (zeta): rel=[16, -3, -4, 4, -4] (h,res)=(16, '2.0e-51')
+
+--- k=2 ---   S_k(zeta)=3.71725992853e-5   S_k(AP)=1.08232323371
+  T1 pi-period [pi^2k, S_k]:  AP-> rel=[1, -90] (h,res)=(90, '0.0')  | zeta-> rel=None (h,res)=None
+  T3 fused [1, zeta(2k), beta(2k), S_k^P, S_k] (zeta): rel=[-64, 15, 16, -4, 4] (h,res)=(64, '3.2e-50')
+
+--- k=3 ---   S_k(zeta)=-1.44173931401e-7   S_k(AP)=-1.01734306198
+  T1 pi-period [pi^2k, S_k]:  AP-> rel=[1, 945] (h,res)=(945, '1.37e-48')  | zeta-> rel=None (h,res)=None
+  T3 fused [1, zeta(2k), beta(2k), S_k^P, S_k] (zeta): rel=[-256, 63, 64, -4, 4] (h,res)=(256, '6.48e-50')
+
+--- k=4 ---   S_k(zeta)=6.63031680253e-10   S_k(AP)=1.0040773562
+  T1 pi-period [pi^2k, S_k]:  AP-> rel=[1, -9450] (h,res)=(9450, '0.0')  | zeta-> rel=None (h,res)=None
+  T3 fused [1, zeta(2k), beta(2k), S_k^P, S_k] (zeta): rel=[-1024, 255, 256, -4, 4] (h,res)=(1024, '1.08e-48')
+
+==============================================================================
+T2 degree-2 [1, S_1, S_2, S_1^2]:
+  AP  : rel=[0, 0, 5, -2]  (h,res)=(5, '0.0')
+  zeta: rel=None  (h,res)=None
+
+==============================================================================
+Exact shell-min A(d=1,H) over [pi^2, S_1]  (smallest nonzero |c0 pi^2 + c1 S_1|):
+  AP   H=4: min|.|=1.64493 at (0, -1)
+  AP   H=8: min|.|=0.0 at (-1, -6)
+  zeta H=4: min|.|=0.023105 at (0, -1)
+  zeta H=8: min|.|=0.023105 at (0, -1)
+
+[done] AP (pi-period) collapses; zeta resists => zeta seam values are arithmetically rigid.

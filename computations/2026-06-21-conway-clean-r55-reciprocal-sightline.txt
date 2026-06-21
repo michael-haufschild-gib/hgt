@@ -1,0 +1,20 @@
+NODE: observer-height assumptions privilege a sightline
+observer visible_partitions blocked_partitions
+child    1 3
+seated   1 3
+adult    3 1
+constraint: visibility is correct only relative to the declared observer-height coordinate
+
+TRANSFER: ResearchNode #2 reciprocal seam coordinate
+method #1 split subclaims: correct chart vs finite-computation sightline coverage
+k first1_share first5_share first20_share effective_zero_count zeros_for_90pct zeros_for_99pct
+01 0.2413 0.5239 0.7698 11.58 53 139
+02 0.6741 0.9349 0.9918 2.08 4 18
+03 0.8697 0.9926 0.9998 1.31 2 5
+04 0.9466 0.9991 1.0000 1.11 1 3
+06 0.9903 1.0000 1.0000 1.02 1 1
+08 0.9981 1.0000 1.0000 1.00 1 1
+
+GATE SUMMARY
+the reciprocal seam chart is canonical for RH, but finite T_k evidence has a sightline: higher k mostly sees the lowest zeros
+report a reciprocal-coordinate sightline passport: contribution shares by height band, effective zero count, and tail coverage before treating finite moments as global evidence

@@ -1,0 +1,36 @@
+STEP12 battery: transition-edge softness
+samples=320
+
+A. sigma=0.5 true/finite/random, threshold=0 band=0.12
+true window=(100.0, 170.0)                   events=70 occ=0.694 medrun=6.00 edge_width=8.00 edge_slope=0.1710 softness=46.77 soft_per_run=7.80
+finite window=(100.0, 170.0)                 events=87 occ=0.525 medrun=3.00 edge_width=4.00 edge_slope=0.3345 softness=11.96 soft_per_run=3.99
+random window=(100.0, 170.0)                 events=147 occ=0.384 medrun=1.00 edge_width=4.00 edge_slope=0.7282 softness=5.49 soft_per_run=5.49
+true window=(500.0, 570.0)                   events=98 occ=0.775 medrun=5.00 edge_width=8.00 edge_slope=0.1880 softness=42.54 soft_per_run=8.51
+finite window=(500.0, 570.0)                 events=98 occ=0.456 medrun=2.00 edge_width=3.00 edge_slope=0.5114 softness=5.87 soft_per_run=2.93
+random window=(500.0, 570.0)                 events=162 occ=0.428 medrun=1.00 edge_width=5.00 edge_slope=0.7951 softness=6.29 soft_per_run=6.29
+
+B. finite prime-count stress at sigma=0.5
+N= 30 mean_softness=7.27 mean_soft_per_run=2.42 mean_medrun=3.00 mean_events=72.0
+N= 80 mean_softness=7.11 mean_soft_per_run=2.77 mean_medrun=2.50 mean_events=82.0
+N=160 mean_softness=8.91 mean_soft_per_run=3.46 mean_medrun=2.50 mean_events=92.5
+N=240 mean_softness=8.53 mean_soft_per_run=3.39 mean_medrun=2.50 mean_events=100.0
+N=400 mean_softness=9.70 mean_soft_per_run=4.85 mean_medrun=2.00 mean_events=104.5
+
+C. band sensitivity at sigma=0.5
+band=0.08 true   mean_softness=30.31 mean_edge_width=5.50 mean_edge_slope=0.1795
+band=0.08 finite mean_softness=6.44 mean_edge_width=2.50 mean_edge_slope=0.4230
+band=0.08 random mean_softness=4.47 mean_edge_width=3.00 mean_edge_slope=0.6716
+band=0.12 true   mean_softness=44.66 mean_edge_width=8.00 mean_edge_slope=0.1795
+band=0.12 finite mean_softness=8.91 mean_edge_width=3.50 mean_edge_slope=0.4230
+band=0.12 random mean_softness=5.96 mean_edge_width=4.00 mean_edge_slope=0.6716
+band=0.20 true   mean_softness=53.16 mean_edge_width=9.50 mean_edge_slope=0.1795
+band=0.20 finite mean_softness=15.35 mean_edge_width=6.00 mean_edge_slope=0.4230
+band=0.20 random mean_softness=9.72 mean_edge_width=6.50 mean_edge_slope=0.6716
+
+D. right-side collapse at sigma=1.2
+true sigma=1.2 window=(100.0, 170.0)         events=43 occ=0.397 medrun=6.00 edge_width=6.00 edge_slope=0.1332 softness=45.03 soft_per_run=7.50
+finite sigma=1.2 window=(100.0, 170.0)       events=43 occ=0.394 medrun=6.00 edge_width=6.00 edge_slope=0.1388 softness=43.24 soft_per_run=7.21
+random sigma=1.2 window=(100.0, 170.0)       events=170 occ=0.444 medrun=1.00 edge_width=7.00 edge_slope=0.3698 softness=18.93 soft_per_run=18.93
+true sigma=1.2 window=(500.0, 570.0)         events=44 occ=0.384 medrun=4.50 edge_width=11.50 edge_slope=0.0977 softness=117.74 soft_per_run=26.16
+finite sigma=1.2 window=(500.0, 570.0)       events=44 occ=0.388 medrun=4.50 edge_width=11.50 edge_slope=0.0936 softness=122.81 soft_per_run=27.29
+random sigma=1.2 window=(500.0, 570.0)       events=167 occ=0.509 medrun=1.00 edge_width=9.00 edge_slope=0.2785 softness=32.32 soft_per_run=32.32
