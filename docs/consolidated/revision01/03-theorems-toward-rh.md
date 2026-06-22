@@ -226,6 +226,22 @@ A proof-grade bridge must supply all five theorems:
 The transport carrier of the mechanism view is compatible with this package **iff** its carrier can be
 identified with the same faithful completed object; until then it is a parallel candidate, not a proof.
 
+### The irreducible in one line, and the ranked proof shapes `[STRATEGIC — gpt/37]`
+
+Stripped of scaffolding, the five-form package is one statement: **the completed explicit formula is a
+one-sided Loewner domination theorem** — `−R^P ⪯ M_triv`, i.e.
+`λ_max(M_triv^{−1/2}(−R^P)M_triv^{−1/2}) ≤ 1` for every `d`. The proof object is therefore a **source-built
+factorization/contraction giving `I − K_d ⪰ 0` at zero margin** (the prime saturates the budget to `~24`
+digits — no slack), not a "large-beats-small" estimate. It lives on a **three-stratum reciprocal divisor**:
+pole `y=−4` (entireness) + trivial-zero chain (positive protector `μ_triv`) + nontrivial divisor (forced onto
+`ℝ_{>0}`). Ranked routes: (1) one-sided Loewner / boundary-Weyl `K⪯I` as a compression of a single
+**non-compact** completed-boundary operator; (2) Weil-form pullback `p↦h_p` (`Q_0[p]=Q_W[h_p]`); (3)
+discriminant / Gram–Heine asymptotics past the proved `d=1`; (4) direct Jacobi / Hankel-determinant (lowest
+odds — intrinsically hard-edge ill-conditioned). The **fake-family separation theorem** (form 4 of the
+package) acquires a concrete first test: the **reciprocal trivial-zero domination on Dirichlet `L`-functions**
+— genuine Euler-product `L` should pass `K_d⪯I`, Davenport–Heilbronn should fail by `λ_max>1` (forward agenda
+`research-topics.md` #38).
+
 ---
 
 ## 8. SOTA integration of the apex

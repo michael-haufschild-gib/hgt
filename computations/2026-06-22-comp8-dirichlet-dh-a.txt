@@ -1,0 +1,25 @@
+## zeta  (dps=278, gamma_1=14.134725)
+  d=10  log10(margin)=   -51.1038  e_d= 3.403  overlap_u=0.97114
+  d=15  log10(margin)=   -81.3111  e_d= 3.446
+  d=20  log10(margin)=  -113.1264  e_d= 3.417  overlap_u=0.97176
+  d=24  log10(margin)=  -139.7216  e_d= 3.412  overlap_u=0.9719
+## chi4  (dps=278, gamma_1=6.0209489)
+  d=10  log10(margin)=   -48.9698  e_d= 3.926  overlap_u=0.98
+  d=15  log10(margin)=   -79.2825  e_d= 3.928
+  d=20  log10(margin)=  -111.4282  e_d= 3.859  overlap_u=0.98138
+  d=24  log10(margin)=  -138.3993  e_d= 3.934  overlap_u=0.98168
+## chi3  (dps=278, gamma_1=8.0397372)
+  d=10  log10(margin)=   -51.4036  e_d= 3.885  overlap_u=0.97644
+  d=15  log10(margin)=   -82.4479  e_d= 3.876
+  d=20  log10(margin)=  -115.5904  e_d= 3.879  overlap_u=0.97766
+  d=24  log10(margin)=  -143.1156  e_d= 3.895  overlap_u=0.97793
+## chi5  (dps=278, gamma_1=6.6484533)
+  d=10  log10(margin)=   -68.1315  e_d= 5.123  overlap_u=0.97962
+  d=15  log10(margin)=  -107.5105  e_d= 5.075
+  d=20  log10(margin)=  -148.7599  e_d= 5.053  overlap_u=0.98118
+  d=24  log10(margin)=  -182.9672  e_d= 4.958  overlap_u=0.9815
+## chi8  (dps=278, gamma_1=4.899974)
+  d=10  log10(margin)=   -64.8005  e_d= 5.257  overlap_u=0.98548
+  d=15  log10(margin)=  -102.9608  e_d= 5.115
+  d=20  log10(margin)=  -143.0425  e_d= 5.041  overlap_u=0.98719
+  d=24  log10(margin)=  -176.3569  e_d= 5.054  overlap_u=0.98754

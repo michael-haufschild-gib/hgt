@@ -1,0 +1,2 @@
+d=8: boundary atom == j=1 trivial term? rel=0.0  | inertia(M_triv^(j>=2))=(9,0)  inertia(H^-=Bj2+R^P)=(8,1)  => boundary SOURCE-BUILT (Gamma j=1), defect PRIME-sourced
+d=12: boundary atom == j=1 trivial term? rel=0.0  | inertia(M_triv^(j>=2))=(13,0)  inertia(H^-=Bj2+R^P)=(12,1)  => boundary SOURCE-BUILT (Gamma j=1), defect PRIME-sourced

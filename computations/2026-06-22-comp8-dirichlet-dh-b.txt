@@ -1,0 +1,17 @@
+# evenness check (odd c_n should be ~0):
+   c_3 = -2.236e-360
+   c_5 = -7.554e-360
+   c_7 = 2.863e-359
+   c_9 = 8.999e-359
+# T_1=0.1961391539 T_2=0.003497009878 T_3=0.0001193805808  (k=catalan note: real)
+# scanning d for first NON-PSD (lambda_min(H^0_DH,M_triv)<0 => off-line zero detected):
+  d= 4  lambda_min=1.7416e-16  log10|.|=-15.76  
+  d= 8  lambda_min=8.7424e-37  log10|.|=-36.06  
+  d=12  lambda_min=1.4549e-59  log10|.|=-58.84  
+  d=16  lambda_min=1.1494e-83  log10|.|=-82.94  
+  d=20  lambda_min=3.3711e-109  log10|.|=-108.47  
+  d=24  lambda_min=1.3488e-135  log10|.|=-134.87  
+  d=28  lambda_min=3.5092e-163  log10|.|=-162.45  
+  d=32  lambda_min=4.9141e-191  log10|.|=-190.31  
+  d=36  lambda_min=8.1944e-220  log10|.|=-219.09  
+# no failure up to d=36 (off-line zeros higher than this degree reaches)

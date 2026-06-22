@@ -1,0 +1,3 @@
+d= 6: inertia R^P=(2,5) min=-0.2565 max=3.01e-8 | offband-energy: monomial=0.0236 mutriv-ON=0.178 shift(-0.16)=0.00796 shift(-4)pole=0.0903
+d= 8: inertia R^P=(2,7) min=-0.2565 max=3.01e-8 | offband-energy: monomial=0.0236 mutriv-ON=0.0905 shift(-0.16)=0.00796 shift(-4)pole=0.0901
+d=10: inertia R^P=(3,8) min=-0.2565 max=3.01e-8 | offband-energy: monomial=0.0236 mutriv-ON=0.0525 shift(-0.16)=0.00796 shift(-4)pole=0.0899

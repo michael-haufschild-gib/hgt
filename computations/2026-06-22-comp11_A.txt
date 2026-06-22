@@ -1,0 +1,10 @@
+# gamma0=20.0  dps=240  dmax=22
+  delta=0.05: d*=9 (flip clean)  [..d6:+-28 d7:+-33 d8:+-38 d9:--42]
+  delta=0.1: d*=8 (flip clean)  [..d5:+-23 d6:+-28 d7:+-33 d8:--38]
+  delta=0.25: d*=7 (flip clean)  [..d4:+-18 d5:+-23 d6:+-28 d7:--32]
+  delta=0.45: d*=5 (flip clean)  [..d2:+-8 d3:+-13 d4:+-18 d5:--24]
+# gamma0=30.0  dps=300  dmax=28
+  delta=0.05: d*=14 (flip clean)  [..d11:+-56 d12:+-62 d13:+-68 d14:--75]
+  delta=0.1: d*=14 (flip clean)  [..d11:+-56 d12:+-62 d13:+-68 d14:--73]
+  delta=0.25: d*=10 (flip clean)  [..d7:+-34 d8:+-40 d9:+-45 d10:--52]
+  delta=0.45: d*=9 (flip clean)  [..d6:+-29 d7:+-34 d8:+-40 d9:--46]

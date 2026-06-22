@@ -1,0 +1,5 @@
+d=10: protector frac j=1=1.0  cum j<=2=1.0  j<=5=1.0  J(99%)=1  | threat peak n*=6 (gamma~37.59)  overlap_u=0.97114
+d=20: protector frac j=1=1.0  cum j<=2=1.0  j<=5=1.0  J(99%)=1  | threat peak n*=1 (gamma~14.13)  overlap_u=0.97176
+d=30: protector frac j=1=1.0  cum j<=2=1.0  j<=5=1.0  J(99%)=1  | threat peak n*=1 (gamma~14.13)  overlap_u=0.97208
+d=40: protector frac j=1=1.0  cum j<=2=1.0  j<=5=1.0  J(99%)=1  | threat peak n*=1 (gamma~14.13)  overlap_u=0.97228
+d=50: protector frac j=1=1.0  cum j<=2=1.0  j<=5=1.0  J(99%)=1  | threat peak n*=1 (gamma~14.13)  overlap_u=0.97242

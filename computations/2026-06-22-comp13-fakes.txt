@@ -1,0 +1,7 @@
+# comp13: zeta M_triv FIXED, N=300 atoms (identical truncation), exponent normalized by degree index
+  zeta    : exponent(per-degree, mean)~ 6.35  log10(margin@16)=-87.7  overlap_u@16=0.97157
+  jitter  : exponent(per-degree, mean)~ 6.35  log10(margin@16)=-87.9  overlap_u@16=0.97156
+  poisson : exponent(per-degree, mean)~ 5.54  log10(margin@16)=-77.7  overlap_u@16=0.97419
+  rigid   : exponent(per-degree, mean)~ 5.41  log10(margin@16)=-75.3  overlap_u@16=0.97419
+  FID     : exponent(per-degree, mean)~ 2.90  log10(margin@16)=-38.5  overlap_u@16=0.69976
+  nsq     : exponent(per-degree, mean)~ 1.49  log10(margin@16)=-18.4  overlap_u@16=0.33271

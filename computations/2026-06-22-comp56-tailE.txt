@@ -1,0 +1,2 @@
+d=10: ||E||/||R^P_x||=0.00796  Hankel-dev=3.13e-175  Toeplitz-dev=0.941  displ-rank(E-ZEZ^T)=11  inertia(E)=(6,5)
+d=14: ||E||/||R^P_x||=0.00796  Hankel-dev=9.36e-202  Toeplitz-dev=0.959  displ-rank(E-ZEZ^T)=15  inertia(E)=(7,8)

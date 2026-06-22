@@ -1,0 +1,10 @@
+zeta  d= 8 a=2: y_*=-0.16 a_*=0.16  inertia(H^-)=(d,1)  s(Schur)=2.955e-41 =1/K? 1.5e-116  =a_**margin? 2.8e-9
+zeta  d=12 a=2: y_*=-0.16 a_*=0.16  inertia(H^-)=(d,1)  s(Schur)=1.4949e-64 =1/K? 8.7e-100  =a_**margin? 2.4e-13
+chi4  d= 8 a=1: y_*=-0.44444 a_*=0.4444  inertia(H^-)=(d,1)  s(Schur)=1.3192e-38 =1/K? 2.1e-121  =a_**margin? 7.7e-13
+chi4  d=12 a=1: y_*=-0.44444 a_*=0.4444  inertia(H^-)=(d,1)  s(Schur)=8.2518e-62 =1/K? 2.3e-103  =a_**margin? 1.1e-18
+chi3  d= 8 a=1: y_*=-0.44444 a_*=0.4444  inertia(H^-)=(d,1)  s(Schur)=1.0089e-40 =1/K? 1.5e-117  =a_**margin? 5.8e-13
+chi3  d=12 a=1: y_*=-0.44444 a_*=0.4444  inertia(H^-)=(d,1)  s(Schur)=9.614e-65 =1/K? 3.0e-98  =a_**margin? 8.2e-19
+chi5  d= 8 a=0: y_*=-4.0 a_*=4.0  inertia(H^-)=(d,1)  s(Schur)=1.7375e-53 =1/K? 1.5e-91  =a_**margin? 3.0e-24
+chi5  d=12 a=0: y_*=-4.0 a_*=4.0  inertia(H^-)=(d,1)  s(Schur)=1.0917e-83 =1/K? 4.6e-59  =a_**margin? 2.1e-35
+chi8  d= 8 a=0: y_*=-4.0 a_*=4.0  inertia(H^-)=(d,1)  s(Schur)=1.844e-50 =1/K? 1.6e-97  =a_**margin? 4.2e-24
+chi8  d=12 a=0: y_*=-4.0 a_*=4.0  inertia(H^-)=(d,1)  s(Schur)=8.2383e-80 =1/K? 1.5e-67  =a_**margin? 3.0e-35

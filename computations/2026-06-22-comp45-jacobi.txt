@@ -1,0 +1,8 @@
+d=8: ||E||/||R^P||=0.00796  inertia R^P=(2,7) J=(4,5) E=(4,5)
+     margin(full)=1.847e-40  margin(J-only)=-3.958e+16  -> E sign-essential: YES (J flips/destroys sign)
+d=12: ||E||/||R^P||=0.00796  inertia R^P=(4,9) J=(7,6) E=(6,7)
+     margin(full)=9.343e-64  margin(J-only)=-1.714e+41  -> E sign-essential: YES (J flips/destroys sign)
+     J diag a_i = ['-0.2531', '-0.001416', '-2.177e-5', '-3.238e-7', '-4.189e-9', '-2.922e-11', '8.42e-13', '5.578e-14', '2.196e-15', '7.399e-17', '2.316e-18', '6.949e-20', '2.029e-21']
+     J offdiag b_i = ['-0.01144', '-0.0001757', '-2.678e-6', '-3.793e-8', '-4.107e-10', '5.384e-13', '2.457e-13', '1.139e-14', '4.081e-16', '1.318e-17', '4.028e-19', '1.191e-20']
+d=16: ||E||/||R^P||=0.00796  inertia R^P=(5,12) J=(9,8) E=(8,9)
+     margin(full)=2.447e-88  margin(J-only)=-7.754e+62  -> E sign-essential: YES (J flips/destroys sign)

@@ -1,0 +1,5 @@
+d=8: recon_err=1.4e-174  defects(H0_minus neg eigs)=1  s(d)=2.955e-41  (2.5)^-2*margin=2.955e-41  ratio=1.0
+d=12: recon_err=2.9e-202  defects(H0_minus neg eigs)=1  s(d)=1.4949e-64  (2.5)^-2*margin=1.4949e-64  ratio=1.0
+d=16: recon_err=1.6e-229  defects(H0_minus neg eigs)=1  s(d)=3.9157e-89  (2.5)^-2*margin=3.9157e-89  ratio=1.0
+# => boundary-Weyl object is RANK-ONE: one bulk defect filled by one boundary atom v=e(-0.16);
+#    H^0>=0 (RH) <=> scalar s(d)>=0, with s(d)=(2.5)^-2*margin -> 0+. Operator face = scalar boundary face.

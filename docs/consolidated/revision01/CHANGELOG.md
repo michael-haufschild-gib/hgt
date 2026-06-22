@@ -937,3 +937,227 @@ in-doc history logs; read before editing.
   Domination is cross-scale, NOT bandwise (scale-local/dyadic proof dead). On the dangerous direction the protector
   reduces to a single evaluation (2.5)^{-2} p(-0.16)^2 at the coarsest trivial zero.
 - Folded: bridge-theorem §5b. Scripts: computations/2026-06-21-connes-edge-mode.py, -band-domination.py.
+
+### 60. Margin = inverse Christoffel function of the zero measure at the coarsest trivial zero (Markov/potential-theory form)
+- The zero measure ν'=Σ 2y_ρ δ has moment matrix = H^0 (∫y^{i+j}dν'=T_{i+j+1}). Its reproducing/Christoffel kernel
+  K_ν'(y_*,y_*)=e(y_*)^T(H^0)^{-1}e(y_*)=max_p p(y_*)^2/Q_0[p]. Verified exact identity (d=10, 6 digits):
+  1/margin = (2.5)^{-2} K_ν'(-0.16,-0.16) = 1.27007e51 (both ways); trivial-zero kernel sum dominated by j=1
+  (profile drops ~10 orders/j: 7.9e51,6.8e41,4.6e35,...).
+- So the bridge margin IS the inverse Christoffel function of the zero measure at the coarsest trivial zero
+  y=-0.16 (exterior to supp(ν')=(0,y_1]). Potential-theory reading: (i) rate K~e^{2d g(-0.16)}, g=Green's function
+  of C\supp(ν'), depends only on the support endpoints ⟹ generic (re-derives "rate is geometry"); (ii) sign
+  K=e^T(H^0)^{-1}e ≥0 ⟺ H^0⪰0 ⟺ ν' positive ⟺ zeros real ⟺ RH. RH content is the sub-exponential prefactor
+  (equilibrium-measure vs actual zero density), not the Green's-function rate.
+- Folded: bridge-theorem §5b. Script: computations/2026-06-21-connes-christoffel.py.
+
+### 61. Christoffel rate is density-tracking, not endpoint-Green's; corrected §60's over-claim
+- Tested K_ν'(-0.16,-0.16)^{1/(2d)} for ζ vs same-support linear-density divisor: rates DIVERGE (z 236→512,
+  lin 392→2436, ratio 0.60→0.21, d=2..14). K^{1/(2d)} does NOT converge to a constant — the hard-edge
+  accumulation at 0 makes exterior growth super-e^{2dg} and DENSITY-tracking (matches Arc Q synthetic spread).
+- So §60's "rate = endpoint Green's function, generic" was too strong. Corrected: the Christoffel growth tracks
+  the zero density (generic band, not a fixed constant); the RH content is isolated cleanly in the SIGN of the
+  kernel — K_ν'>0 ⟺ H^0⪰0 ⟺ ν' positive ⟺ zeros real. The exact margin = inverse Christoffel identity (§60) stands.
+- Folded: bridge-theorem §5b (rate clause corrected). Script: computations/2026-06-21-connes-christoffel-prefactor.py.
+
+### 62. Real-axis kernel does NOT localize the off-line defect (necessary not sufficient)
+- Scanned K(y)=e(y)^T(H^0)^{-1}e(y) on R for on-line vs an injected off-line quartet (d=10>d*). K_online>0
+  everywhere (the zero-measure reproducing kernel is a positive function under RH). But K_offline ALSO stays >0
+  everywhere — even though H^0 is indefinite (Arc S: λ_min<0 at these params). The flipped eigenvalue ~1e-21
+  contributes ~1e21 at the aligned point y=-0.16 vs positive terms ~1e51, so the defect is sub-threshold on the
+  moment curve {e(y)}; it lives in a polynomial-eigenvector direction off that curve.
+- So K(y)>0 ∀ real y is NECESSARY but NOT SUFFICIENT for H^0⪰0/RH — the real-axis kernel does not localize the
+  off-line defect. The faithful handle is the single flipped generalized eigenvalue (Arc S), not the kernel-on-R.
+- Folded: bridge-theorem §5b. Script: computations/2026-06-21-connes-kernel-scan.py.
+
+### 63. gpt/37 folded — the irreducible named (one-sided Loewner domination), the three-stratum divisor, the ranked proof menu, and the forward route-killer agenda
+
+**Source.** `docs/consolidated/gpt/37.md` (GPT synthesis). It demotes the carrier (already done in this
+corpus), names the single irreducible as *"the completed explicit formula is a one-sided Loewner domination
+theorem,"* proposes the **three-stratum reciprocal boundary divisor**, **ranks** the proof shapes, and lays
+out a **10-item forward computation agenda** with a priority order and a decisive fork.
+
+**Register.** All SEARCH; nothing promoted. **No new proof of RH, no Lean, no new proven-ledger item.** The
+underlying facts 37.md rests on were already banked (`Q_0=M_triv+R^P`; `−R^P⪯M_triv`; `λ_max(K_d)≤1`; the
+`j=1` single-point protector; the inverse-Christoffel margin; `det H_1>0` proved; the height-linear detection
+law — all in `bridge-theorem.md` §5b and `08` §2). What is genuinely new and folded in:
+
+- **Three-stratum reciprocal boundary divisor** — pole `y=−4` (entireness `u`) + trivial-zero chain
+  `y_j=−(2j+½)^{−2}` (positive protector `μ_triv`) + nontrivial divisor `y_ρ=−(ρ−½)^{−2}` — as a *named
+  object*, with the **RH-divisor vs proof-divisor** distinction (Stieltjes positivity of the nontrivial
+  divisor vs the trivial-zero divisor as boundary protector) and the relative/Schur-complement speculation
+  `𝒟_rel=𝒟_nontriv⊘𝒟_triv⊘𝒟_pole`. → `bridge-theorem.md` §5b; `08` §2; `big-picture.md` Conj C.
+- **Factorization/contraction sharpening of the proof object** — not "find some positivity" but *source-build
+  a factorization/contraction giving `I−K_d⪰0` at **zero margin*** (the prime saturates the budget to ~24
+  digits; no slack/gap/reserve route survives). → `bridge-theorem.md` §5b; `03` §7; `08` §2.
+- **Ranked proof-shape menu** — (1) one-sided Loewner / boundary-Weyl `K⪯I` (compression of a *non-compact*
+  completed-boundary `K`, essential-spectrum-like `λ_max→1`); (2) Weil-form pullback `p↦h_p`; (3)
+  discriminant / Gram–Heine past `d=1`; (4) direct Jacobi / Hankel-det (lowest). → `bridge-theorem.md` §5b;
+  `03` §7; `08` §2.
+- **Forward route-killer agenda (#35–44)** — high-degree `K_d` law (P1); Dirichlet-`L`/DH reciprocal
+  domination as a **source gate** (P2: genuine Euler `L` pass `K_d⪯I`, DH fails `λ_max>1`); Weil-pullback
+  construction (P3); coarsest-trivial-zero protector test (P4); detection law `d*(γ,β)` (P5); plus
+  Gram–Heine ladder, hard-edge fake battery, hidden-basis search, exterior-Christoffel growth, source-built
+  Schur complement. With the **decisive fork**: broad hard-edge fakes also dominate ⟹ find *why the explicit
+  formula puts ζ in that class*; vs genuine-`L` pass / DH fail ⟹ the domination *is* the source gate.
+  → `research-topics.md` #35–44.
+
+**Affected files:** `bridge-theorem.md` (new §5b synthesis + ranked-menu + agenda block), `08-conjectures-
+required.md` (new §2 bullet), `03-theorems-toward-rh.md` (new §7 subsection), `big-picture.md` (Conj C
+sharpening), `research-topics.md` (#35–44). **New synthesis:** the three-stratum-divisor framing and the
+proof/RH divisor split. **Precisification:** the proof object as a zero-margin contraction; the proof-shape
+ranking. **New conjecture / proof / falsification:** none (restatement + agenda). **Forward agenda:** the
+Dirichlet/DH source-gate test (#38) as the highest-value structural discriminator.
+
+### 64. gpt/37 forward agenda EXECUTED — 10-computation battery run; findings folded into bridge-theorem/08/big-picture/research-topics
+
+**What.** Ran all ten gpt/37 route-killer computations (`research-topics.md` #35–44) on a high-precision
+remote node, exact ζ/L zero-moments `T_k=2Σγ^{−2k}` via `c_{2k}=[w^{2k}]logΞ` (no zero-truncation — an
+80-zero cut corrupts `T_1` by 15%, which had produced a spurious exponent reading). Scripts + raw outputs
+archived under `computations/2026-06-22-*`; full worklog `logs/gpt37-computations-worklog.md`. **Register:**
+all SEARCH/`[OBSERVED]`/`[VERIFIED]`; **no new proof of RH, no Lean, no proven-ledger promotion.**
+
+**Findings folded in (per doc).**
+- **bridge-theorem.md §5b** — new "Empirical refinements" block + an inline marker on the no-margin law:
+  exponent **CORRECTED** (≈3.41→3.48 stable, not 3.7) and **REFINED** (protector/parity-set across the
+  `L`-family: ζ3.41/odd-χ3.90/even-χ5.05, not universal-density); jittered-ζ ≡ ζ to 4–5 digits (numerics carry
+  ZERO prime content); `λ_max→1` no compactness (route 1); `u`=pole vector universal incl. odd-χ (geometric,
+  not arithmetic); protector 100% at `j=1` to d=50; `1/margin=(2.5)^{−2}K_{ν'}(−0.16)` verified to 1.7e-21 at
+  d=20; `R^P` rank-1 in norm / full-rank in sign, near-Jacobi in the `(y+0.16)` basis; detection law mildly
+  super-linear; **DH source gate is faithful but height-limited (real DH off-line zero undetected through
+  d=55) — all-order, not finite-`d`**; Weil-pullback inadmissible, boundary at the seam centre `s=½`.
+- **08 §2** — the gpt/37 source-gate fork marked **RESOLVED** (Euler-product-general mechanism; DH not a
+  finite-`d` gate; route 2 inadmissible / route 1 favored).
+- **big-picture.md** — Conjecture C source-gate question **answered** (faithful but height-limited; all-order).
+- **research-topics.md** — #35–44 annotated `[DONE]` with one-line verdicts.
+
+**Net epistemic change.** No route opened to a finite-`d` certificate; several CLOSED or refined: the K_d/
+margin/conditioning numerics are confirmed **prime-blind** (jitter test), so RH is purely in the **all-order
+sign**; route 2 (Weil-pullback) needs a de Branges/Krein limit with boundary at `s=½`; route 1 (operator/
+boundary-Weyl) is favored (non-compact `K`, near-Jacobi `R^P` in the protector basis). The bridge **mechanism
+is Euler-product-family general** (good for the source-built-transfer framing), and the exponent (rate) is
+archimedean-protector-set, not universal — RH content is exclusively the sign.
+
+### 65. gpt/38 folded — the "purification" verdict; the missing object named as a noncompact boundary-Weyl contraction; four-point compactified boundary divisor; 8 operator-identity computations queued
+
+**Source.** `docs/consolidated/gpt/38.md` (GPT synthesis of the 2026-06-22 battery, entry #64). Its thrust is a
+**purification**: every finite-`d`/conditioning/margin/correlation/rate observable is demoted (the battery showed
+them prime-blind, density/protector-set, generic), leaving exactly one RH-bearing object — the **all-order sign**.
+**Register:** SEARCH/`[SYNTHESIS]`; **no new proof, no Lean, no ledger promotion.**
+
+**Folded in.**
+- **bridge-theorem.md §5b** — new "Purification" block: (i) the missing theorem is now a **single named operator**
+  — a noncompact self-adjoint contraction `K=M_triv^{−1/2}(−R^P)M_triv^{−1/2}` with `K⪯I`, `‖K‖=1`, `1∈σ_ess(K)`,
+  `K_d=P_dKP_d^*`, built without zero-feeding; proof = boundary monotonicity / Weyl positivity, never a
+  spectral-gap estimate; RH `⟺ λ_min(I−K_d)>0 ∀d`. (ii) **revises the three-stratum divisor** to a **four-point
+  compactified reciprocal-boundary divisor** {seam centre `y=∞`(s=½) + pole `y=−4` + first trivial protector
+  `y=−0.16` + hard edge `y=0⁺`}, with the nontrivial divisor demoted to "object controlled, not proof divisor".
+  (iii) updated 5-step proof shape (protector-point `x=y+0.16` operator coordinate; near-Jacobi core + sign-exact
+  tail; Weil-pullback regularized by promoting its seam-centre pole to a boundary vector). (iv) updated slogan.
+- **big-picture.md** — Conjecture B gets the purified form (named noncompact contraction `K`; all-order sign only).
+- **08 §2** — new "Purified target" bullet (the named operator; four-point boundary divisor; →#45–52).
+- **research-topics.md** — gpt/38 agenda **#45–52** (operator-identity computations): protector-point Jacobi
+  model; DH past threshold (d=58–80); regularized Weil-pullback identity; protector-point perturbation/criticality;
+  Dirichlet parity exponent formula; sign-tail audit; Gram–Heine→interval proofs; direct boundary-Weyl triple.
+
+**Net.** No mathematics promoted; the *framing* sharpens from "trivial-zero domination / source gate" to
+"**source-built all-order sign transfer** = a noncompact boundary-Weyl contraction `K⪯I, ‖K‖=1`," with a concrete
+operator coordinate (protector-point shift) and boundary location (seam centre `s=½`) to build against. Next work
+is the operator identity (#45–52), not more rate/margin evidence.
+
+### 66. gpt/38 operator-identity battery EXECUTED — boundary-Weyl theorem shown RANK-ONE; parity exponent formula; band/low-rank routes killed
+
+**What.** Ran the gpt/38 agenda (`research-topics.md` #45–52) on the remote node (exact ζ/L moments). Scripts +
+outputs under `computations/2026-06-22-comp4*/comp5*`; worklog `logs/gpt37-computations-worklog.md`. **Register:**
+SEARCH/`[VERIFIED]`/`[DERIVED]`; **no new proof of RH, no Lean, no ledger promotion.** Seven of eight run (DH-push
+#46 deferred for compute cost; Weil-reg #47 left as the de Branges construction).
+
+**Findings folded in (bridge-theorem.md §5b "Operator-identity battery"; 08 §2; research-topics.md).**
+- **The completed-boundary Weyl PSD theorem is RANK-ONE** (comp52/#52): `H^0=H0_minus+(2.5)^{−2}vv^T`,
+  `v=e(−0.16)`, `inertia(H0_minus)=(d,1)`; RH ⟺ scalar `s(d)=(2.5)^{−2}·margin≥0`. Operator face = moment face =
+  scalar boundary face — the corpus's "finite-rank boundary" is now pinned to **rank one**.
+- **The first trivial zero is the exactly-critical, optimal boundary datum** (comp48/#48): `a_c(−0.16)=0.16` exactly
+  (deficit `=0.16·margin`), and `y_*=−0.16` minimizes `a_c` over the exterior. Structurally explains comp10.
+- **Band and low-rank approximations are both formally dead** (comp45/#45, comp50/#50): R^P=J+E near-Jacobi in the
+  `(y+0.16)` basis, but dropping the 0.8% tail flips `margin +10^{−40}→−10^{16}`, and every rank-`r<d+1` truncation
+  gives the wrong sign. Proof must be sign-exact over the full operator.
+- **No-margin exponent law** (comp49/#49): `α≈4.31+½ln|y_*|` (fits ζ/odd-χ/even-χ to 3 digits) — archimedean-
+  protector-set, slope ½ from the reciprocal square; no universal 4.
+- **Gram–Heine schema reusable** (comp51/#51): tuple identity at d=3,4; `det H_4>0` unconditional for `γ≥16`.
+
+**Net.** The proof target sharpens to a **source-built RANK-ONE boundary-Weyl contraction**: build the bulk
+`H0_minus` (inertia (d,1)) and the single boundary atom `(y=−0.16, mass (2.5)^{−2})` from Γ/pole/FE/EF data without
+zero-feeding, in the protector coordinate `x=y+0.16`, and prove the scalar Weyl function `s(d)≥0 ∀d` keeping the
+exact sign tail. Open next: the de Branges/Krein seam-centre construction (#47) and source-building the bulk/boundary.
+
+### 67. gpt/39 folded — the bridge collapses to a rank-one SCALAR boundary-Weyl theorem at y=−0.16; 7 scalar-Weyl computations queued
+
+**Source.** `docs/consolidated/gpt/39.md` (GPT synthesis of the comp45–52 battery). Thrust: the bridge collapses
+one level further — from "prove a noncompact boundary-Weyl *operator* inequality" to "**prove a rank-one *scalar*
+boundary-Weyl inequality at y=−0.16**." The proof divisor reduces to the single rank-one exterior datum
+`0.16·δ_{−0.16}`; RH ⟺ the scalar Weyl gap `s_d=0.16·margin_d>0 ∀d`. **Register:** SEARCH/`[SYNTHESIS]`; **no new
+proof, no Lean, no ledger promotion.**
+
+**Folded in.**
+- **bridge-theorem.md §5b** — new "collapse to a rank-one SCALAR boundary-Weyl theorem" block: `H^0_d=H^-_d+0.16
+  v_*v_*^T`, `inertia(H^-_d)=(d,1)`, scalar gap `s_d=0.16·margin_d`; the proof divisor reduces to `0.16·δ_{−0.16}`
+  (pole = bookkeeping, chain = background, j=1 = active gate); the "one theorem before RH" rank-one form + slogan.
+- **bridge-theorem.md §7** — added the rank-one "sharpest form" of the one-line summary.
+- **big-picture.md §0** — sharpened the named target to the scalar gap `s_d=0.16·margin_d`.
+- **08 §2** — new "collapse to a scalar gap" bullet (proof divisor = single datum; open faces (i) source-build
+  H^-_d + boundary m-function, (ii) seam-centre de Branges/Krein weld of the Weil pullback).
+- **research-topics.md** — gpt/39 agenda **#53–59** (scalar Weyl m-function; Weyl=Schur=Christoffel unification;
+  Dirichlet generalization; tail-identity; regularized Weil-pullback→scalar gap; DH scalar-gap calibration;
+  Gram–Heine asymptotic lemma).
+
+**Net.** The programme's proof target sharpens from "prove a noncompact operator inequality" to "**prove a
+rank-one scalar boundary-Weyl inequality at y=−0.16**" — `s_d=0.16·margin_d>0 ∀d`, source-built. The first
+trivial zero is reclassified from "protector" to **critical Weyl boundary condition**. Next work: identify the
+scalar Weyl m-function (#53–54), not more margin/tail/dominance tests.
+
+### 68. gpt/39 scalar-Weyl battery EXECUTED — moment & operator faces UNIFIED (Sherman–Morrison); rank-one boundary theorem is Euler-product-general; sign-tail is Hankel
+
+**What.** Ran the gpt/39 agenda's core (#53–56) on the remote node (exact ζ/L moments). Scripts+outputs under
+`computations/2026-06-22-comp5[3-6]*`; worklog `logs/gpt37-computations-worklog.md`. **Register:** SEARCH/
+`[VERIFIED]`/`[PROVED — Sherman–Morrison]`; **no new proof of RH, no Lean, no ledger promotion.** (#57 Weil-reg
+left as the de Branges construction; #58 DH deferred for compute; #59 Gram–Heine pending.)
+
+**Findings folded in (bridge-theorem.md §5b "Scalar Weyl m-function battery"; research-topics.md).**
+- **The two faces are ONE number** (comp54/#54): Sherman–Morrison gives `s_d = a_*+1/m` (rank-one Schur) `=
+  1/K_{ν'}(−0.16)` (inverse exterior Christoffel) `= (2.5)^{−2}·margin_d` (PSD regime), exact to 10^{−103}. The
+  moment-face reproducing kernel and the operator-face rank-one Schur gap are the **same scalar** — RH ⟺ that
+  scalar stays positive ∀d.
+- **The rank-one boundary theorem is completed-Euler-product-general** (comp55/#55): inertia(H^-_χ)=(d,1) for ζ
+  and every real primitive Dirichlet `L`; the Γ-factor selects the boundary datum `y_{*,χ}=−(a+½)^{−2}` (the same
+  point that sets comp49's exponent law `α=4.31+½ln|y_*|`).
+- **The sign-essential tail is a Hankel functional** (comp56/#56): in the protector coordinate `R^P=J+E`, `E` is
+  exactly Hankel (`E_{ij}=f(i+j)`) — the moments of one signed functional `μ_E` (conjecturally the seam-centre
+  boundary distribution); source-identifying `μ_E` is the tail identity.
+- **No stationarity** (comp53/#53): `∂_y a_c(−0.16)≈2d≠0`; the entrance is the Christoffel identity, not `∂_y a_c=0`.
+
+**Net.** The proof object narrows to a **single scalar Weyl m-function = the inverse exterior Christoffel kernel
+`1/K_{ν'}(y_{*,χ})` at the Γ-selected first trivial zero**, uniform across the completed-`L` family; RH ⟺ it stays
+positive ∀d. Moment face = operator face (proved). Open: source-build `K_{ν'}(y_{*,χ})` (= bulk `H^-` + Hankel
+tail `μ_E`) without zero-feeding, and weld the seam-centre Weil-pullback regularization (#57).
+
+### 69. The 3 deferred computations resolved/advanced — DH caught at d*=62 (fails by scalar-gap crossing); boundary is source-built; batched-Hurwitz tooling
+
+**What.** Resolved the gpt/39 deferrals (#57/#58/#59) and the gpt/38 DH deferral (#46). Scripts+outputs under
+`computations/2026-06-22-comp5[7-9]*`, `-hurwitz-batch.py`; worklog updated. **Register:** SEARCH/`[VERIFIED]`;
+**no new RH proof / Lean / ledger promotion.**
+
+- **#58/#46 DH past threshold — SOLVED.** Root cause was mpmath recomputing a full Euler–Maclaurin sweep per
+  derivative order. Built a **batched Hurwitz–Taylor routine** (`hurwitz_taylor`, all M coeffs in one sweep,
+  verified to 2.7e−499 at dps=500); only 4 calls needed for DH ⟹ build 146s (was 250–500s+). Result: **DH
+  off-line zero caught at d*=62** — the scalar gap `s_d=a_*·margin` flips negative at d=62 while `inertia(H^-)=
+  (d,1)` PERSISTS. DH fails by the **boundary atom becoming insufficient** (`a_*<a_c`), the exact rank-one
+  Weyl-threshold crossing — fake-family failure in the boundary-Weyl language (gpt/39 #58 target hit).
+- **#57 Weil-pullback — computable half done.** The rank-one boundary atom = the **j=1 term of the archimedean
+  square-sum** (rel 0) ⟹ boundary source-built from the Γ-factor, no zero-feeding; bulk `H^-=M_triv^{(j≥2)}+R^P`,
+  defect prime-sourced, inertia (d,1). The de Branges/Krein seam-centre construction remains paper-math (target
+  now source-identified).
+- **#59 Gram–Heine d=5,6 — done.** Tuple identity holds d=5,6; det H_5,H_6 unconditional for γ≥25; schema
+  reusable. Rigorous interval-symbolic version is a follow-on.
+
+**Folded:** bridge-theorem.md §5b (source-boundary anatomy + DH fails-by-gap); research-topics.md (deferrals
+resolved + the batched-Hurwitz tooling note). **Net:** all queued computations across gpt/37–39 are now run; the
+only genuinely-open item is the de Branges/Krein construction (paper math), with a source-identified target.

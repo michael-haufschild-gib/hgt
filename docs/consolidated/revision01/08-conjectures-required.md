@@ -133,6 +133,68 @@ and the observation that falsifies it.
     measure**, so the square cannot be completed from source without `μ_0≥0` (= RH). The honest target is a measure
     /transfer proof that the (small, hard-edge) trivial-zero square `M^A` dominates the full-dimensional negative
     `R^P` everywhere — exactly, per the tightness.
+  - *The cleanest finite shadow, the ranked proof menu, and the three-stratum divisor. `[SYNTHESIS — gpt/37]`*
+    The domination `M^A ⪰ −R^P` is cleanest as **one-sided Loewner**:
+    `K_d := M_triv^{−1/2}(−R^P)M_triv^{−1/2}`, RH ⟺ `λ_max(K_d) ≤ 1 ∀d` (only the negative directions matter —
+    the prime may overshoot on the positive side). The sharpening on the *proof object*: not "find some
+    positivity" but **source-build a factorization/contraction giving `I−K_d⪰0` at zero margin** (the tightness
+    forbids any slack — no `Q_prime ≥ −(1−ε)R_d^A` survives). The divisor is **three-stratum** — pole `y=−4`
+    (entireness `u`), trivial chain `y_j=−(2j+½)^{−2}` (positive protector `μ_triv`), nontrivial
+    `y_ρ=−(ρ−½)^{−2}` (to be forced onto `ℝ_{>0}`); **RH divisor** = Stieltjes positivity of the nontrivial
+    divisor, **proof divisor** = the trivial-zero divisor as a boundary protector (RH = "the completed
+    reciprocal divisor is a positive Stieltjes divisor once the `y=−4` pole boundary is absorbed"). Candidate
+    shapes, **ranked**: (1) one-sided Loewner / boundary-Weyl `K⪯I` — `K_d` as a compression of a single
+    **non-compact** completed-boundary `K` (corner-concentration ⟹ essential-spectrum-like `λ_max→1`); (2)
+    Weil-pullback `p↦h_p` with `Q_0[p]=Q_W[h_p]`; (3) discriminant / Gram–Heine ladder past `d=1`; (4) direct
+    Jacobi / Hankel-det (lowest — hard-edge ill-conditioned). Forward route-killers in `research-topics.md`
+    #35–44; the decisive fork is whether the **Dirichlet/DH** test makes `K_d⪯I` a real **source gate** (genuine
+    Euler-product `L` pass, Davenport–Heilbronn fails by `λ_max>1`) or whether broad hard-edge fakes also
+    dominate (then the theorem to find is *why the explicit formula puts `ζ` in that domination class*).
+  - *Fork RESOLVED empirically `[2026-06-22 battery — exact ζ/L moments; logs/gpt37-computations-worklog.md]`.*
+    Both branches partly hold, and the verdict is the **second**: (i) the bridge structure **reproduces for every
+    genuine completed `L`** (vanishing margin + pole-aligned `u`, overlap 0.97–0.99) — the mechanism is
+    **Euler-product-family general**, not ζ-specific; but the exponent is **protector/parity-set** (ζ 3.41, odd-`χ`
+    3.90, even-`χ` 5.05 at equal density), not a universal density constant. (ii) The **real Davenport–Heilbronn**
+    counterexample (first off-line zero `γ=85.7,σ=0.808`; even completion validated to `10^{−360}`) is **NOT
+    detected by `K_d` through d=55** (its reciprocal atom `Im(y)≈10^{−6}` sits at the hard edge; `d*≈55` by the
+    detection law) — so `K_d⪯I` is faithful but **height-limited: not a finite-`d` source gate**. (iii)
+    **Jittered-ζ** (positions kept, correlations destroyed) reproduces ζ's margin law to **4–5 digits** ⟹ the
+    numerics carry **zero prime/correlation content**. Net: the operative open theorem is exactly *"why the explicit
+    formula puts `ζ` in the domination class"* — **at the level of the all-order sign**, never a finite-`d` gate.
+    (Ranked-route updates: route 2 Weil-pullback is **inadmissible** — `h_p` has a pole at `t=0⟺s=½`, needs a de
+    Branges/Krein limit, boundary at the **seam centre**; route 1 is favored — `K` non-compact (`λ_max→1`), and
+    `R^P` is **near-tridiagonal/Jacobi (99.994% banded) in the protector-point `(y+0.16)` basis**, rank-1 in norm
+    but full-rank in sign.)
+  - *Purified target — a single named operator. `[SYNTHESIS — gpt/38]`* The battery's net effect is a
+    **purification**: with every finite-`d`/conditioning/margin/correlation observable demoted, B1–B3 reduce to one
+    statement — *the completed explicit formula produces a **noncompact self-adjoint contraction**
+    `K = M_triv^{−1/2}(−R^P)M_triv^{−1/2}` with `K ⪯ I`, `‖K‖=1`, `1∈σ_ess(K)`, finite sections `K_d=P_d K P_d^*`,
+    built without zero-feeding.* RH `⟺ λ_min(I−K_d)>0 ∀d` (**sign, not rate**), so the proof is **boundary
+    monotonicity / Weyl positivity**, never a spectral-gap / `λ_max≤1−ε` estimate (comp7: `λ_max→1`, noncompact).
+    The **proof divisor** is a four-point *compactified reciprocal-boundary* divisor — seam centre `y=∞` (s=½, the
+    de Branges/Krein boundary where the Weil-pullback breaks) + pole `y=−4` (Part A, closed) + first trivial-zero
+    protector `y=−0.16` (exterior Christoffel point) + hard edge `y=0⁺` — controlling the nontrivial divisor (the
+    object, not the proof divisor). Smoking gun: the **first trivial zero `−0.16` controls the whole hard edge `0⁺`**
+    (`1/margin=(2.5)^{−2}K_{ν'}(−0.16,−0.16)`). Forward operator-identity computations: `research-topics.md` #45–52.
+  - *Operator-identity battery — the boundary-Weyl theorem is RANK-ONE. `[2026-06-22, VERIFIED d=8,12,16]`* `H^0=
+    H0_minus+(2.5)^{−2}vv^T`, `v=e(−0.16)`, with **inertia(H0_minus)=(d,1)** (one defect); RH `⟺` the **scalar**
+    `s(d)=(2.5)^{−2}+1/(v^T H0_minus^{−1}v)≥0`, `s(d)=(2.5)^{−2}·margin→0⁺` — operator face = moment face = scalar
+    boundary face. The datum `(y=−0.16, mass (2.5)^{−2})` is **exactly critical** (a_c(−0.16)=0.16, deficit=0.16·
+    margin) and `y_*=−0.16` **minimizes** a_c over the exterior (optimal control point). Both band- and low-rank
+    approximations are **dead** (dropping the 0.8% off-Jacobi tail flips margin +10^{−40}→−10^{16}; every rank-`r<d+1`
+    truncation gives the wrong sign). No-margin exponent law: **α≈4.31+½ln|y_*|** (archimedean-protector-set). So
+    the target is a **source-built RANK-ONE boundary-Weyl contraction**: build bulk H0_minus (inertia (d,1)) + the
+    single boundary atom from Γ/pole/FE/EF without zero-feeding, prove `s(d)≥0 ∀d` keeping the exact sign tail.
+  - *Collapse to a scalar gap — the "one theorem before RH", rank-one form. `[SYNTHESIS — gpt/39]`* The bridge
+    collapses one level further: the **proof divisor reduces to the single rank-one exterior datum**
+    `a_*δ_{y_*}=0.16·δ_{−0.16}` (the pole `y=−4` is automatic Part-A bookkeeping; the rest of the trivial chain is
+    background; **`j=1` is the active gate**), and RH becomes a **scalar** inequality: `H^0_d=H^-_d+0.16·v_*v_*^T`,
+    `inertia(H^-_d)=(d,1)`, the first-trivial-zero atom repairs the one bulk defect, leaving the **Weyl gap**
+    `s_d=0.16·margin_d>0 ∀d` (`a_*−a_c(d;y_*)=0.16·margin_d`, →0⁺). **RH ⟺ the scalar Weyl gap created by the first
+    trivial zero stays positive at every degree.** Open faces: (i) source-build `H^-_d` + the boundary `m`-function
+    at `y=−0.16` without zero-feeding; (ii) weld route-2 — the seam-centre (`s=½`) de Branges/Krein regularization
+    of the Weil pullback must produce exactly this rank-one boundary condition (`FP_{s=½}Q_W[h_p] → H^-_d+0.16 v_*v_*^T`,
+    gap `s_d`). Forward computations: `research-topics.md` #53–59.
   - *The `χ₄`/character-decomposition route is DEMOTED `[evaluated, d=4,6,8]`.* `β=L(2k,χ₄)` and the arch budget is
     the quarter-integer Hurwitz tower `S_k^A=2^{2k+1}−2^{−2k}ζ(2k,¼)`, whose mod-4 split is principal `ζ` (all odd
     integers) `+` `χ₄` `β` (`ζ(2k,¼)±ζ(2k,¾)`). But character decomposition **breaks** the manifest positivity:

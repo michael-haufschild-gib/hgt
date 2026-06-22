@@ -1,0 +1,13 @@
+d=8:
+  [54 UNIFY] s(Schur)=2.9550313e-41  s(Christoffel=1/K)=2.9550313e-41  s(0.16*margin)=2.9550313e-41
+            agree: |Schur-Chris|/s=1.6e-103  |Chris-marg|/s=2.8e-9
+  [53 STATIONARITY] a_c(-0.16)=0.16  a_c'(-0.16)=15.862  a_c''(-0.16)=2.1448e+35
+d=12:
+  [54 UNIFY] s(Schur)=1.4949316e-64  s(Christoffel=1/K)=1.4949316e-64  s(0.16*margin)=1.4949316e-64
+            agree: |Schur-Chris|/s=1.1e-82  |Chris-marg|/s=2.4e-13
+  [53 STATIONARITY] a_c(-0.16)=0.16  a_c'(-0.16)=23.841  a_c''(-0.16)=1.1771e+58
+            true argmin a_c (f'(y)=0) near -0.16: y=-0.16  (offset -2.03e-57)
+d=16:
+  [54 UNIFY] s(Schur)=3.9157227e-89  s(Christoffel=1/K)=3.9157227e-89  s(0.16*margin)=3.9157227e-89
+            agree: |Schur-Chris|/s=5.7e-60  |Chris-marg|/s=6.6e-16
+  [53 STATIONARITY] a_c(-0.16)=0.16  a_c'(-0.16)=31.827  a_c''(-0.16)=2.5511e+82
