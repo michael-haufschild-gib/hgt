@@ -1,0 +1,7 @@
+=== comp65: N1 Pick test (count negative squares of m_sigma) ===
+  actual zeros (RH): kappa = 1  (expect 1 = boundary atom)
+  with off-line quartet (g0=20,delta=0.1): kappa = 1
+=== comp70: m_d(y) roots interlacing across d ===
+  d=6: 2 real roots of m_d(y); sample (exterior, y<0): ['-0.16', '-0.16']
+  d=8: 2 real roots of m_d(y); sample (exterior, y<0): ['-0.16', '-0.16']
+  d=10: 2 real roots of m_d(y); sample (exterior, y<0): ['-0.16', '-0.16']

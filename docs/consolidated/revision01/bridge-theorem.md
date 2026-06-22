@@ -716,6 +716,73 @@ faces: source-build `K_{ν'}(y_{*,χ})` (equivalently the bulk `H^-` plus the Ha
   exact rank-one Weyl-threshold crossing. (Build via a batched Hurwitz–Taylor routine, `2026-06-22-hurwitz-batch.py`,
   all `M` coefficients in one Euler–Maclaurin sweep — removes the L-function moment-build bottleneck.)
 
+**The exponent law DERIVED, and the four-piece proof shape `[gpt/proof4 + gpt/41]`.**
+- **The parity exponent is derived, not fitted `[DERIVED]`.** The empirical `α≈4.31+½ln|y_*|` (comp49) is the
+  `L̄_d≈4` specialization of the exterior-Christoffel asymptotic
+  > `α_d(y_*) ≈ 4 + [4(1−ln2) + 2ln|y_*|] / L̄_d`,  `L̄_d = (1/d)Σ_{j≤d} ln γ_j`,
+  with three explicit origins: **base 4** = the reciprocal-square weight (`x_j=γ_j^{−2} ⟹ x_j²=γ_j^{−4}`);
+  **`4(1−ln2)≈1.227`** = the hard-edge Vandermonde/spacing correction (`2∫_0^1 log(1−t²)dt = −4(1−ln2)`, via the
+  quantile `x_{d+1}/x_j≈(j/(d+1))²`); **`2ln|y_*|`** = the exterior-Christoffel normalization (`p(−a)=1 ⟹
+  ∏(a+x_j)^{−2}~a^{−2d}`). Checks: ζ `3.391`, odd-χ `3.901`, even-χ `5.000` (obs `3.41/3.90/5.05`). *Caveat:* the
+  slope `½` is `2/L̄_d` at the tested `L̄_d≈4`; since `L̄_d` grows with `d`, the slope **drifts downward** at
+  astronomically large `d` — there is **no universal ½**, confirming "the rate is generic hard-edge geometry, the
+  sign is RH."
+- **The four-piece proof shape `[gpt/41]`.** **(A)** the reciprocal chart, target `Q_0[p]≥0 ∀p`. **(B)** the **Γ
+  boundary split** `H^0_d = H^-_d + a_*v_*v_*^T` with `a_*v_*v_*^T` the first Γ-trivial-zero atom (source-built,
+  comp57). **(C)** the **one-defect bulk theorem** `inertia(H^-_d)=(d,1) ∀d` (verified ζ, real `L`, and DH through
+  the crossing — "removing the first Γ-boundary atom leaves exactly one negative square"). **(D)** the **scalar
+  Weyl gap theorem** `s_d = a_*+1/m_d = 1/K_{ν'}(y_*) = a_*·margin_d > 0 ∀d` (`m_d=v_*^T(H^-_d)^{−1}v_*`). The new
+  reduction (given C): **`Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`** — the *Rank-one Γ-boundary Weyl Bridge*.
+- **The named fake-family gate is `s_d=0` `[VERIFIED — DH at d=62]`.** A valid source-built object must separate
+  DH-style fakes at a *named structural gate*, not by a generic positivity restatement. The gate is now exact:
+  `s_d=0` (DH crosses it at `d=62` while `inertia(H^-)=(d,1)` persists).
+- **The missing paper theorem, made specific `[gpt/41]`.** Source-identify the Hankel-tail functional `μ_E`
+  (comp56: `E_{ij}=f(i+j)`) as the **finite-part seam-centre boundary distribution at `s=½`**, and prove the chain
+  `regularized Weil pullback ⟹ seam-centre finite part ⟹ E_{ij}=f(i+j) ⟹ H^-_d=J+E+(Γ/pole pieces) ⟹
+  s_d=a_*+1/m_d>0`. Target identity: **`FP_{w=0} Q_W[h_p] = Q_0[p] − a_*·p(y_*)²`** (the missing Hankel functional
+  `E[p²]` as the finite-part residue) — a **finite-part identity**, not a matrix experiment.
+
+So the conjectured **last theorem before RH** is the **Rank-one Γ-boundary Weyl Bridge**: *Γ supplies the exact
+boundary atom; the primes create exactly one bulk defect; RH says the Γ atom repairs it at every degree*
+(`s_d>0 ∀d`). Acceptance scorecard: faithful ✓ (DH flips exactly when `s_d<0`), completed ✓ (Γ-selected atom),
+source-built boundary ✓ (the `j=1` term), fake-family separating ✓ (DH at `d=62`), no-margin-compatible ✓
+(`s_d→0⁺`); the one open word is **prove** (all-level `s_d>0 ∀d`, via the seam-centre finite-part identity).
+
+**The seam finite-part construction — built, and the tail identified `[gpt/proof5–8]`.** The Weil-pullback route is
+now a constructed regulator/finite-part lemma; the open content has narrowed to the scalar positivity alone.
+- **Lemma 1 — seam-residue identity `[VERIFIED — comp60]`.** With `h_p(w)=−w^{−2}p(−w^{−2})²` (`= y·p(y)²`) and
+  `M_Ξ(w):=(1/2w)·Ξ'(w)/Ξ(w) = Σ_{k≥0}(−1)^k (T_{k+1}/2)\,w^{2k}` (completed log-derivative generates the reciprocal
+  moments; coefficient `(−1)^k T_{k+1}/2` in the folded convention `T_k=2Σγ^{−2k}`), the bridge form is a single
+  residue at the seam centre `w=0`: `Q_0[p] = −Res_{w=0}[h_p·(Ξ'/Ξ)]`. Splitting `Ξ'/Ξ=A+P` gives `Q_0=Q_A+Q_P`,
+  `Q_A` the closed archimedean rank-one form `−4p(−4)²+Σ_{j≥1}a_jp(y_j)²`; extracting the `j=1` atom yields the
+  rank-one split `H^0_d=H^-_d+a_*v_*v_*^T` — all source-side.
+- **The canonical finite part exists and is regulator-independent `[gpt/proof7]`.** Admissible even approximants
+  `h_{p,q}^{ε,R}(t)=t^{−2}p(t^{−2})q(t^{−2})·η(t/ε)·ψ(t/R)` (smooth, compactly supported, zero near `t=0`) give the
+  Hadamard expansion `Q_W[h^{ε,R}]=Σ_m A_m ε^{−m}+B·logε+C_R+o(1)` with **only odd powers** `m∈{1,…,4d+1}` and
+  **`B=0` by evenness** (no log divergence in the canonical symmetric scheme). The finite part
+  `𝔉[p,q]=FP_{ε=0,R=∞}Q_W`: (i) has an `R→∞` limit (zero/arch tails `O(log R/R)`); (ii) is **independent of the seam
+  cutoff `η`** (the only possible finite remainder needs a `u^{−1}` term, `2r−2n−2=−1`, with no integer solution for
+  even jets); (iii) is **independent of the window `ψ`**; (iv) is necessarily a **Hankel** form
+  `𝔉[p,q]=Σ_{ij}c_id_j 𝔣_{i+j}` (seam-local reads only Laurent `i+j` — the analytic proof of the observed
+  `E_{ij}=f(i+j)`). The only freedom is a zero-free gauge `Ξ→e^{q(w²)}Ξ`, which shifts `𝔉` by a local Hankel
+  counterterm `λ_{i+j}∝(i+j+1)q_{i+j+1}` (comp68) — **removed by the canonical `ξ`-normalization**. So the
+  canonicality concern is settled: with canonical `ξ` the finite part is unique.
+- **The tail IS the boundary distribution — `E = μ_E` `[gpt/proof8 — proved, conditional on the source-defined `J`]`.**
+  With the source-defined Green decomposition `R^P = J + 𝓑` (`J` the interior Jacobi part, `𝓑` the seam boundary
+  form), the boundary moments `e_n^{fp}=FP⟨𝒲_P, φ_n⟩` (`𝒲_P` the source prime-residual distribution, **not**
+  zero-fed; `φ_n(w)=−w^{−2}(−w^{−2}+a_*)^n`) give `𝓑_{ij}=e^{fp}_{i+j}`. Since `J` is Jacobi (`J_{ij}=0` for
+  `|i−j|>1`) and both `E,𝓑` are Hankel, they agree on every off-tridiagonal entry, hence on all anti-diagonals
+  `i+j≥2`; the `i+j=0,1` entries are pinned by the canonical `ξ`-gauge + the explicit `j=1` Γ-atom subtraction.
+  Therefore the **computed Hankel tail `E` IS the seam finite-part boundary distribution `μ_E`** (projectively —
+  finite sections are compressions of the infinite functional). This closes "what is `E`": source-built `μ_E`, not a
+  fitted remainder. (Boundary-triple reading: the Green trace collapses to `Γ_0 F_p=p(y_*)`, Γ selecting `Θ=a_*=0.16`
+  — the rank-one atom is the boundary condition of a self-adjoint extension.)
+
+So the open content has narrowed to **one** statement — the **source-built scalar Weyl positivity**:
+`s_d = a_*+1/m_d = 1/K_{ν'}(y_*) > 0 ∀d` for the form `H^- = J + μ_E + μ_{≥2}` after the `a_*δ_{y_*}` repair. The
+construction (admissibility, canonical finite part, Hankel, `E=μ_E`) is established; what remains is the RH-bearing
+positivity apex, no longer "what is `E`" or "is the finite part canonical."
+
 ---
 
 ## 6. What the theorem must, and must not, be (the corpus's guardrails)
@@ -750,4 +817,7 @@ faces: source-build `K_{ν'}(y_{*,χ})` (equivalently the bulk `H^-` plus the Ha
 > negative bulk square), and the canonical first-trivial-zero boundary atom repairs exactly that one defect,
 > leaving the scalar Weyl gap `s_d = 0.16·margin_d > 0`. RH ⟺ that gap stays positive at every degree (it
 > →0⁺). Equivalently: **RH is the all-degree positivity of the scalar Weyl gap created by the first trivial
-> zero `y=−0.16`** — a source-built rank-one completed-boundary Weyl theorem.*
+> zero `y=−0.16`** — a source-built rank-one completed-boundary Weyl theorem.* This is the **Rank-one Γ-boundary
+> Weyl Bridge** (gpt/41): *Γ supplies the exact boundary atom, the primes create exactly one bulk defect, RH says
+> the Γ atom repairs it at every degree.* Its new content is the reduction **`Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`** (given the
+> one-defect bulk theorem `inertia(H^-_d)=(d,1)`); the four-piece proof shape + derived exponent law are in §5b.

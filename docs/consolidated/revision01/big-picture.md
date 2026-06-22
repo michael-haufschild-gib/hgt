@@ -29,7 +29,10 @@ what is excluded is a finite algebraic-differential rule that *produces* `ζ`, n
 > the **seam centre `s=½`**. Sharper still: the completed form splits as `H^0_d = H^-_d + 0.16·v_{−0.16}v_{−0.16}^T`
 > with `inertia(H^-_d)=(d,1)`, so RH `⟺` the **scalar Weyl gap** `s_d = 0.16·margin_d > 0 ∀d` (the first
 > trivial-zero atom stays just above the rank-one Weyl threshold at every degree). The proof is a **sign-exact
-> boundary-monotonicity theorem** at `y=−0.16`, never an estimate.
+> boundary-monotonicity theorem** at `y=−0.16`, never an estimate. This is the **Rank-one Γ-boundary Weyl Bridge**:
+> *Γ supplies the exact boundary atom (the j=1 trivial zero), the primes create exactly one bulk defect, RH says
+> the Γ atom repairs it at every degree*; the new reduction is `Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`, and the **named
+> fake-family gate is `s_d=0`** (Davenport–Heilbronn crosses it at d=62 while the bulk inertia (d,1) is preserved).
 
 ---
 
@@ -356,8 +359,11 @@ Everything reduces to five cores (Master, A, B, C, D) plus one framing assumptio
 > - the RH content is **the sign of a rank-one boundary-Weyl contraction** — operator face = moment face =
 >   a **scalar condition at the single point `y=−0.16`** (the first trivial zero), which is *exactly
 >   critical and optimal* at every degree (the slack is precisely the bridge margin);
-> - the no-margin **rate is a clean archimedean law** `α ≈ 4.31 + ½·ln|y_*|`, fixed by the Γ-factor's
->   coarsest trivial-zero image — *not* the zeros, *not* the primes (so there is no universal "4");
+> - the no-margin **rate is a clean archimedean law, now derived** (not fitted):
+>   `α_d(y_*) ≈ 4 + [4(1−ln2)+2ln|y_*|]/L̄_d` (`L̄_d=(1/d)Σ ln γ_j`) from exterior-Christoffel asymptotics —
+>   base 4 (reciprocal-square) + hard-edge Vandermonde correction + Γ-boundary normalization; the empirical
+>   `≈4.31+½ln|y_*|` is its `L̄_d≈4` finite-window specialization (the slope `½=2/L̄_d` drifts down with `d`, so
+>   no universal slope) — *not* the zeros, *not* the primes;
 > - the numerics are **certified prime-blind**: ζ and jittered-ζ (correlations destroyed) are
 >   indistinguishable to 4–5 digits — every conditioning / margin / GUE observable carries zero RH content;
 > - **no approximation survives** — band *and* low-rank truncations both flip the sign (dropping a 0.8%
@@ -387,7 +393,10 @@ Everything reduces to five cores (Master, A, B, C, D) plus one framing assumptio
 > - **raw Weil test functions** — inadmissible at the seam centre; the route needs a singular boundary
 >   extension, not a classical test space.
 >
-> **What stays genuinely open.** The construction itself (source-build bulk + boundary without
-> zero-feeding), the de Branges/Krein seam-centre regularization, and — orthogonally, on the value axis —
-> the Schanuel-for-prime-logs apex (A). Everything else is scaffolding, coordinates, or guardrails around
+> **What stays genuinely open.** The seam finite-part construction is now built: the canonical regulator/finite-part
+> at the seam centre exists and is regulator-, window-, and gauge-fixed (`B=0` by evenness; unique under canonical
+> `ξ`), and the sign-essential Hankel tail is identified with the source-built seam boundary distribution
+> (`E=μ_E`, conditional on the source-defined interior Jacobi part). What remains is **one** statement — the
+> **source-built scalar Weyl positivity** `s_d = a_*+1/m_d = 1/K_{ν'}(y_*) > 0 ∀d` — and, orthogonally on the value
+> axis, the Schanuel-for-prime-logs apex (A). Everything else is scaffolding, coordinates, or guardrails around
 > those.

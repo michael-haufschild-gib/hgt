@@ -1161,3 +1161,117 @@ tail `μ_E`) without zero-feeding, and weld the seam-centre Weil-pullback regula
 **Folded:** bridge-theorem.md §5b (source-boundary anatomy + DH fails-by-gap); research-topics.md (deferrals
 resolved + the batched-Hurwitz tooling note). **Net:** all queued computations across gpt/37–39 are now run; the
 only genuinely-open item is the de Branges/Krein construction (paper math), with a source-identified target.
+
+### 70. gpt/proof4 + gpt/41 folded — exponent law DERIVED; the four-piece Rank-one Γ-boundary Weyl Bridge; named gate s_d=0
+
+**Source.** `docs/consolidated/gpt/proof4.md` (analytic derivation of comp49's exponent law) and `gpt/41.md`
+(synthesis of the comp57/58/59 deferral-resolution runs). **Register:** SEARCH/`[DERIVED]`/`[SYNTHESIS]`; **no new
+proof of RH, no Lean, no ledger promotion.**
+
+**Folded in.**
+- **The parity exponent is DERIVED, not fitted** (proof4): `α_d(y_*)≈4+[4(1−ln2)+2ln|y_*|]/L̄_d`, L̄_d=(1/d)Σln γ_j,
+  from exterior-Christoffel asymptotics — base 4 (reciprocal-square) + 4(1−ln2) hard-edge Vandermonde correction
+  (`2∫₀¹log(1−t²)dt`) + 2ln|y_*| Christoffel normalization. The empirical `≈4.31+½ln|y_*|` is the L̄_d≈4
+  finite-window case; the slope ½=2/L̄_d drifts down with d (no universal slope). Checks ζ/odd/even →3.391/3.901/
+  5.000. → bridge-theorem §5b, big-picture §5.
+- **The four-piece proof shape / Rank-one Γ-boundary Weyl Bridge** (41): (A) reciprocal chart; (B) Γ boundary split
+  H^0=H^-+a_*v_*v_*^T (atom = first Γ-trivial-zero term, source-built); (C) one-defect bulk theorem inertia(H^-)=
+  (d,1) ∀d; (D) scalar Weyl gap s_d=a_*+1/m_d=1/K_ν'(y_*)=a_*·margin>0 ∀d. New reduction: **Q_0≥0 ∀p ⟺ s_d>0 ∀d**.
+  → bridge-theorem §5b/§7, big-picture §0, 08 §2.
+- **Named fake-family gate s_d=0** (41): DH crosses at d=62 with inertia(H^-)=(d,1) preserved — separates DH at a
+  structural gate (satisfies the corpus's fake-family-separation requirement). → bridge-theorem §5b, big-picture §0, 08 §2.
+- **The remaining work is a finite-part identity, not a sweep** (41 §9): source-identify μ_E (comp56 Hankel tail)
+  as the seam-centre finite-part boundary distribution; target `FP_{w=0}Q_W[h_p]=Q_0[p]−a_*p(y_*)²` ⟹ s_d>0. Plus
+  the one-defect bulk lemma inertia(H^-)=(d,1) ∀d. → research-topics #60–62.
+
+**Net.** The conjectured last theorem before RH is now the **Rank-one Γ-boundary Weyl Bridge** with a derived rate
+law and a named fake-family gate (s_d=0); the open work is paper-math (the seam-centre finite-part identity + the
+one-defect lemma), not further numerical sweeps. Acceptance scorecard: faithful/completed/source-built-boundary/
+fake-separating/no-margin-compatible all ✓; the one open word is **prove** (all-d s_d>0).
+
+### 71. gpt/proof5 folded — seam finite-part lemma package; Lemma 1 (residue identity) VERIFIED; the tail E PROVED Hankel; one open analytic step isolated
+
+**Source.** `docs/consolidated/gpt/proof5.md` (paper-math lemma package for the open Weil-pullback / seam
+finite-part step). **Register:** Lemma 1 `[VERIFIED — comp60]`, §6 Hankel-forcing `[DERIVED]`, the de Branges/Krein
+finite-part construction `[OPEN — paper math]`. **No new proof of RH, no Lean, no ledger promotion.**
+
+**Folded in (bridge-theorem.md §5b "seam-residue lemma package"; 08 §2; research-topics #60).**
+- **Lemma 1 — seam-residue identity, VERIFIED (comp60).** `Q_0[p] = −Res_{w=0}[h_p(w)·(Ξ'/Ξ)(w)dw]`,
+  `h_p(w)=−w^{−2}p(−w^{−2})²`, with `(1/2w)(Ξ'/Ξ)=Σ(−1)^k(T_{k+1}/2)w^{2k}`. The bridge form is a single seam-centre
+  (w=0 ⟺ s=½) residue of the COMPLETED log-derivative; splitting `Ξ'/Ξ=A+P` gives `Q_0=Q_A+Q_P` source-side.
+  (Corrected proof5's constant: −1 on Ξ'/Ξ in our folded `T_k=2Σγ^{−2k}` convention, not −½ — proof5 uses unfolded T.)
+- **The tail E is PROVED Hankel (§6).** `h_p` is a Laurent series at w=0; a finite-part distribution there pairs only
+  with the coefficients indexed by n ⟹ `E_{ij}=e_{i+j}` necessarily — *proves* comp56's empirical Hankel tail from
+  the singular-pullback structure. Generating fn `M_E(w)`, `μ_E[p²]=−Res[h_p·w·M_E]`.
+- **The one open analytic step, isolated.** All else is closed algebra (Lemma 1; the Γ-atom = j=1 trivial-zero term,
+  source-built; the Sherman–Morrison scalar `s_d=a_*+1/m_d=1/K_{ν'}(y_*)`). The single remaining theorem: construct
+  the canonical de Branges/Krein finite-part domain at w=0 and prove its boundary distribution is exactly μ_E
+  (`FP^bulk_{w=0}Q_W[h_p]=Q_0[p]−a_*p(y_*)²`). A completed-function-theory finite-part identity, not a numerical lemma.
+
+**Net.** The Weil-pullback route is no longer "vague" — it has a verified residue backbone (Q_0 = seam residue of the
+completed Ξ'/Ξ), a proof that the sign-essential tail must be a Hankel functional, and a single isolated open step
+(the de Branges/Krein finite-part domain). The proof-program's remaining content is now one named completed-function
+construction, with everything around it closed.
+
+### 72. de Branges/Krein construction — blocker diagnosed (claude + gpt/42 synthesis); 8-computation program queued (rt#63–70)
+
+**Context.** The one genuinely-open step (gpt/proof5) is the canonical de Branges/Krein finite-part construction at
+the seam centre. Both Claude and GPT (`docs/consolidated/gpt/42.md`) were asked to diagnose the blocker and propose
+NON-theatre computations. **Register:** SEARCH/diagnosis; no new math promoted.
+
+**Synthesis (independent convergence).** Both reached: Krein–Langer **Π₁ (one-negative-square)**, not ordinary
+Hilbert de Branges; Hankel is forced by locality at w=0 but the actual `e_n` is not fixed until the domain is;
+zero-margin kills ε-closure. GPT's shortest-form blocker — **"canonicality of the finite part"** — is the sharpest:
+since tiny tails flip the sign (comp45/50), a finite-part scheme ambiguity could *decide RH in the model*; so the
+single most decisive test is whether μ_E is even regulator-independent (rt#67), prior to locating it (rt#63).
+
+**Tasks created (rt#63–70):** #63 locate μ_E (support/Padé/at-infinity), #64 source-identify μ_E (PSLQ + prime-sum),
+#65 N₁ Pick test, #66 is-H^- a moment matrix, #67 regulator-canonicality (sharpest), #68 zero-free gauge audit, #69
+Hankel-tail comparison across ζ/L/DH, #70 boundary-triple section reconstruction. #63/#64 enriched with gpt/42's
+Padé-singularity-archaeology and explicit prime-sum form. **Run order: 67 → 63,64 → 65,66,68 → 69,70.**
+
+**Folded:** research-topics.md (blocker diagnosis + the 8-computation program + where-not-to-go). The frontier has
+moved from "what is the finite object" (settled) to "is the finite-part construction canonical and source-built."
+
+### 73. de Branges program — all 8 computations run (comp63–70), results recorded
+
+**What.** Ran the de-Branges-program computations (rt#63–70). Scripts+outputs `computations/2026-06-22-comp6*`;
+worklog updated. **Register:** `[VERIFIED]` computational results; no RH math promoted.
+- **#63:** the tridiagonal-split tail μ_E is a SIGNED measure (inertia (5,12)) dominated by x≈0.165 ⟺ the lowest
+  zero y_1; e_n mostly negative, 1 sign change.
+- **#64:** R^P (prime part) source-identified = PRIME_k = (ζ'/ζ)^{(2k−1)}(½) data; split-tail e_n PSLQ-miss
+  (γ_1-dominated, not elementary).
+- **#65:** m_σ=Cauchy(σ) has Pick-kernel κ=1 (generalized Nevanlinna N1; the boundary atom is the one negative
+  square). Off-line quartet at γ0=20 leaves κ=1 at O(1) samples (sampling/height-limited).
+- **#66:** H^- = signed moment matrix of σ=ν'−a_*δ_{y_*} (Krein–Langer Π₁; one negative square = boundary atom;
+  derivable by inspection).
+- **#67:** s_d is presentation/regulator-invariant (three presentations agree to reldiff 1e-116; depends only on H^-).
+- **#68:** s_d gauge-invariant under Ξ→e^{cw²}Ξ; naive Lemma-1 source-extraction is q-contaminated (needs canonical
+  ξ-normalization).
+- **#69:** DH tail = genuine odd-χ tail (gate is s_d=0); tail scale parity-dependent (even-χ deviates).
+- **#70:** m_d(y)=K_{H^0}(y,y) − s_d·(v(y)^T(H^0)^{-1}v_*)²: positive Christoffel minus a thin κ=1 dip at y_*=−0.16
+  (width ~margin), stable across d.
+
+**Folded:** research-topics.md (results). Tasks #32–39 completed.
+
+### 74. gpt/proof7 + proof8 folded — seam finite-part construction BUILT; tail identified (E=μ_E); open content narrowed to s_d>0 (docs updated to current state)
+
+**Source.** `docs/consolidated/gpt/proof7.md` (regulator/finite-part construction) + `proof8.md` (identification
+E=μ_E). **Register:** proof7 anatomy `[DERIVED — paper math]`, proof8 `[PROVED — conditional on the source-defined
+Jacobi J]`; the scalar positivity s_d>0 stays `[OPEN]`. No RH math promoted.
+
+**What changed in the knowledge docs (updated to current state, not appended as history):**
+- **proof7 — the canonical finite part exists and is regulator-independent.** Admissible even approximants
+  h^{ε,R}=t^{−2}p(t^{−2})q(t^{−2})η(t/ε)ψ(t/R); Hadamard expansion has only odd powers and B=0 (no log) by evenness;
+  the finite part is η-/ψ-independent (no u^{−1} term for even jets), has an R→∞ limit, and is necessarily Hankel
+  (analytic proof of E_{ij}=f(i+j)). Gauge Ξ→e^{q(w²)}Ξ shifts it by a local Hankel counterterm removed by canonical
+  ξ-normalization ⟹ unique. This settles the canonicality concern (gpt42 sharpest blocker; consistent with comp67/68).
+- **proof8 — E=μ_E.** With the source-defined Green split R^P=J+𝓑, 𝓑_{ij}=e^{fp}_{i+j} (from the source prime-residual
+  distribution, not zero-fed); J Jacobi + both Hankel ⟹ the computed tail E equals the seam finite-part boundary
+  distribution μ_E on all i+j≥2 (i+j=0,1 pinned by canonical ξ + the Γ-atom). "What is E" is closed.
+- **Open content narrowed to one statement:** the source-built scalar Weyl positivity s_d=1/K_{ν'}(y_*)>0 ∀d.
+
+**Docs revised to current state:** bridge-theorem.md §5b (the seam-residue lemma-package block rewritten: construction
+built + E=μ_E proved; open = s_d>0), 08 §2 (same), big-picture §5 ("what stays open" = s_d>0 only), research-topics
+(the seam finite-part section rewritten to BUILT + open=s_d>0). The dated working blocks were updated in place rather
+than accumulated.

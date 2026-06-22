@@ -195,6 +195,29 @@ and the observation that falsifies it.
     at `y=−0.16` without zero-feeding; (ii) weld route-2 — the seam-centre (`s=½`) de Branges/Krein regularization
     of the Weil pullback must produce exactly this rank-one boundary condition (`FP_{s=½}Q_W[h_p] → H^-_d+0.16 v_*v_*^T`,
     gap `s_d`). Forward computations: `research-topics.md` #53–59.
+  - *The four-piece proof program — the Rank-one Γ-boundary Weyl Bridge. `[gpt/41 + gpt/proof4]`* B1–B3 now have a
+    named four-piece structure: **(A)** reciprocal chart, target `Q_0[p]≥0 ∀p`; **(B)** **Γ boundary split**
+    `H^0_d=H^-_d+a_*v_*v_*^T`, the atom = the first Γ-trivial-zero term (source-built, no zero-feeding — comp57);
+    **(C)** **one-defect bulk theorem** `inertia(H^-_d)=(d,1) ∀d` (verified ζ/real-`L`/DH; "removing the first
+    Γ-boundary atom leaves exactly one negative square" — the Krein/Weyl localization the corpus expected); **(D)**
+    **scalar Weyl gap theorem** `s_d=a_*+1/m_d=1/K_{ν'}(y_*)=a_*·margin_d>0 ∀d`. New reduction (given C):
+    **`Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`**. **Named fake-family gate: `s_d=0`** (DH crosses at d=62, inertia (d,1) preserved
+    — separates DH at a *structural* gate, satisfying the corpus's fake-family-separation requirement). The exponent
+    is now **derived**: `α_d(y_*)≈4+[4(1−ln2)+2ln|y_*|]/L̄_d` (no universal ½). **The remaining paper theorem** is a
+    finite-part identity: source-identify the Hankel tail `μ_E` (comp56) as the seam-centre finite-part boundary
+    distribution and prove `FP_{w=0}Q_W[h_p]=Q_0[p]−a_*p(y_*)²`, hence `s_d>0`. Only "prove (all-`d`)" remains.
+  - *The seam finite-part construction — built; the open content is now the scalar positivity alone. `[gpt/proof5–8]`*
+    **(i) Lemma 1 `[VERIFIED — comp60]`:** `Q_0[p]=−Res_{w=0}[h_p·(Ξ'/Ξ)]`, `h_p=−w^{−2}p(−w^{−2})²` — the bridge
+    form is a seam-centre residue of the COMPLETED `Ξ'/Ξ`; `Ξ'/Ξ=A+P ⟹ Q_0=Q_A+Q_P` source-side. **(ii) the canonical
+    finite part exists `[gpt/proof7]`:** admissible even approximants `h^{ε,R}=t^{−2}p(t^{−2})q(t^{−2})η(t/ε)ψ(t/R)`
+    give a Hadamard expansion with only odd powers and `B=0` (no log) by evenness; the finite part is `η`- and
+    `ψ`-independent (no `u^{−1}` term for even jets), has an `R→∞` limit, and is necessarily **Hankel** — the analytic
+    proof of `E_{ij}=f(i+j)`. Gauge `Ξ→e^{q(w²)}Ξ` shifts it by a local Hankel counterterm fixed by canonical
+    `ξ`-normalization ⟹ the finite part is **unique** (canonicality settled). **(iii) `E=μ_E` `[gpt/proof8 — proved,
+    cond.]`:** with the source-defined Green split `R^P=J+𝓑` (`J` Jacobi, `𝓑` seam), `𝓑_{ij}=e^{fp}_{i+j}` (from the
+    source prime-residual distribution, not zero-fed); `J` Jacobi + both Hankel ⟹ `E=𝓑=μ_E` on all `i+j≥2` (the
+    `i+j=0,1` entries pinned by canonical `ξ` + the Γ-atom). So "what is `E`" is closed: source-built `μ_E`. **Open:
+    `s_d>0 ∀d`** alone — the RH-bearing positivity of `H^-=J+μ_E+μ_{≥2}` after the `a_*δ_{y_*}` repair.
   - *The `χ₄`/character-decomposition route is DEMOTED `[evaluated, d=4,6,8]`.* `β=L(2k,χ₄)` and the arch budget is
     the quarter-integer Hurwitz tower `S_k^A=2^{2k+1}−2^{−2k}ζ(2k,¼)`, whose mod-4 split is principal `ζ` (all odd
     integers) `+` `χ₄` `β` (`ζ(2k,¼)±ζ(2k,¾)`). But character decomposition **breaks** the manifest positivity:

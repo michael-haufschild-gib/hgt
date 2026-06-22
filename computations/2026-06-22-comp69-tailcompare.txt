@@ -1,0 +1,5 @@
+# tail profile (d=14): dominant x-point e_{n+1}/e_n vs predicted y_1+|y_*| (lowest zero), sign-changes
+  zeta : y_*=-0.1600 gamma_1=14.135  dominant e_n+1/e_n=0.16901  pred(y_1+|y_*|)=0.16501  -> MATCH(zero-dominated)  sign-changes=1/24
+  chi4 : y_*=-0.4444 gamma_1=6.021  dominant e_n+1/e_n=0.46940  pred(y_1+|y_*|)=0.47203  -> MATCH(zero-dominated)  sign-changes=0/24
+  chi5 : y_*=-4.0000 gamma_1=6.648  dominant e_n+1/e_n=2.86196  pred(y_1+|y_*|)=4.02262  -> DEVIATES  sign-changes=0/24
+  DH   : y_*=-0.4444 gamma_1=5.314  dominant e_n+1/e_n=0.47956  pred(y_1+|y_*|)=0.47986  -> MATCH(zero-dominated)  sign-changes=0/24

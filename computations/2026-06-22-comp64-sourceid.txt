@@ -1,0 +1,10 @@
+=== (1) R^P / prime part is SOURCE-identified (PRIME_k = -2k g_{2k}, the zeta'/zeta derivatives) ===
+  PRIME_1 = -2k g_2k = -3.7468776976   (source: derivative of log zeta at 1/2)
+  PRIME_2 = -2k g_2k = -15.970944988   (source: derivative of log zeta at 1/2)
+  PRIME_4 = -2k g_2k = -255.999338332   (source: derivative of log zeta at 1/2)
+  PRIME_6 = -2k g_2k = -4095.99998321   (source: derivative of log zeta at 1/2)
+=== (2) PSLQ e_n against {1, pi^2, zeta(3), (y_1+0.16)^n} ===
+  n=2: e_n=-0.0014156023; PSLQ relation = None  (none -> not elementary; gamma_1-data)
+  n=3: e_n=-0.00017566795; PSLQ relation = None  (none -> not elementary; gamma_1-data)
+  n=4: e_n=-2.1771644e-5; PSLQ relation = None  (none -> not elementary; gamma_1-data)
+  => mu_E is source-DETERMINED (via R^P = prime part) but its e_n are zeta-zero-data (gamma_1-dominated, comp63), not elementary constants.

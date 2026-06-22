@@ -1,0 +1,8 @@
+d=10: Hankel-defect of H^0 (should be 0) = 0.0
+  H^- Hankel-defect: at t=0 (monomial)=8.33e-205  min over shifts=8.33e-205 at t=0.0
+  H^- minus its Hankel-projection: effective rank=9/11  (low => H^- ~ Hankel+lowrank; high => irreducibly non-Hankel)
+Traceback (most recent call last):
+  File "/root/hgt37/2026-06-22-comp66-isHankel.py", line 27, in <module>
+    a_=mp.power(mp.mpf('2.5'),-2); v=ev(mp.mpf('-0.16'),d); Hm=A-a_*(v*v.T)
+                                     ~~^^^^^^^^^^^^^^^^^^^
+TypeError: 'list' object is not callable
