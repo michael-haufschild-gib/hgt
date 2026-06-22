@@ -689,8 +689,9 @@ agenda identified the scalar Weyl object and proved the two faces are one number
   that sets the exponent law `α=4.31+½ln|y_*|` — so the bridge is a uniform feature of the completed-`L` family.
 - **The sign-essential tail is a Hankel functional `[VERIFIED]`.** In the protector coordinate `R^P = J + E`
   (`J` the decaying Jacobi core, comp45), `E` is **exactly Hankel** (`E_{ij}=f(i+j)`, deviation `~10^{−175}`) — the
-  finite-section moment matrix of a single signed functional `μ_E`. Source-identifying `μ_E` (conjecturally the
-  seam-centre de Branges/Krein boundary distribution) is the missing tail identity.
+  finite-section moment matrix of a single signed functional `μ_E`. `μ_E` is now **identified** (`E=μ_E`, gpt/proof8)
+  and **demoted to anatomy** (gpt/43): it is the seam Hankel *shadow* of the Krein signed measure `σ=ν'−a_*δ_{y_*}`,
+  not the fake-family gate (DH shares it, comp69). See the Krein–Langer current-sharp-form block in §5b.
 - **`y=−0.16` is not a smooth critical point `[VERIFIED]`.** `∂_y a_c(d;−0.16) ≈ 2d` (linear in `d`, not 0); the
   comp48 minimality is a valid-window edge effect. So the analytic entrance is the inverse-Christoffel identity
   above, not a stationarity condition.
@@ -736,11 +737,11 @@ faces: source-build `K_{ν'}(y_{*,χ})` (equivalently the bulk `H^-` plus the Ha
 - **The named fake-family gate is `s_d=0` `[VERIFIED — DH at d=62]`.** A valid source-built object must separate
   DH-style fakes at a *named structural gate*, not by a generic positivity restatement. The gate is now exact:
   `s_d=0` (DH crosses it at `d=62` while `inertia(H^-)=(d,1)` persists).
-- **The missing paper theorem, made specific `[gpt/41]`.** Source-identify the Hankel-tail functional `μ_E`
-  (comp56: `E_{ij}=f(i+j)`) as the **finite-part seam-centre boundary distribution at `s=½`**, and prove the chain
-  `regularized Weil pullback ⟹ seam-centre finite part ⟹ E_{ij}=f(i+j) ⟹ H^-_d=J+E+(Γ/pole pieces) ⟹
-  s_d=a_*+1/m_d>0`. Target identity: **`FP_{w=0} Q_W[h_p] = Q_0[p] − a_*·p(y_*)²`** (the missing Hankel functional
-  `E[p²]` as the finite-part residue) — a **finite-part identity**, not a matrix experiment.
+- **The `μ_E` identification — done, then demoted `[gpt/proof8, gpt/43]`.** The chain `regularized Weil pullback ⟹
+  seam-centre finite part ⟹ E_{ij}=f(i+j) ⟹ H^-_d=J+E+(Γ/pole pieces)` is now constructed (proof7) and the tail
+  identified (`E=μ_E`, proof8). gpt/43 then *demotes* `μ_E` from "the missing theorem" to **anatomy** — the seam
+  Hankel shadow of `σ=ν'−a_*δ_{y_*}`, not the fake-family gate (the gate is `s_d=0` alone; DH shares the tail). The
+  live theorem is the scalar sign `s_d>0`, not the tail identity. (See the Krein–Langer current-sharp-form block below.)
 
 So the conjectured **last theorem before RH** is the **Rank-one Γ-boundary Weyl Bridge**: *Γ supplies the exact
 boundary atom; the primes create exactly one bulk defect; RH says the Γ atom repairs it at every degree*
@@ -764,9 +765,19 @@ now a constructed regulator/finite-part lemma; the open content has narrowed to 
   cutoff `η`** (the only possible finite remainder needs a `u^{−1}` term, `2r−2n−2=−1`, with no integer solution for
   even jets); (iii) is **independent of the window `ψ`**; (iv) is necessarily a **Hankel** form
   `𝔉[p,q]=Σ_{ij}c_id_j 𝔣_{i+j}` (seam-local reads only Laurent `i+j` — the analytic proof of the observed
-  `E_{ij}=f(i+j)`). The only freedom is a zero-free gauge `Ξ→e^{q(w²)}Ξ`, which shifts `𝔉` by a local Hankel
-  counterterm `λ_{i+j}∝(i+j+1)q_{i+j+1}` (comp68) — **removed by the canonical `ξ`-normalization**. So the
-  canonicality concern is settled: with canonical `ξ` the finite part is unique.
+  `E_{ij}=f(i+j)`). The only freedom is a zero-free gauge `Ξ→e^{q(w²)}Ξ`, whose counterterm is now **exact** (next
+  bullet). So the canonicality concern is settled: with canonical `ξ` the finite part is unique.
+- **The canonical-gauge extraction lemma — proved and verified `[gpt/proof9 — PROVED; comp71 — VERIFIED]`.** Under
+  the zero-free even gauge `Ξ↦e^{q(w²)}Ξ`, `q(w²)=Σ_{r≥1}a_r w^{2r}`, the extracted reciprocal moments shift by the
+  **exact diagonal law**
+  > `T_k ↦ T_k + 2k(−1)^{k+1} a_k`  (only `a_k` moves `T_k`),
+  so on the shifted tower the counterterm is the explicit Hankel `(Δ_q H^{(0)})_{ij}=2(i+j+1)(−1)^{i+j+2}a_{i+j+1}`.
+  Mechanism: `T_k=2(−1)^{k+1}k·c_{2k}`, `c_{2k}=[w^{2k}]logΞ`, and `logΞ↦logΞ+q(w²)` shifts `c_{2k}↦c_{2k}+a_k`. The
+  **canonical extraction** is `T_k^can = T_k^raw − 2k(−1)^{k+1}a_k`, i.e. fix `a_r≡0` = the completed Riemann
+  `ξ`-normalization. comp71 confirms this at the actual `Ξ` for `k=1..6` (closed form, diagonality, Hankel
+  counterterm, canonical recovery — all exact; the `T_1↦T_1+2c` of comp68 is the `k=1` case). Consequence: the
+  source-extraction lemma is well-defined — **never read raw low-order Taylor coefficients without first fixing
+  canonical `ξ`**; any other representative is corrected by an explicit, subtractable, diagonal counterterm.
 - **The tail IS the boundary distribution — `E = μ_E` `[gpt/proof8 — proved, conditional on the source-defined `J`]`.**
   With the source-defined Green decomposition `R^P = J + 𝓑` (`J` the interior Jacobi part, `𝓑` the seam boundary
   form), the boundary moments `e_n^{fp}=FP⟨𝒲_P, φ_n⟩` (`𝒲_P` the source prime-residual distribution, **not**
@@ -778,10 +789,33 @@ now a constructed regulator/finite-part lemma; the open content has narrowed to 
   fitted remainder. (Boundary-triple reading: the Green trace collapses to `Γ_0 F_p=p(y_*)`, Γ selecting `Θ=a_*=0.16`
   — the rank-one atom is the boundary condition of a self-adjoint extension.)
 
-So the open content has narrowed to **one** statement — the **source-built scalar Weyl positivity**:
-`s_d = a_*+1/m_d = 1/K_{ν'}(y_*) > 0 ∀d` for the form `H^- = J + μ_E + μ_{≥2}` after the `a_*δ_{y_*}` repair. The
-construction (admissibility, canonical finite part, Hankel, `E=μ_E`) is established; what remains is the RH-bearing
-positivity apex, no longer "what is `E`" or "is the finite part canonical."
+**The current sharp form — a Krein–Langer rank-one signed moment problem `[gpt/43, synthesizing comp63–70]`.** The
+finite anatomy collapses to one clean object: `H^-_d` is the moment matrix of a **signed** measure,
+> `H^-_d = M_d(σ)`, `σ = ν' − a_*δ_{y_*}`, `ν' = Σ_ρ 2y_ρ δ_{y_ρ}`, `y_ρ=−(ρ−½)^{−2}`, `y_*=−0.16`, `a_*=0.16`,
+and `H^0_d = M_d(σ)+a_*v_*v_*^T = M_d(ν')`. So the boundary atom is literally the **negative atom of a signed moment
+problem**: positive reciprocal zero measure *minus* one exterior Γ-boundary atom. The bridge is the transition
+> `σ ∈ Π₁  ──(+a_*δ_{y_*})──▶  ν' ∈ Π₀`,
+i.e. `m_σ(z)=∫dσ/(t−z) ∈ N₁` (one negative square, carried by the Γ-boundary channel — `[VERIFIED κ=1, comp65/66]`)
+becomes `N₀`/PSD after the canonical Γ atom is added back. This is a **boundary-Weyl theorem, not a bulk positivity
+estimate**: the bulk alone is underdetermined; the finite-rank Γ extension crosses the Krein threshold.
+- **`μ_E` is demoted to anatomy `[gpt/43, comp63/64/69]`.** The identified tail (`E=μ_E`, §above) is the **seam
+  Hankel *shadow* of the signed measure `σ`** in the protector/Jacobi split — *not* a fourth divisor and *not* the
+  fake-family gate (DH and genuine odd-`χ` share the tail, comp69; the tail is `γ_1`-dominated and not elementary,
+  comp64). The gate is `s_d=0` alone.
+- **The scalar apex, as a reproducing-kernel (Christoffel/Uvarov) statement.** `m_d(y)=K_{H^0}(y,y) −
+  s_d·(v(y)^T(H^0)^{−1}v_*)²` (comp70 — a positive Christoffel kernel minus one ultra-thin negative dip at `y_*`,
+  width `~margin→0`). The infinite target is the **Uvarov one-point boundary-removal kernel**
+  > `K_σ(y,y) = K_{ν'}(y,y) − K_{ν'}(y,y_*)² / K_{ν'}(y_*,y_*)`,
+  whence the apex is exactly `K_{ν'}(y_*,y_*) > 0 ∀d`, i.e. **the source-built scalar Weyl positivity**
+  `s_d = a_*+1/m_d = 1/K_{ν'}(y_*) > 0 ∀d`. `N₁` anatomy alone is *not* enough (DH shares it); the Euler-product /
+  polarization ingredient must enter exactly at this scalar repair sign.
+- **The three divisors (do not conflate) `[gpt/43]`.** (1) the **RH divisor** `𝒟_RH={y_ρ}`, RH ⟺ `𝒟_RH⊂ℝ_{>0}`;
+  (2) the **Γ-boundary divisor** `a_*δ_{y_*}=0.16·δ_{−0.16}` (first Γ-trivial-zero atom, the rank-one repair);
+  (3) the **Krein signed divisor** `σ=ν'−a_*δ_{y_*}` — the *proof divisor*, living in `Π₁`.
+
+So the construction (admissibility, canonical finite part, Hankel, `E=μ_E`) is established anatomy; the live theorem
+is the **sign of one scalar**, `s_d>0 ∀d`, now framed as a Krein–Langer `Π₁→Π₀` / Uvarov-kernel statement — the
+RH-bearing positivity apex (B), not "what is `E`" or "is the finite part canonical."
 
 ---
 
@@ -821,3 +855,12 @@ positivity apex, no longer "what is `E`" or "is the finite part canonical."
 > Weyl Bridge** (gpt/41): *Γ supplies the exact boundary atom, the primes create exactly one bulk defect, RH says
 > the Γ atom repairs it at every degree.* Its new content is the reduction **`Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`** (given the
 > one-defect bulk theorem `inertia(H^-_d)=(d,1)`); the four-piece proof shape + derived exponent law are in §5b.
+
+> **Current sharp form (Krein–Langer rank-one signed moment problem, gpt/43):** *`H^-_d` is the moment matrix of the
+> **signed** measure `σ = ν' − a_*δ_{y_*}` (positive reciprocal zero measure minus one exterior Γ-boundary atom), so
+> `H^0_d = M_d(σ)+a_*v_*v_*^T = M_d(ν')`. The bridge is the Krein transition `σ∈Π₁ ──(+a_*δ_{y_*})──▶ ν'∈Π₀`:
+> `m_σ=∫dσ/(t−z)∈N₁` (one negative square, comp65/66) becomes `N₀`/PSD after the canonical Γ atom is added. The apex
+> is the Uvarov one-point boundary-removal positivity `K_{ν'}(y_*,y_*)>0 ∀d`, i.e. `s_d=1/K_{ν'}(y_*)>0 ∀d`. The
+> Hankel tail `μ_E` is the seam shadow of `σ`, anatomy — not the gate (DH shares it); the gate and fake-family
+> separator is the scalar sign `s_d=0`.* This is the **positivity apex (B)**; the value/transcendence apex (A) is
+> distinct and joined only at the seam (DH is the standing witness that the functional equation alone does not force RH).

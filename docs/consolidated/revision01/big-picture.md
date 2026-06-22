@@ -34,6 +34,16 @@ what is excluded is a finite algebraic-differential rule that *produces* `ζ`, n
 > the Γ atom repairs it at every degree*; the new reduction is `Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`, and the **named
 > fake-family gate is `s_d=0`** (Davenport–Heilbronn crosses it at d=62 while the bulk inertia (d,1) is preserved).
 
+> **Sharpest naming (Krein–Langer rank-one signed moment problem, gpt/43 synthesizing the de-Branges battery).**
+> The finite anatomy is one clean object: `H^-_d = M_d(σ)` is the moment matrix of the **signed** measure
+> `σ = ν' − a_*δ_{y_*}` (positive reciprocal zero measure `ν'=Σ_ρ 2y_ρδ_{y_ρ}` minus one exterior Γ-boundary atom);
+> `H^0_d = M_d(ν')`. The bridge is the Krein transition `σ∈Π₁ ──(+a_*δ_{y_*})──▶ ν'∈Π₀`: the Cauchy transform
+> `m_σ∈N₁` (one negative square, verified κ=1) becomes PSD after the canonical Γ atom is restored. The apex, as a
+> reproducing-kernel statement, is the **Uvarov one-point boundary-removal positivity** `K_{ν'}(y_*,y_*)>0 ∀d` — the
+> same `s_d>0`. The Hankel tail `μ_E` is now read as the **seam shadow of `σ`** (anatomy, `γ_1`-dominated, *not* the
+> gate). Three divisors must not be conflated: the **RH divisor** `{y_ρ}`, the **Γ-boundary divisor** `0.16δ_{−0.16}`,
+> and the **Krein signed divisor** `σ` (the proof divisor, in `Π₁`).
+
 ---
 
 ## 1. The lenses
@@ -393,10 +403,14 @@ Everything reduces to five cores (Master, A, B, C, D) plus one framing assumptio
 > - **raw Weil test functions** — inadmissible at the seam centre; the route needs a singular boundary
 >   extension, not a classical test space.
 >
-> **What stays genuinely open.** The seam finite-part construction is now built: the canonical regulator/finite-part
-> at the seam centre exists and is regulator-, window-, and gauge-fixed (`B=0` by evenness; unique under canonical
-> `ξ`), and the sign-essential Hankel tail is identified with the source-built seam boundary distribution
-> (`E=μ_E`, conditional on the source-defined interior Jacobi part). What remains is **one** statement — the
-> **source-built scalar Weyl positivity** `s_d = a_*+1/m_d = 1/K_{ν'}(y_*) > 0 ∀d` — and, orthogonally on the value
-> axis, the Schanuel-for-prime-logs apex (A). Everything else is scaffolding, coordinates, or guardrails around
-> those.
+> **What stays genuinely open.** The seam finite-part construction is built (canonical, regulator-/window-/gauge-fixed;
+> `E=μ_E` identified), so the live theorem is the **Krein–Langer rank-one positivity**: source-build `σ=ν'−a_*δ_{y_*}∈Π₁`
+> and prove the canonical Γ-atom repair crosses to `Π₀` — equivalently the **source-built scalar Weyl positivity**
+> `s_d = a_*+1/m_d = 1/K_{ν'}(y_*) > 0 ∀d` (Uvarov form: `K_{ν'}(y_*,y_*)>0`). One feeder sub-obligation is now
+> **discharged** — the **canonical-`ξ` gauge-extraction lemma** is proved (gpt/proof9) and verified (comp71): the
+> zero-free gauge `e^{q(w²)}` shifts the moments by the exact diagonal law `T_k↦T_k+2k(−1)^{k+1}a_k`, killed by the
+> canonical `ξ`-normalization (`T_k^can=T_k^raw−2k(−1)^{k+1}a_k`; `T_1↦T_1+2c` of comp68 is the `k=1` case). What
+> remains feeding the apex is the **global `N₁` carrier theorem** (`m_σ∈N₁` before positivity). Orthogonally, on
+> the value axis, the Schanuel-for-prime-logs apex (A). Everything else — the tail `μ_E`, Jacobi near-banding,
+> regulator invariance, even the `N₁` anatomy — is scaffolding around the **sign of one scalar** (`N₁` alone is not
+> enough: Davenport–Heilbronn shares it and fails only when `s_d` crosses 0).

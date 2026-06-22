@@ -1,0 +1,28 @@
+logXi-Taylor vs analytic-pieces c_{2k}: max abs diff = 1.14e-77
+T_1 (canonical) = 0.0462099862308   T_2 = 7.43451985705e-5
+
+=== TEST A: multi-term gauge q=sum a_r w^{2r}, a_r all nonzero ===
+ k   T_raw - T_can           proof9 2k(-1)^{k+1}a_k      abs error
+ 1      0.8571428571428571      0.8571428571428571  0.0
+ 2       1.818181818181818       1.818181818181818  0.0
+ 3      0.9230769230769231      0.9230769230769231  0.0
+ 4      0.4705882352941176      0.4705882352941176  0.0
+ 5       3.684210526315789       3.684210526315789  0.0
+ 6        2.08695652173913        2.08695652173913  0.0
+TEST A max abs error = 0.0
+
+=== TEST B: diagonality (only a_3 != 0) -> only T_3 shifts ===
+ T_1 shift =              0.0   (expect 0)
+ T_2 shift =              0.0   (expect 0)
+ T_3 shift =             2.22   (expect 2*3*(+1)*0.37=2.22)
+ T_4 shift =              0.0   (expect 0)
+ T_5 shift =              0.0   (expect 0)
+ T_6 shift =              0.0   (expect 0)
+
+=== TEST C: Hankel counterterm (Dq H^0)_{ij}=2(i+j+1)(-1)^{i+j+2}a_{i+j+1} ===
+TEST C max abs error (matrix vs Hankel counterterm) = 0.0
+
+=== TEST D: canonical recovery T_k^can == T_k ===
+TEST D max abs error = 0.0
+
+SUMMARY: ALL PASS

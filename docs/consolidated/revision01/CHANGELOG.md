@@ -1275,3 +1275,54 @@ Jacobi J]`; the scalar positivity s_d>0 stays `[OPEN]`. No RH math promoted.
 built + E=μ_E proved; open = s_d>0), 08 §2 (same), big-picture §5 ("what stays open" = s_d>0 only), research-topics
 (the seam finite-part section rewritten to BUILT + open=s_d>0). The dated working blocks were updated in place rather
 than accumulated.
+### 75. gpt/43 folded — synthesis of comp63–70 into a Krein–Langer rank-one signed moment problem; μ_E demoted to anatomy; apex = s_d>0 (Uvarov kernel); docs updated to current state
+
+**Source.** `docs/consolidated/gpt/43.md` — gpt's synthesis of the de-Branges battery (comp63–70). **Register:**
+reformulation `[CONJECTURE — structural]` resting on the verified runs; the apex `s_d>0` stays `[OPEN]`. No RH math
+promoted.
+
+**The current sharp form (folded into the knowledge docs as current state):**
+- **Krein–Langer signed moment problem.** `H^-_d = M_d(σ)`, `σ = ν' − a_*δ_{y_*}` (positive reciprocal zero measure
+  minus one exterior Γ-boundary atom); `H^0_d = M_d(ν')`. Bridge = the transition `σ∈Π₁ ─(+a_*δ_{y_*})→ ν'∈Π₀`, i.e.
+  `m_σ=∫dσ/(t−z)∈N₁` (κ=1, comp65/66) becomes PSD after the canonical Γ atom. A boundary-Weyl theorem, not a bulk
+  estimate.
+- **μ_E demoted.** The identified tail `E=μ_E` is the seam Hankel *shadow* of `σ` — anatomy, γ_1-dominated (comp63/64),
+  not a fourth divisor and not the fake-family gate (DH and odd-χ share the tail, comp69). The gate is `s_d=0` alone.
+- **Three divisors:** RH divisor `{y_ρ}`; Γ-boundary divisor `0.16δ_{−0.16}`; Krein signed divisor `σ` (the proof
+  divisor, in Π₁).
+- **Apex as a reproducing-kernel (Uvarov) statement:** `K_σ(y,y)=K_{ν'}(y,y)−K_{ν'}(y,y_*)²/K_{ν'}(y_*,y_*)` ⟹
+  `K_{ν'}(y_*,y_*)>0 ∀d`, i.e. `s_d>0 ∀d`. N₁ anatomy alone is not enough (DH shares it); the Euler/polarization
+  ingredient enters exactly at the scalar repair sign. Likely final shape: a Hodge/de Branges signature theorem.
+- **5-step proof route:** canonical ξ-gauge → source-build R^P from (ζ'/ζ)^{(2k-1)}(½) → prove m_σ∈N₁ globally →
+  rank-one repair s_d>0 → identify the Hodge/de Branges object behind s_d.
+
+**Docs revised to current state (in place, not appended as history):** bridge-theorem §5b (Krein–Langer current-sharp-form
+block added; the stale "μ_E is the missing theorem" bullet rewritten to "identified, then demoted"), bridge §7 (current
+sharp form added), big-picture §0 (Krein–Langer naming) + §5 (open content = Π₁→Π₀ / s_d>0 with the gauge-lemma and
+N₁-carrier sub-obligations), 08 §2 (Krein–Langer + Uvarov + N₁-before-positivity), research-topics (gpt/43 synthesis +
+the 10-item priority computation agenda; the superseded gpt/42 canonicality-blocker block reframed as RESOLVED).
+
+### 76. gpt/proof9 folded — canonical-gauge extraction lemma PROVED + comp71 VERIFIED; the gpt/43 feeder sub-theorem (a) is discharged; comp68 "gauge bug" resolved
+
+**Source.** `docs/consolidated/gpt/proof9.md` (canonical-gauge extraction lemma) + comp71 (local verification,
+`computations/2026-06-22-comp71-gauge-law.py`). **Register:** lemma `[PROVED — paper math]`, law `[VERIFIED — comp71]`;
+RH positivity still `[OPEN]`. No RH math promoted.
+
+**The result.** Under the zero-free even gauge `Ξ↦e^{q(w²)}Ξ`, `q=Σ_{r≥1}a_r w^{2r}`, the extracted reciprocal moments
+obey the **exact diagonal law `T_k↦T_k+2k(−1)^{k+1}a_k`** (only `a_k` moves `T_k`). Mechanism: `T_k=2(−1)^{k+1}k·c_{2k}`,
+`c_{2k}=[w^{2k}]logΞ`, and `logΞ↦logΞ+q(w²)` shifts `c_{2k}↦c_{2k}+a_k`. Form-level Hankel counterterm
+`(Δ_q H^0)_{ij}=2(i+j+1)(−1)^{i+j+2}a_{i+j+1}`. Canonical extraction `T_k^can=T_k^raw−2k(−1)^{k+1}a_k` (= the completed
+Riemann `ξ`-normalization, `a_r≡0`).
+
+**comp71 verification (at the actual Ξ, k=1..6).** logΞ-Taylor anchor agrees with the analytic-pieces `c_{2k}` to
+`1e-77`; the closed form, diagonality (only-`a_3` gauge moves only `T_3`), the Hankel counterterm, and canonical
+recovery are all exact. The `T_1↦T_1+2c` of comp68 is the `k=1` case.
+
+**comp68 "bug" resolved.** The earlier "gauge contamination" of the naive source-extraction is not an error — it is
+this canonical-gauge law; the canonical `ξ`-gauge (or the explicit diagonal subtraction) is the fix. comp68 re-surfaced
+in research-topics with the proof9 clarification.
+
+**Docs revised to current state:** bridge-theorem §5b (canonical-gauge extraction lemma bullet added; the proof7 gauge
+bullet points to the now-exact counterterm), big-picture §5 (feeder sub-obligation (a) marked discharged), 08 §2 (same),
+research-topics (gpt/proof9 block + comp71 done + comp68 resolution; gpt/43 agenda #1 marked DONE). Task #40 (comp71)
+completed.

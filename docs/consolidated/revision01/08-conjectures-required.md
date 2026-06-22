@@ -216,8 +216,18 @@ and the observation that falsifies it.
     `ξ`-normalization ⟹ the finite part is **unique** (canonicality settled). **(iii) `E=μ_E` `[gpt/proof8 — proved,
     cond.]`:** with the source-defined Green split `R^P=J+𝓑` (`J` Jacobi, `𝓑` seam), `𝓑_{ij}=e^{fp}_{i+j}` (from the
     source prime-residual distribution, not zero-fed); `J` Jacobi + both Hankel ⟹ `E=𝓑=μ_E` on all `i+j≥2` (the
-    `i+j=0,1` entries pinned by canonical `ξ` + the Γ-atom). So "what is `E`" is closed: source-built `μ_E`. **Open:
-    `s_d>0 ∀d`** alone — the RH-bearing positivity of `H^-=J+μ_E+μ_{≥2}` after the `a_*δ_{y_*}` repair.
+    `i+j=0,1` entries pinned by canonical `ξ` + the Γ-atom). So "what is `E`" is closed: source-built `μ_E`.
+  - *Current sharp form — a Krein–Langer rank-one signed moment problem. `[gpt/43]`* `H^-_d=M_d(σ)`,
+    `σ=ν'−a_*δ_{y_*}` (positive reciprocal zero measure minus one Γ-boundary atom); `H^0_d=M_d(ν')`. Bridge =
+    `σ∈Π₁ ──(+a_*δ_{y_*})──▶ ν'∈Π₀`, i.e. `m_σ=∫dσ/(t−z)∈N₁` (κ=1, comp65/66) becomes PSD after the canonical Γ atom.
+    `μ_E` is the **seam shadow of `σ`** (anatomy, not the gate; DH shares the tail, comp69). Feeder sub-theorems:
+    **(a) canonical-`ξ` gauge lemma — DONE `[gpt/proof9 PROVED, comp71 VERIFIED]`:** `T_k^can=FP^ξ_{w=0}[−½h_k(Ξ'/Ξ)]`
+    with the exact diagonal law `T_k↦T_k+2k(−1)^{k+1}a_k` under `Ξ↦e^{q(w²)}Ξ` (`q=Σa_r w^{2r}`), killed by canonical
+    `ξ` (`a_r≡0`); Hankel counterterm `2(i+j+1)(−1)^{i+j+2}a_{i+j+1}` (`T_1↦T_1+2c` = the `k=1` case); **(b) the global
+    `N₁` carrier theorem** `m_σ∈N₁` (prove *before* positivity — `N₁` alone is not RH since DH shares it). **Apex (Uvarov
+    one-point boundary-removal kernel):** `K_σ(y,y)=K_{ν'}(y,y)−K_{ν'}(y,y_*)²/K_{ν'}(y_*,y_*)`, whence **`s_d=
+    1/K_{ν'}(y_*,y_*)>0 ∀d`** — the sign of one scalar, the fake-family separator. Likely final shape: a **Hodge/de
+    Branges signature theorem** (`Π₁ + Γ-polarization ⟹ Π₀`), `s_d` expressed as an intersection norm / boundary period.
   - *The `χ₄`/character-decomposition route is DEMOTED `[evaluated, d=4,6,8]`.* `β=L(2k,χ₄)` and the arch budget is
     the quarter-integer Hurwitz tower `S_k^A=2^{2k+1}−2^{−2k}ζ(2k,¼)`, whose mod-4 split is principal `ζ` (all odd
     integers) `+` `χ₄` `β` (`ζ(2k,¼)±ζ(2k,¾)`). But character decomposition **breaks** the manifest positivity:
