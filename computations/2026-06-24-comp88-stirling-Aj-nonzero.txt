@@ -1,0 +1,74 @@
+=== comp88: Verify A_j(k) != 0 for multi-k closure argument ===
+Precision: 50 decimal places
+
+--- A_j(k) for j=3,4,5 and k=1..8 ---
+Stirling dominant term for j>=3: (k!)^2 * (H_k-gamma)^{j-2} / (6*(j-2)!)
+
+j=3:
+  k=1: A_3(k) = +316639016.375373  stir=0.0705  ratio=4493624622.6099  NONZERO
+  k=2: A_3(k) = +1.611022  stir=0.6152  ratio=2.6187  NONZERO
+  k=3: A_3(k) = +26328612.192787  stir=7.5367  ratio=3493384.5311  NONZERO
+  k=4: A_3(k) = +220.177767  stir=144.5873  ratio=1.5228  NONZERO
+  k=5: A_3(k) = -19430246.008238  stir=4094.6824  ratio=-4745.2388  NONZERO
+  k=6: A_3(k) = +203804.628794  stir=161808.5666  ratio=1.2595  NONZERO
+  k=7: A_3(k) = +392476.319732  stir=8533419.7611  ratio=0.0460  NONZERO
+  k=8: A_3(k) = +325208.880218  stir=580007664.7087  ratio=0.0006  NONZERO
+
+j=4:
+  k=1: A_4(k) = -7269109620.007727  stir=0.0149  ratio=-488005469003.9132  NONZERO
+  k=2: A_4(k) = -0.157887  stir=0.2838  ratio=-0.5562  NONZERO
+  k=3: A_4(k) = -551034669.730990  stir=4.7335  ratio=-116411804.4024  NONZERO
+  k=4: A_4(k) = +990.300991  stir=108.8827  ratio=9.0951  NONZERO
+  k=5: A_4(k) = +382976939.890880  stir=3493.0050  ratio=109641.1085  NONZERO
+  k=6: A_4(k) = -3213152.707043  stir=151516.2744  ratio=-21.2067  NONZERO
+  k=7: A_4(k) = -6384571.319091  stir=8600157.4096  ratio=-0.7424  NONZERO
+  k=8: A_4(k) = -5834111.001947  stir=620794232.3038  ratio=-0.0094  NONZERO
+
+j=5:
+  k=1: A_5(k) = +79127406262.340134  stir=0.0021  ratio=37694047040008.0391  NONZERO
+  k=2: A_5(k) = -1.942657  stir=0.0873  ratio=-22.2504  NONZERO
+  k=3: A_5(k) = +5517632328.872427  stir=1.9819  ratio=2783952265.1876  NONZERO
+  k=4: A_5(k) = -16135.726295  stir=54.6634  ratio=-295.1833  NONZERO
+  k=5: A_5(k) = -3674081363.363387  stir=1986.4925  ratio=-1849531.9447  NONZERO
+  k=6: A_5(k) = +26649167.909316  stir=94585.7684  ratio=281.7461  NONZERO
+  k=7: A_5(k) = +54383473.365809  stir=5778277.9973  ratio=9.4117  NONZERO
+  k=8: A_5(k) = +48939887.736101  stir=442965960.9817  ratio=0.1105  NONZERO
+
+--- A_3(k) nonzero check, k=1..12 ---
+  k=1: A_3 = +316639016.3753735  OK
+  k=2: A_3 = +1.6110222  OK
+  k=3: A_3 = +26328612.1927868  OK
+  k=4: A_3 = +220.1777675  OK
+  k=5: A_3 = -19430246.0082377  OK
+  k=6: A_3 = +203804.6287943  OK
+  k=7: A_3 = +392476.3197316  OK
+  k=8: A_3 = +325208.8802177  OK
+  k=9: A_3 = +700039.7076217  OK
+  k=10: A_3 = -3881081.9546964  OK
+  k=11: A_3 = +55515449.0445980  OK
+  k=12: A_3 = -759045316.7700704  OK
+
+Conclusion: A_3(k) != 0 for all k tested — multi-k closure VERIFIED numerically
+
+=== SECRET EXTRA: Stirling ratio A_j(k)/dominant_term for j=3,4 ===
+j=3 ratio A_j(k) / [(k!)^2*(H_k-gamma)^{j-2}/(6*(j-2)!)]:
+  k=2: ratio = 2.61874  [A_3=1.611, stir=0.6152]
+  k=3: ratio = 3493384.53109  [A_3=2.633e+07, stir=7.537]
+  k=4: ratio = 1.52280  [A_3=220.2, stir=144.6]
+  k=5: ratio = -4745.23885  [A_3=-1.943e+07, stir=4095]
+  k=6: ratio = 1.25954  [A_3=2.038e+05, stir=1.618e+05]
+  k=7: ratio = 0.04599  [A_3=3.925e+05, stir=8.533e+06]
+  k=8: ratio = 0.00056  [A_3=3.252e+05, stir=5.8e+08]
+
+j=4 ratio A_j(k) / [(k!)^2*(H_k-gamma)^{j-2}/(6*(j-2)!)]:
+  k=2: ratio = -0.55625  [A_4=-0.1579, stir=0.2838]
+  k=3: ratio = -116411804.40240  [A_4=-5.51e+08, stir=4.733]
+  k=4: ratio = 9.09511  [A_4=990.3, stir=108.9]
+  k=5: ratio = 109641.10847  [A_4=3.83e+08, stir=3493]
+  k=6: ratio = -21.20665  [A_4=-3.213e+06, stir=1.515e+05]
+  k=7: ratio = -0.74238  [A_4=-6.385e+06, stir=8.6e+06]
+  k=8: ratio = -0.00940  [A_4=-5.834e+06, stir=6.208e+08]
+
+=== Summary ===
+If A_j(k) != 0 for some k for each j: multi-k closure argument holds.
+Expected: YES, with dominant Stirling term (k!)^2*(H_k-gamma)^{j-2} nonzero for k>=2.
