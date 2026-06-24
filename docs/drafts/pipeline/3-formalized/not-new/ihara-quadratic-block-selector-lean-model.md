@@ -48,8 +48,8 @@ The Lean file proves:
    `lambda^2 <= 4*q`.
 
 3. **Finite product index.**
-   A finite family of blocks satisfies the model RH condition iff the sum of
-   the block off-circle indices is zero.
+   The finite product of the blocks satisfies the model RH condition iff the
+   sum of the block off-circle indices is zero.
 
 4. **FE-only insufficiency.**
    For every `q > 0`, Lean constructs a `lambda` such that the reciprocal
@@ -77,7 +77,7 @@ Targeted checks run:
 - `lake build GaloisForLFunctions.IharaBlockSelector`
 - `/tmp/ihara_axioms.lean` importing the module and printing axioms for:
   - `zerosOnCriticalCircle_iff_spectral_bound`
-  - `finiteBlockRH_iff_totalOffCircleIndex_eq_zero`
+  - `finiteProductRH_iff_totalOffCircleIndex_eq_zero`
   - `reciprocal_identity_does_not_force_spectral_bound`
 
 The axiom report contains only standard mathlib foundations:

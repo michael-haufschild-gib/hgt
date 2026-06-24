@@ -14,18 +14,18 @@ Substituting `w = 1/z`, the companion series is `U₀(w) = u₀(1/w) = ∑_{n≥
 
 In Lean: stated with the genuine *analytic-continuation* predicate `ContinuesAcross` (NOT `¬AnalyticAt`
 of the junk-extended tsum, which is trivially true for the wrong reason — see the ⚠ note below).
-`u0_natural_boundary` is **proven** modulo exactly two named leaf lemmas:
-  • `seed_singularity`   — ∃ one boundary point of non-continuation (the genuine analytic core,
-                            Mathlib-missing; far weaker than the full Ostrowski–Hadamard gap theorem);
-  • `dense_dyadic_roots` — the `2ⁿ`-th roots of a circle point are dense (elementary).
-Everything connecting them — convergence/divergence (radius = 1), the Mahler-equation propagation
-`continues_sq`, closedness `isClosed_singular`, the root induction and closure — is proven here.
+`u0_natural_boundary` is **proven modulo a single leaf lemma** `seed_singularity` — ∃ one boundary
+point of non-continuation (the genuine analytic core, Mathlib-missing; far weaker than the full
+Ostrowski–Hadamard gap theorem, which asserts *every* point fails). Everything else is proven here:
+convergence/divergence (radius = 1), the Mahler-equation propagation `continues_sq`, closedness
+`isClosed_singular`, dyadic-root density `dense_dyadic_roots`, the root induction and the closure.
 -/
 import GaloisForLFunctions.U0.U0Series
 import Mathlib.Analysis.Analytic.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.Analysis.Analytic.Constructions
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Analytic
+import Mathlib.Analysis.Complex.LocallyUniformLimit
 import Mathlib.RingTheory.Algebraic.Basic
 
 open Complex Filter Topology U0
@@ -71,6 +71,29 @@ def ContinuesAcross (f : ℂ → ℂ) (D : Set ℂ) (z₀ : ℂ) : Prop :=
 
 /-- The exterior `{z | 1 < ‖z‖}`, the genuine domain of convergence of `u₀`. -/
 def Ext : Set ℂ := {z : ℂ | 1 < ‖z‖}
+
+theorem isOpen_Ext : IsOpen Ext := isOpen_lt continuous_const continuous_norm
+
+theorem ne_zero_of_Ext {z : ℂ} (hz : z ∈ Ext) : z ≠ 0 := by
+  intro h; rw [h] at hz; simp only [Ext, Set.mem_setOf_eq, norm_zero] at hz; linarith
+
+/-- Each term `2^{-(n+1)}·z^{-(2^{n+1}-1)}` is holomorphic on the exterior (`z ≠ 0` there). -/
+theorem term_differentiableOn_Ext (n : ℕ) : DifferentiableOn ℂ
+    (fun z : ℂ => (2 : ℂ) ^ (-(n + 1 : ℤ)) * z ^ (-(2 ^ (n + 1) - 1 : ℤ))) Ext :=
+  DifferentiableOn.const_mul
+    (DifferentiableOn.zpow differentiableOn_id (Or.inl (fun x hx => ne_zero_of_Ext hx))) _
+
+/-- **u₀ is holomorphic on the exterior `Ext` (PROVEN).** Weierstrass M-test: each term is
+holomorphic on `Ext` and bounded there by the summable `2^{-(n+1)}` (`norm_u0_term_le`). -/
+theorem u0_differentiableOn_Ext : DifferentiableOn ℂ u0 Ext :=
+  differentiableOn_tsum_of_summable_norm summable_two_zpow_neg
+    term_differentiableOn_Ext isOpen_Ext
+    (fun n w hw => norm_u0_term_le (le_of_lt hw) n)
+
+/-- **u₀ is analytic on the exterior `Ext` (PROVEN).** The analytic realization underlying the
+natural-boundary statement: on `Ext`, `u₀` is the genuine convergent sum, not a junk extension. -/
+theorem u0_analyticOnNhd_Ext : AnalyticOnNhd ℂ u0 Ext :=
+  u0_differentiableOn_Ext.analyticOnNhd isOpen_Ext
 
 /-- **Propagation by the Mahler functional equation (step 3, PROVEN).**
 If `u₀` continues analytically across `z₀ ≠ 0`, it continues across `z₀²`.
@@ -146,21 +169,88 @@ theorem isClosed_singular : IsClosed {z : ℂ | ¬ ContinuesAcross u0 Ext z} :=
   isOpen_continues.isClosed_compl
 
 /-- **Seed singularity (step 2 — the one genuine irreducible analytic core).**
-The power series of `u₀` (radius of convergence exactly `1`: converges on `Ext`, diverges off it by
-`U0term_norm_tendsto_atTop`) fails to continue across **some** unit-circle point. Else, by compactness
-of the circle, finitely many continuations glue (identity theorem) to one analytic on an open set ⊇
-closed exterior collar, forcing the Taylor series to converge past `‖·‖=1` — but its terms diverge
-there. This `∃`-of-a-boundary-singularity is the lone Mathlib-missing input; it is *far* weaker than
-the full Ostrowski–Hadamard gap theorem (which asserts *every* point fails). -/
+`u₀` fails to continue across **some** unit-circle point.
+
+What is already in place (PROVEN above): `u0_analyticOnNhd_Ext` (u₀ analytic on the exterior, the
+genuine convergent realization), and the radius bracket — convergence on `Ext` plus the
+doubly-exponential divergence `U0term_norm_tendsto_atTop` for `‖·‖>1`.
+
+The remaining gap is the **gluing-to-larger-radius** step: assuming `u₀` continues across *every*
+boundary point, compactness of the circle yields finitely many continuations that agree with `u₀` on
+the connected exterior overlaps (identity theorem) and so glue to one function analytic on
+`{‖z‖ > 1−δ}`; its companion power series (in `1/z`) then has radius `> 1` (`HasFPowerSeriesOnBall`),
+whose terms must `→0` past `‖·‖=1` — contradicting `U0term_norm_tendsto_atTop`. This `∃`-of-a-boundary-
+singularity is the lone Mathlib-missing input; it is *far* weaker than the full Ostrowski–Hadamard gap
+theorem (which asserts *every* point fails), but the sheaf-gluing of analytic continuations has no
+ready Mathlib API, so it is isolated here. -/
 theorem seed_singularity : ∃ z₁ : ℂ, ‖z₁‖ = 1 ∧ ¬ ContinuesAcross u0 Ext z₁ := by
   sorry
 
-/-- **Density of dyadic roots (step 4).** The `2ⁿ`-th roots of a unit-circle point `z₁` are dense in
-the unit circle (their arguments are the dyadic translates `(arg z₁ + 2πk)/2ⁿ`, dense in `ℝ/2πℤ`).
-Elementary; the formalization bridges the multiplicative circle to `AddCircle` dyadic density. -/
-theorem dense_dyadic_roots (z₁ : ℂ) (h : ‖z₁‖ = 1) :
+/-- Lipschitz-type bound on the imaginary axis: `‖exp(aI) − exp(bI)‖ ≤ 2·|a−b|` for `|a−b| ≤ 1`.
+(`exp(aI) − exp(bI) = exp(bI)·(exp((a−b)I) − 1)` and `‖exp(x) − 1‖ ≤ 2‖x‖` for `‖x‖ ≤ 1`.) -/
+private theorem norm_exp_imI_sub (a b : ℝ) (h : |a - b| ≤ 1) :
+    ‖Complex.exp (a * I) - Complex.exp (b * I)‖ ≤ 2 * |a - b| := by
+  have factor : Complex.exp (a * I) - Complex.exp (b * I)
+      = Complex.exp (b * I) * (Complex.exp (((a - b : ℝ) : ℂ) * I) - 1) := by
+    rw [mul_sub, mul_one, ← Complex.exp_add]; congr 2 <;> push_cast <;> ring
+  rw [factor, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul]
+  have hnorm : ‖((a - b : ℝ) : ℂ) * I‖ = |a - b| := by
+    rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+  have hkey := norm_exp_sub_one_le (x := ((a - b : ℝ) : ℂ) * I) (by rw [hnorm]; exact h)
+  rwa [hnorm] at hkey
+
+/-- **Density of dyadic roots (step 4, PROVEN).** The `2ⁿ`-th roots of a unit-circle point `z₁` are
+dense in the unit circle. For target `w = exp(α I)` and tolerance `ε`, pick `n` with `2π/2ⁿ < ε` and
+`k = round((2ⁿα − arg z₁)/2π)`; then `exp(((arg z₁)+2πk)/2ⁿ · I)` is a `2ⁿ`-th root of `z₁` within
+`2π/2ⁿ` of `w` (argument error `≤ π/2ⁿ`, exp Lipschitz). -/
+theorem dense_dyadic_roots (z₁ : ℂ) (hz₁ : ‖z₁‖ = 1) :
     Metric.sphere (0 : ℂ) 1 ⊆ closure {z : ℂ | ∃ n : ℕ, z ^ (2 ^ n) = z₁} := by
-  sorry
+  intro w hw
+  rw [mem_sphere_zero_iff_norm] at hw
+  rw [Metric.mem_closure_iff]
+  intro ε hε
+  obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt
+    (max (2 * Real.pi / ε) (2 * Real.pi)) (by norm_num : (1:ℝ) < 2)
+  have h2n_pos : (0:ℝ) < 2 ^ n := by positivity
+  set θ₁ := z₁.arg
+  set α := w.arg
+  set t : ℝ := (2 ^ n * α - θ₁) / (2 * Real.pi) with ht
+  set k : ℤ := round t with hk
+  set β : ℝ := (θ₁ + 2 * Real.pi * k) / 2 ^ n with hβ
+  have hz₁eq : Complex.exp ((θ₁:ℂ) * I) = z₁ := by
+    simpa [hz₁] using norm_mul_exp_arg_mul_I z₁
+  have hweq : w = Complex.exp ((α:ℂ) * I) := by
+    have := norm_mul_exp_arg_mul_I w; rw [hw] at this; simpa using this.symm
+  refine ⟨Complex.exp ((β:ℂ) * I), ?_, ?_⟩
+  · refine ⟨n, ?_⟩
+    rw [← Complex.exp_nat_mul]
+    have hβ2 : (2 ^ n : ℕ) * ((β:ℂ) * I) = ((θ₁ : ℂ) + 2 * Real.pi * (k:ℂ)) * I := by
+      push_cast [hβ]; field_simp
+    rw [hβ2, show ((θ₁ : ℂ) + 2 * Real.pi * (k:ℂ)) * I = (θ₁:ℂ) * I + (k : ℂ) * (2 * Real.pi * I)
+        by ring, Complex.exp_add, Complex.exp_int_mul_two_pi_mul_I, mul_one, hz₁eq]
+  · rw [dist_eq_norm, hweq]
+    have habs : |α - β| ≤ Real.pi / 2 ^ n := by
+      have hαβ : α - β = (2 * Real.pi / 2 ^ n) * (t - k) := by rw [hβ, ht]; field_simp; ring
+      rw [hαβ, abs_mul, abs_of_pos (by positivity : (0:ℝ) < 2 * Real.pi / 2 ^ n)]
+      calc 2 * Real.pi / 2 ^ n * |t - (k:ℝ)|
+          ≤ 2 * Real.pi / 2 ^ n * (1/2) :=
+            mul_le_mul_of_nonneg_left (by rw [hk]; exact abs_sub_round t) (by positivity)
+        _ = Real.pi / 2 ^ n := by ring
+    have hpi_le : Real.pi / 2 ^ n ≤ 1 := by
+      rw [div_le_one h2n_pos]
+      have h2 : 2 * Real.pi ≤ 2 ^ n := le_of_lt (lt_of_le_of_lt (le_max_right _ _) hn)
+      linarith [Real.pi_pos]
+    have hle1 : |α - β| ≤ 1 := le_trans habs hpi_le
+    have hbound := norm_exp_imI_sub α β hle1
+    have hπ : 2 * (Real.pi / 2 ^ n) < ε := by
+      rw [← mul_div_assoc, div_lt_iff₀ h2n_pos]
+      have h2πε : 2 * Real.pi / ε < 2 ^ n := lt_of_le_of_lt (le_max_left _ _) hn
+      rw [div_lt_iff₀ hε, mul_comm] at h2πε
+      linarith [h2πε]
+    have hfin : 2 * |α - β| < ε := by
+      calc 2 * |α - β| ≤ 2 * (Real.pi / 2 ^ n) := by linarith [habs]
+        _ < ε := hπ
+    linarith [hbound]
 
 /-- **Natural boundary of u₀ — ASSEMBLED from the two leaf inputs (genuine form).**
 
@@ -178,7 +268,7 @@ functional equation `(2/w)·U₀(w) = 1 + U₀(w²)` that this specific series s
 1. *Radius of convergence exactly 1.* `U0_summable_lt_one` + `U0term_norm_tendsto_atTop`. [PROVEN]
 2. *Seed singularity.* `seed_singularity`. [leaf sorry — the genuine analytic core]
 3. *Propagation.* `continues_sq` / `not_continues_of_sq`. [PROVEN]
-4. *Density.* `dense_dyadic_roots`. [leaf sorry — elementary]
+4. *Density.* `dense_dyadic_roots`. [PROVEN]
 5. *Close up.* `isClosed_singular` + `closure_minimal`. [PROVEN]
 
 So on the analytic side the three-card independence result reduces to step 2 alone (step 4 being

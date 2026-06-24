@@ -162,11 +162,34 @@ def totalOffCircleIndex {ι : Type*} [Fintype ι] (q : ℝ) (lambda : ι → ℝ
 def finiteBlockRH {ι : Type*} (q : ℝ) (lambda : ι → ℝ) : Prop :=
   ∀ i, zerosOnCriticalCircle q (lambda i)
 
+/-- The finite product of Ihara-style quadratic blocks. -/
+def finiteIharaProduct {ι : Type*} [Fintype ι] (q : ℝ) (lambda : ι → ℝ) (u : ℂ) : ℂ :=
+  ∏ i, iharaBlock q (lambda i) u
+
+/-- The model RH condition for a finite product: every product zero lies on the critical circle. -/
+def finiteProductRH {ι : Type*} [Fintype ι] (q : ℝ) (lambda : ι → ℝ) : Prop :=
+  ∀ u : ℂ, finiteIharaProduct q lambda u = 0 → Complex.normSq u = q⁻¹
+
 theorem blockOffCircleIndex_eq_zero_iff (q lambda : ℝ) :
     blockOffCircleIndex q lambda = 0 ↔ blockSpectralBound q lambda := by
   by_cases h : blockSpectralBound q lambda <;> simp [blockOffCircleIndex, h]
 
-/-- Finite product selector: model RH iff the total off-circle index vanishes. -/
+/-- Product zeros are critical exactly when every quadratic block is critical. -/
+theorem finiteProductRH_iff_finiteBlockRH {ι : Type*} [Fintype ι]
+    (q : ℝ) (lambda : ι → ℝ) :
+    finiteProductRH q lambda ↔ finiteBlockRH q lambda := by
+  constructor
+  · intro hprod i u hu
+    exact hprod u (by
+      unfold finiteIharaProduct
+      exact Finset.prod_eq_zero (Finset.mem_univ i) hu)
+  · intro hblocks u hprod
+    unfold finiteIharaProduct at hprod
+    rw [Finset.prod_eq_zero_iff] at hprod
+    rcases hprod with ⟨i, _, hi⟩
+    exact hblocks i u hi
+
+/-- Finite block-family selector: blockwise model RH iff the total off-circle index vanishes. -/
 theorem finiteBlockRH_iff_totalOffCircleIndex_eq_zero {ι : Type*} [Fintype ι]
     {q : ℝ} (hq : 0 < q) (lambda : ι → ℝ) :
     finiteBlockRH q lambda ↔ totalOffCircleIndex q lambda = 0 := by
@@ -180,6 +203,12 @@ theorem finiteBlockRH_iff_totalOffCircleIndex_eq_zero {ι : Type*} [Fintype ι]
     rw [totalOffCircleIndex, Finset.sum_eq_zero_iff] at hindex
     exact (zerosOnCriticalCircle_iff_spectral_bound hq).2
       ((blockOffCircleIndex_eq_zero_iff q (lambda i)).1 (hindex i (Finset.mem_univ i)))
+
+/-- Finite product selector: model RH iff the total off-circle index vanishes. -/
+theorem finiteProductRH_iff_totalOffCircleIndex_eq_zero {ι : Type*} [Fintype ι]
+    {q : ℝ} (hq : 0 < q) (lambda : ι → ℝ) :
+    finiteProductRH q lambda ↔ totalOffCircleIndex q lambda = 0 := by
+  rw [finiteProductRH_iff_finiteBlockRH, finiteBlockRH_iff_totalOffCircleIndex_eq_zero hq]
 
 /-- Reciprocal symmetry alone cannot force the spectral selector. -/
 theorem reciprocal_identity_does_not_force_spectral_bound (q : ℝ) (hq : 0 < q) :

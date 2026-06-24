@@ -43,6 +43,7 @@ import GaloisForLFunctions.SymPowerPlethysm
 import GaloisForLFunctions.SatakeReality
 import GaloisForLFunctions.CayleySchur
 import GaloisForLFunctions.IharaBlockSelector
+import GaloisForLFunctions.FrozenConstraint
 import GaloisForLFunctions.FunctionalEquationParity
 import GaloisForLFunctions.SpectralTorelli
 import GaloisForLFunctions.ExteriorParity
