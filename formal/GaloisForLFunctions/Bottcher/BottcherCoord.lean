@@ -413,4 +413,150 @@ theorem differentiableOn_bottcherCoord (c : ℂ) :
   have hz0 : z ≠ 0 := by intro h; rw [h, norm_zero] at hz2; linarith
   exact bottcherCoord_eq_mul_exp hz0
 
+/-- **The monomial Böttcher coordinate is the identity**: `φ_0(z) = z`. For `c = 0` (`f = z²`),
+every log-term vanishes (`log(1 + 0/·) = 0`), so `φ_0(z) = z·exp(0) = z ∈ ℂ(z)` — algebraic over
+`K = ℂ(z)`, hence trivially NOT independent of anything. This is exactly why `c = 0` is an
+exceptional parameter excluded from q62 (the monodromy is trivial: `φ_0` is single-valued and
+rational). -/
+theorem bottcherCoord_zero {z : ℂ} (hz : z ≠ 0) : bottcherCoord 0 z = z := by
+  rw [bottcherCoord_eq_mul_exp hz]
+  have hterm : ∀ k, bottcherLogTerm 0 z k = 0 := by
+    intro k; unfold bottcherLogTerm; simp
+  rw [tsum_congr hterm, tsum_zero, Complex.exp_zero, mul_one]
+
+end Bottcher
+
+namespace Bottcher
+open Complex InnerProductSpace
+
+/-! ## The branch-free dynamical Green's function `G_c = log‖φ_c‖`
+
+The constraint-side object of the connected-case (natural-boundary) route. Where `greenLimit`
+(`= Re(log φ_c)`) carries an artificial `slitPlane` restriction from the `log z` branch, the
+genuine Green's function `G_c(z) = log‖φ_c(z)‖` needs no branch and is harmonic on the *entire*
+escape region. It is fixed by a boundary constraint — harmonic on the exterior, log pole at `∞`,
+boundary value `0` on `J_c` — not propagated by any flow; the RH-shaped object of this toy. -/
+
+/-- **`φ_c` is analytic on all of `escapeOpen`** as `AnalyticOnNhd` (upgrading the branch-free
+`DifferentiableOn` factorization `φ_c = z·exp(∑ₖ termₖ)`). Removes the `slitPlane` restriction of
+`analyticOnNhd_bottcherCoord`. -/
+theorem analyticOnNhd_bottcherCoord_full (c : ℂ) :
+    AnalyticOnNhd ℂ (bottcherCoord c) (escapeOpen c) :=
+  (differentiableOn_bottcherCoord c).analyticOnNhd (isOpen_escapeOpen c)
+
+/-- The **dynamical Green's function** `G_c(z) = log‖φ_c(z)‖`, branch-free (defined wherever
+`φ_c ≠ 0`, i.e. everywhere). On the escape region it is the exterior Green's function of `K_c`. -/
+noncomputable def greenFunction (c z : ℂ) : ℝ := Real.log ‖bottcherCoord c z‖
+
+/-- **`G_c` is harmonic on the entire escape region** (no slit): `φ_c` is analytic and nowhere
+zero there, so `log‖φ_c‖` is harmonic (`AnalyticAt.harmonicAt_log_norm`). This is the defining
+constraint of the Green's function: harmonic on `Ω_c`, fixed by its boundary behaviour, not grown
+by recursion — the "constraint, not flow" object the connected case is built on. -/
+theorem harmonicOnNhd_greenFunction (c : ℂ) :
+    HarmonicOnNhd (greenFunction c) (escapeOpen c) :=
+  fun z hz => (analyticOnNhd_bottcherCoord_full c z hz).harmonicAt_log_norm
+    (bottcherCoord_ne_zero c z)
+
+/-- `G_c > 0` on the escape region (since `‖φ_c‖ > 1` there): the basin of `∞` sits at strictly
+positive potential, with the Julia set `J_c ⊆ {G_c = 0}` as the boundary locus. -/
+theorem greenFunction_pos {c z : ℂ} (hz : z ∈ escapeOpen c) : 0 < greenFunction c z := by
+  obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz
+  exact Real.log_pos (one_lt_norm_bottcherCoord hc hz2)
+
+/-- `G_c` is continuous on the escape region (harmonic ⟹ `C²` ⟹ continuous). -/
+theorem continuousOn_greenFunction (c : ℂ) : ContinuousOn (greenFunction c) (escapeOpen c) :=
+  (harmonicOnNhd_greenFunction c).contDiffOn.continuousOn
+
+/-- Consistency: on the slit overlap the branch-free `G_c` agrees with `greenLimit = Re(log φ_c)`.
+So `G_c` is the genuine slit-free harmonic extension of `greenLimit`. -/
+theorem greenFunction_eq_greenLimit {c z : ℂ} (hz : z ∈ escapeOpen c ∩ slitPlane) :
+    greenFunction c z = greenLimit c z := by
+  rw [greenFunction, norm_bottcherCoord_eq_exp_green hz, Real.log_exp]
+
+end Bottcher
+
+namespace Bottcher
+
+/-! ## The Green's-function scaling law (renormalization constraint)
+
+`G_c ∘ f_c = 2·G_c`: the exact analogue of a functional equation. The Green's function is *fixed*
+by this scaling together with harmonicity and the boundary value `0` on `J_c` — a constraint, not a
+flow. This self-similarity is what makes `G_c` rigid and drives both the dyadic monodromy
+(disconnected) and the natural-boundary rigidity (connected). -/
+
+/-- **Green's-function scaling law** `G_c(f_c(z)) = 2·G_c(z)` on the escape region. Immediate from
+`φ_c(z²+c) = φ_c(z)²` and `log‖w²‖ = 2 log‖w‖`. The renormalization identity that fixes `G_c`. -/
+theorem greenFunction_quadratic {c z : ℂ} (hz : z ∈ escapeOpen c) :
+    greenFunction c (quadratic c z) = 2 * greenFunction c z := by
+  obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz
+  rw [greenFunction, greenFunction, bottcherCoord_quadratic hc hz2, norm_pow, Real.log_pow]
+  norm_num
+
+/-- **Iterated scaling** `G_c(f_c^[n](z)) = 2ⁿ·G_c(z)`: the orbit climbs the potential by factors
+of `2`. The exponential separation behind the depth-`n` Cantor-cylinder period `2πi/2ⁿ`. -/
+theorem greenFunction_iterate {c z : ℂ} (hz : z ∈ escapeOpen c) (n : ℕ) :
+    greenFunction c ((quadratic c)^[n] z) = 2 ^ n * greenFunction c z := by
+  obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz
+  rw [greenFunction, greenFunction, bottcherCoord_iterate hc hz2, norm_pow, Real.log_pow]
+  push_cast; ring
+
+end Bottcher
+
+namespace Bottcher
+open Complex
+
+/-- **Strong maximum principle for `G_c` on the full escape region** (branch-free). If `G_c`
+attains a maximum over a preconnected open `U ⊆ escapeOpen c` at an interior point `z₀`, then `G_c`
+is constant on `U`. Via `‖φ_c‖ = exp G_c` and the maximum-modulus principle for the analytic `φ_c`:
+an interior max of `G_c` is an interior max of `‖φ_c‖`, forcing `φ_c` constant, hence `G_c` constant.
+This is the rigidity engine of the crossing lemma — two Green's functions obeying the same boundary
+constraint must coincide; uniqueness pins the equilibrium potential. -/
+theorem greenFunction_eqOn_of_isMaxOn {c : ℂ} {U : Set ℂ} {z₀ : ℂ}
+    (hUc : IsPreconnected U) (hUo : IsOpen U) (hsub : U ⊆ escapeOpen c)
+    (hz₀ : z₀ ∈ U) (hmax : IsMaxOn (greenFunction c) U z₀) :
+    Set.EqOn (greenFunction c) (Function.const ℂ (greenFunction c z₀)) U := by
+  have hexp : ∀ z, ‖bottcherCoord c z‖ = Real.exp (greenFunction c z) := fun z => by
+    rw [greenFunction, Real.exp_log (norm_pos_iff.mpr (bottcherCoord_ne_zero c z))]
+  have hdiff : DifferentiableOn ℂ (bottcherCoord c) U :=
+    (differentiableOn_bottcherCoord c).mono hsub
+  have hmaxnorm : IsMaxOn (norm ∘ bottcherCoord c) U z₀ := by
+    rw [isMaxOn_iff]; intro z hz
+    simp only [Function.comp_apply]
+    rw [hexp z, hexp z₀]; exact Real.exp_le_exp.mpr (hmax hz)
+  have hconst : Set.EqOn (bottcherCoord c) (Function.const ℂ (bottcherCoord c z₀)) U :=
+    Complex.eqOn_of_isPreconnected_of_isMaxOn_norm hUc hUo hdiff hz₀ hmaxnorm
+  intro z hz
+  have h1 : ‖bottcherCoord c z‖ = ‖bottcherCoord c z₀‖ := by rw [hconst hz]; rfl
+  rw [hexp z, hexp z₀] at h1
+  exact Real.exp_injective h1
+
+end Bottcher
+
+namespace Bottcher
+open Complex InnerProductSpace
+
+/-! ## Reconciliation of the two Green's functions on the escape region
+
+`greenLimit` (escape-rate `lim 2⁻ⁿ log‖f_c^[n] z‖`) and `greenFunction` (branch-free `log‖φ_c‖`)
+are the same function on the escape region. This transfers the harmonicity of `greenFunction` to the
+escape-rate Green's function `greenLimit`, whose basin-wide scaling law (`greenLimit_iterate_basin`)
+then carries harmonicity down the whole exterior `Ω_c`. -/
+
+/-- The two Green's functions agree on the escape region: `greenLimit = greenFunction = log‖φ_c‖`.
+Direct from `‖φ_c‖ = exp(greenLimit)` — no slit, no density argument. -/
+theorem greenFunction_eq_greenLimit_escape {c z : ℂ} (hz : z ∈ escapeOpen c) :
+    greenFunction c z = greenLimit c z := by
+  obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz
+  rw [greenFunction, norm_bottcherCoord hc hz2, bottcherModulus, Real.log_exp]
+
+/-- **The escape-rate Green's function `greenLimit` is harmonic on the escape region.** Transfers
+`harmonicOnNhd_greenFunction` across the reconciliation; the launch pad for basin-wide harmonicity. -/
+theorem harmonicOnNhd_greenLimit_escape (c : ℂ) :
+    HarmonicOnNhd (greenLimit c) (escapeOpen c) := by
+  intro z hz
+  have heq : greenFunction c =ᶠ[nhds z] greenLimit c := by
+    filter_upwards [(isOpen_escapeOpen c).mem_nhds hz] with w hw
+      using greenFunction_eq_greenLimit_escape hw
+  exact (harmonicAt_congr_nhds heq).mp (harmonicOnNhd_greenFunction c z hz)
+
 end Bottcher

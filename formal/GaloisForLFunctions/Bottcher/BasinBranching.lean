@@ -14,6 +14,7 @@ functions, and `σ_n` fixing `φ_{c₂}` (loop null-homotopic in the other basin
 remaining analytic build (the disconnected, Cantor-Julia-set covering structure).
 -/
 import GaloisForLFunctions.Bottcher.BottcherCoord
+import GaloisForLFunctions.Bottcher.HarmonicComp
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Topology.Algebra.Polynomial
 import Mathlib.Analysis.Complex.Polynomial.Basic
@@ -489,5 +490,111 @@ theorem exists_deck_unbounded (d : ℕ) :
     ∃ (ζ : ℂ) (n : ℕ), d < orderOf ζ ∧ ζ ^ (2 ^ n) = 1 ∧ orderOf ζ = 2 ^ n := by
   obtain ⟨ζ, hord, hpow⟩ := exists_dyadic_primitive d
   exact ⟨ζ, d, by rw [hord]; exact Nat.lt_two_pow_self, hpow, hord⟩
+
+/-- Two `φ_{c₁}`-branches over the same `z` differ by a `2ⁿ`-th root of unity (fibre = `μ_{2ⁿ}`
+orbit, for the actual Böttcher coordinate). -/
+theorem bottcherPullback_fiber_deck {c : ℂ} {n : ℕ} {z v₁ v₂ : ℂ}
+    (h₁ : (z, v₁) ∈ bottcherPullbackSpace c n) (h₂ : (z, v₂) ∈ bottcherPullbackSpace c n) :
+    (v₁ / v₂) ^ (2 ^ n) = 1 := by
+  obtain ⟨hv1, _⟩ := h₁
+  obtain ⟨hv2, _⟩ := h₂
+  rw [div_pow, hv1, hv2, div_self (bottcherCoord_ne_zero _ _)]
+
+/-- **The actual `(φ_{c₁},φ_{c₂})` carries the full geometric monodromy datum.** For escaping `z`
+and every degree bound `d`, there is `ζ` of order `> d` whose deck transformation `deckMap₁ ζ`
+carries the section `(z,φ_{c₁}(z),φ_{c₂}(z))` (a point of the common cover) to
+`(z, ζ·φ_{c₁}(z), φ_{c₂}(z))`, scaling `φ_{c₁}` by order `> d` and fixing `z, φ_{c₂}` — `monoF`
+realized for the ACTUAL coordinates over the z-plane. -/
+theorem section_monodromy_datum {c₁ c₂ z : ℂ} {n m : ℕ}
+    (h1 : ‖c₁‖ ≤ ‖z‖) (hz1 : 2 < ‖z‖) (h2 : ‖c₂‖ ≤ ‖z‖) (d : ℕ) :
+    ∃ (ζ : ℂ), d < orderOf ζ ∧
+      (z, bottcherCoord c₁ z, bottcherCoord c₂ z) ∈ commonPullback c₁ c₂ n m ∧
+      deckMap₁ ζ (z, bottcherCoord c₁ z, bottcherCoord c₂ z)
+        = (z, ζ * bottcherCoord c₁ z, bottcherCoord c₂ z) := by
+  obtain ⟨ζ, _, hord, _⟩ := exists_deck_unbounded d
+  exact ⟨ζ, hord, bottcher_mem_commonPullback h1 hz1 h2 hz1, rfl⟩
+
+/-- Iterating the deck map multiplies the scalar: `(deckMap₁ ζ)^[k] = deckMap₁ (ζ^k)`. -/
+theorem deckMap₁_iterate (ζ : ℂ) (k : ℕ) : (deckMap₁ ζ)^[k] = deckMap₁ (ζ ^ k) := by
+  induction k with
+  | zero => funext p; simp [deckMap₁]
+  | succ n ih => rw [Function.iterate_succ', ih, deckMap₁_comp, pow_succ, mul_comm]
+
+/-- The deck-orbit of the actual section is `{(z, ζ^k·φ_{c₁}(z), φ_{c₂}(z))}` — the branches of
+`φ_{c₁}` over `z`, all fixing `φ_{c₂}` and `z`. -/
+theorem deckMap₁_iterate_section (ζ : ℂ) (c₁ c₂ z : ℂ) (k : ℕ) :
+    (deckMap₁ ζ)^[k] (z, bottcherCoord c₁ z, bottcherCoord c₂ z)
+      = (z, ζ ^ k * bottcherCoord c₁ z, bottcherCoord c₂ z) := by
+  rw [deckMap₁_iterate]; rfl
+
+/-- `σ_n^k` scales `v₁ = φ_{c₁}` by `ζ^k`: the full cyclic deck action of order `orderOf ζ` on
+`φ_{c₁}` (with `ζ` of order `2ⁿ`, this is the order-`2ⁿ` monodromy on `φ_{c₁}`). -/
+theorem deckPrecomp₁_pow_v₁ {ζ : ℂ} (hζ : ζ ≠ 0) (k : ℕ) :
+    (deckPrecomp₁ hζ ^ k) (fun p => p.2.1) = (fun p => ζ ^ k * p.2.1) := by
+  induction k with
+  | zero => funext p; simp
+  | succ n ih =>
+    rw [pow_succ', AlgEquiv.mul_apply, ih]
+    funext p
+    show (fun q => ζ ^ n * q.2.1) (deckMap₁ ζ p) = ζ ^ (n + 1) * p.2.1
+    simp only [deckMap₁]; rw [pow_succ]; ring
+
+/-- The deck precomposition is a `μ`-action: `σ_ζ ∘ σ_η = σ_{ηζ}`. So `ζ ↦ deckPrecomp₁ ζ` is a
+homomorphism from the roots of unity to the automorphism group of the function ring — the deck-group
+action realizing the monodromy. -/
+theorem deckPrecomp₁_trans {ζ η : ℂ} (hζ : ζ ≠ 0) (hη : η ≠ 0) :
+    (deckPrecomp₁ hη).trans (deckPrecomp₁ hζ) = deckPrecomp₁ (mul_ne_zero hη hζ) := by
+  ext g p
+  show (g ∘ deckMap₁ η) (deckMap₁ ζ p) = g (deckMap₁ (η * ζ) p)
+  simp only [deckMap₁, Function.comp_apply, Prod.mk.injEq]
+  ring_nf
+
+/-- **Geometric realization of the full `monoF` datum.** For every degree bound `d` there is an
+algebra automorphism `σ = deckPrecomp₁ ζ` of the common cover's function ring, with `ζ` of order
+`> d`, that FIXES the base coordinate `z` and the `φ_{c₂}`-coordinate and SCALES the
+`φ_{c₁}`-coordinate by `ζ`. This is exactly the `σ_n`/`monoF` shape of `DyadicMonodromyTower`,
+realized as a genuine ℂ-algebra automorphism over the z-plane. The only remaining step to `hDisc`
+is transporting it from the function ring to the meromorphic function FIELD of the connected
+cover (so the abstract `Field M` obstruction `q62_disconnected_both` applies to the actual
+coordinates); `hRigid` (E–vS) handles the connected case. -/
+theorem geometric_monoF (d : ℕ) :
+    ∃ (ζ : ℂ) (hζ : ζ ≠ 0), d < orderOf ζ ∧
+      deckPrecomp₁ hζ (fun p => p.1) = (fun p => p.1) ∧
+      deckPrecomp₁ hζ (fun p => p.2.2) = (fun p => p.2.2) ∧
+      deckPrecomp₁ hζ (fun p => p.2.1) = (fun p => ζ * p.2.1) := by
+  obtain ⟨ζ, hord, _⟩ := exists_dyadic_primitive d
+  have hζ0 : ζ ≠ 0 := by
+    rintro rfl; rw [orderOf_zero] at hord; exact (pow_ne_zero d two_ne_zero) hord.symm
+  exact ⟨ζ, hζ0, by rw [hord]; exact Nat.lt_two_pow_self,
+    deckPrecomp₁_z hζ0, deckPrecomp₁_v₂ hζ0, deckPrecomp₁_v₁ hζ0⟩
+
+end Bottcher
+
+namespace Bottcher
+
+open InnerProductSpace in
+/-- **`G_c` is harmonic on the entire basin `Ω_c = (filledJulia c)ᶜ`.** At any basin point `z`, an
+iterate `f_c^[N] z` lands in the escape region (where `greenLimit` is harmonic); pulling back through
+the holomorphic `f_c^[N]` via the basin scaling law `G_c = 2⁻ᴺ·(G_c ∘ f_c^[N])` transports
+harmonicity to `z` (`HarmonicAt.comp_analytic`). The Green's function is thus harmonic on all of `Ω_c`
+right down to `J_c` — the constraint-side object on its full natural domain, the exterior in whose
+boundary behaviour the connected-case natural-boundary rigidity lives. -/
+theorem harmonicOnNhd_greenLimit_basin (c : ℂ) :
+    HarmonicOnNhd (greenLimit c) (filledJulia c)ᶜ := by
+  intro z hz
+  obtain ⟨N, hN⟩ := exists_orbit_gt hz (max 2 ‖c‖)
+  have hesc : (quadratic c)^[N] z ∈ escapeOpen c := hN
+  have hg : HarmonicAt (greenLimit c) ((quadratic c)^[N] z) :=
+    harmonicOnNhd_greenLimit_escape c _ hesc
+  have hf : AnalyticAt ℂ (quadratic c)^[N] z := analyticAt_quadratic_iterate c N z
+  have hcomp : HarmonicAt (greenLimit c ∘ (quadratic c)^[N]) z := HarmonicAt.comp_analytic hg hf
+  have hsmul : HarmonicAt ((2 ^ N : ℝ)⁻¹ • (greenLimit c ∘ (quadratic c)^[N])) z :=
+    hcomp.const_smul
+  have heq : ((2 ^ N : ℝ)⁻¹ • (greenLimit c ∘ (quadratic c)^[N])) =ᶠ[𝓝 z] greenLimit c := by
+    filter_upwards [(isClosed_filledJulia c).isOpen_compl.mem_nhds hz] with w hw
+    simp only [Pi.smul_apply, Function.comp_apply, smul_eq_mul]
+    rw [greenLimit_iterate_basin hw N, ← mul_assoc,
+        inv_mul_cancel₀ (by positivity : (2 ^ N : ℝ) ≠ 0), one_mul]
+  exact (harmonicAt_congr_nhds heq).mp hsmul
 
 end Bottcher

@@ -73,47 +73,101 @@ Since `B=0`, this coefficient vanishes for every nonzero integer `m`. The factor
 
 Descending on `d` gives `p_j=0` for every `j`. Then `P=0`, and the original rational coefficients `r_j` also vanish. This proves the lemma.
 
-## Quadratic Row Descent
+## Quadratic Local-Orbit Descent
 
 Let
 
 `P=Q+L+C`
 
-be the decomposition into quadratic, linear, and constant parts in the `Y` variables. Near `a=-n`, set `x=a+n` and
+be the decomposition into quadratic, linear, and constant parts in the `Y` variables. Write the quadratic part in symmetric form
+
+`Q(a,Y)=sum_{0<=i,j<=N} q_{ij}(a)Y_iY_j`, with `q_{ij}=q_{ji}`,
+
+and write `L(a,Y)=sum_j l_j(a)Y_j`. Near `a=-n`, set `x=a+n` and
 
 `F_k(-n+x)=x^(-s-k)+R_{n,k}(x)`.
 
-The monodromy-line lemma from the parent card says that
+Put `H_k(x)=x^(-s-k)` and `q=exp(-2*pi*i*s)`. For fixed `n` and small nonzero
+`x`, define the local orbit polynomial
 
-`P(-n+x, R_n(x)+T H(x))`
+`p_{n,x}(T)=P(-n+x, R_n(x)+T H(x))`.
 
-vanishes identically as a polynomial in `T`, where `H_k(x)=x^(-s-k)`.
+A loop around `x=0` fixes the regular vector `R_n(x)` and sends `H(x)` to
+`q H(x)`. Since the original relation analytically continues to every branch,
 
-The `T^2` coefficient is `Q(-n+x,H(x))`. If
+`p_{n,x}(q^m)=0`
+
+for every integer `m`. Because `deg_T p_{n,x}<=2`, if `q` has at least three
+distinct powers, then `p_{n,x}` is identically zero. If `q=-1`, the two values
+`p_{n,x}(1)=p_{n,x}(-1)=0` still force the odd coefficient of `p_{n,x}` to
+vanish. The only coefficient needed below that is not supplied by the
+order-two orbit is the quadratic coefficient.
+
+That missing coefficient is recovered by the local exponent filtration. Since
+`s notin Z`, the quadratic exponents `-2s-w` do not collide with the linear
+exponents `-s-k` or with the constant exponent `0`. If
 
 `A_w(a)=sum_{i+j=w} q_{ij}(a)`,
 
-then
+then the most singular quadratic contribution at weight `w` is
 
-`Q(-n+x,H(x))=x^(-2s) sum_w A_w(-n+x)x^(-w)`.
+`A_w(-n)x^(-2s-w)`.
 
-For each large `n`, this is zero as a rational function of `a`. Taking the largest `w` with `A_w` nonzero and evaluating after multiplication by `(a+n)^w` forces `A_w(-n)=0` for infinitely many `n`; hence `A_w=0`. Descending gives `A_w=0` for all `w`: the quadratic part vanishes on the rational-normal leading direction.
+Take the largest `w` with `A_w` nonzero. For all sufficiently large `n` avoiding
+coefficient poles, no lower-degree term and no smaller quadratic weight can
+cancel the exponent `-2s-w`; hence `A_w(-n)=0`. This holds for infinitely many
+`n`, so `A_w=0` as a rational function. Descending in `w` gives `A_w=0` for all
+`w`, equivalently the quadratic coefficient of `p_{n,x}` vanishes:
 
-The `T^1` coefficient is
+`Q(-n+x,H(x))=0`.
 
-`L(-n+x,H(x))+2Q(-n+x,R_n(x),H(x))`.
+Combining the monodromy orbit with this filtration gives, for every `s notin Z`,
+the two identities needed for the row descent:
 
-Look at the highest remaining column `j=N`. The coefficient of `x^(-s-N)` gives, for all large `n`,
+`Q(-n+x,H(x))=0`,
 
-`l_N(-n)+2 sum_i q_{iN}(-n) R_{n,i}(0)=0`.
+`L(-n+x,H(x))+2Q(-n+x,R_n(x),H(x))=0`.
+
+Now descend through the columns using the second identity. Suppose columns
+`j+1,...,N` have already been killed. The coefficient of `x^(-s-j)` is
+
+`l_j(-n)+2 sum_i q_{ij}(-n) R_{n,i}(0)=0`.
 
 For the chosen branch,
 
 `R_{n,i}(0)=zeta(s+i)+eta_i H_n^(s+i)`,
 
-with nonzero constants `eta_i`. The rational-tail independence lemma forces every `q_{iN}=0`, and then `l_N=0`. Repeating the same argument for `j=N-1,N-2,...,0` gives `Q=0` and `L=0`. Finally the original relation gives `C=0`.
+with nonzero constants `eta_i`. The displayed coefficient equation is exactly a
+rational-tail interpolation relation in the functions `H_n^(s+i)`, with the
+constant terms `zeta(s+i)` absorbed into the rational right side. The
+rational-tail independence lemma forces every `q_{ij}=0`, and then `l_j=0`.
+Starting at `j=N` and descending to `j=0` gives `Q=0` and `L=0`. The residual
+relation gives `C=0`.
 
 Thus no nonzero relation of total degree at most two exists.
+
+## Formalization Shape
+
+The reusable Lean target is the local-orbit obstruction, not a Hurwitz-specific
+calculation:
+
+1. restrict a finite-degree relation to a local orbit polynomial
+   `p(T)=P(R+T H)`;
+2. use monodromy to force roots `T=q^m`;
+3. if the orbit has enough distinct points, use polynomial root-counting to kill
+   the needed coefficients;
+4. if the orbit is too small at the target degree, use a local exponent
+   filtration to extract the missing top coefficient;
+5. reduce the remaining coefficient equations to an external separation lemma,
+   here rational-tail independence.
+
+This is close enough to compare with the Böttcher/u0 formalizations, but not the
+same engine. Böttcher uses unbounded one-coordinate scalar monodromy with another
+coordinate fixed, so root-counting alone can kill arbitrary polynomial degree.
+Hurwitz uses diagonal local monodromy on the singular ladder and then needs
+tail-separation data. The common pattern is:
+
+`finite relation -> orbit polynomial -> coefficient obstruction -> independence`.
 
 ## Retired Shortcut
 

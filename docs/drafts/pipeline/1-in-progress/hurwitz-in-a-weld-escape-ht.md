@@ -379,7 +379,7 @@ The proposed all-`N` quadratic theorem is:
 
 `{zeta(s+k,a)}_{0<=k<=N}` has no nonzero `C(a)`-polynomial relation of total degree `<=2`, for `Re(s)>1` and `s notin Z`.
 
-The reduction is now concrete. Quadratic leading terms only impose anti-diagonal cancellation on the rational-normal direction. The next monodromy-line coefficient produces rational interpolation equations involving
+The reduction is now concrete. Quadratic leading terms only impose anti-diagonal cancellation on the rational-normal direction. The local-orbit/filtration descent then produces rational interpolation equations involving
 
 `R_{n,k}(0)=zeta(s+k)+eta_k H_n^{(s+k)}`.
 
@@ -415,6 +415,6 @@ Proof structure:
 
    If this branch part vanished, inspect the nonzero pole tower `mu=2 pi i m` of `(1-e^(-mu))^(-1)`. The highest derivative order gives a polynomial in `mu_m` with infinitely many roots, so the top operator coefficients vanish; descending kills all `p_j`.
 
-3. The monodromy-line `T^2` coefficient kills the anti-diagonal sums of the quadratic part. The `T^1` coefficient then descends column by column; each row is exactly a rational-tail interpolation equation, so the tail lemma kills the remaining quadratic and linear coefficients.
+3. The local-orbit descent is the right proof shape: when `exp(-2*pi*i*s)` has at least three distinct powers, the monodromy orbit gives the full quadratic line; in the order-two case the orbit still gives the `T^1` coefficient and the local exponent filtration recovers the missing `T^2` coefficient. The resulting `T^1` identity descends column by column; each row is exactly a rational-tail interpolation equation, so the tail lemma kills the remaining quadratic and linear coefficients.
 
 This is still not full HT: degree `>=3` relations remain open. But the first uniform nonlinear gate in the Hurwitz weld model is now closed without computation and without an RH-equivalent target.

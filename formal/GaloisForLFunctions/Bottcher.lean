@@ -16,6 +16,7 @@ import GaloisForLFunctions.Bottcher.DeckAutomorphism
 import GaloisForLFunctions.Bottcher.MonodromyContinuation
 import GaloisForLFunctions.Bottcher.BasinBranching
 import GaloisForLFunctions.Bottcher.ProperCovering
+import GaloisForLFunctions.Bottcher.AnalyticDomain
 import GaloisForLFunctions.Bottcher.MonodromyObstruction
 import GaloisForLFunctions.Bottcher.LogPotential
 import GaloisForLFunctions.Bottcher.Capacity

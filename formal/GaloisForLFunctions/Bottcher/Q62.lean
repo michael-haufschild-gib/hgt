@@ -122,4 +122,19 @@ theorem q62_disconnected_both
   fun P hrel =>
     algIndep_of_unbounded_monodromy F G (transcendental_of_monodromy G hG0 monoG) hF monoF P hrel
 
+/-- **q62 mixed case (one disconnected) needs NO E–vS rigidity.** If `F = φ_{c₁}` is disconnected —
+so it carries the unbounded dyadic monodromy scaling `F` while fixing the (single-valued, even if
+connected) `G = φ_{c₂}` — and `G` is transcendental over `K`, then `F, G` are algebraically
+independent. The monodromy method alone settles the mixed case; Eremenko–van Strien rigidity
+(`hRigid`) is needed only for the genuinely-both-connected case, where neither coordinate has any
+monodromy. This refines the `q62_independence` case split: of its `hRigid` branch, only
+both-connected is irreducibly E–vS. -/
+theorem q62_mixed
+    {K M : Type*} [Field K] [Field M] [Algebra K M]
+    (F G : M) (hF : F ≠ 0) (hG : Transcendental K G)
+    (monoF : ∀ d : ℕ, ∃ (σ : M ≃ₐ[K] M) (ζ : M) (m : ℕ),
+      d < m ∧ orderOf ζ = m ∧ σ G = G ∧ σ ζ = ζ ∧ σ F = ζ * F) :
+    NoRelation K F G :=
+  fun P hrel => algIndep_of_unbounded_monodromy F G hG hF monoF P hrel
+
 end Bottcher
