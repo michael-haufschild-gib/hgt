@@ -150,3 +150,9 @@ Thus positive Euler amplitudes attached to root or atom displacement cannot sati
 `single-even-frequency-not-stieltjes.md` gives the seam-log pointwise failure. The FE-even source germ `B(cosh(lambda w)-1)` has shifted moments `T_k=B(-1)^(k+1)lambda^(2k)/(2k-1)!`, and its first shifted Hankel determinant is negative.
 
 Therefore a positive-weight Euler proof cannot use termwise FE-even frequencies as pointwise PSD kernels. Any viable proof must use extra completed structure beyond positive frequency weights.
+
+## 2026-06-24 positive FE-even cone fails before the kernel test
+
+`positive-even-frequency-cone-not-markov.md` strengthens the single-point kernel failure. A positive mixture of FE-even frequency germs has alternating shifted seam moments and in particular `T_2<0`, so the positive frequency cone itself is outside the Markov/Stieltjes target.
+
+Thus no pointwise-kernel repair can be obtained by first forming a positive FE-even frequency measure. The proof must use completed source structure outside that cone.

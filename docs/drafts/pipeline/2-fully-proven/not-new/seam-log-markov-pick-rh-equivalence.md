@@ -183,3 +183,62 @@ Therefore the Markov/Pick target here cannot be replaced by any fixed-size Hanke
 `single-even-frequency-not-stieltjes.md` shows that the Markov/Pick target here cannot be proved frequency-by-frequency on FE-even Euler source atoms. A single positive germ `B(cosh(lambda w)-1)` gives an indefinite shifted Hankel block after the seam-square transform.
 
 Thus the source theorem must prove positivity for the completed seam-log object, not for isolated positive frequencies.
+
+## 2026-06-24 positive frequency cone is outside the Markov target
+
+`positive-even-frequency-cone-not-markov.md` shows that a positive measure over FE-even frequency germs `cosh(lambda w)-1` gives alternating shifted seam moments. Nonzero positive mixtures have `T_2<0`, hence cannot be Markov/Stieltjes moment sequences on `R_+`.
+
+So the Markov/Pick target here must be proved for the completed seam-log object, not by positive summation over FE-even source frequencies.
+
+## 2026-06-24 finite signed frequency atoms are outside the Markov target
+
+`finite-signed-even-frequency-atoms-not-markov.md` adds the signed finite-atom test to the Markov/Pick route. A finite signed sum of real FE-even frequency germs gives `T_k=(-1)^(k+1)S_k/(2k-1)!`, and the dominant real frequency fixes the tail sign of `S_k`. Hence one parity of `T_k` is eventually negative.
+
+Therefore the Markov/Pick source proof cannot be a finite signed real-frequency expansion. The completed source object must leave that finite atom class before Markov positivity can even be possible.
+
+## 2026-06-24 finite-order local frequency operators are outside the Markov target
+
+`finite-order-local-frequency-operators-not-markov.md` blocks a local-operator shortcut to Markov/Pick positivity. If the proposed source correction acts coefficientwise by a nonzero real polynomial `q(k)`, then applied to a positive FE-even frequency mixture it leaves the FE parity visible on the tail. One parity of shifted moments is eventually negative.
+
+Therefore Markov/Pick positivity cannot be obtained by a finite-order local correction of the positive frequency source. The source proof must use an all-order/nonlocal or boundary-index mechanism before the Markov cone can be reached.
+
+## 2026-06-24 Markov parity repair is a half-turn operation
+
+`seam-parity-correction-is-nonlocal-half-turn.md` identifies the coefficient-diagonal parity operation blocked by finite-order local corrections. The operator with eigenvalue `(-1)^k` on the `k`-th seam-square coefficient is the half-turn `f(z)->f(-z)`, not a polynomial in `z d/dz`.
+
+Therefore a Markov/Pick proof that starts from FE-even positive frequency data must either source-build this nonlocal half-turn as part of the completed interaction, or prove positivity through a different all-order object. A finite local degree multiplier cannot provide the parity repair.
+
+## 2026-06-24 half-turn repaired frequencies still fail Markov positivity
+
+`half-turn-repaired-frequency-not-markov.md` closes the parity-only escape. For a single positive FE-even frequency, applying the half-turn changes the shifted moments to positive signs, but the first shifted Hankel determinant remains negative:
+
+`(B lambda^2)(B lambda^6/120)-(B lambda^4/6)^2=-7B^2lambda^8/360`.
+
+Therefore a Markov/Pick source proof cannot be: positive frequency expansion plus half-turn parity repair plus positive summation. The completed source theorem must also supply the Hankel square-test geometry.
+
+## 2026-06-24 bounded repaired packets still miss the Markov cone
+
+`bounded-half-turn-frequency-packets-fail-hankel.md` shows that after the half-turn, finite positive repaired packets with squared-frequency ratio strictly below `(17+2 sqrt(70))/3` still have a negative first shifted Hankel determinant. The Markov/Pick source theorem therefore cannot be assembled from local positive repaired frequency packets; it must supply broad cross-scale interaction or a different all-order positivity object.
+
+## 2026-06-24 first repaired gate is sharp but insufficient
+
+`half-turn-first-gate-threshold-sharp.md` proves that the repaired-packet threshold `(17+2 sqrt(70))/3` is sharp for the first shifted Hankel determinant. Broad positive repaired packets can pass that one gate, so the Markov/Pick source theorem cannot be reduced to a `2 x 2` determinant. The remaining content is all-order Hankel positivity from source data.
+
+## 2026-06-24 finite repaired packets closed; infinite repaired sources need a source gate
+
+`finite-half-turn-repaired-packets-not-markov.md` shows that finite positive repaired packets never reach the Markov/Stieltjes cone: top-frequency domination eventually makes an adjacent shifted Hankel determinant negative. `infinite-half-turn-frequency-source-admissibility-split.md` shows that arbitrary infinite repaired sources are too flexible, because sigma-finite mass at zero frequency can realize any Stieltjes target. The Markov/Pick source theorem must therefore be a source-admissibility or boundary/index theorem, not a positive repaired-frequency packet construction.
+
+## 2026-06-24 repaired-frequency infinity is local at the zero-frequency border
+
+`locally-infinite-repaired-frequency-source-for-compact-markov.md` strengthens
+the infinite repaired-source warning. For any compact Markov target not
+supported only at `0`, a positive half-turn repaired-frequency source realizing
+the positive moments must have infinite mass in every interval `(0,delta)` at
+frequency `0`.
+
+Thus the Markov/Pick source theorem cannot be recovered by adding a finite
+border mass, a locally finite source law at the compactified zero-frequency
+endpoint, or an unstated finite-part regularization. If the proof remains in the
+positive repaired-frequency model, source data must select this locally infinite
+border behavior without using Markov positivity as an input. Otherwise the proof
+has to move to the completed boundary/index object.

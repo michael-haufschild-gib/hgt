@@ -1,0 +1,26 @@
+=== comp85b: degree ≤ 3 ODE search for f = ψ(Γ(z)) [CORRECTED, 100 dps] ===
+  41 sample points collected.
+
+=== Degree <= 2 cross-check (degree ≤ 2) ===
+  Matrix: 82×15 (15 correct monomials, no duplicates)
+  Overdetermined by 67 rows — should be full rank if no ODE exists
+  Min SV: 2.425e-03   Max SV: 1.396e+02
+  10 smallest SVs: ['2.425e-03', '9.011e-03', '6.964e-02', '1.528e-01', '2.545e-01', '1.404e+00', '3.113e+00', '6.870e+00', '1.020e+01', '1.898e+01']
+  Min/Max ratio: 1.737e-05
+  Machine epsilon at 100 dps: ~1e-100
+  No degree-2 ODE (min/max well above machine epsilon)
+
+=== Degree <= 3 main result (degree ≤ 3) ===
+  Matrix: 82×35 (35 correct monomials, no duplicates)
+  Overdetermined by 47 rows — should be full rank if no ODE exists
+  Min SV: 2.030e-10   Max SV: 1.370e+03
+  10 smallest SVs: ['2.030e-10', '1.041e-09', '6.527e-09', '1.831e-08', '1.173e-07', '2.777e-07', '9.573e-07', '1.867e-06', '5.155e-06', '1.979e-05']
+  Min/Max ratio: 1.482e-13
+  Machine epsilon at 100 dps: ~1e-100
+  No degree-3 ODE (min/max well above machine epsilon)
+
+=== EXTRA: Wronskian independence of {ψ(z), (ψ(Γ(z)))} and their derivatives ===
+(Probes: could ψ(Γ(z)) be a solution of a 2nd-order LINEAR ODE with ψ-coefficients?)
+  Matrix: 20×8, min/max ratio: 7.606e-05
+  SVs: ['1.157e-03', '1.988e-02', '2.128e-01', '4.373e-01', '1.644e+00', '4.789e+00', '7.163e+00', '1.522e+01']
+  (< 1e-95 => differential linear relation among ψ, ψ', ψ'', ψ(Γ), ψ(Γ)', ψ(Γ)'')

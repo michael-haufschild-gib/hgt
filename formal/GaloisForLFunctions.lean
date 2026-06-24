@@ -76,3 +76,5 @@ import GaloisForLFunctions.DifferentialABP
 import GaloisForLFunctions.PTInvolution
 import GaloisForLFunctions.MoritaGamma
 import GaloisForLFunctions.FamilyCrossResonance
+import GaloisForLFunctions.SingleEvenFrequency
+import GaloisForLFunctions.SourceRecession

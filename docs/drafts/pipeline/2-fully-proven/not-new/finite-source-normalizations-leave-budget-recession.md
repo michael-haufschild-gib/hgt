@@ -162,3 +162,21 @@ for all-order source domination.
 - 2026-06-24 -- Codex: created under the private source-scale audit. The card
   records that finite source normalizations can pay the fixed budget only after
   their remaining recession directions are shown nonnegative or absent.
+
+## 2026-06-24 Lean formalization of the recession core
+
+`../../3-formalized/source-budget-recession-gates.md` records the Lean
+formalization of the algebraic core in
+`formal/GaloisForLFunctions/SourceRecession.lean`:
+
+- `source_budget_one_sided_recession_nonnegative`: a budget inequality holding
+  along every `t>=0` point of a ray forces the recession direction to be
+  nonnegative on every test vector.
+- `source_budget_two_sided_recession_zero`: a budget inequality holding along
+  the whole real affine line forces the recession direction to vanish on every
+  test vector.
+
+This formalizes the finite-normalization audit, not the source-built
+boundary-Weyl repair theorem. The remaining RH-bearing obligation is still the
+construction of an all-order Euler/Gamma/FE boundary object whose residual
+recession directions are source-closed before the Schur/index sign is read.

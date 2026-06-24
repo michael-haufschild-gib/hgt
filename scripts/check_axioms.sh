@@ -352,6 +352,8 @@ import GaloisForLFunctions
 #print axioms GaloisForLFunctions.familyPrimeBalance_apply_eq_zero_of_primeProduct_eq
 #print axioms GaloisForLFunctions.familyPrimeBalance_eq_zero_of_primeLogFrequency_eq_zero
 #print axioms GaloisForLFunctions.familyPrimeBalance_apply_eq_zero_of_primeLogFrequency_eq_zero
+#print axioms GaloisForLFunctions.source_budget_one_sided_recession_nonnegative
+#print axioms GaloisForLFunctions.source_budget_two_sided_recession_zero
 EOF
 
 cd "$FORMAL_DIR"
@@ -365,8 +367,8 @@ NORMALIZED="$(printf '%s\n' "$OUT" | tr '\n' ' ' | sed 's/[[:space:]][[:space:]]
 AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "depends on axioms: \\[[^]]*\\]" || true; })"
 NO_AXIOM_LINES="$(printf '%s\n' "$NORMALIZED" | { grep -oE "does not depend on any axioms" || true; })"
 AUDITED_COUNT="$(printf '%s\n%s\n' "$AXIOM_LINES" "$NO_AXIOM_LINES" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [ "$AUDITED_COUNT" -ne 341 ]; then
-  echo "FAIL: expected 341 audited theorem outputs" >&2
+if [ "$AUDITED_COUNT" -ne 343 ]; then
+  echo "FAIL: expected 343 audited theorem outputs" >&2
   exit 1
 fi
 BAD_AXIOMS="$(printf '%s\n' "$AXIOM_LINES" \
@@ -399,4 +401,4 @@ if [ -n "$SORRY_HITS" ]; then
   exit 1
 fi
 
-echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (341 theorem outputs audited)."
+echo "PASS: Tier A/B elementary theorems axiom-clean (allowed subset of $EXPECTED), no sorry (343 theorem outputs audited)."

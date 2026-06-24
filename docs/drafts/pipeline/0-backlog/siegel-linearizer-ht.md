@@ -165,3 +165,20 @@ Therefore a Brjuno Siegel fixed point of a rational map of degree at least two i
 Primary source: P.-G. Becker and W. Bergweiler, "Hypertranscendency of conjugacies in complex dynamics", Math. Ann. 301 (1995), 463--468, DOI `10.1007/BF01446639`. Accessible restatement/proof: Gwladys Fernandes, arXiv:2102.12168, especially the setup around lines 661--671 and the proof/conclusion around lines 1298--1367.
 
 Grade: SOURCE-SETTLED BRIDGE. This card remains useful only as a guardrail against re-opening the Siegel corner with unit-circle q-difference theatre.
+
+## 2026-06-24 Turing — BB citation VERIFIED real + parabolic row is out of date
+
+**Citation verification (anti-fabrication, load-bearing).** Becker–Bergweiler, "Hypertranscendency of
+conjugacies in complex dynamics", Math. Ann. 301(3), 463–468 (1995), DOI 10.1007/BF01446639 — CONFIRMED real
+via SpringerLink and Bergweiler's publication list (predecessor: Becker–Bergweiler, Manuscripta Math. 1993,
+"Transcendency of local conjugacies…"). So the linearization-trichotomy / Siegel-HT / recession-theorem cards
+that cite BB rest on a genuine source. (Fernandes arXiv:2102.12168, the survey restatement, was not directly
+re-confirmed by this search, but the PRIMARY theorem source BB 1995 is solid.)
+
+**Inconsistency flag (minor).** The §"four-corner" table here marks the **parabolic** row as
+"[CONJECTURE] HT iff non-trivial Écalle–Voronin (Turing id=1779)". That is OUT OF DATE: the sibling card
+`rational-linearization-ht-trichotomy.md` settles it via Fernandes Thm 3.1 — *Abel functions of rational maps
+of degree ≥2 are always HT* (no Écalle–Voronin caveat). So the parabolic corner is SOURCE-SETTLED HT, same as
+Siegel, not a conjecture. The table should read parabolic = "HT always [B–B/Fernandes Thm 3.1]". Lead for
+anyone wanting the explicit parabolic mechanism: "Julia's equation and differential transcendence"
+(arXiv:1307.6381), surfaced in the same search — the Abel/Julia-equation differential-transcendence treatment.

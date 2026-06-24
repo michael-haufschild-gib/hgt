@@ -676,3 +676,128 @@ Thus continued-fraction, Jacobi/orthogonal-polynomial, cumulant, Hankel-ratio, o
 `../2-fully-proven/single-even-frequency-not-stieltjes.md` records the one-tooth extreme case. A positive FE-even source frequency `B(cosh(lambda w)-1)` gives alternating shifted seam moments and a negative first shifted Hankel determinant.
 
 Thus a landscape proof cannot push `Lambda(n)>=0` through the seam-square Markov coordinate one frequency at a time. The source theorem must use a completed interaction: FE cancellation, archimedean budget, multiplicative structure, or a completed boundary/index object.
+
+## 2026-06-24 positive FE-even frequency cone does not reach Markov positivity
+
+`../2-fully-proven/positive-even-frequency-cone-not-markov.md` shows that the entire positive cone of FE-even frequency germs has alternating shifted seam moments. A nonzero positive mixture has `T_2<0`, so it cannot be a positive Markov/Stieltjes measure on `R_+`.
+
+Therefore the landscape proof cannot be positive Euler-frequency summation in the seam-square coordinate. It must use completed interaction: FE cancellation, archimedean coupling, multiplicative correlations, signed counterterms, or a closed boundary/index object.
+
+## 2026-06-24 finite signed real-frequency corrections do not select the landscape
+
+Created `../2-fully-proven/finite-signed-even-frequency-atoms-not-markov.md`. If a proposed completed correction is a finite signed sum of real FE-even frequency atoms, the top nonzero frequency dominates the coefficient tail. The transformed shifted moments are then negative on one tail parity, so the sequence cannot be Markov/Stieltjes positive.
+
+Consequence: the landscape proof cannot be a finite signed real-frequency patch of the positive Euler-frequency cone. The remaining source mechanism must be an all-order completed interaction, not a finite atom list with adjusted signs.
+
+## 2026-06-24 finite-order local corrections do not select the landscape
+
+Created `../2-fully-proven/finite-order-local-frequency-operators-not-markov.md`. A finite-order local operator with coefficient action `a_k -> q(k)a_k`, for nonzero real polynomial `q`, cannot move a nonzero positive FE-even frequency mixture into the Markov/Stieltjes target. The polynomial has an eventual sign, so FE parity leaves negative shifted moments on one tail parity.
+
+Consequence: a landscape proof cannot be a local finite-order correction of the positive Euler-frequency source. It must use an all-order/nonlocal completed interaction or a source-built boundary/index object.
+
+## 2026-06-24 parity repair requires the half-turn, not a finite local operator
+
+Created `../2-fully-proven/seam-parity-correction-is-nonlocal-half-turn.md`. The coefficient parity operator is `Hf(z)=f(-z)`, acting by `(-1)^k` on degree `k`. No finite polynomial `q(D)` in the Euler operator can equal `H` on all degrees.
+
+Consequence: if a landscape proof tries to repair the positive FE-even frequency route by a finite local `D`-operator, it has not supplied the required parity. If it uses the half-turn, that involution must be source-built from the completed FE/Euler/Gamma landscape, not imposed after the Markov target is known.
+
+## 2026-06-24 the half-turn is necessary but not sufficient
+
+Created `../2-fully-proven/half-turn-repaired-frequency-not-markov.md`. The nonlocal half-turn fixes the coefficient parity of a positive FE-even frequency, but the repaired one-frequency shifted moments still have determinant
+
+`(B lambda^2)(B lambda^6/120)-(B lambda^4/6)^2=-7B^2lambda^8/360<0`.
+
+Consequence: a landscape proof cannot stop at constructing the half-turn. It must prove a further completed interaction that changes the Hankel square-test geometry, or abandon the positive frequency-atom model for a boundary/index or multiplicative all-order object.
+
+## 2026-06-24 bounded half-turn repaired packets fail the first gate
+
+`../2-fully-proven/bounded-half-turn-frequency-packets-fail-hankel.md` strengthens the half-turn obstruction from one atom to finite positive packets with bounded squared-frequency spread. If the repaired packet lies in a multiplicative squared-frequency interval of ratio strictly below `(17+2 sqrt(70))/3`, then `U_1 U_3-U_2^2<0`.
+
+Consequence: constructing the half-turn is not enough, and local packets around nearby FE-even frequencies are not enough. The proof must source-build broad cross-scale interaction, multiplicative correlation, signed completed counterterms, or a boundary/index positivity object.
+
+## 2026-06-24 first-gate spread threshold is sharp
+
+`../2-fully-proven/half-turn-first-gate-threshold-sharp.md` closes the first-gate spread question. The threshold `(17+2 sqrt(70))/3` is not only necessary below it; above it, a balanced two-endpoint positive repaired packet has positive first shifted Hankel determinant.
+
+Consequence: the repaired-packet route is not killed by the first gate once broad spread is allowed. The live burden is all-order: source-build the spread and prove every higher shifted Hankel determinant, or replace the packet model by a boundary/index positivity object.
+
+## 2026-06-24 finite repaired packets are closed; infinity needs admissibility
+
+`../2-fully-proven/finite-half-turn-repaired-packets-not-markov.md` upgrades the repaired-packet obstruction from first-gate calibration to a full finite-support no-go: every finite positive half-turn repaired packet fails an eventual adjacent shifted Hankel gate by top-frequency domination.
+
+`../2-fully-proven/infinite-half-turn-frequency-source-admissibility-split.md` shows why the infinite escape is not automatically live. Unrestricted sigma-finite zero-frequency mass can manufacture any Stieltjes target, while `../2-fully-proven/locally-infinite-repaired-frequency-source-for-compact-markov.md` shows that every source realizing a compact Markov target not supported only at `0` is forced to have infinite mass in every zero-frequency neighborhood. Therefore the live route is not positive repaired-frequency summation; it is a source-built admissibility law or a boundary/index positivity object.
+
+## 2026-06-24 anti-theatre reset: do not attack the RH mirror object
+
+Status: route correction, not a theorem.
+
+The direct boundary-Weyl / Stieltjes / `K_d <= I` object is now classified as a
+mirror atlas, not an attack target. It may be used to name what the downstream
+RH residue would read as, but attempting to prove it directly is theatre: the
+proof would only rename the wall as scalar Weyl positivity, Markov positivity,
+Krein repair, Loewner domination, or faithful index.
+
+Allowed use of the mirror atlas:
+
+1. charting the downstream residue after a source landscape has already been
+   constructed;
+2. testing whether a proposed landscape is zero-fed or circular;
+3. separating known fake families only by source gates, never by their zero
+   locations or by the target sign.
+
+Disallowed proof shape:
+
+`prove s_d > 0`, `prove kappa_- = 0`, `prove Q_0 >= 0`, `prove K <= I`, or
+`prove the Gamma atom repairs the carrier`, when any of these is the primary
+object of attack.
+
+Correct proof shape:
+
+Build the hypertranscendental constraint landscape first: a native `M+` / weld
+category in which the completed object is fixed by source constraints and the
+zero divisor is a residue of that constraint. The first theorem must be about
+self-selection of the landscape, not about RH positivity. RH may only appear as
+a downstream reading after the landscape has already forced the object.
+
+Anti-theatre operational test:
+
+If the central question could be answered by prompting an agent with the same
+RH-equivalent chart, stop. The next question must instead ask for a native
+constraint, invariant, or category whose statement still makes sense before the
+zero divisor and the positivity wall are introduced.
+
+## 2026-06-24 Mellin-threshold admissibility does not rescue repaired sources
+
+`../2-fully-proven/zero-frequency-repaired-source-mellin-threshold.md` adds the weakened border test. For compact Markov targets not supported only at `0`, the forced zero-frequency repaired source is locally finite for every positive Mellin weight and locally infinite at exponent `0` and below.
+
+Consequence: a landscape proof cannot use finite positive fractional moments, finite positive Mellin energy, or similar `q>0` local conditions as the source-admissibility selector; the unrestricted reservoir already passes them. Local finiteness or `q<=0` finiteness kills the compact Markov targets themselves. The non-mirror residue remains a structural source law selecting the locally infinite border distribution, or a completed boundary/index theorem outside the additive frequency model.
+
+## 2026-06-24 local weighted border conditions are not the landscape
+
+`../2-fully-proven/zero-frequency-repaired-source-dx-over-x-law.md` classifies the local weighted-integrability escape. For compact Markov targets not supported only at `0`, the zero-frequency repaired source is locally comparable to `dx/x`: a nonnegative weight is integrable against the source exactly when it is integrable against `dx/x`.
+
+Consequence: the landscape proof cannot be a local weighted border condition. `dx/x`-integrable weights are too weak because the arbitrary reservoir passes them; non-`dx/x`-integrable weights are too strong because they reject the compact Markov targets. The next admissibility question must involve source selection beyond local integrability, or the completed boundary/index object.
+
+## 2026-06-24 local measure-class tests are theatre
+
+`../2-fully-proven/zero-frequency-repaired-source-dx-over-x-law.md` now proves that all compact-target repaired reservoirs are locally bounded-equivalent at zero frequency. Hence a landscape condition that only inspects local null sets, local absolute continuity, bounded-density regularity, or comparable border singularity cannot distinguish targets.
+
+Consequence: the next source-admissibility move cannot be another local regularity condition at zero frequency. It must be nonlocal or source-coupled: an Euler/Gamma/FE selection law for the reservoir, a global moment/transform constraint, or a completed boundary/index theorem.
+
+## 2026-06-24 reservoir density is not a softer landscape coordinate
+
+`../2-fully-proven/zero-frequency-reservoir-density-laplace-equivalence.md` proves the density form of the zero-frequency reservoir. The leading logarithmic divergence sees only the scalar positive mass of the compact target. The full density profile, however, is a Laplace transform equivalent to the target Markov measure.
+
+Consequence: a landscape proof cannot use the reservoir's local blowup rate as a selector, and cannot use the full reservoir density as if it were source-neutral data. Either Euler/Gamma/FE data construct the density noncircularly, or the proof must leave the additive reservoir model for the completed boundary/index object.
+
+## 2026-06-24 reservoir complete monotonicity is not a source law by itself
+
+`../2-fully-proven/reservoir-density-complete-monotonicity-markov-equivalence.md` shows that the natural analytic positivity condition on the reservoir profile is exactly the compact Markov target condition in Laplace coordinates. Complete monotonicity of `H(t)=2h(t^2)`, with the support-away-from-zero condition, is not softer than Markov/Pick positivity.
+
+Consequence: a landscape proof cannot declare the reservoir profile completely monotone as an admissibility axiom. It must prove that complete monotonicity from source constraints, or shift to the completed boundary/index object.
+
+## 2026-06-24 singular finite Schur branches are finite-support artifacts
+
+`../2-fully-proven/shifted-stieltjes-hankel-strictness-infinite-support.md` promotes the catalog strictness note into a theorem. A positive Stieltjes measure on `R_{>0}` with infinite support has positive definite shifted Hankel blocks at every finite degree. If a finite shifted Hankel block is singular, the positive representing measure is supported on finitely many points and its moments satisfy a finite recurrence with rational generating function.
+
+Consequence: generalized-inverse Schur complements, flat extensions, and singular finite branches are truncation or finite-atomic hygiene once positive infinite support has been source-built. They do not soften the RH target. The live theorem remains the source construction of the positive infinite-support boundary/index object; strict finite blocks follow downstream and give no independent selector.

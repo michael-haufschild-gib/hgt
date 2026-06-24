@@ -118,10 +118,16 @@ For any proof claiming Euler positivity implies the seam-log Stieltjes cone:
 
 - [x] 0 -> 1 in-progress: single-frequency extreme case isolated.
 - [x] 1 -> 2 fully-proven: coefficient and determinant calculation written.
-- [ ] 2 -> 3 formalized: optional arithmetic determinant lemma.
+- [x] 2 -> 3 formalized: arithmetic determinant identity and negativity proved
+  in `formal/GaloisForLFunctions/SingleEvenFrequency.lean`; analytic coefficient
+  extraction remains paper-level.
 
 ## Log
 
 - 2026-06-24 -- Codex: created under the active RH continuation. Entropy draw:
   seed `1550289540000607138`, method `extreme-cases`, analogies
   `crystal-defects` and `gear-trains`.
+
+## 2026-06-24 positive cone upgrade
+
+`positive-even-frequency-cone-not-markov.md` extends this one-frequency obstruction to every nonzero positive mixture of FE-even frequencies. The obstruction becomes even simpler at cone level: `T_2<0`, so the positive cone cannot be a positive Markov/Stieltjes source on `R_+`.

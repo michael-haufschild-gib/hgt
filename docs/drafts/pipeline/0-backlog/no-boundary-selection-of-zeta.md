@@ -582,3 +582,31 @@ Therefore `L_src` cannot become non-mirror merely by emitting a full continued-f
 `../2-fully-proven/single-even-frequency-not-stieltjes.md` closes the one-frequency extreme case for `L_src`. Even after FE-even symmetrization, a positive frequency `B(cosh(lambda w)-1)` is not a Stieltjes source in the seam-square Markov coordinate.
 
 Therefore `L_src` cannot treat positive Euler frequencies as individually repaired components. The repair selector, if it exists, must be a completed interaction theorem before the reciprocal divisor or Markov positivity is read.
+
+## 2026-06-24 positive FE-even frequency cone is not the selector
+
+`../2-fully-proven/positive-even-frequency-cone-not-markov.md` generalizes the one-frequency test. Positive FE-even frequency summation gives alternating shifted seam moments and a negative `T_2` for every nonzero source measure.
+
+Thus `L_src` cannot use positive Euler-frequency summation as the repair selector in the seam-square Markov coordinate. Any selector must be a completed interaction theorem before Markov positivity or reciprocal zero placement is read.
+
+## 2026-06-24 finite-order local frequency corrections are not the selector
+
+`../2-fully-proven/finite-order-local-frequency-operators-not-markov.md` closes the source-frequency version of finite local correction. A nonzero real polynomial degree-symbol `q(k)` has a tail sign; applied to a nonzero positive FE-even frequency source, it preserves the alternating FE parity in the transformed shifted moments and makes one tail parity negative.
+
+Thus `L_src` cannot replace the all-order landscape theorem by a finite-order local differential or finite-part correction of the positive frequency source. Any selector in this direction must be infinite-order/nonlocal, multiplicative, or boundary-index based.
+
+## 2026-06-24 the local parity repair is not finite order
+
+`../2-fully-proven/seam-parity-correction-is-nonlocal-half-turn.md` gives the exact coefficient-side obstruction: the parity repair is `f(z)->f(-z)`, with degree eigenvalues `(-1)^k`; no finite polynomial in `D=z d/dz` has those eigenvalues on all degrees.
+
+Thus `L_src` cannot select the RH side by claiming that a finite local operator repairs FE parity. The half-turn must be constructed as a source involution, or the proof must use a different all-order/boundary-index mechanism.
+
+## 2026-06-24 half-turn parity repair still does not select RH
+
+`../2-fully-proven/half-turn-repaired-frequency-not-markov.md` records that the nonlocal half-turn is not enough by itself. For one positive FE-even frequency, `-L(-z)` fixes the coefficient parity but its first shifted Hankel determinant remains negative: `-7B^2lambda^8/360`.
+
+Thus `L_src` cannot select the RH side by adding a half-turn to the positive frequency source and then summing positive repaired atoms. The selector must supply a further completed source interaction that changes the Hankel square-test geometry, or use a different boundary/index object.
+
+## 2026-06-24 bounded repaired packets still do not select RH
+
+`../2-fully-proven/bounded-half-turn-frequency-packets-fail-hankel.md` adds a quantitative source-selection guardrail. Even after the half-turn parity repair, finite positive repaired packets supported in squared-frequency ratio strictly below `(17+2 sqrt(70))/3` fail the first shifted Hankel test. Boundary selection cannot be replaced by a local positive repaired-frequency packet argument.

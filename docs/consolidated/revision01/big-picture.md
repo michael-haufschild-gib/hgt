@@ -370,10 +370,26 @@ Everything reduces to five cores (Master, A, B, C, D) plus one framing assumptio
 > via total positivity / a variation-diminishing weld map / a source-built `κ₋` read from `{T_k}` / no
 > off-seam signed defect surviving the reciprocal chart. The object to prove is all-order Stieltjes
 > positivity of `{T_k}`.
-> This transfer is not termwise in Euler frequencies: a single positive FE-even source germ
-> `B(cosh(lambda w)-1)` contributes `T_k=B(-1)^(k+1)lambda^(2k)/(2k-1)!`, giving a negative first
-> shifted Hankel determinant. The source proof must use completed interaction, not isolated
-> positive-frequency summation.
+> This transfer is neither positive summation, nor a finite signed real-frequency patch, nor a finite-order
+> local coefficient correction over FE-even Euler frequencies: positive frequency measures give `T_2<0`,
+> finite signed real-frequency atoms have a dominant tail frequency, and polynomial degree-symbol corrections
+> preserve one negative tail parity. The coefficient parity operator is the nonlocal half-turn `z -> -z`, not
+> any polynomial in `z d/dz`; but even the half-turn repaired single frequency has determinant
+> `-7 B^2 lambda^8 / 360 < 0`. Finite positive repaired packets are now closed as a source model: below
+> squared-frequency spread `(17+2 sqrt(70))/3` they fail the first Hankel gate, above it broad balanced packets
+> can pass that gate, but finite support eventually falls to top-frequency domination and an adjacent shifted
+> Hankel determinant becomes negative. Infinite positive repaired sources split: unrestricted sigma-finite mass
+> at zero frequency can manufacture any Stieltjes target, while any source realizing a compact Markov target
+> not supported only at `0` is forced to have infinite mass in every zero-frequency neighborhood and is locally
+> comparable to `dx/x` there. The Mellin threshold `0` is only the power-weight shadow: positive powers are finite,
+> exponent `0` and below are infinite; all compact-target reservoirs are locally bounded-equivalent. The leading
+> logarithmic blowup sees only one scalar mass, while the full reservoir density is Laplace-equivalent to the
+> target Markov measure; complete monotonicity of the reservoir profile is exactly the compact Markov cone in
+> Laplace coordinates. So the remaining question is a genuine source-admissibility law, not "make the packet
+> infinite" or impose a local weighted-finiteness / measure-class / reservoir-profile positivity condition. The
+> source proof must use completed
+> interaction, not a finite/local real-frequency cone, local repaired packet, arbitrary zero-frequency
+> reservoir, or parity-only repair in the seam-square coordinate.
 > *Current finite shadow (gpt/37):* `Q_0 = M_triv + R^P` with `M_triv` the explicit positive trivial-zero
 > square; RH ⟺ the **one-sided Loewner domination** `−R^P ⪯ M_triv` (`λ_max(K_d) ≤ 1 ∀d`,
 > `K_d = M_triv^{−1/2}(−R^P)M_triv^{−1/2}`). The proof object is a source-built **Loewner inequality `I−K_d⪰0` at

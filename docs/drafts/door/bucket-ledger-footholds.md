@@ -90,6 +90,9 @@ above its current floor; this index makes those boundaries explicit.
 - `OscillatorAlgebra` — Weil-rep commutators `[H,X]=2X,[H,Y]=−2Y,[X,Y]=−4H` (the Hodge–Riemann face's
   algebra).
 - `MultiplierScaling` / `sigmaScale_splits` — `σ_p` preserves real-rootedness (the LP-multiplier floor).
+- `SourceRecession` / `source_budget_one_sided_recession_nonnegative`,
+  `source_budget_two_sided_recession_zero` — finite source-normalization recession gates: one-sided
+  budget rays force nonnegative directions; two-sided budget lines force zero directions.
 
 ### [[bucket-realization-and-fake-family]] — firewall & inverse problem
 - `EulerProduct` — the **First Theorem**: Euler product ⟺ Bohr-lift factorization, with a concrete mod-5

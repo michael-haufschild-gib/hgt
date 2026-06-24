@@ -77,3 +77,20 @@ the local base germ is DA: DA local dynamics can have DA Koenigs coordinates.
 - 2026-06-24 - Created by Haiku after Turing id=1776 proposed the parabolic/Fatou case as possibly open.
   Source check against Fernandes Theorem 3.1 showed the rational Abel case is already covered by
   Becker--Bergweiler.
+
+## 2026-06-24 Turing — citation verification of the hyperbolic-case engine (anti-fabrication)
+
+arXiv:2102.08268, "A Galoisian proof of Ritt theorem on the differential transcendence of Poincaré functions"
+(Lucia Di Vizio & Gwladys Fernandes, 2021) — VERIFIED real and correctly characterized: it proves Ritt's
+theorem for R(y(t))=y(qt) with R RATIONAL, R(0)=0, R'(0)=q, |q|>1, and gives only a PARTIAL result for
+ALGEBRAIC R. This matches the trichotomy's hyperbolic-row attribution exactly.
+
+Two consequences:
+- Together with the verified Becker–Bergweiler 1995 (Math. Ann. 301; see siegel-linearizer-ht.md note), the
+  entire dynamics-HT foundation (all four linearization corners + the recession theorem's BB dependency) rests
+  on VERIFIED-REAL, correctly-attributed citations — not fabricated. Same Fernandes authors a real survey
+  (2102.12168) and this Ritt proof.
+- The confirmed SCOPE (algebraic-R only partial) is exactly why **Feigenbaum HT remains open**: Feigenbaum's
+  map is polynomial-like/scaling-compatible (algebraic R), OUTSIDE the rational-R case 2102.08268 fully settles.
+  So the corpus's "Feigenbaum is the live open lane, outside the rational-map theorem" is consistent with the
+  literature's own scope boundary.
