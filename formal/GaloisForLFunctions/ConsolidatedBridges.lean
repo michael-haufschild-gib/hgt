@@ -127,7 +127,7 @@ theorem finiteRHLike_iff_offLineCount_eq_zero (zeros : Finset Zero) :
     finiteRHLike OffLine zeros ↔ finiteOffLineCount OffLine zeros = 0 := by
   constructor
   · intro hNoOff
-    rw [finiteOffLineCount, Finset.card_eq_zero, Finset.eq_empty_iff_forall_not_mem]
+    rw [finiteOffLineCount, Finset.card_eq_zero, Finset.eq_empty_iff_forall_notMem]
     intro ρ hρ
     exact hNoOff ρ (Finset.mem_filter.mp hρ).1 (Finset.mem_filter.mp hρ).2
   · intro hCount ρ hρ hOff

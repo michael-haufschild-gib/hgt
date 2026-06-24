@@ -36,7 +36,7 @@ theorem sigma_fixed_iff_eq_half (s : ℂ) : sigma s = s ↔ s = (1 / 2 : ℂ) :=
       linarith
     exact Complex.ext (by simpa using hre) (by simpa using him)
   · rintro rfl
-    ext <;> norm_num [sigma]
+    apply Complex.ext <;> norm_num [sigma]
 
 /-- The functional-equation involution `σ` composed with complex conjugation, `s ↦ 1 - s̄`. -/
 def sigmaConj (s : ℂ) : ℂ := sigma ((starRingEnd ℂ) s)
