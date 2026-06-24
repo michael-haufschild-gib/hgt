@@ -10,7 +10,7 @@
 For b ∈ ℂ with b ≠ 0, b ≠ −2, and b ∉ M: u₀(z) and φ_b(z) are algebraically
 independent over Q̄(b,z).
 
-Combined with the connected card (`2-fully-proven/u0-phi-independence.md`): the full
+Combined with the connected card (`u0-phi-independence.md`): the full
 theorem holds for ALL b ≠ 0,−2 (no restriction to M or its complement).
 
 ## Why this case is separate

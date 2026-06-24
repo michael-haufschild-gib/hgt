@@ -6,7 +6,7 @@
 - **Source:** Bottcher family / inverse-Bottcher obstruction lane
 - **Statement:** For `b in M \ {0,-2}`, `u0(z)` and `phi_b(z)` are algebraically independent over `Qbar(b,z)`.
 
-Disconnected case: separate card `../1-in-progress/u0-phi-independence-disconnected.md`.
+Disconnected case: separate card `../../1-in-progress/u0-phi-independence-disconnected.md`.
 
 ## Definitions
 

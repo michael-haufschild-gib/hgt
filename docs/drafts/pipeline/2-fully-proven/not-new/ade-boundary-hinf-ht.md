@@ -1,11 +1,11 @@
-# ADE + H^∞ + Natural Boundary ⟹ Hypertranscendence (n ≥ 2)
+# ADE Bounded-Jet Natural-Boundary Bridge Lemma
 
 - **ID:** ade-boundary-hinf-ht
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (BRIDGE) — promoted 2026-06-24; Wheeler+Turing
+- **Stage:** 2-fully-proven/not-new
+- **Type:** THEOREM (BRIDGE / NOT-NEW)
 - **Source:** Wheeler id=1881, id=1891, id=1903 (candidate); Turing id=1914, id=1915, id=1916
   (companion-system closure, source read, hypothesis sharpening). Hille (tool, step 4);
-  Fatou+F&M Riesz (step 3); irreducibility/resultant argument (step 2). No prior covers the theorem.
+  Fatou+F&M Riesz (step 3); irreducibility/resultant argument (step 2).
 - **Statement (sharpened — 2026-06-24 Turing):** Let f be holomorphic on D={|z|<1}, with
   minimal IRREDUCIBLE differential annihilator P(z, f, …, f^{(n)}) = 0 over ℂ(z) (order n ≥ 1).
   Suppose f, f′, …, f^{(n)} ∈ H^∞(D) (the order-n jet — Hypothesis H). Then ∂D is not a
@@ -14,10 +14,11 @@
 
 ## Goal
 
-A new H^∞-based sufficient condition for HT, using domain analytic properties (H^∞ + natural
-boundary) rather than specific function structure. If proved: any f satisfying a polynomial
-ODE of order n≥2 AND bounded with all derivatives AND having a natural boundary must be HT.
-This is a CRITERION, not a specific-function result — applies to any unknown analytic f.
+Record the classical bridge lemma cleanly and keep it out of the `new/` bucket. The theorem is useful:
+bounded jet control plus an algebraic differential equation gives a companion-system continuation
+mechanism, so a bounded-jet natural-boundary function is hypertranscendental. But the proof uses standard
+complex ODE continuation, Hardy/Fatou boundary limits, and the usual separant/minimality argument; it is
+not counted as new knowledge under the project novelty gate.
 
 ## The classical n=1 case (REDUCE-TO-KNOWN — do not re-prove)
 
@@ -30,7 +31,7 @@ Result: DA+n=1 is incompatible with natural boundary at ∂D, REGARDLESS of H^�
 This is CLASSICAL. Source: Painlevé 1888, Ince "Ordinary Differential Equations" Ch.XIV.
 Hypothesis H is unnecessary here. The n=1 case has zero novelty.
 
-## The n≥2 case under Hypothesis H (CANDIDATE NEW — the card's content)
+## The n≥2 case under bounded-jet Hypothesis H
 
 **Why H^∞ matters for n≥2:** For n≥2, Painlevé-type singularity analysis no longer rules
 out natural boundaries automatically. Chazy's third-order ADE has solutions with natural
@@ -72,30 +73,24 @@ boundary at the hexagonal lattice circle. But for Chazy solutions: f, f', f'' gr
 bound as z approaches ∂D (the singularities accumulate and |f(z)| → ∞). So f^{(j)} ∉ H^∞(D)
 — Hypothesis H FAILS. The theorem correctly does not apply.
 
-## Novelty assessment `[CONJECTURE — source check pending]`
+## Bucket disposition
 
-**NOVEL?** The assembly of Fatou's theorem (Hardy spaces) + Cauchy-Kowalewski (analytic ODEs)
-to produce an HT criterion is NOT in the DA literature as I know it. The H^∞ + natural
-boundary combination does not appear in Hille 1976, Valiron, or the Rubel/Lipshitz survey as
-a criterion for HT. Kill condition: find a prior source giving this exact theorem or a strictly
-stronger result (natural boundary + DAorder n≥2 ⟹ HT without H^∞). Not found.
+**NOT-NEW / BRIDGE.** The corrected proof is a standard classical continuation argument once the claim is
+stated: reduce the ADE to a first-order analytic companion system off the separant locus, use bounded
+Hardy/Nevanlinna boundary control to find a good boundary approach, anchor the IVP at an interior point,
+and cross the boundary using a uniform analytic-ODE existence radius.
 
-**SIGNIFICANT?** YES: this gives a DOMAIN-PROPERTY criterion for HT (H^∞ + natural boundary)
-that works for any analytic function, not just specific ones. New type of HT certificate.
-Significance: MEDIUM (adds a tool to the theory; doesn't prove HT for any specific open case
-without verifying H^∞ and natural boundary for that function).
+The useful content is the reusable lemma and the warning that boundary-limit IVP data are illegitimate.
+The unproven frontier conjecture about `f in H^∞` alone has been split to
+`../../1-in-progress/hinf-alone-da-natural-boundary-frontier.md`.
 
-**BRIDGE?** CANDIDATES: Does Γ satisfy Hypothesis H on any disk? No — Γ has poles at
-z=0,-1,-2,... so Γ ∉ H^∞(D₀) for D₀ the unit disk centered at 0. However, Γ is bounded on
-horizontal strips away from the real axis. The theorem would apply to any bounded DA function
-on the unit disk with a natural boundary — a constraint not obviously satisfied by the known
-HT functions (Γ,ψ,ζ all have singularities). So the theorem proves HT for HYPOTHETICAL
-bounded-analytic-with-natural-boundary functions — a structural "impossibility" result.
+## Superseded crux notes
 
-## Open cruxes
+These notes record the earlier proof gaps. The active disposition is the NOT-NEW / BRIDGE classification
+above, with the open `f in H^∞` frontier split to its own card.
 
-- **Source check (gate 0→1):** Is the n≥2 H^∞ case in Hille 1976 Ch. 13 (complex ODE theory),
-  Valiron "Lectures on the General Theory of Integral Functions," or related? Pending.
+- **Source check (gate 0->1):** the source check was not used to certify novelty; the theorem is classified
+  as a bridge lemma.
 
 - **Step 4 gap:** The uniqueness of ODE solutions requires that the initial data at ζ ∈ ∂D
   uniquely determines f. For ODEs with fixed singularities in Σ: C-K gives a local solution,
@@ -110,10 +105,9 @@ bounded-analytic-with-natural-boundary functions — a structural "impossibility
   is GUARANTEED by H^∞: all f^{(j)} bounded ⟹ no poles in D), then no movable singularity
   hits D, and local uniqueness extends to global.
 
-- **H^∞ for all derivatives:** The statement requires f^{(j)} ∈ H^∞(D) for j=0,...,n-1.
-  Can we weaken to "only f ∈ H^∞"? No — we need Fatou limits of all lower derivatives to
-  supply the ODE initial data. A BMOQ or Besov space substitute might weaken H^∞ while
-  preserving the Fatou-limit argument.
+- **H^∞ for all derivatives:** superseded by the finite order-`n` jet statement below. The stronger
+  weakening to "only f ∈ H^∞" is tracked in
+  `../../1-in-progress/hinf-alone-da-natural-boundary-frontier.md`.
 
 ## Connection to transcendental-composition-ht
 
@@ -124,11 +118,10 @@ by Γ's singularities). This connection is speculative but worth tracking.
 
 ## Gates
 
-- [ ] 0 → 1 in-progress: Source check (Hille 1976 Ch.13, Valiron, Rubel); verify gap in Step 4
-  (measure-zero singularity condition); Chazy check written (done above)
-- [ ] 1 → 2 fully-proven: complete rigorous proof; handle Step 4 gap; state for n≥2 precisely
-- [ ] 2 → 3 formalized (Lean): Fatou theorem (cite; in Mathlib?); C-K for polynomial ODEs
-- [ ] 3 → 4 publication-ready: short paper; compare with Hille, Painlevé n=1
+- [x] 0 -> 1 in-progress: proof route identified; false boundary-IVP route rejected.
+- [x] 1 -> 2 fully-proven bridge: companion-system proof with interior anchor and bounded-jet hypothesis.
+- [ ] 2 -> 3 formalized: not planned; this depends on analytic function theory and complex ODE imports.
+- [ ] 3 -> 4 publication-ready: only as a cited bridge lemma or appendix, not as a new result.
 
 ## Log
 
@@ -225,9 +218,10 @@ full existence disk; (iii) one regular boundary point already contradicts a natu
 ## 2026-06-24 Turing — CONSOLIDATED clean proof (supersedes the two working notes above; for 1→2)
 
 **Theorem.** Let f be holomorphic on the unit disk D, with minimal IRREDUCIBLE differential annihilator
-P(z, f, …, f^{(n)}) = 0 over ℂ(z) (order n ≥ 1). Suppose every derivative f^{(j)} ∈ H^∞(D) (Hypothesis H).
-Then ∂D is not a natural boundary of f. Equivalently: a DA function whose full jet is bounded on D has no
-natural boundary — so any f with a natural boundary and bounded jet is hypertranscendental.
+P(z, f, …, f^{(n)}) = 0 over ℂ(z) (order n ≥ 1). Suppose the order-`n` jet
+f, f′, …, f^{(n)} ∈ H^∞(D). Then ∂D is not a natural boundary of f. Equivalently: a DA function whose
+order-`n` jet is bounded on D has no natural boundary — so any f with a natural boundary and bounded
+order-`n` jet is hypertranscendental.
 
 **Proof.**
 1. *Companion system.* Where the separant S := ∂P/∂y^{(n)} is nonzero, solve P=0 for y^{(n)} = R(z, y, …,
@@ -254,13 +248,13 @@ natural boundary — so any f with a natural boundary and bounded jet is hypertr
    it inside the analyticity polydisc). B(z₁, δ_ζ) crosses ∂D, so F — hence f — continues analytically across
    the good point ζ. A single such regular boundary point already contradicts "natural boundary." ∎
 
-**Grade:** BRIDGE — novel assembly (no named prior: cold-probe + two searches), classical tools (Hille
-analytic continuation; Fatou / F.&M.Riesz; resultant/minimality). Non-folklore steps: companion-system IVP
-(not Cauchy–Kowalewski) and the irreducibility/singular-solution exclusion. Uniform in n (n=1 a corollary;
-Painlevé case-split unnecessary). Witness that H is essential: Σ_k 2^{−k²}z^{2^k} (all jets in H^∞, natural
-boundary, HT — but not DA, so no Φ). Remaining for 1→2: Wheeler concurrence + a direct Hille/Malmquist read.
+**Grade:** NOT-NEW / BRIDGE. Classical tools: Hille analytic continuation; Fatou / F.&M.Riesz;
+resultant/minimality. Useful caution: the proof must use a companion-system IVP anchored at an interior
+point, not Cauchy-Kowalewski from boundary Fatou data. Uniform in n (n=1 a corollary; Painlevé case-split
+unnecessary). Witness that DA is essential: Σ_k 2^{−k²}z^{2^k} has all jets in H^∞ and a natural boundary,
+but is hypertranscendental, so no companion system exists.
 
-## 2026-06-24 Turing — source-read (Hille/Malmquist/Chazy/movable-singularity): NO kill, BRIDGE confirmed
+## 2026-06-24 Turing — source-read notes (Hille/Malmquist/Chazy/movable-singularity)
 
 Direct read of the cold-probe's "closest tools," no prior covering the theorem found:
 - **Chazy** (canonical algebraic ODE with a natural boundary): general solution meromorphic inside a movable
@@ -277,9 +271,8 @@ Direct read of the cold-probe's "closest tools," no prior covering the theorem f
 - **Hille, ODE in the Complex Domain**: supplies the analytic-continuation existence theorem used in step 4
   (the uniform existence radius). The continuation tool, not the conclusion.
 
-Verdict: novelty-gate CLEARED (cold-probe: not a named theorem; this read: no covering prior). Grade BRIDGE.
-The 0→1 source-gate is met. Remaining for 1→2: team concurrence + (optional) a closer Filipuk–Halburd read to
-confirm it doesn't secretly imply our case for 2nd-order — but the boundedness mechanism is independent of it.
+Disposition after later audit: do not use these notes to claim novelty. They support the bridge proof and
+the surrounding landscape, but the theorem itself is classified as NOT-NEW / BRIDGE.
 
 ## 2026-06-24 Turing — HYPOTHESIS SHARPENING: order-n jet suffices (not all derivatives)
 
@@ -301,33 +294,10 @@ Nothing in the continuation argument touches f^{(n+1)}, f^{(n+2)}, … — and i
 **Sharpened theorem:** f DA with minimal irreducible annihilator P of order n, and **f, f′, …, f^{(n)} ∈ H^∞(D)**
 ⟹ ∂D is not a natural boundary ⟹ f HT.
 
-**Further open (forward):**
-- Can the hypothesis be weakened to the order-(n−1) jet f,…,f^{(n−1)} ∈ H^∞? Obstruction: then S∘f involves
-  the possibly-unbounded f^{(n)}, so S∘f may leave the Nevanlinna class and the "boundary zeros measure-zero"
-  step can fail. Needs a separate control on the separant's boundary behavior.
-- Even sharper: does f ∈ H^∞ ALONE suffice? Chazy fails this too (its f has poles accumulating at ∂D), so the
-  Chazy witness doesn't rule it out — genuinely open whether a bounded (pole-free) DA f can have a natural
-  boundary while its derivatives blow up. This is the sharp frontier of the theorem.
+## Split-out frontier conjecture
 
-## 2026-06-24 Turing — frontier question #2 (does f∈H^∞ alone suffice?): conjecturally NO, with mechanism
+The unproven conjecture "does `f in H^∞` alone suffice?" has been split into its own in-progress card:
 
-**[CONJECTURE]** f ∈ H^∞ alone does NOT suffice; the order-n-jet hypothesis (specifically f^{(n)} ∈ H^∞) is
-NECESSARY, not just convenient. Mechanism:
+`../../1-in-progress/hinf-alone-da-natural-boundary-frontier.md`
 
-At an algebraic branch point z₀ (Puiseux f(z) = a₀ + a₁(z−z₀)^{1/q} + …, q ≥ 2): f(z₀) = a₀ is FINITE — f
-stays bounded — while f′ ~ (a₁/q)(z−z₀)^{1/q−1} → ∞. So a branch point keeps f bounded but blows up the
-derivative. This is exactly the gap between "f ∈ H^∞" and "order-n jet ∈ H^∞."
-
-A DA function with algebraic branch points accumulating densely on ∂D, each a finite-value branch point,
-would be bounded (f ∈ H^∞) with a natural boundary and unbounded f′ — refuting "f∈H^∞ ⟹ no natural boundary"
-while remaining consistent with the order-n-jet theorem. This is the **quasi-Painlevé** regime: Filipuk–Halburd
-(arXiv:0804.2859) show movable singularities of certain 2nd-order algebraic ODEs are algebraic BRANCH POINTS
-(not poles). Chazy's natural boundary is built from POLES (unbounded f); the branch-point analog gives a
-BOUNDED f. So the conjectured witness is a quasi-Painlevé-type solution whose movable algebraic branch points
-accumulate at a circle.
-
-**Status:** mechanism sound; the explicit construction (a specific quasi-Painlevé equation with a
-branch-point natural-boundary solution) is the remaining work — research-scale, not a tick. If it exists,
-the clean theorem statement is exactly the order-n-jet one (f^{(n)}∈H^∞ necessary), and "f∈H^∞ alone" is
-provably too weak. The order-n-jet hypothesis is therefore the NATURAL boundary of the theorem, not an
-artifact of the proof.
+This theorem card keeps only the bounded order-`n` jet bridge lemma.

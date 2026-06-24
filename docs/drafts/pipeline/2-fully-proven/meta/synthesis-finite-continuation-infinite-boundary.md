@@ -2,7 +2,7 @@
 
 ## A synthetic research narrative connecting the ADE, Böttcher, Hurwitz, and `u₀` documents
 
-**Status of this document:** synthetic research memo. It is not a replacement for the proof cards. It deliberately mixes three levels of assertion:
+**Status of this document:** synthetic research memo. It is not a proof card and is not counted in any card bucket. It deliberately mixes three levels of assertion:
 
 1. **Proved input** — statements recorded as proved in the uploaded cards.
 2. **Analytical synthesis** — explanations of how the proved cards seem to fit together.
@@ -22,7 +22,7 @@ The uploaded documents fall into four clusters.
 
 ### A. The bounded-jet ADE / natural-boundary criterion
 
-- `ade-boundary-hinf-ht.md` proves, in its sharpened form, that if a holomorphic function on the disk satisfies a minimal irreducible algebraic differential equation of order `n` and the order-`n` jet
+- `not-new/ade-boundary-hinf-ht.md` records, in its sharpened form, the not-new bridge criterion that if a holomorphic function on the disk satisfies a minimal irreducible algebraic differential equation of order `n` and the order-`n` jet
   
   ```text
   f, f′, …, f^(n) ∈ H^∞(D)
@@ -30,7 +30,7 @@ The uploaded documents fall into four clusters.
   
   then the unit circle is **not** a natural boundary. Equivalently, a function with a natural boundary and bounded order-`n` jet is hypertranscendental.
 
-The philosophical role of this card is that a differential-algebraic equation is a local continuation engine. If the jet stays bounded up to the boundary, the engine can be anchored near a good boundary point and pushed across.
+The philosophical role of this not-new bridge lemma is that a differential-algebraic equation is a local continuation engine. If the jet stays bounded up to the boundary, the engine can be anchored near a good boundary point and pushed across.
 
 ### B. Quadratic inverse Böttcher coordinates and Nguyen Q6.2
 
@@ -543,9 +543,9 @@ This suggests the broader principle:
 
 ---
 
-## 6. The ADE bounded-jet theorem as the abstract capstone
+## 6. The ADE bounded-jet theorem as a not-new bridge
 
-The ADE card is the most abstract document in the set. It does not prove algebraic independence of a pair of named Böttcher coordinates or a quadratic relation for a named shift ladder. Instead, it gives a criterion:
+The ADE card is the most abstract bridge analogue in the set, not a novelty anchor. It is not source-killed by the now-suspect Churchill citation, but the repaired proof is a standard classical continuation argument once the claim is stated: interior anchoring plus a uniform analytic-ODE existence radius. The unproven `f in H^∞` frontier is split to `../../1-in-progress/hinf-alone-da-natural-boundary-frontier.md`. The bounded-jet theorem statement is:
 
 > Let `f` be holomorphic on the unit disk and satisfy a minimal irreducible differential annihilator
 > 
@@ -565,13 +565,13 @@ Equivalently:
 
 > If `f` has a natural boundary and bounded order-`n` jet, then `f` is hypertranscendental.
 
-### 6.1 The false start and the corrected proof
+### 6.1 The abandoned sketch and the repaired proof
 
-The document explicitly records a methodological correction.
+The document preserves an abandoned proof sketch. That history is provenance, not evidence of novelty.
 
 The first Fatou + Cauchy–Kowalewski proof sketch was too quick. Fatou gives boundary limits almost everywhere, but Cauchy–Kowalewski requires analytic initial data, not merely measurable point limits.
 
-The corrected proof uses the first-order companion system.
+The repaired proof uses the first-order companion system.
 
 Let
 
@@ -621,7 +621,7 @@ The lower jet `f,…,f^(n−1)` is needed for Fatou boundary data and compactnes
 
 The document explicitly leaves open whether `f∈H^∞` alone could suffice. It conjectures that this is probably false: algebraic branch points can keep `f` bounded while blowing up derivatives. A DA solution with finite-value branch points accumulating densely at the boundary would be bounded with a natural boundary but would evade the bounded-jet theorem.
 
-This frontier is important for the whole synthesis. Many natural-boundary objects in the other documents are bounded or controlled at the function level but not necessarily at the derivative-jet level. The ADE theorem is therefore not a black-box proof of the Böttcher, `u₀`, or Hurwitz results. It is a conceptual capstone that explains why finite differential constraints are incompatible with sufficiently tame natural boundaries.
+This frontier is important for the whole synthesis. Many natural-boundary objects in the other documents are bounded or controlled at the function level but not necessarily at the derivative-jet level. The ADE theorem is therefore not a black-box proof of the Böttcher, `u₀`, or Hurwitz results. It should be used as a not-new bridge lemma explaining why finite differential constraints are incompatible with sufficiently tame natural boundaries.
 
 ### 6.3 How the ADE theorem connects to the other clusters
 
@@ -699,7 +699,7 @@ Used in:
 - Hurwitz `N=2` density shadow;
 - Hurwitz all-`N` quadratic tail independence.
 
-### Template IV — Bounded companion-system continuation
+### Template IV — Bounded companion-system continuation (not-new bridge)
 
 Input:
 
@@ -1065,7 +1065,7 @@ The documents suggest a research roadmap.
    
    Main ingredients: local expansions at `a=-n`, rational-tail independence, fractional polylog branch expansion, pole-tower descent.
 
-The ADE bounded-jet theorem could be a fourth short note or an abstract appendix tying the continuation philosophy together.
+The ADE bounded-jet theorem should be used, if at all, as a not-new bridge appendix tying the continuation philosophy together, not as a new-card pillar.
 
 ### 12.2 Formalize reusable lemmas
 
@@ -1119,13 +1119,13 @@ The following table compresses the proof relationships.
 
 ---
 
-## 14. Final synthesis
+## 14. Synthesis close
 
 The uploaded documents form a coherent research program around a single principle:
 
 > Finite algebraic structures are continuation devices. They fail when the analytic object carries boundary data that are too infinite to be finitely continued, finitely branched, or rationally interpolated.
 
-The Böttcher theorems show this in complex dynamics. Connected Julia sets block continuation by rigidity; disconnected Julia sets create exact dyadic monodromy. The `u₀` theorem shows the same principle at an exceptional tangent fiber: the lacunary natural boundary cannot be crossed by any algebraic relation with a nonexceptional Böttcher coordinate. The Hurwitz theorems show the principle in a singular arithmetic setting: quadratic relations cannot absorb noninteger branch-tail memory. The ADE theorem abstracts the differential version: a bounded finite jet plus an algebraic differential equation would force continuation across almost every good boundary point, so a bounded-jet natural boundary implies hypertranscendence.
+The Böttcher theorems show this in complex dynamics. Connected Julia sets block continuation by rigidity; disconnected Julia sets create exact dyadic monodromy. The `u₀` theorem shows the same principle at an exceptional tangent fiber: the lacunary natural boundary cannot be crossed by any algebraic relation with a nonexceptional Böttcher coordinate. The Hurwitz theorems show the principle in a singular arithmetic setting: quadratic relations cannot absorb noninteger branch-tail memory. The ADE card supplies the not-new differential bridge version: a bounded finite jet plus an algebraic differential equation would force continuation across almost every good boundary point, so a bounded-jet natural boundary implies hypertranscendence. The live question is now the split in-progress frontier: whether `f in H^∞` alone can fail by finite-value branch points with derivative blow-up.
 
 The conjectural next step is to formalize the shared invariant. It might be a boundary groupoid, a finite-correspondence obstruction, a monodromy/tail rank, or a sheaf-theoretic continuation complexity. Whatever the right language is, the cards are already using it informally:
 

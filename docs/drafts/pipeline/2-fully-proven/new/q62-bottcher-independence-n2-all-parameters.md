@@ -139,7 +139,7 @@ same loop fixes `phi_a`. The zero-dimensional non-cutting gate gives a path from
 the infinity germ to the loop basepoint in `Omega_a cap Omega_b`.
 
 Taking `2^n` larger than the polynomial degree and applying
-`unbounded-one-coordinate-monodromy-obstruction.md` gives algebraic
+`not-new-but-required/unbounded-one-coordinate-monodromy-obstruction.md` gives algebraic
 independence.
 
 This closes the mixed case.
