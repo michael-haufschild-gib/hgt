@@ -7,6 +7,9 @@ Bottom-up Lean formalization toward `q62-bottcher-independence-n2-all-parameters
 Importing this builds the whole tower. Everything below is sorry-free.
 -/
 import GaloisForLFunctions.Bottcher.Dynamics
+import GaloisForLFunctions.Bottcher.GreenFunction
+import GaloisForLFunctions.Bottcher.ComplexLogBound
+import GaloisForLFunctions.Bottcher.BottcherCoord
 import GaloisForLFunctions.Bottcher.MonodromyObstruction
 import GaloisForLFunctions.Bottcher.LogPotential
 import GaloisForLFunctions.Bottcher.Capacity

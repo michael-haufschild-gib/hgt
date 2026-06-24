@@ -78,7 +78,25 @@ Logarithmic potential theory (absent from Mathlib), built from the integral laye
 - `disconnected_iff_zero_not_mem`, `disconnected_of_norm_gt` (disconnected params exist for `‖c‖>2`).
   `K_c` is now a genuine compactum — the carrier for the equilibrium measure / capacity theory (item 2).
 
-## VERIFIED so far (sorry-free, from Mathlib up): 11 modules, 55 results
+### Green's function layer — `GreenFunction.lean` (analytic core of the Böttcher coordinate)
+- `abs_log_le_two_abs_sub_one`, `log_quadratic_approx` (one-step estimate `|log‖f_c w‖−2log‖w‖| ≤ 2‖c‖/‖w‖²`).
+- `greenApprox` (`g_n = 2⁻ⁿlog‖orbitₙ‖`), `greenApprox_step_bound`, `escape_regime_stable`, `greenApprox_step_geom_bound`.
+- **`greenApprox_converges`** — `G_c = lim g_n` exists on the escape set (Cauchy via summable geometric differences).
+- `greenApproxPlus_tendsto_zero_of_mem` — **`G_c = 0` on `K_c`** (squeeze on the bounded orbit).
+- `greenApprox_quadratic` — `g_n(f_c z)=2·g_{n+1}(z)` (seed of `φ_c(z²+c)=φ_c(z)²`).
+- `greenLimit` (`G_c`), `greenApprox_tendsto`, **`greenLimit_quadratic`** (`G_c(f_c z)=2·G_c(z)`, the Böttcher functional equation).
+- `greenLimit_eq_tsum`, `greenLimit_lower_bound`, `greenLimit_pos` (`G_c>0` for `‖z‖>3`), `greenLimit_pos_escape` (`‖z‖>2`).
+- `greenLimit_iterate` (`G_c(f^[N]z)=2ᴺG_c(z)`), `exists_orbit_gt`, `greenLimit_eq_pullback`,
+  **`greenLimit_pos_basin`** (`G_c>0` EXACTLY on `Ω_c`; `=0` on `K_c` — the defining sign property).
+- **`greenLimit_abs_sub_log`** (`|G_c(z)−log‖z‖| ≤ 2‖c‖/‖z‖²` ⟹ Robin constant `0` ⟹ `cap(K_c)=1`).
+- `bottcherModulus` (`|φ_c|=exp G_c`), `one_lt_bottcherModulus` (`|φ_c|>1` on `Ω_c`),
+  `bottcherModulus_quadratic` (`|φ_c(z²+c)|=|φ_c(z)|²`).
+The Green's function of a quadratic Julia set + the Böttcher MODULUS are now formalized from scratch (not in Mathlib).
+All genuinely PROVEN analysis (not assumed). `#print axioms` on every result = `[propext, Classical.choice, Quot.sound]` only.
+NEXT (hardest remaining for `hDisc`): the COMPLEX Böttcher coordinate `φ_c` (argument/harmonic conjugate — the
+multivalued part carrying the dyadic monodromy), then Brolin + full-shift coding + monodromy-as-field-automorphism.
+
+## VERIFIED so far (sorry-free, from Mathlib up): 13 modules, 100 results
 Top theorem `q62_independence` COMPILES (conditional on `hDisc`, `hRigid`); disconnected case PROVEN
 (`q62_disconnected`, `q62_disconnected_tower`); the entire algebraic / potential-theoretic / contour
 skeleton + the period formula are complete and machine-checked.

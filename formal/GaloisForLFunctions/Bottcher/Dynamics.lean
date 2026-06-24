@@ -156,6 +156,34 @@ equilibrium measure / capacity theory of Tier 2 will live. -/
 theorem isCompact_filledJulia (c : ℂ) : IsCompact (filledJulia c) :=
   Metric.isCompact_of_isClosed_isBounded (isClosed_filledJulia c) (isBounded_filledJulia c)
 
+/-- **Total invariance** of the filled Julia set: `z ∈ K_c ↔ f_c z ∈ K_c`. -/
+theorem mem_filledJulia_iff_quadratic_mem (c z : ℂ) :
+    z ∈ filledJulia c ↔ quadratic c z ∈ filledJulia c := by
+  constructor
+  · intro hz
+    have h := filledJulia_forward hz 1
+    rwa [Function.iterate_one] at h
+  · intro hfz
+    rw [mem_filledJulia_iff, isBounded_iff_forall_norm_le] at hfz ⊢
+    obtain ⟨C, hC⟩ := hfz
+    refine ⟨max C ‖z‖, ?_⟩
+    rintro x ⟨n, rfl⟩
+    dsimp only
+    rcases n with _ | m
+    · simp only [Function.iterate_zero, id]; exact le_max_right _ _
+    · rw [Function.iterate_succ_apply]
+      exact le_trans (hC _ ⟨m, rfl⟩) (le_max_left _ _)
+
+/-- A point outside `K_c` has an unbounded orbit: it exceeds every bound, hence
+eventually enters the escape regime. -/
+theorem exists_orbit_gt {c z : ℂ} (hz : z ∉ filledJulia c) (B : ℝ) :
+    ∃ N, B < ‖(quadratic c)^[N] z‖ := by
+  by_contra h
+  push_neg at h
+  exact hz (by
+    rw [mem_filledJulia_iff, isBounded_iff_forall_norm_le]
+    exact ⟨B, by rintro x ⟨N, rfl⟩; exact h N⟩)
+
 /-- The basin of infinity `Ω_c = ℂ ∖ K_c`, the domain of the Böttcher coordinate. -/
 def basinInfinity (c : ℂ) : Set ℂ := (filledJulia c)ᶜ
 
@@ -166,6 +194,18 @@ theorem isOpen_basinInfinity (c : ℂ) : IsOpen (basinInfinity c) :=
 /-- Every point beyond radius `2` (with `‖c‖ ≤ ‖z‖`) lies in the basin of infinity. -/
 theorem mem_basinInfinity_of_norm_gt {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
     z ∈ basinInfinity c := not_mem_filledJulia hc hz
+
+/-- The Julia set `J_c = ∂K_c`, where the Böttcher boundary obstruction lives
+(the natural-boundary rigidity in the connected case, the Cantor structure when disconnected). -/
+def juliaSet (c : ℂ) : Set ℂ := frontier (filledJulia c)
+
+/-- `J_c ⊆ K_c` (the filled Julia set is closed, so it contains its frontier). -/
+theorem juliaSet_subset (c : ℂ) : juliaSet c ⊆ filledJulia c :=
+  (isClosed_filledJulia c).frontier_subset
+
+/-- **`J_c` is compact.** -/
+theorem isCompact_juliaSet (c : ℂ) : IsCompact (juliaSet c) :=
+  (isCompact_filledJulia c).of_isClosed_subset isClosed_frontier (juliaSet_subset c)
 
 /-- `c` is disconnected iff the critical point `0` escapes (is not in `K_c`). -/
 theorem disconnected_iff_zero_not_mem (c : ℂ) :
