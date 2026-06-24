@@ -2,14 +2,14 @@
 
 > **What this is.** A complete, self-contained consolidation of the research programme on the Riemann
 > Hypothesis through the lens of hypertranscendental-function theory. Each document stands on its own —
-> no cross-file or repository references — and is register-honest (`[PROVED]` / `[BRIDGE]` / `[OBSERVED]`
+> no cross-file or repository references — and is register-explicit (`[PROVED]` / `[BRIDGE]` / `[OBSERVED]`
 > / `[CONJECTURE]` / `[OPEN CORE]`). **Not a proof of RH** and no promoted mathematics: the genuine RH
 > content is uniformly the open core.
 
 ## The spine, in one paragraph
 
-The completed object is **fixed by a constraint, not propagated by a flow**: `Λ(s)=Λ(1−s)`, with the
-seam `Re(s)=½ = Fix(ι)`. Its content is the weld `H = ∂_s log Γ∞ + ζ'/ζ` (archimedean + prime), a
+The completed object is **fixed by a constraint, not propagated by a flow**: `Λ(s)=Λ(1−s)`, with
+`Fix(ι)={1/2}` and seam `Re(s)=½ = Fix(ι∘conj)`. Its content is the weld `H = ∂_s log Γ∞ + ζ'/ζ` (archimedean + prime), a
 transport connection whose source charges are the zeros. RH is the **faithful index** statement
 `κ₋ = #off-line zero-pairs = 0` — equivalently, in the cleanest coordinate, the reciprocal seam-squared
 moments `T_k = Σ_ρ (−(ρ−½)^{−2})^k` form a **Stieltjes sequence** (the shifted Hankel towers positive
@@ -32,13 +32,16 @@ the value apex a separate, harder question.
 | **07-theorems-and-lemmas-required.md** | the proven scaffolding (paper BRIDGE results + Lean bricks) and the required open lemma-shapes |
 | **08-conjectures-required.md** | the open-conjecture inventory: **THE ONE WALL** (§3), the bridge (§2), the apexes, the gatekeepers |
 | **09-unified-claims.md** | the irreducible core formulas, each stated once with the single claim, conjecture, or meaning it carries |
+| **10-prior-art-and-sota.md** | the literature/SOTA map: which objects are classical (cite, don't re-derive) and which cells the sweep did not find — so effort goes only to genuine open cores |
+| **11-f1-the-target-object.md** | the consolidated `𝔽₁` reference: the constraint-side geometric object (Connes–Consani / Borger / Deninger) that lenses 7–8 and §1′ point at — why `𝔽₁` is forced, what's built, the integrality (not positivity) wall, the recent SOTA, retired no-gos, and the Wheeler–DeWitt reading |
+| **no-roleplay-items.md** | the items that survive the SOTA sweep + roleplay audits (the apex `s_d>0`, the fake-family separation, the value axis): what they are, why hard, decomposed into a conjunction of sub-problems, and projected through the seven lenses |
 | **big-picture.md** | the plain-language map: the lenses, the unsolved issues, the problem/solution space, Conjectures A–E |
-| **bridge-theorem.md** | `[CONJECTURE]` outline of the *last* theorem before RH — the Shifted Reciprocal-Seam Positivity Theorem — with variables, workings, and why no theorem stands between it and RH |
+| **bridge-theorem.md** | `[CONJECTURE]` outline of the current bridge theorem — the Shifted Reciprocal-Seam Positivity Theorem — with variables, workings, and the remaining source-built positivity burden |
 | **formulas.md** | a mechanical collection of every formula in these documents, canonical-symbol-aligned |
 | **CHANGELOG.md** | the change record (working log, not part of the standalone set) |
 | **research-topics.md** | the numbered research agenda (working list) |
 
-## The one honest sentence
+## The Status Sentence
 
 > The programme has **located** the Riemann obstruction with unusual precision — a single archimedean
 > positivity, tool-independent across many reformulations, distinct from the Schanuel value-apex — and

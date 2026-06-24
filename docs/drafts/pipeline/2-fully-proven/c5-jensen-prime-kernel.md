@@ -199,3 +199,9 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+## 2026-06-24 Atom displacement tangents are not PSD kernels
+
+`hankel-atom-displacement-tangent-indefinite.md` extracts the invariant algebra behind §8. For a moment atom at `r`, the first-order displacement tangent has quadratic form `2m q(r)q'(r)`, hence takes both signs as `q` varies. Thus the term `2V(r_l)V'(r_l)` is not a positive source kernel.
+
+Consequently the prime amplitudes in the Jensen kernel cannot prove Hankel positivity by positive-weight summation. Any viable use of this chart must be nonlinear, completed-source, or index/sign-correlated rather than a pointwise PSD-kernel transfer.

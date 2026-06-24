@@ -105,11 +105,10 @@ C_a(τ) = 2(a² − τ²)/(a² + τ²)²,   C_a(τ) > 0 ⟺ |τ| < a
 - s = complex variable
 
 **Formula 8**
-ι² = id,   Fix(ι) = { Re s = ½ }
+ι² = id,   Fix(ι) = { 1/2 }
 - ι = involution s↦1−s
 - id = identity map
 - Fix(ι) = fixed locus of ι
-- Re s = real part of s
 
 **Formula 9**
 s ↦ 1 − s̄,   with fixed locus the line Re s = ½
@@ -647,9 +646,9 @@ F₁ exists ⟺ ( D = 0 ) ∧ ( corank finite );   over ℚ:  ( D = +1, corank =
 - corank = corank of the relation lattice; trdeg = transcendence degree; π = pi; ⊊ = proper subset
 
 **Formula 128**
-trdeg(periods) = dim G;   dim W = corank = 1;   ι unitary on Fix(ι) ⟺ RH-over-F_q
+trdeg(periods) = dim G;   dim W = corank = 1;   reflected constraint unitary on the critical locus ⟺ RH-over-F_q
 - trdeg = transcendence degree; dim G = dimension of the difference-Galois group; dim W = dimension of the weight space
-- corank = corank of the relation lattice; ι = the involution; Fix(ι) = its fixed locus; F_q = finite field with q elements
+- corank = corank of the relation lattice; F_q = finite field with q elements
 
 **Formula 129**
 c_1 = Σ β_p log p   (Tier-1 Stieltjes weld)

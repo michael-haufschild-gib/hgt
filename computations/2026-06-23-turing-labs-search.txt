@@ -1,0 +1,15 @@
+=== INSTRUMENT CHECK: small-N known optima ===
+  Barker-13 merit factor (known 14.083): 14.0833  E=6
+  search N=13: best F=14.0833 E=6 (restarts=45065) -> should reach ~14.08
+
+=== TARGET RUNS ===
+  N= 60 skew=False: best F=6.2069  E=290  restarts=16236
+      seq=010101101101010110010110011110111110110001000100111000000111
+  N=101 skew=True: best F=5.8358  E=874  restarts=3495
+      seq=00001110000110011111001101110110110001010100000011101101010000000100111000100011001010011001011011010
+  N=121 skew=True: best F=5.3986  E=1356  restarts=1911
+      seq=0100101101101100000100110111101001011001100100011111110111101110100010101001000110011000011110100011000101001110001111000
+
+Notes: LABS asymptotic best-known merit factor ~6.34 (Legendre/offset).
+Optimal F is known exactly only for N<=66 (exhaustive); above that records are heuristic.
+Report F found + verifiable sequence; this demonstrates verifier-on-search producing a checked object.

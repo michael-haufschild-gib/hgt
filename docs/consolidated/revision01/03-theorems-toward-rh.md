@@ -104,7 +104,7 @@ Status tags reflect what is actually established.
 
 `[BRIDGE reductions PROVED; the apex itself OPEN]`
 
-The genuine RH content is **one wall with many names**. These are the equivalent forms the final
+The genuine RH content is **one wall with many names**. These are the equivalent forms the completed
 positivity theorem can take — proving *any* one (unconditionally, all-scale) is the apex:
 
 1. **`κ₋ = 0`** — the faithful Krein–Langer / Sylvester index of the completed carrier `−Ξ'/Ξ` vanishes
@@ -120,6 +120,15 @@ positivity theorem can take — proving *any* one (unconditionally, all-scale) i
 6. **G5 unitary holonomy** — `ι` acts unitarily on the completed space (the `F_q` analogue is Deligne's
    Weil II).
 7. **`Ω ≽ Π`** (M5 contraction) — `#neg(Q_W) = 0 ⟺ ‖P̃‖ ≤ 1 ⟺ Ω ≽ Π`, `P̃ = Ω^{-1/2}ΠΩ^{-1/2}`.
+
+> **The seam-coordinate finite form, and what carries RH `[VERIFIED — comp81; no-roleplay-items §5–6]`.** In the
+> reciprocal-seam chart these become `H^0_d = M_d(ν') ⪰ 0`, split `H^0_d = H^-_d + a_*v_*v_*^T`. The archimedean
+> budget is `≈ a_*` (`s_d(arch only) ≈ 0.16`; the Γ-factor's pole+trivial-zero lattice `2|w|=4N+1` is the
+> Connes–Consani–Moscovici prolate Hermite grading, `a_*` = the N=1 level), and matches their archimedean Sonin
+> positivity *unconditionally*. The **RH content is the prime/finite-places demand** `a_c(d)` that eats the budget to
+> `s_d→0⁺` — conjecturally the **semilocal** prolate positivity (arXiv:2310.18423). Watch the **integer `κ₋`**: the
+> scalar `s_d=0` is only its rank-one shadow (a sign-fake has `κ₋=2` with `s_d>0`, comp81), so the apex is `κ₋=1
+> from source` (the carrier) ∧ `s_d>0` — the index, not the scalar.
 
 > **Crucial separation `[PROVED — BRIDGE]`:** `ω = 0` (realization / "a motive exists" / the DSS
 > keystone) is a **different** apex from RH. **`ω = 0 ⇏ RH`** — already over `F_q` both hold for separate
@@ -153,7 +162,7 @@ positivity theorem can take — proving *any* one (unconditionally, all-scale) i
 ```
 
 **Proven floor (the BRIDGE layer, all `[PROVED]`):** the FE mirror law and order-2 constraint; the
-critical line as `Fix(ι)`; the local pole model and `log|ξ|`-concavity; the corank `∞−1` seam invariant;
+critical line as `Fix(ι∘conj)`; the local pole model and `log|ξ|`-concavity; the corank `∞−1` seam invariant;
 the linear floor `corank = ∞` (Baker); the Schur–Cohn / Bezoutian inertia bricks; the finite Laguerre
 `d=2` leader.
 
@@ -221,7 +230,7 @@ A proof-grade bridge must supply all five theorems:
 4. **Fake-family separation theorem** — prove Davenport–Heilbronn-style / FE-exact / correct-zero
    surrogates fail at a *named* source gate.
 5. **No-margin theorem** — prove the mechanism survives the zero-margin nature of RH (no hidden spectral
-   gap, domination reserve, or finite cutoff is used to force the final sign).
+   gap, domination reserve, or finite cutoff is used to force the required sign).
 
 The transport carrier of the mechanism view is compatible with this package **iff** its carrier can be
 identified with the same faithful completed object; until then it is a parallel candidate, not a proof.
@@ -236,7 +245,8 @@ digits — no slack), not a "large-beats-small" estimate. It lives on a **three-
 pole `y=−4` (entireness) + trivial-zero chain (positive protector `μ_triv`) + nontrivial divisor (forced onto
 `ℝ_{>0}`). Ranked routes: (1) one-sided Loewner / boundary-Weyl `K⪯I` as a compression of a single
 **non-compact** completed-boundary operator; (2) Weil-form pullback `p↦h_p` (`Q_0[p]=Q_W[h_p]`); (3)
-discriminant / Gram–Heine asymptotics past the proved `d=1`; (4) direct Jacobi / Hankel-determinant (lowest
+discriminant / Gram–Heine asymptotics, now requiring the exact cross-positive interval plus a summed
+domination estimate; (4) direct Jacobi / Hankel-determinant (lowest
 odds — intrinsically hard-edge ill-conditioned). The **fake-family separation theorem** (form 4 of the
 package) acquires a concrete first test: the **reciprocal trivial-zero domination on Dirichlet `L`-functions**
 — genuine Euler-product `L` should pass `K_d⪯I`, Davenport–Heilbronn should fail by `λ_max>1` (forward agenda

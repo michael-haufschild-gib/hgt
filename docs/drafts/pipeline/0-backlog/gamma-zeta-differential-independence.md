@@ -369,3 +369,102 @@ separator. Per move #24 (incubate; hard problems need settling time) the card re
 banked — NOT terminalized via the Li–Ye import (per @user: at the wall, do the science, don't retreat to a
 web-resolvable citation). Return when a transseries/Hardy-field single-valuedness theorem or a sharper
 weld-arithmetic handle appears.
+
+## Log addendum — 2026-06-23 (Professor): pole-confinement lemma REFUTED by Gamma c-points
+
+The native route depended on the claimed pole-confinement lemma: every element of `K = C(s)<Gamma>` has all poles in a bounded horizontal strip. This is false as stated.
+
+Counterexample: `f(s)=1/(Gamma(s)-1)` lies in `K`. Its poles are the `1`-points of `Gamma`. Solving
+
+`log Gamma(s) = 2*pi*i*k`
+
+with the Stirling/Lambert-W initial approximation
+
+`s ~ 2*pi*i*k / W(2*pi*i*k/e)`
+
+and Newton refinement gives genuine `Gamma(s)=1` points with unbounded imaginary part. Computation archived at `computations/2026-06-23-gamma-cpoints-unbounded-height.py` and `.txt`:
+
+- `k=50`: `s = 29.068503603921728829 + 80.836387880226486924 i`, `|Gamma(s)-1| ~ 3.3e-79`.
+- `k=100`: `s = 45.336359590189951313 + 142.624809956592716 i`, `|Gamma(s)-1| ~ 7.5e-79`.
+- `k=500`: `s = 137.79387391572387708 + 553.53753295347030626 i`, `|Gamma(s)-1| ~ 1.5e-78`.
+
+Therefore `1/(Gamma(s)-1)` has unbounded-height poles, so `K` is not pole-confined. The prior native proof route for `Gamma ⟂ zeta` over `K` is invalid unless the coefficient field is narrowed or a different invariant replaces pole-confinement.
+
+Possible repairs, not yet proven:
+
+1. Replace `K=C(s)<Gamma>` by a restricted archimedean field excluding denominators such as `Gamma-c`; this would no longer prove the stated differential independence over the full field.
+2. Track pole-origin or asymptotic branch data rather than height alone: Gamma c-points arise from archimedean Stirling branches, while zeta zeros carry prime fluctuation through `S(T)`.
+3. Seek an invariant stable under rational operations in the full Gamma differential field; raw pole-height is not stable enough.
+
+Status impact: the pole-confinement lemma and all deductions depending on it are REFUTED AS STATED. This is a kill of the method, not a refutation of the known `Gamma`-`zeta` differential-independence statement.
+
+### Proof sketch for the unbounded `Gamma(s)=1` branch
+
+This is not just numerical evidence. On the principal logarithm branch in the first quadrant, Stirling gives uniformly away from the negative real axis
+
+`log Gamma(s) = (s-1/2)Log s - s + (1/2)log(2*pi) + O(1/s)`.
+
+For large positive integers `k`, solve the leading equation
+
+`s(Log s - 1) = 2*pi*i*k`.
+
+Writing `w=Log s - 1` gives `w e^w = 2*pi*i*k/e`, hence the Lambert-W approximation
+
+`s_k^0 = 2*pi*i*k / W(2*pi*i*k/e)`.
+
+This satisfies `Im(s_k^0) ~ 2*pi*k/log k -> infinity` and remains in the first quadrant. The derivative of the Stirling phase is `Log s + O(1/s)`, so it has size `~ log k` near `s_k^0`. Rouché/Newton-Kantorovich on a shrinking disk around the refined zero of the Stirling phase then gives an actual zero of
+
+`log Gamma(s) - 2*pi*i*k`,
+
+for all sufficiently large `k`. Therefore `Gamma(s)=1` has a sequence of solutions with unbounded imaginary part. The numerical file records explicit members of this branch and residuals.
+
+Novelty note: this is very likely a standard inverse-Gamma/Stirling branch fact, not a new theorem. Its role here is local: it refutes the pole-confinement invariant used in this card.
+
+### Stronger impact: pole-density is not a separator over the full Gamma field
+
+The same branch also kills the later case-(ii) pole-density separator. From
+
+`Im(s_k) ~ 2*pi*k/log k`,
+
+one gets
+
+`k ~ (T/(2*pi)) log T`
+
+up to lower-order `log log T` terms. Thus the poles of `1/(Gamma(s)-1)` along this branch already have the same leading `T log T` counting scale as the Riemann-von Mangoldt zero count. The archived computation now records the finite-size ratio
+
+`k / ((T/(2*pi)) log(T/(2*pi)))`,
+
+which decreases from `1.52` at `k=50` to `1.27` at `k=500`, consistent with convergence to `1` after the expected `log log T / log T` correction.
+
+Therefore the proposed invariant cannot be either:
+
+1. bounded pole height for all `K`-elements, or
+2. absence of log-enhanced pole density for all `K`-elements.
+
+Both fail for the full field `K=C(s)<Gamma>`. Any surviving native separator for `Gamma ⟂ zeta` must distinguish the *origin/phase/arithmetic law* of the unbounded poles, not their height or leading density alone. In particular, Gamma c-points supply an archimedean `T log T` pole lattice, while zeta zeros require the functional-equation/prime fluctuation law. The candidate invariant must see that difference, or the native route remains dead.
+
+## Log addendum — 2026-06-23 (Professor): repaired invariant = vertical-strip tameness
+
+After Haiku's constructibility reversal and Wheeler's location-escape attempt, the correct replacement for pole-confinement appears to be vertical-strip tameness.
+
+[CONJECTURE / candidate lemma] For any finite `n`, nonzero `F in C(s)(Gamma, Gamma', ..., Gamma^(n))`, and any fixed vertical strip `a <= Re(s) <= b`, `F` has only finitely many poles in that strip.
+
+This is compatible with the Gamma c-point refutation: `1/(Gamma-1)` has unbounded-height poles and `T log T` leading count, but the computed/Stirling branch escapes to `Re(s)->+infty`. Thus leading density is not enough; location after allowing inverse-Gamma controls is the sharper invariant.
+
+Corollary if proved: no element of the finite Gamma differential field can have poles precisely at the nontrivial zeta zeros, since those zeros are infinite and remain in the critical strip `0<Re(s)<1`.
+
+Proof shape: in a fixed vertical strip, uniform Stirling gives `Gamma^(j)(s)=Gamma(s)(Log s)^j(1+lower terms)`, with `Gamma(s)` exponentially small. For a denominator differential polynomial, group terms by total Gamma-jet degree. A nonzero degree-zero term dominates; otherwise the least positive degree gives `Gamma(s)^m` times a finite asymptotic scale in `s`, `Log s`, and `1/s`. A nonzero leading term cannot vanish infinitely often in a fixed vertical strip. Full proof must handle cancellation rigorously.
+
+Scope limitation: this is a field-level divisor non-encoding statement, not full differential independence. If `zeta` were differentially algebraic over `C(s)<Gamma>`, `zeta'/zeta` would be differentially algebraic over the field, not necessarily an element of it.
+
+Canonical card: `docs/drafts/pipeline/0-backlog/gamma-field-vertical-strip-tameness.md`.
+
+### Source check on vertical-strip tameness
+
+A strong near-source was found after stating the vertical-strip repair: Feng Lu, *On algebraic differential equations of gamma function and Riemann zeta function*, Ann. Acad. Sci. Fenn. Math. 44 (2019), 1031-1040. The proof uses sequences of zeta points in vertical strips, minimal Gamma-monomial degree, and Stirling estimates showing higher Gamma-degree terms are exponentially small. This is very close to the proposed vertical-strip asymptotic domination mechanism.
+
+Status impact: the repaired invariant remains useful as a project-local control, but global novelty is high-risk / likely killed unless the exact field-level divisor lemma is not in the literature and has independent significance.
+
+## Log addendum — 2026-06-23 (Professor): algebraic theorem not promotable
+
+Haiku proposed promoting the algebraic separation `zeta` not algebraic over the finite Gamma differential field. This is source-killed. Feng Lu 2019 proves the relevant nontrivial distinguished polynomial nonvanishing for expressions involving `Gamma`, its derivatives, and `f(zeta)` with `f` having a zero; `f(w)=w` gives the zeta case. Prior Li-Ye/Lu papers cover adjacent formulations. The algebraic theorem is a valid imported gate/control, not novel project knowledge.

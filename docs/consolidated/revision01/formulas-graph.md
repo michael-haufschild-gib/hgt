@@ -36,7 +36,7 @@ period domain · `ML`/`ZP` Lehmer / zero-perturbation.
 Format: **ID** `canonical formula` ⟵ {absorbed originals}.
 
 ### IV — involution & functional equation
-- **IV1** `ι:s↦1−s, ι²=id, Fix(ι)={Re s=½}; anti-holomorphic ῑ:s↦1−s̄ same locus` ⟵ {7,8,9,135}
+- **IV1** `ι:s↦1−s, ι²=id, Fix(ι)={1/2}; anti-holomorphic ῑ:s↦1−s̄ has Fix(ῑ)={Re s=½}` ⟵ {7,8,9,135}
 - **IV2** `ξ(s)=ξ(1−s) ⟺ Λ(s)=Λ(1−s) ⟺ θ(1/t)=√t·θ(t) ⟺ Poisson (Ш̂=Ш)` ⟵ {10,11,51}
 - **IV3** `ξ'/ξ(s)=−ξ'/ξ(1−s)` (Berry equalization) ⟵ {12}
 - **IV4** `Ξ(w):=ξ(½+w), Ξ(w)=Ξ(−w), 𝒟={ρ−½}` ⟵ {13}

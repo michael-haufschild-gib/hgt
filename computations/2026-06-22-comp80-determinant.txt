@@ -1,0 +1,26 @@
+   d      s_d (a+1/m)      -detH0/detB   rel.diff  det-lemma rel  detH0>0?
+   6     3.222617e-30     3.222617e-30   7.1e-142       7.1e-142      True
+   8    2.9550313e-41    2.9550313e-41   3.0e-132       3.0e-132      True
+  10    1.2597508e-52    1.2597508e-52   1.4e-123       1.4e-123      True
+  12    1.4949316e-64    1.4949316e-64   4.3e-113       4.3e-113      True
+  14    1.3887989e-76    1.3887989e-76   1.2e-101       1.2e-101      True
+
+=== tau-function / Hankel(Jensen)-determinant structure ===
+   d    detH0 (Hankel/Jensen)           detH^-  sign detH^-  1+a*m_d=detH0/detH-
+   6             5.32485e-137    -2.64374e-108            -       -2.0141356e-29
+   8             2.53959e-236    -1.37506e-196            -       -1.8468945e-40
+  10             1.84166e-364    -2.33908e-313            -       -7.8734427e-52
+  12              1.5687e-522    -1.67896e-459            -       -9.3433226e-64
+  14              4.9252e-711    -5.67419e-636            -        -8.679993e-76
+
+Reading: s_d = -det(H^0_d)/det(B_d) is the Christoffel/Uvarov determinant RATIO of the SAME Hankel
+(Jensen/Turan) determinants that govern Polya-Jensen positivity. det(H^0)>0 forall d is the Hankel-
+determinant positivity (= Q_0>=0 = H^0 PSD). det(H^-)<0 (inertia (d,1), one negative eigenvalue) so
+1+a_*m_d = det(H^0)/det(H^-) < 0, i.e. a_*m_d<-1 is the Krein-threshold crossing in determinant form.
+=> Jacobi-Krein (s_d, inertia) and Jensen/Hankel (det H^0 positivity) are the SAME object, linked by
+the matrix-determinant lemma + the Cramer/Uvarov border.
+DONE
+
+real	0m7.108s
+user	0m7.096s
+sys	0m0.012s

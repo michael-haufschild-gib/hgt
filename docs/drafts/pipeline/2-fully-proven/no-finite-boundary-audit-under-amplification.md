@@ -72,3 +72,17 @@ Validated in:
 ## Log
 
 - 2026-06-21 -- created in 2-fully-proven from the black-hole inner-horizon mass-inflation NODE, method 9 small cases.
+
+## 2026-06-24 static Schur reduction separated from uniform proof
+
+`finite-rank-boundary-schur-index.md` records the static finite-rank boundary Schur reduction: at a fixed scale, `kappa_-(B+VCV*)` is determined by the finite boundary Schur matrix. This card remains the scale warning: static Schur reduction at checked degrees does not prove the uniform all-degree/channel statement.
+
+A valid source-built index proof needs both ingredients: the correct Schur matrix at each scale and a source theorem preventing later amplification or hidden-channel crossings.
+
+## 2026-06-24 finite prolate channels are a height-graded shadow
+
+`finite-prolate-channel-boundary-rh-strength.md` gives the all-order fixed-channel version of this warning. At any fixed finite set of exterior prolate channels, the boundary repair vanishes on a finite ideal whose positivity remains RH-strength. Finite channel checks can therefore calibrate the semilocal carrier, but they cannot replace a source-uniform all-channel theorem.
+
+## 2026-06-24 summable all-channel measure is still not enough
+
+`summable-exterior-boundary-measure-rh-strength.md` separates two issues. Finite checks cannot certify a scale-dependent boundary family; moreover, even the full exterior channel set does not soften the all-order target if it enters only as a finite-total-variation measure. Source-uniform control must therefore come from a stronger semilocal operator theorem, not merely from including more summable exterior channels.

@@ -12,12 +12,12 @@
 
 **The constraint.** `[PROVED]`
 ```
-   ι : s ↦ 1−s,   ι² = id,   Fix(ι) = { Re s = ½ }.
+   ι : s ↦ 1−s,   ι² = id,   Fix(ι) = { 1/2 },   Fix(ι∘conj) = { Re s = ½ }.
 ```
 The completed object is governed by a single order-2 reflection — a constraint generating ℤ/2, not a
 one-parameter flow. The holomorphic reflection fixes only the point `s=½`; the seam `Re s = ½` is the
 fixed line of the anti-holomorphic reflection `s ↦ 1−s̄`. The map, its order, and both fixed loci are one
-fact: the constraint whose fixed locus is the critical line.
+constraint package; the critical-line locus uses the conjugated reflection.
 
 **The functional equation, four faces.** `[PROVED]`
 ```
@@ -178,7 +178,11 @@ The infinite corank is robust: the archimedean generator does not supply the mis
 ```
 The RH-bearing quantity is a faithful signed integer — the negative index of the completed carrier,
 counting off-line zeros with reflection multiplicity. A measured density or variance is blind to
-density-zero off-line dust; only the integer index can decide RH.
+density-zero off-line dust; only the integer index can decide RH. **The scalar Weyl gap `s_d` is the
+*rank-one shadow* of `κ₋`, not a substitute for it `[VERIFIED — comp81/72]`:** a fake (reversed prime sign)
+can have `κ₋=2` while `s_d>0` (the single Γ-atom repairs only one negative square; `H^0` is not PSD, the
+scalar misses it). So even the moment-level `s_d=0` gate is a height-/rank-limited shadow of the integer
+`κ₋` — confirming that the faithful object is the index, not any scalar.
 
 **The one wall, its many names.** `[OPEN CORE]`
 ```
@@ -318,7 +322,7 @@ form, and the only thing that makes the integer-divisor positivity above RH-rele
    |ω| = √q  exactly,    ∏(1 − ωT) reflection-invariant,    e_k(S) = q^k e_k(S^{−1});
    normalized margin = 1 − q^{−½};
    polarization present ⟺ single Frobenius ⟺ corank 1 ⟺ F_q;
-   over F_q:  trdeg(periods) = dim G,   dim W = corank = 1,   ι unitary on Fix(ι) ⟺ RH over F_q.
+   over F_q:  trdeg(periods) = dim G,   dim W = corank = 1,   reflected constraint unitary on the critical locus ⟺ RH over F_q.
    arithmetic-progression divisor γ_n = n:  S_k = (−1)^k ζ(2k) ∈ ℚ·π^{2k},  π² + 6S_1 = 0,  5S_2 = 2S_1².
 ```
 The solved model the number-field case is contrasted against: corank `1`, a single Frobenius, an exact

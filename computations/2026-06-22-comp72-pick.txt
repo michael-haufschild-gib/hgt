@@ -1,0 +1,22 @@
+=== ZETA (RH): kappa vs (sample size M, zero-truncation N) — expect kappa=1 stable ===
+ M=  6  N50:k=1  N100:k=1  N200:k=1  N400:k=1
+ M= 12  N50:k=1  N100:k=1  N200:k=1  N400:k=1
+ M= 20  N50:k=1  N100:k=1  N200:k=1  N400:k=1
+ M= 30  N50:k=1  N100:k=1  N200:k=1  N400:k=1
+
+=== off-line quartet (DH-like), N=400, M=20: kappa vs (beta, gamma0) ===
+   on-line beta=0.5 -> quartet at y=1/g0^2>0 (genuine-looking); off-line beta>0.5 -> complex atoms
+ beta=0.5  g0=10:k=1  g0=20:k=1  g0=50:k=1
+ beta=0.7  g0=10:k=2  g0=20:k=1  g0=50:k=1
+ beta=1.0  g0=10:k=2  g0=20:k=2  g0=50:k=1
+
+=== sampling-resolution test: off-line beta=1.0,g0=20, push M (denser near 1/g0^2=0.0025) ===
+ M=  8 near y=0.0025:  kappa=2   min-eig=-0.458
+ M= 16 near y=0.0025:  kappa=2   min-eig=-7.7
+ M= 28 near y=0.0025:  kappa=2   min-eig=-31.4
+
+DONE
+
+real	0m29.830s
+user	0m29.815s
+sys	0m0.015s

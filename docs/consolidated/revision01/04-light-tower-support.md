@@ -1,6 +1,6 @@
-# 04 — Evidence Supporting the Light Tower Claims (Strongest, Sharpest, Minimal Form)
+# 04 — Evidence Supporting the Light Tower Claims (Strong, Minimal Form)
 
-> **Scope.** The material that *reinforces* the eight light-tower claims, reduced to its sharpest
+> **Scope.** The material that *reinforces* the eight light-tower claims, reduced to its current
 > minimal statements, organized by the claim it supports. Its mirror is the invalidating evidence
 > (companion 05). Each support is tagged by register; where a support is itself only a windowed
 > numeric, that is marked — supports are graded, not laundered into theorems. No proof of RH.
@@ -8,7 +8,7 @@
 The eight claims:
 
 - **LT1** — the completed object is a *transport connection*, not a scalar amplitude.
-- **LT2** — the one object is the weld `H = A + P`; the seam is `Re(s)=½ = Fix(ι)`.
+- **LT2** — the one object is the weld `H = A + P`; the seam is `Re(s)=½ = Fix(ι∘conj)`.
 - **LT3** — *constraint, not flow*.
 - **LT4** — σ-lanes are coupled; a *non-product* joint measure.
 - **LT5** — the *Berry two-path completion switch* (Γ reroutes asymmetry into phase).
@@ -30,7 +30,10 @@ The eight claims:
 - `[PROVED — BRIDGE]` **The RH-bearing quantity is a faithful index, not an amplitude.**
   `κ₋ = #off-line zero-pairs` (Sylvester inertia), `RH ⟺ κ₋ = 0` — a signed integer, for which no
   magnitude/density is a substitute (Lean-verified). Minimal form: *the object's RH content is
-  `(1|∞)`-signature positivity of `Q_W`, not a size.*
+  `(1|∞)`-signature positivity of `Q_W`, not a size.* `[VERIFIED — comp81/72/55]` Even the *scalar Weyl gap*
+  `s_d` is only a rank-one shadow of `κ₋`: a reversed-prime-sign fake has `κ₋=2` with `s_d>0` (comp81), and an
+  off-line zero shows `κ=2` in the infinite Pick kernel (comp72) — three computations agree that the separator
+  is the integer index, not the scalar.
 
 ## LT2 — The weld `H = A + P` and the seam `Re=½`
 
@@ -130,7 +133,7 @@ Three independent metaphors report the **same oriented structure, same finite-pr
 
 ---
 
-## How strong is the support, honestly
+## Support Level
 
 | Claim | Strongest support | Register |
 |---|---|---|
@@ -143,7 +146,7 @@ Three independent metaphors report the **same oriented structure, same finite-pr
 | LT7 oriented 2-form | three projections, one sign | `[OBSERVED]` |
 | LT8 off-line ⟺ off-seam | κ₋ Lean; Euler-L separator; firewall | `[PROVED-Lean]` + `[OBSERVED]` |
 
-> **The honest ceiling of all support:** the strongest *proven* supports (LT1–LT3, LT8's κ₋) are
+> **The ceiling of all support:** the strongest *proven* supports (LT1–LT3, LT8's κ₋) are
 > **BRIDGE** — they reduce to classical when the vocabulary is stripped. The strongest *experimental*
 > supports (LT4, LT5, LT7) are `[OBSERVED]`. The supports are real and convergent; they do not by
 > themselves cross the wall.

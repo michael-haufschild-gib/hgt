@@ -1,0 +1,12 @@
+  d |    s_d(zeta)=A+P   inertia |    s_d(A only)   inertia |    s_d(flip A-P)   inertia
+  4 |     7.017994e-20 (4, 1, 0) |     0.16000007 (4, 1, 0) |       0.32000236 (3, 2, 0)
+  6 |     3.222617e-30 (6, 1, 0) |           0.16 (6, 1, 0) |             0.32 (5, 2, 0)
+  8 |    2.9550313e-41 (6, 1, 2) |           0.16 (7, 2, 0) |             0.32 (6, 3, 0)
+ 10 |    1.2597508e-52 (6, 1, 4) |           0.16 (9, 2, 0) |             0.32 (8, 3, 0)
+ 12 |    1.4949316e-64 (6, 1, 6) |     0.15190702 (9, 2, 2) |       0.31998724 (8, 3, 2)
+
+Reading guide:
+ - s_d(zeta) > 0 at all d  ->  RH side, as expected.
+ - sign of s_d(flip): if < 0, the prime SIGN is load-bearing (Euler-product positivity keeps s_d>0) -> NR-2 evidence.
+ - s_d(A only): whether the archimedean budget alone is positive or already defective (whether the prime CREATES the defect).
+DONE

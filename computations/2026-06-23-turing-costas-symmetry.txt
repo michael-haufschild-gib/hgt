@@ -1,0 +1,16 @@
+ n   Costas  symmetric  sym-class-breakdown(|stab|:count)
+ 1        1          1  {2: 1}
+ 2        2          0  {1: 2}
+ 3        4          0  {1: 4}
+ 4       12          0  {1: 12}
+ 5       40          0  {1: 40}
+ 6      116          0  {1: 116}
+ 7      200          0  {1: 200}
+ 8      444          0  {1: 444}
+ 9      760          0  {1: 760}  <-- MISMATCH known=995
+10     2160          0  {1: 2160}
+11     4368          0  {1: 4368}
+12     7852          0  {1: 7852}  <-- MISMATCH known=17828
+
+Instrument check: totals vs OEIS A008404 (flagged if mismatch).
+Strengthen result: the symmetric-Costas counts per n -- pattern? known sequence?

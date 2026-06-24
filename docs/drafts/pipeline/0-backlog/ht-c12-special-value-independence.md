@@ -27,3 +27,21 @@ Do NOT expect an elimination-to-Hölder collapse — that is the whole point (th
 
 ## Log
 - 2026-06-20 — created in 0-backlog from bucket C12. Graded apex-adjacent (value-level) — the native instance is the DSS apex.
+
+## 2026-06-24 source audit — generic version likely known
+
+Haiku entropy-drew C12 after the finite-jet nonidentifiability theorem. The finite-jet theorem does **not** refute
+the generic C12 claim: it only proves HT alone imposes no finite value relation, since any finite jet table can
+be realized by an HT function. Thus C12 must be read as a genericity/value-level statement, not as a consequence
+of function-level HT.
+
+Source audit found a close known framework: Jones--Kirby--Le Gal--Servi, *On local definability of holomorphic
+functions* (arXiv:1712.07064). Their Definition 3.1 defines strongly transcendental holomorphic functions by
+transcendence-degree lower bounds for finite jets at tuples of distinct points, and Proposition 3.2 states that
+`ST(U)` is residual in `O(U)`. This appears to cover the generic finite-jet value-independence phenomenon in a
+stronger form, at least over the countable/base-field setting used there.
+
+Verdict: C12 should not be promoted as new generic mathematics without isolating a delta beyond strong
+transcendence. The HGT-useful conclusion is conceptual: C12 is the value-level/generic backdrop, while the
+finite-jet nonidentifiability theorem shows that no such independence follows from HT alone. Native arithmetic
+instances (`γ_n`, DSS/wild-kernel freeness) remain open and are not advanced by the generic Baire theorem.

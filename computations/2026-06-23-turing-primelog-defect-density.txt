@@ -1,0 +1,19 @@
+=== (+) POSITIVE control: linear relations among log6,log10,log15 (should FIND) ===
+  [pos-linear] pslq error: PSLQ requires a vector of nonzero numbers
+
+=== degree-2 prime-log sets (should find NO relation if Schanuel) ===
+  [primelogs {2,3,5}] NO integer relation (maxcoeff=1000000) over 10 values
+  [primelogs {2,3,5,7}] NO integer relation (maxcoeff=1000000) over 15 values
+
+=== (0) NULL control A: logs of random large primes (same structure) ===
+  random primes: [1223, 2357, 3571]
+  [randprimelogs] NO integer relation (maxcoeff=1000000) over 10 values
+
+=== (0) NULL control B: transcendentals {pi,e,euler} ===
+  [transcend] NO integer relation (maxcoeff=1000000) over 10 values
+
+=== (0) NULL control C: logs of {2,3,5} vs degree-2 BUT also add cross with pi (mixed) ===
+  [primelogs+pi {2,3,5,pi}] NO integer relation (maxcoeff=1000000) over 15 values
+
+DONE. Expectation: pos-linear FOUND; all degree-2 sets (prime + null) relation-free
+at maxcoeff=1e6 -> prime-logs show NO special degree-2 defect vs controls (generic).

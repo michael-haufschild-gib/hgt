@@ -188,6 +188,104 @@ random-phase surrogate, and the `σ>1` collapse control.
   carries zero RH content; the RH content is only the integer→zero explicit-formula transfer ⟹ no
   Hankel/conditioning/deflation argument is RH-relevant; the proof must be the analytic transfer.
 
+### The rank-one Krein–Langer boundary-Weyl battery (the apex, made precise — comp51–80)
+
+The shifted reciprocal moment matrix `H^0_d=[T_{i+j+1}]`, `T_k=2Σ_{γ>0}γ^{−2k}`, is the moment matrix of the
+folded zero divisor `ν'=Σ_ρ 2y_ρδ_{y_ρ}`, `y_ρ=−(ρ−½)^{−2}`. RH ⟺ `H^0_d⪰0 ∀d` (`Q_0[p]≥0`). This battery resolves
+the finite anatomy to a **single scalar gate**.
+
+- **`[exact moments via logΞ — the 80-zero truncation was corrupting T_1 by 15%]`** `[VERIFIED]`: `T_k=2(−1)^{k+1}k·c_{2k}`,
+  `c_{2k}=[w^{2k}]logΞ`, `Ξ(w)=ξ(½+w)` (three closed pieces: `−4^k/k` pole/FE, `polygamma(2k−1,¼)/((2k)!4^k)` Γ,
+  `g_{2k}` ζ-Taylor). Replaces the zero-sum truncation; removed a spurious "exponent drift to 3.7" artifact. This is
+  the **source** extraction (ζ-derivatives at ½, no zeros).
+- **`[rank-one Γ-boundary split + scalar Weyl gap]`** `[VERIFIED d≤62]`: `H^0_d=H^-_d+a_*v_*v_*^T`, `v_*=(y_*^i)`,
+  `y_*=−0.16`, `a_*=(2.5)^{−2}=0.16` (the `j=1` trivial-zero atom, source-built); `inertia(H^-_d)=(d,1)` (one
+  negative square), and RH `⟺ s_d=a_*+1/m_d=1/K_{ν'}(y_*,y_*)=a_*·margin_d>0 ∀d`, `m_d=v_*^T(H^-_d)^{−1}v_*`.
+  The **fundamental fake-family separator is the integer `κ₋`; `s_d=0` is its rank-one shadow** `[VERIFIED — DH d=62;
+  refined comp81]`: DH (a real off-line zero) keeps `κ₋(H^-)=1` and crosses `s_d=0` at `d*=62` (height-limited), while
+  a global sign-fake jumps to `κ₋=2` with `s_d>0` (comp81 below) — the rank-one Γ-atom repairs only one square.
+- **`[the prime sign sets κ₋, not the sign of s_d — budget/demand split]`** `[VERIFIED comp81]`: split `T_k=T_k^A`
+  (archimedean: pole+Γ) `+T_k^P`(prime: `g_{2k}=[w^{2k}]logζ`). **Archimedean budget `≈a_*`:** `s_d(A only)≈0.16` at
+  all d (Γ-structure ≈critical at its own boundary atom). **Prime eats it to no-margin:** `s_d(ζ,A+P)→0⁺` (prime adds
+  `≈−a_*` to `1/m_d`) — the budget-vs-demand identity `s_d=a_*−a_c(d)` made concrete. **Flipping the prime sign**
+  (`A−P`) gives `s_d≈2a_*>0` **but inertia `(d−1,2)` (two negative squares)** — `H^0_flip` not PSD, the scalar `s_d`
+  blind to the second κ. ⟹ the Euler-product sign controls `κ₋` (`N₁` vs `N₂`), not the scalar sign; the separator is
+  the index (consistent with comp72, lens 4).
+- **`[derived exponent law for the no-margin rate]`** `[gpt/proof4]`: `s_d~∏γ_j^{−α}`, `α_d(y_*)≈4+[4(1−ln2)+2ln|y_*|]/L̄_d`,
+  `L̄_d=(1/d)Σln γ_j`; base `4`=reciprocal-square, `4(1−ln2)`=hard-edge Vandermonde, `2ln|y_*|`=exterior-Christoffel
+  normalization. At `L̄_d≈4`: `α≈4.31+½ln|y_*|`, checks ζ/odd-χ/even-χ = `3.39/3.90/5.00` (obs `3.41/3.90/5.05`). No
+  universal slope — `α` drifts as `L̄_d` grows; the rate is generic hard-edge geometry, the **sign** is RH.
+- **`[the Krein–Langer signed moment problem]`** `[VERIFIED κ=1; comp65/66/72]`: `H^-_d=M_d(σ)`, `σ=ν'−a_*δ_{y_*}`
+  (positive zero measure minus one Γ-boundary atom); the Cauchy transform `m_σ∈N₁` (one negative square). The bridge
+  is `σ∈Π₁ ──(+a_*δ_{y_*})──▶ ν'∈Π₀`. comp72 Pick-kernel stress test: ζ **`κ=1` stable** across sample size `M≤30`
+  and zero-truncation `N≤400` (no sampling artifact); an off-line FE quartet gives **`κ=2`** but only when sampled
+  near its scale `1/γ₀²` (resolution-limited; dense local sampling → `κ=2`, min-eig → `−31`). The off-line zero is a
+  second negative square in the infinite Pick kernel — complementary to the height-limited finite `s_d` gate.
+- **`[μ_E is the zero-side spectral measure — anatomy, not the gate]`** `[VERIFIED comp63/64/77/78]`: the protector-split
+  tail `E_{ij}=e_{i+j}` (exactly Hankel, dev `~10^{−175}`) realizes a **signed** measure `μ_E[x^n]=e_n`,
+  `x=y+0.16`. Its signed-Gaussian-quadrature nodes are **exactly the reciprocal zero images** `{a_*+y_n=0.16+1/γ_n²}`
+  (leading node → `0.165005=a_*+y_1`; next `0.162263=a_*+y_2`, `0.161599=a_*+y_3`). Negative inertia **grows ~`0.6d`**
+  ((3,6)→(5,10)→(7,14)→(9,18) for `d=12,18,24,30`) ⟹ a genuine **full** signed measure, no rank-one simplification.
+  `F_E(z)=Σe_n z^n` is meromorphic with simple poles at `z=1/(a_*+y_n)` (nearest `6.0604`, `1/z=0.165005`),
+  **accumulating at `z=1/a_*=6.25`** (the `y=0⁺` hard edge). PSLQ of `e_n` vs `{1,π²,ζ(3),(y_1+0.16)^n}`: no
+  relation — `μ_E` is γ₁-dominated zero-data, not elementary. So `μ_E` is `ν'` seen in the protector coordinate (the
+  seam shadow of `σ`); DH and genuine odd-χ share the tail (comp69) ⟹ `μ_E` is **not** the fake-family gate.
+- **`[canonical-gauge extraction law — proof9 verified]`** `[VERIFIED comp71, k=1..6]`: under `Ξ↦e^{q(w²)}Ξ`,
+  `q=Σa_r w^{2r}`, the moments shift by the exact **diagonal** law `T_k↦T_k+2k(−1)^{k+1}a_k` (only `a_k` moves `T_k`);
+  Hankel counterterm `2(i+j+1)(−1)^{i+j+2}a_{i+j+1}`; canonical fix `T_k^can=T_k^raw−2k(−1)^{k+1}a_k` (the completed
+  ξ-normalization). Verified at the actual Ξ (logΞ-Taylor anchor `1e−77`); the `T_1↦T_1+2c` earlier "contamination"
+  is the `k=1` case — **not a bug**, the canonical-gauge law.
+- **`[prime truncation is not a faithful source]`** `[VERIFIED comp73]`: the von Mangoldt sums for `g_k=(ζ'/ζ)^{(2k−1)}(½)`
+  DIVERGE (pole-dominated `~√X·(log X)^{2k−1}`; `S_1(2e6)=35385` vs target `g_1=3.75`). The `O(1)` residual sign that
+  sets `s_d` is invisible in any finite prime sum without analytic `s=1`-pole subtraction. The no-zero-feeding source
+  extraction must use the completed Ξ (where `T_moments_exact` already lives), not bare primes.
+- **`[the Christoffel dip is universal & parabolic]`** `[VERIFIED comp70/74, dev 3.6e−15]`: the inverse-Christoffel
+  `m_d(y)=v(y)^T(H^-)^{−1}v(y)` is negative in a thin window bracketing `y_*`; rescaled `P(Y)=m_d(y)/|dip_min|=4Y²−1`
+  collapses across `d=8..28`. **Depth pinned `m_d(y_*)=−1/a_*=−6.25 ∀d`** (the no-margin identity `a_*m_d→−1 ⟺ s_d→0`);
+  only the **width** `w_d=2√(2|m_d(y_*)|/m_d''(y_*))~s_d^{≈0.45}` shrinks (`2.4e−18→3.1e−81`). The whole no-margin
+  geometry collapses to one `d`-scalar, the curvature `m_d''(y_*)`.
+- **`[rank-one theorem extends to complex self-dual L]`** `[VERIFIED comp75]`: for complex χ mod 5 (order 4, odd), the
+  self-dual product `Λ(s,χ)Λ(s,χ̄)` stays `N₁` — `H^0` PSD, removing the rank-one atom leaves `inertia(H^-)=(d,1)`,
+  `s_d>0 ∀d`. The squared Γ does **not** force rank-two: χ,χ̄ share one parity/Γ-channel. **Rank = number of distinct
+  Γ-shift values** (a GL(2) `Γ_ℝ(s)Γ_ℝ(s+1)` would give rank-two/`N₂`).
+- **`[s_d=0 is a global condition, not a single off-line atom]`** `[comp76, partly negative]`: adding `λ·(one off-line
+  quartet)` to ζ's moments does NOT monotonically drive `s_d` negative — `s_d` saturates positive (`d=10`:
+  `1.3e−52→5.3e−49` for `λ≥0.5`), crossings sporadic (only `d=8 λ≈0.16`; `d=16` only at `g0=40`). The genuine DH
+  failure (`s_d<0` at `d*=62`) needs the cumulative off-line zero density, a height-limited condition.
+- **`[s_d is a Hankel-determinant ratio — the classical moment-problem dictionary, in the seam coordinate]`**
+  `[VERIFIED comp80, rel ~1e−120; the identities are CLASSICAL, register: organizational not novel]`:
+  `s_d=−det(H^0_d)/det(B_d)` (`B_d`= `H^0` bordered by `v_*`, the Cramer/Uvarov border), and `det(H^0)=det(H^-)(1+a_*m_d)`
+  (matrix-determinant lemma). `det(H^0_d)>0 ∀d` is the **Hankel-determinant (Hamburger) positivity** of the shifted
+  seam-moment sequence `T_k=2Σγ^{−2k}` (`=H^0` PSD `=Q_0≥0`); `det(H^-)<0` (inertia (d,1)), so
+  `1+a_*m_d=det(H^0)/det(H^-)<0→0⁻` (the Krein threshold in determinant form; no-margin = `det(H^0)` vanishing
+  relative to `det(H^-)`). **Honesty note:** these are one-line consequences of Cramer + the matrix-determinant lemma
+  + the classical "Hankel PSD ⟺ Hankel-determinant positivity" / Krein–Langer apparatus — comp80 *reduces-to-known*,
+  it is search not new knowledge. The value is purely internal: it places the bridge's scalar gate inside the
+  classical orthogonal-polynomial / Christoffel / de-Branges toolkit (so the apex can borrow OP/hard-edge asymptotics),
+  and the no-margin `s_d→0⁺` is a recognizable hard-edge Christoffel asymptotic. NOT to be conflated with the
+  **Pólya–Jensen** criterion: that is Hankel/Turán positivity of ξ's *Taylor coefficients* — a different sequence and
+  different determinants. Both are "RH as Hankel positivity," cousins under the same classical principle, not one object.
+
+**Paper-math discharged around this battery (register `[PROVED — conditional]`):** the seam finite-part construction is
+built and canonical (gpt/proof7: regulator-/window-/gauge-independent, `B=0` by evenness; gpt/proof9: the exact gauge
+law above); the tail is identified `E=μ_E` (gpt/proof8, conditional on the source-defined Jacobi part); the **N₁
+carrier theorem** `m_σ∈N₁` is proved from a one-dimensional seam boundary quotient + the Γ atom (gpt/proof10); and
+comp70 is the exact **Christoffel/Uvarov boundary-removal kernel** `K^crit_d(y,z)=K_{ν'}(y,z)−K_{ν'}(y,y_*)K_{ν'}(y_*,z)/K_{ν'}(y_*,y_*)`,
+with the signed `Π₁` kernel an infinitesimal over-subtraction `s_d²/(a_*−s_d)` beyond it (gpt/proof11). The single
+remaining open content across all of this is the **source-built scalar positivity `s_d>0 ∀d`** (the repair theorem).
+
+> **SOTA / prior-art (§10, literature sweep 2026-06-22 — register `[KNOWN]`).** Most of this battery is classical
+> apparatus reassembled in the seam coordinate, NOT new knowledge: `T_k` = **Voros secondary-zeta values** (Voros
+> 2010); `s_d` = inverse **Christoffel function = Hankel-determinant ratio** (Szegő 1939) ⟹ comp80 reduces-to-known;
+> proof11's kernel = **Uvarov 1969**; proof10's `N₁→N₀` rank-one transition = the ζ-specialization of
+> **Derkach–Hassi–de Snoo, JFA 188 (2002)**; the boundary-Weyl positivity overlaps **Suzuki (arXiv:1204.1827)**;
+> `Q_0≥0⟺RH` is in the **Weil/Li/Csordas–Varga** moment-positivity family (and is the Hamburger real-support test
+> repackaged). proof7–11 / comp80 are *re-derivations* — cite the sources, claim no novelty. Cells the sweep did NOT
+> find verbatim: (i) the exterior hard-edge Christoffel asymptotic `s_d~∏γ_j^{−α}` (comp49/proof4) — now **closed**:
+> the *non-regular* regime of Stahl–Totik theory, a derivable special case, **no RH content** (the rate is generic,
+> the RH content is the sign `s_d>0`); and (ii) a *positivity-framed* DH separator = the open apex `s_d>0` (the sole
+> open RH-bearing cell). No-go to heed: Conrey–Li (arXiv:math/9812166), de Branges positivity fails for ξ.
+
 ### Transcendence / relation-search numerics
 
 - **`[strong null]`** Stieltjes `{γ_0..γ_3}` vs the period field `{π², ζ(3), ζ(5), ζ(7)}`, max-coefficient

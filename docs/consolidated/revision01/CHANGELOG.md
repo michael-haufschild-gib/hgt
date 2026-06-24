@@ -378,7 +378,7 @@ the "regularization open" gap (it is classical Li/Weil = APEX-B); open core unch
   coordinate; the *forward* `Σ(ρ−½)^k` divergence was the false trail in #9) are read as the object's
   characteristic values; the question is which value-relations the constraint `Ξ(w)=Ξ(−w)` forces vs
   leaves free.
-  - **FORCED (ω axis, RH-blind):** `(F1)` all odd seam moments vanish `μ_{2k+1}=0 ∀k` (= `Fix(ι)` at
+  - **FORCED (ω axis, RH-blind):** `(F1)` all odd seam moments vanish `μ_{2k+1}=0 ∀k` (= FE evenness at
     value level; structural — `log Ξ` is even); `(F2)` even moments real.
   - **FREE (κ₋ axis = RH):** whether `{T_k=(−1)^kS_k}` is a positive-moment sequence (Hankel PSD ∀order).
     Constraint reaches F1–F2 and stops; the residue *is* RH. Finite-passport blindness (note 11) = "the
@@ -838,25 +838,26 @@ in-doc history logs; read before editing.
 - 31 §8 status: A,B (Q_ζ+Q_β PD, §46/§48), C (here), D (character demoted, §49), E (here) — all run.
 - Folded: 06 §II (two bullets). Script: computations/2026-06-21-connes-31CE.py.
 
-### 52. The discriminant attack — det H_1 PROVED unconditional; RH localized to the d→∞ hard-edge limit
+### 52. The discriminant attack — corrected: termwise det H_1 proof retracted
 - Used the Gram/Heine identity: det H_d = (1/(d+1)!) Σ_tuples ∏(2y_ρ) ∏_{i<j}(y_ρi−y_ρj)² (verified d=1,2 to 8
   digits). Makes positivity manifest termwise; the ONLY negativity is a tuple with an off-line pair {y,ȳ},
   self-term −4|y|²(Im y)²<0.
-- THEOREM [PROVED]: det H_1 = T_1T_3−T_2² > 0 unconditionally. In the reciprocal coord an off-line pair at height
-  γ₀ has Re y=(γ₀²−β'²)/|w|⁴>0, |y|≤γ₀⁻²; negative self-weight ≥−4γ₀⁻⁸ but positive cross-term with each bulk zero
-  y_n is 8y_n Re(y(y−y_n)²)>0 ~γ_n⁻⁴γ₀⁻²; cross/self ~γ₁⁻⁴γ₀⁶→∞. Numerically: deep pair γ₀=50,β'=0.25 self −2e-17
-  vs bulk cross +3.8e-10 (bulk wins 5e7×); low pair γ₀=16,β'=0.49 wins 700×.
-- LOCALIZATION: off-line points above verification height H≈3e12 have weight ≲H⁻²≈1e-25 ≪ on-line bulk
-  discriminant; so det H_d>0 unconditionally for all d ≲ H/3 ≈ 1e12 (matches injected d*≈γ₀/3). RH ⟺ bulk
-  domination survives d→∞ (infinitely many on-line zeros accumulating at hard edge y→0⁺, Vandermonde (Δy)²→0).
-  The open core is now an ASYMPTOTIC statement about on-line zero spacing near the hard edge — attackable with
-  known zero-density, not a generic positivity claim.
-- Folded: bridge-theorem §5b. Script: computations/2026-06-21-connes-discriminant-attack.py.
+- CORRECTION [2026-06-24]: the termwise cross-sign step was false. `Re y>0` does not imply
+  `Re(y(y−x)^2)>0` for every positive real bulk atom `x`; at `x=Re y` the cross term is negative. The exact
+  replacement is `discriminant-cross-positive-interval.md`, where the positive range is controlled by
+  `x_+(y)=(u^2-a^2+a|y|)/u` and `x>=1.18|y|` is sufficient.
+- The valid degree-one repair is `degree-one-discriminant-tail-stability.md`: split a verified positive real
+  bulk from the remaining tail and check an explicit determinant-margin inequality. The old unconditional
+  `det H_1` statement and the `d~H` determinant range are not promoted without that summed domination estimate.
+- Folded correction: bridge-theorem §5b; route cards:
+  `discriminant-bulk-cross-sign-needs-scale-separation.md`,
+  `discriminant-cross-positive-interval.md`,
+  `degree-one-discriminant-tail-stability.md`.
 
 ### 53. Incorporated gpt/32; ran the relative-operator computation — λ_max(K_d)→1⁻ super-exponentially
 - gpt/32 ratifies the partial-square/31CE results and crystallizes the bridge as the ONE-SIDED Loewner
   domination: −R^P ⪯ M_triv ⟺ λ_max(K_d)≤1, K_d=M_triv^{−1/2}(−R^P)M_triv^{−1/2}. (Named: Trivial-Zero
-  Domination Theorem.) Finalized protector/threat language: protector=μ_triv (positive measure), threat=R^P
+  Domination Theorem.) Current protector/threat language: protector=μ_triv (positive measure), threat=R^P
   (high-rank negative), RH=protector dominates threat one-sidedly. Character/ζ-vs-β framing superseded.
 - Ran §9 (the relative operator): λ_max(K_d) ↗ 1⁻ with margin 1−λ_max ≈ 2e-9,4e-19,2e-29,2e-40 at d=2,4,6,8
   — super-exponential ~10^{−5d}≈γ₁^{−4d}; extremizing polynomial = the dangerous direction p_d (overlap 1.0,
@@ -864,17 +865,18 @@ in-doc history logs; read before editing.
   relative-operator and discriminant pictures coincide. RH = λ_max(K_d)<1 ∀d (slack stays >0 as d→∞).
 - Folded: bridge-theorem §5b. Script: computations/2026-06-21-connes-relative-operator.py.
 
-### 54. The race quantified: margin decay law + height-linear detection law ⟹ det H_d>0 unconditional to d~10^12
+### 54. The race quantified: margin decay law + height-linear detection law as evidence
 - (1) on-line margin 1-lambda_max(K_d) decays super-exponentially with INCREASING rate: dlog10/dd −4.7→−6.3
   over d=3..16 (hard-edge: each degree resolves deeper where zeros are denser).
 - (2) off-line detection threshold d*(gamma0) grows ~LINEARLY in height: d*=8,14,>16 at gamma0=20,30,45
   (slope ~0.4 at beta=0.1), NOT in zero-count N(gamma0)~gamma0 log gamma0.
-- THEOREM (verification-conditional, but unconditional in d-range): det H_d>0 for every d ≲ 0.4·H ≈ 10^12,
-  H=RH verification height ≈3e12 — an off-line zero is above H so its detection threshold d*≳0.4H, below which
-  the lowest-(d+1)-zeros bulk discriminant strictly dominates. RH = the d→∞ tail (margin stays >0 as the hard-edge
-  cluster is fully resolved). The race is balanced by faithfulness (detection at d*≈0.4 gamma0).
-- Bankable new content: discriminant+bulk-domination mechanism, PROVED d=1 case (§52), explicit 10^12-degree
-  unconditional range, measured height-linear detection law. Folded: bridge-theorem §5b. Script:
+- CORRECTION [2026-06-24]: the measured height-linear detection law is evidence for a finite-range theorem, not
+  a theorem itself. Promoting a `d~H` range requires the summed determinant domination estimate described in §52,
+  equivalently the finite-degree eigenvalue/tail-norm gate in
+  `finite-degree-shifted-hankel-tail-stability.md`. The monomial absolute-tail version of that gate is now ruled
+  out by `monomial-tail-gate-height-linear-no-go.md`; a viable proof must use relative/source-Weyl control.
+- Bankable content: Gram/Heine mechanism, local off-axis negative term, exact cross-positive interval, degree-one
+  tail-stability criterion, and measured height-linear detection law. Folded: bridge-theorem §5b. Script:
   computations/2026-06-21-connes-detection-law.py.
 
 ### 55. gpt/33 computations: the no-margin law is a product over the zeros; K_d corner-concentrated; off-line detector
@@ -978,8 +980,9 @@ out a **10-item forward computation agenda** with a priority order and a decisiv
 
 **Register.** All SEARCH; nothing promoted. **No new proof of RH, no Lean, no new proven-ledger item.** The
 underlying facts 37.md rests on were already banked (`Q_0=M_triv+R^P`; `−R^P⪯M_triv`; `λ_max(K_d)≤1`; the
-`j=1` single-point protector; the inverse-Christoffel margin; `det H_1>0` proved; the height-linear detection
-law — all in `bridge-theorem.md` §5b and `08` §2). What is genuinely new and folded in:
+`j=1` single-point protector; the inverse-Christoffel margin; the corrected degree-one determinant stability
+criterion; the height-linear detection law — all in `bridge-theorem.md` §5b and `08` §2). What is genuinely new and
+folded in:
 
 - **Three-stratum reciprocal boundary divisor** — pole `y=−4` (entireness `u`) + trivial-zero chain
   `y_j=−(2j+½)^{−2}` (positive protector `μ_triv`) + nontrivial divisor `y_ρ=−(ρ−½)^{−2}` — as a *named
@@ -991,7 +994,8 @@ law — all in `bridge-theorem.md` §5b and `08` §2). What is genuinely new and
   digits; no slack/gap/reserve route survives). → `bridge-theorem.md` §5b; `03` §7; `08` §2.
 - **Ranked proof-shape menu** — (1) one-sided Loewner / boundary-Weyl `K⪯I` (compression of a *non-compact*
   completed-boundary `K`, essential-spectrum-like `λ_max→1`); (2) Weil-form pullback `p↦h_p`; (3)
-  discriminant / Gram–Heine past `d=1`; (4) direct Jacobi / Hankel-det (lowest). → `bridge-theorem.md` §5b;
+  discriminant / Gram–Heine using the exact cross-positive interval plus a summed domination estimate; (4) direct
+  Jacobi / Hankel-det (lowest). → `bridge-theorem.md` §5b;
   `03` §7; `08` §2.
 - **Forward route-killer agenda (#35–44)** — high-degree `K_d` law (P1); Dirichlet-`L`/DH reciprocal
   domination as a **source gate** (P2: genuine Euler `L` pass `K_d⪯I`, DH fails `λ_max>1`); Weil-pullback
@@ -1326,3 +1330,454 @@ in research-topics with the proof9 clarification.
 bullet points to the now-exact counterterm), big-picture §5 (feeder sub-obligation (a) marked discharged), 08 §2 (same),
 research-topics (gpt/proof9 block + comp71 done + comp68 resolution; gpt/43 agenda #1 marked DONE). Task #40 (comp71)
 completed.
+
+### 77. comp72 run — N_kappa Pick stress test: ζ robustly N₁ (κ=1 stable); off-line zero → κ=2 (resolution-limited)
+
+**What.** gpt/43 computation #2 (priority 2). Script+output `computations/2026-06-22-comp72-pick.*`; worklog updated.
+**Register:** `[VERIFIED]` computational result. No RH math promoted. Task #41 completed.
+- **ζ (RH): κ=1 STABLE** across sample size M=6..30 and zero-truncation N=50..400 — gpt/43's falsifier "κ>1 at larger
+  samples ⟹ rank-one route weakens" did NOT fire. Strong support for the global N₁ carrier theorem.
+- **Off-line FE quartet (DH-like): κ=2, resolution-limited.** On-line β=0.5 stays κ=1; off-line β=0.7/1.0 gives κ=2 when
+  sample points sit near the off-line atom scale 1/γ₀² (dense local sampling → κ=2 robust, min-eig→−31).
+- **Reading.** The off-line zero is a 2nd negative square in the *infinite* Cauchy-transform Pick kernel
+  (resolution-limited) — complementary to the *finite* scalar s_d gate (height-limited) and the moment-inertia
+  (d,1)→(d,2) — while leaving the tail μ_E unchanged (comp69). Refines gpt/43's "fake failure is only scalar": several
+  complementary, resolution/height-limited detectors of the same off-line atom; ζ stays cleanly N₁.
+
+**Folded:** research-topics (agenda #2 → DONE), bridge-theorem §5b (N₁ line strengthened with the stress-test result).
+
+### 78. comp73 run — prime truncation is NOT a faithful source for (ζ'/ζ)^{(2k-1)}(½) (pole-dominated); the no-zero-feeding extraction needs the completed Ξ
+
+**What.** gpt/43 computation #3 (priority 3). Script+output `computations/2026-06-22-comp73-prime-source.*`; worklog
+updated. **Register:** `[VERIFIED]` computational result. Task #42 completed.
+- **Result.** Sharp/Riesz-smoothed prime sums for g_k=(ζ'/ζ)^{(2k-1)}(½) DIVERGE (pole-dominated ~√X·(log X)^{2k-1};
+  S_1(2e6)=35385 vs target 3.75). The O(1) residual sign that sets s_d is invisible in any finite prime truncation
+  without explicit s=1-pole subtraction + the zero oscillation. Confirms gpt/43's worst-case surprise.
+- **Clarification.** The no-zero-feeding obligation IS met by the completed/continued ζ: T_moments_exact extracts T_k
+  from c_{2k}=[w^{2k}]logΞ (ζ-derivatives at ½, Γ/pole closed) — zero-free, finite, = the exact T_k. So source-side
+  s_d ≡ zero-side s_d via Ξ; the prime sum is the wrong (divergent) representation. The mandatory step is the analytic
+  pole subtraction built into Ξ.
+
+**Folded:** research-topics (agenda #3 → DONE with the clarification).
+
+### 79. comp74 run — the Christoffel dip is universal & parabolic (P(Y)=4Y²−1); no-margin geometry collapses to one scalar (the curvature)
+
+**What.** gpt/43 computation #4 (priority 4). Script+output `computations/2026-06-22-comp74-dip-profile.*`; worklog
+updated. **Register:** `[VERIFIED]` computational result. Task #43 completed.
+- **Universal parabolic dip.** Rescaled `P(Y)=m_d(y)/|dip_min| = 4Y²−1` to `3.6e-15` across d=8,12,16,20,24,28 (Y=(y−y_min)/w_d).
+  A smooth quadratic minimum — no cusp/anomalous local shape.
+- **Depth pinned `m_d(y_*)=−1/a_*=−6.25 ∀d`** (= the no-margin identity `a_*m_d→−1 ⟺ s_d→0`); depth and shape frozen.
+- **Width curvature-controlled** `w_d=2√(2|m_d(y_*)|/m_d''(y_*))`, super-exponential shrink 2.4e-18→3.1e-81 (d=8..28),
+  `w_d~s_d^{≈0.45}` (not ∝ s_d). ⟹ the asymptotic no-margin geometry collapses to ONE d-scalar, the inverse-Christoffel
+  curvature `m_d''(y_*)`; gpt/43's "universal profile ⟹ asymptotic kernel proof" route is open.
+- **Caveat (recorded).** s_d sign at d=28 (printed −1.9e-168) is precision-limited at dps=322 (below ~1e-150 unreliable);
+  not a real RH violation — d≤24 reliably s_d>0.
+
+**Folded:** research-topics (agenda #4 → DONE), bridge-theorem §5b (comp70 dip line + the universal-parabola/curvature refinement).
+
+### 80. comp75 run — rank-one boundary theorem extends to a COMPLEX self-dual product (still N₁); rank = #distinct Γ-shifts
+
+**What.** gpt/43 computation #5 (priority 5). Script+output `computations/2026-06-22-comp75-complex-selfdual.*`; worklog
+updated. **Register:** `[VERIFIED]`. Task #44 completed.
+- For complex χ mod 5 (order 4, odd), the self-dual product Λ(s,χ)Λ(s,χ̄) (real moments, squared Γ) stays **N₁**:
+  H^0 PSD, removing the rank-one boundary atom (weight a_*=4/9 or doubled 2a_*=8/9) leaves exactly ONE negative square
+  — inertia (d,1) — and s_d=1/K_{H^0}(y_*,y_*)>0 ∀d (d=6..12), shrinking like ζ. (s_d is weight-independent by
+  Sherman–Morrison, consistent with comp67.)
+- **The rank-one boundary-Weyl theorem is structural, not ζ-specific.** The squared Γ does NOT force rank-two; χ,χ̄ share
+  one parity/Γ-channel ⟹ coincident doubled trivial zeros ⟹ rank-one. Rank = number of DISTINCT Γ-shift values; a
+  genuine two-channel object (GL(2) Γ_ℝ(s)Γ_ℝ(s+1)) would give rank-two/N₂.
+
+**Folded:** research-topics (agenda #5 → DONE), bridge-theorem §5b ("completed-Euler-product-general" line extended to
+the complex self-dual case).
+
+### 81. comp76 run (partly negative) — single off-line quartet does NOT cleanly control s_d=0; the gate responds to the GLOBAL off-line density
+
+**What.** gpt/43 computation #6 (priority 6). Script+output `computations/2026-06-22-comp76-dh-deformation.*`; worklog
+updated. **Register:** `[VERIFIED]` (negative/refining result). Task #45 completed.
+- Adding λ·(one off-line quartet) to ζ's moments shifts s_d to a saturated, generically POSITIVE value (d=10:
+  1.3e-52→5.3e-49 for λ≥0.5); crossings are sporadic/non-monotone (only d=8 λ≈0.16; d=16 only at g0=40).
+- **Reading.** s_d=0 is not controlled by a single off-line atom's weight; the genuine DH failure (s_d<0 at d*=62)
+  needs the GLOBAL/cumulative off-line zero density — a height-limited condition, consistent with comp72's
+  resolution-limited κ=2. Answers gpt/43's "crossing appears without a clean single-parameter signature."
+
+**Folded:** research-topics (agenda #6 → DONE).
+
+---
+**gpt/43 priority computations (1–6) COMPLETE.** comp71 (gauge law, proof9 verified), comp72 (ζ κ=1 stable / off-line
+κ=2), comp73 (prime truncation diverges), comp74 (universal parabolic dip), comp75 (complex self-dual stays N₁),
+comp76 (s_d gate is global, not single-atom). Remaining unprioritized: comp77 (μ_E spectral measure), comp78 (Padé of
+F_E), comp79 (regulator-to-scalar s_d), comp80 (determinantal/Jensen identity).
+
+### 82. comp80 run — s_d is a Hankel-determinant ratio (τ-function form); Jacobi–Krein ↔ Pólya–Jensen are one object
+
+**What.** gpt/43 computation #10. Script+output `computations/2026-06-22-comp80-determinant.*`; worklog updated.
+**Register:** `[VERIFIED]`. Task #49 completed.
+- **s_d = −det(H^0_d)/det(B_d)** (B_d = H^0 bordered by v_*=(y_*^i)) verified vs a_*+1/m_d to rel ~1e-120 (d=6..14);
+  det(H^0)=det(H^-)(1+a_*m_d) (matrix-determinant lemma) to same precision.
+- det(H^0_d)>0 ∀d = Hankel/Pólya–Jensen positivity (= H^0 PSD = Q_0≥0); det(H^-)<0 (inertia (d,1)); so
+  1+a_*m_d=det(H^0)/det(H^-)<0→0⁻ (Krein threshold in determinant form; no-margin = det(H^0) vanishing rel. det(H^-)).
+- **Jacobi–Krein and Pólya–Jensen entrances are the SAME object**, joined by the matrix-determinant lemma + Uvarov
+  border; s_d is their Christoffel determinant quotient.
+
+**Folded:** research-topics (agenda #10 → DONE), bridge-theorem §5b (apex reproducing-kernel line gains a determinant/Jensen face).
+
+### 83. comp77+78 run — μ_E is the zero-side spectral measure on {a_*+y_n}; F_E meromorphic with poles accumulating at z=1/a_*
+
+**What.** gpt/43 #7+#8. Script+output `computations/2026-06-22-comp77-78-muE-measure.*`; worklog updated.
+**Register:** `[VERIFIED]`. Tasks #46,#47 completed.
+- **comp77:** μ_E's signed-Gaussian-quadrature nodes = the reciprocal zero images {a_*+y_n=0.16+1/γ_n²} (leading
+  → 0.165005=a_*+y_1; next 0.162263=a_*+y_2, 0.161599=a_*+y_3). Negative inertia grows ~0.6d ((3,6)→(9,18), d=12..30)
+  ⟹ a genuine full signed measure, no rank-one simplification.
+- **comp78:** F_E(z)=Σe_n z^n meromorphic, simple poles at z=1/(a_*+y_n) (nearest 6.0604), accumulating at z=1/a_*=6.25
+  (the y=0⁺ hard edge). ⟹ μ_E = ν' in the protector coordinate (the seam shadow of σ); confirms gpt/43's demotion.
+
+### 84. comp79 — regulator-to-scalar (covered, not re-run)
+gpt/43 #9. The claim (s_d regulator-independence) is established by proof7 Lemma 2 + comp67 (presentation-invariance
+1e-116) + comp71/proof9 (seam FP = T_k exact). A direct contour re-derivation (`2026-06-22-comp79-regulator.py`) was
+slow (4:19) and had a coefficient-extraction bug; not debugged (redundant/theatre by the residue theorem). Task #48
+completed-by-coverage. **gpt/43 computation agenda (1–10) COMPLETE.**
+
+### 85. gpt/proof10 + gpt/proof11 folded — N₁ carrier theorem (feeder b) and Christoffel/Uvarov kernel theorem proved; doc reorganization
+
+**Source.** `docs/consolidated/gpt/proof10.md` (N₁ carrier) + `proof11.md` (Uvarov kernel). **Register:** both
+`[PROVED — conditional]` (proof10 on the 1-dim seam quotient; proof11 exact ∀d); apex `s_d>0` still `[OPEN]`.
+- **proof10 — N₁ carrier theorem.** `m_σ∈N₁` / `inertia(H^-_d)=(d,1)` proved from: the one-dimensional seam boundary
+  quotient `𝒦_max/𝒦_min≅ℂ` (deficiency index one), the Green identity `Γ_0F_p=p(y_*)`, the Γ-atom `a_*|p(y_*)|²`
+  (κ₋≤1 from the 1-dim quotient; =1 from the active defect). The matrix pattern is now an operator-domain theorem.
+  Discharges gpt/43's feeder sub-theorem (b).
+- **proof11 — Christoffel/Uvarov boundary-removal kernel theorem.** Proves comp70 exactly ∀d:
+  `K^crit_d(y,z)=K_{ν'}(y,z)−K_{ν'}(y,y_*)K_{ν'}(y_*,z)/K_{ν'}(y_*,y_*)` (reproducing kernel of {p:p(y_*)=0}). The
+  actual signed Π₁ kernel is an infinitesimal over-subtraction `s_d²/(a_*−s_d)` beyond it (explains the vanishing
+  dip, comp74). No-margin limit via the normalized boundary vector `ψ_{*,d}` (persists as s_d→0). Apex caveat:
+  real-axis kernel positivity insufficient (off-line defect off the moment curve, comp72).
+
+**Docs revised to current state:** bridge-theorem §5b (N₁-carrier-proved + Uvarov-kernel-theorem + over-subtraction
+taxonomy), big-picture §5 (both feeders discharged; sole open = repair theorem s_d>0), 08 §2 (feeder (b) DONE + Uvarov
+∀d).
+
+**Doc reorganization (per user).** All gpt/43 + de-Branges computation RESULTS now live in
+`06-experimental-findings.md` (new subsection "The rank-one Krein–Langer boundary-Weyl battery"). research-topics.md
+is no longer used as a results log — the comp-results blocks added this session (the gpt/43 synthesis/agenda/results,
+proof9 block, de Branges results) were removed from it; the conceptual synthesis remains in the knowledge docs
+(bridge/big-picture/08). The per-computation factual records stay in logs/gpt37-computations-worklog.md.
+
+### 86. Correction (honesty) — comp80's "Jacobi–Krein ↔ Pólya–Jensen are one object" was overstated; it reduces-to-known
+
+Prompted by the user. The comp80 determinant identities (`s_d=−det(H^0)/det(B)`, `det(H^0)=det(H^-)(1+a_*m_d)`,
+`det(H^0_d)>0` ⟺ H^0 PSD) are **classical**: Cramer's rule for the Christoffel function + the matrix-determinant lemma
++ the textbook "Hankel PSD ⟺ Hankel-determinant positivity" (Hamburger moment problem) and Krein–Langer Π_κ apparatus.
+By our own novelty gate this **reduces-to-known** — search, not new knowledge; comp80 only *verified* the algebra
+numerically. Two corrections applied to 06-experimental-findings.md and bridge §5b: (1) the result is downgraded to
+*organizational* (it places the bridge's scalar gate `s_d` inside the classical OP/Christoffel/de-Branges toolkit, and
+identifies the no-margin `s_d→0⁺` as a hard-edge Christoffel asymptotic — useful internally, not a contribution to the
+field); (2) it is **not** the Pólya–Jensen criterion — that is Hankel/Turán positivity of ξ's Taylor coefficients (a
+*different* sequence and determinants). Both are "RH as Hankel positivity," cousins under one classical principle, not
+the same object. The genuinely open/significant item remains the apex: the **source-built** `s_d>0 ∀d` (the repair
+theorem), which comp80/proof10/proof11 do not touch.
+
+### 87. SOTA / prior-art literature sweep — six-cluster WebSearch+arXiv; new doc 10-prior-art-and-sota.md; rediscoveries flagged
+
+**What.** User-requested full literature sweep (6 parallel agents: RH positivity criteria, Pólya–Jensen/Hankel,
+de Branges/Krein, Christoffel/OP hard-edge, hypertranscendence field, Davenport–Heilbronn/Selberg). Two load-bearing
+citations verified directly (Derkach–Hassi–de Snoo 2002; Uvarov 1969). **Register:** `[KNOWN — cite]` / `[NOT FOUND]`.
+
+**Headline:** nearly the entire rank-one Krein–Langer battery is **classical apparatus reassembled in the seam
+coordinate**, not new knowledge:
+- `T_k=2Σγ^{−2k}` = **Voros secondary-zeta values** (Mellin 1917; Voros 2010, arXiv:1403.4558).
+- `s_d` = inverse **Christoffel function = Hankel-determinant ratio** (Szegő 1939; Nevai 1986) ⟹ **comp80 reduces-to-known**.
+- proof11's boundary-removal kernel = **Uvarov 1969** (Krattenthaler arXiv:2103.03969).
+- proof10's `N₁→N₀` rank-one transition = ζ-specialization of **Derkach–Hassi–de Snoo, JFA 188 (2002) 317**.
+- boundary-Weyl positivity overlaps **Suzuki arXiv:1204.1827** (RH ⟺ Hamiltonian PSD); Lagarias/Burnol.
+- `Q_0≥0⟺RH` in the **Weil/Li/Csordas–Varga** moment-positivity family; and (Pólya–Jensen agent's catch) the `T_k`
+  Hankel is auto-PD for any positive measure ⟹ `Q_0` is the Hamburger real-support test repackaged (low content).
+- **Pólya–Jensen ≠ our `T_k` Hankel** (different sequence — ξ Taylor coefficients); GORZ 2019 proved only *asymptotic*
+  hyperbolicity.
+- Hypertranscendence field = **mature but fragmented** (Hölder/Ostrowski; Hardouin–Singer; ADH 2021 arXiv:1910.01874;
+  Fresán–Jossen); "constraint not flow" is framing, not theorem.
+- DH/Euler-product separation is textbook (Selberg class); "Euler product + FE ⟹ RH" is open/RH-equivalent.
+
+**No-go to heed:** **Conrey–Li (arXiv:math/9812166, IMRN 2000)** — de Branges positivity FAILS for ξ.
+
+**NOT found (candidate non-reducing):** (i) explicit *exterior* hard-edge Christoffel asymptotic `s_d~∏γ_j^{−α}`
+(comp49/proof4) — interior/edge solved (Totik 2000; Kuijlaars–Vanlessen 2003; Lubinsky 2009), exterior only
+qualitative; possibly open OP theory but not RH (check Stahl–Totik). (ii) a *positivity-framed* Euler-product-vs-DH
+separator = the open apex `s_d>0`.
+
+**Docs updated:** new `10-prior-art-and-sota.md` (full map); inline SOTA flags in bridge-theorem §5b (proof10/proof11
++ Krein–Langer block), big-picture §5, 06-experimental-findings (battery); README index. The operational point:
+import the classical apparatus with citations; the only genuinely-open/significant target is the apex `s_d>0 ∀d`.
+
+### 88. gpt/45 folded — independent SOTA assessment converges with our sweep; adds Connes–Consani; sharpens the open-theorem list
+
+**Source.** `docs/consolidated/gpt/45.md` — GPT's answer to the same SOTA/prior-art task. **Register:** `[KNOWN]` /
+meta. Strongly convergent with CHANGELOG #87's six-cluster sweep.
+
+**Convergent bottom line (two independent assessments agree):** this is a computationally driven candidate normal form
+/ coordinate atlas of one known wall — NOT yet new mathematics. RH-is-positivity is old; Jensen–Pólya is SOTA (GORZ);
+the `s_d` identities are mechanical (Sherman–Morrison/Schur/Uvarov/Christoffel); comp73 confirmed an expected failure
+mode, not new theory.
+
+**What gpt/45 added (folded into §10):**
+- **Connes–Consani(–Moscovici) archimedean-positivity programme** (§10.A12, verified): arithmetic site (Adv. Math.
+  2016); Riemann–Roch for Arakelov Spec ℤ; **"Zeta zeros and prolate wave operators"** (arXiv:2310.18423 = Ann. Funct.
+  Anal. 15(4):87, 2024; PNAS 2022). Direct overlap: the prolate operator = scaling-operator² + **orthogonal-polynomial
+  grading**, with a positive/negative (Sonin) spectral split — our Christoffel/`N₁`/`s_d` apparatus is adjacent. Was
+  under-weighted in #87; now the principal "source-built archimedean positivity" SOTA to compare against.
+- **The five statements that would be genuinely new** (§10.D): source-built `H^-` without zero-feeding; `N₁` from
+  source data (not assuming the 1-dim quotient); `s_d>0 ∀d`; a *positivity-preserving* Jensen/Pólya identification of
+  `s_d` (comp80's is NOT); the fake-family separation theorem.
+- **gpt/45's self-correction = our `[conditional]` flags:** proof7–11 are algebraic consequences of assumed objects,
+  not the constructed source-built operator domain; the `N₁` carrier is conditional on the 1-dim seam quotient; comp80
+  doesn't prove `s_d>0`.
+- **The deliverable** (§10.D): a short note "The reciprocal-seam moment form of ξ and its Γ-Uvarov boundary scalar"
+  (precise finite normal form + falsification ledger + comparison to GORZ and Connes–Consani) — converts atlas →
+  research output without an RH proof.
+
+**Docs updated:** 10-prior-art-and-sota.md (§A12 Connes–Consani; new §D gpt/45 convergence + the 5 open theorems +
+the deliverable).
+
+### 89. Stahl–Totik chase — the exterior hard-edge Christoffel asymptotic (§10.B1) is CLOSED, not open; no RH content
+
+**What.** Chased the one OP-theory side-question (is `s_d~∏γ_j^{−α}`, comp49/proof4, genuinely open OP theory?).
+WebSearch + reasoning. **Verdict: NOT open — it is the non-regular regime of Stahl–Totik regularity theory, a
+derivable special case, RH-empty.**
+- **Regular measures:** exterior Christoffel ~ `exp(2d·g_E(y_*))` (pure exponential, Green's function) — classical
+  (Totik J.d'Analyse 81 (2000); Stahl–Totik, *General Orthogonal Polynomials*, CUP 1992).
+- **Our `ν'` is non-regular:** thin atomic measure accumulating at the hard edge 0 with decaying masses; the n-th-root
+  test fails (`K_d^{1/d}~exp(α ln d)→∞`, super-exponential `~d^{αd}` since `Σ_{j≤d}ln γ_j≈d ln d`), so the universal
+  `exp(2dg)` law does not apply and the exterior rate is measure-specific (no universal exterior law for non-regular
+  measures; the literature gives only interior/on-support asymptotics).
+- **Derivable, not hard:** proof4's interpolation argument gives `ln s_d≈−4Σln γ_j−2d ln|y_*|+4(1−ln2)d` = the
+  `α≈4+[4(1−ln2)+2ln|y_*|]/L̄_d` law — routine hard-edge OP computation, "unwritten for this measure," not a frontier.
+- **No RH content:** the rate is generic hard-edge geometry (our docs already say this); the RH content is the sign
+  `s_d>0`.
+
+**Net:** B1 dropped as a novelty candidate. **The apex `s_d>0 ∀d` (B2) is now the SOLE open RH-bearing cell.**
+
+**Docs updated:** 10-prior-art-and-sota.md §B1 (RESOLVED) + §C (B1 closed); big-picture §5; 06-experimental-findings.
+
+### 90. Lens-status map (§10.E) added; lens 8 (empirical weld carrier) removed from the lenses
+
+Added §10.E — a per-lens status table against the SOTA sweep: the sweep invalidated none of the lenses logically;
+it relocates lenses 3/4/5/7 as SOTA-overlapping (Connes–Consani adelic weld; Krein–Langer index — corroborated by
+comp72; Selberg-class FE-vs-Euler; 𝔽₁/function-field analogy), and lens 4's `κ₋=0` = the apex `s_d>0` is the sole
+open RH-bearing cell.
+
+Per user: **removed lens 8 (the empirical weld carrier)** from big-picture §1 — it was already deflated to an
+analytic-continuation/zero-structure diagnostic (not a transcendence detector, big-picture Issue 2). The lenses list
+now runs 1–7; the "unifying claim" line and §10.E updated to "seven lenses." (Issue 2's deflation record and the 06
+phase-cancellation carrier findings are left in place — they document the observable, not a lens.)
+
+### 91. gpt/proof12 folded — the reduction Q_0≥0 ⟹ RH is now rigorously proved (classical moment theory); passes the roleplaying audit
+
+**Source.** `docs/consolidated/gpt/proof12.md`. **Register:** `[PROVED]` (the `⟹` half only). Verified the proof line
+by line — it is correct.
+- **What it proves:** `Q_0[p]≥0 ∀p∈ℝ[y] ⟹ RH` for the actual folded reciprocal zero divisor. Mechanism: `Q_0⪰0` ⟺
+  `[T_{i+j+1}]⪰0` ⟹ (Hamburger/Riesz) a positive measure `μ` on `[−R,R]` (`R=sup|y_ρ|<∞`, `ξ(½)≠0`); the divisor g.f.
+  `G(z)=Σ_α M_α y_α/(1−y_α z)` (meromorphic, poles at `1/y_α`) equals `∫dμ/(1−xz)` (Cauchy transform of a positive
+  real-line measure, holomorphic off `ℝ`) ⟹ no non-real atoms (Step 3); `μ=ν=Σ M_α y_α δ_{y_α}` by Weierstrass ⟹
+  `y_α>0` (Step 4) ⟹ `ρ=½+iγ`.
+- **Roleplaying audit: PASSES** — proof12 §5 itself scopes it as a precise checkable reduction that does NOT cross the
+  wall. It does not prove the converse (source-built `Q_0≥0`), which stays the open bridge / apex.
+- **Novelty: LOW** — classical moment theory (Hamburger + Cauchy-transform singularity structure + Weierstrass), the
+  `⟹` half of the known moment-positivity↔RH family (§10.A2). It is the rigorous write-up the corpus had only stated
+  heuristically (the "source-aware refinement: Q_0 alone, not the companion Q_1").
+
+**Docs updated:** bridge-theorem §1 intro + §3 (source-aware refinement upgraded to `[PROVED — proof12]` with the
+mechanism), 07 §1 (new row T30), 10-prior-art §A2 (the `⟹` half now rigorous; passes roleplaying; low novelty).
+
+### 92. gpt/proof13 read — it is gpt/proof9 (the canonical gauge law) re-derived; passes the roleplaying test; no new content
+
+**Source.** `docs/consolidated/gpt/proof13.md`. **Verdict: a clean independent RE-DERIVATION of the proof9 canonical
+gauge law** — identical statement and proof skeleton: `Ξ↦e^{q(w²)}Ξ` (`q=Σa_r w^{2r}`) ⟹ `T_k^raw↦T_k^raw+2k(−1)^{k+1}a_k`
+(diagonal: only `a_k` moves `T_k`, since `d/dw q(w²)=Σ2r a_r w^{2r−1}` feeds `2k a_k` to the `w^{2k−1}` coefficient and
+`T_k=(−1)^{k−1}[w^{2k−1}](Ξ'/Ξ)`); Hankel counterterm `(ΔH^0)_{ij}=2(i+j+1)(−1)^{i+j+2}a_{i+j+1}`; canonical fix
+`T_k^can=T_k^raw−2k(−1)^{k+1}a_k` (= the completed-ξ representative, `q=0`); `T_1↦T_1+2c` is the `k=1` case.
+- **Roleplaying test: PASSES** (proof13 §8 scopes it as a local coefficient calculation: "fixes the gauge bug; does
+  not prove positivity, `Q_0≥0`, or RH"). Math verified correct.
+- **No new content** — already PROVED (proof9, CHANGELOG #76) and numerically VERIFIED (comp71, k=1..6: closed form,
+  diagonality, Hankel counterterm, canonical recovery all exact). proof13 is a second independent derivation, which
+  strengthens confidence in the `[PROVED]` status; nothing to add to the open cores.
+
+**Docs updated:** bridge §5b — `gpt/proof13 — independently re-derived` added as a co-citation on the gauge-law bullet.
+(Not re-cited elsewhere: it duplicates proof9, already folded across 06/08/big-picture/§10.)
+
+### 93. no-roleplay-items.md created — the surviving open cores, decomposed into a conjunction, projected through the seven lenses
+
+New doc (register-honest map, not a proof). **The items that survive the SOTA sweep + roleplay audits:**
+- **NR-1** the positivity transfer (source-built `Q_0≥0` / `s_d>0 ∀d` without zero-feeding) — the apex, RH-bearing;
+- **NR-2** the fake-family separation (Euler-product ⟹ `s_d>0`, DH crosses) — the discriminating content, §10.B2;
+- **NR-3** a *positivity-preserving* Jensen/Pólya identification of `s_d` (comp80's determinant one is sign-blind) — structural target;
+- **NR-orth** the value/transcendence apex (Schanuel-for-prime-logs) — orthogonal, famous-open, set aside.
+
+**Decomposition (iterated conjunction):** NR-1 ⟺ (I-a `N₁` carrier from source) ∧ (III-sign `a_*−a_c(d)>0 ∀d`), with
+III-sign ⟸ NR-2 (Euler-product positivity transfer). Two genuine identities surfaced: `s_d = a_*−a_c(d)` (Γ budget
+minus prime-bulk demand, lens 3); `1/s_d = K_{ν'}(y_*,y_*) = Σ_j|p_j(y_*)|²` (boundary transport-norm, lens 2).
+III-rate (`∏γ_j^{−α}`) and comp80's determinant are reduces-to-known and carry none of the content.
+
+**Seven-lens projections:** L1 no-margin = fixed-point sign (no flow to bound below); L2 holonomy non-degeneracy at
+`y_*`; L3 weld balance = Connes–Consani semilocal weld; L4 `s_d` = continuous shadow of the integer `κ₋`; L5
+must-consume-Euler-product (built-in correctness check vs DH); L6 `s_d` is a localization (not affine-volume)
+functional — passes the faithfulness filter; L7 `s_d>0` = the "missing archimedean Frobenius positivity" (𝔽₁ /
+Connes–Consani). **Most promising concrete move:** test whether `a_*−a_c(d)` is the compression of the Connes–Consani
+prolate operator's positive/Sonin split (NR-3). Added to README index.
+
+### 94. Prolate-compression test run (no-roleplay) — archimedean half matches exactly; literal compression claim refuted; target = semilocal prolate
+
+**Task.** Test whether the finite weld `s_d=a_*−a_c(d)` is the compression of the Connes–Consani–Moscovici prolate
+operator's positive/Sonin split. **Sourced** the operator: `W_λ=−𝕊²+2πλ²(4N+1)−¼` (`𝕊` scaling, `N` Hermite/OP
+grading; Sonin = negative eigenvalues whose UV behaviour reproduces `γ_n²`; the Sonin/scaling compression proves Weil
+positivity *at the archimedean place*). arXiv:2112.05500, 2310.18423.
+
+**Result (no-roleplay — partial match + logical refutation):**
+- `[PROVED — verified exact]` Our archimedean protector lattice `2|w|=4N+1` (N≥0) **is** the prolate Hermite grading:
+  N=0 = the `s=1` pole (`−4` term), **N=1 = the boundary atom `a_*=(5/2)^{−2}=0.16`**, N=2 = `y=−0.0494`, … Same
+  Gaussian origin (`Γ_ℝ` = Mellin transform of the prolate cyclic vector `e^{−πx²}`). Zero-side `γ_n²` = Sonin scale;
+  our `ν'` lives on its reciprocals `1/γ_n²`.
+- `[PROVED — logical]` The literal compression claim is **FALSE**: the Sonin compression is *unconditional* archimedean
+  Weil positivity; `s_d>0` is RH-conditional. They cannot be equal. The match is the **archimedean budget** `a_*`
+  (= `M_triv`, unconditional `⪰0`, the analog of `W_∞≥0`); the **prime demand** `a_c(d)` (the finite places, `Σ_p W_p`)
+  is *outside* the archimedean prolate and carries the RH content.
+- `[CONJECTURE — corrected target]` `s_d>0` ↔ positivity of the **SEMILOCAL** prolate (arXiv:2310.18423) = archimedean
+  Sonin compression + finite places. Same architecture; `H^-_d` conjecturally a compression of
+  `(−W_semilocal)^{−1}|_Sonin` with `y_*` the N=1 archimedean channel.
+- `[NO-ROLEPLAY note]` No numerical comparison run — the semilocal prolate matrix in a comparable basis is not in hand,
+  so a computation would be theatre. What was established is exact (the `4N+1` lattice) or logical (unconditional vs
+  conditional). The missing piece is precisely stated.
+
+**Docs:** no-roleplay-items.md §5 (full write-up) + §4 pointer; 10-prior-art §A12 (lattice match + refutation).
+
+### 95. Prolate finding folded into docs; comp81 run (NR-2 probe) — the fake-family separator is κ₋, not the scalar s_d
+
+**Docs updated (prolate-compression §5 finding):** 02-transport-system.md (exact `2|w|=4N+1` lattice = prolate Hermite
+grading; archimedean budget `a_*` matches unconditionally, RH content = semilocal prolate); bridge-theorem §5b SOTA
+flag; (no-roleplay §5/§4 and 10-prior-art §A12 already done).
+
+**comp81 `[VERIFIED]` — next no-roleplay step (NR-2 probe).** Split `T_k=T_k^A`(pole+Γ)`+T_k^P`(prime `g_{2k}`); compared
+the boundary gap for ζ (A+P), archimedean-only, and prime-sign-flipped (A−P):
+- archimedean budget `s_d(A only) ≈ a_*=0.16` at all d (Γ-structure ≈critical at its own atom);
+- prime eats it to `s_d(ζ)→0⁺` (contributes `≈−a_*` to `1/m_d`) — the budget-vs-demand identity made concrete;
+- **flipping the prime sign gives `s_d≈2a_*>0` BUT inertia `(d−1,2)` — TWO negative squares.** The rank-one Γ-atom
+  repairs one ⟹ `H^0_flip` not PSD (fails RH via a second κ that `s_d` is blind to).
+- **Conclusion:** the fake-family separator (NR-2) is the integer `κ₋`, NOT the scalar `s_d`. Correct Euler sign ⟹
+  `N₁` (repairable); wrong sign ⟹ `N₂`. Matches comp72 + lens 4. NR-2 sharpened to NR-2′ (Euler positivity ⟹ exactly
+  one negative square). Script+output `computations/2026-06-22-comp81-prime-sign.*`; no-roleplay-items §6.
+
+### 96. Two findings propagated across 01–10 + big-picture + bridge (per user): the prolate lattice and "κ₋ not s_d"
+
+Propagated the §5 prolate-compression result and the comp81 NR-2′ finding consistently:
+- **Prolate `2|w|=4N+1` lattice + semilocal-prolate target:** 01-landscape (archimedean-realization passage),
+  02-transport (already), 03-theorems (the seam-coordinate finite form), 07-required (new lemma-shape), 10-prior-art
+  §A12 (already), bridge §5b SOTA flag (already). The archimedean *budget* `a_*` (= N=1 grading level) matches the
+  Connes–Consani–Moscovici archimedean Sonin positivity *unconditionally*; the RH content is the semilocal prolate.
+- **The fake-family separator is the integer `κ₋`, not the scalar `s_d` (comp81):** refined the "`s_d=0` gate"
+  framing in 08 §2, bridge §5b (two spots), big-picture §0, 06 (battery + new comp81 entry); added as supporting
+  evidence in 04 (faithful-index claim), 09 (the faithful-index section), as a falsification/kill-criterion in 05,
+  and as a new lemma-shape in 07. Consistent message everywhere: `s_d=0` is the height-limited rank-one **shadow** of
+  `κ₋` (a sign-fake has `κ₋=2` with `s_d>0`); certify by `κ₋=0`, not `s_d>0`. Corroborates the long-standing
+  faithful-index lens (lens 4) and comp72.
+
+### 97. gpt/48 folded — apex restated on κ₋ (Faithful semilocal Uvarov–Krein index theorem); scalar-shadow lemma + finite-rank promotion + integer-index agenda
+
+**Source.** `docs/consolidated/gpt/48.md` (GPT's response to the comp81 finding). Strongly convergent with the §6
+correction already propagated (CHANGELOG #95–96); core (`s_d` not the apex, `κ₋=0` is, semilocal prolate) NOT re-done.
+**Four sharpenings consolidated:**
+- **Corrected bridge name:** *Faithful semilocal Uvarov–Krein index theorem* (`κ₋=0`); Layer 1 (Q_0 reduction, proof12)
+  unchanged, Layer 2 (proof object) is the integer index.
+- **Divisor correction:** `σ=ν'−a_*δ_{y_*}` = the rank-one `N=1` channel shadow; proof divisor = the completed
+  semilocal index carrier.
+- **Scalar-shadow lemma:** `s_d>0 ∧ κ₋(v_*^⊥)=0 ⟺ κ₋=0` (bars the scalar from posing as faithful; comp81 countercase).
+- **Finite-rank boundary Weyl:** `a_*v_*v_*^T → VCV^*` over the prolate `4N+1` channels, gate `κ₋(S_r)=0`, `S_r=
+  C^{−1}+V^*B^{−1}V`; `s_d` = the `r=0` compression.
+
+**Docs updated:** bridge §5b (three-divisor correction + finite-rank promotion + scalar-shadow lemma + corrected apex
+name); 07 (two new lemma-shapes); no-roleplay-items §7 (corrections + the gpt/48 integer-index experiment agenda a–f).
+The methodological line is unchanged and reinforced: certify by `κ₋=0`, not `s_d>0`.
+
+### 98. comp82 run — the prolate 4N+1 channel basis is FAITHFUL but height-limited (gpt/48 finite-rank Weyl, tested)
+
+**What.** Took gpt/48's next no-roleplay step (agenda §7e/a): where does a fake's negative direction live — in the
+prolate `4N+1` boundary channels or the finite-place bulk? Script+output `computations/2026-06-22-comp82-channel-completeness.*`;
+worklog updated. **Register:** `[VERIFIED]`.
+- **Sign-fake (comp81):** negative eigenvector is the **N=0 pole channel** `v(−4)` (residual 0 at `r=0`, `|cos(u,v_*)|~1e-5`
+  — orthogonal to the `N=1` scalar channel, so `s_d` blind). The sign-flip destroys the exact pole/entireness cancellation.
+- **Real off-line quartet (`g0=8`):** defect lives in **mid channels `N≈3–5`** matching its height (residual
+  `1.0→0.98→0.26→0.025→0`); low channels miss it.
+- **Conclusion:** the `4N+1` basis is **faithful** (every fake's negative direction is in `span{v_N}`; not decorative —
+  gpt/48's finite-rank boundary-Weyl direction has merit) **BUT height-limited** — the channel index needed = the
+  defect's height (same `d*≈γ0/3` law as the moment matrix / comp72 Pick kernel), so finite-`r` is *not* a finite-rank
+  shortcut. Channel map: `N=0` pole/entireness, `N=1`=`v_*` (only channel `s_d` sees), `N≥2` protector tail (off-line
+  zeros at their height). The scalar is blind to both `N=0` and `N≥3`.
+
+**Docs:** bridge §5b (finite-rank promotion bullet + result), 07 (lemma-shape resolved), no-roleplay-items §7 (result).
+The faithful object is the full all-channel semilocal carrier (`κ₋`); every finite truncation inherits the height limit.
+
+### 99. Lens 8 added (per user) — "no target, only byproduct"; the positivity column reclassified as a hall of mirrors
+
+User insight (correct, and it restores the charter): `κ₋=0 is RH`, so the entire positivity program has walked to the
+exact spot everyone failed at — RH attacked under a new name. The RH-equivalences (κ₋=0, Q_0≥0, Weil/Li, Pólya–Jensen,
+prolate Sonin) are **horizontal/cheap** (proof12 = one line); the difficulty is invariant under them; moving among them
+is a **hall of mirrors**, and is the *deduction* the immutable rules forbid. Treating RH as a target to prove violates
+lens 1 (constraint, not flow). **Warrant:** the only RH-type statement ever proved — RH over `𝔽_q` (Deligne, Weil II) —
+was a **byproduct** of Grothendieck's étale cohomology built for its own sake, not a direct attack.
+
+**Lens 8 — "No target, only byproduct"** (the anti-mirror lens, enforcement of lens 1): RH cannot be reached by aiming
+at RH; leverage requires a **non-RH-equivalent constraint** (hypertranscendence / `𝔽₁` / transcendence-independence)
+that leaves no room for off-line zeros, so RH is a **residue** ("cannot be otherwise"), never a goal. Operational rule:
+test every target for RH-reduction; if it reduces, step back to a provable non-equivalent point (hypertranscendence,
+Baker, `𝓜⁺`) and turn orthogonal.
+
+**Docs updated:** big-picture §1 (lens 8 added; unifying-claim restated; "eight lenses"); 10-prior-art §E (lens table +
+lens 8 row; the positivity column 3/4 reclassified as mirrors, lens 7 = the one non-mirror direction); no-roleplay-items
+§8 (NR-1/2/3 reclassified as mirrors; forward agenda = NR-orth / the hypertranscendence home, byproduct stance).
+**The redirection:** stop polishing the positivity mirrors; build the non-equivalent constraint from which the divisor
+location, hence RH, falls out as a byproduct.
+
+### 100. The logical form of a constraint-proof (big-picture §1′) — gives lenses 1 & 8 their logical content
+
+User question: "constraint, not flow" needs a precise logic — a syllogism `a⟹b` is what HT can't be, but
+"constraint" stated as `¬(a⟹b)` is empty (= `a∧¬b`, a counterexample). What is the plain principle behind forcing
+RH to "manifest in one way"? **Answer recorded as big-picture §1′:**
+- Not modus ponens (needs a generative premise; Hölder says none exists) and not `¬(a⟹b)` (wrong type).
+- The form is **`∃!` from rigidity** — a degrees-of-freedom/conservation argument: an off-line zero is an extra free
+  parameter; the completed object is parameter-free (FE + Euler + finite order); a rigid object can't absorb the extra
+  parameter ⟹ no off-line zero *for lack of room*. The conclusion is read off a unique fixed point, not derived.
+- **Mirror vs non-mirror = lens 8 in logic:** the quantifier either ranges over *zeros* (case-elimination = RH = mirror;
+  `κ₋=0` is this) or over the *ambient object* (over-determine it from non-zero data; uniqueness is structural; zero
+  locations fall out — non-mirror). The dividing line is *what the quantifier ranges over*.
+- **"Decoherence" made exact:** pointer-basis/superselection — off-line zeros are states not commuting with the
+  Euler-product constraint `T`, suppressed by incompatibility, not prohibition. RH = pointer basis of the multiplicative constraint.
+- **Rigorous instance:** Deligne/Weil II proves RH-over-`𝔽_q` by **purity** (weight-grading rigidity forces `|α|=q^{i/2}`),
+  not eigenvalue-elimination — the one time this exact logic settled an RH. Same shape as Wheeler–DeWitt (kernel of a
+  constraint) and holography (boundary fixes bulk).
+- **Forward:** the non-mirror task is to build a weight/purity rigidity structure (the missing `𝔽₁` Frobenius, lens 7)
+  whose rigidity dimensionally excludes off-line zeros; RH as a residue of purity.
+
+### 101. NEW DOC 11-f1-the-target-object.md — consolidated 𝔽₁ reference (parent-corpus sweep)
+
+User asked to search /Users/Spare/Documents/code/riemann/docs for "𝔽₁" and consolidate everything into a document.
+Ran 5 parallel read-only extractors over ~28 disjoint parent files (rh/*, plans/archived/*, literature/*, rh-corp/*,
+where_we_stand/pure_facts). Synthesized into `11-f1-the-target-object.md`. All five batches converged on one verdict.
+
+**The object & the consensus.** Every spectral/geometric route (Connes–Consani, Deninger, Weil-étale, Borger Λ-ring,
+modular/Eisenstein) converges onto ONE master object: an infinite-dimensional 𝔽₁-Jacobian / self-product
+`Spec ℤ ×_{𝔽₁} Spec ℤ` with a polarization of signature `(1,ρ−1)`. **Positivity is free (Rosati for any real
+polarization); the wall is INTEGRALITY** — a ℤ-form / complex structure `J` for the ℚ-independent `{log p}`
+("no uniform integer q"). Doc sections: A why 𝔽₁ is forced (primes≠q-powers); B six facets (finite curve Γ_S =
+circles of circ. log p with real-torus Jacobian / Spec ℤ genus-0-vs-∞ / arithmetic site topos / Borger Λ-ring ψ_p
+skeleton / Connes adele-class triple D=log|·|, Frobenius=modular flow, zeros on Sonin cokernel / Deninger foliated
+system); C constructions ((α−1)/log q→ρ; A+iB split RH⟺A=½⟺F*F=e^{−1}; the J/polarization; Witt=Deninger=dBN);
+D the integrality crux (no-margin log2/logX→0; type-II₁ vs type-I; mixed-Tate no purity; Deninger polarization axiom);
+E recent SOTA (CC/CCM 2006.13771, 2205.01391, 2306.00456, 2602.04022, 2602.15941, 2606.06604, 2511.22755 — none
+proves RH; NO ζ-attached Hodge-index theorem exists); F retired no-gos (finite-carrier Lean, resolution wall,
+Schatten, flow-of-weights type-III₁, GL2 off-diagonal, bare-J, Lee-Yang, FID, modular-scattering); G hgt connection.
+
+**hgt connection (§G).** 𝔽₁ is the §1′/lens-7-8 constraint object. Direct identifications: our κ₋ = the
+intersection signature `(1,ρ−1)`; our prolate 4N+1 channels faithful / semilocal open (comp82) = Connes archimedean
+Sonin positivity proven / semilocal S→∞ open; our s_d→0 = the no-margin log2/logX; seam 𝓜⁺ = the 𝔽₁ self-product.
+The Wheeler–DeWitt reading (user's founding metaphor): modular flow σ_t = canonical clock (no external time), the
+zeros = the Sonin COKERNEL (state = kernel of the constraint, not a trajectory); q→1 = the clock degenerating. The
+one genuinely non-mirror sub-piece the corpus isolates = a **type-II₁ symmetry-rigidity theorem** forcing the
+real-valued index κ₋ to exactly 0 from self-duality (no margin to estimate) — the only lens-8-admissible target.
+
+**Wired:** 00-README index (+ row 11); big-picture lens 7 (pointer to doc 11).

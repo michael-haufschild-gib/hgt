@@ -1,7 +1,7 @@
 # Big Picture — what the programme is really about
 
 > A plain-language map of the whole research programme: the **lenses** we look through, the **unsolved
-> issues** that actually block us, the **problem space and the solution space**, and the **sharpest form
+> issues** that actually block us, the **problem space and the solution space**, and the **current form
 > of the conjectures** that must be proved. It claims no proof of the Riemann Hypothesis and introduces
 > no new mathematics — it states the structure the work has uncovered. Register tags
 > (`[PROVED]` / `[OPEN]` / `[CONJECTURE]`) are kept where the distinction matters.
@@ -20,24 +20,30 @@ This rules out only the **generative-flow** reading. Derived objects, deformatio
 embeddings (de Bruijn–Newman), potential theory, and source-measure formulations remain valid lenses —
 what is excluded is a finite algebraic-differential rule that *produces* `ζ`, not analysis *about* it.
 
-> **The target, now named (post-2026-06-22 computation battery).** That faithful object is no longer a vague
-> "two-faced carrier." Its RH-bearing face is a **single noncompact rank-one boundary-Weyl contraction**: the
-> completed explicit formula must produce `K = M_triv^{−1/2}(−R^P)M_triv^{−1/2} ⪯ I` with `‖K‖=1`,
-> `1 ∈ σ_ess(K)`, built **without zero-feeding**, and `RH ⟺ λ_min(I−K_d) > 0 ∀d`. Its entire content
-> collapses to a **scalar** condition at **one exterior point** — the first trivial zero `y=−0.16` controlling
+> **The target, now narrowed (post-2026-06-22 computation battery).** That faithful object is no longer a vague
+> "two-faced carrier." Its RH-bearing face is constrained to a **rank-one boundary-Weyl sign problem**: the
+> completed explicit formula must produce either a bounded self-adjoint
+> `K = M_triv^{−1/2}(−R^P)M_triv^{−1/2} ⪯ I` with `‖K‖=1`, `1 ∈ σ_ess(K)`, or the correct closed
+> semibounded form replacing that operator, built **without zero-feeding**. The finite matrices `K_d` are
+> congruence-normalized witnesses, not the construction of `K`. If the completion exists, RH is equivalent to
+> `λ_min(I−K_d) > 0 ∀d`. Its content then collapses to a **scalar** condition at **one exterior point** — the
+> first trivial zero `y=−0.16` controlling
 > the deep hard edge `y=0⁺` (an inverse exterior Christoffel function) — with the de Branges/Krein boundary at
-> the **seam centre `s=½`**. Sharper still: the completed form splits as `H^0_d = H^-_d + 0.16·v_{−0.16}v_{−0.16}^T`
+> the **seam centre `s=½`**. In the current finite-section chart, the completed form splits as `H^0_d = H^-_d + 0.16·v_{−0.16}v_{−0.16}^T`
 > with `inertia(H^-_d)=(d,1)`, so RH `⟺` the **scalar Weyl gap** `s_d = 0.16·margin_d > 0 ∀d` (the first
 > trivial-zero atom stays just above the rank-one Weyl threshold at every degree). The proof is a **sign-exact
 > boundary-monotonicity theorem** at `y=−0.16`, never an estimate. This is the **Rank-one Γ-boundary Weyl Bridge**:
 > *Γ supplies the exact boundary atom (the j=1 trivial zero), the primes create exactly one bulk defect, RH says
-> the Γ atom repairs it at every degree*; the new reduction is `Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`, and the **named
-> fake-family gate is `s_d=0`** (Davenport–Heilbronn crosses it at d=62 while the bulk inertia (d,1) is preserved).
+> the Γ atom repairs it at every degree*; the new reduction is `Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`. The **fundamental
+> fake-family separator is the integer `κ₋`**, with `s_d=0` its rank-one shadow: DH (a real off-line zero) keeps
+> `κ₋=1` and crosses `s_d=0` at d=62 (height-limited), but a global sign-fake jumps to `κ₋=2` with `s_d>0` (comp81) —
+> so watch the index `κ₋`, not the scalar `s_d`.
 
-> **Sharpest naming (Krein–Langer rank-one signed moment problem, gpt/43 synthesizing the de-Branges battery).**
+> **Current naming (Krein–Langer rank-one signed moment problem, gpt/43 synthesizing the de-Branges battery).**
 > The finite anatomy is one clean object: `H^-_d = M_d(σ)` is the moment matrix of the **signed** measure
-> `σ = ν' − a_*δ_{y_*}` (positive reciprocal zero measure `ν'=Σ_ρ 2y_ρδ_{y_ρ}` minus one exterior Γ-boundary atom);
-> `H^0_d = M_d(ν')`. The bridge is the Krein transition `σ∈Π₁ ──(+a_*δ_{y_*})──▶ ν'∈Π₀`: the Cauchy transform
+> `σ = ν' − a_*δ_{y_*}`, where `ν'=Σ_ρ 2y_ρδ_{y_ρ}` is the shifted reciprocal zero-divisor measure; `ν'`
+> is a positive `R_+` measure exactly on the RH side, so that positivity is not input. The bridge is the Krein
+> transition `σ∈Π₁ ──(+a_*δ_{y_*})──▶ ν'∈Π₀`: the Cauchy transform
 > `m_σ∈N₁` (one negative square, verified κ=1) becomes PSD after the canonical Γ atom is restored. The apex, as a
 > reproducing-kernel statement, is the **Uvarov one-point boundary-removal positivity** `K_{ν'}(y_*,y_*)>0 ∀d` — the
 > same `s_d>0`. The Hankel tail `μ_E` is now read as the **seam shadow of `σ`** (anatomy, `γ_1`-dominated, *not* the
@@ -51,7 +57,8 @@ what is excluded is a finite algebraic-differential rule that *produces* `ζ`, n
 These are not rival theories; they are complementary projections of one object.
 
 1. **Constraint, not generative flow** *(the founding lens — scoped)*. The completed object is **fixed by
-   the order-2 functional-equation constraint** `ι : s ↦ 1−s` (`ι² = id`, fixed locus the seam), **not
+   the order-2 functional-equation constraint** `ι : s ↦ 1−s` (`ι² = id`, `Fix(ι)={1/2}`;
+   the seam is `Fix(ι∘conj)`), **not
    produced by a finite algebraic-differential rule**. Hölder's theorem: hypertranscendence *is* the
    absence of such a rule — there is no founding flow to discover. The mental models are
    Wheeler–DeWitt superspace (a constraint `ĤΨ = 0`, time with no clock) and holography (bulk fixed by
@@ -101,18 +108,63 @@ These are not rival theories; they are complementary projections of one object.
    field (one Frobenius). The gap `∞ − 1` is the missing single Frobenius. This is a **linear** fact
    (`corank = ∞ ⟺ {log p}` ℚ-linearly independent — Baker, **proven**), strictly weaker than the
    **algebraic** apex (`trdeg = ∞ ⟺ {log p}` ℚ-algebraically independent — Schanuel, **open**). The hard
-   content is one level above the proven floor.
+   content is one level above the proven floor. *(The geometric carrier of this lens — the `𝔽₁` object,
+   `Spec ℤ ×_{𝔽₁} Spec ℤ`, Connes–Consani / Borger / Deninger — is consolidated in `11-f1-the-target-object.md`.)*
 
-8. **The empirical weld carrier** *(the experimental lens)*. A single observable — the phase-carrier
-   defect `Δ = max(log|A|, log|P|) − log|A+P|` — separates the true analytic continuation from
-   finite-Euler truncations and random-phase surrogates in the critical strip, and collapses at `σ > 1`.
-   This carrier is a **diagnostic of analytic continuation and zero-structure**, **not** a transcendence
-   detector: the functional-equation-exact, zero-exact, non-hypertranscendental adversary that would be
-   needed to make it one does not exist (see Issue 2).
+8. **No target, only byproduct** *(the anti-mirror lens — the enforcement of lens 1)*. **RH cannot be
+   reached by aiming at RH.** Every object provably equivalent to RH — `κ₋=0`, `Q_0≥0`, Weil/Li positivity,
+   Pólya–Jensen, the prolate Sonin compression — is *the same wall under a new name*; the equivalences are
+   **horizontal** (cheap, content-preserving: proof12 turns one into another in a single line), so motion
+   among them is motion without progress — a **hall of mirrors** — and is exactly the *deduction* the
+   immutable rules forbid (and that a century of renamings has failed at). The difficulty is **invariant**
+   under every RH-equivalence; leverage can only come from **outside the class** — a *non*-RH-equivalent
+   constraint (the hypertranscendence/value home, the `𝔽₁`/geometric realization, a transcendence-independence
+   fact) that leaves **no room** for off-line zeros, so RH is **forced as a residue** ("it cannot be
+   otherwise"), never proved as a goal. **Warrant:** the *only* RH-type statement ever proved — RH over `𝔽_q`
+   (Deligne, Weil II) — was a **byproduct** of Grothendieck building étale cohomology *for its own sake*; RH
+   fell out of that structure's positivity (hard Lefschetz), which existed independently of wanting RH.
+   **Operational rule:** before adopting any target, test it for RH-reduction; if it reduces, it is a mirror —
+   *step back to a provable, non-equivalent point* (hypertranscendence, Baker, the weld category `𝓜⁺`) *and
+   turn orthogonal*. Treating RH as a target to **prove** is treating it as a flow-endpoint to **reach** —
+   which lens 1 already forbids. **The project's hunch, restored to its charter:** we do not try to prove RH;
+   we build the constraint-structure of hypertranscendence, and *if* it forces the divisor onto the line, the
+   RH proof is a byproduct — never the wall, never the goal.
 
 > **The unifying claim behind the eight lenses:** *the object is fixed by a constraint; its RH-content
-> is the faithful archimedean positivity of the completed weld's holonomy, which lives in the one
-> direction no prime-side, flow, or measured tool can reach.*
+> is the faithful archimedean positivity of the completed weld's holonomy — but that positivity is a
+> mirror of RH, not a lever on it (lens 8), so the work is to build the **non-equivalent** constraint from
+> which the divisor's location, hence RH, falls out as a residue.*
+
+### 1′. The logical form of a constraint-proof (what "constraint, not flow" means in logic)
+
+"Constraint, not flow" is a *logical type*, not a slogan, and it is **not** a deduction `a ⟹ b`:
+
+- **Why not a syllogism.** Modus ponens needs a *generative premise* to propagate forward; hypertranscendence
+  (Hölder) is the theorem that *no generative premise exists* — there is nothing to flow from. And "constraint"
+  is **not** `¬(a ⟹ b)`: that is `a ∧ ¬b`, a counterexample — the empty/wrong type.
+- **The actual form: `∃!` from rigidity** (predicate logic, not propositional). A constraint is a *definite
+  description* — "*the* `x` with `C(x)`" — whose force is a **degrees-of-freedom / conservation** argument:
+  an off-line zero is one *extra free parameter*; the completed object is **parameter-free** (its freedoms
+  are fully spent by FE + Euler product + finite order); a parameter-free object cannot absorb an extra
+  parameter ⟹ no off-line zero — *for lack of room, not by prohibition*. The conclusion is **read off a
+  unique fixed point**, never derived from a premise.
+- **Mirror vs non-mirror, stated logically (= lens 8).** The doomed direction *quantifies over zeros*
+  ("knock out every off-line configuration" — case-elimination, which *is* RH; `κ₋=0` is this). The live
+  direction *never quantifies over zeros at all* — it over-determines the **ambient object** from non-zero
+  data until uniqueness is structural, and zero-locations fall out downstream. **The dividing line is
+  whether your quantifier ranges over zeros (mirror) or over the object (constraint).**
+- **"Decoherence" is exact: pointer-basis selection.** For a constraint operator `T`, the allowed objects are
+  `Fix(T)/ker(T)`; if `T` is rigid enough that this is one-dimensional, the object "manifests in one way."
+  Off-line zeros are the states that *don't commute with* `T` (the Euler-product/multiplicative constraint),
+  suppressed by incompatibility, not by a law naming them. RH = the pointer basis of the multiplicative constraint.
+- **The one rigorous instance of this exact logic: Deligne (Weil II).** RH over `𝔽_q` was *not* proved by
+  eliminating bad Frobenius eigenvalues; it was proved by **purity** — the cohomology is pure of weight `i`
+  (hard Lefschetz + Poincaré duality pin a closed weight grading), and purity *forces* `|α|=q^{i/2}`: a
+  deviant eigenvalue is the extra degree of freedom a rigid grading cannot hold. Same shape as Wheeler–DeWitt
+  (`ĤΨ=0`, state = kernel of a constraint) and holography (boundary rigidly fixes bulk).
+- **Forward (the non-mirror task).** Build a **weight/purity rigidity structure** on the seam object — the
+  missing `𝔽₁`-Frobenius grading (lens 7) — whose rigidity makes off-line zeros a *dimensionally excluded*
+  degree of freedom, constructed from non-zero data. RH is then a residue of purity, never a target.
 
 ---
 
@@ -233,17 +285,18 @@ exists, so the carrier is a zero-structure diagnostic, not a transcendence detec
 is *located with unusual precision but not entered*; the live moves are the bridge arrow (C), the
 positivity apex (B), and the value detector (A).
 
-**Update (post-2026-06-22 battery): the positivity face is now concrete.** What was a "vague two-faced
-carrier" has, on the positivity/`κ₋` side, collapsed to a **single rank-one boundary-Weyl contraction**
-`K ⪯ I` (`‖K‖=1`, noncompact) whose RH content is a **scalar** sign condition at the first trivial zero
-`y=−0.16` (§0, Conjecture B). The *transport-face holonomy* and its *identification* with this object
-(Master Conjecture) remain `[CONJECTURE]`; the positivity face is no longer a name but a measured,
-named operator. So the open apex (B) is now "**source-build that rank-one contraction without
-zero-feeding and prove its sign**," not "find some equivalent positivity."
+**Update (post-2026-06-22 battery): the positivity face is localized, not completed.** What was a
+"vague two-faced carrier" has, on the positivity/`κ₋` side, narrowed to a **rank-one boundary-Weyl
+operator/form obligation** whose RH content is a **scalar** sign condition at the first trivial zero
+`y=−0.16` (§0, Conjecture B). The finite sections and Uvarov identities identify the coordinate; they do
+not construct the completed source object. The *transport-face holonomy* and its *identification* with
+this object (Master Conjecture) remain `[CONJECTURE]`. So the open apex (B) is now "**source-build the
+rank-one boundary object without zero-feeding, prove its domain/completion theorem, and prove its
+sign**," not "find some equivalent positivity."
 
 ---
 
-## 4. The conjectures to prove — sharpest form
+## 4. The conjectures to prove — current form
 
 Everything reduces to five cores (Master, A, B, C, D) plus one framing assumption (E).
 
@@ -282,6 +335,13 @@ Everything reduces to five cores (Master, A, B, C, D) plus one framing assumptio
 > contour moments `M_k` and local defect `D₂`, the Li coefficients `λ_n`, the Jensen polynomials
 > `J_{d,n}`, the Hankel determinants `H_d`, the Weil form `Q_W`, and `κ₋` are Newton-conjugate **charts of
 > this one wall** (a finite low-order slab of any chart is seam-blind; only all-order data is RH).
+> The all-order seam-log jet is not a softer source input: for `Xi(w)=Phi(w^2)`, the full coefficient
+> sequence of `log(Phi(z)/Phi(0))` determines `Xi` up to scalar, hence determines the reciprocal zero
+> divisor. It becomes a legitimate source coordinate only after Euler / Gamma / FE data produce it
+> independently; receiving it as data is already receiving a function-complete chart.
+> The same warning survives any all-order triangular/invertible recoding of that jet — continued-fraction,
+> Jacobi, cumulant, Hankel-ratio, or Pade-style coordinates are lenses, not source constraints, when the
+> full coordinate string reconstructs the germ or shifted tower.
 > *Register:* `RH ⟺ κ₋ = 0` is a faithful restatement; `RH ⟺ det H_d ≥ 0 ∀d, t` (uniform Pólya–Jensen,
 > 1927) and `RH ⟺ Q_W ⪰ 0` (Weil) are theorems whose *uniformity* is the open content — the state of the
 > art is Griffin–Ono–Rolen–Zagier (2019), fixed-`d` eventual hyperbolicity.
@@ -289,10 +349,11 @@ Everything reduces to five cores (Master, A, B, C, D) plus one framing assumptio
 > `ν = Σ_m (1/m) δ_{1/m²} ≥ 0`, positive semidefinite **unconditionally** — so integer-side ("FID")
 > positivity is RH-empty; the content is the explicit-formula map onto the zero divisor.
 > *Distinctness:* A and B are **separate apexes**, joined only at the seam (`ω = 0 ⇏ RH`).
-> *Purified form (gpt/38, post-2026-06-22 battery):* the apex is now a **single named operator** — the
-> completed explicit formula must produce a **noncompact self-adjoint contraction**
+> *Purified form (gpt/38, post-2026-06-22 battery):* the apex is now a **specific operator/form
+> obligation** — the completed explicit formula must produce a **noncompact self-adjoint contraction**
 > `K = M_triv^{−1/2}(−R^P)M_triv^{−1/2}` with `K ⪯ I`, `‖K‖=1`, `1∈σ_ess(K)`, finite sections `K_d=P_d K P_d^*`,
-> built **without zero-feeding**; RH `⟺ λ_min(I−K_d)>0 ∀d`. Every finite-`d`/conditioning/margin/correlation
+> or a closed semibounded form with the same Loewner content, built **without zero-feeding**. Only after this
+> source object exists does RH become `λ_min(I−K_d)>0 ∀d`. Every finite-`d`/conditioning/margin/correlation
 > observable is **demoted** (prime-blind, generic) — only the **all-order sign** is RH-bearing, so the proof must
 > be **boundary monotonicity / Weyl positivity**, never a spectral-gap estimate. The cross-scale smoking gun: the
 > **first trivial zero `y=−0.16` controls the entire deep hard edge `0⁺`** via an inverse exterior Christoffel
@@ -303,22 +364,26 @@ Everything reduces to five cores (Master, A, B, C, D) plus one framing assumptio
 > `off-line zero ⟺ off-seam source-carrying transport defect`, with "source-carrying" = nonzero
 > logarithmic residue. The **detection** half (off-line ⟹ off-seam defect) is locally proven via the pole
 > model and the same-height mirror-pair curvature window `2(a²−τ²)/(a²+τ²)²`; the **confinement** half is
-> the genuine open core. *Sharp form (positivity-transfer).* The confinement half is not "phase ⟹ RH" nor
+> the genuine open core. *Current form (positivity-transfer).* The confinement half is not "phase ⟹ RH" nor
 > "integer-side positivity ⟹ RH"; it is the statement that the **completion together with the explicit
 > formula carries the divisor data onto a Stieltjes-positive zero-divisor sequence `{T_k}`** — provably,
 > via total positivity / a variation-diminishing weld map / a source-built `κ₋` read from `{T_k}` / no
 > off-seam signed defect surviving the reciprocal chart. The object to prove is all-order Stieltjes
 > positivity of `{T_k}`.
-> *Sharpest finite shadow (gpt/37):* `Q_0 = M_triv + R^P` with `M_triv` the explicit positive trivial-zero
+> This transfer is not termwise in Euler frequencies: a single positive FE-even source germ
+> `B(cosh(lambda w)-1)` contributes `T_k=B(-1)^(k+1)lambda^(2k)/(2k-1)!`, giving a negative first
+> shifted Hankel determinant. The source proof must use completed interaction, not isolated
+> positive-frequency summation.
+> *Current finite shadow (gpt/37):* `Q_0 = M_triv + R^P` with `M_triv` the explicit positive trivial-zero
 > square; RH ⟺ the **one-sided Loewner domination** `−R^P ⪯ M_triv` (`λ_max(K_d) ≤ 1 ∀d`,
-> `K_d = M_triv^{−1/2}(−R^P)M_triv^{−1/2}`). The proof object is a source-built **contraction `I−K_d⪰0` at
+> `K_d = M_triv^{−1/2}(−R^P)M_triv^{−1/2}`). The proof object is a source-built **Loewner inequality `I−K_d⪰0` at
 > zero margin** on a **three-stratum reciprocal divisor** (pole `y=−4` + trivial chain + nontrivial divisor),
 > *not* a slack estimate. The first real **source-gate** test: do genuine Dirichlet-`L` pass `K_d⪯I` while
 > Davenport–Heilbronn fails (`λ_max>1`)?
 > *Answered (2026-06-22 battery):* the bridge structure reproduces for **every** genuine completed `L` (the
 > mechanism is Euler-product-general; exponent is protector/parity-set, not universal), but the **real
 > Davenport–Heilbronn off-line zero is NOT detected through d=55** (`Im(y)≈10^{−6}` at the hard edge) and
-> jittered-ζ matches ζ to 4–5 digits — so `K_d⪯I` is faithful but **height-limited, not a finite-`d` source
+> jittered-ζ matches ζ to 4–5 digits — so finite `K_d⪯I` is **height-limited, not a finite-`d` source
 > gate**; the discriminator is the same **all-order** wall. RH lives only in the sign.
 
 > **CONJECTURE D — universal prime-side orthogonality. `[CONJECTURE — strongly supported]`**
@@ -358,17 +423,18 @@ Everything reduces to five cores (Master, A, B, C, D) plus one framing assumptio
 > **all-order sign** of the shifted reciprocal form. We have **not crossed** the wall; we have made it
 > small, named, and one-dimensional.
 >
-> **What blocks us, in one line.** Build a **source-built rank-one boundary-Weyl contraction** `K ⪯ I`
-> (`‖K‖=1`, noncompact) from Γ / pole / functional-equation / explicit-formula data *without reading the
-> zeros*, and prove its scalar boundary sign stays positive at all orders. Nothing else.
+> **What blocks us, in one line.** Build the **source-built rank-one boundary-Weyl object** from Γ / pole /
+> functional-equation / explicit-formula data *without reading the zeros*: either a bounded noncompact
+> contraction `K ⪯ I` (`‖K‖=1`) or the correct closed semibounded form, then prove its scalar boundary
+> sign stays positive at all orders.
 >
 > **What we solved — beyond just checking SOTA.** Not theorems toward RH, but a hard structural map nobody
 > had, and several decisive *no-go*s that SOTA had not drawn:
 > - the wall is **archimedean and one-dimensional** — tool-independent across the Li / Jensen / Hankel /
 >   Weil / `κ₋` charts (all the same object);
-> - the RH content is **the sign of a rank-one boundary-Weyl contraction** — operator face = moment face =
->   a **scalar condition at the single point `y=−0.16`** (the first trivial zero), which is *exactly
->   critical and optimal* at every degree (the slack is precisely the bridge margin);
+> - the RH content in this chart is **the sign of a rank-one boundary-Weyl object** — finite operator face,
+>   moment face, and scalar Weyl face all read a **scalar condition at the single point `y=−0.16`** (the
+>   first trivial zero), whose finite-section threshold is the bridge margin;
 > - the no-margin **rate is a clean archimedean law, now derived** (not fitted):
 >   `α_d(y_*) ≈ 4 + [4(1−ln2)+2ln|y_*|]/L̄_d` (`L̄_d=(1/d)Σ ln γ_j`) from exterior-Christoffel asymptotics —
 >   base 4 (reciprocal-square) + hard-edge Vandermonde correction + Γ-boundary normalization; the empirical
@@ -376,8 +442,8 @@ Everything reduces to five cores (Master, A, B, C, D) plus one framing assumptio
 >   no universal slope) — *not* the zeros, *not* the primes;
 > - the numerics are **certified prime-blind**: ζ and jittered-ζ (correlations destroyed) are
 >   indistinguishable to 4–5 digits — every conditioning / margin / GUE observable carries zero RH content;
-> - **no approximation survives** — band *and* low-rank truncations both flip the sign (dropping a 0.8%
->   tail sends the margin `+10^{−40}→−10^{16}`), so the theorem must be **sign-exact**.
+> - the tested approximations do not preserve the sign — band *and* low-rank truncations both flip it
+>   (dropping a 0.8% tail sends the margin `+10^{−40}→−10^{16}`), so the theorem must be **sign-exact**.
 >
 > Each is a leap past the SOTA reflex of producing one more RH-equivalent positivity criterion: we instead
 > **measured which directions carry the content and which are decoration**, and threw the decoration out.
@@ -403,14 +469,26 @@ Everything reduces to five cores (Master, A, B, C, D) plus one framing assumptio
 > - **raw Weil test functions** — inadmissible at the seam centre; the route needs a singular boundary
 >   extension, not a classical test space.
 >
-> **What stays genuinely open.** The seam finite-part construction is built (canonical, regulator-/window-/gauge-fixed;
-> `E=μ_E` identified), so the live theorem is the **Krein–Langer rank-one positivity**: source-build `σ=ν'−a_*δ_{y_*}∈Π₁`
-> and prove the canonical Γ-atom repair crosses to `Π₀` — equivalently the **source-built scalar Weyl positivity**
-> `s_d = a_*+1/m_d = 1/K_{ν'}(y_*) > 0 ∀d` (Uvarov form: `K_{ν'}(y_*,y_*)>0`). One feeder sub-obligation is now
-> **discharged** — the **canonical-`ξ` gauge-extraction lemma** is proved (gpt/proof9) and verified (comp71): the
-> zero-free gauge `e^{q(w²)}` shifts the moments by the exact diagonal law `T_k↦T_k+2k(−1)^{k+1}a_k`, killed by the
-> canonical `ξ`-normalization (`T_k^can=T_k^raw−2k(−1)^{k+1}a_k`; `T_1↦T_1+2c` of comp68 is the `k=1` case). What
-> remains feeding the apex is the **global `N₁` carrier theorem** (`m_σ∈N₁` before positivity). Orthogonally, on
-> the value axis, the Schanuel-for-prime-logs apex (A). Everything else — the tail `μ_E`, Jacobi near-banding,
-> regulator invariance, even the `N₁` anatomy — is scaffolding around the **sign of one scalar** (`N₁` alone is not
-> enough: Davenport–Heilbronn shares it and fails only when `s_d` crosses 0).
+> **What stays genuinely open.** The seam finite-part construction supplies strong source-domain structure
+> (canonical, regulator-/window-/gauge-fixed; `E=μ_E` identified), but the live theorem is still the
+> **Krein–Langer rank-one positivity plus completion problem**: source-build `σ=ν'−a_*δ_{y_*}∈Π₁` as a
+> closed boundary object, then prove the canonical Γ-atom repair crosses to `Π₀` — equivalently the
+> **source-built scalar Weyl positivity** `s_d = a_*+1/m_d = 1/K_{ν'}(y_*) > 0 ∀d` (Uvarov form:
+> `K_{ν'}(y_*,y_*)>0`). The canonical-`ξ` gauge-extraction lemma and the Christoffel/Uvarov identity give
+> coordinates; the `N₁` carrier theorem gives anatomy, subject to its seam-boundary hypothesis. They do not
+> prove the closed source object or the repair sign. Orthogonally, on the value axis, the
+> Schanuel-for-prime-logs apex (A). Everything else — the tail `μ_E`, Jacobi near-banding, regulator
+> invariance, even the `N₁` anatomy — is scaffolding around the **sign of one scalar** (`N₁` alone is not
+> enough: Davenport–Heilbronn shares it and fails when `s_d` crosses 0).
+>
+> **SOTA reality-check (§10, 2026-06-22 literature sweep).** Almost the entire construction is classical apparatus
+> reassembled in the seam coordinate: the moments `T_k` are **Voros secondary-zeta values** (Voros 2010); `s_d` is the
+> inverse **Christoffel function = Hankel-determinant ratio** (Szegő); the Uvarov boundary-removal kernel (proof11) is
+> **Uvarov 1969**; the `N₁→N₀` rank-one transition (proof10) is **Derkach–Hassi–de Snoo, JFA 188 (2002)**; the
+> boundary-Weyl positivity overlaps **Suzuki (arXiv:1204.1827)**; and `Q_0≥0⟺RH` sits in the Weil/Li moment-positivity
+> family. So proof10/proof11/comp80 are *re-derivations* (cite, claim no novelty). Of the two cells the sweep did
+> **not** find verbatim: (i) the *exterior* hard-edge Christoffel asymptotic `s_d~∏γ_j^{−α}` (comp49/proof4) is now
+> **closed** — it is the *non-regular* regime of Stahl–Totik theory, a derivable special case with **no RH content**
+> (the rate is generic hard-edge geometry; the RH content is the sign `s_d>0`); and (ii) a *positivity-framed*
+> Euler-product-vs-DH separator — which is exactly the open apex `s_d>0`, one open RH-bearing cell. Heed the
+> **Conrey–Li (arXiv:math/9812166)** no-go: de Branges positivity fails for ξ.

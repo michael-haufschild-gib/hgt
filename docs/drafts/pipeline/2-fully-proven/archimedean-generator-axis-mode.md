@@ -129,3 +129,7 @@ Added the finite-support integer-mode derivative anchor `deriv_archimedeanPrimeM
 `d/ds exp(-s(m·ell)) = -(m·ell) exp(-s(m·ell))`. The parent card remains in `2-fully-proven`: the infinite
 torus/generator packaging, Gamma/digamma residue, and C5-localization synthesis are not yet formalized as a
 single Lean theorem.
+
+## 2026-06-24 axis positivity versus square tests
+
+`axis-positivity-does-not-imply-hankel-positivity.md` records the positivity analogue of the axis/combination split. The generators and coefficient signs live on axis modes; the repair/index condition lives in Hankel or Schur combination modes. A proof of RH-bearing positivity must therefore supply the source transfer between these levels.

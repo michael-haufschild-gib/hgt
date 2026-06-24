@@ -105,3 +105,9 @@ The exponent audit is archived at:
 ## Log
 
 - 2026-06-21 -- Conway: created from random formula-graph node 95/100 (`XF1`) after checking prior square-test and pole-cancellation cards. Prior work said the explicit-formula residue must be positive on square tests; this card isolates the missing admissibility/regularization theorem needed before `XF1` can be applied to those tests.
+
+## 2026-06-24 canonical finite-part continuation
+
+`even-seam-finite-part-canonicality.md` supplies the next admissibility layer after this obstruction. The square tests still cannot be plugged directly into the standard Weil class, but an even seam cutoff has a regulator-independent Hadamard finite part under the completed source/tail hypotheses, and the resulting boundary form is necessarily Hankel.
+
+This does not prove RH or the scalar Weyl sign. It says the regularized Weil-pullback route has a well-defined source-domain object, so any remaining sign must come from a source theorem rather than from choosing a convenient regulator.

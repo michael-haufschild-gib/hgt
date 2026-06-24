@@ -1,0 +1,24 @@
+NODE: multilayer coupling defeats single-layer hub metrics
+n=220 dependencies=35
+scenario road_removed rail_removed road_giant rail_giant total_active
+road_top_degree                  17            1     0.0197     0.7945          422
+rail_top_degree                  26            8     0.9278     0.0236          406
+low_degree_dependency            27            4     0.9275     0.0417          409
+
+STEP8 Levenshtein transfer candidates
+1 distance=18 ratio=0.3000 gamma prime weld coupling missed by single layer metrics
+2 distance=26 ratio=0.4333 finite euler layer coupling missed by phase metrics
+3 distance=41 ratio=0.6833 archimedean prime dependency missed by separate amplitudes
+selected=1 gamma prime weld coupling missed by single layer metrics
+
+STEP9 method=2 attack false: HT layer-coupling diagnostic
+kind sigma corr_gamma_weld corr_prime_weld high_gamma_rate high_prime_rate high_weld_rate overlap_all
+true   0.3         0.01101        -0.48253         0.15111         0.15111        0.15111     0.00000
+finite 0.3         0.04517        -0.05241         0.15111         0.15111        0.15111     0.00000
+random 0.3         0.03017         0.04402         0.15111         0.15111        0.15111     0.00000
+true   0.5         0.00261        -0.36184         0.15111         0.15111        0.15111     0.00000
+finite 0.5        -0.03313        -0.30301         0.15111         0.15111        0.15111     0.00000
+random 0.5         0.03211        -0.01288         0.15111         0.15111        0.15111     0.00000
+true   1.2        -0.05609         0.08261         0.15111         0.15111        0.15111     0.00000
+finite 1.2        -0.05631         0.08892         0.15111         0.15111        0.15111     0.00000
+random 1.2        -0.02538         0.00399         0.15111         0.15111        0.15111     0.00222

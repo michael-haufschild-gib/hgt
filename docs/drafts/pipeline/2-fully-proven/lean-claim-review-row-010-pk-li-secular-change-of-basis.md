@@ -95,3 +95,14 @@ Split certificate: `../3-formalized/li-secular-pointwise-change-of-basis.md`.
 This certifies the pointwise triangular integer Li/secular change-of-basis only.
 The whole row #10 ticket remains in `2-fully-proven`: the analytic Voros closed
 form for `P_k` in §A is not formalized in Lean.
+
+## Independent third verification — 2026-06-24 (Turing)
+
+Hard-checked §A (the Voros closed form) independently, extending the verified k-range. Computed
+a_j = [s^j](ζ'/ζ)(0) via mpmath Taylor (a_0 = log 2π ✓) and P_k = Σ_n 2 Re((½+iγ_n)^{-k}) over the first
+300 zeros, vs the closed form P_k = 1 − (−1)^k ζ(k)/2^k − a_{k−1}:
+- k=3: diff 4.8e-9; k=4: diff 3.2e-9 (both tail-limited at 300 zeros);
+- k=5: diff 1.6e-14; k=6: diff 6.3e-15 (machine precision — their tails are negligible);
+- k=2: diff −0.0032 = the expected slow −Σ_{n>300}2/γ_n² tail (matches DeWitt/Professor).
+The closed form is confirmed at k=2–6. Ledger integrity: the card correctly distinguishes Lean-proven §B
+(li_secular_pointwise, clean axioms) from paper-proven §A (this closed form) — no over-claim. §A solid.

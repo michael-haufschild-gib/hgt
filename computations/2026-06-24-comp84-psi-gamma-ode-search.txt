@@ -1,0 +1,56 @@
+=== Sampling (z, f, f', f'') for f = ψ(Γ(z)) [exact chain rule] ===
+  z=0.500+0.000j  |f|=0.26449  |f'|=2.61603  |f''|=5.11840
+  z=0.700+0.000j  |f|=0.17140  |f'|=1.79997  |f''|=3.35978
+  z=1.300+0.000j  |f|=0.75980  |f'|=0.29316  |f''|=1.94055
+  z=1.800+0.000j  |f|=0.69612  |f'|=0.48486  |f''|=1.18658
+  z=2.100+0.000j  |f|=0.50324  |f'|=0.78206  |f''|=0.80870
+  z=2.500+0.000j  |f|=0.13642  |f'|=1.02830  |f''|=0.45206
+  z=3.000+0.000j  |f|=0.42278  |f'|=1.19027  |f''|=0.23131
+  z=3.300+0.000j  |f|=0.78935  |f'|=1.25098  |f''|=0.18066
+  z=3.700+0.000j  |f|=1.30342  |f'|=1.31814  |f''|=0.16129
+  z=4.100+0.000j  |f|=1.84359  |f'|=1.38294  |f''|=0.16452
+  z=4.500+0.000j  |f|=2.41014  |f'|=1.45028  |f''|=0.17207
+  z=5.000+0.000j  |f|=3.15708  |f'|=1.53793  |f''|=0.17743
+  z=0.500+0.300j  |f|=0.73296  |f'|=2.46391  |f''|=3.34869
+  z=0.800+0.500j  |f|=0.96952  |f'|=1.79429  |f''|=2.39197
+  z=1.200+0.400j  |f|=0.90636  |f'|=0.91449  |f''|=2.17483
+  z=1.500+0.700j  |f|=1.18674  |f'|=1.22162  |f''|=2.00674
+  z=2.000+0.200j  |f|=0.61205  |f'|=0.74290  |f''|=0.93757
+  z=2.500+0.500j  |f|=0.56118  |f'|=1.12917  |f''|=0.45091
+  z=0.500-0.300j  |f|=0.73296  |f'|=2.46391  |f''|=3.34869
+  z=0.800-0.500j  |f|=0.96952  |f'|=1.79429  |f''|=2.39197
+  z=1.200-0.400j  |f|=0.90636  |f'|=0.91449  |f''|=2.17483
+  z=1.500-0.700j  |f|=1.18674  |f'|=1.22162  |f''|=2.00674
+  z=0.300+0.100j  |f|=0.95205  |f'|=3.97526  |f''|=10.68583
+  z=0.600+0.800j  |f|=1.70626  |f'|=2.56684  |f''|=2.26201
+  z=1.100-0.600j  |f|=1.12732  |f'|=1.41643  |f''|=2.43786
+  z=1.800+1.000j  |f|=1.45231  |f'|=1.62991  |f''|=1.84371
+  z=3.000+0.300j  |f|=0.54637  |f'|=1.20295  |f''|=0.21536
+
+=== Null-space search: degree ≤ 1 polynomial ODE in (z, f, f', f'') ===
+  Matrix size: 54×5  (should be full rank 5 if no ODE exists)
+  Singular values (sorted): ['2.303e-01', '3.291e+00', '6.164e+00', '1.375e+01', '1.671e+01']
+  Min/Max ratio: 1.378e-02  (< 1e-30 ⟹ genuine near-null vector)
+  No low-degree ODE found at this degree
+
+=== Null-space search: degree ≤ 2 polynomial ODE in (z, f, f', f'') ===
+  Matrix size: 54×20  (should be full rank 20 if no ODE exists)
+  Singular values (sorted): ['8.161e-81', '1.164e-80', '1.838e-80', '1.969e-80', '2.234e-80', '2.814e-04', '2.551e-03', '7.200e-03']
+  Min/Max ratio: 6.257e-83  (< 1e-30 ⟹ genuine near-null vector)
+  *** POTENTIAL ODE RELATION FOUND ***
+
+=== SANITY: f=e^z satisfies f'-f=0, should show null at degree 1 ===
+
+=== Null-space search: e^z degree ≤ 1 (sanity) polynomial ODE in (z, f, f', f'') ===
+  Matrix size: 16×5  (should be full rank 5 if no ODE exists)
+  Singular values (sorted): ['1.085e-165', '2.515e-82', '4.410e-01', '1.454e+00', '2.302e+01']
+  Min/Max ratio: 4.715e-167  (< 1e-30 ⟹ genuine near-null vector)
+  *** POTENTIAL ODE RELATION FOUND ***
+
+=== SANITY: f=ψ(z) is HT (order 0: algebraic?): no degree ≤ 2 in (z,f) alone ===
+
+=== Null-space search: ψ(z) degree ≤ 1 (HT, no null expected) polynomial ODE in (z, f, f', f'') ===
+  Matrix size: 16×5  (should be full rank 5 if no ODE exists)
+  Singular values (sorted): ['8.853e-02', '3.627e-01', '2.691e+00', '5.178e+00', '2.115e+01']
+  Min/Max ratio: 4.185e-03  (< 1e-30 ⟹ genuine near-null vector)
+  No low-degree ODE found at this degree

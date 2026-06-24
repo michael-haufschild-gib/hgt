@@ -1,0 +1,38 @@
+NODE: tail-index uncertainty with few extreme drawdown durations
+reps=300 n=800 seed=4122113995
+case k hill_mean hill_emp_sd hill_naive_se ols_mean ols_emp_sd ols_naive_se mean_ols_r2
+pure_pareto   5    1.6626      0.9165        0.7436   1.0883     0.7643       0.2074     0.8958
+pure_pareto  10    1.5250      0.5155        0.4822   1.0853     0.4904       0.1012     0.9227
+pure_pareto  20    1.4106      0.3425        0.3154   1.0723     0.3161       0.0575     0.9400
+pure_pareto  40    1.4022      0.2329        0.2217   1.1636     0.2502       0.0366     0.9562
+mixture_tail  5    1.1007      0.6163        0.4923   0.6592     0.4572       0.1130     0.9044
+mixture_tail 10    0.9607      0.3208        0.3038   0.6635     0.2880       0.0649     0.9161
+mixture_tail 20    0.9491      0.2054        0.2122   0.7124     0.2211       0.0374     0.9415
+mixture_tail 40    0.8834      0.1373        0.1397   0.7671     0.1758       0.0256     0.9487
+
+STEP8 Levenshtein transfer candidates
+1 distance=13 ratio=0.2063 few extreme phase-defect runs understate tail-index uncertainty
+2 distance=27 ratio=0.4821 few zero-shadow extremes understate exponent uncertainty
+3 distance=29 ratio=0.5000 few seam lifetime extremes understate power-tail certainty
+selected=1 few extreme phase-defect runs understate tail-index uncertainty
+
+STEP9 method=9 small cases: HT tail-index uncertainty
+kind sigma run_count max_run top_k hill_alpha hill_naive_se ols_alpha ols_se ols_r2
+true   0.3        13      71     5     2.8800        1.2880    2.0628  0.2956  0.942
+true   0.3        13      71    10     2.6347        0.8332    2.2130  0.1279  0.974
+finite 0.3        22      68     5     2.3223        1.0386    1.1876  0.2278  0.901
+finite 0.3        22      68    10     2.3672        0.7486    1.5665  0.1775  0.907
+random 0.3       138      19     5     4.7105        2.1066    3.1174  0.3100  0.971
+random 0.3       138      19    10     4.2626        1.3479    3.0116  0.1332  0.985
+true   0.5        15      50     5     5.5495        2.4818    3.4307  1.1359  0.753
+true   0.5        15      50    10     3.8537        1.2187    3.5592  0.3733  0.919
+finite 0.5        24      49     5     6.7033        2.9978    2.3979  0.6326  0.827
+finite 0.5        24      49    10     6.5747        2.0791    3.3662  0.5033  0.848
+random 0.5       131      21     5     3.3068        1.4788    1.7709  0.1924  0.966
+random 0.5       131      21    10     3.8976        1.2325    2.3641  0.3209  0.872
+true   1.2         8     107     5     1.3015        0.5821    1.9277  0.4144  0.878
+true   1.2         8     107     7     1.4837        0.5608    1.1541  0.2270  0.838
+finite 1.2         8     108     5     1.2088        0.5406    1.9493  0.3932  0.891
+finite 1.2         8     108     7     1.4930        0.5643    1.1175  0.2256  0.831
+random 1.2       125      31     5     2.4616        1.1009    2.2403  0.1544  0.986
+random 1.2       125      31    10     1.5083        0.4770    1.9804  0.0836  0.986

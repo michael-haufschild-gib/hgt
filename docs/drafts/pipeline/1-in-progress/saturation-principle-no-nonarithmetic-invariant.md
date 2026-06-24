@@ -1,4 +1,4 @@
-# The Saturation Principle — a hypertranscendental object carries no finite non-arithmetic invariant
+# The Saturation Principle — finite-order meromorphic HT objects carry no finite non-arithmetic fine invariant
 
 - **ID:** saturation-principle-no-nonarithmetic-invariant
 - **Stage:** 1-in-progress (DeWitt + Wheeler, 2026-06-20) — strongly-certified **[CONJECTURE]**, NOT proven
@@ -96,3 +96,80 @@ dressed as one. Value = a load-bearing organizing conjecture + a route-closing c
 ## Cross-references
 ht-c28 (single-handle map → BRIDGE bucket); the glassiness dead-route record; [[class-level-saturation]];
 charter door/00-index (the apex as the sole open frontier — library ticket filed).
+
+## Support-Purged Zeta Invariant Challenge
+
+[CONJECTURE pressure test, 2026-06-23]
+
+Turing sharpened the principle into a falsifiable support-purging test: name a `zeta` invariant that distinguishes `zeta` from a random Euler product with the same prime support, but that is not merely a restatement of the infinite prime-log module or Euler-product support.
+
+The obvious non-support answer is classical rather than new: impose analytic continuation, a functional equation, degree-one Selberg-class hypotheses, and Euler-product regularity, and converse-theorem / Selberg-class rigidity pushes the object back toward Dirichlet `L`-functions, with `zeta` singled out by the trivial character and pole. This is a real fake-family filter, but it is imported rigidity, not a new native invariant.
+
+Current ballot position from Professor: no support-purged invariant is known. All separators found in the Gamma-zeta investigation reduced either to:
+
+1. coarse analytic type;
+2. finite/infinite prime-log frequency rank;
+3. Euler-product / Selberg-class rigidity;
+4. arithmetic value/zero data;
+5. RH-equivalent positivity, which is a separate apex.
+
+This supports the saturation principle as a route-closing map, not as a promoted theorem. A promotion would require either:
+
+1. a proof that every finite affine-canonical same-type invariant factors through value/zero arithmetic; or
+2. a counterexample invariant that distinguishes `zeta` from same-support random Euler products while surviving FE/converse-theorem and prime-support stripping.
+
+Falsifier to request from agents: provide a same-coarse-type invariant `I` such that `I(zeta) != I(F)` for a same-support random Euler product `F`, where `I` is not equivalent to analytic continuation + FE rigidity, not equivalent to the infinite prime-log module, and not an RH-equivalent zero-localization criterion.
+
+## FunSearch Target Audit: Support-Purged Invariants
+
+[HOLD / verifier missing, 2026-06-23]
+
+Haiku proposed Turing's support-purged zeta invariant challenge as a FunSearch target: search finite, affine-canonical, same-coarse-type invariants that separate `zeta` from random Euler products with the same prime support while avoiding the known reductions.
+
+Professor audit: the objective is not verifier-ready. The cheap part is only the numerical separation `I(zeta) != I(random control)`. The hard part is the support-purged condition: showing that `I` does not reduce to coefficient coherence, complete multiplicativity, Euler-product/Bohr rigidity, analytic continuation/functional equation failure, prime-log spectral rank, arithmetic zero/value data, or RH-equivalent positivity.
+
+Likely failure modes for an ungated search:
+
+1. The invariant detects `a_n=1` coherence or complete multiplicativity.
+2. The invariant detects positivity / absence of random phases.
+3. The invariant detects failure of random Euler products to analytically continue or satisfy the functional equation.
+4. The invariant rediscovers finite/infinite prime-log spectral rank or explicit-formula residue content.
+5. The invariant detects zero statistics or positivity criteria that are RH-equivalent or already classical.
+
+A FunSearch-style run becomes meaningful only after an explicit verifier is defined. Minimum verifier requirements:
+
+1. specify the allowed invariant language;
+2. normalize away coarse analytic type and trivial truncation artifacts;
+3. include Dirichlet `L` controls so the invariant does not merely detect character/conductor unless intended;
+4. include randomized phase controls, Davenport-Heilbronn / linear-combination controls, and same-zero-density controls;
+5. require label-stripped explanation of what feature the winning invariant measures;
+6. route any winner through source search before promotion.
+
+Status: HOLD. This remains a significant challenge but not a cheap-verifier search target yet. Running a search before the verifier is formalized would optimize a hole in the gate, not solve the support-purged problem.
+
+## 2026-06-24 Turing scope-limit: principle is MEROMORPHIC-ONLY (id=1836, 1838)
+
+**Finding (Turing id=1836, 1838):** The saturation principle as stated is too broad. The title "a HT object carries no finite non-arithmetic invariant" holds in the **finite-order meromorphic regime** (Γ, ζ, Λ), but **FAILS** for natural-boundary HT objects.
+
+**Böttcher counterexample.** φ_{c₁} and φ_{c₂} (Böttcher coordinates for z²+c₁ vs z²+c₂) have the same coarse type (both ~z at ∞), but the dynamical parameter c is:
+- finite-jet-computable (recoverable from Laurent coefficients: φ_c = z + c/(2z) + ...)
+- non-arithmetic (c is a free complex parameter, not a value/zero of φ_c)
+- a fine discriminator at equal coarse type
+
+So the natural-boundary case has a finite, non-arithmetic, same-coarse-type discriminator — the dynamical parameter c (equivalently the Julia set J_c). The saturation principle FAILS here.
+
+**Mahler breakdown of the "singular set determines object" unification attempt.** Even within natural-boundary HT, the discriminator structure is heterogeneous:
+- **Böttcher-type**: boundary SET varies (J_{c₁} ≠ J_{c₂}) → set discriminates.
+- **Mahler-type** (Fredholm Σz^{2ⁿ} and its cousins): boundary set FIXED (all share |z|=1) → boundary BEHAVIOR (coefficients/automaton/singular measure) discriminates, not the set.
+
+No clean unification across natural-boundary HT objects: the discriminators are heterogeneous.
+
+**Correct scoped principle:**
+- **Meromorphic regime** (finite-order, Γ, ζ, Λ): principle holds = Hadamard–Weierstrass (divisor + e^P) + divisor-arithmetic apex. SOLID (after the coarse-type / same-type scope).
+- **Natural-boundary regime** (Böttcher, Mahler, linearizers): NO clean saturation-analog. Discriminators are per-class and non-arithmetic (dynamical parameter for Böttcher; coefficient/automaton for Mahler).
+
+**Title correction required:** Replace "a hypertranscendental object carries no finite non-arithmetic invariant" with "**a finite-order meromorphic hypertranscendental object** carries no finite non-arithmetic *fine* invariant."
+
+**Load-bearing negative:** The failure of a unified saturation principle across all HT objects is as load-bearing as the positive in the meromorphic case — it prevents over-generalizing and tells us the natural-boundary regime needs per-class discriminator theory, not a single principle. This is genuine structural knowledge about the field.
+
+Status: still `[CONJECTURE]` in the meromorphic regime (proof open); the natural-boundary failure is proved (Böttcher counterexample). Title updated pending full card edit.

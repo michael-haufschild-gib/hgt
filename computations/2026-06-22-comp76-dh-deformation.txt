@@ -1,0 +1,35 @@
+=== s_d(lambda) for ZETA + lambda*quartet(beta=0.7,g0=20), d=10 (shape of the crossing) ===
+  lambda=   0:  s_d = 1.2597508e-52
+  lambda= 0.5:  s_d = 5.3143533e-49
+  lambda=   1:  s_d = 5.2956421e-49
+  lambda=   2:  s_d = 5.2863368e-49
+  lambda=   3:  s_d = 5.2832424e-49
+  lambda=   5:  s_d = 5.2807696e-49
+  lambda=   8:  s_d = 5.2793797e-49
+
+=== lambda_crit(d): off-line weight needed to flip s_d, vs degree (beta=0.7,g0=20) ===
+   d    s_d(lambda=0)      lambda_crit
+   8      2.95503e-41         0.163298
+  12      1.49493e-64      no crossing
+  16      3.91572e-89      no crossing
+  20     1.19609e-114      no crossing
+  24     3.03767e-141      no crossing
+  28     1.85805e-168      no crossing
+
+=== dependence on off-line height g0 (does a deeper/shallower off-line zero matter?) d=16 ===
+  g0= 10: lambda_crit = no crossing
+  g0= 20: lambda_crit = no crossing
+  g0= 40: lambda_crit = 6.98983
+  g0= 80: lambda_crit = no crossing
+
+=== dependence on off-line distance beta (closer to line = weaker effect?) d=16,g0=20 ===
+  beta=0.55: lambda_crit = no crossing
+  beta= 0.7: lambda_crit = no crossing
+  beta= 1.0: lambda_crit = no crossing
+  beta= 1.5: lambda_crit = no crossing
+
+DONE
+
+real	0m31.916s
+user	0m31.888s
+sys	0m0.028s

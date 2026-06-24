@@ -163,3 +163,9 @@ logically separate all-order RH implication once `Q_0` is proved for the actual 
 ## Log
 
 - 2026-06-21 -- Conway: created from bridge-theorem RNG node 23, `[T_{i+j+1}]_{i,j=0}^d`.
+
+## 2026-06-24 zero-completeness cross-check
+
+`shifted-reciprocal-moments-determine-divisor.md` records the determinacy fact used implicitly here: for reciprocal divisor data with finite shifted total variation, the all-order shifted tower `T_k=sum_y M_y y^k`, `k>=1`, determines the weighted reciprocal divisor by compact polynomial density on the countable support.
+
+Thus the source-aware `Q_0` chart is faithful because it remembers a zero-complete object. This is useful as a chart, but it is not source-neutral input: any RH proof using the full tower must first derive it from Euler/Gamma/FE source data without reading the zero divisor.

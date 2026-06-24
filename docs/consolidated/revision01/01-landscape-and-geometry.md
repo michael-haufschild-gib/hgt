@@ -58,14 +58,15 @@ pole (`div = [0]−[∞]`), so the one place where CC fails is the place the Γ-
 > The archimedean place is the **unique σ-orbit-unbalanced (Source-A) place**, and
 > `C5 = the weld = {the one non-CC place} × {the CC places}`, welded by the functional equation.
 
-The **functional equation welds the two sources**, and the seam is its fixed locus:
+The **functional equation welds the two sources**. The holomorphic involution fixes the centre; the seam is the
+fixed locus after conjugation:
 
 ```
-   Λ(s) = Λ(1−s),   ι : s ↦ 1−s,   Fix(ι) = { Re s = ½ }.
+   Λ(s) = Λ(1−s),   ι : s ↦ 1−s,   Fix(ι) = { 1/2 },   Fix(ι∘conj) = { Re s = ½ }.
 ```
 
 As a one-form `ω = H(s)ds` this is reflection-compatible: with `r(s)=1−s`, `r*(H ds) = H ds`, so
-`H(s) = −H(1−s)` away from zeros/poles. **`Re(s)=½` is not a midpoint; it is the fixed seam of the
+`H(s) = −H(1−s)` away from zeros/poles. **`Re(s)=½` is not a midpoint; it is the reflected fixed seam of the
 involution `ι`** where the two sides must glue consistently. (Precisely: the *holomorphic* `s↦1−s` fixes
 only the point `s=½`; the whole **line** `Re(s)=½` is the fixed locus of the *anti-holomorphic* `s↦1−s̄`.
 The seam is the line; the functional-equation reflection `Λ(s)=Λ(1−s)` is the holomorphic statement.)
@@ -120,7 +121,7 @@ The seam has a single computable shadow, the **corank** of the difference-Galois
 
 So **`ζ` non-holonomic ⟺ no single Frobenius ⟺ corank = ∞ ⟺ archimedean seam non-trivial.**
 
-**The level-separation theorem (the honest sharpening) `[PROVED — BRIDGE]`:** corank is an *inherently
+**The level-separation theorem (the direct sharpening) `[PROVED — BRIDGE]`:** corank is an *inherently
 linear* invariant —
 ```
    corank = ∞  ⟺  {log p} ℚ-LINEARLY independent      (Baker, PROVEN)
@@ -136,7 +137,7 @@ the proven floor (`T=1`) to the open apex (`all T = ∞`); the first open rung i
 for `{log 2, log 3}`), with the pairwise-homogeneous bottom already climbed by Gelfond–Schneider
 (`{(log p)², (log p)(log q), (log q)²}` ℚ-LI).
 
-> **Honest correction the geometry must carry** `[PROVED]`: the naive reading "*the obstruction is corank
+> **Correction the geometry must carry** `[PROVED]`: the naive reading "*the obstruction is corank
 > = ∞ / missing single Frobenius*" is **refuted**. Twin witnesses with identical native invariants
 > (corank 2, `dim G_L = 2`, flat, additive, Frobenius-less) can have `trdeg = corank = 2` *or*
 > `trdeg = 1 < 2 = corank`. The real obstruction is **value-arithmeticity** (algebraic independence of
@@ -244,7 +245,13 @@ The seam `½` is pinned as a distinguished locus through several *independent* g
 - **The positivity/localization axis** — RH itself. RH is the **positivity of the FE-polarization**
   (Weil), and *that polarization is archimedean*: the prime structure (Source B) carries **no
   polarization** (`g_p = g_p^{-1} ⟹ g_p = ±1`, false). Every known RH-equivalent positivity
-  (Hilbert–Pólya, Nyman–Beurling, de Branges, Connes, Mertens amplitude) is archimedean.
+  (Hilbert–Pólya, Nyman–Beurling, de Branges, Connes, Mertens amplitude) is archimedean. **The archimedean
+  structure is literally the Connes–Consani–Moscovici prolate grading `[PROVED — verified]`:** the Γ-factor's
+  pole+trivial-zero lattice satisfies `2|w|=4N+1` exactly (N=0 the `s=1` pole, **N=1 the boundary atom
+  `a_*=(5/2)^{−2}=0.16`**, N≥2 the protector tail) — the prolate Hermite grading `4N+1`, since `Γ_ℝ` is the
+  Mellin transform of the prolate's Gaussian cyclic vector. The archimedean *budget* matches their Sonin
+  compression *unconditionally*; the RH content (the prime/finite-places demand) is the **semilocal** prolate
+  (Connes–Consani arXiv:2310.18423).
 
 > **`polarization-present ⟺ single Frobenius ⟺ corank 1 ⟺ F_q`**, and its absence (`⟺ corank ∞ ⟺ ℚ`) is
 > exactly the seam. **RH-positivity is the one archimedean/timelike direction**: in the explicit-formula

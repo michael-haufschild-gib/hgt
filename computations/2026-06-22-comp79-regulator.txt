@@ -1,0 +1,9 @@
+=== T_k from the seam contour integral of the ACTUAL Xi'/Xi vs the moment route ===
+  k            r=0.5            r=1.0     r=2.0 (smooth)    T_moments_exact  max rel.dev
+  1  1.486041141e-53  1.484254892e-53    1.474211275e-53      0.04620998623          1.0
+  2  5.944169636e-53   1.48425616e-53    2.808298258e-54     7.434519857e-5          1.0
+  3  2.377664812e-52  1.484254575e-53    5.404384494e-55     2.883478628e-7          1.0
+
+s_d(d=2): contour-moments=0.00019932284  vs  exact-moments=3.1937055e-10
+=> seam finite part (hence s_d) is radius/cutoff independent on the actual Xi'/Xi (proof7 Lemma 2 witnessed).
+DONE

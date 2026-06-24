@@ -1,0 +1,9 @@
+zeros of sin(s exp(s)): s = W_k(n*pi)
+strip: 0 <= Re(s) <= 1
+kmax       count       T=max|Im|       count/T^2
+10         182         61.277366       0.04846980
+20         706         124.100939      0.04584105
+40         2785        249.760618      0.04464546
+80         11067       501.086021      0.04407632
+
+The nonzero limiting scale of count/T^2 is consistent with quadratic strip density.

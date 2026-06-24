@@ -3800,3 +3800,189 @@ Standing-order target pick: file rng#1 = `docs/consolidated/08-conjectures-requi
 - Computation: `computations/2026-06-21-conway-attempt11-step8/01.py` / `.txt`.
 - Result: visual sharpness flagged both the regular weld ridge and the fold toy; only the fold toy had the preimage jump.
 - Verdict: DEAD END. Reduces to the existing two-axis anti-conflation principle and the Master identification-bridge kill condition. Not counted and not posted as a finding.
+
+## Professor dead end — zero-wealth absorbing boundary vs Christoffel/Uvarov front (2026-06-23)
+
+- Workflow source: `logs/experiments/workflow-general.md`, using last RandomNode `granular segregation`.
+- Entropy seed recorded by `scripts/rng seed`: `3845766000613800379`.
+- Step 1 cold prompt produced wide topic list; RNG picked item 13: `Wealth condensation in econophysics models`.
+- Step 3 cold prompt produced missed-detail list; RNG picked item 2: `The zero-wealth absorbing boundary`.
+- NODE constraint: in yard-sale wealth exchange, stake is proportional to `min(w_i,w_j)`, so an agent at exact zero cannot stake and the zero boundary is absorbing unless an explicit floor/redistribution rule is added.
+- NODE experiment: compare absorbing, tiny-floor, and redistribution variants; Step 9 method RNG picked method 10, `Test extreme cases`.
+- Computations: `computations/2026-06-23-wealth-zero-boundary-node.py`, `computations/2026-06-23-wealth-zero-boundary-node-runpod.txt`, `computations/2026-06-23-wealth-zero-boundary-node-extremes-runpod.txt`; RunPod copies under `/root/hgt-shared/computations/`.
+- Result: absorbing boundary revived seeded-zero agents `0/24` and developed high near-zero mass / high Gini; tiny floor or redistribution revived `24/24`; aggressive exchange drove near-total condensation; strong redistribution killed condensation. This confirms the NODE constraint and its boundary cases.
+- Transfer tested: use the zero-boundary/floor distinction to rescue the earlier `granular segregation x Christoffel functions` bridge by interpreting Uvarov point-mass update as a discrete boundary correction beyond continuum segregation.
+- Verdict: DEAD END for novelty. The NODE result is expected from the yard-sale boundary. The transfer reduces to known boundary/floor regularization plus Uvarov/Sherman-Morrison and Christoffel support estimation; no nonstandard `T` was produced. Not counted as a finding.
+
+## Professor dead end — pre-crisis shadow of post-crisis escape channel (2026-06-23)
+
+- Workflow source: `logs/experiments/workflow-general.md`, continuing from last RandomNode `zero-wealth absorbing boundary`.
+- Entropy seed recorded by `scripts/rng seed`: `691829661222804965`.
+- Step 1 cold prompt produced wide topic list; RNG picked item 10: `Basin-boundary crises in chaotic dynamical systems`.
+- Step 3 cold prompt produced missed-detail list; RNG picked item 1: `Pre-crisis chaotic transients that already shadow the post-crisis escape route`.
+- NODE constraint: a post-crisis escape channel is already visible geometrically in pre-crisis bounded dynamics as near-hits to the would-be hole / chaotic saddle channel.
+- NODE experiment: logistic map near the invariant-interval crisis. For `r_post=4.01`, the hole around `x=1/2` maps outside `[0,1]`; for `r_pre=3.99`, bounded orbits can still approach that would-be hole. Compare pre-crisis minimum distance to the post-crisis hole against post-crisis escape time, with a same-width control interval.
+- Computation: `computations/2026-06-23-basin-crisis-shadow-node.py`, `computations/2026-06-23-basin-crisis-shadow-node-runpod.txt`; RunPod copies under `/root/hgt-shared/computations/`.
+- Result: all `8000/8000` post-crisis samples escaped within the cap. Spearman correlation between pre-crisis minimum distance to the post-crisis hole and post-crisis escape time was `0.207839`; same-width control interval correlation was `-0.0406032`. Mean escape time rose from about `25` in closest-hole bins to about `33` in farthest-hole bins; control bins did not show that monotone structure.
+- Source reduction: this is aligned with classical crisis / transient-chaos theory (Grebogi-Ott-Yorke; crisis-induced intermittency; chaotic saddles retaining destroyed-attractor geometry).
+- Transfer attempts: (1) de Bruijn-Newman heat flow, where pre-critical zero geometry shadows post-flow off-line escape; (2) Jensen/Laguerre hyperbolicity deformation; (3) reciprocal Hankel/Krein index crossing. All reduce to existing de Bruijn-Newman / Jensen / `s_d`-Krein wall structures.
+- Verdict: DEAD END for novelty. The NODE experiment is real and workflow-faithful, but the transfer lands in known structures. Not counted as a finding.
+
+## Professor dead end — noise-induced premature escape from repelling slow manifolds (2026-06-23)
+
+- Workflow source: `logs/experiments/workflow-general.md`, continuing from last RandomNode `pre-crisis chaotic transients that already shadow the post-crisis escape route`.
+- Entropy seed recorded by `scripts/rng seed`: `2735874861708935950`.
+- Step 1 cold prompt produced wide topic list; RNG picked item 2: `Canard explosions in slow-fast biochemical oscillators`.
+- Step 3 cold prompt produced missed-detail list; RNG picked item 17: `Noise-induced premature escape from repelling slow manifolds`.
+- NODE constraint: noise kicks trajectories off a repelling slow manifold before the deterministic trajectory would visibly escape; escape coordinate is controlled by accumulated repulsion and the logarithm of the noise scale.
+- NODE experiment: linearized slow-fast normal model `dy/dt=eps`, `dX=y X dt + sigma dW`, with escape at `|X|>=threshold`. Prediction: `y_escape ~ sqrt(2 eps log(threshold/sigma))`.
+- Computation: `computations/2026-06-23-canard-noise-escape-node.py`, `computations/2026-06-23-canard-noise-escape-node-runpod.txt`; RunPod copies under `/root/hgt-shared/computations/`.
+- Result: median escape coordinate decreased monotonically as noise increased: `0.356` at `sigma=1e-4`, `0.3214` at `3e-4`, `0.282` at `1e-3`, `0.24` at `3e-3`, `0.1828` at `1e-2`, and `0.0684` at `3e-2`. The logarithmic prediction gave the correct trend and scale, with increasing deviation at large noise where the asymptotics are not expected to be sharp.
+- Transfer attempts: (1) de Bruijn-Newman heat-flow coefficient perturbations causing premature hyperbolicity loss near tiny margins; (2) Jensen/Laguerre coefficient noise near root-collision boundary; (3) Krein/Hankel moment noise crossing the scalar Weyl gap with probability controlled by `s_d/(sigma ||grad s_d||)`.
+- Verdict: DEAD END for novelty. NODE experiment is real and workflow-faithful, but the transfer reduces to known large-deviation/canard theory and known no-margin / hyperbolicity-boundary perturbation theory. Not counted as a finding.
+
+## Workflow-General Run W4: Nonhyperbolic Escape Algebraic Lifetime Tails
+
+[DEAD END / REDUCES, 2026-06-23]
+
+Workflow continued from last RandomNode `Noise-induced premature escape from repelling slow manifolds`.
+
+- Entropy seed: `279994678386043821`.
+- Step 1 cold prompt list, Step 2 RNG: item 11, `Escape from chaotic saddles in transient chaos`.
+- Step 3 cold prompt list, Step 4 RNG: item 18, `Escape dynamics may be nonhyperbolic, producing algebraic rather than exponential lifetime distributions`.
+- Step 9 scientific-method RNG: method 16, `Use a minimal counterexample`.
+
+NODE constraint: hyperbolic/mixing open systems have exponential-looking survival, while a neutral or nonhyperbolic trapping mechanism can produce algebraic lifetime tails.
+
+Experiment: `computations/2026-06-23-nonhyperbolic-escape-tail-node.py` compares a full-chaos logistic-map control with a small leak against an intermittent neutral-fixed-point map with a leak. It fits survival on both exponential and power-law scales.
+
+RunPod NODE result:
+
+- mixing logistic control: exponential fit `R^2=0.999717`, power-law fit `R^2=0.864772`, exponential slope `-0.016510518`.
+- nonhyperbolic intermittent map: exponential fit `R^2=0.709733`, power-law fit `R^2=0.998907`, power-law slope about `-0.9939138`.
+
+Transfer selected by Levenshtein: `nonhyperbolic phase defect escape has algebraic lifetime tail`.
+
+HT transfer result: phase-defect lifetime tails do not produce a true-specific nonhyperbolic signature. In the right strip (`sigma=1.2`), true and finite Euler nearly coincide: true threshold `0.217145`, run count `11`, max run `67`, exponential/power `R^2=0.9432/0.7566`; finite threshold `0.215792`, run count `11`, max run `67`, exponential/power `R^2=0.9325/0.7790`. Random controls have their own short-run tail shapes. In the left strip, differences mostly reflect threshold/autocorrelation and zero-proximity artifacts already seen in earlier recurrence-skeleton runs.
+
+Source reduction: the NODE behavior is classical nonhyperbolic/transient-chaos material; the HT transfer reduces to generic threshold-run/autocorrelation behavior and repeats the prior warning that recurrence or lifetime skeletons are not native HT invariants.
+
+Verdict: DEAD END for novel knowledge. The NODE experiment is clean and reproducible, but no non-reducing `(S,P,M,T)` survives.
+
+## Workflow-General Run W5: Tail-Index Uncertainty From Few Extreme Drawdowns
+
+[DEAD END / HYGIENE GATE, 2026-06-23]
+
+Workflow continued from last RandomNode `Escape dynamics may be nonhyperbolic, producing algebraic rather than exponential lifetime distributions`.
+
+- Entropy seed: `3142228065337374667`.
+- Step 1 cold prompt list, Step 2 RNG: item 12, `Heavy-tailed financial drawdown durations`.
+- Step 3 cold prompt list, Step 4 RNG: item 19, `Underestimated uncertainty in tail-index estimates due to few extreme durations`.
+- Step 9 scientific-method RNG: method 9, `Test small cases`.
+
+NODE constraint: tail-exponent estimation is controlled by the number and structure of extreme observations, not by the full sample size. High log-log fit quality can coexist with badly understated uncertainty.
+
+Experiment: `computations/2026-06-23-drawdown-tail-uncertainty-node.py` simulates pure Pareto and two-component tail-mixture drawdown durations. It compares repeated-sample variability of Hill and log-log OLS tail estimates against naive within-sample standard errors.
+
+RunPod NODE result:
+
+- Pure Pareto, `k=20`: Hill empirical SD `0.3425` vs naive SE `0.3154`; OLS empirical SD `0.3161` vs naive SE `0.0575`, mean `R^2=0.9400`.
+- Mixture tail, `k=20`: Hill empirical SD `0.2054` vs naive SE `0.2122`; OLS empirical SD `0.2211` vs naive SE `0.0374`, mean `R^2=0.9415`.
+- At `k=40`, OLS still understates repeated-sample variability by about `6.8x` in the mixture case (`0.1758` vs `0.0256`) despite mean `R^2=0.9487`.
+
+Transfer selected by Levenshtein: `few extreme phase-defect runs understate tail-index uncertainty`.
+
+HT transfer result: useful as hygiene, not novelty. Tail-exponent fits to phase-defect run lengths use tiny effective samples. In the right strip (`sigma=1.2`), true and finite Euler are nearly identical: true run count `8`, max run `107`; finite run count `8`, max run `108`; Hill/OLS tail estimates are close at the same `k`. The statistic therefore reduces to finite-sample tail-estimation fragility plus prior recurrence/run-length controls.
+
+Source reduction: this is standard extreme-value / Hill-estimator caution: tail-index estimates depend on the number of upper order statistics and have fragile threshold/sample-size behavior. No non-reducing `(S,P,M,T)` survives.
+
+Verdict: DEAD END for novel knowledge. Keep the hygiene gate: do not promote power-tail/exponent claims from a handful of extreme runs without repeated-window/bootstrap uncertainty and finite/random controls.
+
+## Workflow-General Run W6: Road Hierarchy As Fractal-Morphology Confound
+
+[DEAD END / HYGIENE GATE, 2026-06-23]
+
+Workflow continued from last RandomNode `Underestimated uncertainty in tail-index estimates due to few extreme durations`.
+
+- Entropy seed: `1096590896978984582`.
+- Step 1 cold prompt list, Step 2 RNG: item 10, `Fractal urban morphology`.
+- Step 3 cold prompt list, Step 4 RNG: item 11, `How road hierarchy can mimic fractal branching without reflecting self-organized urban growth`.
+- Step 9 scientific-method RNG: method 1, `Split it into subclaims`.
+
+NODE constraint: box-count fractal-looking morphology is not a mechanism detector. A designed hierarchy, stochastic growth, and random occupancy can all produce high-quality scaling fits.
+
+Experiment: `computations/2026-06-23-road-hierarchy-fractal-confound-node.py` compares a deterministic H-tree-style road hierarchy, stochastic dendritic growth, and random occupancy using box-count dimension, fit `R^2`, occupancy coefficient of variation, and anisotropy.
+
+RunPod NODE result:
+
+- designed hierarchy: box dimension `1.39731`, `R^2=0.9866`, occupancy CV `0.47953`, anisotropy `1.68010`.
+- stochastic growth: box dimension `1.61239`, `R^2=0.9965`, occupancy CV `0.49986`, anisotropy `1.24339`.
+- random occupancy: box dimension `1.59867`, `R^2=0.9659`, occupancy CV `0.28790`, anisotropy `1.03850`.
+
+Transfer selected by Levenshtein: `prime hierarchy mimics fractal phase branching without native organization`.
+
+HT transfer result: high box-count `R^2` appears across true, finite Euler, and random controls. In the right strip (`sigma=1.2`), true and finite Euler are effectively identical on the tested morphology statistics: true dimension `1.42443`, `R^2=0.9954`, CV `0.56542`, anisotropy `4.42820`; finite dimension `1.42402`, `R^2=0.9959`, CV `0.56260`, anisotropy `4.47006`.
+
+Source reduction: this is standard fractal-urban-method caution. Box-count/fractal dimension is descriptive and sensitive to representation/scale; scaling curves can add diagnostic information, but dimension alone does not identify a self-organized mechanism.
+
+Verdict: DEAD END for novel knowledge. Keep the hygiene gate: do not promote HT/landscape claims from box-count dimension or high scaling `R^2` unless controls separate designed hierarchy, random occupancy, finite Euler, and random phase.
+
+## Workflow-General Run W7: Multilayer Transport Coupling Missed By Single-Layer Metrics
+
+[DEAD END / HYGIENE GATE, 2026-06-23]
+
+Workflow continued from last RandomNode `Road hierarchy can mimic fractal branching without reflecting self-organized urban growth`.
+
+- Entropy seed: `3677919641956617035`.
+- Step 1 cold prompt list, Step 2 RNG: item 12, `Scale-free transport networks`.
+- Step 3 cold prompt list, Step 4 RNG: item 11, `Multilayer structure, where transport depends on interactions between roads, rail, air, power, or data layers`.
+- Step 9 scientific-method RNG: method 2, `Attack it as false`.
+
+NODE constraint: single-layer graph statistics can miss vulnerabilities caused by inter-layer dependency links. A low-degree node in one layer can be high-impact because it supports another layer.
+
+Experiment: `computations/2026-06-23-multilayer-transport-coupling-node.py` builds two synthetic transport layers plus dependency links and compares targeted single-layer degree removals against low-degree dependency removals.
+
+RunPod NODE result:
+
+- road top-degree removal: road giant `0.0197`, rail giant `0.7945`.
+- rail top-degree removal: road giant `0.9278`, rail giant `0.0236`.
+- low-degree dependency removal: road giant `0.9275`, rail giant `0.0417`.
+
+Interpretation: a set that is low-degree in the road layer can almost collapse the rail layer through dependency coupling. Single-layer degree alone misses the inter-layer failure channel.
+
+Transfer selected by Levenshtein: `gamma prime weld coupling missed by single layer metrics`.
+
+HT transfer result: weak diagnostic, not novelty. The transfer compared separate Gamma/prime amplitudes with coupled weld defects. Some left-strip correlations differ, but the right-strip true/finite control collapses: at `sigma=1.2`, true and finite have nearly identical `corr_gamma_weld` (`-0.05609/-0.05631`) and similar `corr_prime_weld` (`0.08261/0.08892`). This repeats the standing warning that separate-layer statistics can be misleading, but does not yield a native invariant.
+
+Source reduction: interdependent/multilayer-network cascade failures are established (e.g. Buldyrev et al. interdependent networks; multilayer network robustness/cascade literature). No non-reducing `(S,P,M,T)` survives.
+
+Verdict: DEAD END for novel knowledge. Keep the hygiene gate: Gamma-only or prime-only diagnostics cannot be promoted as weld/landscape evidence unless a coupled statistic separates true from finite/random controls and survives source/promptability checks.
+
+## Workflow-General Run W8: Spin-Orbit Matrix Boundary Conditions
+
+[DEAD END / HYGIENE GATE, 2026-06-23]
+
+Workflow continued from last RandomNode `Multilayer structure, where transport depends on interactions between roads, rail, air, power, or data layers`.
+
+- Entropy seed: `492832716409134168`.
+- Step 1 cold prompt list, Step 2 RNG: item 18, `Quantum graph transport`.
+- Step 3 cold prompt list, Step 4 RNG: item 16, `Spin-orbit coupling requires matrix-valued boundary conditions and changes the scattering symmetry class`.
+- Step 9 scientific-method RNG: method 17, `Change representation`.
+
+NODE constraint: scalar phase boundary data cannot encode spin rotation or spin-dependent scattering. Matrix-valued boundary/scattering data changes both interference visibility and output spin polarization.
+
+Experiment: `computations/2026-06-23-spinorbit-matrix-boundary-node.py` compares a scalar two-path interferometer against a spinful path with a `R_y(theta)` spin rotation. Scalar phases preserve full visibility and spin-z; matrix spin-orbit transport does not.
+
+RunPod NODE result:
+
+- `theta=0`: visibility `1.00000`, spin-z `1.00000`.
+- `theta=pi/2`: visibility `0.70711`, spin-z `0.00000`.
+- `theta=pi`: visibility `0.00000`, spin-z `-1.00000`.
+
+Transfer selected by Levenshtein: `gamma prime coupling needs matrix valued boundary diagnostics`.
+
+HT transfer result: representation change is a useful warning but not a native invariant. The scalar-vs-matrix weld statistic is strongly representation-dependent. In the right strip (`sigma=1.2`), true, finite Euler, and random controls are nearly indistinguishable for the `theta=pi/2` matrix representation: `corr_scalar_matrix=0.99606/0.99603/0.99615`, mean log ratio `0.08061/0.08075/0.07555`. For `theta=pi`, true and finite are also close on the mean log ratio (`0.13989/0.13988`).
+
+Source reduction: spin-orbit quantum transport and matrix/scattering-boundary formulations are established. The transfer creates an arbitrary matrix lift of the Gamma/prime weld, not a source-defined matrix category.
+
+Verdict: DEAD END for novel knowledge. Keep the hygiene gate: do not promote scalar-vs-matrix weld diagnostics unless the matrix representation is source-defined and separates true from finite/random controls under label-stripped promptability and source checks.

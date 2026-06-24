@@ -39,3 +39,29 @@ direct assault.
   causality Λ=0, signature σ=½ #190); A1=σ=½ margin, A2=s=1 margin are two faces of one self-criticality.
   Shared missing lemma with R01: a positivity-preserving continuation across the abscissa. ~60–70% prior-true.
 - 2026-06-20 (codex experiment R18) — **Cayley-Schur inner-defect split for A1/A2.** Re-read the finite carrier/Cayley infrastructure and reframed the carrier germ by `theta_xi=(m_xi-i)/(m_xi+i)`. The finite `κ₋=#off-line pairs` theorem says the RH defect is a discrete negative-square count; in the Schur disk picture this is exactly a finite Blaschke inner factor, morally `theta_xi=B_defect*theta_0` with `deg B_defect=κ₋`. Thus A1/RH is `deg B_defect=0`, while A2/DSS belongs to the outer/infinite Taylor jet. This explains why the one-carrier unification is real but non-coercive: generic Herglotz/Schur theory cannot make inner-degree zero force algebraic independence of the outer jet, or vice versa; any bridge must use the Euler/arithmetic realization cut. Full working log in `logs/codex_experiment.md` Round 18.
+
+## 2026-06-24 seam-log Markov-Pick coordinate
+
+`../2-fully-proven/seam-log-markov-pick-rh-equivalence.md` gives the reciprocal-seam version of the Herglotz target. Instead of the carrier `m_xi=-Xi'/Xi`, use the FE quotient `Phi(z)=Xi(sqrt(z))` and the source transform `G_src(x)=2 d/dz log(Phi(z)/Phi(0))|_{z=-x}`. Then RH is equivalent to `G_src` being the Markov transform of a positive measure on `R_+`.
+
+This does not solve the carrier-Herglotz problem; it normalizes the analytic target and makes the circularity explicit. Markov/Pick positivity is the wall unless derived from an independent source rigidity theorem.
+
+## 2026-06-24 seam division is part of the carrier gate
+
+`../2-fully-proven/seam-log-derivative-weld-identity.md` identifies the reciprocal-seam Markov object as
+
+`G_src(-w^2)=Xi'(w)/(w Xi(w))`.
+
+So a carrier route cannot stop at a generic statement about `Xi'/Xi` or `-Xi'/Xi`. It must prove that after division by `w` and the substitution `x=-w^2`, the resulting even function is a positive Markov/Stieltjes transform on `R_+`. That is the same positivity gate in source coordinates, not an extra shortcut.
+
+## 2026-06-24 real-axis scalar kernels are too weak
+
+`../2-fully-proven/real-axis-kernel-positivity-nonselector.md` records the finite algebra behind the bridge-theorem caveat: `K(y)=e(y)^T H^{-1}e(y)>0` for all real `y` does not imply `H>=0`.
+
+Therefore a carrier/Herglotz route must prove the full upper-half-plane Pick/Nevanlinna condition or the full moment square-test cone. A real-axis kernel check is not enough.
+
+## 2026-06-24 divided source summands have seam poles
+
+`../2-fully-proven/seam-division-source-split-cancellation.md` adds the local residue gate to the carrier route. The carrier coordinate `Xi'(w)/(w Xi(w))` is regular at the seam only after the archimedean/pole and prime log-derivative constants cancel by the functional equation.
+
+Therefore a carrier/Herglotz proof must act on the completed divided carrier, not on separately divided source summands. The separate summands are meromorphic at the seam and cannot be individual Markov transforms there.

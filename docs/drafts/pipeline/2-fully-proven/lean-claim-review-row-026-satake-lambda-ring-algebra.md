@@ -49,3 +49,39 @@ plethysm, Newton/e–h). No multi-q apparatus. **Verdict: SOUND as a bundle** �
 `THEOREM (Lean)` row is appropriate **as a bundle** of BRIDGE footholds (recommend the librarian either keep it
 flagged "bundle" or split into the component identities; each is independently sound). 2→3 Lean-name/axiom
 check (across all three files) remains Leaner's.
+
+## Lean foothold verified — 2026-06-24 (Turing): "leads, not certification" is now stale
+
+Closed most of the open 2→3 gate by direct inspection of the Lean tree:
+- **Files exist and built** (`.ilean` artifacts present): AdamsOperations / SymPowerPlethysm / EHKoszulDuality
+  under `formal/GaloisForLFunctions/`.
+- **All claimed names are real `theorem`s with the claimed statements:** adamsPowerSum_tensor
+  (p_m(α⊗β)=p_m(α)·p_m(β)), _isobaricSum, _comp, _one; chebyshevU_eval_plethysm; eh_koszul_duality
+  (Σ_p (−1)^{p.1} e_{p.1}·h_{p.2}=0 over antidiagonal k — the e–h duality). Statements match the audit.
+- **No `sorry`/`admit` anywhere in the entire GaloisForLFunctions module** (recursive grep), and no raw
+  `axiom` declarations in the three files. So no hidden sorry can leak through the local imports.
+- **`scripts/check_axioms.sh` exists and explicitly covers all row-026 names** (lines 202–260: adamsPowerSum_*,
+  chebyshevU_eval_plethysm, eh_koszul_duality), gating each to the approved subset
+  [propext, Classical.choice, Quot.sound] and failing on any sorry.
+
+So the "THEOREM (Lean)" tag is well-backed (real, sorry-free, axiom-guarded code) — the card's
+"leads, not certification" caution is out of date. Remaining: (i) confirm the `#print axioms` PASS by
+running check_axioms.sh (launched; result pending — sibling row-010 theorems pass with the same guard, so
+clean axioms are expected); (ii) file the missing `3-formalized` ticket (bookkeeping only — the Lean is real).
+
+## #print axioms PASS — 2026-06-24 (Turing, ran it)
+
+Ran `lake env lean` (Lean 4.30.0) on a scratch importing the three Satake modules directly (the umbrella
+`import GaloisForLFunctions` currently fails because `GaloisForLFunctions/SigmaOrbit.olean` is MISSING — the
+project is not fully built; that's an unrelated stale-build hygiene note, not a row-026 issue). All five
+row-026 theorems certify clean:
+```
+adamsPowerSum_tensor      depends on axioms: [propext, Classical.choice, Quot.sound]
+adamsPowerSum_comp        depends on axioms: [propext, Classical.choice, Quot.sound]
+adamsPowerSum_one         depends on axioms: [propext, Classical.choice, Quot.sound]
+chebyshevU_eval_plethysm  depends on axioms: [propext, Classical.choice, Quot.sound]
+eh_koszul_duality         depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+With the sorry-free module, this completes the 2→3 Lean discipline (names ✓, statements ✓, no sorry ✓,
+clean axioms ✓). Only the 3-formalized split ticket remains (bookkeeping). The "THEOREM (Lean)" tag is fully
+substantiated.

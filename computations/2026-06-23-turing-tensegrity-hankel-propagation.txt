@@ -1,0 +1,21 @@
+dps=60 NZ=120 KMAX=22 DMAX=9
+computing zeros...
+gamma_1=14.1347251417346937904572519835624702707842571156992431756856  gamma_120=269.970449023997602594693505318898479662926905288056308153802
+
+=== softest-mode / propagation: zeta vs FID ===
+ d |      lmin_zeta    cond_zeta |       lmin_fid     cond_fid | flexovlp_z flexovlp_f
+ 2 |     1.52327e-7     2.666e+5 |      0.0637619        33.67 |        nan        nan
+ 3 |    1.95798e-13    2.074e+11 |    0.000504896       6151.0 |        1.0     0.8275
+ 4 |    9.26846e-20    4.382e+17 |     1.14359e-6     3.568e+6 |    0.99999    0.80594
+ 5 |      2.813e-26    1.444e+24 |    9.90574e-10     5.112e+9 |    0.99999    0.79995
+ 6 |    6.76453e-33    6.004e+30 |    3.93437e-13    1.539e+13 |    0.99999    0.79865
+ 7 |    7.91939e-40    5.128e+37 |    8.11747e-17     8.68e+16 |    0.99998    0.79879
+ 8 |     5.6958e-47     7.13e+44 |    9.52742e-21    8.439e+20 |    0.99998     0.7994
+ 9 |    4.64262e-54    8.748e+51 |    6.81541e-25    1.326e+25 |    0.99998    0.80013
+
+=== Jacobi beta_n (Hankel-ratio), zeta vs FID ===
+beta_1: zeta=('err', 'list index out of range')   fid=('err', 'list index out of range')
+
+DONE. Interpretation key:
+ - if flexovlp_z ~ flexovlp_f and beta ratios track -> propagation is GENERIC (reduces to known)
+ - if the zeta softest-mode propagates with a DIFFERENT overlap signature than FID -> candidate signal

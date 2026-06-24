@@ -16,8 +16,8 @@
   > by the orthogonality meta-theorem requires the **archimedean FE-polarization** — it is **not** Source-B
   > (and by DSS its spectrum is transcendental, so it is "not too algebraic", B18).
   > **(c)** The completed object `Λ` is **fixed by the FE-constraint** `ι : s↦1−s` — a *relation*
-  > `Λ = Λ∘ι` (order 2, a `ℤ/2`), with `Fix(ι) =` the critical line — **not** propagated by a one-parameter
-  > flow (`ℝ`).
+  > `Λ = Λ∘ι` (order 2, a `ℤ/2`). The holomorphic involution fixes the centre point `1/2`; the
+  > critical line is the fixed locus of `ι∘conj`. Neither is a one-parameter flow (`ℝ`).
   >
   > **Therefore `Λ` is fixed by a constraint (the archimedean FE), not propagated by a flow** — the epigraph,
   > as a theorem. The 150-year failure to find a Hilbert–Pólya *flow* is explained: one is seeking a flow for a
@@ -25,7 +25,7 @@
 
   **Verdict reached:** **PROVED** (structural, BRIDGE) for (a)–(c). The **strong** version *"the zeros are no
   spectrum at all"* is **tested and FAILS** (Connes realizes them spectrally) — but only on the
-  archimedean-inclusive adele class space, which **confirms** (b). Honest scope in §5.
+  archimedean-inclusive adele class space, which **confirms** (b). Scope in §5.
 
 ---
 
@@ -55,13 +55,14 @@ The completed object satisfies `Λ(s) = Λ(1−s)` — i.e. `Λ` is **fixed by t
 - a **constraint** (a *relation* the object obeys: `Λ = Λ∘ι`), not a propagator;
 - **order 2** (`ι² = id`): it generates `ℤ/2`, **not** a one-parameter flow `ℝ`;
 - **archimedean** (it is the FE, intertwined by `Γ` — orthogonality meta-theorem §1), with fixed locus
-  `Fix(ι) = \{Re s = ½\}` = the critical line.
+  `Fix(ι) = {1/2}`. The critical line is instead `Fix(ι∘conj) = {Re s = 1/2}`.
 
-So the symmetry that *governs* the zeros is a **reflection** (a constraint), and the object is **fixed by it**.
+So the symmetry that *governs* the zeros is the FE reflection together with conjugation: a constraint pair, not a
+flow. The object is **fixed by it**.
 There is no flow whose orbits are the dynamics; "time" does not propagate `Λ` — it is constrained. (This is the
 difference-category form of WDW `ĤΨ=0`: a constraint, no `iℏ∂_t`; cf. SEED-Y/Z, now a theorem.) ∎
 
-## §4 The strong version, tested — and where it FAILS `[honest proof-or-fail]`
+## §4 The strong version, tested — and where it FAILS `[proof-or-fail]`
 
 **Strong conjecture (tested):** *the zeros are no spectrum at all* — Hilbert–Pólya is not merely Source-B-impossible
 but categorically impossible. **This FAILS.** **Connes (1999)** realizes `{γ_n}` as the **absorption spectrum**
@@ -73,12 +74,13 @@ archimedean-inclusive space**, never on the prime structure alone — exactly (b
 overshot; the correct statement is **no Source-B / no naive-flow spectrum; the zeros are an archimedean
 (adelic) spectrum whose positivity (RH) is the constraint's, not a flow's**. ∎(fail → sharpened)
 
-## §5 Consequence and honest scope
+## §5 Consequence and scope
 
 - **The HP search, re-posed.** Stop seeking a *flow* (a self-adjoint Hamiltonian on a prime-built space). The
-  correct object is the **constraint `ι`** acting on the archimedean-polarized completed space, and **RH = `ι`
-  acts unitarily** (preserves the polarization's positive form) ⟺ the zeros are real ⟺ on the line. That is the
-  **G5 unitarity gatekeeper**, now *derived* from the constraint principle (`../../door/G5-unitarity-gatekeeper.md`).
+  correct object is the **FE constraint plus conjugation** on the archimedean-polarized completed space, and
+  **RH = the reflected constraint acts unitarily** (preserves the polarization's positive form) ⟺ the zeros are
+  real in seam coordinates ⟺ on the line. That is the **G5 unitarity gatekeeper**, now *derived* from the
+  constraint principle (`../../door/G5-unitarity-gatekeeper.md`).
 - **Why HP eluded everyone.** (i) The flow on the prime structure carries the primes, not the zeros (§1); (ii)
   a zero-spectrum operator is a positivity = archimedean (§2); (iii) the object is constrained, so its
   "dynamics" is the order-2 reflection `ι`, not a flow (§3). Three independent reasons, one cause: **the object
@@ -139,3 +141,34 @@ paper-proof defect. This is a **paper-proven BRIDGE theorem** whose proof legiti
 those imports are to be carried as hypotheses/axioms (or formalized separately) at the Lean stage — not a reason to
 reject the paper proof. The card's stated theorem is proved at its 1→2 gate; any co-located open conjecture
 (C5★ / ω=0 / Schanuel / apex) is explicitly a SEPARATE open core, not part of this theorem. Re-banked for Lean re-attempt.
+
+## 2026-06-24 (Turing) — ERROR in §3: Fix(ι) is the POINT ½, not the critical line
+
+§3 states "ι … with fixed locus Fix(ι) = {Re s = ½} = the critical line." This is mathematically wrong and
+inconsistent with the card's own Lean anchors.
+
+- ι : s ↦ 1−s. Fix(ι) = {s : s = 1−s} = {½} — a **single point**.
+- The critical line {Re s = ½} is **Fix(ι∘conj)**, the fixed locus of s ↦ 1−s̄ (s = 1−s̄ ⟺ s+s̄ = 1 ⟺ Re s = ½).
+
+The card cites (§2→3 gate) exactly these two Lean theorems, which state it correctly:
+`sigma_fixed_iff_eq_half` : σ(s)=s ↔ s = ½  (the POINT), and
+`sigmaConj_fixed_iff_critical` : (σ∘conj)(s)=s ↔ Re s = ½  (the LINE).
+(SigmaOrbit.lean's own docstring: "σ fixes only the center point ½; the full critical line is the fixed
+locus of σ composed with complex conjugation.") So §3 contradicts its formal anchor.
+
+**Correction:** §3 should read — Λ is fixed by the order-2 FE-involution ι (Λ = Λ∘ι), whose fixed locus is
+the single center point Fix(ι) = {½}; the **critical line** is Fix(ι∘conj), and **RH = the zeros lie on
+Fix(ι∘conj)**. The "constraint not flow" thrust is unaffected (ι is still an order-2 ℤ/2 relation, not an ℝ
+flow), but the constraint that pins the critical line is ι together with conjugation (the reflection across
+Re=½), not ι alone. The G5 phrasing in §5 ("RH = ι unitary ⟺ zeros real ⟺ on the line") is consistent with
+this once ι's own fixed locus is correctly stated as the point ½.
+
+Grade impact: none to the BRIDGE verdict; this is a local mis-identification to fix, not a proof collapse.
+But it is a genuine error in a FOUNDATIONAL 2-fully-proven card, caught against its own Lean.
+
+## 2026-06-24 (Codex) — base text corrected after fixed-locus audit
+
+The theorem statement and §3 have been edited to match the Lean anchor:
+`ι:s↦1-s` has `Fix(ι)={1/2}`, while the critical line is
+`Fix(ι∘conj)={Re s=1/2}`. The constraint-not-flow conclusion is unchanged, but
+RH must be phrased on the reflected real/polarized seam, not on `Fix(ι)` itself.

@@ -45,3 +45,22 @@ Its value is as the Lean-certified fixed-locus anchor for the broader constraint
 - 2026-06-19 - Leaner split this exact FE fixed-locus lemma from `constraint-not-flow-theorem`. The parent card
   remains in `2-fully-proven` because the infinite flow, orthogonality, DSS, and Connes/Hilbert-Polya scope are
   not fully Lean-formalized.
+
+## 2026-06-24 (Turing) — build was BROKEN, now repaired + re-certified
+
+Found during a ledger Lean-verification pass: this card's Lean dependency `GaloisForLFunctions/SigmaOrbit.lean`
+did NOT compile in toolchain v4.30.0 — the backward branch of `sigma_fixed_iff_eq_half` used a bare `ext` on a
+ℂ goal (no `ext` lemma for ℂ). The `.olean` was missing and the umbrella `import GaloisForLFunctions` failed,
+so this "formalized (Lean)" claim was, for some time, backed by non-compiling code (worse than a sorry).
+
+Repaired (working tree): `ext <;> norm_num [sigma]` → `apply Complex.ext <;> norm_num [sigma]`. Also fixed a
+co-broken sibling module `ConsolidatedBridges.lean` (`Finset.eq_empty_iff_forall_not_mem` → `…notMem`, a
+mathlib rename). `lake build` now green (8477 jobs). Re-certified the cited theorems via `#print axioms`:
+```
+sigma_fixed_iff_eq_half        : [propext, Classical.choice, Quot.sound]
+sigmaConj_involutive           : [propext, Classical.choice, Quot.sound]
+sigmaConj_fixed_iff_critical   : [propext, Classical.choice, Quot.sound]
+```
+So the claim is sound again. NOTE: the fix is uncommitted (working tree) — a committer/Leaner should commit
+it and run a full `lake build` to confirm no other modules are stale. Lesson: ledger "THEOREM (Lean)" tags
+need a periodic full-build CI gate; tactic/mathlib drift silently broke a 3-formalized claim.

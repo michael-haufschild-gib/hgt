@@ -72,6 +72,12 @@ function with ζ's zeros), the coupled-lane group reduces to **zero-statistics**
   Poisson (Ш̂=Ш)`, but Davenport–Heilbronn satisfies the FE (is crystalline) **with off-line zeros**; the
   separating datum is the Euler product + archimedean polarization, not the FE. The Berry switch sits on
   the FE axis, which is orthogonal to RH.
+- `[VERIFIED — falsification, comp81]` **The scalar Weyl gap `s_d` is NOT the fake-family separator.** The
+  framing "the gate is `s_d=0`" is only the *height-limited rank-one shadow*: a reversed-prime-sign fake has
+  `κ₋=2` (two negative squares) **with `s_d>0`** — the single Γ-atom repairs only one square, so `H^0` is not
+  PSD while `s_d` is positive and blind to it. The faithful separator is the integer `κ₋` (= 2·#off-line pairs),
+  consistent with comp72 (off-line ⟹ `κ=2`). **Kill-criterion sharpened:** do not certify a fake by `s_d>0`;
+  certify by `κ₋=0`.
 
 **LT6 (reset-occupation / `½`) — each localization is RH-blind individually.**
 `[PROVED — BRIDGE, RH-blind]` every independent `½`-localization is RH-blind on its own: the abscissa of

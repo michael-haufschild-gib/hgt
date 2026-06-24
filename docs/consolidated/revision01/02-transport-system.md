@@ -74,7 +74,7 @@ what RH is about.
 
 > `Λ(s) = Λ(1−s)` — `Λ` is fixed by the involution `ι : s↦1−s`. `ι` is **order 2** (`ι²=id`, generates
 > `ℤ/2`, *not* a one-parameter flow `ℝ`); it is **archimedean** (intertwined by `Γ`); its fixed locus is
-> `Fix(ι) = {Re s = ½}`.
+> the centre point `Fix(ι)={1/2}`. The critical line is `Fix(ι∘conj)={Re s=1/2}`.
 
 Three independent facts, one cause — *the object is constrained, not flowing*:
 
@@ -198,7 +198,7 @@ Sylvester) and `fe_quadruple_kappa_two` (one off-line zero ⟹ `κ₋ = 2`). The
 ```
    analytic continuation  =  coupled-lane, measure-covariant, Berry-sensitive
                              phase-space transport of d log ξ,
-   constrained by the order-2 mirror ι (s↦1−s) with seam Fix(ι) = {Re=½},
+   constrained by the order-2 mirror ι (s↦1−s), with seam Fix(ι∘conj) = {Re=½},
    welded from the archimedean generator A and the prime term P,
    whose holonomy (not curvature) carries the hypertranscendence,
    whose Γ-completion is the boundary cocycle trivializing the holonomy on σ=½,
@@ -251,6 +251,14 @@ archimedean and is a positivity** (`κ₋=0` / Weil / `ι` unitary), **not** an 
   low-lying zeros is *also* archimedean and arises as a spectral/positivity object — these **confirm** the
   scoping, not counterexamples. The scope guard leaves heat-flow / de Bruijn–Newman / potential-theory
   analysis admissible.
+- *Exact structural overlap with the prolate operator `[PROVED — no-roleplay-items §5, 2026-06-22]`.* The prolate
+  operator is `W_λ=−𝕊²+2πλ²(4N+1)−¼` (`𝕊` scaling, `N` Hermite/OP grading; Sonin = negative eigenvalues `~γ_n²`). Our
+  **archimedean protector lattice is its Hermite grading**: the Γ-factor points satisfy `2|w|=4N+1` exactly (N=0 = the
+  `s=1` pole / `−4` term, **N=1 = the boundary atom `a_*=0.16`**, N≥2 the protector tail), because `Γ_ℝ` is the Mellin
+  transform of the prolate's Gaussian cyclic vector. But the prolate Sonin compression proves Weil positivity at the
+  archimedean place *unconditionally*, whereas our `s_d>0` is RH-conditional — so the match is the archimedean **budget**
+  `a_*` (unconditional `M_triv⪰0`), and the RH content (the prime demand `a_c(d)`, the finite places) lives in the
+  **semilocal** prolate (Connes–Consani arXiv:2310.18423), the open comparison.
 - *Kill:* a **prime-built** self-adjoint operator with the zeros as spectrum whose self-adjointness ⟺ RH;
   or the prolate operator turning out prime-built/generative rather than archimedean/positivity.
 

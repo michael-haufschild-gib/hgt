@@ -1,0 +1,34 @@
+NODE: spin-orbit coupling needs matrix-valued boundary conditions
+theta visibility scalar_visibility spin_z_after scalar_spin_z min_T max_T
+ 0.0000    1.00000           1.00000      1.00000       1.00000   0.00000   1.00000
+ 0.7854    0.92388           1.00000      0.70711       1.00000   0.03806   0.96194
+ 1.5708    0.70711           1.00000      0.00000       1.00000   0.14645   0.85355
+ 2.3562    0.38268           1.00000     -0.70711       1.00000   0.30866   0.69134
+ 3.1416    0.00000           1.00000     -1.00000       1.00000   0.50000   0.50000
+
+STEP8 Levenshtein transfer candidates
+1 distance=17 ratio=0.2787 gamma prime coupling needs matrix valued boundary diagnostics
+2 distance=40 ratio=0.6780 scalar seam conditions miss matrix weld transport
+3 distance=44 ratio=0.7458 spinor boundary representation of archimedean prime weld
+selected=1 gamma prime coupling needs matrix valued boundary diagnostics
+
+STEP9 method=17 change representation: scalar vs matrix weld diagnostic
+kind sigma theta corr_scalar_matrix mean_log_ratio low_matrix_rate
+true   0.3  1.57            0.99413        0.79124         0.10000
+true   0.3  3.14            0.95831        1.47073         0.10000
+finite 0.3  1.57            0.99687        0.05736         0.10000
+finite 0.3  3.14            0.95542        0.11865         0.10000
+random 0.3  1.57            0.98947        0.22001         0.10000
+random 0.3  3.14            0.83687        0.31607         0.10000
+true   0.5  1.57            1.00000        1.02763         0.10000
+true   0.5  3.14            1.00000        1.59288         0.10000
+finite 0.5  1.57            0.99489        0.30905         0.10000
+finite 0.5  3.14            0.87095        0.53727         0.10000
+random 0.5  1.57            1.00000        0.29683         0.10000
+random 0.5  3.14            1.00000        0.42405         0.10000
+true   1.2  1.57            0.99606        0.08061         0.10000
+true   1.2  3.14            0.19831        0.13989         0.10000
+finite 1.2  1.57            0.99603        0.08075         0.10000
+finite 1.2  3.14            0.18872        0.13988         0.10000
+random 1.2  1.57            0.99615        0.07555         0.10000
+random 1.2  3.14            0.23035        0.13254         0.10000

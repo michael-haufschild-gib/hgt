@@ -79,3 +79,7 @@ Artifacts:
 
 ## Log
 - 2026-06-21 -- Penrose: created from proof-route node 6 after workflow NODE "renormalization group is a change of description, not merely a trick for removing infinities."
+
+## 2026-06-24 finite hard-edge counterterms cannot hide shifted bad atoms
+
+`finite-hard-edge-counterterm-q0-rh-strength.md` gives the shifted `Q_0` counterpart to this `T_0` warning. A finite hard-edge counterterm may alter low-order or unshifted presentation, but if it vanishes on `y^m R[y]`, it cannot affect polynomials used to isolate any reciprocal atom away from `0`. Therefore all-order positivity of the shifted form plus such a finite counterterm remains RH-strength.

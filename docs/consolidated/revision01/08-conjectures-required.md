@@ -130,7 +130,7 @@ and the observation that falsifies it.
     **high-rank and predominantly negative** (inertia `(1,4)/(2,5)/(2,7)` at `d=4/6/8`, only `1–2` tiny-positive
     modes, stable `min`-eig `≈−0.2565`) — *not* a low-rank correction. And for polynomial tests `R^P` is fixed by
     the explicit formula (nontrivial- minus trivial-zero moments): the prime side supplies **no second positive
-    measure**, so the square cannot be completed from source without `μ_0≥0` (= RH). The honest target is a measure
+    measure**, so the square cannot be completed from source without `μ_0≥0` (= RH). The correct target is a measure
     /transfer proof that the (small, hard-edge) trivial-zero square `M^A` dominates the full-dimensional negative
     `R^P` everywhere — exactly, per the tightness.
   - *The cleanest finite shadow, the ranked proof menu, and the three-stratum divisor. `[SYNTHESIS — gpt/37]`*
@@ -145,7 +145,8 @@ and the observation that falsifies it.
     reciprocal divisor is a positive Stieltjes divisor once the `y=−4` pole boundary is absorbed"). Candidate
     shapes, **ranked**: (1) one-sided Loewner / boundary-Weyl `K⪯I` — `K_d` as a compression of a single
     **non-compact** completed-boundary `K` (corner-concentration ⟹ essential-spectrum-like `λ_max→1`); (2)
-    Weil-pullback `p↦h_p` with `Q_0[p]=Q_W[h_p]`; (3) discriminant / Gram–Heine ladder past `d=1`; (4) direct
+    Weil-pullback `p↦h_p` with `Q_0[p]=Q_W[h_p]`; (3) discriminant / Gram–Heine ladder, conditional on the
+    exact cross-positive interval plus a summed domination estimate; (4) direct
     Jacobi / Hankel-det (lowest — hard-edge ill-conditioned). Forward route-killers in `research-topics.md`
     #35–44; the decisive fork is whether the **Dirichlet/DH** test makes `K_d⪯I` a real **source gate** (genuine
     Euler-product `L` pass, Davenport–Heilbronn fails by `λ_max>1`) or whether broad hard-edge fakes also
@@ -201,8 +202,11 @@ and the observation that falsifies it.
     **(C)** **one-defect bulk theorem** `inertia(H^-_d)=(d,1) ∀d` (verified ζ/real-`L`/DH; "removing the first
     Γ-boundary atom leaves exactly one negative square" — the Krein/Weyl localization the corpus expected); **(D)**
     **scalar Weyl gap theorem** `s_d=a_*+1/m_d=1/K_{ν'}(y_*)=a_*·margin_d>0 ∀d`. New reduction (given C):
-    **`Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`**. **Named fake-family gate: `s_d=0`** (DH crosses at d=62, inertia (d,1) preserved
-    — separates DH at a *structural* gate, satisfying the corpus's fake-family-separation requirement). The exponent
+    **`Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`**. **Fake-family gate — the fundamental separator is the integer `κ₋`, with `s_d=0`
+    its rank-one shadow `[refined comp81]`:** for DH (a real off-line zero) `κ₋(H^-)` stays `1` and the scalar `s_d`
+    crosses `0` at d=62 (height-limited); but comp81 shows a *global* sign-fake (reversed prime sign) jumps to `κ₋=2`
+    **with `s_d>0`** — the rank-one Γ-atom repairs only one square, so `H^0` is not PSD while `s_d` is blind to it. So
+    the faithful separator is `κ₋` (= 2·#off-line pairs, lens 4 / comp72); `s_d=0` is its height-limited scalar shadow. The exponent
     is now **derived**: `α_d(y_*)≈4+[4(1−ln2)+2ln|y_*|]/L̄_d` (no universal ½). **The remaining paper theorem** is a
     finite-part identity: source-identify the Hankel tail `μ_E` (comp56) as the seam-centre finite-part boundary
     distribution and prove `FP_{w=0}Q_W[h_p]=Q_0[p]−a_*p(y_*)²`, hence `s_d>0`. Only "prove (all-`d`)" remains.
@@ -224,10 +228,14 @@ and the observation that falsifies it.
     **(a) canonical-`ξ` gauge lemma — DONE `[gpt/proof9 PROVED, comp71 VERIFIED]`:** `T_k^can=FP^ξ_{w=0}[−½h_k(Ξ'/Ξ)]`
     with the exact diagonal law `T_k↦T_k+2k(−1)^{k+1}a_k` under `Ξ↦e^{q(w²)}Ξ` (`q=Σa_r w^{2r}`), killed by canonical
     `ξ` (`a_r≡0`); Hankel counterterm `2(i+j+1)(−1)^{i+j+2}a_{i+j+1}` (`T_1↦T_1+2c` = the `k=1` case); **(b) the global
-    `N₁` carrier theorem** `m_σ∈N₁` (prove *before* positivity — `N₁` alone is not RH since DH shares it). **Apex (Uvarov
-    one-point boundary-removal kernel):** `K_σ(y,y)=K_{ν'}(y,y)−K_{ν'}(y,y_*)²/K_{ν'}(y_*,y_*)`, whence **`s_d=
-    1/K_{ν'}(y_*,y_*)>0 ∀d`** — the sign of one scalar, the fake-family separator. Likely final shape: a **Hodge/de
-    Branges signature theorem** (`Π₁ + Γ-polarization ⟹ Π₀`), `s_d` expressed as an intersection norm / boundary period.
+    `N₁` carrier theorem — DONE `[gpt/proof10, conditional]`:** `m_σ∈N₁` / `inertia(H^-_d)=(d,1)` proved from the
+    one-dimensional seam boundary quotient `𝒦_max/𝒦_min≅ℂ` + the Green identity `Γ_0F_p=p(y_*)` + the Γ-atom (an
+    operator-domain theorem, modulo the one local hypothesis that the seam quotient is exactly 1-dim). **Apex (Uvarov
+    one-point boundary-removal kernel — proved ∀d `[gpt/proof11]`):** `K^crit_d(y,y)=K_{ν'}(y,y)−K_{ν'}(y,y_*)²/K_{ν'}(y_*,y_*)`
+    (the signed `Π₁` kernel an over-subtraction `s_d²/(a_*−s_d)` beyond it), whence the sole open content is **`s_d=
+    1/K_{ν'}(y_*,y_*)>0 ∀d`** — the repair theorem, the fake-family separator (real-axis kernel positivity alone
+    insufficient — off-line defect lives off the moment curve, comp72). Likely target shape: a **Hodge/de Branges
+    signature theorem** (`Π₁ + Γ-polarization ⟹ Π₀`), `s_d` as an intersection norm / boundary period.
   - *The `χ₄`/character-decomposition route is DEMOTED `[evaluated, d=4,6,8]`.* `β=L(2k,χ₄)` and the arch budget is
     the quarter-integer Hurwitz tower `S_k^A=2^{2k+1}−2^{−2k}ζ(2k,¼)`, whose mod-4 split is principal `ζ` (all odd
     integers) `+` `χ₄` `β` (`ζ(2k,¼)±ζ(2k,¾)`). But character decomposition **breaks** the manifest positivity:

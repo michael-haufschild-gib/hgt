@@ -1,9 +1,9 @@
-# The Conjectured Bridge Theorem — the last theorem before RH
+# The Conjectured Bridge Theorem
 
-> **Register: `[CONJECTURE]`.** This is what the corpus, as consolidated so far, claims the *final*
+> **Register: `[CONJECTURE]`.** This is what the corpus, as consolidated so far, claims the missing
 > bridge theorem would most likely be — the single implication whose conclusion is (equivalent to) the
 > Riemann Hypothesis. It is **not** a proof of RH and contains no proof; it is a pattern-matched outline
-> of the missing theorem's shape, its variables, how it works, and why it is the last step. The corpus
+> of the missing theorem's shape, its variables, and how it is expected to work. The corpus
 > states the **equivalence** below as classical (re-charted Laguerre–Pólya / Stieltjes); the open
 > content is the **implication's antecedent → consequent**, proved unconditionally from the source data.
 
@@ -35,7 +35,8 @@ orders.
 > ```
 > equivalently the shifted Hankel tower `[T_{i+j+1}]_{i,j=0}^d` is positive semidefinite for every `d`
 > (positive definite, for an infinite divisor). For the *actual* folded reciprocal zero divisor this one
-> form alone forces every `y_ρ ∈ ℝ_{>0}`, hence RH (§3). The second test
+> form alone forces every `y_ρ ∈ ℝ_{>0}`, hence RH (§3; the `Q_0≥0 ⟹ RH` half is **`[PROVED — gpt/proof12]`** by
+> classical moment theory — the open content is the converse, source-built `Q_0≥0`). The second test
 > `Q_1[p] = Σ_{i,j} c_i c_j T_{i+j+2} ≥ 0` (`[T_{i+j+2}]_{i,j=0}^d ⪰ 0`) is the **companion passport** —
 > the finite-domain repair of the unshifted form and the classical Stieltjes consistency chart, true
 > under RH but no longer logically required once `Q_0` is known source-aware. (Both are independently
@@ -88,11 +89,16 @@ orders.
    `O(G^{−1}log G)`. The ordinary (unshifted) Hankel tower starting at `T_0` is therefore not a finite
    matrix, and no finite "regularised `T_0`" fixes it at all orders. The correct finite certificate is the pair of **shifted** towers `Q_0` (Hamburger) and `Q_1`
    (Stieltjes), which as **abstract** moment sequences are independent — neither implies the other — so
-   both are required *source-forgotten*. **Source-aware refinement:** for the *actual* zero divisor,
-   all-order `Q_0[p]≥0` *alone* already forces every `y_ρ ∈ ℝ_{>0}` — a real polynomial isolates any
-   negative-real atom (`y·p(y)²<0`) or non-real conjugate pair (`Re[y·p(y)²]<0`) and makes `Q_0<0` — so
-   `Q_0` alone implies RH; the dual requirement is only the price of forgetting the divisor's
-   real/conjugate-paired atom structure. *(Convergence: the high-height tail of `Q_r[p]` for
+   both are required *source-forgotten*. **Source-aware refinement `[PROVED — gpt/proof12; classical moment theory]`:**
+   for the *actual* zero divisor, all-order `Q_0[p]≥0` *alone* already forces every `y_ρ ∈ ℝ_{>0}`, hence RH. Rigorous
+   mechanism (proof12): `Q_0⪰0` ⟺ `[T_{i+j+1}]⪰0` ⟹ (Hamburger/Riesz) a positive measure `μ` on `ℝ` with
+   `∫xⁿdμ=T_{n+1}`, compactly supported on `[−R,R]` (`R=sup|y_ρ|<∞` since `ξ(½)≠0`); the divisor generating function
+   `G(z)=Σ_α M_α y_α/(1−y_α z)` is meromorphic with poles at `1/y_α`, while `G(z)=∫dμ/(1−xz)` is the Cauchy transform
+   of a positive real-line measure — holomorphic off `ℝ`, so a **non-real atom (non-real pole) is impossible** (Step 3);
+   then `μ=ν:=Σ_α M_α y_α δ_{y_α}` by Weierstrass (equal compactly-supported moments), and `μ≥0` with `M_α>0` forces
+   `y_α>0` (Step 4). The dual `Q_1` requirement is only the price of forgetting the divisor's real/conjugate-paired
+   structure. *(This is the `⟹` half — the rigorous write-up of the reduction; the hard `⟸` direction, source-built
+   `Q_0≥0`, is untouched and remains the open bridge.)* *(Convergence: the high-height tail of `Q_r[p]` for
    `p(y)=y^j q(y)` is `O(G^{−(2r+4j+1)} log G)` — so the source-aware `Q_0` certificate (`r=0`, `p(0)≠0`)
    is the **slowest**, `O(G^{−1} log G)`, while `Q_1` starts at `O(G^{−3} log G)` and each hard-edge
    zero of `p` gains a further `G^{−4}`.)* The slow tail has an explicit source: high zeros pile up at the
@@ -155,9 +161,8 @@ an `a=0.45` quartet goes undetected at `γ ≈ 180, 260`). The reciprocal-Hankel
 keeps a *fixed* negative sign at every height and distance — which is exactly why the bridge is built on
 it and not on the line curvature.
 
-So the moment of the bridge theorem is the **only remaining gap**: once its conclusion (`Q_0, Q_1 ≥ 0`,
-derived from the source structure) is established, **RH follows with no further theorem** — there is
-nothing between this positivity and RH. That is precisely the definition of "the last theorem before RH."
+So the moment of the bridge theorem is the **remaining bridge gap**: once its conclusion (`Q_0, Q_1 ≥ 0`,
+derived from the source structure) is established, **RH follows by the equivalence already recorded above**.
 Equivalently, in the corpus's many-names language, this positivity is the single wall (`κ₋ = 0` = `Q_W ⪰
 0` = `det H_d ≥ 0 ∀d` = Li `λ_n ≥ 0` = uniform Laguerre–Pólya), here written in its cleanest convergent
 coordinate.
@@ -336,49 +341,55 @@ dominate a full-dimensional negative `R^P`, exactly, everywhere. The viable rout
 **measure/transfer** proof that `M^A ⪰ −R^P` globally — i.e. that the prime residual stays inside the trivial-zero
 budget on the whole polynomial cone — not a finite-rank or kernel-guessing argument.
 
-**The discriminant attack: a manifest positive structure, and the first unconditional cases `[PROVED d=1]`.**
+**The discriminant attack: a manifest tuple structure, with the low-case sign shortcut removed.**
 The shifted Hankel is the Gram matrix of `{1,y,…,y^d}` in `L²(ν')`, `ν'=Σ_ρ 2y_ρ δ_{y_ρ}`, so the **Gram/Heine
 identity** makes its determinant a manifest tuple-sum:
 `det H_d = (1/(d+1)!) Σ_{ρ_0,…,ρ_d} ∏_k (2y_{ρ_k}) · ∏_{i<j}(y_{ρ_i}−y_{ρ_j})²`  `[verified d=1,2 to 8 digits]`.
 Every term is `≥0` exactly when its `y`'s are real-positive (RH); the *only* source of negativity is a tuple
 containing an off-line conjugate pair `{y,ȳ}`, whose self-term is `2·y ȳ (y−ȳ)² = −4|y|²(Im y)² < 0`. This
-localizes the wall termwise. **It also proves the low cases.** In the reciprocal coordinate an off-line pair at
-height `γ₀`, real part `β'`, has `Re y = (γ₀²−β'²)/|w|⁴ > 0` and `|y| ≤ γ₀^{−2}`; so its negative self-weight is
-`≥ −4γ₀^{−8}`, while its cross-term with each bulk zero `y_n` is `8 y_n Re(y(y−y_n)²) > 0` (positive: `Re y>0`,
-`(y−y_n)²≈y_n²` for `γ_n≪γ₀`), of size `~γ_n^{−4}γ₀^{−2}`. The cross/self ratio is `~γ₁^{−4}γ₀^{6}→∞`, so **a single
-off-line pair cannot flip `det H_1`** — confirmed numerically (deep pair `γ₀=50,β'=0.25`: self `−2·10⁻¹⁷` vs bulk
-cross `+3.8·10⁻¹⁰`; aggressive low pair `γ₀=16,β'=0.49`: bulk wins `700×`). Hence:
-> **Theorem `[PROVED]`.** `det H_1 = T_1T_3−T_2² > 0` for the actual `ζ`, unconditionally — the off-line self-terms
-> are dominated by the positive on-line bulk cross-terms.
+localizes the wall termwise. **Correction (2026-06-24).** The earlier termwise low-case proof overstated the
+cross-term sign. In the reciprocal coordinate an off-line pair at height `γ₀`, real part `β'`, has
+`Re y = (γ₀²−β'²)/|w|⁴ > 0` and `|y| ≤ γ₀^{−2}`, so its negative self-weight is `≥ −4γ₀^{−8}`. But
+`Re(y(y−y_n)²)>0` is **not** implied by `Re y>0`; `discriminant-bulk-cross-sign-needs-scale-separation.md`
+gives the exact counterexample. The usable replacement is the exact interval in
+`discriminant-cross-positive-interval.md`: for `y=u+iv`, `a=|v|`, `r=|y|`,
+the cross term is positive for every `x>x_+(y)`, where
+`x_+(y)=(u²−a²+ar)/u`, and the simpler sufficient bound is `x≥1.18|y|`.
+This is relevant for hypothetical off-line zeros far above the verified low-zero bulk, but it is not a global
+termwise proof.
+> **Status.** The discriminant identity and the local off-axis negative term are proved. The unconditional
+> statement `det H_1 = T_1T_3−T_2² > 0` for actual `ζ` is not promoted by the termwise argument above until a
+> full summed domination estimate or another source proof is supplied. The valid degree-one replacement is
+> `degree-one-discriminant-tail-stability.md`: split the verified positive real bulk from the remaining tail and
+> prove an explicit determinant-margin inequality. The all-degree finite-height replacement is
+> `finite-degree-shifted-hankel-tail-stability.md`: prove that the verified bulk eigenvalue margin dominates an
+> explicit tail matrix norm. But `monomial-tail-gate-height-linear-no-go.md` shows that the monomial absolute-tail
+> version cannot prove a height-linear range; any serious version must be relative/orthogonal-polynomial/source-Weyl.
 
-**Where this puts RH (the honest localization, not a retreat).** The same bound scales: a tuple with an off-line
-point above the RH verification height `H` (`≈3·10^{12}`, Platt) has weight `≲H^{−2}≈10^{−25}`, astronomically below
-the on-line bulk discriminant (set by `y_1≈0.005`). The on-line discriminant shrinks only at the hard-edge rate, so
-it dominates the off-line negativity until the degree reaches the **detection threshold** `d*(H)≈H/3` (matching the
-earlier injected-quartet `d*≈γ₀/3`). Therefore **`det H_d > 0` is unconditional for every `d ≲ H/3 ≈ 10^{12}`**, and
-RH is *exactly* the statement that the bulk domination **survives the `d→∞` limit**, where infinitely many on-line
-zeros accumulate at the hard edge `y→0⁺` and the Vandermonde factors `(y_i−y_j)²→0`. So the bridge is not a wall at
-finite `d` (those are theorems) — it is the single asymptotic question of whether the hard-edge accumulation degrades
-the discriminant faster than the (fixed, tiny) off-line budget can exploit. That is the precise open core, and it is
-an *asymptotic* statement about the on-line zero spacing near the hard edge, not a generic positivity claim.
+**Where this puts RH (the current localization, not a retreat).** The scale bound suggests a real finite-range
+mechanism: an off-line point above the RH verification height `H` (`≈3·10^{12}`, Platt) has reciprocal size
+`≲H^{−2}≈10^{−25}`, while the lowest verified on-line atoms are far larger. In that high/low regime the cross terms
+with those low atoms are positive by the `1.18|y|` criterion. What is not yet proved is the global tuple or summed
+domination estimate needed to promote this scale fact to `det H_d>0` for every degree below a height-dependent
+threshold. Thus `d*(H)≈H/3` is a candidate detection/localization law until the summed inequality is supplied. The
+open core is whether hard-edge accumulation of on-line zeros erodes the discriminant faster than the off-line budget
+can be dominated; this is an asymptotic statement about the on-line zero spacing near `y=0⁺`, not a generic positivity
+claim.
 
-**The race, quantified, and the unconditional range `[MEASURED d≤16]`.** Two laws govern the bridge. (i) The on-line
+**The race, quantified, as evidence `[MEASURED d≤16]`.** Two laws govern the candidate bridge. (i) The on-line
 margin `1−λ_max(K_d)` decays *super-exponentially with increasing rate*: `dlog₁₀(margin)/dd` runs `−4.7→−6.3` over
 `d=3..16` — faster than any fixed geometric rate (each degree resolves deeper into the hard-edge cluster, where the
 zeros are denser, costing more margin). (ii) The off-line **detection threshold** `d*(γ₀)` — the smallest degree at
 which an injected off-line quartet at height `γ₀` makes `λ_min(H_d)<0` — grows roughly **linearly in the height**:
 `d*=8,14,>16` at `γ₀=20,30,45` (slope `≈0.4` at off-line distance `β=0.1`), *not* in the zero-count
 `N(γ₀)~γ₀logγ₀`. Combining: a hypothetical off-line zero lies above the RH verification height `H≈3·10^{12}`, so its
-detection threshold is `d*≳0.4H`, and below that the bulk discriminant of the lowest `d+1` (verified on-line) zeros
-strictly dominates. Hence the genuinely unconditional statement:
-> **`det H_d > 0` for every `d ≲ 0.4·H ≈ 10^{12}`**, unconditionally (no off-line zero can flip it below its
-> height-linear detection threshold).
-RH is exactly the `d→∞` tail: the margin, though `>0` at every finite `d`, vanishes super-exponentially, and RH is
-that it stays `>0` as the polynomials resolve the entire hard-edge cluster. The race is *balanced by faithfulness* —
-the bridge detects every off-line zero, at depth `d*≈0.4γ₀` — so cracking `d→∞` is not a soft estimate; it is the
-asymptotic positivity of the actual on-line zero-spacing measure, which is RH. What is *new and bankable* is the
-mechanism (discriminant + bulk domination), the proved `d=1` case, and the explicit `10^{12}`-degree unconditional
-range with a measured height-linear detection law.
+detection threshold is expected to be `d*≳0.4H`. This is evidence for a finite-range domination theorem, not that
+the theorem has already been proved. RH is exactly the `d→∞` tail: the margin, though positive in the measured
+finite windows, vanishes super-exponentially, and RH is that it stays positive as the polynomials resolve the entire
+hard-edge cluster. What is currently bankable is the mechanism (Gram/Heine identity plus local off-axis negative
+term), the exact cross-positive interval, the degree-one and finite-degree tail-stability gates, the monomial-gate
+no-go, the finite-degree height-limited perturbation theorem, and the measured height-linear detection law. The
+unproved step is the source-level relative domination estimate for the actual divisor.
 
 **The bridge in its cleanest form: one-sided Loewner domination, and the margin → 0⁺ `[OBSERVED d≤8]`.** Because
 `M_triv:=[∫y^{i+j}dμ_triv]≻0` and `Q_0 = M_triv + R^P`, the wall is the **Trivial-Zero Domination Theorem**
@@ -389,7 +400,7 @@ with margin `1−λ_max ≈ 2·10⁻⁹, 4·10⁻¹⁹, 2·10⁻²⁹, 2·10⁻�
 (`≈γ₁^{−4d}`), the extremizing polynomial being exactly the dangerous direction `p_d` (overlap `1.0`, `0.97·u`). The
 margin `1−λ_max(K_d)` is precisely the generalized eigenvalue `λ_min(Q_0,M_triv)` = the discriminant margin above, so
 the two pictures coincide: the trivial-zero square dominates the prime residual with vanishing slack, and RH is
-`λ_max(K_d)<1 ∀d` (the slack stays `>0` as `d→∞`). Finalized language: **protector** `= μ_triv` (explicit positive
+`λ_max(K_d)<1 ∀d` (the slack stays `>0` as `d→∞`). Current language: **protector** `= μ_triv` (explicit positive
 trivial-zero measure); **threat** `= R^P` (high-rank, mostly-negative, prime-sourced); **RH** `=` protector dominates
 threat in the one-sided Loewner order. The old "even-`ζ` protects / `β` threatens" was coordinate-dependent (the
 character split); the invariant statement is the support-measure domination `−R^P ⪯ M_triv`.
@@ -516,7 +527,9 @@ inequality, ordered by current odds:
    read positivity off the completed explicit formula. A forced *negative* boundary term would make the
    boundary-Weyl formulation mandatory (or push the proof into a limiting de Branges/Krein space).
 3. **Discriminant / Gram–Heine asymptotics** — the tuple-sum `det H_d` with off-line negativity only from
-   conjugate-pair tuples; a finite-`d` theorem ladder past the proved `d=1`.
+   conjugate-pair tuples; viable only after the exact cross-positive interval is combined with a summed
+   finite-`d` domination theorem and a uniform degree-to-height mechanism. Fixed finite degrees are explicitly
+   height-limited (`finite-degree-reciprocal-tests-height-limited.md`).
 4. **Direct Jacobi / Hankel-determinant** — lowest odds: the raw recurrence coordinate is intrinsically
    hard-edge ill-conditioned (above) and not proof-shaped.
 
@@ -542,7 +555,7 @@ extended this section:
   ζ ≈3.41, odd-`χ` (a=1) ≈3.90, even-`χ` (a=0) ≈5.05 — same zero density, different archimedean protector
   `b=(a+½)/2`, different rate. So the no-margin *rate* is set by the **archimedean protector's hard-edge
   geometry**, refining "density-determined, →4 universal." (RH stays purely in the **sign**.)
-- **The numerics carry zero RH/prime content `[VERIFIED — sharpest form]`.** ζ-actual and **jittered-ζ** (zero
+- **The numerics carry zero RH/prime content `[VERIFIED — current form]`.** ζ-actual and **jittered-ζ** (zero
   positions kept, *correlations destroyed*) give an identical margin law to **4–5 digits** (overlap
   0.97157≈0.97156); it is a **pure functional of the density profile**. The prime/correlation structure — the
   actual RH content — is invisible to every margin / conditioning / overlap observable here.
@@ -581,16 +594,21 @@ extended this section:
   acts at **`s=½`** (not the pole `y=−4`). (Cross-check: `PRIME_k` from `(ζ'/ζ)^{(2k−1)}(½)=(2k)!g_{2k}`
   matches `(−1)^kT_k−(POLE+ZETA+BETA)_k` to `10^{−141}`, independently validating the moments and the split.)
 
-**Purification — the missing object is now a single named operator `[SYNTHESIS — gpt/38]`.** The battery's net
+**Purification — the missing object is now a completed operator/form obligation `[SYNTHESIS — gpt/38]`.** The battery's net
 effect is a *purification*: every finite-`d`, conditioning, margin, correlation, and rate observable is demoted
 (prime-blind, density/protector-set, generic), leaving exactly one RH-bearing object — the **all-order sign**.
 The bridge is no longer "find the source gate" or "detect Euler structure in finite `K_d`"; it is precisely
-> **construct the completed boundary operator `K` and prove `K ⪯ I` with `‖K‖ = 1`.**
-Concretely: *the completed explicit formula produces a **noncompact self-adjoint contraction**
+> **construct the completed boundary operator `K`, or its closed form replacement, and prove the contraction/sign theorem.**
+Concretely: *the completed explicit formula is expected to produce a **noncompact self-adjoint contraction**
 `K = M_triv^{−1/2}(−R^P)M_triv^{−1/2}` whose finite sections are the `K_d` (`K_d = P_d K P_d^*`), with `K ⪯ I`,
 `1 ∈ σ_ess(K)`, built **without zero-feeding**.* comp7 (`λ_max→1`, no compactness, no slack) forces this: the
 proof must be **boundary monotonicity / Weyl positivity**, never an eigenvalue / spectral-gap estimate
-(`λ_max ≤ 1−ε` is impossible). RH `⟺ λ_min(I−K_d) > 0 ∀d` — the sign, not the rate.
+(`λ_max ≤ 1−ε` is impossible). `relative-contraction-compression-exhaustion.md` makes the operator burden exact:
+finite compressions are equivalent to `K⪯I` only after a bounded self-adjoint source operator, or the correct closed
+form replacement, has been constructed on the `M_triv` completion. `one-sided-compression-bound-not-bounded-operator.md`
+adds the domain warning: a one-sided upper form bound on polynomials is not a bounded contraction unless a lower
+bound, boundedness theorem, or closed-form construction is supplied. RH `⟺ λ_min(I−K_d) > 0 ∀d` — the sign, not
+the rate.
 
 **The proof divisor is a four-point *compactified reciprocal-boundary* divisor `[SYNTHESIS — gpt/38, revises the
 three-stratum].`** The nontrivial zero divisor `y_ρ=−(ρ−½)^{−2}` is the **object being controlled**, not the
@@ -682,11 +700,14 @@ agenda identified the scalar Weyl object and proved the two faces are one number
   The **moment face** (`K_{ν'}=e^T(H^0)^{−1}e`, the reproducing kernel of the zero measure `ν'`) and the
   **operator face** (the rank-one Schur gap) are thus one object. RH `⟺ s_d = a_*·margin_d > 0 ∀d` (the
   generalized-eigenvalue margin is the faithful detector; the Christoffel identity gives the source-facing form).
-- **The rank-one boundary theorem is completed-Euler-product-general `[VERIFIED d=8,12]`.** For every real
-  primitive Dirichlet `L` (and ζ), removing the single coarsest trivial-zero atom (`y_{*,χ}=−(a+½)^{−2}`,
+- **The rank-one boundary theorem is completed-Euler-product-general `[VERIFIED d=8,12; complex self-dual comp75]`.**
+  For every real primitive Dirichlet `L` (and ζ), removing the single coarsest trivial-zero atom (`y_{*,χ}=−(a+½)^{−2}`,
   `a_{*,χ}=|y_{*,χ}|`; even-χ `−4`, odd-χ `−4/9`, ζ `−0.16`) leaves `inertia(H^-_χ)=(d,1)`, and
   `s_{χ,d}=1/K_{ν'_χ}(y_{*,χ})=a_{*,χ}·margin_χ`. **The Γ-factor selects the boundary datum** — the same `y_{*,χ}`
   that sets the exponent law `α=4.31+½ln|y_*|` — so the bridge is a uniform feature of the completed-`L` family.
+  comp75 extends this to a **complex self-dual product** `Λ(s,χ)Λ(s,χ̄)` (χ mod 5, order 4): still `N₁`, `inertia(H^-)=(d,1)`,
+  `s_d>0` — the squared Γ stays **rank-one** because χ,χ̄ share one parity/Γ-channel. The rank equals the number of
+  **distinct Γ-shift values**; a genuine two-channel object (e.g. GL(2) `Γ_ℝ(s)Γ_ℝ(s+1)`) would give rank-two/`N₂`.
 - **The sign-essential tail is a Hankel functional `[VERIFIED]`.** In the protector coordinate `R^P = J + E`
   (`J` the decaying Jacobi core, comp45), `E` is **exactly Hankel** (`E_{ij}=f(i+j)`, deviation `~10^{−175}`) — the
   finite-section moment matrix of a single signed functional `μ_E`. `μ_E` is now **identified** (`E=μ_E`, gpt/proof8)
@@ -734,20 +755,23 @@ faces: source-build `K_{ν'}(y_{*,χ})` (equivalently the bulk `H^-` plus the Ha
   the crossing — "removing the first Γ-boundary atom leaves exactly one negative square"). **(D)** the **scalar
   Weyl gap theorem** `s_d = a_*+1/m_d = 1/K_{ν'}(y_*) = a_*·margin_d > 0 ∀d` (`m_d=v_*^T(H^-_d)^{−1}v_*`). The new
   reduction (given C): **`Q_0[p]≥0 ∀p ⟺ s_d>0 ∀d`** — the *Rank-one Γ-boundary Weyl Bridge*.
-- **The named fake-family gate is `s_d=0` `[VERIFIED — DH at d=62]`.** A valid source-built object must separate
-  DH-style fakes at a *named structural gate*, not by a generic positivity restatement. The gate is now exact:
-  `s_d=0` (DH crosses it at `d=62` while `inertia(H^-)=(d,1)` persists).
+- **The fake-family gate is the integer `κ₋`; `s_d=0` is its rank-one shadow `[VERIFIED — DH at d=62; refined comp81]`.**
+  A valid source-built object must separate DH-style fakes at a *named structural gate*. For DH (a real off-line zero)
+  `κ₋(H^-)` stays `1` and the scalar `s_d` crosses `0` at `d=62` (height-limited detection). But comp81 shows a
+  *global* sign-fake (prime sign reversed) jumps to `κ₋=2` **with `s_d>0`** — the rank-one Γ-atom repairs only one of
+  the two negative squares, so `H^0` is not PSD while the scalar `s_d` is blind to it. **The faithful separator is the
+  integer `κ₋` (= 2·#off-line pairs; lens 4, comp72); `s_d=0` is its height-limited scalar shadow** — watch the index,
+  not the scalar.
 - **The `μ_E` identification — done, then demoted `[gpt/proof8, gpt/43]`.** The chain `regularized Weil pullback ⟹
   seam-centre finite part ⟹ E_{ij}=f(i+j) ⟹ H^-_d=J+E+(Γ/pole pieces)` is now constructed (proof7) and the tail
   identified (`E=μ_E`, proof8). gpt/43 then *demotes* `μ_E` from "the missing theorem" to **anatomy** — the seam
   Hankel shadow of `σ=ν'−a_*δ_{y_*}`, not the fake-family gate (the gate is `s_d=0` alone; DH shares the tail). The
   live theorem is the scalar sign `s_d>0`, not the tail identity. (See the Krein–Langer current-sharp-form block below.)
 
-So the conjectured **last theorem before RH** is the **Rank-one Γ-boundary Weyl Bridge**: *Γ supplies the exact
-boundary atom; the primes create exactly one bulk defect; RH says the Γ atom repairs it at every degree*
-(`s_d>0 ∀d`). Acceptance scorecard: faithful ✓ (DH flips exactly when `s_d<0`), completed ✓ (Γ-selected atom),
-source-built boundary ✓ (the `j=1` term), fake-family separating ✓ (DH at `d=62`), no-margin-compatible ✓
-(`s_d→0⁺`); the one open word is **prove** (all-level `s_d>0 ∀d`, via the seam-centre finite-part identity).
+So the conjectured rank-one form of the bridge is the **Rank-one Gamma-boundary Weyl Bridge**: *Gamma supplies the
+boundary atom; the primes create the bulk defect; the bridge assertion is that the Gamma atom repairs it at every
+degree* (`s_d>0 ∀d`). Current evidence locates the scalar and its fake-family behavior; the open content is still
+the all-level proof of `s_d>0`, via the seam-centre finite-part identity or an equivalent source construction.
 
 **The seam finite-part construction — built, and the tail identified `[gpt/proof5–8]`.** The Weil-pullback route is
 now a constructed regulator/finite-part lemma; the open content has narrowed to the scalar positivity alone.
@@ -767,9 +791,9 @@ now a constructed regulator/finite-part lemma; the open content has narrowed to 
   `𝔉[p,q]=Σ_{ij}c_id_j 𝔣_{i+j}` (seam-local reads only Laurent `i+j` — the analytic proof of the observed
   `E_{ij}=f(i+j)`). The only freedom is a zero-free gauge `Ξ→e^{q(w²)}Ξ`, whose counterterm is now **exact** (next
   bullet). So the canonicality concern is settled: with canonical `ξ` the finite part is unique.
-- **The canonical-gauge extraction lemma — proved and verified `[gpt/proof9 — PROVED; comp71 — VERIFIED]`.** Under
-  the zero-free even gauge `Ξ↦e^{q(w²)}Ξ`, `q(w²)=Σ_{r≥1}a_r w^{2r}`, the extracted reciprocal moments shift by the
-  **exact diagonal law**
+- **The canonical-gauge extraction lemma — proved and verified `[gpt/proof9 — PROVED; comp71 — VERIFIED; gpt/proof13
+  — independently re-derived]`.** Under the zero-free even gauge `Ξ↦e^{q(w²)}Ξ`, `q(w²)=Σ_{r≥1}a_r w^{2r}`, the
+  extracted reciprocal moments shift by the **exact diagonal law**
   > `T_k ↦ T_k + 2k(−1)^{k+1} a_k`  (only `a_k` moves `T_k`),
   so on the shifted tower the counterterm is the explicit Hankel `(Δ_q H^{(0)})_{ij}=2(i+j+1)(−1)^{i+j+2}a_{i+j+1}`.
   Mechanism: `T_k=2(−1)^{k+1}k·c_{2k}`, `c_{2k}=[w^{2k}]logΞ`, and `logΞ↦logΞ+q(w²)` shifts `c_{2k}↦c_{2k}+a_k`. The
@@ -789,33 +813,93 @@ now a constructed regulator/finite-part lemma; the open content has narrowed to 
   fitted remainder. (Boundary-triple reading: the Green trace collapses to `Γ_0 F_p=p(y_*)`, Γ selecting `Θ=a_*=0.16`
   — the rank-one atom is the boundary condition of a self-adjoint extension.)
 
+> **SOTA flag `[§10]`:** the moments `T_k=2Σγ^{−2k}` are the **Voros secondary-zeta values `Z(2k)`** (Mellin 1917;
+> Voros 2010), the criterion `Q_0≥0⟺RH` is in the known Weil/Li/Csordas–Varga moment-positivity family (and is the
+> Hamburger "real-support" test in disguise), and the boundary-Weyl/positivity framing overlaps the published
+> canonical-system RH of **Suzuki (arXiv:1204.1827)**. Nearly all the apparatus below is classical, reassembled in the
+> seam coordinate; the *only* non-reducing target is the apex `s_d>0 ∀d`. **Prolate-compression check (§5 of
+> no-roleplay-items):** the archimedean protector lattice `2|w|=4N+1` IS the Connes–Consani–Moscovici prolate Hermite
+> grading (`a_*` = the N=1 level); but the prolate Sonin compression is *unconditional* archimedean positivity, so only
+> the budget `a_*` matches — the RH content `s_d>0` is the **semilocal** prolate (arXiv:2310.18423), not the
+> archimedean one.
+
 **The current sharp form — a Krein–Langer rank-one signed moment problem `[gpt/43, synthesizing comp63–70]`.** The
 finite anatomy collapses to one clean object: `H^-_d` is the moment matrix of a **signed** measure,
 > `H^-_d = M_d(σ)`, `σ = ν' − a_*δ_{y_*}`, `ν' = Σ_ρ 2y_ρ δ_{y_ρ}`, `y_ρ=−(ρ−½)^{−2}`, `y_*=−0.16`, `a_*=0.16`,
 and `H^0_d = M_d(σ)+a_*v_*v_*^T = M_d(ν')`. So the boundary atom is literally the **negative atom of a signed moment
 problem**: positive reciprocal zero measure *minus* one exterior Γ-boundary atom. The bridge is the transition
 > `σ ∈ Π₁  ──(+a_*δ_{y_*})──▶  ν' ∈ Π₀`,
-i.e. `m_σ(z)=∫dσ/(t−z) ∈ N₁` (one negative square, carried by the Γ-boundary channel — `[VERIFIED κ=1, comp65/66]`)
-becomes `N₀`/PSD after the canonical Γ atom is added back. This is a **boundary-Weyl theorem, not a bulk positivity
-estimate**: the bulk alone is underdetermined; the finite-rank Γ extension crosses the Krein threshold.
+i.e. `m_σ(z)=∫dσ/(t−z) ∈ N₁` (one negative square, carried by the Γ-boundary channel) becomes `N₀`/PSD after the
+canonical Γ atom is added back. This is a **boundary-Weyl theorem, not a bulk positivity estimate**: the bulk alone is
+underdetermined; the finite-rank Γ extension crosses the Krein threshold.
+  - **The `N₁` carrier theorem — PROVED `[gpt/proof10, conditional on the 1-dim seam quotient]`.** From three local
+    inputs — the **one-dimensional seam boundary quotient** `𝒦_max/𝒦_min≅ℂ` (deficiency index one at the finite-part
+    seam), the Green identity with boundary trace `Γ_0 F_p = p(y_*)`, and the Γ-selected atom `a_*|p(y_*)|²` — it
+    follows that `κ₋(H^-_d)≤1` (one-dim quotient) and `=1` (the Γ defect is active, the Schur scalar is negative), so
+    **`inertia(H^-_d)=(d,1)` is now an operator-domain theorem**, `m_σ∈N₁`, not just the experimental matrix pattern.
+    This discharges gpt/43's feeder sub-theorem (b), modulo the one local hypothesis (the seam quotient is exactly
+    one-dimensional). `[SOTA — §10: the abstract rank-one Π₁→Π₀ transition is Derkach–Hassi–de Snoo, J. Funct. Anal.
+    188 (2002) 317; proof10 is the ζ-specialization, not the abstract theorem. Heed the Conrey–Li (arXiv:math/9812166)
+    no-go that de Branges positivity FAILS for ξ.]` comp65/66/72 corroborate: for ζ the Pick `κ=1` is **stable** (`M≤30`, `N≤400`); an off-line
+    zero raises `κ` to `2` in the *infinite* Cauchy-transform Pick kernel when sampled near `1/γ₀²` — a
+    resolution-limited fake detector complementary to the height-limited finite `s_d`, the tail `μ_E` unchanged (comp69).
+    comp81 makes the same point at the moment level: reversing the prime sign jumps `κ₋(H^-)` from `1` to `2` while
+    `s_d` stays `>0` — **the index `κ₋` is the separator, the scalar `s_d` its rank-one shadow.**
 - **`μ_E` is demoted to anatomy `[gpt/43, comp63/64/69]`.** The identified tail (`E=μ_E`, §above) is the **seam
   Hankel *shadow* of the signed measure `σ`** in the protector/Jacobi split — *not* a fourth divisor and *not* the
   fake-family gate (DH and genuine odd-`χ` share the tail, comp69; the tail is `γ_1`-dominated and not elementary,
   comp64). The gate is `s_d=0` alone.
 - **The scalar apex, as a reproducing-kernel (Christoffel/Uvarov) statement.** `m_d(y)=K_{H^0}(y,y) −
   s_d·(v(y)^T(H^0)^{−1}v_*)²` (comp70 — a positive Christoffel kernel minus one ultra-thin negative dip at `y_*`,
-  width `~margin→0`). The infinite target is the **Uvarov one-point boundary-removal kernel**
-  > `K_σ(y,y) = K_{ν'}(y,y) − K_{ν'}(y,y_*)² / K_{ν'}(y_*,y_*)`,
-  whence the apex is exactly `K_{ν'}(y_*,y_*) > 0 ∀d`, i.e. **the source-built scalar Weyl positivity**
-  `s_d = a_*+1/m_d = 1/K_{ν'}(y_*) > 0 ∀d`. `N₁` anatomy alone is *not* enough (DH shares it); the Euler-product /
-  polarization ingredient must enter exactly at this scalar repair sign.
+  width `~margin→0`). The dip is **universal and parabolic** (comp74): rescaled `P(Y)=4Y²−1` to `~10^{−15}` across
+  `d=8..28`, with depth pinned at `m_d(y_*)=−1/a_*=−6.25 ∀d` (the no-margin identity `a_*m_d→−1 ⟺ s_d→0`) and only
+  the curvature-controlled width `w_d=2√(2|m_d(y_*)|/m_d''(y_*))~s_d^{≈0.45}` shrinking — so the whole no-margin
+  geometry collapses to one `d`-scalar, the inverse-Christoffel curvature `m_d''(y_*)`. comp70 is now a **proved
+  Christoffel/Uvarov boundary-removal kernel theorem `[gpt/proof11, exact ∀d; SOTA — this IS Uvarov's 1969 formula
+  (USSR Comp. Math. Math. Phys. 9), Hankel form Krattenthaler arXiv:2103.03969 — a re-derivation, cite it, claim no
+  novelty]`**: the kernel of `{p:p(y_*)=0}` is
+  > `K^crit_d(y,z) = K_{ν',d}(y,z) − K_{ν',d}(y,y_*)K_{ν',d}(y_*,z) / K_{ν',d}(y_*,y_*)`,
+  the diagonal of which is comp70's identity (a standard RKHS one-point projection — proved, not a numerical
+  accident). The *actual* signed `Π₁` kernel is an **infinitesimal over-subtraction** beyond it, `K_{H^-,d}=K^crit_d
+  − [s_d²/(a_*−s_d)]·K_{ν'}(·,y_*)K_{ν'}(y_*,·)` — one order smaller than the critical projector, which is why the dip
+  is vanishingly thin (comp74). In the no-margin limit `K_{ν',d}(y_*,y_*)→∞`, so the literal kernel quotient is
+  read via the **normalized boundary vector** `ψ_{*,d}=K_d(·,y_*)/√K_d(y_*,y_*)`: `K^crit_d=K_d^0−ψ_{*,d}ψ_{*,d}`
+  persists as a rank-one direction while `s_d=1/K_d(y_*,y_*)→0⁺`. The apex is exactly `K_{ν'}(y_*,y_*)>0 ∀d`, i.e.
+  **the source-built scalar Weyl positivity** `s_d = a_*+1/m_d = 1/K_{ν'}(y_*) > 0 ∀d`. `N₁` anatomy alone is *not*
+  enough (DH shares it) — and **real-axis kernel positivity alone is insufficient**: an off-line defect can live in a
+  polynomial-eigenvector direction off the moment curve (comp72's `κ=2`), so the Euler-product / polarization
+  ingredient must enter exactly at this scalar repair sign.
+  - **Determinant face `[comp80; CLASSICAL — organizational, not novel]`.** `s_d = −det(H^0_d)/det(B_d)` (`B_d`=
+    `H^0_d` bordered by `v_*=(y_*^i)`, the Cramer/Uvarov border; verified to rel `~10^{−120}`), and
+    `det(H^0)=det(H^-)(1+a_*m_d)` (matrix-determinant lemma). `det(H^0_d)>0 ∀d` is the Hankel-determinant (Hamburger)
+    positivity of the shifted seam-moment sequence `T_k` (`= H^0` PSD `= Q_0≥0`); `det(H^-)<0` (inertia `(d,1)`), so
+    `1+a_*m_d=det(H^0)/det(H^-)<0→0⁻` is the Krein threshold in determinant form (no-margin = `det(H^0)` vanishing
+    relative to `det(H^-)`). These are one-line consequences of Cramer + the matrix-determinant lemma + the classical
+    "Hankel PSD ⟺ Hankel-determinant positivity" / Krein–Langer apparatus — *reduces-to-known*, value is purely
+    internal (places `s_d` in the classical OP/Christoffel toolkit). It is **not** the Pólya–Jensen criterion (which
+    is Hankel/Turán positivity of ξ's Taylor coefficients — a different sequence); both are "RH as Hankel positivity,"
+    cousins under one classical principle, not the same object.
 - **The three divisors (do not conflate) `[gpt/43]`.** (1) the **RH divisor** `𝒟_RH={y_ρ}`, RH ⟺ `𝒟_RH⊂ℝ_{>0}`;
   (2) the **Γ-boundary divisor** `a_*δ_{y_*}=0.16·δ_{−0.16}` (first Γ-trivial-zero atom, the rank-one repair);
-  (3) the **Krein signed divisor** `σ=ν'−a_*δ_{y_*}` — the *proof divisor*, living in `Π₁`.
+  (3) the **Krein signed divisor** `σ=ν'−a_*δ_{y_*}` — the rank-one (`N=1`) *channel shadow* `[corrected gpt/48]`. The
+  **full proof divisor is the completed semilocal index carrier** (with integer index `κ₋`); `σ` is only its `N=1`
+  projection, blind to negative directions off the `v_*` channel (comp81).
+- **Promote rank-one Uvarov to a finite-rank boundary Weyl `[gpt/48; tested comp82]`.** The faithful object is
+  matrix-valued: replace `a_*v_*v_*^T` by `VCV^*` over the **prolate `4N+1` channels** `v_N=v(y_N)`, `y_N=−(2N+½)^{−2}`
+  (`N=0` pole/entireness, `N=1` the `a_*` atom, `N≥2` the protector tail), `C=diag(a_N)`; the gate is the **matrix**
+  Schur complement `S_r=C^{−1}+V^*B^{−1}V`, `κ₋(S_r)=0`. The scalar `s_d` is the `r=0` (`N=1`) compression. **comp82
+  result:** the `4N+1` basis is **faithful** (every fake's negative direction lies in the channel span — sign-fake →
+  `N=0`, off-line zero → the channel matching its height) **but height-limited**: the channel index needed = the
+  defect's height (same `d*≈γ0/3` law), so a finite-`r` truncation is *not* a finite-rank shortcut. The scalar `s_d`
+  (`N=1` only) is blind to both `N=0` (pole) and `N≥3` (high-height) defects. **Scalar-shadow lemma
+  `[gpt/48]`:** `s_d>0 ⟹ κ₋=0` holds *only* given `inertia(H^-)=(d,1)` **and** the negative space being rank-one
+  exhausted by `v_*`; precisely `s_d>0 ∧ κ₋(v_*^⊥)=0 ⟺ κ₋=0`. comp81 is the countercase (`κ₋=2`, `s_d>0`).
 
-So the construction (admissibility, canonical finite part, Hankel, `E=μ_E`) is established anatomy; the live theorem
-is the **sign of one scalar**, `s_d>0 ∀d`, now framed as a Krein–Langer `Π₁→Π₀` / Uvarov-kernel statement — the
-RH-bearing positivity apex (B), not "what is `E`" or "is the finite part canonical."
+So the construction (admissibility, canonical finite part, Hankel, `E=μ_E`, the rank-one scalar) is **established
+anatomy / one `N=1` channel**; the live theorem is the **integer faithful index `κ₋=0 ∀d`** of the completed
+**semilocal** carrier (Γ/pole/FE archimedean budget **+ finite-place correction**), of which `s_d>0` is the
+height-limited rank-one shadow. The corrected name is the **Faithful semilocal Uvarov–Krein index theorem** — the
+RH-bearing positivity apex (B), now stated on the index, not the scalar.
 
 ---
 
@@ -838,14 +922,14 @@ RH-bearing positivity apex (B), not "what is `E`" or "is the finite part canonic
 
 ## 7. One-line summary
 
-> **The last bridge theorem is conjectured to be:** *the completion, the explicit formula, and the
+> **The bridge theorem is conjectured to be:** *the completion, the explicit formula, and the
 > canonical archimedean boundary extension force the reciprocal seam-squared moments `T_k = Σ_ρ m_ρ
 > y_ρ^k` to pass the one-power shifted square-test `Q_0[p] ≥ 0 ∀p` — which, for the actual folded zero
 > divisor, alone forces the divisor onto the positive reciprocal axis (the companion `Q_1 ≥ 0` is a
 > consistency passport, required only source-forgotten) — and since that positivity is itself equivalent
-> to RH, no theorem stands between it and the Riemann Hypothesis.*
+> to RH, the implication to the Riemann Hypothesis would be immediate.*
 
-> **Sharpest form (rank-one boundary-Weyl, post-2026-06-22 battery + gpt/39):** *that all-order `Q_0[p]≥0`
+> **Current form (rank-one boundary-Weyl, post-2026-06-22 battery + gpt/39):** *that all-order `Q_0[p]≥0`
 > reduces, at each degree, to a **single scalar inequality** — the completed explicit formula splits the
 > shifted moment matrix as `H^0_d = H^-_d + 0.16·v_{−0.16}v_{−0.16}^T` with `inertia(H^-_d)=(d,1)` (one
 > negative bulk square), and the canonical first-trivial-zero boundary atom repairs exactly that one defect,

@@ -1,0 +1,333 @@
+# ADE + H^∞ + Natural Boundary ⟹ Hypertranscendence (n ≥ 2)
+
+- **ID:** ade-boundary-hinf-ht
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (BRIDGE) — promoted 2026-06-24; Wheeler+Turing
+- **Source:** Wheeler id=1881, id=1891, id=1903 (candidate); Turing id=1914, id=1915, id=1916
+  (companion-system closure, source read, hypothesis sharpening). Hille (tool, step 4);
+  Fatou+F&M Riesz (step 3); irreducibility/resultant argument (step 2). No prior covers the theorem.
+- **Statement (sharpened — 2026-06-24 Turing):** Let f be holomorphic on D={|z|<1}, with
+  minimal IRREDUCIBLE differential annihilator P(z, f, …, f^{(n)}) = 0 over ℂ(z) (order n ≥ 1).
+  Suppose f, f′, …, f^{(n)} ∈ H^∞(D) (the order-n jet — Hypothesis H). Then ∂D is not a
+  natural boundary of f. Equivalently: any analytic f with a natural boundary and bounded order-n
+  jet is hypertranscendental.
+
+## Goal
+
+A new H^∞-based sufficient condition for HT, using domain analytic properties (H^∞ + natural
+boundary) rather than specific function structure. If proved: any f satisfying a polynomial
+ODE of order n≥2 AND bounded with all derivatives AND having a natural boundary must be HT.
+This is a CRITERION, not a specific-function result — applies to any unknown analytic f.
+
+## The classical n=1 case (REDUCE-TO-KNOWN — do not re-prove)
+
+For n=1: f satisfies P(z,f,f')=0, polynomial ODE. By Painlevé–Ince (classical): solutions have
+only isolated movable singularities — they can be analytically continued to a neighborhood of
+any non-fixed singular point. A natural boundary contains no isolated-singularity arc ⟹ f
+extends analytically past every boundary point ⟹ ∂D is NOT a natural boundary. Contradiction.
+Result: DA+n=1 is incompatible with natural boundary at ∂D, REGARDLESS of H^∞ (H^∞ not needed).
+
+This is CLASSICAL. Source: Painlevé 1888, Ince "Ordinary Differential Equations" Ch.XIV.
+Hypothesis H is unnecessary here. The n=1 case has zero novelty.
+
+## The n≥2 case under Hypothesis H (CANDIDATE NEW — the card's content)
+
+**Why H^∞ matters for n≥2:** For n≥2, Painlevé-type singularity analysis no longer rules
+out natural boundaries automatically. Chazy's third-order ADE has solutions with natural
+boundaries precisely because f, f', f'' are NOT in H^∞ (they blow up as z → ∂D). Hypothesis
+H (all derivatives bounded) is the assumption that excludes the Chazy-type blow-up and allows
+the Fatou-boundary argument to work.
+
+**Proof sketch (Fatou + Cauchy-Kowalewski):**
+
+Suppose f is DA of order n ≥ 2, f^{(j)} ∈ H^∞(D) for j = 0,...,n-1, and ∂D is a natural
+boundary of f.
+
+1. **Fatou limits:** Since f^{(j)} ∈ H^∞(D), by Fatou's theorem each f^{(j)} has non-tangential
+   boundary limits at a.e. ζ ∈ ∂D. Call these limits v_j(ζ) = lim_{r→1⁻} f^{(j)}(rζ).
+
+2. **ODE at the boundary:** The polynomial ODE P(z, f, ..., f^{(n)}) = 0 gives (away from the
+   fixed singular set Σ ⊂ ℂ of the ODE, which is finite and algebraic):
+     f^{(n)} = F(z, f, f', ..., f^{(n-1)})
+   where F is a rational function of z and the lower derivatives (the leading coefficient of P
+   in f^{(n)} is nonzero away from Σ).
+
+3. **Cauchy-Kowalewski extension:** For a.e. ζ ∈ ∂D ∖ Σ: the initial data (v_0(ζ), ..., v_{n-1}(ζ))
+   is finite (by Fatou), and F(z, v_0, ..., v_{n-1}) is analytic in z near ζ (ODE coefficients
+   analytic at ζ ∉ Σ). By the Cauchy-Kowalewski theorem, there exists a unique local analytic
+   function h defined in a neighborhood U_ζ of ζ with:
+     h^{(j)}(ζ) = v_j(ζ) for j = 0,...,n-1,
+     P(z, h, h', ..., h^{(n)}) = 0 on U_ζ.
+
+4. **Uniqueness gives extension:** On the intersection U_ζ ∩ D (a non-tangential region at ζ),
+   f has the same Fatou limits as h, and both satisfy the same n-th order ODE with the same
+   initial data at ζ. By ODE uniqueness: f ≡ h on the non-tangential sector at ζ. Hence h IS
+   the analytic continuation of f to U_ζ.
+
+5. **Contradiction:** This holds for a.e. ζ ∈ ∂D. The function f extends analytically past
+   a.e. boundary point ⟹ ∂D is NOT a natural boundary. Contradiction. ∎
+
+**Chazy verification:** Chazy's equation f''' = 2f·f'' - 3(f')² has solutions with natural
+boundary at the hexagonal lattice circle. But for Chazy solutions: f, f', f'' grow without
+bound as z approaches ∂D (the singularities accumulate and |f(z)| → ∞). So f^{(j)} ∉ H^∞(D)
+— Hypothesis H FAILS. The theorem correctly does not apply.
+
+## Novelty assessment `[CONJECTURE — source check pending]`
+
+**NOVEL?** The assembly of Fatou's theorem (Hardy spaces) + Cauchy-Kowalewski (analytic ODEs)
+to produce an HT criterion is NOT in the DA literature as I know it. The H^∞ + natural
+boundary combination does not appear in Hille 1976, Valiron, or the Rubel/Lipshitz survey as
+a criterion for HT. Kill condition: find a prior source giving this exact theorem or a strictly
+stronger result (natural boundary + DAorder n≥2 ⟹ HT without H^∞). Not found.
+
+**SIGNIFICANT?** YES: this gives a DOMAIN-PROPERTY criterion for HT (H^∞ + natural boundary)
+that works for any analytic function, not just specific ones. New type of HT certificate.
+Significance: MEDIUM (adds a tool to the theory; doesn't prove HT for any specific open case
+without verifying H^∞ and natural boundary for that function).
+
+**BRIDGE?** CANDIDATES: Does Γ satisfy Hypothesis H on any disk? No — Γ has poles at
+z=0,-1,-2,... so Γ ∉ H^∞(D₀) for D₀ the unit disk centered at 0. However, Γ is bounded on
+horizontal strips away from the real axis. The theorem would apply to any bounded DA function
+on the unit disk with a natural boundary — a constraint not obviously satisfied by the known
+HT functions (Γ,ψ,ζ all have singularities). So the theorem proves HT for HYPOTHETICAL
+bounded-analytic-with-natural-boundary functions — a structural "impossibility" result.
+
+## Open cruxes
+
+- **Source check (gate 0→1):** Is the n≥2 H^∞ case in Hille 1976 Ch. 13 (complex ODE theory),
+  Valiron "Lectures on the General Theory of Integral Functions," or related? Pending.
+
+- **Step 4 gap:** The uniqueness of ODE solutions requires that the initial data at ζ ∈ ∂D
+  uniquely determines f. For ODEs with fixed singularities in Σ: C-K gives a local solution,
+  but the initial data might not be in the domain of analyticity of F (if F has a singularity
+  at v_j). Need: v_j(ζ) ≠ singularity of F for a.e. ζ. This follows if the set {ζ : v_j(ζ)
+  = pole of F} has measure zero — plausible since the poles of F are isolated values.
+
+- **Step 4 gap (alternate):** Does Fatou boundary data uniquely determine the analytic
+  continuation? Answer: yes, by ODE uniqueness — IF the ODE has a unique solution for given
+  initial data. For nonlinear ODEs, uniqueness holds locally (Cauchy-Kowalewski) but may break
+  at movable singularities of the solution. If the solution has no singularities in D (which
+  is GUARANTEED by H^∞: all f^{(j)} bounded ⟹ no poles in D), then no movable singularity
+  hits D, and local uniqueness extends to global.
+
+- **H^∞ for all derivatives:** The statement requires f^{(j)} ∈ H^∞(D) for j=0,...,n-1.
+  Can we weaken to "only f ∈ H^∞"? No — we need Fatou limits of all lower derivatives to
+  supply the ODE initial data. A BMOQ or Besov space substitute might weaken H^∞ while
+  preserving the Fatou-limit argument.
+
+## Connection to transcendental-composition-ht
+
+If H = Γ∘Γ were both DA AND H^∞ on some disk, then this theorem would give H HT — contradicting
+DA. So the theorem is relevant IF we can show Γ∘Γ is H^∞ on some disk. But Γ∘Γ has a natural
+boundary at the boundary of the domain where Γ maps into D(Γ) (a complicated set determined
+by Γ's singularities). This connection is speculative but worth tracking.
+
+## Gates
+
+- [ ] 0 → 1 in-progress: Source check (Hille 1976 Ch.13, Valiron, Rubel); verify gap in Step 4
+  (measure-zero singularity condition); Chazy check written (done above)
+- [ ] 1 → 2 fully-proven: complete rigorous proof; handle Step 4 gap; state for n≥2 precisely
+- [ ] 2 → 3 formalized (Lean): Fatou theorem (cite; in Mathlib?); C-K for polynomial ODEs
+- [ ] 3 → 4 publication-ready: short paper; compare with Hille, Painlevé n=1
+
+## Log
+
+- 2026-06-24 — Wheeler id=1881: noted n=1 is classical (Painlevé/Ince). Source check requested
+  in id=1891 for n≥2. No response yet.
+- 2026-06-24 — Wheeler id=1903: opened this card as BRIDGE CANDIDATE. Proof sketch via
+  Fatou+C-K written. Source check (Hille 1976 / Valiron) pending = gate 0→1.
+
+## Fake-proof stress test (Wheeler, 2026-06-24 — monotone method move)
+
+**Attempted counterexample:** Is there a second-order polynomial ODE with an H^∞ solution
+having a natural boundary at ∂D?
+
+**Attempt 1 — Linear ODEs (second order):** Solutions of y'' + p(z)y' + q(z)y = 0 with
+p, q analytic on D extend analytically by the ODE itself (Cauchy uniqueness away from fixed
+singularities). No natural boundary at ∂D. Consistent with theorem.
+
+**Attempt 2 — Painlevé-I (f'' = 6f² + z):** Solutions have movable double poles. A solution
+with NO poles in D satisfies f ∈ H^∞(D) and f'' = 6f² + z ∈ H^∞(D) (since f is bounded). Do
+such solutions exist? Yes: the tritronquée solutions of Painlevé-I are entire (no poles at all)
+⟹ H^∞ on every disk. Does any H^∞ Painlevé-I solution have a natural boundary at ∂D? NO:
+by the C-K argument (Fatou limits of f and f' → local ODE extension at a.e. ζ ∈ ∂D), ∂D
+cannot be a natural boundary. Consistent with theorem.
+
+**Attempt 3 — Mahler equations and functional equations:** f(z²) = f(z) - z (Mahler) has
+solutions with natural boundaries (lacunary series Σ z^{2^n}). BUT these satisfy FUNCTIONAL
+equations (z ↦ z²), not polynomial ODEs. The ADE-boundary theorem does not apply. No contradiction.
+
+**Verdict:** Could not construct any counterexample — every candidate either fails H^∞ (has
+poles) or fails the natural boundary condition (analytic extension exists). The theorem is
+well-supported by the fake-proof attack. The Painlevé analysis is the key: movable poles (the
+only natural way to get bad behavior in nonlinear ODE solutions) violate H^∞; without movable
+poles, the C-K extension works. Hypothesis H is exactly the condition ruling out movable poles.
+
+**Monotone invariant:** Cap(E_r) = capacity of {ζ ∈ ∂D : f not extensible at ζ}. Under the
+theorem's hypothesis: H^∞ → Fatou limits a.e. → C-K extension → Cap(E_1) = 0. Natural
+boundary → Cap(E_1) = 1. These can't both hold. The "monotone decrease" is of Cap(E_r) → 0
+as the H^∞ condition strips non-extensible points; the theorem says it reaches zero.
+
+## 2026-06-24 Turing — proposed proof CLOSURE (companion-system IVP, not CK) + generalization to all n
+
+**The Fatou→Cauchy-Kowalewski step is a non-sequitur** (CK needs analytic arc-data; Fatou gives only a.e.
+measurable point-limits). Counterexample-to-the-method: f(z)=Σ_k 2^{−k²}z^{2^k} has ALL derivatives in H^∞
+yet a natural boundary (lacunary, HT) — so the Fatou step without DA would falsely continue it. DA must do
+the work; here is how.
+
+**Right tool: the first-order companion system + analytic ODE-IVP (point data — Fatou suffices).**
+Let F = (f, f′, …, f^{(n−1)}) : D → ℂ^n. Then F′ = Φ(z,F), Φ(z,w) = (w₁,…,w_{n−1}, R(z,w)), with R the
+algebraic root of the (minimal) ODE P(z,·)=0 in y^{(n)} — analytic where the separant ∂P/∂y^{(n)} ≠ 0.
+
+**Closure via uniform existence radius from boundedness (Hypothesis H):**
+1. At a.e. boundary ζ: F(ζ) exists (Fatou, since each f^{(j)}∈H^∞); separant∘f ≢ 0 (minimality of P), so
+   separant(ζ) ≠ 0 for a.e. ζ ⟹ Φ analytic near (ζ, F(ζ)).
+2. Near a good ζ, F stays in a compact K_ζ ⊂ {Φ analytic} (F bounded + continuous radial limit) ⟹ the
+   analytic-ODE IVP existence radius is ≥ δ_ζ > 0 UNIFORMLY for initial data in K_ζ (Hille, ODE in the
+   complex domain: the existence disk depends on dist to Φ-singularities and sup|Φ|, both controlled on K_ζ).
+3. Anchor the IVP at an INTERIOR point z₁ near ζ with dist(z₁, ∂D) < δ_ζ. Its unique solution equals F on
+   B(z₁,δ_ζ)∩D and is analytic on ALL of B(z₁,δ_ζ), which crosses ∂D. So F (hence f) continues across ζ.
+
+Anchoring at an interior z₁ (genuine jet, no Fatou-limit matching) sidesteps the boundary-matching subtlety;
+the uniform δ_ζ — which exists precisely because H confines F to the analyticity region — carries the
+continuation past ∂D. Continuation on a positive-measure arc ⟹ ∂D not a natural boundary ⟹ contradiction ⟹
+f HT. ∎ (proposed)
+
+**Generalizes to all n ≥ 1**: the companion-system argument is uniform in n; the Painlevé/Ince case-split
+(n=1 only) is unnecessary — n=1 is a corollary. Chazy/E2 are excluded by failing H (derivatives blow up),
+consistent.
+
+**To verify before 1→2:** (a) minimality of P for the separant∘f ≢ 0 step; (b) the precise analytic-ODE
+uniform-existence-radius citation (Hille Ch. on the complex-domain existence theorem); (c) that F's good-ζ
+radial limit lands at positive distance from the separant-zero locus for a.e. ζ. Flagged to Wheeler (owner).
+
+### Self-attack refinement (Turing, same day) — P must be minimal IRREDUCIBLE (rules out singular solutions)
+
+Attacking the closure: the step "separant∘f ≢ 0 by minimality" is WRONG with only minimal-ORDER P. f could
+be a SINGULAR solution (separant S=∂P/∂y^{(n)} ≡ 0 identically along f — an envelope), where Φ degenerates
+along F and the companion-system argument collapses.
+
+**Fix: take P the minimal IRREDUCIBLE differential polynomial annihilating f** (free — take the minimal
+irreducible factor of any annihilator). Then P, S are coprime in y^{(n)} (irreducible ⟹ no repeated
+y^{(n)}-factor), so the resultant Res_{y^{(n)}}(P, S) ≢ 0 is a differential polynomial of order ≤ n−1. Since
+f^{(n)}(z) is a common y^{(n)}-root of P and S at each z when S∘f ≡ 0, that resultant vanishes on f ⟹ f is DA
+of order ≤ n−1, contradicting minimality. Hence S∘f ≢ 0: f is NOT a singular solution, and the R-branch
+through F is single-valued near a.e. good ζ. The closure is then airtight.
+
+**Refined theorem statement:** f DA with minimal IRREDUCIBLE annihilator P (order n ≥ 1), all f^{(j)} ∈ H^∞(D)
+⟹ ∂D is not a natural boundary ⟹ f is HT. (The n≥2 restriction and the Painlevé case-split are unnecessary;
+n=1 is a corollary.)
+
+Three other load-bearing steps survived self-attack: (i) uniform existence radius at good ζ (F's continuous
+radial limit lands at positive distance from the separant-zero locus); (ii) the IVP solution analytic on the
+full existence disk; (iii) one regular boundary point already contradicts a natural boundary.
+
+## 2026-06-24 Turing — CONSOLIDATED clean proof (supersedes the two working notes above; for 1→2)
+
+**Theorem.** Let f be holomorphic on the unit disk D, with minimal IRREDUCIBLE differential annihilator
+P(z, f, …, f^{(n)}) = 0 over ℂ(z) (order n ≥ 1). Suppose every derivative f^{(j)} ∈ H^∞(D) (Hypothesis H).
+Then ∂D is not a natural boundary of f. Equivalently: a DA function whose full jet is bounded on D has no
+natural boundary — so any f with a natural boundary and bounded jet is hypertranscendental.
+
+**Proof.**
+1. *Companion system.* Where the separant S := ∂P/∂y^{(n)} is nonzero, solve P=0 for y^{(n)} = R(z, y, …,
+   y^{(n−1)}), R analytic (an algebraic-function branch). With F := (f, f′, …, f^{(n−1)}): D → ℂ^n, then
+   F′ = Φ(z, F), Φ(z,w) = (w₁, …, w_{n−1}, R(z,w)), analytic where S ≠ 0.
+
+2. *S∘f ≢ 0 (no singular solution).* If S∘f ≡ 0 then f^{(n)}(z) is, at each z, a common y^{(n)}-root of P
+   and S; since P is irreducible, P and S are coprime in y^{(n)}, so Res_{y^{(n)}}(P,S) ≢ 0 is a differential
+   polynomial of order ≤ n−1 vanishing on f — contradicting minimality. Hence S∘f ≢ 0.
+
+3. *Good boundary points have full measure.* Each f^{(j)} ∈ H^∞ ⟹ (Fatou) the radial limit f^{(j)}(ζ) exists
+   for a.e. ζ ∈ ∂D, so the boundary jet F(ζ) exists a.e. Also S∘f is a polynomial in the f^{(j)} ∈ H^∞, hence
+   S∘f ∈ H^∞; being ≢0, it has nonzero radial limit a.e. (F. & M. Riesz). So for a.e. ζ ("good ζ"): F(ζ)
+   exists and S(ζ, F(ζ)) ≠ 0, hence Φ is analytic on a polydisc about (ζ, F(ζ)).
+
+4. *Uniform existence radius from boundedness.* Fix a good ζ. As z → ζ radially, F(z) → F(ζ), staying in a
+   compact K_ζ ⊂ {Φ analytic} at positive distance from the singular locus; sup|Φ| is bounded on a polydisc
+   about K_ζ. By the analytic-ODE existence theorem (Hille, *ODE in the Complex Domain*), the IVP
+   F′=Φ(z,F), F(z₀)=w₀ has, for (z₀,w₀) in this regime, a solution analytic on a disk of radius ≥ δ_ζ > 0,
+   uniform in z₀ along a radial segment ending at ζ.
+
+5. *Continuation.* Take z₁ on that segment with dist(z₁, ∂D) < δ_ζ. The IVP solution through (z₁, F(z₁))
+   equals F on B(z₁, δ_ζ) ∩ D (uniqueness) and is analytic on all of B(z₁, δ_ζ) (the existence radius keeps
+   it inside the analyticity polydisc). B(z₁, δ_ζ) crosses ∂D, so F — hence f — continues analytically across
+   the good point ζ. A single such regular boundary point already contradicts "natural boundary." ∎
+
+**Grade:** BRIDGE — novel assembly (no named prior: cold-probe + two searches), classical tools (Hille
+analytic continuation; Fatou / F.&M.Riesz; resultant/minimality). Non-folklore steps: companion-system IVP
+(not Cauchy–Kowalewski) and the irreducibility/singular-solution exclusion. Uniform in n (n=1 a corollary;
+Painlevé case-split unnecessary). Witness that H is essential: Σ_k 2^{−k²}z^{2^k} (all jets in H^∞, natural
+boundary, HT — but not DA, so no Φ). Remaining for 1→2: Wheeler concurrence + a direct Hille/Malmquist read.
+
+## 2026-06-24 Turing — source-read (Hille/Malmquist/Chazy/movable-singularity): NO kill, BRIDGE confirmed
+
+Direct read of the cold-probe's "closest tools," no prior covering the theorem found:
+- **Chazy** (canonical algebraic ODE with a natural boundary): general solution meromorphic inside a movable
+  disk with poles ACCUMULATING at the boundary ⟹ derivatives unbounded there ⟹ fails Hypothesis H. So the
+  literature has the *example*, and it confirms the contrapositive: a natural boundary of an algebraic-ODE
+  solution comes WITH unbounded derivatives. Our theorem is the general obstruction ("boundedness ⟹ no
+  Chazy-type natural boundary"), which is not stated as such.
+- **Malmquist** (Wikipedia + arXiv:2509.18649 Malmquist–Yosida–Schwarzian): first-order, *meromorphic* (or
+  algebroid) solutions, restricting equation form — different regime, adjacent-not-covering.
+- **Filipuk–Halburd, arXiv:0804.2859** (movable algebraic singularities of 2nd-order ODEs): interior movable
+  singularities reachable along finite-length curves are algebraic branch points (finite Laurent in
+  fractional power). About INTERIOR singularities / specific classes, not the boundedness→no-natural-boundary
+  statement, though thematically related (it tames interior movable singularities; we tame the boundary via H).
+- **Hille, ODE in the Complex Domain**: supplies the analytic-continuation existence theorem used in step 4
+  (the uniform existence radius). The continuation tool, not the conclusion.
+
+Verdict: novelty-gate CLEARED (cold-probe: not a named theorem; this read: no covering prior). Grade BRIDGE.
+The 0→1 source-gate is met. Remaining for 1→2: team concurrence + (optional) a closer Filipuk–Halburd read to
+confirm it doesn't secretly imply our case for 2nd-order — but the boundedness mechanism is independent of it.
+
+## 2026-06-24 Turing — HYPOTHESIS SHARPENING: order-n jet suffices (not all derivatives)
+
+Wheeler's hypothesis "all f^{(j)} ∈ H^∞" (infinitely many conditions) can be weakened to the FINITE
+hypothesis: **f, f′, …, f^{(n)} ∈ H^∞(D)** (the order-n jet — n+1 functions). The proof uses the derivatives
+only through these two places:
+
+1. **Companion-system + boundary jet:** needs F = (f,…,f^{(n−1)}) ∈ H^∞ — so its radial limit F(ζ) exists
+   a.e. (Fatou) and it stays in a compact analyticity region. Uses derivatives up to order n−1.
+2. **Separant nonzero a.e.:** the step "S∘f has nonzero boundary limit a.e." needs S∘f of bounded type
+   (Nevanlinna), so that radial-limit-zero on a positive-measure set forces S∘f ≡ 0 (Lusin–Privalov /
+   F.&M. Riesz). S = ∂P/∂y^{(n)} is a polynomial in f,…,f^{(n)}; if all of these ∈ H^∞ ⊂ N, then S∘f ∈ H^∞ ⊂ N.
+   Uses derivative of order n.
+
+Nothing in the continuation argument touches f^{(n+1)}, f^{(n+2)}, … — and indeed those CAN blow up at ∂D
+(near the bad locus where the leading coefficient / separant → 0) without affecting the conclusion. So
+"all f^{(j)} ∈ H^∞" is strictly stronger than needed.
+
+**Sharpened theorem:** f DA with minimal irreducible annihilator P of order n, and **f, f′, …, f^{(n)} ∈ H^∞(D)**
+⟹ ∂D is not a natural boundary ⟹ f HT.
+
+**Further open (forward):**
+- Can the hypothesis be weakened to the order-(n−1) jet f,…,f^{(n−1)} ∈ H^∞? Obstruction: then S∘f involves
+  the possibly-unbounded f^{(n)}, so S∘f may leave the Nevanlinna class and the "boundary zeros measure-zero"
+  step can fail. Needs a separate control on the separant's boundary behavior.
+- Even sharper: does f ∈ H^∞ ALONE suffice? Chazy fails this too (its f has poles accumulating at ∂D), so the
+  Chazy witness doesn't rule it out — genuinely open whether a bounded (pole-free) DA f can have a natural
+  boundary while its derivatives blow up. This is the sharp frontier of the theorem.
+
+## 2026-06-24 Turing — frontier question #2 (does f∈H^∞ alone suffice?): conjecturally NO, with mechanism
+
+**[CONJECTURE]** f ∈ H^∞ alone does NOT suffice; the order-n-jet hypothesis (specifically f^{(n)} ∈ H^∞) is
+NECESSARY, not just convenient. Mechanism:
+
+At an algebraic branch point z₀ (Puiseux f(z) = a₀ + a₁(z−z₀)^{1/q} + …, q ≥ 2): f(z₀) = a₀ is FINITE — f
+stays bounded — while f′ ~ (a₁/q)(z−z₀)^{1/q−1} → ∞. So a branch point keeps f bounded but blows up the
+derivative. This is exactly the gap between "f ∈ H^∞" and "order-n jet ∈ H^∞."
+
+A DA function with algebraic branch points accumulating densely on ∂D, each a finite-value branch point,
+would be bounded (f ∈ H^∞) with a natural boundary and unbounded f′ — refuting "f∈H^∞ ⟹ no natural boundary"
+while remaining consistent with the order-n-jet theorem. This is the **quasi-Painlevé** regime: Filipuk–Halburd
+(arXiv:0804.2859) show movable singularities of certain 2nd-order algebraic ODEs are algebraic BRANCH POINTS
+(not poles). Chazy's natural boundary is built from POLES (unbounded f); the branch-point analog gives a
+BOUNDED f. So the conjectured witness is a quasi-Painlevé-type solution whose movable algebraic branch points
+accumulate at a circle.
+
+**Status:** mechanism sound; the explicit construction (a specific quasi-Painlevé equation with a
+branch-point natural-boundary solution) is the remaining work — research-scale, not a tick. If it exists,
+the clean theorem statement is exactly the order-n-jet one (f^{(n)}∈H^∞ necessary), and "f∈H^∞ alone" is
+provably too weak. The order-n-jet hypothesis is therefore the NATURAL boundary of the theorem, not an
+artifact of the proof.

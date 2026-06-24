@@ -1,0 +1,23 @@
+target leading node x* = a_*+y_1 = 0.16 + 1/gamma_1^2 = 0.1650052441
+
+=== comp77: leading node (e_{n+1}/e_n) convergence to a_*+y_1, and inertia growth ===
+ d=12: lead e_{n+1}/e_n=0.17250865 (target 0.165005, err 0.0075); Hankel inertia=(3,6); sign-changes=1; top nodes=['0.165007', '0.162851', '0.161172', '0.157563']
+ d=18: lead e_{n+1}/e_n=0.16619112 (target 0.165005, err 0.0012); Hankel inertia=(5,10); sign-changes=1; top nodes=['0.165193', '0.165005', '0.162258', '0.161456']
+ d=24: lead e_{n+1}/e_n=0.16484081 (target 0.165005, err 0.00016); Hankel inertia=(7,14); sign-changes=1; top nodes=['0.165005', '0.162263', '0.161599', '0.161089']
+ d=30: lead e_{n+1}/e_n=0.16443184 (target 0.165005, err 0.00057); Hankel inertia=(9,18); sign-changes=1; top nodes=['0.165005', '0.162263', '0.161599', '0.16108']
+
+=== comp78: F_E(z)=sum e_n z^n  Pade poles (support 1/x_alpha? natural boundary?) ===
+ Pade [27/27] on 57 coeffs; nearest poles |z| and 1/z (=x support pt):
+   z=6.06041  |z|=6.06041  1/z=0.165005  (target x*=0.165005)
+   z=6.16284  |z|=6.16284  1/z=0.162263  (target x*=0.165005)
+   z=6.18817  |z|=6.18817  1/z=0.161599  (target x*=0.165005)
+   z=6.20808  |z|=6.20808  1/z=0.16108  (target x*=0.165005)
+   z=6.2142  |z|=6.2142  1/z=0.160922  (target x*=0.165005)
+   z=6.22283  |z|=6.22283  1/z=0.160699  (target x*=0.165005)
+ pole-|z| spread (clustered=>simple poles; spread on a ring=>natural boundary): [6.0604, 6.1628, 6.1882, 6.2081, 6.2142, 6.2228, 6.2291, 6.2374]
+
+DONE
+
+real	0m22.793s
+user	0m22.778s
+sys	0m0.015s

@@ -12,7 +12,7 @@
 
 | # | Theorem | Statement (core) | Supports |
 |---|---|---|---|
-| T1 | **constraint-not-flow** | `Λ` fixed by order-2 `ι:s↦1−s` (`ι²=id`, `Fix(ι)={Re=½}`); the Source-B flow's spectrum is `{log p}` (RH-blind), not the zeros | LT3 |
+| T1 | **constraint-not-flow** | `Λ` fixed by order-2 `ι:s↦1−s` (`ι²=id`, `Fix(ι)={1/2}`; the critical line is `Fix(ι∘conj)`); the Source-B flow's spectrum is `{log p}` (RH-blind), not the zeros | LT3 |
 | T2 | **two-sources / σ-orbit-balance** | `a` is CC `⟺ deg_O(a)=0 ∀` σ-orbit; the Γ-multiplier `a_Γ=Γ_ℝ(s+2)/Γ_ℝ(s)=s/2π` has `div=[0]−[∞]`, `deg_ℤ=+1≠0` (unique non-CC place — the gamma-recurrence ratio) | LT2 |
 | T3 | **multiplier-dichotomy** | CC `⟹` holonomic (Galois `⊂𝔾_m`); `deg_∞(a)≠0 ⟹` non-CC; non-CC `⟹` hypertranscendental [import Hölder/ADH] | LT2, LT3 |
 | T4 | **corank-seam-invariant** | `corank` = one number, three faces (G1/G2/G4); `corank=∞ ⟺ {log p}` ℚ-LINEARLY indep (Baker); `corank=∞ ⇏ trdeg=∞` (linear floor ⊊ algebraic apex) | LT2 |
@@ -36,11 +36,12 @@
 | T22 | **f1-inversion-stieltjes-collapse** | `trdeg_ℚ{Stieltjes(ζ_S)}=corank_ℚ{log p:p∈S}`; corank-1 `⟹` `γ_n^{(q)}=(B_n^+/n!)(log q)^n`, `trdeg=1` | LT2 |
 | T23 | **f1-two-face-criterion** | `F₁ exists ⟺ (D=0) ∧ (corank finite)`; ℚ: `(D=+1, corank=∞)` `⟹` F₁ missing | LT2 |
 | T24 | **frobenius-collapse-linear-vs-algebraic** | `{corank=1} ⊊ {trdeg=1}` (witness `{π,π²}`: `trdeg=1`, `corank=2`) | LT2 |
-| T25 | **g2/g4/g5-over-F_q** | over `F_q` (corank 1): `trdeg(periods)=dim G` (Papanikolas DSS); `dim W=corank=1` (Deligne–Katz); `ι` unitary on `Fix(ι) ⟺` RH-over-`F_q` (Deligne Weil II) | LT2, LT8 |
+| T25 | **g2/g4/g5-over-F_q** | over `F_q` (corank 1): `trdeg(periods)=dim G` (Papanikolas DSS); `dim W=corank=1` (Deligne–Katz); reflected critical-line constraint unitary `⟺` RH-over-`F_q` (Deligne Weil II) | LT2, LT8 |
 | T26 | **dss-lower-bound-orbit-nogo** | the native `G_L`-orbit gives the DSS **upper** bound only; the lower bound (`F^{(T)}(1)=(−1)^T ΣC_a∏(log p)^{a_p}`) is orthogonal to the orbit | LT2 |
 | T27 | **stieltjes-log-weld** | Tier-1 (Baker, unconditional): `{γ_n}` and `{log p}` jointly **linearly** inseparable (`c_1=Σβ_p log p`) | LT2 |
 | T28 | **koszul-acyclicity** | the multiplicative ∞-prime Koszul stays acyclic **unconditionally** (RH-blind); `RH ⟺` archimedean-completed Koszul acyclic `⟺ ω=0` | LT1 |
 | T29 | **li-secular change-of-basis** | `−ξ'/ξ(s)=Σ_{k≥1}P_k s^{k-1}`, `P_k=Σ_ρ ρ^{-k}`; `λ_n=−Σ_j\binom{n}{j}(−1)^j P_j` (triangular ℤ); `ℚ({P_k})⊇{ζ(odd)}` | LT2, LT8 |
+| T30 | **reciprocal-divisor reduction `[gpt/proof12; classical moment theory]`** | `Q_0[p]≥0 ∀p ⟹ RH` for the *actual* folded divisor: Hamburger/Riesz ⟹ positive `μ` on `[−R,R]`; the divisor g.f. `G(z)=Σ_α M_α y_α/(1−y_α z)` (meromorphic, poles at `1/y_α`) `= ∫dμ/(1−xz)` (Cauchy transform of a positive real-line measure, holomorphic off `ℝ`) ⟹ no non-real atoms; `μ=ν:=Σ M_α y_α δ_{y_α}` by Weierstrass ⟹ `y_α>0`. The `⟸` half (source-built `Q_0≥0`) stays open. *Reduction only — passes the roleplaying audit; low novelty (= the `⟹` half of the known moment-positivity↔RH, §10.A2).* | bridge §3 |
 
 ---
 
@@ -197,6 +198,24 @@ counterpart to the apex forms.)
   determinant-volume observable is RH-blind until `Π(S)` is subtracted.
 - **NEW lemma-shape — sign-changing scale-matched positivity detector.** Prove the off-line curvature is
   detectable only by a zero-mean kernel matched at width `≈a/2`, certifying the APEX-B numerics.
+- **NEW lemma-shape — fake separation is the integer `κ₋`, not the scalar `s_d` `[VERIFIED — comp81/72]`.** The
+  required fake-family lemma (the `s_d>0` apex, T-D) must be stated on the **index**: a fake can carry `κ₋=2` with
+  the rank-one scalar `s_d>0` (comp81: reversed prime sign), so `s_d=0` is only the height-limited shadow. Target
+  shape: `Λ(n)≥0` (Euler-product positivity) `⟹ κ₋(H^-)=1` (exactly one negative square) from source; the
+  archimedean budget `≈a_*` sits on the prolate Hermite grading `2|w|=4N+1` and matches the Connes–Consani–Moscovici
+  archimedean Sonin positivity *unconditionally*, leaving the prime/finite-place demand (the **semilocal** prolate,
+  arXiv:2310.18423) as the carrier of the RH content.
+- **NEW lemma-shape — the scalar-shadow lemma `[gpt/48]`.** State and prove precisely *when* the rank-one scalar is
+  faithful: **`s_d>0 ∧ κ₋(v_*^⊥)=0 ⟺ κ₋=0`** — i.e. `s_d>0 ⟹ κ₋=0` only given `inertia(H^-)=(d,1)` **and** rank-one
+  exhaustion of the negative space by `v_*`. (Prevents the scalar from masquerading as the faithful gate; comp81 is the
+  countercase.)
+- **NEW lemma-shape — finite-rank boundary Weyl over the prolate channels `[gpt/48; tested comp82]`.** Promote
+  `a_*v_*v_*^T` to `VCV^*`, `V=(v_0,…,v_r)` the `4N+1` channels `v_N=v(−(2N+½)^{−2})`, `C=diag(a_N)`; the faithful gate
+  is the matrix Schur complement `κ₋(S_r)=0`, `S_r=C^{−1}+V^*B^{−1}V`. **comp82 answers the "does finite `r` recover
+  `κ₋`?" question:** the `4N+1` basis is **faithful** (every fake's negative direction lies in the channel span) **but
+  the rank needed = the defect's height** (sign-fake → `N=0`; off-line zero at `g0` → `N≈g0`-scale), so a finite-`r`
+  truncation is height-limited (`d*≈γ0/3`), *not* a finite-rank shortcut. ⟹ the faithful object is the **full
+  all-channel** carrier; the lemma must be stated all-order, with finite `r`/scalar `s_d` as height-graded shadows.
 
 ---
 

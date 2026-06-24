@@ -1,0 +1,24 @@
+NODE: road hierarchy can mimic fractal branching
+size=256 occupied_target=3515 boxes=[2, 4, 8, 16, 32, 64]
+pattern occupied box_dimension box_r2 occupancy_cv anisotropy
+designed_hierarchy     3515       1.39731 0.9866      0.47953    1.68010
+stochastic_growth      3515       1.61239 0.9965      0.49986    1.24339
+random_occupancy       3515       1.59867 0.9659      0.28790    1.03850
+
+STEP8 Levenshtein transfer candidates
+1 distance=16 ratio=0.2162 prime hierarchy mimics fractal phase branching without native organization
+2 distance=34 ratio=0.5231 threshold hierarchy mimics fractal zero-shadow branching
+3 distance=41 ratio=0.6308 finite-euler hierarchy mimics fractal seam morphology
+selected=1 prime hierarchy mimics fractal phase branching without native organization
+
+STEP9 method=1 split subclaims: HT morphology hierarchy confound
+kind sigma occupied box_dimension box_r2 occupancy_cv anisotropy
+true   0.3     3330       1.42883 0.9976      0.49102    4.66178
+finite 0.3     3328       1.50674 0.9952      0.41216    3.62231
+random 0.3     3319       1.79778 0.9921      0.33162    3.75033
+true   0.5     3328       1.43464 0.9938      0.47667    4.85060
+finite 0.5     3332       1.51542 0.9916      0.39579    3.67355
+random 0.5     3319       1.79728 0.9927      0.31986    3.90310
+true   1.2     3334       1.42443 0.9954      0.56542    4.42820
+finite 1.2     3325       1.42402 0.9959      0.56260    4.47006
+random 1.2     3319       1.78402 0.9941      0.36848    3.80256
