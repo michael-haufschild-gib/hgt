@@ -364,4 +364,53 @@ theorem bottcherCoord_quadratic {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 <
         = z ^ 2 * Complex.exp (2 * S) * ((z ^ 2 + c) * (z ^ 2 + c)⁻¹) by ring,
       mul_inv_cancel₀ hqc, mul_one]
 
+/-- **Orbit stays in the escape regime.** For `z` beyond radius `2` with `‖c‖ ≤ ‖z‖`, every
+iterate satisfies `‖z‖ ≤ ‖f_c^[n] z‖` (the orbit only grows). Hence the escape-regime
+hypotheses `‖c‖ ≤ ‖·‖`, `2 < ‖·‖` propagate to all iterates. -/
+theorem norm_iterate_ge {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) (n : ℕ) :
+    ‖z‖ ≤ ‖(quadratic c)^[n] z‖ := by
+  have hgrow := quadratic_orbit_growth hc hz n
+  have hz1 : (1 : ℝ) ≤ ‖z‖ - 1 := by linarith
+  have hge1 : (1 : ℝ) ≤ (‖z‖ - 1) ^ n := one_le_pow₀ hz1
+  nlinarith [hgrow, hge1, norm_nonneg z,
+    mul_nonneg (norm_nonneg z) (by linarith [hge1] : (0 : ℝ) ≤ (‖z‖ - 1) ^ n - 1)]
+
+/-- **Iterated functional equation**: `φ_c(f_c^[n] z) = φ_c(z)^(2ⁿ)` on the escape set.
+The `n`-fold conjugacy of `f_c` to `w ↦ w²` — here the dyadic `2ⁿ` of the monodromy is
+born: a branch of `φ_c` pulled back through `f_c^[n]` is a `2ⁿ`-th root of `φ_c`, so the
+deck group over the depth-`n` cylinder is cyclic of order `2ⁿ`. -/
+theorem bottcherCoord_iterate {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) (n : ℕ) :
+    bottcherCoord c ((quadratic c)^[n] z) = (bottcherCoord c z) ^ (2 ^ n) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    have hwz : ‖z‖ ≤ ‖(quadratic c)^[n] z‖ := norm_iterate_ge hc hz n
+    have hwc : ‖c‖ ≤ ‖(quadratic c)^[n] z‖ := le_trans hc hwz
+    have hw2 : 2 < ‖(quadratic c)^[n] z‖ := lt_of_lt_of_le hz hwz
+    rw [Function.iterate_succ', Function.comp_apply, bottcherCoord_quadratic hwc hw2, ih,
+        ← pow_mul, pow_succ]
+
+/-- **Branch-free factorization** `φ_c(z) = z · exp(∑ₖ termₖ(z))` for `z ≠ 0`. The `log z` in
+`bottcherLog` carries a branch cut, but `exp(log z) = z` removes it: `φ_c` itself is single-valued
+and analytic across the slit (everywhere `z ≠ 0` where the series is defined), with the `z`-factor
+giving the normalization `φ_c ~ z` at `∞`. -/
+theorem bottcherCoord_eq_mul_exp {c z : ℂ} (hz : z ≠ 0) :
+    bottcherCoord c z = z * Complex.exp (∑' k, bottcherLogTerm c z k) := by
+  unfold bottcherCoord bottcherLog
+  rw [Complex.exp_add, Complex.exp_log hz]
+
+/-- **`φ_c` is analytic on all of `escapeOpen`** (not merely the slit neighborhood): via the
+branch-free factorization `φ_c = z · exp(∑ₖ termₖ)`, with the series differentiable on `escapeOpen`.
+This removes the `slitPlane` restriction from `analyticOnNhd_bottcherCoord`, so contours (e.g. a
+circle `C(0,R)` crossing the negative reals) lie in the domain of analyticity. -/
+theorem differentiableOn_bottcherCoord (c : ℂ) :
+    DifferentiableOn ℂ (bottcherCoord c) (escapeOpen c) := by
+  have hg : DifferentiableOn ℂ (fun z => z * Complex.exp (∑' k, bottcherLogTerm c z k))
+      (escapeOpen c) :=
+    differentiableOn_id.mul ((differentiableOn_bottcherLogSum c).cexp)
+  refine hg.congr (fun z hz => ?_)
+  obtain ⟨_, hz2⟩ := mem_escapeOpen_regime hz
+  have hz0 : z ≠ 0 := by intro h; rw [h, norm_zero] at hz2; linarith
+  exact bottcherCoord_eq_mul_exp hz0
+
 end Bottcher

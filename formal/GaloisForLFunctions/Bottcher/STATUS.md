@@ -136,3 +136,79 @@ Final:
 Priority path: items 1–6 (disconnected, needs no E–vS). Each is a compiling increment; the period
 formula (T3a) and the obstruction engines are already in hand, so the remaining weight is building the
 Böttcher/Julia/Brolin/germ-field analytic infrastructure that Mathlib does not have.
+
+## Progress log — 2026-06-24 (continued, brick-by-brick toward discharging hDisc)
+
+New verified bricks in `BottcherCoord.lean` (full `lake build GaloisForLFunctions.Bottcher` exit 0; zero sorries/axioms; zero ring-noise):
+
+- `norm_bottcherCoord_eq_exp_green` — `‖φ_c(z)‖ = exp(G_c(z))` on the escape set. Bridges
+  max-modulus (analytic `φ_c`) to the maximum principle (real `G_c`).
+- `greenLimit_eqOn_of_isMaxOn` — **maximum principle for `G_c`**: an interior max of `G_c`
+  on a preconnected open `U ⊆ escapeOpen∩slitPlane` forces `G_c` constant. Via
+  `Complex.eqOn_of_isPreconnected_of_isMaxOn_norm` on `φ_c`. Uniqueness engine (Brolin A2).
+- `bottcherCoord_quadratic` — **functional equation** `φ_c(z²+c) = φ_c(z)²` (exact; the
+  `log(z²)−2log z ∈ 2πiℤ` branch ambiguity is annihilated by `exp`). The conjugacy
+  `φ_c ∘ f_c = (·)² ∘ φ_c` of the dynamics to `w ↦ w²`.
+- `norm_iterate_ge` — orbit stays in the escape regime (`‖z‖ ≤ ‖f_c^[n] z‖`).
+- `bottcherCoord_iterate` — **iterated functional equation** `φ_c(f_c^[n] z) = φ_c(z)^(2ⁿ)`.
+  Where the dyadic `2ⁿ` of the monodromy is born.
+
+### Precise remaining gap to discharge `hDisc` (exact-Prüfer monodromy tower)
+`multiplier_orderOf_of_mass` already gives: cylinder mass `2⁻ⁿ` ⟹ multiplier order `2ⁿ`.
+Two from-scratch sub-towers remain (Mathlib lacks both):
+- **GAP A (Brolin / balanced measure):** define `μ_c` (Riesz measure of `G_c` — Mathlib has
+  NO Riesz/subharmonic/Laplacian-as-measure), prove `G_c` = potential of `μ_c` (uses the new
+  max principle), `f_*μ_c = μ_c` balanced (from `greenLimit_quadratic`), hence depth-`n`
+  cylinder mass `= 2⁻ⁿ`.
+- **GAP B (germ-field monodromy):** realize continuation around the depth-`n` cylinder loop as
+  a field automorphism `σ_n ∈ M ≃ₐ[K] M` with `σ_n φ_{c₁} = ζ_{2^{n+1}} φ_{c₁}`, `σ_n φ_{c₂}
+  = φ_{c₂}`. The conjugacy/iterate bricks above are its algebraic backbone; needs Mathlib-absent
+  analytic-continuation-along-paths infrastructure.
+Then `DyadicMonodromyTower` assembles ⟹ `hDisc` discharged ⟹ `q62_independence` unconditional
+on the disconnected/disconnected case. `hRigid` (E–vS) remains for connected/mixed.
+
+### GAP B route is Mathlib-supported (found 2026-06-24) — `npow` covering
+`Complex.isQuotientCoveringMap_npow (n) [NeZero n] : IsQuotientCoveringMap (·^n) (powMonoidHom n).ker`
+and `isCoveringMap_npow` give: `w ↦ w^{2ⁿ}` on `ℂˣ` is a covering whose **deck group is exactly
+`(powMonoidHom (2ⁿ)).ker` = the `2ⁿ`-th roots of unity, acting by multiplication** — i.e. `μ_{2ⁿ}`,
+the dyadic monodromy multiplier group, already formalized. Homotopy/path lifting
+(`Topology.Homotopy.Lifting`) supplies analytic-continuation-along-paths.
+Concrete monodromy construction:
+1. `bottcherCoord_iterate` conjugates `f_c^[n]` to `w ↦ w^{2ⁿ}` (proven).
+2. Deck transformation `w ↦ ζ·w` (ζ ∈ μ_{2ⁿ}, from the npow covering kernel) pulls back through
+   `φ_c` to a branch-change of `φ_c`, FIXING `z` (hence fixing `K = ℂ(z)`) and sending
+   `φ_{c₁} ↦ ζ·φ_{c₁}`.
+3. That branch-change is the field automorphism `σ_n ∈ M ≃ₐ[K] M` of `DyadicMonodromyTower`.
+No deck-group-as-automorphisms is pre-built in Mathlib's covering API — that piece is the next
+sub-tower, but the covering + kernel + lifting it rests on are all present.
+
+### New file `Bottcher/MonodromyCovering.lean` (2026-06-24, build green, zero axioms)
+First import of Mathlib's covering theory into the tower. Verified:
+- `dyadicDeck n := (powMonoidHom n).ker` — the `n`-th roots of unity in `ℂˣ` (deck group).
+- `dyadicDeck_pow`, `deck_mul_npow` — kernel elements are `n`-th roots of unity; left-mult is a
+  deck transformation (preserves `w ↦ wⁿ`).
+- `npow_eq_iff_mem_dyadicOrbit` — **monodromy torsor**: `w₁ⁿ = w₂ⁿ ↔ w₁ ∈ orbit(μ_n) w₂`
+  (= `isQuotientCoveringMap_npow.apply_eq_iff_mem_orbit`). Fibre = one `μ_n`-orbit.
+- `eq_dyadicRoot_mul_of_npow_eq` — two values with equal `2ⁿ`-th powers differ by a `2ⁿ`-th root
+  of unity. Pins the monodromy multiplier set to `μ_{2ⁿ}`.
+NEXT brick (#52→σ_n): set up the function/germ field `M ⊇ K=ℂ(z)` and realize the deck multiplier
+`w ↦ ζ·w` as `σ_n ∈ M ≃ₐ[K] M` with `σ_n φ_{c₁} = ζ φ_{c₁}`, `σ_n φ_{c₂}=φ_{c₂}` — assembling
+`DyadicMonodromyTower`. Parallel: GAP-A (#53) balanced measure ⟹ cylinder mass `2⁻ⁿ`.
+
+### `MonodromyCovering.lean` +2 faithful value-level bricks (2026-06-24, build green)
+- `bottcherCoord_pow_preimage` — a `f_c^[n]`-preimage `w` of `z` gives `φ_c(w)^(2ⁿ) = φ_c(z)`:
+  the dynamics supplies the *actual* `2ⁿ`-th roots of `φ_{c₁}` (radical tower NOT formally adjoined
+  — avoids the toy that assumes independence). `bottcherCoord_iterate` read backwards.
+- `bottcherCoord_preimage_dyadic` — two preimages' Böttcher values differ by a `2ⁿ`-th root of
+  unity. The monodromy multiplier at the value level.
+
+### Next brick = germ-field sub-tower (the irreducible analytic core of `hDisc`)
+Need: field `M` of multivalued-analytic / germ functions on `Ω_c`, `K=ℂ(z) ↪ M` (RatFunc ℂ),
+`F=φ_{c₁}, G=φ_{c₂} ∈ M`, and `σ_n ∈ M ≃ₐ[K] M` = monodromy round the depth-`n` cylinder loop,
+PROVEN `σ_n G=G`, `σ_n F=ζ_n F`. Realized as precomposition with a deck transformation of the
+Böttcher covering (deck map is a homeomorphism, so precomposition is automatically a `K`-algebra
+automorphism — no separate "continuation-as-automorphism" needed). Mathlib gives covering
+(`isQuotientCoveringMap_npow`), lifting (`Topology.Homotopy.Lifting`), Kummer-Galois
+(`autAdjoinRootXPowSubC`). The basin covering space + deck-precomposition automorphism is the
+build. NOTE: a purely abstract `K(G)(F)` rational-function model is a TOY (assumes independence) —
+`M` must be the actual germ field with the actual `φ_c`.

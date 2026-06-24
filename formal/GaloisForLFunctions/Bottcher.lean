@@ -10,6 +10,8 @@ import GaloisForLFunctions.Bottcher.Dynamics
 import GaloisForLFunctions.Bottcher.GreenFunction
 import GaloisForLFunctions.Bottcher.ComplexLogBound
 import GaloisForLFunctions.Bottcher.BottcherCoord
+import GaloisForLFunctions.Bottcher.Winding
+import GaloisForLFunctions.Bottcher.MonodromyCovering
 import GaloisForLFunctions.Bottcher.MonodromyObstruction
 import GaloisForLFunctions.Bottcher.LogPotential
 import GaloisForLFunctions.Bottcher.Capacity
