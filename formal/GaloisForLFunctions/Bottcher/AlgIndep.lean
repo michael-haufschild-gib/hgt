@@ -110,4 +110,48 @@ theorem algIndep_of_unbounded_monodromy
   obtain ⟨σ, ζ, m, hlt, hord, hσG, hσζ, hσF⟩ := mono P.natDegree
   exact eq_zero_of_monodromy F G hG σ hσG ζ m hord hσζ hF hσF P hlt hrel
 
+/-- **Unbounded monodromy ⟹ transcendence.** If `G ≠ 0` is scaled by automorphisms `σ` by
+multipliers `ζ` of unbounded order (with `σ ζ = ζ`), then `G` is transcendental over `K`. An
+algebraic `G` of degree `d` would have its `> d` distinct conjugates `ζ^k·G` (`k < orderOf ζ`,
+order `> d`) all roots of its minimal polynomial — impossible. So the dyadic monodromy that gives
+independence ALSO gives transcendence: the `Transcendental K G` hypothesis of
+`algIndep_of_unbounded_monodromy` is itself a consequence of the monodromy tower, not a separate
+input — reducing what the disconnected case must supply to the single `mono` datum. -/
+theorem transcendental_of_monodromy {K M : Type*} [Field K] [Field M] [Algebra K M]
+    (G : M) (hG0 : G ≠ 0)
+    (mono : ∀ d : ℕ, ∃ (σ : M ≃ₐ[K] M) (ζ : M), d < orderOf ζ ∧ σ ζ = ζ ∧ σ G = ζ * G) :
+    Transcendental K G := by
+  classical
+  intro hAlg
+  obtain ⟨p, hp0, hpG⟩ := hAlg
+  set q : M[X] := p.map (algebraMap K M) with hq
+  have hq0 : q ≠ 0 := (Polynomial.map_ne_zero_iff (algebraMap K M).injective).mpr hp0
+  obtain ⟨σ, ζ, hd, hσζ, hσG⟩ := mono p.natDegree
+  have hpow : ∀ k, (σ ^ k) G = ζ ^ k * G := by
+    intro k
+    induction k with
+    | zero => simp
+    | succ n ih => rw [pow_succ', AlgEquiv.mul_apply, ih, map_mul, map_pow, hσζ, hσG]; ring
+  have hconj : ∀ k, q.eval (ζ ^ k * G) = 0 := by
+    intro k
+    have he : q.eval ((σ ^ k) G) = aeval ((σ ^ k) G) p := by
+      rw [hq, Polynomial.eval_map, ← Polynomial.aeval_def]
+    rw [← hpow k, he, Polynomial.aeval_algHom_apply, hpG, map_zero]
+  set m := orderOf ζ with hm
+  have hinj : Set.InjOn (fun k : ℕ => ζ ^ k * G) (Set.Iio m) := rotate_injOn rfl hG0
+  set S : Finset M := (Finset.range m).image (fun k => ζ ^ k * G) with hS
+  have hScard : S.card = m := by
+    rw [hS, Finset.card_image_of_injOn, Finset.card_range]
+    intro j hj k hk hjk
+    exact hinj (Finset.mem_range.mp hj) (Finset.mem_range.mp hk) hjk
+  have hvanish : ∀ x ∈ S, q.eval x = 0 := by
+    intro x hx
+    rw [hS, Finset.mem_image] at hx
+    obtain ⟨k, _, rfl⟩ := hx
+    exact hconj k
+  have hdeg : q.natDegree < S.card := by
+    rw [hScard, hq, Polynomial.natDegree_map_eq_of_injective (algebraMap K M).injective]
+    exact hd
+  exact hq0 (eq_zero_of_card_roots_gt_natDegree q S hvanish hdeg)
+
 end Bottcher

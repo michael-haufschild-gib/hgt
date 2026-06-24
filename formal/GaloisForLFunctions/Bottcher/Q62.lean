@@ -106,4 +106,20 @@ theorem q62_independence
     · exact hRigid (Or.inr h2)
   · exact hRigid (Or.inl h1)
 
+/-- **q62 disconnected/disconnected from BOTH coordinates' monodromy** (strengthening of
+`q62_disconnected`). In the disconnected/disconnected case both `φ_{c₁}` and `φ_{c₂}` carry their
+own dyadic monodromy; the `Transcendental K G` hypothesis is then redundant — it follows from
+`φ_{c₂}`'s own unbounded monodromy (`transcendental_of_monodromy`). So the algebraic independence
+needs only `F ≠ 0`, `G ≠ 0`, and the two monodromy data — exactly what the geometric `deckMap₁`
+construction supplies on the common cover (scaling one coordinate, fixing the other). -/
+theorem q62_disconnected_both
+    {K M : Type*} [Field K] [Field M] [Algebra K M]
+    (F G : M) (hF : F ≠ 0) (hG0 : G ≠ 0)
+    (monoF : ∀ d : ℕ, ∃ (σ : M ≃ₐ[K] M) (ζ : M) (m : ℕ),
+      d < m ∧ orderOf ζ = m ∧ σ G = G ∧ σ ζ = ζ ∧ σ F = ζ * F)
+    (monoG : ∀ d : ℕ, ∃ (σ : M ≃ₐ[K] M) (ζ : M), d < orderOf ζ ∧ σ ζ = ζ ∧ σ G = ζ * G) :
+    NoRelation K F G :=
+  fun P hrel =>
+    algIndep_of_unbounded_monodromy F G (transcendental_of_monodromy G hG0 monoG) hF monoF P hrel
+
 end Bottcher

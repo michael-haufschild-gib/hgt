@@ -17,6 +17,7 @@ import GaloisForLFunctions.Bottcher.BottcherCoord
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Topology.Algebra.Polynomial
 import Mathlib.Analysis.Complex.Polynomial.Basic
+import GaloisForLFunctions.Bottcher.DyadicMonodromy
 
 open Complex Filter Topology Polynomial
 
@@ -323,5 +324,170 @@ theorem pullback_fiber_deck {c : ℂ} {n : ℕ} {z v₁ v₂ : ℂ}
   · rw [div_pow, hv1, hv2, div_self hne]
   · simp only [deckMap, Prod.mk.injEq, true_and]
     rw [div_mul_cancel₀ _ hv20]
+
+theorem continuous_deckMap (ζ : ℂ) : Continuous (deckMap ζ) := by
+  unfold deckMap; fun_prop
+
+@[simp] theorem deckMap_one : deckMap 1 = id := by funext p; simp [deckMap]
+
+theorem deckMap_leftInverse {ζ : ℂ} (hζ : ζ ≠ 0) :
+    Function.LeftInverse (deckMap ζ⁻¹) (deckMap ζ) := by
+  intro p
+  rw [← Function.comp_apply (f := deckMap ζ⁻¹), deckMap_comp, inv_mul_cancel₀ hζ, deckMap_one, id]
+
+/-- **Each deck transformation is a homeomorphism** of `ℂ×ℂ` (for `ζ ≠ 0`), fixing the base
+coordinate `z` and scaling `v` by `ζ`. Precomposition by it is therefore a ring automorphism of the
+function field of the pullback space, FIXING functions of `z` (= `K = ℂ(z)`) and scaling `v ≈ φ_{c₁}`
+by `ζ` — the field-level `σ_n` of `DyadicMonodromyTower`, realized as an honest precomposition (no
+circularity: well-definedness is geometric, from `deckMap_mapsTo`). -/
+noncomputable def deckHomeomorph {ζ : ℂ} (hζ : ζ ≠ 0) : (ℂ × ℂ) ≃ₜ (ℂ × ℂ) where
+  toFun := deckMap ζ
+  invFun := deckMap ζ⁻¹
+  left_inv := deckMap_leftInverse hζ
+  right_inv := by have h := deckMap_leftInverse (inv_ne_zero hζ); rwa [inv_inv] at h
+  continuous_toFun := continuous_deckMap ζ
+  continuous_invFun := continuous_deckMap ζ⁻¹
+
+/-- Precomposition by the deck map FIXES the base-coordinate function `z` (`σ_n` fixes `K = ℂ(z)`). -/
+theorem fst_comp_deckMap (ζ : ℂ) : (Prod.fst : ℂ × ℂ → ℂ) ∘ deckMap ζ = Prod.fst := rfl
+
+/-- Precomposition by the deck map SCALES the root-coordinate function `v` by `ζ`
+(`σ_n(φ_{c₁}) = ζ·φ_{c₁}`). -/
+theorem snd_comp_deckMap (ζ : ℂ) :
+    (Prod.snd : ℂ × ℂ → ℂ) ∘ deckMap ζ = fun p => ζ * Prod.snd p := rfl
+
+/-- **Precomposition by the deck homeomorphism is a ℂ-algebra automorphism** of the function ring
+`ℂ×ℂ → ℂ`. This is the field-level `σ_n` as an honest precomposition automorphism: by
+`fst_comp_deckMap` it fixes functions of `z` (= `K`), by `snd_comp_deckMap` it scales `v ≈ φ_{c₁}`
+by `ζ` — exactly the `DyadicMonodromyTower` action `σ_n(φ_{c₁})=ζ·φ_{c₁}`, `σ_n|_K = id`. The
+remaining gap to the FAITHFUL tower (with the actual transcendental `φ_{c₁}`, `φ_{c₂}`) is that this
+realizes `σ_n` on the level-`n` root `v` (algebraic over `K`); the actual `φ_{c₁} = v·(σ_n-invariant
+correction)` and `φ_{c₂}` live in the inverse-limit analytic field. -/
+noncomputable def deckPrecomp {ζ : ℂ} (hζ : ζ ≠ 0) : (ℂ × ℂ → ℂ) ≃ₐ[ℂ] (ℂ × ℂ → ℂ) where
+  toFun g := g ∘ deckMap ζ
+  invFun g := g ∘ deckMap ζ⁻¹
+  left_inv g := by
+    ext p; simp only [Function.comp_apply]
+    have h := deckMap_leftInverse (inv_ne_zero hζ); rw [inv_inv] at h; rw [h p]
+  right_inv g := by ext p; simp only [Function.comp_apply, deckMap_leftInverse hζ p]
+  map_mul' g₁ g₂ := rfl
+  map_add' g₁ g₂ := rfl
+  commutes' r := rfl
+
+/-- The φ-pullback covering `{(z,v) : v^{2ⁿ} = φ_c(f_c^[n] z), v ≠ 0}` — pullback of `w↦w^{2ⁿ}`
+along the single-valued (near ∞) map `z ↦ φ_c(f_c^[n] z) = φ_c(z)^{2ⁿ}`. -/
+def bottcherPullbackSpace (c : ℂ) (n : ℕ) : Set (ℂ × ℂ) :=
+  {p | p.2 ^ (2 ^ n) = bottcherCoord c ((quadratic c)^[n] p.1) ∧ p.2 ≠ 0}
+
+/-- **The actual transcendental `φ_{c₁}` is a section** of the φ-pullback covering: `(z, φ_{c₁}(z))`
+satisfies the pullback relation `v^{2ⁿ} = φ_c(f^[n]z)`, which is exactly the functional equation
+`bottcherCoord_iterate`. Hence the deck transformation `(z,v)↦(z,ζv)` carries the section
+`(z,φ_{c₁}(z))` to `(z, ζ·φ_{c₁}(z))` — realizing `σ_n(φ_{c₁}) = ζ·φ_{c₁}` for the ACTUAL `φ_{c₁}`,
+not an approximation. This connects the transcendental Böttcher coordinate to the geometric `σ_n`. -/
+theorem bottcherCoord_mem_pullback {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) (n : ℕ) :
+    (z, bottcherCoord c z) ∈ bottcherPullbackSpace c n :=
+  ⟨(bottcherCoord_iterate hc hz n).symm, bottcherCoord_ne_zero c z⟩
+
+/-- The deck transformation acts on the φ-pullback covering, fixing `z` and scaling `v = φ_{c₁}`. -/
+theorem deckMap_mapsTo_bottcher {c : ℂ} {n : ℕ} {ζ : ℂ} (hζ : ζ ^ (2 ^ n) = 1) :
+    Set.MapsTo (deckMap ζ) (bottcherPullbackSpace c n) (bottcherPullbackSpace c n) := by
+  rintro ⟨z, v⟩ ⟨hv, hv0⟩
+  have hζ0 : ζ ≠ 0 := by rintro rfl; rw [zero_pow (by positivity)] at hζ; exact one_ne_zero hζ.symm
+  exact ⟨by show (ζ * v) ^ (2 ^ n) = _; rw [mul_pow, hζ, one_mul]; exact hv,
+    mul_ne_zero hζ0 hv0⟩
+
+/-- The common pullback covering resolving both `φ_{c₁}` (level `n`) and `φ_{c₂}` (level `m`):
+`{(z,v₁,v₂) : v₁^{2ⁿ}=φ_{c₁}(f_{c₁}^[n]z), v₂^{2ᵐ}=φ_{c₂}(f_{c₂}^[m]z), v₁,v₂≠0}`. -/
+def commonPullback (c₁ c₂ : ℂ) (n m : ℕ) : Set (ℂ × ℂ × ℂ) :=
+  {p | p.2.1 ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] p.1) ∧ p.2.1 ≠ 0 ∧
+       p.2.2 ^ (2 ^ m) = bottcherCoord c₂ ((quadratic c₂)^[m] p.1) ∧ p.2.2 ≠ 0}
+
+/-- The `c₁`-deck transformation on the common cover: scales `v₁` by `ζ`, FIXES `z` and `v₂`. -/
+def deckMap₁ (ζ : ℂ) : ℂ × ℂ × ℂ → ℂ × ℂ × ℂ := fun p => (p.1, ζ * p.2.1, p.2.2)
+
+/-- **The full `σ_n` shape, geometrically.** The `c₁`-deck acts on the common cover: it scales
+`v₁ ≈ φ_{c₁}` by a `2ⁿ`-th root of unity while FIXING `z` (= `K`) and `v₂ ≈ φ_{c₂}`. This is exactly
+`σ_n(φ_{c₁})=ζ·φ_{c₁}`, `σ_n(φ_{c₂})=φ_{c₂}`, `σ_n|_{ℂ(z)}=id` — the complete `DyadicMonodromyTower`
+action, as a genuine homeomorphism over the z-plane (well-definedness geometric). The remaining gap
+to FAITHFUL `hDisc`: that the `c₁`-deck = the ACTUAL `φ_{c₁}`-monodromy requires a `c₁`-loop trivial
+for `φ_{c₂}` (exists since `c₁≠c₂` give distinct precritical sets — the analytic input), and that
+`NoRelation K v₁ v₂` is the actual independence requires `M` to be the actual common Riemann
+surface's function field (not a formal product). -/
+theorem deckMap₁_mapsTo {c₁ c₂ : ℂ} {n m : ℕ} {ζ : ℂ} (hζ : ζ ^ (2 ^ n) = 1) :
+    Set.MapsTo (deckMap₁ ζ) (commonPullback c₁ c₂ n m) (commonPullback c₁ c₂ n m) := by
+  rintro ⟨z, v₁, v₂⟩ ⟨h1, h10, h2, h20⟩
+  have hζ0 : ζ ≠ 0 := by rintro rfl; rw [zero_pow (by positivity)] at hζ; exact one_ne_zero hζ.symm
+  refine ⟨?_, mul_ne_zero hζ0 h10, h2, h20⟩
+  show (ζ * v₁) ^ (2 ^ n) = _
+  rw [mul_pow, hζ, one_mul]; exact h1
+
+/-- The actual coordinates `(z, φ_{c₁}(z), φ_{c₂}(z))` form a section of the common cover. -/
+theorem bottcher_mem_commonPullback {c₁ c₂ z : ℂ} {n m : ℕ}
+    (h1 : ‖c₁‖ ≤ ‖z‖) (hz1 : 2 < ‖z‖) (h2 : ‖c₂‖ ≤ ‖z‖) (hz2 : 2 < ‖z‖) :
+    (z, bottcherCoord c₁ z, bottcherCoord c₂ z) ∈ commonPullback c₁ c₂ n m :=
+  ⟨(bottcherCoord_iterate h1 hz1 n).symm, bottcherCoord_ne_zero c₁ z,
+   (bottcherCoord_iterate h2 hz2 m).symm, bottcherCoord_ne_zero c₂ z⟩
+
+theorem deckMap₁_comp (ζ η : ℂ) : deckMap₁ ζ ∘ deckMap₁ η = deckMap₁ (ζ * η) := by
+  funext p; simp only [deckMap₁, Function.comp_apply, Prod.mk.injEq, true_and, mul_assoc]
+
+theorem continuous_deckMap₁ (ζ : ℂ) : Continuous (deckMap₁ ζ) := by
+  unfold deckMap₁; fun_prop
+
+@[simp] theorem deckMap₁_one : deckMap₁ 1 = id := by funext p; simp [deckMap₁]
+
+theorem deckMap₁_leftInverse {ζ : ℂ} (hζ : ζ ≠ 0) :
+    Function.LeftInverse (deckMap₁ ζ⁻¹) (deckMap₁ ζ) := by
+  intro p
+  rw [← Function.comp_apply (f := deckMap₁ ζ⁻¹), deckMap₁_comp, inv_mul_cancel₀ hζ, deckMap₁_one, id]
+
+/-- **`σ_n` as a ℂ-algebra automorphism of the common cover's function ring**, realizing the complete
+`DyadicMonodromyTower` coordinate action by precomposition with the `c₁`-deck homeomorphism. By
+`deckPrecomp₁_z`/`deckPrecomp₁_v₂`/`deckPrecomp₁_v₁` it fixes `z` (= `K`) and `v₂` (`φ_{c₂}`) and
+scales `v₁` (`φ_{c₁}`) by `ζ`. A genuine algebra automorphism (well-definedness geometric). -/
+noncomputable def deckPrecomp₁ {ζ : ℂ} (hζ : ζ ≠ 0) :
+    (ℂ × ℂ × ℂ → ℂ) ≃ₐ[ℂ] (ℂ × ℂ × ℂ → ℂ) where
+  toFun g := g ∘ deckMap₁ ζ
+  invFun g := g ∘ deckMap₁ ζ⁻¹
+  left_inv g := by
+    ext p; simp only [Function.comp_apply]
+    have h := deckMap₁_leftInverse (inv_ne_zero hζ); rw [inv_inv] at h; rw [h p]
+  right_inv g := by ext p; simp only [Function.comp_apply, deckMap₁_leftInverse hζ p]
+  map_mul' g₁ g₂ := rfl
+  map_add' g₁ g₂ := rfl
+  commutes' r := rfl
+
+/-- `σ_n` fixes the base coordinate `z` (= `K = ℂ(z)`). -/
+theorem deckPrecomp₁_z {ζ : ℂ} (hζ : ζ ≠ 0) :
+    deckPrecomp₁ hζ (fun p => p.1) = (fun p => p.1) := rfl
+/-- `σ_n` fixes the second root coordinate `v₂` (= `φ_{c₂}`). -/
+theorem deckPrecomp₁_v₂ {ζ : ℂ} (hζ : ζ ≠ 0) :
+    deckPrecomp₁ hζ (fun p => p.2.2) = (fun p => p.2.2) := rfl
+/-- `σ_n` scales the first root coordinate `v₁` (= `φ_{c₁}`) by `ζ`. -/
+theorem deckPrecomp₁_v₁ {ζ : ℂ} (hζ : ζ ≠ 0) :
+    deckPrecomp₁ hζ (fun p => p.2.1) = (fun p => ζ * p.2.1) := rfl
+
+/-- There is a primitive `2ⁿ`-th root of unity (order exactly `2ⁿ`). -/
+theorem exists_dyadic_primitive (n : ℕ) : ∃ ζ : ℂ, orderOf ζ = 2 ^ n ∧ ζ ^ (2 ^ n) = 1 := by
+  refine ⟨Complex.exp (2 * (Real.pi : ℂ) * Complex.I / ((2 ^ n : ℕ) : ℂ)), orderOf_dyadicRoot n, ?_⟩
+  have h := orderOf_dyadicRoot n
+  calc Complex.exp (2 * (Real.pi : ℂ) * Complex.I / ((2 ^ n : ℕ) : ℂ)) ^ (2 ^ n)
+      = _ ^ orderOf (Complex.exp (2 * (Real.pi : ℂ) * Complex.I / ((2 ^ n : ℕ) : ℂ))) := by rw [h]
+    _ = 1 := pow_orderOf_eq_one _
+
+/-- The deck transformation scales the actual `φ_{c₁}`-section: `(z,φ_{c₁}(z),φ_{c₂}(z)) ↦
+(z, ζ·φ_{c₁}(z), φ_{c₂}(z))` — fixes `z` and `φ_{c₂}`, scales `φ_{c₁}`. -/
+theorem deckMap₁_bottcher_section (ζ : ℂ) (c₁ c₂ z : ℂ) :
+    deckMap₁ ζ (z, bottcherCoord c₁ z, bottcherCoord c₂ z)
+      = (z, ζ * bottcherCoord c₁ z, bottcherCoord c₂ z) := rfl
+
+/-- **Geometric unbounded monodromy.** For every degree bound `d` there is a `2ⁿ`-th root of unity
+`ζ` of order `> d` whose deck transformation `deckMap₁ ζ` fixes `z` and `φ_{c₂}` and scales `φ_{c₁}`
+by `ζ` — exactly the unbounded-order `σ_n` data that `q62_disconnected_both` consumes, realized
+geometrically on the common cover. -/
+theorem exists_deck_unbounded (d : ℕ) :
+    ∃ (ζ : ℂ) (n : ℕ), d < orderOf ζ ∧ ζ ^ (2 ^ n) = 1 ∧ orderOf ζ = 2 ^ n := by
+  obtain ⟨ζ, hord, hpow⟩ := exists_dyadic_primitive d
+  exact ⟨ζ, d, by rw [hord]; exact Nat.lt_two_pow_self, hpow, hord⟩
 
 end Bottcher
