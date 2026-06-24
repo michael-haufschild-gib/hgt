@@ -12,6 +12,10 @@ import GaloisForLFunctions.Bottcher.ComplexLogBound
 import GaloisForLFunctions.Bottcher.BottcherCoord
 import GaloisForLFunctions.Bottcher.Winding
 import GaloisForLFunctions.Bottcher.MonodromyCovering
+import GaloisForLFunctions.Bottcher.DeckAutomorphism
+import GaloisForLFunctions.Bottcher.MonodromyContinuation
+import GaloisForLFunctions.Bottcher.BasinBranching
+import GaloisForLFunctions.Bottcher.ProperCovering
 import GaloisForLFunctions.Bottcher.MonodromyObstruction
 import GaloisForLFunctions.Bottcher.LogPotential
 import GaloisForLFunctions.Bottcher.Capacity

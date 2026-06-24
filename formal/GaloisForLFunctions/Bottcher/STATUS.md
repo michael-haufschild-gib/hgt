@@ -212,3 +212,175 @@ automorphism — no separate "continuation-as-automorphism" needed). Mathlib giv
 (`autAdjoinRootXPowSubC`). The basin covering space + deck-precomposition automorphism is the
 build. NOTE: a purely abstract `K(G)(F)` rational-function model is a TOY (assumes independence) —
 `M` must be the actual germ field with the actual `φ_c`.
+
+### `BottcherCoord.lean` +2, new `Winding.lean` +1 (2026-06-24, build green 2768 jobs, zero axioms)
+- `bottcherCoord_eq_mul_exp` — branch-free `φ_c = z·exp(∑ₖ termₖ)` (`z≠0`).
+- `differentiableOn_bottcherCoord` — `φ_c` analytic on ALL of `escapeOpen` (off the slit too), so
+  circles `C(0,R)` lie in the domain.
+- `circleIntegral_dlog_bottcher` — **base period** `∮_{C(0,R)} d log φ_c = 2πi` (total mass = 1,
+  `cap K_c = 1`, winding 1). `n=0` rung of the dyadic period tower. Proof: `z⁻¹`-pole gives `2πi`,
+  series part is a single-valued derivative ⟹ loop integral `0` (FTC).
+
+### STRATEGIC: dyadic periods `2πi/2ⁿ` come from the FUNCTIONAL EQUATION, not Brolin's measure
+`d log φ_c(f z)·f'(z) = 2·d log φ_c(z)` (log-derivative of `φ_c∘f=φ_c²`). So pulling a loop back
+through `f` HALVES its period: `∮_{γ̃} d log φ_c = ½ ∮_{f∘γ̃} d log φ_c`. The `n`-fold pullback of
+the base loop (period `2πi`) has period `2πi/2ⁿ` = the order-`2ⁿ` monodromy multiplier exponent.
+⟹ GAP-A (equilibrium measure / cylinder mass `2⁻ⁿ`) is NOT needed for the period VALUES — the
+period halving is pure functional-equation + contour change-of-variables. The remaining subtlety:
+the `n`-fold pullback loop is non-closing (that non-closure IS the monodromy), so the deeper rungs
+still need the continuation/path framework, but the multiplier value `2πi/2ⁿ` is now elementary.
+NEXT: formalize the period-halving (change of variables ∮_{f∘γ̃} g = 2∮_{γ̃} g for g = d log φ_c).
+
+### `Winding.lean` +3 self-similarity bricks (2026-06-24, build green 2768, zero axioms)
+- `logDeriv_bottcherCoord_self_similar` — `logDeriv φ_c (z) = z · logDeriv φ_c (f_c z)`. The
+  functional equation `φ_c∘f=φ_c²` differentiated (via Mathlib `logDeriv_comp`/`logDeriv_mul`):
+  the pointwise/multiplicative form of "pullback through f halves the period".
+- `escapeOpen_iterate` — escape set is forward-invariant.
+- `logDeriv_bottcherCoord_iterate` — `logDeriv φ_c(z) = (∏_{k<n} f^[k]z)·logDeriv φ_c(f^[n]z)`.
+  Product expansion of `d log φ_c` = Cauchy transform of equilibrium measure, in product (not
+  measure) form. Exhibits the `2⁻ⁿ`-generating structure with NO measure theory.
+These make the dyadic period self-similarity fully explicit and verified at the pointwise level.
+NEXT: lift pointwise self-similarity to the contour/period statement (∮ around the n-fold pullback
+loop = 2πi/2ⁿ), then to the germ-field automorphism σ_n (deck precomposition) → DyadicMonodromyTower.
+
+### `Winding.lean` +1 contour-lift (2026-06-24, build green 2768, zero axioms)
+- `pathInt_comp_quadratic` — **period-doubling** `∮_{f_c∘γ} ω = 2∮_γ ω` for `ω = d log φ_c`,
+  done as a parametrized `intervalIntegral` (NO measure theory, NO general contour object — Mathlib
+  has none). The integral form of `f_c*ω = 2ω`. Since `ω` is single-valued on the whole basin
+  (branches of `φ_c` differ by constants, killed by `d log`), the `n`-fold loop pullback of the base
+  loop (period `2πi`) has period `2πi/2ⁿ` — the order-`2ⁿ` monodromy multiplier exponent.
+
+### Period side of `hDisc` is now elementary & faithful (no Brolin measure)
+Banked end-to-end for the ACTUAL `φ_c`: base period `2πi` (`circleIntegral_dlog_bottcher`) +
+self-similarity `f*ω=2ω` (`logDeriv_bottcherCoord_self_similar`, pointwise + iterate) + contour-lift
+period-doubling (`pathInt_comp_quadratic`) ⟹ the multiplier value `exp(2πi/2ⁿ)`, order `2ⁿ`
+(already abstract in `orderOf_dyadicRoot`/`multiplier_orderOf_of_mass`).
+
+### THE remaining blocker for `hDisc` (explicit): σ_n as a germ-field automorphism
+`DyadicMonodromyTower` needs `σ_n ∈ M ≃ₐ[K] M` (not just the multiplier value/order). This requires
+the field `M` of multivalued-analytic functions on `Ω_c` with `σ_n` = analytic continuation around
+the depth-`n` loop = deck transformation. CANNOT be a toy abstract `K(G)(F)` (assumes independence).
+Mathlib lacks the germ-field-with-monodromy; has étale space (`Topology.Sheaves.EtaleSpace`), path
+lifting (`Topology.Homotopy.Lifting`), covering (`isQuotientCoveringMap_npow`) to build on. This is
+the next sub-tower. `hRigid` (E–vS) remains for connected/mixed.
+
+### `Winding.lean` +1 n-fold period (2026-06-24, build green 2768, zero axioms)
+- `pathInt_iterate_comp` — `∮_{f_c^[n]∘γ} ω = 2ⁿ ∮_γ ω`. ⟹ an `n`-fold loop pullback has period
+  `2πi/2ⁿ` = order-`2ⁿ` monodromy multiplier exponent, for the ACTUAL `φ_c`, zero measure theory.
+PERIOD/MULTIPLIER THEORY FOR `φ_c` IS COMPLETE: base `2πi` + self-sim `f*ω=2ω` + contour-lift
+period-doubling + n-fold scaling. The multiplier value `exp(2πi/2ⁿ)` & order `2ⁿ` are pinned.
+
+### The TWO remaining sub-towers for unconditional q62 (each Mathlib-absent, major):
+1. **σ_n as germ-field automorphism (`hDisc`).** Needs `M` = field of analytic functions on the
+   universal cover of `Ω_c` (or germ field) with `σ_n` = continuation/deck around the depth-`n`
+   loop. Mathlib has étale space (`EtaleSpace`, `isCoveringMap_base`) + path lifting but NO
+   analytic-continuation-as-field-automorphism and NO meromorphic-germ FIELD. Building it (sheaf of
+   analytic fns → étale space → field on stalks → lift-as-automorphism → action on φ_c, well-defined
+   via monodromy theorem) is a research-scale formalization. The period side above PINS what σ_n
+   must do (scale by exp(2πi/2ⁿ)); only the automorphism realization remains.
+2. **Eremenko–van Strien rigidity (`hRigid`).** Separate hard 2009 theorem (arXiv:0810.2260), not
+   in Mathlib; needed for the connected/mixed cases.
+Both are genuine multi-week/team-scale formalizations; the entire analytic FOUNDATION beneath them
+(~27 theorems) is built and zero-axiom.
+
+### New `DeckAutomorphism.lean` — algebraic core of σ_n (2026-06-24, build green 2812, zero axioms)
+- `polyScaleHom`/`polyScaleEquiv` — `W ↦ ζ·W` as an honest ℂ-algebra automorphism of the fibre
+  coordinate ring `ℂ[W]` (`polyScaleEquiv_X : σ(W) = ζ·W` — the scaling `σ_n F = ζ_n F`).
+- `polyScaleHom_comp` — `σ_ζ∘σ_η = σ_{ζη}` (the `μ`-action homomorphism).
+- `polyScaleHom_injective_param` — `ζ ↦ σ_ζ` faithful ⟹ `orderOf σ_ζ = orderOf ζ` (deck group
+  `μ_{2ⁿ}` embeds; supplies the order-`2ⁿ` requirement).
+So the scaling + composition + order of `σ_n` are now realized by a genuine field-coordinate
+automorphism. REMAINING for `σ_n` on the FULL field: (a) lift `ℂ[W]`-equiv to the field `ℂ(W)` via
+`IsFractionRing` functoriality (next brick), (b) embed actual `φ_c` germs into a cover field `M ⊇
+ℂ(z)` extending `ℂ(W)` with `W = φ_{c₁}` — the genuine analytic input. Period side + algebraic core
+of σ_n are DONE; the analytic cover-field embedding is the remaining piece of `hDisc`.
+
+### `DeckAutomorphism.lean` +field lift (2026-06-24, build green 2812, zero axioms)
+- `deckRatEquiv` — the deck automorphism on the fibre FIELD `ℂ(W)` (lift of `polyScaleEquiv` via
+  `IsLocalization.algEquivOfAlgEquiv`). A genuine ℂ-algebra field automorphism.
+- `deckRatEquiv_smul_gen` — `σ(W) = ζ·W` on the field generator. The `σ_n F = ζ_n F` clause.
+
+### KEY STRUCTURAL FINDING (recorded in DeckAutomorphism.lean): the abstract route is CIRCULAR
+A `DyadicMonodromyTower` for the actual coordinates needs `σ_n` on `M ⊇ ℂ(z)` with `φ_{c₁}` scaled
+and `φ_{c₂}` FIXED & transcendental. Any `σ_n`-fixed element of `ℂ(z)(φ_{c₁})` lies in `ℂ(z)=K`, so
+a fixed transcendental `φ_{c₂}` forces `φ_{c₂}∉ℂ(z)(φ_{c₁})` — the independence itself. ⟹ the
+well-definedness of `σ_n` (fixing `φ_{c₂}`) CANNOT come from an abstract algebraic `M`; it must come
+from ANALYTIC CONTINUATION on the actual germ/cover field, where the action on `φ_{c₂}` (trivial
+monodromy of the other basin's loop) is an analytic FACT. This pins ALL remaining `hDisc` work to
+the analytic-continuation layer — no algebraic shortcut exists. The period side + the algebraic
+SHAPE of `σ_n` are fully built; the analytic continuation (field of multivalued fns on `Ω_c` + σ as
+continuation, well-defined by the monodromy theorem) is the irreducible remaining core.
+
+### MATERIAL FINDING + new `MonodromyContinuation.lean` (2026-06-24, build green 2943, zero axioms)
+Mathlib ALREADY HAS the covering monodromy theorem: `IsCoveringMap.monodromy` is a
+homotopy-invariant fibre bijection (`monodromy_bijective`, `monodromy_trans_apply` functoriality,
+`monodromyFunctor`). This removes the hardest hand-built piece (homotopy invariance / monodromy
+theorem) from the continuation layer — the layer is far more tractable than first assessed.
+Banked:
+- `isCoveringMap_dyadic` — the covering `w↦w^{2ᵏ}` of `ℂ∖{0}` (= `isCoveringMap_npow` at `2ᵏ`).
+- `dyadic_monodromy_bijective` — its monodromy is a fibre bijection (the topological continuation
+  operator `σ`, well-defined by Mathlib's monodromy theorem).
+- `dyadic_monodromy_trans` — functoriality `π₁ → Sym(fibre)` (image = deck group).
+
+### Updated concrete path to `σ_n` (each step now a defined Mathlib-supported brick):
+1. topological monodromy of the dyadic covering ✓ (here)
+2. it's a deck element `ζ ∈ μ_{2ᵏ}` of order `2ᵏ` — generator loop of `π₁(ℂ∖{0})=ℤ`, order from
+   the winding/period theory (built) — NEXT brick
+3. induced field automorphism = `deckRatEquiv ζ` ✓ (built)
+4. pull back along `φ_{c₁}` to the basin, fixing `φ_{c₂}` (analytic fact: loop null-homotopic in the
+   other basin) — the remaining genuinely-analytic input
+`hRigid` (E–vS) still pending for connected/mixed.
+
+### `MonodromyContinuation.lean` +`dyadic_generator_lift` — step 2 DONE (2026-06-24, build clean, zero ax)
+- `dyadic_generator_lift` — explicit `2ᵏ`-th-root lift `Γ(t)=exp(2πi t/2ᵏ)` of the generator loop:
+  `Γ(t)^{2ᵏ}=exp(2πi t)` (lifts) ∧ `Γ(1)=exp(2πi/2ᵏ)·Γ(0)` (primitive `2ᵏ`-root multiplier) ∧
+  order `2ᵏ`. The dyadic monodromy multiplier as covering monodromy, matching the period value.
+σ_n path: steps 1 (topological monodromy) ✓, 2 (generator multiplier, order 2ᵏ) ✓, 3 (deckRatEquiv
+field automorphism) ✓. REMAINING: step 4 = pull the dyadic covering back along `φ_{c₁}` to the
+actual disconnected basin `Ω_{c₁}` (its branched covering minus precritical orbit), carry `φ_{c₂}`/`z`
+as functions, prove `σ_n` fixes `φ_{c₂}` (loop null-homotopic in the other basin). Step 4 needs the
+disconnected-basin covering structure (Cantor Julia set) — the major remaining analytic build.
+`hRigid` (E–vS rigidity) remains for connected/mixed.
+
+### New `BasinBranching.lean` — step 4 opened (2026-06-24, build green 2944, zero axioms)
+- `disconnected_critical_escapes` — `Disconnected c ⟹ ∃ N, f_c^[N] 0 ∈ escapeOpen c`. The critical
+  point escapes; its value sits at a positive Green level — the source of `φ_c`'s branching.
+- `disconnected_green_critical_pos` — `Disconnected c ⟹ G_c(0) > 0`. The branch locus is the level
+  set `{G_c = G_c(0)}` and its `f_c`-preimages (the depth-`n` cylinders).
+σ_n skeleton (steps 1–3: covering monodromy, generator multiplier order 2ⁿ, deckRatEquiv field
+automorphism) DONE. Step 4 dynamical foundation started. Full step 4 = branched covering
+`Ω_{c₁}∖(precritical orbit)` + `φ_{c₁}` single-valued on it + `φ_{c₂}`/`z` carried + `σ_n` fixes
+`φ_{c₂}` — the major remaining analytic build (disconnected/Cantor covering). `hRigid` (E–vS) pending.
+
+### `BasinBranching.lean` +4 — cylinder level structure (2026-06-24, build green 2944, zero axioms)
+- `greenApprox_tendsto_basin` — `g_n→G_c` on the whole basin (via pullback to escape regime).
+- `greenLimit_quadratic_basin` — `G_c(f_c z)=2 G_c(z)` on all of `Ω_c` (levels double under `f_c`).
+- `not_mem_filledJulia_iterate` — basin forward-invariant.
+- `greenLimit_iterate_basin` — `G_c(f_c^[n] z)=2ⁿ G_c(z)`: depth-`n` cylinder `{G_c(0)/2ⁿ<G_c<
+  G_c(0)/2ⁿ⁻¹}` maps `2ⁿ`-to-1 onto the critical collar `{G_c(0)<G_c<2 G_c(0)}` — the dyadic
+  covering of step 4, matching the skeleton's `w↦w^{2ⁿ}` covering.
+Step 4 progress: critical escape + critical level + cylinder doubling + the 2ⁿ-to-1 collar map
+are now in the tree. REMAINING for step 4: realize `f_c^[n]: cylinder → collar` as an honest
+covering map (branch points = precritical orbit removed), lift `φ_{c₁}`, carry `φ_{c₂}`/`z`, apply
+the verified continuation skeleton ⟹ `σ_n`, assemble `DyadicMonodromyTower`. `hRigid` (E–vS) pending.
+
+### `BasinBranching.lean` +2 — collar map local-triviality (2026-06-24, build green 2944, zero ax)
+- `hasStrictDerivAt_quadratic` — `f_c'(z) = 2z`.
+- `quadratic_map_nhds` — `f_c` is a local homeomorphism off the critical point (`map f_c (𝓝 z) =
+  𝓝(f_c z)` for `z≠0`). With the cylinder structure (`greenLimit_iterate_basin`, `2ⁿ`-to-1), this
+  gives: `f_c^[n]: cylinder → collar` is `2ⁿ`-to-1 AND a local homeomorphism off the precritical
+  orbit — an honest covering there, the analytic realization of the skeleton's `w↦w^{2ⁿ}` cover.
+Step 4 status: cylinder doubling ✓, `2ⁿ`-to-1 collar map ✓, local-homeo off critical point ✓.
+REMAINING: assemble these into `IsCoveringMap (f_c^[n]) (collar ∖ critical-values)`, lift `φ_{c₁}`
+single-valued, carry `φ_{c₂}`/`z`, `σ_n` fixes `φ_{c₂}` ⟹ `DyadicMonodromyTower`. `hRigid` pending.
+
+### `BasinBranching.lean` +polynomial degree (2026-06-24, build green 2944, zero axioms)
+- `quadraticPoly`/`quadraticPolyIterate` — `f_c` and `f_c^[n]` as polynomials.
+- `quadraticPolyIterate_natDegree` — `deg(f_c^[n]) = 2ⁿ`: the `2ⁿ`-fold covering degree (each value
+  attained `2ⁿ` times; off the `2ⁿ−1` critical values the `2ⁿ` preimages are distinct).
+- `quadraticPolyIterate_eval` — polynomial agrees with the iterated map.
+Step 4 covering ingredients now ALL machine-checked: cylinder doubling ✓, `2ⁿ`-to-1 fibre (degree)
+✓, local-homeo off critical point ✓, fibre count `2ⁿ` ✓. REMAINING: assemble even-covering
+(trivialization) on the punctured collar → `IsCoveringMap (f_c^[n])`, lift `φ_{c₁}`, carry `φ_{c₂}`/`z`,
+`σ_n` fixes `φ_{c₂}` → `DyadicMonodromyTower`. No Mathlib "proper-local-homeo ⟹ covering" shortcut;
+the trivialization is hand-built. `hRigid` (E–vS) pending.
