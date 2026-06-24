@@ -93,10 +93,25 @@ Logarithmic potential theory (absent from Mathlib), built from the integral laye
   `bottcherModulus_quadratic` (`|φ_c(z²+c)|=|φ_c(z)|²`).
 The Green's function of a quadratic Julia set + the Böttcher MODULUS are now formalized from scratch (not in Mathlib).
 All genuinely PROVEN analysis (not assumed). `#print axioms` on every result = `[propext, Classical.choice, Quot.sound]` only.
-NEXT (hardest remaining for `hDisc`): the COMPLEX Böttcher coordinate `φ_c` (argument/harmonic conjugate — the
-multivalued part carrying the dyadic monodromy), then Brolin + full-shift coding + monodromy-as-field-automorphism.
+### Complex Böttcher coordinate — `ComplexLogBound.lean` + `BottcherCoord.lean`
+- `norm_clog_one_add_le` — `‖log(1+w)‖ ≤ 2‖w‖` (mean-value inequality on `closedBall 1 ½`).
+- `bottcherLogTerm` + `norm_bottcherLogTerm_le` + `bottcherLogTerm_summable` — the ℂ log-series converges (escape set).
+- `bottcherLog` (`= log z + ∑ₖ termₖ`), **`bottcherCoord`** (`φ_c = exp(bottcherLog)`).
+- `bottcherLogTerm_re` (`Re(termₖ)=g_{k+1}-g_k`), **`bottcherLog_re`** (`Re(log φ_c)=G_c`),
+  `norm_bottcherCoord` (`‖φ_c‖=exp G_c`), `one_lt_norm_bottcherCoord` (`φ_c: escape→{|w|>1}`).
+- `bottcherLogTerm_quadratic` + `bottcherLog_sum_quadratic` (functional-equation seed, branch-free).
+- **Analyticity**: `analyticAt_quadratic_iterate` (orbit), `one_add_mem_slitPlane`, `analyticAt_bottcherLogTerm`,
+  `differentiableOn_bottcherLogSum` (Weierstrass M-test on `escapeOpen`), `differentiableOn_bottcherLog`,
+  **`analyticOnNhd_bottcherCoord`** — `φ_c` is PROVEN ANALYTIC on the slit neighborhood `escapeOpen ∩ slitPlane`.
+- `hasSum_deriv_bottcherLogSum`, **`deriv_bottcherLog`** (`d log φ_c = z⁻¹ + ∑ₖ deriv termₖ`).
+- **`harmonicAt_greenLimit`** (`G_c` harmonic, via `Re` of analytic `log φ_c`).
+`G_c` now has ALL FOUR Green's-function defining properties: **harmonic** (`harmonicAt_greenLimit`),
+**`=0` on `K_c`** (`greenFunctionDyn_eq_zero_iff`), **`>0` on `Ω_c`** (`greenLimit_pos_basin`),
+**`~log‖z‖` at `∞`** (`greenLimit_abs_sub_log`) — exactly the input to Brolin's uniqueness argument.
+NEXT for `hDisc`: the equilibrium-measure / Brolin theorem (`G_c = potential of μ_c`, `μ_c` balanced, cylinder
+mass 2⁻ⁿ) → `∮_γ dlogφ_c = 2πi/2ⁿ` (proven `period_eq`) → germ-field automorphism → `DyadicMonodromyTower`.
 
-## VERIFIED so far (sorry-free, from Mathlib up): 13 modules, 100 results
+## VERIFIED so far (sorry-free, from Mathlib up): 14 modules, 128 results
 Top theorem `q62_independence` COMPILES (conditional on `hDisc`, `hRigid`); disconnected case PROVEN
 (`q62_disconnected`, `q62_disconnected_tower`); the entire algebraic / potential-theoretic / contour
 skeleton + the period formula are complete and machine-checked.
