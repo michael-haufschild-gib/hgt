@@ -18,6 +18,7 @@ import GaloisForLFunctions.Bottcher.Winding
 import Mathlib.Analysis.Complex.Harmonic.Analytic
 import Mathlib.Analysis.Complex.OpenMapping
 import Mathlib.Topology.Covering
+import GaloisForLFunctions.Bottcher.MeromorphicField
 
 open Filter Topology Set Metric InnerProductSpace
 
@@ -1255,5 +1256,42 @@ theorem criticalValues_finite (c : ℂ) (n : ℕ) :
     rw [quadraticPolyIterate_natDegree] at hdeg
     exact absurd hdeg (by positivity)
   exact Polynomial.finite_setOf_isRoot hne
+
+end Bottcher
+
+namespace Bottcher
+open Complex Filter
+
+/-- **[Field carrier] The explicit lift `φ̃c` is a genuine element of the field carrier.** Since
+`φ̃c = exp(2⁻ⁿ·bottcherLog∘f^[n])` is analytic on `D₀ = {z | f_c^[n] z ∈ escape ∩ slit}`
+(`analyticOnNhd_exp_greenConjugate_explicit`), its germ on any `U ⊆ D₀` lies in `analyticSubring U` —
+hence in `meroField U`, the FractionRing-of-domain field that `q62_independence_disconnected_of_lifts`
+consumes. So the single-valued analytic continuation `φ̃c` (the deck-scaled coordinate, with
+`φ̃c^{2ⁿ} = bottcherCoord∘f^[n]`) is realized as an honest field element — closing the gap between the
+explicit lift and the planar `meroField` carrier. The remaining input is the deck self-map of `U`
+(global section / the connected deck-invariant piece). Axiom-clean. -/
+theorem exp_greenConjugate_explicit_mem_analyticSubring (c : ℂ) (n : ℕ) {U : Set ℂ}
+    (hU : U ⊆ {z : ℂ | (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane}) :
+    (Germ.coeRingHom (𝓟 U)
+        (fun z => Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))))
+      ∈ analyticSubring U :=
+  ⟨_, (analyticOnNhd_exp_greenConjugate_explicit c n).mono hU, rfl⟩
+
+end Bottcher
+
+namespace Bottcher
+open Complex Filter
+
+/-- **[Field carrier] The lift germ is a nonzero field element.** `φ̃c = exp(…) ≠ 0` pointwise, so on a
+nonempty `U` its germ is `≠ 0` in `Germ (𝓟 U) ℂ` — hence a nonzero element of `analyticSubring U` and
+of `meroField U` (the `F ≠ 0` datum of `q62_disconnected_both`). Axiom-clean. -/
+theorem exp_greenConjugate_explicit_germ_ne_zero (c : ℂ) (n : ℕ) {U : Set ℂ} (hU : U.Nonempty) :
+    (Germ.coeRingHom (𝓟 U)
+        (fun z => Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))))
+      ≠ 0 := by
+  intro h
+  obtain ⟨x, hx⟩ := hU
+  have hev := Germ.coe_eq.mp (h.trans Germ.coe_zero.symm)
+  exact Complex.exp_ne_zero _ (Filter.eventually_principal.mp hev x hx)
 
 end Bottcher

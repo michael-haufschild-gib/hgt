@@ -298,17 +298,13 @@ theorem deckMap_mapsTo {c : ℂ} {n : ℕ} {ζ : ℂ} (hζ : ζ ^ (2 ^ n) = 1) :
     rintro rfl
     rw [zero_pow (by positivity)] at hζ
     exact one_ne_zero hζ.symm
-  refine ⟨?_, ?_⟩
-  · show (ζ * v) ^ (2 ^ n) = (quadratic c)^[n] z
-    rw [mul_pow, hζ, one_mul]; exact hv
-  · show ζ * v ≠ 0
-    exact mul_ne_zero hζ0 hv0
+  grind [pullbackSpace, deckMap, mul_pow]
 
 /-- The deck transformations compose by multiplication of roots of unity: `D_ζ ∘ D_η = D_{ζη}`
 (the `μ_{2ⁿ}`-action). -/
 theorem deckMap_comp (ζ η : ℂ) : deckMap ζ ∘ deckMap η = deckMap (ζ * η) := by
   funext p
-  simp only [deckMap, Function.comp_apply, Prod.mk.injEq, true_and, mul_assoc]
+  grind [deckMap]
 
 /-- **Fibers of the pullback covering are `μ_{2ⁿ}`-orbits (regular/Galois covering).** Two points
 over the same `z` differ by a deck transformation `D_ζ` with `ζ` a `2ⁿ`-th root of unity — the deck
@@ -394,8 +390,7 @@ theorem deckMap_mapsTo_bottcher {c : ℂ} {n : ℕ} {ζ : ℂ} (hζ : ζ ^ (2 ^ 
     Set.MapsTo (deckMap ζ) (bottcherPullbackSpace c n) (bottcherPullbackSpace c n) := by
   rintro ⟨z, v⟩ ⟨hv, hv0⟩
   have hζ0 : ζ ≠ 0 := by rintro rfl; rw [zero_pow (by positivity)] at hζ; exact one_ne_zero hζ.symm
-  exact ⟨by show (ζ * v) ^ (2 ^ n) = _; rw [mul_pow, hζ, one_mul]; exact hv,
-    mul_ne_zero hζ0 hv0⟩
+  grind [bottcherPullbackSpace, deckMap, mul_pow]
 
 /-- The common pullback covering resolving both `φ_{c₁}` (level `n`) and `φ_{c₂}` (level `m`):
 `{(z,v₁,v₂) : v₁^{2ⁿ}=φ_{c₁}(f_{c₁}^[n]z), v₂^{2ᵐ}=φ_{c₂}(f_{c₂}^[m]z), v₁,v₂≠0}`. -/
@@ -418,9 +413,7 @@ theorem deckMap₁_mapsTo {c₁ c₂ : ℂ} {n m : ℕ} {ζ : ℂ} (hζ : ζ ^ (
     Set.MapsTo (deckMap₁ ζ) (commonPullback c₁ c₂ n m) (commonPullback c₁ c₂ n m) := by
   rintro ⟨z, v₁, v₂⟩ ⟨h1, h10, h2, h20⟩
   have hζ0 : ζ ≠ 0 := by rintro rfl; rw [zero_pow (by positivity)] at hζ; exact one_ne_zero hζ.symm
-  refine ⟨?_, mul_ne_zero hζ0 h10, h2, h20⟩
-  show (ζ * v₁) ^ (2 ^ n) = _
-  rw [mul_pow, hζ, one_mul]; exact h1
+  grind [commonPullback, deckMap₁, mul_pow]
 
 /-- The actual coordinates `(z, φ_{c₁}(z), φ_{c₂}(z))` form a section of the common cover. -/
 theorem bottcher_mem_commonPullback {c₁ c₂ z : ℂ} {n m : ℕ}
@@ -430,7 +423,8 @@ theorem bottcher_mem_commonPullback {c₁ c₂ z : ℂ} {n m : ℕ}
    (bottcherCoord_iterate h2 hz2 m).symm, bottcherCoord_ne_zero c₂ z⟩
 
 theorem deckMap₁_comp (ζ η : ℂ) : deckMap₁ ζ ∘ deckMap₁ η = deckMap₁ (ζ * η) := by
-  funext p; simp only [deckMap₁, Function.comp_apply, Prod.mk.injEq, true_and, mul_assoc]
+  funext p
+  grind [deckMap₁]
 
 theorem continuous_deckMap₁ (ζ : ℂ) : Continuous (deckMap₁ ζ) := by
   unfold deckMap₁; fun_prop
@@ -440,7 +434,7 @@ theorem continuous_deckMap₁ (ζ : ℂ) : Continuous (deckMap₁ ζ) := by
 theorem deckMap₁_leftInverse {ζ : ℂ} (hζ : ζ ≠ 0) :
     Function.LeftInverse (deckMap₁ ζ⁻¹) (deckMap₁ ζ) := by
   intro p
-  rw [← Function.comp_apply (f := deckMap₁ ζ⁻¹), deckMap₁_comp, inv_mul_cancel₀ hζ, deckMap₁_one, id]
+  grind [deckMap₁]
 
 /-- **`σ_n` as a ℂ-algebra automorphism of the common cover's function ring**, realizing the complete
 `DyadicMonodromyTower` coordinate action by precomposition with the `c₁`-deck homeomorphism. By

@@ -38,14 +38,14 @@ theorem finiteNoBad_iff_badCount_eq_zero
     finiteNoBad S Bad ↔ finiteBadCount S Bad = 0 := by
   constructor
   · intro hNoBad
-    rw [finiteBadCount, Finset.card_eq_zero, Finset.eq_empty_iff_forall_notMem]
-    intro i hi
-    exact hNoBad i (Finset.mem_filter.mp hi).1 (Finset.mem_filter.mp hi).2
+    rw [finiteBadCount, Finset.card_eq_zero]
+    ext i
+    grind [finiteNoBad]
   · intro hCount i hi hBad
     have hmem : i ∈ S.filter Bad := Finset.mem_filter.mpr ⟨hi, hBad⟩
     have hpos : 0 < (S.filter Bad).card := Finset.card_pos.mpr ⟨i, hmem⟩
     rw [finiteBadCount] at hCount
-    omega
+    grind
 
 end FiniteBadIndex
 

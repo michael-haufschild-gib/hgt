@@ -32,3 +32,5 @@ import GaloisForLFunctions.Bottcher.Q62Field
 import GaloisForLFunctions.Bottcher.CoverMonodromy
 import GaloisForLFunctions.Bottcher.CoverConstruction
 import GaloisForLFunctions.Bottcher.Q62Assembly
+import GaloisForLFunctions.Bottcher.KummerDeck
+import GaloisForLFunctions.Bottcher.Q62KummerAssembly

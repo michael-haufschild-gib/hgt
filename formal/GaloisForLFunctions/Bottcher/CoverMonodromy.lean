@@ -63,7 +63,7 @@ theorem deckGerm_v2 {ζ : ℂ} (hpow : ζ ^ (2 ^ n) = 1) :
 
 /-- `(ζ⁻¹)^(2ⁿ) = 1` follows from `ζ^(2ⁿ) = 1`. -/
 theorem inv_pow_eq_one {ζ : ℂ} (hpow : ζ ^ (2 ^ n) = 1) : (ζ⁻¹) ^ (2 ^ n) = 1 := by
-  rw [inv_pow, hpow, inv_one]
+  grind [inv_pow]
 
 /-- **`σ_n` as a ring automorphism** of the cover germ ring, with inverse the descent of
 `deckMap₁ ζ⁻¹`. The geometric monodromy upgraded to the algebraic form `q62_disconnected_both`
@@ -171,12 +171,11 @@ theorem deckMap₂_mapsTo {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
     Set.MapsTo (deckMap₂ ζ) (commonPullback c₁ c₂ n m) (commonPullback c₁ c₂ n m) := by
   rintro ⟨z, v₁, v₂⟩ ⟨h1, h10, h2, h20⟩
   have hζ0 : ζ ≠ 0 := by rintro rfl; rw [zero_pow (by positivity)] at hζ; exact one_ne_zero hζ.symm
-  refine ⟨h1, h10, ?_, mul_ne_zero hζ0 h20⟩
-  show (ζ * v₂) ^ (2 ^ m) = _
-  rw [mul_pow, hζ, one_mul]; exact h2
+  grind [commonPullback, deckMap₂, mul_pow]
 
 theorem deckMap₂_comp (ζ η : ℂ) : deckMap₂ ζ ∘ deckMap₂ η = deckMap₂ (ζ * η) := by
-  funext p; simp only [deckMap₂, Function.comp_apply]; ring_nf
+  funext p
+  grind [deckMap₂]
 
 theorem deckMap₂_tendsto {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
     Tendsto (deckMap₂ ζ) (𝓟 (commonPullback c₁ c₂ n m)) (𝓟 (commonPullback c₁ c₂ n m)) :=
@@ -245,6 +244,6 @@ fix `F`) data of `q62_disconnected_both` coexist on one carrier. Axiom-clean. -/
 theorem deckMap₁_deckMap₂_comm (ζ η : ℂ) :
     deckMap₁ ζ ∘ deckMap₂ η = deckMap₂ η ∘ deckMap₁ ζ := by
   funext p
-  simp only [deckMap₁, deckMap₂, Function.comp_apply]
+  grind [deckMap₁, deckMap₂]
 
 end Bottcher
