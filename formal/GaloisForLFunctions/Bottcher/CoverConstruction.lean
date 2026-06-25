@@ -641,3 +641,129 @@ theorem scaling_from_modulus_preserved {U : Set ℂ} {F : ℂ → ℂ} {ρ : ℂ
   linear_combination hsub
 
 end Bottcher
+
+namespace Bottcher
+open Set
+
+/-- **Green-conjugate gluing step — extending the single-valued lift across two patches.** Two local
+Böttcher-logarithm branches `F₁, F₂` (each with `Re F = G_c`, from `exists_local_greenConjugate_basin`)
+on opens `U₁, U₂` with **connected** overlap glue to a single analytic `F` on `U₁∪U₂` still satisfying
+`Re F = G_c`: they differ by an imaginary constant `a` on the overlap
+(`greenConjugate_sub_imaginary_const`), and `F₂ + a` (with `Re a = 0`) agrees with `F₁` there, so
+`analyticOnNhd_glue_cocycle` glues them while preserving the real part. **Iterating this along a chain
+of patches around the cover assembles the global single-valued green-conjugate `F`** — hence the lift
+`φ̃c = exp F` — the analytic input the disconnected discharge needs (feeding
+`scaling_from_modulus_preserved`); the chain closes up because the accumulated cocycle is the period
+`2πi`, absorbed by `exp` (`analyticOnNhd_glue_unit`). Axiom-clean. -/
+theorem exists_greenConjugate_glue {c : ℂ} {U₁ U₂ : Set ℂ} {F₁ F₂ : ℂ → ℂ}
+    (hU₁o : IsOpen U₁) (hU₂o : IsOpen U₂) (hovc : IsConnected (U₁ ∩ U₂))
+    (hF₁ : AnalyticOnNhd ℂ F₁ U₁) (hF₂ : AnalyticOnNhd ℂ F₂ U₂)
+    (h1 : EqOn (fun w => (F₁ w).re) (greenLimit c) U₁)
+    (h2 : EqOn (fun w => (F₂ w).re) (greenLimit c) U₂) :
+    ∃ F : ℂ → ℂ, AnalyticOnNhd ℂ F (U₁ ∪ U₂) ∧
+      EqOn (fun w => (F w).re) (greenLimit c) (U₁ ∪ U₂) := by
+  classical
+  obtain ⟨a, ha0, ha⟩ := greenConjugate_sub_imaginary_const (hU₁o.inter hU₂o) hovc
+    (hF₁.mono inter_subset_left) (hF₂.mono inter_subset_right)
+    (h1.mono inter_subset_left) (h2.mono inter_subset_right)
+  refine ⟨U₁.piecewise F₁ (fun w => F₂ w + a),
+    analyticOnNhd_glue_cocycle hU₁o hU₂o hF₁ hF₂ ha, ?_⟩
+  intro z hz
+  rcases hz with hz | hz
+  · simp only [Set.piecewise, if_pos hz]; exact h1 hz
+  · by_cases hz1 : z ∈ U₁
+    · simp only [Set.piecewise, if_pos hz1]; exact h1 hz1
+    · simp only [Set.piecewise, if_neg hz1, Complex.add_re, ha0, add_zero]; exact h2 hz
+
+end Bottcher
+
+namespace Bottcher
+open Filter Set
+
+/-- **The whole `hscale` datum reduces to the green-conjugate's existence.** If the single-valued
+green-conjugate `F` exists on the connected cover `U` (`Re F = G_c∘p`) and the deck `ρ` preserves the
+modulus (`Re(F∘ρ) = Re F`), then the lift germ `a₁ = exp F` satisfies the germ-level deck scaling
+`(a₁).compTendsto ρ = ζ·a₁` with `|ζ| = 1` — exactly the `hscale` hypothesis of `monoF_witness`/`hliftF`.
+Chains `scaling_from_modulus_preserved` (open mapping ⟹ `exp(F∘ρ) = ζ·exp F`) with the germ-coe
+naturality. So the entire monodromy-scaling input to the disconnected discharge bottoms out at the lone
+analytic fact: **the global single-valued `F` exists on the connected cover** (assembled by iterating
+`exists_greenConjugate_glue`). Everything else is mechanical and built. -/
+theorem hscale_germ_of_greenConjugate {U : Set ℂ} {F : ℂ → ℂ} {ρ : ℂ → ℂ}
+    (hUo : IsOpen U) (hUc : IsConnected U)
+    (hF : AnalyticOnNhd ℂ F U) (hρ : AnalyticOnNhd ℂ ρ U) (hmaps : Set.MapsTo ρ U U)
+    (hmod : ∀ w ∈ U, (F (ρ w)).re = (F w).re) :
+    ∃ ζ : ℂ, ‖ζ‖ = 1 ∧
+      (↑(fun w => Complex.exp (F w)) : Germ (𝓟 U) ℂ).compTendsto ρ
+          (tendsto_principal_principal.mpr hmaps)
+        = (↑(fun _ : ℂ => ζ) : Germ (𝓟 U) ℂ) * ↑(fun w => Complex.exp (F w)) := by
+  obtain ⟨ζ, hζ, hsc⟩ := scaling_from_modulus_preserved hUo hUc hF hρ hmaps hmod
+  refine ⟨ζ, hζ, ?_⟩
+  rw [Germ.coe_compTendsto, ← Germ.coe_mul]
+  exact Germ.coe_eq.mpr (Filter.eventually_principal.mpr (fun w hw => hsc w hw))
+
+end Bottcher
+
+namespace Bottcher
+open Set
+
+/-- **Forward invariance of the filled Julia set (escape pulls back).** If an iterate `f^[n] z` escapes
+(`∉ K_c`), then `z` itself escapes — `K_c` is forward-invariant
+(`mem_filledJulia_iff_quadratic_mem`). So the domain `{z : f^[n] z ∈ escape}` lies in the basin, where
+the green-conjugate continuation `F = 2⁻ⁿ·bottcherLog∘f^[n]` is defined. -/
+theorem not_mem_filledJulia_of_iterate {c z : ℂ} (n : ℕ)
+    (h : (quadratic c)^[n] z ∉ filledJulia c) : z ∉ filledJulia c := by
+  induction n with
+  | zero => simpa using h
+  | succ n ih =>
+    rw [Function.iterate_succ_apply'] at h
+    exact ih (fun hz => h ((mem_filledJulia_iff_quadratic_mem c _).mp hz))
+
+/-- The iterate `f_c^[n] = (·²+c)^[n]` is entire (a polynomial map), analytic on all of `ℂ`. The
+analytic backbone of the explicit green-conjugate continuation `F = 2⁻ⁿ·bottcherLog∘f^[n]`: on the deep
+domain `{z : f^[n] z ∈ escape∩slitPlane}` it composes the analytic `bottcherLog` with the analytic
+`f^[n]`, giving a single-valued `F` with `Re F = 2⁻ⁿ·G_c∘f^[n] = G_c` (`greenLimit_iterate_basin`) — the
+genuine lift on each fundamental domain, the raw material the connected cover glues. -/
+theorem analyticOnNhd_quadratic_iterate (c : ℂ) (n : ℕ) :
+    AnalyticOnNhd ℂ ((quadratic c)^[n]) Set.univ := by
+  have hq : AnalyticOnNhd ℂ (quadratic c) Set.univ :=
+    fun w _ => (analyticAt_id.pow 2).add analyticAt_const
+  induction n with
+  | zero => simpa using analyticOnNhd_id
+  | succ n ih =>
+    rw [Function.iterate_succ']
+    intro z _
+    exact (hq _ (Set.mem_univ _)).comp (ih z (Set.mem_univ _))
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The explicit green-conjugate continuation `F = 2⁻ⁿ·bottcherLog∘f^[n]`.** On the deep domain
+`{z : f^[n] z ∈ escape∩slitPlane}` (a fundamental domain), the genuine green-conjugate of `φ_c` is
+realized in closed form: `F(z) = 2⁻ⁿ·bottcherLog(f^[n] z)` is single-valued analytic (composition of
+the analytic `bottcherLog` with the entire `f^[n]`, scaled), and `Re F = 2⁻ⁿ·G_c(f^[n] z) = 2⁻ⁿ·2ⁿ·G_c
+= G_c` by the iterated scaling law (`greenLimit_iterate_basin`). So `φ̃c = exp F` is the genuine
+single-valued Böttcher lift on each of the `2ⁿ` fundamental domains — the explicit raw material that the
+connected dyadic cover glues (via `exists_greenConjugate_glue`) into the global single-valued lift, with
+the deck the order-`2ⁿ` permutation of these domains. This realizes the lift WITHOUT abstract gluing on
+each domain; the remaining step is the global identification across the dyadic deck. Axiom-clean. -/
+theorem exists_greenConjugate_explicit (c : ℂ) (n : ℕ) :
+    AnalyticOnNhd ℂ (fun z => ((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))
+        {z : ℂ | (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane} ∧
+      EqOn (fun z => (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z)).re)
+        (greenLimit c) {z : ℂ | (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane} := by
+  have hbl : AnalyticOnNhd ℂ (bottcherLog c) (escapeOpen c ∩ Complex.slitPlane) :=
+    (differentiableOn_bottcherLog c).analyticOnNhd
+      ((isOpen_escapeOpen c).inter Complex.isOpen_slitPlane)
+  refine ⟨fun z hz => analyticAt_const.mul
+    ((hbl _ hz).comp (analyticOnNhd_quadratic_iterate c n z (mem_univ _))), ?_⟩
+  intro z hz
+  have hesc : (quadratic c)^[n] z ∈ escapeOpen c := hz.1
+  obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hesc
+  have hnf : z ∉ filledJulia c := not_mem_filledJulia_of_iterate n (not_mem_filledJulia hc hz2)
+  show (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z)).re = greenLimit c z
+  rw [Complex.re_ofReal_mul, bottcherLog_re hc hz2, greenLimit_iterate_basin hnf, ← mul_assoc,
+      inv_mul_cancel₀ (by positivity), one_mul]
+
+end Bottcher

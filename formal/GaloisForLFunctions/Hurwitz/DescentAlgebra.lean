@@ -9,6 +9,7 @@ is the algebraic backbone tying the local-orbit obstructions (which hold "for al
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Data.Complex.Basic
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
 open Polynomial
 
@@ -35,5 +36,28 @@ theorem eq_zero_of_eventually_neg_nat_roots {p : ℂ[X]} {N : ℕ}
   have hcompl : {n : ℕ | N ≤ n} = (Set.Iio N)ᶜ := by ext n; simp
   rw [hcompl]
   exact (Set.finite_Iio N).infinite_compl
+
+/-- **Quadratic weight-grading regroup.** A quadratic form `∑_{i,j} q_{ij}·g(i+j)` whose monomial weight
+enters only through `i+j` regroups into `∑_w A_w·g(w)` with `A_w = ∑_{i+j=w} q_{ij}`. With
+`g(w) = e^{-(2s+w)z}` (the singular exponent of the quadratic monomial `F_iF_j`, `F_k ~ x^{-s-k}`), this
+is the bridge from the relation's quadratic part to the exponent filtration: the distinct weights `w`
+give distinct exponents, so each `A_w` is a separable coefficient. -/
+theorem quadratic_weight_regroup {N : ℕ} (q : Fin (N + 1) → Fin (N + 1) → ℂ) (g : ℕ → ℂ) :
+    (∑ i : Fin (N + 1), ∑ j : Fin (N + 1), q i j * g ((i : ℕ) + (j : ℕ)))
+      = ∑ w ∈ Finset.range (2 * N + 1),
+          (∑ ij ∈ Finset.univ.filter
+              (fun ij : Fin (N + 1) × Fin (N + 1) => (ij.1 : ℕ) + (ij.2 : ℕ) = w),
+            q ij.1 ij.2) * g w := by
+  rw [← Fintype.sum_prod_type']
+  rw [← Finset.sum_fiberwise_of_maps_to (s := (Finset.univ : Finset (Fin (N + 1) × Fin (N + 1))))
+      (t := Finset.range (2 * N + 1))
+      (g := fun ij : Fin (N + 1) × Fin (N + 1) => (ij.1 : ℕ) + (ij.2 : ℕ))
+      (f := fun ij => q ij.1 ij.2 * g ((ij.1 : ℕ) + (ij.2 : ℕ)))
+      (fun ij _ => by simp only [Finset.mem_range]; have := ij.1.isLt; have := ij.2.isLt; omega)]
+  refine Finset.sum_congr rfl (fun w _ => ?_)
+  rw [Finset.sum_mul]
+  refine Finset.sum_congr rfl (fun ij hij => ?_)
+  rw [Finset.mem_filter] at hij
+  rw [hij.2]
 
 end HurwitzDescent

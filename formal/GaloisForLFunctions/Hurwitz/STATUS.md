@@ -114,3 +114,21 @@ series mathlib lacks for complex shift), via Complex.norm_cpow_le + arg≤π bou
 Real p-series comparison. First brick of the local expansion (the harder deep input). 18 axiom-clean
 theorems / 6 files. Next: holomorphic-in-a (tsum), then the m=n local split → x^{-s-k}+R_{n,k},
 R_{n,0}(0)=ζ(s)+η H_n^{(s)}.
+
+## Update 6 — Hurwitz zeta: N=2 row-descent input complete (axiom-clean)
+
+`Hurwitz/HurwitzZeta.lean` now has (all [propext,Classical.choice,Quot.sound]):
+summable_hurwitzSeries, hzeta (def), hzeta_split, hzeta_local_split (ζ(s,-n+x)=x^{-s}+R_n),
+neg_real_cpow ((-r)^w=r^w e^{iπw}), hzeta_neg_nat (tail value ζ(s,-n)=ζ(s)+η H_n^{(s)}),
+hzeta_neg_nat_diff (Δζ(s,-n)=η·n^{-s} — the N=2 non-integer-power obstruction).
+F_k local split = hzeta_local_split at s+k (gives x^{-s-k}). The N=2 density-shadow card's analytic
+inputs (singular x^{-s-k} + the finite-difference η n^{-s}) are IN PLACE.
+
+### Remaining for a complete N=2 theorem
+- R_n holomorphic at x=0 (analyticOnNhd of the tail tsum; locally-uniform conv of analytic terms).
+- "η n^{-s} is not the finite difference of a rational function" (rational-function asymptotics: integral
+  powers of n only; vs n^{-s}, s∉ℤ) — the non-rationality step.
+- Spine assembly (OrbitObstruction + MonodromyScalar + ExponentFiltration + DescentAlgebra + the above):
+  quadratic weight grading → q(F_0F_2-F_1²) survivor → finite-difference kills q → distinct-exponent
+  kills the linear part.
+Then all-N needs Lemma 1 (Rational-Tail Independence) in place of the finite difference.

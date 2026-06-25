@@ -93,4 +93,65 @@ theorem hzeta_local_split {s : ℂ} (hs : 1 < s.re) (n : ℕ) (x : ℂ) :
       = x ^ (-s) + ∑' m : ℕ, (if m = n then 0 else ((m : ℂ) + (-(n : ℂ) + x)) ^ (-s)) := by
   rw [hzeta_split hs (-(n : ℂ) + x) n, show ((n : ℂ) + (-(n : ℂ) + x)) = x from by ring]
 
+/-- **Negative-base branch of `cpow`.** For `r > 0`, `(-r)^w = r^w · e^{iπ w}` (principal branch:
+`log(-r) = log r + iπ`). With `w = -s` this is the factor `η = e^{-iπ s}` relating the negative-`j`
+terms of the Hurwitz tail to the harmonic sum `H_n^{(s)}`. -/
+theorem neg_real_cpow {r : ℝ} (hr : 0 < r) (w : ℂ) :
+    (-(r : ℂ)) ^ w = (r : ℂ) ^ w * Complex.exp ((Real.pi : ℂ) * Complex.I * w) := by
+  have hrne : (-(r : ℂ)) ≠ 0 := by
+    simp only [ne_eq, neg_eq_zero, Complex.ofReal_eq_zero]; exact ne_of_gt hr
+  have hrne' : (r : ℂ) ≠ 0 := by
+    simp only [ne_eq, Complex.ofReal_eq_zero]; exact ne_of_gt hr
+  rw [Complex.cpow_def_of_ne_zero hrne, Complex.cpow_def_of_ne_zero hrne', ← Complex.exp_add]
+  congr 1
+  have harg : (-(r : ℂ)).arg = Real.pi := by
+    rw [← Complex.ofReal_neg]; exact Complex.arg_ofReal_of_neg (by linarith)
+  have hlog : Complex.log (-(r : ℂ)) = Complex.log (r : ℂ) + (Real.pi : ℂ) * Complex.I := by
+    apply Complex.ext
+    · simp [Complex.log_re, abs_of_pos hr]
+    · simp [Complex.log_im, harg, Complex.arg_ofReal_of_nonneg hr.le]
+  rw [hlog]; ring
+
+/-- **Tail value at `x = 0`: `ζ(s,-n) = ζ(s) + η·H_n^{(s)}`** with `η = e^{-iπs}` and
+`H_n^{(s)} = ∑_{l=1}^{n} l^{-s}`. Split `∑_m (m-n)^{-s}` at `m = n`: the `m ≥ n` tail reindexes to
+`∑_m m^{-s} = ζ(s) = ζ(s,0)`, and the finite `m < n` part is `∑_{i<n}(-(i+1))^{-s} = η·∑_{i<n}(i+1)^{-s}`
+via `neg_real_cpow`. This is the regular-part value `R_{n,0}(0)` the Hurwitz row descent uses (its
+finite difference is `η·n^{-s}`, a non-integer power). -/
+theorem hzeta_neg_nat {s : ℂ} (hs : 1 < s.re) (n : ℕ) :
+    hzeta s (-(n : ℂ)) = hzeta s 0
+      + Complex.exp (-((Real.pi : ℂ) * Complex.I * s))
+        * ∑ l ∈ Finset.range n, ((l : ℂ) + 1) ^ (-s) := by
+  have hsum : Summable (fun m : ℕ => ((m : ℂ) + (-(n : ℂ))) ^ (-s)) := summable_hurwitzSeries hs _
+  rw [hzeta, ← Summable.sum_add_tsum_nat_add n hsum]
+  have htail : ∑' i : ℕ, ((↑(i + n) : ℂ) + (-(n : ℂ))) ^ (-s) = hzeta s 0 := by
+    rw [hzeta]; exact tsum_congr (fun i => by push_cast; ring_nf)
+  have hfin : ∑ i ∈ Finset.range n, ((i : ℂ) + (-(n : ℂ))) ^ (-s)
+      = Complex.exp (-((Real.pi : ℂ) * Complex.I * s))
+        * ∑ l ∈ Finset.range n, ((l : ℂ) + 1) ^ (-s) := by
+    rw [Finset.mul_sum, ← Finset.sum_range_reflect (fun i => ((i : ℂ) + (-(n : ℂ))) ^ (-s)) n]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [Finset.mem_range] at hi
+    have hbase : ((↑(n - 1 - i) : ℂ) + (-(n : ℂ))) = -(((i : ℝ) + 1 : ℝ) : ℂ) := by
+      rw [Nat.cast_sub (by omega : i ≤ n - 1), Nat.cast_sub (by omega : 1 ≤ n)]
+      push_cast; ring
+    rw [hbase, neg_real_cpow (by positivity)]
+    push_cast
+    ring_nf
+  rw [htail, hfin, add_comm]
+
+/-- **Finite difference of the tail value: `ζ(s,-n) - ζ(s,-(n-1)) = η·n^{-s}`** (`η = e^{-iπs}`,
+`n ≥ 1`). The `H_n^{(s)}` sums telescope to the single new term `((n-1)+1)^{-s} = n^{-s}`. This is the
+exact non-integer-power obstruction the N=2 Hurwitz descent uses: a finite difference of a rational
+function has integral-power asymptotics and cannot equal `η·n^{-s}` for nonintegral `s`. -/
+theorem hzeta_neg_nat_diff {s : ℂ} (hs : 1 < s.re) {n : ℕ} (hn : 1 ≤ n) :
+    hzeta s (-(n : ℂ)) - hzeta s (-((n - 1 : ℕ) : ℂ))
+      = Complex.exp (-((Real.pi : ℂ) * Complex.I * s)) * (n : ℂ) ^ (-s) := by
+  rw [hzeta_neg_nat hs n, hzeta_neg_nat hs (n - 1)]
+  have hsucc : Finset.range n = Finset.range ((n - 1) + 1) := by congr 1; omega
+  rw [hsucc, Finset.sum_range_succ]
+  have hcast : ((↑(n - 1) : ℂ) + 1) = (n : ℂ) := by
+    rw [Nat.cast_sub hn]; push_cast; ring
+  rw [hcast]; ring
+
 end HurwitzZetaShift

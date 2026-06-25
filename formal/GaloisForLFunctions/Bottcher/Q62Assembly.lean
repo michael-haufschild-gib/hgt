@@ -782,3 +782,88 @@ theorem noRelation_of_restrict {U V : Set ℂ} (hVU : V ⊆ U)
     (restrictMeroHom hVU hUo hUc hUne hVo hVc hVne).injective h
 
 end Bottcher
+
+namespace Bottcher
+open Polynomial Filter Set
+
+/-- **The deck fixes the cover's `ℂ(z)` base at the `RatFunc` level.** For the projection algebra
+`ratfuncToMeroVia` (the cover's `K = ℂ(z)` via the deck-invariant projection `p₀`), the deck
+automorphism `precompMeroEquiv` fixes every `k ∈ ℂ(z)`: the two ring homs `ℂ(z) → meroField U` agree on
+`ℂ[z]` (`precompMeroEquiv_polyToAnalyticVia_fix` lifted through the fraction field), hence are equal
+(`IsFractionRing.ringHom_ext`). This is **exactly** the `hliftF`/`hliftG` K-fixing hypothesis
+`∀ k : RatFunc ℂ, precompMeroEquiv (algebraMap k) = algebraMap k` that
+`q62_independence_disconnected_of_lifts` consumes — discharged for the cover's projection algebra. With
+this, every hypothesis of the disconnected discharge except the genuine analytic lift germs `a₁ = φc`
+(and `ι`) is mechanically met. -/
+theorem precompMeroEquiv_ratfuncToMeroVia_fix {U : Set ℂ} {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U} {f₀ : ℂ → ℂ} (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀)
+    (hinf : (f₀ '' U).Infinite)
+    (hfix : precompAnalytic hg hmaps p₀ = p₀) (k : RatFunc ℂ) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k)
+      = ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  have key : ((precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne).toRingHom).comp
+      (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne)
+      = ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne := by
+    apply IsFractionRing.ringHom_ext (A := Polynomial ℂ)
+    intro p
+    rw [RingHom.comp_apply]
+    rw [show ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)
+        = polyToMeroVia p₀ p from IsFractionRing.lift_algebraMap _ p]
+    show precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap (analyticSubring U) (meroField U) (polyToAnalyticVia U p₀ p))
+      = algebraMap (analyticSubring U) (meroField U) (polyToAnalyticVia U p₀ p)
+    exact precompMeroEquiv_polyToAnalyticVia_fix hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne hfix p
+  exact RingHom.congr_fun key k
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter Set
+
+/-- **General-descent transfer capstone: cover independence ⟹ deep-ball independence along `ι`.** If
+`F, G` are algebraically independent over the cover's projection base `ℂ(p₀)` (= `ratfuncToMeroVia`),
+then their pullbacks `precompMeroMap F, precompMeroMap G` along `ι : deepBall → cover` (with `p₀∘ι = z`)
+are independent over the deep ball's genuine base `ℂ(z)` (= `ratfuncToMero`). The descent is an injective
+`ℂ(z)`-algebra hom (`precompMeroMap_ratfuncToMeroVia` for the `commutes'`, field source for injective),
+so `noRelation_of_algHom` carries `NoRelation` down. This is the FULL mechanical reduction of the
+disconnected case: with `q62_independence_disconnected_of_lifts` supplying the cover independence (which
+instantiates `q62_independence`, discharging `hDisc` from the lift data over `ℂ(p₀)`), and
+`precompMeroMap F = phiMero c₁` (the analytic identification), the genuine coordinates are independent.
+Every algebraic step is now built and axiom-clean; the lone remaining input is the analytic lift — the
+cover `U` with the genuine `φc` germ + deck + the pullback `ι`. -/
+theorem noRelation_of_precompMap {U V : Set ℂ} {ι : ℂ → ℂ}
+    (hι : AnalyticOnNhd ℂ ι V) (hmaps : Set.MapsTo ι V U) (hUc : IsPreconnected U)
+    (hopen : IsOpen (ι '' V)) (hne : (ι '' V).Nonempty)
+    (hUo : IsOpen U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (hVinf : V.Infinite)
+    {p₀ : analyticSubring U} {f₀ : ℂ → ℂ} (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀)
+    (hinf : (f₀ '' U).Infinite)
+    (hp0ι : (p₀ : Germ (𝓟 U) ℂ).compTendsto ι (tendsto_principal_principal.mpr hmaps)
+        = (↑(fun w : ℂ => w) : Germ (𝓟 V) ℂ)) (F G : meroField U)
+    (h : haveI := isDomain_analyticSubring U hUo hUc hUne
+         haveI := (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+         NoRelation (RatFunc ℂ) F G) :
+    haveI := isDomain_analyticSubring V hVo hVc hVne
+    haveI := (ratfuncToMero V hVo hVc hVne hVinf).toAlgebra
+    NoRelation (RatFunc ℂ)
+      (precompMeroMap hι hmaps hUc hopen hne hUo hUne hVo hVc hVne F)
+      (precompMeroMap hι hmaps hUc hopen hne hUo hUne hVo hVc hVne G) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  letI algU := (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+  letI algV := (ratfuncToMero V hVo hVc hVne hVinf).toAlgebra
+  let ψ : meroField U →ₐ[RatFunc ℂ] meroField V :=
+    { precompMeroMap hι hmaps hUc hopen hne hUo hUne hVo hVc hVne with
+      commutes' := fun k => precompMeroMap_ratfuncToMeroVia hι hmaps hUc hopen hne hUo hUne
+        hVo hVc hVne hVinf hp0 hinf hp0ι k }
+  exact noRelation_of_algHom ψ
+    (precompMeroMap hι hmaps hUc hopen hne hUo hUne hVo hVc hVne).injective h
+
+end Bottcher

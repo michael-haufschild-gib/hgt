@@ -895,3 +895,136 @@ theorem precompAnalyticMap_polyToAnalyticVia {U V : Set ℂ} {ι : ℂ → ℂ} 
   exact RingHom.congr_fun hcomp q
 
 end Bottcher
+
+namespace Bottcher
+open Polynomial Filter Set
+
+/-- **Germ of the projection-base embedding.** `polyToAnalyticVia U p₀ q` has germ `↑(z ↦ q(f₀ z))`
+where `f₀` represents `p₀` — the evaluation of `q` along the projection `p₀`. -/
+theorem polyToAnalyticVia_coe {U : Set ℂ} (p₀ : analyticSubring U) {f₀ : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (q : Polynomial ℂ) :
+    ((polyToAnalyticVia U p₀ q : analyticSubring U) : Germ (𝓟 U) ℂ) = ↑(fun z => q.eval (f₀ z)) := by
+  induction q using Polynomial.induction_on with
+  | C a =>
+    rw [polyToAnalyticVia_C]
+    show ((constToAnalytic U a : analyticSubring U) : Germ (𝓟 U) ℂ) = _
+    apply Germ.coe_eq.mpr; apply Filter.eventually_principal.mpr; intro w _; simp [eval_C]
+  | add p r hp hr =>
+    rw [map_add, Subring.coe_add, hp, hr, ← Germ.coe_add]
+    apply Germ.coe_eq.mpr; apply Filter.eventually_principal.mpr; intro w _; simp [eval_add]
+  | monomial n a _ =>
+    rw [map_mul, map_pow, polyToAnalyticVia_C, polyToAnalyticVia_X, Subring.coe_mul,
+        SubmonoidClass.coe_pow]
+    have h1 : ((constToAnalytic U a : analyticSubring U) : Germ (𝓟 U) ℂ) = ↑(fun _ : ℂ => a) := rfl
+    rw [h1, hp0, ← Germ.coe_pow, ← Germ.coe_mul]
+    apply Germ.coe_eq.mpr; apply Filter.eventually_principal.mpr; intro w _
+    simp [eval_mul, eval_pow, eval_C, eval_X]
+
+/-- **The projection-base embedding `ℂ[z] → analyticSubring U` is injective** when the projection `p₀`
+takes infinitely many values (its representative `f₀` has infinite image on `U`). A polynomial `q` with
+`q(p₀) = 0` vanishes on all of `f₀ '' U`, which is infinite, so `q = 0`. For the cover, `p₀ = w^{2ⁿ}`
+on the annulus has infinite image — so `K = ℂ(p₀)` is a genuine rational-function field, and
+`ratfuncToMeroVia` (the cover's `ℂ(z)` algebra structure via the projection) is well-defined. -/
+theorem polyToAnalyticVia_injective {U : Set ℂ} (p₀ : analyticSubring U) {f₀ : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite) :
+    Function.Injective (polyToAnalyticVia U p₀) := by
+  rw [injective_iff_map_eq_zero]
+  intro q hq
+  have hg : ((polyToAnalyticVia U p₀ q : analyticSubring U) : Germ (𝓟 U) ℂ) = 0 := by
+    rw [hq]; exact ZeroMemClass.coe_zero _
+  rw [polyToAnalyticVia_coe p₀ hp0, ← Germ.coe_zero, Germ.coe_eq] at hg
+  have hroots : f₀ '' U ⊆ {x | q.IsRoot x} := by
+    rintro x ⟨z, hz, rfl⟩; exact Filter.eventually_principal.mp hg z hz
+  exact Polynomial.eq_zero_of_infinite_isRoot q (hinf.mono hroots)
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter Set
+
+/-- `ℂ[z] →+* meroField U` via the projection `p₀` (composition with the fraction-field map). -/
+noncomputable def polyToMeroVia {U : Set ℂ} (p₀ : analyticSubring U) : Polynomial ℂ →+* meroField U :=
+  (algebraMap (analyticSubring U) (meroField U)).comp (polyToAnalyticVia U p₀)
+
+/-- `polyToMeroVia` is injective when `p₀` has infinite image. -/
+theorem polyToMeroVia_injective {U : Set ℂ} (p₀ : analyticSubring U) {f₀ : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) :
+    Function.Injective (polyToMeroVia p₀) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  exact (IsFractionRing.injective (analyticSubring U) (meroField U)).comp
+    (polyToAnalyticVia_injective p₀ hp0 hinf)
+
+/-- **`K = ℂ(z) ↪ meroField U` via the covering projection `p₀`.** The cover's base-field embedding:
+the deck-invariant projection `p₀` (`p₀∘g = p₀`) generates a copy of `ℂ(z)` inside the cover field,
+fixed by the deck (`precompMeroEquiv_polyToAnalyticVia_fix`). With `.toAlgebra` this is the
+`[Algebra (RatFunc ℂ) (meroField U)]` instance `q62_independence_disconnected_of_lifts` takes — the
+cover's `ℂ(z)` structure that the deck fixes and that the descent `precompMeroMap` sends to the deep
+ball's identity `ℂ(z)` (`precompAnalyticMap_polyToAnalyticVia`). -/
+noncomputable def ratfuncToMeroVia {U : Set ℂ} (p₀ : analyticSubring U) {f₀ : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) :
+    RatFunc ℂ →+* meroField U :=
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  IsFractionRing.lift (polyToMeroVia_injective p₀ hp0 hinf hUo hUc hUne)
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter Set
+
+/-- The general descent commutes with the carrier embedding: `precompMeroMap (algebraMap a) =
+algebraMap (precompAnalyticMap a)` (from `IsFractionRing.lift_algebraMap`). -/
+theorem precompMeroMap_algebraMap {U V : Set ℂ} {ι : ℂ → ℂ}
+    (hι : AnalyticOnNhd ℂ ι V) (hmaps : Set.MapsTo ι V U) (hUc : IsPreconnected U)
+    (hopen : IsOpen (ι '' V)) (hne : (ι '' V).Nonempty)
+    (hUo : IsOpen U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (a : analyticSubring U) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := isDomain_analyticSubring V hVo hVc hVne
+    precompMeroMap hι hmaps hUc hopen hne hUo hUne hVo hVc hVne
+        (algebraMap (analyticSubring U) (meroField U) a)
+      = algebraMap (analyticSubring V) (meroField V) (precompAnalyticMap hι hmaps a) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  exact IsFractionRing.lift_algebraMap _ a
+
+/-- **The cover descent is a `ℂ(z)`-algebra map between the two base structures.** The descent
+`precompMeroMap` along `ι` (with `p₀∘ι = z`, hypothesis `hp0ι`) sends the cover's projection base
+`ratfuncToMeroVia` (`K = ℂ(p₀)`) to the deep ball's identity base `ratfuncToMero` (`K = ℂ(z)`):
+`precompMeroMap ∘ ratfuncToMeroVia = ratfuncToMero`. The two homs agree on `ℂ[z]`
+(`precompAnalyticMap_polyToAnalyticVia`, `p₀↦z`), hence on `ℂ(z)` (`IsFractionRing.ringHom_ext`). This
+is the final mechanical link: the cover's independence (proved over its `ℂ(p₀)` base) descends along
+`ι` to `phiMero` independence over the genuine `ℂ(z)` on the deep ball. Every mechanical hypothesis of
+the disconnected discharge is now met; only the analytic lift `ι, φc` remains. -/
+theorem precompMeroMap_ratfuncToMeroVia {U V : Set ℂ} {ι : ℂ → ℂ}
+    (hι : AnalyticOnNhd ℂ ι V) (hmaps : Set.MapsTo ι V U) (hUc : IsPreconnected U)
+    (hopen : IsOpen (ι '' V)) (hne : (ι '' V).Nonempty)
+    (hUo : IsOpen U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (hVinf : V.Infinite)
+    {p₀ : analyticSubring U} {f₀ : ℂ → ℂ} (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀)
+    (hinf : (f₀ '' U).Infinite)
+    (hp0ι : (p₀ : Germ (𝓟 U) ℂ).compTendsto ι (tendsto_principal_principal.mpr hmaps)
+        = (↑(fun w : ℂ => w) : Germ (𝓟 V) ℂ)) (k : RatFunc ℂ) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := isDomain_analyticSubring V hVo hVc hVne
+    precompMeroMap hι hmaps hUc hopen hne hUo hUne hVo hVc hVne
+        (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k)
+      = ratfuncToMero V hVo hVc hVne hVinf k := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  have key : (precompMeroMap hι hmaps hUc hopen hne hUo hUne hVo hVc hVne).comp
+      (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne) = ratfuncToMero V hVo hVc hVne hVinf := by
+    apply IsFractionRing.ringHom_ext (A := Polynomial ℂ)
+    intro p
+    rw [RingHom.comp_apply,
+        show ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)
+          = polyToMeroVia p₀ p from IsFractionRing.lift_algebraMap _ p,
+        ratfuncToMero_algebraMap_polynomial V]
+    show precompMeroMap hι hmaps hUc hopen hne hUo hUne hVo hVc hVne
+        (algebraMap (analyticSubring U) (meroField U) (polyToAnalyticVia U p₀ p)) = _
+    rw [precompMeroMap_algebraMap, precompAnalyticMap_polyToAnalyticVia hι hmaps hp0ι]
+    rfl
+  exact RingHom.congr_fun key k
+
+end Bottcher
