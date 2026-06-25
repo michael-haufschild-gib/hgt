@@ -767,3 +767,374 @@ theorem exists_greenConjugate_explicit (c : ℂ) (n : ℕ) :
       inv_mul_cancel₀ (by positivity), one_mul]
 
 end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The explicit lift has the genuine Böttcher modulus.** `|φ̃c| = |exp F| = exp(Re F) = exp(G_c)` on
+the explicit-lift domain — confirming `φ̃c = exp(2⁻ⁿ·bottcherLog∘f^[n])` is the genuine Böttcher
+coordinate continued (same modulus as `|φ_c| = exp G_c`), nowhere zero, landing on the level
+`{|w| = exp G_c}` that the dyadic deck rotates. With `Re F = G_c` (`exists_greenConjugate_explicit`),
+this pins the lift's modulus on every fundamental domain — the data the deck (a rotation preserving
+`|·|`) acts through, and the input `scaling_from_modulus_preserved` consumes once the domains are glued
+into the connected cover. -/
+theorem norm_exp_greenConjugate_explicit (c : ℂ) (n : ℕ) {z : ℂ}
+    (hz : (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane) :
+    ‖Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))‖
+      = Real.exp (greenLimit c z) := by
+  rw [Complex.norm_exp]
+  congr 1
+  exact (exists_greenConjugate_explicit c n).2 hz
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The explicit lift's derivative is the continued `d log φc`.** `F = 2⁻ⁿ·bottcherLog∘f^[n]` is
+differentiable on its domain with `deriv F = 2⁻ⁿ·(deriv bottcherLog)(f^[n] z)·∏_{k<n} 2·f^[k] z`
+(chain rule: `deriv_bottcherLog` × `hasStrictDerivAt_quadratic_iterate`). Since `deriv bottcherLog =
+logDeriv φc` and `∏ 2·f^[k] z = 2ⁿ·∏ f^[k] z`, this is `(∏_{k<n} f^[k] z)·logDeriv φc(f^[n] z)` — which
+on the escape region equals `logDeriv φc z` (`logDeriv_bottcherCoord_iterate`), so below escape `deriv F`
+**is** the analytic continuation of `d log φc`. This is the concrete first step of continuing
+`log φc = F` past the escape region toward the connected cover: the period `∮ deriv F` around a deep
+loop is the deck cocycle (the `2πi/2ⁿ` monodromy multiplier), the data that glues the per-domain lifts.
+Axiom-clean. -/
+theorem hasDerivAt_greenConjugate_explicit (c : ℂ) (n : ℕ) {z : ℂ}
+    (hz : (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane) :
+    HasDerivAt (fun z => ((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))
+      (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * (deriv (bottcherLog c) ((quadratic c)^[n] z)
+        * (∏ k ∈ Finset.range n, 2 * (quadratic c)^[k] z))) z := by
+  have hbl : HasDerivAt (bottcherLog c) (deriv (bottcherLog c) ((quadratic c)^[n] z))
+      ((quadratic c)^[n] z) :=
+    ((differentiableOn_bottcherLog c).differentiableAt
+      (((isOpen_escapeOpen c).inter Complex.isOpen_slitPlane).mem_nhds hz)).hasDerivAt
+  have hit : HasDerivAt ((quadratic c)^[n]) (∏ k ∈ Finset.range n, 2 * (quadratic c)^[k] z) z :=
+    (hasStrictDerivAt_quadratic_iterate c n z).hasDerivAt
+  exact (hbl.comp z hit).const_mul _
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **`deriv F = logDeriv φc` on the escape overlap — the explicit lift IS the genuine `log φc`.** On
+`escape∩slitPlane` (where both are defined), the explicit green-conjugate's derivative equals the
+genuine logarithmic derivative `logDeriv φc`: combining `hasDerivAt_greenConjugate_explicit` (chain
+rule), `logDeriv_bottcherCoord_iterate` (`logDeriv φc z = (∏_{k<n} f^[k] z)·logDeriv φc(f^[n] z)`), and
+`logDeriv_bottcherCoord_eq`, the `2⁻ⁿ·∏ 2 = 1` cancellation gives `deriv F = logDeriv φc`. So
+`F = 2⁻ⁿ·bottcherLog∘f^[n]` is a genuine analytic continuation of `log φc` (same `d log φc`), single-valued
+below the escape region where `log φc` itself is undefined — the per-domain piece of the global green-
+conjugate. Its period around a deep loop is therefore the deck cocycle `2πi/2ⁿ` (the project's computed
+monodromy multiplier), the data assembling the connected cover. Axiom-clean. -/
+theorem deriv_greenConjugate_explicit_eq (c : ℂ) (n : ℕ) {z : ℂ}
+    (hz : z ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hfz : (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane) :
+    deriv (fun z => ((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z)) z
+      = logDeriv (bottcherCoord c) z := by
+  rw [(hasDerivAt_greenConjugate_explicit c n hfz).deriv,
+      logDeriv_bottcherCoord_iterate hz.1 n, logDeriv_bottcherCoord_eq hfz,
+      Finset.prod_mul_distrib, Finset.prod_const, Finset.card_range]
+  have h2n : ((2:ℂ)) ^ n ≠ 0 := pow_ne_zero n (by norm_num)
+  push_cast
+  field_simp
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The explicit lift's period IS the genuine `d log φc` period.** Over a loop `γ` lying (with its
+`n`-th iterate) in `escape∩slitPlane`, the contour integral of the explicit lift's `1`-form `deriv F`
+equals that of `logDeriv φc` (`deriv_greenConjugate_explicit_eq` pointwise + `integral_congr`). So the
+period of `φ̃c = exp F` around a deep pullback loop is the genuine `∮ d log φc` — which the project
+computes as `2πi` over the base circle (`circleIntegral_dlog_bottcher`) and `2πi/2ⁿ` over the `n`-fold
+pullback (`pathInt_iterate_comp`). This is the explicit **deck-cocycle value** `2πi/2ⁿ` on the continued
+`F`: the monodromy multiplier `exp(2πi/2ⁿ) = ζ` of order `2ⁿ` by which `φ̃c` scales across the cover —
+the bridge from the per-domain continuations to the connected-cover deck. Axiom-clean. -/
+theorem pathInt_deriv_greenConjugate_explicit_eq (c : ℂ) (n : ℕ) {γ γ' : ℝ → ℂ}
+    (hmem : ∀ θ ∈ Set.uIcc (0:ℝ) (2 * Real.pi), γ θ ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hmemn : ∀ θ ∈ Set.uIcc (0:ℝ) (2 * Real.pi),
+      (quadratic c)^[n] (γ θ) ∈ escapeOpen c ∩ Complex.slitPlane) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi),
+        deriv (fun z => ((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z)) (γ θ) * γ' θ)
+      = ∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv (bottcherCoord c) (γ θ) * γ' θ := by
+  apply intervalIntegral.integral_congr
+  intro θ hθ
+  simp only
+  rw [deriv_greenConjugate_explicit_eq c n (hmem θ hθ) (hmemn θ hθ)]
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The explicit lift `φ̃c = exp F` is analytic on its domain.** Hence on each connected fundamental
+domain it is a genuine element of `analyticSubring` — the carrier germ `a₁` that the disconnected
+discharge consumes (`exp F` of the analytic `F = 2⁻ⁿ·bottcherLog∘f^[n]`, via `AnalyticAt.cexp`). -/
+theorem analyticOnNhd_exp_greenConjugate_explicit (c : ℂ) (n : ℕ) :
+    AnalyticOnNhd ℂ
+        (fun z => Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z)))
+        {z : ℂ | (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane} :=
+  fun z hz => ((exists_greenConjugate_explicit c n).1 z hz).cexp
+
+/-- **The explicit lift is nowhere zero** (`exp` never vanishes) — so its carrier germ `a₁ ≠ 0`, the
+nonvanishing hypothesis `hF0` of the disconnected discharge, holds automatically. -/
+theorem exp_greenConjugate_explicit_ne_zero (c : ℂ) (n : ℕ) (z : ℂ) :
+    Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z)) ≠ 0 :=
+  Complex.exp_ne_zero _
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The explicit lift satisfies the Böttcher functional equation, exactly.**
+`φ̃c_{m+1}(z)² = φ̃c_m(f_c z)` where `φ̃c_n = exp(2⁻ⁿ·bottcherLog∘f^[n])` — pure `exp`-algebra
+(`(exp a)² = exp(2a)`, `2·2⁻⁽ᵐ⁺¹⁾ = 2⁻ᵐ`, `f^[m+1] z = f^[m](f z)`), with no branch ambiguity (it lives
+at the `exp` level where `bottcherCoord_quadratic` is exact). This is the conjugacy `φ̃c ∘ f_c = φ̃c²`
+realized for the continued lift across levels — the dynamical engine of the dyadic monodromy: pulling
+the lift back through `f_c` halves it, so the `2ⁿ` preimages of a base loop carry the `2ⁿ`-th-root
+multipliers `ζ` of the deck. The exact level-relation that, combined with the cocycle period `2πi/2ⁿ`,
+organizes the per-domain lifts into the connected-cover deck structure. Axiom-clean. -/
+theorem exp_greenConjugate_explicit_sq (c : ℂ) (m : ℕ) (z : ℂ) :
+    (Complex.exp (((((2:ℝ) ^ (m+1))⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[m+1] z))) ^ 2
+      = Complex.exp (((((2:ℝ) ^ m)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[m] (quadratic c z))) := by
+  rw [sq, ← Complex.exp_add, Function.iterate_succ_apply]
+  congr 1
+  push_cast
+  ring
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The explicit lift is an exact `2ⁿ`-th root of the genuine Böttcher coordinate.**
+`φ̃c_n(z)^{2ⁿ} = bottcherCoord c (f^[n] z)` — pure `exp`-algebra (`(exp a)^{2ⁿ} = exp(2ⁿ·a)`,
+`2ⁿ·2⁻ⁿ = 1`, `bottcherCoord = exp∘bottcherLog`). So `φ̃c_n` is a genuine `2ⁿ`-th root of `φc∘f^[n] =
+φc^{2ⁿ}`, i.e. the genuine Böttcher coordinate `φc` itself (at the right branch), exhibiting the
+disconnected-case multivaluedness as the `2ⁿ`-valued root that the dyadic deck `μ_{2ⁿ}` permutes. This
+is the exact algebraic bond between the explicit lift and `bottcherCoord` — the relation `q62`'s descent
+uses to identify `φ̃c` with `phiMero`. Axiom-clean. -/
+theorem exp_greenConjugate_explicit_pow (c : ℂ) (n : ℕ) (z : ℂ) :
+    (Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))) ^ (2 ^ n)
+      = bottcherCoord c ((quadratic c)^[n] z) := by
+  rw [← Complex.exp_nat_mul, bottcherCoord]
+  congr 1
+  have h2n : ((2:ℂ)) ^ n ≠ 0 := pow_ne_zero n (by norm_num)
+  push_cast
+  field_simp
+
+end Bottcher
+
+namespace Bottcher
+open Set
+
+/-- **The deck is the value-rotation conjugated through the lift — reducing the deck to the lift's
+invertibility.** If the lift `φ` (= `φ̃c`) has a right-inverse `ψ` on the value annulus `V`
+(`φ∘ψ = id` on `V`, i.e. `φ` maps the cover biholomorphically onto `V`) and `ρ = ×ζ` is the value
+rotation, then `g = ψ∘ρ∘φ` is a self-map of the cover with `φ∘g = ζ·φ` — exactly the deck scaling
+`a₁∘g = ζ·a₁` that `monoF_witness` consumes. So the **entire genuine monodromy deck** (for every
+depth, hence the unbounded order) reduces to a single analytic input: that the lift `φ̃c` is
+**invertible** on the cover (the cover is biholomorphic to the value annulus via `φ̃c`) — the
+uniformization of the dyadic cover. Combined with the explicit lift's verified properties
+(`φ̃c^{2ⁿ}=bottcherCoord∘f^[n]`, `Re=G_c`, the conjugacy), this is the last analytic fact between the
+built reduction and the discharged `hDisc`. Axiom-clean. -/
+theorem deck_scaling_of_invertible_lift {U V : Set ℂ} {φ ψ ρ : ℂ → ℂ} {ζ : ℂ}
+    (hinv : Set.EqOn (φ ∘ ψ) id V) (hρ : Set.EqOn ρ (fun w => ζ * w) V)
+    (hφmaps : Set.MapsTo φ U V) (hρmaps : Set.MapsTo ρ V V) :
+    Set.EqOn (φ ∘ (ψ ∘ ρ ∘ φ)) (fun z => ζ * φ z) U := by
+  intro z hz
+  have h1 := hinv (hρmaps (hφmaps hz))
+  have h2 := hρ (hφmaps hz)
+  simp only [Function.comp_apply, id_eq] at h1 h2 ⊢
+  rw [h1, h2]
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The lift `φ̃c = exp F` is differentiable, with `deriv φ̃c = φ̃c·deriv F`.** From
+`hasDerivAt_greenConjugate_explicit` via `HasDerivAt.cexp`. Since `φ̃c ≠ 0` everywhere and
+`deriv F = d log φc` (`deriv_greenConjugate_explicit_eq`) is nonzero off the precritical orbit
+(`logDeriv_bottcherCoord_eq_zero_iff`), the lift's derivative is nonzero there — so `φ̃c` is a **local
+biholomorphism** away from critical points (inverse function theorem). This is the concrete first step
+toward the global invertibility `deck_scaling_of_invertible_lift` needs: the lift is everywhere locally
+invertible; the remaining analytic content is upgrading local to global (the uniformization of the
+connected cover onto the value annulus). Axiom-clean. -/
+theorem hasDerivAt_exp_greenConjugate_explicit (c : ℂ) (n : ℕ) {z : ℂ}
+    (hz : (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane) :
+    HasDerivAt (fun z => Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z)))
+      (Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))
+        * (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * (deriv (bottcherLog c) ((quadratic c)^[n] z)
+          * (∏ k ∈ Finset.range n, 2 * (quadratic c)^[k] z)))) z :=
+  (hasDerivAt_greenConjugate_explicit c n hz).cexp
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **Clean lift-derivative formula: `deriv φ̃c = φ̃c · logDeriv φc`** on the escape overlap. From the
+chain-rule derivative (`hasDerivAt_exp_greenConjugate_explicit`) with the raw factor identified as
+`logDeriv φc` (`deriv_greenConjugate_explicit_eq`). -/
+theorem deriv_exp_greenConjugate_explicit (c : ℂ) (n : ℕ) {z : ℂ}
+    (hz : z ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hfz : (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane) :
+    deriv (fun z => Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))) z
+      = Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))
+        * logDeriv (bottcherCoord c) z := by
+  rw [(hasDerivAt_exp_greenConjugate_explicit c n hfz).deriv]
+  congr 1
+  rw [← (hasDerivAt_greenConjugate_explicit c n hfz).deriv]
+  exact deriv_greenConjugate_explicit_eq c n hz hfz
+
+/-- **The lift is a local biholomorphism off critical points: `deriv φ̃c ≠ 0`** where `logDeriv φc ≠ 0`
+(i.e. away from the precritical orbit, `logDeriv_bottcherCoord_eq_zero_iff`). Since `deriv φ̃c =
+φ̃c·logDeriv φc` with `φ̃c ≠ 0`, the lift's derivative is nonzero there — so by the inverse function
+theorem `φ̃c` is locally invertible, the local half of the cover biholomorphism
+`deck_scaling_of_invertible_lift` needs. The remaining content is upgrading this everywhere-local
+invertibility to a global biholomorphism onto the value annulus (the uniformization of the connected
+dyadic cover). Axiom-clean. -/
+theorem deriv_exp_greenConjugate_explicit_ne_zero (c : ℂ) (n : ℕ) {z : ℂ}
+    (hz : z ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hfz : (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hcrit : logDeriv (bottcherCoord c) z ≠ 0) :
+    deriv (fun z => Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))) z
+      ≠ 0 := by
+  rw [deriv_exp_greenConjugate_explicit c n hz hfz]
+  exact mul_ne_zero (Complex.exp_ne_zero _) hcrit
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The lift has a local analytic inverse off critical points.** Where `logDeriv φc ≠ 0` (away from
+the precritical orbit), `deriv φ̃c ≠ 0`, so by the analytic inverse function theorem
+(`AnalyticAt.hasStrictDerivAt` → `HasStrictDerivAt.to_localInverse`) there is a local holomorphic inverse
+`g` of `φ̃c` with `g'(φ̃c z) = (deriv φ̃c z)⁻¹`. This is the local section `ψ` that
+`deck_scaling_of_invertible_lift` consumes — realized concretely. The remaining content is patching
+these local inverses into a single global section on the value annulus (the uniformization upgrading
+the local biholomorphisms to the global cover biholomorphism). Axiom-clean. -/
+theorem exists_localInverse_exp_greenConjugate (c : ℂ) (n : ℕ) {z : ℂ}
+    (hz : z ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hfz : (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hcrit : logDeriv (bottcherCoord c) z ≠ 0) :
+    ∃ g : ℂ → ℂ, HasStrictDerivAt g
+      (deriv (fun z => Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ)
+        * bottcherLog c ((quadratic c)^[n] z))) z)⁻¹
+      (Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))) :=
+  ⟨_, (analyticOnNhd_exp_greenConjugate_explicit c n z hfz).hasStrictDerivAt.to_localInverse
+    (deriv_exp_greenConjugate_explicit_ne_zero c n hz hfz hcrit)⟩
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex Filter
+
+/-- **The lift is locally injective: a local left-inverse exists.** Near any point off the precritical
+orbit, the local analytic inverse `g` of `φ̃c` satisfies `g(φ̃c x) = x` (`HasStrictDerivAt`'s
+`eventually_left_inverse`). So `φ̃c` is injective on a neighbourhood — locally a biholomorphism. The
+local sections agree where they overlap (the left-inverse is unique near `z`); the remaining content is
+that the global obstruction to a single section over the value annulus is exactly the dyadic
+monodromy, unwound by passing to the connected cover (the uniformization). Axiom-clean. -/
+theorem exists_eventually_left_inverse_exp_greenConjugate (c : ℂ) (n : ℕ) {z : ℂ}
+    (hz : z ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hfz : (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hcrit : logDeriv (bottcherCoord c) z ≠ 0) :
+    ∃ g : ℂ → ℂ, ∀ᶠ x in nhds z,
+      g (Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] x))) = x :=
+  ⟨_, (analyticOnNhd_exp_greenConjugate_explicit c n z hfz).hasStrictDerivAt.eventually_left_inverse
+    (deriv_exp_greenConjugate_explicit_ne_zero c n hz hfz hcrit)⟩
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex Filter
+
+/-- **The lift has a local section: `φ̃c∘g = id` near `φ̃c z`.** The right-inverse of the analytic local
+inverse (`HasStrictDerivAt.eventually_right_inverse`) — so `φ̃c` maps a neighbourhood of `z`
+homeomorphically onto a neighbourhood of the value `φ̃c z`, and `g` is a local **section** of `φ̃c`. This
+is *exactly* the `hinv : φ∘ψ = id on V` hypothesis `deck_scaling_of_invertible_lift` consumes, realized
+locally on the value side. With the left-inverse (`exists_eventually_left_inverse_...`), `φ̃c` is a local
+biholomorphism in both directions. The lone remaining content is upgrading this local section to a
+global one on the whole value annulus — the uniformization of the connected cover, whose obstruction is
+precisely the dyadic monodromy. Axiom-clean. -/
+theorem exists_eventually_right_inverse_exp_greenConjugate (c : ℂ) (n : ℕ) {z : ℂ}
+    (hz : z ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hfz : (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hcrit : logDeriv (bottcherCoord c) z ≠ 0) :
+    ∃ g : ℂ → ℂ, ∀ᶠ y in nhds (Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ)
+        * bottcherLog c ((quadratic c)^[n] z))),
+      Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] (g y))) = y :=
+  ⟨_, (analyticOnNhd_exp_greenConjugate_explicit c n z hfz).hasStrictDerivAt.eventually_right_inverse
+    (deriv_exp_greenConjugate_explicit_ne_zero c n hz hfz hcrit)⟩
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The lift lands in the value-annulus exterior `{|w|>1}`.** `|φ̃c z| = exp(G_c z) > 1` on the basin
+(`greenLimit_pos_basin`: `G_c > 0` off `K_c`, reached via `not_mem_filledJulia_of_iterate`). So `φ̃c`
+maps its domain into `{|w| > 1}` — the value region that is the **target** of the global cover
+biholomorphism `φ̃c : U → V`. With `|φ̃c| = exp G_c` pinning the modulus to the green level, the lift's
+image lies on the level annuli the deck `μ_{2ⁿ}` rotates. Confirms the lift takes values in the
+value-annulus where `deck_scaling_of_invertible_lift`'s rotation `ρ` acts. Axiom-clean. -/
+theorem one_lt_norm_exp_greenConjugate_explicit (c : ℂ) (n : ℕ) {z : ℂ}
+    (hz : (quadratic c)^[n] z ∈ escapeOpen c ∩ Complex.slitPlane) :
+    1 < ‖Complex.exp (((((2:ℝ) ^ n)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[n] z))‖ := by
+  rw [norm_exp_greenConjugate_explicit c n hz]
+  obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz.1
+  have hnf : z ∉ filledJulia c := not_mem_filledJulia_of_iterate n (not_mem_filledJulia hc hz2)
+  exact Real.one_lt_exp_iff.mpr (greenLimit_pos_basin hnf)
+
+end Bottcher
+
+namespace Bottcher
+open Set Filter
+
+/-- **Global section ⟹ the germ-level `hscale` datum, in one step.** Combining
+`deck_scaling_of_invertible_lift` (the section yields the function-level scaling `φ∘g = ζ·φ`) with the
+germ-coercion (`Germ.coe_compTendsto`/`coe_mul`/`coe_eq`), the deck `g = ψ∘ρ∘φ` acts on the germ `↑φ`
+by the scalar `ζ`: `(↑φ).compTendsto g = ↑ζ · ↑φ`. This is *exactly* the `hscale` shape
+`monoF_witness`/`hliftF` consume, now derived directly from the **global-section** hypotheses
+(`hinv : φ∘ψ = id on V`) rather than posited. So the reduction chain tightens to:
+global section `ψ` of `φ̃c` ⟹ germ scaling ⟹ `monoF` ⟹ `q62_independence`. The sole remaining input
+is the existence of that global section `ψ` — the uniformization of the dyadic cover. Axiom-clean. -/
+theorem germ_scaling_of_section {U V : Set ℂ} {φ ψ ρ : ℂ → ℂ} {ζ : ℂ}
+    (hinv : Set.EqOn (φ ∘ ψ) id V) (hρ : Set.EqOn ρ (fun w => ζ * w) V)
+    (hφmaps : Set.MapsTo φ U V) (hρmaps : Set.MapsTo ρ V V)
+    (hgmaps : Set.MapsTo (ψ ∘ ρ ∘ φ) U U) :
+    (↑φ : Germ (𝓟 U) ℂ).compTendsto (ψ ∘ ρ ∘ φ) (tendsto_principal_principal.mpr hgmaps)
+      = (↑(fun _ : ℂ => ζ) : Germ (𝓟 U) ℂ) * ↑φ := by
+  rw [Germ.coe_compTendsto, ← Germ.coe_mul]
+  refine Germ.coe_eq.mpr (Filter.eventually_principal.mpr (fun w hw => ?_))
+  have := deck_scaling_of_invertible_lift hinv hρ hφmaps hρmaps hw
+  simpa [Function.comp_apply, Pi.mul_apply] using this
+
+end Bottcher
+
+namespace Bottcher
+open Set
+
+/-- **At level `n=m=0` the cover is the genuine Böttcher graph.** `commonPullback c₁ c₂ 0 0` forces
+`v₁ = φ_{c₁}(z)` and `v₂ = φ_{c₂}(z)` (no root branching, since `2⁰ = 1` and `f^[0] = id`). So the
+formal cover coordinates `v1Germ, v2Germ` ARE the actual inverse Böttcher coordinates at this level.
+This pins the location of the only genuine gap: the "formal product vs. connected Riemann-surface
+function field" obstruction (named in `commonPullback`'s docstring) lives ENTIRELY in the `n ≥ 1`
+root-branching — where the `2ⁿ`-fold cover is disconnected, so `coverGerm` (functions on the full
+fibre) is not a domain — and NOT in the coordinates being abstract. At `n=0` the coordinates are
+genuine but the deck has order `2⁰ = 1` (no monodromy); the genuine q62 needs both genuine coordinates
+AND nontrivial monodromy, i.e. the connected `n ≥ 1` cover. Axiom-clean. -/
+theorem commonPullback_zero_eq (c₁ c₂ : ℂ) :
+    commonPullback c₁ c₂ 0 0 =
+      {p : ℂ × ℂ × ℂ | p.2.1 = bottcherCoord c₁ p.1 ∧ p.2.1 ≠ 0 ∧
+        p.2.2 = bottcherCoord c₂ p.1 ∧ p.2.2 ≠ 0} := by
+  ext p
+  simp only [commonPullback, Set.mem_setOf_eq, pow_zero, pow_one, Function.iterate_zero, id_eq]
+
+end Bottcher

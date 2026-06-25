@@ -154,4 +154,17 @@ theorem hzeta_neg_nat_diff {s : ℂ} (hs : 1 < s.re) {n : ℕ} (hn : 1 ≤ n) :
     rw [Nat.cast_sub hn]; push_cast; ring
   rw [hcast]; ring
 
+/-- **The shifted ladder `F_k = ζ(s+k, ·)` near `a = -n`.** Since `Re(s+k) = Re s + k > 1`, the local
+split applies to each shift: `ζ(s+k, -n+x) = x^{-(s+k)} + R_{n,k}(x)`. These singular terms `x^{-(s+k)}`
+(`k = 0,…,N`) are the linear exponents of the Hurwitz ladder; their pairwise products give the quadratic
+exponents `x^{-(2s+i+j)}` the descent's exponent filtration separates. -/
+theorem hzeta_local_split_shift {s : ℂ} (hs : 1 < s.re) (k : ℕ) (n : ℕ) (x : ℂ) :
+    hzeta (s + k) (-(n : ℂ) + x)
+      = x ^ (-(s + k))
+        + ∑' m : ℕ, (if m = n then 0 else ((m : ℂ) + (-(n : ℂ) + x)) ^ (-(s + k))) := by
+  refine hzeta_local_split ?_ n x
+  rw [Complex.add_re, Complex.natCast_re]
+  have : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+  linarith
+
 end HurwitzZetaShift

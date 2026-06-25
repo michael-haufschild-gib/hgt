@@ -231,3 +231,20 @@ theorem exists_dyadic_order_gt_coverGerm (c₁ c₂ : ℂ) (n m : ℕ) (d : ℕ)
   exact ⟨k, ζ, hpow, hne, by rw [orderOf_const_coverGerm]; exact hord, hd⟩
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **The two formal decks commute.** `deckMap₁ ζ` (scales `v₁`, fixes `z,v₂`) and `deckMap₂ η`
+(scales `v₂`, fixes `z,v₁`) act on independent coordinates, so they commute:
+`deckMap₁ ζ ∘ deckMap₂ η = deckMap₂ η ∘ deckMap₁ ζ` (both send `(z,v₁,v₂) ↦ (z, ζv₁, ηv₂)`). Hence the
+joint deck group generated on the common cover is the **abelian product** `μ_{2ⁿ} × μ_{2ᵐ}` — the
+formal model of the two *independent* monodromies (one scaling `φ_{c₁}`, the other `φ_{c₂}`). This
+product/commuting structure is exactly what makes `σ_n(φ_{c₂}) = φ_{c₂}` compatible with
+`σ_m(φ_{c₁}) = φ_{c₁}` simultaneously: the `monoF` (scale `F=v₁`, fix `G=v₂`) and `monoG` (scale `G`,
+fix `F`) data of `q62_disconnected_both` coexist on one carrier. Axiom-clean. -/
+theorem deckMap₁_deckMap₂_comm (ζ η : ℂ) :
+    deckMap₁ ζ ∘ deckMap₂ η = deckMap₂ η ∘ deckMap₁ ζ := by
+  funext p
+  simp only [deckMap₁, deckMap₂, Function.comp_apply]
+
+end Bottcher

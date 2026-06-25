@@ -867,3 +867,31 @@ theorem noRelation_of_precompMap {U V : Set ℂ} {ι : ℂ → ℂ}
     (precompMeroMap hι hmaps hUc hopen hne hUo hUne hVo hVc hVne).injective h
 
 end Bottcher
+
+namespace Bottcher
+open Polynomial
+
+/-- **Powers preserve algebraic independence.** If `a, b` satisfy no polynomial relation over `K`,
+then so do `a^k, b^k` (`k > 0`): a relation `P(a^k, b^k) = 0` is `P'(a,b) = 0` where `P'` substitutes
+`X ↦ X^k, Y ↦ Y^k` (`Polynomial.expand`), so `P' = 0` by `NoRelation K a b`, whence `P = 0` since the
+expand substitution is injective (`expand_injective`). The bivariate substitution is realized as
+`expand (K[X]) k ∘ map (expand K k)` on `Polynomial (Polynomial K)`, with the eval intertwining by
+`expand_aeval`/`expand_eval`. A reusable independence tool (e.g. relating a root-coordinate `φc^{1/2ⁿ}`
+to `φc` over a fixed base). Axiom-clean. -/
+theorem noRelation_pow {K M : Type*} [Field K] [Field M] [Algebra K M] {a b : M} {k : ℕ}
+    (hk : 0 < k) (h : NoRelation K a b) : NoRelation K (a ^ k) (b ^ k) := by
+  intro P hP
+  have hcoeff : ((aeval b : Polynomial K →ₐ[K] M).toRingHom).comp ((expand K k).toRingHom)
+      = (aeval (b ^ k) : Polynomial K →ₐ[K] M).toRingHom := by
+    apply Polynomial.ringHom_ext
+    · intro c; simp [expand_C]
+    · simp [expand_X]
+  have hP'0 : (expand (Polynomial K) k) (P.map (expand K k).toRingHom) = 0 := by
+    apply h
+    rw [Polynomial.map_expand, Polynomial.map_map, hcoeff, Polynomial.expand_eval]
+    exact hP
+  have h1 : P.map (expand K k).toRingHom = 0 :=
+    expand_injective hk (hP'0.trans (map_zero _).symm)
+  exact Polynomial.map_injective _ (expand_injective hk) (h1.trans (Polynomial.map_zero _).symm)
+
+end Bottcher
