@@ -536,3 +536,50 @@ theorem no_singlevalued_branch_of_dyadic_period {φ L : ℝ → ℂ} {n : ℕ} (
   omega
 
 end Bottcher
+
+namespace Bottcher
+open Set
+
+/-- **Atomic analytic gluing.** Two local analytic branches `f₁` on `U₁`, `f₂` on `U₂` that **agree on
+the overlap** `U₁∩U₂` glue to a single analytic function `U₁.piecewise f₁ f₂` on `U₁∪U₂`. (On `U₁` it
+is `f₁`, on `U₂` it is `f₂` — well-defined and analytic by the agreement, using openness so each point
+has a one-branch neighbourhood.) This is the inductive engine for assembling the local Böttcher branches
+(`exists_local_bottcherBranch_basin`) into a single-valued lift on the connected dyadic cover: iterate
+the glue along a chain of patches whose transition cocycle is trivialized on the cover. -/
+theorem analyticOnNhd_glue {U₁ U₂ : Set ℂ} {f₁ f₂ : ℂ → ℂ} (hU₁ : IsOpen U₁) (hU₂ : IsOpen U₂)
+    (hf₁ : AnalyticOnNhd ℂ f₁ U₁) (hf₂ : AnalyticOnNhd ℂ f₂ U₂)
+    (hagree : EqOn f₁ f₂ (U₁ ∩ U₂)) :
+    haveI := Classical.dec
+    AnalyticOnNhd ℂ (U₁.piecewise f₁ f₂) (U₁ ∪ U₂) := by
+  classical
+  rintro z (hz | hz)
+  · refine (hf₁ z hz).congr ?_
+    filter_upwards [hU₁.mem_nhds hz] with w hw
+    simp [Set.piecewise, hw]
+  · refine (hf₂ z hz).congr ?_
+    filter_upwards [hU₂.mem_nhds hz] with w hw
+    by_cases hw1 : w ∈ U₁
+    · simp [Set.piecewise, hw1, hagree ⟨hw1, hw⟩]
+    · simp [Set.piecewise, hw1]
+
+end Bottcher
+
+namespace Bottcher
+open Set
+
+/-- **Gluing two green-conjugate branches across the cocycle.** The local Böttcher-logarithm branches
+`F₁, F₂` differ by an **imaginary constant** `c` on their overlap (`greenConjugate_sub_imaginary_const`:
+`F₁ = F₂ + c`). Adjusting `F₂` by `c` makes them agree, so `analyticOnNhd_glue` produces a single
+analytic branch `F` on `U₁∪U₂` with `exp F` a single-valued Böttcher coordinate there. Iterating this
+glue along a chain of patches around the cover annulus assembles the global single-valued lift `φ̃c =
+exp F` — the genuine lift the disconnected case needs — the closing-up obstruction being exactly the
+total period `2πi/2ⁿ` that the `2ⁿ`-fold cover unwinds (`no_singlevalued_branch_of_dyadic_period`). -/
+theorem analyticOnNhd_glue_cocycle {U₁ U₂ : Set ℂ} {F₁ F₂ : ℂ → ℂ} {c : ℂ}
+    (hU₁ : IsOpen U₁) (hU₂ : IsOpen U₂)
+    (hF₁ : AnalyticOnNhd ℂ F₁ U₁) (hF₂ : AnalyticOnNhd ℂ F₂ U₂)
+    (hcoc : EqOn F₁ (fun w => F₂ w + c) (U₁ ∩ U₂)) :
+    haveI := Classical.dec
+    AnalyticOnNhd ℂ (U₁.piecewise F₁ (fun w => F₂ w + c)) (U₁ ∪ U₂) :=
+  analyticOnNhd_glue hU₁ hU₂ hF₁ (hF₂.add analyticOnNhd_const) hcoc
+
+end Bottcher

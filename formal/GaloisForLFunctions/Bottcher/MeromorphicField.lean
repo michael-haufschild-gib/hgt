@@ -546,3 +546,55 @@ theorem constToAnalytic_compTendsto {U : Set ℂ} {g : ℂ → ℂ} (h : Filter.
 end Bottcher
 
 -- (rebuild trigger)
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Projection-based base embedding `K = ℂ(p₀) → analyticSubring U`.** The identity-coordinate
+embedding `polyToAnalytic` (`X ↦ z`) forces any `K`-fixing deck `g` to satisfy `g = id` on a planar
+`U` — so the deck is trivial and `q62_disconnected_both`'s monodromy cannot be realized on a planar
+domain with the identity base. To carry the genuine cover monodromy (deck fixes the *projection*,
+permutes sheets), the base must embed via a chosen analytic *projection* `p₀ ∈ analyticSubring U`:
+`q ↦ q(p₀)` (`eval₂RingHom`). Then `K = ℂ(p₀)`, and any deck self-map `g` with `p₀∘g = p₀` fixes all of
+`K` — the structure a nontrivial order-`2ⁿ` sheet-permuting deck needs. The algebraic enabler for the
+connected dyadic-cover carrier (`p₀` = the `2ⁿ`-fold covering projection of the cover annulus). -/
+noncomputable def polyToAnalyticVia (U : Set ℂ) (p₀ : analyticSubring U) :
+    Polynomial ℂ →+* analyticSubring U :=
+  Polynomial.eval₂RingHom (constToAnalytic U) p₀
+
+@[simp] theorem polyToAnalyticVia_X (U : Set ℂ) (p₀ : analyticSubring U) :
+    polyToAnalyticVia U p₀ Polynomial.X = p₀ := by simp [polyToAnalyticVia]
+
+@[simp] theorem polyToAnalyticVia_C (U : Set ℂ) (p₀ : analyticSubring U) (a : ℂ) :
+    polyToAnalyticVia U p₀ (Polynomial.C a) = constToAnalytic U a := by simp [polyToAnalyticVia]
+
+/-- The deck ring operator `precompAnalytic` fixes the constant subring (`constToAnalytic_compTendsto`,
+constants are `g`-invariant since `(fun _ ↦ c) ∘ g = fun _ ↦ c`). -/
+theorem precompAnalytic_constToAnalytic {U : Set ℂ} {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g U)
+    (hmaps : Set.MapsTo g U U) (c : ℂ) :
+    precompAnalytic hg hmaps (constToAnalytic U c) = constToAnalytic U c := by
+  apply Subtype.ext
+  rw [precompAnalytic_coe]
+  exact constToAnalytic_compTendsto (tendsto_principal_principal.mpr hmaps) c
+
+/-- **The deck operator fixes the whole projection-base `K = ℂ(p₀)` when `p₀∘g = p₀`.** If the chosen
+projection germ `p₀` is `g`-invariant, every `q(p₀) ∈ K` is fixed by the deck ring operator
+`precompAnalytic`: two ring homs `ℂ[X] → analyticSubring U` agreeing on the constants
+(`precompAnalytic_constToAnalytic`) and on `X ↦ p₀` (`hp0`) are equal (`Polynomial.ringHom_ext`). This
+is the key step making the deck a genuine `K`-algebra map with `K` embedded via the covering
+projection — exactly what a nontrivial sheet-permuting order-`2ⁿ` deck requires, which the identity
+embedding cannot supply on a planar domain. -/
+theorem precompAnalytic_polyToAnalyticVia_fix {U : Set ℂ} {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g U)
+    (hmaps : Set.MapsTo g U U) {p₀ : analyticSubring U}
+    (hp0 : precompAnalytic hg hmaps p₀ = p₀) (q : Polynomial ℂ) :
+    precompAnalytic hg hmaps (polyToAnalyticVia U p₀ q) = polyToAnalyticVia U p₀ q := by
+  have hcomp : (precompAnalytic hg hmaps).comp (polyToAnalyticVia U p₀) = polyToAnalyticVia U p₀ := by
+    apply Polynomial.ringHom_ext
+    · intro a
+      simp only [RingHom.comp_apply, polyToAnalyticVia_C]
+      exact precompAnalytic_constToAnalytic hg hmaps a
+    · simp only [RingHom.comp_apply, polyToAnalyticVia_X]
+      exact hp0
+  exact RingHom.congr_fun hcomp q
+
+end Bottcher

@@ -634,3 +634,59 @@ theorem not_square_of_period_ftc {ph : ℂ}
   exact not_square_of_odd_period n hperiod hn
 
 end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **The deck `K`-algebra automorphism fixes the projection base `K = ℂ(p₀)` at the meroField level.**
+Lifting `precompAnalytic_polyToAnalyticVia_fix` through the fraction-field map: when the projection
+germ `p₀` is `g`-invariant (`p₀∘g = p₀`), the deck automorphism `precompMeroEquiv` fixes every
+`q(p₀) ∈ K` inside `meroField U`. This is exactly the `hK` hypothesis `monoF_witness` requires —
+discharged automatically once the base is embedded via the covering projection `p₀` rather than the
+identity coordinate. So on the cover annulus (`g` = the order-`2ⁿ` sheet rotation, `p₀` = the `2ⁿ`-fold
+covering projection with `p₀∘g = p₀`), the deck is a genuine `K`-automorphism — the planar obstruction
+(identity base ⟹ `g = id`) is gone. -/
+theorem precompMeroEquiv_polyToAnalyticVia_fix {U : Set ℂ} {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U} (hp0 : precompAnalytic hg hmaps p₀ = p₀) (q : Polynomial ℂ) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap (analyticSubring U) (meroField U) (polyToAnalyticVia U p₀ q))
+      = algebraMap (analyticSubring U) (meroField U) (polyToAnalyticVia U p₀ q) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  apply precompMeroEquiv_algebraMap_fix
+  rw [← precompAnalytic_coe hg hmaps (polyToAnalyticVia U p₀ q),
+      precompAnalytic_polyToAnalyticVia_fix hg hmaps hp0 q]
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Concrete deck/projection pair on the cover annulus.** On the norm-annulus `Ã = {ρ < |w| < R}`
+the `2ⁿ`-fold covering projection `p₀ = w^{2ⁿ}` (`= polyToAnalytic Ã (X^{2ⁿ})`) is invariant under the
+order-`2ⁿ` sheet rotation `g = rotation ζ` (`w ↦ ζw`, `|ζ|=1`, `ζ^{2ⁿ}=1`): `p₀∘g = (ζw)^{2ⁿ} =
+ζ^{2ⁿ}·w^{2ⁿ} = w^{2ⁿ} = p₀`. So `(g, p₀)` is a concrete realization of the projection-base hypothesis
+`p₀∘g = p₀` — combined with `precompMeroEquiv_polyToAnalyticVia_fix`, the rotation deck fixes the whole
+base `K = ℂ(w^{2ⁿ}) = ℂ(z)` of the cover carrier `meroField Ã`, with deck order `2ⁿ`. Only the genuine
+Böttcher lift `φ̃c` (with `φ̃c∘g = ζ·φ̃c`) now remains to instantiate the disconnected case. -/
+theorem precompAnalytic_rotation_coverProj_fix {ρ R : ℝ} {ζ : ℂ} (hζ : ‖ζ‖ = 1) (n : ℕ)
+    (hζn : ζ ^ (2 ^ n) = 1) :
+    precompAnalytic (analyticOnNhd_rotation ζ {w : ℂ | ρ < ‖w‖ ∧ ‖w‖ < R})
+        (rotation_mapsTo_annulus hζ ρ R)
+        (polyToAnalytic {w : ℂ | ρ < ‖w‖ ∧ ‖w‖ < R} (Polynomial.X ^ (2 ^ n)))
+      = polyToAnalytic {w : ℂ | ρ < ‖w‖ ∧ ‖w‖ < R} (Polynomial.X ^ (2 ^ n)) := by
+  apply Subtype.ext
+  rw [precompAnalytic_coe]
+  show (↑(fun z => (Polynomial.X ^ (2 ^ n) : Polynomial ℂ).eval z) : Germ (𝓟 _) ℂ).compTendsto
+      (rotation ζ) _ = ↑(fun z => (Polynomial.X ^ (2 ^ n) : Polynomial ℂ).eval z)
+  rw [Germ.coe_compTendsto]
+  congr 1
+  funext w
+  simp only [rotation, Function.comp_apply, Polynomial.eval_pow, Polynomial.eval_X, mul_pow, hζn,
+    one_mul]
+
+end Bottcher
