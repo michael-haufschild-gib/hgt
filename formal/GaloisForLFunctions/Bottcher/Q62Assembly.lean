@@ -895,3 +895,75 @@ theorem noRelation_pow {K M : Type*} [Field K] [Field M] [Algebra K M] {a b : M}
   exact Polynomial.map_injective _ (expand_injective hk) (h1.trans (Polynomial.map_zero _).symm)
 
 end Bottcher
+
+namespace Bottcher
+open Polynomial Function Filter Topology Set
+
+/-- **Projection-base `monoF`: the cover deck is automatically `RatFunc ℂ`-linear.**
+`monoF_witness` used to require a separate hypothesis saying the deck fixes every element of the base
+field. When the base is embedded as `ℂ(p₀)` via the deck-invariant projection `p₀`, that hypothesis is
+not extra data: it is exactly `precompMeroEquiv_ratfuncToMeroVia_fix`. This theorem packages the
+field-carrier step needed by the connected cover: scale `a₁`, fix `a₂`, fix the projection base. -/
+theorem monoF_witness_projection_base {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U} {f₀ : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (a₁ a₂ : analyticSubring U) (d : ℕ) (ζ₀ : ℂ) {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hpfix : precompAnalytic hg hmaps p₀ = p₀)
+    (hord : d < orderOf ζ₀)
+    (hscale : (a₁ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+        = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (a₁ : Germ (𝓟 U) ℂ))
+    (hinv : (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+        = (a₂ : Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+    ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+      d < m ∧ orderOf ζ = m ∧
+      σ (algebraMap (analyticSubring U) (meroField U) a₂)
+        = algebraMap (analyticSubring U) (meroField U) a₂ ∧
+      σ ζ = ζ ∧
+      σ (algebraMap (analyticSubring U) (meroField U) a₁)
+        = ζ * algebraMap (analyticSubring U) (meroField U) a₁ := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+  refine monoF_witness hUo hUc hUne a₁ a₂ d ζ₀ hg hg' hmaps hmaps' hgg' hg'g
+    hord hscale hinv ?_
+  intro k
+  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+    hUo hUc hUne hp0 hinf hpfix k
+
+/-- **Projection-base `monoG`: symmetric `RatFunc ℂ`-linear deck witness.**
+This is the `c₂` version of `monoF_witness_projection_base`: once the cover base is `ℂ(p₀)` and the
+deck fixes `p₀`, the `RatFunc ℂ`-algebra condition follows from the projection-base lemma rather than
+being supplied by hand. -/
+theorem monoG_witness_projection_base {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U} {f₀ : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (a₂ : analyticSubring U) (d : ℕ) (ζ₀ : ℂ) {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hpfix : precompAnalytic hg hmaps p₀ = p₀)
+    (hord : d < orderOf ζ₀)
+    (hscale : (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+        = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (a₂ : Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+    ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U),
+      d < orderOf ζ ∧ σ ζ = ζ ∧
+      σ (algebraMap (analyticSubring U) (meroField U) a₂)
+        = ζ * algebraMap (analyticSubring U) (meroField U) a₂ := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+  refine monoG_witness hUo hUc hUne a₂ d ζ₀ hg hg' hmaps hmaps' hgg' hg'g hord hscale ?_
+  intro k
+  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+    hUo hUc hUne hp0 hinf hpfix k
+
+end Bottcher
