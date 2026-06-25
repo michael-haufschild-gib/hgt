@@ -77,3 +77,57 @@ theorem winding_value_of_iterate_loop {c : ℂ} (n : ℕ) {γ γ' : ℝ → ℂ}
   linear_combination -h
 
 end Bottcher
+
+namespace Bottcher
+open Complex InnerProductSpace
+
+/-- **[L4c — the holomorphic saddle model] Near the critical point `0`, `G_c` is the real part of a
+holomorphic `F` with `F'(0) = 0`.** For disconnected `c`, `G_c` is harmonic on a ball about `0`
+(`harmonicOnNhd_greenLimit_basin`), so it has a holomorphic completion `F` (`Re F = G_c`) on that ball
+(Mathlib's harmonic-conjugate `exists_analyticOnNhd_ball_re_eq`). Since `0` is a critical point of `G_c`
+(`fderiv_greenLimit_critical`), the Cauchy–Riemann derivative vanishes: `deriv F 0 = 0`. Thus `F(z) -
+F(0) = ½F''(0)z² + O(z³)` — the standard non-degenerate saddle whose level set `{Re F = Re F(0)} =
+{G_c = G_c(0)}` is the figure-eight, and below which the basin splits into the two Cantor lobes. This is
+the local analytic model the disconnected component structure is read off from. Axiom-clean. -/
+theorem exists_holomorphic_completion_critical {c : ℂ} (hc : Disconnected c) :
+    ∃ (R : ℝ) (F : ℂ → ℂ), 0 < R ∧ AnalyticOnNhd ℂ F (Metric.ball 0 R) ∧
+      Set.EqOn (fun z => (F z).re) (greenLimit c) (Metric.ball 0 R) ∧ deriv F 0 = 0 := by
+  have h0 : (0 : ℂ) ∉ filledJulia c := (disconnected_iff_zero_not_mem c).mp hc
+  obtain ⟨R, hRpos, hsub⟩ :=
+    Metric.mem_nhds_iff.mp ((isClosed_filledJulia c).isOpen_compl.mem_nhds h0)
+  have hharm : HarmonicOnNhd (greenLimit c) (Metric.ball 0 R) :=
+    fun x hx => harmonicOnNhd_greenLimit_basin c x (hsub hx)
+  obtain ⟨F, hFan, hFre⟩ := hharm.exists_analyticOnNhd_ball_re_eq
+  refine ⟨R, F, hRpos, hFan, hFre, ?_⟩
+  have hball0 : (0 : ℂ) ∈ Metric.ball 0 R := Metric.mem_ball_self hRpos
+  have hFda : DifferentiableAt ℂ F 0 := (hFan 0 hball0).differentiableAt
+  have hReF_eq : (fun z => (F z).re) =ᶠ[nhds (0:ℂ)] greenLimit c := by
+    filter_upwards [Metric.isOpen_ball.mem_nhds hball0] with w hw using hFre hw
+  have hfd_eq : fderiv ℝ (fun z => (F z).re) 0 = 0 := by
+    rw [hReF_eq.fderiv_eq]; exact fderiv_greenLimit_critical hc
+  have hcomp : HasFDerivAt (fun z => (F z).re)
+      (Complex.reCLM.comp ((fderiv ℂ F 0).restrictScalars ℝ)) 0 :=
+    Complex.reCLM.hasFDerivAt.comp 0 (hFda.hasFDerivAt.restrictScalars ℝ)
+  have hCLM : Complex.reCLM.comp ((fderiv ℂ F 0).restrictScalars ℝ) = 0 :=
+    hcomp.fderiv.symm.trans hfd_eq
+  have hd1 : (deriv F 0).re = 0 := by
+    have h := congrArg (fun L => L (1:ℂ)) hCLM
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.zero_apply,
+      Complex.reCLM_apply] at h
+    rw [← fderiv_apply_one_eq_deriv]
+    exact h
+  have hdI : (deriv F 0).im = 0 := by
+    have h := congrArg (fun L => L Complex.I) hCLM
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.zero_apply,
+      Complex.reCLM_apply] at h
+    have h1 : (fderiv ℂ F 0) Complex.I = Complex.I • (fderiv ℂ F 0) 1 := by
+      rw [← ContinuousLinearMap.map_smul, smul_eq_mul, mul_one]
+    have hI : (fderiv ℂ F 0) Complex.I = Complex.I * deriv F 0 := by
+      rw [h1, fderiv_apply_one_eq_deriv, smul_eq_mul]
+    rw [show (((fderiv ℂ F 0).restrictScalars ℝ) Complex.I) = (fderiv ℂ F 0) Complex.I from rfl,
+      hI, Complex.mul_re, Complex.I_re, Complex.I_im, zero_mul, one_mul, zero_sub,
+      neg_eq_zero] at h
+    exact h
+  exact Complex.ext hd1 hdI
+
+end Bottcher

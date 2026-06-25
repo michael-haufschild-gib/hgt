@@ -384,3 +384,32 @@ Step 4 covering ingredients now ALL machine-checked: cylinder doubling ✓, `2�
 (trivialization) on the punctured collar → `IsCoveringMap (f_c^[n])`, lift `φ_{c₁}`, carry `φ_{c₂}`/`z`,
 `σ_n` fixes `φ_{c₂}` → `DyadicMonodromyTower`. No Mathlib "proper-local-homeo ⟹ covering" shortcut;
 the trivialization is hand-built. `hRigid` (E–vS) pending.
+
+### New `FigureEight.lean` module — disconnected-basin / winding bricks (2026-06-25, build green, zero axioms)
+Disjoint from the ∞-side uniformization work; this is the disconnected-only topology, the genuine
+remaining analytic crux of `hDisc`. Four verified bricks (each `#print axioms` = `[propext,
+Classical.choice, Quot.sound]`):
+- `pathInt_dlog_lift_closed_eq_zero` (in `CoverConstruction.lean`) — **the `φ_{c₂}`-fixed half**: a
+  closed loop inside the single-valued domain `D_m={f^[m]z∈escape∩slit}` of the lift `φ̃c` has
+  `∮_γ d log φ̃c = 0` (FTC for closed loops). The asymmetry vs the `c₁`-loop: same loop, period
+  `2πi/2ⁿ` for `φ_{c₁}` (crosses fundamental domains) but `0` for `φ_{c₂}` (null-homotopic in the
+  other basin). This is "`σ_n` fixes `φ_{c₂}`" on the genuine (analytic-continuation) route — NOT the
+  circular self-map route (`hliftF` of `q62_independence_disconnected_of_lifts` forces `g=id` because
+  it must fix `ℂ(z)`; that reduction is a dead-end confirmed here).
+- `winding_value_of_iterate_loop` — **the winding value**: a depth-`n` lifted loop (`f^[n]∘γ` has
+  iterate-period `2πi`) has `∮_γ d log φ_{c₁} = 2πi/2ⁿ`. Pure consequence of `pathInt_iterate_comp`.
+  Reduces the winding lemma to ONE existence statement (`hbase` = the lifted base loop).
+- `fderiv_greenLimit_critical` (L4a) — **the branch point**: for `Disconnected c`, `fderiv ℝ G_c 0 =
+  0`. The escaping critical point `0` is a critical point of `G_c` (basin scaling `G_c=½G_c∘f_c` +
+  `f_c'(0)=0`). Uses the just-added `harmonicOnNhd_greenLimit_basin`.
+- `exists_holomorphic_completion_critical` (L4c) — **the holomorphic saddle model**: near `0`,
+  `G_c = Re F` for `F` analytic with `deriv F 0 = 0` (harmonic-conjugate `exists_analyticOnNhd_ball_re_eq`
+  + L4a via Cauchy–Riemann). So `F − F(0) = ½F''(0)z² + O(z³)`: the non-degenerate saddle whose level
+  set `{G_c=G_c(0)}` is the figure-eight, below which the basin splits into 2 Cantor lobes.
+
+GENUINE REMAINING CRUX (everything else built or reduced): the **lifted winding loop** `hbase` —
+construct a closed `γ` around ONE lobe with `f^[n]∘γ` = base circle (period `2πi`), `γ` shrinking into a
+disk in `Ω_{c₂}`. Needs: (L4c→) non-degeneracy `F''(0)≠0` ⟹ figure-eight splits sublevel into 2
+components ⟹ a loop around one lobe; + cylinders-shrink-to-points. Then: winding value + L1 ⟹ `σ_n`
+(`φ_{c₁}↦ζφ_{c₁}`, `φ_{c₂}` fixed) ⟹ `φ_{c₁}∘f^[n]` not a square in `meroField` (`not_square_of_period_ftc`)
+⟹ Kummer irreducibility (`kummer_*` in `Q62Assembly`) ⟹ `NoRelation` ⟹ `hDisc` unconditional.

@@ -34,3 +34,4 @@ import GaloisForLFunctions.Bottcher.CoverConstruction
 import GaloisForLFunctions.Bottcher.Q62Assembly
 import GaloisForLFunctions.Bottcher.KummerDeck
 import GaloisForLFunctions.Bottcher.Q62KummerAssembly
+import GaloisForLFunctions.Bottcher.FigureEight
