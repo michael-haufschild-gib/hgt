@@ -17,6 +17,7 @@ import GaloisForLFunctions.Bottcher.BasinBranching
 import GaloisForLFunctions.Bottcher.Winding
 import Mathlib.Analysis.Complex.Harmonic.Analytic
 import Mathlib.Analysis.Complex.OpenMapping
+import Mathlib.Topology.Covering
 
 open Filter Topology Set Metric InnerProductSpace
 
@@ -1136,5 +1137,123 @@ theorem commonPullback_zero_eq (c₁ c₂ : ℂ) :
         p.2.2 = bottcherCoord c₂ p.1 ∧ p.2.2 ≠ 0} := by
   ext p
   simp only [commonPullback, Set.mem_setOf_eq, pow_zero, pow_one, Function.iterate_zero, id_eq]
+
+end Bottcher
+
+namespace Bottcher
+open Complex
+
+/-- **[Covering brick B] A nonzero strict derivative packages as an `OpenPartialHomeomorph`.** For
+`f : ℂ → ℂ` with `HasStrictDerivAt f d z` and `d ≠ 0`, the inverse function theorem gives an open
+partial homeomorphism `φ` with `z ∈ φ.source` and `φ = f` near `z`. This is the local-homeomorphism
+datum that `IsClosedMap.isCoveringMapOn_of_openPartialHomeomorph` consumes at each preimage point —
+the enabling brick for assembling `IsCoveringMap (f_c^[n] : cylinder → collar)` (step 4 of the
+`hDisc` roadmap). Via `HasStrictDerivAt.hasStrictFDerivAt_equiv` (the `unitsEquivAut` CLE of `d`) and
+`HasStrictFDerivAt.toOpenPartialHomeomorph`. Axiom-clean. -/
+theorem exists_openPartialHomeomorph_of_hasStrictDerivAt {f : ℂ → ℂ} {z d : ℂ}
+    (hf : HasStrictDerivAt f d z) (hd : d ≠ 0) :
+    ∃ φ : OpenPartialHomeomorph ℂ ℂ, z ∈ φ.source ∧ ⇑φ = f := by
+  have hfd : HasStrictFDerivAt f
+      (ContinuousLinearEquiv.unitsEquivAut ℂ (Units.mk0 d hd) : ℂ →L[ℂ] ℂ) z :=
+    hf.hasStrictFDerivAt_equiv hd
+  exact ⟨hfd.toOpenPartialHomeomorph f, hfd.mem_toOpenPartialHomeomorph_source,
+    hfd.toOpenPartialHomeomorph_coe⟩
+
+end Bottcher
+
+namespace Bottcher
+open Complex Polynomial
+
+/-- **[Covering brick E — STEP 4 CORE] `f_c^[n]` is an honest covering map over the complement of its
+critical values.** Assembled from the project's verified pieces via Mathlib's
+`IsClosedMap.isCoveringMapOn_of_openPartialHomeomorph`:
+* `quadratic_iterate_isProperMap` ⟹ closed map;
+* `quadratic_iterate_fiber_finite` ⟹ finite fibres (degree `2ⁿ`);
+* at each preimage `e` of a non-critical value, `(f_c^[n])'(e) = ∏_{k<n} 2·f_c^[k](e) ≠ 0`
+  (`quadratic_iterate_deriv_eq_zero_iff`, `quadratic_iterate_fiber_noncritical`), so brick B
+  (`exists_openPartialHomeomorph_of_hasStrictDerivAt`) supplies the local chart.
+This is the even-covering trivialization the `hDisc` roadmap (STATUS step 4) called for — the analytic
+realization of the dyadic `w ↦ w^{2ⁿ}` cover, now an honest `IsCoveringMapOn` over
+`(criticalValues)ᶜ`, with deck group `μ_{2ⁿ}` fixing `z` and scaling the `2ⁿ`-th-root coordinate
+`v ≈ φ_{c₁}`. The branched-covering bridge from the dynamics to the monodromy automorphism `σ_n`.
+Axiom-clean. -/
+theorem isCoveringMapOn_quadratic_iterate (c : ℂ) (n : ℕ) :
+    IsCoveringMapOn ((quadratic c)^[n])
+      ((quadratic c)^[n] '' {w | (quadraticPolyIterate c n).derivative.IsRoot w})ᶜ := by
+  apply (quadratic_iterate_isProperMap c n).isClosedMap.isCoveringMapOn_of_openPartialHomeomorph
+  · intro x _
+    exact quadratic_iterate_fiber_finite c n x
+  · intro e he
+    have hfe : (quadratic c)^[n] e ∉
+        (quadratic c)^[n] '' {w | (quadraticPolyIterate c n).derivative.IsRoot w} := he
+    have hnc : ¬ (quadraticPolyIterate c n).derivative.IsRoot e :=
+      quadratic_iterate_fiber_noncritical hfe rfl
+    have hd : (∏ k ∈ Finset.range n, 2 * (quadratic c)^[k] e) ≠ 0 := by
+      rw [Finset.prod_ne_zero_iff]
+      intro k hk
+      exact mul_ne_zero two_ne_zero
+        (fun h0 => hnc ((quadratic_iterate_deriv_eq_zero_iff c n e).mpr
+          ⟨k, Finset.mem_range.mp hk, h0⟩))
+    exact exists_openPartialHomeomorph_of_hasStrictDerivAt
+      (hasStrictDerivAt_quadratic_iterate c n e) hd
+
+end Bottcher
+
+namespace Bottcher
+open Complex Polynomial
+
+/-- **[Covering] The global branched covering on the subtype.** Restricting
+`isCoveringMapOn_quadratic_iterate` to the preimage subtype yields an honest `IsCoveringMap`
+(`IsCoveringMapOn.isCoveringMap_restrictPreimage`), so Mathlib's covering-monodromy machinery
+(`IsCoveringMap.monodromy`, the homotopy-invariant fibre bijection) applies directly to
+`f_c^[n] : (f_c^[n])⁻¹(criticalValuesᶜ) → criticalValuesᶜ`. This is the dynamical realization of the
+order-`2ⁿ` deck action `μ_{2ⁿ}` (matching `isCoveringMap_dyadic` via the conjugacy
+`φ_c∘f^[n]=φ_c^{2ⁿ}`), now as a genuine covering whose monodromy IS the continuation operator.
+Axiom-clean. -/
+theorem isCoveringMap_quadratic_iterate_restrict (c : ℂ) (n : ℕ) :
+    IsCoveringMap
+      (((quadratic c)^[n] '' {w | (quadraticPolyIterate c n).derivative.IsRoot w})ᶜ.restrictPreimage
+        ((quadratic c)^[n])) :=
+  (isCoveringMapOn_quadratic_iterate c n).isCoveringMap_restrictPreimage
+
+end Bottcher
+
+namespace Bottcher
+open Complex
+
+/-- **[Covering] Local `2ⁿ`-th root branch.** Away from `0`, `w ↦ w^k` (`k>0`) is a local
+homeomorphism — its `OpenPartialHomeomorph` `φ` (brick B at `deriv = k·v₀^{k-1} ≠ 0`) has inverse
+`φ.symm` the analytic `k`-th-root branch through `v₀`. This is the section-builder for the
+**projection** covering `{(z,v) : v^{2ⁿ} = f_c^[n] z} → z`-plane (the structurally correct `σ_n`
+carrier, whose deck `(z,v)↦(z,ζv)` fixes `z` and `φ_{c₂}`): a local trivialization sends `z` to
+`(z, (φ.symm)(f_c^[n] z))`. Axiom-clean. -/
+theorem exists_openPartialHomeomorph_npow {v₀ : ℂ} (hv₀ : v₀ ≠ 0) (k : ℕ) (hk : 0 < k) :
+    ∃ φ : OpenPartialHomeomorph ℂ ℂ, v₀ ∈ φ.source ∧ ⇑φ = (fun w => w ^ k) := by
+  refine exists_openPartialHomeomorph_of_hasStrictDerivAt
+    (f := fun w => w ^ k) (d := (k : ℂ) * v₀ ^ (k - 1)) (hasStrictDerivAt_pow k v₀) ?_
+  exact mul_ne_zero (by exact_mod_cast hk.ne') (pow_ne_zero _ hv₀)
+
+end Bottcher
+
+namespace Bottcher
+open Complex Polynomial
+
+/-- **[Covering] The branch locus is finite.** The critical values of `f_c^[n]` — the set over which
+`isCoveringMapOn_quadratic_iterate` is branched — form a FINITE set: the critical points are the roots
+of the nonzero degree-`(2ⁿ-1)` polynomial `(f_c^[n])'` (`derivative ≠ 0` since `deg f_c^[n] = 2ⁿ > 0`
+in char 0), hence finite, and so is their image. So `f_c^[n]` is an honest unbranched covering over the
+**cofinite** base `(criticalValues)ᶜ` — a connected, dense open set carrying the full dyadic monodromy.
+This pins that the covering's defect is supported on finitely many points (the precritical orbit's
+image), exactly the branch locus of the `2ⁿ`-fold cover. Axiom-clean. -/
+theorem criticalValues_finite (c : ℂ) (n : ℕ) :
+    ((quadratic c)^[n] '' {w | (quadraticPolyIterate c n).derivative.IsRoot w}).Finite := by
+  apply Set.Finite.image
+  have hne : (quadraticPolyIterate c n).derivative ≠ 0 := by
+    intro h
+    have hdeg : (quadraticPolyIterate c n).natDegree = 0 :=
+      by simpa using Polynomial.natDegree_eq_zero_of_derivative_eq_zero h
+    rw [quadraticPolyIterate_natDegree] at hdeg
+    exact absurd hdeg (by positivity)
+  exact Polynomial.finite_setOf_isRoot hne
 
 end Bottcher
