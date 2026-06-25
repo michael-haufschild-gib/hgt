@@ -36,3 +36,6 @@ import GaloisForLFunctions.Bottcher.KummerDeck
 import GaloisForLFunctions.Bottcher.Q62KummerAssembly
 import GaloisForLFunctions.Bottcher.FigureEight
 import GaloisForLFunctions.Bottcher.FigureEightCapstone
+import GaloisForLFunctions.Bottcher.LiftPeriod
+import GaloisForLFunctions.Bottcher.LiftConstruction
+import GaloisForLFunctions.Bottcher.LiftExists

@@ -466,3 +466,181 @@ The disconnected critical point is the standard saddle: `{G_c=G_c(0)}=h⁻¹{Re 
 NEXT (the genuinely Mathlib-absent topology): turn `{Re w²<0}` = two sectors into "the sublevel set near
 `0` has ≥2 connected components" (via `h` homeomorphism), pick a loop around one lobe, then the
 multivalued basin monodromy `2πi/2ⁿ` → not-a-square → Kummer → `hDisc`. Connected case: E–vS.
+
+## LiftPeriod.lean — fractional dyadic period from a lift (2026-06-25)
+
+`FigureEightCapstone.lean` (figure-eight + two-lobe split at the real `G_c`) and `LiftPeriod.lean`
+land the analytic core of the dyadic monodromy multiplier, all axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), wired into the `Bottcher.lean` aggregator:
+
+- `circleIntegral_logDeriv_bottcher` — `∮_{C(0,R)} logDeriv φ_c = 2πi` for the genuine `logDeriv φ_c`
+  (base period / winding 1), via `logDeriv_bottcherCoord_escape` + `circleIntegral_dlog_bottcher`.
+- `fractional_period_of_lift` — if `γ` lifts the base circle through `f_c^[n]`
+  (`f_c^[n]∘γ = C(0,R)` with velocity match) then `∮_γ d log φ_c = 2πi/2ⁿ`. The order-`2ⁿ`
+  multiplier exponent for the actual `φ_c`, NO equilibrium measure (functional-equation route via
+  `pathInt_iterate_comp`).
+- `hasDerivAt_quadratic_iterate` — `HasDerivAt (f_c^[n]) (∏_{k<n} 2·f_c^[k] x) x` (iterate chain rule).
+- `hvel_of_diff_lift` — the velocity-match hypothesis of `fractional_period_of_lift` is automatic
+  from a *differentiable* lift (chain rule + deriv uniqueness).
+
+NET: the winding crux (#73) is reduced to one isolated statement — **a differentiable lift of the
+base circle through `f_c^[n]` exists** (a path whose `f_c^[n]`-image traces `C(0,R)` once; its
+endpoints differ by the deck map, giving the primitive-`2ⁿ`-root multiplier). The period VALUE
+`2πi/2ⁿ` is now proven outright. Next: construct that lift (single-branch continuation of the circle
+through the `2ⁿ`-fold cover; the figure-eight two-lobe split provides the separated component the
+loop encircles), then feed `not_square_of_period_ftc` → Kummer `inputs` tuple → discharge `hDisc`.
+
+## LiftConstruction.lean — the two geometric gates for path-lifting the circle (2026-06-25)
+
+The lift `γ` for `LiftPeriod.fractional_period_of_lift` is to be built by lifting `C(0,R)` through
+the EXISTING covering `isCoveringMapOn_quadratic_iterate` / `isCoveringMap_quadratic_iterate_restrict`
+(CoverConstruction.lean) — NOT via a global Böttcher inverse (so #75/#76 univalence is bypassed).
+The two missing geometric inputs are now proven, axiom-clean, wired into `Bottcher.lean`:
+
+- `exists_sphere_subset_noncritical` — for `R` large, `C(0,R) ⊆ (criticalValues)ᶜ` (finite critical
+  values are bounded), so the base loop lies in the covering base and is liftable.
+- `exists_sphere_preimage_subset_escapeOpen` — for `R` large, every preimage of `C(0,R)` under
+  `f_c^[n]` is in `escapeOpen c` (forward bound `escapeBound`, `‖z²+c‖≤‖z‖²+‖c‖` iterated), so the
+  lift lands where `logDeriv φ_c` is the single-valued form `fractional_period_of_lift` integrates.
+  Supporting: `escapeBound`, `escapeBound_succ/_nonneg`, `norm_iterate_le_escapeBound`.
+
+Mathlib path-lifting API confirmed available:
+  `IsCoveringMap.exists_path_lifts : IsCoveringMap p → ∀ (γ : C(I,X)) (e), γ 0 = p e → ∃ Γ : C(I,E), p∘Γ = γ ∧ Γ 0 = e`
+  `IsCoveringMap.liftPath`, `IsCoveringMap.isLocalHomeomorph`, `IsCoveringMap.monodromy`.
+
+NEXT BRICK (the remaining open input of #73): upgrade the topological lift to the analytic one that
+`fractional_period_of_lift` needs —
+  (1) feed `circleMap 0 R` (as `C(I,ℂ)` after reparametrizing `unitInterval ↔ [0,2π]`) and a base
+      escapeOpen preimage `e` into `exists_path_lifts` on `isCoveringMap_quadratic_iterate_restrict`;
+  (2) DIFFERENTIABILITY of the lift: it is locally `chart.symm ∘ circleMap` with `chart` an analytic
+      `OpenPartialHomeomorph` (`exists_openPartialHomeomorph_of_hasStrictDerivAt`), so `HasDerivAt`
+      follows; `hvel_of_diff_lift` then discharges the velocity hypothesis automatically;
+  (3) endpoint = deck image: `Γ 1` and `Γ 0` lie in the same fibre (both over `circleMap`'s closed
+      basepoint), differing by the order-`2ⁿ` deck rotation → the primitive-`2ⁿ`-root multiplier.
+Then: `not_square_of_period_ftc` (period `2πi/2ⁿ ∉ 4πiℤ`) → Kummer `inputs` tuple → `hDisc`.
+
+## LiftConstruction.lean — differentiability of the lift (the crux), 2026-06-25
+
+Added (all axiom-clean, wired):
+- `prod_two_mul_iterate_ne_zero_of_escapeOpen` — escape points are non-critical for `f_c^[n]`.
+- `exists_analytic_local_section` — analytic local right-inverse `ψ` of `f_c^[n]` at a non-critical
+  point (inverse function theorem, `HasStrictDerivAt.localInverse`/`.to_localInverse`).
+- `hasDerivAt_lift_of_continuousAt` — **THE differentiability crux**: a *continuous* lift `Γ` through
+  `f_c^[n]` (local biholo, `d ≠ 0`) with differentiable base path `g = f_c^[n]∘Γ` is itself
+  differentiable, `Γ' = d⁻¹·g'`. Forces `Γ = ψ∘g` near each point and inherits the derivative.
+
+This upgrades the topological lift to the differentiable one with NO global Böttcher inverse needed.
+
+REMAINING ASSEMBLY (mechanical, the last hDisc-analytic brick): combine on `R` large (both gates):
+  - `IsCoveringMap.exists_path_lifts` on `isCoveringMap_quadratic_iterate_restrict` with base path
+    = `circleMap 0 R` (reparametrize `unitInterval ↔ [0,2π]`) and basepoint a chosen escapeOpen
+    preimage → continuous `Γ : C(I, subtype)`, `f_c^[n]∘Γ = circle`, `Γ 0 = e₀`;
+  - project to `γ : ℝ → ℂ`, in `escapeOpen` by `exists_sphere_preimage_subset_escapeOpen`;
+  - `hasDerivAt_lift_of_continuousAt` per θ ⟹ differentiable; `hvel_of_diff_lift` ⟹ velocity match;
+  - `fractional_period_of_lift` ⟹ `∮_γ d log φ_{c₁} = 2πi/2ⁿ`;
+  - endpoint `γ(2π)` vs `γ(0)`: same fibre, deck-rotated ⟹ multiplier `exp(2πi/2ⁿ)` (primitive 2ⁿ root)
+    via `exp_logDeriv_antiderivative` → non-squareness of `a=φ_{c₁}∘f^[k]` → Kummer `inputs`
+    (`q62_disconnected_kummer`) → `hDisc`.
+The self-map route (`hDisc_tuple_of_lifts`) is the confirmed DEAD-END (g must fix ℂ(z) ⟹ g=id);
+the Kummer route above is the live one.
+
+## LiftConstruction.lean — basepoint + surjectivity (2026-06-25, cont.)
+
+Added (axiom-clean): `exists_iterate_eq` (f_c^[n] surjective, FTA on the degree-2ⁿ iterate poly) and
+`exists_escapeOpen_preimage_basepoint` (an escapeOpen preimage of the loop basepoint (R:ℂ) — the
+`Γ 0 = e₀` datum). LiftConstruction.lean now holds the COMPLETE brick set for the lift assembly:
+gates (×2), local section, differentiability-crux, surjectivity, basepoint.
+
+ENDPOINT FIX for the final glue: lift a slightly-LONGER arc `circleMap 0 R` over `[−ε, 2π+ε]`
+(reparametrized to `unitInterval`) instead of exactly `[0,2π]`, so the differentiable lift `γ` is
+analytic on an OPEN nbhd of `[0,2π]` — then `hasDerivAt_lift_of_continuousAt` applies at the endpoints
+too and `hvel` holds on the closed `uIcc` that `fractional_period_of_lift` needs. Remaining glue:
+`IsCoveringMap.exists_path_lifts` (subtype `(criticalValues)ᶜ`) + this reparam + projection.
+
+## LiftExists.lean — WINDING CRUX CLOSED (2026-06-25)
+
+`exists_continuous_circle_lift` + `exists_circle_lift_period` (both axiom-clean, wired):
+- the continuous lift of `C(0,R)` through `f_c^[n]` exists, built via `IsCoveringMap.exists_path_lifts`
+  on `isCoveringMap_quadratic_iterate_restrict` (subtype `(criticalValues)ᶜ` + `unitInterval↔arc`
+  reparam over `(-1, 2π+1)`), `R` past both gates;
+- `exists_circle_lift_period` : **∃ R γ γ', ∮_γ d log φ_c = 2πi/2ⁿ, UNCONDITIONALLY**. The continuous
+  lift → `hasDerivAt_lift_of_continuousAt` (differentiable) → `hvel_of_diff_lift` (velocity) →
+  `fractional_period_of_lift` (value). The realized fractional dyadic period — the analytic heart of
+  the disconnected monodromy — is now a theorem with NO hypotheses.
+
+REMAINING for hDisc (algebraic, no analytic gap left): feed the period `2πi/2ⁿ` into
+`no_singlevalued_branch_of_dyadic_period` ⟹ no single-valued 2-root branch ⟹ non-squareness of
+`a = φ_{c₁}∘f^[k]` in `meroField(Ext)` ⟹ `Irreducible (X^{2^k} - C a)` (Capelli,
+`X_sq_sub_C_irreducible_of_not_square`) ⟹ the Kummer `inputs` tuple ⟹ `q62_disconnected_kummer`
+⟹ `hDisc` ⟹ instantiate `q62_independence` (disconnected/disconnected).
+
+## hDisc — the meroField/Kummer bridge: DESIGN (the remaining algebraic work, 2026-06-25)
+
+Analytic side is DONE & axiom-clean (LiftExists): `exists_circle_lift_period` (period 2πi/2ⁿ),
+`multiplier_eq_exp_of_period` (→ multiplier exp(2πi/2ⁿ)), `isPrimitiveRoot_dyadic_multiplier` (ζ),
+`bottcherCoord_iterate_escape` (radical relation `F^{2ᵏ} = bottcherCoord∘f^[k]`).
+
+The live close is `q62_disconnected_kummer` ⊳ `noRelation_of_kummer_inputs` (KummerDeck:151), needing per
+`d` a tuple `(B, Field B, Algebra ℂ(z) B, i : B →ₐ V, a GB ζ : B, k)` with `d<2ᵏ`,
+`IsPrimitiveRoot ζ (2ᵏ)`, `Irreducible(X^{2ᵏ}−C a)`, `F^{2ᵏ} = i a`, `i GB = G`. Status of each piece:
+  - `k := d+1`, `d < 2ᵏ` — trivial.
+  - `ζ` — `exp(2πi/2ᵏ)`, primitive via `isPrimitiveRoot_dyadic_multiplier` (DONE). Lives in ℂ ⊆ B.
+  - `F^{2ᵏ} = i a` — radical relation `bottcherCoord_iterate_escape` (DONE), with `a` = germ of
+    `bottcherCoord∘f^[k]` in B and `F = bottcherCoord` germ in V.
+  - `i GB = G` — `G = φ_{c₂}` germ; `GB` its pullback. Mechanical (`restrictMeroHom`).
+  - `Transcendental` — `transcendental_of_kummer_inputs` (KummerDeck:259).
+  - **THE ONE GAP**: `Irreducible(X^{2ᵏ}−C a)` ⟸ `a` not a square in `B` (Capelli p=2,
+    `X_sq_sub_C_irreducible_of_not_square`, `−1=i²` in ℂ). And `a` not a square in `B = meroField(Ext)`
+    ⟺ the root `bottcherCoord∘f^[k-1] = F^{2^{k-1}}` is NOT in the base `B` (only on the cover `V`) ⟺
+    it has nontrivial monodromy around the loop in `Ext` — which is EXACTLY the realized fractional
+    period `2πi/2ⁿ` (`exists_circle_lift_period`, `multiplier_eq_exp_of_period`).
+
+So the bridge = "fractional monodromy ⟹ root not in base ⟹ not a square". `B`/`i` = `meroField(Ext)`/
+`restrictMeroHom`; constructing `Ext` (the base domain the loop lives in) + the "monodromy ⟹ not a
+pullback" lemma is the remaining `meroField`-API formalization. Self-map route (`hDisc_tuple_of_lifts`)
+stays the DEAD-END (g fixes ℂ(z) ⟹ g=id); Kummer is live.
+
+### NON-CIRCULARITY (critical, 2026-06-25): non-squareness MUST be monodromy, not transcendence
+Tempting shortcut: `a = F^{2ᵏ}` is transcendental over `K=ℂ(z)` (F hypertranscendental), so in the
+rational function field `K(a)`, `a = t` is not a square. CLEAN — but WRONG here, because the Kummer
+input `i GB = G = φ_{c₂}` forces `B ⊇ K(φ_{c₂})`, so the relevant base is `B = K(φ_{c₂}, a)`. Then
+`a` not a square in `K(φ_{c₂})(t)` REQUIRES `t = φ_{c₁}^{2ᵏ}` transcendental over `K(φ_{c₂})` — i.e.
+the very algebraic INDEPENDENCE of `φ_{c₁}, φ_{c₂}` we are proving. CIRCULAR.
+⟹ The base `B = meroField(Ext)` must be built from the cover GEOMETRY (functions on the base domain
+of the f^[k]-cover), NOT from `φ_{c₁}`; and `a` not a square in it must come from the root
+`F^{2^{k-1}}` having nontrivial MONODROMY around the loop in `Ext` (`exists_circle_lift_period`'s
+`2πi/2ⁿ`), keeping it out of the base. This is the non-circular close; the period work feeds it.
+Remaining write: the cover base domain `Ext` + the "fractional-monodromy ⟹ not a restrictMeroHom
+pullback ⟹ not a square" meroField lemma.
+
+## hDisc — CONCRETE carrier resolving the g=id obstruction (2026-06-25)
+
+The dead-end "deck σ over ℂ(z) ⟹ g=id" assumed σ is a self-map of ONE planar domain (where z fixes the
+point ⟹ g=id). RESOLUTION: σ is the deck of the COVERING `E := f_c^[n]⁻¹(X) → X` (E, X ⊆ ℂ both planar,
+`isCoveringMap_quadratic_iterate_restrict`). Carrier:
+  - V = meroField(E), F = bottcherCoord germ on E (single-valued on E — descends to multivalued on X);
+  - B = meroField(X), i = pullback by `f_c^[n]` (restrictMeroHom-style precomposition);
+  - g : E → E = the covering deck self-map (monodromy of the base loop, permuting the 2ⁿ sheets,
+    `f_c^[n]∘g = f_c^[n]`, g ≠ id — sheets share the same X-point);
+  - σ = precompose-by-g `meroField` automorphism. σ fixes i(B) (pullbacks from X). KEY: σ fixes
+    `i(ℂ(z)) = ℂ(f_c^[n])` — NOT the E-coordinate — so g≠id is consistent (no dead-end).
+  - σ F = F∘g = ζ·F, ζ = exp(2πi/2ⁿ) the multiplier (`multiplier_eq_exp_of_period`, period from
+    `exists_circle_lift_period`). `bottcherCoord(g z)/bottcherCoord(z)` = the monodromy ratio.
+Then `fixed_not_sqrt_of_scaling σ … ` ⟹ `a = F^{2ᵏ}` not a square in B ⟹ `Irreducible(X^{2ᵏ}−C a)`
+⟹ Kummer `inputs` ⟹ `q62_disconnected_kummer` ⟹ hDisc. PLANAR, non-circular, uses built pieces.
+
+REMAINING WRITE (multi-brick, concrete): (1) the deck self-map `g` of E from the regular 2ⁿ-cover
+(Mathlib `IsCoveringMap.monodromy` gives the fibre action; lift to a deck homeomorphism of the regular
+cover); (2) `meroField(E)`/`meroField(X)` + pullback hom `i`; (3) `σ F = ζ F` from the multiplier;
+(4) assemble the Kummer `inputs` tuple. Every analytic input is DONE & axiom-clean.
+
+### SIMPLIFICATION (2026-06-25): base period suffices for non-squareness
+`a = bottcherCoord|_X` not a square in `meroField(X)` needs only the BASE period `2πi`
+(`circleIntegral_logDeriv_bottcher`, DONE), not the fractional one: `√a = exp(½ bottcherLog)` has
+sign-monodromy `exp(½·2πi)=−1` around the loop in `X=(criticalValues)ᶜ` ⟹ no single-valued germ ⟹
+not a square. And "a not a square" ⟹ "not a 2ʲ-power" ⟹ `Irreducible(X^{2ᵏ}−C a)` for ALL k (Capelli,
+−1 a square). So ONE non-squareness fact (base-period sign monodromy of √bottcherCoord) closes every
+`d` in the Kummer inputs. The fractional-period/lift machinery (axiom-clean) gives the deck multiplier
+and is the natural route for the OTHER coordinate's transcendence, but non-squareness is cheaper.
+REMAINING hDisc write = the meroField(X) germ lemma "sign-monodromy ⟹ no square-root germ ⟹ not a
+square", then assemble Kummer inputs. Pure meroField-germ API work; all analytic facts are theorems.

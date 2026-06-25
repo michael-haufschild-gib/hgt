@@ -10,8 +10,9 @@ general-`N` analogue of `HurwitzEncoding.phi_block_form` (which is hard-wired to
 -/
 import GaloisForLFunctions.Hurwitz.Spine
 import GaloisForLFunctions.Hurwitz.Encoding
+import GaloisForLFunctions.Hurwitz.N2BlockAnalytic
 
-open Complex HurwitzEncoding
+open Complex HurwitzEncoding HurwitzN2Tail HurwitzN2BlockAnalytic
 
 namespace HurwitzAllNQuadFilt
 
@@ -276,6 +277,59 @@ theorem allN_quad_vanish {s : ℂ} (hs : ∀ k : ℤ, (k : ℂ) ≠ s) (h2s : �
     linear_combination hr - hcoll
   exact (allN_blocks_vanish n hs h2s q l cc (R n) (hRper n) (z0 := -1) (B := -Real.log 2)
     (by simpa using hlog) (by simpa using hpi) (by simpa using hpi) (hanalytic n hn) hsplit).1 z hz
+
+/-- **The general-`N` block sum is analytic on the deep half-plane (discharges the analyticity input).**
+With the factored tail `R_k z = tailFactored s k n (e^z)` analytic on `{‖x‖<1/2}`
+(`N2TailAnalytic.tailFactored_analytic`), the blocks `PhiN, PsiN, ThetaN` are built from entire pieces
+(`e^{c·z}`, `p(−n+e^z)`) and that analytic tail, so their sum is analytic on `{Re z < −log 2}`. The
+`Fin (N+1)` analogue of `HurwitzN2BlockAnalytic.blockSum_analytic`. -/
+theorem allN_blockSum_analytic {s : ℂ} (hs : 1 < s.re) (n : ℕ)
+    (q : Fin (N + 1) → Fin (N + 1) → Polynomial ℂ) (l : Fin (N + 1) → Polynomial ℂ) (cc : Polynomial ℂ) :
+    AnalyticOnNhd ℂ (fun z => PhiN s n q z
+      + PsiN s n q l (fun k z => tailFactored s (k : ℕ) n (Complex.exp z)) z
+      + ThetaN s n q l cc (fun k z => tailFactored s (k : ℕ) n (Complex.exp z)) z)
+      {z : ℂ | z.re < -Real.log 2} := by
+  apply DifferentiableOn.analyticOnNhd _ (isOpen_lt Complex.continuous_re continuous_const)
+  have htail : ∀ k : Fin (N + 1),
+      DifferentiableOn ℂ (fun z => tailFactored s (k : ℕ) n (Complex.exp z))
+        {z : ℂ | z.re < -Real.log 2} :=
+    fun k => (tailFactored_analytic hs (k : ℕ) n).differentiableOn.comp
+      Complex.differentiable_exp.differentiableOn exp_mapsTo
+  have hpoly : ∀ p : Polynomial ℂ,
+      DifferentiableOn ℂ (fun z => p.eval (-(n : ℂ) + Complex.exp z)) {z : ℂ | z.re < -Real.log 2} := by
+    intro p; fun_prop
+  have hexp : ∀ c : ℂ,
+      DifferentiableOn ℂ (fun z => Complex.exp (c * z)) {z : ℂ | z.re < -Real.log 2} := by
+    intro c; fun_prop
+  unfold PhiN PsiN ThetaN
+  refine ((DifferentiableOn.fun_sum fun i _ => DifferentiableOn.fun_sum fun j _ =>
+      (hpoly _).mul ((hexp _).mul (hexp _))).add
+    ((DifferentiableOn.fun_sum fun i _ => DifferentiableOn.fun_sum fun j _ =>
+        (hpoly _).mul (((hexp _).mul (htail j)).add ((hexp _).mul (htail i)))).add
+      (DifferentiableOn.fun_sum fun k _ => (hpoly _).mul (hexp _)))).add
+    (((DifferentiableOn.fun_sum fun i _ => DifferentiableOn.fun_sum fun j _ =>
+        (hpoly _).mul ((htail i).mul (htail j))).add
+      (DifferentiableOn.fun_sum fun k _ => (hpoly _).mul (htail k))).add (hpoly cc))
+
+/-- **All-`N` quadratic filtration — UNCONDITIONAL (analyticity discharged).** From the genuine factored
+degree-≤2 relation among `{ζ(s+k,−n+e^z)}_{k≤N}` (with `R = tailFactored`, the analytic local tails) on
+the strip for every large `n`, every weight coefficient `A_w = ∑_{i+j=w} q_{ij}` vanishes — no separate
+analyticity hypothesis, discharged by `allN_blockSum_analytic`. -/
+theorem allN_quad_vanish_genuine {s : ℂ} (hs1 : 1 < s.re) (hs : ∀ k : ℤ, (k : ℂ) ≠ s)
+    (h2s : ∀ k : ℤ, (k : ℂ) ≠ 2 * s)
+    (q : Fin (N + 1) → Fin (N + 1) → Polynomial ℂ) (l : Fin (N + 1) → Polynomial ℂ) (cc : Polynomial ℂ)
+    {M : ℕ}
+    (hrel : ∀ n, M ≤ n → ∀ z : ℂ, z.re < -Real.log 2 → -Real.pi < z.im → z.im < Real.pi →
+      (∑ i : Fin (N + 1), ∑ j : Fin (N + 1), (q i j).eval (-(n : ℂ) + Complex.exp z)
+          * ((Complex.exp (-(s + (i : ℂ)) * z) + tailFactored s (i : ℕ) n (Complex.exp z))
+            * (Complex.exp (-(s + (j : ℂ)) * z) + tailFactored s (j : ℕ) n (Complex.exp z))))
+        + (∑ k : Fin (N + 1), (l k).eval (-(n : ℂ) + Complex.exp z)
+            * (Complex.exp (-(s + (k : ℂ)) * z) + tailFactored s (k : ℕ) n (Complex.exp z)))
+        + cc.eval (-(n : ℂ) + Complex.exp z) = 0) :
+    ∀ w, w ≤ 2 * N → AqN q w = 0 :=
+  allN_quad_vanish hs h2s q l cc (R := fun n k z => tailFactored s (k : ℕ) n (Complex.exp z))
+    (fun n k z => tailFactored_periodic s (k : ℕ) n z)
+    (fun n _ => allN_blockSum_analytic hs1 n q l cc) hrel
 
 end HurwitzAllNQuadFilt
 
