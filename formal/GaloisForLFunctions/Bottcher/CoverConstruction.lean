@@ -1295,3 +1295,42 @@ theorem exp_greenConjugate_explicit_germ_ne_zero (c : ℂ) (n : ℕ) {U : Set �
   exact Complex.exp_ne_zero _ (Filter.eventually_principal.mp hev x hx)
 
 end Bottcher
+
+namespace Bottcher
+open Complex Set
+
+/-- **[L1 — the `φ_{c₂}`-fixed half of the winding lemma] A closed loop inside the single-valued
+domain of the lift has zero period.** If a `C¹` loop `γ` (closed: `γ(2π)=γ(0)`) lies, throughout
+`[0,2π]`, in the domain `D_m = {z | f_c^[m] z ∈ escape ∩ slit}` where `φ̃c = exp(2⁻ᵐ·bottcherLog∘f^[m])`
+is single-valued analytic, then `∮_γ d log φ̃c = 0`. Pure FTC: `deriv F` integrates to the endpoint
+difference `F(γ(2π)) − F(γ(0)) = 0`. This is the asymmetry the disconnected proof turns on: the *same*
+loop that produces the `2πi/2ⁿ` monodromy of `φ_{c₁}` (because it crosses fundamental domains of `φ̃c₁`)
+fixes `φ_{c₂}` whenever it stays in one single-valued domain of `φ̃c₂` — i.e. is null-homotopic in the
+*other* basin. The contrast with the nonzero `n`-fold pullback period (`pathInt_iterate_comp`) is exactly
+"`σ_n` scales `φ_{c₁}`, fixes `φ_{c₂}`". Axiom-clean. -/
+theorem pathInt_dlog_lift_closed_eq_zero (c : ℂ) (m : ℕ) {γ γ' : ℝ → ℂ}
+    (hmem : ∀ θ ∈ Set.uIcc (0:ℝ) (2 * Real.pi),
+      (quadratic c)^[m] (γ θ) ∈ escapeOpen c ∩ Complex.slitPlane)
+    (hderiv : ∀ θ ∈ Set.uIcc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ)
+    (hint : IntervalIntegrable
+      (fun θ => deriv (fun z => ((((2:ℝ) ^ m)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[m] z))
+        (γ θ) * γ' θ) MeasureTheory.volume 0 (2 * Real.pi))
+    (hclosed : γ (2 * Real.pi) = γ 0) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi),
+        deriv (fun z => ((((2:ℝ) ^ m)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[m] z))
+          (γ θ) * γ' θ) = 0 := by
+  have hd : ∀ θ ∈ Set.uIcc (0:ℝ) (2 * Real.pi),
+      HasDerivAt (fun t => ((((2:ℝ) ^ m)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[m] (γ t)))
+        (deriv (fun z => ((((2:ℝ) ^ m)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[m] z)) (γ θ)
+          * γ' θ) θ := by
+    intro θ hθ
+    have hF := hasDerivAt_greenConjugate_explicit c m (hmem θ hθ)
+    have hF' : HasDerivAt
+        (fun z => ((((2:ℝ) ^ m)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[m] z))
+        (deriv (fun z => ((((2:ℝ) ^ m)⁻¹ : ℝ) : ℂ) * bottcherLog c ((quadratic c)^[m] z)) (γ θ))
+        (γ θ) := by rw [hF.deriv]; exact hF
+    exact hF'.comp θ (hderiv θ hθ)
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd hint]
+  simp only [hclosed, sub_self]
+
+end Bottcher

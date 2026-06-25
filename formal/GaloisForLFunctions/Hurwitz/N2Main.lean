@@ -106,7 +106,7 @@ theorem PhiB_eq_products (s : ℂ) (n : ℕ) (q : Fin 3 → Fin 3 → Polynomial
           (fun ij : Fin 3 × Fin 3 => (ij.1 : ℕ) + (ij.2 : ℕ) = w),
           (q ij.1 ij.2).eval (-(n : ℂ) + Complex.exp z)) * Complex.exp (-(2 * s + (w : ℂ)) * z) := by
     refine Finset.sum_congr rfl (fun w _ => ?_)
-    rw [HurwitzN2Descent.Aq, Polynomial.eval_finset_sum]
+    rw [HurwitzN2Descent.Aq, Polynomial.eval_finsetSum]
   rw [step1]
   exact (phi_block_form (fun i j => (q i j).eval (-(n : ℂ) + Complex.exp z)) z).symm
 
