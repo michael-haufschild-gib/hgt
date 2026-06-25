@@ -413,3 +413,22 @@ disk in `Ω_{c₂}`. Needs: (L4c→) non-degeneracy `F''(0)≠0` ⟹ figure-eigh
 components ⟹ a loop around one lobe; + cylinders-shrink-to-points. Then: winding value + L1 ⟹ `σ_n`
 (`φ_{c₁}↦ζφ_{c₁}`, `φ_{c₂}` fixed) ⟹ `φ_{c₁}∘f^[n]` not a square in `meroField` (`not_square_of_period_ftc`)
 ⟹ Kummer irreducibility (`kummer_*` in `Q62Assembly`) ⟹ `NoRelation` ⟹ `hDisc` unconditional.
+
+### `FigureEight.lean` +2 (2026-06-25, build green, zero axioms) — non-degeneracy scaffold
+- `critical_orbit_ne_zero` (L4d) — `Disconnected c ⟹ f_c^[k] 0 ≠ 0` (k≥1): `0` is aperiodic (periodic ⟹
+  bounded orbit ⟹ `0∈K_c`). So `c=f_c(0)` is not precritical.
+- `fderiv_greenLimit_eq_zero_iff_quadratic` (L4e) — for `z₀∈Ω_c`, `z₀≠0`: `∇G_c(z₀)=0 ↔ ∇G_c(f_c z₀)=0`
+  (chain rule; `f_c'(z₀)=2z₀` invertible). Critical points propagate forward off `0`.
+NEXT (escape base case): `∇G_c ≠ 0` on `escapeOpen` (via harmonic conjugate `F` with `F'=logDeriv φ_c ≠ 0`).
+Then: L4e backward from escape + L4d ⟹ `c` regular (`∇G_c(c)≠0`) ⟹ saddle non-degenerate (`F''(0)≠0`,
+L4c) ⟹ `{G_c=G_c(0)}` figure-eight ⟹ sublevel splits into 2 lobes ⟹ loop around one lobe (`hbase`) ⟹
+[winding value + L1] `σ_n` ⟹ not-a-square ⟹ Kummer irreducible ⟹ `hDisc` unconditional.
+
+### `FigureEight.lean` +1 (2026-06-25) — escape base case, step 1 of 5
+- `logDeriv_bottcherCoord_escape` — `d log φ_c = z⁻¹ + S'(z)` on ALL of `escapeOpen` (slit-free, via
+  `φ_c = z·exp S`). The object the Cauchy estimate bounds.
+REMAINING escape base case: (2) `‖S'(z)‖ ≤ 16‖c‖/‖z‖³` via Cauchy estimate
+`Complex.norm_deriv_le_of_forall_mem_sphere_norm_le` on a ball of radius `‖z‖/2` (value bound
+`‖S‖ ≤ 2‖c‖/‖z‖²` = `norm_bottcherLog_sub_log_le`); (3) `‖z‖²>16‖c‖ ⟹ ‖z⁻¹‖>‖S'‖ ⟹ logDeriv φ_c ≠ 0`;
+(4) propagate to all `escapeOpen` via `logDeriv_bottcherCoord_iterate_eq_zero_iff`; (5) `logDeriv ≠ 0
+⟹ ∇G_c ≠ 0` (CR, as in L4c). Then backward L4e from escape + L4d ⟹ `c` regular ⟹ non-degenerate saddle.
