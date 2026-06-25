@@ -352,3 +352,378 @@ theorem logDeriv_bottcherCoord_ne_zero_escape {c z : ℂ} (hz : z ∈ escapeOpen
   exact logDeriv_bottcherCoord_ne_zero_far h1far h2far hzero
 
 end Bottcher
+
+namespace Bottcher
+open Complex InnerProductSpace
+
+/-- Helper (Cauchy–Riemann): if the ℝ-gradient of `Re∘g` vanishes at `z` and `g` is ℂ-differentiable
+there, then the complex derivative `g'(z) = 0`. -/
+theorem deriv_eq_zero_of_fderiv_re_eq_zero {g : ℂ → ℂ} {z : ℂ}
+    (hg : DifferentiableAt ℂ g z) (hfd : fderiv ℝ (fun w => (g w).re) z = 0) :
+    deriv g z = 0 := by
+  have hcomp : HasFDerivAt (fun w => (g w).re)
+      (Complex.reCLM.comp ((fderiv ℂ g z).restrictScalars ℝ)) z :=
+    Complex.reCLM.hasFDerivAt.comp z (hg.hasFDerivAt.restrictScalars ℝ)
+  have hCLM : Complex.reCLM.comp ((fderiv ℂ g z).restrictScalars ℝ) = 0 :=
+    hcomp.fderiv.symm.trans hfd
+  have hd1 : (deriv g z).re = 0 := by
+    have h := congrArg (fun L => L (1:ℂ)) hCLM
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.zero_apply,
+      Complex.reCLM_apply] at h
+    rw [← fderiv_apply_one_eq_deriv]; exact h
+  have hdI : (deriv g z).im = 0 := by
+    have h := congrArg (fun L => L Complex.I) hCLM
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.zero_apply,
+      Complex.reCLM_apply] at h
+    have h1 : (fderiv ℂ g z) Complex.I = Complex.I • (fderiv ℂ g z) 1 := by
+      rw [← ContinuousLinearMap.map_smul, smul_eq_mul, mul_one]
+    have hI : (fderiv ℂ g z) Complex.I = Complex.I * deriv g z := by
+      rw [h1, fderiv_apply_one_eq_deriv, smul_eq_mul]
+    rw [show (((fderiv ℂ g z).restrictScalars ℝ) Complex.I) = (fderiv ℂ g z) Complex.I from rfl,
+      hI, Complex.mul_re, Complex.I_re, Complex.I_im, zero_mul, one_mul, zero_sub,
+      neg_eq_zero] at h
+    exact h
+  exact Complex.ext hd1 hdI
+
+/-- **[escape base, step 5] `∇G_c ≠ 0` on `escapeOpen`.** On a ball `B ⊆ escapeOpen` about `z`, `G_c`
+has a holomorphic completion `F` (`Re F = G_c`); on `B ∩ slitPlane` both `F` and `bottcherLog` have real
+part `G_c`, so `Re(F − bottcherLog) ≡ 0`, forcing `deriv F = logDeriv φ_c` there; identity theorem ⟹
+`deriv F = logDeriv φ_c` on all `B`. If `∇G_c(z) = 0` then `deriv F z = 0` (CR), so `logDeriv φ_c z = 0`
+— contradicting `logDeriv_bottcherCoord_ne_zero_escape`. So the escape region is regular for `G_c`, the
+base case of the critical-point propagation. Axiom-clean. -/
+theorem fderiv_greenLimit_ne_zero_escape {c z : ℂ} (hz : z ∈ escapeOpen c) :
+    fderiv ℝ (greenLimit c) z ≠ 0 := by
+  obtain ⟨R, hRpos, hsub⟩ := Metric.mem_nhds_iff.mp ((isOpen_escapeOpen c).mem_nhds hz)
+  have hball0 : z ∈ Metric.ball z R := Metric.mem_ball_self hRpos
+  have hUopen : IsOpen (Metric.ball z R ∩ Complex.slitPlane) :=
+    Metric.isOpen_ball.inter Complex.isOpen_slitPlane
+  have hbasin : Metric.ball z R ⊆ (filledJulia c)ᶜ := by
+    intro x hx
+    obtain ⟨hc, hx2⟩ := mem_escapeOpen_regime (hsub hx)
+    exact not_mem_filledJulia hc hx2
+  have hharm : HarmonicOnNhd (greenLimit c) (Metric.ball z R) :=
+    fun x hx => harmonicOnNhd_greenLimit_basin c x (hbasin hx)
+  obtain ⟨F, hFan, hFre⟩ := hharm.exists_analyticOnNhd_ball_re_eq
+  have hlogDan : AnalyticOnNhd ℂ (logDeriv (bottcherCoord c)) (Metric.ball z R) := by
+    intro x hx
+    have hxe : x ∈ escapeOpen c := hsub hx
+    have hbc : AnalyticAt ℂ (bottcherCoord c) x :=
+      (differentiableOn_bottcherCoord c).analyticAt ((isOpen_escapeOpen c).mem_nhds hxe)
+    exact hbc.deriv.div hbc (bottcherCoord_ne_zero c x)
+  have hderivFan : AnalyticOnNhd ℂ (deriv F) (Metric.ball z R) := hFan.deriv
+  have hagree : Set.EqOn (deriv F) (logDeriv (bottcherCoord c))
+      (Metric.ball z R ∩ Complex.slitPlane) := by
+    intro w hw
+    have hwe : w ∈ escapeOpen c := hsub hw.1
+    obtain ⟨hwc, hw2⟩ := mem_escapeOpen_regime hwe
+    have hFd : DifferentiableAt ℂ F w := (hFan w hw.1).differentiableAt
+    have hBd : DifferentiableAt ℂ (bottcherLog c) w :=
+      (differentiableOn_bottcherLog c).differentiableAt
+        (((isOpen_escapeOpen c).inter Complex.isOpen_slitPlane).mem_nhds ⟨hwe, hw.2⟩)
+    have hreq : fderiv ℝ (fun u => (F u - bottcherLog c u).re) w = 0 := by
+      have hev : (fun u => (F u - bottcherLog c u).re) =ᶠ[nhds w] (fun _ => (0:ℝ)) := by
+        filter_upwards [hUopen.mem_nhds hw] with u hu
+        obtain ⟨huc, hu2⟩ := mem_escapeOpen_regime (hsub hu.1)
+        rw [Complex.sub_re, show (F u).re = greenLimit c u from hFre hu.1,
+          bottcherLog_re huc hu2, sub_self]
+      rw [hev.fderiv_eq]; simp
+    have hderivsub := deriv_eq_zero_of_fderiv_re_eq_zero (hFd.sub hBd) hreq
+    have hsubz : deriv F w - deriv (bottcherLog c) w = 0 := by
+      rw [← deriv_sub hFd hBd]; exact hderivsub
+    rw [sub_eq_zero.mp hsubz, ← logDeriv_bottcherCoord_eq ⟨hwe, hw.2⟩]
+  obtain ⟨w₀, hw₀ball, hw₀slit⟩ : ∃ w ∈ Metric.ball z R, w ∈ Complex.slitPlane := by
+    have hnorm : ‖Complex.I * ((R / 2 : ℝ) : ℂ)‖ = R / 2 := by
+      rw [norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_pos (by linarith)]
+    rcases eq_or_ne (z.im + R / 2) 0 with h | h
+    · refine ⟨z - Complex.I * ((R / 2 : ℝ) : ℂ), ?_, ?_⟩
+      · rw [Metric.mem_ball, dist_eq_norm, show
+          z - Complex.I * ((R / 2 : ℝ) : ℂ) - z = -(Complex.I * ((R / 2 : ℝ) : ℂ)) from by ring,
+          norm_neg, hnorm]
+        linarith
+      · rw [Complex.mem_slitPlane_iff]; right
+        simp only [Complex.sub_im, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
+          Complex.ofReal_im, one_mul, mul_zero, zero_add]
+        intro hcon; linarith
+    · refine ⟨z + Complex.I * ((R / 2 : ℝ) : ℂ), ?_, ?_⟩
+      · rw [Metric.mem_ball, dist_eq_norm, show
+          z + Complex.I * ((R / 2 : ℝ) : ℂ) - z = Complex.I * ((R / 2 : ℝ) : ℂ) from by ring, hnorm]
+        linarith
+      · rw [Complex.mem_slitPlane_iff]; right
+        simp only [Complex.add_im, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
+          Complex.ofReal_im, one_mul, mul_zero, zero_add]
+        exact h
+  have heqf : deriv F =ᶠ[nhds w₀] logDeriv (bottcherCoord c) := by
+    filter_upwards [hUopen.mem_nhds ⟨hw₀ball, hw₀slit⟩] with u hu using hagree hu
+  have hEqOn : Set.EqOn (deriv F) (logDeriv (bottcherCoord c)) (Metric.ball z R) :=
+    hderivFan.eqOn_of_preconnected_of_eventuallyEq hlogDan
+      (convex_ball z R).isPreconnected hw₀ball heqf
+  intro hzero
+  have hFre_ev : (fun w => (F w).re) =ᶠ[nhds z] greenLimit c := by
+    filter_upwards [Metric.isOpen_ball.mem_nhds hball0] with w hw using hFre hw
+  have hFda : DifferentiableAt ℂ F z := (hFan z hball0).differentiableAt
+  have hderivFz : deriv F z = 0 :=
+    deriv_eq_zero_of_fderiv_re_eq_zero hFda (by rw [hFre_ev.fderiv_eq]; exact hzero)
+  have hcontra : logDeriv (bottcherCoord c) z = 0 := by rw [← hEqOn hball0]; exact hderivFz
+  exact logDeriv_bottcherCoord_ne_zero_escape hz hcontra
+
+end Bottcher
+
+namespace Bottcher
+open Complex
+
+/-- **[L4k — the critical value is a regular point] `∇G_c(c) ≠ 0`.** The critical value `c = f_c(0)` is
+not a critical point of `G_c`. Its forward orbit `f_c^[n](c) = f_c^[n+1](0)` never hits `0`
+(`critical_orbit_ne_zero`) and escapes (`exists_orbit_gt`); were `∇G_c(c) = 0`, the off-`0` propagation
+`fderiv_greenLimit_eq_zero_iff_quadratic` would push the critical point all the way out to the escape
+region, contradicting `fderiv_greenLimit_ne_zero_escape`. Hence `∇G_c(c) ≠ 0`. Combined with the saddle
+model (`exists_holomorphic_completion_critical`, where `F''(0) = F'(c)`), this makes the critical point
+`0` a **non-degenerate** saddle: `{G_c = G_c(0)}` is a genuine figure-eight. Axiom-clean. -/
+theorem fderiv_greenLimit_ne_zero_critical_value {c : ℂ} (hc : Disconnected c) :
+    fderiv ℝ (greenLimit c) (quadratic c 0) ≠ 0 := by
+  have h0 : (0 : ℂ) ∉ filledJulia c := (disconnected_iff_zero_not_mem c).mp hc
+  have hcnf : quadratic c 0 ∉ filledJulia c := by simpa using not_mem_filledJulia_iterate h0 1
+  obtain ⟨N, hN⟩ := exists_orbit_gt hcnf (max 2 ‖c‖)
+  have hesc : (quadratic c)^[N] (quadratic c 0) ∈ escapeOpen c := by
+    rw [escapeOpen, Set.mem_setOf_eq]; exact hN
+  intro hzero
+  have hforward : ∀ n, fderiv ℝ (greenLimit c) ((quadratic c)^[n] (quadratic c 0)) = 0 := by
+    intro n
+    induction n with
+    | zero => simpa using hzero
+    | succ k ih =>
+      have hjnf : (quadratic c)^[k] (quadratic c 0) ∉ filledJulia c :=
+        not_mem_filledJulia_iterate hcnf k
+      have hjeq : (quadratic c)^[k] (quadratic c 0) = (quadratic c)^[k + 1] 0 :=
+        (Function.iterate_succ_apply (quadratic c) k 0).symm
+      have hjne : (quadratic c)^[k] (quadratic c 0) ≠ 0 := by
+        rw [hjeq]; exact critical_orbit_ne_zero hc (Nat.succ_le_succ (Nat.zero_le k))
+      rw [Function.iterate_succ_apply']
+      exact (fderiv_greenLimit_eq_zero_iff_quadratic hjnf hjne).mp ih
+  exact fderiv_greenLimit_ne_zero_escape hesc (hforward N)
+
+end Bottcher
+
+namespace Bottcher
+open Complex InnerProductSpace
+
+/-- **[L4l — the saddle is non-degenerate] `F''(0) ≠ 0`** for a holomorphic completion `F` of `G_c`
+near `0` (`Re F = G_c` on a basin ball). With a conjugate `F_c` of `G_c` near the critical value `c`,
+the basin scaling `G_c = ½·G_c∘f_c` gives `Re(F − ½F_c∘f_c) ≡ 0` near `0`, so `deriv F(z) = z·F_c'(z²+c)`
+and `F''(0) = F_c'(c) ≠ 0` (since `∇G_c(c) ≠ 0`). The saddle at `0` is order-2: a genuine figure-eight.
+Axiom-clean. -/
+theorem deriv2_completion_critical_ne_zero {c : ℂ} (hc : Disconnected c) {R : ℝ} (hRpos : 0 < R)
+    {F : ℂ → ℂ} (hbasin : Metric.ball 0 R ⊆ (filledJulia c)ᶜ)
+    (hFan : AnalyticOnNhd ℂ F (Metric.ball 0 R))
+    (hFre : Set.EqOn (fun z => (F z).re) (greenLimit c) (Metric.ball 0 R)) :
+    deriv (deriv F) 0 ≠ 0 := by
+  have h0 : (0 : ℂ) ∉ filledJulia c := (disconnected_iff_zero_not_mem c).mp hc
+  have hcnf : quadratic c 0 ∉ filledJulia c := by simpa using not_mem_filledJulia_iterate h0 1
+  obtain ⟨Rc, hRcpos, hsubc⟩ :=
+    Metric.mem_nhds_iff.mp ((isClosed_filledJulia c).isOpen_compl.mem_nhds hcnf)
+  have hharmc : HarmonicOnNhd (greenLimit c) (Metric.ball (quadratic c 0) Rc) :=
+    fun x hx => harmonicOnNhd_greenLimit_basin c x (hsubc hx)
+  obtain ⟨Fc, hFcan, hFcre⟩ := hharmc.exists_analyticOnNhd_ball_re_eq
+  have hcball : quadratic c 0 ∈ Metric.ball (quadratic c 0) Rc := Metric.mem_ball_self hRcpos
+  -- F_c'(c) ≠ 0
+  have hFc'c : deriv Fc (quadratic c 0) ≠ 0 := by
+    intro hzero
+    apply fderiv_greenLimit_ne_zero_critical_value hc
+    have hFcre_ev : (fun w => (Fc w).re) =ᶠ[nhds (quadratic c 0)] greenLimit c := by
+      filter_upwards [Metric.isOpen_ball.mem_nhds hcball] with w hw using hFcre hw
+    rw [← hFcre_ev.fderiv_eq]
+    have hFcda : DifferentiableAt ℂ Fc (quadratic c 0) := (hFcan _ hcball).differentiableAt
+    have hcomp : HasFDerivAt (fun w => (Fc w).re)
+        (Complex.reCLM.comp ((fderiv ℂ Fc (quadratic c 0)).restrictScalars ℝ)) (quadratic c 0) :=
+      Complex.reCLM.hasFDerivAt.comp _ (hFcda.hasFDerivAt.restrictScalars ℝ)
+    have hfc0 : fderiv ℂ Fc (quadratic c 0) = 0 := by
+      apply ContinuousLinearMap.ext_ring
+      rw [fderiv_apply_one_eq_deriv, hzero]; rfl
+    rw [hcomp.fderiv, hfc0]; simp
+  -- small radius
+  set r := min R (min Rc 1) with hr
+  have hrpos : 0 < r := by rw [hr]; simp [hRpos, hRcpos]
+  have hrR : r ≤ R := min_le_left _ _
+  have hrle1 : r ≤ 1 := le_trans (min_le_right _ _) (min_le_right _ _)
+  have hrRc : r ≤ Rc := le_trans (min_le_right _ _) (min_le_left _ _)
+  have hball_sub : Metric.ball (0:ℂ) r ⊆ Metric.ball 0 R := Metric.ball_subset_ball hrR
+  have hmaps : ∀ z ∈ Metric.ball (0:ℂ) r, quadratic c z ∈ Metric.ball (quadratic c 0) Rc := by
+    intro z hz
+    rw [Metric.mem_ball, dist_eq_norm] at hz ⊢
+    simp only [sub_zero] at hz
+    have hzz : quadratic c z - quadratic c 0 = z ^ 2 := by simp only [quadratic]; ring
+    rw [hzz, norm_pow]
+    have h1 : ‖z‖ ^ 2 < r ^ 2 := by
+      rw [sq, sq]; exact mul_self_lt_mul_self (norm_nonneg z) hz
+    nlinarith [h1, hrle1, hrRc, hrpos]
+  -- deriv F = z * deriv Fc (quadratic c z) on ball 0 r
+  have hderivF : Set.EqOn (deriv F) (fun z => z * deriv Fc (quadratic c z)) (Metric.ball 0 r) := by
+    intro w hw
+    have hwR : w ∈ Metric.ball 0 R := hball_sub hw
+    have hwc : quadratic c w ∈ Metric.ball (quadratic c 0) Rc := hmaps w hw
+    have hFw : DifferentiableAt ℂ F w := (hFan w hwR).differentiableAt
+    have hqw : DifferentiableAt ℂ (quadratic c) w := (hasStrictDerivAt_quadratic c w).hasDerivAt.differentiableAt
+    have hFcfw : DifferentiableAt ℂ (fun u => Fc (quadratic c u)) w :=
+      ((hFcan _ hwc).differentiableAt).comp w hqw
+    have hreq : fderiv ℝ (fun u => (F u - ((1/2:ℝ):ℂ) * Fc (quadratic c u)).re) w = 0 := by
+      have hev : (fun u => (F u - ((1/2:ℝ):ℂ) * Fc (quadratic c u)).re)
+          =ᶠ[nhds w] (fun _ => (0:ℝ)) := by
+        filter_upwards [Metric.isOpen_ball.mem_nhds hw] with u hu
+        have huR : u ∈ Metric.ball 0 R := hball_sub hu
+        have huc : quadratic c u ∈ Metric.ball (quadratic c 0) Rc := hmaps u hu
+        have hunf : u ∉ filledJulia c := hbasin huR
+        have hF1 : (F u).re = greenLimit c u := hFre huR
+        have hFc1 : (Fc (quadratic c u)).re = greenLimit c (quadratic c u) := hFcre huc
+        have hgq : greenLimit c (quadratic c u) = 2 * greenLimit c u :=
+          greenLimit_quadratic_basin hunf
+        show (F u - ((1/2:ℝ):ℂ) * Fc (quadratic c u)).re = 0
+        rw [Complex.sub_re, Complex.re_ofReal_mul, hF1, hFc1, hgq]
+        ring
+      rw [hev.fderiv_eq]; simp
+    have hHD : HasDerivAt (fun u => F u - ((1/2:ℝ):ℂ) * Fc (quadratic c u))
+        (deriv F w - ((1/2:ℝ):ℂ) * (deriv Fc (quadratic c w) * (2 * w))) w := by
+      have hcomp : HasDerivAt (fun u => Fc (quadratic c u))
+          (deriv Fc (quadratic c w) * (2 * w)) w :=
+        ((hFcan _ hwc).differentiableAt).hasDerivAt.comp w
+          (hasStrictDerivAt_quadratic c w).hasDerivAt
+      exact hFw.hasDerivAt.sub (hcomp.const_mul ((1/2:ℝ):ℂ))
+    have hd0 := deriv_eq_zero_of_fderiv_re_eq_zero hHD.differentiableAt hreq
+    rw [hHD.deriv] at hd0
+    have heqd : deriv F w = ((1/2:ℝ):ℂ) * (deriv Fc (quadratic c w) * (2 * w)) := by
+      linear_combination hd0
+    rw [heqd]; push_cast; ring
+  -- conclude: F''(0) = F_c'(c)
+  have hderivF_ev : deriv F =ᶠ[nhds (0:ℂ)] (fun z => z * deriv Fc (quadratic c z)) := by
+    filter_upwards [Metric.ball_mem_nhds (0:ℂ) hrpos] with w hw using hderivF hw
+  have hgdiff : DifferentiableAt ℂ (fun z => deriv Fc (quadratic c z)) 0 :=
+    (((hFcan.deriv) _ hcball).differentiableAt).comp 0
+      (hasStrictDerivAt_quadratic c 0).hasDerivAt.differentiableAt
+  rw [hderivF_ev.deriv_eq]
+  have hHD2 : HasDerivAt (fun z => z * deriv Fc (quadratic c z)) (deriv Fc (quadratic c 0)) 0 := by
+    have h := (hasDerivAt_id (0:ℂ)).mul hgdiff.hasDerivAt
+    simpa using h
+  rw [hHD2.deriv]; exact hFc'c
+
+end Bottcher
+
+namespace Bottcher
+open Complex
+
+/-- **[normal form, step 1] A nonvanishing analytic function has a local analytic square root.** -/
+theorem exists_analyticAt_sq_eq {g : ℂ → ℂ} {z₀ : ℂ} (hg : AnalyticAt ℂ g z₀) (hg0 : g z₀ ≠ 0) :
+    ∃ h : ℂ → ℂ, AnalyticAt ℂ h z₀ ∧ h z₀ ≠ 0 ∧ ∀ᶠ z in nhds z₀, h z ^ 2 = g z := by
+  obtain ⟨s, hs⟩ : ∃ s : ℂ, s ^ 2 = g z₀ :=
+    IsAlgClosed.exists_pow_nat_eq (g z₀) (by norm_num)
+  have hsne : s ≠ 0 := by intro h; rw [h] at hs; simp at hs; exact hg0 hs.symm
+  set q : ℂ → ℂ := fun z => g z / g z₀ with hq
+  have hqan : AnalyticAt ℂ q z₀ := hg.div analyticAt_const hg0
+  have hq0 : q z₀ = 1 := by rw [hq]; field_simp
+  have hmem : ∀ᶠ z in nhds z₀, q z ∈ Metric.ball (1:ℂ) 1 := by
+    have hcont : ContinuousAt q z₀ := hqan.continuousAt
+    have hball : Metric.ball (1:ℂ) 1 ∈ nhds (q z₀) := by
+      rw [hq0]; exact Metric.ball_mem_nhds _ one_pos
+    exact hcont.preimage_mem_nhds hball
+  have hslit : Metric.ball (1:ℂ) 1 ⊆ Complex.slitPlane := by
+    intro w hw
+    rw [Metric.mem_ball, dist_eq_norm] at hw
+    refine Complex.mem_slitPlane_iff.mpr (Or.inl ?_)
+    have hb : |w.re - 1| ≤ ‖w - 1‖ := by
+      calc |w.re - 1| = |(w - 1).re| := by rw [Complex.sub_re, Complex.one_re]
+        _ ≤ ‖w - 1‖ := Complex.abs_re_le_norm _
+    have hlt := abs_lt.mp (lt_of_le_of_lt hb hw)
+    linarith [hlt.1]
+  refine ⟨fun z => s * Complex.exp ((2:ℂ)⁻¹ * Complex.log (q z)), ?_, ?_, ?_⟩
+  · have hld : DifferentiableOn ℂ Complex.log Complex.slitPlane :=
+      fun x hx => (Complex.hasDerivAt_log hx).differentiableAt.differentiableWithinAt
+    have hla : AnalyticAt ℂ Complex.log (q z₀) :=
+      (hld.analyticOnNhd Complex.isOpen_slitPlane) (q z₀)
+        (hslit (by rw [hq0]; exact Metric.mem_ball_self one_pos))
+    have hlogan : AnalyticAt ℂ (fun z => Complex.log (q z)) z₀ := hla.comp hqan
+    exact analyticAt_const.mul ((analyticAt_const.mul hlogan).cexp)
+  · show s * Complex.exp ((2:ℂ)⁻¹ * Complex.log (q z₀)) ≠ 0
+    rw [hq0, Complex.log_one, mul_zero, Complex.exp_zero, mul_one]; exact hsne
+  · filter_upwards [hmem] with z hz
+    have hqz0 : q z ≠ 0 := by
+      intro hz0
+      rw [hz0, Metric.mem_ball, dist_eq_norm] at hz
+      simp at hz
+    have hqval : q z = g z / g z₀ := rfl
+    rw [mul_pow, pow_two (Complex.exp ((2:ℂ)⁻¹ * Complex.log (q z))), ← Complex.exp_add,
+      show (2:ℂ)⁻¹ * Complex.log (q z) + (2:ℂ)⁻¹ * Complex.log (q z) = Complex.log (q z) by ring,
+      Complex.exp_log hqz0, hqval, hs]
+    field_simp
+
+/-- **[normal form, step 2] Order-2 factorization.** An analytic `F` with `F'(0)=0`, `F''(0)≠0`
+factors near `0` as `F z − F 0 = z² · G z` with `G` analytic, `G 0 = ½F''(0) ≠ 0`. (Taylor to order 3:
+the order-0 and order-1 coefficients vanish, the order-2 coefficient is `½F''(0)`.) -/
+theorem exists_factor_order_two {F : ℂ → ℂ} (hF : AnalyticAt ℂ F 0)
+    (hF'0 : deriv F 0 = 0) (hF''0 : deriv (deriv F) 0 ≠ 0) :
+    ∃ G : ℂ → ℂ, AnalyticAt ℂ G 0 ∧ G 0 ≠ 0 ∧ ∀ᶠ z in nhds 0, F z - F 0 = z ^ 2 * G z := by
+  set d : ℂ → ℂ := fun z => F z - F 0 with hd
+  have hdan : AnalyticAt ℂ d 0 := hF.sub analyticAt_const
+  obtain ⟨F₃, hF₃an, hF₃⟩ := hdan.exists_eventuallyEq_sum_add_pow_mul 3
+  have hdd : deriv d = deriv F := by funext z; exact deriv_sub_const (F 0)
+  have hid0 : iteratedDeriv 0 d 0 = 0 := by rw [iteratedDeriv_zero]; simp [hd]
+  have hid1 : iteratedDeriv 1 d 0 = 0 := by rw [iteratedDeriv_one, hdd]; exact hF'0
+  have hid2 : iteratedDeriv 2 d 0 = deriv (deriv F) 0 := by
+    rw [iteratedDeriv_succ, iteratedDeriv_one, hdd]
+  refine ⟨fun z => (deriv (deriv F) 0) / 2 + z * F₃ z, ?_, ?_, ?_⟩
+  · exact analyticAt_const.add (analyticAt_id.mul hF₃an)
+  · show deriv (deriv F) 0 / 2 + (0:ℂ) * F₃ 0 ≠ 0
+    rw [zero_mul, add_zero]; exact div_ne_zero hF''0 two_ne_zero
+  · filter_upwards [hF₃] with z hz
+    rw [show F z - F 0 = d z from rfl, hz]
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero, hid0, hid1, hid2,
+      smul_eq_mul, mul_zero, zero_add, add_zero, Nat.factorial_zero,
+      Nat.factorial_one, pow_zero, pow_one]
+    push_cast [Nat.factorial]
+    ring
+
+/-- **[normal form, step 3] Local `√` normal form.** An analytic `F` with `F'(0)=0`, `F''(0)≠0` has a
+local biholomorphic coordinate `h` (`h 0 = 0`, `h'(0) ≠ 0`) with `F z − F 0 = h(z)²` near `0`. So the
+critical point is the standard saddle `w ↦ w²`: the figure-eight `{Re(F−F(0)) = 0}` is `h⁻¹{Re w² = 0}`
+(two arcs) and the sublevel `{Re(F−F(0)) < 0}` is `h⁻¹{Re w² < 0}` (two lobes). The local model from
+which the disconnected basin's two-lobe split is read. Axiom-clean. -/
+theorem exists_sq_normal_form {F : ℂ → ℂ} (hF : AnalyticAt ℂ F 0)
+    (hF'0 : deriv F 0 = 0) (hF''0 : deriv (deriv F) 0 ≠ 0) :
+    ∃ h : ℂ → ℂ, AnalyticAt ℂ h 0 ∧ h 0 = 0 ∧ deriv h 0 ≠ 0 ∧
+      ∀ᶠ z in nhds 0, F z - F 0 = (h z) ^ 2 := by
+  obtain ⟨G, hGan, hG0, hGeq⟩ := exists_factor_order_two hF hF'0 hF''0
+  obtain ⟨s, hsan, hs0, hseq⟩ := exists_analyticAt_sq_eq hGan hG0
+  refine ⟨fun z => z * s z, analyticAt_id.mul hsan, by simp, ?_, ?_⟩
+  · have hHD : HasDerivAt (fun z => z * s z) (s 0) 0 := by
+      have h := (hasDerivAt_id (0:ℂ)).mul hsan.differentiableAt.hasDerivAt
+      simpa using h
+    rw [hHD.deriv]; exact hs0
+  · filter_upwards [hGeq, hseq] with z hz1 hz2
+    rw [hz1, ← hz2]; ring
+
+end Bottcher
+
+namespace Bottcher
+open Complex
+
+/-- **[component split, step 1] `Re(w²) < 0 ↔ |Re w| < |Im w|`.** The sublevel set of the saddle model
+`w ↦ Re(w²)` is the open double cone `{|Re w| < |Im w|}` — two half-cones (`Im w > |Re w|` and
+`Im w < −|Re w|`) meeting only at `0`. This is what makes `{Re w² < 0}` disconnected, hence (pulled back
+by the normal-form biholomorphism) the two Cantor lobes of the disconnected basin. Axiom-clean. -/
+theorem re_sq_neg_iff (w : ℂ) : (w ^ 2).re < 0 ↔ |w.re| < |w.im| := by
+  rw [sq, Complex.mul_re]
+  constructor
+  · intro h
+    nlinarith [abs_mul_abs_self w.re, abs_mul_abs_self w.im, abs_nonneg w.re, abs_nonneg w.im, h]
+  · intro h
+    nlinarith [abs_mul_abs_self w.re, abs_mul_abs_self w.im, abs_nonneg w.re, abs_nonneg w.im, h]
+
+/-- **[component split, step 2] The sublevel set in the normal-form coordinate.** Given the `√` normal
+form `F z − c₀ = (h z)²` near `0`, the sublevel set `{Re(F − c₀) < 0}` coincides near `0` with the
+preimage of the open double cone `{|Re w| < |Im w|}` under `h`. Since `h` is a local biholomorphism
+(`deriv h 0 ≠ 0`) and the double cone has two components, the sublevel set near `0` has two components —
+the two lobes. Axiom-clean. -/
+theorem sublevel_eq_preimage_doublecone {F h : ℂ → ℂ} {c₀ : ℂ}
+    (heq : ∀ᶠ z in nhds (0:ℂ), F z - c₀ = (h z) ^ 2) :
+    ∀ᶠ z in nhds (0:ℂ), ((F z - c₀).re < 0 ↔ |(h z).re| < |(h z).im|) := by
+  filter_upwards [heq] with z hz
+  rw [hz]; exact re_sq_neg_iff (h z)
+
+end Bottcher

@@ -432,3 +432,37 @@ REMAINING escape base case: (2) `‖S'(z)‖ ≤ 16‖c‖/‖z‖³` via Cauchy
 `‖S‖ ≤ 2‖c‖/‖z‖²` = `norm_bottcherLog_sub_log_le`); (3) `‖z‖²>16‖c‖ ⟹ ‖z⁻¹‖>‖S'‖ ⟹ logDeriv φ_c ≠ 0`;
 (4) propagate to all `escapeOpen` via `logDeriv_bottcherCoord_iterate_eq_zero_iff`; (5) `logDeriv ≠ 0
 ⟹ ∇G_c ≠ 0` (CR, as in L4c). Then backward L4e from escape + L4d ⟹ `c` regular ⟹ non-degenerate saddle.
+
+### `FigureEight.lean` — ESCAPE BASE CASE COMPLETE + `c` regular (2026-06-25, build green, zero axioms)
+The whole `∇G_c ≠ 0` base case is now machine-checked (5 steps), plus the critical value is regular:
+- `logDeriv_bottcherCoord_escape` — `d log φ_c = z⁻¹ + S'` slit-free on `escapeOpen`.
+- `norm_deriv_bottcherLogSum_le` — Cauchy estimate `‖S'(z)‖ ≤ 16‖c‖/‖z‖³`.
+- `logDeriv_bottcherCoord_ne_zero_far` — `d log φ_c ≠ 0` for `‖z‖²>16‖c‖` (pole dominates).
+- `logDeriv_bottcherCoord_ne_zero_escape` — `d log φ_c ≠ 0` on ALL `escapeOpen` (orbit escapes + zero-set invariance).
+- `deriv_eq_zero_of_fderiv_re_eq_zero` (CR helper) + `fderiv_greenLimit_ne_zero_escape` — `∇G_c ≠ 0`
+  on `escapeOpen` (harmonic conjugate `F`, `deriv F = logDeriv φ_c` by identity theorem on `B∩slit`).
+- `fderiv_greenLimit_ne_zero_critical_value` — `∇G_c(c) ≠ 0`: propagate L4e forward from `c` to escape,
+  each `f^[j]c = f^[j+1]0 ≠ 0` (L4d). ⟹ saddle at `0` is NON-DEGENERATE (`F''(0)=F'(c)≠0`).
+NEXT: `F''(0) ≠ 0` formally (relate the L4c conjugate's 2nd derivative to `∇G_c(c)` via the functional
+equation) ⟹ `{G_c<G_c(0)}` near `0` splits into 2 components ⟹ loop around one lobe (`hbase`) ⟹
+[winding-value + L1] `σ_n` ⟹ not-a-square ⟹ Kummer ⟹ `hDisc`. Connected case (`hRigid`): E–vS, separate.
+
+### `FigureEight.lean` — NON-DEGENERATE SADDLE COMPLETE (2026-06-25, build green, zero axioms)
+- `deriv2_completion_critical_ne_zero` (L4l) — `F''(0) ≠ 0` for any holomorphic completion `F` of `G_c`
+  near `0`. Via a second conjugate `F_c` near `c`: `Re(F − ½F_c∘f_c) ≡ 0` ⟹ `deriv F(z) = z·F_c'(z²+c)`
+  ⟹ `F''(0) = F_c'(c) ≠ 0` (L4k). The saddle at `0` is order-2: `{G_c = G_c(0)}` a genuine figure-eight.
+The local analytic model of the disconnected critical point is now FULLY characterized:
+`F` analytic near `0`, `Re F = G_c`, `F'(0)=0`, `F''(0)≠0`.
+NEXT: `{Re(F−F(0)) < 0}` near `0` has exactly 2 components (the local normal form `w=√(½F''(0))·z`
+sends `F−F(0) ↦ w²`, sublevel `{Re w² < 0}` = two opposite sectors) ⟹ the two Cantor lobes ⟹ loop
+around one lobe ⟹ basin period `2πi/2ⁿ` ⟹ not-a-square ⟹ Kummer ⟹ `hDisc`. Connected case: E–vS.
+
+### `FigureEight.lean` — LOCAL NORMAL FORM `w↦w²` COMPLETE (2026-06-25, build green, zero axioms)
+- `exists_analyticAt_sq_eq` — nonvanishing analytic `g` has a local analytic `√g` (via `s·exp(½log(g/g₀))`).
+- `exists_factor_order_two` — `F z−F 0 = z²·G z`, `G 0 = ½F''(0) ≠ 0` (Taylor `exists_eventuallyEq_sum_add_pow_mul` to order 3).
+- `exists_sq_normal_form` — `∃ h` biholo (`h 0=0`, `deriv h 0≠0`) with `F z−F 0 = h(z)²` near `0`.
+The disconnected critical point is the standard saddle: `{G_c=G_c(0)}=h⁻¹{Re w²=0}` (figure-eight),
+`{G_c<G_c(0)}=h⁻¹{Re w²<0}` (two lobes). Local model in Lean: COMPLETE.
+NEXT (the genuinely Mathlib-absent topology): turn `{Re w²<0}` = two sectors into "the sublevel set near
+`0` has ≥2 connected components" (via `h` homeomorphism), pick a loop around one lobe, then the
+multivalued basin monodromy `2πi/2ⁿ` → not-a-square → Kummer → `hDisc`. Connected case: E–vS.

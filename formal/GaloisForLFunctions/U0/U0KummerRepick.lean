@@ -54,4 +54,35 @@ theorem u0_phib_noRelation_repick (hUo : IsOpen U) (hUc : IsPreconnected U)
   obtain ⟨p, hp, hpeval⟩ := halg
   exact hGtr ⟨p, hp, by rw [← hG, Polynomial.aeval_algHom_apply, hpeval, map_zero]⟩
 
+/-- **u₀ ⟂ φ_b — the clean Kummer-`inputs` closure (the u₀ analogue of `Bottcher.q62_disconnected_kummer`).**
+Reduces `NoRelation ℂ(z) φ_b u₀` to the *same shared radical `inputs`* the Böttcher disconnected case
+consumes (`noRelation_of_kummer_inputs`): per relation degree `d`, a base field `B`, a `ℂ(z)`-algebra hom
+`i : B → meroField U`, a radicand `a`, a base element `GB` with `i GB = u₀`, a primitive `2^k`-th root `ζ`
+(`2^k > d`), with `X^{2^k}−C a` irreducible and the radical relation `φ_b^{2^k} = i a`. The two u₀-specific
+inputs are discharged here: `φ_b ≠ 0` (`phiMero_ne_zero`) and `Transcendental ℂ(z) u₀`
+(`u0Mero_transcendental`). The only difference from the q62 instantiation is the base element `GB` maps to
+`u₀` instead of `φ_{c₂}` — the radical data (`a`, irreducibility, `bottcherCoord_iterate`) is *identical*,
+so the shared provider closes both the instant it lands. -/
+theorem u0_phi_independence_inputs (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite) (hU_ext : U ⊆ U0NaturalBoundary.Ext) {b : ℂ}
+    (hU_esc : U ⊆ escapeOpen b)
+    (inputs : ∀ d : ℕ,
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∃ (B : Type) (_ : Field B) (_ : Algebra (RatFunc ℂ) B)
+        (i : B →ₐ[RatFunc ℂ] meroField U) (a GB ζ : B) (k : ℕ),
+        d < 2 ^ k ∧ IsPrimitiveRoot ζ (2 ^ k) ∧ Irreducible (X ^ (2 ^ k) - C a : Polynomial B) ∧
+        phiMero b hU_esc ^ (2 ^ k) = i a ∧
+        i GB = algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext)) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact noRelation_of_kummer_inputs (phiMero b hU_esc)
+    (algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext))
+    (phiMero_ne_zero hUo hUc hUne hU_esc)
+    (u0Mero_transcendental hUo hUc hUne hUinf hU_ext) inputs
+
 end U0KummerRepick

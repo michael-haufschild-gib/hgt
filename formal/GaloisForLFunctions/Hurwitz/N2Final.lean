@@ -19,7 +19,7 @@ import GaloisForLFunctions.Hurwitz.N2PsiRegroup
 import GaloisForLFunctions.Hurwitz.N2TailAnalytic
 
 open Complex Filter Topology HurwitzN2Main HurwitzN2Tail HurwitzN2BlockAnalytic HurwitzSpine
-  HurwitzN2Descent HurwitzN2PsiRegroup
+  HurwitzN2Descent HurwitzN2PsiRegroup HurwitzEncoding
 
 namespace HurwitzN2Final
 
@@ -166,5 +166,130 @@ theorem psiB_pure {s : ℂ} (n : ℕ) (q : Fin 3 → Fin 3 → Polynomial ℂ) (
       (fun k => Complex.exp (-(s + (k : ℂ)) * z))]
   simp only [Fin.sum_univ_three, ← Polynomial.eval_add, z00, z01, z02, z10, z11, z12, z20, z21,
     z22, Polynomial.eval_zero, zero_mul, add_zero, zero_add]
+
+/-- **The regular block collapses to the constant.** Once every symmetric quadratic combination and
+every linear coefficient vanishes, `Θb = c(−n+e^z)`. -/
+theorem thetaB_const {s : ℂ} (n : ℕ) (q : Fin 3 → Fin 3 → Polynomial ℂ) (l : Fin 3 → Polynomial ℂ)
+    (cc : Polynomial ℂ) (hq00 : q 0 0 = 0) (hq22 : q 2 2 = 0) (hq11 : q 1 1 = 0)
+    (hA1 : q 0 1 + q 1 0 = 0) (hA3 : q 1 2 + q 2 1 = 0) (hQ : q 0 2 + q 2 0 = 0)
+    (hl0 : l 0 = 0) (hl1 : l 1 = 0) (hl2 : l 2 = 0) (z : ℂ) :
+    ThetaB s n q l cc (fun k z => tailFactored s (k : ℕ) n (Complex.exp z)) z
+      = cc.eval (-(n : ℂ) + Complex.exp z) := by
+  have e00 : (q 0 0).eval (-(n:ℂ) + Complex.exp z) = 0 := by rw [hq00]; simp
+  have e11 : (q 1 1).eval (-(n:ℂ) + Complex.exp z) = 0 := by rw [hq11]; simp
+  have e22 : (q 2 2).eval (-(n:ℂ) + Complex.exp z) = 0 := by rw [hq22]; simp
+  have e01 : (q 0 1).eval (-(n:ℂ) + Complex.exp z) + (q 1 0).eval (-(n:ℂ) + Complex.exp z) = 0 := by
+    rw [← Polynomial.eval_add, hA1]; simp
+  have e12 : (q 1 2).eval (-(n:ℂ) + Complex.exp z) + (q 2 1).eval (-(n:ℂ) + Complex.exp z) = 0 := by
+    rw [← Polynomial.eval_add, hA3]; simp
+  have e02 : (q 0 2).eval (-(n:ℂ) + Complex.exp z) + (q 2 0).eval (-(n:ℂ) + Complex.exp z) = 0 := by
+    rw [← Polynomial.eval_add, hQ]; simp
+  have f0 : (l 0).eval (-(n:ℂ) + Complex.exp z) = 0 := by rw [hl0]; simp
+  have f1 : (l 1).eval (-(n:ℂ) + Complex.exp z) = 0 := by rw [hl1]; simp
+  have f2 : (l 2).eval (-(n:ℂ) + Complex.exp z) = 0 := by rw [hl2]; simp
+  rw [ThetaB]
+  simp only [Fin.sum_univ_three]
+  linear_combination
+    (tailFactored s ((0:Fin 3):ℕ) n (Complex.exp z))^2 * e00
+    + (tailFactored s ((0:Fin 3):ℕ) n (Complex.exp z)) * (tailFactored s ((1:Fin 3):ℕ) n (Complex.exp z)) * e01
+    + (tailFactored s ((0:Fin 3):ℕ) n (Complex.exp z)) * (tailFactored s ((2:Fin 3):ℕ) n (Complex.exp z)) * e02
+    + (tailFactored s ((1:Fin 3):ℕ) n (Complex.exp z))^2 * e11
+    + (tailFactored s ((1:Fin 3):ℕ) n (Complex.exp z)) * (tailFactored s ((2:Fin 3):ℕ) n (Complex.exp z)) * e12
+    + (tailFactored s ((2:Fin 3):ℕ) n (Complex.exp z))^2 * e22
+    + (tailFactored s ((0:Fin 3):ℕ) n (Complex.exp z)) * f0
+    + (tailFactored s ((1:Fin 3):ℕ) n (Complex.exp z)) * f1
+    + (tailFactored s ((2:Fin 3):ℕ) n (Complex.exp z)) * f2
+
+/-- **Hurwitz N=2 — no quadratic relation among `ζ(s,a), ζ(s+1,a), ζ(s+2,a)`, unconditional.** With
+`1 < s.re`, `s ∉ ℤ`, `2s ∉ ℤ`, if the genuine factored relation holds near every large `a = −n`, then
+the symmetric quadratic form, the linear coefficients, and the constant all vanish. This discharges the
+`hrow/h0/h1/hc` hypotheses of `HurwitzN2Theorem.hurwitz_n2` from the relation alone. -/
+theorem hurwitz_n2_unconditional {s : ℂ} (hs1 : 1 < s.re)
+    (hsZ : ∀ k : ℤ, (k : ℂ) ≠ s) (h2sZ : ∀ k : ℤ, (k : ℂ) ≠ 2 * s)
+    (q : Fin 3 → Fin 3 → Polynomial ℂ) (l : Fin 3 → Polynomial ℂ) (cc : Polynomial ℂ) {N : ℕ}
+    (hrel : ∀ n, N ≤ n → ∀ z : ℂ, z.re < -Real.log 2 → -Real.pi < z.im → z.im < Real.pi →
+      (∑ i : Fin 3, ∑ j : Fin 3, (q i j).eval (-(n : ℂ) + Complex.exp z) *
+          ((Complex.exp (-(s + (i : ℂ)) * z) + tailFactored s (i : ℕ) n (Complex.exp z))
+            * (Complex.exp (-(s + (j : ℂ)) * z) + tailFactored s (j : ℕ) n (Complex.exp z))))
+        + (∑ k : Fin 3, (l k).eval (-(n : ℂ) + Complex.exp z) *
+            (Complex.exp (-(s + (k : ℂ)) * z) + tailFactored s (k : ℕ) n (Complex.exp z)))
+        + cc.eval (-(n : ℂ) + Complex.exp z) = 0) :
+    q 0 0 = 0 ∧ q 2 2 = 0 ∧ q 1 1 = 0 ∧ q 0 2 + q 2 0 = 0
+      ∧ l 2 = 0 ∧ l 0 = 0 ∧ l 1 = 0 ∧ cc = 0 := by
+  have hlog : -1 < -Real.log 2 := by have := Real.log_two_lt_d9; linarith
+  have hpi : (0:ℝ) < Real.pi := Real.pi_pos
+  have hblocks : ∀ n, N ≤ n →
+      (∀ z : ℂ, z.re < -Real.log 2 → PhiB s n q z = 0)
+      ∧ (∀ z : ℂ, z.re < -Real.log 2 →
+          PsiB s n q l (fun k z => tailFactored s (k:ℕ) n (Complex.exp z)) z = 0)
+      ∧ (∀ z : ℂ, z.re < -Real.log 2 →
+          ThetaB s n q l cc (fun k z => tailFactored s (k:ℕ) n (Complex.exp z)) z = 0) := by
+    intro n hn
+    set R : Fin 3 → ℂ → ℂ := fun k z => tailFactored s (k:ℕ) n (Complex.exp z) with hRdef
+    have hRper : ∀ k z, R k (z + 2*(Real.pi:ℂ)*Complex.I) = R k z :=
+      fun k z => tailFactored_periodic s (k:ℕ) n z
+    have hsplit : ∀ z:ℂ, z.re < -Real.log 2 → -Real.pi < z.im → z.im < Real.pi →
+        PhiB s n q z + PsiB s n q l R z + ThetaB s n q l cc R z = 0 := by
+      intro z hz hz1 hz2
+      rw [PhiB_eq_products, PsiB, ThetaB]
+      have hcoll := relation_collect (s:=s) (fun i j => (q i j).eval (-(n:ℂ)+Complex.exp z))
+        (fun k => (l k).eval (-(n:ℂ)+Complex.exp z)) (cc.eval (-(n:ℂ)+Complex.exp z)) z (fun k => R k z)
+      have hr := hrel n hn z hz hz1 hz2
+      linear_combination hr - hcoll
+    exact n2_blocks_vanish s n hsZ h2sZ q l cc R hRper (z0:=-1) (B:=-Real.log 2)
+      (by simpa using hlog) (by simpa using hpi) (by simpa using hpi)
+      (blockSum_analytic hs1 n q l cc) hsplit
+  obtain ⟨hq00, hq22, hsurv⟩ := n2_quad_coeffs s q (fun n hn z hz => (hblocks n hn).1 z hz)
+  have hAqfun : ∀ w, w ≤ 4 → Aq q w = 0 :=
+    HurwitzN2Descent.quad_descent q (fun n hn z hz => (hblocks n hn).1 z hz)
+  have hA1 : q 0 1 + q 1 0 = 0 := by rw [← Aq_one]; exact hAqfun 1 (by norm_num)
+  have hA3 : q 1 2 + q 2 1 = 0 := by rw [← Aq_three]; exact hAqfun 3 (by norm_num)
+  have hrow : ∀ᶠ n : ℕ in Filter.atTop,
+      (q 0 2 + q 2 0).eval (-(n:ℂ)) * HurwitzZetaShift.hzeta s (-(n:ℂ)) + (l 2).eval (-(n:ℂ)) = 0 := by
+    filter_upwards [Filter.eventually_ge_atTop N] with n hn
+    exact row_extract hs1 n q l hq22 hA3 (hblocks n hn).2.1
+  obtain ⟨hQ, hl2⟩ := HurwitzN2DensityShadow.survivor_killed hs1 (fun k => (hsZ k).symm) hrow
+  have hq11 : q 1 1 = 0 := by linear_combination hsurv - hQ
+  have hlin : ∀ k, k ≤ 2 →
+      (fun m : ℕ => if m = 0 then l 0 else if m = 1 then l 1 else l 2) k = 0 := by
+    apply HurwitzN2Descent.lin_descent (s:=s)
+      (fun m : ℕ => if m = 0 then l 0 else if m = 1 then l 1 else l 2) (N:=N)
+      (Bregion := fun _ => -Real.log 2)
+    intro n hn z hz
+    have hPsi0 := (hblocks n hn).2.1 z hz
+    rw [psiB_pure n q l hq00 hq22 hq11 hA1 hA3 hQ z] at hPsi0
+    rw [← hPsi0, ← Fin.sum_univ_eq_sum_range
+      (fun m : ℕ => (if m = 0 then l 0 else if m = 1 then l 1 else l 2).eval (-(n:ℂ)+Complex.exp z)
+        * Complex.exp (-(s+(m:ℂ))*z)) 3]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    have hidx : (if (i : ℕ) = 0 then l 0 else if (i : ℕ) = 1 then l 1 else l 2) = l i := by
+      fin_cases i <;> rfl
+    rw [hidx]
+  have hl0 : l 0 = 0 := by have := hlin 0 (by norm_num); simpa using this
+  have hl1 : l 1 = 0 := by have := hlin 1 (by norm_num); simpa using this
+  have hcc : cc = 0 := by
+    apply Polynomial.eq_zero_of_infinite_isRoot
+    apply Set.infinite_of_injective_forall_mem
+      (f := fun m : ℕ => -((N:ℂ)) + (1:ℂ) / ((m + 3 : ℕ) : ℂ))
+    · intro a b hab
+      simp only [add_right_inj] at hab
+      rw [one_div, one_div, inv_inj] at hab
+      have := Nat.cast_injective (R := ℂ) hab
+      omega
+    · intro m
+      have hx : ((m + 3 : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+      have hxr : ((m + 3 : ℕ) : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+      have hez : Complex.exp (Complex.log ((1:ℂ) / ((m + 3 : ℕ) : ℂ)))
+          = (1:ℂ) / ((m + 3 : ℕ) : ℂ) := Complex.exp_log (div_ne_zero one_ne_zero hx)
+      have hzre : (Complex.log ((1:ℂ) / ((m + 3 : ℕ) : ℂ))).re < -Real.log 2 := by
+        rw [Complex.log_re, norm_div, norm_one, Complex.norm_natCast]
+        rw [Real.log_div one_ne_zero hxr, Real.log_one, zero_sub]
+        have h2 : Real.log 2 < Real.log ((m + 3 : ℕ) : ℝ) :=
+          Real.log_lt_log (by norm_num) (by exact_mod_cast (show 2 < m + 3 by omega))
+        linarith
+      have hθ := (hblocks N le_rfl).2.2 _ hzre
+      rw [thetaB_const N q l cc hq00 hq22 hq11 hA1 hA3 hQ hl0 hl1 hl2, hez] at hθ
+      simpa [Set.mem_setOf_eq, Polynomial.IsRoot] using hθ
+  exact ⟨hq00, hq22, hq11, hQ, hl2, hl0, hl1, hcc⟩
 
 end HurwitzN2Final
