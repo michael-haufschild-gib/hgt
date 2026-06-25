@@ -727,3 +727,56 @@ theorem sublevel_eq_preimage_doublecone {F h : ℂ → ℂ} {c₀ : ℂ}
   rw [hz]; exact re_sq_neg_iff (h z)
 
 end Bottcher
+
+namespace Bottcher
+open Complex
+
+/-- **[component split, step 4] The two lobes are genuinely populated.** A local biholomorphism `h`
+(`h 0 = 0`, `deriv h 0 ≠ 0`) is an open map at `0` (inverse function theorem,
+`exists_openPartialHomeomorph_of_hasStrictDerivAt`), so its image covers a neighborhood of `0`. Hence in
+any neighborhood `U` of `0` there are points `zp, zm` with `h zp = i·δ`, `h zm = −i·δ` (small `δ > 0`):
+one in each half-cone `{|Re w| < |Im w|}` (`Im(h zp}) > 0`, `Im(h zm) < 0`). Together with
+`sublevel_eq_preimage_doublecone` these are points in the two distinct lobes of `{Re(F−F(0)) < 0}`. The
+final analytic input separating the disconnected basin's two Cantor halves. Axiom-clean. -/
+theorem exists_two_lobe_points {h : ℂ → ℂ}
+    (hh : AnalyticAt ℂ h 0) (hh0 : h 0 = 0) (hh'0 : deriv h 0 ≠ 0)
+    {U : Set ℂ} (hU : U ∈ nhds (0:ℂ)) :
+    ∃ zp ∈ U, ∃ zm ∈ U, 0 < (h zp).im ∧ |(h zp).re| < |(h zp).im|
+      ∧ (h zm).im < 0 ∧ |(h zm).re| < |(h zm).im| := by
+  have hsd : HasStrictDerivAt h (deriv h 0) 0 := hh.hasStrictDerivAt
+  obtain ⟨φ, h0src, hφeq⟩ := exists_openPartialHomeomorph_of_hasStrictDerivAt hsd hh'0
+  have hφ0 : φ 0 = 0 := by rw [hφeq]; exact hh0
+  have h0tgt : (0:ℂ) ∈ φ.target := hφ0 ▸ φ.map_source h0src
+  have htgt_nhds : φ.target ∈ nhds (0:ℂ) := φ.open_target.mem_nhds h0tgt
+  have hsymm0 : φ.symm 0 = 0 := by
+    have hli := φ.left_inv h0src; rwa [hφ0] at hli
+  have hsymm_cont : ContinuousAt φ.symm 0 := φ.continuousAt_symm h0tgt
+  have hboth : φ.target ∩ φ.symm ⁻¹' U ∈ nhds (0:ℂ) :=
+    Filter.inter_mem htgt_nhds (hsymm_cont.preimage_mem_nhds (by rw [hsymm0]; exact hU))
+  obtain ⟨δ, hδpos, hδ⟩ := Metric.mem_nhds_iff.mp hboth
+  have hnorm : ∀ a : ℝ, ‖Complex.I * (a : ℂ)‖ = |a| := by
+    intro a; rw [norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
+  have hmem : ∀ a : ℝ, |a| < δ → (Complex.I * (a : ℂ)) ∈ φ.target ∩ φ.symm ⁻¹' U := by
+    intro a ha
+    apply hδ
+    rw [Metric.mem_ball, dist_eq_norm, sub_zero, hnorm]; exact ha
+  have hval : ∀ a : ℝ, |a| < δ → h (φ.symm (Complex.I * (a : ℂ))) = Complex.I * (a : ℂ) := by
+    intro a ha
+    rw [← hφeq]; exact φ.right_inv (hmem a ha).1
+  have hδ2 : |(δ / 2 : ℝ)| < δ := by rw [abs_of_pos (by linarith)]; linarith
+  have hδ2' : |(-(δ / 2) : ℝ)| < δ := by rw [abs_of_neg (by linarith), neg_neg]; linarith
+  refine ⟨φ.symm (Complex.I * ((δ / 2 : ℝ) : ℂ)), (hmem _ hδ2).2,
+    φ.symm (Complex.I * ((-(δ / 2) : ℝ) : ℂ)), (hmem _ hδ2').2, ?_, ?_, ?_, ?_⟩
+  · rw [hval _ hδ2]; simp; linarith
+  · rw [hval _ hδ2]
+    simp only [Complex.mul_re, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.mul_im, zero_mul, one_mul, mul_zero, sub_zero, zero_sub, zero_add, abs_zero]
+    rw [abs_of_pos (by linarith : (0:ℝ) < δ / 2)]; linarith
+  · rw [hval _ hδ2']; simp; linarith
+  · rw [hval _ hδ2']
+    simp only [Complex.mul_re, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.mul_im, zero_mul, one_mul, mul_zero, sub_zero, zero_sub, zero_add, abs_zero,
+      abs_neg]
+    rw [abs_of_pos (by linarith : (0:ℝ) < δ / 2)]; linarith
+
+end Bottcher

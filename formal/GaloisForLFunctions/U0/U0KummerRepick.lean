@@ -65,21 +65,19 @@ inputs are discharged here: `φ_b ≠ 0` (`phiMero_ne_zero`) and `Transcendental
 so the shared provider closes both the instant it lands. -/
 theorem u0_phi_independence_inputs (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite) (hU_ext : U ⊆ U0NaturalBoundary.Ext) {b : ℂ}
-    (hU_esc : U ⊆ escapeOpen b)
-    (inputs : ∀ d : ℕ,
-      haveI := isDomain_analyticSubring U hUo hUc hUne
-      letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
-      ∃ (B : Type) (_ : Field B) (_ : Algebra (RatFunc ℂ) B)
-        (i : B →ₐ[RatFunc ℂ] meroField U) (a GB ζ : B) (k : ℕ),
-        d < 2 ^ k ∧ IsPrimitiveRoot ζ (2 ^ k) ∧ Irreducible (X ^ (2 ^ k) - C a : Polynomial B) ∧
-        phiMero b hU_esc ^ (2 ^ k) = i a ∧
-        i GB = algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext)) :
-    haveI := isDomain_analyticSubring U hUo hUc hUne
+    (hU_esc : U ⊆ escapeOpen b) :
+    letI := isDomain_analyticSubring U hUo hUc hUne
     letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    (∀ d : ℕ, ∃ (B : Type) (_ : Field B) (_ : Algebra (RatFunc ℂ) B)
+        (i : B →ₐ[RatFunc ℂ] meroField U) (a GB ζ : B) (k : ℕ),
+        d < 2 ^ k ∧ IsPrimitiveRoot ζ (2 ^ k) ∧ Irreducible ((X : Polynomial B) ^ (2 ^ k) - C a) ∧
+        phiMero b hU_esc ^ (2 ^ k) = i a ∧
+        i GB = algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext)) →
     NoRelation (RatFunc ℂ) (phiMero b hU_esc)
       (algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext)) := by
-  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := isDomain_analyticSubring U hUo hUc hUne
   letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  intro inputs
   exact noRelation_of_kummer_inputs (phiMero b hU_esc)
     (algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext))
     (phiMero_ne_zero hUo hUc hUne hU_esc)
