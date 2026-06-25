@@ -157,4 +157,77 @@ theorem orderOf_const_coverGerm (ζ : ℂ) :
       map_mul' := fun a b => rfl }
   exact orderOf_injective f (fun a b h => Germ.const_inj.mp h) ζ
 
+/-! ## 6e-prep: the symmetric `c₂`-monodromy (scales `v₂`, fixes `v₁`)
+
+By the symmetry `c₁ ↔ c₂`, the cover also carries the `c₂`-deck transformation, scaling `v₂ = φ_{c₂}`
+by a `2ᵐ`-th root of unity while fixing `z` and `v₁ = φ_{c₁}`. This is the `monoG` datum
+`q62_disconnected_both` needs (and, via `transcendental_of_monodromy`, makes `φ_{c₂}`'s transcendence
+a consequence rather than a separate hypothesis — Field-6e). -/
+
+/-- The `c₂`-deck transformation: scales `v₂` by `ζ`, FIXES `z` and `v₁`. -/
+def deckMap₂ (ζ : ℂ) : ℂ × ℂ × ℂ → ℂ × ℂ × ℂ := fun p => (p.1, p.2.1, ζ * p.2.2)
+
+theorem deckMap₂_mapsTo {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
+    Set.MapsTo (deckMap₂ ζ) (commonPullback c₁ c₂ n m) (commonPullback c₁ c₂ n m) := by
+  rintro ⟨z, v₁, v₂⟩ ⟨h1, h10, h2, h20⟩
+  have hζ0 : ζ ≠ 0 := by rintro rfl; rw [zero_pow (by positivity)] at hζ; exact one_ne_zero hζ.symm
+  refine ⟨h1, h10, ?_, mul_ne_zero hζ0 h20⟩
+  show (ζ * v₂) ^ (2 ^ m) = _
+  rw [mul_pow, hζ, one_mul]; exact h2
+
+theorem deckMap₂_comp (ζ η : ℂ) : deckMap₂ ζ ∘ deckMap₂ η = deckMap₂ (ζ * η) := by
+  funext p; simp only [deckMap₂, Function.comp_apply]; ring_nf
+
+theorem deckMap₂_tendsto {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
+    Tendsto (deckMap₂ ζ) (𝓟 (commonPullback c₁ c₂ n m)) (𝓟 (commonPullback c₁ c₂ n m)) :=
+  tendsto_principal_principal.mpr (fun x hx => deckMap₂_mapsTo hζ hx)
+
+/-- The descended `c₂`-deck on cover germs (`σ'_m`). -/
+noncomputable def deckGerm₂ {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
+    coverGerm c₁ c₂ n m → coverGerm c₁ c₂ n m :=
+  fun g => g.compTendsto (deckMap₂ ζ) (deckMap₂_tendsto hζ)
+
+/-- `σ'_m` scales `v₂ = φ_{c₂}` by `ζ`. -/
+theorem deckGerm₂_v2 {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
+    deckGerm₂ hζ (v2Germ : coverGerm c₁ c₂ n m) = (ζ : coverGerm c₁ c₂ n m) * v2Germ := rfl
+/-- `σ'_m` fixes `v₁ = φ_{c₁}`. -/
+theorem deckGerm₂_v1 {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
+    deckGerm₂ hζ (v1Germ : coverGerm c₁ c₂ n m) = v1Germ := rfl
+/-- `σ'_m` fixes `z` (= K). -/
+theorem deckGerm₂_z {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
+    deckGerm₂ hζ (zGerm : coverGerm c₁ c₂ n m) = zGerm := rfl
+
+end Bottcher
+
+namespace Bottcher
+
+/-! ## 6c″: the unbounded-order dyadic tower of multipliers
+
+The monodromy obstruction `q62_disconnected_both` consumes, for every depth `d`, a deck multiplier
+`ζ` whose order exceeds `d`. The orders available on the cover are the powers `2^k` (the `k`-th dyadic
+level), realised by primitive `2^k`-th roots of unity in `ℂ`. Since `2^k → ∞`, the tower has
+unbounded order — exactly the `∀ d, ∃ … d < orderOf ζ` shape the obstruction needs. -/
+
+/-- **The dyadic order tower in `ℂ`.** For every depth `d` there is a `2^k`-th root of unity `ζ`
+(a genuine primitive one, `orderOf ζ = 2^k`) with `2^k > d`. The multiplier supply for the unbounded
+monodromy tower, before transfer to the cover carrier. -/
+theorem exists_dyadic_order_gt (d : ℕ) :
+    ∃ (k : ℕ) (ζ : ℂ), ζ ^ (2 ^ k) = 1 ∧ ζ ≠ 0 ∧ orderOf ζ = 2 ^ k ∧ d < 2 ^ k := by
+  obtain ⟨ζ, hord, hpow⟩ := exists_dyadic_primitive (d + 1)
+  have hk : (0 : ℕ) < 2 ^ (d + 1) := by positivity
+  have hne : ζ ≠ 0 := by
+    rintro rfl; rw [zero_pow hk.ne'] at hpow; exact one_ne_zero hpow.symm
+  exact ⟨d + 1, ζ, hpow, hne, hord, lt_trans (Nat.lt_succ_self d) Nat.lt_two_pow_self⟩
+
+/-- **The dyadic order tower transferred to the cover germ ring.** For every depth `d` there is a
+`2^k`-th root of unity `ζ` whose order *as a constant of the cover carrier* `coverGerm` is `2^k > d`
+(the constant embedding preserves order, `orderOf_const_coverGerm`). This is the carrier-level
+multiplier datum the disconnected-case obstruction feeds to `eq_zero_of_monodromy`: an automorphism
+multiplier of unbounded order living in the same field as `φ_{c₁}, φ_{c₂}`. -/
+theorem exists_dyadic_order_gt_coverGerm (c₁ c₂ : ℂ) (n m : ℕ) (d : ℕ) :
+    ∃ (k : ℕ) (ζ : ℂ), ζ ^ (2 ^ k) = 1 ∧ ζ ≠ 0 ∧
+      orderOf ((ζ : coverGerm c₁ c₂ n m)) = 2 ^ k ∧ d < 2 ^ k := by
+  obtain ⟨k, ζ, hpow, hne, hord, hd⟩ := exists_dyadic_order_gt d
+  exact ⟨k, ζ, hpow, hne, by rw [orderOf_const_coverGerm]; exact hord, hd⟩
+
 end Bottcher

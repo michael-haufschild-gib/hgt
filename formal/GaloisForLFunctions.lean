@@ -80,3 +80,4 @@ import GaloisForLFunctions.MoritaGamma
 import GaloisForLFunctions.FamilyCrossResonance
 import GaloisForLFunctions.SingleEvenFrequency
 import GaloisForLFunctions.SourceRecession
+import GaloisForLFunctions.RHProofLab

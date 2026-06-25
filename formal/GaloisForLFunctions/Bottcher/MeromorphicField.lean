@@ -141,4 +141,408 @@ noncomputable def ratfuncToMero (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne 
   haveI := isDomain_analyticSubring U hUo hUc hUne
   IsFractionRing.lift (polyToMero_injective U hUo hUc hUne hUinf)
 
+/-! ## Field-5 bridge: the base-field embedding agrees with the polynomial eval-germ
+
+A step toward connected-case faithfulness: a relation `P(φ_{c₁},φ_{c₂})=0` over `K=ℂ(z)` evaluated in
+`M` corresponds to the genuine meromorphic function `z ↦ P(z,φ_{c₁}(z),φ_{c₂}(z))` on `U` — so
+`NoRelation` over `M` *is* the actual independence. This lemma is the coefficient step: the embedding
+`ℂ(z)↪M` sends a polynomial to its real eval-germ. -/
+
+/-- The `ℂ(z)↪M` embedding (`ratfuncToMero`) agrees with `polyToMero` on polynomials: a polynomial
+coefficient `p(z)` of a relation maps, under the base-field embedding, to the genuine eval-germ
+`z ↦ p(z)` in `M`. (`IsFractionRing.lift_algebraMap`.) -/
+theorem ratfuncToMero_algebraMap_polynomial (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite) (p : Polynomial ℂ) :
+    ratfuncToMero U hUo hUc hUne hUinf (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)
+      = polyToMero U p := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  exact IsFractionRing.lift_algebraMap (polyToMero_injective U hUo hUc hUne hUinf) p
+
+/-- **Element-level faithfulness**: an analytic-germ element maps to `0` in `M` iff it is already `0`
+in the carrier domain (the fraction-field map is injective). -/
+theorem meroField_algebraMap_eq_zero_iff (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (x : analyticSubring U) :
+    algebraMap (analyticSubring U) (meroField U) x = 0 ↔ x = 0 := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  rw [← map_zero (algebraMap (analyticSubring U) (meroField U))]
+  exact (IsFractionRing.injective (analyticSubring U) (meroField U)).eq_iff
+
+/-- **Function-level faithfulness**: for `f` analytic on `U`, its image in `M` is `0` iff `f` vanishes
+on `U`. A meromorphic element of `M` is thus determined by its function — so `NoRelation` over `M` is
+the genuine statement about the actual functions, not a formal artefact. This is the faithfulness
+that makes the connected-case `meroField`/`phiMero` instantiation non-circular: proving `NoRelation`
+in `M` *is* proving the actual algebraic independence of the Böttcher coordinates on `U`. -/
+theorem meroField_germ_eq_zero_iff (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f U) :
+    algebraMap (analyticSubring U) (meroField U) ⟨Germ.coeRingHom (𝓟 U) f, ⟨f, hf, rfl⟩⟩ = 0
+      ↔ EqOn f 0 U := by
+  rw [meroField_algebraMap_eq_zero_iff U hUo hUc hUne]
+  constructor
+  · intro h
+    have hg : (Germ.coeRingHom (𝓟 U) f) = (0 : Germ (𝓟 U) ℂ) := by
+      have := congrArg Subtype.val h; rwa [ZeroMemClass.coe_zero] at this
+    rw [show Germ.coeRingHom (𝓟 U) f = (↑f : Germ (𝓟 U) ℂ) from rfl, ← Germ.coe_zero, Germ.coe_eq]
+      at hg
+    exact fun z hz => eventually_principal.mp hg z hz
+  · intro h
+    apply Subtype.ext
+    show (↑f : Germ (𝓟 U) ℂ) = 0
+    rw [← Germ.coe_zero, Germ.coe_eq]
+    exact eventually_principal.mpr h
+
+/-- The constant ring hom `ℂ →+* analyticSubring U`: `a ↦` germ of the constant function `a`. The
+scalar embedding of the carrier, used to evaluate `ℂ`-coefficients of a relation. -/
+noncomputable def constToAnalytic (U : Set ℂ) : ℂ →+* analyticSubring U :=
+  ((Germ.coeRingHom (𝓟 U)).comp (Pi.ringHom (fun _ : ℂ => RingHom.id ℂ))).codRestrict
+    (analyticSubring U) (fun a => ⟨fun _ => a, analyticOnNhd_const, rfl⟩)
+
+/-- **Meromorphic faithfulness (fraction form).** For `a, b` analytic germs with `b ≠ 0`, the
+meromorphic element `a/b ∈ M` is `0` iff the numerator `a = 0`. The building block that reduces a
+`ℂ(z)`-coefficient (meromorphic) `NoRelation` evaluation to the vanishing of its analytic numerator,
+where the bivariate faithfulness applies. -/
+theorem meroField_div_eq_zero_iff [IsDomain (analyticSubring U)] (a b : analyticSubring U)
+    (hb : b ≠ 0) :
+    (algebraMap (analyticSubring U) (meroField U) a)
+      / (algebraMap (analyticSubring U) (meroField U) b) = 0 ↔ a = 0 := by
+  have hinj := IsFractionRing.injective (analyticSubring U) (meroField U)
+  rw [div_eq_zero_iff]
+  constructor
+  · rintro (h | h)
+    · exact hinj (h.trans (map_zero _).symm)
+    · exact absurd (hinj (h.trans (map_zero _).symm)) hb
+  · intro h; left; rw [h, map_zero]
+
+/-- **Clearing denominators.** The base-field embedding of a rational function `r ∈ ℂ(z)` into `M`
+equals the meromorphic germ `polyToMero(num r) / polyToMero(denom r)` — numerator and denominator as
+genuine eval-germs. With `meroField_div_eq_zero_iff`, this reduces a `ℂ(z)`-coefficient relation to
+its analytic numerator, where the bivariate faithfulness applies. -/
+theorem ratfuncToMero_eq_div [IsDomain (analyticSubring U)]
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite) (r : RatFunc ℂ) :
+    ratfuncToMero U hUo hUc hUne hUinf r = polyToMero U r.num / polyToMero U r.denom := by
+  conv_lhs => rw [← RatFunc.num_div_denom r]
+  rw [map_div₀, ratfuncToMero_algebraMap_polynomial, ratfuncToMero_algebraMap_polynomial]
+
 end Bottcher
+
+namespace Bottcher
+
+/-- **Precomposition by an analytic self-map preserves the analytic-germ domain.** If `g` is analytic
+on `U` and maps `U` into `U`, then for any analytic germ `a ∈ analyticSubring U`, the precomposition
+`a ∘ g` (`Germ.compTendsto`) is again in `analyticSubring U` — composition of analytic functions is
+analytic. This is the well-definedness of the deck/monodromy operator on the **domain** carrier
+`analyticSubring`/`meroField` (the identity-theorem field), the carrier on which the scaling
+automorphism `σ` that `hDisc` needs can actually live — unlike the principal-filter `coverGerm`, which
+is `ℂ^S` and is never a domain. The deck automorphism is exactly such a precomposition by a
+self-biholomorphism of a connected `U`. -/
+theorem precomp_mem_analyticSubring {U : Set ℂ} {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g U)
+    (hmaps : Set.MapsTo g U U) {a : Germ (𝓟 U) ℂ} (ha : a ∈ analyticSubring U) :
+    a.compTendsto g (tendsto_principal_principal.mpr hmaps) ∈ analyticSubring U := by
+  obtain ⟨f, hf, rfl⟩ := ha
+  exact ⟨f ∘ g, hf.comp hg hmaps,
+    (Germ.coe_compTendsto f (tendsto_principal_principal.mpr hmaps)).symm⟩
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Precomposition by a self-map `g` (as a `Tendsto` on `𝓟 U`) as a **ring endomorphism** of the germ
+ring `Germ (𝓟 U) ℂ`: `a ↦ a ∘ g`. Composition is a ring hom because it is so pointwise. -/
+noncomputable def precompGermHom {U : Set ℂ} {g : ℂ → ℂ} (h : Tendsto g (𝓟 U) (𝓟 U)) :
+    Germ (𝓟 U) ℂ →+* Germ (𝓟 U) ℂ where
+  toFun a := a.compTendsto g h
+  map_one' := by rw [← Germ.coe_one, Germ.coe_compTendsto]; rfl
+  map_zero' := by rw [← Germ.coe_zero, Germ.coe_compTendsto]; rfl
+  map_mul' a b := by
+    induction a using Germ.inductionOn with
+    | _ F => induction b using Germ.inductionOn with
+      | _ G => simp only [← Germ.coe_mul, Germ.coe_compTendsto]; rfl
+  map_add' a b := by
+    induction a using Germ.inductionOn with
+    | _ F => induction b using Germ.inductionOn with
+      | _ G => simp only [← Germ.coe_add, Germ.coe_compTendsto]; rfl
+
+/-- **The deck/monodromy operator as a ring endomorphism of the analytic-germ domain.** For `g`
+analytic on `U` with `g(U) ⊆ U`, precomposition `a ↦ a ∘ g` is a ring endomorphism of
+`analyticSubring U` (well-defined by `precomp_mem_analyticSubring`, ring hom by `precompGermHom`). When
+`g` is a self-biholomorphism this upgrades to an automorphism (next step) and lifts to a `meroField U`
+field automorphism — the genuine carrier for the scaling automorphism `σ` of `hDisc`. -/
+noncomputable def precompAnalytic {U : Set ℂ} {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g U)
+    (hmaps : Set.MapsTo g U U) : analyticSubring U →+* analyticSubring U :=
+  ((precompGermHom (tendsto_principal_principal.mpr hmaps)).comp
+      (analyticSubring U).subtype).codRestrict (analyticSubring U)
+    (fun x => precomp_mem_analyticSubring hg hmaps x.2)
+
+end Bottcher
+
+namespace Bottcher
+
+@[simp] theorem precompAnalytic_coe {U : Set ℂ} {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g U)
+    (hmaps : Set.MapsTo g U U) (a : analyticSubring U) :
+    ((precompAnalytic hg hmaps a : analyticSubring U) : Germ (𝓟 U) ℂ)
+      = (a : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps) := rfl
+
+/-- **The deck operator is a ring automorphism of the analytic-germ domain when `g` is a
+self-biholomorphism of `U`.** Given mutually inverse analytic self-maps `g, g'` of `U`
+(`g∘g' = g'∘g = id` on `U`), precomposition by `g` is a `RingEquiv` of `analyticSubring U`, inverse
+precomposition by `g'`. The genuine `σ`: an automorphism of a DOMAIN, which lifts to the meromorphic
+field `meroField U` and supplies the disconnected-case monodromy `q62_disconnected_both` consumes. -/
+noncomputable def precompAnalyticEquiv {U : Set ℂ} {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U) :
+    analyticSubring U ≃+* analyticSubring U where
+  toFun := precompAnalytic hg hmaps
+  invFun := precompAnalytic hg' hmaps'
+  left_inv a := by
+    apply Subtype.ext
+    rw [precompAnalytic_coe, precompAnalytic_coe]
+    induction (a : Germ (𝓟 U) ℂ) using Germ.inductionOn with
+    | _ F =>
+      rw [Germ.coe_compTendsto, Germ.coe_compTendsto]
+      exact Germ.coe_eq.mpr (eventually_principal.mpr fun x hx => by
+        have h1 : g (g' x) = x := by simpa [Function.comp_apply] using hgg' hx
+        simp only [Function.comp_apply, h1])
+  right_inv a := by
+    apply Subtype.ext
+    rw [precompAnalytic_coe, precompAnalytic_coe]
+    induction (a : Germ (𝓟 U) ℂ) using Germ.inductionOn with
+    | _ F =>
+      rw [Germ.coe_compTendsto, Germ.coe_compTendsto]
+      exact Germ.coe_eq.mpr (eventually_principal.mpr fun x hx => by
+        have h1 : g' (g x) = x := by simpa [Function.comp_apply] using hg'g hx
+        simp only [Function.comp_apply, h1])
+  map_mul' := map_mul (precompAnalytic hg hmaps)
+  map_add' := map_add (precompAnalytic hg hmaps)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **`σ` fixes every `g`-invariant germ.** If an analytic germ `a` is invariant under precomposition
+by `g` (`a ∘ g = a`), then the deck automorphism `precompAnalyticEquiv` fixes it. This is the single
+mechanism behind both `K`-linearity and the fixed coordinate: on the cover annulus the base function
+`z` (the projection) satisfies `z ∘ g = z` (`g` permutes sheets over the same base), hence `σ z = z`
+(so `σ` fixes `ℂ(z)`); likewise `φ_{c₂} ∘ g = φ_{c₂}` gives `σ φ_{c₂} = φ_{c₂}` — exactly the
+`σ G = G` datum of `q62_disconnected_both`. -/
+theorem precompAnalyticEquiv_apply_of_invariant {U : Set ℂ} {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    {a : analyticSubring U}
+    (ha : (a : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+            = (a : Germ (𝓟 U) ℂ)) :
+    precompAnalyticEquiv hg hg' hmaps hmaps' hgg' hg'g a = a := by
+  apply Subtype.ext
+  show ((precompAnalytic hg hmaps a : analyticSubring U) : Germ (𝓟 U) ℂ) = (a : Germ (𝓟 U) ℂ)
+  rw [precompAnalytic_coe]; exact ha
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **`σ` scales a `ζ`-relatively-invariant germ by `ζ`.** If `a ∘ g = ζ · a` (constant `ζ`), then the
+deck automorphism multiplies `a` by `ζ`: `σ a = ζ · a` (at the germ level). On the cover annulus the
+fibre coordinate `φ_{c₁}` satisfies `φ_{c₁} ∘ g = ζ · φ_{c₁}` (the deck rotation scales the `2ⁿ`-th
+root by a primitive root of unity), giving exactly the `σ F = ζ · F` datum of
+`q62_disconnected_both`. -/
+theorem precompAnalyticEquiv_apply_of_scale {U : Set ℂ} {g g' : ℂ → ℂ} {ζ : ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    {a : analyticSubring U}
+    (ha : (a : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+            = (ζ : Germ (𝓟 U) ℂ) * (a : Germ (𝓟 U) ℂ)) :
+    ((precompAnalyticEquiv hg hg' hmaps hmaps' hgg' hg'g a : analyticSubring U) : Germ (𝓟 U) ℂ)
+      = (ζ : Germ (𝓟 U) ℂ) * (a : Germ (𝓟 U) ℂ) := by
+  show ((precompAnalytic hg hmaps a : analyticSubring U) : Germ (𝓟 U) ℂ) = _
+  rw [precompAnalytic_coe]; exact ha
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The deck automorphism on the meromorphic field `M = meroField U`.** Lifts the analytic-germ
+domain automorphism `precompAnalyticEquiv` (precomposition by the self-biholomorphism `g`) through the
+fraction field, giving a field automorphism `meroField U ≃+* meroField U`. This is the genuine `σ` of
+the disconnected case, now living on the field `M` — the carrier `q62_disconnected_both` consumes. -/
+noncomputable def precompMeroEquiv {U : Set ℂ} {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) :
+    meroField U ≃+* meroField U :=
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  IsFractionRing.ringEquivOfRingEquiv (precompAnalyticEquiv hg hg' hmaps hmaps' hgg' hg'g)
+
+/-- `σ` on `M` agrees with `σ` on the domain, through the fraction-field embedding: for an analytic
+germ `a`, `σ (algebraMap … a) = algebraMap … (σ a)`. The bridge for transporting the fixed/scaled
+coordinate relations from `analyticSubring` up to `meroField`. -/
+theorem precompMeroEquiv_algebraMap {U : Set ℂ} {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (a : analyticSubring U) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap (analyticSubring U) (meroField U) a)
+      = algebraMap (analyticSubring U) (meroField U)
+          (precompAnalyticEquiv hg hg' hmaps hmaps' hgg' hg'g a) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  exact IsFractionRing.ringEquivOfRingEquiv_algebraMap _ a
+
+end Bottcher
+
+namespace Bottcher
+
+/-- The **deck rotation** `w ↦ ζ·w` — the deck transformation of the dyadic cover expressed in the
+cover coordinate `w`; it permutes the `2ⁿ` sheets by a `2ⁿ`-th root of unity `ζ`. This is the concrete
+self-biholomorphism `g` that instantiates the abstract `precompAnalyticEquiv`. -/
+def rotation (ζ : ℂ) : ℂ → ℂ := fun w => ζ * w
+
+/-- The deck rotation is analytic (entire). -/
+theorem analyticOnNhd_rotation (ζ : ℂ) (U : Set ℂ) : AnalyticOnNhd ℂ (rotation ζ) U :=
+  analyticOnNhd_const.mul analyticOnNhd_id
+
+/-- `rotation ζ ∘ rotation ζ⁻¹ = id` — the deck rotation is a self-biholomorphism with inverse the
+opposite rotation (the deck group is a group). -/
+theorem rotation_comp_inv (ζ : ℂ) (hζ : ζ ≠ 0) (U : Set ℂ) :
+    Set.EqOn (rotation ζ ∘ rotation ζ⁻¹) id U := fun w _ => by
+  simp only [rotation, Function.comp_apply, id_eq, ← mul_assoc, mul_inv_cancel₀ hζ, one_mul]
+
+/-- A **unimodular** rotation maps the norm-annulus `{ρ < |w| < R}` into itself (it preserves `|w|`):
+the deck rotation is a self-map of the cover annulus `Ã`. -/
+theorem rotation_mapsTo_annulus {ζ : ℂ} (hζ : ‖ζ‖ = 1) (ρ R : ℝ) :
+    Set.MapsTo (rotation ζ) {w | ρ < ‖w‖ ∧ ‖w‖ < R} {w | ρ < ‖w‖ ∧ ‖w‖ < R} := by
+  rintro w ⟨h1, h2⟩
+  simp only [rotation, Set.mem_setOf_eq, norm_mul, hζ, one_mul]
+  exact ⟨h1, h2⟩
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Concrete deck automorphism via the rotation.** Instantiating the abstract `precompMeroEquiv`
+with the genuine deck rotation `w ↦ ζ·w` (here on `U = univ`, the model carrier) yields an explicit
+field automorphism of `meroField univ` — the full chain
+`rotation → precompAnalyticEquiv → precompMeroEquiv` realized on a concrete self-biholomorphism. The
+real disconnected case replaces `univ` by the cover annulus `Ã` and supplies the genuine
+analytically-continued Böttcher lifts; the automorphism machinery is exactly this. -/
+noncomputable def rotationDeckEquiv (ζ : ℂ) (hζ0 : ζ ≠ 0) :
+    meroField (Set.univ : Set ℂ) ≃+* meroField (Set.univ : Set ℂ) :=
+  precompMeroEquiv (analyticOnNhd_rotation ζ _) (analyticOnNhd_rotation ζ⁻¹ _)
+    (Set.mapsTo_univ _ _) (Set.mapsTo_univ _ _)
+    (rotation_comp_inv ζ hζ0 _)
+    (by have h := rotation_comp_inv ζ⁻¹ (inv_ne_zero hζ0) (Set.univ : Set ℂ)
+        rwa [inv_inv] at h)
+    isOpen_univ isPreconnected_univ Set.univ_nonempty
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The deck automorphism as a `K`-algebra automorphism.** If `precompMeroEquiv` fixes the image of
+the base field `K` in `M = meroField U` (which holds when `K = ℂ(z)` embeds via `g`-invariant germs —
+the projection on the cover annulus, `precompAnalyticEquiv_apply_of_invariant`), it upgrades to a
+`K`-algebra automorphism `M ≃ₐ[K] M` — the exact type `q62_disconnected_both` requires for its
+monodromy datum `σ`. -/
+noncomputable def precompMeroAlgEquiv {U : Set ℂ} {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {K : Type*} [Field K] [Algebra K (meroField U)]
+    (hK : ∀ k : K, precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+            (algebraMap K (meroField U) k) = algebraMap K (meroField U) k) :
+    meroField U ≃ₐ[K] meroField U :=
+  AlgEquiv.ofRingEquiv hK
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **`σ` fixes the `meroField` image of a `g`-invariant germ.** Lifting
+`precompAnalyticEquiv_apply_of_invariant` through `algebraMap`: if `a ∘ g = a` then
+`σ (algebraMap a) = algebraMap a` in `meroField U`. This supplies, at the field level, both the
+`σ G = G` datum (`G = φ_{c₂}` germ) and the `K`-linearity (`σ` fixes the `ℂ(z)`-image, the projection
+germ) that `q62_disconnected_both` / `precompMeroAlgEquiv` consume. -/
+theorem precompMeroEquiv_algebraMap_fix {U : Set ℂ} {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {a : analyticSubring U}
+    (ha : (a : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+            = (a : Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap (analyticSubring U) (meroField U) a)
+      = algebraMap (analyticSubring U) (meroField U) a := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  rw [precompMeroEquiv_algebraMap, precompAnalyticEquiv_apply_of_invariant
+    hg hg' hmaps hmaps' hgg' hg'g ha]
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **`σ` scales the `meroField` image of a `ζ₀`-relatively-invariant germ by the constant `ζ₀`.**
+Lifting the germ-level scaling through `algebraMap`: if `a ∘ g = ζ₀ · a` (with `ζ₀` the constant germ
+`constToAnalytic U ζ₀`) then `σ (algebraMap a) = algebraMap (ζ₀) * algebraMap a` in `meroField U`. This
+is the `σ F = ζ · F` datum (`F = φ_{c₁}` germ, `ζ = algebraMap (constToAnalytic ζ₀)`) of
+`q62_disconnected_both`. -/
+theorem precompMeroEquiv_algebraMap_scale {U : Set ℂ} {g g' : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (ζ₀ : ℂ) {a : analyticSubring U}
+    (ha : (a : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+            = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (a : Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap (analyticSubring U) (meroField U) a)
+      = algebraMap (analyticSubring U) (meroField U) (constToAnalytic U ζ₀)
+        * algebraMap (analyticSubring U) (meroField U) a := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  have hscale : precompAnalyticEquiv hg hg' hmaps hmaps' hgg' hg'g a
+      = constToAnalytic U ζ₀ * a := by
+    apply Subtype.ext
+    show ((precompAnalytic hg hmaps a : analyticSubring U) : Germ (𝓟 U) ℂ) = _
+    rw [precompAnalytic_coe, ha, MulMemClass.coe_mul]
+  rw [precompMeroEquiv_algebraMap, hscale, map_mul]
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The constant `ζ₀` keeps its order in `meroField U`.** The composite `ℂ →+* meroField U`
+(constants → analytic germs → fractions) is a ring hom out of the field `ℂ`, hence injective, so it
+preserves multiplicative order: `orderOf (algebraMap (constToAnalytic ζ₀)) = orderOf ζ₀`. With
+`exists_dyadic_order_gt` this supplies the `orderOf ζ = m > d` datum of `q62_disconnected_both` at the
+field level — the `meroField` analogue of `orderOf_const_coverGerm`. -/
+theorem orderOf_algebraMap_constToAnalytic {U : Set ℂ} [IsDomain (analyticSubring U)] (ζ₀ : ℂ) :
+    orderOf (algebraMap (analyticSubring U) (meroField U) (constToAnalytic U ζ₀)) = orderOf ζ₀ := by
+  let f : ℂ →+* meroField U :=
+    (algebraMap (analyticSubring U) (meroField U)).comp (constToAnalytic U)
+  exact orderOf_injective f.toMonoidHom f.injective ζ₀
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The constant germ is `g`-invariant.** Precomposition by any self-map fixes a constant germ
+(`(fun _ ↦ ζ₀) ∘ g = fun _ ↦ ζ₀`). Hence via `precompMeroEquiv_algebraMap_fix` the deck automorphism
+fixes the constant `ζ = algebraMap (constToAnalytic ζ₀)` — the `σ ζ = ζ` datum of
+`q62_disconnected_both`. -/
+theorem constToAnalytic_compTendsto {U : Set ℂ} {g : ℂ → ℂ} (h : Filter.Tendsto g (𝓟 U) (𝓟 U))
+    (ζ₀ : ℂ) :
+    ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ).compTendsto g h
+      = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) := by
+  show (↑(fun _ : ℂ => ζ₀) : Germ (𝓟 U) ℂ).compTendsto g h = ↑(fun _ : ℂ => ζ₀)
+  rw [Germ.coe_compTendsto]
+  rfl
+
+end Bottcher
+
+-- (rebuild trigger)

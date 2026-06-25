@@ -27,3 +27,8 @@ import GaloisForLFunctions.Bottcher.DyadicMonodromy
 import GaloisForLFunctions.Bottcher.Period
 import GaloisForLFunctions.Bottcher.MonodromyMultiplier
 import GaloisForLFunctions.Bottcher.Q62
+import GaloisForLFunctions.Bottcher.MeromorphicField
+import GaloisForLFunctions.Bottcher.Q62Field
+import GaloisForLFunctions.Bottcher.CoverMonodromy
+import GaloisForLFunctions.Bottcher.CoverConstruction
+import GaloisForLFunctions.Bottcher.Q62Assembly
