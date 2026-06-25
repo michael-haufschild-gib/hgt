@@ -583,3 +583,61 @@ theorem analyticOnNhd_glue_cocycle {U₁ U₂ : Set ℂ} {F₁ F₂ : ℂ → �
   analyticOnNhd_glue hU₁ hU₂ hF₁ (hF₂.add analyticOnNhd_const) hcoc
 
 end Bottcher
+
+namespace Bottcher
+open Set
+
+/-- **Multiplicative gluing of Böttcher branches (period-absorbing).** The local Böttcher branches
+`β₁ = exp F₁`, `β₂ = exp F₂` are related on their overlap by a **unit constant** `u = exp c`
+(`β₁ = u·β₂`, from the additive cocycle `F₁ = F₂ + c`). They glue to a single analytic `φ̃c` on
+`U₁∪U₂`. The key over the additive version: `exp` **absorbs the `2πi`-period** — even where `F` jumps by
+`2πi` between overlap components, `β = exp F` is unchanged (`exp(F+2πi)=exp F`), so the multiplicative
+cocycle `u_i = exp(c_i)` is what must close up: `∏ u_i = exp(∑ c_i) = exp(period)`. Around the `2ⁿ`-fold
+cover the period is `2πi` (`no_singlevalued_branch_of_dyadic_period`), so `∏ u_i = exp(2πi) = 1` and the
+glued `φ̃c` is single-valued — the genuine lift, with the deck rotation scaling it by `ζ`. -/
+theorem analyticOnNhd_glue_unit {U₁ U₂ : Set ℂ} {β₁ β₂ : ℂ → ℂ} {u : ℂ}
+    (hU₁ : IsOpen U₁) (hU₂ : IsOpen U₂)
+    (hβ₁ : AnalyticOnNhd ℂ β₁ U₁) (hβ₂ : AnalyticOnNhd ℂ β₂ U₂)
+    (hcoc : EqOn β₁ (fun w => u * β₂ w) (U₁ ∩ U₂)) :
+    haveI := Classical.dec
+    AnalyticOnNhd ℂ (U₁.piecewise β₁ (fun w => u * β₂ w)) (U₁ ∪ U₂) :=
+  analyticOnNhd_glue hU₁ hU₂ hβ₁ (analyticOnNhd_const.mul hβ₂) hcoc
+
+end Bottcher
+
+namespace Bottcher
+open Set Complex
+
+/-- **The deck scaling DERIVES from the lift's existence.** This is the analytic fact aesop cannot
+synthesize — but it is not an independent input: once the single-valued green-conjugate `F = log φ̃c`
+exists on the connected cover `U` and the deck `ρ` preserves the modulus (`Re(F∘ρ) = Re F`, since the
+deck fixes the projection and `Re F = G_c∘p` is a projection-pullback), the ratio `φ̃c∘ρ / φ̃c = exp(F∘ρ
+− F)` has constant real part `0`, so `F∘ρ − F` is an imaginary constant `a` (open mapping,
+`AnalyticOnNhd.eq_const_of_re_eq_const`), giving `φ̃c∘ρ = ζ·φ̃c` with `ζ = exp a`, `|ζ| = 1`. So the
+`hliftF` scaling `a₁∘g = ζ₀·a₁` reduces to the **existence** of the single-valued lift `φ̃c = exp F` on
+the connected cover — the sole genuine remaining analytic input, the global gluing
+(`analyticOnNhd_glue_unit`) where the period unwinds. -/
+theorem scaling_from_modulus_preserved {U : Set ℂ} {F : ℂ → ℂ} {ρ : ℂ → ℂ}
+    (hUo : IsOpen U) (hUc : IsConnected U)
+    (hF : AnalyticOnNhd ℂ F U) (hρ : AnalyticOnNhd ℂ ρ U) (hmaps : Set.MapsTo ρ U U)
+    (hmod : ∀ w ∈ U, (F (ρ w)).re = (F w).re) :
+    ∃ ζ : ℂ, ‖ζ‖ = 1 ∧ ∀ w ∈ U, Complex.exp (F (ρ w)) = ζ * Complex.exp (F w) := by
+  have hcomp : AnalyticOnNhd ℂ (fun w => F (ρ w)) U := by
+    intro w hw
+    exact (hF (ρ w) (hmaps hw)).comp (hρ w hw)
+  have hg : AnalyticOnNhd ℂ (fun w => F (ρ w) - F w) U := hcomp.sub hF
+  have hre : ∀ x ∈ U, (F (ρ x) - F x).re = (0 : ℝ) := fun x hx => by
+    rw [Complex.sub_re, hmod x hx, sub_self]
+  obtain ⟨a, ha⟩ := AnalyticOnNhd.eq_const_of_re_eq_const hg hre hUo hUc
+  obtain ⟨z₀, hz₀⟩ := hUc.nonempty
+  have ha0 : a.re = 0 := by
+    have h1 : F (ρ z₀) - F z₀ = a := ha z₀ hz₀
+    have h2 := hre z₀ hz₀
+    rw [h1] at h2; exact h2
+  refine ⟨Complex.exp a, by rw [Complex.norm_exp, ha0, Real.exp_zero], fun w hw => ?_⟩
+  have hsub : F (ρ w) - F w = a := ha w hw
+  rw [← Complex.exp_add]
+  congr 1
+  linear_combination hsub
+
+end Bottcher

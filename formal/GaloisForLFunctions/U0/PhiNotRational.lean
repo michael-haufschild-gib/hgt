@@ -18,6 +18,7 @@ open Polynomial Bottcher
 namespace PhiNotRational
 
 /-- The escape region is infinite (it contains the real ray `(max 2 ‖c‖, ∞)`). -/
+@[aesop safe]
 theorem escapeOpen_infinite (c : ℂ) : (escapeOpen c).Infinite := by
   apply Set.infinite_of_injective_forall_mem
     (f := fun n : ℕ => ((max 2 ‖c‖ + 1 + n : ℝ) : ℂ))
@@ -36,6 +37,7 @@ theorem escapeOpen_infinite (c : ℂ) : (escapeOpen c).Infinite := by
 equation cross-multiplies to `p(z²+c)·q(z)² = p(z)²·q(z²+c)`, valid wherever `q(z), q(z²+c) ≠ 0` — a
 cofinite subset of the infinite escape region — hence a polynomial identity by `eq_of_infinite_eval_eq`,
 refuted by `no_coprime_mahler_rational`. -/
+@[aesop safe]
 theorem bottcher_not_rational {c : ℂ} (hc : c ≠ 0) {p q : ℂ[X]}
     (hp : p ≠ 0) (hq : q ≠ 0) (hpq : IsCoprime p q)
     (hncc : 0 < p.natDegree ∨ 0 < q.natDegree)

@@ -30,6 +30,7 @@ namespace U0PhiCard
 
 /-- The relation `f(z,w) = ∑ᵢ aᵢ(z)·wⁱ` with analytic coefficients is analytic (the analytic-coefficient
 analogue of `bivar_analytic`). -/
+@[aesop safe]
 theorem anpoly_analytic {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z₀ : ℂ)
     (ha : ∀ i, AnalyticAt ℂ (a i) z₀) (w₀ : ℂ) :
     AnalyticAt ℂ (fun q : ℂ × ℂ => ∑ i : Fin (d+1), a i q.1 * q.2 ^ (i : ℕ)) (z₀, w₀) :=
@@ -37,12 +38,14 @@ theorem anpoly_analytic {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z₀ : ℂ)
     (fun i _ => ((ha i).comp analyticAt_fst).mul (analyticAt_snd.pow (i : ℕ)))
 
 /-- `(∑ᵢ C(aᵢ z)·Xⁱ).eval w = ∑ᵢ aᵢ(z)·wⁱ`: the specialized polynomial evaluates to the relation. -/
+@[aesop safe]
 theorem Qpoly_eval {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z w : ℂ) :
     (∑ i : Fin (d+1), C (a i z) * X ^ (i:ℕ) : ℂ[X]).eval w = ∑ i : Fin (d+1), a i z * w ^ (i:ℕ) := by
   simp only [eval_finset_sum, eval_mul, eval_C, eval_pow, eval_X]
 
 /-- The specialized polynomial `∑ᵢ C(aᵢ z)·Xⁱ` has degree exactly `d` when the top coefficient
 `a_d(z) ≠ 0`. -/
+@[aesop safe]
 theorem Qpoly_natDegree {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z : ℂ) (hlead : a (Fin.last d) z ≠ 0) :
     (∑ i : Fin (d+1), C (a i z) * X ^ (i:ℕ) : ℂ[X]).natDegree = d := by
   have hcoeff : (∑ i : Fin (d+1), C (a i z) * X ^ (i:ℕ) : ℂ[X]).coeff d = a (Fin.last d) z := by
@@ -61,6 +64,7 @@ theorem Qpoly_natDegree {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z : ℂ) (hle
 
 /-- The partial `w`-derivative of `f(z,w) = ∑ᵢ aᵢ(z)·wⁱ` in the `(0,1)` direction is the polynomial
 `w`-derivative of the specialized polynomial — the simple-root quantity `holo_implicit` consumes. -/
+@[aesop safe]
 theorem partial_w_deriv_an {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z₀ : ℂ)
     (ha : ∀ i, AnalyticAt ℂ (a i) z₀) (w₀ : ℂ) :
     (fderiv ℂ (fun q : ℂ × ℂ => ∑ i : Fin (d+1), a i q.1 * q.2 ^ (i:ℕ)) (z₀, w₀)) (0, 1)
@@ -91,6 +95,7 @@ card secures by avoiding the discrete discriminant locus), forces `u₀` to cont
 `root_complete` pins `u₀(z)` to the branch set for exterior `z` near `z₀`; `branch_selection` over the
 preconnected lens selects one analytic branch — the continuation. This is the analytic-coefficient
 generalization of `continues_of_separable_relation`. -/
+@[aesop safe]
 theorem continues_of_analytic_relation {d : ℕ} (hd : 1 ≤ d) (z₀ : ℂ) (hz₀ : ‖z₀‖ = 1)
     (a : Fin (d+1) → ℂ → ℂ) (ha : ∀ i, AnalyticAt ℂ (a i) z₀)
     (hlead : a (Fin.last d) z₀ ≠ 0)
@@ -179,6 +184,7 @@ theorem continues_of_analytic_relation {d : ℕ} (hd : 1 ≤ d) (z₀ : ℂ) (hz
 continuation `continues_of_analytic_relation` provides would cross the natural boundary of `u₀`. This
 is the connected-case `u₀ ⟂ φ_b` conclusion once Steps 1–2 (φ_b analytic on a basin meeting the circle,
 squarefree crossing) supply `a`, `hlead`, `rt`, `hroot`, `hsimple` — the Böttcher-side analytic inputs. -/
+@[aesop safe]
 theorem no_analytic_relation {d : ℕ} (hd : 1 ≤ d) (z₀ : ℂ) (hz₀ : ‖z₀‖ = 1)
     (a : Fin (d+1) → ℂ → ℂ) (ha : ∀ i, AnalyticAt ℂ (a i) z₀)
     (hlead : a (Fin.last d) z₀ ≠ 0)
@@ -197,6 +203,7 @@ extracted from separability (`nodup_roots` + `IsAlgClosed.card_roots_eq_natDegre
 `no_analytic_relation`. This is the connected-case `u₀ ⟂ φ_b` conclusion modulo the Böttcher inputs:
 `aᵢ` analytic (φ_b analytic on the basin, Step 1), a circle crossing `z₀` in the basin (the capacity
 argument, Step 2), and separability of the specialization there. -/
+@[aesop safe]
 theorem no_separable_analytic_relation {d : ℕ} (hd : 1 ≤ d) (z₀ : ℂ) (hz₀ : ‖z₀‖ = 1)
     (a : Fin (d+1) → ℂ → ℂ) (ha : ∀ i, AnalyticAt ℂ (a i) z₀)
     (hlead : a (Fin.last d) z₀ ≠ 0)
@@ -231,6 +238,7 @@ analytic and not identically zero on a preconnected open `Ω`, and a subset `S �
 vanishing on all of `S` would force `g ≡ 0` on `Ω` by the identity theorem. The card uses this to pick
 a crossing point `z₀ ∈ Ω ∩ {|z|=1}` off the discrete zero locus of the leading coefficient and
 discriminant of the minimal polynomial of `u₀` over `ℂ(z,φ_b)`. -/
+@[aesop safe]
 theorem exists_nonzero_on_accumulating {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
     {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g Ω) {w : ℂ} (hw : w ∈ Ω) (hgw : g w ≠ 0)
     {z₁ : ℂ} (hz₁ : z₁ ∈ Ω) {S : Set ℂ} (hS : S ⊆ Ω)
@@ -248,6 +256,7 @@ non-vanishing of the resultant of the minimal polynomial's specialization (secur
 `exists_nonzero_on_accumulating` applied to the resultant — an analytic function of `z`, since it is the
 Sylvester determinant of the analytic coefficients) into the `hsep` hypothesis of
 `no_separable_analytic_relation`. -/
+@[aesop safe]
 theorem separable_of_resultant_ne {Q : ℂ[X]} (hQ : Q ≠ 0)
     (hres : resultant Q (derivative Q) ≠ 0) : Q.Separable := by
   rw [Polynomial.Separable]
@@ -256,6 +265,7 @@ theorem separable_of_resultant_ne {Q : ℂ[X]} (hQ : Q ≠ 0)
 
 /-- The determinant of a matrix whose entries depend analytically on a parameter is analytic
 (`det = ∑_σ sign σ ∏ entries`, a finite sum of products of analytic entries). -/
+@[aesop safe]
 theorem analyticAt_matrix_det {ι : Type} [Fintype ι] [DecidableEq ι] {M : ℂ → Matrix ι ι ℂ} {z₀ : ℂ}
     (hM : ∀ i j, AnalyticAt ℂ (fun z => M z i j) z₀) :
     AnalyticAt ℂ (fun z => (M z).det) z₀ := by
@@ -268,6 +278,7 @@ theorem analyticAt_matrix_det {ι : Type} [Fintype ι] [DecidableEq ι] {M : ℂ
     (fun σ _ => analyticAt_const.mul (Finset.analyticAt_fun_prod _ (fun i _ => hM (σ i) i)))
 
 /-- The `k`-th coefficient of the specialized polynomial `∑ᵢ C(aᵢ z)·Xⁱ` is analytic in `z`. -/
+@[aesop safe]
 theorem Qz_coeff_analytic {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z₀ : ℂ)
     (ha : ∀ i, AnalyticAt ℂ (a i) z₀) (k : ℕ) :
     AnalyticAt ℂ (fun z => (∑ i : Fin (d+1), C (a i z) * X ^ (i:ℕ) : ℂ[X]).coeff k) z₀ := by
@@ -280,6 +291,7 @@ theorem Qz_coeff_analytic {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z₀ : ℂ)
   exact Finset.analyticAt_fun_sum _ (fun i _ => (ha i).mul analyticAt_const)
 
 /-- The `k`-th coefficient of the derivative of `∑ᵢ C(aᵢ z)·Xⁱ` is analytic in `z`. -/
+@[aesop safe]
 theorem Qz_deriv_coeff_analytic {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z₀ : ℂ)
     (ha : ∀ i, AnalyticAt ℂ (a i) z₀) (k : ℕ) :
     AnalyticAt ℂ
@@ -296,6 +308,7 @@ locus where `∑ᵢ aᵢ(z)·Yⁱ` fails to be squarefree is the zero set of an 
 resultant is the Sylvester determinant; its entries are coefficients of the polynomial and its
 derivative, each analytic by `Qz_coeff_analytic`/`Qz_deriv_coeff_analytic`; `analyticAt_matrix_det`
 finishes.) -/
+@[aesop safe]
 theorem resultant_specialize_analytic {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z₀ : ℂ)
     (ha : ∀ i, AnalyticAt ℂ (a i) z₀) :
     AnalyticAt ℂ (fun z => resultant (∑ i : Fin (d+1), C (a i z) * X ^ (i:ℕ))
@@ -321,6 +334,7 @@ theorem resultant_specialize_analytic {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) 
 /-- `natDegree(derivative p) = d - 1` when `natDegree p = d ≥ 1` over `ℂ` (characteristic 0): the
 leading coefficient `d · p.coeff d` of `p'` is nonzero since `d ≠ 0`. Needed to match the fixed-degree
 resultant `(d, d-1)` with the default-degree resultant for the separability criterion. -/
+@[aesop safe]
 theorem natDegree_deriv_eq {p : ℂ[X]} {d : ℕ} (hd : 1 ≤ d) (hp : p.natDegree = d) :
     (derivative p).natDegree = d - 1 := by
   have hpne : p ≠ 0 := fun h => by rw [h, natDegree_zero] at hp; omega
@@ -338,6 +352,7 @@ theorem natDegree_deriv_eq {p : ℂ[X]} {d : ℕ} (hd : 1 ≤ d) (hp : p.natDegr
 (`a_d(z) ≠ 0`), the specialization `∑ᵢ C(aᵢ z)·Xⁱ` is separable iff its degree-`(d,d-1)` resultant with
 its derivative is nonzero — bridging the analytic resultant (`resultant_specialize_analytic`) to the
 separability hypothesis of `no_separable_analytic_relation`. -/
+@[aesop norm simp]
 theorem separable_iff_resultant_fixed {d : ℕ} (hd : 1 ≤ d) (a : Fin (d+1) → ℂ → ℂ) (z : ℂ)
     (hlead : a (Fin.last d) z ≠ 0) :
     (∑ i : Fin (d+1), C (a i z) * X ^ (i:ℕ) : ℂ[X]).Separable
@@ -360,6 +375,7 @@ on a preconnected `Ω`, the specialization is separable at some `w ∈ Ω`, and 
 non-separable locus is the zero set of `z ↦ a_d(z)·resultant(z)` — analytic and not identically zero —
 so `exists_nonzero_on_accumulating` finds a good point on the arc. This is the card's "choose a generic
 crossing point off the discriminant locus." -/
+@[aesop safe]
 theorem exists_separable_crossing {d : ℕ} (hd : 1 ≤ d) {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
     (a : Fin (d+1) → ℂ → ℂ) (ha : ∀ i, AnalyticOnNhd ℂ (a i) Ω)
     {w : ℂ} (hw : w ∈ Ω) (hleadw : a (Fin.last d) w ≠ 0)
@@ -387,6 +403,7 @@ at an interior point (Step 2, the **capacity** argument that the basin crosses t
 entire u₀-side of `u0_phi_independence` (connected case); the three hypotheses `ha`/`hsepw`/`hScirc`+
 `haccum` are exactly the Böttcher-side analytic inputs (φ_b analyticity, transcendence-of-φ_b via the
 minimal polynomial, capacity crossing). -/
+@[aesop safe]
 theorem u0_phi_card_step3 {d : ℕ} (hd : 1 ≤ d) {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
     (a : Fin (d+1) → ℂ → ℂ) (ha : ∀ i, AnalyticOnNhd ℂ (a i) Ω)
     {w : ℂ} (hw : w ∈ Ω) (hleadw : a (Fin.last d) w ≠ 0)
@@ -404,6 +421,7 @@ on an open `Ω` and a polynomial `P ∈ ℂ[z][Y]`, the function `z ↦ P(z, φ(
 is how the card's `aᵢ(z) = (coeff of u₀ⁱ in P)(z, φ_b(z))` become analytic functions once `φ_b` is
 analytic on the basin — the `ha` input to `u0_phi_card_step3`. Generalizes
 `U0Transcendence.relation_analytic` from `u₀` on `Ext` to any analytic `φ` on `Ω`. -/
+@[aesop safe]
 theorem eval_phi_analytic {Ω : Set ℂ} {φ : ℂ → ℂ} (hφ : AnalyticOnNhd ℂ φ Ω) (P : (Polynomial ℂ)[X]) :
     AnalyticOnNhd ℂ (fun z => P.eval₂ (evalRingHom z) (φ z)) Ω := by
   intro z hz
@@ -420,6 +438,7 @@ at an interior point (Step 2, the capacity argument). The relation `P(z,u₀,φ_
 `(P.coeff i)(z, φ_b z)` are analytic on `Ω` by `eval_phi_analytic`; the rest is `u0_phi_card_step3`.
 This is the entire u₀-side of `u0_phi_independence` (connected case), reduced to the three Böttcher
 analytic hypotheses. -/
+@[aesop safe]
 theorem u0_phi_no_relation_3var {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
     {φ : ℂ → ℂ} (hφ : AnalyticOnNhd ℂ φ Ω)
     (P : (Polynomial (Polynomial ℂ))[X]) (hd : 1 ≤ P.natDegree)
@@ -460,6 +479,7 @@ every `w` on the unit circle, then `b = 0`. (Test `w = 1`, `w = -1`: `‖b‖² 
 circle then `K_b` = closed unit disk (capacity), so `J_b = {|z|=1}` is forward-invariant under
 `z ↦ z²+b` (every `z²` ranges over the circle as `z` does), forcing `b = 0` — contradicting `b ≠ 0`.
 Hence the basin *does* cross the circle, supplying the `haccum` arc of `u0_phi_no_relation_3var`. -/
+@[aesop safe]
 theorem eq_zero_of_norm_add_eq_one {b : ℂ} (h : ∀ w : ℂ, ‖w‖ = 1 → ‖w + b‖ = 1) : b = 0 := by
   have h1 : normSq (1 + b) = 1 := by
     rw [Complex.normSq_eq_norm_sq, h 1 (by simp)]; norm_num
@@ -482,6 +502,7 @@ is `z²` for some unit `z` (square roots in `ℂ`, `IsAlgClosed.exists_pow_nat_e
 completely invariant, so `f_b` maps the circle into itself; hence `b = 0`, contradicting `b ≠ 0`, so the
 basin must cross the circle — the missing geometric input is now reduced to the capacity fact
 `K_b = closed unit disk` (Böttcher-side). -/
+@[aesop safe]
 theorem eq_zero_of_circle_invariant {b : ℂ} (h : ∀ z : ℂ, ‖z‖ = 1 → ‖z ^ 2 + b‖ = 1) : b = 0 := by
   apply eq_zero_of_norm_add_eq_one
   intro w hw
@@ -498,6 +519,7 @@ continuity forces `‖z²+b‖ ≥ 1` in the limit, so `‖z²+b‖ = 1` — the
 discharges the card's entire Step 2 *modulo the single deep capacity fact* `K_b = closed unit disk`
 (which holds when the basin avoids the circle, by `cap(K_b)=1` + the energy test — the Böttcher-side
 input). With it, "basin avoids circle ⟹ `b = 0`" is complete, so `b ≠ 0` forces the basin to cross. -/
+@[aesop safe]
 theorem eq_zero_of_invariant_disk {b : ℂ} (hinv : ∀ z : ℂ, ‖z‖ ≤ 1 ↔ ‖z ^ 2 + b‖ ≤ 1) : b = 0 := by
   apply eq_zero_of_circle_invariant
   intro z hz
@@ -524,6 +546,7 @@ the two components `{‖z‖<1}`, `{‖z‖>1}`; containing a large-norm point p
 closed disk is in its complement `K_b`. This is the first half of the card's Step 2; combined with the
 deep capacity fact `cap(K_b)=1` (giving `K_b = closed disk`) and `eq_zero_of_invariant_disk`, it forces
 `b = 0` — so a nonexceptional basin must cross the circle. -/
+@[aesop safe]
 theorem disk_subset_of_basin_avoids_circle {K : Set ℂ} (hΩc : IsPreconnected Kᶜ)
     (havoid : ∀ z ∈ Kᶜ, ‖z‖ ≠ 1) {w : ℂ} (hw : w ∈ Kᶜ) (hwn : 1 < ‖w‖) :
     Metric.closedBall (0:ℂ) 1 ⊆ K := by

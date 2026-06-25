@@ -23,6 +23,7 @@ namespace MahlerPolynomial
 `τ φ = φ²`, evaluating the `σ`-transform `p^σ` at `φ²` equals `τ` applied to `p` evaluated at `φ`:
 `(p.map σ).aeval(φ²) = τ(p.aeval φ)`. Both sides are ring homs `K[Y] → L` agreeing on `C k` (`hcompat`)
 and on `X` (`hτφ`). -/
+@[aesop safe]
 theorem aeval_map_mahler {K L : Type*} [Field K] [Field L] [Algebra K L]
     (σ : K →+* K) (τ : L →+* L)
     (hcompat : ∀ k : K, τ (algebraMap K L k) = algebraMap K L (σ k))
@@ -39,6 +40,7 @@ theorem aeval_map_mahler {K L : Type*} [Field K] [Field L] [Algebra K L]
 minimal polynomial of `φ` over `K` divides `(minpoly K φ).map σ ∘ (X²)` — the `σ`-twisted,
 `Y↦Y²`-substituted minimal polynomial — because `φ` is a root of it (`aeval_map_mahler` +
 `minpoly.aeval`). This is `P(z,Y) ∣ P(σz,Y²)` of the Mahler method, here as clean field theory. -/
+@[aesop safe]
 theorem minpoly_dvd_mahler {K L : Type*} [Field K] [Field L] [Algebra K L]
     (σ : K →+* K) (τ : L →+* L)
     (hcompat : ∀ k : K, τ (algebraMap K L k) = algebraMap K L (σ k))
@@ -54,6 +56,7 @@ endomorphism and `m ∈ K[Y]` is nonconstant with `m ∣ (m^σ)(Y²)` and `m(Y),
 too; coprimality gives `m·m(−Y) ∣ (m^σ)(Y²)`, and both have degree `2·deg m`, so the cofactor is a
 constant. This is the structural identity whose `Y=0` evaluation (`mahler_coeff_zero_of_identity`) drives
 the norm-descent. -/
+@[aesop safe]
 theorem mahler_identity_of_coprime {K : Type*} [Field K] {σ : K →+* K} (hσ : Function.Injective σ)
     {m : K[X]} (hdeg : 0 < m.natDegree)
     (hdvd : m ∣ (m.map σ).comp (X ^ 2)) (hcop : IsCoprime m (m.comp (-X))) :
@@ -95,6 +98,7 @@ relation `mahlerHom(m.coeff 0) = s·(m.coeff 0)²` for a constant `s`. Chains `m
 term `m.coeff 0` is, up to sign, the norm of the algebraic element; with `s` the appropriate unit,
 `mahler_eq_sq_imp_const` then forces the norm constant — completing the norm-descent once the carrier
 supplies the divisibility `hdvd` (via `minpoly_dvd_mahler`). -/
+@[aesop safe]
 theorem mahler_norm_relation {c : ℂ} {m : (RatFunc ℂ)[X]} (hdeg : 0 < m.natDegree)
     (hdvd : m ∣ (m.map (mahlerHom c).toRingHom).comp (X ^ 2))
     (hcop : IsCoprime m (m.comp (-X))) :
@@ -112,6 +116,7 @@ with `mahler_norm_relation` (divisibility ⟹ norm relation). The *only* inputs 
 Böttcher application `L = meroField(escapeOpen)`, `τ` = precomposition by `z↦z²+c`, `τ φ_c = φ_c²` from
 `bottcherCoord_quadratic`. With `s` a sign (monic `m`), `mahler_eq_sq_imp_const` then forces the norm
 constant — the first decoupled constraint of the n≥2 Nishioka system. -/
+@[aesop safe]
 theorem carrier_norm_relation {c : ℂ} {L : Type*} [Field L] [Algebra (RatFunc ℂ) L]
     (τ : L →+* L)
     (hcompat : ∀ k : RatFunc ℂ,
@@ -131,6 +136,7 @@ pins down) together with its `σ`-transform `φ⁴ = (z²+c)φ² + c/2` (the sha
 degree-2 candidate cannot satisfy the functional equation: this is the concrete functional-equation
 obstruction at the heart of the `n=2` case (the remaining input — that `b₁=−z` is *forced*, ruling out
 higher-degree `b₁` — is Ritt-type semi-conjugacy rigidity). -/
+@[aesop safe]
 theorem candidate_forces_exceptional {R : Type*} [CommRing R] [Algebra ℂ R] [Nontrivial R]
     {z φ : R} {c : ℂ}
     (h1 : φ ^ 2 = z * φ + algebraMap ℂ R (c / 2))
@@ -160,6 +166,7 @@ satisfies the semi-conjugacy `b₁(z²+c) = −b₁² + 2β`, then `a₀ = 0` an
 `β = −c/2`. (Coefficient comparison: the `X¹` coefficient forces `a₀=0`, the `X⁰` coefficient forces
 `c=−2β`.) Combined with the deg-forcing `deg b₁ = 1` (from the asymptotic `φ_c ~ z`), this pins the n=2
 minimal polynomial to the candidate `Y²−zY−c/2`, which `candidate_forces_exceptional` then refutes. -/
+@[aesop safe]
 theorem semiconj_degree_one {a₀ β c : ℂ}
     (h : (-X + C a₀ : ℂ[X]).comp (X ^ 2 + C c) = -((-X + C a₀) ^ 2) + C (2 * β)) :
     a₀ = 0 ∧ c = -2 * β := by
@@ -175,6 +182,7 @@ ray (the asymptotic from `φ_c ~ z`) and satisfies the semi-conjugacy `b₁(z²+
 `b₁ = −z` and `c = −2β`. Chains the deg-forcing (`b₁(t)/t→−1` finite ⟹ `deg ≤ 1`, and `≠0` since the
 limit is `≠0`), the leading-coefficient asymptotic (limit `= leadingCoeff = −1`), and
 `semiconj_degree_one`. This pins the candidate minimal polynomial to `Y²−zY−c/2`. -/
+@[aesop safe]
 theorem b1_pinned {c β : ℂ} {b₁ : ℂ[X]}
     (htend : Tendsto (fun t : ℝ => b₁.eval (t : ℂ) / (t : ℂ)) atTop (𝓝 (-1)))
     (hsc : b₁.comp (X ^ 2 + C c) = -(b₁ ^ 2) + C (2 * β)) :

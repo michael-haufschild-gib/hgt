@@ -33,6 +33,7 @@ def adamsPowerSum {ι : Type*} [Fintype ι] (α : ι → ℂ) (m : ℕ) : ℂ :=
 /-- **B30 §8(a): ⊗-multiplicativity of the Adams operations.** The prime power
 sum is multiplicative under the Rankin–Selberg tensor product (pairwise-product
 Satake parameters): `p_m(π₁ ⊗ π₂) = p_m(π₁)·p_m(π₂)`. -/
+@[aesop safe]
 theorem adamsPowerSum_tensor {ι κ : Type*} [Fintype ι] [Fintype κ]
     (α : ι → ℂ) (β : κ → ℂ) (m : ℕ) :
     adamsPowerSum (satakeTensorParameters α β) m
@@ -43,6 +44,7 @@ theorem adamsPowerSum_tensor {ι κ : Type*} [Fintype ι] [Fintype κ]
 
 /-- The Adams operation of the contragredient (conjugate Satake parameters) is
 the complex conjugate of the Adams operation. -/
+@[aesop safe]
 theorem adamsPowerSum_conj {ι : Type*} [Fintype ι] (α : ι → ℂ) (m : ℕ) :
     adamsPowerSum (fun i => (starRingEnd ℂ) (α i)) m
       = (starRingEnd ℂ) (adamsPowerSum α m) := by
@@ -53,6 +55,7 @@ theorem adamsPowerSum_conj {ι : Type*} [Fintype ι] (α : ι → ℂ) (m : ℕ)
 /-- **B30 §8(a), self-dual case.** For the Rankin–Selberg square `π ⊗ π̃`
 (contragredient = conjugate Satake), the Adams operation is the second moment
 `p_m·conj(p_m)`. -/
+@[aesop safe]
 theorem adamsPowerSum_tensor_selfDual {ι : Type*} [Fintype ι] (α : ι → ℂ) (m : ℕ) :
     adamsPowerSum (satakeTensorParameters α (fun i => (starRingEnd ℂ) (α i))) m
       = adamsPowerSum α m * (starRingEnd ℂ) (adamsPowerSum α m) := by
@@ -62,6 +65,7 @@ theorem adamsPowerSum_tensor_selfDual {ι : Type*} [Fintype ι] (α : ι → ℂ
 Rankin–Selberg Adams operation equals `‖p_m(π)‖²` (here `Complex.normSq`), the
 pair-correlation weight of the zeros (Montgomery): "operation = correlation" is
 exact, and the weight is manifestly `≥ 0`. -/
+@[aesop safe]
 theorem adamsPowerSum_tensor_selfDual_normSq {ι : Type*} [Fintype ι]
     (α : ι → ℂ) (m : ℕ) :
     adamsPowerSum (satakeTensorParameters α (fun i => (starRingEnd ℂ) (α i))) m
@@ -74,6 +78,7 @@ Satake parameters are the disjoint union `Sum.elim α β`):
 `p_m(π₁ ⊞ π₂) = p_m(π₁) + p_m(π₂)`. Together with `adamsPowerSum_tensor` this
 exhibits the two λ-ring operations on the Adams generators — `⊕` adds, `⊗`
 multiplies. -/
+@[aesop safe]
 theorem adamsPowerSum_isobaricSum {ι κ : Type*} [Fintype ι] [Fintype κ]
     (α : ι → ℂ) (β : κ → ℂ) (m : ℕ) :
     adamsPowerSum (Sum.elim α β) m = adamsPowerSum α m + adamsPowerSum β m := by
@@ -85,6 +90,7 @@ theorem adamsPowerSum_isobaricSum {ι κ : Type*} [Fintype ι] [Fintype κ]
 operation (`α_i ↦ α_iᵏ`, i.e. base change / `p^k`-Frobenius) and then taking the
 `m`-th power sum yields the `mk`-th power sum: the Adams operations form a
 multiplicative monoid `≅ (ℕ, ×)`. -/
+@[aesop safe]
 theorem adamsPowerSum_comp {ι : Type*} [Fintype ι] (α : ι → ℂ) (k m : ℕ) :
     adamsPowerSum (fun i => (α i) ^ k) m = adamsPowerSum α (k * m) := by
   unfold adamsPowerSum
@@ -92,6 +98,7 @@ theorem adamsPowerSum_comp {ι : Type*} [Fintype ι] (α : ι → ℂ) (k m : �
 
 /-- **B30 §7/§8 (Adams identity `ψ¹ = id`).** The first Adams operation is the
 identity on secular data: `p_m(ψ¹π) = p_m(π)`. -/
+@[aesop safe]
 theorem adamsPowerSum_one {ι : Type*} [Fintype ι] (α : ι → ℂ) (m : ℕ) :
     adamsPowerSum (fun i => (α i) ^ 1) m = adamsPowerSum α m := by
   rw [adamsPowerSum_comp, one_mul]
@@ -103,6 +110,7 @@ weights `w m ≥ 0` is manifestly nonnegative on the **Satake side**:
 is the `π ⊗ π̃` Adams operation, so this is the positivity of the pair-correlation
 pairing — *free* on the prime side. (The wall is whether this transfers to the
 zero side; that is the period realization, not formalized here.) -/
+@[aesop safe]
 theorem adams_secondMoment_weil_nonneg {ι : Type*} [Fintype ι] (α : ι → ℂ)
     (w : ℕ → ℝ) (hw : ∀ m, 0 ≤ w m) (N : ℕ) :
     0 ≤ ∑ m ∈ Finset.range N, w m * Complex.normSq (adamsPowerSum α m) :=
@@ -113,6 +121,7 @@ parameters — the central character / top exterior power `∧^top` (the
 "determinant" of `π`) — is multiplicative under Rankin–Selberg in the
 determinant-of-Kronecker form `det(π₁⊗π₂)=det(π₁)^{dim π₂}·det(π₂)^{dim π₁}`:
 `∏_{i,j} α_i β_j = (∏_i α_i)^{|κ|} · (∏_j β_j)^{|ι|}`. -/
+@[aesop safe]
 theorem satakeDet_tensor {ι κ : Type*} [Fintype ι] [Fintype κ]
     (α : ι → ℂ) (β : κ → ℂ) :
     (∏ p : ι × κ, satakeTensorParameters α β p)

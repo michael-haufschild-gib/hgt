@@ -27,6 +27,7 @@ noncomputable section
 complex Hankel moment matrix `H_{jk}=Σ_i t_i^(j+k)` is positive semidefinite, since it is the Gram
 matrix `B Bᴴ` of the finite Vandermonde-style matrix `B_{j,i}=t_i^j`. This is the ledger-safe easy
 direction of the secular Hankel/Hermite face: real finite points imply PSD Hankel moments. -/
+@[aesop safe]
 theorem secularHankel_posSemidef {n m : ℕ} (t : Fin n → ℝ) :
     (Matrix.of (fun j k : Fin m => ∑ i, (t i : ℂ) ^ ((j : ℕ) + (k : ℕ)))).PosSemidef := by
   let B : Matrix (Fin m) (Fin n) ℂ := Matrix.of (fun j i => (t i : ℂ) ^ (j : ℕ))

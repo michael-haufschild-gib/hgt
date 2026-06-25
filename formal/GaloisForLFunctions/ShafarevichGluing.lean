@@ -24,6 +24,7 @@ coordinatewise decomposition into an `a`-kernel vector plus a `b`-kernel vector.
 
 This is the eigenbasis form of `ker(ST)=ker(S)+ker(T)` used in the rank-one
 Shafarevich-gluing vanishing argument. -/
+@[aesop norm simp]
 theorem diagonalKer_mul_eq_sum_ker {ι K : Type*} [Field K]
     (a b x : ι → K) :
     (∀ i, a i * b i * x i = 0) ↔

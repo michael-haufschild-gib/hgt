@@ -28,6 +28,7 @@ conjugates back to the original pencil `lam * (B * B) - P`. This is the exact
 finite algebraic identity underlying the paper notation
 `A^(1/2) (lam I - A^(-1/2) P A^(-1/2)) A^(1/2) = lam A - P`.
 -/
+@[aesop safe]
 theorem congruencePencil_factorization (R : Type*) [CommRing R]
     (B Binv P : Matrix n n R) (lam : R)
     (hL : B * Binv = 1) (hR : Binv * B = 1) :
@@ -49,6 +50,7 @@ theorem congruencePencil_factorization (R : Type*) [CommRing R]
 /-- Additive rearrangement of `congruencePencil_factorization`: after adding
 the prime block `P`, the congruence-normalized pencil recovers the scaled
 positive block `lam * (B * B)`. -/
+@[aesop safe]
 theorem congruencePencil_add_primeBlock (R : Type*) [CommRing R]
     (B Binv P : Matrix n n R) (lam : R)
     (hL : B * Binv = 1) (hR : Binv * B = 1) :

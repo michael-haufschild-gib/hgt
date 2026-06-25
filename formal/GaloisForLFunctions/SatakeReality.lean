@@ -25,6 +25,7 @@ noncomputable section
 complex Satake parameters (or zeros) is invariant under complex conjugation
 (self-duality `π ≅ π̄`), then every secular moment / Adams operation
 `Σ_{x∈s} x^m` is fixed by conjugation, i.e. **real**. -/
+@[aesop safe]
 theorem selfDual_moment_real (s : Multiset ℂ)
     (hs : s.map (starRingEnd ℂ) = s) (m : ℕ) :
     (starRingEnd ℂ) ((s.map (fun x => x ^ m)).sum)

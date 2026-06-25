@@ -33,6 +33,7 @@ def OnLine (t : ℂ) : Prop := t.im = 0
 /-- **PROVEN — the finite RH-shadow.** The conjugate-pair carrier is Herglotz on `ℂ⁺` iff the zero
 pair is on the critical line. This is the field's RH characterization for one off-line quartet, an
 actual theorem (`conj_pair_herglotz_iff`); `RH` is its statement for the infinite carrier `m_ξ`. -/
+@[aesop norm simp]
 theorem carrierHerglotz_iff_onLine (t : ℂ) : CarrierHerglotz t ↔ OnLine t :=
   conj_pair_herglotz_iff t
 

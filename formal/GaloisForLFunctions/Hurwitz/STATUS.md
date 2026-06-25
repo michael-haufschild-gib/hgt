@@ -67,3 +67,50 @@ ExpIndependence) + STATUS.
    — NOT in mathlib (mathlib's hurwitzZeta is a:UnitAddCircle only). The deep analytic input, analogue
    of u₀-transcendence/hliftF. Build or isolate as named hypothesis.
 4. **Rational-Tail Independence (Lemma 1)** via the same core (pole tower / OGF).
+
+## Update 2 — distinct-exponent core application-ready (axiom-clean)
+
+`expLin_eq_zero_on_open` added: `∑ c_k exp(β_k z)=0` on a NONEMPTY OPEN U⊆ℂ (distinct β_k) ⟹ c=0
+(entire ⟹ identity theorem ⟹ everywhere ⟹ Vandermonde). **No separate power-form bridge needed:**
+the spine works in `z = log x`, so the Hurwitz singular term `x^{-s-k}` is `exp(-(s+k)z)` and the
+relation (which holds on a punctured nbhd of x=0, an open set in z) feeds this lemma directly.
+
+Hurwitz start: **14 axiom-clean theorems / 3 files.** The complete algebraic engine + analytic core
+(distinct-exponent independence) is done. Remaining: the descent SPINE assembly (algebra; use aesop for
+glue) conditional on the isolated Hurwitz-zeta local-expansion interface (the one deep input not in
+mathlib), then discharge that interface, then Rational-Tail Independence (Lemma 1).
+
+## Update 3 — exponent filtration (generic case) landed (axiom-clean)
+
+`Hurwitz/ExponentFiltration.lean`: `coeffs_zero_of_exp_periodic_combo` — singular-vs-regular separation
+via the monodromy shift z↦z+2πi (singular e^{β_k z} scales by e^{2πiβ_k}, regular R(e^z) is 2πi-periodic;
+shift-difference + expLin ⟹ singular coeffs vanish when e^{2πiβ_k}≠1, i.e. β_k∉ℤ). Handles the GENERIC
+case (2s∉ℤ): quadratic exponents -2s-w are non-integer.
+
+**Hurwitz foundation = 15 axiom-clean theorems / 4 files** — the algebraic engine + the analytic core +
+the generic exponent filtration ("easy half" complete).
+
+### Precise remaining structure (intricate — two filtration mechanisms)
+- **q=-1 / half-integer case (2s∈ℤ):** quadratic exponents -2s-w are INTEGERS ⟹ periodic in z; the
+  monodromy filtration can't see them. Needs a LAURENT-coefficient filtration (match power of x) for the
+  quadratic coefficient (the orbit's odd-coeff fallback supplies the rest — MonodromyScalar.eq_neg_one).
+- **Rational-Tail Independence (Lemma 1, task #13):** the LINEAR/cross-term row descent. Σ r_j(n)H_n^{(s+j)}
+  =R(n) ⟹ r_j=0. Deep (OGF Σ H_n^{(u)}z^n = Li_u(z)/(1-z), pole tower). Isolate as interface.
+- **Hurwitz local expansion (deep input):** ζ(s+k,-n+x)=x^{-s-k}+R_{n,k}(x), R_{n,0}(0)=ζ(s)+ηH_n^{(s)} —
+  NOT in mathlib. Isolate as named interface (analogue of u₀-transcendence/hliftF), then discharge.
+- **Spine assembly:** combine the above into the conditional N=2 theorem, then all-N row descent.
+
+## Update 4 — descent algebra brick (axiom-clean)
+
+`Hurwitz/DescentAlgebra.lean`: `eq_zero_of_infinitely_many_neg_nat_roots` /
+`eq_zero_of_eventually_neg_nat_roots` — a polynomial (cleared coefficient) vanishing at `a=-n` for
+infinitely many / all large `n` is 0. The "vanishes at ∞ many -n ⟹ 0 as rational function" backbone
+of the row descent. **Hurwitz foundation now 17 axiom-clean theorems / 5 files.**
+
+## Update 5 — Hurwitz zeta deep input started (axiom-clean)
+
+`Hurwitz/HurwitzZeta.lean`: `summable_hurwitzSeries` — ∑_m((m:ℂ)+a)^(-s) summable for Re s>1 (the
+series mathlib lacks for complex shift), via Complex.norm_cpow_le + arg≤π bound + reverse-triangle +
+Real p-series comparison. First brick of the local expansion (the harder deep input). 18 axiom-clean
+theorems / 6 files. Next: holomorphic-in-a (tsum), then the m=n local split → x^{-s-k}+R_{n,k},
+R_{n,0}(0)=ζ(s)+η H_n^{(s)}.

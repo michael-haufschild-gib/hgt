@@ -35,6 +35,7 @@ variable {n : ℕ}
 for all `k`, then their elementary symmetric functions agree for all `k`. Proved
 by strong induction through `multiset_newton`, solving for `e_k` (char-zero: `k`
 invertible). -/
+@[aesop safe]
 theorem esymm_eq_of_powerSum_eq (f g : Fin n → ℂ)
     (hp : ∀ k, (univ.val.map (fun i => f i ^ k)).sum = (univ.val.map (fun i => g i ^ k)).sum) :
     ∀ k, (univ.val.map f).esymm k = (univ.val.map g).esymm k := by
@@ -76,6 +77,7 @@ theorem esymm_eq_of_powerSum_eq (f g : Fin n → ℂ)
 have the same multiset of values: the secular power sums `p_k` faithfully
 determine the zero multiset. The genuine secular-moment faithfulness of the
 field, proved via Newton inversion + Vieta + `Polynomial.roots`. -/
+@[aesop safe]
 theorem powerSum_torelli (f g : Fin n → ℂ)
     (hp : ∀ k, (univ.val.map (fun i => f i ^ k)).sum = (univ.val.map (fun i => g i ^ k)).sum) :
     univ.val.map f = univ.val.map g := by
@@ -102,6 +104,7 @@ theorem powerSum_torelli (f g : Fin n → ℂ)
 /-- **Finite Newton inversion.** Only the first `n` power sums are needed: equal
 power sums `p_k` for `k ≤ n` force equal elementary symmetric functions `e_k` for
 `k ≤ n`. Same strong induction, tracking the bound `k ≤ n`. -/
+@[aesop safe]
 theorem esymm_eq_of_powerSum_eq_le (f g : Fin n → ℂ)
     (hp : ∀ k, k ≤ n → (univ.val.map (fun i => f i ^ k)).sum
                       = (univ.val.map (fun i => g i ^ k)).sum) :
@@ -146,6 +149,7 @@ zeros".** Two finite families `f, g : Fin n → ℂ` with equal power sums
 `Σ_i f(i)^k = Σ_i g(i)^k` for just `k ≤ n` already have the same multiset of
 values. This is the field's exact statement: the first `n` secular moments pin
 down a configuration of `n` zeros. -/
+@[aesop safe]
 theorem powerSum_torelli_finite (f g : Fin n → ℂ)
     (hp : ∀ k, k ≤ n → (univ.val.map (fun i => f i ^ k)).sum
                       = (univ.val.map (fun i => g i ^ k)).sum) :
@@ -175,6 +179,7 @@ theorem powerSum_torelli_finite (f g : Fin n → ℂ)
 *distinct* zero configurations `f, g : Fin n → ℂ` are separated by some secular
 moment of order `≤ n`: there is `k ≤ n` with `Σ_i f(i)^k ≠ Σ_i g(i)^k`. The
 identifiability statement dual to `powerSum_torelli_finite`. -/
+@[aesop safe]
 theorem exists_powerSum_ne_of_ne (f g : Fin n → ℂ)
     (h : univ.val.map f ≠ univ.val.map g) :
     ∃ k, k ≤ n ∧ (univ.val.map (fun i => f i ^ k)).sum
@@ -192,6 +197,7 @@ of the first two power sums: `2·e₂ = p₁² − p₂`, i.e.
 `2·esymm₂ = (Σ_i f i)² − Σ_i (f i)²`. The explicit `k=2` instance of
 `multiset_newton` (the antidiagonal filter collapses to the single term `(1,1)`),
 with `e₁ = p₁` (`esymm 1 = sum`). -/
+@[aesop safe]
 theorem secularMoment_girard_two (f : Fin n → ℂ) :
     2 * (univ.val.map f).esymm 2
       = ((univ.val.map f).sum) ^ 2 - (univ.val.map (fun i => f i ^ 2)).sum := by
@@ -210,6 +216,7 @@ elementary symmetric function in terms of the first three power sums:
 `6·e₃ = 2·p₃ − 3·p₁·p₂ + p₁³`. The `k=3` instance of `multiset_newton` (the
 antidiagonal filter gives the two terms `(1,2),(2,1)`), combined with the `e₁`
 and `e₂` identities. Demonstrates the Newton engine scales to all orders. -/
+@[aesop safe]
 theorem secularMoment_girard_three (f : Fin n → ℂ) :
     6 * (univ.val.map f).esymm 3
       = 2 * (univ.val.map (fun i => f i ^ 3)).sum

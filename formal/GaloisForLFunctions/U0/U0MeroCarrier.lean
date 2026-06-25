@@ -41,6 +41,7 @@ noncomputable instance algU : Algebra (Polynomial ℂ) (analyticSubring U) :=
 
 /-- The germ-level relation identity at the Böttcher carrier: the subtype image of `aeval (u0AnSub) P`
 is the germ of the relation function `z ↦ P(z, u₀(z))` (= `evalU0 P`). -/
+@[aesop safe]
 theorem subtype_aeval (hU : U ⊆ Ext)
     (algInst : Algebra (Polynomial ℂ) (analyticSubring U))
     (halg : algebraMap (Polynomial ℂ) (analyticSubring U) = polyToAnalytic U)
@@ -63,6 +64,7 @@ theorem subtype_aeval (hU : U ⊆ Ext)
 open infinite `U ⊆ Ext`, the germ `u0AnSub` satisfies no nonzero polynomial relation over `ℂ[z]`. This
 is the `hTranscendental` input of the three `u0_phi_independence` theorems, discharged at the very
 carrier `Bottcher.meroField`/`analyticSubring` they are instantiated over. -/
+@[aesop safe]
 theorem u0AnSub_transcendental (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
     (hUinf : U.Infinite) (hU : U ⊆ Ext) :
     Transcendental (Polynomial ℂ) (u0AnSub hU) := by
@@ -99,6 +101,7 @@ form of `u0AnSub_transcendental` — exactly the `hTranscendental : Transcendent
 (`transcendental_algHom_inj`) and the fraction-field transfer `IsFractionRing.isAlgebraic_iff`. With
 this, instantiating the three `u0_phi_independence` theorems at `Bottcher.meroField (deepBall …)`
 discharges `hTranscendental` outright; only `mono` (the dyadic monodromy tower) remains. -/
+@[aesop safe]
 theorem u0Mero_transcendental {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite) (hU : U ⊆ Ext) :
     letI := isDomain_analyticSubring U hUo hUc hUne
@@ -130,6 +133,7 @@ instantiation for the u₀ case: `hphib` is discharged by `Bottcher.phiMero_ne_z
 monodromy scaling `φ_b` while fixing the single-valued `u₀` — i.e. the Böttcher `DyadicMonodromyTower`.
 Compared to the abstract `u0_phi_independence_abstract`, this carries one hypothesis instead of two,
 at the concrete carrier the named theorems are instantiated over. -/
+@[aesop safe]
 theorem u0_phib_independence_concrete (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite) (hU_ext : U ⊆ Ext)
     {b : ℂ} (hU_esc : U ⊆ escapeOpen b) :

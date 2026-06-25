@@ -18,13 +18,15 @@ noncomputable section
 /-- The functional-equation involution on the `s`-plane. -/
 def sigma (s : ℂ) : ℂ := 1 - s
 
-@[simp] theorem sigma_apply (s : ℂ) : sigma s = 1 - s := rfl
+@[aesop safe, simp] theorem sigma_apply (s : ℂ) : sigma s = 1 - s := rfl
 
 /-- The involution `s ↦ 1 - s` has order two. -/
+@[aesop safe]
 theorem sigma_involutive (s : ℂ) : sigma (sigma s) = s := by
   simp [sigma]
 
 /-- In Bohr coordinates, `s ↦ 1-s` is inversion and scale at every positive base. -/
+@[aesop safe]
 theorem cpow_inversion_scale (p : ℝ) (hp : 0 < p) (s : ℂ) :
     (p : ℂ) ^ (-(1 - s)) = (p : ℂ) ^ (-(1 : ℂ)) * (((p : ℂ) ^ (-s))⁻¹) := by
   have hpC : (p : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hp.ne'
@@ -34,12 +36,14 @@ theorem cpow_inversion_scale (p : ℝ) (hp : 0 < p) (s : ℂ) :
   simp [div_eq_mul_inv, mul_comm]
 
 /-- Absolute value of a positive real base raised to a complex exponent. -/
+@[aesop safe]
 theorem norm_cpow_neg_eq_rpow_re (p : ℝ) (hp : 0 < p) (s : ℂ) :
     ‖(p : ℂ) ^ (-s)‖ = p ^ (-(s.re)) := by
   rw [Complex.norm_cpow_eq_rpow_re_of_pos hp (-s)]
   simp
 
 /-- A single base `p > 1` detects the critical line as the fixed-modulus locus. -/
+@[aesop norm simp]
 theorem norm_cpow_eq_critical_iff (p : ℝ) (hp : 1 < p) (s : ℂ) :
     ‖(p : ℂ) ^ (-s)‖ = p ^ (-(1 / 2 : ℝ)) ↔ s.re = 1 / 2 := by
   have hp0 : 0 < p := zero_lt_one.trans hp
@@ -50,6 +54,7 @@ theorem norm_cpow_eq_critical_iff (p : ℝ) (hp : 1 < p) (s : ℂ) :
 /-- The local Euler factor for zeta in one Bohr coordinate. -/
 def localEulerFactor (x : ℂ) : ℂ := (1 - x)⁻¹
 
+@[aesop safe]
 lemma localEulerFactor_relation {x : ℂ} (hx : x ≠ 1) :
     (1 - x) * localEulerFactor x = 1 := by
   unfold localEulerFactor
@@ -57,6 +62,7 @@ lemma localEulerFactor_relation {x : ℂ} (hx : x ≠ 1) :
   exact mul_inv_cancel₀ h
 
 /-- The local Euler factor has no zeros away from its pole at `x = 1`. -/
+@[aesop safe]
 lemma localEulerFactor_ne_zero {x : ℂ} (hx : x ≠ 1) :
     localEulerFactor x ≠ 0 := by
   unfold localEulerFactor
@@ -67,6 +73,7 @@ def finiteEulerProduct (S : Finset Nat.Primes) (x : Nat.Primes → ℂ) : ℂ :=
   ∏ p ∈ S, localEulerFactor (x p)
 
 /-- Finite Euler products are zero-free where none of their local factors has a pole. -/
+@[aesop safe]
 theorem finiteEulerProduct_ne_zero (S : Finset Nat.Primes) (x : Nat.Primes → ℂ)
     (hx : ∀ p ∈ S, x p ≠ 1) : finiteEulerProduct S x ≠ 0 := by
   classical
@@ -79,6 +86,7 @@ theorem finiteEulerProduct_ne_zero (S : Finset Nat.Primes) (x : Nat.Primes → �
 def primeProduct (m : Nat.Primes →₀ ℕ) : ℕ :=
   m.prod fun p k => (p : ℕ) ^ k
 
+@[aesop safe]
 lemma primeProduct_factorization (m : Nat.Primes →₀ ℕ) (p : Nat.Primes) :
     (primeProduct m).factorization (p : ℕ) = m p := by
   classical
@@ -100,6 +108,7 @@ lemma primeProduct_factorization (m : Nat.Primes →₀ ℕ) (p : Nat.Primes) :
     exact pow_ne_zero _ q.2.ne_zero
 
 /-- Unique factorization makes finite prime products injective in their exponent vector. -/
+@[aesop safe]
 theorem primeProduct_injective : Function.Injective primeProduct := by
   classical
   intro a b h
@@ -111,12 +120,14 @@ theorem primeProduct_injective : Function.Injective primeProduct := by
 def primeProductReal (m : Nat.Primes →₀ ℕ) : ℝ :=
   m.prod fun p k => ((p : ℕ) : ℝ) ^ k
 
+@[aesop safe]
 lemma primeProductReal_eq_natCast (m : Nat.Primes →₀ ℕ) :
     primeProductReal m = (primeProduct m : ℝ) := by
   unfold primeProductReal primeProduct
   rw [Nat.cast_finsuppProd]
   simp
 
+@[aesop safe]
 lemma log_primeProduct (m : Nat.Primes →₀ ℕ) :
     Real.log (primeProduct m : ℝ) = m.sum fun p k => (k : ℝ) * Real.log (p : ℕ) := by
   rw [← primeProductReal_eq_natCast m]
@@ -130,6 +141,7 @@ lemma log_primeProduct (m : Nat.Primes →₀ ℕ) :
       pow_ne_zero _ (Nat.cast_ne_zero.mpr p.2.ne_zero)
     exact False.elim (hpne hzero)
 
+@[aesop safe]
 lemma primeProduct_pos (m : Nat.Primes →₀ ℕ) : 0 < primeProduct m := by
   classical
   unfold primeProduct
@@ -137,6 +149,7 @@ lemma primeProduct_pos (m : Nat.Primes →₀ ℕ) : 0 < primeProduct m := by
   exact Finset.prod_pos fun p _ => pow_pos p.2.pos _
 
 /-- Natural-coefficient log-prime relations are trivial. -/
+@[aesop safe]
 theorem log_prime_nat_relation_eq (a b : Nat.Primes →₀ ℕ)
     (h : a.sum (fun p k => (k : ℝ) * Real.log (p : ℕ)) =
         b.sum (fun p k => (k : ℝ) * Real.log (p : ℕ))) :
@@ -150,10 +163,12 @@ theorem log_prime_nat_relation_eq (a b : Nat.Primes →₀ ℕ)
       (Set.mem_Ioi.mpr (Nat.cast_pos.mpr (primeProduct_pos b))) hlog
   exact_mod_cast hreal
 
+@[aesop safe]
 lemma int_toNat_sub_neg_toNat (z : ℤ) :
     ((z.toNat : ℤ) - ((-z).toNat : ℤ)) = z := by
   omega
 
+@[aesop safe]
 lemma real_max_int_cast_eq_toNat (z : ℤ) : max (z : ℝ) 0 = (z.toNat : ℝ) := by
   by_cases hz : 0 ≤ z
   · rw [max_eq_left]
@@ -179,11 +194,13 @@ def positivePartZ (m : Nat.Primes →₀ ℤ) : Nat.Primes →₀ ℤ :=
 def negativePartZ (m : Nat.Primes →₀ ℤ) : Nat.Primes →₀ ℤ :=
   m.mapRange (fun z => ((-z).toNat : ℤ)) (by simp)
 
+@[aesop safe]
 lemma positivePartZ_sub_negativePartZ (m : Nat.Primes →₀ ℤ) :
     positivePartZ m - negativePartZ m = m := by
   ext
   simp [positivePartZ, negativePartZ]
 
+@[aesop safe]
 lemma positivePartZ_sum (m : Nat.Primes →₀ ℤ) :
     (positivePartZ m).sum (fun p z => (z : ℝ) * Real.log (p : ℕ)) =
       (positivePart m).sum (fun p k => (k : ℝ) * Real.log (p : ℕ)) := by
@@ -198,6 +215,7 @@ lemma positivePartZ_sum (m : Nat.Primes →₀ ℤ) :
   · intro p
     simp
 
+@[aesop safe]
 lemma negativePartZ_sum (m : Nat.Primes →₀ ℤ) :
     (negativePartZ m).sum (fun p z => (z : ℝ) * Real.log (p : ℕ)) =
       (negativePart m).sum (fun p k => (k : ℝ) * Real.log (p : ℕ)) := by
@@ -213,6 +231,7 @@ lemma negativePartZ_sum (m : Nat.Primes →₀ ℤ) :
     simp
 
 /-- Integer-coefficient finite log-prime relations are trivial. -/
+@[aesop safe]
 theorem log_prime_int_relation_eq_zero (m : Nat.Primes →₀ ℤ)
     (h : m.sum (fun p z => (z : ℝ) * Real.log (p : ℕ)) = 0) :
     m = 0 := by
@@ -244,6 +263,7 @@ theorem log_prime_int_relation_eq_zero (m : Nat.Primes →₀ ℤ)
   rwa [int_toNat_sub_neg_toNat] at hsub
 
 /-- The logarithms of primes are `ℤ`-linearly independent. -/
+@[aesop safe]
 theorem logPrime_linearIndependent_int :
     LinearIndependent ℤ (fun p : Nat.Primes => Real.log (p : ℕ)) := by
   rw [linearIndependent_iff]
@@ -256,6 +276,7 @@ theorem logPrime_linearIndependent_int :
   rw [zsmul_eq_mul]
 
 /-- The logarithms of primes are linearly independent over `ℚ`. -/
+@[aesop safe]
 theorem linearIndependent_log_primes :
     LinearIndependent ℚ (fun p : Nat.Primes => Real.log (p : ℕ)) :=
   (logPrime_linearIndependent_int).localization ℚ (nonZeroDivisors ℤ)

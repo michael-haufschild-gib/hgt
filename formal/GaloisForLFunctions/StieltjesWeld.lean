@@ -43,6 +43,7 @@ def auxiliaryTaylorCoeff (c : ℕ → ℂ) (j : ℕ) : ℂ :=
 
 This is the `j`-indexed form of the card's formula
 `[H]_N = c_N/N! + Σ_{n<N} c_{N-n-1}/(N-n-1)! * (-1)^n γ_n/n!`. -/
+@[aesop safe]
 theorem stieltjes_pairing_cauchy_j (c γ : ℕ → ℂ) (N : ℕ) :
     (PowerSeries.coeff N)
       ((PowerSeries.mk (auxiliaryTaylorCoeff c)) * (PowerSeries.mk (stieltjesGCoeff γ))) =

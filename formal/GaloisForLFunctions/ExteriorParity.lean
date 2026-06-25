@@ -29,6 +29,7 @@ variable {R : Type*} [CommRing R] {M : Type*} [AddCommGroup M] [Module R M]
 /-- **B5 §3 (exterior-power scaling).** The induced map of the scalar map
 `c • id` on the `n`-th exterior power `⋀ⁿM` is `cⁿ • id`: the alternating
 `n`-linear structure pulls the scalar out of all `n` slots. -/
+@[aesop safe]
 theorem exteriorPower_map_smul_id (n : ℕ) (c : R) :
     exteriorPower.map n (c • LinearMap.id : M →ₗ[R] M) = c ^ n • LinearMap.id := by
   apply exteriorPower.linearMap_ext
@@ -43,6 +44,7 @@ theorem exteriorPower_map_smul_id (n : ℕ) (c : R) :
 /-- **B5 §3 (cohomological FE σ-parity).** With `σ = −1` on the prime lattice
 `V`, the induced map on `∧ⁿV = Hⁿ` is `(−1)ⁿ • id`: `σ|_{∧ⁿV} = (−1)ⁿ`. This is
 the exterior-power form of the functional-equation moment parity. -/
+@[aesop safe]
 theorem exteriorPower_map_neg_id (n : ℕ) :
     exteriorPower.map n (-LinearMap.id : M →ₗ[R] M) = (-1 : R) ^ n • LinearMap.id := by
   have h := exteriorPower_map_smul_id (R := R) (M := M) n (-1)

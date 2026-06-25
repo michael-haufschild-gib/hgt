@@ -24,6 +24,7 @@ open Polynomial
 namespace MahlerPolynomial
 
 /-- **Multiplicity of a power.** `mult_z(fᵏ) = k · mult_z(f)` for `f ≠ 0`. -/
+@[aesop safe]
 theorem rootMultiplicity_pow {f : ℂ[X]} (hf : f ≠ 0) (k : ℕ) (z : ℂ) :
     rootMultiplicity z (f ^ k) = k * rootMultiplicity z f := by
   induction k with
@@ -36,6 +37,7 @@ theorem rootMultiplicity_pow {f : ℂ[X]} (hf : f ≠ 0) (k : ℕ) (z : ℂ) :
 with `s(w) ≠ 0` gives `p ∘ g = (g − C w)^k · (s ∘ g)`, and `s ∘ g` is nonzero at `z`. Hence
 `mult_z(p ∘ g) = mult_{g(z)}(p) · mult_z(g − C(g(z)))`. The hypothesis `hgz` (that `g − C(g z) ≠ 0`,
 automatic for nonconstant `g`) avoids the degenerate constant-`g` branch. -/
+@[aesop safe]
 theorem rootMultiplicity_comp {p g : ℂ[X]} (hp : p ≠ 0) (z : ℂ)
     (hgz : g - C (g.eval z) ≠ 0) :
     rootMultiplicity z (p.comp g)
@@ -58,6 +60,7 @@ theorem rootMultiplicity_comp {p g : ℂ[X]} (hp : p ≠ 0) (z : ℂ)
 
 /-- **The quadratic ramification factor.** `mult_z((X²+c) − C((z²+c))) = mult_z(X² − C(z²))` is `2` if
 `z = 0` (the critical point, ramified) and `1` otherwise. -/
+@[aesop safe]
 theorem rootMultiplicity_quadratic_factor (c z : ℂ) :
     rootMultiplicity z ((X ^ 2 + C c) - C (((X ^ 2 + C c).eval z))) = if z = 0 then 2 else 1 := by
   have heval : (X ^ 2 + C c).eval z = z ^ 2 + c := by simp
@@ -84,6 +87,7 @@ theorem rootMultiplicity_quadratic_factor (c z : ℂ) :
 every `z`: `2·mult_z(r) = mult_{z²+c}(r) · (2 if z=0 else 1)`. The left side is `mult_z` of the square;
 the right is `mult_z` of the composition `r ∘ (X²+c)` via `rootMultiplicity_comp` and the ramification
 factor. -/
+@[aesop safe]
 theorem mahler_mult_identity {c lam : ℂ} {r : ℂ[X]} (hr0 : r ≠ 0) (hlam : lam ≠ 0)
     (hr : r.comp (X ^ 2 + C c) = C lam * r ^ 2) (z : ℂ) :
     2 * rootMultiplicity z r = rootMultiplicity (z ^ 2 + c) r * (if z = 0 then 2 else 1) := by
@@ -107,6 +111,7 @@ identity gives `mult_{z₀²+c}(r) = 2m`, but `z₀²+c` is then a root, so `2m 
 the ramified identity makes `mult_c(r) = m`, and `c ≠ 0` is a maximal root; applying the unramified case
 to `c` gives `2m ≤ m`. Either way, contradiction. This is the `n = 1` case of φ_c transcendence: φ_c is
 not a rational function. -/
+@[aesop safe]
 theorem no_nonconstant_mahler_poly {c lam : ℂ} (hc : c ≠ 0) {r : ℂ[X]}
     (hnc : 0 < r.natDegree) (hr : r.comp (X ^ 2 + C c) = C lam * r ^ 2) : False := by
   have hr0 : r ≠ 0 := fun h => by simp [h] at hnc
@@ -148,6 +153,7 @@ for a constant `λ`. Proof: from the equation `p² ∣ p(σz)·q²`, and `IsCopr
 `p² ∣ p(σz)`; since `σ` has degree `2`, `deg(p∘σ) = 2·deg p = deg(p²)`, so the cofactor is a constant.
 (The symmetric statement for `q` holds by the same argument with `p, q` swapped.) This is the algebraic
 bridge from a rational `φ_c = p/q` to the Mahler obstruction `no_nonconstant_mahler_poly`. -/
+@[aesop safe]
 theorem comp_eq_const_mul_sq {c : ℂ} {p q : ℂ[X]} (hp : p ≠ 0) (hpq : IsCoprime p q)
     (heq : p.comp (X ^ 2 + C c) * q ^ 2 = p ^ 2 * q.comp (X ^ 2 + C c)) :
     ∃ lam : ℂ, p.comp (X ^ 2 + C c) = C lam * p ^ 2 := by
@@ -178,6 +184,7 @@ theorem comp_eq_const_mul_sq {c : ℂ} {p q : ℂ[X]} (hp : p ≠ 0) (hpq : IsCo
 `p, q` is nonconstant then violates `no_nonconstant_mahler_poly`. This is the polynomial skeleton of
 "φ_c is not rational" — the `n = 1` case of φ_c transcendence over `ℂ(z)`; the only remaining step is the
 analytic bridge expressing the escape-region identity `φ_c = p/q` as this polynomial equation. -/
+@[aesop safe]
 theorem no_coprime_mahler_rational {c : ℂ} (hc : c ≠ 0) {p q : ℂ[X]}
     (hpq : IsCoprime p q) (hp : p ≠ 0) (hq : q ≠ 0)
     (heq : p.comp (X ^ 2 + C c) * q ^ 2 = p ^ 2 * q.comp (X ^ 2 + C c))

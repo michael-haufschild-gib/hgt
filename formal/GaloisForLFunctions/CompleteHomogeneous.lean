@@ -28,6 +28,7 @@ variable {n : ℕ}
 character of a Satake family `f` is `Σ_{s : Sym (Fin n) k} ∏ f(s)`, the complete
 homogeneous symmetric function of the Satake parameters (bridging mathlib's
 `MvPolynomial.hsymm` to the family via `aeval`). -/
+@[aesop safe]
 theorem aeval_hsymm_eq (f : Fin n → ℂ) (k : ℕ) :
     (aeval f) (MvPolynomial.hsymm (Fin n) ℂ k) = ∑ s : Sym (Fin n) k, (s.1.map f).prod := by
   rw [MvPolynomial.hsymm, map_sum]
@@ -37,12 +38,14 @@ theorem aeval_hsymm_eq (f : Fin n → ℂ) (k : ℕ) :
   simp
 
 /-- **Sym⁰ = 1** (the trivial representation). -/
+@[aesop safe]
 theorem symChar_zero (f : Fin n → ℂ) :
     (aeval f) (MvPolynomial.hsymm (Fin n) ℂ 0) = 1 := by
   rw [MvPolynomial.hsymm_zero, map_one]
 
 /-- **Sym¹ character = the trace `p₁ = Σ αᵢ`** (the standard representation). At
 degree one all three λ-ring bases coincide: `Sym¹ = ∧¹ = ψ¹ = p₁`. -/
+@[aesop safe]
 theorem symChar_one (f : Fin n → ℂ) :
     (aeval f) (MvPolynomial.hsymm (Fin n) ℂ 1) = ∑ i, f i := by
   rw [MvPolynomial.hsymm_one, map_sum]
@@ -55,6 +58,7 @@ dimension of `Symᵏ`: `‖hₖ‖ ≤ |Sym (Fin n) k|` (`= binom(n+k-1, k)`). E
 parameters, so the triangle inequality gives the bound. Together with
 `ExteriorSatake.esymm_norm_le` (`∧ᵏ`) and `ExteriorSatake.multiset_powerSum_norm_le`
 (`ψᵏ`) this bounds **all three** λ-ring bases for tempered Satake data. -/
+@[aesop safe]
 theorem symChar_norm_le (f : Fin n → ℂ) (hs : ∀ i, ‖f i‖ ≤ 1) (k : ℕ) :
     ‖(aeval f) (MvPolynomial.hsymm (Fin n) ℂ k)‖ ≤ (Fintype.card (Sym (Fin n) k) : ℝ) := by
   have hprod : ∀ m : Multiset (Fin n), ‖(m.map f).prod‖ ≤ 1 := by
@@ -80,6 +84,7 @@ the Koszul-exactness identity that welds the operations λ-ring (B30) to the
 difference-Galois cohomology grading (B5,
 `difference-galois-cohomology.md §6`). The higher-degree duality is the next
 Tier-A target (it needs the `e–h` generating-series reciprocity, a mathlib gap). -/
+@[aesop safe]
 theorem symChar_one_eq_esymm_one (f : Fin n → ℂ) :
     (aeval f) (MvPolynomial.hsymm (Fin n) ℂ 1) = (Finset.univ.val.map f).esymm 1 := by
   have hesymm1 : ∀ s : Multiset ℂ, s.esymm 1 = s.sum := by

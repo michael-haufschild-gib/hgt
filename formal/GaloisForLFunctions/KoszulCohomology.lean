@@ -35,6 +35,7 @@ def koszulD0 {ι M : Type*} [AddCommGroup M] (act : ι → M →+ M) (x : M) : �
   fun p => act p x - x
 
 /-- The kernel of the first Koszul differential is exactly the joint invariant subspace. -/
+@[aesop norm simp]
 theorem koszulD0_eq_zero_iff_invariant {ι M : Type*} [AddCommGroup M]
     (act : ι → M →+ M) (x : M) :
     koszulD0 act x = 0 ↔ additiveInvariant act x := by
@@ -56,6 +57,7 @@ def koszulD1 {ι M : Type*} [AddCommGroup M] (act : ι → M →+ M) (c : ι →
   fun p q => (act p (c q) - c q) - (act q (c p) - c p)
 
 /-- Vanishing of the second Koszul differential is exactly the additive 1-cocycle condition. -/
+@[aesop norm simp]
 theorem koszulD1_eq_zero_iff_additiveCocycle {ι M : Type*} [AddCommGroup M]
     (act : ι → M →+ M) (c : ι → M) :
     (∀ p q, koszulD1 act c p q = 0) ↔ additiveCocycle act c := by
@@ -71,6 +73,7 @@ def koszulCoboundary {ι M : Type*} [AddCommGroup M] (act : ι → M →+ M) (h 
   koszulD0 act h
 
 /-- Additive coboundaries are additive 1-cocycles when the difference actions commute. -/
+@[aesop safe]
 theorem koszulCoboundary_cocycle {ι M : Type*} [AddCommGroup M]
     {act : ι → M →+ M} (hcomm : commutingAdditiveActions act) (h : M) :
     additiveCocycle act (koszulCoboundary act h) := by
@@ -80,6 +83,7 @@ theorem koszulCoboundary_cocycle {ι M : Type*} [AddCommGroup M]
   abel
 
 /-- The first two Koszul differentials compose to zero: `d₁ (d₀ h) = 0`. -/
+@[aesop safe]
 theorem koszulD1_koszulD0_eq_zero {ι M : Type*} [AddCommGroup M]
     {act : ι → M →+ M} (hcomm : commutingAdditiveActions act) (h : M) :
     ∀ p q, koszulD1 act (koszulD0 act h) p q = 0 := by
@@ -87,6 +91,7 @@ theorem koszulD1_koszulD0_eq_zero {ι M : Type*} [AddCommGroup M]
     (by simpa [koszulCoboundary] using koszulCoboundary_cocycle hcomm h)
 
 /-- The alternating binomial count underlying the finite Koszul Euler characteristic. -/
+@[aesop safe]
 theorem koszul_alternating_choose_sum_eq_zero (n : ℕ) (hn : 0 < n) :
     (∑ i ∈ Finset.range (n + 1), (-1 : ℤ) ^ i * (n.choose i : ℤ)) = 0 := by
   have h := add_pow (-1 : ℤ) 1 n
@@ -98,6 +103,7 @@ theorem koszul_alternating_choose_sum_eq_zero (n : ℕ) (hn : 0 < n) :
 /-- The finite Koszul rank Euler characteristic vanishes for a nonempty finite operator set:
 `dim M · Σ_i (-1)^i choose(n,i) = 0`. This is only the rank count of the complex terms, not a
 claim about individual cohomology dimensions. -/
+@[aesop safe]
 theorem koszul_euler_characteristic_eq_zero (n dimM : ℕ) (hn : 0 < n) :
     (∑ i ∈ Finset.range (n + 1), (-1 : ℤ) ^ i * (n.choose i : ℤ) * (dimM : ℤ)) = 0 := by
   rw [← Finset.sum_mul]

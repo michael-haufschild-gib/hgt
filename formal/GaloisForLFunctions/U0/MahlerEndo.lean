@@ -15,6 +15,7 @@ open Polynomial
 namespace MahlerPolynomial
 
 /-- Composition with the nonconstant `X²+c` preserves nonzero polynomials. -/
+@[aesop safe]
 theorem comp_quadratic_ne_zero {c : ℂ} {p : ℂ[X]} (hp : p ≠ 0) : p.comp (X ^ 2 + C c) ≠ 0 := by
   intro h
   rw [comp_eq_zero_iff] at h
@@ -27,11 +28,13 @@ theorem comp_quadratic_ne_zero {c : ℂ} {p : ℂ[X]} (hp : p ≠ 0) : p.comp (X
 noncomputable def mahlerPolyHom (c : ℂ) : Polynomial ℂ →ₐ[ℂ] RatFunc ℂ :=
   (IsScalarTower.toAlgHom ℂ (Polynomial ℂ) (RatFunc ℂ)).comp (aeval (X ^ 2 + C c))
 
+@[aesop safe]
 theorem mahlerPolyHom_apply (c : ℂ) (p : ℂ[X]) :
     mahlerPolyHom c p = algebraMap (Polynomial ℂ) (RatFunc ℂ) (p.comp (X ^ 2 + C c)) := by
   rw [mahlerPolyHom, AlgHom.comp_apply, IsScalarTower.coe_toAlgHom']
   congr 1
 
+@[aesop safe]
 theorem mahlerPolyHom_ne_zero {c : ℂ} {p : ℂ[X]} (hp : p ≠ 0) : mahlerPolyHom c p ≠ 0 := by
   rw [mahlerPolyHom_apply,
     map_ne_zero_iff _ (IsFractionRing.injective (Polynomial ℂ) (RatFunc ℂ))]
@@ -46,6 +49,7 @@ noncomputable def mahlerHom (c : ℂ) : RatFunc ℂ →ₐ[ℂ] RatFunc ℂ :=
     exact mahlerPolyHom_ne_zero (mem_nonZeroDivisors_iff_ne_zero.mp hx))
 
 /-- `mahlerHom` on the image of a polynomial `p` is `p(z²+c)`. -/
+@[aesop safe]
 theorem mahlerHom_algebraMap (c : ℂ) (p : ℂ[X]) :
     mahlerHom c (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)
       = algebraMap (Polynomial ℂ) (RatFunc ℂ) (p.comp (X ^ 2 + C c)) := by
@@ -61,6 +65,7 @@ to squaring is constant (for `c ≠ 0`): pushing `mahlerHom` through `g = num/de
 gives the polynomial Mahler cross-equation `num(σz)·denom² = num²·denom(σz)`, refuted-unless-constant by
 `ratfunc_mahler_const`. This is the field-level form consumed by the n≥2 norm-descent: `N(φ_c)` satisfies
 `mahlerHom(N) = N²`, hence is constant. -/
+@[aesop safe]
 theorem mahler_eq_sq_imp_const {c : ℂ} (hc : c ≠ 0) {g : RatFunc ℂ}
     (h : mahlerHom c g = g ^ 2) :
     (RatFunc.num g).natDegree = 0 ∧ (RatFunc.denom g).natDegree = 0 := by
@@ -91,6 +96,7 @@ evaluating at `Y = 0` yields `mahlerHom(m.coeff 0) = s·(m.coeff 0)²`. The cons
 (up to sign) the **norm** of the algebraic element; with `s` a unit this feeds `mahler_eq_sq_imp_const`
 to force the norm constant. This is the pure-algebra core of the n≥2 norm-descent — the carrier only
 needs to supply the identity `hid`. -/
+@[aesop safe]
 theorem mahler_coeff_zero_of_identity {c : ℂ} {m : Polynomial (RatFunc ℂ)} {s : RatFunc ℂ}
     (hid : (m.map (mahlerHom c).toRingHom).comp (X ^ 2) = C s * m * m.comp (-X)) :
     mahlerHom c (m.coeff 0) = s * (m.coeff 0) ^ 2 := by

@@ -34,6 +34,7 @@ noncomputable section
 and evaluation points `z : Fin m → ℂ`, the resolvent-Gram matrix
 `K_{jk} = Σ_i (t_i - z_j)⁻¹ · conj((t_i - z_k)⁻¹)` is positive semidefinite — it is `B Bᴴ` with
 `B_{j,i} = (t_i - z_j)⁻¹`. The manifest-positivity (easy) half of `K_ξ ⪰ 0 ⟺ RH`. -/
+@[aesop safe]
 theorem pick_kernel_posSemidef {n m : ℕ} (t : Fin n → ℝ) (z : Fin m → ℂ) :
     (Matrix.of (fun j k => ∑ i, ((t i : ℂ) - z j)⁻¹ * star (((t i : ℂ) - z k)⁻¹))).PosSemidef := by
   let B : Matrix (Fin m) (Fin n) ℂ := Matrix.of (fun j i => ((t i : ℂ) - z j)⁻¹)
@@ -48,6 +49,7 @@ theorem pick_kernel_posSemidef {n m : ℕ} (t : Fin n → ℝ) (z : Fin m → �
 With `m(z) = Σ_i (t_i - z)⁻¹` and real nodes `t`, the Gram `Σ_i (t_i-z)⁻¹ conj((t_i-w)⁻¹)` equals
 `(m(z) - conj(m(w)))/(z - conj(w))` — so `pick_kernel_posSemidef` is the Pick kernel of `m` for a real
 spectrum. (Nodes assumed away from `z, w` and `z ≠ conj(w)`.) -/
+@[aesop safe]
 theorem pick_gram_eq_kernel {n : ℕ} (t : Fin n → ℝ) (z w : ℂ)
     (hz : ∀ i, ((t i : ℂ) - z) ≠ 0) (hw : ∀ i, ((t i : ℂ) - w) ≠ 0) (hzw : z - star w ≠ 0) :
     (∑ i, ((t i : ℂ) - z)⁻¹ * star (((t i : ℂ) - w)⁻¹))
@@ -65,6 +67,7 @@ theorem pick_gram_eq_kernel {n : ℕ} (t : Fin n → ℝ) (z w : ℂ)
 `t : Fin n → ℝ`, the carrier `m(z) = Σ_i (t_i - z)⁻¹` has `Im m(z) ≥ 0` for every `z ∈ ℂ⁺` — it is a
 Nevanlinna (Herglotz) function. The carrier-level RH shadow, forward direction (each term
 `Im((t_i - z)⁻¹) = Im(z)/|t_i - z|² ≥ 0`). -/
+@[aesop safe]
 theorem real_spectrum_carrier_herglotz {n : ℕ} (t : Fin n → ℝ) (z : ℂ) (hz : 0 < z.im) :
     0 ≤ (∑ i, ((t i : ℂ) - z)⁻¹).im := by
   rw [Complex.im_sum]
@@ -81,6 +84,7 @@ theorem real_spectrum_carrier_herglotz {n : ℕ} (t : Fin n → ℝ) (z : ℂ) (
 the open upper half-plane), the carrier `m(z) = Σ_i (tᵢ - z)⁻¹` satisfies `Im m(z) ≥ 0` on `ℂ⁺`.
 Generalizes `real_spectrum_carrier_herglotz` (the `Im tᵢ = 0` case). With `conj_pair_not_herglotz`
 (converse, FE conjugate-pair) this is the carrier dichotomy: Herglotz ⟺ no `ℂ⁺` pole. -/
+@[aesop safe]
 theorem poles_lower_carrier_herglotz {n : ℕ} (t : Fin n → ℂ) (hpoles : ∀ i, (t i).im ≤ 0)
     (z : ℂ) (hz : 0 < z.im) : 0 ≤ (∑ i, (t i - z)⁻¹).im := by
   rw [Complex.im_sum]
@@ -96,6 +100,7 @@ Herglotz.** If the carrier `m(z) = (t - z)⁻¹` has its pole `t` in `ℂ⁺` (`
 `z ∈ ℂ⁺` with `Im(m(z)) < 0` — so `m` is not Nevanlinna and (one-dimensionally) the Pick kernel is not
 PSD. This is the finite shadow of "off-line zero ⟹ carrier not Herglotz ⟹ not RH": the `κ₋ > 0`
 side, proved (not deferred). Witness `z = t - i·(Im t)/2`. -/
+@[aesop safe]
 theorem pole_upper_not_herglotz (t : ℂ) (ht : 0 < t.im) :
     ∃ z : ℂ, 0 < z.im ∧ ((t - z)⁻¹).im < 0 := by
   refine ⟨t - Complex.I * ((t.im / 2 : ℝ) : ℂ), ?_, ?_⟩
@@ -114,6 +119,7 @@ theorem pole_upper_not_herglotz (t : ℂ) (ht : 0 < t.im) :
 
 /-- A `1×1` complex matrix with strictly-negative-real-part entry is not positive semidefinite
 (its diagonal entry is not `≥ 0` in the complex star-order). -/
+@[aesop safe]
 theorem oneByOne_not_posSemidef (c : ℂ) (hc : c.re < 0) :
     ¬ (Matrix.of (fun (_ _ : Fin 1) => c)).PosSemidef := by
   intro h
@@ -127,6 +133,7 @@ For the carrier `m(z) = (t - z)⁻¹` with `Im t > 0`, there is a witness `z ∈
 matrix `[ (m(z) - conj(m(z)))/(z - conj(z)) ]` is **not** positive semidefinite. With
 `pick_kernel_posSemidef` (real spectrum ⟹ PSD) this gives the single-pole characterization in both
 directions: `κ₋ = 0` (no `ℂ⁺` pole) ⟺ Pick PSD. -/
+@[aesop safe]
 theorem single_pole_pick_not_posSemidef (t : ℂ) (ht : 0 < t.im) :
     ∃ z : ℂ, 0 < z.im ∧
       ¬ (Matrix.of (fun (_ _ : Fin 1) =>
@@ -144,6 +151,7 @@ theorem single_pole_pick_not_posSemidef (t : ℂ) (ht : 0 < t.im) :
   exact div_neg_of_neg_of_pos (by linarith) (by linarith)
 
 /-- `Im (I·c)⁻¹ = -1/c` for a nonzero real `c`. -/
+@[aesop safe]
 lemma imInv_I_mul (c : ℝ) (hc : c ≠ 0) : (Complex.I * (c : ℂ))⁻¹.im = -1 / c := by
   rw [Complex.inv_im]
   have him : (Complex.I * (c : ℂ)).im = c := by
@@ -158,6 +166,7 @@ an off-line zero pair) with `Im t > 0`, there is `z ∈ ℂ⁺` with `Im m(z) < 
 for the FE-symmetric carrier. Witness `z = t - i·Im(t)/2`, giving `Im m(z) = -4/(3 Im t) < 0`. With
 `real_spectrum_carrier_herglotz` (forward): the FE-symmetric carrier is Herglotz ⟺ it has no
 conjugate-pair (off-line) pole. -/
+@[aesop safe]
 theorem conj_pair_not_herglotz (t : ℂ) (ht : 0 < t.im) :
     ∃ z : ℂ, 0 < z.im ∧ ((t - z)⁻¹ + (star t - z)⁻¹).im < 0 := by
   refine ⟨t - Complex.I * ((t.im / 2 : ℝ) : ℂ), ?_, ?_⟩
@@ -181,6 +190,7 @@ theorem conj_pair_not_herglotz (t : ℂ) (ht : 0 < t.im) :
     exact div_neg_of_neg_of_pos (by norm_num) (by linarith)
 
 /-- The Pick diagonal value `(m - conj m)/(z - conj z) = Im(m)/Im(z)` (real). -/
+@[aesop safe]
 lemma pickDiag_eq (m z : ℂ) (hz : z.im ≠ 0) :
     (m - star m) / (z - star z) = ((m.im / z.im : ℝ) : ℂ) := by
   have hm : m - star m = ((2 * m.im : ℝ) : ℂ) * Complex.I := by
@@ -192,6 +202,7 @@ lemma pickDiag_eq (m z : ℂ) (hz : z.im ≠ 0) :
     push_cast; field_simp]
 
 /-- The real part of the Pick diagonal is `Im(m)/Im(z)`. -/
+@[aesop safe]
 lemma pickDiag_re (m z : ℂ) (hz : z.im ≠ 0) :
     ((m - star m) / (z - star z)).re = m.im / z.im := by
   rw [pickDiag_eq m z hz, Complex.ofReal_re]
@@ -200,6 +211,7 @@ lemma pickDiag_re (m z : ℂ) (hz : z.im ≠ 0) :
 The off-line conjugate-pair carrier (the FE structure) yields, at the witness `z ∈ ℂ⁺`, a `1×1` Pick
 matrix that is not positive semidefinite — so its negative inertia `κ₋ ≥ 1`. Lifts
 `conj_pair_not_herglotz` to the matrix level via `pickDiag_re`. -/
+@[aesop safe]
 theorem conj_pair_pick_not_posSemidef (t : ℂ) (ht : 0 < t.im) :
     ∃ z : ℂ, 0 < z.im ∧
       ¬ (Matrix.of (fun (_ _ : Fin 1) =>
@@ -215,6 +227,7 @@ The conjugate-pair carrier `m(z) = (t - z)⁻¹ + (conj t - z)⁻¹` is Herglotz
 **iff** `t` is real (`Im t = 0`) — i.e. the conjugate zero-pair lies on the critical line. This is
 RH's finite carrier-shadow as a genuine `⟺`: an off-line pair (`Im t ≠ 0`) ⟺ the carrier fails
 Herglotz. Combines `conj_pair_not_herglotz` (both signs, via `star_star`) and the real-pole forward. -/
+@[aesop norm simp]
 theorem conj_pair_herglotz_iff (t : ℂ) :
     (∀ z : ℂ, 0 < z.im → 0 ≤ ((t - z)⁻¹ + (star t - z)⁻¹).im) ↔ t.im = 0 := by
   constructor
@@ -245,6 +258,7 @@ theorem conj_pair_herglotz_iff (t : ℂ) :
 
 /-- Positive witness: the off-line conjugate-pair carrier has `Im m(z) > 0` at `z = t + i·Im t`
 (`Im m = 4/(3 Im t) > 0`). -/
+@[aesop safe]
 theorem conj_pair_carrier_pos (t : ℂ) (ht : 0 < t.im) :
     ∃ z : ℂ, 0 < z.im ∧ 0 < ((t - z)⁻¹ + (star t - z)⁻¹).im := by
   refine ⟨t + Complex.I * ((t.im : ℝ) : ℂ), ?_, ?_⟩
@@ -270,6 +284,7 @@ theorem conj_pair_carrier_pos (t : ℂ) (ht : 0 < t.im) :
 The carrier of an off-line conjugate pair (`Im t > 0`) takes **both** signs of `Im m` on `ℂ⁺`, so its
 Pick matrix has a positive direction and a negative direction (`n₊ ≥ 1 ∧ n₋ ≥ 1`) — the qualitative
 inertia picture of an off-line pole (exact count `κ₋ = 1` needs the Loewner-rank bound, Stage 1). -/
+@[aesop safe]
 theorem conj_pair_carrier_indefinite (t : ℂ) (ht : 0 < t.im) :
     (∃ z : ℂ, 0 < z.im ∧ 0 < ((t - z)⁻¹ + (star t - z)⁻¹).im) ∧
     (∃ z : ℂ, 0 < z.im ∧ ((t - z)⁻¹ + (star t - z)⁻¹).im < 0) :=
@@ -287,6 +302,7 @@ noncomputable section
 upper-half-plane test point its `1×1` Pick matrix has an explicit nonzero vector with negative
 Hermitian quadratic value. This strengthens the earlier `not PosSemidef` witness into the vector
 language used by the Stage-1 inertia ledger. -/
+@[aesop safe]
 theorem single_pole_pick_negative_vector (t : ℂ) (ht : 0 < t.im) :
     ∃ z : ℂ, 0 < z.im ∧ ∃ x : Fin 1 → ℂ, x ≠ 0 ∧
       (star x ⬝ᵥ (Matrix.of (fun (_ _ : Fin 1) =>
@@ -305,6 +321,7 @@ theorem single_pole_pick_negative_vector (t : ℂ) (ht : 0 < t.im) :
 upper-half-plane test point and an explicit nonzero vector on which the corresponding `1×1` Pick
 matrix is negative. This is still the one-point `κ₋ ≥ 1` lower witness, not the multi-node
 `κ₋ ≥ #{off-line poles}` theorem. -/
+@[aesop safe]
 theorem conj_pair_pick_negative_vector (t : ℂ) (ht : 0 < t.im) :
     ∃ z : ℂ, 0 < z.im ∧ ∃ x : Fin 1 → ℂ, x ≠ 0 ∧
       (star x ⬝ᵥ (Matrix.of (fun (_ _ : Fin 1) =>

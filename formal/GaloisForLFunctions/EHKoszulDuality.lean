@@ -44,6 +44,7 @@ variable {n : ℕ}
 /-- **Geometric series for one local factor.** In `ℂ⟦X⟧`, the local factor
 `1 − rX` is inverted by the geometric series `Σ_m rᵐ Xᵐ`: `(1 − rX)·(Σ rᵐXᵐ) = 1`.
 This is the per-prime reciprocity underlying the `e–h` duality. -/
+@[aesop safe]
 theorem geometric_localFactor_inv (r : ℂ) :
     (1 - PowerSeries.C r * X) * (mk fun m => r ^ m) = 1 := by
   have key : (1 - PowerSeries.C r * X) * (mk fun m => r ^ m)
@@ -59,6 +60,7 @@ theorem geometric_localFactor_inv (r : ℂ) :
 `E(X) = ∏ᵢ (1 − fᵢX)` is the signed elementary symmetric function
 `(−1)ᵏ eₖ(f)` — the exterior-power (`∧ᵏ`) Satake datum. The power-series form of
 `ExteriorSatake.localFactor_coeff_esymm`, obtained via the polynomial coercion. -/
+@[aesop safe]
 theorem coeff_localFactor_series (f : Fin n → ℂ) (k : ℕ) :
     (PowerSeries.coeff k) (∏ i, (1 - PowerSeries.C (f i) * PowerSeries.X))
       = (-1) ^ k * (Finset.univ.val.map f).esymm k := by
@@ -80,6 +82,7 @@ symmetric function `hₖ(f) = aeval f (hsymm k)` — the `Symᵏ` Satake charact
 is the complete-homogeneous generating function (a mathlib gap), proved via the
 `Sym (Fin n) k ↔ {Finsupp summing to k}` multiplicity bijection between the
 `hsymm` monomials and the Cauchy-product (`coeff_prod`) terms. -/
+@[aesop safe]
 theorem coeff_completeHomogeneous_series (f : Fin n → ℂ) (k : ℕ) :
     (PowerSeries.coeff k) (∏ i, (mk fun m => (f i) ^ m))
       = (MvPolynomial.aeval f) (MvPolynomial.hsymm (Fin n) ℂ k) := by
@@ -118,6 +121,7 @@ the finite Satake-side shadow of the B5 Koszul complex
 two generating series via the Cauchy product: the `k`-th coefficient of `1`
 vanishes for `k ≥ 1`. Extends the degree-1 base case
 `CompleteHomogeneous.symChar_one_eq_esymm_one` to all degrees. -/
+@[aesop safe]
 theorem eh_koszul_duality (f : Fin n → ℂ) {k : ℕ} (hk : 1 ≤ k) :
     ∑ p ∈ Finset.antidiagonal k,
       (-1) ^ (p.1) * (Finset.univ.val.map f).esymm p.1

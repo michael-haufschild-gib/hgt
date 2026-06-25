@@ -25,6 +25,7 @@ conjugate pairs (`Im`-positive representatives `t₀, −t̄₀`). So the FE-fai
 inertia **exactly 2** per off-line zero — `κ₋ = 2·#off-line zeros`. Instance of
 `multiPair_carrier_exact_neg_inertia` at `k = 2` with poles `![t₀, −t̄₀]`. Numerically validated on the
 real ξ-zeros (`computations/carrier_real_zeros_inertia/`). -/
+@[aesop safe]
 theorem fe_quadruple_kappa_two (t₀ : ℂ) (z : Fin (2 + 2) → ℂ)
     (ht₀ : 0 < t₀.im) (hre : t₀.re ≠ 0) (hz : Function.Injective z)
     (htz : ∀ i j, (![t₀, -star t₀] i) ≠ z j)

@@ -21,15 +21,18 @@ variable {G : Type*} [Group G]
 def rankOneDualMultiplier (g : G) : G := g⁻¹
 
 /-- The original and dual rank-one multipliers pair to the identity. -/
+@[aesop safe]
 theorem rankOneDualMultiplier_mul (g : G) : g * rankOneDualMultiplier g = 1 := by
   simp [rankOneDualMultiplier]
 
 /-- The dual and original rank-one multipliers pair to the identity in the
 opposite order as well. -/
+@[aesop safe]
 theorem rankOneDualMultiplier_mul_left (g : G) : rankOneDualMultiplier g * g = 1 := by
   simp [rankOneDualMultiplier]
 
 /-- A rank-one multiplier is equal to its dual exactly when it has square one. -/
+@[aesop norm simp]
 theorem rankOne_selfDualMultiplier_iff_sq_eq_one (g : G) :
     rankOneDualMultiplier g = g ↔ g ^ 2 = 1 := by
   constructor
@@ -48,6 +51,7 @@ theorem rankOne_selfDualMultiplier_iff_sq_eq_one (g : G) :
       _ = g := by simp
 
 /-- A multiplier whose square is not one cannot be self-dual. -/
+@[aesop safe]
 theorem rankOne_noSelfDualMultiplier_of_sq_ne_one (g : G) (h : g ^ 2 ≠ 1) :
     rankOneDualMultiplier g ≠ g := by
   intro hself

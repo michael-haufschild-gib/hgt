@@ -40,6 +40,7 @@ namespace U0NaturalBoundary
 /-! ## Radius of convergence of U₀ = 1 -/
 
 /-- The companion series U₀(w) = u₀(1/w) converges absolutely for |w| < 1. -/
+@[aesop safe]
 theorem U0_summable_lt_one {w : ℂ} (hw : ‖w‖ < 1) :
     Summable (fun n : ℕ => (2 : ℂ) ^ (-(n + 1 : ℤ)) * w ^ (2 ^ (n + 1) - 1 : ℤ)) := by
   apply Summable.of_norm_bounded (g := fun n : ℕ => (2 : ℝ) ^ (-(n + 1 : ℤ)))
@@ -77,12 +78,15 @@ def ContinuesAcross (f : ℂ → ℂ) (D : Set ℂ) (z₀ : ℂ) : Prop :=
 /-- The exterior `{z | 1 < ‖z‖}`, the genuine domain of convergence of `u₀`. -/
 def Ext : Set ℂ := {z : ℂ | 1 < ‖z‖}
 
+@[aesop safe]
 theorem isOpen_Ext : IsOpen Ext := isOpen_lt continuous_const continuous_norm
 
+@[aesop safe]
 theorem ne_zero_of_Ext {z : ℂ} (hz : z ∈ Ext) : z ≠ 0 := by
   intro h; rw [h] at hz; simp only [Ext, Set.mem_setOf_eq, norm_zero] at hz; linarith
 
 /-- Each term `2^{-(n+1)}·z^{-(2^{n+1}-1)}` is holomorphic on the exterior (`z ≠ 0` there). -/
+@[aesop safe]
 theorem term_differentiableOn_Ext (n : ℕ) : DifferentiableOn ℂ
     (fun z : ℂ => (2 : ℂ) ^ (-(n + 1 : ℤ)) * z ^ (-(2 ^ (n + 1) - 1 : ℤ))) Ext :=
   DifferentiableOn.const_mul
@@ -90,6 +94,7 @@ theorem term_differentiableOn_Ext (n : ℕ) : DifferentiableOn ℂ
 
 /-- **u₀ is holomorphic on the exterior `Ext` (PROVEN).** Weierstrass M-test: each term is
 holomorphic on `Ext` and bounded there by the summable `2^{-(n+1)}` (`norm_u0_term_le`). -/
+@[aesop safe]
 theorem u0_differentiableOn_Ext : DifferentiableOn ℂ u0 Ext :=
   differentiableOn_tsum_of_summable_norm summable_two_zpow_neg
     term_differentiableOn_Ext isOpen_Ext
@@ -97,6 +102,7 @@ theorem u0_differentiableOn_Ext : DifferentiableOn ℂ u0 Ext :=
 
 /-- **u₀ is analytic on the exterior `Ext` (PROVEN).** The analytic realization underlying the
 natural-boundary statement: on `Ext`, `u₀` is the genuine convergent sum, not a junk extension. -/
+@[aesop safe]
 theorem u0_analyticOnNhd_Ext : AnalyticOnNhd ℂ u0 Ext :=
   u0_differentiableOn_Ext.analyticOnNhd isOpen_Ext
 
@@ -108,6 +114,7 @@ analytic inverse `s` of `z ↦ z²` (`analyticAt_localInverse`, valid since `z�
 `h(v) = 2·s(v)·g(s(v)) − 1`. On the exterior side, `s(v) ∈ Ext`, `g(s v) = u₀(s v)`, `(s v)² = v`, and
 the functional equation `2·(s v)·u₀(s v) = 1 + u₀((s v)²)` give `h(v) = u₀(v)`. This is the step the
 generic Ostrowski–Hadamard proof lacks — it is special to series with a Mahler equation. -/
+@[aesop safe]
 theorem continues_sq {z₀ : ℂ} (hz0 : z₀ ≠ 0) (h : ContinuesAcross u0 Ext z₀) :
     ContinuesAcross u0 Ext (z₀ ^ 2) := by
   obtain ⟨g, hg_an, hg_eq⟩ := h
@@ -152,6 +159,7 @@ theorem continues_sq {z₀ : ℂ} (hz0 : z₀ ≠ 0) (h : ContinuesAcross u0 Ext
 
 /-- **Singularity spreads to square roots (contrapositive of `continues_sq`).**
 If `u₀` does not continue across `z₀² (z₀ ≠ 0)`, it does not continue across `z₀`. -/
+@[aesop safe]
 theorem not_continues_of_sq {z₀ : ℂ} (hz0 : z₀ ≠ 0)
     (h : ¬ ContinuesAcross u0 Ext (z₀ ^ 2)) : ¬ ContinuesAcross u0 Ext z₀ :=
   fun hc => h (continues_sq hz0 hc)
@@ -160,6 +168,7 @@ theorem not_continues_of_sq {z₀ : ℂ} (hz0 : z₀ ≠ 0)
 If `u₀` continues across `z₀` via `g`, the *same* `g` witnesses continuation across every nearby `z`
 (`g` is analytic on a neighborhood, and the agreement set `W ∩ Ext` is an `Ext`-neighborhood of each
 `z ∈ W`). Hence the singular set is closed. -/
+@[aesop safe]
 theorem isOpen_continues : IsOpen {z : ℂ | ContinuesAcross u0 Ext z} := by
   rw [isOpen_iff_mem_nhds]
   rintro z₀ ⟨g, hg_an, hg_eq⟩
@@ -170,6 +179,7 @@ theorem isOpen_continues : IsOpen {z : ℂ | ContinuesAcross u0 Ext z} := by
   exact ⟨g, hzAn, mem_nhdsWithin.mpr ⟨W, hWopen, hzW, hWsub⟩⟩
 
 /-- The singular set `{z | ¬ ContinuesAcross u0 Ext z}` is closed. -/
+@[aesop safe]
 theorem isClosed_singular : IsClosed {z : ℂ | ¬ ContinuesAcross u0 Ext z} :=
   isOpen_continues.isClosed_compl
 
@@ -186,6 +196,7 @@ noncomputable def U0sum (w : ℂ) : ℂ :=
   ∑' n : ℕ, (2 : ℂ) ^ (-(n + 1 : ℤ)) * w ^ (2 ^ (n + 1) - 1 : ℤ)
 
 /-- Each companion term `2^{-(n+1)} w^{2^{n+1}-1}` is entire (nonnegative integer exponent). -/
+@[aesop safe]
 theorem companion_term_diff (n : ℕ) : Differentiable ℂ
     (fun w : ℂ => (2 : ℂ) ^ (-(n + 1 : ℤ)) * w ^ (2 ^ (n + 1) - 1 : ℤ)) := by
   have hexp : (0:ℤ) ≤ 2 ^ (n + 1) - 1 := by
@@ -197,6 +208,7 @@ theorem companion_term_diff (n : ℕ) : Differentiable ℂ
   exact differentiable_pow m
 
 /-- On the open unit disk each companion term is bounded by the summable `2^{-(n+1)}`. -/
+@[aesop safe]
 theorem companion_bound (n : ℕ) (w : ℂ) (hw : w ∈ Metric.ball (0:ℂ) 1) :
     ‖(2 : ℂ) ^ (-(n + 1 : ℤ)) * w ^ (2 ^ (n + 1) - 1 : ℤ)‖ ≤ (2 : ℝ) ^ (-(n + 1 : ℤ)) := by
   rw [Metric.mem_ball, dist_zero_right] at hw
@@ -212,6 +224,7 @@ theorem companion_bound (n : ℕ) (w : ℂ) (hw : w ∈ Metric.ball (0:ℂ) 1) :
   nlinarith [mul_le_mul_of_nonneg_left hwle h2]
 
 /-- **U₀sum is holomorphic on the open unit disk (PROVEN).** -/
+@[aesop safe]
 theorem U0sum_diff_open : DifferentiableOn ℂ U0sum (Metric.ball 0 1) :=
   differentiableOn_tsum_of_summable_norm summable_two_zpow_neg
     (fun n => (companion_term_diff n).differentiableOn) Metric.isOpen_ball
@@ -219,6 +232,7 @@ theorem U0sum_diff_open : DifferentiableOn ℂ U0sum (Metric.ball 0 1) :=
 
 /-- **The companion has a Cauchy power series on every disk `r < 1` (PROVEN).**
 Hence its radius of convergence is `≥ 1`; with divergence (`U0term_norm_tendsto_atTop`) it is `= 1`. -/
+@[aesop safe]
 theorem U0sum_hasFPS {r : NNReal} (hr0 : 0 < r) (hr1 : (r:ℝ) < 1) :
     HasFPowerSeriesOnBall U0sum (cauchyPowerSeries U0sum 0 r) 0 r := by
   apply DifferentiableOn.hasFPowerSeriesOnBall _ hr0
@@ -238,6 +252,7 @@ noncomputable def lacCoeff (k : ℕ) : ℂ :=
   ∑' n : ℕ, if k = 2 ^ (n + 1) - 1 then (2 : ℂ) ^ (-(n + 1 : ℤ)) else 0
 
 /-- The lacunary exponent map `n ↦ 2^{n+1}-1` is injective. -/
+@[aesop safe]
 theorem emb_inj : Function.Injective (fun n : ℕ => 2 ^ (n + 1) - 1) := by
   intro a b hab
   simp only at hab
@@ -247,18 +262,21 @@ theorem emb_inj : Function.Injective (fun n : ℕ => 2 ^ (n + 1) - 1) := by
   have := Nat.pow_right_injective (le_refl 2) h2
   omega
 
+@[aesop safe]
 theorem lacCoeff_emb (n : ℕ) : lacCoeff (2 ^ (n + 1) - 1) = (2 : ℂ) ^ (-(n + 1 : ℤ)) := by
   unfold lacCoeff
   rw [tsum_eq_single n]
   · simp
   · intro m hm; rw [if_neg]; intro h; exact hm (emb_inj h.symm)
 
+@[aesop safe]
 theorem lacCoeff_zero {k : ℕ} (hk : ∀ n, k ≠ 2 ^ (n + 1) - 1) : lacCoeff k = 0 := by
   unfold lacCoeff
   convert tsum_zero with n
   rw [if_neg (hk n)]
 
 /-- **Reindexing (PROVEN):** the companion equals a genuine power series `∑_k lacCoeff(k)·w^k`. -/
+@[aesop safe]
 theorem lac_reindex (w : ℂ) :
     ∑' k : ℕ, lacCoeff k * w ^ k = U0sum w := by
   rw [U0sum]
@@ -280,6 +298,7 @@ theorem lac_reindex (w : ℂ) :
   ring
 
 /-- The `e_n`-th term of the lacunary power series is exactly `U0term`. -/
+@[aesop safe]
 theorem lac_term_eq (x : ℂ) (n : ℕ) :
     lacCoeff (2 ^ (n + 1) - 1) * x ^ (2 ^ (n + 1) - 1) = U0term x n := by
   rw [lacCoeff_emb n, U0term]
@@ -292,6 +311,7 @@ theorem lac_term_eq (x : ℂ) (n : ℕ) :
 /-- **The lacunary power series diverges for `‖x‖ > 1` (PROVEN).** Its `e_n`-subsequence is `U0term x n`,
 whose norm `→ ∞` (`U0term_norm_tendsto_atTop`), so the terms do not tend to `0`. This is the endpoint
 the Pringsheim contradiction lands on: continuation past `‖·‖=1` would force convergence here. -/
+@[aesop safe]
 theorem lac_not_summable {x : ℂ} (hx : 1 < ‖x‖) :
     ¬ Summable (fun k => lacCoeff k * x ^ k) := by
   intro hsum
@@ -310,6 +330,7 @@ theorem lac_not_summable {x : ℂ} (hx : 1 < ‖x‖) :
   exact absurd (U0term_norm_tendsto_atTop hx) (not_tendsto_atTop_of_tendsto_nhds hnorm)
 
 /-- The companion lacunary terms are summable on the open disk (bounded by `2^{-(n+1)}`). -/
+@[aesop safe]
 theorem companion_summable_disk {w : ℂ} (hw : ‖w‖ < 1) :
     Summable (fun n : ℕ => lacCoeff (2 ^ (n + 1) - 1) * w ^ (2 ^ (n + 1) - 1)) := by
   apply Summable.of_norm_bounded (g := fun n : ℕ => (2:ℝ)^(-(n+1:ℤ))) summable_two_zpow_neg
@@ -325,6 +346,7 @@ theorem companion_summable_disk {w : ℂ} (hw : ‖w‖ < 1) :
   nlinarith [mul_le_mul_of_nonneg_left hwle h2]
 
 /-- **The lacunary power series is summable on the open disk (PROVEN).** -/
+@[aesop safe]
 theorem lac_summable {w : ℂ} (hw : ‖w‖ < 1) : Summable (fun k => lacCoeff k * w ^ k) := by
   have hzero : ∀ k ∉ Set.range (fun n : ℕ => 2 ^ (n + 1) - 1), lacCoeff k * w ^ k = 0 := by
     intro k hk; rw [lacCoeff_zero (fun n h => hk ⟨n, h.symm⟩), zero_mul]
@@ -332,12 +354,14 @@ theorem lac_summable {w : ℂ} (hw : ‖w‖ < 1) : Summable (fun k => lacCoeff 
   exact companion_summable_disk hw
 
 /-- **The lacunary power series sums to `U0sum` on the open disk (PROVEN).** -/
+@[aesop safe]
 theorem lac_hasSum {w : ℂ} (hw : ‖w‖ < 1) : HasSum (fun k => lacCoeff k * w ^ k) (U0sum w) := by
   rw [← lac_reindex w]
   exact (lac_summable hw).hasSum
 
 open FormalMultilinearSeries in
 /-- Each coefficient has norm `≤ 1` (`0` or `2^{-j} ≤ 1/2`). -/
+@[aesop safe]
 theorem lacCoeff_norm_le (n : ℕ) : ‖lacCoeff n‖ ≤ 1 := by
   by_cases h : ∃ m, n = 2 ^ (m + 1) - 1
   · obtain ⟨m, rfl⟩ := h
@@ -347,6 +371,7 @@ theorem lacCoeff_norm_le (n : ℕ) : ‖lacCoeff n‖ ≤ 1 := by
 
 open FormalMultilinearSeries in
 /-- The explicit lacunary series has radius of convergence `≥ 1`. -/
+@[aesop safe]
 theorem lac_radius_ge_one : (1 : ENNReal) ≤ (ofScalars ℂ lacCoeff).radius := by
   apply le_radius_of_bound _ 1 (r := 1)
   intro n
@@ -358,6 +383,7 @@ open FormalMultilinearSeries in
 /-- **Keystone (PROVEN): `U0sum` IS its explicit lacunary power series on the unit disk.**
 Combined with `lac_not_summable` (divergence off the disk), the radius of convergence is exactly `1`.
 This is the disk-side power-series object the Pringsheim seed argument runs on. -/
+@[aesop safe]
 theorem U0sum_hasFPS_explicit :
     HasFPowerSeriesOnBall U0sum (ofScalars ℂ lacCoeff) 0 1 where
   r_le := lac_radius_ge_one
@@ -378,6 +404,7 @@ theorem U0sum_hasFPS_explicit :
 open FormalMultilinearSeries in
 /-- The radius is `≤ 1`: at any real `r > 1` inside a hypothetical larger radius the series would be
 summable, contradicting `lac_not_summable`. -/
+@[aesop safe]
 theorem lac_radius_le_one : (ofScalars ℂ lacCoeff).radius ≤ 1 := by
   by_contra h
   rw [not_le] at h
@@ -402,6 +429,7 @@ theorem lac_radius_le_one : (ofScalars ℂ lacCoeff).radius ≤ 1 := by
 
 open FormalMultilinearSeries in
 /-- **The companion power series has radius of convergence exactly `1` (PROVEN).** -/
+@[aesop safe]
 theorem lac_radius_eq_one : (ofScalars ℂ lacCoeff).radius = 1 :=
   le_antisymm lac_radius_le_one lac_radius_ge_one
 
@@ -412,6 +440,7 @@ If the companion `U0sum` admitted an analytic extension `G` on a disk of radius 
 series), forcing its radius `≥ R > 1` — contradicting `lac_radius_eq_one`. Thus `U0sum` cannot be
 extended to any disk past radius `1`; the only missing step to `seed_singularity` is assembling such a
 `G` from the per-boundary-point continuations (the sheaf-gluing). -/
+@[aesop safe]
 theorem glue_contradiction {G : ℂ → ℂ} {R : NNReal} (hR : 1 < (R:ℝ))
     (hGdiff : DifferentiableOn ℂ G (Metric.closedBall 0 R))
     (hGeq : G =ᶠ[𝓝 0] U0sum) : False := by
@@ -431,6 +460,7 @@ theorem glue_contradiction {G : ℂ → ℂ} {R : NNReal} (hR : 1 < (R:ℝ))
 
 /-- The companion series equals `u₀ ∘ (·⁻¹)` as tsums: `(w⁻¹)^{-(2^{n+1}-1)} = w^{2^{n+1}-1}`.
 Pure algebra; underlies the `w ↦ 1/w` bridge between the u₀-side and U₀-side boundary statements. -/
+@[aesop safe]
 theorem u0_inv_eq_companion (w : ℂ) :
     u0 w⁻¹ = ∑' n : ℕ, (2 : ℂ) ^ (-(n + 1 : ℤ)) * w ^ (2 ^ (n + 1) - 1 : ℤ) := by
   simp only [u0]; congr 1; ext n; congr 1
@@ -442,6 +472,7 @@ def ContinuesAcrossDisk (w₀ : ℂ) : Prop :=
 
 /-- **Local identity theorem (PROVEN):** two germs analytic at `w₀` that agree frequently near `w₀`
 agree on a neighborhood. (Restriction to a common ball + `eqOn_of_preconnected_of_frequently_eq`.) -/
+@[aesop safe]
 theorem continuation_unique {w₀ : ℂ} {g h : ℂ → ℂ} (hg : AnalyticAt ℂ g w₀) (hh : AnalyticAt ℂ h w₀)
     (hfreq : ∃ᶠ w in 𝓝[≠] w₀, g w = h w) : g =ᶠ[𝓝 w₀] h := by
   obtain ⟨rg, hrg, hgB⟩ := hg.exists_ball_analyticOnNhd
@@ -458,6 +489,7 @@ theorem continuation_unique {w₀ : ℂ} {g h : ℂ → ℂ} (hg : AnalyticAt �
 
 /-- Two disk-side continuations across a boundary point `w₀` (`‖w₀‖=1`) agree on a neighborhood:
 both equal `U0sum` on the disk-side, which is a `NeBot` filter `≤ 𝓝[≠] w₀`. -/
+@[aesop safe]
 theorem continuation_unique_disk {w₀ : ℂ} (hw₀ : ‖w₀‖ = 1) {g h : ℂ → ℂ}
     (hg : AnalyticAt ℂ g w₀) (hh : AnalyticAt ℂ h w₀)
     (hge : ∀ᶠ w in 𝓝[Metric.ball 0 1] w₀, g w = U0sum w)
@@ -481,6 +513,7 @@ theorem continuation_unique_disk {w₀ : ℂ} (hw₀ : ‖w₀‖ = 1) {g h : �
 companion `U0sum` continues across `z₀⁻¹` from the disk (via the biholomorphism `w ↦ 1/w` and
 `u0_inv_eq_companion`). This carries the `¬seed` hypothesis to the disk side where the radius
 machinery lives. -/
+@[aesop safe]
 theorem continuesDisk_of_continuesExt {z₀ : ℂ} (hz₀ : ‖z₀‖ = 1)
     (h : ContinuesAcross u0 Ext z₀) : ContinuesAcrossDisk z₀⁻¹ := by
   obtain ⟨g, hg_an, hg_eq⟩ := h
@@ -510,6 +543,7 @@ theorem continuesDisk_of_continuesExt {z₀ : ℂ} (hz₀ : ‖z₀‖ = 1)
     exact u0_inv_eq_companion w
 
 /-- Extract a metric ball on which the continuation is analytic and matches `U0sum` on the disk-side. -/
+@[aesop safe]
 theorem continuesDisk_ball {w₀ : ℂ} (h : ContinuesAcrossDisk w₀) :
     ∃ ρ > 0, ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g (Metric.ball w₀ ρ) ∧
       ∀ w ∈ Metric.ball w₀ ρ ∩ Metric.ball 0 1, g w = U0sum w := by
@@ -527,6 +561,7 @@ point, the Lebesgue number lemma gives a single `δ > 0` such that across every 
 there is a continuation analytic on `ball x δ` agreeing with `U0sum` on the disk-side. The uniform
 radius is what makes the overlaps' chord-midpoints land inside the disk, so the per-ball continuations
 are forced to agree (`continuation_unique`) — the key to gluing them into one function. -/
+@[aesop safe]
 theorem uniform_continuation_cover (hcont : ∀ w₀ : ℂ, ‖w₀‖ = 1 → ContinuesAcrossDisk w₀) :
     ∃ δ > 0, ∀ x : ℂ, ‖x‖ = 1 → ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g (Metric.ball x δ) ∧
       ∀ w ∈ Metric.ball x δ ∩ Metric.ball 0 1, g w = U0sum w := by
@@ -548,6 +583,7 @@ theorem uniform_continuation_cover (hcont : ∀ w₀ : ℂ, ‖w₀‖ = 1 → C
 `x, y` agree at any common point `w`: their chord-midpoint `(x+y)/2` lies strictly inside the disk
 (strict convexity) and inside both balls, where both equal `U0sum`; the identity theorem on the convex
 overlap then forces agreement. This makes the per-ball continuations glue into a single function. -/
+@[aesop safe]
 theorem overlap_consistency {x y : ℂ} (hx : ‖x‖ = 1) (hy : ‖y‖ = 1) {δ : ℝ} {gx gy : ℂ → ℂ}
     (hgxan : AnalyticOnNhd ℂ gx (Metric.ball x δ)) (hgyan : AnalyticOnNhd ℂ gy (Metric.ball y δ))
     (hgxeq : ∀ w ∈ Metric.ball x δ ∩ Metric.ball 0 1, gx w = U0sum w)
@@ -601,11 +637,13 @@ theorem overlap_consistency {x y : ℂ} (hx : ‖x‖ = 1) (hy : ‖y‖ = 1) {�
   exact heqOn ⟨hwx, hwy⟩
 
 /-- The radial projection `w ↦ w/‖w‖` lands on the unit sphere (for `‖w‖ ≥ 1`). -/
+@[aesop safe]
 theorem radial_norm {w : ℂ} (hw : 1 ≤ ‖w‖) : ‖w / (‖w‖ : ℂ)‖ = 1 := by
   have hne : ‖w‖ ≠ 0 := by intro h; rw [h] at hw; linarith
   rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg w), div_self hne]
 
 /-- Distance from `w` to its radial projection is `‖w‖ − 1`. -/
+@[aesop safe]
 theorem radial_dist {w : ℂ} (hw : 1 ≤ ‖w‖) : ‖w - w / (‖w‖ : ℂ)‖ = ‖w‖ - 1 := by
   have hwne : (‖w‖ : ℂ) ≠ 0 := by
     simp only [ne_eq, Complex.ofReal_eq_zero]; intro h; rw [h] at hw; linarith
@@ -627,6 +665,7 @@ projection `w ↦ w/‖w‖` and `differentiableOn_of_locally_differentiableOn`)
 
 This realises the natural boundary with *no* appeal to the Ostrowski–Hadamard gap theorem — only the
 Mahler-equation propagation, the doubly-exponential divergence, and this gluing. -/
+@[aesop safe]
 theorem seed_singularity : ∃ z₁ : ℂ, ‖z₁‖ = 1 ∧ ¬ ContinuesAcross u0 Ext z₁ := by
   by_contra hcon
   push_neg at hcon
@@ -687,6 +726,7 @@ theorem seed_singularity : ∃ z₁ : ℂ, ‖z₁‖ = 1 ∧ ¬ ContinuesAcross
 
 /-- Lipschitz-type bound on the imaginary axis: `‖exp(aI) − exp(bI)‖ ≤ 2·|a−b|` for `|a−b| ≤ 1`.
 (`exp(aI) − exp(bI) = exp(bI)·(exp((a−b)I) − 1)` and `‖exp(x) − 1‖ ≤ 2‖x‖` for `‖x‖ ≤ 1`.) -/
+@[aesop safe]
 private theorem norm_exp_imI_sub (a b : ℝ) (h : |a - b| ≤ 1) :
     ‖Complex.exp (a * I) - Complex.exp (b * I)‖ ≤ 2 * |a - b| := by
   have factor : Complex.exp (a * I) - Complex.exp (b * I)
@@ -702,6 +742,7 @@ private theorem norm_exp_imI_sub (a b : ℝ) (h : |a - b| ≤ 1) :
 dense in the unit circle. For target `w = exp(α I)` and tolerance `ε`, pick `n` with `2π/2ⁿ < ε` and
 `k = round((2ⁿα − arg z₁)/2π)`; then `exp(((arg z₁)+2πk)/2ⁿ · I)` is a `2ⁿ`-th root of `z₁` within
 `2π/2ⁿ` of `w` (argument error `≤ π/2ⁿ`, exp Lipschitz). -/
+@[aesop safe]
 theorem dense_dyadic_roots (z₁ : ℂ) (hz₁ : ‖z₁‖ = 1) :
     Metric.sphere (0 : ℂ) 1 ⊆ closure {z : ℂ | ∃ n : ℕ, z ^ (2 ^ n) = z₁} := by
   intro w hw
@@ -772,6 +813,7 @@ functional equation `(2/w)·U₀(w) = 1 + U₀(w²)` that this specific series s
 
 So on the analytic side the three-card independence result reduces to step 2 alone (step 4 being
 routine). -/
+@[aesop safe]
 theorem u0_natural_boundary :
     ∀ z₀ : ℂ, ‖z₀‖ = 1 → ¬ ContinuesAcross u0 Ext z₀ := by
   obtain ⟨z₁, hz₁norm, hz₁sing⟩ := seed_singularity

@@ -26,6 +26,7 @@ def upperUnipotentE (R : Type*) [CommRing R] (a : R) : Matrix (Fin 2) (Fin 2) R 
 
 /-- Multiplication law for the square-zero upper-unipotent matrices:
 `(I+aE)(I+bE)=I+(a+b)E`. -/
+@[aesop safe]
 theorem upperUnipotentE_mul {R : Type*} [CommRing R] (a b : R) :
     upperUnipotentE R a * upperUnipotentE R b = upperUnipotentE R (a + b) := by
   ext i j
@@ -35,6 +36,7 @@ theorem upperUnipotentE_mul {R : Type*} [CommRing R] (a b : R) :
 /-- The rank-two nilpotent curvature identity from the cross-prime curvature
 card. With `bp=b_p`, `bq=b_q`, `sp_bq=σ_p(b_q)`, and `sq_bp=σ_q(b_p)`, this is
 `F_{pq}=I+((1-σ_q)b_p-(1-σ_p)b_q)E`. -/
+@[aesop safe]
 theorem upperUnipotentE_curvature_eq {R : Type*} [CommRing R]
     (bp bq sp_bq sq_bp : R) :
     upperUnipotentE R (-bq) * upperUnipotentE R (-sq_bp) *

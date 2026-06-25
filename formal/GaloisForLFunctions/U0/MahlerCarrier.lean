@@ -18,6 +18,7 @@ namespace MahlerPolynomial
 of a closed disk, is preconnected: it is the image of `(max 2 ‖c‖, ∞) × sphere(0,1)` (a product of
 connected sets — `Ioi` and the circle, connected in `ℂ` by `rank_ℝ ℂ = 2 > 1`) under the continuous
 `(r, u) ↦ (r:ℂ)·u`. This is the domain-connectedness prerequisite for `meroField(escapeOpen c)`. -/
+@[aesop safe]
 theorem isPreconnected_escapeOpen (c : ℂ) : IsPreconnected (escapeOpen c) := by
   have hrank : (1 : Cardinal) < Module.rank ℝ ℂ := by
     rw [Complex.rank_real_complex]; norm_num
@@ -49,6 +50,7 @@ theorem isPreconnected_escapeOpen (c : ℂ) : IsPreconnected (escapeOpen c) := b
 `f = 0` there (every such `w` is `z²+c` for a square root `z` of `w−c` with `‖z‖ > R`), so by the
 identity theorem on connected `escapeOpen`, `f ≡ 0`. This is the mathematical core of the injectivity
 of the Mahler operator `τ` on `meroField(escapeOpen)`. -/
+@[aesop safe]
 theorem eqZero_of_comp_quadratic_eqZero {c : ℂ} {f : ℂ → ℂ}
     (hf : AnalyticOnNhd ℂ f (escapeOpen c))
     (h0 : ∀ z ∈ escapeOpen c, f (z ^ 2 + c) = 0) :

@@ -22,6 +22,7 @@ noncomputable section
 /-- **Per-prime diagonal shift.** In the Bohr coordinate `x_p = p^{-s}`, the
 additive shift `s ↦ s+1` is exactly the prime-lane dilation
 `x_p ↦ p^{-1}x_p`. -/
+@[aesop safe]
 theorem primeDiagonal_shift_apply (p : Nat.Primes) (s : ℂ) :
     ((p : ℂ) ^ (-(s + 1))) = ((p : ℂ)⁻¹) * ((p : ℂ) ^ (-s)) := by
   have hpC : (p : ℂ) ≠ 0 := by exact_mod_cast p.2.ne_zero
@@ -32,6 +33,7 @@ theorem primeDiagonal_shift_apply (p : Nat.Primes) (s : ℂ) :
 /-- **The shift is the diagonal of the prime lanes.** As a function of all
 prime coordinates, `s ↦ s+1` sends `p ↦ p^{-s}` to
 `p ↦ p^{-1}p^{-s}` simultaneously for every prime. -/
+@[aesop safe]
 theorem primeDiagonal_shift (s : ℂ) :
     (fun p : Nat.Primes => ((p : ℂ) ^ (-(s + 1)))) =
       fun p : Nat.Primes => ((p : ℂ)⁻¹) * ((p : ℂ) ^ (-s)) := by

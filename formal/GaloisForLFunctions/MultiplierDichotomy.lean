@@ -22,6 +22,7 @@ noncomputable section
 gauge `h = 1/g` sends the multiplier to `c`:
 `a * σ(h) / h = c`. Written in group notation, division is multiplication by
 inverse. -/
+@[aesop safe]
 theorem ccGaugeMultiplier_eq_const {G : Type*} [CommGroup G]
     (σ : G →* G) (c g : G) :
     (c * (σ g * g⁻¹)) * (σ g⁻¹ * (g⁻¹)⁻¹) = c := by
@@ -31,6 +32,7 @@ theorem ccGaugeMultiplier_eq_const {G : Type*} [CommGroup G]
 If `g` has derivative `g'` and `g z ≠ 0`, then `f' =
 (g'/g + lam) f` at `z`. This is the analytic core of the card's
 `f'/f = g'/g + log c` statement, with `lam = log c`. -/
+@[aesop safe]
 theorem hasDerivAt_mul_exp_const_ode {g : ℂ → ℂ} {g' lam z : ℂ}
     (hg : HasDerivAt g g' z) (hgz : g z ≠ 0) :
     HasDerivAt (fun w : ℂ => g w * Complex.exp (w * lam))
@@ -48,6 +50,7 @@ theorem hasDerivAt_mul_exp_const_ode {g : ℂ → ℂ} {g' lam z : ℂ}
 If `c = exp lam` and `a(z) = c * g(z+1) / g(z)`, then
 `f(z)=g(z) exp(z*lam)` satisfies `f(z+1)=a(z) f(z)` at every point where
 `g z` is nonzero. -/
+@[aesop safe]
 theorem ccShiftSolution_eq (g : ℂ → ℂ) (lam z : ℂ) (hgz : g z ≠ 0) :
     g (z + 1) * Complex.exp ((z + 1) * lam) =
       (Complex.exp lam * (g (z + 1) / g z)) * (g z * Complex.exp (z * lam)) := by

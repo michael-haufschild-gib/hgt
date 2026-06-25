@@ -36,6 +36,7 @@ def diagonalResonant {ι A : Type*} [AddCommGroup A]
 
 /-- Coordinate resonance implies diagonal resonance. The converse is false in
 general, because diagonal resonance may occur by cancellation. -/
+@[aesop safe]
 theorem diagonalResonant_of_coordinateResonant {ι A : Type*} [AddCommGroup A]
     {ω : ι → A} {m : ι →₀ ℤ} :
     coordinateResonant ω m → diagonalResonant ω m := by
@@ -46,6 +47,7 @@ theorem diagonalResonant_of_coordinateResonant {ι A : Type*} [AddCommGroup A]
 
 /-- If no coordinate has integer torsion, then the coordinate-resonance lattice
 is trivial. -/
+@[aesop safe]
 theorem coordinateResonant_eq_zero_of_no_coordinate_torsion {ι A : Type*} [AddCommGroup A]
     {ω : ι → A} {m : ι →₀ ℤ}
     (hω : ∀ i (n : ℤ), n • ω i = 0 → n = 0) :
@@ -55,6 +57,7 @@ theorem coordinateResonant_eq_zero_of_no_coordinate_torsion {ι A : Type*} [AddC
   exact hω i (m i) (h i)
 
 /-- Prime-log diagonal resonances are trivial by unique factorization. -/
+@[aesop safe]
 theorem logPrime_diagonalResonant_eq_zero {m : Nat.Primes →₀ ℤ}
     (h : diagonalResonant (fun p : Nat.Primes => Real.log (p : ℕ)) m) :
     m = 0 := by
@@ -74,6 +77,7 @@ def pairCancelRelation : Fin 2 →₀ ℤ :=
   Finsupp.single (0 : Fin 2) (1 : ℤ) + Finsupp.single (1 : Fin 2) (1 : ℤ)
 
 /-- The pair-cancellation relation is diagonally resonant. -/
+@[aesop safe]
 theorem pairCancel_diagonalResonant :
     diagonalResonant pairCancelFrequencies pairCancelRelation := by
   unfold diagonalResonant pairCancelRelation
@@ -87,6 +91,7 @@ theorem pairCancel_diagonalResonant :
 /-- The same pair-cancellation relation is not coordinate-resonant. This is the
 finite algebraic shadow of the draft's warning that joint diagonal resonances and
 per-coordinate resonances are different columns. -/
+@[aesop safe]
 theorem pairCancel_not_coordinateResonant :
     ¬ coordinateResonant pairCancelFrequencies pairCancelRelation := by
   intro h
@@ -109,6 +114,7 @@ def diagonalRelationLattice {ι A : Type*} [AddCommGroup A] (ω : ι → A) : Se
 /-- The arithmetic prime-log diagonal relation lattice is trivial. This is the
 finite-character `Λ = 0` vertex of the prime torus: no nonzero algebraic
 character annihilates the arithmetic diagonal frequencies. -/
+@[aesop safe]
 theorem primeLog_diagonalRelationLattice_eq_singleton :
     diagonalRelationLattice (fun p : Nat.Primes => Real.log (p : ℕ)) = {0} := by
   ext m
@@ -128,6 +134,7 @@ factorization/log-prime independence. -/
 def finitePrimeLogAnnihilator (S : Finset Nat.Primes) : Set (Nat.Primes →₀ ℤ) :=
   {m | m.support ⊆ S ∧ diagonalResonant (fun p : Nat.Primes => Real.log (p : ℕ)) m}
 
+@[aesop safe]
 theorem finitePrimeLogAnnihilator_eq_singleton (S : Finset Nat.Primes) :
     finitePrimeLogAnnihilator S = {0} := by
   ext m

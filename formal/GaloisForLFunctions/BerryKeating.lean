@@ -24,26 +24,30 @@ noncomputable section
 /-- The FE-invariant Berry-Keating coordinate `u = s(1-s)`. -/
 def berryKeatingU (s : ℂ) : ℂ := s * (1 - s)
 
-@[simp] theorem berryKeatingU_apply (s : ℂ) : berryKeatingU s = s * (1 - s) := rfl
+@[aesop safe, simp] theorem berryKeatingU_apply (s : ℂ) : berryKeatingU s = s * (1 - s) := rfl
 
 /-- The coordinate `u=s(1-s)` is invariant under the functional-equation involution. -/
+@[aesop safe]
 theorem berryKeatingU_sigma (s : ℂ) : berryKeatingU (sigma s) = berryKeatingU s := by
   simp [berryKeatingU, sigma]
   ring
 
 /-- Real part of the Berry-Keating coordinate in rectangular coordinates. -/
+@[aesop safe]
 theorem berryKeatingU_re (s : ℂ) :
     (berryKeatingU s).re = s.re * (1 - s.re) + s.im ^ 2 := by
   simp [berryKeatingU, Complex.mul_re, Complex.sub_re, Complex.sub_im]
   ring
 
 /-- Imaginary part of the Berry-Keating coordinate in rectangular coordinates. -/
+@[aesop safe]
 theorem berryKeatingU_im (s : ℂ) :
     (berryKeatingU s).im = (1 - 2 * s.re) * s.im := by
   simp [berryKeatingU, Complex.mul_im, Complex.sub_re, Complex.sub_im]
   ring
 
 /-- On the critical line, `u=s(1-s)` is real and equals `1/4 + Im(s)^2`. -/
+@[aesop safe]
 theorem berryKeatingU_on_critical (s : ℂ) (hs : s.re = 1 / 2) :
     (berryKeatingU s).im = 0 ∧ (berryKeatingU s).re = 1 / 4 + s.im ^ 2 := by
   constructor
@@ -53,12 +57,14 @@ theorem berryKeatingU_on_critical (s : ℂ) (hs : s.re = 1 / 2) :
     ring
 
 /-- On the critical line, the real `u`-coordinate lies on the ray `[1/4,∞)`. -/
+@[aesop safe]
 theorem berryKeatingU_re_ge_quarter_on_critical (s : ℂ) (hs : s.re = 1 / 2) :
     1 / 4 ≤ (berryKeatingU s).re := by
   rw [(berryKeatingU_on_critical s hs).2]
   nlinarith [sq_nonneg s.im]
 
 /-- Parametrized critical-line formula: `u(1/2+iγ)=1/4+γ^2`. -/
+@[aesop safe]
 theorem berryKeatingU_critical_param (γ : ℝ) :
     berryKeatingU ((1 / 2 : ℂ) + (γ : ℂ) * Complex.I) = (1 / 4 + γ ^ 2 : ℂ) := by
   apply Complex.ext
@@ -72,6 +78,7 @@ theorem berryKeatingU_critical_param (γ : ℝ) :
 
 /-- A non-real point away from the critical line maps to a non-real `u`-coordinate.
 The `s.im ≠ 0` hypothesis is essential: real off-line points still have real `u`. -/
+@[aesop safe]
 theorem berryKeatingU_nonreal_of_offCritical_nonzero_im (s : ℂ)
     (hcrit : s.re ≠ 1 / 2) (him : s.im ≠ 0) :
     (berryKeatingU s).im ≠ 0 := by

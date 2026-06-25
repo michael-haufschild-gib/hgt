@@ -27,6 +27,7 @@ noncomputable def u0 (z : ℂ) : ℂ :=
 
 /-! ## Bounding series -/
 
+@[aesop safe]
 private lemma summable_two_zpow_neg_nat :
     Summable (fun n : ℕ => (2 : ℝ) ^ (-(n : ℤ))) := by
   have hgeom := summable_geometric_of_lt_one (r := (2 : ℝ)⁻¹) (by norm_num) (by norm_num)
@@ -34,6 +35,7 @@ private lemma summable_two_zpow_neg_nat :
   rw [zpow_neg, zpow_natCast, inv_pow]
 
 /-- The bounding series `∑ 2^{-(n+1)}` is summable. -/
+@[aesop safe]
 theorem summable_two_zpow_neg : Summable (fun n : ℕ => (2 : ℝ) ^ (-(n + 1 : ℤ))) := by
   have hgeom := summable_geometric_of_lt_one (r := (2 : ℝ)⁻¹) (by norm_num) (by norm_num)
   have hshift : Summable (fun n : ℕ => (2 : ℝ)⁻¹ ^ (n + 1)) := by
@@ -44,6 +46,7 @@ theorem summable_two_zpow_neg : Summable (fun n : ℕ => (2 : ℝ) ^ (-(n + 1 : 
 /-! ## Absolute convergence for `‖z‖ ≥ 1` -/
 
 /-- For `‖z‖ ≥ 1`, each term has norm ≤ `2^{-(n+1)}`. -/
+@[aesop safe]
 theorem norm_u0_term_le {z : ℂ} (hz : 1 ≤ ‖z‖) (n : ℕ) :
     ‖(2 : ℂ) ^ (-(n + 1 : ℤ)) * z ^ (-(2 ^ (n + 1) - 1 : ℤ))‖ ≤
     (2 : ℝ) ^ (-(n + 1 : ℤ)) := by
@@ -56,6 +59,7 @@ theorem norm_u0_term_le {z : ℂ} (hz : 1 ≤ ‖z‖) (n : ℕ) :
   linarith [mul_le_mul_of_nonneg_left hzpow_le h2pow_pos]
 
 /-- `u₀(z)` is summable for `‖z‖ ≥ 1`. -/
+@[aesop safe]
 theorem summable_u0_terms {z : ℂ} (hz : 1 ≤ ‖z‖) :
     Summable (fun n : ℕ => (2 : ℂ) ^ (-(n + 1 : ℤ)) * z ^ (-(2 ^ (n + 1) - 1 : ℤ))) := by
   apply Summable.of_norm_bounded (g := fun n : ℕ => (2 : ℝ) ^ (-(n + 1 : ℤ)))
@@ -65,6 +69,7 @@ theorem summable_u0_terms {z : ℂ} (hz : 1 ≤ ‖z‖) :
 /-! ## Functional equation: `2 * z * u₀ z = 1 + u₀ (z ^ 2)` -/
 
 /-- Rewriting the `u₀(z²)` series as shifted u₀(z) terms. -/
+@[aesop safe]
 theorem u0_sq_term {z : ℂ} (n : ℕ) :
     (2 : ℂ) ^ (-(n + 1 : ℤ)) * (z ^ 2) ^ (-(2 ^ (n + 1) - 1 : ℤ)) =
     (2 : ℂ) ^ (-(n + 1 : ℤ)) * z ^ (-(2 ^ (n + 2) - 2 : ℤ)) := by
@@ -73,6 +78,7 @@ theorem u0_sq_term {z : ℂ} (n : ℕ) :
   congr 1; push_cast; ring
 
 /-- Multiplying the `n`-th term of `u₀(z)` by `2z` (requires `z ≠ 0`). -/
+@[aesop safe]
 theorem two_z_u0_term {z : ℂ} (hz0 : z ≠ 0) (n : ℕ) :
     2 * z * ((2 : ℂ) ^ (-(n + 1 : ℤ)) * z ^ (-(2 ^ (n + 1) - 1 : ℤ))) =
     (2 : ℂ) ^ (-(n : ℤ)) * z ^ (-(2 ^ (n + 1) - 2 : ℤ)) := by
@@ -84,6 +90,7 @@ theorem two_z_u0_term {z : ℂ} (hz0 : z ≠ 0) (n : ℕ) :
   congr 1 <;> ring
 
 /-- **Functional equation**: `2 * z * u₀ z = 1 + u₀ (z ^ 2)`. -/
+@[aesop safe]
 theorem functional_equation {z : ℂ} (hz : 1 ≤ ‖z‖) :
     2 * z * u0 z = 1 + u0 (z ^ 2) := by
   have hz0 : z ≠ 0 := norm_pos_iff.mp (lt_of_lt_of_le one_pos hz)
@@ -130,12 +137,14 @@ theorem functional_equation {z : ℂ} (hz : 1 ≤ ‖z‖) :
 noncomputable def U0term (x : ℂ) (n : ℕ) : ℂ :=
   (2 : ℂ) ^ (-(n + 1 : ℤ)) * x ^ (2 ^ (n + 1) - 1 : ℤ)
 
+@[aesop safe]
 theorem U0term_norm_eq {x : ℂ} (n : ℕ) :
     ‖U0term x n‖ = (2 : ℝ) ^ (-(n + 1 : ℤ)) * ‖x‖ ^ (2 ^ (n + 1) - 1 : ℤ) := by
   simp only [U0term, norm_mul, norm_zpow, Complex.norm_two]
 
 /-- Geometric growth criterion: if `a N > 0` and `2 · a n ≤ a (n+1)` for all `n ≥ N`,
 then `a → +∞`. (From `a (N+k) ≥ 2^k · a N`.) -/
+@[aesop safe]
 private theorem tendsto_of_two_mul_le (a : ℕ → ℝ) (N : ℕ) (hpos : 0 < a N)
     (hgrow : ∀ n ≥ N, 2 * a n ≤ a (n + 1)) :
     Filter.Tendsto a Filter.atTop Filter.atTop := by
@@ -161,6 +170,7 @@ private theorem tendsto_of_two_mul_le (a : ℕ → ℝ) (N : ℕ) (hpos : 0 < a 
 /-- For `‖x‖ > 1`, the norms `‖U0term x n‖` tend to `+∞`.
 The ratio `a(n+1)/a(n) = ½·‖x‖^{2^{n+1}} → ∞`, so eventually `a(n+1) ≥ 2·a(n)` (geometric growth).
 This is the doubly-exponential growth that makes the unit circle the natural boundary of u₀. -/
+@[aesop safe]
 theorem U0term_norm_tendsto_atTop {x : ℂ} (hx : 1 < ‖x‖) :
     Filter.Tendsto (fun n => ‖U0term x n‖) Filter.atTop Filter.atTop := by
   have hr1 : 1 < ‖x‖ := hx

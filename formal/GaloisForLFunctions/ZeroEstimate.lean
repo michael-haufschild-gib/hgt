@@ -27,9 +27,11 @@ noncomputable section
 def primeLogHeight (m : Nat.Primes →₀ ℤ) : ℕ :=
   primeProduct (positivePart m) * primeProduct (negativePart m)
 
+@[aesop safe]
 lemma primeLogHeight_pos (m : Nat.Primes →₀ ℤ) : 0 < primeLogHeight m := by
   exact mul_pos (primeProduct_pos _) (primeProduct_pos _)
 
+@[aesop safe]
 private lemma one_sub_inv_le_log {x : ℝ} (hx : 1 ≤ x) : 1 - x⁻¹ ≤ Real.log x := by
   have hxpos : 0 < x := lt_of_lt_of_le zero_lt_one hx
   have hposinv : 0 < x⁻¹ := inv_pos.mpr hxpos
@@ -37,6 +39,7 @@ private lemma one_sub_inv_le_log {x : ℝ} (hx : 1 ≤ x) : 1 - x⁻¹ ≤ Real.
   rw [Real.log_inv] at h
   linarith
 
+@[aesop safe]
 private lemma inv_mul_le_one_sub_div_inv {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (hba : b < a) :
     (((a * b : ℕ) : ℝ))⁻¹ ≤ 1 - (((a : ℝ) / (b : ℝ))⁻¹) := by
   have haR : 0 < (a : ℝ) := Nat.cast_pos.mpr ha
@@ -55,6 +58,7 @@ private lemma inv_mul_le_one_sub_div_inv {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (
     nlinarith [mul_le_mul hb1 hdiff (by linarith) (by linarith)]
   nlinarith
 
+@[aesop safe]
 private lemma log_ratio_height_bound {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (hba : b < a) :
     (((a * b : ℕ) : ℝ))⁻¹ ≤ Real.log (a : ℝ) - Real.log (b : ℝ) := by
   have haR : 0 < (a : ℝ) := Nat.cast_pos.mpr ha
@@ -69,6 +73,7 @@ private lemma log_ratio_height_bound {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (hba 
   rw [hlogdiv] at hlog
   exact le_trans hinv hlog
 
+@[aesop safe]
 lemma logPrime_int_sum_eq_log_pos_sub_log_neg (m : Nat.Primes →₀ ℤ) :
     m.sum (fun p z => (z : ℝ) * Real.log (p : ℕ)) =
       Real.log (primeProduct (positivePart m) : ℝ) -
@@ -90,6 +95,7 @@ lemma logPrime_int_sum_eq_log_pos_sub_log_neg (m : Nat.Primes →₀ ℤ) :
   rw [log_primeProduct, log_primeProduct]
   exact hdiff.symm
 
+@[aesop safe]
 lemma positive_negative_eq_zero_of_primeProduct_eq {m : Nat.Primes →₀ ℤ}
     (h : primeProduct (positivePart m) = primeProduct (negativePart m)) :
     m = 0 := by
@@ -104,6 +110,7 @@ lemma positive_negative_eq_zero_of_primeProduct_eq {m : Nat.Primes →₀ ℤ}
 /-- **S-free height bound for prime logarithm frequencies.** For every nonzero
 finite integer exponent vector `m`,
 `H(m)⁻¹ ≤ |Σ_p m_p log p|`, where `H(m)=∏ p^{|m_p|}`. -/
+@[aesop safe]
 theorem logPrime_height_bound (m : Nat.Primes →₀ ℤ) (hm : m ≠ 0) :
     ((primeLogHeight m : ℝ))⁻¹ ≤
       |m.sum (fun p z => (z : ℝ) * Real.log (p : ℕ))| := by
@@ -145,6 +152,7 @@ theorem logPrime_height_bound (m : Nat.Primes →₀ ℤ) (hm : m ≠ 0) :
 
 /-- If the first `n` power moments of a coefficient vector vanish, then it also
 pairs to zero against every polynomial of degree `< n`. -/
+@[aesop safe]
 private lemma weighted_eval_eq_zero_of_moments {n : ℕ} {μ c : Fin n → ℂ} {p : Polynomial ℂ}
     (hp : p.natDegree < n)
     (hmom : ∀ k : Fin n, ∑ j : Fin n, c j * (μ j) ^ (k : ℕ) = 0) :
@@ -185,6 +193,7 @@ private lemma weighted_eval_eq_zero_of_moments {n : ℕ} {μ c : Fin n → ℂ} 
 private def lagrangeComplement {n : ℕ} (μ : Fin n → ℂ) (i : Fin n) : Polynomial ℂ :=
   (Finset.univ.erase i).prod (fun j => Polynomial.X - Polynomial.C (μ j))
 
+@[aesop safe]
 private lemma lagrangeComplement_natDegree_lt {n : ℕ} (μ : Fin n → ℂ) (i : Fin n) :
     (lagrangeComplement μ i).natDegree < n := by
   unfold lagrangeComplement
@@ -205,6 +214,7 @@ private lemma lagrangeComplement_natDegree_lt {n : ℕ} (μ : Fin n → ℂ) (i 
     · simp
   exact lt_of_le_of_lt (le_trans hle₁ hle₂) hcard
 
+@[aesop safe]
 private lemma lagrangeComplement_eval_ne_zero {n : ℕ} {μ : Fin n → ℂ}
     (hμ : Function.Injective μ) (i : Fin n) :
     (lagrangeComplement μ i).eval (μ i) ≠ 0 := by
@@ -218,6 +228,7 @@ private lemma lagrangeComplement_eval_ne_zero {n : ℕ} {μ : Fin n → ℂ}
   have hij : i = j := hμ (sub_eq_zero.mp hsub)
   exact hji hij.symm
 
+@[aesop safe]
 private lemma lagrangeComplement_eval_eq_zero_of_ne {n : ℕ} {μ : Fin n → ℂ}
     (i j : Fin n) (hji : j ≠ i) :
     (lagrangeComplement μ i).eval (μ j) = 0 := by
@@ -231,6 +242,7 @@ private lemma lagrangeComplement_eval_eq_zero_of_ne {n : ℕ} {μ : Fin n → �
 /-- **Vandermonde algebraic core.** At `n` distinct nodes, the first `n`
 power moments determine the coefficient vector. Equivalently, a coefficient
 vector whose moments `∑ j, c_j μ_j^k` vanish for `k=0,…,n-1` is zero. -/
+@[aesop safe]
 theorem vandermonde_moments_eq_zero_of_injective {n : ℕ} {μ c : Fin n → ℂ}
     (hμ : Function.Injective μ)
     (hmom : ∀ k : Fin n, ∑ j : Fin n, c j * (μ j) ^ (k : ℕ) = 0) :
@@ -254,6 +266,7 @@ theorem vandermonde_moments_eq_zero_of_injective {n : ℕ} {μ c : Fin n → ℂ
 
 /-- Direct order-bound form of the Vandermonde core: a nonzero coefficient
 vector at distinct nodes has a nonzero moment among the first `n` moments. -/
+@[aesop safe]
 theorem vandermonde_initial_moment_nonzero_of_nonzero_coeff {n : ℕ} {μ c : Fin n → ℂ}
     (hμ : Function.Injective μ) (hc : c ≠ 0) :
     ∃ k : Fin n, ∑ j : Fin n, c j * (μ j) ^ (k : ℕ) ≠ 0 := by

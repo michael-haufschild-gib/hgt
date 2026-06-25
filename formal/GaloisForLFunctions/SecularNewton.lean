@@ -36,12 +36,14 @@ def secularESymm (f : Fin n → ℂ) (k : ℕ) : ℂ :=
   (MvPolynomial.aeval f) (MvPolynomial.esymm (Fin n) ℂ k)
 
 /-- The power-sum face is the evaluation of the symmetric polynomial `psum`. -/
+@[aesop safe]
 theorem secularPowerSum_eq_aeval (f : Fin n → ℂ) (k : ℕ) :
     secularPowerSum f k = (MvPolynomial.aeval f) (MvPolynomial.psum (Fin n) ℂ k) := by
   rw [secularPowerSum, MvPolynomial.psum, map_sum]
   simp [map_pow, MvPolynomial.aeval_X]
 
 /-- The elementary-symmetric face is the `k`-th elementary symmetric of the family, concretely. -/
+@[aesop safe]
 theorem secularESymm_eq_sum (f : Fin n → ℂ) (k : ℕ) :
     secularESymm f k = ∑ t ∈ univ.powersetCard k, ∏ i ∈ t, f i := by
   rw [secularESymm, MvPolynomial.esymm, map_sum]
@@ -53,6 +55,7 @@ theorem secularESymm_eq_sum (f : Fin n → ℂ) (k : ℕ) :
 /-- **Secular Newton-duality.** For every `k > 0`, the power-sum face and the elementary-symmetric
 face of a finite secular spectrum satisfy Newton's identity; hence each determines the other. The
 Hankel/resolvent (power-sum) face and the Toeplitz/PF (elementary-symmetric) face are one object. -/
+@[aesop safe]
 theorem secular_newton (f : Fin n → ℂ) (k : ℕ) (hk : 0 < k) :
     secularPowerSum f k =
       (-1) ^ (k + 1) * (k : ℂ) * secularESymm f k -

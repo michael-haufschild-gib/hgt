@@ -33,6 +33,7 @@ polynomial `S_k` evaluated at `z + z⁻¹`, cleared of negative powers by `z^k`,
 the finite geometric series `Σ_{i=0}^{k} (z²)^i`. Equivalently the `Symᵏ` power
 sum `Σ_{j=0}^k z^{k-2j}` is the Dirichlet kernel `S_k(z + z⁻¹) = U_k((z+z⁻¹)/2)`.
 Proved by two-step induction on the recurrence `S_{k+2} = X·S_{k+1} − S_k`. -/
+@[aesop safe]
 theorem chebyshevS_eval_add_inv (z : ℂ) (hz : z ≠ 0) (k : ℕ) :
     z ^ k * (Chebyshev.S ℂ (k : ℤ)).eval (z + z⁻¹)
       = ∑ i ∈ Finset.range (k + 1), (z ^ 2) ^ i := by
@@ -71,6 +72,7 @@ theorem chebyshevS_eval_add_inv (z : ℂ) (hz : z ≠ 0) (k : ℕ) :
 `U`: `z^k · U_k((z+z⁻¹)/2) = Σ_{i≤k}(z²)^i`. With `z = αᵐ` and `p_m = z + z⁻¹`
 this is exactly the draft's claim `p_m(Symᵏπ) = U_k(p_m/2)` (the `Symᵏ` power sum
 is the Chebyshev `U`-value at half the trace). -/
+@[aesop safe]
 theorem chebyshevU_eval_plethysm (z : ℂ) (hz : z ≠ 0) (k : ℕ) :
     z ^ k * (Chebyshev.U ℂ (k : ℤ)).eval ((z + z⁻¹) / 2)
       = ∑ i ∈ Finset.range (k + 1), (z ^ 2) ^ i := by

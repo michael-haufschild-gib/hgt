@@ -25,6 +25,7 @@ with algebraic independence of `y` over the generated field `F(x)`.
 This is the Lean form of the paper proof's tower law:
 joint independence is the regular apex plus the relative apex over the regular
 field. -/
+@[aesop norm simp]
 theorem algebraicIndependent_sumElim_intermediateField_iff
     {F E : Type*} {ι ι' : Type*} [Field F] [Field E] [Algebra F E]
     (x : ι → E) (y : ι' → E) :

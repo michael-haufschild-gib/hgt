@@ -30,6 +30,7 @@ def moritaGammaFinite (p : Nat.Primes) (n : ℕ) : ℤ :=
   (-1 : ℤ) ^ n * moritaGammaProduct p n
 
 /-- If `p ∣ n`, the new index `n` is excluded from the filtered product. -/
+@[aesop safe]
 lemma moritaGammaProduct_succ_of_dvd (p : Nat.Primes) {n : ℕ} (h : (p : ℕ) ∣ n) :
     moritaGammaProduct p (n + 1) = moritaGammaProduct p n := by
   unfold moritaGammaProduct
@@ -37,6 +38,7 @@ lemma moritaGammaProduct_succ_of_dvd (p : Nat.Primes) {n : ℕ} (h : (p : ℕ) �
   simp [Finset.filter_insert, h]
 
 /-- If `p ∤ n`, the new index `n` contributes the factor `n`. -/
+@[aesop safe]
 lemma moritaGammaProduct_succ_of_not_dvd (p : Nat.Primes) {n : ℕ} (h : ¬ (p : ℕ) ∣ n) :
     moritaGammaProduct p (n + 1) = (n : ℤ) * moritaGammaProduct p n := by
   unfold moritaGammaProduct
@@ -44,6 +46,7 @@ lemma moritaGammaProduct_succ_of_not_dvd (p : Nat.Primes) {n : ℕ} (h : ¬ (p :
   simp [Finset.filter_insert, h]
 
 /-- Morita recurrence branch at indices divisible by `p`: `Gamma_p(n+1)=-Gamma_p(n)`. -/
+@[aesop safe]
 lemma moritaGammaFinite_succ_of_dvd (p : Nat.Primes) {n : ℕ} (h : (p : ℕ) ∣ n) :
     moritaGammaFinite p (n + 1) = -moritaGammaFinite p n := by
   unfold moritaGammaFinite
@@ -52,6 +55,7 @@ lemma moritaGammaFinite_succ_of_dvd (p : Nat.Primes) {n : ℕ} (h : (p : ℕ) �
   ring
 
 /-- Morita recurrence branch away from `p`: `Gamma_p(n+1)=-n*Gamma_p(n)`. -/
+@[aesop safe]
 lemma moritaGammaFinite_succ_of_not_dvd (p : Nat.Primes) {n : ℕ}
     (h : ¬ (p : ℕ) ∣ n) :
     moritaGammaFinite p (n + 1) = -(n : ℤ) * moritaGammaFinite p n := by
@@ -63,6 +67,7 @@ lemma moritaGammaFinite_succ_of_not_dvd (p : Nat.Primes) {n : ℕ}
 /-- Combined finite Morita recurrence:
 `Gamma_p(n+1) = -Gamma_p(n)` if `p ∣ n`, and
 `Gamma_p(n+1) = -n*Gamma_p(n)` otherwise. -/
+@[aesop safe]
 theorem moritaGammaFinite_succ (p : Nat.Primes) (n : ℕ) :
     moritaGammaFinite p (n + 1) =
       (if (p : ℕ) ∣ n then (-1 : ℤ) else -(n : ℤ)) * moritaGammaFinite p n := by

@@ -29,11 +29,13 @@ def primeLogSpan (S : Finset Nat.Primes) : Submodule ℚ ℝ :=
   Submodule.span ℚ (Set.range fun p : S => Real.log ((p : Nat.Primes) : ℕ))
 
 /-- Finite slices of the prime-log family remain linearly independent. -/
+@[aesop safe]
 theorem primeLogFiniteSlice_linearIndependent (S : Finset Nat.Primes) :
     LinearIndependent ℚ (fun p : S => Real.log ((p : Nat.Primes) : ℕ)) := by
   exact linearIndependent_log_primes.comp (fun p : S => (p : Nat.Primes)) Subtype.coe_injective
 
 /-- Every finite prime slice has full rational rank. -/
+@[aesop safe]
 theorem primeLogFiniteSlice_finrank (S : Finset Nat.Primes) :
     Module.finrank ℚ (primeLogSpan S) = S.card := by
   unfold primeLogSpan
@@ -46,6 +48,7 @@ def archimedeanFiniteGenerator (S : Finset Nat.Primes) (a : S → ℚ) : ℝ :=
   ∑ p : S, a p • Real.log ((p : Nat.Primes) : ℕ)
 
 /-- The finite archimedean generator is already in the prime-log span. -/
+@[aesop safe]
 theorem archimedeanFiniteGenerator_mem_primeLogSpan
     (S : Finset Nat.Primes) (a : S → ℚ) :
     archimedeanFiniteGenerator S a ∈ primeLogSpan S := by
@@ -57,6 +60,7 @@ theorem archimedeanFiniteGenerator_mem_primeLogSpan
 
 /-- Adjoining a finite archimedean generator does not change the finite
 prime-log span. -/
+@[aesop safe]
 theorem primeLogSpan_insert_archimedean_eq
     (S : Finset Nat.Primes) (a : S → ℚ) :
     Submodule.span ℚ
@@ -74,6 +78,7 @@ theorem primeLogSpan_insert_archimedean_eq
 
 /-- Consequently, the same finite slice keeps full rank after adjoining that
 finite dependent archimedean generator. -/
+@[aesop safe]
 theorem primeLogFiniteSlice_finrank_with_archimedean
     (S : Finset Nat.Primes) (a : S → ℚ) :
     Module.finrank ℚ
@@ -84,6 +89,7 @@ theorem primeLogFiniteSlice_finrank_with_archimedean
 
 /-- Prime-log finite-slice ranks are unbounded. This is the finite-slice form of
 `corank = ∞`. -/
+@[aesop safe]
 theorem primeLogFiniteSlice_finrank_unbounded (N : ℕ) :
     ∃ S : Finset Nat.Primes, N ≤ Module.finrank ℚ (primeLogSpan S) := by
   obtain ⟨S, hS⟩ := Infinite.exists_subset_card_eq Nat.Primes N
@@ -94,6 +100,7 @@ theorem primeLogFiniteSlice_finrank_unbounded (N : ℕ) :
 finite-slice ranks remain unbounded. This is the formal no-collapse statement:
 finite dependent archimedean enrichment cannot collapse the infinite prime
 corank to finite rank. -/
+@[aesop safe]
 theorem primeLogFiniteSlice_finrank_with_archimedean_unbounded (N : ℕ) :
     ∃ (S : Finset Nat.Primes) (a : S → ℚ),
       N ≤ Module.finrank ℚ
@@ -109,6 +116,7 @@ def primeLogFullSpan : Submodule ℚ ℝ :=
   Submodule.span ℚ (Set.range fun p : Nat.Primes => Real.log (p : ℕ))
 
 /-- The full prime-log span has rank equal to the cardinality of the prime set. -/
+@[aesop safe]
 theorem primeLogFullSpan_rank :
     Module.rank ℚ primeLogFullSpan = Cardinal.mk Nat.Primes := by
   unfold primeLogFullSpan
@@ -116,6 +124,7 @@ theorem primeLogFullSpan_rank :
   exact Cardinal.mk_range_eq _ linearIndependent_log_primes.injective
 
 /-- A finite archimedean generator is also in the full prime-log span. -/
+@[aesop safe]
 theorem archimedeanFiniteGenerator_mem_primeLogFullSpan
     (S : Finset Nat.Primes) (a : S → ℚ) :
     archimedeanFiniteGenerator S a ∈ primeLogFullSpan := by
@@ -126,6 +135,7 @@ theorem archimedeanFiniteGenerator_mem_primeLogFullSpan
 
 /-- Adjoining a finite dependent archimedean generator does not change the full
 prime-log span. -/
+@[aesop safe]
 theorem primeLogFullSpan_insert_archimedean_eq
     (S : Finset Nat.Primes) (a : S → ℚ) :
     Submodule.span ℚ
@@ -143,6 +153,7 @@ theorem primeLogFullSpan_insert_archimedean_eq
 
 /-- The full rank remains the prime-set rank after adjoining a finite dependent
 archimedean generator: the formal `corank = ∞` no-collapse statement. -/
+@[aesop safe]
 theorem primeLogFullSpan_rank_with_archimedean
     (S : Finset Nat.Primes) (a : S → ℚ) :
     Module.rank ℚ

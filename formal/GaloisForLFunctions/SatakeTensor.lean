@@ -33,6 +33,7 @@ def satakeLocalFactor {ι : Type*} [Fintype ι] (α : ι → ℂ) (x : ℂ) : �
 /-- The Kronecker tensor of diagonal Satake matrices has the pairwise-product Satake parameters on
 its diagonal. This is the finite diagonal skeleton of "Satake parameters tensor by pairwise
 products." -/
+@[aesop safe]
 theorem satakeTensor_diagonal {m n : Type*} [DecidableEq m] [DecidableEq n]
     (α : m → ℂ) (β : n → ℂ) :
     (Matrix.diagonal α ⊗ₖ Matrix.diagonal β : Matrix (m × n) (m × n) ℂ)
@@ -42,6 +43,7 @@ theorem satakeTensor_diagonal {m n : Type*} [DecidableEq m] [DecidableEq n]
 
 /-- The local factor attached to tensor-product Satake parameters is the double product over
 pairwise products. This is the finite local-factor skeleton of Rankin-Selberg `⊗`. -/
+@[aesop safe]
 theorem satakeLocalFactor_tensor {m n : Type*} [Fintype m] [Fintype n]
     (α : m → ℂ) (β : n → ℂ) (x : ℂ) :
     satakeLocalFactor (satakeTensorParameters α β) x

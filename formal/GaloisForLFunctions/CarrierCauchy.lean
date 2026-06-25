@@ -39,6 +39,7 @@ on the left summand and `{uᵢ = eᵢ−aᵢ}` on the right — is linearly inde
 underlying Cauchy family `{eᵢ, aᵢ}` (poles `t̄ᵢ` and `tᵢ`, all `2k` distinct since `Im t̄ᵢ < 0 < Im tⱼ`)
 is independent by `cauchy_linearIndependent`; the invertible per-pair change of basis `eᵢ±aᵢ`
 transfers independence. This is the carrier-side linear-independence input to `exact_neg_inertia`. -/
+@[aesop safe]
 theorem multiPair_carrier_linearIndependent {k : ℕ} (t : Fin k → ℂ) (z : Fin (k + k) → ℂ)
     (ht : ∀ i, 0 < (t i).im) (htinj : Function.Injective t) (hz : Function.Injective z)
     (htz : ∀ i j, t i ≠ z j) (hstz : ∀ i j, star (t i) ≠ z j) :
@@ -113,6 +114,7 @@ by combining `multiPair_carrier_linearIndependent` (the carrier vectors are inde
 `Fin k ⊕ Fin k ≃ Fin (k+k)`. It is the quantitative, unconditional finite firewall: `k` off-line zero
 pairs force exactly `k` negative directions in the carrier Pick form. Still finite — no infinite
 carrier `m_ξ`, no RH. -/
+@[aesop safe]
 theorem multiPair_carrier_exact_neg_inertia {k : ℕ} (t : Fin k → ℂ) (z : Fin (k + k) → ℂ)
     (ht : ∀ i, 0 < (t i).im) (htinj : Function.Injective t) (hz : Function.Injective z)
     (htz : ∀ i j, t i ≠ z j) (hstz : ∀ i j, star (t i) ≠ z j)

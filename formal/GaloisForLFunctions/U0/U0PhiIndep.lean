@@ -47,6 +47,7 @@ In an abstract field `M` over `K` carrying the Böttcher monodromy, with
 there is no nonzero polynomial relation between `phib` and `u0` over `K`.
 
 This is `Bottcher.q62_mixed` with `F := phib`, `G := u0`. The proof is one line: the engine is shared. -/
+@[aesop safe]
 theorem u0_phi_independence_abstract
     {K M : Type*} [Field K] [Field M] [Algebra K M]
     (phib u0 : M) (hphib : phib ≠ 0) (hTranscendental : Transcendental K u0)
@@ -70,6 +71,7 @@ connected (`b ∈ M`) and disconnected (`b ∉ M`) parameter regions in one stro
 Eremenko–van Strien rigidity that q62 needs for its both-connected case is **not** needed here —
 single-valuedness of `u₀` replaces it. That is the structural payoff of `u₀` being a velocity
 rather than a second Böttcher coordinate. -/
+@[aesop safe]
 theorem u0_phi_independence
     {K M : Type*} [Field K] [Field M] [Algebra K M]
     (φ : ℂ → M) (u0 : M) (b : ℂ) (hb : b ∉ Exceptional)
@@ -89,6 +91,7 @@ single-valued, so its transcendence cannot be read off a `u₀`-monodromy (there
 redundant, here the transcendence of `u₀` remains an **independent** analytic input (the natural
 boundary). The disconnected case is therefore NOT cheaper than the connected case for u₀ — a sharp
 contrast with q62, and a direct consequence of `u₀` being a velocity. -/
+@[aesop safe]
 theorem u0_phi_independence_disconnected
     {K M : Type*} [Field K] [Field M] [Algebra K M]
     (phib u0 : M) (hphib : phib ≠ 0) (hTranscendental : Transcendental K u0)

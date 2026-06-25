@@ -28,12 +28,14 @@ namespace GaloisForLFunctions
 noncomputable section
 
 /-- Exact determinant identity for the first shifted Hankel block of one even frequency. -/
+@[aesop safe]
 theorem singleEvenFrequency_det_identity (B lambda : Real) :
     (B * lambda ^ 2) * (B * lambda ^ 6 / 120) - (-B * lambda ^ 4 / 6) ^ 2 =
       -7 * B ^ 2 * lambda ^ 8 / 360 := by
   ring
 
 /-- Positivity of the amplitude and frequency makes the determinant strictly negative. -/
+@[aesop safe]
 theorem singleEvenFrequency_det_neg {B lambda : Real} (hB : 0 < B) (hlambda : 0 < lambda) :
     (B * lambda ^ 2) * (B * lambda ^ 6 / 120) - (-B * lambda ^ 4 / 6) ^ 2 < 0 := by
   rw [singleEvenFrequency_det_identity]
@@ -41,12 +43,14 @@ theorem singleEvenFrequency_det_neg {B lambda : Real} (hB : 0 < B) (hlambda : 0 
   nlinarith
 
 /-- Exact determinant identity for the half-turn repaired one-frequency moments. -/
+@[aesop safe]
 theorem singleEvenFrequency_halfTurn_det_identity (B lambda : Real) :
     (B * lambda ^ 2) * (B * lambda ^ 6 / 120) - (B * lambda ^ 4 / 6) ^ 2 =
       -7 * B ^ 2 * lambda ^ 8 / 360 := by
   ring
 
 /-- The half-turn repaired one-frequency moments still have negative determinant. -/
+@[aesop safe]
 theorem singleEvenFrequency_halfTurn_det_neg {B lambda : Real}
     (hB : 0 < B) (hlambda : 0 < lambda) :
     (B * lambda ^ 2) * (B * lambda ^ 6 / 120) - (B * lambda ^ 4 / 6) ^ 2 < 0 := by
@@ -55,6 +59,7 @@ theorem singleEvenFrequency_halfTurn_det_neg {B lambda : Real}
   nlinarith
 
 /-- Exact numerator identity for the first Hankel determinant of a repaired two-frequency mixture. -/
+@[aesop safe]
 theorem twoFrequency_halfTurn_pairNumerator_identity (A C x y : Real) :
     3 * ((A * x + C * y) * (A * x ^ 3 + C * y ^ 3))
       - 10 * (A * x ^ 2 + C * y ^ 2) ^ 2 =
@@ -63,6 +68,7 @@ theorem twoFrequency_halfTurn_pairNumerator_identity (A C x y : Real) :
   ring
 
 /-- If the repaired two-frequency cross-term is nonpositive, the first determinant is negative. -/
+@[aesop safe]
 theorem twoFrequency_halfTurn_det_neg_of_cross_nonpos {A C x y : Real}
     (hA : 0 < A) (hC : 0 < C) (hx : 0 < x) (hy : 0 < y)
     (hcross : 3 * x ^ 2 - 20 * x * y + 3 * y ^ 2 <= 0) :
@@ -81,12 +87,14 @@ theorem twoFrequency_halfTurn_det_neg_of_cross_nonpos {A C x y : Real}
   nlinarith
 
 /-- Moment-ratio form of the first repaired Hankel determinant gate. -/
+@[aesop safe]
 theorem halfTurn_det_neg_of_moment_ratio_lt {M1 M2 M3 : Real}
     (hratio : 3 * (M1 * M3) < 10 * M2 ^ 2) :
     M1 * M3 / 120 - (M2 / 6) ^ 2 < 0 := by
   nlinarith
 
 /-- Below the optimized two-frequency spread threshold, every positive weighting fails. -/
+@[aesop safe]
 theorem twoFrequency_halfTurn_det_neg_of_ratio_quad_lt {A C x y : Real}
     (hA : 0 < A) (hC : 0 < C) (hx : 0 < x) (hy : 0 < y)
     (hratio : 3 * (x ^ 2 + y ^ 2) < 34 * x * y) :
@@ -116,6 +124,7 @@ theorem twoFrequency_halfTurn_det_neg_of_ratio_quad_lt {A C x y : Real}
   exact halfTurn_det_neg_of_moment_ratio_lt hratioMom
 
 /-- Exact determinant for the balanced repaired two-frequency packet. -/
+@[aesop safe]
 theorem twoFrequency_halfTurn_balanced_det_identity (x y : Real) :
     ((y ^ 2 * x + x ^ 2 * y) * (y ^ 2 * x ^ 3 + x ^ 2 * y ^ 3)) / 120
         - ((y ^ 2 * x ^ 2 + x ^ 2 * y ^ 2) / 6) ^ 2 =
@@ -123,6 +132,7 @@ theorem twoFrequency_halfTurn_balanced_det_identity (x y : Real) :
   ring
 
 /-- Above the optimized spread threshold, a balanced repaired two-frequency packet passes gate one. -/
+@[aesop safe]
 theorem twoFrequency_halfTurn_balanced_det_pos {x y : Real}
     (hx : 0 < x) (hy : 0 < y) (hratio : 34 * x * y < 3 * (x ^ 2 + y ^ 2)) :
     0 < ((y ^ 2 * x + x ^ 2 * y) * (y ^ 2 * x ^ 3 + x ^ 2 * y ^ 3)) / 120
@@ -137,6 +147,7 @@ theorem twoFrequency_halfTurn_balanced_det_pos {x y : Real}
   norm_num [div_pos hprod]
 
 /-- Finite positive mixtures of even frequencies have negative second shifted moment. -/
+@[aesop safe]
 theorem positiveEvenFrequencyCone_T2_neg {n : Nat} [Nonempty (Fin n)]
     (B lambda : Fin n -> Real) (hB : forall i, 0 < B i) (hlambda : forall i, 0 < lambda i) :
     -((Finset.univ.sum fun i => B i * lambda i ^ 4) / 6) < 0 := by
@@ -150,6 +161,7 @@ theorem positiveEvenFrequencyCone_T2_neg {n : Nat} [Nonempty (Fin n)]
   nlinarith
 
 /-- In a two-frequency real signed sum, a positive top coefficient controls the tail sign. -/
+@[aesop safe]
 theorem twoFrequency_dominant_positive_eventually {c1 c2 x1 x2 : Real}
     (hx1 : 0 < x1) (hx12 : x1 < x2) (hc2 : 0 < c2) :
     Filter.Eventually (fun k : Nat => 0 < c1 * x1 ^ k + c2 * x2 ^ k) atTop := by
@@ -174,6 +186,7 @@ theorem twoFrequency_dominant_positive_eventually {c1 c2 x1 x2 : Real}
   exact mul_pos hpowpos hk
 
 /-- In a two-frequency real signed sum, a negative top coefficient controls the tail sign. -/
+@[aesop safe]
 theorem twoFrequency_dominant_negative_eventually {c1 c2 x1 x2 : Real}
     (hx1 : 0 < x1) (hx12 : x1 < x2) (hc2 : c2 < 0) :
     Filter.Eventually (fun k : Nat => c1 * x1 ^ k + c2 * x2 ^ k < 0) atTop := by

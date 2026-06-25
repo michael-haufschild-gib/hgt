@@ -34,6 +34,7 @@ def discreteCurvature {ι G : Type*} [Group G]
   (A q * act q (A p))⁻¹ * (A p * act p (A q))
 
 /-- Vanishing of the corrected discrete curvature is exactly the cocycle condition. -/
+@[aesop norm simp]
 theorem discreteCurvature_eq_one_iff_cocycleCondition {ι G : Type*} [Group G]
     (act : ι → G → G) (A : ι → G) (p q : ι) :
     discreteCurvature act A p q = 1 ↔ cocycleCondition act A p q := by
@@ -51,6 +52,7 @@ def draftOrderCurvature {ι G : Type*} [Group G]
 `A_p * act_p(A_q) = act_q(A_p) * A_q`. This exposes the noncommutative order
 issue; it is not the stated cocycle condition unless the relevant factors
 commute. -/
+@[aesop norm simp]
 theorem draftOrderCurvature_eq_one_iff_twisted_cocycle {ι G : Type*} [Group G]
     (act : ι → G → G) (A : ι → G) (p q : ι) :
     draftOrderCurvature act A p q = 1 ↔
@@ -80,6 +82,7 @@ def integrableOn {ι G : Type*} [Group G]
 
 /-- Finite truncation preserves integrability: if a larger finite operator set
 is integrable, every smaller finite subset is integrable. -/
+@[aesop safe]
 theorem integrableOn_mono {ι G : Type*} [Group G]
     {act : ι → G → G} {A : ι → G} {S T : Finset ι}
     (hST : S ⊆ T) :
@@ -89,6 +92,7 @@ theorem integrableOn_mono {ι G : Type*} [Group G]
 
 /-- A globally pairwise-integrable family is integrable on every finite operator
 set. -/
+@[aesop safe]
 theorem integrableOn_of_forall {ι G : Type*} [Group G]
     {act : ι → G → G} {A : ι → G} (S : Finset ι)
     (h : ∀ p q, cocycleCondition act A p q) :
@@ -121,6 +125,7 @@ def coextensionFlatCondition {ι G : Type*} [Group G]
 co-extension images is exactly the flatness condition. This is the algebraic
 heart of the finite multi-operator PV co-extension criterion; no PV ring is
 constructed here. -/
+@[aesop norm simp]
 theorem coextensionComposite_eq_iff_flatCondition {ι G : Type*} [Group G]
     (act : ι → G → G) (A : ι → G) (i j : ι) (X : G) :
     coextensionComposite act A i j X = coextensionComposite act A j i X ↔
@@ -130,6 +135,7 @@ theorem coextensionComposite_eq_iff_flatCondition {ι G : Type*} [Group G]
 
 /-- The two co-extended maps commute on every fundamental-solution value iff the
 flatness relation `σᵢ(Aⱼ) Aᵢ = σⱼ(Aᵢ) Aⱼ` holds. -/
+@[aesop norm simp]
 theorem coextension_commutes_iff_flatCondition {ι G : Type*} [Group G]
     (act : ι → G → G) (A : ι → G) (i j : ι) :
     (∀ X : G, coextensionComposite act A i j X = coextensionComposite act A j i X) ↔

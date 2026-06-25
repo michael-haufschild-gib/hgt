@@ -21,6 +21,7 @@ namespace MahlerPolynomial
 satisfying `num(z²+c)·denom(z)² = num(z)²·denom(z²+c)` — the cleared-denominator form of `g(z²+c) =
 g(z)²` — then for `c ≠ 0` both `num g` and `denom g` are constant, i.e. `g` is a constant. Immediate from
 `no_coprime_mahler_rational` applied to the canonical coprime pair `(num g, denom g)`. -/
+@[aesop safe]
 theorem ratfunc_mahler_const {c : ℂ} (hc : c ≠ 0) {g : RatFunc ℂ}
     (heq : (RatFunc.num g).comp (X ^ 2 + C c) * (RatFunc.denom g) ^ 2
       = (RatFunc.num g) ^ 2 * (RatFunc.denom g).comp (X ^ 2 + C c)) :

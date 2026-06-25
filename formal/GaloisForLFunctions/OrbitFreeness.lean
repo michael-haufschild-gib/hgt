@@ -27,6 +27,7 @@ noncomputable section
 
 /-- Field-readable form: **no nontrivial finite `ℚ`-resonance** among the prime logarithms.
 This is the finite-character statement derived from `linearIndependent_log_primes`. -/
+@[aesop safe]
 theorem logPrime_no_rat_relation
     (s : Finset Nat.Primes) (g : Nat.Primes → ℚ)
     (h : ∑ p ∈ s, g p • Real.log (p : ℕ) = 0) :
@@ -44,6 +45,7 @@ noncomputable section
 /-- A prime-lane dilation `z ↦ p⁻¹ z` has no nonzero fixed point. This is the
 algebraic core behind the repaired `Ш`-card statement that an equivariant torus
 evaluation point would be forced to leave `ℂˣ`. -/
+@[aesop safe]
 theorem primeDilation_fixed_eq_zero (p : Nat.Primes) {z : ℂ}
     (h : ((p : ℂ)⁻¹) * z = z) : z = 0 := by
   have hpC0 : (p : ℂ) ≠ 0 := by exact_mod_cast p.2.ne_zero
@@ -61,12 +63,14 @@ theorem primeDilation_fixed_eq_zero (p : Nat.Primes) {z : ℂ}
   exact (mul_eq_zero.mp hz).resolve_left hcoef
 
 /-- No coordinate in the algebraic torus `ℂˣ` is fixed by a prime-lane dilation. -/
+@[aesop safe]
 theorem primeDilation_no_fixed_unit (p : Nat.Primes) (z : ℂˣ) :
     ((p : ℂ)⁻¹) * (z : ℂ) ≠ (z : ℂ) := by
   intro h
   exact z.ne_zero (primeDilation_fixed_eq_zero p h)
 
 /-- There is no torus point fixed coordinatewise by all prime-lane dilations. -/
+@[aesop safe]
 theorem no_primeDilation_fixed_torus_point (ξ : Nat.Primes → ℂˣ) :
     ¬ (∀ p : Nat.Primes, ((p : ℂ)⁻¹) * (ξ p : ℂ) = (ξ p : ℂ)) := by
   intro h

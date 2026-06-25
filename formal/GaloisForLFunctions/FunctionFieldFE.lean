@@ -40,6 +40,7 @@ noncomputable section
 /-- **Homogeneity of the elementary symmetric function** (mathlib gap-fill).
 Scaling every entry of a multiset by `c` scales `eₖ` by `cᵏ`:
 `eₖ(c·S) = cᵏ · eₖ(S)` (each `k`-subset product scales by `cᵏ`). -/
+@[aesop safe]
 theorem multiset_esymm_map_mul (c : ℂ) (s : Multiset ℂ) (k : ℕ) :
     (s.map (fun a => c * a)).esymm k = c ^ k * s.esymm k := by
   rw [Multiset.esymm, Multiset.esymm, Multiset.powersetCard_map, Multiset.map_map,
@@ -58,6 +59,7 @@ the elementary symmetric functions — the coefficients of the `L`-polynomial
 `L(T) = ∏(1 − ωT) = Σ (−1)ᵏ eₖ Tᵏ` — satisfy the `q`-weighted relation
 `eₖ(S) = qᵏ · eₖ(S⁻¹)`. This is the algebraic form of the Weil FE (no purity / no
 RH): `S = S.map (q/·) = (S⁻¹).map (q·)`, and `eₖ` scales by `qᵏ`. -/
+@[aesop safe]
 theorem functionField_esymm_FE (q : ℂ) (S : Multiset ℂ)
     (hclosed : S.map (fun ω => q / ω) = S) (k : ℕ) :
     S.esymm k = q ^ k * (S.map (fun ω => ω⁻¹)).esymm k := by
@@ -74,6 +76,7 @@ duality `ω ↦ q/ω`, the function-field `L`-factor `∏_{ω∈S}(1 − ωT)` i
 under the substitution `ω ↦ q/ω`: `∏(1 − ωT) = ∏(1 − (q/ω)T)`. This is the
 `L`-polynomial's fixedness under the FE — the `q`-weighted analog of the unitary
 self-duality `LocalFactorDuality.selfDual_localFactor_eq`. -/
+@[aesop safe]
 theorem functionField_localFactor_FE (q : ℂ) (S : Multiset ℂ)
     (hclosed : S.map (fun ω => q / ω) = S) :
     (S.map (fun ω => 1 - Polynomial.C ω * Polynomial.X)).prod

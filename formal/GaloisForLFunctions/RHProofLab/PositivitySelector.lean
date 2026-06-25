@@ -32,6 +32,7 @@ def finiteNoBad (S : Finset ι) (Bad : ι → Prop) : Prop :=
   ∀ i ∈ S, ¬ Bad i
 
 /-- A finite carrier has no bad elements exactly when its bad index is zero. -/
+@[aesop norm simp]
 theorem finiteNoBad_iff_badCount_eq_zero
     (S : Finset ι) (Bad : ι → Prop) [DecidablePred Bad] :
     finiteNoBad S Bad ↔ finiteBadCount S Bad = 0 := by
@@ -57,6 +58,7 @@ def defectEnergy (w d : ι → ℝ) : ℝ :=
   ∑ i, w i * d i ^ 2
 
 /-- The unweighted positive selector: sum of squares vanishes iff every defect vanishes. -/
+@[aesop norm simp]
 theorem sum_sq_eq_zero_iff_all_zero (d : ι → ℝ) :
     (∑ i, d i ^ 2 = 0) ↔ ∀ i, d i = 0 := by
   constructor
@@ -74,6 +76,7 @@ theorem sum_sq_eq_zero_iff_all_zero (d : ι → ℝ) :
 The weighted positive selector: if all weights are strictly positive, the energy
 vanishes exactly when every defect vanishes.
 -/
+@[aesop norm simp]
 theorem defectEnergy_eq_zero_iff_all_zero
     (w d : ι → ℝ) (hw : ∀ i, 0 < w i) :
     defectEnergy w d = 0 ↔ ∀ i, d i = 0 := by
@@ -115,6 +118,7 @@ def unweightedCriticalLineEnergy (z : ι → ℂ) : ℝ :=
   ∑ i, criticalLineDefect (z i) ^ 2
 
 /-- Unweighted critical-line energy vanishes exactly when every point is on the line. -/
+@[aesop norm simp]
 theorem unweightedCriticalLineEnergy_eq_zero_iff_all_on_line
     (z : ι → ℂ) :
     unweightedCriticalLineEnergy z = 0 ↔ allOnCriticalLine z := by
@@ -122,6 +126,7 @@ theorem unweightedCriticalLineEnergy_eq_zero_iff_all_on_line
     (sum_sq_eq_zero_iff_all_zero (fun i => criticalLineDefect (z i)))
 
 /-- Positive critical-line energy vanishes exactly when every point is on the line. -/
+@[aesop norm simp]
 theorem criticalLineEnergy_eq_zero_iff_all_on_line
     (w : ι → ℝ) (z : ι → ℂ) (hw : ∀ i, 0 < w i) :
     criticalLineEnergy w z = 0 ↔ allOnCriticalLine z := by
@@ -132,6 +137,7 @@ theorem criticalLineEnergy_eq_zero_iff_all_on_line
 Positive critical-line energy is a faithful off-line index: it vanishes exactly
 when the finite off-line count is zero.
 -/
+@[aesop norm simp]
 theorem criticalLineEnergy_eq_zero_iff_badCount_eq_zero
     (w : ι → ℝ) (z : ι → ℂ) (hw : ∀ i, 0 < w i) :
     criticalLineEnergy w z = 0 ↔
@@ -148,6 +154,7 @@ theorem criticalLineEnergy_eq_zero_iff_badCount_eq_zero
 Unweighted critical-line energy is already a faithful off-line index: it
 vanishes exactly when the finite off-line count is zero.
 -/
+@[aesop norm simp]
 theorem unweightedCriticalLineEnergy_eq_zero_iff_badCount_eq_zero
     (z : ι → ℂ) :
     unweightedCriticalLineEnergy z = 0 ↔
@@ -165,12 +172,14 @@ def criticalMirror (z : ℂ) : ℂ :=
   1 - star z
 
 /-- Mirroring changes the signed critical-line defect by a sign. -/
+@[aesop safe]
 theorem criticalLineDefect_mirror (z : ℂ) :
     criticalLineDefect (criticalMirror z) = - criticalLineDefect z := by
   simp [criticalLineDefect, criticalMirror]
   ring
 
 /-- Mirroring preserves squared distance from the critical line. -/
+@[aesop safe]
 theorem criticalLineDefect_sq_mirror (z : ℂ) :
     criticalLineDefect (criticalMirror z) ^ 2 = criticalLineDefect z ^ 2 := by
   rw [criticalLineDefect_mirror]
@@ -180,6 +189,7 @@ theorem criticalLineDefect_sq_mirror (z : ℂ) :
 Functional-equation mirror symmetry preserves the whole finite critical-line
 energy.  It therefore cannot by itself force that energy to vanish.
 -/
+@[aesop safe]
 theorem criticalLineEnergy_mirror_invariant
     (w : ι → ℝ) (z : ι → ℂ) :
     criticalLineEnergy w (fun i => criticalMirror (z i)) =
@@ -190,6 +200,7 @@ theorem criticalLineEnergy_mirror_invariant
   rw [criticalLineDefect_sq_mirror]
 
 /-- Unweighted critical-line energy is also invariant under the mirror. -/
+@[aesop safe]
 theorem unweightedCriticalLineEnergy_mirror_invariant
     (z : ι → ℂ) :
     unweightedCriticalLineEnergy (fun i => criticalMirror (z i)) =

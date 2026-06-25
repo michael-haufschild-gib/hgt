@@ -24,16 +24,19 @@ noncomputable section
 /-- **Sato–Tate trace is real.** For a unitary Satake parameter `z` (`‖z‖ = 1`),
 the trace `z + z⁻¹` equals the real number `2·Re z` (`= 2cos θ`); in particular
 it is real. -/
+@[aesop safe]
 theorem satake_trace_eq_two_mul_re (z : ℂ) (h : ‖z‖ = 1) :
     z + z⁻¹ = ((2 * z.re : ℝ) : ℂ) := by
   rw [Complex.inv_eq_conj h, Complex.add_conj]
 
 /-- The unitary Satake trace has vanishing imaginary part (it is real). -/
+@[aesop safe]
 theorem satake_trace_im (z : ℂ) (h : ‖z‖ = 1) : (z + z⁻¹).im = 0 := by
   rw [satake_trace_eq_two_mul_re z h, Complex.ofReal_im]
 
 /-- **The Sato–Tate interval.** For a unitary Satake parameter `z` (`‖z‖ = 1`),
 the trace `z + z⁻¹` lies in `[−2, 2]` (the support of the Sato–Tate measure). -/
+@[aesop safe]
 theorem satake_trace_re_mem_Icc (z : ℂ) (h : ‖z‖ = 1) :
     (z + z⁻¹).re ∈ Set.Icc (-2 : ℝ) 2 := by
   have h1 : z.re ≤ 1 := h ▸ Complex.re_le_norm z
@@ -49,6 +52,7 @@ parameter `z` (`‖z‖ = 1`), the `Symᵏ` trace `Σ_{j=0}^{k} z^{k-2j}` has no
 `≤ k+1` (the dimension of `Symᵏ`): its `k+1` eigenvalues `z^{k-2j}` all lie on
 the unit circle, so the trace lies in the closed disk of radius `k+1` — the
 temperedness bound for `Symᵏπ`. -/
+@[aesop safe]
 theorem symPower_trace_norm_le (z : ℂ) (h : ‖z‖ = 1) (k : ℕ) :
     ‖∑ j ∈ Finset.range (k + 1), z ^ ((k : ℤ) - 2 * (j : ℤ))‖ ≤ (k : ℝ) + 1 := by
   calc ‖∑ j ∈ Finset.range (k + 1), z ^ ((k : ℤ) - 2 * (j : ℤ))‖

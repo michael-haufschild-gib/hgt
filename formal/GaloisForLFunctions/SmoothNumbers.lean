@@ -23,11 +23,12 @@ noncomputable section
 def primeExponentVector (n : ℕ) : Nat.Primes →₀ ℕ :=
   n.factorization.comapDomain (fun p : Nat.Primes => (p : ℕ)) (Subtype.val_injective.injOn)
 
-@[simp] lemma primeExponentVector_apply (n : ℕ) (p : Nat.Primes) :
+@[aesop safe, simp] lemma primeExponentVector_apply (n : ℕ) (p : Nat.Primes) :
     primeExponentVector n p = n.factorization (p : ℕ) := by
   simp [primeExponentVector, Finsupp.comapDomain]
 
 /-- Reconstructing a nonzero natural number from its bundled prime-exponent vector. -/
+@[aesop safe]
 lemma primeProduct_primeExponentVector {n : ℕ} (hn : n ≠ 0) :
     primeProduct (primeExponentVector n) = n := by
   apply Nat.eq_of_factorization_eq
@@ -45,6 +46,7 @@ lemma primeProduct_primeExponentVector {n : ℕ} (hn : n ≠ 0) :
 factorization exponents times the corresponding prime logarithms. This is the
 formal version of `log k = Σ_p v_p(k) log p` used in the Stieltjes/continuation
 block card. -/
+@[aesop safe]
 theorem log_nat_eq_sum_factorization {n : ℕ} (hn : n ≠ 0) :
     Real.log (n : ℝ) =
       (primeExponentVector n).sum fun p k => (k : ℝ) * Real.log (p : ℕ) := by
@@ -63,6 +65,7 @@ def isBoundedSmooth (S : Finset Nat.Primes) (N n : ℕ) : Prop :=
   n ≠ 0 ∧ ∀ p : Nat.Primes, n.factorization (p : ℕ) ≠ 0 →
     p ∈ S ∧ n.factorization (p : ℕ) ≤ N
 
+@[aesop safe]
 lemma supportedBounded_primeExponentVector_of_isBoundedSmooth
     {S : Finset Nat.Primes} {N n : ℕ} (hn : isBoundedSmooth S N n) :
     supportedBounded S N (primeExponentVector n) := by
@@ -75,6 +78,7 @@ lemma supportedBounded_primeExponentVector_of_isBoundedSmooth
     · simp [primeExponentVector_apply, hp]
     · exact (hn.2 p hp).2
 
+@[aesop safe]
 lemma isBoundedSmooth_primeProduct_of_supportedBounded
     {S : Finset Nat.Primes} {N : ℕ} {m : Nat.Primes →₀ ℕ}
     (hm : supportedBounded S N m) :
@@ -106,6 +110,7 @@ def boundedExponentVectorEquivSmooth (S : Finset Nat.Primes) (N : ℕ) :
 
 /-- A natural number is a bounded `S`-smooth frequency iff it is the prime product of a
 bounded exponent vector supported on `S`. -/
+@[aesop norm simp]
 theorem primeProduct_isBoundedSmooth_iff {S : Finset Nat.Primes} {N n : ℕ} :
     isBoundedSmooth S N n ↔
       ∃ m : Nat.Primes →₀ ℕ, supportedBounded S N m ∧ primeProduct m = n := by
@@ -116,6 +121,7 @@ theorem primeProduct_isBoundedSmooth_iff {S : Finset Nat.Primes} {N n : ℕ} :
   · rintro ⟨m, hm, rfl⟩
     exact isBoundedSmooth_primeProduct_of_supportedBounded hm
 
+@[aesop safe]
 lemma cpow_nat_prime_power (p : Nat.Primes) (k : ℕ) (s : ℂ) :
     ((((p : ℕ) ^ k : ℕ) : ℂ)) ^ (-s) = (((p : ℕ) : ℂ) ^ (-s)) ^ k := by
   rw [Nat.cast_pow]
@@ -124,6 +130,7 @@ lemma cpow_nat_prime_power (p : Nat.Primes) (k : ℕ) (s : ℂ) :
 
 /-- A diagonal monomial in prime Bohr coordinates has the Dirichlet frequency
 given by its finite prime product. -/
+@[aesop safe]
 theorem diagonalMonomial_eq_frequency (m : Nat.Primes →₀ ℕ) (s : ℂ) :
     m.prod (fun p k => (((p : ℕ) : ℂ) ^ (-s)) ^ k) =
       ((primeProduct m : ℕ) : ℂ) ^ (-s) := by
@@ -157,6 +164,7 @@ theorem diagonalMonomial_eq_frequency (m : Nat.Primes →₀ ℕ) (s : ℂ) :
 
 /-- A finite auxiliary form in prime Bohr coordinates pulls back on the diagonal to a
 finite Dirichlet polynomial with frequencies `primeProduct m`. -/
+@[aesop safe]
 theorem diagonalAuxiliaryForm_eq_dirichletPolynomial
     (P : (Nat.Primes →₀ ℕ) →₀ ℂ) (s : ℂ) :
     P.sum (fun m c => c * m.prod (fun p k => (((p : ℕ) : ℂ) ^ (-s)) ^ k)) =

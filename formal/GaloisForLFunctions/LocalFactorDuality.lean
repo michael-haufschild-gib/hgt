@@ -23,6 +23,7 @@ noncomputable section
 /-- **Local L-factor self-duality (FE at the Euler-factor level).** If the Satake
 multiset `s` is inversion-closed (`{α_i} = {α_i⁻¹}`, the self-duality `π ≅ π̃`),
 then the local L-factor `∏_i (1 − α_i x)` equals `∏_i (1 − α_i⁻¹ x)`. -/
+@[aesop safe]
 theorem selfDual_localFactor_eq (s : Multiset ℂ)
     (hs : s.map (fun a => a⁻¹) = s) (x : ℂ) :
     (s.map (fun a => 1 - a * x)).prod = (s.map (fun a => 1 - a⁻¹ * x)).prod := by

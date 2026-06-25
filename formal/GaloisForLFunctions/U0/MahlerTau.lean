@@ -19,10 +19,12 @@ namespace MahlerPolynomial
 variable (c : ℂ)
 
 /-- `quadratic c` is analytic on `escapeOpen c`. -/
+@[aesop safe]
 theorem analyticOnNhd_quadratic_escapeOpen : AnalyticOnNhd ℂ (quadratic c) (escapeOpen c) :=
   fun z _ => analyticAt_quadratic c z
 
 /-- `quadratic c` maps `escapeOpen c` into itself. -/
+@[aesop safe]
 theorem mapsTo_quadratic_escapeOpen : Set.MapsTo (quadratic c) (escapeOpen c) (escapeOpen c) :=
   fun _ hz => PhiMahler.quadratic_mem_escapeOpen hz
 
@@ -31,6 +33,7 @@ A ring endomorphism of a domain is injective iff its kernel is trivial; here `pr
 unpacks (via the germ representation `a = ↑f` and `Germ.coe_eq`) to `f(z²+c) = 0` on `escapeOpen`,
 which `eqZero_of_comp_quadratic_eqZero` forces to `f ≡ 0`, hence `a = 0`. This is the
 nonzerodivisor-preservation needed to lift `precompAnalytic` to the fraction field. -/
+@[aesop safe]
 theorem precompAnalytic_quadratic_injective :
     Function.Injective (precompAnalytic (analyticOnNhd_quadratic_escapeOpen c)
       (mapsTo_quadratic_escapeOpen c)) := by
@@ -51,6 +54,7 @@ theorem precompAnalytic_quadratic_injective :
   exact hf0
 
 /-- `escapeOpen c` is nonempty (contains the real point `max 2 ‖c‖ + 1`). -/
+@[aesop safe]
 theorem escapeOpen_nonempty : (escapeOpen c).Nonempty :=
   ⟨((max 2 ‖c‖ + 1 : ℝ) : ℂ), by
     show max 2 ‖c‖ < ‖((max 2 ‖c‖ + 1 : ℝ) : ℂ)‖
@@ -80,6 +84,7 @@ noncomputable def mahlerTau :
 `precompAnalytic(polyToAnalytic p) = polyToAnalytic(p(z²+c))`: precomposition by `z↦z²+c` of the
 eval-germ of `p` is the eval-germ of `p∘(X²+c)`, since `p.eval(z²+c) = (p.comp(X²+c)).eval z`. This is
 the polynomial-level core of `hcompat` (`τ` restricts to `mahlerHom` on `ℂ(z)`). -/
+@[aesop safe]
 theorem precompAnalytic_polyToAnalytic (p : Polynomial ℂ) :
     precompAnalytic (analyticOnNhd_quadratic_escapeOpen c) (mapsTo_quadratic_escapeOpen c)
       (polyToAnalytic (escapeOpen c) p)
@@ -95,6 +100,7 @@ theorem precompAnalytic_polyToAnalytic (p : Polynomial ℂ) :
   simp only [Function.comp_apply, quadratic_apply, eval_comp, eval_add, eval_pow, eval_X, eval_C]
 
 /-- `escapeOpen c` is infinite (contains an injective real sequence). -/
+@[aesop safe]
 theorem escapeOpen_infinite : (escapeOpen c).Infinite := by
   apply Set.infinite_of_injective_forall_mem (f := fun n : ℕ => ((max 2 ‖c‖ + 1 + n : ℝ) : ℂ))
   · intro a b hab
@@ -110,6 +116,7 @@ theorem escapeOpen_infinite : (escapeOpen c).Infinite := by
 /-- **`τ` on a polynomial eval-germ (PROVED).** `τ(polyToMero p) = polyToMero(p(z²+c))`: unfolding
 `polyToMero = algebraMap ∘ polyToAnalytic`, `IsLocalization.map_eq` reduces `τ` to `precompAnalytic`,
 which `precompAnalytic_polyToAnalytic` evaluates. -/
+@[aesop safe]
 theorem mahlerTau_polyToMero (p : Polynomial ℂ) :
     haveI := isDomain_analyticSubring (escapeOpen c) (isOpen_escapeOpen c)
       (isPreconnected_escapeOpen c) (escapeOpen_nonempty c)
@@ -129,6 +136,7 @@ embedding `ratfuncToMero : ℂ(z) ↪ meroField`, `τ(ratfuncToMero k) = ratfunc
 `IsLocalization.ringHom_ext` it suffices to check on `ℂ[z]`, where both sides equal `polyToMero(p(z²+c))`
 (`mahlerTau_polyToMero` on the left; `mahlerHom_algebraMap` on the right). This is the `hcompat`
 hypothesis of `carrier_norm_relation`. -/
+@[aesop safe]
 theorem mahlerTau_hcompat (k : RatFunc ℂ) :
     haveI := isDomain_analyticSubring (escapeOpen c) (isOpen_escapeOpen c)
       (isPreconnected_escapeOpen c) (escapeOpen_nonempty c)
@@ -153,6 +161,7 @@ theorem mahlerTau_hcompat (k : RatFunc ℂ) :
 /-- **`precompAnalytic(φ_c germ) = (φ_c germ)²` (PROVED).** Precomposition by `z↦z²+c` of the Böttcher
 germ equals its square, because `φ_c(z²+c) = φ_c(z)²` on the escape region (`bottcherCoord_quadratic`).
 This is the functional equation at the germ level. -/
+@[aesop safe]
 theorem precompAnalytic_phiAnalytic :
     precompAnalytic (analyticOnNhd_quadratic_escapeOpen c) (mapsTo_quadratic_escapeOpen c)
       (phiAnalytic c (Set.Subset.refl (escapeOpen c)))
@@ -172,6 +181,7 @@ theorem precompAnalytic_phiAnalytic :
 genuine Böttcher coordinate `phiMero` to its square: `phiMero = algebraMap(phiAnalytic)`, `IsLocalization.map_eq`
 reduces `τ` to `precompAnalytic`, and `precompAnalytic_phiAnalytic` is the germ-level functional equation.
 This is the `τ φ = φ²` hypothesis of `carrier_norm_relation`. -/
+@[aesop safe]
 theorem mahlerTau_phiMero :
     haveI := isDomain_analyticSubring (escapeOpen c) (isOpen_escapeOpen c)
       (isPreconnected_escapeOpen c) (escapeOpen_nonempty c)
@@ -191,6 +201,7 @@ This is `carrier_norm_relation` instantiated at the concrete carrier `(meroField
 τφ_c=φ_c²)` — a one-line instantiation now that all carrier pieces are built. With `s` a sign,
 `mahler_eq_sq_imp_const` forces the norm constant; closing the full coupled system past norm-constant is
 the genuine Nishioka core. -/
+@[aesop safe]
 theorem phiMero_norm_relation
     [Algebra (RatFunc ℂ) (meroField (escapeOpen c))]
     (halg : (algebraMap (RatFunc ℂ) (meroField (escapeOpen c)))
@@ -214,6 +225,7 @@ theorem phiMero_norm_relation
 exp δ → 1` as `‖z‖→∞` — `φ_c` has a simple pole at `∞` with residue-leading term `z`. This is the
 asymptotic input that forces `deg b₁ = 1` in the n=2 case (`b₁ = −(φ_c + β/φ_c) ~ −z`), which combined
 with `candidate_forces_exceptional` closes n=2 for nonexceptional `c`. -/
+@[aesop safe]
 theorem bottcherCoord_eq_z_mul_exp {c z : ℂ} (hz : z ∈ escapeOpen c) :
     bottcherCoord c z = z * Complex.exp (bottcherLog c z - Complex.log z) := by
   obtain ⟨_, hz2⟩ := mem_escapeOpen_regime hz
@@ -224,6 +236,7 @@ theorem bottcherCoord_eq_z_mul_exp {c z : ℂ} (hz : z ∈ escapeOpen c) :
 /-- **`φ_c(t)/t → 1` along the real ray (PROVED).** As `t → +∞`, `φ_c(t)/t = exp(δ(t))` with
 `‖δ(t)‖ ≤ 2‖c‖/t² → 0`, so `φ_c(t)/t → 1`. This is the precise asymptotic (`φ_c` simple pole at `∞`,
 leading coefficient `1`) that forces `deg b₁ = 1` in the n=2 case. -/
+@[aesop safe]
 theorem bottcherCoord_div_id_tendsto_one (c : ℂ) :
     Filter.Tendsto (fun t : ℝ => bottcherCoord c (t : ℂ) / (t : ℂ)) Filter.atTop (nhds 1) := by
   have hδ : Filter.Tendsto

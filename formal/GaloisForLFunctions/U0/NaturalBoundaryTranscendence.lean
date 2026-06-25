@@ -35,6 +35,7 @@ nonempty for all small `ρ`) — `f` continues analytically across `z₀`. This 
 `U0PhiCard.continues_of_analytic_relation` with `(u₀, Ext, ‖z₀‖=1, lens_preconnected)` abstracted to
 `(f, D, z₀, hlens)`; the proof is the same holomorphic-IFT branch construction + monodromy-free
 single-branch selection. -/
+@[aesop safe]
 theorem continues_of_analytic_relation_gen {d : ℕ} (hd : 1 ≤ d)
     {D : Set ℂ} {f : ℂ → ℂ} (hfD : ContinuousOn f D) (z₀ : ℂ)
     {ρ₁ : ℝ} (hρ₁ : 0 < ρ₁)
@@ -122,6 +123,7 @@ at `z₀`, and **squarefree** specialization `∑ᵢ aᵢ(z₀)·Yⁱ` there, th
 `continues_of_analytic_relation_gen` would continue `f` across `z₀`, contradicting the natural boundary.
 This is `U0PhiCard.no_separable_analytic_relation` with the domain/boundary abstracted — the engine of
 Becker–Bergweiler-style transcendence. -/
+@[aesop safe]
 theorem no_separable_analytic_relation_gen {d : ℕ} (hd : 1 ≤ d)
     {D : Set ℂ} {f : ℂ → ℂ} (hfD : ContinuousOn f D) (z₀ : ℂ)
     (hnb : ¬ ContinuesAcross f D z₀)
@@ -172,6 +174,7 @@ its natural boundary. The two named deep inputs `hnb`/`hlens` are the φ_b-speci
 points); everything else is the shared algebraic engine. Specialised to `f = u₀`, `D = Ext`, `S` an arc
 of the unit circle, `hnb = u0_natural_boundary`, `hlens = lens_preconnected`, this reproves the u₀ case
 (`U0PhiCard.u0_phi_card_step3`). -/
+@[aesop safe]
 theorem no_poly_relation_of_natural_boundary_arc {d : ℕ} (hd : 1 ≤ d)
     {D : Set ℂ} {f : ℂ → ℂ} (hfD : ContinuousOn f D)
     {Ω : Set ℂ} (hΩc : IsPreconnected Ω)

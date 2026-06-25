@@ -34,6 +34,7 @@ namespace HolomorphicIFT
 its roots. (The roots multiset has card `d`; the `d` distinct roots fill its support.) This identifies
 the `d` `holo_implicit` branches at a non-degenerate parameter with the complete root set, so any other
 root — in particular `u₀(z)` — is one of the branches. -/
+@[aesop safe]
 theorem root_complete {p : ℂ[X]} {d : ℕ} (hp : p ≠ 0) (hdeg : p.natDegree = d)
     {a : Fin d → ℂ} (hainj : Function.Injective a) (haroot : ∀ i, p.IsRoot (a i))
     {x : ℂ} (hx : p.IsRoot x) : ∃ i, x = a i := by
@@ -57,6 +58,7 @@ theorem root_complete {p : ℂ[X]} {d : ℕ} (hp : p ≠ 0) (hdeg : p.natDegree 
 /-- **The bivariate evaluation of `P ∈ ℂ[z][Y]` is analytic (PROVEN).** `(z,w) ↦ P(z, w)` (coefficients
 of `P` evaluated at `z`, then as a polynomial in `w`) is a genuine bivariate polynomial, hence analytic
 everywhere. This is the analytic relation `f` fed to `holo_implicit` in Step 3. -/
+@[aesop safe]
 theorem bivar_analytic (P : Polynomial (Polynomial ℂ)) (p : ℂ × ℂ) :
     AnalyticAt ℂ (fun q : ℂ × ℂ => P.eval₂ (Polynomial.evalRingHom q.1) q.2) p := by
   have heq : (fun q : ℂ × ℂ => P.eval₂ (Polynomial.evalRingHom q.1) q.2)
@@ -73,6 +75,7 @@ theorem bivar_analytic (P : Polynomial (Polynomial ℂ)) (p : ℂ × ℂ) :
 of `P(z₀,·)` it is `(∂_Y P)(z₀,·)` evaluated at `w₀`, which is `≠ 0` precisely because the root is
 simple. (Proof: restrict `f` to `{z₀}×ℂ`, whose derivative is the one-variable polynomial derivative;
 match it to the `(0,1)` slice of the full Fréchet derivative by uniqueness.) -/
+@[aesop safe]
 theorem partial_w_deriv (P : (Polynomial ℂ)[X]) (z₀ w₀ : ℂ) :
     (fderiv ℂ (fun q : ℂ × ℂ => P.eval₂ (evalRingHom q.1) q.2) (z₀, w₀)) (0, 1)
     = ((derivative P).map (evalRingHom z₀)).eval w₀ := by
@@ -103,6 +106,7 @@ locus is therefore finite — the bad set of parameters `z₀` where `P(z₀,·)
 The proof: separability = `IsCoprime P (∂P)` over the field, so the field resultant is nonzero
 (`resultant_eq_zero_iff`); the resultant commutes with the (injective, degree-preserving) base-change
 map (`resultant_map_map`), so the base-ring resultant is nonzero too. -/
+@[aesop safe]
 theorem resultant_ne_zero_of_separable {R : Type*} [CommRing R] [IsDomain R]
     (P : R[X]) (hsep : (P.map (algebraMap R (FractionRing R))).Separable) :
     resultant P (derivative P) ≠ 0 := by
@@ -128,6 +132,7 @@ separable (squarefree). The specialized resultant equals `(resultant P P').eval 
 `resultant_map_map` and degree-preservation under evaluation (`natDegree_map_of_leadingCoeff_ne_zero`) —
 so it is nonzero, hence `P(z₀,·)` and its derivative are coprime over ℂ. This delivers the
 *simple-root* hypothesis that `holo_implicit` + `root_complete` consume in Step 3. -/
+@[aesop safe]
 theorem separable_specialize {P : (Polynomial ℂ)[X]} (z₀ : ℂ)
     (hlead : P.leadingCoeff.eval z₀ ≠ 0)
     (hlead' : (derivative P).leadingCoeff.eval z₀ ≠ 0)
@@ -162,6 +167,7 @@ non-root on `{‖z‖ = 1}` (it has finitely many roots; the circle, being conne
 infinite). Applied to the product of the leading coefficient and the discriminant, this supplies a
 crossing point `z₀` where `P(z₀,·)` is non-degenerate (degree `d`, distinct roots) — the seed for the
 branch construction in Step 3. -/
+@[aesop safe]
 theorem exists_circle_non_root {p : ℂ[X]} (hp : p ≠ 0) :
     ∃ z : ℂ, ‖z‖ = 1 ∧ p.eval z ≠ 0 := by
   have hroot_fin : {z : ℂ | p.eval z = 0}.Finite := by
@@ -185,6 +191,7 @@ set is the zero locus of `P.leadingCoeff · (∂P).leadingCoeff · resultant(P,�
 (`resultant_ne_zero_of_separable` + nonvanishing leading coefficients) — so it misses some circle point
 (`exists_circle_non_root`). This is the exact entry point of Step 3: a crossing parameter with only
 simple roots, where the holomorphic IFT gives `d` analytic branches and `u₀` must be one of them. -/
+@[aesop safe]
 theorem exists_squarefree_specialization {P : (Polynomial ℂ)[X]}
     (hsep : (P.map (algebraMap (Polynomial ℂ) (FractionRing (Polynomial ℂ)))).Separable)
     (hdeg : 1 ≤ P.natDegree) :
@@ -207,6 +214,7 @@ theorem exists_squarefree_specialization {P : (Polynomial ℂ)[X]}
 
 /-- A set that lies in `𝓝[U] z` for each of its points equals `U ∩ O` for a global open `O`
 (the union of witnessing open neighbourhoods). -/
+@[aesop safe]
 theorem rel_open_eq {U S : Set ℂ} (hSU : S ⊆ U) (hS : ∀ z ∈ S, S ∈ 𝓝[U] z) :
     ∃ O, IsOpen O ∧ S = U ∩ O := by
   classical
@@ -225,6 +233,7 @@ are both relatively open by separation — so it is constant on the connected `U
 
 This pins `u₀` to a single analytic root branch on the connected exterior near a crossing point — the
 combinatorial half of Step 3's branch-matching. -/
+@[aesop safe]
 theorem branch_selection {ι : Type*} [Fintype ι] {U : Set ℂ} (hU : IsPreconnected U)
     {h : ℂ → ℂ} {r : ι → ℂ → ℂ} (hUne : U.Nonempty)
     (hh : ContinuousOn h U) (hr : ∀ i, ContinuousOn (r i) U)
@@ -280,6 +289,7 @@ theorem branch_selection {ι : Type*} [Fintype ι] {U : Set ℂ} (hU : IsPreconn
 
 /-- A continuous ℂ-linear endomorphism of ℂ is invertible as soon as its value at `1` is nonzero
 (it is then scalar multiplication by that nonzero value). -/
+@[aesop safe]
 theorem clm_invertible_of_apply_one_ne {g : ℂ →L[ℂ] ℂ} (hg : g 1 ≠ 0) : g.IsInvertible := by
   rw [show g = smulRight (1 : ℂ →L[ℂ] ℂ) (g 1) from by ext x; simp [← smul_eq_mul, ← map_smul]]
   exact ⟨(Units.mk0 (g 1) hg) • ContinuousLinearEquiv.refl ℂ ℂ,
@@ -292,6 +302,7 @@ there is an **analytic** root branch `r` with `r z₀ = w₀` and `f(z, r z) = 0
 Analyticity is obtained directly from the analytic-smoothness (`ω`) implicit function theorem, since
 `ContDiffAt ℂ ω` ⟺ `AnalyticAt ℂ`. This is the local analytic continuation engine of Step 3: at a
 simple root of an algebraic relation, the algebraic branch is analytic. -/
+@[aesop safe]
 theorem holo_implicit {f : ℂ × ℂ → ℂ} {z₀ w₀ : ℂ}
     (hf : AnalyticAt ℂ f (z₀, w₀)) (h0 : f (z₀, w₀) = 0)
     (hfw : (fderiv ℂ f (z₀, w₀)) (0, 1) ≠ 0) :

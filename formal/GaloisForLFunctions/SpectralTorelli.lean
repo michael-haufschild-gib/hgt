@@ -30,6 +30,7 @@ noncomputable section
 polynomials force equal multisets. The inverse is `Polynomial.roots`
 (`roots_multiset_prod_X_sub_C`). Combined with the Newton bijection in
 characteristic zero, the secular moments are faithful coordinates. -/
+@[aesop safe]
 theorem spectralTorelli_faithful (s t : Multiset ℂ)
     (h : (s.map (fun a => X - C a)).prod = (t.map (fun a => X - C a)).prod) :
     s = t :=
@@ -42,6 +43,7 @@ theorem spectralTorelli_faithful (s t : Multiset ℂ)
 spectral polynomial `∏_{ρ∈s}(X − ρ)` is `(−1)^{#s} · ∏_{ρ∈s} ρ`: the product of
 the zeros (up to sign) is a single coefficient. This is the secular datum that
 the Arakelov product formula `∏_ρ w_ρ = 1` (B7) constrains. -/
+@[aesop safe]
 theorem spectralPoly_coeff_zero (s : Multiset ℂ) :
     ((s.map (fun a => X - C a)).prod).coeff 0
       = (-1) ^ (Multiset.card s) * s.prod := by
@@ -54,6 +56,7 @@ is conjugation-invariant (the self-duality `π ≅ π̄`), then the spectral pol
 `∏_{a∈s}(X − a)` has **real coefficients** (each fixed by conjugation) — the
 reality of the Dirichlet/L-coefficients of a self-dual representation, the
 coefficient-level companion of `SatakeReality.selfDual_moment_real`. -/
+@[aesop safe]
 theorem selfDual_spectralPoly_coeff_real (s : Multiset ℂ)
     (hs : s.map (fun a => (starRingEnd ℂ) a) = s) (k : ℕ) :
     (starRingEnd ℂ) (((s.map (fun a => X - C a)).prod).coeff k)

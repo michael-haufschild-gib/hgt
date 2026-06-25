@@ -33,6 +33,7 @@ def scaleAllCoordinates {ι G : Type*} [CommGroup G] (c : ι → G) (x : ι → 
   fun i => c i * x i
 
 /-- The trivial exponent vector gives the trivial Bohr character. -/
+@[aesop safe]
 theorem bohrCharacter_zero {ι G : Type*} [CommGroup G] (x : ι → G) :
     bohrCharacter (0 : ι →₀ ℤ) x = 1 := by
   simp [bohrCharacter]
@@ -40,6 +41,7 @@ theorem bohrCharacter_zero {ι G : Type*} [CommGroup G] (x : ι → G) :
 /-- Products of Bohr characters add exponent vectors:
 `e_{m+n}=e_m*e_n`. This is the finite algebraic identity behind the card's
 statement that combination modes arise from the ring product. -/
+@[aesop safe]
 theorem bohrCharacter_add {ι G : Type*} [DecidableEq ι] [CommGroup G]
     (m n : ι →₀ ℤ) (x : ι → G) :
     bohrCharacter (m + n) x = bohrCharacter m x * bohrCharacter n x := by
@@ -53,6 +55,7 @@ theorem bohrCharacter_add {ι G : Type*} [DecidableEq ι] [CommGroup G]
 /-- Scaling the `p` coordinate acts diagonally on a Bohr character:
 `e_m(..., c*x_p, ...) = c^{m_p} e_m(x)`. For `c=p^{-1}` this is the finite
 form of `σ_p e_m = p^{-m_p} e_m`. -/
+@[aesop safe]
 theorem bohrCharacter_scaleCoordinate {ι G : Type*} [DecidableEq ι] [CommGroup G]
     (m : ι →₀ ℤ) (p : ι) (c : G) (x : ι → G) :
     bohrCharacter m (scaleCoordinate p c x) = c ^ (m p) * bohrCharacter m x := by
@@ -88,6 +91,7 @@ theorem bohrCharacter_scaleCoordinate {ι G : Type*} [DecidableEq ι] [CommGroup
 /-- Scaling all coordinates acts diagonally on a finite Bohr character. This is
 the finite-support algebra behind applying a family of commuting coordinate
 dilations all at once. -/
+@[aesop safe]
 theorem bohrCharacter_scaleAllCoordinates {ι G : Type*} [CommGroup G]
     (m : ι →₀ ℤ) (c x : ι → G) :
     bohrCharacter m (scaleAllCoordinates c x) = bohrCharacter m c * bohrCharacter m x := by
@@ -99,6 +103,7 @@ theorem bohrCharacter_scaleAllCoordinates {ι G : Type*} [CommGroup G]
 
 /-- Coordinate scalings commute. This is the finite torus-map skeleton behind
 the commutation of prime dilations. -/
+@[aesop safe]
 theorem scaleCoordinate_commute {ι G : Type*} [DecidableEq ι] [CommGroup G]
     (p q : ι) (c d : G) (x : ι → G) :
     scaleCoordinate p c (scaleCoordinate q d x) =
@@ -109,6 +114,7 @@ theorem scaleCoordinate_commute {ι G : Type*} [DecidableEq ι] [CommGroup G]
   split_ifs with h1 h2 h3 h4 h5 h6 <;> subst_vars <;> simp [mul_left_comm] at *
 
 /-- Coordinatewise scalings commute with each other. -/
+@[aesop safe]
 theorem scaleAllCoordinates_commute {ι G : Type*} [CommGroup G]
     (c d : ι → G) (x : ι → G) :
     scaleAllCoordinates c (scaleAllCoordinates d x) =
@@ -119,6 +125,7 @@ theorem scaleAllCoordinates_commute {ι G : Type*} [CommGroup G]
 /-- A single coordinate scaling commutes with a simultaneous coordinatewise
 scaling. This is the finite coordinate-map form of `[sigma_infty, sigma_p]=0`
 on the prime-coordinate base. -/
+@[aesop safe]
 theorem scaleCoordinate_scaleAllCoordinates_commute {ι G : Type*} [DecidableEq ι] [CommGroup G]
     (p : ι) (d : G) (c : ι → G) (x : ι → G) :
     scaleCoordinate p d (scaleAllCoordinates c x) =
@@ -141,6 +148,7 @@ def archimedeanSquareScale : Nat.Primes → ℂˣ :=
 of all prime dilations to a Bohr character multiplies it by the finite product
 of the prime-square scale factors on its support. This is the formal finite
 character form of `sigma_infty|_R = product_p sigma_p^2` on the base. -/
+@[aesop safe]
 theorem bohrCharacter_archimedeanSquareScale (m : Nat.Primes →₀ ℤ) (x : Nat.Primes → ℂˣ) :
     bohrCharacter m (scaleAllCoordinates archimedeanSquareScale x) =
       bohrCharacter m archimedeanSquareScale * bohrCharacter m x := by
@@ -149,6 +157,7 @@ theorem bohrCharacter_archimedeanSquareScale (m : Nat.Primes →₀ ℤ) (x : Na
 /-- A two-axis exponent vector with nonzero coefficients at two distinct axes
 has exactly those two axes as support. This is the finite algebraic meaning of a
 genuine two-prime combination mode. -/
+@[aesop safe]
 theorem twoAxisMode_support_eq {ι : Type*} [DecidableEq ι]
     {p q : ι} (hpq : p ≠ q) {a b : ℤ} (ha : a ≠ 0) (hb : b ≠ 0) :
     (Finsupp.single p a + Finsupp.single q b).support = ({p, q} : Finset ι) := by
@@ -163,6 +172,7 @@ theorem twoAxisMode_support_eq {ι : Type*} [DecidableEq ι]
 
 /-- The product of two axis Bohr characters is the corresponding two-axis
 combination mode. -/
+@[aesop safe]
 theorem bohrCharacter_twoAxis_product {ι G : Type*} [DecidableEq ι] [CommGroup G]
     (p q : ι) (a b : ℤ) (x : ι → G) :
     bohrCharacter (Finsupp.single p a + Finsupp.single q b) x =
@@ -170,6 +180,7 @@ theorem bohrCharacter_twoAxis_product {ι G : Type*} [DecidableEq ι] [CommGroup
   exact bohrCharacter_add (Finsupp.single p a) (Finsupp.single q b) x
 
 /-- A two-axis mode with a nonzero coefficient on the first axis is nontrivial. -/
+@[aesop safe]
 theorem twoAxisMode_ne_zero {ι : Type*} [DecidableEq ι]
     {p q : ι} (hpq : p ≠ q) {a b : ℤ} (ha : a ≠ 0) :
     Finsupp.single p a + Finsupp.single q b ≠ (0 : ι →₀ ℤ) := by

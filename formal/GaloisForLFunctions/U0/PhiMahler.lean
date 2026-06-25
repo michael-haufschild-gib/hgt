@@ -27,12 +27,14 @@ namespace PhiMahler
 /-- **The squaring map preserves the escape region.** If `z ∈ escapeOpen c` then `quadratic c z =
 z²+c ∈ escapeOpen c`, by strict expansion `‖z‖ < ‖z²+c‖` beyond radius `2`. So `σ : z ↦ z²+c` is a
 self-map of the domain on which `φ_c` is defined — the Mahler transformation. -/
+@[aesop safe]
 theorem quadratic_mem_escapeOpen {c z : ℂ} (hz : z ∈ escapeOpen c) :
     quadratic c z ∈ escapeOpen c := by
   obtain ⟨hc, h2⟩ := mem_escapeOpen_regime hz
   exact lt_trans hz (quadratic_norm_lt hc h2)
 
 /-- **`σⁿ` preserves the escape region.** Iterating `quadratic_mem_escapeOpen`. -/
+@[aesop safe]
 theorem quadratic_iterate_mem_escapeOpen {c z : ℂ} (hz : z ∈ escapeOpen c) (n : ℕ) :
     (quadratic c)^[n] z ∈ escapeOpen c := by
   induction n with
@@ -44,6 +46,7 @@ satisfies `P(z, φ_c(z)) = 0` throughout the escape region, then `P(σz, φ_c(z)
 `σz = z²+c`. Proof: `σz ∈ escapeOpen c` (stability), so the relation holds at `σz`:
 `P(σz, φ_c(σz)) = 0`; and `φ_c(σz) = φ_c(z)²` (`bottcherCoord_quadratic`). This is the algebraic shadow of
 the dynamical conjugacy `φ_c ∘ f_c = (·)² ∘ φ_c`. -/
+@[aesop safe]
 theorem relation_propagate {c : ℂ} (P : Polynomial (Polynomial ℂ))
     (hrel : ∀ z ∈ escapeOpen c, P.eval₂ (evalRingHom z) (bottcherCoord c z) = 0)
     {z : ℂ} (hz : z ∈ escapeOpen c) :
@@ -56,6 +59,7 @@ theorem relation_propagate {c : ℂ} (P : Polynomial (Polynomial ℂ))
 `σⁿ z` together with the iterated functional equation `φ_c(σⁿ z) = φ_c(z)^{2ⁿ}`. The `z`-degree of the
 left coordinate grows like `2ⁿ` under `σⁿ`, while `Y` is replaced by `φ_c(z)^{2ⁿ}` — the geometric
 blow-up that, against the fixed algebraic degree of a relation, drives the Mahler/Nishioka contradiction. -/
+@[aesop safe]
 theorem relation_propagate_iterate {c : ℂ} (P : Polynomial (Polynomial ℂ))
     (hrel : ∀ z ∈ escapeOpen c, P.eval₂ (evalRingHom z) (bottcherCoord c z) = 0)
     {z : ℂ} (hz : z ∈ escapeOpen c) (n : ℕ) :
@@ -75,6 +79,7 @@ So a single point `z₀` produces an infinite sequence of roots `w, w², w⁴, �
 of *bounded* `Y`-degree `≤ deg_Y P`, with `|w^{2ⁿ}| = |w|^{2ⁿ}` blowing up when `|w|>1` (which holds on
 the escape region, `|φ_c|=exp G>1`). This bounded-degree-vs-blow-up tension is the lever of the
 Mahler/Nishioka contradiction; the remaining core is the precise height estimate that closes it. -/
+@[aesop safe]
 theorem isRoot_specialize_iterate {c : ℂ} (P : Polynomial (Polynomial ℂ))
     (hrel : ∀ z ∈ escapeOpen c, P.eval₂ (evalRingHom z) (bottcherCoord c z) = 0)
     {z₀ : ℂ} (hz₀ : z₀ ∈ escapeOpen c) (n : ℕ) :

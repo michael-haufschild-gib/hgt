@@ -39,6 +39,7 @@ has full transcendence degree `n`. Proof: the fundamental theorem of symmetric p
 injective; composing with the (injective) subalgebra inclusion identifies it with `aeval (e_·)`, whose
 injectivity is exactly algebraic independence. By Newton's identities this transfers to the finite
 power-sum moments `P_1, …, P_n` — the genuine finite shadow of the DSS conjecture. -/
+@[aesop safe]
 theorem spectrum_esymm_algIndep (n : ℕ) :
     AlgebraicIndependent ℚ (fun i : Fin n => MvPolynomial.esymm (Fin n) ℚ (i + 1)) := by
   rw [algebraicIndependent_iff_injective_aeval]

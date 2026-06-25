@@ -44,6 +44,7 @@ def blockOffCircleIndex (q lambda : ℝ) : ℕ :=
     exact if blockSpectralBound q lambda then 0 else 1
 
 /-- The reciprocal functional-equation identity of the quadratic block. -/
+@[aesop safe]
 theorem iharaBlock_reciprocal_identity {q lambda : ℝ} (hq : q ≠ 0) {u : ℂ} (hu : u ≠ 0) :
     (q : ℂ) * u ^ 2 * iharaBlock q lambda (((q : ℂ) * u)⁻¹) =
       iharaBlock q lambda u := by
@@ -52,6 +53,7 @@ theorem iharaBlock_reciprocal_identity {q lambda : ℝ} (hq : q ≠ 0) {u : ℂ}
   ring
 
 /-- Imaginary-part equation for a zero of an Ihara block. -/
+@[aesop safe]
 lemma iharaBlock_im_eq_zero (q lambda : ℝ) (u : ℂ) (h : iharaBlock q lambda u = 0) :
     u.im * (2 * q * u.re - lambda) = 0 := by
   have him := congrArg Complex.im h
@@ -60,6 +62,7 @@ lemma iharaBlock_im_eq_zero (q lambda : ℝ) (u : ℂ) (h : iharaBlock q lambda 
   exact him
 
 /-- Real-part equation for a zero of an Ihara block. -/
+@[aesop safe]
 lemma iharaBlock_re_eq_zero (q lambda : ℝ) (u : ℂ) (h : iharaBlock q lambda u = 0) :
     1 - lambda * u.re + q * (u.re ^ 2 - u.im ^ 2) = 0 := by
   have hre := congrArg Complex.re h
@@ -67,6 +70,7 @@ lemma iharaBlock_re_eq_zero (q lambda : ℝ) (u : ℂ) (h : iharaBlock q lambda 
   ring_nf at hre ⊢
   exact hre
 
+@[aesop safe]
 private lemma eq_inv_of_mul_eq_one {q r : ℝ} (hq : q ≠ 0) (h : q * r = 1) :
     r = q⁻¹ := by
   calc
@@ -74,6 +78,7 @@ private lemma eq_inv_of_mul_eq_one {q r : ℝ} (hq : q ≠ 0) (h : q * r = 1) :
     _ = q⁻¹ := by rw [h, mul_one]
 
 /-- The spectral bound forces the actual zeros of the quadratic block onto the critical circle. -/
+@[aesop safe]
 theorem zerosOnCriticalCircle_of_spectral_bound {q lambda : ℝ} (hq : 0 < q)
     (hdisc : blockSpectralBound q lambda) : zerosOnCriticalCircle q lambda := by
   intro u hu
@@ -103,6 +108,7 @@ theorem zerosOnCriticalCircle_of_spectral_bound {q lambda : ℝ} (hq : 0 < q)
     exact eq_inv_of_mul_eq_one (ne_of_gt hq) hnorm
 
 /-- If the spectral bound fails, an explicit real zero lies off the critical circle. -/
+@[aesop safe]
 theorem not_zerosOnCriticalCircle_of_spectral_violation {q lambda : ℝ} (hq : 0 < q)
     (hbad : 4 * q < lambda ^ 2) : ¬ zerosOnCriticalCircle q lambda := by
   intro hcircle
@@ -146,6 +152,7 @@ theorem not_zerosOnCriticalCircle_of_spectral_violation {q lambda : ℝ} (hq : 0
   norm_num at hqr
 
 /-- The exact one-block selector: critical-circle zeros iff the spectral bound holds. -/
+@[aesop norm simp]
 theorem zerosOnCriticalCircle_iff_spectral_bound {q lambda : ℝ} (hq : 0 < q) :
     zerosOnCriticalCircle q lambda ↔ blockSpectralBound q lambda := by
   constructor
@@ -170,11 +177,13 @@ def finiteIharaProduct {ι : Type*} [Fintype ι] (q : ℝ) (lambda : ι → ℝ)
 def finiteProductRH {ι : Type*} [Fintype ι] (q : ℝ) (lambda : ι → ℝ) : Prop :=
   ∀ u : ℂ, finiteIharaProduct q lambda u = 0 → Complex.normSq u = q⁻¹
 
+@[aesop norm simp]
 theorem blockOffCircleIndex_eq_zero_iff (q lambda : ℝ) :
     blockOffCircleIndex q lambda = 0 ↔ blockSpectralBound q lambda := by
   by_cases h : blockSpectralBound q lambda <;> simp [blockOffCircleIndex, h]
 
 /-- Product zeros are critical exactly when every quadratic block is critical. -/
+@[aesop norm simp]
 theorem finiteProductRH_iff_finiteBlockRH {ι : Type*} [Fintype ι]
     (q : ℝ) (lambda : ι → ℝ) :
     finiteProductRH q lambda ↔ finiteBlockRH q lambda := by
@@ -190,6 +199,7 @@ theorem finiteProductRH_iff_finiteBlockRH {ι : Type*} [Fintype ι]
     exact hblocks i u hi
 
 /-- Finite block-family selector: blockwise model RH iff the total off-circle index vanishes. -/
+@[aesop norm simp]
 theorem finiteBlockRH_iff_totalOffCircleIndex_eq_zero {ι : Type*} [Fintype ι]
     {q : ℝ} (hq : 0 < q) (lambda : ι → ℝ) :
     finiteBlockRH q lambda ↔ totalOffCircleIndex q lambda = 0 := by
@@ -205,12 +215,14 @@ theorem finiteBlockRH_iff_totalOffCircleIndex_eq_zero {ι : Type*} [Fintype ι]
       ((blockOffCircleIndex_eq_zero_iff q (lambda i)).1 (hindex i (Finset.mem_univ i)))
 
 /-- Finite product selector: model RH iff the total off-circle index vanishes. -/
+@[aesop norm simp]
 theorem finiteProductRH_iff_totalOffCircleIndex_eq_zero {ι : Type*} [Fintype ι]
     {q : ℝ} (hq : 0 < q) (lambda : ι → ℝ) :
     finiteProductRH q lambda ↔ totalOffCircleIndex q lambda = 0 := by
   rw [finiteProductRH_iff_finiteBlockRH, finiteBlockRH_iff_totalOffCircleIndex_eq_zero hq]
 
 /-- Reciprocal symmetry alone cannot force the spectral selector. -/
+@[aesop safe]
 theorem reciprocal_identity_does_not_force_spectral_bound (q : ℝ) (hq : 0 < q) :
     ∃ lambda : ℝ,
       (∀ u : ℂ, u ≠ 0 →

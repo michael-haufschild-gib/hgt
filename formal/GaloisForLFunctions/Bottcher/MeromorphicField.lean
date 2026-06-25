@@ -598,3 +598,300 @@ theorem precompAnalytic_polyToAnalyticVia_fix {U : Set ℂ} {g : ℂ → ℂ} (h
   exact RingHom.congr_fun hcomp q
 
 end Bottcher
+
+namespace Bottcher
+open Filter Set
+
+/-- **Restriction of an analytic germ to a subdomain.** For `V ⊆ U`, an analytic germ on `U`
+restricts (precompose with the inclusion `id : V ↪ U`) to an analytic germ on `V`. The germ-level
+core of the descent `meroField U → meroField V`. -/
+theorem restrict_mem_analyticSubring {U V : Set ℂ} (hVU : V ⊆ U) {a : Germ (𝓟 U) ℂ}
+    (ha : a ∈ analyticSubring U) :
+    a.compTendsto id (tendsto_principal_principal.mpr (fun x hx => hVU hx)) ∈ analyticSubring V := by
+  obtain ⟨f, hf, rfl⟩ := ha
+  exact ⟨f ∘ id, hf.mono hVU, (Germ.coe_compTendsto f _).symm⟩
+
+/-- **The restriction ring hom on germs** `Germ (𝓟 U) ℂ →+* Germ (𝓟 V) ℂ` (`V ⊆ U`), precomposition by
+the inclusion. Ring-hom by the same `compTendsto`-naturality as `precompGermHom`. -/
+noncomputable def restrictGermHom {U V : Set ℂ} (hVU : V ⊆ U) :
+    Germ (𝓟 U) ℂ →+* Germ (𝓟 V) ℂ where
+  toFun a := a.compTendsto id (tendsto_principal_principal.mpr (fun x hx => hVU hx))
+  map_one' := by rw [← Germ.coe_one, Germ.coe_compTendsto]; rfl
+  map_zero' := by rw [← Germ.coe_zero, Germ.coe_compTendsto]; rfl
+  map_mul' a b := by
+    induction a using Germ.inductionOn with
+    | _ F => induction b using Germ.inductionOn with
+      | _ G => simp only [← Germ.coe_mul, Germ.coe_compTendsto]; rfl
+  map_add' a b := by
+    induction a using Germ.inductionOn with
+    | _ F => induction b using Germ.inductionOn with
+      | _ G => simp only [← Germ.coe_add, Germ.coe_compTendsto]; rfl
+
+/-- **Restriction ring hom on the analytic-germ domain** `analyticSubring U →+* analyticSubring V`
+(`V ⊆ U`). This is the carrier-level descent operator: it sends the cover-field Böttcher germs to their
+restrictions on the deep ball where the genuine `phiMero` coordinates live. Lifted through the fraction
+field (next step) and shown injective by the identity theorem (`U` connected), it is the `ψ` of
+`noRelation_of_algHom` that transfers independence from the cover down to the actual coordinates. -/
+noncomputable def restrictAnalytic {U V : Set ℂ} (hVU : V ⊆ U) :
+    analyticSubring U →+* analyticSubring V :=
+  ((restrictGermHom hVU).comp (analyticSubring U).subtype).codRestrict (analyticSubring V)
+    (fun x => restrict_mem_analyticSubring hVU x.2)
+
+end Bottcher
+
+namespace Bottcher
+open Filter Set
+
+/-- **The descent restriction is injective (identity theorem).** For `V ⊆ U` with `U` preconnected and
+`V` open nonempty, `restrictAnalytic hVU` is injective: if an analytic germ on `U` restricts to `0` on
+`V`, its representative `f` vanishes on the open set `V`, hence on all of the connected `U`
+(`AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero`), so the germ is `0`. This is the
+injectivity hypothesis `noRelation_of_algHom` requires of the descent `ψ` — independence proved on the
+cover field transfers down to `meroField V` (the deep ball where the genuine `phiMero` coordinates
+live), since a relation downstairs would have to already hold upstairs. -/
+theorem restrictAnalytic_injective {U V : Set ℂ} (hVU : V ⊆ U) (hUc : IsPreconnected U)
+    (hVo : IsOpen V) (hVne : V.Nonempty) : Function.Injective (restrictAnalytic hVU) := by
+  rw [injective_iff_map_eq_zero]
+  rintro ⟨g, f, hf, rfl⟩ ha
+  have h1 : (↑f : Germ (𝓟 U) ℂ).compTendsto id
+      (tendsto_principal_principal.mpr (fun x hx => hVU hx)) = 0 := congrArg Subtype.val ha
+  rw [Germ.coe_compTendsto, ← Germ.coe_zero, Germ.coe_eq] at h1
+  have hV0 : ∀ w ∈ V, f w = 0 := fun w hw => by
+    have := Filter.eventually_principal.mp h1 w hw; simpa using this
+  obtain ⟨z₀, hz₀⟩ := hVne
+  have hf0U : EqOn f 0 U :=
+    hf.eqOn_zero_of_preconnected_of_eventuallyEq_zero hUc (hVU hz₀)
+      (Filter.eventuallyEq_of_mem (hVo.mem_nhds hz₀) (fun w hw => by simp [hV0 w hw]))
+  apply Subtype.ext
+  show (↑f : Germ (𝓟 U) ℂ) = (0 : Germ (𝓟 U) ℂ)
+  rw [← Germ.coe_zero, Germ.coe_eq]
+  exact Filter.eventually_principal.mpr (fun w hw => by simp [hf0U hw])
+
+end Bottcher
+
+namespace Bottcher
+open Filter Set
+
+/-- **The descent at the field level** `meroField U →+* meroField V` (`V ⊆ U`). Lifts the injective
+`restrictAnalytic` through the fraction field (`IsFractionRing.lift`): restriction of meromorphic germs
+from the cover `U` down to the deep ball `V`. As a ring hom out of the field `meroField U` it is
+automatically injective, so — once shown to be a `ℂ(z)`-algebra map sending the cover Böttcher germs to
+the genuine `phiMero` coordinates — it is exactly the `ψ` consumed by `noRelation_of_algHom` to descend
+independence from the cover field to the actual coordinates. -/
+noncomputable def restrictMeroHom {U V : Set ℂ} (hVU : V ⊆ U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) :
+    meroField U →+* meroField V :=
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  IsFractionRing.lift (A := analyticSubring U) (K := meroField U)
+    (g := (algebraMap (analyticSubring V) (meroField V)).comp (restrictAnalytic hVU))
+    (fun x y h => restrictAnalytic_injective hVU hUc hVo hVne
+      (IsFractionRing.injective (analyticSubring V) (meroField V) (by
+        simpa [RingHom.comp_apply] using h)))
+
+end Bottcher
+
+namespace Bottcher
+open Filter Set
+
+/-- **The descent fixes the base coordinates** `ℂ[z]`. Restriction `U → V` commutes with the
+polynomial embedding `polyToAnalytic` (`z ↦ z`): `restrictAnalytic hVU (polyToAnalytic U p) =
+polyToAnalytic V p`, since the germ `z ↦ p(z)` restricts to itself. This is the `ℂ(z)`-linearity core
+of the descent `ψ` — it makes `restrictMeroHom` a `ℂ(z)`-algebra map (lift through the fraction field),
+the form `noRelation_of_algHom` requires. The genuine Böttcher germs map to their `deepBall`
+restrictions `phiMero` while the base field `ℂ(z)` is fixed pointwise. -/
+theorem restrictAnalytic_polyToAnalytic {U V : Set ℂ} (hVU : V ⊆ U) (p : Polynomial ℂ) :
+    restrictAnalytic hVU (polyToAnalytic U p) = polyToAnalytic V p := by
+  apply Subtype.ext
+  show ((↑(fun z => p.eval z) : Germ (𝓟 U) ℂ)).compTendsto id
+      (tendsto_principal_principal.mpr (fun x hx => hVU hx)) = ↑(fun z => p.eval z)
+  rw [Germ.coe_compTendsto]
+  rfl
+
+end Bottcher
+
+namespace Bottcher
+open Filter Set
+
+/-- **The descent commutes with the carrier embedding** `algebraMap (analyticSubring) (meroField)`.
+`restrictMeroHom (algebraMap a) = algebraMap (restrictAnalytic a)` — immediate from
+`IsFractionRing.lift_algebraMap`, since `restrictMeroHom` is the fraction-field lift of
+`algebraMap_V ∘ restrictAnalytic`. -/
+theorem restrictMeroHom_algebraMap {U V : Set ℂ} (hVU : V ⊆ U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (a : analyticSubring U) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := isDomain_analyticSubring V hVo hVc hVne
+    restrictMeroHom hVU hUo hUc hUne hVo hVc hVne
+        (algebraMap (analyticSubring U) (meroField U) a)
+      = algebraMap (analyticSubring V) (meroField V) (restrictAnalytic hVU a) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  exact IsFractionRing.lift_algebraMap _ a
+
+/-- **The descent is a `ℂ(z)`-algebra map: it fixes the base field `ℂ(z)` pointwise.**
+`restrictMeroHom ∘ ratfuncToMero_U = ratfuncToMero_V` — the two ring homs `ℂ(z) → meroField V` agree on
+`ℂ[z]` (`restrictAnalytic_polyToAnalytic` lifted through `restrictMeroHom_algebraMap`), hence are equal
+by fraction-field uniqueness (`IsFractionRing.ringHom_ext`). This upgrades the descent
+`restrictMeroHom` to a `RatFunc ℂ`-algebra hom — exactly the form `noRelation_of_algHom` consumes. The
+descent half of the disconnected discharge is now mechanically complete: it transfers
+`NoRelation (ℂ(z))` from the cover field down to `meroField (deepBall)` for the genuine coordinates. -/
+theorem restrictMeroHom_ratfuncToMero {U V : Set ℂ} (hVU : V ⊆ U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (hVinf : V.Infinite) :
+    (restrictMeroHom hVU hUo hUc hUne hVo hVc hVne).comp (ratfuncToMero U hUo hUc hUne hUinf)
+      = ratfuncToMero V hVo hVc hVne hVinf := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  apply IsFractionRing.ringHom_ext (A := Polynomial ℂ)
+  intro p
+  rw [RingHom.comp_apply, ratfuncToMero_algebraMap_polynomial U,
+      ratfuncToMero_algebraMap_polynomial V]
+  simp only [polyToMero, RingHom.comp_apply]
+  rw [restrictMeroHom_algebraMap, restrictAnalytic_polyToAnalytic]
+
+end Bottcher
+
+namespace Bottcher
+open Filter Set
+
+/-- **Pullback of an analytic germ along a holomorphic map** `ι : V → U`. For `ι` analytic on `V` with
+`ι(V) ⊆ U`, an analytic germ on `U` pulls back (precompose with `ι`) to an analytic germ on `V`. The
+germ-level core of the general descent `meroField U → meroField V` — `restrict_mem_analyticSubring` is
+the special case `ι = id`. This is the descent the **cover** needs: `ι : deepBall → cover` (e.g. the
+Böttcher coordinate / the dyadic root) pulls the cover's single-valued `φc` germ back to the genuine
+`phiMero` on the deep ball. -/
+theorem precompMap_mem_analyticSubring {U V : Set ℂ} {ι : ℂ → ℂ}
+    (hι : AnalyticOnNhd ℂ ι V) (hmaps : Set.MapsTo ι V U) {a : Germ (𝓟 U) ℂ}
+    (ha : a ∈ analyticSubring U) :
+    a.compTendsto ι (tendsto_principal_principal.mpr hmaps) ∈ analyticSubring V := by
+  obtain ⟨f, hf, rfl⟩ := ha
+  exact ⟨f ∘ ι, (fun z hz => (hf (ι z) (hmaps hz)).comp (hι z hz)),
+    (Germ.coe_compTendsto f _).symm⟩
+
+/-- **The pullback ring hom on germs** `Germ (𝓟 U) ℂ →+* Germ (𝓟 V) ℂ` along `ι : V → U`
+(`ι(V) ⊆ U`). -/
+noncomputable def precompGermMapHom {U V : Set ℂ} {ι : ℂ → ℂ} (hmaps : Set.MapsTo ι V U) :
+    Germ (𝓟 U) ℂ →+* Germ (𝓟 V) ℂ where
+  toFun a := a.compTendsto ι (tendsto_principal_principal.mpr hmaps)
+  map_one' := by rw [← Germ.coe_one, Germ.coe_compTendsto]; rfl
+  map_zero' := by rw [← Germ.coe_zero, Germ.coe_compTendsto]; rfl
+  map_mul' a b := by
+    induction a using Germ.inductionOn with
+    | _ F => induction b using Germ.inductionOn with
+      | _ G => simp only [← Germ.coe_mul, Germ.coe_compTendsto]; rfl
+  map_add' a b := by
+    induction a using Germ.inductionOn with
+    | _ F => induction b using Germ.inductionOn with
+      | _ G => simp only [← Germ.coe_add, Germ.coe_compTendsto]; rfl
+
+/-- **The pullback ring hom on the analytic-germ domain** `analyticSubring U →+* analyticSubring V`
+along a holomorphic `ι : V → U`. The general carrier-level descent operator — pulling the cover's
+Böttcher germs back to the deep ball along `ι`. With the fraction-field lift and injectivity (when `ι`
+is nonconstant, by the identity theorem / open mapping), this is the `ψ` of `noRelation_of_algHom` for
+the genuine cover (whose projection base `ℂ(p₀)` maps to `ℂ(z)` via `p₀∘ι = z`). -/
+noncomputable def precompAnalyticMap {U V : Set ℂ} {ι : ℂ → ℂ}
+    (hι : AnalyticOnNhd ℂ ι V) (hmaps : Set.MapsTo ι V U) :
+    analyticSubring U →+* analyticSubring V :=
+  ((precompGermMapHom hmaps).comp (analyticSubring U).subtype).codRestrict (analyticSubring V)
+    (fun x => precompMap_mem_analyticSubring hι hmaps x.2)
+
+end Bottcher
+
+namespace Bottcher
+open Filter Set
+
+/-- **The general pullback descent is injective** when `ι` has open image (identity theorem). If the
+pullback of an analytic germ along `ι : V → U` vanishes on `V`, its representative `f` vanishes on the
+open nonempty image `ι '' V ⊆ U`, hence on the connected `U`
+(`AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero`). For the cover descent `ι` is a
+biholomorphism onto a sheet, so `ι '' V` is open — the hypothesis holds. This is the injectivity
+`noRelation_of_algHom` needs of the general descent. -/
+theorem precompAnalyticMap_injective {U V : Set ℂ} {ι : ℂ → ℂ}
+    (hι : AnalyticOnNhd ℂ ι V) (hmaps : Set.MapsTo ι V U) (hUc : IsPreconnected U)
+    (hopen : IsOpen (ι '' V)) (hne : (ι '' V).Nonempty) :
+    Function.Injective (precompAnalyticMap hι hmaps) := by
+  rw [injective_iff_map_eq_zero]
+  rintro ⟨g, f, hf, rfl⟩ ha
+  have h1 : (↑f : Germ (𝓟 U) ℂ).compTendsto ι
+      (tendsto_principal_principal.mpr hmaps) = 0 := congrArg Subtype.val ha
+  rw [Germ.coe_compTendsto, ← Germ.coe_zero, Germ.coe_eq] at h1
+  have hfimg : ∀ w ∈ ι '' V, f w = 0 := by
+    rintro w ⟨v, hv, rfl⟩
+    have := Filter.eventually_principal.mp h1 v hv; simpa using this
+  obtain ⟨w₀, v₀, hv₀, rfl⟩ := hne
+  have hf0U : EqOn f 0 U :=
+    hf.eqOn_zero_of_preconnected_of_eventuallyEq_zero hUc (hmaps hv₀)
+      (Filter.eventuallyEq_of_mem (hopen.mem_nhds ⟨v₀, hv₀, rfl⟩)
+        (fun w hw => by simp [hfimg w hw]))
+  apply Subtype.ext
+  show (↑f : Germ (𝓟 U) ℂ) = (0 : Germ (𝓟 U) ℂ)
+  rw [← Germ.coe_zero, Germ.coe_eq]
+  exact Filter.eventually_principal.mpr (fun w hw => by simp [hf0U hw])
+
+/-- **The general pullback descent at the field level** `meroField U →+* meroField V` along a
+holomorphic `ι : V → U` with open image. Lifts the injective `precompAnalyticMap` through the fraction
+field; injective from its field source. This is the cover descent: `ι : deepBall → cover` pulls the
+cover field's coordinates back to the deep ball, the `ψ` of `noRelation_of_algHom` sending the cover's
+`φc` germ to the genuine `phiMero`. -/
+noncomputable def precompMeroMap {U V : Set ℂ} {ι : ℂ → ℂ}
+    (hι : AnalyticOnNhd ℂ ι V) (hmaps : Set.MapsTo ι V U) (hUc : IsPreconnected U)
+    (hopen : IsOpen (ι '' V)) (hne : (ι '' V).Nonempty)
+    (hUo : IsOpen U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) :
+    meroField U →+* meroField V :=
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  IsFractionRing.lift (A := analyticSubring U) (K := meroField U)
+    (g := (algebraMap (analyticSubring V) (meroField V)).comp (precompAnalyticMap hι hmaps))
+    (fun x y h => precompAnalyticMap_injective hι hmaps hUc hopen hne
+      (IsFractionRing.injective (analyticSubring V) (meroField V) (by
+        simpa [RingHom.comp_apply] using h)))
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter Set
+
+/-- Constants pull back to constants along any `ι`: `precompAnalyticMap (constToAnalytic U c) =
+constToAnalytic V c` (a constant germ composed with `ι` is the same constant). -/
+theorem precompAnalyticMap_constToAnalytic {U V : Set ℂ} {ι : ℂ → ℂ}
+    (hι : AnalyticOnNhd ℂ ι V) (hmaps : Set.MapsTo ι V U) (c : ℂ) :
+    precompAnalyticMap hι hmaps (constToAnalytic U c) = constToAnalytic V c := by
+  apply Subtype.ext
+  show ((↑(fun _ : ℂ => c) : Germ (𝓟 U) ℂ)).compTendsto ι
+      (tendsto_principal_principal.mpr hmaps) = ↑(fun _ : ℂ => c)
+  rw [Germ.coe_compTendsto]; rfl
+
+/-- **The pullback sends the projection base `ℂ(p₀)` to the identity base `ℂ(z)` when `p₀∘ι = z`.**
+For the cover descent, the cover carries `K = ℂ(p₀)` via the projection germ `p₀` (`polyToAnalyticVia`),
+while the deep ball carries `K = ℂ(z)` via the identity coordinate (`polyToAnalytic`). The pullback `ι`
+with `p₀∘ι = z` (the inverse-Böttcher / dyadic-root property) intertwines them:
+`precompAnalyticMap (polyToAnalyticVia U p₀ q) = polyToAnalytic V q` — two ring homs agreeing on `C`
+(`precompAnalyticMap_constToAnalytic`) and on `X` (`hp0`: `p₀∘ι = z`). This closes the last mechanical
+gap between the cover's projection base and the genuine `ℂ(z)`: the descent `precompMeroMap` is a
+`ℂ(z)`-algebra map, so `noRelation_of_algHom` transfers independence from the cover's `ℂ(p₀)`-coordinates
+straight to `phiMero` over `ℂ(z)`. -/
+theorem precompAnalyticMap_polyToAnalyticVia {U V : Set ℂ} {ι : ℂ → ℂ} {p₀ : analyticSubring U}
+    (hι : AnalyticOnNhd ℂ ι V) (hmaps : Set.MapsTo ι V U)
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ).compTendsto ι (tendsto_principal_principal.mpr hmaps)
+        = (↑(fun w : ℂ => w) : Germ (𝓟 V) ℂ)) (q : Polynomial ℂ) :
+    precompAnalyticMap hι hmaps (polyToAnalyticVia U p₀ q) = polyToAnalytic V q := by
+  have hcomp : (precompAnalyticMap hι hmaps).comp (polyToAnalyticVia U p₀) = polyToAnalytic V := by
+    apply Polynomial.ringHom_ext
+    · intro a
+      simp only [RingHom.comp_apply, polyToAnalyticVia_C]
+      rw [precompAnalyticMap_constToAnalytic]
+      apply Subtype.ext
+      show (↑(fun _ : ℂ => a) : Germ (𝓟 V) ℂ) = ↑(fun z => (Polynomial.C a).eval z)
+      simp
+    · simp only [RingHom.comp_apply, polyToAnalyticVia_X]
+      apply Subtype.ext
+      rw [show ((precompAnalyticMap hι hmaps p₀ : analyticSubring V) : Germ (𝓟 V) ℂ)
+          = (p₀ : Germ (𝓟 U) ℂ).compTendsto ι (tendsto_principal_principal.mpr hmaps) from rfl, hp0]
+      show (↑(fun w : ℂ => w) : Germ (𝓟 V) ℂ) = ↑(fun z => (Polynomial.X : Polynomial ℂ).eval z)
+      simp
+  exact RingHom.congr_fun hcomp q
+
+end Bottcher

@@ -27,11 +27,13 @@ def gluingHinv : Mat2Rat := ![![(1 / 2 : ℚ), 0], ![0, 1]]
 def gluingB2 : Mat2Rat := gluingA2
 def gluingB3 : Mat2Rat := ![![1, 0], ![(1 / 2 : ℚ), 1]]
 
+@[aesop safe]
 theorem gluingH_mul_Hinv : gluingH * gluingHinv = 1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [gluingH, gluingHinv, Matrix.mul_apply, Fin.sum_univ_two]
 
+@[aesop safe]
 theorem gluingHinv_mul_H : gluingHinv * gluingH = 1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -39,18 +41,22 @@ theorem gluingHinv_mul_H : gluingHinv * gluingH = 1 := by
 
 /-- The second matrix of the `B` pair is conjugate to the second matrix of the
 `A` pair, so the two pairs have identical per-prime data at this prime. -/
+@[aesop safe]
 theorem gluingB3_eq_conj : gluingH * gluingA3 * gluingHinv = gluingB3 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [gluingH, gluingA3, gluingHinv, gluingB3, Matrix.mul_apply, Fin.sum_univ_two]
 
+@[aesop safe]
 theorem gluing_trace_A2A3 : (gluingA2 * gluingA3).trace = 3 := by
   norm_num [gluingA2, gluingA3, Matrix.trace, Matrix.mul_apply, Fin.sum_univ_two]
 
+@[aesop safe]
 theorem gluing_trace_B2B3 : (gluingB2 * gluingB3).trace = (5 / 2 : ℚ) := by
   norm_num [gluingB2, gluingA2, gluingB3, Matrix.trace, Matrix.mul_apply, Fin.sum_univ_two]
 
 /-- The word trace distinguishes the two joint pairs. -/
+@[aesop safe]
 theorem gluing_trace_ne : (gluingA2 * gluingA3).trace ≠ (gluingB2 * gluingB3).trace := by
   rw [gluing_trace_A2A3, gluing_trace_B2B3]
   norm_num
@@ -60,6 +66,7 @@ theorem gluing_trace_ne : (gluingA2 * gluingA3).trace ≠ (gluingB2 * gluingB3).
 The statement uses explicit left/right matrices `P,Q` with `Q * P = 1`; this is
 enough for the trace-cycling obstruction. Any genuine invertible conjugacy gives
 such data. -/
+@[aesop safe]
 theorem gluing_not_jointly_conjugate
     (P Q : Mat2Rat) (hQP : Q * P = 1)
     (h2 : P * gluingA2 * Q = gluingB2) (h3 : P * gluingA3 * Q = gluingB3) :
@@ -80,6 +87,7 @@ theorem gluing_not_jointly_conjugate
 
 /-- Packaged C3 witness: per-prime conjugacy agrees, but the joint pair is not
 simultaneously conjugate. -/
+@[aesop safe]
 theorem gluing_per_prime_same_but_joint_distinct :
     gluingB2 = gluingA2 ∧
       gluingH * gluingHinv = 1 ∧

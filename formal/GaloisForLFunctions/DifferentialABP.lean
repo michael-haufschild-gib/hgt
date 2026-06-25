@@ -16,6 +16,7 @@ ABP values-to-functions lift.
 namespace GaloisForLFunctions
 
 /-- Any Leibniz operator on a ring sends `1` to `0`. -/
+@[aesop safe]
 theorem map_one_eq_zero_of_leibniz {R : Type*} [Ring R] (D : R → R)
     (hleibniz : ∀ x y, D (x * y) = D x * y + x * D y) : D 1 = 0 := by
   have h : D 1 = D 1 + D 1 := by simpa using hleibniz 1 1
@@ -25,6 +26,7 @@ theorem map_one_eq_zero_of_leibniz {R : Type*} [Ring R] (D : R → R)
   exact hcancel.symm
 
 /-- If a map kills `1` and is multiplicative, then it is the zero map. -/
+@[aesop safe]
 theorem map_eq_zero_of_map_one_zero_of_map_mul {R : Type*} [MonoidWithZero R]
     (D : R → R) (h1 : D 1 = 0) (hmul : ∀ x y, D (x * y) = D x * D y) :
     ∀ x, D x = 0 := by
@@ -36,6 +38,7 @@ theorem map_eq_zero_of_map_one_zero_of_map_mul {R : Type*} [MonoidWithZero R]
     _ = 0 := mul_zero (D x)
 
 /-- A Leibniz operator that is also multiplicative is necessarily zero. -/
+@[aesop safe]
 theorem map_eq_zero_of_leibniz_of_map_mul {R : Type*} [Ring R] (D : R → R)
     (hleibniz : ∀ x y, D (x * y) = D x * y + x * D y)
     (hmul : ∀ x y, D (x * y) = D x * D y) :
@@ -43,6 +46,7 @@ theorem map_eq_zero_of_leibniz_of_map_mul {R : Type*} [Ring R] (D : R → R)
   map_eq_zero_of_map_one_zero_of_map_mul D (map_one_eq_zero_of_leibniz D hleibniz) hmul
 
 /-- Equivalently, a nonzero Leibniz operator cannot be multiplicative. -/
+@[aesop safe]
 theorem not_map_mul_of_leibniz_of_exists_ne_zero {R : Type*} [Ring R] (D : R → R)
     (hleibniz : ∀ x y, D (x * y) = D x * y + x * D y)
     (hne : ∃ x, D x ≠ 0) :

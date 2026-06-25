@@ -25,6 +25,7 @@ def logZetaPrimeCoeff (n : ℕ) : ℝ :=
   ArithmeticFunction.vonMangoldt n / Real.log (n : ℝ) * (n : ℝ) ^ (-(1 / 2 : ℝ))
 
 /-- For a prime `p`, the `log ζ` coefficient is `p^{-1/2}`. -/
+@[aesop safe]
 theorem logZetaPrimeCoeff_prime (p : Nat.Primes) :
     logZetaPrimeCoeff (p : ℕ) = ((p : ℝ) ^ (-(1 / 2 : ℝ))) := by
   have hpPrime : Nat.Prime (p : ℕ) := p.2
@@ -35,6 +36,7 @@ theorem logZetaPrimeCoeff_prime (p : Nat.Primes) :
   field_simp [hlogne]
 
 /-- For a prime power `p^k`, the `log ζ` coefficient is `p^{-k/2}/k`. -/
+@[aesop safe]
 theorem logZetaPrimeCoeff_primePower (p : Nat.Primes) {k : ℕ} (hk : k ≠ 0) :
     logZetaPrimeCoeff ((p : ℕ) ^ k) = ((p : ℝ) ^ (-(k : ℝ) / 2)) / (k : ℝ) := by
   have hpPrime : Nat.Prime (p : ℕ) := p.2

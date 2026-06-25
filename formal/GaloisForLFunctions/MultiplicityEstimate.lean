@@ -27,6 +27,7 @@ frequencies `N : Fin L → ℂ`, a nonzero coefficient vector `c` whose Dirichle
 `Σ_n N_n^{z_j} · c_n` vanishes at every `z_j` exists **iff** the matrix `V_{j,n} = N_n^{z_j}` is
 singular (`det V = 0`). With `N_n = primeProduct` and `z_j = -iγ_j`, this is the nonharmonic-Fourier
 / Vandermonde nonsingularity that the multiplicity estimate must quantify. -/
+@[aesop norm simp]
 theorem multiplicity_det_criterion (L : ℕ) (z N : Fin L → ℂ) :
     (∃ c : Fin L → ℂ, c ≠ 0 ∧ ∀ j, ∑ n, (N n) ^ (z j) * c n = 0)
       ↔ (Matrix.of (fun j n => (N n) ^ (z j))).det = 0 := by

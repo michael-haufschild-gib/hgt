@@ -27,6 +27,7 @@ direction `D` is nonnegative on every test vector.
 This is the formal core of the ledger rule: a one-sided source-normalization
 ray can preserve a fixed Loewner budget only when its remaining recession
 direction is already nonnegative. -/
+@[aesop safe]
 theorem source_budget_one_sided_recession_nonnegative {V : Type*} (B R D : V -> ℝ)
     (h : ∀ t : ℝ, 0 ≤ t -> ∀ v : V, 0 ≤ B v + R v + t * D v) :
     ∀ v : V, 0 ≤ D v := by
@@ -56,6 +57,7 @@ direction `D` vanishes on every test vector.
 This is the formal core of the two-sided finite-normalization audit: if both
 `D` and `-D` remain admissible, a fixed budget can hold on the whole affine
 line only when the direction has no quadratic effect. -/
+@[aesop safe]
 theorem source_budget_two_sided_recession_zero {V : Type*} (B R D : V -> ℝ)
     (h : ∀ t : ℝ, ∀ v : V, 0 ≤ B v + R v + t * D v) :
     ∀ v : V, D v = 0 := by

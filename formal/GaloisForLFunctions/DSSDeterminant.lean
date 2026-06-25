@@ -20,6 +20,7 @@ noncomputable section
 /-- A square complex matrix has a nontrivial kernel vector exactly when its
 determinant vanishes. This is the finite algebra behind the DSS determinant
 criterion. -/
+@[aesop norm simp]
 theorem matrix_nontrivial_kernel_iff_det_eq_zero {n : ℕ}
     (V : Matrix (Fin n) (Fin n) ℂ) :
     (∃ c : Fin n → ℂ, c ≠ 0 ∧ V.mulVec c = 0) ↔ V.det = 0 := by

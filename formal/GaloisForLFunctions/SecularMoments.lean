@@ -33,6 +33,7 @@ With `x = 1/ρ`, the Li summand `1 - (1 - x)^n` equals `Σ_{j=1}^{n} C(n,j) (-1)
 (here reindexed `j ↦ j+1` over `Finset.range n`). Summed over the nontrivial zeros this is
 `λ_n = Σ_j C(n,j)(-1)^{j+1} P_j`, linking the RH face (Li positivity) to the DSS face
 (secular moments `P_k = Σ_ρ ρ^{-k}`). Pure commutative-ring algebra. -/
+@[aesop safe]
 theorem li_secular_pointwise (R : Type*) [CommRing R] (x : R) (n : ℕ) :
     1 - (1 - x) ^ n
       = ∑ j ∈ Finset.range n, (n.choose (j + 1) : R) * (-1) ^ j * x ^ (j + 1) := by
@@ -49,6 +50,7 @@ theorem li_secular_pointwise (R : Type*) [CommRing R] (x : R) (n : ℕ) :
 Summed over the zeros this recovers `P_k` from the `λ_n`; together with `li_secular_pointwise` it
 shows the two transforms are mutual inverses, so `{P_k}` and `{λ_n}` generate the **same `ℤ`-lattice**
 (the RH-coordinates and DSS-coordinates of Object-X coincide). Pure commutative-ring algebra. -/
+@[aesop safe]
 theorem secular_li_pointwise_inv (R : Type*) [CommRing R] (x : R) (k : ℕ) (hk : 0 < k) :
     x ^ k = ∑ m ∈ Finset.range k, (-1) ^ m * (k.choose (m + 1) : R) * (1 - (1 - x) ^ (m + 1)) := by
   classical
@@ -91,6 +93,7 @@ theorem secular_li_pointwise_inv (R : Type*) [CommRing R] (x : R) (k : ℕ) (hk 
 contributes `t⁻ᵏ + (conj t)⁻ᵏ = 2 Re(t⁻ᵏ)` to the moment `P_k`, which is real. Hence `P_k` of a
 conjugate-symmetric spectrum (the functional-equation structure) is a **real** period sequence — a
 basic structural fact of the Object-X. -/
+@[aesop safe]
 theorem conj_pair_moment_real (t : ℂ) (k : ℕ) :
     ((t ^ k)⁻¹ + ((star t) ^ k)⁻¹).im = 0 := by
   have hstar : ((star t) ^ k)⁻¹ = star ((t ^ k)⁻¹) := by rw [← star_pow, star_inv₀]

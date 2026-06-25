@@ -21,6 +21,7 @@ noncomputable section
 /-- **Cayley transform: a Herglotz value maps into the closed unit disk (Schur).** If `Im m ≥ 0`
 then `‖(m - i)/(m + i)‖ ≤ 1`. (Reason: `‖m + i‖² - ‖m - i‖² = 4 · Im m ≥ 0`.) The forward direction
 of the Herglotz ⟷ Schur correspondence — the carrier's disk picture. -/
+@[aesop safe]
 theorem cayley_herglotz_schur (m : ℂ) (hm : 0 ≤ m.im) (h : m + Complex.I ≠ 0) :
     ‖(m - Complex.I) / (m + Complex.I)‖ ≤ 1 := by
   rw [norm_div, div_le_one (norm_pos_iff.mpr h)]
@@ -35,6 +36,7 @@ theorem cayley_herglotz_schur (m : ℂ) (hm : 0 ≤ m.im) (h : m + Complex.I ≠
 transform `i(1+θ)/(1-θ)` has nonnegative imaginary part — a Herglotz value
 (`Im(i(1+θ)/(1-θ)) = (1 - ‖θ‖²)/‖1-θ‖² ≥ 0`). With `cayley_herglotz_schur` this is the full
 Herglotz ⟷ Schur correspondence (both directions), the carrier's two-picture equivalence. -/
+@[aesop safe]
 theorem cayley_schur_herglotz (θ : ℂ) (hθ : ‖θ‖ ≤ 1) (h : θ ≠ 1) :
     0 ≤ (Complex.I * ((1 + θ) / (1 - θ))).im := by
   have hden : 0 < Complex.normSq (1 - θ) :=
@@ -51,6 +53,7 @@ theorem cayley_schur_herglotz (θ : ℂ) (hθ : ‖θ‖ ≤ 1) (h : θ ≠ 1) :
 (`‖1-āz‖² - ‖z-a‖² = (1-‖a‖²)(1-‖z‖²) ≥ 0`). The Blaschke factor is the disk-picture building block
 of the Krein–Langer `N_κ` negative squares — one factor per `ℂ⁺` pole, the disk analog of an off-line
 carrier pole. -/
+@[aesop safe]
 theorem blaschke_schur (a z : ℂ) (ha : ‖a‖ ≤ 1) (hz : ‖z‖ ≤ 1)
     (h : 1 - (starRingEnd ℂ) a * z ≠ 0) :
     ‖(z - a) / (1 - (starRingEnd ℂ) a * z)‖ ≤ 1 := by
@@ -70,6 +73,7 @@ theorem blaschke_schur (a z : ℂ) (ha : ‖a‖ ≤ 1) (hz : ‖z‖ ≤ 1)
 `a : Fin n → ℂ` (each `‖a i‖ ≤ 1`) satisfies `‖∏ b_{a_i}(z)‖ ≤ 1` for `‖z‖ ≤ 1`. This finite Blaschke
 product is the disk-picture realization of the Krein–Langer `N_κ` factor (degree = κ₋ = number of
 `ℂ⁺` carrier poles); it is the building block of the Krein–Langer factorization `m = B · m₀`. -/
+@[aesop safe]
 theorem finite_blaschke_schur {n : ℕ} (a : Fin n → ℂ) (z : ℂ) (ha : ∀ i, ‖a i‖ ≤ 1)
     (hz : ‖z‖ ≤ 1) (h : ∀ i, 1 - (starRingEnd ℂ) (a i) * z ≠ 0) :
     ‖∏ i, (z - a i) / (1 - (starRingEnd ℂ) (a i) * z)‖ ≤ 1 := by
@@ -83,6 +87,7 @@ truncated Szegő kernel `S_N(w_j,w_k) = ∑_{n<N} w_j^n · conj(w_k^n)` is posit
 Finset sum of rank-1 Gram matrices `v_n v_nᴴ` (`v_n = (w_j^n)_j`). This is the polynomial
 reproducing-kernel positivity underlying the disk-side de Branges spaces (the `N→∞` limit is the
 Szegő kernel `1/(1 - conj(w_k) w_j)`). -/
+@[aesop safe]
 theorem szego_truncation_posSemidef {m : ℕ} (N : ℕ) (w : Fin m → ℂ) :
     (Matrix.of (fun j k => ∑ n ∈ Finset.range N, (w j) ^ n * star ((w k) ^ n))).PosSemidef := by
   have hterm : ∀ n, (Matrix.of (fun j k : Fin m => (w j) ^ n * star ((w k) ^ n))).PosSemidef := by
@@ -106,6 +111,7 @@ then the factored form `B(z)·θ₀` satisfies `‖B(z)·θ₀‖ ≤ 1` — it 
 direction of the Krein–Langer factorization `m = B · m₀` (disk picture `θ = B · θ₀`): the factored
 form lands in the Schur class. (The converse — every Schur `θ` factors this way with `deg B = κ₋` —
 is the de Branges realization theorem, the open converse.) -/
+@[aesop safe]
 theorem kreinLanger_factored_schur {n : ℕ} (a : Fin n → ℂ) (θ₀ z : ℂ)
     (ha : ∀ i, ‖a i‖ ≤ 1) (hz : ‖z‖ ≤ 1) (h : ∀ i, 1 - (starRingEnd ℂ) (a i) * z ≠ 0)
     (hθ : ‖θ₀‖ ≤ 1) :
@@ -116,6 +122,7 @@ theorem kreinLanger_factored_schur {n : ℕ} (a : Fin n → ℂ) (θ₀ z : ℂ)
 /-- **de Branges–Rovnyak diagonal positivity.** For a Schur value `θ` (`‖θ‖ ≤ 1`) and `w` in the open
 disk (`‖w‖ < 1`), the diagonal of the de Branges–Rovnyak kernel `K_θ(w,w) = (1 - ‖θ‖²)/(1 - ‖w‖²)`
 is nonnegative — the defining positivity of the model space `H(θ)`. -/
+@[aesop safe]
 theorem deBrangesRovnyak_diag_nonneg (θ w : ℂ) (hθ : ‖θ‖ ≤ 1) (hw : ‖w‖ < 1) :
     0 ≤ (1 - ‖θ‖ ^ 2) / (1 - ‖w‖ ^ 2) := by
   apply div_nonneg
@@ -125,6 +132,7 @@ theorem deBrangesRovnyak_diag_nonneg (θ w : ℂ) (hθ : ‖θ‖ ≤ 1) (hw : �
 /-- **The Cayley transform maps the upper half-plane into the open unit disk.** For `Im z > 0`,
 `‖(z - i)/(z + i)‖ < 1`. The conformal equivalence `ℂ⁺ ≅ 𝔻` underlying the entire Herglotz ⟷ Schur
 correspondence (`cayley_herglotz_schur` is its boundary `≤` version). -/
+@[aesop safe]
 theorem cayley_upperHalfPlane_to_disk (z : ℂ) (hz : 0 < z.im) :
     ‖(z - Complex.I) / (z + Complex.I)‖ < 1 := by
   have h : z + Complex.I ≠ 0 := by
@@ -144,6 +152,7 @@ theorem cayley_upperHalfPlane_to_disk (z : ℂ) (hz : 0 < z.im) :
 two Szegő/de Branges reproducing kernels is again positive semidefinite (Schur product theorem) — a
 weighted/Bergman-type reproducing kernel. This closure builds de Branges spaces with products/weights
 from the basic Szegő kernel. -/
+@[aesop safe]
 theorem szego_hadamard_posSemidef {m : ℕ} (N M : ℕ) (w : Fin m → ℂ) :
     ((Matrix.of (fun j k => ∑ n ∈ Finset.range N, (w j) ^ n * star ((w k) ^ n))).hadamard
       (Matrix.of (fun j k => ∑ n ∈ Finset.range M, (w j) ^ n * star ((w k) ^ n)))).PosSemidef :=

@@ -1,71 +1,64 @@
 /-
-# u₀ ⟂ φ_b reduced to the *shared* analytic lift data
+# u₀ ⟂ φ_b — the mixed-case reduction at the genuine (cover / projection) carrier
 
-The named goal (`u0_phi_independence`) and the Böttcher disconnected case
-(`Bottcher.q62_independence_disconnected_of_lifts`) bottom out at the **same** object: the genuine
-analytic dyadic-monodromy lift of `φ_b` on the basin — an analytic self-map `g` of `U` (with analytic
-inverse `g'`) scaling the germ of `φ_b` by a root of unity of unbounded order while fixing `ℂ(z)`. The
-u₀-specific inputs are already discharged, axiom-clean:
+**Carrier correction (important).** The dyadic monodromy lift `g` must *fix* `ℂ(z)` while *scaling*
+`φ_b`. That is possible only when `ℂ(z) ↪ meroField U` is the **projection embedding of the cover** —
+`U` the (uniformized) cover, `g` a deck map fixing the base projection and permuting the branch
+coordinate `φ_b`. It is impossible for the identity-coordinate embedding `ratfuncToMero` of the base
+`z`-plane: there `algebraMap z` is the identity germ, so "`g` fixes `ℂ(z)`" forces `g = id`, hence
+`φ_b ∘ g = φ_b` and the scaling root `ζ₀ = 1` — making `hliftF` **unsatisfiable** (`orderOf ζ₀ > d`
+fails). So the carrier here is the *abstract* `[Algebra (RatFunc ℂ) (meroField U)]` supplied by the
+cover, exactly as in `Bottcher.q62_independence_disconnected_of_lifts` ("the projection embedding").
 
-* `hF` (φ_b ≠ 0) — `Bottcher.phiMero_ne_zero`;
-* `hG` (u₀ transcendental over ℂ(z) at the genuine carrier) — `U0MeroCarrier.u0Mero_transcendental`;
-* the engine — `Bottcher.q62_mixed`, applied through `Bottcher.noRelation_of_mixed_lifts`.
+This file states the u₀ mixed case at that carrier: it reduces `NoRelation ℂ(z) φ_b u₀` to
+`Bottcher.noRelation_of_mixed_lifts`'s inputs — `hF` (φ_b ≠ 0), `hG` (u₀ transcendental over `ℂ(z)` via
+the projection), and `hliftF` (the deck lift scaling `φ_b`, fixing `u₀` and `ℂ(z)`). The `hliftF` is the
+shared open crux with the Böttcher disconnected case — constructing that one deck lift closes both.
 
-For the mixed case the lift need only **fix** `u₀` (single-valued), which the *same* `g` does
-automatically (`u₀` is a function of the base coordinate `z`, fixed by every deck transformation): the
-lift datum `hliftF` that scales `φ_b` already contains the `fixes a₂` clause this file feeds as `u₀`.
-
-So this theorem reduces the genuine independence `NoRelation ℂ(z) φ_b u₀` to **exactly** the lift datum
-`hliftF` of the Böttcher disconnected case — making the shared crux machine-checked: construct that one
-analytic monodromy and *both* the Böttcher independence and the u₀ independence close at once. This is
-the u₀ analogue of `Bottcher.q62_independence_disconnected_of_lifts`, on the faithful carrier
-`Bottcher.meroField U` where `NoRelation` is the real independence.
+The remaining u₀-specific work is to discharge `hG` at this carrier by transporting
+`U0Transcendence.u0Field_transcendental` (u₀ transcendental over `ℂ(z)`, axiom-clean) along the base
+projection — buildable once the cover + projection embedding is constructed (parallel Böttcher work).
+The previous version of this file instantiated the *base-plane* `ratfuncToMero` carrier and so reduced
+to a vacuously unsatisfiable `hliftF`; this corrects it to the genuine monodromy carrier.
 -/
 import GaloisForLFunctions.U0.U0MeroCarrier
 import GaloisForLFunctions.Bottcher.Q62Assembly
 
-open Polynomial Filter Topology U0 U0NaturalBoundary U0Transcendence U0MeroCarrier Bottcher
+open Polynomial Filter Topology Bottcher
 
 namespace U0PhiLifts
 
 variable {U : Set ℂ}
 
-/-- **u₀ ⟂ φ_b, reduced to the Böttcher disconnected-case lift datum (PROVEN).** For a connected open
-infinite `U ⊆ Ext ∩ escapeOpen b`, the genuine Böttcher coordinate `φ_b` and the c-velocity `u₀` — both
-as the *actual analytic functions* inside the faithful carrier `meroField U` — satisfy no nonzero
-polynomial relation over `ℂ(z)`, **given** the single analytic input `hliftF`: a dyadic-monodromy lift
-of `φ_b` (an analytic self-map `g` of `U` with analytic inverse `g'`, scaling `φ_b`'s germ by a root of
-unity `ζ₀` of unbounded order, fixing `u₀`'s germ and fixing `ℂ(z)`). This is precisely the `hliftF`
-that `Bottcher.q62_independence_disconnected_of_lifts` consumes — the one shared open crux. The
-u₀-side inputs (`φ_b ≠ 0`, `u₀` transcendence) are discharged here; only the monodromy remains. -/
-theorem u0_phib_independence_of_lifts (hUo : IsOpen U) (hUc : IsPreconnected U)
-    (hUne : U.Nonempty) (hUinf : U.Infinite) (hU_ext : U ⊆ Ext)
-    {b : ℂ} (hU_esc : U ⊆ escapeOpen b)
-    (hliftF : letI := isDomain_analyticSubring U hUo hUc hUne
-      letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
-      ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+/-- **u₀ ⟂ φ_b at the genuine cover/projection carrier, reduced to the shared deck lift (PROVEN).**
+With `[Algebra (RatFunc ℂ) (meroField U)]` the cover's projection embedding, `aφ`/`au0` the `φ_b`/`u₀`
+germs, this reduces `NoRelation ℂ(z) φ_b u₀` to exactly `Bottcher.noRelation_of_mixed_lifts`'s inputs:
+`hF` (`φ_b ≠ 0`), `hG` (`u₀` transcendental over `ℂ(z)`), and `hliftF` (the deck self-map scaling `φ_b`
+by a root of unbounded order, fixing `u₀` and `ℂ(z)`). The `hliftF` is the shared crux with the Böttcher
+disconnected case. (Carrier note in the file header: the base-plane `ratfuncToMero` carrier makes
+`hliftF` unsatisfiable; the projection carrier is the genuine one.) -/
+@[aesop safe]
+theorem u0_phib_independence_of_lifts (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    [Algebra (RatFunc ℂ) (meroField U)] (aφ au0 : analyticSubring U)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) aφ ≠ 0)
+    (hG : haveI := isDomain_analyticSubring U hUo hUc hUne
+          Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) au0))
+    (hliftF : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
         (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
         (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
         (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U),
         d < orderOf ζ₀ ∧
-        ((phiAnalytic b hU_esc : analyticSubring U) : Germ (𝓟 U) ℂ).compTendsto g
-            (tendsto_principal_principal.mpr hmaps)
-          = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ)
-            * ((phiAnalytic b hU_esc : analyticSubring U) : Germ (𝓟 U) ℂ) ∧
-        ((u0AnSub hU_ext : analyticSubring U) : Germ (𝓟 U) ℂ).compTendsto g
-            (tendsto_principal_principal.mpr hmaps)
-          = ((u0AnSub hU_ext : analyticSubring U) : Germ (𝓟 U) ℂ) ∧
+        (aφ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+          = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (aφ : Germ (𝓟 U) ℂ) ∧
+        (au0 : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+          = (au0 : Germ (𝓟 U) ℂ) ∧
         ∀ k : RatFunc ℂ, precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
           (algebraMap (RatFunc ℂ) (meroField U) k) = algebraMap (RatFunc ℂ) (meroField U) k) :
-    letI := isDomain_analyticSubring U hUo hUc hUne
-    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
-    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
-      (algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext)) := by
-  letI := isDomain_analyticSubring U hUo hUc hUne
-  letI algR : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
-  exact noRelation_of_mixed_lifts hUo hUc hUne (phiAnalytic b hU_esc) (u0AnSub hU_ext)
-    (phiMero_ne_zero hUo hUc hUne hU_esc)
-    (u0Mero_transcendental hUo hUc hUne hUinf hU_ext)
-    hliftF
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) aφ)
+      (algebraMap (analyticSubring U) (meroField U) au0) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  exact noRelation_of_mixed_lifts hUo hUc hUne aφ au0 hF hG hliftF
 
 end U0PhiLifts

@@ -28,6 +28,7 @@ def finiteConstraintPolynomialAction (C : Module.End R M) (a : ℕ → R) (N : �
   ∑ n ∈ Finset.range (N + 1), a n • ((C ^ n) ψ)
 
 /-- Positive powers of a constraint kill physical states. -/
+@[aesop safe]
 theorem constraint_power_succ_apply_eq_zero (C : Module.End R M) {ψ : M}
     (hψ : PhysicalState C ψ) (n : ℕ) :
     (C ^ (n + 1)) ψ = 0 := by
@@ -36,6 +37,7 @@ theorem constraint_power_succ_apply_eq_zero (C : Module.End R M) {ψ : M}
   simp [hψ]
 
 /-- On physical states, a finite polynomial in the constraint acts by its constant term. -/
+@[aesop safe]
 theorem finiteConstraintPolynomialAction_eq_constant (C : Module.End R M) {ψ : M}
     (hψ : PhysicalState C ψ) (a : ℕ → R) (N : ℕ) :
     finiteConstraintPolynomialAction C a N ψ = a 0 • ψ := by
@@ -50,12 +52,14 @@ theorem finiteConstraintPolynomialAction_eq_constant (C : Module.End R M) {ψ : 
     exact (hnot (Finset.mem_range.mpr (Nat.succ_pos N))).elim
 
 /-- A constraint-generated finite evolution with constant term `1` is trivial on physical states. -/
+@[aesop safe]
 theorem finiteConstraintEvolution_eq_self (C : Module.End R M) {ψ : M}
     (hψ : PhysicalState C ψ) (a : ℕ → R) (N : ℕ) (ha0 : a 0 = 1) :
     finiteConstraintPolynomialAction C a N ψ = ψ := by
   rw [finiteConstraintPolynomialAction_eq_constant C hψ a N, ha0, one_smul]
 
 /-- A linear observable commuting with the constraint preserves the physical-state subspace. -/
+@[aesop safe]
 theorem preserves_physicalState_of_commute (C A : Module.End R M)
     (hcomm : C * A = A * C) {ψ : M} (hψ : PhysicalState C ψ) :
     PhysicalState C (A ψ) := by

@@ -41,6 +41,7 @@ def oscComm (A B : (ℕ → ℂ) → (ℕ → ℂ)) (a : ℕ → ℂ) : ℕ → 
   fun n => A (B a) n - B (A a) n
 
 /-- The oscillator relation `[X,Y] = -4H`, checked coefficientwise on the monomial basis. -/
+@[aesop safe]
 theorem osc_comm_XY_apply (a : ℕ → ℂ) (n : ℕ) :
     oscComm oscX oscY a n = -4 * oscH a n := by
   unfold oscComm oscX oscY oscH
@@ -51,6 +52,7 @@ theorem osc_comm_XY_apply (a : ℕ → ℂ) (n : ℕ) :
     rcases hn with rfl | rfl <;> simp <;> ring
 
 /-- The oscillator relation `[H,X] = 2X`, checked coefficientwise on the monomial basis. -/
+@[aesop safe]
 theorem osc_comm_HX_apply (a : ℕ → ℂ) (n : ℕ) :
     oscComm oscH oscX a n = 2 * oscX a n := by
   unfold oscComm oscX oscH
@@ -61,6 +63,7 @@ theorem osc_comm_HX_apply (a : ℕ → ℂ) (n : ℕ) :
     rcases hn with rfl | rfl <;> simp
 
 /-- The oscillator relation `[H,Y] = -2Y`, checked coefficientwise on the monomial basis. -/
+@[aesop safe]
 theorem osc_comm_HY_apply (a : ℕ → ℂ) (n : ℕ) :
     oscComm oscH oscY a n = -2 * oscY a n := by
   unfold oscComm oscY oscH

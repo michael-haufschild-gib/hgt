@@ -42,6 +42,7 @@ Chebyshev polynomial of the trace. With `z = e^{iθ}`, `z + z⁻¹ = 2cos θ`, t
 Proved by clearing `zᵏ` and matching the complete-homogeneous generating function
 (`coeff_completeHomogeneous_series`) to the Chebyshev–Laurent geometric series
 (`chebyshevS_eval_add_inv`). -/
+@[aesop safe]
 theorem symPowerGL2_eq_chebyshevS (z : ℂ) (hz : z ≠ 0) (k : ℕ) :
     (MvPolynomial.aeval ![z, z⁻¹]) (MvPolynomial.hsymm (Fin 2) ℂ k)
       = (Polynomial.Chebyshev.S ℂ (k : ℤ)).eval (z + z⁻¹) := by
@@ -62,6 +63,7 @@ theorem symPowerGL2_eq_chebyshevS (z : ℂ) (hz : z ≠ 0) (k : ℕ) :
 /-- **Dimension of the `GL₂` symmetric power.** `|Sym (Fin 2) k| = k + 1`: the
 `Symᵏ` of the standard `GL₂` representation has dimension `k+1` (the number of
 size-`k` multisets over two letters, `multichoose 2 k`). -/
+@[aesop safe]
 theorem symPowerGL2_card (k : ℕ) : Fintype.card (Sym (Fin 2) k) = k + 1 := by
   rw [Sym.card_sym_eq_multichoose, Fintype.card_fin, Nat.multichoose_eq,
     show 2 + k - 1 = k + 1 from by omega, Nat.choose_succ_self_right]
@@ -71,6 +73,7 @@ Satake parameter (`‖z‖ = 1`, so the parameters `z, z⁻¹` are on the unit c
 the `Symᵏ` character is bounded by its dimension: `‖Symᵏ‖ ≤ k+1`. This is the
 `GL₂` specialization of `CompleteHomogeneous.symChar_norm_le` via
 `symPowerGL2_card`; the Satake-side tempered bound supporting Sato–Tate. -/
+@[aesop safe]
 theorem symPowerGL2_norm_le (z : ℂ) (hz : ‖z‖ = 1) (k : ℕ) :
     ‖(MvPolynomial.aeval ![z, z⁻¹]) (MvPolynomial.hsymm (Fin 2) ℂ k)‖ ≤ (k : ℝ) + 1 := by
   have hb := symChar_norm_le ![z, z⁻¹] ?_ k

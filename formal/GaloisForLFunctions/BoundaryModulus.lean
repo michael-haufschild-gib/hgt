@@ -23,11 +23,13 @@ def boundaryRadius (p : ℝ) : ℝ := p ^ (-(1 / 2 : ℝ))
 def boundaryUnitNormalize (p : ℝ) (x : ℂ) : ℂ := (boundaryRadius p)⁻¹ • x
 
 /-- The boundary radius is positive for a positive base. -/
+@[aesop safe]
 lemma boundaryRadius_pos {p : ℝ} (hp : 0 < p) : 0 < boundaryRadius p := by
   exact Real.rpow_pos_of_pos hp _
 
 /-- Scaling a complex scalar by the inverse of a positive radius has unit norm exactly when the
 original scalar has that radius. -/
+@[aesop norm simp]
 theorem norm_inv_smul_eq_one_iff {r : ℝ} (hr : 0 < r) (x : ℂ) :
     ‖(r⁻¹ : ℝ) • x‖ = 1 ↔ ‖x‖ = r := by
   have hri : 0 < r⁻¹ := inv_pos.mpr hr
@@ -44,6 +46,7 @@ theorem norm_inv_smul_eq_one_iff {r : ℝ} (hr : 0 < r) (x : ℂ) :
 
 /-- Boundary-radius normalization puts a scalar on the unit circle exactly when it lies on the
 boundary circle of radius `p^(-1/2)`. -/
+@[aesop norm simp]
 theorem boundaryUnitNormalize_norm_eq_one_iff {p : ℝ} (hp : 0 < p) (x : ℂ) :
     ‖boundaryUnitNormalize p x‖ = 1 ↔ ‖x‖ = boundaryRadius p := by
   exact norm_inv_smul_eq_one_iff (boundaryRadius_pos hp) x
@@ -57,12 +60,14 @@ def functionFieldWeightNormalize (q w d : ℝ) (alpha : ℂ) : ℂ :=
   (functionFieldWeightRadius q w d)⁻¹ • alpha
 
 /-- The Frobenius weight radius is positive for a positive base field size. -/
+@[aesop safe]
 lemma functionFieldWeightRadius_pos {q : ℝ} (hq : 0 < q) (w d : ℝ) :
     0 < functionFieldWeightRadius q w d := by
   exact Real.rpow_pos_of_pos hq _
 
 /-- Weight normalization puts a Frobenius eigenvalue on the unit circle exactly
 when the original eigenvalue lies on the weight circle. -/
+@[aesop norm simp]
 theorem functionFieldWeightNormalize_norm_eq_one_iff {q : ℝ} (hq : 0 < q)
     (w d : ℝ) (alpha : ℂ) :
     ‖functionFieldWeightNormalize q w d alpha‖ = 1 ↔
@@ -71,6 +76,7 @@ theorem functionFieldWeightNormalize_norm_eq_one_iff {q : ℝ} (hq : 0 < q)
 
 /-- On the diagonal coordinate `p^{-s}`, boundary-radius normalization is unitary exactly on
 `Re(s)=1/2`. -/
+@[aesop norm simp]
 theorem diagonalBoundary_unit_norm_iff (p : ℝ) (hp : 1 < p) (s : ℂ) :
     ‖boundaryUnitNormalize p ((p : ℂ) ^ (-s))‖ = 1 ↔ s.re = 1 / 2 := by
   rw [boundaryUnitNormalize_norm_eq_one_iff (zero_lt_one.trans hp), boundaryRadius]

@@ -27,12 +27,13 @@ noncomputable section
 def familyExponentSum {ι κ : Type*} [Fintype ι] (m : ι → κ →₀ ℤ) : κ →₀ ℤ :=
   ∑ i, m i
 
-@[simp] theorem familyExponentSum_apply {ι κ : Type*} [Fintype ι]
+@[aesop safe, simp] theorem familyExponentSum_apply {ι κ : Type*} [Fintype ι]
     (m : ι → κ →₀ ℤ) (k : κ) :
     familyExponentSum m k = ∑ i, m i k := by
   simp [familyExponentSum]
 
 /-- Bohr characters turn finite sums of exponent vectors into products. -/
+@[aesop safe]
 lemma bohrCharacter_finset_sum {ι κ G : Type*} [DecidableEq κ] [CommGroup G]
     (s : Finset ι) (m : ι → κ →₀ ℤ) (x : κ → G) :
     bohrCharacter (∑ i ∈ s, m i) x = ∏ i ∈ s, bohrCharacter (m i) x := by
@@ -43,6 +44,7 @@ lemma bohrCharacter_finset_sum {ι κ G : Type*} [DecidableEq κ] [CommGroup G]
       simp [ha, bohrCharacter_add, ih]
 
 /-- Family form of `bohrCharacter_finset_sum`. -/
+@[aesop safe]
 lemma bohrCharacter_familyExponentSum {ι κ G : Type*}
     [Fintype ι] [DecidableEq κ] [CommGroup G]
     (m : ι → κ →₀ ℤ) (x : κ → G) :
@@ -57,6 +59,7 @@ def familyTwistedProduct {ι κ G : Type*} [Fintype ι] [CommGroup G]
   ∏ i, bohrCharacter (m i) (fun k => twist i k * scale k)
 
 /-- Split a finite family product into its twist part and shared-scale modulus part. -/
+@[aesop safe]
 theorem familyTwistedProduct_split {ι κ G : Type*}
     [Fintype ι] [DecidableEq κ] [CommGroup G]
     (twist : ι → κ → G) (scale : κ → G) (m : ι → κ →₀ ℤ) :
@@ -82,13 +85,14 @@ def familyPrimeBalance {ι : Type*} [Fintype ι]
     (m : ι → Nat.Primes →₀ ℤ) : Nat.Primes →₀ ℤ :=
   familyExponentSum m
 
-@[simp] theorem familyPrimeBalance_apply {ι : Type*} [Fintype ι]
+@[aesop safe, simp] theorem familyPrimeBalance_apply {ι : Type*} [Fintype ι]
     (m : ι → Nat.Primes →₀ ℤ) (p : Nat.Primes) :
     familyPrimeBalance m p = ∑ i, m i p := by
   simp [familyPrimeBalance, familyExponentSum]
 
 /-- Unique factorization forces the family prime-balance vector to vanish once
 its positive and negative prime products agree. -/
+@[aesop safe]
 theorem familyPrimeBalance_eq_zero_of_primeProduct_eq {ι : Type*} [Fintype ι]
     (m : ι → Nat.Primes →₀ ℤ)
     (h : primeProduct (positivePart (familyPrimeBalance m)) =
@@ -97,6 +101,7 @@ theorem familyPrimeBalance_eq_zero_of_primeProduct_eq {ι : Type*} [Fintype ι]
   exact positive_negative_eq_zero_of_primeProduct_eq h
 
 /-- Pointwise version: the exponent sum over the family vanishes at every prime. -/
+@[aesop safe]
 theorem familyPrimeBalance_apply_eq_zero_of_primeProduct_eq {ι : Type*} [Fintype ι]
     (m : ι → Nat.Primes →₀ ℤ)
     (h : primeProduct (positivePart (familyPrimeBalance m)) =
@@ -108,6 +113,7 @@ theorem familyPrimeBalance_apply_eq_zero_of_primeProduct_eq {ι : Type*} [Fintyp
   simpa [familyPrimeBalance] using hp
 
 /-- Log-frequency form of the same modulus conclusion. -/
+@[aesop safe]
 theorem familyPrimeBalance_eq_zero_of_primeLogFrequency_eq_zero {ι : Type*} [Fintype ι]
     (m : ι → Nat.Primes →₀ ℤ)
     (h : primeLogFrequency (familyPrimeBalance m) = 0) :
@@ -115,6 +121,7 @@ theorem familyPrimeBalance_eq_zero_of_primeLogFrequency_eq_zero {ι : Type*} [Fi
   exact (primeLogFrequency_eq_zero_iff (familyPrimeBalance m)).mp h
 
 /-- Pointwise log-frequency form of the family prime-balance conclusion. -/
+@[aesop safe]
 theorem familyPrimeBalance_apply_eq_zero_of_primeLogFrequency_eq_zero {ι : Type*} [Fintype ι]
     (m : ι → Nat.Primes →₀ ℤ)
     (h : primeLogFrequency (familyPrimeBalance m) = 0)

@@ -22,17 +22,20 @@ noncomputable section
 def exponentialSum {n : ℕ} (μ c : Fin n → ℂ) (s : ℂ) : ℂ :=
   ∑ j : Fin n, c j * Complex.exp (s * μ j)
 
+@[aesop safe]
 private lemma iteratedDeriv_exp_mul (T : ℕ) (μ s : ℂ) :
     iteratedDeriv T (fun z : ℂ => Complex.exp (z * μ)) s =
       μ ^ T * Complex.exp (s * μ) := by
   have h := iteratedDeriv_exp_neg_mul_log T (-μ) s
   simpa using h
 
+@[aesop safe]
 private lemma contDiff_exp_mul (T : ℕ) (μ s : ℂ) :
     ContDiffAt ℂ (T : WithTop ℕ∞) (fun z : ℂ => Complex.exp (z * μ)) s := by
   have h := contDiff_exp_neg_mul_log T (-μ) s
   simpa using h
 
+@[aesop safe]
 private lemma iteratedDeriv_exponentialSum {n : ℕ}
     (T : ℕ) (μ c : Fin n → ℂ) (s : ℂ) :
     iteratedDeriv T (fun z : ℂ => exponentialSum μ c z) s =
@@ -59,6 +62,7 @@ private lemma iteratedDeriv_exponentialSum {n : ℕ}
 coefficient vector has a nonzero derivative among orders `0, ..., n-1` at any
 base point. This is the analytic wrapper around
 `vandermonde_initial_moment_nonzero_of_nonzero_coeff`. -/
+@[aesop safe]
 theorem exponentialSum_has_nonzero_iteratedDeriv_lt_card {n : ℕ} {μ c : Fin n → ℂ}
     (hμ : Function.Injective μ) (hc : c ≠ 0) (s₀ : ℂ) :
     ∃ k : Fin n, iteratedDeriv (k : ℕ) (fun z : ℂ => exponentialSum μ c z) s₀ ≠ 0 := by

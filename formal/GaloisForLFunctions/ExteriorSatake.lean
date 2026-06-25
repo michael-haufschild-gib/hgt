@@ -25,6 +25,7 @@ noncomputable section
 /-- **Elementary-symmetric cons recursion** (mathlib gap-fill). For a multiset `s`
 and a new element `a`, `eₖ₊₁(a ::ₘ s) = eₖ₊₁(s) + a·eₖ(s)`: a `(k+1)`-subset either
 omits `a` (`eₖ₊₁(s)`) or contains it (`a` times a `k`-subset of `s`). -/
+@[aesop safe]
 theorem multiset_esymm_cons (a : ℂ) (s : Multiset ℂ) (k : ℕ) :
     (a ::ₘ s).esymm (k + 1) = s.esymm (k + 1) + a * s.esymm k := by
   simp only [Multiset.esymm, Multiset.powersetCard_cons, Multiset.map_add, Multiset.sum_add,
@@ -35,6 +36,7 @@ theorem multiset_esymm_cons (a : ℂ) (s : Multiset ℂ) (k : ℕ) :
 `∏_{α∈s}(1 − α·x)` has its coefficient of `xᵏ` equal to `(−1)ᵏ · eₖ(s)`, the
 signed `k`-th elementary symmetric function — the trace of the exterior-power
 (`∧ᵏ`) Satake. Proved by induction on `s` via `multiset_esymm_cons`. -/
+@[aesop safe]
 theorem localFactor_coeff_esymm (s : Multiset ℂ) (k : ℕ) :
     ((s.map (fun a => 1 - C a * X)).prod).coeff k = (-1) ^ k * s.esymm k := by
   have he0 : ∀ u : Multiset ℂ, u.esymm 0 = 1 := fun u => by simp [Multiset.esymm]
@@ -60,6 +62,7 @@ function `e_{card}` is the product of all Satake parameters: `e_n(s) = ∏ s`. T
 is the `∧ⁿ` (top exterior power = determinant) — the central character `det π` —
 the `k = n` case of `localFactor_coeff_esymm` (the constant term of the
 characteristic side / leading datum of the local L-factor). -/
+@[aesop safe]
 theorem multiset_esymm_card_eq_prod (s : Multiset ℂ) :
     s.esymm s.card = s.prod := by
   simp [Multiset.esymm, Multiset.powersetCard_self]
@@ -69,6 +72,7 @@ Satake parameter list (all `‖α‖ ≤ 1`), the `∧ᵏ` datum `eₖ` is bound
 dimension of `∧ᵏ`: `‖eₖ(s)‖ ≤ binom(n, k)` where `n = card s`. Each of the
 `binom(n,k)` `k`-subset products has norm `≤ 1`, so the triangle inequality gives
 the bound — the exterior-power analogue of `SatakeInterval.symPower_trace_norm_le`. -/
+@[aesop safe]
 theorem esymm_norm_le (s : Multiset ℂ) (hs : ∀ a ∈ s, ‖a‖ ≤ 1) (k : ℕ) :
     ‖s.esymm k‖ ≤ (s.card.choose k : ℝ) := by
   have hprod : ∀ m : Multiset ℂ, (∀ a ∈ m, ‖a‖ ≤ 1) → ‖m.prod‖ ≤ 1 := by
@@ -101,6 +105,7 @@ Satake parameter list (all `‖α‖ ≤ 1`), the `k`-th power sum / Adams opera
 `pₖ = Σ αᵏ` is bounded by the rank `n = card s`: `‖Σ_{α∈s} αᵏ‖ ≤ n`. Together with
 `esymm_norm_le` (`∧ᵏ`) and `SatakeInterval.symPower_trace_norm_le` (`Symᵏ`) this
 bounds all three standard λ-ring bases for tempered Satake data. -/
+@[aesop safe]
 theorem multiset_powerSum_norm_le (s : Multiset ℂ) (hs : ∀ a ∈ s, ‖a‖ ≤ 1) (k : ℕ) :
     ‖(s.map (fun a => a ^ k)).sum‖ ≤ (s.card : ℝ) := by
   refine (norm_multiset_sum_le _).trans ?_
@@ -118,6 +123,7 @@ theorem multiset_powerSum_norm_le (s : Multiset ℂ) (hs : ∀ a ∈ s, ‖a‖ 
 zero once `k` exceeds the number of parameters: `eₖ(s) = 0` for `card s < k`.
 This is `∧ᵏV = 0` for `k > dim V` — the local L-factor `∏(1−αx)` is a polynomial
 of degree `≤ n`, so the exterior-power Satake `∧ᵏπ` is trivial above the rank. -/
+@[aesop safe]
 theorem multiset_esymm_eq_zero_of_card_lt (s : Multiset ℂ) {k : ℕ} (h : s.card < k) :
     s.esymm k = 0 := by
   rw [Multiset.esymm, Multiset.powersetCard_eq_empty k h, Multiset.map_zero, Multiset.sum_zero]
@@ -134,6 +140,7 @@ noncomputable section
 in `∏_{α∈s}(1-αx)` is `(-1)^k e_k(s)` and `e_k(s)=0` for `k>card s`, every coefficient above the
 number of Satake parameters vanishes. This is the finite polynomial-degree bound for the exterior
 Satake coefficient package. -/
+@[aesop safe]
 theorem localFactor_coeff_eq_zero_of_card_lt (s : Multiset ℂ) {k : ℕ} (h : s.card < k) :
     ((s.map (fun a => 1 - C a * X)).prod).coeff k = 0 := by
   rw [localFactor_coeff_esymm, multiset_esymm_eq_zero_of_card_lt s h, mul_zero]

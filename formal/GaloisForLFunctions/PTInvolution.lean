@@ -19,20 +19,23 @@ noncomputable section
 `sigma(s)=1-s`. -/
 def fePullback (f : ℂ → ℂ) : ℂ → ℂ := fun s => f (sigma s)
 
-@[simp] theorem fePullback_apply (f : ℂ → ℂ) (s : ℂ) :
+@[aesop safe, simp] theorem fePullback_apply (f : ℂ → ℂ) (s : ℂ) :
     fePullback f s = f (sigma s) := rfl
 
 /-- Pullback along the FE involution is itself an involution. -/
+@[aesop safe]
 theorem fePullback_involutive (f : ℂ → ℂ) : fePullback (fePullback f) = f := by
   funext s
   simp [fePullback, sigma]
 
 /-- The derivative of the FE involution `s ↦ 1-s` is `-1`. -/
+@[aesop safe]
 theorem hasDerivAt_sigma (s : ℂ) : HasDerivAt sigma (-1) s := by
   unfold sigma
   simpa using (hasDerivAt_const (x := s) (c := (1 : ℂ))).sub (hasDerivAt_id s)
 
 /-- Chain-rule form: pulling back by `sigma` negates the derivative. -/
+@[aesop safe]
 theorem hasDerivAt_fePullback {f : ℂ → ℂ} {s f' : ℂ}
     (h : HasDerivAt f f' (sigma s)) :
     HasDerivAt (fePullback f) (-f') s := by
@@ -40,12 +43,14 @@ theorem hasDerivAt_fePullback {f : ℂ → ℂ} {s f' : ℂ}
   simpa [fePullback, neg_mul, mul_comm] using hcomp
 
 /-- Derivative form of the FE pullback chain rule. -/
+@[aesop safe]
 theorem deriv_fePullback_eq_neg (f : ℂ → ℂ) (s : ℂ)
     (h : DifferentiableAt ℂ f (sigma s)) :
     deriv (fePullback f) s = -deriv f (sigma s) := by
   exact (hasDerivAt_fePullback (h.hasDerivAt)).deriv
 
 /-- Evaluate the derivative of the FE pullback at the reflected point. -/
+@[aesop safe]
 theorem deriv_fePullback_at_sigma_eq_neg (f : ℂ → ℂ) (s : ℂ)
     (h : DifferentiableAt ℂ f s) :
     deriv (fePullback f) (sigma s) = -deriv f s := by
@@ -56,6 +61,7 @@ theorem deriv_fePullback_at_sigma_eq_neg (f : ℂ → ℂ) (s : ℂ)
 
 /-- Conjugation form of time reversal:
 `sigma^* d/ds sigma^* = - d/ds` on functions differentiable at `s`. -/
+@[aesop safe]
 theorem fePullback_deriv_fePullback_eq_neg_deriv (f : ℂ → ℂ) (s : ℂ)
     (h : DifferentiableAt ℂ f s) :
     fePullback (fun z => deriv (fePullback f) z) s = -deriv f s := by

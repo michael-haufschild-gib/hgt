@@ -33,6 +33,7 @@ coefficients of the spectrum) satisfy Newton's identity
 `k · e_k = (-1)^{k+1} Σ_{i+j=k, i<k} (-1)^i e_i p_j`. Hence over `ℚ` the moments determine the
 elementary symmetric functions (and conversely): the finite moment problem for the spectrum is
 determinate. Obtained by evaluating mathlib's `MvPolynomial.mul_esymm_eq_sum` at `r`. -/
+@[aesop safe]
 theorem secular_moment_newton {σ : Type*} [Fintype σ] (r : σ → ℂ) (k : ℕ) :
     (k : ℂ) * (Multiset.map r Finset.univ.val).esymm k
       = (-1) ^ (k + 1) * ∑ a ∈ (Finset.antidiagonal k).filter (fun a => a.1 < k),

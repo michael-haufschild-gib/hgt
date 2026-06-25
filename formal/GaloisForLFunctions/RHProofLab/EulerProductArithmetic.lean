@@ -33,18 +33,21 @@ def squarefreeEulerCoeff (S T : Finset ι) (a : ι → R) : R :=
   if T ⊆ S then squarefreeMonomial a T else 0
 
 /-- A subset has exactly its squarefree monomial as coefficient. -/
+@[aesop safe]
 theorem squarefreeEulerCoeff_of_subset
     {S T : Finset ι} {a : ι → R} (hT : T ⊆ S) :
     squarefreeEulerCoeff S T a = squarefreeMonomial a T := by
   simp [squarefreeEulerCoeff, hT]
 
 /-- A non-subset has coefficient zero in the finite Euler expansion. -/
+@[aesop safe]
 theorem squarefreeEulerCoeff_of_not_subset
     {S T : Finset ι} {a : ι → R} (hT : ¬ T ⊆ S) :
     squarefreeEulerCoeff S T a = 0 := by
   simp [squarefreeEulerCoeff, hT]
 
 /-- The finite Euler product expands as the sum of all squarefree subset monomials. -/
+@[aesop safe]
 theorem finiteLocalEulerProduct_subsetExpansion
     (S : Finset ι) (a : ι → R) :
     finiteLocalEulerProduct S a =
@@ -59,6 +62,7 @@ theorem finiteLocalEulerProduct_subsetExpansion
   simp [squarefreeMonomial]
 
 /-- The same expansion stated with the explicit squarefree coefficient function. -/
+@[aesop safe]
 theorem finiteLocalEulerProduct_squarefreeCoeffExpansion
     (S : Finset ι) (a : ι → R) :
     finiteLocalEulerProduct S a =
@@ -69,6 +73,7 @@ theorem finiteLocalEulerProduct_squarefreeCoeffExpansion
   exact (squarefreeEulerCoeff_of_subset (Finset.mem_powerset.mp hT)).symm
 
 /-- Inserting one new local index multiplies the finite Euler product by its local factor. -/
+@[aesop safe]
 theorem finiteLocalEulerProduct_insert
     {S : Finset ι} {i : ι} {a : ι → R} (hi : i ∉ S) :
     finiteLocalEulerProduct (insert i S) a =
@@ -76,6 +81,7 @@ theorem finiteLocalEulerProduct_insert
   simp [finiteLocalEulerProduct, hi]
 
 /-- Disjoint finite local blocks multiply independently. -/
+@[aesop safe]
 theorem finiteLocalEulerProduct_union_of_disjoint
     {A B : Finset ι} {a : ι → R} (hdisj : Disjoint A B) :
     finiteLocalEulerProduct (A ∪ B) a =
@@ -83,6 +89,7 @@ theorem finiteLocalEulerProduct_union_of_disjoint
   simp [finiteLocalEulerProduct, Finset.prod_union hdisj]
 
 /-- Squarefree monomials also split over disjoint unions. -/
+@[aesop safe]
 theorem squarefreeMonomial_union_of_disjoint
     {A B : Finset ι} {a : ι → R} (hdisj : Disjoint A B) :
     squarefreeMonomial a (A ∪ B) =

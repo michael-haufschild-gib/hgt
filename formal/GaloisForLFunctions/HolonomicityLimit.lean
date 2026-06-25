@@ -14,6 +14,7 @@ here.
 
 namespace GaloisForLFunctions
 
+@[aesop safe]
 private theorem monotoneNat_eventually_constant_of_bound_aux
     (c : ℕ → ℕ) (hmono : Monotone c) :
     ∀ B : ℕ, (∀ n, c n ≤ B) → ∃ N, ∀ n, N ≤ n → c n = c N := by
@@ -50,6 +51,7 @@ private theorem monotoneNat_eventually_constant_of_bound_aux
 
 This is the formal integer-valued stabilization step used for the corank
 sequence `c_T` in the holonomicity-limit card. -/
+@[aesop safe]
 theorem monotoneNat_eventually_constant_of_bddAbove
     (c : ℕ → ℕ) (hmono : Monotone c) (hbdd : ∃ B, ∀ n, c n ≤ B) :
     ∃ N, ∀ n, N ≤ n → c n = c N := by

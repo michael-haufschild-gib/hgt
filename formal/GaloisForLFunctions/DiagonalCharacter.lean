@@ -23,6 +23,7 @@ namespace GaloisForLFunctions
 noncomputable section
 
 /-- Complex `cpow` distributes over a finite product of nonnegative-real bases. -/
+@[aesop safe]
 lemma prod_ofReal_cpow {ι : Type*} (s : Finset ι) (g : ι → ℝ) (hg : ∀ i ∈ s, 0 ≤ g i) (z : ℂ) :
     ((∏ i ∈ s, (g i : ℂ)) ^ z) = ∏ i ∈ s, ((g i : ℂ) ^ z) := by
   classical
@@ -38,6 +39,7 @@ lemma prod_ofReal_cpow {ι : Type*} (s : Finset ι) (g : ι → ℝ) (hg : ∀ i
 /-- For a nonnegative real base, a natural power commutes past a complex `cpow`:
 `(p^m)^z = (p^z)^m`. (Proved as the constant-product special case of `prod_ofReal_cpow`, avoiding
 the branch hypotheses of `Complex.cpow_mul`.) -/
+@[aesop safe]
 lemma natpow_cpow_comm (p : ℝ) (hp : 0 ≤ p) (m : ℕ) (z : ℂ) :
     (((p : ℂ)) ^ m) ^ z = (((p : ℂ)) ^ z) ^ m := by
   have hp1 : ((p : ℂ)) ^ m = ∏ _i ∈ Finset.range m, (p : ℂ) := by
@@ -50,6 +52,7 @@ lemma natpow_cpow_comm (p : ℝ) (hp : 0 ≤ p) (m : ℕ) (z : ℂ) :
 `(∏_p p^{m_p})^{-it} = ∏_p (p^{-it})^{m_p}` — the auxiliary character `∏_p x_p^{m_p}` evaluated on
 the prime-torus diagonal `(p^{-it})_p` is the Dirichlet monomial of `N_m`. The algebraic heart of
 "auxiliary = Dirichlet polynomial" in the DSS multiplicity engine. -/
+@[aesop safe]
 theorem diagonal_character_eq_dirichlet (m : Nat.Primes →₀ ℕ) (z : ℂ) :
     ((primeProduct m : ℕ) : ℂ) ^ z = ∏ p ∈ m.support, (((p : ℕ) : ℂ) ^ z) ^ (m p) := by
   have hbase : ((primeProduct m : ℕ) : ℂ)
@@ -70,6 +73,7 @@ diagonal (`x_p ↦ p^z`, i.e. `x_p = p^{-it}` at `z = -it`) equals the Dirichlet
 `Σ_i c_i N_{M i}^{z}` over the prime products `N_{M i} = primeProduct (M i)`. Linearity over
 `diagonal_character_eq_dirichlet`. This is the foundational identity of the multiplicity engine:
 the auxiliary, restricted to the diagonal, is a Dirichlet polynomial. -/
+@[aesop safe]
 theorem auxiliary_diagonal_eq {ι : Type*} (s : Finset ι)
     (M : ι → (Nat.Primes →₀ ℕ)) (c : ι → ℂ) (z : ℂ) :
     (∑ i ∈ s, c i * ∏ p ∈ (M i).support, ((((p : ℕ) : ℂ)) ^ z) ^ ((M i) p))

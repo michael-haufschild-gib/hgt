@@ -23,6 +23,7 @@ noncomputable section
 fixes only the center point `1/2`.  The full critical line is instead the
 fixed locus of `σ` composed with complex conjugation, proved below as
 `sigmaConj_fixed_iff_critical`. -/
+@[aesop norm simp]
 theorem sigma_fixed_iff_eq_half (s : ℂ) : sigma s = s ↔ s = (1 / 2 : ℂ) := by
   constructor
   · intro h
@@ -41,16 +42,18 @@ theorem sigma_fixed_iff_eq_half (s : ℂ) : sigma s = s ↔ s = (1 / 2 : ℂ) :=
 /-- The functional-equation involution `σ` composed with complex conjugation, `s ↦ 1 - s̄`. -/
 def sigmaConj (s : ℂ) : ℂ := sigma ((starRingEnd ℂ) s)
 
-@[simp] theorem sigmaConj_apply (s : ℂ) : sigmaConj s = 1 - (starRingEnd ℂ) s := by
+@[aesop safe, simp] theorem sigmaConj_apply (s : ℂ) : sigmaConj s = 1 - (starRingEnd ℂ) s := by
   simp [sigmaConj, sigma]
 
 /-- `σ ∘ conj` is an involution on the `s`-plane. -/
+@[aesop safe]
 theorem sigmaConj_involutive (s : ℂ) : sigmaConj (sigmaConj s) = s := by
   rw [sigmaConj_apply, sigmaConj_apply, map_sub, map_one, Complex.conj_conj]
   ring
 
 /-- **The critical line is the fixed locus of `σ ∘ conj`.** The FE-conjugate `1 - s̄` equals `s`
 iff `Re s = 1/2`; i.e. `σ` acts on `s` as complex conjugation exactly on the critical line. -/
+@[aesop norm simp]
 theorem sigmaConj_fixed_iff_critical (s : ℂ) : sigmaConj s = s ↔ s.re = 1 / 2 := by
   rw [sigmaConj_apply, Complex.ext_iff, Complex.sub_re, Complex.sub_im,
       Complex.one_re, Complex.one_im, Complex.conj_re, Complex.conj_im]

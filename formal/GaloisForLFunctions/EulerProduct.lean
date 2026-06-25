@@ -39,6 +39,7 @@ noncomputable section
 A Dirichlet coefficient function `f` is multiplicative (has an Euler product) iff it is
 normalized `f 1 = 1` and its Bohr lift factors over the prime coordinates, i.e.
 `f n = ∏_{p ∣ n} f (p ^ vₚ(n))` for every `n ≠ 0`. -/
+@[aesop norm simp]
 theorem isMultiplicative_iff_bohr_factorization (f : ArithmeticFunction ℂ) :
     f.IsMultiplicative ↔
       (f 1 = 1 ∧ ∀ n : ℕ, n ≠ 0 → f n = n.factorization.prod fun p k => f (p ^ k)) := by
@@ -61,6 +62,7 @@ Euler product** (non-multiplicative `f`) fails the prime factorization at some f
 there is `n ≠ 0` with `f n ≠ ∏_{p ∣ n} f (p ^ vₚ(n))`. The failure of the Euler product is
 witnessed at a finite `n`, before any zero is examined — the fake-family obstruction made
 intrinsic and pre-spectral. -/
+@[aesop safe]
 theorem fake_fails_factorization (f : ArithmeticFunction ℂ)
     (h1 : f 1 = 1) (hnm : ¬ f.IsMultiplicative) :
     ∃ n : ℕ, n ≠ 0 ∧ f n ≠ n.factorization.prod fun p k => f (p ^ k) := by
@@ -88,6 +90,7 @@ def davenportHeilbronnFakeCoeff : ArithmeticFunction ℂ :=
 coefficient model is not multiplicative: `a_6 = 1` but `a_2 a_3 = 0`. This is the
 finite, pre-spectral obstruction behind the chat computation; it examines no zeros
 and proves no RH/GRH localization statement. -/
+@[aesop safe]
 theorem davenportHeilbronnFakeCoeff_not_isMultiplicative :
     ¬ davenportHeilbronnFakeCoeff.IsMultiplicative := by
   intro hmul

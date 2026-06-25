@@ -25,15 +25,18 @@ def orbitDegree {α : Type*} (D : α →₀ ℤ) : ℤ :=
   D.sum (fun _ n => n)
 
 /-- The zero finite divisor has orbit degree zero. -/
+@[aesop safe]
 theorem orbitDegree_zero {α : Type*} : orbitDegree (0 : α →₀ ℤ) = 0 := by
   simp [orbitDegree]
 
 /-- The orbit degree of a single point-mass is its coefficient. -/
+@[aesop safe]
 theorem orbitDegree_single {α : Type*} (a : α) (n : ℤ) :
     orbitDegree (Finsupp.single a n) = n := by
   simp [orbitDegree]
 
 /-- Orbit degree is additive on finite divisors. -/
+@[aesop safe]
 theorem orbitDegree_add {α : Type*} (D E : α →₀ ℤ) :
     orbitDegree (D + E) = orbitDegree D + orbitDegree E := by
   rw [orbitDegree, Finsupp.sum_add_index']
@@ -44,6 +47,7 @@ theorem orbitDegree_add {α : Type*} (D E : α →₀ ℤ) :
     rfl
 
 /-- Orbit degree is compatible with subtraction. -/
+@[aesop safe]
 theorem orbitDegree_sub {α : Type*} (D E : α →₀ ℤ) :
     orbitDegree (D - E) = orbitDegree D - orbitDegree E := by
   rw [orbitDegree]
@@ -52,6 +56,7 @@ theorem orbitDegree_sub {α : Type*} (D E : α →₀ ℤ) :
 /-- A finite divisor with nonzero orbit degree cannot equal a degree-zero
 divisor. This is the algebraic core of the "non-CC is not in the CC subgroup"
 separation after passing to the orbit-degree classifier. -/
+@[aesop safe]
 theorem orbitDegree_ne_zero_ne_of_orbitDegree_zero {α : Type*} {D E : α →₀ ℤ}
     (hD : orbitDegree D ≠ 0) (hE : orbitDegree E = 0) : D ≠ E := by
   intro h
@@ -60,6 +65,7 @@ theorem orbitDegree_ne_zero_ne_of_orbitDegree_zero {α : Type*} {D E : α →₀
 /-- A nonzero point-mass on one orbit cannot equal any degree-zero finite
 divisor. The degree-one case models the archimedean `Γ` orbit imbalance against
 zero-degree prime/CC classes. -/
+@[aesop safe]
 theorem orbitDegree_single_ne_zero_ne_of_orbitDegree_zero {α : Type*}
     (a : α) {n : ℤ} (hn : n ≠ 0) {E : α →₀ ℤ} (hE : orbitDegree E = 0) :
     Finsupp.single a n ≠ E := by
@@ -68,6 +74,7 @@ theorem orbitDegree_single_ne_zero_ne_of_orbitDegree_zero {α : Type*}
   exact orbitDegree_ne_zero_ne_of_orbitDegree_zero hdeg hE
 
 /-- A balanced point-mass `n[a]-n[b]` has orbit degree zero. -/
+@[aesop safe]
 theorem orbitDegree_single_sub_single {α : Type*} [DecidableEq α] (a b : α) (n : ℤ) :
     orbitDegree (Finsupp.single a n - Finsupp.single b n) = 0 := by
   by_cases hab : a = b
@@ -82,6 +89,7 @@ theorem orbitDegree_single_sub_single {α : Type*} [DecidableEq α] (a b : α) (
 has orbit degree zero, then it is a finite sum of balanced point-masses against
 any chosen base point. This is the augmentation-kernel core of the paper
 statement that degree-zero finite orbit divisors telescope. -/
+@[aesop safe]
 theorem eq_sum_single_sub_base_of_orbitDegree_zero {α : Type*} [DecidableEq α]
     (base : α) (D : α →₀ ℤ) (hD : orbitDegree D = 0) :
     D = D.support.sum (fun a => Finsupp.single a (D a) - Finsupp.single base (D a)) := by
@@ -110,6 +118,7 @@ def intShiftTerm (z n : ℤ) : ℤ →₀ ℤ :=
 
 /-- Every finite integer-orbit shift-coboundary has orbit degree zero. This is
 the `im(Δ) ⊆ ker(deg)` half of the divisor telescoping criterion. -/
+@[aesop safe]
 theorem orbitDegree_intShiftCoboundary (E : ℤ →₀ ℤ) :
     orbitDegree (intShiftCoboundary E) = 0 := by
   unfold intShiftCoboundary
@@ -125,6 +134,7 @@ theorem orbitDegree_intShiftCoboundary (E : ℤ →₀ ℤ) :
 /-- Telescoping along a rightward finite path on the integer orbit. The
 balanced divisor `n[base+k]-n[base]` is a finite sum of consecutive
 shift-differences. This is a concrete `ker(deg) ⊆ im(Δ)` fragment. -/
+@[aesop safe]
 theorem sum_intShiftTerm_right (base : ℤ) (k : ℕ) (n : ℤ) :
     (Finset.range k).sum (fun j => intShiftTerm (base + (j.succ : ℤ)) (-n)) =
       Finsupp.single (base + (k : ℤ)) n - Finsupp.single base n := by

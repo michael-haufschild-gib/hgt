@@ -690,3 +690,95 @@ theorem precompAnalytic_rotation_coverProj_fix {ρ R : ℝ} {ζ : ℂ} (hζ : �
     one_mul]
 
 end Bottcher
+
+namespace Bottcher
+open Filter Set
+
+/-- **Germ-level scaling from function-level scaling.** Lifts a pointwise deck-scaling `β(ρ w) = ζ·β w`
+(on `U`) of a Böttcher branch `β` to the germ identity `(β).compTendsto ρ = ζ·(β)` in `Germ (𝓟 U) ℂ`.
+Since `(constToAnalytic U ζ : Germ) = ↑(fun _ ↦ ζ)`, this is exactly the `hscale` hypothesis that
+`monoF_witness`/`hliftF` consume: the bridge from the analytic scaling
+(`scaling_from_modulus_preserved`, derived in turn from the lift's mere existence) to the germ-level
+monodromy datum the disconnected discharge needs. So the whole `hliftF` scaling chain bottoms out at the
+single existence of the cover green-conjugate `F` with `β = exp F`. -/
+theorem germ_scaling_of_function_scaling {U : Set ℂ} {β : ℂ → ℂ} {ρ : ℂ → ℂ} {ζ : ℂ}
+    (hmaps : Set.MapsTo ρ U U) (hscale : ∀ w ∈ U, β (ρ w) = ζ * β w) :
+    (↑β : Germ (𝓟 U) ℂ).compTendsto ρ (tendsto_principal_principal.mpr hmaps)
+      = (↑(fun _ : ℂ => ζ) : Germ (𝓟 U) ℂ) * (↑β : Germ (𝓟 U) ℂ) := by
+  rw [Germ.coe_compTendsto, ← Germ.coe_mul]
+  exact Germ.coe_eq.mpr (Filter.eventually_principal.mpr (fun w hw => hscale w hw))
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **The cover coordinate scales under the deck — the concrete `hscale`.** On the cover annulus
+`Ã = {ρ<|w|<R}`, the natural lift `φ̃c = w` (the identity germ `polyToAnalytic Ã X`) scales by `ζ`
+under the deck rotation `g = rotation ζ`: `w∘g = ζ·w`. This is exactly the `hscale` datum
+`monoF_witness`/`hliftF` require, realized concretely. Via the Böttcher conjugacy
+`φc∘f^[n] = (·)^{2ⁿ}∘φc` (`MonodromyContinuation.isCoveringMap_dyadic`), this cover coordinate `w` IS
+the genuine `φc` continued to the cover, and its deck-scaling is the order-`2ⁿ` monodromy multiplier
+(`MonodromyMultiplier.multiplier_orderOf_of_mass`). With the projection base `K = ℂ(p₀)`
+(`precompAnalytic_rotation_coverProj_fix`) fixed by the same deck, this supplies `monoF_witness` in full
+bar the descent identification `w ↦ phiMero`. -/
+theorem precompAnalytic_rotation_id_scale {ρ R : ℝ} {ζ : ℂ} (hζ : ‖ζ‖ = 1) :
+    let U := {w : ℂ | ρ < ‖w‖ ∧ ‖w‖ < R}
+    (((polyToAnalytic U Polynomial.X) : analyticSubring U) : Germ (𝓟 U) ℂ).compTendsto
+        (rotation ζ) (tendsto_principal_principal.mpr (rotation_mapsTo_annulus hζ ρ R))
+      = ((constToAnalytic U ζ : analyticSubring U) : Germ (𝓟 U) ℂ)
+        * (((polyToAnalytic U Polynomial.X) : analyticSubring U) : Germ (𝓟 U) ℂ) := by
+  intro U
+  have hlhs : (((polyToAnalytic U Polynomial.X) : analyticSubring U) : Germ (𝓟 U) ℂ).compTendsto
+        (rotation ζ) (tendsto_principal_principal.mpr (rotation_mapsTo_annulus hζ ρ R))
+      = (↑(fun w : ℂ => ζ * w) : Germ (𝓟 U) ℂ) := by
+    show (↑(fun z => (Polynomial.X : Polynomial ℂ).eval z) : Germ (𝓟 U) ℂ).compTendsto (rotation ζ) _
+        = ↑(fun w : ℂ => ζ * w)
+    rw [Germ.coe_compTendsto]; congr 1; funext w; simp [rotation, Polynomial.eval_X]
+  have hrhs : ((constToAnalytic U ζ : analyticSubring U) : Germ (𝓟 U) ℂ)
+        * (((polyToAnalytic U Polynomial.X) : analyticSubring U) : Germ (𝓟 U) ℂ)
+      = (↑(fun w : ℂ => ζ * w) : Germ (𝓟 U) ℂ) := by
+    show (↑(fun _ : ℂ => ζ) : Germ (𝓟 U) ℂ) * ↑(fun z => (Polynomial.X : Polynomial ℂ).eval z)
+        = ↑(fun w : ℂ => ζ * w)
+    rw [← Germ.coe_mul]; congr 1; funext w; simp [Polynomial.eval_X]
+  rw [hlhs, hrhs]
+
+end Bottcher
+
+namespace Bottcher
+open Filter Set
+
+/-- **Descent capstone: independence transfers from the cover field to the deep ball.** If the two
+Böttcher germs `F, G` are algebraically independent over `ℂ(z)` on the **cover field** `meroField U`,
+then their restrictions to a subdomain `V ⊆ U` (the deep ball) are independent over `ℂ(z)` on
+`meroField V`. The descent `restrictMeroHom` is an injective `ℂ(z)`-algebra hom
+(`restrictMeroHom_ratfuncToMero` + field source), so `noRelation_of_algHom` carries `NoRelation` down:
+a polynomial relation among the restricted coordinates would already hold upstairs. This consolidates
+the entire descent half — combined with the disconnected discharge on the cover
+(`q62_independence_disconnected_of_lifts`, which instantiates `q62_independence`), the genuine
+`phiMero c₁, phiMero c₂` on `deepBall` are independent once the cover carries the lift data. Only the
+analytic cover `U ⊇ deepBall` with the genuine `φc` germ + monodromy deck remains. Axiom-clean. -/
+theorem noRelation_of_restrict {U V : Set ℂ} (hVU : V ⊆ U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (hVinf : V.Infinite)
+    (F G : meroField U)
+    (h : haveI := isDomain_analyticSubring U hUo hUc hUne
+         haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+         NoRelation (RatFunc ℂ) F G) :
+    haveI := isDomain_analyticSubring V hVo hVc hVne
+    haveI := (ratfuncToMero V hVo hVc hVne hVinf).toAlgebra
+    NoRelation (RatFunc ℂ)
+      (restrictMeroHom hVU hUo hUc hUne hVo hVc hVne F)
+      (restrictMeroHom hVU hUo hUc hUne hVo hVc hVne G) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  letI algU := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  letI algV := (ratfuncToMero V hVo hVc hVne hVinf).toAlgebra
+  let ψ : meroField U →ₐ[RatFunc ℂ] meroField V :=
+    { restrictMeroHom hVU hUo hUc hUne hVo hVc hVne with
+      commutes' := fun r => RingHom.congr_fun
+        (restrictMeroHom_ratfuncToMero hVU hUo hUc hUne hUinf hVo hVc hVne hVinf) r }
+  exact noRelation_of_algHom ψ
+    (restrictMeroHom hVU hUo hUc hUne hVo hVc hVne).injective h
+
+end Bottcher

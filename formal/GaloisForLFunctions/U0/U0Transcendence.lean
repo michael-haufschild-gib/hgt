@@ -31,6 +31,7 @@ The ball part is convexity; the exterior part `‖(1-t)p + ty‖ > 1` is a `norm
 `A = 1+(1-t)ρ/2`, and `normSq = A² + t²‖ζ‖² + 2Atc` decomposes as `1 + (1-t)·(positive) + At·(2c+‖ζ‖²)`,
 both correction terms `≥ 0` and never simultaneously zero (the `ρ ≤ ½` budget makes the bracket
 strictly positive). -/
+@[aesop safe]
 theorem lens_starConvex (z₀ : ℂ) (hz₀ : ‖z₀‖ = 1) {ρ : ℝ} (hρ : 0 < ρ) (hρ2 : ρ ≤ 1/2) :
     StarConvex ℝ (((1:ℝ) + ρ/2) • z₀) ({z : ℂ | 1 < ‖z‖} ∩ ball z₀ ρ) := by
   set p : ℂ := ((1:ℝ) + ρ/2) • z₀ with hp
@@ -93,6 +94,7 @@ theorem lens_starConvex (z₀ : ℂ) (hz₀ : ‖z₀‖ = 1) {ρ : ℝ} (hρ : 
 /-- **The lens is preconnected (PROVEN).** Star-convex ⟹ path-connected ⟹ connected ⟹ preconnected.
 This is the connectivity input `branch_selection` needs to pin `u₀` to one analytic branch on the
 exterior side of a boundary crossing point. -/
+@[aesop safe]
 theorem lens_preconnected (z₀ : ℂ) (hz₀ : ‖z₀‖ = 1) {ρ : ℝ} (hρ : 0 < ρ) (hρ2 : ρ ≤ 1/2) :
     IsPreconnected ({z : ℂ | 1 < ‖z‖} ∩ ball z₀ ρ) := by
   have hmem : ((1:ℝ) + ρ/2) • z₀ ∈ {z : ℂ | 1 < ‖z‖} ∩ ball z₀ ρ := by
@@ -109,6 +111,7 @@ connected product `(1,∞) × 𝕊¹` under `(r, w) ↦ r·w` (polar coordinates
 `‖z‖ > 1` is `‖z‖ · (z/‖z‖)`. Connectedness of `Ext` is the domain on which the identity theorem
 turns the ring of analytic functions into an integral domain — the engine of the reduction of an
 *arbitrary* relation to a separable one. -/
+@[aesop safe]
 theorem isConnected_Ext : IsConnected Ext := by
   have hprod : IsConnected ((Ioi (1:ℝ)) ×ˢ Metric.sphere (0:ℂ) 1) :=
     isConnected_Ioi.prod
@@ -139,6 +142,7 @@ on the connected `Ext` and `g·h ≡ 0` there, then `g ≡ 0` or `h ≡ 0`. (If 
 a neighbourhood, forcing `h = 0` there, so `h` vanishes on an open set and the identity theorem
 `eqOn_zero_of_preconnected_of_frequently_eq_zero` propagates it to all of `Ext`.) This is the step that
 lets a reducible relation `P = A·B` be split: `A(z,u₀) · B(z,u₀) ≡ 0` forces one factor's relation. -/
+@[aesop safe]
 theorem analytic_domain {g h : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g Ext) (hh : AnalyticOnNhd ℂ h Ext)
     (hgh : ∀ z ∈ Ext, g z * h z = 0) :
     (∀ z ∈ Ext, g z = 0) ∨ (∀ z ∈ Ext, h z = 0) := by
@@ -162,6 +166,7 @@ theorem analytic_domain {g h : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g Ext) (hh :
 polynomial `(z,w) ↦ P(z,w)` (analytic, `bivar_analytic`) composed with the analytic map
 `z ↦ (z, u₀(z))` (`u₀` analytic on `Ext`). This is the analyticity input that `analytic_domain`
 consumes when splitting a reducible relation `Ã(z,u₀)·B̃(z,u₀) ≡ 0`. -/
+@[aesop safe]
 theorem relation_analytic (P : (Polynomial ℂ)[X]) :
     AnalyticOnNhd ℂ (fun z => P.eval₂ (evalRingHom z) (u0 z)) Ext := by
   intro z hz
@@ -177,6 +182,7 @@ roots of `P(z₀,·)` give `d` analytic branches (`holo_implicit` + `partial_w_d
 exterior lens at `z₀` (preconnected, `lens_preconnected`) every value `u₀(z)` is one of the `d` separated
 branch values (`root_complete`), so `branch_selection` pins `u₀` to a single analytic branch `r_j` —
 an analytic continuation. -/
+@[aesop safe]
 theorem continues_of_separable_relation (P : (Polynomial ℂ)[X]) (z₀ : ℂ)
     (hz₀ : ‖z₀‖ = 1)
     (hlead : P.leadingCoeff.eval z₀ ≠ 0)
@@ -292,6 +298,7 @@ with `P(z, u₀(z)) = 0` on the exterior. Such a `P` would, by `exists_squarefre
 squarefree at some circle point `z₀`, where `continues_of_separable_relation` continues `u₀` across
 `z₀` — contradicting the proven natural boundary `u0_natural_boundary`. This is the function-field
 transcendence input that the `Transcendental K u₀` hypothesis of `u0_phi_independence` abstracts. -/
+@[aesop safe]
 theorem u0_separable_no_relation (P : (Polynomial ℂ)[X])
     (hsep : (P.map (algebraMap (Polynomial ℂ) (FractionRing (Polynomial ℂ)))).Separable)
     (hdeg : 1 ≤ P.natDegree)
@@ -309,6 +316,7 @@ on `Ext`. Strong induction on `Y`-degree: over the field `ℂ(z)` (characteristi
 relation, killed by the induction hypothesis. This is the unconditional, function-field form of the
 `Transcendental K u₀` input that `u0_phi_independence` abstracts: the natural boundary of `u₀` *is* its
 transcendence over `ℂ(z)`. -/
+@[aesop safe]
 theorem u0_no_relation (P : (Polynomial ℂ)[X]) (hdeg : 1 ≤ P.natDegree)
     (hrel : ∀ z ∈ Ext, P.eval₂ (evalRingHom z) (u0 z) = 0) : False := by
   classical
@@ -395,6 +403,7 @@ noncomputable def evalU0 : (Polynomial ℂ)[X] →+* (ℂ → ℂ) :=
   eval₂RingHom (Pi.ringHom (fun z => Polynomial.evalRingHom z)) u0
 
 /-- `evalU0 P` evaluated at `z` is the relation `P(z, u₀(z))` (PROVEN). -/
+@[aesop safe]
 theorem evalU0_apply (P : (Polynomial ℂ)[X]) (z : ℂ) :
     evalU0 P z = P.eval₂ (evalRingHom z) (u0 z) := by
   have hcomp : (Pi.evalRingHom (fun _ : ℂ => ℂ) z).comp evalU0
@@ -410,6 +419,7 @@ theorem evalU0_apply (P : (Polynomial ℂ)[X]) (z : ℂ) :
 /-- **Transcendence in ring-hom form (PROVEN).** The relation ring hom `evalU0` has *trivial kernel on
 `Ext`* for positive-degree polynomials: no nonzero `P ∈ ℂ[z][Y]` of positive `Y`-degree has
 `evalU0 P ≡ 0` on the exterior. This is `u0_no_relation` stated through the interface. -/
+@[aesop safe]
 theorem u0_no_relation_ringHom (P : (Polynomial ℂ)[X]) (hdeg : 1 ≤ P.natDegree)
     (hrel : ∀ z ∈ Ext, evalU0 P z = 0) : False := by
   apply u0_no_relation P hdeg
@@ -417,6 +427,7 @@ theorem u0_no_relation_ringHom (P : (Polynomial ℂ)[X]) (hdeg : 1 ≤ P.natDegr
 
 /-! ## Concrete carrier: `u₀` is transcendental over `ℂ(z)` (discharges `Transcendental K u₀`) -/
 
+@[aesop safe]
 theorem two_mem_Ext : (2:ℂ) ∈ Ext := by
   simp only [Ext, Set.mem_setOf_eq]; rw [Complex.norm_ofNat]; norm_num
 
@@ -428,6 +439,7 @@ def AnSub : Subring (Germ (𝓝 (2:ℂ)) ℂ) where
   zero_mem' := ⟨0, rfl, analyticAt_const⟩
   neg_mem' := by rintro _ ⟨f, rfl, hf⟩; exact ⟨-f, rfl, hf.neg⟩
 
+@[aesop norm simp]
 theorem AnSub_coe_eq_zero {f : ℂ → ℂ} (hf : AnalyticAt ℂ f 2) :
     (⟨(f : Germ (𝓝 (2:ℂ)) ℂ), ⟨f, rfl, hf⟩⟩ : AnSub) = 0 ↔ ∀ᶠ z in 𝓝 (2:ℂ), f z = 0 := by
   rw [← Subtype.coe_inj, ZeroMemClass.coe_zero,
@@ -460,6 +472,7 @@ instance : IsDomain AnSub :=
   { toIsCancelMulZero := NoZeroDivisors.to_isCancelMulZero AnSub
     toNontrivial := inferInstance }
 
+@[aesop safe]
 theorem polyAnalytic (p : Polynomial ℂ) (z₀ : ℂ) : AnalyticAt ℂ (fun z => p.eval z) z₀ := by
   have : (fun z => p.eval z) = fun z => ∑ i ∈ Finset.range (p.natDegree+1), p.coeff i * z^i := by
     funext z; rw [Polynomial.eval_eq_sum_range]
@@ -476,6 +489,7 @@ noncomputable instance : Algebra (Polynomial ℂ) AnSub := polyToGerm.toAlgebra
 noncomputable def u0Germ : AnSub :=
   ⟨(u0 : Germ (𝓝 (2:ℂ)) ℂ), ⟨u0, rfl, u0_analyticOnNhd_Ext 2 two_mem_Ext⟩⟩
 
+@[aesop safe]
 theorem subtype_aeval_u0Germ (P : (Polynomial ℂ)[X]) :
     (AnSub.subtype) (aeval u0Germ P) = ((evalU0 P : ℂ → ℂ) : Germ (𝓝 (2:ℂ)) ℂ) := by
   have lhs : (AnSub.subtype) (aeval u0Germ P)
@@ -490,6 +504,7 @@ theorem subtype_aeval_u0Germ (P : (Polynomial ℂ)[X]) :
     rw [hom_eval₂]; rfl
   rw [lhs, rhs]
 
+@[aesop safe]
 theorem u0Germ_transcendental_polyRing : Transcendental (Polynomial ℂ) u0Germ := by
   rw [transcendental_iff]
   intro P hP
@@ -520,6 +535,7 @@ theorem u0Germ_transcendental_polyRing : Transcendental (Polynomial ℂ) u0Germ 
 
 
 
+@[aesop safe]
 theorem transcendental_algHom_inj {R A B : Type*} [CommRing R] [Ring A] [Ring B] [Algebra R A]
     [Algebra R B] (f : A →ₐ[R] B) (hf : Function.Injective f) {x : A}
     (h : Transcendental R x) : Transcendental R (f x) := by
@@ -533,10 +549,12 @@ noncomputable abbrev AnField := FractionRing AnSub
 /-- `u₀` in the carrier field, transcendental over `ℂ[z]`. -/
 noncomputable def u0Field : AnField := algebraMap AnSub AnField u0Germ
 
+@[aesop safe]
 theorem u0Field_transcendental_polyRing : Transcendental (Polynomial ℂ) u0Field :=
   transcendental_algHom_inj (IsScalarTower.toAlgHom (Polynomial ℂ) AnSub AnField)
     (FaithfulSMul.algebraMap_injective AnSub AnField) u0Germ_transcendental_polyRing
 
+@[aesop safe]
 theorem polyToGerm_injective : Function.Injective polyToGerm := by
   rw [injective_iff_map_eq_zero]
   intro p hp
@@ -572,6 +590,7 @@ of the `Transcendental K u₀` hypothesis: `u₀`, as an element of the carrier 
 (fractions of analytic germs at `2 ∈ Ext`), is transcendental over `ℂ(z)`. This is `u0_no_relation`
 carried through the analytic-germ domain into a genuine `ℂ(z)`-algebra, then transferred from the
 polynomial ring to its fraction field via `IsFractionRing.isAlgebraic_iff`. -/
+@[aesop safe]
 theorem u0Field_transcendental : Transcendental (FractionRing (Polynomial ℂ)) u0Field := by
   rw [Transcendental,
     ← IsFractionRing.isAlgebraic_iff (Polynomial ℂ) (FractionRing (Polynomial ℂ)) AnField]

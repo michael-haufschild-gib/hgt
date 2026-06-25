@@ -18,6 +18,7 @@ open Polynomial Filter Topology
 namespace PolyAsymptotics
 
 /-- `(t : ℂ)⁻¹ → 0` as the real `t → +∞`. -/
+@[aesop safe]
 theorem tendsto_inv_ofReal_atTop : Tendsto (fun t : ℝ => ((t : ℂ))⁻¹) atTop (𝓝 0) := by
   have h := (Complex.continuous_ofReal.tendsto 0).comp tendsto_inv_atTop_zero
   simp only [Function.comp_def, Complex.ofReal_inv, Complex.ofReal_zero] at h
@@ -26,6 +27,7 @@ theorem tendsto_inv_ofReal_atTop : Tendsto (fun t : ℝ => ((t : ℂ))⁻¹) atT
 /-- **`p.eval(t)/t^{deg p} → leadingCoeff p` (PROVED).** Via the reverse polynomial identity
 `p.eval(t)/t^d = (reverse p).eval(1/t)` and continuity of `eval` at `1/t → 0`, where
 `(reverse p).eval 0 = (reverse p).coeff 0 = leadingCoeff p`. -/
+@[aesop safe]
 theorem tendsto_eval_div_pow_natDegree (p : ℂ[X]) :
     Tendsto (fun t : ℝ => p.eval (t : ℂ) / (t : ℂ) ^ p.natDegree) atTop
       (𝓝 p.leadingCoeff) := by
@@ -48,6 +50,7 @@ theorem tendsto_eval_div_pow_natDegree (p : ℂ[X]) :
 `deg p ≤ 1`. If instead `deg p ≥ 2`, then `‖p.eval(t)/t‖ = ‖p.eval(t)/t^{deg p}‖ · t^{deg p − 1}` tends to
 `‖leadingCoeff‖ · ∞ = ∞`, contradicting the finite limit. This is the missing-from-Mathlib input that
 forces `deg b₁ = 1` in the n=2 Böttcher case. -/
+@[aesop safe]
 theorem natDegree_le_one_of_div_id_tendsto {p : ℂ[X]} {L : ℂ}
     (h : Tendsto (fun t : ℝ => p.eval (t : ℂ) / (t : ℂ)) atTop (𝓝 L)) : p.natDegree ≤ 1 := by
   by_contra hd

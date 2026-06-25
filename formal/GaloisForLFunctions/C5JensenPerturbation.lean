@@ -15,6 +15,7 @@ noncomputable section
 
 /-- If a perturbation derivative has zero sup-bound on a window containing the center,
 then the perturbation derivative vanishes at the center. -/
+@[aesop safe]
 theorem windowSlope_zero_at_center {D' : ℝ → ℝ} {x w : ℝ}
     (hw : 0 ≤ w)
     (hD : ∀ y, |y - x| ≤ w → |D' y| ≤ 0) :
@@ -26,6 +27,7 @@ theorem windowSlope_zero_at_center {D' : ℝ → ℝ} {x w : ℝ}
 /-- The zero-slope branch of the localized Jensen perturbation witness: if `ε = 0`,
 `C' x = 0`, and the perturbation derivative has zero bound on a window containing `x`,
 then the closed interval `[x - ε, x + ε]` contains a zero of the derivative of `C + D`. -/
+@[aesop safe]
 theorem jensenClosedWitness_of_zeroEpsilon {C' D' : ℝ → ℝ} {x w ε : ℝ}
     (hε : ε = 0)
     (hw : 0 ≤ w)
@@ -40,6 +42,7 @@ theorem jensenClosedWitness_of_zeroEpsilon {C' D' : ℝ → ℝ} {x w ε : ℝ}
 
 /-- Membership in the closed symmetric interval `[x - ε, x + ε]` gives the distance
 bound used by the total-witness perturbation lemma. -/
+@[aesop safe]
 theorem abs_sub_center_le_of_mem_Icc_sub_add {x ε x' : ℝ}
     (hx' : x' ∈ Set.Icc (x - ε) (x + ε)) :
     |x' - x| ≤ ε := by
@@ -48,6 +51,7 @@ theorem abs_sub_center_le_of_mem_Icc_sub_add {x ε x' : ℝ}
 
 /-- IVT bridge for the positive orientation: a continuous function on `[a,b]` with
 opposite weak endpoint signs has a zero in `[a,b]`. -/
+@[aesop safe]
 theorem exists_zero_Icc_of_nonpos_of_nonneg {f : ℝ → ℝ} {a b : ℝ}
     (hab : a ≤ b)
     (hf : ContinuousOn f (Set.Icc a b))
@@ -60,6 +64,7 @@ theorem exists_zero_Icc_of_nonpos_of_nonneg {f : ℝ → ℝ} {a b : ℝ}
 
 /-- IVT bridge for the negative orientation: a continuous function on `[a,b]` with
 opposite weak endpoint signs has a zero in `[a,b]`. -/
+@[aesop safe]
 theorem exists_zero_Icc_of_nonneg_of_nonpos {f : ℝ → ℝ} {a b : ℝ}
     (hab : a ≤ b)
     (hf : ContinuousOn f (Set.Icc a b))
@@ -72,6 +77,7 @@ theorem exists_zero_Icc_of_nonneg_of_nonpos {f : ℝ → ℝ} {a b : ℝ}
 
 /-- If an unperturbed endpoint value is at most `-B` and the perturbation has
 absolute value at most `B`, their sum is nonpositive. -/
+@[aesop safe]
 theorem add_nonpos_of_le_neg_bound_of_abs_le {c d B : ℝ}
     (hc : c ≤ -B)
     (hd : |d| ≤ B) :
@@ -81,6 +87,7 @@ theorem add_nonpos_of_le_neg_bound_of_abs_le {c d B : ℝ}
 
 /-- If an unperturbed endpoint value is at least `B` and the perturbation has
 absolute value at most `B`, their sum is nonnegative. -/
+@[aesop safe]
 theorem add_nonneg_of_bound_le_of_abs_le {c d B : ℝ}
     (hc : B ≤ c)
     (hd : |d| ≤ B) :
@@ -91,6 +98,7 @@ theorem add_nonneg_of_bound_le_of_abs_le {c d B : ℝ}
 /-- Positive-orientation endpoint dominance plus IVT. This packages the step where
 `F' = C' + D'` has weak opposite signs at the two endpoints because `|D'|` is
 bounded by the endpoint lower bound for `|C'|`. -/
+@[aesop safe]
 theorem exists_zero_Icc_of_endpoint_abs_bounds_pos {C' D' : ℝ → ℝ} {a b B : ℝ}
     (hab : a ≤ b)
     (hcont : ContinuousOn (fun y => C' y + D' y) (Set.Icc a b))
@@ -104,6 +112,7 @@ theorem exists_zero_Icc_of_endpoint_abs_bounds_pos {C' D' : ℝ → ℝ} {a b B 
   exact exists_zero_Icc_of_nonpos_of_nonneg hab hcont ha hb
 
 /-- Negative-orientation endpoint dominance plus IVT. -/
+@[aesop safe]
 theorem exists_zero_Icc_of_endpoint_abs_bounds_neg {C' D' : ℝ → ℝ} {a b B : ℝ}
     (hab : a ≤ b)
     (hcont : ContinuousOn (fun y => C' y + D' y) (Set.Icc a b))
@@ -118,6 +127,7 @@ theorem exists_zero_Icc_of_endpoint_abs_bounds_neg {C' D' : ℝ → ℝ} {a b B 
 
 /-- If endpoint values have strictly opposite signs, IVT gives a zero in the closed
 interval between them. -/
+@[aesop safe]
 theorem exists_zero_Icc_of_endpoint_product_neg {f : ℝ → ℝ} {a b : ℝ}
     (hab : a ≤ b)
     (hf : ContinuousOn f (Set.Icc a b))
@@ -129,6 +139,7 @@ theorem exists_zero_Icc_of_endpoint_product_neg {f : ℝ → ℝ} {a b : ℝ}
 
 /-- If a real perturbation is closer to `c` than `c` is to zero, then it has the same
 strict sign as `c`, encoded as a positive product. -/
+@[aesop safe]
 theorem same_sign_product_pos_of_abs_sub_lt_abs {y c : ℝ}
     (h : |y - c| < |c|) :
     0 < y * c := by
@@ -148,6 +159,7 @@ theorem same_sign_product_pos_of_abs_sub_lt_abs {y c : ℝ}
 
 /-- If two values have the same strict signs as two reference values, and the reference
 values have opposite signs, then the two values have opposite signs. -/
+@[aesop safe]
 theorem opposite_sign_product_neg_of_same_sign_products {y z c d : ℝ}
     (hy : 0 < y * c)
     (hz : 0 < z * d)
@@ -161,6 +173,7 @@ theorem opposite_sign_product_neg_of_same_sign_products {y z c d : ℝ}
   nlinarith
 
 /-- The absolute-closeness form of sign transfer for two adjacent critical values. -/
+@[aesop safe]
 theorem opposite_sign_product_neg_of_abs_sub_lt_abs {y z c d : ℝ}
     (hy : |y - c| < |c|)
     (hz : |z - d| < |d|)

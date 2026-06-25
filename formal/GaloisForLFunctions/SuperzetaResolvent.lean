@@ -43,6 +43,7 @@ variable {n : ℕ}
 series `Σ_m rᵐ Xᵐ` is the inverse `(1 − rX)⁻¹` — the resolvent of the local
 zero `r`. (The local factor `1 − rX` has constant coefficient `1 ≠ 0`, so it is a
 unit; `geometric_localFactor_inv` exhibits the inverse.) -/
+@[aesop safe]
 theorem geom_eq_inv (r : ℂ) : (mk fun m => r ^ m) = (1 - PowerSeries.C r * X)⁻¹ := by
   have hc : PowerSeries.constantCoeff (1 - PowerSeries.C r * X) ≠ 0 := by simp
   rw [eq_comm, PowerSeries.inv_eq_iff_mul_eq_one hc, mul_comm]
@@ -54,6 +55,7 @@ finite family of (reciprocal-)zeros `r`, the secular/superzeta generating functi
 additive over the zeros — a trace `Σ`, structurally **not** a product `∏`. It is
 the finite witness that the superzeta lives on the additive/spectral side of the
 `[𝔾_a, 𝔾_m]` seam, hence (B23, First Theorem) carries no Euler product. -/
+@[aesop safe]
 theorem superzeta_eq_sum_resolvent (r : Fin n → ℂ) :
     (∑ i, (mk fun m => (r i) ^ m)) = ∑ i, (1 - PowerSeries.C (r i) * X)⁻¹ :=
   Finset.sum_congr rfl (fun i _ => geom_eq_inv (r i))
@@ -63,6 +65,7 @@ coefficient of the resolvent-trace generating function is the power sum
 `Σ_i r_iᵏ` — i.e. the finite superzeta value `𝒵(k) = Σ_ρ ρ^{-k}` (with
 `r_i = ρ_i⁻¹`), the secular moment `P_k`. These are the *values* the B23 salvage
 places in the period corner. -/
+@[aesop safe]
 theorem superzeta_coeff_eq_powerSum (r : Fin n → ℂ) (k : ℕ) :
     (PowerSeries.coeff k) (∑ i, (mk fun m => (r i) ^ m)) = ∑ i, (r i) ^ k := by
   rw [map_sum]

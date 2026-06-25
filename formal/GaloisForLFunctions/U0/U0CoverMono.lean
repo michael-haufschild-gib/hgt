@@ -38,12 +38,14 @@ noncomputable def u0Cover : coverGerm c₁ c₂ n m := (fun p : ℂ × ℂ × �
 
 /-- **σ_n fixes u₀** on the cover germ ring (deck map level). u₀ is single-valued (a function of `z`),
 and `deckMap₁` fixes the `z`-coordinate. -/
+@[aesop safe]
 theorem deckGerm_u0 {ζ : ℂ} (hpow : ζ ^ (2 ^ n) = 1) :
     deckGerm hpow (u0Cover : coverGerm c₁ c₂ n m) = u0Cover := rfl
 
 /-- **σ_n fixes u₀** as the ring automorphism `deckGermEquiv`. This is the `σ G = G` clause of the
 dyadic-monodromy datum of `q62_mixed`, for `G = u₀` — the structural payoff of u₀ being single-valued:
 it is *always* fixed by the tower, with no rigidity input. -/
+@[aesop safe]
 theorem deckGermEquiv_u0 {ζ : ℂ} (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ n) = 1) :
     deckGermEquiv hζ hpow (u0Cover : coverGerm c₁ c₂ n m) = u0Cover := rfl
 
@@ -52,6 +54,7 @@ For a `2ⁿ`-th root of unity `ζ`, the deck automorphism `σ = deckGermEquiv ζ
 fixes `u₀`, and fixes `ζ`. This is precisely the per-`ζ` data of `q62_mixed`'s `mono` hypothesis (with
 `F = φ_b`, `G = u₀`); only the field structure and the order/unboundedness packaging remain to turn it
 into the `∀ d, ∃ σ ζ m, …` datum over the cover's fraction field. -/
+@[aesop safe]
 theorem cover_mono_action {ζ : ℂ} (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ n) = 1) :
     deckGermEquiv hζ hpow (u0Cover : coverGerm c₁ c₂ n m) = u0Cover
     ∧ deckGermEquiv hζ hpow (v1Germ : coverGerm c₁ c₂ n m) = (ζ : coverGerm c₁ c₂ n m) * v1Germ
@@ -65,6 +68,7 @@ theorem cover_mono_action {ζ : ℂ} (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ n) = 1) 
 of `Ext` by the identity theorem (`isConnected_Ext`), contradicting `u0_no_relation`. This is the
 cover-carrier transcendence input, ready to lift to the cover's fraction field (Böttcher "Field-6")
 as the `hTranscendental` of the `q62_mixed` instantiation. -/
+@[aesop safe]
 theorem u0Cover_no_relation (P : (Polynomial ℂ)[X]) (hP : 1 ≤ P.natDegree)
     (hrel : ((fun p : ℂ × ℂ × ℂ => evalU0 P p.1 : ℂ × ℂ × ℂ → ℂ) : coverGerm c₁ c₂ n m) = 0) :
     False := by

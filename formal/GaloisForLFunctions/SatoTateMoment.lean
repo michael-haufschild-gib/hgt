@@ -36,6 +36,7 @@ noncomputable section
 /-- **`∫₀^π cos(jθ) dθ = π·δ_{j,0}`.** The basic cosine orthogonality integral over
 `[0, π]` for an integer frequency `j` — `π` when `j = 0`, else `0` (since
 `sin(jπ) = 0`). The atom underlying the Sato–Tate moment vanishing. -/
+@[aesop safe]
 theorem integral_cos_nat_mul (j : ℕ) :
     ∫ θ in (0:ℝ)..Real.pi, Real.cos ((j : ℝ) * θ) = if j = 0 then Real.pi else 0 := by
   rcases eq_or_ne j 0 with hj | hj
@@ -50,6 +51,7 @@ theorem integral_cos_nat_mul (j : ℕ) :
 orthogonality of `sin((k+1)θ)` and `sin θ` over `[0, π]`, via product-to-sum and
 `integral_cos_nat_mul`. This is the orthogonality that makes the Sato–Tate moments
 vanish for `k ≥ 1`. -/
+@[aesop safe]
 theorem integral_sin_succ_mul_sin (k : ℕ) :
     ∫ θ in (0:ℝ)..Real.pi, Real.sin (((k : ℝ) + 1) * θ) * Real.sin θ
       = if k = 0 then Real.pi / 2 else 0 := by
@@ -80,6 +82,7 @@ to zero against `μ_ST` — the orthogonality (Weyl-criterion input) that drives
 Sato–Tate equidistribution. Proved from `integral_sin_succ_mul_sin` via
 `U_k(cos θ) sin θ = sin((k+1)θ)`. The measure-side moment only; the prime-side
 average (BLGHT) that converges to it is not formalized. -/
+@[aesop safe]
 theorem satoTate_moment (k : ℕ) :
     ∫ θ in (0:ℝ)..Real.pi,
         (Polynomial.Chebyshev.U ℝ (k : ℤ)).eval (Real.cos θ) * (2 / Real.pi * Real.sin θ ^ 2)
@@ -104,6 +107,7 @@ theorem satoTate_moment (k : ℕ) :
 /-- **Real cosine integral `∫₀^π cos(cθ) dθ = sin(cπ)/c`** for `c ≠ 0.** The
 real-frequency form (the `c = j ≠ 0` case recovers `integral_cos_nat_mul`); the
 engine of the full orthogonality below. -/
+@[aesop safe]
 theorem integral_cos_mul_pi (c : ℝ) (hc : c ≠ 0) :
     ∫ θ in (0:ℝ)..Real.pi, Real.cos (c * θ) = Real.sin (c * Real.pi) / c := by
   rw [intervalIntegral.integral_comp_mul_left (fun x => Real.cos x) hc, mul_zero, integral_cos]
@@ -114,6 +118,7 @@ theorem integral_cos_mul_pi (c : ℝ) (hc : c ≠ 0) :
 (`integral_sin_succ_mul_sin` is the `n = 1` case). Via product-to-sum and
 `integral_cos_mul_pi`, using `sin(jπ) = 0` for integer `j` (both `m+n` and the
 nonzero integer `m−n`). -/
+@[aesop safe]
 theorem integral_sin_mul_sin (m n : ℕ) (hm : 1 ≤ m) (hn : 1 ≤ n) :
     ∫ θ in (0:ℝ)..Real.pi, Real.sin ((m:ℝ) * θ) * Real.sin ((n:ℝ) * θ)
       = if m = n then Real.pi / 2 else 0 := by
@@ -146,6 +151,7 @@ Sato–Tate measure** `μ_ST = (2/π) sin²θ dθ` — the spectral basis of `L�
 underlying the moment/Weyl criterion for equidistribution. Generalizes
 `satoTate_moment` (the `j = 0`, `U_0 = 1` case). Via `U_real_cos`
 (`U_k(cos θ) sin θ = sin((k+1)θ)`) reducing to `integral_sin_mul_sin`. -/
+@[aesop safe]
 theorem satoTate_orthonormal (j k : ℕ) :
     ∫ θ in (0:ℝ)..Real.pi,
         (Polynomial.Chebyshev.U ℝ (j : ℤ)).eval (Real.cos θ)

@@ -21,6 +21,7 @@ def susceptibilityMirrorFrequencyFactor (beta : ℝ) (m : ℕ) (n : ℝ) : ℝ :
   n ^ ((1 - 2 * beta) / (m : ℝ))
 
 /-- The susceptibility exponent vanishes exactly on the critical line. -/
+@[aesop norm simp]
 theorem susceptibilityExponent_zero_iff {beta : ℝ} {m : ℕ} (hm : m ≠ 0) :
     ((1 - 2 * beta) / (m : ℝ) = 0) ↔ beta = 1 / 2 := by
   have hmR : (m : ℝ) ≠ 0 := by exact_mod_cast hm
@@ -35,6 +36,7 @@ theorem susceptibilityExponent_zero_iff {beta : ℝ} {m : ℕ} (hm : m ≠ 0) :
 
 /-- The mirror-frequency factor is independent of every probe frequency `n > 1`
 exactly on the critical line. -/
+@[aesop norm simp]
 theorem susceptibilityMirrorFrequencyFactor_eq_one_forall_iff {beta : ℝ} {m : ℕ}
     (hm : m ≠ 0) :
     (∀ n : ℝ, 1 < n → susceptibilityMirrorFrequencyFactor beta m n = 1) ↔

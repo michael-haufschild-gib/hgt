@@ -36,6 +36,7 @@ def ffRelationLattice (K : FunctionFieldDegreeData) :
   (ffDegreeMap K).ker
 
 /-- The degree map is the displayed finite sum from the paper proof. -/
+@[aesop safe]
 theorem ffDegreeMap_apply (K : FunctionFieldDegreeData) (m : K.Place →₀ ℤ) :
     ffDegreeMap K m = m.sum (fun v n => n * K.degree v) := by
   rw [ffDegreeMap]
@@ -43,11 +44,13 @@ theorem ffDegreeMap_apply (K : FunctionFieldDegreeData) (m : K.Place →₀ ℤ)
 
 /-- `Λ_ff = ker(deg)`: membership in the relation lattice is exactly vanishing
 total degree. -/
+@[aesop norm simp]
 theorem ffRelationLattice_mem_iff (K : FunctionFieldDegreeData) (m : K.Place →₀ ℤ) :
     m ∈ ffRelationLattice K ↔ m.sum (fun v n => n * K.degree v) = 0 := by
   rw [ffRelationLattice, LinearMap.mem_ker, ffDegreeMap_apply]
 
 /-- A degree-one place makes the degree map onto `ℤ`. -/
+@[aesop safe]
 theorem ffDegreeMap_surjective (K : FunctionFieldDegreeData) :
     Function.Surjective (ffDegreeMap K) := by
   intro z
@@ -56,6 +59,7 @@ theorem ffDegreeMap_surjective (K : FunctionFieldDegreeData) :
   simp [Finsupp.lsum, LinearMap.toSpanSingleton, K.degree_degreeOnePlace]
 
 /-- The image of the degree map is all of `ℤ`. -/
+@[aesop safe]
 theorem ffDegreeMap_range_eq_top (K : FunctionFieldDegreeData) :
     (ffDegreeMap K).range = ⊤ := by
   rw [LinearMap.range_eq_top]
@@ -69,6 +73,7 @@ def ffDegreeQuotientEquivInt (K : FunctionFieldDegreeData) :
 
 /-- `corank(Λ_ff) = 1`, formalized as the rank of the quotient by the relation
 lattice. -/
+@[aesop safe]
 theorem ffRelationLattice_corank_eq_one (K : FunctionFieldDegreeData) :
     Module.rank ℤ ((K.Place →₀ ℤ) ⧸ ffRelationLattice K) = 1 := by
   rw [LinearEquiv.rank_eq (ffDegreeQuotientEquivInt K), Module.rank_self]

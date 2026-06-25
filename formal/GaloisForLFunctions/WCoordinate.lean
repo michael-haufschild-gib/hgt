@@ -23,16 +23,19 @@ noncomputable section
 def wCoordinate (z : ℂ) : ℂ := 1 - z⁻¹
 
 /-- Real part of the `w`-coordinate. -/
+@[aesop safe]
 lemma wCoordinate_re (z : ℂ) : (wCoordinate z).re = 1 - z.re / Complex.normSq z := by
   simp [wCoordinate, Complex.inv_re]
 
 /-- Imaginary part of the `w`-coordinate. -/
+@[aesop safe]
 lemma wCoordinate_im (z : ℂ) : (wCoordinate z).im = z.im / Complex.normSq z := by
   simp [wCoordinate, Complex.inv_im]
   ring
 
 /-- The exact norm-square defect in the `w`-coordinate:
 `|1-1/z|² - 1 = (1 - 2 Re z) / |z|²`. -/
+@[aesop safe]
 theorem wCoordinate_normSq_sub_one (z : ℂ) (hz : z ≠ 0) :
     Complex.normSq (wCoordinate z) - 1 = (1 - 2 * z.re) / Complex.normSq z := by
   have hnsq_ne : Complex.normSq z ≠ 0 := by
@@ -43,6 +46,7 @@ theorem wCoordinate_normSq_sub_one (z : ℂ) (hz : z ≠ 0) :
   ring
 
 /-- The critical line is exactly the norm-square unit circle in the `w`-coordinate. -/
+@[aesop norm simp]
 theorem wCoordinate_normSq_eq_one_iff (z : ℂ) (hz : z ≠ 0) :
     Complex.normSq (wCoordinate z) = 1 ↔ z.re = 1 / 2 := by
   have hnsq_ne : Complex.normSq z ≠ 0 := by
@@ -61,6 +65,7 @@ theorem wCoordinate_normSq_eq_one_iff (z : ℂ) (hz : z ≠ 0) :
 
 /-- The functional-equation involution `z ↦ 1-z` becomes a product formula in the `w`-coordinate:
 `w(z) w(1-z) = 1`. -/
+@[aesop safe]
 theorem wCoordinate_sigma_mul (z : ℂ) (hz0 : z ≠ 0) (hz1 : z ≠ 1) :
     wCoordinate z * wCoordinate (1 - z) = 1 := by
   have h1z : 1 - z ≠ 0 := sub_ne_zero.mpr (Ne.symm hz1)
@@ -69,6 +74,7 @@ theorem wCoordinate_sigma_mul (z : ℂ) (hz0 : z ≠ 0) (hz1 : z ≠ 1) :
   ring
 
 /-- For `z ≠ 0,1`, the `w`-coordinate is nonzero. -/
+@[aesop safe]
 lemma wCoordinate_ne_zero (z : ℂ) (hz0 : z ≠ 0) (hz1 : z ≠ 1) :
     wCoordinate z ≠ 0 := by
   intro h
@@ -77,6 +83,7 @@ lemma wCoordinate_ne_zero (z : ℂ) (hz0 : z ≠ 0) (hz1 : z ≠ 1) :
   exact zero_ne_one hmul
 
 /-- The functional-equation involution `z ↦ 1-z` is inversion in the `w`-coordinate. -/
+@[aesop safe]
 theorem wCoordinate_sigma_eq_inv (z : ℂ) (hz0 : z ≠ 0) (hz1 : z ≠ 1) :
     wCoordinate (1 - z) = (wCoordinate z)⁻¹ := by
   have hmul := wCoordinate_sigma_mul z hz0 hz1

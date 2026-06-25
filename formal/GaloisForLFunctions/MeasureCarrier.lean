@@ -29,6 +29,7 @@ function. Generalizes the finite real-spectrum carrier to a measure: the integra
 (integrability from the bound `‖(λ - z)⁻¹‖ ≤ (Im z)⁻¹` against the finite measure). The `ξ`
 zero-counting carrier requires an additional regularized/locally-finite passage and is not asserted
 here. -/
+@[aesop safe]
 theorem measure_carrier_herglotz (μ : MeasureTheory.Measure ℝ) [MeasureTheory.IsFiniteMeasure μ]
     (z : ℂ) (hz : 0 < z.im) :
     0 ≤ (∫ lam, ((lam : ℂ) - z)⁻¹ ∂μ).im := by
@@ -59,6 +60,7 @@ theorem measure_carrier_herglotz (μ : MeasureTheory.Measure ℝ) [MeasureTheory
 /-- **The measure Pick kernel matrix is Hermitian** (`K(w,z) = conj K(z,w)`): the symmetry half of the
 infinite `K ⪰ 0`. For nodes `z : Fin n → ℂ`, the matrix `K_{jk} = ∫ (λ-z_j)⁻¹ conj((λ-z_k)⁻¹) dμ` is
 Hermitian, via `star (∫ f) = ∫ star f` (`integral_conj`). -/
+@[aesop safe]
 theorem measure_pick_isHermitian (μ : MeasureTheory.Measure ℝ) {n : ℕ} (z : Fin n → ℂ) :
     (Matrix.of (fun j k => ∫ lam, ((lam : ℂ) - z j)⁻¹ * star (((lam : ℂ) - z k)⁻¹) ∂μ)).IsHermitian := by
   ext j k
@@ -73,6 +75,7 @@ measure `μ` on `ℝ` and nodes `z : Fin n → ℂ` in `ℂ⁺`, the measure Pic
 `∫ |∑_k c_k conj((λ-z_k)⁻¹)|² dμ ≥ 0`. This is the forward finite-measure
 Nevanlinna–Pick direction (the measure-carrier `K ⪰ 0`), of which the finite
 `CarrierPickKernel.pick_kernel_posSemidef` is the atomic-measure shadow. -/
+@[aesop safe]
 theorem measure_pick_posSemidef (μ : MeasureTheory.Measure ℝ) [MeasureTheory.IsFiniteMeasure μ]
     {n : ℕ} (z : Fin n → ℂ) (hz : ∀ j, 0 < (z j).im) :
     (Matrix.of (fun j k => ∫ lam, ((lam : ℂ) - z j)⁻¹ * star (((lam : ℂ) - z k)⁻¹) ∂μ)).PosSemidef := by
@@ -134,6 +137,7 @@ of two measure Pick kernels (for finite measures `μ`, `ν` on the same `ℂ⁺`
 semidefinite (Schur product theorem). So the measure-carrier Pick kernels form a Schur-product
 semigroup: products/tensors of Nevanlinna carriers stay Pick-positive — the infinite-spectrum analogue
 of `CayleySchur.szego_hadamard_posSemidef`, built on the hard `measure_pick_posSemidef`. -/
+@[aesop safe]
 theorem measure_pick_hadamard_posSemidef (μ ν : MeasureTheory.Measure ℝ)
     [MeasureTheory.IsFiniteMeasure μ] [MeasureTheory.IsFiniteMeasure ν]
     {n : ℕ} (z : Fin n → ℂ) (hz : ∀ j, 0 < (z j).im) :
@@ -145,6 +149,7 @@ theorem measure_pick_hadamard_posSemidef (μ ν : MeasureTheory.Measure ℝ)
 `t : Fin n → ℝ`, the measure carrier of the atomic measure `μ = ∑_i δ_{t_i}` is exactly the finite
 real-spectrum carrier `∑_i (t_i - z)⁻¹`. So `real_spectrum_carrier_herglotz` (and the finite Pick
 results) are the atomic specializations of the measure-level theorems above. -/
+@[aesop safe]
 theorem measure_carrier_atomic {n : ℕ} (t : Fin n → ℝ) (z : ℂ) :
     ∫ lam, ((lam : ℂ) - z)⁻¹ ∂(∑ i, MeasureTheory.Measure.dirac (t i))
       = ∑ i, (((t i : ℂ)) - z)⁻¹ := by

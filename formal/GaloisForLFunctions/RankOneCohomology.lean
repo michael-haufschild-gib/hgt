@@ -34,12 +34,14 @@ def scalarCocycle {ι G : Type*} [CommGroup G]
     (act : ι → G →* G) (a : ι → G) : Prop :=
   ∀ p q, a p * act p (a q) = a q * act q (a p)
 
+@[aesop safe]
 lemma scalarCocycle_one {ι G : Type*} [CommGroup G] (act : ι → G →* G) :
     scalarCocycle act (1 : ι → G) := by
   intro p q
   simp
 
 /-- Scalar rank-one cocycles are closed under tensor product/multiplication. -/
+@[aesop safe]
 theorem scalarCocycle_mul {ι G : Type*} [CommGroup G] {act : ι → G →* G}
     {a b : ι → G} (ha : scalarCocycle act a) (hb : scalarCocycle act b) :
     scalarCocycle act (a * b) := by
@@ -54,6 +56,7 @@ theorem scalarCocycle_mul {ι G : Type*} [CommGroup G] {act : ι → G →* G}
             simp [mul_assoc, mul_left_comm, mul_comm]
 
 /-- Scalar rank-one cocycles are closed under dual/inverse. -/
+@[aesop safe]
 theorem scalarCocycle_inv {ι G : Type*} [CommGroup G] {act : ι → G →* G}
     {a : ι → G} (ha : scalarCocycle act a) :
     scalarCocycle act a⁻¹ := by
@@ -78,6 +81,7 @@ def rankOneCoboundary {ι G : Type*} [CommGroup G]
   fun p => act p h * h⁻¹
 
 /-- Coboundaries are cocycles when the difference actions commute. -/
+@[aesop safe]
 theorem rankOneCoboundary_cocycle {ι G : Type*} [CommGroup G]
     {act : ι → G →* G} (hcomm : commutingActions act) (h : G) :
     scalarCocycle act (rankOneCoboundary act h) := by
@@ -91,6 +95,7 @@ def rankOneCoboundaryCocycle {ι G : Type*} [CommGroup G]
     {act : ι → G →* G} (hcomm : commutingActions act) (h : G) : rankOneCocycles act :=
   ⟨rankOneCoboundary act h, rankOneCoboundary_cocycle hcomm h⟩
 
+@[aesop safe]
 lemma rankOneCoboundaryCocycle_one {ι G : Type*} [CommGroup G]
     {act : ι → G →* G} (hcomm : commutingActions act) :
     rankOneCoboundaryCocycle hcomm (1 : G) = 1 := by
@@ -98,6 +103,7 @@ lemma rankOneCoboundaryCocycle_one {ι G : Type*} [CommGroup G]
   simp [rankOneCoboundaryCocycle, rankOneCoboundary]
 
 /-- Scalar coboundaries multiply as `δ(hk)=δ(h)δ(k)`. -/
+@[aesop safe]
 theorem rankOneCoboundaryCocycle_mul {ι G : Type*} [CommGroup G]
     {act : ι → G →* G} (hcomm : commutingActions act) (h k : G) :
     rankOneCoboundaryCocycle hcomm (h * k) =
@@ -106,6 +112,7 @@ theorem rankOneCoboundaryCocycle_mul {ι G : Type*} [CommGroup G]
   simp [rankOneCoboundaryCocycle, rankOneCoboundary, map_mul, mul_assoc, mul_left_comm, mul_comm]
 
 /-- Scalar coboundaries invert as `δ(h⁻¹)=δ(h)⁻¹`. -/
+@[aesop safe]
 theorem rankOneCoboundaryCocycle_inv {ι G : Type*} [CommGroup G]
     {act : ι → G →* G} (hcomm : commutingActions act) (h : G) :
     rankOneCoboundaryCocycle hcomm h⁻¹ = (rankOneCoboundaryCocycle hcomm h)⁻¹ := by
@@ -130,6 +137,7 @@ abbrev rankOnePicard {ι G : Type*} [CommGroup G]
   rankOneCocycles act ⧸ rankOneCoboundaries hcomm
 
 /-- The rank-one Picard quotient is an abelian group. -/
+@[aesop safe]
 theorem rankOnePicard_commGroup {ι G : Type*} [CommGroup G]
     {act : ι → G →* G} (hcomm : commutingActions act) :
     Nonempty (CommGroup (rankOnePicard hcomm)) :=

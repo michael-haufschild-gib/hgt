@@ -26,6 +26,7 @@ noncomputable section
 def friableDirichletExp (P : ℕ →₀ ℂ) (s : ℂ) : ℂ :=
   P.sum fun n c => c * Complex.exp (-(s * (Real.log (n : ℝ) : ℂ)))
 
+@[aesop safe]
 lemma contDiff_exp_neg_mul_log (T : ℕ) (L : ℂ) (z : ℂ) :
     ContDiffAt ℂ (T : WithTop ℕ∞) (fun z : ℂ => Complex.exp (-(z * L))) z := by
   have h : ContDiff ℂ ⊤ (fun z : ℂ => Complex.exp (-(z * L))) := by
@@ -36,6 +37,7 @@ lemma contDiff_exp_neg_mul_log (T : ℕ) (L : ℂ) (z : ℂ) :
     exact hlin.cexp
   exact h.contDiffAt.of_le le_top
 
+@[aesop safe]
 theorem iteratedDeriv_exp_neg_mul_log_fun (T : ℕ) (L : ℂ) :
     iteratedDeriv T (fun z : ℂ => Complex.exp (-(z * L))) =
       fun z : ℂ => (-L) ^ T * Complex.exp (-(z * L)) := by
@@ -56,12 +58,14 @@ theorem iteratedDeriv_exp_neg_mul_log_fun (T : ℕ) (L : ℂ) :
       ring
 
 /-- Iterated derivative of `exp(-sL)`. -/
+@[aesop safe]
 theorem iteratedDeriv_exp_neg_mul_log (T : ℕ) (L s : ℂ) :
     iteratedDeriv T (fun z : ℂ => Complex.exp (-(z * L))) s =
       (-L) ^ T * Complex.exp (-(s * L)) := by
   rw [iteratedDeriv_exp_neg_mul_log_fun T L]
 
 /-- At `s=1`, `exp(-log n)=n⁻¹` for nonzero natural frequencies. -/
+@[aesop safe]
 theorem exp_neg_real_log_nat (n : ℕ) (hn : n ≠ 0) :
     Complex.exp (-(Real.log (n : ℝ) : ℂ)) = ((n : ℂ)⁻¹) := by
   have hnpos : 0 < (n : ℝ) := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hn)
@@ -76,6 +80,7 @@ theorem exp_neg_real_log_nat (n : ℕ) (hn : n ≠ 0) :
 
 /-- Single-frequency derivative formula at `s=1`:
 `d^T/ds^T exp(-s log n)|_{s=1} = (-1)^T (log n)^T / n`. -/
+@[aesop safe]
 theorem iteratedDeriv_nat_dirichlet_at_one (T n : ℕ) (hn : n ≠ 0) :
     iteratedDeriv T (fun z : ℂ => Complex.exp (-(z * (Real.log (n : ℝ) : ℂ)))) 1 =
       (-1 : ℂ) ^ T * (Real.log (n : ℝ) : ℂ) ^ T * ((n : ℂ)⁻¹) := by
@@ -87,6 +92,7 @@ theorem iteratedDeriv_nat_dirichlet_at_one (T n : ℕ) (hn : n ≠ 0) :
 
 /-- Term-by-term derivative formula for a finite Dirichlet polynomial with nonzero
 natural-number frequencies. -/
+@[aesop safe]
 theorem iteratedDeriv_friableDirichletExp_at_one (T : ℕ) (P : ℕ →₀ ℂ)
     (hP : ∀ n ∈ P.support, n ≠ 0) :
     iteratedDeriv T (fun z : ℂ => friableDirichletExp P z) 1 =
@@ -113,6 +119,7 @@ theorem iteratedDeriv_friableDirichletExp_at_one (T : ℕ) (P : ℕ →₀ ℂ)
     exact hc.mul (contDiff_exp_neg_mul_log T (Real.log (n : ℝ) : ℂ) 1)
 
 /-- Casting the finite real prime-log dot product to `ℂ` may be done termwise. -/
+@[aesop safe]
 lemma complex_cast_logPrime_sum (m : Nat.Primes →₀ ℕ) :
     (((m.sum fun p k => (k : ℝ) * Real.log (p : ℕ)) : ℝ) : ℂ) =
       m.sum fun p k => (k : ℂ) * (Real.log (p : ℕ) : ℂ) := by
@@ -125,6 +132,7 @@ lemma complex_cast_logPrime_sum (m : Nat.Primes →₀ ℕ) :
 This is the Lean form of expanding `(Σ_p m_p log p)^T` into degree-`T`
 prime-log monomials. The words `w : Fin T → Nat.Primes` encode the usual
 multinomial coefficients by repetition before collecting like monomials. -/
+@[aesop safe]
 theorem primeLogDot_pow_wordExpansion (m : Nat.Primes →₀ ℕ) (T : ℕ) :
     (m.sum fun p k => (k : ℂ) * (Real.log (p : ℕ) : ℂ)) ^ T =
       ∑ w ∈ Fintype.piFinset (fun _ : Fin T => m.support),
@@ -140,6 +148,7 @@ def friableExponentDirichletExp (P : (Nat.Primes →₀ ℕ) →₀ ℂ) (s : �
 
 /-- Term-by-term derivative at `s=1` for the exponent-vector friable auxiliary,
 with `log n_m` rewritten as `m · ℓ = Σ_p m_p log p`. -/
+@[aesop safe]
 theorem iteratedDeriv_friableExponentDirichletExp_at_one
     (T : ℕ) (P : (Nat.Primes →₀ ℕ) →₀ ℂ) :
     iteratedDeriv T (fun z : ℂ => friableExponentDirichletExp P z) 1 =
@@ -178,6 +187,7 @@ theorem iteratedDeriv_friableExponentDirichletExp_at_one
 degree-`T` word monomials. This is the formal algebraic step after
 `iteratedDeriv_friableExponentDirichletExp_at_one` and before collecting equal
 words into multinomial coefficient vectors. -/
+@[aesop safe]
 theorem iteratedDeriv_friableExponentDirichletExp_at_one_wordExpansion
     (T : ℕ) (P : (Nat.Primes →₀ ℕ) →₀ ℂ) :
     iteratedDeriv T (fun z : ℂ => friableExponentDirichletExp P z) 1 =

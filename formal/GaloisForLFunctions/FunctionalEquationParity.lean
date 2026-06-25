@@ -31,6 +31,7 @@ invariant under negation `x ↦ −x` (the functional-equation symmetry centered
 the critical line), then every **odd** power sum vanishes:
 `Σ_{x∈s} x^{2m+1} = 0`. Proof: the odd-power image is again negation-invariant,
 so its sum equals its own negation, hence is `0` in characteristic zero. -/
+@[aesop safe]
 theorem fe_odd_moment_vanish (s : Multiset ℂ)
     (hs : s.map (fun x => -x) = s) (m : ℕ) :
     (s.map (fun x => x ^ (2 * m + 1))).sum = 0 := by
@@ -58,6 +59,7 @@ reflection `ρ ↦ 1 − ρ`, then every **centered odd moment** vanishes:
 `Σ_{ρ∈s} (ρ − ½)^{2m+1} = 0`. This is foundations §22 (`τ_{2m+1}=0`) for the
 actual functional equation: the shifted multiset `{ρ − ½}` is negation-invariant,
 so `fe_odd_moment_vanish` applies. -/
+@[aesop safe]
 theorem fe_centered_odd_moment_vanish (s : Multiset ℂ)
     (hs : s.map (fun x => 1 - x) = s) (m : ℕ) :
     (s.map (fun x => (x - 1 / 2) ^ (2 * m + 1))).sum = 0 := by

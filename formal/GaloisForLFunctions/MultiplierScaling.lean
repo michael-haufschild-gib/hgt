@@ -34,13 +34,14 @@ difference operator `σ_p` of the draft acting on the coefficient sequence. -/
 def sigmaScale (c : ℝ) (P : ℝ[X]) : ℝ[X] := P.comp (C c * X)
 
 /-- Evaluation of the scaled polynomial: `(σ_c P)(r) = P(c·r)`. -/
-@[simp] theorem sigmaScale_eval (c r : ℝ) (P : ℝ[X]) :
+@[aesop safe, simp] theorem sigmaScale_eval (c r : ℝ) (P : ℝ[X]) :
     (sigmaScale c P).eval r = P.eval (c * r) := by
   simp [sigmaScale, eval_comp]
 
 /-- Root correspondence (the scalar core): `r` is a root of `σ_c P` iff `c·r` is
 a root of `P`. For `c ≠ 0` the real map `r ↦ c·r` is a bijection of `ℝ`, so it
 carries the real roots of `σ_c P` bijectively onto the real roots of `P`. -/
+@[aesop norm simp]
 theorem sigmaScale_isRoot (c r : ℝ) (P : ℝ[X]) :
     (sigmaScale c P).IsRoot r ↔ P.IsRoot (c * r) := by
   simp [IsRoot, sigmaScale_eval]
@@ -50,6 +51,7 @@ polynomial `P` is real-rooted (`P.Splits`, i.e. it factors into real linear
 factors over `ℝ`) and `c ≠ 0`, then the scaled polynomial `σ_c P` is again
 real-rooted. The proof is elementary real algebra: each linear factor `X - C a`
 becomes `C c · X - C a = C c · (X - C (c⁻¹·a))`, still a real linear factor. -/
+@[aesop safe]
 theorem sigmaScale_splits (c : ℝ) (hc : c ≠ 0) (P : ℝ[X])
     (hP : P.Splits) : (sigmaScale c P).Splits := by
   -- comp by `C c * X` pushed through a product of linear factors

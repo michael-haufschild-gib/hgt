@@ -32,6 +32,7 @@ noncomputable section
 /-- **Power-sum bridge.** `aeval f` sends the `MvPolynomial` power sum `psum σ R k`
 to the multiset power sum `Σ_i f(i)^k`. This is the companion of mathlib's
 `MvPolynomial.aeval_esymm_eq_multiset_esymm`, which mathlib does not provide. -/
+@[aesop safe]
 theorem aeval_psum_eq_multiset_powerSum {σ R S : Type*} [CommSemiring R] [CommSemiring S]
     [Fintype σ] [Algebra R S] (k : ℕ) (f : σ → S) :
     (aeval f) (MvPolynomial.psum σ R k) = (Finset.univ.val.map (fun i => f i ^ k)).sum := by
@@ -48,6 +49,7 @@ Transferred from `MvPolynomial.psum_eq_mul_esymm_sub_sum` via the esymm/psum
 `aeval` bridges. In characteristic zero (`k` invertible) this **solves for `e_k`**
 in terms of `p_1,…,p_k` and `e_0,…,e_{k-1}` — the recursion that recovers the
 spectral polynomial, hence the zero multiset, from the secular power sums. -/
+@[aesop safe]
 theorem multiset_newton {S : Type*} [CommRing S] {n : ℕ} (f : Fin n → S) (k : ℕ) (hk : 0 < k) :
     (Finset.univ.val.map (fun i => f i ^ k)).sum
       = (-1) ^ (k + 1) * k * (Finset.univ.val.map f).esymm k

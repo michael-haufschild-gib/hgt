@@ -31,6 +31,7 @@ negative-definite subspace `V` (where `Q x < 0`), the linear map `x ↦ (ℓ_0 x
 injective — if all `ℓ_i x = 0` then `Q x ≥ 0`, contradicting `Q x < 0` — so `V` embeds in `ℝ^k` and
 `dim V ≤ k`. This is the carrier statement "at most `k` off-line poles ⟹ at most `k` negative
 squares", the upper-bound half of the exact Krein–Langer `κ₋`. -/
+@[aesop safe]
 theorem sigNeg_le_of_add_sum_sq_nonneg {M : Type*} [AddCommGroup M] [Module ℝ M]
     [FiniteDimensional ℝ M] (Q : QuadraticForm ℝ M) {k : ℕ} (ℓ : Fin k → (M →ₗ[ℝ] ℝ))
     (h : ∀ x, 0 ≤ Q x + ∑ i, (ℓ i x) ^ 2) : sigNeg Q ≤ k := by
@@ -66,6 +67,7 @@ is positive-semidefinite up to one square (`0 ≤ Q x + (ℓ x)²`) has at most 
 contributes at most one negative square. With `CarrierPickKernel.conj_pair_pick_not_posSemidef`
 (`κ₋ ≥ 1`) this is the exact `κ₋ = 1` for a single off-line pole — once the complex Pick matrix is
 realified into this quadratic-form setting (the remaining Stage-1 wiring). -/
+@[aesop safe]
 theorem sigNeg_le_one_of_add_sq_nonneg {M : Type*} [AddCommGroup M] [Module ℝ M]
     [FiniteDimensional ℝ M] (Q : QuadraticForm ℝ M) (ℓ : M →ₗ[ℝ] ℝ)
     (h : ∀ x, 0 ≤ Q x + (ℓ x) ^ 2) : sigNeg Q ≤ 1 := by
@@ -84,6 +86,7 @@ to `k` rank-one terms `v_i v_i*`), then every subspace `W` on which `H` is negat
 "at most `k` off-line poles ⟹ negative inertia `κ₋ ≤ k`" directly on the Hermitian Pick matrix; the
 remaining Stage-1 brick is the structural decomposition exhibiting the carrier Pick matrix as
 `(PSD) + ∑ (rank-one)` with `k = #{off-line poles}`. -/
+@[aesop safe]
 theorem hermitian_neg_inertia_le {n k : ℕ} (H : Matrix (Fin n) (Fin n) ℂ)
     (v : Fin k → (Fin n → ℂ))
     (hbound : ∀ x : Fin n → ℂ, 0 ≤ (star x ⬝ᵥ H.mulVec x).re + ∑ i, ‖star (v i) ⬝ᵥ x‖ ^ 2)
@@ -122,6 +125,7 @@ identity `star x ⬝ᵥ (v_i v_i*) x = ‖⟨v_i, x⟩‖²`. So once the carrie
 factored form `(PSD) − ∑ (rank-one)` with `k = #{off-line poles}`, the exact `κ₋ ≤ #{off-line poles}`
 follows immediately. The remaining (genuine, deep) Stage-1 content is producing that factorization
 (the Blaschke/Krein–Langer rank-one data); this lemma is the clean bridge that consumes it. -/
+@[aesop safe]
 theorem neg_inertia_le_of_posSemidef {n k : ℕ} (H : Matrix (Fin n) (Fin n) ℂ)
     (v : Fin k → (Fin n → ℂ))
     (hPSD : (H + ∑ i, Matrix.of (fun j l => v i j * star (v i l))).PosSemidef)
@@ -165,6 +169,7 @@ noncomputable section
 negative real part has an explicit vector on which the Hermitian quadratic expression is negative.
 This is the smallest lower-bound primitive for the Krein-Langer inertia ledger: it proves existence
 of an actual negative direction, not merely failure of positive semidefiniteness. -/
+@[aesop safe]
 theorem oneByOne_negative_vector_of_re_neg (c : ℂ) (hc : c.re < 0) :
     ∃ x : Fin 1 → ℂ, x ≠ 0 ∧
       (star x ⬝ᵥ (Matrix.of (fun (_ _ : Fin 1) => c)).mulVec x).re < 0 := by
@@ -175,6 +180,7 @@ theorem oneByOne_negative_vector_of_re_neg (c : ℂ) (hc : c.re < 0) :
   · simpa [Matrix.mulVec, dotProduct] using hc
 
 /-- Outer product `w w*` is positive semidefinite (`= (col w)(col w)ᴴ`). -/
+@[aesop safe]
 theorem outer_posSemidef {n : ℕ} (w : Fin n → ℂ) :
     (Matrix.of (fun j l => w j * star (w l))).PosSemidef := by
   have h : (Matrix.of (fun j l => w j * star (w l)))
@@ -186,6 +192,7 @@ theorem outer_posSemidef {n : ℕ} (w : Fin n → ℂ) :
 /-- The per-entry conjugate-pair Pick identity, as a formal rational identity in four atoms:
 `(m(z_j) - conj m(z_k))/(z_j - conj z_k) = a_j conj(e_k) + e_j conj(a_k)` with `a=1/(t-·)`,
 `e=1/(t̄-·)`. The Cauchy-telescoping `(q-p)/(pq) = 1/p - 1/q` applied at both poles. -/
+@[aesop safe]
 theorem conjPair_pe (t cT zj czk : ℂ)
     (h1 : t - zj ≠ 0) (h2 : cT - zj ≠ 0) (h3 : t - czk ≠ 0) (h4 : cT - czk ≠ 0) (hD : zj - czk ≠ 0) :
     (((t - zj)⁻¹ + (cT - zj)⁻¹) - ((cT - czk)⁻¹ + (t - czk)⁻¹)) / (zj - czk)
@@ -211,6 +218,7 @@ lower bound `CarrierPickKernel.conj_pair_pick_not_posSemidef` (`κ₋ ≥ 1`) th
 `κ₋ = 1`**: one off-line zero contributes exactly one negative square. This closes the Stage-1
 exact-inertia core for a single off-line zero — the deep Blaschke/Krein–Langer content, here computed
 in closed form (numerically pre-certified to machine precision before formalization). -/
+@[aesop safe]
 theorem conj_pair_pick_neg_inertia_le_one {N : ℕ} (t : ℂ) (z : Fin N → ℂ)
     (ht : 0 < t.im) (hz : ∀ j, 0 < (z j).im) (hjt : ∀ j, z j ≠ t)
     (W : Submodule ℂ (Fin N → ℂ))
@@ -271,6 +279,7 @@ factorizations sum: `2·Pick = ∑_i [(e_i+a_i)(e_i+a_i)* − (e_i−a_i)(e_i−
 — a sum of `k` outer products (PSD), i.e. `k` rank-one corrections suffice. Generalizes
 `conj_pair_pick_neg_inertia_le_one` (`k=1`). The matching lower bound (`κ₋ ≥ k`, a multi-node Pick
 witness) would pin the exact `κ₋ = k`: each off-line zero contributes exactly one negative square. -/
+@[aesop safe]
 theorem multi_pair_pick_neg_inertia_le {N k : ℕ} (t : Fin k → ℂ) (z : Fin N → ℂ)
     (ht : ∀ i, 0 < (t i).im) (hz : ∀ j, 0 < (z j).im) (hjt : ∀ i j, z j ≠ t i)
     (W : Submodule ℂ (Fin N → ℂ))
@@ -323,6 +332,7 @@ with the dual factorization `−2·Pick + ∑_i (e_i+a_i)(e_i+a_i)* = ∑_i (e_i
 `multi_pair_pick_neg_inertia_le` (`κ₋ ≤ k`) this shows the `k`-pair Pick matrix has **rank ≤ 2k** —
 both inertias are bounded by the number of off-line zeros. The exact `κ₋ = k` additionally needs the
 matching lower bound (Cauchy-rank non-degeneracy of the `2k` pole-vectors `{a_i, e_i}`). -/
+@[aesop safe]
 theorem multi_pair_pick_pos_inertia_le {N k : ℕ} (t : Fin k → ℂ) (z : Fin N → ℂ)
     (ht : ∀ i, 0 < (t i).im) (hz : ∀ j, 0 < (z j).im) (hjt : ∀ i j, z j ≠ t i)
     (W : Submodule ℂ (Fin N → ℂ))
@@ -375,6 +385,7 @@ The conjugate-pair Pick matrix is the difference of two rank-one positive matric
 adds back `(e−a)(e−a)*` to reach the PSD `(e+a)(e+a)*`; the lower bound `κ₋ ≥ 1` evaluates the form on
 a vector orthogonal to `e+a` (where it is `−‖⟨e−a,·⟩‖² < 0`). Numerically pre-certified to machine
 precision (`computations/krein_langer_single_pole/`). -/
+@[aesop safe]
 theorem conj_pair_pick_factorization {N : ℕ} (t : ℂ) (z : Fin N → ℂ)
     (ht : 0 < t.im) (hz : ∀ j, 0 < (z j).im) (hjt : ∀ j, z j ≠ t) :
     (2 : ℂ) • conjPairPick t z
@@ -414,6 +425,7 @@ noncomputable section
 negative real part is negative-definite on the whole one-dimensional ambient space. This upgrades the
 one-point lower witness from an explicit vector to an explicit negative subspace of complex dimension
 one, matching the subspace language consumed by `hermitian_neg_inertia_le`. -/
+@[aesop safe]
 theorem oneByOne_negative_subspace_of_re_neg (c : ℂ) (hc : c.re < 0) :
     Module.finrank ℂ (⊤ : Submodule ℂ (Fin 1 → ℂ)) = 1 ∧
       ∀ x ∈ (⊤ : Submodule ℂ (Fin 1 → ℂ)), x ≠ 0 →
@@ -450,6 +462,7 @@ entries of a diagonal complex matrix all have strictly negative real part, then 
 finite linear-algebra primitive needed by the Stage-1 lower-bound program after the multi-pair Pick
 kernel has been reduced to, or isolated on, a diagonal negative block: it turns `k` independent
 one-point negative tests into a genuine `k`-dimensional negative subspace. -/
+@[aesop safe]
 theorem diagonal_negative_subspace {k : ℕ} (c : Fin k → ℂ) (hc : ∀ i, (c i).re < 0) :
     Module.finrank ℂ (⊤ : Submodule ℂ (Fin k → ℂ)) = k ∧
       ∀ x ∈ (⊤ : Submodule ℂ (Fin k → ℂ)), x ≠ 0 →
@@ -492,6 +505,7 @@ theorem diagonal_negative_subspace {k : ℕ} (c : Fin k → ℂ) (hc : ∀ i, (c
     linarith
 
 /-- Rank-one quadratic identity: `x* (v v*) x = ‖⟨v,x⟩‖²`. -/
+@[aesop safe]
 theorem rankOne_quadForm {n : ℕ} (v x : Fin n → ℂ) :
     star x ⬝ᵥ (Matrix.of (fun p q => v p * star (v q))).mulVec x = ((‖star v ⬝ᵥ x‖ ^ 2 : ℝ) : ℂ) := by
   have hmv : (Matrix.of (fun p q => v p * star (v q))).mulVec x = (star v ⬝ᵥ x) • v := by
@@ -512,6 +526,7 @@ to a `k`-dimensional subspace `W` orthogonal to all `w_i` with the `u_i` jointly
 `W∖{0}`, this exhibits a `k`-dim negative-definite subspace, i.e. `κ₋ ≥ k` — the matching lower bound
 to `neg_inertia_le_of_posSemidef`. For the carrier (`w_i=e_i+a_i`, `u_i=e_i−a_i`) the only remaining
 input is constructing that `W` (Cauchy non-degeneracy of `{a_i, e_i}`), per the roadmap strategy. -/
+@[aesop safe]
 theorem neg_def_of_factored_orthogonal {N k : ℕ} (w u : Fin k → (Fin N → ℂ))
     (x : Fin N → ℂ) (hw : ∀ i, star (w i) ⬝ᵥ x = 0) (hu : ∃ i, star (u i) ⬝ᵥ x ≠ 0) :
     (star x ⬝ᵥ ((∑ i, Matrix.of (fun p q => w i p * star (w i q)))
@@ -535,6 +550,7 @@ subspace on which `H` is negative-definite. Construction: take preimages `x_m` o
 `Φ(x_m)=0`, `Ψ(x_m)=δ_m`); the section `S = ∑_m c_m • x_m` satisfies `Ψ∘S = id` (hence `S` injective,
 `dim range S = k`) and `Φ∘S = 0` (so `range S ⊥ {w_i}`); on `range S`, `Ψ y = c ≠ 0` for `y≠0`, so
 some `⟨u_i,y⟩ ≠ 0`, and `neg_def_of_factored_orthogonal` gives negativity. -/
+@[aesop safe]
 theorem exists_neg_def_subspace {N k : ℕ} (w u : Fin k → (Fin N → ℂ))
     (Φ Ψ : (Fin N → ℂ) →ₗ[ℂ] (Fin k → ℂ))
     (hΦ : ∀ (y : Fin N → ℂ) (i : Fin k), Φ y i = star (w i) ⬝ᵥ y)
@@ -580,6 +596,7 @@ negative-definite subspace has `dim ≤ k` (upper, via `H + ∑ u_i u_i* = ∑ w
 `dim = k` exists (lower, `exists_neg_def_subspace`). For the conjugate-pair carrier
 (`w_i=e_i+a_i`, `u_i=e_i−a_i`) the surjectivity hypothesis is exactly the Cauchy independence of the
 `2k` pole-vectors `{a_i, e_i}` — the sole remaining arithmetic input for the closed-form `κ₋ = #off-line zeros`. -/
+@[aesop safe]
 theorem exact_neg_inertia {N k : ℕ} (w u : Fin k → (Fin N → ℂ))
     (Φ Ψ : (Fin N → ℂ) →ₗ[ℂ] (Fin k → ℂ))
     (hΦ : ∀ (y : Fin N → ℂ) (i : Fin k), Φ y i = star (w i) ⬝ᵥ y)
@@ -605,6 +622,7 @@ clears to a polynomial `Q(X) = ∑_i c_i ∏_{l≠i}(p_l - X)` of degree `< n` v
 nodes, so `Q = 0`; evaluating at `p_m` gives `c_m ∏_{l≠m}(p_l-p_m) = 0`, hence `c_m = 0`. This is the
 arithmetic core of the exact Krein–Langer count: applied to the `2k` poles `{t_i, t̄_i}` it gives the
 Cauchy non-degeneracy of `{a_i, e_i}` underlying the surjectivity hypothesis of `exact_neg_inertia`. -/
+@[aesop safe]
 theorem cauchy_linearIndependent {ι : Type*} [Fintype ι] [DecidableEq ι] (p z : ι → ℂ)
     (hp : Function.Injective p) (hz : Function.Injective z) (hpz : ∀ i j, p i ≠ z j) :
     LinearIndependent ℂ (fun i => (fun j => (p i - z j)⁻¹ : ι → ℂ)) := by
@@ -663,6 +681,7 @@ unit and `Mᴴ.mulVec` (= the evaluation map) is surjective. This is the layer j
 `cauchy_linearIndependent` (the `2k` Cauchy vectors `{a_i, e_i}` are independent) to the surjectivity
 hypothesis of `exact_neg_inertia`: together they make the exact `κ₋ = k` unconditional for the
 conjugate-pair carrier on `2k` nodes (combining `w_i, u_i` over the index `Fin k ⊕ Fin k`). -/
+@[aesop safe]
 theorem eval_surjective_of_linearIndependent {m : Type*} [Fintype m] [DecidableEq m]
     (v : m → (m → ℂ)) (hv : LinearIndependent ℂ v) :
     Function.Surjective (fun x : m → ℂ => (fun i => star (v i) ⬝ᵥ x : m → ℂ)) := by
@@ -686,6 +705,7 @@ independent family `V : ι → (Fin N → ℂ)` (`ι` a fintype, `card ι ≤ N`
 `eval_surjective_of_linearIndependent`, this applies over the carrier's actual node space `Fin N`
 (`N ≥ card ι`), with `ι = Fin k ⊕ Fin k` the combined off-line-pole index — the connecting layer that
 makes `exact_neg_inertia` unconditional once `{a_i, e_i}` are shown Cauchy-independent. -/
+@[aesop safe]
 theorem eval_surjective_rect {N : ℕ} {ι : Type*} [Fintype ι] [DecidableEq ι]
     (V : ι → (Fin N → ℂ)) (hv : LinearIndependent ℂ V) :
     Function.Surjective (fun x : Fin N → ℂ => (fun j => star (V j) ⬝ᵥ x : ι → ℂ)) := by

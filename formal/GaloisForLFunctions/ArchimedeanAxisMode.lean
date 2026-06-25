@@ -28,6 +28,7 @@ def archimedeanPrimeMode (m : Nat.Primes →₀ ℤ) (s : ℂ) : ℂ :=
 
 /-- The archimedean `s`-generator acts diagonally on each finite prime Fourier
 mode: `∂_s e_m = -(m · ell) e_m`. -/
+@[aesop safe]
 theorem deriv_archimedeanPrimeMode (m : Nat.Primes →₀ ℤ) (s : ℂ) :
     deriv (archimedeanPrimeMode m) s =
       -primeLogFrequencyComplex m * archimedeanPrimeMode m s := by

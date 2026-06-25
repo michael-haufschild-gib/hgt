@@ -19,6 +19,7 @@ noncomputable section
 
 /-- Multiplicative first-order relation for a dilated local Euler factor,
 away from the two poles. -/
+@[aesop safe]
 theorem localEulerFactor_dilation_relation {q x : ℂ}
     (hx : x ≠ 1) (hqx : q * x ≠ 1) :
     (1 - q * x) * localEulerFactor (q * x) =
@@ -27,6 +28,7 @@ theorem localEulerFactor_dilation_relation {q x : ℂ}
 
 /-- The local Euler factor satisfies the first-order `q`-difference equation
 `f(qx) = ((1 - x) / (1 - qx)) * f(x)` away from the poles. -/
+@[aesop safe]
 theorem localEulerFactor_q_difference {q x : ℂ}
     (hx : x ≠ 1) (hqx : q * x ≠ 1) :
     localEulerFactor (q * x) =
@@ -38,6 +40,7 @@ theorem localEulerFactor_q_difference {q x : ℂ}
 
 /-- Prime-indexed dilation form: for `q_p = p⁻¹`, each Euler factor satisfies
 its own first-order difference equation. -/
+@[aesop safe]
 theorem localEulerFactor_prime_dilation_difference (p : Nat.Primes) {x : ℂ}
     (hx : x ≠ 1) (hpx : ((p : ℂ)⁻¹) * x ≠ 1) :
     localEulerFactor (((p : ℂ)⁻¹) * x) =

@@ -25,12 +25,14 @@ def gammaRealLogConnection (s : ℂ) : ℂ :=
 
 /-- Deligne's real archimedean Gamma factor satisfies the `s ↦ s+2`
 recurrence used by the completed base: `Gamma_R(s+2)=(s/(2*pi)) Gamma_R(s)`. -/
+@[aesop safe]
 theorem gammaReal_shift_two {s : ℂ} (hs : s ≠ 0) :
     Complex.Gammaℝ (s + 2) = (s / (2 * (Real.pi : ℂ))) * Complex.Gammaℝ s := by
   rw [Complex.Gammaℝ_add_two hs]
   field_simp [two_ne_zero, Complex.ofReal_ne_zero.mpr Real.pi_ne_zero]
 
 /-- Digamma recurrence in the half-argument form used by the completed base. -/
+@[aesop safe]
 theorem digamma_half_add_one {s : ℂ} (hs : ∀ m : ℕ, s / 2 ≠ -m) :
     Complex.digamma (s / 2 + 1) = Complex.digamma (s / 2) + 2 / s := by
   have hs0 : s ≠ 0 := by
@@ -44,6 +46,7 @@ theorem digamma_half_add_one {s : ℂ} (hs : ∀ m : ℕ, s / 2 ≠ -m) :
 shift multiplier. This is the scalar identity behind
 `d/ds ((s/(2*pi))g) = sigma_infty (d/ds g)` after cancelling the nonzero symbol
 `g`. -/
+@[aesop safe]
 theorem gammaRealLogConnection_shift_compat {s : ℂ}
     (hs : ∀ m : ℕ, s / 2 ≠ -m) :
     (1 / (2 * (Real.pi : ℂ))) + (s / (2 * (Real.pi : ℂ))) * gammaRealLogConnection s =

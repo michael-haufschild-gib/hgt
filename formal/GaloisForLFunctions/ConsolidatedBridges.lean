@@ -48,6 +48,7 @@ def detectsOffSeamDefect
 /-- The consolidated two-lemma bridge, as pure logic:
 if off-line zeros are detected by source-carrying off-seam defects, and all such
 defects are confined to the seam, then every zero is on line. -/
+@[aesop safe]
 theorem twoLemmaBridge_forces_onLine
     {OnLine : Zero → Prop} {OnSeam SourceCarrying : Defect → Prop}
     (hDetect : detectsOffSeamDefect OnLine OnSeam SourceCarrying)
@@ -67,6 +68,7 @@ def offSeamSourceDefectFor
 /-- The RH-false bridge form from the consolidation:
 if an off-line zero is equivalent to an off-seam source-carrying defect, then
 seam confinement rules out off-line zeros. -/
+@[aesop safe]
 theorem rhFalseBridge_forces_onLine
     {OnLine : Zero → Prop} {OnSeam SourceCarrying : Defect → Prop}
     {Link : Zero → Defect → Prop}
@@ -97,6 +99,7 @@ def offLineProducesOffSeamSupport
 /-- The source-measure bridge in abstract form:
 support confined to the seam plus off-line-to-off-seam support detection forces
 the RH-like conclusion. -/
+@[aesop safe]
 theorem supportBridge_forces_onLine
     {OnLine : Zero → Prop} {InSupport OnSeamSupport : SupportPoint → Prop}
     (hDetect : offLineProducesOffSeamSupport OnLine InSupport OnSeamSupport)
@@ -123,6 +126,7 @@ def finiteOffLineCount (zeros : Finset Zero) : ℕ :=
   (zeros.filter OffLine).card
 
 /-- A finite set has no off-line elements exactly when its off-line count is zero. -/
+@[aesop norm simp]
 theorem finiteRHLike_iff_offLineCount_eq_zero (zeros : Finset Zero) :
     finiteRHLike OffLine zeros ↔ finiteOffLineCount OffLine zeros = 0 := by
   constructor
@@ -141,6 +145,7 @@ theorem finiteRHLike_iff_offLineCount_eq_zero (zeros : Finset Zero) :
 if the faithful index is exactly the off-line count, and the source construction
 forces that index to vanish, then the finite carrier satisfies the RH-like
 no-off-line conclusion. -/
+@[aesop safe]
 theorem faithfulIndex_zero_forces_finiteRHLike
     {zeros : Finset Zero} {kappa : ℕ}
     (hFaithful : kappa = finiteOffLineCount OffLine zeros)
@@ -159,6 +164,7 @@ variable {Obj : Type*} (CarrierIntegral : Obj → ℝ)
 logic behind the surrogate-ladder kill criterion for an oriented 2-form carrier:
 if the true object is positive and a surrogate is negative for the same signed
 functional, they cannot be the same object. -/
+@[aesop safe]
 theorem signedCarrier_separates
     {trueObj surrogate : Obj}
     (hTrue : 0 < CarrierIntegral trueObj)
@@ -170,6 +176,7 @@ theorem signedCarrier_separates
 
 /-- A signed carrier cannot both be strictly positive and strictly negative on
 the same object. -/
+@[aesop safe]
 theorem signedCarrier_not_both_signs
     {obj : Obj}
     (hPos : 0 < CarrierIntegral obj) :
