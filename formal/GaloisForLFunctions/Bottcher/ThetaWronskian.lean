@@ -22,7 +22,7 @@ Consumes `ModularLambdaLocalBiholo` (`ThetaWronskian23`) + `ThetaNullwert` (null
 import GaloisForLFunctions.Bottcher.ModularLambdaLocalBiholo
 
 open Complex
-open scoped Real
+open scoped Real Topology
 
 namespace Bottcher
 
@@ -349,4 +349,303 @@ theorem thetaWronskian23_of_ratio_zero
   intro τ hτ
   rw [thetaWronskianDefect_eq_ratio_mul hτ, hP τ hτ, zero_mul]
 
+/-! ### Cusp limit `θ₃' → 0` at `i∞` (first step toward `P → 0`). -/
+
+open Filter in
+/-- `‖θ₃'`'s `n`-th term`‖ = π·n²·e^{−πn²·im τ}` (the `z = 0` nullwert). -/
+theorem norm_jacobiTheta₂_snd_term_zero (n : ℤ) (τ : ℂ) :
+    ‖jacobiTheta₂_snd_term n 0 τ‖ = π * (n : ℝ) ^ 2 * Real.exp (-π * (n : ℝ) ^ 2 * τ.im) := by
+  rw [jacobiTheta₂_snd_term, norm_mul, norm_jacobiTheta₂_term, Complex.zero_im, mul_zero, sub_zero]
+  congr 1
+  rw [show (π : ℂ) * I * (n : ℂ) ^ 2 = ((π * (n : ℝ) ^ 2 : ℝ) : ℂ) * I by push_cast; ring,
+      norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (by positivity)]
+
+open Filter in
+/-- **`θ₃' → 0` as `im τ → ∞`.** The derivative series `θ₃'(τ) = ∑ πin²·q^{n²}` is squeezed by
+`C·e^{−π·imτ/2}` (`C = ∑ πn²e^{−πn²/2}`): for `im ≥ 1`, `πn²e^{−πn²·im} ≤ (πn²e^{−πn²/2})·e^{−π·im/2}`. -/
+theorem tendsto_deriv_thetaThree_atImInfty :
+    Tendsto (deriv thetaThree) (comap Complex.im atTop) (𝓝 0) := by
+  have hCsum : Summable (fun n : ℤ => π * (n : ℝ) ^ 2 * Real.exp (-π * (n : ℝ) ^ 2 / 2)) := by
+    have h := (summable_pow_mul_jacobiTheta₂_term_bound (0 : ℝ) (by norm_num : (0:ℝ) < 1/2) 2).mul_left π
+    refine h.congr (fun n => ?_)
+    rw [Int.cast_abs, sq_abs]; push_cast; ring_nf
+  set C : ℝ := ∑' n : ℤ, π * (n : ℝ) ^ 2 * Real.exp (-π * (n : ℝ) ^ 2 / 2) with hC
+  have hgto : Tendsto (fun τ : ℂ => C * Real.exp (-π * τ.im / 2)) (comap Complex.im atTop) (𝓝 0) := by
+    have : Tendsto (fun τ : ℂ => Real.exp (-π * τ.im / 2)) (comap Complex.im atTop) (𝓝 0) := by
+      apply Real.tendsto_exp_atBot.comp
+      exact Filter.Tendsto.neg_mul_atTop (by have := Real.pi_pos; linarith : (-π / 2 : ℝ) < 0)
+        tendsto_const_nhds tendsto_comap |>.congr (fun τ => by ring)
+    simpa using this.const_mul C
+  refine squeeze_zero_norm' ?_ hgto
+  filter_upwards [tendsto_comap.eventually (eventually_ge_atTop (1 : ℝ))] with τ hτ
+  have hτ0 : 0 < τ.im := by linarith
+  rw [(hasDerivAt_thetaThree hτ0).deriv]
+  have hsummN : Summable (fun n : ℤ => ‖jacobiTheta₂_snd_term n 0 τ‖) := by
+    simp_rw [norm_jacobiTheta₂_snd_term_zero]
+    have h := (summable_pow_mul_jacobiTheta₂_term_bound (0 : ℝ) hτ0 2).mul_left π
+    refine h.congr (fun n => ?_)
+    rw [Int.cast_abs, sq_abs]; push_cast; ring_nf
+  refine (norm_tsum_le_tsum_norm hsummN).trans ?_
+  rw [tsum_congr (fun n => norm_jacobiTheta₂_snd_term_zero n τ)]
+  rw [show C * Real.exp (-π * τ.im / 2)
+      = ∑' n : ℤ, π * (n : ℝ) ^ 2 * Real.exp (-π * (n : ℝ) ^ 2 / 2) * Real.exp (-π * τ.im / 2) by
+    rw [hC, ← tsum_mul_right]]
+  have hsummN' : Summable (fun n : ℤ => π * (n : ℝ) ^ 2 * Real.exp (-π * (n : ℝ) ^ 2 * τ.im)) := by
+    simp_rw [norm_jacobiTheta₂_snd_term_zero] at hsummN; exact hsummN
+  refine Summable.tsum_mono hsummN' (hCsum.mul_right _) (fun n => ?_)
+  rcases eq_or_ne n 0 with hn | hn
+  · simp [hn]
+  · have hn2 : (1 : ℝ) ≤ (n : ℝ) ^ 2 := by
+      have hz : (1 : ℤ) ≤ n ^ 2 := by nlinarith [Int.one_le_abs hn, sq_abs n]
+      exact_mod_cast hz
+    calc π * (n : ℝ) ^ 2 * Real.exp (-π * (n : ℝ) ^ 2 * τ.im)
+        ≤ π * (n : ℝ) ^ 2 * Real.exp (-π * (n : ℝ) ^ 2 / 2 + -π * τ.im / 2) := by
+          gcongr π * (n : ℝ) ^ 2 * Real.exp ?_
+          nlinarith [Real.pi_pos, hτ, hn2,
+            mul_nonneg (sub_nonneg.2 hn2) (by linarith : (0 : ℝ) ≤ 2 * τ.im - 1)]
+      _ = π * (n : ℝ) ^ 2 * Real.exp (-π * (n : ℝ) ^ 2 / 2) * Real.exp (-π * τ.im / 2) := by
+          rw [Real.exp_add]; ring
+
+/-! ### Cusp limit `Θ(τ/2,τ) → 2` (the `θ₂`-diagonal nullwert). -/
+
+open Filter in
+/-- **`jacobiTheta₂(τ/2, τ) → 2`** as `im τ → ∞`. The two terms `n = 0, −1` both equal `1` (their
+exponents vanish on the diagonal `z = τ/2`); the rest decay (`n(n+1) ≥ 2`), squeezed by `C·e^{−π·imτ}`. -/
+theorem tendsto_jacobiTheta₂_diag_atImInfty :
+    Tendsto (fun τ : ℂ => jacobiTheta₂ (τ / 2) τ) (comap Complex.im atTop) (𝓝 2) := by
+  have hC'' : Summable (fun n : ℤ => Real.exp (-π * ((n : ℝ) ^ 2 + n) / 2)) := by
+    refine (summable_exp_neg_half (1/2 : ℝ) (by norm_num)).congr (fun n => ?_)
+    rw [show (-π * ((n : ℝ) ^ 2 + (n : ℝ)) * (1/2 : ℝ)) = -π * ((n : ℝ) ^ 2 + n) / 2 by ring]
+  set C'' : ℝ := ∑' n : ℤ, Real.exp (-π * ((n : ℝ) ^ 2 + n) / 2) with hC''def
+  suffices hsub : Tendsto (fun τ : ℂ => jacobiTheta₂ (τ / 2) τ - 2) (comap Complex.im atTop) (𝓝 0) by
+    simpa using hsub.add_const 2
+  have hgto : Tendsto (fun τ : ℂ => C'' * Real.exp (-π * τ.im)) (comap Complex.im atTop) (𝓝 0) := by
+    simpa using tendsto_exp_neg_pi_im.const_mul C''
+  refine squeeze_zero_norm' ?_ hgto
+  filter_upwards [tendsto_comap.eventually (eventually_ge_atTop (1 : ℝ))] with τ hτ
+  have hτ0 : 0 < τ.im := by linarith
+  have hsumm : Summable (fun n : ℤ => jacobiTheta₂_term n (τ / 2) τ) :=
+    (summable_jacobiTheta₂_term_iff (τ / 2) τ).2 hτ0
+  have hsum2 : (∑ i ∈ ({0, -1} : Finset ℤ), jacobiTheta₂_term i (τ / 2) τ) = 2 := by
+    rw [Finset.sum_pair (by decide),
+        show jacobiTheta₂_term 0 (τ / 2) τ = 1 by rw [jacobiTheta₂_term]; simp,
+        show jacobiTheta₂_term (-1) (τ / 2) τ = 1 by
+          rw [jacobiTheta₂_term,
+            show (2 * ↑π * I * ((-1 : ℤ) : ℂ) * (τ / 2) + ↑π * I * ((-1 : ℤ) : ℂ) ^ 2 * τ : ℂ) = 0 by
+              push_cast; ring, Complex.exp_zero]]
+    norm_num
+  have hΘsub : jacobiTheta₂ (τ / 2) τ - 2
+      = ∑' (i : ↥((↑({0, -1} : Finset ℤ) : Set ℤ)ᶜ)), jacobiTheta₂_term i (τ / 2) τ := by
+    have h := hsumm.sum_add_tsum_compl (s := ({0, -1} : Finset ℤ))
+    rw [hsum2] at h
+    rw [show jacobiTheta₂ (τ / 2) τ = ∑' n, jacobiTheta₂_term n (τ / 2) τ from rfl]
+    linear_combination -h
+  rw [hΘsub]
+  have hzim : ((τ / 2 : ℂ)).im = τ.im / 2 := by
+    rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.div_ofReal_im]
+  have hnorm : ∀ n : ℤ, ‖jacobiTheta₂_term n (τ / 2) τ‖
+      = Real.exp (-π * ((n : ℝ) ^ 2 + n) * τ.im) := by
+    intro n; rw [norm_jacobiTheta₂_term, hzim]; congr 1; ring
+  have hsummNorm : Summable (fun n : ℤ => ‖jacobiTheta₂_term n (τ / 2) τ‖) := by
+    simp_rw [hnorm]; exact summable_exp_neg_half τ.im hτ0
+  have hBsum : Summable (fun n : ℤ => Real.exp (-π * ((n : ℝ) ^ 2 + n) / 2) * Real.exp (-π * τ.im)) :=
+    hC''.mul_right _
+  refine (norm_tsum_le_tsum_norm (hsummNorm.subtype _)).trans ?_
+  refine (Summable.tsum_mono (hsummNorm.subtype _) (hBsum.subtype _) (fun i => ?_)).trans ?_
+  · have hi : (i : ℤ) ≠ 0 ∧ (i : ℤ) ≠ -1 := by
+      have h := i.2
+      simp only [Finset.coe_insert, Finset.coe_singleton, Set.mem_compl_iff, Set.mem_insert_iff,
+        Set.mem_singleton_iff, not_or] at h
+      exact h
+    have hge : (2 : ℝ) ≤ ((i : ℤ) : ℝ) ^ 2 + ((i : ℤ) : ℝ) := by
+      have h2 : (2 : ℤ) ≤ (i : ℤ) ^ 2 + (i : ℤ) := by
+        rcases lt_or_gt_of_ne hi.1 with h | h
+        · have : (i : ℤ) ≤ -2 := by omega
+          nlinarith
+        · have : (1 : ℤ) ≤ (i : ℤ) := by omega
+          nlinarith
+      exact_mod_cast h2
+    simp only [Function.comp_apply]
+    rw [hnorm, ← Real.exp_add, Real.exp_le_exp]
+    nlinarith [Real.pi_pos, hτ, hge,
+      mul_nonneg (mul_nonneg Real.pi_pos.le (sub_nonneg.2 hge)) (by linarith : (0 : ℝ) ≤ τ.im - 1/2),
+      mul_nonneg Real.pi_pos.le (by linarith : (0 : ℝ) ≤ τ.im - 1)]
+  · rw [hC''def, ← tsum_mul_right]
+    exact Summable.tsum_subtype_le _ _ (fun n => by positivity) hBsum
+
+/-! ### Cusp limit `Θ_deriv(τ) := jacobiTheta₂_fderiv(τ/2,τ)(1/2,1) → 0`. -/
+
+/-- The diagonal fderiv term: `term_fderiv n (τ/2) τ (1/2,1) = πin(n+1)·term`. -/
+theorem jacobiTheta₂_term_fderiv_diag (n : ℤ) (τ : ℂ) :
+    (jacobiTheta₂_term_fderiv n (τ / 2) τ) (1/2, 1)
+      = (π : ℂ) * I * n * (n + 1) * jacobiTheta₂_term n (τ / 2) τ := by
+  rw [jacobiTheta₂_term_fderiv, jacobiTheta₂_term]
+  simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
+    ContinuousLinearMap.coe_fst', ContinuousLinearMap.coe_snd', smul_eq_mul]
+  ring
+
+/-- The `θ₂`-diagonal derivative `Θ_deriv(τ) = jacobiTheta₂_fderiv(τ/2,τ)(1/2,1)`. By `hasDerivAt_thetaTwo`
+this is the non-prefactor part of `θ₂'`. -/
+noncomputable def jacobiTheta₂DiagDeriv (τ : ℂ) : ℂ := (jacobiTheta₂_fderiv (τ / 2) τ) (1/2, 1)
+
+theorem jacobiTheta₂DiagDeriv_tsum {τ : ℂ} (hτ : 0 < τ.im) :
+    jacobiTheta₂DiagDeriv τ = ∑' n : ℤ, (π : ℂ) * I * n * (n + 1) * jacobiTheta₂_term n (τ / 2) τ := by
+  let evalCLM : (ℂ × ℂ →L[ℂ] ℂ) →L[ℂ] ℂ :=
+    { toFun := fun f => f (1/2, 1), map_add' := fun f g => rfl, map_smul' := fun c f => rfl,
+      cont := by fun_prop }
+  have h := evalCLM.hasSum (hasSum_jacobiTheta₂_term_fderiv (τ / 2) hτ)
+  have heq : (fun n : ℤ => evalCLM (jacobiTheta₂_term_fderiv n (τ / 2) τ))
+      = fun n => (π : ℂ) * I * n * (n + 1) * jacobiTheta₂_term n (τ / 2) τ := by
+    funext n; exact jacobiTheta₂_term_fderiv_diag n τ
+  rw [show jacobiTheta₂DiagDeriv τ = evalCLM (jacobiTheta₂_fderiv (τ / 2) τ) from rfl,
+      ← h.tsum_eq, heq]
+
+
+/-- The summand `π(n²+n)·e^{−π(n²+n)·y}`, **named** so `tsum`/`isDefEq` treat it as an atom (the
+expanded form triggers an exponential `isDefEq` blowup inside `Summable.tsum_mono`). -/
+private noncomputable def polyExpTerm (y : ℝ) (n : ℤ) : ℝ :=
+  π * ((n : ℝ) ^ 2 + n) * Real.exp (-π * ((n : ℝ) ^ 2 + n) * y)
+
+private theorem nn_sq_add {n : ℤ} : (0 : ℝ) ≤ (n : ℝ) ^ 2 + n := by
+  have h : (0 : ℤ) ≤ n ^ 2 + n := by nlinarith [sq_nonneg (2 * n + 1)]
+  exact_mod_cast h
+
+private theorem summable_polyExpTerm {y : ℝ} (hy : 0 < y) : Summable (polyExpTerm y) := by
+  unfold polyExpTerm
+  have hb : Summable (fun n : ℤ =>
+      π * ((|(n : ℝ)| ^ 2 + |(n : ℝ)|) * Real.exp (-π * (y * (n : ℝ) ^ 2 - y * |(n : ℝ)|)))) := by
+    have h := (((summable_pow_mul_jacobiTheta₂_term_bound (y / 2) hy 2).add
+      (summable_pow_mul_jacobiTheta₂_term_bound (y / 2) hy 1)).mul_left π)
+    refine h.congr (fun n => ?_)
+    rw [Int.cast_abs, sq_abs]; push_cast; ring
+  refine Summable.of_nonneg_of_le (fun n => by have := @nn_sq_add n; positivity) (fun n => ?_) hb
+  have hexp : Real.exp (-π * ((n : ℝ) ^ 2 + n) * y)
+      ≤ Real.exp (-π * (y * (n : ℝ) ^ 2 - y * |(n : ℝ)|)) := by
+    rw [Real.exp_le_exp]
+    nlinarith [Real.pi_pos, hy, neg_abs_le (n : ℝ),
+      mul_nonneg (mul_nonneg Real.pi_pos.le hy.le)
+        (by linarith [neg_abs_le (n : ℝ)] : (0 : ℝ) ≤ (n : ℝ) + |(n : ℝ)|)]
+  have hpoly : (n : ℝ) ^ 2 + n ≤ |(n : ℝ)| ^ 2 + |(n : ℝ)| := by
+    rw [sq_abs]; nlinarith [le_abs_self (n : ℝ)]
+  calc π * ((n : ℝ) ^ 2 + n) * Real.exp (-π * ((n : ℝ) ^ 2 + n) * y)
+      ≤ π * (|(n : ℝ)| ^ 2 + |(n : ℝ)|) * Real.exp (-π * (y * (n : ℝ) ^ 2 - y * |(n : ℝ)|)) := by gcongr
+    _ = π * ((|(n : ℝ)| ^ 2 + |(n : ℝ)|) * Real.exp (-π * (y * (n : ℝ) ^ 2 - y * |(n : ℝ)|))) := by ring
+
+private theorem tsum_polyExpTerm_bound {y : ℝ} (hy1 : 1 ≤ y) :
+    (∑' n : ℤ, polyExpTerm y n) ≤ (∑' n : ℤ, polyExpTerm (1/2 : ℝ) n) * Real.exp (-π * y) := by
+  rw [← tsum_mul_right]
+  refine Summable.tsum_mono (summable_polyExpTerm (by linarith))
+    ((summable_polyExpTerm (by norm_num : (0:ℝ) < 1/2)).mul_right _) (fun n => ?_)
+  unfold polyExpTerm
+  rcases eq_or_lt_of_le (@nn_sq_add n) with h0 | h0
+  · rw [← h0]; simp
+  · have hge : (2 : ℝ) ≤ (n : ℝ) ^ 2 + n := by
+      have hint : (0 : ℤ) < n ^ 2 + n := by
+        have : (0 : ℝ) < ((n ^ 2 + n : ℤ) : ℝ) := by push_cast; linarith [h0]
+        exact_mod_cast this
+      have heven : Even (n ^ 2 + n) := by
+        have := Int.even_mul_succ_self n
+        rwa [show n * (n + 1) = n ^ 2 + n by ring] at this
+      have hz : (2 : ℤ) ≤ n ^ 2 + n := by
+        obtain ⟨k, hk⟩ := heven; rw [hk] at hint ⊢; omega
+      exact_mod_cast hz
+    have hAB : Real.exp (-π * ((n : ℝ) ^ 2 + n) * y)
+        ≤ Real.exp (-π * ((n : ℝ) ^ 2 + n) * (1/2 : ℝ) + -π * y) := by
+      rw [Real.exp_le_exp]
+      nlinarith [Real.pi_pos, hy1, hge,
+        mul_nonneg (mul_nonneg Real.pi_pos.le (sub_nonneg.2 hge))
+          (by linarith : (0 : ℝ) ≤ y - 1/2)]
+    calc π * ((n : ℝ) ^ 2 + n) * Real.exp (-π * ((n : ℝ) ^ 2 + n) * y)
+        ≤ π * ((n : ℝ) ^ 2 + n) * Real.exp (-π * ((n : ℝ) ^ 2 + n) * (1/2 : ℝ) + -π * y) :=
+          mul_le_mul_of_nonneg_left hAB (by have := @nn_sq_add n; positivity)
+      _ = π * ((n : ℝ) ^ 2 + n) * Real.exp (-π * ((n : ℝ) ^ 2 + n) * (1/2 : ℝ)) * Real.exp (-π * y) := by
+          rw [Real.exp_add]; ring
+
+open Filter in
+/-- **`Θ_deriv → 0`** as `im τ → ∞` (the `n = 0, −1` terms vanish; the rest decay like `e^{−π·im}`). -/
+theorem tendsto_jacobiTheta₂DiagDeriv_atImInfty :
+    Tendsto jacobiTheta₂DiagDeriv (comap Complex.im atTop) (𝓝 0) := by
+  have hbnd : Tendsto (fun τ : ℂ => (∑' n : ℤ, polyExpTerm (1/2 : ℝ) n) * Real.exp (-π * τ.im))
+      (comap Complex.im atTop) (𝓝 0) := by
+    simpa using tendsto_exp_neg_pi_im.const_mul (∑' n : ℤ, polyExpTerm (1/2 : ℝ) n)
+  refine squeeze_zero_norm' ?_ hbnd
+  filter_upwards [tendsto_comap.eventually (eventually_ge_atTop (1 : ℝ))] with τ hτ
+  have hτ0 : 0 < τ.im := by linarith
+  rw [jacobiTheta₂DiagDeriv_tsum hτ0]
+  have hzim : ((τ / 2 : ℂ)).im = τ.im / 2 := by
+    rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.div_ofReal_im]
+  have hnorm : ∀ n : ℤ, ‖(π : ℂ) * I * n * (n + 1) * jacobiTheta₂_term n (τ / 2) τ‖
+      = polyExpTerm τ.im n := by
+    intro n
+    rw [polyExpTerm, norm_mul, norm_jacobiTheta₂_term, hzim,
+        show (π : ℂ) * I * n * (n + 1) = (((π * ((n : ℝ) ^ 2 + n) : ℝ)) : ℂ) * I by push_cast; ring,
+        norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (by have := @nn_sq_add n; positivity)]
+    congr 1; ring
+  have hsummNorm : Summable
+      (fun n : ℤ => ‖(π : ℂ) * I * n * (n + 1) * jacobiTheta₂_term n (τ / 2) τ‖) := by
+    simp_rw [hnorm]; exact summable_polyExpTerm hτ0
+  refine (norm_tsum_le_tsum_norm hsummNorm).trans ?_
+  rw [tsum_congr (fun n => hnorm n)]
+  exact tsum_polyExpTerm_bound hτ
+
+
+/-- **`θ₂'/θ₂ = πi/4 + Θ_deriv/Θ`** (`Θ = jacobiTheta₂(τ/2,τ)`), from `hasDerivAt_thetaTwo` and
+`θ₂ = e^{πiτ/4}·Θ`. -/
+theorem deriv_thetaTwo_div_eq {τ : ℂ} (hτ : 0 < τ.im) :
+    deriv thetaTwo τ / thetaTwo τ
+      = (π : ℂ) * I / 4 + jacobiTheta₂DiagDeriv τ / jacobiTheta₂ (τ / 2) τ := by
+  have hΘ : jacobiTheta₂ (τ / 2) τ ≠ 0 := (thetaTwo_ne_zero_iff τ).mp (thetaTwo_ne_zero_of_im_pos hτ)
+  have hexp : Complex.exp ((Real.pi : ℂ) * I * τ / 4) ≠ 0 := Complex.exp_ne_zero _
+  rw [(hasDerivAt_thetaTwo hτ).deriv, thetaTwo, jacobiTheta₂DiagDeriv]
+  field_simp
+
+open Filter in
+/-- **`θ₂'/θ₂ → πi/4`** as `im τ → ∞` (since `Θ_deriv → 0` and `Θ → 2 ≠ 0`). -/
+theorem tendsto_deriv_thetaTwo_div_atImInfty :
+    Tendsto (fun τ : ℂ => deriv thetaTwo τ / thetaTwo τ) (comap Complex.im atTop)
+      (𝓝 ((π : ℂ) * I / 4)) := by
+  have hΘdΘ : Tendsto (fun τ : ℂ => jacobiTheta₂DiagDeriv τ / jacobiTheta₂ (τ / 2) τ)
+      (comap Complex.im atTop) (𝓝 (0 / 2)) :=
+    tendsto_jacobiTheta₂DiagDeriv_atImInfty.div tendsto_jacobiTheta₂_diag_atImInfty (by norm_num)
+  have hsum := tendsto_const_nhds (x := (π : ℂ) * I / 4)
+    (f := comap Complex.im atTop) |>.add hΘdΘ
+  refine (hsum.congr' ?_).mono_right (by norm_num)
+  filter_upwards [tendsto_comap.eventually (eventually_gt_atTop (0 : ℝ))] with τ hτ
+  exact (deriv_thetaTwo_div_eq hτ).symm
+
+/-- **Closed form of `P`:** `P = (4·θ₂'/θ₂ − 4·θ₃'/θ₃)/θ₄⁴ − πi` (factor `θ₂⁴θ₃⁴` out of `D₆`). -/
+theorem thetaWronskianRatio_eq {τ : ℂ} (hτ : 0 < τ.im) :
+    thetaWronskianRatio τ
+      = (4 * (deriv thetaTwo τ / thetaTwo τ) - 4 * (deriv thetaThree τ / thetaThree τ))
+          / thetaFour τ ^ 4 - (π : ℂ) * I := by
+  have h2 := thetaTwo_ne_zero_of_im_pos hτ
+  have h3 := thetaThree_ne_zero_of_im_pos hτ
+  have h4 := thetaFour_ne_zero_of_im_pos hτ
+  rw [thetaWronskianRatio, thetaWronskianDefect, deriv_thetaTwo_pow4 hτ, deriv_thetaThree_pow4 hτ]
+  field_simp
+  ring
+
+open Filter in
+/-- **`P → 0` at `i∞`.** From `θ₂'/θ₂ → πi/4`, `θ₃'/θ₃ → 0`, `θ₄⁴ → 1`:
+`P → (4·πi/4 − 0)/1 − πi = 0`. This is the cusp-vanishing input for `P ≡ 0`. -/
+theorem tendsto_thetaWronskianRatio_atImInfty :
+    Tendsto thetaWronskianRatio (comap Complex.im atTop) (𝓝 0) := by
+  have hb : Tendsto (fun τ : ℂ => deriv thetaThree τ / thetaThree τ)
+      (comap Complex.im atTop) (𝓝 (0 / 1)) :=
+    tendsto_deriv_thetaThree_atImInfty.div tendsto_thetaThree_atImInfty (by norm_num)
+  have hc : Tendsto (fun τ : ℂ => thetaFour τ ^ 4) (comap Complex.im atTop) (𝓝 ((1 : ℂ) ^ 4)) :=
+    tendsto_thetaFour_atImInfty.pow 4
+  have hlim : Tendsto (fun τ : ℂ =>
+      (4 * (deriv thetaTwo τ / thetaTwo τ) - 4 * (deriv thetaThree τ / thetaThree τ))
+        / thetaFour τ ^ 4 - (π : ℂ) * I)
+      (comap Complex.im atTop)
+      (𝓝 ((4 * ((π : ℂ) * I / 4) - 4 * (0 / 1)) / (1 : ℂ) ^ 4 - (π : ℂ) * I)) :=
+    (((tendsto_deriv_thetaTwo_div_atImInfty.const_mul (4 : ℂ)).sub
+      (hb.const_mul (4 : ℂ))).div hc (by norm_num)).sub tendsto_const_nhds
+  rw [show ((4 * ((π : ℂ) * I / 4) - 4 * (0 / 1)) / (1 : ℂ) ^ 4 - (π : ℂ) * I) = 0 by ring] at hlim
+  refine hlim.congr' ?_
+  filter_upwards [tendsto_comap.eventually (eventually_gt_atTop (0 : ℝ))] with τ hτ
+  exact (thetaWronskianRatio_eq hτ).symm
 end Bottcher

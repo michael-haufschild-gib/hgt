@@ -7,12 +7,29 @@ import sys
 from pathlib import Path
 
 
-REMINDER = (
+EFFORT_REMINDER = (
     "Reminder: multi-session efforts are must-do. Never use large efforts as "
     "an excuse to avoid work. Just do it."
 )
+TRACTABLE_REMINDER = (
+    "Are you still working on the hard, high-effort tasks or stalling with "
+    "simple tasks? Do the hard high effort tasks."
+)
 
-TRIGGER_RE = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:multi-session|fabricate|research-level)(?![A-Za-z0-9_])")
+TRIGGERS = [
+    (
+        re.compile(
+            r"(?i)(?<![A-Za-z0-9_])"
+            r"(?:multi-session|fabricate|research-level|multi-day|multi-month|multi-step build)"
+            r"(?![A-Za-z0-9_])"
+        ),
+        EFFORT_REMINDER,
+    ),
+    (
+        re.compile(r"(?i)(?<![A-Za-z0-9_])tractable(?![A-Za-z0-9_])"),
+        TRACTABLE_REMINDER,
+    ),
+]
 
 
 def message_from_entry(entry):
@@ -80,25 +97,35 @@ def assistant_texts_since_last_prompt(transcript_path):
     return texts
 
 
-def should_fire_for_post_tool_use(hook_input):
+def reminders_for_texts(texts):
+    reminders = []
+    for pattern, reminder in TRIGGERS:
+        if any(pattern.search(text) for text in texts):
+            reminders.append(reminder)
+    return "\n\n".join(reminders)
+
+
+def post_tool_use_reminder(hook_input):
     transcript_path = hook_input.get("transcript_path", "")
     if not transcript_path:
-        return False
+        return ""
 
-    return any(TRIGGER_RE.search(text) for text in assistant_texts_since_last_prompt(transcript_path))
+    return reminders_for_texts(assistant_texts_since_last_prompt(transcript_path))
 
 
-def should_fire_for_stop(hook_input):
+def stop_reminder(hook_input):
     last_message = hook_input.get("last_assistant_message")
-    if isinstance(last_message, str) and TRIGGER_RE.search(last_message):
-        return True
+    if isinstance(last_message, str):
+        reminder = reminders_for_texts([last_message])
+        if reminder:
+            return reminder
 
     transcript_path = hook_input.get("transcript_path", "")
     if not transcript_path:
-        return False
+        return ""
 
     texts = assistant_texts_since_last_prompt(transcript_path)
-    return bool(texts and TRIGGER_RE.search(texts[-1]))
+    return reminders_for_texts(texts[-1:]) if texts else ""
 
 
 def main():
@@ -110,13 +137,13 @@ def main():
     hook_event = hook_input.get("hook_event_name", "")
 
     if hook_event == "PostToolUse":
-        should_fire = should_fire_for_post_tool_use(hook_input)
+        reminder = post_tool_use_reminder(hook_input)
     elif hook_event == "Stop":
-        should_fire = should_fire_for_stop(hook_input)
+        reminder = stop_reminder(hook_input)
     else:
         return 0
 
-    if not should_fire:
+    if not reminder:
         return 0
 
     print(
@@ -124,7 +151,7 @@ def main():
             {
                 "hookSpecificOutput": {
                     "hookEventName": hook_event,
-                    "additionalContext": REMINDER,
+                    "additionalContext": reminder,
                 }
             }
         )

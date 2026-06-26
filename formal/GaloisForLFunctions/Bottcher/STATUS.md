@@ -2209,3 +2209,102 @@ holo' = MDiff P from D₆ holo + θ₂θ₃θ₄≠0; bdd_at_cusps). (2) cusp li
   (`ζ·φ_c(z)` lands in the annulus image, where `ψ` is defined). The far-field deck map exists; the
   remaining L5 work is the inward continuation past the critical-value level to the cylinders + `φ_{c₂}`
   fixing (L1) + germ assembly.
+
+## 2026-06-26 — Analytic far-field deck map (CoverDeckScaling.lean, axiom-clean)
+- `exists_far_deckMap` — `g = ψ(ζ·φ_c)` is realized as an ANALYTIC self-map on the deep far field
+  (`AnalyticAt g`, `φ_c∘g = ζ·φ_c`, `f_c^[n]∘g = f_c^[n]`), from L3 inverse `ψ` + surjectivity +
+  `exists_deck_image`. This is the `φ_{c₁}`-scaling + projection-fixing HALF of the `hliftF` deck map,
+  built. The lone remaining `hliftF` clause is `φ_{c₂}∘g = φ_{c₂}`, which the far-field `g` does NOT
+  satisfy (the far-field deck loop encloses both Julia sets). It needs the deck loop on a depth-n
+  c₁-cylinder that ALSO lies in the c₂-basin (so `f_{c₂}^[m]`(loop) ⊆ escapeOpen) — then L1
+  `pathInt_dlog_lift_closed_eq_zero` gives the zero c₂-period ⟹ `φ_{c₂}` fixed. That cylinder-in-c₂-basin
+  geometry is the genuine remaining analytic input; everything else (all algebra + the φ_{c₁} deck) is built.
+
+## 2026-06-26 — K_{c₂}-free cylinder seed (JuliaSeparation.lean, axiom-clean)
+- `exists_point_filledJulia_symmDiff` — `c₁≠c₂ ⟹ ∃ z` in the symmetric difference of `K_{c₁}, K_{c₂}`
+  (from rigidity `c_eq_of_filledJulia_eq'`).
+- `exists_ball_filledJulia_one_not_other` — hence a point `z₀ ∈ K_{c₁}` with a ball around it DISJOINT
+  from `K_{c₂}` (in the c₂-basin, where φ_{c₂} is single-valued). This is the K_{c₂}-free anchor: a c₁-deck
+  loop inside this ball has zero φ_{c₂}-period (L1) ⟹ fixes φ_{c₂}, while winding a c₁-cylinder scales
+  φ_{c₁}. Remaining: the c₁-cylinder loop inside the ball + wire L1 + germ bridges + q62_disconnected_both.
+
+## Disconnected case — collapsed to one geometric input + hyperbolicity foundation (2026-06-26)
+
+The disconnected/disconnected `hDisc` discharge is now reduced to a single sharply-stated geometric
+fact, with the surrounding algebra fully discharged and the hyperbolicity foundation laid.
+
+NEW, axiom-clean, in-tree:
+- `JuliaSeparation.exists_ball_filledJulia_one_not_other` — `K_{c₂}`-free ball anchored at a
+  `K_{c₁}`-point (the monodromy carrier; the c₁-cylinder loop lives here, fixing `φ_{c₂}` by L1).
+- `JuliaSeparation.exists_ball_zero_filledJulia_free` / `exists_ball_zero_both_free` — single-valued
+  chart at the figure-eight saddle `0` (`0 ∉ K_c` for disconnected `c`).
+- `Q62RadicalReduction.q62_disconnected_of_radical_data` — **collapses** the whole disconnected/
+  disconnected `NoRelation` to: per depth `d`, a base `B ∋ φ_{c₂}` with `a = φ_{c₁}^{2^k}` (`k≥1`,
+  `d<2^k`) NOT A SQUARE in `B`. All Kummer algebra (Capelli `p=2` irreducibility, primitive `2^k`-root
+  lifted `ℂ→ℂ(z)→B`, `−1=i²`) discharged via `kummer_irreducible`. Transcendence of `φ_{c₂}` is a
+  (symmetric, separately dischargeable) hypothesis.
+- `JuliaExpansion.exists_min_norm_filledJulia_pos` / `norm_deriv_iterate_filledJulia_ge` — `K_c` is
+  bounded away from `0` (`δ>0`) and `‖(f_c^[n])'z‖ ≥ (2δ)^n` on `K_c`: the multiplicative expansion
+  foundation for hyperbolicity.
+
+THE SINGLE REMAINING GEOMETRIC CRUX (sharply isolated): for each `k`, a `c₁`-cylinder loop `γ` with
+PRIMITIVE `2^k` `φ_{c₁}`-monodromy (so `a=φ_{c₁}^{2^k}` is not a square — `not_square_of_period_ftc`
+from `∮_γ d log φ_{c₁}` dyadic via `winding_value_of_iterate_loop`) lying in a `K_{c₂}`-free ball (so
+`∮_γ d log φ_{c₂}=0` — L1). The order-2 figure-eight lobe loop gives `k=1`; the UNBOUNDED order needs
+the depth-`k` Cantor cylinders shrinking onto `K_{c₁}`. That shrinking is the Branner–Hubbard / Mañé
+hyperbolicity step — its derivative-expansion foundation is now `JuliaExpansion`; the remaining work is
+upgrading `(2δ)^n` to genuine `λ>1` expansion (orbits can't dwell near `0` since the critical orbit
+escapes) and the modulus/diameter→0 estimate for the nested cylinders.
+
+### Hyperbolicity foundation — cocycle + bootstrap (2026-06-26, cont.)
+
+`JuliaExpansion.lean` now carries the full multiplicative structure, all axiom-clean:
+- `disconnected_expansion` — UNCONDITIONAL: for disconnected `c`, `∃ δ>0, ‖(f_c^[n])'z‖ ≥ (2δ)^n` on
+  `K_c` (rate `δ` = min modulus, positive since `0∉K_c`). Genuine uniform expansion already when `2δ>1`.
+- `deriv_iterate_quadratic_cocycle` / `norm_deriv_iterate_filledJulia_mul` — the derivative cocycle
+  `(f^[N+M])' = (f^[N])'·(f^[M])∘f^[N]`, giving Fekete superadditivity of `log min‖(f^[N])'‖`.
+- `uniform_expansion_of_one_expanding_iterate` — bootstraps a SINGLE expanding iterate
+  (`min_{K_c}‖(f^[N₀])'‖ ≥ L`) to `≥ L^m` at every multiple `m·N₀`. **Reduces full hyperbolicity (hence
+  the shrinking depth-`k` Cantor cylinders) to the lone Mañé input: one expanding iterate exists on
+  `K_c`** (true because the critical orbit escapes; orbits in `K_c` cannot dwell near `0`).
+
+Net: the disconnected/disconnected case is now pinched between two sharply-stated open inputs —
+(geometry) the depth-`k` cylinder loop in a `K_{c₂}`-free ball feeding
+`q62_disconnected_of_radical_data`, and (dynamics) the single expanding iterate feeding
+`uniform_expansion_of_one_expanding_iterate` — with all algebra and all multiplicative structure built.
+NOTE: aggregator currently fails ONLY on `ThetaWronskian.lean` (collaborator WIP, syntax error l.532);
+all `Julia*`/`Q62RadicalReduction` files build independently and are axiom-clean.
+
+### P→0 cusp asymptotics — theta DERIVATIVE limits landed (2026-06-26, cont.)
+
+ThetaWronskian.lean now also has (axiom-clean): `tendsto_deriv_thetaThree_atImInfty` (θ₃'→0 via the
+snd_term series squeezed by C·e^{−π·im/2}); `tendsto_jacobiTheta₂_diag_atImInfty` (Θ(τ/2,τ)→2,
+extracting the two unit terms n=0,−1 via Summable.sum_add_tsum_compl + Summable.tsum_subtype_le);
+`jacobiTheta₂_term_fderiv_diag` (term_fderiv(1/2,1)=πin(n+1)·term) + `jacobiTheta₂DiagDeriv` + its
+tsum-form. These are the building blocks of `P → 0`.
+
+REMAINING for `P→0` (then P:ModularForm 𝒮ℒ 0 → levelOne_weight_zero_const → ThetaWronskian23):
+- `Θ_deriv → 0`: math fully worked (‖πin(n+1)term‖=π(n²+n)e^{−π(n²+n)im}, n=0,−1 vanish, squeeze by
+  C·e^{−π·im}) BUT `Summable.tsum_mono` on the heavy theta expressions hits an EXPONENTIAL isDefEq
+  blowup (times out even at 1M heartbeats — an elaboration pathology, not a math gap). FIX next: abstract
+  the summand to a named `def f n := π(n²+n)e^{−π(n²+n)y}` so isDefEq compares the atom, or bound via an
+  explicit `HasSum`/`tsum_le_tsum_of_inj` route instead of `tsum_mono`.
+- θ₂'/θ₂ → πi/4: from hasDerivAt_thetaTwo, θ₂'/θ₂ = πi/4 + Θ_deriv/Θ → πi/4 (Θ→2 bounds Θ away from 0,
+  Θ_deriv→0). Then (θ₂⁴)'/θ₂⁴ = 4θ₂'/θ₂ → πi.
+- P = (θ₂⁴)'/(θ₂⁴θ₄⁴) − (θ₃⁴)'/(θ₃⁴θ₄⁴) − πi → πi/1 − 0 − πi = 0.
+
+### Mañé foundation — critical-orbit separation (2026-06-26, cont.)
+
+`JuliaExpansion.exists_dist_filledJulia_critical_orbit_pos` (axiom-clean): for disconnected `c`,
+`∃ ρ>0, ∀ z∈K_c ∀ k, ρ ≤ ‖z − f_c^[k] 0‖`. `K_c` sits at uniform positive distance from the ENTIRE
+critical orbit (tail escapes past `R_c` and stays there by `norm_iterate_ge`; the finitely many early
+points are each at positive `infDist` from compact `K_c`). This is the geometric input that keeps the
+Poincaré density of `Ω = ℂ ∖ {critical orbit}` bounded on `K_c`, the missing piece for the Mañé step
+"one expanding iterate exists on `K_c`" → `uniform_expansion_of_one_expanding_iterate` → shrinking
+Cantor cylinders → `q62_disconnected_of_radical_data`.
+
+REMAINING (genuinely multi-session, needs new infrastructure): (1) the Mañé expansion itself —
+Schwarz–Pick on the Poincaré metric of `Ω` (NOT in mathlib; must be built) gives `f` strictly expanding
+on the compact `K_c ⊆ Ω`, i.e. one expanding iterate; (2) the germ-path-integral bridge turning a
+shrunk depth-`k` cylinder loop into the meroField non-squareness `q62_disconnected_of_radical_data`
+consumes; (3) connected case `hRigid` (E–vS or `htip`). Proof NOT complete — these are the open fronts.

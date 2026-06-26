@@ -95,6 +95,9 @@ import GaloisForLFunctions.Bottcher.CoverDeckScaling
 import GaloisForLFunctions.Bottcher.Univalence
 import GaloisForLFunctions.Bottcher.FarFieldUnivalence
 import GaloisForLFunctions.Bottcher.FarFieldSurjective
+import GaloisForLFunctions.Bottcher.JuliaSeparation
+import GaloisForLFunctions.Bottcher.JuliaExpansion
+import GaloisForLFunctions.Bottcher.Q62RadicalReduction
 import GaloisForLFunctions.Bottcher.QuarticSlash
 import GaloisForLFunctions.Bottcher.QuarticModularForm
 import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional

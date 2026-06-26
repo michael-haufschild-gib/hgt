@@ -122,4 +122,40 @@ theorem exists_deck_image {c : ℂ} {R : ℝ} (n : ℕ) {ζ z : ℂ}
     have h := hz'ge; rw [hnorm] at h; linarith [hb3]
   exact ⟨z', hz'far, hz'eq, iterate_eq_of_bottcherCoord_scaling n hR1 hR2 hz hz'far hζ hz'eq⟩
 
+/-- **The analytic far-field deck map** `g(z) = ψ(ζ·φ_c z)`. For a `2ⁿ`-th root of unity `ζ` and `z`
+whose Böttcher value is deep enough, `g` is analytic at `z`, lands in the far field, scales the Böttcher
+coordinate by `ζ` (`φ_c(g z) = ζ·φ_c z`), and fixes the projection `f_c^[n]` (`f_c^[n](g z) = f_c^[n] z`).
+This realizes the deck transformation of `f_c^[n]` as a genuine analytic self-map: the `φ_{c₁}`-scaling
+and projection-fixing clauses of `hliftF`. (The remaining `hliftF` clause, `φ_{c₂}∘g = φ_{c₂}`, is the
+cylinder-loop input from L1 `pathInt_dlog_lift_closed_eq_zero`, which the FAR-FIELD deck map does NOT
+satisfy — there the loop encloses both Julia sets — and is the genuine remaining analytic construction.) -/
+theorem exists_far_deckMap (c : ℂ) (n : ℕ) {ζ : ℂ} (hζ : ζ ^ (2 ^ n) = 1) (hζ1 : ‖ζ‖ = 1)
+    {R : ℝ} (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2) :
+    ∃ ψ : ℂ → ℂ, ∀ z : ℂ, R < ‖z‖ →
+        768 * ‖c‖ + 64 < ‖bottcherCoord c z‖ ^ 2 → 8 * max 2 ‖c‖ < ‖bottcherCoord c z‖ →
+        2 * R < ‖bottcherCoord c z‖ →
+        AnalyticAt ℂ (fun w => ψ (ζ * bottcherCoord c w)) z ∧
+        bottcherCoord c (ψ (ζ * bottcherCoord c z)) = ζ * bottcherCoord c z ∧
+        (quadratic c)^[n] (ψ (ζ * bottcherCoord c z)) = (quadratic c)^[n] z := by
+  obtain ⟨ψ, hψleft, hψan, hψright⟩ := exists_analytic_inverse_far (c := c) hR1 hR2
+  refine ⟨ψ, fun z hz hb1 hb2 hb3 => ?_⟩
+  -- the deck partner z' (far field) with φ_c z' = ζ φ_c z
+  obtain ⟨z', hz'far, hz'eq, hz'iter⟩ := exists_deck_image n hζ hζ1 hR1 hR2 hz hb1 hb2 hb3
+  -- ψ at ζ φ_c z = φ_c z'  inverts to z'
+  have hψval : ψ (ζ * bottcherCoord c z) = z' := by rw [← hz'eq]; exact hψleft z' hz'far
+  refine ⟨?_, ?_, ?_⟩
+  · -- analytic: ψ analytic at φ_c z' (= ζ φ_c z), composed with the analytic ζ·φ_c
+    have hφan : AnalyticAt ℂ (fun w => ζ * bottcherCoord c w) z := by
+      have : max 2 ‖c‖ < ‖z‖ := lt_trans (by nlinarith [le_max_left 2 ‖c‖, norm_nonneg c]) hz
+      exact analyticAt_const.mul (analyticOnNhd_bottcherCoord_full c z this)
+    have hψatz' : AnalyticAt ℂ ψ (ζ * bottcherCoord c z) := by
+      rw [← hz'eq]; exact hψan z' hz'far
+    have hcomp : AnalyticAt ℂ (ψ ∘ (fun w => ζ * bottcherCoord c w)) z := by
+      apply AnalyticAt.comp
+      · exact hψatz'
+      · exact hφan
+    exact hcomp
+  · rw [hψval]; exact hz'eq
+  · rw [hψval]; exact hz'iter
+
 end Bottcher
