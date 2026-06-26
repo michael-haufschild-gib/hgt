@@ -86,4 +86,63 @@ theorem quarticDefectH_slash_zeroAtImInfty (γ : SL(2, ℤ)) :
   · rw [h]; exact quarticDefectH_zeroAtImInfty
   · rw [h]; exact quarticDefectH_zeroAtImInfty.neg
 
+/-- `F² = (θ₃⁴−θ₂⁴−θ₄⁴)²` is `SL(2,ℤ)`-slash-invariant of weight `4`: from `F∣[2]γ = ±F`,
+`F²∣[4]γ = (±F)² = F²` (the sign squares away). -/
+theorem quarticDefectH_sq_slash_SL2Z (γ : SL(2, ℤ)) :
+    (quarticDefectH ^ 2) ∣[(4 : ℤ)] γ = quarticDefectH ^ 2 := by
+  rw [pow_two, show (4 : ℤ) = 2 + 2 by norm_num, ModularForm.mul_slash_SL2]
+  rcases quarticDefectH_slash_pm γ with h | h <;> rw [h] <;> ring
+
+/-- `F²` as a weight-`4` cusp form for `SL(2,ℤ)`: holomorphic (`F` is), `SL(2,ℤ)`-invariant
+(`quarticDefectH_sq_slash_SL2Z`), and zero at the cusp (`F → 0`, so `F² → 0`). -/
+noncomputable def quarticDefectSq : CuspForm 𝒮ℒ 4 where
+  toFun := quarticDefectH ^ 2
+  slash_action_eq' A hA := by
+    obtain ⟨γ, rfl⟩ := hA
+    exact quarticDefectH_sq_slash_SL2Z γ
+  holo' := quarticDefectH_mdiff.pow 2
+  zero_at_cusps' hc := by
+    rw [OnePoint.isZeroAt_iff_forall_SL2Z hc]
+    intro γ _
+    rw [quarticDefectH_sq_slash_SL2Z γ]
+    show Filter.Tendsto (quarticDefectH ^ 2) atImInfty (nhds 0)
+    simpa using Filter.Tendsto.pow quarticDefectH_zeroAtImInfty 2
+
+/-- **The Jacobi quartic identity** `θ₃⁴ = θ₂⁴ + θ₄⁴`, equivalently `F ≡ 0` on `ℍ`.
+
+`F²` is a weight-`4` cusp form for `SL(2,ℤ)`, and the space `S₄(SL(2,ℤ))` of weight-`4` cusp forms
+is zero-dimensional (`CuspForm.rank_eq_zero_of_weight_lt_twelve`, since `4 < 12`). Hence `F² ≡ 0`,
+and so `F ≡ 0`. This is the theta-side input giving "`λ` omits `1`", closing
+`λ : ℍ → ℂ ∖ {0,1}` ← (a) of the three-value Montel reduction. -/
+theorem quarticDefect_eq_zero {σ : ℂ} (hσ : 0 < σ.im) : quarticDefect σ = 0 := by
+  have h0 : quarticDefectSq = 0 :=
+    rank_zero_iff_forall_zero.mp
+      (CuspForm.rank_eq_zero_of_weight_lt_twelve (by norm_num)) quarticDefectSq
+  have hz : (quarticDefect σ) ^ 2 = 0 := by
+    have key : quarticDefectSq ⟨σ, hσ⟩ = (0 : CuspForm 𝒮ℒ 4) ⟨σ, hσ⟩ :=
+      DFunLike.congr_fun h0 _
+    rw [CuspForm.zero_apply] at key
+    exact key
+  exact (pow_eq_zero_iff (by norm_num : (2 : ℕ) ≠ 0)).mp hz
+
 end Bottcher2Cusp
+
+namespace Bottcher
+
+/-- **`λ` omits `1`, unconditionally.** The Jacobi quartic identity is now a theorem
+(`Bottcher2Cusp.quarticDefect_eq_zero`), so the hypothesis of `modularLambda_ne_one_of_quartic`
+is discharged: for `0 < τ.im`, `modularLambda τ ≠ 1`. -/
+theorem modularLambda_ne_one {τ : ℂ} (hτ : 0 < τ.im) : modularLambda τ ≠ 1 :=
+  modularLambda_ne_one_of_quartic hτ (Bottcher2Cusp.quarticDefect_eq_zero hτ)
+
+/-- **`λ : ℍ → ℂ ∖ {0,1}`, unconditionally.** Both omitted values, with the quartic identity proven. -/
+theorem modularLambda_omits_zero_one' {τ : ℂ} (hτ : 0 < τ.im) :
+    modularLambda τ ≠ 0 ∧ modularLambda τ ≠ 1 :=
+  modularLambda_omits_zero_one (fun σ hσ => Bottcher2Cusp.quarticDefect_eq_zero hσ) hτ
+
+/-- The range condition as a single membership: `λ τ ∈ ℂ ∖ {0,1}`, unconditionally. -/
+theorem modularLambda_mem_compl_zero_one' {τ : ℂ} (hτ : 0 < τ.im) :
+    modularLambda τ ∈ ({0, 1} : Set ℂ)ᶜ :=
+  modularLambda_mem_compl_zero_one (fun σ hσ => Bottcher2Cusp.quarticDefect_eq_zero hσ) hτ
+
+end Bottcher

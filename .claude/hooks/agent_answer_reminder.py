@@ -12,7 +12,7 @@ REMINDER = (
     "an excuse to avoid work. Just do it."
 )
 
-TRIGGER_RE = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:multi-session|fabricate)(?![A-Za-z0-9_])")
+TRIGGER_RE = re.compile(r"(?i)(?<![A-Za-z0-9_])(?:multi-session|fabricate|research-level)(?![A-Za-z0-9_])")
 
 
 def message_from_entry(entry):

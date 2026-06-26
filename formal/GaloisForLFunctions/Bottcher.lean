@@ -90,5 +90,8 @@ import GaloisForLFunctions.Bottcher.QuarticCusp
 import GaloisForLFunctions.Bottcher.ModularLambdaModular
 import GaloisForLFunctions.Bottcher.Gamma2Generators
 import GaloisForLFunctions.Bottcher.GreenLogDeriv
+import GaloisForLFunctions.Bottcher.GlobalBasinBranch
 import GaloisForLFunctions.Bottcher.QuarticSlash
 import GaloisForLFunctions.Bottcher.QuarticModularForm
+import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional
+import GaloisForLFunctions.Bottcher.ModularLambdaLocalBiholo

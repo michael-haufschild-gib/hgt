@@ -19,9 +19,11 @@ dendrite Julia point supplies both `hβmod` (`‖β‖ = exp G_c`) and — ancho
 -/
 import GaloisForLFunctions.Bottcher.BasinBranching
 import GaloisForLFunctions.Bottcher.BottcherCoord
+import GaloisForLFunctions.Bottcher.PeriodicPoints
 import Mathlib.Analysis.Complex.Harmonic.Analytic
 import Mathlib.Analysis.Complex.HasPrimitives
 import Mathlib.Analysis.InnerProductSpace.Harmonic.Constructions
+import Mathlib.MeasureTheory.Integral.CurveIntegral.Poincare
 
 open Complex Set Topology Filter
 
@@ -426,5 +428,90 @@ theorem exists_primitive_glue_chain_of_disjoint {f : ℂ → ℂ} (U : ℕ → S
   refine exists_primitive_glue_chain U g hUo hg (fun i => ?_) k
   rw [prefix_inter_eq_of_disjoint (hdisj i)]
   exact hover i
+
+/-- `filledJulia c` is nonempty (it contains a fixed point of `f_c`). -/
+theorem nonempty_filledJulia (c : ℂ) : (filledJulia c).Nonempty := by
+  obtain ⟨z, hz⟩ := exists_periodic_point c 1 (le_refl 1)
+  have hfix : quadratic c z = z := by simpa using hz
+  refine ⟨z, ?_⟩
+  rw [mem_filledJulia_iff, isBounded_iff_forall_norm_le]
+  exact ⟨‖z‖, fun x hx => by obtain ⟨n, rfl⟩ := hx; simp [Function.iterate_fixed hfix n]⟩
+
+/-- **Unconditional Böttcher branch with modulus on the right half-plane — discharges the `hF` hypothesis.**
+The half-plane `R = {Re z > M}` with `M = max Re over K_c` is convex and disjoint from `K_c` (so `⊆` basin);
+mathlib's **convex** Poincaré lemma `Convex.exists_forall_hasDerivWithinAt` gives a primitive of `ω` on `R`
+with NO assumption, and `exists_bottcherBranch_of_primitive` yields a single-valued branch `β`, analytic,
+nonvanishing, with the Böttcher modulus `‖β‖ = exp(greenFunctionDyn c)`. This is the first unconditional
+construction of the continued Böttcher coordinate (the `hF`/primitive input is now eliminated on `R`); the
+max-Re point of `K_c` lies on `∂R ∩ J_c`, the anchor for the natural-boundary contradiction. -/
+theorem exists_bottcherBranch_rightHalfplane (c : ℂ) :
+    ∃ (M : ℝ) (β : ℂ → ℂ),
+      (∀ w ∈ filledJulia c, w.re ≤ M) ∧
+      AnalyticOnNhd ℂ β {z | M < z.re} ∧ (∀ z, M < z.re → β z ≠ 0) ∧
+      (∀ z, M < z.re → ‖β z‖ = Real.exp (greenFunctionDyn c z)) := by
+  obtain ⟨z₀, hz₀K, hz₀max⟩ := (isCompact_filledJulia c).exists_isMaxOn (nonempty_filledJulia c)
+    Complex.continuous_re.continuousOn
+  set M : ℝ := z₀.re with hM
+  have hmax : ∀ w ∈ filledJulia c, w.re ≤ M := fun w hw => hz₀max hw
+  set R : Set ℂ := {z | M < z.re} with hR
+  have hRconv : Convex ℝ R := convex_halfSpace_re_gt M
+  have hRo : IsOpen R := isOpen_lt continuous_const Complex.continuous_re
+  have hRb : R ⊆ (filledJulia c)ᶜ := fun z hz hzK => absurd (hmax z hzK) (not_le.mpr hz)
+  have hTR : ((M + 1 : ℝ) : ℂ) ∈ R := by
+    show M < ((M + 1 : ℝ) : ℂ).re; rw [Complex.ofReal_re]; linarith
+  have hωdiff : DifferentiableOn ℂ (greenLogDeriv c) R := (differentiableOn_greenLogDeriv c).mono hRb
+  obtain ⟨F, hF'⟩ := hRconv.exists_forall_hasDerivWithinAt hωdiff
+  have hF : ∀ z ∈ R, HasDerivAt F (greenLogDeriv c z) z :=
+    fun z hz => (hF' z hz).hasDerivAt (hRo.mem_nhds hz)
+  obtain ⟨β, hβan, hβ0, hβmod⟩ :=
+    exists_bottcherBranch_of_primitive hRo hRconv.isPreconnected hRb hF hTR
+  exact ⟨M, β, hmax, hβan, hβ0, hβmod⟩
+
+/-- **Unconditional FULL Böttcher branch on the right half-plane (modulus + relation).** As
+`exists_bottcherBranch_rightHalfplane`, but the branch `β` additionally satisfies any relation
+`P(z, bottcherCoord c z) = 0` that holds on `escapeOpen ∩ slitPlane` — anchored by a small escape ball
+inside `R` (`exists_fullBottcherBranch_of_primitive`). This is the unconditional single-valued `φ_c` on `R`
+carrying everything `false_of_basin_branch_dendrite` needs on the basin side, with NO primitive hypothesis. -/
+theorem exists_fullBottcherBranch_rightHalfplane (c : ℂ)
+    (P : Polynomial (Polynomial ℂ))
+    (hrel : ∀ z ∈ escapeOpen c ∩ Complex.slitPlane,
+        ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c z) ^ i = 0) :
+    ∃ (M : ℝ) (β : ℂ → ℂ),
+      (∀ w ∈ filledJulia c, w.re ≤ M) ∧
+      AnalyticOnNhd ℂ β {z | M < z.re} ∧ (∀ z, M < z.re → β z ≠ 0) ∧
+      (∀ z, M < z.re → ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
+      (∀ z, M < z.re → ∑ i ∈ P.support, (P.coeff i).aeval z * (β z) ^ i = 0) := by
+  obtain ⟨z₀, hz₀K, hz₀max⟩ := (isCompact_filledJulia c).exists_isMaxOn (nonempty_filledJulia c)
+    Complex.continuous_re.continuousOn
+  set M : ℝ := z₀.re with hM
+  have hmax : ∀ w ∈ filledJulia c, w.re ≤ M := fun w hw => hz₀max hw
+  set R : Set ℂ := {z | M < z.re} with hR
+  have hRconv : Convex ℝ R := convex_halfSpace_re_gt M
+  have hRo : IsOpen R := isOpen_lt continuous_const Complex.continuous_re
+  have hRb : R ⊆ (filledJulia c)ᶜ := fun z hz hzK => absurd (hmax z hzK) (not_le.mpr hz)
+  set MM : ℝ := max 2 ‖c‖ with hMM
+  set T : ℝ := max M MM + 1 with hT
+  have hTM : M < T := by have := le_max_left M MM; rw [hT]; linarith
+  have hTMM : MM < T := by have := le_max_right M MM; rw [hT]; linarith
+  have hTpos : 0 < T := by
+    have h2 : (2:ℝ) ≤ MM := le_max_left 2 ‖c‖
+    have := le_max_right M MM; rw [hT]; linarith
+  have hTmem : (T : ℂ) ∈ R ∩ escapeOpen c ∩ Complex.slitPlane := by
+    refine ⟨⟨?_, ?_⟩, ofReal_mem_slitPlane.mpr hTpos⟩
+    · show M < ((T:ℝ):ℂ).re; rw [Complex.ofReal_re]; exact hTM
+    · show MM < ‖((T:ℝ):ℂ)‖; rw [Complex.norm_real, Real.norm_of_nonneg hTpos.le]; exact hTMM
+  have hOpen : IsOpen (R ∩ escapeOpen c ∩ Complex.slitPlane) :=
+    (hRo.inter (isOpen_escapeOpen c)).inter Complex.isOpen_slitPlane
+  obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.mp hOpen _ hTmem
+  have hωdiff : DifferentiableOn ℂ (greenLogDeriv c) R := (differentiableOn_greenLogDeriv c).mono hRb
+  obtain ⟨F, hF'⟩ := hRconv.exists_forall_hasDerivWithinAt hωdiff
+  have hF : ∀ z ∈ R, HasDerivAt F (greenLogDeriv c z) z :=
+    fun z hz => (hF' z hz).hasDerivAt (hRo.mem_nhds hz)
+  obtain ⟨β, hβan, hβ0, hβmod, hβrel⟩ := exists_fullBottcherBranch_of_primitive hRo
+    hRconv.isPreconnected hRb hF (E := Metric.ball (T : ℂ) ρ)
+    (fun z hz => ((hball hz).1).1) (fun z hz => ⟨((hball hz).1).2, (hball hz).2⟩)
+    Metric.isOpen_ball (convex_ball _ _).isPreconnected (Metric.mem_ball_self hρ) P
+    (fun z hz => hrel z ⟨((hball hz).1).2, (hball hz).2⟩)
+  exact ⟨M, β, hmax, hβan, hβ0, hβmod, hβrel⟩
 
 end Bottcher

@@ -1996,3 +1996,92 @@ with non-adjacent balls disjoint ⟹ prefix-overlap = consecutive lens = connect
 `exists_primitive_greenLogDeriv_chain` → `exists_fullBottcherBranch_of_primitive` → `β`, modulus spread to
 `ball z₀ r ∩ basin`, `dendrite_branch_limit` → `false_of_basin_branch_dendrite`. `hDisc` reuses the same
 primitive machinery on the 2ⁿ-cover. Remaining: the arc/cover construction (elementary topology) + `hrig` (E–vS).
+
+---
+
+## hF/primitive hypothesis DISCHARGED unconditionally on the right half-plane, 2026-06-26
+
+Using mathlib's **convex** Poincaré lemma `Convex.exists_forall_hasDerivWithinAt` (in `CurveIntegral/Poincare.lean`):
+- `nonempty_filledJulia` — `K_c` contains a fixed point (axiom-clean).
+- `exists_bottcherBranch_rightHalfplane` — UNCONDITIONAL: on `R = {Re z > M}` (`M = max Re over K_c`,
+  convex, `⊆` basin), `ω = greenLogDeriv` has a primitive (convex Poincaré, NO hypothesis), so there is a
+  single-valued branch `β`, analytic, nonvanishing, with `‖β‖ = exp(greenFunctionDyn c)`. The `hF`/primitive
+  hypothesis of `exists_bottcherBranch_of_primitive` is thereby ELIMINATED on a concrete basin region.
+
+This is the first unconditional construction of the continued single-valued Böttcher coordinate (modulus side).
+The max-Re point `z₀ ∈ ∂R ∩ J_c` is the natural-boundary anchor. Remaining to close the dendrite sub-case:
+the relation-carrying version (escape-ball anchor inside `R`), match the algebraic branch `g` on
+`R ∩ ball(z₀,r) ∩ basin`, spread the modulus (`norm_eq_exp_green_of_eqOn_open`) to `ball(z₀,r) ∩ basin`,
+then `false_of_basin_branch_dendrite`. The interior sub-case (`K_c` has interior — touches density of
+hyperbolicity) and `hrig` (E–vS) remain genuinely harder.
+
+---
+
+## Three-value Montel sub-lane — progress 2026-06-26 (Jacobi identity PROVEN)
+
+The fundamental normality test (`OmittingNormal.normal_of_omitting_lift`, proven) reduces three-value
+Montel to: the modular `λ` provides holomorphic lifts of omitting families = `IsCoveringMap λ` onto
+`ℂ∖{0,1}`. Two inputs feed that covering: (a) `λ : ℍ → ℂ∖{0,1}` well-defined; (b) the covering itself.
+
+**DONE this session (all axiom-clean `[propext, Classical.choice, Quot.sound]`, zero sorry):**
+- `Bottcher2Cusp.quarticDefect_eq_zero` (QuarticModularForm.lean) — **the Jacobi quartic identity
+  `F = θ₃⁴−θ₂⁴−θ₄⁴ ≡ 0` is now a THEOREM**, no longer a hypothesis. Route that worked cleanly:
+  `F∣[2]γ = ±F` for all `γ∈SL(2,ℤ)` (`quarticDefectH_slash_pm`) ⟹ `F²∣[4]γ = F²` ⟹
+  `F² ∈ CuspForm 𝒮ℒ 4`; and `S₄(SL(2,ℤ)) = 0` (`CuspForm.rank_eq_zero_of_weight_lt_twelve`, 4<12)
+  forces `F² ≡ 0`, hence `F ≡ 0`. (The `F⁶→weight-12→order≥2` / NormTrace route was avoidable.)
+- `Bottcher.modularLambda_omits_zero_one'` / `_mem_compl_zero_one'` — **input (a): `λ : ℍ → ℂ∖{0,1}`
+  unconditionally** (the `hquartic` hypothesis of `QuarticCusp` is discharged).
+- `ModularLambdaUnconditional.lean` — the `Γ(2)`-Hauptmodul / anharmonic deck relations, now
+  unconditional: `modularLambda_S'` (`λ(−1/τ)=1−λ`), `_T_mul'`/`_T_eq'` (`λ↦λ/(λ−1)`),
+  `_anharmonic'`, `_at_I'` (`λ(I)=1/2`).
+
+**NEXT BRICK (precisely located): `λ' ≠ 0` on `ℍ` (λ is a local biholomorphism).**
+Reduction done on paper: `λ = (θ₂/θ₃)⁴ ⟹ λ' = 4θ₂³·W₂₃/θ₃⁵` where `W₂₃ := θ₂'θ₃ − θ₂θ₃'`. With
+`θ₂,θ₃,θ₄ ≠ 0` (have `thetaProduct_ne_zero_of_im_pos`) and `λ∉{0,1}` (have), `λ'≠0` ⟺ the single
+classical theta **Wronskian identity**
+        `W₂₃ = θ₂'θ₃ − θ₂θ₃' = (πi/4)·θ₂θ₃θ₄⁴`   (equivalently `λ'/λ = πi·θ₄⁴`).
+This is the gate. The `dim = 0/1` q-expansion trick used for the Jacobi identity does NOT transfer
+(W₂₃ and θ₂θ₃θ₄⁴ are weight-3 HALF-integral forms; mathlib lacks half-integral weight). Two attack
+routes for next session: (i) direct from the theta-sum derivatives (`hasDerivAt_thetaTwo/Three`) +
+heat equation (`ThetaHeat.tsum_thetaHeatTerm_eq`) — hard sum manipulation; (ii) reduce to the Jacobi
+derivative formula `θ₁'(0)=πθ₂θ₃θ₄` and a known nullwert log-derivative relation.
+
+**REMAINING after λ'≠0 (the deep walls):**
+- `IsCoveringMap λ`. Decomposes `λ = (homeo) ∘ (ℍ → ℍ/Γ(2))`. mathlib has
+  `isQuotientCoveringMap_quotientMk_of_properlyDiscontinuousSMul` AND
+  `Subgroup.IsArithmetic.properlyDiscontinuous` (Γ(2) on ℍ) — BUT the GL-action of Γ(2) is NOT free
+  (`−I` acts trivially ⟹ `IsCancelSMul` fails, free locus empty); must pass to `PΓ(2)=Γ(2)/{±I}`.
+  Then the deep Hauptmodul homeo `ℍ/Γ(2) ≅ ℂ∖{0,1}` (λ surjective onto `ℂ∖{0,1}` + λ separates
+  Γ(2)-orbits) — essentially Picard for the modular function; mathlib has none of this.
+- Then: three-value Montel → Julia repelling-density → E–vS rigidity `TranscendentalOverAdjoin`
+  (the single remaining hypothesis of `q62_both_connected` in Rigidity.lean).
+
+### Update (same session): `λ' ≠ 0` local-biholo brick landed (ModularLambdaLocalBiholo.lean)
+
+All axiom-clean. `hasDerivAt_modularLambda` is **unconditional**: `λ'(τ) = 4(θ₂/θ₃)³·(θ₂'θ₃−θ₂θ₃')/θ₃²`
+from the nullwert derivatives. The local-homeomorphism datum for `IsCoveringMap λ` is now reduced to
+**exactly one** named theta identity:
+  `ThetaWronskian23 : θ₂'θ₃ − θ₂θ₃' = (πi/4)·θ₂θ₃θ₄⁴`
+under which `deriv_modularLambda_eq[_lambda]` gives `λ' = πi·θ₂⁴θ₄⁴/θ₃⁴ = πi·θ₃⁴·λ(1−λ)` and
+`modularLambda_deriv_ne_zero` gives `λ'≠0` (all factors nonzero; `λ(1−λ)≠0` is the proven quartic
+identity). So the local-biholo lane is fully proven *modulo* `ThetaWronskian23`, carried as a named
+hypothesis in the `TranscendentalOverAdjoin` style.
+
+Next attack on `ThetaWronskian23` (the half-integral weight-3 gate): the cleanest non-half-integral
+route is the **heat equation** — `θ₂'`, `θ₃'` are `(πi)·`(2nd `z`-derivatives via
+`ThetaHeat.tsum_thetaHeatTerm_eq`); the combination `θ₂'θ₃−θ₂θ₃'` should collapse against the addition
+formula for `θ` to the product `θ₂θ₃θ₄⁴`. Alternatively the Jacobi triple-product / the derivative
+formula `θ₁'(0)=πθ₂θ₃θ₄` plus a nullwert log-derivative relation. This is the one open analytic input
+of the three-value-Montel→covering brick.
+
+### KEY REFRAMING of `ThetaWronskian23` → integral weight 6 (found same session)
+
+With `u=θ₂⁴, v=θ₃⁴, w=θ₄⁴` (each a weight-2 Γ(2) modular form, INTEGRAL weight; `v=u+w` is the
+proven quartic identity), `ThetaWronskian23` is *equivalent* (divide by `4θ₂³θ₃³≠0`) to the
+INTEGRAL weight-6 identity
+        `u'v − uv' = πi · u v w`     i.e. the first Rankin–Cohen bracket `[θ₂⁴, θ₃⁴]₁ = πi·θ₂⁴θ₃⁴θ₄⁴`.
+The Wronskian `u'v−uv'` of two weight-2 forms is a genuine weight-6 modular form (Rankin–Cohen — the
+cocycle terms cancel), so BOTH sides are weight-6 Γ(2) forms. This escapes the half-integral wall: the
+`dim`/Sturm q-expansion technique that proved the Jacobi identity becomes available IF a Γ(2) Sturm
+bound is built (mathlib has only level-one) — or push both sides through `NormTrace`/the difference's
+cusp behaviour to a level where mathlib's machinery applies. This is the concrete next attack on #26.
