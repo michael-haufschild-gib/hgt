@@ -196,3 +196,77 @@ theorem exists_dist_filledJulia_critical_orbit_pos {c : ℂ} (hc : Disconnected 
       exact le_trans (min_le_left _ _) (by linarith)
 
 end Bottcher
+
+namespace Bottcher
+
+open Complex Set Metric
+
+/-- **Local expansion from an inverse-branch contraction (Schwarz–Pick engine).** If a holomorphic
+right inverse `g` of `f` (`f ∘ g = id` on `ball b R₁`) sends that disk into the smaller
+`closedBall (g b) R₂`, then `f` EXPANDS at `z = g b`: `R₁ / R₂ ≤ ‖f'(z)‖`. Schwarz
+(`Complex.norm_deriv_le_div_of_mapsTo_ball`) gives `‖g'(b)‖ ≤ R₂/R₁`; the chain rule on `f ∘ g = id`
+gives `f'(z)·g'(b) = 1`, so `‖f'(z)‖ = 1/‖g'(b)‖ ≥ R₁/R₂`. This is the engine of the Mañé step for the
+disconnected Julia set: at depth `n` the inverse branch of `f_c^[n]` over a fixed-radius disk (radius =
+the postcritical gap `ρ`, `exists_dist_filledJulia_critical_orbit_pos`) lands in a disk whose radius → 0,
+so `f_c^[n]` expands by the diameter ratio → one expanding iterate, feeding
+`uniform_expansion_of_one_expanding_iterate`. -/
+theorem expansion_of_inverse_branch {f g : ℂ → ℂ} {b z : ℂ} {R₁ R₂ : ℝ}
+    (hg : DifferentiableOn ℂ g (Metric.ball b R₁))
+    (hgz : g b = z)
+    (hinv : Set.EqOn (f ∘ g) id (Metric.ball b R₁))
+    (hmaps : Set.MapsTo g (Metric.ball b R₁) (Metric.closedBall z R₂))
+    (hf : DifferentiableAt ℂ f z) (hR1 : 0 < R₁) (hR2 : 0 < R₂) :
+    R₁ / R₂ ≤ ‖deriv f z‖ := by
+  have hbmem : b ∈ Metric.ball b R₁ := Metric.mem_ball_self hR1
+  have hgb : DifferentiableAt ℂ g b :=
+    (hg b hbmem).differentiableAt (Metric.isOpen_ball.mem_nhds hbmem)
+  have hfgb : DifferentiableAt ℂ f (g b) := hgz ▸ hf
+  have hev : (f ∘ g) =ᶠ[nhds b] id := by
+    filter_upwards [Metric.isOpen_ball.mem_nhds hbmem] with w hw using hinv hw
+  have hcomp : deriv (f ∘ g) b = deriv f (g b) * deriv g b :=
+    (hfgb.hasDerivAt.comp b hgb.hasDerivAt).deriv
+  have hone : deriv (f ∘ g) b = 1 := by rw [hev.deriv_eq]; simp
+  rw [hgz] at hcomp
+  have hprod : deriv f z * deriv g b = 1 := by rw [← hcomp, hone]
+  have hmaps' : Set.MapsTo g (Metric.ball b R₁) (Metric.closedBall (g b) R₂) := by
+    rw [hgz]; exact hmaps
+  have hschwarz : ‖deriv g b‖ ≤ R₂ / R₁ := Complex.norm_deriv_le_div_of_mapsTo_ball hg hmaps' hR1
+  have hnz : deriv g b ≠ 0 := by
+    intro h; rw [h, mul_zero] at hprod; exact one_ne_zero hprod.symm
+  have hnorm1 : ‖deriv f z‖ * ‖deriv g b‖ = 1 := by rw [← norm_mul, hprod, norm_one]
+  have hschwarz' : ‖deriv g b‖ * R₁ ≤ R₂ := (le_div_iff₀ hR1).mp hschwarz
+  rw [div_le_iff₀ hR2]
+  calc R₁ = (‖deriv f z‖ * ‖deriv g b‖) * R₁ := by rw [hnorm1, one_mul]
+    _ = ‖deriv f z‖ * (‖deriv g b‖ * R₁) := by ring
+    _ ≤ ‖deriv f z‖ * R₂ := mul_le_mul_of_nonneg_left hschwarz' (norm_nonneg _)
+
+end Bottcher
+
+namespace Bottcher
+
+open Complex Set Metric
+
+/-- **Expansion of the iterate from a shrinking inverse branch (dynamical Schwarz bridge).** If `g` is a
+holomorphic inverse branch of `f_c^[n]` on `ball b R₁` (`f_c^[n] ∘ g = id`) with `g b = z`, landing in
+`closedBall z R₂`, then `R₁ / R₂ ≤ ‖∏_{k<n} 2·f_c^[k] z‖` (`= ‖(f_c^[n])'(z)‖`). Specializes
+`expansion_of_inverse_branch` to `f = f_c^[n]`, identifying `deriv (f_c^[n]) z` with the orbit-product
+(`hasStrictDerivAt_quadratic_iterate`). So once the depth-`n` inverse-branch image radius `R₂^{(n)}` is
+shown to make `R₁/R₂^{(n)} > 1` for some `n` (the shrinking that uniform hyperbolicity provides — needing
+univalent-function/Koebe or hyperbolic-metric infrastructure), this feeds
+`uniform_expansion_of_one_expanding_iterate` to give the unbounded-order dyadic monodromy of the
+disconnected case. -/
+theorem norm_deriv_iterate_ge_of_inverse_branch {c : ℂ} {n : ℕ} {g : ℂ → ℂ} {b z : ℂ} {R₁ R₂ : ℝ}
+    (hg : DifferentiableOn ℂ g (Metric.ball b R₁))
+    (hgz : g b = z)
+    (hinv : Set.EqOn ((quadratic c)^[n] ∘ g) id (Metric.ball b R₁))
+    (hmaps : Set.MapsTo g (Metric.ball b R₁) (Metric.closedBall z R₂))
+    (hR1 : 0 < R₁) (hR2 : 0 < R₂) :
+    R₁ / R₂ ≤ ‖∏ k ∈ Finset.range n, 2 * (quadratic c)^[k] z‖ := by
+  have hfdiff : DifferentiableAt ℂ ((quadratic c)^[n]) z :=
+    (hasStrictDerivAt_quadratic_iterate c n z).hasDerivAt.differentiableAt
+  have hderiv : deriv ((quadratic c)^[n]) z = ∏ k ∈ Finset.range n, 2 * (quadratic c)^[k] z :=
+    (hasStrictDerivAt_quadratic_iterate c n z).hasDerivAt.deriv
+  have h := expansion_of_inverse_branch hg hgz hinv hmaps hfdiff hR1 hR2
+  rwa [hderiv] at h
+
+end Bottcher

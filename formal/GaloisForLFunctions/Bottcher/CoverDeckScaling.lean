@@ -159,3 +159,40 @@ theorem exists_far_deckMap (c : ℂ) (n : ℕ) {ζ : ℂ} (hζ : ζ ^ (2 ^ n) = 
   · rw [hψval]; exact hz'iter
 
 end Bottcher
+
+namespace Bottcher
+
+open Set
+
+/-- **The deck `g = ψ∘ρ∘φ` fixes every ρ-invariant function of the lift (the `a₂`/projection-fixing
+mechanism).** Companion to `deck_scaling_of_invertible_lift` (which *scales* the lift `φ`):
+if `a₂ = h∘φ` for an `h` invariant under the value-rotation `ρ` (`h∘ρ = h` on `V`), then `a₂∘g = a₂`
+on `U`. Proof: `φ(g z) = φ(ψ(ρ(φ z))) = ρ(φ z)` (the section identity `φ∘ψ = id`), so
+`a₂(g z) = h(ρ(φ z)) = h(φ z) = a₂ z`. This is the precise reason the SAME deck that scales `φ̃_{c₁}`
+leaves `a₂ = φ_{c₂}∘p₀` and the projection `p₀` FIXED on a cylinder chart: both are `ρ`-invariant
+functions of `φ̃_{c₁}` (functions of `φ̃_{c₁}^{2ⁿ} = φ_{c₁}∘f^[n]∘p₀`). Together with
+`deck_scaling_of_invertible_lift` it turns a single cylinder chart `ψ` (inverse of `φ̃_{c₁}` on a
+`ζ`-invariant value annulus) into the FULL `monoF_witness_projection_base` lift datum — scale `a₁`,
+fix `a₂`, fix `p₀` — which the far-field deck (`exists_far_deckMap`) cannot supply (there the loop
+encloses both Julia sets, so `a₂` is scaled, not fixed). Axiom-clean. -/
+theorem deck_fixes_invariant_of_lift {U V : Set ℂ} {φ ψ ρ h a₂ : ℂ → ℂ}
+    (hinv : Set.EqOn (φ ∘ ψ) id V) (hρmaps : Set.MapsTo ρ V V)
+    (hφmaps : Set.MapsTo φ U V)
+    (hgmaps : Set.MapsTo (ψ ∘ ρ ∘ φ) U U)
+    (hhinv : Set.EqOn (h ∘ ρ) h V)
+    (ha₂ : Set.EqOn a₂ (h ∘ φ) U) :
+    Set.EqOn (a₂ ∘ (ψ ∘ ρ ∘ φ)) a₂ U := by
+  intro z hz
+  have hφz : φ z ∈ V := hφmaps hz
+  have hρφz : ρ (φ z) ∈ V := hρmaps hφz
+  have hgz : (ψ ∘ ρ ∘ φ) z ∈ U := hgmaps hz
+  have hφgz : φ ((ψ ∘ ρ ∘ φ) z) = ρ (φ z) := by
+    have := hinv hρφz
+    simpa [Function.comp] using this
+  calc a₂ ((ψ ∘ ρ ∘ φ) z)
+      = h (φ ((ψ ∘ ρ ∘ φ) z)) := by simpa [Function.comp] using ha₂ hgz
+    _ = h (ρ (φ z)) := by rw [hφgz]
+    _ = h (φ z) := by simpa [Function.comp] using hhinv hφz
+    _ = a₂ z := by simpa [Function.comp] using (ha₂ hz).symm
+
+end Bottcher

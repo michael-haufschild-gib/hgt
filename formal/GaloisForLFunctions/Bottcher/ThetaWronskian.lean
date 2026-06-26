@@ -625,7 +625,6 @@ theorem thetaWronskianRatio_eq {τ : ℂ} (hτ : 0 < τ.im) :
   have h4 := thetaFour_ne_zero_of_im_pos hτ
   rw [thetaWronskianRatio, thetaWronskianDefect, deriv_thetaTwo_pow4 hτ, deriv_thetaThree_pow4 hτ]
   field_simp
-  ring
 
 open Filter in
 /-- **`P → 0` at `i∞`.** From `θ₂'/θ₂ → πi/4`, `θ₃'/θ₃ → 0`, `θ₄⁴ → 1`:
@@ -648,4 +647,134 @@ theorem tendsto_thetaWronskianRatio_atImInfty :
   refine hlim.congr' ?_
   filter_upwards [tendsto_comap.eventually (eventually_gt_atTop (0 : ℝ))] with τ hτ
   exact (thetaWronskianRatio_eq hτ).symm
+
+/-! ### `P` is a weight-0 cusp form for `SL(2,ℤ)`, so `P ≡ 0` — `ThetaWronskian23` unconditional.
+
+`P = D₆/(θ₂θ₃θ₄)⁴` is holomorphic on `ℍ`, `SL(2,ℤ)`-invariant (weight 0; `_add_one`/`_S`), and `→ 0`
+at `i∞` (`tendsto_thetaWronskianRatio_atImInfty`). Hence `P ∈ S₀(SL(2,ℤ))`, a weight-`0 < 12` cusp-form
+space, which is zero-dimensional (`CuspForm.rank_eq_zero_of_weight_lt_twelve`). So `P ≡ 0`, giving
+`ThetaWronskian23` (hence `λ' ≠ 0`) unconditionally — the same `F² ∈ S₄ = 0` route that proved the
+Jacobi quartic identity, one weight up. -/
+
+section ModularConstruction
+open Matrix ModularGroup CongruenceSubgroup UpperHalfPlane
+open scoped MatrixGroups ModularForm Manifold
+
+/-- `P` viewed as a function `ℍ → ℂ`. -/
+noncomputable def thetaWronskianRatioH : ℍ → ℂ := fun z => thetaWronskianRatio (z : ℂ)
+
+/-- `P` is holomorphic at every `τ ∈ ℍ`: `D₆` is (`differentiableOn_thetaWronskianDefect`) and the
+denominator `(θ₂θ₃θ₄)⁴` is holomorphic and nonzero. -/
+theorem differentiableAt_thetaWronskianRatio {τ : ℂ} (hτ : 0 < τ.im) :
+    DifferentiableAt ℂ thetaWronskianRatio τ := by
+  have hUo : IsOpen {z : ℂ | 0 < z.im} := isOpen_lt continuous_const Complex.continuous_im
+  have hnum : DifferentiableAt ℂ thetaWronskianDefect τ :=
+    differentiableOn_thetaWronskianDefect.differentiableAt (hUo.mem_nhds hτ)
+  have hden : DifferentiableAt ℂ (fun t => (thetaTwo t * thetaThree t * thetaFour t) ^ 4) τ :=
+    ((((hasDerivAt_thetaTwo hτ).mul (hasDerivAt_thetaThree hτ)).mul
+      (hasDerivAt_thetaFour hτ)).pow 4).differentiableAt
+  exact hnum.div hden (pow_ne_zero 4 (thetaProduct_ne_zero_of_im_pos hτ))
+
+/-- `P` is holomorphic on `ℍ` (manifold sense). -/
+theorem thetaWronskianRatioH_mdiff : MDiff thetaWronskianRatioH := by
+  rw [mdifferentiable_iff]
+  intro z hz
+  have hz' : 0 < z.im := by simpa using hz
+  refine (differentiableAt_thetaWronskianRatio hz').differentiableWithinAt.congr
+    (fun w hw => ?_) ?_
+  · show thetaWronskianRatio ((ofComplex w : ℍ) : ℂ) = thetaWronskianRatio w
+    rw [ofComplex_apply_of_im_pos (by simpa using hw)]
+  · show thetaWronskianRatio ((ofComplex z : ℍ) : ℂ) = thetaWronskianRatio z
+    rw [ofComplex_apply_of_im_pos hz']
+
+/-- `P ∣[0] S = P` (weight-0, `S`-invariance `P(−1/τ)=P(τ)`; the `denom^0 = 1` factor drops). -/
+theorem thetaWronskianRatioH_slash_S :
+    thetaWronskianRatioH ∣[(0 : ℤ)] ModularGroup.S = thetaWronskianRatioH := by
+  funext z
+  have hzim : 0 < (z : ℂ).im := by rw [UpperHalfPlane.coe_im]; exact z.im_pos
+  rw [ModularForm.SL_slash_apply, thetaWronskianRatioH, thetaWronskianRatioH]
+  have hact : ((ModularGroup.S • z : ℍ) : ℂ) = -1 / (z : ℂ) := by
+    rw [UpperHalfPlane.modular_S_smul, UpperHalfPlane.coe_mk, neg_div, one_div, inv_neg]
+  rw [hact, thetaWronskianRatio_S hzim, neg_zero, zpow_zero, mul_one]
+
+/-- `P ∣[0] T = P` (weight-0, `T`-invariance `P(τ+1)=P(τ)`). -/
+theorem thetaWronskianRatioH_slash_T :
+    thetaWronskianRatioH ∣[(0 : ℤ)] ModularGroup.T = thetaWronskianRatioH := by
+  funext z
+  have hzim : 0 < (z : ℂ).im := by rw [UpperHalfPlane.coe_im]; exact z.im_pos
+  rw [ModularForm.SL_slash_apply, thetaWronskianRatioH, thetaWronskianRatioH]
+  have hact : ((ModularGroup.T • z : ℍ) : ℂ) = (z : ℂ) + 1 := by
+    rw [← zpow_one ModularGroup.T, ModularGroup.coe_T_zpow_smul_eq]; push_cast; ring
+  rw [hact, thetaWronskianRatio_add_one hzim, neg_zero, zpow_zero, mul_one]
+
+/-- `P ∣[0] γ = P` for every `γ ∈ SL(2,ℤ)` — closure induction over `⟨S,T⟩` (all `=`, no sign, since
+`P` is genuinely invariant of weight 0). -/
+theorem thetaWronskianRatioH_slash_SL2Z (γ : SL(2, ℤ)) :
+    thetaWronskianRatioH ∣[(0 : ℤ)] γ = thetaWronskianRatioH := by
+  have hmem : γ ∈ Subgroup.closure ({ModularGroup.S, ModularGroup.T} : Set SL(2, ℤ)) := by
+    simp [SpecialLinearGroup.SL2Z_generators]
+  induction hmem using Subgroup.closure_induction with
+  | mem x hx =>
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hx
+    rcases hx with rfl | rfl
+    exacts [thetaWronskianRatioH_slash_S, thetaWronskianRatioH_slash_T]
+  | one => exact SlashAction.slash_one 0 thetaWronskianRatioH
+  | mul x y _ _ ihx ihy => rw [SlashAction.slash_mul, ihx, ihy]
+  | inv x _ ih =>
+    have h : thetaWronskianRatioH ∣[(0 : ℤ)] x⁻¹
+        = (thetaWronskianRatioH ∣[(0 : ℤ)] x) ∣[(0 : ℤ)] x⁻¹ := by rw [ih]
+    rw [h, ← SlashAction.slash_mul, mul_inv_cancel, SlashAction.slash_one]
+
+/-- `P → 0` at `i∞` in manifold form. -/
+theorem thetaWronskianRatioH_zeroAtImInfty : IsZeroAtImInfty thetaWronskianRatioH :=
+  tendsto_thetaWronskianRatio_atImInfty.comp tendsto_coe_atImInfty
+
+/-- **`P` as a weight-0 cusp form for `SL(2,ℤ)`** — holomorphic, `SL(2,ℤ)`-invariant, vanishing at the
+cusp. -/
+noncomputable def thetaWronskianRatioCusp : CuspForm 𝒮ℒ 0 where
+  toFun := thetaWronskianRatioH
+  slash_action_eq' A hA := by
+    obtain ⟨γ, rfl⟩ := hA
+    exact thetaWronskianRatioH_slash_SL2Z γ
+  holo' := thetaWronskianRatioH_mdiff
+  zero_at_cusps' hc := by
+    rw [OnePoint.isZeroAt_iff_forall_SL2Z hc]
+    intro γ _
+    rw [thetaWronskianRatioH_slash_SL2Z γ]
+    exact thetaWronskianRatioH_zeroAtImInfty
+
+/-- **`P ≡ 0` on `ℍ`.** `P` is a weight-`0` cusp form and `S₀(SL(2,ℤ)) = 0`
+(`CuspForm.rank_eq_zero_of_weight_lt_twelve`, `0 < 12`). -/
+theorem thetaWronskianRatio_eq_zero {τ : ℂ} (hτ : 0 < τ.im) : thetaWronskianRatio τ = 0 := by
+  have h0 : thetaWronskianRatioCusp = 0 :=
+    rank_zero_iff_forall_zero.mp
+      (CuspForm.rank_eq_zero_of_weight_lt_twelve (by norm_num)) thetaWronskianRatioCusp
+  have key : thetaWronskianRatioCusp ⟨τ, hτ⟩ = (0 : CuspForm 𝒮ℒ 0) ⟨τ, hτ⟩ :=
+    DFunLike.congr_fun h0 _
+  rw [CuspForm.zero_apply] at key
+  exact key
+
+/-- **`ThetaWronskian23` is a theorem.** `θ₂'θ₃ − θ₂θ₃' = (πi/4)·θ₂θ₃θ₄⁴` on `ℍ`, via `P ≡ 0`. This
+discharges the named hypothesis of `ModularLambdaLocalBiholo`, making `λ' ≠ 0` unconditional. -/
+theorem thetaWronskian23 : ThetaWronskian23 :=
+  thetaWronskian23_of_ratio_zero (fun τ hτ => thetaWronskianRatio_eq_zero hτ)
+
+end ModularConstruction
+
+/-! ### `λ` is a local biholomorphism, unconditionally (`ThetaWronskian23` discharged). -/
+
+/-- **`λ' ≠ 0` on `ℍ`, unconditionally** — the local-biholomorphism datum for `IsCoveringMap λ`. -/
+theorem modularLambda_deriv_ne_zero' {τ : ℂ} (hτ : 0 < τ.im) : deriv modularLambda τ ≠ 0 :=
+  modularLambda_deriv_ne_zero thetaWronskian23 hτ
+
+/-- **`λ' = πi·θ₂⁴θ₄⁴/θ₃⁴`, unconditionally.** -/
+theorem deriv_modularLambda_eq' {τ : ℂ} (hτ : 0 < τ.im) :
+    deriv modularLambda τ = (π : ℂ) * I * thetaTwo τ ^ 4 * thetaFour τ ^ 4 / thetaThree τ ^ 4 :=
+  deriv_modularLambda_eq thetaWronskian23 hτ
+
+/-- **`λ' = πi·θ₃⁴·λ·(1−λ)`, unconditionally.** -/
+theorem deriv_modularLambda_eq_lambda' {τ : ℂ} (hτ : 0 < τ.im) :
+    deriv modularLambda τ
+      = (π : ℂ) * I * thetaThree τ ^ 4 * modularLambda τ * (1 - modularLambda τ) :=
+  deriv_modularLambda_eq_lambda thetaWronskian23 hτ
 end Bottcher

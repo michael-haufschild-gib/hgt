@@ -9,11 +9,11 @@ from pathlib import Path
 
 EFFORT_REMINDER = (
     "Reminder: multi-session efforts are must-do. Never use large efforts as "
-    "an excuse to avoid work. Just do it."
+    "an excuse to avoid work. Just do it. For lean proofs: the proof not being in Mathlib and easy is exactly the point of this project."
 )
 TRACTABLE_REMINDER = (
     "Are you still working on the hard, high-effort tasks or stalling with "
-    "simple tasks? Do the hard high effort tasks."
+    "simple tasks? Do the hard high effort tasks. For lean proofs: the proof not being in Mathlib and easy is exactly the point of this project."
 )
 
 TRIGGERS = [

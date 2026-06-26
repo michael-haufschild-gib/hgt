@@ -2308,3 +2308,141 @@ Schwarz–Pick on the Poincaré metric of `Ω` (NOT in mathlib; must be built) g
 on the compact `K_c ⊆ Ω`, i.e. one expanding iterate; (2) the germ-path-integral bridge turning a
 shrunk depth-`k` cylinder loop into the meroField non-squareness `q62_disconnected_of_radical_data`
 consumes; (3) connected case `hRigid` (E–vS or `htip`). Proof NOT complete — these are the open fronts.
+
+### Schwarz–Pick engine for the Mañé step (2026-06-26, cont.)
+
+`JuliaExpansion.expansion_of_inverse_branch` (axiom-clean, via mathlib `Complex.norm_deriv_le_div_of_mapsTo_ball`):
+a holomorphic right-inverse `g` of `f` with `f∘g=id` on `ball b R₁` mapping into `closedBall (g b) R₂`
+forces `R₁/R₂ ≤ ‖f'(g b)‖` (chain rule + Schwarz). This is the verified engine converting
+"inverse branch contracts a disk" → "f expands." Combined with `exists_dist_filledJulia_critical_orbit_pos`
+(the inverse branch of `f^[n]` is defined on a fixed-radius `ρ`-disk over `K_c`), the Mañé step now needs
+exactly ONE more input: the n-fold inverse-branch image radius `R₂^{(n)}` satisfies `R₁/R₂^{(n)} > 1` for
+some n. With the EUCLIDEAN Schwarz this gives only a uniform CONSTANT lower bound `ρ/diam`; the GROWTH
+(`R₂^{(n)} → 0`) requires the hyperbolic (Poincaré) metric of `ℂ̂ ∖ postcritical-set` — the composition of
+inclusions contracting it. That metric is the single remaining infrastructure to build (not in mathlib);
+everything that consumes its output (engine → bootstrap → reduction) is now in place and axiom-clean.
+
+### Koebe/area stack — started (2026-06-26, user-directed)
+
+`UnivalentArea.lean` (axiom-clean), the foundation of the univalent-function-theory infrastructure that
+delivers the inverse-branch shrinkage of the Mañé step:
+- `det_fderivReal_eq_normSq_deriv` — complex Jacobian `det(fderiv ℝ g z) = ‖g'(z)‖²` (via
+  `LinearMap.det_restrictScalars` + `Algebra.norm_complex_apply`).
+- `volume_image_eq_lintegral_normSq_deriv` — holomorphic area change-of-variables
+  `area(g '' s) = ∫_s ‖g'‖²` (mathlib `lintegral_abs_det_fderiv_eq_addHaar_image` + the Jacobian).
+
+NEXT bricks (subsequent sessions, in order): Gronwall area theorem (`∑ n|bₙ|² ≤ 1` via Laurent
+coefficients + the boundary-area integral, mathlib `BoxIntegral.DivergenceTheorem`) → Bieberbach
+`|a₂| ≤ 2` → Koebe `1/4` + distortion theorem → inverse-branch image-radius shrinkage `R₂^{(n)} → 0`
+→ feed `JuliaExpansion.norm_deriv_iterate_ge_of_inverse_branch` (`R₁/R₂^{(n)} > 1`) →
+`uniform_expansion_of_one_expanding_iterate` → Mañé hyperbolicity → disconnected `hDisc`.
+
+### CORRECTION (2026-06-26): Koebe/area stack was a detour — period route is correct
+
+The Koebe/Gronwall/Laurent stack (`UnivalentArea.lean`, now DELETED) was the WRONG direction: it
+reconstructed univalent-function theory to obtain a non-squareness that the **period** already gives.
+The project ALREADY has the period→non-square engine: `NonSquare.no_analytic_sqrt_bottcher'`
+(φ_c has no analytic square root on the escape annulus, unconditional, via ∮ d log φ_c = 2πi odd) and
+`Q62Assembly.not_square_of_period_ftc`.
+
+CORRECTED disconnected-case logic (no Koebe, no Mañé hyperbolicity, no Laurent):
+`q62_disconnected_of_radical_data` needs, per k, `a = φ_{c₁}^{2^k}` not a square in `B = ℂ(z,φ_{c₂})`.
+On a **localized depth-k loop** γ_k: `∮_{γ_k} d log φ_{c₁} = 2πi/2^k` (`winding_value_of_iterate_loop`),
+so `∮_{γ_k} d log a = 2πi`; and every element of `ℂ(z,φ_{c₂})` is single-valued around γ_k
+(`z` trivially; `φ_{c₂}` by L1 `pathInt_dlog_lift_closed_eq_zero`, since γ_k is null-homotopic in the
+c₂-basin). Then `b² = a ⟹ ∮ d log b = πi`, contradicting single-valuedness (`not_square_of_period_ftc`).
+
+TWO genuine remaining gaps (both far-from-mathlib, both correctly-scoped now):
+1. period→non-square BRIDGE over `meroField` (germ ⇒ path-integral realization of the above).
+2. the localized depth-k LOOP γ_k: a component of `f_{c₁}^{-k}(base circle)` lying in a K_{c₂}-free,
+   0-free region (so L1 applies and z-period = 0). Dynamical — cylinder shrinking near `K_{c₁}∖K_{c₂}`.
+
+### Corrected-path progress: general-loop non-square engine (2026-06-26)
+
+`SquareFree.no_analytic_sqrt_of_odd_period_loop` (axiom-clean, NEW): the loop-general form of
+`no_analytic_sqrt_of_odd_period` — for ANY closed C¹ loop γ (not just the centered circle `C(0,R)`),
+a non-vanishing `g` with `∮_γ d log g = 2πi` has no analytic square root near γ. This is the reusable
+period→non-square engine for the disconnected case's LOCALIZED cylinder loop (which is not centered at
+0). Reuses `pathInt_logDeriv_sq` + `exp_logDeriv_antiderivative` + `not_square_of_period_ftc`.
+
+Tasks #85–90 created (corrected path): #85 localized loop γ_k (dynamical core) → #86 non-square over
+ℂ(z,φ_{c₂}) [engine done, needs γ_k + germ extraction] → #87 assemble disconnected hDisc via
+q62_disconnected_of_radical_data; #88 mixed case; #89 connected hRigid via htip; #90 final unconditional
+q62. The Koebe/Laurent detour is deleted; the period route reuses existing project machinery.
+
+---
+
+## 2026-06-26 — ThetaWronskian23 PROVEN + IsCoveringMap λ backbone started
+
+**`ThetaWronskian23` is now a THEOREM** (was a carried hypothesis), axiom-clean
+[propext, Classical.choice, Quot.sound]. Route: weight-6 Rankin–Cohen defect
+`D₆ = (θ₂⁴)'θ₃⁴ − θ₂⁴(θ₃⁴)' − πi·θ₂⁴θ₃⁴θ₄⁴`, reduced via the SL(2,ℤ)-invariant ratio
+`P = D₆/(θ₂θ₃θ₄)⁴` to `P ≡ 0`; `P` is a weight-0 **cusp** form (`P→0` at i∞ built from theta-derivative
+cusp limits θ₃'→0, jacobiTheta₂ diag→2 and diag-deriv→0, θ₂'/θ₂→πi/4), killed by
+`CuspForm.rank_eq_zero_of_weight_lt_twelve` (0<12) — the same `F²∈S₄=0` route as the Jacobi identity.
+⟹ **`modularLambda_deriv_ne_zero'` (λ'≠0) unconditional**, λ a local biholo on ℍ.
+(ThetaWronskian.lean.)
+
+**New file `ModularLambdaCovering.lean`** — building `IsCoveringMap λ` (not hypothesizing it),
+all axiom-clean, full Bottcher tower builds:
+- `isLocalHomeomorphOn_modularLambda` — λ local homeo on ℍ via the holomorphic IFT off λ'≠0.
+- `isOpen_modularLambda_image` — λ(ℍ) open (open half of surjectivity).
+- three cusp values: `tendsto_modularLambda_atImInfty` (λ→0 at ∞), `tendsto_modularLambda_neg_inv_atImInfty`
+  (λ(−1/σ)→1 at cusp 0), `tendsto_norm_inv_modularLambda_atImInfty` (‖1/λ‖→∞, cusp value ∞).
+- **anharmonic S₃-action** `exists_anharm_eq`: `λ(g•τ)=φ_g(λτ)`, `φ_g ∈ ⟨anharmS,anharmT⟩≅S₃` of Equivs
+  of ℂ∖{0,1}, by closure-induction — mul-case automatic Equiv composition, no cross-ratio algebra.
+
+REMAINING (the hard core): **surjectivity = closed image via the Γ(2) fundamental domain**.
+mathlib gives `ModularGroup.exists_smul_mem_fd` + `isCompact_truncatedFundamentalDomain`; bounded
+subcase → limit in range; escaping-cusp subcase uses the cusp values + `exists_anharm_eq`. Needs the
+SL(2,ℤ)/Γ(2) coset structure (6 cosets, ≅ SL(2,ZMod 2)) OR anharmonicGroup finiteness (S₃). Then
+fibres=Γ(2)-orbits (λ̄ injective) ⟹ `IsCoveringMap λ` ⟹ `normal_of_omitting_lift` ⟹ three-value
+Montel ⟹ Julia repelling-density ⟹ `TranscendentalOverAdjoin`.
+
+### Coordination + period engine (2026-06-26)
+hRigid (connected) is owned by another agent (modular-λ/theta route: ModularLambdaCovering.lean,
+ThetaWronskian.lean — DISJOINT from the disconnected dynamical lane). My lane: hDisc disconnected,
+using f^[k]-covering machinery (BasinBranching, LiftExists, CoverConstruction). No code overlap.
+
+Disconnected period engine BUILT in SquareFree (axiom-clean): no_analytic_sqrt_of_odd_period_loop
+(general-loop), pathInt_logDeriv_pow, no_analytic_sqrt_pow_of_fractional_period. The disconnected
+non-squareness of `φ_{c₁}^{2^k}` reduces to: g = φ_{c₁}∘f^[k] = bottcherCoord∘f^[k] (single-valued near a
+localized cylinder loop γ_k since f^[k] escapes there), odd period 2πi (γ_k's f^[k]-image winds K_{c₁}
+once) ⟹ no analytic sqrt ⟹ not a square over meroField(localized), ⊇ ℂ(z,φ_{c₂}) [φ_{c₂} single-valued
+by L1]. REMAINING: #85 the localized closed cylinder loop + K_{c₂}-free domain (dynamical, via the
+equipotential components of f^[k]^{-1}(C(0,R)) below the critical level); germ extraction (mirror
+bottcherGerm_not_isSquare with g=φ_{c₁}∘f^[k]).
+
+## Disconnected gap — single geometric primitive (triangulated)
+
+All three reduction routes for the disconnected/disconnected case collapse to ONE geometric input,
+the **localized sub-critical cylinder chart** near `z₀ ∈ K_{c₁} ∖ K_{c₂}`:
+
+- **Deck route** (`q62_independence_disconnected_of_lifts` ← `monoF_witness_projection_base`): needs,
+  for every `d`, a cover annulus `U` with deck `g,g'` (mutually-inverse self-maps), a deck-invariant
+  projection `p₀` (`p₀∘g = p₀`), and lifts `a₁,a₂` with `a₁∘g = ζ₀·a₁` (`orderOf ζ₀ > d`), `a₂∘g = a₂`.
+- **Loop/period route** (`q62_disconnected_of_radical_data` ← `no_analytic_sqrt_iterate_of_closed_lift`,
+  banked in `SquareFree.lean`): needs a CLOSED degree-1 `C¹` lift `γ` of `C(0,R)` under `f_{c₁}^[k]`,
+  sub-critical (so `φ_{c₁}` is multivalued around it), `K_{c₂}`-free.
+- **Monodromy/Brolin route** (`multiplier_orderOf_of_mass` ← `period_eq`): needs the same loop to
+  enclose equilibrium mass `2^{-n}`.
+
+These are the SAME object: a loop around one depth-`n` Cantor cylinder of `K_{c₁}`, lying in a
+`K_{c₂}`-free region (so `φ_{c₂}` is single-valued there). The far-field deck `exists_far_deckMap`
+is built but provably CANNOT fix `a₂` — its loop encloses both Julia sets — so the localization to
+`z₀ ∈ K_{c₁} ∖ K_{c₂}` (sub-critical, where `φ_{c₁}` is genuinely `2ⁿ`-valued over a `z`-annulus while
+`φ_{c₂}` stays single-valued) is essential, not incidental.
+
+Deck-action algebra now COMPLETE on a chart (both axiom-clean):
+- `deck_scaling_of_invertible_lift` — `g=ψ∘ρ∘φ` scales the lift `φ` by `ζ` (`a₁` clause).
+- `deck_fixes_invariant_of_lift` (`CoverDeckScaling.lean`, NEW) — `g` FIXES any `ρ`-invariant function
+  of the lift (`a₂ = φ_{c₂}∘p₀` and `p₀` clauses), since both factor through `φ̃_{c₁}^{2ⁿ}`.
+
+Remaining primitive (the lone analytic input): the **cylinder uniformizing chart** `ψ` = an analytic
+inverse of `φ̃_{c₁} = exp(2⁻ⁿ·bottcherLog∘f^[n])` on a `ζ`-invariant value annulus `V`, with
+`U = ψ(V)` a `K_{c₂}`-free cylinder annulus around `z₀`, and the `z`-projection `p₀` and `φ_{c₂}∘p₀`
+realized as `ρ`-invariant functions of `φ̃_{c₁}` on `U`. Equivalently: the connected `2ⁿ`-fold dyadic
+cover over the sub-critical cylinder, with its order-`2ⁿ` deck. (Local pieces exist:
+`exists_localInverse_exp_greenConjugate`, `deriv_exp_greenConjugate_explicit_ne_zero`,
+figure-eight saddle `disconnected_critical_figure_eight`; the open content is local→global univalence
+on the cylinder annulus.)

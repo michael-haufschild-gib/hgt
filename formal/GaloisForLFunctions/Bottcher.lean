@@ -103,3 +103,4 @@ import GaloisForLFunctions.Bottcher.QuarticModularForm
 import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional
 import GaloisForLFunctions.Bottcher.ModularLambdaLocalBiholo
 import GaloisForLFunctions.Bottcher.ThetaWronskian
+import GaloisForLFunctions.Bottcher.ModularLambdaCovering

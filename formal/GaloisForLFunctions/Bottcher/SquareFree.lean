@@ -340,3 +340,218 @@ theorem bottcher_X_pow_sub_C_irreducible (c : ℂ)
   rw [← map_pow, h1, map_neg, map_one, map_neg, map_one]
 
 end Bottcher
+
+namespace Bottcher
+
+open Complex Set intervalIntegral MeasureTheory
+
+/-- **No analytic square root of an odd-period function around a GENERAL closed loop.** Loop-general
+form of `no_analytic_sqrt_of_odd_period` (the `γ = circleMap 0 R` case): if `g` is non-vanishing on an
+open `A`, a `C¹` closed loop `γ` lies in `A`, and `∮_γ d log g = 2πi` (odd period), then `g` has no
+analytic square root `h` (`h² = g`) on `A`. The localized `c₁`-cylinder loop of the disconnected case is
+NOT centered at `0`, so this general version is the bridge the disconnected non-squareness needs:
+`a = φ_{c₁}^{2^k}` has period `2πi` around the depth-`k` cylinder loop, hence no square root over any
+ring of functions single-valued around that loop (e.g. `ℂ(z,φ_{c₂})`, single-valued by L1
+`pathInt_dlog_lift_closed_eq_zero`). Same proof as the circle case via `pathInt_logDeriv_sq` +
+`exp_logDeriv_antiderivative` + `not_square_of_period_ftc`. Axiom-clean. -/
+theorem no_analytic_sqrt_of_odd_period_loop
+    {A : Set ℂ} (hAo : IsOpen A) {γ γ' : ℝ → ℂ}
+    (hγcont : Continuous γ) (hγ'cont : Continuous γ')
+    (hγmem : ∀ θ : ℝ, γ θ ∈ A)
+    (hγd : ∀ θ : ℝ, HasDerivAt γ (γ' θ) θ)
+    (hγclosed : γ (2 * Real.pi) = γ 0)
+    {g h : ℂ → ℂ}
+    (hperiod : (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv g (γ θ) * γ' θ) = 2 * (Real.pi : ℂ) * Complex.I)
+    (hgne : ∀ z ∈ A, g z ≠ 0)
+    (hh : AnalyticOnNhd ℂ h A)
+    (hsq : Set.EqOn (fun z => (h z) ^ 2) g A) :
+    False := by
+  have hne : ∀ θ : ℝ, h (γ θ) ≠ 0 := by
+    intro θ hz0
+    have he : (h (γ θ)) ^ 2 = g (γ θ) := hsq (hγmem θ)
+    rw [hz0, zero_pow (by norm_num : (2 : ℕ) ≠ 0)] at he
+    exact hgne _ (hγmem θ) he.symm
+  have hderivφ : ∀ θ, deriv (fun t => h (γ t)) θ = deriv h (γ θ) * γ' θ := fun θ =>
+    ((hh (γ θ) (hγmem θ)).differentiableAt.hasDerivAt.comp θ (hγd θ)).deriv
+  have hcont_dh : Continuous (fun θ => deriv h (γ θ)) :=
+    (hh.deriv.continuousOn).comp_continuous hγcont hγmem
+  have hcont_h : Continuous (fun θ => h (γ θ)) := (hh.continuousOn).comp_continuous hγcont hγmem
+  have hgcont : Continuous (fun θ => deriv (fun t => h (γ t)) θ / h (γ θ)) := by
+    have heq : (fun θ => deriv (fun t => h (γ t)) θ / h (γ θ))
+        = fun θ => deriv h (γ θ) * γ' θ / h (γ θ) := funext fun θ => by rw [hderivφ θ]
+    rw [heq]; exact (hcont_dh.mul hγ'cont).div hcont_h hne
+  set L : ℝ → ℂ := fun u => ∫ t in (0 : ℝ)..u, deriv (fun s => h (γ s)) t / h (γ t) with hLdef
+  have hL : ∀ θ ∈ Set.Icc (0 : ℝ) (2 * Real.pi),
+      HasDerivAt L (deriv (fun t => h (γ t)) θ / h (γ θ)) θ := by
+    intro θ _
+    exact intervalIntegral.integral_hasDerivAt_right (hgcont.intervalIntegrable 0 θ)
+      hgcont.stronglyMeasurable.stronglyMeasurableAtFilter hgcont.continuousAt
+  have hhd : ∀ θ, HasDerivAt h (deriv h (γ θ)) (γ θ) :=
+    fun θ => (hh (γ θ) (hγmem θ)).differentiableAt.hasDerivAt
+  have hφd : ∀ θ, HasDerivAt (fun t => h (γ t)) (deriv h (γ θ) * γ' θ) θ :=
+    fun θ => (hhd θ).comp θ (hγd θ)
+  have hlogcong : ∀ θ : ℝ, logDeriv g (γ θ) = logDeriv (fun w => (h w) ^ 2) (γ θ) := by
+    intro θ
+    have heq : g =ᶠ[nhds (γ θ)] (fun w => (h w) ^ 2) :=
+      Filter.eventuallyEq_of_mem (hAo.mem_nhds (hγmem θ)) (fun w hw => (hsq hw).symm)
+    simp only [logDeriv_apply]
+    rw [heq.deriv_eq, heq.eq_of_nhds]
+  have hcong : (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv g (γ θ) * γ' θ)
+      = ∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv (fun w => (h w) ^ 2) (γ θ) * γ' θ := by
+    apply intervalIntegral.integral_congr; intro θ _; dsimp only; rw [hlogcong θ]
+  have hd : ∀ θ ∈ Set.uIcc (0 : ℝ) (2 * Real.pi), DifferentiableAt ℂ h (γ θ) :=
+    fun θ _ => (hh (γ θ) (hγmem θ)).differentiableAt
+  have hsq2 : (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv (fun w => (h w) ^ 2) (γ θ) * γ' θ)
+      = 2 * ∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv h (γ θ) * γ' θ :=
+    pathInt_logDeriv_sq (h := h) (γ := γ) (γ' := γ') hd
+  have hL'' : ∀ θ ∈ Set.uIcc (0 : ℝ) (2 * Real.pi),
+      HasDerivAt L (logDeriv h (γ θ) * γ' θ) θ := by
+    intro θ hθ
+    rw [Set.uIcc_of_le (by positivity)] at hθ
+    have hd2 := hL θ hθ
+    rw [hderivφ θ] at hd2
+    rw [show logDeriv h (γ θ) * γ' θ = deriv h (γ θ) * γ' θ / h (γ θ) by rw [logDeriv_apply]; ring]
+    exact hd2
+  have hcontinuity : Continuous (fun θ => logDeriv h (γ θ) * γ' θ) := by
+    have heq : (fun θ => logDeriv h (γ θ) * γ' θ)
+        = fun θ => deriv h (γ θ) / h (γ θ) * γ' θ := funext fun θ => by rw [logDeriv_apply]
+    rw [heq]; exact (hcont_dh.div hcont_h hne).mul hγ'cont
+  have hint : IntervalIntegrable (fun θ => logDeriv h (γ θ) * γ' θ) volume 0 (2 * Real.pi) :=
+    hcontinuity.intervalIntegrable 0 (2 * Real.pi)
+  have hI3 : (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv h (γ θ) * γ' θ) = L (2 * Real.pi) - L 0 :=
+    intervalIntegral.integral_eq_sub_of_hasDerivAt hL'' hint
+  have key : 2 * (Real.pi : ℂ) * Complex.I = 2 * (L (2 * Real.pi) - L 0) := by
+    rw [← hperiod, hcong, hsq2, hI3]
+  have hexp1 : Complex.exp (L (2 * Real.pi) - L 0) = 1 := by
+    have hratio := exp_logDeriv_antiderivative (φ := fun t => h (γ t)) (I := L)
+      (a := 0) (b := 2 * Real.pi) Real.two_pi_pos.le
+      (fun t _ => hne t) (fun t _ => (hφd t).differentiableAt.hasDerivAt) (fun t ht => hL t ht)
+    rw [hratio]
+    show h (γ (2 * Real.pi)) / h (γ 0) = 1
+    rw [hγclosed, div_self (hne 0)]
+  exact not_square_of_period_ftc key hexp1
+
+end Bottcher
+
+namespace Bottcher
+
+open Complex Set intervalIntegral
+
+/-- **Period of a power = power × period.** `∮_γ d log(g^n) = n · ∮_γ d log g` for `g` differentiable
+along the loop (`logDeriv_fun_pow` pointwise + integral linearity). Bridges
+`winding_value_of_iterate_loop` (`∮_γ d log φ_{c₁} = 2πi/2^k`) to the non-square engine
+`no_analytic_sqrt_of_odd_period_loop` (which needs `∮_γ d log(φ_{c₁}^{2^k}) = 2πi`): set `n = 2^k`, so
+`2^k · (2πi/2^k) = 2πi`. The arithmetic core of the disconnected period→non-square chain. Axiom-clean. -/
+theorem pathInt_logDeriv_pow {g : ℂ → ℂ} {γ γ' : ℝ → ℂ} (n : ℕ)
+    (hd : ∀ θ ∈ Set.uIcc (0:ℝ) (2 * Real.pi), DifferentiableAt ℂ g (γ θ)) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv (fun w => (g w) ^ n) (γ θ) * γ' θ)
+      = (n : ℂ) * ∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv g (γ θ) * γ' θ := by
+  have heq : ∀ θ ∈ Set.uIcc (0:ℝ) (2 * Real.pi),
+      logDeriv (fun w => (g w) ^ n) (γ θ) * γ' θ = (n : ℂ) * (logDeriv g (γ θ) * γ' θ) := by
+    intro θ hθ
+    rw [logDeriv_fun_pow (hd θ hθ) n]; ring
+  rw [intervalIntegral.integral_congr heq, intervalIntegral.integral_const_mul]
+
+end Bottcher
+
+namespace Bottcher
+
+open Complex Set intervalIntegral
+
+/-- **Fractional period ⟹ the `2^k`-th power has no analytic square root (disconnected engine).** If a
+nonvanishing analytic `φ` has FRACTIONAL period `∮_γ d log φ = 2πi/2^k` around a closed C¹ loop γ, then
+`φ^{2^k}` has no analytic square root near γ. The period of `φ^{2^k}` is `2^k·(2πi/2^k) = 2πi` (odd),
+so `no_analytic_sqrt_of_odd_period_loop` applies. This is the disconnected case's period engine: the
+localized depth-`k` cylinder loop gives `φ_{c₁}` fractional period `2πi/2^k`
+(`winding_value_of_iterate_loop`), whence `a = φ_{c₁}^{2^k}` is not a square over any ring single-valued
+around γ — e.g. `ℂ(z,φ_{c₂})`, single-valued by L1 `pathInt_dlog_lift_closed_eq_zero`. Axiom-clean. -/
+theorem no_analytic_sqrt_pow_of_fractional_period
+    {A : Set ℂ} (hAo : IsOpen A) {γ γ' : ℝ → ℂ}
+    (hγcont : Continuous γ) (hγ'cont : Continuous γ') (hγmem : ∀ θ : ℝ, γ θ ∈ A)
+    (hγd : ∀ θ : ℝ, HasDerivAt γ (γ' θ) θ) (hγclosed : γ (2 * Real.pi) = γ 0)
+    {φ : ℂ → ℂ} (k : ℕ) (hφ : AnalyticOnNhd ℂ φ A) (hφne : ∀ z ∈ A, φ z ≠ 0)
+    (hfracper : (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv φ (γ θ) * γ' θ)
+        = 2 * (Real.pi : ℂ) * Complex.I / 2 ^ k)
+    {h : ℂ → ℂ} (hh : AnalyticOnNhd ℂ h A)
+    (hsq : Set.EqOn (fun z => (h z) ^ 2) (fun z => (φ z) ^ (2 ^ k)) A) :
+    False := by
+  have h2k : (2 : ℂ) ^ k ≠ 0 := pow_ne_zero _ two_ne_zero
+  refine no_analytic_sqrt_of_odd_period_loop hAo hγcont hγ'cont hγmem hγd hγclosed
+    (g := fun w => (φ w) ^ (2 ^ k)) ?_ (fun z hz => pow_ne_zero _ (hφne z hz)) hh hsq
+  rw [pathInt_logDeriv_pow (2 ^ k) (fun θ _ => (hφ (γ θ) (hγmem θ)).differentiableAt), hfracper]
+  push_cast
+  rw [mul_comm, div_mul_cancel₀ _ h2k]
+
+end Bottcher
+
+namespace Bottcher
+
+open Complex Set intervalIntegral
+
+/-- **Path-integral change of variables under `f^[k]` (chain rule for `d log`).** For a loop `γ` and a
+function `g` differentiable along `f_c^[k]∘γ`, `∮_γ d log(g∘f_c^[k]) = ∫ logDeriv g(f_c^[k] γ)·(f_c^[k]∘γ)'`
+— the contour integral of `d log g` over the IMAGE path `f_c^[k]∘γ` (pure `logDeriv_comp`). For the
+disconnected case `g = bottcherCoord c`: `∮_{γ_k} d log(φ_{c₁}∘f^[k]) = ∮_{f^[k]∘γ_k} d log φ_{c₁} = 2πi`
+when `f^[k]∘γ_k` winds `K_{c₁}` once (a degree-1 lift of the base circle), supplying the odd-period
+hypothesis of `no_analytic_sqrt_of_odd_period_loop`. Reduces #85's period condition to a degree-1 lift.
+Axiom-clean. -/
+theorem pathInt_logDeriv_comp_iterate {c : ℂ} (k : ℕ) {g : ℂ → ℂ} {γ γ' : ℝ → ℂ}
+    (hg : ∀ θ : ℝ, DifferentiableAt ℂ g ((quadratic c)^[k] (γ θ))) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv (fun z => g ((quadratic c)^[k] z)) (γ θ) * γ' θ)
+      = ∫ θ in (0:ℝ)..(2 * Real.pi),
+          logDeriv g ((quadratic c)^[k] (γ θ)) * (deriv ((quadratic c)^[k]) (γ θ) * γ' θ) := by
+  apply intervalIntegral.integral_congr
+  intro θ _
+  dsimp only
+  have hcomp : logDeriv (fun z => g ((quadratic c)^[k] z)) (γ θ)
+      = logDeriv g ((quadratic c)^[k] (γ θ)) * deriv ((quadratic c)^[k]) (γ θ) :=
+    logDeriv_comp (hg θ)
+      (analyticOnNhd_quadratic_iterate c k (γ θ) (Set.mem_univ _)).differentiableAt
+  rw [hcomp]; ring
+
+end Bottcher
+
+namespace Bottcher
+
+open Complex Set intervalIntegral
+
+/-- **Closed degree-1 lift ⟹ `φ_{c₁}∘f^[k]` has no analytic square root (the full #85→engine reduction).**
+If a closed C¹ loop `γ` lies in an open `A` where `f_c^[k]` escapes, and `γ` is a degree-1 lift of the
+base circle (`f_c^[k]∘γ = C(0,R)` with the chain-rule velocity match), then `g = bottcherCoord c∘f_c^[k]`
+(single-valued analytic nonvanishing on `A`) has no analytic square root on `A`. Period:
+`∮_γ d log g = ∮_{f^[k]∘γ} d log φ_{c₁} = ∮_{C(0,R)} d log φ_{c₁} = 2πi` (`pathInt_logDeriv_comp_iterate`
++ `circleIntegral_logDeriv_bottcher`), odd ⟹ `no_analytic_sqrt_of_odd_period_loop`. This reduces the
+disconnected non-squareness to the single geometric input #85: a CLOSED degree-1 lift (a loop around one
+depth-`k` Cantor cylinder, BELOW the critical level so `φ_{c₁}` is multivalued and the closed loop carries
+fractional monodromy), lying K_{c₂}-free. Axiom-clean. -/
+theorem no_analytic_sqrt_iterate_of_closed_lift {c : ℂ} (k : ℕ) {R : ℝ} (hR : max 2 ‖c‖ < R)
+    {A : Set ℂ} (hAo : IsOpen A) {γ γ' : ℝ → ℂ}
+    (hγcont : Continuous γ) (hγ'cont : Continuous γ')
+    (hγmem : ∀ θ : ℝ, γ θ ∈ A)
+    (hγd : ∀ θ : ℝ, HasDerivAt γ (γ' θ) θ)
+    (hγclosed : γ (2 * Real.pi) = γ 0)
+    (hAesc : ∀ z ∈ A, (quadratic c)^[k] z ∈ escapeOpen c)
+    (hlift : ∀ θ : ℝ, (quadratic c)^[k] (γ θ) = circleMap 0 R θ)
+    (hvel : ∀ θ : ℝ, deriv ((quadratic c)^[k]) (γ θ) * γ' θ = deriv (circleMap 0 R) θ)
+    {h : ℂ → ℂ} (hh : AnalyticOnNhd ℂ h A)
+    (hsq : Set.EqOn (fun z => (h z) ^ 2) (fun z => bottcherCoord c ((quadratic c)^[k] z)) A) :
+    False := by
+  refine no_analytic_sqrt_of_odd_period_loop hAo hγcont hγ'cont hγmem hγd hγclosed
+    (g := fun z => bottcherCoord c ((quadratic c)^[k] z)) ?_
+    (fun z _ => bottcherCoord_ne_zero c _) hh hsq
+  rw [pathInt_logDeriv_comp_iterate k
+    (fun θ => (analyticOnNhd_bottcherCoord_full c _ (hAesc (γ θ) (hγmem θ))).differentiableAt)]
+  rw [show (∫ θ in (0:ℝ)..(2 * Real.pi),
+        logDeriv (bottcherCoord c) ((quadratic c)^[k] (γ θ)) * (deriv ((quadratic c)^[k]) (γ θ) * γ' θ))
+      = ∮ z in C(0, R), logDeriv (bottcherCoord c) z from ?_,
+    circleIntegral_logDeriv_bottcher hR]
+  have hdef : (∮ z in C(0, R), logDeriv (bottcherCoord c) z)
+      = ∫ θ in (0:ℝ)..(2 * Real.pi),
+          deriv (circleMap 0 R) θ • logDeriv (bottcherCoord c) (circleMap 0 R θ) := rfl
+  rw [hdef]
+  refine intervalIntegral.integral_congr ?_
+  intro θ _
+  dsimp only
+  rw [hlift θ, hvel θ, smul_eq_mul, mul_comm]
+
+end Bottcher
