@@ -282,4 +282,37 @@ theorem compact_subset_of_full {K₁ K₂ : Set ℂ} (hK₁ : IsCompact K₁) (h
       obtain ⟨z, hz⟩ := hconn (interior K₁) K₁ᶜ isOpen_interior hK₁open hcover hu hv
       exact hz.2.2 (interior_subset hz.2.1)
 
+/-- **Both-connected independence — the capstone (function level).** Let `f = φ_{c₁}` be analytic on the
+basin `K₁ᶜ = ℂ\K_{c₁}` with the Julia set `frontier K₁` as its natural boundary, and `g = φ_{c₂}` analytic
+on the basin `K₂ᶜ` of a *full* `K₂` (`K₂ᶜ` connected, unbounded). If `K_{c₁} ⊄ K_{c₂}` (the parameters are
+distinct), then `f` satisfies **no** polynomial relation `∑ b_i(z, g(z))·f(z)^i = 0` over `ℂ(z)[g]`:
+the distinct filled-Julia sets put a Julia point `z₀ ∈ J_{c₁}` inside `φ_{c₂}`'s basin
+(`compact_subset_of_full`), where the relation would continue `φ_{c₁}` across its natural boundary
+(`no_phi_relation_of_natural_boundary`) — impossible. This is `TranscendentalOverAdjoin φ_{c₁} φ_{c₂}` at
+the function level: everything is discharged except the two named Böttcher inputs `hnb` (Julia natural
+boundary) and `hfdom`/`hgdom` (full-basin analyticity). -/
+theorem phi_indep_capstone {f g : ℂ → ℂ} {K₁ K₂ : Set ℂ}
+    (hK₁ : IsCompact K₁) (hK₂ : IsClosed K₂)
+    (hconn : IsPreconnected K₂ᶜ) (hunb : ¬ Bornology.IsBounded K₂ᶜ) (hne : ¬ K₁ ⊆ K₂)
+    (hfdom : ∀ z ∈ K₁ᶜ, AnalyticAt ℂ f z) (hgdom : ∀ z ∈ K₂ᶜ, AnalyticAt ℂ g z)
+    (hnb : ∀ z₀ ∈ frontier K₁, ¬ ContinuesAcross f K₁ᶜ z₀)
+    (hlens : ∀ z₀ ∈ frontier K₁, ∀ ρ : ℝ, 0 < ρ →
+      IsPreconnected (K₁ᶜ ∩ ball z₀ ρ) ∧ (K₁ᶜ ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    (hrel : ∀ z ∈ K₁ᶜ,
+      ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0)
+    (hcoeff : ∀ z₀ ∈ frontier K₁, z₀ ∉ K₂ →
+      (b (Fin.last d)).eval₂ (evalRingHom z₀) (g z₀) ≠ 0 ∧
+        (specPoly (fun i z => (b i).eval₂ (evalRingHom z) (g z)) z₀).Separable) :
+    False := by
+  -- distinct ⟹ a Julia point of c₁ lies outside K_{c₂}
+  have hex : ∃ z₀ ∈ frontier K₁, z₀ ∉ K₂ := by
+    by_contra hc
+    push_neg at hc
+    exact hne (compact_subset_of_full hK₁ hK₂ hconn hunb hc)
+  obtain ⟨z₀, hz₀fr, hz₀K₂⟩ := hex
+  obtain ⟨hlead, hsep⟩ := hcoeff z₀ hz₀fr hz₀K₂
+  exact no_phi_relation_of_natural_boundary (hnb z₀ hz₀fr) hfdom (hgdom z₀ hz₀K₂)
+    (hlens z₀ hz₀fr) hd b hlead hsep hrel
+
 end BottcherIndep
