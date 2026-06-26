@@ -317,3 +317,99 @@ theorem quadratic_inverse_branch_slit (c : ℂ) :
   exact (quadratic_sqrt_inverse c w).1
 
 end Bottcher
+
+namespace Bottcher
+
+open Complex Set Metric
+
+/-- **Round annulus = `exp` of a vertical strip.** For `0 < r < R`,
+`{t | r < ‖t‖ < R} = exp '' {s | log r < re s < log R}` (`‖exp s‖ = exp(re s)`). Axiom-clean. -/
+theorem annulus_eq_exp_strip {r R : ℝ} (hr : 0 < r) (hR : r < R) :
+    {t : ℂ | r < ‖t‖ ∧ ‖t‖ < R} = Complex.exp '' {s : ℂ | Real.log r < s.re ∧ s.re < Real.log R} := by
+  have hRpos : 0 < R := lt_trans hr hR
+  ext t
+  simp only [mem_setOf_eq, mem_image]
+  constructor
+  · rintro ⟨h1, h2⟩
+    have ht0 : t ≠ 0 := by rintro rfl; simp only [norm_zero] at h1; linarith
+    have htpos : 0 < ‖t‖ := by positivity
+    refine ⟨Complex.log t, ⟨?_, ?_⟩, Complex.exp_log ht0⟩
+    · rw [Complex.log_re]; exact Real.log_lt_log hr h1
+    · rw [Complex.log_re]; exact Real.log_lt_log htpos h2
+  · rintro ⟨s, ⟨h1, h2⟩, rfl⟩
+    rw [Complex.norm_exp]
+    refine ⟨?_, ?_⟩
+    · calc r = Real.exp (Real.log r) := (Real.exp_log hr).symm
+        _ < Real.exp s.re := Real.exp_lt_exp.mpr h1
+    · calc Real.exp s.re < Real.exp (Real.log R) := Real.exp_lt_exp.mpr h2
+        _ = R := Real.exp_log hRpos
+
+/-- **A round annulus is connected** (`0 < r < R`): the continuous image of the convex (hence
+connected) strip `{log r < re s < log R}` under `exp`. The cover-annulus carrier `U` is such an
+annulus; `IsPreconnected U` is what `monoF_witness_projection_base` requires. Axiom-clean. -/
+theorem isConnected_annulus {r R : ℝ} (hr : 0 < r) (hrR : r < R) :
+    IsConnected {t : ℂ | r < ‖t‖ ∧ ‖t‖ < R} := by
+  have hmid : 0 < (r + R) / 2 := by linarith
+  rw [annulus_eq_exp_strip hr hrR]
+  apply IsConnected.image
+  · apply Convex.isConnected
+    · exact (convex_halfSpace_re_gt _).inter (convex_halfSpace_re_lt _)
+    · refine ⟨Real.log ((r+R)/2), ?_, ?_⟩
+      · show Real.log r < (Real.log ((r+R)/2) : ℂ).re
+        rw [Complex.ofReal_re]; exact Real.log_lt_log hr (by linarith)
+      · show ((Real.log ((r+R)/2) : ℂ)).re < Real.log R
+        rw [Complex.ofReal_re]; exact Real.log_lt_log hmid (by linarith)
+  · exact Complex.continuous_exp.continuousOn
+
+/-- **The rotation deck FIXES every function of `t^{2ⁿ}`** when `ζ₀^{2ⁿ}=1` — the projection `p₀` and
+`a₂ = φ_{c₂}∘p₀` of the cover-annulus model both factor through `t^{2ⁿ} = φ̃_{c₁}^{2ⁿ}`, so are
+deck-invariant. This is the concrete mechanism (`(ζ₀t)^{2ⁿ} = ζ₀^{2ⁿ}·t^{2ⁿ} = t^{2ⁿ}`) by which the
+SAME deck that scales `a₁ = φ̃_{c₁}` (the `t`-coordinate) leaves `p₀` and `φ_{c₂}` fixed — the
+resolution of the planar-deck obstruction (the cover `U` is in the `t`-coordinate, the `z`-projection
+factors through `t^{2ⁿ}`). Axiom-clean. -/
+theorem rotation_fixes_monomial_comp {ζ₀ : ℂ} {n : ℕ} (hζpow : ζ₀ ^ (2 ^ n) = 1)
+    (h : ℂ → ℂ) (t : ℂ) :
+    (fun s => h (s ^ (2 ^ n))) (ζ₀ * t) = (fun s => h (s ^ (2 ^ n))) t := by
+  simp only [mul_pow, hζpow, one_mul]
+
+end Bottcher
+
+namespace Bottcher
+
+open Complex Set
+
+/-- **`exp` is injective on a horizontal strip of height `≤ 2π`.** If `im a, im b ∈ (y₀, y₀+2π]` and
+`exp a = exp b` then `a = b` — `exp` periodicity forces the period multiple `n` to vanish
+(`|a.im - b.im| ≤ 2π` and `= |n|·2π` with `n∈ℤ` ⟹ `n=0`). The engine for univalence of the dyadic
+lift `φ̃_{c₁} = exp(2⁻ⁿ·bottcherLog∘f^[n])`: on a single cover sheet (`im` of the log-argument
+spanning one period) `exp` does not wrap, so `φ̃_{c₁}` inherits injectivity from
+`2⁻ⁿ·bottcherLog∘f^[n]`. Axiom-clean. -/
+theorem exp_injOn_strip {y₀ : ℝ} :
+    Set.InjOn Complex.exp {z : ℂ | y₀ < z.im ∧ z.im ≤ y₀ + 2 * Real.pi} := by
+  intro a ⟨ha1, ha2⟩ b ⟨hb1, hb2⟩ hab
+  obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp hab
+  have him : a.im = b.im + (n : ℝ) * (2 * Real.pi) := by
+    have := congrArg Complex.im hn
+    simp only [Complex.add_im, Complex.mul_im, Complex.intCast_re, Complex.intCast_im,
+      Complex.ofReal_im, Complex.mul_re, Complex.I_re, Complex.I_im, Complex.ofReal_re] at this
+    simpa using this
+  have hpi : 0 < Real.pi := Real.pi_pos
+  have hn0 : n = 0 := by
+    rcases lt_trichotomy n 0 with h | h | h
+    · exfalso; have hc : (n : ℝ) ≤ -1 := by exact_mod_cast (by omega : n ≤ -1)
+      nlinarith [him]
+    · exact h
+    · exfalso; have hc : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (by omega : 1 ≤ n)
+      nlinarith [him]
+  rw [hn0] at hn; simpa using hn
+
+/-- **`exp ∘ g` is injective from `g` injective into a height-`≤2π` strip.** Composition of the
+injective `g` with `exp` (injective on the strip, `exp_injOn_strip`). With `g = 2⁻ⁿ·bottcherLog∘f^[n]`
+this yields univalence of `φ̃_{c₁}` on a cover sheet — the chart `chart_deck_*` and the deck route
+consume. Axiom-clean. -/
+theorem exp_comp_injOn {α : Type*} {g : α → ℂ} {D : Set α} {y₀ : ℝ}
+    (hg : Set.InjOn g D) (hmaps : ∀ x ∈ D, y₀ < (g x).im ∧ (g x).im ≤ y₀ + 2 * Real.pi) :
+    Set.InjOn (fun x => Complex.exp (g x)) D :=
+  fun a ha b hb hab => hg ha hb (exp_injOn_strip (hmaps a ha) (hmaps b hb) hab)
+
+end Bottcher

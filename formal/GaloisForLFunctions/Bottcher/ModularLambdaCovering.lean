@@ -649,27 +649,28 @@ theorem Gamma2_trace_form {g : SL(2, ℤ)} (hg : g ∈ CongruenceSubgroup.Gamma 
     ∃ e : ℤ, g.1 0 0 + g.1 1 1 = 4 * e + 2 := by
   obtain ⟨h00, h01, h10, h11⟩ := CongruenceSubgroup.Gamma_mem.mp hg
   have e00 : (2 : ℤ) ∣ (g.1 0 0 - 1) := by
-    rw [← ZMod.intCast_zmod_eq_zero_iff_dvd]; push_cast; rw [h00]; ring
+    have := (ZMod.intCast_zmod_eq_zero_iff_dvd (g.1 0 0 - 1) 2).mp (by push_cast; rw [h00]; ring)
+    exact_mod_cast this
   have e11 : (2 : ℤ) ∣ (g.1 1 1 - 1) := by
-    rw [← ZMod.intCast_zmod_eq_zero_iff_dvd]; push_cast; rw [h11]; ring
-  have e01 : (2 : ℤ) ∣ g.1 0 1 := (ZMod.intCast_zmod_eq_zero_iff_dvd _ 2).mp h01
-  have e10 : (2 : ℤ) ∣ g.1 1 0 := (ZMod.intCast_zmod_eq_zero_iff_dvd _ 2).mp h10
+    have := (ZMod.intCast_zmod_eq_zero_iff_dvd (g.1 1 1 - 1) 2).mp (by push_cast; rw [h11]; ring)
+    exact_mod_cast this
+  have e01 : (2 : ℤ) ∣ g.1 0 1 := by
+    have := (ZMod.intCast_zmod_eq_zero_iff_dvd (g.1 0 1) 2).mp h01; exact_mod_cast this
+  have e10 : (2 : ℤ) ∣ g.1 1 0 := by
+    have := (ZMod.intCast_zmod_eq_zero_iff_dvd (g.1 1 0) 2).mp h10; exact_mod_cast this
   obtain ⟨a, ha⟩ := e00; obtain ⟨b, hb⟩ := e11; obtain ⟨c, hc⟩ := e01; obtain ⟨d, hd⟩ := e10
   have hdet : g.1 0 0 * g.1 1 1 - g.1 0 1 * g.1 1 0 = 1 := by
     have h := g.2; rwa [Matrix.det_fin_two] at h
   refine ⟨c * d - a * b, ?_⟩
-  have ha' : g.1 0 0 = 2 * a + 1 := by omega
-  have hb' : g.1 1 1 = 2 * b + 1 := by omega
-  rw [ha', hb', ha', hb', hc, hd] at *
+  rw [hc, hd] at hdet
+  rw [show g.1 0 0 = 2 * a + 1 from by omega, show g.1 1 1 = 2 * b + 1 from by omega] at hdet ⊢
   linear_combination hdet
 
 /-- **`Γ(2)` has no elliptic elements:** every `γ ∈ Γ(2)` has `|trace| ≥ 2`. -/
 theorem Gamma2_abs_trace_ge_two {g : SL(2, ℤ)} (hg : g ∈ CongruenceSubgroup.Gamma 2) :
     2 ≤ |g.1 0 0 + g.1 1 1| := by
   obtain ⟨e, he⟩ := Gamma2_trace_form hg
-  rw [he]
-  rcases le_or_lt 0 e with h | h
-  · rw [abs_of_nonneg (by omega)]; omega
-  · rw [abs_of_neg (by omega)]; omega
+  rw [he, le_abs]
+  omega
 
 end Bottcher

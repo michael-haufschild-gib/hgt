@@ -2647,3 +2647,25 @@ Honest status: the consuming machinery + inverse-branch engine + antipodal symme
 axiom-clean (~15 thms this session). The cylinder/cover-annulus construction itself is a delicate
 sub-critical-dynamics formalization (not trivial assembly); the deck route is the cleaner of the two
 paths to it.
+
+### Confirmed: ALL deck/automorphism machinery built — only the genuine lift data remains
+
+The rotation-deck apparatus is ALREADY complete in `MeromorphicField.lean` (`rotation`,
+`rotation_comp_inv`, `rotation_mapsTo_annulus`, `rotationDeckEquiv`, `precompMeroAlgEquiv`,
+`precompMeroEquiv_algebraMap_fix`) — its own docstring (l.428): "The real disconnected case replaces
+`univ` by the cover annulus `Ã` and supplies the genuine analytically-continued Böttcher lifts; the
+automorphism machinery is exactly this." So the single remaining input is, verbatim, the **genuine
+analytically-continued Böttcher lift on the cover annulus `Ã`** (= task #67/#85), with the `z`-projection.
+
+This session's contribution is the building-block layer for that lift continuation, all axiom-clean
+(`CylinderUnivalence.lean`, 18 thms): the inverse-branch engine (`quadratic_inverse_branch_slit`:
+`±√(w-c)`), the injectivity engine (`quadratic_iterate_injOn` etc. ⟹ `f^[n]` injective ⟹ `φ̃_{c₁}`
+univalent), the antipodal symmetry (`greenLimit_neg`: `G_c` even ⟹ lobes are exact antipodal images),
+the cover-annulus carrier (`isConnected_annulus`), and the projection-invariance mechanism
+(`rotation_fixes_monomial_comp`: `p₀ = h(t^{2ⁿ})` is deck-fixed). Plus the chart→deck toolkit
+(`CoverDeckScaling`) turning a univalent chart into the full deck datum.
+
+The lone open object: the cover annulus `Ã` carrying the genuine `φ̃_{c₁}` continuation — the
+sub-critical-dynamics construction the project has flagged open from the start. Building blocks are now
+in place; the continuation itself (the `Ξ = (φ_{c₁}∘f^[n])⁻¹` chart on a separating annulus near `z₀`,
+`K_{c₂}`-free) is the remaining sustained work.
