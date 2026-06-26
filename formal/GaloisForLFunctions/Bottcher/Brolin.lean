@@ -25,6 +25,7 @@ import Mathlib.Data.Multiset.Fintype
 import Mathlib.FieldTheory.IsAlgClosed.Basic
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 import Mathlib.MeasureTheory.Measure.AEMeasurable
+import Mathlib.MeasureTheory.Measure.Prokhorov
 import Mathlib.MeasureTheory.Integral.RieszMarkovKakutani.Real
 
 open Filter Topology MeasureTheory CompactlySupported Laplacian
@@ -163,6 +164,49 @@ potential equal to the `n`th Green approximant away from its atoms.
 noncomputable def rootCountingMeasure (s : Multiset ℂ) : Measure ℂ :=
   ∑ x : s, Measure.dirac (x : ℂ)
 
+/-- The fixed escape disk that contains all finite zero-pullback atoms. -/
+def escapeDisk (c : ℂ) : Set ℂ :=
+  Metric.closedBall 0 (max 2 ‖c‖)
+
+/-- Pushing forward a multiset counting measure maps the underlying multiset,
+preserving multiplicities. -/
+theorem map_rootCountingMeasure (s : Multiset ℂ) (f : ℂ → ℂ) (hf : Measurable f) :
+    Measure.map f (rootCountingMeasure s) = rootCountingMeasure (s.map f) := by
+  rw [rootCountingMeasure, rootCountingMeasure]
+  rw [Measure.map_finset_sum']
+  · simp only [Measure.map_dirac' hf]
+    rw [Finset.sum, Finset.sum]
+    have hleft :
+        ((Finset.univ : Finset s).val.map
+            (fun x : s => Measure.dirac (f x.1))) =
+          s.map (fun x => Measure.dirac (f x)) := by
+      simpa using (Multiset.map_univ s fun x : ℂ => Measure.dirac (f x))
+    have hright :
+        ((Finset.univ : Finset (s.map f)).val.map
+            (fun x : s.map f => Measure.dirac x.1)) =
+          (s.map f).map Measure.dirac := by
+      simpa using (Multiset.map_univ (s.map f) fun x : ℂ => Measure.dirac x)
+    rw [hleft, hright, Multiset.map_map]
+    simp
+  · exact hf.aemeasurable
+
+/-- Counting measures turn multiset addition into measure addition. -/
+theorem rootCountingMeasure_add (s t : Multiset ℂ) :
+    rootCountingMeasure (s + t) = rootCountingMeasure s + rootCountingMeasure t := by
+  ext A hA
+  simp [rootCountingMeasure, Finset.sum]
+
+/-- If every atom of a multiset lies in `K`, its counting measure gives no mass
+to `Kᶜ`. -/
+theorem rootCountingMeasure_compl_eq_zero_of_forall_mem (s : Multiset ℂ) (K : Set ℂ)
+    (hK : ∀ z ∈ s, z ∈ K) :
+    rootCountingMeasure s Kᶜ = 0 := by
+  rw [rootCountingMeasure]
+  simp only [Measure.coe_finsetSum, Finset.sum_apply]
+  apply Finset.sum_eq_zero
+  intro x _hx
+  simp [hK x.1 Multiset.coe_mem]
+
 /-- Integrating against a multiset counting measure is summing over the multiset. -/
 theorem integral_rootCountingMeasure (s : Multiset ℂ) (f : ℂ → ℝ) :
     ∫ z, f z ∂rootCountingMeasure s = (s.map f).sum := by
@@ -276,6 +320,14 @@ theorem rootLogSum_eq_log_eval_of_monic {p : Polynomial ℂ} (hp : p.Monic) {z :
 noncomputable def preBrolinMeasure (c : ℂ) (n : ℕ) : Measure ℂ :=
   ((2 ^ n : ENNReal)⁻¹) • rootCountingMeasure ((quadraticPolyIterate c n).roots)
 
+/-- Integrating against a finite normalized pre-Brolin measure is the
+normalized average over the level-`n` zero-pullback multiset. -/
+theorem integral_preBrolinMeasure_eq_root_average (c : ℂ) (n : ℕ) (f : ℂ → ℝ) :
+    ∫ z, f z ∂preBrolinMeasure c n =
+      (2 ^ n : ℝ)⁻¹ * (((quadraticPolyIterate c n).roots.map f).sum) := by
+  rw [preBrolinMeasure, integral_smul_measure, integral_rootCountingMeasure]
+  simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
+
 /-- The finite pre-Brolin potential is the normalized negative root-log sum. -/
 theorem logPotential_preBrolinMeasure_eq_neg_rootLogSum (c z : ℂ) (n : ℕ) :
     logPotential (preBrolinMeasure c n) z =
@@ -357,6 +409,29 @@ theorem roots_card_quadraticPolyIterate (c : ℂ) (n : ℕ) :
     (quadraticPolyIterate c n).roots.card = 2 ^ n := by
   rw [IsAlgClosed.card_roots_eq_natDegree, quadraticPolyIterate_natDegree]
 
+/-- Every zero-pullback atom lies in the fixed escape disk. -/
+theorem mem_escapeDisk_of_mem_roots_quadraticPolyIterate {c z : ℂ} {n : ℕ}
+    (hz : z ∈ (quadraticPolyIterate c n).roots) :
+    z ∈ escapeDisk c := by
+  rw [escapeDisk, Metric.mem_closedBall, dist_zero_right]
+  by_contra hle
+  rw [not_le] at hle
+  have h2 : 2 < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) hle
+  have hc : ‖c‖ ≤ ‖z‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) hle)
+  have hzroot : (quadratic c)^[n] z = 0 := by
+    have hp : quadraticPolyIterate c n ≠ 0 := (quadraticPolyIterate_monic c n).ne_zero
+    have hisroot : (quadraticPolyIterate c n).IsRoot z := (Polynomial.mem_roots hp).mp hz
+    rwa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] at hisroot
+  exact (escape_regime_stable hc h2 n).2 hzroot
+
+/-- The unnormalized zero-pullback counting measure is carried by the fixed
+escape disk. -/
+theorem rootCountingMeasure_roots_quadraticPolyIterate_escapeDisk_compl
+    (c : ℂ) (n : ℕ) :
+    rootCountingMeasure (quadraticPolyIterate c n).roots (escapeDisk c)ᶜ = 0 :=
+  rootCountingMeasure_compl_eq_zero_of_forall_mem _ _ fun z hz =>
+    mem_escapeDisk_of_mem_roots_quadraticPolyIterate hz
+
 /-- Each finite pre-Brolin pullback measure is normalized to total mass `1`. -/
 theorem preBrolinMeasure_apply_univ (c : ℂ) (n : ℕ) :
     preBrolinMeasure c n Set.univ = 1 := by
@@ -370,6 +445,265 @@ theorem preBrolinMeasure_apply_univ (c : ℂ) (n : ℕ) :
 instance instIsProbabilityMeasure_preBrolinMeasure (c : ℂ) (n : ℕ) :
     IsProbabilityMeasure (preBrolinMeasure c n) where
   measure_univ := preBrolinMeasure_apply_univ c n
+
+/-- Each finite zero-pullback probability measure is carried by the fixed
+escape disk. -/
+theorem preBrolinMeasure_escapeDisk_compl (c : ℂ) (n : ℕ) :
+    preBrolinMeasure c n (escapeDisk c)ᶜ = 0 := by
+  rw [preBrolinMeasure, Measure.smul_apply,
+    rootCountingMeasure_roots_quadraticPolyIterate_escapeDisk_compl]
+  simp
+
+/-- Counting measure on a subtype carrier, used to place the finite Brolin
+approximants on the compact escape disk before taking limits. -/
+noncomputable def rootCountingMeasureOn (K : Set ℂ) (s : Multiset ℂ)
+    (hK : ∀ z ∈ s, z ∈ K) : Measure K :=
+  ∑ x : s, Measure.dirac (⟨x.1, hK x.1 Multiset.coe_mem⟩ : K)
+
+/-- The subtype-carried counting measure has mass equal to the source multiset
+cardinality. -/
+theorem rootCountingMeasureOn_apply_univ (K : Set ℂ) (s : Multiset ℂ)
+    (hK : ∀ z ∈ s, z ∈ K) :
+    rootCountingMeasureOn K s hK Set.univ = s.card := by
+  simp [rootCountingMeasureOn, Multiset.card_coe]
+
+/-- Pushing the subtype-carried counting measure back to the plane recovers
+the original counting measure. -/
+theorem map_rootCountingMeasureOn_subtype_coe (K : Set ℂ) (s : Multiset ℂ)
+    (hK : ∀ z ∈ s, z ∈ K) :
+    Measure.map (fun z : K => (z : ℂ)) (rootCountingMeasureOn K s hK) =
+      rootCountingMeasure s := by
+  ext A hA
+  simp [rootCountingMeasureOn, rootCountingMeasure, Measure.map_apply measurable_subtype_coe hA]
+  apply Finset.sum_congr rfl
+  intro x _hx
+  rfl
+
+/-- The finite zero-pullback measure, now regarded as a measure on the compact
+escape disk itself. -/
+noncomputable def preBrolinMeasureOnEscapeDisk (c : ℂ) (n : ℕ) :
+    Measure (escapeDisk c) :=
+  ((2 ^ n : ENNReal)⁻¹) •
+    rootCountingMeasureOn (escapeDisk c) (quadraticPolyIterate c n).roots
+      (fun _ hz => mem_escapeDisk_of_mem_roots_quadraticPolyIterate hz)
+
+/-- The compact-carrier finite Brolin measure is exactly the plane finite
+pre-Brolin measure after pushing forward along the escape-disk inclusion. -/
+theorem map_preBrolinMeasureOnEscapeDisk_subtype_coe (c : ℂ) (n : ℕ) :
+    Measure.map (fun z : escapeDisk c => (z : ℂ))
+        (preBrolinMeasureOnEscapeDisk c n) =
+      preBrolinMeasure c n := by
+  rw [preBrolinMeasureOnEscapeDisk, preBrolinMeasure, Measure.map_smul,
+    map_rootCountingMeasureOn_subtype_coe]
+
+/-- Equivalent orientation of the compact-carrier pushforward identity. -/
+theorem preBrolinMeasure_eq_map_preBrolinMeasureOnEscapeDisk (c : ℂ) (n : ℕ) :
+    preBrolinMeasure c n =
+      Measure.map (fun z : escapeDisk c => (z : ℂ))
+        (preBrolinMeasureOnEscapeDisk c n) :=
+  (map_preBrolinMeasureOnEscapeDisk_subtype_coe c n).symm
+
+/-- Plane test integrals against the finite pre-Brolin measure can be computed
+on the compact escape-disk carrier. -/
+theorem integral_preBrolinMeasure_eq_integral_escapeDisk (c : ℂ) (n : ℕ)
+    (φ : C_c(ℂ, ℝ)) :
+    ∫ z, φ z ∂preBrolinMeasure c n =
+      ∫ z : escapeDisk c, φ (z : ℂ) ∂preBrolinMeasureOnEscapeDisk c n := by
+  rw [preBrolinMeasure_eq_map_preBrolinMeasureOnEscapeDisk, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact φ.continuous.aestronglyMeasurable
+
+/-- The finite positive functional represented by the normalized level-`n`
+zero-pullback measure. -/
+noncomputable def preBrolinRieszFunctional (c : ℂ) (n : ℕ) :
+    C_c(ℂ, ℝ) →ₚ[ℝ] ℝ :=
+  { toFun := fun φ => ∫ z, φ z ∂preBrolinMeasure c n
+    map_add' := by
+      intro φ ψ
+      change ∫ z, φ z + ψ z ∂preBrolinMeasure c n =
+        ∫ z, φ z ∂preBrolinMeasure c n + ∫ z, ψ z ∂preBrolinMeasure c n
+      rw [integral_add]
+      · exact φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+      · exact ψ.continuous.integrable_of_hasCompactSupport ψ.hasCompactSupport
+    map_smul' := by
+      intro a φ
+      change ∫ z, a • φ z ∂preBrolinMeasure c n =
+        a • ∫ z, φ z ∂preBrolinMeasure c n
+      rw [integral_smul]
+    monotone' := by
+      intro φ ψ hφψ
+      apply integral_mono _ _ hφψ
+      · exact φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+      · exact ψ.continuous.integrable_of_hasCompactSupport ψ.hasCompactSupport }
+
+theorem preBrolinRieszFunctional_apply (c : ℂ) (n : ℕ) (φ : C_c(ℂ, ℝ)) :
+    preBrolinRieszFunctional c n φ =
+      ∫ z, φ z ∂preBrolinMeasure c n := by
+  rfl
+
+/-- Finite Riesz functionals are normalized root averages. -/
+theorem preBrolinRieszFunctional_apply_root_average (c : ℂ) (n : ℕ)
+    (φ : C_c(ℂ, ℝ)) :
+    preBrolinRieszFunctional c n φ =
+      (2 ^ n : ℝ)⁻¹ *
+        (((quadraticPolyIterate c n).roots.map fun z => φ z).sum) := by
+  rw [preBrolinRieszFunctional_apply, integral_preBrolinMeasure_eq_root_average]
+
+/-- Finite Riesz functionals can equivalently be integrated on the compact
+escape-disk carrier. -/
+theorem preBrolinRieszFunctional_apply_escapeDisk (c : ℂ) (n : ℕ)
+    (φ : C_c(ℂ, ℝ)) :
+    preBrolinRieszFunctional c n φ =
+      ∫ z : escapeDisk c, φ (z : ℂ) ∂preBrolinMeasureOnEscapeDisk c n := by
+  rw [preBrolinRieszFunctional_apply, integral_preBrolinMeasure_eq_integral_escapeDisk]
+
+/-- The subtype-carried finite pre-Brolin measure is normalized. -/
+theorem preBrolinMeasureOnEscapeDisk_apply_univ (c : ℂ) (n : ℕ) :
+    preBrolinMeasureOnEscapeDisk c n Set.univ = 1 := by
+  rw [preBrolinMeasureOnEscapeDisk, Measure.smul_apply,
+    rootCountingMeasureOn_apply_univ, roots_card_quadraticPolyIterate]
+  rw [smul_eq_mul]
+  have hne : (2 ^ n : ENNReal) ≠ 0 := by simp
+  have htop : (2 ^ n : ENNReal) ≠ ⊤ := by simp
+  simpa using ENNReal.inv_mul_cancel hne htop
+
+instance instIsProbabilityMeasure_preBrolinMeasureOnEscapeDisk (c : ℂ) (n : ℕ) :
+    IsProbabilityMeasure (preBrolinMeasureOnEscapeDisk c n) where
+  measure_univ := preBrolinMeasureOnEscapeDisk_apply_univ c n
+
+/-- The compact-carrier probability-measure form of the finite pre-Brolin
+approximants. -/
+noncomputable def preBrolinProbabilityOnEscapeDisk (c : ℂ) (n : ℕ) :
+    ProbabilityMeasure (escapeDisk c) :=
+  ⟨preBrolinMeasureOnEscapeDisk c n,
+    instIsProbabilityMeasure_preBrolinMeasureOnEscapeDisk c n⟩
+
+instance instCompactSpace_escapeDisk (c : ℂ) : CompactSpace (escapeDisk c) :=
+  isCompact_iff_compactSpace.mp (by
+    simpa [escapeDisk] using (isCompact_closedBall (0 : ℂ) (max 2 ‖c‖)))
+
+/-- A chosen subsequential weak limit of the compact-carrier finite Brolin
+approximants.  This is the first genuine limiting measure object in the
+arbitrary-`c` Brolin construction. -/
+noncomputable def brolinLimitOnEscapeDiskData (c : ℂ) :
+    { μ : ProbabilityMeasure (escapeDisk c) //
+      ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
+        Tendsto (fun k => preBrolinProbabilityOnEscapeDisk c (ψ k)) atTop (𝓝 μ) } := by
+  classical
+  let h := CompactSpace.tendsto_subseq (preBrolinProbabilityOnEscapeDisk c)
+  let μ := Classical.choose h
+  have hμ :
+      ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
+        Tendsto (preBrolinProbabilityOnEscapeDisk c ∘ ψ) atTop (𝓝 μ) :=
+    Classical.choose_spec h
+  let ψ := Classical.choose hμ
+  have hψ :
+      StrictMono ψ ∧ Tendsto (preBrolinProbabilityOnEscapeDisk c ∘ ψ) atTop (𝓝 μ) :=
+    Classical.choose_spec hμ
+  exact ⟨μ, ψ, hψ.1, by simpa [Function.comp_def] using hψ.2⟩
+
+/-- The compact-carrier limiting Brolin probability measure. -/
+noncomputable def brolinLimitOnEscapeDisk (c : ℂ) : ProbabilityMeasure (escapeDisk c) :=
+  (brolinLimitOnEscapeDiskData c).1
+
+/-- The defining subsequential convergence of the compact-carrier limiting
+Brolin measure. -/
+theorem brolinLimitOnEscapeDisk_spec (c : ℂ) :
+    ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
+      Tendsto (fun k => preBrolinProbabilityOnEscapeDisk c (ψ k)) atTop
+        (𝓝 (brolinLimitOnEscapeDisk c)) :=
+  (brolinLimitOnEscapeDiskData c).2
+
+/-- A named extraction subsequence for the compact-carrier finite Brolin
+probabilities. -/
+noncomputable def brolinLimitSubsequence (c : ℂ) : ℕ → ℕ :=
+  Classical.choose (brolinLimitOnEscapeDisk_spec c)
+
+theorem brolinLimitSubsequence_strictMono (c : ℂ) :
+    StrictMono (brolinLimitSubsequence c) :=
+  (Classical.choose_spec (brolinLimitOnEscapeDisk_spec c)).1
+
+theorem preBrolinProbabilityOnEscapeDisk_subseq_tendsto (c : ℂ) :
+    Tendsto
+      (fun k => preBrolinProbabilityOnEscapeDisk c (brolinLimitSubsequence c k))
+      atTop (𝓝 (brolinLimitOnEscapeDisk c)) :=
+  (Classical.choose_spec (brolinLimitOnEscapeDisk_spec c)).2
+
+/-- The limiting Brolin measure on the plane, obtained by pushing the compact
+escape-disk limit forward along the subtype inclusion. -/
+noncomputable def limitingBrolinMeasure (c : ℂ) : Measure ℂ :=
+  Measure.map (fun z : escapeDisk c => (z : ℂ))
+    (brolinLimitOnEscapeDisk c : Measure (escapeDisk c))
+
+instance instIsProbabilityMeasure_limitingBrolinMeasure (c : ℂ) :
+    IsProbabilityMeasure (limitingBrolinMeasure c) := by
+  rw [limitingBrolinMeasure]
+  exact Measure.isProbabilityMeasure_map measurable_subtype_coe.aemeasurable
+
+/-- The limiting plane measure is still carried by the same compact escape disk. -/
+theorem limitingBrolinMeasure_escapeDisk_compl (c : ℂ) :
+    limitingBrolinMeasure c (escapeDisk c)ᶜ = 0 := by
+  rw [limitingBrolinMeasure]
+  rw [Measure.map_apply measurable_subtype_coe]
+  · simp
+  · have hclosed : IsClosed (escapeDisk c) := by
+      exact (by
+        simpa [escapeDisk] using
+          (isCompact_closedBall (0 : ℂ) (max 2 ‖c‖)).isClosed)
+    exact hclosed.measurableSet.compl
+
+/-- The limiting plane measure is a probability measure carried by the compact
+escape disk. -/
+theorem limitingBrolinMeasure_isProbOn_escapeDisk (c : ℂ) :
+    IsProbOn (limitingBrolinMeasure c) (escapeDisk c) :=
+  ⟨instIsProbabilityMeasure_limitingBrolinMeasure c,
+    limitingBrolinMeasure_escapeDisk_compl c⟩
+
+/-- The Riesz-Markov positive functional represented by the constructed limiting
+Brolin measure.  The remaining GAP-A analytic step is to identify this
+functional with `(2π)⁻¹ ΔG_c`. -/
+noncomputable def limitingBrolinRieszFunctional (c : ℂ) : C_c(ℂ, ℝ) →ₚ[ℝ] ℝ :=
+  { toFun := fun φ => ∫ z, φ z ∂limitingBrolinMeasure c
+    map_add' := by
+      intro φ ψ
+      change ∫ z, φ z + ψ z ∂limitingBrolinMeasure c =
+        ∫ z, φ z ∂limitingBrolinMeasure c + ∫ z, ψ z ∂limitingBrolinMeasure c
+      rw [integral_add]
+      · exact φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+      · exact ψ.continuous.integrable_of_hasCompactSupport ψ.hasCompactSupport
+    map_smul' := by
+      intro a φ
+      change ∫ z, a • φ z ∂limitingBrolinMeasure c =
+        a • ∫ z, φ z ∂limitingBrolinMeasure c
+      rw [integral_smul]
+    monotone' := by
+      intro φ ψ hφψ
+      apply integral_mono _ _ hφψ
+      · exact φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+      · exact ψ.continuous.integrable_of_hasCompactSupport ψ.hasCompactSupport }
+
+theorem limitingBrolinRieszFunctional_apply (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    limitingBrolinRieszFunctional c φ =
+      ∫ z, φ z ∂limitingBrolinMeasure c := by
+  rfl
+
+/-- Plane test integrals against the limiting Brolin measure can be computed on
+the compact escape-disk carrier where the limit was constructed. -/
+theorem integral_limitingBrolinMeasure_eq_integral_escapeDisk (c : ℂ)
+    (φ : C_c(ℂ, ℝ)) :
+    ∫ z, φ z ∂limitingBrolinMeasure c =
+      ∫ z : escapeDisk c, φ (z : ℂ) ∂(brolinLimitOnEscapeDisk c : Measure (escapeDisk c)) := by
+  rw [limitingBrolinMeasure, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact φ.continuous.aestronglyMeasurable
+
+/-- Carrier form of the limiting positive functional. -/
+theorem limitingBrolinRieszFunctional_apply_escapeDisk (c : ℂ)
+    (φ : C_c(ℂ, ℝ)) :
+    limitingBrolinRieszFunctional c φ =
+      ∫ z : escapeDisk c, φ (z : ℂ) ∂(brolinLimitOnEscapeDisk c : Measure (escapeDisk c)) := by
+  rw [limitingBrolinRieszFunctional_apply,
+    integral_limitingBrolinMeasure_eq_integral_escapeDisk]
 
 /-- The finite normalized pullback of an arbitrary target point `a` under `f_c^[n]`. -/
 noncomputable def preBrolinMeasureAt (c a : ℂ) (n : ℕ) : Measure ℂ :=
@@ -508,6 +842,50 @@ theorem roots_map_quadraticPolyIterate_succ_sub_C (c a : ℂ) (n : ℕ) :
   intro r _hr
   exact roots_map_quadraticPoly_sub_C c r
 
+/-- Binding each point to two copies is the same multiset as adding the
+multiset to itself. -/
+theorem bind_replicate_two_eq_add (s : Multiset ℂ) :
+    (s.bind fun r => Multiset.replicate 2 r) = s + s := by
+  calc
+    (s.bind fun r => Multiset.replicate 2 r)
+        = (s.bind fun r => Multiset.replicate 1 r + Multiset.replicate 1 r) := by
+          apply Multiset.bind_congr
+          intro r _hr
+          rw [← Multiset.replicate_add]
+    _ = (s.bind fun r => Multiset.replicate 1 r) +
+          (s.bind fun r => Multiset.replicate 1 r) := by
+          rw [Multiset.bind_add]
+    _ = s + s := by
+          have hsingle : (s.bind fun r => ({r} : Multiset ℂ)) = s := by
+            simpa using (Multiset.bind_singleton s id)
+          simp [hsingle]
+
+/-- Counting measure form of doubling every atom. -/
+theorem rootCountingMeasure_bind_replicate_two (s : Multiset ℂ) :
+    rootCountingMeasure (s.bind fun r => Multiset.replicate 2 r) =
+      (2 : ENNReal) • rootCountingMeasure s := by
+  rw [bind_replicate_two_eq_add, rootCountingMeasure_add]
+  ext A hA
+  simp [Measure.smul_apply, two_mul]
+
+/-- Finite balancedness for normalized arbitrary-target pre-Brolin measures:
+the pushforward of the level `n+1` pullback measure by `f_c` is the level `n`
+pullback measure. -/
+theorem map_preBrolinMeasureAt_succ (c a : ℂ) (n : ℕ) :
+    Measure.map (quadratic c) (preBrolinMeasureAt c a (n + 1)) =
+      preBrolinMeasureAt c a n := by
+  have hquad : Measurable (quadratic c) := (continuous_quadratic c).measurable
+  rw [preBrolinMeasureAt, preBrolinMeasureAt, Measure.map_smul,
+    map_rootCountingMeasure _ _ hquad, roots_map_quadraticPolyIterate_succ_sub_C,
+    rootCountingMeasure_bind_replicate_two]
+  rw [smul_smul]
+  congr 1
+  rw [pow_succ]
+  rw [ENNReal.mul_inv (Or.inl (by simp)) (Or.inl (by simp))]
+  rw [mul_assoc]
+  have h2 : (2 : ENNReal)⁻¹ * 2 = 1 := ENNReal.inv_mul_cancel (by simp) (by simp)
+  rw [h2, mul_one]
+
 /-- Summing over a multiset where every point is doubled multiplies the sum by `2`. -/
 theorem sum_bind_replicate_two (s : Multiset ℂ) (g : ℂ → ℝ) :
     (((s.bind fun r => Multiset.replicate 2 r).map g).sum) =
@@ -570,6 +948,14 @@ at target `0`. -/
 theorem preBrolinMeasureAt_zero (c : ℂ) (n : ℕ) :
     preBrolinMeasureAt c 0 n = preBrolinMeasure c n := by
   simp [preBrolinMeasureAt, preBrolinMeasure]
+
+/-- Zero-target finite balancedness: the pushforward of the level `n+1`
+finite Brolin pullback measure by `f_c` is the level `n` measure. -/
+theorem map_preBrolinMeasure_succ (c : ℂ) (n : ℕ) :
+    Measure.map (quadratic c) (preBrolinMeasure c (n + 1)) =
+      preBrolinMeasure c n := by
+  rw [← preBrolinMeasureAt_zero c (n + 1), ← preBrolinMeasureAt_zero c n]
+  exact map_preBrolinMeasureAt_succ c 0 n
 
 /-- Zero-target arbitrary-pullback potential identity, stated through the
 arbitrary-target finite measure. -/
