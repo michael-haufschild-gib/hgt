@@ -431,6 +431,42 @@ theorem integral_cauchy_rootCountingMeasure_eq_derivative_div {p : Polynomial �
   rw [integral_rootCountingMeasure_complex]
   simpa [one_div] using ((IsAlgClosed.splits p).eval_derivative_div_eval_of_ne_zero hz).symm
 
+theorem multiset_sum_map_complex_re {α : Type*} (s : Multiset α) (f : α → ℂ) :
+    ((s.map f).sum).re = (s.map fun x => (f x).re).sum := by
+  induction s using Multiset.induction with
+  | empty => simp
+  | cons a t ih => simp [ih]
+
+theorem multiset_sum_map_complex_im {α : Type*} (s : Multiset α) (f : α → ℂ) :
+    ((s.map f).sum).im = (s.map fun x => (f x).im).sum := by
+  induction s using Multiset.induction with
+  | empty => simp
+  | cons a t ih => simp [ih]
+
+/-- Real part of the finite Cauchy-transform identity for a root-counting
+measure. -/
+theorem integral_cauchy_re_rootCountingMeasure_eq_derivative_div {p : Polynomial ℂ} {z : ℂ}
+    (hz : p.eval z ≠ 0) :
+    ∫ ζ, ((z - ζ)⁻¹).re ∂rootCountingMeasure p.roots =
+      (p.derivative.eval z / p.eval z).re := by
+  have h := integral_cauchy_rootCountingMeasure_eq_derivative_div (p := p) (z := z) hz
+  rw [integral_rootCountingMeasure_complex] at h
+  rw [integral_rootCountingMeasure]
+  exact (multiset_sum_map_complex_re p.roots (fun ζ => (z - ζ)⁻¹)).symm.trans
+    (congrArg Complex.re h)
+
+/-- Imaginary part of the finite Cauchy-transform identity for a root-counting
+measure. -/
+theorem integral_cauchy_im_rootCountingMeasure_eq_derivative_div {p : Polynomial ℂ} {z : ℂ}
+    (hz : p.eval z ≠ 0) :
+    ∫ ζ, ((z - ζ)⁻¹).im ∂rootCountingMeasure p.roots =
+      (p.derivative.eval z / p.eval z).im := by
+  have h := integral_cauchy_rootCountingMeasure_eq_derivative_div (p := p) (z := z) hz
+  rw [integral_rootCountingMeasure_complex] at h
+  rw [integral_rootCountingMeasure]
+  exact (multiset_sum_map_complex_im p.roots (fun ζ => (z - ζ)⁻¹)).symm.trans
+    (congrArg Complex.im h)
+
 /-- Finite GAP-A Cauchy-transform identity: the normalized pre-Brolin measure has
 Cauchy transform equal to the normalized logarithmic derivative of `f_c^[n]`,
 away from the finite preimage atoms. -/
@@ -884,6 +920,11 @@ theorem eventually_preBrolinRieszFunctional_subseq_eq_zero_of_eq_zero_on_greenSu
     c (brolinLimitSubsequence c k) φ
     (hN (brolinLimitSubsequence c k) (le_trans hk (le_brolinLimitSubsequence c k))) hφ
 
+/-- The chosen compactness extraction still has indices tending to infinity. -/
+theorem brolinLimitSubsequence_tendsto_atTop (c : ℂ) :
+    Tendsto (brolinLimitSubsequence c) atTop atTop :=
+  (brolinLimitSubsequence_strictMono c).tendsto_atTop
+
 /-- The limiting Brolin measure on the plane, obtained by pushing the compact
 escape-disk limit forward along the subtype inclusion. -/
 noncomputable def limitingBrolinMeasure (c : ℂ) : Measure ℂ :=
@@ -960,10 +1001,449 @@ theorem limitingBrolinRieszFunctional_apply_escapeDisk (c : ℂ)
   rw [limitingBrolinRieszFunctional_apply,
     integral_limitingBrolinMeasure_eq_integral_escapeDisk]
 
+/-- Restrict a compactly supported plane test function to the compact escape
+disk as a bounded continuous test function. -/
+noncomputable def compactRestrictionOnEscapeDisk (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    BoundedContinuousFunction (escapeDisk c) ℝ :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun z : escapeDisk c => φ (z : ℂ), φ.continuous.comp continuous_subtype_val⟩
+
+/-- The defining compact-carrier subsequential convergence, expressed on the
+restricted compactly supported tests used by the Riesz interface. -/
+theorem preBrolinProbabilityOnEscapeDisk_subseq_integral_tendsto
+    (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    Tendsto
+      (fun k =>
+        ∫ z : escapeDisk c, φ (z : ℂ)
+          ∂(preBrolinProbabilityOnEscapeDisk c (brolinLimitSubsequence c k) :
+            Measure (escapeDisk c)))
+      atTop
+      (𝓝 (∫ z : escapeDisk c, φ (z : ℂ)
+          ∂(brolinLimitOnEscapeDisk c : Measure (escapeDisk c)))) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp
+      (preBrolinProbabilityOnEscapeDisk_subseq_tendsto c))
+      (compactRestrictionOnEscapeDisk c φ)
+  simpa [compactRestrictionOnEscapeDisk] using h
+
+/-- Weak convergence of the chosen finite zero-pullback subsequence to a plane
+measure, stated only in the compactly supported test-function language used by
+the local Riesz-Markov interface. -/
+def IsWeakSubseqLimitOfPreBrolin (c : ℂ) (μ : Measure ℂ) : Prop :=
+  ∀ φ : C_c(ℂ, ℝ),
+    Tendsto
+      (fun k => ∫ z, φ z ∂preBrolinMeasure c (brolinLimitSubsequence c k))
+      atTop (𝓝 (∫ z, φ z ∂μ))
+
+/-- Functional version of the same weak-limit contract. -/
+def IsWeakSubseqLimitFunctionalOfPreBrolin
+    (c : ℂ) (Λ : C_c(ℂ, ℝ) →ₚ[ℝ] ℝ) : Prop :=
+  ∀ φ : C_c(ℂ, ℝ),
+    Tendsto
+      (fun k => preBrolinRieszFunctional c (brolinLimitSubsequence c k) φ)
+      atTop (𝓝 (Λ φ))
+
+/-- Measure weak convergence implies weak convergence of the represented
+positive functional. -/
+theorem isWeakSubseqLimitFunctionalOfPreBrolin_of_measure
+    {c : ℂ} {μ : Measure ℂ} [IsFiniteMeasureOnCompacts μ]
+    (hμ : IsWeakSubseqLimitOfPreBrolin c μ) :
+    IsWeakSubseqLimitFunctionalOfPreBrolin c
+      { toFun := fun φ => ∫ z, φ z ∂μ
+        map_add' := by
+          intro φ ψ
+          change ∫ z, φ z + ψ z ∂μ = ∫ z, φ z ∂μ + ∫ z, ψ z ∂μ
+          rw [integral_add]
+          · exact φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+          · exact ψ.continuous.integrable_of_hasCompactSupport ψ.hasCompactSupport
+        map_smul' := by
+          intro a φ
+          change ∫ z, a • φ z ∂μ = a • ∫ z, φ z ∂μ
+          rw [integral_smul]
+        monotone' := by
+          intro φ ψ hφψ
+          apply integral_mono _ _ hφψ
+          · exact φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+          · exact ψ.continuous.integrable_of_hasCompactSupport ψ.hasCompactSupport } := by
+  intro φ
+  exact hμ φ
+
+/-- The compactness-selected plane measure is the weak subsequential limit of
+the finite zero-pullback Brolin measures. -/
+theorem limitingBrolinMeasure_isWeakSubseqLimitOfPreBrolin (c : ℂ) :
+    IsWeakSubseqLimitOfPreBrolin c (limitingBrolinMeasure c) := by
+  intro φ
+  have h := preBrolinProbabilityOnEscapeDisk_subseq_integral_tendsto c φ
+  rw [integral_limitingBrolinMeasure_eq_integral_escapeDisk]
+  refine h.congr' ?_
+  filter_upwards [eventually_ge_atTop 0] with k _hk
+  rw [integral_preBrolinMeasure_eq_integral_escapeDisk]
+  rfl
+
+/-- The represented limiting Riesz functional is the weak limit of the finite
+pre-Brolin Riesz functionals. -/
+theorem limitingBrolinRieszFunctional_isWeakSubseqLimitFunctionalOfPreBrolin
+    (c : ℂ) :
+    IsWeakSubseqLimitFunctionalOfPreBrolin c (limitingBrolinRieszFunctional c) :=
+  isWeakSubseqLimitFunctionalOfPreBrolin_of_measure
+    (limitingBrolinMeasure_isWeakSubseqLimitOfPreBrolin c)
+
+/-- A weak subsequential limit gives zero mass to every compactly supported
+test function that vanishes on a positive Green sublevel.  This is the
+test-function support form of the future statement `μ((K_c)ᶜ)=0`. -/
+theorem weakSubseqLimit_integral_eq_zero_of_eq_zero_on_greenSublevel
+    {c : ℂ} {μ : Measure ℂ} (hμ : IsWeakSubseqLimitOfPreBrolin c μ)
+    {ε : ℝ} (hε : 0 < ε) (φ : C_c(ℂ, ℝ))
+    (hφ : ∀ z, z ∈ greenSublevel c ε → φ z = 0) :
+    ∫ z, φ z ∂μ = 0 := by
+  have hlim := hμ φ
+  have hzero :
+      Tendsto
+        (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 (∫ z, φ z ∂μ)) := by
+    exact hlim.congr'
+      (eventually_preBrolinRieszFunctional_subseq_eq_zero_of_eq_zero_on_greenSublevel
+        c hε φ hφ)
+  exact (tendsto_nhds_unique tendsto_const_nhds hzero).symm
+
+/-- Functional weak-limit version of the same Green-sublevel vanishing
+criterion. -/
+theorem weakSubseqLimitFunctional_eq_zero_of_eq_zero_on_greenSublevel
+    {c : ℂ} {Λ : C_c(ℂ, ℝ) →ₚ[ℝ] ℝ}
+    (hΛ : IsWeakSubseqLimitFunctionalOfPreBrolin c Λ)
+    {ε : ℝ} (hε : 0 < ε) (φ : C_c(ℂ, ℝ))
+    (hφ : ∀ z, z ∈ greenSublevel c ε → φ z = 0) :
+    Λ φ = 0 := by
+  have hlim := hΛ φ
+  have hzero : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 (Λ φ)) := by
+    exact hlim.congr'
+      (eventually_preBrolinRieszFunctional_subseq_eq_zero_of_eq_zero_on_greenSublevel
+        c hε φ hφ)
+  exact (tendsto_nhds_unique tendsto_const_nhds hzero).symm
+
+/-- Concrete Green-sublevel vanishing for the constructed limiting measure. -/
+theorem limitingBrolinMeasure_integral_eq_zero_of_eq_zero_on_greenSublevel
+    (c : ℂ) {ε : ℝ} (hε : 0 < ε) (φ : C_c(ℂ, ℝ))
+    (hφ : ∀ z, z ∈ greenSublevel c ε → φ z = 0) :
+    ∫ z, φ z ∂limitingBrolinMeasure c = 0 :=
+  weakSubseqLimit_integral_eq_zero_of_eq_zero_on_greenSublevel
+    (limitingBrolinMeasure_isWeakSubseqLimitOfPreBrolin c) hε φ hφ
+
+/-- Concrete Green-sublevel vanishing for the represented limiting positive
+functional. -/
+theorem limitingBrolinRieszFunctional_eq_zero_of_eq_zero_on_greenSublevel
+    (c : ℂ) {ε : ℝ} (hε : 0 < ε) (φ : C_c(ℂ, ℝ))
+    (hφ : ∀ z, z ∈ greenSublevel c ε → φ z = 0) :
+    limitingBrolinRieszFunctional c φ = 0 :=
+  weakSubseqLimitFunctional_eq_zero_of_eq_zero_on_greenSublevel
+    (limitingBrolinRieszFunctional_isWeakSubseqLimitFunctionalOfPreBrolin c) hε φ hφ
+
+/-- The compact-carrier weak limit is carried by every positive Green sublevel,
+pulled back to the escape disk. -/
+theorem brolinLimitOnEscapeDisk_greenSublevel_preimage_compl_of_pos
+    (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    (brolinLimitOnEscapeDisk c : Measure (escapeDisk c))
+      (((fun z : escapeDisk c => (z : ℂ)) ⁻¹' (greenSublevel c ε)ᶜ)) = 0 := by
+  let G : Set (escapeDisk c) :=
+    ((fun z : escapeDisk c => (z : ℂ)) ⁻¹' (greenSublevel c ε)ᶜ)
+  have hGopen : IsOpen G := by
+    dsimp [G]
+    exact ((isClosed_greenSublevel c ε).isOpen_compl).preimage continuous_subtype_val
+  have hle :=
+    ProbabilityMeasure.le_liminf_measure_open_of_tendsto
+      (preBrolinProbabilityOnEscapeDisk_subseq_tendsto c) hGopen
+  have hevent :
+      ∀ᶠ k in atTop,
+        (preBrolinProbabilityOnEscapeDisk c (brolinLimitSubsequence c k) :
+          Measure (escapeDisk c)) G = 0 := by
+    filter_upwards
+      [eventually_preBrolinMeasureOnEscapeDisk_subseq_greenSublevel_preimage_compl_of_pos
+        c hε] with k hk
+    simpa [G, preBrolinProbabilityOnEscapeDisk] using hk
+  have htend :
+      Tendsto
+        (fun k =>
+          (preBrolinProbabilityOnEscapeDisk c (brolinLimitSubsequence c k) :
+            Measure (escapeDisk c)) G)
+        atTop (𝓝 0) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [hevent] with k hk
+    exact hk.symm
+  have hliminf :
+      atTop.liminf
+        (fun k =>
+          (preBrolinProbabilityOnEscapeDisk c (brolinLimitSubsequence c k) :
+            Measure (escapeDisk c)) G) = 0 :=
+    htend.liminf_eq
+  have hle_zero : (brolinLimitOnEscapeDisk c : Measure (escapeDisk c)) G ≤ 0 := by
+    rw [← hliminf]
+    exact hle
+  have hGzero : (brolinLimitOnEscapeDisk c : Measure (escapeDisk c)) G = 0 :=
+    le_antisymm hle_zero bot_le
+  simpa [G] using hGzero
+
+/-- The limiting plane measure is carried by every positive Green sublevel. -/
+theorem limitingBrolinMeasure_greenSublevel_compl_of_pos
+    (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    limitingBrolinMeasure c (greenSublevel c ε)ᶜ = 0 := by
+  have hmeas : MeasurableSet (greenSublevel c ε)ᶜ :=
+    (measurableSet_greenSublevel c ε).compl
+  rw [limitingBrolinMeasure, Measure.map_apply measurable_subtype_coe hmeas]
+  exact brolinLimitOnEscapeDisk_greenSublevel_preimage_compl_of_pos c hε
+
+/-- The complement of `K_c` is the union of complements of the positive Green
+sublevels with levels `(n+1)⁻¹`. -/
+theorem filledJulia_compl_eq_iUnion_greenSublevel_inv_nat_succ_compl (c : ℂ) :
+    (filledJulia c)ᶜ =
+      ⋃ n : ℕ, (greenSublevel c (((n + 1 : ℕ) : ℝ)⁻¹))ᶜ := by
+  ext z
+  constructor
+  · intro hz
+    have hznot : z ∉ filledJulia c := by
+      simpa using hz
+    have hGne : greenFunctionDyn c z ≠ 0 := by
+      intro hzero
+      exact hznot ((greenFunctionDyn_eq_zero_iff c z).mp hzero)
+    have hGpos : 0 < greenFunctionDyn c z :=
+      lt_of_le_of_ne (greenFunctionDyn_nonneg c z) (by simpa [eq_comm] using hGne)
+    obtain ⟨N, hN⟩ := exists_nat_gt (1 / greenFunctionDyn c z)
+    refine Set.mem_iUnion.mpr ⟨N, ?_⟩
+    rw [Set.mem_compl_iff, mem_greenSublevel_iff]
+    have hN' : 1 / greenFunctionDyn c z < ((N + 1 : ℕ) : ℝ) :=
+      lt_trans hN (by exact_mod_cast Nat.lt_succ_self N)
+    have hden : 0 < ((N + 1 : ℕ) : ℝ) := by positivity
+    have hsmall : (((N + 1 : ℕ) : ℝ)⁻¹) < greenFunctionDyn c z := by
+      simpa [one_div] using (one_div_lt hden hGpos).2 hN'
+    exact not_le_of_gt hsmall
+  · intro hz
+    rcases Set.mem_iUnion.mp hz with ⟨N, hN⟩
+    rw [Set.mem_compl_iff]
+    intro hK
+    apply hN
+    rw [mem_greenSublevel_iff, (greenFunctionDyn_eq_zero_iff c z).mpr hK]
+    positivity
+
+/-- The constructed limiting measure is carried by the filled Julia set. -/
+theorem limitingBrolinMeasure_filledJulia_compl (c : ℂ) :
+    limitingBrolinMeasure c (filledJulia c)ᶜ = 0 := by
+  rw [filledJulia_compl_eq_iUnion_greenSublevel_inv_nat_succ_compl c]
+  apply measure_iUnion_null
+  intro n
+  exact limitingBrolinMeasure_greenSublevel_compl_of_pos c (by positivity)
+
+/-- The constructed limiting measure is a probability measure on `K_c`. -/
+theorem limitingBrolinMeasure_isProbOn_filledJulia (c : ℂ) :
+    IsProbOn (limitingBrolinMeasure c) (filledJulia c) :=
+  ⟨instIsProbabilityMeasure_limitingBrolinMeasure c,
+    limitingBrolinMeasure_filledJulia_compl c⟩
+
+/-- A globally continuous truncation of the logarithmic kernel singular at `z`.
+For `δ ≤ ‖z - w‖` it agrees with `logKernel z w`. -/
+noncomputable def truncatedLogKernel (z : ℂ) (δ : ℝ) (w : ℂ) : ℝ :=
+  - Real.log (max δ ‖z - w‖)
+
+theorem continuous_truncatedLogKernel {z : ℂ} {δ : ℝ} (hδ : 0 < δ) :
+    Continuous (fun w : ℂ => truncatedLogKernel z δ w) := by
+  unfold truncatedLogKernel
+  have hcont : Continuous fun w : ℂ => max δ ‖z - w‖ :=
+    continuous_const.max ((continuous_const.sub continuous_id).norm)
+  exact (hcont.log fun w =>
+    ne_of_gt (lt_of_lt_of_le hδ (le_max_left δ ‖z - w‖))).neg
+
+theorem truncatedLogKernel_eq_logKernel_of_le_norm
+    {z w : ℂ} {δ : ℝ} (hδw : δ ≤ ‖z - w‖) :
+    truncatedLogKernel z δ w = logKernel z w := by
+  unfold truncatedLogKernel logKernel
+  rw [max_eq_right hδw]
+
+/-- The truncated kernel restricted to the compact escape disk, in the bounded
+continuous-function form required by weak convergence of probability measures. -/
+noncomputable def truncatedLogKernelOnEscapeDisk
+    (c z : ℂ) (δ : ℝ) (hδ : 0 < δ) :
+    BoundedContinuousFunction (escapeDisk c) ℝ :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ),
+      (continuous_truncatedLogKernel (z := z) hδ).comp continuous_subtype_val⟩
+
+/-- Finite pre-Brolin integrals of the truncated kernel can be computed on the
+compact escape-disk carrier. -/
+theorem integral_truncatedLogKernel_preBrolinMeasure_eq_integral_escapeDisk
+    (c z : ℂ) {δ : ℝ} (hδ : 0 < δ) (n : ℕ) :
+    ∫ w, truncatedLogKernel z δ w ∂preBrolinMeasure c n =
+      ∫ w : escapeDisk c, truncatedLogKernel z δ (w : ℂ)
+        ∂preBrolinMeasureOnEscapeDisk c n := by
+  rw [preBrolinMeasure_eq_map_preBrolinMeasureOnEscapeDisk, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (continuous_truncatedLogKernel (z := z) hδ).aestronglyMeasurable
+
+/-- Limiting Brolin integrals of the truncated kernel can be computed on the
+compact escape-disk carrier. -/
+theorem integral_truncatedLogKernel_limitingBrolinMeasure_eq_integral_escapeDisk
+    (c z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    ∫ w, truncatedLogKernel z δ w ∂limitingBrolinMeasure c =
+      ∫ w : escapeDisk c, truncatedLogKernel z δ (w : ℂ)
+        ∂(brolinLimitOnEscapeDisk c : Measure (escapeDisk c)) := by
+  rw [limitingBrolinMeasure, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (continuous_truncatedLogKernel (z := z) hδ).aestronglyMeasurable
+
+/-- The compact-carrier finite measures converge on the truncated logarithmic
+kernel. -/
+theorem truncatedLogKernel_preBrolinProbabilityOnEscapeDisk_subseq_integral_tendsto
+    (c z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto
+      (fun k =>
+        ∫ w : escapeDisk c, truncatedLogKernel z δ (w : ℂ)
+          ∂(preBrolinProbabilityOnEscapeDisk c (brolinLimitSubsequence c k) :
+            Measure (escapeDisk c)))
+      atTop
+      (𝓝 (∫ w : escapeDisk c, truncatedLogKernel z δ (w : ℂ)
+          ∂(brolinLimitOnEscapeDisk c : Measure (escapeDisk c)))) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp
+      (preBrolinProbabilityOnEscapeDisk_subseq_tendsto c))
+      (truncatedLogKernelOnEscapeDisk c z δ hδ)
+  simpa [truncatedLogKernelOnEscapeDisk] using h
+
+/-- The plane finite measures converge on the truncated logarithmic kernel to
+the constructed limiting Brolin measure. -/
+theorem truncatedLogKernel_preBrolinMeasure_subseq_integral_tendsto_limiting
+    (c z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto
+      (fun k =>
+        ∫ w, truncatedLogKernel z δ w
+          ∂preBrolinMeasure c (brolinLimitSubsequence c k))
+      atTop
+      (𝓝 (∫ w, truncatedLogKernel z δ w ∂limitingBrolinMeasure c)) := by
+  have h :=
+    truncatedLogKernel_preBrolinProbabilityOnEscapeDisk_subseq_integral_tendsto
+      c z hδ
+  rw [integral_truncatedLogKernel_limitingBrolinMeasure_eq_integral_escapeDisk
+    c z hδ]
+  refine h.congr' ?_
+  filter_upwards [eventually_ge_atTop 0] with k _hk
+  rw [integral_truncatedLogKernel_preBrolinMeasure_eq_integral_escapeDisk c z hδ]
+  rfl
+
+/-- If `ε < G_c(z)`, then the Green sublevel `{G_c ≤ ε}` stays a positive
+Euclidean distance from `z`. -/
+theorem exists_pos_le_norm_of_greenSublevel_of_lt_green
+    {c z : ℂ} {ε : ℝ} (hεz : ε < greenFunctionDyn c z) :
+    ∃ δ : ℝ, 0 < δ ∧
+      ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖ := by
+  have hopen : IsOpen {w : ℂ | ε < greenFunctionDyn c w} :=
+    isOpen_lt continuous_const (continuous_greenFunctionDyn c)
+  obtain ⟨δ, hδpos, hδsub⟩ := (Metric.isOpen_iff.mp hopen) z hεz
+  refine ⟨δ, hδpos, ?_⟩
+  intro w hw
+  by_contra hnot
+  have hlt : ‖z - w‖ < δ := lt_of_not_ge hnot
+  have hball : w ∈ Metric.ball z δ := by
+    simpa [Metric.mem_ball, dist_eq_norm, norm_sub_rev] using hlt
+  have hgt : ε < greenFunctionDyn c w := hδsub hball
+  exact not_lt_of_ge hw hgt
+
+/-- A measure carried by a Green sublevel separated from `z` has true log
+potential equal to the truncated-kernel integral at `z`. -/
+theorem logPotential_eq_integral_truncatedLogKernel_of_greenSublevel_support
+    {c z : ℂ} {μ : Measure ℂ} {ε δ : ℝ}
+    (hμ : μ (greenSublevel c ε)ᶜ = 0)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    logPotential μ z = ∫ w, truncatedLogKernel z δ w ∂μ := by
+  unfold logPotential
+  refine integral_congr_ae ?_
+  have hmem : ∀ᵐ w ∂μ, w ∈ greenSublevel c ε := by
+    exact (mem_ae_iff).2 hμ
+  filter_upwards [hmem] with w hw
+  exact (truncatedLogKernel_eq_logKernel_of_le_norm (hsep w hw)).symm
+
+/-- Along the selected subsequence, finite log potentials equal the truncated
+kernel integral once the finite measures are carried by the separating sublevel. -/
+theorem eventually_logPotential_preBrolinMeasure_subseq_eq_integral_truncatedLogKernel
+    (c z : ℂ) {ε δ : ℝ} (hε : 0 < ε)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    ∀ᶠ k in atTop,
+      logPotential (preBrolinMeasure c (brolinLimitSubsequence c k)) z =
+        ∫ w, truncatedLogKernel z δ w
+          ∂preBrolinMeasure c (brolinLimitSubsequence c k) := by
+  filter_upwards [eventually_preBrolinMeasure_subseq_greenSublevel_compl_of_pos
+    c hε] with k hk
+  exact logPotential_eq_integral_truncatedLogKernel_of_greenSublevel_support hk hsep
+
+/-- The constructed limiting measure has true log potential equal to the
+truncated-kernel integral whenever the chosen sublevel separates it from `z`. -/
+theorem logPotential_limitingBrolinMeasure_eq_integral_truncatedLogKernel
+    (c z : ℂ) {ε δ : ℝ} (hε : 0 < ε)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    logPotential (limitingBrolinMeasure c) z =
+      ∫ w, truncatedLogKernel z δ w ∂limitingBrolinMeasure c :=
+  logPotential_eq_integral_truncatedLogKernel_of_greenSublevel_support
+    (limitingBrolinMeasure_greenSublevel_compl_of_pos c hε) hsep
+
+/-- The logarithmic-potential part of weak convergence at points of the basin.
+It is stated separately because the kernel has a logarithmic singularity and
+needs its own proof, distinct from compactly supported continuous tests. -/
+def HasSubseqLogPotentialLimit (c : ℂ) (μ : Measure ℂ) : Prop :=
+  ∀ ⦃z : ℂ⦄, z ∉ filledJulia c →
+    Tendsto
+      (fun k => - logPotential (preBrolinMeasure c (brolinLimitSubsequence c k)) z)
+      atTop (𝓝 (- logPotential μ z))
+
+/-- The constructed limiting Brolin measure satisfies the logarithmic-potential
+weak limit on the whole basin.  The singular logarithmic kernel is removed by
+separating the basin point from a positive Green sublevel and using the
+truncated-kernel weak convergence proved above. -/
+theorem limitingBrolinMeasure_hasSubseqLogPotentialLimit (c : ℂ) :
+    HasSubseqLogPotentialLimit c (limitingBrolinMeasure c) := by
+  intro z hz
+  have hGne : greenFunctionDyn c z ≠ 0 := by
+    intro hzero
+    exact hz ((greenFunctionDyn_eq_zero_iff c z).mp hzero)
+  have hGpos : 0 < greenFunctionDyn c z :=
+    lt_of_le_of_ne (greenFunctionDyn_nonneg c z) (by simpa [eq_comm] using hGne)
+  let ε : ℝ := greenFunctionDyn c z / 2
+  have hεpos : 0 < ε := by
+    dsimp [ε]
+    linarith
+  have hεlt : ε < greenFunctionDyn c z := by
+    dsimp [ε]
+    linarith
+  obtain ⟨δ, hδpos, hsep⟩ :=
+    exists_pos_le_norm_of_greenSublevel_of_lt_green
+      (c := c) (z := z) (ε := ε) hεlt
+  have htrunc :=
+    truncatedLogKernel_preBrolinMeasure_subseq_integral_tendsto_limiting
+      c z hδpos
+  have hlim :=
+    logPotential_limitingBrolinMeasure_eq_integral_truncatedLogKernel
+      c z hεpos hsep
+  have hevent :=
+    eventually_logPotential_preBrolinMeasure_subseq_eq_integral_truncatedLogKernel
+      c z hεpos hsep
+  have hlog :
+      Tendsto
+        (fun k => logPotential
+          (preBrolinMeasure c (brolinLimitSubsequence c k)) z)
+        atTop (𝓝 (logPotential (limitingBrolinMeasure c) z)) := by
+    rw [hlim]
+    exact htrunc.congr' (by
+      filter_upwards [hevent] with k hk
+      exact hk.symm)
+  simpa using hlog.neg
+
 /-- The finite normalized pullback of an arbitrary target point `a` under `f_c^[n]`. -/
 noncomputable def preBrolinMeasureAt (c a : ℂ) (n : ℕ) : Measure ℂ :=
   ((2 ^ n : ENNReal)⁻¹) •
     rootCountingMeasure ((quadraticPolyIterate c n - Polynomial.C a).roots)
+
+/-- Integrating against a finite normalized arbitrary-target pre-Brolin measure
+is the normalized average over the level-`n` pullback multiset. -/
+theorem integral_preBrolinMeasureAt_eq_root_average
+    (c a : ℂ) (n : ℕ) (f : ℂ → ℝ) :
+    ∫ z, f z ∂preBrolinMeasureAt c a n =
+      (2 ^ n : ℝ)⁻¹ *
+        (((quadraticPolyIterate c n - Polynomial.C a).roots.map f).sum) := by
+  rw [preBrolinMeasureAt, integral_smul_measure, integral_rootCountingMeasure]
+  simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
 
 /-- `f_c^[n](X) - a` is monic. -/
 theorem quadraticPolyIterate_sub_C_monic (c a : ℂ) (n : ℕ) :
@@ -1203,6 +1683,21 @@ theorem sum_quadratic_roots_quadraticPolyIterate_succ_sub_C (c a : ℂ) (n : ℕ
   rw [← Multiset.map_map]
   rw [roots_map_quadraticPolyIterate_succ_sub_C, sum_bind_replicate_two]
 
+/-- Finite balancedness in normalized integral form.  Integrating `g ∘ f_c`
+against the level-`n+1` arbitrary-target pullback measure equals integrating
+`g` against the level-`n` measure. -/
+theorem integral_preBrolinMeasureAt_succ_comp_quadratic
+    (c a : ℂ) (n : ℕ) (g : ℂ → ℝ) :
+    ∫ z, g (quadratic c z) ∂preBrolinMeasureAt c a (n + 1) =
+      ∫ z, g z ∂preBrolinMeasureAt c a n := by
+  rw [integral_preBrolinMeasureAt_eq_root_average,
+    integral_preBrolinMeasureAt_eq_root_average,
+    sum_quadratic_roots_quadraticPolyIterate_succ_sub_C]
+  have h2 : (2 : ℝ) ≠ 0 := by norm_num
+  have hpow : (2 ^ n : ℝ) ≠ 0 := by positivity
+  rw [pow_succ]
+  field_simp [h2, hpow]
+
 /-- Each arbitrary-target finite pre-Brolin pullback measure is normalized to
 total mass `1`. -/
 theorem preBrolinMeasureAt_apply_univ (c a : ℂ) (n : ℕ) :
@@ -1217,6 +1712,44 @@ theorem preBrolinMeasureAt_apply_univ (c a : ℂ) (n : ℕ) :
 instance instIsProbabilityMeasure_preBrolinMeasureAt (c a : ℂ) (n : ℕ) :
     IsProbabilityMeasure (preBrolinMeasureAt c a n) where
   measure_univ := preBrolinMeasureAt_apply_univ c a n
+
+/-- The finite positive functional represented by the normalized level-`n`
+pullback measure of an arbitrary target. -/
+noncomputable def preBrolinRieszFunctionalAt (c a : ℂ) (n : ℕ) :
+    C_c(ℂ, ℝ) →ₚ[ℝ] ℝ :=
+  { toFun := fun φ => ∫ z, φ z ∂preBrolinMeasureAt c a n
+    map_add' := by
+      intro φ ψ
+      change ∫ z, φ z + ψ z ∂preBrolinMeasureAt c a n =
+        ∫ z, φ z ∂preBrolinMeasureAt c a n +
+          ∫ z, ψ z ∂preBrolinMeasureAt c a n
+      rw [integral_add]
+      · exact φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+      · exact ψ.continuous.integrable_of_hasCompactSupport ψ.hasCompactSupport
+    map_smul' := by
+      intro r φ
+      change ∫ z, r • φ z ∂preBrolinMeasureAt c a n =
+        r • ∫ z, φ z ∂preBrolinMeasureAt c a n
+      rw [integral_smul]
+    monotone' := by
+      intro φ ψ hφψ
+      apply integral_mono _ _ hφψ
+      · exact φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+      · exact ψ.continuous.integrable_of_hasCompactSupport ψ.hasCompactSupport }
+
+theorem preBrolinRieszFunctionalAt_apply (c a : ℂ) (n : ℕ)
+    (φ : C_c(ℂ, ℝ)) :
+    preBrolinRieszFunctionalAt c a n φ =
+      ∫ z, φ z ∂preBrolinMeasureAt c a n := by
+  rfl
+
+/-- Arbitrary-target finite Riesz functionals are normalized root averages. -/
+theorem preBrolinRieszFunctionalAt_apply_root_average
+    (c a : ℂ) (n : ℕ) (φ : C_c(ℂ, ℝ)) :
+    preBrolinRieszFunctionalAt c a n φ =
+      (2 ^ n : ℝ)⁻¹ *
+        (((quadraticPolyIterate c n - Polynomial.C a).roots.map fun z => φ z).sum) := by
+  rw [preBrolinRieszFunctionalAt_apply, integral_preBrolinMeasureAt_eq_root_average]
 
 /-- The finite normalized arbitrary-target pullback measure gives no mass above
 the exact Green height `2⁻ⁿG_c(a)`. -/
@@ -1247,6 +1780,80 @@ theorem preBrolinMeasureAt_greenSublevel_compl_of_scaled_target_le
   rw [hroot]
   simp
 
+/-- If a test function vanishes on a Green sublevel that contains the
+level-`n` pullback atoms of `a`, then the corresponding finite arbitrary-target
+Brolin functional vanishes on it. -/
+theorem preBrolinRieszFunctionalAt_eq_zero_of_scaled_target_le_of_eq_zero_on_greenSublevel
+    (c a : ℂ) (n : ℕ) {ε : ℝ} (φ : C_c(ℂ, ℝ))
+    (hε : (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c a ≤ ε)
+    (hφ : ∀ z, z ∈ greenSublevel c ε → φ z = 0) :
+    preBrolinRieszFunctionalAt c a n φ = 0 := by
+  rw [preBrolinRieszFunctionalAt_apply_root_average]
+  have hsum :
+      (((quadraticPolyIterate c n - Polynomial.C a).roots.map fun z => φ z).sum) = 0 := by
+    have hmap :
+        ((quadraticPolyIterate c n - Polynomial.C a).roots.map fun z => φ z) =
+          ((quadraticPolyIterate c n - Polynomial.C a).roots.map fun _ => 0) := by
+      apply Multiset.map_congr rfl
+      intro z hz
+      exact hφ z (by
+        have hzsub :=
+          mem_greenSublevel_scaled_target_of_mem_roots_quadraticPolyIterate_sub_C
+            (c := c) (a := a) (n := n) hz
+        rw [mem_greenSublevel_iff] at hzsub ⊢
+        exact le_trans hzsub hε)
+    rw [hmap]
+    simp
+  rw [hsum, mul_zero]
+
+/-- The target Green height scaled by `2⁻ⁿ` eventually lies below any
+positive threshold. -/
+theorem exists_forall_scaled_target_le_of_pos (c a : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ N : ℕ, ∀ n, N ≤ n →
+      (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c a ≤ ε := by
+  have hGnonneg : 0 ≤ greenFunctionDyn c a := greenFunctionDyn_nonneg c a
+  by_cases hGzero : greenFunctionDyn c a = 0
+  · refine ⟨0, fun n _ => ?_⟩
+    rw [hGzero, mul_zero]
+    exact hε.le
+  · have hGpos : 0 < greenFunctionDyn c a :=
+      lt_of_le_of_ne hGnonneg (Ne.symm hGzero)
+    obtain ⟨N, hN⟩ :=
+      pow_unbounded_of_one_lt (greenFunctionDyn c a / ε)
+        (show (1 : ℝ) < 2 by norm_num)
+    refine ⟨N, fun n hn => ?_⟩
+    have hpowmono : (2 ^ N : ℝ) ≤ 2 ^ n :=
+      pow_le_pow_right₀ (by norm_num : (1 : ℝ) ≤ 2) hn
+    have hlt : greenFunctionDyn c a / ε < (2 ^ n : ℝ) := lt_of_lt_of_le hN hpowmono
+    have hpowpos : 0 < (2 ^ n : ℝ) := by positivity
+    have hGlt : greenFunctionDyn c a < ε * (2 ^ n : ℝ) := by
+      rw [mul_comm]
+      exact (div_lt_iff₀ hε).mp hlt
+    have hscaled_lt : (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c a < ε := by
+      rw [inv_mul_eq_div]
+      exact (div_lt_iff₀ hpowpos).mpr (by nlinarith)
+    exact hscaled_lt.le
+
+/-- For every positive Green threshold, all sufficiently deep arbitrary-target
+finite pullback measures are carried by `{G_c ≤ ε}`. -/
+theorem eventually_preBrolinMeasureAt_greenSublevel_compl_of_pos
+    (c a : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ n in atTop, preBrolinMeasureAt c a n (greenSublevel c ε)ᶜ = 0 := by
+  obtain ⟨N, hN⟩ := exists_forall_scaled_target_le_of_pos c a hε
+  filter_upwards [eventually_ge_atTop N] with n hn
+  exact preBrolinMeasureAt_greenSublevel_compl_of_scaled_target_le c a n (hN n hn)
+
+/-- Arbitrary-target finite Riesz functionals vanish eventually on every test
+function that vanishes on a positive Green sublevel. -/
+theorem eventually_preBrolinRieszFunctionalAt_eq_zero_of_eq_zero_on_greenSublevel
+    (c a : ℂ) {ε : ℝ} (hε : 0 < ε) (φ : C_c(ℂ, ℝ))
+    (hφ : ∀ z, z ∈ greenSublevel c ε → φ z = 0) :
+    ∀ᶠ n in atTop, preBrolinRieszFunctionalAt c a n φ = 0 := by
+  obtain ⟨N, hN⟩ := exists_forall_scaled_target_le_of_pos c a hε
+  filter_upwards [eventually_ge_atTop N] with n hn
+  exact preBrolinRieszFunctionalAt_eq_zero_of_scaled_target_le_of_eq_zero_on_greenSublevel
+    c a n φ (hN n hn) hφ
+
 /-- Arbitrary-target finite GAP-A Cauchy-transform identity: the normalized
 pullback measure has Cauchy transform equal to the normalized logarithmic
 derivative of `f_c^[n] - a`, away from the finite preimage atoms. -/
@@ -1269,11 +1876,66 @@ theorem integral_cauchy_preBrolinMeasureAt_eq_derivative_div {c a z : ℂ} {n : 
       ((quadraticPolyIterate c n).derivative.eval z / ((quadratic c)^[n] z - a))
   rw [hscale]
 
+/-- The finite normalized logarithmic derivative of `f_c^[n] - a` at `z`.
+For basin points this is the algebraic side of the Cauchy-transform limit. -/
+noncomputable def finiteBrolinNormalizedLogDerivativeAt
+    (c a z : ℂ) (n : ℕ) : ℂ :=
+  ((2 ^ n : ℝ)⁻¹ : ℂ) *
+    ((quadraticPolyIterate c n).derivative.eval z / ((quadratic c)^[n] z - a))
+
+/-- Real part of the finite arbitrary-target GAP-A Cauchy identity. -/
+theorem integral_cauchy_re_preBrolinMeasureAt_eq_derivative_div
+    {c a z : ℂ} {n : ℕ} (hz : (quadratic c)^[n] z - a ≠ 0) :
+    ∫ ζ, ((z - ζ)⁻¹).re ∂preBrolinMeasureAt c a n =
+      (finiteBrolinNormalizedLogDerivativeAt c a z n).re := by
+  have hzeval : (quadraticPolyIterate c n - Polynomial.C a).eval z ≠ 0 := by
+    simpa [Polynomial.eval_sub, quadraticPolyIterate_eval] using hz
+  rw [preBrolinMeasureAt, integral_smul_measure,
+    integral_cauchy_re_rootCountingMeasure_eq_derivative_div hzeval]
+  have hscale : (((2 ^ n : ENNReal)⁻¹).toReal) = (2 ^ n : ℝ)⁻¹ := by
+    simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
+  rw [Polynomial.derivative_sub, Polynomial.derivative_C, sub_zero, Polynomial.eval_sub,
+    Polynomial.eval_C, quadraticPolyIterate_eval, hscale]
+  rw [finiteBrolinNormalizedLogDerivativeAt, ← Complex.ofReal_inv, Complex.re_ofReal_mul]
+  simp
+
+/-- Imaginary part of the finite arbitrary-target GAP-A Cauchy identity. -/
+theorem integral_cauchy_im_preBrolinMeasureAt_eq_derivative_div
+    {c a z : ℂ} {n : ℕ} (hz : (quadratic c)^[n] z - a ≠ 0) :
+    ∫ ζ, ((z - ζ)⁻¹).im ∂preBrolinMeasureAt c a n =
+      (finiteBrolinNormalizedLogDerivativeAt c a z n).im := by
+  have hzeval : (quadraticPolyIterate c n - Polynomial.C a).eval z ≠ 0 := by
+    simpa [Polynomial.eval_sub, quadraticPolyIterate_eval] using hz
+  rw [preBrolinMeasureAt, integral_smul_measure,
+    integral_cauchy_im_rootCountingMeasure_eq_derivative_div hzeval]
+  have hscale : (((2 ^ n : ENNReal)⁻¹).toReal) = (2 ^ n : ℝ)⁻¹ := by
+    simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
+  rw [Polynomial.derivative_sub, Polynomial.derivative_C, sub_zero, Polynomial.eval_sub,
+    Polynomial.eval_C, quadraticPolyIterate_eval, hscale]
+  rw [finiteBrolinNormalizedLogDerivativeAt, ← Complex.ofReal_inv, Complex.im_ofReal_mul]
+  simp
+
 /-- The original finite pre-Brolin measure is the arbitrary-target construction
 at target `0`. -/
 theorem preBrolinMeasureAt_zero (c : ℂ) (n : ℕ) :
     preBrolinMeasureAt c 0 n = preBrolinMeasure c n := by
   simp [preBrolinMeasureAt, preBrolinMeasure]
+
+/-- The arbitrary-target finite Riesz functional specializes to the original
+zero-target finite Riesz functional. -/
+theorem preBrolinRieszFunctionalAt_zero_apply (c : ℂ) (n : ℕ)
+    (φ : C_c(ℂ, ℝ)) :
+    preBrolinRieszFunctionalAt c 0 n φ = preBrolinRieszFunctional c n φ := by
+  rw [preBrolinRieszFunctionalAt_apply, preBrolinRieszFunctional_apply,
+    preBrolinMeasureAt_zero]
+
+/-- Zero-target finite balancedness in normalized integral form. -/
+theorem integral_preBrolinMeasure_succ_comp_quadratic
+    (c : ℂ) (n : ℕ) (g : ℂ → ℝ) :
+    ∫ z, g (quadratic c z) ∂preBrolinMeasure c (n + 1) =
+      ∫ z, g z ∂preBrolinMeasure c n := by
+  rw [← preBrolinMeasureAt_zero c (n + 1), ← preBrolinMeasureAt_zero c n]
+  exact integral_preBrolinMeasureAt_succ_comp_quadratic c 0 n g
 
 /-- Zero-target finite balancedness: the pushforward of the level `n+1`
 finite Brolin pullback measure by `f_c` is the level `n` measure. -/
@@ -1333,6 +1995,50 @@ theorem eventually_iterate_ne_zero_of_not_mem_filledJulia {c z : ℂ}
   rw [hzero, norm_zero] at htail
   linarith
 
+/-- A basin orbit eventually avoids any fixed target.  Once the orbit has
+escaped past `max 2 ‖c‖` and `‖a‖`, the escape estimate keeps its norm above
+`‖a‖`. -/
+theorem eventually_iterate_ne_of_not_mem_filledJulia {c z : ℂ}
+    (hz : z ∉ filledJulia c) (a : ℂ) :
+    ∀ᶠ n in atTop, (quadratic c)^[n] z ≠ a := by
+  obtain ⟨N, hN⟩ := exists_orbit_gt hz (max (max 2 ‖c‖) ‖a‖)
+  have hNc : ‖c‖ ≤ ‖(quadratic c)^[N] z‖ :=
+    le_of_lt (lt_of_le_of_lt (le_trans (le_max_right _ _) (le_max_left _ _)) hN)
+  have hN2 : 2 < ‖(quadratic c)^[N] z‖ :=
+    lt_of_le_of_lt (le_trans (le_max_left _ _) (le_max_left _ _)) hN
+  have hNa : ‖a‖ < ‖(quadratic c)^[N] z‖ :=
+    lt_of_le_of_lt (le_max_right _ _) hN
+  filter_upwards [eventually_ge_atTop N] with n hn
+  have htail := norm_le_orbit hNc hN2 (n - N)
+  rw [← Function.iterate_add_apply, Nat.sub_add_cancel hn] at htail
+  intro ha
+  rw [ha] at htail
+  exact not_le_of_gt hNa htail
+
+/-- If `w` is at least twice as large as `a`, then replacing `w` by `w-a`
+changes `log ‖·‖` by at most `log 2`. -/
+theorem abs_log_norm_sub_target_sub_log_norm_le_log_two {w a : ℂ}
+    (hwpos : 0 < ‖w‖) (ha : 2 * ‖a‖ ≤ ‖w‖) :
+    |Real.log ‖w - a‖ - Real.log ‖w‖| ≤ Real.log 2 := by
+  have hhalf : ‖w‖ / 2 ≤ ‖w‖ - ‖a‖ := by linarith
+  have hlower0 : ‖w‖ / 2 ≤ ‖w - a‖ :=
+    le_trans hhalf (norm_sub_norm_le w a)
+  have hwa_pos : 0 < ‖w - a‖ := lt_of_lt_of_le (by positivity) hlower0
+  have ha_le_half : ‖a‖ ≤ ‖w‖ / 2 := by linarith
+  have hupper : ‖w - a‖ ≤ 2 * ‖w‖ := by
+    have htri : ‖w - a‖ ≤ ‖w‖ + ‖a‖ := norm_sub_le w a
+    nlinarith [htri, ha_le_half, hwpos]
+  have hlower' : ‖w‖ ≤ 2 * ‖w - a‖ := by nlinarith [hlower0]
+  have hlog2_nonneg : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+  rw [abs_sub_le_iff]
+  constructor
+  · have hlog := Real.log_le_log hwa_pos hupper
+    rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (ne_of_gt hwpos)] at hlog
+    linarith
+  · have hlog := Real.log_le_log hwpos hlower'
+    rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (ne_of_gt hwa_pos)] at hlog
+    linarith
+
 /-- Finite GAP-A convergence on the whole basin: the normalized pre-Brolin
 potentials converge to the dynamical Green function outside `K_c`. -/
 theorem neg_logPotential_preBrolinMeasure_tendsto_greenFunctionDyn_basin {c z : ℂ}
@@ -1345,6 +2051,1074 @@ theorem neg_logPotential_preBrolinMeasure_tendsto_greenFunctionDyn_basin {c z : 
   refine (greenApprox_tendsto_basin hz).congr' ?_
   filter_upwards [eventually_iterate_ne_zero_of_not_mem_filledJulia hz] with n hn
   exact (neg_logPotential_preBrolinMeasure_eq_greenApprox hn).symm
+
+/-- Arbitrary-target logarithmic approximants have the same basin limit as the
+zero-target Green approximants. -/
+theorem scaled_log_norm_iterate_sub_target_tendsto_greenFunctionDyn_basin
+    {c a z : ℂ} (hz : z ∉ filledJulia c) :
+    Tendsto
+      (fun n => (2 ^ n : ℝ)⁻¹ * Real.log ‖(quadratic c)^[n] z - a‖)
+      atTop (𝓝 (greenFunctionDyn c z)) := by
+  have hgreen : greenFunctionDyn c z = greenLimit c z := by
+    simp [greenFunctionDyn, hz]
+  rw [hgreen]
+  have hdiff :
+      Tendsto
+        (fun n =>
+          (2 ^ n : ℝ)⁻¹ *
+            (Real.log ‖(quadratic c)^[n] z - a‖ -
+              Real.log ‖(quadratic c)^[n] z‖))
+        atTop (𝓝 0) := by
+    have hpow : Tendsto (fun n : ℕ => (2 ^ n : ℝ)⁻¹) atTop (𝓝 0) := by
+      simp_rw [← inv_pow]
+      exact tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)
+    have hbd : Tendsto (fun n : ℕ => (2 ^ n : ℝ)⁻¹ * Real.log 2) atTop (𝓝 0) := by
+      simpa using hpow.mul_const (Real.log 2)
+    refine squeeze_zero_norm' ?_ hbd
+    obtain ⟨N, hN⟩ := exists_orbit_gt hz (max (max 2 ‖c‖) (2 * ‖a‖))
+    have hNc : ‖c‖ ≤ ‖(quadratic c)^[N] z‖ :=
+      le_of_lt (lt_of_le_of_lt (le_trans (le_max_right _ _) (le_max_left _ _)) hN)
+    have hN2 : 2 < ‖(quadratic c)^[N] z‖ :=
+      lt_of_le_of_lt (le_trans (le_max_left _ _) (le_max_left _ _)) hN
+    have hNa : 2 * ‖a‖ < ‖(quadratic c)^[N] z‖ :=
+      lt_of_le_of_lt (le_max_right _ _) hN
+    filter_upwards [eventually_ge_atTop N] with n hn
+    have htail := norm_le_orbit hNc hN2 (n - N)
+    rw [← Function.iterate_add_apply, Nat.sub_add_cancel hn] at htail
+    have hpos : 0 < ‖(quadratic c)^[n] z‖ :=
+      lt_of_lt_of_le (lt_trans (by norm_num : (0 : ℝ) < 2) hN2) htail
+    have hlarge : 2 * ‖a‖ ≤ ‖(quadratic c)^[n] z‖ :=
+      le_trans hNa.le htail
+    rw [Real.norm_eq_abs, abs_mul]
+    rw [abs_of_nonneg (by positivity : 0 ≤ (2 ^ n : ℝ)⁻¹)]
+    exact mul_le_mul_of_nonneg_left
+      (abs_log_norm_sub_target_sub_log_norm_le_log_two hpos hlarge)
+      (by positivity)
+  have hsum := (greenApprox_tendsto_basin hz).add hdiff
+  simpa using hsum.congr' (by
+    filter_upwards [eventually_ge_atTop 0] with n _hn
+    unfold greenApprox
+    ring)
+
+/-- Finite GAP-A convergence for arbitrary target pullbacks on the whole
+basin.  The choice of target changes the finite logarithm by only
+`O(2⁻ⁿ)`, once the orbit has escaped. -/
+theorem neg_logPotential_preBrolinMeasureAt_tendsto_greenFunctionDyn_basin
+    {c a z : ℂ} (hz : z ∉ filledJulia c) :
+    Tendsto (fun n => - logPotential (preBrolinMeasureAt c a n) z) atTop
+      (𝓝 (greenFunctionDyn c z)) := by
+  refine (scaled_log_norm_iterate_sub_target_tendsto_greenFunctionDyn_basin
+    (c := c) (a := a) hz).congr' ?_
+  filter_upwards [eventually_iterate_ne_of_not_mem_filledJulia hz a] with n hn
+  have hsub : (quadratic c)^[n] z - a ≠ 0 := by
+    intro hzero
+    exact hn (sub_eq_zero.mp hzero)
+  exact (neg_logPotential_preBrolinMeasureAt_eq_log_norm hsub).symm
+
+/-- The chosen compactness subsequence preserves zero-target finite potential
+convergence on the basin. -/
+theorem neg_logPotential_preBrolinMeasure_subseq_tendsto_greenFunctionDyn_basin
+    {c z : ℂ} (hz : z ∉ filledJulia c) :
+    Tendsto
+      (fun k => - logPotential (preBrolinMeasure c (brolinLimitSubsequence c k)) z)
+      atTop (𝓝 (greenFunctionDyn c z)) :=
+  (neg_logPotential_preBrolinMeasure_tendsto_greenFunctionDyn_basin hz).comp
+    (brolinLimitSubsequence_tendsto_atTop c)
+
+/-- The chosen compactness subsequence preserves arbitrary-target finite
+potential convergence on the basin. -/
+theorem neg_logPotential_preBrolinMeasureAt_subseq_tendsto_greenFunctionDyn_basin
+    {c a z : ℂ} (hz : z ∉ filledJulia c) :
+    Tendsto
+      (fun k =>
+        - logPotential (preBrolinMeasureAt c a (brolinLimitSubsequence c k)) z)
+      atTop (𝓝 (greenFunctionDyn c z)) :=
+  (neg_logPotential_preBrolinMeasureAt_tendsto_greenFunctionDyn_basin
+    (c := c) (a := a) hz).comp (brolinLimitSubsequence_tendsto_atTop c)
+
+/-- Once the logarithmic kernel is known to pass to the chosen subsequential
+limit, the exterior potential identity follows from the finite Brolin
+potential convergence. -/
+theorem green_eq_neg_logPotential_on_basin_of_subseqLogPotentialLimit
+    {c : ℂ} {μ : Measure ℂ} (hpot : HasSubseqLogPotentialLimit c μ)
+    {z : ℂ} (hz : z ∉ filledJulia c) :
+    greenFunctionDyn c z = - logPotential μ z := by
+  exact tendsto_nhds_unique
+    (neg_logPotential_preBrolinMeasure_subseq_tendsto_greenFunctionDyn_basin hz)
+    (hpot hz)
+
+/-- Exterior GAP-A potential identity for the constructed limiting Brolin
+measure. -/
+theorem green_eq_neg_logPotential_limitingBrolinMeasure_on_basin
+    {c z : ℂ} (hz : z ∉ filledJulia c) :
+    greenFunctionDyn c z = - logPotential (limitingBrolinMeasure c) z :=
+  green_eq_neg_logPotential_on_basin_of_subseqLogPotentialLimit
+    (limitingBrolinMeasure_hasSubseqLogPotentialLimit c) hz
+
+/-- The hDisc-side constructed limiting measure, used as the candidate `μ_c`. -/
+noncomputable def brolinMu (c : ℂ) : Measure ℂ :=
+  limitingBrolinMeasure c
+
+theorem brolinMu_isProbOn_filledJulia (c : ℂ) :
+    IsProbOn (brolinMu c) (filledJulia c) := by
+  simpa [brolinMu] using limitingBrolinMeasure_isProbOn_filledJulia c
+
+theorem brolinMu_isWeakSubseqLimitOfPreBrolin (c : ℂ) :
+    IsWeakSubseqLimitOfPreBrolin c (brolinMu c) := by
+  simpa [brolinMu] using limitingBrolinMeasure_isWeakSubseqLimitOfPreBrolin c
+
+theorem brolinMu_hasSubseqLogPotentialLimit (c : ℂ) :
+    HasSubseqLogPotentialLimit c (brolinMu c) := by
+  simpa [brolinMu] using limitingBrolinMeasure_hasSubseqLogPotentialLimit c
+
+/-- Exterior GAP-A potential identity for the constructed `μ_c`. -/
+theorem brolinMu_green_eq_neg_logPotential_on_basin
+    {c z : ℂ} (hz : z ∉ filledJulia c) :
+    greenFunctionDyn c z = - logPotential (brolinMu c) z := by
+  simpa [brolinMu] using
+    green_eq_neg_logPotential_limitingBrolinMeasure_on_basin (c := c) (z := z) hz
+
+/-- The hDisc-side core of Brolin/GAP-A now available for the constructed
+candidate `μ_c`: probability on `K_c`, weak subsequential construction, logarithmic
+potential convergence, and exterior potential representation. -/
+theorem brolinMu_hDiscCore (c : ℂ) :
+    IsProbOn (brolinMu c) (filledJulia c) ∧
+      IsWeakSubseqLimitOfPreBrolin c (brolinMu c) ∧
+      HasSubseqLogPotentialLimit c (brolinMu c) ∧
+      ∀ z : ℂ, z ∉ filledJulia c →
+        greenFunctionDyn c z = - logPotential (brolinMu c) z :=
+  ⟨brolinMu_isProbOn_filledJulia c,
+    brolinMu_isWeakSubseqLimitOfPreBrolin c,
+    brolinMu_hasSubseqLogPotentialLimit c,
+    fun z hz => brolinMu_green_eq_neg_logPotential_on_basin (c := c) (z := z) hz⟩
+
+/-! ## Arbitrary-target limiting Brolin measures
+
+The zero-target construction is useful for the exterior identity, but for
+`c = 0` it selects the exceptional pullback sequence.  The following block
+builds the same compactness/potential package for arbitrary target pullbacks.
+-/
+
+/-- A target-dependent escape disk containing every level-`n` pullback atom of
+`a`. -/
+def targetEscapeDisk (c a : ℂ) : Set ℂ :=
+  Metric.closedBall 0 (max (max 2 ‖c‖) ‖a‖)
+
+/-- Every arbitrary-target pullback atom lies in its target-dependent escape
+disk. -/
+theorem mem_targetEscapeDisk_of_mem_roots_quadraticPolyIterate_sub_C
+    {c a z : ℂ} {n : ℕ}
+    (hz : z ∈ (quadraticPolyIterate c n - Polynomial.C a).roots) :
+    z ∈ targetEscapeDisk c a := by
+  rw [targetEscapeDisk, Metric.mem_closedBall, dist_zero_right]
+  by_contra hle
+  rw [not_le] at hle
+  have h2 : 2 < ‖z‖ :=
+    lt_of_le_of_lt (le_trans (le_max_left _ _) (le_max_left _ _)) hle
+  have hc : ‖c‖ ≤ ‖z‖ :=
+    le_of_lt (lt_of_le_of_lt (le_trans (le_max_right _ _) (le_max_left _ _)) hle)
+  have ha : ‖a‖ < ‖z‖ := lt_of_le_of_lt (le_max_right _ _) hle
+  have hzroot : (quadratic c)^[n] z = a := by
+    have hp : quadraticPolyIterate c n - Polynomial.C a ≠ 0 :=
+      (quadraticPolyIterate_sub_C_monic c a n).ne_zero
+    have hisroot : (quadraticPolyIterate c n - Polynomial.C a).IsRoot z :=
+      (Polynomial.mem_roots hp).mp hz
+    rwa [Polynomial.IsRoot.def, Polynomial.eval_sub, Polynomial.eval_C,
+      quadraticPolyIterate_eval, sub_eq_zero] at hisroot
+  have horbit := norm_le_orbit hc h2 n
+  rw [hzroot] at horbit
+  exact not_le_of_gt ha horbit
+
+/-- The unnormalized arbitrary-target counting measure is carried by the
+target-dependent escape disk. -/
+theorem rootCountingMeasure_roots_sub_C_targetEscapeDisk_compl
+    (c a : ℂ) (n : ℕ) :
+    rootCountingMeasure (quadraticPolyIterate c n - Polynomial.C a).roots
+        (targetEscapeDisk c a)ᶜ = 0 :=
+  rootCountingMeasure_compl_eq_zero_of_forall_mem _ _ fun _ hz =>
+    mem_targetEscapeDisk_of_mem_roots_quadraticPolyIterate_sub_C hz
+
+/-- Each finite arbitrary-target pre-Brolin measure is carried by the
+target-dependent escape disk. -/
+theorem preBrolinMeasureAt_targetEscapeDisk_compl (c a : ℂ) (n : ℕ) :
+    preBrolinMeasureAt c a n (targetEscapeDisk c a)ᶜ = 0 := by
+  rw [preBrolinMeasureAt, Measure.smul_apply,
+    rootCountingMeasure_roots_sub_C_targetEscapeDisk_compl]
+  simp
+
+/-- The finite arbitrary-target pullback measure, regarded as a measure on its
+compact target-dependent escape disk. -/
+noncomputable def preBrolinMeasureAtOnTargetEscapeDisk
+    (c a : ℂ) (n : ℕ) : Measure (targetEscapeDisk c a) :=
+  ((2 ^ n : ENNReal)⁻¹) •
+    rootCountingMeasureOn (targetEscapeDisk c a)
+      (quadraticPolyIterate c n - Polynomial.C a).roots
+      (fun _ hz => mem_targetEscapeDisk_of_mem_roots_quadraticPolyIterate_sub_C hz)
+
+/-- The compact-carrier arbitrary-target measure pushes forward to the plane
+finite arbitrary-target pre-Brolin measure. -/
+theorem map_preBrolinMeasureAtOnTargetEscapeDisk_subtype_coe
+    (c a : ℂ) (n : ℕ) :
+    Measure.map (fun z : targetEscapeDisk c a => (z : ℂ))
+        (preBrolinMeasureAtOnTargetEscapeDisk c a n) =
+      preBrolinMeasureAt c a n := by
+  rw [preBrolinMeasureAtOnTargetEscapeDisk, preBrolinMeasureAt, Measure.map_smul,
+    map_rootCountingMeasureOn_subtype_coe]
+
+theorem preBrolinMeasureAt_eq_map_preBrolinMeasureAtOnTargetEscapeDisk
+    (c a : ℂ) (n : ℕ) :
+    preBrolinMeasureAt c a n =
+      Measure.map (fun z : targetEscapeDisk c a => (z : ℂ))
+        (preBrolinMeasureAtOnTargetEscapeDisk c a n) :=
+  (map_preBrolinMeasureAtOnTargetEscapeDisk_subtype_coe c a n).symm
+
+/-- Plane compactly supported test integrals against arbitrary-target finite
+measures can be computed on the target-dependent escape disk. -/
+theorem integral_preBrolinMeasureAt_eq_integral_targetEscapeDisk
+    (c a : ℂ) (n : ℕ) (φ : C_c(ℂ, ℝ)) :
+    ∫ z, φ z ∂preBrolinMeasureAt c a n =
+      ∫ z : targetEscapeDisk c a, φ (z : ℂ)
+        ∂preBrolinMeasureAtOnTargetEscapeDisk c a n := by
+  rw [preBrolinMeasureAt_eq_map_preBrolinMeasureAtOnTargetEscapeDisk, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact φ.continuous.aestronglyMeasurable
+
+/-- Truncated-kernel integrals against arbitrary-target finite measures can be
+computed on the target-dependent escape disk. -/
+theorem integral_truncatedLogKernel_preBrolinMeasureAt_eq_integral_targetEscapeDisk
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) (n : ℕ) :
+    ∫ w, truncatedLogKernel z δ w ∂preBrolinMeasureAt c a n =
+      ∫ w : targetEscapeDisk c a, truncatedLogKernel z δ (w : ℂ)
+        ∂preBrolinMeasureAtOnTargetEscapeDisk c a n := by
+  rw [preBrolinMeasureAt_eq_map_preBrolinMeasureAtOnTargetEscapeDisk, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (continuous_truncatedLogKernel (z := z) hδ).aestronglyMeasurable
+
+/-- Carrier form of finite arbitrary-target Green-sublevel confinement. -/
+theorem preBrolinMeasureAtOnTargetEscapeDisk_greenSublevel_preimage_compl_of_scaled_target_le
+    (c a : ℂ) (n : ℕ) {ε : ℝ}
+    (hε : (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c a ≤ ε) :
+    preBrolinMeasureAtOnTargetEscapeDisk c a n
+      ((fun z : targetEscapeDisk c a => (z : ℂ)) ⁻¹' (greenSublevel c ε)ᶜ) = 0 := by
+  have hset : MeasurableSet (greenSublevel c ε)ᶜ :=
+    (measurableSet_greenSublevel c ε).compl
+  have hmap := map_preBrolinMeasureAtOnTargetEscapeDisk_subtype_coe c a n
+  have h := congrArg (fun μ : Measure ℂ => μ (greenSublevel c ε)ᶜ) hmap
+  change (Measure.map (fun z : targetEscapeDisk c a => (z : ℂ))
+      (preBrolinMeasureAtOnTargetEscapeDisk c a n)) (greenSublevel c ε)ᶜ =
+        preBrolinMeasureAt c a n (greenSublevel c ε)ᶜ at h
+  rw [Measure.map_apply measurable_subtype_coe hset] at h
+  rw [h, preBrolinMeasureAt_greenSublevel_compl_of_scaled_target_le c a n hε]
+
+theorem preBrolinMeasureAtOnTargetEscapeDisk_apply_univ
+    (c a : ℂ) (n : ℕ) :
+    preBrolinMeasureAtOnTargetEscapeDisk c a n Set.univ = 1 := by
+  rw [preBrolinMeasureAtOnTargetEscapeDisk, Measure.smul_apply,
+    rootCountingMeasureOn_apply_univ, roots_card_quadraticPolyIterate_sub_C]
+  rw [smul_eq_mul]
+  have hne : (2 ^ n : ENNReal) ≠ 0 := by simp
+  have htop : (2 ^ n : ENNReal) ≠ ⊤ := by simp
+  simpa using ENNReal.inv_mul_cancel hne htop
+
+instance instIsProbabilityMeasure_preBrolinMeasureAtOnTargetEscapeDisk
+    (c a : ℂ) (n : ℕ) :
+    IsProbabilityMeasure (preBrolinMeasureAtOnTargetEscapeDisk c a n) where
+  measure_univ := preBrolinMeasureAtOnTargetEscapeDisk_apply_univ c a n
+
+noncomputable def preBrolinProbabilityAtOnTargetEscapeDisk
+    (c a : ℂ) (n : ℕ) :
+    ProbabilityMeasure (targetEscapeDisk c a) :=
+  ⟨preBrolinMeasureAtOnTargetEscapeDisk c a n,
+    instIsProbabilityMeasure_preBrolinMeasureAtOnTargetEscapeDisk c a n⟩
+
+instance instCompactSpace_targetEscapeDisk (c a : ℂ) :
+    CompactSpace (targetEscapeDisk c a) :=
+  isCompact_iff_compactSpace.mp (by
+    simpa [targetEscapeDisk] using
+      (isCompact_closedBall (0 : ℂ) (max (max 2 ‖c‖) ‖a‖)))
+
+/-- A chosen subsequential weak limit of the compact-carrier arbitrary-target
+finite Brolin approximants. -/
+noncomputable def brolinLimitAtOnTargetEscapeDiskData (c a : ℂ) :
+    { μ : ProbabilityMeasure (targetEscapeDisk c a) //
+      ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
+        Tendsto
+          (fun k => preBrolinProbabilityAtOnTargetEscapeDisk c a (ψ k))
+          atTop (𝓝 μ) } := by
+  classical
+  let h := CompactSpace.tendsto_subseq (preBrolinProbabilityAtOnTargetEscapeDisk c a)
+  let μ := Classical.choose h
+  have hμ :
+      ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
+        Tendsto (preBrolinProbabilityAtOnTargetEscapeDisk c a ∘ ψ)
+          atTop (𝓝 μ) :=
+    Classical.choose_spec h
+  let ψ := Classical.choose hμ
+  have hψ :
+      StrictMono ψ ∧
+        Tendsto (preBrolinProbabilityAtOnTargetEscapeDisk c a ∘ ψ)
+          atTop (𝓝 μ) :=
+    Classical.choose_spec hμ
+  exact ⟨μ, ψ, hψ.1, by simpa [Function.comp_def] using hψ.2⟩
+
+noncomputable def brolinLimitAtOnTargetEscapeDisk (c a : ℂ) :
+    ProbabilityMeasure (targetEscapeDisk c a) :=
+  (brolinLimitAtOnTargetEscapeDiskData c a).1
+
+theorem brolinLimitAtOnTargetEscapeDisk_spec (c a : ℂ) :
+    ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
+      Tendsto
+        (fun k => preBrolinProbabilityAtOnTargetEscapeDisk c a (ψ k))
+        atTop (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)) :=
+  (brolinLimitAtOnTargetEscapeDiskData c a).2
+
+noncomputable def brolinLimitAtSubsequence (c a : ℂ) : ℕ → ℕ :=
+  Classical.choose (brolinLimitAtOnTargetEscapeDisk_spec c a)
+
+theorem brolinLimitAtSubsequence_strictMono (c a : ℂ) :
+    StrictMono (brolinLimitAtSubsequence c a) :=
+  (Classical.choose_spec (brolinLimitAtOnTargetEscapeDisk_spec c a)).1
+
+theorem preBrolinProbabilityAtOnTargetEscapeDisk_subseq_tendsto (c a : ℂ) :
+    Tendsto
+      (fun k =>
+        preBrolinProbabilityAtOnTargetEscapeDisk c a
+          (brolinLimitAtSubsequence c a k))
+      atTop (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)) :=
+  (Classical.choose_spec (brolinLimitAtOnTargetEscapeDisk_spec c a)).2
+
+theorem le_brolinLimitAtSubsequence (c a : ℂ) (k : ℕ) :
+    k ≤ brolinLimitAtSubsequence c a k := by
+  have hψ := brolinLimitAtSubsequence_strictMono c a
+  induction k with
+  | zero => exact Nat.zero_le _
+  | succ k ih =>
+      have hlt : brolinLimitAtSubsequence c a k <
+          brolinLimitAtSubsequence c a (k + 1) :=
+        hψ (Nat.lt_succ_self k)
+      exact Nat.succ_le_of_lt (lt_of_le_of_lt ih hlt)
+
+theorem brolinLimitAtSubsequence_tendsto_atTop (c a : ℂ) :
+    Tendsto (brolinLimitAtSubsequence c a) atTop atTop :=
+  (brolinLimitAtSubsequence_strictMono c a).tendsto_atTop
+
+/-- The arbitrary-target limiting Brolin measure on the plane. -/
+noncomputable def limitingBrolinMeasureAt (c a : ℂ) : Measure ℂ :=
+  Measure.map (fun z : targetEscapeDisk c a => (z : ℂ))
+    (brolinLimitAtOnTargetEscapeDisk c a : Measure (targetEscapeDisk c a))
+
+instance instIsProbabilityMeasure_limitingBrolinMeasureAt (c a : ℂ) :
+    IsProbabilityMeasure (limitingBrolinMeasureAt c a) := by
+  rw [limitingBrolinMeasureAt]
+  exact Measure.isProbabilityMeasure_map measurable_subtype_coe.aemeasurable
+
+theorem integral_limitingBrolinMeasureAt_eq_integral_targetEscapeDisk
+    (c a : ℂ) (φ : C_c(ℂ, ℝ)) :
+    ∫ z, φ z ∂limitingBrolinMeasureAt c a =
+      ∫ z : targetEscapeDisk c a, φ (z : ℂ)
+        ∂(brolinLimitAtOnTargetEscapeDisk c a :
+          Measure (targetEscapeDisk c a)) := by
+  rw [limitingBrolinMeasureAt, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact φ.continuous.aestronglyMeasurable
+
+/-- Restrict a compactly supported plane test function to the target-dependent
+escape disk. -/
+noncomputable def compactRestrictionOnTargetEscapeDisk
+    (c a : ℂ) (φ : C_c(ℂ, ℝ)) :
+    BoundedContinuousFunction (targetEscapeDisk c a) ℝ :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun z : targetEscapeDisk c a => φ (z : ℂ),
+      φ.continuous.comp continuous_subtype_val⟩
+
+theorem preBrolinProbabilityAtOnTargetEscapeDisk_subseq_integral_tendsto
+    (c a : ℂ) (φ : C_c(ℂ, ℝ)) :
+    Tendsto
+      (fun k =>
+        ∫ z : targetEscapeDisk c a, φ (z : ℂ)
+          ∂(preBrolinProbabilityAtOnTargetEscapeDisk c a
+              (brolinLimitAtSubsequence c a k) :
+            Measure (targetEscapeDisk c a)))
+      atTop
+      (𝓝 (∫ z : targetEscapeDisk c a, φ (z : ℂ)
+          ∂(brolinLimitAtOnTargetEscapeDisk c a :
+            Measure (targetEscapeDisk c a)))) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp
+      (preBrolinProbabilityAtOnTargetEscapeDisk_subseq_tendsto c a))
+      (compactRestrictionOnTargetEscapeDisk c a φ)
+  simpa [compactRestrictionOnTargetEscapeDisk] using h
+
+/-- Weak convergence of the chosen arbitrary-target subsequence to a plane
+measure, in compactly supported test-function form. -/
+def IsWeakSubseqLimitOfPreBrolinAt
+    (c a : ℂ) (ψ : ℕ → ℕ) (μ : Measure ℂ) : Prop :=
+  ∀ φ : C_c(ℂ, ℝ),
+    Tendsto (fun k => ∫ z, φ z ∂preBrolinMeasureAt c a (ψ k))
+      atTop (𝓝 (∫ z, φ z ∂μ))
+
+theorem limitingBrolinMeasureAt_isWeakSubseqLimitOfPreBrolinAt
+    (c a : ℂ) :
+    IsWeakSubseqLimitOfPreBrolinAt c a (brolinLimitAtSubsequence c a)
+      (limitingBrolinMeasureAt c a) := by
+  intro φ
+  have h := preBrolinProbabilityAtOnTargetEscapeDisk_subseq_integral_tendsto c a φ
+  rw [integral_limitingBrolinMeasureAt_eq_integral_targetEscapeDisk]
+  refine h.congr' ?_
+  filter_upwards [eventually_ge_atTop 0] with k _hk
+  rw [integral_preBrolinMeasureAt_eq_integral_targetEscapeDisk]
+  rfl
+
+theorem eventually_preBrolinMeasureAt_subseq_greenSublevel_compl_of_pos
+    (c a : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ k in atTop,
+      preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)
+        (greenSublevel c ε)ᶜ = 0 := by
+  obtain ⟨N, hN⟩ := exists_forall_scaled_target_le_of_pos c a hε
+  filter_upwards [eventually_ge_atTop N] with k hk
+  exact preBrolinMeasureAt_greenSublevel_compl_of_scaled_target_le
+    c a (brolinLimitAtSubsequence c a k)
+    (hN (brolinLimitAtSubsequence c a k)
+      (le_trans hk (le_brolinLimitAtSubsequence c a k)))
+
+theorem eventually_preBrolinMeasureAtOnTargetEscapeDisk_subseq_greenSublevel_preimage_compl_of_pos
+    (c a : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ k in atTop,
+      preBrolinMeasureAtOnTargetEscapeDisk c a
+        (brolinLimitAtSubsequence c a k)
+        ((fun z : targetEscapeDisk c a => (z : ℂ)) ⁻¹'
+          (greenSublevel c ε)ᶜ) = 0 := by
+  obtain ⟨N, hN⟩ := exists_forall_scaled_target_le_of_pos c a hε
+  filter_upwards [eventually_ge_atTop N] with k hk
+  exact
+    preBrolinMeasureAtOnTargetEscapeDisk_greenSublevel_preimage_compl_of_scaled_target_le
+      c a (brolinLimitAtSubsequence c a k)
+      (hN (brolinLimitAtSubsequence c a k)
+        (le_trans hk (le_brolinLimitAtSubsequence c a k)))
+
+/-- The arbitrary-target compact-carrier weak limit is carried by every positive
+Green sublevel, pulled back to its target-dependent escape disk. -/
+theorem brolinLimitAtOnTargetEscapeDisk_greenSublevel_preimage_compl_of_pos
+    (c a : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    (brolinLimitAtOnTargetEscapeDisk c a :
+      Measure (targetEscapeDisk c a))
+      (((fun z : targetEscapeDisk c a => (z : ℂ)) ⁻¹'
+        (greenSublevel c ε)ᶜ)) = 0 := by
+  let G : Set (targetEscapeDisk c a) :=
+    ((fun z : targetEscapeDisk c a => (z : ℂ)) ⁻¹'
+      (greenSublevel c ε)ᶜ)
+  have hGopen : IsOpen G := by
+    dsimp [G]
+    exact ((isClosed_greenSublevel c ε).isOpen_compl).preimage continuous_subtype_val
+  have hle :=
+    ProbabilityMeasure.le_liminf_measure_open_of_tendsto
+      (preBrolinProbabilityAtOnTargetEscapeDisk_subseq_tendsto c a) hGopen
+  have hevent :
+      ∀ᶠ k in atTop,
+        (preBrolinProbabilityAtOnTargetEscapeDisk c a
+          (brolinLimitAtSubsequence c a k) :
+          Measure (targetEscapeDisk c a)) G = 0 := by
+    filter_upwards
+      [eventually_preBrolinMeasureAtOnTargetEscapeDisk_subseq_greenSublevel_preimage_compl_of_pos
+        c a hε] with k hk
+    simpa [G, preBrolinProbabilityAtOnTargetEscapeDisk] using hk
+  have htend :
+      Tendsto
+        (fun k =>
+          (preBrolinProbabilityAtOnTargetEscapeDisk c a
+            (brolinLimitAtSubsequence c a k) :
+            Measure (targetEscapeDisk c a)) G)
+        atTop (𝓝 0) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [hevent] with k hk
+    exact hk.symm
+  have hliminf :
+      atTop.liminf
+        (fun k =>
+          (preBrolinProbabilityAtOnTargetEscapeDisk c a
+            (brolinLimitAtSubsequence c a k) :
+            Measure (targetEscapeDisk c a)) G) = 0 :=
+    htend.liminf_eq
+  have hle_zero :
+      (brolinLimitAtOnTargetEscapeDisk c a :
+        Measure (targetEscapeDisk c a)) G ≤ 0 := by
+    rw [← hliminf]
+    exact hle
+  have hGzero :
+      (brolinLimitAtOnTargetEscapeDisk c a :
+        Measure (targetEscapeDisk c a)) G = 0 :=
+    le_antisymm hle_zero bot_le
+  simpa [G] using hGzero
+
+theorem limitingBrolinMeasureAt_greenSublevel_compl_of_pos
+    (c a : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    limitingBrolinMeasureAt c a (greenSublevel c ε)ᶜ = 0 := by
+  have hmeas : MeasurableSet (greenSublevel c ε)ᶜ :=
+    (measurableSet_greenSublevel c ε).compl
+  rw [limitingBrolinMeasureAt, Measure.map_apply measurable_subtype_coe hmeas]
+  exact brolinLimitAtOnTargetEscapeDisk_greenSublevel_preimage_compl_of_pos c a hε
+
+theorem limitingBrolinMeasureAt_filledJulia_compl (c a : ℂ) :
+    limitingBrolinMeasureAt c a (filledJulia c)ᶜ = 0 := by
+  rw [filledJulia_compl_eq_iUnion_greenSublevel_inv_nat_succ_compl c]
+  apply measure_iUnion_null
+  intro n
+  exact limitingBrolinMeasureAt_greenSublevel_compl_of_pos c a (by positivity)
+
+theorem limitingBrolinMeasureAt_isProbOn_filledJulia (c a : ℂ) :
+    IsProbOn (limitingBrolinMeasureAt c a) (filledJulia c) :=
+  ⟨instIsProbabilityMeasure_limitingBrolinMeasureAt c a,
+    limitingBrolinMeasureAt_filledJulia_compl c a⟩
+
+noncomputable def truncatedLogKernelOnTargetEscapeDisk
+    (c a z : ℂ) (δ : ℝ) (hδ : 0 < δ) :
+    BoundedContinuousFunction (targetEscapeDisk c a) ℝ :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun w : targetEscapeDisk c a => truncatedLogKernel z δ (w : ℂ),
+      (continuous_truncatedLogKernel (z := z) hδ).comp continuous_subtype_val⟩
+
+theorem integral_truncatedLogKernel_limitingBrolinMeasureAt_eq_integral_targetEscapeDisk
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    ∫ w, truncatedLogKernel z δ w ∂limitingBrolinMeasureAt c a =
+      ∫ w : targetEscapeDisk c a, truncatedLogKernel z δ (w : ℂ)
+        ∂(brolinLimitAtOnTargetEscapeDisk c a :
+          Measure (targetEscapeDisk c a)) := by
+  rw [limitingBrolinMeasureAt, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (continuous_truncatedLogKernel (z := z) hδ).aestronglyMeasurable
+
+theorem truncatedLogKernel_preBrolinProbabilityAtOnTargetEscapeDisk_subseq_integral_tendsto
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto
+      (fun k =>
+        ∫ w : targetEscapeDisk c a, truncatedLogKernel z δ (w : ℂ)
+          ∂(preBrolinProbabilityAtOnTargetEscapeDisk c a
+              (brolinLimitAtSubsequence c a k) :
+            Measure (targetEscapeDisk c a)))
+      atTop
+      (𝓝 (∫ w : targetEscapeDisk c a, truncatedLogKernel z δ (w : ℂ)
+          ∂(brolinLimitAtOnTargetEscapeDisk c a :
+            Measure (targetEscapeDisk c a)))) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp
+      (preBrolinProbabilityAtOnTargetEscapeDisk_subseq_tendsto c a))
+      (truncatedLogKernelOnTargetEscapeDisk c a z δ hδ)
+  simpa [truncatedLogKernelOnTargetEscapeDisk] using h
+
+theorem truncatedLogKernel_preBrolinMeasureAt_subseq_integral_tendsto_limiting
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto
+      (fun k =>
+        ∫ w, truncatedLogKernel z δ w
+          ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k))
+      atTop
+      (𝓝 (∫ w, truncatedLogKernel z δ w ∂limitingBrolinMeasureAt c a)) := by
+  have h :=
+    truncatedLogKernel_preBrolinProbabilityAtOnTargetEscapeDisk_subseq_integral_tendsto
+      c a z hδ
+  rw [integral_truncatedLogKernel_limitingBrolinMeasureAt_eq_integral_targetEscapeDisk
+    c a z hδ]
+  refine h.congr' ?_
+  filter_upwards [eventually_ge_atTop 0] with k _hk
+  rw [integral_truncatedLogKernel_preBrolinMeasureAt_eq_integral_targetEscapeDisk c a z hδ]
+  rfl
+
+theorem eventually_logPotential_preBrolinMeasureAt_subseq_eq_integral_truncatedLogKernel
+    (c a z : ℂ) {ε δ : ℝ} (hε : 0 < ε)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    ∀ᶠ k in atTop,
+      logPotential
+          (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z =
+        ∫ w, truncatedLogKernel z δ w
+          ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k) := by
+  filter_upwards [eventually_preBrolinMeasureAt_subseq_greenSublevel_compl_of_pos
+    c a hε] with k hk
+  exact logPotential_eq_integral_truncatedLogKernel_of_greenSublevel_support hk hsep
+
+theorem logPotential_limitingBrolinMeasureAt_eq_integral_truncatedLogKernel
+    (c a z : ℂ) {ε δ : ℝ} (hε : 0 < ε)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    logPotential (limitingBrolinMeasureAt c a) z =
+      ∫ w, truncatedLogKernel z δ w ∂limitingBrolinMeasureAt c a :=
+  logPotential_eq_integral_truncatedLogKernel_of_greenSublevel_support
+    (limitingBrolinMeasureAt_greenSublevel_compl_of_pos c a hε) hsep
+
+/-- The logarithmic-potential part of weak convergence for arbitrary target
+pullbacks along a selected subsequence. -/
+def HasSubseqLogPotentialLimitAt
+    (c a : ℂ) (ψ : ℕ → ℕ) (μ : Measure ℂ) : Prop :=
+  ∀ ⦃z : ℂ⦄, z ∉ filledJulia c →
+    Tendsto (fun k => - logPotential (preBrolinMeasureAt c a (ψ k)) z)
+      atTop (𝓝 (- logPotential μ z))
+
+theorem neg_logPotential_preBrolinMeasureAt_limitSubseq_tendsto_greenFunctionDyn_basin
+    {c a z : ℂ} (hz : z ∉ filledJulia c) :
+    Tendsto
+      (fun k =>
+        - logPotential
+          (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+      atTop (𝓝 (greenFunctionDyn c z)) :=
+  (neg_logPotential_preBrolinMeasureAt_tendsto_greenFunctionDyn_basin
+    (c := c) (a := a) hz).comp (brolinLimitAtSubsequence_tendsto_atTop c a)
+
+theorem limitingBrolinMeasureAt_hasSubseqLogPotentialLimitAt (c a : ℂ) :
+    HasSubseqLogPotentialLimitAt c a (brolinLimitAtSubsequence c a)
+      (limitingBrolinMeasureAt c a) := by
+  intro z hz
+  have hGne : greenFunctionDyn c z ≠ 0 := by
+    intro hzero
+    exact hz ((greenFunctionDyn_eq_zero_iff c z).mp hzero)
+  have hGpos : 0 < greenFunctionDyn c z :=
+    lt_of_le_of_ne (greenFunctionDyn_nonneg c z) (by simpa [eq_comm] using hGne)
+  let ε : ℝ := greenFunctionDyn c z / 2
+  have hεpos : 0 < ε := by
+    dsimp [ε]
+    linarith
+  have hεlt : ε < greenFunctionDyn c z := by
+    dsimp [ε]
+    linarith
+  obtain ⟨δ, hδpos, hsep⟩ :=
+    exists_pos_le_norm_of_greenSublevel_of_lt_green
+      (c := c) (z := z) (ε := ε) hεlt
+  have htrunc :=
+    truncatedLogKernel_preBrolinMeasureAt_subseq_integral_tendsto_limiting
+      c a z hδpos
+  have hlim :=
+    logPotential_limitingBrolinMeasureAt_eq_integral_truncatedLogKernel
+      c a z hεpos hsep
+  have hevent :=
+    eventually_logPotential_preBrolinMeasureAt_subseq_eq_integral_truncatedLogKernel
+      c a z hεpos hsep
+  have hlog :
+      Tendsto
+        (fun k =>
+          logPotential
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+        atTop (𝓝 (logPotential (limitingBrolinMeasureAt c a) z)) := by
+    rw [hlim]
+    exact htrunc.congr' (by
+      filter_upwards [hevent] with k hk
+      exact hk.symm)
+  simpa using hlog.neg
+
+theorem green_eq_neg_logPotential_limitingBrolinMeasureAt_on_basin
+    {c a z : ℂ} (hz : z ∉ filledJulia c) :
+    greenFunctionDyn c z = - logPotential (limitingBrolinMeasureAt c a) z :=
+  tendsto_nhds_unique
+    (neg_logPotential_preBrolinMeasureAt_limitSubseq_tendsto_greenFunctionDyn_basin
+      (c := c) (a := a) hz)
+    (limitingBrolinMeasureAt_hasSubseqLogPotentialLimitAt c a hz)
+
+/-- Canonical nonzero-target hDisc-side limiting measure.  Choosing target `1`
+avoids the zero-target exceptional degeneration at `c = 0`. -/
+noncomputable def brolinMuOne (c : ℂ) : Measure ℂ :=
+  limitingBrolinMeasureAt c 1
+
+theorem brolinMuOne_hDiscCore (c : ℂ) :
+    IsProbOn (brolinMuOne c) (filledJulia c) ∧
+      IsWeakSubseqLimitOfPreBrolinAt c 1 (brolinLimitAtSubsequence c 1)
+        (brolinMuOne c) ∧
+      HasSubseqLogPotentialLimitAt c 1 (brolinLimitAtSubsequence c 1)
+        (brolinMuOne c) ∧
+      ∀ z : ℂ, z ∉ filledJulia c →
+        greenFunctionDyn c z = - logPotential (brolinMuOne c) z := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · simpa [brolinMuOne] using limitingBrolinMeasureAt_isProbOn_filledJulia c 1
+  · simpa [brolinMuOne] using limitingBrolinMeasureAt_isWeakSubseqLimitOfPreBrolinAt c 1
+  · simpa [brolinMuOne] using limitingBrolinMeasureAt_hasSubseqLogPotentialLimitAt c 1
+  · intro z hz
+    simpa [brolinMuOne] using
+      green_eq_neg_logPotential_limitingBrolinMeasureAt_on_basin
+        (c := c) (a := 1) (z := z) hz
+
+/-! ## Cauchy-transform limit for the constructed hDisc measure -/
+
+noncomputable def truncatedCauchyKernel (z : ℂ) (δ : ℝ) (w : ℂ) : ℂ :=
+  (starRingEnd ℂ) (z - w) /
+    (((max (δ ^ 2) (‖z - w‖ ^ 2) : ℝ) : ℂ))
+
+theorem continuous_truncatedCauchyKernel {z : ℂ} {δ : ℝ} (hδ : 0 < δ) :
+    Continuous (fun w : ℂ => truncatedCauchyKernel z δ w) := by
+  unfold truncatedCauchyKernel
+  have hnum : Continuous fun w : ℂ => (starRingEnd ℂ) (z - w) := by
+    fun_prop
+  have hreal :
+      Continuous fun w : ℂ => max (δ ^ 2) (‖z - w‖ ^ 2) :=
+    continuous_const.max (((continuous_const.sub continuous_id).norm).pow 2)
+  have hden :
+      Continuous fun w : ℂ =>
+        (((max (δ ^ 2) (‖z - w‖ ^ 2) : ℝ) : ℂ)) := by
+    exact Complex.continuous_ofReal.comp hreal
+  refine hnum.div hden ?_
+  intro w
+  have hpos : 0 < max (δ ^ 2) (‖z - w‖ ^ 2) :=
+    lt_of_lt_of_le (sq_pos_of_pos hδ) (le_max_left _ _)
+  exact_mod_cast (ne_of_gt hpos)
+
+theorem truncatedCauchyKernel_eq_cauchyKernel_of_le_norm
+    {z w : ℂ} {δ : ℝ} (hδ : 0 < δ) (hδw : δ ≤ ‖z - w‖) :
+    truncatedCauchyKernel z δ w = (z - w)⁻¹ := by
+  unfold truncatedCauchyKernel
+  have hsq : δ ^ 2 ≤ ‖z - w‖ ^ 2 := by
+    nlinarith [hδw, hδ, norm_nonneg (z - w)]
+  rw [max_eq_right hsq]
+  set x : ℂ := z - w
+  have hx : x ≠ 0 := by
+    intro hx0
+    have hnorm : ‖z - w‖ = 0 := by
+      simpa [x] using congrArg norm hx0
+    rw [hnorm] at hδw
+    linarith
+  change (starRingEnd ℂ) x / (((‖x‖ ^ 2 : ℝ) : ℂ)) = x⁻¹
+  have hden : x * (starRingEnd ℂ) x = (((‖x‖ ^ 2 : ℝ) : ℂ)) := by
+    rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
+  rw [← hden]
+  field_simp [hx]
+
+noncomputable def truncatedCauchyKernelOnTargetEscapeDisk
+    (c a z : ℂ) (δ : ℝ) (hδ : 0 < δ) :
+    BoundedContinuousFunction (targetEscapeDisk c a) ℂ :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun w : targetEscapeDisk c a => truncatedCauchyKernel z δ (w : ℂ),
+      (continuous_truncatedCauchyKernel (z := z) hδ).comp continuous_subtype_val⟩
+
+theorem integral_truncatedCauchyKernel_preBrolinMeasureAt_eq_integral_targetEscapeDisk
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) (n : ℕ) :
+    ∫ w, truncatedCauchyKernel z δ w ∂preBrolinMeasureAt c a n =
+      ∫ w : targetEscapeDisk c a, truncatedCauchyKernel z δ (w : ℂ)
+        ∂preBrolinMeasureAtOnTargetEscapeDisk c a n := by
+  rw [preBrolinMeasureAt_eq_map_preBrolinMeasureAtOnTargetEscapeDisk, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (continuous_truncatedCauchyKernel (z := z) hδ).aestronglyMeasurable
+
+theorem integral_truncatedCauchyKernel_limitingBrolinMeasureAt_eq_integral_targetEscapeDisk
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    ∫ w, truncatedCauchyKernel z δ w ∂limitingBrolinMeasureAt c a =
+      ∫ w : targetEscapeDisk c a, truncatedCauchyKernel z δ (w : ℂ)
+        ∂(brolinLimitAtOnTargetEscapeDisk c a :
+          Measure (targetEscapeDisk c a)) := by
+  rw [limitingBrolinMeasureAt, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (continuous_truncatedCauchyKernel (z := z) hδ).aestronglyMeasurable
+
+noncomputable def truncatedCauchyKernelReOnTargetEscapeDisk
+    (c a z : ℂ) (δ : ℝ) (hδ : 0 < δ) :
+    BoundedContinuousFunction (targetEscapeDisk c a) ℝ :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun w : targetEscapeDisk c a => (truncatedCauchyKernel z δ (w : ℂ)).re,
+      Complex.continuous_re.comp
+        ((continuous_truncatedCauchyKernel (z := z) hδ).comp continuous_subtype_val)⟩
+
+noncomputable def truncatedCauchyKernelImOnTargetEscapeDisk
+    (c a z : ℂ) (δ : ℝ) (hδ : 0 < δ) :
+    BoundedContinuousFunction (targetEscapeDisk c a) ℝ :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun w : targetEscapeDisk c a => (truncatedCauchyKernel z δ (w : ℂ)).im,
+      Complex.continuous_im.comp
+        ((continuous_truncatedCauchyKernel (z := z) hδ).comp continuous_subtype_val)⟩
+
+theorem integral_truncatedCauchyKernel_re_preBrolinMeasureAt_eq_integral_targetEscapeDisk
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) (n : ℕ) :
+    ∫ w, (truncatedCauchyKernel z δ w).re ∂preBrolinMeasureAt c a n =
+      ∫ w : targetEscapeDisk c a, (truncatedCauchyKernel z δ (w : ℂ)).re
+        ∂preBrolinMeasureAtOnTargetEscapeDisk c a n := by
+  rw [preBrolinMeasureAt_eq_map_preBrolinMeasureAtOnTargetEscapeDisk, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (Complex.continuous_re.comp
+      (continuous_truncatedCauchyKernel (z := z) hδ)).aestronglyMeasurable
+
+theorem integral_truncatedCauchyKernel_im_preBrolinMeasureAt_eq_integral_targetEscapeDisk
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) (n : ℕ) :
+    ∫ w, (truncatedCauchyKernel z δ w).im ∂preBrolinMeasureAt c a n =
+      ∫ w : targetEscapeDisk c a, (truncatedCauchyKernel z δ (w : ℂ)).im
+        ∂preBrolinMeasureAtOnTargetEscapeDisk c a n := by
+  rw [preBrolinMeasureAt_eq_map_preBrolinMeasureAtOnTargetEscapeDisk, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (Complex.continuous_im.comp
+      (continuous_truncatedCauchyKernel (z := z) hδ)).aestronglyMeasurable
+
+theorem integral_truncatedCauchyKernel_re_limitingBrolinMeasureAt_eq_integral_targetEscapeDisk
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    ∫ w, (truncatedCauchyKernel z δ w).re ∂limitingBrolinMeasureAt c a =
+      ∫ w : targetEscapeDisk c a, (truncatedCauchyKernel z δ (w : ℂ)).re
+        ∂(brolinLimitAtOnTargetEscapeDisk c a :
+          Measure (targetEscapeDisk c a)) := by
+  rw [limitingBrolinMeasureAt, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (Complex.continuous_re.comp
+      (continuous_truncatedCauchyKernel (z := z) hδ)).aestronglyMeasurable
+
+theorem integral_truncatedCauchyKernel_im_limitingBrolinMeasureAt_eq_integral_targetEscapeDisk
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    ∫ w, (truncatedCauchyKernel z δ w).im ∂limitingBrolinMeasureAt c a =
+      ∫ w : targetEscapeDisk c a, (truncatedCauchyKernel z δ (w : ℂ)).im
+        ∂(brolinLimitAtOnTargetEscapeDisk c a :
+          Measure (targetEscapeDisk c a)) := by
+  rw [limitingBrolinMeasureAt, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (Complex.continuous_im.comp
+      (continuous_truncatedCauchyKernel (z := z) hδ)).aestronglyMeasurable
+
+theorem truncatedCauchyKernel_re_preBrolinProbabilityAtOnTargetEscapeDisk_subseq_integral_tendsto
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto
+      (fun k =>
+        ∫ w : targetEscapeDisk c a, (truncatedCauchyKernel z δ (w : ℂ)).re
+          ∂(preBrolinProbabilityAtOnTargetEscapeDisk c a
+              (brolinLimitAtSubsequence c a k) :
+            Measure (targetEscapeDisk c a)))
+      atTop
+      (𝓝 (∫ w : targetEscapeDisk c a, (truncatedCauchyKernel z δ (w : ℂ)).re
+          ∂(brolinLimitAtOnTargetEscapeDisk c a :
+            Measure (targetEscapeDisk c a)))) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp
+      (preBrolinProbabilityAtOnTargetEscapeDisk_subseq_tendsto c a))
+      (truncatedCauchyKernelReOnTargetEscapeDisk c a z δ hδ)
+  simpa [truncatedCauchyKernelReOnTargetEscapeDisk] using h
+
+theorem truncatedCauchyKernel_im_preBrolinProbabilityAtOnTargetEscapeDisk_subseq_integral_tendsto
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto
+      (fun k =>
+        ∫ w : targetEscapeDisk c a, (truncatedCauchyKernel z δ (w : ℂ)).im
+          ∂(preBrolinProbabilityAtOnTargetEscapeDisk c a
+              (brolinLimitAtSubsequence c a k) :
+            Measure (targetEscapeDisk c a)))
+      atTop
+      (𝓝 (∫ w : targetEscapeDisk c a, (truncatedCauchyKernel z δ (w : ℂ)).im
+          ∂(brolinLimitAtOnTargetEscapeDisk c a :
+            Measure (targetEscapeDisk c a)))) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp
+      (preBrolinProbabilityAtOnTargetEscapeDisk_subseq_tendsto c a))
+      (truncatedCauchyKernelImOnTargetEscapeDisk c a z δ hδ)
+  simpa [truncatedCauchyKernelImOnTargetEscapeDisk] using h
+
+theorem truncatedCauchyKernel_re_preBrolinMeasureAt_subseq_integral_tendsto_limiting
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto
+      (fun k =>
+        ∫ w, (truncatedCauchyKernel z δ w).re
+          ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k))
+      atTop
+      (𝓝 (∫ w, (truncatedCauchyKernel z δ w).re ∂limitingBrolinMeasureAt c a)) := by
+  have h :=
+    truncatedCauchyKernel_re_preBrolinProbabilityAtOnTargetEscapeDisk_subseq_integral_tendsto
+      c a z hδ
+  rw [integral_truncatedCauchyKernel_re_limitingBrolinMeasureAt_eq_integral_targetEscapeDisk
+    c a z hδ]
+  refine h.congr' ?_
+  filter_upwards [eventually_ge_atTop 0] with k _hk
+  rw [integral_truncatedCauchyKernel_re_preBrolinMeasureAt_eq_integral_targetEscapeDisk
+    c a z hδ]
+  rfl
+
+theorem truncatedCauchyKernel_im_preBrolinMeasureAt_subseq_integral_tendsto_limiting
+    (c a z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto
+      (fun k =>
+        ∫ w, (truncatedCauchyKernel z δ w).im
+          ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k))
+      atTop
+      (𝓝 (∫ w, (truncatedCauchyKernel z δ w).im ∂limitingBrolinMeasureAt c a)) := by
+  have h :=
+    truncatedCauchyKernel_im_preBrolinProbabilityAtOnTargetEscapeDisk_subseq_integral_tendsto
+      c a z hδ
+  rw [integral_truncatedCauchyKernel_im_limitingBrolinMeasureAt_eq_integral_targetEscapeDisk
+    c a z hδ]
+  refine h.congr' ?_
+  filter_upwards [eventually_ge_atTop 0] with k _hk
+  rw [integral_truncatedCauchyKernel_im_preBrolinMeasureAt_eq_integral_targetEscapeDisk
+    c a z hδ]
+  rfl
+
+theorem cauchyIntegral_re_eq_integral_truncatedCauchyKernel_of_greenSublevel_support
+    {c z : ℂ} {μ : Measure ℂ} {ε δ : ℝ}
+    (hμ : μ (greenSublevel c ε)ᶜ = 0) (hδ : 0 < δ)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    ∫ w, ((z - w)⁻¹).re ∂μ =
+      ∫ w, (truncatedCauchyKernel z δ w).re ∂μ := by
+  refine integral_congr_ae ?_
+  have hmem : ∀ᵐ w ∂μ, w ∈ greenSublevel c ε := by
+    exact (mem_ae_iff).2 hμ
+  filter_upwards [hmem] with w hw
+  exact congrArg Complex.re
+    (truncatedCauchyKernel_eq_cauchyKernel_of_le_norm hδ (hsep w hw)).symm
+
+theorem cauchyIntegral_im_eq_integral_truncatedCauchyKernel_of_greenSublevel_support
+    {c z : ℂ} {μ : Measure ℂ} {ε δ : ℝ}
+    (hμ : μ (greenSublevel c ε)ᶜ = 0) (hδ : 0 < δ)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    ∫ w, ((z - w)⁻¹).im ∂μ =
+      ∫ w, (truncatedCauchyKernel z δ w).im ∂μ := by
+  refine integral_congr_ae ?_
+  have hmem : ∀ᵐ w ∂μ, w ∈ greenSublevel c ε := by
+    exact (mem_ae_iff).2 hμ
+  filter_upwards [hmem] with w hw
+  exact congrArg Complex.im
+    (truncatedCauchyKernel_eq_cauchyKernel_of_le_norm hδ (hsep w hw)).symm
+
+theorem eventually_cauchyIntegral_re_preBrolinMeasureAt_subseq_eq_integral_truncatedCauchyKernel
+    (c a z : ℂ) {ε δ : ℝ} (hε : 0 < ε) (hδ : 0 < δ)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    ∀ᶠ k in atTop,
+      ∫ w, ((z - w)⁻¹).re
+          ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k) =
+        ∫ w, (truncatedCauchyKernel z δ w).re
+          ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k) := by
+  filter_upwards [eventually_preBrolinMeasureAt_subseq_greenSublevel_compl_of_pos
+    c a hε] with k hk
+  exact cauchyIntegral_re_eq_integral_truncatedCauchyKernel_of_greenSublevel_support
+    hk hδ hsep
+
+theorem eventually_cauchyIntegral_im_preBrolinMeasureAt_subseq_eq_integral_truncatedCauchyKernel
+    (c a z : ℂ) {ε δ : ℝ} (hε : 0 < ε) (hδ : 0 < δ)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    ∀ᶠ k in atTop,
+      ∫ w, ((z - w)⁻¹).im
+          ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k) =
+        ∫ w, (truncatedCauchyKernel z δ w).im
+          ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k) := by
+  filter_upwards [eventually_preBrolinMeasureAt_subseq_greenSublevel_compl_of_pos
+    c a hε] with k hk
+  exact cauchyIntegral_im_eq_integral_truncatedCauchyKernel_of_greenSublevel_support
+    hk hδ hsep
+
+theorem cauchyIntegral_re_limitingBrolinMeasureAt_eq_integral_truncatedCauchyKernel
+    (c a z : ℂ) {ε δ : ℝ} (hε : 0 < ε) (hδ : 0 < δ)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    ∫ w, ((z - w)⁻¹).re ∂limitingBrolinMeasureAt c a =
+      ∫ w, (truncatedCauchyKernel z δ w).re ∂limitingBrolinMeasureAt c a :=
+  cauchyIntegral_re_eq_integral_truncatedCauchyKernel_of_greenSublevel_support
+    (limitingBrolinMeasureAt_greenSublevel_compl_of_pos c a hε) hδ hsep
+
+theorem cauchyIntegral_im_limitingBrolinMeasureAt_eq_integral_truncatedCauchyKernel
+    (c a z : ℂ) {ε δ : ℝ} (hε : 0 < ε) (hδ : 0 < δ)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    ∫ w, ((z - w)⁻¹).im ∂limitingBrolinMeasureAt c a =
+      ∫ w, (truncatedCauchyKernel z δ w).im ∂limitingBrolinMeasureAt c a :=
+  cauchyIntegral_im_eq_integral_truncatedCauchyKernel_of_greenSublevel_support
+    (limitingBrolinMeasureAt_greenSublevel_compl_of_pos c a hε) hδ hsep
+
+def HasSubseqCauchyTransformLimitAt
+    (c a : ℂ) (ψ : ℕ → ℕ) (μ : Measure ℂ) : Prop :=
+  ∀ ⦃z : ℂ⦄, z ∉ filledJulia c →
+    Tendsto (fun k => ∫ w, ((z - w)⁻¹).re ∂preBrolinMeasureAt c a (ψ k))
+      atTop (𝓝 (∫ w, ((z - w)⁻¹).re ∂μ)) ∧
+    Tendsto (fun k => ∫ w, ((z - w)⁻¹).im ∂preBrolinMeasureAt c a (ψ k))
+      atTop (𝓝 (∫ w, ((z - w)⁻¹).im ∂μ))
+
+theorem limitingBrolinMeasureAt_hasSubseqCauchyTransformLimitAt (c a : ℂ) :
+    HasSubseqCauchyTransformLimitAt c a (brolinLimitAtSubsequence c a)
+      (limitingBrolinMeasureAt c a) := by
+  intro z hz
+  have hGne : greenFunctionDyn c z ≠ 0 := by
+    intro hzero
+    exact hz ((greenFunctionDyn_eq_zero_iff c z).mp hzero)
+  have hGpos : 0 < greenFunctionDyn c z :=
+    lt_of_le_of_ne (greenFunctionDyn_nonneg c z) (by simpa [eq_comm] using hGne)
+  let ε : ℝ := greenFunctionDyn c z / 2
+  have hεpos : 0 < ε := by
+    dsimp [ε]
+    linarith
+  have hεlt : ε < greenFunctionDyn c z := by
+    dsimp [ε]
+    linarith
+  obtain ⟨δ, hδpos, hsep⟩ :=
+    exists_pos_le_norm_of_greenSublevel_of_lt_green
+      (c := c) (z := z) (ε := ε) hεlt
+  have htruncRe :=
+    truncatedCauchyKernel_re_preBrolinMeasureAt_subseq_integral_tendsto_limiting
+      c a z hδpos
+  have htruncIm :=
+    truncatedCauchyKernel_im_preBrolinMeasureAt_subseq_integral_tendsto_limiting
+      c a z hδpos
+  have hlimRe :=
+    cauchyIntegral_re_limitingBrolinMeasureAt_eq_integral_truncatedCauchyKernel
+      c a z hεpos hδpos hsep
+  have hlimIm :=
+    cauchyIntegral_im_limitingBrolinMeasureAt_eq_integral_truncatedCauchyKernel
+      c a z hεpos hδpos hsep
+  have heventRe :=
+    eventually_cauchyIntegral_re_preBrolinMeasureAt_subseq_eq_integral_truncatedCauchyKernel
+      c a z hεpos hδpos hsep
+  have heventIm :=
+    eventually_cauchyIntegral_im_preBrolinMeasureAt_subseq_eq_integral_truncatedCauchyKernel
+      c a z hεpos hδpos hsep
+  constructor
+  · rw [hlimRe]
+    exact htruncRe.congr' (by
+      filter_upwards [heventRe] with k hk
+      exact hk.symm)
+  · rw [hlimIm]
+    exact htruncIm.congr' (by
+      filter_upwards [heventIm] with k hk
+      exact hk.symm)
+
+theorem brolinMuOne_hasSubseqCauchyTransformLimitAt (c : ℂ) :
+    HasSubseqCauchyTransformLimitAt c 1 (brolinLimitAtSubsequence c 1)
+      (brolinMuOne c) := by
+  simpa [brolinMuOne] using
+    limitingBrolinMeasureAt_hasSubseqCauchyTransformLimitAt c 1
+
+/-- The algebraic finite logarithmic derivatives converge, componentwise, to
+the Cauchy transform of the limiting measure.  This is the bridge from the
+finite pullback identity to the hDisc period kernel. -/
+def HasSubseqNormalizedLogDerivativeLimitAt
+    (c a : ℂ) (ψ : ℕ → ℕ) (μ : Measure ℂ) : Prop :=
+  ∀ ⦃z : ℂ⦄, z ∉ filledJulia c →
+    Tendsto (fun k => (finiteBrolinNormalizedLogDerivativeAt c a z (ψ k)).re)
+      atTop (𝓝 (∫ w, ((z - w)⁻¹).re ∂μ)) ∧
+    Tendsto (fun k => (finiteBrolinNormalizedLogDerivativeAt c a z (ψ k)).im)
+      atTop (𝓝 (∫ w, ((z - w)⁻¹).im ∂μ))
+
+theorem eventually_finiteBrolinNormalizedLogDerivativeAt_subseq_valid
+    {c a z : ℂ} (hz : z ∉ filledJulia c) :
+    ∀ᶠ k in atTop,
+      (quadratic c)^[brolinLimitAtSubsequence c a k] z - a ≠ 0 := by
+  obtain ⟨N, hN⟩ :=
+    eventually_atTop.1 (eventually_iterate_ne_of_not_mem_filledJulia hz a)
+  filter_upwards [eventually_ge_atTop N] with k hk
+  exact sub_ne_zero.mpr
+    (hN (brolinLimitAtSubsequence c a k)
+      (le_trans hk (le_brolinLimitAtSubsequence c a k)))
+
+theorem limitingBrolinMeasureAt_hasSubseqNormalizedLogDerivativeLimitAt
+    (c a : ℂ) :
+    HasSubseqNormalizedLogDerivativeLimitAt c a (brolinLimitAtSubsequence c a)
+      (limitingBrolinMeasureAt c a) := by
+  intro z hz
+  have hcauchy :=
+    limitingBrolinMeasureAt_hasSubseqCauchyTransformLimitAt c a hz
+  have hvalid := eventually_finiteBrolinNormalizedLogDerivativeAt_subseq_valid
+    (c := c) (a := a) hz
+  constructor
+  · exact hcauchy.1.congr' (by
+      filter_upwards [hvalid] with k hk
+      exact integral_cauchy_re_preBrolinMeasureAt_eq_derivative_div hk)
+  · exact hcauchy.2.congr' (by
+      filter_upwards [hvalid] with k hk
+      exact integral_cauchy_im_preBrolinMeasureAt_eq_derivative_div hk)
+
+theorem brolinMuOne_hasSubseqNormalizedLogDerivativeLimitAt (c : ℂ) :
+    HasSubseqNormalizedLogDerivativeLimitAt c 1 (brolinLimitAtSubsequence c 1)
+      (brolinMuOne c) := by
+  simpa [brolinMuOne] using
+    limitingBrolinMeasureAt_hasSubseqNormalizedLogDerivativeLimitAt c 1
+
+/-- Full potential representation from the exterior logarithmic-kernel limit
+and the zero-potential boundary condition on `K_c`. -/
+theorem hasGreenPotentialRepresentation_of_subseqLogPotentialLimit
+    {c : ℂ} {μ : Measure ℂ}
+    (hpot : HasSubseqLogPotentialLimit c μ)
+    (hK : ∀ z, z ∈ filledJulia c → - logPotential μ z = 0) :
+    HasGreenPotentialRepresentation c μ := by
+  rw [hasGreenPotentialRepresentation_iff]
+  intro z
+  by_cases hz : z ∈ filledJulia c
+  · rw [(greenFunctionDyn_eq_zero_iff c z).mpr hz, hK z hz]
+  · exact green_eq_neg_logPotential_on_basin_of_subseqLogPotentialLimit hpot hz
 
 /-! ## Unit-circle model kernel
 
