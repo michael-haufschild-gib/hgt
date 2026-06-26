@@ -108,3 +108,4 @@ import GaloisForLFunctions.Bottcher.ThetaWronskian
 import GaloisForLFunctions.Bottcher.ModularLambdaCovering
 import GaloisForLFunctions.Bottcher.ProperLocalHomeoCovering
 import GaloisForLFunctions.Bottcher.ArgumentPrinciple
+import GaloisForLFunctions.Bottcher.ModularLambdaArgumentPrinciple

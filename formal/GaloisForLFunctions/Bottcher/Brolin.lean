@@ -152,6 +152,65 @@ theorem isRieszMeasureOf_greenFunctionDyn_of_isBrolinMeasure {c : ℂ} {μ : Mea
     IsRieszMeasureOf μ (greenFunctionDyn c) :=
   hμ.2.1
 
+/-! ## Green-height confinement for pullback atoms -/
+
+/-- The dynamical Green function satisfies the global quadratic scaling law,
+including points of the filled Julia set where both sides are zero. -/
+theorem greenFunctionDyn_quadratic (c z : ℂ) :
+    greenFunctionDyn c (quadratic c z) = 2 * greenFunctionDyn c z := by
+  by_cases hz : z ∈ filledJulia c
+  · have hfz : quadratic c z ∈ filledJulia c :=
+      (mem_filledJulia_iff_quadratic_mem c z).mp hz
+    rw [greenFunctionDyn, if_pos hfz, greenFunctionDyn, if_pos hz, mul_zero]
+  · have hfz : quadratic c z ∉ filledJulia c :=
+      fun hfz => hz ((mem_filledJulia_iff_quadratic_mem c z).mpr hfz)
+    rw [greenFunctionDyn, if_neg hfz, greenFunctionDyn, if_neg hz,
+      greenLimit_quadratic_basin hz]
+
+/-- Iterated Green-function scaling: `G_c(f_c^[n] z)=2^n G_c(z)` on all of
+`ℂ`. -/
+theorem greenFunctionDyn_iterate (c z : ℂ) (n : ℕ) :
+    greenFunctionDyn c ((quadratic c)^[n] z) =
+      (2 ^ n : ℝ) * greenFunctionDyn c z := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [Function.iterate_succ_apply', greenFunctionDyn_quadratic, ih, pow_succ]
+      ring
+
+/-- Green sublevel sets, used to express that finite pullback atoms collapse
+toward `K_c = {G_c=0}`. -/
+def greenSublevel (c : ℂ) (t : ℝ) : Set ℂ :=
+  {z | greenFunctionDyn c z ≤ t}
+
+theorem mem_greenSublevel_iff (c z : ℂ) (t : ℝ) :
+    z ∈ greenSublevel c t ↔ greenFunctionDyn c z ≤ t := Iff.rfl
+
+/-- Green sublevels are monotone in the level. -/
+theorem greenSublevel_mono (c : ℂ) {s t : ℝ} (hst : s ≤ t) :
+    greenSublevel c s ⊆ greenSublevel c t := by
+  intro z hz
+  exact le_trans hz hst
+
+/-- Green sublevels are closed because `G_c` is continuous. -/
+theorem isClosed_greenSublevel (c : ℂ) (t : ℝ) : IsClosed (greenSublevel c t) := by
+  exact isClosed_le (continuous_greenFunctionDyn c) continuous_const
+
+theorem measurableSet_greenSublevel (c : ℂ) (t : ℝ) :
+    MeasurableSet (greenSublevel c t) :=
+  (isClosed_greenSublevel c t).measurableSet
+
+/-- The zero Green sublevel is exactly the filled Julia set. -/
+theorem greenSublevel_zero_eq_filledJulia (c : ℂ) :
+    greenSublevel c 0 = filledJulia c := by
+  ext z
+  constructor
+  · intro hz
+    have hnonneg : 0 ≤ greenFunctionDyn c z := greenFunctionDyn_nonneg c z
+    exact (greenFunctionDyn_eq_zero_iff c z).mp (le_antisymm hz hnonneg)
+  · intro hz
+    rw [mem_greenSublevel_iff, (greenFunctionDyn_eq_zero_iff c z).mpr hz]
+
 /-! ## Finite pre-Brolin measures
 
 The Brolin measure is the weak limit of the normalized pullbacks of a point.
@@ -429,8 +488,45 @@ escape disk. -/
 theorem rootCountingMeasure_roots_quadraticPolyIterate_escapeDisk_compl
     (c : ℂ) (n : ℕ) :
     rootCountingMeasure (quadraticPolyIterate c n).roots (escapeDisk c)ᶜ = 0 :=
-  rootCountingMeasure_compl_eq_zero_of_forall_mem _ _ fun z hz =>
+  rootCountingMeasure_compl_eq_zero_of_forall_mem _ _ fun _ hz =>
     mem_escapeDisk_of_mem_roots_quadraticPolyIterate hz
+
+/-- A level-`n` zero-pullback atom has Green height exactly
+`2⁻ⁿ G_c(0)`. This is the finite dynamical reason the limiting Brolin mass is
+forced onto `{G_c=0}=K_c`. -/
+theorem greenFunctionDyn_eq_scaled_critical_of_mem_roots_quadraticPolyIterate
+    {c z : ℂ} {n : ℕ} (hz : z ∈ (quadraticPolyIterate c n).roots) :
+    greenFunctionDyn c z =
+      (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0 := by
+  have hzroot : (quadratic c)^[n] z = 0 := by
+    have hp : quadraticPolyIterate c n ≠ 0 := (quadraticPolyIterate_monic c n).ne_zero
+    have hisroot : (quadraticPolyIterate c n).IsRoot z := (Polynomial.mem_roots hp).mp hz
+    rwa [Polynomial.IsRoot.def, quadraticPolyIterate_eval] at hisroot
+  have hscale := greenFunctionDyn_iterate c z n
+  rw [hzroot] at hscale
+  have hpow : (2 ^ n : ℝ) ≠ 0 := by positivity
+  calc
+    greenFunctionDyn c z = (2 ^ n : ℝ)⁻¹ * ((2 ^ n : ℝ) * greenFunctionDyn c z) := by
+      field_simp [hpow]
+    _ = (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0 := by
+      rw [← hscale]
+
+/-- Every level-`n` zero-pullback atom lies in the Green sublevel
+`{G_c ≤ 2⁻ⁿG_c(0)}`. -/
+theorem mem_greenSublevel_scaled_critical_of_mem_roots_quadraticPolyIterate
+    {c z : ℂ} {n : ℕ} (hz : z ∈ (quadraticPolyIterate c n).roots) :
+    z ∈ greenSublevel c ((2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0) := by
+  rw [greenSublevel]
+  exact le_of_eq (greenFunctionDyn_eq_scaled_critical_of_mem_roots_quadraticPolyIterate hz)
+
+/-- The unnormalized level-`n` zero-pullback measure gives no mass above its
+exact Green height. -/
+theorem rootCountingMeasure_roots_greenSublevel_scaled_critical_compl
+    (c : ℂ) (n : ℕ) :
+    rootCountingMeasure (quadraticPolyIterate c n).roots
+        (greenSublevel c ((2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0))ᶜ = 0 :=
+  rootCountingMeasure_compl_eq_zero_of_forall_mem _ _ fun _ hz =>
+    mem_greenSublevel_scaled_critical_of_mem_roots_quadraticPolyIterate hz
 
 /-- Each finite pre-Brolin pullback measure is normalized to total mass `1`. -/
 theorem preBrolinMeasure_apply_univ (c : ℂ) (n : ℕ) :
@@ -453,6 +549,72 @@ theorem preBrolinMeasure_escapeDisk_compl (c : ℂ) (n : ℕ) :
   rw [preBrolinMeasure, Measure.smul_apply,
     rootCountingMeasure_roots_quadraticPolyIterate_escapeDisk_compl]
   simp
+
+/-- The finite normalized pullback measure gives no mass above the exact
+Green height `2⁻ⁿG_c(0)`. -/
+theorem preBrolinMeasure_greenSublevel_scaled_critical_compl
+    (c : ℂ) (n : ℕ) :
+    preBrolinMeasure c n
+        (greenSublevel c ((2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0))ᶜ = 0 := by
+  rw [preBrolinMeasure, Measure.smul_apply,
+    rootCountingMeasure_roots_greenSublevel_scaled_critical_compl]
+  simp
+
+/-- If a Green threshold lies above `2⁻ⁿG_c(0)`, then the level-`n`
+pre-Brolin measure is carried by that larger sublevel. -/
+theorem preBrolinMeasure_greenSublevel_compl_of_scaled_critical_le
+    (c : ℂ) (n : ℕ) {ε : ℝ}
+    (hε : (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0 ≤ ε) :
+    preBrolinMeasure c n (greenSublevel c ε)ᶜ = 0 := by
+  rw [preBrolinMeasure]
+  rw [Measure.smul_apply]
+  have hroot :
+      rootCountingMeasure (quadraticPolyIterate c n).roots (greenSublevel c ε)ᶜ = 0 :=
+    rootCountingMeasure_compl_eq_zero_of_forall_mem _ _ fun z hz => by
+      have hzsub :=
+        mem_greenSublevel_scaled_critical_of_mem_roots_quadraticPolyIterate
+          (c := c) (n := n) hz
+      rw [greenSublevel] at hzsub ⊢
+      exact le_trans hzsub hε
+  rw [hroot]
+  simp
+
+/-- The critical Green height scaled by `2⁻ⁿ` eventually lies below any
+positive threshold. -/
+theorem exists_forall_scaled_critical_le_of_pos (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ N : ℕ, ∀ n, N ≤ n →
+      (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0 ≤ ε := by
+  have hGnonneg : 0 ≤ greenFunctionDyn c 0 := greenFunctionDyn_nonneg c 0
+  by_cases hGzero : greenFunctionDyn c 0 = 0
+  · refine ⟨0, fun n _ => ?_⟩
+    rw [hGzero, mul_zero]
+    exact hε.le
+  · have hGpos : 0 < greenFunctionDyn c 0 :=
+      lt_of_le_of_ne hGnonneg (Ne.symm hGzero)
+    obtain ⟨N, hN⟩ :=
+      pow_unbounded_of_one_lt (greenFunctionDyn c 0 / ε)
+        (show (1 : ℝ) < 2 by norm_num)
+    refine ⟨N, fun n hn => ?_⟩
+    have hpowmono : (2 ^ N : ℝ) ≤ 2 ^ n :=
+      pow_le_pow_right₀ (by norm_num : (1 : ℝ) ≤ 2) hn
+    have hlt : greenFunctionDyn c 0 / ε < (2 ^ n : ℝ) := lt_of_lt_of_le hN hpowmono
+    have hpowpos : 0 < (2 ^ n : ℝ) := by positivity
+    have hGlt : greenFunctionDyn c 0 < ε * (2 ^ n : ℝ) := by
+      rw [mul_comm]
+      exact (div_lt_iff₀ hε).mp hlt
+    have hscaled_lt : (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0 < ε := by
+      rw [inv_mul_eq_div]
+      exact (div_lt_iff₀ hpowpos).mpr (by nlinarith)
+    exact hscaled_lt.le
+
+/-- For every positive Green threshold, all sufficiently deep finite
+pre-Brolin measures are carried by `{G_c ≤ ε}`. -/
+theorem eventually_preBrolinMeasure_greenSublevel_compl_of_pos
+    (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ n in atTop, preBrolinMeasure c n (greenSublevel c ε)ᶜ = 0 := by
+  obtain ⟨N, hN⟩ := exists_forall_scaled_critical_le_of_pos c hε
+  filter_upwards [eventually_ge_atTop N] with n hn
+  exact preBrolinMeasure_greenSublevel_compl_of_scaled_critical_le c n (hN n hn)
 
 /-- Counting measure on a subtype carrier, used to place the finite Brolin
 approximants on the compact escape disk before taking limits. -/
@@ -513,6 +675,23 @@ theorem integral_preBrolinMeasure_eq_integral_escapeDisk (c : ℂ) (n : ℕ)
   · exact measurable_subtype_coe.aemeasurable
   · exact φ.continuous.aestronglyMeasurable
 
+/-- Carrier form of finite Green-sublevel confinement. -/
+theorem preBrolinMeasureOnEscapeDisk_greenSublevel_preimage_compl_of_scaled_critical_le
+    (c : ℂ) (n : ℕ) {ε : ℝ}
+    (hε : (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0 ≤ ε) :
+    preBrolinMeasureOnEscapeDisk c n
+        ((fun z : escapeDisk c => (z : ℂ)) ⁻¹' (greenSublevel c ε)ᶜ) = 0 := by
+  have hset : MeasurableSet (greenSublevel c ε)ᶜ :=
+    (measurableSet_greenSublevel c ε).compl
+  have hmap := map_preBrolinMeasureOnEscapeDisk_subtype_coe c n
+  have h :=
+    congrArg (fun μ : Measure ℂ => μ (greenSublevel c ε)ᶜ) hmap
+  change (Measure.map (fun z : escapeDisk c => (z : ℂ))
+      (preBrolinMeasureOnEscapeDisk c n)) (greenSublevel c ε)ᶜ =
+        preBrolinMeasure c n (greenSublevel c ε)ᶜ at h
+  rw [Measure.map_apply measurable_subtype_coe hset] at h
+  rw [h, preBrolinMeasure_greenSublevel_compl_of_scaled_critical_le c n hε]
+
 /-- The finite positive functional represented by the normalized level-`n`
 zero-pullback measure. -/
 noncomputable def preBrolinRieszFunctional (c : ℂ) (n : ℕ) :
@@ -556,6 +735,31 @@ theorem preBrolinRieszFunctional_apply_escapeDisk (c : ℂ) (n : ℕ)
     preBrolinRieszFunctional c n φ =
       ∫ z : escapeDisk c, φ (z : ℂ) ∂preBrolinMeasureOnEscapeDisk c n := by
   rw [preBrolinRieszFunctional_apply, integral_preBrolinMeasure_eq_integral_escapeDisk]
+
+/-- If a test function vanishes on a Green sublevel that contains the level-`n`
+zero-pullback atoms, then the level-`n` finite Brolin functional vanishes on it. -/
+theorem preBrolinRieszFunctional_eq_zero_of_scaled_critical_le_of_eq_zero_on_greenSublevel
+    (c : ℂ) (n : ℕ) {ε : ℝ} (φ : C_c(ℂ, ℝ))
+    (hε : (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c 0 ≤ ε)
+    (hφ : ∀ z, z ∈ greenSublevel c ε → φ z = 0) :
+    preBrolinRieszFunctional c n φ = 0 := by
+  rw [preBrolinRieszFunctional_apply_root_average]
+  have hsum :
+      (((quadraticPolyIterate c n).roots.map fun z => φ z).sum) = 0 := by
+    have hmap :
+        ((quadraticPolyIterate c n).roots.map fun z => φ z) =
+          ((quadraticPolyIterate c n).roots.map fun _ => 0) := by
+      apply Multiset.map_congr rfl
+      intro z hz
+      exact hφ z (by
+        have hzsub :=
+          mem_greenSublevel_scaled_critical_of_mem_roots_quadraticPolyIterate
+            (c := c) (n := n) hz
+        rw [mem_greenSublevel_iff] at hzsub ⊢
+        exact le_trans hzsub hε)
+    rw [hmap]
+    simp
+  rw [hsum, mul_zero]
 
 /-- The subtype-carried finite pre-Brolin measure is normalized. -/
 theorem preBrolinMeasureOnEscapeDisk_apply_univ (c : ℂ) (n : ℕ) :
@@ -628,6 +832,57 @@ theorem preBrolinProbabilityOnEscapeDisk_subseq_tendsto (c : ℂ) :
       (fun k => preBrolinProbabilityOnEscapeDisk c (brolinLimitSubsequence c k))
       atTop (𝓝 (brolinLimitOnEscapeDisk c)) :=
   (Classical.choose_spec (brolinLimitOnEscapeDisk_spec c)).2
+
+/-- A strictly increasing self-map of `ℕ` eventually dominates the identity;
+in this concrete form it is enough for the Brolin extraction sequence. -/
+theorem le_brolinLimitSubsequence (c : ℂ) (k : ℕ) :
+    k ≤ brolinLimitSubsequence c k := by
+  have hψ := brolinLimitSubsequence_strictMono c
+  induction k with
+  | zero => exact Nat.zero_le _
+  | succ k ih =>
+      have hlt : brolinLimitSubsequence c k <
+          brolinLimitSubsequence c (k + 1) :=
+        hψ (Nat.lt_succ_self k)
+      exact Nat.succ_le_of_lt (lt_of_le_of_lt ih hlt)
+
+/-- Along the chosen compactness subsequence, every positive Green sublevel
+eventually carries the finite plane measures. -/
+theorem eventually_preBrolinMeasure_subseq_greenSublevel_compl_of_pos
+    (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ k in atTop,
+      preBrolinMeasure c (brolinLimitSubsequence c k) (greenSublevel c ε)ᶜ = 0 := by
+  obtain ⟨N, hN⟩ := exists_forall_scaled_critical_le_of_pos c hε
+  filter_upwards [eventually_ge_atTop N] with k hk
+  exact preBrolinMeasure_greenSublevel_compl_of_scaled_critical_le
+    c (brolinLimitSubsequence c k)
+    (hN (brolinLimitSubsequence c k) (le_trans hk (le_brolinLimitSubsequence c k)))
+
+/-- Along the chosen compactness subsequence, every positive Green sublevel
+eventually carries the finite compact-carrier measures. -/
+theorem eventually_preBrolinMeasureOnEscapeDisk_subseq_greenSublevel_preimage_compl_of_pos
+    (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ k in atTop,
+      preBrolinMeasureOnEscapeDisk c (brolinLimitSubsequence c k)
+        ((fun z : escapeDisk c => (z : ℂ)) ⁻¹' (greenSublevel c ε)ᶜ) = 0 := by
+  obtain ⟨N, hN⟩ := exists_forall_scaled_critical_le_of_pos c hε
+  filter_upwards [eventually_ge_atTop N] with k hk
+  exact preBrolinMeasureOnEscapeDisk_greenSublevel_preimage_compl_of_scaled_critical_le
+    c (brolinLimitSubsequence c k)
+    (hN (brolinLimitSubsequence c k) (le_trans hk (le_brolinLimitSubsequence c k)))
+
+/-- Along the chosen compactness subsequence, finite Riesz functionals vanish
+eventually on every test function that vanishes on a positive Green sublevel. -/
+theorem eventually_preBrolinRieszFunctional_subseq_eq_zero_of_eq_zero_on_greenSublevel
+    (c : ℂ) {ε : ℝ} (hε : 0 < ε) (φ : C_c(ℂ, ℝ))
+    (hφ : ∀ z, z ∈ greenSublevel c ε → φ z = 0) :
+    ∀ᶠ k in atTop,
+      preBrolinRieszFunctional c (brolinLimitSubsequence c k) φ = 0 := by
+  obtain ⟨N, hN⟩ := exists_forall_scaled_critical_le_of_pos c hε
+  filter_upwards [eventually_ge_atTop N] with k hk
+  exact preBrolinRieszFunctional_eq_zero_of_scaled_critical_le_of_eq_zero_on_greenSublevel
+    c (brolinLimitSubsequence c k) φ
+    (hN (brolinLimitSubsequence c k) (le_trans hk (le_brolinLimitSubsequence c k))) hφ
 
 /-- The limiting Brolin measure on the plane, obtained by pushing the compact
 escape-disk limit forward along the subtype inclusion. -/
@@ -767,6 +1022,48 @@ theorem roots_card_quadraticPolyIterate_sub_C (c a : ℂ) (n : ℕ) :
     (quadraticPolyIterate c n - Polynomial.C a).roots.card = 2 ^ n := by
   rw [IsAlgClosed.card_roots_eq_natDegree, Polynomial.natDegree_sub_C,
     quadraticPolyIterate_natDegree]
+
+/-- A level-`n` pullback atom of an arbitrary target `a` has Green height
+`2⁻ⁿG_c(a)`. -/
+theorem greenFunctionDyn_eq_scaled_target_of_mem_roots_quadraticPolyIterate_sub_C
+    {c a z : ℂ} {n : ℕ}
+    (hz : z ∈ (quadraticPolyIterate c n - Polynomial.C a).roots) :
+    greenFunctionDyn c z =
+      (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c a := by
+  have hzroot : (quadratic c)^[n] z = a := by
+    have hp : quadraticPolyIterate c n - Polynomial.C a ≠ 0 :=
+      (quadraticPolyIterate_sub_C_monic c a n).ne_zero
+    have hisroot : (quadraticPolyIterate c n - Polynomial.C a).IsRoot z :=
+      (Polynomial.mem_roots hp).mp hz
+    rwa [Polynomial.IsRoot.def, Polynomial.eval_sub, Polynomial.eval_C,
+      quadraticPolyIterate_eval, sub_eq_zero] at hisroot
+  have hscale := greenFunctionDyn_iterate c z n
+  rw [hzroot] at hscale
+  have hpow : (2 ^ n : ℝ) ≠ 0 := by positivity
+  calc
+    greenFunctionDyn c z = (2 ^ n : ℝ)⁻¹ * ((2 ^ n : ℝ) * greenFunctionDyn c z) := by
+      field_simp [hpow]
+    _ = (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c a := by
+      rw [← hscale]
+
+/-- Every level-`n` pullback atom of `a` lies in the corresponding Green
+sublevel. -/
+theorem mem_greenSublevel_scaled_target_of_mem_roots_quadraticPolyIterate_sub_C
+    {c a z : ℂ} {n : ℕ}
+    (hz : z ∈ (quadraticPolyIterate c n - Polynomial.C a).roots) :
+    z ∈ greenSublevel c ((2 ^ n : ℝ)⁻¹ * greenFunctionDyn c a) := by
+  rw [greenSublevel]
+  exact le_of_eq
+    (greenFunctionDyn_eq_scaled_target_of_mem_roots_quadraticPolyIterate_sub_C hz)
+
+/-- The unnormalized arbitrary-target pullback measure gives no mass above the
+exact Green height `2⁻ⁿG_c(a)`. -/
+theorem rootCountingMeasure_roots_sub_C_greenSublevel_scaled_target_compl
+    (c a : ℂ) (n : ℕ) :
+    rootCountingMeasure (quadraticPolyIterate c n - Polynomial.C a).roots
+        (greenSublevel c ((2 ^ n : ℝ)⁻¹ * greenFunctionDyn c a))ᶜ = 0 :=
+  rootCountingMeasure_compl_eq_zero_of_forall_mem _ _ fun _ hz =>
+    mem_greenSublevel_scaled_target_of_mem_roots_quadraticPolyIterate_sub_C hz
 
 /-- One-step finite balancedness at the root-multiset level: the two roots of
 `f_c(X) = a`, counted with multiplicity, both push forward to `a`. -/
@@ -920,6 +1217,35 @@ theorem preBrolinMeasureAt_apply_univ (c a : ℂ) (n : ℕ) :
 instance instIsProbabilityMeasure_preBrolinMeasureAt (c a : ℂ) (n : ℕ) :
     IsProbabilityMeasure (preBrolinMeasureAt c a n) where
   measure_univ := preBrolinMeasureAt_apply_univ c a n
+
+/-- The finite normalized arbitrary-target pullback measure gives no mass above
+the exact Green height `2⁻ⁿG_c(a)`. -/
+theorem preBrolinMeasureAt_greenSublevel_scaled_target_compl
+    (c a : ℂ) (n : ℕ) :
+    preBrolinMeasureAt c a n
+        (greenSublevel c ((2 ^ n : ℝ)⁻¹ * greenFunctionDyn c a))ᶜ = 0 := by
+  rw [preBrolinMeasureAt, Measure.smul_apply,
+    rootCountingMeasure_roots_sub_C_greenSublevel_scaled_target_compl]
+  simp
+
+/-- If a Green threshold lies above `2⁻ⁿG_c(a)`, then the level-`n`
+arbitrary-target pullback measure is carried by that larger sublevel. -/
+theorem preBrolinMeasureAt_greenSublevel_compl_of_scaled_target_le
+    (c a : ℂ) (n : ℕ) {ε : ℝ}
+    (hε : (2 ^ n : ℝ)⁻¹ * greenFunctionDyn c a ≤ ε) :
+    preBrolinMeasureAt c a n (greenSublevel c ε)ᶜ = 0 := by
+  rw [preBrolinMeasureAt, Measure.smul_apply]
+  have hroot :
+      rootCountingMeasure (quadraticPolyIterate c n - Polynomial.C a).roots
+          (greenSublevel c ε)ᶜ = 0 :=
+    rootCountingMeasure_compl_eq_zero_of_forall_mem _ _ fun z hz => by
+      have hzsub :=
+        mem_greenSublevel_scaled_target_of_mem_roots_quadraticPolyIterate_sub_C
+          (c := c) (a := a) (n := n) hz
+      rw [mem_greenSublevel_iff] at hzsub ⊢
+      exact le_trans hzsub hε
+  rw [hroot]
+  simp
 
 /-- Arbitrary-target finite GAP-A Cauchy-transform identity: the normalized
 pullback measure has Cauchy transform equal to the normalized logarithmic
