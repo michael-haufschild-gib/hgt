@@ -2183,3 +2183,29 @@ REMAINING (scoped): (1) `D₆` holomorphic on ℍ — needs the SECOND τ-deriva
 not 2nd τ-deriv). (2) `D₆² ∈ ModularForm 𝒮ℒ 12` (slash via closure over S,T sign-covariance + cusp
 bound). (3) `D₆ = O(q²)` at i∞ (leading-coeff vanishing — theta q-expansions to order 2). (4)
 `sturm_bound_levelOne` (wt 12 bound = 1) ⟹ D₆²=0 ⟹ D₆=0 ⟹ ThetaWronskian23 ⟹ λ'≠0 (local biholo).
+
+### ThetaWronskian23 reduced to a single level-one input `P ≡ 0` (2026-06-26, cont.)
+
+ThetaWronskian.lean now (all axiom-clean) also has:
+- `differentiableOn_thetaWronskianDefect` — D₆ holomorphic on ℍ (NO θ'' needed: deriv of a function
+  holomorphic on an open set is holomorphic — `DifferentiableOn.analyticOnNhd.deriv.differentiableOn`).
+- `thetaProductPow4_add_one`/`_S` — `(θ₂θ₃θ₄)⁴` sign-covariance (`−1`, `−τ⁶`), matching D₆.
+- `thetaWronskianRatio` P := D₆/(θ₂θ₃θ₄)⁴ with `_add_one`/`_S` invariance (sign factors cancel) ⟹ P is
+  weight-0 SL(2,ℤ)-INVARIANT and holomorphic on ℍ — a level-one modular FUNCTION.
+- `thetaWronskian23_of_ratio_zero` — `P ≡ 0 ⟹ ThetaWronskian23`.
+
+**ThetaWronskian23 is now reduced to the single clean input `P ≡ 0`.** Final stretch (no Γ(2) needed):
+(1) P as `ModularForm 𝒮ℒ 0` (slash via `slash_action_generators_SL2Z` from the proven S,T invariance;
+holo' = MDiff P from D₆ holo + θ₂θ₃θ₄≠0; bdd_at_cusps). (2) cusp limit `P → 0` at i∞ (D₆=O(q²),
+(θ₂θ₃θ₄)⁴=O(q^{1/2}) ⟹ P=O(q^{3/2})→0) — the remaining analytic computation. (3)
+`ModularFormClass.levelOne_weight_zero_const` ⟹ P=const, =0 by the limit ⟹ ThetaWronskian23 ⟹ λ'≠0.
+
+## 2026-06-26 — Far-field surjectivity onto a deep value annulus (FarFieldSurjective.lean, axiom-clean)
+- `exists_far_preimage` — for `‖w‖²` beating the `‖c‖`-scaled constants, `φ_c(z)=w` has a solution with
+  `‖z‖ ≥ ‖w‖/2`. Banach fixed point on `closedBall w (‖w‖/2)` for `T(z)=w·exp(−S(z))` (contraction const
+  `384‖c‖/‖w‖²<1`), MVT (`Convex.lipschitzOnWith_of_nnnorm_hasDerivWithin_le`) for the Lipschitz bound.
+  ⟹ `φ_c` maps the far field ONTO a deep, ROTATION-INVARIANT annulus `{|w|>R'}`. With L2 (`injOn`) + L3
+  (`ψ`) this completes the far-field biholomorphism AND makes the deck map `g = ψ(ζ·φ_c)` well-defined
+  (`ζ·φ_c(z)` lands in the annulus image, where `ψ` is defined). The far-field deck map exists; the
+  remaining L5 work is the inward continuation past the critical-value level to the cylinders + `φ_{c₂}`
+  fixing (L1) + germ assembly.

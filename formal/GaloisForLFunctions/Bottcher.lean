@@ -94,6 +94,7 @@ import GaloisForLFunctions.Bottcher.GlobalBasinBranch
 import GaloisForLFunctions.Bottcher.CoverDeckScaling
 import GaloisForLFunctions.Bottcher.Univalence
 import GaloisForLFunctions.Bottcher.FarFieldUnivalence
+import GaloisForLFunctions.Bottcher.FarFieldSurjective
 import GaloisForLFunctions.Bottcher.QuarticSlash
 import GaloisForLFunctions.Bottcher.QuarticModularForm
 import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional

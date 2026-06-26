@@ -14,6 +14,7 @@ data exploits: a deck transformation of `f_{c₁}^[n]` scales `φ_{c₁}` by a p
 import GaloisForLFunctions.Bottcher.LiftExists
 import GaloisForLFunctions.Bottcher.MeromorphicField
 import GaloisForLFunctions.Bottcher.FarFieldUnivalence
+import GaloisForLFunctions.Bottcher.FarFieldSurjective
 
 open Complex Set Filter Topology
 
@@ -97,5 +98,28 @@ theorem iterate_eq_of_bottcherCoord_scaling {c : ℂ} {R : ℝ} (n : ℕ) {ζ z 
   have hz'n : R < ‖(quadratic c)^[n] z'‖ :=
     lt_of_lt_of_le hz' (norm_iterate_ge (mem_escapeOpen_regime hz'E).1 (mem_escapeOpen_regime hz'E).2 n)
   exact bottcherCoord_injOn_far hR1 hR2 hz'n hzn hval
+
+/-- **Far-field deck image (the pointwise deck map).** For a `2ⁿ`-th root of unity `ζ` and a far-field
+`z` whose Böttcher value is deep enough, there is a far-field `z'` with `φ_c z' = ζ·φ_c z` AND
+`f_c^[n] z' = f_c^[n] z` — the deck partner of `z` under `μ_{2ⁿ}`. Assembles far-field surjectivity
+(`exists_far_preimage`: the preimage of `ζ·φ_c z`, which has the same modulus as `φ_c z` since `‖ζ‖=1`)
+with the deck condition (`iterate_eq_of_bottcherCoord_scaling`). This realizes the value of the deck map
+`g(z) = ψ(ζ·φ_c z)`; with `ψ` analytic (L3) it is the analytic deck self-map of the far field — the seed
+continued inward to the cylinders for `hliftF`. -/
+theorem exists_deck_image {c : ℂ} {R : ℝ} (n : ℕ) {ζ z : ℂ}
+    (hζ : ζ ^ (2 ^ n) = 1) (hζ1 : ‖ζ‖ = 1)
+    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2)
+    (hz : R < ‖z‖)
+    (hb1 : 768 * ‖c‖ + 64 < ‖bottcherCoord c z‖ ^ 2)
+    (hb2 : 8 * max 2 ‖c‖ < ‖bottcherCoord c z‖)
+    (hb3 : 2 * R < ‖bottcherCoord c z‖) :
+    ∃ z', R < ‖z'‖ ∧ bottcherCoord c z' = ζ * bottcherCoord c z ∧
+          (quadratic c)^[n] z' = (quadratic c)^[n] z := by
+  have hnorm : ‖ζ * bottcherCoord c z‖ = ‖bottcherCoord c z‖ := by rw [norm_mul, hζ1, one_mul]
+  obtain ⟨z', hz'ge, hz'eq⟩ := exists_far_preimage (c := c) (w := ζ * bottcherCoord c z)
+    (by rw [hnorm]; exact hb1) (by rw [hnorm]; exact hb2)
+  have hz'far : R < ‖z'‖ := by
+    have h := hz'ge; rw [hnorm] at h; linarith [hb3]
+  exact ⟨z', hz'far, hz'eq, iterate_eq_of_bottcherCoord_scaling n hR1 hR2 hz hz'far hζ hz'eq⟩
 
 end Bottcher

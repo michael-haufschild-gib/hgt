@@ -311,4 +311,42 @@ theorem thetaProductPow4_S {τ : ℂ} (hτ : τ ≠ 0) :
       ha, hb]
   ring
 
+/-! ### The `SL(2,ℤ)`-invariant ratio `P = D₆ / (θ₂θ₃θ₄)⁴`. -/
+
+/-- **`P := D₆ / (θ₂θ₃θ₄)⁴`** — weight-0, `SL(2,ℤ)`-invariant (the `−1` and `−τ⁶` sign factors of `D₆`
+and `(θ₂θ₃θ₄)⁴` cancel in the ratio). A holomorphic level-one modular *function*; `ThetaWronskian23`
+reduces to `P ≡ 0`, which `ModularFormClass.levelOne_weight_zero_const` + the cusp limit will give. -/
+noncomputable def thetaWronskianRatio (τ : ℂ) : ℂ :=
+  thetaWronskianDefect τ / (thetaTwo τ * thetaThree τ * thetaFour τ) ^ 4
+
+/-- `P(τ+1) = P(τ)`. -/
+theorem thetaWronskianRatio_add_one {τ : ℂ} (hτ : 0 < τ.im) :
+    thetaWronskianRatio (τ + 1) = thetaWronskianRatio τ := by
+  unfold thetaWronskianRatio
+  rw [thetaWronskianDefect_add_one hτ, thetaProductPow4_add_one, neg_div_neg_eq]
+
+/-- `P(−1/τ) = P(τ)`. -/
+theorem thetaWronskianRatio_S {τ : ℂ} (hτ : 0 < τ.im) :
+    thetaWronskianRatio (-1 / τ) = thetaWronskianRatio τ := by
+  have hτ0 : τ ≠ 0 := fun h => by simp [h] at hτ
+  unfold thetaWronskianRatio
+  rw [thetaWronskianDefect_S hτ, thetaProductPow4_S hτ0,
+      mul_div_mul_left _ _ (neg_ne_zero.mpr (pow_ne_zero 6 hτ0))]
+
+/-- `D₆ = P · (θ₂θ₃θ₄)⁴`: recover the defect from the ratio (used to transfer `P ≡ 0` to `D₆ ≡ 0`). -/
+theorem thetaWronskianDefect_eq_ratio_mul {τ : ℂ} (hτ : 0 < τ.im) :
+    thetaWronskianDefect τ = thetaWronskianRatio τ * (thetaTwo τ * thetaThree τ * thetaFour τ) ^ 4 := by
+  unfold thetaWronskianRatio
+  rw [div_mul_cancel₀ _ (pow_ne_zero 4 (thetaProduct_ne_zero_of_im_pos hτ))]
+
+/-- **Final reduction: `P ≡ 0 ⟹ ThetaWronskian23`.** `P` is the holomorphic `SL(2,ℤ)`-invariant
+weight-0 ratio; the only remaining input to `ThetaWronskian23` (hence to `λ' ≠ 0`) is `P ≡ 0`, which
+follows from `P` being a level-one modular function (constant by `levelOne_weight_zero_const`) with
+`P → 0` at `i∞`. -/
+theorem thetaWronskian23_of_ratio_zero
+    (hP : ∀ τ : ℂ, 0 < τ.im → thetaWronskianRatio τ = 0) : ThetaWronskian23 := by
+  apply thetaWronskian23_of_defect
+  intro τ hτ
+  rw [thetaWronskianDefect_eq_ratio_mul hτ, hP τ hτ, zero_mul]
+
 end Bottcher
