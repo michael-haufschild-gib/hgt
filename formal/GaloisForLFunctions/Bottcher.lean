@@ -91,3 +91,4 @@ import GaloisForLFunctions.Bottcher.ModularLambdaModular
 import GaloisForLFunctions.Bottcher.Gamma2Generators
 import GaloisForLFunctions.Bottcher.GreenLogDeriv
 import GaloisForLFunctions.Bottcher.QuarticSlash
+import GaloisForLFunctions.Bottcher.QuarticModularForm

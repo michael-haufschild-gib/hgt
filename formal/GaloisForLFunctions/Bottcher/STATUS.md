@@ -1953,3 +1953,46 @@ Remaining for connected `hGtr` (in dependency order):
    `K_c`-side is a dendrite/tree). Deep topology.
 3. Harmonic-conjugate identity `Re F = G_c` from `F' = ω = 2∂G_c` (Cauchy–Riemann bookkeeping).
 Separately: `hrig` (Eremenko–van Strien rigidity, `TranscendentalOverAdjoin`) is an independent major theorem.
+
+### Post-Poincaré path now fully verified (the modulus bridge), 2026-06-26
+
+Added to `GreenLogDeriv.lean` (axiom-clean):
+- `eqOn_const_of_hasFDerivAt_zero` — a real function with zero `fderiv` on an open preconnected set is
+  constant (clopen level-set argument).
+- `re_primitive_sub_green_const` — **harmonic-conjugate identity**: any holomorphic primitive `F` of
+  `ω = greenLogDeriv c` on a preconnected basin set has `Re F − G_c` constant (Cauchy–Riemann:
+  `F' = ω = 2∂G_c` ⟹ `∇(Re F) = ∇G_c`).
+
+Consequence: the ENTIRE post-Poincaré path is now verified. Given `F` with `F' = ω` on a simply-connected
+basin region (anchored to `escapeOpen` where `F = log φ_c`, fixing the constant to 0): `Re F = G_c` ⟹
+`‖exp F‖ = exp(Re F) = exp G_c` (`Complex.norm_exp`) — the modulus `hβmod`; and `β := exp F` equals `φ_c`,
+satisfying the relation. Feeds `dendrite_branch_limit` ⟹ `false_of_basin_branch_dendrite` ⟹ `hGtr`.
+
+So the connected case is reduced to ONE Lean theorem — the **Poincaré lemma** (task #84) — plus the
+topological inputs `IsSimplyConnected (ball z₀ r ∩ basin)` (#83) and the deep-exterior anchor. `hDisc` reuses
+the same `ω`-primitive on the 2ⁿ-cover. `hrig` (E–vS) stays independent.
+
+---
+
+## Poincaré lemma CONSTRUCTED for chain-coverable regions + modulus spread, 2026-06-26
+
+Found that mathlib's `CurveIntegral/Poincare.lean` actually has the **convex** Poincaré lemma
+(`Convex.exists_forall_hasDerivWithinAt`) and C²-homotopy invariance (more than the WIP comment implied).
+Built on top of it, in `GreenLogDeriv.lean` (all axiom-clean; module builds, 8508 jobs):
+
+- `primitive_sub_const` — two primitives of a form differ by a constant (H¹-vanishing step).
+- `exists_primitive_glue` — atomic glue of two local primitives over a connected overlap.
+- `exists_primitive_glue_chain` — iterate → primitive of any holomorphic form on a chain-coverable region.
+- `exists_primitive_greenLogDeriv_chain` — specialize to `ω` + basin balls (local primitives from mathlib's
+  `DifferentiableOn.isExactOn_ball`): primitive of `ω` on any basin ball-chain with connected prefix-overlaps.
+- `norm_eq_exp_green_of_eqOn_open` — **harmonic identity modulus spread**: `‖g‖ = exp G_c` on a small open
+  `C` propagates to the whole connected basin region (`AnalyticAt.harmonicAt_log_norm` + `HarmonicAt.analyticAt`
+  + real-analytic identity). So the chain need only reach ONE spot near `z₀`; the modulus then spreads in 2-D.
+
+Net: the connected-case blocker is no longer an abstract open mathlib theorem. It is reduced to a **concrete
+point-set-topology construction**: a finite chain of basin balls from `escapeOpen` to a spot near a Julia
+point `z₀`, with connected prefix-overlaps (a simple arc in the open connected basin, cover by small balls
+with non-adjacent balls disjoint ⟹ prefix-overlap = consecutive lens = connected). Then
+`exists_primitive_greenLogDeriv_chain` → `exists_fullBottcherBranch_of_primitive` → `β`, modulus spread to
+`ball z₀ r ∩ basin`, `dendrite_branch_limit` → `false_of_basin_branch_dendrite`. `hDisc` reuses the same
+primitive machinery on the 2ⁿ-cover. Remaining: the arc/cover construction (elementary topology) + `hrig` (E–vS).
