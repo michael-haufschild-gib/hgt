@@ -187,4 +187,128 @@ theorem thetaFour_pow4_S {τ : ℂ} (hτ : τ ≠ 0) :
   rw [show (1 : ℂ) / (I / τ) ^ 2 = - τ ^ 2 by
     rw [div_pow, Complex.I_sq, one_div, neg_div, inv_neg, one_div, inv_inv]]
 
+private theorem im_neg_inv_pos {τ : ℂ} (hτ : 0 < τ.im) : 0 < (-1 / τ).im := by
+  have hz0 : τ ≠ 0 := by rintro rfl; simp at hτ
+  have hn : 0 < Complex.normSq τ := Complex.normSq_pos.mpr hz0
+  rw [neg_div, Complex.neg_im, Complex.div_im]
+  simp only [Complex.one_im, Complex.one_re, zero_mul, zero_div, one_mul, zero_sub, neg_neg]
+  exact div_pos hτ hn
+
+/-- `S`-substitution transfer of derivative: if `g(−1/t) = h(t)` near `τ`, then `g'(−1/τ)·(1/τ²) = h'(τ)`
+(chain rule for `t ↦ −1/t`, whose derivative is `1/τ²`). -/
+private theorem deriv_S_shift {g h : ℂ → ℂ} {τ : ℂ} (hτ : τ ≠ 0)
+    (hg : DifferentiableAt ℂ g (-1 / τ)) (hh : DifferentiableAt ℂ h τ)
+    (hid : (fun t => g (-1 / t)) =ᶠ[nhds τ] h) :
+    deriv g (-1 / τ) * (1 / τ ^ 2) = deriv h τ := by
+  have hinv : HasDerivAt (fun t : ℂ => -1 / t) (1 / τ ^ 2) τ := by
+    simpa [neg_div, one_div] using (hasDerivAt_inv hτ).neg
+  have hcomp : HasDerivAt (fun t => g (-1 / t)) (deriv g (-1 / τ) * (1 / τ ^ 2)) τ :=
+    hg.hasDerivAt.comp τ hinv
+  exact (hcomp.congr_of_eventuallyEq hid.symm).unique hh.hasDerivAt
+
+/-- `(θ₂⁴)'(−1/τ) = −2τ³θ₄⁴ − τ⁴(θ₄⁴)'`. -/
+theorem deriv_thetaTwo_pow4_S {τ : ℂ} (hτ : 0 < τ.im) :
+    deriv (fun t => thetaTwo t ^ 4) (-1 / τ)
+      = -2 * τ ^ 3 * thetaFour τ ^ 4 - τ ^ 4 * deriv (fun t => thetaFour t ^ 4) τ := by
+  have hτ0 : τ ≠ 0 := fun h => by simp [h] at hτ
+  have hHder : HasDerivAt (fun t => -t ^ 2 * thetaFour t ^ 4)
+      (-(2 * τ) * thetaFour τ ^ 4 + -τ ^ 2 * (4 * thetaFour τ ^ 3 * deriv thetaFour τ)) τ := by
+    have h1 : HasDerivAt (fun t : ℂ => -t ^ 2) (-(2 * τ)) τ := by
+      simpa using (hasDerivAt_pow 2 τ).neg
+    exact h1.mul (hasDerivAt_thetaFour_pow4 hτ)
+  have hid : ∀ᶠ t in nhds τ, thetaTwo (-1 / t) ^ 4 = (fun t => -t ^ 2 * thetaFour t ^ 4) t := by
+    filter_upwards [isOpen_ne.mem_nhds hτ0] with t ht using thetaTwo_pow4_S ht
+  have hshift := deriv_S_shift hτ0 (hasDerivAt_thetaTwo_pow4 (im_neg_inv_pos hτ)).differentiableAt
+    hHder.differentiableAt hid
+  rw [hHder.deriv, mul_one_div, div_eq_iff (pow_ne_zero 2 hτ0)] at hshift
+  rw [deriv_thetaFour_pow4 hτ]
+  linear_combination hshift
+
+/-- `(θ₃⁴)'(−1/τ) = −2τ³θ₃⁴ − τ⁴(θ₃⁴)'`. -/
+theorem deriv_thetaThree_pow4_S {τ : ℂ} (hτ : 0 < τ.im) :
+    deriv (fun t => thetaThree t ^ 4) (-1 / τ)
+      = -2 * τ ^ 3 * thetaThree τ ^ 4 - τ ^ 4 * deriv (fun t => thetaThree t ^ 4) τ := by
+  have hτ0 : τ ≠ 0 := fun h => by simp [h] at hτ
+  have hHder : HasDerivAt (fun t => -t ^ 2 * thetaThree t ^ 4)
+      (-(2 * τ) * thetaThree τ ^ 4 + -τ ^ 2 * (4 * thetaThree τ ^ 3 * deriv thetaThree τ)) τ := by
+    have h1 : HasDerivAt (fun t : ℂ => -t ^ 2) (-(2 * τ)) τ := by
+      simpa using (hasDerivAt_pow 2 τ).neg
+    exact h1.mul (hasDerivAt_thetaThree_pow4 hτ)
+  have hid : ∀ᶠ t in nhds τ, thetaThree (-1 / t) ^ 4 = (fun t => -t ^ 2 * thetaThree t ^ 4) t := by
+    filter_upwards [isOpen_ne.mem_nhds hτ0] with t ht using thetaThree_pow4_S ht
+  have hshift := deriv_S_shift hτ0 (hasDerivAt_thetaThree_pow4 (im_neg_inv_pos hτ)).differentiableAt
+    hHder.differentiableAt hid
+  rw [hHder.deriv, mul_one_div, div_eq_iff (pow_ne_zero 2 hτ0)] at hshift
+  rw [deriv_thetaThree_pow4 hτ]
+  linear_combination hshift
+
+/-- Derivative-Jacobi in `4th`-power-derivative form: `(θ₃⁴)' = (θ₂⁴)' + (θ₄⁴)'`. -/
+theorem deriv_pow4_jacobi' {τ : ℂ} (hτ : 0 < τ.im) :
+    deriv (fun t => thetaThree t ^ 4) τ
+      = deriv (fun t => thetaTwo t ^ 4) τ + deriv (fun t => thetaFour t ^ 4) τ := by
+  rw [deriv_thetaThree_pow4 hτ, deriv_thetaTwo_pow4 hτ, deriv_thetaFour_pow4 hτ]
+  exact deriv_pow4_jacobi hτ
+
+/-- **`D₆(−1/τ) = −τ⁶·D₆(τ)`** (the `S`-anti-invariance). With `D₆∣[6]T = −D₆`
+(`thetaWronskianDefect_add_one`), this gives `D₆∣[6]γ = ±D₆` for all `γ ∈ SL(2,ℤ)`, so `D₆²` descends
+to `ModularForm 𝒮ℒ 12`. -/
+theorem thetaWronskianDefect_S {τ : ℂ} (hτ : 0 < τ.im) :
+    thetaWronskianDefect (-1 / τ) = - τ ^ 6 * thetaWronskianDefect τ := by
+  have hτ0 : τ ≠ 0 := fun h => by simp [h] at hτ
+  simp only [thetaWronskianDefect]
+  rw [deriv_thetaTwo_pow4_S hτ, deriv_thetaThree_pow4_S hτ,
+      thetaThree_pow4_S hτ0, thetaTwo_pow4_S hτ0, thetaFour_pow4_S hτ0]
+  linear_combination (τ ^ 6 * deriv (fun t => thetaThree t ^ 4) τ) * pow4_jacobi hτ
+    - (τ ^ 6 * thetaThree τ ^ 4) * deriv_pow4_jacobi' hτ
+
+/-! ### Holomorphy of `D₆` on `ℍ`. -/
+
+/-- **`D₆` is holomorphic on `ℍ`.** The derivative terms `(θᵢ⁴)'` are holomorphic because `θᵢ⁴` is
+holomorphic on the open set `ℍ` (the derivative of a function holomorphic on an open set is itself
+holomorphic — no second-derivative computation needed). -/
+theorem differentiableOn_thetaWronskianDefect :
+    DifferentiableOn ℂ thetaWronskianDefect {z : ℂ | 0 < z.im} := by
+  set U : Set ℂ := {z : ℂ | 0 < z.im} with hU
+  have hUo : IsOpen U := isOpen_lt continuous_const Complex.continuous_im
+  have h2 : DifferentiableOn ℂ (fun t => thetaTwo t ^ 4) U :=
+    fun z hz => (hasDerivAt_thetaTwo_pow4 hz).differentiableAt.differentiableWithinAt
+  have h3 : DifferentiableOn ℂ (fun t => thetaThree t ^ 4) U :=
+    fun z hz => (hasDerivAt_thetaThree_pow4 hz).differentiableAt.differentiableWithinAt
+  have h4 : DifferentiableOn ℂ (fun t => thetaFour t ^ 4) U :=
+    fun z hz => (hasDerivAt_thetaFour_pow4 hz).differentiableAt.differentiableWithinAt
+  have hd2 : DifferentiableOn ℂ (deriv (fun t => thetaTwo t ^ 4)) U :=
+    (h2.analyticOnNhd hUo).deriv.differentiableOn
+  have hd3 : DifferentiableOn ℂ (deriv (fun t => thetaThree t ^ 4)) U :=
+    (h3.analyticOnNhd hUo).deriv.differentiableOn
+  unfold thetaWronskianDefect
+  exact ((hd2.mul h3).sub (h2.mul hd3)).sub
+    ((differentiableOn_const ((π : ℂ) * I)).mul ((h2.mul h3).mul h4))
+
+/-! ### Sign-covariance of the weight-6 denominator `(θ₂θ₃θ₄)⁴`. -/
+
+/-- `(θ₂θ₃θ₄)⁴(τ+1) = −(θ₂θ₃θ₄)⁴(τ)`. -/
+theorem thetaProductPow4_add_one (τ : ℂ) :
+    (thetaTwo (τ + 1) * thetaThree (τ + 1) * thetaFour (τ + 1)) ^ 4
+      = -(thetaTwo τ * thetaThree τ * thetaFour τ) ^ 4 := by
+  rw [thetaProduct_add_one, mul_pow, ← Complex.exp_nat_mul,
+      show ((4 : ℕ) : ℂ) * ((Real.pi : ℂ) * I / 4) = (Real.pi : ℂ) * I by push_cast; ring,
+      Complex.exp_pi_mul_I]
+  ring
+
+/-- `(θ₂θ₃θ₄)⁴(−1/τ) = −τ⁶·(θ₂θ₃θ₄)⁴(τ)` — the automorphy factor `M⁴ = −τ⁶`, matching `D₆`. -/
+theorem thetaProductPow4_S {τ : ℂ} (hτ : τ ≠ 0) :
+    (thetaTwo (-1 / τ) * thetaThree (-1 / τ) * thetaFour (-1 / τ)) ^ 4
+      = -τ ^ 6 * (thetaTwo τ * thetaThree τ * thetaFour τ) ^ 4 := by
+  have ha : (1 / (I / τ) ^ (1/2 : ℂ)) ^ 4 = -τ ^ 2 := by
+    rw [div_pow, one_pow, cpow_half_pow4 (div_ne_zero Complex.I_ne_zero hτ), div_pow, Complex.I_sq,
+        one_div, neg_div, inv_neg, one_div, inv_inv]
+  have hb : ((-I * τ) ^ (1/2 : ℂ)) ^ 4 = -τ ^ 2 := by
+    rw [cpow_half_pow4 (mul_ne_zero (by simp) hτ), mul_pow, neg_sq, Complex.I_sq]; ring
+  rw [thetaProduct_S τ hτ, mul_pow,
+      show (1 / (I / τ) ^ (1/2 : ℂ) * (-I * τ) ^ (1/2 : ℂ) * (1 / (I / τ) ^ (1/2 : ℂ))) ^ 4
+        = (1 / (I / τ) ^ (1/2 : ℂ)) ^ 4 * ((-I * τ) ^ (1/2 : ℂ)) ^ 4
+          * (1 / (I / τ) ^ (1/2 : ℂ)) ^ 4 by ring,
+      ha, hb]
+  ring
+
 end Bottcher

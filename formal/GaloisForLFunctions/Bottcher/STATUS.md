@@ -2167,3 +2167,19 @@ REMAINING for hDisc (the crux, L5): continue `ψ` inward to the depth-n cylinder
 deck transformations); the deep cylinder loop fixes `φ_{c₂}` (L1 asymmetry); assemble the pointwise deck
 map `g` (then `compTendsto_germ_scaling`/`_fixed` give `hliftF`/`hliftG`) and instantiate
 `q62_independence_disconnected_of_lifts`.
+
+### ThetaWronskian23 — weight-6 route: D₆ FULL SL(2,ℤ) sign-covariance PROVEN (2026-06-26)
+
+New file `ThetaWronskian.lean` (all axiom-clean). `D₆ := (θ₂⁴)'θ₃⁴ − θ₂⁴(θ₃⁴)' − πi·θ₂⁴θ₃⁴θ₄⁴`:
+- `thetaWronskian23_of_defect` — `D₆ ≡ 0 ⟹ ThetaWronskian23` (algebraic reduction, ÷4θ₂³θ₃³). DONE.
+- `thetaWronskianDefect_add_one` — `D₆(τ+1) = −D₆(τ)` (T-anti-invariance). DONE.
+- `thetaWronskianDefect_S` — `D₆(−1/τ) = −τ⁶·D₆(τ)` (S-anti-invariance, weight-6 slash). DONE.
+- Supporting: 4th-power derivs, T/S value-transforms of θᵢ⁴, deriv-shift helpers (T add-one + S −1/τ
+  chain rule), `pow4_jacobi`, `deriv_pow4_jacobi(')`.
+
+So `D₆∣[6]γ = ±D₆ ∀γ∈SL(2,ℤ)` ⟹ `D₆²` is SL(2,ℤ)-invariant weight 12. The F²∈S=0 trick now applies.
+REMAINING (scoped): (1) `D₆` holomorphic on ℍ — needs the SECOND τ-derivative θ'' of the nullwerts
+(differentiate the `hasDerivAt_thetaThree` τ-derivative series again; ThetaHeat has the 2nd z-deriv but
+not 2nd τ-deriv). (2) `D₆² ∈ ModularForm 𝒮ℒ 12` (slash via closure over S,T sign-covariance + cusp
+bound). (3) `D₆ = O(q²)` at i∞ (leading-coeff vanishing — theta q-expansions to order 2). (4)
+`sturm_bound_levelOne` (wt 12 bound = 1) ⟹ D₆²=0 ⟹ D₆=0 ⟹ ThetaWronskian23 ⟹ λ'≠0 (local biholo).

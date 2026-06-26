@@ -13,6 +13,7 @@ data exploits: a deck transformation of `f_{c₁}^[n]` scales `φ_{c₁}` by a p
 -/
 import GaloisForLFunctions.Bottcher.LiftExists
 import GaloisForLFunctions.Bottcher.MeromorphicField
+import GaloisForLFunctions.Bottcher.FarFieldUnivalence
 
 open Complex Set Filter Topology
 
@@ -74,5 +75,27 @@ theorem compTendsto_germ_fixed {U : Set ℂ} {g f₂ : ℂ → ℂ}
       = (↑f₂ : Germ (𝓟 U) ℂ) := by
   rw [Germ.coe_compTendsto, Germ.coe_eq]
   exact eventually_principal.mpr (fun z hz => hfix z hz)
+
+/-- **Far-field deck condition: value-scaling ⟹ projection fixed.** Two far-field points whose Böttcher
+values differ by a `2ⁿ`-th root of unity have the same `f_c^[n]`-image (converse of
+`bottcherCoord_deck_scaling`, via far-field injectivity L2 `bottcherCoord_injOn_far`). So on the far
+field the deck-pair relation `f_c^[n] z' = f_c^[n] z` is EQUIVALENT to `φ_c z' = ζ·φ_c z`, `ζ^{2ⁿ}=1` —
+the value-coordinate model `w ↦ ζw` of the dyadic deck group `μ_{2ⁿ}` the deck map `g` is read off from. -/
+theorem iterate_eq_of_bottcherCoord_scaling {c : ℂ} {R : ℝ} (n : ℕ) {ζ z z' : ℂ}
+    (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2)
+    (hz : R < ‖z‖) (hz' : R < ‖z'‖)
+    (hζ : ζ ^ (2 ^ n) = 1) (hscale : bottcherCoord c z' = ζ * bottcherCoord c z) :
+    (quadratic c)^[n] z' = (quadratic c)^[n] z := by
+  have hRmax : max 2 ‖c‖ < R := by nlinarith [le_max_left 2 ‖c‖, norm_nonneg c]
+  have hzE : z ∈ escapeOpen c := lt_trans hRmax hz
+  have hz'E : z' ∈ escapeOpen c := lt_trans hRmax hz'
+  have hval : bottcherCoord c ((quadratic c)^[n] z') = bottcherCoord c ((quadratic c)^[n] z) := by
+    rw [bottcherCoord_iterate_escape hz'E n, bottcherCoord_iterate_escape hzE n, hscale,
+      mul_pow, hζ, one_mul]
+  have hzn : R < ‖(quadratic c)^[n] z‖ :=
+    lt_of_lt_of_le hz (norm_iterate_ge (mem_escapeOpen_regime hzE).1 (mem_escapeOpen_regime hzE).2 n)
+  have hz'n : R < ‖(quadratic c)^[n] z'‖ :=
+    lt_of_lt_of_le hz' (norm_iterate_ge (mem_escapeOpen_regime hz'E).1 (mem_escapeOpen_regime hz'E).2 n)
+  exact bottcherCoord_injOn_far hR1 hR2 hz'n hzn hval
 
 end Bottcher
