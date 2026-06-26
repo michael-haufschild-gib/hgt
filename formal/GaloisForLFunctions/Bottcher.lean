@@ -91,7 +91,11 @@ import GaloisForLFunctions.Bottcher.ModularLambdaModular
 import GaloisForLFunctions.Bottcher.Gamma2Generators
 import GaloisForLFunctions.Bottcher.GreenLogDeriv
 import GaloisForLFunctions.Bottcher.GlobalBasinBranch
+import GaloisForLFunctions.Bottcher.CoverDeckScaling
+import GaloisForLFunctions.Bottcher.Univalence
+import GaloisForLFunctions.Bottcher.FarFieldUnivalence
 import GaloisForLFunctions.Bottcher.QuarticSlash
 import GaloisForLFunctions.Bottcher.QuarticModularForm
 import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional
 import GaloisForLFunctions.Bottcher.ModularLambdaLocalBiholo
+import GaloisForLFunctions.Bottcher.ThetaWronskian

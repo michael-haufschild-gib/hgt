@@ -2085,3 +2085,85 @@ cocycle terms cancel), so BOTH sides are weight-6 Γ(2) forms. This escapes the 
 `dim`/Sturm q-expansion technique that proved the Jacobi identity becomes available IF a Γ(2) Sturm
 bound is built (mathlib has only level-one) — or push both sides through `NormTrace`/the difference's
 cusp behaviour to a level where mathlib's machinery applies. This is the concrete next attack on #26.
+
+## 2026-06-26 — Connected dendrite case: hF discharged + reduced to pure geometry (GlobalBasinBranch.lean)
+
+New file `GlobalBasinBranch.lean` (builds in tree, 8512 jobs; every theorem `#print axioms` =
+`[propext, Classical.choice, Quot.sound]`). The connected-case natural-boundary transcendence no longer
+needs the analytic primitive hypothesis `hF` — it is discharged unconditionally on the half-plane.
+
+- `escapeOpen_subset_compl_filledJulia`, `deepPoint_mem_escapeOpen` — far-field plumbing.
+- `norm_eq_exp_green_basin` — a `β` analytic+nonvanishing on the basin with the Böttcher modulus on
+  `escapeOpen` has `‖β‖ = exp G_c` on ALL of `Ω_c` (harmonic identity theorem over the now-known
+  preconnected basin `isPreconnected_compl_filledJulia`).
+- `relation_eq_zero_basin` — same spread for the algebraic relation (analytic identity theorem).
+- `false_of_global_basin_branch` — reduces the connected dendrite contradiction to inputs (G) a global
+  single-valued analytic nonvanishing basin branch `β` and (T) a dendrite tip (preconnected punctured
+  basin nbhds), with everything between machine-checked.
+- `exists_fullBottcherBranch_halfplane_at` — `exists_fullBottcherBranch_rightHalfplane` with the
+  threshold pinned to a GIVEN maximiser `z₀.re` (so the rightmost point of `K_c` is the anchor). The
+  convex Poincaré lemma builds the `ω`-primitive ⟹ NO `hF`.
+- **`false_of_halfplane_dendrite`** — THE result: at the rightmost point `z₀` of `K_c`, in the dendrite
+  case, ELIMINATES input (G). The unconditional half-plane `β` on `R={Re>z₀.re}` follows one analytic
+  root-branch on the convex sector `R∩ball`; the algebraic branch `g` across `z₀`
+  (`exists_analyticAt_branch_poly`) matches `β` there (`branch_unique_poly_within`, boundary value
+  `w₀=w k z₀`, `‖w₀‖≥1`); `norm_eq_exp_green_of_eqOn_open` spreads `‖g‖=exp G_c` across the preconnected
+  basin sector; `no_continuation_dendrite` closes it. Remaining inputs are now PURELY geometric:
+  `hempty` (dendrite/empty interior) + `htip` (rightmost point is a tip: `ball z₀ ρ ∩ Ω_c` preconnected)
+  + generic fibre nondegeneracy (`hlead`, `hsep`, automatic off the finite discriminant locus). The
+  analytic primitive `hF` is gone.
+
+NEXT (connected): discharge `htip` — at the rightmost point of a dendrite `K_c`, `ball z₀ ρ ∩ Ω_c` is
+preconnected (point-set topology of an extreme point of a full continuum); and the dendrite-vs-interior
+dichotomy (interior case needs the modulus into `K_c`, separate). Then wire into
+`phiMero_transcendental_of_dendrite_input`.
+
+## 2026-06-26 — hDisc precise status (disconnected/disconnected)
+hDisc is NOT yet unconditional. Machine-checked and sorry-free: the entire ALGEBRA
+(`q62_disconnected_kummer` reduces hDisc to `hF`, `hGtr`, the per-depth Kummer `inputs` tuple;
+`hDisc_tuple_of_lifts`/`q62_independence_disconnected_of_lifts` reduce it to the lift data), the dyadic
+PERIOD `2πi/2ⁿ` (`exists_differentiable_circle_lift`, `exists_circle_lift_period`,
+`fractional_period_of_lift`), the period→NON-SQUARE link (`exp_logDeriv_antiderivative`,
+`winding_integer_of_exp_eq_one`, `not_square_of_period_ftc`, `not_square_of_odd_period`), and the Kummer
+IRREDUCIBILITY criterion (`SquareFree`, Capelli p=2). GENUINE REMAINING CORE: none of these is assembled
+into an UNCONDITIONAL `inputs`/lift-data — the missing piece is the genuine cover carrier `U` with its
+`[Algebra (RatFunc ℂ) (meroField U)]` projection structure (the actual analytic cover on which
+`φ_{c₁},φ_{c₂}` are single-valued germs and `z = π`), then wiring `not_square_of_period_ftc` →
+`Irreducible(X^{2^k}−C a)` → `inputs`, and `hGtr`. q62_disconnected_kummer is never yet called with
+constructed inputs.
+
+## 2026-06-26 — hDisc cover lane: deck-scaling + germ bridges (CoverDeckScaling.lean, axiom-clean)
+Toward constructing the lift data `hliftF`/`hliftG` (the genuine open core). New file, builds in tree,
+all `#print axioms` = `[propext, Classical.choice, Quot.sound]`:
+- `bottcherCoord_deck_scaling` — two escape points with the same `f_c^[n]`-image have Böttcher values
+  differing by a `2ⁿ`-th root of unity (`φ_c w = ζ φ_c z`, `ζ^{2ⁿ}=1`), from `bottcherCoord_iterate`.
+  The value-level mechanism of the deck group `μ_{2ⁿ}` scaling `φ_c`.
+- `bottcherCoord_deck_scaling_norm` — same `ζ` packaged with `‖ζ‖=1`.
+- `compTendsto_germ_scaling` — pointwise `f₁∘g = ζ₀·f₁` on `U` ⟹ germ-level
+  `(f₁).compTendsto g = constToAnalytic ζ₀ · f₁`, the scaling clause of `hliftF`.
+- `compTendsto_germ_fixed` — pointwise `f₂∘g = f₂` ⟹ germ-level fixing clause (for `φ_{c₂}` and the base
+  projection).
+NET: `hliftF`/`hliftG` are reduced to PURELY POINTWISE data — a geometric analytic deck map `g` on the
+carrier `U` with analytic inverse `g'`, `MapsTo`, `φ_{c₁}∘g = ζ₀·φ_{c₁}`, `φ_{c₂}∘g = φ_{c₂}`, `π∘g = π`
+(π the projection of the ℂ(z)-algebra structure). EXACT REMAINING GAP: construct that geometric deck map
+— needs (i) the projection carrier `U⊆ℂ` with `[Algebra (RatFunc ℂ) (meroField U)]` via `z ↦ germ π`
+(π ≠ identity), (ii) the global Böttcher inverse / univalence (L2/L3) to define `g`, (iii) the deep
+cylinder loop fixing `φ_{c₂}` (L5, the `pathInt_dlog_lift_closed_eq_zero` asymmetry). The deck map fixing
+ℂ(z) forces `π ≠ identity` (else `g=id`), so the projection carrier is mandatory — not `ratfuncToMero`.
+
+## 2026-06-26 — L2 DONE: far-field univalence (Univalence.lean + FarFieldUnivalence.lean, axiom-clean)
+- `injOn_of_re_deriv_pos` (Noshiro–Warschawski, Mathlib-absent) — holomorphic + `Re f' > 0` on convex ⟹
+  injective. Proved from the FTC along the segment.
+- `bottcherCoord_injOn_far` — `φ_c` is injective on `{|z| > R}` for `2·max(2,‖c‖) < R`, `16‖c‖ < R²`.
+  Log coordinates `Φ(ζ)=ζ+S(exp ζ)` (no slit), `Re Φ' = 1+Re(zS') ≥ 1−16‖c‖/|z|² > 0`, NW + `2πi`
+  periodicity descent. This is L2 (was pending). Unlocks L3 (global inverse `ψ` on a value annulus) →
+  the deck map `g = ψ(ζ·φ_c)` for `hliftF`.
+
+## 2026-06-26 — L3 DONE: global far-field inverse (FarFieldUnivalence.lean, axiom-clean)
+- `exists_analytic_inverse_far` — `ψ = invFunOn φ_c {|z|>R}` is analytic at every `φ_c z`, a two-sided
+  inverse of `φ_c` on the far field (local-inverse agreement under L2 injectivity). So `φ_c : {|z|>R} →
+  φ_c({|z|>R})` is a BIHOLOMORPHISM (L2 ∧ L3). This is the far-field chart the deck map continues from.
+REMAINING for hDisc (the crux, L5): continue `ψ` inward to the depth-n cylinders (multivalued branches =
+deck transformations); the deep cylinder loop fixes `φ_{c₂}` (L1 asymmetry); assemble the pointwise deck
+map `g` (then `compTendsto_germ_scaling`/`_fixed` give `hliftF`/`hliftG`) and instantiate
+`q62_independence_disconnected_of_lifts`.

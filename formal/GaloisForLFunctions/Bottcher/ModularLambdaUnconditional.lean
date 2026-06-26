@@ -20,7 +20,7 @@ import GaloisForLFunctions.Bottcher.QuarticModularForm
 import GaloisForLFunctions.Bottcher.ModularLambdaModular
 import GaloisForLFunctions.Bottcher.Gamma2Generators
 
-open Complex Matrix ModularGroup CongruenceSubgroup UpperHalfPlane
+open Complex Matrix ModularGroup CongruenceSubgroup
 open scoped MatrixGroups
 
 namespace Bottcher
@@ -59,6 +59,7 @@ theorem modularLambda_Gamma2_gen' {τ : ℂ} (hτ : 0 < τ.im) :
     modularLambda (τ / (2 * τ + 1)) = modularLambda τ :=
   modularLambda_Gamma2_gen (fun σ hσ => Bottcher2Cusp.quarticDefect_eq_zero hσ) hτ
 
+open UpperHalfPlane in
 /-- **`λ` is `Γ(2)`-invariant: `λ(γ • z) = λ(z)` for every `γ ∈ Γ(2)`** (the Hauptmodul property).
 By induction over the generators `Γ(2) = ⟨T², R, −I⟩` (`Gamma2_eq_closure`): `T²` is `τ ↦ τ+2`
 (`modularLambda_add_two`), `R` is `τ ↦ τ/(2τ+1)` (`modularLambda_Gamma2_gen'`), `−I` acts trivially;
@@ -87,5 +88,37 @@ theorem modularLambda_smul {γ : SL(2, ℤ)} (hγ : γ ∈ CongruenceSubgroup.Ga
       have h := ih (x⁻¹ • z)
       rw [← mul_smul, mul_inv_cancel, one_smul] at h
       exact h.symm
+
+open UpperHalfPlane in
+/-- **`λ ∘ (↑·) : ℍ → ℂ` is continuous** — `λ` is holomorphic on `ℍ`
+(`differentiableAt_modularLambda_of_im_pos`) and the inclusion `ℍ ↪ ℂ` is continuous. -/
+theorem continuous_modularLambda_comp : Continuous (fun z : ℍ => modularLambda (z : ℂ)) := by
+  rw [continuous_iff_continuousAt]
+  intro z
+  have hz : 0 < (z : ℂ).im := by rw [UpperHalfPlane.coe_im]; exact z.im_pos
+  exact ((differentiableAt_modularLambda_of_im_pos hz).continuousAt).comp
+    UpperHalfPlane.continuous_coe.continuousAt
+
+open UpperHalfPlane in
+/-- **`λ` descends to a well-defined map `ℍ/Γ(2) → ℂ`** (`λ̄`), by `Γ(2)`-invariance
+(`modularLambda_smul`). This is the function half of the Hauptmodul homeomorphism `ℍ/Γ(2) ≅ ℂ∖{0,1}`
+that underlies `IsCoveringMap λ` in the three-value Montel lane; the remaining (deep) halves are that
+`λ̄` is injective (separates `Γ(2)`-orbits) and surjective onto `ℂ∖{0,1}`. -/
+noncomputable def modularLambdaQuotient :
+    Quotient (MulAction.orbitRel (CongruenceSubgroup.Gamma 2) ℍ) → ℂ :=
+  Quotient.lift (fun z : ℍ => modularLambda (z : ℂ)) <| by
+    rintro a b ⟨g, rfl⟩
+    exact modularLambda_smul g.property b
+
+open UpperHalfPlane in
+/-- **`λ̄ : ℍ/Γ(2) → ℂ` is continuous** for the quotient topology — `λ ∘ (↑·)` is continuous and
+constant on `Γ(2)`-orbits, so it descends continuously. -/
+theorem continuous_modularLambdaQuotient : Continuous modularLambdaQuotient :=
+  continuous_modularLambda_comp.quotient_lift _
+
+open UpperHalfPlane in
+/-- The descended map evaluated on a point: `λ̄ ⟦z⟧ = λ(z)`. -/
+@[simp] theorem modularLambdaQuotient_mk (z : ℍ) :
+    modularLambdaQuotient (Quotient.mk _ z) = modularLambda (z : ℂ) := rfl
 
 end Bottcher
