@@ -21,6 +21,8 @@ import GaloisForLFunctions.Bottcher.GreenContinuity
 import Mathlib.Analysis.Fourier.AddCircle
 import Mathlib.Analysis.InnerProductSpace.Laplacian
 import Mathlib.Analysis.Polynomial.MahlerMeasure
+import Mathlib.Data.Multiset.Fintype
+import Mathlib.FieldTheory.IsAlgClosed.Basic
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 import Mathlib.MeasureTheory.Integral.RieszMarkovKakutani.Real
 
@@ -147,6 +149,125 @@ theorem isRieszMeasureOf_greenFunctionDyn_of_isBrolinMeasure {c : ℂ} {μ : Mea
     (hμ : IsBrolinMeasure c μ) :
     IsRieszMeasureOf μ (greenFunctionDyn c) :=
   hμ.2.1
+
+/-! ## Finite pre-Brolin measures
+
+The Brolin measure is the weak limit of the normalized pullbacks of a point.
+This section formalizes the finite algebraic layer for the base point `0`:
+the normalized root-counting measure on `(f_c^[n])⁻¹ {0}` has logarithmic
+potential equal to the `n`th Green approximant away from its atoms.
+-/
+
+/-- The atomic counting measure attached to a multiset, with multiplicity. -/
+noncomputable def rootCountingMeasure (s : Multiset ℂ) : Measure ℂ :=
+  ∑ x : s, Measure.dirac (x : ℂ)
+
+/-- Integrating against a multiset counting measure is summing over the multiset. -/
+theorem integral_rootCountingMeasure (s : Multiset ℂ) (f : ℂ → ℝ) :
+    ∫ z, f z ∂rootCountingMeasure s = (s.map f).sum := by
+  rw [rootCountingMeasure, integral_finsetSum_measure]
+  · simp [integral_dirac, Finset.sum]
+  · intro x hx
+    exact integrable_dirac (by simp)
+
+/-- The logarithmic potential of a multiset counting measure is the kernel sum. -/
+theorem logPotential_rootCountingMeasure (s : Multiset ℂ) (z : ℂ) :
+    logPotential (rootCountingMeasure s) z = (s.map fun ζ => logKernel z ζ).sum := by
+  simpa [logPotential] using integral_rootCountingMeasure s (fun ζ => logKernel z ζ)
+
+/-- The quadratic polynomial `z² + c`, as a polynomial, is monic. -/
+theorem quadraticPoly_monic (c : ℂ) : (quadraticPoly c).Monic := by
+  simpa [quadraticPoly] using
+    (Polynomial.monic_X_pow_add_C (R := ℂ) c (n := 2) (by norm_num))
+
+/-- Every polynomial iterate of `z² + c` is monic. -/
+theorem quadraticPolyIterate_monic (c : ℂ) (n : ℕ) :
+    (quadraticPolyIterate c n).Monic := by
+  induction n with
+  | zero =>
+      simpa [quadraticPolyIterate] using (Polynomial.monic_X_pow (R := ℂ) 1)
+  | succ n ih =>
+      rw [quadraticPolyIterate]
+      exact (quadraticPoly_monic c).comp ih (by
+        rw [quadraticPolyIterate_natDegree c n]
+        positivity)
+
+/-- For a monic complex polynomial, the logarithmic root sum is the logarithm of
+the absolute value of the polynomial, away from the roots. -/
+theorem rootLogSum_eq_log_eval_of_monic {p : Polynomial ℂ} (hp : p.Monic) {z : ℂ}
+    (hz : p.eval z ≠ 0) :
+    (p.roots.map (fun r => Real.log ‖z - r‖)).sum = Real.log ‖p.eval z‖ := by
+  have hsplits : p.Splits := IsAlgClosed.splits p
+  have heval_multiset := hsplits.eval_eq_prod_roots_of_monic hp z
+  have hprod_roots :
+      (∏ r : p.roots, z - (r : ℂ)) = (p.roots.map (fun r => z - r)).prod := by
+    rw [Finset.prod, Multiset.map_univ]
+  have heval_fintype : p.eval z = ∏ r : p.roots, z - (r : ℂ) := by
+    rw [heval_multiset, ← hprod_roots]
+  have hfactor_ne : ∀ r : p.roots, ‖z - (r : ℂ)‖ ≠ 0 := by
+    intro r hrzero
+    have hsub : z - (r : ℂ) = 0 := norm_eq_zero.mp hrzero
+    have hprod_zero : (∏ r : p.roots, z - (r : ℂ)) = 0 :=
+      Finset.prod_eq_zero
+        (s := (Finset.univ : Finset p.roots))
+        (f := fun r : p.roots => z - (r : ℂ))
+        (Finset.mem_univ r) hsub
+    exact hz (by rw [heval_fintype, hprod_zero])
+  have hnorm_eval : ‖p.eval z‖ = ∏ r : p.roots, ‖z - (r : ℂ)‖ := by
+    rw [heval_fintype]
+    simpa using norm_prod (Finset.univ : Finset p.roots) fun r => z - (r : ℂ)
+  have hlog_prod :
+      Real.log (∏ r : p.roots, ‖z - (r : ℂ)‖) =
+        ∑ r : p.roots, Real.log ‖z - (r : ℂ)‖ := by
+    simpa using
+      (Real.log_prod (s := (Finset.univ : Finset p.roots))
+        (f := fun r : p.roots => ‖z - (r : ℂ)‖)
+        (by intro r hr; exact hfactor_ne r))
+  calc
+    (p.roots.map (fun r => Real.log ‖z - r‖)).sum
+        = ∑ r : p.roots, Real.log ‖z - (r : ℂ)‖ := by
+          rw [Finset.sum, Multiset.map_univ]
+    _ = Real.log (∏ r : p.roots, ‖z - (r : ℂ)‖) := hlog_prod.symm
+    _ = Real.log ‖p.eval z‖ := by rw [← hnorm_eval]
+
+/-- The finite normalized pullback of the point `0` under `f_c^[n]`. -/
+noncomputable def preBrolinMeasure (c : ℂ) (n : ℕ) : Measure ℂ :=
+  ((2 ^ n : ℝ≥0∞)⁻¹) • rootCountingMeasure ((quadraticPolyIterate c n).roots)
+
+/-- The finite pre-Brolin potential is the normalized negative root-log sum. -/
+theorem logPotential_preBrolinMeasure_eq_neg_rootLogSum (c z : ℂ) (n : ℕ) :
+    logPotential (preBrolinMeasure c n) z =
+      - (2 ^ n : ℝ)⁻¹ *
+        ((quadraticPolyIterate c n).roots.map (fun r => Real.log ‖z - r‖)).sum := by
+  rw [preBrolinMeasure, logPotential_smul, logPotential_rootCountingMeasure]
+  have hscale : (((2 ^ n : ℝ≥0∞)⁻¹).toReal) = (2 ^ n : ℝ)⁻¹ := by
+    simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
+  have hkernel :
+      ((quadraticPolyIterate c n).roots.map (fun ζ => logKernel z ζ)).sum =
+        - ((quadraticPolyIterate c n).roots.map (fun ζ => Real.log ‖z - ζ‖)).sum := by
+    simp [logKernel]
+  rw [hscale, hkernel]
+  ring
+
+/-- Finite Brolin potential identity away from the atoms:
+`-U^{μ_{c,n}}(z) = 2⁻ⁿ log ‖f_c^[n](z)‖`. -/
+theorem neg_logPotential_preBrolinMeasure_eq_greenApprox {c z : ℂ} {n : ℕ}
+    (hz : (quadratic c)^[n] z ≠ 0) :
+    - logPotential (preBrolinMeasure c n) z = greenApprox c z n := by
+  have hzeval : (quadraticPolyIterate c n).eval z ≠ 0 := by
+    rwa [quadraticPolyIterate_eval]
+  have hroots := rootLogSum_eq_log_eval_of_monic
+    (quadraticPolyIterate_monic c n) (z := z) hzeval
+  calc
+    - logPotential (preBrolinMeasure c n) z
+        = (2 ^ n : ℝ)⁻¹ *
+            ((quadraticPolyIterate c n).roots.map (fun r => Real.log ‖z - r‖)).sum := by
+          rw [logPotential_preBrolinMeasure_eq_neg_rootLogSum]
+          ring
+    _ = (2 ^ n : ℝ)⁻¹ * Real.log ‖(quadraticPolyIterate c n).eval z‖ := by
+          rw [hroots]
+    _ = greenApprox c z n := by
+          rw [greenApprox, quadraticPolyIterate_eval]
 
 /-! ## Unit-circle model kernel
 
