@@ -322,6 +322,47 @@ theorem hasGreenPotentialRepresentation_unitCircleMeasure_zero :
   intro z
   rw [greenFunctionDyn_zero_eq_posLog, greenFunction_unitCircleMeasure_zero]
 
+/-- The concrete Brolin/equilibrium measure in the model case `f_0(z)=z²`. -/
+noncomputable def brolinMeasureZero : Measure ℂ :=
+  unitCircleMeasure
+
+instance instIsProbabilityMeasure_brolinMeasureZero :
+    IsProbabilityMeasure brolinMeasureZero := by
+  rw [brolinMeasureZero]
+  infer_instance
+
+/-- The model Brolin measure is a probability carried by `K_0`. -/
+theorem isProbOn_brolinMeasureZero_filledJulia_zero :
+    IsProbOn brolinMeasureZero (filledJulia 0) := by
+  simpa [brolinMeasureZero] using isProbOn_unitCircleMeasure_filledJulia_zero
+
+/-- Potential of the model Brolin measure. -/
+theorem logPotential_brolinMeasureZero (z : ℂ) :
+    logPotential brolinMeasureZero z = - Real.posLog ‖z‖ := by
+  simpa [brolinMeasureZero] using logPotential_unitCircleMeasure z
+
+/-- Green-function notation for the model Brolin measure potential. -/
+theorem greenFunction_brolinMeasureZero_zero (z : ℂ) :
+    greenFunction brolinMeasureZero 0 z = Real.posLog ‖z‖ := by
+  simpa [brolinMeasureZero] using greenFunction_unitCircleMeasure_zero z
+
+/-- The named model Brolin measure gives the potential representation of `G_0`. -/
+theorem hasGreenPotentialRepresentation_brolinMeasureZero_zero :
+    HasGreenPotentialRepresentation 0 brolinMeasureZero := by
+  simpa [brolinMeasureZero] using hasGreenPotentialRepresentation_unitCircleMeasure_zero
+
+/-- Direct zero-model potential identity: `G_0(z) = -U^{μ_0}(z)`. -/
+theorem greenFunctionDyn_zero_eq_neg_logPotential_brolinMeasureZero (z : ℂ) :
+    greenFunctionDyn 0 z = - logPotential brolinMeasureZero z :=
+  (hasGreenPotentialRepresentation_iff 0 brolinMeasureZero).mp
+    hasGreenPotentialRepresentation_brolinMeasureZero_zero z
+
+/-- Existence of a no-hypothesis probability measure representing the model Green function. -/
+theorem exists_probOn_hasGreenPotentialRepresentation_zero :
+    ∃ μ : Measure ℂ, IsProbOn μ (filledJulia 0) ∧ HasGreenPotentialRepresentation 0 μ :=
+  ⟨brolinMeasureZero, isProbOn_brolinMeasureZero_filledJulia_zero,
+    hasGreenPotentialRepresentation_brolinMeasureZero_zero⟩
+
 /-- Outside the unit disk, the unit-circle kernel average is `-log |z|`. -/
 theorem circleAverage_logKernel_unitCircle_of_one_le {z : ℂ} (hz : 1 ≤ ‖z‖) :
     Real.circleAverage (fun ζ => logKernel z ζ) 0 1 = - Real.log ‖z‖ := by

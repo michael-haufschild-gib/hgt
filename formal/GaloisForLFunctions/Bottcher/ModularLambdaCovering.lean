@@ -871,4 +871,45 @@ theorem modularLambda_injOn_circle :
   · exact ((continuous_const.add (Complex.continuous_exp.comp
       (continuous_const.mul Complex.continuous_ofReal))).div_const 2).continuousOn
 
+
+/-! ### Imaginary-axis arc endpoints (cusp limits pinning the `Re=0` arc onto `(0,1)`)
+
+With step-2 monotonicity, these two endpoint limits show `t ↦ λ(it)` is a strictly monotone bijection
+`(0,∞) → (0,1)`: it tends to `0` at the `i∞` cusp and to `1` at the cusp `0` (via the `S`-involution
+`λ(-1/τ)=1-λ(τ)` with `-1/(it) = i/t`). -/
+
+/-- **Imaginary-axis cusp endpoint at `i∞`:** `λ(it) → 0` as `t → ∞`. -/
+theorem tendsto_modularLambda_imAxis_atTop :
+    Tendsto (fun t : ℝ => modularLambda ((t:ℂ)*Complex.I)) atTop (𝓝 0) := by
+  apply tendsto_modularLambda_atImInfty.comp
+  rw [tendsto_comap_iff]
+  have h : (Complex.im ∘ fun t : ℝ => (t:ℂ)*Complex.I) = fun t : ℝ => t := by
+    funext t; simp [Complex.mul_im]
+  rw [h]; exact tendsto_id
+
+/-- **Imaginary-axis cusp endpoint at the cusp `0`:** `λ(it) → 1` as `t → 0⁺`. -/
+theorem tendsto_modularLambda_imAxis_nhdsGT :
+    Tendsto (fun t : ℝ => modularLambda ((t:ℂ)*Complex.I)) (𝓝[>] 0) (𝓝 1) := by
+  have hinv : Tendsto (fun t : ℝ => modularLambda (((t⁻¹:ℝ):ℂ)*Complex.I)) (𝓝[>] 0) (𝓝 0) :=
+    tendsto_modularLambda_imAxis_atTop.comp tendsto_inv_nhdsGT_zero
+  have heq : (fun t : ℝ => modularLambda ((t:ℂ)*Complex.I)) =ᶠ[𝓝[>] 0]
+             (fun t : ℝ => 1 - modularLambda (((t⁻¹:ℝ):ℂ)*Complex.I)) := by
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    have ht0 : (0:ℝ) < t := ht
+    have htc : (t:ℂ) ≠ 0 := by exact_mod_cast ne_of_gt ht0
+    have hti : 0 < (((t⁻¹:ℝ):ℂ) * Complex.I).im := by
+      simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
+        mul_one, mul_zero, add_zero]
+      positivity
+    have hrel := modularLambda_S' hti
+    have hpt : -1 / (((t⁻¹:ℝ):ℂ) * Complex.I) = (t:ℂ)*Complex.I := by
+      rw [Complex.ofReal_inv, div_eq_iff (mul_ne_zero (inv_ne_zero htc) Complex.I_ne_zero),
+        show (t:ℂ)*Complex.I*((↑t)⁻¹*Complex.I) = (↑t*(↑t)⁻¹)*(Complex.I*Complex.I) from by ring,
+        mul_inv_cancel₀ htc, Complex.I_mul_I]
+      ring
+    rw [hpt] at hrel
+    exact hrel
+  rw [tendsto_congr' heq]
+  simpa using (tendsto_const_nhds (x := (1:ℂ))).sub hinv
+
 end Bottcher
