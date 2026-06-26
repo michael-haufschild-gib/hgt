@@ -24,6 +24,7 @@ import Mathlib.Analysis.Polynomial.MahlerMeasure
 import Mathlib.Data.Multiset.Fintype
 import Mathlib.FieldTheory.IsAlgClosed.Basic
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
+import Mathlib.MeasureTheory.Measure.AEMeasurable
 import Mathlib.MeasureTheory.Integral.RieszMarkovKakutani.Real
 
 open Filter Topology MeasureTheory CompactlySupported Laplacian
@@ -170,6 +171,14 @@ theorem integral_rootCountingMeasure (s : Multiset ℂ) (f : ℂ → ℝ) :
   · intro x hx
     exact integrable_dirac (by simp)
 
+/-- Complex-valued version of integration against a multiset counting measure. -/
+theorem integral_rootCountingMeasure_complex (s : Multiset ℂ) (f : ℂ → ℂ) :
+    ∫ z, f z ∂rootCountingMeasure s = (s.map f).sum := by
+  rw [rootCountingMeasure, integral_finsetSum_measure]
+  · simp [integral_dirac, Finset.sum]
+  · intro x hx
+    exact integrable_dirac (by simp)
+
 /-- The logarithmic potential of a multiset counting measure is the kernel sum. -/
 theorem logPotential_rootCountingMeasure (s : Multiset ℂ) (z : ℂ) :
     logPotential (rootCountingMeasure s) z = (s.map fun ζ => logKernel z ζ).sum := by
@@ -192,6 +201,25 @@ theorem quadraticPolyIterate_monic (c : ℂ) (n : ℕ) :
         rw [quadraticPolyIterate_natDegree c n]
         positivity)
 
+/-- Polynomial iterates also satisfy the right-composition recursion
+`f_c^[n+1] = f_c^[n] ∘ f_c`. -/
+theorem quadraticPolyIterate_succ_eq_comp_quadraticPoly (c : ℂ) (n : ℕ) :
+    quadraticPolyIterate c (n + 1) =
+      (quadraticPolyIterate c n).comp (quadraticPoly c) := by
+  apply Polynomial.funext
+  intro z
+  rw [Polynomial.eval_comp, quadraticPolyIterate_eval, quadraticPolyIterate_eval]
+  have hq : (quadraticPoly c).eval z = quadratic c z := by
+    simp [quadraticPoly, quadratic_apply]
+  rw [hq, ← Function.iterate_succ_apply]
+
+/-- The level-`n+1` target polynomial factors as the level-`n` target
+polynomial composed with `f_c`. -/
+theorem quadraticPolyIterate_succ_sub_C_eq_comp (c a : ℂ) (n : ℕ) :
+    quadraticPolyIterate c (n + 1) - Polynomial.C a =
+      (quadraticPolyIterate c n - Polynomial.C a).comp (quadraticPoly c) := by
+  rw [quadraticPolyIterate_succ_eq_comp_quadraticPoly, Polynomial.sub_comp, Polynomial.C_comp]
+
 /-- For a monic complex polynomial, the logarithmic root sum is the logarithm of
 the absolute value of the polynomial, away from the roots. -/
 theorem rootLogSum_eq_log_eval_of_monic {p : Polynomial ℂ} (hp : p.Monic) {z : ℂ}
@@ -199,40 +227,54 @@ theorem rootLogSum_eq_log_eval_of_monic {p : Polynomial ℂ} (hp : p.Monic) {z :
     (p.roots.map (fun r => Real.log ‖z - r‖)).sum = Real.log ‖p.eval z‖ := by
   have hsplits : p.Splits := IsAlgClosed.splits p
   have heval_multiset := hsplits.eval_eq_prod_roots_of_monic hp z
+  have hmap_prod :
+      ((Finset.univ : Finset p.roots).val.map (fun r : p.roots => z - r.1)) =
+        p.roots.map (fun r : ℂ => z - r) := by
+    simpa using (Multiset.map_univ p.roots (fun r : ℂ => z - r))
+  have hmap_sum :
+      ((Finset.univ : Finset p.roots).val.map
+          (fun r : p.roots => Real.log ‖z - r.1‖)) =
+        p.roots.map (fun r : ℂ => Real.log ‖z - r‖) := by
+    simpa using (Multiset.map_univ p.roots (fun r : ℂ => Real.log ‖z - r‖))
   have hprod_roots :
-      (∏ r : p.roots, z - (r : ℂ)) = (p.roots.map (fun r => z - r)).prod := by
-    rw [Finset.prod, Multiset.map_univ]
-  have heval_fintype : p.eval z = ∏ r : p.roots, z - (r : ℂ) := by
+      (Finset.univ : Finset p.roots).prod (fun r => z - r.1) =
+        (p.roots.map (fun r => z - r)).prod := by
+    rw [Finset.prod, hmap_prod]
+  have heval_fintype :
+      p.eval z = (Finset.univ : Finset p.roots).prod (fun r => z - r.1) := by
     rw [heval_multiset, ← hprod_roots]
-  have hfactor_ne : ∀ r : p.roots, ‖z - (r : ℂ)‖ ≠ 0 := by
+  have hfactor_ne : ∀ r : p.roots, ‖z - r.1‖ ≠ 0 := by
     intro r hrzero
-    have hsub : z - (r : ℂ) = 0 := norm_eq_zero.mp hrzero
-    have hprod_zero : (∏ r : p.roots, z - (r : ℂ)) = 0 :=
+    have hsub : z - r.1 = 0 := norm_eq_zero.mp hrzero
+    have hprod_zero :
+        (Finset.univ : Finset p.roots).prod (fun r => z - r.1) = 0 :=
       Finset.prod_eq_zero
         (s := (Finset.univ : Finset p.roots))
-        (f := fun r : p.roots => z - (r : ℂ))
+        (f := fun r : p.roots => z - r.1)
         (Finset.mem_univ r) hsub
     exact hz (by rw [heval_fintype, hprod_zero])
-  have hnorm_eval : ‖p.eval z‖ = ∏ r : p.roots, ‖z - (r : ℂ)‖ := by
+  have hnorm_eval :
+      ‖p.eval z‖ = (Finset.univ : Finset p.roots).prod (fun r => ‖z - r.1‖) := by
     rw [heval_fintype]
-    simpa using norm_prod (Finset.univ : Finset p.roots) fun r => z - (r : ℂ)
+    simpa using norm_prod (Finset.univ : Finset p.roots) fun r : p.roots => z - r.1
   have hlog_prod :
-      Real.log (∏ r : p.roots, ‖z - (r : ℂ)‖) =
-        ∑ r : p.roots, Real.log ‖z - (r : ℂ)‖ := by
+      Real.log ((Finset.univ : Finset p.roots).prod (fun r => ‖z - r.1‖)) =
+        (Finset.univ : Finset p.roots).sum (fun r => Real.log ‖z - r.1‖) := by
     simpa using
       (Real.log_prod (s := (Finset.univ : Finset p.roots))
-        (f := fun r : p.roots => ‖z - (r : ℂ)‖)
+        (f := fun r : p.roots => ‖z - r.1‖)
         (by intro r hr; exact hfactor_ne r))
   calc
     (p.roots.map (fun r => Real.log ‖z - r‖)).sum
-        = ∑ r : p.roots, Real.log ‖z - (r : ℂ)‖ := by
-          rw [Finset.sum, Multiset.map_univ]
-    _ = Real.log (∏ r : p.roots, ‖z - (r : ℂ)‖) := hlog_prod.symm
+        = (Finset.univ : Finset p.roots).sum (fun r => Real.log ‖z - r.1‖) := by
+          rw [Finset.sum, hmap_sum]
+    _ = Real.log ((Finset.univ : Finset p.roots).prod (fun r => ‖z - r.1‖)) :=
+          hlog_prod.symm
     _ = Real.log ‖p.eval z‖ := by rw [← hnorm_eval]
 
 /-- The finite normalized pullback of the point `0` under `f_c^[n]`. -/
 noncomputable def preBrolinMeasure (c : ℂ) (n : ℕ) : Measure ℂ :=
-  ((2 ^ n : ℝ≥0∞)⁻¹) • rootCountingMeasure ((quadraticPolyIterate c n).roots)
+  ((2 ^ n : ENNReal)⁻¹) • rootCountingMeasure ((quadraticPolyIterate c n).roots)
 
 /-- The finite pre-Brolin potential is the normalized negative root-log sum. -/
 theorem logPotential_preBrolinMeasure_eq_neg_rootLogSum (c z : ℂ) (n : ℕ) :
@@ -240,7 +282,7 @@ theorem logPotential_preBrolinMeasure_eq_neg_rootLogSum (c z : ℂ) (n : ℕ) :
       - (2 ^ n : ℝ)⁻¹ *
         ((quadraticPolyIterate c n).roots.map (fun r => Real.log ‖z - r‖)).sum := by
   rw [preBrolinMeasure, logPotential_smul, logPotential_rootCountingMeasure]
-  have hscale : (((2 ^ n : ℝ≥0∞)⁻¹).toReal) = (2 ^ n : ℝ)⁻¹ := by
+  have hscale : (((2 ^ n : ENNReal)⁻¹).toReal) = (2 ^ n : ℝ)⁻¹ := by
     simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
   have hkernel :
       ((quadraticPolyIterate c n).roots.map (fun ζ => logKernel z ζ)).sum =
@@ -268,6 +310,329 @@ theorem neg_logPotential_preBrolinMeasure_eq_greenApprox {c z : ℂ} {n : ℕ}
           rw [hroots]
     _ = greenApprox c z n := by
           rw [greenApprox, quadraticPolyIterate_eval]
+
+/-- The Cauchy transform of a polynomial root-counting measure is the logarithmic
+derivative of the polynomial, away from the roots. -/
+theorem integral_cauchy_rootCountingMeasure_eq_derivative_div {p : Polynomial ℂ} {z : ℂ}
+    (hz : p.eval z ≠ 0) :
+    ∫ ζ, (z - ζ)⁻¹ ∂rootCountingMeasure p.roots =
+      p.derivative.eval z / p.eval z := by
+  rw [integral_rootCountingMeasure_complex]
+  simpa [one_div] using ((IsAlgClosed.splits p).eval_derivative_div_eval_of_ne_zero hz).symm
+
+/-- Finite GAP-A Cauchy-transform identity: the normalized pre-Brolin measure has
+Cauchy transform equal to the normalized logarithmic derivative of `f_c^[n]`,
+away from the finite preimage atoms. -/
+theorem integral_cauchy_preBrolinMeasure_eq_derivative_div {c z : ℂ} {n : ℕ}
+    (hz : (quadratic c)^[n] z ≠ 0) :
+    ∫ ζ, (z - ζ)⁻¹ ∂preBrolinMeasure c n =
+      ((2 ^ n : ℝ)⁻¹ : ℂ) *
+        ((quadraticPolyIterate c n).derivative.eval z / (quadratic c)^[n] z) := by
+  have hzeval : (quadraticPolyIterate c n).eval z ≠ 0 := by
+    rwa [quadraticPolyIterate_eval]
+  rw [preBrolinMeasure, integral_smul_measure,
+    integral_cauchy_rootCountingMeasure_eq_derivative_div hzeval]
+  have hscale : (((2 ^ n : ENNReal)⁻¹).toReal : ℂ) = ((2 ^ n : ℝ)⁻¹ : ℂ) := by
+    simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
+  rw [quadraticPolyIterate_eval]
+  change (((2 ^ n : ENNReal)⁻¹).toReal : ℂ) *
+      ((quadraticPolyIterate c n).derivative.eval z / (quadratic c)^[n] z) =
+    ((2 ^ n : ℝ)⁻¹ : ℂ) *
+      ((quadraticPolyIterate c n).derivative.eval z / (quadratic c)^[n] z)
+  rw [hscale]
+
+/-- The counting measure has total mass equal to the multiset cardinality. -/
+theorem rootCountingMeasure_apply_univ (s : Multiset ℂ) :
+    rootCountingMeasure s Set.univ = s.card := by
+  simp [rootCountingMeasure, Multiset.card_coe]
+
+instance instIsFiniteMeasure_rootCountingMeasure (s : Multiset ℂ) :
+    IsFiniteMeasure (rootCountingMeasure s) where
+  measure_univ_lt_top := by
+    rw [rootCountingMeasure_apply_univ]
+    exact ENNReal.natCast_lt_top s.card
+
+/-- The iterate polynomial has exactly `2^n` roots over `ℂ`, counted with multiplicity. -/
+theorem roots_card_quadraticPolyIterate (c : ℂ) (n : ℕ) :
+    (quadraticPolyIterate c n).roots.card = 2 ^ n := by
+  rw [IsAlgClosed.card_roots_eq_natDegree, quadraticPolyIterate_natDegree]
+
+/-- Each finite pre-Brolin pullback measure is normalized to total mass `1`. -/
+theorem preBrolinMeasure_apply_univ (c : ℂ) (n : ℕ) :
+    preBrolinMeasure c n Set.univ = 1 := by
+  rw [preBrolinMeasure, Measure.smul_apply, rootCountingMeasure_apply_univ,
+    roots_card_quadraticPolyIterate]
+  rw [smul_eq_mul]
+  have hne : (2 ^ n : ENNReal) ≠ 0 := by simp
+  have htop : (2 ^ n : ENNReal) ≠ ⊤ := by simp
+  simpa using ENNReal.inv_mul_cancel hne htop
+
+instance instIsProbabilityMeasure_preBrolinMeasure (c : ℂ) (n : ℕ) :
+    IsProbabilityMeasure (preBrolinMeasure c n) where
+  measure_univ := preBrolinMeasure_apply_univ c n
+
+/-- The finite normalized pullback of an arbitrary target point `a` under `f_c^[n]`. -/
+noncomputable def preBrolinMeasureAt (c a : ℂ) (n : ℕ) : Measure ℂ :=
+  ((2 ^ n : ENNReal)⁻¹) •
+    rootCountingMeasure ((quadraticPolyIterate c n - Polynomial.C a).roots)
+
+/-- `f_c^[n](X) - a` is monic. -/
+theorem quadraticPolyIterate_sub_C_monic (c a : ℂ) (n : ℕ) :
+    (quadraticPolyIterate c n - Polynomial.C a).Monic := by
+  refine (quadraticPolyIterate_monic c n).sub_of_left ?_
+  have hpos : 0 < (quadraticPolyIterate c n).degree := by
+    rw [← Polynomial.natDegree_pos_iff_degree_pos, quadraticPolyIterate_natDegree]
+    positivity
+  exact lt_of_le_of_lt Polynomial.degree_C_le hpos
+
+/-- The arbitrary-target finite pre-Brolin potential is the normalized negative
+root-log sum. -/
+theorem logPotential_preBrolinMeasureAt_eq_neg_rootLogSum (c a z : ℂ) (n : ℕ) :
+    logPotential (preBrolinMeasureAt c a n) z =
+      - (2 ^ n : ℝ)⁻¹ *
+        ((quadraticPolyIterate c n - Polynomial.C a).roots.map
+          (fun r => Real.log ‖z - r‖)).sum := by
+  rw [preBrolinMeasureAt, logPotential_smul, logPotential_rootCountingMeasure]
+  have hscale : (((2 ^ n : ENNReal)⁻¹).toReal) = (2 ^ n : ℝ)⁻¹ := by
+    simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
+  have hkernel :
+      (((quadraticPolyIterate c n - Polynomial.C a).roots.map
+          (fun ζ => logKernel z ζ)).sum) =
+        - (((quadraticPolyIterate c n - Polynomial.C a).roots.map
+          (fun ζ => Real.log ‖z - ζ‖)).sum) := by
+    simp [logKernel]
+  rw [hscale, hkernel]
+  ring
+
+/-- Finite arbitrary-target Brolin potential identity away from the atoms:
+`-U^{μ_{c,a,n}}(z) = 2⁻ⁿ log ‖f_c^[n](z) - a‖`. -/
+theorem neg_logPotential_preBrolinMeasureAt_eq_log_norm {c a z : ℂ} {n : ℕ}
+    (hz : (quadratic c)^[n] z - a ≠ 0) :
+    - logPotential (preBrolinMeasureAt c a n) z =
+      (2 ^ n : ℝ)⁻¹ * Real.log ‖(quadratic c)^[n] z - a‖ := by
+  have hzeval : (quadraticPolyIterate c n - Polynomial.C a).eval z ≠ 0 := by
+    simpa [Polynomial.eval_sub, quadraticPolyIterate_eval] using hz
+  have hroots := rootLogSum_eq_log_eval_of_monic
+    (quadraticPolyIterate_sub_C_monic c a n) (z := z) hzeval
+  calc
+    - logPotential (preBrolinMeasureAt c a n) z
+        = (2 ^ n : ℝ)⁻¹ *
+            ((quadraticPolyIterate c n - Polynomial.C a).roots.map
+              (fun r => Real.log ‖z - r‖)).sum := by
+          rw [logPotential_preBrolinMeasureAt_eq_neg_rootLogSum]
+          ring
+    _ = (2 ^ n : ℝ)⁻¹ *
+          Real.log ‖(quadraticPolyIterate c n - Polynomial.C a).eval z‖ := by
+          rw [hroots]
+    _ = (2 ^ n : ℝ)⁻¹ * Real.log ‖(quadratic c)^[n] z - a‖ := by
+          rw [Polynomial.eval_sub, Polynomial.eval_C, quadraticPolyIterate_eval]
+
+/-- Pulling back any point by `f_c^[n]` gives exactly `2^n` roots over `ℂ`,
+counted with multiplicity. -/
+theorem roots_card_quadraticPolyIterate_sub_C (c a : ℂ) (n : ℕ) :
+    (quadraticPolyIterate c n - Polynomial.C a).roots.card = 2 ^ n := by
+  rw [IsAlgClosed.card_roots_eq_natDegree, Polynomial.natDegree_sub_C,
+    quadraticPolyIterate_natDegree]
+
+/-- One-step finite balancedness at the root-multiset level: the two roots of
+`f_c(X) = a`, counted with multiplicity, both push forward to `a`. -/
+theorem roots_map_quadraticPoly_sub_C (c a : ℂ) :
+    ((quadraticPoly c - Polynomial.C a).roots.map (quadratic c)) =
+      Multiset.replicate 2 a := by
+  rw [Multiset.eq_replicate]
+  constructor
+  · rw [Multiset.card_map, IsAlgClosed.card_roots_eq_natDegree, Polynomial.natDegree_sub_C,
+      quadraticPoly_natDegree]
+  · intro b hb
+    rw [Multiset.mem_map] at hb
+    rcases hb with ⟨x, hx, rfl⟩
+    have hdeg : 0 < (quadraticPoly c).degree := by
+      rw [← Polynomial.natDegree_pos_iff_degree_pos, quadraticPoly_natDegree]
+      norm_num
+    have hxroot : (quadraticPoly c).eval x = a :=
+      (Polynomial.mem_roots_sub_C hdeg).mp hx
+    simpa [quadraticPoly, quadratic_apply] using hxroot
+
+/-- Roots of the level-`n+1` target polynomial decompose as the multiset union,
+over roots of the level-`n` target polynomial, of the two one-step preimages. -/
+theorem roots_quadraticPolyIterate_succ_sub_C (c a : ℂ) (n : ℕ) :
+    (quadraticPolyIterate c (n + 1) - Polynomial.C a).roots =
+      ((quadraticPolyIterate c n - Polynomial.C a).roots.bind fun r =>
+        (quadraticPoly c - Polynomial.C r).roots) := by
+  let p : Polynomial ℂ := quadraticPolyIterate c n - Polynomial.C a
+  have hpmonic : p.Monic := by
+    dsimp [p]
+    exact quadraticPolyIterate_sub_C_monic c a n
+  have hproots : p.roots.card = p.natDegree := by
+    dsimp [p]
+    rw [roots_card_quadraticPolyIterate_sub_C, Polynomial.natDegree_sub_C,
+      quadraticPolyIterate_natDegree]
+  have hfactor : (p.roots.map fun r => Polynomial.X - Polynomial.C r).prod = p :=
+    Polynomial.prod_multiset_X_sub_C_of_monic_of_roots_card_eq hpmonic hproots
+  have hne : (0 : Polynomial ℂ) ∉ p.roots.map (fun r => quadraticPoly c - Polynomial.C r) := by
+    intro h
+    rcases Multiset.mem_map.mp h with ⟨r, _hr, hzero⟩
+    have hnd : (quadraticPoly c - Polynomial.C r).natDegree = 2 := by
+      rw [Polynomial.natDegree_sub_C, quadraticPoly_natDegree]
+    rw [hzero, Polynomial.natDegree_zero] at hnd
+    norm_num at hnd
+  calc
+    (quadraticPolyIterate c (n + 1) - Polynomial.C a).roots
+        = ((quadraticPolyIterate c n - Polynomial.C a).comp (quadraticPoly c)).roots := by
+          rw [quadraticPolyIterate_succ_sub_C_eq_comp]
+    _ = (p.comp (quadraticPoly c)).roots := by rfl
+    _ = (((p.roots.map fun r => Polynomial.X - Polynomial.C r).prod).comp
+          (quadraticPoly c)).roots := by rw [hfactor]
+    _ = ((p.roots.map fun r => quadraticPoly c - Polynomial.C r).prod).roots := by
+          congr 1
+          rw [Polynomial.multiset_prod_comp, Multiset.map_map]
+          apply congrArg Multiset.prod
+          apply Multiset.map_congr rfl
+          intro r _hr
+          simp [Polynomial.sub_comp]
+    _ = (p.roots.map fun r => quadraticPoly c - Polynomial.C r).bind Polynomial.roots := by
+          rw [Polynomial.roots_multiset_prod _ hne]
+    _ = ((quadraticPolyIterate c n - Polynomial.C a).roots.bind fun r =>
+          (quadraticPoly c - Polynomial.C r).roots) := by
+          rw [Multiset.bind_map]
+
+/-- Finite balancedness at the root-multiset level: pushing level `n+1` roots
+forward by `f_c` gives each level-`n` root with multiplicity `2`. -/
+theorem roots_map_quadraticPolyIterate_succ_sub_C (c a : ℂ) (n : ℕ) :
+    ((quadraticPolyIterate c (n + 1) - Polynomial.C a).roots.map (quadratic c)) =
+      ((quadraticPolyIterate c n - Polynomial.C a).roots.bind fun r =>
+        Multiset.replicate 2 r) := by
+  rw [roots_quadraticPolyIterate_succ_sub_C]
+  rw [Multiset.map_bind]
+  apply Multiset.bind_congr
+  intro r _hr
+  exact roots_map_quadraticPoly_sub_C c r
+
+/-- Summing over a multiset where every point is doubled multiplies the sum by `2`. -/
+theorem sum_bind_replicate_two (s : Multiset ℂ) (g : ℂ → ℝ) :
+    (((s.bind fun r => Multiset.replicate 2 r).map g).sum) =
+      2 * (s.map g).sum := by
+  rw [Multiset.map_bind, Multiset.sum_bind]
+  simp [two_mul, Multiset.sum_map_add]
+
+/-- Finite balancedness in test-function form: summing a test function after
+pushing level `n+1` roots through `f_c` gives twice the level-`n` root sum. -/
+theorem sum_quadratic_roots_quadraticPolyIterate_succ_sub_C (c a : ℂ) (n : ℕ)
+    (g : ℂ → ℝ) :
+    (((quadraticPolyIterate c (n + 1) - Polynomial.C a).roots.map
+      (fun z => g (quadratic c z))).sum) =
+      2 * (((quadraticPolyIterate c n - Polynomial.C a).roots.map g).sum) := by
+  change (((quadraticPolyIterate c (n + 1) - Polynomial.C a).roots.map
+    (g ∘ quadratic c)).sum) =
+      2 * (((quadraticPolyIterate c n - Polynomial.C a).roots.map g).sum)
+  rw [← Multiset.map_map]
+  rw [roots_map_quadraticPolyIterate_succ_sub_C, sum_bind_replicate_two]
+
+/-- Each arbitrary-target finite pre-Brolin pullback measure is normalized to
+total mass `1`. -/
+theorem preBrolinMeasureAt_apply_univ (c a : ℂ) (n : ℕ) :
+    preBrolinMeasureAt c a n Set.univ = 1 := by
+  rw [preBrolinMeasureAt, Measure.smul_apply, rootCountingMeasure_apply_univ,
+    roots_card_quadraticPolyIterate_sub_C]
+  rw [smul_eq_mul]
+  have hne : (2 ^ n : ENNReal) ≠ 0 := by simp
+  have htop : (2 ^ n : ENNReal) ≠ ⊤ := by simp
+  simpa using ENNReal.inv_mul_cancel hne htop
+
+instance instIsProbabilityMeasure_preBrolinMeasureAt (c a : ℂ) (n : ℕ) :
+    IsProbabilityMeasure (preBrolinMeasureAt c a n) where
+  measure_univ := preBrolinMeasureAt_apply_univ c a n
+
+/-- Arbitrary-target finite GAP-A Cauchy-transform identity: the normalized
+pullback measure has Cauchy transform equal to the normalized logarithmic
+derivative of `f_c^[n] - a`, away from the finite preimage atoms. -/
+theorem integral_cauchy_preBrolinMeasureAt_eq_derivative_div {c a z : ℂ} {n : ℕ}
+    (hz : (quadratic c)^[n] z - a ≠ 0) :
+    ∫ ζ, (z - ζ)⁻¹ ∂preBrolinMeasureAt c a n =
+      ((2 ^ n : ℝ)⁻¹ : ℂ) *
+        ((quadraticPolyIterate c n).derivative.eval z / ((quadratic c)^[n] z - a)) := by
+  have hzeval : (quadraticPolyIterate c n - Polynomial.C a).eval z ≠ 0 := by
+    simpa [Polynomial.eval_sub, quadraticPolyIterate_eval] using hz
+  rw [preBrolinMeasureAt, integral_smul_measure,
+    integral_cauchy_rootCountingMeasure_eq_derivative_div hzeval]
+  have hscale : (((2 ^ n : ENNReal)⁻¹).toReal : ℂ) = ((2 ^ n : ℝ)⁻¹ : ℂ) := by
+    simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
+  rw [Polynomial.derivative_sub, Polynomial.derivative_C, sub_zero, Polynomial.eval_sub,
+    Polynomial.eval_C, quadraticPolyIterate_eval]
+  change (((2 ^ n : ENNReal)⁻¹).toReal : ℂ) *
+      ((quadraticPolyIterate c n).derivative.eval z / ((quadratic c)^[n] z - a)) =
+    ((2 ^ n : ℝ)⁻¹ : ℂ) *
+      ((quadraticPolyIterate c n).derivative.eval z / ((quadratic c)^[n] z - a))
+  rw [hscale]
+
+/-- The original finite pre-Brolin measure is the arbitrary-target construction
+at target `0`. -/
+theorem preBrolinMeasureAt_zero (c : ℂ) (n : ℕ) :
+    preBrolinMeasureAt c 0 n = preBrolinMeasure c n := by
+  simp [preBrolinMeasureAt, preBrolinMeasure]
+
+/-- Zero-target arbitrary-pullback potential identity, stated through the
+arbitrary-target finite measure. -/
+theorem neg_logPotential_preBrolinMeasureAt_zero_eq_greenApprox {c z : ℂ} {n : ℕ}
+    (hz : (quadratic c)^[n] z ≠ 0) :
+    - logPotential (preBrolinMeasureAt c 0 n) z = greenApprox c z n := by
+  rw [preBrolinMeasureAt_zero]
+  exact neg_logPotential_preBrolinMeasure_eq_greenApprox hz
+
+/-- Zero-target arbitrary-pullback Cauchy identity, stated through the
+arbitrary-target finite measure. -/
+theorem integral_cauchy_preBrolinMeasureAt_zero_eq_derivative_div {c z : ℂ} {n : ℕ}
+    (hz : (quadratic c)^[n] z ≠ 0) :
+    ∫ ζ, (z - ζ)⁻¹ ∂preBrolinMeasureAt c 0 n =
+      ((2 ^ n : ℝ)⁻¹ : ℂ) *
+        ((quadraticPolyIterate c n).derivative.eval z / (quadratic c)^[n] z) := by
+  rw [preBrolinMeasureAt_zero]
+  exact integral_cauchy_preBrolinMeasure_eq_derivative_div hz
+
+/-- Finite GAP-A convergence on the immediate escape region: the normalized
+pre-Brolin potentials converge to the dynamical Green function. -/
+theorem neg_logPotential_preBrolinMeasure_tendsto_greenFunctionDyn_escape {c z : ℂ}
+    (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
+    Tendsto (fun n => - logPotential (preBrolinMeasure c n) z) atTop
+      (𝓝 (greenFunctionDyn c z)) := by
+  have hnotK : z ∉ filledJulia c := not_mem_filledJulia hc hz
+  have hgreen : greenFunctionDyn c z = greenLimit c z := by
+    simp [greenFunctionDyn, hnotK]
+  rw [hgreen]
+  refine (greenApprox_tendsto hc hz).congr' ?_
+  exact Filter.Eventually.of_forall fun n =>
+    (neg_logPotential_preBrolinMeasure_eq_greenApprox ((escape_regime_stable hc hz n).2)).symm
+
+/-- A basin point has nonzero iterates eventually.  This removes the finite
+root-collision obstruction from convergence statements: finitely many early
+atoms do not affect the limit. -/
+theorem eventually_iterate_ne_zero_of_not_mem_filledJulia {c z : ℂ}
+    (hz : z ∉ filledJulia c) :
+    ∀ᶠ n in atTop, (quadratic c)^[n] z ≠ 0 := by
+  obtain ⟨N, hN⟩ := exists_orbit_gt hz (max 2 ‖c‖)
+  have hNc : ‖c‖ ≤ ‖(quadratic c)^[N] z‖ :=
+    le_of_lt (lt_of_le_of_lt (le_max_right _ _) hN)
+  have hN2 : 2 < ‖(quadratic c)^[N] z‖ :=
+    lt_of_le_of_lt (le_max_left _ _) hN
+  filter_upwards [eventually_ge_atTop N] with n hn
+  have htail := norm_le_orbit hNc hN2 (n - N)
+  rw [← Function.iterate_add_apply, Nat.sub_add_cancel hn] at htail
+  intro hzero
+  rw [hzero, norm_zero] at htail
+  linarith
+
+/-- Finite GAP-A convergence on the whole basin: the normalized pre-Brolin
+potentials converge to the dynamical Green function outside `K_c`. -/
+theorem neg_logPotential_preBrolinMeasure_tendsto_greenFunctionDyn_basin {c z : ℂ}
+    (hz : z ∉ filledJulia c) :
+    Tendsto (fun n => - logPotential (preBrolinMeasure c n) z) atTop
+      (𝓝 (greenFunctionDyn c z)) := by
+  have hgreen : greenFunctionDyn c z = greenLimit c z := by
+    simp [greenFunctionDyn, hz]
+  rw [hgreen]
+  refine (greenApprox_tendsto_basin hz).congr' ?_
+  filter_upwards [eventually_iterate_ne_zero_of_not_mem_filledJulia hz] with n hn
+  exact (neg_logPotential_preBrolinMeasure_eq_greenApprox hn).symm
 
 /-! ## Unit-circle model kernel
 

@@ -106,3 +106,4 @@ import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional
 import GaloisForLFunctions.Bottcher.ModularLambdaLocalBiholo
 import GaloisForLFunctions.Bottcher.ThetaWronskian
 import GaloisForLFunctions.Bottcher.ModularLambdaCovering
+import GaloisForLFunctions.Bottcher.ProperLocalHomeoCovering

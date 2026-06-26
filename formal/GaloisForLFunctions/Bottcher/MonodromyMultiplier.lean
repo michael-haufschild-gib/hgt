@@ -13,6 +13,7 @@ field — the germ-field/deck-transformation construction.
 -/
 import GaloisForLFunctions.Bottcher.Period
 import GaloisForLFunctions.Bottcher.DyadicMonodromy
+import GaloisForLFunctions.Bottcher.Brolin
 
 open Complex Metric MeasureTheory
 
@@ -33,5 +34,32 @@ theorem multiplier_orderOf_of_mass (μ : Measure ℂ) [IsFiniteMeasure μ] {c : 
       show 2 * (Real.pi : ℂ) * Complex.I * ((((2 ^ n : ℕ) : ℝ))⁻¹ : ℝ)
          = 2 * (Real.pi : ℂ) * Complex.I / (((2 ^ n : ℕ) : ℂ)) from by push_cast; ring]
   exact orderOf_dyadicRoot n
+
+/-- GAP-A/hDisc period bridge for the packaged Brolin measure `μ_c`.
+Once a `BrolinMeasure c` is supplied, its underlying Riesz measure is a probability
+measure and can be fed directly into the contour-period formula. -/
+theorem period_eq_brolinMeasure {c : ℂ} (M : BrolinMeasure c) {a : ℂ} {R : ℝ}
+    (h0 : 0 ≤ R) (hsphere : M.μ (sphere a R) = 0)
+    (hint : Integrable (Function.uncurry fun (θ : ℝ) (ζ : ℂ) =>
+        deriv (circleMap a R) θ • (circleMap a R θ - ζ)⁻¹)
+      ((volume.restrict (Set.Ioc 0 (2 * Real.pi))).prod M.μ)) :
+    (∮ z in C(a, R), ∫ ζ, (z - ζ)⁻¹ ∂M.μ)
+      = 2 * (Real.pi : ℂ) * Complex.I * (M.μ (ball a R)).toReal := by
+  haveI : IsProbabilityMeasure M.μ := M.probOn.1
+  exact period_eq M.μ h0 hsphere hint
+
+/-- GAP-A/hDisc multiplier bridge for `μ_c`: if a separated loop encloses Brolin
+mass `2⁻ⁿ`, the corresponding Cauchy-transform period gives a primitive
+`2ⁿ`-th multiplier. -/
+theorem multiplier_orderOf_brolinMeasure_of_mass {c : ℂ} (M : BrolinMeasure c)
+    {a : ℂ} {R : ℝ} (n : ℕ) (h0 : 0 ≤ R)
+    (hsphere : M.μ (sphere a R) = 0)
+    (hint : Integrable (Function.uncurry fun (θ : ℝ) (ζ : ℂ) =>
+        deriv (circleMap a R) θ • (circleMap a R θ - ζ)⁻¹)
+      ((volume.restrict (Set.Ioc 0 (2 * Real.pi))).prod M.μ))
+    (hmass : (M.μ (ball a R)).toReal = (((2 ^ n : ℕ) : ℝ))⁻¹) :
+    orderOf (Complex.exp (∮ z in C(a, R), ∫ ζ, (z - ζ)⁻¹ ∂M.μ)) = 2 ^ n := by
+  haveI : IsProbabilityMeasure M.μ := M.probOn.1
+  exact multiplier_orderOf_of_mass M.μ n h0 hsphere hint hmass
 
 end Bottcher
