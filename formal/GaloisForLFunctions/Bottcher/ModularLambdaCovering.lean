@@ -714,4 +714,161 @@ theorem Gamma2_abs_trace_ge_two {g : SL(2, ℤ)} (hg : g ∈ CongruenceSubgroup.
   rw [he, le_abs]
   omega
 
+
+/-! ### Boundary-arc monotonicity (step 2 of fundamental-domain univalence)
+
+Along each of the three boundary arcs of the `Γ(2)` half fundamental domain, `λ` is real (boundary
+correspondence) and `λ' ≠ 0`; the real-valued path therefore has a nowhere-vanishing real derivative,
+forcing strict monotonicity hence injectivity on the arc. `injOn_arc` packages the argument for an
+arbitrary smooth path into `ℍ`; the three named corollaries instantiate the imaginary axis (`Re=0`),
+the line `Re=1`, and the unit semicircle `|2τ−1|=1`. -/
+
+theorem injOn_of_real_deriv_ne_zero {g g' : ℝ → ℝ} {s : Set ℝ}
+    (hconv : Convex ℝ s) (hd : ∀ t ∈ s, HasDerivAt g (g' t) t)
+    (hc : ContinuousOn g' s) (hne : ∀ t ∈ s, g' t ≠ 0) :
+    Set.InjOn g s := by
+  rcases Set.eq_empty_or_nonempty s with hs | ⟨t₀, ht₀⟩
+  · subst hs; exact Set.injOn_empty g
+  rcases lt_or_gt_of_ne (hne t₀ ht₀) with hneg | hpos
+  · have hall : ∀ t ∈ s, g' t < 0 := by
+      intro t ht
+      rcases lt_or_gt_of_ne (hne t ht) with h | h
+      · exact h
+      · exfalso
+        have hsub : Set.uIcc t₀ t ⊆ s := by rw [← segment_eq_uIcc]; exact hconv.segment_subset ht₀ ht
+        obtain ⟨c, hc1, hc2⟩ := intermediate_value_uIcc (hc.mono hsub)
+          (show (0:ℝ) ∈ Set.uIcc (g' t₀) (g' t) by
+            rw [Set.uIcc_of_le (le_of_lt (hneg.trans h))]; exact ⟨le_of_lt hneg, le_of_lt h⟩)
+        exact hne c (hsub hc1) hc2
+    exact (strictAntiOn_of_hasDerivWithinAt_neg hconv
+      (fun t ht => (hd t ht).continuousAt.continuousWithinAt)
+      (fun t ht => (hd t (interior_subset ht)).hasDerivWithinAt)
+      (fun t ht => hall t (interior_subset ht))).injOn
+  · have hall : ∀ t ∈ s, 0 < g' t := by
+      intro t ht
+      rcases lt_or_gt_of_ne (hne t ht) with h | h
+      · exfalso
+        have hsub : Set.uIcc t₀ t ⊆ s := by rw [← segment_eq_uIcc]; exact hconv.segment_subset ht₀ ht
+        obtain ⟨c, hc1, hc2⟩ := intermediate_value_uIcc (hc.mono hsub)
+          (show (0:ℝ) ∈ Set.uIcc (g' t₀) (g' t) by
+            rw [Set.uIcc_of_ge (le_of_lt (h.trans hpos))]; exact ⟨le_of_lt h, le_of_lt hpos⟩)
+        exact hne c (hsub hc1) hc2
+      · exact h
+    exact (strictMonoOn_of_hasDerivWithinAt_pos hconv
+      (fun t ht => (hd t ht).continuousAt.continuousWithinAt)
+      (fun t ht => (hd t (interior_subset ht)).hasDerivWithinAt)
+      (fun t ht => hall t (interior_subset ht))).injOn
+
+theorem continuousOn_deriv_modularLambda :
+    ContinuousOn (deriv modularLambda) {z : ℂ | 0 < z.im} := by
+  have hopen : IsOpen {z : ℂ | 0 < z.im} := isOpen_lt continuous_const Complex.continuous_im
+  have hdiff : DifferentiableOn ℂ modularLambda {z : ℂ | 0 < z.im} :=
+    fun z hz => (differentiableAt_modularLambda_of_im_pos hz).differentiableWithinAt
+  exact ((hdiff.analyticOnNhd hopen).deriv).continuousOn
+
+/-- **Master arc-injectivity lemma.** A smooth path `p` into `ℍ` along which `λ` is real and whose
+velocity `pd` never vanishes ⟹ `λ∘p` is injective on the open convex parameter set `s`. -/
+theorem injOn_arc {p pd : ℝ → ℂ} {s : Set ℝ}
+    (hconv : Convex ℝ s) (hsopen : IsOpen s)
+    (hp : ∀ θ ∈ s, HasDerivAt p (pd θ) θ) (hpd : ∀ θ ∈ s, pd θ ≠ 0)
+    (him : ∀ θ ∈ s, 0 < (p θ).im) (hreal : ∀ θ ∈ s, (modularLambda (p θ)).im = 0)
+    (hcont_pd : ContinuousOn pd s) (hcont_p : ContinuousOn p s) :
+    Set.InjOn (fun θ => modularLambda (p θ)) s := by
+  have hγ' : ∀ θ ∈ s, HasDerivAt (fun u => modularLambda (p u))
+      (pd θ • deriv modularLambda (p θ)) θ :=
+    fun θ hθ => ((differentiableAt_modularLambda_of_im_pos (him θ hθ)).hasDerivAt).scomp θ (hp θ hθ)
+  have hImZero : ∀ θ ∈ s, (pd θ * deriv modularLambda (p θ)).im = 0 := by
+    intro θ hθ
+    have hev : (fun u : ℝ => (modularLambda (p u)).im) =ᶠ[nhds θ] (fun _ => (0:ℝ)) := by
+      filter_upwards [hsopen.mem_nhds hθ] with u hu using hreal u hu
+    have hd_im : HasDerivAt (fun u : ℝ => (modularLambda (p u)).im)
+        ((pd θ • deriv modularLambda (p θ)).im) θ := by
+      simpa using Complex.imCLM.hasFDerivAt.comp_hasDerivAt θ (hγ' θ hθ)
+    have hd0 : HasDerivAt (fun u : ℝ => (modularLambda (p u)).im) 0 θ :=
+      (hasDerivAt_const θ (0:ℝ)).congr_of_eventuallyEq hev
+    simpa using hd_im.unique hd0
+  set g' : ℝ → ℝ := fun θ => (pd θ * deriv modularLambda (p θ)).re with hg'def
+  set g : ℝ → ℝ := fun θ => (modularLambda (p θ)).re with hgdef
+  have hInjg : Set.InjOn g s := by
+    apply injOn_of_real_deriv_ne_zero (g' := g') hconv
+    · intro θ hθ
+      simpa only [Function.comp, Complex.reCLM_apply, smul_eq_mul, hg'def]
+        using Complex.reCLM.hasFDerivAt.comp_hasDerivAt θ (hγ' θ hθ)
+    · have hdml : ContinuousOn (fun θ => deriv modularLambda (p θ)) s :=
+        continuousOn_deriv_modularLambda.comp hcont_p (fun θ hθ => him θ hθ)
+      exact Complex.continuous_re.comp_continuousOn (hcont_pd.mul hdml)
+    · intro θ hθ
+      have hγne : pd θ * deriv modularLambda (p θ) ≠ 0 :=
+        mul_ne_zero (hpd θ hθ) (modularLambda_deriv_ne_zero' (him θ hθ))
+      show (pd θ * deriv modularLambda (p θ)).re ≠ 0
+      intro hre
+      exact hγne (Complex.ext hre (hImZero θ hθ))
+  intro a ha b hb hab
+  exact hInjg ha hb (congrArg Complex.re hab)
+
+/-- Re = 0 arc (imaginary axis): `t ↦ λ(it)` injective on `(0,∞)`. -/
+theorem modularLambda_injOn_imAxis :
+    Set.InjOn (fun t : ℝ => modularLambda ((t:ℂ)*Complex.I)) (Set.Ioi (0:ℝ)) := by
+  apply injOn_arc (p := fun t => (t:ℂ)*Complex.I) (pd := fun _ => Complex.I) (convex_Ioi 0) isOpen_Ioi
+  · intro θ _; simpa using (Complex.ofRealCLM.hasDerivAt (x := θ)).mul_const Complex.I
+  · intro _ _; exact Complex.I_ne_zero
+  · intro θ hθ
+    simp only [Complex.mul_im, Complex.I_im, Complex.I_re, Complex.ofReal_re, Complex.ofReal_im,
+      mul_one, mul_zero, add_zero]
+    exact Set.mem_Ioi.mp hθ
+  · intro θ _; exact modularLambda_im_axis_real
+  · exact continuousOn_const
+  · exact (Complex.continuous_ofReal.mul continuous_const).continuousOn
+
+/-- Re = 1 arc: `t ↦ λ(1+it)` injective on `(0,∞)`. -/
+theorem modularLambda_injOn_reOne :
+    Set.InjOn (fun t : ℝ => modularLambda (1 + (t:ℂ)*Complex.I)) (Set.Ioi (0:ℝ)) := by
+  apply injOn_arc (p := fun t => 1 + (t:ℂ)*Complex.I) (pd := fun _ => Complex.I) (convex_Ioi 0) isOpen_Ioi
+  · intro θ _
+    have hmI : HasDerivAt (fun t : ℝ => (t:ℂ)*Complex.I) Complex.I θ := by
+      simpa using (Complex.ofRealCLM.hasDerivAt (x := θ)).mul_const Complex.I
+    have h := (hasDerivAt_const θ (1:ℂ)).add hmI
+    rwa [zero_add] at h
+  · intro _ _; exact Complex.I_ne_zero
+  · intro θ hθ
+    simp only [Complex.add_im, Complex.one_im, Complex.mul_im, Complex.I_im, Complex.I_re,
+      Complex.ofReal_re, Complex.ofReal_im, mul_one, mul_zero, add_zero, zero_add]
+    exact Set.mem_Ioi.mp hθ
+  · intro θ _; exact modularLambda_re_one_real
+  · exact continuousOn_const
+  · exact (continuous_const.add (Complex.continuous_ofReal.mul continuous_const)).continuousOn
+
+/-- Semicircle arc `|2τ−1|=1`: `θ ↦ λ((1+e^{iθ})/2)` injective on `(0,π)`. -/
+theorem modularLambda_injOn_circle :
+    Set.InjOn (fun θ : ℝ => modularLambda ((1 + Complex.exp (Complex.I*(θ:ℂ)))/2)) (Set.Ioo 0 Real.pi) := by
+  have hpim : ∀ θ : ℝ, ((1 + Complex.exp (Complex.I*(θ:ℂ)))/2).im = Real.sin θ / 2 := by
+    intro θ
+    rw [show (2:ℂ) = ((2:ℝ):ℂ) by norm_num, Complex.div_ofReal_im,
+        show Complex.I*(θ:ℂ) = (θ:ℂ)*Complex.I from mul_comm _ _]
+    simp [Complex.exp_ofReal_mul_I_im]
+  apply injOn_arc (p := fun θ => (1 + Complex.exp (Complex.I*(θ:ℂ)))/2)
+    (pd := fun θ => Complex.I * Complex.exp (Complex.I*(θ:ℂ))/2) (convex_Ioo 0 Real.pi) isOpen_Ioo
+  · intro θ _
+    have hexp : HasDerivAt (fun u:ℝ => Complex.exp (Complex.I*(u:ℂ))) (Complex.I * Complex.exp (Complex.I*(θ:ℂ))) θ := by
+      have h1 : HasDerivAt (fun u:ℝ => Complex.I*(u:ℂ)) Complex.I θ := by
+        simpa using (Complex.ofRealCLM.hasDerivAt (x:=θ)).const_mul Complex.I
+      simpa using (Complex.hasDerivAt_exp (Complex.I*(θ:ℂ))).scomp θ h1
+    have h := ((hasDerivAt_const θ (1:ℂ)).add hexp).div_const 2
+    simpa using h
+  · intro θ _
+    exact div_ne_zero (mul_ne_zero Complex.I_ne_zero (Complex.exp_ne_zero _)) two_ne_zero
+  · intro θ hθ
+    rw [hpim θ]; exact div_pos (Real.sin_pos_of_pos_of_lt_pi hθ.1 hθ.2) two_pos
+  · intro θ hθ
+    apply modularLambda_circle_real
+    · rw [hpim θ]; exact div_pos (Real.sin_pos_of_pos_of_lt_pi hθ.1 hθ.2) two_pos
+    · have hsimp : 2 * ((1 + Complex.exp (Complex.I*(θ:ℂ)))/2) - 1 = Complex.exp (Complex.I*(θ:ℂ)) := by ring
+      rw [hsimp, show Complex.I*(θ:ℂ) = (θ:ℂ)*Complex.I from mul_comm _ _, Complex.normSq_apply,
+          Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im]
+      linear_combination Real.sin_sq_add_cos_sq θ
+  · exact ((continuous_const.mul (Complex.continuous_exp.comp
+      (continuous_const.mul Complex.continuous_ofReal))).div_const 2).continuousOn
+  · exact ((continuous_const.add (Complex.continuous_exp.comp
+      (continuous_const.mul Complex.continuous_ofReal))).div_const 2).continuousOn
+
 end Bottcher
