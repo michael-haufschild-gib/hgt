@@ -20,6 +20,7 @@ import GaloisForLFunctions.Bottcher.AnalyticDomain
 import GaloisForLFunctions.Bottcher.MonodromyObstruction
 import GaloisForLFunctions.Bottcher.LogPotential
 import GaloisForLFunctions.Bottcher.Capacity
+import GaloisForLFunctions.Bottcher.Brolin
 import GaloisForLFunctions.Bottcher.EnergyVariation
 import GaloisForLFunctions.Bottcher.CapacitySeparation
 import GaloisForLFunctions.Bottcher.AlgIndep
