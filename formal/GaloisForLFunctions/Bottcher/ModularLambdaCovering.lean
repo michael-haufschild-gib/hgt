@@ -638,6 +638,47 @@ theorem modularLambda_re_one_real {t : ℝ} :
   rw [← modularLambda_add_two (-(starRingEnd ℂ) (1 + (t : ℂ) * Complex.I)), hfix] at h
   exact Complex.conj_eq_iff_im.mp h.symm
 
+/-- **`λ` is real on the semicircle `|2τ−1| = 1`** (the arc from cusp `0` to cusp `1`). The reflection
+across this circle is `τ ↦ (−conj τ)/(2(−conj τ)+1) = R•(−conj τ)` with `R = [[1,0],[2,1]] ∈ Γ(2)`; so
+`λ(τ) = λ(R•(−conj τ)) = λ(−conj τ) = conj(λ τ)` on the circle. The **third and last boundary arc** of
+the fundamental-domain correspondence — `λ(∂F) ⊆ ℝ` is now complete. -/
+theorem modularLambda_circle_real {τ : ℂ} (hτ : 0 < τ.im)
+    (hc : Complex.normSq (2 * τ - 1) = 1) : (modularLambda τ).im = 0 := by
+  have hreal : Complex.normSq τ = τ.re := by
+    have h1 : (2 * τ - 1).re = 2 * τ.re - 1 := by simp
+    have h2 : (2 * τ - 1).im = 2 * τ.im := by simp
+    rw [Complex.normSq_apply, h1, h2] at hc
+    rw [Complex.normSq_apply]
+    nlinarith [hc]
+  have hden : 2 * (starRingEnd ℂ) τ - 1 ≠ 0 := by
+    intro h
+    have hc2 : (starRingEnd ℂ) τ = 1 / 2 := by linear_combination h / 2
+    have him0 : τ.im = 0 := by
+      have := congrArg Complex.im hc2
+      simp [Complex.conj_im] at this
+      linarith
+    linarith [hτ, him0]
+  have hfix : τ * (2 * (starRingEnd ℂ) τ - 1) = (starRingEnd ℂ) τ := by
+    have hmc : τ * (starRingEnd ℂ) τ = (Complex.normSq τ : ℂ) := Complex.mul_conj τ
+    have hac : τ + (starRingEnd ℂ) τ = 2 * (τ.re : ℂ) := by rw [Complex.add_conj]; push_cast; ring
+    have hrc : (Complex.normSq τ : ℂ) = (τ.re : ℂ) := by exact_mod_cast hreal
+    linear_combination 2 * hmc + 2 * hrc - hac
+  have hτeq : τ = (starRingEnd ℂ) τ / (2 * (starRingEnd ℂ) τ - 1) := by
+    rw [eq_div_iff hden]; exact hfix
+  have hden2 : 2 * (-(starRingEnd ℂ) τ) + 1 ≠ 0 := by
+    rw [show 2 * (-(starRingEnd ℂ) τ) + 1 = -(2 * (starRingEnd ℂ) τ - 1) from by ring]
+    exact neg_ne_zero.mpr hden
+  have halg : (starRingEnd ℂ) τ / (2 * (starRingEnd ℂ) τ - 1)
+      = (-(starRingEnd ℂ) τ) / (2 * (-(starRingEnd ℂ) τ) + 1) := by
+    rw [div_eq_div_iff hden hden2]; ring
+  have hρ : 0 < (-(starRingEnd ℂ) τ).im := by
+    rw [Complex.neg_im, Complex.conj_im]; simpa using hτ
+  have hreduce : (-(starRingEnd ℂ) τ) / (2 * (-(starRingEnd ℂ) τ) + 1) = τ :=
+    halg.symm.trans hτeq.symm
+  have hlam : modularLambda τ = modularLambda (-(starRingEnd ℂ) τ) :=
+    (congrArg modularLambda hreduce.symm).trans (modularLambda_Gamma2_gen' hρ)
+  exact Complex.conj_eq_iff_im.mp (hlam.trans (modularLambda_conj τ)).symm
+
 /-! ### `Γ(2)` has no elliptic elements (`|trace| ≥ 2`) — the free-action core for the covering.
 
 Every `γ ∈ Γ(2)` has `trace ≡ 2 (mod 4)`: the diagonal entries are odd, the off-diagonal even, and the
