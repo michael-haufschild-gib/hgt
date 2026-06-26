@@ -402,4 +402,245 @@ theorem phiMero_transcendental_of_repelling_input {U : Set ℂ}
   exact ⟨p, lam, w₀, d, z₀, hroot, hpartial, hd, hFz, hlam, hw₀, hw0ne,
     nonresonant_of_norm_gt hnorm⟩
 
+/-- **Connected-case transcendence via the NATURAL-BOUNDARY route — spectrum-free.** `φ_c = phiMero c` is
+transcendental over `ℂ(z)` provided that for each minimal simple-root relation `P` there is a **dendrite
+Julia point** `z₀` (`z₀ ∈ K_c`, empty `K_c`-interior near it) that is a simple root `(z₀, w₀)` of `P`,
+reached by a basin branch `β` (the continued `φ_c`) tending to `w₀` with the relation and the genuine
+modulus `‖β‖ = exp(G_c)` along the basin. Then `false_of_basin_branch_dendrite` (the natural-boundary
+obstruction) closes it. This is the connected-case analogue of `phiMero_transcendental_of_periodic_input'`
+but needs **NO multiplier-spectrum / non-resonant-cycle input** — the obstruction is the natural boundary
+of `J_c`, not a periodic-point resonance. The remaining input is the basin continuation `β` reaching a
+dendrite Julia point (single-valued for connected `J_c`), the shared core with `hDisc`. -/
+theorem phiMero_transcendental_of_dendrite_input {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c : ℂ) (hU : U ⊆ escapeOpen c)
+    (hinput : ∀ P : Polynomial (Polynomial ℂ), P ≠ 0 → 1 ≤ P.natDegree →
+        (∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c z) ^ i = 0) →
+        (∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+          (∀ z ∈ U, ∑ i ∈ R.support, (R.coeff i).aeval z * (bottcherCoord c z) ^ i = 0) →
+          P.natDegree ≤ R.natDegree) →
+        {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
+          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c z) ^ i = 0}.Countable →
+        ∃ (z₀ w₀ d : ℂ) (r : ℝ) (β : ℂ → ℂ),
+          0 < r ∧ z₀ ∈ filledJulia c ∧ Metric.ball z₀ r ∩ interior (filledJulia c) = ∅ ∧
+          (∑ i ∈ P.support, (P.coeff i).aeval z₀ * w₀ ^ i = 0) ∧
+          HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * w ^ i) d w₀ ∧ d ≠ 0 ∧
+          Tendsto β (𝓝[(filledJulia c)ᶜ] z₀) (𝓝 w₀) ∧
+          (∀ᶠ z in 𝓝[(filledJulia c)ᶜ] z₀,
+            ∑ i ∈ P.support, (P.coeff i).aeval z * (β z) ^ i = 0) ∧
+          (∀ᶠ z in 𝓝[(filledJulia c)ᶜ] z₀, ‖β z‖ = Real.exp (greenFunctionDyn c z))) :
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    Transcendental (RatFunc ℂ) (phiMero c hU) := by
+  apply phiMero_transcendental_of_no_minimal_relation_min hUo hUc hUne hUinf c hU
+  intro P hP0 hdeg hPrel hPmin hcount
+  obtain ⟨z₀, w₀, d, r, β, hr, hz₀, hempty, hroot, hpartial, hd, hβlim, hβrel, hβmod⟩ :=
+    hinput P hP0 hdeg hPrel hPmin hcount
+  exact false_of_basin_branch_dendrite P hr hz₀ hempty hroot hpartial hd hβlim hβrel hβmod
+
+/-- **The relation's `w`-derivative is the fibre polynomial's formal derivative.** `∂_w [∑ᵢ (P.coeff i)(z₀)·wⁱ]`
+at `w₀` equals `(P.map(eval z₀))'.eval w₀`. Packages the simple-root partial-derivative datum `hpartial`/`d`
+that `exists_analyticAt_branch_poly` consumes directly from the fibre polynomial. -/
+theorem relation_hasDerivAt_w (P : Polynomial (Polynomial ℂ)) (z₀ w₀ : ℂ) :
+    HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * w ^ i)
+      ((P.map (Polynomial.evalRingHom z₀)).derivative.eval w₀) w₀ := by
+  have hfun : (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * w ^ i)
+      = (fun w => (P.map (Polynomial.evalRingHom z₀)).eval w) := by
+    funext w; rw [relation_eq_eval_map]
+  rw [hfun]
+  exact (P.map (Polynomial.evalRingHom z₀)).hasDerivAt w₀
+
+/-- **A root of a separable polynomial is simple**: the formal derivative does not vanish there. From
+`IsCoprime q q.derivative` (the definition of `Separable`): `a·q + b·q' = 1`, evaluated at the root forces
+`q'.eval w₀ ≠ 0`. This is what turns "the fibre `P.map(eval z₀)` is separable at a dendrite Julia point" into
+the simple-root hypothesis `d ≠ 0` of `exists_analyticAt_branch_poly` (via `relation_hasDerivAt_w`), for
+*every* root simultaneously — the separation that makes the branch family pairwise distinct. -/
+theorem eval_derivative_ne_zero_of_separable {q : Polynomial ℂ} (hsep : q.Separable)
+    {w₀ : ℂ} (hroot : q.eval w₀ = 0) : q.derivative.eval w₀ ≠ 0 := by
+  obtain ⟨a, b, hab⟩ := hsep
+  intro hderiv
+  have h := congrArg (Polynomial.eval w₀) hab
+  simp only [Polynomial.eval_add, Polynomial.eval_mul, hroot, hderiv, mul_zero, add_zero,
+    Polynomial.eval_one] at h
+  exact zero_ne_one h
+
+/-- **The fibre degree is constant `= P.natDegree` where the leading coefficient does not vanish.** Off the
+finite zero-set of `z ↦ (P.coeff P.natDegree)(z)` the fibre `P.map(eval z)` has full degree `P.natDegree`.
+(Without this the fibre degree only jumps up near `z₀`, and exhaustion would miss the extra roots — so the
+dendrite Julia point `z₀` must be chosen off this finite bad-set, which is automatic for the uncountable
+dendrite.) Supplies the `hdeg` hypothesis of `eqOn_branch_of_relation` on a whole ball, by continuity of the
+leading coefficient. -/
+theorem fiber_natDegree_eq {P : Polynomial (Polynomial ℂ)} {z : ℂ}
+    (h : (P.coeff P.natDegree).eval z ≠ 0) :
+    (P.map (Polynomial.evalRingHom z)).natDegree = P.natDegree := by
+  apply Polynomial.natDegree_map_of_leadingCoeff_ne_zero
+  rwa [Polynomial.coe_evalRingHom, Polynomial.leadingCoeff]
+
+/-- **Finitely many germs distinct at `z₀` stay pairwise distinct on a neighbourhood.** For the analytic
+root-branches `g k` (`g k z₀` the distinct roots of the separable fibre), separation propagates to a whole
+ball — the `hsep` hypothesis of `eqOn_branch_of_relation`. (Each pair `g k - g l` is continuous and nonzero
+at `z₀`, hence nonzero nearby; finitely many pairs intersect to one neighbourhood.) -/
+theorem eventually_separated {N : ℕ} (g : Fin N → ℂ → ℂ) {z₀ : ℂ}
+    (hg : ∀ k, ContinuousAt (g k) z₀)
+    (hdist : ∀ k l, k ≠ l → g k z₀ ≠ g l z₀) :
+    ∀ᶠ z in 𝓝 z₀, ∀ k l, k ≠ l → g k z ≠ g l z := by
+  rw [eventually_all]
+  intro k
+  rw [eventually_all]
+  intro l
+  by_cases hkl : k = l
+  · exact Filter.Eventually.of_forall (fun z h => absurd hkl h)
+  · have hsub : ContinuousAt (fun z => g k z - g l z) z₀ := (hg k).sub (hg l)
+    have hne : (fun z => g k z - g l z) z₀ ≠ 0 := sub_ne_zero.mpr (hdist k l hkl)
+    filter_upwards [hsub.eventually_ne hne] with z hz _
+    exact sub_ne_zero.mp hz
+
+/-- **The analytic branch family of a separable fibre.** At `z₀` with non-vanishing leading coefficient
+(`hlead`, full fibre degree `N = P.natDegree`) and *separable* fibre `P.map(eval z₀)`, there is a ball on
+which the `N` roots of the fibre extend to `N` pairwise-separated analytic branches `w k`, each satisfying
+the relation, with the fibre degree constant `= N`. Construction: index the `N` distinct roots of the
+separable fibre (`nodup_roots` + `card_roots_eq_natDegree`) by `Fin N`; at each (a *simple* root, by
+`eval_derivative_ne_zero_of_separable`) the implicit-function branch `exists_analyticAt_branch_poly` gives an
+analytic germ (partial-derivative datum from `relation_hasDerivAt_w`); the germs are distinct at `z₀`, so
+`eventually_separated` keeps them separated nearby, and `fiber_natDegree_eq` keeps the degree constant —
+intersect the finitely many neighbourhoods. This is the exact input `eqOn_branch_of_relation` consumes. -/
+theorem exists_branch_family {P : Polynomial (Polynomial ℂ)} {z₀ : ℂ}
+    (hN : 1 ≤ P.natDegree)
+    (hlead : (P.coeff P.natDegree).eval z₀ ≠ 0)
+    (hsep : (P.map (Polynomial.evalRingHom z₀)).Separable) :
+    ∃ (r : ℝ) (w : Fin P.natDegree → ℂ → ℂ), 0 < r ∧
+      (∀ k, ContinuousOn (w k) (Metric.ball z₀ r)) ∧
+      (∀ z ∈ Metric.ball z₀ r, ∀ k l, k ≠ l → w k z ≠ w l z) ∧
+      (∀ z ∈ Metric.ball z₀ r, (P.map (Polynomial.evalRingHom z)).natDegree = P.natDegree) ∧
+      (∀ k, ∀ z ∈ Metric.ball z₀ r, ∑ i ∈ P.support, (P.coeff i).aeval z * (w k z) ^ i = 0) := by
+  classical
+  set N := P.natDegree with hNdef
+  set Q₀ := P.map (Polynomial.evalRingHom z₀) with hQ₀def
+  have hQ0deg : Q₀.natDegree = N := fiber_natDegree_eq hlead
+  have hQ0 : Q₀ ≠ 0 := fun h => by rw [h, Polynomial.natDegree_zero] at hQ0deg; omega
+  have hnd : Q₀.roots.Nodup := Polynomial.nodup_roots hsep
+  have hcard : Fintype.card ↥(Q₀.roots.toFinset) = N := by
+    rw [Fintype.card_coe, Multiset.toFinset_card_of_nodup hnd,
+      IsAlgClosed.card_roots_eq_natDegree, hQ0deg]
+  set e : ↥(Q₀.roots.toFinset) ≃ Fin N := Fintype.equivFinOfCardEq hcard with hedef
+  set root : Fin N → ℂ := fun k => (e.symm k).val with hrootdef
+  have hex : ∀ k : Fin N, ∃ g : ℂ → ℂ, AnalyticAt ℂ g z₀ ∧ g z₀ = root k ∧
+      ∀ᶠ z in 𝓝 z₀, ∑ i ∈ P.support, (P.coeff i).aeval z * (g z) ^ i = 0 := by
+    intro k
+    have hrk_mem : root k ∈ Q₀.roots := Multiset.mem_toFinset.mp (e.symm k).2
+    have hrk_root : Q₀.eval (root k) = 0 := (Polynomial.mem_roots hQ0).mp hrk_mem
+    have hroot' : ∑ i ∈ P.support, (P.coeff i).aeval z₀ * (root k) ^ i = 0 := by
+      rw [relation_eq_eval_map]; exact hrk_root
+    have hpart : HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * w ^ i)
+        (Q₀.derivative.eval (root k)) (root k) := relation_hasDerivAt_w P z₀ (root k)
+    have hd : Q₀.derivative.eval (root k) ≠ 0 := eval_derivative_ne_zero_of_separable hsep hrk_root
+    exact exists_analyticAt_branch_poly P hroot' hpart hd
+  choose g hg_an hg_val hg_rel using hex
+  have hcont : ∀ k, ContinuousAt (g k) z₀ := fun k => (hg_an k).continuousAt
+  have hdist : ∀ k l, k ≠ l → g k z₀ ≠ g l z₀ := by
+    intro k l hkl
+    rw [hg_val k, hg_val l]
+    intro h
+    exact hkl (e.symm.injective (Subtype.ext h))
+  have hsep_ev : ∀ᶠ z in 𝓝 z₀, ∀ k l, k ≠ l → g k z ≠ g l z := eventually_separated g hcont hdist
+  have hrel_ev : ∀ᶠ z in 𝓝 z₀, ∀ k, ∑ i ∈ P.support, (P.coeff i).aeval z * (g k z) ^ i = 0 :=
+    eventually_all.mpr hg_rel
+  have han_ev : ∀ᶠ z in 𝓝 z₀, ∀ k, AnalyticAt ℂ (g k) z :=
+    eventually_all.mpr (fun k => (hg_an k).eventually_analyticAt)
+  have hdeg_ev : ∀ᶠ z in 𝓝 z₀, (P.map (Polynomial.evalRingHom z)).natDegree = N := by
+    have hc : ContinuousAt (fun z => (P.coeff N).eval z) z₀ :=
+      (Polynomial.continuous_eval₂ (P.coeff N) (RingHom.id ℂ)).continuousAt
+    filter_upwards [hc.eventually_ne hlead] with z hz
+    exact fiber_natDegree_eq hz
+  have hall := hsep_ev.and (hrel_ev.and (han_ev.and hdeg_ev))
+  rw [Metric.eventually_nhds_iff] at hall
+  obtain ⟨r, hr, hball⟩ := hall
+  refine ⟨r, g, hr, ?_, ?_, ?_, ?_⟩
+  · intro k
+    have han : AnalyticOnNhd ℂ (g k) (Metric.ball z₀ r) := fun z hz =>
+      (hball (Metric.mem_ball.mp hz)).2.2.1 k
+    exact han.continuousOn
+  · intro z hz; exact (hball (Metric.mem_ball.mp hz)).1
+  · intro z hz; exact (hball (Metric.mem_ball.mp hz)).2.2.2
+  · intro k z hz; exact (hball (Metric.mem_ball.mp hz)).2.1 k
+
+/-- **β follows one analytic branch (from the relation).** On a preconnected basin set `U`, a continuous
+`β` satisfying the relation `∑ᵢ (P.coeff i)(z)·(β z)ⁱ = 0` is, at each `z`, a root of the fibre polynomial
+`P.map(eval z)`; when that fibre has constant degree `d` carrying `d` pairwise-separated continuous root
+branches `w k`, exhaustion (`root_eq_of_card_branches`) forces `β z ∈ {w k z}` and branch-following
+(`eq_one_branch_of_valued_in_separated`) forces a single `k` with `β = w k` on all of `U`. This is the
+linchpin of the dendrite-route `hβlim`: it gives `β` a definite analytic branch on the connected basin side
+of a Julia point, hence (via `tendsto_within_of_eqOn`, `w k` continuous at `z₀`) a boundary limit `w k z₀` —
+the simple root `w₀` — *without invoking Carathéodory boundary extension*, using only the hypothetical
+algebraicity of `φ_c` (the relation) to pin the limit. -/
+theorem eqOn_branch_of_relation {P : Polynomial (Polynomial ℂ)} {U : Set ℂ} {d : ℕ} (hd1 : 1 ≤ d)
+    (w : Fin d → ℂ → ℂ) (β : ℂ → ℂ) (hUc : IsPreconnected U)
+    (hwc : ∀ k, ContinuousOn (w k) U) (hβc : ContinuousOn β U)
+    (hsep : ∀ z ∈ U, ∀ k l, k ≠ l → w k z ≠ w l z)
+    (hdeg : ∀ z ∈ U, (P.map (Polynomial.evalRingHom z)).natDegree = d)
+    (hwroot : ∀ k, ∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (w k z) ^ i = 0)
+    (hβrel : ∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (β z) ^ i = 0)
+    {z₀ : ℂ} (hz₀ : z₀ ∈ U) :
+    ∃ k, Set.EqOn β (w k) U := by
+  have hval : ∀ z ∈ U, ∃ k, β z = w k z := by
+    intro z hz
+    have hinj : Function.Injective (fun k => w k z) := by
+      intro k l hkl; by_contra h; exact hsep z hz k l h hkl
+    have hroots : ∀ k, (P.map (Polynomial.evalRingHom z)).eval (w k z) = 0 := fun k => by
+      rw [← relation_eq_eval_map]; exact hwroot k z hz
+    have hβroot : (P.map (Polynomial.evalRingHom z)).eval (β z) = 0 := by
+      rw [← relation_eq_eval_map]; exact hβrel z hz
+    obtain ⟨k, hk⟩ := root_eq_of_card_branches hd1 (hdeg z hz) (fun k => w k z) hinj hroots hβroot
+    exact ⟨k, hk⟩
+  exact eq_one_branch_of_valued_in_separated hUc w β hwc hβc hsep hval hz₀
+
+/-- **The dendrite-route boundary limit, assembled (Carathéodory-free).** Given the separable-fibre branch
+family `w` on `ball z₀ r` (from `exists_branch_family`) and a basin Böttcher branch `β` on a preconnected
+basin neighbourhood `U` of `z₀` (`U ⊆ ball z₀ r`, `U ∈ 𝓝[basin] z₀`) satisfying the relation, `β` follows a
+single branch `w k` (`eqOn_branch_of_relation`), so it has the boundary limit `w₀ := w k z₀` along the basin
+(`tendsto_within_of_eqOn`, with `𝓝[U] z₀ = 𝓝[basin] z₀`), and `w₀` is a *simple* root of the relation
+(`eval_derivative_ne_zero_of_separable` + `relation_hasDerivAt_w`). This packages `hβlim`, `hroot`,
+`hpartial`, `hd` — every hypothesis of `false_of_basin_branch_dendrite` except the modulus `hβmod` (supplied
+directly by the chain `β = exp(green-conjugate)` via `exists_bottcher_on_chain`). The hypothetical
+algebraicity of `φ_c` (the relation) pins the boundary value with no Carathéodory boundary extension. -/
+theorem dendrite_branch_limit {P : Polynomial (Polynomial ℂ)} {z₀ : ℂ} {r : ℝ} {c : ℂ} {N : ℕ}
+    (hN1 : 1 ≤ N) (hr : 0 < r)
+    (hsepf : (P.map (Polynomial.evalRingHom z₀)).Separable)
+    (w : Fin N → ℂ → ℂ)
+    (hwc : ∀ k, ContinuousOn (w k) (Metric.ball z₀ r))
+    (hwsep : ∀ z ∈ Metric.ball z₀ r, ∀ k l, k ≠ l → w k z ≠ w l z)
+    (hwdeg : ∀ z ∈ Metric.ball z₀ r, (P.map (Polynomial.evalRingHom z)).natDegree = N)
+    (hwrel : ∀ k, ∀ z ∈ Metric.ball z₀ r, ∑ i ∈ P.support, (P.coeff i).aeval z * (w k z) ^ i = 0)
+    {U : Set ℂ} {β : ℂ → ℂ}
+    (hUball : U ⊆ Metric.ball z₀ r) (hUbasin : U ⊆ (filledJulia c)ᶜ)
+    (hUc : IsPreconnected U) (hUnhds : U ∈ 𝓝[(filledJulia c)ᶜ] z₀)
+    (hβc : ContinuousOn β U)
+    (hβrel : ∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (β z) ^ i = 0)
+    {z₁ : ℂ} (hz₁ : z₁ ∈ U) :
+    ∃ (w₀ d : ℂ),
+      (∑ i ∈ P.support, (P.coeff i).aeval z₀ * w₀ ^ i = 0) ∧
+      HasDerivAt (fun y => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * y ^ i) d w₀ ∧ d ≠ 0 ∧
+      Tendsto β (𝓝[(filledJulia c)ᶜ] z₀) (𝓝 w₀) := by
+  have hwcU : ∀ k, ContinuousOn (w k) U := fun k => (hwc k).mono hUball
+  have hwsepU : ∀ z ∈ U, ∀ k l, k ≠ l → w k z ≠ w l z := fun z hz => hwsep z (hUball hz)
+  have hwdegU : ∀ z ∈ U, (P.map (Polynomial.evalRingHom z)).natDegree = N :=
+    fun z hz => hwdeg z (hUball hz)
+  have hwrelU : ∀ k, ∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (w k z) ^ i = 0 :=
+    fun k z hz => hwrel k z (hUball hz)
+  obtain ⟨k, hk⟩ := eqOn_branch_of_relation hN1 w β hUc hwcU hβc hwsepU hwdegU hwrelU hβrel hz₁
+  have hwkAt : ContinuousAt (w k) z₀ := (hwc k).continuousAt (Metric.ball_mem_nhds z₀ hr)
+  have hz₀ball : z₀ ∈ Metric.ball z₀ r := Metric.mem_ball_self hr
+  have hroot : ∑ i ∈ P.support, (P.coeff i).aeval z₀ * (w k z₀) ^ i = 0 := hwrel k z₀ hz₀ball
+  have hrootQ : (P.map (Polynomial.evalRingHom z₀)).eval (w k z₀) = 0 := by
+    rw [← relation_eq_eval_map]; exact hroot
+  have hd : (P.map (Polynomial.evalRingHom z₀)).derivative.eval (w k z₀) ≠ 0 :=
+    eval_derivative_ne_zero_of_separable hsepf hrootQ
+  have hpart := relation_hasDerivAt_w P z₀ (w k z₀)
+  have htend : Tendsto β (𝓝[U] z₀) (𝓝 (w k z₀)) := tendsto_within_of_eqOn hwkAt hk
+  have hfilt : 𝓝[U] z₀ = 𝓝[(filledJulia c)ᶜ] z₀ := by
+    have h1 : U ∩ (filledJulia c)ᶜ = U := inter_eq_left.mpr hUbasin
+    rw [← h1]; exact nhdsWithin_inter_of_mem hUnhds
+  rw [hfilt] at htend
+  exact ⟨w k z₀, (P.map (Polynomial.evalRingHom z₀)).derivative.eval (w k z₀),
+    hroot, hpart, hd, htend⟩
+
 end Bottcher

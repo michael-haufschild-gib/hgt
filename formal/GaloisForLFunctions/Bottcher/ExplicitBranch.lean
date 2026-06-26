@@ -58,4 +58,55 @@ theorem norm_explicitBranch (c : ℂ) (n : ℕ) {z : ℂ} (hz : z ∈ explicitDo
     (exists_greenConjugate_explicit c n).2 hz
   rw [explicitBranch, Complex.norm_exp, hre, greenFunctionDyn, if_neg hzK]
 
+/-- **The explicit branch is a `2^n`-th root of `φ_c ∘ f^[n]`**: `(explicitBranch c n z)^{2^n} =
+bottcherCoord c (f_c^[n] z)`. (Exponentiating `exp(2⁻ⁿ·bottcherLog(f^[n]z))` to the `2^n`.) -/
+theorem explicitBranch_pow (c : ℂ) (n : ℕ) (z : ℂ) :
+    (explicitBranch c n z) ^ (2 ^ n) = bottcherCoord c ((quadratic c)^[n] z) := by
+  rw [explicitBranch, bottcherCoord, ← Complex.exp_nat_mul]
+  congr 1
+  have h2n : ((2 ^ n : ℕ) : ℂ) ≠ 0 := by exact_mod_cast pow_ne_zero n two_ne_zero
+  push_cast
+  field_simp
+
+/-- **The explicit branch is a root-of-unity sheet of `φ_c` on the escape regime.** On `escapeOpen c`,
+`explicitBranch c n z = ζ · bottcherCoord c z` for a `2^n`-th root of unity `ζ` — the dyadic monodromy
+sheet. (From `explicitBranch_pow` + `bottcherCoord_iterate`: both `2^n`-th powers equal `φ_c(z)^{2^n}`.)
+Selecting the `ζ = 1` sheet globally across the connected basin is exactly Böttcher single-valuedness. -/
+theorem explicitBranch_isRootOfUnity_smul (c : ℂ) (n : ℕ) {z : ℂ} (hz : z ∈ escapeOpen c) :
+    ∃ ζ : ℂ, ζ ^ (2 ^ n) = 1 ∧ explicitBranch c n z = ζ * bottcherCoord c z := by
+  obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz
+  refine ⟨explicitBranch c n z / bottcherCoord c z, ?_, ?_⟩
+  · rw [div_pow, explicitBranch_pow, bottcherCoord_iterate hc hz2 n, div_self
+      (pow_ne_zero _ (bottcherCoord_ne_zero c z))]
+  · rw [div_mul_cancel₀ _ (bottcherCoord_ne_zero c z)]
+
+/-- **Functional equation of the explicit branch**: `explicitBranch c n (z²+c) = (explicitBranch c (n+1) z)²`.
+The level-`n` branch at `f_c z` is the square of the level-`(n+1)` branch at `z` — the explicit-branch
+form of `φ_c(z²+c) = φ_c(z)²`, the consistency that threads the levels into one continuation. -/
+theorem explicitBranch_quadratic (c : ℂ) (n : ℕ) (z : ℂ) :
+    explicitBranch c n (quadratic c z) = (explicitBranch c (n + 1) z) ^ 2 := by
+  rw [explicitBranch, explicitBranch, ← Complex.exp_nat_mul]
+  congr 1
+  rw [show (quadratic c)^[n] (quadratic c z) = (quadratic c)^[n + 1] z from
+      (Function.iterate_succ_apply (quadratic c) n z).symm]
+  push_cast
+  ring
+
+/-- `explicitBranch c 0 = bottcherCoord c` — the base level is `φ_c` itself. -/
+theorem explicitBranch_zero (c : ℂ) : explicitBranch c 0 = bottcherCoord c := by
+  funext z
+  rw [explicitBranch, bottcherCoord]
+  norm_num
+
+/-- On the escape regime the explicit branch's relation equals the relation evaluated at its sheet
+`ζ·φ_c` (`ζ^{2^n}=1`). The hook by which a sheet inherits `φ_c`'s minimal relation when the sheet rotation
+is a Galois conjugacy (the dyadic case). -/
+theorem explicitBranch_relation_eq_sheet (c : ℂ) (n : ℕ) {z : ℂ} (hz : z ∈ escapeOpen c)
+    (P : Polynomial (Polynomial ℂ)) :
+    ∃ ζ : ℂ, ζ ^ (2 ^ n) = 1 ∧
+      (∑ i ∈ P.support, (P.coeff i).aeval z * (explicitBranch c n z) ^ i)
+        = ∑ i ∈ P.support, (P.coeff i).aeval z * (ζ * bottcherCoord c z) ^ i := by
+  obtain ⟨ζ, hζ, hsmul⟩ := explicitBranch_isRootOfUnity_smul c n hz
+  exact ⟨ζ, hζ, by rw [hsmul]⟩
+
 end Bottcher

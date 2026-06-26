@@ -1839,3 +1839,117 @@ interface) is complete and consumes precisely `greenConjugate_sub_imaginary_cons
 **Residue (mine):** instantiate `U i / F i / a i` from a finite (e.g. 2-sector) cover of the basin cover
 annulus, and supply the period value `∑ a i = k·2πi` (= dyadic monodromy `ζ^{2ⁿ}` with `ζ = exp(2πi/2ⁿ)`,
 `isPrimitiveRoot_dyadic_multiplier`). Then `hscale_germ_of_greenConjugate` → deck → `hliftF`, + figure-eight.
+
+### hGtr REFRAMED: natural-boundary route, NOT spectrum-blocked (2026-06-26)
+
+Prompted by Michael: I was wrong to call hGtr "multiplier-spectrum blocked" — that blocker is only for my
+divisibility/resonance route. hGtr is the CONNECTED case, where `φ_c` is single-valued on the basin
+(`isPreconnected_compl_filledJulia`, proven). The natural-boundary route closes it with NO spectrum:
+- `NaturalBoundaryContradiction.false_of_basin_branch_interior` (NEW) — interior-`K_c` case via
+  `InteriorBoundary.no_unit_modulus_open_continuation` (max-modulus).
+- `false_of_modulus_branch` (NEW) — UNIFIED obstruction: any modulus-preserving branch analytic across a
+  `K_c` point with basin nearby ⟹ False (dendrite case via `no_continuation_dendrite`, interior via the
+  above). Axiom-clean.
+
+**Honest refinement:** the obstruction MECHANISM is now complete (both cases). For the actual `φ_c`
+continuation, the modulus `‖g‖=exp(G_c)` holds on the BASIN side always; the **dendrite case** (`K_c` empty
+interior near `z₀` — all NON-hyperbolic connected `c`, uncountable) is fully closed by `no_continuation_dendrite`
+needing only the basin-side modulus. The **hyperbolic case** (`K_c` has interior): the continuation's
+modulus on the `K_c`-interior is the harmonic continuation (`<1`, not `=1`), so the interior natural-boundary
+lemma needs modulus-preservation it doesn't have — that sub-case routes through the ATTRACTING cycle instead
+(`‖λ‖<1` ⟹ non-resonant for free via `nonresonant_of_norm_lt_one` + `false_of_periodic_simpleroot`), with
+the single-cycle "good simple root" gap. So hGtr is spectrum-FREE; remaining = the `φ_c` algebraic
+continuation reaching a Julia point (dendrite) + the attracting-cycle good-root lemma (hyperbolic).
+
+### hGtr spectrum-free capstone built (2026-06-26)
+
+`ConnectedTranscendence.phiMero_transcendental_of_dendrite_input` (NEW, axiom-clean): connected-case
+`φ_c`-transcendence reduced to the NATURAL-BOUNDARY input — per minimal relation `P`, a dendrite Julia
+point `z₀` (simple root `(z₀,w₀)`) reached by a basin branch `β` (continued `φ_c`) with `‖β‖=exp(G_c)` —
+via `false_of_basin_branch_dendrite`. **NO multiplier-spectrum / non-resonant-cycle input.** This replaces
+the earlier (wrong) "hGtr is spectrum-blocked" with a spectrum-free reduction.
+
+So both connected-case capstones now exist: `phiMero_transcendental_of_periodic_input'` (resonance route,
+needs a non-resonant cycle) AND `phiMero_transcendental_of_dendrite_input` (natural-boundary route, needs
+the basin continuation reaching a dendrite Julia point — spectrum-free). The latter is the right one for
+the connected case.
+
+**Shared remaining core (spectrum-free, mine):** the basin continuation `β` of `φ_c` from `escapeOpen`
+across the connected basin to `J_c` (single-valued for connected `J_c` — trivial monodromy; the `2ⁿ`-cover
+for disconnected). Built from `GreenChain` (chain glue, done) + my loop-glue (loop closure, done) +
+`exists_local_greenConjugate_basin` over the escape-level chain (`isPreconnected_preimage_escapeLevel`,
+done). This `β` closes hGtr-dendrite (above) AND feeds hDisc's `hliftF`. No missing infrastructure.
+
+---
+
+## Dendrite-route hβlim machinery — COMPLETE (Carathéodory-free), 2026-06-26
+
+The connected-case capstone `phiMero_transcendental_of_dendrite_input` reduces `φ_c`-transcendence to a
+single `hinput`: at each minimal relation `P`, a dendrite Julia point `z₀` reached by a basin branch `β`
+with limit `w₀` (simple root), the relation, and the modulus `‖β‖=exp G_c`. The hardest part — `hβlim`
+(that `β` HAS a boundary limit at `z₀`) — is now fully built in Lean WITHOUT Carathéodory boundary
+extension, using only the *hypothetical algebraicity* of `φ_c` (the relation `P`) to pin the limit.
+
+Added (all axiom-clean = [propext, Classical.choice, Quot.sound]):
+- `NaturalBoundaryContradiction.lean`:
+  - `norm_eq_one_of_open`, `norm_eq_of_norm_eq_on_open` — modulus propagation across a connected basin
+    (a unit-modulus open point is a local max → locally constant → constant on the connected set).
+  - `eq_one_branch_of_valued_in_separated` — branch following: a continuous map valued in finitely many
+    pairwise-separated continuous branches, on a preconnected set, equals ONE branch (clopen partition).
+  - `tendsto_within_of_eqOn` — `β = w` on `U`, `w` continuous at `z₀` ⟹ `β → w z₀` along `𝓝[U] z₀`.
+  - `root_eq_of_card_branches` — exhaustion: a degree-`d` poly with `d` known distinct roots has no others.
+- `ConnectedTranscendence.lean`:
+  - `relation_hasDerivAt_w` — the relation's `w`-derivative = fibre polynomial's formal derivative.
+  - `eval_derivative_ne_zero_of_separable` — a root of a separable poly is simple (coprime `q,q'`).
+  - `fiber_natDegree_eq` — fibre degree is constant `= P.natDegree` where the leading coeff doesn't vanish.
+  - `eventually_separated` — distinct germs at `z₀` stay pairwise distinct on a neighbourhood.
+  - `exists_branch_family` — from a separable fibre at `z₀` (leading coeff ≠0): `N=P.natDegree`
+    pairwise-separated analytic root-branches on a ball, each satisfying the relation, constant fibre degree.
+  - `eqOn_branch_of_relation` — `β` satisfying the relation on a preconnected basin `U`, with the branch
+    family present, follows ONE branch `w k` on all of `U` (exhaustion + branch following).
+  - `dendrite_branch_limit` — CAPSTONE: family + basin branch `β` on a preconnected basin-nbhd `U` of `z₀`
+    ⟹ the full `hβlim` + `hroot` + `hpartial` + `hd` of `false_of_basin_branch_dendrite` (`𝓝[U]z₀ =
+    𝓝[basin]z₀` via `nhdsWithin_inter_of_mem`). Only `hβmod` remains, supplied by the chain `β`.
+
+Remaining inputs to discharge the dendrite `hinput` (now the only gaps for connected `hGtr`):
+1. The chain branch `β` with `hβmod` (= `‖β‖=exp G_c`) + `hβrel` on a connected basin-nbhd `U` reaching
+   `z₀` — via `GreenChain.exists_bottcher_on_chain` along a path from `escapeOpen` to near `z₀`.
+2. `z₀` a dendrite Julia point off the finite bad-set (fibre separable + leading coeff ≠0) — generic for
+   the uncountable dendrite of a non-hyperbolic connected `c`.
+3. Local basin connectivity at `z₀`: `U ∈ 𝓝[basin] z₀` preconnected (locally-connected `J_c`).
+
+Strategic finding (banked): the modulus route `phiMero_transcendental_of_repelling_input` (need `‖λ‖>2^p`)
+is FRAGILE — `cap(K_c)=1` forces period-`p` multipliers asymptotically to the resonance modulus
+`‖λ‖≈2^p`, so strongly-repelling cycles are not guaranteed for general connected `c`. The dendrite route
+above sidesteps the multiplier spectrum entirely; it is the correct connected-case attack.
+
+---
+
+## Connected case localized to ONE missing analytic theorem: the Poincaré lemma, 2026-06-26
+
+The single-valued Böttcher coordinate `φ_c` on the (annular, π₁=ℤ) connected basin is the object that gates
+`hGtr` (connected transcendence) and `hDisc` (the dyadic lift). It is now localized to one mathlib-gap brick.
+
+`GreenLogDeriv.lean` (new, axiom-clean): the global logarithmic derivative `ω = φ_c'/φ_c = 2·∂G_c`.
+- `greenLogDeriv c` := Wirtinger `∂` of `G_c`.
+- `differentiableOn_greenLogDeriv` — `ω` holomorphic on the whole basin (from `harmonicOnNhd_greenLimit_basin`
+  + mathlib `HarmonicAt.differentiableAt_complex_partial`). Single-valued even though `log φ_c` is not.
+- `isConservativeOn_greenLogDeriv` — `ω` conservative on the basin (`DifferentiableOn.isConservativeOn`).
+
+Reduction (all prerequisites IN the tree / mathlib): single-valued `φ_c = exp F` on a simply-connected basin
+region `V` ⟺ a primitive `F` of `ω` on `V` with `Re F = G_c`. The ONLY missing analytic step is the
+**Poincaré lemma**:  `IsConservativeOn ω V + IsSimplyConnected V ⟹ IsExactOn ω V`.
+Mathlib has exactness only on balls (`DifferentiableOn.isExactOn_ball`) and `ℂ` (`isExactOn_univ`), NOT on
+general simply-connected domains. This is the genuine remaining frontier brick for the connected case.
+
+With it: `F` primitive on `V` ⟹ `Re F = G_c` (harmonic-conjugate identity, `F' = ω = 2∂G_c`) ⟹ `β := exp F`
+has `‖β‖ = exp G_c` (`hβmod`); anchored to `escapeOpen` where `β = φ_c`, identity gives `hβrel`. Then
+`dendrite_branch_limit` (already built) supplies `hβlim`+simple-root, closing `false_of_basin_branch_dendrite`.
+
+Remaining for connected `hGtr` (in dependency order):
+1. **Poincaré lemma** `IsConservativeOn + IsSimplyConnected ⟹ IsExactOn` (mathlib gap; homotopy invariance of
+   the conservative integral). THE enabler — also unlocks `hDisc` (same primitive on the 2ⁿ-cover, period 2πi/2ⁿ).
+2. `IsSimplyConnected (ball z₀ r ∩ basin)` at a dendrite Julia point (a small ball does not enclose `K_c`;
+   `K_c`-side is a dendrite/tree). Deep topology.
+3. Harmonic-conjugate identity `Re F = G_c` from `F' = ω = 2∂G_c` (Cauchy–Riemann bookkeeping).
+Separately: `hrig` (Eremenko–van Strien rigidity, `TranscendentalOverAdjoin`) is an independent major theorem.

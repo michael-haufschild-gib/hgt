@@ -87,3 +87,7 @@ import GaloisForLFunctions.Bottcher.ThetaNullwert
 import GaloisForLFunctions.Bottcher.QuarticDefect
 import GaloisForLFunctions.Bottcher.CuspLimits
 import GaloisForLFunctions.Bottcher.QuarticCusp
+import GaloisForLFunctions.Bottcher.ModularLambdaModular
+import GaloisForLFunctions.Bottcher.Gamma2Generators
+import GaloisForLFunctions.Bottcher.GreenLogDeriv
+import GaloisForLFunctions.Bottcher.QuarticSlash
