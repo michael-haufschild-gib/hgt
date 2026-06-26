@@ -2446,3 +2446,204 @@ cover over the sub-critical cylinder, with its order-`2ⁿ` deck. (Local pieces 
 `exists_localInverse_exp_greenConjugate`, `deriv_exp_greenConjugate_explicit_ne_zero`,
 figure-eight saddle `disconnected_critical_figure_eight`; the open content is local→global univalence
 on the cylinder annulus.)
+
+### Sharpened: the chart reduces to univalence of `f^[n]` on the cylinder
+
+The chart→deck conversion is now COMPLETE and axiom-clean (`CoverDeckScaling.lean`):
+`deck_scaling_of_invertible_lift` (scale `a₁`), `deck_fixes_invariant_of_lift` (fix `a₂`,`p₀`),
+`chart_deck_mutual_inverse` (`g∘g'=id`), `chart_deck_mapsTo` (`g:U→U`), `chart_deck_analytic`
+(`g` analytic). These feed `monoF_witness_projection_base` directly. So the WHOLE disconnected
+`hDisc` reduces to the bare existence of the chart, and the chart unwinds to one statement:
+
+> **`Φ = φ_{c₁}∘f_{c₁}^[n]` is univalent on a `z`-annulus `A` around `z₀`'s depth-`n` cylinder,
+> with `Φ(A)` a round annulus about `0`, and `A` is `K_{c₂}`-free.**
+
+Then `φ̃_{c₁} = Φ^{1/2ⁿ}` lives on the connected round `t`-cover `U = {t : t^{2ⁿ} ∈ Φ(A)}`
+(`φ̃_{c₁}(t)=t`, `ζ₀=exp(2πi/2ⁿ)`), the projection is `p₀ = q∘(φ̃_{c₁}^{2ⁿ})` with `q = Φ⁻¹`
+(`ρ`-invariant ⟹ `g`-fixed), and `a₂ = φ_{c₂}∘p₀` (likewise `g`-fixed). Since `φ_{c₁}` is univalent
+on the far field (`FarFieldUnivalence`), `Φ` univalent ⟺ `f_{c₁}^[n]` univalent on `A`. The lone open
+input is therefore:
+
+> **`f_{c₁}^[n]` is univalent on a `K_{c₂}`-free annulus separating `z₀`'s depth-`n` Cantor piece
+> from the rest of `K_{c₁}`** (the iterated figure-eight: `disconnected_critical_figure_eight` gives
+> the depth-1 clopen split; the depth-`n` cylinder is its `n`-fold inverse-branch pullback, univalent
+> by the disconnected expansion `JuliaExpansion.disconnected_expansion`, `K_{c₂}`-free for `n` large
+> since the cylinder diameter `→ 0` toward `z₀` and `dist(z₀,K_{c₂})>0`).
+
+### Loop route: injectivity ⟹ closed loop ⟹ no square root (CylinderUnivalence.lean)
+
+The loop route's analytic machinery is now COMPLETE and axiom-clean. The single theorem
+`no_sqrt_of_inj_loop` takes:
+- `A` open, `f_c^[k]` injective on `A` (`hinj`),
+- `A` avoids the precritical orbit (`hcrit`: `∀ z∈A, ∀ j<k, f_c^[j] z ≠ 0`),
+- `A` escapes (`hesc`: `f_c^[k] z ∈ escapeOpen c`),
+- a section `γ` of `C(0,R)` into `A` (`f_c^[k]∘γ = circleMap`, `γ θ ∈ A`),
+
+and concludes `φ_c∘f_c^[k]` has no analytic square root on `A`. Injectivity makes the section's
+inverse branch single-valued around the whole circle, so `γ` is automatically a CLOSED `C¹` loop
+(`continuousAt_preimage_lift` + `hasDerivAt_lift_of_continuousAt` + `circleMap` period) and
+`no_analytic_sqrt_iterate_of_closed_lift` fires. The injectivity itself reduces (via
+`quadratic_iterate_injOn` + `antipodalFree_of_halfplane`) to: each forward image `f_c^[j] '' A`
+(`j<k`) is antipodal-pair-free — true because the figure-eight lobes are exact antipodal images
+(`f_c z = f_c(-z)`), so each sits in a half-plane.
+
+**Disconnected gap, now fully concrete (loop route):** construct an open `A` near `z₀∈K_{c₁}∖K_{c₂}`
+with (i) each `f_{c₁}^[j] '' A` (`j<k`) inside one figure-eight lobe [⟹ injectivity], (ii) the orbit
+avoiding `0`, (iii) `f_{c₁}^[k](A) ⊇ C(0,R)` escaping for some `R > max 2‖c₁‖`, (iv) `A` `K_{c₂}`-free.
+This is the depth-`k` itinerary cylinder. Build: iterate `disconnected_critical_figure_eight`
+(depth-1 lobe split) `k` times by inverse-branch pullback (`disconnected_expansion` contracts ⟹
+diameter `→ 0` ⟹ `K_{c₂}`-free), choosing level `t₀ ∈ (G_c(0)/2ᵏ, G_c(0)/2^{k-1})`.
+
+---
+
+## 2026-06-26 (cont.) — λ SURJECTIVITY (little Picard) fully formalized
+
+`ModularLambdaCovering.lean`, axiom-clean [propext, Classical.choice, Quot.sound]:
+**`modularLambda_surjective`** — `∀ w ∈ ℂ∖{0,1}, ∃ τ, 0 < τ.im ∧ modularLambda τ = w`.
+
+Route (range λ clopen in the connected `ℂ∖{0,1}`):
+- OPEN: `isOpen_range_lambdaPunct` (λ a local homeomorphism, `isLocalHomeomorphOn_modularLambda`).
+- CLOSED: `isClosed_range_lambdaPunct` (`IsSeqClosed`): move `τ_n` into `𝒟` (`exists_smul_mem_fd`), track λ
+  through the anharmonic `S₃`-action (`exists_anharm_eq`), pigeonhole over `Finite anharmonicGroup` to a
+  single `φ₀`; on that subsequence the `Im` is bounded (→ `isCompact_truncatedFundamentalDomain` +
+  `IsCompact.tendsto_subseq` → `x = φ₀(λ a) = λ(g⁻¹•a) ∈ range`) or escapes to `i∞`
+  (→ `anharm_cusp_ne`: the six anharmonic cusp values land in `{0,1,∞}`, contradiction).
+- CONNECTED: `isConnected_compl_zero_one` (`Countable.isConnected_compl_of_one_lt_rank`, rank ℝ ℂ = 2).
+
+Full supporting layer (all axiom-clean): the anharmonic `S₃` group (relations + `Finite` + identification +
+`continuous_of_mem_anharmonicGroup`), the 6 cusp-value limits, `continuous_lambdaPunct`, `lambdaPunct_coe`.
+
+REMAINING toward `IsCoveringMap λ`: fibres = Γ(2)-orbits (λ̄ injective, the second Picard-level half) +
+the free PΓ(2) quotient-covering, then `homeomorph_comp` → `IsCoveringMap λ` → `normal_of_omitting_lift`
+→ three-value Montel → Julia repelling-density → `TranscendentalOverAdjoin`.
+
+### Injectivity fully grounded: iterates are antipodal-free arcs
+
+`circleArc_antipodalFree` (CylinderUnivalence.lean): a circle arc of angular extent `≤ π` is
+antipodal-free. This grounds the injectivity hypothesis of `no_sqrt_of_inj_loop` with no remaining
+hand-waving: the depth-`k` cylinder `A`'s forward image `f_{c₁}^[j] '' A` (`j<k`) is a thin tube over
+an arc of angular extent `π/2^{k-j} ≤ π` (each `f_c` step `z↦z²+c` doubles angular extent;
+`f_{c₁}^[k] '' A` is the full circle `C(0,R)`, `f_{c₁}^[k-1] '' A` a half-circle, …), so by
+`circleArc_antipodalFree` + `quadratic_injOn` each step is injective and `quadratic_iterate_injOn`
+gives `f_{c₁}^[k]` injective on `A`.
+
+**Remaining (the only open piece of hDisc):** construct the thin tube `A` and section `γ` near
+`z₀∈K_{c₁}∖K_{c₂}`. Plan using the in-tree expansion tools (`JuliaExpansion`): the section `γ` is the
+inverse-branch-word lift of `C(0,R)` selecting the `z₀` itinerary; the tube `A` is its
+`expansion_of_inverse_branch`-controlled neighborhood (diameter `≤ R·Λ^{-k} → 0`, `Λ` the expansion
+constant of `disconnected_expansion`, giving `K_{c₂}`-freeness for `k` large); `f_{c₁}^[j] '' A` is an
+arc of extent `π/2^{k-j}` by construction; the orbit avoids `0` since `z₀∈K_{c₁}` and the precritical
+orbit is at positive distance (`exists_dist_filledJulia_critical_orbit_pos`). All consuming machinery
+(`no_sqrt_of_inj_loop`, the chart→deck toolkit) is built and axiom-clean; this is the last input.
+
+### The geometric crux, isolated: single-valued inverse branch (Koebe-level)
+
+Two construction routes for the cylinder feeding `no_sqrt_of_inj_loop` were analyzed; both bottom out
+on the SAME mathlib-level primitive:
+
+1. **Arc/itinerary route.** `A` = thin tube near `z₀∈K_{c₁}∖K_{c₂}` whose forward images
+   `f^[j] '' A` are arcs of extent `π/2^{k-j}` (antipodal-free by `circleArc_antipodalFree`). Needs the
+   tube + section built as the inverse-branch-word lift selecting `z₀`'s itinerary.
+2. **Deep-preimage route (cleaner injectivity).** `A` = small tube around the component of
+   `{f_{c₁}^[k] ∈ C(0,R)}` enclosing a deep SIMPLE preimage `w*` of `0` (`w*∉K_{c₂}`). There `f^[k]` is
+   a local biholomorphism (simple zero), so injectivity is LOCAL — no itinerary combinatorics. The
+   component is tiny (radius `≈ R/|f^[k]'(w*)| ≈ R·Λ^{-k} → 0` by `disconnected_expansion`),
+   `K_{c₂}`-free, and its `f^[k]`-image winds once around `0` ⟹ the inverse branch is single-valued
+   around `C(0,R)` (monodromy-trivial sheet) ⟹ closed degree-1 loop.
+
+Both need the **single-valued holomorphic inverse branch `g` of `f_{c₁}^[k]` on an annular neighborhood
+of `C(0,R)`, landing in a shrinking neighborhood of the deep point** — exactly the object
+`expansion_of_inverse_branch` / `norm_deriv_iterate_ge_of_inverse_branch` *consume* but do not build.
+Per the latter's own docstring, building the shrinking branch needs **Koebe/univalent-function or
+hyperbolic-metric infrastructure** (a mathlib gap). This is the isolated remaining input: with `g`
+in hand, `A = g(annulus)`, `γ = g∘circleMap`, and `no_sqrt_of_inj_loop` closes `hDisc`.
+
+Status: ALL consuming machinery is built and axiom-clean (reductions, chart→deck toolkit, injectivity
+engine, `no_sqrt_of_inj_loop`, `circleArc_antipodalFree`). The lone open piece is the Koebe-level
+inverse-branch construction.
+
+### Correction: the construction is Koebe-FREE (mathlib open mapping + injectivity)
+
+Re-analysis this turn corrected two earlier mis-statements:
+1. **No Koebe needed.** mathlib has `AnalyticOnNhd.is_constant_or_isOpenMap` (open mapping) and
+   `analyticAt_localInverse`. So `f_c^[n]` injective + analytic on an open `D` ⟹ analytic inverse
+   branch on `f_c^[n](D)` directly — no univalent-function/Koebe machinery. The remaining content is
+   establishing INJECTIVITY (the antipodal/itinerary engine, all built) and the SET `D`.
+2. **Base is a level curve, not `C(0,R)`.** A closed loop around a depth-`n` lobe maps under `f_c^[n]`
+   to a level curve `{G_c = L}`, parametrizable as `ψ_{c₁}(circleMap 0 ρ)` (`ψ_{c₁}` = inverse Böttcher,
+   `exists_analytic_inverse_far`; `ρ=e^L`), with period `∮ d log φ_{c₁} = 2πi`. (The current
+   `no_analytic_sqrt_iterate_of_closed_lift` hardcodes `C(0,R)`; it needs generalizing to a
+   `ψ_{c₁}`-parametrized level curve — a closed lift over `[0,2π]` of `C(0,R)` does NOT exist for `n≥1`
+   since the depth-`n` lift of `C(0,R)` is the `2πi/2ⁿ`-period ARC, not closed.)
+
+Antipodal-symmetry foundation now built & axiom-clean (`CylinderUnivalence.lean`):
+`greenLimit_neg` (`G_c(-z)=G_c(z)`, so every sublevel `{G_c<t}` is `z↦-z`-symmetric and the two lobes
+are exact antipodal images), `quadratic_neg`, `norm_iterate_neg`, `greenApprox_neg`, and
+`antipodalFree_of_disjoint_neg` (`Disjoint L (-L)` ⟹ `f_c` injective on `L`).
+
+**Remaining (Koebe-free path):** (a) the two lobes `L_±` of `{G_c<G_c 0}` as open sets with
+`L_- = -L_+` disjoint (from the figure-eight `disconnected_critical_figure_eight` + `greenLimit_neg`);
+(b) the depth-`n` itinerary set `D_σ = {z : f_c^[j] z ∈ L_{σ_j}, j<n}` (open, `f_c^[n]` injective via
+`quadratic_iterate_injOn` + `antipodalFree_of_disjoint_neg`); (c) `f_c^[n](D_σ) ⊇` a level curve
+`{G_c=L}` with `L<2·G_c 0` (so a section exists); (d) `diam D_σ → 0` (expansion ⟹ `K_{c₂}`-free);
+(e) generalize the no-sqrt theorem to the `ψ_{c₁}`-level-curve base. Each is now a concrete, bounded
+target on existing tools — no mathlib gap.
+
+### Inverse-branch engine built (CylinderUnivalence.lean) — lobe building block
+
+`complex_sqrt_sq` (`(Complex.sqrt z)²=z`, unconditional via `cpow_nat_inv_pow`),
+`quadratic_sqrt_inverse` (`f_c(±√(w-c))=w`), `quadratic_inverse_branch_slit` (`s_±(w)=±√(w-c)`
+holomorphic on `c+slitPlane` via mathlib `differentiableOn_sqrt`, `f_c∘s_±=id`, `s_-=-s_+`). These
+are the two depth-1 inverse branches whose images are the antipodal lobes. Composing them along an
+itinerary builds the depth-`n` cylinder; each branch is univalent so `quadratic_iterate_injOn` gives
+`f_c^[n]` injective — confirming NO Koebe is needed (mathlib `sqrt` + open mapping suffice).
+Remaining assembly: itinerary composite (compose `s_{σ_j}`) → injective image `D_σ` → section over a
+`ψ_{c₁}`-level-curve → `no_sqrt_of_inj_loop`. The combinatorial closure (itinerary closes around the
+level curve) and `diam→0` (expansion) are the last set-level steps.
+
+### CLOSURE RESOLVED: use a level curve that does not enclose the critical value
+
+The conceptual blocker (does a closed degree-1 lift exist?) is resolved. The round circle `C(0,R)`
+(`R>max 2‖c‖`) ENCLOSES the critical value `c=f_{c₁}(0)` (`|c|<R`), so `f_{c₁}`'s monodromy over it
+is the sheet-swap ⟹ no closed lift over `[0,2π]` (only the `2πi/2ⁿ` arc). But the **level curve
+`J = {G_{c₁} = L}` with `L ∈ (G_{c₁} 0, 2·G_{c₁} 0)`** encloses `K_{c₁}` (period `∮_J d log φ_{c₁} =
+2πi`) yet does NOT enclose `c` (which is at level `2·G_{c₁} 0 > L`) — so `f_{c₁}`'s monodromy over `J`
+is TRIVIAL, and the lift CLOSES at every level. `J` is parametrized by `ψ_{c₁}(circleMap 0 e^L)`
+(`exists_analytic_inverse_far`, `L>G_{c₁} 0` ⟹ `J` in far field).
+
+So the construction is now complete and mathlib-gap-free:
+- base `J = ψ_{c₁}∘circleMap` (closed, period `2πi`, encloses `K_{c₁}` not `c`);
+- the depth-`n` lift `γ` = the boundary of the component of `{G_{c₁}=L/2ⁿ}` around `z₀`'s Cantor piece,
+  CLOSED automatically (`no_sqrt_of_inj_loop` derives closure from injectivity + closed base `J`);
+- `f_{c₁}^[n]` injective on a nbhd `A` since each `f_{c₁}^[j] '' A` is a sub-critical lobe component,
+  disjoint from its `z↦-z` image (`greenLimit_neg` ⟹ `G_c` even; `z₀≠-z₀` ⟹ different components for
+  `n` large) ⟹ `antipodalFree_of_disjoint_neg` ⟹ `quadratic_iterate_injOn`;
+- `K_{c₂}`-free since `diam A → 0` toward `z₀` (`disconnected_expansion`).
+
+Remaining assembly: (i) generalize `no_analytic_sqrt_iterate_of_closed_lift` to base `J` (+ period
+lemma `∮_{ψ_{c₁}∘circle} d log φ_{c₁} = 2πi`); (ii) the depth-`n` lobe component `A` near `z₀` as an
+open set with `f^[j] '' A` antipodal-disjoint and `f^[n](A) ⊇ J`; (iii) `diam A → 0`. No mathlib gap.
+
+### Technical correction: DECK route (via φ̃) is the clean path, not the loop route
+
+A real subtlety in the loop route: `no_sqrt_of_inj_loop`/`no_analytic_sqrt_iterate_of_closed_lift`
+require the base `f^[n]∘γ` in `escapeOpen` (so single-valued `bottcherCoord` and its period lemma
+apply). But a closed lift needs the base to NOT enclose the critical value `c` (level `2·G 0`), whereas
+`escapeOpen ≈ {G > 2·G 0}` — so an `escapeOpen` base encloses `c` (no closure) and a non-`c`-enclosing
+base is below `escapeOpen` (multivalued `bottcherCoord`). The level-vs-escapeOpen alignment at `2·G 0`
+makes the loop route delicate.
+
+The **deck route avoids this entirely**: `φ̃_{c₁} = exp(2⁻ⁿ·bottcherLog∘f^[n])` is single-valued on
+`D₀ = {z : f^[n] z ∈ escape ∩ slit}` (a SUB-critical region — it uses `f^[n]∘`, which escapes — so no
+multivalued-`bottcherCoord` problem), and the deck `g` handles the monodromy ABSTRACTLY (no closed
+loop, no period integral over a sub-critical curve). The chart→deck toolkit (`CoverDeckScaling`)
+already consumes exactly this: a cylinder `U` where `φ̃_{c₁}` is univalent onto a `ζ`-invariant value
+annulus. Univalence of `φ̃_{c₁} ⟸ f^[n] injective on U` (the injectivity engine, built). So the clean
+remaining target is: the cover-annulus `U` near `z₀` where `f_{c₁}^[n]` is injective (antipodal-free
+iterates), escapes into the slit, and `φ̃_{c₁}` winds once onto a round value annulus — then
+`chart_deck_*` + `monoF_witness_projection_base` close `hDisc` with NO loop/period machinery.
+
+Honest status: the consuming machinery + inverse-branch engine + antipodal symmetry are built and
+axiom-clean (~15 thms this session). The cylinder/cover-annulus construction itself is a delicate
+sub-critical-dynamics formalization (not trivial assembly); the deck route is the cleaner of the two
+paths to it.

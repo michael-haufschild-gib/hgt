@@ -196,3 +196,49 @@ theorem deck_fixes_invariant_of_lift {U V : Set ℂ} {φ ψ ρ h a₂ : ℂ → 
     _ = a₂ z := by simpa [Function.comp] using (ha₂ hz).symm
 
 end Bottcher
+
+namespace Bottcher
+
+open Set
+
+/-- **Cylinder-chart deck: the deck pair is mutually inverse.** With a chart `(φ,ψ)` (univalent lift
+`φ = φ̃_{c₁}` and its section `ψ`, `φ∘ψ = id` on `V`, `ψ∘φ = id` on `U`) and a mutually-inverse value
+pair `(ρ,ρ')` on `V` (`ρ∘ρ' = id`, e.g. `ρ = ζ₀·`, `ρ' = ζ₀⁻¹·`), the decks `g = ψ∘ρ∘φ` and
+`g' = ψ∘ρ'∘φ` satisfy `g∘g' = id` on `U`: `ψ(ρ(φ(ψ(ρ'(φ z))))) = ψ(ρ(ρ'(φ z))) = ψ(φ z) = z`.
+Together with `chart_deck_mapsTo` this gives the mutually-inverse self-maps
+`monoF_witness_projection_base` consumes. Axiom-clean. -/
+theorem chart_deck_mutual_inverse {U V : Set ℂ} {φ ψ ρ ρ' : ℂ → ℂ}
+    (hφψ : Set.EqOn (φ ∘ ψ) id V) (hψφ : Set.EqOn (ψ ∘ φ) id U)
+    (hφmaps : Set.MapsTo φ U V) (hρ'maps : Set.MapsTo ρ' V V)
+    (hρρ' : Set.EqOn (ρ ∘ ρ') id V) :
+    Set.EqOn ((ψ ∘ ρ ∘ φ) ∘ (ψ ∘ ρ' ∘ φ)) id U := by
+  intro z hz
+  have hφz : φ z ∈ V := hφmaps hz
+  have hρ'φz : ρ' (φ z) ∈ V := hρ'maps hφz
+  have e1 : φ (ψ (ρ' (φ z))) = ρ' (φ z) := by simpa [Function.comp] using hφψ hρ'φz
+  have e2 : ρ (ρ' (φ z)) = φ z := by simpa [Function.comp] using hρρ' hφz
+  have e3 : ψ (φ z) = z := by simpa [Function.comp] using hψφ hz
+  simp only [Function.comp_apply]
+  rw [e1, e2, e3, id_eq]
+
+/-- **Cylinder-chart deck: the deck is a self-map of `U`.** `g = ψ∘ρ∘φ` maps `U → U` whenever
+`φ : U → V`, `ρ : V → V`, `ψ : V → U`. The `hgmaps` clause of `deck_fixes_invariant_of_lift` and the
+`MapsTo g U U` input of `monoF_witness_projection_base`. Axiom-clean. -/
+theorem chart_deck_mapsTo {U V : Set ℂ} {φ ψ ρ : ℂ → ℂ}
+    (hφmaps : Set.MapsTo φ U V) (hψmaps : Set.MapsTo ψ V U) (hρmaps : Set.MapsTo ρ V V) :
+    Set.MapsTo (ψ ∘ ρ ∘ φ) U U :=
+  fun _ hz => hψmaps (hρmaps (hφmaps hz))
+
+/-- **Cylinder-chart deck: the deck is analytic on `U`.** `g = ψ∘(ζ₀·)∘φ` is `AnalyticOnNhd` on `U`
+when the lift `φ` is analytic on `U` (into `V`) and the section `ψ` is analytic on `V` — composition
+of analytic maps (the rotation `ζ₀·` is entire). Supplies the `AnalyticOnNhd ℂ g U` input of
+`monoF_witness_projection_base`. Axiom-clean. -/
+theorem chart_deck_analytic {U V : Set ℂ} {φ ψ : ℂ → ℂ} (ζ₀ : ℂ)
+    (hφ : AnalyticOnNhd ℂ φ U) (hψ : AnalyticOnNhd ℂ ψ V)
+    (hφmaps : Set.MapsTo φ U V)
+    (hρmaps : Set.MapsTo (fun w => ζ₀ * w) V V) :
+    AnalyticOnNhd ℂ (ψ ∘ (fun w => ζ₀ * w) ∘ φ) U := by
+  have hρ : AnalyticOnNhd ℂ (fun w => ζ₀ * w) V := fun x _ => analyticAt_const.mul analyticAt_id
+  exact hψ.comp (hρ.comp hφ hφmaps) (hρmaps.comp hφmaps)
+
+end Bottcher
