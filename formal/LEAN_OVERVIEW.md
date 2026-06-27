@@ -9,12 +9,12 @@ Use this as the quick map before opening large proof files.
 |---|---|---:|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 22 | 109 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 24 | 194 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 164 | 2242 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 164 | 2243 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
-- Shared and bridge declarations outside the three theorem areas: **553**.
+- Shared and bridge declarations outside the three theorem areas: **576**.
 - Active proof-debt findings: **0**.
 
 ## Local Commands
