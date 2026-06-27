@@ -43,4 +43,23 @@ theorem properlyDiscontinuousSMul_of_injective {G H T : Type*} [TopologicalSpace
   obtain ⟨w, ⟨v, hv, hvw⟩, hwL⟩ := hg
   exact ⟨w, ⟨v, hv, (hcompat g v).symm.trans hvw⟩, hwL⟩
 
+/-- **Proper discontinuity transports along a surjective equivariant map.** If `G` acts properly
+discontinuously on `T`, `f : G → H` is surjective, and the `H`-action is the pushforward of the
+`G`-action (`f g • x = g • x`), then `H` acts properly discontinuously. The tool to push proper
+discontinuity from a group down to a **quotient** group `H = G/N` (where `N` acts trivially): the
+finite set `{g | (g•K ∩ L).Nonempty}` maps onto `{h | (h•K ∩ L).Nonempty}` under the surjection `f`,
+and the image of a finite set is finite. -/
+theorem properlyDiscontinuousSMul_of_surjective {G H T : Type*} [TopologicalSpace T]
+    [SMul G T] [SMul H T] [ProperlyDiscontinuousSMul G T] (f : G → H)
+    (hf : Function.Surjective f) (hcompat : ∀ (g : G) (x : T), f g • x = g • x) :
+    ProperlyDiscontinuousSMul H T := by
+  constructor
+  intro K L hK hL
+  have hfin := ProperlyDiscontinuousSMul.finite_disjoint_inter_image (Γ := G) (T := T) hK hL
+  apply Set.Finite.subset (hfin.image f)
+  intro h hmem
+  obtain ⟨g, rfl⟩ := hf h
+  obtain ⟨w, ⟨v, hv, hvw⟩, hwL⟩ := hmem
+  exact ⟨g, ⟨w, ⟨v, hv, (hcompat g v).symm.trans hvw⟩, hwL⟩, rfl⟩
+
 end Bottcher

@@ -206,6 +206,20 @@ theorem mem_filledJulia_neg_iff (c z : ℂ) :
     have h := hB ((quadratic c)^[n] z) ⟨n, rfl⟩
     simpa [quadratic_iterate_norm_neg c z n] using h
 
+/-- Every point of the filled Julia set has a filled-Julia preimage under
+`f_c(z)=z²+c`. -/
+theorem exists_mem_filledJulia_quadratic_eq
+    {c y : ℂ} (hy : y ∈ filledJulia c) :
+    ∃ z : ℂ, z ∈ filledJulia c ∧ quadratic c z = y := by
+  obtain ⟨z, hz⟩ :=
+    IsAlgClosed.exists_pow_nat_eq (k := ℂ) (y - c) (by norm_num : 0 < 2)
+  have hq : quadratic c z = y := by
+    rw [quadratic_apply, hz]
+    ring_nf
+  refine ⟨z, ?_, hq⟩
+  · apply (mem_filledJulia_iff_quadratic_mem c z).mpr
+    rwa [hq]
+
 /-- The finite Green approximants are antipodally even. -/
 theorem greenApprox_neg_eq (c z : ℂ) (n : ℕ) :
     greenApprox c (-z) n = greenApprox c z n := by
@@ -1517,6 +1531,57 @@ theorem truncatedLogKernel_escapeDisk_lower_bound
     lt_of_lt_of_le hδ (le_max_left _ _)
   exact neg_le_neg (Real.log_le_log hpos hmax)
 
+/-- On the fixed escape disk, the true logarithmic kernel has the same
+diameter lower bound.  At the diagonal the convention `log 0 = 0` is harmless
+because the diameter is at least one. -/
+theorem logKernel_escapeDisk_lower_bound
+    {c z w : ℂ} (hz : z ∈ escapeDisk c) (hw : w ∈ escapeDisk c) :
+    - Real.log (2 * max 2 ‖c‖) ≤ logKernel z w := by
+  unfold logKernel
+  by_cases hzw : z - w = 0
+  · rw [hzw, norm_zero, Real.log_zero, neg_zero]
+    have hdiam_ge_one : (1 : ℝ) ≤ 2 * max 2 ‖c‖ := by
+      have hmax_ge_one : (1 : ℝ) ≤ max 2 ‖c‖ := by
+        exact le_trans (by norm_num : (1 : ℝ) ≤ 2) (le_max_left 2 ‖c‖)
+      nlinarith
+    have hlog_nonneg : 0 ≤ Real.log (2 * max 2 ‖c‖) :=
+      Real.log_nonneg hdiam_ge_one
+    linarith
+  · have hdist : ‖z - w‖ ≤ 2 * max 2 ‖c‖ :=
+      norm_sub_le_escapeDisk_diameter hz hw
+    have hdistpos : 0 < ‖z - w‖ := norm_pos_iff.mpr hzw
+    exact neg_le_neg (Real.log_le_log hdistpos hdist)
+
+/-- Any probability measure carried by `K_c` has logarithmic potential bounded
+below at every evaluation point in the fixed escape disk.  This is the
+carrier-only lower half of the boundary potential estimates. -/
+theorem logPotential_lower_bound_of_isProbOn_filledJulia_of_mem_escapeDisk
+    {c z : ℂ} {μ : Measure ℂ}
+    (hμ : IsProbOn μ (filledJulia c)) (hz : z ∈ escapeDisk c) :
+    - Real.log (2 * max 2 ‖c‖) ≤ logPotential μ z := by
+  let A : ℝ := - Real.log (2 * max 2 ‖c‖)
+  haveI : IsProbabilityMeasure μ := hμ.1
+  have hCge : (1 : ℝ) ≤ 2 * max 2 ‖c‖ := by
+    have hmax_ge_one : (1 : ℝ) ≤ max 2 ‖c‖ := by
+      exact le_trans (by norm_num : (1 : ℝ) ≤ 2) (le_max_left 2 ‖c‖)
+    nlinarith
+  by_cases hint : Integrable (fun w => logKernel z w) μ
+  · have hconst : Integrable (fun _ : ℂ => A) μ := integrable_const A
+    have hmem : ∀ᵐ w ∂μ, w ∈ filledJulia c := (mem_ae_iff).2 hμ.2
+    have hmono :
+        (fun _ : ℂ => A) ≤ᵐ[μ] fun w => logKernel z w := by
+      filter_upwards [hmem] with w hwK
+      dsimp [A]
+      exact logKernel_escapeDisk_lower_bound hz
+        (mem_escapeDisk_of_mem_filledJulia hwK)
+    have hle := integral_mono_ae hconst hint hmono
+    simpa [A, logPotential] using hle
+  · have hzero : logPotential μ z = 0 := by
+      unfold logPotential
+      exact integral_undef hint
+    rw [hzero]
+    exact neg_nonpos.mpr (Real.log_nonneg hCge)
+
 /-- Finite truncated-kernel integrals are bounded above by the true finite
 pre-Brolin potential whenever the evaluation point is not a level-`n` atom. -/
 theorem integral_truncatedLogKernel_preBrolinMeasure_le_logPotential_of_iterate_ne_zero
@@ -1927,6 +1992,60 @@ theorem roots_map_quadraticPoly_sub_C (c a : ℂ) :
       (Polynomial.mem_roots_sub_C hdeg).mp hx
     simpa [quadraticPoly, quadratic_apply] using hxroot
 
+/-- The two one-step roots of `z² + c = a`, counted with multiplicity, are
+invariant under the antipodal map. -/
+theorem roots_quadraticPoly_sub_C_map_neg (c a : ℂ) :
+    ((quadraticPoly c - Polynomial.C a).roots.map Neg.neg) =
+      (quadraticPoly c - Polynomial.C a).roots := by
+  have hpoly :
+      quadraticPoly c - Polynomial.C a =
+        (Polynomial.X ^ 2 - Polynomial.C (a - c) : Polynomial ℂ) := by
+    rw [quadraticPoly, map_sub]
+    ring
+  have hroots :
+      (quadraticPoly c - Polynomial.C a).roots =
+        Polynomial.nthRoots 2 (a - c) := by
+    rw [hpoly, Polynomial.nthRoots]
+  rw [hroots]
+  by_cases hac : a - c = 0
+  · rw [hac, Polynomial.nthRoots_zero_right]
+    norm_num
+  · have hsep :
+        (Polynomial.X ^ 2 - Polynomial.C (a - c) : Polynomial ℂ).Separable :=
+      Polynomial.separable_X_pow_sub_C (a - c)
+        (by norm_num : (2 : ℂ) ≠ 0) hac
+    have hnodup : (Polynomial.nthRoots 2 (a - c)).Nodup := by
+      unfold Polynomial.nthRoots
+      exact Polynomial.nodup_roots hsep
+    apply Multiset.ext.mpr
+    intro x
+    have hcount :
+        ((Polynomial.nthRoots 2 (a - c)).map Neg.neg).count x =
+          (Polynomial.nthRoots 2 (a - c)).count (-x) := by
+      simpa using
+        (Multiset.count_map_eq_count' (fun y : ℂ => -y)
+          (Polynomial.nthRoots 2 (a - c))
+          (fun u v h => neg_inj.mp h) (-x))
+    rw [hcount]
+    by_cases hx : x ^ 2 = a - c
+    · have hxmem : x ∈ Polynomial.nthRoots 2 (a - c) := by
+        rw [Polynomial.mem_nthRoots (by norm_num : 0 < 2)]
+        exact hx
+      have hnegmem : -x ∈ Polynomial.nthRoots 2 (a - c) := by
+        rw [Polynomial.mem_nthRoots (by norm_num : 0 < 2)]
+        rw [show (-x) ^ 2 = x ^ 2 by ring, hx]
+      rw [Multiset.count_eq_one_of_mem hnodup hxmem,
+        Multiset.count_eq_one_of_mem hnodup hnegmem]
+    · have hxnot : x ∉ Polynomial.nthRoots 2 (a - c) := by
+        rw [Polynomial.mem_nthRoots (by norm_num : 0 < 2)]
+        exact hx
+      have hnegnot : -x ∉ Polynomial.nthRoots 2 (a - c) := by
+        rw [Polynomial.mem_nthRoots (by norm_num : 0 < 2)]
+        intro h
+        exact hx (by rwa [show (-x) ^ 2 = x ^ 2 by ring] at h)
+      rw [Multiset.count_eq_zero_of_notMem hxnot,
+        Multiset.count_eq_zero_of_notMem hnegnot]
+
 /-- Roots of the level-`n+1` target polynomial decompose as the multiset union,
 over roots of the level-`n` target polynomial, of the two one-step preimages. -/
 theorem roots_quadraticPolyIterate_succ_sub_C (c a : ℂ) (n : ℕ) :
@@ -1969,6 +2088,142 @@ theorem roots_quadraticPolyIterate_succ_sub_C (c a : ℂ) (n : ℕ) :
     _ = ((quadraticPolyIterate c n - Polynomial.C a).roots.bind fun r =>
           (quadraticPoly c - Polynomial.C r).roots) := by
           rw [Multiset.bind_map]
+
+/-- Zero-target pullback roots are antipodally symmetric at every finite
+level, with multiplicity. -/
+theorem roots_quadraticPolyIterate_map_neg (c : ℂ) (n : ℕ) :
+    ((quadraticPolyIterate c n).roots.map Neg.neg) =
+      (quadraticPolyIterate c n).roots := by
+  cases n with
+  | zero =>
+      simp [quadraticPolyIterate]
+  | succ n =>
+      have hdecomp :
+          (quadraticPolyIterate c (n + 1)).roots =
+            ((quadraticPolyIterate c n).roots.bind fun r =>
+              (quadraticPoly c - Polynomial.C r).roots) := by
+        simpa using roots_quadraticPolyIterate_succ_sub_C c 0 n
+      rw [hdecomp, Multiset.map_bind]
+      apply Multiset.bind_congr
+      intro r _hr
+      exact roots_quadraticPoly_sub_C_map_neg c r
+
+/-- Finite zero-target pre-Brolin measures are antipodally invariant in
+test-integral form. -/
+theorem integral_preBrolinMeasure_neg_eq (c : ℂ) (n : ℕ) (g : ℂ → ℝ) :
+    ∫ z, g (-z) ∂preBrolinMeasure c n =
+      ∫ z, g z ∂preBrolinMeasure c n := by
+  rw [integral_preBrolinMeasure_eq_root_average,
+    integral_preBrolinMeasure_eq_root_average]
+  congr 1
+  calc
+    (((quadraticPolyIterate c n).roots.map fun z => g (-z)).sum)
+        = ((((quadraticPolyIterate c n).roots.map Neg.neg).map g).sum) := by
+          rw [Multiset.map_map]
+          rfl
+    _ = (((quadraticPolyIterate c n).roots.map g).sum) := by
+          rw [roots_quadraticPolyIterate_map_neg]
+
+/-- Measure-level antipodal invariance of the finite zero-target pre-Brolin
+measures. -/
+theorem map_preBrolinMeasure_neg (c : ℂ) (n : ℕ) :
+    Measure.map Neg.neg (preBrolinMeasure c n) = preBrolinMeasure c n := by
+  rw [preBrolinMeasure, Measure.map_smul,
+    map_rootCountingMeasure _ _ continuous_neg.measurable]
+  rw [roots_quadraticPolyIterate_map_neg]
+
+/-- Restrict a negated compactly supported plane test function to the compact
+escape disk as a bounded continuous test function. -/
+noncomputable def compactNegRestrictionOnEscapeDisk
+    (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    BoundedContinuousFunction (escapeDisk c) ℝ :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun z : escapeDisk c => φ (-(z : ℂ)),
+      φ.continuous.comp (continuous_neg.comp continuous_subtype_val)⟩
+
+theorem preBrolinProbabilityOnEscapeDisk_subseq_neg_integral_tendsto
+    (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    Tendsto
+      (fun k =>
+        ∫ z : escapeDisk c, φ (-(z : ℂ))
+          ∂(preBrolinProbabilityOnEscapeDisk c (brolinLimitSubsequence c k) :
+            Measure (escapeDisk c)))
+      atTop
+      (𝓝 (∫ z : escapeDisk c, φ (-(z : ℂ))
+          ∂(brolinLimitOnEscapeDisk c : Measure (escapeDisk c)))) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp
+      (preBrolinProbabilityOnEscapeDisk_subseq_tendsto c))
+      (compactNegRestrictionOnEscapeDisk c φ)
+  simpa [compactNegRestrictionOnEscapeDisk] using h
+
+theorem integral_preBrolinMeasure_neg_eq_integral_escapeDisk
+    (c : ℂ) (n : ℕ) (φ : C_c(ℂ, ℝ)) :
+    ∫ z, φ (-z) ∂preBrolinMeasure c n =
+      ∫ z : escapeDisk c, φ (-(z : ℂ))
+        ∂(preBrolinProbabilityOnEscapeDisk c n : Measure (escapeDisk c)) := by
+  rw [preBrolinMeasure_eq_map_preBrolinMeasureOnEscapeDisk, integral_map]
+  · rfl
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (φ.continuous.comp continuous_neg).aestronglyMeasurable
+
+theorem integral_limitingBrolinMeasure_neg_eq_integral_escapeDisk
+    (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    ∫ z, φ (-z) ∂limitingBrolinMeasure c =
+      ∫ z : escapeDisk c, φ (-(z : ℂ))
+        ∂(brolinLimitOnEscapeDisk c : Measure (escapeDisk c)) := by
+  rw [limitingBrolinMeasure, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (φ.continuous.comp continuous_neg).aestronglyMeasurable
+
+/-- The selected zero-target limiting Brolin measure inherits the finite
+antipodal symmetry. -/
+theorem integral_limitingBrolinMeasure_neg_eq
+    (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    ∫ z, φ (-z) ∂limitingBrolinMeasure c =
+      ∫ z, φ z ∂limitingBrolinMeasure c := by
+  have hneg :=
+    preBrolinProbabilityOnEscapeDisk_subseq_neg_integral_tendsto c φ
+  have hpos :=
+    preBrolinProbabilityOnEscapeDisk_subseq_integral_tendsto c φ
+  have hsame :
+      Tendsto
+        (fun k =>
+          ∫ z : escapeDisk c, φ (-(z : ℂ))
+            ∂(preBrolinProbabilityOnEscapeDisk c
+                (brolinLimitSubsequence c k) :
+              Measure (escapeDisk c)))
+        atTop
+        (𝓝 (∫ z : escapeDisk c, φ (z : ℂ)
+          ∂(brolinLimitOnEscapeDisk c : Measure (escapeDisk c)))) := by
+    exact hpos.congr' (by
+      filter_upwards [eventually_ge_atTop 0] with k _hk
+      have hplane :=
+        integral_preBrolinMeasure_neg_eq c (brolinLimitSubsequence c k)
+          (fun z : ℂ => φ z)
+      rw [integral_preBrolinMeasure_neg_eq_integral_escapeDisk,
+        integral_preBrolinMeasure_eq_integral_escapeDisk] at hplane
+      exact hplane.symm)
+  have hlim :
+      (∫ z : escapeDisk c, φ (-(z : ℂ))
+          ∂(brolinLimitOnEscapeDisk c : Measure (escapeDisk c))) =
+        ∫ z : escapeDisk c, φ (z : ℂ)
+          ∂(brolinLimitOnEscapeDisk c : Measure (escapeDisk c)) :=
+    tendsto_nhds_unique hneg hsame
+  rw [integral_limitingBrolinMeasure_neg_eq_integral_escapeDisk,
+    integral_limitingBrolinMeasure_eq_integral_escapeDisk]
+  exact hlim
+
+/-- Measure-level antipodal invariance of the selected zero-target limiting
+Brolin measure. -/
+theorem map_limitingBrolinMeasure_neg (c : ℂ) :
+    Measure.map Neg.neg (limitingBrolinMeasure c) = limitingBrolinMeasure c := by
+  apply Measure.ext_of_integral_eq_on_compactlySupported
+  intro φ
+  rw [integral_map]
+  · exact integral_limitingBrolinMeasure_neg_eq c φ
+  · exact continuous_neg.measurable.aemeasurable
+  · exact φ.continuous.aestronglyMeasurable
 
 /-- Finite balancedness at the root-multiset level: pushing level `n+1` roots
 forward by `f_c` gives each level-`n` root with multiplicity `2`. -/
@@ -2583,6 +2838,95 @@ theorem preBrolinMeasure_shiftedSubseq_integral_tendsto_shiftedLimiting
   rw [integral_preBrolinMeasure_eq_integral_escapeDisk]
   rfl
 
+theorem shiftedBrolinProbabilityOnEscapeDisk_subseq_neg_integral_tendsto
+    (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    Tendsto
+      (fun k =>
+        ∫ z : escapeDisk c, φ (-(z : ℂ))
+          ∂(preBrolinProbabilityOnEscapeDisk c (shiftedBrolinIndex c k) :
+            Measure (escapeDisk c)))
+      atTop
+      (𝓝 (∫ z : escapeDisk c, φ (-(z : ℂ))
+          ∂(shiftedBrolinLimitOnEscapeDisk c : Measure (escapeDisk c)))) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp
+      (shiftedBrolinProbabilityOnEscapeDisk_subseq_tendsto c))
+      (compactNegRestrictionOnEscapeDisk c φ)
+  simpa [compactNegRestrictionOnEscapeDisk] using h
+
+theorem shiftedBrolinProbabilityOnEscapeDisk_subseq_integral_tendsto
+    (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    Tendsto
+      (fun k =>
+        ∫ z : escapeDisk c, φ (z : ℂ)
+          ∂(preBrolinProbabilityOnEscapeDisk c (shiftedBrolinIndex c k) :
+            Measure (escapeDisk c)))
+      atTop
+      (𝓝 (∫ z : escapeDisk c, φ (z : ℂ)
+          ∂(shiftedBrolinLimitOnEscapeDisk c : Measure (escapeDisk c)))) := by
+  have h :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp
+      (shiftedBrolinProbabilityOnEscapeDisk_subseq_tendsto c))
+      (compactRestrictionOnEscapeDisk c φ)
+  simpa [compactRestrictionOnEscapeDisk] using h
+
+theorem integral_shiftedLimitingBrolinMeasure_neg_eq_integral_escapeDisk
+    (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    ∫ z, φ (-z) ∂shiftedLimitingBrolinMeasure c =
+      ∫ z : escapeDisk c, φ (-(z : ℂ))
+        ∂(shiftedBrolinLimitOnEscapeDisk c : Measure (escapeDisk c)) := by
+  rw [shiftedLimitingBrolinMeasure, integral_map]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (φ.continuous.comp continuous_neg).aestronglyMeasurable
+
+/-- The shifted limiting Brolin cluster inherits the finite antipodal symmetry. -/
+theorem integral_shiftedLimitingBrolinMeasure_neg_eq
+    (c : ℂ) (φ : C_c(ℂ, ℝ)) :
+    ∫ z, φ (-z) ∂shiftedLimitingBrolinMeasure c =
+      ∫ z, φ z ∂shiftedLimitingBrolinMeasure c := by
+  have hneg :=
+    shiftedBrolinProbabilityOnEscapeDisk_subseq_neg_integral_tendsto c φ
+  have hpos :=
+    shiftedBrolinProbabilityOnEscapeDisk_subseq_integral_tendsto c φ
+  have hsame :
+      Tendsto
+        (fun k =>
+          ∫ z : escapeDisk c, φ (-(z : ℂ))
+            ∂(preBrolinProbabilityOnEscapeDisk c
+                (shiftedBrolinIndex c k) :
+              Measure (escapeDisk c)))
+        atTop
+        (𝓝 (∫ z : escapeDisk c, φ (z : ℂ)
+          ∂(shiftedBrolinLimitOnEscapeDisk c : Measure (escapeDisk c)))) := by
+    exact hpos.congr' (by
+      filter_upwards [eventually_ge_atTop 0] with k _hk
+      have hplane :=
+        integral_preBrolinMeasure_neg_eq c (shiftedBrolinIndex c k)
+          (fun z : ℂ => φ z)
+      rw [integral_preBrolinMeasure_neg_eq_integral_escapeDisk,
+        integral_preBrolinMeasure_eq_integral_escapeDisk] at hplane
+      exact hplane.symm)
+  have hlim :
+      (∫ z : escapeDisk c, φ (-(z : ℂ))
+          ∂(shiftedBrolinLimitOnEscapeDisk c : Measure (escapeDisk c))) =
+        ∫ z : escapeDisk c, φ (z : ℂ)
+          ∂(shiftedBrolinLimitOnEscapeDisk c : Measure (escapeDisk c)) :=
+    tendsto_nhds_unique hneg hsame
+  rw [integral_shiftedLimitingBrolinMeasure_neg_eq_integral_escapeDisk,
+    shiftedLimitingBrolinMeasure_integral_eq_integral_escapeDisk]
+  exact hlim
+
+/-- Measure-level antipodal invariance of the shifted limiting cluster. -/
+theorem map_shiftedLimitingBrolinMeasure_neg (c : ℂ) :
+    Measure.map Neg.neg (shiftedLimitingBrolinMeasure c) =
+      shiftedLimitingBrolinMeasure c := by
+  apply Measure.ext_of_integral_eq_on_compactlySupported
+  intro φ
+  rw [integral_map]
+  · exact integral_shiftedLimitingBrolinMeasure_neg_eq c φ
+  · exact continuous_neg.measurable.aemeasurable
+  · exact φ.continuous.aestronglyMeasurable
+
 theorem integral_shiftedLimitingBrolinMeasure_comp_quadratic_eq_integral_escapeDisk
     (c : ℂ) (φ : C_c(ℂ, ℝ)) :
     ∫ z, φ (quadratic c z) ∂shiftedLimitingBrolinMeasure c =
@@ -2851,6 +3195,34 @@ theorem shiftedLimitingBrolinMeasure_isProbOn_filledJulia (c : ℂ) :
     IsProbOn (shiftedLimitingBrolinMeasure c) (filledJulia c) :=
   ⟨instIsProbabilityMeasure_shiftedLimitingBrolinMeasure c,
     shiftedLimitingBrolinMeasure_filledJulia_compl c⟩
+
+/-- Carrier-only lower bound for the shifted limiting potential at every point
+of the fixed escape disk. -/
+theorem logPotential_shiftedLimitingBrolinMeasure_lower_bound_of_mem_escapeDisk
+    {c z : ℂ} (hz : z ∈ escapeDisk c) :
+    - Real.log (2 * max 2 ‖c‖) ≤
+      logPotential (shiftedLimitingBrolinMeasure c) z :=
+  logPotential_lower_bound_of_isProbOn_filledJulia_of_mem_escapeDisk
+    (shiftedLimitingBrolinMeasure_isProbOn_filledJulia c) hz
+
+/-- Filled-Julia specialization of the carrier-only shifted potential lower
+bound. -/
+theorem logPotential_shiftedLimitingBrolinMeasure_lower_bound_of_mem_filledJulia
+    {c z : ℂ} (hz : z ∈ filledJulia c) :
+    - Real.log (2 * max 2 ‖c‖) ≤
+      logPotential (shiftedLimitingBrolinMeasure c) z :=
+  logPotential_shiftedLimitingBrolinMeasure_lower_bound_of_mem_escapeDisk
+    (mem_escapeDisk_of_mem_filledJulia hz)
+
+/-- Carrier-only upper bound for the negative shifted potential on `K_c`. -/
+theorem neg_logPotential_shiftedLimitingBrolinMeasure_upper_bound_of_mem_filledJulia
+    {c z : ℂ} (hz : z ∈ filledJulia c) :
+    - logPotential (shiftedLimitingBrolinMeasure c) z ≤
+      Real.log (2 * max 2 ‖c‖) := by
+  have h :=
+    logPotential_shiftedLimitingBrolinMeasure_lower_bound_of_mem_filledJulia
+      (c := c) (z := z) hz
+  linarith
 
 theorem integral_truncatedLogKernel_shiftedLimitingBrolinMeasure_eq_integral_escapeDisk
     (c z : ℂ) {δ : ℝ} (hδ : 0 < δ) :
@@ -3567,6 +3939,48 @@ theorem gapAMu_eq_brolinMu (c : ℂ) :
     gapAMu c = brolinMu c := by
   rw [gapAMu, brolinMuRieszMeasure_eq_brolinMu]
 
+/-- Measure-level antipodal invariance of the hDisc candidate `μ_c`. -/
+theorem map_brolinMu_neg (c : ℂ) :
+    Measure.map Neg.neg (brolinMu c) = brolinMu c := by
+  simpa [brolinMu] using map_limitingBrolinMeasure_neg c
+
+/-- GAP-A notation for antipodal invariance of the constructed measure `μ_c`. -/
+theorem map_gapAMu_neg (c : ℂ) :
+    Measure.map Neg.neg (gapAMu c) = gapAMu c := by
+  rw [gapAMu_eq_brolinMu]
+  exact map_brolinMu_neg c
+
+/-- Antipodal symmetry of `μ_c` makes the antipodal kernel integral equal to
+the original kernel integral. -/
+theorem integral_logKernel_neg_right_gapAMu_eq
+    (c z : ℂ) :
+    ∫ w, logKernel z (-w) ∂gapAMu c =
+      ∫ w, logKernel z w ∂gapAMu c := by
+  let μ : Measure ℂ := gapAMu c
+  calc
+    ∫ w, logKernel z (-w) ∂gapAMu c
+        = ∫ w, logKernel z (-w) ∂μ := by rfl
+    _ = ∫ w, logKernel z w ∂Measure.map Neg.neg μ := by
+          rw [integral_map]
+          · exact continuous_neg.measurable.aemeasurable
+          · exact logKernel_aestronglyMeasurable z (Measure.map Neg.neg μ)
+    _ = ∫ w, logKernel z w ∂gapAMu c := by
+          rw [show μ = gapAMu c from rfl, map_gapAMu_neg c]
+
+/-- The GAP-A potential is even under `z ↦ -z`. -/
+theorem logPotential_gapAMu_neg_eq (c z : ℂ) :
+    logPotential (gapAMu c) (-z) = logPotential (gapAMu c) z := by
+  calc
+    logPotential (gapAMu c) (-z)
+        = ∫ w, logKernel z (-w) ∂gapAMu c := by
+          unfold logPotential
+          refine integral_congr_ae ?_
+          exact Filter.Eventually.of_forall
+            (fun w => (logKernel_neg_right z w).symm)
+    _ = logPotential (gapAMu c) z := by
+          rw [integral_logKernel_neg_right_gapAMu_eq]
+          rfl
+
 /-- GAP-A-facing form of the shifted balancedness bridge.  The shifted cluster
 limit may be a priori different, but its quadratic pushforward has the same
 compact-test integrals as the constructed measure `μ_c`. -/
@@ -3836,6 +4250,30 @@ theorem gapAMu_isProbOn_filledJulia (c : ℂ) :
     IsProbOn (gapAMu c) (filledJulia c) := by
   rw [gapAMu_eq_brolinMuRieszMeasure]
   exact brolinMuRieszMeasure_isProbOn_filledJulia c
+
+/-- Carrier-only lower bound for the canonical GAP-A potential at every point
+of the fixed escape disk. -/
+theorem logPotential_gapAMu_lower_bound_of_mem_escapeDisk
+    {c z : ℂ} (hz : z ∈ escapeDisk c) :
+    - Real.log (2 * max 2 ‖c‖) ≤ logPotential (gapAMu c) z :=
+  logPotential_lower_bound_of_isProbOn_filledJulia_of_mem_escapeDisk
+    (gapAMu_isProbOn_filledJulia c) hz
+
+/-- Filled-Julia specialization of the carrier-only GAP-A potential lower
+bound. -/
+theorem logPotential_gapAMu_lower_bound_of_mem_filledJulia
+    {c z : ℂ} (hz : z ∈ filledJulia c) :
+    - Real.log (2 * max 2 ‖c‖) ≤ logPotential (gapAMu c) z :=
+  logPotential_gapAMu_lower_bound_of_mem_escapeDisk
+    (mem_escapeDisk_of_mem_filledJulia hz)
+
+/-- Carrier-only upper bound for the negative GAP-A potential on `K_c`. -/
+theorem neg_logPotential_gapAMu_upper_bound_of_mem_filledJulia
+    {c z : ℂ} (hz : z ∈ filledJulia c) :
+    - logPotential (gapAMu c) z ≤ Real.log (2 * max 2 ‖c‖) := by
+  have h := logPotential_gapAMu_lower_bound_of_mem_filledJulia
+    (c := c) (z := z) hz
+  linarith
 
 theorem brolinMuRieszMeasure_isWeakSubseqLimitOfPreBrolin (c : ℂ) :
     IsWeakSubseqLimitOfPreBrolin c (brolinMuRieszMeasure c) := by
@@ -4339,6 +4777,186 @@ theorem escapeDisk_singleton_eq_zero_of_truncatedLogKernel_nonpos
     nlinarith
   exact (not_lt_of_ge hmass') hlt
 
+/-- Generic boundary ball-pressure estimate on the compact escape-disk carrier.
+The same truncation inequality that kills atoms also controls the measure of a
+small Euclidean ball around a filled-Julia point. -/
+theorem escapeDisk_ball_pressure_of_truncatedLogKernel_nonpos
+    (c : ℂ) {z : ℂ} (hzK : z ∈ filledJulia c)
+    {δ : ℝ} (hδ : 0 < δ) (hδle : δ ≤ 1)
+    (μK : Measure (escapeDisk c)) [IsProbabilityMeasure μK]
+    (hnonpos :
+      ∫ w : escapeDisk c, truncatedLogKernel z δ (w : ℂ) ∂μK ≤ 0) :
+    let S : Set (escapeDisk c) := {w | ‖z - (w : ℂ)‖ < δ}
+    let C : ℝ := 2 * max 2 ‖c‖
+    let A : ℝ := - Real.log δ
+    let B : ℝ := - Real.log C
+    B + (A - B) * (μK S).toReal ≤ 0 := by
+  intro S C A B
+  have hz : z ∈ escapeDisk c := mem_escapeDisk_of_mem_filledJulia hzK
+  have hCge : 1 ≤ C := by
+    dsimp [C]
+    have hR : (2 : ℝ) ≤ max 2 ‖c‖ := le_max_left _ _
+    nlinarith
+  have hδC : δ ≤ C := le_trans hδle hCge
+  have hmaxC : max δ C = C := max_eq_right hδC
+  have hSopen : IsOpen S := by
+    dsimp [S]
+    exact isOpen_lt
+      ((continuous_const.sub continuous_subtype_val).norm)
+      continuous_const
+  have hS : MeasurableSet S := hSopen.measurableSet
+  let ballIndicator : escapeDisk c → ℝ := S.indicator (fun _ => (1 : ℝ))
+  have hconst : Integrable (fun _ : escapeDisk c => B) μK :=
+    integrable_const B
+  have hind : Integrable ballIndicator μK := by
+    dsimp [ballIndicator]
+    exact (integrable_const (α := escapeDisk c) (μ := μK) (1 : ℝ)).indicator hS
+  have hscaled : Integrable (fun w : escapeDisk c => (A - B) * ballIndicator w) μK :=
+    hind.const_mul (A - B)
+  have hlowerInt :
+      Integrable (fun w : escapeDisk c => B + (A - B) * ballIndicator w) μK :=
+    hconst.add hscaled
+  have htruncInt :
+      Integrable (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) μK := by
+    simpa [truncatedLogKernelOnEscapeDisk] using
+      (truncatedLogKernelOnEscapeDisk c z δ hδ).integrable μK
+  have hmono :
+      (fun w : escapeDisk c => B + (A - B) * ballIndicator w) ≤
+        (fun w : escapeDisk c => truncatedLogKernel z δ (w : ℂ)) := by
+    intro w
+    by_cases hw : w ∈ S
+    · have hdist_le : ‖z - (w : ℂ)‖ ≤ δ := le_of_lt hw
+      have hmax : max δ ‖z - (w : ℂ)‖ = δ := max_eq_left hdist_le
+      apply le_of_eq
+      calc
+        B + (A - B) * ballIndicator w = A := by
+          simp [ballIndicator, Set.indicator_of_mem hw]
+        _ = truncatedLogKernel z δ (w : ℂ) := by
+          simp [truncatedLogKernel, A, hmax]
+    · have hlower :=
+        truncatedLogKernel_escapeDisk_lower_bound
+          (c := c) (z := z) (w := (w : ℂ)) hδ hz w.2
+      rw [hmaxC] at hlower
+      calc
+        B + (A - B) * ballIndicator w = B := by
+          simp [ballIndicator, Set.indicator_of_notMem hw]
+        _ ≤ truncatedLogKernel z δ (w : ℂ) := by
+          simpa [B, C] using hlower
+  have hle := integral_mono hlowerInt htruncInt hmono
+  have hlowerIntegral :
+      ∫ w : escapeDisk c, B + (A - B) * ballIndicator w ∂μK =
+        B + (A - B) * (μK S).toReal := by
+    rw [integral_add hconst hscaled]
+    rw [integral_const, integral_const_mul]
+    have hindint :
+        ∫ w : escapeDisk c, ballIndicator w ∂μK =
+          (μK S).toReal := by
+      rw [show ballIndicator = S.indicator (fun _ => (1 : ℝ)) from rfl]
+      rw [integral_indicator_const (1 : ℝ) hS]
+      simp [S, measureReal_def]
+    rw [hindint]
+    simp [measureReal_def]
+  exact le_trans (by simpa [hlowerIntegral] using hle) hnonpos
+
+/-- Generic explicit small-ball mass bound extracted from the boundary
+truncation pressure estimate on the compact escape-disk carrier. -/
+theorem escapeDisk_ball_mass_le_of_truncatedLogKernel_nonpos
+    (c : ℂ) {z : ℂ} (hzK : z ∈ filledJulia c)
+    {δ : ℝ} (hδ : 0 < δ) (hδle : δ ≤ 1)
+    (μK : Measure (escapeDisk c)) [IsProbabilityMeasure μK]
+    (hnonpos :
+      ∫ w : escapeDisk c, truncatedLogKernel z δ (w : ℂ) ∂μK ≤ 0) :
+    let S : Set (escapeDisk c) := {w | ‖z - (w : ℂ)‖ < δ}
+    let C : ℝ := 2 * max 2 ‖c‖
+    (μK S).toReal ≤
+      Real.log C / (- Real.log δ + Real.log C) := by
+  intro S C
+  have hpress :=
+    escapeDisk_ball_pressure_of_truncatedLogKernel_nonpos
+      (c := c) (z := z) hzK hδ hδle μK hnonpos
+  dsimp at hpress
+  have hCgt : 1 < C := by
+    dsimp [C]
+    have hR : (2 : ℝ) ≤ max 2 ‖c‖ := le_max_left _ _
+    nlinarith
+  have hlogCpos : 0 < Real.log C := Real.log_pos hCgt
+  have hlogδnonpos : Real.log δ ≤ 0 := Real.log_nonpos hδ.le hδle
+  have hDpos : 0 < - Real.log δ + Real.log C := by
+    nlinarith
+  rw [le_div_iff₀ hDpos]
+  nlinarith
+
+/-- Shifted compact-carrier small-ball mass bound near any filled-Julia point.
+This is the shifted analogue of the unshifted boundary ball-pressure estimate. -/
+theorem shiftedBrolinLimitOnEscapeDisk_ball_mass_le_of_mem_filledJulia_of_disconnected
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    {δ : ℝ} (hδ : 0 < δ) (hδle : δ ≤ 1) :
+    let μK : Measure (escapeDisk c) :=
+      (shiftedBrolinLimitOnEscapeDisk c : Measure (escapeDisk c))
+    let S : Set (escapeDisk c) := {w | ‖z - (w : ℂ)‖ < δ}
+    let C : ℝ := 2 * max 2 ‖c‖
+    (μK S).toReal ≤
+      Real.log C / (- Real.log δ + Real.log C) := by
+  intro μK S C
+  haveI : IsProbabilityMeasure μK := by
+    dsimp [μK]
+    infer_instance
+  have hnonpos :
+      ∫ w : escapeDisk c, truncatedLogKernel z δ (w : ℂ) ∂μK ≤ 0 := by
+    have hplane :=
+      integral_truncatedLogKernel_shiftedLimitingBrolinMeasure_nonpos_of_mem_filledJulia_of_disconnected
+        (c := c) (z := z) hc hzK hδ
+    rw [integral_truncatedLogKernel_shiftedLimitingBrolinMeasure_eq_integral_escapeDisk
+      c z hδ] at hplane
+    simpa [μK] using hplane
+  have hmass :=
+    escapeDisk_ball_mass_le_of_truncatedLogKernel_nonpos
+      (c := c) (z := z) hzK hδ hδle μK hnonpos
+  dsimp at hmass
+  simpa [S, C] using hmass
+
+theorem shiftedLimitingBrolinMeasure_ball_mass_le_of_mem_filledJulia_of_disconnected
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    {δ : ℝ} (hδ : 0 < δ) (hδle : δ ≤ 1) :
+    let S : Set ℂ := {w | ‖z - w‖ < δ}
+    let C : ℝ := 2 * max 2 ‖c‖
+    (shiftedLimitingBrolinMeasure c S).toReal ≤
+      Real.log C / (- Real.log δ + Real.log C) := by
+  intro S C
+  have hS : MeasurableSet S := by
+    dsimp [S]
+    exact (isOpen_lt ((continuous_const.sub continuous_id).norm) continuous_const).measurableSet
+  have hcarrier :=
+    shiftedBrolinLimitOnEscapeDisk_ball_mass_le_of_mem_filledJulia_of_disconnected
+      (c := c) (z := z) hc hzK hδ hδle
+  dsimp at hcarrier
+  rw [shiftedLimitingBrolinMeasure, Measure.map_apply measurable_subtype_coe hS]
+  simpa [S, C] using hcarrier
+
+/-- Shifted small-ball mass bound at the antipodal singularity `w = -z`.  This
+is the estimate needed for the second term `logKernel z (-w)` in the quadratic
+boundary kernel split. -/
+theorem shiftedLimitingBrolinMeasure_antipodal_ball_mass_le_of_mem_filledJulia_of_disconnected
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    {δ : ℝ} (hδ : 0 < δ) (hδle : δ ≤ 1) :
+    let S : Set ℂ := {w | ‖z + w‖ < δ}
+    let C : ℝ := 2 * max 2 ‖c‖
+    (shiftedLimitingBrolinMeasure c S).toReal ≤
+      Real.log C / (- Real.log δ + Real.log C) := by
+  intro S C
+  have hnegK : -z ∈ filledJulia c := (mem_filledJulia_neg_iff c z).2 hzK
+  have hmass :=
+    shiftedLimitingBrolinMeasure_ball_mass_le_of_mem_filledJulia_of_disconnected
+      (c := c) (z := -z) hc hnegK hδ hδle
+  dsimp at hmass
+  have hS :
+      ({w : ℂ | ‖-z - w‖ < δ}) = S := by
+    ext w
+    have hnorm : ‖-z - w‖ = ‖z + w‖ := by
+      rw [show -z - w = -(z + w) by ring, norm_neg]
+    simp [S, hnorm]
+  simpa [S, C, hS] using hmass
+
 theorem shiftedBrolinLimitOnEscapeDisk_singleton_eq_zero_of_mem_filledJulia_of_disconnected
     {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c) :
     let hz : z ∈ escapeDisk c := mem_escapeDisk_of_mem_filledJulia hzK
@@ -4380,6 +4998,45 @@ theorem shiftedLimitingBrolinMeasure_singleton_eq_zero_of_mem_filledJulia_of_dis
   exact shiftedBrolinLimitOnEscapeDisk_singleton_eq_zero_of_mem_filledJulia_of_disconnected
     hc hzK
 
+/-- For the shifted limiting measure, positive truncations at a boundary point
+are a.e. below the true logarithmic kernel. -/
+theorem ae_truncatedLogKernel_le_logKernel_shiftedLimitingBrolinMeasure_of_mem_filledJulia_of_disconnected
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    {δ : ℝ} (hδ : 0 < δ) :
+    ∀ᵐ w ∂shiftedLimitingBrolinMeasure c,
+      truncatedLogKernel z δ w ≤ logKernel z w := by
+  have hzero :
+      shiftedLimitingBrolinMeasure c (({z} : Set ℂ)ᶜ)ᶜ = 0 := by
+    simpa using
+      shiftedLimitingBrolinMeasure_singleton_eq_zero_of_mem_filledJulia_of_disconnected
+        hc hzK
+  have hne_ae : ∀ᵐ w ∂shiftedLimitingBrolinMeasure c, w ∈ ({z} : Set ℂ)ᶜ :=
+    (mem_ae_iff).2 hzero
+  filter_upwards [hne_ae] with w hw
+  exact truncatedLogKernel_le_logKernel_of_ne hδ (fun hzw => hw hzw.symm)
+
+/-- For the shifted limiting measure, positive truncations at the antipodal
+boundary singularity are a.e. below the true antipodal logarithmic kernel. -/
+theorem ae_truncatedLogKernel_neg_right_le_logKernel_neg_right_shiftedLimitingBrolinMeasure_of_mem_filledJulia_of_disconnected
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    {δ : ℝ} (hδ : 0 < δ) :
+    ∀ᵐ w ∂shiftedLimitingBrolinMeasure c,
+      truncatedLogKernel z δ (-w) ≤ logKernel z (-w) := by
+  have hnegK : -z ∈ filledJulia c := (mem_filledJulia_neg_iff c z).2 hzK
+  have hzero :
+      shiftedLimitingBrolinMeasure c (({-z} : Set ℂ)ᶜ)ᶜ = 0 := by
+    simpa using
+      shiftedLimitingBrolinMeasure_singleton_eq_zero_of_mem_filledJulia_of_disconnected
+        (c := c) (z := -z) hc hnegK
+  have hne_ae : ∀ᵐ w ∂shiftedLimitingBrolinMeasure c, w ∈ ({-z} : Set ℂ)ᶜ :=
+    (mem_ae_iff).2 hzero
+  filter_upwards [hne_ae] with w hw
+  exact truncatedLogKernel_le_logKernel_of_ne hδ (by
+    intro hzw
+    have hw_eq : w = -z := by
+      rw [hzw, neg_neg]
+    exact hw hw_eq)
+
 /-- Under the shifted limiting measure, the quadratic pullback of the
 logarithmic kernel splits almost everywhere into the two antipodal kernels. -/
 theorem ae_logKernel_quadratic_eq_add_shiftedLimitingBrolinMeasure_of_mem_filledJulia_of_disconnected
@@ -4411,6 +5068,58 @@ theorem ae_logKernel_quadratic_eq_add_shiftedLimitingBrolinMeasure_of_mem_filled
         rw [hznw, neg_neg]
       exact hwneg hw_eq)
 
+/-- Antipodal symmetry of the shifted limit transfers logarithmic-kernel
+integrability from a boundary point to its antipodal kernel. -/
+theorem integrable_logKernel_neg_right_shiftedLimitingBrolinMeasure
+    {c z : ℂ}
+    (hzint :
+      Integrable (fun w => logKernel z w) (shiftedLimitingBrolinMeasure c)) :
+    Integrable (fun w => logKernel z (-w)) (shiftedLimitingBrolinMeasure c) := by
+  let ν : Measure ℂ := shiftedLimitingBrolinMeasure c
+  have hmap : Measure.map Neg.neg ν = ν := by
+    simpa [ν] using map_shiftedLimitingBrolinMeasure_neg c
+  have hzmap : Integrable (fun w => logKernel z w) (Measure.map Neg.neg ν) := by
+    rw [hmap]
+    exact hzint
+  simpa [ν] using
+    (integrable_map_measure
+      (logKernel_aestronglyMeasurable z (Measure.map Neg.neg ν))
+      continuous_neg.measurable.aemeasurable).1 hzmap
+
+/-- Antipodal symmetry of the shifted limit makes the antipodal kernel integral
+equal to the original kernel integral. -/
+theorem integral_logKernel_neg_right_shiftedLimitingBrolinMeasure_eq
+    (c z : ℂ) :
+    ∫ w, logKernel z (-w) ∂shiftedLimitingBrolinMeasure c =
+      ∫ w, logKernel z w ∂shiftedLimitingBrolinMeasure c := by
+  let ν : Measure ℂ := shiftedLimitingBrolinMeasure c
+  calc
+    ∫ w, logKernel z (-w) ∂shiftedLimitingBrolinMeasure c
+        = ∫ w, logKernel z (-w) ∂ν := by rfl
+    _ = ∫ w, logKernel z w ∂Measure.map Neg.neg ν := by
+          rw [integral_map]
+          · exact continuous_neg.measurable.aemeasurable
+          · exact logKernel_aestronglyMeasurable z (Measure.map Neg.neg ν)
+    _ = ∫ w, logKernel z w ∂shiftedLimitingBrolinMeasure c := by
+          rw [show ν = shiftedLimitingBrolinMeasure c from rfl,
+            map_shiftedLimitingBrolinMeasure_neg c]
+
+/-- The shifted limiting potential is even under `z ↦ -z`. -/
+theorem logPotential_shiftedLimitingBrolinMeasure_neg_eq
+    (c z : ℂ) :
+    logPotential (shiftedLimitingBrolinMeasure c) (-z) =
+      logPotential (shiftedLimitingBrolinMeasure c) z := by
+  calc
+    logPotential (shiftedLimitingBrolinMeasure c) (-z)
+        = ∫ w, logKernel z (-w) ∂shiftedLimitingBrolinMeasure c := by
+          unfold logPotential
+          refine integral_congr_ae ?_
+          exact Filter.Eventually.of_forall
+            (fun w => (logKernel_neg_right z w).symm)
+    _ = logPotential (shiftedLimitingBrolinMeasure c) z := by
+          rw [integral_logKernel_neg_right_shiftedLimitingBrolinMeasure_eq]
+          rfl
+
 /-- The quadratic-composed kernel is integrable against the shifted limiting
 measure as soon as the two antipodal boundary kernels are. -/
 theorem integrable_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure_of_antipodal
@@ -4427,6 +5136,20 @@ theorem integrable_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure_of_anti
     [ae_logKernel_quadratic_eq_add_shiftedLimitingBrolinMeasure_of_mem_filledJulia_of_disconnected
       hc hzK] with w hsplit
   exact hsplit.symm
+
+/-- The quadratic-composed kernel is integrable against the shifted limiting
+measure as soon as the original boundary kernel is; antipodal integrability is
+supplied by shifted antipodal symmetry. -/
+theorem integrable_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    (hzint :
+      Integrable (fun w => logKernel z w) (shiftedLimitingBrolinMeasure c)) :
+    Integrable
+      (fun w => logKernel (quadratic c z) (quadratic c w))
+      (shiftedLimitingBrolinMeasure c) :=
+  integrable_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure_of_antipodal
+    (c := c) (z := z) hc hzK hzint
+    (integrable_logKernel_neg_right_shiftedLimitingBrolinMeasure hzint)
 
 /-- The target-side logarithmic kernel at `f_c z` is integrable against
 `μ_c` whenever the two shifted antipodal boundary kernels at `z` are
@@ -4450,6 +5173,133 @@ theorem integrable_logKernel_gapAMu_quadratic_of_shifted_antipodal
     (logKernel_aestronglyMeasurable (quadratic c z)
       (Measure.map (quadratic c) (shiftedLimitingBrolinMeasure c)))
     (continuous_quadratic c).measurable.aemeasurable).2 hcomp
+
+/-- The target-side logarithmic kernel at `f_c z` is integrable against `μ_c`
+as soon as the original shifted boundary kernel at `z` is integrable. -/
+theorem integrable_logKernel_gapAMu_quadratic_of_shifted
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    (hzint :
+      Integrable (fun w => logKernel z w) (shiftedLimitingBrolinMeasure c)) :
+    Integrable (fun y => logKernel (quadratic c z) y) (gapAMu c) :=
+  integrable_logKernel_gapAMu_quadratic_of_shifted_antipodal
+    (c := c) (z := z) hc hzK hzint
+    (integrable_logKernel_neg_right_shiftedLimitingBrolinMeasure hzint)
+
+/-- The shifted limiting measure is carried by the filled Julia set, in the
+`∀ᵐ` form used by pointwise lower-bound arguments. -/
+theorem ae_mem_filledJulia_shiftedLimitingBrolinMeasure (c : ℂ) :
+    ∀ᵐ w ∂shiftedLimitingBrolinMeasure c, w ∈ filledJulia c := by
+  exact (mem_ae_iff).2 (shiftedLimitingBrolinMeasure_filledJulia_compl c)
+
+/-- If the split antipodal logarithmic kernel is integrable against the shifted
+limit, then the original branch is integrable.  The point is that both branches
+have a uniform escape-disk lower bound on the support, so after adding the
+diameter constant they are nonnegative and integrability of the sum separates. -/
+theorem integrable_logKernel_shiftedLimitingBrolinMeasure_of_integrable_add_neg_right
+    {c z : ℂ} (hzK : z ∈ filledJulia c)
+    (hadd :
+      Integrable
+        (fun w => logKernel z w + logKernel z (-w))
+        (shiftedLimitingBrolinMeasure c)) :
+    Integrable
+      (fun w => logKernel z w)
+      (shiftedLimitingBrolinMeasure c) := by
+  let ν : Measure ℂ := shiftedLimitingBrolinMeasure c
+  let D : ℝ := Real.log (2 * max 2 ‖c‖)
+  haveI : IsProbabilityMeasure ν := by
+    dsimp [ν]
+    exact instIsProbabilityMeasure_shiftedLimitingBrolinMeasure c
+  have hzEsc : z ∈ escapeDisk c := mem_escapeDisk_of_mem_filledJulia hzK
+  have hsupport : ∀ᵐ w ∂ν, w ∈ filledJulia c := by
+    dsimp [ν]
+    exact ae_mem_filledJulia_shiftedLimitingBrolinMeasure c
+  have hf_nonneg :
+      0 ≤ᵐ[ν] fun w => logKernel z w + D := by
+    filter_upwards [hsupport] with w hwK
+    have hwEsc : w ∈ escapeDisk c := mem_escapeDisk_of_mem_filledJulia hwK
+    have hfloor : -D ≤ logKernel z w := by
+      dsimp [D]
+      exact logKernel_escapeDisk_lower_bound hzEsc hwEsc
+    have hnonneg : (0 : ℝ) ≤ logKernel z w + D := by linarith
+    simpa using hnonneg
+  have hg_nonneg :
+      0 ≤ᵐ[ν] fun w => logKernel z (-w) + D := by
+    filter_upwards [hsupport] with w hwK
+    have hnegK : -w ∈ filledJulia c := (mem_filledJulia_neg_iff c w).2 hwK
+    have hnegEsc : -w ∈ escapeDisk c := mem_escapeDisk_of_mem_filledJulia hnegK
+    have hfloor : -D ≤ logKernel z (-w) := by
+      dsimp [D]
+      exact logKernel_escapeDisk_lower_bound hzEsc hnegEsc
+    have hnonneg : (0 : ℝ) ≤ logKernel z (-w) + D := by linarith
+    simpa using hnonneg
+  have hshifted_sum :
+      Integrable
+        (fun w => (logKernel z w + logKernel z (-w)) + 2 * D)
+        ν := by
+    have hconst : Integrable (fun _ : ℂ => 2 * D) ν := integrable_const _
+    have haddν :
+        Integrable (fun w => logKernel z w + logKernel z (-w)) ν := by
+      simpa [ν] using hadd
+    simpa [Pi.add_apply] using haddν.add hconst
+  have hbranch_sum :
+      Integrable
+        ((fun w => logKernel z w + D) +
+          (fun w => logKernel z (-w) + D))
+        ν := by
+    refine hshifted_sum.congr ?_
+    filter_upwards with w
+    simp only [Pi.add_apply]
+    ring
+  have hf_meas :
+      AEStronglyMeasurable (fun w => logKernel z w + D) ν :=
+    (logKernel_aestronglyMeasurable z ν).add aestronglyMeasurable_const
+  have hf_shift :
+      Integrable (fun w => logKernel z w + D) ν :=
+    integrable_left_of_integrable_add_of_nonneg
+      (μ := ν) hf_meas hf_nonneg hg_nonneg hbranch_sum
+  have hplain :
+      Integrable (fun w => logKernel z w) ν := by
+    exact (integrable_add_const_iff.mp hf_shift)
+  dsimp [ν] at hplain
+  exact hplain
+
+/-- Converse integrability transfer for the quadratic GAP-A pushforward:
+target-side integrability at `f_c z` forces integrability of the shifted branch
+at `z`. -/
+theorem integrable_logKernel_shiftedLimitingBrolinMeasure_of_gapAMu_quadratic
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    (hμint :
+      Integrable (fun y => logKernel (quadratic c z) y) (gapAMu c)) :
+    Integrable
+      (fun w => logKernel z w)
+      (shiftedLimitingBrolinMeasure c) := by
+  let ν : Measure ℂ := shiftedLimitingBrolinMeasure c
+  have hmapint :
+      Integrable (fun y => logKernel (quadratic c z) y)
+        (Measure.map (quadratic c) ν) := by
+    dsimp [ν]
+    rw [map_shiftedLimitingBrolinMeasure_quadratic_eq_gapAMu]
+    exact hμint
+  have hcomp :
+      Integrable
+        (fun w => logKernel (quadratic c z) (quadratic c w))
+        ν := by
+    exact
+      (integrable_map_measure
+        (logKernel_aestronglyMeasurable (quadratic c z)
+          (Measure.map (quadratic c) ν))
+        (continuous_quadratic c).measurable.aemeasurable).1 hmapint
+  have hsum :
+      Integrable
+        (fun w => logKernel z w + logKernel z (-w))
+        ν := by
+    refine hcomp.congr ?_
+    dsimp [ν]
+    exact ae_logKernel_quadratic_eq_add_shiftedLimitingBrolinMeasure_of_mem_filledJulia_of_disconnected
+      (c := c) (z := z) hc hzK
+  dsimp [ν] at hsum ⊢
+  exact integrable_logKernel_shiftedLimitingBrolinMeasure_of_integrable_add_neg_right
+    (c := c) (z := z) hzK hsum
 
 /-- Shifted boundary-kernel core for hDisc: the shifted compactness limit is a
 probability on `K_c`, has the exterior Green potential, pushes forward to
@@ -4537,6 +5387,31 @@ theorem integral_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure_eq_add
           ∫ w, logKernel z (-w) ∂shiftedLimitingBrolinMeasure c := by
         rw [integral_add hzint hnegint]
 
+/-- Antipodal symmetry collapses the shifted quadratic kernel split to twice
+the original shifted kernel integral. -/
+theorem integral_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure_eq_two
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    (hzint :
+      Integrable (fun w => logKernel z w) (shiftedLimitingBrolinMeasure c)) :
+    ∫ w, logKernel (quadratic c z) (quadratic c w)
+        ∂shiftedLimitingBrolinMeasure c =
+      2 * ∫ w, logKernel z w ∂shiftedLimitingBrolinMeasure c := by
+  have hnegint :
+      Integrable (fun w => logKernel z (-w)) (shiftedLimitingBrolinMeasure c) :=
+    integrable_logKernel_neg_right_shiftedLimitingBrolinMeasure hzint
+  calc
+    ∫ w, logKernel (quadratic c z) (quadratic c w)
+        ∂shiftedLimitingBrolinMeasure c
+        = ∫ w, logKernel z w ∂shiftedLimitingBrolinMeasure c +
+            ∫ w, logKernel z (-w) ∂shiftedLimitingBrolinMeasure c :=
+          integral_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure_eq_add
+            hc hzK hzint hnegint
+    _ = ∫ w, logKernel z w ∂shiftedLimitingBrolinMeasure c +
+          ∫ w, logKernel z w ∂shiftedLimitingBrolinMeasure c := by
+        rw [integral_logKernel_neg_right_shiftedLimitingBrolinMeasure_eq]
+    _ = 2 * ∫ w, logKernel z w ∂shiftedLimitingBrolinMeasure c := by
+        ring
+
 /-- Integral form of `logKernel_neg_right`. -/
 theorem integral_logKernel_neg_right_eq_logPotential_neg
     (μ : Measure ℂ) (z : ℂ) :
@@ -4561,6 +5436,19 @@ theorem integral_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure_eq_potent
   rw [integral_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure_eq_add
     (c := c) (z := z) hc hzK hzint hnegRightInt]
   rw [integral_logKernel_neg_right_eq_logPotential_neg]
+  rfl
+
+/-- Potential form of the shifted quadratic kernel split after antipodal
+symmetry: the quadratic pullback integral is `2 U_ν(z)`. -/
+theorem integral_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure_eq_two_potential
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    (hzint :
+      Integrable (fun w => logKernel z w) (shiftedLimitingBrolinMeasure c)) :
+    ∫ w, logKernel (quadratic c z) (quadratic c w)
+        ∂shiftedLimitingBrolinMeasure c =
+      2 * logPotential (shiftedLimitingBrolinMeasure c) z := by
+  rw [integral_logKernel_quadratic_comp_shiftedLimitingBrolinMeasure_eq_two
+    hc hzK hzint]
   rfl
 
 /-- Boundary singular-kernel passage for the shifted limiting measure,
@@ -5302,6 +6190,85 @@ theorem logPotential_gapAMu_quadratic_eq_shiftedPotential_add_of_shifted_antipod
       (c := c) (z := z) hc hzK hzint hnegRightInt)
     hzint hnegRightInt
 
+/-- Antipodal symmetry collapses the GAP-A boundary pushforward identity to
+`U_{μ_c}(f_c z) = 2 U_ν(z)` for the shifted limiting measure `ν`. -/
+theorem logPotential_gapAMu_quadratic_eq_two_shiftedPotential
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    (hzint :
+      Integrable (fun w => logKernel z w) (shiftedLimitingBrolinMeasure c)) :
+    logPotential (gapAMu c) (quadratic c z) =
+      2 * logPotential (shiftedLimitingBrolinMeasure c) z := by
+  have hnegRightInt :
+      Integrable (fun w => logKernel z (-w)) (shiftedLimitingBrolinMeasure c) :=
+    integrable_logKernel_neg_right_shiftedLimitingBrolinMeasure hzint
+  calc
+    logPotential (gapAMu c) (quadratic c z)
+        = logPotential (shiftedLimitingBrolinMeasure c) z +
+            logPotential (shiftedLimitingBrolinMeasure c) (-z) :=
+          logPotential_gapAMu_quadratic_eq_shiftedPotential_add_of_shifted_antipodal_integrable
+            (c := c) (z := z) hc hzK hzint hnegRightInt
+    _ = logPotential (shiftedLimitingBrolinMeasure c) z +
+          logPotential (shiftedLimitingBrolinMeasure c) z := by
+        rw [logPotential_shiftedLimitingBrolinMeasure_neg_eq]
+    _ = 2 * logPotential (shiftedLimitingBrolinMeasure c) z := by
+        ring
+
+/-- Signed form of the collapsed GAP-A boundary pushforward identity. -/
+theorem neg_logPotential_gapAMu_quadratic_eq_two_neg_shiftedPotential
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    (hzint :
+      Integrable (fun w => logKernel z w) (shiftedLimitingBrolinMeasure c)) :
+    - logPotential (gapAMu c) (quadratic c z) =
+      2 * (- logPotential (shiftedLimitingBrolinMeasure c) z) := by
+  have h :=
+    logPotential_gapAMu_quadratic_eq_two_shiftedPotential
+      (c := c) (z := z) hc hzK hzint
+  linarith
+
+/-- Unconditional collapsed GAP-A boundary pushforward identity.  If the
+shifted branch is integrable this is the proved dominated-convergence identity;
+if it is not, reverse integrability transfer forces the GAP-A target kernel to
+be nonintegrable too, so both Bochner integrals reduce to `0` by the project's
+`logPotential` convention. -/
+theorem logPotential_gapAMu_quadratic_eq_two_shiftedPotential_unconditional
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c) :
+    logPotential (gapAMu c) (quadratic c z) =
+      2 * logPotential (shiftedLimitingBrolinMeasure c) z := by
+  by_cases hzint :
+      Integrable (fun w => logKernel z w) (shiftedLimitingBrolinMeasure c)
+  · exact logPotential_gapAMu_quadratic_eq_two_shiftedPotential
+      (c := c) (z := z) hc hzK hzint
+  · have hμnot :
+        ¬ Integrable
+          (fun y => logKernel (quadratic c z) y) (gapAMu c) := by
+      intro hμint
+      exact hzint
+        (integrable_logKernel_shiftedLimitingBrolinMeasure_of_gapAMu_quadratic
+          (c := c) (z := z) hc hzK hμint)
+    have hleft :
+        logPotential (gapAMu c) (quadratic c z) = 0 := by
+      unfold logPotential
+      exact integral_undef hμnot
+    have hright :
+        logPotential (shiftedLimitingBrolinMeasure c) z = 0 := by
+      unfold logPotential
+      exact integral_undef hzint
+    calc
+      logPotential (gapAMu c) (quadratic c z) = 0 := hleft
+      _ = 2 * logPotential (shiftedLimitingBrolinMeasure c) z := by
+            rw [hright, mul_zero]
+
+/-- Signed unconditional form of the collapsed GAP-A boundary pushforward
+identity. -/
+theorem neg_logPotential_gapAMu_quadratic_eq_two_neg_shiftedPotential_unconditional
+    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c) :
+    - logPotential (gapAMu c) (quadratic c z) =
+      2 * (- logPotential (shiftedLimitingBrolinMeasure c) z) := by
+  have h :=
+    logPotential_gapAMu_quadratic_eq_two_shiftedPotential_unconditional
+      (c := c) (z := z) hc hzK
+  linarith
+
 /-- Boundary singular-kernel passage, upper-potential side.  At a filled-Julia
 point for disconnected `c`, the actual logarithmic potential of the
 constructed GAP-A measure is nonpositive.  The proof uses the no-atom result to
@@ -5439,12 +6406,10 @@ theorem neg_logPotential_gapAMu_nonneg_of_mem_filledJulia_of_disconnected
   linarith
 
 theorem neg_logPotential_gapAMu_upper_bound_of_mem_filledJulia_of_disconnected
-    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c) :
+    {c z : ℂ} (_hc : Disconnected c) (hzK : z ∈ filledJulia c) :
     - logPotential (gapAMu c) z ≤ Real.log (2 * max 2 ‖c‖) := by
-  have h :=
-    logPotential_gapAMu_lower_bound_of_mem_filledJulia_of_disconnected
-      (c := c) (z := z) hc hzK
-  linarith
+  exact neg_logPotential_gapAMu_upper_bound_of_mem_filledJulia
+    (c := c) (z := z) hzK
 
 theorem logPotential_gapAMu_bounds_of_mem_filledJulia_of_disconnected
     {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c) :
@@ -5502,11 +6467,11 @@ theorem gapAMu_hasGreenPotentialRepresentation_iff_boundary_nonpos_of_disconnect
         (c := c) (z := z) hc hz)
 
 /-- If the constructed boundary potential satisfies the same quadratic scaling
-law as the Green function on `K_c`, then the remaining hDisc boundary
-inequality follows.  Indeed, a positive value would double along a bounded
-filled-Julia orbit, contradicting the uniform upper bound above. -/
-theorem neg_logPotential_gapAMu_nonpos_of_boundary_scaling_of_mem_filledJulia
-    {c z : ℂ} (hc : Disconnected c) (hzK : z ∈ filledJulia c)
+law as the Green function on `K_c`, then the opposite boundary inequality
+follows.  Indeed, a positive value would double along a bounded filled-Julia
+orbit, contradicting the carrier-only upper bound above. -/
+theorem neg_logPotential_gapAMu_nonpos_of_boundary_scaling
+    {c z : ℂ} (hzK : z ∈ filledJulia c)
     (hscale :
       ∀ w : ℂ, w ∈ filledJulia c →
         - logPotential (gapAMu c) (quadratic c w) =
@@ -5553,11 +6518,23 @@ theorem neg_logPotential_gapAMu_nonpos_of_boundary_scaling_of_mem_filledJulia
   have hbound :
       A N ≤ B := by
     simpa [A, B] using
-      neg_logPotential_gapAMu_upper_bound_of_mem_filledJulia_of_disconnected
-        (c := c) (z := (quadratic c)^[N] z) hc hNK
+      neg_logPotential_gapAMu_upper_bound_of_mem_filledJulia
+        (c := c) (z := (quadratic c)^[N] z) hNK
   have hgt : B < A N := by
     simpa [hA N] using hN N le_rfl
   exact not_lt_of_ge hbound hgt
+
+/-- Disconnected-lane wrapper for the boundary-scaling contradiction.  The
+pointwise doubling argument itself is carrier-only; the disconnected input is
+kept here for the existing hDisc API. -/
+theorem neg_logPotential_gapAMu_nonpos_of_boundary_scaling_of_mem_filledJulia
+    {c z : ℂ} (_hc : Disconnected c) (hzK : z ∈ filledJulia c)
+    (hscale :
+      ∀ w : ℂ, w ∈ filledJulia c →
+        - logPotential (gapAMu c) (quadratic c w) =
+          2 * (- logPotential (gapAMu c) w)) :
+    - logPotential (gapAMu c) z ≤ 0 :=
+  neg_logPotential_gapAMu_nonpos_of_boundary_scaling hzK hscale
 
 /-- The same scaling law closes the existing GAP-A representation criterion for
 the constructed limiting/Riesz measure. -/
@@ -5570,8 +6547,441 @@ theorem gapAMu_hasGreenPotentialRepresentation_of_boundary_scaling
     HasGreenPotentialRepresentation c (gapAMu c) := by
   rw [gapAMu_hasGreenPotentialRepresentation_iff_boundary_nonpos_of_disconnected hc]
   intro z hzK
-  exact neg_logPotential_gapAMu_nonpos_of_boundary_scaling_of_mem_filledJulia
-    (c := c) (z := z) hc hzK hscale
+  exact neg_logPotential_gapAMu_nonpos_of_boundary_scaling
+    (c := c) (z := z) hzK hscale
+
+/-- The collapsed shifted pushforward identity supplies the boundary scaling
+needed for hDisc once the shifted boundary potential is identified with the
+constructed GAP-A potential on `K_c`. -/
+theorem gapAMu_boundary_scaling_of_shiftedPotential_eq
+    {c : ℂ} (hc : Disconnected c)
+    (hpot :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        logPotential (shiftedLimitingBrolinMeasure c) z =
+          logPotential (gapAMu c) z) :
+    ∀ z : ℂ, z ∈ filledJulia c →
+      - logPotential (gapAMu c) (quadratic c z) =
+        2 * (- logPotential (gapAMu c) z) := by
+  intro z hzK
+  have h :=
+    neg_logPotential_gapAMu_quadratic_eq_two_neg_shiftedPotential_unconditional
+      (c := c) (z := z) hc hzK
+  rw [hpot z hzK] at h
+  exact h
+
+/-- hDisc closure through the shifted potential identification: it replaces the
+raw boundary-scaling hypothesis by the concrete remaining shifted/GAP-A
+potential comparison on the filled Julia set. -/
+theorem gapAMu_hasGreenPotentialRepresentation_of_shiftedPotential_eq
+    {c : ℂ} (hc : Disconnected c)
+    (hpot :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        logPotential (shiftedLimitingBrolinMeasure c) z =
+          logPotential (gapAMu c) z) :
+    HasGreenPotentialRepresentation c (gapAMu c) :=
+  gapAMu_hasGreenPotentialRepresentation_of_boundary_scaling hc
+    (gapAMu_boundary_scaling_of_shiftedPotential_eq hc hpot)
+
+/-- If the shifted cluster is the constructed GAP-A measure, the unconditional
+quadratic potential identity gives the boundary scaling law directly. -/
+theorem gapAMu_boundary_scaling_of_shiftedLimitingBrolinMeasure_eq
+    {c : ℂ} (hc : Disconnected c)
+    (hν : shiftedLimitingBrolinMeasure c = gapAMu c) :
+    ∀ z : ℂ, z ∈ filledJulia c →
+      - logPotential (gapAMu c) (quadratic c z) =
+        2 * (- logPotential (gapAMu c) z) := by
+  intro z hzK
+  have h :=
+    neg_logPotential_gapAMu_quadratic_eq_two_neg_shiftedPotential_unconditional
+      (c := c) (z := z) hc hzK
+  rwa [hν] at h
+
+/-- hDisc closure from uniqueness of the shifted cluster.  Once the shifted
+compactness limit is identified with `μ_c`, the boundary scaling law follows
+and the bounded-orbit doubling argument proves the Green-potential
+representation. -/
+theorem gapAMu_hasGreenPotentialRepresentation_of_shiftedLimitingBrolinMeasure_eq
+    {c : ℂ} (hc : Disconnected c)
+    (hν : shiftedLimitingBrolinMeasure c = gapAMu c) :
+    HasGreenPotentialRepresentation c (gapAMu c) :=
+  gapAMu_hasGreenPotentialRepresentation_of_boundary_scaling hc
+    (gapAMu_boundary_scaling_of_shiftedLimitingBrolinMeasure_eq hc hν)
+
+/-- The shifted boundary-zero statement alone closes the GAP-A potential
+representation: every boundary point has a filled-Julia preimage, and the
+collapsed shifted pushforward identity gives zero potential at its image. -/
+theorem gapAMu_boundary_zero_of_shiftedBoundary_zero
+    {c : ℂ} (hc : Disconnected c)
+    (hshift :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        - logPotential (shiftedLimitingBrolinMeasure c) z = 0) :
+    ∀ y : ℂ, y ∈ filledJulia c →
+      - logPotential (gapAMu c) y = 0 := by
+  intro y hy
+  rcases exists_mem_filledJulia_quadratic_eq (c := c) (y := y) hy with
+    ⟨z, hzK, hzy⟩
+  have hscale :=
+    neg_logPotential_gapAMu_quadratic_eq_two_neg_shiftedPotential_unconditional
+      (c := c) (z := z) hc hzK
+  rw [hzy, hshift z hzK] at hscale
+  simpa using hscale
+
+/-- hDisc closure through shifted boundary-zero.  This is the direct form of
+the remaining boundary task for the shifted limiting cluster. -/
+theorem gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundary_zero
+    {c : ℂ} (hc : Disconnected c)
+    (hshift :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        - logPotential (shiftedLimitingBrolinMeasure c) z = 0) :
+    HasGreenPotentialRepresentation c (gapAMu c) := by
+  rw [gapAMu_hasGreenPotentialRepresentation_iff_boundary_zero]
+  exact gapAMu_boundary_zero_of_shiftedBoundary_zero hc hshift
+
+/-- Conversely, if the constructed GAP-A measure has the Green-potential
+representation, then the shifted boundary potential is zero.  The unconditional
+quadratic identity transfers boundary-zero at `f_c z` back to the shifted
+preimage branch at `z`. -/
+theorem shiftedBoundary_zero_of_gapAMu_hasGreenPotentialRepresentation
+    {c : ℂ} (hc : Disconnected c)
+    (hrep : HasGreenPotentialRepresentation c (gapAMu c)) :
+    ∀ z : ℂ, z ∈ filledJulia c →
+      - logPotential (shiftedLimitingBrolinMeasure c) z = 0 := by
+  have hgapzero :
+      ∀ y : ℂ, y ∈ filledJulia c →
+        - logPotential (gapAMu c) y = 0 :=
+    (gapAMu_hasGreenPotentialRepresentation_iff_boundary_zero c).mp hrep
+  intro z hzK
+  have hfzK : quadratic c z ∈ filledJulia c :=
+    (mem_filledJulia_iff_quadratic_mem c z).mp hzK
+  have hscale :=
+    neg_logPotential_gapAMu_quadratic_eq_two_neg_shiftedPotential_unconditional
+      (c := c) (z := z) hc hzK
+  rw [hgapzero (quadratic c z) hfzK] at hscale
+  linarith
+
+/-- For disconnected parameters, shifted boundary-zero is exactly equivalent
+to the GAP-A Green-potential representation for the constructed measure. -/
+theorem gapAMu_hasGreenPotentialRepresentation_iff_shiftedBoundary_zero
+    {c : ℂ} (hc : Disconnected c) :
+    HasGreenPotentialRepresentation c (gapAMu c) ↔
+      ∀ z : ℂ, z ∈ filledJulia c →
+        - logPotential (shiftedLimitingBrolinMeasure c) z = 0 := by
+  constructor
+  · exact shiftedBoundary_zero_of_gapAMu_hasGreenPotentialRepresentation hc
+  · exact gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundary_zero hc
+
+/-- At a point where the shifted singular kernel is not integrable, the
+project's real-valued `logPotential` convention makes the shifted boundary
+value vanish immediately.  Thus the remaining hDisc boundary problem is the
+finite-integral case. -/
+theorem shiftedBoundary_zero_of_not_integrable
+    {c z : ℂ}
+    (hnot :
+      ¬ Integrable (fun w => logKernel z w)
+        (shiftedLimitingBrolinMeasure c)) :
+    - logPotential (shiftedLimitingBrolinMeasure c) z = 0 := by
+  have hzero : logPotential (shiftedLimitingBrolinMeasure c) z = 0 := by
+    unfold logPotential
+    exact integral_undef hnot
+  rw [hzero, neg_zero]
+
+/-- If every shifted boundary kernel on `K_c` is nonintegrable, then hDisc
+closes through shifted boundary-zero.  This isolates the genuinely hard
+remaining case to finite boundary kernels. -/
+theorem gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundary_not_integrable
+    {c : ℂ} (hc : Disconnected c)
+    (hnot :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        ¬ Integrable (fun w => logKernel z w)
+          (shiftedLimitingBrolinMeasure c)) :
+    HasGreenPotentialRepresentation c (gapAMu c) :=
+  gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundary_zero hc
+    (fun z hzK => shiftedBoundary_zero_of_not_integrable (hnot z hzK))
+
+/-- Exact finite-kernel form of the remaining hDisc boundary problem.  The
+nonintegrable boundary kernels already give shifted boundary-zero by convention;
+therefore the GAP-A Green-potential representation is equivalent to proving
+`U_ν(z) ≥ 0` only at the boundary points where the shifted kernel is integrable.
+-/
+theorem gapAMu_hasGreenPotentialRepresentation_iff_shiftedBoundary_integrable_nonnegative
+    {c : ℂ} (hc : Disconnected c) :
+    HasGreenPotentialRepresentation c (gapAMu c) ↔
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Integrable (fun w => logKernel z w)
+          (shiftedLimitingBrolinMeasure c) →
+        0 ≤ logPotential (shiftedLimitingBrolinMeasure c) z := by
+  constructor
+  · intro hrep z hzK _hint
+    have hzero :=
+      shiftedBoundary_zero_of_gapAMu_hasGreenPotentialRepresentation
+        (c := c) hc hrep z hzK
+    have hUzero :
+        logPotential (shiftedLimitingBrolinMeasure c) z = 0 := by
+      linarith
+    rw [hUzero]
+  · intro hnonneg
+    apply gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundary_zero hc
+    intro z hzK
+    by_cases hint :
+      Integrable (fun w => logKernel z w)
+        (shiftedLimitingBrolinMeasure c)
+    · have hle :
+          logPotential (shiftedLimitingBrolinMeasure c) z ≤ 0 :=
+        logPotential_shiftedLimitingBrolinMeasure_nonpos_of_mem_filledJulia_of_disconnected
+          (c := c) (z := z) hc hzK
+      have hge :
+          0 ≤ logPotential (shiftedLimitingBrolinMeasure c) z :=
+        hnonneg z hzK hint
+      have hzero :
+          logPotential (shiftedLimitingBrolinMeasure c) z = 0 :=
+        le_antisymm hle hge
+      rw [hzero, neg_zero]
+    · exact shiftedBoundary_zero_of_not_integrable hint
+
+/-- The already-proved shifted upper-potential bound turns the remaining
+opposite signed boundary inequality into shifted boundary-zero. -/
+theorem shiftedBoundary_zero_of_nonpos
+    {c : ℂ} (hc : Disconnected c)
+    (hshiftNonpos :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        - logPotential (shiftedLimitingBrolinMeasure c) z ≤ 0) :
+    ∀ z : ℂ, z ∈ filledJulia c →
+      - logPotential (shiftedLimitingBrolinMeasure c) z = 0 := by
+  intro z hzK
+  exact le_antisymm (hshiftNonpos z hzK)
+    (neg_nonneg.mpr
+      (logPotential_shiftedLimitingBrolinMeasure_nonpos_of_mem_filledJulia_of_disconnected
+        (c := c) (z := z) hc hzK))
+
+/-- hDisc closure from the remaining shifted boundary inequality.  The shifted
+measure already has the nonpositive logarithmic potential on `K_c`; proving the
+opposite signed inequality for it supplies the GAP-A potential representation. -/
+theorem gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundary_nonpos
+    {c : ℂ} (hc : Disconnected c)
+    (hshiftNonpos :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        - logPotential (shiftedLimitingBrolinMeasure c) z ≤ 0) :
+    HasGreenPotentialRepresentation c (gapAMu c) :=
+  gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundary_zero hc
+    (shiftedBoundary_zero_of_nonpos hc hshiftNonpos)
+
+/-- The remaining shifted signed inequality is equivalent to the disconnected
+GAP-A Green-potential representation: one direction is the closure theorem
+above, and the converse follows from shifted boundary-zero forced by the
+representation. -/
+theorem gapAMu_hasGreenPotentialRepresentation_iff_shiftedBoundary_nonpos
+    {c : ℂ} (hc : Disconnected c) :
+    HasGreenPotentialRepresentation c (gapAMu c) ↔
+      ∀ z : ℂ, z ∈ filledJulia c →
+        - logPotential (shiftedLimitingBrolinMeasure c) z ≤ 0 := by
+  constructor
+  · intro hrep z hzK
+    rw [shiftedBoundary_zero_of_gapAMu_hasGreenPotentialRepresentation
+      (c := c) hc hrep z hzK]
+  · exact gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundary_nonpos hc
+
+/-- A point outside the interior of `K_c` is approached by basin points. -/
+theorem mem_closure_filledJulia_compl_of_not_mem_interior
+    {c z : ℂ} (hzint : z ∉ interior (filledJulia c)) :
+    z ∈ closure (filledJulia c)ᶜ := by
+  rwa [closure_compl]
+
+/-- Boundary lower-semicontinuity bridge for the shifted potential.  If every
+filled-Julia point is approached by basin points, and `-U_ν` is lower
+semicontinuous at those points, then the remaining signed hDisc boundary
+inequality follows. -/
+theorem shiftedBoundary_nonpos_of_lowerSemicontinuousAt_of_basin_closure
+    {c : ℂ}
+    (hcl :
+      ∀ z : ℂ, z ∈ filledJulia c → z ∈ closure (filledJulia c)ᶜ)
+    (hlsc :
+      ∀ z : ℂ, z ∈ filledJulia c → ∀ a : ℝ,
+        a < - logPotential (shiftedLimitingBrolinMeasure c) z →
+          ∀ᶠ y in 𝓝 z,
+            a < - logPotential (shiftedLimitingBrolinMeasure c) y) :
+    ∀ z : ℂ, z ∈ filledJulia c →
+      - logPotential (shiftedLimitingBrolinMeasure c) z ≤ 0 := by
+  intro z hzK
+  by_contra hnot
+  let F : ℂ → ℝ :=
+    fun y => - logPotential (shiftedLimitingBrolinMeasure c) y
+  have hFpos : 0 < F z := lt_of_not_ge hnot
+  let a : ℝ := F z / 2
+  have hapos : 0 < a := by
+    dsimp [a]
+    linarith
+  have haF : a < F z := by
+    dsimp [a]
+    linarith
+  have hFnhds : {y : ℂ | a < F y} ∈ 𝓝 z := by
+    dsimp [F] at haF ⊢
+    exact hlsc z hzK a haF
+  have hGnhds : {y : ℂ | greenFunctionDyn c y < a} ∈ 𝓝 z := by
+    exact (tendsto_greenFunctionDyn_boundary hzK).eventually
+      (Iio_mem_nhds hapos)
+  have hne : NeBot (𝓝[(filledJulia c)ᶜ] z) :=
+    mem_closure_iff_nhdsWithin_neBot.mp (hcl z hzK)
+  have hboth :
+      ({y : ℂ | a < F y} ∩ {y : ℂ | greenFunctionDyn c y < a} ∩
+          (filledJulia c)ᶜ) ∈ 𝓝[(filledJulia c)ᶜ] z := by
+    exact inter_mem
+      (inter_mem (nhdsWithin_le_nhds hFnhds) (nhdsWithin_le_nhds hGnhds))
+      self_mem_nhdsWithin
+  obtain ⟨y, ⟨⟨hyF, hyG⟩, hyK⟩⟩ := hne.nonempty_of_mem hboth
+  have hFy : F y = greenFunctionDyn c y := by
+    dsimp [F]
+    exact (green_eq_neg_logPotential_shiftedLimitingBrolinMeasure_on_basin hyK).symm
+  have hyF' : a < F y := hyF
+  have hyG' : greenFunctionDyn c y < a := hyG
+  rw [hFy] at hyF'
+  exact (not_lt_of_ge (le_of_lt hyG') hyF')
+
+/-- Empty interior of the filled Julia set supplies the basin-closure input in
+the lower-semicontinuity bridge. -/
+theorem shiftedBoundary_nonpos_of_lowerSemicontinuousAt_of_empty_interior
+    {c : ℂ}
+    (hempty : interior (filledJulia c) = ∅)
+    (hlsc :
+      ∀ z : ℂ, z ∈ filledJulia c → ∀ a : ℝ,
+        a < - logPotential (shiftedLimitingBrolinMeasure c) z →
+          ∀ᶠ y in 𝓝 z,
+            a < - logPotential (shiftedLimitingBrolinMeasure c) y) :
+    ∀ z : ℂ, z ∈ filledJulia c →
+      - logPotential (shiftedLimitingBrolinMeasure c) z ≤ 0 := by
+  exact shiftedBoundary_nonpos_of_lowerSemicontinuousAt_of_basin_closure
+    (fun z _hzK => by
+      apply mem_closure_filledJulia_compl_of_not_mem_interior
+      rw [hempty]
+      simp)
+    hlsc
+
+/-- hDisc closure from the two analytic/topological facts that remain in the
+lower-semicontinuity route: disconnected `K_c` has empty interior, and the
+shifted negative potential is lower semicontinuous on `K_c`. -/
+theorem gapAMu_hasGreenPotentialRepresentation_of_shifted_lsc_empty_interior
+    {c : ℂ} (hc : Disconnected c)
+    (hempty : interior (filledJulia c) = ∅)
+    (hlsc :
+      ∀ z : ℂ, z ∈ filledJulia c → ∀ a : ℝ,
+        a < - logPotential (shiftedLimitingBrolinMeasure c) z →
+          ∀ᶠ y in 𝓝 z,
+            a < - logPotential (shiftedLimitingBrolinMeasure c) y) :
+    HasGreenPotentialRepresentation c (gapAMu c) :=
+  gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundary_nonpos hc
+    (shiftedBoundary_nonpos_of_lowerSemicontinuousAt_of_empty_interior
+      hempty hlsc)
+
+/-- Boundary value convergence contract for the shifted compactness limit.
+After the unconditional quadratic identity, this is the actual value-level
+hDisc target on `K_c`: the shifted finite potentials converge to the
+`logPotential` value of the shifted limit, with the existing convention handling
+the nonintegrable case. -/
+def HasShiftedBoundaryPotentialValueLimit (c : ℂ) (ν : Measure ℂ) : Prop :=
+  ∀ z : ℂ, z ∈ filledJulia c →
+    Tendsto
+      (fun k =>
+        - logPotential (preBrolinMeasure c (shiftedBrolinIndex c k)) z)
+      atTop (𝓝 (- logPotential ν z))
+
+/-- Boundary singular-kernel convergence contract for the shifted compactness
+limit.  This stronger form records integrability as well as value convergence;
+the hDisc closure below now only needs the value-convergence component. -/
+def HasShiftedBoundaryPotentialLimit (c : ℂ) (ν : Measure ℂ) : Prop :=
+  ∀ z : ℂ, z ∈ filledJulia c →
+    Integrable (fun w => logKernel z w) ν ∧
+      Tendsto
+        (fun k =>
+          - logPotential (preBrolinMeasure c (shiftedBrolinIndex c k)) z)
+        atTop (𝓝 (- logPotential ν z))
+
+/-- The stronger singular-kernel contract implies the value-level boundary
+contract. -/
+theorem HasShiftedBoundaryPotentialLimit.valueLimit
+    {c : ℂ} {ν : Measure ℂ}
+    (hlim : HasShiftedBoundaryPotentialLimit c ν) :
+    HasShiftedBoundaryPotentialValueLimit c ν := by
+  intro z hzK
+  exact (hlim z hzK).2
+
+/-- The shifted boundary value convergence contract forces the shifted boundary
+potential to vanish, because the finite shifted potentials already tend to zero
+on `K_c` in the disconnected case. -/
+theorem shiftedBoundary_zero_of_boundaryPotentialValueLimit
+    {c : ℂ} (hc : Disconnected c)
+    (hlim :
+      HasShiftedBoundaryPotentialValueLimit c (shiftedLimitingBrolinMeasure c)) :
+    ∀ z : ℂ, z ∈ filledJulia c →
+      - logPotential (shiftedLimitingBrolinMeasure c) z = 0 := by
+  intro z hzK
+  exact (tendsto_nhds_unique
+    (neg_logPotential_preBrolinMeasure_shiftedIndex_tendsto_zero_filledJulia_of_disconnected
+      (c := c) (z := z) hc hzK)
+    (hlim z hzK)).symm
+
+/-- Shifted boundary-zero supplies the value-level boundary convergence
+contract, because the finite shifted potentials already converge to zero on
+`K_c`. -/
+theorem HasShiftedBoundaryPotentialValueLimit.of_shiftedBoundary_zero
+    {c : ℂ} (hc : Disconnected c)
+    (hshift :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        - logPotential (shiftedLimitingBrolinMeasure c) z = 0) :
+    HasShiftedBoundaryPotentialValueLimit c (shiftedLimitingBrolinMeasure c) := by
+  intro z hzK
+  have hfinite :=
+    neg_logPotential_preBrolinMeasure_shiftedIndex_tendsto_zero_filledJulia_of_disconnected
+      (c := c) (z := z) hc hzK
+  simpa [hshift z hzK] using hfinite
+
+/-- For disconnected parameters, the value-level shifted boundary convergence
+contract is equivalent to shifted boundary-zero. -/
+theorem HasShiftedBoundaryPotentialValueLimit_iff_shiftedBoundary_zero
+    {c : ℂ} (hc : Disconnected c) :
+    HasShiftedBoundaryPotentialValueLimit c (shiftedLimitingBrolinMeasure c) ↔
+      ∀ z : ℂ, z ∈ filledJulia c →
+        - logPotential (shiftedLimitingBrolinMeasure c) z = 0 := by
+  constructor
+  · exact shiftedBoundary_zero_of_boundaryPotentialValueLimit hc
+  · exact HasShiftedBoundaryPotentialValueLimit.of_shiftedBoundary_zero hc
+
+/-- Equivalent value-limit form of the disconnected GAP-A hDisc target. -/
+theorem gapAMu_hasGreenPotentialRepresentation_iff_shiftedBoundaryPotentialValueLimit
+    {c : ℂ} (hc : Disconnected c) :
+    HasGreenPotentialRepresentation c (gapAMu c) ↔
+      HasShiftedBoundaryPotentialValueLimit c (shiftedLimitingBrolinMeasure c) := by
+  rw [gapAMu_hasGreenPotentialRepresentation_iff_shiftedBoundary_zero hc,
+    HasShiftedBoundaryPotentialValueLimit_iff_shiftedBoundary_zero hc]
+
+/-- The stronger shifted boundary singular-kernel convergence contract forces
+shifted boundary-zero through its value-level component. -/
+theorem shiftedBoundary_zero_of_boundaryPotentialLimit
+    {c : ℂ} (hc : Disconnected c)
+    (hlim :
+      HasShiftedBoundaryPotentialLimit c (shiftedLimitingBrolinMeasure c)) :
+    ∀ z : ℂ, z ∈ filledJulia c →
+      - logPotential (shiftedLimitingBrolinMeasure c) z = 0 :=
+  shiftedBoundary_zero_of_boundaryPotentialValueLimit hc hlim.valueLimit
+
+/-- hDisc closure from the shifted boundary value convergence contract.  This
+is the leaner remaining analytic passage after the unconditional quadratic
+identity has removed the separate integrability premise. -/
+theorem gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundaryPotentialValueLimit
+    {c : ℂ} (hc : Disconnected c)
+    (hlim :
+      HasShiftedBoundaryPotentialValueLimit c (shiftedLimitingBrolinMeasure c)) :
+    HasGreenPotentialRepresentation c (gapAMu c) := by
+  exact gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundary_zero hc
+    (shiftedBoundary_zero_of_boundaryPotentialValueLimit hc hlim)
+
+/-- hDisc closure from the exact shifted boundary singular-kernel convergence
+contract.  The value-level component is sufficient. -/
+theorem gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundaryPotentialLimit
+    {c : ℂ} (hc : Disconnected c)
+    (hlim :
+      HasShiftedBoundaryPotentialLimit c (shiftedLimitingBrolinMeasure c)) :
+    HasGreenPotentialRepresentation c (gapAMu c) :=
+  gapAMu_hasGreenPotentialRepresentation_of_shiftedBoundaryPotentialValueLimit
+    hc hlim.valueLimit
 
 /-- Disconnected hDisc boundary-truncation core for `μ_c`: the constructed
 Riesz measure is the zero-target Brolin limit, has the finite-potential core,
@@ -6545,6 +7955,30 @@ theorem cauchyIntegral_im_eq_integral_truncatedCauchyKernel_of_greenSublevel_sup
   exact congrArg Complex.im
     (truncatedCauchyKernel_eq_cauchyKernel_of_le_norm hδ (hsep w hw)).symm
 
+/-- If a finite measure is carried by a Green sublevel uniformly separated from
+`z`, then the true Cauchy kernel at `z` is integrable against that measure. -/
+theorem cauchyKernel_integrable_of_greenSublevel_support
+    {c z : ℂ} {μ : Measure ℂ} [IsFiniteMeasure μ] {ε δ : ℝ}
+    (hμ : μ (greenSublevel c ε)ᶜ = 0) (hδ : 0 < δ)
+    (hsep : ∀ w : ℂ, w ∈ greenSublevel c ε → δ ≤ ‖z - w‖) :
+    Integrable (fun w : ℂ => (z - w)⁻¹) μ := by
+  have hmem : ∀ᵐ w ∂μ, w ∈ greenSublevel c ε := by
+    exact (mem_ae_iff).2 hμ
+  have htrunc :
+      Integrable (fun w : ℂ => truncatedCauchyKernel z δ w) μ := by
+    refine Integrable.of_bound
+      (Measurable.aestronglyMeasurable
+        (continuous_truncatedCauchyKernel (z := z) hδ).measurable)
+      δ⁻¹ ?_
+    filter_upwards [hmem] with w hw
+    rw [truncatedCauchyKernel_eq_cauchyKernel_of_le_norm hδ (hsep w hw)]
+    rw [norm_inv]
+    gcongr
+    exact hsep w hw
+  refine htrunc.congr ?_
+  filter_upwards [hmem] with w hw
+  exact truncatedCauchyKernel_eq_cauchyKernel_of_le_norm hδ (hsep w hw)
+
 noncomputable def truncatedCauchyKernelReOnEscapeDisk
     (c z : ℂ) (δ : ℝ) (hδ : 0 < δ) :
     BoundedContinuousFunction (escapeDisk c) ℝ :=
@@ -7128,6 +8562,107 @@ theorem shiftedLimitingBrolinMeasure_cauchyIntegral_eq_gapAMu_on_basin
   exact ⟨tendsto_nhds_unique hshift.1 hgap.1,
     tendsto_nhds_unique hshift.2 hgap.2⟩
 
+/-- Complex Cauchy-transform equality for the shifted compactness limit and the
+GAP-A limiting/Riesz measure on the basin.  This is the uniqueness substrate for
+identifying the shifted cluster with `μ_c`. -/
+theorem shiftedLimitingBrolinMeasure_cauchyIntegral_complex_eq_gapAMu_on_basin
+    {c z : ℂ} (hz : z ∉ filledJulia c) :
+    ∫ w, (z - w)⁻¹ ∂shiftedLimitingBrolinMeasure c =
+      ∫ w, (z - w)⁻¹ ∂gapAMu c := by
+  have hpair := shiftedLimitingBrolinMeasure_cauchyIntegral_eq_gapAMu_on_basin
+    (c := c) (z := z) hz
+  have hGne : greenFunctionDyn c z ≠ 0 := by
+    intro hzero
+    exact hz ((greenFunctionDyn_eq_zero_iff c z).mp hzero)
+  have hGpos : 0 < greenFunctionDyn c z :=
+    lt_of_le_of_ne (greenFunctionDyn_nonneg c z) (by simpa [eq_comm] using hGne)
+  let ε : ℝ := greenFunctionDyn c z / 2
+  have hεpos : 0 < ε := by
+    dsimp [ε]
+    linarith
+  have hεlt : ε < greenFunctionDyn c z := by
+    dsimp [ε]
+    linarith
+  obtain ⟨δ, hδpos, hsep⟩ :=
+    exists_pos_le_norm_of_greenSublevel_of_lt_green
+      (c := c) (z := z) (ε := ε) hεlt
+  haveI : IsProbabilityMeasure (shiftedLimitingBrolinMeasure c) :=
+    (shiftedLimitingBrolinMeasure_isProbOn_filledJulia c).1
+  haveI : IsProbabilityMeasure (gapAMu c) :=
+    (gapAMu_isProbOn_filledJulia c).1
+  have hshiftInt :
+      Integrable (fun w : ℂ => (z - w)⁻¹)
+        (shiftedLimitingBrolinMeasure c) :=
+    cauchyKernel_integrable_of_greenSublevel_support
+      (c := c) (z := z) (μ := shiftedLimitingBrolinMeasure c)
+      (ε := ε) (δ := δ)
+      (shiftedLimitingBrolinMeasure_greenSublevel_compl_of_pos c hεpos)
+      hδpos hsep
+  have hgapInt :
+      Integrable (fun w : ℂ => (z - w)⁻¹) (gapAMu c) := by
+    rw [gapAMu_eq_brolinMu, brolinMu]
+    exact cauchyKernel_integrable_of_greenSublevel_support
+      (c := c) (z := z) (μ := limitingBrolinMeasure c)
+      (ε := ε) (δ := δ)
+      (limitingBrolinMeasure_greenSublevel_compl_of_pos c hεpos)
+      hδpos hsep
+  apply Complex.ext
+  · rw [← Complex.reCLM_apply,
+      ← ContinuousLinearMap.integral_comp_comm Complex.reCLM hshiftInt]
+    rw [← Complex.reCLM_apply,
+      ← ContinuousLinearMap.integral_comp_comm Complex.reCLM hgapInt]
+    exact hpair.1
+  · rw [← Complex.imCLM_apply,
+      ← ContinuousLinearMap.integral_comp_comm Complex.imCLM hshiftInt]
+    rw [← Complex.imCLM_apply,
+      ← ContinuousLinearMap.integral_comp_comm Complex.imCLM hgapInt]
+    exact hpair.2
+
+/-- On the basin, the shifted limiting measure has the same Cauchy transform
+after pushing its integration variable through `f_c`.  This is the analytic form
+of the already-proved measure pushforward
+`(f_c)_* shiftedLimitingBrolinMeasure = gapAMu`, combined with the complex
+Cauchy-transform identification above. -/
+theorem shiftedLimitingBrolinMeasure_cauchyIntegral_eq_comp_quadratic_on_basin
+    {c z : ℂ} (hz : z ∉ filledJulia c) :
+    ∫ w, (z - w)⁻¹ ∂shiftedLimitingBrolinMeasure c =
+      ∫ w, (z - quadratic c w)⁻¹ ∂shiftedLimitingBrolinMeasure c := by
+  have hGne : greenFunctionDyn c z ≠ 0 := by
+    intro hzero
+    exact hz ((greenFunctionDyn_eq_zero_iff c z).mp hzero)
+  have hGpos : 0 < greenFunctionDyn c z :=
+    lt_of_le_of_ne (greenFunctionDyn_nonneg c z) (by simpa [eq_comm] using hGne)
+  let ε : ℝ := greenFunctionDyn c z / 2
+  have hεpos : 0 < ε := by
+    dsimp [ε]
+    linarith
+  have hεlt : ε < greenFunctionDyn c z := by
+    dsimp [ε]
+    linarith
+  obtain ⟨δ, hδpos, hsep⟩ :=
+    exists_pos_le_norm_of_greenSublevel_of_lt_green
+      (c := c) (z := z) (ε := ε) hεlt
+  haveI : IsProbabilityMeasure (gapAMu c) :=
+    (gapAMu_isProbOn_filledJulia c).1
+  have hgapInt :
+      Integrable (fun y : ℂ => (z - y)⁻¹) (gapAMu c) := by
+    rw [gapAMu_eq_brolinMu, brolinMu]
+    exact cauchyKernel_integrable_of_greenSublevel_support
+      (c := c) (z := z) (μ := limitingBrolinMeasure c)
+      (ε := ε) (δ := δ)
+      (limitingBrolinMeasure_greenSublevel_compl_of_pos c hεpos)
+      hδpos hsep
+  calc
+    ∫ w, (z - w)⁻¹ ∂shiftedLimitingBrolinMeasure c
+        = ∫ y, (z - y)⁻¹ ∂gapAMu c := by
+          exact shiftedLimitingBrolinMeasure_cauchyIntegral_complex_eq_gapAMu_on_basin hz
+    _ = ∫ w, (z - quadratic c w)⁻¹ ∂shiftedLimitingBrolinMeasure c := by
+      rw [← map_shiftedLimitingBrolinMeasure_quadratic_eq_gapAMu c]
+      rw [integral_map]
+      · exact (continuous_quadratic c).measurable.aemeasurable
+      · simpa [map_shiftedLimitingBrolinMeasure_quadratic_eq_gapAMu c] using
+          hgapInt.aestronglyMeasurable
+
 theorem gapAMu_hDiscZeroTargetCauchyCore (c : ℂ) :
     gapAMu c = brolinMu c ∧
       IsProbOn (gapAMu c) (filledJulia c) ∧
@@ -7141,10 +8676,12 @@ theorem gapAMu_hDiscZeroTargetCauchyCore (c : ℂ) :
         greenFunctionDyn c z =
           - logPotential (shiftedLimitingBrolinMeasure c) z) ∧
       ∀ z : ℂ, z ∉ filledJulia c →
-        (∫ w, ((z - w)⁻¹).re ∂shiftedLimitingBrolinMeasure c =
-          ∫ w, ((z - w)⁻¹).re ∂gapAMu c) ∧
-        (∫ w, ((z - w)⁻¹).im ∂shiftedLimitingBrolinMeasure c =
-          ∫ w, ((z - w)⁻¹).im ∂gapAMu c) := by
+        ((∫ w, ((z - w)⁻¹).re ∂shiftedLimitingBrolinMeasure c =
+            ∫ w, ((z - w)⁻¹).re ∂gapAMu c) ∧
+          (∫ w, ((z - w)⁻¹).im ∂shiftedLimitingBrolinMeasure c =
+            ∫ w, ((z - w)⁻¹).im ∂gapAMu c)) ∧
+        ∫ w, (z - w)⁻¹ ∂shiftedLimitingBrolinMeasure c =
+          ∫ w, (z - w)⁻¹ ∂gapAMu c := by
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · exact gapAMu_eq_brolinMu c
   · exact gapAMu_isProbOn_filledJulia c
@@ -7157,7 +8694,9 @@ theorem gapAMu_hDiscZeroTargetCauchyCore (c : ℂ) :
   · intro z hz
     exact green_eq_neg_logPotential_shiftedLimitingBrolinMeasure_on_basin hz
   · intro z hz
-    exact shiftedLimitingBrolinMeasure_cauchyIntegral_eq_gapAMu_on_basin hz
+    exact ⟨
+      shiftedLimitingBrolinMeasure_cauchyIntegral_eq_gapAMu_on_basin hz,
+      shiftedLimitingBrolinMeasure_cauchyIntegral_complex_eq_gapAMu_on_basin hz⟩
 
 noncomputable def truncatedCauchyKernelOnTargetEscapeDisk
     (c a z : ℂ) (δ : ℝ) (hδ : 0 < δ) :
