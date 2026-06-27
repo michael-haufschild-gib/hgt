@@ -154,6 +154,7 @@ import GaloisForLFunctions.Bottcher.PolyAsymptotic
 import GaloisForLFunctions.Bottcher.BasinColimit
 import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranch
 import GaloisForLFunctions.Bottcher.RelativeRigidityNaturalBoundary
+import GaloisForLFunctions.Bottcher.RelativeRigidityHNBCrossing
 
 import GaloisForLFunctions.Bottcher.AnalyticRoot
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
