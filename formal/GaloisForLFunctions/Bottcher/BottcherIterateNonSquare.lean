@@ -269,3 +269,109 @@ theorem radical_relation_germ {c : ℂ} {U Ext : Set ℂ} (k : ℕ) (hUExt : U �
   exact (bottcherCoord_iterate (hUesc z hz).1 (hUesc z hz).2 k).symm
 
 end Bottcher
+
+namespace Bottcher
+open Set
+
+/-- **[Winding period] `∮_σ d log bottcherCoord = ∮_σ d log z` for a closed loop in the escape set.**
+Since `bottcherCoord c = z·exp(S)` with `S = ∑ bottcherLogTerm` single-valued analytic on `escapeOpen`
+(`logDeriv_bottcherCoord_escape`), `d log bottcherCoord = z⁻¹ dz + dS`, and the single-valued `S`-part
+integrates to `0` over the closed loop (FTC).  So the period of `bottcherCoord` over `σ` equals that of
+`z` — `2πi` times the winding number of `σ` around `K_c ∋ 0`.  The homotopy-invariant winding period
+that turns the deep non-square's odd-period condition into the topological statement
+*`f^[k]∘γ` winds oddly*. -/
+theorem pathInt_logDeriv_bottcher_eq_inv {c : ℂ} {σ σ' : ℝ → ℂ}
+    (hσesc : ∀ θ : ℝ, σ θ ∈ escapeOpen c)
+    (hσcont : Continuous σ) (hσ'cont : Continuous σ')
+    (hdσ : ∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt σ (σ' θ) θ)
+    (hσclosed : σ (2 * Real.pi) = σ 0) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv (bottcherCoord c) (σ θ) * σ' θ)
+      = ∫ θ in (0:ℝ)..(2 * Real.pi), (σ θ)⁻¹ * σ' θ := by
+  set S : ℂ → ℂ := fun w => ∑' k, bottcherLogTerm c w k with hS
+  have hSan : AnalyticOnNhd ℂ S (escapeOpen c) :=
+    (differentiableOn_bottcherLogSum c).analyticOnNhd (isOpen_escapeOpen c)
+  have hsplit : ∀ θ : ℝ, logDeriv (bottcherCoord c) (σ θ) * σ' θ
+      = (σ θ)⁻¹ * σ' θ + deriv S (σ θ) * σ' θ := by
+    intro θ; rw [logDeriv_bottcherCoord_escape (hσesc θ)]; ring
+  have hScont : Continuous (fun θ => deriv S (σ θ) * σ' θ) :=
+    ((hSan.deriv.continuousOn).comp_continuous hσcont hσesc).mul hσ'cont
+  have hinvcont : Continuous (fun θ => (σ θ)⁻¹ * σ' θ) := by
+    have hne : ∀ θ, σ θ ≠ 0 := by
+      intro θ h
+      obtain ⟨_, hz2⟩ := mem_escapeOpen_regime (hσesc θ)
+      rw [h, norm_zero] at hz2; linarith
+    exact (hσcont.inv₀ hne).mul hσ'cont
+  have hSzero : (∫ θ in (0:ℝ)..(2 * Real.pi), deriv S (σ θ) * σ' θ) = 0 := by
+    have hd : ∀ θ ∈ Set.uIcc (0:ℝ) (2 * Real.pi),
+        HasDerivAt (fun t => S (σ t)) (deriv S (σ θ) * σ' θ) θ := by
+      intro θ hθ
+      rw [Set.uIcc_of_le (by positivity)] at hθ
+      have hSd : HasDerivAt S (deriv S (σ θ)) (σ θ) :=
+        ((hSan (σ θ) (hσesc θ)).differentiableAt).hasDerivAt
+      exact hSd.comp θ (hdσ θ hθ)
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd (hScont.intervalIntegrable _ _),
+        hσclosed, sub_self]
+  rw [intervalIntegral.integral_congr (fun θ _ => hsplit θ),
+      intervalIntegral.integral_add (hinvcont.intervalIntegrable _ _)
+        (hScont.intervalIntegrable _ _), hSzero, add_zero]
+
+/-- **[Radicand period = image winding] `∮_γ d log(bottcherCoord∘f^[k]) = ∮_{f^[k]∘γ} d log z`.**
+Composing the chain-rule reduction (`pathInt_logDeriv_iterate_eq_image`) with the winding period
+(`pathInt_logDeriv_bottcher_eq_inv`) on the closed image loop `σ = f^[k]∘γ`: the radicand's period along
+`γ` is `2πi` times the winding of `f^[k]∘γ` around `K_c`. -/
+theorem pathInt_logDeriv_bottcherIterate_eq_imageInv {c : ℂ} (k : ℕ) {γ γ' : ℝ → ℂ}
+    (hesc : ∀ θ : ℝ, (quadratic c)^[k] (γ θ) ∈ escapeOpen c)
+    (hdγ : ∀ θ : ℝ, HasDerivAt γ (γ' θ) θ)
+    (hγcont : Continuous γ) (hγ'cont : Continuous γ')
+    (hclosed : (quadratic c)^[k] (γ (2 * Real.pi)) = (quadratic c)^[k] (γ 0)) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi),
+        logDeriv (fun z => bottcherCoord c ((quadratic c)^[k] z)) (γ θ) * γ' θ)
+      = ∫ θ in (0:ℝ)..(2 * Real.pi),
+          ((quadratic c)^[k] (γ θ))⁻¹
+            * ((∏ j ∈ Finset.range k, 2 * (quadratic c)^[j] (γ θ)) * γ' θ) := by
+  set σ : ℝ → ℂ := fun t => (quadratic c)^[k] (γ t) with hσdef
+  set σ' : ℝ → ℂ := fun t => (∏ j ∈ Finset.range k, 2 * (quadratic c)^[j] (γ t)) * γ' t with hσ'def
+  have hσderiv : ∀ θ : ℝ, HasDerivAt σ (σ' θ) θ := fun θ =>
+    (hasDerivAt_quadratic_iterate c (γ θ) k).comp θ (hdγ θ)
+  have hσcont : Continuous σ :=
+    (analyticOnNhd_quadratic_iterate c k).continuousOn.comp_continuous hγcont (fun _ => mem_univ _)
+  have hσ'cont : Continuous σ' := by
+    have hprod : Continuous (fun t => ∏ j ∈ Finset.range k, 2 * (quadratic c)^[j] (γ t)) := by
+      apply continuous_finsetProd
+      intro j _
+      exact continuous_const.mul
+        ((analyticOnNhd_quadratic_iterate c j).continuousOn.comp_continuous hγcont
+          (fun _ => mem_univ _))
+    exact hprod.mul hγ'cont
+  have hstep1 := pathInt_logDeriv_iterate_eq_image (c := c) k hesc (γ := γ) (γ' := γ') (σ' := σ')
+    (fun θ _ => rfl)
+  rw [hstep1, pathInt_logDeriv_bottcher_eq_inv hesc hσcont hσ'cont
+    (fun θ _ => hσderiv θ) hclosed]
+
+/-- **[Deep non-square from image winding] — the topological form.**  No analytic square root of
+`bottcherCoord∘f^[k]` near a closed `C¹` loop `γ` in `A` whose `f^[k]`-image winds an **odd** number of
+times around `K_c` (`∮_{f^[k]∘γ} d log z = 2πi·(2m+1)`).  Combines
+`pathInt_logDeriv_bottcherIterate_eq_imageInv` (radicand period = image winding) with
+`no_analytic_sqrt_bottcherIterate_of_oddPeriod`.  This is the cleanest statement of the depth-`k`
+non-square: it asks only for a closed loop whose `f^[k]`-image has odd winding — the disconnected
+two-lobe / figure-eight datum, with the analytic period entirely discharged. -/
+theorem no_analytic_sqrt_bottcherIterate_of_imageWinding {c : ℂ} (k : ℕ) {m : ℤ}
+    {A : Set ℂ} (hAo : IsOpen A) (hAesc : ∀ z ∈ A, (quadratic c)^[k] z ∈ escapeOpen c)
+    {γ γ' : ℝ → ℂ} (hγA : ∀ θ : ℝ, γ θ ∈ A)
+    (hγcont : Continuous γ) (hγ'cont : Continuous γ')
+    (hdγ : ∀ θ : ℝ, HasDerivAt γ (γ' θ) θ)
+    (hγclosed : γ (2 * Real.pi) = γ 0)
+    (hwind : (∫ θ in (0:ℝ)..(2 * Real.pi),
+        ((quadratic c)^[k] (γ θ))⁻¹
+          * ((∏ j ∈ Finset.range k, 2 * (quadratic c)^[j] (γ θ)) * γ' θ))
+      = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))
+    (h : ℂ → ℂ) (hh : AnalyticOnNhd ℂ h A) :
+    ¬ Set.EqOn (fun z => h z ^ 2)
+        (fun z => bottcherCoord c ((quadratic c)^[k] z)) A := by
+  have hesc : ∀ θ : ℝ, (quadratic c)^[k] (γ θ) ∈ escapeOpen c := fun θ => hAesc _ (hγA θ)
+  have hclosed' : (quadratic c)^[k] (γ (2 * Real.pi)) = (quadratic c)^[k] (γ 0) := by rw [hγclosed]
+  have hperiod := pathInt_logDeriv_bottcherIterate_eq_imageInv k hesc hdγ hγcont hγ'cont hclosed'
+  exact no_analytic_sqrt_bottcherIterate_of_oddPeriod k hAo hAesc hγA hγcont hγ'cont
+    (fun θ _ => hdγ θ) hγclosed (hperiod.trans hwind) h hh
+
+end Bottcher
