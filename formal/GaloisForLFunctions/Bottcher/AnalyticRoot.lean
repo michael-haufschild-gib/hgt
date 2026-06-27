@@ -122,4 +122,97 @@ theorem analyticOnNhd_glue_twoChart {V₁ V₂ : Set ℂ} {s₁ s₂ : ℂ → �
     · simp [Set.piecewise, hz1, hagree ⟨hz1, hz⟩]
     · simp [Set.piecewise, hz1]
 
+/-- **An annular sector is simply connected.** `{z : R < ‖z‖ ∧ z ∈ slitPlane}` (the exterior of the disk
+of radius `R`, minus the negative-real slit) is simply connected, for `R > 0`: it is the image of the
+convex strip `{Real.log R < Re w, |Im w| < π}` under the open embedding `exp` (injective there since the
+strip has height `< 2π`), and a convex set is contractible hence simply connected
+(`Convex.contractibleSpace` → `SimplyConnectedSpace.ofContractible`, transported along the embedding by
+`IsEmbedding.isSimplyConnected_image`). The slit cuts the loop around the disk, making the sector simply
+connected. This is the building block of every escape-level chart of the connected Böttcher
+uniformization. -/
+theorem isSimplyConnected_sector {R : ℝ} (hR : 0 < R) :
+    IsSimplyConnected {z : ℂ | R < ‖z‖ ∧ z ∈ slitPlane} := by
+  set S : Set ℂ := {w : ℂ | Real.log R < w.re ∧ -Real.pi < w.im ∧ w.im < Real.pi} with hSdef
+  have hSo : IsOpen S := by
+    have he : S = {w : ℂ | Real.log R < w.re} ∩ {w : ℂ | -Real.pi < w.im} ∩ {w : ℂ | w.im < Real.pi} := by
+      ext w; simp only [hSdef, mem_setOf_eq, mem_inter_iff]; tauto
+    rw [he]
+    exact ((isOpen_lt continuous_const continuous_re).inter
+      (isOpen_lt continuous_const continuous_im)).inter (isOpen_lt continuous_im continuous_const)
+  have hSconv : Convex ℝ S := by
+    have he : S = ({w : ℂ | Real.log R < w.re} ∩ {w : ℂ | -Real.pi < w.im}) ∩ {w : ℂ | w.im < Real.pi} := by
+      ext w; simp only [hSdef, mem_setOf_eq, mem_inter_iff]; tauto
+    rw [he]
+    exact ((convex_halfSpace_re_gt _).inter (convex_halfSpace_im_gt _)).inter (convex_halfSpace_im_lt _)
+  have hSne : S.Nonempty := ⟨((Real.log R + 1 : ℝ) : ℂ), by
+    refine ⟨by simp, ?_, ?_⟩ <;> simp [Real.pi_pos]⟩
+  set e : S → ℂ := fun w => Complex.exp (w : ℂ) with hedef
+  have hcont : Continuous e := Complex.continuous_exp.comp continuous_subtype_val
+  have hinj : Function.Injective e := by
+    rintro ⟨a, ha⟩ ⟨b, hb⟩ h
+    simp only [hedef] at h
+    rw [exp_eq_exp_iff_exists_int] at h
+    obtain ⟨n, hn⟩ := h
+    have hd : a - b = (n:ℂ) * (2 * (Real.pi:ℂ) * I) := by rw [hn]; ring
+    have him : a.im - b.im = (n:ℝ) * (2 * Real.pi) := by
+      have := congrArg Complex.im hd
+      simpa [Complex.sub_im, Complex.mul_im, Complex.mul_re] using this
+    have hn0 : n = 0 := by
+      have hd2 : |(n : ℝ) * (2 * Real.pi)| < 2 * Real.pi := by
+        rw [← him, abs_lt]
+        constructor <;> nlinarith [ha.2.1, ha.2.2, hb.2.1, hb.2.2, Real.pi_pos]
+      by_contra hne
+      have h1 : (1:ℝ) ≤ |(n:ℝ)| := by exact_mod_cast Int.one_le_abs (by exact_mod_cast hne)
+      rw [abs_mul, abs_of_pos (by positivity : (0:ℝ) < 2 * Real.pi)] at hd2
+      nlinarith [Real.pi_pos]
+    subst hn0; simp only [Int.cast_zero, zero_mul, add_zero] at hn
+    exact Subtype.ext hn
+  have hopen : IsOpenMap e := isOpenMap_exp.comp (hSo.isOpenMap_subtype_val)
+  have hemb : IsEmbedding e :=
+    (IsOpenEmbedding.of_continuous_injective_isOpenMap hcont hinj hopen).isEmbedding
+  have himg : e '' univ = {z : ℂ | R < ‖z‖ ∧ z ∈ slitPlane} := by
+    ext z
+    constructor
+    · rintro ⟨⟨w, hw⟩, -, rfl⟩
+      refine ⟨?_, ?_⟩
+      · show R < ‖Complex.exp w‖
+        rw [Complex.norm_exp]
+        calc R = Real.exp (Real.log R) := (Real.exp_log hR).symm
+          _ < Real.exp w.re := Real.exp_lt_exp.mpr hw.1
+      · show Complex.exp w ∈ slitPlane
+        rw [Complex.mem_slitPlane_iff]
+        by_cases hw0 : w.im = 0
+        · left; rw [Complex.exp_re, hw0, Real.cos_zero, mul_one]; exact Real.exp_pos _
+        · right; rw [Complex.exp_im]
+          refine mul_ne_zero (Real.exp_ne_zero _) ?_
+          intro hsin
+          rw [Real.sin_eq_zero_iff] at hsin
+          obtain ⟨k, hk⟩ := hsin
+          rcases lt_trichotomy k 0 with hkneg | hk0 | hkpos
+          · have hk1 : k ≤ -1 := by omega
+            have : (k:ℝ) ≤ -1 := by exact_mod_cast hk1
+            nlinarith [hw.2.1, Real.pi_pos]
+          · subst hk0; simp at hk; exact hw0 hk.symm
+          · have hk1 : (1:ℤ) ≤ k := hkpos
+            have : (1:ℝ) ≤ (k:ℝ) := by exact_mod_cast hk1
+            nlinarith [hw.2.2, Real.pi_pos]
+    · rintro ⟨hz1, hz2⟩
+      have hz0 : z ≠ 0 := by rintro rfl; simp at hz1; linarith
+      refine ⟨⟨Complex.log z, ?_, ?_, ?_⟩, mem_univ _, Complex.exp_log hz0⟩
+      · rw [Complex.log_re]; exact Real.log_lt_log hR hz1
+      · rw [Complex.log_im]; exact Complex.neg_pi_lt_arg z
+      · rw [Complex.log_im]
+        rcases lt_or_eq_of_le (Complex.arg_le_pi z) with h | h
+        · exact h
+        · exfalso
+          obtain ⟨hre, him⟩ := Complex.arg_eq_pi_iff.mp h
+          rw [Complex.mem_slitPlane_iff] at hz2
+          rcases hz2 with h' | h'
+          · linarith
+          · exact h' him
+  rw [← himg, hemb.isSimplyConnected_image]
+  haveI : ContractibleSpace S := hSconv.contractibleSpace hSne
+  haveI : SimplyConnectedSpace S := SimplyConnectedSpace.ofContractible S
+  exact ((Homeomorph.Set.univ S).toHomotopyEquiv).simplyConnectedSpace_iff.mpr ‹_›
+
 end Bottcher

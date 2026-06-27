@@ -24,6 +24,7 @@ import GaloisForLFunctions.Bottcher.Q62Assembly
 import GaloisForLFunctions.Bottcher.CoverDeckScaling
 import GaloisForLFunctions.Bottcher.AlgIndep
 import GaloisForLFunctions.Bottcher.CoverConstruction
+import GaloisForLFunctions.Bottcher.DeckBiholo
 
 open Filter Topology Set
 
@@ -146,5 +147,156 @@ theorem quasiperiodic_lift_of_period {F I : ℝ → ℂ} {c φ0 : ℂ}
   have hF0 : F 0 ≠ 0 := hF 0 (by norm_num)
   rw [← hφ0, h]
   exact (div_mul_cancel₀ (F 1) hF0).symm
+
+/-- **Projection-periodic cylinder deck tower ⟹ hDisc.**  This is the z-fixing deck interface in the
+form the remaining disconnected geometry should construct.  On one fixed cover `U`, suppose the deck
+map at every depth is a self-biholomorphism `g` whose base projection is periodic
+(`π∘g = π`) and whose first lifted coordinate is quasi-periodic (`f₁∘g = ζ₀ f₁`).  If the second
+coordinate factors through that projection (`f₂ = b∘π`), then the deck automatically fixes `f₂`; the
+only nontrivial pointwise input left is the `φ_{c₁}` scaling.  Therefore the resulting tower is exactly
+the `deck` hypothesis of `hDisc_of_cylinder_tower`, and the unbounded-monodromy obstruction proves
+`NoRelation ℂ(z)(a₁,a₂)`.
+
+This packages the intended disconnected monodromy loop: the loop is represented on the universal-cover
+strip by the deck `g`; z-fixing is the projection-periodicity `π∘g = π`; `φ_{c₂}`-fixing is not a
+separate analytic burden once `φ_{c₂}` is pulled back from the base. -/
+theorem hDisc_of_periodic_projection_tower {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    [Algebra (RatFunc ℂ) (meroField U)]
+    (a₁ a₂ : analyticSubring U) {f₁ f₂ π b : ℂ → ℂ}
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = ↑f₁) (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = ↑f₂)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hGtr : haveI := isDomain_analyticSubring U hUo hUc hUne
+            Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂))
+    (hF2base : ∀ z ∈ U, f₂ z = b (π z))
+    (deck : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+        (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+        (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U),
+        d < orderOf ζ₀ ∧ (∀ z ∈ U, π (g z) = π z) ∧
+        (∀ z ∈ U, f₁ (g z) = ζ₀ * f₁ z) ∧
+        ∀ k : RatFunc ℂ, precompMeroEquiv hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+          (algebraMap (RatFunc ℂ) (meroField U) k) = algebraMap (RatFunc ℂ) (meroField U) k) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  refine hDisc_of_cylinder_tower hUo hUc hUne a₁ a₂ ha₁ ha₂ hF hGtr ?_
+  intro d
+  obtain ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hπper, hF1, hK⟩ := deck d
+  have hfix := (universal_cover_strip_deck_consistent (U := U) (T := g) (π := π)
+    (F₁ := f₁) (F₂ := f₂) (b := b) (ζ₀ := ζ₀) hmaps hπper hF1 hF2base).2
+  exact ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hF1, hfix, hK⟩
+
+/-- **Projection-base periodic deck tower ⟹ hDisc, with base-field fixing automatic.**  This is the
+sharper fixed-cover interface for the disconnected monodromy loop.  The deck constructor now supplies
+only the actual geometry: a self-biholomorphic deck `g`, projection periodicity `π∘g = π`, and the
+quasi-periodic first lift `f₁∘g = ζ₀ f₁` with unbounded order.  The `RatFunc ℂ`-linearity is no longer a
+separate hypothesis: once the cover base is embedded as `ℂ(p₀)` through the deck-invariant projection
+`p₀ = π`, `monoF_witness_projection_base` proves the deck fixes that whole base field.  The second
+coordinate is fixed because it factors through the same projection. -/
+theorem hDisc_of_periodic_projection_base_tower {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U} {π : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑π) (hπinf : (π '' U).Infinite)
+    (a₁ a₂ : analyticSubring U) {f₁ f₂ b : ℂ → ℂ}
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = ↑f₁) (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = ↑f₂)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hGtr :
+      letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+      letI : Algebra (RatFunc ℂ) (meroField U) :=
+        (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+      Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂))
+    (hF2base : ∀ z ∈ U, f₂ z = b (π z))
+    (deck : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (_ : AnalyticOnNhd ℂ g U) (_ : AnalyticOnNhd ℂ g' U)
+        (_ : Set.MapsTo g U U) (_ : Set.MapsTo g' U U)
+        (_ : Set.EqOn (g ∘ g') id U) (_ : Set.EqOn (g' ∘ g) id U),
+        d < orderOf ζ₀ ∧ (∀ z ∈ U, π (g z) = π z) ∧
+        (∀ z ∈ U, f₁ (g z) = ζ₀ * f₁ z)) :
+    letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) :=
+      (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+  intro P hrel
+  refine algIndep_of_unbounded_monodromy _ _ hGtr hF (fun d => ?_) P hrel
+  obtain ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hπper, hF1⟩ := deck d
+  have hpfix : precompAnalytic hg hmaps p₀ = p₀ := by
+    apply Subtype.ext
+    rw [precompAnalytic_coe, hp0, Germ.coe_compTendsto, Germ.coe_eq]
+    exact eventually_principal.mpr (fun z hz => hπper z hz)
+  have hscale : (a₁ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+      = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (a₁ : Germ (𝓟 U) ℂ) := by
+    rw [ha₁]
+    exact compTendsto_germ_scaling ζ₀ hmaps hF1
+  have hfix_pt := (universal_cover_strip_deck_consistent (U := U) (T := g) (π := π)
+    (F₁ := f₁) (F₂ := f₂) (b := b) (ζ₀ := ζ₀) hmaps hπper hF1 hF2base).2
+  have hinv : (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+      = (a₂ : Germ (𝓟 U) ℂ) := by
+    rw [ha₂]
+    exact compTendsto_germ_fixed hmaps hfix_pt
+  exact monoF_witness_projection_base hUo hUc hUne hp0 hπinf a₁ a₂ d ζ₀ hg hg' hmaps hmaps'
+    hgg' hg'g hpfix hord hscale hinv
+
+/-- **Uniformized projection-base tower ⟹ hDisc.**  This packages the final deck construction step
+available once the genuine cover annulus has been uniformized by a single-valued lift
+`φ : U ≃ V`.  For each large order, the actual deck is not assumed abstractly: it is the conjugated
+rotation `g = ψ ∘ (×ζ₀) ∘ φ`.  If the projection factors as `π = q∘φ` and `q` is invariant under the
+chosen rotations on `V`, then `π∘g = π`, so the whole `RatFunc ℂ` base is fixed automatically by the
+projection-base machinery.  Thus the remaining analytic work is exactly the uniformized annulus plus
+its rotation-stable projection factor. -/
+theorem hDisc_of_uniformized_projection_base_tower {U V : Set ℂ} {φ ψ π q b : ℂ → ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑π) (hπinf : (π '' U).Infinite)
+    (H : LiftUniformization U V φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (a₁ a₂ : analyticSubring U) {f₂ : ℂ → ℂ}
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = ↑φ) (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = ↑f₂)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hGtr :
+      letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+      letI : Algebra (RatFunc ℂ) (meroField U) :=
+        (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+      Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂))
+    (hF2base : ∀ z ∈ U, f₂ z = b (π z))
+    (rotTower : ∀ d : ℕ, ∃ ζ₀ : ℂ,
+        ζ₀ ≠ 0 ∧ d < orderOf ζ₀ ∧
+        Set.MapsTo (rotation ζ₀) V V ∧ Set.MapsTo (rotation ζ₀⁻¹) V V ∧
+        (∀ y ∈ V, q (rotation ζ₀ y) = q y)) :
+    letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) :=
+      (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+  refine hDisc_of_periodic_projection_base_tower hUo hUc hUne hp0 hπinf a₁ a₂ ha₁ ha₂ hF hGtr
+    hF2base ?_
+  intro d
+  obtain ⟨ζ₀, hζ0, hord, hrot, hrot', hqfix⟩ := rotTower d
+  refine ⟨ζ₀, deckRot ψ φ ζ₀, deckRot ψ φ ζ₀⁻¹,
+    analyticOnNhd_deckRot H hrot, analyticOnNhd_deckRot H hrot',
+    mapsTo_deckRot H hrot, mapsTo_deckRot H hrot',
+    eqOn_deckRot_comp hζ0 H hrot', eqOn_deckRot_comp' hζ0 H hrot,
+    hord, ?_, ?_⟩
+  · intro z hz
+    have hgz : deckRot ψ φ ζ₀ z ∈ U := mapsTo_deckRot H hrot hz
+    calc
+      π (deckRot ψ φ ζ₀ z) = q (φ (deckRot ψ φ ζ₀ z)) := hπfactor _ hgz
+      _ = q (rotation ζ₀ (φ z)) := by
+        rw [deckRot_lift_scale H hrot z hz]
+        rfl
+      _ = q (φ z) := hqfix (φ z) (H.hφmaps hz)
+      _ = π z := (hπfactor z hz).symm
+  · exact deckRot_lift_scale H hrot
 
 end Bottcher

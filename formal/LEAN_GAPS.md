@@ -33,18 +33,25 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 646 | `formal/GaloisForLFunctions/Bottcher/ConnectedTranscendence.lean` |
 | 602 | `formal/GaloisForLFunctions/U0/U0Transcendence.lean` |
 | 594 | `formal/GaloisForLFunctions/Bottcher/BasinBranching.lean` |
+| 589 | `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean` |
 | 573 | `formal/GaloisForLFunctions/U0/U0PhiCard.lean` |
 | 562 | `formal/GaloisForLFunctions/Bottcher/BottcherCoord.lean` |
-| 557 | `formal/GaloisForLFunctions/Bottcher/SquareFree.lean` |
 
 ## Gap Markers
 
 | Location | Text |
 |---|---|
+| `formal/GaloisForLFunctions/Bottcher/BasinBranchGlue.lean:303` | the local form of the basin branch the index route consumes; the remaining inputs are the geometric ones: a |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranching.lean:14` | remaining analytic build (the disconnected, Cantor-Julia-set covering structure). |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranching.lean:360` | remaining gap to the FAITHFUL tower (with the actual transcendental `φ_{c₁}`, `φ_{c₂}`) is that this |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranching.lean:407` | action, as a genuine homeomorphism over the z-plane (well-definedness geometric). The remaining gap |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranching.lean:550` | realized as a genuine ℂ-algebra automorphism over the z-plane. The only remaining step to `hDisc` |
+| `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean:6` | local form is `BasinBranchGlue.explicitBranch_FE_relation_of_anchor`, which needs an OPEN far-field |
+| `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean:143` | route's `hinput` consumes at each cycle point. The remaining per-point datum is the boundary limit |
+| `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean:206` | branch, not an input. The remaining per-point hypotheses are the genuine dynamical residue — a |
+| `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean:262` | `2ⁿ`-th-root branches — the remaining winding/monodromy construction. -/ |
+| `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean:406` | uniformization: the only remaining atom is a single-valued analytic **square root** of `βlev n ∘ f` on |
+| `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean:454` | remaining winding step. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:13` | connected. That step (the branched-cover / critical-value structure of `z²+c`) is the lone remaining |
 | `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:80` | /-- **Basin-connectedness from the Riemann–Hurwitz step.** The full reduction: the single remaining |
 | `formal/GaloisForLFunctions/Bottcher/BottcherCoord.lean:276` | `∑ₖ termₖ(f_c z) = 2·(∑ₖ termₖ(z) − term₀(z))`. The remaining `log z` vs `log(z²+c)` |
@@ -77,6 +84,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/ConnectedTranscendence.lean:5` | theorem, reducing `Transcendental (RatFunc ℂ) (phiMero c)` to exactly the two remaining deep dynamical |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedTranscendence.lean:62` | contradicting `(X - C(C w₀)) ∤ P` via `relation_at_const`. The remaining input is purely dynamical: such a |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedTranscendence.lean:412` | of `J_c`, not a periodic-point resonance. The remaining input is the basin continuation `β` reaching a |
+| `formal/GaloisForLFunctions/Bottcher/CoverChainGlue.lean:14` | local→semilocal step toward the global cover — the only remaining obstruction being a chain that |
+| `formal/GaloisForLFunctions/Bottcher/CoverChainGlue.lean:63` | assembles, the remaining input being the loop-closure / deck where the chain wraps a Cantor cylinder. -/ |
 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean:123` | connected dyadic cover are these branches; gluing them (by the `μ_{2^∞}` cocycle) is the remaining |
 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean:413` | formalizes. The missing companion (`∮ d log h ∈ 2πiℤ` for single-valued nonzero `h`, the integer-winding |
 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean:620` | the connected cover — the sole genuine remaining analytic input, the global gluing |
@@ -90,11 +99,22 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean:1271` | explicit lift and the planar `meroField` carrier. The remaining input is the deck self-map of `U` |
 | `formal/GaloisForLFunctions/Bottcher/CoverDeckScaling.lean:129` | and projection-fixing clauses of `hliftF`. (The remaining `hliftF` clause, `φ_{c₂}∘g = φ_{c₂}`, is the |
 | `formal/GaloisForLFunctions/Bottcher/CoverDeckScaling.lean:131` | satisfy — there the loop encloses both Julia sets — and is the genuine remaining analytic construction.) -/ |
+| `formal/GaloisForLFunctions/Bottcher/CoverDescent.lean:17` | the concrete sheet; the lone remaining input is the cover independence itself (the Kummer close |
+| `formal/GaloisForLFunctions/Bottcher/CoverDescent.lean:49` | germ/analytic plumbing of the descent is supplied by the geometric sheet.  The remaining hypothesis `h` |
 | `formal/GaloisForLFunctions/Bottcher/CoverMonodromy.lean:14` | This file builds the descent and its coordinate action. The remaining Field-6 steps: upgrade |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:20` | the close is `monoF_witness`.  The sole remaining analytic input is the deck `g` itself — the closed |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:40` | not.  The lone remaining analytic input is the deck `g` of the closed Cantor-cylinder loop. -/ |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:80` | remaining input is the geometric deck tower `deck` itself: the closed cylinder loop's monodromy realized |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:117` | AUTOMATIC (it factors through the deck-invariant periodic base).  The remaining analytic core is |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:138` | pointwise SCALING.  Remaining for the deck: build the strip cover + the lift `F` + the period value. -/ |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:152` | form the remaining disconnected geometry should construct.  On one fixed cover `U`, suppose the deck |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:252` | projection-base machinery.  Thus the remaining analytic work is exactly the uniformized annulus plus |
 | `formal/GaloisForLFunctions/Bottcher/CylinderUnivalence.lean:4` | The single remaining analytic input of the disconnected/disconnected case (STATUS.md "Disconnected |
 | `formal/GaloisForLFunctions/Bottcher/CylinderUnivalence.lean:48` | (hypothesis), composed via `InjOn.comp`. The single remaining cylinder input becomes: each |
+| `formal/GaloisForLFunctions/Bottcher/DeckAnnulus.lean:136` | `NoRelation(φ_{c₁}, φ_{c₂})` since `a₁^{2ⁿ} = φ_{c₁}`).  The sole remaining inputs are now isolated: |
 | `formal/GaloisForLFunctions/Bottcher/DeckAutomorphism.lean:13` | This is the *algebraic core* of `σ_n` (real automorphism, correct scaling/order). The remaining |
 | `formal/GaloisForLFunctions/Bottcher/DeckAutomorphism.lean:88` | analytic fact, not an assumed one. This pins the remaining work to the analytic continuation layer. |
+| `formal/GaloisForLFunctions/Bottcher/DeckBiholo.lean:12` | This file supplies that missing link.  From a **global biholomorphism** `φ : U ≃ V` of the cover |
 | `formal/GaloisForLFunctions/Bottcher/DendriteBoundary.lean:113` | the basin can exist. The only remaining inputs are the empty-interior condition (the dendrite case |
 | `formal/GaloisForLFunctions/Bottcher/DyadicMonodromy.lean:10` | The remaining (analytic) half of `mono` — that continuation around the cylinder loop |
 | `formal/GaloisForLFunctions/Bottcher/ExplicitBranch.lean:23` | the basin (`ζ ≡ 1`, the connected-`J_c` / trivial-monodromy condition) is the remaining analytic core, |
@@ -110,6 +130,9 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:379` | `exists_fullBottcherBranch_of_primitive`; the only remaining input is a *geometric* ball-chain from |
 | `formal/GaloisForLFunctions/Bottcher/GreenUnique.lean:12` | basin is preconnected (`K_c` full), the one remaining topological input. |
 | `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:44` | forbids. This is a deep published theorem — the largest remaining formalization in the whole proof, |
+| `formal/GaloisForLFunctions/Bottcher/IndexEstimate.lean:56` | bulk strictly dominates. Discharging `hG`/`hrep` for an actual relation is the remaining dynamical wiring; |
+| `formal/GaloisForLFunctions/Bottcher/IndexFormula.lean:8` | the spectrum **algebraically** — flagged in the tower's status as the missing piece for a *Zdunik-free* |
+| `formal/GaloisForLFunctions/Bottcher/IndexResonance.lean:178` | residue identity forbids it, with no ergodic input. The remaining work to discharge an actual relation is |
 | `formal/GaloisForLFunctions/Bottcher/InteriorBoundary.lean:8` | the OPEN interior of `K_c` (where `G_c = 0`), forcing `g` constant on the connected ball (max-modulus / |
 | `formal/GaloisForLFunctions/Bottcher/JuliaExpansion.lean:9` | (`Q62RadicalReduction.q62_disconnected_of_radical_data`: the lone remaining input is, per depth `k`, a |
 | `formal/GaloisForLFunctions/Bottcher/LiftPeriod.lean:11` | The remaining geometric input of the whole disconnected case is hereby isolated as a single clean |
@@ -137,6 +160,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/NonSquare.lean:122` | route consumes, with no remaining hypothesis. -/ |
 | `formal/GaloisForLFunctions/Bottcher/OmittingNormal.lean:12` | the family `f_n` is normal. The only remaining input to three-value Montel is then the **covering μ |
 | `formal/GaloisForLFunctions/Bottcher/PeriodicPoints.lean:64` | remaining Fatou-density content.) -/ |
+| `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:235` | far field — with the only remaining input a geometric one: the connected far-field region `V` reaching the |
 | `formal/GaloisForLFunctions/Bottcher/Q62.lean:26` | by monodromy / blocked at the boundary), `G` the role of `φ_{c₂}`. -/ |
 | `formal/GaloisForLFunctions/Bottcher/Q62Assembly.lean:82` | `constToAnalytic_compTendsto`). The only remaining input is the lift data itself (the analytic |
 | `formal/GaloisForLFunctions/Bottcher/Q62Assembly.lean:168` | `noRelation_meroField_of_monodromy` → `q62_disconnected_both`) is machine-checked; the *only* remaining |
@@ -154,6 +178,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:128` | branch* and the *dendrite tip*, not the pre-digested simple-root boundary value. The remaining #24 content |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:289` | a distinct obstruction — the genuine remaining frontier). -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:375` | axiom-clean; the sole remaining input is the *existence* of such a repelling cycle — Fatou's classical |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:118` | input `TranscendentalOverAdjoin φ_{c₁} φ_{c₂}`. The remaining inputs are now exactly: the per-level |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedPoint.lean:103` | point in the Julia set, for all non-exceptional `c ≠ 1/4`. The remaining data (non-resonance, location off |
 | `formal/GaloisForLFunctions/Bottcher/ResonanceOrder.lean:13` | no continuation of `φ_c` across a non-resonant repelling periodic point. The only remaining global |
 | `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean:18` | `D₆ ≡ 0 ⟹ ThetaWronskian23`. The remaining (modular) input is the vanishing `D₆ ≡ 0`. |

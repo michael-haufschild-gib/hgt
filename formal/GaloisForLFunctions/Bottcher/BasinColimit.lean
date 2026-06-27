@@ -516,4 +516,74 @@ theorem eqOn_sqrt_of_preconnected {W : Set ℂ} (hWc : IsPreconnected W) {s₁ s
   have hone : s₁ z / s₂ z = 1 := hconst
   exact (div_eq_one_iff_eq (hs₂0 z hz)).mp hone
 
+/-- The reflected annular sector `{R < ‖z‖ ∧ -z ∈ slitPlane}` is simply connected (image of the
+`slitPlane` sector under the negation homeomorphism). -/
+theorem isSimplyConnected_neg_sector {R : ℝ} (hR : 0 < R) :
+    IsSimplyConnected {z : ℂ | R < ‖z‖ ∧ -z ∈ slitPlane} := by
+  have himg : {z : ℂ | R < ‖z‖ ∧ -z ∈ slitPlane}
+      = (Homeomorph.neg ℂ) '' {z : ℂ | R < ‖z‖ ∧ z ∈ slitPlane} := by
+    ext z
+    simp only [mem_setOf_eq, Homeomorph.neg, mem_image]
+    constructor
+    · intro ⟨h1, h2⟩; exact ⟨-z, ⟨by simpa using h1, by simpa using h2⟩, by simp⟩
+    · rintro ⟨w, ⟨h1, h2⟩, rfl⟩; exact ⟨by simpa using h1, by simpa using h2⟩
+  rw [himg, Homeomorph.isSimplyConnected_image]
+  exact isSimplyConnected_sector hR
+
+/-- **The far field `escapeOpen` is covered by two simply-connected sectors.** Every point of
+`escapeOpen c` avoids at least one of the two opposite rays `ℝ_{≤0}`, `ℝ_{≥0}`, so it lies in the
+`slitPlane` sector or the reflected sector — both simply connected (`isSimplyConnected_sector`,
+`isSimplyConnected_neg_sector`). The base case of the escape-level chart cover. -/
+theorem escapeOpen_subset_sectors (c : ℂ) :
+    escapeOpen c ⊆ {z : ℂ | max 2 ‖c‖ < ‖z‖ ∧ z ∈ slitPlane}
+      ∪ {z : ℂ | max 2 ‖c‖ < ‖z‖ ∧ -z ∈ slitPlane} := by
+  intro z hz
+  have hznorm : max 2 ‖c‖ < ‖z‖ := hz
+  have hz0 : z ≠ 0 := by rintro rfl; simp at hznorm; nlinarith [hznorm]
+  by_cases him : z.im = 0
+  · by_cases hre : 0 < z.re
+    · exact Or.inl ⟨hznorm, by rw [Complex.mem_slitPlane_iff]; left; exact hre⟩
+    · have hrn : z.re < 0 := by
+        rcases lt_trichotomy z.re 0 with h | h | h
+        · exact h
+        · exact absurd (Complex.ext h him) hz0
+        · exact absurd hre (not_not.mpr h)
+      exact Or.inr ⟨hznorm, by rw [Complex.mem_slitPlane_iff]; left; simp; linarith⟩
+  · exact Or.inl ⟨hznorm, by rw [Complex.mem_slitPlane_iff]; right; exact him⟩
+
+/-- **The deck symmetry of `f = z²+c`:** `f z = f w ↔ z = w ∨ z = -w`. The two preimages of any value
+are related by the deck involution `z ↦ -z` (the branched 2-to-1 structure, unbranched off the critical
+point `0`). The foundation of the covering lift `escapeLevel c(n+1) → escapeLevel c n`. -/
+theorem quadratic_eq_iff (c z w : ℂ) :
+    quadratic c z = quadratic c w ↔ z = w ∨ z = -w := by
+  unfold quadratic
+  constructor
+  · intro h
+    have hz2 : z ^ 2 = w ^ 2 := by linear_combination h
+    have hfac : (z - w) * (z + w) = 0 := by ring_nf; linear_combination hz2
+    rcases mul_eq_zero.mp hfac with h1 | h1
+    · left; linear_combination h1
+    · right; linear_combination h1
+  · rintro (rfl | rfl) <;> ring
+
+/-- **An inverse branch of `f = z²+c` over a simply-connected region.** On a simply-connected open `U`
+not containing the critical value `c`, there is an analytic `g` with `f(g w) = w` for all `w ∈ U` —
+a single-valued branch of `√(w-c)` (existing because `w ↦ w-c` is nonvanishing on `U` and `U` is simply
+connected, `exists_analyticOnNhd_pow_eq`). The building block of the covering lift
+`escapeLevel c(n+1) → escapeLevel c n`: composing inverse branches lifts a simply-connected far-field
+sector to a simply-connected sheet deep in the escape level. -/
+theorem exists_quadratic_inverse_branch (c : ℂ) {U : Set ℂ}
+    (hUsc : IsSimplyConnected U) (hUo : IsOpen U) (hc : c ∉ U) :
+    ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g U ∧ ∀ w ∈ U, quadratic c (g w) = w := by
+  have hne : ∀ w ∈ U, (fun w => w - c) w ≠ 0 := by
+    intro w hw hzero
+    exact hc (sub_eq_zero.mp hzero ▸ hw)
+  have hsuban : AnalyticOnNhd ℂ (fun w => w - c) U := fun w _ => by fun_prop
+  obtain ⟨g, hgan, hgsq⟩ := exists_analyticOnNhd_pow_eq hUsc hUo hsuban hne (by norm_num : 1 ≤ 2)
+  refine ⟨g, hgan, fun w hw => ?_⟩
+  have hs : (g w) ^ 2 = w - c := by simpa using hgsq w hw
+  calc
+    (g w) ^ 2 + c = (w - c) + c := by rw [hs]
+    _ = w := by ring
+
 end Bottcher
