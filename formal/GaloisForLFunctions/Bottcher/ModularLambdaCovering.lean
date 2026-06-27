@@ -69,7 +69,7 @@ theorem isLocalHomeomorphOn_modularLambda :
   set e : ℂ ≃L[ℂ] ℂ :=
     ContinuousLinearEquiv.unitsEquivAut ℂ (Units.mk0 (deriv modularLambda x) hd) with he
   have hcle : (e : ℂ →L[ℂ] ℂ) = ContinuousLinearMap.toSpanSingleton ℂ (deriv modularLambda x) := by
-    rw [he]; ext y
+    rw [he]; ext
     simp [ContinuousLinearEquiv.unitsEquivAut, ContinuousLinearMap.toSpanSingleton_apply, mul_comm]
   have hfd : HasStrictFDerivAt modularLambda (e : ℂ →L[ℂ] ℂ) x := by
     rw [hcle]; exact hstr.hasStrictFDerivAt
@@ -505,14 +505,14 @@ theorem isClosed_range_lambdaPunct : IsClosed (Set.range lambdaPunct) := by
     rw [heq] at hux'
     have hxeq : x = φ₀ (lambdaPunct a) := tendsto_nhds_unique hux' hφla
     exact ⟨(g (ρ (ρ' (ρ'' 0))))⁻¹ • a, by rw [hxeq, ← hρS (ρ' (ρ'' 0)), ← hφeq (ρ (ρ' (ρ'' 0))) a]⟩
-  · push_neg at hb
+  · push Not at hb
     have hImtop : Tendsto (fun k => (σ (ρ k)).im) atTop atTop := by
       rw [tendsto_atTop_atTop]
       intro M
       obtain ⟨N, hN⟩ := (hb M).bddAbove
       refine ⟨N + 1, fun k hk => ?_⟩
       by_contra hlt
-      push_neg at hlt
+      push Not at hlt
       have := hN hlt.le
       omega
     have heq : (fun k => (u (ρ k) : ℂ)) = fun k => (φ₀ (lambdaPunct (σ (ρ k))) : ℂ) := by

@@ -1,5 +1,10 @@
 # Consolidated Lean Implementation Index
 
+**Historical bridge index.** For current formal navigation start with
+`formal/LEAN_OVERVIEW.md`, then search `formal/LEAN_API.md` or run
+`scripts/formal_tools.py research "<query>"`. This file tracks older
+`docs/consolidated/` bridge status and is not the primary proof map.
+
 Working index for the goal: turn the claims in `docs/consolidated/` into Lean
 artifacts in this project where possible.  The consolidated files are treated as
 read-only sources.

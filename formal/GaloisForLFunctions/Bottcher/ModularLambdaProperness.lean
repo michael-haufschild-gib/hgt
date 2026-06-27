@@ -88,7 +88,7 @@ theorem cusp_height_bound {K : Set Punctured} (hK : IsCompact K) :
   obtain ⟨M, hM⟩ := hev
   refine ⟨M, fun w hw => ?_⟩
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   have hbound : ‖modularLambda (w : ℂ)‖ < ε := hM (w : ℂ).im hlt.le (w : ℂ) rfl
   have hmem : modularLambda (w : ℂ) ∈ K'c := ⟨lambdaPunct w, hw, rfl⟩
   exact absurd (hεle _ hmem) (not_le.mpr hbound)

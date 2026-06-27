@@ -145,7 +145,7 @@ theorem exists_simpleRoot_minimal_relation {U : Set ℂ} (hUc : IsPreconnected U
     rw [hfeq]; exact analyticOnNhd_eval₂_bottcher c hU (Polynomial.derivative P)
   have hgne : ∃ x ∈ U, f x ≠ 0 := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have hge := hPmin (Polynomial.derivative P) hD0 hcon
     have hlt : (Polynomial.derivative P).natDegree < P.natDegree := natDegree_derivative_lt (by omega)
     omega
@@ -256,7 +256,7 @@ theorem exists_bottcherCoord_ne {U : Set ℂ} (hUo : IsOpen U) (hUne : U.Nonempt
     (hU : U ⊆ escapeOpen c) (w₀ : ℂ) :
     ∃ x₀ ∈ U, bottcherCoord c x₀ ≠ w₀ := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   obtain ⟨u, huU⟩ := hUne
   have hφan : AnalyticOnNhd ℂ (bottcherCoord c) (escapeOpen c) := analyticOnNhd_bottcherCoord_full c
   have hev : bottcherCoord c =ᶠ[𝓝 u] (fun _ => w₀) := by
@@ -286,7 +286,7 @@ theorem exists_bottcherCoord_ne {U : Set ℂ} (hUo : IsOpen U) (hUne : U.Nonempt
 vanishing relation, contradicting minimality. Removes the `hndvd` hypothesis from the divisibility input. -/
 theorem factor_not_dvd_of_minimal {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (c : ℂ) (hU : U ⊆ escapeOpen c)
-    (P : Polynomial (Polynomial ℂ)) (hP0 : P ≠ 0) (hdeg : 1 ≤ P.natDegree)
+    (P : Polynomial (Polynomial ℂ)) (hP0 : P ≠ 0) (_hdeg : 1 ≤ P.natDegree)
     (hPrel : ∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c z) ^ i = 0)
     (hPmin : ∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
         (∀ z ∈ U, ∑ i ∈ R.support, (R.coeff i).aeval z * (bottcherCoord c z) ^ i = 0) →

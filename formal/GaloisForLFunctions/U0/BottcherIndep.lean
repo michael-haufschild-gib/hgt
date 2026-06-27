@@ -71,13 +71,13 @@ noncomputable def specPoly {d : ℕ} (a : Fin (d + 1) → ℂ → ℂ) (z : ℂ)
 
 theorem specPoly_eval {d : ℕ} (a : Fin (d + 1) → ℂ → ℂ) (z w : ℂ) :
     (specPoly a z).eval w = ∑ i : Fin (d + 1), a i z * w ^ (i : ℕ) := by
-  rw [specPoly, Polynomial.eval_finset_sum]
+  rw [specPoly, Polynomial.eval_finsetSum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
 
 theorem specPoly_coeff {d : ℕ} (a : Fin (d + 1) → ℂ → ℂ) (z : ℂ) (j : Fin (d + 1)) :
     (specPoly a z).coeff (j : ℕ) = a j z := by
-  rw [specPoly, Polynomial.finset_sum_coeff]
+  rw [specPoly, Polynomial.finsetSum_coeff]
   rw [Finset.sum_eq_single j]
   · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl, mul_one]
   · intro i _ hij
@@ -253,7 +253,7 @@ unbounded complement (a *full* compact-like set — exactly the filled Julia set
 the connected basin of `∞`), and the frontier of a compact `K₁` lies in `K₂`, then `K₁ ⊆ K₂`. Proof: the
 clopen-in-`K₂ᶜ` set `K₁ ∩ K₂ᶜ` is forced empty by connectedness — else it is all of `K₂ᶜ`, making the
 compact `K₁` unbounded. -/
-theorem compact_subset_of_full {K₁ K₂ : Set ℂ} (hK₁ : IsCompact K₁) (hK₂ : IsClosed K₂)
+theorem compact_subset_of_full {K₁ K₂ : Set ℂ} (hK₁ : IsCompact K₁)
     (hconn : IsPreconnected K₂ᶜ) (hunb : ¬ Bornology.IsBounded K₂ᶜ)
     (hcon : ∀ z ∈ frontier K₁, z ∈ K₂) : K₁ ⊆ K₂ := by
   have hSsubInt : K₁ ∩ K₂ᶜ ⊆ interior K₁ := by
@@ -292,7 +292,7 @@ the distinct filled-Julia sets put a Julia point `z₀ ∈ J_{c₁}` inside `φ_
 the function level: everything is discharged except the two named Böttcher inputs `hnb` (Julia natural
 boundary) and `hfdom`/`hgdom` (full-basin analyticity). -/
 theorem phi_indep_capstone {f g : ℂ → ℂ} {K₁ K₂ : Set ℂ}
-    (hK₁ : IsCompact K₁) (hK₂ : IsClosed K₂)
+    (hK₁ : IsCompact K₁)
     (hconn : IsPreconnected K₂ᶜ) (hunb : ¬ Bornology.IsBounded K₂ᶜ) (hne : ¬ K₁ ⊆ K₂)
     (hfdom : ∀ z ∈ K₁ᶜ, AnalyticAt ℂ f z) (hgdom : ∀ z ∈ K₂ᶜ, AnalyticAt ℂ g z)
     (hnb : ∀ z₀ ∈ frontier K₁, ¬ ContinuesAcross f K₁ᶜ z₀)
@@ -308,8 +308,8 @@ theorem phi_indep_capstone {f g : ℂ → ℂ} {K₁ K₂ : Set ℂ}
   -- distinct ⟹ a Julia point of c₁ lies outside K_{c₂}
   have hex : ∃ z₀ ∈ frontier K₁, z₀ ∉ K₂ := by
     by_contra hc
-    push_neg at hc
-    exact hne (compact_subset_of_full hK₁ hK₂ hconn hunb hc)
+    push Not at hc
+    exact hne (compact_subset_of_full hK₁ hconn hunb hc)
   obtain ⟨z₀, hz₀fr, hz₀K₂⟩ := hex
   obtain ⟨hlead, hsep⟩ := hcoeff z₀ hz₀fr hz₀K₂
   exact no_phi_relation_of_natural_boundary (hnb z₀ hz₀fr) hfdom (hgdom z₀ hz₀K₂)

@@ -188,7 +188,7 @@ theorem quadratic_filtration_top {W : ℕ} {A : Fin (W + 1) → ℂ → ℂ} {l 
     intro w
     by_cases hw : w = Fin.last W
     · subst hw
-      simp only [if_pos rfl, Fin.val_last, Nat.sub_self, pow_zero, mul_one]
+      simp only [Fin.val_last, Nat.sub_self, pow_zero, mul_one]
       exact hA _
     · rw [if_neg hw]
       have hlt : (w : ℕ) < W := by
@@ -200,7 +200,7 @@ theorem quadratic_filtration_top {W : ℕ} {A : Fin (W + 1) → ℂ → ℂ} {l 
         rwa [zero_pow (by omega : W - (w : ℕ) ≠ 0)] at hp
       have := (hA w).mul hpow
       rwa [mul_zero] at this
-  have hsum := tendsto_finset_sum Finset.univ (fun w _ => hterm w)
+  have hsum := tendsto_finsetSum Finset.univ (fun w _ => hterm w)
   rw [Finset.sum_ite_eq' Finset.univ (Fin.last W) (fun _ => A (Fin.last W) 0)] at hsum
   simp only [Finset.mem_univ, if_true] at hsum
   have hzero : Filter.Tendsto (fun x => ∑ w : Fin (W + 1), A w x * x ^ (W - (w : ℕ))) l (nhds 0) :=

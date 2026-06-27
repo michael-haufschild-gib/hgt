@@ -91,7 +91,9 @@ theorem quarticDefectH_slash_zeroAtImInfty (γ : SL(2, ℤ)) :
 theorem quarticDefectH_sq_slash_SL2Z (γ : SL(2, ℤ)) :
     (quarticDefectH ^ 2) ∣[(4 : ℤ)] γ = quarticDefectH ^ 2 := by
   rw [pow_two, show (4 : ℤ) = 2 + 2 by norm_num, ModularForm.mul_slash_SL2]
-  rcases quarticDefectH_slash_pm γ with h | h <;> rw [h] <;> ring
+  rcases quarticDefectH_slash_pm γ with h | h
+  · rw [h]
+  · rw [h]; ring
 
 /-- `F²` as a weight-`4` cusp form for `SL(2,ℤ)`: holomorphic (`F` is), `SL(2,ℤ)`-invariant
 (`quarticDefectH_sq_slash_SL2Z`), and zero at the cusp (`F → 0`, so `F² → 0`). -/
@@ -138,11 +140,11 @@ theorem modularLambda_ne_one {τ : ℂ} (hτ : 0 < τ.im) : modularLambda τ ≠
 /-- **`λ : ℍ → ℂ ∖ {0,1}`, unconditionally.** Both omitted values, with the quartic identity proven. -/
 theorem modularLambda_omits_zero_one' {τ : ℂ} (hτ : 0 < τ.im) :
     modularLambda τ ≠ 0 ∧ modularLambda τ ≠ 1 :=
-  modularLambda_omits_zero_one (fun σ hσ => Bottcher2Cusp.quarticDefect_eq_zero hσ) hτ
+  modularLambda_omits_zero_one (fun _ hσ => Bottcher2Cusp.quarticDefect_eq_zero hσ) hτ
 
 /-- The range condition as a single membership: `λ τ ∈ ℂ ∖ {0,1}`, unconditionally. -/
 theorem modularLambda_mem_compl_zero_one' {τ : ℂ} (hτ : 0 < τ.im) :
     modularLambda τ ∈ ({0, 1} : Set ℂ)ᶜ :=
-  modularLambda_mem_compl_zero_one (fun σ hσ => Bottcher2Cusp.quarticDefect_eq_zero hσ) hτ
+  modularLambda_mem_compl_zero_one (fun _ hσ => Bottcher2Cusp.quarticDefect_eq_zero hσ) hτ
 
 end Bottcher

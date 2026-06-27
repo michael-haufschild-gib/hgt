@@ -53,7 +53,7 @@ theorem Rgen_pow_val (n : ℕ) : (Rgen ^ n).val = !![1, 0; 2 * (n : ℤ), 1] := 
     rw [pow_succ]; show (Rgen ^ k).val * Rgen.val = _
     rw [ih]; show !![1, 0; 2 * (k : ℤ), 1] * !![1, 0; 2, 1] = _
     rw [Matrix.mul_fin_two]; ext i j
-    fin_cases i <;> fin_cases j <;> simp <;> push_cast <;> ring
+    fin_cases i <;> fin_cases j <;> simp; ring
 
 /-- Entry form of the power `(T²)ⁿ = [[1,2n],[0,1]]` (needed for the reduction algorithm). -/
 theorem Tsq_pow_val (n : ℕ) : ((ModularGroup.T ^ 2) ^ n).val = !![1, 2 * (n : ℤ); 0, 1] := by
@@ -62,7 +62,7 @@ theorem Tsq_pow_val (n : ℕ) : ((ModularGroup.T ^ 2) ^ n).val = !![1, 2 * (n : 
   | succ k ih =>
     rw [pow_succ]; show ((ModularGroup.T ^ 2) ^ k).val * (ModularGroup.T ^ 2).val = _
     rw [ih, show (ModularGroup.T ^ 2).val = !![1, 2; 0, 1] from Tsq_coe, Matrix.mul_fin_two]
-    ext i j; fin_cases i <;> fin_cases j <;> simp <;> push_cast <;> ring
+    ext i j; fin_cases i <;> fin_cases j <;> simp; ring
 
 
 /-! ## Toward the reverse inclusion `Γ(2) ≤ closure{T²,R,−I}` (the reduction algorithm). -/
@@ -128,11 +128,11 @@ theorem Rgen_zpow_val (n : ℤ) : (Rgen ^ n).val = !![1, 0; 2 * n, 1] := by
   · intro k ih
     rw [_root_.zpow_add_one]; show (Rgen ^ (k : ℤ)).val * Rgen.val = _
     rw [ih]; show !![1, 0; 2 * (k : ℤ), 1] * !![1, 0; 2, 1] = _
-    rw [Matrix.mul_fin_two]; ext i j; fin_cases i <;> fin_cases j <;> simp <;> push_cast <;> ring
+    rw [Matrix.mul_fin_two]; ext i j; fin_cases i <;> fin_cases j <;> simp; ring
   · intro k ih
     rw [_root_.zpow_sub_one]; show (Rgen ^ (-(k : ℤ))).val * (Rgen⁻¹).val = _
     rw [ih, Rgen_inv_val, Matrix.mul_fin_two]
-    ext i j; fin_cases i <;> fin_cases j <;> simp <;> push_cast <;> ring
+    ext i j; fin_cases i <;> fin_cases j <;> simp; ring
 
 theorem Tsq_zpow_val (n : ℤ) : ((ModularGroup.T ^ 2) ^ n).val = !![1, 2 * n; 0, 1] := by
   refine Int.induction_on n ?_ ?_ ?_
@@ -142,12 +142,12 @@ theorem Tsq_zpow_val (n : ℤ) : ((ModularGroup.T ^ 2) ^ n).val = !![1, 2 * n; 0
     show ((ModularGroup.T ^ 2) ^ (k : ℤ)).val * (ModularGroup.T ^ 2).val = _
     rw [ih, show ((ModularGroup.T ^ 2 : SL(2, ℤ)) : Matrix (Fin 2) (Fin 2) ℤ) = !![1, 2; 0, 1] from Tsq_coe,
       Matrix.mul_fin_two]
-    ext i j; fin_cases i <;> fin_cases j <;> simp <;> push_cast <;> ring
+    ext i j; fin_cases i <;> fin_cases j <;> simp; ring
   · intro k ih
     rw [_root_.zpow_sub_one]
     show ((ModularGroup.T ^ 2) ^ (-(k : ℤ))).val * ((ModularGroup.T ^ 2)⁻¹).val = _
     rw [ih, Tsq_inv_val, Matrix.mul_fin_two]
-    ext i j; fin_cases i <;> fin_cases j <;> simp <;> push_cast <;> ring
+    ext i j; fin_cases i <;> fin_cases j <;> simp; ring
 
 theorem Rk_mul_00 (k : ℤ) (γ : SL(2, ℤ)) : (Rgen ^ k * γ).val 0 0 = γ.val 0 0 := by
   show ((Rgen ^ k).val * γ.val) 0 0 = _
@@ -175,7 +175,7 @@ theorem exists_reduce (a c : ℤ) (ha : a ≠ 0) : ∃ k : ℤ, |2 * k * a + c| 
   set r := c % (2 * |a|) with hr
   have hr0 : 0 ≤ r := Int.emod_nonneg c (by linarith)
   have hrlt : r < 2 * |a| := Int.emod_lt_of_pos c hd
-  have hcq : c = 2 * |a| * q + r := (Int.ediv_add_emod c (2 * |a|)).symm
+  have hcq : c = 2 * |a| * q + r := (Int.mul_ediv_add_emod c (2 * |a|)).symm
   have hsa : (a.sign : ℤ) * a = |a| := by
     rcases lt_trichotomy a 0 with h | h | h
     · rw [Int.sign_eq_neg_one_of_neg h]; simp [abs_of_neg h]

@@ -82,7 +82,7 @@ the `K_c`-interior `G_c = 0` so `‖g‖ = 1`, while at the basin point `‖g‖
 (`greenLimit_pos_basin`); `InteriorBoundary.no_unit_modulus_open_continuation` (max-modulus) closes it.
 Together with the dendrite case this forbids ANY modulus-preserving continuation of `φ_c` across `J_c` for
 every connected `c` — the full natural-boundary obstruction, requiring NO multiplier-spectrum input. -/
-theorem false_of_basin_branch_interior {c z₀ : ℂ} {r : ℝ} (hr : 0 < r)
+theorem false_of_basin_branch_interior {c z₀ : ℂ} {r : ℝ} (_hr : 0 < r)
     {g : ℂ → ℂ} (hgan : AnalyticOnNhd ℂ g (Metric.ball z₀ r))
     (hmod : ∀ z ∈ Metric.ball z₀ r, ‖g z‖ = Real.exp (greenFunctionDyn c z))
     (hint : ∃ z ∈ Metric.ball z₀ r, z ∈ interior (filledJulia c))

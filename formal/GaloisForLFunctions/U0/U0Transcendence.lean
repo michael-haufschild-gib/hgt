@@ -147,7 +147,7 @@ theorem analytic_domain {g h : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g Ext) (hh :
     (hgh : ∀ z ∈ Ext, g z * h z = 0) :
     (∀ z ∈ Ext, g z = 0) ∨ (∀ z ∈ Ext, h z = 0) := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   obtain ⟨⟨z₁, hz₁E, hgz₁⟩, ⟨z₂, hz₂E, hhz₂⟩⟩ := hcon
   have hgne : ∀ᶠ z in 𝓝 z₁, g z ≠ 0 := (hg z₁ hz₁E).continuousAt.eventually_ne hgz₁
   have hExt_nhds : Ext ∈ 𝓝 z₁ := isOpen_Ext.mem_nhds hz₁E
@@ -344,14 +344,18 @@ theorem u0_no_relation (P : (Polynomial ℂ)[X]) (hdeg : 1 ≤ P.natDegree)
       obtain ⟨A, B, hAnu, hBnu, hPfAB⟩ := (irreducible_or_factor hQf_nu).resolve_left hirr
       have hA0 : A ≠ 0 := by rintro rfl; rw [zero_mul] at hPfAB; exact hQf0 hPfAB
       have hB0 : B ≠ 0 := by rintro rfl; rw [mul_zero] at hPfAB; exact hQf0 hPfAB
-      obtain ⟨bA, hbA⟩ := IsLocalization.integerNormalization_map_to_map (Polynomial ℂ)⁰ A
-      obtain ⟨bB, hbB⟩ := IsLocalization.integerNormalization_map_to_map (Polynomial ℂ)⁰ B
+      obtain ⟨bA, hbAmem, hbA⟩ :=
+        IsLocalization.integerNormalization_spec (nonZeroDivisors (Polynomial ℂ)) A
+      obtain ⟨bB, hbBmem, hbB⟩ :=
+        IsLocalization.integerNormalization_spec (nonZeroDivisors (Polynomial ℂ)) B
       set Atil := IsLocalization.integerNormalization (Polynomial ℂ)⁰ A with hAtil
       set Btil := IsLocalization.integerNormalization (Polynomial ℂ)⁰ B with hBtil
-      have hbA0 : alg (bA : Polynomial ℂ) ≠ 0 :=
-        fun h => (nonZeroDivisors.coe_ne_zero bA) (halginj (by rw [h, map_zero]))
-      have hbB0 : alg (bB : Polynomial ℂ) ≠ 0 :=
-        fun h => (nonZeroDivisors.coe_ne_zero bB) (halginj (by rw [h, map_zero]))
+      have hbApoly0 : bA ≠ 0 := nonZeroDivisors.ne_zero hbAmem
+      have hbBpoly0 : bB ≠ 0 := nonZeroDivisors.ne_zero hbBmem
+      have hbA0 : alg bA ≠ 0 :=
+        fun h => hbApoly0 (halginj (by rw [h, map_zero]))
+      have hbB0 : alg bB ≠ 0 :=
+        fun h => hbBpoly0 (halginj (by rw [h, map_zero]))
       have hAtil0 : Atil ≠ 0 := fun h => hA0
         ((IsFractionRing.integerNormalization_eq_zero_iff).mp (by rw [← hAtil, h]))
       have hBtil0 : Btil ≠ 0 := fun h => hB0
@@ -376,15 +380,14 @@ theorem u0_no_relation (P : (Polynomial ℂ)[X]) (hdeg : 1 ≤ P.natDegree)
       have hdegBtil : Btil.natDegree = B.natDegree := by
         have h1 := natDegree_map_eq_of_injective halginj Btil
         rw [hbB, hsmul, Polynomial.natDegree_C_mul hbB0] at h1; omega
-      have hdescent : Atil * Btil = C ((bA : Polynomial ℂ) * bB) * Q := by
+      have hdescent : Atil * Btil = C (bA * bB) * Q := by
         apply Polynomial.map_injective alg halginj
         rw [Polynomial.map_mul, hbA, hbB, hsmul, hsmul, Polynomial.map_mul, Polynomial.map_C,
           map_mul alg, Polynomial.C_mul, ← hQf, hPfAB]
         ring
       have hdegsum : Atil.natDegree + Btil.natDegree = d := by
         have hm := Polynomial.natDegree_mul hAtil0 hBtil0
-        rw [hdescent, Polynomial.natDegree_C_mul (mul_ne_zero (nonZeroDivisors.coe_ne_zero bA)
-          (nonZeroDivisors.coe_ne_zero bB)), hQd] at hm
+        rw [hdescent, Polynomial.natDegree_C_mul (mul_ne_zero hbApoly0 hbBpoly0), hQd] at hm
         omega
       have heval : ∀ z ∈ Ext, (Atil.eval₂ (evalRingHom z) (u0 z))
           * (Btil.eval₂ (evalRingHom z) (u0 z)) = 0 := by

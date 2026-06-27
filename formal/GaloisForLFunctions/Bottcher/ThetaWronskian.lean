@@ -369,7 +369,7 @@ theorem tendsto_deriv_thetaThree_atImInfty :
   have hCsum : Summable (fun n : ℤ => π * (n : ℝ) ^ 2 * Real.exp (-π * (n : ℝ) ^ 2 / 2)) := by
     have h := (summable_pow_mul_jacobiTheta₂_term_bound (0 : ℝ) (by norm_num : (0:ℝ) < 1/2) 2).mul_left π
     refine h.congr (fun n => ?_)
-    rw [Int.cast_abs, sq_abs]; push_cast; ring_nf
+    rw [Int.cast_abs, sq_abs]; ring_nf
   set C : ℝ := ∑' n : ℤ, π * (n : ℝ) ^ 2 * Real.exp (-π * (n : ℝ) ^ 2 / 2) with hC
   have hgto : Tendsto (fun τ : ℂ => C * Real.exp (-π * τ.im / 2)) (comap Complex.im atTop) (𝓝 0) := by
     have : Tendsto (fun τ : ℂ => Real.exp (-π * τ.im / 2)) (comap Complex.im atTop) (𝓝 0) := by
@@ -385,7 +385,7 @@ theorem tendsto_deriv_thetaThree_atImInfty :
     simp_rw [norm_jacobiTheta₂_snd_term_zero]
     have h := (summable_pow_mul_jacobiTheta₂_term_bound (0 : ℝ) hτ0 2).mul_left π
     refine h.congr (fun n => ?_)
-    rw [Int.cast_abs, sq_abs]; push_cast; ring_nf
+    rw [Int.cast_abs, sq_abs]; ring_nf
   refine (norm_tsum_le_tsum_norm hsummN).trans ?_
   rw [tsum_congr (fun n => norm_jacobiTheta₂_snd_term_zero n τ)]
   rw [show C * Real.exp (-π * τ.im / 2)
@@ -518,7 +518,7 @@ private theorem summable_polyExpTerm {y : ℝ} (hy : 0 < y) : Summable (polyExpT
     have h := (((summable_pow_mul_jacobiTheta₂_term_bound (y / 2) hy 2).add
       (summable_pow_mul_jacobiTheta₂_term_bound (y / 2) hy 1)).mul_left π)
     refine h.congr (fun n => ?_)
-    rw [Int.cast_abs, sq_abs]; push_cast; ring
+    rw [Int.cast_abs, sq_abs]; ring_nf
   refine Summable.of_nonneg_of_le (fun n => by have := @nn_sq_add n; positivity) (fun n => ?_) hb
   have hexp : Real.exp (-π * ((n : ℝ) ^ 2 + n) * y)
       ≤ Real.exp (-π * (y * (n : ℝ) ^ 2 - y * |(n : ℝ)|)) := by
@@ -582,7 +582,7 @@ theorem tendsto_jacobiTheta₂DiagDeriv_atImInfty :
         show (π : ℂ) * I * n * (n + 1) = (((π * ((n : ℝ) ^ 2 + n) : ℝ)) : ℂ) * I by push_cast; ring,
         norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (by have := @nn_sq_add n; positivity)]
-    congr 1; ring
+    congr 1; ring_nf
   have hsummNorm : Summable
       (fun n : ℤ => ‖(π : ℂ) * I * n * (n + 1) * jacobiTheta₂_term n (τ / 2) τ‖) := by
     simp_rw [hnorm]; exact summable_polyExpTerm hτ0
@@ -757,7 +757,7 @@ theorem thetaWronskianRatio_eq_zero {τ : ℂ} (hτ : 0 < τ.im) : thetaWronskia
 /-- **`ThetaWronskian23` is a theorem.** `θ₂'θ₃ − θ₂θ₃' = (πi/4)·θ₂θ₃θ₄⁴` on `ℍ`, via `P ≡ 0`. This
 discharges the named hypothesis of `ModularLambdaLocalBiholo`, making `λ' ≠ 0` unconditional. -/
 theorem thetaWronskian23 : ThetaWronskian23 :=
-  thetaWronskian23_of_ratio_zero (fun τ hτ => thetaWronskianRatio_eq_zero hτ)
+  thetaWronskian23_of_ratio_zero (fun _ hτ => thetaWronskianRatio_eq_zero hτ)
 
 end ModularConstruction
 

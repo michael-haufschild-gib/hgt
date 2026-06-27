@@ -97,9 +97,10 @@ theorem deepBall_infinite (c₁ c₂ : ℂ) : (deepBall c₁ c₂).Infinite := b
 nowhere-vanishing `φ_c` on the nonempty `U`, and the fraction-field map is injective. This is the
 `F ≠ 0` / `G ≠ 0` datum the obstruction (`q62_disconnected_both`, `algIndep_of_unbounded_monodromy`)
 requires. -/
-theorem phiMero_ne_zero {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+theorem phiMero_ne_zero {U : Set ℂ} (_hUo : IsOpen U) (_hUc : IsPreconnected U)
+    (hUne : U.Nonempty)
     {c : ℂ} (hU : U ⊆ escapeOpen c) : phiMero c hU ≠ 0 := by
-  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring U _hUo _hUc hUne
   intro h
   have hinj := IsFractionRing.injective (analyticSubring U) (meroField U)
   have h0 : phiAnalytic c hU = 0 := by apply hinj; rw [map_zero]; exact h
@@ -129,7 +130,7 @@ theorem analyticOnNhd_evalComp (c : ℂ) (hU : U ⊆ escapeOpen c) (p : Polynomi
     ((analyticOnNhd_bottcherCoord_full c).mono hU).aeval_polynomial p
   have heq : (fun z => Polynomial.aeval (bottcherCoord c z) p)
       = (fun z => p.eval (bottcherCoord c z)) := by
-    funext z; simp [Polynomial.aeval_def, Polynomial.eval₂_at_apply]
+    funext z; simp [Polynomial.aeval_def]
   rwa [heq] at h
 
 /-- `ℂ[X] →+* analyticSubring U`, `p ↦` germ of `z ↦ p(φ_c(z))`. -/

@@ -188,7 +188,7 @@ theorem no_poly_relation_of_natural_boundary_arc {d : ℕ} (hd : 1 ≤ d)
       IsPreconnected (D ∩ ball z₀ ρ) ∧ (D ∩ ball z₀ ρ).Nonempty)
     (hrel : ∀ z ∈ D, ∑ i : Fin (d+1), a i z * (f z) ^ (i:ℕ) = 0) : False := by
   obtain ⟨z₀, hz₀S, hl₀, hsep₀⟩ :=
-    exists_separable_crossing hd hΩc a ha hw hleadw hsepw hz₁ hS haccum
+    exists_separable_crossing hd hΩc a ha hw hleadw hsepw hz₁ haccum
   obtain ⟨ρ₁, hρ₁, hlens₀⟩ := hlens z₀ hz₀S
   exact no_separable_analytic_relation_gen hd hfD z₀ (hnb z₀ hz₀S) hρ₁ hlens₀ a
     (fun i => ha i z₀ (hS hz₀S)) hl₀ hsep₀ hrel

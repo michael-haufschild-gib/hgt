@@ -106,7 +106,7 @@ theorem harmonic_exterior_unique {u : ℂ → ℝ} {Ω : Set ℂ}
       Tendsto v (cobounded ℂ) (𝓝 0) → ∀ z, v z ≤ 0 := by
     intro v hv hvc hvbd hvinf z
     by_contra hpos
-    push_neg at hpos
+    push Not at hpos
     set ε : ℝ := v z with hεdef
     have hεpos : 0 < ε := hpos
     have hmem : {w : ℂ | v w < ε} ∈ cobounded ℂ := hvinf (gt_mem_nhds hεpos)
@@ -122,7 +122,7 @@ theorem harmonic_exterior_unique {u : ℂ → ℝ} {Ω : Set ℂ}
       intro w
       by_cases hw : ε ≤ v w
       · exact hz₀max hw
-      · push_neg at hw; have : ε ≤ M := hz₀mem; linarith
+      · push Not at hw; have : ε ≤ M := hz₀mem; linarith
     have hz₀Ω : z₀ ∈ Ω := by
       by_contra hz₀notΩ
       have h0 : v z₀ = 0 := hvbd z₀ hz₀notΩ
@@ -154,4 +154,3 @@ theorem harmonic_exterior_unique {u : ℂ → ℝ} {Ω : Set ℂ}
     (fun w hw => by simp [hbd w hw]) (by simpa using hinf.neg) z
   simp only at h2
   linarith
-

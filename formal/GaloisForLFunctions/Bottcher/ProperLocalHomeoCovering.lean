@@ -77,8 +77,12 @@ theorem exists_pairwise_disjoint_nhds [T2Space E] (s : Finset E) :
     · intro e he
       rcases Finset.mem_insert.mp he with rfl | hes
       · refine ⟨?_, ?_⟩
-        · simp only [if_pos rfl]; exact isOpen_biInter_finset (fun i hi => (hsep i hi).1)
-        · simp only [if_pos rfl]; exact mem_iInter₂.mpr (fun i hi => (hsep i hi).2.2.1)
+        · change IsOpen (if e = e then (⋂ i ∈ s, (sep i).1) else D e ∩ (sep e).2)
+          rw [if_pos rfl]
+          exact isOpen_biInter_finset (fun i hi => (hsep i hi).1)
+        · change e ∈ (if e = e then (⋂ i ∈ s, (sep i).1) else D e ∩ (sep e).2)
+          rw [if_pos rfl]
+          exact mem_iInter₂.mpr (fun i hi => (hsep i hi).2.2.1)
       · have hea : e ≠ a := fun h => ha (h ▸ hes)
         simp only [if_neg hea]
         exact ⟨(hD e hes).1.inter (hsep e hes).2.1, (hD e hes).2, (hsep e hes).2.2.2.1⟩
@@ -91,11 +95,11 @@ theorem exists_pairwise_disjoint_nhds [T2Space E] (s : Finset E) :
         rcases hy with hya | hys
         · exact absurd hya.symm hxy
         · have hya : y ≠ x := fun h => ha (h ▸ hys)
-          simp only [if_pos rfl, if_neg hya]; exact key y hys
+          simp only [if_neg hya]; exact key y hys
       · have hxa : x ≠ a := fun h => ha (h ▸ hxs)
         rcases hy with hya | hys
         · subst hya
-          simp only [if_pos rfl, if_neg hxa]; exact (key x hxs).symm
+          simp only [if_neg hxa]; exact (key x hxs).symm
         · have hya : y ≠ a := fun h => ha (h ▸ hys)
           simp only [if_neg hxa, if_neg hya]
           exact Disjoint.mono inter_subset_left inter_subset_left (hDpair hxs hys hxy)

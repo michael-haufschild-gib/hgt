@@ -41,7 +41,7 @@ theorem anpoly_analytic {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z₀ : ℂ)
 @[aesop safe]
 theorem Qpoly_eval {d : ℕ} (a : Fin (d+1) → ℂ → ℂ) (z w : ℂ) :
     (∑ i : Fin (d+1), C (a i z) * X ^ (i:ℕ) : ℂ[X]).eval w = ∑ i : Fin (d+1), a i z * w ^ (i:ℕ) := by
-  simp only [eval_finset_sum, eval_mul, eval_C, eval_pow, eval_X]
+  simp only [eval_finsetSum, eval_mul, eval_C, eval_pow, eval_X]
 
 /-- The specialized polynomial `∑ᵢ C(aᵢ z)·Xⁱ` has degree exactly `d` when the top coefficient
 `a_d(z) ≠ 0`. -/
@@ -241,11 +241,11 @@ discriminant of the minimal polynomial of `u₀` over `ℂ(z,φ_b)`. -/
 @[aesop safe]
 theorem exists_nonzero_on_accumulating {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
     {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g Ω) {w : ℂ} (hw : w ∈ Ω) (hgw : g w ≠ 0)
-    {z₁ : ℂ} (hz₁ : z₁ ∈ Ω) {S : Set ℂ} (hS : S ⊆ Ω)
+    {z₁ : ℂ} (hz₁ : z₁ ∈ Ω) {S : Set ℂ}
     (haccum : ∃ᶠ z in 𝓝[≠] z₁, z ∈ S) :
     ∃ z₀ ∈ S, g z₀ ≠ 0 := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   have hfreq : ∃ᶠ z in 𝓝[≠] z₁, g z = 0 := haccum.mono (fun z hz => hcon z hz)
   have heq := hg.eqOn_zero_of_preconnected_of_frequently_eq_zero hΩc hz₁ hfreq
   exact hgw (heq hw)
@@ -380,7 +380,7 @@ theorem exists_separable_crossing {d : ℕ} (hd : 1 ≤ d) {Ω : Set ℂ} (hΩc 
     (a : Fin (d+1) → ℂ → ℂ) (ha : ∀ i, AnalyticOnNhd ℂ (a i) Ω)
     {w : ℂ} (hw : w ∈ Ω) (hleadw : a (Fin.last d) w ≠ 0)
     (hsepw : (∑ i : Fin (d+1), C (a i w) * X ^ (i:ℕ) : ℂ[X]).Separable)
-    {z₁ : ℂ} (hz₁ : z₁ ∈ Ω) {S : Set ℂ} (hS : S ⊆ Ω)
+    {z₁ : ℂ} (hz₁ : z₁ ∈ Ω) {S : Set ℂ}
     (haccum : ∃ᶠ z in 𝓝[≠] z₁, z ∈ S) :
     ∃ z₀ ∈ S, a (Fin.last d) z₀ ≠ 0 ∧ (∑ i : Fin (d+1), C (a i z₀) * X ^ (i:ℕ) : ℂ[X]).Separable := by
   set g : ℂ → ℂ := fun z => a (Fin.last d) z * resultant (∑ i : Fin (d+1), C (a i z) * X ^ (i:ℕ))
@@ -389,7 +389,7 @@ theorem exists_separable_crossing {d : ℕ} (hd : 1 ≤ d) {Ω : Set ℂ} (hΩc 
     (ha (Fin.last d) z hz).mul (resultant_specialize_analytic a z (fun i => ha i z hz))
   have hgw : g w ≠ 0 :=
     mul_ne_zero hleadw ((separable_iff_resultant_fixed hd a w hleadw).mp hsepw)
-  obtain ⟨z₀, hz₀S, hgz₀⟩ := exists_nonzero_on_accumulating hΩc hgan hw hgw hz₁ hS haccum
+  obtain ⟨z₀, hz₀S, hgz₀⟩ := exists_nonzero_on_accumulating hΩc hgan hw hgw hz₁ haccum
   obtain ⟨hl₀, hr₀⟩ := mul_ne_zero_iff.mp hgz₀
   exact ⟨z₀, hz₀S, hl₀, (separable_iff_resultant_fixed hd a z₀ hl₀).mpr hr₀⟩
 
@@ -412,7 +412,7 @@ theorem u0_phi_card_step3 {d : ℕ} (hd : 1 ≤ d) {Ω : Set ℂ} (hΩc : IsPrec
     (hScirc : ∀ z ∈ S, ‖z‖ = 1) (haccum : ∃ᶠ z in 𝓝[≠] z₁, z ∈ S)
     (hrel : ∀ z ∈ Ext, ∑ i : Fin (d+1), a i z * (u0 z) ^ (i:ℕ) = 0) : False := by
   obtain ⟨z₀, hz₀S, hl₀, hsep₀⟩ :=
-    exists_separable_crossing hd hΩc a ha hw hleadw hsepw hz₁ hS haccum
+    exists_separable_crossing hd hΩc a ha hw hleadw hsepw hz₁ haccum
   exact no_separable_analytic_relation hd z₀ (hScirc z₀ hz₀S) a
     (fun i => ha i z₀ (hS hz₀S)) hl₀ hsep₀ hrel
 
@@ -486,7 +486,7 @@ theorem eq_zero_of_norm_add_eq_one {b : ℂ} (h : ∀ w : ℂ, ‖w‖ = 1 → �
   have h2 : normSq (-1 + b) = 1 := by
     rw [Complex.normSq_eq_norm_sq, h (-1) (by simp)]; norm_num
   rw [Complex.normSq_add] at h1 h2
-  simp only [Complex.normSq_one, Complex.normSq_neg, Complex.one_re, map_one] at h1 h2
+  simp only [Complex.normSq_neg, map_one] at h1 h2
   have hb : normSq b = 0 := by
     have e1 : (1 : ℂ) * (starRingEnd ℂ) b = (starRingEnd ℂ) b := one_mul _
     have e2 : (-1 : ℂ) * (starRingEnd ℂ) b = -((starRingEnd ℂ) b) := by ring
@@ -525,7 +525,7 @@ theorem eq_zero_of_invariant_disk {b : ℂ} (hinv : ∀ z : ℂ, ‖z‖ ≤ 1 �
   intro z hz
   refine le_antisymm ((hinv z).mp (le_of_eq hz)) ?_
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   have hcont : ContinuousAt (fun t : ℝ => ‖((t : ℂ) * z) ^ 2 + b‖) 1 := by fun_prop
   have hval : (fun t : ℝ => ‖((t : ℂ) * z) ^ 2 + b‖) 1 < 1 := by simp [hlt]
   have hev : ∀ᶠ t : ℝ in 𝓝 1, ‖((t : ℂ) * z) ^ 2 + b‖ < 1 := hcont.eventually_lt_const hval

@@ -104,7 +104,7 @@ noncomputable def PsiN (s : ℂ) (n : ℕ) (q : Fin (N + 1) → Fin (N + 1) → 
     + ∑ k : Fin (N + 1), (l k).eval (-(n : ℂ) + Complex.exp z) * Complex.exp (-(s + (k : ℂ)) * z)
 
 /-- The **regular** block over the full `(N+1)`-ladder. -/
-noncomputable def ThetaN (s : ℂ) (n : ℕ) (q : Fin (N + 1) → Fin (N + 1) → Polynomial ℂ)
+noncomputable def ThetaN (_s : ℂ) (n : ℕ) (q : Fin (N + 1) → Fin (N + 1) → Polynomial ℂ)
     (l : Fin (N + 1) → Polynomial ℂ) (cc : Polynomial ℂ) (R : Fin (N + 1) → ℂ → ℂ) (z : ℂ) : ℂ :=
   (∑ i : Fin (N + 1), ∑ j : Fin (N + 1), (q i j).eval (-(n : ℂ) + Complex.exp z) * (R i z * R j z))
     + (∑ k : Fin (N + 1), (l k).eval (-(n : ℂ) + Complex.exp z) * R k z)
@@ -332,4 +332,3 @@ theorem allN_quad_vanish_genuine {s : ℂ} (hs1 : 1 < s.re) (hs : ∀ k : ℤ, (
     (fun n _ => allN_blockSum_analytic hs1 n q l cc) hrel
 
 end HurwitzAllNQuadFilt
-

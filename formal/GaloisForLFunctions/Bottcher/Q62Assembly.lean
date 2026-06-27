@@ -382,10 +382,10 @@ theorem q62_independence_disconnected_of_lifts {U : Set ℂ}
               else algebraMap (analyticSubring U) (meroField U) a₁)
     (fun _ => True) c₁ c₂ hne hx₁ hx₂
     (fun _ _ => by
-      simp only [if_neg hne, if_pos rfl]
+      simp only [if_neg hne]
       exact hDisc_tuple_of_lifts hUo hUc hUne a₁ a₂ hF0 hG0 hliftF hliftG)
     (fun h => absurd trivial (h.elim id id))
-  simp only [if_neg hne, if_pos rfl] at key
+  simp only [if_neg hne] at key
   exact key
 
 end Bottcher

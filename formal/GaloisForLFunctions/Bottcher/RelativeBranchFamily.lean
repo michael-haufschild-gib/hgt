@@ -35,7 +35,7 @@ noncomputable def fibrePoly (a : ℕ → ℂ → ℂ) (s : Finset ℕ) (z : ℂ)
 /-- Evaluating the fibre polynomial recovers the relation value `∑ aᵢ(z)·wⁱ`. -/
 theorem eval_fibrePoly (a : ℕ → ℂ → ℂ) (s : Finset ℕ) (z w : ℂ) :
     (fibrePoly a s z).eval w = ∑ i ∈ s, a i z * w ^ i := by
-  rw [fibrePoly, Polynomial.eval_finset_sum]
+  rw [fibrePoly, Polynomial.eval_finsetSum]
   apply Finset.sum_congr rfl
   intro i _
   rw [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
@@ -43,7 +43,7 @@ theorem eval_fibrePoly (a : ℕ → ℂ → ℂ) (s : Finset ℕ) (z w : ℂ) :
 /-- The `j`-th coefficient of the fibre polynomial. -/
 theorem coeff_fibrePoly (a : ℕ → ℂ → ℂ) (s : Finset ℕ) (z : ℂ) (j : ℕ) :
     (fibrePoly a s z).coeff j = if j ∈ s then a j z else 0 := by
-  rw [fibrePoly, Polynomial.finset_sum_coeff]
+  rw [fibrePoly, Polynomial.finsetSum_coeff]
   simp only [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, mul_ite, mul_one, mul_zero]
   rw [Finset.sum_ite_eq s j (fun i => a i z)]
 

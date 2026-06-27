@@ -44,12 +44,12 @@ theorem exists_cocycle_primitive {n : ℕ} (u : Fin (n + 1) → ℂ) (hu : ∀ i
   · intro i
     by_cases hlast : i = Fin.last n
     · subst hlast
-      have h0 : (Fin.last n + 1) = 0 := by ext; simp [Fin.val_add_one, Fin.val_last]
+      have h0 : (Fin.last n + 1) = 0 := by ext; simp
       show (∏ j ∈ univ.filter (fun j : Fin (n + 1) => j.val < (Fin.last n + 1).val), u j)
           = (∏ j ∈ univ.filter (fun j : Fin (n + 1) => j.val < (Fin.last n).val), u j) * u (Fin.last n)
       rw [h0]
       have hc0 : univ.filter (fun j : Fin (n + 1) => j.val < (0 : Fin (n + 1)).val) = ∅ := by
-        ext j; simp [Fin.val_zero]
+        ext j; simp
       have hclast : univ.filter (fun j : Fin (n + 1) => j.val < (Fin.last n).val)
           = univ.erase (Fin.last n) := by
         ext j

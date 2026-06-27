@@ -179,7 +179,7 @@ theorem exists_circle_non_root {p : ℂ[X]} (hp : p ≠ 0) :
     have hpre : IsPreconnected (Metric.sphere (0:ℂ) 1) :=
       (isConnected_sphere (by norm_num) (0:ℂ) (by norm_num)).isPreconnected
     refine hpre.infinite_of_nontrivial ⟨1, ?_, -1, ?_, by norm_num⟩ <;>
-      simp [mem_sphere_zero_iff_norm]
+      simp
   obtain ⟨z, hzc, hzr⟩ := (hcirc_inf.diff hroot_fin).nonempty
   rw [mem_sphere_zero_iff_norm] at hzc
   exact ⟨z, hzc, hzr⟩
@@ -291,9 +291,9 @@ theorem branch_selection {ι : Type*} [Fintype ι] {U : Set ℂ} (hU : IsPreconn
 (it is then scalar multiplication by that nonzero value). -/
 @[aesop safe]
 theorem clm_invertible_of_apply_one_ne {g : ℂ →L[ℂ] ℂ} (hg : g 1 ≠ 0) : g.IsInvertible := by
-  rw [show g = smulRight (1 : ℂ →L[ℂ] ℂ) (g 1) from by ext x; simp [← smul_eq_mul, ← map_smul]]
+  rw [show g = smulRight (1 : ℂ →L[ℂ] ℂ) (g 1) from by ext; simp]
   exact ⟨(Units.mk0 (g 1) hg) • ContinuousLinearEquiv.refl ℂ ℂ,
-    by ext x; simp [Units.smul_def]⟩
+    by ext; simp⟩
 
 /-- **Holomorphic implicit function theorem (PROVEN).** For an analytic `f : ℂ×ℂ → ℂ` with
 `f(z₀,w₀)=0` and nonzero partial `w`-derivative (`(fderiv f)(0,1) ≠ 0`, i.e. `∂_w f(z₀,w₀) ≠ 0`),

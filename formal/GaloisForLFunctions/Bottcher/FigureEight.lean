@@ -770,12 +770,12 @@ theorem exists_two_lobe_points {h : ℂ → ℂ}
   · rw [hval _ hδ2]; simp; linarith
   · rw [hval _ hδ2]
     simp only [Complex.mul_re, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
-      Complex.mul_im, zero_mul, one_mul, mul_zero, sub_zero, zero_sub, zero_add, abs_zero]
+      Complex.mul_im, zero_mul, one_mul, mul_zero, sub_zero, zero_add, abs_zero]
     rw [abs_of_pos (by linarith : (0:ℝ) < δ / 2)]; linarith
   · rw [hval _ hδ2']; simp; linarith
   · rw [hval _ hδ2']
     simp only [Complex.mul_re, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
-      Complex.mul_im, zero_mul, one_mul, mul_zero, sub_zero, zero_sub, zero_add, abs_zero,
+      Complex.mul_im, zero_mul, one_mul, mul_zero, sub_zero, zero_add, abs_zero,
       abs_neg]
     rw [abs_of_pos (by linarith : (0:ℝ) < δ / 2)]; linarith
 

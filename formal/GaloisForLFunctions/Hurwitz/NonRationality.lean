@@ -236,11 +236,11 @@ theorem not_eventually_cpow_polyRatio {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k : �
       apply Complex.ext
       · simp only [Complex.add_re, Complex.neg_re, Complex.sub_re, Complex.natCast_re,
           Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
-          mul_zero, mul_one, sub_zero, zero_mul]
+          mul_zero, mul_one, sub_zero]
         rw [hre]; ring
       · simp only [Complex.add_im, Complex.neg_im, Complex.sub_im, Complex.natCast_im,
           Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
-          mul_zero, mul_one, add_zero, sub_zero, zero_add]
+          mul_zero, mul_one, add_zero, sub_zero]
     calc num.eval (n : ℂ) / (n : ℂ) ^ num.natDegree
             / (denom.eval (n : ℂ) / (n : ℂ) ^ denom.natDegree)
         = (num.eval (n : ℂ) / denom.eval (n : ℂ))

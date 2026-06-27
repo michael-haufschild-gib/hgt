@@ -130,7 +130,7 @@ theorem norm_root_le_of_monic {p : Polynomial ℂ} (hp : p.Monic) {z : ℂ} (hz 
     (hdeg : 0 < p.natDegree) :
     ‖z‖ ≤ max 1 (∑ i ∈ Finset.range p.natDegree, ‖p.coeff i‖) := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   set n := p.natDegree with hn
   have h1 : (1 : ℝ) < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) hcon
   have hS : (∑ i ∈ Finset.range n, ‖p.coeff i‖) < ‖z‖ := lt_of_le_of_lt (le_max_right _ _) hcon
@@ -372,7 +372,7 @@ theorem exists_minimal_relation {U : Set ℂ} (hUinf : U.Infinite)
     fun R hR0 hRrel => Nat.find_min' hex ⟨R, hR0, rfl, hRrel⟩
   have hdeg1 : 1 ≤ P.natDegree := by
     by_contra h
-    push_neg at h
+    push Not at h
     have hnd0 : P.natDegree = 0 := by omega
     obtain ⟨a, ha⟩ := Polynomial.natDegree_eq_zero.mp hnd0
     have ha0 : a ≠ 0 := by rintro rfl; rw [map_zero] at ha; exact hP0 ha.symm

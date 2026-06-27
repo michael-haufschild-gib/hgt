@@ -77,7 +77,7 @@ theorem exists_fixed_point_multiplier_ge_one (c : ℂ) :
       _ ≤ ‖(2 : ℂ) * zp‖ + ‖(2 : ℂ) * zm‖ := norm_add_le _ _
   by_cases hp : 1 ≤ ‖(2 : ℂ) * zp‖
   · exact ⟨zp, hzp_fix, mem_filledJulia_of_fixed hzp_fix, hp⟩
-  · push_neg at hp
+  · push Not at hp
     exact ⟨zm, hzm_fix, mem_filledJulia_of_fixed hzm_fix, by linarith⟩
 
 /-- **A strictly repelling fixed point exists (for `c ≠ 1/4`).** If neither fixed point `z±` were
@@ -106,7 +106,7 @@ theorem exists_repelling_fixed_point (c : ℂ) (hc : c ≠ 1 / 4) :
     parallelogram_law_with_norm ℝ (1 : ℂ) s
   have hsnorm : 0 < ‖s‖ := norm_pos_iff.mpr hs0
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   have hple : ‖(1 : ℂ) + s‖ ≤ 1 := by
     have := hcon zp hzp_fix (mem_filledJulia_of_fixed hzp_fix); rwa [h2p] at this
   have hmle : ‖(1 : ℂ) - s‖ ≤ 1 := by
@@ -172,7 +172,7 @@ theorem differentiableAt_crossRatio {c α β : ℂ} {n : ℕ} {z : ℂ}
   have hiter : ∀ m : ℕ, Differentiable ℂ ((quadratic c)^[m]) := by
     intro m
     induction m with
-    | zero => simpa using differentiable_id
+    | zero => exact differentiable_id
     | succ k ih =>
       rw [Function.iterate_succ']
       exact (by unfold quadratic; fun_prop : Differentiable ℂ (quadratic c)).comp ih

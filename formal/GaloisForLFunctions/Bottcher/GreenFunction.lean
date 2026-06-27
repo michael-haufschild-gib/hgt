@@ -30,7 +30,7 @@ theorem abs_log_le_two_abs_sub_one {r : ℝ} (hr : 1 / 2 ≤ r) :
   by_cases hle : r ≤ 1
   · rw [abs_of_nonpos (show r - 1 ≤ 0 by linarith), abs_le]
     exact ⟨by nlinarith [hlow, hinv, hr0, hle, hr], by linarith [hup, hle]⟩
-  · push_neg at hle
+  · push Not at hle
     rw [abs_of_pos (show 0 < r - 1 by linarith), abs_le]
     exact ⟨by nlinarith [hlow, hinv, hr0, hle, hr], by linarith [hup, hle]⟩
 

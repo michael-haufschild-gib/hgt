@@ -35,7 +35,7 @@ theorem basin_eq_compl_filledJulia (c : ℂ) : basin c = (filledJulia c)ᶜ := b
     exact not_mem_filledJulia hc hz2 hfwd
   · intro hzK
     rw [mem_filledJulia_iff, isBounded_iff_forall_norm_le] at hzK
-    push_neg at hzK
+    push Not at hzK
     obtain ⟨x, hxmem, hx⟩ := hzK (max 2 ‖c‖)
     obtain ⟨n, hn⟩ := hxmem
     refine ⟨n, ?_⟩
@@ -50,7 +50,7 @@ theorem isOpen_basin (c : ℂ) : IsOpen (basin c) := by
 /-- The basin is unbounded (it contains the whole `escapeOpen c`, an exterior neighborhood of `∞`). -/
 theorem not_isBounded_basin (c : ℂ) : ¬ Bornology.IsBounded (basin c) := by
   rw [isBounded_iff_forall_norm_le]
-  push_neg
+  push Not
   intro C
   have hmax : (0 : ℝ) < max C (max 2 ‖c‖) + 1 := by
     have h2 : (2 : ℝ) ≤ max 2 ‖c‖ := le_max_left _ _

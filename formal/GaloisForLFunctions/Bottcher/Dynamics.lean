@@ -48,7 +48,7 @@ theorem quadratic_iterate_succ (c z : ℂ) (n : ℕ) :
 
 /-- **Escape estimate.** Beyond radius `2` (and `‖c‖ ≤ ‖z‖`), one quadratic step expands
 the modulus: `‖f_c z‖ ≥ ‖z‖·(‖z‖-1)`. The geometric driver of escape to `∞`. -/
-theorem quadratic_norm_ge {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
+theorem quadratic_norm_ge {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (_hz : 2 < ‖z‖) :
     ‖z‖ * (‖z‖ - 1) ≤ ‖quadratic c z‖ := by
   rw [quadratic_apply]
   have h1 : ‖z‖ ^ 2 - ‖c‖ ≤ ‖z ^ 2 + c‖ := by
@@ -88,7 +88,7 @@ theorem quadratic_orbit_growth {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < 
 theorem not_mem_filledJulia {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
     z ∉ filledJulia c := by
   rw [mem_filledJulia_iff, isBounded_iff_forall_norm_le]
-  push_neg
+  push Not
   intro C
   obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt C (show (1 : ℝ) < ‖z‖ - 1 by linarith)
   refine ⟨(quadratic c)^[n] z, ⟨n, rfl⟩, ?_⟩
@@ -104,7 +104,7 @@ theorem filledJulia_subset_closedBall (c : ℂ) :
   intro z hz
   rw [mem_closedBall, dist_zero_right]
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   have h2 : 2 < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) hlt
   have hcc : ‖c‖ ≤ ‖z‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) hlt)
   exact not_mem_filledJulia hcc h2 hz
@@ -137,7 +137,7 @@ theorem filledJulia_eq_iInter (c : ℂ) :
   · intro hz n
     have hforward := filledJulia_forward hz n
     by_contra hgt
-    push_neg at hgt
+    push Not at hgt
     have h2 : 2 < ‖(quadratic c)^[n] z‖ := lt_of_le_of_lt (le_max_left _ _) hgt
     have hcc : ‖c‖ ≤ ‖(quadratic c)^[n] z‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) hgt)
     exact not_mem_filledJulia hcc h2 hforward
@@ -179,7 +179,7 @@ eventually enters the escape regime. -/
 theorem exists_orbit_gt {c z : ℂ} (hz : z ∉ filledJulia c) (B : ℝ) :
     ∃ N, B < ‖(quadratic c)^[N] z‖ := by
   by_contra h
-  push_neg at h
+  push Not at h
   exact hz (by
     rw [mem_filledJulia_iff, isBounded_iff_forall_norm_le]
     exact ⟨B, by rintro x ⟨N, rfl⟩; exact h N⟩)

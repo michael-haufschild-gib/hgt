@@ -75,7 +75,7 @@ theorem quad_nonneg (n : ℤ) : (0 : ℝ) ≤ (n : ℝ) ^ 2 + n := by
   have hq : (0 : ℤ) ≤ n ^ 2 + n := by
     by_cases h : 0 ≤ n
     · nlinarith [mul_nonneg h h]
-    · push_neg at h
+    · push Not at h
       nlinarith [mul_nonneg (by omega : (0:ℤ) ≤ -n) (by omega : (0:ℤ) ≤ -(n+1))]
   exact_mod_cast hq
 

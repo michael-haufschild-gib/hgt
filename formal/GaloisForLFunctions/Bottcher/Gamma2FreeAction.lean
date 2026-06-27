@@ -39,7 +39,7 @@ theorem gamma2_fix_eq_one_or_neg_one {γ : Matrix.SpecialLinearGroup (Fin 2) ℤ
     intro h0
     have him0 : ((c : ℂ) * (z : ℂ) + (d : ℂ)).im = 0 := by rw [h0]; simp
     simp only [Complex.add_im, Complex.mul_im, Complex.intCast_im, Complex.intCast_re,
-      mul_zero, zero_mul, add_zero, zero_add] at him0
+      zero_mul, add_zero] at him0
     -- him0 : c * y = 0 (roughly)
     have hc0 : (c : ℝ) = 0 := by
       rcases mul_eq_zero.mp him0 with h1 | h1
@@ -96,7 +96,7 @@ theorem gamma2_fix_eq_one_or_neg_one {γ : Matrix.SpecialLinearGroup (Fin 2) ℤ
       have e11 : γ.1 1 1 = 1 := hd.symm.trans (hda.trans h1)
       refine Subtype.ext (Matrix.ext fun i j => ?_)
       fin_cases i <;> fin_cases j <;>
-        simp [e00, e01, e10, e11, Matrix.SpecialLinearGroup.coe_one, Matrix.one_apply]
+        simp [e00, e01, e10, e11, Matrix.SpecialLinearGroup.coe_one]
     · right
       have hd1 : d = -1 := hda.trans h1
       have e00 : γ.1 0 0 = -1 := ha.symm.trans h1
@@ -108,7 +108,7 @@ theorem gamma2_fix_eq_one_or_neg_one {γ : Matrix.SpecialLinearGroup (Fin 2) ℤ
           = -(1 : Matrix (Fin 2) (Fin 2) ℤ) i j := fun i j => by
         rw [Matrix.SpecialLinearGroup.coe_neg, Matrix.SpecialLinearGroup.coe_one, Matrix.neg_apply]
       fin_cases i <;> fin_cases j <;>
-        simp [e00, e01, e10, e11, hneg, Matrix.one_apply]
+        simp [e00, e01, e10, e11, hneg]
   · -- c ≠ 0: 4 c² y² = 4 - (a+d)² ⟹ (a+d)²<4 ⟹ tr=0 ⟹ a²+bc=-1, impossible mod 4
     exfalso
     have hcR : (c:ℝ) ≠ 0 := by exact_mod_cast hcne

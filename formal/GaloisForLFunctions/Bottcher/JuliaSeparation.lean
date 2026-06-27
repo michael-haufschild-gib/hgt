@@ -12,7 +12,7 @@ theorem exists_point_filledJulia_symmDiff {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂
     ∃ z, (z ∈ filledJulia c₁ ∧ z ∉ filledJulia c₂) ∨ (z ∈ filledJulia c₂ ∧ z ∉ filledJulia c₁) := by
   have hKne : filledJulia c₁ ≠ filledJulia c₂ := fun h => hne (c_eq_of_filledJulia_eq' h)
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   apply hKne
   ext z
   exact ⟨(hcon z).1, (hcon z).2⟩

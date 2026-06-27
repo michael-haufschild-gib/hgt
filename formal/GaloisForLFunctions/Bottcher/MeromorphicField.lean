@@ -101,7 +101,7 @@ theorem analyticOnNhd_polyEval (p : Polynomial ℂ) :
     AnalyticOnNhd ℂ (fun z => p.eval z) U := by
   have h : AnalyticOnNhd ℂ (fun z => aeval z p) (univ : Set ℂ) := analyticOnNhd_id.aeval_polynomial p
   have heq : (fun z => aeval z p) = (fun z => p.eval z) := by
-    funext z; simp [aeval_def, eval₂_at_apply]
+    funext z; simp [aeval_def]
   rw [heq] at h; exact h.mono (subset_univ U)
 
 /-- The ring hom `ℂ[X] →+* analyticSubring U`, sending a polynomial to the germ of its evaluation
@@ -127,9 +127,9 @@ noncomputable def polyToMero : Polynomial ℂ →+* meroField U :=
   (algebraMap (analyticSubring U) (meroField U)).comp (polyToAnalytic U)
 
 /-- `polyToMero` is injective (composite of `polyToAnalytic_injective` and the fraction-field map). -/
-theorem polyToMero_injective (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+theorem polyToMero_injective (_hUo : IsOpen U) (_hUc : IsPreconnected U) (_hUne : U.Nonempty)
     (hUinf : U.Infinite) : Injective (polyToMero U) := by
-  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring U _hUo _hUc _hUne
   exact (IsFractionRing.injective (analyticSubring U) (meroField U)).comp
     (polyToAnalytic_injective U hUinf)
 
@@ -160,10 +160,11 @@ theorem ratfuncToMero_algebraMap_polynomial (hUo : IsOpen U) (hUc : IsPreconnect
 
 /-- **Element-level faithfulness**: an analytic-germ element maps to `0` in `M` iff it is already `0`
 in the carrier domain (the fraction-field map is injective). -/
-theorem meroField_algebraMap_eq_zero_iff (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+theorem meroField_algebraMap_eq_zero_iff (_hUo : IsOpen U) (_hUc : IsPreconnected U)
+    (_hUne : U.Nonempty)
     (x : analyticSubring U) :
     algebraMap (analyticSubring U) (meroField U) x = 0 ↔ x = 0 := by
-  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring U _hUo _hUc _hUne
   rw [← map_zero (algebraMap (analyticSubring U) (meroField U))]
   exact (IsFractionRing.injective (analyticSubring U) (meroField U)).eq_iff
 
@@ -607,7 +608,7 @@ restricts (precompose with the inclusion `id : V ↪ U`) to an analytic germ on 
 core of the descent `meroField U → meroField V`. -/
 theorem restrict_mem_analyticSubring {U V : Set ℂ} (hVU : V ⊆ U) {a : Germ (𝓟 U) ℂ}
     (ha : a ∈ analyticSubring U) :
-    a.compTendsto id (tendsto_principal_principal.mpr (fun x hx => hVU hx)) ∈ analyticSubring V := by
+    a.compTendsto id (tendsto_principal_principal.mpr (fun _ hx => hVU hx)) ∈ analyticSubring V := by
   obtain ⟨f, hf, rfl⟩ := ha
   exact ⟨f ∘ id, hf.mono hVU, (Germ.coe_compTendsto f _).symm⟩
 
@@ -949,9 +950,9 @@ noncomputable def polyToMeroVia {U : Set ℂ} (p₀ : analyticSubring U) : Polyn
 /-- `polyToMeroVia` is injective when `p₀` has infinite image. -/
 theorem polyToMeroVia_injective {U : Set ℂ} (p₀ : analyticSubring U) {f₀ : ℂ → ℂ}
     (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
-    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) :
+    (_hUo : IsOpen U) (_hUc : IsPreconnected U) (_hUne : U.Nonempty) :
     Function.Injective (polyToMeroVia p₀) := by
-  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring U _hUo _hUc _hUne
   exact (IsFractionRing.injective (analyticSubring U) (meroField U)).comp
     (polyToAnalyticVia_injective p₀ hp0 hinf)
 

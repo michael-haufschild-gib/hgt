@@ -81,3 +81,4 @@ import GaloisForLFunctions.FamilyCrossResonance
 import GaloisForLFunctions.SingleEvenFrequency
 import GaloisForLFunctions.SourceRecession
 import GaloisForLFunctions.RHProofLab
+import GaloisForLFunctions.MainTheorems

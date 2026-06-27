@@ -44,7 +44,7 @@ minimal polynomial of `φ` over `K` divides `(minpoly K φ).map σ ∘ (X²)` �
 theorem minpoly_dvd_mahler {K L : Type*} [Field K] [Field L] [Algebra K L]
     (σ : K →+* K) (τ : L →+* L)
     (hcompat : ∀ k : K, τ (algebraMap K L k) = algebraMap K L (σ k))
-    {φ : L} (hφ : IsIntegral K φ) (hτφ : τ φ = φ ^ 2) :
+    {φ : L} (hτφ : τ φ = φ ^ 2) :
     minpoly K φ ∣ ((minpoly K φ).map σ).comp (X ^ 2) := by
   apply minpoly.dvd
   rw [aeval_comp, show aeval φ (X ^ 2 : K[X]) = φ ^ 2 by simp,
@@ -121,13 +121,13 @@ theorem carrier_norm_relation {c : ℂ} {L : Type*} [Field L] [Algebra (RatFunc 
     (τ : L →+* L)
     (hcompat : ∀ k : RatFunc ℂ,
       τ (algebraMap (RatFunc ℂ) L k) = algebraMap (RatFunc ℂ) L (mahlerHom c k))
-    {φ : L} (hφ : IsIntegral (RatFunc ℂ) φ) (hτφ : τ φ = φ ^ 2)
+    {φ : L} (hτφ : τ φ = φ ^ 2)
     (hdeg : 0 < (minpoly (RatFunc ℂ) φ).natDegree)
     (hcop : IsCoprime (minpoly (RatFunc ℂ) φ) ((minpoly (RatFunc ℂ) φ).comp (-X))) :
     ∃ s : RatFunc ℂ, mahlerHom c ((minpoly (RatFunc ℂ) φ).coeff 0)
       = s * ((minpoly (RatFunc ℂ) φ).coeff 0) ^ 2 :=
   mahler_norm_relation hdeg
-    (minpoly_dvd_mahler (mahlerHom c).toRingHom τ hcompat hφ hτφ) hcop
+    (minpoly_dvd_mahler (mahlerHom c).toRingHom τ hcompat hτφ) hcop
 
 /-- **The degree-2 candidate forces the exceptional values (PROVED).** If `φ` satisfies the only
 degree-2 candidate minimal polynomial `φ² = zφ + c/2` (the one the n=2 symmetric-function/norm analysis

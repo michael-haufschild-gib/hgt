@@ -17,7 +17,7 @@ import GaloisForLFunctions.Bottcher.BasinBranching
 import GaloisForLFunctions.Bottcher.Winding
 import Mathlib.Analysis.Complex.Harmonic.Analytic
 import Mathlib.Analysis.Complex.OpenMapping
-import Mathlib.Topology.Covering
+import Mathlib.Topology.Covering.Basic
 import GaloisForLFunctions.Bottcher.MeromorphicField
 
 open Filter Topology Set Metric InnerProductSpace

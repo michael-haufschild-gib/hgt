@@ -32,7 +32,7 @@ abbrev coverGerm (c₁ c₂ : ℂ) (n m : ℕ) : Type := Germ (𝓟 (commonPullb
 `ζ^(2ⁿ)=1`. -/
 theorem deckMap₁_tendsto {ζ : ℂ} (hpow : ζ ^ (2 ^ n) = 1) :
     Tendsto (deckMap₁ ζ) (𝓟 (commonPullback c₁ c₂ n m)) (𝓟 (commonPullback c₁ c₂ n m)) :=
-  tendsto_principal_principal.mpr (fun x hx => deckMap₁_mapsTo hpow hx)
+  tendsto_principal_principal.mpr (fun _ hx => deckMap₁_mapsTo hpow hx)
 
 /-- The descended deck map on cover germs: precomposition with `deckMap₁ ζ`. The geometric `σ_n`
 on the faithful carrier. -/
@@ -179,7 +179,7 @@ theorem deckMap₂_comp (ζ η : ℂ) : deckMap₂ ζ ∘ deckMap₂ η = deckMa
 
 theorem deckMap₂_tendsto {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
     Tendsto (deckMap₂ ζ) (𝓟 (commonPullback c₁ c₂ n m)) (𝓟 (commonPullback c₁ c₂ n m)) :=
-  tendsto_principal_principal.mpr (fun x hx => deckMap₂_mapsTo hζ hx)
+  tendsto_principal_principal.mpr (fun _ hx => deckMap₂_mapsTo hζ hx)
 
 /-- The descended `c₂`-deck on cover germs (`σ'_m`). -/
 noncomputable def deckGerm₂ {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :

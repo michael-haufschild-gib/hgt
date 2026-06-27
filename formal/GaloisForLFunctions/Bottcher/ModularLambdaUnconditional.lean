@@ -57,7 +57,7 @@ theorem modularLambda_at_I' : modularLambda I = 1 / 2 :=
 `R = [[1,0],[2,1]]`. -/
 theorem modularLambda_Gamma2_gen' {τ : ℂ} (hτ : 0 < τ.im) :
     modularLambda (τ / (2 * τ + 1)) = modularLambda τ :=
-  modularLambda_Gamma2_gen (fun σ hσ => Bottcher2Cusp.quarticDefect_eq_zero hσ) hτ
+  modularLambda_Gamma2_gen (fun _ hσ => Bottcher2Cusp.quarticDefect_eq_zero hσ) hτ
 
 open UpperHalfPlane in
 /-- **`λ` is `Γ(2)`-invariant: `λ(γ • z) = λ(z)` for every `γ ∈ Γ(2)`** (the Hauptmodul property).

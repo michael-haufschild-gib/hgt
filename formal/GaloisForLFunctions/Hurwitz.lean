@@ -1,0 +1,29 @@
+/-
+# Hurwitz theorem area
+
+Umbrella module for the Hurwitz quadratic tail-independence proof program.
+Use this import when working on the Hurwitz theorem area; use narrower imports
+inside leaf modules when a file only needs a smaller local API.
+-/
+import GaloisForLFunctions.Hurwitz.OrbitObstruction
+import GaloisForLFunctions.Hurwitz.MonodromyScalar
+import GaloisForLFunctions.Hurwitz.ExpIndependence
+import GaloisForLFunctions.Hurwitz.ExponentFiltration
+import GaloisForLFunctions.Hurwitz.DescentAlgebra
+import GaloisForLFunctions.Hurwitz.HurwitzZeta
+import GaloisForLFunctions.Hurwitz.NonRationality
+import GaloisForLFunctions.Hurwitz.N2DensityShadow
+import GaloisForLFunctions.Hurwitz.N2BlockAnalytic
+import GaloisForLFunctions.Hurwitz.N2TailValue
+import GaloisForLFunctions.Hurwitz.N2TailAnalytic
+import GaloisForLFunctions.Hurwitz.N2Tail
+import GaloisForLFunctions.Hurwitz.N2PsiRegroup
+import GaloisForLFunctions.Hurwitz.N2Laurent
+import GaloisForLFunctions.Hurwitz.Encoding
+import GaloisForLFunctions.Hurwitz.N2Survivor
+import GaloisForLFunctions.Hurwitz.N2Main
+import GaloisForLFunctions.Hurwitz.N2Descent
+import GaloisForLFunctions.Hurwitz.Spine
+import GaloisForLFunctions.Hurwitz.AllNQuadFilt
+import GaloisForLFunctions.Hurwitz.N2Theorem
+import GaloisForLFunctions.Hurwitz.N2Final

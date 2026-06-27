@@ -65,7 +65,7 @@ open infinite `U ⊆ Ext`, the germ `u0AnSub` satisfies no nonzero polynomial re
 is the `hTranscendental` input of the three `u0_phi_independence` theorems, discharged at the very
 carrier `Bottcher.meroField`/`analyticSubring` they are instantiated over. -/
 @[aesop safe]
-theorem u0AnSub_transcendental (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+theorem u0AnSub_transcendental (hUo : IsOpen U) (_hUc : IsPreconnected U) (hUne : U.Nonempty)
     (hUinf : U.Infinite) (hU : U ⊆ Ext) :
     Transcendental (Polynomial ℂ) (u0AnSub hU) := by
   rw [transcendental_iff]

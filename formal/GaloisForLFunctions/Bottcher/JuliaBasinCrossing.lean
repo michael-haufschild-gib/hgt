@@ -42,7 +42,7 @@ theorem exists_frontier_off {a b : ℂ} {z₀ : ℂ}
       show max 2 ‖b‖ < ‖w‖
       rw [hwnorm, hRdef]; have := le_max_right (max 2 ‖a‖) (max 2 ‖b‖); linarith
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have hΩ₂pre : IsPreconnected ((filledJulia b)ᶜ) := isPreconnected_compl_filledJulia b
     have hfront : frontier (filledJulia a) = filledJulia a \ interior (filledJulia a) :=
       (isClosed_filledJulia a).frontier_eq

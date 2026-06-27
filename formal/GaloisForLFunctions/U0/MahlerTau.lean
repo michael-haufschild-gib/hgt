@@ -207,7 +207,6 @@ theorem phiMero_norm_relation
     (halg : (algebraMap (RatFunc ℂ) (meroField (escapeOpen c)))
       = ratfuncToMero (escapeOpen c) (isOpen_escapeOpen c) (isPreconnected_escapeOpen c)
         (escapeOpen_nonempty c) (escapeOpen_infinite c))
-    (hint : IsIntegral (RatFunc ℂ) (phiMero c (Set.Subset.refl (escapeOpen c))))
     (hdeg : 0 < (minpoly (RatFunc ℂ) (phiMero c (Set.Subset.refl (escapeOpen c)))).natDegree)
     (hcop : IsCoprime (minpoly (RatFunc ℂ) (phiMero c (Set.Subset.refl (escapeOpen c))))
       ((minpoly (RatFunc ℂ) (phiMero c (Set.Subset.refl (escapeOpen c)))).comp (-X))) :
@@ -216,7 +215,7 @@ theorem phiMero_norm_relation
       = s * ((minpoly (RatFunc ℂ) (phiMero c (Set.Subset.refl (escapeOpen c)))).coeff 0) ^ 2 := by
   haveI := isDomain_analyticSubring (escapeOpen c) (isOpen_escapeOpen c)
     (isPreconnected_escapeOpen c) (escapeOpen_nonempty c)
-  refine carrier_norm_relation (mahlerTau c) (fun k => ?_) hint (mahlerTau_phiMero c) hdeg hcop
+  refine carrier_norm_relation (mahlerTau c) (fun k => ?_) (mahlerTau_phiMero c) hdeg hcop
   rw [halg]
   exact mahlerTau_hcompat c k
 

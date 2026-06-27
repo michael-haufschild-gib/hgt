@@ -26,8 +26,8 @@ theorem eval_phiAnalytic_val (c : ℂ) (hU : U ⊆ escapeOpen c) (P : Polynomial
   rw [Polynomial.hom_eval₂, RingHom.comp_id]
   rfl
 
-theorem function_eqOn_of_eval_phiAnalytic_zero (hUo : IsOpen U) (hUc : IsPreconnected U)
-    (hUne : U.Nonempty) (c : ℂ) (hU : U ⊆ escapeOpen c) (P : Polynomial (analyticSubring U))
+theorem function_eqOn_of_eval_phiAnalytic_zero (c : ℂ) (hU : U ⊆ escapeOpen c)
+    (P : Polynomial (analyticSubring U))
     (a : ℕ → ℂ → ℂ)
     (ha : ∀ i ∈ P.support, ((P.coeff i).val : Germ (𝓟 U) ℂ) = ((a i : ℂ → ℂ) : Germ (𝓟 U) ℂ))
     (hP : P.eval (phiAnalytic c hU) = 0) :
@@ -66,14 +66,14 @@ theorem transcendentalOverAdjoin_of_noRelation {K M : Type*} [Field K] [Field M]
   set P : Polynomial (Polynomial K) := ∑ i ∈ R.support, Polynomial.monomial i (s i) with hPdef
   have hPmap : (P.map (Polynomial.aeval G : Polynomial K →ₐ[K] M).toRingHom).eval F = 0 := by
     rw [hPdef, Polynomial.map_sum]
-    simp only [Polynomial.map_monomial, Polynomial.eval_finset_sum, Polynomial.eval_monomial]
+    simp only [Polynomial.map_monomial, Polynomial.eval_finsetSum, Polynomial.eval_monomial]
     rw [← hRF, Polynomial.eval_eq_sum, Polynomial.sum_def]
     apply Finset.sum_congr rfl
     intro i _
     rw [hs i]
   have hPeq0 : P = 0 := h P hPmap
   have hex : ∃ i, R.coeff i ≠ 0 := by
-    by_contra hc; push_neg at hc
+    by_contra hc; push Not at hc
     exact hR0 (Polynomial.ext fun i => by rw [hc i, Polynomial.coeff_zero])
   obtain ⟨i, hi⟩ := hex
   have hisupp : i ∈ R.support := Polynomial.mem_support_iff.mpr hi
@@ -81,7 +81,7 @@ theorem transcendentalOverAdjoin_of_noRelation {K M : Type*} [Field K] [Field M]
     intro h0; apply hi; rw [← hs i, h0, map_zero]
   apply hsi
   have hcoef : P.coeff i = s i := by
-    rw [hPdef, Polynomial.finset_sum_coeff]
+    rw [hPdef, Polynomial.finsetSum_coeff]
     simp only [Polynomial.coeff_monomial]
     rw [Finset.sum_ite_eq' R.support i s, if_pos hisupp]
   rw [← hcoef, hPeq0, Polynomial.coeff_zero]
@@ -135,7 +135,7 @@ theorem exists_clear_denominators_poly (q : Polynomial (RatFunc ℂ)) :
   choose p hp using hclear
   refine ⟨D, ∑ i ∈ q.support, Polynomial.monomial i (p i), hD, ?_⟩
   ext j
-  rw [Polynomial.coeff_smul, Polynomial.coeff_map, Polynomial.finset_sum_coeff]
+  rw [Polynomial.coeff_smul, Polynomial.coeff_map, Polynomial.finsetSum_coeff]
   simp only [Polynomial.coeff_monomial]
   rw [Finset.sum_ite_eq' q.support j p]
   by_cases hj : j ∈ q.support
@@ -208,7 +208,7 @@ theorem algebraMap_eval_eq_polyToMero_mul_relation
           (P_abs.map (Polynomial.aeval (phiMero c₂ hU₂) :
             Polynomial (RatFunc ℂ) →ₐ[RatFunc ℂ] meroField U).toRingHom).eval (phiMero c₁ hU₁) := by
   letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
-  rw [Polynomial.eval_finset_sum]
+  rw [Polynomial.eval_finsetSum]
   simp only [Polynomial.eval_monomial, map_sum, map_mul, map_pow]
   rw [show phiMero c₁ hU₁ = algebraMap (analyticSubring U) (meroField U) (phiAnalytic c₁ hU₁) from rfl]
   rw [Polynomial.eval_map, Polynomial.eval₂_eq_sum, Polynomial.sum_def, Finset.mul_sum]
@@ -253,7 +253,7 @@ theorem noRelation_phiMero_of_no_function_relation
   have hPcoeff : ∀ i, P.coeff i =
       (if i ∈ P_abs.support then (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) else 0) := by
     intro i
-    rw [hPdef, Polynomial.finset_sum_coeff]
+    rw [hPdef, Polynomial.finsetSum_coeff]
     simp only [Polynomial.coeff_monomial]
     rw [Finset.sum_ite_eq' P_abs.support i
       (fun j => (Q j).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂))]
@@ -314,7 +314,7 @@ theorem noRelation_phiMero_of_no_function_relation
       have hcoeff_eq : P.coeff i = (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) := by
         have := hPcoeff i; rw [if_pos (hsub i hi)] at this; exact this
       rw [hcoeff_eq, eval₂_polyToAnalytic_val c₂ hU₂ (Q i)]
-    have hEqOn := function_eqOn_of_eval_phiAnalytic_zero hUo hUc hUne c₁ hU₁ P
+    have hEqOn := function_eqOn_of_eval_phiAnalytic_zero c₁ hU₁ P
       (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) ha hstep5
     -- nontriviality: some support index has nonzero cleared coefficient
     obtain ⟨i₀, hi₀⟩ := Polynomial.support_nonempty.mpr hPzero

@@ -148,7 +148,7 @@ theorem exists_simpleRoot_relation (hUc : IsPreconnected U) (hUinf : U.Infinite)
     fun Q hQ0 hQrel => Nat.find_min' hex ⟨Q, hQ0, rfl, hQrel⟩
   have hdeg1 : 1 ≤ P.natDegree := by
     by_contra h
-    push_neg at h
+    push Not at h
     have hnd0 : P.natDegree = 0 := by omega
     obtain ⟨a, ha⟩ := Polynomial.natDegree_eq_zero.mp hnd0
     have hazero : ∀ z ∈ U, a.eval z = 0 := by
@@ -181,7 +181,7 @@ theorem exists_simpleRoot_relation (hUc : IsPreconnected U) (hUinf : U.Infinite)
   have hgne : ∃ x ∈ U,
       (Polynomial.derivative P).eval₂ (Polynomial.evalRingHom x) (bottcherCoord c x) ≠ 0 := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have hDrel : Set.EqOn
         (fun z => (Polynomial.derivative P).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c z)) 0 U :=
       fun x hx => by simpa using hcon x hx

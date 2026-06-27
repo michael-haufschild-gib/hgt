@@ -29,7 +29,7 @@ theorem ratfunc_mahler_const {c : ℂ} (hc : c ≠ 0) {g : RatFunc ℂ}
   by_contra hcon
   have hnc : 0 < (RatFunc.num g).natDegree ∨ 0 < (RatFunc.denom g).natDegree := by
     by_contra h2
-    push_neg at h2
+    push Not at h2
     exact hcon ⟨Nat.le_zero.mp h2.1, Nat.le_zero.mp h2.2⟩
   have hg : g ≠ 0 := by
     rintro rfl

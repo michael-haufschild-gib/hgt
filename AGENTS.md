@@ -96,7 +96,10 @@ workspace's own root file supplies its broader corpus; do not hard-code parent p
 - Verify every mathlib name against THIS toolchain in a /tmp scratch file
   (`lake env lean /tmp/x.lean` with `have := @Name` lines). Never trust a recalled name.
 - `#print axioms` via a /tmp scratch file, never by editing the tree.
-- The tree carries exactly the intended sorries: currently ZERO.
+- The formal lint gate is authoritative: run `scripts/formal_tools.py lint`; currently no active
+  `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is allowed.
+- For formal project navigation, read `formal/README.md` and use
+  `scripts/formal_tools.py research "<query>"` before proving a reusable lemma.
 - Numerically pre-certify a formalisation plan (mpmath) before writing Lean.
 
 ## Computations

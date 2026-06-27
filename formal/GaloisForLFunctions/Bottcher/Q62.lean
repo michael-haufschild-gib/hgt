@@ -92,7 +92,7 @@ discharges. -/
 theorem q62_independence
     {K M : Type*} [Field K] [Field M] [Algebra K M]
     (φ : ℂ → M) (Disc : ℂ → Prop) (c₁ c₂ : ℂ)
-    (hne : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
+    (_hne : c₁ ≠ c₂) (_hx₁ : c₁ ∉ Exceptional) (_hx₂ : c₂ ∉ Exceptional)
     (hDisc : Disc c₁ → Disc c₂ →
       Transcendental K (φ c₂) ∧ φ c₁ ≠ 0 ∧
       ∀ d : ℕ, ∃ (σ : M ≃ₐ[K] M) (ζ : M) (m : ℕ),

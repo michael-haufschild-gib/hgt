@@ -87,7 +87,7 @@ theorem two_z_u0_term {z : ℂ} (hz0 : z ≠ 0) (n : ℕ) :
       2 ^ (1 : ℤ) * 2 ^ (-(↑n + 1 : ℤ)) * (z ^ (1 : ℤ) * z ^ (-(2 ^ (n + 1) - 1 : ℤ))) := by
     simp [zpow_one]; ring
   rw [hlhs, ← zpow_add₀ h2, ← zpow_add₀ hz0]
-  congr 1 <;> ring
+  congr 1 <;> ring_nf
 
 /-- **Functional equation**: `2 * z * u₀ z = 1 + u₀ (z ^ 2)`. -/
 @[aesop safe]

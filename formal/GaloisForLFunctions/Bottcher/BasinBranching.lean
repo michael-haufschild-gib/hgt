@@ -540,7 +540,7 @@ theorem deckPrecomp₁_trans {ζ η : ℂ} (hζ : ζ ≠ 0) (hη : η ≠ 0) :
     (deckPrecomp₁ hη).trans (deckPrecomp₁ hζ) = deckPrecomp₁ (mul_ne_zero hη hζ) := by
   ext g p
   show (g ∘ deckMap₁ η) (deckMap₁ ζ p) = g (deckMap₁ (η * ζ) p)
-  simp only [deckMap₁, Function.comp_apply, Prod.mk.injEq]
+  simp only [deckMap₁, Function.comp_apply]
   ring_nf
 
 /-- **Geometric realization of the full `monoF` datum.** For every degree bound `d` there is an

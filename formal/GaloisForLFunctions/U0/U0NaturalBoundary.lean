@@ -90,7 +90,7 @@ theorem ne_zero_of_Ext {z : ℂ} (hz : z ∈ Ext) : z ≠ 0 := by
 theorem term_differentiableOn_Ext (n : ℕ) : DifferentiableOn ℂ
     (fun z : ℂ => (2 : ℂ) ^ (-(n + 1 : ℤ)) * z ^ (-(2 ^ (n + 1) - 1 : ℤ))) Ext :=
   DifferentiableOn.const_mul
-    (DifferentiableOn.zpow differentiableOn_id (Or.inl (fun x hx => ne_zero_of_Ext hx))) _
+    (DifferentiableOn.zpow differentiableOn_id (Or.inl (fun _ hx => ne_zero_of_Ext hx))) _
 
 /-- **u₀ is holomorphic on the exterior `Ext` (PROVEN).** Weierstrass M-test: each term is
 holomorphic on `Ext` and bounded there by the summable `2^{-(n+1)}` (`norm_u0_term_le`). -/
@@ -98,7 +98,7 @@ holomorphic on `Ext` and bounded there by the summable `2^{-(n+1)}` (`norm_u0_te
 theorem u0_differentiableOn_Ext : DifferentiableOn ℂ u0 Ext :=
   differentiableOn_tsum_of_summable_norm summable_two_zpow_neg
     term_differentiableOn_Ext isOpen_Ext
-    (fun n w hw => norm_u0_term_le (le_of_lt hw) n)
+    (fun n _ hw => norm_u0_term_le (le_of_lt hw) n)
 
 /-- **u₀ is analytic on the exterior `Ext` (PROVEN).** The analytic realization underlying the
 natural-boundary statement: on `Ext`, `u₀` is the genuine convergent sum, not a junk extension. -/
@@ -125,7 +125,8 @@ theorem continues_sq {z₀ : ℂ} (hz0 : z₀ ≠ 0) (h : ContinuesAcross u0 Ext
   have hs_an : AnalyticAt ℂ s (z₀ ^ 2) := hf.analyticAt_localInverse hfderiv
   have hs_pt : s (z₀ ^ 2) = z₀ := by
     have := (hf.hasStrictDerivAt.eventually_left_inverse hfderiv).self_of_nhds
-    simpa [hs_def] using this
+    rw [hs_def]
+    exact this
   have hs_rinv : ∀ᶠ v in nhds (z₀ ^ 2), (s v) ^ 2 = v :=
     hf.hasStrictDerivAt.eventually_right_inverse hfderiv
   refine ⟨fun v => 2 * s v * g (s v) - 1, ?_, ?_⟩
@@ -668,7 +669,7 @@ Mahler-equation propagation, the doubly-exponential divergence, and this gluing.
 @[aesop safe]
 theorem seed_singularity : ∃ z₁ : ℂ, ‖z₁‖ = 1 ∧ ¬ ContinuesAcross u0 Ext z₁ := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   have hdisk : ∀ w₀ : ℂ, ‖w₀‖ = 1 → ContinuesAcrossDisk w₀ := by
     intro w₀ hw₀
     have hinv : ‖w₀⁻¹‖ = 1 := by rw [norm_inv, hw₀, inv_one]
@@ -686,7 +687,7 @@ theorem seed_singularity : ∃ z₁ : ℂ, ‖z₁‖ = 1 ∧ ¬ ContinuesAcross
   have hRcoe : (R:ℝ) = 1 + δ/2 := rfl
   have hR1 : 1 < (R:ℝ) := by rw [hRcoe]; linarith
   have hGeq0 : G =ᶠ[𝓝 0] U0sum := by
-    apply eventually_of_mem (Metric.isOpen_ball.mem_nhds (by simp [hδ] : (0:ℂ) ∈ Metric.ball 0 1))
+    apply eventually_of_mem (Metric.isOpen_ball.mem_nhds (by simp : (0:ℂ) ∈ Metric.ball 0 1))
     intro w hw; simp only [hG, Metric.mem_ball, dist_zero_right] at hw ⊢; rw [if_pos hw]
   have hGdiff : DifferentiableOn ℂ G (Metric.closedBall 0 R) := by
     apply differentiableOn_of_locally_differentiableOn
@@ -697,7 +698,7 @@ theorem seed_singularity : ∃ z₁ : ℂ, ‖z₁‖ = 1 ∧ ¬ ContinuesAcross
       intro w' hw'
       have hlt : ‖w'‖ < 1 := by simpa using hw'.2
       simp only [hG]; rw [if_pos hlt]
-    · push_neg at hw1
+    · push Not at hw1
       set x₀ := w / (‖w‖:ℂ) with hx₀
       have hx₀norm : ‖x₀‖ = 1 := radial_norm hw1
       refine ⟨Metric.ball x₀ δ, Metric.isOpen_ball, ?_, ?_⟩
@@ -712,7 +713,7 @@ theorem seed_singularity : ∃ z₁ : ℂ, ‖z₁‖ = 1 ∧ ¬ ContinuesAcross
         · rw [if_pos hw'1]
           exact (hgext_eq x₀ hx₀norm w' ⟨hw'x, by simpa using hw'1⟩).symm
         · rw [if_neg hw'1]
-          push_neg at hw'1
+          push Not at hw'1
           set x' := w' / (‖w'‖:ℂ) with hx'
           have hx'norm : ‖x'‖ = 1 := radial_norm hw'1
           have hw'R : ‖w'‖ ≤ (R:ℝ) := by
@@ -731,7 +732,10 @@ private theorem norm_exp_imI_sub (a b : ℝ) (h : |a - b| ≤ 1) :
     ‖Complex.exp (a * I) - Complex.exp (b * I)‖ ≤ 2 * |a - b| := by
   have factor : Complex.exp (a * I) - Complex.exp (b * I)
       = Complex.exp (b * I) * (Complex.exp (((a - b : ℝ) : ℂ) * I) - 1) := by
-    rw [mul_sub, mul_one, ← Complex.exp_add]; congr 2 <;> push_cast <;> ring
+    rw [mul_sub, mul_one, ← Complex.exp_add]
+    congr 2
+    push_cast
+    ring
   rw [factor, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul]
   have hnorm : ‖((a - b : ℝ) : ℂ) * I‖ = |a - b| := by
     rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]

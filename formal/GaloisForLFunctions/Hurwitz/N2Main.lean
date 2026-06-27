@@ -33,7 +33,7 @@ noncomputable def PsiB (s : ℂ) (n : ℕ) (q : Fin 3 → Fin 3 → Polynomial �
     + ∑ k : Fin 3, (l k).eval (-(n : ℂ) + Complex.exp z) * Complex.exp (-(s + (k : ℂ)) * z)
 
 /-- The regular block. -/
-noncomputable def ThetaB (s : ℂ) (n : ℕ) (q : Fin 3 → Fin 3 → Polynomial ℂ) (l : Fin 3 → Polynomial ℂ)
+noncomputable def ThetaB (_s : ℂ) (n : ℕ) (q : Fin 3 → Fin 3 → Polynomial ℂ) (l : Fin 3 → Polynomial ℂ)
     (cc : Polynomial ℂ) (R : Fin 3 → ℂ → ℂ) (z : ℂ) : ℂ :=
   (∑ i : Fin 3, ∑ j : Fin 3, (q i j).eval (-(n : ℂ) + Complex.exp z) * (R i z * R j z))
     + (∑ k : Fin 3, (l k).eval (-(n : ℂ) + Complex.exp z) * R k z)

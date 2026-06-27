@@ -24,7 +24,7 @@ namespace Bottcher
 nonvanishing there ⟹ `∮_{C(c,R)} h'/h = 0`. Reuses our Cauchy theorem `DiffContOnCl.circleIntegral_eq_zero`
 exactly as `period_point_outside` does. -/
 theorem circleIntegral_logDeriv_eq_zero {h : ℂ → ℂ} {c : ℂ} {R : ℝ} {U : Set ℂ}
-    (hR : 0 ≤ R) (hU : IsOpen U) (hsub : closedBall c R ⊆ U)
+    (hR : 0 ≤ R) (_hU : IsOpen U) (hsub : closedBall c R ⊆ U)
     (hh : AnalyticOnNhd ℂ h U) (hne : ∀ z ∈ closedBall c R, h z ≠ 0) :
     (∮ z in C(c, R), deriv h z / h z) = 0 := by
   apply DiffContOnCl.circleIntegral_eq_zero hR

@@ -36,7 +36,7 @@ theorem mem_filledJulia_iterate {c z : ℂ} (hz : z ∈ filledJulia c) (n : ℕ)
 theorem differentiable_quadratic_iterate (c : ℂ) (n : ℕ) :
     Differentiable ℂ ((quadratic c)^[n]) := by
   induction n with
-  | zero => simpa using differentiable_id
+  | zero => exact differentiable_id
   | succ n ih =>
     rw [Function.iterate_succ']
     have hq : Differentiable ℂ (quadratic c) := by unfold quadratic; fun_prop
