@@ -202,4 +202,21 @@ theorem bottcherCoord_iterate_escape {c z : ℂ} (hz : z ∈ escapeOpen c) (k : 
   obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz
   exact bottcherCoord_iterate hc hz2 k
 
+/-- **Unbounded-order monodromy loops.**  The already-constructed circle-lift period gives, for
+every degree bound `d`, a genuine lifted loop whose Böttcher logarithmic period is `2πi/2^d` and
+whose multiplier has order `2^d > d`.  This is the loop-side counterpart of the z-fixing deck tower:
+the analytic loop exists (`exists_circle_lift_period`) and its multiplier has the required unbounded
+dyadic order (`isPrimitiveRoot_dyadic_multiplier`). -/
+theorem exists_circle_lift_period_order_gt (c : ℂ) (d : ℕ) :
+    ∃ (n : ℕ) (R : ℝ) (γ γ' : ℝ → ℂ),
+      d < orderOf (Complex.exp (2 * (Real.pi : ℂ) * Complex.I / 2 ^ n)) ∧
+      max 2 ‖c‖ < R ∧
+      (∫ θ in (0 : ℝ)..(2 * Real.pi), logDeriv (bottcherCoord c) (γ θ) * γ' θ)
+        = 2 * (Real.pi : ℂ) * Complex.I / 2 ^ n := by
+  let n : ℕ := d
+  obtain ⟨R, γ, γ', hR, hperiod⟩ := exists_circle_lift_period c n
+  refine ⟨n, R, γ, γ', ?_, hR, hperiod⟩
+  rw [((isPrimitiveRoot_dyadic_multiplier n).eq_orderOf).symm]
+  exact Nat.lt_two_pow_self
+
 end Bottcher

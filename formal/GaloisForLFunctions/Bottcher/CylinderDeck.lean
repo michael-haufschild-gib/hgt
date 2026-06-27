@@ -148,6 +148,162 @@ theorem quasiperiodic_lift_of_period {F I : ℝ → ℂ} {c φ0 : ℂ}
   rw [← hφ0, h]
   exact (div_mul_cancel₀ (F 1) hF0).symm
 
+/-- The additive/log-cover deck `w ↦ w + τ`, conjugated through a uniformization. -/
+def deckAdd (ψ φ : ℂ → ℂ) (τ : ℂ) : ℂ → ℂ := ψ ∘ (fun w : ℂ => w + τ) ∘ φ
+
+/-- The inverse additive/log-cover deck `w ↦ w - τ`, conjugated through a uniformization. -/
+def deckSub (ψ φ : ℂ → ℂ) (τ : ℂ) : ℂ → ℂ := ψ ∘ (fun w : ℂ => w - τ) ∘ φ
+
+/-- The additive deck is analytic on the cover carrier. -/
+theorem analyticOnNhd_deckAdd {U V : Set ℂ} {φ ψ : ℂ → ℂ} {τ : ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hadd : Set.MapsTo (fun w : ℂ => w + τ) V V) :
+    AnalyticOnNhd ℂ (deckAdd ψ φ τ) U := by
+  have hadd_an : AnalyticOnNhd ℂ (fun w : ℂ => w + τ) V :=
+    fun _ _ => analyticAt_id.add analyticAt_const
+  exact H.hψ.comp (hadd_an.comp H.hφ H.hφmaps) (hadd.comp H.hφmaps)
+
+/-- The inverse additive deck is analytic on the cover carrier. -/
+theorem analyticOnNhd_deckSub {U V : Set ℂ} {φ ψ : ℂ → ℂ} {τ : ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hsub : Set.MapsTo (fun w : ℂ => w - τ) V V) :
+    AnalyticOnNhd ℂ (deckSub ψ φ τ) U := by
+  have hsub_an : AnalyticOnNhd ℂ (fun w : ℂ => w - τ) V :=
+    fun _ _ => analyticAt_id.sub analyticAt_const
+  exact H.hψ.comp (hsub_an.comp H.hφ H.hφmaps) (hsub.comp H.hφmaps)
+
+/-- The additive deck maps the cover carrier into itself. -/
+theorem mapsTo_deckAdd {U V : Set ℂ} {φ ψ : ℂ → ℂ} {τ : ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hadd : Set.MapsTo (fun w : ℂ => w + τ) V V) :
+    Set.MapsTo (deckAdd ψ φ τ) U U :=
+  H.hψmaps.comp (hadd.comp H.hφmaps)
+
+/-- The inverse additive deck maps the cover carrier into itself. -/
+theorem mapsTo_deckSub {U V : Set ℂ} {φ ψ : ℂ → ℂ} {τ : ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hsub : Set.MapsTo (fun w : ℂ => w - τ) V V) :
+    Set.MapsTo (deckSub ψ φ τ) U U :=
+  H.hψmaps.comp (hsub.comp H.hφmaps)
+
+/-- The additive deck followed by its inverse is the identity on the cover carrier. -/
+theorem eqOn_deckAdd_comp_sub {U V : Set ℂ} {φ ψ : ℂ → ℂ} {τ : ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hsub : Set.MapsTo (fun w : ℂ => w - τ) V V) :
+    Set.EqOn (deckAdd ψ φ τ ∘ deckSub ψ φ τ) id U := by
+  intro z hz
+  have hφz : φ z ∈ V := H.hφmaps hz
+  have hminus : φ z - τ ∈ V := hsub hφz
+  have e1 : φ (ψ (φ z - τ)) = φ z - τ := by
+    simpa [Function.comp] using H.hφψ hminus
+  have e2 : ψ (φ z) = z := by
+    simpa [Function.comp] using H.hψφ hz
+  simp only [deckAdd, deckSub, Function.comp_apply, id_eq]
+  rw [e1]
+  have hsum : φ z - τ + τ = φ z := by ring
+  rw [hsum, e2]
+
+/-- The inverse additive deck followed by the additive deck is the identity on the cover carrier. -/
+theorem eqOn_deckSub_comp_add {U V : Set ℂ} {φ ψ : ℂ → ℂ} {τ : ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hadd : Set.MapsTo (fun w : ℂ => w + τ) V V) :
+    Set.EqOn (deckSub ψ φ τ ∘ deckAdd ψ φ τ) id U := by
+  intro z hz
+  have hφz : φ z ∈ V := H.hφmaps hz
+  have hplus : φ z + τ ∈ V := hadd hφz
+  have e1 : φ (ψ (φ z + τ)) = φ z + τ := by
+    simpa [Function.comp] using H.hφψ hplus
+  have e2 : ψ (φ z) = z := by
+    simpa [Function.comp] using H.hψφ hz
+  simp only [deckAdd, deckSub, Function.comp_apply, id_eq]
+  rw [e1]
+  have hsum : φ z + τ - τ = φ z := by ring
+  rw [hsum, e2]
+
+/-- In the uniformizing coordinate, the additive deck translates by `τ`. -/
+theorem deckAdd_lift_add {U V : Set ℂ} {φ ψ : ℂ → ℂ} {τ : ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hadd : Set.MapsTo (fun w : ℂ => w + τ) V V) :
+    ∀ z ∈ U, φ (deckAdd ψ φ τ z) = φ z + τ := by
+  intro z hz
+  have hplus : φ z + τ ∈ V := hadd (H.hφmaps hz)
+  simpa [deckAdd, Function.comp] using H.hφψ hplus
+
+/-- The additive deck scales the exponential lift by `exp τ`. -/
+theorem deckAdd_exp_lift_scale {U V : Set ℂ} {φ ψ : ℂ → ℂ} {τ : ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hadd : Set.MapsTo (fun w : ℂ => w + τ) V V) :
+    ∀ z ∈ U, (Complex.exp ∘ φ) (deckAdd ψ φ τ z)
+      = Complex.exp τ * (Complex.exp ∘ φ) z := by
+  intro z hz
+  have hφgz : φ (deckAdd ψ φ τ z) = φ z + τ := deckAdd_lift_add H hadd z hz
+  simp only [Function.comp_apply]
+  rw [hφgz, Complex.exp_add, mul_comm]
+
+/-- If the projection descends through a translation-invariant quotient, the additive deck fixes
+the base projection. -/
+theorem deckAdd_projection_fix {U V : Set ℂ} {φ ψ π q : ℂ → ℂ} {τ : ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (hadd : Set.MapsTo (fun w : ℂ => w + τ) V V)
+    (hqfix : ∀ y ∈ V, q (y + τ) = q y) :
+    ∀ z ∈ U, π (deckAdd ψ φ τ z) = π z := by
+  intro z hz
+  have hmaps : Set.MapsTo (deckAdd ψ φ τ) U U := mapsTo_deckAdd H hadd
+  have hgz : deckAdd ψ φ τ z ∈ U := hmaps hz
+  have hφgz : φ (deckAdd ψ φ τ z) = φ z + τ := deckAdd_lift_add H hadd z hz
+  calc
+    π (deckAdd ψ φ τ z) = q (φ (deckAdd ψ φ τ z)) := hπfactor _ hgz
+    _ = q (φ z + τ) := by rw [hφgz]
+    _ = q (φ z) := hqfix (φ z) (H.hφmaps hz)
+    _ = π z := (hπfactor z hz).symm
+
+/-- **Additive z-fixing deck data.**  A translation-stable log-cover uniformization constructs the
+actual self-biholomorphism `g = ψ ∘ (w ↦ w + τ) ∘ φ`, its inverse, the projection-fixing clause
+`π∘g = π`, and the monodromy scaling `(exp∘φ)∘g = exp(τ)·(exp∘φ)`. -/
+theorem additive_zfixing_deck_data {U V : Set ℂ} {φ ψ π q : ℂ → ℂ} {τ : ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (hadd : Set.MapsTo (fun w : ℂ => w + τ) V V)
+    (hsub : Set.MapsTo (fun w : ℂ => w - τ) V V)
+    (hqfix : ∀ y ∈ V, q (y + τ) = q y) :
+    ∃ (g g' : ℂ → ℂ)
+        (_ : AnalyticOnNhd ℂ g U) (_ : AnalyticOnNhd ℂ g' U)
+        (_ : Set.MapsTo g U U) (_ : Set.MapsTo g' U U)
+        (_ : Set.EqOn (g ∘ g') id U) (_ : Set.EqOn (g' ∘ g) id U),
+      (∀ z ∈ U, π (g z) = π z) ∧
+      (∀ z ∈ U, (Complex.exp ∘ φ) (g z) = Complex.exp τ * (Complex.exp ∘ φ) z) := by
+  exact ⟨deckAdd ψ φ τ, deckSub ψ φ τ,
+    analyticOnNhd_deckAdd H hadd, analyticOnNhd_deckSub H hsub,
+    mapsTo_deckAdd H hadd, mapsTo_deckSub H hsub,
+    eqOn_deckAdd_comp_sub H hsub, eqOn_deckSub_comp_add H hadd,
+    deckAdd_projection_fix H hπfactor hadd hqfix, deckAdd_exp_lift_scale H hadd⟩
+
+/-- **Additive z-fixing deck tower.**  A period tower on the log-cover uniformizing coordinate
+constructs, at every depth bound, a genuine self-biholomorphic deck fixing the projection and scaling
+`exp ∘ φ` by a multiplier of larger order.  This is the named deck tower consumed by
+`hDisc_of_periodic_projection_base_tower`. -/
+theorem additive_zfixing_deck_tower_data {U V : Set ℂ} {φ ψ π q : ℂ → ℂ}
+    (H : LiftUniformization U V φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (periodTower : ∀ d : ℕ, ∃ τ : ℂ,
+        d < orderOf (Complex.exp τ) ∧
+        Set.MapsTo (fun w : ℂ => w + τ) V V ∧
+        Set.MapsTo (fun w : ℂ => w - τ) V V ∧
+        (∀ y ∈ V, q (y + τ) = q y)) :
+    ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (_ : AnalyticOnNhd ℂ g U) (_ : AnalyticOnNhd ℂ g' U)
+        (_ : Set.MapsTo g U U) (_ : Set.MapsTo g' U U)
+        (_ : Set.EqOn (g ∘ g') id U) (_ : Set.EqOn (g' ∘ g) id U),
+      d < orderOf ζ₀ ∧
+      (∀ z ∈ U, π (g z) = π z) ∧
+      (∀ z ∈ U, (Complex.exp ∘ φ) (g z) = ζ₀ * (Complex.exp ∘ φ) z) := by
+  intro d
+  obtain ⟨τ, hord, hadd, hsub, hqfix⟩ := periodTower d
+  obtain ⟨g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hπfix, hscale⟩ :=
+    additive_zfixing_deck_data (H := H) hπfactor hadd hsub hqfix
+  exact ⟨Complex.exp τ, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hπfix, hscale⟩
+
 /-- **Projection-periodic cylinder deck tower ⟹ hDisc.**  This is the z-fixing deck interface in the
 form the remaining disconnected geometry should construct.  On one fixed cover `U`, suppose the deck
 map at every depth is a self-biholomorphism `g` whose base projection is periodic
@@ -298,5 +454,433 @@ theorem hDisc_of_uniformized_projection_base_tower {U V : Set ℂ} {φ ψ π q b
       _ = q (φ z) := hqfix (φ z) (H.hφmaps hz)
       _ = π z := (hπfactor z hz).symm
   · exact deckRot_lift_scale H hrot
+
+/-- **Additive/log-uniformized projection-base tower ⟹ hDisc.**  This is the log-cover version of the
+z-fixing deck interface.  The deck is built from a translation on the uniformizing coordinate,
+`g = ψ ∘ (w ↦ w + τ) ∘ φ`; the scaling coordinate is `exp ∘ φ`, so the deck multiplier is
+`exp τ`.  If the projection factors as `π = q∘φ` and `q` is invariant under the chosen translations,
+then the deck fixes `π` pointwise.  This avoids the finite-root-annulus bounded-order trap: the
+unboundedness is carried by the supplied period tower `τ ↦ exp τ`, not by a fixed finite monomial. -/
+theorem hDisc_of_additive_uniformized_projection_base_tower {U V : Set ℂ} {φ ψ π q b : ℂ → ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑π) (hπinf : (π '' U).Infinite)
+    (H : LiftUniformization U V φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (a₁ a₂ : analyticSubring U) {f₂ : ℂ → ℂ}
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = ↑(Complex.exp ∘ φ))
+    (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = ↑f₂)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hGtr :
+      letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+      letI : Algebra (RatFunc ℂ) (meroField U) :=
+        (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+      Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂))
+    (hF2base : ∀ z ∈ U, f₂ z = b (π z))
+    (periodTower : ∀ d : ℕ, ∃ τ : ℂ,
+        d < orderOf (Complex.exp τ) ∧
+        Set.MapsTo (fun w : ℂ => w + τ) V V ∧
+        Set.MapsTo (fun w : ℂ => w - τ) V V ∧
+        (∀ y ∈ V, q (y + τ) = q y)) :
+    letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) :=
+      (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+  refine hDisc_of_periodic_projection_base_tower hUo hUc hUne hp0 hπinf a₁ a₂ ha₁ ha₂ hF hGtr
+    hF2base ?_
+  intro d
+  obtain ⟨τ, hord, hplusmaps, hminusmaps, hqfix⟩ := periodTower d
+  let g : ℂ → ℂ := ψ ∘ (fun w : ℂ => w + τ) ∘ φ
+  let g' : ℂ → ℂ := ψ ∘ (fun w : ℂ => w - τ) ∘ φ
+  have hplusan : AnalyticOnNhd ℂ (fun w : ℂ => w + τ) V :=
+    fun _ _ => analyticAt_id.add analyticAt_const
+  have hminusan : AnalyticOnNhd ℂ (fun w : ℂ => w - τ) V :=
+    fun _ _ => analyticAt_id.sub analyticAt_const
+  have hg : AnalyticOnNhd ℂ g U := by
+    dsimp [g]
+    exact H.hψ.comp (hplusan.comp H.hφ H.hφmaps) (hplusmaps.comp H.hφmaps)
+  have hg' : AnalyticOnNhd ℂ g' U := by
+    dsimp [g']
+    exact H.hψ.comp (hminusan.comp H.hφ H.hφmaps) (hminusmaps.comp H.hφmaps)
+  have hmaps : Set.MapsTo g U U := by
+    dsimp [g]
+    exact H.hψmaps.comp (hplusmaps.comp H.hφmaps)
+  have hmaps' : Set.MapsTo g' U U := by
+    dsimp [g']
+    exact H.hψmaps.comp (hminusmaps.comp H.hφmaps)
+  have hgg' : Set.EqOn (g ∘ g') id U := by
+    intro z hz
+    have hφz : φ z ∈ V := H.hφmaps hz
+    have hminus : φ z - τ ∈ V := hminusmaps hφz
+    have e1 : φ (ψ (φ z - τ)) = φ z - τ := by
+      simpa [Function.comp] using H.hφψ hminus
+    have e2 : ψ (φ z) = z := by
+      simpa [Function.comp] using H.hψφ hz
+    simp only [g, g', Function.comp_apply, id_eq]
+    rw [e1]
+    have hsum : φ z - τ + τ = φ z := by ring
+    rw [hsum, e2]
+  have hg'g : Set.EqOn (g' ∘ g) id U := by
+    intro z hz
+    have hφz : φ z ∈ V := H.hφmaps hz
+    have hplus : φ z + τ ∈ V := hplusmaps hφz
+    have e1 : φ (ψ (φ z + τ)) = φ z + τ := by
+      simpa [Function.comp] using H.hφψ hplus
+    have e2 : ψ (φ z) = z := by
+      simpa [Function.comp] using H.hψφ hz
+    simp only [g, g', Function.comp_apply, id_eq]
+    rw [e1]
+    have hsum : φ z + τ - τ = φ z := by ring
+    rw [hsum, e2]
+  refine ⟨Complex.exp τ, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, ?_, ?_⟩
+  · intro z hz
+    have hgz : g z ∈ U := hmaps hz
+    have hφgz : φ (g z) = φ z + τ := by
+      have hφz : φ z ∈ V := H.hφmaps hz
+      have hplus : φ z + τ ∈ V := hplusmaps hφz
+      simpa [g, Function.comp] using H.hφψ hplus
+    calc
+      π (g z) = q (φ (g z)) := hπfactor _ hgz
+      _ = q (φ z + τ) := by rw [hφgz]
+      _ = q (φ z) := hqfix (φ z) (H.hφmaps hz)
+      _ = π z := (hπfactor z hz).symm
+  · intro z hz
+    have hφgz : φ (g z) = φ z + τ := by
+      have hφz : φ z ∈ V := H.hφmaps hz
+      have hplus : φ z + τ ∈ V := hplusmaps hφz
+      simpa [g, Function.comp] using H.hφψ hplus
+    simp only [Function.comp_apply]
+    rw [hφgz, Complex.exp_add, mul_comm]
+
+/-- **Dyadic additive/log-uniformized projection-base tower ⟹ hDisc.**  This specializes the additive
+log-cover deck interface to the actual dyadic monodromy periods
+`τ_d = 2πi / 2^d`.  The only remaining geometric hypotheses are that these translations and their
+inverses stay on the uniformizing cover region `V`, and that the projection factor `q` is invariant
+under them.  The multiplier order is no longer a hypothesis: it is exactly `orderOf_dyadicRoot`. -/
+theorem hDisc_of_dyadic_additive_uniformized_projection_base_tower {U V : Set ℂ}
+    {φ ψ π q b : ℂ → ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑π) (hπinf : (π '' U).Infinite)
+    (H : LiftUniformization U V φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (a₁ a₂ : analyticSubring U) {f₂ : ℂ → ℂ}
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = ↑(Complex.exp ∘ φ))
+    (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = ↑f₂)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hGtr :
+      letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+      letI : Algebra (RatFunc ℂ) (meroField U) :=
+        (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+      Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂))
+    (hF2base : ∀ z ∈ U, f₂ z = b (π z))
+    (dyadicPeriod : ∀ d : ℕ,
+      let τ : ℂ := 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)
+      Set.MapsTo (fun w : ℂ => w + τ) V V ∧
+      Set.MapsTo (fun w : ℂ => w - τ) V V ∧
+      (∀ y ∈ V, q (y + τ) = q y)) :
+    letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) :=
+      (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+  refine hDisc_of_additive_uniformized_projection_base_tower hUo hUc hUne hp0 hπinf H hπfactor
+    a₁ a₂ ha₁ ha₂ hF hGtr hF2base ?_
+  intro d
+  let τ : ℂ := 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)
+  have hτdef : τ = 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ) := rfl
+  obtain ⟨hplus, hminus, hq⟩ := dyadicPeriod d
+  refine ⟨τ, ?_, hplus, hminus, hq⟩
+  rw [hτdef, orderOf_dyadicRoot]
+  exact Nat.lt_two_pow_self
+
+/-- The dyadic period `2πi/2^d` is purely imaginary. -/
+theorem dyadic_period_re_zero (d : ℕ) :
+    ((2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)) : ℂ).re = 0 := by
+  have hnum : (2 * (Real.pi : ℂ) * Complex.I).re = 0 := by
+    rw [show 2 * (Real.pi : ℂ) = (((2 * Real.pi : ℝ)) : ℂ) by norm_num]
+    rw [Complex.re_ofReal_mul, Complex.I_re, mul_zero]
+  rw [show (((2 ^ d : ℕ) : ℂ)) = (((2 ^ d : ℕ) : ℝ) : ℂ) by norm_num,
+    Complex.div_ofReal_re, hnum, zero_div]
+
+/-- Dyadic imaginary translation preserves every vertical strip `{a < re w < b}`. -/
+theorem dyadic_add_mapsTo_verticalStrip (a b : ℝ) (d : ℕ) :
+    Set.MapsTo
+      (fun w : ℂ => w + 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ))
+      {w : ℂ | a < w.re ∧ w.re < b}
+      {w : ℂ | a < w.re ∧ w.re < b} := by
+  intro w hw
+  simp only [Set.mem_setOf_eq] at hw ⊢
+  rw [Complex.add_re, dyadic_period_re_zero d, add_zero]
+  exact hw
+
+/-- The inverse dyadic imaginary translation also preserves every vertical strip `{a < re w < b}`. -/
+theorem dyadic_sub_mapsTo_verticalStrip (a b : ℝ) (d : ℕ) :
+    Set.MapsTo
+      (fun w : ℂ => w - 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ))
+      {w : ℂ | a < w.re ∧ w.re < b}
+      {w : ℂ | a < w.re ∧ w.re < b} := by
+  intro w hw
+  simp only [Set.mem_setOf_eq] at hw ⊢
+  rw [sub_eq_add_neg, Complex.add_re, Complex.neg_re, dyadic_period_re_zero d, neg_zero, add_zero]
+  exact hw
+
+/-- **Dyadic vertical-strip log-cover ⟹ hDisc.**  This is the concrete log-annulus shape of the
+z-fixing deck.  The uniformizing value region is a vertical strip, so the dyadic periods
+`2πi/2^d` and their inverses automatically stay in the region (`re` is unchanged).  The remaining
+deck geometry is exactly the projection factor's dyadic translation invariance. -/
+theorem hDisc_of_dyadic_verticalStrip_uniformized_projection_base_tower {U : Set ℂ}
+    {a b : ℝ} {φ ψ π q base : ℂ → ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑π) (hπinf : (π '' U).Infinite)
+    (H : LiftUniformization U {w : ℂ | a < w.re ∧ w.re < b} φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (a₁ a₂ : analyticSubring U) {f₂ : ℂ → ℂ}
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = ↑(Complex.exp ∘ φ))
+    (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = ↑f₂)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hGtr :
+      letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+      letI : Algebra (RatFunc ℂ) (meroField U) :=
+        (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+      Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂))
+    (hF2base : ∀ z ∈ U, f₂ z = base (π z))
+    (hq_dyadic : ∀ d : ℕ,
+      let τ : ℂ := 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)
+      ∀ y ∈ {w : ℂ | a < w.re ∧ w.re < b}, q (y + τ) = q y) :
+    letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) :=
+      (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+  refine hDisc_of_dyadic_additive_uniformized_projection_base_tower hUo hUc hUne hp0 hπinf H
+    hπfactor a₁ a₂ ha₁ ha₂ hF hGtr hF2base ?_
+  intro d
+  exact ⟨dyadic_add_mapsTo_verticalStrip a b d, dyadic_sub_mapsTo_verticalStrip a b d,
+    hq_dyadic d⟩
+
+/-- The depth-`d` quotient coordinate `exp((2^d)y)` is invariant under the dyadic period
+`2πi/2^d`. -/
+theorem dyadic_exp_power_add_period (d : ℕ) (y : ℂ) :
+    Complex.exp (((2 ^ d : ℕ) : ℂ) *
+        (y + 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)))
+      = Complex.exp (((2 ^ d : ℕ) : ℂ) * y) := by
+  have hN : (((2 ^ d : ℕ) : ℂ)) ≠ 0 := by
+    exact_mod_cast (pow_ne_zero d (by norm_num : (2 : ℕ) ≠ 0))
+  rw [show (((2 ^ d : ℕ) : ℂ) *
+        (y + 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)))
+      = ((2 ^ d : ℕ) : ℂ) * y + 2 * (Real.pi : ℂ) * Complex.I by
+    field_simp [hN]]
+  rw [Complex.exp_add]
+  have hper : Complex.exp (2 * (Real.pi : ℂ) * Complex.I) = 1 := by
+    have h := Complex.exp_int_mul_two_pi_mul_I (1 : ℤ)
+    norm_num only [Int.cast_one, one_mul] at h
+    exact h
+  rw [hper, mul_one]
+
+/-- If the projection factor descends through `exp((2^d)y)`, then it is fixed by the
+depth-`d` dyadic period. -/
+theorem dyadic_exp_power_projection_invariant {q Q : ℂ → ℂ} (d : ℕ)
+    (hfactor : ∀ y : ℂ, q y = Q (Complex.exp (((2 ^ d : ℕ) : ℂ) * y))) :
+    ∀ y : ℂ,
+      q (y + 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)) = q y := by
+  intro y
+  calc
+    q (y + 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ))
+        = Q (Complex.exp (((2 ^ d : ℕ) : ℂ) *
+            (y + 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)))) := hfactor _
+    _ = Q (Complex.exp (((2 ^ d : ℕ) : ℂ) * y)) := by
+      rw [dyadic_exp_power_add_period]
+    _ = q y := (hfactor y).symm
+
+/-- **Concrete dyadic z-fixing deck on a vertical-strip log cover.**  At depth `d`, the deck is
+`g = ψ ∘ (w ↦ w + 2πi/2^d) ∘ φ`.  The vertical strip is preserved because the period is purely
+imaginary; the projection is fixed because `q` descends through `exp((2^d)w)`; and the exponential
+lift is scaled by the primitive dyadic multiplier `exp(2πi/2^d)`, whose order exceeds `d`. -/
+theorem dyadic_verticalStrip_zfixing_deck_data {U : Set ℂ}
+    {a b : ℝ} {φ ψ π q : ℂ → ℂ}
+    (H : LiftUniformization U {w : ℂ | a < w.re ∧ w.re < b} φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (hqFactor : ∀ d : ℕ, ∃ Qd : ℂ → ℂ,
+      ∀ y ∈ {w : ℂ | a < w.re ∧ w.re < b},
+        q y = Qd (Complex.exp (((2 ^ d : ℕ) : ℂ) * y)))
+    (d : ℕ) :
+    ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (_ : AnalyticOnNhd ℂ g U) (_ : AnalyticOnNhd ℂ g' U)
+        (_ : Set.MapsTo g U U) (_ : Set.MapsTo g' U U)
+        (_ : Set.EqOn (g ∘ g') id U) (_ : Set.EqOn (g' ∘ g) id U),
+      d < orderOf ζ₀ ∧
+      ζ₀ = Complex.exp (2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)) ∧
+      (∀ z ∈ U, π (g z) = π z) ∧
+      (∀ z ∈ U, (Complex.exp ∘ φ) (g z) = ζ₀ * (Complex.exp ∘ φ) z) := by
+  let τ : ℂ := 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)
+  have hτdef : τ = 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ) := rfl
+  have hadd : Set.MapsTo (fun w : ℂ => w + τ)
+      {w : ℂ | a < w.re ∧ w.re < b} {w : ℂ | a < w.re ∧ w.re < b} := by
+    dsimp [τ]
+    exact dyadic_add_mapsTo_verticalStrip a b d
+  have hsub : Set.MapsTo (fun w : ℂ => w - τ)
+      {w : ℂ | a < w.re ∧ w.re < b} {w : ℂ | a < w.re ∧ w.re < b} := by
+    dsimp [τ]
+    exact dyadic_sub_mapsTo_verticalStrip a b d
+  have hqfix : ∀ y ∈ {w : ℂ | a < w.re ∧ w.re < b}, q (y + τ) = q y := by
+    intro y hy
+    obtain ⟨Qd, hQd⟩ := hqFactor d
+    calc
+      q (y + τ) = Qd (Complex.exp (((2 ^ d : ℕ) : ℂ) * (y + τ))) :=
+        hQd _ (hadd hy)
+      _ = Qd (Complex.exp (((2 ^ d : ℕ) : ℂ) * y)) := by
+        rw [hτdef, dyadic_exp_power_add_period]
+      _ = q y := (hQd y hy).symm
+  obtain ⟨g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hπfix, hscale⟩ :=
+    additive_zfixing_deck_data (H := H) hπfactor hadd hsub hqfix
+  refine ⟨Complex.exp τ, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, ?_, ?_, hπfix, ?_⟩
+  · rw [hτdef, orderOf_dyadicRoot]
+    exact Nat.lt_two_pow_self
+  · rw [hτdef]
+  · exact hscale
+
+/-- **Concrete dyadic z-fixing deck tower on a vertical-strip log cover.**  This packages
+`dyadic_verticalStrip_zfixing_deck_data` in the exact tower shape consumed by the projection-base
+hDisc close: for every degree bound `d`, it supplies a deck of order `> d`, with inverse,
+projection fixing, and exponential-lift scaling. -/
+theorem dyadic_verticalStrip_zfixing_deck_tower_data {U : Set ℂ}
+    {a b : ℝ} {φ ψ π q : ℂ → ℂ}
+    (H : LiftUniformization U {w : ℂ | a < w.re ∧ w.re < b} φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (hqFactor : ∀ d : ℕ, ∃ Qd : ℂ → ℂ,
+      ∀ y ∈ {w : ℂ | a < w.re ∧ w.re < b},
+        q y = Qd (Complex.exp (((2 ^ d : ℕ) : ℂ) * y))) :
+    ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (_ : AnalyticOnNhd ℂ g U) (_ : AnalyticOnNhd ℂ g' U)
+        (_ : Set.MapsTo g U U) (_ : Set.MapsTo g' U U)
+        (_ : Set.EqOn (g ∘ g') id U) (_ : Set.EqOn (g' ∘ g) id U),
+      d < orderOf ζ₀ ∧
+      (∀ z ∈ U, π (g z) = π z) ∧
+      (∀ z ∈ U, (Complex.exp ∘ φ) (g z) = ζ₀ * (Complex.exp ∘ φ) z) := by
+  intro d
+  obtain ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, _hζ, hπfix, hscale⟩ :=
+    dyadic_verticalStrip_zfixing_deck_data H hπfactor hqFactor d
+  exact ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hπfix, hscale⟩
+
+/-- **Dyadic vertical-strip quotient projection ⟹ hDisc.**  This removes the last abstract
+translation-invariance hypothesis from the vertical-strip bridge: it is enough that, at each dyadic
+depth `d`, the projection factor `q` descends on the strip through the quotient coordinate
+`y ↦ exp((2^d)y)`.  That quotient is exactly fixed by the closed dyadic period. -/
+theorem hDisc_of_dyadic_verticalStrip_expPower_projection_base_tower {U : Set ℂ}
+    {a b : ℝ} {φ ψ π q base : ℂ → ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑π) (hπinf : (π '' U).Infinite)
+    (H : LiftUniformization U {w : ℂ | a < w.re ∧ w.re < b} φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (a₁ a₂ : analyticSubring U) {f₂ : ℂ → ℂ}
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = ↑(Complex.exp ∘ φ))
+    (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = ↑f₂)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hGtr :
+      letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+      letI : Algebra (RatFunc ℂ) (meroField U) :=
+        (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+      Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂))
+    (hF2base : ∀ z ∈ U, f₂ z = base (π z))
+    (hqFactor : ∀ d : ℕ, ∃ Qd : ℂ → ℂ,
+      ∀ y ∈ {w : ℂ | a < w.re ∧ w.re < b},
+        q y = Qd (Complex.exp (((2 ^ d : ℕ) : ℂ) * y))) :
+    letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) :=
+      (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+  refine hDisc_of_dyadic_verticalStrip_uniformized_projection_base_tower hUo hUc hUne hp0
+    hπinf H hπfactor a₁ a₂ ha₁ ha₂ hF hGtr hF2base ?_
+  intro d
+  dsimp
+  intro y hy
+  obtain ⟨Qd, hQd⟩ := hqFactor d
+  calc
+    q (y + 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ))
+        = Qd (Complex.exp (((2 ^ d : ℕ) : ℂ) *
+            (y + 2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)))) :=
+          hQd _ (dyadic_add_mapsTo_verticalStrip a b d hy)
+    _ = Qd (Complex.exp (((2 ^ d : ℕ) : ℂ) * y)) := by
+      rw [dyadic_exp_power_add_period]
+    _ = q y := (hQd y hy).symm
+
+/-- **The log-cover scaling coordinate is nonzero in the meromorphic field.**  If an analytic
+carrier element is represented by `exp ∘ φ`, then it is pointwise nonzero on every nonempty carrier,
+so its image in `meroField U` is nonzero by fraction-field faithfulness.  This discharges the
+`F ≠ 0` input in the additive/log-cover hDisc bridge. -/
+theorem exp_comp_algebraMap_ne_zero {U : Set ℂ} {φ : ℂ → ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (a : analyticSubring U)
+    (ha : (a : Germ (𝓟 U) ℂ) = ↑(Complex.exp ∘ φ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    algebraMap (analyticSubring U) (meroField U) a ≠ 0 := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  intro h
+  have hmap0 : algebraMap (analyticSubring U) (meroField U) a
+      = algebraMap (analyticSubring U) (meroField U) 0 := by
+    simpa using h
+  have ha0 : a = 0 :=
+    (IsFractionRing.injective (analyticSubring U) (meroField U)) hmap0
+  have hgerm : (a : Germ (𝓟 U) ℂ) = 0 := congrArg Subtype.val ha0
+  rw [ha, ← Germ.coe_zero, Germ.coe_eq] at hgerm
+  obtain ⟨z, hz⟩ := hUne
+  exact Complex.exp_ne_zero (φ z) (Filter.eventually_principal.mp hgerm z hz)
+
+/-- **Dyadic vertical-strip quotient projection ⟹ hDisc, with `exp ∘ φ ≠ 0` automatic.**  This is
+the strongest current log-cover interface: the first coordinate is the exponential of the
+uniformizing coordinate, so its nonvanishing is proved here rather than supplied as a hypothesis.
+The remaining hdisc-side inputs are the projection-base transcendence, the base-pulled-back second
+coordinate, and the dyadic quotient factorization of the projection. -/
+theorem hDisc_of_dyadic_verticalStrip_expPower_projection_base_tower_auto_nonzero {U : Set ℂ}
+    {a b : ℝ} {φ ψ π q base : ℂ → ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑π) (hπinf : (π '' U).Infinite)
+    (H : LiftUniformization U {w : ℂ | a < w.re ∧ w.re < b} φ ψ)
+    (hπfactor : ∀ z ∈ U, π z = q (φ z))
+    (a₁ a₂ : analyticSubring U) {f₂ : ℂ → ℂ}
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = ↑(Complex.exp ∘ φ))
+    (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = ↑f₂)
+    (hGtr :
+      letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+      letI : Algebra (RatFunc ℂ) (meroField U) :=
+        (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+      Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂))
+    (hF2base : ∀ z ∈ U, f₂ z = base (π z))
+    (hqFactor : ∀ d : ℕ, ∃ Qd : ℂ → ℂ,
+      ∀ y ∈ {w : ℂ | a < w.re ∧ w.re < b},
+        q y = Qd (Complex.exp (((2 ^ d : ℕ) : ℂ) * y))) :
+    letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) :=
+      (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hπinf hUo hUc hUne).toAlgebra
+  refine hDisc_of_periodic_projection_base_tower hUo hUc hUne hp0 hπinf a₁ a₂ ha₁ ha₂
+    (exp_comp_algebraMap_ne_zero hUo hUc hUne a₁ ha₁) hGtr hF2base ?_
+  exact dyadic_verticalStrip_zfixing_deck_tower_data H hπfactor hqFactor
 
 end Bottcher

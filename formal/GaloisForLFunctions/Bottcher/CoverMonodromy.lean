@@ -196,6 +196,58 @@ theorem deckGerm₂_v1 {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
 theorem deckGerm₂_z {ζ : ℂ} (hζ : ζ ^ (2 ^ m) = 1) :
     deckGerm₂ hζ (zGerm : coverGerm c₁ c₂ n m) = zGerm := rfl
 
+/-- **`σ'_m` as a ring automorphism** of the cover germ ring, inverse to the deck with multiplier
+`ζ⁻¹`.  This is the symmetric field-6 germ carrier for the `c₂`-monodromy: it fixes `z` and `v₁`,
+and scales `v₂`. -/
+noncomputable def deckGermEquiv₂ {ζ : ℂ} (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ m) = 1) :
+    coverGerm c₁ c₂ n m ≃+* coverGerm c₁ c₂ n m where
+  toFun := deckGerm₂ hpow
+  invFun := deckGerm₂ (inv_pow_eq_one (n := m) hpow)
+  left_inv g := by
+    induction g using Germ.inductionOn with
+    | _ F =>
+      have hp : ∀ p, deckMap₂ ζ (deckMap₂ ζ⁻¹ p) = p := by
+        intro p
+        rw [← Function.comp_apply (f := deckMap₂ ζ), deckMap₂_comp, mul_inv_cancel₀ hζ]
+        simp [deckMap₂]
+      have hfun : (F ∘ deckMap₂ ζ) ∘ deckMap₂ ζ⁻¹ = F := by
+        funext p; simp only [Function.comp_apply, hp]
+      simp only [deckGerm₂, Germ.coe_compTendsto, hfun]
+  right_inv g := by
+    induction g using Germ.inductionOn with
+    | _ F =>
+      have hp : ∀ p, deckMap₂ ζ⁻¹ (deckMap₂ ζ p) = p := by
+        intro p
+        rw [← Function.comp_apply (f := deckMap₂ ζ⁻¹), deckMap₂_comp, inv_mul_cancel₀ hζ]
+        simp [deckMap₂]
+      have hfun : (F ∘ deckMap₂ ζ⁻¹) ∘ deckMap₂ ζ = F := by
+        funext p; simp only [Function.comp_apply, hp]
+      simp only [deckGerm₂, Germ.coe_compTendsto, hfun]
+  map_mul' g₁ g₂ := by
+    induction g₁ using Germ.inductionOn with
+    | _ F₁ => induction g₂ using Germ.inductionOn with
+      | _ F₂ => simp only [deckGerm₂, ← Germ.coe_mul, Germ.coe_compTendsto]; rfl
+  map_add' g₁ g₂ := by
+    induction g₁ using Germ.inductionOn with
+    | _ F₁ => induction g₂ using Germ.inductionOn with
+      | _ F₂ => simp only [deckGerm₂, ← Germ.coe_add, Germ.coe_compTendsto]; rfl
+
+@[simp] theorem deckGermEquiv₂_v2 {ζ : ℂ} (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ m) = 1) :
+    deckGermEquiv₂ hζ hpow (v2Germ : coverGerm c₁ c₂ n m)
+      = (ζ : coverGerm c₁ c₂ n m) * v2Germ := rfl
+
+@[simp] theorem deckGermEquiv₂_v1 {ζ : ℂ} (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ m) = 1) :
+    deckGermEquiv₂ hζ hpow (v1Germ : coverGerm c₁ c₂ n m) = v1Germ := rfl
+
+@[simp] theorem deckGermEquiv₂_z {ζ : ℂ} (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ m) = 1) :
+    deckGermEquiv₂ hζ hpow (zGerm : coverGerm c₁ c₂ n m) = zGerm := rfl
+
+/-- The `c₂` deck fixes every constant, hence fixes its multiplier. -/
+theorem deckGermEquiv₂_const {ζ : ℂ} (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ m) = 1) (a : ℂ) :
+    deckGermEquiv₂ hζ hpow ((a : coverGerm c₁ c₂ n m)) = (a : coverGerm c₁ c₂ n m) := by
+  show deckGerm₂ hpow (a : coverGerm c₁ c₂ n m) = a
+  simp only [deckGerm₂, Germ.const_compTendsto]
+
 end Bottcher
 
 namespace Bottcher
@@ -228,6 +280,46 @@ theorem exists_dyadic_order_gt_coverGerm (c₁ c₂ : ℂ) (n m : ℕ) (d : ℕ)
       orderOf ((ζ : coverGerm c₁ c₂ n m)) = 2 ^ k ∧ d < 2 ^ k := by
   obtain ⟨k, ζ, hpow, hne, hord, hd⟩ := exists_dyadic_order_gt d
   exact ⟨k, ζ, hpow, hne, by rw [orderOf_const_coverGerm]; exact hord, hd⟩
+
+/-- **Cover-germ `monoF` coordinate datum.**  For every bound `d`, the common pullback cover at a
+deep enough `c₁`-level carries a genuine z-fixing deck automorphism: it fixes `z` and `v₂`, fixes its
+constant multiplier, and scales `v₁` by a multiplier whose order exceeds `d`.  This is the
+coordinate-level disconnected monodromy loop before passage to the connected meromorphic field
+carrier. -/
+theorem coverGerm_monoF_datum (c₁ c₂ : ℂ) (m d : ℕ) :
+    ∃ (k : ℕ) (ζ : ℂ) (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ k) = 1),
+      d < orderOf ((ζ : coverGerm c₁ c₂ k m)) ∧
+      deckGermEquiv hζ hpow (zGerm : coverGerm c₁ c₂ k m) = zGerm ∧
+      deckGermEquiv hζ hpow (v2Germ : coverGerm c₁ c₂ k m) = v2Germ ∧
+      deckGermEquiv hζ hpow ((ζ : coverGerm c₁ c₂ k m)) = (ζ : coverGerm c₁ c₂ k m) ∧
+      deckGermEquiv hζ hpow (v1Germ : coverGerm c₁ c₂ k m)
+        = (ζ : coverGerm c₁ c₂ k m) * v1Germ := by
+  obtain ⟨k, ζ, hpow, hζ, hord, hd⟩ := exists_dyadic_order_gt d
+  have hcarrier : orderOf ((ζ : coverGerm c₁ c₂ k m)) = 2 ^ k := by
+    rw [orderOf_const_coverGerm]
+    exact hord
+  refine ⟨k, ζ, hζ, hpow, ?_, deckGermEquiv_z hζ hpow, deckGermEquiv_v2 hζ hpow,
+    deckGermEquiv_const hζ hpow ζ, deckGermEquiv_v1 hζ hpow⟩
+  rwa [hcarrier]
+
+/-- **Cover-germ `monoG` coordinate datum.**  Symmetric to `coverGerm_monoF_datum`: at a deep enough
+`c₂`-level the second deck fixes `z` and `v₁`, fixes its constant multiplier, and scales `v₂` by
+unbounded dyadic order. -/
+theorem coverGerm_monoG_datum (c₁ c₂ : ℂ) (n d : ℕ) :
+    ∃ (k : ℕ) (ζ : ℂ) (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ k) = 1),
+      d < orderOf ((ζ : coverGerm c₁ c₂ n k)) ∧
+      deckGermEquiv₂ hζ hpow (zGerm : coverGerm c₁ c₂ n k) = zGerm ∧
+      deckGermEquiv₂ hζ hpow (v1Germ : coverGerm c₁ c₂ n k) = v1Germ ∧
+      deckGermEquiv₂ hζ hpow ((ζ : coverGerm c₁ c₂ n k)) = (ζ : coverGerm c₁ c₂ n k) ∧
+      deckGermEquiv₂ hζ hpow (v2Germ : coverGerm c₁ c₂ n k)
+        = (ζ : coverGerm c₁ c₂ n k) * v2Germ := by
+  obtain ⟨k, ζ, hpow, hζ, hord, hd⟩ := exists_dyadic_order_gt d
+  have hcarrier : orderOf ((ζ : coverGerm c₁ c₂ n k)) = 2 ^ k := by
+    rw [orderOf_const_coverGerm]
+    exact hord
+  refine ⟨k, ζ, hζ, hpow, ?_, deckGermEquiv₂_z hζ hpow, deckGermEquiv₂_v1 hζ hpow,
+    deckGermEquiv₂_const hζ hpow ζ, deckGermEquiv₂_v2 hζ hpow⟩
+  rwa [hcarrier]
 
 end Bottcher
 

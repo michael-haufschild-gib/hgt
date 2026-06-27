@@ -12,6 +12,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | Lines | File |
 |---:|---|
 | 1475 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
+| 1452 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
 | 1267 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean` |
@@ -23,19 +24,18 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1029 | `formal/GaloisForLFunctions/Bottcher/Brolin/FiniteMeasures.lean` |
 | 975 | `formal/GaloisForLFunctions/Bottcher/Brolin/FiniteLimits.lean` |
 | 969 | `formal/GaloisForLFunctions/Bottcher/Q62Assembly.lean` |
+| 943 | `formal/GaloisForLFunctions/Bottcher/ProductCover.lean` |
 | 915 | `formal/GaloisForLFunctions/Bottcher/ModularLambdaCovering.lean` |
+| 915 | `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean` |
+| 886 | `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean` |
 | 855 | `formal/GaloisForLFunctions/U0/U0NaturalBoundary.lean` |
 | 782 | `formal/GaloisForLFunctions/Bottcher/FigureEight.lean` |
 | 780 | `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean` |
 | 769 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetLimit.lean` |
+| 759 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 736 | `formal/GaloisForLFunctions/KreinLangerInertia.lean` |
 | 655 | `formal/GaloisForLFunctions/Bottcher/BranchContinuation.lean` |
 | 646 | `formal/GaloisForLFunctions/Bottcher/ConnectedTranscendence.lean` |
-| 602 | `formal/GaloisForLFunctions/U0/U0Transcendence.lean` |
-| 594 | `formal/GaloisForLFunctions/Bottcher/BasinBranching.lean` |
-| 589 | `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean` |
-| 573 | `formal/GaloisForLFunctions/U0/U0PhiCard.lean` |
-| 562 | `formal/GaloisForLFunctions/Bottcher/BottcherCoord.lean` |
 
 ## Gap Markers
 
@@ -107,8 +107,11 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:80` | remaining input is the geometric deck tower `deck` itself: the closed cylinder loop's monodromy realized |
 | `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:117` | AUTOMATIC (it factors through the deck-invariant periodic base).  The remaining analytic core is |
 | `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:138` | pointwise SCALING.  Remaining for the deck: build the strip cover + the lift `F` + the period value. -/ |
-| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:152` | form the remaining disconnected geometry should construct.  On one fixed cover `U`, suppose the deck |
-| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:252` | projection-base machinery.  Thus the remaining analytic work is exactly the uniformized annulus plus |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:308` | form the remaining disconnected geometry should construct.  On one fixed cover `U`, suppose the deck |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:408` | projection-base machinery.  Thus the remaining analytic work is exactly the uniformized annulus plus |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:562` | `τ_d = 2πi / 2^d`.  The only remaining geometric hypotheses are that these translations and their |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:639` | `2πi/2^d` and their inverses automatically stay in the region (`re` is unchanged).  The remaining |
+| `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:853` | The remaining hdisc-side inputs are the projection-base transcendence, the base-pulled-back second |
 | `formal/GaloisForLFunctions/Bottcher/CylinderUnivalence.lean:4` | The single remaining analytic input of the disconnected/disconnected case (STATUS.md "Disconnected |
 | `formal/GaloisForLFunctions/Bottcher/CylinderUnivalence.lean:48` | (hypothesis), composed via `InjOn.comp`. The single remaining cylinder input becomes: each |
 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulus.lean:136` | `NoRelation(φ_{c₁}, φ_{c₂})` since `a₁^{2ⁿ} = φ_{c₁}`).  The sole remaining inputs are now isolated: |
@@ -161,6 +164,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/OmittingNormal.lean:12` | the family `f_n` is normal. The only remaining input to three-value Montel is then the **covering μ |
 | `formal/GaloisForLFunctions/Bottcher/PeriodicPoints.lean:64` | remaining Fatou-density content.) -/ |
 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:235` | far field — with the only remaining input a geometric one: the connected far-field region `V` reaching the |
+| `formal/GaloisForLFunctions/Bottcher/ProductCover.lean:799` | `meroFieldGen` version of the disconnected/disconnected hdisc assembly; the remaining geometric input |
 | `formal/GaloisForLFunctions/Bottcher/Q62.lean:26` | by monodromy / blocked at the boundary), `G` the role of `φ_{c₂}`. -/ |
 | `formal/GaloisForLFunctions/Bottcher/Q62Assembly.lean:82` | `constToAnalytic_compTendsto`). The only remaining input is the lift data itself (the analytic |
 | `formal/GaloisForLFunctions/Bottcher/Q62Assembly.lean:168` | `noRelation_meroField_of_monodromy` → `q62_disconnected_both`) is machine-checked; the *only* remaining |
@@ -179,6 +183,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:289` | a distinct obstruction — the genuine remaining frontier). -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:375` | axiom-clean; the sole remaining input is the *existence* of such a repelling cycle — Fatou's classical |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:118` | input `TranscendentalOverAdjoin φ_{c₁} φ_{c₂}`. The remaining inputs are now exactly: the per-level |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:1410` | hRigid interface in this file: nonresonance is derived from `(2^p : ℝ) < ‖λ‖`, and the remaining callback |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedPoint.lean:103` | point in the Julia set, for all non-exceptional `c ≠ 1/4`. The remaining data (non-resonance, location off |
 | `formal/GaloisForLFunctions/Bottcher/ResonanceOrder.lean:13` | no continuation of `φ_c` across a non-resonant repelling periodic point. The only remaining global |
 | `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean:18` | `D₆ ≡ 0 ⟹ ThetaWronskian23`. The remaining (modular) input is the vanishing `D₆ ≡ 0`. |

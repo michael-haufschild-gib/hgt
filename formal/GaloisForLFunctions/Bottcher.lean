@@ -153,3 +153,4 @@ import GaloisForLFunctions.Bottcher.BasinColimit
 import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranch
 
 import GaloisForLFunctions.Bottcher.AnalyticRoot
+import GaloisForLFunctions.Bottcher.HDiscLoopDeck

@@ -12,6 +12,8 @@ not just `ℂ`. This file proves that general domain property; the rest of `Mero
 construction (germ subring → `FractionRing` → precomposition deck) is `E`-agnostic and lifts on top.
 -/
 import GaloisForLFunctions.Bottcher.MeromorphicField
+import GaloisForLFunctions.Bottcher.CoverMonodromy
+import GaloisForLFunctions.Bottcher.Q62
 
 open Filter Topology
 
@@ -221,5 +223,721 @@ theorem precompMeroEquivGen_algebraMap {g g' : E → E}
           (precompAnalyticEquivGen U hg hg' hmaps hmaps' hgg' hg'g a) := by
   haveI := isDomain_analyticSubringGen U hUo hUc hUne
   exact IsFractionRing.ringEquivOfRingEquiv_algebraMap _ a
+
+/-- Constant functions as analytic germs on a several-variable carrier. -/
+noncomputable def constToAnalyticGen : ℂ →+* analyticSubringGen U :=
+  ((Germ.coeRingHom (𝓟 U)).comp (Pi.ringHom (fun _ : E => RingHom.id ℂ))).codRestrict
+    (analyticSubringGen U) (fun a => ⟨fun _ => a, analyticOnNhd_const, rfl⟩)
+
+/-- Constants are fixed by every precomposition operator. -/
+theorem constToAnalyticGen_compTendsto {g : E → E} (h : Filter.Tendsto g (𝓟 U) (𝓟 U))
+    (ζ₀ : ℂ) :
+    ((constToAnalyticGen U ζ₀ : analyticSubringGen U) : Germ (𝓟 U) ℂ).compTendsto g h
+      = ((constToAnalyticGen U ζ₀ : analyticSubringGen U) : Germ (𝓟 U) ℂ) := by
+  show (↑(fun _ : E => ζ₀) : Germ (𝓟 U) ℂ).compTendsto g h = ↑(fun _ : E => ζ₀)
+  rw [Germ.coe_compTendsto]
+  rfl
+
+/-- The analytic-germ precomposition operator fixes constants. -/
+theorem precompAnalyticGen_constToAnalyticGen {g : E → E} (hg : AnalyticOnNhd ℂ g U)
+    (hmaps : Set.MapsTo g U U) (c : ℂ) :
+    precompAnalyticGen U hg hmaps (constToAnalyticGen U c) = constToAnalyticGen U c := by
+  apply Subtype.ext
+  rw [precompAnalyticGen_coe]
+  exact constToAnalyticGen_compTendsto U (tendsto_principal_principal.mpr hmaps) c
+
+/-- The constant multiplier keeps its order after embedding in the several-variable meromorphic
+field. -/
+theorem orderOf_algebraMap_constToAnalyticGen [IsDomain (analyticSubringGen U)] (ζ₀ : ℂ) :
+    orderOf (algebraMap (analyticSubringGen U) (meroFieldGen U) (constToAnalyticGen U ζ₀))
+      = orderOf ζ₀ := by
+  let f : ℂ →+* meroFieldGen U :=
+    (algebraMap (analyticSubringGen U) (meroFieldGen U)).comp (constToAnalyticGen U)
+  exact orderOf_injective f.toMonoidHom f.injective ζ₀
+
+/-- Upgrade a `g`-invariant analytic germ to a fixed meromorphic field element. -/
+theorem precompMeroEquivGen_algebraMap_fix {g g' : E → E}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {a : analyticSubringGen U}
+    (ha : (a : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+            = (a : Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap (analyticSubringGen U) (meroFieldGen U) a)
+      = algebraMap (analyticSubringGen U) (meroFieldGen U) a := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  rw [precompMeroEquivGen_algebraMap,
+    precompAnalyticEquivGen_apply_of_invariant U hg hg' hmaps hmaps' hgg' hg'g ha]
+
+/-- Upgrade a relatively-invariant analytic germ to a scaled meromorphic field element. -/
+theorem precompMeroEquivGen_algebraMap_scale {g g' : E → E}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (ζ₀ : ℂ) {a : analyticSubringGen U}
+    (ha : (a : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+            = ((constToAnalyticGen U ζ₀ : analyticSubringGen U) : Germ (𝓟 U) ℂ)
+              * (a : Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap (analyticSubringGen U) (meroFieldGen U) a)
+      = algebraMap (analyticSubringGen U) (meroFieldGen U) (constToAnalyticGen U ζ₀)
+        * algebraMap (analyticSubringGen U) (meroFieldGen U) a := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  have hscale : precompAnalyticEquivGen U hg hg' hmaps hmaps' hgg' hg'g a
+      = constToAnalyticGen U ζ₀ * a := by
+    apply Subtype.ext
+    show ((precompAnalyticGen U hg hmaps a : analyticSubringGen U) : Germ (𝓟 U) ℂ) = _
+    rw [precompAnalyticGen_coe, ha, MulMemClass.coe_mul]
+  rw [precompMeroEquivGen_algebraMap, hscale, map_mul]
+
+/-- The several-variable meromorphic deck automorphism as a `K`-algebra automorphism, once the deck
+fixes the embedded base field. -/
+noncomputable def precompMeroAlgEquivGen {g g' : E → E}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {K : Type*} [Field K] [Algebra K (meroFieldGen U)]
+    (hK : ∀ k : K, precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+            (algebraMap K (meroFieldGen U) k) = algebraMap K (meroFieldGen U) k) :
+    meroFieldGen U ≃ₐ[K] meroFieldGen U :=
+  AlgEquiv.ofRingEquiv hK
+
+/-- **Several-variable `monoF` witness.**  A z-fixing/product-cover deck self-biholomorphism with
+`a₁ ∘ g = ζ₀ a₁`, `a₂ ∘ g = a₂`, and base-field fixing gives the exact `monoF` tuple over
+`meroFieldGen U`. -/
+theorem monoF_witness_gen
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {K : Type*} [Field K] [Algebra K (meroFieldGen U)]
+    (a₁ a₂ : analyticSubringGen U) (d : ℕ) (ζ₀ : ℂ) {g g' : E → E}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hord : d < orderOf ζ₀)
+    (hscale : (a₁ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+        = ((constToAnalyticGen U ζ₀ : analyticSubringGen U) : Germ (𝓟 U) ℂ)
+          * (a₁ : Germ (𝓟 U) ℂ))
+    (hinv : (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+        = (a₂ : Germ (𝓟 U) ℂ))
+    (hK : ∀ k : K, precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap K (meroFieldGen U) k) = algebraMap K (meroFieldGen U) k) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    ∃ (σ : meroFieldGen U ≃ₐ[K] meroFieldGen U) (ζ : meroFieldGen U) (m : ℕ),
+      d < m ∧ orderOf ζ = m ∧
+      σ (algebraMap (analyticSubringGen U) (meroFieldGen U) a₂)
+        = algebraMap (analyticSubringGen U) (meroFieldGen U) a₂ ∧
+      σ ζ = ζ ∧
+      σ (algebraMap (analyticSubringGen U) (meroFieldGen U) a₁)
+        = ζ * algebraMap (analyticSubringGen U) (meroFieldGen U) a₁ := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  refine ⟨precompMeroAlgEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne hK,
+    algebraMap (analyticSubringGen U) (meroFieldGen U) (constToAnalyticGen U ζ₀), orderOf ζ₀,
+    hord, orderOf_algebraMap_constToAnalyticGen U ζ₀, ?_, ?_, ?_⟩
+  · show precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap _ _ a₂) = algebraMap _ _ a₂
+    exact precompMeroEquivGen_algebraMap_fix U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne hinv
+  · show precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap _ _ (constToAnalyticGen U ζ₀)) = algebraMap _ _ (constToAnalyticGen U ζ₀)
+    exact precompMeroEquivGen_algebraMap_fix U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+      (constToAnalyticGen_compTendsto U (tendsto_principal_principal.mpr hmaps) ζ₀)
+  · show precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap _ _ a₁) = _
+    exact precompMeroEquivGen_algebraMap_scale U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+      ζ₀ hscale
+
+/-- **Several-variable `monoG` witness.**  The symmetric scaling deck tuple for the second coordinate
+over `meroFieldGen U`. -/
+theorem monoG_witness_gen
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {K : Type*} [Field K] [Algebra K (meroFieldGen U)]
+    (a₂ : analyticSubringGen U) (d : ℕ) (ζ₀ : ℂ) {g g' : E → E}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hord : d < orderOf ζ₀)
+    (hscale : (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+        = ((constToAnalyticGen U ζ₀ : analyticSubringGen U) : Germ (𝓟 U) ℂ)
+          * (a₂ : Germ (𝓟 U) ℂ))
+    (hK : ∀ k : K, precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap K (meroFieldGen U) k) = algebraMap K (meroFieldGen U) k) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    ∃ (σ : meroFieldGen U ≃ₐ[K] meroFieldGen U) (ζ : meroFieldGen U),
+      d < orderOf ζ ∧ σ ζ = ζ ∧
+      σ (algebraMap (analyticSubringGen U) (meroFieldGen U) a₂)
+        = ζ * algebraMap (analyticSubringGen U) (meroFieldGen U) a₂ := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  refine ⟨precompMeroAlgEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne hK,
+    algebraMap (analyticSubringGen U) (meroFieldGen U) (constToAnalyticGen U ζ₀), ?_, ?_, ?_⟩
+  · rw [orderOf_algebraMap_constToAnalyticGen U]; exact hord
+  · show precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap _ _ (constToAnalyticGen U ζ₀)) = algebraMap _ _ (constToAnalyticGen U ζ₀)
+    exact precompMeroEquivGen_algebraMap_fix U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+      (constToAnalyticGen_compTendsto U (tendsto_principal_principal.mpr hmaps) ζ₀)
+  · show precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap _ _ a₂) = _
+    exact precompMeroEquivGen_algebraMap_scale U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+      ζ₀ hscale
+
+/-- Projection-base embedding `ℂ[z] → analyticSubringGen U`, via an analytic projection germ `p₀`.
+This is the several-variable analogue of `polyToAnalyticVia`: on a product cover, `p₀` is the
+deck-invariant base coordinate `z`. -/
+noncomputable def polyToAnalyticViaGen (p₀ : analyticSubringGen U) :
+    Polynomial ℂ →+* analyticSubringGen U :=
+  Polynomial.eval₂RingHom (constToAnalyticGen U) p₀
+
+@[simp] theorem polyToAnalyticViaGen_X (p₀ : analyticSubringGen U) :
+    polyToAnalyticViaGen U p₀ Polynomial.X = p₀ := by simp [polyToAnalyticViaGen]
+
+@[simp] theorem polyToAnalyticViaGen_C (p₀ : analyticSubringGen U) (a : ℂ) :
+    polyToAnalyticViaGen U p₀ (Polynomial.C a) = constToAnalyticGen U a := by
+  simp [polyToAnalyticViaGen]
+
+/-- The several-variable precomposition operator fixes the whole projection base when it fixes the
+projection germ `p₀`. -/
+theorem precompAnalyticGen_polyToAnalyticViaGen_fix {g : E → E}
+    (hg : AnalyticOnNhd ℂ g U) (hmaps : Set.MapsTo g U U) {p₀ : analyticSubringGen U}
+    (hp0 : precompAnalyticGen U hg hmaps p₀ = p₀) (q : Polynomial ℂ) :
+    precompAnalyticGen U hg hmaps (polyToAnalyticViaGen U p₀ q)
+      = polyToAnalyticViaGen U p₀ q := by
+  have hcomp : (precompAnalyticGen U hg hmaps).comp (polyToAnalyticViaGen U p₀)
+      = polyToAnalyticViaGen U p₀ := by
+    apply Polynomial.ringHom_ext
+    · intro a
+      simp only [RingHom.comp_apply, polyToAnalyticViaGen_C]
+      exact precompAnalyticGen_constToAnalyticGen U hg hmaps a
+    · simp only [RingHom.comp_apply, polyToAnalyticViaGen_X]
+      exact hp0
+  exact RingHom.congr_fun hcomp q
+
+/-- Germ of the projection-base embedding: `q ↦ q(p₀)`. -/
+theorem polyToAnalyticViaGen_coe (p₀ : analyticSubringGen U) {f₀ : E → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (q : Polynomial ℂ) :
+    ((polyToAnalyticViaGen U p₀ q : analyticSubringGen U) : Germ (𝓟 U) ℂ)
+      = ↑(fun z => q.eval (f₀ z)) := by
+  induction q using Polynomial.induction_on with
+  | C a =>
+    rw [polyToAnalyticViaGen_C]
+    show ((constToAnalyticGen U a : analyticSubringGen U) : Germ (𝓟 U) ℂ) = _
+    apply Germ.coe_eq.mpr
+    exact Filter.eventually_principal.mpr (fun _ _ => by simp [Polynomial.eval_C])
+  | add p r hp hr =>
+    rw [map_add, Subring.coe_add, hp, hr, ← Germ.coe_add]
+    apply Germ.coe_eq.mpr
+    exact Filter.eventually_principal.mpr (fun _ _ => by simp [Polynomial.eval_add])
+  | monomial n a _ =>
+    rw [map_mul, map_pow, polyToAnalyticViaGen_C, polyToAnalyticViaGen_X, Subring.coe_mul,
+        SubmonoidClass.coe_pow]
+    have h1 : ((constToAnalyticGen U a : analyticSubringGen U) : Germ (𝓟 U) ℂ)
+        = ↑(fun _ : E => a) := rfl
+    rw [h1, hp0, ← Germ.coe_pow, ← Germ.coe_mul]
+    apply Germ.coe_eq.mpr
+    exact Filter.eventually_principal.mpr (fun _ _ => by
+      simp [Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_C, Polynomial.eval_X])
+
+/-- The projection-base polynomial embedding is injective when the projection has infinite image. -/
+theorem polyToAnalyticViaGen_injective (p₀ : analyticSubringGen U) {f₀ : E → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite) :
+    Function.Injective (polyToAnalyticViaGen U p₀) := by
+  rw [injective_iff_map_eq_zero]
+  intro q hq
+  have hg : ((polyToAnalyticViaGen U p₀ q : analyticSubringGen U) : Germ (𝓟 U) ℂ) = 0 := by
+    rw [hq]
+    exact ZeroMemClass.coe_zero _
+  rw [polyToAnalyticViaGen_coe U p₀ hp0, ← Germ.coe_zero, Germ.coe_eq] at hg
+  have hroots : f₀ '' U ⊆ {x | q.IsRoot x} := by
+    rintro x ⟨z, hz, rfl⟩
+    exact Filter.eventually_principal.mp hg z hz
+  exact Polynomial.eq_zero_of_infinite_isRoot q (hinf.mono hroots)
+
+/-- `ℂ[z] → meroFieldGen U` via a projection germ. -/
+noncomputable def polyToMeroViaGen (p₀ : analyticSubringGen U) :
+    Polynomial ℂ →+* meroFieldGen U :=
+  (algebraMap (analyticSubringGen U) (meroFieldGen U)).comp (polyToAnalyticViaGen U p₀)
+
+/-- The meromorphic projection-base polynomial embedding is injective when the projection has
+infinite image. -/
+theorem polyToMeroViaGen_injective (p₀ : analyticSubringGen U) {f₀ : E → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (_hUo : IsOpen U) (_hUc : IsPreconnected U) (_hUne : U.Nonempty) :
+    Function.Injective (polyToMeroViaGen U p₀) := by
+  haveI := isDomain_analyticSubringGen U _hUo _hUc _hUne
+  exact (IsFractionRing.injective (analyticSubringGen U) (meroFieldGen U)).comp
+    (polyToAnalyticViaGen_injective U p₀ hp0 hinf)
+
+/-- `K = ℂ(z)` embedded into the several-variable meromorphic field through a deck-invariant
+projection `p₀`. -/
+noncomputable def ratfuncToMeroViaGen (p₀ : analyticSubringGen U) {f₀ : E → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) :
+    RatFunc ℂ →+* meroFieldGen U :=
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  IsFractionRing.lift (polyToMeroViaGen_injective U p₀ hp0 hinf hUo hUc hUne)
+
+/-- Lifting projection-base fixing through the several-variable fraction field. -/
+theorem precompMeroEquivGen_polyToAnalyticViaGen_fix {g g' : E → E}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubringGen U} (hp0 : precompAnalyticGen U hg hmaps p₀ = p₀)
+    (q : Polynomial ℂ) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap (analyticSubringGen U) (meroFieldGen U) (polyToAnalyticViaGen U p₀ q))
+      = algebraMap (analyticSubringGen U) (meroFieldGen U) (polyToAnalyticViaGen U p₀ q) := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  apply precompMeroEquivGen_algebraMap_fix U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+  rw [← precompAnalyticGen_coe U hg hmaps (polyToAnalyticViaGen U p₀ q),
+      precompAnalyticGen_polyToAnalyticViaGen_fix U hg hmaps hp0 q]
+
+/-- The deck fixes the whole `RatFunc ℂ` projection base embedded through `p₀`. -/
+theorem precompMeroEquivGen_ratfuncToMeroViaGen_fix {g g' : E → E}
+    (hg : AnalyticOnNhd ℂ g U) (hg' : AnalyticOnNhd ℂ g' U)
+    (hmaps : Set.MapsTo g U U) (hmaps' : Set.MapsTo g' U U)
+    (hgg' : Set.EqOn (g ∘ g') id U) (hg'g : Set.EqOn (g' ∘ g) id U)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubringGen U} {f₀ : E → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (hfix : precompAnalyticGen U hg hmaps p₀ = p₀) (k : RatFunc ℂ) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (ratfuncToMeroViaGen U p₀ hp0 hinf hUo hUc hUne k)
+      = ratfuncToMeroViaGen U p₀ hp0 hinf hUo hUc hUne k := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  have key : ((precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne).toRingHom).comp
+      (ratfuncToMeroViaGen U p₀ hp0 hinf hUo hUc hUne)
+      = ratfuncToMeroViaGen U p₀ hp0 hinf hUo hUc hUne := by
+    apply IsFractionRing.ringHom_ext (A := Polynomial ℂ)
+    intro p
+    rw [RingHom.comp_apply]
+    rw [show ratfuncToMeroViaGen U p₀ hp0 hinf hUo hUc hUne
+          (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)
+        = polyToMeroViaGen U p₀ p from IsFractionRing.lift_algebraMap _ p]
+    show precompMeroEquivGen U hg hg' hmaps hmaps' hgg' hg'g hUo hUc hUne
+        (algebraMap (analyticSubringGen U) (meroFieldGen U) (polyToAnalyticViaGen U p₀ p))
+      = algebraMap (analyticSubringGen U) (meroFieldGen U) (polyToAnalyticViaGen U p₀ p)
+    exact precompMeroEquivGen_polyToAnalyticViaGen_fix U hg hg' hmaps hmaps' hgg' hg'g
+      hUo hUc hUne hfix p
+  exact RingHom.congr_fun key k
+
+end Bottcher
+
+namespace Bottcher
+
+/-! ## Concrete coordinate germs on the product-cover carrier -/
+
+/-- The base coordinate `z` is analytic on any product-cover piece. -/
+theorem analyticOnNhd_product_z (U : Set (ℂ × ℂ × ℂ)) :
+    AnalyticOnNhd ℂ (fun p : ℂ × ℂ × ℂ => p.1) U := by
+  intro _ _
+  exact analyticAt_fst
+
+/-- The first branch coordinate `v₁` is analytic on any product-cover piece. -/
+theorem analyticOnNhd_product_v1 (U : Set (ℂ × ℂ × ℂ)) :
+    AnalyticOnNhd ℂ (fun p : ℂ × ℂ × ℂ => p.2.1) U := by
+  intro _ _
+  exact analyticAt_fst.comp analyticAt_snd
+
+/-- The second branch coordinate `v₂` is analytic on any product-cover piece. -/
+theorem analyticOnNhd_product_v2 (U : Set (ℂ × ℂ × ℂ)) :
+    AnalyticOnNhd ℂ (fun p : ℂ × ℂ × ℂ => p.2.2) U := by
+  intro _ _
+  exact analyticAt_snd.comp analyticAt_snd
+
+/-- The analytic-germ base coordinate on a product-cover piece. -/
+noncomputable def zCoordGen (U : Set (ℂ × ℂ × ℂ)) : analyticSubringGen U :=
+  ⟨(↑(fun p : ℂ × ℂ × ℂ => p.1) : Germ (𝓟 U) ℂ),
+    fun p : ℂ × ℂ × ℂ => p.1, analyticOnNhd_product_z U, rfl⟩
+
+/-- The analytic-germ first branch coordinate on a product-cover piece. -/
+noncomputable def v1CoordGen (U : Set (ℂ × ℂ × ℂ)) : analyticSubringGen U :=
+  ⟨(↑(fun p : ℂ × ℂ × ℂ => p.2.1) : Germ (𝓟 U) ℂ),
+    fun p : ℂ × ℂ × ℂ => p.2.1, analyticOnNhd_product_v1 U, rfl⟩
+
+/-- The analytic-germ second branch coordinate on a product-cover piece. -/
+noncomputable def v2CoordGen (U : Set (ℂ × ℂ × ℂ)) : analyticSubringGen U :=
+  ⟨(↑(fun p : ℂ × ℂ × ℂ => p.2.2) : Germ (𝓟 U) ℂ),
+    fun p : ℂ × ℂ × ℂ => p.2.2, analyticOnNhd_product_v2 U, rfl⟩
+
+/-- If `v₁` is pointwise nonzero on the carrier, then its meromorphic field element is nonzero. -/
+theorem v1CoordGen_algebraMap_ne_zero_of_forall {U : Set (ℂ × ℂ × ℂ)}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hv1 : ∀ p ∈ U, p.2.1 ≠ 0) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U) ≠ 0 := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  intro h
+  have hmap0 : algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U)
+      = algebraMap (analyticSubringGen U) (meroFieldGen U) 0 := by
+    simpa using h
+  have hv0 : v1CoordGen U = 0 :=
+    (IsFractionRing.injective (analyticSubringGen U) (meroFieldGen U)) hmap0
+  have hgerm : (v1CoordGen U : Germ (𝓟 U) ℂ) = 0 := by
+    exact congrArg Subtype.val hv0
+  rw [show (v1CoordGen U : Germ (𝓟 U) ℂ)
+        = (↑(fun p : ℂ × ℂ × ℂ => p.2.1) : Germ (𝓟 U) ℂ) from rfl,
+      ← Germ.coe_zero, Germ.coe_eq] at hgerm
+  obtain ⟨p, hp⟩ := hUne
+  exact hv1 p hp (Filter.eventually_principal.mp hgerm p hp)
+
+/-- If `v₂` is pointwise nonzero on the carrier, then its meromorphic field element is nonzero. -/
+theorem v2CoordGen_algebraMap_ne_zero_of_forall {U : Set (ℂ × ℂ × ℂ)}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hv2 : ∀ p ∈ U, p.2.2 ≠ 0) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U) ≠ 0 := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  intro h
+  have hmap0 : algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U)
+      = algebraMap (analyticSubringGen U) (meroFieldGen U) 0 := by
+    simpa using h
+  have hv0 : v2CoordGen U = 0 :=
+    (IsFractionRing.injective (analyticSubringGen U) (meroFieldGen U)) hmap0
+  have hgerm : (v2CoordGen U : Germ (𝓟 U) ℂ) = 0 := by
+    exact congrArg Subtype.val hv0
+  rw [show (v2CoordGen U : Germ (𝓟 U) ℂ)
+        = (↑(fun p : ℂ × ℂ × ℂ => p.2.2) : Germ (𝓟 U) ℂ) from rfl,
+      ← Germ.coe_zero, Germ.coe_eq] at hgerm
+  obtain ⟨p, hp⟩ := hUne
+  exact hv2 p hp (Filter.eventually_principal.mp hgerm p hp)
+
+/-- On a piece of the common pullback cover, `v₁` is a nonzero meromorphic field element. -/
+theorem v1CoordGen_algebraMap_ne_zero_of_subset_commonPullback {U : Set (ℂ × ℂ × ℂ)}
+    {c₁ c₂ : ℂ} {n m : ℕ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hsub : U ⊆ commonPullback c₁ c₂ n m) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U) ≠ 0 :=
+  v1CoordGen_algebraMap_ne_zero_of_forall hUo hUc hUne (fun _ hp => (hsub hp).2.1)
+
+/-- On a piece of the common pullback cover, `v₂` is a nonzero meromorphic field element. -/
+theorem v2CoordGen_algebraMap_ne_zero_of_subset_commonPullback {U : Set (ℂ × ℂ × ℂ)}
+    {c₁ c₂ : ℂ} {n m : ℕ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hsub : U ⊆ commonPullback c₁ c₂ n m) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U) ≠ 0 :=
+  v2CoordGen_algebraMap_ne_zero_of_forall hUo hUc hUne (fun _ hp => (hsub hp).2.2.2)
+
+/-- The `c₁` product-cover deck is analytic. -/
+theorem analyticOnNhd_deckMap₁ (ζ : ℂ) (U : Set (ℂ × ℂ × ℂ)) :
+    AnalyticOnNhd ℂ (deckMap₁ ζ) U := by
+  intro _ _
+  exact analyticAt_fst.prod
+    ((analyticAt_const.mul (analyticAt_fst.comp analyticAt_snd)).prod
+      (analyticAt_snd.comp analyticAt_snd))
+
+/-- The `c₂` product-cover deck is analytic. -/
+theorem analyticOnNhd_deckMap₂ (ζ : ℂ) (U : Set (ℂ × ℂ × ℂ)) :
+    AnalyticOnNhd ℂ (deckMap₂ ζ) U := by
+  intro _ _
+  exact analyticAt_fst.prod
+    ((analyticAt_fst.comp analyticAt_snd).prod
+      (analyticAt_const.mul (analyticAt_snd.comp analyticAt_snd)))
+
+/-- `deckMap₁ ζ` followed by `deckMap₁ ζ⁻¹` is the identity. -/
+theorem deckMap₁_comp_inv_eqOn {ζ : ℂ} (hζ : ζ ≠ 0) (U : Set (ℂ × ℂ × ℂ)) :
+    Set.EqOn (deckMap₁ ζ ∘ deckMap₁ ζ⁻¹) id U := by
+  intro p _
+  simp [deckMap₁, hζ]
+
+/-- `deckMap₁ ζ⁻¹` followed by `deckMap₁ ζ` is the identity. -/
+theorem deckMap₁_inv_comp_eqOn {ζ : ℂ} (hζ : ζ ≠ 0) (U : Set (ℂ × ℂ × ℂ)) :
+    Set.EqOn (deckMap₁ ζ⁻¹ ∘ deckMap₁ ζ) id U := by
+  intro p _
+  simp [deckMap₁, hζ]
+
+/-- `deckMap₂ ζ` followed by `deckMap₂ ζ⁻¹` is the identity. -/
+theorem deckMap₂_comp_inv_eqOn {ζ : ℂ} (hζ : ζ ≠ 0) (U : Set (ℂ × ℂ × ℂ)) :
+    Set.EqOn (deckMap₂ ζ ∘ deckMap₂ ζ⁻¹) id U := by
+  intro p _
+  simp [deckMap₂, hζ]
+
+/-- `deckMap₂ ζ⁻¹` followed by `deckMap₂ ζ` is the identity. -/
+theorem deckMap₂_inv_comp_eqOn {ζ : ℂ} (hζ : ζ ≠ 0) (U : Set (ℂ × ℂ × ℂ)) :
+    Set.EqOn (deckMap₂ ζ⁻¹ ∘ deckMap₂ ζ) id U := by
+  intro p _
+  simp [deckMap₂, hζ]
+
+/-- The `c₁` deck fixes the base coordinate. -/
+theorem zCoordGen_deckMap₁ {U : Set (ℂ × ℂ × ℂ)} {ζ : ℂ}
+    (hmaps : Set.MapsTo (deckMap₁ ζ) U U) :
+    (zCoordGen U : Germ (𝓟 U) ℂ).compTendsto (deckMap₁ ζ)
+        (tendsto_principal_principal.mpr hmaps)
+      = (zCoordGen U : Germ (𝓟 U) ℂ) := by
+  change (↑(fun p : ℂ × ℂ × ℂ => p.1) : Germ (𝓟 U) ℂ).compTendsto
+      (deckMap₁ ζ) (tendsto_principal_principal.mpr hmaps)
+    = (↑(fun p : ℂ × ℂ × ℂ => p.1) : Germ (𝓟 U) ℂ)
+  rw [Germ.coe_compTendsto]
+  rfl
+
+/-- The `c₁` deck scales the first branch coordinate. -/
+theorem v1CoordGen_deckMap₁ {U : Set (ℂ × ℂ × ℂ)} {ζ : ℂ}
+    (hmaps : Set.MapsTo (deckMap₁ ζ) U U) :
+    (v1CoordGen U : Germ (𝓟 U) ℂ).compTendsto (deckMap₁ ζ)
+        (tendsto_principal_principal.mpr hmaps)
+      = ((constToAnalyticGen U ζ : analyticSubringGen U) : Germ (𝓟 U) ℂ)
+        * (v1CoordGen U : Germ (𝓟 U) ℂ) := by
+  change (↑(fun p : ℂ × ℂ × ℂ => p.2.1) : Germ (𝓟 U) ℂ).compTendsto
+      (deckMap₁ ζ) (tendsto_principal_principal.mpr hmaps)
+    = (↑(fun _ : ℂ × ℂ × ℂ => ζ) : Germ (𝓟 U) ℂ)
+      * (↑(fun p : ℂ × ℂ × ℂ => p.2.1) : Germ (𝓟 U) ℂ)
+  rw [Germ.coe_compTendsto, ← Germ.coe_mul]
+  rfl
+
+/-- The `c₁` deck fixes the second branch coordinate. -/
+theorem v2CoordGen_deckMap₁ {U : Set (ℂ × ℂ × ℂ)} {ζ : ℂ}
+    (hmaps : Set.MapsTo (deckMap₁ ζ) U U) :
+    (v2CoordGen U : Germ (𝓟 U) ℂ).compTendsto (deckMap₁ ζ)
+        (tendsto_principal_principal.mpr hmaps)
+      = (v2CoordGen U : Germ (𝓟 U) ℂ) := by
+  change (↑(fun p : ℂ × ℂ × ℂ => p.2.2) : Germ (𝓟 U) ℂ).compTendsto
+      (deckMap₁ ζ) (tendsto_principal_principal.mpr hmaps)
+    = (↑(fun p : ℂ × ℂ × ℂ => p.2.2) : Germ (𝓟 U) ℂ)
+  rw [Germ.coe_compTendsto]
+  rfl
+
+/-- The `c₂` deck fixes the base coordinate. -/
+theorem zCoordGen_deckMap₂ {U : Set (ℂ × ℂ × ℂ)} {ζ : ℂ}
+    (hmaps : Set.MapsTo (deckMap₂ ζ) U U) :
+    (zCoordGen U : Germ (𝓟 U) ℂ).compTendsto (deckMap₂ ζ)
+        (tendsto_principal_principal.mpr hmaps)
+      = (zCoordGen U : Germ (𝓟 U) ℂ) := by
+  change (↑(fun p : ℂ × ℂ × ℂ => p.1) : Germ (𝓟 U) ℂ).compTendsto
+      (deckMap₂ ζ) (tendsto_principal_principal.mpr hmaps)
+    = (↑(fun p : ℂ × ℂ × ℂ => p.1) : Germ (𝓟 U) ℂ)
+  rw [Germ.coe_compTendsto]
+  rfl
+
+/-- The `c₂` deck fixes the first branch coordinate. -/
+theorem v1CoordGen_deckMap₂ {U : Set (ℂ × ℂ × ℂ)} {ζ : ℂ}
+    (hmaps : Set.MapsTo (deckMap₂ ζ) U U) :
+    (v1CoordGen U : Germ (𝓟 U) ℂ).compTendsto (deckMap₂ ζ)
+        (tendsto_principal_principal.mpr hmaps)
+      = (v1CoordGen U : Germ (𝓟 U) ℂ) := by
+  change (↑(fun p : ℂ × ℂ × ℂ => p.2.1) : Germ (𝓟 U) ℂ).compTendsto
+      (deckMap₂ ζ) (tendsto_principal_principal.mpr hmaps)
+    = (↑(fun p : ℂ × ℂ × ℂ => p.2.1) : Germ (𝓟 U) ℂ)
+  rw [Germ.coe_compTendsto]
+  rfl
+
+/-- The `c₂` deck scales the second branch coordinate. -/
+theorem v2CoordGen_deckMap₂ {U : Set (ℂ × ℂ × ℂ)} {ζ : ℂ}
+    (hmaps : Set.MapsTo (deckMap₂ ζ) U U) :
+    (v2CoordGen U : Germ (𝓟 U) ℂ).compTendsto (deckMap₂ ζ)
+        (tendsto_principal_principal.mpr hmaps)
+      = ((constToAnalyticGen U ζ : analyticSubringGen U) : Germ (𝓟 U) ℂ)
+        * (v2CoordGen U : Germ (𝓟 U) ℂ) := by
+  change (↑(fun p : ℂ × ℂ × ℂ => p.2.2) : Germ (𝓟 U) ℂ).compTendsto
+      (deckMap₂ ζ) (tendsto_principal_principal.mpr hmaps)
+    = (↑(fun _ : ℂ × ℂ × ℂ => ζ) : Germ (𝓟 U) ℂ)
+      * (↑(fun p : ℂ × ℂ × ℂ => p.2.2) : Germ (𝓟 U) ℂ)
+  rw [Germ.coe_compTendsto, ← Germ.coe_mul]
+  rfl
+
+/-- **The concrete product-cover `c₁` deck supplies `monoF`.**  On any connected open product-cover
+piece invariant under `deckMap₁ ζ₀` and its inverse, the map `(z,v₁,v₂) ↦ (z,ζ₀v₁,v₂)` is a
+z-fixing meromorphic field automorphism: it fixes the second branch coordinate and scales the first. -/
+theorem monoF_witness_product_deckMap₁ {U : Set (ℂ × ℂ × ℂ)}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {K : Type*} [Field K] [Algebra K (meroFieldGen U)]
+    (d : ℕ) (ζ₀ : ℂ) (hζ₀ : ζ₀ ≠ 0)
+    (hmaps : Set.MapsTo (deckMap₁ ζ₀) U U)
+    (hmaps' : Set.MapsTo (deckMap₁ ζ₀⁻¹) U U)
+    (hord : d < orderOf ζ₀)
+    (hK : ∀ k : K,
+      precompMeroEquivGen U (analyticOnNhd_deckMap₁ ζ₀ U) (analyticOnNhd_deckMap₁ ζ₀⁻¹ U)
+        hmaps hmaps' (deckMap₁_comp_inv_eqOn hζ₀ U) (deckMap₁_inv_comp_eqOn hζ₀ U)
+        hUo hUc hUne (algebraMap K (meroFieldGen U) k)
+        = algebraMap K (meroFieldGen U) k) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    ∃ (σ : meroFieldGen U ≃ₐ[K] meroFieldGen U) (ζ : meroFieldGen U) (m : ℕ),
+      d < m ∧ orderOf ζ = m ∧
+      σ (algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U))
+        = algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U) ∧
+      σ ζ = ζ ∧
+      σ (algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U))
+        = ζ * algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U) := by
+  exact monoF_witness_gen U hUo hUc hUne (v1CoordGen U) (v2CoordGen U) d ζ₀
+    (analyticOnNhd_deckMap₁ ζ₀ U) (analyticOnNhd_deckMap₁ ζ₀⁻¹ U)
+    hmaps hmaps' (deckMap₁_comp_inv_eqOn hζ₀ U) (deckMap₁_inv_comp_eqOn hζ₀ U)
+    hord (v1CoordGen_deckMap₁ hmaps) (v2CoordGen_deckMap₁ hmaps) hK
+
+/-- **The concrete product-cover `c₂` deck supplies `monoG`.**  Symmetric to
+`monoF_witness_product_deckMap₁`: `(z,v₁,v₂) ↦ (z,v₁,ζ₀v₂)` scales the second branch coordinate on
+the several-variable meromorphic field. -/
+theorem monoG_witness_product_deckMap₂ {U : Set (ℂ × ℂ × ℂ)}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {K : Type*} [Field K] [Algebra K (meroFieldGen U)]
+    (d : ℕ) (ζ₀ : ℂ) (hζ₀ : ζ₀ ≠ 0)
+    (hmaps : Set.MapsTo (deckMap₂ ζ₀) U U)
+    (hmaps' : Set.MapsTo (deckMap₂ ζ₀⁻¹) U U)
+    (hord : d < orderOf ζ₀)
+    (hK : ∀ k : K,
+      precompMeroEquivGen U (analyticOnNhd_deckMap₂ ζ₀ U) (analyticOnNhd_deckMap₂ ζ₀⁻¹ U)
+        hmaps hmaps' (deckMap₂_comp_inv_eqOn hζ₀ U) (deckMap₂_inv_comp_eqOn hζ₀ U)
+        hUo hUc hUne (algebraMap K (meroFieldGen U) k)
+        = algebraMap K (meroFieldGen U) k) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    ∃ (σ : meroFieldGen U ≃ₐ[K] meroFieldGen U) (ζ : meroFieldGen U),
+      d < orderOf ζ ∧ σ ζ = ζ ∧
+      σ (algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U))
+        = ζ * algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U) := by
+  exact monoG_witness_gen U hUo hUc hUne (v2CoordGen U) d ζ₀
+    (analyticOnNhd_deckMap₂ ζ₀ U) (analyticOnNhd_deckMap₂ ζ₀⁻¹ U)
+    hmaps hmaps' (deckMap₂_comp_inv_eqOn hζ₀ U) (deckMap₂_inv_comp_eqOn hζ₀ U)
+    hord (v2CoordGen_deckMap₂ hmaps) hK
+
+/-- **Product-cover hDisc carrier close.**  On a connected open product-cover piece, the concrete
+z-fixing decks `deckMap₁` and `deckMap₂`, if available with unbounded dyadic order and base-field
+fixing, give `NoRelation` for the two branch-coordinate meromorphic functions.  This is the
+`meroFieldGen` version of the disconnected/disconnected hdisc assembly; the remaining geometric input
+is exactly the construction of such invariant connected cover pieces and their `K = ℂ(z)` embedding. -/
+theorem noRelation_productCover_of_deckMaps {U : Set (ℂ × ℂ × ℂ)}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {K : Type*} [Field K] [Algebra K (meroFieldGen U)]
+    (hF : haveI := isDomain_analyticSubringGen U hUo hUc hUne
+      algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U) ≠ 0)
+    (hG0 : haveI := isDomain_analyticSubringGen U hUo hUc hUne
+      algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U) ≠ 0)
+    (deckF : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (hζ₀ : ζ₀ ≠ 0)
+        (hmaps : Set.MapsTo (deckMap₁ ζ₀) U U)
+        (hmaps' : Set.MapsTo (deckMap₁ ζ₀⁻¹) U U),
+        d < orderOf ζ₀ ∧
+        ∀ k : K,
+          precompMeroEquivGen U (analyticOnNhd_deckMap₁ ζ₀ U) (analyticOnNhd_deckMap₁ ζ₀⁻¹ U)
+            hmaps hmaps' (deckMap₁_comp_inv_eqOn hζ₀ U) (deckMap₁_inv_comp_eqOn hζ₀ U)
+            hUo hUc hUne (algebraMap K (meroFieldGen U) k)
+            = algebraMap K (meroFieldGen U) k)
+    (deckG : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (hζ₀ : ζ₀ ≠ 0)
+        (hmaps : Set.MapsTo (deckMap₂ ζ₀) U U)
+        (hmaps' : Set.MapsTo (deckMap₂ ζ₀⁻¹) U U),
+        d < orderOf ζ₀ ∧
+        ∀ k : K,
+          precompMeroEquivGen U (analyticOnNhd_deckMap₂ ζ₀ U) (analyticOnNhd_deckMap₂ ζ₀⁻¹ U)
+            hmaps hmaps' (deckMap₂_comp_inv_eqOn hζ₀ U) (deckMap₂_inv_comp_eqOn hζ₀ U)
+            hUo hUc hUne (algebraMap K (meroFieldGen U) k)
+            = algebraMap K (meroFieldGen U) k) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    NoRelation K
+      (algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U))
+      (algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U)) := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  refine q62_disconnected_both
+    (algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U))
+    (algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U))
+    hF hG0 ?_ ?_
+  · intro d
+    obtain ⟨ζ₀, hζ₀, hmaps, hmaps', hord, hK⟩ := deckF d
+    exact monoF_witness_product_deckMap₁ hUo hUc hUne d ζ₀ hζ₀ hmaps hmaps' hord hK
+  · intro d
+    obtain ⟨ζ₀, hζ₀, hmaps, hmaps', hord, hK⟩ := deckG d
+    exact monoG_witness_product_deckMap₂ hUo hUc hUne d ζ₀ hζ₀ hmaps hmaps' hord hK
+
+/-- **Product-cover hDisc close with automatic `ℂ(z)` fixing.**  The base field is embedded as
+`ℂ(zCoordGen)` via `ratfuncToMeroViaGen`. Since both concrete deck maps fix `zCoordGen`, the whole
+`RatFunc ℂ` base is fixed automatically; the only deck inputs left are invariant connected carrier
+pieces and unbounded-order multipliers. -/
+theorem noRelation_productCover_projectionBase_of_deckMaps {U : Set (ℂ × ℂ × ℂ)}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hzInf : ((fun p : ℂ × ℂ × ℂ => p.1) '' U).Infinite)
+    (hF :
+      haveI := isDomain_analyticSubringGen U hUo hUc hUne
+      letI : Algebra (RatFunc ℂ) (meroFieldGen U) :=
+        (ratfuncToMeroViaGen U (zCoordGen U) (f₀ := fun p : ℂ × ℂ × ℂ => p.1)
+          rfl hzInf hUo hUc hUne).toAlgebra
+      algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U) ≠ 0)
+    (hG0 :
+      haveI := isDomain_analyticSubringGen U hUo hUc hUne
+      letI : Algebra (RatFunc ℂ) (meroFieldGen U) :=
+        (ratfuncToMeroViaGen U (zCoordGen U) (f₀ := fun p : ℂ × ℂ × ℂ => p.1)
+          rfl hzInf hUo hUc hUne).toAlgebra
+      algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U) ≠ 0)
+    (deckF : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (_hζ₀ : ζ₀ ≠ 0)
+        (_hmaps : Set.MapsTo (deckMap₁ ζ₀) U U)
+        (_hmaps' : Set.MapsTo (deckMap₁ ζ₀⁻¹) U U),
+        d < orderOf ζ₀)
+    (deckG : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (_hζ₀ : ζ₀ ≠ 0)
+        (_hmaps : Set.MapsTo (deckMap₂ ζ₀) U U)
+        (_hmaps' : Set.MapsTo (deckMap₂ ζ₀⁻¹) U U),
+        d < orderOf ζ₀) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroFieldGen U) :=
+      (ratfuncToMeroViaGen U (zCoordGen U) (f₀ := fun p : ℂ × ℂ × ℂ => p.1)
+        rfl hzInf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ)
+      (algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U))
+      (algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U)) := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroFieldGen U) :=
+    (ratfuncToMeroViaGen U (zCoordGen U) (f₀ := fun p : ℂ × ℂ × ℂ => p.1)
+      rfl hzInf hUo hUc hUne).toAlgebra
+  refine noRelation_productCover_of_deckMaps (U := U) (K := RatFunc ℂ)
+    hUo hUc hUne hF hG0 ?_ ?_
+  · intro d
+    obtain ⟨ζ₀, hζ₀, hmaps, hmaps', hord⟩ := deckF d
+    refine ⟨ζ₀, hζ₀, hmaps, hmaps', hord, ?_⟩
+    intro k
+    have hfix : precompAnalyticGen U (analyticOnNhd_deckMap₁ ζ₀ U) hmaps (zCoordGen U)
+        = zCoordGen U := by
+      apply Subtype.ext
+      rw [precompAnalyticGen_coe]
+      exact zCoordGen_deckMap₁ hmaps
+    exact precompMeroEquivGen_ratfuncToMeroViaGen_fix U
+      (analyticOnNhd_deckMap₁ ζ₀ U) (analyticOnNhd_deckMap₁ ζ₀⁻¹ U)
+      hmaps hmaps' (deckMap₁_comp_inv_eqOn hζ₀ U) (deckMap₁_inv_comp_eqOn hζ₀ U)
+      hUo hUc hUne (p₀ := zCoordGen U) (f₀ := fun p : ℂ × ℂ × ℂ => p.1)
+      rfl hzInf hfix k
+  · intro d
+    obtain ⟨ζ₀, hζ₀, hmaps, hmaps', hord⟩ := deckG d
+    refine ⟨ζ₀, hζ₀, hmaps, hmaps', hord, ?_⟩
+    intro k
+    have hfix : precompAnalyticGen U (analyticOnNhd_deckMap₂ ζ₀ U) hmaps (zCoordGen U)
+        = zCoordGen U := by
+      apply Subtype.ext
+      rw [precompAnalyticGen_coe]
+      exact zCoordGen_deckMap₂ hmaps
+    exact precompMeroEquivGen_ratfuncToMeroViaGen_fix U
+      (analyticOnNhd_deckMap₂ ζ₀ U) (analyticOnNhd_deckMap₂ ζ₀⁻¹ U)
+      hmaps hmaps' (deckMap₂_comp_inv_eqOn hζ₀ U) (deckMap₂_inv_comp_eqOn hζ₀ U)
+      hUo hUc hUne (p₀ := zCoordGen U) (f₀ := fun p : ℂ × ℂ × ℂ => p.1)
+      rfl hzInf hfix k
+
+/-- **Product-cover hDisc close on common-pullback pieces.**  If the connected carrier lies inside
+the common pullback cover, then `v₁` and `v₂` are automatically nonzero.  Combined with the
+projection-base version, this leaves only the actual geometric deck inputs: invariant connected
+pieces, infinite base projection, and unbounded z-fixing deck maps. -/
+theorem noRelation_productCover_projectionBase_of_commonPullback_deckMaps
+    {U : Set (ℂ × ℂ × ℂ)} {c₁ c₂ : ℂ} {n m : ℕ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hzInf : ((fun p : ℂ × ℂ × ℂ => p.1) '' U).Infinite)
+    (hsub : U ⊆ commonPullback c₁ c₂ n m)
+    (deckF : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (_hζ₀ : ζ₀ ≠ 0)
+        (_hmaps : Set.MapsTo (deckMap₁ ζ₀) U U)
+        (_hmaps' : Set.MapsTo (deckMap₁ ζ₀⁻¹) U U),
+        d < orderOf ζ₀)
+    (deckG : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (_hζ₀ : ζ₀ ≠ 0)
+        (_hmaps : Set.MapsTo (deckMap₂ ζ₀) U U)
+        (_hmaps' : Set.MapsTo (deckMap₂ ζ₀⁻¹) U U),
+        d < orderOf ζ₀) :
+    haveI := isDomain_analyticSubringGen U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroFieldGen U) :=
+      (ratfuncToMeroViaGen U (zCoordGen U) (f₀ := fun p : ℂ × ℂ × ℂ => p.1)
+        rfl hzInf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ)
+      (algebraMap (analyticSubringGen U) (meroFieldGen U) (v1CoordGen U))
+      (algebraMap (analyticSubringGen U) (meroFieldGen U) (v2CoordGen U)) := by
+  haveI := isDomain_analyticSubringGen U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroFieldGen U) :=
+    (ratfuncToMeroViaGen U (zCoordGen U) (f₀ := fun p : ℂ × ℂ × ℂ => p.1)
+      rfl hzInf hUo hUc hUne).toAlgebra
+  refine noRelation_productCover_projectionBase_of_deckMaps hUo hUc hUne hzInf ?_ ?_ deckF deckG
+  · exact v1CoordGen_algebraMap_ne_zero_of_subset_commonPullback hUo hUc hUne hsub
+  · exact v2CoordGen_algebraMap_ne_zero_of_subset_commonPullback hUo hUc hUne hsub
 
 end Bottcher

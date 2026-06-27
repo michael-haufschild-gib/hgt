@@ -587,3 +587,329 @@ theorem exists_quadratic_inverse_branch (c : ℂ) {U : Set ℂ}
     _ = w := by ring
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Nonvanishing square-root descent on a simply-connected piece.** The local square root supplied by
+`exists_sqrt_pullback_on_simplyConnected` is automatically nowhere zero when the previous level branch is
+nowhere zero. This is the exact nonvanishing datum needed by the global level-root assembly. -/
+theorem exists_sqrt_pullback_on_simplyConnected_nonzero (c : ℂ) (n : ℕ) {V : Set ℂ}
+    (hVsc : IsSimplyConnected V) (hVo : IsOpen V) (hVsub : V ⊆ escapeLevel c (n + 1))
+    (βlevn : ℂ → ℂ) (hβan : AnalyticOnNhd ℂ βlevn (escapeLevel c n))
+    (hβne : ∀ z ∈ escapeLevel c n, βlevn z ≠ 0) :
+    ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s V ∧
+      (∀ z ∈ V, (s z) ^ 2 = βlevn (quadratic c z)) ∧
+      (∀ z ∈ V, s z ≠ 0) := by
+  obtain ⟨s, hsan, hsq⟩ :=
+    exists_sqrt_pullback_on_simplyConnected c n hVsc hVo hVsub βlevn hβan hβne
+  refine ⟨s, hsan, hsq, ?_⟩
+  intro z hz hs0
+  have hfz : quadratic c z ∈ escapeLevel c n := quadratic_mapsTo_escapeLevel c n (hVsub hz)
+  have hzero : βlevn (quadratic c z) = 0 := by
+    have hsqz := hsq z hz
+    simpa [hs0] using hsqz.symm
+  exact (hβne (quadratic c z) hfz) hzero
+
+/-- **Two-chart successor level branch, with nonvanishing.** If two chart roots of `βlev n ∘ f` agree on
+their overlap and are nowhere zero on their charts, their glued successor branch on
+`escapeLevel c (n+1)` is also nowhere zero. This packages the analytic, square, and nonzero data required
+for the next level of the connected Böttcher uniformization. -/
+theorem exists_levelBranch_succ_of_chart_agreement_nonzero (c : ℂ) (n : ℕ)
+    {V₁ V₂ : Set ℂ} (hV₁o : IsOpen V₁) (hV₂o : IsOpen V₂)
+    (hcover : escapeLevel c (n + 1) ⊆ V₁ ∪ V₂)
+    (βlevn : ℂ → ℂ) (s₁ s₂ : ℂ → ℂ)
+    (hs₁an : AnalyticOnNhd ℂ s₁ V₁) (hs₂an : AnalyticOnNhd ℂ s₂ V₂)
+    (hs₁sq : ∀ z ∈ V₁, (s₁ z) ^ 2 = βlevn (quadratic c z))
+    (hs₂sq : ∀ z ∈ V₂, (s₂ z) ^ 2 = βlevn (quadratic c z))
+    (hs₁0 : ∀ z ∈ V₁, s₁ z ≠ 0) (hs₂0 : ∀ z ∈ V₂, s₂ z ≠ 0)
+    (hagree : EqOn s₁ s₂ (V₁ ∩ V₂)) :
+    ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c (n + 1)) ∧
+      (∀ z ∈ escapeLevel c (n + 1), (s z) ^ 2 = βlevn (quadratic c z)) ∧
+      (∀ z ∈ escapeLevel c (n + 1), s z ≠ 0) := by
+  obtain ⟨s, hsan, hs1, hs2⟩ := analyticOnNhd_glue_twoChart hV₁o hV₂o hs₁an hs₂an hagree
+  refine ⟨s, hsan.mono hcover, ?_, ?_⟩
+  · intro z hz
+    rcases hcover hz with hz1 | hz2
+    · rw [hs1 hz1]
+      exact hs₁sq z hz1
+    · rw [hs2 hz2]
+      exact hs₂sq z hz2
+  · intro z hz
+    rcases hcover hz with hz1 | hz2
+    · rw [hs1 hz1]
+      exact hs₁0 z hz1
+    · rw [hs2 hz2]
+      exact hs₂0 z hz2
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Two-chart successor from chart roots alone.** For chart roots of `βlev n ∘ f`, nonvanishing is not an
+extra analytic hypothesis: it follows from the square identities and nonvanishing of `βlev n` on the
+previous escape level. Thus a pair of agreeing chart roots glues directly into the full successor datum
+`(analytic, square law, nonzero)` on `escapeLevel c (n+1)`. -/
+theorem exists_levelBranch_succ_of_chart_roots (c : ℂ) (n : ℕ)
+    {V₁ V₂ : Set ℂ} (hV₁o : IsOpen V₁) (hV₂o : IsOpen V₂)
+    (hcover : escapeLevel c (n + 1) ⊆ V₁ ∪ V₂)
+    (hV₁sub : V₁ ⊆ escapeLevel c (n + 1)) (hV₂sub : V₂ ⊆ escapeLevel c (n + 1))
+    (βlevn : ℂ → ℂ) (hβne : ∀ z ∈ escapeLevel c n, βlevn z ≠ 0)
+    (hroots : ∃ s₁ s₂ : ℂ → ℂ,
+      AnalyticOnNhd ℂ s₁ V₁ ∧ AnalyticOnNhd ℂ s₂ V₂ ∧
+      (∀ z ∈ V₁, (s₁ z) ^ 2 = βlevn (quadratic c z)) ∧
+      (∀ z ∈ V₂, (s₂ z) ^ 2 = βlevn (quadratic c z)) ∧
+      EqOn s₁ s₂ (V₁ ∩ V₂)) :
+    ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c (n + 1)) ∧
+      (∀ z ∈ escapeLevel c (n + 1), (s z) ^ 2 = βlevn (quadratic c z)) ∧
+      (∀ z ∈ escapeLevel c (n + 1), s z ≠ 0) := by
+  obtain ⟨s₁, s₂, hs₁an, hs₂an, hs₁sq, hs₂sq, hagree⟩ := hroots
+  have hs₁0 : ∀ z ∈ V₁, s₁ z ≠ 0 := by
+    intro z hz hs0
+    have hfz : quadratic c z ∈ escapeLevel c n := quadratic_mapsTo_escapeLevel c n (hV₁sub hz)
+    have hzero : βlevn (quadratic c z) = 0 := by
+      have hsqz := hs₁sq z hz
+      simpa [hs0] using hsqz.symm
+    exact (hβne (quadratic c z) hfz) hzero
+  have hs₂0 : ∀ z ∈ V₂, s₂ z ≠ 0 := by
+    intro z hz hs0
+    have hfz : quadratic c z ∈ escapeLevel c n := quadratic_mapsTo_escapeLevel c n (hV₂sub hz)
+    have hzero : βlevn (quadratic c z) = 0 := by
+      have hsqz := hs₂sq z hz
+      simpa [hs0] using hsqz.symm
+    exact (hβne (quadratic c z) hfz) hzero
+  exact exists_levelBranch_succ_of_chart_agreement_nonzero c n hV₁o hV₂o hcover βlevn s₁ s₂
+    hs₁an hs₂an hs₁sq hs₂sq hs₁0 hs₂0 hagree
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Boundary limit nonzero.** The modulus identity on the basin and a basin-side limit at a Julia point
+force the limiting value onto the unit circle, hence it is nonzero. -/
+theorem boundary_limit_ne_zero {c : ℂ} {β : ℂ → ℂ} {z₀ w₀ : ℂ}
+    (hβmod : ∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z))
+    (hz₀ : z₀ ∈ filledJulia c) (hNeBot : (𝓝[(filledJulia c)ᶜ] z₀).NeBot)
+    (hβlim : Tendsto β (𝓝[(filledJulia c)ᶜ] z₀) (𝓝 w₀)) :
+    w₀ ≠ 0 := by
+  intro hw
+  have hnorm := norm_boundary_limit_eq_one hβmod hz₀ hNeBot hβlim
+  rw [hw, norm_zero] at hnorm
+  norm_num at hnorm
+
+/-- **Single-point repelling obstruction with `w₀ ≠ 0` derived from the branch modulus.** This is the
+modulus-strengthened form of `false_of_repelling_branch_global`: callers supply the genuine Böttcher
+modulus on the basin, and the boundary limit's nonvanishing is proved internally. -/
+theorem false_of_repelling_branch_global_modulus {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {c₁ : ℂ}
+    {z₀ w₀ d lam : ℂ} {p : ℕ} {β : ℂ → ℂ}
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
+    (hroot : ∑ i ∈ s, a i z₀ * w₀ ^ i = 0)
+    (hpartial : HasDerivAt (fun w => ∑ i ∈ s, a i z₀ * w ^ i) d w₀) (hd : d ≠ 0)
+    (hz₀ : z₀ ∈ filledJulia c₁)
+    (hNeBot : (𝓝[(filledJulia c₁)ᶜ] z₀).NeBot)
+    (hβlim : Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀))
+    (hβrel : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, ∑ i ∈ s, a i z * (β z) ^ i = 0)
+    (hβne : ∃ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, β z ≠ w₀)
+    (hFz : (quadratic c₁)^[p] z₀ = z₀)
+    (hlam : HasDerivAt ((quadratic c₁)^[p]) lam z₀)
+    (hres : ∀ m : ℕ, 1 ≤ m → lam ^ m ≠ ((2 ^ p : ℕ) : ℂ)) :
+    False := by
+  have hw₀ : w₀ ≠ 0 := boundary_limit_ne_zero hβmod hz₀ hNeBot hβlim
+  exact false_of_repelling_branch_global hβan hβesc ha hroot hpartial hd hw₀ hz₀ hNeBot
+    hβlim hβrel hβne hFz hlam hres
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Slit-free Böttcher modulus on the escape region.** The older modulus theorem is stated on
+`escapeOpen c ∩ slitPlane`; the branch-free Green reconciliation gives the same identity on all of
+`escapeOpen c`. -/
+theorem norm_bottcherCoord_eq_exp_green_escape {c z : ℂ} (hz : z ∈ escapeOpen c) :
+    ‖bottcherCoord c z‖ = Real.exp (greenLimit c z) := by
+  calc
+    ‖bottcherCoord c z‖ = Real.exp (greenLogNorm c z) := by
+      rw [greenLogNorm, Real.exp_log (norm_pos_iff.mpr (bottcherCoord_ne_zero c z))]
+    _ = Real.exp (greenLimit c z) := by
+      rw [greenLogNorm_eq_greenLimit_escape hz]
+
+/-- **Global branch from coherent levels, preserving nonvanishing.** This is the value-exposing version
+of `exists_global_branch_of_coherent_levels`: the same least-level colimit is analytic and anchored on
+`escapeOpen`, and because it agrees pointwise with some nonzero level branch at every basin point, it is
+nonzero on the whole basin. -/
+theorem exists_global_branch_of_coherent_levels_nonzero (c : ℂ) (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n))
+    (hcoherent : ∀ n, ∀ z ∈ escapeLevel c n, βlev (n + 1) z = βlev n z)
+    (hanchor : ∀ z ∈ escapeOpen c, βlev 0 z = bottcherCoord c z)
+    (hne : ∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0) :
+    ∃ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
+      (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) := by
+  have hcoh_le : ∀ {n m : ℕ}, n ≤ m → ∀ z ∈ escapeLevel c n, βlev m z = βlev n z := by
+    intro n m h
+    induction m with
+    | zero => intro z hz; simp [Nat.le_zero.mp h]
+    | succ k ih =>
+      intro z hz
+      rcases Nat.lt_succ_iff_lt_or_eq.mp (Nat.lt_succ_of_le h) with h' | h'
+      · have hk : n ≤ k := Nat.lt_succ_iff.mp h'
+        rw [hcoherent k z (escapeLevel_subset_of_le c hk hz), ih hk z hz]
+      · subst h'; rfl
+  classical
+  set β : ℂ → ℂ := fun z => if h : ∃ n, z ∈ escapeLevel c n then βlev (Nat.find h) z else 0 with hβdef
+  have hβval : ∀ z (n : ℕ), z ∈ escapeLevel c n → β z = βlev n z := by
+    intro z n hz
+    have hex : ∃ k, z ∈ escapeLevel c k := ⟨n, hz⟩
+    have hfind : Nat.find hex ≤ n := Nat.find_le hz
+    have hzfind : z ∈ escapeLevel c (Nat.find hex) := Nat.find_spec hex
+    rw [hβdef]
+    simp only [dif_pos hex]
+    rw [hcoh_le hfind z hzfind]
+  refine ⟨β, ?_, ?_, ?_⟩
+  · intro z hz
+    rw [compl_filledJulia_eq_iUnion_level, Set.mem_iUnion] at hz
+    obtain ⟨n, hzn⟩ := hz
+    have hloc : β =ᶠ[𝓝 z] βlev n := by
+      filter_upwards [(isOpen_escapeLevel c n).mem_nhds hzn] with w hw
+      exact hβval w n hw
+    exact (hanalytic n z hzn).congr hloc.symm
+  · intro z hz
+    have hz0 : z ∈ escapeLevel c 0 := by rw [escapeLevel_zero]; exact hz
+    rw [hβval z 0 hz0, hanchor z hz]
+  · intro z hz
+    rw [compl_filledJulia_eq_iUnion_level, Set.mem_iUnion] at hz
+    obtain ⟨n, hzn⟩ := hz
+    rw [hβval z n hzn]
+    exact hne n z hzn
+
+/-- **Per-level roots assemble to a nonvanishing global branch.** This strengthens
+`exists_global_branch_of_level_roots` by carrying the level-branch nonvanishing through the colimit. -/
+theorem exists_global_branch_of_level_roots_nonzero (c : ℂ) (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c n, (βlev n z) ^ (2 ^ n) = bottcherCoord c ((quadratic c)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z) :
+    ∃ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
+      (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) :=
+  exists_global_branch_of_coherent_levels_nonzero c βlev hanalytic
+    (levelBranch_coherent_of_pow c βlev hanalytic hpow hne hanchorEsc)
+    (fun z hz => hanchorEsc 0 z hz) hne
+
+/-- **Per-level roots assemble to a modulus-carrying global branch.** The nonvanishing colimit plus the
+far-field anchor lets `GlobalBasinBranch.norm_eq_exp_green_basin` spread the Böttcher modulus from
+`escapeOpen` to the whole basin. -/
+theorem exists_global_branch_of_level_roots_modulus (c : ℂ) (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c n, (βlev n z) ^ (2 ^ n) = bottcherCoord c ((quadratic c)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z) :
+    ∃ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
+      (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) := by
+  obtain ⟨β, hβan, hβesc, hβ0⟩ :=
+    exists_global_branch_of_level_roots_nonzero c βlev hanalytic hpow hne hanchorEsc
+  have hβmodE : ∀ z ∈ escapeOpen c, ‖β z‖ = Real.exp (greenFunctionDyn c z) := by
+    intro z hz
+    rw [hβesc z hz, greenFunctionDyn, if_neg (escapeOpen_subset_compl_filledJulia c hz)]
+    exact norm_bottcherCoord_eq_exp_green_escape hz
+  have hmodG : ∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenLimit c z) :=
+    norm_eq_exp_green_basin hβan hβ0 hβmodE
+  refine ⟨β, hβan, hβesc, hβ0, ?_⟩
+  intro z hz
+  rw [hmodG z hz, greenFunctionDyn, if_neg hz]
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The boundary-limit exclusion is automatic from modulus.** If `β` has the Böttcher modulus on the
+basin and tends to `w₀` at a Julia boundary point, then basin values are frequently different from `w₀`.
+Indeed `‖w₀‖ = 1` by the boundary-limit modulus theorem, while every basin point has
+`‖β z‖ = exp(G_c z)` with `G_c z ≠ 0`; equality to `w₀` would force `z ∈ K_c`. -/
+theorem frequently_ne_boundary_limit_of_modulus {c : ℂ} {β : ℂ → ℂ} {z₀ w₀ : ℂ}
+    (hβmod : ∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z))
+    (hz₀ : z₀ ∈ filledJulia c) (hNeBot : (𝓝[(filledJulia c)ᶜ] z₀).NeBot)
+    (hβlim : Tendsto β (𝓝[(filledJulia c)ᶜ] z₀) (𝓝 w₀)) :
+    ∃ᶠ z in 𝓝[(filledJulia c)ᶜ] z₀, β z ≠ w₀ := by
+  haveI := hNeBot
+  have hw_norm : ‖w₀‖ = 1 := norm_boundary_limit_eq_one hβmod hz₀ hNeBot hβlim
+  have hpoint : ∀ z ∈ (filledJulia c)ᶜ, β z ≠ w₀ := by
+    intro z hz heq
+    have hG0 : greenFunctionDyn c z = 0 := by
+      apply Real.exp_injective
+      calc
+        Real.exp (greenFunctionDyn c z) = ‖β z‖ := by rw [hβmod z hz]
+        _ = ‖w₀‖ := by rw [heq]
+        _ = 1 := hw_norm
+        _ = Real.exp 0 := by rw [Real.exp_zero]
+    exact hz ((greenFunctionDyn_eq_zero_iff c z).mp hG0)
+  exact (Filter.eventually_of_mem self_mem_nhdsWithin hpoint).frequently
+
+/-- **Single-point repelling obstruction with both boundary side conditions derived from modulus.** This
+strengthens `false_of_repelling_branch_global_modulus`: neither `w₀ ≠ 0` nor
+`∃ᶠ z, β z ≠ w₀` is an input. Both follow from the basin-wide Böttcher modulus and the basin-side
+boundary limit. -/
+theorem false_of_repelling_branch_global_modulus_auto_ne {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {c₁ : ℂ}
+    {z₀ w₀ d lam : ℂ} {p : ℕ} {β : ℂ → ℂ}
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
+    (hroot : ∑ i ∈ s, a i z₀ * w₀ ^ i = 0)
+    (hpartial : HasDerivAt (fun w => ∑ i ∈ s, a i z₀ * w ^ i) d w₀) (hd : d ≠ 0)
+    (hz₀ : z₀ ∈ filledJulia c₁)
+    (hNeBot : (𝓝[(filledJulia c₁)ᶜ] z₀).NeBot)
+    (hβlim : Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀))
+    (hβrel : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, ∑ i ∈ s, a i z * (β z) ^ i = 0)
+    (hFz : (quadratic c₁)^[p] z₀ = z₀)
+    (hlam : HasDerivAt ((quadratic c₁)^[p]) lam z₀)
+    (hres : ∀ m : ℕ, 1 ≤ m → lam ^ m ≠ ((2 ^ p : ℕ) : ℂ)) :
+    False := by
+  have hβne : ∃ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, β z ≠ w₀ :=
+    frequently_ne_boundary_limit_of_modulus hβmod hz₀ hNeBot hβlim
+  exact false_of_repelling_branch_global_modulus hβan hβesc hβmod ha hroot hpartial hd hz₀ hNeBot
+    hβlim hβrel hβne hFz hlam hres
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Analytic-coefficient relation spreads from any open basin witness.** If the relation function
+`∑ᵢ aᵢ(z) β(z)^i` is analytic on the basin and vanishes on a nonempty open subset of the basin, then it
+vanishes on the whole basin. This is the open-witness version of `relation_eq_zero_basin_analytic`, used
+when the far-field relation is initially known only on the carrier `U`. -/
+theorem relation_eq_zero_basin_analytic_of_open {c : ℂ} {β : ℂ → ℂ} {a : ℕ → ℂ → ℂ}
+    {s : Finset ℕ} {U : Set ℂ}
+    (hUo : IsOpen U) (hUne : U.Nonempty) (hUbasin : U ⊆ (filledJulia c)ᶜ)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) (filledJulia c)ᶜ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c)ᶜ)
+    (hrelU : ∀ z ∈ U, ∑ i ∈ s, a i z * (β z) ^ i = 0) :
+    ∀ z ∈ (filledJulia c)ᶜ, ∑ i ∈ s, a i z * (β z) ^ i = 0 := by
+  have hrelan := analyticOnNhd_relation_analytic ha hβan
+  obtain ⟨u, hu⟩ := hUne
+  have hev : (fun z => ∑ i ∈ s, a i z * (β z) ^ i) =ᶠ[𝓝 u] (fun _ => (0 : ℂ)) := by
+    filter_upwards [hUo.mem_nhds hu] with z hz
+    exact hrelU z hz
+  intro z hz
+  exact (hrelan.eqOn_of_preconnected_of_eventuallyEq analyticOnNhd_const
+    (isPreconnected_compl_filledJulia c) (hUbasin hu) hev) hz
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Basin modulus implies nonvanishing.** A branch carrying the Böttcher modulus on the basin is nowhere
+zero there, since `Real.exp (G_c z)` is strictly positive. -/
+theorem branch_ne_zero_of_modulus {c : ℂ} {β : ℂ → ℂ}
+    (hβmod : ∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) :
+    ∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0 := by
+  intro z hz hzero
+  have hnorm := hβmod z hz
+  rw [hzero, norm_zero] at hnorm
+  exact (ne_of_gt (Real.exp_pos (greenFunctionDyn c z))) hnorm.symm
+
+end Bottcher
