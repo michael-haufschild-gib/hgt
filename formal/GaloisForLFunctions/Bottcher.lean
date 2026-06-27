@@ -63,6 +63,7 @@ import GaloisForLFunctions.Bottcher.BottcherAsymptotic
 import GaloisForLFunctions.Bottcher.BottcherDetermines
 import GaloisForLFunctions.Bottcher.BasinConnected
 import GaloisForLFunctions.Bottcher.PeriodicPoints
+import GaloisForLFunctions.Bottcher.RepellingFixedPoint
 import GaloisForLFunctions.Bottcher.Resonance
 import GaloisForLFunctions.Bottcher.ResonanceOrder
 import GaloisForLFunctions.Bottcher.SphericalDeriv
@@ -97,6 +98,7 @@ import GaloisForLFunctions.Bottcher.Univalence
 import GaloisForLFunctions.Bottcher.FarFieldUnivalence
 import GaloisForLFunctions.Bottcher.FarFieldSurjective
 import GaloisForLFunctions.Bottcher.JuliaSeparation
+import GaloisForLFunctions.Bottcher.JuliaBasinCrossing
 import GaloisForLFunctions.Bottcher.JuliaExpansion
 import GaloisForLFunctions.Bottcher.Q62RadicalReduction
 import GaloisForLFunctions.Bottcher.CylinderUnivalence
@@ -111,3 +113,8 @@ import GaloisForLFunctions.Bottcher.ArgumentPrinciple
 import GaloisForLFunctions.Bottcher.ModularLambdaArgumentPrinciple
 import GaloisForLFunctions.Bottcher.IntervalLogDerivFTC
 import GaloisForLFunctions.Bottcher.BoundaryArcWinding
+import GaloisForLFunctions.Bottcher.RelativeNaturalBoundary
+import GaloisForLFunctions.Bottcher.RelativeBranchFamily
+import GaloisForLFunctions.Bottcher.RelativeBasinBranch
+import GaloisForLFunctions.Bottcher.RelativeTranscendenceBridge
+import GaloisForLFunctions.Bottcher.RelativeRigidityCapstone
