@@ -21,7 +21,7 @@ New file (hRigid / connected lane, the basin-branch functional equation = the co
 -/
 import GaloisForLFunctions.Bottcher.ExplicitBranch
 
-open Complex Set Filter Topology
+open Complex Set Filter Topology Bornology
 
 namespace Bottcher
 
@@ -217,5 +217,111 @@ theorem explicitBranch_eq_of_anchor_le (c : ℂ) {n m : ℕ} (hnm : n ≤ m) {V 
     rw [hanchor, div_self hne1]
   rw [hξ1] at hconst
   exact (div_eq_one_iff_eq hnez).mp hconst
+
+/-- **Composition–level identity (unconditional).** `explicitBranch c n (f^[p] z) = (explicitBranch c (n+p)
+z)^{2^p}`: both equal `exp(2⁻ⁿ · bottcherLog (f^[n+p] z))` (`f^[n](f^[p] z) = f^[n+p] z` and the exponent
+algebra `2⁻ⁿ = 2^p · 2^{-(n+p)}`). Pure `exp`-algebra. This ties the Böttcher functional equation directly to
+the level-gluing: `eb(n)∘f^[p] = (eb(n+p))^{2^p}`, so where `eb(n+p) = eb(n)` the functional equation holds. -/
+theorem explicitBranch_comp_iterate (c : ℂ) (n p : ℕ) (z : ℂ) :
+    explicitBranch c n ((quadratic c)^[p] z) = (explicitBranch c (n + p) z) ^ (2 ^ p) := by
+  rw [explicitBranch, explicitBranch, ← Complex.exp_nat_mul,
+    show (quadratic c)^[n] ((quadratic c)^[p] z) = (quadratic c)^[n + p] z from
+      (Function.iterate_add_apply (quadratic c) n p z).symm]
+  congr 1
+  push_cast
+  rw [pow_add]
+  field_simp
+
+/-- **Multi-level gluing, symmetric form.** For *any* levels `n, m` (no order hypothesis): on a preconnected
+`V` in both domains, anchored where the levels agree, levels coincide on `V`. -/
+theorem explicitBranch_eq_of_anchor (c : ℂ) (n m : ℕ) {V : Set ℂ}
+    (hVc : IsPreconnected V) (hVn : V ⊆ explicitDomain c n) (hVm : V ⊆ explicitDomain c m)
+    {z₁ : ℂ} (hz₁ : z₁ ∈ V) (hanchor : explicitBranch c m z₁ = explicitBranch c n z₁) :
+    ∀ z ∈ V, explicitBranch c m z = explicitBranch c n z := by
+  rcases le_total n m with h | h
+  · exact explicitBranch_eq_of_anchor_le c h hVc hVn hVm hz₁ hanchor
+  · intro z hz
+    exact (explicitBranch_eq_of_anchor_le c h hVc hVm hVn hz₁ hanchor.symm z hz).symm
+
+/-- **The Böttcher functional equation from the level-gluing.** On a preconnected `V ⊆ explicitDomain c n ∩
+explicitDomain c (n+p)` anchored at `z₁` where `eb(n+p) = eb(n)`, the explicit level-`n` branch satisfies
+`eb(n)(f^[p] z) = (eb(n) z)^{2^p}` throughout `V`. (By `explicitBranch_comp_iterate`, `eb(n)(f^[p] z) =
+(eb(n+p) z)^{2^p}`, and `eb(n+p)=eb(n)` on `V` by `explicitBranch_eq_of_anchor_le`.) This is the clean form
+of the functional equation for the basin branch — it follows directly from gluing levels `n` and `n+p`. -/
+theorem explicitBranch_FE_of_glue (c : ℂ) (n p : ℕ) {V : Set ℂ}
+    (hVc : IsPreconnected V) (hVn : V ⊆ explicitDomain c n) (hVnp : V ⊆ explicitDomain c (n + p))
+    {z₁ : ℂ} (hz₁ : z₁ ∈ V)
+    (hanchor : explicitBranch c (n + p) z₁ = explicitBranch c n z₁) :
+    ∀ z ∈ V, explicitBranch c n ((quadratic c)^[p] z) = (explicitBranch c n z) ^ (2 ^ p) := by
+  have hglue : ∀ z ∈ V, explicitBranch c (n + p) z = explicitBranch c n z :=
+    explicitBranch_eq_of_anchor_le c (Nat.le_add_right n p) hVc hVn hVnp hz₁ hanchor
+  intro z hz
+  rw [explicitBranch_comp_iterate c n p z, hglue z hz]
+
+/-- **Relation continuation by the identity theorem (analytic coefficients).** A relation
+`∑ a_i(z)·(β z)^i` with `a_i, β` analytic on a preconnected `V` that vanishes on a nonempty open subset
+`W ⊆ V` vanishes on all of `V`. (The relation function is analytic on `V`; vanishing on the open `W` spreads
+across the preconnected `V` by the identity theorem.) This carries the relation from a far-field anchor open
+set into the basin region for the explicit branch. -/
+theorem relation_zero_of_eqOn_open {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {β : ℂ → ℂ} {V W : Set ℂ}
+    (hVc : IsPreconnected V)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) V) (hβ : AnalyticOnNhd ℂ β V)
+    (hWo : IsOpen W) (hWsub : W ⊆ V) {z₀ : ℂ} (hz₀ : z₀ ∈ W)
+    (hWrel : ∀ z ∈ W, ∑ i ∈ s, a i z * (β z) ^ i = 0) :
+    ∀ z ∈ V, ∑ i ∈ s, a i z * (β z) ^ i = 0 := by
+  have hrelan : AnalyticOnNhd ℂ (fun z => ∑ i ∈ s, a i z * (β z) ^ i) V := by
+    have heq : (fun z => ∑ i ∈ s, a i z * (β z) ^ i)
+        = ∑ i ∈ s, (fun z => a i z * (β z) ^ i) := by funext z; rw [Finset.sum_apply]
+    rw [heq]
+    exact Finset.analyticOnNhd_sum s (fun i hi => (ha i hi).mul (hβ.pow i))
+  have hev : (fun z => ∑ i ∈ s, a i z * (β z) ^ i) =ᶠ[𝓝 z₀] (fun _ => (0 : ℂ)) := by
+    filter_upwards [hWo.mem_nhds hz₀] with z hz
+    exact hWrel z hz
+  intro z hz
+  exact (hrelan.eqOn_of_preconnected_of_eventuallyEq analyticOnNhd_const hVc (hWsub hz₀) hev) hz
+
+/-- **`bottcherLog` is asymptotic to `Complex.log` at `∞`:** `bottcherLog c z − Complex.log z → 0` as
+`z → ∞`, from the bound `‖bottcherLog c z − log z‖ ≤ 2‖c‖/‖z‖² → 0`. The seed for the far-field anchor
+`eb(n) = bottcherCoord` (pinning the ζ=1 principal sheet). -/
+theorem tendsto_bottcherLog_sub_log (c : ℂ) :
+    Tendsto (fun z => bottcherLog c z - Complex.log z) (cobounded ℂ) (𝓝 0) := by
+  have hnorm : Tendsto (fun z : ℂ => ‖z‖) (cobounded ℂ) atTop := tendsto_norm_cobounded_atTop
+  have hbd : Tendsto (fun z : ℂ => 2 * ‖c‖ / ‖z‖ ^ 2) (cobounded ℂ) (𝓝 0) :=
+    tendsto_const_nhds.div_atTop ((tendsto_pow_atTop two_ne_zero).comp hnorm)
+  refine squeeze_zero_norm' ?_ hbd
+  filter_upwards [hnorm.eventually_gt_atTop (max 2 ‖c‖)] with z hz
+  have hc : ‖c‖ ≤ ‖z‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) hz)
+  have hz2 : 2 < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) hz
+  exact norm_bottcherLog_sub_log_le hc hz2
+
+/-- **Basin branch with functional equation AND relation, on a connected region.** Assembles the basin
+branch `β = explicitBranch c n` carrying *both* the Böttcher functional equation `β(f^[p]z)=(βz)^{2^p}` and
+the algebraic relation `∑ a_i(z)(βz)^i=0` on a preconnected `V ⊆ explicitDomain c n ∩ explicitDomain c (n+p)`,
+from a single **far-field anchor** `W ⊆ V` where `eb(n)=eb(n+p)=bottcherCoord` and the relation holds for
+`bottcherCoord`. (The anchor pins the level-gluing for the functional equation — `explicitBranch_FE_of_glue` —
+and provides the relation's vanishing seed for the identity theorem — `relation_zero_of_eqOn_open`.) This is
+the local form of the basin branch the index route consumes; the remaining inputs are the geometric ones: a
+connected region reaching from a far-field anchor to the cycle point, and the anchor itself
+(`eb(n)=bottcherCoord`, the ζ=1 sheet on the principal far field). -/
+theorem explicitBranch_FE_relation_of_anchor (c : ℂ) (n p : ℕ) {V W : Set ℂ}
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ}
+    (hVc : IsPreconnected V) (hVn : V ⊆ explicitDomain c n) (hVnp : V ⊆ explicitDomain c (n + p))
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) V)
+    (hWo : IsOpen W) (hWsub : W ⊆ V) {z₁ : ℂ} (hz₁W : z₁ ∈ W)
+    (hanchorN : ∀ z ∈ W, explicitBranch c n z = bottcherCoord c z)
+    (hanchorNP : ∀ z ∈ W, explicitBranch c (n + p) z = bottcherCoord c z)
+    (hWrel : ∀ z ∈ W, ∑ i ∈ s, a i z * (bottcherCoord c z) ^ i = 0) :
+    (∀ z ∈ V, explicitBranch c n ((quadratic c)^[p] z) = (explicitBranch c n z) ^ (2 ^ p)) ∧
+      (∀ z ∈ V, ∑ i ∈ s, a i z * (explicitBranch c n z) ^ i = 0) := by
+  have hanchor : explicitBranch c (n + p) z₁ = explicitBranch c n z₁ := by
+    rw [hanchorNP z₁ hz₁W, hanchorN z₁ hz₁W]
+  refine ⟨explicitBranch_FE_of_glue c n p hVc hVn hVnp (hWsub hz₁W) hanchor, ?_⟩
+  have hβan : AnalyticOnNhd ℂ (explicitBranch c n) V := (analyticOnNhd_explicitBranch c n).mono hVn
+  have hWrel' : ∀ z ∈ W, ∑ i ∈ s, a i z * (explicitBranch c n z) ^ i = 0 := by
+    intro z hz
+    rw [show (fun i => a i z * (explicitBranch c n z) ^ i)
+        = (fun i => a i z * (bottcherCoord c z) ^ i) from by funext i; rw [hanchorN z hz]]
+    exact hWrel z hz
+  exact relation_zero_of_eqOn_open hVc ha hβan hWo hWsub hz₁W hWrel'
 
 end Bottcher

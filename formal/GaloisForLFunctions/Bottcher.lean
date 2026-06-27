@@ -36,6 +36,7 @@ import GaloisForLFunctions.Bottcher.CoverChainGlue
 import GaloisForLFunctions.Bottcher.CoverSection
 import GaloisForLFunctions.Bottcher.Q62Assembly
 import GaloisForLFunctions.Bottcher.DeckBiholo
+import GaloisForLFunctions.Bottcher.DeckAnnulus
 import GaloisForLFunctions.Bottcher.NonSquareWinding
 import GaloisForLFunctions.Bottcher.KummerDeck
 import GaloisForLFunctions.Bottcher.Q62KummerAssembly
@@ -102,6 +103,8 @@ import GaloisForLFunctions.Bottcher.CoverDeckScaling
 import GaloisForLFunctions.Bottcher.Univalence
 import GaloisForLFunctions.Bottcher.FarFieldUnivalence
 import GaloisForLFunctions.Bottcher.CoverChart
+import GaloisForLFunctions.Bottcher.CoverSheet
+import GaloisForLFunctions.Bottcher.CoverDescent
 import GaloisForLFunctions.Bottcher.FarFieldSurjective
 import GaloisForLFunctions.Bottcher.JuliaSeparation
 import GaloisForLFunctions.Bottcher.JuliaBasinCrossing
@@ -142,3 +145,6 @@ import GaloisForLFunctions.Bottcher.IndexEstimate
 import GaloisForLFunctions.Bottcher.IndexWiring
 import GaloisForLFunctions.Bottcher.IndexWiringRelative
 import GaloisForLFunctions.Bottcher.BasinBranchGlue
+import GaloisForLFunctions.Bottcher.PolyAsymptotic
+import GaloisForLFunctions.Bottcher.BasinColimit
+import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranch
