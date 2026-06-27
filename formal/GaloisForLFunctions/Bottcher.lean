@@ -102,6 +102,7 @@ import GaloisForLFunctions.Bottcher.JuliaBasinCrossing
 import GaloisForLFunctions.Bottcher.JuliaExpansion
 import GaloisForLFunctions.Bottcher.Q62RadicalReduction
 import GaloisForLFunctions.Bottcher.CylinderUnivalence
+import GaloisForLFunctions.Bottcher.BrolinCylinder
 import GaloisForLFunctions.Bottcher.QuarticSlash
 import GaloisForLFunctions.Bottcher.QuarticModularForm
 import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional
@@ -114,7 +115,10 @@ import GaloisForLFunctions.Bottcher.Gamma2FreeAction
 import GaloisForLFunctions.Bottcher.Gamma2ProperAction
 import GaloisForLFunctions.Bottcher.Gamma2QuotientCovering
 import GaloisForLFunctions.Bottcher.ModularLambdaQuotientLift
+import GaloisForLFunctions.Bottcher.CoveringComp
 import GaloisForLFunctions.Bottcher.ModularLambdaProperness
+import GaloisForLFunctions.Bottcher.ModularLambdaLift
+import GaloisForLFunctions.Bottcher.ModularLambdaOmittingLift
 import GaloisForLFunctions.Bottcher.ArgumentPrinciple
 import GaloisForLFunctions.Bottcher.ModularLambdaArgumentPrinciple
 import GaloisForLFunctions.Bottcher.ModularLambdaRegionCauchy

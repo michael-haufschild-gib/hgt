@@ -30,6 +30,7 @@ import GaloisForLFunctions.Bottcher.Gamma2QuotientCovering
 import GaloisForLFunctions.Bottcher.ModularLambdaCovering
 import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional
 import GaloisForLFunctions.Bottcher.ModularLambdaQuotientLift
+import GaloisForLFunctions.Bottcher.CoveringComp
 
 open UpperHalfPlane CongruenceSubgroup MulAction
 open scoped MatrixGroups
@@ -154,5 +155,15 @@ since `λ̄` is a local homeomorphism). So `Y(2) → ℂ∖{0,1}` has finite deg
 the composition `λ = λ̄ ∘ q` reduce to a finite combine of the two coverings' even-coverings. -/
 theorem lambdaBar_fibre_finite (w : Punctured) : (lambdaBar ⁻¹' {w}).Finite :=
   Set.finite_coe_iff.mp (fibre_finite isLocalHomeomorph_lambdaBar isProperMap_lambdaBar w)
+
+/-- **`λ : ℍ → ℂ∖{0,1}` is a covering map** (unconditional). `λ = λ̄ ∘ q` factors as the composition of two
+covering maps — the quotient covering `q : ℍ → ℍ/PΓ(2)` (`isCoveringMap_quotientMk_pgamma2`) and the
+finite-degree modular covering `λ̄ : ℍ/PΓ(2) → ℂ∖{0,1}` (`isCoveringMap_lambdaBar'`) — and a composition of
+covering maps with finite outer fibre is a covering map (`isCoveringMap_comp`, built from scratch). This is
+`ℍ` exhibited as a covering space of the thrice-punctured sphere: the input the three-value Montel lift
+(`#30`) consumes, with the degree-1/injectivity (argument-principle) crux entirely bypassed. -/
+theorem isCoveringMap_lambdaPunct : IsCoveringMap lambdaPunct := by
+  rw [← lambdaBar_comp_mk]
+  exact isCoveringMap_comp isCoveringMap_quotientMk_pgamma2 isCoveringMap_lambdaBar' lambdaBar_fibre_finite
 
 end Bottcher
