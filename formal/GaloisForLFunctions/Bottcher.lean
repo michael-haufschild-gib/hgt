@@ -65,6 +65,7 @@ import GaloisForLFunctions.Bottcher.Q62ConnectedAssembly
 import GaloisForLFunctions.Bottcher.NaturalBoundary
 import GaloisForLFunctions.Bottcher.GreenContinuity
 import GaloisForLFunctions.Bottcher.DendriteBoundary
+import GaloisForLFunctions.Bottcher.DendriteContinuesAcross
 import GaloisForLFunctions.Bottcher.PhiLevel
 import GaloisForLFunctions.Bottcher.GreenChain
 import GaloisForLFunctions.Bottcher.GreenUnique
@@ -139,6 +140,7 @@ import GaloisForLFunctions.Bottcher.IntervalLogDerivFTC
 import GaloisForLFunctions.Bottcher.BoundaryArcWinding
 import GaloisForLFunctions.Bottcher.RelativeNaturalBoundary
 import GaloisForLFunctions.Bottcher.RelativeBranchFamily
+import GaloisForLFunctions.Bottcher.RelativeFibreGeneric
 import GaloisForLFunctions.Bottcher.RelativeBasinBranch
 import GaloisForLFunctions.Bottcher.RelativeTranscendenceBridge
 import GaloisForLFunctions.Bottcher.RelativeRigidityCapstone
@@ -151,6 +153,7 @@ import GaloisForLFunctions.Bottcher.BasinBranchGlue
 import GaloisForLFunctions.Bottcher.PolyAsymptotic
 import GaloisForLFunctions.Bottcher.BasinColimit
 import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranch
+import GaloisForLFunctions.Bottcher.RelativeRigidityNaturalBoundary
 
 import GaloisForLFunctions.Bottcher.AnalyticRoot
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck

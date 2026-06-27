@@ -109,3 +109,28 @@ theorem exists_repelling_fixed_point_on_julia (c : ℂ) (hc : c ≠ 1 / 4) :
   exact ⟨z₀, hfix, hmem, nhdsWithin_compl_filledJulia_neBot_of_repelling_fixed hfix hrep, hrep⟩
 
 end Bottcher
+
+namespace Bottcher
+
+/-- A filled-Julia point whose basin-side neighbourhood filter is nontrivial is on the frontier. -/
+theorem mem_frontier_of_mem_filledJulia_of_nhdsWithin_compl_neBot {c z₀ : ℂ}
+    (hz : z₀ ∈ filledJulia c) (hNeBot : (𝓝[(filledJulia c)ᶜ] z₀).NeBot) :
+    z₀ ∈ frontier (filledJulia c) := by
+  rw [frontier_eq_closure_inter_closure]
+  exact ⟨subset_closure hz, mem_closure_iff_nhdsWithin_neBot.mpr hNeBot⟩
+
+/-- A repelling fixed point lies on `frontier K_c`. -/
+theorem mem_frontier_of_repelling_fixed {c z₀ : ℂ}
+    (hfix : quadratic c z₀ = z₀) (hrep : 1 < ‖(2 : ℂ) * z₀‖) :
+    z₀ ∈ frontier (filledJulia c) :=
+  mem_frontier_of_mem_filledJulia_of_nhdsWithin_compl_neBot (mem_filledJulia_of_fixed hfix)
+    (nhdsWithin_compl_filledJulia_neBot_of_repelling_fixed hfix hrep)
+
+/-- A repelling fixed point on the frontier exists for every `c ≠ 1 / 4`. -/
+theorem exists_repelling_fixed_point_on_frontier (c : ℂ) (hc : c ≠ 1 / 4) :
+    ∃ z₀ : ℂ, quadratic c z₀ = z₀ ∧ z₀ ∈ frontier (filledJulia c) ∧
+      1 < ‖(2 : ℂ) * z₀‖ := by
+  obtain ⟨z₀, hfix, _hmem, _hNeBot, hrep⟩ := exists_repelling_fixed_point_on_julia c hc
+  exact ⟨z₀, hfix, mem_frontier_of_repelling_fixed hfix hrep, hrep⟩
+
+end Bottcher

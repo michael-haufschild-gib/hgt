@@ -11,8 +11,10 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 | Lines | File |
 |---:|---|
+| 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
+| 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
+| 1658 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
 | 1475 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
-| 1452 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
 | 1267 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean` |
@@ -32,10 +34,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 782 | `formal/GaloisForLFunctions/Bottcher/FigureEight.lean` |
 | 780 | `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean` |
 | 769 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetLimit.lean` |
-| 759 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 736 | `formal/GaloisForLFunctions/KreinLangerInertia.lean` |
 | 655 | `formal/GaloisForLFunctions/Bottcher/BranchContinuation.lean` |
-| 646 | `formal/GaloisForLFunctions/Bottcher/ConnectedTranscendence.lean` |
 
 ## Gap Markers
 
@@ -115,6 +115,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/CylinderUnivalence.lean:4` | The single remaining analytic input of the disconnected/disconnected case (STATUS.md "Disconnected |
 | `formal/GaloisForLFunctions/Bottcher/CylinderUnivalence.lean:48` | (hypothesis), composed via `InjOn.comp`. The single remaining cylinder input becomes: each |
 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulus.lean:136` | `NoRelation(φ_{c₁}, φ_{c₂})` since `a₁^{2ⁿ} = φ_{c₁}`).  The sole remaining inputs are now isolated: |
+| `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean:319` | one usable statement.  The only remaining parameters are the explicit radius inequalities and the |
 | `formal/GaloisForLFunctions/Bottcher/DeckAutomorphism.lean:13` | This is the *algebraic core* of `σ_n` (real automorphism, correct scaling/order). The remaining |
 | `formal/GaloisForLFunctions/Bottcher/DeckAutomorphism.lean:88` | analytic fact, not an assumed one. This pins the remaining work to the analytic continuation layer. |
 | `formal/GaloisForLFunctions/Bottcher/DeckBiholo.lean:12` | This file supplies that missing link.  From a **global biholomorphism** `φ : U ≃ V` of the cover |
@@ -178,12 +179,17 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:24` | algebraic surface of the disconnected case: the lone remaining input is the *geometric* non-squareness |
 | `formal/GaloisForLFunctions/Bottcher/QuarticDefect.lean:72` | remaining input is the Γ(2) cusp-form finiteness (modular-curve compactness / valence), absent from |
 | `formal/GaloisForLFunctions/Bottcher/QuarticModularForm.lean:6` | `zero_at_cusps'`) is the remaining input toward `F ≡ 0` via `NormTrace` to level-one weight-12. |
+| `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:7` | fibre with support in `range (N+1)` is the dense degree-`N` polynomial whose missing coefficients are zero, |
+| `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:28` | /-- A sparse fibre equals its dense degree-`N` presentation with zero-filled missing coefficients. -/ |
+| `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:120` | `exists_sparse_fibre_separable_crossing`, while the remaining target-set geometry is supplied pointwise on |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:21` | the connected case down to the one remaining dynamical input. |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:128` | branch* and the *dendrite tip*, not the pre-digested simple-root boundary value. The remaining #24 content |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:289` | a distinct obstruction — the genuine remaining frontier). -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:375` | axiom-clean; the sole remaining input is the *existence* of such a repelling cycle — Fatou's classical |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:118` | input `TranscendentalOverAdjoin φ_{c₁} φ_{c₂}`. The remaining inputs are now exactly: the per-level |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:1410` | hRigid interface in this file: nonresonance is derived from `(2^p : ℝ) < ‖λ‖`, and the remaining callback |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:2376` | frontier-analytic γ endpoint by deriving it via `phiMero_transcendental_of_repelling_input`.  The remaining |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean:987` | are constructed internally from coherent level-root towers; the remaining per-relation datum is purely |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedPoint.lean:103` | point in the Julia set, for all non-exceptional `c ≠ 1/4`. The remaining data (non-resonance, location off |
 | `formal/GaloisForLFunctions/Bottcher/ResonanceOrder.lean:13` | no continuation of `φ_c` across a non-resonant repelling periodic point. The only remaining global |
 | `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean:18` | `D₆ ≡ 0 ⟹ ThetaWronskian23`. The remaining (modular) input is the vanishing `D₆ ≡ 0`. |

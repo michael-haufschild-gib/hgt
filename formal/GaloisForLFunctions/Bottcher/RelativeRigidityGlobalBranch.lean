@@ -1450,3 +1450,1272 @@ theorem hrig_phiMero_of_level_roots_modulus_auto_contDiffAt_minBranch_frontier_n
         nonresonant_of_norm_gt hnorm⟩)
 
 end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- The canonical derivative witness for an iterate of the quadratic map. -/
+theorem hasDerivAt_quadratic_iterate_deriv (c z₀ : ℂ) (p : ℕ) :
+    HasDerivAt ((quadratic c)^[p]) (deriv ((quadratic c)^[p]) z₀) z₀ := by
+  exact (analyticOnNhd_quadratic_iterate c p z₀ (mem_univ z₀)).differentiableAt.hasDerivAt
+
+/-- **NoRelation with canonical multiplier derivative.** This removes the callback's auxiliary multiplier
+`λ` and its `HasDerivAt` proof: the multiplier is the canonical derivative
+`deriv ((quadratic c₁)^[p]) z₀`, and analyticity of the iterate supplies the derivative witness. -/
+theorem noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_derivNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (a : ℕ → ℂ → ℂ) (z₀ w₀ : ℂ) (p : ℕ),
+          (∀ i ∈ s, AnalyticOnNhd ℂ (a i) (filledJulia c₁)ᶜ) ∧
+          (∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀) ∧
+          (∀ i ∈ s, ∀ z ∈ U,
+            a i z = (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) ∧
+          (fibrePoly a s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖deriv ((quadratic c₁)^[p]) z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_norm hUo hUc hUne hUinf
+    c₁ c₂ hU₁ hU₂ hG β hβan hβesc hβmod (by
+      intro Q s hnt hEqOn
+      obtain ⟨a, z₀, w₀, p, ha, ha_z₀, hmatch, hderiv, hfront, hβlim, hFz, hnorm⟩ :=
+        hinput Q s hnt hEqOn
+      exact ⟨a, z₀, w₀, deriv ((quadratic c₁)^[p]) z₀, p, ha, ha_z₀, hmatch, hderiv,
+        hfront, hβlim, hFz, hasDerivAt_quadratic_iterate_deriv c₁ z₀ p, hnorm⟩)
+
+/-- **hRigid with canonical multiplier derivative.** This is the `TranscendentalOverAdjoin` form of
+`noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_derivNorm`. -/
+theorem hrig_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_derivNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (a : ℕ → ℂ → ℂ) (z₀ w₀ : ℂ) (p : ℕ),
+          (∀ i ∈ s, AnalyticOnNhd ℂ (a i) (filledJulia c₁)ᶜ) ∧
+          (∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀) ∧
+          (∀ i ∈ s, ∀ z ∈ U,
+            a i z = (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) ∧
+          (fibrePoly a s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖deriv ((quadratic c₁)^[p]) z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact transcendentalOverAdjoin_of_noRelation _ _
+    (noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_derivNorm
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β hβan hβesc hβmod hinput)
+
+/-- **Level-root hRigid with canonical multiplier derivative.** This is the current smallest level-root
+hRigid interface in this file: the callback no longer supplies a multiplier value or derivative proof;
+it only proves the strongly-repelling inequality for the canonical derivative of the iterate. -/
+theorem hrig_phiMero_of_level_roots_modulus_auto_contDiffAt_minBranch_frontier_derivNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c₁ n, (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (hinput : ∀ (β : ℂ → ℂ), AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (a : ℕ → ℂ → ℂ) (z₀ w₀ : ℂ) (p : ℕ),
+          (∀ i ∈ s, AnalyticOnNhd ℂ (a i) (filledJulia c₁)ᶜ) ∧
+          (∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀) ∧
+          (∀ i ∈ s, ∀ z ∈ U,
+            a i z = (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) ∧
+          (fibrePoly a s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖deriv ((quadratic c₁)^[p]) z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact hrig_phiMero_of_level_roots_modulus_auto_contDiffAt_minBranch_frontier_norm
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG βlev hanalytic hpow hne hanchorEsc (by
+      intro β hβan hβesc hβmod Q s hnt hEqOn
+      obtain ⟨a, z₀, w₀, p, ha, ha_z₀, hmatch, hderiv, hfront, hβlim, hFz, hnorm⟩ :=
+        hinput β hβan hβesc hβmod Q s hnt hEqOn
+      exact ⟨a, z₀, w₀, deriv ((quadratic c₁)^[p]) z₀, p, ha, ha_z₀, hmatch, hderiv,
+        hfront, hβlim, hFz, hasDerivAt_quadratic_iterate_deriv c₁ z₀ p, hnorm⟩)
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- The derivative of an iterate of the quadratic map is the product of orbit multipliers. -/
+theorem deriv_quadratic_iterate_eq_orbitProduct (c z₀ : ℂ) (p : ℕ) :
+    deriv ((quadratic c)^[p]) z₀ = ∏ k ∈ Finset.range p, 2 * (quadratic c)^[k] z₀ := by
+  exact (hasDerivAt_quadratic_iterate c z₀ p).deriv
+
+/-- **NoRelation with orbit-product expansion input.** This rewrites the canonical derivative norm in
+`noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_derivNorm` as the explicit
+product of quadratic orbit multipliers. -/
+theorem noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_orbitNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (a : ℕ → ℂ → ℂ) (z₀ w₀ : ℂ) (p : ℕ),
+          (∀ i ∈ s, AnalyticOnNhd ℂ (a i) (filledJulia c₁)ᶜ) ∧
+          (∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀) ∧
+          (∀ i ∈ s, ∀ z ∈ U,
+            a i z = (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) ∧
+          (fibrePoly a s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_derivNorm hUo hUc hUne hUinf
+    c₁ c₂ hU₁ hU₂ hG β hβan hβesc hβmod (by
+      intro Q s hnt hEqOn
+      obtain ⟨a, z₀, w₀, p, ha, ha_z₀, hmatch, hderiv, hfront, hβlim, hFz, hnorm⟩ :=
+        hinput Q s hnt hEqOn
+      have hnorm' : (2 ^ p : ℝ) < ‖deriv ((quadratic c₁)^[p]) z₀‖ := by
+        rwa [deriv_quadratic_iterate_eq_orbitProduct]
+      exact ⟨a, z₀, w₀, p, ha, ha_z₀, hmatch, hderiv, hfront, hβlim, hFz, hnorm'⟩)
+
+/-- **hRigid with orbit-product expansion input.** This is the `TranscendentalOverAdjoin` form of
+`noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_orbitNorm`. -/
+theorem hrig_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_orbitNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (a : ℕ → ℂ → ℂ) (z₀ w₀ : ℂ) (p : ℕ),
+          (∀ i ∈ s, AnalyticOnNhd ℂ (a i) (filledJulia c₁)ᶜ) ∧
+          (∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀) ∧
+          (∀ i ∈ s, ∀ z ∈ U,
+            a i z = (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) ∧
+          (fibrePoly a s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact transcendentalOverAdjoin_of_noRelation _ _
+    (noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_orbitNorm
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β hβan hβesc hβmod hinput)
+
+/-- **Level-root hRigid with orbit-product expansion input.** This is currently the most geometric
+level-root hRigid interface in this file: the repelling/nonresonance datum is expressed directly as the
+orbit-multiplier product bound. -/
+theorem hrig_phiMero_of_level_roots_modulus_auto_contDiffAt_minBranch_frontier_orbitNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c₁ n, (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (hinput : ∀ (β : ℂ → ℂ), AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (a : ℕ → ℂ → ℂ) (z₀ w₀ : ℂ) (p : ℕ),
+          (∀ i ∈ s, AnalyticOnNhd ℂ (a i) (filledJulia c₁)ᶜ) ∧
+          (∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀) ∧
+          (∀ i ∈ s, ∀ z ∈ U,
+            a i z = (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) ∧
+          (fibrePoly a s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact hrig_phiMero_of_level_roots_modulus_auto_contDiffAt_minBranch_frontier_derivNorm
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG βlev hanalytic hpow hne hanchorEsc (by
+      intro β hβan hβesc hβmod Q s hnt hEqOn
+      obtain ⟨a, z₀, w₀, p, ha, ha_z₀, hmatch, hderiv, hfront, hβlim, hFz, hnorm⟩ :=
+        hinput β hβan hβesc hβmod Q s hnt hEqOn
+      have hnorm' : (2 ^ p : ℝ) < ‖deriv ((quadratic c₁)^[p]) z₀‖ := by
+        rwa [deriv_quadratic_iterate_eq_orbitProduct]
+      exact ⟨a, z₀, w₀, p, ha, ha_z₀, hmatch, hderiv, hfront, hβlim, hFz, hnorm'⟩)
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- **NoRelation with a single continued coefficient branch.** The caller supplies one analytic basin
+continuation `γ` of `φ_{c₂}` along the `c₁` basin, rather than a separate coefficient family `a`.  The
+coefficient family needed by the orbit-product hRigid theorem is constructed internally as
+`aᵢ(z) = Qᵢ(z, γ z)`, and its analyticity is derived from
+`analyticOnNhd_eval₂_of_analyticOnNhd`. -/
+theorem noRelation_phiMero_of_repelling_global_modulus_auto_gamma_frontier_orbitNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          (∀ i ∈ s, ContDiffAt ℂ ⊤
+            (fun z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) z₀) ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier_orbitNorm
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β hβan hβesc hβmod (by
+      intro Q s hnt hEqOn
+      obtain ⟨z₀, w₀, p, hcont, hderiv, hfront, hβlim, hFz, hnorm⟩ := hinput Q s hnt hEqOn
+      refine ⟨fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z), z₀, w₀, p, ?_, ?_, ?_, hderiv,
+        hfront, hβlim, hFz, hnorm⟩
+      · intro i _hi
+        exact analyticOnNhd_eval₂_of_analyticOnNhd hγan (Q i)
+      · exact hcont
+      · intro i _hi z hz
+        simpa using congrArg (fun w => (Q i).eval₂ (Polynomial.evalRingHom z) w) (hγmatch z hz))
+
+/-- **hRigid with a single continued coefficient branch.** This is the
+`TranscendentalOverAdjoin` form of
+`noRelation_phiMero_of_repelling_global_modulus_auto_gamma_frontier_orbitNorm`. -/
+theorem hrig_phiMero_of_repelling_global_modulus_auto_gamma_frontier_orbitNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          (∀ i ∈ s, ContDiffAt ℂ ⊤
+            (fun z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) z₀) ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact transcendentalOverAdjoin_of_noRelation _ _
+    (noRelation_phiMero_of_repelling_global_modulus_auto_gamma_frontier_orbitNorm
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγmatch hinput)
+
+/-- **Level-root hRigid with a single continued coefficient branch.** Per-level roots still assemble
+into the global `c₁` branch `β`; the `c₂` side is now supplied as one analytic continuation `γ`, from
+which all relation coefficients are built internally. -/
+theorem hrig_phiMero_of_level_roots_modulus_auto_gamma_minBranch_frontier_orbitNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c₁ n, (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (γ : ℂ → ℂ)
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (β : ℂ → ℂ), AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          (∀ i ∈ s, ContDiffAt ℂ ⊤
+            (fun z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) z₀) ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  obtain ⟨β, hβan, hβesc, _hβ0, hβmod⟩ :=
+    exists_global_branch_of_level_roots_modulus c₁ βlev hanalytic hpow hne hanchorEsc
+  exact hrig_phiMero_of_repelling_global_modulus_auto_gamma_frontier_orbitNorm
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγmatch
+    (hinput β hβan hβesc hβmod)
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- A bivariate polynomial evaluated along an analytic germ `g` is analytic at the base point.  This is
+the local analogue of `analyticOnNhd_eval₂_of_analyticOnNhd`; it is used at frontier points where the
+continued `γ` branch is only known locally across the boundary point. -/
+theorem analyticAt_eval₂_of_analyticAt {g : ℂ → ℂ} {z₀ : ℂ}
+    (hg : AnalyticAt ℂ g z₀) (R : Polynomial (Polynomial ℂ)) :
+    AnalyticAt ℂ (fun z => R.eval₂ (Polynomial.evalRingHom z) (g z)) z₀ := by
+  have hfun : (fun z => R.eval₂ (Polynomial.evalRingHom z) (g z))
+      = (fun z => ∑ i ∈ Finset.range (R.natDegree + 1), (R.coeff i).eval z * (g z) ^ i) := by
+    funext z; rw [eval₂_eq_sum_range]; rfl
+  rw [hfun]
+  apply Finset.analyticAt_fun_sum
+  intro i _
+  exact (analyticAt_id.aeval_polynomial (R.coeff i)).mul (hg.pow i)
+
+/-- **NoRelation with a single continued coefficient branch, local smoothness derived.** Compared with
+`noRelation_phiMero_of_repelling_global_modulus_auto_gamma_frontier_orbitNorm`, the callback no longer
+proves `ContDiffAt` for every coefficient `Qᵢ(z, γ z)`: it only proves that `γ` is analytic at the chosen
+frontier point.  The coefficient smoothness is derived by `analyticAt_eval₂_of_analyticAt`. -/
+theorem noRelation_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          AnalyticAt ℂ γ z₀ ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  noRelation_phiMero_of_repelling_global_modulus_auto_gamma_frontier_orbitNorm
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγmatch (by
+      intro Q s hnt hEqOn
+      obtain ⟨z₀, w₀, p, hγAt, hderiv, hfront, hβlim, hFz, hnorm⟩ := hinput Q s hnt hEqOn
+      refine ⟨z₀, w₀, p, ?_, hderiv, hfront, hβlim, hFz, hnorm⟩
+      intro i _hi
+      exact (analyticAt_eval₂_of_analyticAt hγAt (Q i)).contDiffAt)
+
+/-- **hRigid with a single continued coefficient branch, local smoothness derived.** This is the
+`TranscendentalOverAdjoin` form of
+`noRelation_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm`. -/
+theorem hrig_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          AnalyticAt ℂ γ z₀ ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact transcendentalOverAdjoin_of_noRelation _ _
+    (noRelation_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγmatch hinput)
+
+/-- **Level-root hRigid with a single continued coefficient branch, local smoothness derived.** This is
+currently the smallest level-root hRigid interface in the γ-continuation route: the `c₁` branch comes from
+level roots, the `c₂` branch is one continued `γ`, and the callback only supplies local analyticity of `γ`
+at the chosen frontier point plus the simple-fibre and repelling orbit-product data. -/
+theorem hrig_phiMero_of_level_roots_modulus_auto_gamma_analyticAt_minBranch_frontier_orbitNorm
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c₁ n, (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (γ : ℂ → ℂ)
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (β : ℂ → ℂ), AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          AnalyticAt ℂ γ z₀ ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).derivative.eval w₀ ≠ 0 ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  obtain ⟨β, hβan, hβesc, _hβ0, hβmod⟩ :=
+    exists_global_branch_of_level_roots_modulus c₁ βlev hanalytic hpow hne hanchorEsc
+  exact hrig_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγmatch
+    (hinput β hβan hβesc hβmod)
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- **NoRelation with γ continuation and separable boundary fibre.** This removes the callback's direct
+simple-derivative proof from
+`noRelation_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm`.  The boundary
+root is derived by propagating the relation through the basin and taking the basin-side limit; separability
+of the boundary fibre then gives the nonzero fibre derivative. -/
+theorem noRelation_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          AnalyticAt ℂ γ z₀ ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  noRelation_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγmatch (by
+      intro Q s hnt hEqOn
+      obtain ⟨z₀, w₀, p, hγAt, hsep, hfront, hβlim, hFz, hnorm⟩ := hinput Q s hnt hEqOn
+      let a : ℕ → ℂ → ℂ := fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)
+      have ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) (filledJulia c₁)ᶜ := by
+        intro i _hi
+        exact analyticOnNhd_eval₂_of_analyticOnNhd hγan (Q i)
+      have haAt : ∀ i ∈ s, AnalyticAt ℂ (a i) z₀ := by
+        intro i _hi
+        exact analyticAt_eval₂_of_analyticAt hγAt (Q i)
+      have hmatch : ∀ i ∈ s, ∀ z ∈ U,
+          a i z = (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z) := by
+        intro i _hi z hz
+        dsimp [a]
+        simpa using congrArg (fun w => (Q i).eval₂ (Polynomial.evalRingHom z) w) (hγmatch z hz)
+      have hrelU : ∀ z ∈ U, ∑ i ∈ s, a i z * (β z) ^ i = 0 := by
+        intro z hz
+        calc
+          ∑ i ∈ s, a i z * (β z) ^ i
+              = ∑ i ∈ s,
+                  ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) *
+                    (bottcherCoord c₁ z) ^ i := by
+                refine Finset.sum_congr rfl ?_
+                intro i hi
+                rw [hmatch i hi z hz, hβesc z (hU₁ hz)]
+          _ = 0 := hEqOn hz
+      have hβrel_all : ∀ z ∈ (filledJulia c₁)ᶜ, ∑ i ∈ s, a i z * (β z) ^ i = 0 :=
+        relation_eq_zero_basin_analytic_of_open hUo hUne
+          (fun z hz => escapeOpen_subset_compl_filledJulia c₁ (hU₁ hz)) ha hβan hrelU
+      have hβrel : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, ∑ i ∈ s, a i z * (β z) ^ i = 0 :=
+        Filter.eventually_of_mem self_mem_nhdsWithin hβrel_all
+      have hNeBot : (𝓝[(filledJulia c₁)ᶜ] z₀).NeBot :=
+        nhdsWithin_compl_filledJulia_neBot_of_mem_frontier hfront
+      have hrootSum : ∑ i ∈ s, a i z₀ * w₀ ^ i = 0 :=
+        relation_boundary_root_of_tendsto (c := c₁) (β := β) (a := a) (s := s)
+          (fun i hi => (haAt i hi).continuousAt) hNeBot hβlim hβrel
+      have hrootPoly : (fibrePoly a s z₀).eval w₀ = 0 := by
+        rwa [eval_fibrePoly]
+      have hderiv : (fibrePoly a s z₀).derivative.eval w₀ ≠ 0 :=
+        eval_derivative_ne_zero_of_separable (by simpa [a] using hsep) hrootPoly
+      refine ⟨z₀, w₀, p, hγAt, ?_, hfront, hβlim, hFz, hnorm⟩
+      simpa [a] using hderiv)
+
+/-- **hRigid with γ continuation and separable boundary fibre.** This is the
+`TranscendentalOverAdjoin` form of
+`noRelation_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm_separable`. -/
+theorem hrig_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          AnalyticAt ℂ γ z₀ ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact transcendentalOverAdjoin_of_noRelation _ _
+    (noRelation_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm_separable
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγmatch hinput)
+
+/-- **Level-root hRigid with γ continuation and separable boundary fibre.** This is now the smallest
+level-root hRigid interface in the γ-continuation route: the callback supplies local analyticity of `γ`,
+separability of the boundary fibre, a frontier basin limit, and the orbit-product repelling inequality. -/
+theorem hrig_phiMero_of_level_roots_modulus_auto_gamma_analyticAt_minBranch_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c₁ n, (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (γ : ℂ → ℂ)
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (β : ℂ → ℂ), AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          AnalyticAt ℂ γ z₀ ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  obtain ⟨β, hβan, hβesc, _hβ0, hβmod⟩ :=
+    exists_global_branch_of_level_roots_modulus c₁ βlev hanalytic hpow hne hanchorEsc
+  exact hrig_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm_separable
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγmatch
+    (hinput β hβan hβesc hβmod)
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- **Concrete `NoRelation` from level roots, γ continuation, and separable boundary fibres.** This is the
+level-root `NoRelation` endpoint of the γ/separable hRigid route: the level-root tower assembles the global
+`c₁` Böttcher branch, and the γ/separable callback closes every cleared relation directly. -/
+theorem noRelation_phiMero_of_level_roots_modulus_auto_gamma_analyticAt_minBranch_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c₁ n, (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (γ : ℂ → ℂ)
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (β : ℂ → ℂ), AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          AnalyticAt ℂ γ z₀ ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  obtain ⟨β, hβan, hβesc, _hβ0, hβmod⟩ :=
+    exists_global_branch_of_level_roots_modulus c₁ βlev hanalytic hpow hne hanchorEsc
+  exact noRelation_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm_separable
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγmatch
+    (hinput β hβan hβesc hβmod)
+
+/-- **Connected-case `q62` endpoint from the level-root γ/separable hRigid route.** This composes the
+strongest level-root hRigid producer in this file with `q62_independence_connected_of_inputs`, yielding the
+concrete connected-case independence for distinct nonexceptional parameters from the same γ/separable
+frontier data. -/
+theorem q62_independence_connected_of_level_roots_modulus_auto_gamma_analyticAt_minBranch_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne_params : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c₁ n, (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (γ : ℂ → ℂ)
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (β : ℂ → ℂ), AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          AnalyticAt ℂ γ z₀ ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact q62_independence_connected_of_inputs hUo hUc hUne
+    (phiAnalytic c₁ hU₁) (phiAnalytic c₂ hU₂) c₁ c₂ hne_params hx₁ hx₂ hG
+    (hrig_phiMero_of_level_roots_modulus_auto_gamma_analyticAt_minBranch_frontier_orbitNorm_separable
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG βlev hanalytic hpow hne hanchorEsc γ hγan hγmatch hinput)
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- **NoRelation with frontier-analytic γ.** Compared with the γ/separable frontier theorem, local
+analyticity of `γ` at each selected frontier point is no longer relation data: it is supplied once as
+`AnalyticOnNhd γ (frontier K_{c₁})`. -/
+theorem noRelation_phiMero_of_repelling_global_modulus_auto_gamma_frontierAnalytic_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  noRelation_phiMero_of_repelling_global_modulus_auto_gamma_analyticAt_frontier_orbitNorm_separable
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγmatch (by
+      intro Q s hnt hEqOn
+      obtain ⟨z₀, w₀, p, hsep, hfront, hβlim, hFz, hnorm⟩ := hinput Q s hnt hEqOn
+      exact ⟨z₀, w₀, p, hγfront z₀ hfront, hsep, hfront, hβlim, hFz, hnorm⟩)
+
+/-- **hRigid with frontier-analytic γ.** This is the `TranscendentalOverAdjoin` form of
+`noRelation_phiMero_of_repelling_global_modulus_auto_gamma_frontierAnalytic_frontier_orbitNorm_separable`. -/
+theorem hrig_phiMero_of_repelling_global_modulus_auto_gamma_frontierAnalytic_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact transcendentalOverAdjoin_of_noRelation _ _
+    (noRelation_phiMero_of_repelling_global_modulus_auto_gamma_frontierAnalytic_frontier_orbitNorm_separable
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγfront hγmatch hinput)
+
+/-- **Level-root hRigid with frontier-analytic γ.** The level-root tower still supplies the global `c₁`
+branch; frontier analyticity of `γ` is now a global input rather than a per-relation callback field. -/
+theorem hrig_phiMero_of_level_roots_modulus_auto_gamma_frontierAnalytic_minBranch_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c₁ n, (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (γ : ℂ → ℂ)
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (β : ℂ → ℂ), AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  obtain ⟨β, hβan, hβesc, _hβ0, hβmod⟩ :=
+    exists_global_branch_of_level_roots_modulus c₁ βlev hanalytic hpow hne hanchorEsc
+  exact hrig_phiMero_of_repelling_global_modulus_auto_gamma_frontierAnalytic_frontier_orbitNorm_separable
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγfront hγmatch
+    (hinput β hβan hβesc hβmod)
+
+/-- **Connected-case `q62` endpoint with frontier-analytic γ.** This is the strongest connected endpoint
+currently exposed by the γ/separable hRigid route: the per-relation callback no longer carries local
+analyticity of `γ`; it supplies only separability, frontier limit, periodicity, and repelling orbit product. -/
+theorem q62_independence_connected_of_level_roots_modulus_auto_gamma_frontierAnalytic_minBranch_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne_params : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c₁ n, (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (γ : ℂ → ℂ)
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (β : ℂ → ℂ), AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact q62_independence_connected_of_inputs hUo hUc hUne
+    (phiAnalytic c₁ hU₁) (phiAnalytic c₂ hU₂) c₁ c₂ hne_params hx₁ hx₂ hG
+    (hrig_phiMero_of_level_roots_modulus_auto_gamma_frontierAnalytic_minBranch_frontier_orbitNorm_separable
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG βlev hanalytic hpow hne hanchorEsc γ hγan hγfront hγmatch hinput)
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- **Connected hRigid endpoint with `φ_{c₂}` transcendence produced internally.** This removes the
+abstract terminal hypothesis `Transcendental (RatFunc ℂ) (phiMero c₂ hU₂)` from the strongest
+frontier-analytic γ endpoint by deriving it via `phiMero_transcendental_of_repelling_input`.  The remaining
+`c₂` input is explicit dynamical/simple-root data, not a field-theoretic placeholder. -/
+theorem q62_independence_connected_of_level_roots_modulus_auto_gamma_frontierAnalytic_minBranch_frontier_orbitNorm_separable_repellingG
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne_params : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
+    (hGinput : ∀ P : Polynomial (Polynomial ℂ), P ≠ 0 → 1 ≤ P.natDegree →
+        (∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
+        (∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+          (∀ z ∈ U, ∑ i ∈ R.support, (R.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
+          P.natDegree ≤ R.natDegree) →
+        {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
+          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0}.Countable →
+        ∃ (p : ℕ) (lam w₀ d : ℂ) (z₀ : ℂ),
+          (∑ i ∈ P.support, (P.coeff i).aeval z₀ * w₀ ^ i = 0) ∧
+          HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * w ^ i) d w₀ ∧ d ≠ 0 ∧
+          (quadratic c₂)^[p] z₀ = z₀ ∧ HasDerivAt ((quadratic c₂)^[p]) lam z₀ ∧
+          w₀ ^ (2 ^ p) = w₀ ∧ w₀ ≠ 0 ∧ (2 ^ p : ℝ) < ‖lam‖)
+    (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c₁ n, (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (γ : ℂ → ℂ)
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (β : ℂ → ℂ), AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ w₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 w₀) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  have hG : Transcendental (RatFunc ℂ) (phiMero c₂ hU₂) :=
+    phiMero_transcendental_of_repelling_input hUo hUc hUne hUinf c₂ hU₂ hGinput
+  exact q62_independence_connected_of_level_roots_modulus_auto_gamma_frontierAnalytic_minBranch_frontier_orbitNorm_separable
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hne_params hx₁ hx₂ hG βlev hanalytic hpow hne hanchorEsc
+    γ hγan hγfront hγmatch hinput
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- **NoRelation with frontier-analytic β and γ.**  This is the boundary-limit-free form of the
+frontier-analytic γ route: if the global basin branch `β` itself has a frontier analytic continuation, then
+`w₀` and `Tendsto β (𝓝[Kᶜ] z₀) (𝓝 w₀)` are no longer relation data.  The callback only chooses a separable
+strongly-repelling frontier fibre; the boundary value is forced to be `β z₀`. -/
+theorem noRelation_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβfront : AnalyticOnNhd ℂ β (frontier (filledJulia c₁)))
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  noRelation_phiMero_of_repelling_global_modulus_auto_gamma_frontierAnalytic_frontier_orbitNorm_separable
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hγan hγfront hγmatch (by
+      intro Q s hnt hEqOn
+      obtain ⟨z₀, p, hsep, hfront, hFz, hnorm⟩ := hinput Q s hnt hEqOn
+      refine ⟨z₀, β z₀, p, hsep, hfront, ?_, hFz, hnorm⟩
+      exact ((hβfront z₀ hfront).continuousAt.tendsto).mono_left nhdsWithin_le_nhds)
+
+/-- **hRigid with frontier-analytic β and γ.** This packages the boundary-limit-free NoRelation wrapper as
+`TranscendentalOverAdjoin`: once `β` is analytic at the frontier, the per-relation datum only chooses a
+separable strongly-repelling frontier fibre. -/
+theorem hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_orbitNorm_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβfront : AnalyticOnNhd ℂ β (frontier (filledJulia c₁)))
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact transcendentalOverAdjoin_of_noRelation _ _
+    (noRelation_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_orbitNorm_separable
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβfront hβesc hβmod hγan hγfront hγmatch hinput)
+
+/-- **Connected q62 endpoint with β/γ frontier analyticity and `φ_{c₂}` transcendence produced internally.**
+The ad hoc boundary-limit witness is gone: `w₀` is `β z₀`, and `Tendsto β` follows from `hβfront`. -/
+theorem q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_orbitNorm_separable_repellingG
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne_params : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
+    (hGinput : ∀ P : Polynomial (Polynomial ℂ), P ≠ 0 → 1 ≤ P.natDegree →
+        (∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
+        (∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+          (∀ z ∈ U, ∑ i ∈ R.support, (R.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
+          P.natDegree ≤ R.natDegree) →
+        {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
+          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0}.Countable →
+        ∃ (p : ℕ) (lam w₀ d : ℂ) (z₀ : ℂ),
+          (∑ i ∈ P.support, (P.coeff i).aeval z₀ * w₀ ^ i = 0) ∧
+          HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * w ^ i) d w₀ ∧ d ≠ 0 ∧
+          (quadratic c₂)^[p] z₀ = z₀ ∧ HasDerivAt ((quadratic c₂)^[p]) lam z₀ ∧
+          w₀ ^ (2 ^ p) = w₀ ∧ w₀ ≠ 0 ∧ (2 ^ p : ℝ) < ‖lam‖)
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβfront : AnalyticOnNhd ℂ β (frontier (filledJulia c₁)))
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c₁)^[k] z₀‖) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  have hG : Transcendental (RatFunc ℂ) (phiMero c₂ hU₂) :=
+    phiMero_transcendental_of_repelling_input hUo hUc hUne hUinf c₂ hU₂ hGinput
+  exact q62_independence_connected_of_inputs hUo hUc hUne
+    (phiAnalytic c₁ hU₁) (phiAnalytic c₂ hU₂) c₁ c₂ hne_params hx₁ hx₂ hG
+    (hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_orbitNorm_separable
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβfront hβesc hβmod hγan hγfront hγmatch hinput)
+
+end Bottcher
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- **NoRelation with frontier-analytic β/γ and canonical nonresonance.**  The branch boundary value is
+forced to be `β z₀`, and the periodic multiplier is the canonical derivative of the iterate.  The caller
+only selects a separable frontier periodic fibre and proves the genuine nonresonance condition for that
+canonical multiplier. -/
+theorem noRelation_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_derivNonres_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβfront : AnalyticOnNhd ℂ β (frontier (filledJulia c₁)))
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (∀ m : ℕ, 1 ≤ m →
+            (deriv ((quadratic c₁)^[p]) z₀) ^ m ≠ ((2 ^ p : ℕ) : ℂ))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact noRelation_phiMero_of_repelling_global_modulus_auto_contDiffAt_frontier
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β hβan hβesc hβmod (by
+      intro Q s hnt hEqOn
+      obtain ⟨z₀, p, hsep, hfront, hFz, hres⟩ := hinput Q s hnt hEqOn
+      let a : ℕ → ℂ → ℂ := fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)
+      have ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) (filledJulia c₁)ᶜ := by
+        intro i _hi
+        exact analyticOnNhd_eval₂_of_analyticOnNhd hγan (Q i)
+      have hγAt : AnalyticAt ℂ γ z₀ := hγfront z₀ hfront
+      have haAt : ∀ i ∈ s, AnalyticAt ℂ (a i) z₀ := by
+        intro i _hi
+        exact analyticAt_eval₂_of_analyticAt hγAt (Q i)
+      have hmatch : ∀ i ∈ s, ∀ z ∈ U,
+          a i z = (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z) := by
+        intro i _hi z hz
+        dsimp [a]
+        simpa using congrArg (fun w => (Q i).eval₂ (Polynomial.evalRingHom z) w) (hγmatch z hz)
+      have hrelU : ∀ z ∈ U, ∑ i ∈ s, a i z * (β z) ^ i = 0 := by
+        intro z hz
+        calc
+          ∑ i ∈ s, a i z * (β z) ^ i
+              = ∑ i ∈ s,
+                  ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) *
+                    (bottcherCoord c₁ z) ^ i := by
+                refine Finset.sum_congr rfl ?_
+                intro i hi
+                rw [hmatch i hi z hz, hβesc z (hU₁ hz)]
+          _ = 0 := hEqOn hz
+      have hβrel_all : ∀ z ∈ (filledJulia c₁)ᶜ, ∑ i ∈ s, a i z * (β z) ^ i = 0 :=
+        relation_eq_zero_basin_analytic_of_open hUo hUne
+          (fun z hz => escapeOpen_subset_compl_filledJulia c₁ (hU₁ hz)) ha hβan hrelU
+      have hβrel : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, ∑ i ∈ s, a i z * (β z) ^ i = 0 :=
+        Filter.eventually_of_mem self_mem_nhdsWithin hβrel_all
+      have hNeBot : (𝓝[(filledJulia c₁)ᶜ] z₀).NeBot :=
+        nhdsWithin_compl_filledJulia_neBot_of_mem_frontier hfront
+      have hβlim : Tendsto β (𝓝[(filledJulia c₁)ᶜ] z₀) (𝓝 (β z₀)) :=
+        ((hβfront z₀ hfront).continuousAt.tendsto).mono_left nhdsWithin_le_nhds
+      have hrootSum : ∑ i ∈ s, a i z₀ * (β z₀) ^ i = 0 :=
+        relation_boundary_root_of_tendsto (c := c₁) (β := β) (a := a) (s := s)
+          (fun i hi => (haAt i hi).continuousAt) hNeBot hβlim hβrel
+      have hrootPoly : (fibrePoly a s z₀).eval (β z₀) = 0 := by
+        rwa [eval_fibrePoly]
+      have hderiv : (fibrePoly a s z₀).derivative.eval (β z₀) ≠ 0 :=
+        eval_derivative_ne_zero_of_separable (by simpa [a] using hsep) hrootPoly
+      refine ⟨a, z₀, β z₀, deriv ((quadratic c₁)^[p]) z₀, p, ha,
+        (fun i hi => (haAt i hi).contDiffAt), hmatch, ?_, hfront, hβlim, hFz,
+        hasDerivAt_quadratic_iterate_deriv c₁ z₀ p, hres⟩
+      simpa [a] using hderiv)
+
+/-- **hRigid with frontier-analytic β/γ and canonical nonresonance.** -/
+theorem hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_derivNonres_separable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβfront : AnalyticOnNhd ℂ β (frontier (filledJulia c₁)))
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (∀ m : ℕ, 1 ≤ m →
+            (deriv ((quadratic c₁)^[p]) z₀) ^ m ≠ ((2 ^ p : ℕ) : ℂ))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact transcendentalOverAdjoin_of_noRelation _ _
+    (noRelation_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_derivNonres_separable
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβfront hβesc hβmod hγan hγfront hγmatch hinput)
+
+/-- **Connected q62 endpoint with β/γ frontier analyticity and canonical nonresonance.** -/
+theorem q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_derivNonres_separable_repellingG
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne_params : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
+    (hGinput : ∀ P : Polynomial (Polynomial ℂ), P ≠ 0 → 1 ≤ P.natDegree →
+        (∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
+        (∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+          (∀ z ∈ U, ∑ i ∈ R.support, (R.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
+          P.natDegree ≤ R.natDegree) →
+        {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
+          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0}.Countable →
+        ∃ (p : ℕ) (lam w₀ d : ℂ) (z₀ : ℂ),
+          (∑ i ∈ P.support, (P.coeff i).aeval z₀ * w₀ ^ i = 0) ∧
+          HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * w ^ i) d w₀ ∧ d ≠ 0 ∧
+          (quadratic c₂)^[p] z₀ = z₀ ∧ HasDerivAt ((quadratic c₂)^[p]) lam z₀ ∧
+          w₀ ^ (2 ^ p) = w₀ ∧ w₀ ≠ 0 ∧ (2 ^ p : ℝ) < ‖lam‖)
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβfront : AnalyticOnNhd ℂ β (frontier (filledJulia c₁)))
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ)
+    (hγfront : AnalyticOnNhd ℂ γ (frontier (filledJulia c₁)))
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (z₀ : ℂ) (p : ℕ),
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          (quadratic c₁)^[p] z₀ = z₀ ∧
+          (∀ m : ℕ, 1 ≤ m →
+            (deriv ((quadratic c₁)^[p]) z₀) ^ m ≠ ((2 ^ p : ℕ) : ℂ))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  have hG : Transcendental (RatFunc ℂ) (phiMero c₂ hU₂) :=
+    phiMero_transcendental_of_repelling_input hUo hUc hUne hUinf c₂ hU₂ hGinput
+  exact q62_independence_connected_of_inputs hUo hUc hUne
+    (phiAnalytic c₁ hU₁) (phiAnalytic c₂ hU₂) c₁ c₂ hne_params hx₁ hx₂ hG
+    (hrig_phiMero_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_derivNonres_separable
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβfront hβesc hβmod hγan hγfront hγmatch hinput)
+
+end Bottcher

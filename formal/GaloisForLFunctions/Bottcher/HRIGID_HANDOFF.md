@@ -1,54 +1,92 @@
-# Handoff: the `hRigid` (both-connected) branch of `q62_independence`
+# Handoff: current `hRigid` branch of `q62_independence`
 
-Parallelization contract so the `hRigid` work composes with the `hDisc` work without edit races.
+This handoff supersedes the old "make a new `Rigidity.lean` file" note.  The hRigid lane has already
+created substantial axiom-clean Lean infrastructure.  Do not redo it, and do not replace the remaining
+work by axioms, `sorry`, or terminal hypotheses.
 
-## Ownership boundary
-- **Other agent (this ticket):** `hRigid` — the both-connected case via Eremenko–van Strien rigidity.
-  Own a NEW file, e.g. `GaloisForLFunctions/Bottcher/Rigidity.lean`. Do NOT touch `LiftPeriod.lean`,
-  `LiftConstruction.lean`, `Q62KummerAssembly.lean`, `CoverConstruction.lean` (the `hDisc` lane).
-- **hDisc lane (me):** the disconnected/disconnected lift → dyadic period → Kummer. Don't touch
-  `Rigidity.lean`.
-- **Shared, DO NOT EDIT:** `Q62.lean` is unalterable (it holds `q62_independence`, `NoRelation`,
-  `q62_mixed`). Both lanes only *consume* it.
-- **Aggregator `GaloisForLFunctions/Bottcher.lean`:** to avoid a race on the import list, add exactly
-  ONE import line for the new file and nothing else; coordinate the line so the two lanes don't
-  both rewrite the same hunk.
+## Current verified surface
 
-## What is already done (do NOT redo)
-- The **mixed** sub-case (exactly one parameter disconnected) needs NO E–vS: `q62_mixed`
-  (`Q62.lean:132`) closes it from the disconnected coordinate's monodromy alone. `noRelation_of_mixed_lifts`
-  similarly. So `hRigid`'s only irreducible content is **both `c₁` and `c₂` connected**.
+The main active files are:
 
-## The deliverable (exact target)
-Produce, on the genuine carrier, the both-connected algebraic-independence theorem. Abstract shape
-(matching `Q62.lean`'s `NoRelation K F G`, `F = φ_{c₁}`, `G = φ_{c₂}`):
+- `DendriteContinuesAcross.lean`
+  - `not_continuesAcross_of_emptyInterior_modulus`
+  - `hnb_of_emptyInterior_modulus`
+- `RelativeFibreGeneric.lean`
+  - `fibrePoly_eq_denseFibreCoeff`
+  - `exists_sparse_fibre_separable_crossing`
+  - `exists_commonBasin_input_of_sparse_fibre_crossing`
+- `RelativeRigidityNaturalBoundary.lean`
+  - natural-boundary hRigid bridges from `ContinuesAcross` obstruction;
+  - empty-interior specialization deriving the obstruction from the Böttcher modulus;
+  - local/off-other `γ` endpoints;
+  - common-region and common-basin endpoints;
+  - level-root tower endpoints;
+  - crossing-driven endpoints that create the separable target fibre internally;
+  - square-root-family endpoints that create the `2^n` power law internally via `hpow_of_sqrt_family`.
 
-```
-theorem q62_both_connected
-    {K M : Type*} [Field K] [Field M] [Algebra K M]
-    (F G : M)
-    (hconn : <both-connected hypotheses: c₁, c₂ ∈ Mandelbrot, nonexceptional, c₁ ≠ c₂>) :
-    NoRelation K F G
-```
+The newest strongest square-root endpoints are:
 
-Then assemble the full `hRigid` slot of `q62_independence`:
-`(¬ Disc c₁ ∨ ¬ Disc c₂) → NoRelation K (φ c₁) (φ c₂)`
-by case-splitting: if the *other* parameter is disconnected → `q62_mixed`; if both connected →
-`q62_both_connected`. (So the other agent can own the entire `hRigid` term, combining the existing
-mixed lemma with their new both-connected theorem.)
+- `noRelation_phiMero_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing`
+- `hrig_phiMero_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing`
+- `q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing`
+- `q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_repellingG`
 
-## The mathematical content (the actual mountain)
-Eremenko–van Strien (arXiv:0810.2260) smooth-piece rigidity for connected polynomial Julia sets:
-two distinct connected-Julia parameters cannot share an algebraic relation between their Böttcher
-coordinates, because a relation would force a smooth conjugacy/rigidity the boundary regularity
-forbids. This is a deep published theorem — the largest remaining formalization in the whole proof,
-much heavier than `hDisc`. Expect a sub-tower (boundary regularity, the rigidity obstruction). Build
-it from Mathlib up; no `sorry`, no added axioms (project discipline). Numerically pre-certify any
-analytic estimate (mpmath) before the Lean.
+Verification from the current session:
 
-## Interface invariants
-- Final form must be axiom-clean: `#print axioms <thm>` = `[propext, Classical.choice, Quot.sound]`.
-- Don't introduce a hypothesis that re-imports the conclusion (no circularity through `NoRelation`).
-- Keep `Disc`/`Exceptional` semantics identical to `Q62.lean`.
+- `lake build GaloisForLFunctions.Bottcher.RelativeRigidityNaturalBoundary`
+- `git diff --check`
+- placeholder scan for `sorry`/`admit`/`axiom`/`opaque`/`unsafe` over touched hRigid files
+- `scripts/formal_tools.py index`
+- `scripts/formal_tools.py lint --check-generated`
+- `#print axioms` for the newest square-root endpoints: only `[propext, Classical.choice, Quot.sound]`
 
-When both lanes land, `q62_independence` is invoked with the two assembled terms and is unconditional.
+## What the created pieces already remove
+
+- The natural-boundary predicate is no longer a raw input in the empty-interior case.
+- The selected separable fibre is no longer a raw input in the crossing route; it is produced by
+  `exists_commonBasin_input_of_sparse_fibre_crossing`.
+- The full `2^n` power-law tower is no longer a raw input in the newest route; it is produced by
+  `hpow_of_sqrt_family` from a coherent square-root family.
+- The abstract `Transcendental (RatFunc ℂ) (phiMero c₂ hU₂)` can be replaced by the existing
+  repelling/simple-root interface in the `_repellingG` endpoints, but that interface itself is still a
+  real input unless separately discharged.
+
+## Remaining work for a hypothesis-free both-connected theorem
+
+The final theorem is not done.  A theorem that still carries these as terminal hypotheses must not be
+presented as the q62 close.
+
+1. **General Eremenko-van Strien natural-boundary obstruction.**
+   Current code proves the obstruction from `interior (filledJulia c) = ∅`.  The full connected
+   nonexceptional theorem needs an axiom-clean Lean proof that analytic continuation of the basin
+   Böttcher branch through a Julia point forces a smooth Julia piece, then E-vS rigidity forces
+   `c ∈ Exceptional`, contradiction.
+
+2. **Capacity/common-basin crossing geometry.**
+   The hRigid endpoint now consumes sparse crossing data plus pointwise common-basin target geometry.
+   The missing created theorem should supply this geometry from distinct connected parameters:
+   enough points in `filledJulia c₁ ∩ (filledJulia c₂)ᶜ`, accumulating inside an analytic coefficient
+   region, with local preconnected basin sectors from the carrier `U` to the selected point.
+
+3. **Actual branch construction on connected basins.**
+   The newest endpoint accepts coherent square-root towers and derives the level-root power law.
+   A final connected theorem must either construct these towers axiom-clean, or replace this input by
+   an already-formalized global single-valued Böttcher branch on `(filledJulia c)ᶜ`.
+
+4. **Repelling/simple-root transcendence input.**
+   The `_repellingG` wrappers remove the abstract `hG`, but the callback producing the repelling
+   simple-root data remains to be discharged if the final theorem uses that route.
+
+## Coordination boundary
+
+- Avoid the hDisc files unless the user explicitly redirects: `HDiscLoopDeck.lean`, deck/cover
+  construction files, and the disconnected Kummer lane are separate work.
+- `Bottcher.lean` already imports the new hRigid files.  Do not churn the import list except when a new
+  module is genuinely added.
+- Keep every new theorem axiom-clean.  Run `#print axioms` from `/tmp`, not by editing the tree.
+
+## Target shape
+
+The target remains an unconditional both-connected `NoRelation` theorem for the genuine Böttcher
+coordinates, suitable as the `hRigid` branch of `q62_independence`.  The proof must have no extra axioms,
+no `sorry`/`admit`, and no terminal hypothesis that is just the missing theorem in another form.
