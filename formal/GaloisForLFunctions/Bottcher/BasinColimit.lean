@@ -20,6 +20,8 @@ import GaloisForLFunctions.Bottcher.Winding
 import GaloisForLFunctions.Bottcher.RelativeBasinBranch
 import GaloisForLFunctions.Bottcher.RelativeBranchFamily
 import GaloisForLFunctions.Bottcher.BasinConnected
+import GaloisForLFunctions.Bottcher.GreenContinuity
+import GaloisForLFunctions.Bottcher.AnalyticRoot
 
 open Complex Set Filter Topology Bornology Metric
 
@@ -294,5 +296,224 @@ theorem exists_global_branch_of_coherent_levels (c : ℂ) (βlev : ℕ → ℂ �
   · intro z hz
     have hz0 : z ∈ escapeLevel c 0 := by rw [escapeLevel_zero]; exact hz
     rw [hβval z 0 hz0, hanchor z hz]
+
+/-- Each escape level is connected (nonempty — the deep point — and preconnected by Riemann–Hurwitz). -/
+theorem isConnected_escapeLevel (c : ℂ) (n : ℕ) : IsConnected (escapeLevel c n) := by
+  induction n with
+  | zero => rw [escapeLevel_zero]; exact isConnected_escapeOpen c
+  | succ k ih =>
+    exact ⟨⟨_, deep_mem_escapeLevel c (k + 1)⟩, isPreconnected_preimage_escapeLevel c k ih⟩
+
+/-- **Coherence of a level-branch family of `2ⁿ`-th roots.** If each `βlev n` is analytic and nonzero on
+`escapeLevel c n` with `(βlev n)^{2ⁿ} = bottcherCoord c ∘ f^[n]`, anchored at `bottcherCoord c` on the far
+field `escapeOpen c`, then adjacent levels agree: `βlev (n+1) = βlev n` on `escapeLevel c n`. The ratio is
+a `2^{n+1}`-th root of unity — both sides' `2^{n+1}`-th powers equal `(bottcherCoord∘f^[n])²` via
+`bottcherCoord_quadratic` — continuous on the connected level, pinned to `1` at the deep anchor where both
+equal `bottcherCoord`. This is the coherence input of `exists_global_branch_of_coherent_levels`. -/
+theorem levelBranch_coherent_of_pow (c : ℂ) (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c n, (βlev n z) ^ (2 ^ n) = bottcherCoord c ((quadratic c)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z) :
+    ∀ n, ∀ z ∈ escapeLevel c n, βlev (n + 1) z = βlev n z := by
+  intro n
+  set V : Set ℂ := escapeLevel c n with hVdef
+  have hVc : IsPreconnected V := (isConnected_escapeLevel c n).isPreconnected
+  have hsub : V ⊆ escapeLevel c (n + 1) := escapeLevel_subset_succ c n
+  set ξ : ℂ → ℂ := fun z => βlev (n + 1) z / βlev n z with hξdef
+  have hpow1 : ∀ z ∈ V, ξ z ^ (2 ^ (n + 1)) = 1 := by
+    intro z hz
+    have hzn1 : z ∈ escapeLevel c (n + 1) := hsub hz
+    have hfn : (quadratic c)^[n] z ∈ escapeOpen c := hz
+    obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hfn
+    have hnum : (βlev (n + 1) z) ^ (2 ^ (n + 1)) = bottcherCoord c ((quadratic c)^[n] z) ^ 2 := by
+      rw [hpow (n + 1) z hzn1]
+      rw [show (quadratic c)^[n + 1] z = quadratic c ((quadratic c)^[n] z) from
+        Function.iterate_succ_apply' (quadratic c) n z]
+      exact bottcherCoord_quadratic hc hz2
+    have hden : (βlev n z) ^ (2 ^ (n + 1)) = bottcherCoord c ((quadratic c)^[n] z) ^ 2 := by
+      rw [show (2:ℕ) ^ (n + 1) = 2 ^ n * 2 from by rw [pow_succ], pow_mul, hpow n z hz]
+    rw [hξdef]; simp only
+    rw [div_pow, hnum, hden, div_self]
+    exact pow_ne_zero _ (bottcherCoord_ne_zero c _)
+  have hξc : ContinuousOn ξ V := by
+    apply ContinuousOn.div
+    · exact ((hanalytic (n + 1)).continuousOn).mono hsub
+    · exact (hanalytic n).continuousOn
+    · exact fun z hz => hne n z hz
+  have hdeep : ((max 2 ‖c‖ + 1 : ℝ) : ℂ) ∈ V := deep_mem_escapeLevel c n
+  have hdeepEsc : ((max 2 ‖c‖ + 1 : ℝ) : ℂ) ∈ escapeOpen c := by
+    have := deep_mem_escapeLevel c 0; rwa [escapeLevel_zero] at this
+  have hξdeep : ξ ((max 2 ‖c‖ + 1 : ℝ) : ℂ) = 1 := by
+    rw [hξdef]; simp only
+    rw [hanchorEsc (n + 1) _ hdeepEsc, hanchorEsc n _ hdeepEsc, div_self (bottcherCoord_ne_zero c _)]
+  intro z hz
+  have hconst : ξ z = ξ ((max 2 ‖c‖ + 1 : ℝ) : ℂ) :=
+    const_of_pow_eq_one hVc hξc (by positivity) hpow1 hz hdeep
+  rw [hξdeep] at hconst
+  have hone : βlev (n + 1) z / βlev n z = 1 := hconst
+  exact (div_eq_one_iff_eq (hne n z hz)).mp hone
+
+/-- **The connected Böttcher uniformization reduced to per-level single-valued roots.** Combining the
+coherence (`levelBranch_coherent_of_pow`) with the colimit gluing
+(`exists_global_branch_of_coherent_levels`): a family of single-valued analytic nonzero `2ⁿ`-th-root
+branches `βlev n` on the connected escape levels, each restricting to `bottcherCoord c` on the far field,
+assembles into the **global single-valued basin branch** `β` (analytic on `(K_c)ᶜ`, `= bottcherCoord c`
+on `escapeOpen c`) — exactly the `(hβan, hβesc)` input of `bottcherFE_of_global_branch` and
+`false_of_repelling_branch_global`. So the entire connected-case branch input is reduced to the per-level
+winding construction: a single-valued `2ⁿ`-th root of `bottcherCoord∘f^[n]` on `escapeLevel c n`. -/
+theorem exists_global_branch_of_level_roots (c : ℂ) (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c n, (βlev n z) ^ (2 ^ n) = bottcherCoord c ((quadratic c)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z) :
+    ∃ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
+      (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) :=
+  exists_global_branch_of_coherent_levels c βlev hanalytic
+    (levelBranch_coherent_of_pow c βlev hanalytic hpow hne hanchorEsc)
+    (fun z hz => hanchorEsc 0 z hz)
+
+/-- **Square-root recursion ⟹ the `2ⁿ`-th-power property.** A family `βlev` with `βlev 0 = bottcherCoord`
+on `escapeOpen` and, at each level, `(βlev (n+1))² = βlev n ∘ f` on `escapeLevel c (n+1)`, automatically
+satisfies the `2ⁿ`-th-power law `(βlev n)^{2ⁿ} = bottcherCoord ∘ f^[n]` on every `escapeLevel c n`.
+Induction: the base is the anchor; the step uses `(βlev(n+1))^{2^{n+1}} = ((βlev(n+1))²)^{2ⁿ} =
+(βlev n ∘ f)^{2ⁿ}` and the IH at `f z ∈ escapeLevel c n`. Reduces the per-level root family to a single
+SQUARE ROOT step `βlev (n+1) = √(βlev n ∘ f)`. -/
+theorem hpow_of_sqrt_family (c : ℂ) (βlev : ℕ → ℂ → ℂ)
+    (hanchor0 : ∀ z ∈ escapeOpen c, βlev 0 z = bottcherCoord c z)
+    (hsqrt : ∀ n, ∀ z ∈ escapeLevel c (n + 1), (βlev (n + 1) z) ^ 2 = βlev n (quadratic c z)) :
+    ∀ n, ∀ z ∈ escapeLevel c n, (βlev n z) ^ (2 ^ n) = bottcherCoord c ((quadratic c)^[n] z) := by
+  intro n
+  induction n with
+  | zero =>
+    intro z hz
+    rw [escapeLevel_zero] at hz
+    simp only [pow_zero, pow_one, Function.iterate_zero, id_eq]
+    exact hanchor0 z hz
+  | succ k ih =>
+    intro z hz
+    have hfz : quadratic c z ∈ escapeLevel c k := by
+      show (quadratic c)^[k] (quadratic c z) ∈ escapeOpen c
+      rw [← Function.iterate_succ_apply]; exact hz
+    have hstep : (βlev (k + 1) z) ^ (2 ^ (k + 1)) = (βlev k (quadratic c z)) ^ (2 ^ k) := by
+      rw [show (2 : ℕ) ^ (k + 1) = 2 * 2 ^ k from by rw [pow_succ]; ring, pow_mul, hsqrt k z hz]
+    rw [hstep, ih (quadratic c z) hfz, ← Function.iterate_succ_apply]
+
+/-- **The global branch from a square-root family.** Combining `hpow_of_sqrt_family` with
+`exists_global_branch_of_level_roots`: a family of analytic nowhere-zero `βlev n` on the escape levels,
+anchored to `bottcherCoord c` on `escapeOpen c`, with `(βlev (n+1))² = βlev n ∘ f` at each level,
+assembles into the global single-valued basin branch. The cleanest reduction of the connected Böttcher
+uniformization: the only remaining atom is a single-valued analytic **square root** of `βlev n ∘ f` on
+the connected `escapeLevel c (n+1)` (the winding identification), iterated. -/
+theorem exists_global_branch_of_sqrt_family (c : ℂ) (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z)
+    (hsqrt : ∀ n, ∀ z ∈ escapeLevel c (n + 1), (βlev (n + 1) z) ^ 2 = βlev n (quadratic c z)) :
+    ∃ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
+      (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) :=
+  exists_global_branch_of_level_roots c βlev hanalytic
+    (hpow_of_sqrt_family c βlev (hanchorEsc 0) hsqrt) hne hanchorEsc
+
+/-- **The basin boundary limit lands on the unit circle.** If a basin branch `β` carries the Böttcher
+modulus `‖β‖ = exp(G_c)` on the basin and has a limit `w₀` along the basin at a Julia point `z₀ ∈ J_c`
+(basin accumulating, `NeBot`), then `‖w₀‖ = 1` — hence `w₀ ≠ 0`. Mechanism: `‖β z‖ = exp(G_c z) →
+exp(G_c z₀) = exp 0 = 1` (`tendsto_greenFunctionDyn_boundary` + `G_c = 0` on `K_c`) and `‖β z‖ → ‖w₀‖`
+(norm continuous); unique limit on the `NeBot` filter. Supplies the `w₀ ≠ 0` datum of the
+repelling-cycle input for free from the boundary limit. -/
+theorem norm_boundary_limit_eq_one {c : ℂ} {β : ℂ → ℂ} {z₀ w₀ : ℂ}
+    (hβmod : ∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z))
+    (hz₀ : z₀ ∈ filledJulia c) (hNeBot : (𝓝[(filledJulia c)ᶜ] z₀).NeBot)
+    (hβlim : Tendsto β (𝓝[(filledJulia c)ᶜ] z₀) (𝓝 w₀)) :
+    ‖w₀‖ = 1 := by
+  haveI := hNeBot
+  have h1 : Tendsto (fun z => ‖β z‖) (𝓝[(filledJulia c)ᶜ] z₀) (𝓝 ‖w₀‖) :=
+    (continuous_norm.continuousAt).tendsto.comp hβlim
+  have h2 : Tendsto (fun z => ‖β z‖) (𝓝[(filledJulia c)ᶜ] z₀) (𝓝 1) := by
+    have hgreen : Tendsto (fun z => Real.exp (greenFunctionDyn c z))
+        (𝓝[(filledJulia c)ᶜ] z₀) (𝓝 1) := by
+      have hg0 : Tendsto (greenFunctionDyn c) (𝓝[(filledJulia c)ᶜ] z₀) (𝓝 0) :=
+        (tendsto_greenFunctionDyn_boundary hz₀).mono_left nhdsWithin_le_nhds
+      have := (Real.continuous_exp.continuousAt).tendsto.comp hg0
+      simpa using this
+    exact hgreen.congr' (by filter_upwards [self_mem_nhdsWithin] with z hz; rw [hβmod z hz])
+  exact tendsto_nhds_unique h1 h2
+
+/-- `f` maps `escapeLevel c (n+1)` into `escapeLevel c n`. -/
+theorem quadratic_mapsTo_escapeLevel (c : ℂ) (n : ℕ) :
+    Set.MapsTo (quadratic c) (escapeLevel c (n + 1)) (escapeLevel c n) := by
+  intro z hz
+  show (quadratic c)^[n] (quadratic c z) ∈ escapeOpen c
+  rw [← Function.iterate_succ_apply]; exact hz
+
+/-- **Descent step on a simply-connected piece.** On any simply-connected open `V ⊆ escapeLevel c (n+1)`,
+the pullback `βlev n ∘ f` is analytic and nowhere-zero (`f(V) ⊆ escapeLevel c n`, `βlev n` analytic
+nonvanishing there), so it has an analytic SQUARE ROOT on `V` (`exists_analyticOnNhd_pow_eq`, `N = 2`).
+This is the local form of `βlev (n+1)` — a single-valued analytic `s` with `s² = βlev n ∘ f` on each
+simply-connected chart of the escape level. Gluing the charts across the connected (π₁=ℤ) level is the
+remaining winding step. -/
+theorem exists_sqrt_pullback_on_simplyConnected (c : ℂ) (n : ℕ) {V : Set ℂ}
+    (hVsc : IsSimplyConnected V) (hVo : IsOpen V) (hVsub : V ⊆ escapeLevel c (n + 1))
+    (βlevn : ℂ → ℂ) (hβan : AnalyticOnNhd ℂ βlevn (escapeLevel c n))
+    (hβne : ∀ z ∈ escapeLevel c n, βlevn z ≠ 0) :
+    ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s V ∧ ∀ z ∈ V, (s z) ^ 2 = βlevn (quadratic c z) := by
+  have hmaps : Set.MapsTo (quadratic c) V (escapeLevel c n) :=
+    (quadratic_mapsTo_escapeLevel c n).mono_left hVsub
+  have hgan : AnalyticOnNhd ℂ (fun z => βlevn (quadratic c z)) V := by
+    intro z hz
+    exact (hβan _ (hmaps hz)).comp (analyticAt_quadratic c z)
+  have hg0 : ∀ z ∈ V, βlevn (quadratic c z) ≠ 0 := fun z hz => hβne _ (hmaps hz)
+  exact exists_analyticOnNhd_pow_eq hVsc hVo hgan hg0 (by norm_num : 1 ≤ 2)
+
+/-- **Level branch from two simply-connected charts.** If the connected level `escapeLevel c (n+1)` is
+covered by two open charts `V₁, V₂`, each carrying a square root `sᵢ` of `βlev n ∘ f` (from the descent
+step `exists_sqrt_pullback_on_simplyConnected` on a simply-connected chart), and the two roots AGREE on
+the overlap `V₁ ∩ V₂` (`hagree` — the single winding identification), then they glue
+(`analyticOnNhd_glue_twoChart`) into a single-valued analytic `s` on all of `escapeLevel c (n+1)` with
+`s² = βlev n ∘ f`. Everything is proven except `hagree`, which isolates the winding fact: the even
+winding `2` of `βlev n ∘ f` forces the overlap roots to match. -/
+theorem exists_levelBranch_succ_of_chart_agreement (c : ℂ) (n : ℕ)
+    {V₁ V₂ : Set ℂ} (hV₁o : IsOpen V₁) (hV₂o : IsOpen V₂)
+    (hcover : escapeLevel c (n + 1) ⊆ V₁ ∪ V₂)
+    (βlevn : ℂ → ℂ) (s₁ s₂ : ℂ → ℂ)
+    (hs₁an : AnalyticOnNhd ℂ s₁ V₁) (hs₂an : AnalyticOnNhd ℂ s₂ V₂)
+    (hs₁sq : ∀ z ∈ V₁, (s₁ z) ^ 2 = βlevn (quadratic c z))
+    (hs₂sq : ∀ z ∈ V₂, (s₂ z) ^ 2 = βlevn (quadratic c z))
+    (hagree : EqOn s₁ s₂ (V₁ ∩ V₂)) :
+    ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s (escapeLevel c (n + 1)) ∧
+      (∀ z ∈ escapeLevel c (n + 1), (s z) ^ 2 = βlevn (quadratic c z)) := by
+  obtain ⟨s, hsan, hs1, hs2⟩ := analyticOnNhd_glue_twoChart hV₁o hV₂o hs₁an hs₂an hagree
+  refine ⟨s, hsan.mono hcover, ?_⟩
+  intro z hz
+  rcases hcover hz with hz1 | hz2
+  · rw [hs1 hz1]; exact hs₁sq z hz1
+  · rw [hs2 hz2]; exact hs₂sq z hz2
+
+/-- **Two square roots agreeing at one point of a preconnected set agree throughout.** If `s₁, s₂` are
+continuous on a preconnected `W` with `(s₁)² = (s₂)²` and `s₂ ≠ 0` there, and `s₁ z₀ = s₂ z₀` at one
+point `z₀ ∈ W`, then `s₁ = s₂` on all of `W`. (The ratio `ξ = s₁/s₂` satisfies `ξ² = 1`, is continuous
+root-of-unity-valued — hence constant on the preconnected `W` — pinned to `1` at `z₀`.) Per-component
+agreement tool for the level-branch chart gluing: on each component of the chart overlap, both descent
+roots equal the single-valued `bottcherCoord` on the far field, so they agree — **resolving the winding
+via the far-field anchor** (`bottcherCoord` is already single-valued on `escapeOpen`, pinning both sides
+of every seam). -/
+theorem eqOn_sqrt_of_preconnected {W : Set ℂ} (hWc : IsPreconnected W) {s₁ s₂ : ℂ → ℂ}
+    (hs₁ : ContinuousOn s₁ W) (hs₂ : ContinuousOn s₂ W)
+    (hsq : ∀ z ∈ W, (s₁ z) ^ 2 = (s₂ z) ^ 2) (hs₂0 : ∀ z ∈ W, s₂ z ≠ 0)
+    {z₀ : ℂ} (hz₀ : z₀ ∈ W) (hanchor : s₁ z₀ = s₂ z₀) :
+    EqOn s₁ s₂ W := by
+  set ξ : ℂ → ℂ := fun z => s₁ z / s₂ z with hξdef
+  have hpow : ∀ z ∈ W, ξ z ^ 2 = 1 := by
+    intro z hz
+    rw [hξdef]; simp only
+    rw [div_pow, hsq z hz, div_self (pow_ne_zero _ (hs₂0 z hz))]
+  have hξc : ContinuousOn ξ W := hs₁.div hs₂ (fun z hz => hs₂0 z hz)
+  intro z hz
+  have hconst : ξ z = ξ z₀ := const_of_pow_eq_one hWc hξc (by norm_num) hpow hz hz₀
+  have hξ1 : ξ z₀ = 1 := by
+    rw [hξdef]; simp only; rw [hanchor, div_self (hs₂0 z₀ hz₀)]
+  rw [hξ1] at hconst
+  have hone : s₁ z / s₂ z = 1 := hconst
+  exact (div_eq_one_iff_eq (hs₂0 z hz)).mp hone
 
 end Bottcher

@@ -54,17 +54,19 @@ theorem nonempty_exterior {R' : ℝ} (hR' : 0 < R') : ({ξ : ℂ | R' < ‖ξ‖
     show R' < ‖((R' + 1 : ℝ) : ℂ)‖
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]; linarith⟩
 
-/-- **The exterior annulus is infinite** (it contains the injective real ray `(R', ∞) ↪ ℂ`). -/
-theorem infinite_exterior {R' : ℝ} : ({ξ : ℂ | R' < ‖ξ‖}).Infinite := by
-  apply Set.infinite_of_injective_forall_mem
-    (f := fun t : {x : ℝ // R' < x} => ((t : ℝ) : ℂ))
-  constructor
+/-- **The exterior annulus is infinite** (it contains the injective sequence `n ↦ R'+1+n`). -/
+theorem infinite_exterior {R' : ℝ} (hR' : 0 < R') : ({ξ : ℂ | R' < ‖ξ‖}).Infinite := by
+  refine Set.infinite_of_injective_forall_mem
+    (f := fun n : ℕ => ((R' + 1 + (n : ℝ) : ℝ) : ℂ)) ?_ ?_
   · intro a b hab
-    exact Subtype.ext (by exact_mod_cast hab)
-  · intro t
-    show R' < ‖((t : ℝ) : ℂ)‖
-    rw [Complex.norm_real, Real.norm_eq_abs]
-    exact lt_of_lt_of_le t.2 (le_abs_self _)
+    simp only at hab
+    have h : R' + 1 + (a : ℝ) = R' + 1 + (b : ℝ) := Complex.ofReal_inj.mp hab
+    exact Nat.cast_injective (show (a : ℝ) = (b : ℝ) by linarith)
+  · intro n
+    show R' < ‖((R' + 1 + (n : ℝ) : ℝ) : ℂ)‖
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+    have : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    linarith
 
 /-- **The exterior annulus is rotation-invariant** under any unit-modulus `ζ₀`. -/
 theorem mapsTo_rotation_exterior {ζ₀ : ℂ} (hζ : ‖ζ₀‖ = 1) {R' : ℝ} :
@@ -113,5 +115,29 @@ theorem exists_cover_annulus_data (c₁ c₂ : ℂ) (n : ℕ) {R B R' : ℝ}
     rw [hψw]
     show max 2 ‖c₂‖ < ‖z‖
     exact lt_trans hRc₂ hzR
+
+/-- **The deck-invariant base projection `p₀(ξ) = ψ₁(ξ^{2ⁿ})` as an analytic germ on `U`.**  This is
+the base coordinate `z` read on the cover (`z = φ_{c₁}^{-1}(ξ^{2ⁿ})`), through which `ℂ(z)` embeds into
+`meroField U` via `ratfuncToMeroVia p₀`.  Analytic wherever `ψ₁` is analytic at `ξ^{2ⁿ}` (the
+`exists_cover_annulus_data` hypothesis). -/
+theorem exists_projection_p0 {U : Set ℂ} {ψ₁ : ℂ → ℂ} {n : ℕ}
+    (hψan : ∀ ξ ∈ U, AnalyticAt ℂ ψ₁ (ξ ^ (2 ^ n))) :
+    ∃ p₀ : analyticSubring U,
+      (p₀ : Germ (𝓟 U) ℂ) = ↑(fun ξ => ψ₁ (ξ ^ (2 ^ n))) := by
+  set pw : ℂ → ℂ := fun ξ => ξ ^ (2 ^ n) with hpw
+  have han : AnalyticOnNhd ℂ (fun ξ => ψ₁ (pw ξ)) U := by
+    intro ξ hξ
+    have h1 : AnalyticAt ℂ pw ξ := analyticAt_id.pow (2 ^ n)
+    have h2 : AnalyticAt ℂ ψ₁ (pw ξ) := hψan ξ hξ
+    exact h2.comp h1
+  exact ⟨⟨(↑(fun ξ => ψ₁ (pw ξ)) : Germ (𝓟 U) ℂ), fun ξ => ψ₁ (pw ξ), han, rfl⟩, rfl⟩
+
+/-- **The base projection is deck-invariant:** `p₀∘(×ζ₀) = p₀` for `ζ₀^{2ⁿ} = 1` — so the deck fixes
+`ℂ(z)` (the `hfix` hypothesis of `precompMeroEquiv_ratfuncToMeroVia_fix`, discharging the `hK` clause). -/
+theorem p0_rotation_invariant {U : Set ℂ} {ψ₁ : ℂ → ℂ} {ζ₀ : ℂ} {n : ℕ}
+    (hζ : ζ₀ ^ (2 ^ n) = 1) :
+    ∀ y ∈ U, (fun ξ => ψ₁ (ξ ^ (2 ^ n))) (rotation ζ₀ y)
+      = (fun ξ => ψ₁ (ξ ^ (2 ^ n))) y :=
+  pow_comp_rotation_invariant (h := ψ₁) hζ U
 
 end Bottcher

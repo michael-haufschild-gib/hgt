@@ -37,6 +37,9 @@ import GaloisForLFunctions.Bottcher.CoverSection
 import GaloisForLFunctions.Bottcher.Q62Assembly
 import GaloisForLFunctions.Bottcher.DeckBiholo
 import GaloisForLFunctions.Bottcher.DeckAnnulus
+import GaloisForLFunctions.Bottcher.DeckAnnulusData
+import GaloisForLFunctions.Bottcher.CylinderDeck
+import GaloisForLFunctions.Bottcher.DisconnectedLoop
 import GaloisForLFunctions.Bottcher.NonSquareWinding
 import GaloisForLFunctions.Bottcher.KummerDeck
 import GaloisForLFunctions.Bottcher.Q62KummerAssembly
@@ -148,3 +151,5 @@ import GaloisForLFunctions.Bottcher.BasinBranchGlue
 import GaloisForLFunctions.Bottcher.PolyAsymptotic
 import GaloisForLFunctions.Bottcher.BasinColimit
 import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranch
+
+import GaloisForLFunctions.Bottcher.AnalyticRoot
