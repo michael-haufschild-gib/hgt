@@ -33,6 +33,8 @@ import GaloisForLFunctions.Bottcher.Q62Field
 import GaloisForLFunctions.Bottcher.CoverMonodromy
 import GaloisForLFunctions.Bottcher.CoverConstruction
 import GaloisForLFunctions.Bottcher.Q62Assembly
+import GaloisForLFunctions.Bottcher.DeckBiholo
+import GaloisForLFunctions.Bottcher.NonSquareWinding
 import GaloisForLFunctions.Bottcher.KummerDeck
 import GaloisForLFunctions.Bottcher.Q62KummerAssembly
 import GaloisForLFunctions.Bottcher.FigureEight
@@ -44,6 +46,7 @@ import GaloisForLFunctions.Bottcher.KummerNonSquare
 import GaloisForLFunctions.Bottcher.NonSquare
 import GaloisForLFunctions.Bottcher.ZeroSet
 import GaloisForLFunctions.Bottcher.SquareFree
+import GaloisForLFunctions.Bottcher.BottcherIterateNonSquare
 import GaloisForLFunctions.Bottcher.ProductCover
 import GaloisForLFunctions.Bottcher.AlgebraicBranch
 import GaloisForLFunctions.Bottcher.GermZeros
@@ -101,6 +104,7 @@ import GaloisForLFunctions.Bottcher.JuliaSeparation
 import GaloisForLFunctions.Bottcher.JuliaBasinCrossing
 import GaloisForLFunctions.Bottcher.JuliaExpansion
 import GaloisForLFunctions.Bottcher.Q62RadicalReduction
+import GaloisForLFunctions.Bottcher.Q62DeepDataAssembly
 import GaloisForLFunctions.Bottcher.CylinderUnivalence
 import GaloisForLFunctions.Bottcher.BrolinCylinder
 import GaloisForLFunctions.Bottcher.QuarticSlash
@@ -129,3 +133,6 @@ import GaloisForLFunctions.Bottcher.RelativeBranchFamily
 import GaloisForLFunctions.Bottcher.RelativeBasinBranch
 import GaloisForLFunctions.Bottcher.RelativeTranscendenceBridge
 import GaloisForLFunctions.Bottcher.RelativeRigidityCapstone
+import GaloisForLFunctions.Bottcher.IndexFormula
+import GaloisForLFunctions.Bottcher.IndexResonance
+import GaloisForLFunctions.Bottcher.IndexEstimate
