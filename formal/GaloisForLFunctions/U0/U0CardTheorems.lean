@@ -638,6 +638,61 @@ theorem escapeOpen_subset_U0Ext (b : ℂ) : escapeOpen b ⊆ U0NaturalBoundary.E
 
 variable {U : Set ℂ}
 
+/-- Escape-local topological deep data for the U0 radical provider.  Compared with
+`PhibImageWindingDeepData`, the deeper domain is required to lie in `escapeOpen b`; containment in the
+U0 exterior is then automatic by `escapeOpen_subset_U0Ext`. -/
+def PhibImageWindingEscapeDeepData (U : Set ℂ) (b : ℂ) : Prop :=
+  ∀ d : ℕ, ∃ (Ext : Set ℂ)
+    (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+    (_hUExt : U ⊆ Ext)
+    (_hExtesc : ∀ z ∈ Ext, (quadratic b)^[d+1] z ∈ escapeOpen b)
+    (_hExtSubEsc : Ext ⊆ escapeOpen b)
+    (aExt : analyticSubring Ext),
+    (aExt : Germ (𝓟 Ext) ℂ)
+        = (↑(fun z => bottcherCoord b ((quadratic b)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+    (∀ T : Set ℂ, T.Countable →
+      ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+        (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+        (∀ θ : ℝ, HasDerivAt γ (γ' θ) θ) ∧
+        γ (2 * Real.pi) = γ 0 ∧
+        (∀ θ : ℝ, (quadratic b)^[d+1] (γ θ) ∉ T) ∧
+        (∫ θ in (0:ℝ)..(2 * Real.pi),
+            ((quadratic b)^[d+1] (γ θ))⁻¹ *
+              ((∏ j ∈ Finset.range (d+1), 2 * (quadratic b)^[j] (γ θ)) * γ' θ))
+          = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))
+
+/-- Escape-local topological deep data supplies the older U0 image-winding deep-data interface. -/
+theorem phibImageWindingDeepData_of_escapeDeepData {b : ℂ}
+    (deepdata : PhibImageWindingEscapeDeepData U b) :
+    PhibImageWindingDeepData U b := by
+  intro d
+  obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, hExtSubEsc, aExt, haExt, hloops⟩ :=
+    deepdata d
+  exact ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc,
+    hExtSubEsc.trans (escapeOpen_subset_U0Ext b), aExt, haExt, hloops⟩
+
+/-- U0 radical-data provider from escape-local topological image-winding deep data. -/
+theorem phibRadicalData_of_imageWindingEscapeDeepData (hUo : IsOpen U)
+    (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) {b : ℂ} (hU_esc : U ⊆ escapeOpen b)
+    (deepdata : PhibImageWindingEscapeDeepData U b) :
+    PhibRadicalData hUo hUc hUne hUinf hU_ext hU_esc :=
+  phibRadicalData_of_imageWindingDeepData hUo hUc hUne hUinf hU_ext hU_esc
+    (phibImageWindingDeepData_of_escapeDeepData deepdata)
+
+/-- U0 escape-carrier independence from escape-local topological image-winding deep data. -/
+theorem u0_phi_independence_escapeCarrier_imageWindingEscapeDeepData (hUo : IsOpen U)
+    (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite) {b : ℂ}
+    (hU_esc : U ⊆ escapeOpen b) (deepdata : PhibImageWindingEscapeDeepData U b) :
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U)
+        (u0AnSub (hU_esc.trans (escapeOpen_subset_U0Ext b)))) := by
+  exact u0_phi_independence_carrier_imageWindingDeepData hUo hUc hUne hUinf
+    (hU_esc.trans (escapeOpen_subset_U0Ext b)) hU_esc
+    (phibImageWindingDeepData_of_escapeDeepData deepdata)
+
 /-- U0 carrier independence from deep data on an escape carrier. The separate containment
 `U ⊆ U0NaturalBoundary.Ext` is derived automatically from `U ⊆ escapeOpen b`. -/
 theorem u0_phi_independence_escapeCarrier_deepData (hUo : IsOpen U) (hUc : IsPreconnected U)
@@ -727,6 +782,19 @@ theorem u0_phi_independence_connected_escapeCarrier_imageWindingDeepData (hUo : 
         (u0AnSub (hU_esc.trans (escapeOpen_subset_U0Ext b)))) :=
   u0_phi_independence_escapeCarrier_imageWindingDeepData hUo hUc hUne hUinf hU_esc deepdata
 
+/-- Connected-card U0 independence on an escape carrier from escape-local topological image-winding
+deep data. -/
+theorem u0_phi_independence_connected_escapeCarrier_imageWindingEscapeDeepData (hUo : IsOpen U)
+    (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite) {b : ℂ}
+    (hU_esc : U ⊆ escapeOpen b) (deepdata : PhibImageWindingEscapeDeepData U b) :
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U)
+        (u0AnSub (hU_esc.trans (escapeOpen_subset_U0Ext b)))) :=
+  u0_phi_independence_escapeCarrier_imageWindingEscapeDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
 /-- Disconnected-card U0 independence on an escape carrier from deep odd-period data. -/
 theorem u0_phi_independence_disconnected_escapeCarrier_deepData (hUo : IsOpen U)
     (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite) {b : ℂ}
@@ -767,6 +835,19 @@ theorem u0_phi_independence_disconnected_escapeCarrier_imageWindingDeepData (hUo
         (u0AnSub (hU_esc.trans (escapeOpen_subset_U0Ext b)))) :=
   u0_phi_independence_escapeCarrier_imageWindingDeepData hUo hUc hUne hUinf hU_esc deepdata
 
+/-- Disconnected-card U0 independence on an escape carrier from escape-local topological image-winding
+deep data. -/
+theorem u0_phi_independence_disconnected_escapeCarrier_imageWindingEscapeDeepData (hUo : IsOpen U)
+    (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite) {b : ℂ}
+    (hU_esc : U ⊆ escapeOpen b) (deepdata : PhibImageWindingEscapeDeepData U b) :
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U)
+        (u0AnSub (hU_esc.trans (escapeOpen_subset_U0Ext b)))) :=
+  u0_phi_independence_escapeCarrier_imageWindingEscapeDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
 /-- All-parameter U0 independence on an escape carrier from deep odd-period data. -/
 theorem u0_phi_independence_all_parameters_escapeCarrier_deepData (hUo : IsOpen U)
     (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite) {b : ℂ}
@@ -806,5 +887,18 @@ theorem u0_phi_independence_all_parameters_escapeCarrier_imageWindingDeepData (h
       (algebraMap (analyticSubring U) (meroField U)
         (u0AnSub (hU_esc.trans (escapeOpen_subset_U0Ext b)))) :=
   u0_phi_independence_escapeCarrier_imageWindingDeepData hUo hUc hUne hUinf hU_esc deepdata
+
+/-- All-parameter U0 independence on an escape carrier from escape-local topological image-winding
+deep data. -/
+theorem u0_phi_independence_all_parameters_escapeCarrier_imageWindingEscapeDeepData (hUo : IsOpen U)
+    (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite) {b : ℂ}
+    (hU_esc : U ⊆ escapeOpen b) (deepdata : PhibImageWindingEscapeDeepData U b) :
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U)
+        (u0AnSub (hU_esc.trans (escapeOpen_subset_U0Ext b)))) :=
+  u0_phi_independence_escapeCarrier_imageWindingEscapeDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
 
 end U0CardTheorems

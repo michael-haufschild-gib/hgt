@@ -98,6 +98,7 @@ import GaloisForLFunctions.Bottcher.FixedPointSeparable
 import GaloisForLFunctions.Bottcher.ConnectedRepellingNoParabolic
 import GaloisForLFunctions.Bottcher.DenominatorContent
 import GaloisForLFunctions.Bottcher.ConnectedRepellingRootDefect
+import GaloisForLFunctions.Bottcher.ConnectedRepellingStrongRoots
 import GaloisForLFunctions.Bottcher.BranchContinuation
 import GaloisForLFunctions.Bottcher.BottcherInverse
 import GaloisForLFunctions.Bottcher.SheafGlue
@@ -121,6 +122,7 @@ import GaloisForLFunctions.Bottcher.CoverDescent
 import GaloisForLFunctions.Bottcher.FarFieldSurjective
 import GaloisForLFunctions.Bottcher.JuliaSeparation
 import GaloisForLFunctions.Bottcher.JuliaBasinCrossing
+import GaloisForLFunctions.Bottcher.JuliaFrontierPerfect
 import GaloisForLFunctions.Bottcher.JuliaExpansion
 import GaloisForLFunctions.Bottcher.Q62RadicalReduction
 import GaloisForLFunctions.Bottcher.Q62DeepDataAssembly
@@ -164,7 +166,10 @@ import GaloisForLFunctions.Bottcher.BasinColimit
 import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranch
 import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranchCrossing
 import GaloisForLFunctions.Bottcher.RelativeRigidityNaturalBoundary
+import GaloisForLFunctions.Bottcher.RelativeRigidityCountableAvoidance
 import GaloisForLFunctions.Bottcher.RelativeRigidityHNBCrossing
+import GaloisForLFunctions.Bottcher.RelativeRigidityReturnOrder
+import GaloisForLFunctions.Bottcher.RelativeRigidityMultiplierOnePeriod
 
 import GaloisForLFunctions.Bottcher.AnalyticRoot
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck

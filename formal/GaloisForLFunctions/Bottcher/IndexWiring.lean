@@ -167,4 +167,96 @@ theorem phiMero_transcendental_via_index {U : Set ℂ}
     exact relation_iterate_eq_zero P p hesc z (hU hz)
   exact false_of_relation_bulk_branches c hp hsep P hP0 hPmin hPrel hQrel B hBfix hBrep hbulk hsmall
 
+/-- **Connected-case `φ_c`-transcendence via the index route, with smallness chosen internally.**
+This variant removes the explicit exceptional-mass inequality from `phiMero_transcendental_via_index`.
+For each minimal relation, the caller supplies one finite exceptional set of repelling fixed points and
+eventual separability/bulk branch data.  Lean then chooses a sufficiently large period using
+`eventually_exceptional_mass_small_roots` and closes with `false_of_relation_bulk_branches`. -/
+theorem phiMero_transcendental_via_index_eventual {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c : ℂ) (hU : U ⊆ escapeOpen c)
+    (hinput : ∀ P : Polynomial (Polynomial ℂ), P ≠ 0 → 1 ≤ P.natDegree →
+        (∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c z) ^ i = 0) →
+        (∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+          (∀ z ∈ U, ∑ i ∈ R.support, (R.coeff i).aeval z * (bottcherCoord c z) ^ i = 0) →
+          P.natDegree ≤ R.natDegree) →
+        {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
+          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c z) ^ i = 0}.Countable →
+        ∃ B : Finset ℂ,
+          (∀ z ∈ B, quadratic c z = z) ∧
+          (∀ z ∈ B, 1 < ‖2 * z‖) ∧
+          (∀ᶠ p : ℕ in atTop, 1 ≤ p ∧ (fixedPointPoly c p).Separable ∧
+            B ⊆ (fixedPointPoly c p).roots.toFinset ∧
+            (∀ z ∈ (fixedPointPoly c p).roots.toFinset \ B, ∃ (w₀ d : ℂ),
+              (∑ i ∈ P.support, (P.coeff i).aeval z * w₀ ^ i = 0) ∧
+              HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z * w ^ i) d w₀ ∧
+              d ≠ 0 ∧ w₀ ^ (2 ^ p) = w₀ ∧ w₀ ≠ 0 ∧
+              (∀ g : ℂ → ℂ, AnalyticAt ℂ g z → g z = w₀ →
+                (∀ᶠ y in 𝓝 z,
+                  ∑ i ∈ P.support, (P.coeff i).aeval y * (g y) ^ i = 0) →
+                deriv g z ≠ 0)))) :
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    Transcendental (RatFunc ℂ) (phiMero c hU) := by
+  apply phiMero_transcendental_of_no_minimal_relation_min hUo hUc hUne hUinf c hU
+  intro P hP0 hdeg hPrel hPmin hcount
+  obtain ⟨B, hBfix, hBrep, heventual⟩ := hinput P hP0 hdeg hPrel hPmin hcount
+  obtain ⟨p, hpdata, hsmallRoot⟩ :=
+    (heventual.and (eventually_exceptional_mass_small_roots c B hBrep)).exists
+  rcases hpdata with ⟨hp, hsep, hBsub, hbulk⟩
+  have hesc := relation_vanishes_escapeOpen hUo hUne c hU P hPrel
+  have hQrel : ∀ z ∈ U, ∑ i ∈ (compRelPoly c p P).support,
+      ((compRelPoly c p P).coeff i).aeval z * (bottcherCoord c z) ^ i = 0 := by
+    intro z hz
+    rw [compRelPoly_relation]
+    exact relation_iterate_eq_zero P p hesc z (hU hz)
+  exact false_of_relation_bulk_branches c hp hsep P hP0 hPmin hPrel hQrel B hBfix hBrep
+    hbulk (hsmallRoot hp hsep hBsub)
+
+/-- **Connected-case `φ_c`-transcendence via the index route, with fixed exceptional roots derived.**
+This strengthens `phiMero_transcendental_via_index_eventual`: the caller only supplies a fixed finite
+exceptional set of repelling fixed points and eventual bulk branch data.  The inclusion
+`B ⊆ roots (f_c^[p] - X)` is derived internally from fixedness and `1 ≤ p`, while the exceptional-mass
+smallness period is still chosen internally. -/
+theorem phiMero_transcendental_via_index_eventual_fixedB {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c : ℂ) (hU : U ⊆ escapeOpen c)
+    (hinput : ∀ P : Polynomial (Polynomial ℂ), P ≠ 0 → 1 ≤ P.natDegree →
+        (∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c z) ^ i = 0) →
+        (∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+          (∀ z ∈ U, ∑ i ∈ R.support, (R.coeff i).aeval z * (bottcherCoord c z) ^ i = 0) →
+          P.natDegree ≤ R.natDegree) →
+        {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
+          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c z) ^ i = 0}.Countable →
+        ∃ B : Finset ℂ,
+          (∀ z ∈ B, quadratic c z = z) ∧
+          (∀ z ∈ B, 1 < ‖2 * z‖) ∧
+          (∀ᶠ p : ℕ in atTop, 1 ≤ p ∧ (fixedPointPoly c p).Separable ∧
+            (∀ z ∈ (fixedPointPoly c p).roots.toFinset \ B, ∃ (w₀ d : ℂ),
+              (∑ i ∈ P.support, (P.coeff i).aeval z * w₀ ^ i = 0) ∧
+              HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z * w ^ i) d w₀ ∧
+              d ≠ 0 ∧ w₀ ^ (2 ^ p) = w₀ ∧ w₀ ≠ 0 ∧
+              (∀ g : ℂ → ℂ, AnalyticAt ℂ g z → g z = w₀ →
+                (∀ᶠ y in 𝓝 z,
+                  ∑ i ∈ P.support, (P.coeff i).aeval y * (g y) ^ i = 0) →
+                deriv g z ≠ 0)))) :
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    Transcendental (RatFunc ℂ) (phiMero c hU) := by
+  apply phiMero_transcendental_of_no_minimal_relation_min hUo hUc hUne hUinf c hU
+  intro P hP0 hdeg hPrel hPmin hcount
+  obtain ⟨B, hBfix, hBrep, heventual⟩ := hinput P hP0 hdeg hPrel hPmin hcount
+  obtain ⟨p, hpdata, hsmallRoot⟩ :=
+    (heventual.and (eventually_exceptional_mass_small_roots c B hBrep)).exists
+  rcases hpdata with ⟨hp, hsep, hbulk⟩
+  have hBsub : B ⊆ (fixedPointPoly c p).roots.toFinset := by
+    intro z hz
+    exact fixed_mem_fixedPointPoly_roots hp (hBfix z hz)
+  have hesc := relation_vanishes_escapeOpen hUo hUne c hU P hPrel
+  have hQrel : ∀ z ∈ U, ∑ i ∈ (compRelPoly c p P).support,
+      ((compRelPoly c p P).coeff i).aeval z * (bottcherCoord c z) ^ i = 0 := by
+    intro z hz
+    rw [compRelPoly_relation]
+    exact relation_iterate_eq_zero P p hesc z (hU hz)
+  exact false_of_relation_bulk_branches c hp hsep P hP0 hPmin hPrel hQrel B hBfix hBrep
+    hbulk (hsmallRoot hp hsep hBsub)
+
 end Bottcher

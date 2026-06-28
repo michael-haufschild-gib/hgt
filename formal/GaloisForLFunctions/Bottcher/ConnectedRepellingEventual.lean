@@ -57,6 +57,17 @@ theorem eventually_strong_roots_off_of_eventually_nonStrong_subset
   by_contra hnot
   exact hzE (hEp ((mem_nonStrongFixedPointRoots).mpr ⟨hzroot, hnot⟩))
 
+/-- If all fixed roots outside a finite exceptional set are eventually strong, then the same finite
+set eventually contains every non-strong fixed root. -/
+theorem eventually_nonStrong_subset_of_eventually_strong_roots_off
+    (c : ℂ) (E : Finset ℂ)
+    (hstrong : ∀ᶠ p : ℕ in atTop,
+      ∀ z ∈ (fixedPointPoly c p).roots.toFinset, z ∉ E →
+        (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c)^[k] z‖) :
+    ∀ᶠ p : ℕ in atTop, nonStrongFixedPointRoots c p ⊆ E := by
+  filter_upwards [hstrong] with p hp
+  exact nonStrongFixedPointRoots_subset_of_strong_off_exceptional c p E hp
+
 /-- **Eventual non-strong-root containment creates a strong-root-card period.**
 
 This is the same period-selection bridge as

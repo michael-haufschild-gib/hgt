@@ -205,4 +205,117 @@ theorem hrig_phiMero_via_index {U : Set ℂ}
   exact false_of_relative_bulk_branches hp hsep
     (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) s B hBfix hBrep hbulk hsmall
 
+/-- **The hRigid connected-case rigidity input via the index route, with smallness chosen internally.**
+This variant removes the explicit exceptional-mass inequality from `hrig_phiMero_via_index`.  For each
+cleared relative relation, the caller supplies one finite exceptional set of repelling fixed points and
+eventual separability/bulk branch data.  Lean intersects that eventual data with
+`eventually_exceptional_mass_small_roots`, chooses a large period, and closes with
+`false_of_relative_bulk_branches`. -/
+theorem hrig_phiMero_via_index_eventual {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ B : Finset ℂ,
+          (∀ z ∈ B, quadratic c₁ z = z) ∧
+          (∀ z ∈ B, 1 < ‖2 * z‖) ∧
+          (∀ᶠ p : ℕ in atTop, 1 ≤ p ∧ (fixedPointPoly c₁ p).Separable ∧
+            B ⊆ (fixedPointPoly c₁ p).roots.toFinset ∧
+            (∀ z ∈ (fixedPointPoly c₁ p).roots.toFinset \ B,
+              ∃ (w₀ d : ℂ) (β : ℂ → ℂ),
+                (∀ i ∈ s, ContDiffAt ℂ ⊤
+                  (fun z => (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) z) ∧
+                (∑ i ∈ s, ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) * w₀ ^ i = 0) ∧
+                HasDerivAt (fun w => ∑ i ∈ s,
+                  ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) * w ^ i) d w₀ ∧
+                d ≠ 0 ∧
+                (𝓝[(filledJulia c₁)ᶜ] z).NeBot ∧
+                Tendsto β (𝓝[(filledJulia c₁)ᶜ] z) (𝓝 w₀) ∧
+                (∀ᶠ y in 𝓝[(filledJulia c₁)ᶜ] z, ∑ i ∈ s,
+                  ((Q i).eval₂ (Polynomial.evalRingHom y) (bottcherCoord c₂ y)) * (β y) ^ i = 0) ∧
+                (∀ᶠ y in 𝓝[(filledJulia c₁)ᶜ] z,
+                  β ((quadratic c₁)^[p] y) = (β y) ^ (2 ^ p)) ∧
+                w₀ ≠ 0 ∧
+                (∀ g : ℂ → ℂ, AnalyticAt ℂ g z → g z = w₀ →
+                  (∀ᶠ y in 𝓝 z, ∑ i ∈ s,
+                    ((Q i).eval₂ (Polynomial.evalRingHom y) (bottcherCoord c₂ y)) * (g y) ^ i = 0) →
+                  deriv g z ≠ 0)))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  apply transcendentalOverAdjoin_of_noRelation
+  apply noRelation_phiMero_of_no_function_relation hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG
+  intro Q s hnt hEqOn
+  obtain ⟨B, hBfix, hBrep, heventual⟩ := hinput Q s hnt hEqOn
+  obtain ⟨p, hpdata, hsmallRoot⟩ :=
+    (heventual.and (eventually_exceptional_mass_small_roots c₁ B hBrep)).exists
+  rcases hpdata with ⟨hp, hsep, hBsub, hbulk⟩
+  exact false_of_relative_bulk_branches hp hsep
+    (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) s B hBfix hBrep
+    hbulk (hsmallRoot hp hsep hBsub)
+
+/-- **The hRigid connected-case rigidity input via the index route, with fixed exceptional roots
+derived.**  This strengthens `hrig_phiMero_via_index_eventual`: the caller supplies a fixed finite
+exceptional set of repelling fixed points and eventual bulk branch data, while Lean derives
+`B ⊆ roots (f_c^[p] - X)` from fixedness and `1 ≤ p` and chooses the exceptional-mass smallness period
+internally. -/
+theorem hrig_phiMero_via_index_eventual_fixedB {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ B : Finset ℂ,
+          (∀ z ∈ B, quadratic c₁ z = z) ∧
+          (∀ z ∈ B, 1 < ‖2 * z‖) ∧
+          (∀ᶠ p : ℕ in atTop, 1 ≤ p ∧ (fixedPointPoly c₁ p).Separable ∧
+            (∀ z ∈ (fixedPointPoly c₁ p).roots.toFinset \ B,
+              ∃ (w₀ d : ℂ) (β : ℂ → ℂ),
+                (∀ i ∈ s, ContDiffAt ℂ ⊤
+                  (fun z => (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) z) ∧
+                (∑ i ∈ s, ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) * w₀ ^ i = 0) ∧
+                HasDerivAt (fun w => ∑ i ∈ s,
+                  ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) * w ^ i) d w₀ ∧
+                d ≠ 0 ∧
+                (𝓝[(filledJulia c₁)ᶜ] z).NeBot ∧
+                Tendsto β (𝓝[(filledJulia c₁)ᶜ] z) (𝓝 w₀) ∧
+                (∀ᶠ y in 𝓝[(filledJulia c₁)ᶜ] z, ∑ i ∈ s,
+                  ((Q i).eval₂ (Polynomial.evalRingHom y) (bottcherCoord c₂ y)) * (β y) ^ i = 0) ∧
+                (∀ᶠ y in 𝓝[(filledJulia c₁)ᶜ] z,
+                  β ((quadratic c₁)^[p] y) = (β y) ^ (2 ^ p)) ∧
+                w₀ ≠ 0 ∧
+                (∀ g : ℂ → ℂ, AnalyticAt ℂ g z → g z = w₀ →
+                  (∀ᶠ y in 𝓝 z, ∑ i ∈ s,
+                    ((Q i).eval₂ (Polynomial.evalRingHom y) (bottcherCoord c₂ y)) * (g y) ^ i = 0) →
+                  deriv g z ≠ 0)))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  apply transcendentalOverAdjoin_of_noRelation
+  apply noRelation_phiMero_of_no_function_relation hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG
+  intro Q s hnt hEqOn
+  obtain ⟨B, hBfix, hBrep, heventual⟩ := hinput Q s hnt hEqOn
+  obtain ⟨p, hpdata, hsmallRoot⟩ :=
+    (heventual.and (eventually_exceptional_mass_small_roots c₁ B hBrep)).exists
+  rcases hpdata with ⟨hp, hsep, hbulk⟩
+  have hBsub : B ⊆ (fixedPointPoly c₁ p).roots.toFinset := by
+    intro z hz
+    exact fixed_mem_fixedPointPoly_roots hp (hBfix z hz)
+  exact false_of_relative_bulk_branches hp hsep
+    (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) s B hBfix hBrep
+    hbulk (hsmallRoot hp hsep hBsub)
+
 end Bottcher

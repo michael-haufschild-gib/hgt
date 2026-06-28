@@ -1,10 +1,11 @@
 /-
-# `2-fully-proven/new` Lean targets, excluding the hRigid path
+# `2-fully-proven/new` Lean targets, including q62 branch surfaces
 
 Door grade: BRIDGE / formal ledger.  This file adds no mathematical shortcut: it
 collects the Lean proof objects currently serving the cards in
-`docs/drafts/pipeline/2-fully-proven/new`, with the hRigid branch deliberately
-left out because that path is owned by the parallel agent.
+`docs/drafts/pipeline/2-fully-proven/new`.  Connected hRigid/q62 endpoints are
+exposed as explicit branch proof objects here; their theorem names state the
+remaining hypotheses still carried by those branches.
 
 The rule here is strict.  A declaration below is either:
 * a theorem wrapper around an existing proof object, or
@@ -33,7 +34,13 @@ import GaloisForLFunctions.Bottcher.MonodromyObstruction
 import GaloisForLFunctions.Bottcher.CoverMonodromy
 import GaloisForLFunctions.Bottcher.DyadicMonodromy
 import GaloisForLFunctions.Bottcher.MonodromyMultiplier
+import GaloisForLFunctions.Bottcher.JuliaBasinCrossing
 import GaloisForLFunctions.Bottcher.Q62DeepDataAssembly
+import GaloisForLFunctions.Bottcher.IndexWiring
+import GaloisForLFunctions.Bottcher.IndexWiringRelative
+import GaloisForLFunctions.Bottcher.RelativeRigidityCountableAvoidance
+import GaloisForLFunctions.Bottcher.RelativeRigidityReturnOrder
+import GaloisForLFunctions.Bottcher.RelativeRigidityMultiplierOnePeriod
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 
 noncomputable section
@@ -582,6 +589,11 @@ mapping has a stable name without importing the hRigid path. -/
 def q62_both_disconnected_deep_data_escape_formal_proof :=
   @Bottcher.q62_disconnected_of_deepData_escape
 
+/-- Topological image-winding hDisc close for q62; the analytic radicand-period condition is derived
+from the image-loop winding bridge before applying the existing deep-data close. -/
+def q62_both_disconnected_image_winding_deep_data_escape_formal_proof :=
+  @Bottcher.q62_disconnected_of_imageWindingDeepData_escape
+
 /-- Existing additive loop/deck close for q62 both-disconnected; exposed for the
 same card mapping. -/
 def q62_both_disconnected_additive_loop_deck_formal_proof :=
@@ -591,6 +603,121 @@ def q62_both_disconnected_additive_loop_deck_formal_proof :=
 the same card mapping. -/
 def q62_both_disconnected_vertical_strip_loop_deck_formal_proof :=
   @Bottcher.q62_independence_disconnected_of_dyadic_verticalStrip_loop_and_two_zfixing_decks
+
+/-! ## q62 connected / hRigid branch surfaces -/
+
+/-- Connected q62 geometry seed: distinct parameters give, after possible swap, a Julia-frontier point
+off the other filled Julia set, plus an other-basin ball and a nontrivial frontier-side basin filter. -/
+def q62_connected_frontier_off_other_basin_seed_formal_proof :=
+  @Bottcher.exists_frontier_filledJulia_off_other_with_basin_ball
+
+/-- Natural-boundary connected `NoRelation` endpoint using countable-avoidance sparse crossing and
+common-basin geometry. -/
+def q62_connected_noRelation_naturalBoundary_gamma_offOther_countableAvoidance_formal_proof :=
+  @Bottcher.noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance
+
+/-- hRigid endpoint using countable-avoidance sparse crossing and common-basin geometry. -/
+def hrig_phiMero_naturalBoundary_gamma_offOther_countableAvoidance_formal_proof :=
+  @Bottcher.hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance
+
+/-- Connected q62 endpoint using countable-avoidance sparse crossing and common-basin geometry. -/
+def q62_connected_naturalBoundary_gamma_offOther_countableAvoidance_formal_proof :=
+  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_gamma_offOther_countableAvoidance
+
+/-- Empty-interior `NoRelation` endpoint using countable avoidance, carrier-closure contact, and
+punctured-sector preconnectedness; the common-basin component is built internally. -/
+def q62_connected_noRelation_emptyInterior_gamma_offOther_countableAvoidance_carrierClosure_formal_proof :=
+  @Bottcher.noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
+
+/-- Empty-interior hRigid endpoint using countable avoidance, carrier-closure contact, and
+punctured-sector preconnectedness; the common-basin component is built internally. -/
+def hrig_phiMero_emptyInterior_gamma_offOther_countableAvoidance_carrierClosure_formal_proof :=
+  @Bottcher.hrig_phiMero_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
+
+/-- Empty-interior connected q62 endpoint using countable avoidance, carrier-closure contact, and
+punctured-sector preconnectedness; the common-basin component is built internally. -/
+def q62_connected_emptyInterior_gamma_offOther_countableAvoidance_carrierClosure_formal_proof :=
+  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_countableAvoidance_carrierClosure
+
+/-- Strongest current natural-boundary connected q62 endpoint: square-root level
+branches plus off-other crossing data, with the repelling second-map witnesses
+promoted to eventual support input. -/
+def q62_connected_naturalBoundary_sqrt_family_offOther_crossing_eventualG_formal_proof :=
+  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_eventualG
+
+/-- Empty-interior counterpart of the connected q62 endpoint, derived through
+the natural-boundary bridge. -/
+def q62_connected_emptyInterior_sqrt_family_offOther_crossing_eventualG_formal_proof :=
+  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_eventualG
+
+/-- Natural-boundary connected q62 endpoint consuming the newer return-order hRigid payload. -/
+def q62_connected_naturalBoundary_sqrt_family_offOther_crossing_returnOrderG_formal_proof :=
+  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_returnOrderG
+
+/-- Empty-interior connected q62 endpoint consuming the newer return-order hRigid payload. -/
+def q62_connected_emptyInterior_sqrt_family_offOther_crossing_returnOrderG_formal_proof :=
+  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_returnOrderG
+
+/-- Natural-boundary connected q62 endpoint consuming the root-of-unity-safe multiplier-one-period
+hRigid payload. -/
+def q62_connected_naturalBoundary_sqrt_family_offOther_crossing_multiplierOnePeriodG_formal_proof :=
+  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_multiplierOnePeriodG
+
+/-- Empty-interior connected q62 endpoint consuming the root-of-unity-safe multiplier-one-period
+hRigid payload. -/
+def q62_connected_emptyInterior_sqrt_family_offOther_crossing_multiplierOnePeriodG_formal_proof :=
+  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_multiplierOnePeriodG
+
+/-- Natural-boundary connected q62 endpoint consuming eventual bounds on exact multiplier-one periods
+and non-strong-root cardinality. -/
+def q62_connected_naturalBoundary_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG_formal_proof :=
+  @Bottcher.q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG
+
+/-- Empty-interior connected q62 endpoint consuming eventual bounds on exact multiplier-one periods
+and non-strong-root cardinality. -/
+def q62_connected_emptyInterior_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG_formal_proof :=
+  @Bottcher.q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_exactMultiplierOnePeriodBoundCardG
+
+/-- Absolute connected `φ_c` hRigid bridge from the root-of-unity-safe multiplier-one-period support
+predicate.  This is the general parabolic-support input now targeted by the connected q62 route. -/
+def hrig_phiMero_multiplierOnePeriod_support_formal_proof :=
+  @Bottcher.phiMero_transcendental_of_repelling_eventually_multiplierOnePeriod_contentDenominator_noExtra_input
+
+/-- Absolute connected `φ_c` hRigid bridge from an eventual bound on exact multiplier-one periods
+plus finite eventual non-strong support. -/
+def hrig_phiMero_exactMultiplierOnePeriodBound_formal_proof :=
+  @Bottcher.phiMero_transcendental_of_repelling_eventually_exactMultiplierOnePeriodBound_contentDenominator_noExtra_input
+
+/-- Absolute connected `φ_c` hRigid bridge from eventual bounds on exact multiplier-one periods and
+the cardinality of non-strong roots. -/
+def hrig_phiMero_exactMultiplierOnePeriodBound_cardBound_formal_proof :=
+  @Bottcher.phiMero_transcendental_of_repelling_eventually_exactMultiplierOnePeriodBound_cardBound_contentDenominator_noExtra_input
+
+/-- Global β/γ frontier endpoint for connected q62.  This is the canonical
+nonresonance branch currently exposed before the local hRigid completion
+removes the remaining branch hypotheses. -/
+def q62_connected_repelling_global_betaGamma_frontier_derivNonres_separable_repellingG_formal_proof :=
+  @Bottcher.q62_independence_connected_of_repelling_global_modulus_auto_betaGamma_frontierAnalytic_frontier_derivNonres_separable_repellingG
+
+/-- Absolute connected `φ_c` transcendence through the index route, with the exceptional-mass
+smallness period chosen internally from eventual bulk data. -/
+def hrig_phiMero_absolute_index_eventual_formal_proof :=
+  @Bottcher.phiMero_transcendental_via_index_eventual
+
+/-- Absolute connected `φ_c` transcendence through the index route, with both fixed-root membership and
+exceptional-mass smallness derived internally from a fixed repelling exceptional set. -/
+def hrig_phiMero_absolute_index_eventual_fixedB_formal_proof :=
+  @Bottcher.phiMero_transcendental_via_index_eventual_fixedB
+
+/-- Relative connected hRigid input through the index route, with the exceptional-mass smallness
+period chosen internally from eventual bulk data. -/
+def hrig_phiMero_relative_index_eventual_formal_proof :=
+  @Bottcher.hrig_phiMero_via_index_eventual
+
+/-- Relative connected hRigid input through the index route, with both fixed-root membership and
+exceptional-mass smallness derived internally from a fixed repelling exceptional set. -/
+def hrig_phiMero_relative_index_eventual_fixedB_formal_proof :=
+  @Bottcher.hrig_phiMero_via_index_eventual_fixedB
 
 end FullyProvenNewTargets
 
@@ -1662,6 +1789,10 @@ no separate `φ₂` transcendence input remains. -/
 def q62_disconnected_deep_data_two_radical_formal_proof :=
   @Bottcher.q62_disconnected_of_deepData_two_radical
 
+/-- Image-winding version of the two-radical deep-data q62 close. -/
+def q62_disconnected_image_winding_deep_data_two_radical_formal_proof :=
+  @Bottcher.q62_disconnected_of_imageWindingDeepData_two_radical
+
 end FullyProvenNewTargets
 
 namespace FullyProvenNewTargets
@@ -1670,6 +1801,10 @@ namespace FullyProvenNewTargets
 built from supplied escape/radical data rather than separate premises. -/
 def q62_disconnected_deep_data_escape_two_radical_formal_proof :=
   @Bottcher.q62_disconnected_of_deepData_escape_two_radical
+
+/-- Image-winding version of the escape-form two-radical deep-data q62 close. -/
+def q62_disconnected_image_winding_deep_data_escape_two_radical_formal_proof :=
+  @Bottcher.q62_disconnected_of_imageWindingDeepData_escape_two_radical
 
 end FullyProvenNewTargets
 
@@ -2289,6 +2424,33 @@ theorem hurwitz_harmonic_tail_mixed_finite_difference (N : ℕ) :
   exact HurwitzAllNTailIndependence.HurwitzZetaTail.harmonicTail_relation_finite_difference_mixed
     (N := N) (s := s) coeff P hrel n hn
 
+/-- Two-ray finite-difference landing target for mixed harmonic/shifted-power relations. -/
+def HurwitzMixedTailTwoRayFiniteDifferenceTarget (N : ℕ) : Prop :=
+  ∀ {s : ℂ} (hcoeff scoeff : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ},
+    (∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (hcoeff i).eval (n : ℂ) *
+        HurwitzAllNTailIndependence.HurwitzZetaTail.harmonicTail (N := N) s i n) +
+        (∑ i : Fin (N + 1), (scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ)))) = P.eval (n : ℂ)) →
+    ∀ n, M + 1 ≤ n →
+      (∑ i : Fin (N + 1),
+        (hcoeff i - (hcoeff i).comp (X - 1)).eval (n : ℂ) *
+          HurwitzAllNTailIndependence.HurwitzZetaTail.harmonicTail (N := N) s i n) +
+      (∑ i : Fin (N + 1),
+        ((hcoeff i).comp (X - 1) + scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ)))) -
+      (∑ i : Fin (N + 1),
+        ((scoeff i).comp (X - 1)).eval (n : ℂ) *
+          (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) =
+      (P - P.comp (X - 1)).eval (n : ℂ)
+
+/-- Formal wrapper for the two-ray mixed finite-difference landing. -/
+theorem hurwitz_mixed_tail_two_ray_finite_difference (N : ℕ) :
+    HurwitzMixedTailTwoRayFiniteDifferenceTarget N := by
+  intro s hcoeff scoeff P M hrel n hn
+  exact HurwitzAllNTailIndependence.HurwitzZetaTail.mixedTail_relation_finite_difference_twoRay
+    (N := N) (s := s) hcoeff scoeff P hrel n hn
+
 /-- Shifted-power close in the eventual-lower-bound form produced by mixed relations. -/
 def HurwitzShiftedPowerEventuallyGeCloseTarget (N : ℕ) : Prop :=
   ∀ {s : ℂ}, (∀ k : ℤ, s ≠ (k : ℂ)) →
@@ -2304,6 +2466,77 @@ theorem hurwitz_shifted_power_eventually_ge_close (N : ℕ) :
   intro s hs coeff P M hrel
   exact HurwitzAllNTailIndependence.HurwitzZetaTail.shiftedPower_relation_close_of_eventually_ge
     (N := N) (s := s) hs coeff P hrel
+
+/-- Previous-ray shifted-power close in the eventual-lower-bound form produced by two-ray mixed
+finite differences. -/
+def HurwitzShiftedPowerPrevEventuallyGeCloseTarget (N : ℕ) : Prop :=
+  ∀ {s : ℂ}, (∀ k : ℤ, s ≠ (k : ℂ)) →
+  ∀ (coeff : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ},
+    (∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (coeff i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = P.eval (n : ℂ)) →
+    HurwitzNonRat.shiftedPowerPolynomial N (fun i => (coeff i).comp (X + 1)) = 0 ∧ P = 0
+
+/-- Formal wrapper for the previous-ray shifted-power close. -/
+theorem hurwitz_shifted_power_prev_eventually_ge_close (N : ℕ) :
+    HurwitzShiftedPowerPrevEventuallyGeCloseTarget N := by
+  intro s hs coeff P M hrel
+  exact HurwitzAllNTailIndependence.HurwitzZetaTail.shiftedPower_prev_relation_close_of_eventually_ge
+    (N := N) (s := s) hs coeff P hrel
+
+/-- Singleton previous-ray shifted-power close in coefficient form. -/
+def HurwitzShiftedPowerPrevCloseN0CoeffTarget : Prop :=
+  ∀ {s : ℂ}, (∀ k : ℤ, s ≠ (k : ℂ)) →
+  ∀ (coeff : Fin (0 + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ},
+    (∀ n, M ≤ n →
+      (∑ i : Fin (0 + 1), (coeff i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = P.eval (n : ℂ)) →
+    (∀ i : Fin (0 + 1), coeff i = 0) ∧ P = 0
+
+/-- Formal wrapper for the singleton previous-ray shifted-power coefficient close. -/
+theorem hurwitz_shifted_power_prev_close_N0_coefficients :
+    HurwitzShiftedPowerPrevCloseN0CoeffTarget := by
+  intro s hs coeff P M hrel
+  exact HurwitzAllNTailIndependence.HurwitzZetaTail.shiftedPower_prev_relation_close_N0_coefficients
+    (s := s) hs coeff P hrel
+
+/-- Pure two-ray shifted-power close when the previous ray is already absent. -/
+def HurwitzShiftedPowerTwoRayZeroPrevCloseTarget (N : ℕ) : Prop :=
+  ∀ {s : ℂ}, (∀ k : ℤ, s ≠ (k : ℂ)) →
+  ∀ (current prev : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ},
+    (∀ i : Fin (N + 1), prev i = 0) →
+    (∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (current i).eval (n : ℂ) *
+        (n : ℂ) ^ (-(s + (i : ℂ)))) -
+      (∑ i : Fin (N + 1), (prev i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = P.eval (n : ℂ)) →
+    HurwitzNonRat.shiftedPowerPolynomial N current = 0 ∧ P = 0
+
+/-- Formal wrapper for the zero-previous-ray two-ray shifted-power close. -/
+theorem hurwitz_shifted_power_twoRay_zero_prev_close (N : ℕ) :
+    HurwitzShiftedPowerTwoRayZeroPrevCloseTarget N := by
+  intro s hs current prev P M hprev hrel
+  exact HurwitzAllNTailIndependence.HurwitzZetaTail.shiftedPower_twoRay_close_of_zero_prev
+    (N := N) (s := s) hs current prev P hprev hrel
+
+/-- Pure two-ray shifted-power close when the current ray is already absent. -/
+def HurwitzShiftedPowerTwoRayZeroCurrentCloseTarget (N : ℕ) : Prop :=
+  ∀ {s : ℂ}, (∀ k : ℤ, s ≠ (k : ℂ)) →
+  ∀ (current prev : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ},
+    (∀ i : Fin (N + 1), current i = 0) →
+    (∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (current i).eval (n : ℂ) *
+        (n : ℂ) ^ (-(s + (i : ℂ)))) -
+      (∑ i : Fin (N + 1), (prev i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = P.eval (n : ℂ)) →
+    HurwitzNonRat.shiftedPowerPolynomial N (fun i => (prev i).comp (X + 1)) = 0 ∧ P = 0
+
+/-- Formal wrapper for the zero-current-ray two-ray shifted-power close. -/
+theorem hurwitz_shifted_power_twoRay_zero_current_close (N : ℕ) :
+    HurwitzShiftedPowerTwoRayZeroCurrentCloseTarget N := by
+  intro s hs current prev P M hcurrent hrel
+  exact HurwitzAllNTailIndependence.HurwitzZetaTail.shiftedPower_twoRay_close_of_zero_current
+    (N := N) (s := s) hs current prev P hcurrent hrel
 
 /-- Mixed relation close in the subcase where the harmonic coefficients are already zero. -/
 def HurwitzMixedTailZeroHarmonicCloseTarget (N : ℕ) : Prop :=
@@ -3076,6 +3309,61 @@ theorem u0_phi_independence_all_parameters_escapeCarrier_from_imageWindingDeepDa
     U0PhiIndependenceEscapeCarrierFromImageWindingDeepDataTarget := by
   intro U hUo hUc hUne hUinf b hU_esc deepdata
   exact U0CardTheorems.u0_phi_independence_all_parameters_escapeCarrier_imageWindingDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+/-- U0 escape-local topological deep-provider target: if the deep domains already lie in
+`escapeOpen b`, the `U0NaturalBoundary.Ext` containment required by the older provider is automatic. -/
+def U0PhibRadicalDataFromImageWindingEscapeDeepDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    U0CardTheorems.PhibImageWindingEscapeDeepData U b →
+    U0CardTheorems.PhibRadicalData hUo hUc hUne hUinf hU_ext hU_esc
+
+/-- Formal wrapper for escape-local image-winding-data to U0 radical data. -/
+theorem u0_phib_radicalData_from_imageWindingEscapeDeepData :
+    U0PhibRadicalDataFromImageWindingEscapeDeepDataTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc deepdata
+  exact U0CardTheorems.phibRadicalData_of_imageWindingEscapeDeepData
+    hUo hUc hUne hUinf hU_ext hU_esc deepdata
+
+/-- U0 escape-carrier target from escape-local topological image-winding deep data. -/
+def U0PhiIndependenceEscapeCarrierFromImageWindingEscapeDeepDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    U0CardTheorems.PhibImageWindingEscapeDeepData U b →
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U)
+        (u0AnSub (hU_esc.trans (U0CardTheorems.escapeOpen_subset_U0Ext b))))
+
+/-- Formal wrapper for U0 escape-carrier independence from escape-local image-winding deep data. -/
+theorem u0_phi_independence_escapeCarrier_from_imageWindingEscapeDeepData :
+    U0PhiIndependenceEscapeCarrierFromImageWindingEscapeDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_escapeCarrier_imageWindingEscapeDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+/-- Connected U0 card wrapper from escape-local topological image-winding deep data. -/
+theorem u0_phi_independence_connected_escapeCarrier_from_imageWindingEscapeDeepData :
+    U0PhiIndependenceEscapeCarrierFromImageWindingEscapeDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_connected_escapeCarrier_imageWindingEscapeDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+/-- Disconnected U0 card wrapper from escape-local topological image-winding deep data. -/
+theorem u0_phi_independence_disconnected_escapeCarrier_from_imageWindingEscapeDeepData :
+    U0PhiIndependenceEscapeCarrierFromImageWindingEscapeDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_disconnected_escapeCarrier_imageWindingEscapeDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+/-- All-parameter U0 card wrapper from escape-local topological image-winding deep data. -/
+theorem u0_phi_independence_all_parameters_escapeCarrier_from_imageWindingEscapeDeepData :
+    U0PhiIndependenceEscapeCarrierFromImageWindingEscapeDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_all_parameters_escapeCarrier_imageWindingEscapeDeepData
     hUo hUc hUne hUinf hU_esc deepdata
 
 end FullyProvenNewTargets

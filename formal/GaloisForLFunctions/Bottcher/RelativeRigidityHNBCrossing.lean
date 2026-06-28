@@ -521,10 +521,10 @@ theorem q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_of
 This is the same hRigid endpoint as
 `q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_repellingG`,
 but the absolute `c₂` input no longer hand-picks a period or proves a direct cardinality inequality.
-It supplies finite eventual supports for the non-strong and multiplier-one fixed roots, plus a uniform
-local duplicate-excess bound on the multiplier-one support.  Lean builds the content denominator,
-derives the root-defect inequality, supplies exponential domination, and chooses a large period
-internally. -/
+It supplies finite eventual supports for the non-strong and multiplier-one fixed roots, plus pointwise
+eventual analytic-order bounds on the multiplier-one support.  Lean converts analytic order to local
+duplicate-excess, takes the finite maximum, builds the content denominator, derives the root-defect
+inequality, supplies exponential domination, and chooses a large period internally. -/
 theorem q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_eventualG
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
     (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
@@ -539,12 +539,13 @@ theorem q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_of
         (_hcount : {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
           ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0}.Countable)
         (_hconst : P.coeff 0 ≠ 0),
-        ∃ (E F : Finset ℂ) (L : ℕ),
+        ∃ (E F : Finset ℂ),
           (∀ᶠ p : ℕ in atTop,
+            1 ≤ p ∧ multiplierOneFixedPointRoots c₂ p ⊆ F) ∧
+          (∀ z ∈ F, ∃ Lz : ℕ, ∀ᶠ p : ℕ in atTop,
             1 ≤ p ∧
-            multiplierOneFixedPointRoots c₂ p ⊆ F ∧
-            (∀ z ∈ (fixedPointPoly c₂ p).roots.toFinset, z ∈ F →
-              (fixedPointPoly c₂ p).roots.count z - 1 ≤ L)) ∧
+              analyticOrderAt (fun y : ℂ => (fixedPointPoly c₂ p).eval y) z ≤
+                ((Lz + 1 : ℕ) : ℕ∞)) ∧
           (∀ᶠ p : ℕ in atTop, nonStrongFixedPointRoots c₂ p ⊆ E))
     (βlev γlev : ℕ → ℂ → ℂ)
     (hβanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
@@ -592,7 +593,7 @@ theorem q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_of
   haveI := isDomain_analyticSubring U hUo hUc hUne
   letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
   have hG : Transcendental (RatFunc ℂ) (phiMero c₂ hU₂) :=
-    phiMero_transcendental_of_repelling_eventually_multiplierOne_contentDenominator_noExtra_input
+    phiMero_transcendental_of_repelling_eventually_multiplierOne_pointwiseAnalyticOrder_contentDenominator_noExtra_input
       hUo hUc hUne hUinf c₂ hU₂ (by
         intro P hP0 hdeg hPrel hPmin hcount hconst
         exact hGinput P hP0 hdeg hPrel hPmin hcount hconst)

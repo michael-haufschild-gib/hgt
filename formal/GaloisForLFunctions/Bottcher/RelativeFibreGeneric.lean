@@ -8,6 +8,7 @@ fibre with support in `range (N+1)` is the dense degree-`N` polynomial whose mis
 so the resultant/squarefree crossing theorem applies unchanged.
 -/
 import GaloisForLFunctions.Bottcher.RelativeBranchFamily
+import GaloisForLFunctions.Bottcher.ZeroSet
 import GaloisForLFunctions.U0.U0PhiCard
 
 open Polynomial Filter Topology Set Metric
@@ -115,6 +116,92 @@ theorem exists_sparse_fibre_separable_crossing {a : ℕ → ℂ → ℂ} {s : Fi
     exact hsep₀_b
   exact ⟨z₀, hz₀S, hlead₀, hsep₀⟩
 
+/-- **Sparse generic crossing from countable avoidance.** This is the no-arc variant of
+`exists_sparse_fibre_separable_crossing`: instead of requiring an accumulating target set, it is enough
+that the target mechanism can avoid every countable bad set.  The bad locus is the zero set of the
+analytic product "top coefficient times resultant", hence countable on the preconnected analytic
+region. -/
+theorem exists_sparse_fibre_separable_countableAvoidance {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ}
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T) :
+    ∃ z₀ ∈ S, a N z₀ ≠ 0 ∧ (fibrePoly a s z₀).Separable := by
+  classical
+  set b : Fin (N + 1) → ℂ → ℂ := denseFibreCoeff a s N with hb
+  have hb_an : ∀ i, AnalyticOnNhd ℂ (b i) Ω := by
+    intro i
+    rw [hb]
+    exact analyticOnNhd_denseFibreCoeff ha i
+  have hleadw_b : b (Fin.last N) w ≠ 0 := by
+    rw [hb, denseFibreCoeff_last hN]
+    exact hleadw
+  have hsepw_b :
+      (∑ i : Fin (N + 1), Polynomial.C (b i w) * Polynomial.X ^ (i : ℕ) : Polynomial ℂ).Separable := by
+    rw [hb, ← fibrePoly_eq_denseFibreCoeff hsupp w]
+    exact hsepw
+  set g : ℂ → ℂ := fun z =>
+    b (Fin.last N) z *
+      resultant (∑ i : Fin (N + 1), Polynomial.C (b i z) * Polynomial.X ^ (i : ℕ))
+        (derivative (∑ i : Fin (N + 1), Polynomial.C (b i z) * Polynomial.X ^ (i : ℕ)))
+        N (N - 1) with hg
+  have hgan : AnalyticOnNhd ℂ g Ω := fun z hz => by
+    rw [hg]
+    exact (hb_an (Fin.last N) z hz).mul
+      (resultant_specialize_analytic b z (fun i => hb_an i z hz))
+  have hgw : g w ≠ 0 := by
+    rw [hg]
+    exact mul_ne_zero hleadw_b ((separable_iff_resultant_fixed hN1 b w hleadw_b).mp hsepw_b)
+  have hbad : {z ∈ Ω | g z = 0}.Countable :=
+    analyticOnNhd_zeros_countable hgan hΩc hw hgw
+  obtain ⟨z₀, hz₀S, hz₀Ω, hz₀bad⟩ := havoid {z ∈ Ω | g z = 0} hbad
+  have hgz₀ : g z₀ ≠ 0 := fun hz => hz₀bad ⟨hz₀Ω, hz⟩
+  have hgz₀' :
+      b (Fin.last N) z₀ *
+        resultant (∑ i : Fin (N + 1), Polynomial.C (b i z₀) * Polynomial.X ^ (i : ℕ))
+          (derivative (∑ i : Fin (N + 1), Polynomial.C (b i z₀) * Polynomial.X ^ (i : ℕ)))
+          N (N - 1) ≠ 0 := by
+    simpa [g] using hgz₀
+  obtain ⟨hlead₀_b, hres₀_b⟩ := mul_ne_zero_iff.mp hgz₀'
+  have hlead₀ : a N z₀ ≠ 0 := by
+    rw [hb, denseFibreCoeff_last hN] at hlead₀_b
+    exact hlead₀_b
+  have hsep₀_b :
+      (∑ i : Fin (N + 1), Polynomial.C (b i z₀) * Polynomial.X ^ (i : ℕ) : Polynomial ℂ).Separable :=
+    (separable_iff_resultant_fixed hN1 b z₀ hlead₀_b).mpr hres₀_b
+  have hsep₀ : (fibrePoly a s z₀).Separable := by
+    rw [hb, ← fibrePoly_eq_denseFibreCoeff hsupp z₀] at hsep₀_b
+    exact hsep₀_b
+  exact ⟨z₀, hz₀S, hlead₀, hsep₀⟩
+
+/-- An uncountable target set inside `Ω` can avoid every countable exceptional set. -/
+theorem countableAvoidance_of_uncountable_inter {S Ω : Set ℂ}
+    (hunc : ¬ (S ∩ Ω).Countable) :
+    ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T := by
+  intro T hT
+  by_contra hnone
+  push Not at hnone
+  have hsub : S ∩ Ω ⊆ T := by
+    intro z hz
+    exact hnone z hz.1 hz.2
+  exact hunc (hT.mono hsub)
+
+/-- **Sparse generic crossing from an uncountable target set.** This is the geometric form of
+`exists_sparse_fibre_separable_countableAvoidance`: an uncountable supply of candidate targets inside
+the analytic region can avoid the countable analytic bad locus. -/
+theorem exists_sparse_fibre_separable_uncountable {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ}
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ} (hunc : ¬ (S ∩ Ω).Countable) :
+    ∃ z₀ ∈ S, a N z₀ ≠ 0 ∧ (fibrePoly a s z₀).Separable :=
+  exists_sparse_fibre_separable_countableAvoidance
+    hN1 hsupp hN hΩc ha hw hleadw hsepw
+    (countableAvoidance_of_uncountable_inter hunc)
+
 /-- **Common-basin hRigid input from sparse generic crossing.** This is the payload form consumed by the
 strongest natural-boundary common-basin endpoint: the fibre nondegeneracy is created by
 `exists_sparse_fibre_separable_crossing`, while the remaining target-set geometry is supplied pointwise on
@@ -191,6 +278,74 @@ theorem exists_commonBasin_frontier_input_of_sparse_fibre_crossing {U : Set ℂ}
     hgeom z₀ hz₀S
   exact ⟨N, z₀, r, V, hsupp, hN, hN1, hlead₀, hsep₀, hz₀front, hz₀off₂, hr, hVo, hVc,
     hUV, hVbasin₁, hVbasin₂, hsectorV, htip⟩
+
+/-- **Common-basin hRigid input from countable-avoidance sparse crossing.** This is the frontier form of
+`exists_commonBasin_frontier_input_of_sparse_fibre_crossing` with the target-set hypothesis changed from
+accumulation to countable avoidance.  It is designed for dynamical inputs of the form "for every
+countable exceptional set, choose a frontier/common-basin target outside it". -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance {U : Set ℂ}
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T)
+    (hgeom : ∀ z₀ ∈ S, ∃ (r : ℝ) (V : Set ℂ),
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+      V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r : ℝ) (V : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+      V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) := by
+  obtain ⟨z₀, hz₀S, hlead₀, hsep₀⟩ :=
+    exists_sparse_fibre_separable_countableAvoidance hN1 hsupp hN hΩc ha hw hleadw hsepw havoid
+  obtain ⟨r, V, hz₀front, hz₀off₂, hr, hVo, hVc, hUV, hVbasin₁, hVbasin₂, hsectorV, htip⟩ :=
+    hgeom z₀ hz₀S
+  exact ⟨N, z₀, r, V, hsupp, hN, hN1, hlead₀, hsep₀, hz₀front, hz₀off₂, hr, hVo, hVc,
+    hUV, hVbasin₁, hVbasin₂, hsectorV, htip⟩
+
+/-- **Common-basin hRigid input from an uncountable target set.** This is the geometric form of
+`exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance`: an uncountable set of
+frontier/common-basin targets inside the analytic region can avoid the countable sparse-fibre bad
+locus. -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_uncountable {U : Set ℂ}
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ} (hunc : ¬ (S ∩ Ω).Countable)
+    (hgeom : ∀ z₀ ∈ S, ∃ (r : ℝ) (V : Set ℂ),
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+      V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r : ℝ) (V : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+      V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) :=
+  exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance
+    hN1 hsupp hN hΩc ha hw hleadw hsepw
+    (countableAvoidance_of_uncountable_inter hunc) hgeom
 
 /-- **Empty-interior common-basin crossing, frontier form.** In the dendrite/empty-interior route,
 target geometry only has to place the accumulating sparse-crossing set in `filledJulia c₁`: empty interior
@@ -399,6 +554,173 @@ theorem exists_commonBasin_frontier_input_of_sparse_fibre_crossing_emptyInterior
     (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂)
     hempty hUo hUc ⟨u, huU⟩ hUbasin₁ hUbasin₂ hN1 hsupp hN hΩc ha hw hleadw hsepw
     hz₁ haccum
+    (by
+      refine ⟨u, huU, ?_⟩
+      intro z₀ hz₀S
+      exact closure_mono hUcomponent (hSclosure z₀ hz₀S))
+    hgeom
+
+/-- **Countable-avoidance empty-interior common-basin crossing from one global common-basin region.**
+This is the countable-avoidance analogue of
+`exists_commonBasin_frontier_input_of_sparse_fibre_crossing_emptyInterior_globalRegion`: the sparse
+fibre point is chosen by avoiding an arbitrary countable bad set, while the common-basin region `V` is
+supplied once. -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_emptyInterior_globalRegion
+    {U : Set ℂ} {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (hempty : interior (filledJulia c₁) = ∅)
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S V : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T)
+    (hVo : IsOpen V) (hVc : IsPreconnected V)
+    (hUV : U ⊆ V) (hVbasin₁ : V ⊆ (filledJulia c₁)ᶜ) (hVbasin₂ : V ⊆ (filledJulia c₂)ᶜ)
+    (hgeom : ∀ z₀ ∈ S, ∃ r : ℝ,
+      z₀ ∈ filledJulia c₁ ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r : ℝ) (V' : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ IsOpen V' ∧ IsPreconnected V' ∧ U ⊆ V' ∧ V' ⊆ (filledJulia c₁)ᶜ ∧
+      V' ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V' ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) := by
+  exact exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance
+    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂)
+    hN1 hsupp hN hΩc ha hw hleadw hsepw havoid (by
+      intro z₀ hz₀S
+      obtain ⟨r, hz₀K₁, hz₀off₂, hr, hsectorV, htip⟩ := hgeom z₀ hz₀S
+      have hz₀front : z₀ ∈ frontier (filledJulia c₁) := by
+        rw [(isClosed_filledJulia c₁).frontier_eq]
+        exact ⟨hz₀K₁, by simp [hempty]⟩
+      exact ⟨r, V, hz₀front, hz₀off₂, hr, hVo, hVc, hUV, hVbasin₁, hVbasin₂,
+        hsectorV, htip⟩)
+
+/-- **Countable-avoidance empty-interior common-basin crossing from the component containing `U`.**
+This is the countable-avoidance analogue of
+`exists_commonBasin_frontier_input_of_sparse_fibre_crossing_emptyInterior_commonComponent`.  The global
+common-basin region is constructed internally as the connected component of
+`(filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ` containing `U`. -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_emptyInterior_commonComponent
+    {U : Set ℂ} {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (hempty : interior (filledJulia c₁) = ∅)
+    (_hUo : IsOpen U) (hUc : IsPreconnected U) (_hUne : U.Nonempty)
+    (hUbasin₁ : U ⊆ (filledJulia c₁)ᶜ) (hUbasin₂ : U ⊆ (filledJulia c₂)ᶜ)
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T)
+    (hcomponent : ∃ u ∈ U,
+      ∀ z₀ ∈ S,
+        z₀ ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u))
+    (hgeom : ∀ z₀ ∈ S,
+      z₀ ∈ filledJulia c₁ ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r : ℝ) (V : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+      V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) := by
+  obtain ⟨u, huU, hcl⟩ := hcomponent
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  let V : Set ℂ := connectedComponentIn C u
+  have hCo : IsOpen C :=
+    (isClosed_filledJulia c₁).isOpen_compl.inter (isClosed_filledJulia c₂).isOpen_compl
+  have hVo : IsOpen V := by
+    simpa [V] using hCo.connectedComponentIn
+  have hVc : IsPreconnected V := by
+    simpa [V] using (isPreconnected_connectedComponentIn (x := u) (F := C))
+  have hVsubC : V ⊆ C := by
+    simpa [V] using connectedComponentIn_subset C u
+  have hVbasin₁ : V ⊆ (filledJulia c₁)ᶜ := fun z hz => (hVsubC hz).1
+  have hVbasin₂ : V ⊆ (filledJulia c₂)ᶜ := fun z hz => (hVsubC hz).2
+  have hUV : U ⊆ V := by
+    have hUC : U ⊆ C := fun z hz => ⟨hUbasin₁ hz, hUbasin₂ hz⟩
+    simpa [V] using hUc.subset_connectedComponentIn huU hUC
+  exact exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_emptyInterior_globalRegion
+    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂) (V := V)
+    hempty hN1 hsupp hN hΩc ha hw hleadw hsepw havoid
+    hVo hVc hUV hVbasin₁ hVbasin₂ (by
+      intro z₀ hz₀S
+      obtain ⟨hz₀K₁, hz₀off₂, htip⟩ := hgeom z₀ hz₀S
+      obtain ⟨r, hr, hball₂⟩ :=
+        Metric.isOpen_iff.mp (isClosed_filledJulia c₂).isOpen_compl z₀ hz₀off₂
+      refine ⟨r, hz₀K₁, hz₀off₂, hr, ?_, htip⟩
+      set W : Set ℂ := Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ with hW
+      have hWc : IsPreconnected W := by
+        simpa [W] using htip r hr
+      have hWC : W ⊆ C := by
+        intro z hz
+        exact ⟨hz.2, hball₂ hz.1⟩
+      have hz₀clV : z₀ ∈ closure V := by
+        simpa [V, C] using hcl z₀ hz₀S
+      have hmeet : (Metric.ball z₀ r ∩ V).Nonempty := by
+        rw [_root_.mem_closure_iff] at hz₀clV
+        exact hz₀clV (Metric.ball z₀ r) isOpen_ball (Metric.mem_ball_self hr)
+      obtain ⟨y, hyball, hyV⟩ := hmeet
+      have hyW : y ∈ W := ⟨hyball, hVbasin₁ hyV⟩
+      have hWsubCompY : W ⊆ connectedComponentIn C y :=
+        hWc.subset_connectedComponentIn hyW hWC
+      have hcomp : connectedComponentIn C y = V := by
+        have h := connectedComponentIn_eq (by simpa [V] using hyV)
+        simpa [V] using h.symm
+      intro z hz
+      exact hcomp ▸ hWsubCompY (by simpa [W] using hz))
+
+/-- **Countable-avoidance empty-interior common-basin crossing from carrier-closure contact.** This is
+the countable-avoidance analogue of
+`exists_commonBasin_frontier_input_of_sparse_fibre_crossing_emptyInterior_carrierClosure`; it removes the
+explicit connected-component closure payload from the countable-avoidance route. -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_emptyInterior_carrierClosure
+    {U : Set ℂ} {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (hempty : interior (filledJulia c₁) = ∅)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hUbasin₁ : U ⊆ (filledJulia c₁)ᶜ) (hUbasin₂ : U ⊆ (filledJulia c₂)ᶜ)
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T)
+    (hSclosure : ∀ z₀ ∈ S, z₀ ∈ closure U)
+    (hgeom : ∀ z₀ ∈ S,
+      z₀ ∈ filledJulia c₁ ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r : ℝ) (V : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+      V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) := by
+  obtain ⟨u, huU⟩ := hUne
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  have hUC : U ⊆ C := fun z hz => ⟨hUbasin₁ hz, hUbasin₂ hz⟩
+  have hUcomponent : U ⊆ connectedComponentIn C u :=
+    hUc.subset_connectedComponentIn huU hUC
+  exact exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_emptyInterior_commonComponent
+    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂)
+    hempty hUo hUc ⟨u, huU⟩ hUbasin₁ hUbasin₂ hN1 hsupp hN hΩc ha hw hleadw hsepw
+    havoid
     (by
       refine ⟨u, huU, ?_⟩
       intro z₀ hz₀S

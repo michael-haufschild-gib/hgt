@@ -863,6 +863,19 @@ theorem polynomial_eq_C_of_comp_neg_eq_comp_oneSub {p : Polynomial ℂ}
     rw [Polynomial.IsRoot.def, eval_sub, eval_C, hnat n, sub_self]
   exact sub_eq_zero.mp hzero
 
+/-- Composition with the translation `X + 1` preserves nonzero complex polynomials. -/
+theorem comp_X_add_one_ne_zero {p : Polynomial ℂ} (hp : p ≠ 0) :
+    p.comp (X + 1) ≠ 0 := by
+  intro h
+  apply hp
+  have hlin : (X + 1 : Polynomial ℂ).comp (X - 1) = X := by
+    rw [Polynomial.add_comp, Polynomial.X_comp, Polynomial.one_comp]
+    ring
+  have hinv : (p.comp (X + 1)).comp (X - 1) = p := by
+    rw [Polynomial.comp_assoc, hlin, Polynomial.comp_X]
+  rw [h, Polynomial.zero_comp] at hinv
+  exact hinv.symm
+
 namespace HurwitzZetaTail
 
 /-- If every polynomial coefficient has zero `-n` finite difference, the harmonic-tail relation closes
@@ -941,6 +954,117 @@ def MixedTailIndependent (N : ℕ) (s : ℂ) : Prop :=
     (∀ i : Fin (N + 1), hcoeff i = 0) ∧
       HurwitzNonRat.shiftedPowerPolynomial N scoeff = 0 ∧ P = 0
 
+/-- Finite-difference transform for a mixed harmonic/shifted-power relation.  Differencing a mixed
+relation does not land back in the one-ray mixed interface: the shifted-power side keeps one term on
+the `n` ray and one on the `(n-1)` ray.  This theorem records the exact two-ray landing, which is the
+next analytic obstruction after `MixedTailIndependent`. -/
+theorem mixedTail_relation_finite_difference_twoRay {N : ℕ} {s : ℂ}
+    (hcoeff scoeff : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ}
+    (hrel : ∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (hcoeff i).eval (n : ℂ) * harmonicTail (N := N) s i n) +
+        (∑ i : Fin (N + 1), (scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ)))) = P.eval (n : ℂ)) :
+    ∀ n, M + 1 ≤ n →
+      (∑ i : Fin (N + 1),
+        (hcoeff i - (hcoeff i).comp (X - 1)).eval (n : ℂ) *
+          harmonicTail (N := N) s i n) +
+      (∑ i : Fin (N + 1),
+        ((hcoeff i).comp (X - 1) + scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ)))) -
+      (∑ i : Fin (N + 1),
+        ((scoeff i).comp (X - 1)).eval (n : ℂ) *
+          (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) =
+      (P - P.comp (X - 1)).eval (n : ℂ) := by
+  intro n hn
+  have hn1 : 1 ≤ n := by omega
+  have hMn : M ≤ n := by omega
+  have hMprev : M ≤ n - 1 := by omega
+  have hrel_n := hrel n hMn
+  have hrel_prev := hrel (n - 1) hMprev
+  have hsub0 := congrArg₂ (fun a b : ℂ => a - b) hrel_n hrel_prev
+  have hsub :
+      ((∑ i : Fin (N + 1), (hcoeff i).eval (n : ℂ) * harmonicTail (N := N) s i n) +
+        (∑ i : Fin (N + 1), (scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ))))) -
+      ((∑ i : Fin (N + 1), (hcoeff i).eval ((n - 1 : ℕ) : ℂ) *
+          harmonicTail (N := N) s i (n - 1)) +
+        (∑ i : Fin (N + 1), (scoeff i).eval ((n - 1 : ℕ) : ℂ) *
+          (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ)))))) =
+      P.eval (n : ℂ) - P.eval ((n - 1 : ℕ) : ℂ) := by
+    simpa using hsub0
+  have hleft :
+      ((∑ i : Fin (N + 1), (hcoeff i).eval (n : ℂ) * harmonicTail (N := N) s i n) +
+        (∑ i : Fin (N + 1), (scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ))))) -
+      ((∑ i : Fin (N + 1), (hcoeff i).eval ((n - 1 : ℕ) : ℂ) *
+          harmonicTail (N := N) s i (n - 1)) +
+        (∑ i : Fin (N + 1), (scoeff i).eval ((n - 1 : ℕ) : ℂ) *
+          (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ)))))) =
+      (∑ i : Fin (N + 1),
+        (hcoeff i - (hcoeff i).comp (X - 1)).eval (n : ℂ) *
+          harmonicTail (N := N) s i n) +
+      (∑ i : Fin (N + 1),
+        ((hcoeff i).comp (X - 1) + scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ)))) -
+      (∑ i : Fin (N + 1),
+        ((scoeff i).comp (X - 1)).eval (n : ℂ) *
+          (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) := by
+    calc
+      ((∑ i : Fin (N + 1), (hcoeff i).eval (n : ℂ) * harmonicTail (N := N) s i n) +
+          (∑ i : Fin (N + 1), (scoeff i).eval (n : ℂ) *
+            (n : ℂ) ^ (-(s + (i : ℂ))))) -
+        ((∑ i : Fin (N + 1), (hcoeff i).eval ((n - 1 : ℕ) : ℂ) *
+            harmonicTail (N := N) s i (n - 1)) +
+          (∑ i : Fin (N + 1), (scoeff i).eval ((n - 1 : ℕ) : ℂ) *
+            (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ)))))) =
+          ∑ i : Fin (N + 1),
+            (((hcoeff i).eval (n : ℂ) * harmonicTail (N := N) s i n +
+                (scoeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ)))) -
+              ((hcoeff i).eval ((n - 1 : ℕ) : ℂ) *
+                  harmonicTail (N := N) s i (n - 1) +
+                (scoeff i).eval ((n - 1 : ℕ) : ℂ) *
+                  (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ)))))) := by
+            rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+      _ =
+          ∑ i : Fin (N + 1),
+            (((hcoeff i - (hcoeff i).comp (X - 1)).eval (n : ℂ) *
+                harmonicTail (N := N) s i n +
+              ((hcoeff i).comp (X - 1) + scoeff i).eval (n : ℂ) *
+                (n : ℂ) ^ (-(s + (i : ℂ)))) -
+              ((scoeff i).comp (X - 1)).eval (n : ℂ) *
+                (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) := by
+            refine Finset.sum_congr rfl (fun i _ => ?_)
+            simp only [eval_sub, eval_add, eval_comp, eval_X, eval_one]
+            have hprev : (n : ℂ) - 1 = ((n - 1 : ℕ) : ℂ) := by
+              rw [Nat.cast_sub hn1]
+              push_cast
+              ring
+            have hdiff := harmonicTail_sub_prev (N := N) s i hn1
+            rw [hprev, ← hdiff]
+            ring
+      _ =
+          (∑ i : Fin (N + 1),
+            (hcoeff i - (hcoeff i).comp (X - 1)).eval (n : ℂ) *
+              harmonicTail (N := N) s i n) +
+          (∑ i : Fin (N + 1),
+            ((hcoeff i).comp (X - 1) + scoeff i).eval (n : ℂ) *
+              (n : ℂ) ^ (-(s + (i : ℂ)))) -
+          (∑ i : Fin (N + 1),
+            ((scoeff i).comp (X - 1)).eval (n : ℂ) *
+              (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) := by
+            rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
+  have hright :
+      P.eval (n : ℂ) - P.eval ((n - 1 : ℕ) : ℂ) =
+        (P - P.comp (X - 1)).eval (n : ℂ) := by
+    simp only [eval_sub, eval_comp, eval_X, eval_one]
+    have hprev : (n : ℂ) - 1 = ((n - 1 : ℕ) : ℂ) := by
+      rw [Nat.cast_sub hn1]
+      push_cast
+      ring
+    rw [hprev]
+  rw [hleft, hright] at hsub
+  exact hsub
+
 /-- The shifted-power part of the mixed target closes unconditionally. -/
 theorem shiftedPower_relation_close_of_eventually_ge {N : ℕ} {s : ℂ}
     (hsZ : ∀ k : ℤ, s ≠ (k : ℂ))
@@ -956,6 +1080,105 @@ theorem shiftedPower_relation_close_of_eventually_ge {N : ℕ} {s : ℂ}
     exact hrel n hn
   exact HurwitzNonRat.shiftedPowerPolynomial_eq_zero_and_rhs_eq_zero_of_eventually_cpow_sum_eq_poly
     hsZ scoeff P hev
+
+/-- Previous-ray shifted-power close.  This is the one-ray obstruction for relations landing on
+`(n-1)^{-(s+i)}` rather than `n^{-(s+i)}`; after translating `n = m + 1`, it is exactly the existing
+shifted-power close with coefficient polynomials composed by `X + 1`. -/
+theorem shiftedPower_prev_relation_close_of_eventually_ge {N : ℕ} {s : ℂ}
+    (hsZ : ∀ k : ℤ, s ≠ (k : ℂ))
+    (scoeff : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ}
+    (hrel : ∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (scoeff i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = P.eval (n : ℂ)) :
+    HurwitzNonRat.shiftedPowerPolynomial N (fun i => (scoeff i).comp (X + 1)) = 0 ∧ P = 0 := by
+  let scoeffShift : Fin (N + 1) → Polynomial ℂ := fun i => (scoeff i).comp (X + 1)
+  let PShift : Polynomial ℂ := P.comp (X + 1)
+  have hrelShift : ∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (scoeffShift i).eval (n : ℂ) *
+        (n : ℂ) ^ (-(s + (i : ℂ)))) = PShift.eval (n : ℂ) := by
+    intro n hn
+    have hr := hrel (n + 1) (by omega)
+    simpa [scoeffShift, PShift, eval_comp, add_comm, add_left_comm, add_assoc] using hr
+  obtain ⟨hD, hPShift⟩ :=
+    shiftedPower_relation_close_of_eventually_ge (N := N) (s := s) hsZ scoeffShift PShift hrelShift
+  refine ⟨?_, ?_⟩
+  · simpa [scoeffShift] using hD
+  · by_contra hP
+    exact (comp_X_add_one_ne_zero hP) hPShift
+
+/-- Singleton previous-ray shifted-power close in coefficient form. -/
+theorem shiftedPower_prev_relation_close_N0_coefficients {s : ℂ}
+    (hsZ : ∀ k : ℤ, s ≠ (k : ℂ))
+    (scoeff : Fin (0 + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ}
+    (hrel : ∀ n, M ≤ n →
+      (∑ i : Fin (0 + 1), (scoeff i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = P.eval (n : ℂ)) :
+    (∀ i : Fin (0 + 1), scoeff i = 0) ∧ P = 0 := by
+  obtain ⟨hD, hP⟩ :=
+    shiftedPower_prev_relation_close_of_eventually_ge (N := 0) (s := s) hsZ scoeff P hrel
+  have hcomp0 : (scoeff 0).comp (X + 1) = 0 := by
+    simpa [HurwitzNonRat.shiftedPowerPolynomial] using hD
+  have hcoeff0 : scoeff 0 = 0 := by
+    by_contra hne
+    exact (comp_X_add_one_ne_zero hne) hcomp0
+  refine ⟨?_, hP⟩
+  intro i
+  fin_cases i
+  exact hcoeff0
+
+/-- Pure two-ray shifted-power close when the previous ray is already absent. -/
+theorem shiftedPower_twoRay_close_of_zero_prev {N : ℕ} {s : ℂ}
+    (hsZ : ∀ k : ℤ, s ≠ (k : ℂ))
+    (current prev : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ}
+    (hprev : ∀ i : Fin (N + 1), prev i = 0)
+    (hrel : ∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (current i).eval (n : ℂ) *
+        (n : ℂ) ^ (-(s + (i : ℂ)))) -
+      (∑ i : Fin (N + 1), (prev i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = P.eval (n : ℂ)) :
+    HurwitzNonRat.shiftedPowerPolynomial N current = 0 ∧ P = 0 := by
+  have hcurrentRel : ∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (current i).eval (n : ℂ) *
+        (n : ℂ) ^ (-(s + (i : ℂ)))) = P.eval (n : ℂ) := by
+    intro n hn
+    have hr := hrel n hn
+    have hprevSum :
+        (∑ i : Fin (N + 1), (prev i).eval (n : ℂ) *
+          (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = 0 := by
+      simp [hprev]
+    rw [hprevSum, sub_zero] at hr
+    exact hr
+  exact shiftedPower_relation_close_of_eventually_ge (N := N) (s := s) hsZ current P hcurrentRel
+
+/-- Pure two-ray shifted-power close when the current ray is already absent. -/
+theorem shiftedPower_twoRay_close_of_zero_current {N : ℕ} {s : ℂ}
+    (hsZ : ∀ k : ℤ, s ≠ (k : ℂ))
+    (current prev : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ}
+    (hcurrent : ∀ i : Fin (N + 1), current i = 0)
+    (hrel : ∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (current i).eval (n : ℂ) *
+        (n : ℂ) ^ (-(s + (i : ℂ)))) -
+      (∑ i : Fin (N + 1), (prev i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = P.eval (n : ℂ)) :
+    HurwitzNonRat.shiftedPowerPolynomial N (fun i => (prev i).comp (X + 1)) = 0 ∧ P = 0 := by
+  let negPrev : Fin (N + 1) → Polynomial ℂ := fun i => -(prev i)
+  have hprevRel : ∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (negPrev i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = P.eval (n : ℂ) := by
+    intro n hn
+    have hr := hrel n hn
+    have hcurrentSum :
+        (∑ i : Fin (N + 1), (current i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ)))) = 0 := by
+      simp [hcurrent]
+    rw [hcurrentSum, zero_sub] at hr
+    simpa [negPrev] using hr
+  obtain ⟨hDneg, hP⟩ :=
+    shiftedPower_prev_relation_close_of_eventually_ge (N := N) (s := s) hsZ negPrev P hprevRel
+  have hDneg' :
+      -HurwitzNonRat.shiftedPowerPolynomial N (fun i => (prev i).comp (X + 1)) = 0 := by
+    simpa [HurwitzNonRat.shiftedPowerPolynomial, negPrev] using hDneg
+  exact ⟨neg_eq_zero.mp hDneg', hP⟩
 
 /-- Mixed relations with zero harmonic coefficients close by the shifted-power obstruction. -/
 theorem mixedTailIndependent_zero_harmonic_part {N : ℕ} {s : ℂ}

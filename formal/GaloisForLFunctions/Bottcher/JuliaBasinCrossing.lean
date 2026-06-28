@@ -16,7 +16,7 @@ import GaloisForLFunctions.Bottcher.JuliaSeparation
 import GaloisForLFunctions.Bottcher.GlobalBasinBranch
 import GaloisForLFunctions.Bottcher.BasinConnected
 
-open Set Metric
+open Filter Topology Set Metric
 
 namespace Bottcher
 
@@ -73,5 +73,46 @@ theorem exists_frontier_filledJulia_off_other {c₁ c₂ : ℂ} (hne : c₁ ≠ 
   rcases h with ⟨h1, h2⟩ | ⟨h2, h1⟩
   · exact Or.inl (exists_frontier_off h1 h2)
   · exact Or.inr (exists_frontier_off h2 h1)
+
+/-- From a point `z₀ ∈ K_a ∖ K_b`, produce the off-other frontier point together with the two local
+basin facts the natural-boundary/common-basin route consumes: a ball around the frontier point that stays
+in the `b`-basin, and a nontrivial `a`-basin-side neighbourhood filter at the frontier point. -/
+theorem exists_frontier_off_with_other_basin_ball {a b : ℂ} {z₀ : ℂ}
+    (hz1 : z₀ ∈ filledJulia a) (hz2 : z₀ ∉ filledJulia b) :
+    ∃ (p : ℂ) (r : ℝ),
+      p ∈ frontier (filledJulia a) ∧
+      p ∈ (filledJulia b)ᶜ ∧
+      0 < r ∧
+      Metric.ball p r ⊆ (filledJulia b)ᶜ ∧
+      (𝓝[(filledJulia a)ᶜ] p).NeBot := by
+  obtain ⟨p, hpfront, hpoff⟩ := exists_frontier_off hz1 hz2
+  obtain ⟨r, hr, hball⟩ :=
+    Metric.isOpen_iff.mp (isClosed_filledJulia b).isOpen_compl p hpoff
+  have hpcl : p ∈ closure (filledJulia a)ᶜ := by
+    rw [frontier_eq_closure_inter_closure] at hpfront
+    exact hpfront.2
+  exact ⟨p, r, hpfront, hpoff, hr, hball, mem_closure_iff_nhdsWithin_neBot.mp hpcl⟩
+
+/-- **Distinct parameters with local basin seed data.** For `c₁ ≠ c₂`, one Julia frontier meets the
+other parameter's basin, and the chosen point comes with a basin ball for the other parameter plus a
+nontrivial basin-side neighbourhood filter for the frontier parameter. This is the reusable geometric
+seed before any countable-avoidance or common-component strengthening. -/
+theorem exists_frontier_filledJulia_off_other_with_basin_ball {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂) :
+    (∃ (p : ℂ) (r : ℝ),
+      p ∈ frontier (filledJulia c₁) ∧
+      p ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧
+      Metric.ball p r ⊆ (filledJulia c₂)ᶜ ∧
+      (𝓝[(filledJulia c₁)ᶜ] p).NeBot) ∨
+    (∃ (p : ℂ) (r : ℝ),
+      p ∈ frontier (filledJulia c₂) ∧
+      p ∈ (filledJulia c₁)ᶜ ∧
+      0 < r ∧
+      Metric.ball p r ⊆ (filledJulia c₁)ᶜ ∧
+      (𝓝[(filledJulia c₂)ᶜ] p).NeBot) := by
+  obtain ⟨z₀, h⟩ := exists_point_filledJulia_symmDiff hne
+  rcases h with ⟨h1, h2⟩ | ⟨h2, h1⟩
+  · exact Or.inl (exists_frontier_off_with_other_basin_ball h1 h2)
+  · exact Or.inr (exists_frontier_off_with_other_basin_ball h2 h1)
 
 end Bottcher

@@ -154,6 +154,70 @@ end Bottcher
 
 namespace Bottcher
 
+/-- **[hDisc capstone, image-winding input] q62 disc/disc from topological deep data.**
+This is the escape-form hDisc close with the loop hypothesis lowered from the analytic radicand period
+to odd logarithmic winding of the image loop `(f^[d+1])∘γ`.  The chain-rule/winding bridge in
+`BottcherIterateNonSquare` supplies the radicand period consumed by
+`q62_disconnected_of_deepData_escape`. -/
+theorem q62_disconnected_of_imageWindingDeepData_escape {c₁ c₂ : ℂ} {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hUesc : ∀ z ∈ U, ‖c₁‖ ≤ ‖z‖ ∧ 2 < ‖z‖)
+    (a₁ a₂ : analyticSubring U)
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = (↑(bottcherCoord c₁) : Germ (𝓟 U) ℂ))
+    (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = (↑(bottcherCoord c₂) : Germ (𝓟 U) ℂ))
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hGtr : haveI := isDomain_analyticSubring U hUo hUc hUne
+            haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+            Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂))
+    (deepdata : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (_hUExt : U ⊆ Ext)
+        (_hExtesc : ∀ z ∈ Ext, (quadratic c₁)^[d+1] z ∈ escapeOpen c₁)
+        (_hExtc₂ : Ext ⊆ escapeOpen c₂)
+        (aExt : analyticSubring Ext),
+        (aExt : Germ (𝓟 Ext) ℂ)
+            = (↑(fun z => bottcherCoord c₁ ((quadratic c₁)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ : ℝ, HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, (quadratic c₁)^[d+1] (γ θ) ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi),
+                ((quadratic c₁)^[d+1] (γ θ))⁻¹ *
+                  ((∏ j ∈ Finset.range (d+1), 2 * (quadratic c₁)^[j] (γ θ)) * γ' θ))
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  apply q62_disconnected_of_deepData_escape hUo hUc hUne hUinf hUesc a₁ a₂ ha₁ ha₂ hF hGtr
+  intro d
+  obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, hExtc₂, aExt, haExt, hloops⟩ :=
+    deepdata d
+  refine ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, hExtc₂, aExt, haExt, ?_⟩
+  intro T hTcount
+  obtain ⟨γ, γ', m, hγExt, hγcont, hγ'cont, hdγ, hγclosed, havoid, hwind⟩ :=
+    hloops T hTcount
+  refine ⟨γ, γ', m, hγExt, hγcont, hγ'cont, ?_, hγclosed, havoid, ?_⟩
+  · intro θ _hθ
+    exact hdγ θ
+  · have hesc : ∀ θ : ℝ, (quadratic c₁)^[d+1] (γ θ) ∈ escapeOpen c₁ :=
+      fun θ => hExtesc (γ θ) (hγExt θ)
+    have hclosed' :
+        (quadratic c₁)^[d+1] (γ (2 * Real.pi)) = (quadratic c₁)^[d+1] (γ 0) := by
+      rw [hγclosed]
+    have hperiod :=
+      pathInt_logDeriv_bottcherIterate_eq_imageInv (c := c₁) (d+1)
+        hesc hdγ hγcont hγ'cont hclosed'
+    exact hperiod.trans hwind
+
+end Bottcher
+
+namespace Bottcher
+
 /-- Deep-data q62 disconnected close with both coordinates supplied by their own non-square radical
 data. This removes the explicit `φ_{c₂}` transcendence input from the deep-data capstone. -/
 theorem q62_disconnected_of_deepData_two_radical {c₁ c₂ : ℂ} {U : Set ℂ}
@@ -328,5 +392,197 @@ theorem q62_disconnected_of_deepData_escape_two_radical {c₁ c₂ : ℂ} {U : S
     rw [ha₂, Germ.coe_compTendsto]
     rfl
   · exact deepdataG
+
+/-- Image-winding form of the two-radical q62 disconnected close.  Each radical tower supplies only
+the odd winding of the image loop `(f^[d+1])∘γ`; the analytic radicand periods required by
+`q62_disconnected_of_deepData_two_radical` are recovered by the chain-rule/winding bridge. -/
+theorem q62_disconnected_of_imageWindingDeepData_two_radical {c₁ c₂ : ℂ} {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hUesc₁ : ∀ z ∈ U, ‖c₁‖ ≤ ‖z‖ ∧ 2 < ‖z‖)
+    (hUesc₂ : ∀ z ∈ U, ‖c₂‖ ≤ ‖z‖ ∧ 2 < ‖z‖)
+    (a₁ a₂ : analyticSubring U)
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = (↑(bottcherCoord c₁) : Germ (𝓟 U) ℂ))
+    (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = (↑(bottcherCoord c₂) : Germ (𝓟 U) ℂ))
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hG : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₂ ≠ 0)
+    (deepdataF : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (hUExt : U ⊆ Ext)
+        (_hExtesc : ∀ z ∈ Ext, (quadratic c₁)^[d+1] z ∈ escapeOpen c₁)
+        (aExt GBExt : analyticSubring Ext),
+        (aExt : Germ (𝓟 Ext) ℂ)
+            = (↑(fun z => bottcherCoord c₁ ((quadratic c₁)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+        restrictAnalytic hUExt GBExt = a₂ ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ : ℝ, HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, (quadratic c₁)^[d+1] (γ θ) ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi),
+                ((quadratic c₁)^[d+1] (γ θ))⁻¹ *
+                  ((∏ j ∈ Finset.range (d+1), 2 * (quadratic c₁)^[j] (γ θ)) * γ' θ))
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1)))
+    (deepdataG : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (_hUExt : U ⊆ Ext)
+        (_hExtesc : ∀ z ∈ Ext, (quadratic c₂)^[d+1] z ∈ escapeOpen c₂)
+        (aExt : analyticSubring Ext),
+        (aExt : Germ (𝓟 Ext) ℂ)
+            = (↑(fun z => bottcherCoord c₂ ((quadratic c₂)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ : ℝ, HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, (quadratic c₂)^[d+1] (γ θ) ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi),
+                ((quadratic c₂)^[d+1] (γ θ))⁻¹ *
+                  ((∏ j ∈ Finset.range (d+1), 2 * (quadratic c₂)^[j] (γ θ)) * γ' θ))
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  apply q62_disconnected_of_deepData_two_radical hUo hUc hUne hUinf hUesc₁ hUesc₂
+    a₁ a₂ ha₁ ha₂ hF hG
+  · intro d
+    obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, aExt, GBExt, haExt, hGB,
+      hloops⟩ := deepdataF d
+    refine ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, aExt, GBExt, haExt, hGB, ?_⟩
+    intro T hTcount
+    obtain ⟨γ, γ', m, hγExt, hγcont, hγ'cont, hdγ, hγclosed, havoid, hwind⟩ :=
+      hloops T hTcount
+    refine ⟨γ, γ', m, hγExt, hγcont, hγ'cont, ?_, hγclosed, havoid, ?_⟩
+    · intro θ _hθ
+      exact hdγ θ
+    · have hesc : ∀ θ : ℝ, (quadratic c₁)^[d+1] (γ θ) ∈ escapeOpen c₁ :=
+        fun θ => hExtesc (γ θ) (hγExt θ)
+      have hclosed' :
+          (quadratic c₁)^[d+1] (γ (2 * Real.pi)) = (quadratic c₁)^[d+1] (γ 0) := by
+        rw [hγclosed]
+      have hperiod :=
+        pathInt_logDeriv_bottcherIterate_eq_imageInv (c := c₁) (d+1)
+          hesc hdγ hγcont hγ'cont hclosed'
+      exact hperiod.trans hwind
+  · intro d
+    obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, aExt, haExt, hloops⟩ :=
+      deepdataG d
+    refine ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, aExt, haExt, ?_⟩
+    intro T hTcount
+    obtain ⟨γ, γ', m, hγExt, hγcont, hγ'cont, hdγ, hγclosed, havoid, hwind⟩ :=
+      hloops T hTcount
+    refine ⟨γ, γ', m, hγExt, hγcont, hγ'cont, ?_, hγclosed, havoid, ?_⟩
+    · intro θ _hθ
+      exact hdγ θ
+    · have hesc : ∀ θ : ℝ, (quadratic c₂)^[d+1] (γ θ) ∈ escapeOpen c₂ :=
+        fun θ => hExtesc (γ θ) (hγExt θ)
+      have hclosed' :
+          (quadratic c₂)^[d+1] (γ (2 * Real.pi)) = (quadratic c₂)^[d+1] (γ 0) := by
+        rw [hγclosed]
+      have hperiod :=
+        pathInt_logDeriv_bottcherIterate_eq_imageInv (c := c₂) (d+1)
+          hesc hdγ hγcont hγ'cont hclosed'
+      exact hperiod.trans hwind
+
+/-- Image-winding form of the escape two-radical q62 disconnected close.  The first tower also
+supplies the escape-domain compatibility for `φ₂`; both odd radicand periods are derived from image
+winding before applying `q62_disconnected_of_deepData_escape_two_radical`. -/
+theorem q62_disconnected_of_imageWindingDeepData_escape_two_radical {c₁ c₂ : ℂ} {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hUesc₁ : ∀ z ∈ U, ‖c₁‖ ≤ ‖z‖ ∧ 2 < ‖z‖)
+    (hUesc₂ : ∀ z ∈ U, ‖c₂‖ ≤ ‖z‖ ∧ 2 < ‖z‖)
+    (a₁ a₂ : analyticSubring U)
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = (↑(bottcherCoord c₁) : Germ (𝓟 U) ℂ))
+    (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = (↑(bottcherCoord c₂) : Germ (𝓟 U) ℂ))
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hG : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₂ ≠ 0)
+    (deepdataF : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (_hUExt : U ⊆ Ext)
+        (_hExtesc : ∀ z ∈ Ext, (quadratic c₁)^[d+1] z ∈ escapeOpen c₁)
+        (_hExtc₂ : Ext ⊆ escapeOpen c₂)
+        (aExt : analyticSubring Ext),
+        (aExt : Germ (𝓟 Ext) ℂ)
+            = (↑(fun z => bottcherCoord c₁ ((quadratic c₁)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ : ℝ, HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, (quadratic c₁)^[d+1] (γ θ) ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi),
+                ((quadratic c₁)^[d+1] (γ θ))⁻¹ *
+                  ((∏ j ∈ Finset.range (d+1), 2 * (quadratic c₁)^[j] (γ θ)) * γ' θ))
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1)))
+    (deepdataG : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (_hUExt : U ⊆ Ext)
+        (_hExtesc : ∀ z ∈ Ext, (quadratic c₂)^[d+1] z ∈ escapeOpen c₂)
+        (aExt : analyticSubring Ext),
+        (aExt : Germ (𝓟 Ext) ℂ)
+            = (↑(fun z => bottcherCoord c₂ ((quadratic c₂)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ : ℝ, HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, (quadratic c₂)^[d+1] (γ θ) ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi),
+                ((quadratic c₂)^[d+1] (γ θ))⁻¹ *
+                  ((∏ j ∈ Finset.range (d+1), 2 * (quadratic c₂)^[j] (γ θ)) * γ' θ))
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  apply q62_disconnected_of_deepData_escape_two_radical hUo hUc hUne hUinf hUesc₁ hUesc₂
+    a₁ a₂ ha₁ ha₂ hF hG
+  · intro d
+    obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, hExtc₂, aExt, haExt, hloops⟩ :=
+      deepdataF d
+    refine ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, hExtc₂, aExt, haExt, ?_⟩
+    intro T hTcount
+    obtain ⟨γ, γ', m, hγExt, hγcont, hγ'cont, hdγ, hγclosed, havoid, hwind⟩ :=
+      hloops T hTcount
+    refine ⟨γ, γ', m, hγExt, hγcont, hγ'cont, ?_, hγclosed, havoid, ?_⟩
+    · intro θ _hθ
+      exact hdγ θ
+    · have hesc : ∀ θ : ℝ, (quadratic c₁)^[d+1] (γ θ) ∈ escapeOpen c₁ :=
+        fun θ => hExtesc (γ θ) (hγExt θ)
+      have hclosed' :
+          (quadratic c₁)^[d+1] (γ (2 * Real.pi)) = (quadratic c₁)^[d+1] (γ 0) := by
+        rw [hγclosed]
+      have hperiod :=
+        pathInt_logDeriv_bottcherIterate_eq_imageInv (c := c₁) (d+1)
+          hesc hdγ hγcont hγ'cont hclosed'
+      exact hperiod.trans hwind
+  · intro d
+    obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, aExt, haExt, hloops⟩ :=
+      deepdataG d
+    refine ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, aExt, haExt, ?_⟩
+    intro T hTcount
+    obtain ⟨γ, γ', m, hγExt, hγcont, hγ'cont, hdγ, hγclosed, havoid, hwind⟩ :=
+      hloops T hTcount
+    refine ⟨γ, γ', m, hγExt, hγcont, hγ'cont, ?_, hγclosed, havoid, ?_⟩
+    · intro θ _hθ
+      exact hdγ θ
+    · have hesc : ∀ θ : ℝ, (quadratic c₂)^[d+1] (γ θ) ∈ escapeOpen c₂ :=
+        fun θ => hExtesc (γ θ) (hγExt θ)
+      have hclosed' :
+          (quadratic c₂)^[d+1] (γ (2 * Real.pi)) = (quadratic c₂)^[d+1] (γ 0) := by
+        rw [hγclosed]
+      have hperiod :=
+        pathInt_logDeriv_bottcherIterate_eq_imageInv (c := c₂) (d+1)
+          hesc hdγ hγcont hγ'cont hclosed'
+      exact hperiod.trans hwind
 
 end Bottcher
