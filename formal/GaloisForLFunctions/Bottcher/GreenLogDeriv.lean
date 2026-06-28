@@ -437,6 +437,42 @@ theorem nonempty_filledJulia (c : ℂ) : (filledJulia c).Nonempty := by
   rw [mem_filledJulia_iff, isBounded_iff_forall_norm_le]
   exact ⟨‖z‖, fun x hx => by obtain ⟨n, rfl⟩ := hx; simp [Function.iterate_fixed hfix n]⟩
 
+/-- **Rightmost filled-Julia point.** Since `K_c` is compact and nonempty, the real-part functional
+attains its maximum on `K_c`. This is the canonical half-plane anchor used by the connected hRigid
+branch route. -/
+theorem exists_rightmost_filledJulia (c : ℂ) :
+    ∃ z₀ ∈ filledJulia c, ∀ w ∈ filledJulia c, w.re ≤ z₀.re := by
+  obtain ⟨z₀, hz₀K, hz₀max⟩ :=
+    (isCompact_filledJulia c).exists_isMaxOn (nonempty_filledJulia c)
+      Complex.continuous_re.continuousOn
+  exact ⟨z₀, hz₀K, fun w hw => hz₀max hw⟩
+
+/-- **A rightmost filled-Julia point lies on the Julia frontier.** Points immediately to the right of
+a real-part maximizer cannot lie in `K_c`, and they approach the maximizer. -/
+theorem rightmost_mem_frontier_filledJulia {c z₀ : ℂ}
+    (hz₀K : z₀ ∈ filledJulia c)
+    (hz₀max : ∀ w ∈ filledJulia c, w.re ≤ z₀.re) :
+    z₀ ∈ frontier (filledJulia c) := by
+  rw [frontier_eq_closure_inter_closure]
+  refine ⟨subset_closure hz₀K, ?_⟩
+  rw [Metric.mem_closure_iff]
+  intro δ hδ
+  let ε : ℝ := δ / 2
+  let p : ℂ := z₀ + (ε : ℂ)
+  have hεpos : 0 < ε := by dsimp [ε]; linarith
+  have hpnot : p ∉ filledJulia c := by
+    intro hpK
+    have hmax := hz₀max p hpK
+    have hpre : p.re = z₀.re + ε := by simp [p]
+    rw [hpre] at hmax
+    linarith
+  refine ⟨p, hpnot, ?_⟩
+  rw [dist_eq_norm]
+  have hsub : z₀ - p = -((ε : ℂ)) := by simp [p]
+  rw [hsub, norm_neg, Complex.norm_real, Real.norm_of_nonneg hεpos.le]
+  dsimp [ε]
+  linarith
+
 /-- **Unconditional Böttcher branch with modulus on the right half-plane — discharges the `hF` hypothesis.**
 The half-plane `R = {Re z > M}` with `M = max Re over K_c` is convex and disjoint from `K_c` (so `⊆` basin);
 mathlib's **convex** Poincaré lemma `Convex.exists_forall_hasDerivWithinAt` gives a primitive of `ω` on `R`
@@ -449,10 +485,9 @@ theorem exists_bottcherBranch_rightHalfplane (c : ℂ) :
       (∀ w ∈ filledJulia c, w.re ≤ M) ∧
       AnalyticOnNhd ℂ β {z | M < z.re} ∧ (∀ z, M < z.re → β z ≠ 0) ∧
       (∀ z, M < z.re → ‖β z‖ = Real.exp (greenFunctionDyn c z)) := by
-  obtain ⟨z₀, hz₀K, hz₀max⟩ := (isCompact_filledJulia c).exists_isMaxOn (nonempty_filledJulia c)
-    Complex.continuous_re.continuousOn
+  obtain ⟨z₀, _hz₀K, hz₀max⟩ := exists_rightmost_filledJulia c
   set M : ℝ := z₀.re with hM
-  have hmax : ∀ w ∈ filledJulia c, w.re ≤ M := fun w hw => hz₀max hw
+  have hmax : ∀ w ∈ filledJulia c, w.re ≤ M := fun w hw => hz₀max w hw
   set R : Set ℂ := {z | M < z.re} with hR
   have hRconv : Convex ℝ R := convex_halfSpace_re_gt M
   have hRo : IsOpen R := isOpen_lt continuous_const Complex.continuous_re
@@ -481,10 +516,9 @@ theorem exists_fullBottcherBranch_rightHalfplane (c : ℂ)
       AnalyticOnNhd ℂ β {z | M < z.re} ∧ (∀ z, M < z.re → β z ≠ 0) ∧
       (∀ z, M < z.re → ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
       (∀ z, M < z.re → ∑ i ∈ P.support, (P.coeff i).aeval z * (β z) ^ i = 0) := by
-  obtain ⟨z₀, hz₀K, hz₀max⟩ := (isCompact_filledJulia c).exists_isMaxOn (nonempty_filledJulia c)
-    Complex.continuous_re.continuousOn
+  obtain ⟨z₀, _hz₀K, hz₀max⟩ := exists_rightmost_filledJulia c
   set M : ℝ := z₀.re with hM
-  have hmax : ∀ w ∈ filledJulia c, w.re ≤ M := fun w hw => hz₀max hw
+  have hmax : ∀ w ∈ filledJulia c, w.re ≤ M := fun w hw => hz₀max w hw
   set R : Set ℂ := {z | M < z.re} with hR
   have hRconv : Convex ℝ R := convex_halfSpace_re_gt M
   have hRo : IsOpen R := isOpen_lt continuous_const Complex.continuous_re

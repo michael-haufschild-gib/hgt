@@ -55,3 +55,37 @@ theorem q62_disconnected_kummer {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconne
   exact noRelation_of_kummer_inputs _ _ hF hGtr inputs
 
 end Bottcher
+
+namespace Bottcher
+
+/-- Two-coordinate disconnected Kummer close with the second coordinate's transcendence derived from
+its own radical tower. The first radical input is the no-relation Kummer tuple for `F` over a base
+containing `G`; the second radical input is the one-coordinate Kummer tuple for `G`. -/
+theorem q62_disconnected_kummer_with_radical_transcendence {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    [Algebra (RatFunc ℂ) (meroField U)] (a₁ a₂ : analyticSubring U)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          (algebraMap (analyticSubring U) (meroField U) a₁) ≠ 0)
+    (hG : haveI := isDomain_analyticSubring U hUo hUc hUne
+          (algebraMap (analyticSubring U) (meroField U) a₂) ≠ 0)
+    (inputsF : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (B : Type) (_ : Field B) (_ : Algebra (RatFunc ℂ) B)
+      (i : B →ₐ[RatFunc ℂ] meroField U) (a GB ζ : B) (k : ℕ),
+      d < 2 ^ k ∧ IsPrimitiveRoot ζ (2 ^ k) ∧ Irreducible (X ^ (2 ^ k) - C a) ∧
+      (algebraMap (analyticSubring U) (meroField U) a₁) ^ (2 ^ k) = i a ∧
+      i GB = (algebraMap (analyticSubring U) (meroField U) a₂))
+    (inputsG : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (B : Type) (_ : Field B) (_ : Algebra (RatFunc ℂ) B)
+      (i : B →ₐ[RatFunc ℂ] meroField U) (a ζ : B) (k : ℕ),
+      d < 2 ^ k ∧ IsPrimitiveRoot ζ (2 ^ k) ∧ Irreducible (X ^ (2 ^ k) - C a) ∧
+      (algebraMap (analyticSubring U) (meroField U) a₂) ^ (2 ^ k) = i a) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  have hGtr : Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂) :=
+    transcendental_of_kummer_radical_inputs
+      (algebraMap (analyticSubring U) (meroField U) a₂) hG inputsG
+  exact q62_disconnected_kummer hUo hUc hUne a₁ a₂ hF hGtr inputsF
+
+end Bottcher

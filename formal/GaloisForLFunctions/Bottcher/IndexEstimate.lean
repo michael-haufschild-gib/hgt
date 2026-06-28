@@ -126,4 +126,41 @@ theorem card_sdiff_roots (c : ℂ) {p : ℕ} (hp : 1 ≤ p) (hsep : (fixedPointP
   rw [hcast] at hadd
   linarith
 
+/-- **The exceptional mass is eventually small against the actual root bulk.** This is the
+root-count form of `eventually_exceptional_mass_small`: once the fixed-point polynomial is separable and
+the exceptional fixed set `B` is contained in its roots, the analytic bound
+`(2^p - 1) * exceptionalMass < 2^p - |B|` is exactly the hRigid/index-route smallness hypothesis with
+right side `card(roots ∖ B)`. -/
+theorem eventually_exceptional_mass_small_roots (c : ℂ) (B : Finset ℂ)
+    (hBrep : ∀ z ∈ B, 1 < ‖2 * z‖) :
+    ∀ᶠ p : ℕ in atTop,
+      ∀ (_hp : 1 ≤ p), (fixedPointPoly c p).Separable →
+        B ⊆ (fixedPointPoly c p).roots.toFinset →
+          ((2 : ℝ) ^ p - 1) * ∑ z ∈ B, (‖2 * z‖ ^ p - 1)⁻¹
+            < (((fixedPointPoly c p).roots.toFinset \ B).card : ℝ) := by
+  filter_upwards [eventually_exceptional_mass_small B hBrep] with p hsmall hp hsep hBsub
+  simpa [card_sdiff_roots c hp hsep B hBsub] using hsmall
+
+/-- **Pinned bulk contradiction with smallness discharged asymptotically.** For a fixed finite exceptional
+set `B` of repelling fixed points of `f_c`, every sufficiently large period satisfying separability,
+`B ⊆ roots(f_c^[p] - X)`, and the pinned-bulk multiplier identity already contradicts the index formula.
+
+This removes the explicit `hsmall` terminal hypothesis from
+`false_of_pinned_bulk_repelling`; it is created from `eventually_exceptional_mass_small_roots`. -/
+theorem eventually_false_of_pinned_bulk_repelling (c : ℂ) (B : Finset ℂ)
+    (hBfix : ∀ z ∈ B, quadratic c z = z)
+    (hBrep : ∀ z ∈ B, 1 < ‖2 * z‖) :
+    ∀ᶠ p : ℕ in atTop,
+      ∀ (_hp : 1 ≤ p), (fixedPointPoly c p).Separable →
+        B ⊆ (fixedPointPoly c p).roots.toFinset →
+        (∀ z ∈ (fixedPointPoly c p).roots.toFinset \ B,
+          (∏ k ∈ Finset.range p, 2 * (quadratic c)^[k] z) = (2 : ℂ) ^ p) →
+        False := by
+  filter_upwards [eventually_exceptional_mass_small_roots c B hBrep] with p hsmall hp hsep hBsub hG
+  have hrep : ∀ z ∈ B, quadratic c z = z ∧ 1 < ‖2 * z‖ ^ p := by
+    intro z hz
+    refine ⟨hBfix z hz, ?_⟩
+    exact one_lt_pow₀ (hBrep z hz) (by omega : p ≠ 0)
+  exact false_of_pinned_bulk_repelling c hp hsep B hBsub hG hrep (hsmall hp hsep hBsub)
+
 end Bottcher

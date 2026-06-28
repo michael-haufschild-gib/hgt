@@ -2,6 +2,7 @@ import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranch
 import GaloisForLFunctions.Bottcher.RelativeNaturalBoundary
 import GaloisForLFunctions.Bottcher.DendriteContinuesAcross
 import GaloisForLFunctions.Bottcher.RelativeFibreGeneric
+import GaloisForLFunctions.Bottcher.ConnectedRepellingPeriodicAvoidance
 import GaloisForLFunctions.U0.U0NaturalBoundary
 
 open Polynomial Filter Topology Set Metric U0NaturalBoundary
@@ -1277,16 +1278,178 @@ theorem noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_crossing
     haveI := isDomain_analyticSubring U hUo hUc hUne
     letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
     NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
-  exact noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_branch_separable
-    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hempty
-    hγan₂ hγmatch (by
+  exact noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_branch_separable
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hγan₂ hγmatch
+    (hnb_of_emptyInterior_modulus hempty hβmod) (by
       intro Q s hnt hEqOn
       obtain ⟨N, Ω, w, z₁, S, hsupp, hN, hN1, hΩc, haΩ, hw, hleadw, hsepw,
         hz₁, haccum, hgeom⟩ := hinput Q s hnt hEqOn
-      exact exists_commonBasin_input_of_sparse_fibre_crossing
+      exact exists_commonBasin_frontier_input_of_sparse_fibre_crossing_emptyInterior
         (U := U) (a := fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z))
-        (s := s) (N := N) (c₁ := c₁) (c₂ := c₂)
+        (s := s) (N := N) (c₁ := c₁) (c₂ := c₂) hempty
         hN1 hsupp hN hΩc haΩ hw hleadw hsepw hz₁ haccum hgeom)
+
+/-- **NoRelation from sparse crossing and one global common-basin region.** This is the reduced-geometry
+form of `noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_crossing`: the per-relation input
+supplies a single open preconnected common-basin region `V`; pointwise target geometry only has to put the
+local basin sectors into that `V`.  The separable frontier fibre is still created internally. -/
+theorem noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_crossing_globalRegion
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hempty : interior (filledJulia c₁) = ∅)
+    (hγan₂ : AnalyticOnNhd ℂ γ (filledJulia c₂)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (N : ℕ) (Ω : Set ℂ) (w z₁ : ℂ) (S V : Set ℂ),
+          s ⊆ Finset.range (N + 1) ∧ N ∈ s ∧ 1 ≤ N ∧
+          IsPreconnected Ω ∧
+          (∀ i ∈ s, AnalyticOnNhd ℂ
+            (fun z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) Ω) ∧
+          w ∈ Ω ∧
+          (Q N).eval₂ (Polynomial.evalRingHom w) (γ w) ≠ 0 ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s w).Separable ∧
+          z₁ ∈ Ω ∧
+          (∃ᶠ z in 𝓝[≠] z₁, z ∈ S) ∧
+          IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+          V ⊆ (filledJulia c₂)ᶜ ∧
+          (∀ z₀ ∈ S, ∃ r : ℝ,
+            z₀ ∈ filledJulia c₁ ∧
+            z₀ ∈ (filledJulia c₂)ᶜ ∧
+            0 < r ∧
+            Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+            (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_branch_separable
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hγan₂ hγmatch
+    (hnb_of_emptyInterior_modulus hempty hβmod) (by
+      intro Q s hnt hEqOn
+      obtain ⟨N, Ω, w, z₁, S, V, hsupp, hN, hN1, hΩc, haΩ, hw, hleadw, hsepw,
+        hz₁, haccum, hVo, hVc, hUV, hVbasin₁, hVbasin₂, hgeom⟩ :=
+        hinput Q s hnt hEqOn
+      exact exists_commonBasin_frontier_input_of_sparse_fibre_crossing_emptyInterior_globalRegion
+        (U := U) (a := fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z))
+        (s := s) (N := N) (c₁ := c₁) (c₂ := c₂) (V := V) hempty
+        hN1 hsupp hN hΩc haΩ hw hleadw hsepw hz₁ haccum hVo hVc hUV hVbasin₁ hVbasin₂ hgeom)
+
+/-- **NoRelation from sparse crossing and the common-basin component containing `U`.** This is the
+component-created version of
+`noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_crossing_globalRegion`: the per-relation
+input no longer supplies an open preconnected region `V`, nor sector inclusion into it.  Lean constructs
+`V` as the connected component of `(filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ` containing the carrier `U`, and
+uses closure contact of that component at the target set to derive the local sector inclusion. -/
+theorem noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_crossing_commonComponent
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hempty : interior (filledJulia c₁) = ∅)
+    (hγan₂ : AnalyticOnNhd ℂ γ (filledJulia c₂)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (N : ℕ) (Ω : Set ℂ) (w z₁ : ℂ) (S : Set ℂ),
+          s ⊆ Finset.range (N + 1) ∧ N ∈ s ∧ 1 ≤ N ∧
+          IsPreconnected Ω ∧
+          (∀ i ∈ s, AnalyticOnNhd ℂ
+            (fun z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) Ω) ∧
+          w ∈ Ω ∧
+          (Q N).eval₂ (Polynomial.evalRingHom w) (γ w) ≠ 0 ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s w).Separable ∧
+          z₁ ∈ Ω ∧
+          (∃ᶠ z in 𝓝[≠] z₁, z ∈ S) ∧
+          (∃ u ∈ U, ∀ z₀ ∈ S,
+            z₀ ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)) ∧
+          (∀ z₀ ∈ S,
+            z₀ ∈ filledJulia c₁ ∧
+            z₀ ∈ (filledJulia c₂)ᶜ ∧
+            (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_branch_separable
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hγan₂ hγmatch
+    (hnb_of_emptyInterior_modulus hempty hβmod) (by
+      intro Q s hnt hEqOn
+      obtain ⟨N, Ω, w, z₁, S, hsupp, hN, hN1, hΩc, haΩ, hw, hleadw, hsepw,
+        hz₁, haccum, hcomponent, hgeom⟩ := hinput Q s hnt hEqOn
+      exact exists_commonBasin_frontier_input_of_sparse_fibre_crossing_emptyInterior_commonComponent
+        (U := U) (a := fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z))
+        (s := s) (N := N) (c₁ := c₁) (c₂ := c₂) hempty hUo hUc hUne
+        (fun z hz => escapeOpen_subset_compl_filledJulia c₁ (hU₁ hz))
+        (fun z hz => escapeOpen_subset_compl_filledJulia c₂ (hU₂ hz))
+        hN1 hsupp hN hΩc haΩ hw hleadw hsepw hz₁ haccum hcomponent hgeom)
+
+/-- **NoRelation from sparse crossing and carrier-closure contact.** This is the carrier-closure
+version of `noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_crossing_commonComponent`:
+the per-relation input no longer mentions `connectedComponentIn`.  It only supplies that the target set
+lies in `closure U`; preconnectedness of `U` inside the common basin creates the component-closure
+payload internally. -/
+theorem noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_crossing_carrierClosure
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hempty : interior (filledJulia c₁) = ∅)
+    (hγan₂ : AnalyticOnNhd ℂ γ (filledJulia c₂)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (N : ℕ) (Ω : Set ℂ) (w z₁ : ℂ) (S : Set ℂ),
+          s ⊆ Finset.range (N + 1) ∧ N ∈ s ∧ 1 ≤ N ∧
+          IsPreconnected Ω ∧
+          (∀ i ∈ s, AnalyticOnNhd ℂ
+            (fun z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) Ω) ∧
+          w ∈ Ω ∧
+          (Q N).eval₂ (Polynomial.evalRingHom w) (γ w) ≠ 0 ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s w).Separable ∧
+          z₁ ∈ Ω ∧
+          (∃ᶠ z in 𝓝[≠] z₁, z ∈ S) ∧
+          (∀ z₀ ∈ S, z₀ ∈ closure U) ∧
+          (∀ z₀ ∈ S,
+            z₀ ∈ filledJulia c₁ ∧
+            z₀ ∈ (filledJulia c₂)ᶜ ∧
+            (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_branch_separable
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hγan₂ hγmatch
+    (hnb_of_emptyInterior_modulus hempty hβmod) (by
+      intro Q s hnt hEqOn
+      obtain ⟨N, Ω, w, z₁, S, hsupp, hN, hN1, hΩc, haΩ, hw, hleadw, hsepw,
+        hz₁, haccum, hSclosure, hgeom⟩ := hinput Q s hnt hEqOn
+      exact exists_commonBasin_frontier_input_of_sparse_fibre_crossing_emptyInterior_carrierClosure
+        (U := U) (a := fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z))
+        (s := s) (N := N) (c₁ := c₁) (c₂ := c₂) hempty hUo hUc hUne
+        (fun z hz => escapeOpen_subset_compl_filledJulia c₁ (hU₁ hz))
+        (fun z hz => escapeOpen_subset_compl_filledJulia c₂ (hU₂ hz))
+        hN1 hsupp hN hΩc haΩ hw hleadw hsepw hz₁ haccum hSclosure hgeom)
 
 /-- **hRigid from sparse generic crossing and common-basin target geometry.** This packages
 `noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_crossing`. -/
@@ -1486,6 +1649,65 @@ theorem noRelation_phiMero_of_emptyInterior_commonBasin_level_roots_offOther_cro
     hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hempty
     hγan (fun z hz => hγesc z (hU₂ hz)) (hinput γ hγan hγesc)
 
+/-- **NoRelation from level-root branches, sparse crossing, and one global common-basin region.** This is
+the reduced-geometry version of
+`noRelation_phiMero_of_emptyInterior_commonBasin_level_roots_offOther_crossing`: level-root towers still
+construct the `c₁`/`c₂` basin branches internally, while the per-relation sparse-crossing input supplies one
+shared open preconnected common-basin region `V` plus local sector data for the accumulating target set. -/
+theorem noRelation_phiMero_of_emptyInterior_commonBasin_level_roots_offOther_crossing_globalRegion
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (βlev γlev : ℕ → ℂ → ℂ)
+    (hβanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
+    (hβpow : ∀ n, ∀ z ∈ escapeLevel c₁ n,
+      (βlev n z) ^ (2 ^ n) = bottcherCoord c₁ ((quadratic c₁)^[n] z))
+    (hβne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
+    (hβanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₁, βlev n z = bottcherCoord c₁ z)
+    (hγanalytic : ∀ n, AnalyticOnNhd ℂ (γlev n) (escapeLevel c₂ n))
+    (hγpow : ∀ n, ∀ z ∈ escapeLevel c₂ n,
+      (γlev n z) ^ (2 ^ n) = bottcherCoord c₂ ((quadratic c₂)^[n] z))
+    (hγne : ∀ n, ∀ z ∈ escapeLevel c₂ n, γlev n z ≠ 0)
+    (hγanchorEsc : ∀ n, ∀ z ∈ escapeOpen c₂, γlev n z = bottcherCoord c₂ z)
+    (hempty : interior (filledJulia c₁) = ∅)
+    (hinput : ∀ (γ : ℂ → ℂ),
+        AnalyticOnNhd ℂ γ (filledJulia c₂)ᶜ →
+        (∀ z ∈ escapeOpen c₂, γ z = bottcherCoord c₂ z) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (N : ℕ) (Ω : Set ℂ) (w z₁ : ℂ) (S V : Set ℂ),
+          s ⊆ Finset.range (N + 1) ∧ N ∈ s ∧ 1 ≤ N ∧
+          IsPreconnected Ω ∧
+          (∀ i ∈ s, AnalyticOnNhd ℂ
+            (fun z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) Ω) ∧
+          w ∈ Ω ∧
+          (Q N).eval₂ (Polynomial.evalRingHom w) (γ w) ≠ 0 ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s w).Separable ∧
+          z₁ ∈ Ω ∧
+          (∃ᶠ z in 𝓝[≠] z₁, z ∈ S) ∧
+          IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+          V ⊆ (filledJulia c₂)ᶜ ∧
+          (∀ z₀ ∈ S, ∃ r : ℝ,
+            z₀ ∈ filledJulia c₁ ∧
+            z₀ ∈ (filledJulia c₂)ᶜ ∧
+            0 < r ∧
+            Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+            (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  obtain ⟨β, hβan, hβesc, _hβ0, hβmod⟩ :=
+    exists_global_branch_of_level_roots_modulus c₁ βlev hβanalytic hβpow hβne hβanchorEsc
+  obtain ⟨γ, hγan, hγesc, _hγ0, _hγmod⟩ :=
+    exists_global_branch_of_level_roots_modulus c₂ γlev hγanalytic hγpow hγne hγanchorEsc
+  exact noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_crossing_globalRegion
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hempty
+    hγan (fun z hz => hγesc z (hU₂ hz)) (hinput γ hγan hγesc)
+
 /-- **hRigid from level-root branches, sparse generic crossing, and common-basin geometry.** This packages
 `noRelation_phiMero_of_emptyInterior_commonBasin_level_roots_offOther_crossing`. -/
 theorem hrig_phiMero_of_emptyInterior_commonBasin_level_roots_offOther_crossing
@@ -1591,25 +1813,27 @@ theorem q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offO
       hβanalytic hβpow hβne hβanchorEsc hγanalytic hγpow hγne hγanchorEsc hempty hinput)
 
 /-- **Connected-case endpoint with `φ_{c₂}` transcendence produced internally.** This replaces the
-abstract `Transcendental (RatFunc ℂ) (phiMero c₂ hU₂)` input by the existing repelling/simple-root
-transcendence interface for `c₂`, then applies
+abstract `Transcendental (RatFunc ℂ) (phiMero c₂ hU₂)` input by the current no-extra
+non-strong-count repelling interface for `c₂`, then applies
 `q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offOther_branch_separable`. -/
 theorem q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offOther_branch_separable_repellingG
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
     (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
     (hne : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
-    (hGinput : ∀ P : Polynomial (Polynomial ℂ), P ≠ 0 → 1 ≤ P.natDegree →
-        (∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
-        (∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+    (hGinput : ∀ (P : Polynomial (Polynomial ℂ)) (hP0 : P ≠ 0)
+        (_hdeg : 1 ≤ P.natDegree)
+        (hPrel : ∀ z ∈ U, ∑ i ∈ P.support,
+          (P.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0)
+        (hPmin : ∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
           (∀ z ∈ U, ∑ i ∈ R.support, (R.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
-          P.natDegree ≤ R.natDegree) →
-        {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
-          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0}.Countable →
-        ∃ (p : ℕ) (lam w₀ d : ℂ) (z₀ : ℂ),
-          (∑ i ∈ P.support, (P.coeff i).aeval z₀ * w₀ ^ i = 0) ∧
-          HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * w ^ i) d w₀ ∧ d ≠ 0 ∧
-          (quadratic c₂)^[p] z₀ = z₀ ∧ HasDerivAt ((quadratic c₂)^[p]) lam z₀ ∧
-          w₀ ^ (2 ^ p) = w₀ ∧ w₀ ≠ 0 ∧ (2 ^ p : ℝ) < ‖lam‖)
+          P.natDegree ≤ R.natDegree)
+        (_hcount : {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
+          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0}.Countable)
+        (_hconst : P.coeff 0 ≠ 0),
+        ∃ p : ℕ,
+          squarefreeBadDegreeBudget P
+              (chosenCompRelDenom hUo hUne c₂ hU₂ P hP0 hPrel hPmin p) ∅ <
+            (strongFixedPointRoots c₂ p).card)
     (βlev γlev : ℕ → ℂ → ℂ)
     (hβanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
     (hβpow : ∀ n, ∀ z ∈ escapeLevel c₁ n,
@@ -1646,7 +1870,10 @@ theorem q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offO
   haveI := isDomain_analyticSubring U hUo hUc hUne
   letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
   have hG : Transcendental (RatFunc ℂ) (phiMero c₂ hU₂) :=
-    phiMero_transcendental_of_repelling_input hUo hUc hUne hUinf c₂ hU₂ hGinput
+    phiMero_transcendental_of_repelling_standard_squarefree_budget_strongRoots_clearedDenominator_noExtra_input
+      hUo hUc hUne hUinf c₂ hU₂ (by
+        intro P hP0 hdeg hPrel hPmin hcount hconst
+        exact hGinput P hP0 hdeg hPrel hPmin hcount hconst)
   exact q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offOther_branch_separable
     hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hne hx₁ hx₂ hG βlev γlev
     hβanalytic hβpow hβne hβanchorEsc hγanalytic hγpow hγne hγanchorEsc hempty hinput
@@ -1708,24 +1935,26 @@ theorem q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offO
       hβanalytic hβpow hβne hβanchorEsc hγanalytic hγpow hγne hγanchorEsc hempty hinput)
 
 /-- **Connected-case crossing endpoint with `φ_{c₂}` transcendence produced internally.** This replaces
-the abstract `hG` input by the existing repelling/simple-root transcendence interface for `c₂`, then applies
+the abstract `hG` input by the current no-extra non-strong-count repelling interface for `c₂`, then applies
 `q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offOther_crossing`. -/
 theorem q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offOther_crossing_repellingG
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
     (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
     (hne : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
-    (hGinput : ∀ P : Polynomial (Polynomial ℂ), P ≠ 0 → 1 ≤ P.natDegree →
-        (∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
-        (∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+    (hGinput : ∀ (P : Polynomial (Polynomial ℂ)) (hP0 : P ≠ 0)
+        (_hdeg : 1 ≤ P.natDegree)
+        (hPrel : ∀ z ∈ U, ∑ i ∈ P.support,
+          (P.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0)
+        (hPmin : ∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
           (∀ z ∈ U, ∑ i ∈ R.support, (R.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
-          P.natDegree ≤ R.natDegree) →
-        {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
-          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0}.Countable →
-        ∃ (p : ℕ) (lam w₀ d : ℂ) (z₀ : ℂ),
-          (∑ i ∈ P.support, (P.coeff i).aeval z₀ * w₀ ^ i = 0) ∧
-          HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * w ^ i) d w₀ ∧ d ≠ 0 ∧
-          (quadratic c₂)^[p] z₀ = z₀ ∧ HasDerivAt ((quadratic c₂)^[p]) lam z₀ ∧
-          w₀ ^ (2 ^ p) = w₀ ∧ w₀ ≠ 0 ∧ (2 ^ p : ℝ) < ‖lam‖)
+          P.natDegree ≤ R.natDegree)
+        (_hcount : {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
+          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0}.Countable)
+        (_hconst : P.coeff 0 ≠ 0),
+        ∃ p : ℕ,
+          squarefreeBadDegreeBudget P
+              (chosenCompRelDenom hUo hUne c₂ hU₂ P hP0 hPrel hPmin p) ∅ <
+            (strongFixedPointRoots c₂ p).card)
     (βlev γlev : ℕ → ℂ → ℂ)
     (hβanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
     (hβpow : ∀ n, ∀ z ∈ escapeLevel c₁ n,
@@ -1769,16 +1998,17 @@ theorem q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offO
   haveI := isDomain_analyticSubring U hUo hUc hUne
   letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
   have hG : Transcendental (RatFunc ℂ) (phiMero c₂ hU₂) :=
-    phiMero_transcendental_of_repelling_input hUo hUc hUne hUinf c₂ hU₂ hGinput
+    phiMero_transcendental_of_repelling_standard_squarefree_budget_strongRoots_clearedDenominator_noExtra_input
+      hUo hUc hUne hUinf c₂ hU₂ (by
+        intro P hP0 hdeg hPrel hPmin hcount hconst
+        exact hGinput P hP0 hdeg hPrel hPmin hcount hconst)
   exact q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offOther_crossing
     hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hne hx₁ hx₂ hG βlev γlev
     hβanalytic hβpow hβne hβanchorEsc hγanalytic hγpow hγne hγanchorEsc hempty hinput
 
-/-- **NoRelation from square-root towers, sparse generic crossing, and common-basin geometry.** This is
-the same crossing endpoint as
-`noRelation_phiMero_of_emptyInterior_commonBasin_level_roots_offOther_crossing`, but the caller only
-provides the coherent square-root recursion. The `2^n` power law is constructed internally by
-`hpow_of_sqrt_family`. -/
+/-- **NoRelation from square-root towers, sparse generic crossing, and common-basin geometry.** The
+square-root families now construct the modulus-carrying global basin branches directly; the `2^n` power
+laws are internal to `exists_global_branch_of_sqrt_family_modulus`. -/
 theorem noRelation_phiMero_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
     (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
@@ -1824,11 +2054,13 @@ theorem noRelation_phiMero_of_emptyInterior_commonBasin_sqrt_family_offOther_cro
     haveI := isDomain_analyticSubring U hUo hUc hUne
     letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
     NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
-  exact noRelation_phiMero_of_emptyInterior_commonBasin_level_roots_offOther_crossing
-    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG βlev γlev
-    hβanalytic (hpow_of_sqrt_family c₁ βlev (hβanchorEsc 0) hβsqrt) hβne hβanchorEsc
-    hγanalytic (hpow_of_sqrt_family c₂ γlev (hγanchorEsc 0) hγsqrt) hγne hγanchorEsc
-    hempty hinput
+  obtain ⟨β, hβan, hβesc, _hβ0, hβmod⟩ :=
+    exists_global_branch_of_sqrt_family_modulus c₁ βlev hβanalytic hβne hβanchorEsc hβsqrt
+  obtain ⟨γ, hγan, hγesc, _hγ0, _hγmod⟩ :=
+    exists_global_branch_of_sqrt_family_modulus c₂ γlev hγanalytic hγne hγanchorEsc hγsqrt
+  exact noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_crossing
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hβmod hempty
+    hγan (fun z hz => hγesc z (hU₂ hz)) (hinput γ hγan hγesc)
 
 /-- **hRigid from square-root towers, sparse generic crossing, and common-basin geometry.** This packages
 `noRelation_phiMero_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing`. -/
@@ -1941,23 +2173,25 @@ theorem q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offO
       hβanalytic hβne hβanchorEsc hβsqrt hγanalytic hγne hγanchorEsc hγsqrt hempty hinput)
 
 /-- **Connected-case square-root crossing endpoint with `φ_{c₂}` transcendence produced internally.**
-This removes the abstract `hG` input using the existing repelling/simple-root transcendence interface. -/
+This removes the abstract `hG` input using the current no-extra non-strong-count repelling interface. -/
 theorem q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_repellingG
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
     (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
     (hne : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
-    (hGinput : ∀ P : Polynomial (Polynomial ℂ), P ≠ 0 → 1 ≤ P.natDegree →
-        (∀ z ∈ U, ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
-        (∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+    (hGinput : ∀ (P : Polynomial (Polynomial ℂ)) (hP0 : P ≠ 0)
+        (_hdeg : 1 ≤ P.natDegree)
+        (hPrel : ∀ z ∈ U, ∑ i ∈ P.support,
+          (P.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0)
+        (hPmin : ∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
           (∀ z ∈ U, ∑ i ∈ R.support, (R.coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0) →
-          P.natDegree ≤ R.natDegree) →
-        {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
-          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0}.Countable →
-        ∃ (p : ℕ) (lam w₀ d : ℂ) (z₀ : ℂ),
-          (∑ i ∈ P.support, (P.coeff i).aeval z₀ * w₀ ^ i = 0) ∧
-          HasDerivAt (fun w => ∑ i ∈ P.support, (P.coeff i).aeval z₀ * w ^ i) d w₀ ∧ d ≠ 0 ∧
-          (quadratic c₂)^[p] z₀ = z₀ ∧ HasDerivAt ((quadratic c₂)^[p]) lam z₀ ∧
-          w₀ ^ (2 ^ p) = w₀ ∧ w₀ ≠ 0 ∧ (2 ^ p : ℝ) < ‖lam‖)
+          P.natDegree ≤ R.natDegree)
+        (_hcount : {z ∈ U | ∑ i ∈ (Polynomial.derivative P).support,
+          ((Polynomial.derivative P).coeff i).aeval z * (bottcherCoord c₂ z) ^ i = 0}.Countable)
+        (_hconst : P.coeff 0 ≠ 0),
+        ∃ p : ℕ,
+          squarefreeBadDegreeBudget P
+              (chosenCompRelDenom hUo hUne c₂ hU₂ P hP0 hPrel hPmin p) ∅ <
+            (strongFixedPointRoots c₂ p).card)
     (βlev γlev : ℕ → ℂ → ℂ)
     (hβanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c₁ n))
     (hβne : ∀ n, ∀ z ∈ escapeLevel c₁ n, βlev n z ≠ 0)
@@ -2001,7 +2235,10 @@ theorem q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offO
   haveI := isDomain_analyticSubring U hUo hUc hUne
   letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
   have hG : Transcendental (RatFunc ℂ) (phiMero c₂ hU₂) :=
-    phiMero_transcendental_of_repelling_input hUo hUc hUne hUinf c₂ hU₂ hGinput
+    phiMero_transcendental_of_repelling_standard_squarefree_budget_strongRoots_clearedDenominator_noExtra_input
+      hUo hUc hUne hUinf c₂ hU₂ (by
+        intro P hP0 hdeg hPrel hPmin hcount hconst
+        exact hGinput P hP0 hdeg hPrel hPmin hcount hconst)
   exact q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing
     hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hne hx₁ hx₂ hG βlev γlev
     hβanalytic hβne hβanchorEsc hβsqrt hγanalytic hγne hγanchorEsc hγsqrt hempty hinput

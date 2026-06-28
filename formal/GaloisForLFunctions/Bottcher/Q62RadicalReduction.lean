@@ -63,3 +63,66 @@ theorem q62_disconnected_of_radical_data {U : Set ℂ} (hUo : IsOpen U) (hUc : I
   exact hζ₀prim.map_of_injective hinj
 
 end Bottcher
+
+namespace Bottcher
+
+/-- Two-coordinate disconnected close from non-square radical data on both coordinates. This removes the
+separate `φ₂` transcendence input from `q62_disconnected_of_radical_data`: the second coordinate's own
+non-square radical tower supplies that transcendence by Kummer. -/
+theorem q62_disconnected_of_two_radical_data {U : Set ℂ} (hUo : IsOpen U)
+    (hUc : IsPreconnected U) (hUne : U.Nonempty) [Algebra (RatFunc ℂ) (meroField U)]
+    (a₁ a₂ : analyticSubring U)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          (algebraMap (analyticSubring U) (meroField U) a₁) ≠ 0)
+    (hG : haveI := isDomain_analyticSubring U hUo hUc hUne
+          (algebraMap (analyticSubring U) (meroField U) a₂) ≠ 0)
+    (dataF : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (B : Type) (_ : Field B) (_ : Algebra (RatFunc ℂ) B)
+      (i : B →ₐ[RatFunc ℂ] meroField U) (a GB : B) (k : ℕ),
+      1 ≤ k ∧ d < 2 ^ k ∧ (∀ b : B, b ^ 2 ≠ a) ∧
+      (algebraMap (analyticSubring U) (meroField U) a₁) ^ (2 ^ k) = i a ∧
+      i GB = (algebraMap (analyticSubring U) (meroField U) a₂))
+    (dataG : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (B : Type) (_ : Field B) (_ : Algebra (RatFunc ℂ) B)
+      (i : B →ₐ[RatFunc ℂ] meroField U) (a : B) (k : ℕ),
+      1 ≤ k ∧ d < 2 ^ k ∧ (∀ b : B, b ^ 2 ≠ a) ∧
+      (algebraMap (analyticSubring U) (meroField U) a₂) ^ (2 ^ k) = i a) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  apply q62_disconnected_kummer_with_radical_transcendence hUo hUc hUne a₁ a₂ hF hG
+  · intro d
+    obtain ⟨B, hBfield, hBalg, i, a, GB, k, hk1, hdk, hns, hroot, hiGB⟩ := dataF d
+    have hneg : ∃ j : B, j ^ 2 = -1 := by
+      refine ⟨algebraMap (RatFunc ℂ) B (algebraMap ℂ (RatFunc ℂ) Complex.I), ?_⟩
+      rw [← map_pow, ← map_pow]
+      rw [show Complex.I ^ 2 = (-1 : ℂ) from Complex.I_sq, map_neg, map_one, map_neg, map_one]
+    have hirr : Irreducible (X ^ (2 ^ k) - C a) := kummer_irreducible hneg a hns k hk1
+    obtain ⟨ζ₀, hζ₀ord, _hζ₀pow⟩ := exists_dyadic_primitive k
+    have hζ₀prim : IsPrimitiveRoot ζ₀ (2 ^ k) := by
+      have h := IsPrimitiveRoot.orderOf ζ₀
+      rwa [hζ₀ord] at h
+    set j : ℂ →+* B := (algebraMap (RatFunc ℂ) B).comp (algebraMap ℂ (RatFunc ℂ)) with hj
+    have hinj : Function.Injective j :=
+      (algebraMap (RatFunc ℂ) B).injective.comp (algebraMap ℂ (RatFunc ℂ)).injective
+    exact ⟨B, hBfield, hBalg, i, a, GB, j ζ₀, k, hdk, hζ₀prim.map_of_injective hinj,
+      hirr, hroot, hiGB⟩
+  · intro d
+    obtain ⟨B, hBfield, hBalg, i, a, k, hk1, hdk, hns, hroot⟩ := dataG d
+    have hneg : ∃ j : B, j ^ 2 = -1 := by
+      refine ⟨algebraMap (RatFunc ℂ) B (algebraMap ℂ (RatFunc ℂ) Complex.I), ?_⟩
+      rw [← map_pow, ← map_pow]
+      rw [show Complex.I ^ 2 = (-1 : ℂ) from Complex.I_sq, map_neg, map_one, map_neg, map_one]
+    have hirr : Irreducible (X ^ (2 ^ k) - C a) := kummer_irreducible hneg a hns k hk1
+    obtain ⟨ζ₀, hζ₀ord, _hζ₀pow⟩ := exists_dyadic_primitive k
+    have hζ₀prim : IsPrimitiveRoot ζ₀ (2 ^ k) := by
+      have h := IsPrimitiveRoot.orderOf ζ₀
+      rwa [hζ₀ord] at h
+    set j : ℂ →+* B := (algebraMap (RatFunc ℂ) B).comp (algebraMap ℂ (RatFunc ℂ)) with hj
+    have hinj : Function.Injective j :=
+      (algebraMap (RatFunc ℂ) B).injective.comp (algebraMap ℂ (RatFunc ℂ)).injective
+    exact ⟨B, hBfield, hBalg, i, a, j ζ₀, k, hdk, hζ₀prim.map_of_injective hinj,
+      hirr, hroot⟩
+
+end Bottcher

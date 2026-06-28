@@ -11,6 +11,13 @@ theorem mem_filledJulia_of_frontier {c z₀ : ℂ}
   rw [(isClosed_filledJulia c).frontier_eq] at hz
   exact hz.1
 
+/-- If `K_c` has empty interior, every point of `K_c` is a frontier point. -/
+theorem mem_frontier_of_mem_filledJulia_emptyInterior {c z₀ : ℂ}
+    (hempty : interior (filledJulia c) = ∅) (hz : z₀ ∈ filledJulia c) :
+    z₀ ∈ frontier (filledJulia c) := by
+  rw [(isClosed_filledJulia c).frontier_eq]
+  exact ⟨hz, by simp [hempty]⟩
+
 /-- A frontier point of `K_c` is accumulated by the basin side. -/
 theorem nhdsWithin_compl_filledJulia_neBot_of_frontier {c z₀ : ℂ}
     (hz : z₀ ∈ frontier (filledJulia c)) : (𝓝[(filledJulia c)ᶜ] z₀).NeBot := by
@@ -56,6 +63,15 @@ theorem not_continuesAcross_of_emptyInterior_modulus {c z₀ : ℂ} {β : ℂ �
       (inter_mem_nhdsWithin _ (ball_mem_nhds z₀ hr))
     exact ⟨z, hz2, hz1⟩
   exact no_continuation_dendrite hr hgan hzK hemptyBall hmod hbasin
+
+/-- Empty interior lets the modulus obstruction be applied at any filled-Julia point. -/
+theorem not_continuesAcross_of_emptyInterior_modulus_at_filled {c z₀ : ℂ} {β : ℂ → ℂ}
+    (hempty : interior (filledJulia c) = ∅)
+    (hβmod : ∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z))
+    (hz : z₀ ∈ filledJulia c) :
+    ¬ ContinuesAcross β (filledJulia c)ᶜ z₀ :=
+  not_continuesAcross_of_emptyInterior_modulus hempty hβmod
+    (mem_frontier_of_mem_filledJulia_emptyInterior hempty hz)
 
 /-- Empty-interior filled Julia sets give the natural-boundary predicate at every frontier point for any
 basin branch carrying the Böttcher modulus. -/

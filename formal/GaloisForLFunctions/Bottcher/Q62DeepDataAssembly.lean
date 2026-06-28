@@ -151,3 +151,182 @@ theorem q62_disconnected_of_deepData_escape {c₁ c₂ : ℂ} {U : Set ℂ}
   rw [ha₂, Germ.coe_compTendsto]; rfl
 
 end Bottcher
+
+namespace Bottcher
+
+/-- Deep-data q62 disconnected close with both coordinates supplied by their own non-square radical
+data. This removes the explicit `φ_{c₂}` transcendence input from the deep-data capstone. -/
+theorem q62_disconnected_of_deepData_two_radical {c₁ c₂ : ℂ} {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hUesc₁ : ∀ z ∈ U, ‖c₁‖ ≤ ‖z‖ ∧ 2 < ‖z‖)
+    (hUesc₂ : ∀ z ∈ U, ‖c₂‖ ≤ ‖z‖ ∧ 2 < ‖z‖)
+    (a₁ a₂ : analyticSubring U)
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = (↑(bottcherCoord c₁) : Germ (𝓟 U) ℂ))
+    (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = (↑(bottcherCoord c₂) : Germ (𝓟 U) ℂ))
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hG : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₂ ≠ 0)
+    (deepdataF : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (hUExt : U ⊆ Ext)
+        (_hExtesc : ∀ z ∈ Ext, (quadratic c₁)^[d+1] z ∈ escapeOpen c₁)
+        (aExt GBExt : analyticSubring Ext),
+        (aExt : Germ (𝓟 Ext) ℂ)
+            = (↑(fun z => bottcherCoord c₁ ((quadratic c₁)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+        restrictAnalytic hUExt GBExt = a₂ ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, (quadratic c₁)^[d+1] (γ θ) ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi),
+                logDeriv (fun z => bottcherCoord c₁ ((quadratic c₁)^[d+1] z)) (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1)))
+    (deepdataG : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (_hUExt : U ⊆ Ext)
+        (_hExtesc : ∀ z ∈ Ext, (quadratic c₂)^[d+1] z ∈ escapeOpen c₂)
+        (aExt : analyticSubring Ext),
+        (aExt : Germ (𝓟 Ext) ℂ)
+            = (↑(fun z => bottcherCoord c₂ ((quadratic c₂)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, (quadratic c₂)^[d+1] (γ θ) ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi),
+                logDeriv (fun z => bottcherCoord c₂ ((quadratic c₂)^[d+1] z)) (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI algU := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  apply q62_disconnected_of_two_radical_data hUo hUc hUne a₁ a₂ hF hG
+  · intro d
+    obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, aExt, GBExt, haExt, hGB, hloops⟩ :=
+      deepdataF d
+    haveI := isDomain_analyticSubring Ext hExto hExtc.isPreconnected hExtc.nonempty
+    letI algExt := (ratfuncToMero Ext hExto hExtc.isPreconnected hExtc.nonempty hExtinf).toAlgebra
+    let i : meroField Ext →ₐ[RatFunc ℂ] meroField U :=
+      { restrictMeroHom hUExt hExto hExtc.isPreconnected hExtc.nonempty hUo hUc hUne with
+        commutes' := fun r => RingHom.congr_fun
+          (restrictMeroHom_ratfuncToMero hUExt hExto hExtc.isPreconnected hExtc.nonempty hExtinf
+            hUo hUc hUne hUinf) r }
+    refine ⟨meroField Ext, inferInstance, inferInstance, i,
+      algebraMap (analyticSubring Ext) (meroField Ext) aExt,
+      algebraMap (analyticSubring Ext) (meroField Ext) GBExt, d + 1,
+      Nat.le_add_left 1 d, ?_, ?_, ?_, ?_⟩
+    · exact lt_of_lt_of_le Nat.lt_two_pow_self (Nat.pow_le_pow_right (by norm_num) (Nat.le_succ d))
+    · exact bottcherIterateGerm_not_isSquare (d+1) hExto hExtc hExtesc hloops aExt haExt.symm
+    · show (algebraMap (analyticSubring U) (meroField U) a₁) ^ (2 ^ (d+1))
+          = restrictMeroHom hUExt hExto hExtc.isPreconnected hExtc.nonempty hUo hUc hUne
+              (algebraMap (analyticSubring Ext) (meroField Ext) aExt)
+      exact radical_relation_germ (d+1) hUExt hUo hUc hUne hExto hExtc.isPreconnected hExtc.nonempty
+        hUesc₁ a₁ aExt ha₁ haExt
+    · show restrictMeroHom hUExt hExto hExtc.isPreconnected hExtc.nonempty hUo hUc hUne
+          (algebraMap (analyticSubring Ext) (meroField Ext) GBExt)
+        = algebraMap (analyticSubring U) (meroField U) a₂
+      rw [restrictMeroHom_algebraMap, hGB]
+  · intro d
+    obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, aExt, haExt, hloops⟩ := deepdataG d
+    haveI := isDomain_analyticSubring Ext hExto hExtc.isPreconnected hExtc.nonempty
+    letI algExt := (ratfuncToMero Ext hExto hExtc.isPreconnected hExtc.nonempty hExtinf).toAlgebra
+    let i : meroField Ext →ₐ[RatFunc ℂ] meroField U :=
+      { restrictMeroHom hUExt hExto hExtc.isPreconnected hExtc.nonempty hUo hUc hUne with
+        commutes' := fun r => RingHom.congr_fun
+          (restrictMeroHom_ratfuncToMero hUExt hExto hExtc.isPreconnected hExtc.nonempty hExtinf
+            hUo hUc hUne hUinf) r }
+    refine ⟨meroField Ext, inferInstance, inferInstance, i,
+      algebraMap (analyticSubring Ext) (meroField Ext) aExt, d + 1,
+      Nat.le_add_left 1 d, ?_, ?_, ?_⟩
+    · exact lt_of_lt_of_le Nat.lt_two_pow_self (Nat.pow_le_pow_right (by norm_num) (Nat.le_succ d))
+    · exact bottcherIterateGerm_not_isSquare (d+1) hExto hExtc hExtesc hloops aExt haExt.symm
+    · show (algebraMap (analyticSubring U) (meroField U) a₂) ^ (2 ^ (d+1))
+          = restrictMeroHom hUExt hExto hExtc.isPreconnected hExtc.nonempty hUo hUc hUne
+              (algebraMap (analyticSubring Ext) (meroField Ext) aExt)
+      exact radical_relation_germ (d+1) hUExt hUo hUc hUne hExto hExtc.isPreconnected hExtc.nonempty
+        hUesc₂ a₂ aExt ha₂ haExt
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Escape-form deep-data q62 disconnected close with both coordinates supplied by their own non-square
+radical data. This combines `q62_disconnected_of_deepData_escape`'s internal construction of the
+`φ₂` restriction with the two-radical theorem that derives `φ₂` transcendence from its own tower. -/
+theorem q62_disconnected_of_deepData_escape_two_radical {c₁ c₂ : ℂ} {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hUesc₁ : ∀ z ∈ U, ‖c₁‖ ≤ ‖z‖ ∧ 2 < ‖z‖)
+    (hUesc₂ : ∀ z ∈ U, ‖c₂‖ ≤ ‖z‖ ∧ 2 < ‖z‖)
+    (a₁ a₂ : analyticSubring U)
+    (ha₁ : (a₁ : Germ (𝓟 U) ℂ) = (↑(bottcherCoord c₁) : Germ (𝓟 U) ℂ))
+    (ha₂ : (a₂ : Germ (𝓟 U) ℂ) = (↑(bottcherCoord c₂) : Germ (𝓟 U) ℂ))
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hG : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₂ ≠ 0)
+    (deepdataF : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (_hUExt : U ⊆ Ext)
+        (_hExtesc : ∀ z ∈ Ext, (quadratic c₁)^[d+1] z ∈ escapeOpen c₁)
+        (_hExtc₂ : Ext ⊆ escapeOpen c₂)
+        (aExt : analyticSubring Ext),
+        (aExt : Germ (𝓟 Ext) ℂ)
+            = (↑(fun z => bottcherCoord c₁ ((quadratic c₁)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, (quadratic c₁)^[d+1] (γ θ) ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi),
+                logDeriv (fun z => bottcherCoord c₁ ((quadratic c₁)^[d+1] z)) (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1)))
+    (deepdataG : haveI := isDomain_analyticSubring U hUo hUc hUne
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (_hUExt : U ⊆ Ext)
+        (_hExtesc : ∀ z ∈ Ext, (quadratic c₂)^[d+1] z ∈ escapeOpen c₂)
+        (aExt : analyticSubring Ext),
+        (aExt : Germ (𝓟 Ext) ℂ)
+            = (↑(fun z => bottcherCoord c₂ ((quadratic c₂)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, (quadratic c₂)^[d+1] (γ θ) ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi),
+                logDeriv (fun z => bottcherCoord c₂ ((quadratic c₂)^[d+1] z)) (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  apply q62_disconnected_of_deepData_two_radical hUo hUc hUne hUinf hUesc₁ hUesc₂ a₁ a₂ ha₁ ha₂ hF hG
+  · intro d
+    obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc, hExtc₂, aExt, haExt, hloops⟩ := deepdataF d
+    have hbc₂an : AnalyticOnNhd ℂ (bottcherCoord c₂) Ext :=
+      ((differentiableOn_bottcherCoord c₂).analyticOnNhd (isOpen_escapeOpen c₂)).mono hExtc₂
+    refine ⟨Ext, hExto, hExtc, hExtinf, hUExt, hExtesc,
+      aExt, ⟨(↑(bottcherCoord c₂) : Germ (𝓟 Ext) ℂ), bottcherCoord c₂, hbc₂an, rfl⟩,
+      haExt, ?_, hloops⟩
+    apply Subtype.ext
+    show (↑(bottcherCoord c₂) : Germ (𝓟 Ext) ℂ).compTendsto id
+          (tendsto_principal_principal.mpr (fun x hx => hUExt hx))
+        = (a₂ : Germ (𝓟 U) ℂ)
+    rw [ha₂, Germ.coe_compTendsto]
+    rfl
+  · exact deepdataG
+
+end Bottcher

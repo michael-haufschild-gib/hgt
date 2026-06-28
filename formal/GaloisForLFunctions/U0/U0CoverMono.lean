@@ -106,3 +106,27 @@ theorem u0Cover_no_relation (P : (Polynomial ℂ)[X]) (hP : 1 ≤ P.natDegree)
   exact u0_no_relation_ringHom P hP hExt
 
 end U0CoverMono
+
+namespace U0CoverMono
+
+/-- Cover-germ monodromy datum for `u₀` and `φ_b`: for every order bound, a dyadic deck
+transformation fixes `z`, fixes `u₀`, fixes its multiplier, and scales `φ_b`. This is the ring-level
+unbounded monodromy tower before the remaining transport to the meromorphic fraction-field carrier. -/
+theorem u0_coverGerm_monoF_datum (c₁ c₂ : ℂ) (m d : ℕ) :
+    ∃ (k : ℕ) (ζ : ℂ) (hζ : ζ ≠ 0) (hpow : ζ ^ (2 ^ k) = 1),
+      d < orderOf ((ζ : Bottcher.coverGerm c₁ c₂ k m)) ∧
+      Bottcher.deckGermEquiv hζ hpow (Bottcher.zGerm : Bottcher.coverGerm c₁ c₂ k m)
+        = Bottcher.zGerm ∧
+      Bottcher.deckGermEquiv hζ hpow (u0Cover : Bottcher.coverGerm c₁ c₂ k m)
+        = u0Cover ∧
+      Bottcher.deckGermEquiv hζ hpow ((ζ : Bottcher.coverGerm c₁ c₂ k m))
+        = (ζ : Bottcher.coverGerm c₁ c₂ k m) ∧
+      Bottcher.deckGermEquiv hζ hpow (Bottcher.v1Germ : Bottcher.coverGerm c₁ c₂ k m)
+        = (ζ : Bottcher.coverGerm c₁ c₂ k m) * Bottcher.v1Germ := by
+  obtain ⟨k, ζ, hζ, hpow, horder, hz, _hv2, hconst, hv1⟩ :=
+    Bottcher.coverGerm_monoF_datum c₁ c₂ m d
+  exact ⟨k, ζ, hζ, hpow, horder, hz,
+    deckGermEquiv_u0 (c₁ := c₁) (c₂ := c₂) (n := k) (m := m) hζ hpow,
+    hconst, hv1⟩
+
+end U0CoverMono

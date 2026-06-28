@@ -571,3 +571,58 @@ theorem disk_subset_of_basin_avoids_circle {K : Set ℂ} (hΩc : IsPreconnected 
     linarith
 
 end U0PhiCard
+
+namespace U0PhiCard
+
+/-- If a preconnected basin avoids the unit circle, contains an exterior point, and the filled set is
+contained in the closed unit disk, then complete invariance of the filled set forces the exceptional
+parameter `b = 0`. This glues the topological basin-side lemma to the invariant-disk endgame used in
+the connected `u₀ ⟂ φ_b` card. -/
+@[aesop safe]
+theorem eq_zero_of_basin_avoids_circle_of_subset_disk_and_completeInvariant
+    {K : Set ℂ} {b w : ℂ}
+    (hΩc : IsPreconnected Kᶜ)
+    (havoid : ∀ z ∈ Kᶜ, ‖z‖ ≠ 1)
+    (hw : w ∈ Kᶜ) (hwn : 1 < ‖w‖)
+    (hKsub : K ⊆ Metric.closedBall (0 : ℂ) 1)
+    (hinvK : ∀ z : ℂ, z ^ 2 + b ∈ K ↔ z ∈ K) :
+    b = 0 := by
+  have hdisk : Metric.closedBall (0 : ℂ) 1 ⊆ K :=
+    disk_subset_of_basin_avoids_circle hΩc havoid hw hwn
+  have hKiff : ∀ z : ℂ, z ∈ K ↔ ‖z‖ ≤ 1 := by
+    intro z
+    constructor
+    · intro hz
+      have hzball := hKsub hz
+      simpa [Metric.mem_closedBall, dist_zero_right] using hzball
+    · intro hz
+      exact hdisk (by simpa [Metric.mem_closedBall, dist_zero_right] using hz)
+  apply eq_zero_of_invariant_disk
+  intro z
+  rw [← hKiff z, ← hKiff (z ^ 2 + b)]
+  exact (hinvK z).symm
+
+end U0PhiCard
+
+namespace U0PhiCard
+
+/-- Positive crossing form of the connected `u₀ ⟂ φ_b` Step 2 endgame. Under the same
+capacity-side disk containment and complete invariance hypotheses, a nonzero parameter forces the basin
+`Kᶜ` to meet the unit circle. -/
+@[aesop safe]
+theorem exists_circle_point_of_nonzero_basin_subset_disk_and_completeInvariant
+    {K : Set ℂ} {b w : ℂ} (hb : b ≠ 0)
+    (hΩc : IsPreconnected Kᶜ)
+    (hw : w ∈ Kᶜ) (hwn : 1 < ‖w‖)
+    (hKsub : K ⊆ Metric.closedBall (0 : ℂ) 1)
+    (hinvK : ∀ z : ℂ, z ^ 2 + b ∈ K ↔ z ∈ K) :
+    ∃ z : ℂ, z ∈ Kᶜ ∧ ‖z‖ = 1 := by
+  by_contra hnone
+  push Not at hnone
+  have havoid : ∀ z ∈ Kᶜ, ‖z‖ ≠ 1 := by
+    intro z hz hnorm
+    exact hnone z hz hnorm
+  exact hb (eq_zero_of_basin_avoids_circle_of_subset_disk_and_completeInvariant
+    hΩc havoid hw hwn hKsub hinvK)
+
+end U0PhiCard

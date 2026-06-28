@@ -117,7 +117,7 @@ theorem false_of_basin_branch_dendrite_analytic {c z₀ w₀ d : ℂ} {r : ℝ} 
     have : z₀ ∈ ball z₀ r ∩ interior (filledJulia c) := ⟨mem_ball_self hr, h⟩
     rwa [hempty] at this
   have hNeBot : (𝓝[(filledJulia c)ᶜ] z₀).NeBot :=
-    mem_closure_iff_nhdsWithin_neBot.mp (by rw [closure_compl]; exact hz₀int)
+    nhdsWithin_compl_filledJulia_neBot_of_not_mem_interior hz₀int
   obtain ⟨g, hgAt, hgz₀, hgrel⟩ := exists_analyticAt_branch_analytic ha hroot hpartial hd
   have hacont : ∀ i ∈ s, ContinuousAt (a i) z₀ := fun i hi => (ha i hi).continuousAt
   have hmatch := branch_unique_within_analytic hacont hpartial hd hgAt.continuousAt hgz₀ hβlim

@@ -335,4 +335,49 @@ theorem false_of_halfplane_dendrite (c : ℂ) (P : Polynomial (Polynomial ℂ))
     ⟨v, (hVUbig hvV).1, (hVUbig hvV).2⟩
   exact no_continuation_dendrite hr0 hgan0 hz₀K hempty0 hmod_basin hbasin
 
+/-- **The half-plane dendrite contradiction with the rightmost anchor created internally.** The caller no
+longer chooses the anchor point: compactness of `K_c` gives a rightmost point, and
+`false_of_halfplane_dendrite` builds the unconditional half-plane branch from that point.  The remaining
+input is exactly the local dendrite-tip and fibre-nondegeneracy package at whichever rightmost point Lean
+selects. -/
+theorem false_of_rightmost_halfplane_dendrite (c : ℂ) (P : Polynomial (Polynomial ℂ))
+    (hrelE : ∀ z ∈ escapeOpen c ∩ Complex.slitPlane,
+        ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c z) ^ i = 0)
+    (hN1 : 1 ≤ P.natDegree)
+    (hinput : ∀ z₀ : ℂ, z₀ ∈ filledJulia c →
+        (∀ w ∈ filledJulia c, w.re ≤ z₀.re) →
+        ∃ r : ℝ, 0 < r ∧
+          Metric.ball z₀ r ∩ interior (filledJulia c) = ∅ ∧
+          (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c)ᶜ)) ∧
+          (P.coeff P.natDegree).eval z₀ ≠ 0 ∧
+          (P.map (Polynomial.evalRingHom z₀)).Separable) :
+    False := by
+  obtain ⟨z₀, hz₀K, hz₀max⟩ := exists_rightmost_filledJulia c
+  obtain ⟨r, hr, hempty, htip, hlead, hsep⟩ := hinput z₀ hz₀K hz₀max
+  exact false_of_halfplane_dendrite c P hrelE hz₀K hz₀max hr hempty htip hN1 hlead hsep
+
+/-- **Rightmost half-plane dendrite contradiction in the empty-interior case.** This creates the local
+dendrite ball and the frontier fact internally: the chosen rightmost point is on `frontier K_c`, and
+`interior K_c = ∅` gives `ball z₀ 1 ∩ interior K_c = ∅`.  The remaining caller input is only the punctured
+basin-sector preconnectedness and fibre nondegeneracy at that rightmost frontier point. -/
+theorem false_of_rightmost_halfplane_dendrite_emptyInterior (c : ℂ)
+    (P : Polynomial (Polynomial ℂ))
+    (hrelE : ∀ z ∈ escapeOpen c ∩ Complex.slitPlane,
+        ∑ i ∈ P.support, (P.coeff i).aeval z * (bottcherCoord c z) ^ i = 0)
+    (hempty : interior (filledJulia c) = ∅)
+    (hN1 : 1 ≤ P.natDegree)
+    (hinput : ∀ z₀ : ℂ, z₀ ∈ frontier (filledJulia c) →
+        (∀ w ∈ filledJulia c, w.re ≤ z₀.re) →
+        (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c)ᶜ)) ∧
+          (P.coeff P.natDegree).eval z₀ ≠ 0 ∧
+          (P.map (Polynomial.evalRingHom z₀)).Separable) :
+    False := by
+  refine false_of_rightmost_halfplane_dendrite c P hrelE hN1 ?_
+  intro z₀ hz₀K hz₀max
+  have hfront : z₀ ∈ frontier (filledJulia c) :=
+    rightmost_mem_frontier_filledJulia hz₀K hz₀max
+  obtain ⟨htip, hlead, hsep⟩ := hinput z₀ hfront hz₀max
+  refine ⟨1, by norm_num, ?_, htip, hlead, hsep⟩
+  rw [hempty, inter_empty]
+
 end Bottcher

@@ -610,6 +610,121 @@ theorem exists_sqrt_pullback_on_simplyConnected_nonzero (c : ℂ) (n : ℕ) {V :
     simpa [hs0] using hsqz.symm
   exact (hβne (quadratic c z) hfz) hzero
 
+/-- **Normalized successor branch on a simply-connected escape level.** If the next escape level is
+simply connected, the local square-root descent can be normalized by the far-field Böttcher sheet:
+starting from a level branch `βlevn` anchored to `bottcherCoord` on `escapeOpen`, Lean constructs the
+successor branch on `escapeLevel c (n+1)` with the square-root recursion, nonvanishing, and the same
+far-field anchor.  This is the one-step constructor needed for an eventual recursive square-root tower. -/
+theorem exists_sqrtLevel_succ_of_simplyConnected (c : ℂ) (n : ℕ)
+    (hsc : IsSimplyConnected (escapeLevel c (n + 1)))
+    (βlevn : ℂ → ℂ) (hβan : AnalyticOnNhd ℂ βlevn (escapeLevel c n))
+    (hβne : ∀ z ∈ escapeLevel c n, βlevn z ≠ 0)
+    (hβanchor : ∀ z ∈ escapeOpen c, βlevn z = bottcherCoord c z) :
+    ∃ βnext : ℂ → ℂ,
+      AnalyticOnNhd ℂ βnext (escapeLevel c (n + 1)) ∧
+      (∀ z ∈ escapeLevel c (n + 1), βnext z ≠ 0) ∧
+      (∀ z ∈ escapeLevel c (n + 1), (βnext z) ^ 2 = βlevn (quadratic c z)) ∧
+      (∀ z ∈ escapeOpen c, βnext z = bottcherCoord c z) := by
+  obtain ⟨s, hsan, hsq, hs0⟩ :=
+    exists_sqrt_pullback_on_simplyConnected_nonzero c n hsc (isOpen_escapeLevel c (n + 1))
+      (subset_refl _) βlevn hβan hβne
+  let d : ℂ := ((max 2 ‖c‖ + 1 : ℝ) : ℂ)
+  have hdlev : d ∈ escapeLevel c (n + 1) := by
+    simpa [d] using deep_mem_escapeLevel c (n + 1)
+  have hdesc : d ∈ escapeOpen c := by
+    have := deep_mem_escapeLevel c 0
+    simpa [d, escapeLevel_zero] using this
+  have hfd : quadratic c d ∈ escapeOpen c := by
+    have := escapeOpen_iterate hdesc 1
+    simpa [Function.iterate_one] using this
+  have hsd0 : s d ≠ 0 := hs0 d hdlev
+  let η : ℂ := bottcherCoord c d / s d
+  have hη2 : η ^ 2 = 1 := by
+    rw [show η = bottcherCoord c d / s d from rfl, div_pow, hsq d hdlev,
+      hβanchor (quadratic c d) hfd]
+    obtain ⟨hc, hd2⟩ := mem_escapeOpen_regime hdesc
+    rw [bottcherCoord_quadratic hc hd2,
+      div_self (pow_ne_zero 2 (bottcherCoord_ne_zero c d))]
+  let βnext : ℂ → ℂ := fun z => η * s z
+  have hβnext_an : AnalyticOnNhd ℂ βnext (escapeLevel c (n + 1)) := by
+    intro z hz
+    exact analyticAt_const.mul (hsan z hz)
+  have hβnext_ne : ∀ z ∈ escapeLevel c (n + 1), βnext z ≠ 0 := by
+    intro z hz
+    exact mul_ne_zero (by
+      rw [show η = bottcherCoord c d / s d from rfl]
+      exact div_ne_zero (bottcherCoord_ne_zero c d) hsd0) (hs0 z hz)
+  have hβnext_sq : ∀ z ∈ escapeLevel c (n + 1), (βnext z) ^ 2 = βlevn (quadratic c z) := by
+    intro z hz
+    calc
+      (βnext z) ^ 2 = η ^ 2 * (s z) ^ 2 := by simp [βnext, mul_pow]
+      _ = βlevn (quadratic c z) := by rw [hη2, one_mul, hsq z hz]
+  have hβnext_anchor : ∀ z ∈ escapeOpen c, βnext z = bottcherCoord c z := by
+    have hanchor_d : βnext d = bottcherCoord c d := by
+      dsimp [βnext, η]
+      exact div_mul_cancel₀ (bottcherCoord c d) hsd0
+    have hEq : EqOn βnext (bottcherCoord c) (escapeOpen c) := by
+      refine eqOn_sqrt_of_preconnected (isConnected_escapeOpen c).isPreconnected
+        (hβnext_an.continuousOn.mono ?_) (analyticOnNhd_bottcherCoord_full c).continuousOn ?_
+        (fun z _ => bottcherCoord_ne_zero c z) hdesc hanchor_d
+      · intro z hz
+        exact escapeOpen_iterate hz (n + 1)
+      · intro z hz
+        have hzlev : z ∈ escapeLevel c (n + 1) := escapeOpen_iterate hz (n + 1)
+        have hfz : quadratic c z ∈ escapeOpen c := by
+          have := escapeOpen_iterate hz 1
+          simpa [Function.iterate_one] using this
+        obtain ⟨hc, hz2⟩ := mem_escapeOpen_regime hz
+        rw [hβnext_sq z hzlev, hβanchor (quadratic c z) hfz, bottcherCoord_quadratic hc hz2]
+    intro z hz
+    exact hEq hz
+  exact ⟨βnext, hβnext_an, hβnext_ne, hβnext_sq, hβnext_anchor⟩
+
+/-- **Recursive square-root tower from simply-connected escape levels.** The one-step normalized
+successor constructor can be iterated: if every successor escape level is simply connected, Lean builds
+the whole analytic nowhere-zero square-root family `βlev n`, anchored to the far-field Böttcher
+coordinate, with `(βlev (n+1))² = βlev n ∘ f` on each next level. -/
+theorem exists_sqrt_family_of_simplyConnected_levels (c : ℂ)
+    (hsc : ∀ n, IsSimplyConnected (escapeLevel c (n + 1))) :
+    ∃ βlev : ℕ → ℂ → ℂ,
+      (∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n)) ∧
+      (∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0) ∧
+      (∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z) ∧
+      (∀ n, ∀ z ∈ escapeLevel c (n + 1),
+        (βlev (n + 1) z) ^ 2 = βlev n (quadratic c z)) := by
+  classical
+  let BranchData (n : ℕ) := {β : ℂ → ℂ //
+    AnalyticOnNhd ℂ β (escapeLevel c n) ∧
+    (∀ z ∈ escapeLevel c n, β z ≠ 0) ∧
+    (∀ z ∈ escapeOpen c, β z = bottcherCoord c z)}
+  have hbase : BranchData 0 := by
+    refine ⟨bottcherCoord c, ?_, ?_, ?_⟩
+    · simpa [escapeLevel_zero] using analyticOnNhd_bottcherCoord_full c
+    · intro z _hz
+      exact bottcherCoord_ne_zero c z
+    · intro z _hz
+      rfl
+  have hsucc : ∀ n, (b : BranchData n) → ∃ bnext : BranchData (n + 1),
+      ∀ z ∈ escapeLevel c (n + 1), (bnext.1 z) ^ 2 = b.1 (quadratic c z) := by
+    intro n b
+    obtain ⟨βnext, han, hne, hsqrt, hanchor⟩ :=
+      exists_sqrtLevel_succ_of_simplyConnected c n (hsc n)
+        b.1 b.2.1 b.2.2.1 b.2.2.2
+    exact ⟨⟨βnext, han, hne, hanchor⟩, hsqrt⟩
+  let data : ∀ n, BranchData n := Nat.rec hbase (fun n b => Classical.choose (hsucc n b))
+  let βlev : ℕ → ℂ → ℂ := fun n => (data n).1
+  refine ⟨βlev, ?_, ?_, ?_, ?_⟩
+  · intro n
+    exact (data n).2.1
+  · intro n
+    exact (data n).2.2.1
+  · intro n
+    exact (data n).2.2.2
+  · intro n z hz
+    change ((data (n + 1)).1 z) ^ 2 = (data n).1 (quadratic c z)
+    change ((Classical.choose (hsucc n (data n))).1 z) ^ 2 = (data n).1 (quadratic c z)
+    exact (Classical.choose_spec (hsucc n (data n))) z hz
+
 /-- **Two-chart successor level branch, with nonvanishing.** If two chart roots of `βlev n ∘ f` agree on
 their overlap and are nowhere zero on their charts, their glued successor branch on
 `escapeLevel c (n+1)` is also nowhere zero. This packages the analytic, square, and nonzero data required
@@ -821,6 +936,36 @@ theorem exists_global_branch_of_level_roots_modulus (c : ℂ) (βlev : ℕ → �
   refine ⟨β, hβan, hβesc, hβ0, ?_⟩
   intro z hz
   rw [hmodG z hz, greenFunctionDyn, if_neg hz]
+
+/-- **Square-root families assemble to a modulus-carrying global branch.** This is the strongest
+branch constructor needed by the connected hRigid lane: the caller supplies only the coherent square-root
+recursion, and Lean creates the `2^n` power law, the nonvanishing global branch, and the basin-wide
+Böttcher modulus. -/
+theorem exists_global_branch_of_sqrt_family_modulus (c : ℂ) (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z)
+    (hsqrt : ∀ n, ∀ z ∈ escapeLevel c (n + 1), (βlev (n + 1) z) ^ 2 = βlev n (quadratic c z)) :
+    ∃ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
+      (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) :=
+  exists_global_branch_of_level_roots_modulus c βlev hanalytic
+    (hpow_of_sqrt_family c βlev (hanchorEsc 0) hsqrt) hne hanchorEsc
+
+/-- **Global modulus branch from simply-connected escape levels.** This combines the recursive
+square-root tower constructor with the colimit/modulus assembly: under the concrete geometric input
+that each successor escape level is simply connected, Lean constructs the global single-valued
+nonvanishing Böttcher branch on the basin and proves its modulus identity. -/
+theorem exists_global_branch_of_simplyConnected_levels_modulus (c : ℂ)
+    (hsc : ∀ n, IsSimplyConnected (escapeLevel c (n + 1))) :
+    ∃ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
+      (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) := by
+  obtain ⟨βlev, hanalytic, hne, hanchorEsc, hsqrt⟩ :=
+    exists_sqrt_family_of_simplyConnected_levels c hsc
+  exact exists_global_branch_of_sqrt_family_modulus c βlev hanalytic hne hanchorEsc hsqrt
 
 end Bottcher
 

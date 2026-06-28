@@ -4,7 +4,7 @@
 Bottom-up Lean formalization toward `q62-bottcher-independence-n2-all-parameters`
 (Nguyen Q6.2, quadratic nonexceptional). See `Bottcher/STATUS.md` for the DAG.
 
-Importing this builds the whole tower. Everything below is sorry-free.
+Importing this builds the whole tower. Everything below is fully proved.
 -/
 import GaloisForLFunctions.Bottcher.Dynamics
 import GaloisForLFunctions.Bottcher.GreenFunction
@@ -74,6 +74,7 @@ import GaloisForLFunctions.Bottcher.BottcherDetermines
 import GaloisForLFunctions.Bottcher.BasinConnected
 import GaloisForLFunctions.Bottcher.PeriodicPoints
 import GaloisForLFunctions.Bottcher.RepellingFixedPoint
+import GaloisForLFunctions.Bottcher.RepellingPeriodicFrontier
 import GaloisForLFunctions.Bottcher.Resonance
 import GaloisForLFunctions.Bottcher.ResonanceOrder
 import GaloisForLFunctions.Bottcher.SphericalDeriv
@@ -89,6 +90,9 @@ import GaloisForLFunctions.Bottcher.MontelIterates
 import GaloisForLFunctions.Bottcher.ExplicitBranch
 import GaloisForLFunctions.Bottcher.NaturalBoundaryContradiction
 import GaloisForLFunctions.Bottcher.ConnectedTranscendence
+import GaloisForLFunctions.Bottcher.ConnectedRepellingFibreInput
+import GaloisForLFunctions.Bottcher.PeriodicPointAvoidance
+import GaloisForLFunctions.Bottcher.ConnectedRepellingPeriodicAvoidance
 import GaloisForLFunctions.Bottcher.BranchContinuation
 import GaloisForLFunctions.Bottcher.BottcherInverse
 import GaloisForLFunctions.Bottcher.SheafGlue
@@ -153,6 +157,7 @@ import GaloisForLFunctions.Bottcher.BasinBranchGlue
 import GaloisForLFunctions.Bottcher.PolyAsymptotic
 import GaloisForLFunctions.Bottcher.BasinColimit
 import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranch
+import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranchCrossing
 import GaloisForLFunctions.Bottcher.RelativeRigidityNaturalBoundary
 import GaloisForLFunctions.Bottcher.RelativeRigidityHNBCrossing
 

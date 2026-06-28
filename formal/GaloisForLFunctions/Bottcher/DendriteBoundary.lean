@@ -108,6 +108,43 @@ theorem density_basin_of_empty_interior {c z₀ : ℂ} {r : ℝ}
     ball z₀ r ⊆ closure (ball z₀ r ∩ (filledJulia c)ᶜ) :=
   subset_closure_inter_compl isOpen_ball hempty
 
+/-- A point outside the interior of `K_c` has nontrivial basin-side neighbourhood filter. -/
+theorem nhdsWithin_compl_filledJulia_neBot_of_not_mem_interior {c z₀ : ℂ}
+    (hz₀int : z₀ ∉ interior (filledJulia c)) :
+    (𝓝[(filledJulia c)ᶜ] z₀).NeBot :=
+  mem_closure_iff_nhdsWithin_neBot.mp (by
+    rw [closure_compl]
+    exact hz₀int)
+
+/-- Every ball around a non-interior point of `K_c` contains a basin point. -/
+theorem exists_mem_ball_compl_filledJulia_of_not_mem_interior {c z₀ : ℂ} {r : ℝ}
+    (hz₀int : z₀ ∉ interior (filledJulia c)) (hr : 0 < r) :
+    ∃ z, z ∈ ball z₀ r ∧ z ∈ (filledJulia c)ᶜ := by
+  obtain ⟨z, hzcomp, hzball⟩ :=
+    (nhdsWithin_compl_filledJulia_neBot_of_not_mem_interior hz₀int).nonempty_of_mem
+      (inter_mem_nhdsWithin _ (ball_mem_nhds z₀ hr))
+  exact ⟨z, hzball, hzcomp⟩
+
+/-- Empty interior makes every filled-Julia point basin-accumulated. -/
+theorem nhdsWithin_compl_filledJulia_neBot_of_mem_emptyInterior {c z₀ : ℂ}
+    (hempty : interior (filledJulia c) = ∅) (_hz₀ : z₀ ∈ filledJulia c) :
+    (𝓝[(filledJulia c)ᶜ] z₀).NeBot :=
+  nhdsWithin_compl_filledJulia_neBot_of_not_mem_interior (by
+    intro hzint
+    rw [hempty] at hzint
+    exact hzint)
+
+/-- Empty interior makes every ball around a filled-Julia point contain a basin point. -/
+theorem exists_mem_ball_compl_filledJulia_of_mem_emptyInterior {c z₀ : ℂ} {r : ℝ}
+    (hempty : interior (filledJulia c) = ∅) (_hz₀ : z₀ ∈ filledJulia c) (hr : 0 < r) :
+    ∃ z, z ∈ ball z₀ r ∧ z ∈ (filledJulia c)ᶜ :=
+  exists_mem_ball_compl_filledJulia_of_not_mem_interior
+    (by
+      intro hzint
+      rw [hempty] at hzint
+      exact hzint)
+    hr
+
 /-- **Dendrite natural boundary, fully assembled from the empty-interior condition.** For a Julia
 point `z₀` where `K_c` has empty interior, no continuation of `φ_c` preserving the Böttcher modulus on
 the basin can exist. The only remaining inputs are the empty-interior condition (the dendrite case

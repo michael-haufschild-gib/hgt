@@ -332,3 +332,92 @@ theorem kummer_irreducible {K : Type*} [Field K] (hneg : ∃ i : K, i ^ 2 = -1) 
     exact gen_not_isSquare k hk a x hmin ha hneg ⟨b, hb⟩
 
 end Bottcher
+
+namespace Bottcher
+
+/-- If a deck automorphism fixes the base field but scales a nonzero root by a nontrivial multiplier,
+then the root's square cannot come from a square in that fixed base. This is the algebraic bridge from
+finite deck-scaling data to the non-square radicand required by the Kummer provider. -/
+theorem not_square_of_scaled_root_fixed_base {B M : Type*} [Field B] [Field M] [Algebra B M]
+    (σ : M ≃+* M) {F ζ : M} {a : B}
+    (hbase : ∀ x : B, σ (algebraMap B M x) = algebraMap B M x)
+    (hroot : F ^ 2 = algebraMap B M a) (hσF : σ F = ζ * F) (hF : F ≠ 0) (hζ : ζ ≠ 1) :
+    ∀ x : B, x ^ 2 ≠ a := by
+  intro x hx
+  let y : M := algebraMap B M x
+  have hy : y ^ 2 = algebraMap B M a := by
+    change (algebraMap B M x) ^ 2 = algebraMap B M a
+    rw [← map_pow, hx]
+  have hsq : F ^ 2 = y ^ 2 := by rw [hroot, hy]
+  have hprod : (F - y) * (F + y) = 0 := by
+    calc
+      (F - y) * (F + y) = F ^ 2 - y ^ 2 := by ring
+      _ = 0 := sub_eq_zero.mpr hsq
+  rcases eq_zero_or_eq_zero_of_mul_eq_zero hprod with hminus | hplus
+  · have hFy : F = y := by simpa [sub_eq_zero] using hminus
+    have hsF : σ F = F := by
+      rw [hFy]
+      exact hbase x
+    have hzF : ζ * F = F := by rw [← hσF, hsF]
+    exact hζ (mul_right_cancel₀ hF (by simpa using hzF))
+  · have hFy : F = -y := by
+      exact eq_neg_of_add_eq_zero_left hplus
+    have hsF : σ F = F := by
+      rw [hFy, map_neg, hbase x]
+    have hzF : ζ * F = F := by rw [← hσF, hsF]
+    exact hζ (mul_right_cancel₀ hF (by simpa using hzF))
+
+/-- Order-form of `not_square_of_scaled_root_fixed_base`: a multiplier of order greater than one is
+nontrivial, so deck scaling by it forces the base radicand to be non-square. -/
+theorem not_square_of_scaled_root_fixed_base_of_order {B M : Type*} [Field B] [Field M]
+    [Algebra B M] (σ : M ≃+* M) {F ζ : M} {a : B}
+    (hbase : ∀ x : B, σ (algebraMap B M x) = algebraMap B M x)
+    (hroot : F ^ 2 = algebraMap B M a) (hσF : σ F = ζ * F) (hF : F ≠ 0)
+    (hζord : 1 < orderOf ζ) :
+    ∀ x : B, x ^ 2 ≠ a := by
+  refine not_square_of_scaled_root_fixed_base σ hbase hroot hσF hF ?_
+  intro hζ
+  have horder : orderOf ζ = 1 := by simp [hζ]
+  rw [horder] at hζord
+  exact (Nat.lt_irrefl 1 hζord)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- One-coordinate transcendence directly from Kummer radical inputs. This is the one-variable analogue
+of `noRelation_of_kummer_inputs`: the Kummer deck and descent are assembled internally from the
+radicand, irreducibility, primitive root, and radical relation. -/
+theorem transcendental_of_kummer_radical_inputs {K V : Type u} [Field K] [Field V] [Algebra K V]
+    (G : V) (hG : G ≠ 0)
+    (inputs : ∀ d : ℕ, ∃ (B : Type u) (_ : Field B) (_ : Algebra K B)
+      (i : B →ₐ[K] V) (a ζ : B) (k : ℕ),
+      d < 2 ^ k ∧ IsPrimitiveRoot ζ (2 ^ k) ∧ Irreducible (X ^ (2 ^ k) - C a) ∧
+      G ^ (2 ^ k) = i a) :
+    Transcendental K G := by
+  apply transcendental_of_kummer_inputs G
+  intro d
+  obtain ⟨B, _, _, i, a, ζ, k, hdk, hζ, hirr, hroot⟩ := inputs d
+  haveI : Fact (Irreducible (X ^ (2 ^ k) - C a)) := ⟨hirr⟩
+  obtain ⟨σ, ζ', m, hm, hord, _hσbase, hσζ, hσroot⟩ :=
+    kummer_deck_datum (K₀ := K) k a hirr hζ (0 : B)
+  obtain ⟨ψ, hψinj, hψroot, _hψbase⟩ := kummer_descent i k a hirr G hroot
+  have ha : a ≠ 0 := by
+    intro h0
+    rw [h0, map_zero] at hroot
+    exact hG ((pow_eq_zero_iff (pow_ne_zero k two_ne_zero)).mp hroot)
+  have hroot_ne : (AdjoinRoot.root (X ^ (2 ^ k) - C a)) ≠ 0 := by
+    have hr : (AdjoinRoot.root (X ^ (2 ^ k) - C a)) ^ (2 ^ k) = algebraMap B _ a := by
+      have he := AdjoinRoot.eval₂_root (X ^ (2 ^ k) - C a)
+      simp only [eval₂_sub, eval₂_X_pow, eval₂_C, sub_eq_zero] at he
+      rw [he]
+      rfl
+    intro h0
+    rw [h0, zero_pow (pow_ne_zero k two_ne_zero)] at hr
+    exact ha ((algebraMap B _).injective (by rw [← hr, map_zero]))
+  refine ⟨AdjoinRoot (X ^ (2 ^ k) - C a), inferInstance, inferInstance, ψ,
+    AdjoinRoot.root _, ζ', σ, hψinj, hψroot, hroot_ne, ?_, hσζ, hσroot⟩
+  rw [hord, ← hm]
+  exact hdk
+
+end Bottcher

@@ -61,3 +61,23 @@ theorem quadratic_weight_regroup {N : ℕ} (q : Fin (N + 1) → Fin (N + 1) → 
   rw [hij.2]
 
 end HurwitzDescent
+
+namespace HurwitzDescent
+
+/-- Shifted cofinite form: if `p` vanishes at `-n + c` for all sufficiently
+large natural numbers `n`, then `p = 0`. -/
+theorem eq_zero_of_eventually_shifted_neg_nat_roots {p : ℂ[X]} {N : ℕ} (c : ℂ)
+    (h : ∀ n, N ≤ n → p.IsRoot (-(n : ℂ) + c)) : p = 0 := by
+  apply Polynomial.eq_zero_of_infinite_isRoot
+  have hinfN : {n : ℕ | N ≤ n}.Infinite := by
+    have hcompl : {n : ℕ | N ≤ n} = (Set.Iio N)ᶜ := by ext n; simp
+    rw [hcompl]
+    exact (Set.finite_Iio N).infinite_compl
+  refine Set.Infinite.mono ?_ (hinfN.image (f := fun n : ℕ => -(n : ℂ) + c) ?_)
+  · rintro x ⟨n, hn, rfl⟩
+    exact h n hn
+  · intro a _ b _ hab
+    have hneg : -(a : ℂ) = -(b : ℂ) := add_right_cancel hab
+    exact Nat.cast_injective (neg_injective hneg)
+
+end HurwitzDescent

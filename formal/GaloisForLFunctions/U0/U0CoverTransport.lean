@@ -152,3 +152,130 @@ theorem transcendental_precompMeroCross {g : ℂ → ℂ} (hg : AnalyticOnNhd �
     (precompMeroCross_injective hg hmaps h hsurj hUo hUc hUne hVo hVc hVne) hx
 
 end U0CoverTransport
+
+namespace U0CoverTransport
+
+/-- Concrete cover-transport of `u₀` transcendence: the base carrier theorem supplies `u₀`
+transcendence, and cross-set precomposition carries it to the cover carrier under the projection's
+`ℂ(z)`-compatibility. This is the cover-side `hG` input for the U0-phi lift route, with only the
+projection algebra compatibility left explicit. -/
+theorem u0_transcendental_precompMeroCross {U V : Set ℂ} {g : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hmaps : Set.MapsTo g U V) (h : Tendsto g (𝓟 U) (𝓟 V))
+    (hsurj : Set.SurjOn g U V)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (hVinf : V.Infinite)
+    (hV_ext : V ⊆ U0NaturalBoundary.Ext)
+    [haveI := isDomain_analyticSubring U hUo hUc hUne; Algebra (RatFunc ℂ) (meroField U)]
+    (hcompat : haveI := isDomain_analyticSubring U hUo hUc hUne
+      haveI := isDomain_analyticSubring V hVo hVc hVne
+      letI : Algebra (RatFunc ℂ) (meroField V) := (ratfuncToMero V hVo hVc hVne hVinf).toAlgebra
+      ∀ k : RatFunc ℂ, precompMeroCross hg hmaps h hsurj hUo hUc hUne hVo hVc hVne
+          (algebraMap (RatFunc ℂ) (meroField V) k) = algebraMap (RatFunc ℂ) (meroField U) k) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := isDomain_analyticSubring V hVo hVc hVne
+    letI : Algebra (RatFunc ℂ) (meroField V) := (ratfuncToMero V hVo hVc hVne hVinf).toAlgebra
+    Transcendental (RatFunc ℂ)
+      (precompMeroCross hg hmaps h hsurj hUo hUc hUne hVo hVc hVne
+        (algebraMap (analyticSubring V) (meroField V) (U0MeroCarrier.u0AnSub hV_ext))) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  letI : Algebra (RatFunc ℂ) (meroField V) := (ratfuncToMero V hVo hVc hVne hVinf).toAlgebra
+  exact transcendental_precompMeroCross hg hmaps h hsurj hUo hUc hUne hVo hVc hVne hcompat
+    (U0MeroCarrier.u0Mero_transcendental hVo hVc hVne hVinf hV_ext)
+
+end U0CoverTransport
+
+namespace U0CoverTransport
+
+/-- `precompMeroCross` agrees with `precompAnalyticCross` on analytic numerator elements. -/
+theorem precompMeroCross_algebraMap {U V : Set ℂ} {g : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hmaps : Set.MapsTo g U V) (h : Tendsto g (𝓟 U) (𝓟 V))
+    (hsurj : Set.SurjOn g U V)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (a : analyticSubring V) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := isDomain_analyticSubring V hVo hVc hVne
+    precompMeroCross hg hmaps h hsurj hUo hUc hUne hVo hVc hVne
+      (algebraMap (analyticSubring V) (meroField V) a)
+      = algebraMap (analyticSubring U) (meroField U) (precompAnalyticCross hg hmaps h a) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  rw [precompMeroCross, IsLocalization.map_eq]
+
+end U0CoverTransport
+
+namespace U0CoverTransport
+
+/-- Cross-set precomposition fixes constant analytic germs. -/
+theorem precompAnalyticCross_constToAnalytic {U V : Set ℂ} {g : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hmaps : Set.MapsTo g U V) (h : Tendsto g (𝓟 U) (𝓟 V))
+    (c : ℂ) :
+    precompAnalyticCross hg hmaps h (constToAnalytic V c) = constToAnalytic U c := by
+  apply Subtype.ext
+  rw [precompAnalyticCross_coe]
+  change ((↑(fun _ : ℂ => c) : Germ (𝓟 V) ℂ).compTendsto g h)
+      = (↑(fun _ : ℂ => c) : Germ (𝓟 U) ℂ)
+  rw [Germ.coe_compTendsto]
+  exact Germ.coe_eq.mpr (Filter.eventually_principal.mpr (fun _ _ => rfl))
+
+/-- Cross-set precomposition sends the identity-base polynomial embedding on `V` to the projection-base
+polynomial embedding on `U`, once the projection germ `p₀` is represented by the map `g`. -/
+theorem precompAnalyticCross_polyToAnalyticVia {U V : Set ℂ} {g : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hmaps : Set.MapsTo g U V) (h : Tendsto g (𝓟 U) (𝓟 V))
+    {p₀ : analyticSubring U} (hp0g : (p₀ : Germ (𝓟 U) ℂ) = ↑g) (q : Polynomial ℂ) :
+    precompAnalyticCross hg hmaps h (polyToAnalytic V q) = polyToAnalyticVia U p₀ q := by
+  have hcomp : (precompAnalyticCross hg hmaps h).comp (polyToAnalytic V) =
+      polyToAnalyticVia U p₀ := by
+    apply Polynomial.ringHom_ext
+    · intro c
+      rw [RingHom.comp_apply, polyToAnalyticVia_C]
+      apply Subtype.ext
+      rw [precompAnalyticCross_coe]
+      change ((↑(fun z : ℂ => (Polynomial.C c).eval z) : Germ (𝓟 V) ℂ).compTendsto g h)
+          = (↑(fun _ : ℂ => c) : Germ (𝓟 U) ℂ)
+      rw [Germ.coe_compTendsto]
+      simp
+      exact fun _ _ => rfl
+    · rw [RingHom.comp_apply, polyToAnalyticVia_X]
+      apply Subtype.ext
+      rw [precompAnalyticCross_coe]
+      change ((↑(fun z : ℂ => Polynomial.X.eval z) : Germ (𝓟 V) ℂ).compTendsto g h)
+          = (p₀ : Germ (𝓟 U) ℂ)
+      rw [hp0g, Germ.coe_compTendsto]
+      simp
+      exact fun _ _ => rfl
+  exact RingHom.congr_fun hcomp q
+
+/-- The cross-set precomposition from a base region `V` to a cover region `U` is automatically
+`RatFunc ℂ`-linear when the cover's base algebra is generated by the projection germ represented by
+`g`. This discharges the `hcompat` input of the U0 precomp transport route from the concrete projection
+identity. -/
+theorem precompMeroCross_ratfuncToMeroVia {U V : Set ℂ} {g : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g U) (hmaps : Set.MapsTo g U V) (h : Tendsto g (𝓟 U) (𝓟 V))
+    (hsurj : Set.SurjOn g U V)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (hVinf : V.Infinite)
+    {p₀ : analyticSubring U} {f₀ : ℂ → ℂ} (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀)
+    (hinf : (f₀ '' U).Infinite) (hp0g : (p₀ : Germ (𝓟 U) ℂ) = ↑g) (k : RatFunc ℂ) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := isDomain_analyticSubring V hVo hVc hVne
+    precompMeroCross hg hmaps h hsurj hUo hUc hUne hVo hVc hVne
+        (ratfuncToMero V hVo hVc hVne hVinf k)
+      = ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne k := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  haveI := isDomain_analyticSubring V hVo hVc hVne
+  have key : (precompMeroCross hg hmaps h hsurj hUo hUc hUne hVo hVc hVne).comp
+      (ratfuncToMero V hVo hVc hVne hVinf) = ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne := by
+    apply IsFractionRing.ringHom_ext (A := Polynomial ℂ)
+    intro p
+    rw [RingHom.comp_apply,
+        ratfuncToMero_algebraMap_polynomial V hVo hVc hVne hVinf p,
+        show ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)
+          = polyToMeroVia p₀ p from IsFractionRing.lift_algebraMap _ p]
+    show precompMeroCross hg hmaps h hsurj hUo hUc hUne hVo hVc hVne
+        (algebraMap (analyticSubring V) (meroField V) (polyToAnalytic V p)) = _
+    rw [precompMeroCross_algebraMap, precompAnalyticCross_polyToAnalyticVia hg hmaps h hp0g]
+    rfl
+  exact RingHom.congr_fun key k
+
+end U0CoverTransport

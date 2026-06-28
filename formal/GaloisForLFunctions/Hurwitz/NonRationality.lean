@@ -256,3 +256,300 @@ theorem not_eventually_cpow_polyRatio {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k : �
   exact not_tendsto_cexp_I_mul_log (neg_ne_zero.mpr hims) (hquot.congr' heq)
 
 end HurwitzNonRat
+
+namespace HurwitzNonRat
+
+/-- Polynomial that compresses a finite shifted-power combination after multiplying by `n^N`. -/
+noncomputable def shiftedPowerPolynomial (N : ℕ) (coeff : Fin (N + 1) → ℂ[X]) : ℂ[X] :=
+  ∑ i : Fin (N + 1), coeff i * X ^ (N - (i : ℕ))
+
+/-- A nonzero polynomial is eventually nonzero along `ℕ` (cast to `ℂ`). -/
+theorem eventually_eval_ne_zero {p : ℂ[X]} (hp : p ≠ 0) :
+    ∀ᶠ n : ℕ in atTop, p.eval (n : ℂ) ≠ 0 := by
+  have hld : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp
+  filter_upwards [(tendsto_eval_div_pow_nat p).eventually_ne hld] with n hn hc
+  apply hn
+  rw [hc, zero_div]
+
+/-- A finite shifted-power relation against a polynomial has zero compressed coefficient polynomial.
+
+After multiplying by `n^N`, the left side is `n^(-(s+N))` times
+`shiftedPowerPolynomial N coeff`. If that compressed polynomial were nonzero, the existing
+non-rationality obstruction for `n^(-(s+N))` would contradict `s ∉ ℤ`. -/
+theorem shiftedPowerPolynomial_eq_zero_of_eventually_cpow_sum_eq_poly {N : ℕ} {s : ℂ}
+    (hs : ∀ k : ℤ, s ≠ (k : ℂ))
+    (coeff : Fin (N + 1) → ℂ[X]) (P : ℂ[X])
+    (hrel : ∀ᶠ n : ℕ in atTop,
+      (∑ i : Fin (N + 1), (coeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ))))
+        = P.eval (n : ℂ)) :
+    shiftedPowerPolynomial N coeff = 0 := by
+  by_contra hD
+  let D := shiftedPowerPolynomial N coeff
+  have hDne : D ≠ 0 := hD
+  have hsN : ∀ k : ℤ, s + (N : ℂ) ≠ (k : ℂ) := by
+    intro k hk
+    apply hs (k - (N : ℤ))
+    rw [Int.cast_sub, Int.cast_natCast]
+    linear_combination hk
+  have heq : ∀ᶠ n : ℕ in atTop,
+      (n : ℂ) ^ (-(s + (N : ℂ))) * D.eval (n : ℂ) = P.eval (n : ℂ) := by
+    filter_upwards [hrel, eventually_gt_atTop (0 : ℕ)] with n hn hnpos
+    have hnc : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hnpos.ne'
+    rw [← hn]
+    unfold D shiftedPowerPolynomial
+    rw [eval_finsetSum, Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    simp only [eval_mul, eval_pow, eval_X]
+    have hiN : (i : ℕ) ≤ N := Nat.lt_succ_iff.mp i.isLt
+    have hpow : (n : ℂ) ^ (-(s + (N : ℂ))) * (n : ℂ) ^ (N - (i : ℕ)) =
+        (n : ℂ) ^ (-(s + (i : ℂ))) := by
+      rw [← Complex.cpow_natCast, ← Complex.cpow_add _ _ hnc]
+      congr 1
+      rw [Nat.cast_sub hiN]
+      ring
+    calc
+      (n : ℂ) ^ (-(s + (N : ℂ))) *
+          ((coeff i).eval (n : ℂ) * (n : ℂ) ^ (N - (i : ℕ)))
+          = (coeff i).eval (n : ℂ) *
+              ((n : ℂ) ^ (-(s + (N : ℂ))) * (n : ℂ) ^ (N - (i : ℕ))) := by
+            ring
+      _ = (coeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ))) := by
+            rw [hpow]
+  by_cases hP : P = 0
+  · have hzero : ∀ᶠ n : ℕ in atTop,
+        (n : ℂ) ^ (-(s + (N : ℂ))) * D.eval (n : ℂ) = 0 := by
+      simpa [hP] using heq
+    have hDnz := eventually_eval_ne_zero hDne
+    have hpos := eventually_gt_atTop (0 : ℕ)
+    obtain ⟨n, hnzero, hnD, hnpos⟩ := (hzero.and (hDnz.and hpos)).exists
+    have hnc : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hnpos.ne'
+    have hcpow : (n : ℂ) ^ (-(s + (N : ℂ))) ≠ 0 := by
+      rw [Complex.cpow_def_of_ne_zero hnc]
+      exact Complex.exp_ne_zero _
+    exact (mul_ne_zero hcpow hnD) hnzero
+  · exact not_eventually_cpow_polyRatio hsN hP hDne heq
+
+end HurwitzNonRat
+
+namespace HurwitzNonRat
+
+/-- If the compressed shifted-power polynomial has constant coefficient polynomials, each scalar
+coefficient is zero. -/
+theorem shiftedPowerPolynomial_const_coeff_eq_zero {N : ℕ} {c : Fin (N + 1) → ℂ}
+    (hD : shiftedPowerPolynomial N (fun i => C (c i)) = 0) :
+    ∀ i : Fin (N + 1), c i = 0 := by
+  intro i
+  have hcoeff : (shiftedPowerPolynomial N (fun i => C (c i))).coeff (N - (i : ℕ)) = 0 := by
+    rw [hD]
+    simp
+  unfold shiftedPowerPolynomial at hcoeff
+  rw [finsetSum_coeff] at hcoeff
+  have hsingle :
+      (∑ j : Fin (N + 1), (C (c j) * X ^ (N - (j : ℕ)) : ℂ[X]).coeff (N - (i : ℕ))) = c i := by
+    rw [Finset.sum_eq_single i]
+    · rw [coeff_C_mul_X_pow, if_pos rfl]
+    · intro j _ hji
+      have hneq : N - (j : ℕ) ≠ N - (i : ℕ) := by
+        intro h
+        have hj : (j : ℕ) ≤ N := Nat.lt_succ_iff.mp j.isLt
+        have hi : (i : ℕ) ≤ N := Nat.lt_succ_iff.mp i.isLt
+        have hnat : (j : ℕ) = (i : ℕ) := by omega
+        exact hji (Fin.ext hnat)
+      have hneq' : N - (i : ℕ) ≠ N - (j : ℕ) := fun h => hneq h.symm
+      rw [coeff_C_mul_X_pow, if_neg hneq']
+    · intro hi
+      simp at hi
+  rwa [hsingle] at hcoeff
+
+/-- Constant-coefficient finite shifted powers are independent modulo eventual polynomial functions. -/
+theorem const_coefficients_eq_zero_of_eventually_cpow_sum_eq_poly {N : ℕ} {s : ℂ}
+    (hs : ∀ k : ℤ, s ≠ (k : ℂ))
+    (c : Fin (N + 1) → ℂ) (P : ℂ[X])
+    (hrel : ∀ᶠ n : ℕ in atTop,
+      (∑ i : Fin (N + 1), c i * (n : ℂ) ^ (-(s + (i : ℂ)))) = P.eval (n : ℂ)) :
+    (∀ i : Fin (N + 1), c i = 0) ∧ P = 0 := by
+  have hrelC : ∀ᶠ n : ℕ in atTop,
+      (∑ i : Fin (N + 1), (C (c i)).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ))))
+        = P.eval (n : ℂ) := by
+    simpa using hrel
+  have hD := shiftedPowerPolynomial_eq_zero_of_eventually_cpow_sum_eq_poly hs (fun i => C (c i)) P hrelC
+  have hc : ∀ i : Fin (N + 1), c i = 0 := shiftedPowerPolynomial_const_coeff_eq_zero hD
+  refine ⟨hc, ?_⟩
+  by_contra hP
+  have hPnz := eventually_eval_ne_zero hP
+  have hPzero : ∀ᶠ n : ℕ in atTop, P.eval (n : ℂ) = 0 := by
+    filter_upwards [hrel] with n hn
+    have hsum : (∑ i : Fin (N + 1), c i * (n : ℂ) ^ (-(s + (i : ℂ)))) = 0 := by
+      refine Finset.sum_eq_zero (fun i _ => ?_)
+      rw [hc i, zero_mul]
+    rw [← hn, hsum]
+  obtain ⟨n, hz, hnz⟩ := (hPzero.and hPnz).exists
+  exact hnz hz
+
+end HurwitzNonRat
+
+namespace HurwitzNonRat
+
+/-- A compressed shifted-power polynomial cannot have a unique top weighted-degree contribution. This
+is the algebraic extraction used by finite-difference descents after the shifted-power obstruction has
+forced `shiftedPowerPolynomial N coeff = 0`. -/
+theorem shiftedPowerPolynomial_ne_zero_of_unique_weighted_natDegree {N : ℕ}
+    {coeff : Fin (N + 1) → ℂ[X]} {k : Fin (N + 1)}
+    (hk : coeff k ≠ 0)
+    (huniq : ∀ i : Fin (N + 1), i ≠ k →
+      (coeff i).natDegree + (N - (i : ℕ)) < (coeff k).natDegree + (N - (k : ℕ))) :
+    shiftedPowerPolynomial N coeff ≠ 0 := by
+  intro hD
+  let W := (coeff k).natDegree + (N - (k : ℕ))
+  have hcoeff0 : (shiftedPowerPolynomial N coeff).coeff W = 0 := by
+    rw [hD]
+    simp
+  unfold shiftedPowerPolynomial at hcoeff0
+  rw [finsetSum_coeff] at hcoeff0
+  have hsum :
+      (∑ i : Fin (N + 1), (coeff i * X ^ (N - (i : ℕ))).coeff W) =
+        (coeff k).leadingCoeff := by
+    rw [Finset.sum_eq_single k]
+    · change (coeff k * X ^ (N - (k : ℕ))).coeff ((coeff k).natDegree + (N - (k : ℕ))) =
+        (coeff k).leadingCoeff
+      rw [coeff_mul_X_pow]
+      rfl
+    · intro i _ hik
+      have hlt := huniq i hik
+      rw [coeff_mul_X_pow']
+      split_ifs with hle
+      · have hdeg : (coeff i).natDegree < W - (N - (i : ℕ)) := by
+          dsimp [W] at hlt ⊢
+          omega
+        exact coeff_eq_zero_of_natDegree_lt hdeg
+      · rfl
+    · intro hknot
+      simp at hknot
+  rw [hsum] at hcoeff0
+  exact (leadingCoeff_ne_zero.mpr hk) hcoeff0
+
+end HurwitzNonRat
+
+namespace HurwitzNonRat
+
+/-- If the compressed shifted-power polynomial is zero, every nonzero coefficient has a competing
+coefficient at least as large in weighted degree. This is the collision form of
+`shiftedPowerPolynomial_ne_zero_of_unique_weighted_natDegree`. -/
+theorem exists_weighted_natDegree_ge_of_shiftedPowerPolynomial_eq_zero {N : ℕ}
+    {coeff : Fin (N + 1) → ℂ[X]} {k : Fin (N + 1)}
+    (hD : shiftedPowerPolynomial N coeff = 0) (hk : coeff k ≠ 0) :
+    ∃ i : Fin (N + 1), i ≠ k ∧
+      (coeff k).natDegree + (N - (k : ℕ)) ≤ (coeff i).natDegree + (N - (i : ℕ)) := by
+  by_contra hnone
+  have huniq : ∀ i : Fin (N + 1), i ≠ k →
+      (coeff i).natDegree + (N - (i : ℕ)) < (coeff k).natDegree + (N - (k : ℕ)) := by
+    intro i hik
+    have hnot : ¬ (coeff k).natDegree + (N - (k : ℕ)) ≤
+        (coeff i).natDegree + (N - (i : ℕ)) := by
+      intro hle
+      exact hnone ⟨i, hik, hle⟩
+    omega
+  exact (shiftedPowerPolynomial_ne_zero_of_unique_weighted_natDegree hk huniq) hD
+
+end HurwitzNonRat
+
+namespace HurwitzNonRat
+
+/-- Any eventual shifted-power relation forces weighted-degree collision among nonzero coefficients. This
+packages the shifted-power non-rationality obstruction directly in the form used by polynomial-degree
+descents. -/
+theorem exists_weighted_natDegree_ge_of_eventually_cpow_sum_eq_poly {N : ℕ} {s : ℂ}
+    (hs : ∀ k : ℤ, s ≠ (k : ℂ))
+    (coeff : Fin (N + 1) → ℂ[X]) (P : ℂ[X])
+    (hrel : ∀ᶠ n : ℕ in atTop,
+      (∑ i : Fin (N + 1), (coeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ))))
+        = P.eval (n : ℂ))
+    {k : Fin (N + 1)} (hk : coeff k ≠ 0) :
+    ∃ i : Fin (N + 1), i ≠ k ∧
+      (coeff k).natDegree + (N - (k : ℕ)) ≤ (coeff i).natDegree + (N - (i : ℕ)) := by
+  have hD := shiftedPowerPolynomial_eq_zero_of_eventually_cpow_sum_eq_poly hs coeff P hrel
+  exact exists_weighted_natDegree_ge_of_shiftedPowerPolynomial_eq_zero hD hk
+
+end HurwitzNonRat
+
+namespace HurwitzNonRat
+
+/-- If the compressed shifted-power polynomial is zero, a unique top weighted-degree coefficient must
+vanish. This is the elimination form of the weighted-degree extraction. -/
+theorem coeff_eq_zero_of_shiftedPowerPolynomial_eq_zero_of_unique_weighted_natDegree {N : ℕ}
+    {coeff : Fin (N + 1) → ℂ[X]} {k : Fin (N + 1)}
+    (hD : shiftedPowerPolynomial N coeff = 0)
+    (huniq : ∀ i : Fin (N + 1), i ≠ k →
+      (coeff i).natDegree + (N - (i : ℕ)) < (coeff k).natDegree + (N - (k : ℕ))) :
+    coeff k = 0 := by
+  by_contra hk
+  exact (shiftedPowerPolynomial_ne_zero_of_unique_weighted_natDegree hk huniq) hD
+
+/-- In an eventual shifted-power relation, a unique top weighted-degree coefficient must vanish. -/
+theorem coeff_eq_zero_of_eventually_cpow_sum_eq_poly_of_unique_weighted_natDegree {N : ℕ} {s : ℂ}
+    (hs : ∀ k : ℤ, s ≠ (k : ℂ))
+    (coeff : Fin (N + 1) → ℂ[X]) (P : ℂ[X])
+    (hrel : ∀ᶠ n : ℕ in atTop,
+      (∑ i : Fin (N + 1), (coeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ))))
+        = P.eval (n : ℂ))
+    (k : Fin (N + 1))
+    (huniq : ∀ i : Fin (N + 1), i ≠ k →
+      (coeff i).natDegree + (N - (i : ℕ)) < (coeff k).natDegree + (N - (k : ℕ))) :
+    coeff k = 0 := by
+  have hD := shiftedPowerPolynomial_eq_zero_of_eventually_cpow_sum_eq_poly hs coeff P hrel
+  exact coeff_eq_zero_of_shiftedPowerPolynomial_eq_zero_of_unique_weighted_natDegree hD huniq
+
+end HurwitzNonRat
+
+namespace HurwitzNonRat
+
+/-- On positive naturals, the finite shifted-power sum is exactly the compressed polynomial times the
+lowest shifted power. -/
+theorem eventually_cpow_sum_eq_cpow_mul_shiftedPowerPolynomial_eval {N : ℕ} (s : ℂ)
+    (coeff : Fin (N + 1) → ℂ[X]) :
+    ∀ᶠ n : ℕ in atTop,
+      (∑ i : Fin (N + 1), (coeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ)))) =
+        (n : ℂ) ^ (-(s + (N : ℂ))) * (shiftedPowerPolynomial N coeff).eval (n : ℂ) := by
+  filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hnpos
+  have hnc : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hnpos.ne'
+  unfold shiftedPowerPolynomial
+  rw [eval_finsetSum, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  simp only [eval_mul, eval_pow, eval_X]
+  have hiN : (i : ℕ) ≤ N := Nat.lt_succ_iff.mp i.isLt
+  have hpow : (n : ℂ) ^ (-(s + (N : ℂ))) * (n : ℂ) ^ (N - (i : ℕ)) =
+      (n : ℂ) ^ (-(s + (i : ℂ))) := by
+    rw [← Complex.cpow_natCast, ← Complex.cpow_add _ _ hnc]
+    congr 1
+    rw [Nat.cast_sub hiN]
+    ring
+  calc
+    (coeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ)))
+        = (coeff i).eval (n : ℂ) *
+            ((n : ℂ) ^ (-(s + (N : ℂ))) * (n : ℂ) ^ (N - (i : ℕ))) := by
+          rw [hpow]
+    _ = (n : ℂ) ^ (-(s + (N : ℂ))) *
+          ((coeff i).eval (n : ℂ) * (n : ℂ) ^ (N - (i : ℕ))) := by
+          ring
+
+/-- Exact shifted-power relation close: an eventual polynomial relation forces both the compressed
+coefficient polynomial and the polynomial right side to vanish. -/
+theorem shiftedPowerPolynomial_eq_zero_and_rhs_eq_zero_of_eventually_cpow_sum_eq_poly {N : ℕ} {s : ℂ}
+    (hs : ∀ k : ℤ, s ≠ (k : ℂ))
+    (coeff : Fin (N + 1) → ℂ[X]) (P : ℂ[X])
+    (hrel : ∀ᶠ n : ℕ in atTop,
+      (∑ i : Fin (N + 1), (coeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ))))
+        = P.eval (n : ℂ)) :
+    shiftedPowerPolynomial N coeff = 0 ∧ P = 0 := by
+  have hD := shiftedPowerPolynomial_eq_zero_of_eventually_cpow_sum_eq_poly hs coeff P hrel
+  refine ⟨hD, ?_⟩
+  by_contra hP
+  have hPnz := eventually_eval_ne_zero hP
+  have hsum := eventually_cpow_sum_eq_cpow_mul_shiftedPowerPolynomial_eval (N := N) s coeff
+  have hPzero : ∀ᶠ n : ℕ in atTop, P.eval (n : ℂ) = 0 := by
+    filter_upwards [hrel, hsum] with n hn hsum_n
+    rw [← hn, hsum_n, hD, eval_zero, mul_zero]
+  obtain ⟨n, hz, hnz⟩ := (hPzero.and hPnz).exists
+  exact hnz hz
+
+end HurwitzNonRat
