@@ -9,6 +9,7 @@ so the resultant/squarefree crossing theorem applies unchanged.
 -/
 import GaloisForLFunctions.Bottcher.RelativeBranchFamily
 import GaloisForLFunctions.Bottcher.ZeroSet
+import GaloisForLFunctions.U0.BottcherIndep
 import GaloisForLFunctions.U0.U0PhiCard
 
 open Polynomial Filter Topology Set Metric
@@ -176,6 +177,195 @@ theorem exists_sparse_fibre_separable_countableAvoidance {a : ℕ → ℂ → �
     exact hsep₀_b
   exact ⟨z₀, hz₀S, hlead₀, hsep₀⟩
 
+/-- **Dense analytic bad locus is countable.** For a dense analytic coefficient family, one full-degree
+separable witness makes the leading-coefficient/discriminant bad locus the zero set of the analytic
+product `a_d · Res(Q, Q')`, hence countable on a preconnected analytic region. -/
+theorem dense_specialization_bad_locus_countable {d : ℕ} (hd : 1 ≤ d)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (a : Fin (d + 1) → ℂ → ℂ) (ha : ∀ i, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a (Fin.last d) w ≠ 0)
+    (hsepw : (∑ i : Fin (d + 1), C (a i w) * X ^ (i : ℕ) : ℂ[X]).Separable) :
+    {z ∈ Ω |
+      a (Fin.last d) z = 0 ∨
+        ¬ (∑ i : Fin (d + 1), C (a i z) * X ^ (i : ℕ) : ℂ[X]).Separable}.Countable := by
+  classical
+  set G : ℂ → ℂ := fun z =>
+    a (Fin.last d) z *
+      resultant (∑ i : Fin (d + 1), C (a i z) * X ^ (i : ℕ))
+        (derivative (∑ i : Fin (d + 1), C (a i z) * X ^ (i : ℕ)))
+        d (d - 1) with hG
+  have hGan : AnalyticOnNhd ℂ G Ω := fun z hz => by
+    rw [hG]
+    exact (ha (Fin.last d) z hz).mul
+      (resultant_specialize_analytic a z (fun i => ha i z hz))
+  have hGw : G w ≠ 0 := by
+    rw [hG]
+    exact mul_ne_zero hleadw ((separable_iff_resultant_fixed hd a w hleadw).mp hsepw)
+  have hzeros : {z ∈ Ω | G z = 0}.Countable :=
+    analyticOnNhd_zeros_countable hGan hΩc hw hGw
+  refine hzeros.mono ?_
+  intro z hz
+  refine ⟨hz.1, ?_⟩
+  rcases hz.2 with hlead0 | hnotsep
+  · simp [G, hlead0]
+  · by_contra hGne
+    have hprod :
+        a (Fin.last d) z *
+          resultant (∑ i : Fin (d + 1), C (a i z) * X ^ (i : ℕ))
+            (derivative (∑ i : Fin (d + 1), C (a i z) * X ^ (i : ℕ)))
+            d (d - 1) ≠ 0 := by
+      simpa [G] using hGne
+    obtain ⟨hlead, hres⟩ := mul_ne_zero_iff.mp hprod
+    exact hnotsep ((separable_iff_resultant_fixed hd a z hlead).mpr hres)
+
+/-- **Bivariate-polynomial bad locus is countable.** This specializes
+`dense_specialization_bad_locus_countable` to coefficients `(bᵢ)(z, g z)`, matching the dense
+`BottcherIndep.specPoly` capstone. -/
+theorem bivariate_specPoly_bad_locus_countable {d : ℕ} (hd : 1 ≤ d)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω) {g : ℂ → ℂ}
+    (hg : AnalyticOnNhd ℂ g Ω) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    {w : ℂ} (hw : w ∈ Ω)
+    (hleadw : (b (Fin.last d)).eval₂ (Polynomial.evalRingHom w) (g w) ≠ 0)
+    (hsepw :
+      (BottcherIndep.specPoly
+        (fun i z => (b i).eval₂ (Polynomial.evalRingHom z) (g z)) w).Separable) :
+    {z ∈ Ω |
+      (b (Fin.last d)).eval₂ (Polynomial.evalRingHom z) (g z) = 0 ∨
+        ¬ (BottcherIndep.specPoly
+          (fun i y => (b i).eval₂ (Polynomial.evalRingHom y) (g y)) z).Separable}.Countable := by
+  have ha : ∀ i, AnalyticOnNhd ℂ
+      (fun z => (b i).eval₂ (Polynomial.evalRingHom z) (g z)) Ω := by
+    intro i
+    exact analyticOnNhd_eval₂_of_analyticOnNhd hg (b i)
+  simpa [BottcherIndep.specPoly] using
+    dense_specialization_bad_locus_countable (d := d) hd hΩc
+      (a := fun i z => (b i).eval₂ (Polynomial.evalRingHom z) (g z))
+      ha hw hleadw (by simpa [BottcherIndep.specPoly] using hsepw)
+
+/-- **Frontier/off-other bad locus is countable.** If the frontier targets lie in the analytic region,
+then the exact lead-zero/separability bad set used by `BottcherIndep.phi_indep_capstone_countableAvoidance`
+is countable. -/
+theorem bivariate_frontier_specPoly_bad_locus_countable {d : ℕ} (hd : 1 ≤ d)
+    {K₁ K₂ Ω : Set ℂ} (hsub : ((frontier K₁ ∩ K₂ᶜ : Set ℂ) ⊆ Ω))
+    (hΩc : IsPreconnected Ω) {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g Ω)
+    (b : Fin (d + 1) → Polynomial (Polynomial ℂ)) {w : ℂ} (hw : w ∈ Ω)
+    (hleadw : (b (Fin.last d)).eval₂ (Polynomial.evalRingHom w) (g w) ≠ 0)
+    (hsepw :
+      (BottcherIndep.specPoly
+        (fun i z => (b i).eval₂ (Polynomial.evalRingHom z) (g z)) w).Separable) :
+    (((frontier K₁ ∩ K₂ᶜ) : Set ℂ) ∩
+      ({z | (b (Fin.last d)).eval₂ (Polynomial.evalRingHom z) (g z) = 0} ∪
+        {z | ¬ (BottcherIndep.specPoly
+          (fun i y => (b i).eval₂ (Polynomial.evalRingHom y) (g y)) z).Separable} :
+          Set ℂ)).Countable := by
+  have hcount :=
+    bivariate_specPoly_bad_locus_countable (d := d) hd hΩc hg b hw hleadw hsepw
+  exact hcount.mono (by
+    intro z hz
+    exact ⟨hsub hz.1, hz.2⟩)
+
+/-- **Countable-avoidance capstone with analytic bad locus generated internally.** This is the
+`BottcherIndep` capstone after replacing the explicit bad-locus-countability hypothesis by a
+preconnected analytic region and one full-degree separable witness. -/
+theorem phi_indep_capstone_countableAvoidance_of_analytic_bad_locus
+    {f g : ℂ → ℂ} {K₁ K₂ Ω : Set ℂ}
+    (hfdom : ∀ z ∈ K₁ᶜ, AnalyticAt ℂ f z) (hgdom : ∀ z ∈ K₂ᶜ, AnalyticAt ℂ g z)
+    (hnb : ∀ z₀ ∈ frontier K₁, ¬ U0NaturalBoundary.ContinuesAcross f K₁ᶜ z₀)
+    (hlens : ∀ z₀ ∈ frontier K₁, ∀ ρ : ℝ, 0 < ρ →
+      IsPreconnected (K₁ᶜ ∩ ball z₀ ρ) ∧ (K₁ᶜ ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    (hrel : ∀ z ∈ K₁ᶜ,
+      ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0)
+    (havoid : ∀ T : Set ℂ, T.Countable →
+      ∃ z₀, z₀ ∈ frontier K₁ ∧ z₀ ∉ K₂ ∧ z₀ ∉ T)
+    (hΩK₂ : Ω ⊆ K₂ᶜ) (hfrontΩ : ((frontier K₁ ∩ K₂ᶜ : Set ℂ) ⊆ Ω))
+    (hΩc : IsPreconnected Ω) {w : ℂ} (hw : w ∈ Ω)
+    (hleadw : (b (Fin.last d)).eval₂ (Polynomial.evalRingHom w) (g w) ≠ 0)
+    (hsepw :
+      (BottcherIndep.specPoly
+        (fun i z => (b i).eval₂ (Polynomial.evalRingHom z) (g z)) w).Separable) :
+    False := by
+  have hgΩ : AnalyticOnNhd ℂ g Ω := fun z hz => hgdom z (hΩK₂ hz)
+  exact BottcherIndep.phi_indep_capstone_countableAvoidance hfdom hgdom hnb hlens hd b hrel havoid
+    (bivariate_frontier_specPoly_bad_locus_countable
+      (d := d) hd hfrontΩ hΩc hgΩ b hw hleadw hsepw)
+
+/-- **Uncountable-target capstone with analytic bad locus generated internally.** This is the
+uncountable target form of `phi_indep_capstone_countableAvoidance_of_analytic_bad_locus`. -/
+theorem phi_indep_capstone_uncountable_of_analytic_bad_locus
+    {f g : ℂ → ℂ} {K₁ K₂ Ω : Set ℂ}
+    (hfdom : ∀ z ∈ K₁ᶜ, AnalyticAt ℂ f z) (hgdom : ∀ z ∈ K₂ᶜ, AnalyticAt ℂ g z)
+    (hnb : ∀ z₀ ∈ frontier K₁, ¬ U0NaturalBoundary.ContinuesAcross f K₁ᶜ z₀)
+    (hlens : ∀ z₀ ∈ frontier K₁, ∀ ρ : ℝ, 0 < ρ →
+      IsPreconnected (K₁ᶜ ∩ ball z₀ ρ) ∧ (K₁ᶜ ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    (hrel : ∀ z ∈ K₁ᶜ,
+      ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0)
+    (hunc : ¬ ({z | z ∈ frontier K₁ ∧ z ∉ K₂} : Set ℂ).Countable)
+    (hΩK₂ : Ω ⊆ K₂ᶜ) (hfrontΩ : ((frontier K₁ ∩ K₂ᶜ : Set ℂ) ⊆ Ω))
+    (hΩc : IsPreconnected Ω) {w : ℂ} (hw : w ∈ Ω)
+    (hleadw : (b (Fin.last d)).eval₂ (Polynomial.evalRingHom w) (g w) ≠ 0)
+    (hsepw :
+      (BottcherIndep.specPoly
+        (fun i z => (b i).eval₂ (Polynomial.evalRingHom z) (g z)) w).Separable) :
+    False := by
+  have hgΩ : AnalyticOnNhd ℂ g Ω := fun z hz => hgdom z (hΩK₂ hz)
+  exact BottcherIndep.phi_indep_capstone_uncountable_bad hfdom hgdom hnb hlens hd b hrel hunc
+    (bivariate_frontier_specPoly_bad_locus_countable
+      (d := d) hd hfrontΩ hΩc hgΩ b hw hleadw hsepw)
+
+/-- **Local-lens countable-avoidance capstone with analytic bad locus generated internally.** This
+combines the local-radius `BottcherIndep` capstone with the resultant bad-locus countability theorem:
+no all-scale lens and no separate `hbad` input are required. -/
+theorem phi_indep_capstone_countableAvoidance_localLens_of_analytic_bad_locus
+    {f g : ℂ → ℂ} {K₁ K₂ Ω : Set ℂ}
+    (hfdom : ∀ z ∈ K₁ᶜ, AnalyticAt ℂ f z) (hgdom : ∀ z ∈ K₂ᶜ, AnalyticAt ℂ g z)
+    (hnb : ∀ z₀ ∈ frontier K₁, ¬ U0NaturalBoundary.ContinuesAcross f K₁ᶜ z₀)
+    (hlens : ∀ z₀ ∈ frontier K₁, ∃ ρ₁ : ℝ, 0 < ρ₁ ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ →
+      IsPreconnected (K₁ᶜ ∩ ball z₀ ρ) ∧ (K₁ᶜ ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    (hrel : ∀ z ∈ K₁ᶜ,
+      ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0)
+    (havoid : ∀ T : Set ℂ, T.Countable →
+      ∃ z₀, z₀ ∈ frontier K₁ ∧ z₀ ∉ K₂ ∧ z₀ ∉ T)
+    (hΩK₂ : Ω ⊆ K₂ᶜ) (hfrontΩ : ((frontier K₁ ∩ K₂ᶜ : Set ℂ) ⊆ Ω))
+    (hΩc : IsPreconnected Ω) {w : ℂ} (hw : w ∈ Ω)
+    (hleadw : (b (Fin.last d)).eval₂ (Polynomial.evalRingHom w) (g w) ≠ 0)
+    (hsepw :
+      (BottcherIndep.specPoly
+        (fun i z => (b i).eval₂ (Polynomial.evalRingHom z) (g z)) w).Separable) :
+    False := by
+  have hgΩ : AnalyticOnNhd ℂ g Ω := fun z hz => hgdom z (hΩK₂ hz)
+  exact BottcherIndep.phi_indep_capstone_countableAvoidance_localLens
+    hfdom hgdom hnb hlens hd b hrel havoid
+    (bivariate_frontier_specPoly_bad_locus_countable
+      (d := d) hd hfrontΩ hΩc hgΩ b hw hleadw hsepw)
+
+/-- **Local-lens uncountable-target capstone with analytic bad locus generated internally.** This is the
+uncountable target form of `phi_indep_capstone_countableAvoidance_localLens_of_analytic_bad_locus`. -/
+theorem phi_indep_capstone_uncountable_localLens_of_analytic_bad_locus
+    {f g : ℂ → ℂ} {K₁ K₂ Ω : Set ℂ}
+    (hfdom : ∀ z ∈ K₁ᶜ, AnalyticAt ℂ f z) (hgdom : ∀ z ∈ K₂ᶜ, AnalyticAt ℂ g z)
+    (hnb : ∀ z₀ ∈ frontier K₁, ¬ U0NaturalBoundary.ContinuesAcross f K₁ᶜ z₀)
+    (hlens : ∀ z₀ ∈ frontier K₁, ∃ ρ₁ : ℝ, 0 < ρ₁ ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ →
+      IsPreconnected (K₁ᶜ ∩ ball z₀ ρ) ∧ (K₁ᶜ ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    (hrel : ∀ z ∈ K₁ᶜ,
+      ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0)
+    (hunc : ¬ ({z | z ∈ frontier K₁ ∧ z ∉ K₂} : Set ℂ).Countable)
+    (hΩK₂ : Ω ⊆ K₂ᶜ) (hfrontΩ : ((frontier K₁ ∩ K₂ᶜ : Set ℂ) ⊆ Ω))
+    (hΩc : IsPreconnected Ω) {w : ℂ} (hw : w ∈ Ω)
+    (hleadw : (b (Fin.last d)).eval₂ (Polynomial.evalRingHom w) (g w) ≠ 0)
+    (hsepw :
+      (BottcherIndep.specPoly
+        (fun i z => (b i).eval₂ (Polynomial.evalRingHom z) (g z)) w).Separable) :
+    False := by
+  have hgΩ : AnalyticOnNhd ℂ g Ω := fun z hz => hgdom z (hΩK₂ hz)
+  exact BottcherIndep.phi_indep_capstone_uncountable_bad_localLens
+    hfdom hgdom hnb hlens hd b hrel hunc
+    (bivariate_frontier_specPoly_bad_locus_countable
+      (d := d) hd hfrontΩ hΩc hgΩ b hw hleadw hsepw)
+
 /-- An uncountable target set inside `Ω` can avoid every countable exceptional set. -/
 theorem countableAvoidance_of_uncountable_inter {S Ω : Set ℂ}
     (hunc : ¬ (S ∩ Ω).Countable) :
@@ -314,6 +504,43 @@ theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance {U 
     hgeom z₀ hz₀S
   exact ⟨N, z₀, r, V, hsupp, hN, hN1, hlead₀, hsep₀, hz₀front, hz₀off₂, hr, hVo, hVc,
     hUV, hVbasin₁, hVbasin₂, hsectorV, htip⟩
+
+/-- **Local-tip countable-avoidance common-basin input.**  This is the same sparse-fibre selection as
+`exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance`, but the selected target only
+has to carry punctured-basin preconnectedness below one positive local radius. -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_localTip {U : Set ℂ}
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T)
+    (hgeom : ∀ z₀ ∈ S, ∃ (r rTip : ℝ) (V : Set ℂ),
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ 0 < rTip ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧
+      V ⊆ (filledJulia c₁)ᶜ ∧ V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → ρ ≤ rTip →
+        IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r rTip : ℝ) (V : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ 0 < rTip ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧
+      V ⊆ (filledJulia c₁)ᶜ ∧ V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → ρ ≤ rTip →
+        IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) := by
+  obtain ⟨z₀, hz₀S, hlead₀, hsep₀⟩ :=
+    exists_sparse_fibre_separable_countableAvoidance hN1 hsupp hN hΩc ha hw hleadw hsepw havoid
+  obtain ⟨r, rTip, V, hz₀front, hz₀off₂, hr, hrTip, hVo, hVc, hUV, hVbasin₁, hVbasin₂,
+    hsectorV, htip⟩ := hgeom z₀ hz₀S
+  exact ⟨N, z₀, r, rTip, V, hsupp, hN, hN1, hlead₀, hsep₀, hz₀front, hz₀off₂, hr,
+    hrTip, hVo, hVc, hUV, hVbasin₁, hVbasin₂, hsectorV, htip⟩
 
 /-- **Common-basin hRigid input from an uncountable target set.** This is the geometric form of
 `exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance`: an uncountable set of
@@ -551,14 +778,169 @@ theorem exists_commonBasin_frontier_input_of_sparse_fibre_crossing_emptyInterior
   have hUcomponent : U ⊆ connectedComponentIn C u :=
     hUc.subset_connectedComponentIn huU hUC
   exact exists_commonBasin_frontier_input_of_sparse_fibre_crossing_emptyInterior_commonComponent
-    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂)
+    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂) (S := S)
     hempty hUo hUc ⟨u, huU⟩ hUbasin₁ hUbasin₂ hN1 hsupp hN hΩc ha hw hleadw hsepw
     hz₁ haccum
-    (by
+    (hcomponent := by
       refine ⟨u, huU, ?_⟩
       intro z₀ hz₀S
       exact closure_mono hUcomponent (hSclosure z₀ hz₀S))
-    hgeom
+    (hgeom := hgeom)
+
+/-- **Countable-avoidance common-basin crossing from one global common-basin region.** This is the
+natural-boundary analogue of the empty-interior global-region reducer below: the target mechanism avoids
+the countable analytic bad set, while the common-basin region `V` is supplied once. -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_globalRegion
+    {U : Set ℂ} {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S V : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T)
+    (hVo : IsOpen V) (hVc : IsPreconnected V)
+    (hUV : U ⊆ V) (hVbasin₁ : V ⊆ (filledJulia c₁)ᶜ) (hVbasin₂ : V ⊆ (filledJulia c₂)ᶜ)
+    (hgeom : ∀ z₀ ∈ S, ∃ r : ℝ,
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r : ℝ) (V' : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ IsOpen V' ∧ IsPreconnected V' ∧ U ⊆ V' ∧ V' ⊆ (filledJulia c₁)ᶜ ∧
+      V' ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V' ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) := by
+  exact exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance
+    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂)
+    hN1 hsupp hN hΩc ha hw hleadw hsepw havoid (by
+      intro z₀ hz₀S
+      obtain ⟨r, hz₀front, hz₀off₂, hr, hsectorV, htip⟩ := hgeom z₀ hz₀S
+      exact ⟨r, V, hz₀front, hz₀off₂, hr, hVo, hVc, hUV, hVbasin₁, hVbasin₂,
+        hsectorV, htip⟩)
+
+/-- **Countable-avoidance common-basin crossing from the common-basin component containing `U`.**  The
+global region is built internally as the connected component of
+`(filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ` containing the carrier. -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_commonComponent
+    {U : Set ℂ} {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (_hUo : IsOpen U) (hUc : IsPreconnected U) (_hUne : U.Nonempty)
+    (hUbasin₁ : U ⊆ (filledJulia c₁)ᶜ) (hUbasin₂ : U ⊆ (filledJulia c₂)ᶜ)
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T)
+    (hcomponent : ∃ u ∈ U,
+      ∀ z₀ ∈ S,
+        z₀ ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u))
+    (hgeom : ∀ z₀ ∈ S,
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r : ℝ) (V : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+      V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) := by
+  obtain ⟨u, huU, hcl⟩ := hcomponent
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  let V : Set ℂ := connectedComponentIn C u
+  have hCo : IsOpen C :=
+    (isClosed_filledJulia c₁).isOpen_compl.inter (isClosed_filledJulia c₂).isOpen_compl
+  have hVo : IsOpen V := by
+    simpa [V] using hCo.connectedComponentIn
+  have hVc : IsPreconnected V := by
+    simpa [V] using (isPreconnected_connectedComponentIn (x := u) (F := C))
+  have hVsubC : V ⊆ C := by
+    simpa [V] using connectedComponentIn_subset C u
+  have hVbasin₁ : V ⊆ (filledJulia c₁)ᶜ := fun z hz => (hVsubC hz).1
+  have hVbasin₂ : V ⊆ (filledJulia c₂)ᶜ := fun z hz => (hVsubC hz).2
+  have hUV : U ⊆ V := by
+    have hUC : U ⊆ C := fun z hz => ⟨hUbasin₁ hz, hUbasin₂ hz⟩
+    simpa [V] using hUc.subset_connectedComponentIn huU hUC
+  exact exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_globalRegion
+    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂) (V := V)
+    hN1 hsupp hN hΩc ha hw hleadw hsepw havoid
+    hVo hVc hUV hVbasin₁ hVbasin₂ (by
+      intro z₀ hz₀S
+      obtain ⟨hz₀front, hz₀off₂, htip⟩ := hgeom z₀ hz₀S
+      obtain ⟨r, hr, hball₂⟩ :=
+        Metric.isOpen_iff.mp (isClosed_filledJulia c₂).isOpen_compl z₀ hz₀off₂
+      refine ⟨r, hz₀front, hz₀off₂, hr, ?_, htip⟩
+      set W : Set ℂ := Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ with hW
+      have hWc : IsPreconnected W := by
+        simpa [W] using htip r hr
+      have hWC : W ⊆ C := by
+        intro z hz
+        exact ⟨hz.2, hball₂ hz.1⟩
+      have hz₀clV : z₀ ∈ closure V := by
+        simpa [V, C] using hcl z₀ hz₀S
+      have hmeet : (Metric.ball z₀ r ∩ V).Nonempty := by
+        rw [_root_.mem_closure_iff] at hz₀clV
+        exact hz₀clV (Metric.ball z₀ r) isOpen_ball (Metric.mem_ball_self hr)
+      obtain ⟨y, hyball, hyV⟩ := hmeet
+      have hyW : y ∈ W := ⟨hyball, hVbasin₁ hyV⟩
+      have hWsubCompY : W ⊆ connectedComponentIn C y :=
+        hWc.subset_connectedComponentIn hyW hWC
+      have hcomp : connectedComponentIn C y = V := by
+        have h := connectedComponentIn_eq (by simpa [V] using hyV)
+        simpa [V] using h.symm
+      intro z hz
+      exact hcomp ▸ hWsubCompY (by simpa [W] using hz))
+
+/-- **Countable-avoidance common-basin crossing from carrier-closure contact.** This removes the
+explicit connected-component closure payload from the natural-boundary countable-avoidance route. -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_carrierClosure
+    {U : Set ℂ} {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hUbasin₁ : U ⊆ (filledJulia c₁)ᶜ) (hUbasin₂ : U ⊆ (filledJulia c₂)ᶜ)
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T)
+    (hSclosure : ∀ z₀ ∈ S, z₀ ∈ closure U)
+    (hgeom : ∀ z₀ ∈ S,
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r : ℝ) (V : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+      V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) := by
+  obtain ⟨u, huU⟩ := hUne
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  have hUC : U ⊆ C := fun z hz => ⟨hUbasin₁ hz, hUbasin₂ hz⟩
+  have hUcomponent : U ⊆ connectedComponentIn C u :=
+    hUc.subset_connectedComponentIn huU hUC
+  exact exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_commonComponent
+    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂) (S := S)
+    hUo hUc ⟨u, huU⟩ hUbasin₁ hUbasin₂ hN1 hsupp hN hΩc ha hw hleadw hsepw
+    havoid
+    (hcomponent := by
+      refine ⟨u, huU, ?_⟩
+      intro z₀ hz₀S
+      exact closure_mono hUcomponent (hSclosure z₀ hz₀S))
+    (hgeom := hgeom)
 
 /-- **Countable-avoidance empty-interior common-basin crossing from one global common-basin region.**
 This is the countable-avoidance analogue of
@@ -718,13 +1100,190 @@ theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_emp
   have hUcomponent : U ⊆ connectedComponentIn C u :=
     hUc.subset_connectedComponentIn huU hUC
   exact exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_emptyInterior_commonComponent
-    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂)
+    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂) (S := S)
     hempty hUo hUc ⟨u, huU⟩ hUbasin₁ hUbasin₂ hN1 hsupp hN hΩc ha hw hleadw hsepw
     havoid
-    (by
+    (hcomponent := by
       refine ⟨u, huU, ?_⟩
       intro z₀ hz₀S
       exact closure_mono hUcomponent (hSclosure z₀ hz₀S))
-    hgeom
+    (hgeom := hgeom)
+
+/-- **Local-radius countable-avoidance crossing from carrier-closure contact.**  This is the
+natural-boundary carrier-closure bridge for the local-tip endpoint: each selected target supplies
+frontier/off-other membership and punctured-basin preconnectedness below one positive radius, while
+`S ⊆ closure U` builds the common-basin component internally. -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_carrierClosure_localTip
+    {U : Set ℂ} {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (_hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hUbasin₁ : U ⊆ (filledJulia c₁)ᶜ) (hUbasin₂ : U ⊆ (filledJulia c₂)ᶜ)
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T)
+    (hSclosure : ∀ z₀ ∈ S, z₀ ∈ closure U)
+    (hgeom : ∀ z₀ ∈ S,
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      ∃ rTip : ℝ, 0 < rTip ∧
+        ∀ ρ, 0 < ρ → ρ ≤ rTip →
+          IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r rTip : ℝ) (V : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ 0 < rTip ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧
+      V ⊆ (filledJulia c₁)ᶜ ∧ V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → ρ ≤ rTip →
+        IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) := by
+  obtain ⟨u, huU⟩ := hUne
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  let V : Set ℂ := connectedComponentIn C u
+  have hCo : IsOpen C :=
+    (isClosed_filledJulia c₁).isOpen_compl.inter (isClosed_filledJulia c₂).isOpen_compl
+  have hVo : IsOpen V := by
+    simpa [V] using hCo.connectedComponentIn
+  have hVc : IsPreconnected V := by
+    simpa [V] using (isPreconnected_connectedComponentIn (x := u) (F := C))
+  have hVsubC : V ⊆ C := by
+    simpa [V] using connectedComponentIn_subset C u
+  have hVbasin₁ : V ⊆ (filledJulia c₁)ᶜ := fun z hz => (hVsubC hz).1
+  have hVbasin₂ : V ⊆ (filledJulia c₂)ᶜ := fun z hz => (hVsubC hz).2
+  have hUC : U ⊆ C := fun z hz => ⟨hUbasin₁ hz, hUbasin₂ hz⟩
+  have hUV : U ⊆ V := by
+    simpa [V] using hUc.subset_connectedComponentIn huU hUC
+  exact exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_localTip
+    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂)
+    hN1 hsupp hN hΩc ha hw hleadw hsepw havoid (by
+      intro z₀ hz₀S
+      obtain ⟨hz₀front, hz₀off₂, rTip, hrTip, htip⟩ := hgeom z₀ hz₀S
+      obtain ⟨rOther, hrOther, hball₂⟩ :=
+        Metric.isOpen_iff.mp (isClosed_filledJulia c₂).isOpen_compl z₀ hz₀off₂
+      let r : ℝ := min rOther rTip
+      have hr : 0 < r := by
+        simpa [r] using lt_min hrOther hrTip
+      have hr_le_other : r ≤ rOther := by
+        simp [r]
+      have hr_le_tip : r ≤ rTip := by
+        simp [r]
+      refine ⟨r, rTip, V, hz₀front, hz₀off₂, hr, hrTip, hVo, hVc, hUV, hVbasin₁,
+        hVbasin₂, ?_, htip⟩
+      set W : Set ℂ := Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ with hW
+      have hWc : IsPreconnected W := by
+        simpa [W] using htip r hr hr_le_tip
+      have hWC : W ⊆ C := by
+        intro z hz
+        have hzballOther : z ∈ Metric.ball z₀ rOther :=
+          Metric.ball_subset_ball hr_le_other hz.1
+        exact ⟨hz.2, hball₂ hzballOther⟩
+      have hz₀clV : z₀ ∈ closure V :=
+        closure_mono hUV (hSclosure z₀ hz₀S)
+      have hmeet : (Metric.ball z₀ r ∩ V).Nonempty := by
+        rw [_root_.mem_closure_iff] at hz₀clV
+        exact hz₀clV (Metric.ball z₀ r) isOpen_ball (Metric.mem_ball_self hr)
+      obtain ⟨y, hyball, hyV⟩ := hmeet
+      have hyW : y ∈ W := ⟨hyball, hVbasin₁ hyV⟩
+      have hWsubCompY : W ⊆ connectedComponentIn C y :=
+        hWc.subset_connectedComponentIn hyW hWC
+      have hcomp : connectedComponentIn C y = V := by
+        have h := connectedComponentIn_eq (by simpa [V] using hyV)
+        simpa [V] using h.symm
+      intro z hz
+      exact hcomp ▸ hWsubCompY (by simpa [W] using hz))
+
+/-- **Local-radius countable-avoidance empty-interior crossing from carrier-closure contact.**  This is
+the carrier-closure bridge for the local-tip natural-boundary endpoint: each selected target only has to
+carry punctured-basin preconnectedness below one positive radius. -/
+theorem exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_emptyInterior_carrierClosure_localTip
+    {U : Set ℂ} {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c₁ c₂ : ℂ}
+    (hempty : interior (filledJulia c₁) = ∅)
+    (_hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hUbasin₁ : U ⊆ (filledJulia c₁)ᶜ) (hUbasin₂ : U ⊆ (filledJulia c₂)ᶜ)
+    (hN1 : 1 ≤ N) (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s)
+    {Ω : Set ℂ} (hΩc : IsPreconnected Ω)
+    (ha : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) Ω)
+    {w : ℂ} (hw : w ∈ Ω) (hleadw : a N w ≠ 0) (hsepw : (fibrePoly a s w).Separable)
+    {S : Set ℂ}
+    (havoid : ∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T)
+    (hSclosure : ∀ z₀ ∈ S, z₀ ∈ closure U)
+    (hgeom : ∀ z₀ ∈ S,
+      z₀ ∈ filledJulia c₁ ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      ∃ rTip : ℝ, 0 < rTip ∧
+        ∀ ρ, 0 < ρ → ρ ≤ rTip →
+          IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) :
+    ∃ (N' : ℕ) (z₀ : ℂ) (r rTip : ℝ) (V : Set ℂ),
+      s ⊆ Finset.range (N' + 1) ∧ N' ∈ s ∧ 1 ≤ N' ∧
+      a N' z₀ ≠ 0 ∧
+      (fibrePoly a s z₀).Separable ∧
+      z₀ ∈ frontier (filledJulia c₁) ∧
+      z₀ ∈ (filledJulia c₂)ᶜ ∧
+      0 < r ∧ 0 < rTip ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧
+      V ⊆ (filledJulia c₁)ᶜ ∧ V ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+      (∀ ρ, 0 < ρ → ρ ≤ rTip →
+        IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ)) := by
+  obtain ⟨u, huU⟩ := hUne
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  let V : Set ℂ := connectedComponentIn C u
+  have hCo : IsOpen C :=
+    (isClosed_filledJulia c₁).isOpen_compl.inter (isClosed_filledJulia c₂).isOpen_compl
+  have hVo : IsOpen V := by
+    simpa [V] using hCo.connectedComponentIn
+  have hVc : IsPreconnected V := by
+    simpa [V] using (isPreconnected_connectedComponentIn (x := u) (F := C))
+  have hVsubC : V ⊆ C := by
+    simpa [V] using connectedComponentIn_subset C u
+  have hVbasin₁ : V ⊆ (filledJulia c₁)ᶜ := fun z hz => (hVsubC hz).1
+  have hVbasin₂ : V ⊆ (filledJulia c₂)ᶜ := fun z hz => (hVsubC hz).2
+  have hUC : U ⊆ C := fun z hz => ⟨hUbasin₁ hz, hUbasin₂ hz⟩
+  have hUV : U ⊆ V := by
+    simpa [V] using hUc.subset_connectedComponentIn huU hUC
+  exact exists_commonBasin_frontier_input_of_sparse_fibre_countableAvoidance_localTip
+    (U := U) (a := a) (s := s) (N := N) (c₁ := c₁) (c₂ := c₂)
+    hN1 hsupp hN hΩc ha hw hleadw hsepw havoid (by
+      intro z₀ hz₀S
+      obtain ⟨hz₀K₁, hz₀off₂, rTip, hrTip, htip⟩ := hgeom z₀ hz₀S
+      obtain ⟨rOther, hrOther, hball₂⟩ :=
+        Metric.isOpen_iff.mp (isClosed_filledJulia c₂).isOpen_compl z₀ hz₀off₂
+      let r : ℝ := min rOther rTip
+      have hr : 0 < r := by
+        simpa [r] using lt_min hrOther hrTip
+      have hr_le_other : r ≤ rOther := by
+        simp [r]
+      have hr_le_tip : r ≤ rTip := by
+        simp [r]
+      have hz₀front : z₀ ∈ frontier (filledJulia c₁) := by
+        rw [(isClosed_filledJulia c₁).frontier_eq]
+        exact ⟨hz₀K₁, by simp [hempty]⟩
+      refine ⟨r, rTip, V, hz₀front, hz₀off₂, hr, hrTip, hVo, hVc, hUV, hVbasin₁,
+        hVbasin₂, ?_, htip⟩
+      set W : Set ℂ := Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ with hW
+      have hWc : IsPreconnected W := by
+        simpa [W] using htip r hr hr_le_tip
+      have hWC : W ⊆ C := by
+        intro z hz
+        have hzballOther : z ∈ Metric.ball z₀ rOther :=
+          Metric.ball_subset_ball hr_le_other hz.1
+        exact ⟨hz.2, hball₂ hzballOther⟩
+      have hz₀clV : z₀ ∈ closure V := by
+        exact closure_mono hUV (hSclosure z₀ hz₀S)
+      have hmeet : (Metric.ball z₀ r ∩ V).Nonempty := by
+        rw [_root_.mem_closure_iff] at hz₀clV
+        exact hz₀clV (Metric.ball z₀ r) isOpen_ball (Metric.mem_ball_self hr)
+      obtain ⟨y, hyball, hyV⟩ := hmeet
+      have hyW : y ∈ W := ⟨hyball, hVbasin₁ hyV⟩
+      have hWsubCompY : W ⊆ connectedComponentIn C y :=
+        hWc.subset_connectedComponentIn hyW hWC
+      have hcomp : connectedComponentIn C y = V := by
+        have h := connectedComponentIn_eq (by simpa [V] using hyV)
+        simpa [V] using h.symm
+      intro z hz
+      exact hcomp ▸ hWsubCompY (by simpa [W] using hz))
 
 end Bottcher

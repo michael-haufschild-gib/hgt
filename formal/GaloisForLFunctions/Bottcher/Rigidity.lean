@@ -150,4 +150,27 @@ theorem hRigid_assemble (φ : ℂ → M) (Disc : ℂ → Prop) (c₁ c₂ : ℂ)
     · obtain ⟨hG, hrig⟩ := hBoth h1 h2
       exact q62_both_connected (φ c₁) (φ c₂) hG hrig
 
+/-- **Top q62 assembly from the separated hDisc and hRigid data.**  This is the final abstract join:
+`hDisc` handles the both-disconnected branch of `q62_independence`; `hRigid_assemble` handles every
+branch with at least one connected parameter, using monodromy for the mixed cases and
+`TranscendentalOverAdjoin` only for the both-connected case.  Thus the remaining analytic work can be
+produced independently as the explicit data terms below, with no hidden q62 case-split obligation. -/
+theorem q62_independence_of_hDisc_hRigidData (φ : ℂ → M) (Disc : ℂ → Prop) (c₁ c₂ : ℂ)
+    (hne : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
+    (hDisc : Disc c₁ → Disc c₂ →
+      Transcendental K (φ c₂) ∧ φ c₁ ≠ 0 ∧
+      ∀ d : ℕ, ∃ (σ : M ≃ₐ[K] M) (ζ : M) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (φ c₂) = φ c₂ ∧ σ ζ = ζ ∧ σ (φ c₁) = ζ * φ c₁)
+    (hData1 : Disc c₁ → φ c₁ ≠ 0 ∧ Transcendental K (φ c₂) ∧
+      ∀ d : ℕ, ∃ (σ : M ≃ₐ[K] M) (ζ : M) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (φ c₂) = φ c₂ ∧ σ ζ = ζ ∧ σ (φ c₁) = ζ * φ c₁)
+    (hData2 : Disc c₂ → φ c₂ ≠ 0 ∧ Transcendental K (φ c₁) ∧
+      ∀ d : ℕ, ∃ (σ : M ≃ₐ[K] M) (ζ : M) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (φ c₁) = φ c₁ ∧ σ ζ = ζ ∧ σ (φ c₂) = ζ * φ c₂)
+    (hBoth : ¬ Disc c₁ → ¬ Disc c₂ →
+      Transcendental K (φ c₂) ∧ TranscendentalOverAdjoin (K := K) (φ c₁) (φ c₂)) :
+    NoRelation K (φ c₁) (φ c₂) :=
+  q62_independence φ Disc c₁ c₂ hne hx₁ hx₂ hDisc
+    (hRigid_assemble φ Disc c₁ c₂ hData1 hData2 hBoth)
+
 end Bottcher

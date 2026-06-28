@@ -16,6 +16,7 @@ New file (hRigid connected lane); consumes `Rigidity` (the abstract reduction) a
 -/
 import GaloisForLFunctions.Bottcher.Rigidity
 import GaloisForLFunctions.Bottcher.MeromorphicField
+import GaloisForLFunctions.Bottcher.Q62Field
 
 open Polynomial
 
@@ -53,5 +54,28 @@ theorem q62_independence_connected_of_inputs {U : Set ℂ}
       exact q62_both_connected _ _ hGtr hrig)
   simp only [if_neg hne] at key
   exact key
+
+/-- **Concrete connected q62 bridge for the actual Böttcher meromorphic germs.**  Once the two
+connected-case analytic inputs are available directly for `phiMero c₁` and `phiMero c₂` on a common
+carrier `U` — transcendence of `phiMero c₂` and the E-vS hRigid input
+`TranscendentalOverAdjoin (phiMero c₁) (phiMero c₂)` — the connected q62 `NoRelation` follows
+immediately.  This is the minimal plug-in point for the hRigid sub-tower. -/
+theorem q62_independence_connected_phiMero_of_transcendentalOverAdjoin {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂) (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
+    (hGtr : haveI := isDomain_analyticSubring U hUo hUc hUne
+            letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+            Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (hrig : haveI := isDomain_analyticSubring U hUo hUc hUne
+            letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+            TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact q62_independence_connected_of_inputs hUo hUc hUne
+    (phiAnalytic c₁ hU₁) (phiAnalytic c₂ hU₂) c₁ c₂ hne hx₁ hx₂ hGtr hrig
 
 end Bottcher

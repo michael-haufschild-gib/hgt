@@ -379,6 +379,16 @@ theorem phibKummerInputs_iff_radicalData (hUo : IsOpen U) (hUc : IsPreconnected 
   · exact phibRadicalData_of_kummerInputs hUo hUc hUne hUinf hU_ext hU_esc
   · exact phibKummerInputs_of_radicalData hUo hUc hUne hUinf hU_ext hU_esc
 
+/-- The original Kummer-input provider and the finite square-root deck provider carry the same Lean
+content; radical data is only the intermediate normal form. -/
+theorem phibKummerInputs_iff_squareRootDeckData (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite) (hU_ext : U ⊆ U0NaturalBoundary.Ext) {b : ℂ}
+    (hU_esc : U ⊆ escapeOpen b) :
+    PhibKummerInputs hUo hUc hUne hUinf hU_ext hU_esc ↔
+      PhibSquareRootDeckData hUo hUc hUne hUinf hU_ext hU_esc := by
+  exact (phibKummerInputs_iff_radicalData hUo hUc hUne hUinf hU_ext hU_esc).trans
+    (phibRadicalData_iff_squareRootDeckData hUo hUc hUne hUinf hU_ext hU_esc)
+
 end U0CardTheorems
 
 namespace U0CardTheorems
@@ -584,6 +594,24 @@ theorem phibRadicalData_of_imageWindingDeepData (hUo : IsOpen U) (hUc : IsPrecon
       = algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext)
     rw [restrictMeroHom_algebraMap, restrictAnalytic_u0AnSub]
 
+/-- Topological image-winding deep data supplies the original U0 Kummer-input provider directly. -/
+theorem phibKummerInputs_of_imageWindingDeepData (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite) (hU_ext : U ⊆ U0NaturalBoundary.Ext) {b : ℂ}
+    (hU_esc : U ⊆ escapeOpen b)
+    (deepdata : PhibImageWindingDeepData U b) :
+    PhibKummerInputs hUo hUc hUne hUinf hU_ext hU_esc :=
+  phibKummerInputs_of_radicalData hUo hUc hUne hUinf hU_ext hU_esc
+    (phibRadicalData_of_imageWindingDeepData hUo hUc hUne hUinf hU_ext hU_esc deepdata)
+
+/-- Topological image-winding deep data supplies the equivalent square-root deck provider directly. -/
+theorem phibSquareRootDeckData_of_imageWindingDeepData (hUo : IsOpen U)
+    (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) {b : ℂ} (hU_esc : U ⊆ escapeOpen b)
+    (deepdata : PhibImageWindingDeepData U b) :
+    PhibSquareRootDeckData hUo hUc hUne hUinf hU_ext hU_esc :=
+  phibSquareRootDeckData_of_radicalData hUo hUc hUne hUinf hU_ext hU_esc
+    (phibRadicalData_of_imageWindingDeepData hUo hUc hUne hUinf hU_ext hU_esc deepdata)
+
 /-- U0 carrier independence directly from the deep odd-period data. This composes the new deep-data
 provider with the existing radical-data Kummer close, so the remaining U0 card input is exactly the
 geometric per-depth deep domain/loop construction. -/
@@ -678,6 +706,24 @@ theorem phibRadicalData_of_imageWindingEscapeDeepData (hUo : IsOpen U)
     (deepdata : PhibImageWindingEscapeDeepData U b) :
     PhibRadicalData hUo hUc hUne hUinf hU_ext hU_esc :=
   phibRadicalData_of_imageWindingDeepData hUo hUc hUne hUinf hU_ext hU_esc
+    (phibImageWindingDeepData_of_escapeDeepData deepdata)
+
+/-- Escape-local image-winding deep data supplies the original U0 Kummer-input provider directly. -/
+theorem phibKummerInputs_of_imageWindingEscapeDeepData (hUo : IsOpen U)
+    (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) {b : ℂ} (hU_esc : U ⊆ escapeOpen b)
+    (deepdata : PhibImageWindingEscapeDeepData U b) :
+    PhibKummerInputs hUo hUc hUne hUinf hU_ext hU_esc :=
+  phibKummerInputs_of_imageWindingDeepData hUo hUc hUne hUinf hU_ext hU_esc
+    (phibImageWindingDeepData_of_escapeDeepData deepdata)
+
+/-- Escape-local image-winding deep data supplies the equivalent square-root deck provider directly. -/
+theorem phibSquareRootDeckData_of_imageWindingEscapeDeepData (hUo : IsOpen U)
+    (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) {b : ℂ} (hU_esc : U ⊆ escapeOpen b)
+    (deepdata : PhibImageWindingEscapeDeepData U b) :
+    PhibSquareRootDeckData hUo hUc hUne hUinf hU_ext hU_esc :=
+  phibSquareRootDeckData_of_imageWindingDeepData hUo hUc hUne hUinf hU_ext hU_esc
     (phibImageWindingDeepData_of_escapeDeepData deepdata)
 
 /-- U0 escape-carrier independence from escape-local topological image-winding deep data. -/

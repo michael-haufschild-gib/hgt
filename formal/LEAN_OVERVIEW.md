@@ -7,14 +7,14 @@ Use this as the quick map before opening large proof files.
 
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
-| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 28 | 219 | `hurwitz_n2_unconditional` |
-| `u0_pui` | `GaloisForLFunctions.U0` | 24 | 244 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 180 | 2555 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 28 | 220 | `hurwitz_n2_unconditional` |
+| `u0_pui` | `GaloisForLFunctions.U0` | 24 | 255 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 183 | 2729 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
-- Shared and bridge declarations outside the three theorem areas: **864**.
+- Shared and bridge declarations outside the three theorem areas: **1007**.
 - Active proof-debt findings: **0**.
 
 ## Local Commands
@@ -31,15 +31,15 @@ Use this as the quick map before opening large proof files.
 
 | Lines | File |
 |---:|---|
-| 3369 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 4133 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
-| 2327 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
+| 2679 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
+| 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
+| 1537 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
+| 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1475 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
-| 1438 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
+| 1289 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean` |
 | 1267 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean` |
-| 1249 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryTruncation.lean` |
-| 1206 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingPeriodicAvoidance.lean` |
-| 1202 | `formal/GaloisForLFunctions/Bottcher/Brolin/GapAMuCore.lean` |

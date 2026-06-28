@@ -550,6 +550,59 @@ theorem continuesAcross_of_global_basin_branch_analytic {a : ℕ → ℂ → ℂ
       (hgrel.filter_mono nhdsWithin_le_nhds) hβrel_filt
   exact ⟨g, hgAt, hmatchβ⟩
 
+/-- Local-radius form of `continuesAcross_of_global_basin_branch_analytic`.  The branch-family proof
+only needs preconnectedness at one radius, so a tip model valid below some positive `rTip` suffices. -/
+theorem continuesAcross_of_global_basin_branch_analytic_localTip {a : ℕ → ℂ → ℂ} {s : Finset ℕ}
+    {N : ℕ} {c z₀ : ℂ} {r rTip : ℝ} {β : ℂ → ℂ}
+    (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s) (hN1 : 1 ≤ N)
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
+    (hlead : a N z₀ ≠ 0) (hsep : (fibrePoly a s z₀).Separable)
+    (hr : 0 < r) (hrTip : 0 < rTip) (hfront : z₀ ∈ frontier (filledJulia c))
+    (htip : ∀ ρ, 0 < ρ → ρ ≤ rTip →
+      IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c)ᶜ))
+    (hβc : ContinuousOn β (Metric.ball z₀ r ∩ (filledJulia c)ᶜ))
+    (hβrel : ∀ z ∈ Metric.ball z₀ r ∩ (filledJulia c)ᶜ,
+      ∑ i ∈ s, a i z * (β z) ^ i = 0) :
+    ContinuesAcross β (filledJulia c)ᶜ z₀ := by
+  obtain ⟨r', w, hr', hwc, hwsep, hwdeg, hwrel⟩ :=
+    exists_branch_family_analytic hsupp hN hN1 ha hlead hsep
+  set ρ : ℝ := min r (min r' rTip) with hρdef
+  have hρ : 0 < ρ := lt_min hr (lt_min hr' hrTip)
+  have hρr : ρ ≤ r := min_le_left _ _
+  have hρr' : ρ ≤ r' := le_trans (min_le_right _ _) (min_le_left _ _)
+  have hρTip : ρ ≤ rTip := le_trans (min_le_right _ _) (min_le_right _ _)
+  set W : Set ℂ := Metric.ball z₀ ρ ∩ (filledJulia c)ᶜ with hWdef
+  have hWball' : W ⊆ Metric.ball z₀ r' := fun z hz => Metric.ball_subset_ball hρr' hz.1
+  have hWball : W ⊆ Metric.ball z₀ r ∩ (filledJulia c)ᶜ :=
+    fun z hz => ⟨Metric.ball_subset_ball hρr hz.1, hz.2⟩
+  have hWbasin : W ⊆ (filledJulia c)ᶜ := inter_subset_right
+  have hWc : IsPreconnected W := htip ρ hρ hρTip
+  have hWnhds : W ∈ 𝓝[(filledJulia c)ᶜ] z₀ := by
+    have h := inter_mem_nhdsWithin ((filledJulia c)ᶜ) (Metric.ball_mem_nhds z₀ hρ)
+    rwa [inter_comm] at h
+  have hβcW : ContinuousOn β W := hβc.mono hWball
+  have hβrelW : ∀ z ∈ W, ∑ i ∈ s, a i z * (β z) ^ i = 0 :=
+    fun z hz => hβrel z (hWball hz)
+  have hNeBot : (𝓝[(filledJulia c)ᶜ] z₀).NeBot :=
+    nhdsWithin_compl_filledJulia_neBot_of_frontier hfront
+  obtain ⟨z₁, hz₁⟩ := hNeBot.nonempty_of_mem hWnhds
+  obtain ⟨w₀, d, hroot, hpart, hd, hβlim⟩ :=
+    dendrite_branch_limit_analytic hN1 hr' hsep w hwc hwsep hwdeg hwrel
+      hWball' hWbasin hWc hWnhds hβcW hβrelW hz₁
+  have hballbasin : Metric.ball z₀ r ∩ (filledJulia c)ᶜ ∈ 𝓝[(filledJulia c)ᶜ] z₀ := by
+    have h := inter_mem_nhdsWithin ((filledJulia c)ᶜ) (Metric.ball_mem_nhds z₀ hr)
+    rwa [inter_comm] at h
+  have hβrel_filt : ∀ᶠ z in 𝓝[(filledJulia c)ᶜ] z₀,
+      ∑ i ∈ s, a i z * (β z) ^ i = 0 :=
+    Filter.eventually_of_mem hballbasin hβrel
+  obtain ⟨g, hgAt, hgz₀, hgrel⟩ :=
+    exists_analyticAt_branch_analytic ha hroot hpart hd
+  have hmatchβ : ∀ᶠ z in 𝓝[(filledJulia c)ᶜ] z₀, g z = β z :=
+    branch_unique_within_analytic (fun i hi => (ha i hi).continuousAt) hpart hd
+      hgAt.continuousAt hgz₀ hβlim
+      (hgrel.filter_mono nhdsWithin_le_nhds) hβrel_filt
+  exact ⟨g, hgAt, hmatchβ⟩
+
 /-- **NoRelation from a common region and a branch-family continuation, using an abstract natural
 boundary predicate.** This is the E-vS-ready analogue of
 `noRelation_phiMero_of_emptyInterior_commonRegion_gamma_offOther_branch_separable`: the branch-family
@@ -628,6 +681,86 @@ theorem noRelation_phiMero_of_naturalBoundary_commonRegion_gamma_offOther_branch
     (continuesAcross_of_global_basin_branch_analytic hsupp hN hN1 haAt
       (by simpa [a] using hlead) (by simpa [a] using hsep) hr hfront htip hβc hβrel)
 
+/-- **Local-tip version of the common-region natural-boundary endpoint.**  This is the same
+branch-family `NoRelation` theorem as
+`noRelation_phiMero_of_naturalBoundary_commonRegion_gamma_offOther_branch_separable`, but it only
+requires the punctured-basin preconnectedness below one positive local radius.  The continuation
+construction shrinks its working ball before applying the local tip model. -/
+theorem noRelation_phiMero_of_naturalBoundary_commonRegion_gamma_offOther_branch_separable_localTip
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hγan₂ : AnalyticOnNhd ℂ γ (filledJulia c₂)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hnb : ∀ z₀ ∈ frontier (filledJulia c₁), ¬ ContinuesAcross β (filledJulia c₁)ᶜ z₀)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (N : ℕ) (z₀ : ℂ) (r rTip : ℝ) (V : Set ℂ),
+          s ⊆ Finset.range (N + 1) ∧ N ∈ s ∧ 1 ≤ N ∧
+          (Q N).eval₂ (Polynomial.evalRingHom z₀) (γ z₀) ≠ 0 ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          z₀ ∈ (filledJulia c₂)ᶜ ∧
+          0 < r ∧ 0 < rTip ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧ V ⊆ (filledJulia c₁)ᶜ ∧
+          Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+          AnalyticOnNhd ℂ γ V ∧
+          (∀ ρ, 0 < ρ → ρ ≤ rTip →
+            IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  apply noRelation_phiMero_of_no_function_relation hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG
+  intro Q s hnt hEqOn
+  obtain ⟨N, z₀, r, rTip, V, hsupp, hN, hN1, hlead, hsep, hfront, hz₀off, hr,
+    hrTip, hVo, hVc, hUV, hVbasin, hsectorV, hγV, htip⟩ := hinput Q s hnt hEqOn
+  let a : ℕ → ℂ → ℂ := fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)
+  have haV : ∀ i ∈ s, AnalyticOnNhd ℂ (a i) V := by
+    intro i _hi
+    exact analyticOnNhd_eval₂_of_analyticOnNhd hγV (Q i)
+  have hγAt : AnalyticAt ℂ γ z₀ := hγan₂ z₀ hz₀off
+  have haAt : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀ := by
+    intro i _hi
+    exact (analyticAt_eval₂_of_analyticAt hγAt (Q i)).contDiffAt
+  have hmatch : ∀ i ∈ s, ∀ z ∈ U,
+      a i z = (Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z) := by
+    intro i _hi z hz
+    dsimp [a]
+    simpa using congrArg (fun w => (Q i).eval₂ (Polynomial.evalRingHom z) w) (hγmatch z hz)
+  have hrelU : ∀ z ∈ U, ∑ i ∈ s, a i z * (β z) ^ i = 0 := by
+    intro z hz
+    calc
+      ∑ i ∈ s, a i z * (β z) ^ i
+          = ∑ i ∈ s,
+              ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) *
+                (bottcherCoord c₁ z) ^ i := by
+            refine Finset.sum_congr rfl ?_
+            intro i hi
+            rw [hmatch i hi z hz, hβesc z (hU₁ hz)]
+      _ = 0 := hEqOn hz
+  have hβV : AnalyticOnNhd ℂ β V := hβan.mono hVbasin
+  have hrelan : AnalyticOnNhd ℂ (fun z => ∑ i ∈ s, a i z * (β z) ^ i) V :=
+    analyticOnNhd_relation_analytic haV hβV
+  obtain ⟨u, huU⟩ := hUne
+  have hev : (fun z => ∑ i ∈ s, a i z * (β z) ^ i) =ᶠ[𝓝 u] (fun _ => (0 : ℂ)) := by
+    filter_upwards [hUo.mem_nhds huU] with z hz
+    exact hrelU z hz
+  have hrelV : Set.EqOn (fun z => ∑ i ∈ s, a i z * (β z) ^ i) 0 V :=
+    hrelan.eqOn_of_preconnected_of_eventuallyEq analyticOnNhd_const hVc (hUV huU) hev
+  have hβc : ContinuousOn β (Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ) :=
+    hβan.continuousOn.mono inter_subset_right
+  have hβrel : ∀ z ∈ Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ,
+      ∑ i ∈ s, a i z * (β z) ^ i = 0 := fun z hz => hrelV (hsectorV hz)
+  exact (hnb z₀ hfront)
+    (continuesAcross_of_global_basin_branch_analytic_localTip hsupp hN hN1 haAt
+      (by simpa [a] using hlead) (by simpa [a] using hsep) hr hrTip hfront htip hβc hβrel)
+
 /-- **hRigid from a common region and a branch-family continuation, using an abstract natural boundary
 predicate.** This packages
 `noRelation_phiMero_of_naturalBoundary_commonRegion_gamma_offOther_branch_separable`. -/
@@ -704,6 +837,92 @@ theorem noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_branch_
         hUV, hVbasin₁, hVbasin₂, hsectorV, htip⟩ := hinput Q s hnt hEqOn
       exact ⟨N, z₀, r, V, hsupp, hN, hN1, hlead, hsep, hfront, hz₀off, hr, hVo, hVc,
         hUV, hVbasin₁, hsectorV, hγan₂.mono hVbasin₂, htip⟩)
+
+/-- **Local-tip common-basin natural-boundary endpoint.**  This is the common-basin analogue of
+`noRelation_phiMero_of_naturalBoundary_commonRegion_gamma_offOther_branch_separable_localTip`: the
+caller only proves punctured-basin preconnectedness below a positive local radius, while `γ`
+analyticity is still derived from `V ⊆ (filledJulia c₂)ᶜ`. -/
+theorem noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_branch_separable_localTip
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hγan₂ : AnalyticOnNhd ℂ γ (filledJulia c₂)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hnb : ∀ z₀ ∈ frontier (filledJulia c₁), ¬ ContinuesAcross β (filledJulia c₁)ᶜ z₀)
+    (hinput : ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (N : ℕ) (z₀ : ℂ) (r rTip : ℝ) (V : Set ℂ),
+          s ⊆ Finset.range (N + 1) ∧ N ∈ s ∧ 1 ≤ N ∧
+          (Q N).eval₂ (Polynomial.evalRingHom z₀) (γ z₀) ≠ 0 ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          z₀ ∈ (filledJulia c₂)ᶜ ∧
+          0 < r ∧ 0 < rTip ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧
+          V ⊆ (filledJulia c₁)ᶜ ∧ V ⊆ (filledJulia c₂)ᶜ ∧
+          Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+          (∀ ρ, 0 < ρ → ρ ≤ rTip →
+            IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact noRelation_phiMero_of_naturalBoundary_commonRegion_gamma_offOther_branch_separable_localTip
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hγan₂ hγmatch hnb (by
+      intro Q s hnt hEqOn
+      obtain ⟨N, z₀, r, rTip, V, hsupp, hN, hN1, hlead, hsep, hfront, hz₀off, hr,
+        hrTip, hVo, hVc, hUV, hVbasin₁, hVbasin₂, hsectorV, htip⟩ :=
+        hinput Q s hnt hEqOn
+      exact ⟨N, z₀, r, rTip, V, hsupp, hN, hN1, hlead, hsep, hfront, hz₀off, hr,
+        hrTip, hVo, hVc, hUV, hVbasin₁, hsectorV, hγan₂.mono hVbasin₂, htip⟩)
+
+/-- **hRigid from a local-tip common-basin branch-family continuation.**  Packages
+`noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_branch_separable_localTip` as the
+relative transcendence input used by connected q62. -/
+theorem hrig_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_branch_separable_localTip
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β γ : ℂ → ℂ)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hγan₂ : AnalyticOnNhd ℂ γ (filledJulia c₂)ᶜ)
+    (hγmatch : ∀ z ∈ U, γ z = bottcherCoord c₂ z)
+    (hnb : ∀ z₀ ∈ frontier (filledJulia c₁), ¬ ContinuesAcross β (filledJulia c₁)ᶜ z₀)
+    (hinput : ∀ (γ : ℂ → ℂ),
+        AnalyticOnNhd ℂ γ (filledJulia c₂)ᶜ →
+        (∀ z ∈ U, γ z = bottcherCoord c₂ z) →
+        ∀ (Q : ℕ → Polynomial (Polynomial ℂ)) (s : Finset ℕ),
+        (∃ i ∈ s, (Q i).eval₂ (polyToAnalytic U) (phiAnalytic c₂ hU₂) ≠ 0) →
+        Set.EqOn (fun z => ∑ i ∈ s,
+            ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+              * (bottcherCoord c₁ z) ^ i) 0 U →
+        ∃ (N : ℕ) (z₀ : ℂ) (r rTip : ℝ) (V : Set ℂ),
+          s ⊆ Finset.range (N + 1) ∧ N ∈ s ∧ 1 ≤ N ∧
+          (Q N).eval₂ (Polynomial.evalRingHom z₀) (γ z₀) ≠ 0 ∧
+          (fibrePoly (fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (γ z)) s z₀).Separable ∧
+          z₀ ∈ frontier (filledJulia c₁) ∧
+          z₀ ∈ (filledJulia c₂)ᶜ ∧
+          0 < r ∧ 0 < rTip ∧ IsOpen V ∧ IsPreconnected V ∧ U ⊆ V ∧
+          V ⊆ (filledJulia c₁)ᶜ ∧ V ⊆ (filledJulia c₂)ᶜ ∧
+          Metric.ball z₀ r ∩ (filledJulia c₁)ᶜ ⊆ V ∧
+          (∀ ρ, 0 < ρ → ρ ≤ rTip →
+            IsPreconnected (Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    TranscendentalOverAdjoin (K := RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact transcendentalOverAdjoin_of_noRelation _ _
+    (noRelation_phiMero_of_naturalBoundary_commonBasin_gamma_offOther_branch_separable_localTip
+      hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG β γ hβan hβesc hγan₂ hγmatch hnb
+      (hinput γ hγan₂ hγmatch))
 
 /-- **hRigid from a common-basin region and branch-family continuation, using an abstract natural
 boundary predicate.** This packages

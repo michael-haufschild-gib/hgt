@@ -145,6 +145,420 @@ theorem exists_mem_ball_compl_filledJulia_of_mem_emptyInterior {c z₀ : ℂ} {r
       exact hzint)
     hr
 
+/-- Model one-sided local basin: an open Euclidean ball cut by the right half-plane is
+preconnected. This is the point-set topology shape needed by local tip arguments. -/
+theorem isPreconnected_ball_inter_rightHalfplane (z₀ : ℂ) {ρ : ℝ} :
+    IsPreconnected (Metric.ball z₀ ρ ∩ {z | z₀.re < z.re}) := by
+  exact ((convex_ball z₀ ρ).inter (convex_halfSpace_re_gt z₀.re)).isPreconnected
+
+/-- The open half-plane strictly to the right of a real-part maximizer of `filledJulia c` lies in
+the basin. -/
+theorem rightmost_rightHalfplane_subset_compl_filledJulia {c z₀ : ℂ}
+    (hz₀max : ∀ w ∈ filledJulia c, w.re ≤ z₀.re) :
+    {z : ℂ | z₀.re < z.re} ⊆ (filledJulia c)ᶜ := by
+  intro z hz hzK
+  exact (not_lt_of_ge (hz₀max z hzK)) hz
+
+/-- The local right-hand sector at a real-part maximizer is contained in the basin. -/
+theorem rightmost_ball_inter_rightHalfplane_subset_compl_filledJulia {c z₀ : ℂ} {ρ : ℝ}
+    (hz₀max : ∀ w ∈ filledJulia c, w.re ≤ z₀.re) :
+    Metric.ball z₀ ρ ∩ {z : ℂ | z₀.re < z.re} ⊆
+      Metric.ball z₀ ρ ∩ (filledJulia c)ᶜ := by
+  intro z hz
+  exact ⟨hz.1, rightmost_rightHalfplane_subset_compl_filledJulia hz₀max hz.2⟩
+
+/-- A real-part maximizer supplies a preconnected local sector lying in the basin. -/
+theorem rightmost_ball_inter_rightHalfplane_preconnected_subset_compl_filledJulia {c z₀ : ℂ}
+    {ρ : ℝ} (hz₀max : ∀ w ∈ filledJulia c, w.re ≤ z₀.re) :
+    IsPreconnected (Metric.ball z₀ ρ ∩ {z : ℂ | z₀.re < z.re}) ∧
+      Metric.ball z₀ ρ ∩ {z : ℂ | z₀.re < z.re} ⊆
+        Metric.ball z₀ ρ ∩ (filledJulia c)ᶜ := by
+  exact ⟨isPreconnected_ball_inter_rightHalfplane z₀,
+    rightmost_ball_inter_rightHalfplane_subset_compl_filledJulia hz₀max⟩
+
+/-- A local one-sided complement model supplies the `htip`-style preconnectedness hypothesis at
+every scale. The geometric task is to prove such a local model for selected filled-Julia tip
+points. -/
+theorem local_tip_preconnected_of_eq_rightHalfplane {K : Set ℂ} {z₀ : ℂ}
+    (hlocal : ∀ ρ, 0 < ρ →
+      Metric.ball z₀ ρ ∩ Kᶜ = Metric.ball z₀ ρ ∩ {z | z₀.re < z.re}) :
+    ∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ Kᶜ) := by
+  intro ρ hρ
+  rw [hlocal ρ hρ]
+  exact isPreconnected_ball_inter_rightHalfplane z₀
+
+/-- Model endpoint slit basin: a ball centered at the tip, with only the translated negative real
+ray removed, is preconnected. -/
+theorem isPreconnected_ball_inter_translated_slitPlane (z₀ : ℂ) {ρ : ℝ} (hρ : 0 < ρ) :
+    IsPreconnected (Metric.ball z₀ ρ ∩ {z | z - z₀ ∈ Complex.slitPlane}) := by
+  let w : ℂ := ((ρ / 2 : ℝ) : ℂ)
+  let center : ℂ := z₀ + w
+  have hw_pos : 0 < ρ / 2 := half_pos hρ
+  have hw_slit : w ∈ Complex.slitPlane := by
+    dsimp [w]
+    exact Complex.ofReal_mem_slitPlane.2 hw_pos
+  have hcenter_ball : center ∈ Metric.ball z₀ ρ := by
+    dsimp [center, w]
+    rw [Metric.mem_ball]
+    simp only [dist_eq_norm, add_sub_cancel_left]
+    have hnorm : ‖((ρ / 2 : ℝ) : ℂ)‖ = ρ / 2 :=
+      Complex.norm_of_nonneg (le_of_lt hw_pos)
+    rw [hnorm]
+    exact half_lt_self hρ
+  have hcenter_slit : center - z₀ ∈ Complex.slitPlane := by
+    dsimp [center]
+    simpa using hw_slit
+  have hstar_ball : StarConvex ℝ center (Metric.ball z₀ ρ) :=
+    (convex_ball z₀ ρ).starConvex hcenter_ball
+  have hstar_slit : StarConvex ℝ center {z | z - z₀ ∈ Complex.slitPlane} := by
+    intro y hy a b ha hb hab
+    have h := (Complex.starConvex_ofReal_slitPlane hw_pos) hy ha hb hab
+    have heq : (a • center + b • y) - z₀ = a • w + b • (y - z₀) := by
+      have haeq : a = 1 - b := by linarith
+      rw [haeq]
+      dsimp [center]
+      norm_num
+      ring_nf
+    change (a • center + b • y) - z₀ ∈ Complex.slitPlane
+    rw [heq]
+    simpa [w] using h
+  exact
+    (((hstar_ball.inter hstar_slit).isPathConnected
+      ⟨hcenter_ball, hcenter_slit⟩).isConnected).isPreconnected
+
+/-- A translated real line has empty interior. -/
+theorem interior_translated_realLine_eq_empty (z₀ : ℂ) :
+    interior {z : ℂ | (z - z₀).im = 0} = ∅ := by
+  have hline : {z : ℂ | (z - z₀).im = 0} = {z : ℂ | z.im = z₀.im} := by
+    ext z
+    constructor <;> intro h <;> simp [sub_im] at h ⊢ <;> linarith
+  rw [hline]
+  have heq :
+      {z : ℂ | z.im = z₀.im} =
+        {z : ℂ | z.im ≤ z₀.im} ∩ {z : ℂ | z₀.im ≤ z.im} := by
+    ext z
+    constructor
+    · intro hz
+      exact ⟨le_of_eq hz, ge_of_eq hz⟩
+    · intro hz
+      exact le_antisymm hz.1 hz.2
+  rw [heq, interior_inter]
+  rw [eq_empty_iff_forall_notMem]
+  intro z hz
+  simp at hz
+  linarith
+
+/-- The translated slit sector is dense in every ball centered at the tip. -/
+theorem ball_subset_closure_ball_inter_translated_slitPlane (z₀ : ℂ) {ρ : ℝ} :
+    Metric.ball z₀ ρ ⊆
+      closure (Metric.ball z₀ ρ ∩ {z | z - z₀ ∈ Complex.slitPlane}) := by
+  classical
+  let K : Set ℂ := {z | z - z₀ ∈ (Complex.slitPlane)ᶜ}
+  have hKsubLine : K ⊆ {z | (z - z₀).im = 0} := by
+    intro z hz
+    simp [K, Complex.mem_slitPlane_iff] at hz
+    exact hz.2
+  have hemptyK : interior K = ∅ := by
+    have hIntSub : interior K ⊆ interior {z : ℂ | (z - z₀).im = 0} :=
+      interior_mono hKsubLine
+    rw [interior_translated_realLine_eq_empty z₀] at hIntSub
+    exact eq_empty_of_subset_empty hIntSub
+  have hcl : Metric.ball z₀ ρ ⊆ closure (Metric.ball z₀ ρ ∩ Kᶜ) := by
+    apply subset_closure_inter_compl (U := Metric.ball z₀ ρ) (K := K) Metric.isOpen_ball
+    rw [hemptyK, inter_empty]
+  have hset :
+      Metric.ball z₀ ρ ∩ Kᶜ =
+        Metric.ball z₀ ρ ∩ {z | z - z₀ ∈ Complex.slitPlane} := by
+    ext y
+    constructor
+    · intro hy
+      refine ⟨hy.1, ?_⟩
+      by_contra hys
+      exact hy.2 (by simpa [K] using hys)
+    · intro hy
+      refine ⟨hy.1, ?_⟩
+      intro hyK
+      exact hyK hy.2
+  intro z hz
+  rw [← hset]
+  exact hcl hz
+
+/-- If a local complement is exactly the translated slit-plane model at every scale, then it
+supplies the `htip`-style preconnectedness hypothesis. -/
+theorem local_tip_preconnected_of_eq_translated_slitPlane {K : Set ℂ} {z₀ : ℂ}
+    (hlocal : ∀ ρ, 0 < ρ →
+      Metric.ball z₀ ρ ∩ Kᶜ = Metric.ball z₀ ρ ∩ {z | z - z₀ ∈ Complex.slitPlane}) :
+    ∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ Kᶜ) := by
+  intro ρ hρ
+  rw [hlocal ρ hρ]
+  exact isPreconnected_ball_inter_translated_slitPlane z₀ hρ
+
+/-- If the translated slit sector lies in the local basin at every scale, then the local basin is
+preconnected at every scale. The slit sector is preconnected and dense in the ball, so the full local
+basin is sandwiched between a preconnected set and its closure. -/
+theorem local_tip_preconnected_of_translated_slitPlane_subset_compl {K : Set ℂ} {z₀ : ℂ}
+    (hslit : ∀ ρ, 0 < ρ →
+      Metric.ball z₀ ρ ∩ {z | z - z₀ ∈ Complex.slitPlane} ⊆ Metric.ball z₀ ρ ∩ Kᶜ) :
+    ∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ Kᶜ) := by
+  intro ρ hρ
+  exact (isPreconnected_ball_inter_translated_slitPlane z₀ hρ).subset_closure
+    (hslit ρ hρ)
+    (fun z hz => ball_subset_closure_ball_inter_translated_slitPlane z₀ hz.1)
+
+/-- All-scale translated-slit inclusion is equivalent to putting `K` on the excluded translated
+slit ray. This records a useful obstruction: an all-scale slit-sector basin hypothesis is far more
+rigid than a genuinely local tip hypothesis. -/
+theorem all_scale_translated_slitPlane_subset_compl_iff_subset_nonSlitPlane
+    {K : Set ℂ} {z₀ : ℂ} :
+    (∀ ρ, 0 < ρ →
+      Metric.ball z₀ ρ ∩ {z | z - z₀ ∈ Complex.slitPlane} ⊆
+        Metric.ball z₀ ρ ∩ Kᶜ) ↔
+    K ⊆ {z | z - z₀ ∉ Complex.slitPlane} := by
+  constructor
+  · intro h z hzK hzslit
+    let ρ : ℝ := dist z z₀ + 1
+    have hdist : 0 ≤ dist z z₀ := dist_nonneg
+    have hρ : 0 < ρ := by
+      dsimp [ρ]
+      linarith
+    have hzball : z ∈ Metric.ball z₀ ρ := by
+      rw [Metric.mem_ball]
+      dsimp [ρ]
+      rw [dist_comm]
+      linarith
+    exact (h ρ hρ ⟨hzball, hzslit⟩).2 hzK
+  · intro h ρ _hρ z hz
+    exact ⟨hz.1, fun hzK => h hzK hz.2⟩
+
+/-- Among points of `K`, the all-scale translated-slit condition can hold at most once. -/
+theorem subsingleton_mem_all_scale_translated_slitPlane_subset_compl
+    (K : Set ℂ) :
+    Set.Subsingleton {z₀ : ℂ | z₀ ∈ K ∧
+      ∀ ρ, 0 < ρ →
+        Metric.ball z₀ ρ ∩ {z | z - z₀ ∈ Complex.slitPlane} ⊆
+          Metric.ball z₀ ρ ∩ Kᶜ} := by
+  intro z₀ hz₀ z₁ hz₁
+  have h₀ : K ⊆ {z | z - z₀ ∉ Complex.slitPlane} :=
+    (all_scale_translated_slitPlane_subset_compl_iff_subset_nonSlitPlane.mp hz₀.2)
+  have h₁ : K ⊆ {z | z - z₁ ∉ Complex.slitPlane} :=
+    (all_scale_translated_slitPlane_subset_compl_iff_subset_nonSlitPlane.mp hz₁.2)
+  have h01 : z₁ - z₀ ∉ Complex.slitPlane := h₀ hz₁.1
+  have h10 : z₀ - z₁ ∉ Complex.slitPlane := h₁ hz₀.1
+  have h01re : (z₁ - z₀).re ≤ 0 := by
+    by_contra h
+    exact h01 (Complex.mem_slitPlane_iff.mpr (Or.inl (not_le.mp h)))
+  have h10re : (z₀ - z₁).re ≤ 0 := by
+    by_contra h
+    exact h10 (Complex.mem_slitPlane_iff.mpr (Or.inl (not_le.mp h)))
+  have h01im : (z₁ - z₀).im = 0 := by
+    by_contra h
+    exact h01 (Complex.mem_slitPlane_iff.mpr (Or.inr h))
+  apply Complex.ext
+  · simp [sub_re] at h01re h10re ⊢
+    linarith
+  · simp [sub_im] at h01im ⊢
+    linarith
+
+/-- The all-scale translated-slit condition is countable on `K` because it is subsingleton. -/
+theorem countable_mem_all_scale_translated_slitPlane_subset_compl
+    (K : Set ℂ) :
+    ({z₀ : ℂ | z₀ ∈ K ∧
+      ∀ ρ, 0 < ρ →
+        Metric.ball z₀ ρ ∩ {z | z - z₀ ∈ Complex.slitPlane} ⊆
+          Metric.ball z₀ ρ ∩ Kᶜ}).Countable :=
+  (subsingleton_mem_all_scale_translated_slitPlane_subset_compl K).countable
+
+/-- The filled-Julia frontier points satisfying the all-scale translated-slit basin inclusion are
+countable, even after intersecting with an arbitrary local set, off-other condition, and analytic
+region. In particular, the corresponding uncountable local-frontier supply hypothesis is impossible
+for the all-scale slit-sector model. -/
+theorem countable_local_frontier_offOther_all_scale_translated_slitPlane_subset_compl_filledJulia
+    (c₁ c₂ : ℂ) (A Ω : Set ℂ) :
+    (((((A ∩ frontier (filledJulia c₁)) ∩ (filledJulia c₂)ᶜ) ∩
+      {z₀ : ℂ | ∀ ρ, 0 < ρ →
+        Metric.ball z₀ ρ ∩ {z | z - z₀ ∈ Complex.slitPlane} ⊆
+          Metric.ball z₀ ρ ∩ (filledJulia c₁)ᶜ}) ∩ Ω)).Countable := by
+  exact (countable_mem_all_scale_translated_slitPlane_subset_compl (filledJulia c₁)).mono (by
+    intro z hz
+    have hzfront : z ∈ frontier (filledJulia c₁) := hz.1.1.1.2
+    have hzcl : z ∈ closure (filledJulia c₁) := by
+      rw [frontier_eq_closure_inter_closure] at hzfront
+      exact hzfront.1
+    have hzK : z ∈ filledJulia c₁ := by
+      rwa [(isClosed_filledJulia c₁).closure_eq] at hzcl
+    exact ⟨hzK, hz.1.2⟩)
+
+private theorem complex_norm_inv_of_norm_eq_one {u : ℂ} (hu : ‖u‖ = 1) : ‖u⁻¹‖ = 1 := by
+  rw [norm_inv, hu, inv_one]
+
+private theorem complex_ne_zero_of_norm_eq_one {u : ℂ} (hu : ‖u‖ = 1) : u ≠ 0 := by
+  intro h
+  rw [h, norm_zero] at hu
+  norm_num at hu
+
+private theorem complex_normSq_of_norm_eq_one {u : ℂ} (hu : ‖u‖ = 1) :
+    Complex.normSq u = 1 := by
+  rw [Complex.normSq_eq_norm_sq, hu]
+  norm_num
+
+/-- A rotated translated real line has empty interior. -/
+theorem interior_rotated_translated_realLine_eq_empty (u z₀ : ℂ) (hu : ‖u‖ = 1) :
+    interior {z : ℂ | (u * (z - z₀)).im = 0} = ∅ := by
+  let L : Set ℂ := {z : ℂ | (u * (z - z₀)).im = 0}
+  change interior L = ∅
+  rw [eq_empty_iff_forall_notMem]
+  intro z hzint
+  have hzline : z ∈ L := interior_subset hzint
+  change (u * (z - z₀)).im = 0 at hzline
+  rw [mem_interior_iff_mem_nhds, Metric.mem_nhds_iff] at hzint
+  obtain ⟨ε, hεpos, hεsub⟩ := hzint
+  let v : ℂ := (((ε / 2 : ℝ) : ℂ) * Complex.I) * u⁻¹
+  let y : ℂ := z + v
+  have hyball : y ∈ Metric.ball z ε := by
+    rw [Metric.mem_ball, dist_eq_norm]
+    have hsub : y - z = v := by
+      dsimp [y]
+      ring
+    rw [hsub]
+    dsimp [v]
+    rw [norm_mul, norm_mul, Complex.norm_real,
+      Real.norm_of_nonneg (by linarith : 0 ≤ ε / 2), Complex.norm_I,
+      complex_norm_inv_of_norm_eq_one hu]
+    ring_nf
+    linarith
+  have hyline : (u * (y - z₀)).im = 0 := hεsub hyball
+  have hcalc : (u * (y - z₀)).im = (u * (z - z₀)).im + ε / 2 := by
+    dsimp [y, v]
+    have hnormSq : Complex.normSq u = 1 := complex_normSq_of_norm_eq_one hu
+    have hunit : u.re * u.re + u.im * u.im = 1 := by
+      simpa [Complex.normSq_apply] using hnormSq
+    simp [Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.add_im,
+      Complex.sub_re, Complex.sub_im]
+    rw [hnormSq]
+    nlinarith
+  rw [hcalc, hzline] at hyline
+  linarith
+
+/-- Rotated model endpoint slit basin: a ball centered at the tip, with a rotated translated ray
+removed, is preconnected. -/
+theorem isPreconnected_ball_inter_rotated_translated_slitPlane (u z₀ : ℂ) (hu : ‖u‖ = 1)
+    {ρ : ℝ} (hρ : 0 < ρ) :
+    IsPreconnected (Metric.ball z₀ ρ ∩ {z | u * (z - z₀) ∈ Complex.slitPlane}) := by
+  let w : ℂ := ((ρ / 2 : ℝ) : ℂ)
+  let center : ℂ := z₀ + u⁻¹ * w
+  have hune : u ≠ 0 := complex_ne_zero_of_norm_eq_one hu
+  have hw_pos : 0 < ρ / 2 := half_pos hρ
+  have hw_slit : w ∈ Complex.slitPlane := by
+    dsimp [w]
+    exact Complex.ofReal_mem_slitPlane.2 hw_pos
+  have hcenter_ball : center ∈ Metric.ball z₀ ρ := by
+    dsimp [center, w]
+    rw [Metric.mem_ball]
+    simp only [dist_eq_norm, add_sub_cancel_left]
+    rw [norm_mul, complex_norm_inv_of_norm_eq_one hu, one_mul]
+    have hnorm : ‖((ρ / 2 : ℝ) : ℂ)‖ = ρ / 2 :=
+      Complex.norm_of_nonneg (le_of_lt hw_pos)
+    rw [hnorm]
+    exact half_lt_self hρ
+  have hcenter_slit : u * (center - z₀) ∈ Complex.slitPlane := by
+    dsimp [center]
+    rw [add_sub_cancel_left]
+    rw [← mul_assoc, mul_inv_cancel₀ hune, one_mul]
+    exact hw_slit
+  have hstar_ball : StarConvex ℝ center (Metric.ball z₀ ρ) :=
+    (convex_ball z₀ ρ).starConvex hcenter_ball
+  have hstar_slit : StarConvex ℝ center {z | u * (z - z₀) ∈ Complex.slitPlane} := by
+    intro y hy a b ha hb hab
+    have h := (Complex.starConvex_ofReal_slitPlane hw_pos) hy ha hb hab
+    have heq : u * ((a • center + b • y) - z₀) =
+        a • w + b • (u * (y - z₀)) := by
+      have haeq : a = 1 - b := by
+        linarith
+      rw [haeq]
+      dsimp [center]
+      norm_num
+      have hinner : (1 - ↑b) * (z₀ + u⁻¹ * w) + ↑b * y - z₀ =
+          (1 - ↑b) * (u⁻¹ * w) + ↑b * (y - z₀) := by
+        ring_nf
+      rw [hinner, mul_add]
+      have hterm₁ : u * ((1 - ↑b) * (u⁻¹ * w)) = (1 - ↑b) * w := by
+        ring_nf
+        have hbterm : u * ↑b * u⁻¹ = ↑b := by
+          rw [mul_comm u ↑b, mul_assoc, mul_inv_cancel₀ hune, mul_one]
+        rw [hbterm, mul_inv_cancel₀ hune, one_mul]
+      have hterm₂ : u * (↑b * (y - z₀)) = ↑b * (u * (y - z₀)) := by
+        ring
+      rw [hterm₁, hterm₂]
+    change u * ((a • center + b • y) - z₀) ∈ Complex.slitPlane
+    rw [heq]
+    simpa [w] using h
+  exact
+    (((hstar_ball.inter hstar_slit).isPathConnected
+      ⟨hcenter_ball, hcenter_slit⟩).isConnected).isPreconnected
+
+/-- The rotated translated slit sector is dense in every ball centered at the tip. -/
+theorem ball_subset_closure_ball_inter_rotated_translated_slitPlane (u z₀ : ℂ) (hu : ‖u‖ = 1)
+    {ρ : ℝ} :
+    Metric.ball z₀ ρ ⊆
+      closure (Metric.ball z₀ ρ ∩ {z | u * (z - z₀) ∈ Complex.slitPlane}) := by
+  classical
+  let K : Set ℂ := {z | u * (z - z₀) ∈ (Complex.slitPlane)ᶜ}
+  have hKsubLine : K ⊆ {z | (u * (z - z₀)).im = 0} := by
+    intro z hz
+    simp [K, Complex.mem_slitPlane_iff] at hz
+    exact hz.2
+  have hemptyK : interior K = ∅ := by
+    have hIntSub : interior K ⊆ interior {z : ℂ | (u * (z - z₀)).im = 0} :=
+      interior_mono hKsubLine
+    rw [interior_rotated_translated_realLine_eq_empty u z₀ hu] at hIntSub
+    exact eq_empty_of_subset_empty hIntSub
+  have hcl : Metric.ball z₀ ρ ⊆ closure (Metric.ball z₀ ρ ∩ Kᶜ) := by
+    apply subset_closure_inter_compl (U := Metric.ball z₀ ρ) (K := K) Metric.isOpen_ball
+    rw [hemptyK, inter_empty]
+  have hset :
+      Metric.ball z₀ ρ ∩ Kᶜ =
+        Metric.ball z₀ ρ ∩ {z | u * (z - z₀) ∈ Complex.slitPlane} := by
+    ext y
+    constructor
+    · intro hy
+      refine ⟨hy.1, ?_⟩
+      by_contra hys
+      exact hy.2 (by simpa [K] using hys)
+    · intro hy
+      refine ⟨hy.1, ?_⟩
+      intro hyK
+      exact hyK hy.2
+  intro z hz
+  rw [← hset]
+  exact hcl hz
+
+/-- If a rotated translated slit sector lies in the local basin at every scale, then the local basin
+is preconnected at every scale. -/
+theorem local_tip_preconnected_of_rotated_translated_slitPlane_subset_compl {K : Set ℂ}
+    {u z₀ : ℂ} (hu : ‖u‖ = 1)
+    (hslit : ∀ ρ, 0 < ρ →
+      Metric.ball z₀ ρ ∩ {z | u * (z - z₀) ∈ Complex.slitPlane} ⊆
+        Metric.ball z₀ ρ ∩ Kᶜ) :
+    ∀ ρ, 0 < ρ → IsPreconnected (Metric.ball z₀ ρ ∩ Kᶜ) := by
+  intro ρ hρ
+  exact (isPreconnected_ball_inter_rotated_translated_slitPlane u z₀ hu hρ).subset_closure
+    (hslit ρ hρ)
+    (fun z hz => ball_subset_closure_ball_inter_rotated_translated_slitPlane u z₀ hu hz.1)
+
+/-- Local-radius version of the rotated-slit bridge.  This is the non-global interface: it gives
+`htip` only below a prescribed radius, avoiding the all-scale condition that forces a global ray
+obstruction. -/
+theorem local_tip_preconnected_of_rotated_translated_slitPlane_subset_compl_le {K : Set ℂ}
+    {u z₀ : ℂ} {R : ℝ} (hu : ‖u‖ = 1)
+    (hslit : ∀ ρ, 0 < ρ → ρ ≤ R →
+      Metric.ball z₀ ρ ∩ {z | u * (z - z₀) ∈ Complex.slitPlane} ⊆
+        Metric.ball z₀ ρ ∩ Kᶜ) :
+    ∀ ρ, 0 < ρ → ρ ≤ R → IsPreconnected (Metric.ball z₀ ρ ∩ Kᶜ) := by
+  intro ρ hρ hρR
+  exact (isPreconnected_ball_inter_rotated_translated_slitPlane u z₀ hu hρ).subset_closure
+    (hslit ρ hρ hρR)
+    (fun z hz => ball_subset_closure_ball_inter_rotated_translated_slitPlane u z₀ hu hz.1)
+
 /-- **Dendrite natural boundary, fully assembled from the empty-interior condition.** For a Julia
 point `z₀` where `K_c` has empty interior, no continuation of `φ_c` preserving the Böttcher modulus on
 the basin can exist. The only remaining inputs are the empty-interior condition (the dendrite case

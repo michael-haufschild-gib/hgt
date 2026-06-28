@@ -1180,6 +1180,70 @@ theorem shiftedPower_twoRay_close_of_zero_current {N : ℕ} {s : ℂ}
     simpa [HurwitzNonRat.shiftedPowerPolynomial, negPrev] using hDneg
   exact ⟨neg_eq_zero.mp hDneg', hP⟩
 
+/-- If both compressed shifted-power polynomials vanish, a two-ray shifted-power relation has zero
+polynomial right side. This is the algebraic handoff after the current and previous rays have each
+been reduced to their one-ray shifted-power obstruction. -/
+theorem shiftedPower_twoRay_rhs_zero_of_compressed_zero {N : ℕ} {s : ℂ}
+    (current prev : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ}
+    (hcurrent : HurwitzNonRat.shiftedPowerPolynomial N current = 0)
+    (hprev : HurwitzNonRat.shiftedPowerPolynomial N (fun i => (prev i).comp (X + 1)) = 0)
+    (hrel : ∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (current i).eval (n : ℂ) *
+        (n : ℂ) ^ (-(s + (i : ℂ)))) -
+      (∑ i : Fin (N + 1), (prev i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = P.eval (n : ℂ)) :
+    P = 0 := by
+  have hcurEv :=
+    HurwitzNonRat.eventually_cpow_sum_eq_cpow_mul_shiftedPowerPolynomial_eval (N := N) s current
+  have hprevEv :=
+    HurwitzNonRat.eventually_cpow_sum_eq_cpow_mul_shiftedPowerPolynomial_eval (N := N) s
+      (fun i => (prev i).comp (X + 1))
+  rw [Filter.eventually_atTop] at hcurEv hprevEv
+  obtain ⟨A, hA⟩ := hcurEv
+  obtain ⟨B, hB⟩ := hprevEv
+  let C : ℕ := max M (max A (B + 1))
+  apply Polynomial.eq_zero_of_infinite_isRoot
+  have htail : {n : ℕ | C ≤ n}.Infinite := by
+    have hcompl : {n : ℕ | C ≤ n} = (Set.Iio C)ᶜ := by
+      ext n
+      simp
+    rw [hcompl]
+    exact (Set.finite_Iio C).infinite_compl
+  have hinj : Set.InjOn (fun n : ℕ => (n : ℂ)) {n : ℕ | C ≤ n} := by
+    intro a _ b _ hcast
+    exact Nat.cast_injective hcast
+  refine Set.Infinite.mono ?_ (htail.image hinj)
+  rintro x ⟨n, hn, rfl⟩
+  change P.IsRoot (n : ℂ)
+  rw [Polynomial.IsRoot.def]
+  have hM : M ≤ n := by dsimp [C] at hn; omega
+  have hAn : A ≤ n := by dsimp [C] at hn; omega
+  have hn1 : 1 ≤ n := by dsimp [C] at hn; omega
+  have hBn : B ≤ n - 1 := by dsimp [C] at hn; omega
+  have hcur := hA n hAn
+  have hcurZero :
+      (∑ i : Fin (N + 1), (current i).eval (n : ℂ) *
+        (n : ℂ) ^ (-(s + (i : ℂ)))) = 0 := by
+    rw [hcurrent, eval_zero, mul_zero] at hcur
+    exact hcur
+  have hprevm := hB (n - 1) hBn
+  have hprevZero :
+      (∑ i : Fin (N + 1), (prev i).eval (n : ℂ) *
+        (((n - 1 : ℕ) : ℂ) ^ (-(s + (i : ℂ))))) = 0 := by
+    rw [hprev, eval_zero, mul_zero] at hprevm
+    have hcast : ((n - 1 : ℕ) : ℂ) + 1 = (n : ℂ) := by
+      rw [Nat.cast_sub hn1]
+      push_cast
+      ring
+    have heval : ∀ i : Fin (N + 1),
+        (((prev i).comp (X + 1)).eval (((n - 1 : ℕ) : ℂ))) = (prev i).eval (n : ℂ) := by
+      intro i
+      simp [eval_comp, hcast]
+    simpa [heval] using hprevm
+  have hr := hrel n hM
+  rw [hcurZero, hprevZero, sub_zero] at hr
+  exact hr.symm
+
 /-- Mixed relations with zero harmonic coefficients close by the shifted-power obstruction. -/
 theorem mixedTailIndependent_zero_harmonic_part {N : ℕ} {s : ℂ}
     (hsZ : ∀ k : ℤ, s ≠ (k : ℂ))

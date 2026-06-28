@@ -187,4 +187,56 @@ theorem differentiableAt_crossRatio {c α β : ℂ} {n : ℕ} {z : ℂ}
     mul_ne_zero (sub_ne_zero.mpr hwβ) (sub_ne_zero.mpr hzα)
   exact hnum.div hden hdne
 
+/-- The iterate cross-ratio is differentiable on any region avoiding the denominator fibres. -/
+theorem differentiableOn_crossRatio_iterate {c α β : ℂ} {n : ℕ} {U : Set ℂ}
+    (hβ : ∀ z ∈ U, (quadratic c)^[n] z ≠ β)
+    (hα : ∀ z ∈ U, z ≠ α) :
+    DifferentiableOn ℂ
+      (fun z => ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α))) U := by
+  intro z hz
+  exact (differentiableAt_crossRatio (hβ z hz) (hα z hz)).differentiableWithinAt
+
+/-- If a point is not fixed by `f_c^[n]`, the iterate cross-ratio does not take the value `1`. -/
+theorem crossRatio_iterate_ne_one_of_not_periodic {c α β z : ℂ} {n : ℕ}
+    (hαβ : α ≠ β)
+    (hβ : (quadratic c)^[n] z ≠ β)
+    (hα : z ≠ α)
+    (hnper : (quadratic c)^[n] z ≠ z) :
+    ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α)) ≠ 1 := by
+  intro h
+  exact hnper ((crossRatio_eq_one_iff hαβ hβ hα).mp h)
+
+/-- If a point avoids the two numerator fibres, the iterate cross-ratio does not take the value `0`. -/
+theorem crossRatio_iterate_ne_zero_of_avoids {c α β z : ℂ} {n : ℕ}
+    (hβ : (quadratic c)^[n] z ≠ β)
+    (hα : z ≠ α)
+    (hpreα : (quadratic c)^[n] z ≠ α)
+    (hzβ : z ≠ β) :
+    ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α)) ≠ 0 := by
+  intro h
+  rcases (crossRatio_eq_zero_iff hβ hα).mp h with hpre | hz
+  · exact hpreα hpre
+  · exact hzβ hz
+
+/-- On a region with no denominator fibres, no numerator fibres, and no period-`n` point, the
+iterate cross-ratio omits the two values `0` and `1`. -/
+theorem crossRatio_iterate_omits_zero_one_on {c α β : ℂ} {n : ℕ} {U : Set ℂ}
+    (hαβ : α ≠ β)
+    (hβ : ∀ z ∈ U, (quadratic c)^[n] z ≠ β)
+    (hα : ∀ z ∈ U, z ≠ α)
+    (hpreα : ∀ z ∈ U, (quadratic c)^[n] z ≠ α)
+    (hzβ : ∀ z ∈ U, z ≠ β)
+    (hnper : ∀ z ∈ U, (quadratic c)^[n] z ≠ z) :
+    ∀ z ∈ U,
+      ((quadratic c)^[n] z - α) * (z - β) /
+          (((quadratic c)^[n] z - β) * (z - α)) ∈ ({0, 1} : Set ℂ)ᶜ := by
+  intro z hz
+  rw [Set.mem_compl_iff]
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
+  exact ⟨crossRatio_iterate_ne_zero_of_avoids (hβ z hz) (hα z hz) (hpreα z hz) (hzβ z hz),
+    crossRatio_iterate_ne_one_of_not_periodic hαβ (hβ z hz) (hα z hz) (hnper z hz)⟩
+
 end Bottcher

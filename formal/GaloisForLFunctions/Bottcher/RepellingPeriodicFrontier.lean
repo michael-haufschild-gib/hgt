@@ -135,6 +135,29 @@ theorem one_le_two_pow_real (p : ℕ) : (1 : ℝ) ≤ (2 ^ p : ℝ) := by
       rw [pow_succ]
       nlinarith
 
+/-- The hRigid strong-repelling orbit-product bound implies canonical derivative nonresonance. -/
+theorem deriv_nonresonant_of_strongly_repelling_periodic_orbitProduct {c z₀ : ℂ} {p : ℕ}
+    (hrep : (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c)^[k] z₀‖) :
+    ∀ m : ℕ, 1 ≤ m →
+      (deriv ((quadratic c)^[p]) z₀) ^ m ≠ ((2 ^ p : ℕ) : ℂ) := by
+  intro m hm
+  let x : ℝ := ‖deriv ((quadratic c)^[p]) z₀‖
+  have hbase : (2 ^ p : ℝ) < x := by
+    simpa [x, deriv_quadratic_iterate_eq_orbitProduct_core] using hrep
+  have hx1 : (1 : ℝ) ≤ x :=
+    le_trans (one_le_two_pow_real p) (le_of_lt hbase)
+  cases m with
+  | zero => omega
+  | succ n =>
+      intro hEq
+      have hxpow : x ≤ x ^ (n + 1) :=
+        le_self_pow₀ hx1 (by omega)
+      have hgt : (2 ^ p : ℝ) < x ^ (n + 1) := lt_of_lt_of_le hbase hxpow
+      have hnormEq : x ^ (n + 1) = (2 ^ p : ℝ) := by
+        have hnorm := congrArg norm hEq
+        simpa [x, norm_pow, Complex.norm_natCast] using hnorm
+      linarith
+
 /-- The hRigid strong-repelling orbit-product bound implies frontier membership. -/
 theorem mem_frontier_of_strongly_repelling_periodic_orbitProduct {c z₀ : ℂ} {p : ℕ}
     (hper : (quadratic c)^[p] z₀ = z₀)
@@ -142,5 +165,79 @@ theorem mem_frontier_of_strongly_repelling_periodic_orbitProduct {c z₀ : ℂ} 
     z₀ ∈ frontier (filledJulia c) :=
   mem_frontier_of_repelling_periodic_orbitProduct hper
     (lt_of_le_of_lt (one_le_two_pow_real p) hrep)
+
+/-- An infinite supply of strong-repelling periodic targets has a Julia-frontier accumulation point. -/
+theorem exists_frontier_accumulation_of_infinite_strongly_repelling_periodic_set {c : ℂ}
+    {S : Set ℂ}
+    (hSinf : S.Infinite)
+    (hgeom : ∀ z ∈ S, ∃ p : ℕ,
+      (quadratic c)^[p] z = z ∧
+      (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c)^[k] z‖) :
+    ∃ z₁ ∈ frontier (filledJulia c), AccPt z₁ (𝓟 S) := by
+  have hsub : S ⊆ frontier (filledJulia c) := by
+    intro z hz
+    obtain ⟨p, hper, hrep⟩ := hgeom z hz
+    exact mem_frontier_of_strongly_repelling_periodic_orbitProduct hper hrep
+  have hK : IsCompact (frontier (filledJulia c)) := by
+    simpa [juliaSet] using isCompact_juliaSet c
+  exact hSinf.exists_accPt_of_subset_isCompact hK hsub
+
+/-- A local infinite supply of strong-repelling periodic targets accumulates inside any closed ball
+kept inside the target region. -/
+theorem exists_omega_accumulation_of_infinite_strongly_repelling_periodic_set_closedBall
+    {c a : ℂ} {r : ℝ} {S Ω : Set ℂ}
+    (hSinf : S.Infinite)
+    (hSball : S ⊆ Metric.closedBall a r)
+    (hballΩ : Metric.closedBall a r ⊆ Ω)
+    (hgeom : ∀ z ∈ S, ∃ p : ℕ,
+      (quadratic c)^[p] z = z ∧
+      (2 ^ p : ℝ) < ‖∏ k ∈ Finset.range p, 2 * (quadratic c)^[k] z‖) :
+    ∃ z₁ ∈ Ω, z₁ ∈ frontier (filledJulia c) ∧ AccPt z₁ (𝓟 S) := by
+  have hfront : S ⊆ frontier (filledJulia c) := by
+    intro z hz
+    obtain ⟨p, hper, hrep⟩ := hgeom z hz
+    exact mem_frontier_of_strongly_repelling_periodic_orbitProduct hper hrep
+  have hsub : S ⊆ frontier (filledJulia c) ∩ Metric.closedBall a r := by
+    intro z hz
+    exact ⟨hfront hz, hSball hz⟩
+  have hKfront : IsCompact (frontier (filledJulia c)) := by
+    simpa [juliaSet] using isCompact_juliaSet c
+  have hK : IsCompact (frontier (filledJulia c) ∩ Metric.closedBall a r) :=
+    hKfront.inter_right isClosed_closedBall
+  obtain ⟨z₁, hz₁K, hacc⟩ := hSinf.exists_accPt_of_subset_isCompact hK hsub
+  exact ⟨z₁, hballΩ hz₁K.2, hz₁K.1, hacc⟩
+
+/-- A strong-periodic accumulation point in the interior of a target region gives the local closed-ball
+strong-periodic supply consumed by the closed-ball hRigid endpoint. -/
+theorem exists_closedBall_strongly_repelling_periodic_set_of_accPt_in_interior
+    {c p : ℂ} {S Ω : Set ℂ}
+    (hpΩ : p ∈ interior Ω)
+    (hacc : AccPt p (𝓟 S))
+    (hgeom : ∀ z ∈ S, ∃ q : ℕ,
+      (quadratic c)^[q] z = z ∧
+      (2 ^ q : ℝ) < ‖∏ k ∈ Finset.range q, 2 * (quadratic c)^[k] z‖) :
+    ∃ (r : ℝ) (Slocal : Set ℂ), 0 < r ∧ Slocal.Infinite ∧
+      Slocal ⊆ Metric.closedBall p r ∧
+      Metric.closedBall p r ⊆ Ω ∧
+      (∀ z ∈ Slocal, ∃ q : ℕ,
+        (quadratic c)^[q] z = z ∧
+        (2 ^ q : ℝ) < ‖∏ k ∈ Finset.range q, 2 * (quadratic c)^[k] z‖) := by
+  have hΩmem : Ω ∈ 𝓝 p := mem_interior_iff_mem_nhds.mp hpΩ
+  obtain ⟨R, hR, hballΩ⟩ := Metric.mem_nhds_iff.mp hΩmem
+  let r : ℝ := R / 2
+  let Slocal : Set ℂ := S ∩ Metric.closedBall p r
+  have hr : 0 < r := by dsimp [r]; linarith
+  have hclosedBallΩ : Metric.closedBall p r ⊆ Ω := by
+    intro z hz
+    exact hballΩ (Metric.closedBall_subset_ball (by dsimp [r]; linarith) hz)
+  have hclosedN : Metric.closedBall p r ∈ 𝓝 p := by
+    exact mem_of_superset (Metric.ball_mem_nhds p hr) Metric.ball_subset_closedBall
+  have haccLocal : AccPt p (𝓟 (Metric.closedBall p r ∩ S)) := hacc.nhds_inter hclosedN
+  have hSinf : Slocal.Infinite := by
+    simpa [Slocal, inter_comm] using Set.Infinite.of_accPt haccLocal
+  refine ⟨r, Slocal, hr, hSinf, ?_, hclosedBallΩ, ?_⟩
+  · exact inter_subset_right
+  · intro z hz
+    exact hgeom z hz.1
 
 end Bottcher

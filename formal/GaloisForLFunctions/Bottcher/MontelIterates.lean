@@ -85,4 +85,43 @@ theorem no_normal_limit_of_meets_basin {c z₀ : ℂ} {ρ : ℝ}
     (norm_iterate_tendsto_atTop_of_basin hwbasin).comp hφ.tendsto_atTop
   exact not_tendsto_atTop_of_tendsto_nhds hptn hsub
 
+/-- Every ball around a non-interior point of `K_c` contains a point of the basin of infinity. -/
+theorem exists_mem_ball_basin_of_not_mem_interior {c z₀ : ℂ} {ρ : ℝ}
+    (hz₀int : z₀ ∉ interior (filledJulia c)) (hρ : 0 < ρ) :
+    ∃ w ∈ ball z₀ ρ, w ∈ basin c := by
+  have hzcl : z₀ ∈ closure (filledJulia c)ᶜ := by
+    rw [closure_compl]
+    exact hz₀int
+  obtain ⟨w, hwball, hwcomp⟩ :=
+    (_root_.mem_closure_iff.mp hzcl) (ball z₀ ρ) isOpen_ball (mem_ball_self hρ)
+  exact ⟨w, hwball, by rwa [basin_eq_compl_filledJulia]⟩
+
+/-- The iterate family is non-normal on every ball around a non-interior point of `K_c`. -/
+theorem no_normal_limit_of_not_mem_interior {c z₀ : ℂ} {ρ : ℝ}
+    (hz₀int : z₀ ∉ interior (filledJulia c)) (hρ : 0 < ρ) :
+    ¬ ∃ (φ : ℕ → ℕ) (g : ℂ → ℂ), StrictMono φ ∧
+        TendstoUniformlyOn (fun k => (quadratic c)^[φ k]) g atTop (ball z₀ ρ) :=
+  no_normal_limit_of_meets_basin
+    (exists_mem_ball_basin_of_not_mem_interior hz₀int hρ)
+
+/-- Frontier points of `K_c` are non-normality points for the iterate family. -/
+theorem no_normal_limit_of_frontier {c z₀ : ℂ} {ρ : ℝ}
+    (hzfront : z₀ ∈ frontier (filledJulia c)) (hρ : 0 < ρ) :
+    ¬ ∃ (φ : ℕ → ℕ) (g : ℂ → ℂ), StrictMono φ ∧
+        TendstoUniformlyOn (fun k => (quadratic c)^[φ k]) g atTop (ball z₀ ρ) := by
+  have hzcompl : z₀ ∈ closure (filledJulia c)ᶜ := by
+    rw [frontier_eq_closure_inter_closure] at hzfront
+    exact hzfront.2
+  have hzint : z₀ ∉ interior (filledJulia c) := by
+    rwa [closure_compl] at hzcompl
+  exact no_normal_limit_of_not_mem_interior hzint hρ
+
+/-- If `K_c` has empty interior, every filled-Julia point is a non-normality point for the iterate
+family. -/
+theorem no_normal_limit_of_mem_emptyInterior {c z₀ : ℂ} {ρ : ℝ}
+    (hempty : interior (filledJulia c) = ∅) (_hzK : z₀ ∈ filledJulia c) (hρ : 0 < ρ) :
+    ¬ ∃ (φ : ℕ → ℕ) (g : ℂ → ℂ), StrictMono φ ∧
+        TendstoUniformlyOn (fun k => (quadratic c)^[φ k]) g atTop (ball z₀ ρ) := by
+  exact no_normal_limit_of_not_mem_interior (by simp [hempty]) hρ
+
 end Bottcher

@@ -473,6 +473,24 @@ theorem rightmost_mem_frontier_filledJulia {c z₀ : ℂ}
   dsimp [ε]
   linarith
 
+/-- **Rightmost frontier sector package.** A rightmost filled-Julia point exists on the frontier, and
+at every radius the strict right half-plane slice through that point is preconnected and lies in the
+basin. This is intentionally weaker than the local-tip hypothesis: it supplies a canonical
+preconnected basin-side sector but does not claim the whole punctured basin slice is preconnected. -/
+theorem exists_rightmost_frontier_rightHalfplane_basin_sector (c : ℂ) :
+    ∃ z₀ : ℂ, z₀ ∈ frontier (filledJulia c) ∧
+      (∀ w ∈ filledJulia c, w.re ≤ z₀.re) ∧
+      ∀ ρ : ℝ,
+        IsPreconnected (Metric.ball z₀ ρ ∩ {z : ℂ | z₀.re < z.re}) ∧
+          Metric.ball z₀ ρ ∩ {z : ℂ | z₀.re < z.re} ⊆
+            Metric.ball z₀ ρ ∩ (filledJulia c)ᶜ := by
+  obtain ⟨z₀, hz₀K, hz₀max⟩ := exists_rightmost_filledJulia c
+  refine ⟨z₀, rightmost_mem_frontier_filledJulia hz₀K hz₀max, hz₀max, ?_⟩
+  intro ρ
+  refine ⟨((convex_ball z₀ ρ).inter (convex_halfSpace_re_gt z₀.re)).isPreconnected, ?_⟩
+  intro z hz
+  exact ⟨hz.1, fun hzK => (not_lt_of_ge (hz₀max z hzK)) hz.2⟩
+
 /-- **Unconditional Böttcher branch with modulus on the right half-plane — discharges the `hF` hypothesis.**
 The half-plane `R = {Re z > M}` with `M = max Re over K_c` is convex and disjoint from `K_c` (so `⊆` basin);
 mathlib's **convex** Poincaré lemma `Convex.exists_forall_hasDerivWithinAt` gives a primitive of `ω` on `R`

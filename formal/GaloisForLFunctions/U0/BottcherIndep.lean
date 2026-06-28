@@ -18,7 +18,9 @@ lens. It reuses `HolomorphicIFT` (`holo_implicit`, `branch_selection`, `root_com
 the remaining bricks fed to it.
 -/
 import GaloisForLFunctions.U0.HolomorphicIFT
+import GaloisForLFunctions.U0.NaturalBoundaryTranscendence
 import GaloisForLFunctions.U0.U0NaturalBoundary
+import Mathlib.Data.Set.Countable
 
 open Polynomial Complex Metric Filter Topology U0NaturalBoundary HolomorphicIFT
 
@@ -217,6 +219,21 @@ theorem no_separable_relation_of_natural_boundary
     False :=
   hnb (continues_of_analytic_coeff_relation hd a ha hlead hsep hf hrel hlens)
 
+/-- **Local-radius natural-boundary obstruction.** The algebraic-IFT continuation only needs a
+preconnected approach lens below one positive radius, not at every scale. -/
+theorem no_separable_relation_of_natural_boundary_localLens
+    {f : ℂ → ℂ} {D : Set ℂ} {z₀ : ℂ} (hnb : ¬ ContinuesAcross f D z₀)
+    (hf : ∀ z ∈ D, AnalyticAt ℂ f z) {ρ₁ : ℝ} (hρ₁ : 0 < ρ₁)
+    (hlens : ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ →
+      IsPreconnected (D ∩ ball z₀ ρ) ∧ (D ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (a : Fin (d + 1) → ℂ → ℂ) (ha : ∀ i, AnalyticAt ℂ (a i) z₀)
+    (hlead : a (Fin.last d) z₀ ≠ 0) (hsep : (specPoly a z₀).Separable)
+    (hrel : ∀ z ∈ D, ∑ i : Fin (d + 1), a i z * (f z) ^ (i : ℕ) = 0) :
+    False := by
+  have hfD : ContinuousOn f D := fun z hz => (hf z hz).continuousAt.continuousWithinAt
+  exact NaturalBoundaryTranscendence.no_separable_analytic_relation_gen hd hfD z₀ hnb hρ₁ hlens
+    a ha hlead (by simpa [specPoly] using hsep) hrel
+
 /-- **The coefficient `z ↦ b(z, g(z))` is analytic** when `g` is analytic at `z₀` and `b ∈ ℂ[z][W]` — the
 bivariate polynomial evaluated along `(id, g)`. Supplies the `analytic at z₀` inputs when the relation's
 coefficients are polynomials in `z` and a *second* analytic function `g = φ_{c₂}`. -/
@@ -243,6 +260,24 @@ theorem no_phi_relation_of_natural_boundary
       ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0) :
     False :=
   no_separable_relation_of_natural_boundary hnb hf hlens hd
+    (fun i z => (b i).eval₂ (evalRingHom z) (g z))
+    (fun i => analyticAt_evalComp (b i) hg) hlead hsep hrel
+
+/-- **Local-radius `ℂ(z)[g]` obstruction.** Local version of
+`no_phi_relation_of_natural_boundary`, replacing all-scale lens connectivity by one positive radius. -/
+theorem no_phi_relation_of_natural_boundary_localLens
+    {f g : ℂ → ℂ} {D : Set ℂ} {z₀ : ℂ} (hnb : ¬ ContinuesAcross f D z₀)
+    (hf : ∀ z ∈ D, AnalyticAt ℂ f z) (hg : AnalyticAt ℂ g z₀)
+    {ρ₁ : ℝ} (hρ₁ : 0 < ρ₁)
+    (hlens : ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ →
+      IsPreconnected (D ∩ ball z₀ ρ) ∧ (D ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    (hlead : (b (Fin.last d)).eval₂ (evalRingHom z₀) (g z₀) ≠ 0)
+    (hsep : (specPoly (fun i z => (b i).eval₂ (evalRingHom z) (g z)) z₀).Separable)
+    (hrel : ∀ z ∈ D,
+      ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0) :
+    False :=
+  no_separable_relation_of_natural_boundary_localLens hnb hf hρ₁ hlens hd
     (fun i z => (b i).eval₂ (evalRingHom z) (g z))
     (fun i => analyticAt_evalComp (b i) hg) hlead hsep hrel
 
@@ -314,5 +349,144 @@ theorem phi_indep_capstone {f g : ℂ → ℂ} {K₁ K₂ : Set ℂ}
   obtain ⟨hlead, hsep⟩ := hcoeff z₀ hz₀fr hz₀K₂
   exact no_phi_relation_of_natural_boundary (hnb z₀ hz₀fr) hfdom (hgdom z₀ hz₀K₂)
     (hlens z₀ hz₀fr) hd b hlead hsep hrel
+
+/-- **Both-connected independence with a countable bad locus.** This is the paper-proof form of
+`phi_indep_capstone`: instead of requiring the leading coefficient and separability at every boundary
+point outside `K₂`, it chooses one boundary point outside a prescribed countable bad set. -/
+theorem phi_indep_capstone_countableAvoidance {f g : ℂ → ℂ} {K₁ K₂ : Set ℂ}
+    (hfdom : ∀ z ∈ K₁ᶜ, AnalyticAt ℂ f z) (hgdom : ∀ z ∈ K₂ᶜ, AnalyticAt ℂ g z)
+    (hnb : ∀ z₀ ∈ frontier K₁, ¬ ContinuesAcross f K₁ᶜ z₀)
+    (hlens : ∀ z₀ ∈ frontier K₁, ∀ ρ : ℝ, 0 < ρ →
+      IsPreconnected (K₁ᶜ ∩ ball z₀ ρ) ∧ (K₁ᶜ ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    (hrel : ∀ z ∈ K₁ᶜ,
+      ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0)
+    (havoid : ∀ T : Set ℂ, T.Countable →
+      ∃ z₀, z₀ ∈ frontier K₁ ∧ z₀ ∉ K₂ ∧ z₀ ∉ T)
+    (hbad : (((frontier K₁ ∩ K₂ᶜ) : Set ℂ) ∩
+        ({z | (b (Fin.last d)).eval₂ (evalRingHom z) (g z) = 0} ∪
+          {z | ¬ (specPoly (fun i y => (b i).eval₂ (evalRingHom y) (g y)) z).Separable} :
+            Set ℂ)).Countable) :
+    False := by
+  set Bad : Set ℂ := ((frontier K₁ ∩ K₂ᶜ) : Set ℂ) ∩
+    ({z | (b (Fin.last d)).eval₂ (evalRingHom z) (g z) = 0} ∪
+      {z | ¬ (specPoly (fun i y => (b i).eval₂ (evalRingHom y) (g y)) z).Separable} :
+        Set ℂ)
+  have hBadCount : Bad.Countable := by
+    simpa [Bad] using hbad
+  obtain ⟨z₀, hz₀fr, hz₀K₂, hz₀Bad⟩ := havoid Bad hBadCount
+  have hnotBad :
+      ¬ ((b (Fin.last d)).eval₂ (evalRingHom z₀) (g z₀) = 0 ∨
+        ¬ (specPoly (fun i y => (b i).eval₂ (evalRingHom y) (g y)) z₀).Separable) := by
+    intro h
+    exact hz₀Bad (by
+      refine ⟨⟨hz₀fr, hz₀K₂⟩, ?_⟩
+      exact h)
+  have hlead : (b (Fin.last d)).eval₂ (evalRingHom z₀) (g z₀) ≠ 0 := by
+    intro h0
+    exact hnotBad (Or.inl h0)
+  have hsep : (specPoly (fun i y => (b i).eval₂ (evalRingHom y) (g y)) z₀).Separable := by
+    by_contra hsep
+    exact hnotBad (Or.inr hsep)
+  exact no_phi_relation_of_natural_boundary (hnb z₀ hz₀fr) hfdom (hgdom z₀ hz₀K₂)
+    (hlens z₀ hz₀fr) hd b hlead hsep hrel
+
+/-- **Both-connected independence with countable avoidance and a local-radius lens.** This is the
+local-radius replacement for `phi_indep_capstone_countableAvoidance`: each boundary point only needs a
+positive lens radius, with connectivity for smaller radii. -/
+theorem phi_indep_capstone_countableAvoidance_localLens {f g : ℂ → ℂ} {K₁ K₂ : Set ℂ}
+    (hfdom : ∀ z ∈ K₁ᶜ, AnalyticAt ℂ f z) (hgdom : ∀ z ∈ K₂ᶜ, AnalyticAt ℂ g z)
+    (hnb : ∀ z₀ ∈ frontier K₁, ¬ ContinuesAcross f K₁ᶜ z₀)
+    (hlens : ∀ z₀ ∈ frontier K₁, ∃ ρ₁ : ℝ, 0 < ρ₁ ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ →
+      IsPreconnected (K₁ᶜ ∩ ball z₀ ρ) ∧ (K₁ᶜ ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    (hrel : ∀ z ∈ K₁ᶜ,
+      ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0)
+    (havoid : ∀ T : Set ℂ, T.Countable →
+      ∃ z₀, z₀ ∈ frontier K₁ ∧ z₀ ∉ K₂ ∧ z₀ ∉ T)
+    (hbad : (((frontier K₁ ∩ K₂ᶜ) : Set ℂ) ∩
+        ({z | (b (Fin.last d)).eval₂ (evalRingHom z) (g z) = 0} ∪
+          {z | ¬ (specPoly (fun i y => (b i).eval₂ (evalRingHom y) (g y)) z).Separable} :
+            Set ℂ)).Countable) :
+    False := by
+  set Bad : Set ℂ := ((frontier K₁ ∩ K₂ᶜ) : Set ℂ) ∩
+    ({z | (b (Fin.last d)).eval₂ (evalRingHom z) (g z) = 0} ∪
+      {z | ¬ (specPoly (fun i y => (b i).eval₂ (evalRingHom y) (g y)) z).Separable} :
+        Set ℂ)
+  have hBadCount : Bad.Countable := by
+    simpa [Bad] using hbad
+  obtain ⟨z₀, hz₀fr, hz₀K₂, hz₀Bad⟩ := havoid Bad hBadCount
+  have hnotBad :
+      ¬ ((b (Fin.last d)).eval₂ (evalRingHom z₀) (g z₀) = 0 ∨
+        ¬ (specPoly (fun i y => (b i).eval₂ (evalRingHom y) (g y)) z₀).Separable) := by
+    intro h
+    exact hz₀Bad (by
+      refine ⟨⟨hz₀fr, hz₀K₂⟩, ?_⟩
+      exact h)
+  have hlead : (b (Fin.last d)).eval₂ (evalRingHom z₀) (g z₀) ≠ 0 := by
+    intro h0
+    exact hnotBad (Or.inl h0)
+  have hsep : (specPoly (fun i y => (b i).eval₂ (evalRingHom y) (g y)) z₀).Separable := by
+    by_contra hsep
+    exact hnotBad (Or.inr hsep)
+  obtain ⟨ρ₁, hρ₁, hlens₀⟩ := hlens z₀ hz₀fr
+  exact no_phi_relation_of_natural_boundary_localLens (hnb z₀ hz₀fr) hfdom (hgdom z₀ hz₀K₂)
+    hρ₁ hlens₀ hd b hlead hsep hrel
+
+/-- **Uncountable-target form of the countable bad-locus capstone.** An uncountable set of boundary
+points outside `K₂` can avoid the countable leading-coefficient/discriminant bad locus. -/
+theorem phi_indep_capstone_uncountable_bad {f g : ℂ → ℂ} {K₁ K₂ : Set ℂ}
+    (hfdom : ∀ z ∈ K₁ᶜ, AnalyticAt ℂ f z) (hgdom : ∀ z ∈ K₂ᶜ, AnalyticAt ℂ g z)
+    (hnb : ∀ z₀ ∈ frontier K₁, ¬ ContinuesAcross f K₁ᶜ z₀)
+    (hlens : ∀ z₀ ∈ frontier K₁, ∀ ρ : ℝ, 0 < ρ →
+      IsPreconnected (K₁ᶜ ∩ ball z₀ ρ) ∧ (K₁ᶜ ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    (hrel : ∀ z ∈ K₁ᶜ,
+      ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0)
+    (hunc : ¬ ({z | z ∈ frontier K₁ ∧ z ∉ K₂} : Set ℂ).Countable)
+    (hbad : (((frontier K₁ ∩ K₂ᶜ) : Set ℂ) ∩
+        ({z | (b (Fin.last d)).eval₂ (evalRingHom z) (g z) = 0} ∪
+          {z | ¬ (specPoly (fun i y => (b i).eval₂ (evalRingHom y) (g y)) z).Separable} :
+            Set ℂ)).Countable) :
+    False := by
+  refine phi_indep_capstone_countableAvoidance hfdom hgdom hnb hlens hd b hrel ?_ hbad
+  intro T hT
+  set Target : Set ℂ := {z | z ∈ frontier K₁ ∧ z ∉ K₂}
+  have hTarget : ¬ Target.Countable := by
+    simpa [Target] using hunc
+  by_contra hnone
+  apply hTarget
+  apply hT.mono
+  intro z hz
+  by_contra hzT
+  exact hnone ⟨z, hz.1, hz.2, hzT⟩
+
+/-- **Uncountable-target local-radius capstone.** Local-lens version of
+`phi_indep_capstone_uncountable_bad`. -/
+theorem phi_indep_capstone_uncountable_bad_localLens {f g : ℂ → ℂ} {K₁ K₂ : Set ℂ}
+    (hfdom : ∀ z ∈ K₁ᶜ, AnalyticAt ℂ f z) (hgdom : ∀ z ∈ K₂ᶜ, AnalyticAt ℂ g z)
+    (hnb : ∀ z₀ ∈ frontier K₁, ¬ ContinuesAcross f K₁ᶜ z₀)
+    (hlens : ∀ z₀ ∈ frontier K₁, ∃ ρ₁ : ℝ, 0 < ρ₁ ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ →
+      IsPreconnected (K₁ᶜ ∩ ball z₀ ρ) ∧ (K₁ᶜ ∩ ball z₀ ρ).Nonempty)
+    {d : ℕ} (hd : 1 ≤ d) (b : Fin (d + 1) → Polynomial (Polynomial ℂ))
+    (hrel : ∀ z ∈ K₁ᶜ,
+      ∑ i : Fin (d + 1), (b i).eval₂ (evalRingHom z) (g z) * (f z) ^ (i : ℕ) = 0)
+    (hunc : ¬ ({z | z ∈ frontier K₁ ∧ z ∉ K₂} : Set ℂ).Countable)
+    (hbad : (((frontier K₁ ∩ K₂ᶜ) : Set ℂ) ∩
+        ({z | (b (Fin.last d)).eval₂ (evalRingHom z) (g z) = 0} ∪
+          {z | ¬ (specPoly (fun i y => (b i).eval₂ (evalRingHom y) (g y)) z).Separable} :
+            Set ℂ)).Countable) :
+    False := by
+  refine phi_indep_capstone_countableAvoidance_localLens hfdom hgdom hnb hlens hd b hrel ?_ hbad
+  intro T hT
+  set Target : Set ℂ := {z | z ∈ frontier K₁ ∧ z ∉ K₂}
+  have hTarget : ¬ Target.Countable := by
+    simpa [Target] using hunc
+  by_contra hnone
+  apply hTarget
+  apply hT.mono
+  intro z hz
+  by_contra hzT
+  exact hnone ⟨z, hz.1, hz.2, hzT⟩
 
 end BottcherIndep
