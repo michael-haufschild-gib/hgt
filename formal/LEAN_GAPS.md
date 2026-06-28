@@ -11,12 +11,12 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 | Lines | File |
 |---:|---|
-| 4133 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 4197 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2679 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
-| 1537 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
+| 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1475 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
@@ -201,7 +201,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:1410` | hRigid interface in this file: nonresonance is derived from `(2^p : ℝ) < ‖λ‖`, and the remaining callback |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:2376` | frontier-analytic γ endpoint by deriving it via `phiMero_transcendental_of_repelling_input`.  The remaining |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean:128` | transcendence produced internally.** The remaining callback is geometric/dynamical: it supplies an |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean:1277` | frontier-fibre `Separable` datum from the callback.  The remaining per-target geometry is a boundary |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean:1396` | frontier-fibre `Separable` datum from the callback.  The remaining per-target geometry is a boundary |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityHNBCrossing.lean:660` | remaining input is the common-basin sparse crossing geometry for the continued `c₂` branch. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean:1720` | are constructed internally from coherent level-root towers; the remaining per-relation datum is purely |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedPoint.lean:103` | point in the Julia set, for all non-exceptional `c ≠ 1/4`. The remaining data (non-resonance, location off |
@@ -214,18 +214,18 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/CarrierCauchy.lean:13` | This file supplies the missing link: the carrier family `{wᵢ, uᵢ}`, indexed by `Fin k ⊕ Fin k`, is |
 | `formal/GaloisForLFunctions/ConsolidatedBridges.lean:12` | make the promised conclusions machine-checkable once the missing hypotheses are |
 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:8` | remaining hypotheses still carried by those branches. |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:394` | the missing analytic theorem needed to remove the `RationalTailIndependent` |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:530` | /-- Abstract q62 both-connected reduction: after `φ_{c₂}` transcendence, the remaining hRigid analytic |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1245` | removes the remaining branch hypotheses. -/ |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1644` | fixed to the canonical `ratfuncToMero`; the remaining hypothesis is precisely that the cover projection |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1683` | is the lift-level card target after removing the separate `hG` input; remaining inputs are the |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1925` | descent after the affine reduction from `ζ(s+i,-n)` to harmonic sums; the only remaining Hurwitz |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1974` | most concrete all-`N` row-close target currently isolated: the remaining analytic input is exactly |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2462` | This is the proved replacement for the generic three-eigenvalue split in the missing N=2 branch. -/ |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2586` | form: the only remaining assumptions are the analytic parameter conditions and the genuine local |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3228` | zero.  For `N = 0`, the compressed shifted-power polynomial is exactly the remaining shifted |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3487` | provider. This pins the remaining all-`N` Hurwitz analytic input to one explicit interface. -/ |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3780` | remaining provider must use a proper descent/cover base. -/ |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:395` | the missing analytic theorem needed to remove the `RationalTailIndependent` |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:531` | /-- Abstract q62 both-connected reduction: after `φ_{c₂}` transcendence, the remaining hRigid analytic |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1288` | removes the remaining branch hypotheses. -/ |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1687` | fixed to the canonical `ratfuncToMero`; the remaining hypothesis is precisely that the cover projection |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1726` | is the lift-level card target after removing the separate `hG` input; remaining inputs are the |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1968` | descent after the affine reduction from `ζ(s+i,-n)` to harmonic sums; the only remaining Hurwitz |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2017` | most concrete all-`N` row-close target currently isolated: the remaining analytic input is exactly |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2526` | This is the proved replacement for the generic three-eigenvalue split in the missing N=2 branch. -/ |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2650` | form: the only remaining assumptions are the analytic parameter conditions and the genuine local |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3292` | zero.  For `N = 0`, the compressed shifted-power polynomial is exactly the remaining shifted |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3551` | provider. This pins the remaining all-`N` Hurwitz analytic input to one explicit interface. -/ |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3844` | remaining provider must use a proper descent/cover base. -/ |
 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean:416` | implication to `rationalTailIndependent_harmonic_of_poleRootInput`, making the remaining Hurwitz analytic |
 | `formal/GaloisForLFunctions/Hurwitz/HurwitzZeta.lean:88` | `x^{-s}` and the remaining tail `R_{n}(x) = ∑_{m≠n}(m-n+x)^{-s}` is the regular part: |
 | `formal/GaloisForLFunctions/Hurwitz/N2DensityShadow.lean:10` | `q=0`, then `l_2=0`. The remaining `l_0F_0+l_1F_1+c=0` is killed by the distinct-exponent extraction |

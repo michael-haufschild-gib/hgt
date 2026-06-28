@@ -161,6 +161,76 @@ theorem crossRatio_eq_zero_iff {α β z w : ℂ} (hwβ : w ≠ β) (hzα : z ≠
   have hden : (w - β) * (z - α) ≠ 0 := mul_ne_zero (sub_ne_zero.mpr hwβ) (sub_ne_zero.mpr hzα)
   simp only [hden, or_false, mul_eq_zero, sub_eq_zero]
 
+/-- The Möbius denominator used to solve a genuine cross-ratio for `w` is nonzero. -/
+theorem crossRatio_solve_den_ne_zero {α β z w R : ℂ}
+    (hαβ : α ≠ β) (hwβ : w ≠ β) (hzα : z ≠ α) (hzβ : z ≠ β)
+    (hR : R = (w - α) * (z - β) / ((w - β) * (z - α))) :
+    R * (z - α) - (z - β) ≠ 0 := by
+  subst R
+  have hden1 : (w - β) * (z - α) ≠ 0 :=
+    mul_ne_zero (sub_ne_zero.mpr hwβ) (sub_ne_zero.mpr hzα)
+  have hden2eq :
+      (w - α) * (z - β) / ((w - β) * (z - α)) * (z - α) - (z - β) =
+        (z - β) * (β - α) / (w - β) := by
+    field_simp [hden1, sub_ne_zero.mpr hwβ, sub_ne_zero.mpr hzα]
+    ring
+  rw [hden2eq]
+  exact div_ne_zero (mul_ne_zero (sub_ne_zero.mpr hzβ) (sub_ne_zero.mpr hαβ.symm))
+    (sub_ne_zero.mpr hwβ)
+
+/-- **Solving the cross-ratio for the target value.** If
+`R = (w-α)(z-β)/((w-β)(z-α))`, then `w` is the corresponding Möbius transform of `R`.
+This is the algebraic bridge needed to push normality of cross-ratio maps back to normality of
+the iterate family. -/
+theorem crossRatio_solve_w {α β z w R : ℂ}
+    (hαβ : α ≠ β) (hwβ : w ≠ β) (hzα : z ≠ α) (hzβ : z ≠ β)
+    (hR : R = (w - α) * (z - β) / ((w - β) * (z - α))) :
+    (R * β * (z - α) - α * (z - β)) / (R * (z - α) - (z - β)) = w := by
+  subst R
+  have hden1 : (w - β) * (z - α) ≠ 0 :=
+    mul_ne_zero (sub_ne_zero.mpr hwβ) (sub_ne_zero.mpr hzα)
+  have hden2eq :
+      (w - α) * (z - β) / ((w - β) * (z - α)) * (z - α) - (z - β) =
+        (z - β) * (β - α) / (w - β) := by
+    field_simp [hden1, sub_ne_zero.mpr hwβ, sub_ne_zero.mpr hzα]
+    ring
+  have hnum_eq :
+      (w - α) * (z - β) / ((w - β) * (z - α)) * β * (z - α) - α * (z - β) =
+        w * ((z - β) * (β - α) / (w - β)) := by
+    field_simp [hden1, sub_ne_zero.mpr hwβ, sub_ne_zero.mpr hzα]
+    ring
+  have hden3 : (z - β) * (β - α) / (w - β) ≠ 0 :=
+    div_ne_zero (mul_ne_zero (sub_ne_zero.mpr hzβ) (sub_ne_zero.mpr hαβ.symm))
+      (sub_ne_zero.mpr hwβ)
+  rw [hden2eq, hnum_eq]
+  rw [mul_div_cancel_right₀ w hden3]
+
+/-- The iterate target `(f_c^[n]) z` is recovered from its cross-ratio value by the same Möbius
+transform. -/
+theorem crossRatio_iterate_solve {c α β z R : ℂ} {n : ℕ}
+    (hαβ : α ≠ β)
+    (hβ : (quadratic c)^[n] z ≠ β)
+    (hα : z ≠ α)
+    (hzβ : z ≠ β)
+    (hR : R =
+      ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α))) :
+    (R * β * (z - α) - α * (z - β)) / (R * (z - α) - (z - β)) =
+      (quadratic c)^[n] z :=
+  crossRatio_solve_w hαβ hβ hα hzβ hR
+
+/-- The inverse-Möbius denominator is nonzero for an iterate cross-ratio value. -/
+theorem crossRatio_iterate_solve_den_ne_zero {c α β z R : ℂ} {n : ℕ}
+    (hαβ : α ≠ β)
+    (hβ : (quadratic c)^[n] z ≠ β)
+    (hα : z ≠ α)
+    (hzβ : z ≠ β)
+    (hR : R =
+      ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α))) :
+    R * (z - α) - (z - β) ≠ 0 :=
+  crossRatio_solve_den_ne_zero hαβ hβ hα hzβ hR
+
 /-- **Cross-ratio family is holomorphic off the `β`-fibre.** Where `f_c^[n] z ≠ β` and `z ≠ α` (denominator
 nonzero), the cross-ratio `z ↦ (f^[n]z-α)(z-β)/((f^[n]z-β)(z-α))` is differentiable — a rational expression
 in the entire `f_c^[n]` and `z`. The analytic input the three-value Montel (`normal_of_omitting_lift`)

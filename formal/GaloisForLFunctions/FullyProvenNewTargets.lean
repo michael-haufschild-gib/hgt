@@ -47,6 +47,7 @@ import GaloisForLFunctions.Bottcher.RelativeRigidityLocalSlitModel
 import GaloisForLFunctions.Bottcher.RelativeRigidityGlobalBranchCrossing
 import GaloisForLFunctions.Bottcher.RelativeRigidityReturnOrder
 import GaloisForLFunctions.Bottcher.RelativeRigidityMultiplierOnePeriod
+import GaloisForLFunctions.Bottcher.CrossRatioNormalBridge
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 
 noncomputable section
@@ -961,6 +962,48 @@ def q62_connected_branchContinuation_localRadiusTip_formal_proof :=
 /-- Cross-ratio/Montel source brick: differentiability of the cross-ratio iterate on the local patch. -/
 def hrig_differentiableOn_crossRatio_iterate_formal_proof :=
   @Bottcher.differentiableOn_crossRatio_iterate
+
+/-- Cross-ratio/Montel algebra brick: a genuine cross-ratio value has nonzero inverse-Möbius
+denominator. -/
+def hrig_crossRatio_solve_den_ne_zero_formal_proof :=
+  @Bottcher.crossRatio_solve_den_ne_zero
+
+/-- Cross-ratio/Montel algebra brick: the inverse-Möbius transform recovers the target value from
+its cross-ratio. -/
+def hrig_crossRatio_solve_w_formal_proof :=
+  @Bottcher.crossRatio_solve_w
+
+/-- Cross-ratio/Montel algebra brick: the inverse-Möbius transform recovers the quadratic iterate
+from its cross-ratio value. -/
+def hrig_crossRatio_iterate_solve_formal_proof :=
+  @Bottcher.crossRatio_iterate_solve
+
+/-- Cross-ratio/Montel algebra brick: the inverse-Möbius denominator is nonzero for a quadratic
+iterate cross-ratio value. -/
+def hrig_crossRatio_iterate_solve_den_ne_zero_formal_proof :=
+  @Bottcher.crossRatio_iterate_solve_den_ne_zero
+
+/-- Cross-ratio/Montel bridge: the inverse-Möbius transform used to pass from cross-ratio values
+back to iterate values. -/
+def hrig_crossRatioInverse_formal_proof :=
+  @Bottcher.crossRatioInverse
+
+/-- Cross-ratio/Montel bridge: on a local patch where `R` is the genuine iterate cross-ratio, the
+inverse-Möbius transform recovers the iterate. -/
+def hrig_eqOn_iterate_eq_crossRatioInverse_formal_proof :=
+  @Bottcher.eqOn_iterate_eq_crossRatioInverse
+
+/-- Cross-ratio/Montel bridge: the inverse-Möbius denominator is nonzero on such a local patch. -/
+def hrig_eqOn_crossRatioInverse_den_ne_zero_formal_proof :=
+  @Bottcher.eqOn_crossRatioInverse_den_ne_zero
+
+/-- Cross-ratio/Montel bridge: family form of the local-patch iterate recovery theorem. -/
+def hrig_forall_eqOn_iterate_eq_crossRatioInverse_formal_proof :=
+  @Bottcher.forall_eqOn_iterate_eq_crossRatioInverse
+
+/-- Cross-ratio/Montel bridge: family form of the local-patch denominator nonzero theorem. -/
+def hrig_forall_crossRatioInverse_den_ne_zero_formal_proof :=
+  @Bottcher.forall_crossRatioInverse_den_ne_zero
 
 /-- Cross-ratio/Montel source brick: absence of a period-`n` fixed point makes the cross-ratio
 iterate avoid `1`. -/
@@ -2389,6 +2432,27 @@ theorem u0_basin_circle_crossing_from_nonzero_card :
   intro K b w hb hΩc hw hwn hKsub hinvK
   exact U0PhiCard.exists_circle_point_of_nonzero_basin_subset_disk_and_completeInvariant
     hb hΩc hw hwn hKsub hinvK
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Connected U0 Step 2-to-Step 3 handoff: an open basin containing a unit-circle point contains
+unit-circle points frequently in the punctured neighbourhood of that point. This turns the positive
+crossing output into the accumulating-set input consumed by `U0PhiCard.u0_phi_card_step3`. -/
+def U0OpenUnitCircleAccumulationTarget : Prop :=
+  ∀ {Ω : Set ℂ} (_ : IsOpen Ω) {z₀ : ℂ}, z₀ ∈ Ω → ‖z₀‖ = 1 →
+    ∃ᶠ z in 𝓝[≠] z₀, z ∈ Ω ∩ {z : ℂ | ‖z‖ = 1}
+
+/-- Formal wrapper for the open unit-circle accumulation handoff in the U0 cards. -/
+theorem u0_open_unitCircle_accumulation_card : U0OpenUnitCircleAccumulationTarget := by
+  intro Ω hΩo z₀ hzΩ hz₀
+  exact U0PhiCard.frequently_mem_open_unitCircle_of_mem hΩo hzΩ hz₀
+
+/-- Card proof object for the U0 Step-3 continuation contradiction after the Step-2 output has been
+reduced to a single open-basin unit-circle crossing point. -/
+def u0_phi_no_relation_3var_open_crossing_formal_proof :=
+  @U0PhiCard.u0_phi_no_relation_3var_open_crossing
 
 end FullyProvenNewTargets
 

@@ -452,6 +452,78 @@ theorem infinite_nonresonantPeriodic_closedBall_of_frontier_dense_of_not_countab
     simpa [Nonres] using hfin.countable
   exact hunc (hfinNonres.mono hTsub)
 
+/-- The fixed points of a positive iterate form a finite set. -/
+theorem fixedPoints_iterate_finite (c : ℂ) {q : ℕ} (hq : 1 ≤ q) :
+    {z : ℂ | (quadratic c)^[q] z = z}.Finite := by
+  classical
+  refine Set.Finite.subset (Finset.finite_toSet ((fixedPointPoly c q).roots.toFinset)) ?_
+  intro z hz
+  rw [Finset.mem_coe, Multiset.mem_toFinset, mem_roots (fixedPointPoly_ne_zero c hq),
+    fixedPointPoly_isRoot_iff]
+  exact hz
+
+/-- The union of all positive-period fixed points is countable. -/
+theorem positivePeriodic_countable (c : ℂ) :
+    {z : ℂ | ∃ q : ℕ, 1 ≤ q ∧ (quadratic c)^[q] z = z}.Countable := by
+  classical
+  rw [show {z : ℂ | ∃ q : ℕ, 1 ≤ q ∧ (quadratic c)^[q] z = z} =
+      ⋃ q : ℕ, {z : ℂ | 1 ≤ q ∧ (quadratic c)^[q] z = z} by
+    ext z
+    simp]
+  apply Set.countable_iUnion
+  intro q
+  by_cases hq : 1 ≤ q
+  · exact (fixedPoints_iterate_finite c hq).countable.mono (by
+      intro z hz
+      exact hz.2)
+  · have hempty : {z : ℂ | 1 ≤ q ∧ (quadratic c)^[q] z = z} = ∅ := by
+      ext z
+      simp [hq]
+    rw [hempty]
+    exact Set.countable_empty
+
+/-- The canonical-resonant positive-period locus is countable. -/
+theorem resonantPeriodic_countable (c : ℂ) :
+    {z : ℂ | ∃ q : ℕ, 1 ≤ q ∧ (quadratic c)^[q] z = z ∧
+      ∃ m : ℕ, 1 ≤ m ∧
+        (deriv ((quadratic c)^[q]) z) ^ m = ((2 ^ q : ℕ) : ℂ)}.Countable :=
+  (positivePeriodic_countable c).mono (by
+    intro z hz
+    obtain ⟨q, hq, hper, _m, _hm, _hres⟩ := hz
+    exact ⟨q, hq, hper⟩)
+
+/-- Local nonresonant periodic witnesses in every frontier ball give frontier density of the native
+hRigid target set. -/
+theorem dense_nonresonantPeriodic_of_forall_frontier_ball
+    {c : ℂ}
+    (hlocal : ∀ z ∈ frontier (filledJulia c), ∀ r : ℝ, 0 < r →
+      ∃ y ∈ Metric.ball z r, y ∈ frontier (filledJulia c) ∧ ∃ q : ℕ,
+        (quadratic c)^[q] y = y ∧
+        ∀ m : ℕ, 1 ≤ m →
+          (deriv ((quadratic c)^[q]) y) ^ m ≠ ((2 ^ q : ℕ) : ℂ)) :
+    frontier (filledJulia c) ⊆ closure
+      {z : ℂ | z ∈ frontier (filledJulia c) ∧ ∃ q : ℕ,
+        (quadratic c)^[q] z = z ∧
+        ∀ m : ℕ, 1 ≤ m →
+          (deriv ((quadratic c)^[q]) z) ^ m ≠ ((2 ^ q : ℕ) : ℂ)} := by
+  intro z hzfront
+  rw [_root_.mem_closure_iff]
+  intro U hUo hzU
+  obtain ⟨r, hr, hballU⟩ := Metric.isOpen_iff.mp hUo z hzU
+  obtain ⟨y, hyball, hyfront, hygeom⟩ := hlocal z hzfront r hr
+  exact ⟨y, hballU hyball, hyfront, hygeom⟩
+
+/-- A positive-periodic target set cannot support arbitrary countable avoidance: choose the
+countable set of all positive-periodic points. -/
+theorem not_countableAvoidance_of_subset_positivePeriodic
+    {c : ℂ} {S : Set ℂ}
+    (hS : S ⊆ {z : ℂ | ∃ q : ℕ, 1 ≤ q ∧ (quadratic c)^[q] z = z}) :
+    ¬ (∀ T : Set ℂ, T.Countable → ∃ z ∈ S, z ∉ T) := by
+  intro havoid
+  let Periodic : Set ℂ := {z : ℂ | ∃ q : ℕ, 1 ≤ q ∧ (quadratic c)^[q] z = z}
+  obtain ⟨z, hzS, hznot⟩ := havoid Periodic (by simpa [Periodic] using positivePeriodic_countable c)
+  exact hznot (hS hzS)
+
 /-- Connected empty-interior geometry plus frontier-density of nonresonant periodic targets creates
 the accumulating target set required by the native nonresonant hRigid crossing endpoint. -/
 theorem exists_accumulation_nonresonantPeriodic_of_frontier_dense_open

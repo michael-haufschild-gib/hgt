@@ -73,6 +73,7 @@ import GaloisForLFunctions.Bottcher.BottcherAsymptotic
 import GaloisForLFunctions.Bottcher.BottcherDetermines
 import GaloisForLFunctions.Bottcher.BasinConnected
 import GaloisForLFunctions.Bottcher.PeriodicPoints
+import GaloisForLFunctions.Bottcher.CrossRatioNormalBridge
 import GaloisForLFunctions.Bottcher.RepellingFixedPoint
 import GaloisForLFunctions.Bottcher.RepellingPeriodicFrontier
 import GaloisForLFunctions.Bottcher.Resonance

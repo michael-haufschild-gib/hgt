@@ -625,4 +625,62 @@ theorem exists_circle_point_of_nonzero_basin_subset_disk_and_completeInvariant
   exact hb (eq_zero_of_basin_avoids_circle_of_subset_disk_and_completeInvariant
     hΩc havoid hw hwn hKsub hinvK)
 
+/-- **Open crossing point gives the accumulating arc input (PROVED).** If an open basin `Ω` contains a
+unit-circle point `z₀`, then `Ω ∩ {|z| = 1}` is frequently nonempty in every punctured neighbourhood of
+`z₀`. This is the exact handoff from the Step-2 crossing output to the `haccum` input of
+`u0_phi_card_step3`: openness upgrades a single circle crossing to an accumulating circle arc. -/
+@[aesop safe]
+theorem frequently_mem_open_unitCircle_of_mem {Ω : Set ℂ} (hΩo : IsOpen Ω) {z₀ : ℂ}
+    (hzΩ : z₀ ∈ Ω) (hz₀ : ‖z₀‖ = 1) :
+    ∃ᶠ z in 𝓝[≠] z₀, z ∈ Ω ∩ {z : ℂ | ‖z‖ = 1} := by
+  have hzSphere : z₀ ∈ Metric.sphere (0 : ℂ) 1 := by
+    simpa [Metric.mem_sphere, dist_zero_right] using hz₀
+  obtain ⟨θ₀, hθ₀⟩ : ∃ θ : ℝ, circleMap 0 1 θ = z₀ := by
+    have hrange : Set.range (circleMap 0 (1 : ℝ)) = Metric.sphere (0 : ℂ) |(1 : ℝ)| :=
+      range_circleMap 0 1
+    rw [abs_of_pos (by norm_num : (0 : ℝ) < 1)] at hrange
+    exact Set.mem_range.mp (by simpa [hrange] using hzSphere)
+  have hderiv := hasDerivAt_circleMap 0 (1 : ℝ) θ₀
+  have hderiv_ne : circleMap 0 (1 : ℝ) θ₀ * Complex.I ≠ 0 := by
+    rw [hθ₀]
+    exact mul_ne_zero (norm_ne_zero_iff.mp (by rw [hz₀]; norm_num)) Complex.I_ne_zero
+  have hmap : Tendsto (circleMap 0 (1 : ℝ)) (𝓝[≠] θ₀) (𝓝[≠] z₀) := by
+    simpa [hθ₀] using hderiv.tendsto_nhdsNE hderiv_ne
+  have hΩev : ∀ᶠ θ in 𝓝[≠] θ₀, circleMap 0 (1 : ℝ) θ ∈ Ω := by
+    have hcont : Tendsto (circleMap 0 (1 : ℝ)) (𝓝 θ₀) (𝓝 z₀) := by
+      simpa [hθ₀] using (continuous_circleMap 0 (1 : ℝ)).continuousAt.tendsto (x := θ₀)
+    exact (hcont.mono_left nhdsWithin_le_nhds) (hΩo.mem_nhds hzΩ)
+  have hfreqθ : ∃ᶠ θ in 𝓝[≠] θ₀,
+      circleMap 0 (1 : ℝ) θ ∈ Ω ∩ {z : ℂ | ‖z‖ = 1} := by
+    haveI : NeBot (𝓝[≠] θ₀) := NormedField.nhdsNE_neBot θ₀
+    refine (hΩev.mp ?_).frequently
+    filter_upwards with θ hΩθ
+    have hsphere : circleMap 0 (1 : ℝ) θ ∈ Metric.sphere (0 : ℂ) 1 :=
+      circleMap_mem_sphere 0 (by norm_num : (0 : ℝ) ≤ 1) θ
+    have hnorm : ‖circleMap 0 (1 : ℝ) θ‖ = 1 :=
+      mem_sphere_zero_iff_norm.mp hsphere
+    exact ⟨hΩθ, hnorm⟩
+  exact hmap.frequently hfreqθ
+
+/-- **The U0 Step 3 theorem with an open crossing point (PROVED).** This is the literal
+`u0_phi_no_relation_3var` continuation contradiction after replacing its manual accumulating set
+`S ⊆ Ω ∩ {|z|=1}` by the intrinsic one `Ω ∩ {|z|=1}`. Thus the caller only supplies the Böttcher-side
+open basin, a unit-circle crossing point, analytic `φ`, and the separable specialization data. -/
+@[aesop safe]
+theorem u0_phi_no_relation_3var_open_crossing {Ω : Set ℂ} (hΩo : IsOpen Ω)
+    (hΩc : IsPreconnected Ω) {φ : ℂ → ℂ} (hφ : AnalyticOnNhd ℂ φ Ω)
+    (P : (Polynomial (Polynomial ℂ))[X]) (hd : 1 ≤ P.natDegree)
+    {w : ℂ} (hw : w ∈ Ω)
+    (hleadw : (∑ i : Fin (P.natDegree+1),
+      C ((P.coeff i).eval₂ (evalRingHom w) (φ w)) * X ^ (i:ℕ) : ℂ[X]).coeff P.natDegree ≠ 0)
+    (hsepw : (∑ i : Fin (P.natDegree+1),
+      C ((P.coeff i).eval₂ (evalRingHom w) (φ w)) * X ^ (i:ℕ) : ℂ[X]).Separable)
+    {z₁ : ℂ} (hz₁ : z₁ ∈ Ω) (hz₁norm : ‖z₁‖ = 1)
+    (hrel : ∀ z ∈ Ext, P.eval₂ (eval₂RingHom (evalRingHom z) (φ z)) (u0 z) = 0) :
+    False := by
+  exact u0_phi_no_relation_3var hΩc hφ P hd hw hleadw hsepw hz₁
+    (S := Ω ∩ {z : ℂ | ‖z‖ = 1})
+    (fun z hz => hz.1) (fun z hz => hz.2)
+    (frequently_mem_open_unitCircle_of_mem hΩo hz₁ hz₁norm) hrel
+
 end U0PhiCard
