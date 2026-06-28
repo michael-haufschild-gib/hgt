@@ -29,6 +29,7 @@ import GaloisForLFunctions.U0.U0CoverTransport
 import GaloisForLFunctions.U0.U0PhiLifts
 import GaloisForLFunctions.U0.U0PhiCard
 import GaloisForLFunctions.Bottcher.AlgIndep
+import GaloisForLFunctions.Bottcher.MonodromyObstruction
 import GaloisForLFunctions.Bottcher.CoverMonodromy
 import GaloisForLFunctions.Bottcher.DyadicMonodromy
 import GaloisForLFunctions.Bottcher.MonodromyMultiplier
@@ -2324,6 +2325,70 @@ theorem hurwitz_mixed_tail_zero_harmonic_close (N : ℕ) :
   exact HurwitzAllNTailIndependence.HurwitzZetaTail.mixedTailIndependent_zero_harmonic_part
     (N := N) (s := s) hs hcoeff scoeff P hh hrel
 
+/-- Singleton mixed relation close in coefficient form when the harmonic coefficients are already
+zero.  For `N = 0`, the compressed shifted-power polynomial is exactly the remaining shifted
+coefficient. -/
+def HurwitzMixedTailZeroHarmonicCloseN0CoeffTarget : Prop :=
+  ∀ {s : ℂ}, (∀ k : ℤ, s ≠ (k : ℂ)) →
+  ∀ (hcoeff scoeff : Fin (0 + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ},
+    (∀ i : Fin (0 + 1), hcoeff i = 0) →
+    (∀ n, M ≤ n →
+      (∑ i : Fin (0 + 1), (hcoeff i).eval (n : ℂ) *
+        HurwitzAllNTailIndependence.HurwitzZetaTail.harmonicTail (N := 0) s i n) +
+      (∑ i : Fin (0 + 1), (scoeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ)))) =
+        P.eval (n : ℂ)) →
+    (∀ i : Fin (0 + 1), hcoeff i = 0) ∧ (∀ i : Fin (0 + 1), scoeff i = 0) ∧ P = 0
+
+/-- Formal wrapper for the singleton zero-harmonic mixed-tail coefficient close. -/
+theorem hurwitz_mixed_tail_zero_harmonic_close_N0_coefficients :
+    HurwitzMixedTailZeroHarmonicCloseN0CoeffTarget := by
+  intro s hsZ hcoeff scoeff P M hh hrel
+  exact HurwitzAllNTailIndependence.HurwitzZetaTail.mixedTailIndependent_zero_harmonic_part_N0_coefficients
+    (s := s) hsZ hcoeff scoeff P hh hrel
+
+/-- Mixed relation close in the subcase where the shifted-power coefficients are already zero, assuming
+the harmonic-tail rational-independence provider. -/
+def HurwitzMixedTailZeroShiftedCloseFromHarmonicTarget (N : ℕ) : Prop :=
+  ∀ {s : ℂ},
+  HurwitzAllNTailIndependence.RationalTailIndependent (N := N)
+    (HurwitzAllNTailIndependence.HurwitzZetaTail.harmonicTail (N := N) s) →
+  ∀ (hcoeff scoeff : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ},
+    (∀ i : Fin (N + 1), scoeff i = 0) →
+    (∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (hcoeff i).eval (n : ℂ) *
+        HurwitzAllNTailIndependence.HurwitzZetaTail.harmonicTail (N := N) s i n) +
+      (∑ i : Fin (N + 1), (scoeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ)))) =
+        P.eval (n : ℂ)) →
+    (∀ i : Fin (N + 1), hcoeff i = 0) ∧
+      HurwitzNonRat.shiftedPowerPolynomial N scoeff = 0 ∧ P = 0
+
+/-- Formal wrapper for the zero-shifted mixed-tail close from harmonic-tail independence. -/
+theorem hurwitz_mixed_tail_zero_shifted_close_from_harmonic (N : ℕ) :
+    HurwitzMixedTailZeroShiftedCloseFromHarmonicTarget N := by
+  intro s hTail hcoeff scoeff P M hs hrel
+  exact HurwitzAllNTailIndependence.HurwitzZetaTail.mixedTailIndependent_zero_shifted_part_of_rationalTailIndependent
+    (N := N) (s := s) hTail hcoeff scoeff P hs hrel
+
+/-- Unconditional singleton mixed relation close in the zero shifted-power subcase. -/
+def HurwitzMixedTailZeroShiftedCloseN0Target : Prop :=
+  ∀ {s : ℂ}, (∀ k : ℤ, s ≠ (k : ℂ)) →
+  ∀ (hcoeff scoeff : Fin (0 + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ},
+    (∀ i : Fin (0 + 1), scoeff i = 0) →
+    (∀ n, M ≤ n →
+      (∑ i : Fin (0 + 1), (hcoeff i).eval (n : ℂ) *
+        HurwitzAllNTailIndependence.HurwitzZetaTail.harmonicTail (N := 0) s i n) +
+      (∑ i : Fin (0 + 1), (scoeff i).eval (n : ℂ) * (n : ℂ) ^ (-(s + (i : ℂ)))) =
+        P.eval (n : ℂ)) →
+    (∀ i : Fin (0 + 1), hcoeff i = 0) ∧
+      HurwitzNonRat.shiftedPowerPolynomial 0 scoeff = 0 ∧ P = 0
+
+/-- Formal wrapper for the unconditional singleton zero-shifted mixed-tail close. -/
+theorem hurwitz_mixed_tail_zero_shifted_close_N0 :
+    HurwitzMixedTailZeroShiftedCloseN0Target := by
+  intro s hsZ hcoeff scoeff P M hs hrel
+  exact HurwitzAllNTailIndependence.HurwitzZetaTail.mixedTailIndependent_zero_shifted_part_N0
+    (s := s) hsZ hcoeff scoeff P hs hrel
+
 /-- A full mixed-tail independence provider is enough to close the original harmonic-tail provider. -/
 def HurwitzHarmonicTailFromMixedTarget (N : ℕ) : Prop :=
   ∀ {s : ℂ}, (∀ k : ℤ, s ≠ (k : ℂ)) →
@@ -2501,5 +2566,516 @@ theorem hurwitz_hzeta_row_close_from_mixed_pole_root_card (N : ℕ) :
   intro s hs1 hsZ hpole q l cc hrow hcc
   exact HurwitzAllNTailIndependence.HurwitzZetaTail.rows_and_constant_close_of_hzeta_shift_neg_nat_of_mixedPoleRootInput
     hs1 hsZ hpole q l cc hrow hcc
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Exact Hurwitz mixed-provider target: for nonintegral `s`, the mixed pole-root input is precisely
+the mixed harmonic-tail/shifted-power independence provider produced by the finite-difference route. -/
+def HurwitzMixedPoleRootExactTarget : Prop :=
+  ∀ (N : ℕ) (s : ℂ), (∀ k : ℤ, s ≠ (k : ℂ)) →
+    (HurwitzAllNTailIndependence.HurwitzZetaTail.MixedTailIndependent N s ↔
+      HurwitzAllNTailIndependence.HurwitzZetaTail.MixedPoleRootInput N s)
+
+/-- Formal wrapper: the mixed pole-root bridge has exactly the same Lean content as the mixed-tail
+provider. This pins the remaining all-`N` Hurwitz analytic input to one explicit interface. -/
+theorem hurwitz_mixed_pole_root_exact_target : HurwitzMixedPoleRootExactTarget := by
+  intro N s hsZ
+  exact HurwitzAllNTailIndependence.HurwitzZetaTail.mixedTailIndependent_iff_mixedPoleRootInput hsZ
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Exact dyadic multiplier target for `not-new-but-required/bottcher-exact-pruefer-monodromy.md`:
+the depth-`n` scalar multiplier has order exactly `2^n`. -/
+def BottcherExactPrueferDyadicMultiplierOrderTarget : Prop :=
+  ∀ n : ℕ,
+    orderOf (Complex.exp (2 * (Real.pi : ℂ) * Complex.I / ((2 ^ n : ℕ) : ℂ))) = 2 ^ n
+
+/-- Formal wrapper for the exact order of the dyadic Prüfer multipliers. This is the algebraic
+order component of the exact disconnected Böttcher monodromy theorem. -/
+theorem bottcher_exact_pruefer_dyadic_multiplier_order :
+    BottcherExactPrueferDyadicMultiplierOrderTarget := by
+  intro n
+  exact Bottcher.orderOf_dyadicRoot n
+
+/-- Exact dyadic multipliers imply the finite-type absence order target used by the C11 support card. -/
+def BottcherDyadicUnboundedOrderFromExactPrueferTarget : Prop :=
+  BottcherExactPrueferDyadicMultiplierOrderTarget → BottcherDyadicUnboundedOrderTarget
+
+/-- Formal wrapper: the exact Prüfer multiplier theorem supplies unbounded dyadic order. -/
+theorem bottcher_dyadic_unbounded_order_from_exact_pruefer :
+    BottcherDyadicUnboundedOrderFromExactPrueferTarget := by
+  intro h d
+  refine ⟨Complex.exp (2 * (Real.pi : ℂ) * Complex.I / ((2 ^ d : ℕ) : ℂ)), ?_⟩
+  rw [h d]
+  exact Nat.lt_two_pow_self
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Symmetric algebraic target for
+`not-new-but-required/unbounded-one-coordinate-monodromy-obstruction.md`: the same obstruction applies
+when the monodromy fixes the first coordinate and scales the second. -/
+def UnboundedOneCoordinateMonodromySymmTarget
+    {K M : Type*} [Field K] [Field M] [Algebra K M] (F G : M) : Prop :=
+  Transcendental K F →
+  G ≠ 0 →
+  (∀ d : ℕ, ∃ (σ : M ≃ₐ[K] M) (ζ : M) (m : ℕ),
+    d < m ∧ orderOf ζ = m ∧ σ F = F ∧ σ ζ = ζ ∧ σ G = ζ * G) →
+  ∀ P : Polynomial (Polynomial K),
+    (P.map (aeval F : Polynomial K →ₐ[K] M).toRingHom).eval G = 0 →
+    P = 0
+
+/-- Formal wrapper for the symmetric one-coordinate monodromy obstruction. -/
+theorem unbounded_one_coordinate_monodromy_obstruction_symm_card
+    {K M : Type*} [Field K] [Field M] [Algebra K M] (F G : M) :
+    UnboundedOneCoordinateMonodromySymmTarget (K := K) (M := M) F G := by
+  intro hF hG mono P hrel
+  exact Bottcher.algIndep_of_unbounded_monodromy (K := K) (M := M) G F hF hG mono P hrel
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Multiplicative scalar-monodromy finite-cover target: finite-index source subgroups have finite-index
+image inside the scalar monodromy image, so every nontrivial power-divisible subgroup of that image
+survives on the cover subgroup. This is the direct multiplicative form of
+`bottcher-pruefer-monodromy-no-finite-cover.md`. -/
+def BottcherMultiplicativeFiniteIndexImageDivisibleSubgroupTarget : Prop :=
+  (∀ {G A : Type} [Group G] [Group A] (H : Subgroup G), H.FiniteIndex →
+    (ρ : G →* A) → (H.map ρ.rangeRestrict).FiniteIndex) ∧
+  (∀ {G A : Type} [Group G] [CommGroup A] (H : Subgroup G), H.FiniteIndex →
+    (ρ : G →* A) → (D : Subgroup ρ.range) →
+    (∀ n : ℕ, 0 < n → ∀ d : ρ.range, d ∈ D → ∃ e : ρ.range, e ∈ D ∧ e ^ n = d) →
+    D ≤ H.map ρ.rangeRestrict ∧ (H.map ρ.rangeRestrict) ⊓ D = D) ∧
+  (∀ {G A : Type} [Group G] [CommGroup A] (H : Subgroup G), H.FiniteIndex →
+    (ρ : G →* A) → (D : Subgroup ρ.range) →
+    (∀ n : ℕ, 0 < n → ∀ d : ρ.range, d ∈ D → ∃ e : ρ.range, e ∈ D ∧ e ^ n = d) →
+    (∃ d : ρ.range, d ∈ D ∧ d ≠ 1) → ∃ h : G, h ∈ H ∧ ρ h ≠ 1) ∧
+  (∀ {G A : Type} [Group G] [CommGroup A] (H : Subgroup G), H.FiniteIndex →
+    (ρ : G →* A) → (D : Subgroup ρ.range) →
+    (∀ n : ℕ, 0 < n → ∀ d : ρ.range, d ∈ D → ∃ e : ρ.range, e ∈ D ∧ e ^ n = d) →
+    (∃ d : ρ.range, d ∈ D ∧ d ≠ 1) → ¬ ∀ h : G, h ∈ H → ρ h = 1)
+
+/-- Formal wrapper: finite covers cannot kill a scalar monodromy image containing a nontrivial
+power-divisible Prüfer-type subgroup. -/
+theorem bottcher_pruefer_multiplicative_finite_index_image_divisible_subgroup_obstruction :
+    BottcherMultiplicativeFiniteIndexImageDivisibleSubgroupTarget := by
+  constructor
+  · intro G A hG hA H hfinite ρ
+    haveI : H.FiniteIndex := hfinite
+    exact Bottcher.subgroup_map_rangeRestrict_finiteIndex H ρ
+  constructor
+  · intro G A hG hA H hfinite ρ D hdiv
+    haveI : H.FiniteIndex := hfinite
+    exact ⟨Bottcher.subgroup_le_map_rangeRestrict_of_powerDivisible_finiteIndex H ρ D hdiv,
+      Bottcher.subgroup_inf_map_rangeRestrict_eq_right_of_powerDivisible_finiteIndex H ρ D hdiv⟩
+  constructor
+  · intro G A hG hA H hfinite ρ D hdiv hne
+    haveI : H.FiniteIndex := hfinite
+    exact Bottcher.exists_mem_finiteIndex_subgroup_apply_ne_one_of_powerDivisible_nontrivial
+      H ρ D hdiv hne
+  · intro G A hG hA H hfinite ρ D hdiv hne
+    haveI : H.FiniteIndex := hfinite
+    exact Bottcher.not_forall_mem_finiteIndex_subgroup_apply_eq_one_of_powerDivisible_nontrivial
+      H ρ D hdiv hne
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Exact Prüfer tower coherence target for `bottcher-exact-pruefer-monodromy.md`: the named depth-`n`
+multiplier has order `2^n`, the depth `n+1` multiplier squares to it, and the square root again has
+exact Prüfer order. -/
+def BottcherExactPrueferDyadicTowerCoherenceTarget : Prop :=
+  ∀ n : ℕ,
+    orderOf (Bottcher.dyadicRoot n) = 2 ^ n ∧
+    Bottcher.dyadicRoot (n + 1) ^ 2 = Bottcher.dyadicRoot n ∧
+    ∃ η : ℂ, η ^ 2 = Bottcher.dyadicRoot n ∧ orderOf η = 2 ^ (n + 1)
+
+/-- Formal wrapper for the exact coherent dyadic Prüfer multiplier tower. -/
+theorem bottcher_exact_pruefer_dyadic_tower_coherence :
+    BottcherExactPrueferDyadicTowerCoherenceTarget := by
+  intro n
+  exact ⟨Bottcher.orderOf_dyadicRoot_named n, Bottcher.dyadicRoot_succ_sq n,
+    Bottcher.dyadicRoot_square_root n⟩
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Ambient scalar-monodromy finite-cover target: if an ambient target subgroup `D` is contained in the
+monodromy image and is power-divisible, then every finite-index source subgroup still maps onto `D` and
+therefore has nontrivial scalar monodromy whenever `D` is nontrivial. This is the card-facing form of
+`bottcher-pruefer-monodromy-no-finite-cover.md`, avoiding an extra subtype-of-`ρ.range` packaging step. -/
+def BottcherMultiplicativeFiniteIndexAmbientDivisibleSubgroupTarget : Prop :=
+  (∀ {G A : Type} [Group G] [CommGroup A] (H : Subgroup G), H.FiniteIndex →
+    (ρ : G →* A) → (D : Subgroup A) → D ≤ ρ.range →
+    (∀ n : ℕ, 0 < n → ∀ d : A, d ∈ D → ∃ e : A, e ∈ D ∧ e ^ n = d) →
+    D ≤ H.map ρ) ∧
+  (∀ {G A : Type} [Group G] [CommGroup A] (H : Subgroup G), H.FiniteIndex →
+    (ρ : G →* A) → (D : Subgroup A) → D ≤ ρ.range →
+    (∀ n : ℕ, 0 < n → ∀ d : A, d ∈ D → ∃ e : A, e ∈ D ∧ e ^ n = d) →
+    (∃ d : A, d ∈ D ∧ d ≠ 1) → ∃ h : G, h ∈ H ∧ ρ h ≠ 1) ∧
+  (∀ {G A : Type} [Group G] [CommGroup A] (H : Subgroup G), H.FiniteIndex →
+    (ρ : G →* A) → (D : Subgroup A) → D ≤ ρ.range →
+    (∀ n : ℕ, 0 < n → ∀ d : A, d ∈ D → ∃ e : A, e ∈ D ∧ e ^ n = d) →
+    (∃ d : A, d ∈ D ∧ d ≠ 1) → ¬ ∀ h : G, h ∈ H → ρ h = 1)
+
+/-- Formal wrapper for the ambient subgroup version of the finite-cover Prüfer obstruction. -/
+theorem bottcher_pruefer_multiplicative_finite_index_ambient_divisible_subgroup_obstruction :
+    BottcherMultiplicativeFiniteIndexAmbientDivisibleSubgroupTarget := by
+  constructor
+  · intro G A hG hA H hfinite ρ D hDρ hdiv
+    haveI : H.FiniteIndex := hfinite
+    exact Bottcher.subgroup_le_map_of_powerDivisible_finiteIndex_of_le_range H ρ D hDρ hdiv
+  constructor
+  · intro G A hG hA H hfinite ρ D hDρ hdiv hne
+    haveI : H.FiniteIndex := hfinite
+    exact Bottcher.exists_mem_finiteIndex_subgroup_apply_ne_one_of_powerDivisible_nontrivial_of_le_range
+      H ρ D hDρ hdiv hne
+  · intro G A hG hA H hfinite ρ D hDρ hdiv hne
+    haveI : H.FiniteIndex := hfinite
+    exact Bottcher.not_forall_mem_finiteIndex_subgroup_apply_eq_one_of_powerDivisible_nontrivial_of_le_range
+      H ρ D hDρ hdiv hne
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Concrete root-of-unity input for the finite-cover Prüfer obstruction: the torsion subgroup of
+`ℂˣ` is power-divisible and nontrivial.  This supplies a reusable, fully proved source for the
+`hdiv`/`hne` hypotheses in the scalar finite-cover algebra whenever the monodromy image contains the
+relevant complex root-of-unity subgroup. -/
+def BottcherComplexUnitTorsionPowerDivisibleTarget : Prop :=
+  (∀ n : ℕ, 0 < n → ∀ d : ℂˣ, d ∈ CommGroup.torsion ℂˣ →
+    ∃ e : ℂˣ, e ∈ CommGroup.torsion ℂˣ ∧ e ^ n = d) ∧
+  (∃ d : ℂˣ, d ∈ CommGroup.torsion ℂˣ ∧ d ≠ 1)
+
+/-- Formal wrapper: complex roots of unity form a nontrivial power-divisible subgroup of `ℂˣ`. -/
+theorem bottcher_complex_unit_torsion_power_divisible :
+    BottcherComplexUnitTorsionPowerDivisibleTarget := by
+  exact ⟨Bottcher.complex_units_torsion_powerDivisible,
+    Bottcher.complex_units_torsion_nontrivial⟩
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- U0 provider reduction target: radical data canonically supplies finite square-root deck data by
+adjoining a square root of the radicand. -/
+def U0PhibSquareRootDeckDataFromRadicalDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    U0CardTheorems.PhibRadicalData hUo hUc hUne hUinf hU_ext hU_esc →
+    U0CardTheorems.PhibSquareRootDeckData hUo hUc hUne hUinf hU_ext hU_esc
+
+/-- Formal wrapper for the radical-data-to-square-root-deck U0 provider reduction. -/
+theorem u0_phib_squareRootDeckData_from_radicalData :
+    U0PhibSquareRootDeckDataFromRadicalDataTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc hRadical
+  exact U0CardTheorems.phibSquareRootDeckData_of_radicalData
+    hUo hUc hUne hUinf hU_ext hU_esc hRadical
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- U0 provider equivalence target: radical data and finite square-root deck data carry the same Lean
+content for the Kummer radicand. -/
+def U0PhibRadicalDataIffSquareRootDeckDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    U0CardTheorems.PhibRadicalData hUo hUc hUne hUinf hU_ext hU_esc ↔
+      U0CardTheorems.PhibSquareRootDeckData hUo hUc hUne hUinf hU_ext hU_esc
+
+/-- Formal wrapper for the U0 radical-data/square-root-deck-data provider equivalence. -/
+theorem u0_phib_radicalData_iff_squareRootDeckData :
+    U0PhibRadicalDataIffSquareRootDeckDataTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc
+  exact U0CardTheorems.phibRadicalData_iff_squareRootDeckData
+    hUo hUc hUne hUinf hU_ext hU_esc
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- U0 provider-reduction target: full Kummer inputs already supply radical data, because dyadic
+Kummer irreducibility forces the radicand to be non-square. -/
+def U0PhibRadicalDataFromKummerInputsTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    U0CardTheorems.PhibKummerInputs hUo hUc hUne hUinf hU_ext hU_esc →
+    U0CardTheorems.PhibRadicalData hUo hUc hUne hUinf hU_ext hU_esc
+
+/-- Formal wrapper for the U0 Kummer-inputs-to-radical-data provider reduction. -/
+theorem u0_phib_radicalData_from_kummerInputs :
+    U0PhibRadicalDataFromKummerInputsTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc hKummer
+  exact U0CardTheorems.phibRadicalData_of_kummerInputs
+    hUo hUc hUne hUinf hU_ext hU_esc hKummer
+
+/-- U0 provider equivalence target: the original Kummer-input provider and the radical-data provider
+carry the same Lean content. -/
+def U0PhibKummerInputsIffRadicalDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    U0CardTheorems.PhibKummerInputs hUo hUc hUne hUinf hU_ext hU_esc ↔
+      U0CardTheorems.PhibRadicalData hUo hUc hUne hUinf hU_ext hU_esc
+
+/-- Formal wrapper for the U0 Kummer-input/radical-data provider equivalence. -/
+theorem u0_phib_kummerInputs_iff_radicalData :
+    U0PhibKummerInputsIffRadicalDataTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc
+  exact U0CardTheorems.phibKummerInputs_iff_radicalData
+    hUo hUc hUne hUinf hU_ext hU_esc
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- U0 provider obstruction target: any valid radical-data map is necessarily non-surjective.  This
+formally rules out the naive base-field choice equal to the carrier already containing `φ_b`; the
+remaining provider must use a proper descent/cover base. -/
+def U0PhibRadicalDataNonSurjectiveMapsTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    U0CardTheorems.PhibRadicalData hUo hUc hUne hUinf hU_ext hU_esc →
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    ∀ d : ℕ, ∃ (B : Type) (_ : Field B) (_ : Algebra (RatFunc ℂ) B)
+        (i : B →ₐ[RatFunc ℂ] meroField U) (a GB : B) (k : ℕ),
+        1 ≤ k ∧ d < 2 ^ k ∧ (∀ x : B, x ^ 2 ≠ a) ∧
+        phiMero b hU_esc ^ (2 ^ k) = i a ∧
+        i GB = algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext) ∧
+        ¬ Function.Surjective i
+
+/-- Formal wrapper for the U0 radical-provider non-surjectivity obstruction. -/
+theorem u0_phib_radicalData_nonSurjective_maps :
+    U0PhibRadicalDataNonSurjectiveMapsTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc hRadical
+  exact U0CardTheorems.phibRadicalData_nonSurjective_maps
+    hUo hUc hUne hUinf hU_ext hU_esc hRadical
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- U0 deep-provider target: the Böttcher deep odd-period loop data, plus containment of the deep domain
+inside the U0 exterior, constructs the actual `PhibRadicalData` provider consumed by the U0 cards. -/
+def U0PhibRadicalDataFromDeepDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    (∀ d : ℕ, ∃ (Ext : Set ℂ)
+      (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+      (_hUExt : U ⊆ Ext)
+      (_hExtesc : ∀ z ∈ Ext, (quadratic b)^[d+1] z ∈ escapeOpen b)
+      (_hExtU0 : Ext ⊆ U0NaturalBoundary.Ext)
+      (aExt : analyticSubring Ext),
+      (aExt : Germ (𝓟 Ext) ℂ)
+          = (↑(fun z => bottcherCoord b ((quadratic b)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+      (∀ T : Set ℂ, T.Countable →
+        ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+          (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+          (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+          γ (2 * Real.pi) = γ 0 ∧
+          (∀ θ : ℝ, (quadratic b)^[d+1] (γ θ) ∉ T) ∧
+          (∫ θ in (0:ℝ)..(2 * Real.pi),
+              logDeriv (fun z => bottcherCoord b ((quadratic b)^[d+1] z)) (γ θ) * γ' θ)
+            = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) →
+    U0CardTheorems.PhibRadicalData hUo hUc hUne hUinf hU_ext hU_esc
+
+/-- Formal wrapper for the U0 deep-data-to-radical-data provider. -/
+theorem u0_phib_radicalData_from_deepData :
+    U0PhibRadicalDataFromDeepDataTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc deepdata
+  exact U0CardTheorems.phibRadicalData_of_deepData
+    hUo hUc hUne hUinf hU_ext hU_esc deepdata
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- U0 carrier-independence target from deep data: once the per-depth deep odd-period domains are
+supplied, the actual `NoRelation ℂ(z) φ_b u₀` statement follows in the faithful meromorphic carrier. -/
+def U0PhiIndependenceCarrierFromDeepDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    (∀ d : ℕ, ∃ (Ext : Set ℂ)
+      (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+      (_hUExt : U ⊆ Ext)
+      (_hExtesc : ∀ z ∈ Ext, (quadratic b)^[d+1] z ∈ escapeOpen b)
+      (_hExtU0 : Ext ⊆ U0NaturalBoundary.Ext)
+      (aExt : analyticSubring Ext),
+      (aExt : Germ (𝓟 Ext) ℂ)
+          = (↑(fun z => bottcherCoord b ((quadratic b)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+      (∀ T : Set ℂ, T.Countable →
+        ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+          (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+          (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+          γ (2 * Real.pi) = γ 0 ∧
+          (∀ θ : ℝ, (quadratic b)^[d+1] (γ θ) ∉ T) ∧
+          (∫ θ in (0:ℝ)..(2 * Real.pi),
+              logDeriv (fun z => bottcherCoord b ((quadratic b)^[d+1] z)) (γ θ) * γ' θ)
+            = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) →
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext))
+
+/-- Formal wrapper for U0 carrier independence from deep data. -/
+theorem u0_phi_independence_carrier_from_deepData :
+    U0PhiIndependenceCarrierFromDeepDataTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_carrier_deepData
+    hUo hUc hUne hUinf hU_ext hU_esc deepdata
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- U0 escape-carrier deep-data target: on a Böttcher escape carrier, the U0 exterior containment is
+automatic, so deep odd-period data directly gives the `NoRelation ℂ(z) φ_b u₀` theorem. -/
+def U0PhiIndependenceEscapeCarrierFromDeepDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    (∀ d : ℕ, ∃ (Ext : Set ℂ)
+      (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+      (_hUExt : U ⊆ Ext)
+      (_hExtesc : ∀ z ∈ Ext, (quadratic b)^[d+1] z ∈ escapeOpen b)
+      (_hExtU0 : Ext ⊆ U0NaturalBoundary.Ext)
+      (aExt : analyticSubring Ext),
+      (aExt : Germ (𝓟 Ext) ℂ)
+          = (↑(fun z => bottcherCoord b ((quadratic b)^[d+1] z)) : Germ (𝓟 Ext) ℂ) ∧
+      (∀ T : Set ℂ, T.Countable →
+        ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+          (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+          (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+          γ (2 * Real.pi) = γ 0 ∧
+          (∀ θ : ℝ, (quadratic b)^[d+1] (γ θ) ∉ T) ∧
+          (∫ θ in (0:ℝ)..(2 * Real.pi),
+              logDeriv (fun z => bottcherCoord b ((quadratic b)^[d+1] z)) (γ θ) * γ' θ)
+            = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) →
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U)
+        (u0AnSub (hU_esc.trans (U0CardTheorems.escapeOpen_subset_U0Ext b))))
+
+/-- Formal wrapper for U0 escape-carrier independence from deep data. -/
+theorem u0_phi_independence_escapeCarrier_from_deepData :
+    U0PhiIndependenceEscapeCarrierFromDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_escapeCarrier_deepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Connected U0 card wrapper from escape-carrier deep data. -/
+theorem u0_phi_independence_connected_escapeCarrier_from_deepData :
+    U0PhiIndependenceEscapeCarrierFromDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_connected_escapeCarrier_deepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+/-- Disconnected U0 card wrapper from escape-carrier deep data. -/
+theorem u0_phi_independence_disconnected_escapeCarrier_from_deepData :
+    U0PhiIndependenceEscapeCarrierFromDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_disconnected_escapeCarrier_deepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+/-- All-parameter U0 card wrapper from escape-carrier deep data. -/
+theorem u0_phi_independence_all_parameters_escapeCarrier_from_deepData :
+    U0PhiIndependenceEscapeCarrierFromDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_all_parameters_escapeCarrier_deepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+/-- U0 topological deep-provider target: odd image-winding data constructs the actual
+`PhibRadicalData` provider consumed by the U0 cards. -/
+def U0PhibRadicalDataFromImageWindingDeepDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    U0CardTheorems.PhibImageWindingDeepData U b →
+    U0CardTheorems.PhibRadicalData hUo hUc hUne hUinf hU_ext hU_esc
+
+/-- Formal wrapper for the U0 image-winding-data-to-radical-data provider. -/
+theorem u0_phib_radicalData_from_imageWindingDeepData :
+    U0PhibRadicalDataFromImageWindingDeepDataTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc deepdata
+  exact U0CardTheorems.phibRadicalData_of_imageWindingDeepData
+    hUo hUc hUne hUinf hU_ext hU_esc deepdata
+
+/-- U0 carrier-independence target from topological image-winding deep data. -/
+def U0PhiIndependenceCarrierFromImageWindingDeepDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hU_ext : U ⊆ U0NaturalBoundary.Ext) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    U0CardTheorems.PhibImageWindingDeepData U b →
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U) (u0AnSub hU_ext))
+
+/-- Formal wrapper for U0 carrier independence from topological image-winding deep data. -/
+theorem u0_phi_independence_carrier_from_imageWindingDeepData :
+    U0PhiIndependenceCarrierFromImageWindingDeepDataTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_carrier_imageWindingDeepData
+    hUo hUc hUne hUinf hU_ext hU_esc deepdata
+
+/-- U0 escape-carrier target from topological image-winding deep data. -/
+def U0PhiIndependenceEscapeCarrierFromImageWindingDeepDataTarget : Prop :=
+  ∀ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite) (b : ℂ) (hU_esc : U ⊆ escapeOpen b),
+    U0CardTheorems.PhibImageWindingDeepData U b →
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U)
+        (u0AnSub (hU_esc.trans (U0CardTheorems.escapeOpen_subset_U0Ext b))))
+
+/-- Formal wrapper for U0 escape-carrier independence from topological image-winding deep data. -/
+theorem u0_phi_independence_escapeCarrier_from_imageWindingDeepData :
+    U0PhiIndependenceEscapeCarrierFromImageWindingDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_escapeCarrier_imageWindingDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+/-- Connected U0 card wrapper from escape-carrier topological image-winding deep data. -/
+theorem u0_phi_independence_connected_escapeCarrier_from_imageWindingDeepData :
+    U0PhiIndependenceEscapeCarrierFromImageWindingDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_connected_escapeCarrier_imageWindingDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+/-- Disconnected U0 card wrapper from escape-carrier topological image-winding deep data. -/
+theorem u0_phi_independence_disconnected_escapeCarrier_from_imageWindingDeepData :
+    U0PhiIndependenceEscapeCarrierFromImageWindingDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_disconnected_escapeCarrier_imageWindingDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
+
+/-- All-parameter U0 card wrapper from escape-carrier topological image-winding deep data. -/
+theorem u0_phi_independence_all_parameters_escapeCarrier_from_imageWindingDeepData :
+    U0PhiIndependenceEscapeCarrierFromImageWindingDeepDataTarget := by
+  intro U hUo hUc hUne hUinf b hU_esc deepdata
+  exact U0CardTheorems.u0_phi_independence_all_parameters_escapeCarrier_imageWindingDeepData
+    hUo hUc hUne hUinf hU_esc deepdata
 
 end FullyProvenNewTargets

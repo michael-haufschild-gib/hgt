@@ -980,6 +980,83 @@ theorem mixedTailIndependent_zero_harmonic_part {N : ℕ} {s : ℂ}
   obtain ⟨hD, hP⟩ := shiftedPower_relation_close_of_eventually_ge hsZ scoeff P hshift
   exact ⟨hh, hD, hP⟩
 
+/-- Singleton mixed relations with zero harmonic coefficients close in coefficient form: for `N = 0`,
+the compressed shifted-power polynomial is just the unique shifted coefficient. -/
+theorem mixedTailIndependent_zero_harmonic_part_N0_coefficients {s : ℂ}
+    (hsZ : ∀ k : ℤ, s ≠ (k : ℂ))
+    (hcoeff scoeff : Fin (0 + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ}
+    (hh : ∀ i : Fin (0 + 1), hcoeff i = 0)
+    (hrel : ∀ n, M ≤ n →
+      (∑ i : Fin (0 + 1), (hcoeff i).eval (n : ℂ) * harmonicTail (N := 0) s i n) +
+        (∑ i : Fin (0 + 1), (scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ)))) = P.eval (n : ℂ)) :
+    (∀ i : Fin (0 + 1), hcoeff i = 0) ∧
+      (∀ i : Fin (0 + 1), scoeff i = 0) ∧ P = 0 := by
+  obtain ⟨hhcoeff, hD, hP⟩ :=
+    mixedTailIndependent_zero_harmonic_part (N := 0) (s := s)
+      hsZ hcoeff scoeff P hh hrel
+  have hscoeff0 : scoeff 0 = 0 := by
+    simpa [HurwitzNonRat.shiftedPowerPolynomial] using hD
+  refine ⟨hhcoeff, ?_, hP⟩
+  intro i
+  fin_cases i
+  exact hscoeff0
+
+/-- Mixed relations with zero shifted-power coefficients close from the harmonic-tail rational
+independence provider.  This is the complementary easy branch to
+`mixedTailIndependent_zero_harmonic_part`: after composing the coefficient polynomials with `-X`, the
+positive-parameter mixed relation becomes exactly the negative-parameter harmonic-tail interface. -/
+theorem mixedTailIndependent_zero_shifted_part_of_rationalTailIndependent {N : ℕ} {s : ℂ}
+    (hTail : RationalTailIndependent (N := N) (harmonicTail (N := N) s))
+    (hcoeff scoeff : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ}
+    (hs : ∀ i : Fin (N + 1), scoeff i = 0)
+    (hrel : ∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (hcoeff i).eval (n : ℂ) * harmonicTail (N := N) s i n) +
+        (∑ i : Fin (N + 1), (scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ)))) = P.eval (n : ℂ)) :
+    (∀ i : Fin (N + 1), hcoeff i = 0) ∧
+      HurwitzNonRat.shiftedPowerPolynomial N scoeff = 0 ∧ P = 0 := by
+  let coeffNeg : Fin (N + 1) → Polynomial ℂ := fun i => (hcoeff i).comp (-X)
+  let PNeg : Polynomial ℂ := P.comp (-X)
+  have hrelNeg : ∀ n, M ≤ n →
+      (∑ i : Fin (N + 1), (coeffNeg i).eval (-(n : ℂ)) *
+        harmonicTail (N := N) s i n) = PNeg.eval (-(n : ℂ)) := by
+    intro n hn
+    have hr := hrel n hn
+    have hshift :
+        (∑ i : Fin (N + 1), (scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ)))) = 0 := by
+      simp [hs]
+    rw [hshift, add_zero] at hr
+    simpa [coeffNeg, PNeg, eval_comp] using hr
+  obtain ⟨hcoeffNeg, hPNeg⟩ := hTail coeffNeg PNeg hrelNeg
+  have hh : ∀ i : Fin (N + 1), hcoeff i = 0 := by
+    intro i
+    by_contra hi
+    exact (HurwitzN2Survivor.comp_neg_ne_zero hi) (hcoeffNeg i)
+  have hD : HurwitzNonRat.shiftedPowerPolynomial N scoeff = 0 := by
+    simp [HurwitzNonRat.shiftedPowerPolynomial, hs]
+  have hP : P = 0 := by
+    by_contra hP0
+    exact (HurwitzN2Survivor.comp_neg_ne_zero hP0) hPNeg
+  exact ⟨hh, hD, hP⟩
+
+/-- Unconditional singleton mixed-tail close in the zero shifted-power subcase. -/
+theorem mixedTailIndependent_zero_shifted_part_N0 {s : ℂ}
+    (hsZ : ∀ k : ℤ, s ≠ (k : ℂ))
+    (hcoeff scoeff : Fin (0 + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ}
+    (hs : ∀ i : Fin (0 + 1), scoeff i = 0)
+    (hrel : ∀ n, M ≤ n →
+      (∑ i : Fin (0 + 1), (hcoeff i).eval (n : ℂ) *
+        harmonicTail (N := 0) s i n) +
+        (∑ i : Fin (0 + 1), (scoeff i).eval (n : ℂ) *
+          (n : ℂ) ^ (-(s + (i : ℂ)))) = P.eval (n : ℂ)) :
+    (∀ i : Fin (0 + 1), hcoeff i = 0) ∧
+      HurwitzNonRat.shiftedPowerPolynomial 0 scoeff = 0 ∧ P = 0 := by
+  exact mixedTailIndependent_zero_shifted_part_of_rationalTailIndependent
+    (N := 0) (s := s) (rationalTailIndependent_harmonic_single (s := s) hsZ)
+    hcoeff scoeff P hs hrel
+
 /-- The existing finite-difference transform lands exactly in the mixed relation type. -/
 theorem harmonicTail_relation_finite_difference_mixed {N : ℕ} {s : ℂ}
     (coeff : Fin (N + 1) → Polynomial ℂ) (P : Polynomial ℂ) {M : ℕ}

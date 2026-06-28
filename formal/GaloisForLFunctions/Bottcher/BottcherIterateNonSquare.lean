@@ -374,4 +374,43 @@ theorem no_analytic_sqrt_bottcherIterate_of_imageWinding {c : ℂ} (k : ℕ) {m 
   exact no_analytic_sqrt_bottcherIterate_of_oddPeriod k hAo hAesc hγA hγcont hγ'cont
     (fun θ _ => hdγ θ) hγclosed (hperiod.trans hwind) h hh
 
+/-- **[Deep germ non-square from image winding]** Field-level version of
+`no_analytic_sqrt_bottcherIterate_of_imageWinding`.  A per-denominator closed loop whose image under
+`f^[k]` has odd logarithmic winding already gives the non-square clause in `meroField Ext`; the
+analytic radicand-period equality is derived internally by
+`pathInt_logDeriv_bottcherIterate_eq_imageInv`. -/
+theorem bottcherIterateGerm_not_isSquare_of_imageWinding {c : ℂ} (k : ℕ) {Ext : Set ℂ}
+    (hExto : IsOpen Ext) (hExtc : IsConnected Ext)
+    (hExtesc : ∀ z ∈ Ext, (quadratic c)^[k] z ∈ escapeOpen c)
+    (hloops : ∀ T : Set ℂ, T.Countable →
+      ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+        (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+        (∀ θ : ℝ, HasDerivAt γ (γ' θ) θ) ∧
+        γ (2 * Real.pi) = γ 0 ∧
+        (∀ θ : ℝ, (quadratic c)^[k] (γ θ) ∉ T) ∧
+        (∫ θ in (0:ℝ)..(2 * Real.pi),
+            ((quadratic c)^[k] (γ θ))⁻¹ *
+              ((∏ j ∈ Finset.range k, 2 * (quadratic c)^[j] (γ θ)) * γ' θ))
+          = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))
+    (a : analyticSubring Ext)
+    (hae : (Filter.Germ.coeRingHom (𝓟 Ext) (fun z => bottcherCoord c ((quadratic c)^[k] z)))
+            = (a : Filter.Germ (𝓟 Ext) ℂ)) :
+    haveI := isDomain_analyticSubring Ext hExto hExtc.isPreconnected hExtc.nonempty
+    ∀ b : meroField Ext,
+      b ^ 2 ≠ algebraMap (analyticSubring Ext) (meroField Ext) a := by
+  refine bottcherIterateGerm_not_isSquare (c := c) k hExto hExtc hExtesc ?_ a hae
+  intro T hTcount
+  obtain ⟨γ, γ', m, hγExt, hγcont, hγ'cont, hdγ, hγclosed, havoid, hwind⟩ :=
+    hloops T hTcount
+  refine ⟨γ, γ', m, hγExt, hγcont, hγ'cont, ?_, hγclosed, havoid, ?_⟩
+  · intro θ _hθ
+    exact hdγ θ
+  · have hesc : ∀ θ : ℝ, (quadratic c)^[k] (γ θ) ∈ escapeOpen c :=
+      fun θ => hExtesc (γ θ) (hγExt θ)
+    have hclosed' : (quadratic c)^[k] (γ (2 * Real.pi)) = (quadratic c)^[k] (γ 0) := by
+      rw [hγclosed]
+    have hperiod :=
+      pathInt_logDeriv_bottcherIterate_eq_imageInv (c := c) k hesc hdγ hγcont hγ'cont hclosed'
+    exact hperiod.trans hwind
+
 end Bottcher

@@ -31,3 +31,32 @@ theorem exists_complex_orderOf_gt (d : ℕ) : ∃ ζ : ℂ, d < orderOf ζ := by
   exact Nat.lt_two_pow_self
 
 end Bottcher
+
+namespace Bottcher
+
+/-- Named depth-`n` dyadic Prüfer multiplier. -/
+noncomputable def dyadicRoot (n : ℕ) : ℂ :=
+  Complex.exp (2 * (Real.pi : ℂ) * Complex.I / ((2 ^ n : ℕ) : ℂ))
+
+/-- The named depth-`n` dyadic Prüfer multiplier has exact order `2^n`. -/
+theorem orderOf_dyadicRoot_named (n : ℕ) : orderOf (dyadicRoot n) = 2 ^ n := by
+  unfold dyadicRoot
+  exact orderOf_dyadicRoot n
+
+/-- The exact Prüfer tower is coherent: the next depth multiplier squares to the current one. -/
+theorem dyadicRoot_succ_sq (n : ℕ) : dyadicRoot (n + 1) ^ 2 = dyadicRoot n := by
+  unfold dyadicRoot
+  rw [← Complex.exp_nat_mul]
+  congr 1
+  have hpow : ((2 ^ n : ℕ) : ℂ) ≠ 0 := by
+    exact_mod_cast pow_ne_zero n (by norm_num : (2 : ℕ) ≠ 0)
+  field_simp [pow_succ, hpow]
+  exact_mod_cast (show 2 * 2 ^ n = 2 ^ (n + 1) by rw [pow_succ'])
+
+/-- Every named depth-`n` dyadic Prüfer multiplier has a square root at depth `n+1`, again with exact
+Prüfer order. -/
+theorem dyadicRoot_square_root (n : ℕ) :
+    ∃ η : ℂ, η ^ 2 = dyadicRoot n ∧ orderOf η = 2 ^ (n + 1) :=
+  ⟨dyadicRoot (n + 1), dyadicRoot_succ_sq n, orderOf_dyadicRoot_named (n + 1)⟩
+
+end Bottcher

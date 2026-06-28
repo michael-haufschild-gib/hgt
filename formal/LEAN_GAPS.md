@@ -11,19 +11,19 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 | Lines | File |
 |---:|---|
+| 3081 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
-| 2505 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
-| 2246 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
+| 2325 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
 | 1475 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
 | 1267 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean` |
 | 1249 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryTruncation.lean` |
+| 1215 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1206 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingPeriodicAvoidance.lean` |
 | 1202 | `formal/GaloisForLFunctions/Bottcher/Brolin/GapAMuCore.lean` |
 | 1172 | `formal/GaloisForLFunctions/Bottcher/Brolin/Cauchy.lean` |
-| 1138 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1093 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryCriteria.lean` |
 | 1060 | `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean` |
 | 1031 | `formal/GaloisForLFunctions/Bottcher/MeromorphicField.lean` |
@@ -34,8 +34,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 915 | `formal/GaloisForLFunctions/Bottcher/ModularLambdaCovering.lean` |
 | 886 | `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean` |
 | 855 | `formal/GaloisForLFunctions/U0/U0NaturalBoundary.lean` |
+| 810 | `formal/GaloisForLFunctions/U0/U0CardTheorems.lean` |
 | 782 | `formal/GaloisForLFunctions/Bottcher/FigureEight.lean` |
-| 780 | `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean` |
 
 ## Gap Markers
 
@@ -145,10 +145,10 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/GreenUnique.lean:12` | basin is preconnected (`K_c` full), the one remaining topological input. |
 | `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:4` | created substantial axiom-clean Lean infrastructure.  Do not redo it, and do not replace the remaining |
 | `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:75` | rightmost frontier fact and local empty-interior ball internally.  The remaining input is the punctured |
-| `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:411` | ## Remaining work for a hypothesis-free both-connected theorem |
-| `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:432` | The missing created theorem should supply this geometry from distinct connected parameters: |
-| `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:441` | anchor via `exists_rightmost_filledJulia` and `rightmost_mem_frontier_filledJulia`; the remaining |
-| `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:460` | no `sorry`/`admit`, and no terminal hypothesis that is just the missing theorem in another form. |
+| `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:611` | ## Remaining work for a hypothesis-free both-connected theorem |
+| `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:639` | The missing created theorem should supply this geometry from distinct connected parameters: |
+| `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:648` | anchor via `exists_rightmost_filledJulia` and `rightmost_mem_frontier_filledJulia`; the remaining |
+| `formal/GaloisForLFunctions/Bottcher/HRIGID_HANDOFF.md:667` | no `sorry`/`admit`, and no terminal hypothesis that is just the missing theorem in another form. |
 | `formal/GaloisForLFunctions/Bottcher/IndexEstimate.lean:56` | bulk strictly dominates. Discharging `hG`/`hrep` for an actual relation is the remaining dynamical wiring; |
 | `formal/GaloisForLFunctions/Bottcher/IndexFormula.lean:8` | the spectrum **algebraically** — flagged in the tower's status as the missing piece for a *Zdunik-free* |
 | `formal/GaloisForLFunctions/Bottcher/IndexResonance.lean:178` | residue identity forbids it, with no ergodic input. The remaining work to discharge an actual relation is |
@@ -206,7 +206,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:2376` | frontier-analytic γ endpoint by deriving it via `phiMero_transcendental_of_repelling_input`.  The remaining |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean:127` | transcendence produced internally.** The remaining callback is geometric/dynamical: it supplies an |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean:189` | frontier-fibre `Separable` datum from the callback.  The remaining per-target geometry is a boundary |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityHNBCrossing.lean:576` | remaining input is the common-basin sparse crossing geometry for the continued `c₂` branch. -/ |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityHNBCrossing.lean:659` | remaining input is the common-basin sparse crossing geometry for the continued `c₂` branch. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean:1501` | are constructed internally from coherent level-root towers; the remaining per-relation datum is purely |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedPoint.lean:103` | point in the Julia set, for all non-exceptional `c ≠ 1/4`. The remaining data (non-resonance, location off |
 | `formal/GaloisForLFunctions/Bottcher/RepellingPeriodicFrontier.lean:6` | arbitrary period.  This file supplies the missing dynamical part directly. |
@@ -216,13 +216,16 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/TranscendenceReduction.lean:213` | `g` — the propagation half of the remaining continuation core. -/ |
 | `formal/GaloisForLFunctions/CarrierCauchy.lean:13` | This file supplies the missing link: the carrier family `{wᵢ, uᵢ}`, indexed by `Fin k ⊕ Fin k`, is |
 | `formal/GaloisForLFunctions/ConsolidatedBridges.lean:12` | make the promised conclusions machine-checkable once the missing hypotheses are |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:373` | the missing analytic theorem needed to remove the `RationalTailIndependent` |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:869` | fixed to the canonical `ratfuncToMero`; the remaining hypothesis is precisely that the cover projection |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:908` | is the lift-level card target after removing the separate `hG` input; remaining inputs are the |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1150` | descent after the affine reduction from `ζ(s+i,-n)` to harmonic sums; the only remaining Hurwitz |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1199` | most concrete all-`N` row-close target currently isolated: the remaining analytic input is exactly |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1679` | This is the proved replacement for the generic three-eigenvalue split in the missing N=2 branch. -/ |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1803` | form: the only remaining assumptions are the analytic parameter conditions and the genuine local |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:374` | the missing analytic theorem needed to remove the `RationalTailIndependent` |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:870` | fixed to the canonical `ratfuncToMero`; the remaining hypothesis is precisely that the cover projection |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:909` | is the lift-level card target after removing the separate `hG` input; remaining inputs are the |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1151` | descent after the affine reduction from `ζ(s+i,-n)` to harmonic sums; the only remaining Hurwitz |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1200` | most concrete all-`N` row-close target currently isolated: the remaining analytic input is exactly |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1680` | This is the proved replacement for the generic three-eigenvalue split in the missing N=2 branch. -/ |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1804` | form: the only remaining assumptions are the analytic parameter conditions and the genuine local |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2329` | zero.  For `N = 0`, the compressed shifted-power polynomial is exactly the remaining shifted |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2582` | provider. This pins the remaining all-`N` Hurwitz analytic input to one explicit interface. -/ |
+| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2847` | remaining provider must use a proper descent/cover base. -/ |
 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean:416` | implication to `rationalTailIndependent_harmonic_of_poleRootInput`, making the remaining Hurwitz analytic |
 | `formal/GaloisForLFunctions/Hurwitz/HurwitzZeta.lean:88` | `x^{-s}` and the remaining tail `R_{n}(x) = ∑_{m≠n}(m-n+x)^{-s}` is the regular part: |
 | `formal/GaloisForLFunctions/Hurwitz/N2DensityShadow.lean:10` | `q=0`, then `l_2=0`. The remaining `l_0F_0+l_1F_1+c=0` is killed by the distinct-exponent extraction |
@@ -249,7 +252,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/U0/PolyAsymptotics.lean:2` | # Complex-polynomial asymptotics at the real ray (missing from Mathlib) |
 | `formal/GaloisForLFunctions/U0/PolyAsymptotics.lean:51` | `‖leadingCoeff‖ · ∞ = ∞`, contradicting the finite limit. This is the missing-from-Mathlib input that |
 | `formal/GaloisForLFunctions/U0/U0CardTheorems.lean:11` | The remaining input is `PhibKummerInputs` — the Böttcher cover **Kummer-inputs provider for `φ_b`** |
-| `formal/GaloisForLFunctions/U0/U0CardTheorems.lean:181` | exposes the same weaker missing input uniformly in `b`. -/ |
+| `formal/GaloisForLFunctions/U0/U0CardTheorems.lean:182` | exposes the same weaker missing input uniformly in `b`. -/ |
+| `formal/GaloisForLFunctions/U0/U0CardTheorems.lean:588` | provider with the existing radical-data Kummer close, so the remaining U0 card input is exactly the |
 | `formal/GaloisForLFunctions/U0/U0CoverMono.lean:114` | unbounded monodromy tower before the remaining transport to the meromorphic fraction-field carrier. -/ |
 | `formal/GaloisForLFunctions/U0/U0KummerRepick.lean:14` | construction. No tower, no monodromy hypothesis: the lone remaining input is the φ_b radical data. |
 | `formal/GaloisForLFunctions/U0/U0MeroCarrier.lean:16` | available at the carrier the named theorems instantiate over; the remaining `mono` (the dyadic |

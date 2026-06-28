@@ -10,6 +10,8 @@ Built bottom-up; each lemma compiles against Mathlib (lean4 v4.30.0).
 -/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.GroupTheory.OrderOfElement
+import Mathlib.GroupTheory.Torsion
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
 open Polynomial
 
@@ -310,5 +312,235 @@ theorem not_forall_mem_finiteIndex_subgroup_apply_eq_zero_of_nsmulDivisible_nont
     exists_mem_finiteIndex_subgroup_apply_ne_zero_of_nsmulDivisible_nontrivial H ρ D hdiv hne
   intro htriv
   exact hρ (htriv h hhH)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- If a subgroup `D` is power-divisible inside an ambient abelian multiplicative group, then every
+finite quotient of the ambient group kills `D`. Equivalently, `D` is contained in the finite-quotient
+kernel `B`. This is the multiplicative scalar-monodromy version of the Prüfer finite-cover obstruction. -/
+theorem subgroup_le_of_powerDivisible_of_finite_quotient {A : Type*} [CommGroup A]
+    (D B : Subgroup A)
+    (hdiv : ∀ n : ℕ, 0 < n → ∀ d : A, d ∈ D → ∃ e : A, e ∈ D ∧ e ^ n = d)
+    [Finite (A ⧸ B)] : D ≤ B := by
+  intro d hd
+  let N := Nat.card (A ⧸ B)
+  have hN : 0 < N := Nat.card_pos
+  obtain ⟨e, _heD, heq⟩ := hdiv N hN d hd
+  have hq : (QuotientGroup.mk e : A ⧸ B) ^ N = 1 := pow_card_eq_one'
+  have hmk : (QuotientGroup.mk d : A ⧸ B) = 1 := by
+    rw [← heq]
+    simpa using hq
+  exact (QuotientGroup.eq_one_iff d).mp hmk
+
+/-- Finite-index version of `subgroup_le_of_powerDivisible_of_finite_quotient`. -/
+theorem subgroup_le_of_powerDivisible_of_finiteIndex {A : Type*} [CommGroup A]
+    (D B : Subgroup A) [B.FiniteIndex]
+    (hdiv : ∀ n : ℕ, 0 < n → ∀ d : A, d ∈ D → ∃ e : A, e ∈ D ∧ e ^ n = d) :
+    D ≤ B := by
+  exact subgroup_le_of_powerDivisible_of_finite_quotient D B hdiv
+
+/-- Intersection form of the finite-index containment: `B ∩ D = D` for a finite-index `B` and
+power-divisible subgroup `D`. -/
+theorem subgroup_inf_eq_right_of_powerDivisible_of_finiteIndex {A : Type*} [CommGroup A]
+    (D B : Subgroup A) [B.FiniteIndex]
+    (hdiv : ∀ n : ℕ, 0 < n → ∀ d : A, d ∈ D → ∃ e : A, e ∈ D ∧ e ^ n = d) :
+    B ⊓ D = D := by
+  exact inf_eq_right.mpr (subgroup_le_of_powerDivisible_of_finiteIndex D B hdiv)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Multiplicative pushforward finite-index lemma: if `H` has finite index in the source, then its image
+has finite index inside the homomorphic image. This is the scalar-monodromy version of `rho(H)` having
+finite index in `rho(G)`. -/
+theorem subgroup_map_rangeRestrict_finiteIndex {G A : Type*} [Group G] [Group A]
+    (H : Subgroup G) [H.FiniteIndex] (ρ : G →* A) :
+    (H.map ρ.rangeRestrict).FiniteIndex := by
+  refine Subgroup.FiniteIndex.mk ?_
+  intro hzero
+  have hdiv := H.index_map_dvd (f := ρ.rangeRestrict) ρ.rangeRestrict_surjective
+  rw [hzero] at hdiv
+  exact Subgroup.FiniteIndex.index_ne_zero (Nat.zero_dvd.mp hdiv)
+
+/-- Finite-index cover subgroup image contains every power-divisible subgroup of the full scalar
+monodromy image. -/
+theorem subgroup_le_map_rangeRestrict_of_powerDivisible_finiteIndex
+    {G A : Type*} [Group G] [CommGroup A]
+    (H : Subgroup G) [H.FiniteIndex] (ρ : G →* A) (D : Subgroup ρ.range)
+    (hdiv : ∀ n : ℕ, 0 < n → ∀ d : ρ.range, d ∈ D → ∃ e : ρ.range, e ∈ D ∧ e ^ n = d) :
+    D ≤ H.map ρ.rangeRestrict := by
+  haveI : (H.map ρ.rangeRestrict).FiniteIndex :=
+    subgroup_map_rangeRestrict_finiteIndex H ρ
+  exact subgroup_le_of_powerDivisible_of_finiteIndex D (H.map ρ.rangeRestrict) hdiv
+
+/-- Intersection form of `subgroup_le_map_rangeRestrict_of_powerDivisible_finiteIndex`. -/
+theorem subgroup_inf_map_rangeRestrict_eq_right_of_powerDivisible_finiteIndex
+    {G A : Type*} [Group G] [CommGroup A]
+    (H : Subgroup G) [H.FiniteIndex] (ρ : G →* A) (D : Subgroup ρ.range)
+    (hdiv : ∀ n : ℕ, 0 < n → ∀ d : ρ.range, d ∈ D → ∃ e : ρ.range, e ∈ D ∧ e ^ n = d) :
+    (H.map ρ.rangeRestrict) ⊓ D = D := by
+  exact inf_eq_right.mpr (subgroup_le_map_rangeRestrict_of_powerDivisible_finiteIndex H ρ D hdiv)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- If a nontrivial subgroup of the scalar monodromy image is contained in the image of `H`, then the
+restriction of the monodromy homomorphism to `H` is nontrivial. -/
+theorem exists_mem_subgroup_apply_ne_one_of_nontrivial_subgroup
+    {G A : Type*} [Group G] [Group A]
+    (H : Subgroup G) (ρ : G →* A) (D : Subgroup ρ.range)
+    (hD : D ≤ H.map ρ.rangeRestrict)
+    (hne : ∃ d : ρ.range, d ∈ D ∧ d ≠ 1) :
+    ∃ h : G, h ∈ H ∧ ρ h ≠ 1 := by
+  obtain ⟨d, hdD, hdne⟩ := hne
+  have hdmap : d ∈ H.map ρ.rangeRestrict := hD hdD
+  obtain ⟨h, hhH, hh⟩ := Subgroup.mem_map.mp hdmap
+  refine ⟨h, hhH, ?_⟩
+  intro hrho
+  apply hdne
+  rw [← hh]
+  ext
+  exact hrho
+
+/-- Multiplicative finite-cover nontriviality step: a nontrivial power-divisible subgroup of the full
+scalar monodromy image remains visible on every finite-index subgroup of the source. -/
+theorem exists_mem_finiteIndex_subgroup_apply_ne_one_of_powerDivisible_nontrivial
+    {G A : Type*} [Group G] [CommGroup A]
+    (H : Subgroup G) [H.FiniteIndex] (ρ : G →* A) (D : Subgroup ρ.range)
+    (hdiv : ∀ n : ℕ, 0 < n → ∀ d : ρ.range, d ∈ D → ∃ e : ρ.range, e ∈ D ∧ e ^ n = d)
+    (hne : ∃ d : ρ.range, d ∈ D ∧ d ≠ 1) :
+    ∃ h : G, h ∈ H ∧ ρ h ≠ 1 := by
+  exact exists_mem_subgroup_apply_ne_one_of_nontrivial_subgroup H ρ D
+    (subgroup_le_map_rangeRestrict_of_powerDivisible_finiteIndex H ρ D hdiv) hne
+
+/-- Contradiction form of the multiplicative finite-cover nontriviality step: scalar monodromy cannot
+be trivial on every element of a finite-index subgroup if its full image contains a nontrivial
+power-divisible subgroup. -/
+theorem not_forall_mem_finiteIndex_subgroup_apply_eq_one_of_powerDivisible_nontrivial
+    {G A : Type*} [Group G] [CommGroup A]
+    (H : Subgroup G) [H.FiniteIndex] (ρ : G →* A) (D : Subgroup ρ.range)
+    (hdiv : ∀ n : ℕ, 0 < n → ∀ d : ρ.range, d ∈ D → ∃ e : ρ.range, e ∈ D ∧ e ^ n = d)
+    (hne : ∃ d : ρ.range, d ∈ D ∧ d ≠ 1) :
+    ¬ ∀ h : G, h ∈ H → ρ h = 1 := by
+  obtain ⟨h, hhH, hρ⟩ :=
+    exists_mem_finiteIndex_subgroup_apply_ne_one_of_powerDivisible_nontrivial H ρ D hdiv hne
+  intro htriv
+  exact hρ (htriv h hhH)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Ambient-subgroup form of the scalar finite-cover image step.  The paper proof naturally supplies a
+power-divisible subgroup `D` of the target scalar monodromy group and a containment `D ≤ ρ.range`; this
+lemma converts that ambient statement into the subtype-of-range form used by the core algebra above. -/
+theorem subgroup_le_map_of_powerDivisible_finiteIndex_of_le_range
+    {G A : Type*} [Group G] [CommGroup A]
+    (H : Subgroup G) [H.FiniteIndex] (ρ : G →* A) (D : Subgroup A)
+    (hDρ : D ≤ ρ.range)
+    (hdiv : ∀ n : ℕ, 0 < n → ∀ d : A, d ∈ D → ∃ e : A, e ∈ D ∧ e ^ n = d) :
+    D ≤ H.map ρ := by
+  let D' : Subgroup ρ.range :=
+    { carrier := {x : ρ.range | (x : A) ∈ D}
+      one_mem' := D.one_mem
+      mul_mem' := by
+        intro x y hx hy
+        exact D.mul_mem hx hy
+      inv_mem' := by
+        intro x hx
+        exact D.inv_mem hx }
+  have hdiv' :
+      ∀ n : ℕ, 0 < n → ∀ d : ρ.range, d ∈ D' → ∃ e : ρ.range, e ∈ D' ∧ e ^ n = d := by
+    intro n hn d hd
+    obtain ⟨e, heD, heq⟩ := hdiv n hn (d : A) hd
+    refine ⟨⟨e, hDρ heD⟩, heD, ?_⟩
+    ext
+    simpa using heq
+  have hsub : D' ≤ H.map ρ.rangeRestrict :=
+    subgroup_le_map_rangeRestrict_of_powerDivisible_finiteIndex H ρ D' hdiv'
+  intro d hd
+  have hd' : (⟨d, hDρ hd⟩ : ρ.range) ∈ D' := hd
+  have hmap' : (⟨d, hDρ hd⟩ : ρ.range) ∈ H.map ρ.rangeRestrict := hsub hd'
+  obtain ⟨h, hhH, hh⟩ := Subgroup.mem_map.mp hmap'
+  refine Subgroup.mem_map.mpr ⟨h, hhH, ?_⟩
+  exact Subtype.ext_iff.mp hh
+
+/-- Ambient-subgroup nontriviality form: if a nontrivial power-divisible subgroup `D` of the target is
+contained in the scalar monodromy image, then every finite-index source subgroup contains a loop with
+nontrivial scalar monodromy. -/
+theorem exists_mem_finiteIndex_subgroup_apply_ne_one_of_powerDivisible_nontrivial_of_le_range
+    {G A : Type*} [Group G] [CommGroup A]
+    (H : Subgroup G) [H.FiniteIndex] (ρ : G →* A) (D : Subgroup A)
+    (hDρ : D ≤ ρ.range)
+    (hdiv : ∀ n : ℕ, 0 < n → ∀ d : A, d ∈ D → ∃ e : A, e ∈ D ∧ e ^ n = d)
+    (hne : ∃ d : A, d ∈ D ∧ d ≠ 1) :
+    ∃ h : G, h ∈ H ∧ ρ h ≠ 1 := by
+  obtain ⟨d, hdD, hdne⟩ := hne
+  have hDmap : D ≤ H.map ρ :=
+    subgroup_le_map_of_powerDivisible_finiteIndex_of_le_range H ρ D hDρ hdiv
+  have hdmap : d ∈ H.map ρ := hDmap hdD
+  obtain ⟨h, hhH, hh⟩ := Subgroup.mem_map.mp hdmap
+  refine ⟨h, hhH, ?_⟩
+  intro hρ
+  exact hdne (by rw [← hh, hρ])
+
+/-- Contradiction form of the ambient-subgroup finite-cover step: scalar monodromy cannot be trivial on
+a finite-index source subgroup if the full image contains a nontrivial power-divisible subgroup. -/
+theorem not_forall_mem_finiteIndex_subgroup_apply_eq_one_of_powerDivisible_nontrivial_of_le_range
+    {G A : Type*} [Group G] [CommGroup A]
+    (H : Subgroup G) [H.FiniteIndex] (ρ : G →* A) (D : Subgroup A)
+    (hDρ : D ≤ ρ.range)
+    (hdiv : ∀ n : ℕ, 0 < n → ∀ d : A, d ∈ D → ∃ e : A, e ∈ D ∧ e ^ n = d)
+    (hne : ∃ d : A, d ∈ D ∧ d ≠ 1) :
+    ¬ ∀ h : G, h ∈ H → ρ h = 1 := by
+  obtain ⟨h, hhH, hρ⟩ :=
+    exists_mem_finiteIndex_subgroup_apply_ne_one_of_powerDivisible_nontrivial_of_le_range
+      H ρ D hDρ hdiv hne
+  intro htriv
+  exact hρ (htriv h hhH)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- The torsion subgroup of complex units is power-divisible.  This is the concrete root-of-unity input
+behind finite-cover scalar monodromy obstructions: every finite-order complex unit has an `n`th root
+which is again finite-order. -/
+theorem complex_units_torsion_powerDivisible :
+    ∀ n : ℕ, 0 < n → ∀ d : ℂˣ, d ∈ CommGroup.torsion ℂˣ →
+      ∃ e : ℂˣ, e ∈ CommGroup.torsion ℂˣ ∧ e ^ n = d := by
+  intro n hn d hd
+  obtain ⟨z, hz⟩ := IsAlgClosed.exists_pow_nat_eq (d : ℂ) hn
+  have hz0 : z ≠ 0 := by
+    intro h0
+    apply d.ne_zero
+    rw [← hz, h0, zero_pow (Nat.ne_of_gt hn)]
+  let e : ℂˣ := Units.mk0 z hz0
+  have hed : e ^ n = d := by
+    ext
+    simpa [e, Units.val_pow_eq_pow_val] using hz
+  refine ⟨e, ?_, hed⟩
+  rw [CommGroup.mem_torsion] at hd ⊢
+  rw [isOfFinOrder_iff_pow_eq_one] at hd ⊢
+  obtain ⟨m, hmpos, hdm⟩ := hd
+  refine ⟨n * m, Nat.mul_pos hn hmpos, ?_⟩
+  rw [pow_mul, hed, hdm]
+
+/-- The torsion subgroup of complex units is nontrivial: `-1` is a finite-order unit and is not `1`. -/
+theorem complex_units_torsion_nontrivial :
+    ∃ d : ℂˣ, d ∈ CommGroup.torsion ℂˣ ∧ d ≠ 1 := by
+  let d : ℂˣ := Units.mk0 (-1 : ℂ) (by norm_num)
+  refine ⟨d, ?_, ?_⟩
+  · rw [CommGroup.mem_torsion, isOfFinOrder_iff_pow_eq_one]
+    refine ⟨2, by norm_num, ?_⟩
+    ext
+    norm_num [d, Units.val_pow_eq_pow_val]
+  · intro h
+    have hv := congrArg (fun u : ℂˣ => (u : ℂ)) h
+    norm_num [d] at hv
 
 end Bottcher

@@ -147,6 +147,81 @@ The main active files are:
     created internally as `∅`; the avoiding target is selected internally from
     `strongFixedPointRoots c₂ p`.  Squarefree bad polynomials create fibre separability internally,
     and the derivative witness is created from the orbit-product multiplier.
+- `ConnectedRepellingEventual.lean`
+  - eventual period-selection bridge:
+    `exists_period_of_eventually_exceptional_strong_roots`;
+  - non-strong-containment bridges:
+    `eventually_strong_roots_off_of_eventually_nonStrong_subset`,
+    `exists_period_of_eventually_exceptional_nonStrong_subset`;
+  - asymptotic cleared-denominator absolute `c₂` entry:
+    `phiMero_transcendental_of_repelling_eventually_exceptionalSet_clearedDenominator_noExtra_input`;
+  - sharper asymptotic non-strong-containment absolute `c₂` entry:
+    `phiMero_transcendental_of_repelling_eventually_nonStrongSubset_clearedDenominator_noExtra_input`;
+  - bounded-budget bridges:
+    `eventually_budget_add_card_lt_two_pow_of_eventually_le`,
+    `exists_period_of_eventually_exceptional_nonStrong_subset_of_bounded_budget`;
+  - denominator-degree budget bridges:
+    `squarefreeStaticDegreeBudget`,
+    `squarefreeBadDegreeBudget_empty_le_natDegree_add_static`,
+    `eventually_budget_le_of_eventually_denominator_natDegree_le`,
+    `exists_period_of_eventually_exceptional_nonStrong_subset_of_bounded_denominator_degree`;
+  - chosen-denominator-degree absolute `c₂` entry:
+    `phiMero_transcendental_of_repelling_eventually_denominatorDegreeBound_clearedDenominator_noExtra_input`;
+  - explicit bounded-denominator-witness bridge:
+    `exists_period_denominator_of_eventually_exceptional_nonStrong_subset_of_bounded_denominator_witness`;
+  - frequent-separability explicit bounded-denominator-witness bridge:
+    `exists_period_denominator_of_frequently_separable_eventually_nonStrong_subset_of_bounded_denominator_witness`;
+  - constructible absolute `c₂` entry with eventual separability:
+    `phiMero_transcendental_of_repelling_eventually_denominatorWitnessBound_noExtra_input`;
+  - current sharpest constructible absolute `c₂` entry:
+    `phiMero_transcendental_of_repelling_frequently_separable_denominatorWitnessBound_noExtra_input`;
+  - this is the current sharper `c₂` count shape: for each minimal relation, the callback supplies a
+    finite exceptional set, a finite denominator-degree bound, frequent fixed-point separability,
+    eventual containment `nonStrongFixedPointRoots c₂ p ⊆ E`, and, for all sufficiently large `p`, an
+    explicit clearing identity `(Polynomial.C e) * compRelPoly c₂ p P = P * S` with `e ≠ 0` and
+    `e.natDegree ≤ M`.  Lean intersects the frequent separable periods with the eventual large-period
+    region, expands the no-extra squarefree budget, bounds it by the explicit denominator degree plus the
+    static `P`-dependent budget, proves exponential domination by `2^p`, converts containment to a
+    non-strong-count bound, chooses the large period and denominator witness, and routes through the
+    existing chosen-denominator repelling interface.
+- `FixedPointSeparable.lean`
+  - removes raw fixed-point-polynomial separability from the active `c₂` input:
+    `fixedPointPoly_separable_of_multiplier_ne_one`,
+    `eventually_fixedPointPoly_separable_of_eventually_multiplier_ne_one`,
+    `frequently_fixedPointPoly_separable_of_frequently_multiplier_ne_one`.
+- `ConnectedRepellingNoParabolic.lean`
+  - replaces the frequent-separability clause by frequent no-multiplier-one fixed-point periods:
+    `exists_period_denominator_of_frequently_multiplier_ne_one_eventually_nonStrong_subset_of_bounded_denominator_witness`,
+    `phiMero_transcendental_of_repelling_frequently_multiplier_ne_one_denominatorWitnessBound_noExtra_input`.
+- `DenominatorContent.lean`
+  - removes the bounded-denominator witness from the active hRigid input.  Gauss descent over
+    `FractionRing (ℂ[X])` proves that any clearing identity forces `P.primPart ∣ Q`; multiplying back by
+    `P.content` gives a fixed denominator independent of the period:
+    `primitivePart_dvd_of_denominator_identity`,
+    `content_denominator_identity_of_denominator_identity`,
+    `eventually_content_compRelPoly_denominatorWitness_of_minimal`;
+  - no-parabolic absolute `c₂` entry:
+    `phiMero_transcendental_of_repelling_frequently_multiplier_ne_one_contentDenominator_noExtra_input`.
+- `ConnectedRepellingRootDefect.lean`
+  - multiplier-one fixed-root locus and the bridge from multiple roots to multiplier `1`:
+    `multiplierOneFixedPointRoots`,
+    `mem_multiplierOneFixedPointRoots`,
+    `mem_multiplierOneFixedPointRoots_of_one_lt_roots_count`;
+  - duplicate-excess algebra producing the active root-defect lower bound:
+    `multiset_card_eq_toFinset_card_add_count_excess`,
+    `multiset_count_excess_le_card_mul_of_multiple_support`,
+    `fixedPointPoly_rootDefect_bound_of_roots_count_excess_le`,
+    `eventually_fixedPointPoly_rootDefect_bound_of_eventually_roots_count_excess_le`,
+    `fixedPointPoly_rootDefect_bound_of_multiple_roots_subset`,
+    `eventually_fixedPointPoly_rootDefect_bound_of_eventually_multiple_roots_subset`,
+    `fixedPointPoly_rootDefect_bound_of_multiplierOne_subset`,
+    `eventually_fixedPointPoly_rootDefect_bound_of_eventually_multiplierOne_subset`;
+  - separability-free/root-defect route through the existing strong-root interface:
+    `squarefreeBadDegreeBudget_lt_strongFixedPointRoots_card_of_add_nonStrong_lt_roots`,
+    `exists_period_denominator_of_eventually_nonStrong_subset_of_bounded_rootDefect_denominator_witness`,
+    `phiMero_transcendental_of_repelling_standard_squarefree_budget_strongRoots_denominatorWitness_noExtra_input`;
+  - current sharpest absolute `c₂` entry:
+    `phiMero_transcendental_of_repelling_eventually_multiplierOne_contentDenominator_noExtra_input`.
 - `RelativeRigidityNaturalBoundary.lean`
   - natural-boundary hRigid bridges from `ContinuesAcross` obstruction;
   - empty-interior specialization deriving the obstruction from the Böttcher modulus;
@@ -171,6 +246,8 @@ The main active files are:
     `q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offOther_branch_separable_repellingG`,
     `q62_independence_connected_of_emptyInterior_commonBasin_level_roots_offOther_crossing_repellingG`,
     `q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_repellingG`.
+  - empty-interior asymptotic denominator-degree `c₂` endpoint:
+    `q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_eventualG`.
 - `RelativeRigidityGlobalBranchCrossing.lean`
   - global-branch crossing endpoint;
   - current strongest global route:
@@ -181,6 +258,8 @@ The main active files are:
   - current strongest HNB repelling-G routes:
     `q62_independence_connected_of_naturalBoundary_commonBasin_level_roots_offOther_crossing_repellingG`,
     `q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_repellingG`;
+  - asymptotic denominator-degree `c₂` HNB route:
+    `q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_eventualG`;
   - simply-connected-level HNB crossing endpoint:
     `noRelation_phiMero_of_naturalBoundary_commonBasin_simplyConnectedLevels_offOther_crossing`;
   - empty-interior simply-connected-level HNB crossing endpoint:
@@ -326,6 +405,111 @@ Verification from the current session:
   `eventually_exceptional_mass_small_roots`,
   `eventually_false_of_pinned_bulk_repelling`: only
   `[propext, Classical.choice, Quot.sound]`
+- `lake env lean GaloisForLFunctions/Bottcher/ConnectedRepellingEventual.lean`
+- `lake build GaloisForLFunctions.Bottcher.ConnectedRepellingEventual`
+- `lake env lean GaloisForLFunctions/Bottcher.lean`
+- `#print axioms` for
+  `exists_period_of_eventually_exceptional_strong_roots`,
+  `phiMero_transcendental_of_repelling_eventually_exceptionalSet_clearedDenominator_noExtra_input`:
+  only `[propext, Classical.choice, Quot.sound]`
+- `lake build GaloisForLFunctions.Bottcher.ConnectedRepellingEventual`
+- `#print axioms` for
+  `eventually_strong_roots_off_of_eventually_nonStrong_subset`,
+  `exists_period_of_eventually_exceptional_nonStrong_subset`,
+  `phiMero_transcendental_of_repelling_eventually_nonStrongSubset_clearedDenominator_noExtra_input`:
+  only `[propext, Classical.choice, Quot.sound]`
+- `#print axioms` for
+  `eventually_budget_add_card_lt_two_pow_of_eventually_le`,
+  `exists_period_of_eventually_exceptional_nonStrong_subset_of_bounded_budget`,
+  `phiMero_transcendental_of_repelling_eventually_boundedBudget_clearedDenominator_noExtra_input`:
+  only `[propext, Classical.choice, Quot.sound]`
+- `lake build GaloisForLFunctions.Bottcher.ConnectedRepellingEventual`
+- `lake env lean GaloisForLFunctions/Bottcher/RelativeRigidityHNBCrossing.lean`
+- `lake env lean GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean`
+- `lake build GaloisForLFunctions.Bottcher.RelativeRigidityHNBCrossing`
+- `lake build GaloisForLFunctions.Bottcher.RelativeRigidityNaturalBoundary`
+- `scripts/formal_tools.py lint`
+- `#print axioms` for
+  `squarefreeBadDegreeBudget_empty_le_natDegree_add_static`,
+  `eventually_budget_le_of_eventually_denominator_natDegree_le`,
+  `exists_period_of_eventually_exceptional_nonStrong_subset_of_bounded_denominator_degree`,
+  `phiMero_transcendental_of_repelling_eventually_denominatorDegreeBound_clearedDenominator_noExtra_input`,
+  `q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_eventualG`,
+  `q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_eventualG`:
+  only `[propext, Classical.choice, Quot.sound]`
+- `lake env lean GaloisForLFunctions/Bottcher/ConnectedRepellingEventual.lean`
+- `lake build GaloisForLFunctions.Bottcher.ConnectedRepellingEventual`
+- `lake env lean GaloisForLFunctions/Bottcher/RelativeRigidityHNBCrossing.lean`
+- `lake env lean GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean`
+- `lake build GaloisForLFunctions.Bottcher.RelativeRigidityHNBCrossing`
+- targeted placeholder scan and `git diff --check` over the three touched hRigid Lean files
+- `#print axioms` for
+  `exists_period_denominator_of_eventually_exceptional_nonStrong_subset_of_bounded_denominator_witness`,
+  `phiMero_transcendental_of_repelling_eventually_denominatorWitnessBound_noExtra_input`,
+  `q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_eventualG`,
+  `q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_eventualG`:
+  only `[propext, Classical.choice, Quot.sound]`
+- `lake env lean GaloisForLFunctions/Bottcher/ConnectedRepellingEventual.lean`
+- `lake build GaloisForLFunctions.Bottcher.ConnectedRepellingEventual`
+- `lake env lean GaloisForLFunctions/Bottcher/RelativeRigidityHNBCrossing.lean`
+- `lake env lean GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean`
+- `lake build GaloisForLFunctions.Bottcher.RelativeRigidityHNBCrossing`
+- `#print axioms` for
+  `exists_period_denominator_of_frequently_separable_eventually_nonStrong_subset_of_bounded_denominator_witness`,
+  `phiMero_transcendental_of_repelling_frequently_separable_denominatorWitnessBound_noExtra_input`,
+  `q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_eventualG`,
+  `q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_eventualG`:
+  only `[propext, Classical.choice, Quot.sound]`
+- `lake env lean GaloisForLFunctions/Bottcher/RelativeRigidityHNBCrossing.lean`
+- `lake build GaloisForLFunctions.Bottcher.RelativeRigidityHNBCrossing`
+- `#print axioms` for
+  `q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_eventualG`:
+  only `[propext, Classical.choice, Quot.sound]`
+- `lake env lean GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean`
+- `lake build GaloisForLFunctions.Bottcher.RelativeRigidityNaturalBoundary`
+- `#print axioms` for
+  `q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_eventualG`:
+  only `[propext, Classical.choice, Quot.sound]`
+- `lake env lean GaloisForLFunctions/Bottcher/FixedPointSeparable.lean`
+- `lake build GaloisForLFunctions.Bottcher.FixedPointSeparable`
+- `lake env lean GaloisForLFunctions/Bottcher/ConnectedRepellingNoParabolic.lean`
+- `lake build GaloisForLFunctions.Bottcher.ConnectedRepellingNoParabolic`
+- `lake env lean GaloisForLFunctions/Bottcher/DenominatorContent.lean`
+- `lake build GaloisForLFunctions.Bottcher.DenominatorContent`
+- focused endpoint checks for
+  `RelativeRigidityHNBCrossing.lean` and `RelativeRigidityNaturalBoundary.lean` currently stop before
+  elaboration because the existing dependency artifact `BasinConnected.olean` is absent; no aggregate
+  rebuild was run in response.
+- `#print axioms` for
+  `primitivePart_dvd_of_denominator_identity`,
+  `content_denominator_identity_of_denominator_identity`,
+  `eventually_content_compRelPoly_denominatorWitness_of_minimal`,
+  `phiMero_transcendental_of_repelling_frequently_multiplier_ne_one_contentDenominator_noExtra_input`:
+  only `[propext, Classical.choice, Quot.sound]`
+- `lake env lean GaloisForLFunctions/Bottcher/ConnectedRepellingRootDefect.lean`
+- `lake build GaloisForLFunctions.Bottcher.ConnectedRepellingRootDefect`
+- focused endpoint checks for
+  `RelativeRigidityHNBCrossing.lean` and `RelativeRigidityNaturalBoundary.lean` still stop before
+  elaboration because the existing dependency artifact `BasinConnected.olean` is absent; no aggregate
+  rebuild was run in response.
+- `#print axioms` for
+  `multiplierOneFixedPointRoots`,
+  `mem_multiplierOneFixedPointRoots`,
+  `mem_multiplierOneFixedPointRoots_of_one_lt_roots_count`,
+  `multiset_card_eq_toFinset_card_add_count_excess`,
+  `multiset_count_excess_le_card_mul_of_multiple_support`,
+  `fixedPointPoly_rootDefect_bound_of_roots_count_excess_le`,
+  `eventually_fixedPointPoly_rootDefect_bound_of_eventually_roots_count_excess_le`,
+  `fixedPointPoly_rootDefect_bound_of_multiple_roots_subset`,
+  `eventually_fixedPointPoly_rootDefect_bound_of_eventually_multiple_roots_subset`,
+  `fixedPointPoly_rootDefect_bound_of_multiplierOne_subset`,
+  `eventually_fixedPointPoly_rootDefect_bound_of_eventually_multiplierOne_subset`,
+  `squarefreeBadDegreeBudget_lt_strongFixedPointRoots_card_of_add_nonStrong_lt_roots`,
+  `exists_period_denominator_of_eventually_nonStrong_subset_of_bounded_rootDefect_denominator_witness`,
+  `phiMero_transcendental_of_repelling_standard_squarefree_budget_strongRoots_denominatorWitness_noExtra_input`,
+  `phiMero_transcendental_of_repelling_eventually_rootDefect_contentDenominator_noExtra_input`,
+  `phiMero_transcendental_of_repelling_eventually_multiplierOne_contentDenominator_noExtra_input`:
+  only `[propext, Classical.choice, Quot.sound]`
 
 ## What the created pieces already remove
 
@@ -383,6 +567,23 @@ Verification from the current session:
 - The direct strong-root-card `c₂` input can now itself be created from a finite set of ordinary fixed
   points with `‖(2 : ℂ) * z‖ > 2` whose cardinality beats the internally chosen squarefree budget, via
   `phiMero_transcendental_of_repelling_standard_squarefree_budget_fixedNormGtTwo_clearedDenominator_noExtra_input`.
+- The direct strong-root-card `c₂` input can now be created from eventual containment of non-strong roots
+  in a finite set plus finite eventual support for multiplier-one fixed roots, via
+  `phiMero_transcendental_of_repelling_eventually_multiplierOne_contentDenominator_noExtra_input`.
+  The callback supplies finite sets `E F` and a bound `L` such that eventually
+  `multiplierOneFixedPointRoots c₂ p ⊆ F`, every duplicate excess on `F` is at most `L`, and
+  `nonStrongFixedPointRoots c₂ p ⊆ E`.  Lean creates the fixed denominator `P.content` from minimality
+  and Gauss descent, proves multiple fixed roots lie in the multiplier-one locus, derives the
+  root-defect inequality with `D = F.card * L`, proves domination by `2^p`, chooses a large period, and
+  feeds the existing chosen-denominator repelling interface.  The older no-multiplier-one, explicit-witness,
+  bounded-budget, chosen-denominator-degree, and eventual-separability entries remain available, but
+  they are no longer the sharpest hRigid endpoint shape.
+- The natural-boundary square-root hRigid endpoint can now consume that asymptotic `c₂` input directly
+  through
+  `q62_independence_connected_of_naturalBoundary_commonBasin_sqrt_family_offOther_crossing_eventualG`.
+- The empty-interior square-root hRigid endpoint can consume the same asymptotic `c₂` input directly
+  through
+  `q62_independence_connected_of_emptyInterior_commonBasin_sqrt_family_offOther_crossing_eventualG`.
 - On the `c₁` side, strong periodic orbit-product repulsion now proves frontier membership internally.
 - In the index/pinned-bulk route, the exceptional-mass smallness inequality is no longer a terminal
   hypothesis once `B` is a finite set of repelling fixed points and `p` is sufficiently large:
@@ -420,12 +621,20 @@ presented as the q62 close.
    `c ∈ Exceptional`, contradiction.
 
 2. **Absolute `c₂` finite periodic-point construction.**
-   The geometry/count callback still must be created from dynamics: for each minimal relation, prove
-   existence of a period `p` with
-   `squarefreeBadDegreeBudget P (chosenCompRelDenom hUo hUne c₂ hU₂ P hP0 hPrel hPmin p) ∅ <
-   (strongFixedPointRoots c₂ p).card`.  The denominator identity is now constructed by Lean; the old
-   every-denominator quantifier, explicit `e,S` terminal hypothesis, explicit fixed-point-polynomial
-   separability hypothesis, and non-strong-count comparison are no longer the active route.
+   The dynamics callback should now target the multiplier-one content-denominator form: for each minimal
+   relation, produce a finite exceptional set `E` for non-strong roots and a finite set `F` containing
+   all multiplier-one fixed roots eventually, with a finite local duplicate-excess bound `L` on `F`.
+   Lean proves every multiple fixed root lies in `multiplierOneFixedPointRoots`, then turns that into
+   the duplicate-excess/root-defect lower bound
+   `∑ z ∈ (fixedPointPoly c₂ p).roots.toFinset, ((fixedPointPoly c₂ p).roots.count z - 1) ≤ D`
+   with `D = F.card * L`, and hence into
+   `2^p ≤ (fixedPointPoly c₂ p).roots.toFinset.card + D`; the callback no longer supplies a terminal
+   `D`.  The same callback must also prove eventual containment
+   `nonStrongFixedPointRoots c₂ p ⊆ E`.  Lean now creates the denominator witness internally
+   from `P.content` and no longer needs raw fixed-point separability or no-multiplier-one as the active
+   route.  The explicit bounded-denominator witness, every-denominator quantifier, direct
+   squarefree-budget bound, and direct strong-root-card comparison are also no longer active terminal
+   hypotheses.
 
 3. **Capacity/common-basin crossing geometry.**
    The hRigid endpoint now consumes sparse crossing data plus pointwise common-basin target geometry.

@@ -421,3 +421,42 @@ theorem transcendental_of_kummer_radical_inputs {K V : Type u} [Field K] [Field 
   exact hdk
 
 end Bottcher
+
+namespace Bottcher
+
+/-- A dyadic Kummer polynomial can be irreducible only when its radicand is not a square. If
+`a = b^2` and `k ≥ 1`, then `X^(2^k) - C a` factors as a difference of squares. -/
+theorem not_square_of_irreducible_X_pow_two_pow_sub_C {K : Type*} [Field K] {a : K} {k : ℕ}
+    (hk : 1 ≤ k) (hirr : Irreducible ((X : Polynomial K) ^ (2 ^ k) - C a)) :
+    ∀ b : K, b ^ 2 ≠ a := by
+  intro b hb
+  let m : ℕ := 2 ^ (k - 1)
+  have hmpos : 0 < m := by positivity
+  have hpow : 2 ^ k = m + m := by
+    calc
+      2 ^ k = 2 ^ ((k - 1) + 1) := by rw [Nat.sub_add_cancel hk]
+      _ = 2 ^ (k - 1) * 2 := by rw [pow_succ]
+      _ = m + m := by dsimp [m]; ring
+  have hfac : ((X : Polynomial K) ^ (2 ^ k) - C a)
+      = ((X : Polynomial K) ^ m - C b) * ((X : Polynomial K) ^ m + C b) := by
+    rw [hpow, pow_add, ← sq, ← hb, map_pow]
+    ring
+  have hleft_nonunit : ¬ IsUnit (((X : Polynomial K) ^ m - C b)) := by
+    intro hu
+    have hdeg0 := Polynomial.natDegree_eq_zero_of_isUnit hu
+    have hdeg : (((X : Polynomial K) ^ m - C b)).natDegree = m := by
+      rw [Polynomial.natDegree_X_pow_sub_C]
+    omega
+  have hright_nonunit : ¬ IsUnit (((X : Polynomial K) ^ m + C b)) := by
+    intro hu
+    have hdeg0 := Polynomial.natDegree_eq_zero_of_isUnit hu
+    have hpoly : ((X : Polynomial K) ^ m + C b) = ((X : Polynomial K) ^ m - C (-b)) := by
+      simp [sub_eq_add_neg]
+    have hdeg : (((X : Polynomial K) ^ m + C b)).natDegree = m := by
+      rw [hpoly, Polynomial.natDegree_X_pow_sub_C]
+    omega
+  rcases hirr.isUnit_or_isUnit hfac with hleft | hright
+  · exact hleft_nonunit hleft
+  · exact hright_nonunit hright
+
+end Bottcher
