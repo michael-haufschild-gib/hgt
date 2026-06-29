@@ -152,6 +152,128 @@ theorem dense_strongly_repelling_periodic_of_forall_frontier_ball
   obtain ⟨y, hyball, hygeom⟩ := hlocal z hzfront r hr
   exact ⟨y, hballU hyball, hygeom⟩
 
+/-- Periodic points avoiding every finite set, plus eventual finite containment of all non-strong
+periodic roots, force strongly-repelling periodic density on the Julia frontier. -/
+theorem dense_strongly_repelling_periodic_of_forall_frontier_ball_periodic_avoiding_eventually_nonStrong_subset
+    {c : ℂ}
+    (havoid : ∀ E : Finset ℂ, ∀ z ∈ frontier (filledJulia c), ∀ r : ℝ, 0 < r →
+      ∃ y ∈ Metric.ball z r, ∃ q : ℕ,
+        1 ≤ q ∧ (quadratic c)^[q] y = y ∧ y ∉ E)
+    (hE : ∃ E : Finset ℂ, ∀ᶠ p : ℕ in atTop, nonStrongFixedPointRoots c p ⊆ E) :
+    frontier (filledJulia c) ⊆ closure
+      {z : ℂ | ∃ q : ℕ,
+        (quadratic c)^[q] z = z ∧
+        (2 ^ q : ℝ) < ‖∏ k ∈ Finset.range q, 2 * (quadratic c)^[k] z‖} := by
+  classical
+  obtain ⟨E, hEevent⟩ := hE
+  obtain ⟨N, hNthresh⟩ := (eventually_atTop.mp hEevent)
+  let smallNonStrong : Finset ℂ :=
+    (Finset.range N).biUnion fun q => nonStrongFixedPointRoots c q
+  let bad : Finset ℂ := E ∪ smallNonStrong
+  apply dense_strongly_repelling_periodic_of_forall_frontier_ball
+  intro z hz r hr
+  obtain ⟨y, hyball, q, hqpos, hfix, hybad⟩ := havoid bad z hz r hr
+  refine ⟨y, hyball, q, hfix, ?_⟩
+  have hyroot : y ∈ (fixedPointPoly c q).roots.toFinset := by
+    exact Multiset.mem_toFinset.mpr
+      ((mem_roots (fixedPointPoly_ne_zero c hqpos)).mpr
+        ((fixedPointPoly_isRoot_iff c q y).mpr hfix))
+  by_contra hnotStrong
+  have hyNonStrong : y ∈ nonStrongFixedPointRoots c q :=
+    (mem_nonStrongFixedPointRoots).mpr ⟨hyroot, hnotStrong⟩
+  by_cases hqN : q < N
+  · have hysmall : y ∈ smallNonStrong := by
+      dsimp [smallNonStrong]
+      exact Finset.mem_biUnion.mpr ⟨q, Finset.mem_range.mpr hqN, hyNonStrong⟩
+    have hybad' : y ∈ bad :=
+      Finset.mem_union.mpr (Or.inr hysmall)
+    exact hybad hybad'
+  · have hNq : N ≤ q := Nat.le_of_not_gt hqN
+    have hyE : y ∈ E := hNthresh q hNq hyNonStrong
+    have hybad' : y ∈ bad :=
+      Finset.mem_union.mpr (Or.inl hyE)
+    exact hybad hybad'
+
+/-- On a perfect frontier, ordinary periodic witnesses in every frontier ball can be chosen outside
+any prescribed finite exceptional set. -/
+theorem forall_frontier_ball_periodic_avoiding_of_perfect_frontier_forall_frontier_ball_periodic
+    {c : ℂ}
+    (hfront : Perfect (frontier (filledJulia c)))
+    (hperiodic : ∀ z ∈ frontier (filledJulia c), ∀ r : ℝ, 0 < r →
+      ∃ y ∈ Metric.ball z r, ∃ q : ℕ,
+        1 ≤ q ∧ (quadratic c)^[q] y = y) :
+    ∀ E : Finset ℂ, ∀ z ∈ frontier (filledJulia c), ∀ r : ℝ, 0 < r →
+      ∃ y ∈ Metric.ball z r, ∃ q : ℕ,
+        1 ≤ q ∧ (quadratic c)^[q] y = y ∧ y ∉ E := by
+  classical
+  intro E z hz r hr
+  have hhalf : 0 < r / 2 := by linarith
+  have hzhalf : z ∈ Metric.ball z (r / 2) := Metric.mem_ball_self hhalf
+  have hEcount : ((E : Set ℂ)).Countable := E.finite_toSet.countable
+  obtain ⟨w, hwfront, hwball_half, hwE⟩ :=
+    countableAvoidance_frontier_open_of_perfect_frontier
+      (K := filledJulia c) (Ω := Metric.ball z (r / 2)) hfront Metric.isOpen_ball
+      hz hzhalf (E : Set ℂ) hEcount
+  let Ω : Set ℂ := Metric.ball z r ∩ (E : Set ℂ)ᶜ
+  have hEclosed : IsClosed (E : Set ℂ) := E.finite_toSet.isClosed
+  have hΩopen : IsOpen Ω := by
+    dsimp [Ω]
+    exact IsOpen.inter Metric.isOpen_ball hEclosed.isOpen_compl
+  have hwΩ : w ∈ Ω :=
+    ⟨Metric.ball_subset_ball (by linarith) hwball_half, hwE⟩
+  obtain ⟨δ, hδ, hδsub⟩ := Metric.isOpen_iff.mp hΩopen w hwΩ
+  obtain ⟨y, hyδ, q, hq, hfix⟩ := hperiodic w hwfront δ hδ
+  have hyΩ : y ∈ Ω := hδsub hyδ
+  exact ⟨y, hyΩ.1, q, hq, hfix, hyΩ.2⟩
+
+/-- Perfect-frontier ordinary periodic density plus eventual finite containment of all non-strong
+roots force strongly-repelling periodic density. -/
+theorem dense_strongly_repelling_periodic_of_perfect_frontier_forall_frontier_ball_periodic_eventually_nonStrong_subset
+    {c : ℂ}
+    (hfront : Perfect (frontier (filledJulia c)))
+    (hperiodic : ∀ z ∈ frontier (filledJulia c), ∀ r : ℝ, 0 < r →
+      ∃ y ∈ Metric.ball z r, ∃ q : ℕ,
+        1 ≤ q ∧ (quadratic c)^[q] y = y)
+    (hE : ∃ E : Finset ℂ, ∀ᶠ p : ℕ in atTop, nonStrongFixedPointRoots c p ⊆ E) :
+    frontier (filledJulia c) ⊆ closure
+      {z : ℂ | ∃ q : ℕ,
+        (quadratic c)^[q] z = z ∧
+        (2 ^ q : ℝ) < ‖∏ k ∈ Finset.range q, 2 * (quadratic c)^[k] z‖} :=
+  dense_strongly_repelling_periodic_of_forall_frontier_ball_periodic_avoiding_eventually_nonStrong_subset
+    (forall_frontier_ball_periodic_avoiding_of_perfect_frontier_forall_frontier_ball_periodic
+      hfront hperiodic) hE
+
+/-- Connected empty-interior form of finite-exception ordinary periodic avoidance. -/
+theorem forall_frontier_ball_periodic_avoiding_of_preconnected_emptyInterior_forall_frontier_ball_periodic
+    {c : ℂ}
+    (hconn : IsPreconnected (filledJulia c))
+    (hempty : interior (filledJulia c) = ∅)
+    (hperiodic : ∀ z ∈ frontier (filledJulia c), ∀ r : ℝ, 0 < r →
+      ∃ y ∈ Metric.ball z r, ∃ q : ℕ,
+        1 ≤ q ∧ (quadratic c)^[q] y = y) :
+    ∀ E : Finset ℂ, ∀ z ∈ frontier (filledJulia c), ∀ r : ℝ, 0 < r →
+      ∃ y ∈ Metric.ball z r, ∃ q : ℕ,
+        1 ≤ q ∧ (quadratic c)^[q] y = y ∧ y ∉ E :=
+  forall_frontier_ball_periodic_avoiding_of_perfect_frontier_forall_frontier_ball_periodic
+    (perfect_frontier_filledJulia_of_preconnected_emptyInterior hconn hempty) hperiodic
+
+/-- Connected empty-interior ordinary periodic density plus eventual finite containment of all
+non-strong roots force strongly-repelling periodic density. -/
+theorem dense_strongly_repelling_periodic_of_preconnected_emptyInterior_forall_frontier_ball_periodic_eventually_nonStrong_subset
+    {c : ℂ}
+    (hconn : IsPreconnected (filledJulia c))
+    (hempty : interior (filledJulia c) = ∅)
+    (hperiodic : ∀ z ∈ frontier (filledJulia c), ∀ r : ℝ, 0 < r →
+      ∃ y ∈ Metric.ball z r, ∃ q : ℕ,
+        1 ≤ q ∧ (quadratic c)^[q] y = y)
+    (hE : ∃ E : Finset ℂ, ∀ᶠ p : ℕ in atTop, nonStrongFixedPointRoots c p ⊆ E) :
+    frontier (filledJulia c) ⊆ closure
+      {z : ℂ | ∃ q : ℕ,
+        (quadratic c)^[q] z = z ∧
+        (2 ^ q : ℝ) < ‖∏ k ∈ Finset.range q, 2 * (quadratic c)^[k] z‖} :=
+  dense_strongly_repelling_periodic_of_perfect_frontier_forall_frontier_ball_periodic_eventually_nonStrong_subset
+    (perfect_frontier_filledJulia_of_preconnected_emptyInterior hconn hempty) hperiodic hE
+
 /-- Local strongly-repelling periodic witnesses in every frontier ball give the exact
 `strongFixedPointRoots` density input used by the closed-ball hRigid route. -/
 theorem dense_strongFixedPointRoots_of_forall_frontier_ball_strongly_repelling_periodic

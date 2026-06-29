@@ -280,4 +280,166 @@ theorem exists_sphericalDeriv_gt_iterates_on_frontier_ball {c z₀ : ℂ} {R ρ 
     exact h ⟨n, z, hz, lt_of_not_ge hnot⟩
   exact not_sphericalDeriv_bounded_iterates_on_frontier_ball hzfront hρ0 hρR hle
 
+/-- Ordinary-derivative form of the frontier Marty blow-up. -/
+theorem exists_norm_deriv_gt_iterates_on_frontier_ball {c z₀ : ℂ} {R ρ M : ℝ}
+    (hzfront : z₀ ∈ frontier (filledJulia c)) (hρ0 : 0 < ρ) (hρR : ρ < R) :
+    ∃ n z, z ∈ ball z₀ R ∧ M < ‖deriv ((quadratic c)^[n]) z‖ := by
+  obtain ⟨n, z, hz, hM⟩ :=
+    exists_sphericalDeriv_gt_iterates_on_frontier_ball
+      (c := c) (z₀ := z₀) (R := R) (ρ := ρ) (M := M) hzfront hρ0 hρR
+  exact ⟨n, z, hz, lt_of_lt_of_le hM (sphericalDeriv_le_norm_deriv _ _)⟩
+
+/-- Frontier Marty blow-up supplies positive-depth iterates with arbitrarily small inverse
+multiplier somewhere in the frontier ball.  This is the inverse-multiplier half of the
+local-inverse near-return route; trapping/location is a separate quantitative obligation. -/
+theorem exists_positive_iterate_deriv_inv_norm_lt_on_frontier_ball
+    {c z₀ : ℂ} {R ρ ε : ℝ}
+    (hzfront : z₀ ∈ frontier (filledJulia c)) (hρ0 : 0 < ρ) (hρR : ρ < R)
+    (hε : 0 < ε) :
+    ∃ n z, 1 ≤ n ∧ z ∈ ball z₀ R ∧
+      deriv ((quadratic c)^[n]) z ≠ 0 ∧ ‖(deriv ((quadratic c)^[n]) z)⁻¹‖ < ε := by
+  obtain ⟨n, z, hz, hlarge⟩ :=
+    exists_norm_deriv_gt_iterates_on_frontier_ball
+      (c := c) (z₀ := z₀) (R := R) (ρ := ρ) (M := max ε⁻¹ 1)
+      hzfront hρ0 hρR
+  have hlarge_inv : ε⁻¹ < ‖deriv ((quadratic c)^[n]) z‖ :=
+    lt_of_le_of_lt (le_max_left _ _) hlarge
+  have hlarge_one : (1 : ℝ) < ‖deriv ((quadratic c)^[n]) z‖ :=
+    lt_of_le_of_lt (le_max_right _ _) hlarge
+  have hn : 1 ≤ n := by
+    cases n with
+    | zero =>
+        simp at hlarge_one
+    | succ n =>
+        exact Nat.succ_le_succ (Nat.zero_le n)
+  have hεinv : 0 < ε⁻¹ := inv_pos.mpr hε
+  have hnormpos : 0 < ‖deriv ((quadratic c)^[n]) z‖ := lt_trans hεinv hlarge_inv
+  have hderiv_ne : deriv ((quadratic c)^[n]) z ≠ 0 := norm_pos_iff.mp hnormpos
+  refine ⟨n, z, hn, hz, hderiv_ne, ?_⟩
+  rw [norm_inv]
+  exact (inv_lt_comm₀ hnormpos hε).2 hlarge_inv
+
+/-- A large spherical derivative makes the Newton correction center for `F - id` close to the base
+point.  The bound is uniform in `F z`: the spherical denominator absorbs large image values. -/
+theorem newton_center_displacement_lt_of_sphericalDeriv_gt
+    {F : ℂ → ℂ} {z : ℂ} {M η : ℝ}
+    (hMpos : 0 < M)
+    (hσ : M < sphericalDeriv F z)
+    (hη : (‖z‖ + 1) / M < η) :
+    deriv F z ≠ 0 ∧
+      dist (z - (deriv F z)⁻¹ * (F z - z)) z < η := by
+  unfold sphericalDeriv at hσ
+  have hdenpos : 0 < (1 : ℝ) + ‖F z‖ ^ 2 := by positivity
+  have hlarge : M * (1 + ‖F z‖ ^ 2) < ‖deriv F z‖ := by
+    rwa [lt_div_iff₀ hdenpos] at hσ
+  have hprodpos : 0 < M * (1 + ‖F z‖ ^ 2) := mul_pos hMpos hdenpos
+  have hderiv_norm_pos : 0 < ‖deriv F z‖ := lt_trans hprodpos hlarge
+  have hderiv_ne : deriv F z ≠ 0 := norm_pos_iff.mp hderiv_norm_pos
+  refine ⟨hderiv_ne, ?_⟩
+  have hdist_le : ‖F z - z‖ ≤ ‖F z‖ + ‖z‖ := norm_sub_le _ _
+  have hfrac_deriv : ‖F z - z‖ / ‖deriv F z‖ ≤
+      ‖F z - z‖ / (M * (1 + ‖F z‖ ^ 2)) := by
+    exact div_le_div_of_nonneg_left (norm_nonneg _) hprodpos (le_of_lt hlarge)
+  have hfrac_num : ‖F z - z‖ / (M * (1 + ‖F z‖ ^ 2)) ≤
+      (‖F z‖ + ‖z‖) / (M * (1 + ‖F z‖ ^ 2)) := by
+    exact div_le_div_of_nonneg_right hdist_le (le_of_lt hprodpos)
+  have hratio : (‖F z‖ + ‖z‖) / (M * (1 + ‖F z‖ ^ 2)) ≤ (‖z‖ + 1) / M := by
+    rw [div_le_div_iff₀ hprodpos hMpos]
+    have ha_le : ‖F z‖ ≤ 1 + ‖F z‖ ^ 2 := by
+      nlinarith [sq_nonneg (‖F z‖ - 1 / 2)]
+    have hbterm : 0 ≤ ‖z‖ * ‖F z‖ ^ 2 := mul_nonneg (norm_nonneg _) (sq_nonneg _)
+    have hbase : ‖F z‖ + ‖z‖ ≤ (‖z‖ + 1) * (1 + ‖F z‖ ^ 2) := by
+      nlinarith
+    have hmul := mul_le_mul_of_nonneg_right hbase (le_of_lt hMpos)
+    nlinarith
+  have hcenter : ‖(deriv F z)⁻¹ * (F z - z)‖ < η := by
+    rw [norm_mul, norm_inv]
+    have hle : ‖deriv F z‖⁻¹ * ‖F z - z‖ ≤ (‖z‖ + 1) / M := by
+      rw [inv_mul_eq_div]
+      exact le_trans hfrac_deriv (le_trans hfrac_num hratio)
+    exact lt_of_le_of_lt hle hη
+  rw [dist_eq_norm]
+  rw [show z - (deriv F z)⁻¹ * (F z - z) - z =
+      -((deriv F z)⁻¹ * (F z - z)) by ring]
+  rwa [norm_neg]
+
+/-- Frontier Marty blow-up produces a positive iterate whose Newton correction center is arbitrarily
+small, once the chosen spherical-derivative threshold beats the local size of the base point. -/
+theorem exists_positive_iterate_newton_center_displacement_lt_on_frontier_ball
+    {c z₀ : ℂ} {R ρ M η : ℝ}
+    (hzfront : z₀ ∈ frontier (filledJulia c)) (hρ0 : 0 < ρ) (hρR : ρ < R)
+    (hMone : 1 < M)
+    (hfit : ∀ z ∈ ball z₀ R, (‖z‖ + 1) / M < η) :
+    ∃ n z, 1 ≤ n ∧ z ∈ ball z₀ R ∧
+      deriv ((quadratic c)^[n]) z ≠ 0 ∧
+      dist (z - (deriv ((quadratic c)^[n]) z)⁻¹ *
+        ((quadratic c)^[n] z - z)) z < η := by
+  obtain ⟨n, z, hz, hσ⟩ :=
+    exists_sphericalDeriv_gt_iterates_on_frontier_ball
+      (c := c) (z₀ := z₀) (R := R) (ρ := ρ) (M := M) hzfront hρ0 hρR
+  have hcenter :=
+    newton_center_displacement_lt_of_sphericalDeriv_gt
+      (F := (quadratic c)^[n]) (z := z) (M := M) (η := η)
+      (lt_trans zero_lt_one hMone) hσ (hfit z hz)
+  have hnorm_gt : M < ‖deriv ((quadratic c)^[n]) z‖ :=
+    lt_of_lt_of_le hσ (sphericalDeriv_le_norm_deriv _ _)
+  have hn : 1 ≤ n := by
+    cases n with
+    | zero =>
+        simp at hnorm_gt
+        linarith
+    | succ n =>
+        exact Nat.succ_le_succ (Nat.zero_le n)
+  exact ⟨n, z, hn, hz, hcenter.1, hcenter.2⟩
+
+/-- Explicit frontier-ball Newton-center witness from Marty blow-up.  For every requested center
+scale `η > 0`, some positive iterate has Newton correction center displacement `< η` inside the
+frontier ball. -/
+theorem exists_positive_iterate_newton_center_displacement_lt_on_frontier_ball_explicit
+    {c z₀ : ℂ} {R ρ η : ℝ}
+    (hzfront : z₀ ∈ frontier (filledJulia c)) (hρ0 : 0 < ρ) (hρR : ρ < R)
+    (hη : 0 < η) :
+    ∃ n z, 1 ≤ n ∧ z ∈ ball z₀ R ∧
+      deriv ((quadratic c)^[n]) z ≠ 0 ∧
+      dist (z - (deriv ((quadratic c)^[n]) z)⁻¹ *
+        ((quadratic c)^[n] z - z)) z < η := by
+  let B : ℝ := ‖z₀‖ + R + 1
+  let M : ℝ := (B + 1) / η + 2
+  have hRpos : 0 < R := lt_trans hρ0 hρR
+  have hBpos : 0 < B + 1 := by
+    dsimp [B]
+    positivity
+  have hMpos : 0 < M := by
+    dsimp [M]
+    positivity
+  have hMone : 1 < M := by
+    dsimp [M]
+    have hdivpos : 0 < (B + 1) / η := div_pos hBpos hη
+    linarith
+  have hBMlt : (B + 1) / M < η := by
+    rw [div_lt_iff₀ hMpos]
+    have hgt : (B + 1) / η < M := by
+      dsimp [M]
+      linarith
+    have hcleared : B + 1 < M * η := by
+      rwa [div_lt_iff₀ hη] at hgt
+    linarith
+  apply exists_positive_iterate_newton_center_displacement_lt_on_frontier_ball
+    (c := c) (z₀ := z₀) (R := R) (ρ := ρ) (M := M) (η := η)
+    hzfront hρ0 hρR hMone
+  intro z hz
+  have hzdist : dist z z₀ < R := by
+    simpa [Metric.mem_ball] using hz
+  have hnorm : ‖z‖ < ‖z₀‖ + R := by
+    calc
+      ‖z‖ = ‖(z - z₀) + z₀‖ := by ring_nf
+      _ ≤ ‖z - z₀‖ + ‖z₀‖ := norm_add_le _ _
+      _ = dist z z₀ + ‖z₀‖ := by rw [dist_eq_norm]
+      _ < R + ‖z₀‖ := by linarith
+      _ = ‖z₀‖ + R := by ring
+  have hnum : ‖z‖ + 1 < B + 1 := by
+    dsimp [B]
+    linarith
+  exact lt_trans (div_lt_div_of_pos_right hnum hMpos) hBMlt
+
 end Bottcher

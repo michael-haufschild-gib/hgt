@@ -61,6 +61,22 @@ theorem exists_continuous_lift_disk {c : ℂ} {R : ℝ} (hR : 0 < R)
     isCoveringMap_lambdaPunct.existsUnique_continuousMap_lifts F a₀ e₀ he₀
   exact ⟨G, hG⟩
 
+/-- **Based continuous lift of a disk map through `λ`.** This is the sheet-selection form of
+`exists_continuous_lift_disk`: if a basepoint preimage `e₀` is prescribed, the lifted disk map starts
+at `e₀`.  The deck-normalized Montel assembly uses this to choose the lift sheet whose Cayley
+coordinate lies in a strict subdisk. -/
+theorem exists_continuous_lift_disk_based {c : ℂ} {R : ℝ} (hR : 0 < R)
+    (F : C(↥(ball c R), Punctured)) (a₀ : ↥(ball c R)) (e₀ : ℍ)
+    (he₀ : lambdaPunct e₀ = F a₀) :
+    ∃ G : C(↥(ball c R), ℍ), G a₀ = e₀ ∧ lambdaPunct ∘ G = F := by
+  haveI : ContractibleSpace ↥(ball c R) :=
+    (convex_ball c R).contractibleSpace (nonempty_ball.mpr hR)
+  haveI : SimplyConnectedSpace ↥(ball c R) := inferInstance
+  haveI : LocPathConnectedSpace ↥(ball c R) := isOpen_ball.locPathConnectedSpace
+  obtain ⟨G, hG, _⟩ :=
+    isCoveringMap_lambdaPunct.existsUnique_continuousMap_lifts F a₀ e₀ he₀
+  exact ⟨G, hG⟩
+
 /-- The **Cayley transform** `w ↦ (w-i)/(w+i)`, mapping `ℍ` into the open unit disc. The bounded model of
 `ℍ` used to turn an `ℍ`-valued lift into a `‖·‖ ≤ 1`-bounded one for `normal_of_omitting_lift` (`#30`). -/
 noncomputable def cayley (w : ℂ) : ℂ := (w - Complex.I) / (w + Complex.I)

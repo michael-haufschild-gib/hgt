@@ -29,6 +29,14 @@ noncomputable def sphericalDeriv (f : ℂ → ℂ) (z : ℂ) : ℝ := ‖deriv f
 theorem sphericalDeriv_nonneg (f : ℂ → ℂ) (z : ℂ) : 0 ≤ sphericalDeriv f z := by
   unfold sphericalDeriv; positivity
 
+/-- The spherical derivative is bounded above by the ordinary derivative norm. -/
+theorem sphericalDeriv_le_norm_deriv (f : ℂ → ℂ) (z : ℂ) :
+    sphericalDeriv f z ≤ ‖deriv f z‖ := by
+  unfold sphericalDeriv
+  have hdenpos : 0 < (1 : ℝ) + ‖f z‖ ^ 2 := by positivity
+  rw [div_le_iff₀ hdenpos]
+  nlinarith [sq_nonneg ‖f z‖, norm_nonneg (deriv f z)]
+
 /-- **Inversion-invariance** `σ(1/f) = σf` — the characteristic symmetry of the spherical derivative.
 Because the round metric on `ℂ̂` is invariant under `z ↦ 1/z`, the distortion of `1/f` equals that of
 `f` (wherever `f ≠ 0`). This is what lets the spherical derivative, and Marty's normality criterion

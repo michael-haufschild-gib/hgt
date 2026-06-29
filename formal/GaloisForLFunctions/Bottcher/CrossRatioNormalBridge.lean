@@ -19,6 +19,457 @@ noncomputable section
 def crossRatioInverse (α β z R : ℂ) : ℂ :=
   (R * β * (z - α) - α * (z - β)) / (R * (z - α) - (z - β))
 
+/-- The finite affine chart of the Riemann sphere, inverse to stereographic projection away from the
+north pole. -/
+def stereoFiniteChart (v : EuclideanSpace ℝ (Fin 3)) : ℂ :=
+  (((v.ofLp (0 : Fin 3) : ℝ) : ℂ) + ((v.ofLp (1 : Fin 3) : ℝ) : ℂ) * Complex.I) /
+    (((1 : ℝ) - v.ofLp (2 : Fin 3) : ℝ) : ℂ)
+
+/-- The inverse affine chart near the north pole. On `stereo z`, it returns `z⁻¹`, so it turns
+spherical convergence to the point at infinity into finite convergence in the inverse coordinate. -/
+def stereoInvChart (v : EuclideanSpace ℝ (Fin 3)) : ℂ :=
+  (((v.ofLp (0 : Fin 3) : ℝ) : ℂ) - ((v.ofLp (1 : Fin 3) : ℝ) : ℂ) * Complex.I) /
+    (((1 : ℝ) + v.ofLp (2 : Fin 3) : ℝ) : ℂ)
+
+/-- The finite chart recovers a complex number from its stereographic image. -/
+theorem stereoFiniteChart_stereo (z : ℂ) :
+    stereoFiniteChart (stereo z) = z := by
+  let A : ℝ := 2 / (1 + ‖z‖ ^ 2)
+  have hApos : 0 < A := by
+    dsimp [A]
+    positivity
+  have hAne : (A : ℂ) ≠ 0 := by
+    exact_mod_cast (ne_of_gt hApos)
+  have hx : (stereo z).ofLp (0 : Fin 3) = A * z.re := by
+    dsimp [A]
+    simp [stereo]
+    ring
+  have hy : (stereo z).ofLp (1 : Fin 3) = A * z.im := by
+    dsimp [A]
+    simp [stereo]
+    ring
+  have hdenR : (1 : ℝ) - (stereo z).ofLp (2 : Fin 3) = A := by
+    dsimp [A]
+    simp [stereo]
+    field_simp [show (1 : ℝ) + ‖z‖ ^ 2 ≠ 0 by positivity]
+    ring
+  have hden : (((1 : ℝ) - (stereo z).ofLp (2 : Fin 3) : ℝ) : ℂ) = (A : ℂ) := by
+    exact_mod_cast hdenR
+  have hnum : (((stereo z).ofLp (0 : Fin 3) : ℝ) : ℂ) +
+      ((stereo z).ofLp (1 : Fin 3) : ℝ) * Complex.I = (A : ℂ) * z := by
+    rw [hx, hy]
+    apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
+  unfold stereoFiniteChart
+  rw [hden, hnum]
+  exact mul_div_cancel_left₀ z hAne
+
+/-- The inverse chart recovers `z⁻¹` from the stereographic image of a nonzero complex number. -/
+theorem stereoInvChart_stereo {z : ℂ} (hz : z ≠ 0) :
+    stereoInvChart (stereo z) = z⁻¹ := by
+  let A : ℝ := 2 / (1 + ‖z‖ ^ 2)
+  let B : ℝ := A * ‖z‖ ^ 2
+  have hApos : 0 < A := by
+    dsimp [A]
+    positivity
+  have hAne : (A : ℂ) ≠ 0 := by
+    exact_mod_cast (ne_of_gt hApos)
+  have hBpos : 0 < B := by
+    dsimp [B, A]
+    have hzpos : 0 < ‖z‖ ^ 2 := sq_pos_of_ne_zero (norm_ne_zero_iff.mpr hz)
+    positivity
+  have hx : (stereo z).ofLp (0 : Fin 3) = A * z.re := by
+    dsimp [A]
+    simp [stereo]
+    ring
+  have hy : (stereo z).ofLp (1 : Fin 3) = A * z.im := by
+    dsimp [A]
+    simp [stereo]
+    ring
+  have hdenR : (1 : ℝ) + (stereo z).ofLp (2 : Fin 3) = B := by
+    dsimp [B, A]
+    simp [stereo]
+    field_simp [show (1 : ℝ) + ‖z‖ ^ 2 ≠ 0 by positivity]
+    ring
+  have hden : (((1 : ℝ) + (stereo z).ofLp (2 : Fin 3) : ℝ) : ℂ) = (B : ℂ) := by
+    exact_mod_cast hdenR
+  have hnum : (((stereo z).ofLp (0 : Fin 3) : ℝ) : ℂ) -
+      ((stereo z).ofLp (1 : Fin 3) : ℝ) * Complex.I = (A : ℂ) * star z := by
+    rw [hx, hy]
+    apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
+  have hB : (B : ℂ) = (A : ℂ) * (z * star z) := by
+    dsimp [B]
+    rw [Complex.mul_conj]
+    simp [Complex.normSq_eq_norm_sq]
+  unfold stereoInvChart
+  rw [hden, hnum, hB]
+  field_simp [hAne, hz, (star_ne_zero.mpr hz)]
+
+/-- The third stereographic coordinate is always at most the north-pole coordinate. -/
+theorem stereo_third_le_one (z : ℂ) : (stereo z).ofLp (2 : Fin 3) ≤ 1 := by
+  simp [stereo]
+  have hdenpos : 0 < (1 : ℝ) + ‖z‖ ^ 2 := by positivity
+  rw [div_le_iff₀ hdenpos]
+  ring_nf
+  nlinarith [sq_nonneg ‖z‖]
+
+/-- The third stereographic coordinate is always at least the south-pole coordinate. -/
+theorem neg_one_le_stereo_third (z : ℂ) : -1 ≤ (stereo z).ofLp (2 : Fin 3) := by
+  simp [stereo]
+  have hdenpos : 0 < (1 : ℝ) + ‖z‖ ^ 2 := by positivity
+  rw [le_div_iff₀ hdenpos]
+  ring_nf
+  nlinarith [sq_nonneg ‖z‖]
+
+/-- The finite stereographic chart is continuous away from the north pole. -/
+theorem stereoFiniteChart_continuousAt {v : EuclideanSpace ℝ (Fin 3)}
+    (h : v.ofLp (2 : Fin 3) ≠ 1) : ContinuousAt stereoFiniteChart v := by
+  have h0 : ContinuousAt (fun v : EuclideanSpace ℝ (Fin 3) => v.ofLp (0 : Fin 3)) v :=
+    (PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (0 : Fin 3)).continuousAt
+  have h1 : ContinuousAt (fun v : EuclideanSpace ℝ (Fin 3) => v.ofLp (1 : Fin 3)) v :=
+    (PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (1 : Fin 3)).continuousAt
+  have h2 : ContinuousAt (fun v : EuclideanSpace ℝ (Fin 3) => v.ofLp (2 : Fin 3)) v :=
+    (PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (2 : Fin 3)).continuousAt
+  have h0c : ContinuousAt
+      (fun v : EuclideanSpace ℝ (Fin 3) => ((v.ofLp (0 : Fin 3) : ℝ) : ℂ)) v :=
+    Complex.continuous_ofReal.continuousAt.comp h0
+  have h1c : ContinuousAt
+      (fun v : EuclideanSpace ℝ (Fin 3) => ((v.ofLp (1 : Fin 3) : ℝ) : ℂ)) v :=
+    Complex.continuous_ofReal.continuousAt.comp h1
+  have hn : ContinuousAt (fun v : EuclideanSpace ℝ (Fin 3) =>
+      (((v.ofLp (0 : Fin 3) : ℝ) : ℂ) + ((v.ofLp (1 : Fin 3) : ℝ) : ℂ) * Complex.I)) v :=
+    h0c.add (h1c.mul continuousAt_const)
+  have hd : ContinuousAt (fun v : EuclideanSpace ℝ (Fin 3) =>
+      (((1 : ℝ) - v.ofLp (2 : Fin 3) : ℝ) : ℂ)) v :=
+    Complex.continuous_ofReal.continuousAt.comp (continuousAt_const.sub h2)
+  have hdne : (((1 : ℝ) - v.ofLp (2 : Fin 3) : ℝ) : ℂ) ≠ 0 := by
+    have hreal : (1 : ℝ) - v.ofLp (2 : Fin 3) ≠ 0 := by
+      intro hzero
+      apply h
+      linarith
+    exact_mod_cast hreal
+  unfold stereoFiniteChart
+  exact hn.div hd hdne
+
+/-- The inverse stereographic chart is continuous away from the south pole. -/
+theorem stereoInvChart_continuousAt {v : EuclideanSpace ℝ (Fin 3)}
+    (h : v.ofLp (2 : Fin 3) ≠ -1) : ContinuousAt stereoInvChart v := by
+  have h0 : ContinuousAt (fun v : EuclideanSpace ℝ (Fin 3) => v.ofLp (0 : Fin 3)) v :=
+    (PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (0 : Fin 3)).continuousAt
+  have h1 : ContinuousAt (fun v : EuclideanSpace ℝ (Fin 3) => v.ofLp (1 : Fin 3)) v :=
+    (PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (1 : Fin 3)).continuousAt
+  have h2 : ContinuousAt (fun v : EuclideanSpace ℝ (Fin 3) => v.ofLp (2 : Fin 3)) v :=
+    (PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (2 : Fin 3)).continuousAt
+  have h0c : ContinuousAt
+      (fun v : EuclideanSpace ℝ (Fin 3) => ((v.ofLp (0 : Fin 3) : ℝ) : ℂ)) v :=
+    Complex.continuous_ofReal.continuousAt.comp h0
+  have h1c : ContinuousAt
+      (fun v : EuclideanSpace ℝ (Fin 3) => ((v.ofLp (1 : Fin 3) : ℝ) : ℂ)) v :=
+    Complex.continuous_ofReal.continuousAt.comp h1
+  have hn : ContinuousAt (fun v : EuclideanSpace ℝ (Fin 3) =>
+      (((v.ofLp (0 : Fin 3) : ℝ) : ℂ) - ((v.ofLp (1 : Fin 3) : ℝ) : ℂ) * Complex.I)) v :=
+    h0c.sub (h1c.mul continuousAt_const)
+  have hd : ContinuousAt (fun v : EuclideanSpace ℝ (Fin 3) =>
+      (((1 : ℝ) + v.ofLp (2 : Fin 3) : ℝ) : ℂ)) v :=
+    Complex.continuous_ofReal.continuousAt.comp (continuousAt_const.add h2)
+  have hdne : (((1 : ℝ) + v.ofLp (2 : Fin 3) : ℝ) : ℂ) ≠ 0 := by
+    have hreal : (1 : ℝ) + v.ofLp (2 : Fin 3) ≠ 0 := by
+      intro hzero
+      apply h
+      linarith
+    exact_mod_cast hreal
+  unfold stereoInvChart
+  exact hn.div hd hdne
+
+/-- Set-level continuity of the finite stereographic chart away from the north pole. -/
+theorem stereoFiniteChart_continuousOn {S : Set (EuclideanSpace ℝ (Fin 3))}
+    (h : ∀ v ∈ S, v.ofLp (2 : Fin 3) ≠ 1) :
+    ContinuousOn stereoFiniteChart S := by
+  intro v hv
+  exact (stereoFiniteChart_continuousAt (h v hv)).continuousWithinAt
+
+/-- Set-level continuity of the inverse stereographic chart away from the south pole. -/
+theorem stereoInvChart_continuousOn {S : Set (EuclideanSpace ℝ (Fin 3))}
+    (h : ∀ v ∈ S, v.ofLp (2 : Fin 3) ≠ -1) :
+    ContinuousOn stereoInvChart S := by
+  intro v hv
+  exact (stereoInvChart_continuousAt (h v hv)).continuousWithinAt
+
+/-- A coordinate difference is bounded by Euclidean distance. -/
+theorem stereo_coord_abs_sub_le_dist (x y : EuclideanSpace ℝ (Fin 3)) (i : Fin 3) :
+    |x.ofLp i - y.ofLp i| ≤ dist x y := by
+  rw [dist_eq_norm]
+  have h := PiLp.norm_apply_le (x - y) i
+  simpa using h
+
+/-- If a spherical limit stays uniformly away from the north pole, spherical uniform convergence of
+`stereo (R n z)` upgrades to ordinary uniform convergence of `R n z` in the finite chart. -/
+theorem tendstoUniformlyOn_of_stereo_tendstoUniformlyOn_finiteChart
+    {K : Set ℂ} {Rseq : ℕ → ℂ → ℂ} {G : ℂ → EuclideanSpace ℝ (Fin 3)} {B : ℝ}
+    (hGthird : ∀ z ∈ K, (G z).ofLp (2 : Fin 3) ≤ B)
+    (hB : B < 1)
+    (hconv : TendstoUniformlyOn (fun n z => stereo (Rseq n z)) G atTop K) :
+    TendstoUniformlyOn Rseq (fun z => stereoFiniteChart (G z)) atTop K := by
+  let C : ℝ := (B + 1) / 2
+  have hBC : B < C := by
+    dsimp [C]
+    linarith
+  have hC1 : C < 1 := by
+    dsimp [C]
+    linarith
+  let S : Set (EuclideanSpace ℝ (Fin 3)) :=
+    closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2 ∩ {v | v.ofLp (2 : Fin 3) ≤ C}
+  have hclosedCoord : IsClosed ({v : EuclideanSpace ℝ (Fin 3) | v.ofLp (2 : Fin 3) ≤ C}) :=
+    isClosed_le (PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (2 : Fin 3)) continuous_const
+  have hScompact : IsCompact S :=
+    (isCompact_closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2).inter_right hclosedCoord
+  have hScont : ContinuousOn stereoFiniteChart S := by
+    refine stereoFiniteChart_continuousOn ?_
+    intro v hv hEq
+    have hvle : v.ofLp (2 : Fin 3) ≤ C := hv.2
+    linarith
+  have hUC : UniformContinuousOn stereoFiniteChart S :=
+    hScompact.uniformContinuousOn_of_continuous hScont
+  have hlim_norm : ∀ z ∈ K, ‖G z‖ ≤ 1 := by
+    intro z hz
+    have hpt : Tendsto (fun n => stereo (Rseq n z)) atTop (𝓝 (G z)) := hconv.tendsto_at hz
+    have hnorm : Tendsto (fun n => ‖stereo (Rseq n z)‖) atTop (𝓝 ‖G z‖) := hpt.norm
+    exact le_of_tendsto' hnorm (fun n => by rw [norm_stereo_eq_one])
+  have hlim_mem : ∀ z ∈ K, G z ∈ S := by
+    intro z hz
+    refine ⟨?_, (hGthird z hz).trans (le_of_lt hBC)⟩
+    rw [mem_closedBall, dist_zero_right]
+    linarith [hlim_norm z hz]
+  have hseq_mem : ∀ᶠ n in atTop, ∀ z ∈ K, stereo (Rseq n z) ∈ S := by
+    rw [Metric.tendstoUniformlyOn_iff] at hconv
+    filter_upwards [hconv (C - B) (by linarith)] with n hn
+    intro z hz
+    refine ⟨?_, ?_⟩
+    · rw [mem_closedBall, dist_zero_right, norm_stereo_eq_one]
+      norm_num
+    · have hdist : dist (stereo (Rseq n z)) (G z) < C - B := by
+        simpa [dist_comm] using hn z hz
+      have hcoord := stereo_coord_abs_sub_le_dist (stereo (Rseq n z)) (G z) (2 : Fin 3)
+      have hdiff : (stereo (Rseq n z)).ofLp (2 : Fin 3) - (G z).ofLp (2 : Fin 3) <
+          C - B := by
+        have habs_nonneg : (stereo (Rseq n z)).ofLp (2 : Fin 3) - (G z).ofLp (2 : Fin 3) ≤
+            |(stereo (Rseq n z)).ofLp (2 : Fin 3) - (G z).ofLp (2 : Fin 3)| :=
+          le_abs_self _
+        linarith
+      have hle1 : (stereo (Rseq n z)).ofLp (2 : Fin 3) ≤
+          (G z).ofLp (2 : Fin 3) + (C - B) := by
+        linarith [hdiff]
+      have hle2 : (G z).ofLp (2 : Fin 3) + (C - B) ≤ C := by
+        linarith [hGthird z hz]
+      exact hle1.trans hle2
+  have hcomp : TendstoUniformlyOn
+      (fun n z => stereoFiniteChart (stereo (Rseq n z)))
+      (fun z => stereoFiniteChart (G z)) atTop K :=
+    UniformContinuousOn.comp_tendstoUniformlyOn_eventually hseq_mem hlim_mem hUC hconv
+  exact hcomp.congr (by
+    filter_upwards with n z _hz
+    exact stereoFiniteChart_stereo (Rseq n z))
+
+/-- If a spherical limit stays uniformly away from the south pole, spherical uniform convergence of
+`stereo (R n z)` upgrades to uniform convergence of the inverse values `(R n z)⁻¹`. -/
+theorem tendstoUniformlyOn_inv_of_stereo_tendstoUniformlyOn_invChart
+    {K : Set ℂ} {Rseq : ℕ → ℂ → ℂ} {G : ℂ → EuclideanSpace ℝ (Fin 3)} {A : ℝ}
+    (hGthird : ∀ z ∈ K, A ≤ (G z).ofLp (2 : Fin 3))
+    (hA : -1 < A)
+    (hRne : ∀ n z, z ∈ K → Rseq n z ≠ 0)
+    (hconv : TendstoUniformlyOn (fun n z => stereo (Rseq n z)) G atTop K) :
+    TendstoUniformlyOn (fun n z => (Rseq n z)⁻¹) (fun z => stereoInvChart (G z)) atTop K := by
+  let C : ℝ := (A - 1) / 2
+  have hneg1C : -1 < C := by
+    dsimp [C]
+    linarith
+  have hCA : C < A := by
+    dsimp [C]
+    linarith
+  let S : Set (EuclideanSpace ℝ (Fin 3)) :=
+    closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2 ∩ {v | C ≤ v.ofLp (2 : Fin 3)}
+  have hclosedCoord : IsClosed ({v : EuclideanSpace ℝ (Fin 3) | C ≤ v.ofLp (2 : Fin 3)}) :=
+    isClosed_le continuous_const (PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (2 : Fin 3))
+  have hScompact : IsCompact S :=
+    (isCompact_closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2).inter_right hclosedCoord
+  have hScont : ContinuousOn stereoInvChart S := by
+    refine stereoInvChart_continuousOn ?_
+    intro v hv hEq
+    have hvge : C ≤ v.ofLp (2 : Fin 3) := hv.2
+    linarith
+  have hUC : UniformContinuousOn stereoInvChart S :=
+    hScompact.uniformContinuousOn_of_continuous hScont
+  have hlim_norm : ∀ z ∈ K, ‖G z‖ ≤ 1 := by
+    intro z hz
+    have hpt : Tendsto (fun n => stereo (Rseq n z)) atTop (𝓝 (G z)) := hconv.tendsto_at hz
+    have hnorm : Tendsto (fun n => ‖stereo (Rseq n z)‖) atTop (𝓝 ‖G z‖) := hpt.norm
+    exact le_of_tendsto' hnorm (fun n => by rw [norm_stereo_eq_one])
+  have hlim_mem : ∀ z ∈ K, G z ∈ S := by
+    intro z hz
+    refine ⟨?_, (le_of_lt hCA).trans (hGthird z hz)⟩
+    rw [mem_closedBall, dist_zero_right]
+    linarith [hlim_norm z hz]
+  have hseq_mem : ∀ᶠ n in atTop, ∀ z ∈ K, stereo (Rseq n z) ∈ S := by
+    rw [Metric.tendstoUniformlyOn_iff] at hconv
+    filter_upwards [hconv (A - C) (by linarith)] with n hn
+    intro z hz
+    refine ⟨?_, ?_⟩
+    · rw [mem_closedBall, dist_zero_right, norm_stereo_eq_one]
+      norm_num
+    · have hdist : dist (stereo (Rseq n z)) (G z) < A - C := by
+        simpa [dist_comm] using hn z hz
+      have hcoord := stereo_coord_abs_sub_le_dist (stereo (Rseq n z)) (G z) (2 : Fin 3)
+      have hdiff : (G z).ofLp (2 : Fin 3) - (stereo (Rseq n z)).ofLp (2 : Fin 3) <
+          A - C := by
+        have habs_nonneg : (G z).ofLp (2 : Fin 3) - (stereo (Rseq n z)).ofLp (2 : Fin 3) ≤
+            |(stereo (Rseq n z)).ofLp (2 : Fin 3) - (G z).ofLp (2 : Fin 3)| := by
+          rw [abs_sub_comm]
+          exact le_abs_self _
+        linarith
+      have hle1 : (G z).ofLp (2 : Fin 3) - (A - C) ≤
+          (stereo (Rseq n z)).ofLp (2 : Fin 3) := by
+        linarith [hdiff]
+      have hle2 : C ≤ (G z).ofLp (2 : Fin 3) - (A - C) := by
+        linarith [hGthird z hz]
+      exact hle2.trans hle1
+  have hcomp : TendstoUniformlyOn
+      (fun n z => stereoInvChart (stereo (Rseq n z)))
+      (fun z => stereoInvChart (G z)) atTop K :=
+    UniformContinuousOn.comp_tendstoUniformlyOn_eventually hseq_mem hlim_mem hUC hconv
+  exact hcomp.congr (by
+    filter_upwards with n z hz
+    exact stereoInvChart_stereo (hRne n z hz))
+
+/-- Continuity of the finite-chart pullback of a spherical limit that avoids the north pole. -/
+theorem continuousOn_stereoFiniteChart_comp {K : Set ℂ} {G : ℂ → EuclideanSpace ℝ (Fin 3)}
+    (hGcont : ContinuousOn G K)
+    (hGnorth : ∀ z ∈ K, (G z).ofLp (2 : Fin 3) ≠ 1) :
+    ContinuousOn (fun z => stereoFiniteChart (G z)) K := by
+  intro z hz
+  exact (stereoFiniteChart_continuousAt (hGnorth z hz)).comp_continuousWithinAt (hGcont z hz)
+
+/-- Continuity of the inverse-chart pullback of a spherical limit that avoids the south pole. -/
+theorem continuousOn_stereoInvChart_comp {K : Set ℂ} {G : ℂ → EuclideanSpace ℝ (Fin 3)}
+    (hGcont : ContinuousOn G K)
+    (hGsouth : ∀ z ∈ K, (G z).ofLp (2 : Fin 3) ≠ -1) :
+    ContinuousOn (fun z => stereoInvChart (G z)) K := by
+  intro z hz
+  exact (stereoInvChart_continuousAt (hGsouth z hz)).comp_continuousWithinAt (hGcont z hz)
+
+/-- If a continuous spherical limit has third coordinate below `B` at the center, then on some
+smaller closed ball the third coordinate is bounded by `B`. -/
+theorem exists_closedBall_upper_bound_of_continuousOn {z₀ : ℂ} {ρ B : ℝ}
+    {G : ℂ → EuclideanSpace ℝ (Fin 3)}
+    (hρ : 0 < ρ)
+    (hGcont : ContinuousOn G (closedBall z₀ ρ))
+    (hB : (G z₀).ofLp (2 : Fin 3) < B) :
+    ∃ r : ℝ, 0 < r ∧ closedBall z₀ r ⊆ closedBall z₀ ρ ∧
+      ∀ z ∈ closedBall z₀ r, (G z).ofLp (2 : Fin 3) ≤ B := by
+  have hzmem : z₀ ∈ closedBall z₀ ρ := by
+    rw [mem_closedBall, dist_self]
+    exact le_of_lt hρ
+  have hcoord_cont : ContinuousWithinAt (fun z => (G z).ofLp (2 : Fin 3))
+      (closedBall z₀ ρ) z₀ := by
+    exact ContinuousAt.comp_continuousWithinAt
+      ((PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (2 : Fin 3)).continuousAt)
+      (hGcont z₀ hzmem)
+  rw [Metric.continuousWithinAt_iff] at hcoord_cont
+  have hε : 0 < B - (G z₀).ofLp (2 : Fin 3) := by
+    linarith
+  obtain ⟨δ, hδpos, hδ⟩ := hcoord_cont (B - (G z₀).ofLp (2 : Fin 3)) hε
+  let r : ℝ := min ρ δ / 2
+  have hrpos : 0 < r := by
+    dsimp [r]
+    positivity
+  refine ⟨r, hrpos, ?_, ?_⟩
+  · intro z hz
+    rw [mem_closedBall] at hz ⊢
+    have hrleρ : r ≤ ρ := by
+      dsimp [r]
+      have hmin : min ρ δ ≤ ρ := min_le_left _ _
+      linarith
+    exact hz.trans hrleρ
+  · intro z hz
+    have hzK : z ∈ closedBall z₀ ρ := by
+      rw [mem_closedBall] at hz ⊢
+      have hrleρ : r ≤ ρ := by
+        dsimp [r]
+        have hmin : min ρ δ ≤ ρ := min_le_left _ _
+        linarith
+      exact hz.trans hrleρ
+    have hdistδ : dist z z₀ < δ := by
+      rw [mem_closedBall] at hz
+      have hrltδ : r < δ := by
+        dsimp [r]
+        have hmin : min ρ δ ≤ δ := min_le_right _ _
+        linarith
+      exact lt_of_le_of_lt hz hrltδ
+    have hdist : dist ((G z).ofLp (2 : Fin 3)) ((G z₀).ofLp (2 : Fin 3)) <
+        B - (G z₀).ofLp (2 : Fin 3) :=
+      hδ (x := z) hzK hdistδ
+    rw [Real.dist_eq] at hdist
+    have hle : (G z).ofLp (2 : Fin 3) - (G z₀).ofLp (2 : Fin 3) ≤
+        |(G z).ofLp (2 : Fin 3) - (G z₀).ofLp (2 : Fin 3)| :=
+      le_abs_self _
+    linarith
+
+/-- If a continuous spherical limit has third coordinate above `A` at the center, then on some
+smaller closed ball the third coordinate is bounded below by `A`. -/
+theorem exists_closedBall_lower_bound_of_continuousOn {z₀ : ℂ} {ρ A : ℝ}
+    {G : ℂ → EuclideanSpace ℝ (Fin 3)}
+    (hρ : 0 < ρ)
+    (hGcont : ContinuousOn G (closedBall z₀ ρ))
+    (hA : A < (G z₀).ofLp (2 : Fin 3)) :
+    ∃ r : ℝ, 0 < r ∧ closedBall z₀ r ⊆ closedBall z₀ ρ ∧
+      ∀ z ∈ closedBall z₀ r, A ≤ (G z).ofLp (2 : Fin 3) := by
+  have hzmem : z₀ ∈ closedBall z₀ ρ := by
+    rw [mem_closedBall, dist_self]
+    exact le_of_lt hρ
+  have hcoord_cont : ContinuousWithinAt (fun z => (G z).ofLp (2 : Fin 3))
+      (closedBall z₀ ρ) z₀ := by
+    exact ContinuousAt.comp_continuousWithinAt
+      ((PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (2 : Fin 3)).continuousAt)
+      (hGcont z₀ hzmem)
+  rw [Metric.continuousWithinAt_iff] at hcoord_cont
+  have hε : 0 < (G z₀).ofLp (2 : Fin 3) - A := by
+    linarith
+  obtain ⟨δ, hδpos, hδ⟩ := hcoord_cont ((G z₀).ofLp (2 : Fin 3) - A) hε
+  let r : ℝ := min ρ δ / 2
+  have hrpos : 0 < r := by
+    dsimp [r]
+    positivity
+  refine ⟨r, hrpos, ?_, ?_⟩
+  · intro z hz
+    rw [mem_closedBall] at hz ⊢
+    have hrleρ : r ≤ ρ := by
+      dsimp [r]
+      have hmin : min ρ δ ≤ ρ := min_le_left _ _
+      linarith
+    exact hz.trans hrleρ
+  · intro z hz
+    have hzK : z ∈ closedBall z₀ ρ := by
+      rw [mem_closedBall] at hz ⊢
+      have hrleρ : r ≤ ρ := by
+        dsimp [r]
+        have hmin : min ρ δ ≤ ρ := min_le_left _ _
+        linarith
+      exact hz.trans hrleρ
+    have hdistδ : dist z z₀ < δ := by
+      rw [mem_closedBall] at hz
+      have hrltδ : r < δ := by
+        dsimp [r]
+        have hmin : min ρ δ ≤ δ := min_le_right _ _
+        linarith
+      exact lt_of_le_of_lt hz hrltδ
+    have hdist : dist ((G z).ofLp (2 : Fin 3)) ((G z₀).ofLp (2 : Fin 3)) <
+        (G z₀).ofLp (2 : Fin 3) - A :=
+      hδ (x := z) hzK hdistδ
+    rw [Real.dist_eq] at hdist
+    have hle : (G z₀).ofLp (2 : Fin 3) - (G z).ofLp (2 : Fin 3) ≤
+        |(G z).ofLp (2 : Fin 3) - (G z₀).ofLp (2 : Fin 3)| := by
+      rw [abs_sub_comm]
+      exact le_abs_self _
+    linarith
+
 /-- Homogeneous stereographic image of a quotient `N / D`.
 
 Unlike `stereo (N / D)` as a `ℂ`-valued quotient, this formula stays meaningful at `D = 0`: it is the
@@ -192,6 +643,15 @@ theorem crossRatioInverseSphereInv_continuousAt {α β z T : ℂ}
   exact ContinuousAt.comp_of_eq (homogeneousRatioStereo_continuousAt hND)
     (by fun_prop : ContinuousAt F (z, T)) rfl
 
+/-- Set-level continuity of the inverse-coordinate homogeneous sphere map. -/
+theorem crossRatioInverseSphereInv_continuousOn {α β : ℂ} {U : Set ℂ} {T : ℂ → ℂ}
+    (hαβ : α ≠ β) (hα : ∀ z ∈ U, z ≠ α) (hTcont : ContinuousOn T U) :
+    ContinuousOn (fun z => crossRatioInverseSphereInv α β z (T z)) U := by
+  intro z hz
+  exact ContinuousAt.comp₂_continuousWithinAt_of_eq
+    (crossRatioInverseSphereInv_continuousAt hαβ (hα z hz))
+    continuousWithinAt_id (hTcont z hz) rfl
+
 /-- At `T = 0`, i.e. `R = ∞`, the inverse-cross-ratio sphere value is the finite point `β`. -/
 theorem crossRatioInverseSphereInv_zero_eq {α β z : ℂ} (hzα : z ≠ α) :
     crossRatioInverseSphereInv α β z 0 = stereo β := by
@@ -270,6 +730,77 @@ theorem tendstoUniformlyOn_crossRatioInverseSphere_of_tendstoUniformlyOn
     intro z hz
     simpa using hn z hz
   exact UniformContinuousOn.comp_tendstoUniformlyOn_eventually hseq_mem hlim_mem hUC hpair
+
+/-- Uniform convergence in the inverse coordinate `T = R⁻¹` gives uniform convergence of the
+inverse-coordinate homogeneous sphere values on compact patches avoiding `α`. -/
+theorem tendstoUniformlyOn_crossRatioInverseSphereInv_of_tendstoUniformlyOn
+    {α β : ℂ} {K : Set ℂ} {Tseq : ℕ → ℂ → ℂ} {Tlim : ℂ → ℂ}
+    (hK : IsCompact K)
+    (hαβ : α ≠ β)
+    (hα : ∀ z ∈ K, z ≠ α)
+    (hTcont : ContinuousOn Tlim K)
+    (hconv : TendstoUniformlyOn Tseq Tlim atTop K) :
+    TendstoUniformlyOn
+      (fun n z => crossRatioInverseSphereInv α β z (Tseq n z))
+      (fun z => crossRatioInverseSphereInv α β z (Tlim z)) atTop K := by
+  have hTimgCompact : IsCompact (Tlim '' K) := hK.image_of_continuousOn hTcont
+  obtain ⟨B, hB⟩ := (Metric.isBounded_iff_subset_closedBall (0 : ℂ)).mp hTimgCompact.isBounded
+  let C : ℝ := B + 1
+  let S : Set (ℂ × ℂ) := K ×ˢ closedBall (0 : ℂ) C
+  have hScompact : IsCompact S := hK.prod (isCompact_closedBall (0 : ℂ) C)
+  have hFcont : ContinuousOn (fun p : ℂ × ℂ => crossRatioInverseSphereInv α β p.1 p.2) S := by
+    intro p hp
+    exact (crossRatioInverseSphereInv_continuousAt hαβ (hα p.1 hp.1)).continuousWithinAt
+  have hUC : UniformContinuousOn (fun p : ℂ × ℂ => crossRatioInverseSphereInv α β p.1 p.2) S :=
+    hScompact.uniformContinuousOn_of_continuous hFcont
+  have hlim_mem : ∀ z ∈ K, (z, Tlim z) ∈ S := by
+    intro z hz
+    refine ⟨hz, ?_⟩
+    have himg : Tlim z ∈ Tlim '' K := ⟨z, hz, rfl⟩
+    have hclosed := hB himg
+    rw [mem_closedBall, dist_zero_right] at hclosed ⊢
+    dsimp [C]
+    linarith
+  have hseq_mem : ∀ᶠ n in atTop, ∀ z ∈ K, (z, Tseq n z) ∈ S := by
+    rw [Metric.tendstoUniformlyOn_iff] at hconv
+    filter_upwards [hconv 1 (by norm_num)] with n hn
+    intro z hz
+    refine ⟨hz, ?_⟩
+    have hlim_closed : Tlim z ∈ closedBall (0 : ℂ) B := hB ⟨z, hz, rfl⟩
+    rw [mem_closedBall, dist_zero_right] at hlim_closed ⊢
+    have hdist : dist (Tlim z) (Tseq n z) < 1 := hn z hz
+    have hnorm : ‖Tseq n z‖ ≤ ‖Tlim z‖ + dist (Tlim z) (Tseq n z) := by
+      calc
+        ‖Tseq n z‖ = dist (0 : ℂ) (Tseq n z) := by rw [dist_zero_left]
+        _ ≤ dist (0 : ℂ) (Tlim z) + dist (Tlim z) (Tseq n z) := dist_triangle _ _ _
+        _ = ‖Tlim z‖ + dist (Tlim z) (Tseq n z) := by rw [dist_zero_left]
+    dsimp [C]
+    linarith
+  have hpair : TendstoUniformlyOn (fun n z => (z, Tseq n z)) (fun z => (z, Tlim z)) atTop K := by
+    rw [Metric.tendstoUniformlyOn_iff] at hconv ⊢
+    intro ε hε
+    filter_upwards [hconv ε hε] with n hn
+    intro z hz
+    simpa using hn z hz
+  exact UniformContinuousOn.comp_tendstoUniformlyOn_eventually hseq_mem hlim_mem hUC hpair
+
+/-- The inverse-coordinate convergence theorem in the original finite `R` chart. -/
+theorem tendstoUniformlyOn_crossRatioInverseSphere_of_inv_tendstoUniformlyOn
+    {α β : ℂ} {K : Set ℂ} {Rseq : ℕ → ℂ → ℂ} {Tlim : ℂ → ℂ}
+    (hK : IsCompact K)
+    (hαβ : α ≠ β)
+    (hα : ∀ z ∈ K, z ≠ α)
+    (hRne : ∀ n z, z ∈ K → Rseq n z ≠ 0)
+    (hTcont : ContinuousOn Tlim K)
+    (hconv : TendstoUniformlyOn (fun n z => (Rseq n z)⁻¹) Tlim atTop K) :
+    TendstoUniformlyOn
+      (fun n z => crossRatioInverseSphere α β z (Rseq n z))
+      (fun z => crossRatioInverseSphereInv α β z (Tlim z)) atTop K := by
+  have hInv := tendstoUniformlyOn_crossRatioInverseSphereInv_of_tendstoUniformlyOn
+    hK hαβ hα hTcont hconv
+  refine hInv.congr ?_
+  filter_upwards with n z hz
+  exact (crossRatioInverseSphere_eq_inv (hRne n z hz)).symm
 
 /-- If cross-ratio values tend uniformly to `∞` in the inverse coordinate (`R⁻¹ → 0`), then the
 homogeneous inverse-cross-ratio sphere values tend uniformly to the finite point `β`.
@@ -394,6 +925,35 @@ theorem forall_crossRatioInverse_den_ne_zero {c α β : ℂ} {U : Set ℂ}
     ∀ n z, z ∈ U → R n z * (z - α) - (z - β) ≠ 0 := by
   intro n z hz
   exact eqOn_crossRatioInverse_den_ne_zero hαβ (hβ n) hα hzβ (hR n) z hz
+
+/-- A genuine iterate cross-ratio is nonzero on a patch avoiding the numerator fibres. -/
+theorem eqOn_crossRatio_ne_zero {c α β : ℂ} {n : ℕ} {U : Set ℂ}
+    {R : ℂ → ℂ}
+    (hβ : ∀ z ∈ U, (quadratic c)^[n] z ≠ β)
+    (hα : ∀ z ∈ U, z ≠ α)
+    (hpreα : ∀ z ∈ U, (quadratic c)^[n] z ≠ α)
+    (hzβ : ∀ z ∈ U, z ≠ β)
+    (hR : Set.EqOn R
+      (fun z => ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α))) U) :
+    ∀ z ∈ U, R z ≠ 0 := by
+  intro z hz
+  rw [hR hz]
+  exact crossRatio_iterate_ne_zero_of_avoids (hβ z hz) (hα z hz) (hpreα z hz) (hzβ z hz)
+
+/-- Family form of `eqOn_crossRatio_ne_zero`. -/
+theorem forall_crossRatio_ne_zero {c α β : ℂ} {U : Set ℂ}
+    {R : ℕ → ℂ → ℂ}
+    (hβ : ∀ n z, z ∈ U → (quadratic c)^[n] z ≠ β)
+    (hα : ∀ z ∈ U, z ≠ α)
+    (hpreα : ∀ n z, z ∈ U → (quadratic c)^[n] z ≠ α)
+    (hzβ : ∀ z ∈ U, z ≠ β)
+    (hR : ∀ n, Set.EqOn (R n)
+      (fun z => ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α))) U) :
+    ∀ n z, z ∈ U → R n z ≠ 0 := by
+  intro n z hz
+  exact eqOn_crossRatio_ne_zero (hβ n) hα (hpreα n) hzβ (hR n) z hz
 
 /-- On a frontier ball, the inverse-cross-ratio family cannot have a finite locally uniform
 subsequential limit.
@@ -558,6 +1118,182 @@ theorem no_crossRatio_inv_tendsto_zero_of_frontier {c α β z₀ : ℂ} {ρ : �
   exact no_spherical_crossRatioInverseSphere_limit_of_frontier hzfront hρ hU hαβ hβ hα hzβ hR
     ⟨φ, fun _z => stereo β, hφ, hSphereCont, hSphereConv⟩
 
+/-- A genuine cross-ratio family has no locally uniform subsequential limit in the inverse
+coordinate on a frontier closed ball.
+
+This is the full infinity-chart obstruction: the limit of `(R n z)⁻¹` may be any continuous finite
+function, not only `0`. Composing with the inverse-coordinate homogeneous sphere map again produces
+a forbidden spherical normal limit of the inverse-cross-ratio family. -/
+theorem no_crossRatio_inv_uniform_limit_of_frontier {c α β z₀ : ℂ} {ρ : ℝ}
+    {U : Set ℂ} {R : ℕ → ℂ → ℂ}
+    (hzfront : z₀ ∈ frontier (filledJulia c)) (hρ : 0 < ρ)
+    (hU : closedBall z₀ ρ ⊆ U)
+    (hαβ : α ≠ β)
+    (hβ : ∀ n z, z ∈ U → (quadratic c)^[n] z ≠ β)
+    (hα : ∀ z ∈ U, z ≠ α)
+    (hzβ : ∀ z ∈ U, z ≠ β)
+    (hRne : ∀ n z, z ∈ closedBall z₀ ρ → R n z ≠ 0)
+    (hR : ∀ n, Set.EqOn (R n)
+      (fun z => ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α))) U) :
+    ¬ ∃ (φ : ℕ → ℕ) (T : ℂ → ℂ), StrictMono φ ∧
+        ContinuousOn T (closedBall z₀ ρ) ∧
+        TendstoUniformlyOn (fun k z => (R (φ k) z)⁻¹) T atTop
+          (closedBall z₀ ρ) := by
+  intro hlim
+  obtain ⟨φ, T, hφ, hTcont, hinv⟩ := hlim
+  have hSphereConv :
+      TendstoUniformlyOn
+        (fun k z => crossRatioInverseSphere α β z (R (φ k) z))
+        (fun z => crossRatioInverseSphereInv α β z (T z)) atTop (closedBall z₀ ρ) :=
+    tendstoUniformlyOn_crossRatioInverseSphere_of_inv_tendstoUniformlyOn
+      (isCompact_closedBall z₀ ρ) hαβ (fun z hz => hα z (hU hz))
+      (fun k z hz => hRne (φ k) z hz) hTcont hinv
+  have hSphereCont : ContinuousOn (fun z => crossRatioInverseSphereInv α β z (T z))
+      (closedBall z₀ ρ) :=
+    crossRatioInverseSphereInv_continuousOn hαβ (fun z hz => hα z (hU hz)) hTcont
+  exact no_spherical_crossRatioInverseSphere_limit_of_frontier hzfront hρ hU hαβ hβ hα hzβ hR
+    ⟨φ, fun z => crossRatioInverseSphereInv α β z (T z), hφ, hSphereCont, hSphereConv⟩
+
+/-- Finite-chart branch of the spherical cross-ratio obstruction. If the spherical limit stays
+uniformly away from the north pole, charting it gives a forbidden finite cross-ratio limit. -/
+theorem no_spherical_crossRatio_uniform_limit_of_frontier_finiteChart {c α β z₀ : ℂ} {ρ B : ℝ}
+    {U : Set ℂ} {R : ℕ → ℂ → ℂ}
+    (hzfront : z₀ ∈ frontier (filledJulia c)) (hρ : 0 < ρ)
+    (hU : closedBall z₀ ρ ⊆ U)
+    (hαβ : α ≠ β)
+    (hβ : ∀ n z, z ∈ U → (quadratic c)^[n] z ≠ β)
+    (hα : ∀ z ∈ U, z ≠ α)
+    (hzβ : ∀ z ∈ U, z ≠ β)
+    (hRcont : ∀ n, ContinuousOn (R n) (closedBall z₀ ρ))
+    (hR : ∀ n, Set.EqOn (R n)
+      (fun z => ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α))) U)
+    (hB : B < 1) :
+    ¬ ∃ (φ : ℕ → ℕ) (G : ℂ → EuclideanSpace ℝ (Fin 3)), StrictMono φ ∧
+        ContinuousOn G (closedBall z₀ ρ) ∧
+        (∀ z ∈ closedBall z₀ ρ, (G z).ofLp (2 : Fin 3) ≤ B) ∧
+        TendstoUniformlyOn (fun k z => stereo (R (φ k) z)) G atTop
+          (closedBall z₀ ρ) := by
+  intro hlim
+  obtain ⟨φ, G, hφ, _hGcont, hGthird, hconv⟩ := hlim
+  have hchart :
+      TendstoUniformlyOn (fun k z => R (φ k) z) (fun z => stereoFiniteChart (G z)) atTop
+        (closedBall z₀ ρ) :=
+    tendstoUniformlyOn_of_stereo_tendstoUniformlyOn_finiteChart hGthird hB hconv
+  exact no_crossRatio_uniform_limit_of_frontier hzfront hρ hU hαβ hβ hα hzβ hRcont hR
+    ⟨φ, fun z => stereoFiniteChart (G z), hφ, hchart⟩
+
+/-- Inverse-chart branch of the spherical cross-ratio obstruction. If the spherical limit stays
+uniformly away from the south pole, charting near infinity gives a forbidden inverse-coordinate
+cross-ratio limit. -/
+theorem no_spherical_crossRatio_uniform_limit_of_frontier_invChart {c α β z₀ : ℂ} {ρ A : ℝ}
+    {U : Set ℂ} {R : ℕ → ℂ → ℂ}
+    (hzfront : z₀ ∈ frontier (filledJulia c)) (hρ : 0 < ρ)
+    (hU : closedBall z₀ ρ ⊆ U)
+    (hαβ : α ≠ β)
+    (hβ : ∀ n z, z ∈ U → (quadratic c)^[n] z ≠ β)
+    (hα : ∀ z ∈ U, z ≠ α)
+    (hpreα : ∀ n z, z ∈ U → (quadratic c)^[n] z ≠ α)
+    (hzβ : ∀ z ∈ U, z ≠ β)
+    (hR : ∀ n, Set.EqOn (R n)
+      (fun z => ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α))) U)
+    (hA : -1 < A) :
+    ¬ ∃ (φ : ℕ → ℕ) (G : ℂ → EuclideanSpace ℝ (Fin 3)), StrictMono φ ∧
+        ContinuousOn G (closedBall z₀ ρ) ∧
+        (∀ z ∈ closedBall z₀ ρ, A ≤ (G z).ofLp (2 : Fin 3)) ∧
+        TendstoUniformlyOn (fun k z => stereo (R (φ k) z)) G atTop
+          (closedBall z₀ ρ) := by
+  intro hlim
+  obtain ⟨φ, G, hφ, hGcont, hGthird, hconv⟩ := hlim
+  have hRneAll := forall_crossRatio_ne_zero hβ hα hpreα hzβ hR
+  have hRne : ∀ n z, z ∈ closedBall z₀ ρ → R n z ≠ 0 := by
+    intro n z hz
+    exact hRneAll n z (hU hz)
+  have hchart :
+      TendstoUniformlyOn (fun k z => (R (φ k) z)⁻¹) (fun z => stereoInvChart (G z)) atTop
+        (closedBall z₀ ρ) :=
+    tendstoUniformlyOn_inv_of_stereo_tendstoUniformlyOn_invChart hGthird hA
+      (fun k z hz => hRne (φ k) z hz) hconv
+  have hTcont : ContinuousOn (fun z => stereoInvChart (G z)) (closedBall z₀ ρ) := by
+    refine continuousOn_stereoInvChart_comp hGcont ?_
+    intro z hz hEq
+    have hlower := hGthird z hz
+    linarith
+  exact no_crossRatio_inv_uniform_limit_of_frontier hzfront hρ hU hαβ hβ hα hzβ hRne hR
+    ⟨φ, fun z => stereoInvChart (G z), hφ, hTcont, hchart⟩
+
+/-- Full spherical cross-ratio obstruction on a frontier closed ball.
+
+Any spherical locally uniform subsequential limit of the genuine cross-ratio family has a center value
+whose third stereographic coordinate is at most `1`. If it is below `1`, continuity puts a smaller
+closed ball in the finite chart and the finite cross-ratio obstruction applies. If it is exactly `1`,
+continuity puts a smaller closed ball in the inverse chart and the inverse-coordinate obstruction
+applies. -/
+theorem no_spherical_crossRatio_uniform_limit_of_frontier {c α β z₀ : ℂ} {ρ : ℝ}
+    {U : Set ℂ} {R : ℕ → ℂ → ℂ}
+    (hzfront : z₀ ∈ frontier (filledJulia c)) (hρ : 0 < ρ)
+    (hU : closedBall z₀ ρ ⊆ U)
+    (hαβ : α ≠ β)
+    (hβ : ∀ n z, z ∈ U → (quadratic c)^[n] z ≠ β)
+    (hα : ∀ z ∈ U, z ≠ α)
+    (hpreα : ∀ n z, z ∈ U → (quadratic c)^[n] z ≠ α)
+    (hzβ : ∀ z ∈ U, z ≠ β)
+    (hRcont : ∀ n, ContinuousOn (R n) (closedBall z₀ ρ))
+    (hR : ∀ n, Set.EqOn (R n)
+      (fun z => ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α))) U) :
+    ¬ ∃ (φ : ℕ → ℕ) (G : ℂ → EuclideanSpace ℝ (Fin 3)), StrictMono φ ∧
+        ContinuousOn G (closedBall z₀ ρ) ∧
+        TendstoUniformlyOn (fun k z => stereo (R (φ k) z)) G atTop
+          (closedBall z₀ ρ) := by
+  intro hlim
+  obtain ⟨φ, G, hφ, hGcont, hconv⟩ := hlim
+  have hzmem : z₀ ∈ closedBall z₀ ρ := by
+    rw [mem_closedBall, dist_self]
+    exact le_of_lt hρ
+  have hpt : Tendsto (fun k => stereo (R (φ k) z₀)) atTop (𝓝 (G z₀)) :=
+    hconv.tendsto_at hzmem
+  have hcoord : Tendsto (fun k => (stereo (R (φ k) z₀)).ofLp (2 : Fin 3)) atTop
+      (𝓝 ((G z₀).ofLp (2 : Fin 3))) :=
+    ((PiLp.continuous_apply 2 (fun _ : Fin 3 => ℝ) (2 : Fin 3)).tendsto (G z₀)).comp hpt
+  have hcenter_le : (G z₀).ofLp (2 : Fin 3) ≤ 1 :=
+    le_of_tendsto' hcoord (fun k => stereo_third_le_one (R (φ k) z₀))
+  rcases lt_or_eq_of_le hcenter_le with hcenter_lt | hcenter_eq
+  · let B : ℝ := ((G z₀).ofLp (2 : Fin 3) + 1) / 2
+    have hcenter_B : (G z₀).ofLp (2 : Fin 3) < B := by
+      dsimp [B]
+      linarith
+    have hB : B < 1 := by
+      dsimp [B]
+      linarith
+    obtain ⟨r, hrpos, hsub, hGthird⟩ :=
+      exists_closedBall_upper_bound_of_continuousOn hρ hGcont hcenter_B
+    have hUsub : closedBall z₀ r ⊆ U := fun z hz => hU (hsub hz)
+    have hconv_r : TendstoUniformlyOn (fun k z => stereo (R (φ k) z)) G atTop
+        (closedBall z₀ r) :=
+      hconv.mono hsub
+    have hGcont_r : ContinuousOn G (closedBall z₀ r) := hGcont.mono hsub
+    have hRcont_r : ∀ n, ContinuousOn (R n) (closedBall z₀ r) :=
+      fun n => (hRcont n).mono hsub
+    exact no_spherical_crossRatio_uniform_limit_of_frontier_finiteChart
+      hzfront hrpos hUsub hαβ hβ hα hzβ hRcont_r hR hB
+      ⟨φ, G, hφ, hGcont_r, hGthird, hconv_r⟩
+  · have hcenter_pos : (0 : ℝ) < (G z₀).ofLp (2 : Fin 3) := by
+      rw [hcenter_eq]
+      norm_num
+    obtain ⟨r, hrpos, hsub, hGthird⟩ :=
+      exists_closedBall_lower_bound_of_continuousOn (A := (0 : ℝ)) hρ hGcont hcenter_pos
+    have hUsub : closedBall z₀ r ⊆ U := fun z hz => hU (hsub hz)
+    have hconv_r : TendstoUniformlyOn (fun k z => stereo (R (φ k) z)) G atTop
+        (closedBall z₀ r) :=
+      hconv.mono hsub
+    have hGcont_r : ContinuousOn G (closedBall z₀ r) := hGcont.mono hsub
+    exact no_spherical_crossRatio_uniform_limit_of_frontier_invChart
+      hzfront hrpos hUsub hαβ hβ hα hpreα hzβ hR (by norm_num : (-1 : ℝ) < 0)
+      ⟨φ, G, hφ, hGcont_r, hGthird, hconv_r⟩
+
 /-- Marty-form obstruction for the inverse-cross-ratio family itself.
 
 On a frontier neighborhood where the inverse cross-ratio is the genuine quadratic iterate family, its
@@ -623,6 +1359,58 @@ theorem exists_sphericalDeriv_gt_crossRatioInverse_on_frontier_ball {c α β z�
     exact h ⟨n, z, hz, lt_of_not_ge hnot⟩
   exact not_sphericalDeriv_bounded_crossRatioInverse_on_frontier_ball
     hzfront hρ0 hρR hαβ hβ hα hzβ hR hle
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Subsequence-depth form of the spherical frontier cross-ratio obstruction.  The family index may be
+`k` while the genuine iterate depth is a strictly increasing sequence `nseq k`.  The proof reduces to
+the existing full-depth obstruction by comparing with the raw cross-ratio family and composing strict
+monotone subsequences. -/
+theorem no_spherical_crossRatio_uniform_limit_of_frontier_subseq {c α β z₀ : ℂ} {ρ : ℝ}
+    {U : Set ℂ} {R : ℕ → ℂ → ℂ} {nseq : ℕ → ℕ}
+    (hzfront : z₀ ∈ frontier (filledJulia c)) (hρ : 0 < ρ)
+    (hU : closedBall z₀ ρ ⊆ U)
+    (hαβ : α ≠ β)
+    (hnseq : StrictMono nseq)
+    (hβ : ∀ n z, z ∈ U → (quadratic c)^[n] z ≠ β)
+    (hα : ∀ z ∈ U, z ≠ α)
+    (hpreα : ∀ n z, z ∈ U → (quadratic c)^[n] z ≠ α)
+    (hzβ : ∀ z ∈ U, z ≠ β)
+    (hR : ∀ k, Set.EqOn (R k)
+      (fun z => ((quadratic c)^[nseq k] z - α) * (z - β) /
+        (((quadratic c)^[nseq k] z - β) * (z - α))) U) :
+    ¬ ∃ (φ : ℕ → ℕ) (G : ℂ → EuclideanSpace ℝ (Fin 3)), StrictMono φ ∧
+        ContinuousOn G (closedBall z₀ ρ) ∧
+        TendstoUniformlyOn (fun k z => stereo (R (φ k) z)) G atTop
+          (closedBall z₀ ρ) := by
+  let Rfull : ℕ → ℂ → ℂ := fun n z => ((quadratic c)^[n] z - α) * (z - β) /
+    (((quadratic c)^[n] z - β) * (z - α))
+  have hRfullcont : ∀ n, ContinuousOn (Rfull n) (closedBall z₀ ρ) := by
+    intro n
+    exact ((differentiableOn_crossRatio_iterate (U := U) (hβ n) hα).continuousOn).mono hU
+  have hRfull : ∀ n, Set.EqOn (Rfull n)
+      (fun z => ((quadratic c)^[n] z - α) * (z - β) /
+        (((quadratic c)^[n] z - β) * (z - α))) U := by
+    intro n z hz
+    rfl
+  intro hlim
+  obtain ⟨φ, G, hφ, hGcont, hconv⟩ := hlim
+  have hdepth : StrictMono (fun k => nseq (φ k)) := hnseq.comp hφ
+  have hconv_full : TendstoUniformlyOn
+      (fun k z => stereo (Rfull (nseq (φ k)) z)) G atTop (closedBall z₀ ρ) := by
+    refine hconv.congr ?_
+    filter_upwards with k z hz
+    have hEq := hR (φ k) (hU hz)
+    exact congrArg stereo hEq
+  exact no_spherical_crossRatio_uniform_limit_of_frontier
+    (R := Rfull) hzfront hρ hU hαβ hβ hα hpreα hzβ hRfullcont hRfull
+    ⟨fun k => nseq (φ k), G, hdepth, hGcont, hconv_full⟩
 
 end
 

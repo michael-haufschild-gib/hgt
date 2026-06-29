@@ -1,4 +1,5 @@
 import GaloisForLFunctions.Bottcher.DendriteContinuesAcross
+import GaloisForLFunctions.Bottcher.JuliaBasinCrossing
 import GaloisForLFunctions.Bottcher.PeriodicPoints
 import Mathlib.Topology.MetricSpace.Perfect
 import Mathlib.Data.Set.Countable
@@ -91,6 +92,66 @@ theorem countableAvoidance_frontier_off_closed_of_perfect_frontier {K₁ K₂ : 
   obtain ⟨z₀, hzfront, hzoff, hzT⟩ :=
     countableAvoidance_frontier_open_of_perfect_frontier hfront hK₂closed.isOpen_compl hpfront hpK₂ T hT
   exact ⟨z₀, hzfront, hzoff, hzT⟩
+
+/-- Distinct parameters supply an off-other Julia-frontier point avoiding any prescribed countable
+exceptional set, on one of the two sides.  This is the countable-avoidance upgrade of
+`exists_frontier_filledJulia_off_other`, used to choose the boundary specialization away from the
+leading-coefficient/resultant bad locus in the connected hRigid route. -/
+theorem exists_frontier_filledJulia_off_other_avoiding_countable {c₁ c₂ : ℂ}
+    (hne : c₁ ≠ c₂)
+    (hfront₁ : Perfect (frontier (filledJulia c₁)))
+    (hfront₂ : Perfect (frontier (filledJulia c₂)))
+    {T : Set ℂ} (hT : T.Countable) :
+    (∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∉ filledJulia c₂ ∧ p ∉ T) ∨
+    (∃ p, p ∈ frontier (filledJulia c₂) ∧ p ∉ filledJulia c₁ ∧ p ∉ T) := by
+  rcases exists_frontier_filledJulia_off_other hne with hleft | hright
+  · obtain ⟨p, hpfront, hpoff⟩ := hleft
+    obtain ⟨z₀, hzfront, hzoff, hzT⟩ :=
+      countableAvoidance_frontier_off_closed_of_perfect_frontier
+        (K₁ := filledJulia c₁) (K₂ := filledJulia c₂)
+        hfront₁ (isClosed_filledJulia c₂) hpfront hpoff T hT
+    exact Or.inl ⟨z₀, hzfront, hzoff, hzT⟩
+  · obtain ⟨p, hpfront, hpoff⟩ := hright
+    obtain ⟨z₀, hzfront, hzoff, hzT⟩ :=
+      countableAvoidance_frontier_off_closed_of_perfect_frontier
+        (K₁ := filledJulia c₂) (K₂ := filledJulia c₁)
+        hfront₂ (isClosed_filledJulia c₁) hpfront hpoff T hT
+    exact Or.inr ⟨z₀, hzfront, hzoff, hzT⟩
+
+/-- Countable-avoidance off-other frontier crossing, packaged with the local data consumed by
+natural-boundary/common-basin bridges: an other-basin ball and a nontrivial basin-side neighbourhood
+filter for the frontier parameter. -/
+theorem exists_frontier_filledJulia_off_other_avoiding_countable_with_basin_ball {c₁ c₂ : ℂ}
+    (hne : c₁ ≠ c₂)
+    (hfront₁ : Perfect (frontier (filledJulia c₁)))
+    (hfront₂ : Perfect (frontier (filledJulia c₂)))
+    {T : Set ℂ} (hT : T.Countable) :
+    (∃ (p : ℂ) (r : ℝ),
+      p ∈ frontier (filledJulia c₁) ∧
+      p ∈ (filledJulia c₂)ᶜ ∧
+      p ∉ T ∧
+      0 < r ∧
+      Metric.ball p r ⊆ (filledJulia c₂)ᶜ ∧
+      (𝓝[(filledJulia c₁)ᶜ] p).NeBot) ∨
+    (∃ (p : ℂ) (r : ℝ),
+      p ∈ frontier (filledJulia c₂) ∧
+      p ∈ (filledJulia c₁)ᶜ ∧
+      p ∉ T ∧
+      0 < r ∧
+      Metric.ball p r ⊆ (filledJulia c₁)ᶜ ∧
+      (𝓝[(filledJulia c₂)ᶜ] p).NeBot) := by
+  rcases exists_frontier_filledJulia_off_other_avoiding_countable
+      hne hfront₁ hfront₂ hT with hleft | hright
+  · obtain ⟨p, hpfront, hpoff, hpT⟩ := hleft
+    obtain ⟨r, hr, hball⟩ :=
+      Metric.isOpen_iff.mp (isClosed_filledJulia c₂).isOpen_compl p hpoff
+    exact Or.inl ⟨p, r, hpfront, hpoff, hpT, hr, hball,
+      nhdsWithin_compl_filledJulia_neBot_of_frontier hpfront⟩
+  · obtain ⟨p, hpfront, hpoff, hpT⟩ := hright
+    obtain ⟨r, hr, hball⟩ :=
+      Metric.isOpen_iff.mp (isClosed_filledJulia c₁).isOpen_compl p hpoff
+    exact Or.inr ⟨p, r, hpfront, hpoff, hpT, hr, hball,
+      nhdsWithin_compl_filledJulia_neBot_of_frontier hpfront⟩
 
 /-- In a perfect closed set with empty interior, every small ball around a point of the set contains
 uncountably many frontier points. -/
@@ -223,6 +284,69 @@ theorem frontier_mem_closure_of_basin_sector {K U : Set ℂ} {p z : ℂ} {r : �
     (hWo.inter Metric.isOpen_ball) ⟨hzW, hzball⟩
   rcases hmeet with ⟨y, ⟨hyW, hyball⟩, hyKc⟩
   exact ⟨y, hyW, hsector ⟨hyball, hyKc⟩⟩
+
+/-- Local target-set uncountability from a perfect frontier.  This is the non-dendrite replacement
+for the empty-interior selector: once the frontier itself is perfect, every local off-other slice in
+an analytic region remains uncountable. -/
+theorem not_countable_local_frontier_inter_region_other_basin_of_perfect_frontier
+    {c₁ c₂ : ℂ} {Ω : Set ℂ} (hfront : Perfect (frontier (filledJulia c₁)))
+    {p : ℂ} (hpfront : p ∈ frontier (filledJulia c₁)) (hpΩ : p ∈ interior Ω)
+    {rLocal rOther : ℝ} (hrLocal : 0 < rLocal) (hrOther : 0 < rOther)
+    (hother : Metric.ball p rOther ⊆ (filledJulia c₂)ᶜ) :
+    ¬ ((((Metric.ball p rLocal ∩ frontier (filledJulia c₁)) ∩ (filledJulia c₂)ᶜ) ∩ Ω).Countable) := by
+  obtain ⟨rΩ, hrΩ, hballΩ⟩ := Metric.isOpen_iff.mp isOpen_interior p hpΩ
+  set r : ℝ := min (min rLocal rOther) rΩ with hrdef
+  have hr : 0 < r := by rw [hrdef]; exact lt_min (lt_min hrLocal hrOther) hrΩ
+  have hunc : ¬ (Metric.ball p r ∩ frontier (filledJulia c₁)).Countable :=
+    not_countable_ball_inter_perfect hfront hpfront hr
+  intro hcount
+  apply hunc
+  apply hcount.mono
+  intro z hz
+  rcases hz with ⟨hzball, hzfront⟩
+  have hzLocal : z ∈ Metric.ball p rLocal :=
+    Metric.ball_subset_ball
+      (by rw [hrdef]; exact (min_le_left (min rLocal rOther) rΩ).trans (min_le_left rLocal rOther))
+      hzball
+  have hzOther : z ∈ (filledJulia c₂)ᶜ :=
+    hother (Metric.ball_subset_ball
+      (by rw [hrdef]; exact (min_le_left (min rLocal rOther) rΩ).trans (min_le_right rLocal rOther))
+      hzball)
+  have hzΩ : z ∈ Ω :=
+    interior_subset (hballΩ (Metric.ball_subset_ball
+      (by rw [hrdef]; exact min_le_right (min rLocal rOther) rΩ) hzball))
+  exact ⟨⟨⟨hzLocal, hzfront⟩, hzOther⟩, hzΩ⟩
+
+/-- Local target-set package from a perfect frontier, retaining the concrete local
+frontier/off-other description and closure against the carrier `U`. -/
+theorem exists_local_frontier_target_set_countableAvoidance_closure_frontier_of_perfect_frontier
+    {U Ω : Set ℂ} {c₁ c₂ : ℂ} (hfront : Perfect (frontier (filledJulia c₁)))
+    {p : ℂ} (hpfront : p ∈ frontier (filledJulia c₁)) (hpΩ : p ∈ interior Ω)
+    {rLocal rOther : ℝ} (hrLocal : 0 < rLocal) (hrOther : 0 < rOther)
+    (hsector : Metric.ball p rLocal ∩ (filledJulia c₁)ᶜ ⊆ U)
+    (hother : Metric.ball p rOther ⊆ (filledJulia c₂)ᶜ) :
+    ∃ S : Set ℂ,
+      (∀ T : Set ℂ, T.Countable → ∃ z₀ ∈ S, z₀ ∈ Ω ∧ z₀ ∉ T) ∧
+      (∀ z₀ ∈ S, z₀ ∈ closure U) ∧
+      (∀ z₀ ∈ S,
+        z₀ ∈ Metric.ball p rLocal ∧ z₀ ∈ frontier (filledJulia c₁) ∧
+          z₀ ∈ (filledJulia c₂)ᶜ) := by
+  let S : Set ℂ := (Metric.ball p rLocal ∩ frontier (filledJulia c₁)) ∩ (filledJulia c₂)ᶜ
+  refine ⟨S, ?_, ?_, ?_⟩
+  · intro T hT
+    by_contra hnone
+    push Not at hnone
+    have hsub : (S ∩ Ω) ⊆ T := by
+      intro z hz
+      exact hnone z hz.1 hz.2
+    have hunc : ¬ (S ∩ Ω).Countable := by
+      simpa [S] using not_countable_local_frontier_inter_region_other_basin_of_perfect_frontier
+        hfront hpfront hpΩ hrLocal hrOther hother
+    exact hunc (hT.mono hsub)
+  · intro z hzS
+    exact frontier_mem_closure_of_basin_sector hzS.1.1 hzS.1.2 hsector
+  · intro z hzS
+    exact ⟨hzS.1.1, hzS.1.2, hzS.2⟩
 
 /-- Local target-set uncountability: after shrinking inside a prescribed local sector radius, there are
 still uncountably many frontier/off-other points in the analytic region. -/
@@ -423,6 +547,19 @@ theorem filledJulia_nontrivial (c : ℂ) :
 theorem filledJulia_nontrivial_of_ne_quarter {c : ℂ} (_hc : c ≠ 1 / 4) :
     (filledJulia c).Nontrivial := by
   exact filledJulia_nontrivial c
+
+/-- A connected filled Julia set with empty interior has a perfect frontier. -/
+theorem perfect_frontier_filledJulia_of_preconnected_emptyInterior {c : ℂ}
+    (hconn : IsPreconnected (filledJulia c))
+    (hempty : interior (filledJulia c) = ∅) :
+    Perfect (frontier (filledJulia c)) := by
+  have hK : Perfect (filledJulia c) :=
+    perfect_filledJulia_of_preconnected_nontrivial hconn (filledJulia_nontrivial c)
+  have hfront_eq : frontier (filledJulia c) = filledJulia c := by
+    rw [(isClosed_filledJulia c).frontier_eq, hempty]
+    ext z
+    simp
+  simpa [hfront_eq] using hK
 
 theorem not_countable_ball_inter_frontier_filledJulia_of_preconnected_emptyInterior
     {c p : ℂ} (hconn : IsPreconnected (filledJulia c))
