@@ -559,6 +559,674 @@ theorem norm_deriv_deriv_fixed_tail_of_iterate_eq_fixed_le
           ‖deriv (fun w => deriv ((quadratic c)^[n]) w) z‖ := by
           gcongr
 
+/-- Recursive coefficient for the third derivative of a fixed tail.  If `α` is fixed,
+`λ = 2α`, and `(f_c^[m])''(α)` is `fixedTailSecondCoeff λ m`, then this coefficient is
+`(f_c^[m])'''(α)`. -/
+def fixedTailThirdCoeff (lam : ℂ) : ℕ → ℂ
+  | 0 => 0
+  | m + 1 =>
+      lam * fixedTailThirdCoeff lam m +
+        6 * lam ^ m * fixedTailSecondCoeff lam m
+
+/-- Quantitative growth bound for the fixed-tail third-derivative coefficient, assuming a
+quadratic growth bound for the second coefficient.
+
+The recurrence is `C₃(m+1) = λ C₃(m) + 6 λ^m C₂(m)`, so a cubic bound closes whenever the
+available cubic constant absorbs `6 * C₂` across the multiplier gap `|λ|^3 - |λ|`. -/
+theorem norm_fixedTailThirdCoeff_le_mul_pow_of_second_bound
+    {lam : ℂ} {C₂ C₃ : ℝ}
+    (hL : 1 < ‖lam‖)
+    (hsecond : ∀ m : ℕ, ‖fixedTailSecondCoeff lam m‖ ≤ C₂ * ‖lam‖ ^ (2 * m))
+    (hC₃nonneg : 0 ≤ C₃)
+    (hC₃ : 6 * C₂ ≤ C₃ * ‖lam‖ * (‖lam‖ ^ 2 - 1)) :
+    ∀ m : ℕ, ‖fixedTailThirdCoeff lam m‖ ≤ C₃ * ‖lam‖ ^ (3 * m) := by
+  intro m
+  induction m with
+  | zero =>
+      simp [fixedTailThirdCoeff, hC₃nonneg]
+  | succ m ih =>
+      let L : ℝ := ‖lam‖
+      have hLpos : 0 < L := by
+        dsimp [L]
+        exact lt_trans zero_lt_one hL
+      have hstep : ‖fixedTailThirdCoeff lam (m + 1)‖ ≤
+          L * ‖fixedTailThirdCoeff lam m‖ +
+            6 * L ^ m * ‖fixedTailSecondCoeff lam m‖ := by
+        calc
+          ‖lam * fixedTailThirdCoeff lam m +
+              6 * lam ^ m * fixedTailSecondCoeff lam m‖
+              ≤ ‖lam * fixedTailThirdCoeff lam m‖ +
+                  ‖(6 : ℂ) * lam ^ m * fixedTailSecondCoeff lam m‖ :=
+                norm_add_le _ _
+          _ = L * ‖fixedTailThirdCoeff lam m‖ +
+                6 * L ^ m * ‖fixedTailSecondCoeff lam m‖ := by
+              dsimp [L]
+              rw [norm_mul, norm_mul, norm_mul, Complex.norm_ofNat, norm_pow]
+      have hmain : L * ‖fixedTailThirdCoeff lam m‖ +
+            6 * L ^ m * ‖fixedTailSecondCoeff lam m‖ ≤
+          C₃ * L ^ (3 * (m + 1)) := by
+        have hsecond_m :
+            ‖fixedTailSecondCoeff lam m‖ ≤ C₂ * L ^ (2 * m) := by
+          simpa [L] using hsecond m
+        have hpow_nonneg : 0 ≤ L ^ (3 * m) := pow_nonneg (le_of_lt hLpos) _
+        calc
+          L * ‖fixedTailThirdCoeff lam m‖ +
+              6 * L ^ m * ‖fixedTailSecondCoeff lam m‖
+              ≤ L * (C₃ * L ^ (3 * m)) +
+                  6 * L ^ m * (C₂ * L ^ (2 * m)) := by
+                have hfirst : L * ‖fixedTailThirdCoeff lam m‖ ≤
+                    L * (C₃ * L ^ (3 * m)) :=
+                  mul_le_mul_of_nonneg_left ih (le_of_lt hLpos)
+                have hfactor_nonneg : 0 ≤ 6 * L ^ m := by
+                  positivity
+                exact add_le_add hfirst
+                  (mul_le_mul_of_nonneg_left hsecond_m hfactor_nonneg)
+          _ = (C₃ * L + 6 * C₂) * L ^ (3 * m) := by
+                ring_nf
+          _ ≤ (C₃ * L ^ 3) * L ^ (3 * m) := by
+                have hgap : 6 * C₂ ≤ C₃ * L ^ 3 - C₃ * L := by
+                  dsimp [L]
+                  nlinarith
+                have hcoef : C₃ * L + 6 * C₂ ≤ C₃ * L ^ 3 := by nlinarith
+                exact mul_le_mul_of_nonneg_right hcoef hpow_nonneg
+          _ = C₃ * L ^ (3 * (m + 1)) := by
+                rw [show 3 * (m + 1) = 3 * m + 3 by omega, pow_add]
+                ring
+      exact le_trans hstep hmain
+
+/-- Explicit constant wrapper for `norm_fixedTailThirdCoeff_le_mul_pow_of_second_bound`, using the
+existing fixed-tail second-derivative coefficient estimate. -/
+theorem norm_fixedTailThirdCoeff_le_mul_pow
+    {lam : ℂ} {C₂ C₃ : ℝ}
+    (hL : 1 < ‖lam‖)
+    (hC₂nonneg : 0 ≤ C₂)
+    (hC₂ : 2 ≤ C₂ * ‖lam‖ * (‖lam‖ - 1))
+    (hC₃nonneg : 0 ≤ C₃)
+    (hC₃ : 6 * C₂ ≤ C₃ * ‖lam‖ * (‖lam‖ ^ 2 - 1)) :
+    ∀ m : ℕ, ‖fixedTailThirdCoeff lam m‖ ≤ C₃ * ‖lam‖ ^ (3 * m) :=
+  norm_fixedTailThirdCoeff_le_mul_pow_of_second_bound hL
+    (norm_fixedTailSecondCoeff_le_mul_pow hC₂nonneg hC₂)
+    hC₃nonneg hC₃
+
+/-- Recursive coefficient for the fourth derivative of a fixed tail.  If `α` is fixed,
+`λ = 2α`, and the lower derivative coefficients are the preceding fixed-tail coefficients, then
+this coefficient is `(f_c^[m])''''(α)`.  The recurrence is the differentiated form of
+`(f ∘ F)''' = 6 F' F'' + 2 F F'''`. -/
+def fixedTailFourthCoeff (lam : ℂ) : ℕ → ℂ
+  | 0 => 0
+  | m + 1 =>
+      lam * fixedTailFourthCoeff lam m +
+        8 * lam ^ m * fixedTailThirdCoeff lam m +
+        6 * (fixedTailSecondCoeff lam m) ^ 2
+
+/-- Quantitative growth bound for the fixed-tail fourth-derivative coefficient, assuming quadratic
+and cubic bounds for the second and third coefficients.
+
+The recurrence is
+`D₄(m+1) = λ D₄(m) + 8 λ^m D₃(m) + 6 D₂(m)^2`, so a quartic bound closes whenever the available
+quartic constant absorbs `8*C₃ + 6*C₂^2` across the multiplier gap `|λ|^4 - |λ|`. -/
+theorem norm_fixedTailFourthCoeff_le_mul_pow_of_second_third_bound
+    {lam : ℂ} {C₂ C₃ C₄ : ℝ}
+    (hL : 1 < ‖lam‖)
+    (hsecond : ∀ m : ℕ, ‖fixedTailSecondCoeff lam m‖ ≤ C₂ * ‖lam‖ ^ (2 * m))
+    (hthird : ∀ m : ℕ, ‖fixedTailThirdCoeff lam m‖ ≤ C₃ * ‖lam‖ ^ (3 * m))
+    (hC₄nonneg : 0 ≤ C₄)
+    (hC₄ : 8 * C₃ + 6 * C₂ ^ 2 ≤ C₄ * ‖lam‖ * (‖lam‖ ^ 3 - 1)) :
+    ∀ m : ℕ, ‖fixedTailFourthCoeff lam m‖ ≤ C₄ * ‖lam‖ ^ (4 * m) := by
+  intro m
+  induction m with
+  | zero =>
+      simp [fixedTailFourthCoeff, hC₄nonneg]
+  | succ m ih =>
+      let L : ℝ := ‖lam‖
+      have hLpos : 0 < L := by
+        dsimp [L]
+        exact lt_trans zero_lt_one hL
+      have hstep : ‖fixedTailFourthCoeff lam (m + 1)‖ ≤
+          L * ‖fixedTailFourthCoeff lam m‖ +
+            8 * L ^ m * ‖fixedTailThirdCoeff lam m‖ +
+            6 * ‖fixedTailSecondCoeff lam m‖ ^ 2 := by
+        calc
+          ‖lam * fixedTailFourthCoeff lam m +
+              8 * lam ^ m * fixedTailThirdCoeff lam m +
+              6 * (fixedTailSecondCoeff lam m) ^ 2‖
+              ≤ (‖lam * fixedTailFourthCoeff lam m‖ +
+                    ‖(8 : ℂ) * lam ^ m * fixedTailThirdCoeff lam m‖) +
+                  ‖(6 : ℂ) * (fixedTailSecondCoeff lam m) ^ 2‖ := by
+                calc
+                  ‖lam * fixedTailFourthCoeff lam m +
+                      8 * lam ^ m * fixedTailThirdCoeff lam m +
+                      6 * (fixedTailSecondCoeff lam m) ^ 2‖
+                      ≤ ‖lam * fixedTailFourthCoeff lam m +
+                            8 * lam ^ m * fixedTailThirdCoeff lam m‖ +
+                          ‖(6 : ℂ) * (fixedTailSecondCoeff lam m) ^ 2‖ :=
+                        norm_add_le _ _
+                  _ ≤ (‖lam * fixedTailFourthCoeff lam m‖ +
+                          ‖(8 : ℂ) * lam ^ m * fixedTailThirdCoeff lam m‖) +
+                        ‖(6 : ℂ) * (fixedTailSecondCoeff lam m) ^ 2‖ := by
+                        exact add_le_add
+                          (norm_add_le _ _)
+                          (le_refl ‖(6 : ℂ) * (fixedTailSecondCoeff lam m) ^ 2‖)
+          _ = L * ‖fixedTailFourthCoeff lam m‖ +
+                8 * L ^ m * ‖fixedTailThirdCoeff lam m‖ +
+                6 * ‖fixedTailSecondCoeff lam m‖ ^ 2 := by
+              dsimp [L]
+              rw [norm_mul, norm_mul, norm_mul, Complex.norm_ofNat, norm_pow,
+                norm_mul, Complex.norm_ofNat, norm_pow]
+      have hmain : L * ‖fixedTailFourthCoeff lam m‖ +
+            8 * L ^ m * ‖fixedTailThirdCoeff lam m‖ +
+            6 * ‖fixedTailSecondCoeff lam m‖ ^ 2 ≤
+          C₄ * L ^ (4 * (m + 1)) := by
+        have hsecond_m :
+            ‖fixedTailSecondCoeff lam m‖ ≤ C₂ * L ^ (2 * m) := by
+          simpa [L] using hsecond m
+        have hthird_m :
+            ‖fixedTailThirdCoeff lam m‖ ≤ C₃ * L ^ (3 * m) := by
+          simpa [L] using hthird m
+        have hsecond_sq :
+            ‖fixedTailSecondCoeff lam m‖ ^ 2 ≤ (C₂ * L ^ (2 * m)) ^ 2 := by
+          nlinarith [hsecond_m, norm_nonneg (fixedTailSecondCoeff lam m)]
+        have hpow_nonneg : 0 ≤ L ^ (4 * m) := pow_nonneg (le_of_lt hLpos) _
+        calc
+          L * ‖fixedTailFourthCoeff lam m‖ +
+              8 * L ^ m * ‖fixedTailThirdCoeff lam m‖ +
+              6 * ‖fixedTailSecondCoeff lam m‖ ^ 2
+              ≤ L * (C₄ * L ^ (4 * m)) +
+                  8 * L ^ m * (C₃ * L ^ (3 * m)) +
+                  6 * (C₂ * L ^ (2 * m)) ^ 2 := by
+                have hfirst : L * ‖fixedTailFourthCoeff lam m‖ ≤
+                    L * (C₄ * L ^ (4 * m)) :=
+                  mul_le_mul_of_nonneg_left ih (le_of_lt hLpos)
+                have hthird_factor_nonneg : 0 ≤ 8 * L ^ m := by positivity
+                have hthird_term : 8 * L ^ m * ‖fixedTailThirdCoeff lam m‖ ≤
+                    8 * L ^ m * (C₃ * L ^ (3 * m)) :=
+                  mul_le_mul_of_nonneg_left hthird_m hthird_factor_nonneg
+                have hsecond_term : 6 * ‖fixedTailSecondCoeff lam m‖ ^ 2 ≤
+                    6 * (C₂ * L ^ (2 * m)) ^ 2 :=
+                  mul_le_mul_of_nonneg_left hsecond_sq (by norm_num)
+                exact add_le_add (add_le_add hfirst hthird_term) hsecond_term
+          _ = (C₄ * L + 8 * C₃ + 6 * C₂ ^ 2) * L ^ (4 * m) := by
+                ring_nf
+          _ ≤ (C₄ * L ^ 4) * L ^ (4 * m) := by
+                have hgap : 8 * C₃ + 6 * C₂ ^ 2 ≤ C₄ * L ^ 4 - C₄ * L := by
+                  dsimp [L]
+                  nlinarith
+                have hcoef : C₄ * L + 8 * C₃ + 6 * C₂ ^ 2 ≤ C₄ * L ^ 4 := by
+                  nlinarith
+                exact mul_le_mul_of_nonneg_right hcoef hpow_nonneg
+          _ = C₄ * L ^ (4 * (m + 1)) := by
+                rw [show 4 * (m + 1) = 4 * m + 4 by omega, pow_add]
+                ring
+      exact le_trans hstep hmain
+
+/-- Explicit constant wrapper for `norm_fixedTailFourthCoeff_le_mul_pow_of_second_third_bound`,
+using the existing fixed-tail second- and third-derivative coefficient estimates. -/
+theorem norm_fixedTailFourthCoeff_le_mul_pow
+    {lam : ℂ} {C₂ C₃ C₄ : ℝ}
+    (hL : 1 < ‖lam‖)
+    (hC₂nonneg : 0 ≤ C₂)
+    (hC₂ : 2 ≤ C₂ * ‖lam‖ * (‖lam‖ - 1))
+    (hC₃nonneg : 0 ≤ C₃)
+    (hC₃ : 6 * C₂ ≤ C₃ * ‖lam‖ * (‖lam‖ ^ 2 - 1))
+    (hC₄nonneg : 0 ≤ C₄)
+    (hC₄ : 8 * C₃ + 6 * C₂ ^ 2 ≤ C₄ * ‖lam‖ * (‖lam‖ ^ 3 - 1)) :
+    ∀ m : ℕ, ‖fixedTailFourthCoeff lam m‖ ≤ C₄ * ‖lam‖ ^ (4 * m) :=
+  norm_fixedTailFourthCoeff_le_mul_pow_of_second_third_bound hL
+    (norm_fixedTailSecondCoeff_le_mul_pow hC₂nonneg hC₂)
+    (norm_fixedTailThirdCoeff_le_mul_pow hL hC₂nonneg hC₂ hC₃nonneg hC₃)
+    hC₄nonneg hC₄
+
+/-- Second-derivative formula for the successor quadratic iterate. -/
+theorem deriv_deriv_quadratic_iterate_succ_eq (c : ℂ) (m : ℕ) (w : ℂ) :
+    deriv (fun v => deriv ((quadratic c)^[m + 1]) v) w =
+      2 * (deriv ((quadratic c)^[m]) w) ^ 2 +
+        2 * (quadratic c)^[m] w *
+          deriv (fun v => deriv ((quadratic c)^[m]) v) w := by
+  have hD : HasDerivAt (fun x => deriv ((quadratic c)^[m + 1]) x)
+      (2 * (deriv ((quadratic c)^[m]) w) ^ 2 +
+        2 * (quadratic c)^[m] w *
+          deriv (fun v => deriv ((quadratic c)^[m]) v) w) w := by
+    have hderiv_succ : (fun x => deriv ((quadratic c)^[m + 1]) x) =
+        fun x => 2 * (quadratic c)^[m] x * deriv ((quadratic c)^[m]) x := by
+      funext x
+      exact deriv_quadratic_iterate_succ_eq c m x
+    have hF : HasDerivAt ((quadratic c)^[m]) (deriv ((quadratic c)^[m]) w) w :=
+      (differentiable_quadratic_iterate c m w).hasDerivAt
+    have hB : HasDerivAt (fun x => deriv ((quadratic c)^[m]) x)
+        (deriv (fun v => deriv ((quadratic c)^[m]) v) w) w :=
+      (analyticAt_quadratic_iterate c m w).deriv.differentiableAt.hasDerivAt
+    rw [hderiv_succ]
+    convert ((hF.const_mul 2).mul hB) using 1
+    · ring_nf
+  exact hD.deriv
+
+/-- Third-derivative formula for the successor quadratic iterate. -/
+theorem deriv_deriv_deriv_quadratic_iterate_succ_eq (c : ℂ) (m : ℕ) (w : ℂ) :
+    deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m + 1]) v) x) w =
+      6 * deriv ((quadratic c)^[m]) w *
+          deriv (fun v => deriv ((quadratic c)^[m]) v) w +
+        2 * (quadratic c)^[m] w *
+          deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w := by
+  have hD : HasDerivAt
+      (fun x => deriv (fun v => deriv ((quadratic c)^[m + 1]) v) x)
+      (6 * deriv ((quadratic c)^[m]) w *
+          deriv (fun v => deriv ((quadratic c)^[m]) v) w +
+        2 * (quadratic c)^[m] w *
+          deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w) w := by
+    have hsecond_succ :
+        (fun x => deriv (fun v => deriv ((quadratic c)^[m + 1]) v) x) =
+          fun x =>
+            2 * (deriv ((quadratic c)^[m]) x) ^ 2 +
+              2 * (quadratic c)^[m] x *
+                deriv (fun v => deriv ((quadratic c)^[m]) v) x := by
+      funext x
+      exact deriv_deriv_quadratic_iterate_succ_eq c m x
+    have hF : HasDerivAt ((quadratic c)^[m]) (deriv ((quadratic c)^[m]) w) w :=
+      (differentiable_quadratic_iterate c m w).hasDerivAt
+    have hB : HasDerivAt (fun x => deriv ((quadratic c)^[m]) x)
+        (deriv (fun v => deriv ((quadratic c)^[m]) v) w) w :=
+      (analyticAt_quadratic_iterate c m w).deriv.differentiableAt.hasDerivAt
+    have hC : HasDerivAt (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x)
+        (deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w) w :=
+      ((analyticAt_quadratic_iterate c m w).deriv).deriv.differentiableAt.hasDerivAt
+    have hterm1 : HasDerivAt
+        (fun x => 2 * (deriv ((quadratic c)^[m]) x) ^ 2)
+        (4 * deriv ((quadratic c)^[m]) w *
+          deriv (fun v => deriv ((quadratic c)^[m]) v) w) w := by
+      have hsq := hB.mul hB
+      convert hsq.const_mul 2 using 1
+      · funext y
+        simp [Pi.mul_apply, pow_two]
+      · ring
+    have hterm2 : HasDerivAt
+        (fun x =>
+          2 * (quadratic c)^[m] x *
+            deriv (fun v => deriv ((quadratic c)^[m]) v) x)
+        (2 * deriv ((quadratic c)^[m]) w *
+            deriv (fun v => deriv ((quadratic c)^[m]) v) w +
+          2 * (quadratic c)^[m] w *
+            deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w) w := by
+      have hprod := (hF.const_mul 2).mul hC
+      convert hprod using 1
+    rw [hsecond_succ]
+    convert hterm1.add hterm2 using 1
+    ring
+  exact hD.deriv
+
+/-- Third derivative of a fixed tail at the fixed point, in recursive closed form. -/
+theorem hasDerivAt_deriv_deriv_iterate_fixed
+    {c α : ℂ} (hfix : quadratic c α = α) (m : ℕ) :
+    HasDerivAt (fun w => deriv (fun v => deriv ((quadratic c)^[m]) v) w)
+      (fixedTailThirdCoeff ((2 : ℂ) * α) m) α := by
+  induction m with
+  | zero =>
+      simpa [fixedTailThirdCoeff] using (hasDerivAt_const α (0 : ℂ))
+  | succ m ih =>
+      let lam : ℂ := (2 : ℂ) * α
+      let B : ℂ := fixedTailSecondCoeff lam m
+      let C : ℂ := fixedTailThirdCoeff lam m
+      have hF : HasDerivAt ((quadratic c)^[m]) (lam ^ m) α := by
+        have hbase : HasDerivAt ((quadratic c)^[m])
+            (deriv ((quadratic c)^[m]) α) α :=
+          (differentiable_quadratic_iterate c m α).hasDerivAt
+        have hderiv : deriv ((quadratic c)^[m]) α = lam ^ m := by
+          dsimp [lam]
+          simpa using (deriv_fixed_tail_of_iterate_eq_fixed (c := c) (z := α) (α := α)
+            (n := 0) (by rfl) hfix m)
+        simpa [hderiv] using hbase
+      have hFval : (quadratic c)^[m] α = α := Function.iterate_fixed hfix m
+      have hDval : deriv ((quadratic c)^[m]) α = lam ^ m := by
+        dsimp [lam]
+        simpa using (deriv_fixed_tail_of_iterate_eq_fixed (c := c) (z := α) (α := α)
+          (n := 0) (by rfl) hfix m)
+      have hB : HasDerivAt (fun w => deriv ((quadratic c)^[m]) w) B α := by
+        simpa [B, lam] using hasDerivAt_deriv_iterate_fixed hfix m
+      have hBval : deriv (fun v => deriv ((quadratic c)^[m]) v) α = B := hB.deriv
+      have hC : HasDerivAt
+          (fun w => deriv (fun v => deriv ((quadratic c)^[m]) v) w) C α := by
+        simpa [C, lam] using ih
+      have hterm1 : HasDerivAt
+          (fun w => 2 * (deriv ((quadratic c)^[m]) w) ^ 2)
+          (4 * lam ^ m * B) α := by
+        have hsq := hB.mul hB
+        convert hsq.const_mul 2 using 1
+        · funext y
+          simp [Pi.mul_apply, pow_two]
+        · rw [hDval]
+          ring
+      have hterm2 : HasDerivAt
+          (fun w => 2 * (quadratic c)^[m] w *
+            deriv (fun v => deriv ((quadratic c)^[m]) v) w)
+          (2 * lam ^ m * B + lam * C) α := by
+        have hprod := (hF.const_mul 2).mul hC
+        convert hprod using 1
+        · simp [B, C, lam, hFval, hBval]
+      have hsum := hterm1.add hterm2
+      have hsecond_succ :
+          (fun w => deriv (fun v => deriv ((quadratic c)^[m + 1]) v) w) =
+            fun w => 2 * (deriv ((quadratic c)^[m]) w) ^ 2 +
+              2 * (quadratic c)^[m] w *
+                deriv (fun v => deriv ((quadratic c)^[m]) v) w := by
+        funext w
+        exact deriv_deriv_quadratic_iterate_succ_eq c m w
+      rw [hsecond_succ]
+      convert hsum using 1
+      · simp [fixedTailThirdCoeff, B, C, lam]
+        ring
+
+/-- Fourth derivative of a fixed tail at the fixed point, in recursive closed form. -/
+theorem hasDerivAt_deriv_deriv_deriv_iterate_fixed
+    {c α : ℂ} (hfix : quadratic c α = α) (m : ℕ) :
+    HasDerivAt
+      (fun w => deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w)
+      (fixedTailFourthCoeff ((2 : ℂ) * α) m) α := by
+  induction m with
+  | zero =>
+      simpa [fixedTailFourthCoeff] using (hasDerivAt_const α (0 : ℂ))
+  | succ m ih =>
+      let lam : ℂ := (2 : ℂ) * α
+      let B : ℂ := fixedTailSecondCoeff lam m
+      let C : ℂ := fixedTailThirdCoeff lam m
+      let Q : ℂ := fixedTailFourthCoeff lam m
+      have hF : HasDerivAt ((quadratic c)^[m]) (lam ^ m) α := by
+        have hbase : HasDerivAt ((quadratic c)^[m])
+            (deriv ((quadratic c)^[m]) α) α :=
+          (differentiable_quadratic_iterate c m α).hasDerivAt
+        have hderiv : deriv ((quadratic c)^[m]) α = lam ^ m := by
+          dsimp [lam]
+          simpa using (deriv_fixed_tail_of_iterate_eq_fixed (c := c) (z := α) (α := α)
+            (n := 0) (by rfl) hfix m)
+        simpa [hderiv] using hbase
+      have hFval : (quadratic c)^[m] α = α := Function.iterate_fixed hfix m
+      have hDval : deriv ((quadratic c)^[m]) α = lam ^ m := by
+        dsimp [lam]
+        simpa using (deriv_fixed_tail_of_iterate_eq_fixed (c := c) (z := α) (α := α)
+          (n := 0) (by rfl) hfix m)
+      have hB : HasDerivAt (fun w => deriv ((quadratic c)^[m]) w) B α := by
+        simpa [B, lam] using hasDerivAt_deriv_iterate_fixed hfix m
+      have hBval : deriv (fun v => deriv ((quadratic c)^[m]) v) α = B := hB.deriv
+      have hC : HasDerivAt
+          (fun w => deriv (fun v => deriv ((quadratic c)^[m]) v) w) C α := by
+        simpa [C, lam] using hasDerivAt_deriv_deriv_iterate_fixed hfix m
+      have hCval :
+          deriv (fun w => deriv (fun v => deriv ((quadratic c)^[m]) v) w) α = C :=
+        hC.deriv
+      have hQ : HasDerivAt
+          (fun w => deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w)
+          Q α := by
+        simpa [Q, lam] using ih
+      have hterm1 : HasDerivAt
+          (fun w =>
+            6 * deriv ((quadratic c)^[m]) w *
+              deriv (fun v => deriv ((quadratic c)^[m]) v) w)
+          (6 * B ^ 2 + 6 * lam ^ m * C) α := by
+        have hprod := (hB.const_mul 6).mul hC
+        convert hprod using 1
+        · rw [hDval, hBval]
+          ring
+      have hterm2 : HasDerivAt
+          (fun w =>
+            2 * (quadratic c)^[m] w *
+              deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w)
+          (2 * lam ^ m * C + lam * Q) α := by
+        have hprod := (hF.const_mul 2).mul hQ
+        convert hprod using 1
+        · rw [hFval, hCval]
+      have hsum := hterm1.add hterm2
+      have hthird_succ :
+          (fun w => deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m + 1]) v) x) w) =
+            fun w =>
+              6 * deriv ((quadratic c)^[m]) w *
+                  deriv (fun v => deriv ((quadratic c)^[m]) v) w +
+                2 * (quadratic c)^[m] w *
+                  deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w := by
+        funext w
+        exact deriv_deriv_deriv_quadratic_iterate_succ_eq c m w
+      rw [hthird_succ]
+      convert hsum using 1
+      · simp [fixedTailFourthCoeff, B, C, Q, lam]
+        ring
+
+/-- Equality form of `hasDerivAt_deriv_deriv_deriv_iterate_fixed`. -/
+theorem deriv_deriv_deriv_deriv_iterate_fixed
+    {c α : ℂ} (hfix : quadratic c α = α) (m : ℕ) :
+    deriv
+      (fun w => deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w) α =
+      fixedTailFourthCoeff ((2 : ℂ) * α) m :=
+  (hasDerivAt_deriv_deriv_deriv_iterate_fixed hfix m).deriv
+
+/-- Norm bound for the fourth derivative of a fixed tail at the fixed point. -/
+theorem norm_deriv_deriv_deriv_deriv_iterate_fixed_le
+    {c α : ℂ} {C₂ C₃ C₄ : ℝ}
+    (hfix : quadratic c α = α)
+    (hL : 1 < ‖(2 : ℂ) * α‖)
+    (hC₂nonneg : 0 ≤ C₂)
+    (hC₂ : 2 ≤ C₂ * ‖(2 : ℂ) * α‖ * (‖(2 : ℂ) * α‖ - 1))
+    (hC₃nonneg : 0 ≤ C₃)
+    (hC₃ : 6 * C₂ ≤ C₃ * ‖(2 : ℂ) * α‖ * (‖(2 : ℂ) * α‖ ^ 2 - 1))
+    (hC₄nonneg : 0 ≤ C₄)
+    (hC₄ : 8 * C₃ + 6 * C₂ ^ 2 ≤
+      C₄ * ‖(2 : ℂ) * α‖ * (‖(2 : ℂ) * α‖ ^ 3 - 1))
+    (m : ℕ) :
+    ‖deriv
+      (fun w => deriv (fun x => deriv (fun v => deriv ((quadratic c)^[m]) v) x) w) α‖ ≤
+      C₄ * ‖(2 : ℂ) * α‖ ^ (4 * m) := by
+  rw [deriv_deriv_deriv_deriv_iterate_fixed hfix m]
+  exact norm_fixedTailFourthCoeff_le_mul_pow
+    (lam := (2 : ℂ) * α) (C₂ := C₂) (C₃ := C₃) (C₄ := C₄)
+    hL hC₂nonneg hC₂ hC₃nonneg hC₃ hC₄nonneg hC₄ m
+
+/-- Second-derivative chain rule for an iterate split `n + m`. -/
+theorem deriv_deriv_iterate_add_eq (c : ℂ) (n m : ℕ) (w : ℂ) :
+    deriv (fun v => deriv ((quadratic c)^[n + m]) v) w =
+      deriv (fun a => deriv ((quadratic c)^[m]) a) ((quadratic c)^[n] w) *
+          (deriv ((quadratic c)^[n]) w) ^ 2 +
+        deriv ((quadratic c)^[m]) ((quadratic c)^[n] w) *
+          deriv (fun v => deriv ((quadratic c)^[n]) v) w := by
+  have hderiv_add : (fun x => deriv ((quadratic c)^[n + m]) x) =
+      fun x => deriv ((quadratic c)^[m]) ((quadratic c)^[n] x) *
+        deriv ((quadratic c)^[n]) x := by
+    funext x
+    rw [deriv_quadratic_iterate_eq_orbitProduct_core,
+      deriv_quadratic_iterate_eq_orbitProduct_core,
+      deriv_quadratic_iterate_eq_orbitProduct_core]
+    rw [deriv_iterate_quadratic_cocycle]
+    ring
+  have hA : HasDerivAt (fun a => deriv ((quadratic c)^[m]) a)
+      (deriv (fun a => deriv ((quadratic c)^[m]) a) ((quadratic c)^[n] w))
+      ((quadratic c)^[n] w) :=
+    (analyticAt_quadratic_iterate c m ((quadratic c)^[n] w)).deriv.differentiableAt.hasDerivAt
+  have hG : HasDerivAt ((quadratic c)^[n])
+      (deriv ((quadratic c)^[n]) w) w :=
+    (differentiable_quadratic_iterate c n w).hasDerivAt
+  have hcomp : HasDerivAt
+      (fun x => deriv ((quadratic c)^[m]) ((quadratic c)^[n] x))
+      (deriv (fun a => deriv ((quadratic c)^[m]) a) ((quadratic c)^[n] w) *
+        deriv ((quadratic c)^[n]) w) w :=
+    hA.comp w hG
+  have hB : HasDerivAt (fun x => deriv ((quadratic c)^[n]) x)
+      (deriv (fun v => deriv ((quadratic c)^[n]) v) w) w :=
+    (analyticAt_quadratic_iterate c n w).deriv.differentiableAt.hasDerivAt
+  have hprod := hcomp.mul hB
+  rw [hderiv_add]
+  convert hprod.deriv using 1
+  ring
+
+/-- The third derivative of a fixed tail after a preperiodic hit.  This is the exact
+chain-rule decomposition
+`T'''(α) P^3 + 3 T''(α) P B + T'(α) C` for `T = f_c^[m]` and `P,B,C`
+the first three derivative coefficients of the initial segment `f_c^[n]` at `z`. -/
+theorem hasDerivAt_deriv_deriv_fixed_tail_of_iterate_eq_fixed
+    {c z α : ℂ} {n : ℕ} (hhit : (quadratic c)^[n] z = α)
+    (hfix : quadratic c α = α) (m : ℕ) :
+    HasDerivAt (fun w => deriv (fun v => deriv ((quadratic c)^[n + m]) v) w)
+      (fixedTailThirdCoeff ((2 : ℂ) * α) m * (deriv ((quadratic c)^[n]) z) ^ 3 +
+        3 * fixedTailSecondCoeff ((2 : ℂ) * α) m *
+          deriv ((quadratic c)^[n]) z *
+          deriv (fun w => deriv ((quadratic c)^[n]) w) z +
+        ((2 : ℂ) * α) ^ m *
+          deriv (fun w => deriv (fun v => deriv ((quadratic c)^[n]) v) w) z) z := by
+  let lam : ℂ := (2 : ℂ) * α
+  let P : ℂ := deriv ((quadratic c)^[n]) z
+  let B : ℂ := deriv (fun w => deriv ((quadratic c)^[n]) w) z
+  let C : ℂ := deriv (fun w => deriv (fun v => deriv ((quadratic c)^[n]) v) w) z
+  let A₂ : ℂ := fixedTailSecondCoeff lam m
+  let A₃ : ℂ := fixedTailThirdCoeff lam m
+  have hG : HasDerivAt ((quadratic c)^[n]) P z := by
+    simpa [P] using (differentiable_quadratic_iterate c n z).hasDerivAt
+  have hP : HasDerivAt (fun w => deriv ((quadratic c)^[n]) w) B z := by
+    simpa [B] using (analyticAt_quadratic_iterate c n z).deriv.differentiableAt.hasDerivAt
+  have hC : HasDerivAt
+      (fun w => deriv (fun v => deriv ((quadratic c)^[n]) v) w) C z := by
+    simpa [C] using (((analyticAt_quadratic_iterate c n z).deriv).deriv.differentiableAt.hasDerivAt)
+  have hA₂ : HasDerivAt (fun a => deriv ((quadratic c)^[m]) a) A₂ α := by
+    simpa [A₂, lam] using hasDerivAt_deriv_iterate_fixed hfix m
+  have hA₂at : HasDerivAt (fun a => deriv ((quadratic c)^[m]) a) A₂ ((quadratic c)^[n] z) := by
+    rwa [hhit]
+  have hA₂val : deriv (fun a => deriv ((quadratic c)^[m]) a) α = A₂ := hA₂.deriv
+  have hA₃ : HasDerivAt
+      (fun a => deriv (fun v => deriv ((quadratic c)^[m]) v) a) A₃ α := by
+    simpa [A₃, lam] using hasDerivAt_deriv_deriv_iterate_fixed hfix m
+  have hA₃at : HasDerivAt
+      (fun a => deriv (fun v => deriv ((quadratic c)^[m]) v) a) A₃
+      ((quadratic c)^[n] z) := by
+    rwa [hhit]
+  have hTailDerivVal : deriv ((quadratic c)^[m]) α = lam ^ m := by
+    dsimp [lam]
+    simpa using (deriv_fixed_tail_of_iterate_eq_fixed (c := c) (z := α) (α := α)
+      (n := 0) (by rfl) hfix m)
+  have hTailDerivVal_at :
+      deriv ((quadratic c)^[m]) ((quadratic c)^[n] z) = lam ^ m := by
+    rwa [hhit]
+  have hcompA₃ : HasDerivAt
+      (fun w => deriv (fun v => deriv ((quadratic c)^[m]) v) ((quadratic c)^[n] w))
+      (A₃ * P) z :=
+    hA₃at.comp z hG
+  have hP2 : HasDerivAt (fun w => (deriv ((quadratic c)^[n]) w) ^ 2)
+      (2 * P * B) z := by
+    have hsq := hP.mul hP
+    convert hsq using 1
+    · funext y
+      simp [Pi.mul_apply, pow_two]
+    · simp [P, B]
+      ring
+  have hterm1 : HasDerivAt
+      (fun w =>
+        deriv (fun a => deriv ((quadratic c)^[m]) a) ((quadratic c)^[n] w) *
+          (deriv ((quadratic c)^[n]) w) ^ 2)
+      (A₃ * P ^ 3 + 2 * A₂ * P * B) z := by
+    have hprod := hcompA₃.mul hP2
+    convert hprod using 1
+    · rw [hhit, hA₂val]
+      ring
+  have hcompA₂ : HasDerivAt
+      (fun w => deriv ((quadratic c)^[m]) ((quadratic c)^[n] w))
+      (A₂ * P) z :=
+    hA₂at.comp z hG
+  have hterm2 : HasDerivAt
+      (fun w =>
+        deriv ((quadratic c)^[m]) ((quadratic c)^[n] w) *
+          deriv (fun v => deriv ((quadratic c)^[n]) v) w)
+      (A₂ * P * B + lam ^ m * C) z := by
+    have hprod := hcompA₂.mul hC
+    convert hprod using 1
+    · rw [hTailDerivVal_at]
+  have hsum := hterm1.add hterm2
+  have hsecond_add :
+      (fun w => deriv (fun v => deriv ((quadratic c)^[n + m]) v) w) =
+        fun w =>
+          deriv (fun a => deriv ((quadratic c)^[m]) a) ((quadratic c)^[n] w) *
+              (deriv ((quadratic c)^[n]) w) ^ 2 +
+            deriv ((quadratic c)^[m]) ((quadratic c)^[n] w) *
+              deriv (fun v => deriv ((quadratic c)^[n]) v) w := by
+    funext w
+    exact deriv_deriv_iterate_add_eq c n m w
+  rw [hsecond_add]
+  convert hsum using 1
+  · simp [A₂, A₃, P, B, C, lam]
+    ring
+
+/-- Equality form of `hasDerivAt_deriv_deriv_fixed_tail_of_iterate_eq_fixed`. -/
+theorem deriv_deriv_deriv_fixed_tail_of_iterate_eq_fixed
+    {c z α : ℂ} {n : ℕ} (hhit : (quadratic c)^[n] z = α)
+    (hfix : quadratic c α = α) (m : ℕ) :
+    deriv (fun w => deriv (fun v => deriv ((quadratic c)^[n + m]) v) w) z =
+      fixedTailThirdCoeff ((2 : ℂ) * α) m * (deriv ((quadratic c)^[n]) z) ^ 3 +
+        3 * fixedTailSecondCoeff ((2 : ℂ) * α) m *
+          deriv ((quadratic c)^[n]) z *
+          deriv (fun w => deriv ((quadratic c)^[n]) w) z +
+        ((2 : ℂ) * α) ^ m *
+          deriv (fun w => deriv (fun v => deriv ((quadratic c)^[n]) v) w) z :=
+  (hasDerivAt_deriv_deriv_fixed_tail_of_iterate_eq_fixed hhit hfix m).deriv
+
+/-- Norm bound for the exact third-derivative fixed-tail decomposition after a preperiodic hit. -/
+theorem norm_deriv_deriv_deriv_fixed_tail_of_iterate_eq_fixed_le
+    {c z α : ℂ} {n : ℕ} {C₂ C₃ : ℝ}
+    (hhit : (quadratic c)^[n] z = α)
+    (hfix : quadratic c α = α)
+    (hL : 1 < ‖(2 : ℂ) * α‖)
+    (hC₂nonneg : 0 ≤ C₂)
+    (hC₂ : 2 ≤ C₂ * ‖(2 : ℂ) * α‖ * (‖(2 : ℂ) * α‖ - 1))
+    (hC₃nonneg : 0 ≤ C₃)
+    (hC₃ : 6 * C₂ ≤ C₃ * ‖(2 : ℂ) * α‖ * (‖(2 : ℂ) * α‖ ^ 2 - 1))
+    (m : ℕ) :
+    ‖deriv (fun w => deriv (fun v => deriv ((quadratic c)^[n + m]) v) w) z‖ ≤
+      C₃ * ‖(2 : ℂ) * α‖ ^ (3 * m) * ‖deriv ((quadratic c)^[n]) z‖ ^ 3 +
+        3 * C₂ * ‖(2 : ℂ) * α‖ ^ (2 * m) *
+          ‖deriv ((quadratic c)^[n]) z‖ *
+          ‖deriv (fun w => deriv ((quadratic c)^[n]) w) z‖ +
+        ‖(2 : ℂ) * α‖ ^ m *
+          ‖deriv (fun w => deriv (fun v => deriv ((quadratic c)^[n]) v) w) z‖ := by
+  rw [deriv_deriv_deriv_fixed_tail_of_iterate_eq_fixed hhit hfix m]
+  let lam : ℂ := (2 : ℂ) * α
+  let P : ℂ := deriv ((quadratic c)^[n]) z
+  let B : ℂ := deriv (fun w => deriv ((quadratic c)^[n]) w) z
+  let C : ℂ := deriv (fun w => deriv (fun v => deriv ((quadratic c)^[n]) v) w) z
+  let A₂ : ℂ := fixedTailSecondCoeff lam m
+  let A₃ : ℂ := fixedTailThirdCoeff lam m
+  have hA₂ := norm_fixedTailSecondCoeff_le_mul_pow
+    (lam := lam) (C := C₂) hC₂nonneg (by simpa [lam] using hC₂) m
+  have hA₃ := norm_fixedTailThirdCoeff_le_mul_pow
+    (lam := lam) (C₂ := C₂) (C₃ := C₃)
+    (by simpa [lam] using hL) hC₂nonneg (by simpa [lam] using hC₂)
+    hC₃nonneg (by simpa [lam] using hC₃) m
+  have htermA : ‖A₃‖ * ‖P‖ ^ 3 ≤
+      C₃ * ‖lam‖ ^ (3 * m) * ‖P‖ ^ 3 := by
+    exact mul_le_mul_of_nonneg_right hA₃ (pow_nonneg (norm_nonneg _) _)
+  have htermB : 3 * ‖A₂‖ * ‖P‖ * ‖B‖ ≤
+      3 * C₂ * ‖lam‖ ^ (2 * m) * ‖P‖ * ‖B‖ := by
+    calc
+      3 * ‖A₂‖ * ‖P‖ * ‖B‖ = ‖A₂‖ * (3 * ‖P‖ * ‖B‖) := by ring
+      _ ≤ (C₂ * ‖lam‖ ^ (2 * m)) * (3 * ‖P‖ * ‖B‖) := by
+            exact mul_le_mul_of_nonneg_right hA₂ (by positivity)
+      _ = 3 * C₂ * ‖lam‖ ^ (2 * m) * ‖P‖ * ‖B‖ := by ring
+  calc
+    ‖A₃ * P ^ 3 + 3 * A₂ * P * B + lam ^ m * C‖
+        ≤ (‖A₃ * P ^ 3‖ + ‖3 * A₂ * P * B‖) + ‖lam ^ m * C‖ := by
+          calc
+            ‖A₃ * P ^ 3 + 3 * A₂ * P * B + lam ^ m * C‖
+                ≤ ‖A₃ * P ^ 3 + 3 * A₂ * P * B‖ + ‖lam ^ m * C‖ :=
+                  norm_add_le (A₃ * P ^ 3 + 3 * A₂ * P * B) (lam ^ m * C)
+            _ ≤ (‖A₃ * P ^ 3‖ + ‖3 * A₂ * P * B‖) + ‖lam ^ m * C‖ := by
+                  simpa only [add_assoc] using
+                    add_le_add (norm_add_le (A₃ * P ^ 3) (3 * A₂ * P * B))
+                      (le_refl ‖lam ^ m * C‖)
+    _ = ‖A₃‖ * ‖P‖ ^ 3 + 3 * ‖A₂‖ * ‖P‖ * ‖B‖ +
+          ‖lam‖ ^ m * ‖C‖ := by
+          rw [norm_mul, norm_pow, norm_mul, norm_mul, norm_mul, Complex.norm_ofNat,
+            norm_mul, norm_pow]
+    _ ≤ C₃ * ‖lam‖ ^ (3 * m) * ‖P‖ ^ 3 +
+          3 * C₂ * ‖lam‖ ^ (2 * m) * ‖P‖ * ‖B‖ +
+          ‖lam‖ ^ m * ‖C‖ := by
+          exact add_le_add (add_le_add htermA htermB) le_rfl
+    _ = C₃ * ‖(2 : ℂ) * α‖ ^ (3 * m) * ‖deriv ((quadratic c)^[n]) z‖ ^ 3 +
+          3 * C₂ * ‖(2 : ℂ) * α‖ ^ (2 * m) *
+            ‖deriv ((quadratic c)^[n]) z‖ *
+            ‖deriv (fun w => deriv ((quadratic c)^[n]) w) z‖ +
+          ‖(2 : ℂ) * α‖ ^ m *
+            ‖deriv (fun w => deriv (fun v => deriv ((quadratic c)^[n]) v) w) z‖ := by
+          simp [lam, P, B, C]
+
 /-- A noncritical forward hit to a repelling fixed anchor gives unbounded derivative growth along
 the tail iterates `n + m`.  This is the quantitative large-derivative input for the Newton bridge. -/
 theorem tendsto_norm_deriv_fixed_tail_atTop
