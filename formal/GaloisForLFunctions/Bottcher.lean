@@ -134,6 +134,10 @@ import GaloisForLFunctions.Bottcher.JuliaExpansion
 import GaloisForLFunctions.Bottcher.Q62RadicalReduction
 import GaloisForLFunctions.Bottcher.Q62DeepDataAssembly
 import GaloisForLFunctions.Bottcher.CylinderUnivalence
+import GaloisForLFunctions.Bottcher.LocalCollar
+import GaloisForLFunctions.Bottcher.LocalCollarQ62
+import GaloisForLFunctions.Bottcher.LiftedImageWindingQ62
+import GaloisForLFunctions.Bottcher.ZeroCircleBranchQ62
 import GaloisForLFunctions.Bottcher.BrolinCylinder
 import GaloisForLFunctions.Bottcher.QuarticSlash
 import GaloisForLFunctions.Bottcher.QuarticModularForm
