@@ -953,3 +953,153 @@ theorem transcendental_pullback_bottcher_of_no_far_high_relation
     hR'pos hNpos hψleft hp0 ha q hqe
 
 end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Generic transition-function transcendence bridge.**
+For an analytic coordinate `p₀` represented by `f₀` and an analytic function `a` represented by `g`,
+transcendence of `a` over the projection-base copy of `RatFunc ℂ` follows from the concrete
+function-level statement that no nonzero `q ∈ ℂ[f₀][Y]` vanishes as `q(f₀ x, g x)` on `U`.
+
+This is the algebraic core of the direct far-value route: take `f₀(w)=w` and
+`g(w)=φ_{c₂}(ψ₁(w))`, rather than passing through a finite root cover where degrees multiply. -/
+theorem transcendental_of_no_eval₂_relation_via {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ a : analyticSubring U} {f₀ g : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀)
+    (hpInf : (f₀ '' U).Infinite)
+    (ha : (a : Germ (𝓟 U) ℂ) = ↑g)
+    (hno : ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+      ¬ Set.EqOn (fun x => q.eval₂ (Polynomial.evalRingHom (f₀ x)) (g x)) 0 U) :
+    letI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) :=
+      (ratfuncToMeroVia p₀ hp0 hpInf hUo hUc hUne).toAlgebra
+    Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a) := by
+  haveI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+  letI algK : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hpInf hUo hUc hUne).toAlgebra
+  letI algA : Algebra (Polynomial ℂ) (meroField U) := (polyToMeroVia p₀).toAlgebra
+  haveI hst : IsScalarTower (Polynomial ℂ) (RatFunc ℂ) (meroField U) := by
+    apply IsScalarTower.of_algebraMap_eq
+    intro p
+    show polyToMeroVia p₀ p = ratfuncToMeroVia p₀ hp0 hpInf hUo hUc hUne
+      (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)
+    rw [show ratfuncToMeroVia p₀ hp0 hpInf hUo hUc hUne
+        (algebraMap (Polynomial ℂ) (RatFunc ℂ) p) = polyToMeroVia p₀ p
+      from IsFractionRing.lift_algebraMap (polyToMeroVia_injective p₀ hp0 hpInf hUo hUc hUne) p]
+  show ¬ IsAlgebraic (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a)
+  rw [← IsFractionRing.isAlgebraic_iff (Polynomial ℂ) (RatFunc ℂ) (meroField U)]
+  rintro ⟨q, hq0, hqe⟩
+  apply hno q hq0
+  rw [aeval_def] at hqe
+  have halg : (algebraMap (Polynomial ℂ) (meroField U)) = polyToMeroVia p₀ := rfl
+  rw [halg] at hqe
+  exact eqOn_pullback_eval₂_of_eval₂_polyToMeroVia_zero hUo hUc hUne hp0 ha q hqe
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Direct far-value transition transcendence.**
+On an exterior value annulus, if `ψ₁` is analytic there and lands in the `c₂` escape set, the transition
+function `H(w)=φ_{c₂}(ψ₁(w))` is an analytic germ over the identity coordinate `w`. Its transcendence
+over `ℂ(w)` is reduced to the concrete function-level no-relation statement for `q(w,H(w))`.
+
+This is the finite-cover bypass: it keeps the first variable as the actual far Böttcher value `w`, so
+relations do not become `P(ξ^N,H)` and no `N * degree` obstruction appears. -/
+theorem exists_value_transition_transcendental_of_no_relation
+    {c₂ : ℂ} {ψ₁ : ℂ → ℂ} {R' : ℝ} (hR'pos : 0 < R')
+    (hψan : ∀ w ∈ {w : ℂ | R' < ‖w‖}, AnalyticAt ℂ ψ₁ w)
+    (hcont : ∀ w ∈ {w : ℂ | R' < ‖w‖}, ψ₁ w ∈ escapeOpen c₂)
+    (hno : ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+      ¬ Set.EqOn (fun w => q.eval₂ (Polynomial.evalRingHom w) (bottcherCoord c₂ (ψ₁ w)))
+        0 {w : ℂ | R' < ‖w‖}) :
+    ∃ (p₀ : analyticSubring {w : ℂ | R' < ‖w‖})
+      (hp0 : (p₀ : Germ (𝓟 {w : ℂ | R' < ‖w‖}) ℂ) = ↑(id : ℂ → ℂ))
+      (hpInf : ((id : ℂ → ℂ) '' {w : ℂ | R' < ‖w‖}).Infinite)
+      (a : analyticSubring {w : ℂ | R' < ‖w‖}),
+      (a : Germ (𝓟 {w : ℂ | R' < ‖w‖}) ℂ) =
+        ↑(fun w => bottcherCoord c₂ (ψ₁ w)) ∧
+      (letI : IsDomain (analyticSubring {w : ℂ | R' < ‖w‖}) :=
+        isDomain_analyticSubring {w : ℂ | R' < ‖w‖} isOpen_exterior
+          (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+       letI : Algebra (RatFunc ℂ) (meroField {w : ℂ | R' < ‖w‖}) :=
+        (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+          (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+       Transcendental (RatFunc ℂ)
+        (algebraMap (analyticSubring {w : ℂ | R' < ‖w‖})
+          (meroField {w : ℂ | R' < ‖w‖}) a)) := by
+  let U : Set ℂ := {w : ℂ | R' < ‖w‖}
+  let p₀ : analyticSubring U :=
+    ⟨(↑(id : ℂ → ℂ) : Germ (𝓟 U) ℂ), id, analyticOnNhd_id, rfl⟩
+  have hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑(id : ℂ → ℂ) := rfl
+  have hpInf : ((id : ℂ → ℂ) '' U).Infinite := by
+    have hid : ((id : ℂ → ℂ) '' U) = U := by
+      ext w; simp
+    rw [hid]
+    exact infinite_exterior hR'pos
+  obtain ⟨a, ha⟩ := exists_rotInvariant_a2 (c₂ := c₂) (U := U) (ψ₁ := ψ₁) (n := 0)
+    (by simpa [U] using hψan) (by simpa [U] using hcont)
+  have haH : (a : Germ (𝓟 U) ℂ) = ↑(fun w => bottcherCoord c₂ (ψ₁ w)) := by
+    simpa using ha
+  have htr := transcendental_of_no_eval₂_relation_via
+    (U := U) isOpen_exterior (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+    (p₀ := p₀) (a := a) (f₀ := id) (g := fun w => bottcherCoord c₂ (ψ₁ w))
+    hp0 hpInf haH (by simpa [U] using hno)
+  exact ⟨by simpa [U] using p₀, by simpa [U] using hp0, by simpa [U] using hpInf,
+    by simpa [U] using a, by simpa [U] using haH, by simpa [U] using htr⟩
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Pointwise square-defect identity for the far-value transition.**
+Let `H(w)=φ_{c₂}(ψ₁(w))` and suppose `ψ₁` is a left inverse to `φ_{c₁}` on the relevant far points and
+`φ_{c₁}(ψ₁ w)=w`. Then the failure of `H` to conjugate squaring is exactly the difference between
+reading `φ_{c₂}` at the two quadratic images with parameters `c₁` and `c₂`:
+`H(w²)-H(w)² = φ₂(z²+c₁)-φ₂(z²+c₂)`, where `z=ψ₁(w)`.
+
+This is the concrete asymptotic/valuation hook for the direct transition route. -/
+theorem value_transition_square_defect_at
+    {c₁ c₂ w : ℂ} {ψ₁ : ℂ → ℂ} {R : ℝ}
+    (hψleft : ∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z)
+    (hproj : bottcherCoord c₁ (ψ₁ w) = w)
+    (hzqR : R < ‖quadratic c₁ (ψ₁ w)‖)
+    (hc₁z : ‖c₁‖ ≤ ‖ψ₁ w‖) (hc₂z : ‖c₂‖ ≤ ‖ψ₁ w‖) (hz2 : 2 < ‖ψ₁ w‖) :
+    bottcherCoord c₂ (ψ₁ (w ^ 2)) - (bottcherCoord c₂ (ψ₁ w)) ^ 2 =
+      bottcherCoord c₂ (quadratic c₁ (ψ₁ w)) - bottcherCoord c₂ (quadratic c₂ (ψ₁ w)) := by
+  have hφsq : bottcherCoord c₁ (quadratic c₁ (ψ₁ w)) = w ^ 2 := by
+    rw [bottcherCoord_quadratic hc₁z hz2, hproj]
+  have hψsq : ψ₁ (w ^ 2) = quadratic c₁ (ψ₁ w) := by
+    rw [← hφsq]
+    exact hψleft (quadratic c₁ (ψ₁ w)) hzqR
+  have hφ₂sq : bottcherCoord c₂ (quadratic c₂ (ψ₁ w)) = (bottcherCoord c₂ (ψ₁ w)) ^ 2 :=
+    bottcherCoord_quadratic hc₂z hz2
+  rw [hψsq, ← hφ₂sq]
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Exact transferred-dynamics identity for the far-value transition.**
+For `H(w)=φ_{c₂}(ψ₁(w))`, the transported `c₂` map
+`T(w)=φ_{c₁}((ψ₁ w)^2+c₂)` satisfies `H(T(w))=H(w)^2` whenever all points are in the far inverse domain.
+This is stronger than the square-defect asymptotic: it is the exact conjugacy relation to use in the
+value-transition route. -/
+theorem value_transition_conj_transferred_quadratic_at
+    {c₁ c₂ w : ℂ} {ψ₁ : ℂ → ℂ} {R : ℝ}
+    (hψleft : ∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z)
+    (hzqR : R < ‖quadratic c₂ (ψ₁ w)‖)
+    (hc₂z : ‖c₂‖ ≤ ‖ψ₁ w‖) (hz2 : 2 < ‖ψ₁ w‖) :
+    bottcherCoord c₂ (ψ₁ (bottcherCoord c₁ (quadratic c₂ (ψ₁ w)))) =
+      (bottcherCoord c₂ (ψ₁ w)) ^ 2 := by
+  have hψT : ψ₁ (bottcherCoord c₁ (quadratic c₂ (ψ₁ w))) = quadratic c₂ (ψ₁ w) :=
+    hψleft (quadratic c₂ (ψ₁ w)) hzqR
+  rw [hψT]
+  exact bottcherCoord_quadratic hc₂z hz2
+
+end Bottcher

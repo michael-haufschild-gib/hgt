@@ -118,3 +118,28 @@ theorem c_eq_of_bottcherCoord_eqOn {c₁ c₂ : ℂ}
 
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Parameter-defect asymptotic.** For the `c₂` Böttcher coordinate, the two quadratic inputs with
+parameters `c₁` and `c₂` differ asymptotically by exactly `c₁-c₂`:
+`φ₂(z²+c₁)-φ₂(z²+c₂) → c₁-c₂` as `z → ∞`.
+
+This is the leading valuation term behind the direct transition-function route. -/
+theorem tendsto_bottcherCoord_quadratic_parameter_defect (c₁ c₂ : ℂ) :
+    Tendsto (fun z => bottcherCoord c₂ (quadratic c₁ z) - bottcherCoord c₂ (quadratic c₂ z))
+      (cobounded ℂ) (𝓝 (c₁ - c₂)) := by
+  let E₁ : ℂ → ℂ := fun z => bottcherCoord c₂ (quadratic c₁ z) - quadratic c₁ z
+  let E₂ : ℂ → ℂ := fun z => bottcherCoord c₂ (quadratic c₂ z) - quadratic c₂ z
+  have hE₁ : Tendsto E₁ (cobounded ℂ) (𝓝 0) :=
+    (tendsto_bottcherCoord_sub_id c₂).comp (tendsto_sq_add_cobounded c₁)
+  have hE₂ : Tendsto E₂ (cobounded ℂ) (𝓝 0) :=
+    (tendsto_bottcherCoord_sub_id c₂).comp (tendsto_sq_add_cobounded c₂)
+  have hmain : Tendsto (fun z => E₁ z - E₂ z + (c₁ - c₂)) (cobounded ℂ) (𝓝 (c₁ - c₂)) := by
+    simpa using (hE₁.sub hE₂).add tendsto_const_nhds
+  convert hmain using 1
+  funext z
+  simp [E₁, E₂, quadratic]
+  ring
+
+end Bottcher

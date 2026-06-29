@@ -314,3 +314,131 @@ theorem eventually_explicitBranch_eq_bottcherCoord_real (c : ℂ) (n : ℕ) :
   exact explicitBranch_eq_bottcherCoord_of_realray c n hVc hVdom hVesc hray ⟨t, ht, rfl⟩
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Transition square-defect along the real far-field ray.**
+If `ψ₁` is the far inverse of `φ_{c₁}`, then along `w=φ_{c₁}(t)` with `t → +∞`, the transition
+function `H(w)=φ_{c₂}(ψ₁(w))` satisfies
+`H(w²)-H(w)² → c₁-c₂`.
+
+This turns the pointwise defect identity into an actual asymptotic signal for the direct
+`H(w)`-transcendence route. -/
+theorem tendsto_value_transition_square_defect_along_real_bottcher_ray
+    {c₁ c₂ : ℂ} {ψ₁ : ℂ → ℂ} {R : ℝ}
+    (hψleft : ∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z) :
+    Tendsto (fun t : ℝ =>
+      bottcherCoord c₂ (ψ₁ ((bottcherCoord c₁ (t : ℂ)) ^ 2)) -
+        (bottcherCoord c₂ (ψ₁ (bottcherCoord c₁ (t : ℂ)))) ^ 2)
+      atTop (𝓝 (c₁ - c₂)) := by
+  have hdefect : Tendsto (fun t : ℝ => bottcherCoord c₂ (quadratic c₁ (t : ℂ)) -
+        bottcherCoord c₂ (quadratic c₂ (t : ℂ))) atTop (𝓝 (c₁ - c₂)) := by
+    let E₁ : ℝ → ℂ := fun t => bottcherCoord c₂ (quadratic c₁ (t : ℂ)) - quadratic c₁ (t : ℂ)
+    let E₂ : ℝ → ℂ := fun t => bottcherCoord c₂ (quadratic c₂ (t : ℂ)) - quadratic c₂ (t : ℂ)
+    have hE₁ : Tendsto E₁ atTop (𝓝 0) :=
+      ((tendsto_bottcherCoord_sub_id c₂).comp (tendsto_sq_add_cobounded c₁)).comp
+        tendsto_ofReal_cobounded
+    have hE₂ : Tendsto E₂ atTop (𝓝 0) :=
+      ((tendsto_bottcherCoord_sub_id c₂).comp (tendsto_sq_add_cobounded c₂)).comp
+        tendsto_ofReal_cobounded
+    have hmain : Tendsto (fun t => E₁ t - E₂ t + (c₁ - c₂)) atTop (𝓝 (c₁ - c₂)) := by
+      simpa using (hE₁.sub hE₂).add tendsto_const_nhds
+    convert hmain using 1
+    funext t
+    simp [E₁, E₂, quadratic]
+    ring
+  have hev : (fun t : ℝ =>
+      bottcherCoord c₂ (ψ₁ ((bottcherCoord c₁ (t : ℂ)) ^ 2)) -
+        (bottcherCoord c₂ (ψ₁ (bottcherCoord c₁ (t : ℂ)))) ^ 2)
+      =ᶠ[atTop]
+      (fun t : ℝ => bottcherCoord c₂ (quadratic c₁ (t : ℂ)) -
+        bottcherCoord c₂ (quadratic c₂ (t : ℂ))) := by
+    let T : ℝ := max 3 (max ‖c₁‖ (max ‖c₂‖ (R + ‖c₁‖ + 1)))
+    filter_upwards [eventually_gt_atTop T] with t ht
+    have ht3 : (3 : ℝ) < t := lt_of_le_of_lt (le_max_left _ _) ht
+    have htpos : 0 < t := by linarith
+    have hnormt : ‖(t : ℂ)‖ = t := by
+      rw [Complex.norm_real, Real.norm_of_nonneg (le_of_lt htpos)]
+    have hc₁t : ‖c₁‖ ≤ ‖(t : ℂ)‖ := by
+      rw [hnormt]
+      exact le_of_lt (lt_of_le_of_lt (le_trans (le_max_left _ _) (le_max_right 3 _)) ht)
+    have hc₂t : ‖c₂‖ ≤ ‖(t : ℂ)‖ := by
+      rw [hnormt]
+      exact le_of_lt (lt_of_le_of_lt
+        (le_trans (le_max_left _ _) (le_trans (le_max_right _ _) (le_max_right 3 _))) ht)
+    have h2t : 2 < ‖(t : ℂ)‖ := by rw [hnormt]; linarith
+    have hRt : R < ‖(t : ℂ)‖ := by
+      rw [hnormt]
+      have hRle : R ≤ R + ‖c₁‖ + 1 := by nlinarith [norm_nonneg c₁]
+      exact lt_of_le_of_lt hRle (lt_of_le_of_lt
+        (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) (le_max_right 3 _))) ht)
+    have hqR : R < ‖quadratic c₁ (t : ℂ)‖ := by
+      have hlow : ‖(t : ℂ)‖ ^ 2 - ‖c₁‖ ≤ ‖quadratic c₁ (t : ℂ)‖ := by
+        have h := norm_sub_le (quadratic c₁ (t : ℂ)) c₁
+        rw [quadratic, add_sub_cancel_right, norm_pow] at h
+        change ‖(t : ℂ)‖ ^ 2 - ‖c₁‖ ≤ ‖(t : ℂ) ^ 2 + c₁‖
+        linarith
+      have hRt2 : R < ‖(t : ℂ)‖ ^ 2 - ‖c₁‖ := by
+        rw [hnormt]
+        have hTtail : R + ‖c₁‖ + 1 < t := lt_of_le_of_lt
+          (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) (le_max_right 3 _))) ht
+        nlinarith
+      exact lt_of_lt_of_le hRt2 hlow
+    have hψt : ψ₁ (bottcherCoord c₁ (t : ℂ)) = (t : ℂ) := hψleft (t : ℂ) hRt
+    have hφsq : bottcherCoord c₁ (quadratic c₁ (t : ℂ)) = (bottcherCoord c₁ (t : ℂ)) ^ 2 :=
+      bottcherCoord_quadratic hc₁t h2t
+    have hψsq : ψ₁ ((bottcherCoord c₁ (t : ℂ)) ^ 2) = quadratic c₁ (t : ℂ) := by
+      rw [← hφsq]
+      exact hψleft (quadratic c₁ (t : ℂ)) hqR
+    have hφ₂sq : bottcherCoord c₂ (quadratic c₂ (t : ℂ)) = (bottcherCoord c₂ (t : ℂ)) ^ 2 :=
+      bottcherCoord_quadratic hc₂t h2t
+    rw [hψsq, hψt, ← hφ₂sq]
+  exact hdefect.congr' hev.symm
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Transferred quadratic asymptotic in the `c₁` value coordinate.**
+Along `w=φ_{c₁}(t)`, the `c₂` quadratic map transported into the `c₁` Böttcher-value coordinate has
+leading defect `c₂-c₁`:
+`φ₁(t²+c₂)-φ₁(t)² → c₂-c₁` as `t → +∞`. -/
+theorem tendsto_transferred_quadratic_minus_square_along_real_bottcher_ray (c₁ c₂ : ℂ) :
+    Tendsto (fun t : ℝ =>
+      bottcherCoord c₁ (quadratic c₂ (t : ℂ)) - (bottcherCoord c₁ (t : ℂ)) ^ 2)
+      atTop (𝓝 (c₂ - c₁)) := by
+  have hdefect : Tendsto (fun t : ℝ => bottcherCoord c₁ (quadratic c₂ (t : ℂ)) -
+        bottcherCoord c₁ (quadratic c₁ (t : ℂ))) atTop (𝓝 (c₂ - c₁)) := by
+    let E₂ : ℝ → ℂ := fun t => bottcherCoord c₁ (quadratic c₂ (t : ℂ)) - quadratic c₂ (t : ℂ)
+    let E₁ : ℝ → ℂ := fun t => bottcherCoord c₁ (quadratic c₁ (t : ℂ)) - quadratic c₁ (t : ℂ)
+    have hE₂ : Tendsto E₂ atTop (𝓝 0) :=
+      ((tendsto_bottcherCoord_sub_id c₁).comp (tendsto_sq_add_cobounded c₂)).comp
+        tendsto_ofReal_cobounded
+    have hE₁ : Tendsto E₁ atTop (𝓝 0) :=
+      ((tendsto_bottcherCoord_sub_id c₁).comp (tendsto_sq_add_cobounded c₁)).comp
+        tendsto_ofReal_cobounded
+    have hmain : Tendsto (fun t => E₂ t - E₁ t + (c₂ - c₁)) atTop (𝓝 (c₂ - c₁)) := by
+      simpa using (hE₂.sub hE₁).add tendsto_const_nhds
+    convert hmain using 1
+    funext t
+    simp [E₂, E₁, quadratic]
+    ring
+  have hev : (fun t : ℝ =>
+      bottcherCoord c₁ (quadratic c₂ (t : ℂ)) - (bottcherCoord c₁ (t : ℂ)) ^ 2)
+      =ᶠ[atTop]
+      (fun t : ℝ => bottcherCoord c₁ (quadratic c₂ (t : ℂ)) -
+        bottcherCoord c₁ (quadratic c₁ (t : ℂ))) := by
+    let T : ℝ := max 3 ‖c₁‖
+    filter_upwards [eventually_gt_atTop T] with t ht
+    have ht3 : (3 : ℝ) < t := lt_of_le_of_lt (le_max_left _ _) ht
+    have htpos : 0 < t := by linarith
+    have hnormt : ‖(t : ℂ)‖ = t := by
+      rw [Complex.norm_real, Real.norm_of_nonneg (le_of_lt htpos)]
+    have hc₁t : ‖c₁‖ ≤ ‖(t : ℂ)‖ := by
+      rw [hnormt]
+      exact le_of_lt (lt_of_le_of_lt (le_max_right 3 ‖c₁‖) ht)
+    have h2t : 2 < ‖(t : ℂ)‖ := by rw [hnormt]; linarith
+    rw [bottcherCoord_quadratic hc₁t h2t]
+  exact hdefect.congr' hev.symm
+
+end Bottcher
