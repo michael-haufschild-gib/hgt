@@ -967,3 +967,20 @@ theorem monoG_witness_projection_base {U : Set ℂ}
     hUo hUc hUne hp0 hinf hpfix k
 
 end Bottcher
+
+namespace Bottcher
+open Polynomial
+
+/-- **Left powers preserve algebraic independence.** If `a, b` satisfy no polynomial relation over `K`,
+then so do `a^k, b` for `k > 0`. This is the one-coordinate version needed when a cover coordinate
+`ξ` is independent from `G`, but the downstairs coordinate is `ξ^k`. -/
+theorem noRelation_pow_left {K M : Type*} [Field K] [Field M] [Algebra K M] {a b : M} {k : ℕ}
+    (hk : 0 < k) (h : NoRelation K a b) : NoRelation K (a ^ k) b := by
+  intro P hP
+  have hP'0 : (expand (Polynomial K) k) P = 0 := by
+    apply h
+    rw [Polynomial.map_expand, Polynomial.expand_eval]
+    exact hP
+  exact expand_injective hk (hP'0.trans (map_zero _).symm)
+
+end Bottcher

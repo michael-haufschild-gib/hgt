@@ -632,3 +632,324 @@ theorem exists_uniform_cover_annulus_data_with_fixed_inverse_projection (c₁ c�
     by simpa [n] using hpInf⟩
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Projection image contains every high Böttcher-value far-field point.**
+If `ψ₁` is a left inverse to `φ_{c₁}` on `{‖z‖ > R}` and `z` is far enough with
+`R'^N < ‖φ_{c₁}(z)‖`, then choosing an `N`-th root `ξ` of `φ_{c₁}(z)` puts `ξ` in the exterior annulus
+and sends it back to `z` under the annulus projection `ξ ↦ ψ₁(ξ^N)`. This is the concrete image-side
+lemma needed for the pullback-transcendence route. -/
+theorem mem_projection_image_of_far_bottcher_value {c₁ z : ℂ} {ψ₁ : ℂ → ℂ} {R R' : ℝ} {N : ℕ}
+    (hNpos : 0 < N)
+    (hψleft : ∀ w, R < ‖w‖ → ψ₁ (bottcherCoord c₁ w) = w)
+    (hzR : R < ‖z‖) (hzval : R' ^ N < ‖bottcherCoord c₁ z‖) :
+    z ∈ (fun ξ => ψ₁ (ξ ^ N)) '' {ξ : ℂ | R' < ‖ξ‖} := by
+  obtain ⟨ξ, hξpow⟩ := IsAlgClosed.exists_pow_nat_eq (bottcherCoord c₁ z) hNpos
+  have hξann : R' < ‖ξ‖ := by
+    by_contra hle
+    push Not at hle
+    have hpow_le : ‖ξ‖ ^ N ≤ R' ^ N := pow_le_pow_left₀ (norm_nonneg ξ) hle N
+    have hval_le : ‖bottcherCoord c₁ z‖ ≤ R' ^ N := by
+      rw [← hξpow, norm_pow]
+      exact hpow_le
+    exact not_lt_of_ge hval_le hzval
+  refine ⟨ξ, hξann, ?_⟩
+  change ψ₁ (ξ ^ N) = z
+  rw [hξpow]
+  exact hψleft z hzR
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Uniform fixed-inverse annulus data with an explicit image lower set.**
+This strengthens `exists_uniform_cover_annulus_data_with_fixed_inverse_projection` by retaining the
+left-inverse identity for the same `ψ₁` and exposing the usable image fact: for every dyadic level,
+all far-field points whose `c₁` Böttcher value has norm above `R'^(2^(d+1))` lie in the projection
+image of the exterior annulus. -/
+theorem exists_uniform_cover_annulus_data_with_fixed_inverse_projection_and_image (c₁ c₂ : ℂ) :
+    ∃ (R B R' : ℝ) (_hR'pos : 0 < R') (ψ₁ : ℂ → ℂ),
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₁ c₂ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z) ∧
+      ∀ d : ℕ,
+        (∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖}, AnalyticAt ℂ ψ₁ (ξ ^ (2 ^ (d + 1)))) ∧
+        (∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖}, ψ₁ (ξ ^ (2 ^ (d + 1))) ∈ escapeOpen c₂) ∧
+        (∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖},
+          bottcherCoord c₁ (ψ₁ (ξ ^ (2 ^ (d + 1)))) = ξ ^ (2 ^ (d + 1))) ∧
+        ((fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite ∧
+        (∀ z, R < ‖z‖ → R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₁ z‖ →
+          z ∈ (fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}) := by
+  obtain ⟨R, B, R', hR'gt1, hall⟩ := exists_cover_annulus_radii_uniform_dyadic c₁ c₂
+  have hR'pos : 0 < R' := lt_trans zero_lt_one hR'gt1
+  obtain ⟨hR1, hR2, _hRc₂0, _hB_far10, _hB_far20, _hBR0, _hBpos0,
+      _hR'pos0, _hR'B0⟩ := hall 0
+  obtain ⟨ψ₁, hψleft, hψan, _hψright⟩ := exists_analytic_inverse_far (c := c₁) hR1 hR2
+  refine ⟨R, B, R', hR'pos, ψ₁, hall, hψleft, fun d => ?_⟩
+  obtain ⟨_hR1, _hR2, hRc₂, hB_far1, hB_far2, hBR, hBpos, _hR'pos, hR'B⟩ := hall d
+  let n : ℕ := d + 1
+  have hR'B_n : B < R' ^ (2 ^ n) := by simpa [n] using hR'B
+  have key : ∀ ξ : ℂ, R' < ‖ξ‖ → ∃ z, R < ‖z‖ ∧ bottcherCoord c₁ z = ξ ^ (2 ^ n) := by
+    intro ξ hξR'
+    have hwnorm : ‖ξ ^ (2 ^ n)‖ = ‖ξ‖ ^ (2 ^ n) := by rw [norm_pow]
+    have hwB : B < ‖ξ ^ (2 ^ n)‖ := by
+      rw [hwnorm]
+      exact lt_of_lt_of_le hR'B_n (pow_le_pow_left₀ (le_of_lt hR'pos) (le_of_lt hξR') (2 ^ n))
+    have hwfar1 : 768 * ‖c₁‖ + 64 < ‖ξ ^ (2 ^ n)‖ ^ 2 :=
+      lt_of_le_of_lt hB_far1 (by nlinarith [hBpos, hwB])
+    have hwfar2 : 8 * max 2 ‖c₁‖ < ‖ξ ^ (2 ^ n)‖ := lt_trans hB_far2 hwB
+    obtain ⟨z, hz, hbz⟩ := exists_far_preimage (c := c₁) hwfar1 hwfar2
+    have hzR : R < ‖z‖ := by
+      have h1 : B / 2 ≤ ‖z‖ := le_trans (by linarith [hwB]) hz
+      linarith [hBR]
+    exact ⟨z, hzR, hbz⟩
+  have hψan' : ∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖}, AnalyticAt ℂ ψ₁ (ξ ^ (2 ^ n)) := by
+    intro ξ hξ
+    obtain ⟨z, hzR, hbz⟩ := key ξ hξ
+    rw [← hbz]
+    exact hψan z hzR
+  have hcont' : ∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖}, ψ₁ (ξ ^ (2 ^ n)) ∈ escapeOpen c₂ := by
+    intro ξ hξ
+    obtain ⟨z, hzR, hbz⟩ := key ξ hξ
+    have hψw : ψ₁ (ξ ^ (2 ^ n)) = z := by
+      rw [← hbz]
+      exact hψleft z hzR
+    rw [hψw]
+    show max 2 ‖c₂‖ < ‖z‖
+    exact lt_trans hRc₂ hzR
+  have hproj : ∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖},
+      bottcherCoord c₁ (ψ₁ (ξ ^ (2 ^ n))) = ξ ^ (2 ^ n) := by
+    intro ξ hξ
+    obtain ⟨z, hzR, hbz⟩ := key ξ hξ
+    have hψw : ψ₁ (ξ ^ (2 ^ n)) = z := by
+      rw [← hbz]
+      exact hψleft z hzR
+    rw [hψw]
+    exact hbz
+  have hpInf : ((fun ξ => ψ₁ (ξ ^ (2 ^ n))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite :=
+    projection_image_infinite_exterior hR'pos hproj
+  have himage : ∀ z, R < ‖z‖ → R' ^ (2 ^ n) < ‖bottcherCoord c₁ z‖ →
+      z ∈ (fun ξ => ψ₁ (ξ ^ (2 ^ n))) '' {ξ : ℂ | R' < ‖ξ‖} := by
+    intro z hzR hzval
+    exact mem_projection_image_of_far_bottcher_value
+      (c₁ := c₁) (ψ₁ := ψ₁) (R := R) (R' := R') (N := 2 ^ n)
+      (pow_pos (by norm_num : (0 : ℕ) < 2) n) hψleft hzR hzval
+  exact ⟨by simpa [n] using hψan', by simpa [n] using hcont', by simpa [n] using hproj,
+    by simpa [n] using hpInf, by simpa [n] using himage⟩
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **A pulled-back algebraic relation descends to the projection image.**
+If `q(z,Y)` vanishes after substituting `z = ψ₁(ξ^N)` and
+`Y = φ_{c₂}(ψ₁(ξ^N))` on the exterior annulus, then the original relation vanishes at every point in
+the projection image. This is the function-level descent step for the pulled-back transcendence bridge. -/
+theorem eqOn_eval₂_bottcher_on_projection_image_of_pullback
+    {c₂ : ℂ} {ψ₁ : ℂ → ℂ} {N : ℕ} {R' : ℝ} (q : Polynomial (Polynomial ℂ))
+    (hrel : Set.EqOn
+      (fun ξ => q.eval₂ (Polynomial.evalRingHom (ψ₁ (ξ ^ N)))
+        (bottcherCoord c₂ (ψ₁ (ξ ^ N)))) 0 {ξ : ℂ | R' < ‖ξ‖}) :
+    Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0
+      ((fun ξ => ψ₁ (ξ ^ N)) '' {ξ : ℂ | R' < ‖ξ‖}) := by
+  rintro z ⟨ξ, hξ, rfl⟩
+  exact hrel hξ
+
+/-- **Pulled-back relation descends to the explicit high-value far-field subset.**
+Combining `mem_projection_image_of_far_bottcher_value` with
+`eqOn_eval₂_bottcher_on_projection_image_of_pullback`: on every far-field point whose `c₁` Böttcher
+value is large enough to admit an annulus root, a relation vanishing on the annulus pullback gives the
+same relation for the genuine `z`-plane `φ_{c₂}`. -/
+theorem eqOn_eval₂_bottcher_on_far_high_values_of_pullback
+    {c₁ c₂ : ℂ} {ψ₁ : ℂ → ℂ} {R R' : ℝ} {N : ℕ} (q : Polynomial (Polynomial ℂ))
+    (hNpos : 0 < N)
+    (hψleft : ∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z)
+    (hrel : Set.EqOn
+      (fun ξ => q.eval₂ (Polynomial.evalRingHom (ψ₁ (ξ ^ N)))
+        (bottcherCoord c₂ (ψ₁ (ξ ^ N)))) 0 {ξ : ℂ | R' < ‖ξ‖}) :
+    Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0
+      {z : ℂ | R < ‖z‖ ∧ R' ^ N < ‖bottcherCoord c₁ z‖} := by
+  intro z hz
+  exact eqOn_eval₂_bottcher_on_projection_image_of_pullback (c₂ := c₂) (ψ₁ := ψ₁)
+    (N := N) (R' := R') q hrel
+    (mem_projection_image_of_far_bottcher_value (c₁ := c₁) (ψ₁ := ψ₁) (R := R) (R' := R')
+      (N := N) hNpos hψleft hz.1 hz.2)
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial
+
+/-- **Projection-base bivariate eval-germ identity.**
+Evaluating `q ∈ ℂ[z][Y]` at an analytic projection germ `p₀` and an analytic coordinate `a` gives the
+concrete germ `ξ ↦ q(p₀(ξ), a(ξ))`. This is the `ratfuncToMeroVia` analogue of
+`eval₂_polyToAnalytic_val`. -/
+theorem eval₂_polyToAnalyticVia_val {U : Set ℂ} {p₀ a : analyticSubring U} {f₀ g : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀)
+    (ha : (a : Germ (𝓟 U) ℂ) = ↑g) (q : Polynomial (Polynomial ℂ)) :
+    ((q.eval₂ (polyToAnalyticVia U p₀) a : analyticSubring U) : Germ (𝓟 U) ℂ)
+      = ↑(fun ξ => q.eval₂ (Polynomial.evalRingHom (f₀ ξ)) (g ξ)) := by
+  rw [show ((q.eval₂ (polyToAnalyticVia U p₀) a : analyticSubring U) : Germ (𝓟 U) ℂ)
+        = (analyticSubring U).subtype (q.eval₂ (polyToAnalyticVia U p₀) a) from rfl]
+  rw [Polynomial.eval₂_eq_sum, Polynomial.sum_def]
+  simp only [map_sum, map_mul, map_pow]
+  rw [show (↑(fun ξ => q.eval₂ (Polynomial.evalRingHom (f₀ ξ)) (g ξ)) : Germ (𝓟 U) ℂ)
+      = ↑(fun ξ => ∑ i ∈ q.support, (q.coeff i).eval (f₀ ξ) * (g ξ) ^ i : ℂ → ℂ) from by
+        congr 1
+        funext ξ
+        simp [Polynomial.eval₂_eq_sum, Polynomial.sum_def]]
+  rw [show ((fun ξ => ∑ i ∈ q.support, (q.coeff i).eval (f₀ ξ) * (g ξ) ^ i : ℂ → ℂ) :
+        Germ (𝓟 U) ℂ)
+      = ∑ i ∈ q.support,
+          ((fun ξ => (q.coeff i).eval (f₀ ξ) * (g ξ) ^ i : ℂ → ℂ) : Germ (𝓟 U) ℂ) from by
+        rw [show ((fun ξ => ∑ i ∈ q.support, (q.coeff i).eval (f₀ ξ) * (g ξ) ^ i : ℂ → ℂ) :
+            Germ (𝓟 U) ℂ)
+          = Germ.coeRingHom (𝓟 U)
+              (fun ξ => ∑ i ∈ q.support, (q.coeff i).eval (f₀ ξ) * (g ξ) ^ i) from rfl]
+        rw [show (fun ξ => ∑ i ∈ q.support, (q.coeff i).eval (f₀ ξ) * (g ξ) ^ i)
+          = ∑ i ∈ q.support, (fun ξ => (q.coeff i).eval (f₀ ξ) * (g ξ) ^ i) from by
+            funext ξ
+            rw [Finset.sum_apply]]
+        rw [map_sum]
+        apply Finset.sum_congr rfl
+        intro i _hi
+        rfl]
+  apply Finset.sum_congr rfl
+  intro i _hi
+  rw [show (analyticSubring U).subtype (polyToAnalyticVia U p₀ (q.coeff i))
+      = ((polyToAnalyticVia U p₀ (q.coeff i) : analyticSubring U) : Germ (𝓟 U) ℂ) from rfl]
+  rw [polyToAnalyticVia_coe p₀ hp0 (q.coeff i)]
+  change (↑(fun z => (q.coeff i).eval (f₀ z)) : Germ (𝓟 U) ℂ) * (a : Germ (𝓟 U) ℂ) ^ i =
+      ↑(fun ξ => (q.coeff i).eval (f₀ ξ) * (g ξ) ^ i)
+  rw [ha]
+  rw [← Germ.coe_pow]
+  rw [← Germ.coe_mul]
+  rfl
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Polynomial projection-base field relation gives a concrete pulled-back relation.**
+If a `ℂ[z][Y]` relation evaluates to zero in `meroField U` after embedding `ℂ[z]` via the projection
+`p₀` and substituting the analytic coordinate `a`, then the value-function
+`ξ ↦ q(p₀(ξ), a(ξ))` vanishes on `U`. -/
+theorem eqOn_pullback_eval₂_of_eval₂_polyToMeroVia_zero {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ a : analyticSubring U} {f₀ g : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀)
+    (ha : (a : Germ (𝓟 U) ℂ) = ↑g) (q : Polynomial (Polynomial ℂ))
+    (hzero : q.eval₂ (polyToMeroVia p₀)
+        (algebraMap (analyticSubring U) (meroField U) a) = 0) :
+    Set.EqOn (fun ξ => q.eval₂ (Polynomial.evalRingHom (f₀ ξ)) (g ξ)) 0 U := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  have hzero' : algebraMap (analyticSubring U) (meroField U)
+      (q.eval₂ (polyToAnalyticVia U p₀) a) = 0 := by
+    have heq : q.eval₂ (polyToMeroVia p₀)
+        (algebraMap (analyticSubring U) (meroField U) a)
+        = algebraMap (analyticSubring U) (meroField U)
+            (q.eval₂ (polyToAnalyticVia U p₀) a) := by
+      rw [show polyToMeroVia p₀ =
+          (algebraMap (analyticSubring U) (meroField U)).comp (polyToAnalyticVia U p₀) from rfl]
+      exact (Polynomial.hom_eval₂ q (polyToAnalyticVia U p₀)
+        (algebraMap (analyticSubring U) (meroField U)) a).symm
+    rwa [← heq]
+  rw [meroField_algebraMap_eq_zero_iff U hUo hUc hUne] at hzero'
+  have hval := eval₂_polyToAnalyticVia_val (U := U) hp0 ha q
+  rw [hzero', ZeroMemClass.coe_zero] at hval
+  have hgerm : (↑(fun ξ => q.eval₂ (Polynomial.evalRingHom (f₀ ξ)) (g ξ)) : Germ (𝓟 U) ℂ)
+      = 0 := hval.symm
+  rw [← Germ.coe_zero, Germ.coe_eq] at hgerm
+  exact fun ξ hξ => eventually_principal.mp hgerm ξ hξ
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Projection-base field relation descends to the far high-value z-domain.**
+This composes the meromorphic field-to-function bridge with the annulus projection image lemma. A
+polynomial relation over `ℂ(p₀)` that vanishes for the pulled-back coordinate
+`a(ξ)=φ_{c₂}(ψ₁(ξ^N))` forces the original relation `q(z,φ_{c₂}(z))=0` on every far-field point whose
+`φ_{c₁}` value admits an exterior-annulus `N`-th root. -/
+theorem eqOn_eval₂_bottcher_on_far_high_values_of_eval₂_polyToMeroVia_zero
+    {c₁ c₂ : ℂ} {ψ₁ : ℂ → ℂ} {R R' : ℝ} {N : ℕ}
+    (hR'pos : 0 < R') (hNpos : 0 < N)
+    (hψleft : ∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z)
+    {p₀ a : analyticSubring {ξ : ℂ | R' < ‖ξ‖}}
+    (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) = ↑(fun ξ => ψ₁ (ξ ^ N)))
+    (ha : (a : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+      ↑(fun ξ => bottcherCoord c₂ (ψ₁ (ξ ^ N))))
+    (q : Polynomial (Polynomial ℂ))
+    (hzero : q.eval₂ (polyToMeroVia p₀)
+        (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (meroField {ξ : ℂ | R' < ‖ξ‖}) a) = 0) :
+    Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0
+      {z : ℂ | R < ‖z‖ ∧ R' ^ N < ‖bottcherCoord c₁ z‖} := by
+  have hrel := eqOn_pullback_eval₂_of_eval₂_polyToMeroVia_zero
+    isOpen_exterior (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+    hp0 ha q hzero
+  exact eqOn_eval₂_bottcher_on_far_high_values_of_pullback
+    (c₁ := c₁) (c₂ := c₂) (ψ₁ := ψ₁) (R := R) (R' := R') (N := N)
+    q hNpos hψleft hrel
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Pulled-back `φ₂` transcendence from no relation on the far high-value z-domain.**
+For the exterior annulus projection `p₀(ξ)=ψ₁(ξ^N)` and coordinate
+`a(ξ)=φ_{c₂}(ψ₁(ξ^N))`, algebraicity of `a` over the projection-base copy of `ℂ(z)` would produce a
+nonzero polynomial relation `q(z,φ_{c₂}(z))=0` on the explicit far high-value subset. Thus any
+function-level obstruction on that subset proves the exact `hGtr` needed by the annulus route. -/
+theorem transcendental_pullback_bottcher_of_no_far_high_relation
+    {c₁ c₂ : ℂ} {ψ₁ : ℂ → ℂ} {R R' : ℝ} {N : ℕ}
+    (hR'pos : 0 < R') (hNpos : 0 < N)
+    (hψleft : ∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z)
+    {p₀ a : analyticSubring {ξ : ℂ | R' < ‖ξ‖}}
+    (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) = ↑(fun ξ => ψ₁ (ξ ^ N)))
+    (hpInf : ((fun ξ => ψ₁ (ξ ^ N)) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+    (ha : (a : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+      ↑(fun ξ => bottcherCoord c₂ (ψ₁ (ξ ^ N))))
+    (hno : ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+      ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0
+        {z : ℂ | R < ‖z‖ ∧ R' ^ N < ‖bottcherCoord c₁ z‖}) :
+    letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+      isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+        (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+    letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+      (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+        (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+    Transcendental (RatFunc ℂ)
+      (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+        (meroField {ξ : ℂ | R' < ‖ξ‖}) a) := by
+  let U : Set ℂ := {ξ : ℂ | R' < ‖ξ‖}
+  have hUo : IsOpen U := isOpen_exterior
+  have hUc : IsPreconnected U := isPreconnected_exterior hR'pos
+  have hUne : U.Nonempty := nonempty_exterior hR'pos
+  haveI : IsDomain (analyticSubring U) := isDomain_analyticSubring U hUo hUc hUne
+  letI algK : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hpInf hUo hUc hUne).toAlgebra
+  letI algA : Algebra (Polynomial ℂ) (meroField U) := (polyToMeroVia p₀).toAlgebra
+  haveI hst : IsScalarTower (Polynomial ℂ) (RatFunc ℂ) (meroField U) := by
+    apply IsScalarTower.of_algebraMap_eq
+    intro p
+    show polyToMeroVia p₀ p = ratfuncToMeroVia p₀ hp0 hpInf hUo hUc hUne
+      (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)
+    rw [show ratfuncToMeroVia p₀ hp0 hpInf hUo hUc hUne
+        (algebraMap (Polynomial ℂ) (RatFunc ℂ) p) = polyToMeroVia p₀ p
+      from IsFractionRing.lift_algebraMap (polyToMeroVia_injective p₀ hp0 hpInf hUo hUc hUne) p]
+  show ¬ IsAlgebraic (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a)
+  rw [← IsFractionRing.isAlgebraic_iff (Polynomial ℂ) (RatFunc ℂ) (meroField U)]
+  rintro ⟨q, hq0, hqe⟩
+  apply hno q hq0
+  rw [aeval_def] at hqe
+  have halg : (algebraMap (Polynomial ℂ) (meroField U)) = polyToMeroVia p₀ := rfl
+  rw [halg] at hqe
+  exact eqOn_eval₂_bottcher_on_far_high_values_of_eval₂_polyToMeroVia_zero
+    (c₁ := c₁) (c₂ := c₂) (ψ₁ := ψ₁) (R := R) (R' := R') (N := N)
+    hR'pos hNpos hψleft hp0 ha q hqe
+
+end Bottcher
