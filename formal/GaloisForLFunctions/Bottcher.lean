@@ -204,3 +204,4 @@ import GaloisForLFunctions.Bottcher.RelativeRigidityMultiplierOnePeriod
 
 import GaloisForLFunctions.Bottcher.AnalyticRoot
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
+import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
