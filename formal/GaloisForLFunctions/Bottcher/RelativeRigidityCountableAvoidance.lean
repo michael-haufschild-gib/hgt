@@ -10536,3 +10536,140 @@ theorem noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_radicalSq
       (c₁ := c₂) (c₂ := c₁) (u := u) (p := p) (R := R) loopOrderCode₂ hloopOrderInj₂
 
 end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- Boundary-bumping reduction, local carrier form.  Once a paper/topology argument supplies a
+nontrivial preconnected continuum `A` inside a small closed ball of `K_c1`, this lemma proves that the
+continuum is already a two-arm germ in the exact common-component frontier slice.  The only dynamical
+input is that the surrounding punctured basin ball lies in the selected common exterior component. -/
+lemma commonComponentFrontierSlice_preconnected_germ_of_filledJulia_closedBall_germ
+    {c₁ c₂ u p : ℂ} {A : Set ℂ} {ρ R : ℝ}
+    (hempty : interior (filledJulia c₁) = ∅)
+    (hApre : IsPreconnected A) (hpA : p ∈ A) (hAnon : A.Nontrivial)
+    (hAK : A ⊆ filledJulia c₁)
+    (hAρ : A ⊆ Metric.closedBall p ρ)
+    (hρR : ρ < R)
+    (hoff : Metric.closedBall p ρ ⊆ (filledJulia c₂)ᶜ)
+    (hlocalV : Metric.ball p R ∩ (filledJulia c₁)ᶜ ⊆
+      connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) :
+    ∃ A : Set ℂ, IsPreconnected A ∧ p ∈ A ∧ A.Nontrivial ∧
+      A ⊆ CommonComponentFrontierSlice c₁ c₂ u := by
+  refine ⟨A, hApre, hpA, hAnon, ?_⟩
+  intro x hxA
+  have hxK : x ∈ filledJulia c₁ := hAK hxA
+  have hxfront : x ∈ frontier (filledJulia c₁) :=
+    mem_frontier_of_mem_filledJulia_emptyInterior hempty hxK
+  have hxoff : x ∈ (filledJulia c₂)ᶜ := hoff (hAρ hxA)
+  have hxballR : x ∈ Metric.ball p R := by
+    rw [Metric.mem_ball]
+    exact lt_of_le_of_lt (by simpa [Metric.mem_closedBall] using hAρ hxA) hρR
+  have hxnotint : x ∉ interior (filledJulia c₁) := by
+    rw [hempty]
+    simp
+  have hxclKc : x ∈ closure (filledJulia c₁)ᶜ := by
+    rwa [closure_compl]
+  have hxclV : x ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) := by
+    rw [mem_closure_iff_nhds] at hxclKc ⊢
+    intro N hN
+    have hballN : Metric.ball p R ∩ N ∈ 𝓝 x :=
+      inter_mem (isOpen_ball.mem_nhds hxballR) hN
+    obtain ⟨y, hyBN, hyKc⟩ := hxclKc (Metric.ball p R ∩ N) hballN
+    exact ⟨y, hyBN.2, hlocalV ⟨hyBN.1, hyKc⟩⟩
+  exact ⟨hxfront, hxoff, hxclV⟩
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- **Connected q62-facing endpoint from boundary-bumping continua.**  This is the Lean interface for
+the boundary-bumping route: for each exact common-component frontier point, the geometric side supplies
+a nontrivial preconnected continuum inside a small closed ball of the active filled Julia set; the
+surrounding punctured basin ball is contained in the selected common exterior component.  The helper
+`commonComponentFrontierSlice_preconnected_germ_of_filledJulia_closedBall_germ` turns that continuum
+into a two-arm germ in the exact slice, and the existing loop/order code handles the non-ray bad locus. -/
+theorem q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffBoundaryBumpingContinuumLoopOrderCode
+    {κ₁ κ₂ : Type*} [Countable κ₁] [Countable κ₂]
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUneMoore : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂) (_hx₁ : c₁ ∉ Exceptional) (_hx₂ : c₂ ∉ Exceptional)
+    (hG₁ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (hG₂ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β₁ β₂ : ℂ → ℂ)
+    (hβ₁an : AnalyticOnNhd ℂ β₁ (filledJulia c₁)ᶜ)
+    (hβ₁esc : ∀ z ∈ escapeOpen c₁, β₁ z = bottcherCoord c₁ z)
+    (hβ₁mod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β₁ z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hβ₂an : AnalyticOnNhd ℂ β₂ (filledJulia c₂)ᶜ)
+    (hβ₂esc : ∀ z ∈ escapeOpen c₂, β₂ z = bottcherCoord c₂ z)
+    (hβ₂mod : ∀ z ∈ (filledJulia c₂)ᶜ, ‖β₂ z‖ = Real.exp (greenFunctionDyn c₂ z))
+    (hKconn₁ : IsPreconnected (filledJulia c₁))
+    (hKconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (hbump₁ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+        ∃ (A : Set ℂ) (ρ R : ℝ),
+          IsPreconnected A ∧ p ∈ A ∧ A.Nontrivial ∧
+          A ⊆ filledJulia c₁ ∧ A ⊆ Metric.closedBall p ρ ∧ ρ < R ∧
+          Metric.closedBall p ρ ⊆ (filledJulia c₂)ᶜ ∧
+          Metric.ball p R ∩ (filledJulia c₁)ᶜ ⊆
+            connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)
+    (loopOrderCode₁ : ℂ → κ₁)
+    (hloopOrderInj₁ : InjOn loopOrderCode₁
+      ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v z} : Set ℂ))
+    (hbump₂ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₂) → p ∈ (filledJulia c₁)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u) →
+        ∃ (A : Set ℂ) (ρ R : ℝ),
+          IsPreconnected A ∧ p ∈ A ∧ A.Nontrivial ∧
+          A ⊆ filledJulia c₂ ∧ A ⊆ Metric.closedBall p ρ ∧ ρ < R ∧
+          Metric.closedBall p ρ ⊆ (filledJulia c₁)ᶜ ∧
+          Metric.ball p R ∩ (filledJulia c₂)ᶜ ⊆
+            connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u)
+    (loopOrderCode₂ : ℂ → κ₂)
+    (hloopOrderInj₂ : InjOn loopOrderCode₂
+      ({z | z ∈ frontier (filledJulia c₂) ∧ z ∈ (filledJulia c₁)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v z} : Set ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+    letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+  letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+  refine q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffMooreFiberSliceComponentLoopOrderCode
+    hUo hUc hUneMoore hUinf c₁ c₂ hU₁ hU₂ hne _hx₁ _hx₂ hG₁ hG₂ β₁ β₂ hβ₁an hβ₁esc
+    hβ₁mod hβ₂an hβ₂esc hβ₂mod hKconn₁ hKconn₂ hempty₁ hempty₂ ?_ loopOrderCode₁
+    hloopOrderInj₁ ?_ loopOrderCode₂ hloopOrderInj₂
+  · intro p u huU hpfront hpoff hpcl
+    right
+    obtain ⟨A, ρ, R, hApre, hpA, hAnon, hAK, hAρ, hρR, hoff, hlocalV⟩ :=
+      hbump₁ p u huU hpfront hpoff hpcl
+    obtain ⟨B, hBpre, hpB, hBnon, hBsub⟩ :=
+      commonComponentFrontierSlice_preconnected_germ_of_filledJulia_closedBall_germ
+        (c₁ := c₁) (c₂ := c₂) (u := u) (p := p) (A := A) (ρ := ρ) (R := R)
+        hempty₁ hApre hpA hAnon hAK hAρ hρR hoff hlocalV
+    exact exists_second_point_in_commonComponentFrontierSlice_component_of_not_subsingleton
+      (c₁ := c₁) (c₂ := c₂) (u := u) (p := p)
+      (commonComponentFrontierSlice_component_not_subsingleton_of_preconnected_nontrivial_subset
+        (c₁ := c₁) (c₂ := c₂) (u := u) (p := p) (A := B) hBpre hpB hBnon hBsub)
+  · intro p u huU hpfront hpoff hpcl
+    right
+    obtain ⟨A, ρ, R, hApre, hpA, hAnon, hAK, hAρ, hρR, hoff, hlocalV⟩ :=
+      hbump₂ p u huU hpfront hpoff hpcl
+    obtain ⟨B, hBpre, hpB, hBnon, hBsub⟩ :=
+      commonComponentFrontierSlice_preconnected_germ_of_filledJulia_closedBall_germ
+        (c₁ := c₂) (c₂ := c₁) (u := u) (p := p) (A := A) (ρ := ρ) (R := R)
+        hempty₂ hApre hpA hAnon hAK hAρ hρR hoff hlocalV
+    exact exists_second_point_in_commonComponentFrontierSlice_component_of_not_subsingleton
+      (c₁ := c₂) (c₂ := c₁) (u := u) (p := p)
+      (commonComponentFrontierSlice_component_not_subsingleton_of_preconnected_nontrivial_subset
+        (c₁ := c₂) (c₂ := c₁) (u := u) (p := p) (A := B) hBpre hpB hBnon hBsub)
+
+end Bottcher
