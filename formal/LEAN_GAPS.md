@@ -11,7 +11,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 | Lines | File |
 |---:|---|
-| 11088 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
+| 11348 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 4197 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
@@ -163,8 +163,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/LocalCollar.lean:422` | normalization estimate.  The remaining geometric obligations are: construct the forward sector, |
 | `formal/GaloisForLFunctions/Bottcher/LoopGlue.lean:12` | the global single-valued `φ̃c`. The remaining hDisc work is exactly that geometric instantiation, plus the |
 | `formal/GaloisForLFunctions/Bottcher/ModularLambda.lean:4` | The sole remaining input to three-value Montel (via `normal_of_omitting_lift`) is the universal |
-| `formal/GaloisForLFunctions/Bottcher/ModularLambda.lean:69` | into `ℂ` there. (Non-vanishing of `θ₃` on all of `ℍ` is one of the remaining theta facts.) -/ |
-| `formal/GaloisForLFunctions/Bottcher/ModularLambda.lean:140` | the series is `2 + tail`; the remaining work is the tail bound `‖tail‖ < 2` on the fundamental domain.) -/ |
+| `formal/GaloisForLFunctions/Bottcher/ModularLambda.lean:75` | into `ℂ` there. (Non-vanishing of `θ₃` on all of `ℍ` is one of the remaining theta facts.) -/ |
+| `formal/GaloisForLFunctions/Bottcher/ModularLambda.lean:146` | the series is `2 + tail`; the remaining work is the tail bound `‖tail‖ < 2` on the fundamental domain.) -/ |
 | `formal/GaloisForLFunctions/Bottcher/ModularLambdaCovering.lean:547` | connecting `SL(2,ℤ)`-element into `Γ(2)` *once* the remaining (analytic) univalence input is supplied. -/ |
 | `formal/GaloisForLFunctions/Bottcher/ModularLambdaInteriorNormal.lean:34` | remaining branch is the cusp/boundary escape case. -/ |
 | `formal/GaloisForLFunctions/Bottcher/ModularLambdaLift.lean:11` | local biholomorphism — and the bound via Cayley are the remaining analytic steps of `#30`.) Built on the |
@@ -279,18 +279,18 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3551` | provider. This pins the remaining all-`N` Hurwitz analytic input to one explicit interface. -/ |
 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3844` | remaining provider must use a proper descent/cover base. -/ |
 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean:416` | implication to `rationalTailIndependent_harmonic_of_poleRootInput`, making the remaining Hurwitz analytic |
-| `formal/GaloisForLFunctions/Hurwitz/HurwitzZeta.lean:88` | `x^{-s}` and the remaining tail `R_{n}(x) = ∑_{m≠n}(m-n+x)^{-s}` is the regular part: |
+| `formal/GaloisForLFunctions/Hurwitz/HurwitzZeta.lean:89` | `x^{-s}` and the remaining tail `R_{n}(x) = ∑_{m≠n}(m-n+x)^{-s}` is the regular part: |
 | `formal/GaloisForLFunctions/Hurwitz/N2DensityShadow.lean:10` | `q=0`, then `l_2=0`. The remaining `l_0F_0+l_1F_1+c=0` is killed by the distinct-exponent extraction |
 | `formal/GaloisForLFunctions/Hurwitz/N2HalfInteger.lean:367` | missing companion to `HurwitzN2Final.hurwitz_n2_unconditional`: instead of assuming `2s ∉ ℤ`, it assumes |
 | `formal/GaloisForLFunctions/Hurwitz/N2Main.lean:9` | Two inputs are taken as hypotheses (the remaining analytic/arithmetic gaps): |
 | `formal/GaloisForLFunctions/Hurwitz/OrbitObstruction.lean:18` | coefficient to vanish — `coeff_one_eq_zero_of_pm_one` — and the missing top (quadratic) coefficient is |
 | `formal/GaloisForLFunctions/Hurwitz/OrbitObstruction.lean:65` | `coeff 1 = 0`. The missing quadratic coefficient is *not* supplied here (the order-two orbit cannot |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:16` | `κ₋ = #off-line poles` are the remaining Stage-1 bricks; only the **upper bound** is proved here. No |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:69` | realified into this quadratic-form setting (the remaining Stage-1 wiring). -/ |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:87` | remaining Stage-1 brick is the structural decomposition exhibiting the carrier Pick matrix as |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:126` | follows immediately. The remaining (genuine, deep) Stage-1 content is producing that factorization |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:527` | to `neg_inertia_le_of_posSemidef`. For the carrier (`w_i=e_i+a_i`, `u_i=e_i−a_i`) the only remaining |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:598` | `2k` pole-vectors `{a_i, e_i}` — the sole remaining arithmetic input for the closed-form `κ₋ = #off-line zeros`. -/ |
+| `formal/GaloisForLFunctions/KreinLangerInertia.lean:19` | `κ₋ = #off-line poles` are the remaining Stage-1 bricks; only the **upper bound** is proved here. No |
+| `formal/GaloisForLFunctions/KreinLangerInertia.lean:72` | realified into this quadratic-form setting (the remaining Stage-1 wiring). -/ |
+| `formal/GaloisForLFunctions/KreinLangerInertia.lean:90` | remaining Stage-1 brick is the structural decomposition exhibiting the carrier Pick matrix as |
+| `formal/GaloisForLFunctions/KreinLangerInertia.lean:129` | follows immediately. The remaining (genuine, deep) Stage-1 content is producing that factorization |
+| `formal/GaloisForLFunctions/KreinLangerInertia.lean:530` | to `neg_inertia_le_of_posSemidef`. For the carrier (`w_i=e_i+a_i`, `u_i=e_i−a_i`) the only remaining |
+| `formal/GaloisForLFunctions/KreinLangerInertia.lean:601` | `2k` pole-vectors `{a_i, e_i}` — the sole remaining arithmetic input for the closed-form `κ₋ = #off-line zeros`. -/ |
 
 ## Historical Status Logs
 

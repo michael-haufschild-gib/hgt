@@ -11186,3 +11186,673 @@ theorem exists_commonExterior_straightSegmentAccessible_offOther_frontier_near
 end
 
 end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- A connected component of a subset is closed relative to the ambient subset. -/
+lemma connectedComponentIn_relatively_closed
+    {G : Set ℂ} {v : ℂ} (hvG : v ∈ G) :
+    closure (connectedComponentIn G v) ∩ G ⊆ connectedComponentIn G v := by
+  let W : Set ℂ := connectedComponentIn G v
+  have hWpre : IsPreconnected W := isPreconnected_connectedComponentIn
+  have hWsubT : W ⊆ closure W ∩ G := by
+    intro z hz
+    exact ⟨subset_closure hz, connectedComponentIn_subset G v (by simpa [W] using hz)⟩
+  have hTsubcl : closure W ∩ G ⊆ closure W := inter_subset_left
+  have hTpre : IsPreconnected (closure W ∩ G) := hWpre.subset_closure hWsubT hTsubcl
+  have hvW : v ∈ W := by simpa [W] using mem_connectedComponentIn hvG
+  have hvT : v ∈ closure W ∩ G := ⟨subset_closure hvW, hvG⟩
+  have hTsubG : closure W ∩ G ⊆ G := inter_subset_right
+  simpa [W] using hTpre.subset_connectedComponentIn hvT hTsubG
+
+/-- Nearest-complement radial access from an interior point of an open proper planar set. -/
+lemma exists_straightSegmentAccessible_frontier_point_near_complement_point
+    {W : Set ℂ} (hWopen : IsOpen W) {v y : ℂ}
+    (hvW : v ∈ W) (hyWc : y ∈ Wᶜ) {ε : ℝ}
+    (hvy : 2 * dist v y < ε) :
+    ∃ q : ℂ, q ∈ frontier W ∧ dist q y < ε ∧ StraightSegmentAccessibleFrom W q := by
+  have hWne : W ≠ univ := by
+    intro h
+    exact hyWc (by simpa [h] using mem_univ y)
+  have hcomplne : Wᶜ.Nonempty := ⟨y, hyWc⟩
+  have hdistpos : 0 < Metric.infDist v Wᶜ :=
+    ((isClosed_compl_iff.mpr hWopen).notMem_iff_infDist_pos hcomplne).mp (by simpa using hvW)
+  obtain ⟨q, hqfront, hdistq⟩ := exists_mem_frontier_infDist_compl_eq_dist (E := ℂ) hvW hWne
+  have hvq : dist v q = Metric.infDist v Wᶜ := by
+    simpa [dist_comm] using hdistq.symm
+  have hseg : ∀ t : ℝ, 0 ≤ t → t < 1 → AffineMap.lineMap v q t ∈ W := by
+    intro t ht0 ht1
+    have htdist : dist (AffineMap.lineMap v q t) v < Metric.infDist v Wᶜ := by
+      rw [dist_lineMap_left, hvq]
+      have hnorm : ‖t‖ < (1 : ℝ) := by
+        rw [Real.norm_eq_abs, abs_of_nonneg ht0]
+        exact ht1
+      simpa using mul_lt_of_lt_one_left hdistpos hnorm
+    exact Metric.ball_infDist_compl_subset (x := v) (s := W) htdist
+  refine ⟨q, hqfront, ?_, ⟨v, hvW, hqfront, hseg⟩⟩
+  have hqv : dist q v = Metric.infDist v Wᶜ := by
+    simpa [dist_comm] using hdistq.symm
+  have hle : Metric.infDist v Wᶜ ≤ dist v y := Metric.infDist_le_dist_of_mem hyWc
+  calc
+    dist q y ≤ dist q v + dist v y := dist_triangle q v y
+    _ = Metric.infDist v Wᶜ + dist v y := by rw [hqv]
+    _ ≤ dist v y + dist v y := by linarith
+    _ = 2 * dist v y := by ring
+    _ < ε := hvy
+
+/-- Strong component-relative boundary access: near every eligible common-frontier point there is a
+straight-segment-accessible point on the active Julia frontier, still outside the other filled Julia
+set, and on the boundary of the chosen common-exterior component. -/
+theorem exists_commonExterior_julia_straightSegmentAccessible_offOther_frontier_near
+    {c₁ c₂ u p : ℂ} {ε : ℝ}
+    (hpfront : p ∈ frontier (filledJulia c₁))
+    (hpoff : p ∈ (filledJulia c₂)ᶜ)
+    (hpcl : p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u))
+    (hε : 0 < ε) :
+    ∃ q : ℂ,
+      q ∈ frontier (filledJulia c₁) ∧
+      q ∈ (filledJulia c₂)ᶜ ∧
+      q ∈ frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) ∧
+      dist q p < ε ∧
+      StraightSegmentAccessibleFrom
+        (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) q := by
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  let V : Set ℂ := connectedComponentIn C u
+  have hCopen : IsOpen C :=
+    (isClosed_filledJulia c₁).isOpen_compl.inter (isClosed_filledJulia c₂).isOpen_compl
+  have hVopen : IsOpen V := by
+    simpa [V] using hCopen.connectedComponentIn (x := u)
+  obtain ⟨R, hRpos, hRsub⟩ := Metric.isOpen_iff.mp (isClosed_filledJulia c₂).isOpen_compl p hpoff
+  let δ : ℝ := min ε R
+  have hδpos : 0 < δ := lt_min hε hRpos
+  let η : ℝ := δ / 3
+  have hηpos : 0 < η := by positivity
+  obtain ⟨v, hvV, hpvlt⟩ := Metric.mem_closure_iff.mp hpcl η hηpos
+  have hvpdist : dist v p < η := by simpa [dist_comm] using hpvlt
+  have hδleR : δ ≤ R := min_le_right ε R
+  have hδleε : δ ≤ ε := min_le_left ε R
+  have hηltR : η < R := by
+    dsimp [η]
+    nlinarith [hδpos, hδleR]
+  have hvC : v ∈ C := connectedComponentIn_subset C u (by simpa [V] using hvV)
+  let G : Set ℂ := Metric.ball p R ∩ (filledJulia c₁)ᶜ
+  have hvG : v ∈ G := by
+    refine ⟨?_, hvC.1⟩
+    exact lt_trans hvpdist hηltR
+  let W : Set ℂ := connectedComponentIn G v
+  have hGopen : IsOpen G := Metric.isOpen_ball.inter (isClosed_filledJulia c₁).isOpen_compl
+  have hWopen : IsOpen W := by
+    simpa [W] using hGopen.connectedComponentIn (x := v)
+  have hvW : v ∈ W := by simpa [W] using mem_connectedComponentIn hvG
+  have hWsubG : W ⊆ G := by simpa [W] using connectedComponentIn_subset G v
+  have hWsubC : W ⊆ C := by
+    intro z hz
+    have hzG : z ∈ G := hWsubG hz
+    exact ⟨hzG.2, hRsub hzG.1⟩
+  have hWsubV : W ⊆ V := by
+    have hWsubCompV : W ⊆ connectedComponentIn C v :=
+      (isPreconnected_connectedComponentIn).subset_connectedComponentIn hvW hWsubC
+    have hcomp : connectedComponentIn C v = V := by
+      have h := connectedComponentIn_eq (by simpa [V] using hvV)
+      exact h.symm
+    simpa [hcomp] using hWsubCompV
+  have hpK : p ∈ filledJulia c₁ := mem_filledJulia_of_frontier hpfront
+  have hpnotG : p ∉ G := by
+    intro hpG
+    exact hpG.2 hpK
+  have hpnotW : p ∈ Wᶜ := by
+    intro hpW
+    exact hpnotG (hWsubG hpW)
+  have hvy : 2 * dist v p < δ := by
+    dsimp [η] at hvpdist
+    nlinarith
+  obtain ⟨q, hqfrontW, hqdistδ, hqaccW⟩ :=
+    exists_straightSegmentAccessible_frontier_point_near_complement_point
+      (W := W) hWopen hvW hpnotW hvy
+  have hqdistε : dist q p < ε := lt_of_lt_of_le hqdistδ hδleε
+  have hqballR : q ∈ Metric.ball p R := lt_of_lt_of_le hqdistδ hδleR
+  have hqoff : q ∈ (filledJulia c₂)ᶜ := hRsub hqballR
+  have hqclW : q ∈ closure W := frontier_subset_closure hqfrontW
+  have hqnotW : q ∉ W := by
+    have htmp : q ∈ closure W \ W := by simpa [hWopen.frontier_eq] using hqfrontW
+    exact htmp.2
+  have hqnotΩ₁ : q ∉ (filledJulia c₁)ᶜ := by
+    intro hqΩ₁
+    have hqG : q ∈ G := ⟨hqballR, hqΩ₁⟩
+    have hqW : q ∈ W := connectedComponentIn_relatively_closed (G := G) (v := v) hvG ⟨hqclW, hqG⟩
+    exact hqnotW hqW
+  have hqK : q ∈ filledJulia c₁ := by simpa using hqnotΩ₁
+  have hWsubΩ₁ : W ⊆ (filledJulia c₁)ᶜ := fun z hz => (hWsubG hz).2
+  have hqclΩ₁ : q ∈ closure (filledJulia c₁)ᶜ := closure_mono hWsubΩ₁ hqclW
+  have hqfrontK : q ∈ frontier (filledJulia c₁) := by
+    rw [frontier_eq_closure_inter_closure]
+    exact ⟨subset_closure hqK, hqclΩ₁⟩
+  have hqclV : q ∈ closure V := closure_mono hWsubV hqclW
+  have hVsubΩ₁ : V ⊆ (filledJulia c₁)ᶜ := by
+    intro z hz
+    exact (connectedComponentIn_subset C u (by simpa [V] using hz)).1
+  have hqnotV : q ∉ V := by
+    intro hqV
+    exact hVsubΩ₁ hqV hqK
+  have hqfrontV : q ∈ frontier V := by
+    simpa [hVopen.frontier_eq] using And.intro hqclV hqnotV
+  have hqaccV : StraightSegmentAccessibleFrom V q := by
+    rcases hqaccW with ⟨x, hxW, _hxfront, hxseg⟩
+    exact ⟨x, hWsubV hxW, hqfrontV, fun t ht0 ht1 => hWsubV (hxseg t ht0 ht1)⟩
+  exact ⟨q, hqfrontK, hqoff, by simpa [V] using hqfrontV, hqdistε, by simpa [V] using hqaccV⟩
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Analytic continuation across a boundary point from a specified approach set.  This is weaker than
+`ContinuesAcross f D z₀`, which uses the full `nhdsWithin z₀ D` filter; it is the component-relative
+continuation notion used by the accessible-boundary crossing argument. -/
+def ContinuesAcrossWithin (f : ℂ → ℂ) (A : Set ℂ) (z₀ : ℂ) : Prop :=
+  ∃ g : ℂ → ℂ, AnalyticAt ℂ g z₀ ∧ ∀ᶠ z in 𝓝[A] z₀, g z = f z
+
+/-- A separable analytic fibre forces continuation of the basin branch from any preconnected approach
+set on which the relation holds.  This is the formal core of the GPT crossing route: the approach set
+may be one component/tail of the common exterior, not the full punctured basin ball. -/
+theorem continuesAcrossWithin_of_branch_analytic_approach
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {z₀ : ℂ}
+    {r : ℝ} {A : Set ℂ} {β : ℂ → ℂ}
+    (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s) (hN1 : 1 ≤ N)
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
+    (hlead : a N z₀ ≠ 0) (hsep : (fibrePoly a s z₀).Separable)
+    (hr : 0 < r)
+    (hApre : ∀ ρ : ℝ, 0 < ρ → ρ ≤ r → IsPreconnected (Metric.ball z₀ ρ ∩ A))
+    (hAne : ∀ ρ : ℝ, 0 < ρ → ρ ≤ r → (Metric.ball z₀ ρ ∩ A).Nonempty)
+    (hβcA : ContinuousOn β (Metric.ball z₀ r ∩ A))
+    (hβrelA : ∀ z ∈ Metric.ball z₀ r ∩ A, ∑ i ∈ s, a i z * (β z) ^ i = 0) :
+    ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ r ∧
+      ContinuesAcrossWithin β (Metric.ball z₀ ρ ∩ A) z₀ := by
+  obtain ⟨rBranch, w, hrBranch, hwc, hwsep, hwdeg, hwrel⟩ :=
+    exists_branch_family_analytic hsupp hN hN1 ha hlead hsep
+  set ρ : ℝ := min r rBranch with hρdef
+  have hρ : 0 < ρ := lt_min hr hrBranch
+  have hρr : ρ ≤ r := min_le_left _ _
+  have hρBranch : ρ ≤ rBranch := min_le_right _ _
+  let Approach : Set ℂ := Metric.ball z₀ ρ ∩ A
+  have hApproachBallBranch : Approach ⊆ Metric.ball z₀ rBranch := by
+    intro z hz
+    exact Metric.ball_subset_ball hρBranch hz.1
+  have hApproachPre : IsPreconnected Approach := hApre ρ hρ hρr
+  have hβcApproach : ContinuousOn β Approach := by
+    refine hβcA.mono ?_
+    intro z hz
+    exact ⟨Metric.ball_subset_ball hρr hz.1, hz.2⟩
+  have hβrelApproach : ∀ z ∈ Approach, ∑ i ∈ s, a i z * (β z) ^ i = 0 := by
+    intro z hz
+    exact hβrelA z ⟨Metric.ball_subset_ball hρr hz.1, hz.2⟩
+  obtain ⟨z₁, hz₁⟩ := hAne ρ hρ hρr
+  have hwcApproach : ∀ k, ContinuousOn (w k) Approach :=
+    fun k => (hwc k).mono hApproachBallBranch
+  have hwsepApproach : ∀ z ∈ Approach, ∀ k l, k ≠ l → w k z ≠ w l z :=
+    fun z hz => hwsep z (hApproachBallBranch hz)
+  have hwdegApproach : ∀ z ∈ Approach, (fibrePoly a s z).natDegree = N :=
+    fun z hz => hwdeg z (hApproachBallBranch hz)
+  have hwrelApproach : ∀ k, ∀ z ∈ Approach, ∑ i ∈ s, a i z * (w k z) ^ i = 0 :=
+    fun k z hz => hwrel k z (hApproachBallBranch hz)
+  obtain ⟨k, hk⟩ :=
+    eqOn_branch_of_relation_analytic hN1 w β hApproachPre hwcApproach hβcApproach
+      hwsepApproach hwdegApproach hwrelApproach hβrelApproach hz₁
+  have hwkAt : ContinuousAt (w k) z₀ :=
+    (hwc k).continuousAt (Metric.ball_mem_nhds z₀ hrBranch)
+  have hz₀ball : z₀ ∈ Metric.ball z₀ rBranch := Metric.mem_ball_self hrBranch
+  have hroot : ∑ i ∈ s, a i z₀ * (w k z₀) ^ i = 0 :=
+    hwrel k z₀ hz₀ball
+  have hrootQ : (fibrePoly a s z₀).eval (w k z₀) = 0 := by
+    rw [eval_fibrePoly]
+    exact hroot
+  have hd : (fibrePoly a s z₀).derivative.eval (w k z₀) ≠ 0 :=
+    eval_derivative_ne_zero_of_separable hsep hrootQ
+  have hpart := relation_hasDerivAt_w_analytic a s z₀ (w k z₀)
+  have hβlim : Tendsto β (𝓝[Approach] z₀) (𝓝 (w k z₀)) :=
+    tendsto_within_of_eqOn hwkAt hk
+  obtain ⟨g, hgAt, hgz₀, hgrel⟩ :=
+    exists_analyticAt_branch_analytic ha hroot hpart hd
+  have hrelFilt : ∀ᶠ z in 𝓝[Approach] z₀, ∑ i ∈ s, a i z * (β z) ^ i = 0 :=
+    Filter.eventually_of_mem self_mem_nhdsWithin hβrelApproach
+  have hmatchβ : ∀ᶠ z in 𝓝[Approach] z₀, g z = β z :=
+    branch_unique_within_analytic (fun i hi => (ha i hi).continuousAt) hpart hd
+      hgAt.continuousAt hgz₀ hβlim (hgrel.filter_mono nhdsWithin_le_nhds) hrelFilt
+  exact ⟨ρ, hρ, hρr, g, hgAt, hmatchβ⟩
+
+/-- Component-relative natural-boundary contradiction from a separable fibre.  The obstruction needed
+here is not full-filter noncontinuability; it is the stronger one-sided/component noncontinuability used
+in the paper proof package. -/
+theorem false_of_branch_analytic_component_approach
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c z₀ : ℂ}
+    {r : ℝ} {A : Set ℂ} {β : ℂ → ℂ}
+    (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s) (hN1 : 1 ≤ N)
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
+    (hlead : a N z₀ ≠ 0) (hsep : (fibrePoly a s z₀).Separable)
+    (hr : 0 < r) (hAsub : A ⊆ (filledJulia c)ᶜ)
+    (hApre : ∀ ρ : ℝ, 0 < ρ → ρ ≤ r → IsPreconnected (Metric.ball z₀ ρ ∩ A))
+    (hAne : ∀ ρ : ℝ, 0 < ρ → ρ ≤ r → (Metric.ball z₀ ρ ∩ A).Nonempty)
+    (hβcA : ContinuousOn β (Metric.ball z₀ r ∩ A))
+    (hβrelA : ∀ z ∈ Metric.ball z₀ r ∩ A, ∑ i ∈ s, a i z * (β z) ^ i = 0)
+    (hnbWithin : ∀ B : Set ℂ,
+      B ⊆ (filledJulia c)ᶜ →
+      (∀ ε : ℝ, 0 < ε → (Metric.ball z₀ ε ∩ B).Nonempty) →
+      ¬ ContinuesAcrossWithin β B z₀) :
+    False := by
+  obtain ⟨ρ, hρ, hρr, hcont⟩ :=
+    continuesAcrossWithin_of_branch_analytic_approach
+      hsupp hN hN1 ha hlead hsep hr hApre hAne hβcA hβrelA
+  exact hnbWithin (Metric.ball z₀ ρ ∩ A)
+    (by
+      intro z hz
+      exact hAsub hz.2)
+    (by
+      intro ε hε
+      set δ : ℝ := min ε ρ with hδdef
+      have hδ : 0 < δ := lt_min hε hρ
+      have hδr : δ ≤ r := le_trans (min_le_right _ _) hρr
+      obtain ⟨z, hzball, hzA⟩ := hAne δ hδ hδr
+      refine ⟨z, ?_, ?_⟩
+      · exact Metric.ball_subset_ball (min_le_left _ _) hzball
+      · exact ⟨Metric.ball_subset_ball (min_le_right _ _) hzball, hzA⟩)
+    hcont
+
+end Bottcher
+
+namespace Bottcher
+
+/-- A nonempty set with no isolated points cannot be contained in a discrete subset.  This is the
+abstract avoidance step in the component-frontier proof: once the frontier slice is shown to have no
+isolated points, it automatically avoids every discrete analytic bad locus. -/
+theorem not_subset_discrete_of_no_isolated {S B : Set ℂ}
+    (hne : S.Nonempty)
+    (hacc : ∀ p ∈ S, ∀ r : ℝ, 0 < r → ∃ q ∈ S, q ≠ p ∧ q ∈ Metric.ball p r)
+    (hBdisc : IsDiscrete B) :
+    ¬ S ⊆ B := by
+  intro hsub
+  obtain ⟨p, hpS⟩ := hne
+  have hpB : p ∈ B := hsub hpS
+  obtain ⟨ε, hε, hball⟩ := Metric.exists_ball_inter_eq_singleton_of_mem_discrete hBdisc hpB
+  obtain ⟨q, hqS, hqne, hqball⟩ := hacc p hpS ε hε
+  have hqmem : q ∈ Metric.ball p ε ∩ B := ⟨hqball, hsub hqS⟩
+  have hqp : q = p := by
+    have hsingle : q ∈ ({p} : Set ℂ) := by
+      rw [← hball]
+      exact hqmem
+    simpa using hsingle
+  exact hqne hqp
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Existence form of `not_subset_discrete_of_no_isolated`: a nonempty set with no isolated points has
+at least one point outside any discrete bad locus. -/
+theorem exists_mem_not_mem_discrete_of_no_isolated {S B : Set ℂ}
+    (hne : S.Nonempty)
+    (hacc : ∀ p ∈ S, ∀ r : ℝ, 0 < r → ∃ q ∈ S, q ≠ p ∧ q ∈ Metric.ball p r)
+    (hBdisc : IsDiscrete B) :
+    ∃ q : ℂ, q ∈ S ∧ q ∉ B := by
+  by_contra hnone
+  have hsub : S ⊆ B := by
+    intro z hzS
+    by_contra hzB
+    exact hnone ⟨z, hzS, hzB⟩
+  exact not_subset_discrete_of_no_isolated hne hacc hBdisc hsub
+
+end Bottcher
+
+open Set Metric
+open scoped Pointwise
+
+namespace Bottcher
+
+/-- A punctured Euclidean disk in `ℂ` is preconnected.  The proof writes the centered punctured disk
+as `(0,r) • sphere(0,1)` and then translates. -/
+lemma punctured_ball_isPreconnected_complex {p : ℂ} {r : ℝ} (_hr : 0 < r) :
+    IsPreconnected (Metric.ball p r \ ({p} : Set ℂ)) := by
+  have hSphere : IsPreconnected (Metric.sphere (0 : ℂ) (1 : ℝ)) := by
+    have hrank : 1 < Module.rank ℝ ℂ := by
+      rw [Complex.rank_real_complex]
+      norm_num
+    exact isPreconnected_sphere hrank (0 : ℂ) (1 : ℝ)
+  have hProd : IsPreconnected (Set.Ioo (0 : ℝ) r ×ˢ Metric.sphere (0 : ℂ) (1 : ℝ)) :=
+    isPreconnected_Ioo.prod hSphere
+  let f : ℝ × ℂ → ℂ := fun x => x.1 • x.2
+  have hfcont : ContinuousOn f (Set.Ioo (0 : ℝ) r ×ˢ Metric.sphere (0 : ℂ) (1 : ℝ)) := by
+    fun_prop
+  have hImage : IsPreconnected (f '' (Set.Ioo (0 : ℝ) r ×ˢ Metric.sphere (0 : ℂ) (1 : ℝ))) :=
+    hProd.image f hfcont
+  have hImageEqSmul :
+      f '' (Set.Ioo (0 : ℝ) r ×ˢ Metric.sphere (0 : ℂ) (1 : ℝ)) =
+        Set.Ioo (0 : ℝ) r • Metric.sphere (0 : ℂ) (1 : ℝ) := by
+    ext z
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨x.1, hx.1, x.2, hx.2, rfl⟩
+    · rintro ⟨a, ha, y, hy, rfl⟩
+      exact ⟨(a, y), ⟨ha, hy⟩, rfl⟩
+  have hSmulEq :
+      Set.Ioo (0 : ℝ) r • Metric.sphere (0 : ℂ) (1 : ℝ) =
+        Metric.ball (0 : ℂ) r \ Metric.closedBall (0 : ℂ) (0 : ℝ) := by
+    simpa [mul_one] using
+      (Ioo_smul_sphere_zero (E := ℂ) (a := 0) (b := r) (r := 1) (by norm_num) zero_lt_one)
+  have hClosedBallZero : Metric.closedBall (0 : ℂ) (0 : ℝ) = ({0} : Set ℂ) := by
+    ext z
+    simp
+  have h0 : IsPreconnected (Metric.ball (0 : ℂ) r \ ({0} : Set ℂ)) := by
+    simpa [hImageEqSmul, hSmulEq, hClosedBallZero] using hImage
+  let g : ℂ → ℂ := fun z => p + z
+  have hgcont : ContinuousOn g (Metric.ball (0 : ℂ) r \ ({0} : Set ℂ)) := by
+    fun_prop
+  have hgImage : IsPreconnected (g '' (Metric.ball (0 : ℂ) r \ ({0} : Set ℂ))) :=
+    h0.image g hgcont
+  have hgImageEq :
+      g '' (Metric.ball (0 : ℂ) r \ ({0} : Set ℂ)) = Metric.ball p r \ ({p} : Set ℂ) := by
+    ext z
+    constructor
+    · rintro ⟨w, hw, rfl⟩
+      constructor
+      · simpa [g, dist_eq_norm, add_comm, add_left_comm, add_assoc] using hw.1
+      · intro hz
+        have hw0 : w = 0 := by
+          simpa [g] using congrArg (fun t => t - p) hz
+        exact hw.2 (by simp [hw0])
+    · intro hz
+      refine ⟨z - p, ?_, ?_⟩
+      · constructor
+        · simpa [g, dist_eq_norm, sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using hz.1
+        · intro hw0
+          have hz_eq : z = p := sub_eq_zero.mp (by simpa using hw0)
+          exact hz.2 hz_eq
+      · simp [g]
+  simpa [hgImageEq] using hgImage
+
+/-- If a preconnected set meets an open set and does not meet its frontier, then it is contained in
+that open set. -/
+lemma subset_of_isPreconnected_of_inter_frontier_empty_of_inter_nonempty
+    {Y A : Set ℂ} (hY : IsPreconnected Y) (hAopen : IsOpen A)
+    (hYA : (Y ∩ A).Nonempty) (hYfront : Y ∩ frontier A = ∅) :
+    Y ⊆ A := by
+  have hcover : Y ⊆ A ∪ interior Aᶜ := by
+    intro y hyY
+    by_cases hyA : y ∈ A
+    · exact Or.inl hyA
+    · right
+      have hynfront : y ∉ frontier A := by
+        intro hyfront
+        have hyempty : y ∈ (∅ : Set ℂ) := by
+          rw [← hYfront]
+          exact ⟨hyY, hyfront⟩
+        exact hyempty
+      have hycomplFront : y ∈ (frontier A)ᶜ := hynfront
+      rw [compl_frontier_eq_union_interior] at hycomplFront
+      rcases hycomplFront with hyintA | hyintAc
+      · exact False.elim (hyA (interior_subset hyintA))
+      · exact hyintAc
+  have hdisj : Y ∩ (A ∩ interior Aᶜ) = ∅ := by
+    apply eq_empty_iff_forall_notMem.mpr
+    rintro z ⟨_hzY, hzA, hzintAc⟩
+    exact interior_subset hzintAc hzA
+  have hsub_or := (isPreconnected_iff_subset_of_disjoint.mp hY)
+    A (interior Aᶜ) hAopen isOpen_interior hcover hdisj
+  rcases hsub_or with hsub | hsub
+  · exact hsub
+  · rcases hYA with ⟨y, hyY, hyA⟩
+    exact False.elim (interior_subset (hsub hyY) hyA)
+
+/-- Abstract form of boundary-slice no-isolatedness.  If `V` is open, lies outside `J`, is closed
+relative to `Ω \ J`, and `J` has no isolated points, then `J ∩ Ω ∩ frontier V` has no isolated
+points. -/
+lemma boundary_slice_no_isolated_of_relative_component
+    {Ω J V : Set ℂ}
+    (hΩopen : IsOpen Ω) (hVopen : IsOpen V)
+    (hVsubJc : V ⊆ Jᶜ)
+    (hrelclosed : closure V ∩ (Ω \ J) ⊆ V)
+    (hJacc : ∀ p ∈ J, ∀ r : ℝ, 0 < r → ∃ q ∈ J, q ≠ p ∧ q ∈ Metric.ball p r) :
+    ∀ p ∈ (J ∩ Ω ∩ frontier V), ∀ r : ℝ, 0 < r →
+      ∃ q ∈ (J ∩ Ω ∩ frontier V), q ≠ p ∧ q ∈ Metric.ball p r := by
+  intro p hpE r hr
+  by_contra hnone
+  have hpJ : p ∈ J := hpE.1.1
+  have hpΩ : p ∈ Ω := hpE.1.2
+  have hpfront : p ∈ frontier V := hpE.2
+  have hEball_single : ∀ q, q ∈ (J ∩ Ω ∩ frontier V) → q ∈ Metric.ball p r → q = p := by
+    intro q hqE hqball
+    by_contra hqne
+    exact hnone ⟨q, hqE, hqne, hqball⟩
+  obtain ⟨R, hRpos, hRsub⟩ := Metric.isOpen_iff.mp hΩopen p hpΩ
+  let δ : ℝ := min (r / 2) R
+  have hδpos : 0 < δ := lt_min (by linarith) hRpos
+  have hδleR : δ ≤ R := min_le_right _ _
+  have hδltr : δ < r := by
+    have hδle : δ ≤ r / 2 := min_le_left _ _
+    linarith
+  let Y : Set ℂ := Metric.ball p δ \ ({p} : Set ℂ)
+  have hYpre : IsPreconnected Y := by
+    simpa [Y] using punctured_ball_isPreconnected_complex (p := p) hδpos
+  have hpclV : p ∈ closure V := frontier_subset_closure hpfront
+  have hpnotV : p ∉ V := by
+    intro hpV
+    have hpVF : p ∈ V ∩ frontier V := ⟨hpV, hpfront⟩
+    have hempty := hVopen.inter_frontier_eq
+    rw [hempty] at hpVF
+    exact hpVF
+  obtain ⟨v, hvV, hvball⟩ := Metric.mem_closure_iff.mp hpclV δ hδpos
+  have hvne : v ≠ p := by
+    intro hvp
+    exact hpnotV (by simpa [hvp] using hvV)
+  have hYV : (Y ∩ V).Nonempty := by
+    refine ⟨v, ?_, hvV⟩
+    exact ⟨by simpa [dist_comm] using hvball, by simp [hvne]⟩
+  have hYfront : Y ∩ frontier V = ∅ := by
+    apply eq_empty_iff_forall_notMem.mpr
+    rintro x ⟨hxY, hxfront⟩
+    have hxΩ : x ∈ Ω := hRsub (Metric.ball_subset_ball hδleR hxY.1)
+    have hxJ : x ∈ J := by
+      by_contra hxnotJ
+      have hxΩJ : x ∈ Ω \ J := ⟨hxΩ, hxnotJ⟩
+      have hxclV : x ∈ closure V := frontier_subset_closure hxfront
+      have hxV : x ∈ V := hrelclosed ⟨hxclV, hxΩJ⟩
+      have hxVF : x ∈ V ∩ frontier V := ⟨hxV, hxfront⟩
+      have hempty := hVopen.inter_frontier_eq
+      rw [hempty] at hxVF
+      exact hxVF
+    have hxE : x ∈ J ∩ Ω ∩ frontier V := ⟨⟨hxJ, hxΩ⟩, hxfront⟩
+    have hxballr : x ∈ Metric.ball p r := Metric.ball_subset_ball (le_of_lt hδltr) hxY.1
+    have hxp : x = p := hEball_single x hxE hxballr
+    exact hxY.2 (by simp [hxp])
+  have hYsubV : Y ⊆ V :=
+    subset_of_isPreconnected_of_inter_frontier_empty_of_inter_nonempty hYpre hVopen hYV hYfront
+  obtain ⟨q, hqJ, hqne, hqball⟩ := hJacc p hpJ δ hδpos
+  have hqY : q ∈ Y := ⟨hqball, by simp [hqne]⟩
+  have hqV : q ∈ V := hYsubV hqY
+  exact hVsubJc hqV hqJ
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Component-side noncontinuability at one Julia-boundary point, stated in the exact form consumed by
+`false_of_branch_analytic_component_approach`.  The proof in
+`docs/reports/theorem-b-component-side-noncontinuability-answer.md` reduces this to the Fatou-Ritt
+exceptional-polynomial theorem. -/
+def ComponentSideNoncontinuableAt (c : ℂ) (β : ℂ → ℂ) (z₀ : ℂ) : Prop :=
+  ∀ B : Set ℂ,
+    B ⊆ (filledJulia c)ᶜ →
+    (∀ ε : ℝ, 0 < ε → (Metric.ball z₀ ε ∩ B).Nonempty) →
+    ¬ ContinuesAcrossWithin β B z₀
+
+/-- The component-side branch contradiction, with Theorem B supplied as the named noncontinuability
+input. -/
+theorem false_of_branch_analytic_component_approach_of_noncontinuable
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c z₀ : ℂ}
+    {r : ℝ} {A : Set ℂ} {β : ℂ → ℂ}
+    (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s) (hN1 : 1 ≤ N)
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
+    (hlead : a N z₀ ≠ 0) (hsep : (fibrePoly a s z₀).Separable)
+    (hr : 0 < r) (hAsub : A ⊆ (filledJulia c)ᶜ)
+    (hApre : ∀ ρ : ℝ, 0 < ρ → ρ ≤ r → IsPreconnected (Metric.ball z₀ ρ ∩ A))
+    (hAne : ∀ ρ : ℝ, 0 < ρ → ρ ≤ r → (Metric.ball z₀ ρ ∩ A).Nonempty)
+    (hβcA : ContinuousOn β (Metric.ball z₀ r ∩ A))
+    (hβrelA : ∀ z ∈ Metric.ball z₀ r ∩ A, ∑ i ∈ s, a i z * (β z) ^ i = 0)
+    (hnbAt : ComponentSideNoncontinuableAt c β z₀) :
+    False :=
+  false_of_branch_analytic_component_approach
+    hsupp hN hN1 ha hlead hsep hr hAsub hApre hAne hβcA hβrelA hnbAt
+
+/-- The local data obtained in Theorem C after choosing an accessible point outside the finite bad locus
+of an irreducible separable one-coordinate relation. -/
+structure OneCoordinateSeparableCrossingData (c : ℂ) (β : ℂ → ℂ) where
+  a : ℕ → ℂ → ℂ
+  s : Finset ℕ
+  N : ℕ
+  z0 : ℂ
+  r : ℝ
+  A : Set ℂ
+  hsupp : s ⊆ Finset.range (N + 1)
+  hN : N ∈ s
+  hN1 : 1 ≤ N
+  ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z0
+  hlead : a N z0 ≠ 0
+  hsep : (fibrePoly a s z0).Separable
+  hr : 0 < r
+  hAsub : A ⊆ (filledJulia c)ᶜ
+  hApre : ∀ ρ : ℝ, 0 < ρ → ρ ≤ r → IsPreconnected (Metric.ball z0 ρ ∩ A)
+  hAne : ∀ ρ : ℝ, 0 < ρ → ρ ≤ r → (Metric.ball z0 ρ ∩ A).Nonempty
+  hβcA : ContinuousOn β (Metric.ball z0 r ∩ A)
+  hβrelA : ∀ z ∈ Metric.ball z0 r ∩ A, ∑ i ∈ s, a i z * (β z) ^ i = 0
+
+/-- Theorem C's final step: once a one-coordinate relation has been reduced to good separable crossing
+data, component-side noncontinuability gives a contradiction. -/
+theorem false_of_oneCoordinateSeparableCrossingData
+    {c : ℂ} {β : ℂ → ℂ} (D : OneCoordinateSeparableCrossingData c β)
+    (hnbAt : ComponentSideNoncontinuableAt c β D.z0) :
+    False :=
+  false_of_branch_analytic_component_approach_of_noncontinuable
+    D.hsupp D.hN D.hN1 D.ha D.hlead D.hsep D.hr D.hAsub D.hApre D.hAne D.hβcA D.hβrelA hnbAt
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Concrete common-exterior form of Theorem A.  If the first filled Julia set is perfect with empty
+interior, then its slice lying in the other exterior and on the frontier of the chosen common-exterior
+component has no isolated points. -/
+theorem commonExterior_boundarySlice_no_isolated_of_perfect_emptyInterior
+    {c₁ c₂ u : ℂ}
+    (hK : Perfect (filledJulia c₁))
+    (hempty : interior (filledJulia c₁) = ∅) :
+    ∀ p ∈ (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+        frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)),
+      ∀ r : ℝ, 0 < r →
+        ∃ q ∈ (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+          frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)),
+          q ≠ p ∧ q ∈ Metric.ball p r := by
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  let V : Set ℂ := connectedComponentIn C u
+  have hfront_eq : frontier (filledJulia c₁) = filledJulia c₁ := by
+    rw [(isClosed_filledJulia c₁).frontier_eq, hempty]
+    ext z
+    simp
+  have hΩopen : IsOpen ((filledJulia c₂)ᶜ : Set ℂ) := (isClosed_filledJulia c₂).isOpen_compl
+  have hCopen : IsOpen C :=
+    (isClosed_filledJulia c₁).isOpen_compl.inter (isClosed_filledJulia c₂).isOpen_compl
+  have hVopen : IsOpen V := by
+    simpa [V, C] using hCopen.connectedComponentIn (x := u)
+  have hVsubJc : V ⊆ (filledJulia c₁)ᶜ := by
+    intro z hzV
+    exact (connectedComponentIn_subset C u (by simpa [V] using hzV)).1
+  have hrelclosed : closure V ∩ ((filledJulia c₂)ᶜ \ filledJulia c₁) ⊆ V := by
+    intro z hz
+    have hzC : z ∈ C := ⟨hz.2.2, hz.2.1⟩
+    by_cases huC : u ∈ C
+    · exact connectedComponentIn_relatively_closed (G := C) (v := u) huC
+        (by simpa [V] using ⟨hz.1, hzC⟩)
+    · have hVempty : V = ∅ := by
+        simpa [V] using connectedComponentIn_eq_empty (F := C) (x := u) huC
+      have hzcl : z ∈ closure V := hz.1
+      rw [hVempty] at hzcl
+      simpa using hzcl
+  have hJacc : ∀ p ∈ filledJulia c₁, ∀ r : ℝ, 0 < r →
+      ∃ q ∈ filledJulia c₁, q ≠ p ∧ q ∈ Metric.ball p r := by
+    intro p hp r hr
+    have hpacc : AccPt p (𝓟 (filledJulia c₁)) := hK.acc p hp
+    rw [accPt_iff_nhds] at hpacc
+    obtain ⟨q, hq, hqne⟩ := hpacc (Metric.ball p r) (Metric.ball_mem_nhds p hr)
+    exact ⟨q, hq.2, hqne, hq.1⟩
+  have habstract := boundary_slice_no_isolated_of_relative_component
+    (Ω := (filledJulia c₂)ᶜ) (J := filledJulia c₁) (V := V)
+    hΩopen hVopen hVsubJc hrelclosed hJacc
+  intro p hp r hr
+  have hpAbs : p ∈ filledJulia c₁ ∩ (filledJulia c₂)ᶜ ∩ frontier V := by
+    exact ⟨⟨by simpa [hfront_eq] using hp.1.1, hp.1.2⟩, by simpa [V] using hp.2⟩
+  obtain ⟨q, hqAbs, hqne, hqball⟩ := habstract p hpAbs r hr
+  refine ⟨q, ?_, hqne, hqball⟩
+  exact ⟨⟨by simpa [hfront_eq] using hqAbs.1.1, hqAbs.1.2⟩, by simpa [V] using hqAbs.2⟩
+
+/-- Countable/discrete bad-locus avoidance on the same common-exterior boundary slice. -/
+theorem exists_commonExterior_boundarySlice_not_mem_discrete_of_perfect_emptyInterior
+    {c₁ c₂ u : ℂ} {B : Set ℂ}
+    (hK : Perfect (filledJulia c₁))
+    (hempty : interior (filledJulia c₁) = ∅)
+    (hne : (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+        frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)).Nonempty)
+    (hBdisc : IsDiscrete B) :
+    ∃ q,
+      q ∈ (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+        frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)) ∧
+      q ∉ B := by
+  exact exists_mem_not_mem_discrete_of_no_isolated hne
+    (commonExterior_boundarySlice_no_isolated_of_perfect_emptyInterior hK hempty) hBdisc
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Global component-side noncontinuability on the Julia frontier.  The paper proof of Theorem B
+supplies this for the Böttcher coordinate when `c ≠ -2`, `filledJulia c` is connected, and
+`interior (filledJulia c) = ∅`; the Fatou-Ritt classification is the external analytic input. -/
+def ComponentSideNoncontinuabilityOnJulia (c : ℂ) (β : ℂ → ℂ) : Prop :=
+  ∀ z₀, z₀ ∈ frontier (filledJulia c) → ComponentSideNoncontinuableAt c β z₀
+
+/-- Theorem C consumed through the global noncontinuability interface supplied by Theorem B. -/
+theorem false_of_oneCoordinateSeparableCrossingData_of_noncontinuabilityOnJulia
+    {c : ℂ} {β : ℂ → ℂ} (D : OneCoordinateSeparableCrossingData c β)
+    (hz0 : D.z0 ∈ frontier (filledJulia c))
+    (hnb : ComponentSideNoncontinuabilityOnJulia c β) :
+    False :=
+  false_of_oneCoordinateSeparableCrossingData D (hnb D.z0 hz0)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Final bivariate-relation algebra step.  If the boundary-crossing argument proves that every
+relation `P(F,G)=0` already has zero specialization `P(X,G)` as a polynomial in `X`, then
+transcendence of `G` kills all coefficients of `P`, so the original bivariate relation is zero. -/
+theorem noRelation_of_specialization_zero_of_transcendental
+    {K M : Type*} [Field K] [Field M] [Algebra K M] {F G : M}
+    (hG : Transcendental K G)
+    (hspecialize : ∀ P : Polynomial (Polynomial K),
+      (P.map (aeval G : Polynomial K →ₐ[K] M).toRingHom).eval F = 0 →
+      P.map (aeval G : Polynomial K →ₐ[K] M).toRingHom = 0) :
+    NoRelation K F G := by
+  intro P hrel
+  have hmap0 := hspecialize P hrel
+  refine Polynomial.ext (fun i => ?_)
+  rw [Polynomial.coeff_zero]
+  have hcoeff : (aeval G) (P.coeff i) = 0 := by
+    have h := congrArg (fun Q : Polynomial M => Q.coeff i) hmap0
+    simpa [Polynomial.coeff_map] using h
+  by_contra hne
+  exact hG ⟨P.coeff i, hne, hcoeff⟩
+
+end Bottcher
