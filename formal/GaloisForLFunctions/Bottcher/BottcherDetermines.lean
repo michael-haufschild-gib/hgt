@@ -90,7 +90,7 @@ theorem c_eq_of_greenFunctionDyn_eq {c₁ c₂ : ℂ}
     rw [Complex.sub_re, bottcherLog_re hc1 hz1, bottcherLog_re hc2 hz2,
       hglEq w (by rw [hWdef]; exact ⟨hw1, hw2⟩), sub_self]
   obtain ⟨a, ha⟩ := AnalyticOnNhd.eq_const_of_re_eq_const (hBlog1.sub hBlog2) hre0 isOpen_ball
-    (isConnected_ball (by norm_num))
+    ⟨⟨z₀, mem_ball_self (by norm_num)⟩, (convex_ball z₀ (1 : ℝ)).isPreconnected⟩
   -- φ_{c₁} = exp(a) · φ_{c₂} on the ball
   have hBcoord : ∀ w ∈ ball z₀ 1, bottcherCoord c₁ w = Complex.exp a * bottcherCoord c₂ w := by
     intro w hw

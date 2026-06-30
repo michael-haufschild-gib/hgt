@@ -12275,3 +12275,167 @@ theorem exists_commonExterior_boundarySlice_not_mem_discrete_of_preconnected_emp
 end
 
 end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Symmetric boundary-slice bad-locus avoidance for distinct parameters.  A distinct pair supplies a
+point in one filled Julia set and outside the other; applying the off-other-point wrapper in that
+orientation gives a good common-component boundary point outside the corresponding discrete bad locus. -/
+theorem exists_commonExterior_boundarySlice_not_mem_discrete_of_preconnected_emptyInterior_symmDiff
+    {c₁ c₂ u : ℂ} {B₁ B₂ : Set ℂ}
+    (hu : u ∈ (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ)
+    (hne : c₁ ≠ c₂)
+    (hconn₁ : IsPreconnected (filledJulia c₁))
+    (hconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (hB₁disc : IsDiscrete B₁)
+    (hB₂disc : IsDiscrete B₂) :
+    (∃ q,
+      q ∈ (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+        frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)) ∧
+      q ∉ B₁) ∨
+    (∃ q,
+      q ∈ (frontier (filledJulia c₂) ∩ (filledJulia c₁)ᶜ ∩
+        frontier (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u)) ∧
+      q ∉ B₂) := by
+  obtain ⟨x, hx | hx⟩ := exists_point_filledJulia_symmDiff hne
+  · exact Or.inl
+      (exists_commonExterior_boundarySlice_not_mem_discrete_of_preconnected_emptyInterior_offOtherPoint
+        hu hx.1 hx.2 hconn₁ hempty₁ hB₁disc)
+  · have hu' : u ∈ (filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ := ⟨hu.2, hu.1⟩
+    exact Or.inr
+      (exists_commonExterior_boundarySlice_not_mem_discrete_of_preconnected_emptyInterior_offOtherPoint
+        hu' hx.1 hx.2 hconn₂ hempty₂ hB₂disc)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- A straight component-access arc supplies the connected approach set required by the branch-family
+contradiction.  This is the component-side replacement for the false local slit/one-arm condition: the
+approach set is a tail of one accessible segment, not a whole punctured ball. -/
+theorem false_of_accessible_branch_family_relation_of_noncontinuable
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c q : ℂ}
+    {V : Set ℂ} {β : ℂ → ℂ}
+    (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s) (hN1 : 1 ≤ N)
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) q)
+    (hlead : a N q ≠ 0)
+    (hsep : (fibrePoly a s q).Separable)
+    (hqJ : q ∈ frontier (filledJulia c))
+    (hVsub : V ⊆ (filledJulia c)ᶜ)
+    (hacc : StraightSegmentAccessibleFrom V q)
+    (hβcV : ContinuousOn β V)
+    (hβrelV : ∀ z ∈ V, ∑ i ∈ s, a i z * (β z) ^ i = 0)
+    (hnbAt : ComponentSideNoncontinuableAt c β q) :
+    False := by
+  obtain ⟨r, xbranch, hr, hxbranchc, hxbranchsep, hxbranchdeg, hxbranchrel⟩ :=
+    exists_branch_family_analytic hsupp hN hN1 ha hlead hsep
+  rcases hacc with ⟨x, hxV, hqfrontV, hsegV⟩
+  have hqK : q ∈ filledJulia c := mem_filledJulia_of_frontier hqJ
+  have hqnotV : q ∉ V := by
+    intro hqV
+    exact hVsub hqV hqK
+  have hxne : x ≠ q := by
+    intro hxq
+    exact hqnotV (by simpa [hxq] using hxV)
+  have hdistpos : 0 < dist x q := dist_pos.mpr hxne
+  let d : ℝ := dist x q
+  have hdpos : 0 < d := by simpa [d] using hdistpos
+  let δ : ℝ := min (1 / 2 : ℝ) (r / (2 * d))
+  have hδpos : 0 < δ := by
+    have hhalf : (0 : ℝ) < 1 / 2 := by norm_num
+    have hrd : 0 < r / (2 * d) := by positivity
+    exact lt_min hhalf hrd
+  have hδlehalf : δ ≤ (1 / 2 : ℝ) := min_le_left _ _
+  have hδle_r : δ ≤ r / (2 * d) := min_le_right _ _
+  let t₀ : ℝ := 1 - δ
+  have ht₀nonneg : 0 ≤ t₀ := by
+    dsimp [t₀]
+    nlinarith [hδlehalf]
+  let A : Set ℂ := (fun t : ℝ => AffineMap.lineMap x q t) '' Set.Ico t₀ 1
+  have hAV : A ⊆ V := by
+    rintro z ⟨t, ht, rfl⟩
+    exact hsegV t (le_trans ht₀nonneg ht.1) ht.2
+  have hAball : A ⊆ Metric.ball q r := by
+    rintro z ⟨t, ht, rfl⟩
+    have ht_nonneg : 0 ≤ t := le_trans ht₀nonneg ht.1
+    have hone_minus_nonneg : 0 ≤ 1 - t := by linarith [ht.2]
+    have hone_minus_le_delta : 1 - t ≤ δ := by
+      dsimp [t₀] at ht
+      linarith [ht.1]
+    have hnorm : ‖(1 : ℝ) - t‖ = 1 - t := Real.norm_of_nonneg hone_minus_nonneg
+    have hdist : dist (AffineMap.lineMap x q t) q = (1 - t) * d := by
+      rw [dist_lineMap_right, hnorm]
+    have hmul : (1 - t) * d < r := by
+      have hle : (1 - t) * d ≤ δ * d := by
+        exact mul_le_mul_of_nonneg_right hone_minus_le_delta (le_of_lt hdpos)
+      have hδd : δ * d ≤ r / 2 := by
+        have hdnonzero : d ≠ 0 := ne_of_gt hdpos
+        have htmp : δ * d ≤ (r / (2 * d)) * d :=
+          mul_le_mul_of_nonneg_right hδle_r (le_of_lt hdpos)
+        have heq : (r / (2 * d)) * d = r / 2 := by field_simp [hdnonzero]
+        nlinarith [htmp, heq]
+      nlinarith [hle, hδd, hr]
+    simpa [Metric.mem_ball, hdist] using hmul
+  have hApre : IsPreconnected A := by
+    have hI : IsPreconnected (Set.Ico t₀ (1 : ℝ)) := isPreconnected_Ico
+    have hf : ContinuousOn (fun t : ℝ => AffineMap.lineMap x q t) (Set.Ico t₀ 1) := by
+      fun_prop
+    exact hI.image _ hf
+  have hAacc : ∀ ε : ℝ, 0 < ε → (Metric.ball q ε ∩ A).Nonempty := by
+    intro ε hε
+    let τ : ℝ := min (δ / 2) (ε / (2 * d))
+    have hτpos : 0 < τ := by
+      have hδ2 : 0 < δ / 2 := by positivity
+      have hεd : 0 < ε / (2 * d) := by positivity
+      exact lt_min hδ2 hεd
+    have hτleδ2 : τ ≤ δ / 2 := min_le_left _ _
+    have hτleεδ : τ ≤ ε / (2 * d) := min_le_right _ _
+    have hτleδ : τ ≤ δ := by nlinarith [hτleδ2]
+    let t : ℝ := 1 - τ
+    have htI : t ∈ Set.Ico t₀ (1 : ℝ) := by
+      refine ⟨?_, ?_⟩
+      · dsimp [t, t₀]
+        linarith [hτleδ]
+      · dsimp [t]
+        linarith [hτpos]
+    refine ⟨AffineMap.lineMap x q t, ?_, ⟨t, htI, rfl⟩⟩
+    have hτnonneg : 0 ≤ τ := le_of_lt hτpos
+    have hnorm : ‖(1 : ℝ) - t‖ = τ := by
+      dsimp [t]
+      rw [sub_sub_cancel]
+      exact Real.norm_of_nonneg hτnonneg
+    have hdist : dist (AffineMap.lineMap x q t) q = τ * d := by
+      rw [dist_lineMap_right, hnorm]
+    have hτd : τ * d < ε := by
+      have hle : τ * d ≤ (ε / (2 * d)) * d :=
+        mul_le_mul_of_nonneg_right hτleεδ (le_of_lt hdpos)
+      have hdnonzero : d ≠ 0 := ne_of_gt hdpos
+      have heq : (ε / (2 * d)) * d = ε / 2 := by field_simp [hdnonzero]
+      nlinarith [hle, heq, hε]
+    · simpa [Metric.mem_ball, hdist] using hτd
+    · exact ⟨t, htI, rfl⟩
+  have hxbranchAt : ∀ k, ContinuousAt (xbranch k) q := by
+    intro k
+    exact (hxbranchc k).continuousAt (Metric.ball_mem_nhds q hr)
+  have hxbranchrel0 : ∀ k, ∑ i ∈ s, a i q * (xbranch k q) ^ i = 0 := by
+    intro k
+    exact hxbranchrel k q (Metric.mem_ball_self hr)
+  exact false_of_branch_family_preconnected_approach_of_noncontinuable
+    hN1 ha hsep (fun z hz => hVsub (hAV hz)) hAacc hApre
+    (fun k => (hxbranchc k).mono hAball) hxbranchAt
+    (fun z hz => hxbranchsep z (hAball hz))
+    (fun z hz => hxbranchdeg z (hAball hz))
+    (fun k z hz => hxbranchrel k z (hAball hz)) hxbranchrel0
+    (hβcV.mono hAV) (fun z hz => hβrelV z (hAV hz)) hnbAt
+
+end
+
+end Bottcher
