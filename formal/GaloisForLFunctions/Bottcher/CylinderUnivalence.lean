@@ -22,8 +22,26 @@ makes its inverse branch single-valued around the full base circle, so the close
 import GaloisForLFunctions.Bottcher.BasinBranching
 import GaloisForLFunctions.Bottcher.LiftConstruction
 import GaloisForLFunctions.Bottcher.SquareFree
+import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
 open Complex Set Filter Topology
+
+namespace Complex
+
+/-- **Principal complex square root** as the half-power `z ^ (2⁻¹)`. This Mathlib toolchain has no
+`Complex.sqrt`, so we provide the half-power definition used throughout this file. -/
+noncomputable def sqrt (z : ℂ) : ℂ := z ^ ((2 : ℂ)⁻¹)
+
+/-- Definitional unfolding of `Complex.sqrt` (rfl-lemma for rewriting). -/
+theorem sqrt_def (z : ℂ) : Complex.sqrt z = z ^ ((2 : ℂ)⁻¹) := rfl
+
+/-- `Complex.sqrt` is holomorphic on the slit plane (the branch cut of the half-power), via
+`DifferentiableOn.cpow_const` applied to the identity with the slit-plane side condition. -/
+theorem differentiableOn_sqrt : DifferentiableOn ℂ Complex.sqrt slitPlane := by
+  show DifferentiableOn ℂ (fun z => z ^ ((2 : ℂ)⁻¹)) slitPlane
+  exact differentiableOn_id.cpow_const (fun x hx => hx)
+
+end Complex
 
 namespace Bottcher
 
@@ -291,7 +309,7 @@ open Complex Set
 /-- **`Complex.sqrt` squares back (unconditional).** `(Complex.sqrt z)^2 = z` for every `z`, since
 `Complex.sqrt z = z^(2⁻¹)` and `(z^(2⁻¹))^2 = z` (`cpow_nat_inv_pow`). Axiom-clean. -/
 theorem complex_sqrt_sq (z : ℂ) : (Complex.sqrt z) ^ 2 = z := by
-  rw [Complex.sqrt, show (2 : ℂ)⁻¹ = ((2 : ℕ) : ℂ)⁻¹ by norm_num]
+  rw [Complex.sqrt_def, show (2 : ℂ)⁻¹ = ((2 : ℕ) : ℂ)⁻¹ by norm_num]
   exact Complex.cpow_nat_inv_pow z (by norm_num)
 
 /-- **`±√(w-c)` are the two inverse branches of `f_c`.** `f_c(±√(w-c)) = w` (from `complex_sqrt_sq`):

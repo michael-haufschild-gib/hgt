@@ -18,6 +18,7 @@ New file (Montel/Julia lane for the connected-case natural boundary); consumes `
 -/
 import GaloisForLFunctions.Bottcher.Montel
 import Mathlib.Analysis.Complex.LocallyUniformLimit
+import Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli
 
 open Complex Metric Set Filter Topology BoundedContinuousFunction
 

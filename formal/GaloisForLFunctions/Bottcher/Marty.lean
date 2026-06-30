@@ -15,6 +15,8 @@ plumbing `hasDerivAt_euclidean3` and the dynamic conformality `stereo_speed_iden
 New file (Montel/Julia lane — Marty's criterion). General lemmas; consumes `ChordalMetric`,
 `SphericalDeriv`.
 -/
+import Mathlib.Analysis.Calculus.Deriv.Pow
+import Mathlib.Analysis.Calculus.MeanValue
 import GaloisForLFunctions.Bottcher.ChordalMetric
 import GaloisForLFunctions.Bottcher.SphericalDeriv
 
@@ -107,7 +109,7 @@ theorem marty_equicontinuity {f : ℂ → ℂ} {U : Set ℂ} {M : ℝ}
     intro s hs; simp only [hh'_def]; rw [dif_pos hs]; exact (hkey s hs).choose_spec.1.hasDerivWithinAt
   have hnb : ∀ s ∈ Set.Icc (0 : ℝ) 1, ‖h' s‖ ≤ 2 * M * ‖b - a‖ := by
     intro s hs; simp only [hh'_def]; rw [dif_pos hs]; exact (hkey s hs).choose_spec.2
-  have hmv := (convex_Icc (0:ℝ) 1).norm_image_sub_le_of_norm_hasDerivWithin_le hd hnb
+  have hmv := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hd hnb (convex_Icc (0:ℝ) 1)
     (Set.left_mem_Icc.mpr zero_le_one) (Set.right_mem_Icc.mpr zero_le_one)
   -- ‖h 1 - h 0‖ ≤ (2M‖b-a‖)·‖1-0‖ = 2M‖b-a‖
   simp only [hh_def, hγ1, hγ0, sub_zero, norm_one, mul_one] at hmv

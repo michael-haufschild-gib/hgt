@@ -6,6 +6,8 @@ With `Gamma2_eq_closure` + `slash_action_generators`, these promote to `F ∈ Sl
 -/
 import GaloisForLFunctions.Bottcher.ModularLambdaModular
 import GaloisForLFunctions.Bottcher.Gamma2Generators
+import Mathlib.NumberTheory.ModularForms.SlashInvariantForms
+import Mathlib.NumberTheory.ModularForms.ArithmeticSubgroups
 
 open Matrix ModularGroup CongruenceSubgroup Complex UpperHalfPlane
 open scoped MatrixGroups ModularForm
@@ -77,9 +79,8 @@ theorem quarticDefectH_slash_Gamma2 (A : SL(2, ℤ)) (hA : A ∈ CongruenceSubgr
 
 noncomputable def quarticDefectSIF : SlashInvariantForm (CongruenceSubgroup.Gamma 2) 2 where
   toFun := quarticDefectH
-  slash_action_eq' A hA := by
-    obtain ⟨A, hA, rfl⟩ := hA
-    simp only [SpecialLinearGroup.mapGL]
+  slash_action_eq' γ hγ := by
+    obtain ⟨A, hA, rfl⟩ := hγ
     exact quarticDefectH_slash_Gamma2 A hA
 
 end Bottcher

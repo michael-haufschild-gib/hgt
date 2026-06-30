@@ -25,6 +25,7 @@ with the homeomorphism `λ̄ : ℍ/PΓ(2) ≃ₜ ℂ∖{0,1}` (the analytic half
 `λ : ℍ → ℂ∖{0,1}` a covering map — the input the three-value Montel lift (`#30`) consumes.
 -/
 import Mathlib.Tactic
+import Mathlib.Topology.Covering.Quotient
 import GaloisForLFunctions.Bottcher.Gamma2FreeAction
 import GaloisForLFunctions.Bottcher.Gamma2ProperAction
 

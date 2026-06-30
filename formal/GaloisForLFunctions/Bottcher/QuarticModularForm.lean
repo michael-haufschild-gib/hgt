@@ -6,6 +6,10 @@ holomorphy half of `ModularForm/CuspForm Γ(2) 2`; the cusp-behaviour (`bdd_at_c
 `zero_at_cusps'`) is the remaining input toward `F ≡ 0` via `NormTrace` to level-one weight-12.
 -/
 import GaloisForLFunctions.Bottcher.QuarticSlash
+import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
+import Mathlib.Analysis.Complex.UpperHalfPlane.FunctionsBoundedAtInfty
+import Mathlib.NumberTheory.ModularForms.BoundedAtCusp
+import Mathlib.NumberTheory.ModularForms.LevelOne.DimensionFormula
 
 open Matrix ModularGroup CongruenceSubgroup Complex UpperHalfPlane
 open scoped MatrixGroups ModularForm Manifold

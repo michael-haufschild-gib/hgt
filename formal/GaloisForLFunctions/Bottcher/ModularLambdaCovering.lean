@@ -20,6 +20,7 @@ properness in (2): `λ → 0` at the cusp `∞`, and via the deck relations `λ(
 Consumes `ThetaWronskian` (`λ' ≠ 0` unconditional + the theta cusp limits).
 -/
 import GaloisForLFunctions.Bottcher.ThetaWronskian
+import Mathlib.Analysis.Normed.Module.Connected
 
 open Complex Filter Topology Matrix UpperHalfPlane ModularGroup CongruenceSubgroup
 open scoped MatrixGroups

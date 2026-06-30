@@ -12420,8 +12420,7 @@ theorem false_of_accessible_branch_family_relation_of_noncontinuable
       have hdnonzero : d ≠ 0 := ne_of_gt hdpos
       have heq : (ε / (2 * d)) * d = ε / 2 := by field_simp [hdnonzero]
       nlinarith [hle, heq, hε]
-    · simpa [Metric.mem_ball, hdist] using hτd
-    · exact ⟨t, htI, rfl⟩
+    simpa [Metric.mem_ball, hdist] using hτd
   have hxbranchAt : ∀ k, ContinuousAt (xbranch k) q := by
     intro k
     exact (hxbranchc k).continuousAt (Metric.ball_mem_nhds q hr)

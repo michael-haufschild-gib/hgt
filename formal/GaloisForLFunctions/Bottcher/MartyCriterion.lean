@@ -15,6 +15,7 @@ The proof: `stereo` lands in the unit sphere (`norm_stereo_eq_one`, a compact ta
 New file (Montel/Julia lane — Marty's criterion). Consumes `Marty`.
 -/
 import GaloisForLFunctions.Bottcher.Marty
+import Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli
 
 open Complex Metric Set Filter Topology BoundedContinuousFunction
 

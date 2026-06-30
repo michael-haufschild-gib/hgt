@@ -20,6 +20,7 @@ import GaloisForLFunctions.Bottcher.GreenUnique
 import GaloisForLFunctions.Bottcher.BasinConnected
 import GaloisForLFunctions.Bottcher.SquareFree
 import Mathlib.Analysis.Complex.OpenMapping
+import Mathlib.Analysis.Normed.Module.Connected
 
 open Filter Topology Metric Complex Set Bornology
 

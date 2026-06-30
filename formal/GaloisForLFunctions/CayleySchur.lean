@@ -1,4 +1,7 @@
 import GaloisForLFunctions.Core
+import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.LinearAlgebra.Matrix.Hadamard
+import Mathlib.Analysis.Matrix.Order
 
 /-!
 # The Cayley transform: Herglotz ⟷ Schur (the carrier's disk picture)
@@ -156,7 +159,7 @@ from the basic Szegő kernel. -/
 theorem szego_hadamard_posSemidef {m : ℕ} (N M : ℕ) (w : Fin m → ℂ) :
     ((Matrix.of (fun j k => ∑ n ∈ Finset.range N, (w j) ^ n * star ((w k) ^ n))).hadamard
       (Matrix.of (fun j k => ∑ n ∈ Finset.range M, (w j) ^ n * star ((w k) ^ n)))).PosSemidef :=
-  (szego_truncation_posSemidef N w).hadamard (szego_truncation_posSemidef M w)
+  Matrix.PosSemidef.hadamard (szego_truncation_posSemidef N w) (szego_truncation_posSemidef M w)
 
 end
 

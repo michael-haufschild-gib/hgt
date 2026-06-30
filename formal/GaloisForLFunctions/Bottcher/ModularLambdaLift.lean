@@ -14,6 +14,7 @@ connected), plus `λ` surjective (`lambdaPunct_surjective`) for the basepoint, f
 `IsCoveringMap.existsUnique_continuousMap_lifts`.
 -/
 import Mathlib.Tactic
+import Mathlib.Topology.Homotopy.Lifting
 import GaloisForLFunctions.Bottcher.ModularLambdaProperness
 import GaloisForLFunctions.Bottcher.ModularLambdaCovering
 
