@@ -11,7 +11,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 | Lines | File |
 |---:|---|
-| 11348 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
+| 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 4197 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
@@ -55,7 +55,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:13` | connected. That step (the branched-cover / critical-value structure of `z²+c`) is the lone remaining |
 | `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:80` | /-- **Basin-connectedness from the Riemann–Hurwitz step.** The full reduction: the single remaining |
 | `formal/GaloisForLFunctions/Bottcher/BottcherCoord.lean:276` | `∑ₖ termₖ(f_c z) = 2·(∑ₖ termₖ(z) − term₀(z))`. The remaining `log z` vs `log(z²+c)` |
-| `formal/GaloisForLFunctions/Bottcher/BottcherDetermines.lean:157` | in the connected-case independence, with no remaining hypotheses. -/ |
+| `formal/GaloisForLFunctions/Bottcher/BottcherDetermines.lean:158` | in the connected-case independence, with no remaining hypotheses. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BottcherInverse.lean:4` | The dyadic-cover lift `hliftF`/`hliftG` (the genuine remaining analytic input of the disconnected case, |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean:203` | needed for the remaining boundary singular-potential lower semicontinuity. -/ |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean:1162` | the full GAP-A potential representation is equivalent to the remaining |
@@ -110,6 +110,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/CoverDescent.lean:17` | the concrete sheet; the lone remaining input is the cover independence itself (the Kummer close |
 | `formal/GaloisForLFunctions/Bottcher/CoverDescent.lean:49` | germ/analytic plumbing of the descent is supplied by the geometric sheet.  The remaining hypothesis `h` |
 | `formal/GaloisForLFunctions/Bottcher/CoverMonodromy.lean:14` | This file builds the descent and its coordinate action. The remaining Field-6 steps: upgrade |
+| `formal/GaloisForLFunctions/Bottcher/CoveringRoot.lean:11` | This file proves the **forward direction** of that lemma — the genuinely missing analytic content, |
+| `formal/GaloisForLFunctions/Bottcher/CoveringRoot.lean:23` | The remaining input is thus the canonical, sharp one — the `π₁`/winding-divisibility hypothesis — |
 | `formal/GaloisForLFunctions/Bottcher/CrossRatioCuspBridge.lean:145` | /-- Harnack-form cusp `∞` branch.  The remaining analytic producer should supply `A > 0` and |
 | `formal/GaloisForLFunctions/Bottcher/CrossRatioDeckNormalBridge.lean:21` | The remaining global assembly task is to produce the normalized lift data from the `Γ(2)` deck |
 | `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:20` | the close is `monoF_witness`.  The sole remaining analytic input is the deck `g` itself — the closed |
@@ -123,7 +125,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:639` | `2πi/2^d` and their inverses automatically stay in the region (`re` is unchanged).  The remaining |
 | `formal/GaloisForLFunctions/Bottcher/CylinderDeck.lean:853` | The remaining hdisc-side inputs are the projection-base transcendence, the base-pulled-back second |
 | `formal/GaloisForLFunctions/Bottcher/CylinderUnivalence.lean:4` | The single remaining analytic input of the disconnected/disconnected case (STATUS.md "Disconnected |
-| `formal/GaloisForLFunctions/Bottcher/CylinderUnivalence.lean:48` | (hypothesis), composed via `InjOn.comp`. The single remaining cylinder input becomes: each |
+| `formal/GaloisForLFunctions/Bottcher/CylinderUnivalence.lean:49` | (hypothesis), composed via `InjOn.comp`. The single remaining cylinder input becomes: each |
 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulus.lean:136` | `NoRelation(φ_{c₁}, φ_{c₂})` since `a₁^{2ⁿ} = φ_{c₁}`).  The sole remaining inputs are now isolated: |
 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean:322` | one usable statement.  The only remaining parameters are the explicit radius inequalities and the |
 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean:1382` | To use this for the transported Böttcher map, the remaining analytic work is exactly: |
@@ -135,6 +137,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/DeckBiholo.lean:12` | This file supplies that missing link.  From a **global biholomorphism** `φ : U ≃ V` of the cover |
 | `formal/GaloisForLFunctions/Bottcher/DendriteBoundary.lean:564` | the basin can exist. The only remaining inputs are the empty-interior condition (the dendrite case |
 | `formal/GaloisForLFunctions/Bottcher/DyadicMonodromy.lean:10` | The remaining (analytic) half of `mono` — that continuation around the cylinder loop |
+| `formal/GaloisForLFunctions/Bottcher/EscapeLevelRoot.lean:14` | wind(βlev n)`. That dynamical evenness is the remaining geometric input, now isolated as exactly the |
 | `formal/GaloisForLFunctions/Bottcher/ExplicitBranch.lean:23` | the basin (`ζ ≡ 1`, the connected-`J_c` / trivial-monodromy condition) is the remaining analytic core, |
 | `formal/GaloisForLFunctions/Bottcher/GlobalBasinBranch.lean:6` | right half-plane `R = {Re z > M}` — the `hF`/primitive hypothesis is eliminated there. The remaining gap |
 | `formal/GaloisForLFunctions/Bottcher/GlobalBasinBranch.lean:88` | `φ_c` — the genuine remaining analytic input, an unconditional half-plane version of which is |
@@ -165,7 +168,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/ModularLambda.lean:4` | The sole remaining input to three-value Montel (via `normal_of_omitting_lift`) is the universal |
 | `formal/GaloisForLFunctions/Bottcher/ModularLambda.lean:75` | into `ℂ` there. (Non-vanishing of `θ₃` on all of `ℍ` is one of the remaining theta facts.) -/ |
 | `formal/GaloisForLFunctions/Bottcher/ModularLambda.lean:146` | the series is `2 + tail`; the remaining work is the tail bound `‖tail‖ < 2` on the fundamental domain.) -/ |
-| `formal/GaloisForLFunctions/Bottcher/ModularLambdaCovering.lean:547` | connecting `SL(2,ℤ)`-element into `Γ(2)` *once* the remaining (analytic) univalence input is supplied. -/ |
+| `formal/GaloisForLFunctions/Bottcher/ModularLambdaCovering.lean:548` | connecting `SL(2,ℤ)`-element into `Γ(2)` *once* the remaining (analytic) univalence input is supplied. -/ |
 | `formal/GaloisForLFunctions/Bottcher/ModularLambdaInteriorNormal.lean:34` | remaining branch is the cusp/boundary escape case. -/ |
 | `formal/GaloisForLFunctions/Bottcher/ModularLambdaLift.lean:11` | local biholomorphism — and the bound via Cayley are the remaining analytic steps of `#30`.) Built on the |
 | `formal/GaloisForLFunctions/Bottcher/ModularLambdaLocalBiholo.lean:33` | remaining gate to "`λ` is a local biholomorphism" (`λ' ≠ 0`). -/ |
@@ -225,6 +228,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:11036` | /-- Remaining loop/order coding hypothesis for the boundary-bumping q62 route.  The non-ray bad |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:11044` | /-- The exact remaining symmetric hypotheses after compact boundary bumping has been proved. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:11053` | /-- **Connected q62-facing endpoint stopped exactly at the remaining hypotheses.**  Compact boundary |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:12158` | /-- Theorem C specialized to the actual Böttcher meromorphic germ `phiMero c`.  The remaining producer is |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:12182` | transcendence of the second coordinate.  The two remaining producers are the two constructive parts of |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:118` | input `TranscendentalOverAdjoin φ_{c₁} φ_{c₂}`. The remaining inputs are now exactly: the per-level |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:1410` | hRigid interface in this file: nonresonance is derived from `(2^p : ℝ) < ‖λ‖`, and the remaining callback |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:2376` | frontier-analytic γ endpoint by deriving it via `phiMero_transcendental_of_repelling_input`.  The remaining |
@@ -286,11 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Hurwitz/OrbitObstruction.lean:18` | coefficient to vanish — `coeff_one_eq_zero_of_pm_one` — and the missing top (quadratic) coefficient is |
 | `formal/GaloisForLFunctions/Hurwitz/OrbitObstruction.lean:65` | `coeff 1 = 0`. The missing quadratic coefficient is *not* supplied here (the order-two orbit cannot |
 | `formal/GaloisForLFunctions/KreinLangerInertia.lean:19` | `κ₋ = #off-line poles` are the remaining Stage-1 bricks; only the **upper bound** is proved here. No |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:72` | realified into this quadratic-form setting (the remaining Stage-1 wiring). -/ |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:90` | remaining Stage-1 brick is the structural decomposition exhibiting the carrier Pick matrix as |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:129` | follows immediately. The remaining (genuine, deep) Stage-1 content is producing that factorization |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:530` | to `neg_inertia_le_of_posSemidef`. For the carrier (`w_i=e_i+a_i`, `u_i=e_i−a_i`) the only remaining |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:601` | `2k` pole-vectors `{a_i, e_i}` — the sole remaining arithmetic input for the closed-form `κ₋ = #off-line zeros`. -/ |
 
 ## Historical Status Logs
 
