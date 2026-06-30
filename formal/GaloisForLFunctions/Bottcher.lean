@@ -205,5 +205,9 @@ import GaloisForLFunctions.Bottcher.RelativeRigidityMultiplierOnePeriod
 import GaloisForLFunctions.Bottcher.AnalyticRoot
 import GaloisForLFunctions.Bottcher.CoveringRoot
 import GaloisForLFunctions.Bottcher.EscapeLevelRoot
+import GaloisForLFunctions.Bottcher.Pi1CMinusZero
+import GaloisForLFunctions.Bottcher.CoveringPi1
+import GaloisForLFunctions.Bottcher.EscapeCovering
+import GaloisForLFunctions.Bottcher.Pi1EscapeOpen
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
