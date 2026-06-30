@@ -214,5 +214,6 @@ import GaloisForLFunctions.Bottcher.WindDynamics
 import GaloisForLFunctions.Bottcher.UniversalCover
 import GaloisForLFunctions.Bottcher.BottcherWinding
 import GaloisForLFunctions.Bottcher.PeriodDoubling
+import GaloisForLFunctions.Bottcher.ConnectedBranchAssembly
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional

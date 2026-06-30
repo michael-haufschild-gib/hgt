@@ -374,4 +374,17 @@ theorem Lroot_period (n : ℕ) {t : ℂ} (ht : t ∈ coverPlane c) :
     rw [hshift, Lroot_flip_of_period m (fun {u} hu => ih hu) ht',
       Lroot_flip_of_period m (fun {u} hu => ih hu) ht, neg_neg]
 
+/-- **Weak fiber containment: `ρ_n`-fibers sit inside the `exp`-fibers `2πiℤ`.** Since
+`f^[n] ∘ ρ_n = exp` on `H` (`iterate_quadratic_rho`), `ρ_n t = ρ_n t'` forces `exp t = exp t'`, hence
+`t − t' ∈ 2πiℤ`. This is the easy half of the fiber structure; the `2ⁿ`-refinement (`t − t' ∈ 2ⁿ·2πiℤ`)
+is the genuine remaining content, governed by the connectedness of the filled Julia set. -/
+theorem rho_fiber_sub_2pi (hc : ∀ n, c ∉ escapeLevel c n) (n : ℕ) {t t' : ℂ}
+    (ht : t ∈ coverPlane c) (ht' : t' ∈ coverPlane c) (h : rho c n t = rho c n t') :
+    ∃ k : ℤ, t - t' = (k : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by
+  have he : Complex.exp t = Complex.exp t' := by
+    rw [← iterate_quadratic_rho c hc n ht, ← iterate_quadratic_rho c hc n ht', h]
+  rw [Complex.exp_eq_exp_iff_exists_int] at he
+  obtain ⟨k, hk⟩ := he
+  exact ⟨k, by rw [hk]; ring⟩
+
 end Bottcher
