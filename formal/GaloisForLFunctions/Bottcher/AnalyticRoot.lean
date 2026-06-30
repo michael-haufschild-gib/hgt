@@ -86,6 +86,19 @@ theorem analyticAt_of_continuousAt_pow_eq {s g : ℂ → ℂ} {z₀ : ℂ} {N : 
     exact (div_eq_iff hrnz).mp hz
   exact (analyticAt_const.mul hra).congr hseq.symm
 
+/-- **A continuous `N`-th root of an analytic nowhere-zero function is analytic.** Globalisation of
+`analyticAt_of_continuousAt_pow_eq` over an open set: if `s` is merely continuous on the open `U`,
+`g` is analytic and nowhere-zero on `U`, and `s^N = g` on `U` (`N ≥ 1`), then `s` is analytic on `U`.
+This is the final step of every root construction: the topology only has to supply a *continuous*
+branch, and analyticity is then automatic. -/
+theorem analyticOnNhd_of_continuousOn_pow_eq {U : Set ℂ} (hUo : IsOpen U) {s g : ℂ → ℂ} {N : ℕ}
+    (hN : 1 ≤ N) (hsc : ContinuousOn s U) (hg : AnalyticOnNhd ℂ g U) (hg0 : ∀ z ∈ U, g z ≠ 0)
+    (hpow : ∀ z ∈ U, s z ^ N = g z) :
+    AnalyticOnNhd ℂ s U := by
+  intro z hz
+  exact analyticAt_of_continuousAt_pow_eq hN (hsc.continuousAt (hUo.mem_nhds hz)) (hg z hz)
+    (hg0 z hz) (Filter.eventually_of_mem (hUo.mem_nhds hz) (fun w hw => hpow w hw))
+
 /-- **Analytic `N`-th root on a simply-connected region.** If `U` is open and simply connected and `g`
 is analytic and nowhere-zero on `U`, then `g` has an analytic `N`-th root on `U` (`N ≥ 1`). Mathlib's
 `exists_continuousOn_pow_eq` gives a CONTINUOUS branch on the simply-connected `U`; the analyticity
