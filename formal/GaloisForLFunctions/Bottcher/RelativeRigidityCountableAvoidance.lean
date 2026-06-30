@@ -11856,3 +11856,422 @@ theorem noRelation_of_specialization_zero_of_transcendental
   exact hG ⟨P.coeff i, hne, hcoeff⟩
 
 end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Connected-empty-interior common-exterior form of Theorem A.  This removes the auxiliary `Perfect`
+hypothesis from `commonExterior_boundarySlice_no_isolated_of_perfect_emptyInterior` using the existing
+perfectness theorem for connected nontrivial filled Julia sets. -/
+theorem commonExterior_boundarySlice_no_isolated_of_preconnected_emptyInterior
+    {c₁ c₂ u : ℂ}
+    (hconn : IsPreconnected (filledJulia c₁))
+    (hempty : interior (filledJulia c₁) = ∅) :
+    ∀ p ∈ (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+        frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)),
+      ∀ r : ℝ, 0 < r →
+        ∃ q ∈ (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+          frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)),
+          q ≠ p ∧ q ∈ Metric.ball p r :=
+  commonExterior_boundarySlice_no_isolated_of_perfect_emptyInterior
+    (perfect_filledJulia_of_preconnected_nontrivial hconn (filledJulia_nontrivial c₁)) hempty
+
+/-- Connected-empty-interior discrete bad-locus avoidance on the common-exterior boundary slice. -/
+theorem exists_commonExterior_boundarySlice_not_mem_discrete_of_preconnected_emptyInterior
+    {c₁ c₂ u : ℂ} {B : Set ℂ}
+    (hconn : IsPreconnected (filledJulia c₁))
+    (hempty : interior (filledJulia c₁) = ∅)
+    (hne : (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+        frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)).Nonempty)
+    (hBdisc : IsDiscrete B) :
+    ∃ q,
+      q ∈ (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+        frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)) ∧
+      q ∉ B :=
+  exists_commonExterior_boundarySlice_not_mem_discrete_of_perfect_emptyInterior
+    (perfect_filledJulia_of_preconnected_nontrivial hconn (filledJulia_nontrivial c₁))
+    hempty hne hBdisc
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Component-level branch continuation from a separated analytic branch family.  Unlike
+`continuesAcrossWithin_of_branch_analytic_approach`, this does not require every small ball slice of the
+approach set to be preconnected; it only requires the chosen approach set itself to be preconnected. -/
+theorem continuesAcrossWithin_of_branch_family_preconnected_approach
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {z₀ : ℂ}
+    {A : Set ℂ} {β : ℂ → ℂ} {w : Fin N → ℂ → ℂ}
+    (hN1 : 1 ≤ N)
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
+    (hsep0 : (fibrePoly a s z₀).Separable)
+    (hApre : IsPreconnected A) (hAne : A.Nonempty)
+    (hwcA : ∀ k, ContinuousOn (w k) A)
+    (hwAt : ∀ k, ContinuousAt (w k) z₀)
+    (hwsepA : ∀ z ∈ A, ∀ k l, k ≠ l → w k z ≠ w l z)
+    (hwdegA : ∀ z ∈ A, (fibrePoly a s z).natDegree = N)
+    (hwrelA : ∀ k, ∀ z ∈ A, ∑ i ∈ s, a i z * (w k z) ^ i = 0)
+    (hwrel0 : ∀ k, ∑ i ∈ s, a i z₀ * (w k z₀) ^ i = 0)
+    (hβcA : ContinuousOn β A)
+    (hβrelA : ∀ z ∈ A, ∑ i ∈ s, a i z * (β z) ^ i = 0) :
+    ContinuesAcrossWithin β A z₀ := by
+  obtain ⟨z₁, hz₁A⟩ := hAne
+  obtain ⟨k, hk⟩ :=
+    eqOn_branch_of_relation_analytic hN1 w β hApre hwcA hβcA hwsepA hwdegA hwrelA hβrelA hz₁A
+  have hroot : ∑ i ∈ s, a i z₀ * (w k z₀) ^ i = 0 := hwrel0 k
+  have hrootQ : (fibrePoly a s z₀).eval (w k z₀) = 0 := by
+    rw [eval_fibrePoly]
+    exact hroot
+  have hd : (fibrePoly a s z₀).derivative.eval (w k z₀) ≠ 0 :=
+    eval_derivative_ne_zero_of_separable hsep0 hrootQ
+  have hpart := relation_hasDerivAt_w_analytic a s z₀ (w k z₀)
+  have hβlim : Tendsto β (𝓝[A] z₀) (𝓝 (w k z₀)) :=
+    tendsto_within_of_eqOn (hwAt k) hk
+  obtain ⟨g, hgAt, hgz₀, hgrel⟩ :=
+    exists_analyticAt_branch_analytic ha hroot hpart hd
+  have hrelFilt : ∀ᶠ z in 𝓝[A] z₀, ∑ i ∈ s, a i z * (β z) ^ i = 0 :=
+    Filter.eventually_of_mem self_mem_nhdsWithin hβrelA
+  have hmatchβ : ∀ᶠ z in 𝓝[A] z₀, g z = β z :=
+    branch_unique_within_analytic (fun i hi => (ha i hi).continuousAt) hpart hd
+      hgAt.continuousAt hgz₀ hβlim (hgrel.filter_mono nhdsWithin_le_nhds) hrelFilt
+  exact ⟨g, hgAt, hmatchβ⟩
+
+/-- Component-level contradiction from a separated analytic branch family and component-side
+noncontinuability.  This is the local form needed after choosing a connected approach component in the
+squarefree factor proof. -/
+theorem false_of_branch_family_preconnected_approach_of_noncontinuable
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c z₀ : ℂ}
+    {A : Set ℂ} {β : ℂ → ℂ} {w : Fin N → ℂ → ℂ}
+    (hN1 : 1 ≤ N)
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
+    (hsep0 : (fibrePoly a s z₀).Separable)
+    (hAsub : A ⊆ (filledJulia c)ᶜ)
+    (hAacc : ∀ ε : ℝ, 0 < ε → (Metric.ball z₀ ε ∩ A).Nonempty)
+    (hApre : IsPreconnected A)
+    (hwcA : ∀ k, ContinuousOn (w k) A)
+    (hwAt : ∀ k, ContinuousAt (w k) z₀)
+    (hwsepA : ∀ z ∈ A, ∀ k l, k ≠ l → w k z ≠ w l z)
+    (hwdegA : ∀ z ∈ A, (fibrePoly a s z).natDegree = N)
+    (hwrelA : ∀ k, ∀ z ∈ A, ∑ i ∈ s, a i z * (w k z) ^ i = 0)
+    (hwrel0 : ∀ k, ∑ i ∈ s, a i z₀ * (w k z₀) ^ i = 0)
+    (hβcA : ContinuousOn β A)
+    (hβrelA : ∀ z ∈ A, ∑ i ∈ s, a i z * (β z) ^ i = 0)
+    (hnbAt : ComponentSideNoncontinuableAt c β z₀) :
+    False := by
+  have hAne : A.Nonempty := by
+    obtain ⟨z, _hzball, hzA⟩ := hAacc 1 (by norm_num)
+    exact ⟨z, hzA⟩
+  exact hnbAt A hAsub hAacc
+    (continuesAcrossWithin_of_branch_family_preconnected_approach hN1 ha hsep0 hApre hAne
+      hwcA hwAt hwsepA hwdegA hwrelA hwrel0 hβcA hβrelA)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Julia-level contradiction from a separated analytic branch family and component-side
+noncontinuability on the Julia set.  This is the endpoint used after Theorem A chooses a boundary
+point avoiding the finite/discrete bad locus in the squarefree factor argument. -/
+theorem false_of_branch_family_preconnected_approach_of_noncontinuabilityOnJulia
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c z₀ : ℂ}
+    {A : Set ℂ} {β : ℂ → ℂ} {w : Fin N → ℂ → ℂ}
+    (hN1 : 1 ≤ N)
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
+    (hsep0 : (fibrePoly a s z₀).Separable)
+    (hz₀J : z₀ ∈ frontier (filledJulia c))
+    (hAsub : A ⊆ (filledJulia c)ᶜ)
+    (hAacc : ∀ ε : ℝ, 0 < ε → (Metric.ball z₀ ε ∩ A).Nonempty)
+    (hApre : IsPreconnected A)
+    (hwcA : ∀ k, ContinuousOn (w k) A)
+    (hwAt : ∀ k, ContinuousAt (w k) z₀)
+    (hwsepA : ∀ z ∈ A, ∀ k l, k ≠ l → w k z ≠ w l z)
+    (hwdegA : ∀ z ∈ A, (fibrePoly a s z).natDegree = N)
+    (hwrelA : ∀ k, ∀ z ∈ A, ∑ i ∈ s, a i z * (w k z) ^ i = 0)
+    (hwrel0 : ∀ k, ∑ i ∈ s, a i z₀ * (w k z₀) ^ i = 0)
+    (hβcA : ContinuousOn β A)
+    (hβrelA : ∀ z ∈ A, ∑ i ∈ s, a i z * (β z) ^ i = 0)
+    (hnb : ComponentSideNoncontinuabilityOnJulia c β) :
+    False :=
+  false_of_branch_family_preconnected_approach_of_noncontinuable hN1 ha hsep0 hAsub hAacc hApre
+    hwcA hwAt hwsepA hwdegA hwrelA hwrel0 hβcA hβrelA (hnb z₀ hz₀J)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- One-coordinate crossing data in the component form used by the final proof.  The approach set is a
+single preconnected component/tail from the common exterior, equipped with the separated local branch
+family for the squarefree fibre polynomial. -/
+structure OneCoordinateBranchFamilyCrossingData (c : ℂ) (β : ℂ → ℂ) where
+  a : ℕ → ℂ → ℂ
+  s : Finset ℕ
+  N : ℕ
+  z0 : ℂ
+  A : Set ℂ
+  w : Fin N → ℂ → ℂ
+  hN1 : 1 ≤ N
+  ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z0
+  hsep0 : (fibrePoly a s z0).Separable
+  hz0J : z0 ∈ frontier (filledJulia c)
+  hAsub : A ⊆ (filledJulia c)ᶜ
+  hAacc : ∀ ε : ℝ, 0 < ε → (Metric.ball z0 ε ∩ A).Nonempty
+  hApre : IsPreconnected A
+  hwcA : ∀ k, ContinuousOn (w k) A
+  hwAt : ∀ k, ContinuousAt (w k) z0
+  hwsepA : ∀ z ∈ A, ∀ k l, k ≠ l → w k z ≠ w l z
+  hwdegA : ∀ z ∈ A, (fibrePoly a s z).natDegree = N
+  hwrelA : ∀ k, ∀ z ∈ A, ∑ i ∈ s, a i z * (w k z) ^ i = 0
+  hwrel0 : ∀ k, ∑ i ∈ s, a i z0 * (w k z0) ^ i = 0
+  hβcA : ContinuousOn β A
+  hβrelA : ∀ z ∈ A, ∑ i ∈ s, a i z * (β z) ^ i = 0
+
+/-- Theorem C's component-form endpoint.  Once the one-coordinate relation has been reduced to a good
+separable fibre over one accessible approach component, Theorem B's component-side noncontinuability
+contradicts the relation. -/
+theorem false_of_oneCoordinateBranchFamilyCrossingData_of_noncontinuabilityOnJulia
+    {c : ℂ} {β : ℂ → ℂ} (D : OneCoordinateBranchFamilyCrossingData c β)
+    (hnb : ComponentSideNoncontinuabilityOnJulia c β) :
+    False :=
+  false_of_branch_family_preconnected_approach_of_noncontinuabilityOnJulia
+    (a := D.a) (s := D.s) (N := D.N) (c := c) (z₀ := D.z0) (A := D.A) (β := β) (w := D.w)
+    D.hN1 D.ha D.hsep0 D.hz0J D.hAsub D.hAacc D.hApre
+    D.hwcA D.hwAt D.hwsepA D.hwdegA D.hwrelA D.hwrel0 D.hβcA D.hβrelA hnb
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Final bivariate algebra endpoint in contradiction form.  A relation is killed either because its
+specialization in the first coordinate is already zero, in which case transcendence of the second
+coordinate kills every coefficient, or because a nonzero specialization triggers the supplied
+contradiction. -/
+theorem noRelation_of_specialization_contradiction_of_transcendental
+    {K M : Type*} [Field K] [Field M] [Algebra K M] {F G : M}
+    (hG : Transcendental K G)
+    (hcontra : ∀ P : Polynomial (Polynomial K),
+      (P.map (aeval G : Polynomial K →ₐ[K] M).toRingHom).eval F = 0 →
+      P.map (aeval G : Polynomial K →ₐ[K] M).toRingHom ≠ 0 →
+      False) :
+    NoRelation K F G := by
+  intro P hrel
+  by_cases hmap0 : P.map (aeval G : Polynomial K →ₐ[K] M).toRingHom = 0
+  · refine Polynomial.ext (fun i => ?_)
+    rw [Polynomial.coeff_zero]
+    have hcoeff : (aeval G) (P.coeff i) = 0 := by
+      have h := congrArg (fun Q : Polynomial M => Q.coeff i) hmap0
+      simpa [Polynomial.coeff_map] using h
+    by_contra hne
+    exact hG ⟨P.coeff i, hne, hcoeff⟩
+  · exact False.elim (hcontra P hrel hmap0)
+
+/-- Theorem D endpoint using the component-form Theorem C package.  The analytic reduction only has to
+show that a nonzero specialization of a bivariate relation produces one good component crossing datum;
+Theorem B and Theorem C then give the contradiction, while transcendence handles the zero
+specialization case. -/
+theorem noRelation_of_branchFamily_specialization_producer_of_transcendental
+    {K M : Type*} [Field K] [Field M] [Algebra K M] {F G : M}
+    {c : ℂ} {β : ℂ → ℂ}
+    (hG : Transcendental K G)
+    (hnb : ComponentSideNoncontinuabilityOnJulia c β)
+    (hproducer : ∀ P : Polynomial (Polynomial K),
+      (P.map (aeval G : Polynomial K →ₐ[K] M).toRingHom).eval F = 0 →
+      P.map (aeval G : Polynomial K →ₐ[K] M).toRingHom ≠ 0 →
+      OneCoordinateBranchFamilyCrossingData c β) :
+    NoRelation K F G :=
+  noRelation_of_specialization_contradiction_of_transcendental hG
+    (fun P hrel hnonzero =>
+      false_of_oneCoordinateBranchFamilyCrossingData_of_noncontinuabilityOnJulia
+        (hproducer P hrel hnonzero) hnb)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- A genuine single-valued Böttcher branch on the basin of infinity.  This is the branch class to which
+the component-side theorem B applies: analytic on `Ω_c = K_cᶜ`, anchored to the normalized far-field
+Böttcher coordinate, and carrying the Böttcher Green modulus. -/
+structure GlobalBottcherBranch (c : ℂ) (β : ℂ → ℂ) : Prop where
+  analytic : AnalyticOnNhd ℂ β (filledJulia c)ᶜ
+  anchorEscape : ∀ z ∈ escapeOpen c, β z = bottcherCoord c z
+  modulus : ∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)
+
+/-- The component-side form of theorem B, restricted to genuine Böttcher branches.  This is the formal
+shape of `docs/reports/theorem-b-component-side-noncontinuability-open-lean-obstruction-answer.md`:
+a branch matching the normalized Böttcher coordinate cannot have a one-sided/component holomorphic
+continuation across a Julia point. -/
+def ComponentSideBottcherNoncontinuabilityOnJulia (c : ℂ) : Prop :=
+  ∀ β : ℂ → ℂ, GlobalBottcherBranch c β →
+    ∀ z₀, z₀ ∈ frontier (filledJulia c) → ComponentSideNoncontinuableAt c β z₀
+
+/-- Theorem C endpoint with theorem B stated for genuine Böttcher branches. -/
+theorem false_of_oneCoordinateBranchFamilyCrossingData_of_bottcherNoncontinuabilityOnJulia
+    {c : ℂ} {β : ℂ → ℂ} (D : OneCoordinateBranchFamilyCrossingData c β)
+    (hbranch : GlobalBottcherBranch c β)
+    (hnb : ComponentSideBottcherNoncontinuabilityOnJulia c) :
+    False :=
+  false_of_oneCoordinateBranchFamilyCrossingData_of_noncontinuabilityOnJulia D
+    (hnb β hbranch)
+
+/-- Theorem D endpoint with theorem B stated for genuine Böttcher branches.  A nonzero specialization
+must produce component crossing data for the same global Böttcher branch; theorem B then supplies the
+component-side contradiction, while transcendence kills the zero-specialization case. -/
+theorem noRelation_of_branchFamily_specialization_producer_of_bottcherNoncontinuability
+    {K M : Type*} [Field K] [Field M] [Algebra K M] {F G : M}
+    {c : ℂ} {β : ℂ → ℂ}
+    (hG : Transcendental K G)
+    (hbranch : GlobalBottcherBranch c β)
+    (hnb : ComponentSideBottcherNoncontinuabilityOnJulia c)
+    (hproducer : ∀ P : Polynomial (Polynomial K),
+      (P.map (aeval G : Polynomial K →ₐ[K] M).toRingHom).eval F = 0 →
+      P.map (aeval G : Polynomial K →ₐ[K] M).toRingHom ≠ 0 →
+      OneCoordinateBranchFamilyCrossingData c β) :
+    NoRelation K F G :=
+  noRelation_of_specialization_contradiction_of_transcendental hG
+    (fun P hrel hnonzero =>
+      false_of_oneCoordinateBranchFamilyCrossingData_of_bottcherNoncontinuabilityOnJulia
+        (hproducer P hrel hnonzero) hbranch hnb)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Theorem C in algebraic form: if every nonzero univariate algebraic relation for `G` produces the
+component crossing datum from the one-coordinate proof, then `G` is transcendental.  The contradiction
+uses theorem B only through the genuine-Böttcher-branch component noncontinuability interface. -/
+theorem transcendental_of_branchFamily_relation_producer_of_bottcherNoncontinuability
+    {K M : Type*} [Field K] [Field M] [Algebra K M] {G : M}
+    {c : ℂ} {β : ℂ → ℂ}
+    (hbranch : GlobalBottcherBranch c β)
+    (hnb : ComponentSideBottcherNoncontinuabilityOnJulia c)
+    (hproducer : ∀ P : Polynomial K,
+      aeval G P = 0 → P ≠ 0 → OneCoordinateBranchFamilyCrossingData c β) :
+    Transcendental K G := by
+  rw [transcendental_iff]
+  intro P hP
+  by_contra hPne
+  exact false_of_oneCoordinateBranchFamilyCrossingData_of_bottcherNoncontinuabilityOnJulia
+    (hproducer P hP hPne) hbranch hnb
+
+/-- Theorem C specialized to the actual Böttcher meromorphic germ `phiMero c`.  The remaining producer is
+exactly the proof step in `theorem-c-one-coordinate-transcendence-open-lean-obstruction-answer.md`: a
+nonzero univariate relation is made squarefree, a good accessible boundary point is chosen, and the local
+root branches give component crossing data. -/
+theorem transcendental_phiMero_of_branchFamily_relation_producer
+    {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c : ℂ) (hU : U ⊆ escapeOpen c)
+    (β : ℂ → ℂ)
+    (hbranch : GlobalBottcherBranch c β)
+    (hnb : ComponentSideBottcherNoncontinuabilityOnJulia c)
+    (hproducer :
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ P : Polynomial (RatFunc ℂ),
+        aeval (phiMero c hU) P = 0 → P ≠ 0 → OneCoordinateBranchFamilyCrossingData c β) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    Transcendental (RatFunc ℂ) (phiMero c hU) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact transcendental_of_branchFamily_relation_producer_of_bottcherNoncontinuability
+    hbranch hnb hproducer
+
+/-- Theorem D on the actual `phiMero` carrier, with Theorem C supplying the one-coordinate
+transcendence of the second coordinate.  The two remaining producers are the two constructive parts of
+the supplied proofs: univariate squarefree boundary crossing for C, and nonzero-specialization
+squarefree boundary-slice crossing for D. -/
+theorem noRelation_phiMero_of_branchFamily_relation_producers
+    {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (β₁ β₂ : ℂ → ℂ)
+    (hbranch₁ : GlobalBottcherBranch c₁ β₁)
+    (hbranch₂ : GlobalBottcherBranch c₂ β₂)
+    (hnb₁ : ComponentSideBottcherNoncontinuabilityOnJulia c₁)
+    (hnb₂ : ComponentSideBottcherNoncontinuabilityOnJulia c₂)
+    (hGproducer :
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ P : Polynomial (RatFunc ℂ),
+        aeval (phiMero c₂ hU₂) P = 0 → P ≠ 0 → OneCoordinateBranchFamilyCrossingData c₂ β₂)
+    (hSpecializationProducer :
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ P : Polynomial (Polynomial (RatFunc ℂ)),
+        (P.map (aeval (phiMero c₂ hU₂) : Polynomial (RatFunc ℂ) →ₐ[RatFunc ℂ] meroField U).toRingHom).eval
+            (phiMero c₁ hU₁) = 0 →
+        (P.map (aeval (phiMero c₂ hU₂) : Polynomial (RatFunc ℂ) →ₐ[RatFunc ℂ] meroField U).toRingHom) ≠ 0 →
+        OneCoordinateBranchFamilyCrossingData c₁ β₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  have hG : Transcendental (RatFunc ℂ) (phiMero c₂ hU₂) :=
+    transcendental_phiMero_of_branchFamily_relation_producer hUo hUc hUne hUinf c₂ hU₂ β₂
+      hbranch₂ hnb₂ hGproducer
+  exact noRelation_of_branchFamily_specialization_producer_of_bottcherNoncontinuability
+    hG hbranch₁ hnb₁ hSpecializationProducer
+
+/-- A global Böttcher branch produced by the existing level-root/modulus construction, packaged in the
+new theorem-B-specific branch structure. -/
+theorem exists_globalBottcherBranch_of_level_roots_modulus
+    (c : ℂ) (βlev : ℕ → ℂ → ℂ)
+    (hanalytic : ∀ n, AnalyticOnNhd ℂ (βlev n) (escapeLevel c n))
+    (hpow : ∀ n, ∀ z ∈ escapeLevel c n,
+      (βlev n z) ^ (2 ^ n) = bottcherCoord c ((quadratic c)^[n] z))
+    (hne : ∀ n, ∀ z ∈ escapeLevel c n, βlev n z ≠ 0)
+    (hanchorEsc : ∀ n, ∀ z ∈ escapeOpen c, βlev n z = bottcherCoord c z) :
+    ∃ β : ℂ → ℂ, GlobalBottcherBranch c β := by
+  obtain ⟨β, hβan, hβesc, _hβ0, hβmod⟩ :=
+    exists_global_branch_of_level_roots_modulus c βlev hanalytic hpow hne hanchorEsc
+  exact ⟨β, ⟨hβan, hβesc, hβmod⟩⟩
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Boundary-slice bad-locus avoidance from a concrete off-other filled-Julia point.  This is the
+component form used in theorem D: if the chosen common exterior component starts at `u` and there is a
+point of `K_{c₁}` still lying in the other exterior, then the `J_{c₁}` side of that component has a
+frontier point in `Ω_{c₂}` outside any discrete bad locus. -/
+theorem exists_commonExterior_boundarySlice_not_mem_discrete_of_preconnected_emptyInterior_offOtherPoint
+    {c₁ c₂ u x : ℂ} {B : Set ℂ}
+    (hu : u ∈ (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ)
+    (hxK : x ∈ filledJulia c₁)
+    (hxoff : x ∈ (filledJulia c₂)ᶜ)
+    (hconn : IsPreconnected (filledJulia c₁))
+    (hempty : interior (filledJulia c₁) = ∅)
+    (hBdisc : IsDiscrete B) :
+    ∃ q,
+      q ∈ (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+        frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)) ∧
+      q ∉ B := by
+  obtain ⟨p, hpfront, hpoff, hpcl⟩ :=
+    exists_frontier_off_other_in_closure_common_component (a := c₁) (b := c₂) (u := u) (x := x)
+      hu hxK hxoff
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  let V : Set ℂ := connectedComponentIn C u
+  have hCopen : IsOpen C :=
+    (isClosed_filledJulia c₁).isOpen_compl.inter (isClosed_filledJulia c₂).isOpen_compl
+  have hVopen : IsOpen V := by
+    simpa [V, C] using hCopen.connectedComponentIn (x := u)
+  have hpK : p ∈ filledJulia c₁ := mem_filledJulia_of_frontier hpfront
+  have hpnotV : p ∉ V := by
+    intro hpV
+    have hpC : p ∈ C := connectedComponentIn_subset C u hpV
+    exact hpC.1 hpK
+  have hpfrontV : p ∈ frontier V := by
+    simpa [hVopen.frontier_eq, V] using And.intro (by simpa [V, C] using hpcl) hpnotV
+  have hne : (frontier (filledJulia c₁) ∩ (filledJulia c₂)ᶜ ∩
+      frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)).Nonempty := by
+    refine ⟨p, ?_⟩
+    exact ⟨⟨hpfront, hpoff⟩, by simpa [V, C] using hpfrontV⟩
+  exact exists_commonExterior_boundarySlice_not_mem_discrete_of_preconnected_emptyInterior
+    hconn hempty hne hBdisc
+
+end
+
+end Bottcher
