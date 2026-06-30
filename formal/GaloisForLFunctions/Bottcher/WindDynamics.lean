@@ -42,6 +42,16 @@ noncomputable def wind (g : X → ℂ) (hg : Continuous g) (hgne : ∀ x, g x �
     {x₀ : X} (p : Path x₀ x₀) : ℤ :=
   degZ ⟦transLoop g hg hgne p⟧
 
+/-- Pointwise value of a power loop. -/
+theorem powLoop_apply (k : ℕ) (q : Path one_cs one_cs) (t : I) :
+    ((powLoop k q) t : ℂ) = (q t : ℂ) ^ k := by
+  induction k with
+  | zero => show ((Path.refl one_cs) t : ℂ) = (q t : ℂ) ^ 0; rw [pow_zero]; rfl
+  | succ k ih =>
+    show ((mulLoop q (powLoop k q)) t : ℂ) = (q t : ℂ) ^ (k + 1)
+    show (q t : ℂ) * ((powLoop k q) t : ℂ) = (q t : ℂ) ^ (k + 1)
+    rw [ih, pow_succ]; ring
+
 /-- **Winding is additive under pointwise products.** -/
 theorem wind_mul (g h : X → ℂ) (hg : Continuous g) (hh : Continuous h)
     (hgne : ∀ x, g x ≠ 0) (hhne : ∀ x, h x ≠ 0) {x₀ : X} (p : Path x₀ x₀) :
@@ -53,7 +63,7 @@ theorem wind_mul (g h : X → ℂ) (hg : Continuous g) (hh : Continuous h)
     apply Path.ext; funext t; apply Subtype.ext
     show g (p t) * h (p t) / (g x₀ * h x₀) = g (p t) / g x₀ * (h (p t) / h x₀)
     rw [div_mul_div_comm]
-  show degZ ⟦transLoop (fun x => g x * h x) _ _ p⟧ = _
+  simp only [wind]
   rw [hpath, degZ_mulLoop]
 
 /-- A constant loop has winding `0`. -/
@@ -74,16 +84,8 @@ theorem wind_pow (g : X → ℂ) (hg : Continuous g) (hgne : ∀ x, g x ≠ 0)
       = powLoop k (transLoop g hg hgne p) := by
     apply Path.ext; funext t; apply Subtype.ext
     show g (p t) ^ k / g x₀ ^ k = ((powLoop k (transLoop g hg hgne p)) t : ℂ)
-    rw [div_pow]
-    -- `(transLoop g p t)^k` pointwise equals `powLoop k (transLoop g p) t`
-    induction k with
-    | zero => simp [powLoop]
-    | succ k ih =>
-      show (g (p t) / g x₀) ^ (k + 1) = ((mulLoop (transLoop g hg hgne p) (powLoop k _)) t : ℂ)
-      show (g (p t) / g x₀) ^ (k + 1)
-          = (g (p t) / g x₀) * ((powLoop k (transLoop g hg hgne p)) t : ℂ)
-      rw [← ih, pow_succ]; ring
-  show degZ ⟦transLoop (fun x => g x ^ k) _ _ p⟧ = _
+    rw [powLoop_apply, ← div_pow]; rfl
+  simp only [wind]
   rw [hpath, degZ_powLoop]
 
 /-- A factor whose transported loop stays in the right half-plane is windingless. -/
@@ -120,5 +122,121 @@ theorem wind_exp (M : X → ℂ) (hM : Continuous M) {x₀ : X} (p : Path x₀ x
   show fiberEquivInt _ = 0
   simp only [fiberEquivInt, Equiv.ofBijective_apply]
   exact_mod_cast hz
+
+/-- `wind` depends only on the function (the continuity / nonvanishing data are `Prop`). -/
+theorem wind_congr {g₁ g₂ : X → ℂ} (h : g₁ = g₂)
+    (hg₁ : Continuous g₁) (hg₁ne : ∀ x, g₁ x ≠ 0)
+    (hg₂ : Continuous g₂) (hg₂ne : ∀ x, g₂ x ≠ 0) {x₀ : X} (p : Path x₀ x₀) :
+    wind g₁ hg₁ hg₁ne p = wind g₂ hg₂ hg₂ne p := by
+  subst h; rfl
+
+/-- **A factor whose raw values stay in the slit plane is windingless** (e.g. all in `{Re > 0}`).
+The lift is `log(g∘p) − log(g x₀)`, a closed loop. -/
+theorem wind_zero_of_slitPlane (g : X → ℂ) (hg : Continuous g) (hgne : ∀ x, g x ≠ 0)
+    {x₀ : X} (p : Path x₀ x₀) (hslit : ∀ t : I, g (p t) ∈ Complex.slitPlane) :
+    wind g hg hgne p = 0 := by
+  set q : Path one_cs one_cs := transLoop g hg hgne p with hq
+  have hcont : Continuous fun t : I => Complex.log (g (p t)) - Complex.log (g x₀) :=
+    ((hg.comp p.continuous_toFun).clog hslit).sub continuous_const
+  set L : C(I, ℂ) := ⟨fun t => Complex.log (g (p t)) - Complex.log (g x₀), hcont⟩ with hLdef
+  have hL : pexp ∘ L = q := by
+    funext t; apply Subtype.ext
+    show Complex.exp (Complex.log (g (p t)) - Complex.log (g x₀)) = g (p t) / g x₀
+    rw [Complex.exp_sub, Complex.exp_log (hgne _), Complex.exp_log (hgne _)]
+  have h0 : L 0 = (e0 : ℂ) := by
+    show Complex.log (g (p 0)) - Complex.log (g x₀) = (e0 : ℂ); rw [p.source]; show _ - _ = (0:ℂ); ring
+  have h1 : (L : I → ℂ) 1 = 0 := by
+    show Complex.log (g (p 1)) - Complex.log (g x₀) = (0 : ℂ); rw [p.target]; ring
+  have hc : (degClass ⟦q⟧ : ℂ) = L 1 := degClass_eq_of_lift q L hL h0
+  rw [h1] at hc
+  show degZ ⟦q⟧ = 0
+  have hsp := degOfFiber_spec (degClass ⟦q⟧)
+  have hzero : (degOfFiber (degClass ⟦q⟧) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) = 0 :=
+    hsp.symm.trans hc
+  have hz : (degOfFiber (degClass ⟦q⟧) : ℂ) = 0 :=
+    (mul_eq_zero.mp hzero).resolve_right twopiI_ne_zero
+  show fiberEquivInt _ = 0
+  simp only [fiberEquivInt, Equiv.ofBijective_apply]
+  exact_mod_cast hz
+
+/-- **The dynamical doubling.** For `g` with `‖c‖ < ‖g‖²` everywhere (so `f∘g = g²+c` stays large and
+the corrector `1 + c/g²` stays near `1`), the winding doubles: `wind(g²+c) = 2·wind(g)`. This is
+"`f = z²+c` is degree 2" expressed as a winding identity. -/
+theorem wind_quadratic (c : ℂ) (g : X → ℂ) (hg : Continuous g)
+    (hgbig : ∀ x, ‖c‖ < ‖g x‖ ^ 2) {x₀ : X} (p : Path x₀ x₀) :
+    wind (fun x => g x ^ 2 + c) (by fun_prop)
+        (fun x => by
+          show g x ^ 2 + c ≠ 0
+          have h := hgbig x
+          have hpos : (0 : ℝ) < ‖g x ^ 2 + c‖ := by
+            have hle : ‖g x‖ ^ 2 - ‖c‖ ≤ ‖g x ^ 2 + c‖ := by
+              have := norm_sub_norm_le (g x ^ 2) (-c)
+              simpa [norm_pow, norm_neg, sub_neg_eq_add] using this
+            linarith
+          intro hz; rw [hz, norm_zero] at hpos; exact lt_irrefl 0 hpos) p
+      = 2 * wind g hg (fun x => by
+          have h := hgbig x
+          have hp : (0 : ℝ) < ‖g x‖ ^ 2 := lt_of_le_of_lt (norm_nonneg c) h
+          intro hgx; rw [hgx, norm_zero] at hp; norm_num at hp) p := by
+  have gne : ∀ x, g x ≠ 0 := fun x => by
+    have h := hgbig x
+    have hp : (0 : ℝ) < ‖g x‖ ^ 2 := lt_of_le_of_lt (norm_nonneg c) h
+    intro hgx; rw [hgx, norm_zero] at hp; norm_num at hp
+  -- corrector `B x = 1 + c / g x²`
+  set B : X → ℂ := fun x => 1 + c / g x ^ 2 with hB
+  have hg2ne : ∀ x, g x ^ 2 ≠ 0 := fun x => pow_ne_zero 2 (gne x)
+  -- `B x` stays near `1`: `‖c / g x²‖ < 1`
+  have hBsmall : ∀ x, ‖c / g x ^ 2‖ < 1 := fun x => by
+    have hpos : (0 : ℝ) < ‖g x‖ ^ 2 := lt_of_le_of_lt (norm_nonneg c) (hgbig x)
+    rw [norm_div, norm_pow, div_lt_one hpos]
+    exact hgbig x
+  have hBne : ∀ x, B x ≠ 0 := fun x => by
+    have hb := hBsmall x
+    intro h0
+    have hcg : c / g x ^ 2 = -1 := by
+      have h1 : (1 : ℂ) + c / g x ^ 2 = 0 := h0
+      linear_combination h1
+    rw [hcg] at hb; simp at hb
+  have hBcont : Continuous B := by fun_prop (disch := exact hg2ne _)
+  -- factorisation `g² + c = g² · B`
+  have hfun : (fun x => g x ^ 2 + c) = (fun x => g x ^ 2 * B x) := by
+    funext x
+    show g x ^ 2 + c = g x ^ 2 * (1 + c / g x ^ 2)
+    rw [mul_add, mul_one, mul_div_cancel₀ c (hg2ne x)]
+  rw [wind_congr hfun (by fun_prop) _ (by fun_prop (disch := exact hg2ne _)) _ p]
+  · rw [wind_mul (fun x => g x ^ 2) B (by fun_prop) hBcont hg2ne hBne p]
+    rw [wind_pow g hg gne 2 p]
+    -- corrector is windingless: `Re (B (p t)) > 0`
+    have hBslit : ∀ t : I, B (p t) ∈ Complex.slitPlane := fun t => by
+      refine Or.inl ?_
+      show 0 < (1 + c / g (p t) ^ 2).re
+      have hb := hBsmall (p t)
+      have habs : |(c / g (p t) ^ 2).re| < 1 :=
+        lt_of_le_of_lt (Complex.abs_re_le_norm _) hb
+      have hlow := (abs_lt.mp habs).1
+      simp only [Complex.add_re, Complex.one_re]
+      linarith
+    rw [wind_zero_of_slitPlane B hBcont hBne p hBslit]
+    push_cast; ring
+  · exact fun x => mul_ne_zero (hg2ne x) (hBne x)
+
+/-- **The halving step.** If `G^(2ⁿ) = H` and `H` has winding divisible by `2ⁿ⁺¹`, then `G` has
+*even* winding `2m`. Instantiated with `G = βlev_n ∘ f` and `H = bottcherCoord ∘ f^[n+1]` (whose
+winding is `2ⁿ⁺¹ · wind(id)` by the iterate-doubling), this is exactly the evenness that discharges
+`hlift`. -/
+theorem wind_even_of_pow (n : ℕ) (G H : X → ℂ) (hG : Continuous G) (hGne : ∀ x, G x ≠ 0)
+    (hH : Continuous H) (hHne : ∀ x, H x ≠ 0) {x₀ : X} (p : Path x₀ x₀) (m : ℤ)
+    (hpow : ∀ x, G x ^ (2 ^ n) = H x)
+    (hwindH : wind H hH hHne p = 2 ^ (n + 1) * m) :
+    wind G hG hGne p = 2 * m := by
+  have hfun : (fun x => G x ^ (2 ^ n)) = H := funext hpow
+  have h1 : wind (fun x => G x ^ (2 ^ n)) (hG.pow _) (fun x => pow_ne_zero _ (hGne x)) p
+      = wind H hH hHne p :=
+    wind_congr hfun (hG.pow _) (fun x => pow_ne_zero _ (hGne x)) hH hHne p
+  rw [wind_pow G hG hGne (2 ^ n) p, hwindH] at h1
+  push_cast at h1
+  have h2 : (2 : ℤ) ^ n * wind G hG hGne p = (2 : ℤ) ^ n * (2 * m) := by
+    rw [h1, pow_succ]; ring
+  exact mul_left_cancel₀ (pow_ne_zero n (two_ne_zero)) h2
 
 end Bottcher
