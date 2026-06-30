@@ -2669,3 +2669,34 @@ The lone open object: the cover annulus `Ã` carrying the genuine `φ̃_{c₁}` 
 sub-critical-dynamics construction the project has flagged open from the start. Building blocks are now
 in place; the continuation itself (the `Ξ = (φ_{c₁}∘f^[n])⁻¹` chart on a separating annulus near `z₀`,
 `K_{c₂}`-free) is the remaining sustained work.
+
+### Connected hRigid/countable-avoidance scan update -- local noncountability routes (2026-06-30)
+
+The active q62 countable-avoidance implementation is
+`GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean`, registered through the
+umbrella import `GaloisForLFunctions.Bottcher`. The generated indexes have been refreshed after the
+latest endpoint additions; use `formal/LEAN_API.md` or `../scripts/formal_tools.py research` rather
+than searching the large file manually first.
+
+Compiled scan anchors now available:
+- `exists_not_countable_local_commonComponentFrontierSlice_of_localTip`
+- `q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalExactSlicePreconnectedNotCountableLoopOrderCode`
+- `q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipEveryRadiusPreconnectedLoopOrderCode`
+- `q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipEveryRadiusComponentSaturationLoopOrderCode`
+- `noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffBaseLocalTipLocalBadCountable`
+- `noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffBaseLocalTipLocalLoopOrderCode`
+
+The remaining open supplier is geometric, not registration/infrastructure. One of these inputs would
+move the q62 bridge forward:
+- local exact-slice preconnectedness at the noncountable radius selected by `LocalTipGood`;
+- local component saturation
+  `CommonComponentFrontierSlice c1 c2 U p i j ∩ Metric.ball p R ⊆ connectedComponentIn
+  (CommonComponentFrontierSlice c1 c2 U p i j) p`;
+- base `LocalTipGood` at the relevant closure points plus an injective/countable loop-order code for
+  the local non-ray frontier/off-other bad locus.
+
+Verification for this scan state: the target module
+`lake env lean GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` passed before the
+index refresh; `python3 scripts/formal_tools.py index` regenerated `formal/LEAN_API.md`,
+`formal/LEAN_GAPS.md`, and `formal/LEAN_OVERVIEW.md`; `python3 scripts/formal_tools.py status` reports
+zero proof-debt findings.

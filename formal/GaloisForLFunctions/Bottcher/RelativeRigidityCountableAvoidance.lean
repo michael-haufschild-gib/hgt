@@ -9931,3 +9931,608 @@ lemma exists_Icc_crosscut_to_commonComponent_of_rotatedSlitGood_offOther_mem_clo
     hv hη hzcl hsubC
 
 end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+lemma localIccAccess_of_rotatedSlitGood_offOther_closure
+    {c₁ c₂ u p : ℂ} {R : ℝ}
+    (haccess : ∀ z, z ∈ Metric.ball p R → z ∈ frontier (filledJulia c₁) →
+      z ∈ (filledJulia c₂)ᶜ →
+      RotatedSlitGood c₁ z ∧
+        z ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)) :
+    ∀ z, z ∈ Metric.ball p R → z ∈ frontier (filledJulia c₁) →
+      z ∈ (filledJulia c₂)ᶜ →
+      ∃ (γ : ℝ → ℂ) (ε : ℝ), 0 < ε ∧ ContinuousOn γ (Set.Icc (0 : ℝ) ε) ∧
+        γ 0 = z ∧
+        ∀ t ∈ Set.Ioc (0 : ℝ) ε,
+          γ t ∈ connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u := by
+  intro z hzball hzfront hzoff
+  obtain ⟨hgood, hzcl⟩ := haccess z hzball hzfront hzoff
+  exact exists_Icc_crosscut_to_commonComponent_of_rotatedSlitGood_offOther_mem_closure
+    hgood hzoff hzcl
+
+/-- **Connected q62-facing endpoint from local `RotatedSlitGood` access and exact-slice
+parametrization.**  This removes explicit slit-sector/crosscut construction from the q62 input: every
+local frontier/off-other point only has to be `RotatedSlitGood` and in the selected common-component
+closure. -/
+theorem q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalExactSliceRotatedSlitGoodAccessParamLoopOrderCode
+    {κ₁ κ₂ : Type*} [Countable κ₁] [Countable κ₂]
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUneMoore : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂) (_hx₁ : c₁ ∉ Exceptional) (_hx₂ : c₂ ∉ Exceptional)
+    (hG₁ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (hG₂ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β₁ β₂ : ℂ → ℂ)
+    (hβ₁an : AnalyticOnNhd ℂ β₁ (filledJulia c₁)ᶜ)
+    (hβ₁esc : ∀ z ∈ escapeOpen c₁, β₁ z = bottcherCoord c₁ z)
+    (hβ₁mod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β₁ z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hβ₂an : AnalyticOnNhd ℂ β₂ (filledJulia c₂)ᶜ)
+    (hβ₂esc : ∀ z ∈ escapeOpen c₂, β₂ z = bottcherCoord c₂ z)
+    (hβ₂mod : ∀ z ∈ (filledJulia c₂)ᶜ, ‖β₂ z‖ = Real.exp (greenFunctionDyn c₂ z))
+    (hKconn₁ : IsPreconnected (filledJulia c₁))
+    (hKconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (hlocal₁ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+      ∃ (R : ℝ) (γslice : ℝ → ℂ), 0 < R ∧
+        (∀ z, z ∈ Metric.ball p R → z ∈ frontier (filledJulia c₁) →
+          z ∈ (filledJulia c₂)ᶜ →
+          RotatedSlitGood c₁ z ∧
+            z ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u)) ∧
+        ContinuousOn γslice (Set.Icc (0 : ℝ) 1) ∧
+        MapsTo γslice (Set.Icc (0 : ℝ) 1)
+          (CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R) ∧
+        (∀ z ∈ CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R,
+          ∃ t ∈ Set.Icc (0 : ℝ) 1, γslice t = z))
+    (loopOrderCode₁ : ℂ → κ₁)
+    (hloopOrderInj₁ : InjOn loopOrderCode₁
+      ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v z} : Set ℂ))
+    (hlocal₂ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₂) → p ∈ (filledJulia c₁)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u) →
+      ∃ (R : ℝ) (γslice : ℝ → ℂ), 0 < R ∧
+        (∀ z, z ∈ Metric.ball p R → z ∈ frontier (filledJulia c₂) →
+          z ∈ (filledJulia c₁)ᶜ →
+          RotatedSlitGood c₂ z ∧
+            z ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u)) ∧
+        ContinuousOn γslice (Set.Icc (0 : ℝ) 1) ∧
+        MapsTo γslice (Set.Icc (0 : ℝ) 1)
+          (CommonComponentFrontierSlice c₂ c₁ u ∩ Metric.ball p R) ∧
+        (∀ z ∈ CommonComponentFrontierSlice c₂ c₁ u ∩ Metric.ball p R,
+          ∃ t ∈ Set.Icc (0 : ℝ) 1, γslice t = z))
+    (loopOrderCode₂ : ℂ → κ₂)
+    (hloopOrderInj₂ : InjOn loopOrderCode₂
+      ({z | z ∈ frontier (filledJulia c₂) ∧ z ∈ (filledJulia c₁)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v z} : Set ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+    letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+  letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+  refine q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalExactSliceContinuousIccAccessParamLoopOrderCode
+    hUo hUc hUneMoore hUinf c₁ c₂ hU₁ hU₂ hne _hx₁ _hx₂ hG₁ hG₂ β₁ β₂ hβ₁an hβ₁esc
+    hβ₁mod hβ₂an hβ₂esc hβ₂mod hKconn₁ hKconn₂ hempty₁ hempty₂ ?_ loopOrderCode₁
+    hloopOrderInj₁ ?_ loopOrderCode₂ hloopOrderInj₂
+  · intro p u huU hpfront hpoff hpcl
+    obtain ⟨R, γslice, hR, haccess, hγcont, hγmaps, hγsurj⟩ :=
+      hlocal₁ p u huU hpfront hpoff hpcl
+    refine ⟨R, γslice, hR, ?_, hγcont, hγmaps, hγsurj⟩
+    exact localIccAccess_of_rotatedSlitGood_offOther_closure haccess
+  · intro p u huU hpfront hpoff hpcl
+    obtain ⟨R, γslice, hR, haccess, hγcont, hγmaps, hγsurj⟩ :=
+      hlocal₂ p u huU hpfront hpoff hpcl
+    refine ⟨R, γslice, hR, ?_, hγcont, hγmaps, hγsurj⟩
+    exact localIccAccess_of_rotatedSlitGood_offOther_closure haccess
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- A noncountable set is automatically nontrivial.  This is the small cardinal bridge needed by the
+local exact-slice route: once the geometric side proves a local slice is not countable, the Moore
+component endpoint only needs local preconnectedness. -/
+lemma Set.Nontrivial.of_not_countable {S : Set ℂ} (h : ¬ S.Countable) : S.Nontrivial := by
+  by_contra hnon
+  exact h ((Set.not_nontrivial_iff.mp hnon).countable)
+
+lemma exists_second_point_in_commonComponentFrontierSlice_component_of_local_preconnected_not_countable
+    {c₁ c₂ u p : ℂ} {R : ℝ}
+    (hR : 0 < R) (hpS : p ∈ CommonComponentFrontierSlice c₁ c₂ u)
+    (hpre : IsPreconnected (CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R))
+    (hnotCount : ¬ (CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R).Countable) :
+    ∃ q, q ∈ connectedComponentIn (CommonComponentFrontierSlice c₁ c₂ u) p ∧ q ≠ p := by
+  exact exists_second_point_in_commonComponentFrontierSlice_component_of_local_preconnected_nontrivial
+    hR hpS hpre (Set.Nontrivial.of_not_countable hnotCount)
+
+/-- **Connected q62-facing endpoint from locally noncountable exact slices.**  This is the Lean-facing
+piece of Grok's noncountability route: after local preconnectedness is known, the geometric side can
+prove local noncountability instead of explicitly choosing a second point or parametrizing the slice. -/
+theorem q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalExactSlicePreconnectedNotCountableLoopOrderCode
+    {κ₁ κ₂ : Type*} [Countable κ₁] [Countable κ₂]
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUneMoore : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂) (_hx₁ : c₁ ∉ Exceptional) (_hx₂ : c₂ ∉ Exceptional)
+    (hG₁ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (hG₂ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β₁ β₂ : ℂ → ℂ)
+    (hβ₁an : AnalyticOnNhd ℂ β₁ (filledJulia c₁)ᶜ)
+    (hβ₁esc : ∀ z ∈ escapeOpen c₁, β₁ z = bottcherCoord c₁ z)
+    (hβ₁mod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β₁ z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hβ₂an : AnalyticOnNhd ℂ β₂ (filledJulia c₂)ᶜ)
+    (hβ₂esc : ∀ z ∈ escapeOpen c₂, β₂ z = bottcherCoord c₂ z)
+    (hβ₂mod : ∀ z ∈ (filledJulia c₂)ᶜ, ‖β₂ z‖ = Real.exp (greenFunctionDyn c₂ z))
+    (hKconn₁ : IsPreconnected (filledJulia c₁))
+    (hKconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (hdich₁ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+      (∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v p) ∨
+        ∃ R : ℝ, 0 < R ∧
+          IsPreconnected (CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R) ∧
+          ¬ (CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R).Countable)
+    (loopOrderCode₁ : ℂ → κ₁)
+    (hloopOrderInj₁ : InjOn loopOrderCode₁
+      ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v z} : Set ℂ))
+    (hdich₂ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₂) → p ∈ (filledJulia c₁)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u) →
+      (∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v p) ∨
+        ∃ R : ℝ, 0 < R ∧
+          IsPreconnected (CommonComponentFrontierSlice c₂ c₁ u ∩ Metric.ball p R) ∧
+          ¬ (CommonComponentFrontierSlice c₂ c₁ u ∩ Metric.ball p R).Countable)
+    (loopOrderCode₂ : ℂ → κ₂)
+    (hloopOrderInj₂ : InjOn loopOrderCode₂
+      ({z | z ∈ frontier (filledJulia c₂) ∧ z ∈ (filledJulia c₁)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v z} : Set ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+    letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+  letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+  refine q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalExactSlicePreconnectedNontrivialLoopOrderCode
+    hUo hUc hUneMoore hUinf c₁ c₂ hU₁ hU₂ hne _hx₁ _hx₂ hG₁ hG₂ β₁ β₂ hβ₁an hβ₁esc
+    hβ₁mod hβ₂an hβ₂esc hβ₂mod hKconn₁ hKconn₂ hempty₁ hempty₂ ?_ loopOrderCode₁
+    hloopOrderInj₁ ?_ loopOrderCode₂ hloopOrderInj₂
+  · intro p u huU hpfront hpoff hpcl
+    rcases hdich₁ p u huU hpfront hpoff hpcl with hray | hlocal
+    · exact Or.inl hray
+    · obtain ⟨R, hR, hpre, hnotCount⟩ := hlocal
+      exact Or.inr ⟨R, hR, hpre, Set.Nontrivial.of_not_countable hnotCount⟩
+  · intro p u huU hpfront hpoff hpcl
+    rcases hdich₂ p u huU hpfront hpoff hpcl with hray | hlocal
+    · exact Or.inl hray
+    · obtain ⟨R, hR, hpre, hnotCount⟩ := hlocal
+      exact Or.inr ⟨R, hR, hpre, Set.Nontrivial.of_not_countable hnotCount⟩
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- Localized form of `not_countable_commonComponent_closure_slice_of_localTip`: the same selector
+argument actually produces noncountability inside a definite ball around the base closure point. -/
+theorem exists_not_countable_local_commonComponentFrontierSlice_of_localTip
+    {c₁ c₂ p u : ℂ}
+    (hKconn : IsPreconnected (filledJulia c₁))
+    (hempty : interior (filledJulia c₁) = ∅)
+    (_huU : u ∈ U)
+    (hpfront : p ∈ frontier (filledJulia c₁))
+    (hpoff : p ∈ (filledJulia c₂)ᶜ)
+    (hpcl : p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u))
+    (htip : LocalTipGood c₁ p) :
+    ∃ R : ℝ, 0 < R ∧
+      ¬ (CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R).Countable := by
+  rcases htip with ⟨rTip, hrTip, htip⟩
+  obtain ⟨rOther, hrOther, hother⟩ :=
+    Metric.isOpen_iff.mp (isClosed_filledJulia c₂).isOpen_compl p hpoff
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  let V : Set ℂ := connectedComponentIn C u
+  have hVsubC : V ⊆ C := by
+    simpa [V] using connectedComponentIn_subset C u
+  have hVbasin₁ : V ⊆ (filledJulia c₁)ᶜ := fun z hz => (hVsubC hz).1
+  set R : ℝ := min rTip rOther with hRdef
+  have hR : 0 < R := by rw [hRdef]; exact lt_min hrTip hrOther
+  have hR_le_tip : R ≤ rTip := by rw [hRdef]; exact min_le_left _ _
+  have hR_le_other : R ≤ rOther := by rw [hRdef]; exact min_le_right _ _
+  have hsectorV : Metric.ball p R ∩ (filledJulia c₁)ᶜ ⊆ V := by
+    set W : Set ℂ := Metric.ball p R ∩ (filledJulia c₁)ᶜ with hW
+    have hWc : IsPreconnected W := by simpa [W] using htip R hR hR_le_tip
+    have hWC : W ⊆ C := by
+      intro z hz
+      exact ⟨hz.2, hother (Metric.ball_subset_ball hR_le_other hz.1)⟩
+    have hpclV : p ∈ closure V := by simpa [V, C] using hpcl
+    have hmeet : (Metric.ball p R ∩ V).Nonempty := by
+      rw [_root_.mem_closure_iff] at hpclV
+      exact hpclV (Metric.ball p R) isOpen_ball (Metric.mem_ball_self hR)
+    obtain ⟨y, hyball, hyV⟩ := hmeet
+    have hyW : y ∈ W := ⟨hyball, hVbasin₁ hyV⟩
+    have hWsubCompY : W ⊆ connectedComponentIn C y :=
+      hWc.subset_connectedComponentIn hyW hWC
+    have hcomp : connectedComponentIn C y = V := by
+      have h := connectedComponentIn_eq (by simpa [V] using hyV)
+      simpa [V] using h.symm
+    intro z hz
+    exact hcomp ▸ hWsubCompY (by simpa [W] using hz)
+  have hpΩ : p ∈ interior ((filledJulia c₂)ᶜ) :=
+    mem_interior_iff_mem_nhds.mpr ((isClosed_filledJulia c₂).isOpen_compl.mem_nhds hpoff)
+  obtain ⟨S, havoid, hclosure, hSlocal⟩ :=
+    exists_local_frontier_target_set_countableAvoidance_closure_frontier_of_preconnected_emptyInterior
+      (U := V) (Ω := (filledJulia c₂)ᶜ) (c₁ := c₁) (c₂ := c₂)
+      hKconn hempty (mem_filledJulia_of_frontier hpfront) hpΩ hR hrOther hsectorV hother
+  refine ⟨R, hR, ?_⟩
+  intro hcount
+  obtain ⟨z, hzS, _hzΩ, hznot⟩ := havoid
+    (CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R) hcount
+  obtain ⟨hzball, hzfront, hzoff⟩ := hSlocal z hzS
+  have hzcl : z ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) := by
+    simpa [V, C] using hclosure z hzS
+  exact hznot ⟨⟨hzfront, hzoff, hzcl⟩, hzball⟩
+
+/-- **Connected q62-facing endpoint from base local tips plus all-radius local exact-slice
+preconnectedness.**  The local-tip selector supplies a radius where the exact slice is noncountable;
+all-radius preconnectedness supplies the matching preconnectedness at that same radius. -/
+theorem q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipEveryRadiusPreconnectedLoopOrderCode
+    {κ₁ κ₂ : Type*} [Countable κ₁] [Countable κ₂]
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUneMoore : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂) (_hx₁ : c₁ ∉ Exceptional) (_hx₂ : c₂ ∉ Exceptional)
+    (hG₁ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (hG₂ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β₁ β₂ : ℂ → ℂ)
+    (hβ₁an : AnalyticOnNhd ℂ β₁ (filledJulia c₁)ᶜ)
+    (hβ₁esc : ∀ z ∈ escapeOpen c₁, β₁ z = bottcherCoord c₁ z)
+    (hβ₁mod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β₁ z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hβ₂an : AnalyticOnNhd ℂ β₂ (filledJulia c₂)ᶜ)
+    (hβ₂esc : ∀ z ∈ escapeOpen c₂, β₂ z = bottcherCoord c₂ z)
+    (hβ₂mod : ∀ z ∈ (filledJulia c₂)ᶜ, ‖β₂ z‖ = Real.exp (greenFunctionDyn c₂ z))
+    (hKconn₁ : IsPreconnected (filledJulia c₁))
+    (hKconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (hdich₁ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+      (∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v p) ∨
+        LocalTipGood c₁ p ∧
+          ∀ R : ℝ, 0 < R →
+            IsPreconnected (CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R))
+    (loopOrderCode₁ : ℂ → κ₁)
+    (hloopOrderInj₁ : InjOn loopOrderCode₁
+      ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v z} : Set ℂ))
+    (hdich₂ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₂) → p ∈ (filledJulia c₁)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u) →
+      (∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v p) ∨
+        LocalTipGood c₂ p ∧
+          ∀ R : ℝ, 0 < R →
+            IsPreconnected (CommonComponentFrontierSlice c₂ c₁ u ∩ Metric.ball p R))
+    (loopOrderCode₂ : ℂ → κ₂)
+    (hloopOrderInj₂ : InjOn loopOrderCode₂
+      ({z | z ∈ frontier (filledJulia c₂) ∧ z ∈ (filledJulia c₁)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v z} : Set ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+    letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+  letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+  refine q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalExactSlicePreconnectedNotCountableLoopOrderCode
+    hUo hUc hUneMoore hUinf c₁ c₂ hU₁ hU₂ hne _hx₁ _hx₂ hG₁ hG₂ β₁ β₂ hβ₁an hβ₁esc
+    hβ₁mod hβ₂an hβ₂esc hβ₂mod hKconn₁ hKconn₂ hempty₁ hempty₂ ?_ loopOrderCode₁
+    hloopOrderInj₁ ?_ loopOrderCode₂ hloopOrderInj₂
+  · intro p u huU hpfront hpoff hpcl
+    rcases hdich₁ p u huU hpfront hpoff hpcl with hray | hlocal
+    · exact Or.inl hray
+    · rcases hlocal with ⟨htip, hpreAll⟩
+      obtain ⟨R, hR, hnotCount⟩ :=
+        exists_not_countable_local_commonComponentFrontierSlice_of_localTip
+          (U := U) hKconn₁ hempty₁ huU hpfront hpoff hpcl htip
+      exact Or.inr ⟨R, hR, hpreAll R hR, hnotCount⟩
+  · intro p u huU hpfront hpoff hpcl
+    rcases hdich₂ p u huU hpfront hpoff hpcl with hray | hlocal
+    · exact Or.inl hray
+    · rcases hlocal with ⟨htip, hpreAll⟩
+      obtain ⟨R, hR, hnotCount⟩ :=
+        exists_not_countable_local_commonComponentFrontierSlice_of_localTip
+          (U := U) hKconn₂ hempty₂ huU hpfront hpoff hpcl htip
+      exact Or.inr ⟨R, hR, hpreAll R hR, hnotCount⟩
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- A noncountable local exact slice contained in the global exact-slice component of `p` gives the
+Moore second point directly, bypassing local preconnectedness. -/
+lemma exists_second_point_in_commonComponentFrontierSlice_component_of_local_not_countable_subset_component
+    {c₁ c₂ u p : ℂ} {R : ℝ}
+    (hnotCount : ¬ (CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R).Countable)
+    (hsubComp : CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R ⊆
+      connectedComponentIn (CommonComponentFrontierSlice c₁ c₂ u) p) :
+    ∃ q, q ∈ connectedComponentIn (CommonComponentFrontierSlice c₁ c₂ u) p ∧ q ≠ p := by
+  obtain ⟨q, hq, hqne⟩ := (Set.Nontrivial.of_not_countable hnotCount).exists_ne p
+  exact ⟨q, hsubComp hq, hqne⟩
+
+/-- **Connected q62-facing endpoint from base local tips plus local component saturation.**  This is
+Grok's component-saturation bypass in Lean form: `LocalTipGood` supplies a noncountable local exact
+slice, and saturation of that local slice into the component of `p` supplies the Moore two-arm witness
+directly, without proving preconnectedness of the exact slice. -/
+theorem q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipEveryRadiusComponentSaturationLoopOrderCode
+    {κ₁ κ₂ : Type*} [Countable κ₁] [Countable κ₂]
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUneMoore : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂) (_hx₁ : c₁ ∉ Exceptional) (_hx₂ : c₂ ∉ Exceptional)
+    (hG₁ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (hG₂ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β₁ β₂ : ℂ → ℂ)
+    (hβ₁an : AnalyticOnNhd ℂ β₁ (filledJulia c₁)ᶜ)
+    (hβ₁esc : ∀ z ∈ escapeOpen c₁, β₁ z = bottcherCoord c₁ z)
+    (hβ₁mod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β₁ z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hβ₂an : AnalyticOnNhd ℂ β₂ (filledJulia c₂)ᶜ)
+    (hβ₂esc : ∀ z ∈ escapeOpen c₂, β₂ z = bottcherCoord c₂ z)
+    (hβ₂mod : ∀ z ∈ (filledJulia c₂)ᶜ, ‖β₂ z‖ = Real.exp (greenFunctionDyn c₂ z))
+    (hKconn₁ : IsPreconnected (filledJulia c₁))
+    (hKconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (hdich₁ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+      (∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v p) ∨
+        LocalTipGood c₁ p ∧
+          ∀ R : ℝ, 0 < R →
+            CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R ⊆
+              connectedComponentIn (CommonComponentFrontierSlice c₁ c₂ u) p)
+    (loopOrderCode₁ : ℂ → κ₁)
+    (hloopOrderInj₁ : InjOn loopOrderCode₁
+      ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v z} : Set ℂ))
+    (hdich₂ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₂) → p ∈ (filledJulia c₁)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u) →
+      (∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v p) ∨
+        LocalTipGood c₂ p ∧
+          ∀ R : ℝ, 0 < R →
+            CommonComponentFrontierSlice c₂ c₁ u ∩ Metric.ball p R ⊆
+              connectedComponentIn (CommonComponentFrontierSlice c₂ c₁ u) p)
+    (loopOrderCode₂ : ℂ → κ₂)
+    (hloopOrderInj₂ : InjOn loopOrderCode₂
+      ({z | z ∈ frontier (filledJulia c₂) ∧ z ∈ (filledJulia c₁)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v z} : Set ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+    letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+  letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+  refine q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffMooreFiberSliceComponentLoopOrderCode
+    hUo hUc hUneMoore hUinf c₁ c₂ hU₁ hU₂ hne _hx₁ _hx₂ hG₁ hG₂ β₁ β₂ hβ₁an hβ₁esc
+    hβ₁mod hβ₂an hβ₂esc hβ₂mod hKconn₁ hKconn₂ hempty₁ hempty₂ ?_ loopOrderCode₁
+    hloopOrderInj₁ ?_ loopOrderCode₂ hloopOrderInj₂
+  · intro p u huU hpfront hpoff hpcl
+    rcases hdich₁ p u huU hpfront hpoff hpcl with hray | hlocal
+    · exact Or.inl hray
+    · rcases hlocal with ⟨htip, hsat⟩
+      obtain ⟨R, hR, hnotCount⟩ :=
+        exists_not_countable_local_commonComponentFrontierSlice_of_localTip
+          (U := U) hKconn₁ hempty₁ huU hpfront hpoff hpcl htip
+      exact Or.inr
+        (exists_second_point_in_commonComponentFrontierSlice_component_of_local_not_countable_subset_component
+          hnotCount (hsat R hR))
+  · intro p u huU hpfront hpoff hpcl
+    rcases hdich₂ p u huU hpfront hpoff hpcl with hray | hlocal
+    · exact Or.inl hray
+    · rcases hlocal with ⟨htip, hsat⟩
+      obtain ⟨R, hR, hnotCount⟩ :=
+        exists_not_countable_local_commonComponentFrontierSlice_of_localTip
+          (U := U) hKconn₂ hempty₂ huU hpfront hpoff hpcl htip
+      exact Or.inr
+        (exists_second_point_in_commonComponentFrontierSlice_component_of_local_not_countable_subset_component
+          hnotCount (hsat R hR))
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- A base local tip plus locally countably many non-tip points forces the global local-tip-good locus
+inside the common-component frontier slice to be noncountable.  This is the localized version of the
+older `LocalTipBadCountable` bridge: only the bad locus in the small ball selected by the base local tip
+is needed. -/
+lemma not_countable_commonComponentFrontierSlice_localTipGood_locus_of_baseLocalTip_localBadCountable
+    {c₁ c₂ p u : ℂ}
+    (hKconn : IsPreconnected (filledJulia c₁))
+    (hempty : interior (filledJulia c₁) = ∅)
+    (huU : u ∈ U)
+    (hpfront : p ∈ frontier (filledJulia c₁))
+    (hpoff : p ∈ (filledJulia c₂)ᶜ)
+    (hpcl : p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u))
+    (htip : LocalTipGood c₁ p)
+    (hbadLocal : ∀ R : ℝ, 0 < R →
+      ({z | z ∈ CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R ∧
+          ¬ LocalTipGood c₁ z} : Set ℂ).Countable) :
+    ¬ ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+          z ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) ∧
+          LocalTipGood c₁ z} : Set ℂ).Countable := by
+  obtain ⟨R, hR, hnotCount⟩ :=
+    exists_not_countable_local_commonComponentFrontierSlice_of_localTip
+      (U := U) hKconn hempty huU hpfront hpoff hpcl htip
+  intro hGoodCount
+  apply hnotCount
+  let Good : Set ℂ := {z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+          z ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) ∧
+          LocalTipGood c₁ z}
+  let BadLocal : Set ℂ := {z | z ∈ CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R ∧
+          ¬ LocalTipGood c₁ z}
+  have hGood : Good.Countable := by simpa [Good] using hGoodCount
+  have hBad : BadLocal.Countable := by simpa [BadLocal] using hbadLocal R hR
+  have hsub : CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R ⊆ Good ∪ BadLocal := by
+    intro z hz
+    by_cases htipz : LocalTipGood c₁ z
+    · left
+      exact ⟨hz.1.1, hz.1.2.1, hz.1.2.2, htipz⟩
+    · right
+      exact ⟨hz, htipz⟩
+  exact (hGood.union hBad).mono hsub
+
+/-- **NoRelation from base local tips plus locally countably many non-tip points.**  This replaces the
+older global bad-countability requirement by a local one: at every relevant base point, every small
+exact slice ball has only countably many non-`LocalTipGood` points. -/
+theorem noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffBaseLocalTipLocalBadCountable
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUneBaseTip : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂)
+    (hG₁ : letI := (ratfuncToMero U hUo hUc hUneBaseTip hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (hG₂ : letI := (ratfuncToMero U hUo hUc hUneBaseTip hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β₁ β₂ : ℂ → ℂ)
+    (hβ₁an : AnalyticOnNhd ℂ β₁ (filledJulia c₁)ᶜ)
+    (hβ₁esc : ∀ z ∈ escapeOpen c₁, β₁ z = bottcherCoord c₁ z)
+    (hβ₁mod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β₁ z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hβ₂an : AnalyticOnNhd ℂ β₂ (filledJulia c₂)ᶜ)
+    (hβ₂esc : ∀ z ∈ escapeOpen c₂, β₂ z = bottcherCoord c₂ z)
+    (hβ₂mod : ∀ z ∈ (filledJulia c₂)ᶜ, ‖β₂ z‖ = Real.exp (greenFunctionDyn c₂ z))
+    (hKconn₁ : IsPreconnected (filledJulia c₁))
+    (hKconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (hbaseTip₁ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+      LocalTipGood c₁ p)
+    (hbadLocal₁ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+      ∀ R : ℝ, 0 < R →
+        ({z | z ∈ CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R ∧
+            ¬ LocalTipGood c₁ z} : Set ℂ).Countable)
+    (hbaseTip₂ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₂) → p ∈ (filledJulia c₁)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u) →
+      LocalTipGood c₂ p)
+    (hbadLocal₂ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₂) → p ∈ (filledJulia c₁)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u) →
+      ∀ R : ℝ, 0 < R →
+        ({z | z ∈ CommonComponentFrontierSlice c₂ c₁ u ∩ Metric.ball p R ∧
+            ¬ LocalTipGood c₂ z} : Set ℂ).Countable) :
+    haveI := isDomain_analyticSubring U hUo hUc hUneBaseTip
+    letI := (ratfuncToMero U hUo hUc hUneBaseTip hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUneBaseTip
+  letI := (ratfuncToMero U hUo hUc hUneBaseTip hUinf).toAlgebra
+  refine noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipGoodLocus
+    hUo hUc hUneBaseTip hUinf c₁ c₂ hU₁ hU₂ hne hG₁ hG₂ β₁ β₂ hβ₁an hβ₁esc
+    hβ₁mod hβ₂an hβ₂esc hβ₂mod hempty₁ hempty₂ ?_ ?_
+  · intro p u huU hpfront hpoff hpcl
+    exact not_countable_commonComponentFrontierSlice_localTipGood_locus_of_baseLocalTip_localBadCountable
+      (U := U) hKconn₁ hempty₁ huU hpfront hpoff hpcl
+      (hbaseTip₁ p u huU hpfront hpoff hpcl)
+      (hbadLocal₁ p u huU hpfront hpoff hpcl)
+  · intro p u huU hpfront hpoff hpcl
+    exact not_countable_commonComponentFrontierSlice_localTipGood_locus_of_baseLocalTip_localBadCountable
+      (U := U) hKconn₂ hempty₂ huU hpfront hpoff hpcl
+      (hbaseTip₂ p u huU hpfront hpoff hpcl)
+      (hbadLocal₂ p u huU hpfront hpoff hpcl)
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- A countable injective code on the non-ray bad locus counts the local non-`LocalTipGood` points in
+any exact-slice ball.  The only implication used is `¬ LocalTipGood -> ¬ local nonpositive ray`. -/
+lemma countable_local_nonLocalTip_of_injOn_nonpositiveRayCode
+    {κ : Type*} [Countable κ] {c₁ c₂ u p : ℂ} {R : ℝ}
+    (loopOrderCode : ℂ → κ)
+    (hloopOrderInj : InjOn loopOrderCode
+      ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v z} : Set ℂ)) :
+    ({z | z ∈ CommonComponentFrontierSlice c₁ c₂ u ∩ Metric.ball p R ∧
+        ¬ LocalTipGood c₁ z} : Set ℂ).Countable := by
+  refine countable_of_injOn_countable_code loopOrderCode ?_
+  intro x hx y hy hxy
+  exact hloopOrderInj
+    ⟨hx.1.1.1, hx.1.1.2.1, not_exists_localNonpositiveRayConfined_of_not_localTipGood hx.2⟩
+    ⟨hy.1.1.1, hy.1.1.2.1, not_exists_localNonpositiveRayConfined_of_not_localTipGood hy.2⟩
+    hxy
+
+/-- **NoRelation from base local tips plus injective local loop/order codes.**  This combines the
+localized local-tip noncountability bridge with the existing loop-order countability primitive: the
+remaining geometric input is that each base point is `LocalTipGood`, while the combinatorial input is a
+countable injective code on the non-ray frontier/off-other locus. -/
+theorem noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffBaseLocalTipLocalLoopOrderCode
+    {κ₁ κ₂ : Type*} [Countable κ₁] [Countable κ₂]
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUneBaseTip : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂)
+    (hG₁ : letI := (ratfuncToMero U hUo hUc hUneBaseTip hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (hG₂ : letI := (ratfuncToMero U hUo hUc hUneBaseTip hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β₁ β₂ : ℂ → ℂ)
+    (hβ₁an : AnalyticOnNhd ℂ β₁ (filledJulia c₁)ᶜ)
+    (hβ₁esc : ∀ z ∈ escapeOpen c₁, β₁ z = bottcherCoord c₁ z)
+    (hβ₁mod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β₁ z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hβ₂an : AnalyticOnNhd ℂ β₂ (filledJulia c₂)ᶜ)
+    (hβ₂esc : ∀ z ∈ escapeOpen c₂, β₂ z = bottcherCoord c₂ z)
+    (hβ₂mod : ∀ z ∈ (filledJulia c₂)ᶜ, ‖β₂ z‖ = Real.exp (greenFunctionDyn c₂ z))
+    (hKconn₁ : IsPreconnected (filledJulia c₁))
+    (hKconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (hbaseTip₁ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+      LocalTipGood c₁ p)
+    (loopOrderCode₁ : ℂ → κ₁)
+    (hloopOrderInj₁ : InjOn loopOrderCode₁
+      ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v z} : Set ℂ))
+    (hbaseTip₂ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₂) → p ∈ (filledJulia c₁)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u) →
+      LocalTipGood c₂ p)
+    (loopOrderCode₂ : ℂ → κ₂)
+    (hloopOrderInj₂ : InjOn loopOrderCode₂
+      ({z | z ∈ frontier (filledJulia c₂) ∧ z ∈ (filledJulia c₁)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v z} : Set ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUneBaseTip
+    letI := (ratfuncToMero U hUo hUc hUneBaseTip hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUneBaseTip
+  letI := (ratfuncToMero U hUo hUc hUneBaseTip hUinf).toAlgebra
+  refine noRelation_phiMero_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffBaseLocalTipLocalBadCountable
+    hUo hUc hUneBaseTip hUinf c₁ c₂ hU₁ hU₂ hne hG₁ hG₂ β₁ β₂ hβ₁an hβ₁esc
+    hβ₁mod hβ₂an hβ₂esc hβ₂mod hKconn₁ hKconn₂ hempty₁ hempty₂ hbaseTip₁ ?_
+    hbaseTip₂ ?_
+  · intro p u huU hpfront hpoff hpcl R hR
+    exact countable_local_nonLocalTip_of_injOn_nonpositiveRayCode
+      (c₁ := c₁) (c₂ := c₂) (u := u) (p := p) (R := R) loopOrderCode₁ hloopOrderInj₁
+  · intro p u huU hpfront hpoff hpcl R hR
+    exact countable_local_nonLocalTip_of_injOn_nonpositiveRayCode
+      (c₁ := c₂) (c₂ := c₁) (u := u) (p := p) (R := R) loopOrderCode₂ hloopOrderInj₂
+
+end Bottcher

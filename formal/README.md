@@ -25,6 +25,35 @@ For a quick local overview, run:
 ../scripts/formal_tools.py status
 ```
 
+## Böttcher q62 Agent Scan Path
+
+Use `GaloisForLFunctions.Bottcher` as the umbrella import for q62.  It imports
+`GaloisForLFunctions.Bottcher.RelativeRigidityCountableAvoidance`, so the
+current connected-case countable-avoidance infrastructure is registered through
+the theorem-area umbrella and appears in the generated API.
+
+When working on the current connected `hRigid`/countable-avoidance lane, start
+with these generated-index queries:
+
+```bash
+../scripts/formal_tools.py research "exists_not_countable_local_commonComponentFrontierSlice"
+../scripts/formal_tools.py research "LocalTipEveryRadiusComponentSaturation"
+../scripts/formal_tools.py research "BaseLocalTipLocalLoopOrderCode"
+../scripts/formal_tools.py research "PreconnectedNotCountable"
+```
+
+The active implementation file is large by design:
+`GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean`.
+For cheap iteration, run only:
+
+```bash
+lake env lean GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean
+```
+
+Regenerate `LEAN_API.md`, `LEAN_GAPS.md`, and `LEAN_OVERVIEW.md` after adding
+or renaming q62-facing declarations; otherwise agents will miss the newest
+bridges.
+
 ## Required Local Workflow
 
 Before proving a new lemma:
