@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # DSS determinant criterion: finite linear algebra skeleton

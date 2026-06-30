@@ -12,7 +12,11 @@ lifting tower needs.
 
 New file (Montel/Julia lane — three-value Montel foundation). General lemmas; Mathlib only.
 -/
-import Mathlib
+import Mathlib.Analysis.Calculus.Deriv.Comp
+import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Deriv
+import Mathlib.Analysis.Complex.BranchLogRoot
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Mathlib.Tactic
 
 open Complex Set Filter Topology
 

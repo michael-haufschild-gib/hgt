@@ -11,7 +11,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 | Lines | File |
 |---:|---|
-| 10675 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
+| 11088 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 4197 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
@@ -221,6 +221,10 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:6448` | the remaining geometric input is only that the non-tip locus inside each such slice is countable. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:6972` | set, and the remaining non-tip failures are countably portrait-covered. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:10484` | remaining geometric input is that each base point is `LocalTipGood`, while the combinatorial input is a |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:11028` | /-- Remaining local-tip hypothesis for the boundary-bumping q62 route.  At every relevant common |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:11036` | /-- Remaining loop/order coding hypothesis for the boundary-bumping q62 route.  The non-ray bad |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:11044` | /-- The exact remaining symmetric hypotheses after compact boundary bumping has been proved. -/ |
+| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:11053` | /-- **Connected q62-facing endpoint stopped exactly at the remaining hypotheses.**  Compact boundary |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:118` | input `TranscendentalOverAdjoin φ_{c₁} φ_{c₂}`. The remaining inputs are now exactly: the per-level |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:1410` | hRigid interface in this file: nonresonance is derived from `(2^p : ℝ) < ‖λ‖`, and the remaining callback |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:2376` | frontier-analytic γ endpoint by deriving it via `phiMero_transcendental_of_repelling_input`.  The remaining |
@@ -287,10 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/KreinLangerInertia.lean:126` | follows immediately. The remaining (genuine, deep) Stage-1 content is producing that factorization |
 | `formal/GaloisForLFunctions/KreinLangerInertia.lean:527` | to `neg_inertia_le_of_posSemidef`. For the carrier (`w_i=e_i+a_i`, `u_i=e_i−a_i`) the only remaining |
 | `formal/GaloisForLFunctions/KreinLangerInertia.lean:598` | `2k` pole-vectors `{a_i, e_i}` — the sole remaining arithmetic input for the closed-form `κ₋ = #off-line zeros`. -/ |
-| `formal/GaloisForLFunctions/MultisetNewton.lean:11` | missing engine is **Newton's identity for a multiset**, which (in characteristic |
-| `formal/GaloisForLFunctions/MultisetNewton.lean:17` | `aeval_esymm_eq_multiset_esymm`. Here we add the missing **psum bridge** and |
-| `formal/GaloisForLFunctions/SourceRecession.lean:28` | ray can preserve a fixed Loewner budget only when its remaining recession |
-| `formal/GaloisForLFunctions/StieltjesWeld.lean:17` | after reindexing the remaining sum by `n = N - j - 1`. |
 
 ## Historical Status Logs
 

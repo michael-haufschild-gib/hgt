@@ -24,7 +24,7 @@ Conclusion `isCoveringMap_quotientMk_pgamma2 : IsCoveringMap (Quotient.mk (orbit
 with the homeomorphism `λ̄ : ℍ/PΓ(2) ≃ₜ ℂ∖{0,1}` (the analytic half, separate), this makes
 `λ : ℍ → ℂ∖{0,1}` a covering map — the input the three-value Montel lift (`#30`) consumes.
 -/
-import Mathlib
+import Mathlib.Tactic
 import GaloisForLFunctions.Bottcher.Gamma2FreeAction
 import GaloisForLFunctions.Bottcher.Gamma2ProperAction
 

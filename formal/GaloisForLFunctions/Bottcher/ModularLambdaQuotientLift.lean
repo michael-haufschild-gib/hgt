@@ -24,7 +24,7 @@ limits `λ → {0,1,∞}` already proven, the engine being `ModularLambdaCoverin
 (truncated-fundamental-domain compactness + `anharm_cusp_ne`). Note we never need `λ̄` *injective* (degree 1):
 a covering of any degree suffices, which sidesteps the argument-principle crux entirely.
 -/
-import Mathlib
+import Mathlib.Tactic
 import GaloisForLFunctions.Bottcher.Gamma2QuotientCovering
 import GaloisForLFunctions.Bottcher.ModularLambdaCovering
 import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional

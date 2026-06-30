@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 import GaloisForLFunctions.Bottcher.ModularLambdaLift
 import GaloisForLFunctions.Bottcher.ModularLambdaCovering
 import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional

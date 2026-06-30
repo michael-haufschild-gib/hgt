@@ -25,7 +25,7 @@ Note this needs `λ̄` only as a **covering** (any degree), never injective — 
 crux is entirely bypassed. With `IsCoveringMap λ̄` in hand, `λ = λ̄ ∘ q` is the modular `λ` exhibited as a
 covering of `ℂ∖{0,1}` (the universal property feeding the three-value Montel lift, `#30`).
 -/
-import Mathlib
+import Mathlib.Tactic
 import GaloisForLFunctions.Bottcher.Gamma2QuotientCovering
 import GaloisForLFunctions.Bottcher.ModularLambdaCovering
 import GaloisForLFunctions.Bottcher.ModularLambdaUnconditional

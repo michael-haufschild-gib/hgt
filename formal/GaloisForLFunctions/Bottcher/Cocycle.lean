@@ -10,7 +10,7 @@ cocycle is a coboundary, i.e. there is `c` with `c(i+1) = c(i)·u(i)`. Then the 
 global single-valued lift. This file proves the algebraic heart — the discrete primitive — independent of
 the analysis.
 -/
-import Mathlib
+import Mathlib.Tactic
 
 open Finset
 

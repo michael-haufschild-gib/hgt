@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.LinearAlgebra.ExteriorPower.Basic
+import Mathlib.Tactic
 
 /-!
 # Exterior-power σ-parity (Tier A)

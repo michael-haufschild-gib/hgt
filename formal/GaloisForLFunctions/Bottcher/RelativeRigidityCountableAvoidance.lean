@@ -10541,6 +10541,228 @@ namespace Bottcher
 
 variable {U : Set ℂ}
 
+/-- Compact quasicomponent separation.  In a compact Hausdorff space, if a compact set misses the
+connected component of `x`, then some clopen neighbourhood of `x` already misses that compact set. -/
+lemma exists_isClopen_neighborhood_disjoint_compact_of_disjoint_connectedComponent
+    {α : Type*} [TopologicalSpace α] [T2Space α] [CompactSpace α]
+    {F : Set α} {x : α}
+    (hF : IsCompact F) (hdisj : Disjoint F (connectedComponent x)) :
+    ∃ E : Set α, IsClopen E ∧ x ∈ E ∧ Disjoint F E := by
+  have hCeq := connectedComponent_eq_iInter_isClopen (X := α) x
+  have hEmpty : F ∩ (⋂ s : {s : Set α // IsClopen s ∧ x ∈ s}, (s : Set α)) = ∅ := by
+    rw [← hCeq]
+    exact disjoint_iff_inter_eq_empty.mp hdisj
+  obtain ⟨u, hu⟩ := hF.elim_finite_subfamily_closed
+    (fun s : {s : Set α // IsClopen s ∧ x ∈ s} => (s : Set α))
+    (fun s => s.2.1.1) hEmpty
+  let E : Set α := ⋂ s ∈ u, (s : Set α)
+  refine ⟨E, ?_, ?_, ?_⟩
+  · exact isClopen_biInter_finset (s := u) (fun s _ => s.2.1)
+  · simp [E, fun s : {s : Set α // IsClopen s ∧ x ∈ s} => s.2.2]
+  · rw [Set.disjoint_iff_inter_eq_empty]
+    simpa [E] using hu
+
+/-- A clopen subset of a closed ball that avoids the boundary sphere is clopen after embedding back
+into the ambient metric space.  This is the clopen-lifting step in boundary bumping. -/
+lemma isClopen_image_closedBall_subtype_of_isClopen_disjoint_sphere
+    {α : Type*} [MetricSpace α] {p : α} {r : ℝ}
+    {E : Set (Metric.closedBall p r)}
+    (hE : IsClopen E)
+    (hdisj : Disjoint E
+      ({x : Metric.closedBall p r | (x : α) ∈ Metric.sphere p r} :
+        Set (Metric.closedBall p r))) :
+    IsClopen (((↑) : Metric.closedBall p r → α) '' E : Set α) := by
+  constructor
+  · exact Metric.isClosed_closedBall.isClosedEmbedding_subtypeVal.isClosed_iff_image_isClosed.mp hE.1
+  · rcases isOpen_induced_iff.mp hE.2 with ⟨O, hOopen, hOeq⟩
+    have himg_eq : ((↑) : Metric.closedBall p r → α) '' E = O ∩ Metric.ball p r := by
+      ext z
+      constructor
+      · rintro ⟨zQ, hzQE, rfl⟩
+        have hzO : (zQ : α) ∈ O := by
+          change zQ ∈ ((↑) : Metric.closedBall p r → α) ⁻¹' O
+          rw [hOeq]
+          exact hzQE
+        have hznotSphere : ¬ (zQ : α) ∈ Metric.sphere p r := by
+          intro hzSphere
+          exact Set.disjoint_left.mp hdisj hzQE hzSphere
+        have hzball : (zQ : α) ∈ Metric.ball p r := by
+          rw [Metric.mem_ball]
+          have hzclosed : dist (zQ : α) p ≤ r := zQ.2
+          have hzne : dist (zQ : α) p ≠ r := by
+            intro hdist
+            exact hznotSphere (by simpa [Metric.mem_sphere] using hdist)
+          exact lt_of_le_of_ne hzclosed hzne
+        exact ⟨hzO, hzball⟩
+      · intro hz
+        have hzclosed : z ∈ Metric.closedBall p r := Metric.ball_subset_closedBall hz.2
+        refine ⟨⟨z, hzclosed⟩, ?_, rfl⟩
+        change (⟨z, hzclosed⟩ : Metric.closedBall p r) ∈ E
+        rw [← hOeq]
+        exact hz.1
+    rw [himg_eq]
+    exact hOopen.inter isOpen_ball
+
+/-- Boundary bumping for compact preconnected metric spaces.  Every positive closed ball around a
+point contains a nontrivial preconnected subset through that point.  If the whole space is already in
+the closed ball, take the whole space; otherwise the component in the closed ball bumps into the
+sphere, proved via compact quasicomponents. -/
+lemma exists_preconnected_nontrivial_subset_closedBall_of_compact_preconnected
+    {α : Type*} [MetricSpace α] [CompactSpace α] [Nontrivial α]
+    (hpre : IsPreconnected (Set.univ : Set α)) (p : α) {r : ℝ} (hr : 0 < r) :
+    ∃ A : Set α, IsPreconnected A ∧ p ∈ A ∧ A.Nontrivial ∧ A ⊆ Metric.closedBall p r := by
+  by_cases hsub : (Set.univ : Set α) ⊆ Metric.closedBall p r
+  · exact ⟨Set.univ, hpre, Set.mem_univ p, Set.nontrivial_univ, hsub⟩
+  · have hnotforall : ¬ ∀ y : α, y ∈ Metric.closedBall p r := by
+      intro hall
+      exact hsub (fun y _ => hall y)
+    push Not at hnotforall
+    obtain ⟨y, hyout⟩ := hnotforall
+    let Q : Set α := Metric.closedBall p r
+    have hpQ : p ∈ Q := by simpa [Q, Metric.mem_closedBall] using le_of_lt hr
+    let C : Set α := connectedComponentIn Q p
+    have hCpre : IsPreconnected C := by
+      simpa [C] using (isPreconnected_connectedComponentIn (x := p) (F := Q))
+    have hpC : p ∈ C := by simpa [C] using mem_connectedComponentIn hpQ
+    have hCsubQ : C ⊆ Q := by simpa [C] using connectedComponentIn_subset Q p
+    have hCnot : ¬ C.Subsingleton := by
+      intro hCsub
+      have hQcompact : IsCompact Q := by simpa [Q] using (isCompact_closedBall p r)
+      haveI : CompactSpace Q := isCompact_iff_compactSpace.mp hQcompact
+      let pQ : Q := ⟨p, hpQ⟩
+      let FQ : Set Q := {x : Q | (x : α) ∈ Metric.sphere p r}
+      have hFQclosed : IsClosed FQ := by
+        exact Metric.isClosed_sphere.preimage continuous_subtype_val
+      have hFQcompact : IsCompact FQ := hFQclosed.isCompact
+      have hdisjFcomp : Disjoint FQ (connectedComponent pQ) := by
+        rw [Set.disjoint_left]
+        intro z hzF hzC
+        have hzCimg : (z : α) ∈ C := by
+          have : (z : α) ∈ connectedComponentIn Q p := by
+            rw [connectedComponentIn_eq_image hpQ]
+            exact ⟨z, hzC, rfl⟩
+          simpa [C] using this
+        have hzp : (z : α) = p := hCsub hzCimg hpC
+        have hdist : dist (z : α) p = r := by simpa [Metric.mem_sphere] using hzF
+        rw [hzp, dist_self] at hdist
+        linarith
+      obtain ⟨E, hEclopen, hpE, hdisjFE⟩ :=
+        exists_isClopen_neighborhood_disjoint_compact_of_disjoint_connectedComponent
+          (F := FQ) (x := pQ) hFQcompact hdisjFcomp
+      have hEclopenα : IsClopen (((↑) : Q → α) '' E : Set α) := by
+        exact isClopen_image_closedBall_subtype_of_isClopen_disjoint_sphere
+          (p := p) (r := r) hEclopen hdisjFE.symm
+      have hpEα : p ∈ (((↑) : Q → α) '' E : Set α) := ⟨pQ, hpE, rfl⟩
+      have hAllE : (Set.univ : Set α) ⊆ ((↑) : Q → α) '' E :=
+        hpre.subset_isClopen hEclopenα ⟨p, Set.mem_univ p, hpEα⟩
+      have hyE : y ∈ ((↑) : Q → α) '' E := hAllE (Set.mem_univ y)
+      obtain ⟨yQ, _hyQE, hyval⟩ := hyE
+      have hyclosed : y ∈ Metric.closedBall p r := by simpa [Q, hyval] using yQ.2
+      exact hyout hyclosed
+    exact ⟨C, hCpre, hpC, Set.not_subsingleton_iff.mp hCnot, hCsubQ⟩
+
+/-- Filled-Julia boundary-bumping core.  For a connected filled Julia set, every positive closed ball
+around a frontier point contains a nontrivial preconnected continuum through that point inside the
+filled Julia set. -/
+lemma filledJulia_boundaryBumpingCore_of_preconnected
+    {c p : ℂ}
+    (hKconn : IsPreconnected (filledJulia c))
+    (hpfront : p ∈ frontier (filledJulia c)) {ρ : ℝ} (hρ : 0 < ρ) :
+    ∃ A : Set ℂ, IsPreconnected A ∧ p ∈ A ∧ A.Nontrivial ∧
+      A ⊆ filledJulia c ∧ A ⊆ Metric.closedBall p ρ := by
+  let K : Set ℂ := filledJulia c
+  have hpK : p ∈ K := by simpa [K] using mem_filledJulia_of_frontier hpfront
+  haveI : CompactSpace K := isCompact_iff_compactSpace.mp (by simpa [K] using isCompact_filledJulia c)
+  haveI : Nontrivial K := by
+    exact Set.Nontrivial.coe_sort (by simpa [K] using filledJulia_nontrivial c)
+  have hpreK : IsPreconnected (Set.univ : Set K) := by
+    apply IsInducing.subtypeVal.isPreconnected_image.mp
+    simpa [K, Set.image_univ, Subtype.range_coe] using hKconn
+  obtain ⟨A₀, hA₀pre, hpA₀, hA₀non, hA₀ρ⟩ :=
+    exists_preconnected_nontrivial_subset_closedBall_of_compact_preconnected
+      (α := K) hpreK ⟨p, hpK⟩ hρ
+  let A : Set ℂ := ((↑) : K → ℂ) '' A₀
+  refine ⟨A, ?_, ?_, ?_, ?_, ?_⟩
+  · simpa [A] using (IsInducing.subtypeVal.isPreconnected_image.mpr hA₀pre)
+  · exact ⟨⟨p, hpK⟩, hpA₀, rfl⟩
+  · rcases hA₀non with ⟨x, hx, y, hy, hxy⟩
+    refine ⟨(x : ℂ), ⟨x, hx, rfl⟩, (y : ℂ), ⟨y, hy, rfl⟩, ?_⟩
+    intro hxyval
+    exact hxy (Subtype.ext hxyval)
+  · rintro z ⟨x, _hx, rfl⟩
+    exact x.2
+  · rintro z ⟨x, hx, rfl⟩
+    have hxρ := hA₀ρ hx
+    change dist (x : ℂ) p ≤ ρ
+    simpa [Metric.mem_closedBall] using hxρ
+
+/-- Local-tip absorption of the punctured exterior ball into the selected common exterior component.
+This is the Lean form of the first half of the boundary-slice reduction: once `p` lies in the
+closure of a common exterior component and the active exterior is locally preconnected at `p`, a
+small punctured active-basin ball cannot split across different common exterior components. -/
+lemma localTipGood_commonExterior_ball_subset_component
+    {c₁ c₂ p u : ℂ}
+    (hpoff : p ∈ (filledJulia c₂)ᶜ)
+    (hpcl : p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u))
+    (htip : LocalTipGood c₁ p) :
+    ∃ R : ℝ, 0 < R ∧
+      Metric.ball p R ∩ (filledJulia c₁)ᶜ ⊆
+        connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u ∧
+      Metric.ball p R ⊆ (filledJulia c₂)ᶜ := by
+  rcases htip with ⟨rTip, hrTip, htip⟩
+  obtain ⟨rOther, hrOther, hother⟩ :=
+    Metric.isOpen_iff.mp (isClosed_filledJulia c₂).isOpen_compl p hpoff
+  let C : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  let V : Set ℂ := connectedComponentIn C u
+  have hVsubC : V ⊆ C := by
+    simpa [V] using connectedComponentIn_subset C u
+  have hVbasin₁ : V ⊆ (filledJulia c₁)ᶜ := fun z hz => (hVsubC hz).1
+  set R : ℝ := min rTip rOther with hRdef
+  have hR : 0 < R := by rw [hRdef]; exact lt_min hrTip hrOther
+  have hR_le_tip : R ≤ rTip := by rw [hRdef]; exact min_le_left _ _
+  have hR_le_other : R ≤ rOther := by rw [hRdef]; exact min_le_right _ _
+  have hlocalV : Metric.ball p R ∩ (filledJulia c₁)ᶜ ⊆ V := by
+    set W : Set ℂ := Metric.ball p R ∩ (filledJulia c₁)ᶜ with hW
+    have hWc : IsPreconnected W := by simpa [W] using htip R hR hR_le_tip
+    have hWC : W ⊆ C := by
+      intro z hz
+      exact ⟨hz.2, hother (Metric.ball_subset_ball hR_le_other hz.1)⟩
+    have hpclV : p ∈ closure V := by simpa [V, C] using hpcl
+    have hmeet : (Metric.ball p R ∩ V).Nonempty := by
+      rw [_root_.mem_closure_iff] at hpclV
+      exact hpclV (Metric.ball p R) isOpen_ball (Metric.mem_ball_self hR)
+    obtain ⟨y, hyball, hyV⟩ := hmeet
+    have hyW : y ∈ W := ⟨hyball, hVbasin₁ hyV⟩
+    have hWsubCompY : W ⊆ connectedComponentIn C y :=
+      hWc.subset_connectedComponentIn hyW hWC
+    have hcomp : connectedComponentIn C y = V := by
+      have h := connectedComponentIn_eq (by simpa [V] using hyV)
+      simpa [V] using h.symm
+    intro z hz
+    exact hcomp ▸ hWsubCompY (by simpa [W] using hz)
+  refine ⟨R, hR, by simpa [V, C] using hlocalV, ?_⟩
+  intro z hz
+  exact hother (Metric.ball_subset_ball hR_le_other hz)
+
+/-- Closed-ball shrink of `localTipGood_commonExterior_ball_subset_component`.  This packages the
+radius choice used by the boundary-bumping route: choose a smaller closed ball for the continuum while
+keeping a larger open ball whose punctured active exterior is in the selected common component. -/
+lemma localTipGood_commonExterior_closedBall_shrink
+    {c₁ c₂ p u : ℂ}
+    (hpoff : p ∈ (filledJulia c₂)ᶜ)
+    (hpcl : p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u))
+    (htip : LocalTipGood c₁ p) :
+    ∃ (ρ R : ℝ), 0 < ρ ∧ ρ < R ∧
+      Metric.closedBall p ρ ⊆ (filledJulia c₂)ᶜ ∧
+      Metric.ball p R ∩ (filledJulia c₁)ᶜ ⊆
+        connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u := by
+  obtain ⟨R, hR, hlocalV, hoffBall⟩ :=
+    localTipGood_commonExterior_ball_subset_component
+      (c₁ := c₁) (c₂ := c₂) (p := p) (u := u) hpoff hpcl htip
+  refine ⟨R / 2, R, half_pos hR, half_lt_self hR, ?_, hlocalV⟩
+  intro z hz
+  exact hoffBall (Metric.closedBall_subset_ball (half_lt_self hR) hz)
+
 /-- Boundary-bumping reduction, local carrier form.  Once a paper/topology argument supplies a
 nontrivial preconnected continuum `A` inside a small closed ball of `K_c1`, this lemma proves that the
 continuum is already a two-arm germ in the exact common-component frontier slice.  The only dynamical
@@ -10671,5 +10893,296 @@ theorem q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_r
       (c₁ := c₂) (c₂ := c₁) (u := u) (p := p)
       (commonComponentFrontierSlice_component_not_subsingleton_of_preconnected_nontrivial_subset
         (c₁ := c₂) (c₂ := c₁) (u := u) (p := p) (A := B) hBpre hpB hBnon hBsub)
+
+/-- **Connected q62-facing endpoint from local-tip absorption plus a pure boundary-bumping core.**
+This is the sharper boundary-slice route: `LocalTipGood` supplies the common-component exterior
+absorption and the geometric/topological side only has to produce, for every small radius, a
+nontrivial preconnected continuum through the base point inside the active filled Julia set. -/
+theorem q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipBoundaryBumpingCoreLoopOrderCode
+    {κ₁ κ₂ : Type*} [Countable κ₁] [Countable κ₂]
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUneMoore : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂) (_hx₁ : c₁ ∉ Exceptional) (_hx₂ : c₂ ∉ Exceptional)
+    (hG₁ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (hG₂ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β₁ β₂ : ℂ → ℂ)
+    (hβ₁an : AnalyticOnNhd ℂ β₁ (filledJulia c₁)ᶜ)
+    (hβ₁esc : ∀ z ∈ escapeOpen c₁, β₁ z = bottcherCoord c₁ z)
+    (hβ₁mod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β₁ z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hβ₂an : AnalyticOnNhd ℂ β₂ (filledJulia c₂)ᶜ)
+    (hβ₂esc : ∀ z ∈ escapeOpen c₂, β₂ z = bottcherCoord c₂ z)
+    (hβ₂mod : ∀ z ∈ (filledJulia c₂)ᶜ, ‖β₂ z‖ = Real.exp (greenFunctionDyn c₂ z))
+    (hKconn₁ : IsPreconnected (filledJulia c₁))
+    (hKconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (hbaseTip₁ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+      LocalTipGood c₁ p)
+    (hbumpCore₁ : ∀ p ρ, 0 < ρ → p ∈ frontier (filledJulia c₁) →
+      ∃ A : Set ℂ, IsPreconnected A ∧ p ∈ A ∧ A.Nontrivial ∧
+        A ⊆ filledJulia c₁ ∧ A ⊆ Metric.closedBall p ρ)
+    (loopOrderCode₁ : ℂ → κ₁)
+    (hloopOrderInj₁ : InjOn loopOrderCode₁
+      ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v z} : Set ℂ))
+    (hbaseTip₂ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₂) → p ∈ (filledJulia c₁)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u) →
+      LocalTipGood c₂ p)
+    (hbumpCore₂ : ∀ p ρ, 0 < ρ → p ∈ frontier (filledJulia c₂) →
+      ∃ A : Set ℂ, IsPreconnected A ∧ p ∈ A ∧ A.Nontrivial ∧
+        A ⊆ filledJulia c₂ ∧ A ⊆ Metric.closedBall p ρ)
+    (loopOrderCode₂ : ℂ → κ₂)
+    (hloopOrderInj₂ : InjOn loopOrderCode₂
+      ({z | z ∈ frontier (filledJulia c₂) ∧ z ∈ (filledJulia c₁)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v z} : Set ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+    letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+  letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+  refine q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffBoundaryBumpingContinuumLoopOrderCode
+    hUo hUc hUneMoore hUinf c₁ c₂ hU₁ hU₂ hne _hx₁ _hx₂ hG₁ hG₂ β₁ β₂ hβ₁an hβ₁esc
+    hβ₁mod hβ₂an hβ₂esc hβ₂mod hKconn₁ hKconn₂ hempty₁ hempty₂ ?_ loopOrderCode₁
+    hloopOrderInj₁ ?_ loopOrderCode₂ hloopOrderInj₂
+  · intro p u huU hpfront hpoff hpcl
+    obtain ⟨ρ, R, hρ, hρR, hoff, hlocalV⟩ :=
+      localTipGood_commonExterior_closedBall_shrink
+        (c₁ := c₁) (c₂ := c₂) (p := p) (u := u) hpoff hpcl
+        (hbaseTip₁ p u huU hpfront hpoff hpcl)
+    obtain ⟨A, hApre, hpA, hAnon, hAK, hAρ⟩ := hbumpCore₁ p ρ hρ hpfront
+    exact ⟨A, ρ, R, hApre, hpA, hAnon, hAK, hAρ, hρR, hoff, hlocalV⟩
+  · intro p u huU hpfront hpoff hpcl
+    obtain ⟨ρ, R, hρ, hρR, hoff, hlocalV⟩ :=
+      localTipGood_commonExterior_closedBall_shrink
+        (c₁ := c₂) (c₂ := c₁) (p := p) (u := u) hpoff hpcl
+        (hbaseTip₂ p u huU hpfront hpoff hpcl)
+    obtain ⟨A, hApre, hpA, hAnon, hAK, hAρ⟩ := hbumpCore₂ p ρ hρ hpfront
+    exact ⟨A, ρ, R, hApre, hpA, hAnon, hAK, hAρ, hρR, hoff, hlocalV⟩
+
+/-- **Connected q62-facing endpoint from local-tip absorption and proved boundary bumping.**  This
+removes the `hbumpCore` assumption from
+`q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipBoundaryBumpingCoreLoopOrderCode`:
+the required local continua are supplied by compact boundary bumping for the connected filled Julia
+sets themselves. -/
+theorem q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipBoundaryBumpingLoopOrderCode
+    {κ₁ κ₂ : Type*} [Countable κ₁] [Countable κ₂]
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUneMoore : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂) (_hx₁ : c₁ ∉ Exceptional) (_hx₂ : c₂ ∉ Exceptional)
+    (hG₁ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (hG₂ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β₁ β₂ : ℂ → ℂ)
+    (hβ₁an : AnalyticOnNhd ℂ β₁ (filledJulia c₁)ᶜ)
+    (hβ₁esc : ∀ z ∈ escapeOpen c₁, β₁ z = bottcherCoord c₁ z)
+    (hβ₁mod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β₁ z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hβ₂an : AnalyticOnNhd ℂ β₂ (filledJulia c₂)ᶜ)
+    (hβ₂esc : ∀ z ∈ escapeOpen c₂, β₂ z = bottcherCoord c₂ z)
+    (hβ₂mod : ∀ z ∈ (filledJulia c₂)ᶜ, ‖β₂ z‖ = Real.exp (greenFunctionDyn c₂ z))
+    (hKconn₁ : IsPreconnected (filledJulia c₁))
+    (hKconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (hbaseTip₁ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+      LocalTipGood c₁ p)
+    (loopOrderCode₁ : ℂ → κ₁)
+    (hloopOrderInj₁ : InjOn loopOrderCode₁
+      ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v z} : Set ℂ))
+    (hbaseTip₂ : ∀ p u, u ∈ U →
+      p ∈ frontier (filledJulia c₂) → p ∈ (filledJulia c₁)ᶜ →
+      p ∈ closure (connectedComponentIn ((filledJulia c₂)ᶜ ∩ (filledJulia c₁)ᶜ) u) →
+      LocalTipGood c₂ p)
+    (loopOrderCode₂ : ℂ → κ₂)
+    (hloopOrderInj₂ : InjOn loopOrderCode₂
+      ({z | z ∈ frontier (filledJulia c₂) ∧ z ∈ (filledJulia c₁)ᶜ ∧
+        ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₂ v z} : Set ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+    letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+  letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+  refine q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipBoundaryBumpingCoreLoopOrderCode
+    hUo hUc hUneMoore hUinf c₁ c₂ hU₁ hU₂ hne _hx₁ _hx₂ hG₁ hG₂ β₁ β₂ hβ₁an hβ₁esc
+    hβ₁mod hβ₂an hβ₂esc hβ₂mod hKconn₁ hKconn₂ hempty₁ hempty₂ hbaseTip₁ ?_
+    loopOrderCode₁ hloopOrderInj₁ hbaseTip₂ ?_ loopOrderCode₂ hloopOrderInj₂
+  · intro p ρ hρ hpfront
+    exact filledJulia_boundaryBumpingCore_of_preconnected hKconn₁ hpfront hρ
+  · intro p ρ hρ hpfront
+    exact filledJulia_boundaryBumpingCore_of_preconnected hKconn₂ hpfront hρ
+
+end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- Remaining local-tip hypothesis for the boundary-bumping q62 route.  At every relevant common
+frontier point, the active exterior is locally preconnected at the base point. -/
+def CommonComponentBaseLocalTipHypothesis (U : Set ℂ) (c₁ c₂ : ℂ) : Prop :=
+  ∀ p u, u ∈ U →
+    p ∈ frontier (filledJulia c₁) → p ∈ (filledJulia c₂)ᶜ →
+    p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) →
+    LocalTipGood c₁ p
+
+/-- Remaining loop/order coding hypothesis for the boundary-bumping q62 route.  The non-ray bad
+frontier/off-other locus must inject into a countable code type. -/
+def BoundaryBadNonRayLoopOrderCodeHypothesis {κ : Type*} [Countable κ]
+    (c₁ c₂ : ℂ) (loopOrderCode : ℂ → κ) : Prop :=
+  InjOn loopOrderCode
+    ({z | z ∈ frontier (filledJulia c₁) ∧ z ∈ (filledJulia c₂)ᶜ ∧
+      ¬ ∃ v : ℂ, ‖v‖ = 1 ∧ LocalNonpositiveRayConfined c₁ v z} : Set ℂ)
+
+/-- The exact remaining symmetric hypotheses after compact boundary bumping has been proved. -/
+def LocalTipBoundaryBumpingRemainingHypotheses (U : Set ℂ) (c₁ c₂ : ℂ)
+    {κ₁ κ₂ : Type*} [Countable κ₁] [Countable κ₂]
+    (loopOrderCode₁ : ℂ → κ₁) (loopOrderCode₂ : ℂ → κ₂) : Prop :=
+  CommonComponentBaseLocalTipHypothesis U c₁ c₂ ∧
+  BoundaryBadNonRayLoopOrderCodeHypothesis c₁ c₂ loopOrderCode₁ ∧
+  CommonComponentBaseLocalTipHypothesis U c₂ c₁ ∧
+  BoundaryBadNonRayLoopOrderCodeHypothesis c₂ c₁ loopOrderCode₂
+
+/-- **Connected q62-facing endpoint stopped exactly at the remaining hypotheses.**  Compact boundary
+bumping and local common-component absorption are internal; the only unresolved local inputs are the
+base `LocalTipGood` condition and a countable injective code for the non-ray bad locus, symmetrically
+for `c₁,c₂`. -/
+theorem q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipBoundaryBumpingRemainingHypotheses
+    {κ₁ κ₂ : Type*} [Countable κ₁] [Countable κ₂]
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUneMoore : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hne : c₁ ≠ c₂) (_hx₁ : c₁ ∉ Exceptional) (_hx₂ : c₂ ∉ Exceptional)
+    (hG₁ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (hG₂ : letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (β₁ β₂ : ℂ → ℂ)
+    (hβ₁an : AnalyticOnNhd ℂ β₁ (filledJulia c₁)ᶜ)
+    (hβ₁esc : ∀ z ∈ escapeOpen c₁, β₁ z = bottcherCoord c₁ z)
+    (hβ₁mod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β₁ z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hβ₂an : AnalyticOnNhd ℂ β₂ (filledJulia c₂)ᶜ)
+    (hβ₂esc : ∀ z ∈ escapeOpen c₂, β₂ z = bottcherCoord c₂ z)
+    (hβ₂mod : ∀ z ∈ (filledJulia c₂)ᶜ, ‖β₂ z‖ = Real.exp (greenFunctionDyn c₂ z))
+    (hKconn₁ : IsPreconnected (filledJulia c₁))
+    (hKconn₂ : IsPreconnected (filledJulia c₂))
+    (hempty₁ : interior (filledJulia c₁) = ∅)
+    (hempty₂ : interior (filledJulia c₂) = ∅)
+    (loopOrderCode₁ : ℂ → κ₁) (loopOrderCode₂ : ℂ → κ₂)
+    (hremaining : LocalTipBoundaryBumpingRemainingHypotheses U c₁ c₂ loopOrderCode₁ loopOrderCode₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUneMoore
+    letI := (ratfuncToMero U hUo hUc hUneMoore hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  rcases hremaining with ⟨hbaseTip₁, hloopOrderInj₁, hbaseTip₂, hloopOrderInj₂⟩
+  exact q62_independence_connected_of_emptyInterior_commonBasin_gamma_offOther_radicalSqfreeBad_countableAvoidance_symmDiffLocalTipBoundaryBumpingLoopOrderCode
+    hUo hUc hUneMoore hUinf c₁ c₂ hU₁ hU₂ hne _hx₁ _hx₂ hG₁ hG₂ β₁ β₂ hβ₁an hβ₁esc
+    hβ₁mod hβ₂an hβ₂esc hβ₂mod hKconn₁ hKconn₂ hempty₁ hempty₂ hbaseTip₁ loopOrderCode₁
+    hloopOrderInj₁ hbaseTip₂ loopOrderCode₂ hloopOrderInj₂
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- A boundary point is straight-segment accessible from `V` if some interior point sees it by an
+open segment contained in `V`. -/
+def StraightSegmentAccessibleFrom (V : Set ℂ) (q : ℂ) : Prop :=
+  ∃ x : ℂ, x ∈ V ∧ q ∈ frontier V ∧
+    ∀ t : ℝ, 0 ≤ t → t < 1 → AffineMap.lineMap x q t ∈ V
+
+/-- Accessible boundary points are dense in the boundary of any open subset of the plane. -/
+lemma exists_straightSegmentAccessible_frontier_point_near
+    {V : Set ℂ} (hVopen : IsOpen V) {p : ℂ} (hp : p ∈ frontier V)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ q : ℂ, q ∈ frontier V ∧ dist q p < ε ∧ StraightSegmentAccessibleFrom V q := by
+  have hpcl : p ∈ closure V := frontier_subset_closure hp
+  have hpnot : p ∉ V := by
+    intro hpV
+    have hpint : p ∈ interior V := by simp [hVopen.interior_eq, hpV]
+    exact hp.2 hpint
+  let η : ℝ := ε / 3
+  have hη : 0 < η := by positivity
+  obtain ⟨x, hxV, hxp⟩ := Metric.mem_closure_iff.mp hpcl η hη
+  have hVne : V ≠ univ := by
+    intro h
+    exact hpnot (by simpa [h] using mem_univ p)
+  have hcomplne : Vᶜ.Nonempty := ⟨p, by simpa using hpnot⟩
+  have hdistpos : 0 < Metric.infDist x Vᶜ :=
+    ((isClosed_compl_iff.mpr hVopen).notMem_iff_infDist_pos hcomplne).mp (by simpa using hxV)
+  obtain ⟨q, hqfront, hdistq⟩ := exists_mem_frontier_infDist_compl_eq_dist (E := ℂ) hxV hVne
+  have hqdistxp : dist x q = Metric.infDist x Vᶜ := by
+    simpa [dist_comm] using hdistq.symm
+  have hseg : ∀ t : ℝ, 0 ≤ t → t < 1 → AffineMap.lineMap x q t ∈ V := by
+    intro t ht0 ht1
+    have htdist : dist (AffineMap.lineMap x q t) x < Metric.infDist x Vᶜ := by
+      rw [dist_lineMap_left, hqdistxp]
+      have hnorm : ‖t‖ < (1 : ℝ) := by
+        rw [Real.norm_eq_abs, abs_of_nonneg ht0]
+        exact ht1
+      simpa using mul_lt_of_lt_one_left hdistpos hnorm
+    exact Metric.ball_infDist_compl_subset (x := x) (s := V) htdist
+  refine ⟨q, hqfront, ?_, ⟨x, hxV, hqfront, hseg⟩⟩
+  have hxpd : dist x p < η := by simpa [dist_comm] using hxp
+  have hqx : dist q x = Metric.infDist x Vᶜ := by
+    simpa [dist_comm] using hdistq.symm
+  have hle : Metric.infDist x Vᶜ ≤ dist x p := Metric.infDist_le_dist_of_mem (by simpa using hpnot)
+  calc
+    dist q p ≤ dist q x + dist x p := dist_triangle q x p
+    _ = Metric.infDist x Vᶜ + dist x p := by rw [hqx]
+    _ ≤ dist x p + dist x p := by linarith
+    _ < η + η := add_lt_add hxpd hxpd
+    _ < ε := by
+      dsimp [η]
+      linarith
+
+/-- Component-relative access near a common-frontier point, localized away from the other filled Julia
+set.  This is the formal core of the prime-end/accessibility replacement for the false local-ray
+condition. -/
+theorem exists_commonExterior_straightSegmentAccessible_offOther_frontier_near
+    {c₁ c₂ u p : ℂ} {ε : ℝ}
+    (hpfront : p ∈ frontier (filledJulia c₁))
+    (hpoff : p ∈ (filledJulia c₂)ᶜ)
+    (hpcl : p ∈ closure (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u))
+    (hε : 0 < ε) :
+    ∃ q : ℂ,
+      q ∈ (filledJulia c₂)ᶜ ∧
+      q ∈ frontier (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) ∧
+      dist q p < ε ∧
+      StraightSegmentAccessibleFrom
+        (connectedComponentIn ((filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ) u) q := by
+  let G : Set ℂ := (filledJulia c₁)ᶜ ∩ (filledJulia c₂)ᶜ
+  let V : Set ℂ := connectedComponentIn G u
+  have hGopen : IsOpen G :=
+    (isClosed_filledJulia c₁).isOpen_compl.inter (isClosed_filledJulia c₂).isOpen_compl
+  have hVopen : IsOpen V := by
+    simpa [V] using hGopen.connectedComponentIn (x := u)
+  have hpK : p ∈ filledJulia c₁ := mem_filledJulia_of_frontier hpfront
+  have hpnotV : p ∉ V := by
+    intro hpV
+    have hpG : p ∈ G := connectedComponentIn_subset G u (by simpa [V] using hpV)
+    exact hpG.1 hpK
+  have hpVfront : p ∈ frontier V := by
+    simpa [hVopen.frontier_eq, V] using And.intro hpcl hpnotV
+  obtain ⟨R, hRpos, hRsub⟩ := Metric.isOpen_iff.mp (isClosed_filledJulia c₂).isOpen_compl p hpoff
+  let δ : ℝ := min ε R
+  have hδpos : 0 < δ := lt_min hε hRpos
+  obtain ⟨q, hqfront, hqdistδ, hqacc⟩ :=
+    exists_straightSegmentAccessible_frontier_point_near (V := V) hVopen hpVfront hδpos
+  have hqoff : q ∈ (filledJulia c₂)ᶜ := by
+    apply hRsub
+    exact lt_of_lt_of_le hqdistδ (min_le_right ε R)
+  refine ⟨q, hqoff, ?_, ?_, ?_⟩
+  · simpa [V] using hqfront
+  · exact lt_of_lt_of_le hqdistδ (min_le_left ε R)
+  · simpa [V] using hqacc
+
+end
 
 end Bottcher

@@ -18,7 +18,14 @@ needs gluing such roots across a cut — the winding identification.
 
 New file (hRigid / connected lane, analytic-root utilities — Mathlib-only deps).
 -/
-import Mathlib
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.Analysis.Analytic.Basic
+import Mathlib.Analysis.Complex.BranchLogRoot
+import Mathlib.Analysis.Complex.Convex
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
+import Mathlib.Tactic
 
 open Complex Filter Topology Set
 

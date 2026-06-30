@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # Holonomicity-limit nonclosure: stabilization anchor

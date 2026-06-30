@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # Complete-homogeneous (Symᵏ) Satake character — the third λ-ring basis (Tier A)

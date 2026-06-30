@@ -14,7 +14,10 @@ That identity is the crux of the Marty equicontinuity bound `σf ≤ M ⟹ χ(fa
 
 New file (Montel/Julia lane — spherical normality foundation). General lemmas; Mathlib only.
 -/
-import Mathlib
+import Mathlib.Analysis.Calculus.Deriv.Comp
+import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Tactic
 
 open Complex
 

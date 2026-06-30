@@ -21,7 +21,8 @@ exactly the kind of `𝓜⁺` interaction this layer makes precise; downstream i
 Jacobi quartic identity `θ₃⁴ = θ₂⁴ + θ₄⁴` (the second-order ODE the theta-nullwerte satisfy via the
 heat equation). General lemmas; Mathlib only.
 -/
-import Mathlib
+import Mathlib.NumberTheory.ModularForms.JacobiTheta.TwoVariable
+import Mathlib.Tactic
 open Complex Real Filter
 open scoped Real Topology
 

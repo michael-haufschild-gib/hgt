@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
+import Mathlib.Tactic
 
 /-!
 # Secular Newton-duality: the power-sum face and the elementary-symmetric face are one object (Tier A)

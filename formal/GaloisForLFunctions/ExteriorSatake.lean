@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # Exterior-power Satake: the local L-factor coefficients are the ∧ᵏ data (Tier A)

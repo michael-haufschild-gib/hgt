@@ -15,7 +15,8 @@ non-negativity and continuity (the input to the compactness step of Marty's crit
 
 New file (Montel/Julia lane — spherical normality foundation). General lemmas; Mathlib only.
 -/
-import Mathlib
+import Mathlib.Analysis.Calculus.Deriv.Inv
+import Mathlib.Tactic
 
 open Complex
 

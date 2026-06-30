@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Tactic
 
 /-!
 # Stieltjes-log weld: coefficient Cauchy product (Tier A)

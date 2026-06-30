@@ -18,7 +18,9 @@ order API (`AnalyticAt.analyticOrderAt_eq_natCast`) and the slope limit `(Fz-zâ‚
 
 New file (hRigid connected lane, D2 â€” the local obstruction). General lemma; Mathlib only.
 -/
-import Mathlib
+import Mathlib.Analysis.Analytic.Order
+import Mathlib.Analysis.Calculus.Deriv.Slope
+import Mathlib.Tactic
 
 open Filter Topology
 

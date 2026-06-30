@@ -11,7 +11,9 @@ constant, contradicting `|g| = exp(G_c)` non-constant on the basin.
 This file proves the first-order resonance and its critical-point corollary (a repelling fixed point
 forces `φ_c`'s continuation to have a critical point unless `λ = k`). General lemma; Mathlib only.
 -/
-import Mathlib
+import Mathlib.Analysis.Calculus.Deriv.Comp
+import Mathlib.Analysis.Calculus.Deriv.Pow
+import Mathlib.Tactic
 
 open Filter Topology
 

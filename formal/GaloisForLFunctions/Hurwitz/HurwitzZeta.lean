@@ -10,7 +10,8 @@ that object from the convergent series (`Re s > 1`), starting with summability.
   `p`-series. The bound: `‖z^{-s}‖ ≤ ‖z‖^{-Re s} · e^{arg z · Im s}` (`Complex.norm_cpow_le`); the `arg`
   factor is `≤ e^{π|Im s|}`, and for `m` past `2‖a‖` the base `‖(m:ℂ)+a‖ ≥ (m+M) - ‖a‖ ≥ (m+M)/2`.
 -/
-import Mathlib
+import Mathlib.Analysis.PSeries
+import Mathlib.Tactic
 
 open Complex Filter
 

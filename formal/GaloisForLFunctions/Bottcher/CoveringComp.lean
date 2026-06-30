@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 import GaloisForLFunctions.Bottcher.ProperLocalHomeoCovering
 open Topology
 namespace Bottcher

@@ -7,7 +7,7 @@ powers `t^{K−k}` (via `cpow_add` on the positive real ray and `cpow_natCast`);
 every `k < K` term and leaves the top coefficient `c_K(0)`. So `c_K(0) = 0`. This is the linear-eigenspace
 analogue of `quadratic_filtration_top`, with a complex (`cpow`) singular base rather than integer powers.
 -/
-import Mathlib
+import Mathlib.Tactic
 
 open Complex Filter Topology
 

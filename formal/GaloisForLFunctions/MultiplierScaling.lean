@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # Per-prime multiplier scaling preserves real-rootedness (Tier A)

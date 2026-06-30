@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
+import Mathlib.Tactic
 
 /-!
 # C5 Jensen prime kernel: von Mangoldt coefficient anchor (Tier A)

@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # The Sato–Tate interval / Ramanujan trace bound (Tier A)

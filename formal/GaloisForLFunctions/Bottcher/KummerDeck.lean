@@ -20,7 +20,8 @@ independence. `w = φ_{c₁}` being algebraic over the large field `B` is fully 
 This file builds the abstract algebraic core; the analytic instantiation (naming `a`, irreducibility,
 the descent `π*`) is layered on top.
 -/
-import Mathlib
+import Mathlib.FieldTheory.KummerExtension
+import Mathlib.Tactic
 import GaloisForLFunctions.Bottcher.AlgIndep
 import GaloisForLFunctions.Bottcher.Q62
 import GaloisForLFunctions.Bottcher.MonodromyObstruction

@@ -1,4 +1,6 @@
-import Mathlib
+import Mathlib.NumberTheory.ModularForms.Cusps
+import Mathlib.NumberTheory.ModularForms.SlashActions
+import Mathlib.Tactic
 open Matrix CongruenceSubgroup UpperHalfPlane Complex
 open scoped MatrixGroups UpperHalfPlane
 

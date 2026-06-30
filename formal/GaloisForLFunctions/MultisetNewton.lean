@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
+import Mathlib.Tactic
 
 /-!
 # Newton's identities for multisets — the inversion engine for B29 (Tier A)

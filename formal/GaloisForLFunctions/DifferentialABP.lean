@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # Differential ABP type obstruction: derivation versus Frobenius

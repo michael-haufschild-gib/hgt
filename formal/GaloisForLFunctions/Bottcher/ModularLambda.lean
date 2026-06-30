@@ -21,7 +21,13 @@ fundamental-domain/Hauptmodul argument ⟹ `λ` is a covering `ℍ → ℂ∖{0,
 
 New file (Montel/Julia lane — three-value Montel keystone). General; Mathlib only.
 -/
-import Mathlib
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.LinearAlgebra.Matrix.FixedDetMatrices
+import Mathlib.NumberTheory.Modular
+import Mathlib.NumberTheory.ModularForms.JacobiTheta.Bounds
+import Mathlib.NumberTheory.ModularForms.JacobiTheta.OneVariable
+import Mathlib.NumberTheory.ModularForms.JacobiTheta.TwoVariable
+import Mathlib.Tactic
 
 open Complex
 open scoped Real

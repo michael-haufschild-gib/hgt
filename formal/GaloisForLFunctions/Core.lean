@@ -1,4 +1,8 @@
-import Mathlib
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Data.Nat.Factorization.Basic
+import Mathlib.LinearAlgebra.Dimension.Localization
+import Mathlib.Tactic
 
 /-!
 # Infinite-base difference Galois for L-functions: Tier A core

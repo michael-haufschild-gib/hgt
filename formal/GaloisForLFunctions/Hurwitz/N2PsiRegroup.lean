@@ -6,7 +6,7 @@ exponential `E_k = e^{−(s+k)z}` into `∑_k c_k·E_k` with coefficient `c_k = 
 This is the form `linear_laurent_top` consumes (peel the `E_2 = x^{−s−2}` coefficient `c_2`). Linear-case
 analogue of `quadratic_weight_regroup`.
 -/
-import Mathlib
+import Mathlib.Tactic
 
 namespace HurwitzN2PsiRegroup
 

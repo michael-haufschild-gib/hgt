@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # Functional-equation self-duality of the local L-factor (Tier A)

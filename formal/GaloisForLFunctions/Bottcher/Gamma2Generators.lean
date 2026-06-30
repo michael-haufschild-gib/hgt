@@ -9,7 +9,10 @@ level-one route to the Jacobi quartic identity.
 
 This file: the generators, their membership in `Γ(2)`, and the easy inclusion `closure ≤ Γ(2)`.
 -/
-import Mathlib
+import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
+import Mathlib.NumberTheory.ModularForms.Cusps
+import Mathlib.NumberTheory.ModularForms.SlashActions
+import Mathlib.Tactic
 
 open Matrix ModularGroup CongruenceSubgroup
 open scoped MatrixGroups

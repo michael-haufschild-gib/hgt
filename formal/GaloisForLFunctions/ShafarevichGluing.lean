@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # Multi-q Shafarevich gluing: rank-one diagonal kernel anchor

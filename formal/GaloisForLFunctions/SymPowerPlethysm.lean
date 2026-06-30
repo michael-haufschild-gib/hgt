@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.RingTheory.Polynomial.Chebyshev
+import Mathlib.Tactic
 
 /-!
 # The Chebyshev–Laurent plethysm identity (Tier A)

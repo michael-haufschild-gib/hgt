@@ -6,7 +6,9 @@ The interval form of `ClosedLoopFTC.exp_integral_logDeriv` (which is global, `�
 `exp(∫ₐᵇ g'/g) = g(b)/g(a)`.  Needed for the per-arc winding integrals of the `∂F` contour (the arcs
 live on bounded sub-intervals of `(0,∞)`, where `λ(it)` is defined).
 -/
-import Mathlib
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.Tactic
 open Complex intervalIntegral
 
 theorem exp_integral_logDeriv_interval {g g' : ℝ → ℂ} {a b : ℝ} {U : Set ℝ}

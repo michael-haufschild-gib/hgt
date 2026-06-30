@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem
+import Mathlib.Tactic
 
 /-!
 # The finite DSS face: the spectrum's symmetric coordinates are algebraically independent

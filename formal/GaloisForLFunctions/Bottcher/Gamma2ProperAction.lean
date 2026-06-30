@@ -16,7 +16,9 @@ This is brick `#35` of the modular-curve covering lane: with `Γ(2)` acting free
 no elliptic elements) **and** properly discontinuously, the quotient `ℍ → ℍ/PΓ(2)` is a covering, the
 last topological input by which `λ : ℍ → ℂ∖{0,1}` becomes a covering and the three-value Montel lift fires.
 -/
-import Mathlib
+import Mathlib.NumberTheory.ModularForms.Cusps
+import Mathlib.NumberTheory.ModularForms.ProperlyDiscontinuous
+import Mathlib.Tactic
 import GaloisForLFunctions.Bottcher.ProperlyDiscontinuousSubgroup
 
 open UpperHalfPlane CongruenceSubgroup

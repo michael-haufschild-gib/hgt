@@ -13,7 +13,7 @@ disk being contractible (`Convex.contractibleSpace`, hence simply connected) and
 connected), plus `λ` surjective (`lambdaPunct_surjective`) for the basepoint, fed to mathlib's
 `IsCoveringMap.existsUnique_continuousMap_lifts`.
 -/
-import Mathlib
+import Mathlib.Tactic
 import GaloisForLFunctions.Bottcher.ModularLambdaProperness
 import GaloisForLFunctions.Bottcher.ModularLambdaCovering
 

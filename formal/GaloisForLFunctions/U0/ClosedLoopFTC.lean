@@ -10,7 +10,11 @@ globally smooth and nonzero, `ph = ∫ g'/g`, and the loop being closed forces `
 Proof: `ψ(t) = g(t)·exp(−∫ₐᵗ g'/g)` has identically-zero derivative (`g' − g·(g'/g) = 0`), hence is
 constant; `ψ(a) = g(a)` and `ψ(b) = g(b)·exp(−∫ₐᵇ)` give the identity.
 -/
-import Mathlib
+import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.Tactic
 
 open Complex intervalIntegral
 

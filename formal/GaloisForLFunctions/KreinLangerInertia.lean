@@ -1,4 +1,7 @@
-import Mathlib
+import Mathlib.Data.Matrix.Mul
+import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.LinearAlgebra.QuadraticForm.Signature
+import Mathlib.Tactic
 
 /-!
 # Krein–Langer negative inertia upper bounds (Stage 1)

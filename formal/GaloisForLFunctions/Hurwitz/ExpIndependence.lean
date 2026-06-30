@@ -17,7 +17,11 @@ entire functions `z ↦ exp(α_k z)` for distinct `α_k`, proved here by the cle
 This is the Hurwitz analogue of the u₀ natural-boundary transcendence: the irreducible analytic fact
 the algebraic engine (`OrbitObstruction`, `MonodromyScalar`) is fed by.
 -/
-import Mathlib
+import Mathlib.Analysis.Analytic.IsolatedZeros
+import Mathlib.Analysis.Complex.CauchyIntegral
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Mathlib.LinearAlgebra.Vandermonde
+import Mathlib.Tactic
 
 open Complex Polynomial Matrix
 

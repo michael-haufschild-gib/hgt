@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Tactic
 
 /-!
 # The Weil functional equation for the function-field `L`-polynomial (D6, Tier A)
