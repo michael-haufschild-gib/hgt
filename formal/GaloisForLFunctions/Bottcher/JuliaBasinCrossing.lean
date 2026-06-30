@@ -116,3 +116,65 @@ theorem exists_frontier_filledJulia_off_other_with_basin_ball {c₁ c₂ : ℂ} 
   · exact Or.inr (exists_frontier_off_with_other_basin_ball h2 h1)
 
 end Bottcher
+
+namespace Bottcher
+
+/-- In an open set, a point of the ambient open set lying in the closure of a connected component
+already belongs to that connected component. -/
+theorem mem_connectedComponentIn_of_mem_closure_of_isOpen {P : Set ℂ} (hPopen : IsOpen P)
+    {x y : ℂ} (hycl : y ∈ closure (connectedComponentIn P x)) (hyP : y ∈ P) :
+    y ∈ connectedComponentIn P x := by
+  have hov : (connectedComponentIn P y ∩ connectedComponentIn P x).Nonempty :=
+    mem_closure_iff_nhds.mp hycl _
+      (hPopen.connectedComponentIn.mem_nhds (mem_connectedComponentIn hyP))
+  obtain ⟨q, hqy, hqx⟩ := hov
+  have e1 : connectedComponentIn P y = connectedComponentIn P q := connectedComponentIn_eq hqy
+  have e2 : connectedComponentIn P x = connectedComponentIn P q := connectedComponentIn_eq hqx
+  have heq : connectedComponentIn P y = connectedComponentIn P x := by rw [e1, ← e2]
+  rw [← heq]
+  exact mem_connectedComponentIn hyP
+
+/-- **Common-component frontier crossing.**  If a point of `K_a` lies in the `b`-basin while a base point
+`u` lies in the common basin, then the common-basin component containing `u` accumulates on
+`frontier K_a` inside the `b`-basin. -/
+theorem exists_frontier_off_other_in_closure_common_component {a b : ℂ} {u x : ℂ}
+    (hu : u ∈ (filledJulia a)ᶜ ∩ (filledJulia b)ᶜ)
+    (hxK : x ∈ filledJulia a) (hxB : x ∈ (filledJulia b)ᶜ) :
+    ∃ p, p ∈ frontier (filledJulia a) ∧ p ∈ (filledJulia b)ᶜ ∧
+      p ∈ closure (connectedComponentIn ((filledJulia a)ᶜ ∩ (filledJulia b)ᶜ) u) := by
+  let C : Set ℂ := (filledJulia a)ᶜ ∩ (filledJulia b)ᶜ
+  let V : Set ℂ := connectedComponentIn C u
+  have hCo : IsOpen C :=
+    (isClosed_filledJulia a).isOpen_compl.inter (isClosed_filledJulia b).isOpen_compl
+  have hVo : IsOpen V := by
+    simpa [V] using hCo.connectedComponentIn
+  have hVsubC : V ⊆ C := by
+    simpa [V] using connectedComponentIn_subset C u
+  have hVsubKc : V ⊆ (filledJulia a)ᶜ := fun z hz => (hVsubC hz).1
+  have huV : u ∈ V := by
+    simpa [V, C] using mem_connectedComponentIn hu
+  by_contra hnone
+  push Not at hnone
+  have hcover : (filledJulia b)ᶜ ⊆ V ∪ (closure V)ᶜ := by
+    intro y hyB
+    by_cases hycl : y ∈ closure V
+    · left
+      by_cases hyKc : y ∈ (filledJulia a)ᶜ
+      · have hyC : y ∈ C := ⟨hyKc, hyB⟩
+        exact mem_connectedComponentIn_of_mem_closure_of_isOpen hCo (by simpa [V] using hycl) hyC
+      · have hyK : y ∈ filledJulia a := by simpa using hyKc
+        have hyclKc : y ∈ closure (filledJulia a)ᶜ := closure_mono hVsubKc hycl
+        have hyfront : y ∈ frontier (filledJulia a) := by
+          rw [frontier_eq_closure_inter_closure]
+          exact ⟨subset_closure hyK, hyclKc⟩
+        exact False.elim (hnone y hyfront hyB hycl)
+    · right
+      exact hycl
+  have hdisj : Disjoint V (closure V)ᶜ :=
+    disjoint_compl_right_iff_subset.mpr subset_closure
+  have hBpre : IsPreconnected ((filledJulia b)ᶜ) := isPreconnected_compl_filledJulia b
+  rcases hBpre.subset_or_subset hVo isClosed_closure.isOpen_compl hdisj hcover with hsub | hsub
+  · exact hVsubKc (hsub hxB) hxK
+  · exact (hsub hu.2) (subset_closure huV)
+
+end Bottcher

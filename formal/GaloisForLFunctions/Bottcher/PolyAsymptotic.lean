@@ -442,3 +442,776 @@ theorem tendsto_transferred_quadratic_minus_square_along_real_bottcher_ray (c₁
   exact hdefect.congr' hev.symm
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Quadratic-like weighted Laurent top peel.**
+If `x → 0`, `S x → 1`, and an exact filtered relation
+`∑ A_w(x) x^(W-w) S(x)^w = 0` holds eventually, then the top coefficient `A_W(0)` vanishes.
+
+This is the Böttcher-side Laurent extraction for a transported coordinate with
+`T(1/x) = x⁻² S(x)` and `S(x) → 1`; it is the weighted analogue of the Hurwitz Laurent peel. -/
+theorem quadraticLike_weighted_filtration_top {W : ℕ} {A : Fin (W + 1) → ℂ → ℂ} {S : ℂ → ℂ}
+    {l : Filter ℂ} [l.NeBot]
+    (hid : Tendsto (fun x : ℂ => x) l (𝓝 0))
+    (hS : Tendsto S l (𝓝 1))
+    (hA : ∀ w : Fin (W + 1), Tendsto (A w) l (𝓝 (A w 0)))
+    (hrel : ∀ᶠ x in l,
+      ∑ w : Fin (W + 1), A w x * x ^ (W - (w : ℕ)) * (S x) ^ (w : ℕ) = 0) :
+    A (Fin.last W) 0 = 0 := by
+  have hterm : ∀ w : Fin (W + 1),
+      Tendsto (fun x => A w x * x ^ (W - (w : ℕ)) * (S x) ^ (w : ℕ)) l
+        (𝓝 (if w = Fin.last W then A (Fin.last W) 0 else 0)) := by
+    intro w
+    have hSw : Tendsto (fun x => (S x) ^ (w : ℕ)) l (𝓝 (1 ^ (w : ℕ))) := hS.pow (w : ℕ)
+    by_cases hw : w = Fin.last W
+    · subst hw
+      simp only [Fin.val_last, Nat.sub_self, pow_zero, mul_one]
+      simpa using (hA _).mul hSw
+    · rw [if_neg hw]
+      have hlt : (w : ℕ) < W := by
+        have hwlt := w.isLt
+        have hne : (w : ℕ) ≠ W := fun hc => hw (Fin.ext (by rw [Fin.val_last]; exact hc))
+        omega
+      have hpow : Tendsto (fun x : ℂ => x ^ (W - (w : ℕ))) l (𝓝 0) := by
+        have hp := hid.pow (W - (w : ℕ))
+        rwa [zero_pow (by omega : W - (w : ℕ) ≠ 0)] at hp
+      have hAw := (hA w).mul hpow
+      have hall := hAw.mul hSw
+      simpa [mul_assoc] using hall
+  have hsum := tendsto_finsetSum Finset.univ (fun w _ => hterm w)
+  rw [Finset.sum_ite_eq' Finset.univ (Fin.last W) (fun _ => A (Fin.last W) 0)] at hsum
+  simp only [Finset.mem_univ, if_true] at hsum
+  have hzero : Tendsto
+      (fun x => ∑ w : Fin (W + 1), A w x * x ^ (W - (w : ℕ)) * (S x) ^ (w : ℕ)) l
+      (𝓝 0) := tendsto_const_nhds.congr' (hrel.mono fun x hx => hx.symm)
+  exact tendsto_nhds_unique hsum hzero
+
+end Bottcher
+
+namespace Bottcher
+
+/-- `(t : ℂ)⁻¹ → 0` as real `t → +∞`. -/
+theorem tendsto_inv_ofReal_atTop_bottcher : Tendsto (fun t : ℝ => ((t : ℂ))⁻¹) atTop (𝓝 0) := by
+  have h := (Complex.continuous_ofReal.tendsto 0).comp tendsto_inv_atTop_zero
+  simp only [Function.comp_def, Complex.ofReal_inv, Complex.ofReal_zero] at h
+  exact h
+
+/-- **Böttcher coordinate has unit scale on the positive real ray.**
+`φ_c(t)/t → 1` as `t → +∞`. -/
+theorem tendsto_bottcherCoord_real_div_atTop (c : ℂ) :
+    Tendsto (fun t : ℝ => bottcherCoord c (t : ℂ) / (t : ℂ)) atTop (𝓝 1) := by
+  have hE : Tendsto (fun t : ℝ => bottcherCoord c (t : ℂ) - (t : ℂ)) atTop (𝓝 0) :=
+    (tendsto_bottcherCoord_sub_id c).comp tendsto_ofReal_cobounded
+  have hprod : Tendsto
+      (fun t : ℝ => (bottcherCoord c (t : ℂ) - (t : ℂ)) * ((t : ℂ)⁻¹)) atTop (𝓝 0) := by
+    simpa using hE.mul tendsto_inv_ofReal_atTop_bottcher
+  have heq : (fun t : ℝ => bottcherCoord c (t : ℂ) / (t : ℂ))
+      =ᶠ[atTop] (fun t : ℝ => 1 + (bottcherCoord c (t : ℂ) - (t : ℂ)) * ((t : ℂ)⁻¹)) := by
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+    have htne : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt ht)
+    field_simp [htne]
+    ring
+  rw [tendsto_congr' heq]
+  simpa using tendsto_const_nhds.add hprod
+
+/-- **Transferred quadratic has unit weighted scale on the positive real ray.**
+`φ_{c₁}(t²+c₂)/t² → 1` as `t → +∞`. -/
+theorem tendsto_transferred_quadratic_real_div_sq_atTop (c₁ c₂ : ℂ) :
+    Tendsto (fun t : ℝ => bottcherCoord c₁ (quadratic c₂ (t : ℂ)) / ((t : ℂ) ^ 2))
+      atTop (𝓝 1) := by
+  have hE : Tendsto (fun t : ℝ => bottcherCoord c₁ (quadratic c₂ (t : ℂ)) - quadratic c₂ (t : ℂ))
+      atTop (𝓝 0) :=
+    ((tendsto_bottcherCoord_sub_id c₁).comp (tendsto_sq_add_cobounded c₂)).comp
+      tendsto_ofReal_cobounded
+  have hinv : Tendsto (fun t : ℝ => ((t : ℂ) ^ 2)⁻¹) atTop (𝓝 0) := by
+    simpa [inv_pow] using (tendsto_inv_ofReal_atTop_bottcher.pow 2)
+  have hsmall : Tendsto
+      (fun t : ℝ => (bottcherCoord c₁ (quadratic c₂ (t : ℂ)) - quadratic c₂ (t : ℂ)) *
+        (((t : ℂ) ^ 2)⁻¹)) atTop (𝓝 0) := by
+    simpa using hE.mul hinv
+  have hconst : Tendsto (fun t : ℝ => c₂ * (((t : ℂ) ^ 2)⁻¹)) atTop (𝓝 0) := by
+    simpa using tendsto_const_nhds.mul hinv
+  have heq : (fun t : ℝ => bottcherCoord c₁ (quadratic c₂ (t : ℂ)) / ((t : ℂ) ^ 2))
+      =ᶠ[atTop] (fun t : ℝ => 1 +
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ)) - quadratic c₂ (t : ℂ)) * (((t : ℂ) ^ 2)⁻¹)
+          + c₂ * (((t : ℂ) ^ 2)⁻¹)) := by
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+    have htne : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt ht)
+    have ht2ne : (t : ℂ) ^ 2 ≠ 0 := pow_ne_zero _ htne
+    field_simp [ht2ne]
+    rw [quadratic]
+    ring
+  rw [tendsto_congr' heq]
+  simpa using (tendsto_const_nhds.add hsmall).add hconst
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Finite weighted top extraction.**
+If `x → 0`, the two scaled factors `P,Q → 1`, all monomials have weighted degree
+`I k + 2 J k ≤ W`, and the weighted relation
+`∑ a_k x^(W-(I_k+2J_k)) P^I_k Q^J_k = 0` holds eventually, then the top weighted
+coefficient sum vanishes. This is the finite Laurent gate used after pulling a transported Böttcher
+relation back to the real far ray and dividing by `t^W`. -/
+theorem weighted_top_sum_zero_of_eventual_relation_filter {α ι : Type*} [Fintype ι]
+    {l : Filter α} [l.NeBot]
+    {W : ℕ} {a : ι → ℂ} {I J : ι → ℕ} {x P Q : α → ℂ}
+    (hweight : ∀ k : ι, I k + 2 * J k ≤ W)
+    (hx : Tendsto x l (𝓝 0))
+    (hP : Tendsto P l (𝓝 1))
+    (hQ : Tendsto Q l (𝓝 1))
+    (hrel : ∀ᶠ t in l,
+      ∑ k : ι, a k * x t ^ (W - (I k + 2 * J k)) * P t ^ I k * Q t ^ J k = 0) :
+    ∑ k : ι, (if I k + 2 * J k = W then a k else 0) = 0 := by
+  have hterm : ∀ k : ι,
+      Tendsto (fun t : α => a k * x t ^ (W - (I k + 2 * J k)) * P t ^ I k * Q t ^ J k) l
+        (𝓝 (if I k + 2 * J k = W then a k else 0)) := by
+    intro k
+    by_cases hk : I k + 2 * J k = W
+    · have hxpow : Tendsto (fun t : α => x t ^ (W - (I k + 2 * J k))) l (𝓝 1) := by
+        rw [hk, Nat.sub_self]
+        simp
+      have hlim := (((tendsto_const_nhds (x := a k)).mul hxpow).mul (hP.pow (I k))).mul (hQ.pow (J k))
+      rw [if_pos hk]
+      simpa using hlim
+    · have hlt : I k + 2 * J k < W := Nat.lt_of_le_of_ne (hweight k) hk
+      have hxpow : Tendsto (fun t : α => x t ^ (W - (I k + 2 * J k))) l (𝓝 0) := by
+        have hp := hx.pow (W - (I k + 2 * J k))
+        rwa [zero_pow (by omega : W - (I k + 2 * J k) ≠ 0)] at hp
+      have hlim := (((tendsto_const_nhds (x := a k)).mul hxpow).mul (hP.pow (I k))).mul (hQ.pow (J k))
+      rw [if_neg hk]
+      simpa using hlim
+  have hsum := tendsto_finsetSum Finset.univ (fun k _ => hterm k)
+  have hzero : Tendsto
+      (fun t : α => ∑ k : ι, a k * x t ^ (W - (I k + 2 * J k)) * P t ^ I k * Q t ^ J k) l
+      (𝓝 0) := tendsto_const_nhds.congr' (hrel.mono fun t ht => ht.symm)
+  exact tendsto_nhds_unique hsum hzero
+
+/-- **Böttcher real-ray weighted top extraction.**
+For the transported quadratic pair
+`P(t)=φ_{c₁}(t)/t`, `Q(t)=φ_{c₁}(t²+c₂)/t²`, both scaled factors tend to `1`; hence any eventual
+weighted relation in the divided form forces its top weighted coefficient sum to vanish. -/
+theorem bottcher_weighted_top_sum_zero_of_eventual_relation
+    (c₁ c₂ : ℂ) {ι : Type*} [Fintype ι]
+    {W : ℕ} {a : ι → ℂ} {I J : ι → ℕ}
+    (hweight : ∀ k : ι, I k + 2 * J k ≤ W)
+    (hrel : ∀ᶠ t : ℝ in atTop,
+      ∑ k : ι, a k * ((t : ℂ)⁻¹) ^ (W - (I k + 2 * J k)) *
+        (bottcherCoord c₁ (t : ℂ) / (t : ℂ)) ^ I k *
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ)) / ((t : ℂ) ^ 2)) ^ J k = 0) :
+    ∑ k : ι, (if I k + 2 * J k = W then a k else 0) = 0 := by
+  exact weighted_top_sum_zero_of_eventual_relation_filter
+    (l := (atTop : Filter ℝ)) (W := W) (a := a) (I := I) (J := J)
+    (x := fun t : ℝ => ((t : ℂ)⁻¹))
+    (P := fun t : ℝ => bottcherCoord c₁ (t : ℂ) / (t : ℂ))
+    (Q := fun t : ℝ => bottcherCoord c₁ (quadratic c₂ (t : ℂ)) / ((t : ℂ) ^ 2))
+    hweight tendsto_inv_ofReal_atTop_bottcher (tendsto_bottcherCoord_real_div_atTop c₁)
+    (tendsto_transferred_quadratic_real_div_sq_atTop c₁ c₂) hrel
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Scaling one weighted monomial by `t^{-W}`. -/
+lemma weighted_scale_term_identity {z A B a : ℂ} {i j W : ℕ} (hw : i + 2 * j ≤ W) :
+    a * z⁻¹ ^ (W - (i + 2 * j)) * (A / z) ^ i * (B / z ^ 2) ^ j =
+      z⁻¹ ^ W * (a * A ^ i * B ^ j) := by
+  rw [div_eq_mul_inv A z, div_eq_mul_inv B (z ^ 2), mul_pow, mul_pow]
+  rw [show (z ^ 2)⁻¹ = z⁻¹ ^ 2 by rw [inv_pow]]
+  have hpow : z⁻¹ ^ (W - (i + 2 * j)) * z⁻¹ ^ i * (z⁻¹ ^ 2) ^ j = z⁻¹ ^ W := by
+    rw [← pow_mul, ← pow_add, ← pow_add]
+    congr 1
+    omega
+  rw [show a * z⁻¹ ^ (W - (i + 2 * j)) * (A ^ i * z⁻¹ ^ i) * (B ^ j * (z⁻¹ ^ 2) ^ j)
+        = (z⁻¹ ^ (W - (i + 2 * j)) * z⁻¹ ^ i * (z⁻¹ ^ 2) ^ j) * (a * A ^ i * B ^ j) by ring]
+  rw [hpow]
+
+/-- **Raw Böttcher real-ray weighted top extraction.**
+If a finite raw relation in `φ_{c₁}(t)` and `φ_{c₁}(t²+c₂)` holds eventually on the positive real ray
+and every monomial has weighted degree `i+2j ≤ W`, then the top weighted coefficient sum is zero.
+This is the directly usable Laurent gate for a pulled-back transported-map relation. -/
+theorem bottcher_weighted_top_sum_zero_of_raw_eventual_relation
+    (c₁ c₂ : ℂ) {ι : Type*} [Fintype ι]
+    {W : ℕ} {a : ι → ℂ} {I J : ι → ℕ}
+    (hweight : ∀ k : ι, I k + 2 * J k ≤ W)
+    (hraw : ∀ᶠ t : ℝ in atTop,
+      ∑ k : ι, a k * (bottcherCoord c₁ (t : ℂ)) ^ I k *
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ))) ^ J k = 0) :
+    ∑ k : ι, (if I k + 2 * J k = W then a k else 0) = 0 := by
+  refine bottcher_weighted_top_sum_zero_of_eventual_relation c₁ c₂ hweight ?_
+  filter_upwards [hraw] with t hrawt
+  have hscaled :
+      (∑ k : ι, a k * ((t : ℂ)⁻¹) ^ (W - (I k + 2 * J k)) *
+        (bottcherCoord c₁ (t : ℂ) / (t : ℂ)) ^ I k *
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ)) / ((t : ℂ) ^ 2)) ^ J k)
+        = ((t : ℂ)⁻¹) ^ W *
+          (∑ k : ι, a k * (bottcherCoord c₁ (t : ℂ)) ^ I k *
+            (bottcherCoord c₁ (quadratic c₂ (t : ℂ))) ^ J k) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl ?_
+    intro k _
+    exact weighted_scale_term_identity (z := (t : ℂ))
+      (A := bottcherCoord c₁ (t : ℂ))
+      (B := bottcherCoord c₁ (quadratic c₂ (t : ℂ)))
+      (a := a k) (i := I k) (j := J k) (W := W) (hweight k)
+  rw [hscaled, hrawt, mul_zero]
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Expand a bivariate polynomial `R(W,Z)` into its nested coefficient sum. -/
+lemma eval₂_eq_sum_coeff_fin (R : Polynomial (Polynomial ℂ)) (x y : ℂ) :
+    R.eval₂ (Polynomial.evalRingHom x) y =
+      ∑ j : Fin (R.natDegree + 1),
+        ∑ i : Fin ((R.coeff (j : ℕ)).natDegree + 1),
+          (R.coeff (j : ℕ)).coeff (i : ℕ) * x ^ (i : ℕ) * y ^ (j : ℕ) := by
+  rw [Polynomial.eval₂_eq_sum_range]
+  conv_rhs =>
+    rw [Fin.sum_univ_eq_sum_range
+      (fun j => ∑ i : Fin ((R.coeff j).natDegree + 1),
+        (R.coeff j).coeff (i : ℕ) * x ^ (i : ℕ) * y ^ j)
+      (R.natDegree + 1)]
+  refine Finset.sum_congr rfl ?_
+  intro j _
+  change (R.coeff j).eval x * y ^ j = ∑ i : Fin ((R.coeff j).natDegree + 1),
+      (R.coeff j).coeff (i : ℕ) * x ^ (i : ℕ) * y ^ j
+  rw [Polynomial.eval_eq_sum_range]
+  conv_rhs =>
+    rw [Fin.sum_univ_eq_sum_range
+      (fun i => (R.coeff j).coeff i * x ^ i * y ^ j)
+      ((R.coeff j).natDegree + 1)]
+  rw [Finset.sum_mul]
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Polynomial Böttcher real-ray weighted top extraction.**
+If a bivariate polynomial relation `R(φ_{c₁}(t), φ_{c₁}(t²+c₂))=0` holds eventually on the positive
+real ray and all retained coefficient monomials have weighted degree `i+2j ≤ W`, then the top weighted
+coefficient slice of `R` vanishes. This is the polynomial-form Laurent obstruction for the transported
+quadratic relation. -/
+theorem bottcher_weighted_top_sum_zero_of_polynomial_eventual_relation
+    (c₁ c₂ : ℂ) (R : Polynomial (Polynomial ℂ)) {W : ℕ}
+    (hweight : ∀ j : Fin (R.natDegree + 1),
+      ∀ i : Fin ((R.coeff (j : ℕ)).natDegree + 1), (i : ℕ) + 2 * (j : ℕ) ≤ W)
+    (hrel : ∀ᶠ t : ℝ in atTop,
+      R.eval₂ (Polynomial.evalRingHom (bottcherCoord c₁ (t : ℂ)))
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ))) = 0) :
+    ∑ s : Sigma (fun j : Fin (R.natDegree + 1) => Fin ((R.coeff (j : ℕ)).natDegree + 1)),
+      (if (s.2 : ℕ) + 2 * (s.1 : ℕ) = W then
+        (R.coeff (s.1 : ℕ)).coeff (s.2 : ℕ) else 0) = 0 := by
+  refine bottcher_weighted_top_sum_zero_of_raw_eventual_relation c₁ c₂
+    (ι := Sigma (fun j : Fin (R.natDegree + 1) => Fin ((R.coeff (j : ℕ)).natDegree + 1)))
+    (W := W)
+    (a := fun s => (R.coeff (s.1 : ℕ)).coeff (s.2 : ℕ))
+    (I := fun s => (s.2 : ℕ)) (J := fun s => (s.1 : ℕ)) ?_ ?_
+  · intro s
+    exact hweight s.1 s.2
+  · filter_upwards [hrel] with t ht
+    rw [← ht]
+    rw [eval₂_eq_sum_coeff_fin]
+    rw [Fintype.sum_sigma]
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **First Laurent coefficient of the Böttcher coordinate on the positive real ray.**
+The functional equation and normalization force
+`t * (φ_c(t)-t) → c/2`. This is the next coefficient after `φ_c(t)/t → 1` and is the first
+nontrivial Laurent datum needed for sharper transported-quadratic descent. -/
+theorem tendsto_real_mul_bottcherCoord_sub_id_atTop (c : ℂ) :
+    Tendsto (fun t : ℝ => (t : ℂ) * (bottcherCoord c (t : ℂ) - (t : ℂ))) atTop (𝓝 (c / 2)) := by
+  let E : ℝ → ℂ := fun t => bottcherCoord c (quadratic c (t : ℂ)) - quadratic c (t : ℂ)
+  have hE : Tendsto E atTop (𝓝 0) :=
+    ((tendsto_bottcherCoord_sub_id c).comp (tendsto_sq_add_cobounded c)).comp tendsto_ofReal_cobounded
+  have hdelta : Tendsto (fun t : ℝ => bottcherCoord c (t : ℂ) - (t : ℂ)) atTop (𝓝 0) :=
+    (tendsto_bottcherCoord_sub_id c).comp tendsto_ofReal_cobounded
+  have hsquare : Tendsto (fun t : ℝ => (bottcherCoord c (t : ℂ) - (t : ℂ)) ^ 2) atTop (𝓝 0) := by
+    simpa using hdelta.pow 2
+  have htwice : Tendsto (fun t : ℝ => 2 * ((t : ℂ) * (bottcherCoord c (t : ℂ) - (t : ℂ))))
+      atTop (𝓝 c) := by
+    have hrhs : Tendsto (fun t : ℝ => E t - (bottcherCoord c (t : ℂ) - (t : ℂ)) ^ 2 + c)
+        atTop (𝓝 c) := by
+      simpa using (hE.sub hsquare).add tendsto_const_nhds
+    refine hrhs.congr' ?_
+    let T : ℝ := max 3 ‖c‖
+    filter_upwards [eventually_gt_atTop T] with t ht
+    have ht3 : (3 : ℝ) < t := lt_of_le_of_lt (le_max_left _ _) ht
+    have htpos : 0 < t := by linarith
+    have hnormt : ‖(t : ℂ)‖ = t := by
+      rw [Complex.norm_real, Real.norm_of_nonneg (le_of_lt htpos)]
+    have hct : ‖c‖ ≤ ‖(t : ℂ)‖ := by
+      rw [hnormt]
+      exact le_of_lt (lt_of_le_of_lt (le_max_right 3 ‖c‖) ht)
+    have h2t : 2 < ‖(t : ℂ)‖ := by rw [hnormt]; linarith
+    have hfe := bottcherCoord_quadratic (c := c) hct h2t
+    simp [quadratic] at hfe
+    dsimp [E]
+    rw [hfe]
+    ring
+  have hhalf := htwice.const_mul ((2 : ℂ)⁻¹)
+  convert hhalf using 1
+  · funext t; ring
+  · field_simp
+
+/-- Quantitative normalization estimate for the Böttcher coordinate:
+`‖φ_c(z)-z‖ ≤ 4‖c‖/‖z‖` deep in the escape regime. -/
+theorem norm_bottcherCoord_sub_id_le {c z : ℂ} (hc : ‖c‖ ≤ ‖z‖) (hz : 2 < ‖z‖) :
+    ‖bottcherCoord c z - z‖ ≤ 4 * ‖c‖ / ‖z‖ := by
+  have hzpos : (0 : ℝ) < ‖z‖ := lt_trans (by norm_num) hz
+  have hzne : z ≠ 0 := by intro h; rw [h, norm_zero] at hzpos; linarith
+  set S := ∑' k, bottcherLogTerm c z k with hSdef
+  have hSbd : ‖S‖ ≤ 2 * ‖c‖ / ‖z‖ ^ 2 := by
+    have h := norm_bottcherLog_sub_log_le hc hz
+    rw [bottcherLog, add_sub_cancel_left] at h
+    rw [hSdef]
+    exact h
+  have hSle1 : ‖S‖ ≤ 1 := by
+    have h2 : 2 * ‖c‖ / ‖z‖ ^ 2 ≤ 1 := by
+      rw [div_le_one (by positivity)]
+      nlinarith [hc, hz, norm_nonneg z]
+    linarith
+  rw [bottcherCoord_eq_mul_exp hzne, ← hSdef,
+    show z * Complex.exp S - z = z * (Complex.exp S - 1) by ring, norm_mul]
+  calc
+    ‖z‖ * ‖Complex.exp S - 1‖
+        ≤ ‖z‖ * (2 * ‖S‖) := by
+          gcongr
+          exact Complex.norm_exp_sub_one_le hSle1
+    _ ≤ ‖z‖ * (2 * (2 * ‖c‖ / ‖z‖ ^ 2)) := by gcongr
+    _ = 4 * ‖c‖ / ‖z‖ := by field_simp; ring
+
+/-- `t²+a` has unit quadratic scale on the positive real ray. -/
+theorem tendsto_quadratic_real_div_sq_atTop (a : ℂ) :
+    Tendsto (fun t : ℝ => quadratic a (t : ℂ) / ((t : ℂ) ^ 2)) atTop (𝓝 1) := by
+  have hinv2 : Tendsto (fun t : ℝ => (((t : ℂ) ^ 2)⁻¹)) atTop (𝓝 0) := by
+    simpa [inv_pow] using (tendsto_inv_ofReal_atTop_bottcher.pow 2)
+  have hconst : Tendsto (fun t : ℝ => a * (((t : ℂ) ^ 2)⁻¹)) atTop (𝓝 0) := by
+    simpa using tendsto_const_nhds.mul hinv2
+  have heq : (fun t : ℝ => quadratic a (t : ℂ) / ((t : ℂ) ^ 2))
+      =ᶠ[atTop] (fun t : ℝ => 1 + a * (((t : ℂ) ^ 2)⁻¹)) := by
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+    have htne : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt ht)
+    have ht2ne : (t : ℂ) ^ 2 ≠ 0 := pow_ne_zero _ htne
+    rw [quadratic]
+    field_simp [ht2ne]
+  rw [tendsto_congr' heq]
+  simpa using tendsto_const_nhds.add hconst
+
+/-- Along every quadratic real ray, the Böttcher normalization error is `o(1/t)`. -/
+theorem tendsto_real_mul_bottcherCoord_quadratic_sub_quadratic_atTop (c a : ℂ) :
+    Tendsto (fun t : ℝ =>
+      (t : ℂ) * (bottcherCoord c (quadratic a (t : ℂ)) - quadratic a (t : ℂ))) atTop
+      (𝓝 0) := by
+  let Z : ℝ → ℂ := fun t => quadratic a (t : ℂ)
+  have hZcob : Tendsto Z atTop (cobounded ℂ) :=
+    (tendsto_sq_add_cobounded a).comp tendsto_ofReal_cobounded
+  have hratio : Tendsto (fun t : ℝ => (t : ℂ) / Z t) atTop (𝓝 0) := by
+    have hnum : Tendsto (fun t : ℝ => ((t : ℂ)⁻¹)) atTop (𝓝 0) :=
+      tendsto_inv_ofReal_atTop_bottcher
+    have hden : Tendsto (fun t : ℝ => Z t / ((t : ℂ) ^ 2)) atTop (𝓝 1) :=
+      tendsto_quadratic_real_div_sq_atTop a
+    have hdiv := hnum.div hden (by norm_num : (1 : ℂ) ≠ 0)
+    have heqratio :
+        ((fun t : ℝ => ((t : ℂ)⁻¹)) / fun t : ℝ => Z t / ((t : ℂ) ^ 2))
+          =ᶠ[atTop] (fun t : ℝ => (t : ℂ) / Z t) := by
+      filter_upwards [eventually_gt_atTop (0 : ℝ),
+        hden.eventually_ne (by norm_num : (1 : ℂ) ≠ 0)] with t ht hZratio_ne
+      have htne : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt ht)
+      have ht2ne : (t : ℂ) ^ 2 ≠ 0 := pow_ne_zero _ htne
+      have hZne : Z t ≠ 0 := by
+        intro h
+        exact hZratio_ne (by rw [h, zero_div])
+      change ((t : ℂ)⁻¹) / (Z t / ((t : ℂ) ^ 2)) = (t : ℂ) / Z t
+      field_simp [Z, htne, ht2ne, hZne]
+    simpa using hdiv.congr' heqratio
+  have hbd : Tendsto (fun t : ℝ => 4 * ‖c‖ * ‖(t : ℂ) / Z t‖) atTop (𝓝 0) := by
+    have hn := (continuous_norm.tendsto 0).comp hratio
+    simpa using tendsto_const_nhds.mul hn
+  refine squeeze_zero_norm' ?_ hbd
+  filter_upwards [hZcob.eventually (tendsto_norm_cobounded_atTop.eventually_gt_atTop (max 2 ‖c‖))]
+    with t htZ
+  have hcZ : ‖c‖ ≤ ‖Z t‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) htZ)
+  have h2Z : 2 < ‖Z t‖ := lt_of_le_of_lt (le_max_left _ _) htZ
+  have hZne : Z t ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at h2Z
+    norm_num at h2Z
+  have hnorm := norm_bottcherCoord_sub_id_le (c := c) (z := Z t) hcZ h2Z
+  calc
+    ‖(t : ℂ) * (bottcherCoord c (Z t) - Z t)‖
+        = ‖(t : ℂ)‖ * ‖bottcherCoord c (Z t) - Z t‖ := by rw [norm_mul]
+    _ ≤ ‖(t : ℂ)‖ * (4 * ‖c‖ / ‖Z t‖) := by gcongr
+    _ = 4 * ‖c‖ * ‖(t : ℂ) / Z t‖ := by
+      rw [norm_div]
+      field_simp [norm_ne_zero_iff.mpr hZne]
+
+/-- The transported shifted-parabola defect gains one inverse power:
+`t * (φ_{c₁}(t²+c₂) - (φ_{c₁}(t)^2 + c₂-c₁)) → 0`. -/
+theorem tendsto_real_mul_transported_quadratic_defect_atTop (c₁ c₂ : ℂ) :
+    Tendsto (fun t : ℝ => (t : ℂ) *
+      (bottcherCoord c₁ (quadratic c₂ (t : ℂ)) -
+        ((bottcherCoord c₁ (t : ℂ)) ^ 2 + (c₂ - c₁)))) atTop (𝓝 0) := by
+  have h₂ := tendsto_real_mul_bottcherCoord_quadratic_sub_quadratic_atTop c₁ c₂
+  have h₁ := tendsto_real_mul_bottcherCoord_quadratic_sub_quadratic_atTop c₁ c₁
+  have hsub := h₂.sub h₁
+  have heqdef :
+      (fun t : ℝ =>
+        (t : ℂ) * (bottcherCoord c₁ (quadratic c₂ (t : ℂ)) - quadratic c₂ (t : ℂ)) -
+          (t : ℂ) * (bottcherCoord c₁ (quadratic c₁ (t : ℂ)) - quadratic c₁ (t : ℂ)))
+        =ᶠ[atTop]
+      (fun t : ℝ => (t : ℂ) *
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ)) -
+          ((bottcherCoord c₁ (t : ℂ)) ^ 2 + (c₂ - c₁)))) := by
+    let T : ℝ := max 3 ‖c₁‖
+    filter_upwards [eventually_gt_atTop T] with t ht
+    have htpos : 0 < t := by
+      have h3 : (3 : ℝ) < t := lt_of_le_of_lt (le_max_left _ _) ht
+      linarith
+    have hnormt : ‖(t : ℂ)‖ = t := by
+      rw [Complex.norm_real, Real.norm_of_nonneg (le_of_lt htpos)]
+    have hc₁t : ‖c₁‖ ≤ ‖(t : ℂ)‖ := by
+      rw [hnormt]
+      exact le_of_lt (lt_of_le_of_lt (le_max_right 3 ‖c₁‖) ht)
+    have h2t : 2 < ‖(t : ℂ)‖ := by
+      rw [hnormt]
+      have h3 : (3 : ℝ) < t := lt_of_le_of_lt (le_max_left _ _) ht
+      linarith
+    have hfe := bottcherCoord_quadratic (c := c₁) hc₁t h2t
+    have hfe' : bottcherCoord c₁ ((t : ℂ) ^ 2 + c₁) = bottcherCoord c₁ (t : ℂ) ^ 2 := by
+      simpa [quadratic] using hfe
+    dsimp [quadratic]
+    rw [hfe']
+    ring
+  simpa using hsub.congr' heqdef
+
+end Bottcher
+
+namespace Bottcher
+
+/-- The positive real ray is eventually far both in the source coordinate and in Böttcher value. -/
+theorem eventually_real_mem_bottcher_pullback_far (c : ℂ) (Rfar R' : ℝ) :
+    ∀ᶠ t : ℝ in atTop, Rfar < ‖(t : ℂ)‖ ∧ R' < ‖bottcherCoord c (t : ℂ)‖ := by
+  have hratio : Tendsto
+      ((fun z : ℂ => ‖z‖) ∘ fun t : ℝ => bottcherCoord c (t : ℂ) / (t : ℂ))
+      atTop (𝓝 1) := by
+    simpa using (continuous_norm.continuousAt.tendsto).comp (tendsto_bottcherCoord_real_div_atTop c)
+  filter_upwards [eventually_gt_atTop (max 1 (max Rfar (2 * R'))),
+    hratio.eventually (eventually_gt_nhds (by norm_num : (1 / 2 : ℝ) < 1))] with t ht hratio_gt
+  have htpos : 0 < t := lt_of_lt_of_le (by norm_num) (le_of_lt (lt_of_le_of_lt (le_max_left _ _) ht))
+  have hnormt : ‖(t : ℂ)‖ = t := by
+    rw [Complex.norm_real, Real.norm_of_nonneg (le_of_lt htpos)]
+  constructor
+  · rw [hnormt]
+    exact lt_of_le_of_lt (le_trans (le_max_left _ _) (le_max_right 1 _)) ht
+  · have htR : R' < t / 2 := by
+      have h2Rle : 2 * R' ≤ max Rfar (2 * R') := le_max_right _ _
+      have hle : 2 * R' ≤ max 1 (max Rfar (2 * R')) := le_trans h2Rle (le_max_right _ _)
+      nlinarith
+    have hnorm_ratio : ‖bottcherCoord c (t : ℂ) / (t : ℂ)‖ = ‖bottcherCoord c (t : ℂ)‖ / t := by
+      rw [norm_div, hnormt]
+    change (1 / 2 : ℝ) < ‖bottcherCoord c (t : ℂ) / (t : ℂ)‖ at hratio_gt
+    rw [hnorm_ratio] at hratio_gt
+    have hmul : t / 2 < ‖bottcherCoord c (t : ℂ)‖ := by
+      have hmul' := mul_lt_mul_of_pos_right hratio_gt htpos
+      rw [div_mul_cancel₀ _ (ne_of_gt htpos)] at hmul'
+      linarith
+    exact lt_trans htR hmul
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Finite weighted top extraction with a vanishing tail.**
+The divided weighted relation may carry an extra term tending to `0`; it still cannot contribute to the
+top weighted coefficient. This is the tail-aware form needed after subtracting a shifted parabola factor,
+where the remaining error is multiplied by the small defect `Z(t)-W(t)^2-d`. -/
+theorem weighted_top_sum_zero_of_eventual_relation_filter_with_tail {α ι : Type*} [Fintype ι]
+    {l : Filter α} [l.NeBot]
+    {W : ℕ} {a : ι → ℂ} {I J : ι → ℕ} {x P Q Tail : α → ℂ}
+    (hweight : ∀ k : ι, I k + 2 * J k ≤ W)
+    (hx : Tendsto x l (𝓝 0))
+    (hP : Tendsto P l (𝓝 1))
+    (hQ : Tendsto Q l (𝓝 1))
+    (hTail : Tendsto Tail l (𝓝 0))
+    (hrel : ∀ᶠ t in l,
+      (∑ k : ι, a k * x t ^ (W - (I k + 2 * J k)) * P t ^ I k * Q t ^ J k) + Tail t = 0) :
+    ∑ k : ι, (if I k + 2 * J k = W then a k else 0) = 0 := by
+  have hterm : ∀ k : ι,
+      Tendsto (fun t : α => a k * x t ^ (W - (I k + 2 * J k)) * P t ^ I k * Q t ^ J k) l
+        (𝓝 (if I k + 2 * J k = W then a k else 0)) := by
+    intro k
+    by_cases hk : I k + 2 * J k = W
+    · have hxpow : Tendsto (fun t : α => x t ^ (W - (I k + 2 * J k))) l (𝓝 1) := by
+        rw [hk, Nat.sub_self]
+        simp
+      have hlim := (((tendsto_const_nhds (x := a k)).mul hxpow).mul (hP.pow (I k))).mul (hQ.pow (J k))
+      rw [if_pos hk]
+      simpa using hlim
+    · have hlt : I k + 2 * J k < W := Nat.lt_of_le_of_ne (hweight k) hk
+      have hxpow : Tendsto (fun t : α => x t ^ (W - (I k + 2 * J k))) l (𝓝 0) := by
+        have hp := hx.pow (W - (I k + 2 * J k))
+        rwa [zero_pow (by omega : W - (I k + 2 * J k) ≠ 0)] at hp
+      have hlim := (((tendsto_const_nhds (x := a k)).mul hxpow).mul (hP.pow (I k))).mul (hQ.pow (J k))
+      rw [if_neg hk]
+      simpa using hlim
+  have hsum := tendsto_finsetSum Finset.univ (fun k _ => hterm k)
+  have htotal : Tendsto
+      (fun t : α => (∑ k : ι, a k * x t ^ (W - (I k + 2 * J k)) * P t ^ I k * Q t ^ J k) + Tail t) l
+      (𝓝 ((∑ k : ι, (if I k + 2 * J k = W then a k else 0)) + 0)) := hsum.add hTail
+  have hzero : Tendsto
+      (fun t : α => (∑ k : ι, a k * x t ^ (W - (I k + 2 * J k)) * P t ^ I k * Q t ^ J k) + Tail t) l
+      (𝓝 0) := tendsto_const_nhds.congr' (hrel.mono fun t ht => ht.symm)
+  simpa using tendsto_nhds_unique htotal hzero
+
+/-- Böttcher real-ray weighted top extraction in divided form, with a vanishing divided tail. -/
+theorem bottcher_weighted_top_sum_zero_of_eventual_relation_with_tail
+    (c₁ c₂ : ℂ) {ι : Type*} [Fintype ι]
+    {W : ℕ} {a : ι → ℂ} {I J : ι → ℕ} {Tail : ℝ → ℂ}
+    (hweight : ∀ k : ι, I k + 2 * J k ≤ W)
+    (hTail : Tendsto Tail atTop (𝓝 0))
+    (hrel : ∀ᶠ t : ℝ in atTop,
+      (∑ k : ι, a k * ((t : ℂ)⁻¹) ^ (W - (I k + 2 * J k)) *
+        (bottcherCoord c₁ (t : ℂ) / (t : ℂ)) ^ I k *
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ)) / ((t : ℂ) ^ 2)) ^ J k) + Tail t = 0) :
+    ∑ k : ι, (if I k + 2 * J k = W then a k else 0) = 0 := by
+  exact weighted_top_sum_zero_of_eventual_relation_filter_with_tail
+    (l := (atTop : Filter ℝ)) (W := W) (a := a) (I := I) (J := J)
+    (x := fun t : ℝ => ((t : ℂ)⁻¹))
+    (P := fun t : ℝ => bottcherCoord c₁ (t : ℂ) / (t : ℂ))
+    (Q := fun t : ℝ => bottcherCoord c₁ (quadratic c₂ (t : ℂ)) / ((t : ℂ) ^ 2))
+    (Tail := Tail)
+    hweight tendsto_inv_ofReal_atTop_bottcher (tendsto_bottcherCoord_real_div_atTop c₁)
+    (tendsto_transferred_quadratic_real_div_sq_atTop c₁ c₂) hTail hrel
+
+/-- Raw Böttcher relation with a tail whose weighted scaling tends to zero. -/
+theorem bottcher_weighted_top_sum_zero_of_raw_eventual_relation_with_scaled_tail
+    (c₁ c₂ : ℂ) {ι : Type*} [Fintype ι]
+    {W : ℕ} {a : ι → ℂ} {I J : ι → ℕ} {Tail : ℝ → ℂ}
+    (hweight : ∀ k : ι, I k + 2 * J k ≤ W)
+    (hTail : Tendsto (fun t : ℝ => ((t : ℂ)⁻¹) ^ W * Tail t) atTop (𝓝 0))
+    (hraw : ∀ᶠ t : ℝ in atTop,
+      (∑ k : ι, a k * (bottcherCoord c₁ (t : ℂ)) ^ I k *
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ))) ^ J k) + Tail t = 0) :
+    ∑ k : ι, (if I k + 2 * J k = W then a k else 0) = 0 := by
+  refine bottcher_weighted_top_sum_zero_of_eventual_relation_with_tail c₁ c₂ hweight hTail ?_
+  filter_upwards [hraw] with t hrawt
+  have hscaled :
+      (∑ k : ι, a k * ((t : ℂ)⁻¹) ^ (W - (I k + 2 * J k)) *
+        (bottcherCoord c₁ (t : ℂ) / (t : ℂ)) ^ I k *
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ)) / ((t : ℂ) ^ 2)) ^ J k)
+        = ((t : ℂ)⁻¹) ^ W *
+          (∑ k : ι, a k * (bottcherCoord c₁ (t : ℂ)) ^ I k *
+            (bottcherCoord c₁ (quadratic c₂ (t : ℂ))) ^ J k) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl ?_
+    intro k _
+    exact weighted_scale_term_identity (z := (t : ℂ))
+      (A := bottcherCoord c₁ (t : ℂ))
+      (B := bottcherCoord c₁ (quadratic c₂ (t : ℂ)))
+      (a := a k) (i := I k) (j := J k) (W := W) (hweight k)
+  rw [hscaled, ← mul_add, hrawt, mul_zero]
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Polynomial Böttcher weighted top extraction with a scaled tail. -/
+theorem bottcher_weighted_top_sum_zero_of_polynomial_eventual_relation_with_scaled_tail
+    (c₁ c₂ : ℂ) (R : Polynomial (Polynomial ℂ)) {W : ℕ} {Tail : ℝ → ℂ}
+    (hweight : ∀ j : Fin (R.natDegree + 1),
+      ∀ i : Fin ((R.coeff (j : ℕ)).natDegree + 1), (i : ℕ) + 2 * (j : ℕ) ≤ W)
+    (hTail : Tendsto (fun t : ℝ => ((t : ℂ)⁻¹) ^ W * Tail t) atTop (𝓝 0))
+    (hrel : ∀ᶠ t : ℝ in atTop,
+      R.eval₂ (Polynomial.evalRingHom (bottcherCoord c₁ (t : ℂ)))
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ))) + Tail t = 0) :
+    ∑ s : Sigma (fun j : Fin (R.natDegree + 1) => Fin ((R.coeff (j : ℕ)).natDegree + 1)),
+      (if (s.2 : ℕ) + 2 * (s.1 : ℕ) = W then
+        (R.coeff (s.1 : ℕ)).coeff (s.2 : ℕ) else 0) = 0 := by
+  refine bottcher_weighted_top_sum_zero_of_raw_eventual_relation_with_scaled_tail c₁ c₂
+    (ι := Sigma (fun j : Fin (R.natDegree + 1) => Fin ((R.coeff (j : ℕ)).natDegree + 1)))
+    (W := W)
+    (a := fun s => (R.coeff (s.1 : ℕ)).coeff (s.2 : ℕ))
+    (I := fun s => (s.2 : ℕ)) (J := fun s => (s.1 : ℕ)) ?_ hTail ?_
+  · intro s
+    exact hweight s.1 s.2
+  · filter_upwards [hrel] with t ht
+    have hraweq :
+        (∑ s : Sigma (fun j : Fin (R.natDegree + 1) => Fin ((R.coeff (j : ℕ)).natDegree + 1)),
+          (R.coeff (s.1 : ℕ)).coeff (s.2 : ℕ) *
+            (bottcherCoord c₁ (t : ℂ)) ^ (s.2 : ℕ) *
+            (bottcherCoord c₁ (quadratic c₂ (t : ℂ))) ^ (s.1 : ℕ)) =
+        R.eval₂ (Polynomial.evalRingHom (bottcherCoord c₁ (t : ℂ)))
+          (bottcherCoord c₁ (quadratic c₂ (t : ℂ))) := by
+      rw [eval₂_eq_sum_coeff_fin]
+      rw [Fintype.sum_sigma]
+    rw [hraweq]
+    exact ht
+
+end Bottcher
+
+namespace Bottcher
+
+/-- The divided finite weighted sum tends to its top weighted coefficient sum. -/
+theorem weighted_sum_tendsto_top_filter {α ι : Type*} [Fintype ι]
+    {l : Filter α} [l.NeBot]
+    {W : ℕ} {a : ι → ℂ} {I J : ι → ℕ} {x P Q : α → ℂ}
+    (hweight : ∀ k : ι, I k + 2 * J k ≤ W)
+    (hx : Tendsto x l (𝓝 0))
+    (hP : Tendsto P l (𝓝 1))
+    (hQ : Tendsto Q l (𝓝 1)) :
+    Tendsto (fun t : α =>
+      ∑ k : ι, a k * x t ^ (W - (I k + 2 * J k)) * P t ^ I k * Q t ^ J k) l
+      (𝓝 (∑ k : ι, (if I k + 2 * J k = W then a k else 0))) := by
+  have hterm : ∀ k : ι,
+      Tendsto (fun t : α => a k * x t ^ (W - (I k + 2 * J k)) * P t ^ I k * Q t ^ J k) l
+        (𝓝 (if I k + 2 * J k = W then a k else 0)) := by
+    intro k
+    by_cases hk : I k + 2 * J k = W
+    · have hxpow : Tendsto (fun t : α => x t ^ (W - (I k + 2 * J k))) l (𝓝 1) := by
+        rw [hk, Nat.sub_self]
+        simp
+      have hlim := (((tendsto_const_nhds (x := a k)).mul hxpow).mul (hP.pow (I k))).mul (hQ.pow (J k))
+      rw [if_pos hk]
+      simpa using hlim
+    · have hlt : I k + 2 * J k < W := Nat.lt_of_le_of_ne (hweight k) hk
+      have hxpow : Tendsto (fun t : α => x t ^ (W - (I k + 2 * J k))) l (𝓝 0) := by
+        have hp := hx.pow (W - (I k + 2 * J k))
+        rwa [zero_pow (by omega : W - (I k + 2 * J k) ≠ 0)] at hp
+      have hlim := (((tendsto_const_nhds (x := a k)).mul hxpow).mul (hP.pow (I k))).mul (hQ.pow (J k))
+      rw [if_neg hk]
+      simpa using hlim
+  exact tendsto_finsetSum Finset.univ (fun k _ => hterm k)
+
+/-- Böttcher divided weighted polynomial evaluation has a finite top-weight limit. -/
+theorem bottcher_weighted_scaled_eval_tendsto_top_sum
+    (c₁ c₂ : ℂ) (R : Polynomial (Polynomial ℂ)) {W : ℕ}
+    (hweight : ∀ j : Fin (R.natDegree + 1),
+      ∀ i : Fin ((R.coeff (j : ℕ)).natDegree + 1), (i : ℕ) + 2 * (j : ℕ) ≤ W) :
+    Tendsto (fun t : ℝ => ((t : ℂ)⁻¹) ^ W *
+      R.eval₂ (Polynomial.evalRingHom (bottcherCoord c₁ (t : ℂ)))
+        (bottcherCoord c₁ (quadratic c₂ (t : ℂ)))) atTop
+      (𝓝 (∑ s : Sigma (fun j : Fin (R.natDegree + 1) => Fin ((R.coeff (j : ℕ)).natDegree + 1)),
+        (if (s.2 : ℕ) + 2 * (s.1 : ℕ) = W then
+          (R.coeff (s.1 : ℕ)).coeff (s.2 : ℕ) else 0))) := by
+  have hdiv := weighted_sum_tendsto_top_filter
+    (l := (atTop : Filter ℝ))
+    (W := W)
+    (a := fun s : Sigma (fun j : Fin (R.natDegree + 1) => Fin ((R.coeff (j : ℕ)).natDegree + 1)) =>
+      (R.coeff (s.1 : ℕ)).coeff (s.2 : ℕ))
+    (I := fun s : Sigma (fun j : Fin (R.natDegree + 1) => Fin ((R.coeff (j : ℕ)).natDegree + 1)) =>
+      (s.2 : ℕ))
+    (J := fun s : Sigma (fun j : Fin (R.natDegree + 1) => Fin ((R.coeff (j : ℕ)).natDegree + 1)) =>
+      (s.1 : ℕ))
+    (x := fun t : ℝ => ((t : ℂ)⁻¹))
+    (P := fun t : ℝ => bottcherCoord c₁ (t : ℂ) / (t : ℂ))
+    (Q := fun t : ℝ => bottcherCoord c₁ (quadratic c₂ (t : ℂ)) / ((t : ℂ) ^ 2))
+    (fun s => hweight s.1 s.2)
+    tendsto_inv_ofReal_atTop_bottcher (tendsto_bottcherCoord_real_div_atTop c₁)
+    (tendsto_transferred_quadratic_real_div_sq_atTop c₁ c₂)
+  refine hdiv.congr' ?_
+  filter_upwards with t
+  rw [eval₂_eq_sum_coeff_fin, Fintype.sum_sigma, Finset.mul_sum]
+  refine Finset.sum_congr rfl ?_
+  intro j _
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl ?_
+  intro i _
+  exact (weighted_scale_term_identity (z := (t : ℂ))
+    (A := bottcherCoord c₁ (t : ℂ))
+    (B := bottcherCoord c₁ (quadratic c₂ (t : ℂ)))
+    (a := (R.coeff (j : ℕ)).coeff (i : ℕ))
+    (i := (i : ℕ)) (j := (j : ℕ)) (W := W) (hweight j i))
+
+/-- A univariate polynomial's leading term survives along any real-ray coordinate `A(t)` with
+`A(t)/t → 1`.  This is the exact asymptotic gate needed for the shifted-parabola remainder:
+once an exact-division argument proves the left-hand side tends to `0`, the univariate
+remainder must be zero. -/
+theorem univariate_scaled_eval_tendsto_leadingCoeff_of_tendsto_div
+    {A : ℝ → ℂ} (p : Polynomial ℂ)
+    (hA : Tendsto (fun t : ℝ => A t / (t : ℂ)) atTop (𝓝 1)) :
+    Tendsto (fun t : ℝ => ((t : ℂ)⁻¹) ^ p.natDegree * p.eval (A t)) atTop
+      (𝓝 p.leadingCoeff) := by
+  classical
+  have hlim := weighted_sum_tendsto_top_filter
+    (l := (atTop : Filter ℝ))
+    (W := p.natDegree)
+    (a := fun k : Fin (p.natDegree + 1) => p.coeff (k : ℕ))
+    (I := fun k : Fin (p.natDegree + 1) => (k : ℕ))
+    (J := fun _ : Fin (p.natDegree + 1) => 0)
+    (x := fun t : ℝ => ((t : ℂ)⁻¹))
+    (P := fun t : ℝ => A t / (t : ℂ))
+    (Q := fun _ : ℝ => (1 : ℂ))
+    (by
+      intro k
+      simpa using Nat.le_of_lt_succ k.isLt)
+    tendsto_inv_ofReal_atTop_bottcher hA tendsto_const_nhds
+  have htop :
+      (∑ k : Fin (p.natDegree + 1),
+        (if (k : ℕ) + 2 * 0 = p.natDegree then p.coeff (k : ℕ) else 0)) =
+        p.leadingCoeff := by
+    rw [Polynomial.leadingCoeff]
+    rw [Finset.sum_eq_single (Fin.last p.natDegree)]
+    · simp
+    · intro k _ hk
+      have hkval : (k : ℕ) ≠ p.natDegree := by
+        intro h
+        apply hk
+        ext
+        simpa [Fin.val_last] using h
+      simp [hkval]
+    · intro hnot
+      simp at hnot
+  rw [htop] at hlim
+  refine hlim.congr' ?_
+  filter_upwards with t
+  have hscaled :
+      (∑ k : Fin (p.natDegree + 1),
+        p.coeff (k : ℕ) * ((t : ℂ)⁻¹) ^ (p.natDegree - ((k : ℕ) + 2 * 0)) *
+          (A t / (t : ℂ)) ^ (k : ℕ) * (1 : ℂ) ^ 0) =
+        ((t : ℂ)⁻¹) ^ p.natDegree *
+          (∑ k : Fin (p.natDegree + 1), p.coeff (k : ℕ) * (A t) ^ (k : ℕ)) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl ?_
+    intro k _
+    simpa [mul_assoc, mul_comm, mul_left_comm] using
+      (weighted_scale_term_identity (z := (t : ℂ)) (A := A t) (B := 1)
+        (a := p.coeff (k : ℕ)) (i := (k : ℕ)) (j := 0) (W := p.natDegree)
+        (by simpa using Nat.le_of_lt_succ k.isLt))
+  have hfin :
+      (∑ k : Fin (p.natDegree + 1), p.coeff (k : ℕ) * (A t) ^ (k : ℕ)) =
+        p.eval (A t) := by
+    rw [Polynomial.eval_eq_sum_range]
+    exact Fin.sum_univ_eq_sum_range (fun i => p.coeff i * (A t) ^ i) (p.natDegree + 1)
+  rw [hscaled, hfin]
+
+/-- If a univariate polynomial evaluated along `A(t) ~ t` is smaller than its own leading scale,
+then the polynomial is zero.  The analytic burden in the Böttcher remainder route is therefore
+precisely to prove the scaled-zero hypothesis for the shifted-parabola remainder. -/
+theorem polynomial_eq_zero_of_scaled_eval_tendsto_zero_of_tendsto_div
+    {A : ℝ → ℂ} (p : Polynomial ℂ)
+    (hA : Tendsto (fun t : ℝ => A t / (t : ℂ)) atTop (𝓝 1))
+    (hsmall : Tendsto (fun t : ℝ => ((t : ℂ)⁻¹) ^ p.natDegree * p.eval (A t)) atTop
+      (𝓝 0)) :
+    p = 0 := by
+  have hlead := univariate_scaled_eval_tendsto_leadingCoeff_of_tendsto_div p hA
+  have hlead0 : p.leadingCoeff = 0 := tendsto_nhds_unique hlead hsmall
+  by_contra hp
+  exact (Polynomial.leadingCoeff_ne_zero.mpr hp) hlead0
+
+/-- Böttcher-specialized zero criterion for a univariate shifted-parabola remainder. -/
+theorem polynomial_eq_zero_of_bottcher_scaled_eval_tendsto_zero
+    (c : ℂ) (p : Polynomial ℂ)
+    (hsmall : Tendsto
+      (fun t : ℝ => ((t : ℂ)⁻¹) ^ p.natDegree * p.eval (bottcherCoord c (t : ℂ))) atTop
+      (𝓝 0)) :
+    p = 0 :=
+  polynomial_eq_zero_of_scaled_eval_tendsto_zero_of_tendsto_div p
+    (tendsto_bottcherCoord_real_div_atTop c) hsmall
+
+end Bottcher
