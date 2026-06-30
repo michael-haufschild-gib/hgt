@@ -62,4 +62,38 @@ theorem isCoveringMapOn_quadratic_escapeLevel (c : ℂ) (n : ℕ) (hc : c ∉ es
   intro hzc
   exact hc ((critical_values_quadratic c hzc) ▸ hz)
 
+/-! ## The deck transformation of `f` is `z ↦ -z`
+
+`f(z)=z²+c` satisfies `f(-z)=f(z)`, and `-z` escapes exactly when `z` does, so `z ↦ -z` is the
+nontrivial deck transformation of the degree-2 covering `f : escapeLevel c (n+1) → escapeLevel c n`.
+This is the concrete generator of the deck group `ℤ/2` — the explicit handle on the covering's
+2-sheeted structure (no abstract deck-group theory needed). -/
+
+/-- `f(z)=z²+c` is even: `f(-z)=f(z)`. -/
+theorem quadratic_neg (c z : ℂ) : quadratic c (-z) = quadratic c z := by
+  simp only [quadratic]; ring
+
+/-- `-z` escapes at level `n` exactly when `z` does. -/
+theorem neg_mem_escapeLevel (c : ℂ) (n : ℕ) (z : ℂ) :
+    -z ∈ escapeLevel c n ↔ z ∈ escapeLevel c n := by
+  cases n with
+  | zero => simp [escapeLevel, escapeOpen]
+  | succ m =>
+    simp only [escapeLevel, Set.mem_setOf_eq, Function.iterate_succ_apply, quadratic_neg]
+
+/-- **The deck transformation** `z ↦ -z` of `escapeLevel c n`, an involutive homeomorphism. -/
+def negHomeoEscape (c : ℂ) (n : ℕ) : escapeLevel c n ≃ₜ escapeLevel c n where
+  toFun z := ⟨-(z : ℂ), (neg_mem_escapeLevel c n z).mpr z.2⟩
+  invFun z := ⟨-(z : ℂ), (neg_mem_escapeLevel c n z).mpr z.2⟩
+  left_inv z := by ext; simp
+  right_inv z := by ext; simp
+  continuous_toFun := by fun_prop
+  continuous_invFun := by fun_prop
+
+/-- The deck transformation is genuinely a deck transformation of `f`: `f ∘ (z ↦ -z) = f`. -/
+theorem quadratic_comp_neg (c : ℂ) (n : ℕ) (z : escapeLevel c (n + 1)) :
+    quadratic c ((negHomeoEscape c (n + 1) z : ℂ)) = quadratic c (z : ℂ) := by
+  show quadratic c (-(z : ℂ)) = quadratic c (z : ℂ)
+  exact quadratic_neg c z
+
 end Bottcher

@@ -206,9 +206,13 @@ import GaloisForLFunctions.Bottcher.AnalyticRoot
 import GaloisForLFunctions.Bottcher.CoveringRoot
 import GaloisForLFunctions.Bottcher.EscapeLevelRoot
 import GaloisForLFunctions.Bottcher.Pi1CMinusZero
+import GaloisForLFunctions.Bottcher.CircleDegree
 import GaloisForLFunctions.Bottcher.CoveringPi1
 import GaloisForLFunctions.Bottcher.EscapeCovering
 import GaloisForLFunctions.Bottcher.Pi1EscapeOpen
 import GaloisForLFunctions.Bottcher.WindDynamics
+import GaloisForLFunctions.Bottcher.UniversalCover
+import GaloisForLFunctions.Bottcher.BottcherWinding
+import GaloisForLFunctions.Bottcher.PeriodDoubling
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
