@@ -60,6 +60,33 @@ theorem exists_global_branch_modulus_of_mem_mandelbrot_of_rho_lifts (c : ℂ) (h
   exists_global_branch_modulus_of_rho_lifts_antiperiod_of_mem_mandelbrot c hcM
     (rho_antiperiod_of_mem_mandelbrot hcM) hlift
 
+/-- **Unconditional connected Böttcher branch for `c ∈ mandelbrot`.** Both remaining topological
+inputs of the connected branch are now theorems: the anti-period sheet-swap
+(`rho_antiperiod_of_mem_mandelbrot`) and the covering-map status of the explicit `ρ_n` tower
+(`rho_isCoveringMap`, obtained from the covering-cancellation lemma). Feeding both into
+`exists_global_branch_covering_bijective_of_rho_covering_antiperiod_of_mem_mandelbrot` discharges the
+last hypotheses, so the analytic branch `β` on the connected basin `(filledJulia c)ᶜ` — extending the
+Böttcher coordinate, with the modulus, functional-equation, covering and bijectivity data — exists with
+no remaining hypothesis beyond `c ∈ mandelbrot`. This closes the connected-branch Gap 2. -/
+theorem exists_global_branch_covering_bijective_of_mem_mandelbrot (c : ℂ) (hcM : c ∈ mandelbrot) :
+    ∃ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c)ᶜ ∧
+      (∀ z ∈ escapeOpen c, β z = bottcherCoord c z) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, β z ≠ 0) ∧
+      (∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) ∧
+      ∃ hβgt : ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖,
+        (∀ z ∈ (filledJulia c)ᶜ, β (quadratic c z) = (β z) ^ 2) ∧
+        (∀ p : ℕ, ∀ z ∈ (filledJulia c)ᶜ,
+          β ((quadratic c)^[p] z) = (β z) ^ (2 ^ p)) ∧
+        (∀ z ∈ (filledJulia c)ᶜ, deriv β z ≠ 0) ∧
+        IsCoveringMap (fun z : {z : ℂ // z ∈ (filledJulia c)ᶜ} =>
+          (⟨β (z : ℂ), hβgt (z : ℂ) z.2⟩ : {w : ℂ // 1 < ‖w‖})) ∧
+        Function.Bijective (fun z : {z : ℂ // z ∈ (filledJulia c)ᶜ} =>
+          (⟨β (z : ℂ), hβgt (z : ℂ) z.2⟩ : {w : ℂ // 1 < ‖w‖})) :=
+  exists_global_branch_covering_bijective_of_rho_covering_antiperiod_of_mem_mandelbrot c hcM
+    (rho_antiperiod_of_mem_mandelbrot hcM)
+    (rho_isCoveringMap c (criticalValue_not_mem_escapeLevels_of_mem_mandelbrot hcM)
+      (rho_antiperiod_of_mem_mandelbrot hcM))
+
 end
 
 end Bottcher

@@ -19,6 +19,7 @@ import GaloisForLFunctions.Bottcher.EscapeCovering
 import GaloisForLFunctions.Bottcher.CoveringPi1
 import GaloisForLFunctions.Bottcher.PeriodDoubling
 import GaloisForLFunctions.Bottcher.CircleDegree
+import GaloisForLFunctions.Bottcher.CoveringCancellation
 import Mathlib.Analysis.Complex.CoveringMap
 
 open Topology
@@ -200,6 +201,41 @@ theorem rho_surjective_of_antiperiod (c : ℂ) (hc : ∀ n, c ∉ escapeLevel c 
   induction n with
   | zero => exact rho_surjective_zero c hc
   | succ n ih => exact rho_surjective_succ_of_antiperiod c hc hanti n ih
+
+/-- **Every `ρ_n : coverPlane c → escapeLevel c n` is a covering map.** This closes the connected
+branch Gap 2: it is exactly the `∀ n, IsCoveringMap ρ_n` input that
+`exists_global_branch_covering_bijective_of_rho_covering_antiperiod_of_mem_mandelbrot` still assumed.
+The base `ρ₀ = exp` is the exponential covering of the far field (`rho_covering_zero`). The successor
+step uses `Q ∘ ρ_{n+1} = ρ_n` (`quadratic_rho_succ`): `Q` (the level-quadratic double cover) and
+`Q ∘ ρ_{n+1} = ρ_n` (induction hypothesis) are covering maps, `ρ_{n+1}` is continuous and surjective,
+so the left-cancellation lemma `isCoveringMap_of_comp_left` upgrades `ρ_{n+1}` to a covering map. The
+Hausdorff/locally-connected side conditions hold because the escape levels are open subsets of `ℂ`. -/
+theorem rho_isCoveringMap (c : ℂ) (hc : ∀ n, c ∉ escapeLevel c n)
+    (hanti : ∀ n : ℕ, ∀ {t : ℂ}, t ∈ coverPlane c →
+      rho c (n + 1) (t + ((2 ^ n : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I))
+        = -rho c (n + 1) t) :
+    ∀ n : ℕ, IsCoveringMap (fun t : {t : ℂ // t ∈ coverPlane c} =>
+      (⟨rho c n (t : ℂ), rho_mem_escapeLevel c hc n t.2⟩ : escapeLevel c n)) := by
+  intro n
+  induction n with
+  | zero => exact rho_covering_zero c hc
+  | succ n ih =>
+      let Rsucc : {t : ℂ // t ∈ coverPlane c} → escapeLevel c (n + 1) :=
+        fun t => ⟨rho c (n + 1) (t : ℂ), rho_mem_escapeLevel c hc (n + 1) t.2⟩
+      let Rn : {t : ℂ // t ∈ coverPlane c} → escapeLevel c n :=
+        fun t => ⟨rho c n (t : ℂ), rho_mem_escapeLevel c hc n t.2⟩
+      let Q : escapeLevel c (n + 1) → escapeLevel c n :=
+        fun z => ⟨quadratic c (z : ℂ), quadratic_mapsTo_escapeLevel c n z.2⟩
+      haveI : LocallyConnectedSpace ↥(escapeLevel c n) :=
+        (isOpen_escapeLevel c n).isOpenEmbedding_subtypeVal.locallyConnectedSpace
+      have hQ : IsCoveringMap Q := isCoveringMap_quadratic_escapeLevel_succ c n (hc n)
+      have hcont : Continuous Rsucc := rho_continuous c hc (n + 1)
+      have hsurj : Function.Surjective Rsucc :=
+        rho_surjective_of_antiperiod c hc hanti (n + 1)
+      have hcomp_eq : Q ∘ Rsucc = Rn := by
+        funext t; apply Subtype.ext; exact quadratic_rho_succ c hc n t.2
+      have hcomp : IsCoveringMap (Q ∘ Rsucc) := by rw [hcomp_eq]; exact ih
+      exact isCoveringMap_of_comp_left hcomp hQ hcont hsurj
 
 /-- **Iterate-image winding from an explicit `ρ`-lift endpoint.** Suppose a loop in
 `escapeLevel c (n+1)` lifts through the universal-cover candidate `ρ_{n+1}` to a path `L` in the
