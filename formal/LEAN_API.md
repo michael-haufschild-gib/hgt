@@ -7,9 +7,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 227 | `hurwitz_n2_unconditional` |
+| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 234 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 291 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4255 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4265 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -233,6 +233,13 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `gamma_one_sub_shift_ne_zero` | `GaloisForLFunctions.Hurwitz.PolylogPoleTower` | `formal/GaloisForLFunctions/Hurwitz/PolylogPoleTower.lean:123` | The actual fractional-polylog pole coefficients `Gamma(1 - s - j)` are nonzero whenever `s` is not an integer. |
 | theorem | `coefficients_zero_of_gamma_pole_sum_roots` | `GaloisForLFunctions.Hurwitz.PolylogPoleTower` | `formal/GaloisForLFunctions/Hurwitz/PolylogPoleTower.lean:142` | Actual Gamma-coefficient scalar pole-tower injectivity for the Hurwitz rational-tail proof. |
 | theorem | `polynomials_zero_of_gamma_pole_sum_roots` | `GaloisForLFunctions.Hurwitz.PolylogPoleTower` | `formal/GaloisForLFunctions/Hurwitz/PolylogPoleTower.lean:153` | Actual Gamma-coefficient polynomial-valued pole-tower injectivity for the Hurwitz rational-tail proof. |
+| theorem | `tendsto_base` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:22` | The vertical approach path tends to its base point. |
+| theorem | `tendsto_norm_base` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:30` | The norm along the vertical approach tends to `−x` for `x < 0`. |
+| theorem | `tendsto_log_cut_upper` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:38` | The complex log of `x + iy` tends to `log(−x) + iπ` as `y ↓ 0`, for `x < 0`. |
+| theorem | `tendsto_log_cut_lower` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:79` | The complex log of `x − iy` tends to `log(−x) − iπ` as `y ↓ 0`, for `x < 0`. |
+| theorem | `tendsto_cpow_cut_upper` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:113` | Upper boundary value of `z^σ` on the negative cut**: `(x+iy)^σ → (−x)^σ·e^{iπσ}` as `y ↓ 0`, for `x < 0`. |
+| theorem | `tendsto_cpow_cut_lower` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:146` | Lower boundary value of `z^σ` on the negative cut**: `(x−iy)^σ → (−x)^σ·e^{−iπσ}` as `y ↓ 0`, for `x < 0`. |
+| theorem | `jump_factor_ne` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:178` | The cut jump factor is nonzero off the integers**: `e^{iπσ} ≠ e^{−iπσ}` for `σ ∉ ℤ`. |
 | theorem | `comp_exp_periodic` | `GaloisForLFunctions.Hurwitz.Spine` | `formal/GaloisForLFunctions/Hurwitz/Spine.lean:21` | The regular part is `2πi`-periodic in `z = log x`.** `R(e^{z+2πi}) = R(e^z)` since `e^{2πi} = 1`. This is the `H` (periodic) input of `coeffs_zero_of_exp_periodic_combo`. |
 | theorem | `cexp_cpow_strip` | `GaloisForLFunctions.Hurwitz.Spine` | `formal/GaloisForLFunctions/Hurwitz/Spine.lean:28` | Singular term in `z = log x`.** On the strip `Im z ∈ (-π, π]`, `(e^z)^w = e^{w·z}`; applied with `z = log x` and `w = -(s+k)`, the Hurwitz singular term `x^{-(s+k)}` is `e^{-(s+k)· |
 | theorem | `coeffs_zero_of_exp_periodic_combo_on_open` | `GaloisForLFunctions.Hurwitz.Spine` | `formal/GaloisForLFunctions/Hurwitz/Spine.lean:37` | Exponent filtration on a `2πi`-invariant open region.** The Hurwitz relation holds only on a left half-plane in `z = log x` (`x → 0`), not all `z`; this is the region version of `c |
@@ -4610,6 +4617,16 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `noRelation_symm` | `GaloisForLFunctions.Bottcher.Rigidity` | `formal/GaloisForLFunctions/Bottcher/Rigidity.lean:113` | `NoRelation` is symmetric.** Algebraic independence does not depend on the order of the pair — the variable-swap automorphism turns a relation for `(G, F)` into one for `(F, G)`. |
 | theorem | `hRigid_assemble` | `GaloisForLFunctions.Bottcher.Rigidity` | `formal/GaloisForLFunctions/Bottcher/Rigidity.lean:132` | The assembled `hRigid` slot of `q62_independence`.** Given, per parameter, the analytic data its Mandelbrot placement supplies — for a *disconnected* coordinate its dyadic monodrom |
 | theorem | `q62_independence_of_hDisc_hRigidData` | `GaloisForLFunctions.Bottcher.Rigidity` | `formal/GaloisForLFunctions/Bottcher/Rigidity.lean:158` | Top q62 assembly from the separated hDisc and hRigid data.** This is the final abstract join: `hDisc` handles the both-disconnected branch of `q62_independence`; `hRigid_assemble`  |
+| structure | `TowerSection` | `GaloisForLFunctions.Bottcher.SectionTower` | `formal/GaloisForLFunctions/Bottcher/SectionTower.lean:29` | A **tower section** on the annulus `{rlo < ‖w‖ < rhi}`: analytic, level-true, odd, satisfying the Böttcher functional equation, injective, with unit winding of every circle image a |
+| theorem | `exists_tower_anchor` | `GaloisForLFunctions.Bottcher.SectionTower` | `formal/GaloisForLFunctions/Bottcher/SectionTower.lean:45` | The far anchor.** There is a radius `Ra` (above `1` and above the critical Böttcher modulus `e^{G_c(0)}`) such that on every annulus `{Ra < ‖w‖ < rhi}` the far-field inverse `ψ` of |
+| theorem | `norm_circleMap_zero` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:14` |  |
+| theorem | `circleMap_mem_annulusSet` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:17` |  |
+| theorem | `TowerSection.windInt_loop_zero` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:29` | The raw winding field is `windInt` of the section loop about `0`. |
+| theorem | `TowerSection.loop_level` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:41` | The loop of a tower section runs at constant level `log r`. |
+| theorem | `TowerSection.windInt_loop_point` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:49` | Transported point winding.** Any point strictly below the circle's level has winding `2πi` about the section loop (sublevel transport to `0` + the tower's winding invariant). |
+| theorem | `greenFunctionDyn_critical_value` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:58` | The critical value's level: `G_c(c) = 2·G_c(0)`. |
+| theorem | `logDeriv_congr_of_eventuallyEq` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:65` | `logDeriv` respects eventual equality. |
+| theorem | `tower_extension_step` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:78` |  |
 | theorem | `analyticOnNhd_glue_finite` | `GaloisForLFunctions.Bottcher.SheafGlue` | `formal/GaloisForLFunctions/Bottcher/SheafGlue.lean:26` | Finite sheaf-gluing of analytic branches.** A finite family of analytic branches `f i` on opens `U i` (`i ∈ s`) that agree pairwise on overlaps (`EqOn (f i) (f j) (U i ∩ U j)`) glu |
 | theorem | `sphericalDeriv_nonneg` | `GaloisForLFunctions.Bottcher.SphericalDeriv` | `formal/GaloisForLFunctions/Bottcher/SphericalDeriv.lean:30` | The spherical derivative is non-negative. |
 | theorem | `sphericalDeriv_le_norm_deriv` | `GaloisForLFunctions.Bottcher.SphericalDeriv` | `formal/GaloisForLFunctions/Bottcher/SphericalDeriv.lean:34` | The spherical derivative is bounded above by the ordinary derivative norm. |

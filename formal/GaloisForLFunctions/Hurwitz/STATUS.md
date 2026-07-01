@@ -181,3 +181,49 @@ The in-tree reduction chain already lands the all-N rows on ONE leaf:
 This upgrades `hurwitz_allN_hzeta_quadratic_block` to the full all-N tail-independence close,
 including rows, against the actual hzeta (via `Hurwitz/N2HZeta.lean`'s bridge, already generic
 in the width).
+
+### Lemma 1, sharpened (2026-07-02): ONE core statement left — the two-ray cpow obstruction
+
+The in-tree reduction chain (`AllNTailIndependence`) lands Lemma 1 on `MixedTailIndependent`,
+whose only unproven part is the simultaneous TWO-RAY close.  Compression by `n^N·(n−1)^N`
+(as in `shiftedPowerPolynomial_eq_zero_of_eventually_cpow_sum_eq_poly`) reduces it to:
+
+(★)  For `s ∉ ℤ` and `A B Q ∈ ℂ[X]`:
+     `(∀ᶠ n in atTop, (n:ℂ)^(−s)·A(n) + ((n−1:ℕ):ℂ)^(−s)·B(n) = Q(n)) → A = 0 ∧ B = 0 ∧ Q = 0`.
+
+(Then `Σ cᵢ Xᴺ⁻ⁱ(X−1)ᴺ = 0` cancels `(X−1)ᴺ` in the domain `ℂ[X]`, recovering the
+`shiftedPowerPolynomial = 0` conclusions on both rays.)
+
+Proof strategy for (★), analyzed: with `g(n) := (1−1/n)^(−s) → 1`, the relation reads
+`n^(−s)·(A(n) + g(n)B(n)) = Q(n)` — a multiplicatively `(1+o(1))`-perturbed ONE-ray relation.
+Mirror `not_eventually_cpow_polyRatio` (the 2^k/3^k-subsequence oscillation engine): all its
+limits persist under the `g → 1` corrector (limits along any `n → ∞` subsequence are unchanged),
+giving `A + B = 0` and `Q = 0` at top order; the residual case `B = −A` gives
+`A(n)·(n^(−s) − (n−1)^(−s)) = Q(n)` with `n^(−s) − (n−1)^(−s) = n^(−s)·(−s/n + O(1/n²))` — a
+perturbed one-ray relation at exponent `s+1` with coefficient `−s·A ≠ 0` (s ≠ 0 since s ∉ ℤ),
+killed by the same engine ⟹ `A = 0` ⟹ `B = 0` ⟹ `Q = 0`.  Execution = adapt the proof of
+`not_eventually_cpow_polyRatio` (NonRationality.lean:208–260) to tolerate a convergent
+multiplicative corrector; then wire (★) → two-ray close → `MixedTailIndependent` →
+`RationalTailIndependent` → the full all-N rows (chain already in-tree and proven).
+
+### Lemma 1 — SUPERIOR route found (2026-07-02, supersedes the perturbed-engine plan for (★))
+
+Kill the polynomial part FIRST by differencing (`deg Q + 1` times; rays spread to
+`{n, n−1, …, n−T}` — harmless), leaving `Σ_{t≤T} (n−t)^{−s}·C_t(n) = 0` with NO polynomial side.
+Multiply by `n^s` and substitute `u := 1/n`:
+
+    Σ_t (1 − t·u)^{−s} · P_t(u) = 0  at  u = 1/n → 0,   P_t(u) := u^D·C_t(1/u) ∈ ℂ[u].
+
+Every factor is ANALYTIC at u = 0 (no `(1/t)^s` obstruction — that only arises with Q ≠ 0), so
+the identity theorem upgrades the ℕ-relation to an identity on the connected domain
+`ℂ ∖ [1/T, ∞)` (all binomial cuts lie on the positive real axis).  Then peel singularities at
+each branch point `u = 1/t` from the farthest in: approaching `u → 1/t` off-axis, the term
+`(1−tu)^{−s}P_t` has a non-meromorphic singularity (s ∉ ℤ) unless `P_t` vanishes to infinite
+order — blow-up forces `(u − 1/t)^k ∣ P_t` for `k < Re s`, and DERIVATIVES re-negativize the
+exponent to force the remaining orders — so `P_t = 0`, ray by ray.  No oscillation case, no
+2^k/3^k subsequences, no asymptotic coefficient ladders.  Components: (a) the differencing
+transform to the Q-free multi-ray form (mirror `mixedTail_relation_finite_difference_twoRay`);
+(b) `u = 1/n` compactification + `eqOn_zero_of_preconnected_of_frequently_eq_zero` (in-tree
+identity-theorem tools); (c) the branch-point peeling lemma (`(1−v)^{−s}·p(v) + analytic-at-0 ≡ 0`
+near `v = 0` off the cut ⟹ `p = 0`, by bounded-blow-up + derivative induction); (d) wire into
+`MixedTailIndependent` → the proven chain closes all-N rows.

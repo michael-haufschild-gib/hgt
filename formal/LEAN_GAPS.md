@@ -5,7 +5,9 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
+| Kind | Location | Context | Text |
+|---|---|---|---|
+| proof-debt | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:297` | `theorem tower_extension_step` | `sorry` |
 
 ## Large Files
 
@@ -300,4 +302,4 @@ Use `scripts/formal_tools.py research "<query>"` when you need to search those l
 | Lines | File |
 |---:|---|
 | 2702 | `formal/GaloisForLFunctions/Bottcher/STATUS.md` |
-| 183 | `formal/GaloisForLFunctions/Hurwitz/STATUS.md` |
+| 229 | `formal/GaloisForLFunctions/Hurwitz/STATUS.md` |

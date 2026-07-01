@@ -34,3 +34,4 @@ import GaloisForLFunctions.Hurwitz.AllNRelationClose
 import GaloisForLFunctions.Hurwitz.AllNTailIndependence
 import GaloisForLFunctions.Hurwitz.PolylogPoleTower
 import GaloisForLFunctions.Hurwitz.N2HZeta
+import GaloisForLFunctions.Hurwitz.RayPeeling
