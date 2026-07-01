@@ -91,6 +91,9 @@ import GaloisForLFunctions.Bottcher.EvenHoloExtension
 import GaloisForLFunctions.Bottcher.ArcContinuation
 import GaloisForLFunctions.Bottcher.BoundaryCollarExtension
 import GaloisForLFunctions.Bottcher.BoundaryArcCovering
+import GaloisForLFunctions.Bottcher.RelationContinuation
+import GaloisForLFunctions.Bottcher.FarFieldInverseFE
+import GaloisForLFunctions.Bottcher.BottcherFarFieldSurjective
 import GaloisForLFunctions.Bottcher.VandermondeVanishing
 import GaloisForLFunctions.Bottcher.NaturalBoundaryReduction
 import GaloisForLFunctions.Bottcher.ZeroSurvival
