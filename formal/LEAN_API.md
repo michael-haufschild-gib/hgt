@@ -7,9 +7,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 234 | `hurwitz_n2_unconditional` |
+| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 237 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 291 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4265 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4267 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -240,6 +240,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `tendsto_cpow_cut_upper` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:113` | Upper boundary value of `z^σ` on the negative cut**: `(x+iy)^σ → (−x)^σ·e^{iπσ}` as `y ↓ 0`, for `x < 0`. |
 | theorem | `tendsto_cpow_cut_lower` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:146` | Lower boundary value of `z^σ` on the negative cut**: `(x−iy)^σ → (−x)^σ·e^{−iπσ}` as `y ↓ 0`, for `x < 0`. |
 | theorem | `jump_factor_ne` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:178` | The cut jump factor is nonzero off the integers**: `e^{iπσ} ≠ e^{−iπσ}` for `σ ∉ ℤ`. |
+| theorem | `tendsto_base_lower` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:203` | The mirrored vertical approach path tends to its base point. |
+| theorem | `peel_on_slit` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:214` | The one-ray peel across the cut.** If `v^σ·p(v) + g(v) = 0` off the real axis over a set `S` of negative abscissae, and `g` has MATCHING one-sided boundary limits `G x` from above  |
+| theorem | `peel_poly_eq_zero` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:288` | The one-ray peel kills the polynomial** when the abscissa set is infinite. |
 | theorem | `comp_exp_periodic` | `GaloisForLFunctions.Hurwitz.Spine` | `formal/GaloisForLFunctions/Hurwitz/Spine.lean:21` | The regular part is `2πi`-periodic in `z = log x`.** `R(e^{z+2πi}) = R(e^z)` since `e^{2πi} = 1`. This is the `H` (periodic) input of `coeffs_zero_of_exp_periodic_combo`. |
 | theorem | `cexp_cpow_strip` | `GaloisForLFunctions.Hurwitz.Spine` | `formal/GaloisForLFunctions/Hurwitz/Spine.lean:28` | Singular term in `z = log x`.** On the strip `Im z ∈ (-π, π]`, `(e^z)^w = e^{w·z}`; applied with `z = log x` and `w = -(s+k)`, the Hurwitz singular term `x^{-(s+k)}` is `e^{-(s+k)· |
 | theorem | `coeffs_zero_of_exp_periodic_combo_on_open` | `GaloisForLFunctions.Hurwitz.Spine` | `formal/GaloisForLFunctions/Hurwitz/Spine.lean:37` | Exponent filtration on a `2πi`-invariant open region.** The Hurwitz relation holds only on a left half-plane in `z = log x` (`x → 0`), not all `z`; this is the region version of `c |
@@ -4626,7 +4629,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `TowerSection.windInt_loop_point` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:49` | Transported point winding.** Any point strictly below the circle's level has winding `2πi` about the section loop (sublevel transport to `0` + the tower's winding invariant). |
 | theorem | `greenFunctionDyn_critical_value` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:58` | The critical value's level: `G_c(c) = 2·G_c(0)`. |
 | theorem | `logDeriv_congr_of_eventuallyEq` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:65` | `logDeriv` respects eventual equality. |
-| theorem | `tower_extension_step` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:78` |  |
+| theorem | `circleMap_zero_add_pi` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:76` | `circleMap` at `θ + π` is the antipode. |
+| theorem | `even_section_winding_ne` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:86` | Winding parity of an even section.** An even, analytic, nonvanishing function on a symmetric annulus has circle windings in `2·2πi·ℤ`; in particular the winding is never `2πi`. |
+| theorem | `tower_extension_step` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:122` | The extension step.** A tower section on `{rlo < ‖w‖ < R₀}` whose source band `(σ₁, σ₂)` lies strictly above the critical value's level extends across the square root of the band:  |
 | theorem | `analyticOnNhd_glue_finite` | `GaloisForLFunctions.Bottcher.SheafGlue` | `formal/GaloisForLFunctions/Bottcher/SheafGlue.lean:26` | Finite sheaf-gluing of analytic branches.** A finite family of analytic branches `f i` on opens `U i` (`i ∈ s`) that agree pairwise on overlaps (`EqOn (f i) (f j) (U i ∩ U j)`) glu |
 | theorem | `sphericalDeriv_nonneg` | `GaloisForLFunctions.Bottcher.SphericalDeriv` | `formal/GaloisForLFunctions/Bottcher/SphericalDeriv.lean:30` | The spherical derivative is non-negative. |
 | theorem | `sphericalDeriv_le_norm_deriv` | `GaloisForLFunctions.Bottcher.SphericalDeriv` | `formal/GaloisForLFunctions/Bottcher/SphericalDeriv.lean:34` | The spherical derivative is bounded above by the ordinary derivative norm. |
