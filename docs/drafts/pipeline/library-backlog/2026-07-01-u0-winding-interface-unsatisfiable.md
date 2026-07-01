@@ -60,3 +60,32 @@ closes through `u0_phi_circle_window` with V = the far-field overlap; the u₀-d
 Genuine-`hzeta` capstones landed (`Hurwitz/N2HZeta.lean`): the N=2 card and the all-N quadratic
 block now hold against the actual Hurwitz zeta — see `Hurwitz/STATUS.md` Update 7.  Area
 build-rot from the mathlib bump repaired (4 missing transitive imports).
+
+## UPDATE (same day): the window object is CONSTRUCTED for `b = 4`
+
+`formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean` (axiom-clean) removes the "remaining analytic
+input" for a concrete disconnected parameter.  Mechanism: for `‖z‖ < 21/20`, one quadratic step
+lands in the uniform far field `{‖w‖ > 289/100}`, which is forward invariant with
+`‖4/w²‖ < 1/2`, so `bottcherLog 4` converges geometrically and is analytic there — the in-tree
+escape regime `‖c‖ ≤ ‖z‖` is not needed at this parameter.  Hence
+
+- `phiFour z := exp(½·bottcherLog 4 (z²+4))` is ANALYTIC ON THE OPEN DISK `ball 0 (21/20)` —
+  containing the whole unit circle (`phiFour_analytic`);
+- it is a canonical Böttcher branch: `phiFour z ^ 2 = bottcherCoord 4 (z²+4)` (`phiFour_sq`,
+  definitional);
+- `u0_phiFour_no_relation` / wrapper `FullyProvenNewTargets.u0_phi_four_window`: the circle-window
+  engine fires UNCONDITIONALLY at `b = 4` — no continuation hypothesis remains.
+
+Remaining named residues for the full `u0-phi-independence` card at `b = 4`:
+(i) the min-poly separability normalization of an arbitrary relation (pure algebra; route: minimal
+`u₀`-degree + resultant machinery already in `U0PhiCard`);
+(ii) the `u₀`-degree-0 case — `phiFour` transcendental over `ℂ(z)` (the φ-side half; exactly the
+q62-shared content);
+(iii) identification of `phiFour`'s germ with the far-field `phiMero 4` germ (monodromy transport
+through the Cantor gaps; also q62-shared — note `phiFour_sq` already pins it up to the dyadic
+branch ambiguity, which the `NoRelation` statement is insensitive to after substituting
+`P(X,Y) ↦ P(ζX, Y)`).
+
+Same construction generalizes to any `b` with an explicit one-step (or `n`-step) uniform-far-field
+certificate — i.e. all `|b|` large — and, with interval-arithmetic effort, to concrete `b` near
+the Green-crossing regime.
