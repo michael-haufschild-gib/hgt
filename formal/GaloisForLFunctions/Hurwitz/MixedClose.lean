@@ -111,7 +111,7 @@ theorem mixed_diff_step {N : ℕ} {s : ℂ} (h : Fin (N + 1) → Polynomial ℂ)
         = harmonicTail (N := N) s i n - ((n : ℂ)) ^ (-(s + (i : ℂ))) := by
     intro i
     have := harmonicTail_succ_diff (N := N) s i (n := n) (by omega)
-    linear_combination this
+    linear_combination -this
   -- expand the harmonic difference block
   have hharm_block :
       (∑ i : Fin (N + 1), (h i).eval ((n : ℂ)) * harmonicTail (N := N) s i n)
@@ -174,7 +174,6 @@ theorem mixed_diff_step {N : ℕ} {s : ℂ} (h : Fin (N + 1) → Polynomial ℂ)
       rw [if_neg (by omega), if_neg (by omega)]
       simp
     rw [hlast, add_zero]
-    rw [← Finset.sum_add_distrib]
     have hsum : ∀ t ∈ Finset.range (T + 1),
         (∑ i : Fin (N + 1),
           ((if t ≤ T then A t i else 0)
@@ -189,23 +188,46 @@ theorem mixed_diff_step {N : ℕ} {s : ℂ} (h : Fin (N + 1) → Polynomial ℂ)
       split_ifs with h0
       · subst h0
         have hper : ∀ i ∈ (Finset.univ : Finset (Fin (N + 1))),
-            ((if (0 : ℕ) ≤ T then A 0 i else 0)
-              + (if (0 : ℕ) = 0 then (h i).comp (Polynomial.X - Polynomial.C 1) else 0)).eval
+            (A 0 i + (h i).comp (Polynomial.X - Polynomial.C 1)).eval
                 ((n : ℂ)) * (((n - 0 : ℕ)) : ℂ) ^ (-(s + (i : ℂ)))
             = (A 0 i).eval ((n : ℂ)) * (((n - 0 : ℕ)) : ℂ) ^ (-(s + (i : ℂ)))
               + ((h i).comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ))
                 * ((n : ℂ)) ^ (-(s + (i : ℂ))) := by
           intro i _
-          rw [if_pos (by omega), if_pos rfl]
           simp only [Polynomial.eval_add, Nat.sub_zero]
           ring
         rw [Finset.sum_congr rfl hper, Finset.sum_add_distrib]
       · rw [add_zero]
         refine Finset.sum_congr rfl fun i _ => ?_
-        rw [if_pos htT, if_neg h0]
-        simp only [Polynomial.eval_add, Polynomial.eval_zero, add_zero]
-    rw [Finset.sum_congr rfl hsum, Finset.sum_add_distrib, Finset.sum_ite_eq' (Finset.range (T + 1)) 0]
-    rw [if_pos (Finset.mem_range.mpr (by omega))]
+        rw [add_zero]
+    have hconst : (∑ t ∈ Finset.range (T + 1),
+        (if t = 0 then (∑ i : Fin (N + 1),
+          ((h i).comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ))
+            * ((n : ℂ)) ^ (-(s + (i : ℂ)))) else 0))
+        = ∑ i : Fin (N + 1),
+            ((h i).comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ))
+              * ((n : ℂ)) ^ (-(s + (i : ℂ))) := by
+      rw [Finset.sum_eq_single 0 (fun b _ hb => if_neg hb)
+        (fun hnotmem => absurd (Finset.mem_range.mpr (by omega)) hnotmem)]
+      rw [if_pos rfl]
+    calc ∑ t ∈ Finset.range (T + 1), ∑ i : Fin (N + 1),
+          ((if t ≤ T then A t i else 0)
+            + (if t = 0 then (h i).comp (Polynomial.X - Polynomial.C 1) else 0)).eval ((n : ℂ))
+            * (((n - t : ℕ)) : ℂ) ^ (-(s + (i : ℂ)))
+        = ∑ t ∈ Finset.range (T + 1),
+            ((∑ i : Fin (N + 1), (A t i).eval ((n : ℂ))
+                * (((n - t : ℕ)) : ℂ) ^ (-(s + (i : ℂ))))
+              + (if t = 0 then (∑ i : Fin (N + 1),
+                  ((h i).comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ))
+                    * ((n : ℂ)) ^ (-(s + (i : ℂ)))) else 0)) :=
+          Finset.sum_congr rfl hsum
+      _ = (∑ t ∈ Finset.range (T + 1), ∑ i : Fin (N + 1),
+            (A t i).eval ((n : ℂ)) * (((n - t : ℕ)) : ℂ) ^ (-(s + (i : ℂ))))
+          + (∑ t ∈ Finset.range (T + 1),
+              (if t = 0 then (∑ i : Fin (N + 1),
+                ((h i).comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ))
+                  * ((n : ℂ)) ^ (-(s + (i : ℂ)))) else 0)) := Finset.sum_add_distrib
+      _ = _ := by rw [hconst]
   -- final algebra
   have hsplitA : ∀ t ∈ Finset.range (T + 2), ∀ i : Fin (N + 1),
       (mixedDiffA h T A t i).eval ((n : ℂ))

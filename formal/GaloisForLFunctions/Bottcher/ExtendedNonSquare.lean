@@ -337,3 +337,75 @@ theorem q62_disconnected_of_towerData_two {U : Set ℂ}
         hExtc.nonempty a₂ aExt hrad
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Single-coordinate transcendence from one tower.**  The `towerdataG`-shape data for a germ
+`a₂` alone — no second coordinate, no `GB` clause — already forces `a₂` transcendental over
+`ℂ(z)`: the standalone consumption theorem for one coordinate's Böttcher tower. -/
+theorem transcendental_of_towerDataG {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (a₂ : analyticSubring U)
+    (hG : haveI := isDomain_analyticSubring U hUo hUc hUne
+          haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          algebraMap (analyticSubring U) (meroField U) a₂ ≠ 0)
+    (towerdataG : ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (hUExt : U ⊆ Ext) (F : ℂ → ℂ) (aExt : analyticSubring Ext) (k : ℕ),
+        1 ≤ k ∧ d < 2 ^ k ∧
+        AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
+        (Filter.Germ.coeRingHom (𝓟 Ext) F) = (aExt : Filter.Germ (𝓟 Ext) ℂ) ∧
+        restrictAnalytic hUExt aExt = a₂ ^ (2 ^ k) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, γ θ ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv F (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI algU := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  apply transcendental_of_kummer_radical_inputs
+    (algebraMap (analyticSubring U) (meroField U) a₂) hG
+  intro d
+  obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, F, aExt, k, hk1, hdk,
+    hFan, hFne, hae, hrad, hloops⟩ := towerdataG d
+  haveI := isDomain_analyticSubring Ext hExto hExtc.isPreconnected hExtc.nonempty
+  letI algExt := (ratfuncToMero Ext hExto hExtc.isPreconnected hExtc.nonempty hExtinf).toAlgebra
+  let i : meroField Ext →ₐ[RatFunc ℂ] meroField U :=
+    { restrictMeroHom hUExt hExto hExtc.isPreconnected hExtc.nonempty hUo hUc hUne with
+      commutes' := fun r => RingHom.congr_fun
+        (restrictMeroHom_ratfuncToMero hUExt hExto hExtc.isPreconnected hExtc.nonempty hExtinf
+          hUo hUc hUne hUinf) r }
+  have hns : ∀ b : meroField Ext,
+      b ^ 2 ≠ algebraMap (analyticSubring Ext) (meroField Ext) aExt :=
+    analyticGerm_not_isSquare hExto hExtc hFan hFne hloops aExt hae
+  have hroot : (algebraMap (analyticSubring U) (meroField U) a₂) ^ (2 ^ k)
+      = i (algebraMap (analyticSubring Ext) (meroField Ext) aExt) :=
+    radical_relation_restrict k hUExt hUo hUc hUne hExto hExtc.isPreconnected
+      hExtc.nonempty a₂ aExt hrad
+  have hneg : ∃ j : meroField Ext, j ^ 2 = -1 := by
+    refine ⟨algebraMap (RatFunc ℂ) (meroField Ext) (algebraMap ℂ (RatFunc ℂ) Complex.I), ?_⟩
+    rw [← map_pow, ← map_pow]
+    rw [show Complex.I ^ 2 = (-1 : ℂ) from Complex.I_sq, map_neg, map_one, map_neg, map_one]
+  have hirr : Irreducible (Polynomial.X ^ (2 ^ k)
+      - Polynomial.C (algebraMap (analyticSubring Ext) (meroField Ext) aExt)) :=
+    kummer_irreducible hneg _ hns k hk1
+  obtain ⟨ζ₀, hζ₀ord, _hζ₀pow⟩ := exists_dyadic_primitive k
+  have hζ₀prim : IsPrimitiveRoot ζ₀ (2 ^ k) := by
+    have h := IsPrimitiveRoot.orderOf ζ₀
+    rwa [hζ₀ord] at h
+  have hinj : Function.Injective
+      ((algebraMap (RatFunc ℂ) (meroField Ext)).comp (algebraMap ℂ (RatFunc ℂ))) :=
+    (algebraMap (RatFunc ℂ) (meroField Ext)).injective.comp
+      (algebraMap ℂ (RatFunc ℂ)).injective
+  exact ⟨meroField Ext, inferInstance, inferInstance, i,
+    algebraMap (analyticSubring Ext) (meroField Ext) aExt,
+    ((algebraMap (RatFunc ℂ) (meroField Ext)).comp (algebraMap ℂ (RatFunc ℂ))) ζ₀, k,
+    hdk, hζ₀prim.map_of_injective hinj, hirr, hroot⟩
+
+end Bottcher
