@@ -241,6 +241,8 @@ import GaloisForLFunctions.Bottcher.RhoLoopWinding
 import GaloisForLFunctions.Bottcher.RhoWindingOne
 import GaloisForLFunctions.Bottcher.IterateCovering
 import GaloisForLFunctions.Bottcher.ConnectedBranchMandelbrot
+import GaloisForLFunctions.Bottcher.ConnectedNaturalBoundaryMandelbrot
+import GaloisForLFunctions.Bottcher.DiskAlgebraicContinuation
 import GaloisForLFunctions.Bottcher.RhoPathLift
 import GaloisForLFunctions.Bottcher.ConnectedBranchModulusAuto
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck

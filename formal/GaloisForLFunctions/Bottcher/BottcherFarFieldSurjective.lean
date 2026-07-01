@@ -49,7 +49,7 @@ is `φ_c z` for some `z` with `‖z‖ > R`. The image is open (`isOpen_far_imag
 `‖z‖-1 < ‖φ_c z‖ < ‖z‖+1` (from `tendsto_bottcherCoord_sub_id`), closed in `{‖w‖ > R'}` — an
 approximating preimage of a boundary `w` is confined to a compact annulus on which `φ_c` is a closed
 map. Open + closed + connected target (`isPathConnected_exterior`) gives the whole exterior. -/
-theorem exists_far_preimage {c : ℂ} {R : ℝ}
+theorem exists_bottcher_far_preimage {c : ℂ} {R : ℝ}
     (hR1 : 2 * max 2 ‖c‖ < R) (hR2 : 16 * ‖c‖ < R ^ 2) :
     ∃ R' : ℝ, ∀ w : ℂ, R' < ‖w‖ → ∃ z : ℂ, R < ‖z‖ ∧ bottcherCoord c z = w := by
   have hmaxlt : max 2 ‖c‖ < R := by
@@ -156,7 +156,7 @@ theorem exists_far_preimage {c : ℂ} {R : ℝ}
   exact ⟨z, hzA, hzw⟩
 
 /-- **Inverse Böttcher on a genuine neighborhood of `∞`.** Combining far-field surjectivity
-(`exists_far_preimage`) with the local analytic inverse (`exists_analytic_inverse_far`) and the
+(`exists_bottcher_far_preimage`) with the local analytic inverse (`exists_analytic_inverse_far`) and the
 banked functional-equation/oddness lemmas: there is a threshold `R' > 0` and a map `ψ` that on the
 whole exterior `{‖w‖ > R'}` is analytic, is a right inverse of `φ_c`, and satisfies the inverse
 Böttcher functional equation `ψ(w²)=ψ(w)²+c` and oddness `ψ(-w)=-ψ(w)`. This is the genuine
@@ -172,7 +172,7 @@ theorem exists_far_inverse {c : ℂ} {R : ℝ}
     have : (0:ℝ) < max 2 ‖c‖ := lt_of_lt_of_le (by norm_num) (le_max_left 2 ‖c‖)
     linarith
   obtain ⟨ψ, hψleft, hψan, hψright⟩ := exists_analytic_inverse_far hR1 hR2
-  obtain ⟨R', hRpre⟩ := exists_far_preimage hR1 hR2
+  obtain ⟨R', hRpre⟩ := exists_bottcher_far_preimage hR1 hR2
   refine ⟨max R' 1, ψ, lt_of_lt_of_le one_pos (le_max_right _ _), ?_, ?_, ?_, ?_⟩
   · intro w hw
     obtain ⟨z, hz, hzw⟩ := hRpre w (lt_of_le_of_lt (le_max_left _ _) hw)
@@ -205,7 +205,7 @@ theorem tendsto_psi_sub_id {c : ℂ} {R : ℝ}
     intro z hz; rw [escapeOpen, mem_setOf_eq]; exact lt_of_lt_of_le hmaxlt hz
   have hφcont : ContinuousOn (bottcherCoord c) {z | R ≤ ‖z‖} :=
     (analyticOnNhd_bottcherCoord_full c).continuousOn.mono (fun z hz => hsub z hz)
-  obtain ⟨R', hRpre⟩ := exists_far_preimage hR1 hR2
+  obtain ⟨R', hRpre⟩ := exists_bottcher_far_preimage hR1 hR2
   rw [NormedAddGroup.tendsto_nhds_zero]
   intro ε hε
   -- asymptotic threshold for ε and for 1
@@ -281,7 +281,7 @@ theorem exists_disk_model {c : ℂ} {R : ℝ}
       (∀ t ∈ ball (0:ℂ) ρ, h (t ^ 2) = (h t) ^ 2 + c * t ^ 2) ∧
       h 0 = 1 := by
   obtain ⟨ψ, hψleft, hψan, hψright⟩ := exists_analytic_inverse_far hR1 hR2
-  obtain ⟨R', hRpre⟩ := exists_far_preimage hR1 hR2
+  obtain ⟨R', hRpre⟩ := exists_bottcher_far_preimage hR1 hR2
   have hRpos : (0:ℝ) < R := by
     have : (0:ℝ) < max 2 ‖c‖ := lt_of_lt_of_le (by norm_num) (le_max_left 2 ‖c‖)
     linarith
