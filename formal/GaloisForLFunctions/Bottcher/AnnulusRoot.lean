@@ -75,7 +75,10 @@ theorem log_mem_stripSet {r R : ℝ} (hr : 0 < r) {w : ℂ} (hw : w ∈ annulusS
 
 theorem annulus_mem_ne_zero {r R : ℝ} (hr : 0 < r) {w : ℂ} (hw : w ∈ annulusSet r R) :
     w ≠ 0 := by
-  intro h0; rw [h0, norm_zero] at hw; exact absurd hw.1 (not_lt.mpr hr.le)
+  intro h0
+  subst h0
+  have : r < (0:ℝ) := by simpa using hw.1
+  linarith
 
 /-- Purely imaginary shifts keep the strip. -/
 theorem stripSet_add_im {r R : ℝ} {ξ z : ℂ} (hξ : ξ ∈ stripSet r R) (hz : z.re = 0) :
@@ -121,15 +124,15 @@ theorem exists_log_on_annulus {r R ρ : ℝ} (hr : 0 < r) (hρ1 : r < ρ) (hρ2 
   -- L₀' = logDeriv h on the strip
   have hL₀deriv : ∀ ξ ∈ S, deriv L₀ ξ = logDeriv h ξ := by
     intro ξ hξ
-    have hev : ∀ᶠ ζ in nhds ξ, Complex.exp (L₀ ζ) = h ζ := by
+    have hev : h =ᶠ[nhds ξ] (fun ζ => Complex.exp (L₀ ζ)) := by
       filter_upwards [(isOpen_stripSet r R).mem_nhds hξ] with ζ hζ
-      exact hL₀exp ζ hζ
+      exact (hL₀exp ζ hζ).symm
     have hL₀at : HasDerivAt L₀ (deriv L₀ ξ) ξ := (hL₀an ξ hξ).differentiableAt.hasDerivAt
     have hcomp : HasDerivAt (fun ζ => Complex.exp (L₀ ζ))
         (Complex.exp (L₀ ξ) * deriv L₀ ξ) ξ :=
       (Complex.hasStrictDerivAt_exp (L₀ ξ)).hasDerivAt.comp ξ hL₀at
     have hh' : HasDerivAt h (Complex.exp (L₀ ξ) * deriv L₀ ξ) ξ :=
-      hcomp.congr_of_eventuallyEq hev.symm
+      hcomp.congr_of_eventuallyEq hev
     rw [logDeriv_apply, hh'.deriv, hL₀exp ξ hξ]
     field_simp [hhne ξ hξ]
   -- vertical-segment FTC at the base radius
@@ -208,8 +211,8 @@ theorem exists_log_on_annulus {r R ρ : ℝ} (hr : 0 < r) (hρ1 : r < ρ) (hρ2 
     exact h1.sub hL₀an.continuousOn
   have hDξ₀ : D ξ₀ = 0 := by
     have hv2 : v (2 * Real.pi) = L₀ (ξ₀ + 2 * (Real.pi : ℂ) * Complex.I) := by
-      rw [hvdef]; congr 1; push_cast; ring
-    have hv0 : v 0 = L₀ ξ₀ := by rw [hvdef]; congr 1; push_cast; ring
+      rw [hvdef]; push_cast; ring_nf
+    have hv0 : v 0 = L₀ ξ₀ := by rw [hvdef]; push_cast; ring_nf
     have := hdefect0
     rw [hv2, hv0] at this
     exact this
@@ -228,10 +231,8 @@ theorem exists_log_on_annulus {r R ρ : ℝ} (hr : 0 < r) (hρ1 : r < ρ) (hρ2 
         have hcast : ((n:ℂ) - p) = ((n - p : ℤ) : ℂ) := by push_cast; ring
         have hnz : (n - p : ℤ) ≠ 0 := sub_ne_zero.mpr hne
         have h1 : (1 : ℝ) ≤ ‖((n:ℂ) - p)‖ := by
-          rw [hcast]
-          calc (1 : ℝ) ≤ |((n - p : ℤ) : ℝ)| := by exact_mod_cast Int.one_le_abs hnz
-            _ = ‖(((n - p : ℤ) : ℝ) : ℂ)‖ := by rw [Complex.norm_real]
-            _ = ‖((n - p : ℤ) : ℂ)‖ := by norm_cast
+          rw [hcast, Complex.norm_intCast]
+          exact_mod_cast Int.one_le_abs hnz
         nlinarith [Real.pi_pos]
       rw [hnp]
     set E : Set ℂ := {ξ | ξ ∈ S ∧ D ξ = 0} with hEdef
@@ -280,37 +281,33 @@ theorem exists_log_on_annulus {r R ρ : ℝ} (hr : 0 < r) (hρ1 : r < ρ) (hρ2 
     have hmem : ∀ j : ℤ, ξ + (j : ℂ) * (2 * (Real.pi:ℂ) * Complex.I) ∈ S := fun j =>
       stripSet_add_im hξ (by simp)
     induction k using Int.induction_on with
-    | hz => simp
-    | hp n ih =>
+    | zero => simp
+    | succ n ih =>
         have harg : ξ + ((n : ℤ) + 1 : ℂ) * (2 * (Real.pi:ℂ) * Complex.I)
             = (ξ + ((n : ℤ) : ℂ) * (2 * (Real.pi:ℂ) * Complex.I))
               + 2 * (Real.pi:ℂ) * Complex.I := by push_cast; ring
         rw [show (((n : ℤ) + 1 : ℤ) : ℂ) = ((n : ℤ) : ℂ) + 1 by push_cast; ring, harg,
           hstep _ (hmem n)]
         exact ih
-    | hn n ih =>
-        have harg : ξ + ((-(n : ℤ) : ℤ) : ℂ) * (2 * (Real.pi:ℂ) * Complex.I)
-            = (ξ + ((-(n : ℤ) - 1 : ℤ) : ℂ) * (2 * (Real.pi:ℂ) * Complex.I))
-              + 2 * (Real.pi:ℂ) * Complex.I := by push_cast; ring
-        have := hstep _ (hmem (-(n : ℤ) - 1))
-        rw [← harg] at this
-        rw [show ((-(n : ℤ) - 1 : ℤ) : ℂ) = ((-(n:ℤ) : ℤ) : ℂ) - 1 by push_cast; ring] at ih ⊢
-        rw [show ξ + (((-(n:ℤ) : ℤ) : ℂ) - 1) * (2 * (Real.pi:ℂ) * Complex.I)
-            = ξ + ((-(n : ℤ) - 1 : ℤ) : ℂ) * (2 * (Real.pi:ℂ) * Complex.I) by push_cast; ring]
-        rw [← this]
-        congr 1
-        push_cast
-        ring
+    | pred n ih =>
+        have hs := hstep _ (hmem (-(n : ℤ) - 1))
+        have harg : ξ + ((-(n : ℤ) - 1 : ℤ) : ℂ) * (2 * (Real.pi:ℂ) * Complex.I)
+            + 2 * (Real.pi:ℂ) * Complex.I
+            = ξ + ((-(n : ℤ) : ℤ) : ℂ) * (2 * (Real.pi:ℂ) * Complex.I) := by
+          push_cast; ring
+        rw [harg] at hs
+        rw [← hs]
+        exact ih
   -- descend through exp via the principal log
   refine ⟨fun w => L₀ (Complex.log w), ?_, ?_⟩
   · intro w₀ hw₀
     have hw₀ne : w₀ ≠ 0 := annulus_mem_ne_zero hr hw₀
     set ξw := Complex.log w₀ with hξwdef
     have hξwS : ξw ∈ S := log_mem_stripSet hr hw₀
+    have hlogdiff : DifferentiableOn ℂ Complex.log Complex.slitPlane := fun z hz =>
+      (Complex.differentiableAt_log hz).differentiableWithinAt
     have hlogan : AnalyticOnNhd ℂ Complex.log Complex.slitPlane :=
-      (fun z hz => (Complex.differentiableAt_log hz).differentiableWithinAt :
-        DifferentiableOn ℂ Complex.log Complex.slitPlane).analyticOnNhd
-        Complex.isOpen_slitPlane
+      hlogdiff.analyticOnNhd Complex.isOpen_slitPlane
     set ℓ : ℂ → ℂ := fun w => ξw + Complex.log (w / w₀) with hℓdef
     have hℓw₀ : ℓ w₀ = ξw := by
       rw [hℓdef]; simp [div_self hw₀ne]
@@ -319,7 +316,10 @@ theorem exists_log_on_annulus {r R ρ : ℝ} (hr : 0 < r) (hρ1 : r < ρ) (hρ2 
         (analyticAt_id).div analyticAt_const hw₀ne
       have hmem1 : w₀ / w₀ ∈ Complex.slitPlane := by
         rw [div_self hw₀ne]; exact Complex.one_mem_slitPlane
-      exact (analyticAt_const).add ((hlogan _ hmem1).comp hdiv)
+      have hcomp : AnalyticAt ℂ (Complex.log ∘ (fun w : ℂ => w / w₀)) w₀ :=
+        AnalyticAt.comp (g := Complex.log) (f := fun w : ℂ => w / w₀)
+          (hlogan _ hmem1) hdiv
+      exact (analyticAt_const).add hcomp
     have hℓcont : ContinuousAt ℓ w₀ := hℓan.continuousAt
     have hev : (fun w => L₀ (Complex.log w)) =ᶠ[nhds w₀] fun w => L₀ (ℓ w) := by
       have h1 : ∀ᶠ w in nhds w₀, w ∈ A := (isOpen_annulusSet r R).mem_nhds hw₀
@@ -361,7 +361,6 @@ theorem winding_zpow_circle {ρ : ℝ} (hρ : 0 < ρ) (n : ℤ) :
     intro θ _
     rw [logDeriv_zpow]
     field_simp [hne θ]
-    ring
   rw [intervalIntegral.integral_congr hcongr, intervalIntegral.integral_const]
   rw [sub_zero, Complex.real_smul]
   push_cast
@@ -381,18 +380,11 @@ theorem exists_pow_root_on_annulus {r R ρ : ℝ} (hr : 0 < r) (hρ1 : r < ρ) (
       (∀ w ∈ annulusSet r R, s w ^ (2 ^ k) = g w) ∧
       (∀ w ∈ annulusSet r R, s w ≠ 0) := by
   have hρ0 : 0 < ρ := lt_trans hr hρ1
-  have hρA : circleMap 0 ρ ⁻¹' (annulusSet r R) = univ := by
-    ext θ
-    simp only [mem_preimage, mem_univ, iff_true]
-    constructor
-    · rw [show ‖circleMap 0 ρ θ‖ = |ρ| from by simp [circleMap]]
-      rw [abs_of_pos hρ0]; exact hρ1
-    · rw [show ‖circleMap 0 ρ θ‖ = |ρ| from by simp [circleMap]]
-      rw [abs_of_pos hρ0]; exact hρ2
   have hcmA : ∀ θ : ℝ, circleMap 0 ρ θ ∈ annulusSet r R := by
     intro θ
-    have := hρA ▸ mem_univ θ
-    exact mem_preimage.mp (by rw [hρA]; exact mem_univ θ)
+    have hnorm : ‖circleMap 0 ρ θ‖ = ρ := by
+      simp [circleMap, Complex.norm_exp, abs_of_pos hρ0]
+    exact ⟨by rw [hnorm]; exact hρ1, by rw [hnorm]; exact hρ2⟩
   set n : ℤ := 2 ^ k * m with hndef
   set p : ℂ → ℂ := fun w => w ^ (-n) with hpdef
   have hp_an : AnalyticOnNhd ℂ p (annulusSet r R) := by
@@ -444,7 +436,8 @@ theorem exists_pow_root_on_annulus {r R ρ : ℝ} (hr : 0 < r) (hρ1 : r < ρ) (
     push_cast
     ring
   obtain ⟨L, hLan, hLexp⟩ := exists_log_on_annulus hr hρ1 hρ2 hgm_an hgm_ne hgmwind
-  have h2k : ((2 ^ k : ℕ) : ℂ) ≠ 0 := by positivity
+  have h2k : ((2 ^ k : ℕ) : ℂ) ≠ 0 :=
+    Nat.cast_ne_zero.mpr (pow_ne_zero k two_ne_zero)
   refine ⟨fun w => w ^ m * Complex.exp (L w / ((2 ^ k : ℕ) : ℂ)), ?_, ?_, ?_⟩
   · intro w hw
     have hzm : AnalyticAt ℂ (fun w : ℂ => w ^ m) w := by
@@ -460,8 +453,7 @@ theorem exists_pow_root_on_annulus {r R ρ : ℝ} (hr : 0 < r) (hρ1 : r < ρ) (
     rw [hpdef]
     show (w ^ m) ^ (2 ^ k) * (g w * w ^ (-n)) = g w
     rw [← zpow_natCast (w ^ m) (2 ^ k), ← zpow_mul]
-    rw [show m * ((2:ℤ) ^ k) = n from by rw [hndef]; push_cast; ring]
-    rw [show (((2:ℕ) ^ k : ℕ) : ℤ) = (2:ℤ) ^ k from by push_cast; ring]
+    rw [show m * ((2 ^ k : ℕ) : ℤ) = n from by rw [hndef]; push_cast; ring]
     calc w ^ n * (g w * w ^ (-n)) = g w * (w ^ n * w ^ (-n)) := by ring
       _ = g w := by rw [← zpow_add₀ hwne]; simp
   · intro w hw

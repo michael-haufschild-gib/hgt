@@ -7,16 +7,14 @@ This is an agent worklist aid, not a mathematical ledger.
 
 | Kind | Location | Context | Text |
 |---|---|---|---|
-| proof-debt | `formal/GaloisForLFunctions/Bottcher/AnnulusRoot.lean:65` | `theorem exp_mem_annulusSet` | `sorry` |
-| proof-debt | `formal/GaloisForLFunctions/Bottcher/AnnulusRoot.lean:312` | `theorem exists_log_on_annulus` | `sorry` |
-| proof-debt | `formal/GaloisForLFunctions/Bottcher/AnnulusRoot.lean:313` | `theorem exists_log_on_annulus` | `sorry` |
+| proof-debt | `formal/GaloisForLFunctions/Bottcher/WindingCertificates.lean:79` | `theorem exists_int_windInt` | `sorry` |
 
 ## Large Files
 
 | Lines | File |
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 4313 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 4347 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |

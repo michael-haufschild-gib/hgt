@@ -27,6 +27,7 @@ import GaloisForLFunctions.Hurwitz.MonodromyScalar
 import GaloisForLFunctions.Hurwitz.PolylogPoleTower
 import GaloisForLFunctions.U0.U0CardTheorems
 import GaloisForLFunctions.U0.U0PhiCircleWindow
+import GaloisForLFunctions.U0.U0PhiFourWindow
 import GaloisForLFunctions.U0.U0CoverMono
 import GaloisForLFunctions.U0.U0CoverTransport
 import GaloisForLFunctions.U0.U0PhiLifts
@@ -4309,5 +4310,38 @@ theorem u0_phi_circle_window : U0PhiCircleWindowTarget := by
   intro Ω hΩo hΩc hDc φ hφ P hd w hw hleadw hsepw z₁ hz₁ hz₁norm V hVo hVne hVD hrel
   exact U0PhiCircleWindow.u0_phi_windowed_no_relation_3var hΩo hΩc hDc hφ P hd hw
     hleadw hsepw hz₁ hz₁norm hVo hVne hVD hrel
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-! ## u₀ ⟂ φ — the `b = 4` window instance (window object CONSTRUCTED)
+
+`U0PhiFourWindow.phiFour z = exp(½·bottcherLog 4 (z²+4))` is analytic on the open disk
+`ball 0 (21/20)` — containing the whole unit circle — and is a canonical Böttcher branch
+(`phiFour_sq : phiFour z ^ 2 = bottcherCoord 4 (z²+4)`).  The circle-window reduction therefore
+fires unconditionally at `b = 4`. -/
+
+/-- `b = 4` window target: no positive-`u₀`-degree polynomial relation between `u₀` and the
+constructed Böttcher branch `phiFour` (with separable specialization data) on any nonempty open
+subset of the annulus `{1 < ‖z‖ < 21/20}`. -/
+def U0PhiFourWindowTarget : Prop :=
+  ∀ (P : (Polynomial (Polynomial ℂ))[X]), 1 ≤ P.natDegree →
+  ∀ w, w ∈ Metric.ball (0 : ℂ) (21 / 20) →
+    ((∑ i : Fin (P.natDegree + 1),
+      C ((P.coeff i).eval₂ (evalRingHom w) (U0PhiFourWindow.phiFour w)) * X ^ (i : ℕ) : ℂ[X]).coeff
+        P.natDegree ≠ 0) →
+    ((∑ i : Fin (P.natDegree + 1),
+      C ((P.coeff i).eval₂ (evalRingHom w) (U0PhiFourWindow.phiFour w)) * X ^ (i : ℕ) :
+        ℂ[X]).Separable) →
+  ∀ (V : Set ℂ), IsOpen V → V.Nonempty →
+    V ⊆ Metric.ball (0 : ℂ) (21 / 20) ∩ U0NaturalBoundary.Ext →
+    (∀ z ∈ V, P.eval₂ (eval₂RingHom (evalRingHom z) (U0PhiFourWindow.phiFour z)) (U0.u0 z) = 0) →
+  False
+
+/-- The `b = 4` window instance, proved — the window continuation is no longer a hypothesis. -/
+theorem u0_phi_four_window : U0PhiFourWindowTarget := by
+  intro P hd w hw hleadw hsepw V hVo hVne hVD hrel
+  exact U0PhiFourWindow.u0_phiFour_no_relation P hd hw hleadw hsepw hVo hVne hVD hrel
 
 end FullyProvenNewTargets
