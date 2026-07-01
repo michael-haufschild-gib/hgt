@@ -256,6 +256,7 @@ import GaloisForLFunctions.Bottcher.GreenPullback
 import GaloisForLFunctions.Bottcher.GreenSublevel
 import GaloisForLFunctions.Bottcher.TowerCertificates
 import GaloisForLFunctions.Bottcher.SectionTower
+import GaloisForLFunctions.Bottcher.SectionTowerStep
 import GaloisForLFunctions.Bottcher.RhoPathLift
 import GaloisForLFunctions.Bottcher.ConnectedBranchModulusAuto
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck

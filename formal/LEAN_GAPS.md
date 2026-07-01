@@ -5,10 +5,7 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-| Kind | Location | Context | Text |
-|---|---|---|---|
-| proof-debt | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:117` | `theorem even_section_winding_ne` | `sorry` |
-| proof-debt | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:472` | `theorem tower_extension_step` | `sorry` |
+No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 ## Large Files
 

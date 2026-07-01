@@ -239,3 +239,696 @@ theorem even_section_winding_ne {a b : ℝ} {s : ℂ → ℂ} (ha : 0 < a)
     linear_combination h3
   have : (2 * n : ℤ) = 1 := by exact_mod_cast hcast
   omega
+
+/-- **Sign constancy.**  A continuous pointwise square root `u` of `v²` (i.e. `u = ±v` pointwise,
+`v` nonvanishing) on an open connected set is globally `v` or globally `-v`. -/
+theorem sign_constant_on_connected {A : Set ℂ} (hAo : IsOpen A) (hconn : IsConnected A)
+    {u v : ℂ → ℂ} (hu : ∀ w ∈ A, ContinuousAt u w) (hv : ∀ w ∈ A, ContinuousAt v w)
+    (hvne : ∀ w ∈ A, v w ≠ 0) (hsq : ∀ w ∈ A, u w = v w ∨ u w = -v w) :
+    (∀ w ∈ A, u w = v w) ∨ (∀ w ∈ A, u w = -v w) := by
+  classical
+  have hEopen : IsOpen {z : ℂ | z ∈ A ∧ u z ≠ -v z} := by
+    rw [isOpen_iff_mem_nhds]
+    rintro z ⟨hzA, hzne⟩
+    have hc : ContinuousAt (fun x => u x + v x) z := (hu z hzA).add (hv z hzA)
+    have hne0 : u z + v z ≠ 0 := fun h => hzne (by linear_combination h)
+    filter_upwards [hAo.mem_nhds hzA, hc.eventually_ne hne0] with x hx1 hx2
+    exact ⟨hx1, fun h => hx2 (by rw [h]; ring)⟩
+  have hFopen : IsOpen {z : ℂ | z ∈ A ∧ u z ≠ v z} := by
+    rw [isOpen_iff_mem_nhds]
+    rintro z ⟨hzA, hzne⟩
+    have hc : ContinuousAt (fun x => u x - v x) z := (hu z hzA).sub (hv z hzA)
+    have hne0 : u z - v z ≠ 0 := sub_ne_zero.mpr hzne
+    filter_upwards [hAo.mem_nhds hzA, hc.eventually_ne hne0] with x hx1 hx2
+    exact ⟨hx1, fun h => hx2 (sub_eq_zero.mp (by rw [← h]; ring))⟩
+  by_cases hpos : ∀ w ∈ A, u w = v w
+  · exact Or.inl hpos
+  push Not at hpos
+  obtain ⟨w₁, hw₁A, hw₁⟩ := hpos
+  right
+  intro w hw
+  by_contra hne
+  have hweq : u w = v w := (hsq w hw).resolve_right hne
+  have hcover : A ⊆ {z : ℂ | z ∈ A ∧ u z ≠ -v z} ∪ {z : ℂ | z ∈ A ∧ u z ≠ v z} := by
+    intro z hz
+    by_cases h : u z = v z
+    · refine Or.inl ⟨hz, fun hcontra => hvne z hz ?_⟩
+      have h2 : v z = -v z := h.symm.trans hcontra
+      linear_combination ((1:ℂ)/2) * h2
+    · exact Or.inr ⟨hz, h⟩
+  have hneE : (A ∩ {z : ℂ | z ∈ A ∧ u z ≠ -v z}).Nonempty := by
+    refine ⟨w, hw, hw, fun hcontra => hvne w hw ?_⟩
+    have h2 : v w = -v w := hweq.symm.trans hcontra
+    linear_combination ((1:ℂ)/2) * h2
+  have hneF : (A ∩ {z : ℂ | z ∈ A ∧ u z ≠ v z}).Nonempty := ⟨w₁, hw₁A, hw₁A, hw₁⟩
+  obtain ⟨z, _, ⟨_, hz1⟩, ⟨_, hz2⟩⟩ := hconn.isPreconnected _ _ hEopen hFopen
+    hcover hneE hneF
+  rcases hsq z (by assumption) with h | h
+  · exact hz2 h
+  · exact hz1 h
+
+/-- **The extension step.**  A tower section on `{rlo < ‖w‖ < R₀}` whose source band
+`(σ₁, σ₂)` lies strictly above the critical value's level extends across the square root of the
+band: there is a tower section on `{√σ₁ < ‖w‖ < R₀}`. -/
+theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
+    (hrlo : 1 < rlo) (hrloR₀ : rlo ^ 2 < R₀)
+    (S : TowerSection c rlo R₀)
+    (h0 : greenFunctionDyn c 0 < Real.log rlo)
+    {σ₁ σ₂ : ℝ} (hσ₁lo : rlo < σ₁) (hσ₁hi : σ₁ < rlo ^ 2)
+    (hσ₂lo : rlo ^ 2 < σ₂) (hσ₂hi : σ₂ ≤ R₀)
+    (hcab : greenFunctionDyn c c < Real.log σ₁) :
+    Nonempty (TowerSection c (Real.sqrt σ₁) R₀) := by
+  classical
+  have hσ₁pos : (0:ℝ) < σ₁ := by nlinarith
+  have hσ₂pos : (0:ℝ) < σ₂ := by nlinarith
+  have hσ : σ₁ < σ₂ := by nlinarith
+  have hs₁ : Real.sqrt σ₁ < rlo := by
+    rw [Real.sqrt_lt' (by linarith)]
+    exact hσ₁hi
+  have hs₂ : rlo < Real.sqrt σ₂ := by
+    rw [show rlo = Real.sqrt (rlo ^ 2) from (Real.sqrt_sq (by linarith)).symm]
+    exact Real.sqrt_lt_sqrt (by positivity) hσ₂lo
+  have hs₁pos : (0:ℝ) < Real.sqrt σ₁ := Real.sqrt_pos.mpr hσ₁pos
+  have hs₁s₂ : Real.sqrt σ₁ < Real.sqrt σ₂ := Real.sqrt_lt_sqrt (le_of_lt hσ₁pos) hσ
+  have hs₂R₀ : Real.sqrt σ₂ < R₀ := by
+    have h1 : Real.sqrt σ₂ ≤ Real.sqrt R₀ := Real.sqrt_le_sqrt hσ₂hi
+    have h2 : Real.sqrt R₀ < R₀ := by
+      have hR₀1 : (1:ℝ) < R₀ := by nlinarith
+      nth_rewrite 2 [show R₀ = Real.sqrt (R₀ ^ 2) from (Real.sqrt_sq (by linarith)).symm]
+      exact Real.sqrt_lt_sqrt (by linarith) (by nlinarith)
+    linarith
+  -- the squared-argument membership
+  have hsqmem : ∀ w : ℂ, w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) →
+      w ^ 2 ∈ annulusSet σ₁ σ₂ := by
+    rintro w ⟨h1, h2⟩
+    constructor
+    · rw [norm_pow]
+      calc σ₁ = Real.sqrt σ₁ ^ 2 := (Real.sq_sqrt (le_of_lt hσ₁pos)).symm
+        _ < ‖w‖ ^ 2 := by nlinarith [norm_nonneg w]
+    · rw [norm_pow]
+      calc ‖w‖ ^ 2 < Real.sqrt σ₂ ^ 2 := by nlinarith [norm_nonneg w, hs₁pos.trans h1]
+        _ = σ₂ := Real.sq_sqrt (le_of_lt hσ₂pos)
+  have hsrcmem : ∀ v : ℂ, v ∈ annulusSet σ₁ σ₂ → v ∈ annulusSet rlo R₀ := by
+    rintro v ⟨h1, h2⟩
+    exact ⟨lt_trans hσ₁lo h1, lt_of_lt_of_le h2 hσ₂hi⟩
+  -- the pulled-back radicand g := T(w²) − c on the target band
+  set g : ℂ → ℂ := fun w => S.T (w ^ 2) - c with hgdef
+  have hg_an : AnalyticOnNhd ℂ g (annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)) := by
+    intro w hw
+    have h1 : AnalyticAt ℂ (fun w : ℂ => w ^ 2) w := analyticAt_id.pow 2
+    have h2 : AnalyticAt ℂ S.T (w ^ 2) := S.an _ (hsrcmem _ (hsqmem w hw))
+    have h3 : AnalyticAt ℂ (S.T ∘ fun w : ℂ => w ^ 2) w :=
+      AnalyticAt.comp (g := S.T) (f := fun w : ℂ => w ^ 2) h2 h1
+    exact h3.sub analyticAt_const
+  have hg_ne : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂), g w ≠ 0 := by
+    intro w hw h
+    have hval : S.T (w ^ 2) = c := by
+      have := sub_eq_zero.mp h
+      exact this
+    have hlev := S.level _ (hsrcmem _ (hsqmem w hw))
+    rw [hval] at hlev
+    have h1 : Real.log σ₁ < Real.log ‖w ^ 2‖ := by
+      apply Real.log_lt_log hσ₁pos
+      exact (hsqmem w hw).1
+    rw [← hlev] at h1
+    linarith
+  -- level of g-arguments: the band sits strictly above the critical level h
+  have hbandh : greenFunctionDyn c 0 < Real.log (Real.sqrt σ₁) := by
+    have h2h := greenFunctionDyn_critical_value c
+    have hG0 : 0 ≤ greenFunctionDyn c 0 := greenFunctionDyn_nonneg c 0
+    have hlogs : Real.log (Real.sqrt σ₁) = Real.log σ₁ / 2 := by
+      rw [Real.log_sqrt (le_of_lt hσ₁pos)]
+    rw [hlogs]
+    rw [h2h] at hcab
+    linarith
+  -- the core radius and its square
+  set ρ : ℝ := (Real.sqrt σ₁ + Real.sqrt σ₂) / 2 with hρdef
+  have hρ1 : Real.sqrt σ₁ < ρ := by rw [hρdef]; linarith
+  have hρ2 : ρ < Real.sqrt σ₂ := by rw [hρdef]; linarith
+  have hρpos : (0:ℝ) < ρ := lt_trans hs₁pos hρ1
+  have hρsq₁ : σ₁ < ρ ^ 2 := by
+    have h1 : Real.sqrt σ₁ ^ 2 < ρ ^ 2 := by nlinarith [hs₁pos]
+    rwa [Real.sq_sqrt (le_of_lt hσ₁pos)] at h1
+  have hρsq₂ : ρ ^ 2 < σ₂ := by
+    have h1 : ρ ^ 2 < Real.sqrt σ₂ ^ 2 := by nlinarith [hρpos]
+    rwa [Real.sq_sqrt (le_of_lt hσ₂pos)] at h1
+  have hρsqrlo : rlo < ρ ^ 2 := lt_trans hσ₁lo hρsq₁
+  have hρsqR₀ : ρ ^ 2 < R₀ := lt_of_lt_of_le hρsq₂ hσ₂hi
+  have hρsqpos : (0:ℝ) < ρ ^ 2 := by positivity
+  -- T never takes the value c on the source band
+  have hTnec : ∀ v ∈ annulusSet σ₁ σ₂, S.T v ≠ c := by
+    intro v hv h
+    have hlev := S.level _ (hsrcmem _ hv)
+    rw [h] at hlev
+    have h1 : Real.log σ₁ < Real.log ‖v‖ := Real.log_lt_log hσ₁pos hv.1
+    rw [← hlev] at h1
+    linarith
+  -- the parametric g-winding: at every band radius, the doubled source winding
+  have hgwindAll : ∀ r : ℝ, Real.sqrt σ₁ < r → r < Real.sqrt σ₂ →
+      (∫ θ in (0:ℝ)..(2 * Real.pi),
+        logDeriv g (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I))
+      = ((2 ^ 1 * 1 : ℤ) : ℂ) * (2 * Real.pi * Complex.I) := by
+    intro r hr1 hr2
+    have hrpos : (0:ℝ) < r := lt_trans hs₁pos hr1
+    have hrsq₁ : σ₁ < r ^ 2 := by
+      have h1 : Real.sqrt σ₁ ^ 2 < r ^ 2 := by nlinarith [hs₁pos]
+      rwa [Real.sq_sqrt (le_of_lt hσ₁pos)] at h1
+    have hrsq₂ : r ^ 2 < σ₂ := by
+      have h1 : r ^ 2 < Real.sqrt σ₂ ^ 2 := by nlinarith [hrpos]
+      rwa [Real.sq_sqrt (le_of_lt hσ₂pos)] at h1
+    have hrsqrlo : rlo < r ^ 2 := lt_trans hσ₁lo hrsq₁
+    have hrsqR₀ : r ^ 2 < R₀ := lt_of_lt_of_le hrsq₂ hσ₂hi
+    have hrsqpos : (0:ℝ) < r ^ 2 := by positivity
+    set δ : ℝ → ℂ := fun u => S.T (circleMap 0 (r ^ 2) u) - c with hδdef
+    set δ' : ℝ → ℂ := fun u =>
+      deriv S.T (circleMap 0 (r ^ 2) u) * (circleMap 0 (r ^ 2) u * Complex.I) with hδ'def
+    have hcmsq : ∀ u : ℝ, circleMap 0 (r ^ 2) u ∈ annulusSet σ₁ σ₂ := by
+      intro u
+      exact circleMap_mem_annulusSet hrsqpos hrsq₁ hrsq₂ u
+    have hδcont : Continuous δ := by
+      have h1 : ContinuousOn S.T (annulusSet rlo R₀) := S.an.continuousOn
+      exact (h1.comp_continuous (continuous_circleMap 0 (r ^ 2))
+        (fun u => hsrcmem _ (hcmsq u))).sub continuous_const
+    have hδ'cont : Continuous δ' := by
+      have h1 : ContinuousOn (deriv S.T) (annulusSet rlo R₀) := (S.an.deriv).continuousOn
+      exact (h1.comp_continuous (continuous_circleMap 0 (r ^ 2))
+        (fun u => hsrcmem _ (hcmsq u))).mul
+        ((continuous_circleMap 0 (r ^ 2)).mul continuous_const)
+    have hδne : ∀ u : ℝ, δ u ≠ 0 := by
+      intro u h
+      exact hTnec _ (hcmsq u)
+        (sub_eq_zero.mp (show S.T (circleMap 0 (r ^ 2) u) - c = 0 from h))
+    have hδper : Function.Periodic δ (2 * Real.pi) := by
+      intro u
+      show S.T (circleMap 0 (r ^ 2) (u + 2 * Real.pi)) - c
+        = S.T (circleMap 0 (r ^ 2) u) - c
+      rw [periodic_circleMap 0 (r ^ 2) u]
+    have hδ'per : Function.Periodic δ' (2 * Real.pi) := by
+      intro u
+      show deriv S.T (circleMap 0 (r ^ 2) (u + 2 * Real.pi))
+          * (circleMap 0 (r ^ 2) (u + 2 * Real.pi) * Complex.I)
+        = deriv S.T (circleMap 0 (r ^ 2) u) * (circleMap 0 (r ^ 2) u * Complex.I)
+      rw [periodic_circleMap 0 (r ^ 2) u]
+    have hcmsqid : ∀ θ : ℝ, (circleMap 0 r θ) ^ 2 = circleMap 0 (r ^ 2) (2 * θ) := by
+      intro θ
+      simp only [circleMap, zero_add]
+      rw [mul_pow, ← Complex.exp_nat_mul]
+      congr 1
+      · push_cast; ring
+      · congr 1
+        push_cast
+        ring
+    have hstep1 : ∀ θ : ℝ,
+        logDeriv g (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I)
+        = (δ (2 * θ))⁻¹ * (2 * δ' (2 * θ)) := by
+      intro θ
+      set w : ℂ := circleMap 0 r θ with hwdef
+      have hwmem : w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) :=
+        circleMap_mem_annulusSet hrpos hr1 hr2 θ
+      have hDdiff : DifferentiableAt ℂ (fun z => S.T z - c) (w ^ 2) :=
+        ((S.an _ (hsrcmem _ (hsqmem w hwmem))).differentiableAt).sub_const c
+      have hsqdiff : DifferentiableAt ℂ (fun z : ℂ => z ^ 2) w :=
+        (hasDerivAt_pow 2 w).differentiableAt
+      have hcomp : logDeriv g w
+          = logDeriv (fun z => S.T z - c) (w ^ 2) * deriv (fun z : ℂ => z ^ 2) w := by
+        have h1 : g = (fun z => S.T z - c) ∘ (fun z : ℂ => z ^ 2) := rfl
+        rw [h1]
+        exact logDeriv_comp hDdiff hsqdiff
+      have hderivsq : deriv (fun z : ℂ => z ^ 2) w = 2 * w := by
+        have h6 := (hasDerivAt_pow 2 w).deriv
+        rw [h6]
+        push_cast
+        ring
+      have hlogD : logDeriv (fun z => S.T z - c) (w ^ 2)
+          = deriv S.T (w ^ 2) / (S.T (w ^ 2) - c) := by
+        rw [logDeriv_apply]
+        congr 1
+        exact deriv_sub_const c
+      have hw2 : w ^ 2 = circleMap 0 (r ^ 2) (2 * θ) := hcmsqid θ
+      have hRHS : (δ (2 * θ))⁻¹ * (2 * δ' (2 * θ))
+          = (S.T (w ^ 2) - c)⁻¹ * (2 * (deriv S.T (w ^ 2) * (w ^ 2 * Complex.I))) := by
+        show (S.T (circleMap 0 (r ^ 2) (2 * θ)) - c)⁻¹
+            * (2 * (deriv S.T (circleMap 0 (r ^ 2) (2 * θ))
+                * (circleMap 0 (r ^ 2) (2 * θ) * Complex.I)))
+          = _
+        rw [← hw2]
+      rw [hcomp, hderivsq, hlogD, hRHS]
+      have hne2 : S.T (w ^ 2) - c ≠ 0 := fun h => hTnec _ (hsqmem w hwmem) (sub_eq_zero.mp h)
+      field_simp
+    rw [intervalIntegral.integral_congr (fun θ _ => hstep1 θ)]
+    have hdouble := windInt_double (a := 0) hδcont hδ'cont hδne hδper hδ'per
+    have hLHS : (∫ θ in (0:ℝ)..(2 * Real.pi), (δ (2 * θ))⁻¹ * (2 * δ' (2 * θ)))
+        = ∫ θ in (0:ℝ)..(2 * Real.pi), (δ (2 * θ) - 0)⁻¹ * (2 * δ' (2 * θ)) := by
+      apply intervalIntegral.integral_congr
+      intro θ _
+      show (δ (2 * θ))⁻¹ * (2 * δ' (2 * θ)) = (δ (2 * θ) - 0)⁻¹ * (2 * δ' (2 * θ))
+      rw [sub_zero]
+    have hinner : (∫ θ in (0:ℝ)..(2 * Real.pi), (δ θ - 0)⁻¹ * δ' θ)
+        = windInt (S.loop hrsqpos hrsqrlo hrsqR₀) c := by
+      apply intervalIntegral.integral_congr
+      intro θ _
+      show (δ θ - 0)⁻¹ * δ' θ = ((S.loop hrsqpos hrsqrlo hrsqR₀).γ θ - c)⁻¹
+        * (S.loop hrsqpos hrsqrlo hrsqR₀).γ' θ
+      rw [sub_zero]
+      rfl
+    have hlogσ₁pos : 0 < Real.log σ₁ :=
+      Real.log_pos (by nlinarith)
+    have hlogrhosq : Real.log σ₁ < Real.log (r ^ 2) :=
+      Real.log_lt_log hσ₁pos hrsq₁
+    have h0' : greenFunctionDyn c 0 < Real.log (r ^ 2) := by
+      have h1 : Real.log (Real.sqrt σ₁) = Real.log σ₁ / 2 :=
+        Real.log_sqrt (le_of_lt hσ₁pos)
+      rw [h1] at hbandh
+      linarith
+    have hp' : greenFunctionDyn c c < Real.log (r ^ 2) := by linarith
+    have hpoint := S.windInt_loop_point hrsqpos hrsqrlo hrsqR₀ h0' hp'
+    rw [hLHS, hdouble, hinner, hpoint]
+    push_cast
+    ring
+  have hgwind := hgwindAll ρ hρ1 hρ2
+  obtain ⟨s, hs_an, hs_sq, hs_ne⟩ :=
+    exists_pow_root_on_annulus hs₁pos hρ1 hρ2 hg_an hg_ne 1 1 hgwind
+  have hs_sq' : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂), s w ^ 2 = g w := by
+    intro w hw
+    have := hs_sq w hw
+    rwa [pow_one 2] at this
+  -- (3) the s-winding: half the g-winding, at every band radius
+  have hlogs : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂),
+      logDeriv g w = 2 * logDeriv s w := by
+    intro w hw
+    have hev : g =ᶠ[nhds w] (fun z => s z ^ 2) := by
+      filter_upwards [(isOpen_annulusSet _ _).mem_nhds hw] with z hz
+      exact (hs_sq' z hz).symm
+    rw [logDeriv_congr_of_eventuallyEq hev,
+      logDeriv_fun_pow ((hs_an w hw).differentiableAt)]
+    push_cast
+    ring
+  have hswind : ∀ r : ℝ, Real.sqrt σ₁ < r → r < Real.sqrt σ₂ →
+      (∫ θ in (0:ℝ)..(2 * Real.pi), (s (circleMap 0 r θ))⁻¹
+        * (deriv s (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I)))
+      = 2 * (Real.pi : ℂ) * Complex.I := by
+    intro r hr1 hr2
+    have hrpos : (0:ℝ) < r := lt_trans hs₁pos hr1
+    have hcm : ∀ θ : ℝ, circleMap 0 r θ ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) :=
+      circleMap_mem_annulusSet hrpos hr1 hr2
+    have hcongr : ∀ θ : ℝ,
+        logDeriv g (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I)
+        = 2 * ((s (circleMap 0 r θ))⁻¹
+            * (deriv s (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I))) := by
+      intro θ
+      rw [hlogs _ (hcm θ)]
+      rw [logDeriv_apply]
+      ring
+    have h1 := hgwindAll r hr1 hr2
+    rw [intervalIntegral.integral_congr (fun θ _ => hcongr θ),
+      intervalIntegral.integral_const_mul] at h1
+    have h2 : ((2 ^ 1 * 1 : ℤ) : ℂ) * (2 * Real.pi * Complex.I)
+        = 2 * (2 * (Real.pi:ℂ) * Complex.I) := by push_cast; ring
+    rw [h2] at h1
+    exact mul_left_cancel₀ (by norm_num : (2:ℂ) ≠ 0) h1
+  -- (4) s is odd on the band
+  have hsodd : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂), s (-w) = -s w := by
+    -- the two closed sets where the ratio is ±1 cover the connected band
+    have hnegmem : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂),
+        -w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) := by
+      rintro w ⟨h1, h2⟩
+      exact ⟨by rwa [norm_neg], by rwa [norm_neg]⟩
+    have hsq_ratio : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂),
+        s (-w) = s w ∨ s (-w) = -s w := by
+      intro w hw
+      have h1 : s (-w) ^ 2 = s w ^ 2 := by
+        rw [hs_sq' _ (hnegmem w hw), hs_sq' _ hw]
+        show S.T ((-w) ^ 2) - c = S.T (w ^ 2) - c
+        rw [neg_pow, show (-1:ℂ)^2 = 1 from by norm_num, one_mul]
+      have h2 : (s (-w) - s w) * (s (-w) + s w) = 0 := by linear_combination h1
+      rcases mul_eq_zero.mp h2 with h | h
+      · exact Or.inl (sub_eq_zero.mp h)
+      · exact Or.inr (by linear_combination h)
+    set E : Set ℂ := {w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) | s (-w) = s w} with hEdef
+    set F : Set ℂ := {w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) | s (-w) = -s w} with hFdef
+    have hscont : ContinuousOn s (annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)) :=
+      hs_an.continuousOn
+    -- both sets are closed in the band; if E is nonempty, evenness propagates everywhere
+    by_contra hcon
+    push Not at hcon
+    obtain ⟨w₁, hw₁, hw₁ne⟩ := hcon
+    -- w₁ ∈ E by the dichotomy
+    have hw₁E : s (-w₁) = s w₁ := by
+      rcases hsq_ratio w₁ hw₁ with h | h
+      · exact h
+      · exact absurd h hw₁ne
+    -- E and F are relatively clopen (closed by continuity, open by local dichotomy + continuity)
+    -- use preconnectedness through ambient-open sets
+    have hEopen : IsOpen {w : ℂ | w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)
+        ∧ s (-w) ≠ -s w} := by
+      rw [isOpen_iff_mem_nhds]
+      rintro w ⟨hwA, hwne⟩
+      have hc1 : ContinuousAt (fun z => s (-z) + s z) w := by
+        have h1 : ContinuousAt s (-w) := (hs_an _ (hnegmem w hwA)).continuousAt
+        have h2 : ContinuousAt s w := (hs_an _ hwA).continuousAt
+        exact ((h1.comp (continuousAt_neg)).add h2)
+      have hne0 : s (-w) + s w ≠ 0 := by
+        intro h
+        exact hwne (by linear_combination h)
+      have hev := hc1.eventually_ne hne0
+      filter_upwards [(isOpen_annulusSet _ _).mem_nhds hwA, hev] with z hz1 hz2
+      refine ⟨hz1, ?_⟩
+      intro h
+      exact hz2 (by linear_combination h)
+    have hFopen : IsOpen {w : ℂ | w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)
+        ∧ s (-w) ≠ s w} := by
+      rw [isOpen_iff_mem_nhds]
+      rintro w ⟨hwA, hwne⟩
+      have hc1 : ContinuousAt (fun z => s (-z) - s z) w := by
+        have h1 : ContinuousAt s (-w) := (hs_an _ (hnegmem w hwA)).continuousAt
+        have h2 : ContinuousAt s w := (hs_an _ hwA).continuousAt
+        exact ((h1.comp (continuousAt_neg)).sub h2)
+      have hne0 : s (-w) - s w ≠ 0 := sub_ne_zero.mpr hwne
+      have hev := hc1.eventually_ne hne0
+      filter_upwards [(isOpen_annulusSet _ _).mem_nhds hwA, hev] with z hz1 hz2
+      refine ⟨hz1, ?_⟩
+      intro h
+      exact hz2 (sub_eq_zero.mpr h)
+    -- preconnectedness of the band splits on the two opens
+    have hcover : annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)
+        ⊆ {w : ℂ | w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) ∧ s (-w) ≠ -s w}
+          ∪ {w : ℂ | w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) ∧ s (-w) ≠ s w} := by
+      intro w hw
+      by_cases h : s (-w) = -s w
+      · right
+        refine ⟨hw, ?_⟩
+        rw [h]
+        intro h2
+        have hzero : s w = 0 := by linear_combination (-(1:ℂ)/2) * h2
+        exact hs_ne w hw hzero
+      · exact Or.inl ⟨hw, h⟩
+    have hconn := isConnected_annulus hs₁pos hs₁s₂
+    have hneE : (annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)
+        ∩ {w : ℂ | w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) ∧ s (-w) ≠ -s w}).Nonempty :=
+      ⟨w₁, hw₁, hw₁, by
+        rw [hw₁E]
+        intro h
+        exact hs_ne w₁ hw₁ (by linear_combination ((1:ℂ)/2) * h)⟩
+    have hneF : (annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)
+        ∩ {w : ℂ | w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) ∧ s (-w) ≠ s w}).Nonempty := by
+      -- if F-side were empty, s would be globally even: refute by the winding parity
+      by_contra hFe
+      push Not at hFe
+      have heven : ∀ w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂), s (-w) = s w := by
+        intro w hw
+        by_contra hne
+        have hmem : w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)
+            ∩ {w : ℂ | w ∈ annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) ∧ s (-w) ≠ s w} :=
+          ⟨hw, hw, hne⟩
+        rw [hFe] at hmem
+        exact hmem
+      -- parity contradiction at the core radius ρ
+      exact absurd (hswind ρ hρ1 hρ2)
+        (even_section_winding_ne hs₁pos hs_an hs_ne heven hρ1 hρ2)
+    obtain ⟨v, hvA, ⟨_, hv1⟩, ⟨_, hv2⟩⟩ := hconn.isPreconnected _ _ hEopen hFopen
+      hcover hneE hneF
+    rcases hsq_ratio v hvA with h | h
+    · exact hv2 h
+    · exact hv1 h
+  -- (5) sign-normalization against T on the overlap, then glue
+  set B₁ : Set ℂ := annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂) with hB₁def
+  set B₂ : Set ℂ := annulusSet rlo R₀ with hB₂def
+  set O : Set ℂ := annulusSet rlo (Real.sqrt σ₂) with hOdef
+  have hO1 : ∀ w ∈ O, w ∈ B₁ := by
+    rintro w ⟨h1, h2⟩
+    exact ⟨lt_trans hs₁ h1, h2⟩
+  have hO2 : ∀ w ∈ O, w ∈ B₂ := by
+    rintro w ⟨h1, h2⟩
+    exact ⟨h1, lt_trans h2 hs₂R₀⟩
+  have hOsq : ∀ w ∈ O, w ^ 2 ∈ B₂ := by
+    rintro w ⟨h1, h2⟩
+    have hw1 : (1:ℝ) < ‖w‖ := lt_trans hrlo h1
+    constructor
+    · rw [norm_pow]; nlinarith
+    · rw [norm_pow]
+      have h3 : ‖w‖ ^ 2 < Real.sqrt σ₂ ^ 2 := by nlinarith
+      rw [Real.sq_sqrt (le_of_lt hσ₂pos)] at h3
+      linarith
+  have hTneO : ∀ w ∈ O, S.T w ≠ 0 := by
+    intro w hw h
+    have hlev := S.level _ (hO2 w hw)
+    rw [h] at hlev
+    have h1 : Real.log rlo < Real.log ‖w‖ := Real.log_lt_log (by linarith) hw.1
+    rw [← hlev] at h1
+    linarith
+  have hsqO : ∀ w ∈ O, s w = S.T w ∨ s w = -S.T w := by
+    intro w hw
+    have h1 : s w ^ 2 = S.T w ^ 2 := by
+      rw [hs_sq' _ (hO1 w hw)]
+      show S.T (w ^ 2) - c = S.T w ^ 2
+      rw [S.fe w (hO2 w hw) (hOsq w hw)]
+      ring
+    have h2 : (s w - S.T w) * (s w + S.T w) = 0 := by linear_combination h1
+    rcases mul_eq_zero.mp h2 with h | h
+    · exact Or.inl (sub_eq_zero.mp h)
+    · exact Or.inr (by linear_combination h)
+  have hOconn : IsConnected O := isConnected_annulus (by linarith) hs₂
+  have hOopen : IsOpen O := isOpen_annulusSet _ _
+  have hsign := sign_constant_on_connected hOopen hOconn
+    (fun w hw => (hs_an _ (hO1 w hw)).continuousAt)
+    (fun w hw => (S.an _ (hO2 w hw)).continuousAt)
+    hTneO hsqO
+  -- the normalized root s'
+  have hkey : ∃ s' : ℂ → ℂ, AnalyticOnNhd ℂ s' B₁ ∧
+      (∀ w ∈ B₁, s' w ^ 2 = S.T (w ^ 2) - c) ∧ (∀ w ∈ B₁, s' w ≠ 0) ∧
+      (∀ w ∈ B₁, s' (-w) = -s' w) ∧
+      (∀ r : ℝ, Real.sqrt σ₁ < r → r < Real.sqrt σ₂ →
+        (∫ θ in (0:ℝ)..(2 * Real.pi), (s' (circleMap 0 r θ))⁻¹
+          * (deriv s' (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I)))
+        = 2 * (Real.pi : ℂ) * Complex.I) ∧
+      (∀ w ∈ O, s' w = S.T w) := by
+    rcases hsign with hpos | hneg
+    · exact ⟨s, hs_an, hs_sq', hs_ne, hsodd, hswind, hpos⟩
+    · refine ⟨fun w => -s w, hs_an.neg, ?_, ?_, ?_, ?_, ?_⟩
+      · intro w hw
+        have := hs_sq' w hw
+        show (-s w) ^ 2 = S.T (w ^ 2) - c
+        rw [neg_pow]
+        simpa using this
+      · intro w hw
+        simpa using hs_ne w hw
+      · intro w hw
+        have := hsodd w hw
+        show -s (-w) = -(-s w)
+        rw [this]
+      · intro r hr1 hr2
+        have hcm : ∀ θ : ℝ, circleMap 0 r θ ∈ B₁ :=
+          circleMap_mem_annulusSet (lt_trans hs₁pos hr1) hr1 hr2
+        have hcongr : ∀ θ : ℝ,
+            ((fun w => -s w) (circleMap 0 r θ))⁻¹
+              * (deriv (fun w => -s w) (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I))
+            = (s (circleMap 0 r θ))⁻¹
+              * (deriv s (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I)) := by
+          intro θ
+          have hd : deriv (fun w => -s w) (circleMap 0 r θ) = -deriv s (circleMap 0 r θ) := by
+            have h1 : HasDerivAt s (deriv s (circleMap 0 r θ)) (circleMap 0 r θ) :=
+              (hs_an _ (hcm θ)).differentiableAt.hasDerivAt
+            exact h1.neg.deriv
+          rw [hd]
+          show (-s (circleMap 0 r θ))⁻¹
+              * (-deriv s (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I)) = _
+          rw [inv_neg]
+          ring
+        rw [intervalIntegral.integral_congr (fun θ _ => hcongr θ)]
+        exact hswind r hr1 hr2
+      · intro w hw
+        have := hneg w hw
+        show -s w = S.T w
+        rw [this]
+        ring
+  obtain ⟨s', hs'_an, hs'_sq, hs'_ne, hs'_odd, hs'_wind, hs'T⟩ := hkey
+  -- glue into the extended section
+  have hinter : B₁ ∩ B₂ = O := by
+    ext w
+    constructor
+    · rintro ⟨⟨h1, h2⟩, ⟨h3, h4⟩⟩
+      exact ⟨h3, h2⟩
+    · intro hw
+      exact ⟨hO1 w hw, hO2 w hw⟩
+  have hagree : Set.EqOn s' S.T (B₁ ∩ B₂) := by
+    intro w hw
+    rw [hinter] at hw
+    exact hs'T w hw
+  obtain ⟨Tn, hTn_an, hTn_s, hTn_T⟩ := analyticOnNhd_glue_twoChart
+    (isOpen_annulusSet _ _) (isOpen_annulusSet _ _) hs'_an S.an hagree
+  have hunion : B₁ ∪ B₂ = annulusSet (Real.sqrt σ₁) R₀ := by
+    ext w
+    constructor
+    · rintro (⟨h1, h2⟩ | ⟨h1, h2⟩)
+      · exact ⟨h1, lt_trans h2 hs₂R₀⟩
+      · exact ⟨lt_trans hs₁ h1, h2⟩
+    · rintro ⟨h1, h2⟩
+      by_cases h : ‖w‖ < Real.sqrt σ₂
+      · exact Or.inl ⟨h1, h⟩
+      · push Not at h
+        exact Or.inr ⟨lt_of_lt_of_le hs₂ h, h2⟩
+  -- membership dispatchers
+  have hmem₁ : ∀ w : ℂ, Real.sqrt σ₁ < ‖w‖ → ‖w‖ < Real.sqrt σ₂ → Tn w = s' w :=
+    fun w h1 h2 => hTn_s ⟨h1, h2⟩
+  have hmem₂ : ∀ w : ℂ, rlo < ‖w‖ → ‖w‖ < R₀ → Tn w = S.T w :=
+    fun w h1 h2 => hTn_T ⟨h1, h2⟩
+  refine ⟨⟨Tn, ?_, ?_, ?_, ?_, ?_, ?_⟩⟩
+  · rw [← hunion]
+    exact hTn_an
+  · -- level
+    rintro w ⟨h1, h2⟩
+    by_cases h : ‖w‖ < Real.sqrt σ₂
+    · rw [hmem₁ w h1 h]
+      have hwB₁ : w ∈ B₁ := ⟨h1, h⟩
+      have hfe : quadratic c (s' w) = S.T (w ^ 2) := by
+        unfold quadratic
+        rw [hs'_sq w hwB₁]
+        ring
+      have h3 := greenFunctionDyn_quadratic c (s' w)
+      rw [hfe, S.level _ (hsrcmem _ (hsqmem w hwB₁))] at h3
+      have h4 : Real.log ‖w ^ 2‖ = 2 * Real.log ‖w‖ := by
+        rw [norm_pow]
+        rw [Real.log_pow]
+        push_cast
+        ring
+      rw [h4] at h3
+      linarith
+    · push Not at h
+      rw [hmem₂ w (lt_of_lt_of_le hs₂ h) h2]
+      exact S.level w ⟨lt_of_lt_of_le hs₂ h, h2⟩
+  · -- odd
+    rintro w ⟨h1, h2⟩
+    by_cases h : ‖w‖ < Real.sqrt σ₂
+    · have hneg : Tn (-w) = s' (-w) := by
+        apply hmem₁ <;> rwa [norm_neg]
+      rw [hneg, hmem₁ w h1 h, hs'_odd w ⟨h1, h⟩]
+    · push Not at h
+      have hneg : Tn (-w) = S.T (-w) := by
+        apply hmem₂ <;> rw [norm_neg]
+        · exact lt_of_lt_of_le hs₂ h
+        · exact h2
+      rw [hneg, hmem₂ w (lt_of_lt_of_le hs₂ h) h2,
+        S.odd w ⟨lt_of_lt_of_le hs₂ h, h2⟩]
+  · -- functional equation
+    rintro w ⟨h1, h2⟩ ⟨h3, h4⟩
+    by_cases h : ‖w‖ < Real.sqrt σ₂
+    · have hwB₁ : w ∈ B₁ := ⟨h1, h⟩
+      have hsq : w ^ 2 ∈ annulusSet σ₁ σ₂ := hsqmem w hwB₁
+      have h5 : Tn (w ^ 2) = S.T (w ^ 2) := by
+        apply hmem₂
+        · exact lt_trans hσ₁lo hsq.1
+        · exact lt_of_lt_of_le hsq.2 hσ₂hi
+      rw [h5, hmem₁ w h1 h]
+      linear_combination -hs'_sq w hwB₁
+    · push Not at h
+      have hwB₂lo : rlo < ‖w‖ := lt_of_lt_of_le hs₂ h
+      have hsqlo : rlo < ‖w ^ 2‖ := by
+        rw [norm_pow]
+        nlinarith [lt_trans hrlo hwB₂lo]
+      rw [hmem₂ w hwB₂lo h2, hmem₂ (w ^ 2) hsqlo h4]
+      exact S.fe w ⟨hwB₂lo, h2⟩ ⟨hsqlo, h4⟩
+  · -- injectivity
+    rintro w₁ ⟨h1, h2⟩ w₂ ⟨h3, h4⟩ heq
+    -- equal levels force equal radii
+    have hlev : ∀ w : ℂ, Real.sqrt σ₁ < ‖w‖ → ‖w‖ < R₀ →
+        greenFunctionDyn c (Tn w) = Real.log ‖w‖ := by
+      intro w ha hb
+      by_cases h : ‖w‖ < Real.sqrt σ₂
+      · rw [hmem₁ w ha h]
+        have hwB₁ : w ∈ B₁ := ⟨ha, h⟩
+        have hfe : quadratic c (s' w) = S.T (w ^ 2) := by
+          unfold quadratic
+          rw [hs'_sq w hwB₁]
+          ring
+        have h3' := greenFunctionDyn_quadratic c (s' w)
+        rw [hfe, S.level _ (hsrcmem _ (hsqmem w hwB₁))] at h3'
+        have h4' : Real.log ‖w ^ 2‖ = 2 * Real.log ‖w‖ := by
+          rw [norm_pow, Real.log_pow]
+          push_cast
+          ring
+        rw [h4'] at h3'
+        linarith
+      · push Not at h
+        rw [hmem₂ w (lt_of_lt_of_le hs₂ h) hb]
+        exact S.level w ⟨lt_of_lt_of_le hs₂ h, hb⟩
+    have hnorm : ‖w₁‖ = ‖w₂‖ := by
+      have e1 := hlev w₁ h1 h2
+      have e2 := hlev w₂ h3 h4
+      rw [heq] at e1
+      have : Real.log ‖w₁‖ = Real.log ‖w₂‖ := by rw [← e1, ← e2]
+      have hp1 : (0:ℝ) < ‖w₁‖ := lt_trans hs₁pos h1
+      have hp2 : (0:ℝ) < ‖w₂‖ := lt_trans hs₁pos h3
+      calc ‖w₁‖ = Real.exp (Real.log ‖w₁‖) := (Real.exp_log hp1).symm
+        _ = Real.exp (Real.log ‖w₂‖) := by rw [this]
+        _ = ‖w₂‖ := Real.exp_log hp2
+    by_cases h : rlo < ‖w₁‖
+    · -- both deep in the old section
+      have h₂' : rlo < ‖w₂‖ := by rwa [hnorm] at h
+      rw [hmem₂ w₁ h h2, hmem₂ w₂ h₂' h4] at heq
+      exact S.inj ⟨h, h2⟩ ⟨h₂', h4⟩ heq
+    · push Not at h
+      -- both in the new band; square and use the old injectivity
+      have hb₁ : ‖w₁‖ < Real.sqrt σ₂ := lt_of_le_of_lt h hs₂
+      have hb₂ : ‖w₂‖ < Real.sqrt σ₂ := by rwa [hnorm] at hb₁
+      have hw₁B : w₁ ∈ B₁ := ⟨h1, hb₁⟩
+      have hw₂B : w₂ ∈ B₁ := ⟨h3, hb₂⟩
+      rw [hmem₁ w₁ h1 hb₁, hmem₁ w₂ h3 hb₂] at heq
+      have hsq' : S.T (w₁ ^ 2) = S.T (w₂ ^ 2) := by
+        have e1 := hs'_sq w₁ hw₁B
+        have e2 := hs'_sq w₂ hw₂B
+        have : S.T (w₁ ^ 2) - c = S.T (w₂ ^ 2) - c := by
+          rw [← e1, ← e2, heq]
+        linear_combination this
+      have hmem₁' : w₁ ^ 2 ∈ B₂ := hsrcmem _ (hsqmem w₁ hw₁B)
+      have hmem₂' : w₂ ^ 2 ∈ B₂ := hsrcmem _ (hsqmem w₂ hw₂B)
+      have hsqeq : w₁ ^ 2 = w₂ ^ 2 := S.inj hmem₁' hmem₂' hsq'
+      have hpm : w₂ = w₁ ∨ w₂ = -w₁ := by
+        have h5 : (w₂ - w₁) * (w₂ + w₁) = 0 := by linear_combination -hsqeq
+        rcases mul_eq_zero.mp h5 with h6 | h6
+        · exact Or.inl (sub_eq_zero.mp h6)
+        · exact Or.inr (by linear_combination h6)
+      rcases hpm with h6 | h6
+      · exact h6.symm
+      · exfalso
+        rw [h6, hs'_odd w₁ hw₁B] at heq
+        have h7 : s' w₁ = 0 := by linear_combination ((1:ℂ)/2) * heq
+        exact hs'_ne w₁ hw₁B h7
+  · -- winding
+    intro r hr1 hr2
+    have hrpos : (0:ℝ) < r := lt_trans hs₁pos hr1
+    by_cases h : rlo < r
+    · -- congruent to the old section's loop
+      have hcongr : ∀ θ : ℝ,
+          (Tn (circleMap 0 r θ))⁻¹
+            * (deriv Tn (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I))
+          = (S.T (circleMap 0 r θ))⁻¹
+            * (deriv S.T (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I)) := by
+        intro θ
+        have hcm : circleMap 0 r θ ∈ B₂ := circleMap_mem_annulusSet hrpos h hr2 θ
+        have hval : Tn (circleMap 0 r θ) = S.T (circleMap 0 r θ) := hTn_T hcm
+        have hder : deriv Tn (circleMap 0 r θ) = deriv S.T (circleMap 0 r θ) := by
+          apply Filter.EventuallyEq.deriv_eq
+          filter_upwards [(isOpen_annulusSet rlo R₀).mem_nhds hcm] with z hz
+          exact hTn_T hz
+        rw [hval, hder]
+      rw [intervalIntegral.integral_congr (fun θ _ => hcongr θ)]
+      exact S.wind r h hr2
+    · push Not at h
+      have hb : r < Real.sqrt σ₂ := lt_of_le_of_lt h hs₂
+      have hcongr : ∀ θ : ℝ,
+          (Tn (circleMap 0 r θ))⁻¹
+            * (deriv Tn (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I))
+          = (s' (circleMap 0 r θ))⁻¹
+            * (deriv s' (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I)) := by
+        intro θ
+        have hcm : circleMap 0 r θ ∈ B₁ := circleMap_mem_annulusSet hrpos hr1 hb θ
+        have hval : Tn (circleMap 0 r θ) = s' (circleMap 0 r θ) := hTn_s hcm
+        have hder : deriv Tn (circleMap 0 r θ) = deriv s' (circleMap 0 r θ) := by
+          apply Filter.EventuallyEq.deriv_eq
+          filter_upwards [(isOpen_annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)).mem_nhds hcm]
+            with z hz
+          exact hTn_s hz
+        rw [hval, hder]
+      rw [intervalIntegral.integral_congr (fun θ _ => hcongr θ)]
+      exact hs'_wind r hr1 hb
+

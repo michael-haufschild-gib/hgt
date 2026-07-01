@@ -13,6 +13,7 @@ across that piece of the cut.  This file provides the analytic bricks:
 * `jump_factor_ne` — `e^{iπσ} ≠ e^{−iπσ}` for `σ ∉ ℤ`.
 -/
 import GaloisForLFunctions.Hurwitz.HurwitzZeta
+import Mathlib.Order.Interval.Set.Infinite
 
 open Complex Filter Topology
 
@@ -310,7 +311,6 @@ namespace HurwitzRayPeeling
 theorem offAxis_infinite : {u : ℂ | u.im ≠ 0}.Infinite := by
   apply Set.infinite_of_injective_forall_mem
     (f := fun n : ℕ => ((n : ℝ) + 1) * Complex.I)
-  constructor
   · intro m n hmn
     have h := congrArg Complex.im hmn
     simp at h
@@ -332,12 +332,13 @@ theorem multiRay_eq_zero {σ : ℂ} (hσ : ∀ k : ℤ, σ ≠ (k : ℂ)) :
   induction T with
   | zero =>
     intro P hrel t ht
-    interval_cases t
+    have ht0 : t = 0 := by omega
+    subst ht0
     apply Polynomial.eq_zero_of_infinite_isRoot
     refine offAxis_infinite.mono ?_
     intro u hu
     have h := hrel u hu
-    simpa [Complex.one_cpow] using h
+    simpa [Finset.sum_range_one, Complex.one_cpow] using h
   | succ T ih =>
     intro P hrel t ht
     have hTpos : (0 : ℝ) < (T : ℝ) + 1 := by positivity
@@ -355,10 +356,13 @@ theorem multiRay_eq_zero {σ : ℂ} (hσ : ∀ k : ℤ, σ ≠ (k : ℂ)) :
       ring
     have haff_im : ∀ v : ℂ, (aff v).im = -v.im / ((T : ℝ) + 1) := by
       intro v
-      rw [haff]
-      rw [Complex.div_im]
-      simp
-      ring
+      show ((1 - v) / ((T : ℂ) + 1)).im = -v.im / ((T : ℝ) + 1)
+      have hTr : ((T : ℂ) + 1) = ((((T : ℝ) + 1) : ℝ) : ℂ) := by push_cast; ring
+      rw [hTr, div_eq_mul_inv, ← Complex.ofReal_inv, Complex.mul_im]
+      have h1 : ((((((T : ℝ) + 1))⁻¹ : ℝ)) : ℂ).im = 0 := Complex.ofReal_im _
+      have h2 : ((((((T : ℝ) + 1))⁻¹ : ℝ)) : ℂ).re = (((T : ℝ) + 1))⁻¹ := Complex.ofReal_re _
+      rw [h1, h2]
+      simp [div_eq_mul_inv]
     set pT : Polynomial ℂ := (P (T + 1)).comp (Polynomial.C (((T : ℂ) + 1)⁻¹) *
       (1 - Polynomial.X)) with hpT
     have hpT_eval : ∀ v : ℂ, pT.eval v = (P (T + 1)).eval (aff v) := by
@@ -379,44 +383,60 @@ theorem multiRay_eq_zero {σ : ℂ} (hσ : ∀ k : ℤ, σ ≠ (k : ℂ)) :
       have ht' : (t : ℝ) ≤ T := by
         exact_mod_cast Nat.lt_succ_iff.mp (Finset.mem_range.mp htmem)
       obtain ⟨hx1, hx2⟩ := hx
-      have hxa : (1 - x) / ((T : ℝ) + 1) < ((T : ℝ) + 2) / (((T : ℝ) + 1) * ((T : ℝ) + 1)) := by
-        rw [div_lt_div_iff₀ hTpos (by positivity)]
-        have : -(1 : ℝ)/((T : ℝ) + 1) < x := hx1
-        nlinarith
       have hTnn : (0 : ℝ) ≤ (T : ℝ) := Nat.cast_nonneg T
-      nlinarith [mul_le_mul_of_nonneg_right ht'
-        (le_of_lt (lt_of_le_of_lt (by positivity : (0:ℝ) ≤ (1 - x) / ((T : ℝ) + 1)) hxa))]
-    -- continuity of g across S
-    have hgcont : ∀ x ∈ S, ContinuousAt g ((x : ℝ) : ℂ) := by
-      intro x hx
-      rw [hg]
-      apply ContinuousAt.sum
-      intro t htmem
-      have haffc : ContinuousAt aff ((x : ℝ) : ℂ) := by
-        rw [haff]
-        fun_prop
-      have hbasec : ContinuousAt (fun v => 1 - (t : ℂ) * aff v) ((x : ℝ) : ℂ) := by
-        fun_prop
-      have hslit : (1 - (t : ℂ) * aff ((x : ℝ) : ℂ)) ∈ Complex.slitPlane := by
-        rw [haff_real x]
-        refine Or.inl ?_
-        have : (1 - (t : ℂ) * (((1 - x) / ((T : ℝ) + 1) : ℝ) : ℂ)).re
-            = 1 - (t : ℝ) * ((1 - x) / ((T : ℝ) + 1)) := by
-          push_cast
-          simp
-        rw [this]
-        exact hbase_pos x hx t htmem
-      refine ContinuousAt.mul ?_ ?_
-      · exact (continuousAt_cpow_const hslit).comp hbasec
-      · exact ((P t).continuous_aeval.continuousAt).comp haffc
+      have hu_nn : (0 : ℝ) ≤ (1 - x) / ((T : ℝ) + 1) :=
+        div_nonneg (by linarith) hTpos.le
+      have hu_ub : (1 - x) / ((T : ℝ) + 1) ≤ ((T : ℝ) + 2) / (((T : ℝ) + 1) * ((T : ℝ) + 1)) := by
+        rw [div_le_div_iff₀ hTpos (by positivity)]
+        have hneg1 : -1 < x * ((T : ℝ) + 1) := by
+          have := (mul_lt_mul_of_pos_right hx1 hTpos)
+          have hval : -(1 : ℝ)/((T : ℝ) + 1) * ((T : ℝ) + 1) = -1 := by
+            field_simp
+          linarith [hval ▸ this]
+        nlinarith [mul_pos hTpos (by linarith : (0:ℝ) < x * ((T : ℝ) + 1) + 1)]
+      have hprod : (t : ℝ) * ((1 - x) / ((T : ℝ) + 1))
+          ≤ (T : ℝ) * (((T : ℝ) + 2) / (((T : ℝ) + 1) * ((T : ℝ) + 1))) :=
+        mul_le_mul ht' hu_ub hu_nn hTnn
+      have hlast : (T : ℝ) * (((T : ℝ) + 2) / (((T : ℝ) + 1) * ((T : ℝ) + 1))) < 1 := by
+        rw [← mul_div_assoc, div_lt_one (by positivity)]
+        nlinarith
+      linarith
+    -- path limits of g across S (continuity of each summand)
+    have hgpath : ∀ x ∈ S, ∀ path : ℝ → ℂ, Tendsto path (𝓝[>] 0) (𝓝 ((x : ℂ))) →
+        Tendsto (fun y : ℝ => g (path y)) (𝓝[>] 0) (𝓝 (g ((x : ℂ)))) := by
+      intro x hx path hpath
+      have hterms : ∀ t ∈ Finset.range (T + 1), ContinuousAt
+          (fun v => (1 - (t : ℂ) * aff v) ^ σ * (P t).eval (aff v)) ((x : ℂ)) := by
+        intro t htmem
+        have haffc : ContinuousAt aff ((x : ℝ) : ℂ) := by
+          rw [haff]
+          fun_prop
+        have hbasec : ContinuousAt (fun v => 1 - (t : ℂ) * aff v) ((x : ℝ) : ℂ) := by
+          exact (continuousAt_const.sub (continuousAt_const.mul haffc))
+        have hslit : (1 - (t : ℂ) * aff ((x : ℝ) : ℂ)) ∈ Complex.slitPlane := by
+          rw [haff_real x]
+          have hpt : (1 - (t : ℂ) * (((1 - x) / ((T : ℝ) + 1) : ℝ) : ℂ))
+              = ((((1 : ℝ) - (t : ℝ) * ((1 - x) / ((T : ℝ) + 1))) : ℝ) : ℂ) := by
+            push_cast
+            ring
+          rw [hpt]
+          refine Or.inl ?_
+          rw [Complex.ofReal_re]
+          exact hbase_pos x hx t htmem
+        refine ContinuousAt.mul ?_ ?_
+        · exact ContinuousAt.cpow hbasec continuousAt_const hslit
+        · exact ((P t).continuous_aeval.continuousAt).comp haffc
+      have hsum := tendsto_finsetSum (Finset.range (T + 1))
+        (fun t htmem => ((hterms t htmem).tendsto).comp hpath)
+      exact hsum
     -- the peel
     have hpeel : pT = 0 := by
       refine peel_poly_eq_zero hσ pT g (fun x => g ((x : ℝ) : ℂ))
-        (S := S) (fun x hx => hx.2) (Set.infinite_Ioo (by positivity)) ?_ ?_ ?_
+        (S := S) (fun x hx => hx.2) (Set.Ioo_infinite (by rw [neg_div]; exact neg_lt_zero.mpr (div_pos one_pos hTpos))) ?_ ?_ ?_
       · intro x hx
-        exact ((hgcont x hx).tendsto).comp tendsto_base
+        exact hgpath x hx _ tendsto_base
       · intro x hx
-        exact ((hgcont x hx).tendsto).comp tendsto_base_lower
+        exact hgpath x hx _ tendsto_base_lower
       · intro x hx y hy
         set v : ℂ := (x : ℂ) + y * Complex.I with hv
         have hvim : v.im ≠ 0 := by
@@ -435,11 +455,12 @@ theorem multiRay_eq_zero {σ : ℂ} (hσ : ∀ k : ℤ, σ ≠ (k : ℂ)) :
           rw [haff]
           push_cast
           field_simp
+          ring
         rw [hlast] at hmaster
         have hgv : g v = ∑ t ∈ Finset.range (T + 1),
             (1 - (t : ℂ) * aff v) ^ σ * (P t).eval (aff v) := by rw [hg]
-        rw [hpT_eval v, ← hgv] at hmaster
-        linarith_or : linear_combination hmaster
+        rw [← hpT_eval v, ← hgv] at hmaster
+        linear_combination hmaster
     -- the outermost polynomial dies
     have hPtop : P (T + 1) = 0 := by
       rcases Polynomial.comp_eq_zero_iff.mp (hpT ▸ hpeel) with h | ⟨_, h⟩
@@ -448,8 +469,8 @@ theorem multiRay_eq_zero {σ : ℂ} (hσ : ∀ k : ℤ, σ ≠ (k : ℂ)) :
         have hdeg : (Polynomial.C (((T : ℂ) + 1)⁻¹) * (1 - Polynomial.X)).natDegree = 1 := by
           rw [Polynomial.natDegree_C_mul (inv_ne_zero hTcne)]
           have : (1 - Polynomial.X : Polynomial ℂ) = -(Polynomial.X - Polynomial.C 1) := by
-            ring_nf
-            simp [Polynomial.C_1]
+            rw [Polynomial.C_1]
+            ring
           rw [this, Polynomial.natDegree_neg, Polynomial.natDegree_X_sub_C]
         rw [h] at hdeg
         simp at hdeg

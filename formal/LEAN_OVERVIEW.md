@@ -7,15 +7,15 @@ Use this as the quick map before opening large proof files.
 
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
-| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 30 | 237 | `hurwitz_n2_unconditional` |
+| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 30 | 239 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 27 | 291 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 270 | 4267 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 270 | 4268 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
 - Shared and bridge declarations outside the three theorem areas: **1031**.
-- Active proof-debt findings: **2**.
+- Active proof-debt findings: **0**.
 
 ## Local Commands
 
