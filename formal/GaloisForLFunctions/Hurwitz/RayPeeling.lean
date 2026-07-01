@@ -746,11 +746,11 @@ theorem natDegree_sub_comp_lt {Q : Polynomial ℂ} (hQ : Q ≠ 0) :
     simp
   · right
     have hcompdeg : (Q.comp (Polynomial.X - Polynomial.C 1)).natDegree = Q.natDegree := by
-      rw [Polynomial.natDegree_comp]
-      simp [Polynomial.natDegree_X_sub_C]
+      rw [Polynomial.natDegree_comp, Polynomial.natDegree_X_sub_C, mul_one]
     have hlead : (Q.comp (Polynomial.X - Polynomial.C 1)).leadingCoeff = Q.leadingCoeff := by
-      rw [Polynomial.leadingCoeff_comp (by simp [Polynomial.natDegree_X_sub_C])]
-      simp [Polynomial.leadingCoeff_X_sub_C]
+      rw [Polynomial.leadingCoeff_comp
+        (by rw [Polynomial.natDegree_X_sub_C]; norm_num)]
+      rw [Polynomial.leadingCoeff_X_sub_C, one_pow, mul_one]
     have hcoeff_top : (Q - Q.comp (Polynomial.X - Polynomial.C 1)).coeff Q.natDegree = 0 := by
       rw [Polynomial.coeff_sub]
       have h1 : Q.coeff Q.natDegree = Q.leadingCoeff := rfl
@@ -760,7 +760,7 @@ theorem natDegree_sub_comp_lt {Q : Polynomial ℂ} (hQ : Q ≠ 0) :
         exact hlead
       rw [h1, h2, sub_self]
     have hle : (Q - Q.comp (Polynomial.X - Polynomial.C 1)).natDegree ≤ Q.natDegree :=
-      le_trans (Polynomial.natDegree_sub_le _ _) (by simp [hcompdeg])
+      le_trans (Polynomial.natDegree_sub_le _ _) (by rw [hcompdeg, max_self])
     rcases lt_or_eq_of_le hle with h | h
     · exact h
     · exfalso
@@ -822,10 +822,10 @@ theorem multiRay_nat_relation_poly_kill {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k : 
           · simp
         · split_ifs with h
           · simp
-          · rw [Polynomial.natDegree_comp]
+          · rw [Polynomial.natDegree_comp, Polynomial.natDegree_X_sub_C, mul_one]
             simp only [hF]
             split_ifs with h2
-            · simpa [Polynomial.natDegree_X_sub_C] using hdeg (t - 1)
+            · exact hdeg (t - 1)
             · simp
       have hrel' : ∀ n : ℕ, M + 1 ≤ n → T + 1 < n →
           ∑ t ∈ Finset.range (T + 2), (((n - t : ℕ) : ℂ)) ^ (-s) * (E' t).eval ((n : ℂ))
@@ -886,8 +886,9 @@ theorem multiRay_nat_relation_poly_kill {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k : 
               (((n - (t + 1) : ℕ)) : ℂ) ^ (-s)
                 * ((F t).comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ)) := by
           rw [Finset.sum_range_succ']
-          simp only [if_pos rfl, Polynomial.eval_zero, mul_zero, add_zero]
-          refine Finset.sum_congr rfl fun t _ => ?_
+          simp only [if_true, Polynomial.eval_zero, mul_zero, add_zero]
+          apply Finset.sum_congr rfl
+          intro t _
           simp only [Nat.add_sub_cancel]
           rw [if_neg (by omega)]
         rw [hsplit, hfirst, hsecond, h1, h2', hQ']
@@ -895,14 +896,15 @@ theorem multiRay_nat_relation_poly_kill {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k : 
       -- recurse on the differenced relation
       have hstep : (∀ t ≤ T + 1, E' t = 0) ∧ Q' = 0 := by
         rcases natDegree_sub_comp_lt hQ0 with h0 | hlt
-        · rw [hQ'] at *
+        · have h0' : Q' = 0 := by rw [hQ']; exact h0
           refine ⟨multiRay_nat_relation_kill hs (T + 1) D (by omega) E' hdegE' (M := M + 1) ?_,
-            h0⟩
+            h0'⟩
           intro n hMn hTn
           have := hrel' n hMn hTn
-          rw [h0] at this
+          rw [h0'] at this
           simpa using this
-        · have hQ'd : Q'.natDegree ≤ Q.natDegree - 1 := by omega
+        · rw [← hQ'] at hlt
+          have hQ'd : Q'.natDegree ≤ Q.natDegree - 1 := by omega
           have hQdlt : Q.natDegree - 1 < d := by
             have hQle : Q.natDegree ≤ d := hQd
             have : Q.natDegree ≠ 0 → Q.natDegree - 1 < d := by omega

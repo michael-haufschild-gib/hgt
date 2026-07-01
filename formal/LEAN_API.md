@@ -7,9 +7,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 244 | `hurwitz_n2_unconditional` |
+| `hurwitz` | `GaloisForLFunctions.Hurwitz` | 247 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 291 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4269 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4276 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -250,6 +250,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `revPoly_eval_inv` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:531` | Evaluation of the reversal at `1/n` recovers the polynomial value at `n`. |
 | theorem | `revPoly_eval_inv'` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:548` | Evaluation form when the degree is within the window. |
 | theorem | `multiRay_nat_relation_kill` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:566` | The compactified kill: an eventual ℕ multi-ray shifted-power relation has zero coefficients.** Substituting `u = 1/n`, the relation becomes the vanishing of the analytic function ` |
+| theorem | `natDegree_sub_comp_lt` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:739` | The finite difference of a polynomial drops degree (and kills constants). |
+| theorem | `eq_zero_of_comp_X_sub_one` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:779` | Composition with `X − 1` reflects vanishing. |
+| theorem | `multiRay_nat_relation_poly_kill` | `GaloisForLFunctions.Hurwitz.RayPeeling` | `formal/GaloisForLFunctions/Hurwitz/RayPeeling.lean:792` | The compactified kill with a polynomial side.** An eventual ℕ multi-ray shifted-power relation equal to a polynomial forces all ray coefficients and the polynomial to vanish: diffe |
 | theorem | `comp_exp_periodic` | `GaloisForLFunctions.Hurwitz.Spine` | `formal/GaloisForLFunctions/Hurwitz/Spine.lean:21` | The regular part is `2πi`-periodic in `z = log x`.** `R(e^{z+2πi}) = R(e^z)` since `e^{2πi} = 1`. This is the `H` (periodic) input of `coeffs_zero_of_exp_periodic_combo`. |
 | theorem | `cexp_cpow_strip` | `GaloisForLFunctions.Hurwitz.Spine` | `formal/GaloisForLFunctions/Hurwitz/Spine.lean:28` | Singular term in `z = log x`.** On the strip `Im z ∈ (-π, π]`, `(e^z)^w = e^{w·z}`; applied with `z = log x` and `w = -(s+k)`, the Hurwitz singular term `x^{-(s+k)}` is `e^{-(s+k)· |
 | theorem | `coeffs_zero_of_exp_periodic_combo_on_open` | `GaloisForLFunctions.Hurwitz.Spine` | `formal/GaloisForLFunctions/Hurwitz/Spine.lean:37` | Exponent filtration on a `2πi`-invariant open region.** The Hurwitz relation holds only on a left half-plane in `z = log x` (`x → 0`), not all `z`; this is the region version of `c |
@@ -4627,6 +4630,13 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `noRelation_symm` | `GaloisForLFunctions.Bottcher.Rigidity` | `formal/GaloisForLFunctions/Bottcher/Rigidity.lean:113` | `NoRelation` is symmetric.** Algebraic independence does not depend on the order of the pair — the variable-swap automorphism turns a relation for `(G, F)` into one for `(F, G)`. |
 | theorem | `hRigid_assemble` | `GaloisForLFunctions.Bottcher.Rigidity` | `formal/GaloisForLFunctions/Bottcher/Rigidity.lean:132` | The assembled `hRigid` slot of `q62_independence`.** Given, per parameter, the analytic data its Mandelbrot placement supplies — for a *disconnected* coordinate its dyadic monodrom |
 | theorem | `q62_independence_of_hDisc_hRigidData` | `GaloisForLFunctions.Bottcher.Rigidity` | `formal/GaloisForLFunctions/Bottcher/Rigidity.lean:158` | Top q62 assembly from the separated hDisc and hRigid data.** This is the final abstract join: `hDisc` handles the both-disconnected branch of `q62_independence`; `hRigid_assemble`  |
+| theorem | `TowerSection.exists_localInverse` | `GaloisForLFunctions.Bottcher.SectionInverse` | `formal/GaloisForLFunctions/Bottcher/SectionInverse.lean:18` | The holomorphic local inverse of a tower section at any point of its annulus. |
+| theorem | `TowerSection.isOpen_image` | `GaloisForLFunctions.Bottcher.SectionInverse` | `formal/GaloisForLFunctions/Bottcher/SectionInverse.lean:32` | The image of a tower section is open. |
+| theorem | `TowerSection.inv_left` | `GaloisForLFunctions.Bottcher.SectionInverse` | `formal/GaloisForLFunctions/Bottcher/SectionInverse.lean:50` |  |
+| theorem | `TowerSection.inv_right` | `GaloisForLFunctions.Bottcher.SectionInverse` | `formal/GaloisForLFunctions/Bottcher/SectionInverse.lean:54` |  |
+| theorem | `TowerSection.inv_mem` | `GaloisForLFunctions.Bottcher.SectionInverse` | `formal/GaloisForLFunctions/Bottcher/SectionInverse.lean:59` |  |
+| theorem | `TowerSection.inv_analytic` | `GaloisForLFunctions.Bottcher.SectionInverse` | `formal/GaloisForLFunctions/Bottcher/SectionInverse.lean:65` | The tower section's inverse is analytic on the image.** |
+| theorem | `TowerSection.norm_inv` | `GaloisForLFunctions.Bottcher.SectionInverse` | `formal/GaloisForLFunctions/Bottcher/SectionInverse.lean:84` | The level identity for the inverse: `‖S.inv z‖ = exp (G_c z)` on the image. |
 | structure | `TowerSection` | `GaloisForLFunctions.Bottcher.SectionTower` | `formal/GaloisForLFunctions/Bottcher/SectionTower.lean:29` | A **tower section** on the annulus `{rlo < ‖w‖ < rhi}`: analytic, level-true, odd, satisfying the Böttcher functional equation, injective, with unit winding of every circle image a |
 | theorem | `exists_tower_anchor` | `GaloisForLFunctions.Bottcher.SectionTower` | `formal/GaloisForLFunctions/Bottcher/SectionTower.lean:46` | The far anchor.** There is a radius `Ra` (above `1` and above the critical Böttcher modulus `e^{G_c(0)}`) such that on every annulus `{Ra < ‖w‖ < rhi}` the far-field inverse `ψ` of |
 | theorem | `norm_circleMap_zero` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:14` |  |
@@ -4640,7 +4650,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `even_section_winding_ne` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:86` | Winding parity of an even section.** An even, analytic, nonvanishing function on a symmetric annulus has circle windings in `2·2πi·ℤ`; in particular the winding is never `2πi`. |
 | theorem | `sign_constant_on_connected` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:245` | Sign constancy.** A continuous pointwise square root `u` of `v²` (i.e. `u = ±v` pointwise, `v` nonvanishing) on an open connected set is globally `v` or globally `-v`. |
 | theorem | `tower_extension_step` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:293` | The extension step.** A tower section on `{rlo < ‖w‖ < R₀}` whose source band `(σ₁, σ₂)` lies strictly above the critical value's level extends across the square root of the band:  |
-| theorem | `exists_tower_deep` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:988` | The tower descent.** For every `ε > 0` there is a tower section whose bottom level is within `ε` of the critical level `h = G_c(0)`, on an annulus whose top `R₀` clears `exp(4h + 1 |
+| theorem | `exists_tower_deep` | `GaloisForLFunctions.Bottcher.SectionTowerStep` | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean:990` | The tower descent.** For every `ε > 0` there is a tower section whose bottom level is within `ε` of the critical level `h = G_c(0)`, on an annulus whose top `R₀` clears `exp(4h + 1 |
 | theorem | `analyticOnNhd_glue_finite` | `GaloisForLFunctions.Bottcher.SheafGlue` | `formal/GaloisForLFunctions/Bottcher/SheafGlue.lean:26` | Finite sheaf-gluing of analytic branches.** A finite family of analytic branches `f i` on opens `U i` (`i ∈ s`) that agree pairwise on overlaps (`EqOn (f i) (f j) (U i ∩ U j)`) glu |
 | theorem | `sphericalDeriv_nonneg` | `GaloisForLFunctions.Bottcher.SphericalDeriv` | `formal/GaloisForLFunctions/Bottcher/SphericalDeriv.lean:30` | The spherical derivative is non-negative. |
 | theorem | `sphericalDeriv_le_norm_deriv` | `GaloisForLFunctions.Bottcher.SphericalDeriv` | `formal/GaloisForLFunctions/Bottcher/SphericalDeriv.lean:34` | The spherical derivative is bounded above by the ordinary derivative norm. |
