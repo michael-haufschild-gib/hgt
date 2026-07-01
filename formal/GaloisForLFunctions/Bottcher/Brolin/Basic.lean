@@ -232,6 +232,65 @@ theorem greenSublevel_mono (c : ℂ) {s t : ℝ} (hst : s ≤ t) :
 theorem isClosed_greenSublevel (c : ℂ) (t : ℝ) : IsClosed (greenSublevel c t) := by
   exact isClosed_le (continuous_greenFunctionDyn c) continuous_const
 
+/-- The Green escape rate tends to `+∞` at spatial infinity. -/
+theorem tendsto_greenLimit_atTop (c : ℂ) :
+    Tendsto (fun z : ℂ => greenLimit c z) (Bornology.cobounded ℂ) atTop := by
+  have hnorm : Tendsto (fun z : ℂ => ‖z‖) (Bornology.cobounded ℂ) atTop :=
+    tendsto_norm_cobounded_atTop
+  have hlog : Tendsto (fun z : ℂ => Real.log ‖z‖) (Bornology.cobounded ℂ) atTop :=
+    Real.tendsto_log_atTop.comp hnorm
+  have hdiff : Tendsto (fun z : ℂ => greenLimit c z - Real.log ‖z‖)
+      (Bornology.cobounded ℂ) (𝓝 0) := tendsto_greenLimit_sub_log c
+  simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using hdiff.add_atTop hlog
+
+/-- The dynamical Green function tends to `+∞` at spatial infinity. This is the boundedness
+input behind compact Green sublevels. -/
+theorem tendsto_greenFunctionDyn_atTop (c : ℂ) :
+    Tendsto (greenFunctionDyn c) (Bornology.cobounded ℂ) atTop := by
+  refine (tendsto_greenLimit_atTop c).congr' ?_
+  have hnorm : Tendsto (fun z : ℂ => ‖z‖) (Bornology.cobounded ℂ) atTop :=
+    tendsto_norm_cobounded_atTop
+  filter_upwards [hnorm.eventually_gt_atTop (max 2 ‖c‖)] with z hz
+  have h2 : 2 < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) hz
+  have hc : ‖c‖ ≤ ‖z‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) hz)
+  have hzK : z ∉ filledJulia c := not_mem_filledJulia hc h2
+  rw [greenFunctionDyn, if_neg hzK]
+
+/-- Green sublevels are bounded because `G_c(z) → +∞` at infinity. -/
+theorem isBounded_greenSublevel (c : ℂ) (t : ℝ) :
+    Bornology.IsBounded (greenSublevel c t) := by
+  rw [Bornology.isBounded_def]
+  have hgt : {z : ℂ | t < greenFunctionDyn c z} ∈ Bornology.cobounded ℂ :=
+    (tendsto_greenFunctionDyn_atTop c).eventually_gt_atTop t
+  convert hgt using 1
+  ext z
+  simp [greenSublevel, not_le]
+
+/-- Green sublevels are compact: closed by continuity and bounded by the escape-rate asymptotic. -/
+theorem isCompact_greenSublevel (c : ℂ) (t : ℝ) : IsCompact (greenSublevel c t) :=
+  Metric.isCompact_of_isClosed_isBounded (isClosed_greenSublevel c t) (isBounded_greenSublevel c t)
+
+/-- Closed Green bands `{z | a ≤ G_c z ≤ b}`. These are the compact sets used in the
+properness step for the global Böttcher branch. -/
+def greenBand (c : ℂ) (a b : ℝ) : Set ℂ :=
+  {z | a ≤ greenFunctionDyn c z ∧ greenFunctionDyn c z ≤ b}
+
+theorem mem_greenBand_iff (c z : ℂ) (a b : ℝ) :
+    z ∈ greenBand c a b ↔ a ≤ greenFunctionDyn c z ∧ greenFunctionDyn c z ≤ b := Iff.rfl
+
+theorem greenBand_subset_greenSublevel (c : ℂ) (a b : ℝ) :
+    greenBand c a b ⊆ greenSublevel c b := fun _ hz => hz.2
+
+theorem isClosed_greenBand (c : ℂ) (a b : ℝ) : IsClosed (greenBand c a b) :=
+  (isClosed_le continuous_const (continuous_greenFunctionDyn c)).inter
+    (isClosed_le (continuous_greenFunctionDyn c) continuous_const)
+
+/-- Green bands are compact. This formalizes the proof's compactness claim
+`{a ≤ G_c ≤ b}` in the properness argument. -/
+theorem isCompact_greenBand (c : ℂ) (a b : ℝ) : IsCompact (greenBand c a b) :=
+  Metric.isCompact_of_isClosed_isBounded (isClosed_greenBand c a b)
+    ((isBounded_greenSublevel c b).subset (greenBand_subset_greenSublevel c a b))
+
 theorem measurableSet_greenSublevel (c : ℂ) (t : ℝ) :
     MeasurableSet (greenSublevel c t) :=
   (isClosed_greenSublevel c t).measurableSet

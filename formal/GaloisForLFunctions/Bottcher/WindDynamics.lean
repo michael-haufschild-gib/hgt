@@ -239,4 +239,103 @@ theorem wind_even_of_pow (n : ℕ) (G H : X → ℂ) (hG : Continuous G) (hGne :
     rw [h1, pow_succ]; ring
   exact mul_left_cancel₀ (pow_ne_zero n (two_ne_zero)) h2
 
+/-! ## From normalized winding to the square-lift criterion -/
+
+/-- Normalize a nowhere-zero continuous map to have value `1` at the basepoint. -/
+noncomputable def normalizeToOne {X : Type*} [TopologicalSpace X]
+    (g : C(X, Cs)) (x₀ : X) : C(X, Cs) where
+  toFun := fun x => ⟨(g x : ℂ) / (g x₀ : ℂ), div_ne_zero (g x).2 (g x₀).2⟩
+  continuous_toFun := by
+    apply Continuous.subtype_mk
+    exact (continuous_subtype_val.comp g.continuous).div_const _
+
+@[simp] theorem normalizeToOne_base {X : Type*} [TopologicalSpace X]
+    (g : C(X, Cs)) (x₀ : X) : normalizeToOne g x₀ x₀ = one_cs := by
+  apply Subtype.ext
+  show (g x₀ : ℂ) / (g x₀ : ℂ) = (1 : ℂ)
+  exact div_self (g x₀).2
+
+/-- The path induced by the normalized map is exactly the transported loop used by `wind`. -/
+theorem normalizeToOne_path_eq_transLoop {X : Type*} [TopologicalSpace X]
+    (g : C(X, Cs)) {x₀ : X} (p : Path x₀ x₀) :
+    ((p.map (normalizeToOne g x₀).continuous).cast
+        (normalizeToOne_base g x₀).symm (normalizeToOne_base g x₀).symm)
+      = transLoop (fun x => (g x : ℂ)) (continuous_subtype_val.comp g.continuous)
+          (fun x => (g x).2) p := by
+  apply Path.ext
+  funext t
+  apply Subtype.ext
+  rfl
+
+/-- **Even normalized winding gives the square-lift `π₁` condition.** If every normalized loop of a
+nowhere-zero map `g` has even `degZ`, then the normalized map's induced fundamental-group image lies in
+the image of the square map. This is the bridge from the project's winding calculus to Mathlib's
+covering-space lifting hypothesis. -/
+theorem normalized_square_range_of_even_winding {X : Type*} [TopologicalSpace X]
+    (g : C(X, Cs)) {x₀ : X}
+    (hwind : ∀ p : Path x₀ x₀,
+      Even (degZ ⟦transLoop (fun x => (g x : ℂ)) (continuous_subtype_val.comp g.continuous)
+          (fun x => (g x).2) p⟧)) :
+    (FundamentalGroup.mapOfEq (normalizeToOne g x₀) (normalizeToOne_base g x₀)).range ≤
+      (FundamentalGroup.mapOfEq ⟨sqCs, continuous_sqCs⟩ sqCs_one).range := by
+  intro γ hγ
+  rcases hγ with ⟨δ, rfl⟩
+  obtain ⟨p, hp⟩ := Path.Homotopic.Quotient.mk_surjective (FundamentalGroup.toPath δ)
+  have hδ : δ = FundamentalGroup.fromPath (.mk p) := hp.symm
+  subst δ
+  rw [FundamentalGroup.mapOfEq_apply]
+  apply Pi1CMinusZero.mem_sq_range_of_even_deg
+  rw [normalizeToOne_path_eq_transLoop]
+  exact hwind p
+
+/-- Multiplying a transported loop by its basepoint recovers the original image loop, allowing a
+different but equal basepoint `b` for dependent casts. -/
+theorem map_mulBase_transLoop_eq_of_base {X : Type*} [TopologicalSpace X]
+    (g : C(X, Cs)) {x₀ : X} (p : Path x₀ x₀) {b : Cs} (hb : b = g x₀) :
+    ((transLoop (fun x => (g x : ℂ)) (continuous_subtype_val.comp g.continuous)
+          (fun x => (g x).2) p).map (mulBaseMap b).continuous).cast
+        (mulBaseMap_one b).symm (mulBaseMap_one b).symm =
+      (p.map g.continuous).cast hb hb := by
+  subst hb
+  apply Path.ext
+  funext t
+  apply Subtype.ext
+  show (g x₀ : ℂ) * ((g (p t) : ℂ) / (g x₀ : ℂ)) = (g (p t) : ℂ)
+  exact mul_div_cancel₀ (g (p t) : ℂ) (g x₀).2
+
+/-- **Even transported winding gives the exact square-cover lift condition.** This is the non-normalized
+form consumed by `CoveringRoot`: if `e₀² = g x₀` and every loop transported by `g` has even degree, then
+`g_*π₁` lies in the image of the square map based at `e₀`. -/
+theorem square_range_of_even_winding {X : Type*} [TopologicalSpace X]
+    (g : C(X, Cs)) {x₀ : X} {e₀ : Cs}
+    (he : sqCs e₀ = g x₀)
+    (hwind : ∀ p : Path x₀ x₀,
+      Even (degZ ⟦transLoop (fun x => (g x : ℂ)) (continuous_subtype_val.comp g.continuous)
+          (fun x => (g x).2) p⟧)) :
+    (FundamentalGroup.map g x₀).range ≤
+      (FundamentalGroup.mapOfEq ⟨sqCs, continuous_sqCs⟩ he).range := by
+  intro γ hγ
+  rcases hγ with ⟨δ, rfl⟩
+  obtain ⟨p, hp⟩ := Path.Homotopic.Quotient.mk_surjective (FundamentalGroup.toPath δ)
+  have hδ : δ = FundamentalGroup.fromPath (.mk p) := hp.symm
+  subst δ
+  rw [FundamentalGroup.map_apply]
+  obtain ⟨q, hq⟩ := (degZ_even_iff_sq ⟦transLoop (fun x => (g x : ℂ))
+      (continuous_subtype_val.comp g.continuous) (fun x => (g x).2) p⟧).mp (hwind p)
+  refine ⟨FundamentalGroup.fromPath (.mk (scaleLoop e₀ q)), ?_⟩
+  rw [FundamentalGroup.mapOfEq_apply]
+  have hmapped := congrArg (fun Q : Path.Homotopic.Quotient one_cs one_cs =>
+    Path.Homotopic.Quotient.map Q (mulBaseMap (sqCs e₀))) hq
+  change ⟦(transLoop (fun x => (g x : ℂ)) (continuous_subtype_val.comp g.continuous)
+      (fun x => (g x).2) p).map (mulBaseMap (sqCs e₀)).continuous⟧ =
+    ⟦(sqLoop q).map (mulBaseMap (sqCs e₀)).continuous⟧ at hmapped
+  have hhom := Path.Homotopic.Quotient.eq.mp hmapped
+  have hhomCast := Path.Homotopic.pathCast hhom (mulBaseMap_one (sqCs e₀)).symm
+    (mulBaseMap_one (sqCs e₀)).symm
+  rw [map_mulBase_transLoop_eq_of_base g p he] at hhomCast
+  rw [map_mulBase_sqLoop_eq_scaled_sq e₀ q] at hhomCast
+  have hfinal := Path.Homotopic.pathCast hhomCast he.symm he.symm
+  apply Quotient.sound
+  simpa using hfinal.symm
+
 end Bottcher

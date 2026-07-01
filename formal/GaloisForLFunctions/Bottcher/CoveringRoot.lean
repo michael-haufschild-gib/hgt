@@ -26,6 +26,7 @@ replacing the ad-hoc matching-point hypotheses of the sector route.
 New file (hRigid / connected lane). Deps: `AnalyticRoot` + Mathlib covering/lifting.
 -/
 import GaloisForLFunctions.Bottcher.AnalyticRoot
+import GaloisForLFunctions.Bottcher.WindDynamics
 import Mathlib.Analysis.Complex.CoveringMap
 import Mathlib.Topology.Homotopy.Lifting
 
@@ -95,5 +96,25 @@ theorem exists_analyticOnNhd_pow_eq_of_lift
     intro z hz; rw [hsU z hz, hFpow ⟨z, hz⟩, hgSub ⟨z, hz⟩]
   have hsne : ∀ z ∈ U, s z ≠ 0 := fun z hz => by rw [hsU z hz]; exact (F ⟨z, hz⟩).2
   exact ⟨s, analyticOnNhd_of_continuousOn_pow_eq hUo hn1 hscont hg hg0 hspow, hspow, hsne⟩
+
+/-- **Analytic square root from even transported winding.** This is the answer-04 annular-root
+criterion in the form needed by the connected Böttcher tower: the caller supplies the usual analytic
+nowhere-zero map `gSub` and proves that every transported loop has even integer degree; the exact
+covering-lift hypothesis is produced by `square_range_of_even_winding`, then upgraded to a holomorphic
+square root. -/
+theorem exists_analyticOnNhd_sq_eq_of_even_winding
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsConnected U)
+    {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g U)
+    (gSub : C(U, {w : ℂ // w ≠ 0})) (hgSub : ∀ a : U, (gSub a : ℂ) = g a)
+    {a₀ : U} {e₀ : {w : ℂ // w ≠ 0}}
+    (he : (⟨(e₀ : ℂ) ^ 2, pow_ne_zero 2 e₀.2⟩ : {w : ℂ // w ≠ 0}) = gSub a₀)
+    (hwind : ∀ p : Path a₀ a₀,
+      Even (Pi1CMinusZero.degZ ⟦transLoop (fun a : U => (gSub a : ℂ))
+        (continuous_subtype_val.comp gSub.continuous) (fun a => (gSub a).2) p⟧)) :
+    ∃ s : ℂ → ℂ, AnalyticOnNhd ℂ s U ∧ (∀ z ∈ U, s z ^ 2 = g z) ∧
+      (∀ z ∈ U, s z ≠ 0) := by
+  refine exists_analyticOnNhd_pow_eq_of_lift hUo hUc hg (by norm_num : ((2 : ℕ) : ℂ) ≠ 0)
+    gSub hgSub he ?_
+  exact square_range_of_even_winding gSub he hwind
 
 end Bottcher

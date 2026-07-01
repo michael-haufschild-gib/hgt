@@ -473,4 +473,55 @@ theorem degZ_even_iff_sq (γ : Path.Homotopic.Quotient one_cs one_cs) :
   · rintro ⟨p, rfl⟩
     exact ⟨degZ ⟦p⟧, by rw [degZ_sqLoop]; ring⟩
 
+/-- Multiply a loop in `ℂ*` by a fixed basepoint. Used to undo the normalization
+`w ↦ w / b` in transported winding loops. -/
+noncomputable def mulBaseMap (b : Cs) : C(Cs, Cs) where
+  toFun := fun w => ⟨(b : ℂ) * (w : ℂ), mul_ne_zero b.2 w.2⟩
+  continuous_toFun := by
+    apply Continuous.subtype_mk
+    exact continuous_const.mul continuous_subtype_val
+
+@[simp] theorem mulBaseMap_one (b : Cs) : mulBaseMap b one_cs = b := by
+  apply Subtype.ext
+  simp [mulBaseMap, one_cs]
+
+/-- Scale a based loop at `1` to a loop based at `e`. -/
+noncomputable def scaleLoop (e : Cs) (q : Path one_cs one_cs) : Path e e where
+  toFun := fun t => ⟨(e : ℂ) * (q t : ℂ), mul_ne_zero e.2 (q t).2⟩
+  continuous_toFun := by
+    apply Continuous.subtype_mk
+    exact continuous_const.mul (continuous_subtype_val.comp q.continuous_toFun)
+  source' := by
+    apply Subtype.ext
+    show (e : ℂ) * (q 0 : ℂ) = (e : ℂ)
+    rw [q.source]
+    simp [one_cs]
+  target' := by
+    apply Subtype.ext
+    show (e : ℂ) * (q 1 : ℂ) = (e : ℂ)
+    rw [q.target]
+    simp [one_cs]
+
+/-- Multiplying a squared normalized loop by `e²` is the square of the loop scaled by `e`. -/
+theorem map_mulBase_sqLoop_eq_scaled_sq (e : Cs) (q : Path one_cs one_cs) :
+    ((sqLoop q).map (mulBaseMap (sqCs e)).continuous).cast
+        (mulBaseMap_one (sqCs e)).symm (mulBaseMap_one (sqCs e)).symm =
+      (scaleLoop e q).map continuous_sqCs := by
+  apply Path.ext
+  funext t
+  apply Subtype.ext
+  change (e : ℂ) ^ 2 * (q t : ℂ) ^ 2 = ((e : ℂ) * (q t : ℂ)) ^ 2
+  ring
+
+/-- **Even degree gives square-cover range.** If a loop class in `π₁(ℂ*,1)` has even integer degree,
+then it lies in the image of the square map on fundamental groups. This is the `FundamentalGroup`
+form of `degZ_even_iff_sq`, matching Mathlib's covering-lift criterion. -/
+theorem mem_sq_range_of_even_deg (γ : FundamentalGroup Cs one_cs)
+    (hEven : Even (degZ (FundamentalGroup.toPath γ))) :
+    γ ∈ (FundamentalGroup.mapOfEq ⟨sqCs, continuous_sqCs⟩ sqCs_one).range := by
+  obtain ⟨p, hp⟩ := (degZ_even_iff_sq (FundamentalGroup.toPath γ)).mp hEven
+  refine ⟨FundamentalGroup.fromPath (.mk p), ?_⟩
+  rw [FundamentalGroup.mapOfEq_apply]
+  exact hp.symm
+
 end Pi1CMinusZero

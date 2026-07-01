@@ -1057,4 +1057,15 @@ theorem branch_ne_zero_of_modulus {c : ℂ} {β : ℂ → ℂ}
   rw [hzero, norm_zero] at hnorm
   exact (ne_of_gt (Real.exp_pos (greenFunctionDyn c z))) hnorm.symm
 
+/-- **Basin modulus maps into the exterior disk.** A branch carrying the Böttcher modulus on the
+basin satisfies `1 < ‖β z‖` there, because `G_c z > 0` off the filled Julia set. This is the formal
+version of the written Böttcher proof's line `|φ| = exp G` and `G > 0` on `Ω_c`. -/
+theorem one_lt_norm_of_global_branch_modulus {c : ℂ} {β : ℂ → ℂ}
+    (hβmod : ∀ z ∈ (filledJulia c)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c z)) :
+    ∀ z ∈ (filledJulia c)ᶜ, 1 < ‖β z‖ := by
+  intro z hz
+  have hzK : z ∉ filledJulia c := by simpa using hz
+  rw [hβmod z hz, greenFunctionDyn, if_neg hzK]
+  exact Real.one_lt_exp_iff.mpr (greenLimit_pos_basin hzK)
+
 end Bottcher

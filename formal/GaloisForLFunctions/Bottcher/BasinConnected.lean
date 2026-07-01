@@ -36,6 +36,25 @@ theorem compl_filledJulia_eq_iUnion_level (c : ℂ) :
 theorem escapeLevel_zero (c : ℂ) : escapeLevel c 0 = escapeOpen c := by
   ext z; simp only [escapeLevel, Function.iterate_zero, id_eq, Set.mem_setOf_eq]
 
+/-- **Mandelbrot parameters keep the critical value out of every escape level.** In this project's
+normalization `c ∈ mandelbrot` means the critical point `0` has bounded orbit. Hence the critical
+value `c = f_c(0)` and all of its forward iterates lie in `filledJulia c`, so none can lie in the far
+escape set used to define `escapeLevel c n`. -/
+theorem criticalValue_not_mem_escapeLevel_of_mem_mandelbrot {c : ℂ} (hc : c ∈ mandelbrot) (n : ℕ) :
+    c ∉ escapeLevel c n := by
+  intro hesc
+  have hcK : c ∈ filledJulia c := by
+    have h1 : (quadratic c)^[1] (0 : ℂ) ∈ filledJulia c := filledJulia_forward hc 1
+    simpa [Function.iterate_one, quadratic_apply] using h1
+  have hiterK : (quadratic c)^[n] c ∈ filledJulia c := filledJulia_forward hcK n
+  obtain ⟨hcn, h2n⟩ := mem_escapeOpen_regime hesc
+  exact not_mem_filledJulia hcn h2n hiterK
+
+/-- The bundled connected-lane hypothesis consumed by the `ρ` tower, from `c ∈ mandelbrot`. -/
+theorem criticalValue_not_mem_escapeLevels_of_mem_mandelbrot {c : ℂ} (hc : c ∈ mandelbrot) :
+    ∀ n, c ∉ escapeLevel c n :=
+  fun n => criticalValue_not_mem_escapeLevel_of_mem_mandelbrot hc n
+
 /-- **Recursive structure**: `escapeLevel c (n+1) = f_c⁻¹(escapeLevel c n)`. -/
 theorem escapeLevel_succ (c : ℂ) (n : ℕ) :
     escapeLevel c (n + 1) = (quadratic c) ⁻¹' escapeLevel c n := by

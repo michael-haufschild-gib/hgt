@@ -29,13 +29,13 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
 | 1292 | `formal/GaloisForLFunctions/Bottcher/CrossRatioCuspBridge.lean` |
 | 1289 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean` |
+| 1278 | `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean` |
 | 1267 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean` |
 | 1249 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryTruncation.lean` |
 | 1217 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean` |
 | 1206 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingPeriodicAvoidance.lean` |
 | 1202 | `formal/GaloisForLFunctions/Bottcher/Brolin/GapAMuCore.lean` |
 | 1172 | `formal/GaloisForLFunctions/Bottcher/Brolin/Cauchy.lean` |
-| 1093 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryCriteria.lean` |
 
 ## Gap Markers
 
@@ -53,10 +53,11 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean:406` | uniformization: the only remaining atom is a single-valued analytic **square root** of `βlev n ∘ f` on |
 | `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean:454` | remaining winding step. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:13` | connected. That step (the branched-cover / critical-value structure of `z²+c`) is the lone remaining |
-| `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:80` | /-- **Basin-connectedness from the Riemann–Hurwitz step.** The full reduction: the single remaining |
+| `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:99` | /-- **Basin-connectedness from the Riemann–Hurwitz step.** The full reduction: the single remaining |
 | `formal/GaloisForLFunctions/Bottcher/BottcherCoord.lean:276` | `∑ₖ termₖ(f_c z) = 2·(∑ₖ termₖ(z) − term₀(z))`. The remaining `log z` vs `log(z²+c)` |
 | `formal/GaloisForLFunctions/Bottcher/BottcherDetermines.lean:158` | in the connected-case independence, with no remaining hypotheses. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BottcherInverse.lean:4` | The dyadic-cover lift `hliftF`/`hliftG` (the genuine remaining analytic input of the disconnected case, |
+| `formal/GaloisForLFunctions/Bottcher/BottcherWinding.lean:59` | escape-level subtypes: the remaining winding problem becomes the pure winding of the iterate image loop |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean:203` | needed for the remaining boundary singular-potential lower semicontinuity. -/ |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean:1162` | the full GAP-A potential representation is equivalent to the remaining |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryCriteria.lean:120` | raw boundary-scaling hypothesis by the concrete remaining shifted/GAP-A |
@@ -81,6 +82,22 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean:1123` | /-- hDisc-facing exponential-separation closure for GAP-A.  The remaining |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean:1235` | for any fixed `q < 2`; the missing logarithmic separation may decay |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetLimit.lean:294` | limiting Brolin measure.  The remaining GAP-A analytic step is to identify this |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:15` | datum is the only remaining input, cleanly separated from the analytic/colimit plumbing. |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:36` | /-- **The isolated remaining geometric input for the connected case.** At every level `n`, the pullback |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:152` | reduced to the per-level winding hypothesis `hlift`, the only genuinely missing analytic input. -/ |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:177` | `bottcherCoord c ∘ f_c^[n]`. The only remaining input is the pure topological-degree statement |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:358` | `ρ` tower; the only remaining hypothesis here is the actual dyadic endpoint lift theorem. -/ |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:373` | Mandelbrot hypothesis supplies the critical-value exclusion; exact endpoint lifts are the only remaining |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:436` | exclusion, while the remaining work is the exact `ρ` path-lift and anti-period package. -/ |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:453` | remaining exact `ρ` lift and anti-period package supplies the topological winding. -/ |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:1001` | written proof's "proper unbranched covering of `{|w| > 1}`" stage. The only remaining hypotheses are |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:1090` | `s ↦ rho_n(t + 2^n·2πi·s) - c`, matching the remaining topological-degree claim in the paper proof. -/ |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:1164` | exclusion and the remaining inputs isolated as `ρ` path lifting plus all-level anti-periodicity. -/ |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:1189` | current strongest connected-case endpoint: under the remaining `ρ` path-lift and all-level |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:1218` | Mandelbrot hypothesis supplies the critical-value exclusion; the remaining inputs are now the explicit |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:1246` | Mandelbrot parameters.** The remaining hypotheses are now the two concrete formal gaps left by the |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:147` | This is the concrete bridge from the remaining exact-fiber statement for `ρ_{n+1}` to the |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:263` | /-- **Iterate-image winding from `ρ` as a surjective covering plus sheet-swap.** The remaining |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingFibreInput.lean:217` | identity, a strongly repelling periodic point can be chosen avoiding that denominator and the remaining |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingPeriodicAvoidance.lean:6` | strictly smaller than the separable fixed-point set and prove that every remaining fixed point has the |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingPeriodicAvoidance.lean:507` | fibre separability; the callback only proves strong repulsion at the remaining period-`p` fixed |
@@ -138,6 +155,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/DendriteBoundary.lean:564` | the basin can exist. The only remaining inputs are the empty-interior condition (the dendrite case |
 | `formal/GaloisForLFunctions/Bottcher/DyadicMonodromy.lean:10` | The remaining (analytic) half of `mono` — that continuation around the cylinder loop |
 | `formal/GaloisForLFunctions/Bottcher/EscapeLevelRoot.lean:14` | wind(βlev n)`. That dynamical evenness is the remaining geometric input, now isolated as exactly the |
+| `formal/GaloisForLFunctions/Bottcher/EscapeLevelRoot.lean:59` | `2ⁿ⁺¹` divisibility; the remaining topological content is proving the previous image winding is already |
+| `formal/GaloisForLFunctions/Bottcher/EscapeLevelRoot.lean:224` | `wind_bottcherCoord_comp_eq_wind_coe`, so the remaining obligation is the pure topological-degree |
 | `formal/GaloisForLFunctions/Bottcher/ExplicitBranch.lean:23` | the basin (`ζ ≡ 1`, the connected-`J_c` / trivial-monodromy condition) is the remaining analytic core, |
 | `formal/GaloisForLFunctions/Bottcher/GlobalBasinBranch.lean:6` | right half-plane `R = {Re z > M}` — the `hF`/primitive hypothesis is eliminated there. The remaining gap |
 | `formal/GaloisForLFunctions/Bottcher/GlobalBasinBranch.lean:88` | `φ_c` — the genuine remaining analytic input, an unconditional half-plane version of which is |
@@ -193,6 +212,10 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean:2002` | `(|P_n| |2α|^m)⁻¹ |α-z|`.  The only remaining quantitative work is the real window inequality against |
 | `formal/GaloisForLFunctions/Bottcher/NonSquare.lean:122` | route consumes, with no remaining hypothesis. -/ |
 | `formal/GaloisForLFunctions/Bottcher/OmittingNormal.lean:12` | the family `f_n` is normal. The only remaining input to three-value Montel is then the **covering μ |
+| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:655` | remaining topological-degree assertion exposed as the `hodd` hypothesis. -/ |
+| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:722` | `rho_n - c` half-period loops. This packages the remaining connected topological-degree |
+| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:806` | behind the remaining connected `π₁` theorem. -/ |
+| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:865` | is the genuine remaining content, governed by the connectedness of the filled Julia set. -/ |
 | `formal/GaloisForLFunctions/Bottcher/PeriodicPoints.lean:64` | remaining Fatou-density content.) -/ |
 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:235` | far field — with the only remaining input a geometric one: the connected far-field region `V` reaching the |
 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:933` | where the remaining error is multiplied by the small defect `Z(t)-W(t)^2-d`. -/ |
@@ -268,29 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean:99` | This isolates the exact remaining geometric obligation for the repaired |
 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean:978` | by the chain rule.  The remaining geometric input is now exactly a closed |
 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean:1323` | square root `v²=q_n-c₁`; the new carried ball is `ball(v, r_n/‖v‖)`.  The remaining geometric core is |
-| `formal/GaloisForLFunctions/CarrierCauchy.lean:13` | This file supplies the missing link: the carrier family `{wᵢ, uᵢ}`, indexed by `Fin k ⊕ Fin k`, is |
-| `formal/GaloisForLFunctions/ConsolidatedBridges.lean:12` | make the promised conclusions machine-checkable once the missing hypotheses are |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:8` | remaining hypotheses still carried by those branches. |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:395` | the missing analytic theorem needed to remove the `RationalTailIndependent` |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:531` | /-- Abstract q62 both-connected reduction: after `φ_{c₂}` transcendence, the remaining hRigid analytic |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1288` | removes the remaining branch hypotheses. -/ |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1687` | fixed to the canonical `ratfuncToMero`; the remaining hypothesis is precisely that the cover projection |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1726` | is the lift-level card target after removing the separate `hG` input; remaining inputs are the |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:1968` | descent after the affine reduction from `ζ(s+i,-n)` to harmonic sums; the only remaining Hurwitz |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2017` | most concrete all-`N` row-close target currently isolated: the remaining analytic input is exactly |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2526` | This is the proved replacement for the generic three-eigenvalue split in the missing N=2 branch. -/ |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:2650` | form: the only remaining assumptions are the analytic parameter conditions and the genuine local |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3292` | zero.  For `N = 0`, the compressed shifted-power polynomial is exactly the remaining shifted |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3551` | provider. This pins the remaining all-`N` Hurwitz analytic input to one explicit interface. -/ |
-| `formal/GaloisForLFunctions/FullyProvenNewTargets.lean:3844` | remaining provider must use a proper descent/cover base. -/ |
-| `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean:416` | implication to `rationalTailIndependent_harmonic_of_poleRootInput`, making the remaining Hurwitz analytic |
-| `formal/GaloisForLFunctions/Hurwitz/HurwitzZeta.lean:89` | `x^{-s}` and the remaining tail `R_{n}(x) = ∑_{m≠n}(m-n+x)^{-s}` is the regular part: |
-| `formal/GaloisForLFunctions/Hurwitz/N2DensityShadow.lean:10` | `q=0`, then `l_2=0`. The remaining `l_0F_0+l_1F_1+c=0` is killed by the distinct-exponent extraction |
-| `formal/GaloisForLFunctions/Hurwitz/N2HalfInteger.lean:367` | missing companion to `HurwitzN2Final.hurwitz_n2_unconditional`: instead of assuming `2s ∉ ℤ`, it assumes |
-| `formal/GaloisForLFunctions/Hurwitz/N2Main.lean:9` | Two inputs are taken as hypotheses (the remaining analytic/arithmetic gaps): |
-| `formal/GaloisForLFunctions/Hurwitz/OrbitObstruction.lean:18` | coefficient to vanish — `coeff_one_eq_zero_of_pm_one` — and the missing top (quadratic) coefficient is |
-| `formal/GaloisForLFunctions/Hurwitz/OrbitObstruction.lean:65` | `coeff 1 = 0`. The missing quadratic coefficient is *not* supplied here (the order-two orbit cannot |
-| `formal/GaloisForLFunctions/KreinLangerInertia.lean:19` | `κ₋ = #off-line poles` are the remaining Stage-1 bricks; only the **upper bound** is proved here. No |
 
 ## Historical Status Logs
 
