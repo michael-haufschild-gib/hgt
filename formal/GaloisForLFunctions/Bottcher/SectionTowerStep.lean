@@ -993,7 +993,8 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
       greenFunctionDyn c 0 < Real.log rlo ∧
       Real.log rlo < greenFunctionDyn c 0 + ε ∧
       ∃ S : TowerSection c rlo R₀,
-        ∀ w : ℂ, Rb < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w := by
+        ∀ w : ℂ, Rb < ‖w‖ → ‖w‖ < R₀ →
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c := by
   classical
   set h : ℝ := greenFunctionDyn c 0 with hhdef
   have hh0 : 0 ≤ h := greenFunctionDyn_nonneg c 0
@@ -1014,11 +1015,13 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
   -- the one-step descent with uniform gap contraction
   have hstep : ∀ rlo : ℝ, 1 < rlo → rlo ^ 2 < R₀ → h < Real.log rlo → rlo ≤ Ra →
       (∃ S : TowerSection c rlo R₀,
-        ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w) →
+        ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c) →
       ∃ rlo' : ℝ, 1 < rlo' ∧ rlo' ^ 2 < R₀ ∧ h < Real.log rlo' ∧ rlo' ≤ Ra ∧
         Real.log rlo' - h ≤ (3/4) * (Real.log rlo - h) ∧
         ∃ S' : TowerSection c rlo' R₀,
-          ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S'.T w) = w := by
+          ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
+            bottcherCoord c (S'.T w) = w ∧ S'.T w ∈ escapeOpen c := by
     intro rlo h1 h2 h3 hRale hS
     obtain ⟨S, hSφ⟩ := hS
     set ℓ : ℝ := Real.log rlo with hℓdef
@@ -1065,7 +1068,8 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
       rw [hσ₁def, Real.log_exp, greenFunctionDyn_critical_value c]
       exact hτ2h
     obtain ⟨S', hS'T⟩ := tower_extension_step h1 h2 S h3 hσ₁rlo hσ₁sq h2 le_rfl hcab
-    have hS'φ : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S'.T w) = w := by
+    have hS'φ : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
+        bottcherCoord c (S'.T w) = w ∧ S'.T w ∈ escapeOpen c := by
       intro w hw1 hw2
       have hwold : w ∈ annulusSet rlo R₀ := ⟨lt_of_le_of_lt hRale hw1, hw2⟩
       rw [hS'T w hwold]
@@ -1097,7 +1101,8 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
   have hiter : ∀ n : ℕ, ∃ rlo : ℝ, 1 < rlo ∧ rlo ^ 2 < R₀ ∧ h < Real.log rlo ∧ rlo ≤ Ra ∧
       Real.log rlo - h ≤ (3/4) ^ n * (Real.log Ra - h) ∧
       ∃ S : TowerSection c rlo R₀,
-        ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w := by
+        ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c := by
     intro n
     induction n with
     | zero =>

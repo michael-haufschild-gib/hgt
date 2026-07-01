@@ -46,7 +46,8 @@ a tower section. -/
 theorem exists_tower_anchor (c : ℂ) :
     ∃ Ra : ℝ, 1 < Ra ∧ Real.exp (greenFunctionDyn c 0) < Ra ∧
       ∀ rhi : ℝ, Ra < rhi → ∃ S : TowerSection c Ra rhi,
-        ∀ w ∈ annulusSet Ra rhi, bottcherCoord c (S.T w) = w := by
+        ∀ w ∈ annulusSet Ra rhi,
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c := by
   classical
   have hmax2 : (2:ℝ) ≤ max 2 ‖c‖ := le_max_left _ _
   have hmaxc : ‖c‖ ≤ max 2 ‖c‖ := le_max_right _ _
@@ -243,8 +244,13 @@ theorem exists_tower_anchor (c : ℂ) :
       rfl
     rw [← hraw, hwind0, hcirc0]
   · intro w hw
-    obtain ⟨z, _, hzeq, hψv⟩ := hwit w (hdeep w hw)
-    show bottcherCoord c (ψ w) = w
-    rw [hψv, hzeq]
+    obtain ⟨z, hz, hzeq, hψv⟩ := hwit w (hdeep w hw)
+    constructor
+    · show bottcherCoord c (ψ w) = w
+      rw [hψv, hzeq]
+    · show ψ w ∈ escapeOpen c
+      rw [hψv]
+      show max 2 ‖c‖ < ‖z‖
+      exact lt_trans hmaxR hz
 
 end Bottcher
