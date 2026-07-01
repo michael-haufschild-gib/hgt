@@ -297,7 +297,8 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     {σ₁ σ₂ : ℝ} (hσ₁lo : rlo < σ₁) (hσ₁hi : σ₁ < rlo ^ 2)
     (hσ₂lo : rlo ^ 2 < σ₂) (hσ₂hi : σ₂ ≤ R₀)
     (hcab : greenFunctionDyn c c < Real.log σ₁) :
-    Nonempty (TowerSection c (Real.sqrt σ₁) R₀) := by
+    ∃ S' : TowerSection c (Real.sqrt σ₁) R₀,
+      ∀ w ∈ annulusSet rlo R₀, S'.T w = S.T w := by
   classical
   have hσ₁pos : (0:ℝ) < σ₁ := by nlinarith
   have hσ₂pos : (0:ℝ) < σ₂ := by nlinarith
@@ -772,7 +773,8 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     fun w h1 h2 => hTn_s ⟨h1, h2⟩
   have hmem₂ : ∀ w : ℂ, rlo < ‖w‖ → ‖w‖ < R₀ → Tn w = S.T w :=
     fun w h1 h2 => hTn_T ⟨h1, h2⟩
-  refine ⟨{ T := Tn, an := ?_, level := ?_, odd := ?_, fe := ?_, inj := ?_, dne := ?_, wind := ?_ }⟩
+  refine ⟨{ T := Tn, an := ?_, level := ?_, odd := ?_, fe := ?_, inj := ?_, dne := ?_, wind := ?_ },
+    fun w hw => hTn_T hw⟩
   · rw [← hunion]
     exact hTn_an
   · -- level
@@ -986,11 +988,12 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
 within `ε` of the critical level `h = G_c(0)`, on an annulus whose top `R₀` clears
 `exp(4h + 1)` (room for the sub-critical chain). -/
 theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
-    ∃ (rlo R₀ : ℝ), 1 < rlo ∧ rlo ^ 2 < R₀ ∧
+    ∃ (rlo Rb R₀ : ℝ), 1 < rlo ∧ rlo ≤ Rb ∧ Rb < R₀ ∧ rlo ^ 2 < R₀ ∧
       Real.exp (4 * greenFunctionDyn c 0 + 1) < R₀ ∧
       greenFunctionDyn c 0 < Real.log rlo ∧
       Real.log rlo < greenFunctionDyn c 0 + ε ∧
-      Nonempty (TowerSection c rlo R₀) := by
+      ∃ S : TowerSection c rlo R₀,
+        ∀ w : ℂ, Rb < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w := by
   classical
   set h : ℝ := greenFunctionDyn c 0 with hhdef
   have hh0 : 0 ≤ h := greenFunctionDyn_nonneg c 0
@@ -1003,18 +1006,20 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
     rw [hR₀def]; nlinarith
   have hR₀exp : Real.exp (4 * h + 1) < R₀ := by
     rw [hR₀def]; nlinarith
-  obtain ⟨S₀⟩ := hanchor R₀ hR₀Ra
+  obtain ⟨S₀, hS₀φ⟩ := hanchor R₀ hR₀Ra
   have hhRa : h < Real.log Ra := by
     calc h = Real.log (Real.exp h) := (Real.log_exp h).symm
       _ < Real.log Ra := Real.log_lt_log (Real.exp_pos h) hRaG
   -- the one-step descent with uniform gap contraction
-  have hstep : ∀ rlo : ℝ, 1 < rlo → rlo ^ 2 < R₀ → h < Real.log rlo →
-      Nonempty (TowerSection c rlo R₀) →
-      ∃ rlo' : ℝ, 1 < rlo' ∧ rlo' ^ 2 < R₀ ∧ h < Real.log rlo' ∧
+  have hstep : ∀ rlo : ℝ, 1 < rlo → rlo ^ 2 < R₀ → h < Real.log rlo → rlo ≤ Ra →
+      (∃ S : TowerSection c rlo R₀,
+        ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w) →
+      ∃ rlo' : ℝ, 1 < rlo' ∧ rlo' ^ 2 < R₀ ∧ h < Real.log rlo' ∧ rlo' ≤ Ra ∧
         Real.log rlo' - h ≤ (3/4) * (Real.log rlo - h) ∧
-        Nonempty (TowerSection c rlo' R₀) := by
-    intro rlo h1 h2 h3 hS
-    obtain ⟨S⟩ := hS
+        ∃ S' : TowerSection c rlo' R₀,
+          ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S'.T w) = w := by
+    intro rlo h1 h2 h3 hRale hS
+    obtain ⟨S, hSφ⟩ := hS
     set ℓ : ℝ := Real.log rlo with hℓdef
     have hℓ0 : 0 < ℓ := Real.log_pos h1
     have hrlopos : (0:ℝ) < rlo := by linarith
@@ -1058,8 +1063,16 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
     have hcab : greenFunctionDyn c c < Real.log σ₁ := by
       rw [hσ₁def, Real.log_exp, greenFunctionDyn_critical_value c]
       exact hτ2h
-    obtain ⟨S'⟩ := tower_extension_step h1 h2 S h3 hσ₁rlo hσ₁sq h2 le_rfl hcab
-    refine ⟨Real.sqrt σ₁, ?_, ?_, ?_, ?_, ⟨S'⟩⟩
+    obtain ⟨S', hS'T⟩ := tower_extension_step h1 h2 S h3 hσ₁rlo hσ₁sq h2 le_rfl hcab
+    have hS'φ : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S'.T w) = w := by
+      intro w hw1 hw2
+      have hwold : w ∈ annulusSet rlo R₀ := ⟨lt_of_le_of_lt hRale hw1, hw2⟩
+      rw [hS'T w hwold]
+      exact hSφ w hw1 hw2
+    have hs₁rlo : Real.sqrt σ₁ < rlo := by
+      rw [Real.sqrt_lt' (by linarith)]
+      exact hσ₁sq
+    refine ⟨Real.sqrt σ₁, ?_, ?_, ?_, by linarith, ?_, S', hS'φ⟩
     · have h4 : (0:ℝ) < τ := by linarith
       have h5 : (1:ℝ) < σ₁ := by
         rw [hσ₁def]
@@ -1080,17 +1093,20 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
       rw [h4]
       linarith
   -- iterate: geometric decay of the level gap
-  have hiter : ∀ n : ℕ, ∃ rlo : ℝ, 1 < rlo ∧ rlo ^ 2 < R₀ ∧ h < Real.log rlo ∧
+  have hiter : ∀ n : ℕ, ∃ rlo : ℝ, 1 < rlo ∧ rlo ^ 2 < R₀ ∧ h < Real.log rlo ∧ rlo ≤ Ra ∧
       Real.log rlo - h ≤ (3/4) ^ n * (Real.log Ra - h) ∧
-      Nonempty (TowerSection c rlo R₀) := by
+      ∃ S : TowerSection c rlo R₀,
+        ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ → bottcherCoord c (S.T w) = w := by
     intro n
     induction n with
     | zero =>
-        exact ⟨Ra, hRa1, hRasqR₀, hhRa, by norm_num, ⟨S₀⟩⟩
+        refine ⟨Ra, hRa1, hRasqR₀, hhRa, le_refl Ra, by norm_num, S₀, ?_⟩
+        intro w hw1 hw2
+        exact hS₀φ w ⟨hw1, hw2⟩
     | succ m ih =>
-        obtain ⟨rlo, h1, h2, h3, h4, hS⟩ := ih
-        obtain ⟨rlo', h1', h2', h3', h4', hS'⟩ := hstep rlo h1 h2 h3 hS
-        refine ⟨rlo', h1', h2', h3', ?_, hS'⟩
+        obtain ⟨rlo, h1, h2, h3, hle, h4, hS⟩ := ih
+        obtain ⟨rlo', h1', h2', h3', hle', h4', hS'⟩ := hstep rlo h1 h2 h3 hle hS
+        refine ⟨rlo', h1', h2', h3', hle', ?_, hS'⟩
         calc Real.log rlo' - h ≤ (3/4) * (Real.log rlo - h) := h4'
           _ ≤ (3/4) * ((3/4) ^ m * (Real.log Ra - h)) := by nlinarith
           _ = (3/4) ^ (m + 1) * (Real.log Ra - h) := by ring
@@ -1103,7 +1119,7 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
     refine ⟨n, ?_⟩
     rw [lt_div_iff₀ hgap0] at hn
     nlinarith
-  obtain ⟨rlo, h1, h2, h3, h4, hS⟩ := hiter n
-  exact ⟨rlo, R₀, h1, h2, hR₀exp, h3, by linarith, hS⟩
+  obtain ⟨rlo, h1, h2, h3, hle, h4, hS⟩ := hiter n
+  exact ⟨rlo, Ra, R₀, h1, hle, hR₀Ra, h2, hR₀exp, h3, by linarith, hS⟩
 
 end Bottcher

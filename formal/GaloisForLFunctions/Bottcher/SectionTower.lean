@@ -45,7 +45,8 @@ structure TowerSection (c : ℂ) (rlo rhi : ℝ) where
 a tower section. -/
 theorem exists_tower_anchor (c : ℂ) :
     ∃ Ra : ℝ, 1 < Ra ∧ Real.exp (greenFunctionDyn c 0) < Ra ∧
-      ∀ rhi : ℝ, Ra < rhi → Nonempty (TowerSection c Ra rhi) := by
+      ∀ rhi : ℝ, Ra < rhi → ∃ S : TowerSection c Ra rhi,
+        ∀ w ∈ annulusSet Ra rhi, bottcherCoord c (S.T w) = w := by
   classical
   have hmax2 : (2:ℝ) ≤ max 2 ‖c‖ := le_max_left _ _
   have hmaxc : ‖c‖ ≤ max 2 ‖c‖ := le_max_right _ _
@@ -187,7 +188,7 @@ theorem exists_tower_anchor (c : ℂ) :
   have hdeep : ∀ w ∈ annulusSet Ra rhi, R₁ < ‖w‖ := by
     intro w hw
     exact lt_of_lt_of_le hRaR₁ (le_of_lt hw.1)
-  refine ⟨⟨ψ, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩⟩
+  refine ⟨⟨ψ, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ?_⟩
   · exact fun w hw => hψanv w (hdeep w hw)
   · exact fun w hw => hGψ w (hdeep w hw)
   · exact fun w hw => hψodd w (hdeep w hw)
@@ -241,5 +242,9 @@ theorem exists_tower_anchor (c : ℂ) :
       rw [sub_zero]
       rfl
     rw [← hraw, hwind0, hcirc0]
+  · intro w hw
+    obtain ⟨z, _, hzeq, hψv⟩ := hwit w (hdeep w hw)
+    show bottcherCoord c (ψ w) = w
+    rw [hψv, hzeq]
 
 end Bottcher

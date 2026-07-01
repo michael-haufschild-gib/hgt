@@ -730,3 +730,246 @@ theorem multiRay_nat_relation_kill {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k : ℂ))
   exact eq_zero_of_revPoly_eq_zero (hdeg t) (hrev0 t ht)
 
 end HurwitzRayPeeling
+
+namespace HurwitzRayPeeling
+
+open Polynomial
+
+/-- The finite difference of a polynomial drops degree (and kills constants). -/
+theorem natDegree_sub_comp_lt {Q : Polynomial ℂ} (hQ : Q ≠ 0) :
+    Q - Q.comp (Polynomial.X - Polynomial.C 1) = 0
+      ∨ (Q - Q.comp (Polynomial.X - Polynomial.C 1)).natDegree < Q.natDegree := by
+  classical
+  by_cases hdeg : Q.natDegree = 0
+  · left
+    obtain ⟨c, rfl⟩ := Polynomial.natDegree_eq_zero.mp hdeg
+    simp
+  · right
+    have hcompdeg : (Q.comp (Polynomial.X - Polynomial.C 1)).natDegree = Q.natDegree := by
+      rw [Polynomial.natDegree_comp]
+      simp [Polynomial.natDegree_X_sub_C]
+    have hlead : (Q.comp (Polynomial.X - Polynomial.C 1)).leadingCoeff = Q.leadingCoeff := by
+      rw [Polynomial.leadingCoeff_comp (by simp [Polynomial.natDegree_X_sub_C])]
+      simp [Polynomial.leadingCoeff_X_sub_C]
+    have hcoeff_top : (Q - Q.comp (Polynomial.X - Polynomial.C 1)).coeff Q.natDegree = 0 := by
+      rw [Polynomial.coeff_sub]
+      have h1 : Q.coeff Q.natDegree = Q.leadingCoeff := rfl
+      have h2 : (Q.comp (Polynomial.X - Polynomial.C 1)).coeff Q.natDegree
+          = Q.leadingCoeff := by
+        rw [← hcompdeg]
+        exact hlead
+      rw [h1, h2, sub_self]
+    have hle : (Q - Q.comp (Polynomial.X - Polynomial.C 1)).natDegree ≤ Q.natDegree :=
+      le_trans (Polynomial.natDegree_sub_le _ _) (by simp [hcompdeg])
+    rcases lt_or_eq_of_le hle with h | h
+    · exact h
+    · exfalso
+      have hne : Q - Q.comp (Polynomial.X - Polynomial.C 1) ≠ 0 → False := by
+        intro hne0
+        have := Polynomial.leadingCoeff_ne_zero.mpr hne0
+        rw [Polynomial.leadingCoeff, h] at this
+        exact this hcoeff_top
+      by_cases h0 : Q - Q.comp (Polynomial.X - Polynomial.C 1) = 0
+      · rw [h0] at h
+        simp only [Polynomial.natDegree_zero] at h
+        exact hdeg h.symm
+      · exact hne h0
+
+/-- Composition with `X − 1` reflects vanishing. -/
+theorem eq_zero_of_comp_X_sub_one {p : Polynomial ℂ}
+    (h : p.comp (Polynomial.X - Polynomial.C 1) = 0) : p = 0 := by
+  rcases Polynomial.comp_eq_zero_iff.mp h with h' | ⟨_, h'⟩
+  · exact h'
+  · exfalso
+    have := congrArg Polynomial.natDegree h'
+    rw [Polynomial.natDegree_X_sub_C] at this
+    simp at this
+
+/-- **The compactified kill with a polynomial side.**  An eventual ℕ multi-ray shifted-power
+relation equal to a polynomial forces all ray coefficients and the polynomial to vanish:
+difference to reduce the polynomial degree (rays spread by one), recurse, and recover the
+original coefficients through the triangular ray structure. -/
+theorem multiRay_nat_relation_poly_kill {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k : ℂ)) :
+    ∀ (d : ℕ) (T D : ℕ), 1 ≤ T → ∀ (E : ℕ → Polynomial ℂ), (∀ t, (E t).natDegree ≤ D) →
+    ∀ (Q : Polynomial ℂ), Q.natDegree ≤ d → ∀ (M : ℕ),
+    (∀ n : ℕ, M ≤ n → T < n →
+      ∑ t ∈ Finset.range (T + 1), (((n - t : ℕ) : ℂ)) ^ (-s) * (E t).eval ((n : ℂ))
+        = Q.eval ((n : ℂ))) →
+    (∀ t ≤ T, E t = 0) ∧ Q = 0 := by
+  classical
+  intro d
+  induction d using Nat.strong_induction_on with
+  | _ d ih =>
+    intro T D hT E hdeg Q hQd M hrel
+    by_cases hQ0 : Q = 0
+    · subst hQ0
+      refine ⟨multiRay_nat_relation_kill hs T D hT E hdeg (M := M) ?_, rfl⟩
+      intro n hMn hTn
+      have := hrel n hMn hTn
+      simpa using this
+    · -- difference once
+      set F : ℕ → Polynomial ℂ := fun t => if t ≤ T then E t else 0 with hF
+      set E' : ℕ → Polynomial ℂ := fun t =>
+        F t - (if t = 0 then 0 else (F (t - 1)).comp (Polynomial.X - Polynomial.C 1)) with hE'
+      set Q' : Polynomial ℂ := Q - Q.comp (Polynomial.X - Polynomial.C 1) with hQ'
+      have hdegE' : ∀ t, (E' t).natDegree ≤ D := by
+        intro t
+        rw [hE']
+        refine le_trans (Polynomial.natDegree_sub_le _ _) (max_le ?_ ?_)
+        · simp only [hF]
+          split_ifs with h
+          · exact hdeg t
+          · simp
+        · split_ifs with h
+          · simp
+          · rw [Polynomial.natDegree_comp]
+            simp only [hF]
+            split_ifs with h2
+            · simpa [Polynomial.natDegree_X_sub_C] using hdeg (t - 1)
+            · simp
+      have hrel' : ∀ n : ℕ, M + 1 ≤ n → T + 1 < n →
+          ∑ t ∈ Finset.range (T + 2), (((n - t : ℕ) : ℂ)) ^ (-s) * (E' t).eval ((n : ℂ))
+            = Q'.eval ((n : ℂ)) := by
+        intro n hMn hTn
+        have h1 := hrel n (by omega) (by omega)
+        have h2 := hrel (n - 1) (by omega) (by omega)
+        have hcastn : (((n - 1 : ℕ)) : ℂ) = ((n : ℂ)) - 1 := by
+          rw [Nat.cast_sub (by omega)]
+          push_cast
+          ring
+        -- rewrite the shifted relation into the n-variable
+        have h2' : ∑ t ∈ Finset.range (T + 1),
+            (((n - (t + 1) : ℕ)) : ℂ) ^ (-s)
+              * ((F t).comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ))
+            = (Q.comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ)) := by
+          rw [Polynomial.eval_comp]
+          simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C]
+          rw [← hcastn]
+          rw [← h2]
+          refine Finset.sum_congr rfl fun t htmem => ?_
+          have htT : t ≤ T := Nat.lt_succ_iff.mp (Finset.mem_range.mp htmem)
+          have hsub : (n - 1 - t : ℕ) = (n - (t + 1) : ℕ) := by omega
+          rw [Polynomial.eval_comp]
+          simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C]
+          rw [← hcastn, hsub]
+          congr 1
+          simp only [hF]
+          rw [if_pos htT]
+        -- assemble the differenced relation
+        have hsplit : ∑ t ∈ Finset.range (T + 2),
+            (((n - t : ℕ)) : ℂ) ^ (-s) * (E' t).eval ((n : ℂ))
+            = (∑ t ∈ Finset.range (T + 2), (((n - t : ℕ)) : ℂ) ^ (-s) * (F t).eval ((n : ℂ)))
+              - (∑ t ∈ Finset.range (T + 2), (((n - t : ℕ)) : ℂ) ^ (-s)
+                * (if t = 0 then (0 : Polynomial ℂ)
+                    else (F (t - 1)).comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ))) := by
+          rw [← Finset.sum_sub_distrib]
+          refine Finset.sum_congr rfl fun t _ => ?_
+          simp only [hE', Polynomial.eval_sub]
+          split_ifs with h
+          · simp
+          · ring
+        have hfirst : ∑ t ∈ Finset.range (T + 2),
+            (((n - t : ℕ)) : ℂ) ^ (-s) * (F t).eval ((n : ℂ))
+            = ∑ t ∈ Finset.range (T + 1), (((n - t : ℕ)) : ℂ) ^ (-s) * (E t).eval ((n : ℂ)) := by
+          rw [Finset.sum_range_succ]
+          have hFT1 : F (T + 1) = 0 := by simp only [hF]; rw [if_neg (by omega)]
+          rw [hFT1]
+          simp only [Polynomial.eval_zero, mul_zero, add_zero]
+          refine Finset.sum_congr rfl fun t htmem => ?_
+          have htT : t ≤ T := Nat.lt_succ_iff.mp (Finset.mem_range.mp htmem)
+          simp only [hF]
+          rw [if_pos htT]
+        have hsecond : ∑ t ∈ Finset.range (T + 2), (((n - t : ℕ)) : ℂ) ^ (-s)
+            * (if t = 0 then (0 : Polynomial ℂ)
+                else (F (t - 1)).comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ))
+            = ∑ t ∈ Finset.range (T + 1),
+              (((n - (t + 1) : ℕ)) : ℂ) ^ (-s)
+                * ((F t).comp (Polynomial.X - Polynomial.C 1)).eval ((n : ℂ)) := by
+          rw [Finset.sum_range_succ']
+          simp only [if_pos rfl, Polynomial.eval_zero, mul_zero, add_zero]
+          refine Finset.sum_congr rfl fun t _ => ?_
+          simp only [Nat.add_sub_cancel]
+          rw [if_neg (by omega)]
+        rw [hsplit, hfirst, hsecond, h1, h2', hQ']
+        simp
+      -- recurse on the differenced relation
+      have hstep : (∀ t ≤ T + 1, E' t = 0) ∧ Q' = 0 := by
+        rcases natDegree_sub_comp_lt hQ0 with h0 | hlt
+        · rw [hQ'] at *
+          refine ⟨multiRay_nat_relation_kill hs (T + 1) D (by omega) E' hdegE' (M := M + 1) ?_,
+            h0⟩
+          intro n hMn hTn
+          have := hrel' n hMn hTn
+          rw [h0] at this
+          simpa using this
+        · have hQ'd : Q'.natDegree ≤ Q.natDegree - 1 := by omega
+          have hQdlt : Q.natDegree - 1 < d := by
+            have hQle : Q.natDegree ≤ d := hQd
+            have : Q.natDegree ≠ 0 → Q.natDegree - 1 < d := by omega
+            rcases Nat.eq_zero_or_pos Q.natDegree with h00 | hpos
+            · rw [h00] at hlt
+              omega
+            · omega
+          exact ih (Q.natDegree - 1) hQdlt (T + 1) D (by omega) E' hdegE' Q' hQ'd (M + 1) hrel'
+      obtain ⟨hE'0, hQ'0⟩ := hstep
+      -- triangular recovery: kill F from the top ray downward
+      have hFchain : ∀ j : ℕ, j ≤ T + 1 → F (T + 1 - j) = 0 := by
+        intro j
+        induction j with
+        | zero =>
+          intro _
+          simp only [hF]
+          rw [if_neg (by omega)]
+        | succ m ihm =>
+          intro hm
+          have hprev : F (T + 1 - m) = 0 := ihm (by omega)
+          have ht : T + 1 - m = (T - m) + 1 := by omega
+          have hE't := hE'0 ((T - m) + 1) (by omega)
+          simp only [hE'] at hE't
+          rw [if_neg (by omega)] at hE't
+          simp only [Nat.add_sub_cancel] at hE't
+          have : (F (T - m)).comp (Polynomial.X - Polynomial.C 1) = 0 := by
+            have hFtop : F ((T - m) + 1) = 0 := by
+              rw [← ht]
+              exact hprev
+            rw [hFtop] at hE't
+            linear_combination -hE't
+          have hgoal : T + 1 - (m + 1) = T - m := by omega
+          rw [hgoal]
+          exact eq_zero_of_comp_X_sub_one this
+      have hEzero : ∀ t ≤ T, E t = 0 := by
+        intro t ht
+        have := hFchain (T + 1 - t) (by omega)
+        rw [show T + 1 - (T + 1 - t) = t from by omega] at this
+        simp only [hF] at this
+        rw [if_pos ht] at this
+        exact this
+      -- the original polynomial side dies
+      have hQzero : Q = 0 := by
+        apply Polynomial.eq_zero_of_infinite_isRoot
+        have hsub : (fun n : ℕ => ((n : ℂ))) '' {n : ℕ | M ≤ n ∧ T < n}
+            ⊆ {v | Q.IsRoot v} := by
+          rintro v ⟨n, ⟨hMn, hTn⟩, rfl⟩
+          have := hrel n hMn hTn
+          have hzero : ∑ t ∈ Finset.range (T + 1),
+              (((n - t : ℕ)) : ℂ) ^ (-s) * (E t).eval ((n : ℂ)) = 0 := by
+            refine Finset.sum_eq_zero fun t htmem => ?_
+            rw [hEzero t (Nat.lt_succ_iff.mp (Finset.mem_range.mp htmem))]
+            simp
+          rw [hzero] at this
+          exact this.symm
+        have hinf : ({n : ℕ | M ≤ n ∧ T < n}).Infinite := by
+          have : {n : ℕ | M ≤ n ∧ T < n} = {n : ℕ | max M (T + 1) ≤ n} := by
+            ext n
+            simp only [Set.mem_setOf_eq, max_le_iff]
+            omega
+          rw [this]
+          have hcompl : {n : ℕ | max M (T + 1) ≤ n} = (Set.Iio (max M (T + 1)))ᶜ := by
+            ext n
+            simp
+          rw [hcompl]
+          exact (Set.finite_Iio _).infinite_compl
+        exact (hinf.image (fun a _ b _ hab => by exact_mod_cast hab)).mono hsub
+      exact ⟨hEzero, hQzero⟩
+
+end HurwitzRayPeeling
