@@ -252,7 +252,10 @@ import GaloisForLFunctions.Bottcher.ExtendedNonSquare
 import GaloisForLFunctions.Bottcher.AnnulusRoot
 import GaloisForLFunctions.Bottcher.WindingCertificates
 import GaloisForLFunctions.Bottcher.GreenSuperlevel
+import GaloisForLFunctions.Bottcher.GreenPullback
+import GaloisForLFunctions.Bottcher.GreenSublevel
 import GaloisForLFunctions.Bottcher.RhoPathLift
 import GaloisForLFunctions.Bottcher.ConnectedBranchModulusAuto
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
+import GaloisForLFunctions.Bottcher.BottcherNotRational
