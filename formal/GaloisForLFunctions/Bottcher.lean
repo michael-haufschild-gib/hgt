@@ -35,6 +35,7 @@ import GaloisForLFunctions.Bottcher.CoverConstruction
 import GaloisForLFunctions.Bottcher.CoverChainGlue
 import GaloisForLFunctions.Bottcher.CoverSection
 import GaloisForLFunctions.Bottcher.Q62Assembly
+import GaloisForLFunctions.Bottcher.DisconnectedPointwiseLifts
 import GaloisForLFunctions.Bottcher.DeckBiholo
 import GaloisForLFunctions.Bottcher.DeckAnnulus
 import GaloisForLFunctions.Bottcher.DeckAnnulusData
@@ -80,6 +81,7 @@ import GaloisForLFunctions.Bottcher.RepellingFixedPoint
 import GaloisForLFunctions.Bottcher.JuliaFrontierPreimage
 import GaloisForLFunctions.Bottcher.RepellingPeriodicFrontier
 import GaloisForLFunctions.Bottcher.InverseBranchPeriodic
+import GaloisForLFunctions.Bottcher.ContractingInverseBranch
 import GaloisForLFunctions.Bottcher.ZeroSurvival
 import GaloisForLFunctions.Bottcher.Resonance
 import GaloisForLFunctions.Bottcher.ResonanceOrder
@@ -223,6 +225,9 @@ import GaloisForLFunctions.Bottcher.FilledJuliaConnectedConsequences
 import GaloisForLFunctions.Bottcher.WindingBasepoint
 import GaloisForLFunctions.Bottcher.RhoLoopWinding
 import GaloisForLFunctions.Bottcher.RhoWindingOne
+import GaloisForLFunctions.Bottcher.IterateCovering
 import GaloisForLFunctions.Bottcher.ConnectedBranchMandelbrot
+import GaloisForLFunctions.Bottcher.RhoPathLift
+import GaloisForLFunctions.Bottcher.ConnectedBranchModulusAuto
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
