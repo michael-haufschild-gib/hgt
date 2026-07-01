@@ -216,5 +216,11 @@ import GaloisForLFunctions.Bottcher.BottcherWinding
 import GaloisForLFunctions.Bottcher.PeriodDoubling
 import GaloisForLFunctions.Bottcher.ConnectedBranchAssembly
 import GaloisForLFunctions.Bottcher.ConnectedPi1
+import GaloisForLFunctions.Bottcher.RhoDeckTranslate
+import GaloisForLFunctions.Bottcher.SublevelConnected
+import GaloisForLFunctions.Bottcher.FilledJuliaConnected
+import GaloisForLFunctions.Bottcher.FilledJuliaConnectedConsequences
+import GaloisForLFunctions.Bottcher.WindingBasepoint
+import GaloisForLFunctions.Bottcher.RhoLoopWinding
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
