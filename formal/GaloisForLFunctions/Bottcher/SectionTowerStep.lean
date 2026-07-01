@@ -987,9 +987,9 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
 /-- **The tower descent.**  For every `ε > 0` there is a tower section whose bottom level is
 within `ε` of the critical level `h = G_c(0)`, on an annulus whose top `R₀` clears
 `exp(4h + 1)` (room for the sub-critical chain). -/
-theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
+theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
     ∃ (rlo Rb R₀ : ℝ), 1 < rlo ∧ rlo ≤ Rb ∧ Rb < R₀ ∧ rlo ^ 2 < R₀ ∧
-      Real.exp (4 * greenFunctionDyn c 0 + 1) < R₀ ∧
+      M < R₀ ∧
       greenFunctionDyn c 0 < Real.log rlo ∧
       Real.log rlo < greenFunctionDyn c 0 + ε ∧
       ∃ S : TowerSection c rlo R₀,
@@ -998,13 +998,14 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
   set h : ℝ := greenFunctionDyn c 0 with hhdef
   have hh0 : 0 ≤ h := greenFunctionDyn_nonneg c 0
   obtain ⟨Ra, hRa1, hRaG, hanchor⟩ := exists_tower_anchor c
-  set R₀ : ℝ := Ra ^ 2 + Real.exp (4 * h + 1) + 1 with hR₀def
-  have hexppos : (0:ℝ) < Real.exp (4 * h + 1) := Real.exp_pos _
+  set R₀ : ℝ := Ra ^ 2 + max M 0 + 1 with hR₀def
+  have hMnn : (0:ℝ) ≤ max M 0 := le_max_right M 0
   have hR₀Ra : Ra < R₀ := by
     rw [hR₀def]; nlinarith
   have hRasqR₀ : Ra ^ 2 < R₀ := by
     rw [hR₀def]; nlinarith
-  have hR₀exp : Real.exp (4 * h + 1) < R₀ := by
+  have hR₀exp : M < R₀ := by
+    have h1 : M ≤ max M 0 := le_max_left M 0
     rw [hR₀def]; nlinarith
   obtain ⟨S₀, hS₀φ⟩ := hanchor R₀ hR₀Ra
   have hhRa : h < Real.log Ra := by
