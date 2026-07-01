@@ -932,3 +932,129 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
       rw [intervalIntegral.integral_congr (fun θ _ => hcongr θ)]
       exact hs'_wind r hr1 hb
 
+
+/-- **The tower descent.**  For every `ε > 0` there is a tower section whose bottom level is
+within `ε` of the critical level `h = G_c(0)`, on an annulus whose top `R₀` clears
+`exp(4h + 1)` (room for the sub-critical chain). -/
+theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (rlo R₀ : ℝ), 1 < rlo ∧ rlo ^ 2 < R₀ ∧
+      Real.exp (4 * greenFunctionDyn c 0 + 1) < R₀ ∧
+      greenFunctionDyn c 0 < Real.log rlo ∧
+      Real.log rlo < greenFunctionDyn c 0 + ε ∧
+      Nonempty (TowerSection c rlo R₀) := by
+  classical
+  set h : ℝ := greenFunctionDyn c 0 with hhdef
+  have hh0 : 0 ≤ h := greenFunctionDyn_nonneg c 0
+  obtain ⟨Ra, hRa1, hRaG, hanchor⟩ := exists_tower_anchor c
+  set R₀ : ℝ := Ra ^ 2 + Real.exp (4 * h + 1) + 1 with hR₀def
+  have hexppos : (0:ℝ) < Real.exp (4 * h + 1) := Real.exp_pos _
+  have hR₀Ra : Ra < R₀ := by
+    rw [hR₀def]; nlinarith
+  have hRasqR₀ : Ra ^ 2 < R₀ := by
+    rw [hR₀def]; nlinarith
+  have hR₀exp : Real.exp (4 * h + 1) < R₀ := by
+    rw [hR₀def]; nlinarith
+  obtain ⟨S₀⟩ := hanchor R₀ hR₀Ra
+  have hhRa : h < Real.log Ra := by
+    calc h = Real.log (Real.exp h) := (Real.log_exp h).symm
+      _ < Real.log Ra := Real.log_lt_log (Real.exp_pos h) hRaG
+  -- the one-step descent with uniform gap contraction
+  have hstep : ∀ rlo : ℝ, 1 < rlo → rlo ^ 2 < R₀ → h < Real.log rlo →
+      Nonempty (TowerSection c rlo R₀) →
+      ∃ rlo' : ℝ, 1 < rlo' ∧ rlo' ^ 2 < R₀ ∧ h < Real.log rlo' ∧
+        Real.log rlo' - h ≤ (3/4) * (Real.log rlo - h) ∧
+        Nonempty (TowerSection c rlo' R₀) := by
+    intro rlo h1 h2 h3 hS
+    obtain ⟨S⟩ := hS
+    set ℓ : ℝ := Real.log rlo with hℓdef
+    have hℓ0 : 0 < ℓ := Real.log_pos h1
+    have hrlopos : (0:ℝ) < rlo := by linarith
+    have hrloexp : rlo = Real.exp ℓ := (Real.exp_log hrlopos).symm
+    -- the source bottom level: 1.5ℓ above 2h, else h + ℓ
+    set τ : ℝ := if 2 * h < ℓ then (3/2) * ℓ else h + ℓ with hτdef
+    have hτ2h : 2 * h < τ := by
+      rw [hτdef]
+      by_cases hc : 2 * h < ℓ
+      · rw [if_pos hc]; nlinarith
+      · rw [if_neg hc]; linarith
+    have hτℓ : ℓ < τ := by
+      rw [hτdef]
+      by_cases hc : 2 * h < ℓ
+      · rw [if_pos hc]; nlinarith
+      · rw [if_neg hc]
+        push Not at hc
+        -- here ℓ ≤ 2h with ℓ > h forces 0 < h
+        have hhpos : 0 < h := by linarith
+        linarith
+    have hτ2ℓ : τ < 2 * ℓ := by
+      rw [hτdef]
+      by_cases hc : 2 * h < ℓ
+      · rw [if_pos hc]; nlinarith
+      · rw [if_neg hc]; linarith
+    have hgap : τ / 2 - h ≤ (3/4) * (ℓ - h) := by
+      rw [hτdef]
+      by_cases hc : 2 * h < ℓ
+      · rw [if_pos hc]; nlinarith
+      · rw [if_neg hc]; nlinarith
+    -- the step with σ₁ := exp τ, σ₂ := R₀
+    set σ₁ : ℝ := Real.exp τ with hσ₁def
+    have hσ₁rlo : rlo < σ₁ := by
+      rw [hσ₁def, hrloexp]
+      exact Real.exp_lt_exp.mpr hτℓ
+    have hσ₁sq : σ₁ < rlo ^ 2 := by
+      rw [hσ₁def, hrloexp, ← Real.exp_nat_mul]
+      apply Real.exp_lt_exp.mpr
+      push_cast
+      linarith
+    have hcab : greenFunctionDyn c c < Real.log σ₁ := by
+      rw [hσ₁def, Real.log_exp, greenFunctionDyn_critical_value c]
+      exact hτ2h
+    obtain ⟨S'⟩ := tower_extension_step h1 h2 S h3 hσ₁rlo hσ₁sq h2 le_rfl hcab
+    refine ⟨Real.sqrt σ₁, ?_, ?_, ?_, ?_, ⟨S'⟩⟩
+    · have h4 : (0:ℝ) < τ := by linarith
+      have h5 : (1:ℝ) < σ₁ := by
+        rw [hσ₁def]
+        calc (1:ℝ) = Real.exp 0 := Real.exp_zero.symm
+          _ < Real.exp τ := Real.exp_lt_exp.mpr h4
+      calc (1:ℝ) = Real.sqrt 1 := Real.sqrt_one.symm
+        _ < Real.sqrt σ₁ := Real.sqrt_lt_sqrt (by norm_num) h5
+    · have h4 : Real.sqrt σ₁ ^ 2 = σ₁ := Real.sq_sqrt (le_of_lt (Real.exp_pos _))
+      rw [h4]
+      calc σ₁ < rlo ^ 2 := hσ₁sq
+        _ < R₀ := h2
+    · have h4 : Real.log (Real.sqrt σ₁) = τ / 2 := by
+        rw [Real.log_sqrt (le_of_lt (Real.exp_pos _)), Real.log_exp]
+      rw [h4]
+      linarith
+    · have h4 : Real.log (Real.sqrt σ₁) = τ / 2 := by
+        rw [Real.log_sqrt (le_of_lt (Real.exp_pos _)), Real.log_exp]
+      rw [h4]
+      linarith
+  -- iterate: geometric decay of the level gap
+  have hiter : ∀ n : ℕ, ∃ rlo : ℝ, 1 < rlo ∧ rlo ^ 2 < R₀ ∧ h < Real.log rlo ∧
+      Real.log rlo - h ≤ (3/4) ^ n * (Real.log Ra - h) ∧
+      Nonempty (TowerSection c rlo R₀) := by
+    intro n
+    induction n with
+    | zero =>
+        exact ⟨Ra, hRa1, hRasqR₀, hhRa, by norm_num, ⟨S₀⟩⟩
+    | succ m ih =>
+        obtain ⟨rlo, h1, h2, h3, h4, hS⟩ := ih
+        obtain ⟨rlo', h1', h2', h3', h4', hS'⟩ := hstep rlo h1 h2 h3 hS
+        refine ⟨rlo', h1', h2', h3', ?_, hS'⟩
+        calc Real.log rlo' - h ≤ (3/4) * (Real.log rlo - h) := h4'
+          _ ≤ (3/4) * ((3/4) ^ m * (Real.log Ra - h)) := by nlinarith
+          _ = (3/4) ^ (m + 1) * (Real.log Ra - h) := by ring
+  -- pick n with the gap below ε
+  have hgap0 : (0:ℝ) < Real.log Ra - h := by linarith
+  obtain ⟨n, hn⟩ : ∃ n : ℕ, (3/4:ℝ) ^ n * (Real.log Ra - h) < ε := by
+    obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one
+      (show (0:ℝ) < ε / (Real.log Ra - h) from by positivity)
+      (by norm_num : (3:ℝ)/4 < 1)
+    refine ⟨n, ?_⟩
+    rw [lt_div_iff₀ hgap0] at hn
+    nlinarith
+  obtain ⟨rlo, h1, h2, h3, h4, hS⟩ := hiter n
+  exact ⟨rlo, R₀, h1, h2, hR₀exp, h3, by linarith, hS⟩
+
+end Bottcher

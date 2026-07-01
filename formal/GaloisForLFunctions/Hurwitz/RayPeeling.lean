@@ -487,3 +487,64 @@ theorem multiRay_eq_zero {σ : ℂ} (hσ : ∀ k : ℤ, σ ≠ (k : ℂ)) :
       exact hPtop
 
 end HurwitzRayPeeling
+
+namespace HurwitzRayPeeling
+
+open Polynomial
+
+/-- Reversal of a polynomial into the compactified coordinate `u = 1/n`. -/
+noncomputable def revPoly (D : ℕ) (E : Polynomial ℂ) : Polynomial ℂ :=
+  ∑ k ∈ Finset.range (D + 1), Polynomial.C (E.coeff k) * Polynomial.X ^ (D - k)
+
+/-- Coefficients of the reversal. -/
+theorem revPoly_coeff (D : ℕ) (E : Polynomial ℂ) {j : ℕ} (hj : j ≤ D) :
+    (revPoly D E).coeff j = E.coeff (D - j) := by
+  rw [revPoly, Polynomial.finsetSum_coeff]
+  rw [Finset.sum_eq_single (D - j)]
+  · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos (by omega), mul_one]
+  · intro k hk hkne
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg ?_, mul_zero]
+    have hkD : k < D + 1 := Finset.mem_range.mp hk
+    omega
+  · intro h
+    exact absurd (Finset.mem_range.mpr (by omega)) h
+
+/-- The reversal vanishes iff the polynomial does (degrees within `D`). -/
+theorem eq_zero_of_revPoly_eq_zero {D : ℕ} {E : Polynomial ℂ} (hdeg : E.natDegree ≤ D)
+    (h : revPoly D E = 0) : E = 0 := by
+  ext k
+  rcases le_or_gt k D with hk | hk
+  · have := revPoly_coeff D E (j := D - k) (by omega)
+    rw [h, Polynomial.coeff_zero] at this
+    have hDk : D - (D - k) = k := by omega
+    rw [hDk] at this
+    simp [this.symm]
+  · rw [Polynomial.coeff_zero]
+    exact Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
+
+/-- Evaluation of the reversal at `1/n` recovers the polynomial value at `n`. -/
+theorem revPoly_eval_inv {D : ℕ} (E : Polynomial ℂ) {n : ℂ} (hn : n ≠ 0) :
+    (revPoly D E).eval n⁻¹ * n ^ D = ∑ k ∈ Finset.range (D + 1), E.coeff k * n ^ k := by
+  rw [revPoly, Polynomial.eval_finsetSum, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun k hk => ?_
+  have hkD : k ≤ D := by
+    have := Finset.mem_range.mp hk
+    omega
+  simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
+  have hpow : (n⁻¹) ^ (D - k) * n ^ D = n ^ k := by
+    rw [inv_pow, inv_mul_eq_div, div_eq_iff (pow_ne_zero _ hn), ← pow_add]
+    congr 1
+    omega
+  calc E.coeff k * (n⁻¹) ^ (D - k) * n ^ D
+      = E.coeff k * ((n⁻¹) ^ (D - k) * n ^ D) := by ring
+    _ = E.coeff k * n ^ k := by rw [hpow]
+
+/-- Evaluation form when the degree is within the window. -/
+theorem revPoly_eval_inv' {D : ℕ} {E : Polynomial ℂ} (hdeg : E.natDegree ≤ D) {n : ℂ}
+    (hn : n ≠ 0) :
+    (revPoly D E).eval n⁻¹ * n ^ D = E.eval n := by
+  rw [revPoly_eval_inv E hn]
+  rw [Polynomial.eval_eq_sum_range' (by omega : E.natDegree < D + 1)]
+
+end HurwitzRayPeeling
+
