@@ -258,6 +258,7 @@ import GaloisForLFunctions.Bottcher.TowerCertificates
 import GaloisForLFunctions.Bottcher.SectionTower
 import GaloisForLFunctions.Bottcher.SectionTowerStep
 import GaloisForLFunctions.Bottcher.SectionInverse
+import GaloisForLFunctions.Bottcher.SubCriticalChain
 import GaloisForLFunctions.Bottcher.RhoPathLift
 import GaloisForLFunctions.Bottcher.ConnectedBranchModulusAuto
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
