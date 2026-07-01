@@ -222,5 +222,7 @@ import GaloisForLFunctions.Bottcher.FilledJuliaConnected
 import GaloisForLFunctions.Bottcher.FilledJuliaConnectedConsequences
 import GaloisForLFunctions.Bottcher.WindingBasepoint
 import GaloisForLFunctions.Bottcher.RhoLoopWinding
+import GaloisForLFunctions.Bottcher.RhoWindingOne
+import GaloisForLFunctions.Bottcher.ConnectedBranchMandelbrot
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
