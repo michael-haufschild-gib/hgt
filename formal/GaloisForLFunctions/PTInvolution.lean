@@ -1,4 +1,7 @@
 import GaloisForLFunctions.Core
+import Mathlib.Analysis.Calculus.Deriv.Basic
+import Mathlib.Analysis.Calculus.Deriv.Add
+import Mathlib.Analysis.Calculus.Deriv.Comp
 
 /-!
 # Functional-equation pullback and the derivative time-reversal

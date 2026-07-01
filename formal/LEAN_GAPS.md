@@ -5,14 +5,18 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
+| Kind | Location | Context | Text |
+|---|---|---|---|
+| proof-debt | `formal/GaloisForLFunctions/Bottcher/AnnulusRoot.lean:65` | `theorem exp_mem_annulusSet` | `sorry` |
+| proof-debt | `formal/GaloisForLFunctions/Bottcher/AnnulusRoot.lean:312` | `theorem exists_log_on_annulus` | `sorry` |
+| proof-debt | `formal/GaloisForLFunctions/Bottcher/AnnulusRoot.lean:313` | `theorem exists_log_on_annulus` | `sorry` |
 
 ## Large Files
 
 | Lines | File |
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 4197 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 4313 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
@@ -41,6 +45,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 | Location | Text |
 |---|---|
+| `formal/GaloisForLFunctions/Bottcher/ArcContinuation.lean:9` | spreads any positive-length arc of continuation over the whole circle — the remaining step (a |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranchGlue.lean:303` | the local form of the basin branch the index route consumes; the remaining inputs are the geometric ones: a |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranching.lean:14` | remaining analytic build (the disconnected, Cantor-Julia-set covering structure). |
 | `formal/GaloisForLFunctions/Bottcher/BasinBranching.lean:360` | remaining gap to the FAITHFUL tower (with the actual transcendental `φ_{c₁}`, `φ_{c₂}`) is that this |
@@ -58,6 +63,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/BottcherDetermines.lean:158` | in the connected-case independence, with no remaining hypotheses. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BottcherInverse.lean:4` | The dyadic-cover lift `hliftF`/`hliftG` (the genuine remaining analytic input of the disconnected case, |
 | `formal/GaloisForLFunctions/Bottcher/BottcherWinding.lean:59` | escape-level subtypes: the remaining winding problem becomes the pure winding of the iterate image loop |
+| `formal/GaloisForLFunctions/Bottcher/BoundaryCollarExtension.lean:199` | isolates the sole remaining geometric input of §1 as the elementary combinatorial fact `hgen` — a |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean:203` | needed for the remaining boundary singular-potential lower semicontinuity. -/ |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean:1162` | the full GAP-A potential representation is equivalent to the remaining |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryCriteria.lean:120` | raw boundary-scaling hypothesis by the concrete remaining shifted/GAP-A |
@@ -96,8 +102,14 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:1189` | current strongest connected-case endpoint: under the remaining `ρ` path-lift and all-level |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:1218` | Mandelbrot hypothesis supplies the critical-value exclusion; the remaining inputs are now the explicit |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean:1246` | Mandelbrot parameters.** The remaining hypotheses are now the two concrete formal gaps left by the |
-| `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:147` | This is the concrete bridge from the remaining exact-fiber statement for `ρ_{n+1}` to the |
-| `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:263` | /-- **Iterate-image winding from `ρ` as a surjective covering plus sheet-swap.** The remaining |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchMandelbrot.lean:10` | internally. The single remaining topological input is the path-lift `hlift` (each loop in |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchMandelbrot.lean:63` | /-- **Unconditional connected Böttcher branch for `c ∈ mandelbrot`.** Both remaining topological |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedBranchMandelbrot.lean:70` | no remaining hypothesis beyond `c ∈ mandelbrot`. This closes the connected-branch Gap 2. -/ |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedNaturalBoundaryMandelbrot.lean:16` | empty-interior (dendrite) connected parameters. The remaining connected input is the branch boundary |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:112` | homeomorphy of `ρ_{n+1}`. This closes the local-unbranched half of the remaining `ρ_n` covering input; |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:113` | the remaining covering work is to assemble evenly-covered neighborhoods from the dyadic fiber/period |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:245` | This is the concrete bridge from the remaining exact-fiber statement for `ρ_{n+1}` to the |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:361` | /-- **Iterate-image winding from `ρ` as a surjective covering plus sheet-swap.** The remaining |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingFibreInput.lean:217` | identity, a strongly repelling periodic point can be chosen avoiding that denominator and the remaining |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingPeriodicAvoidance.lean:6` | strictly smaller than the separable fixed-point set and prove that every remaining fixed point has the |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingPeriodicAvoidance.lean:507` | fibre separability; the callback only proves strong repulsion at the remaining period-`p` fixed |
@@ -109,6 +121,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/ConnectedTranscendence.lean:5` | theorem, reducing `Transcendental (RatFunc ℂ) (phiMero c)` to exactly the two remaining deep dynamical |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedTranscendence.lean:62` | contradicting `(X - C(C w₀)) ∤ P` via `relation_at_const`. The remaining input is purely dynamical: such a |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedTranscendence.lean:412` | of `J_c`, not a periodic-point resonance. The remaining input is the basin continuation `β` reaching a |
+| `formal/GaloisForLFunctions/Bottcher/ContractingInverseBranch.lean:13` | but consumes a *hypothesised* contracting branch.  This file supplies the missing quantitative fact — |
 | `formal/GaloisForLFunctions/Bottcher/CoverChainGlue.lean:14` | local→semilocal step toward the global cover — the only remaining obstruction being a chain that |
 | `formal/GaloisForLFunctions/Bottcher/CoverChainGlue.lean:63` | assembles, the remaining input being the loop-closure / deck where the chain wraps a Cantor cylinder. -/ |
 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean:123` | connected dyadic cover are these branches; gluing them (by the `μ_{2^∞}` cocycle) is the remaining |
@@ -153,6 +166,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/DeckAutomorphism.lean:88` | analytic fact, not an assumed one. This pins the remaining work to the analytic continuation layer. |
 | `formal/GaloisForLFunctions/Bottcher/DeckBiholo.lean:12` | This file supplies that missing link.  From a **global biholomorphism** `φ : U ≃ V` of the cover |
 | `formal/GaloisForLFunctions/Bottcher/DendriteBoundary.lean:564` | the basin can exist. The only remaining inputs are the empty-interior condition (the dendrite case |
+| `formal/GaloisForLFunctions/Bottcher/DisconnectedPointwiseLifts.lean:47` | `φ₁ = bottcherCoord c₁`, `φ₂ = bottcherCoord c₂`.  The remaining input is thus purely the *pointwise* |
 | `formal/GaloisForLFunctions/Bottcher/DyadicMonodromy.lean:10` | The remaining (analytic) half of `mono` — that continuation around the cylinder loop |
 | `formal/GaloisForLFunctions/Bottcher/EscapeLevelRoot.lean:14` | wind(βlev n)`. That dynamical evenness is the remaining geometric input, now isolated as exactly the |
 | `formal/GaloisForLFunctions/Bottcher/EscapeLevelRoot.lean:59` | `2ⁿ⁺¹` divisibility; the remaining topological content is proving the previous image winding is already |
@@ -215,7 +229,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:655` | remaining topological-degree assertion exposed as the `hodd` hypothesis. -/ |
 | `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:722` | `rho_n - c` half-period loops. This packages the remaining connected topological-degree |
 | `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:806` | behind the remaining connected `π₁` theorem. -/ |
-| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:865` | is the genuine remaining content, governed by the connectedness of the filled Julia set. -/ |
+| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:917` | is the genuine remaining content, governed by the connectedness of the filled Julia set. -/ |
 | `formal/GaloisForLFunctions/Bottcher/PeriodicPoints.lean:64` | remaining Fatou-density content.) -/ |
 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:235` | far field — with the only remaining input a geometric one: the connected far-field region `V` reaching the |
 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:933` | where the remaining error is multiplied by the small defect `Z(t)-W(t)^2-d`. -/ |
@@ -281,16 +295,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1863` | /-- q62 target-density reduction with concrete Newton parameters.  The remaining hRigid local |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedZeroSurvival.lean:277` | fixed closed ball, the repelling fixed tail supplies the missing center estimate automatically. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedZeroSurvival.lean:499` | The remaining local work is now exactly the scaled-ball containment and scaled derivative-variation |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedZeroSurvival.lean:543` | window.  This is the current hRigid endpoint for the zero-survival route; the remaining analytic |
-| `formal/GaloisForLFunctions/Bottcher/RepellingPeriodicFrontier.lean:6` | arbitrary period.  This file supplies the missing dynamical part directly. |
-| `formal/GaloisForLFunctions/Bottcher/ResonanceOrder.lean:13` | no continuation of `φ_c` across a non-resonant repelling periodic point. The only remaining global |
-| `formal/GaloisForLFunctions/Bottcher/Rigidity.lean:156` | `TranscendentalOverAdjoin` only for the both-connected case.  Thus the remaining analytic work can be |
-| `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean:18` | `D₆ ≡ 0 ⟹ ThetaWronskian23`. The remaining (modular) input is the vanishing `D₆ ≡ 0`. |
-| `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean:343` | weight-0 ratio; the only remaining input to `ThetaWronskian23` (hence to `λ' ≠ 0`) is `P ≡ 0`, which |
-| `formal/GaloisForLFunctions/Bottcher/TranscendenceReduction.lean:213` | `g` — the propagation half of the remaining continuation core. -/ |
-| `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean:99` | This isolates the exact remaining geometric obligation for the repaired |
-| `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean:978` | by the chain rule.  The remaining geometric input is now exactly a closed |
-| `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean:1323` | square root `v²=q_n-c₁`; the new carried ball is `ball(v, r_n/‖v‖)`.  The remaining geometric core is |
 
 ## Historical Status Logs
 
@@ -300,4 +304,4 @@ Use `scripts/formal_tools.py research "<query>"` when you need to search those l
 | Lines | File |
 |---:|---|
 | 2702 | `formal/GaloisForLFunctions/Bottcher/STATUS.md` |
-| 134 | `formal/GaloisForLFunctions/Hurwitz/STATUS.md` |
+| 183 | `formal/GaloisForLFunctions/Hurwitz/STATUS.md` |

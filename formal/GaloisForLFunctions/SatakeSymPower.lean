@@ -1,5 +1,6 @@
 import GaloisForLFunctions.EHKoszulDuality
 import GaloisForLFunctions.SymPowerPlethysm
+import Mathlib.Data.Sym.Card
 
 /-!
 # The `GL₂` symmetric-power character = Chebyshev `S` (Sato–Tate skeleton, Tier A)

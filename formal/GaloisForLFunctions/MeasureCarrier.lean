@@ -1,4 +1,7 @@
 import GaloisForLFunctions.Core
+import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
+import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Analysis.Matrix.Order
 
 /-!
 # The measure carrier: finite poles → infinite spectrum (Stage-2 infrastructure)

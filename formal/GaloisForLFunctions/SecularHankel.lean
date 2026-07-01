@@ -1,4 +1,5 @@
 import GaloisForLFunctions.Core
+import Mathlib.LinearAlgebra.Matrix.PosDef
 
 /-!
 # Finite secular Hankel positivity: real spectrum ⟹ PSD moment Gram

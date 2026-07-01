@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CompleteHomogeneous
 import GaloisForLFunctions.ExteriorSatake
+import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
 # The `e–h` (∧•/Sym•) Koszul duality — welding B30 to B5 (Tier A)

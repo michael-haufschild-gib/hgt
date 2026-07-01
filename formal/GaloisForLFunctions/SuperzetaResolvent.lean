@@ -1,4 +1,5 @@
 import GaloisForLFunctions.EHKoszulDuality
+import Mathlib.RingTheory.PowerSeries.Inverse
 
 /-!
 # The superzeta as an additive resolvent trace (B23 verdict, Tier A)

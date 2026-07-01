@@ -18,6 +18,7 @@ The only inputs taken as named hypotheses are the **Laurent-coefficient extracti
 -/
 import GaloisForLFunctions.Hurwitz.N2BlockAnalytic
 import GaloisForLFunctions.Hurwitz.N2DensityShadow
+import Mathlib.Analysis.Complex.ExponentialBounds
 
 open Complex HurwitzN2Main HurwitzN2Tail HurwitzN2BlockAnalytic HurwitzN2DensityShadow
 open HurwitzZetaShift HurwitzEncoding

@@ -17,6 +17,7 @@ wrapper name says which branch is proved.
 import GaloisForLFunctions.Hurwitz.N2Final
 import GaloisForLFunctions.Hurwitz.NonRationality
 import GaloisForLFunctions.Hurwitz.N2HalfInteger
+import GaloisForLFunctions.Hurwitz.N2HZeta
 import GaloisForLFunctions.Hurwitz.AllNQuadFilt
 import GaloisForLFunctions.Hurwitz.AllNHalfInteger
 import GaloisForLFunctions.Hurwitz.AllNRowExtraction
@@ -25,6 +26,7 @@ import GaloisForLFunctions.Hurwitz.AllNTailIndependence
 import GaloisForLFunctions.Hurwitz.MonodromyScalar
 import GaloisForLFunctions.Hurwitz.PolylogPoleTower
 import GaloisForLFunctions.U0.U0CardTheorems
+import GaloisForLFunctions.U0.U0PhiCircleWindow
 import GaloisForLFunctions.U0.U0CoverMono
 import GaloisForLFunctions.U0.U0CoverTransport
 import GaloisForLFunctions.U0.U0PhiLifts
@@ -4193,5 +4195,119 @@ theorem u0_phi_independence_all_parameters_escapeCarrier_from_imageWindingEscape
   intro U hUo hUc hUne hUinf b hU_esc deepdata
   exact U0CardTheorems.u0_phi_independence_all_parameters_escapeCarrier_imageWindingEscapeDeepData
     hUo hUc hUne hUinf hU_esc deepdata
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-! ## Hurwitz genuine-`hzeta` capstones
+
+Bridge closure: the model capstones (`exp + tailFactored` blocks) restated against the ACTUAL
+Hurwitz zeta `hzeta s a = ∑' m, (m+a)^{-s}`.  The relation hypothesis is imposed at
+`a = -n + x` with `0 < Im x` (upper side of the negative-integer ray) — the honest window, since
+the principal-branch split of the Hurwitz tail matches the analytic factored tail exactly there;
+the identity theorem then extends the model relation to the full strip. -/
+
+/-- Genuine-`hzeta` N=2 target: a polynomial-coefficient quadratic relation among the actual
+`hzeta (s+k) ·` (`k ≤ 2`) near the negative-integer ray (upper side) has only zero coefficients;
+only `Re s > 1` and `s ∉ ℤ` are assumed. -/
+def HurwitzN2HZetaUnconditionalTarget (s : ℂ) : Prop :=
+  1 < s.re →
+  (∀ k : ℤ, (k : ℂ) ≠ s) →
+  ∀ (q : Fin 3 → Fin 3 → Polynomial ℂ) (l : Fin 3 → Polynomial ℂ) (cc : Polynomial ℂ) (N : ℕ),
+    (∀ n, N ≤ n → ∀ x : ℂ, ‖x‖ < 1 / 2 → 0 < x.im →
+      (∑ i : Fin 3, ∑ j : Fin 3, (q i j).eval (-(n : ℂ) + x)
+          * (HurwitzZetaShift.hzeta (s + (i : ℂ)) (-(n : ℂ) + x)
+            * HurwitzZetaShift.hzeta (s + (j : ℂ)) (-(n : ℂ) + x)))
+        + (∑ k : Fin 3, (l k).eval (-(n : ℂ) + x)
+            * HurwitzZetaShift.hzeta (s + (k : ℂ)) (-(n : ℂ) + x))
+        + cc.eval (-(n : ℂ) + x) = 0) →
+    q 0 0 = 0 ∧ q 2 2 = 0 ∧ q 1 1 = 0 ∧ q 0 2 + q 2 0 = 0
+      ∧ l 2 = 0 ∧ l 0 = 0 ∧ l 1 = 0 ∧ cc = 0
+
+/-- Genuine-`hzeta` N=2 capstone, proved. -/
+theorem hurwitz_n2_hzeta_unconditional (s : ℂ) : HurwitzN2HZetaUnconditionalTarget s := by
+  intro hs1 hsZ q l cc N hrel
+  exact HurwitzN2HZeta.hurwitz_n2_hzeta_unconditional hs1 hsZ q l cc (N := N) hrel
+
+/-- Genuine-`hzeta` N=2 target, upper-half-plane form: the same conclusion assuming the relation
+at every `a` in the upper half-plane. -/
+def HurwitzN2HZetaUpperHalfPlaneTarget (s : ℂ) : Prop :=
+  1 < s.re →
+  (∀ k : ℤ, (k : ℂ) ≠ s) →
+  ∀ (q : Fin 3 → Fin 3 → Polynomial ℂ) (l : Fin 3 → Polynomial ℂ) (cc : Polynomial ℂ),
+    (∀ a : ℂ, 0 < a.im →
+      (∑ i : Fin 3, ∑ j : Fin 3, (q i j).eval a
+          * (HurwitzZetaShift.hzeta (s + (i : ℂ)) a * HurwitzZetaShift.hzeta (s + (j : ℂ)) a))
+        + (∑ k : Fin 3, (l k).eval a * HurwitzZetaShift.hzeta (s + (k : ℂ)) a)
+        + cc.eval a = 0) →
+    q 0 0 = 0 ∧ q 2 2 = 0 ∧ q 1 1 = 0 ∧ q 0 2 + q 2 0 = 0
+      ∧ l 2 = 0 ∧ l 0 = 0 ∧ l 1 = 0 ∧ cc = 0
+
+/-- Genuine-`hzeta` N=2 upper-half-plane capstone, proved. -/
+theorem hurwitz_n2_hzeta_upper_half_plane (s : ℂ) : HurwitzN2HZetaUpperHalfPlaneTarget s := by
+  intro hs1 hsZ q l cc hrel
+  exact HurwitzN2HZeta.hurwitz_n2_hzeta_upper_half_plane hs1 hsZ q l cc hrel
+
+/-- Genuine-`hzeta` all-`N` quadratic-block target: a polynomial-coefficient quadratic relation
+among the actual `hzeta (s+k) ·` (`0 ≤ k ≤ N`) near the negative-integer ray (upper side) kills
+the entire quadratic filtration `AqN`. -/
+def HurwitzAllNHZetaQuadraticBlockTarget (N : ℕ) (s : ℂ) : Prop :=
+  1 < s.re →
+  (∀ k : ℤ, (k : ℂ) ≠ s) →
+  ∀ (q : Fin (N + 1) → Fin (N + 1) → Polynomial ℂ) (l : Fin (N + 1) → Polynomial ℂ)
+      (cc : Polynomial ℂ) (M : ℕ),
+    (∀ n, M ≤ n → ∀ x : ℂ, ‖x‖ < 1 / 2 → 0 < x.im →
+      (∑ i : Fin (N + 1), ∑ j : Fin (N + 1), (q i j).eval (-(n : ℂ) + x)
+          * (HurwitzZetaShift.hzeta (s + (i : ℂ)) (-(n : ℂ) + x)
+            * HurwitzZetaShift.hzeta (s + (j : ℂ)) (-(n : ℂ) + x)))
+        + (∑ k : Fin (N + 1), (l k).eval (-(n : ℂ) + x)
+            * HurwitzZetaShift.hzeta (s + (k : ℂ)) (-(n : ℂ) + x))
+        + cc.eval (-(n : ℂ) + x) = 0) →
+    ∀ w, w ≤ 2 * N → HurwitzAllNQuadFilt.AqN q w = 0
+
+/-- Genuine-`hzeta` all-`N` quadratic-block capstone, proved. -/
+theorem hurwitz_all_n_hzeta_quadratic_block (N : ℕ) (s : ℂ) :
+    HurwitzAllNHZetaQuadraticBlockTarget N s := by
+  intro hs1 hsZ q l cc M hrel
+  exact HurwitzN2HZeta.hurwitz_allN_hzeta_quadratic_block N hs1 hsZ q l cc (M := M) hrel
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-! ## u₀ ⟂ φ — the circle-window reduction
+
+The corrected reduction of the `u0-phi-independence` cards.  The previously registered
+image-winding deep-data interface is unsatisfiable (every component of the escape bad set
+carries an even count of `f^[k]`-zeros, so all avoidable windings are even); the honest
+remaining analytic input is the window continuation `(Ω, φ)` of the Böttcher coordinate to a
+connected window touching the unit circle, and this target consumes exactly that. -/
+
+/-- Circle-window target: given a window continuation `(Ω, φ)` touching the unit circle with
+`Ω ∩ Ext` preconnected, no nonzero positive-`u₀`-degree polynomial relation
+`P(z, φ(z), u₀(z)) = 0` (with separable-specialization data at some `w ∈ Ω`) can hold on any
+nonempty open piece of `Ω ∩ Ext`. -/
+def U0PhiCircleWindowTarget : Prop :=
+  ∀ (Ω : Set ℂ), IsOpen Ω → IsPreconnected Ω →
+    IsPreconnected (Ω ∩ U0NaturalBoundary.Ext) →
+  ∀ (φ : ℂ → ℂ), AnalyticOnNhd ℂ φ Ω →
+  ∀ (P : (Polynomial (Polynomial ℂ))[X]), 1 ≤ P.natDegree →
+  ∀ w, w ∈ Ω →
+    ((∑ i : Fin (P.natDegree + 1),
+      C ((P.coeff i).eval₂ (evalRingHom w) (φ w)) * X ^ (i : ℕ) : ℂ[X]).coeff
+        P.natDegree ≠ 0) →
+    ((∑ i : Fin (P.natDegree + 1),
+      C ((P.coeff i).eval₂ (evalRingHom w) (φ w)) * X ^ (i : ℕ) : ℂ[X]).Separable) →
+  ∀ z₁, z₁ ∈ Ω → ‖z₁‖ = 1 →
+  ∀ (V : Set ℂ), IsOpen V → V.Nonempty → V ⊆ Ω ∩ U0NaturalBoundary.Ext →
+    (∀ z ∈ V, P.eval₂ (eval₂RingHom (evalRingHom z) (φ z)) (U0.u0 z) = 0) →
+  False
+
+/-- The circle-window reduction, proved. -/
+theorem u0_phi_circle_window : U0PhiCircleWindowTarget := by
+  intro Ω hΩo hΩc hDc φ hφ P hd w hw hleadw hsepw z₁ hz₁ hz₁norm V hVo hVne hVD hrel
+  exact U0PhiCircleWindow.u0_phi_windowed_no_relation_3var hΩo hΩc hDc hφ P hd hw
+    hleadw hsepw hz₁ hz₁norm hVo hVne hVD hrel
 
 end FullyProvenNewTargets

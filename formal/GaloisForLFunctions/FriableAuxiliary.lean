@@ -1,4 +1,6 @@
 import GaloisForLFunctions.SmoothNumbers
+import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 /-!
 # Friable Dirichlet auxiliary: derivative anchor at `s = 1` (Tier A)

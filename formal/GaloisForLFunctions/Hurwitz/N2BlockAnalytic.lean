@@ -8,6 +8,7 @@ analytic on the half-plane `{Re z < −log 2}` — the `hanalytic` input of `n2_
 -/
 import GaloisForLFunctions.Hurwitz.N2Main
 import GaloisForLFunctions.Hurwitz.N2TailAnalytic
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
 
 open Complex HurwitzN2Main HurwitzN2Tail
 

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.Core
+import Mathlib.LinearAlgebra.Matrix.PosDef
 
 /-!
 # The carrier Pick kernel: finite real-spectrum positivity and pole witnesses

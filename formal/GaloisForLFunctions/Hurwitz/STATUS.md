@@ -132,3 +132,52 @@ inputs (singular x^{-s-k} + the finite-difference η n^{-s}) are IN PLACE.
   quadratic weight grading → q(F_0F_2-F_1²) survivor → finite-difference kills q → distinct-exponent
   kills the linear part.
 Then all-N needs Lemma 1 (Rational-Tail Independence) in place of the finite difference.
+
+## Update 7 — GENUINE-`hzeta` capstones landed (2026-07-01, axiom-clean)
+
+The mathlib-bump rot in the area build was repaired (missing transitive imports:
+`Mathlib.Analysis.Complex.LocallyUniformLimit` + `Pow.Deriv` in N2TailAnalytic,
+`Deriv.Polynomial` in N2BlockAnalytic, `ExponentialBounds` in N2Theorem/AllNQuadFilt), and the
+model→actual bridge was built in `Hurwitz/N2HZeta.lean` (all [propext, Classical.choice, Quot.sound]):
+
+- `term_split` — principal-branch product split `((m−n)+x)^c = (m−n)^c·(1+x/(m−n))^c` for `Im x > 0`
+  (the branch-cut analysis; fails on the lower half-plane for `m<n` — the upper-side hypothesis is
+  the honest window).
+- `principal_tail_eq_tailFactored`, `hzeta_eq_model` — `ζ(s+k, −n+e^z) = e^{−(s+k)z} + tailFactored`
+  on the upper half-strip `0 < Im z < π`.
+- `model_relation_of_hzeta_relation` — hzeta relation at `a = −n+x` (`‖x‖<1/2`, `Im x>0`, all `n≥N`)
+  ⟹ the model relation on the FULL strip (identity theorem on the convex half-plane, via
+  `blockSum`-style analyticity).
+- **`hurwitz_n2_hzeta_unconditional`** — the N=2 card against the ACTUAL Hurwitz zeta: only
+  `Re s > 1`, `s ∉ ℤ`. **`hurwitz_n2_hzeta_upper_half_plane`** — upper-half-plane form.
+- **`hurwitz_allN_hzeta_quadratic_block`** — all-N quadratic filtration `AqN q w = 0` (`w ≤ 2N`)
+  against the actual hzeta.
+
+Card wrappers registered in `FullyProvenNewTargets` (`HurwitzN2HZetaUnconditionalTarget`,
+`HurwitzN2HZetaUpperHalfPlaneTarget`, `HurwitzAllNHZetaQuadraticBlockTarget`). The N=2 card is now
+complete at the genuine-function level.
+
+### Remaining open input (all-N rows only)
+`RationalTailIndependent` (Lemma 1): no `ℂ[a]`-relation `∑ r_j(−n)·H_n^{(s+j)} = P(−n)`. Needs the
+OGF `∑ H_n^{(u)} z^n = Li_u(z)/(1−z)` pole-tower singularity analysis (fractional polylog — not in
+mathlib). `PolylogPoleTower.lean` has the pole-arithmetic bricks; the OGF analytics are the open
+work. The all-N quadratic block does NOT depend on it.
+
+### Route plan for Lemma 1 (next session) — Euler–Maclaurin filtration, no polylog needed
+
+The in-tree reduction chain already lands the all-N rows on ONE leaf:
+`MixedTailIndependent N s` (⟺ `MixedPoleRootInput`, `AllNTailIndependence.lean`): a relation
+`∑ h_i(n)·H_n^{(s+i)} + ∑ s_i(n)·n^{−s−i} = P(n)` (eventually, `H_n^{(u)} = harmonicTail =
+∑_{l<n}(l+1)^{−u}`) forces all coefficients to vanish. The OGF/polylog pole tower is NOT needed:
+
+1. `H_n^{(u)} = ζ(u) − hzeta u (n+1)` (exact, in-tree objects: `hzeta_split`-style).
+2. Expand `hzeta u (n+1)` to finite order `K = maxdeg + 2` by iterated integral comparison
+   (Euler–Maclaurin light): `hzeta u a = a^{1−u}/(u−1) + a^{−u}/2 + Σ_{r<K} c_r(u) a^{−u−r}
+   + O(a^{−Re u−K})` — elementary complex-power sums, no special functions.
+3. The relation becomes `∑ (integer scales n^d) + ∑ (non-integer scales n^{1−s−w}) + o(all) = 0`.
+   With `s ∉ ℤ` the two scale families are disjoint and all exponents pairwise distinct;
+   successive leading-term extraction (the `Spine.quadratic_filtration_top` / `evalShift`
+   asymptotic tools, or a fresh finite filtration) kills every coefficient.
+This upgrades `hurwitz_allN_hzeta_quadratic_block` to the full all-N tail-independence close,
+including rows, against the actual hzeta (via `Hurwitz/N2HZeta.lean`'s bridge, already generic
+in the width).

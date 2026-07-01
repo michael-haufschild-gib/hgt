@@ -11,6 +11,7 @@ general-`N` analogue of `HurwitzEncoding.phi_block_form` (which is hard-wired to
 import GaloisForLFunctions.Hurwitz.Spine
 import GaloisForLFunctions.Hurwitz.Encoding
 import GaloisForLFunctions.Hurwitz.N2BlockAnalytic
+import Mathlib.Analysis.Complex.ExponentialBounds
 
 open Complex HurwitzEncoding HurwitzN2Tail HurwitzN2BlockAnalytic
 

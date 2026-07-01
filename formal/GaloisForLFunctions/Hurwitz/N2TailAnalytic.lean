@@ -9,6 +9,8 @@ series converges by the Weierstrass M-test: `‖term_m‖ ≤ ‖(m−n)^{−(s+
 `summable_hurwitzSeries` at shift `a = −n`.
 -/
 import GaloisForLFunctions.Hurwitz.N2Tail
+import Mathlib.Analysis.Complex.LocallyUniformLimit
+import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
 open Complex HurwitzZetaShift
 

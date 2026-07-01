@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RankOneCohomology
+import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 
 /-!
 # Multiplier dichotomy: CC gauge-trivialization anchor

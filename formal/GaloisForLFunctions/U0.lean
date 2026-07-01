@@ -30,3 +30,4 @@ import GaloisForLFunctions.U0.U0CoverTransport
 import GaloisForLFunctions.U0.U0KummerRepick
 import GaloisForLFunctions.U0.BottcherIndep
 import GaloisForLFunctions.U0.U0CardTheorems
+import GaloisForLFunctions.U0.U0PhiCircleWindow

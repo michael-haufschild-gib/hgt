@@ -1,4 +1,5 @@
 import GaloisForLFunctions.Core
+import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
 
 /-!
 # Moment ↔ spectrum reconstruction: Newton's identities for a finite spectrum (Tier A/B)
