@@ -5,16 +5,14 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-| Kind | Location | Context | Text |
-|---|---|---|---|
-| proof-debt | `formal/GaloisForLFunctions/Bottcher/WindingCertificates.lean:79` | `theorem exists_int_windInt` | `sorry` |
+No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 ## Large Files
 
 | Lines | File |
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 4347 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 4376 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
@@ -182,6 +180,7 @@ This is an agent worklist aid, not a mathematical ledger.
 | `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:259` | of the green-conjugate cocycle, and the gluing heart of the Poincaré lemma (the remaining frontier input). -/ |
 | `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:327` | `ω` on any chain-coverable basin region — which feeds `exists_fullBottcherBranch_of_primitive`. The remaining |
 | `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:379` | `exists_fullBottcherBranch_of_primitive`; the only remaining input is a *geometric* ball-chain from |
+| `formal/GaloisForLFunctions/Bottcher/GreenSuperlevel.lean:10` | component missing the far field would be bounded; the maximum of `G_c` over its closure is |
 | `formal/GaloisForLFunctions/Bottcher/GreenUnique.lean:12` | basin is preconnected (`K_c` full), the one remaining topological input. |
 | `formal/GaloisForLFunctions/Bottcher/IndexEstimate.lean:56` | bulk strictly dominates. Discharging `hG`/`hrep` for an actual relation is the remaining dynamical wiring; |
 | `formal/GaloisForLFunctions/Bottcher/IndexFormula.lean:8` | the spectrum **algebraically** — flagged in the tower's status as the missing piece for a *Zdunik-free* |
@@ -292,7 +291,6 @@ This is an agent worklist aid, not a mathematical ledger.
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1634` | `K = 1/2`, `μ = 1/4`, and scaled radius `4‖α-z‖`; the only remaining local input is the |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1863` | /-- q62 target-density reduction with concrete Newton parameters.  The remaining hRigid local |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedZeroSurvival.lean:277` | fixed closed ball, the repelling fixed tail supplies the missing center estimate automatically. -/ |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedZeroSurvival.lean:499` | The remaining local work is now exactly the scaled-ball containment and scaled derivative-variation |
 
 ## Historical Status Logs
 

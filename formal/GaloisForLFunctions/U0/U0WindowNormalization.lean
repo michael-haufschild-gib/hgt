@@ -14,6 +14,7 @@ This file builds the ring-theoretic layer:
   function `φ`, and the `IsDomain` instance on its range.
 -/
 import GaloisForLFunctions.U0.U0PhiCircleWindow
+import GaloisForLFunctions.U0.U0PhiFourWindow
 
 open Complex Filter Topology Metric Set Polynomial
 open U0 U0NaturalBoundary U0Transcendence U0PhiCard
@@ -312,7 +313,7 @@ theorem relSet_false {Ω : Set ℂ} (hΩo : IsOpen Ω) (hΩc : IsPreconnected Ω
     refine ⟨1, 0, fun h => ?_⟩
     obtain ⟨z₀, hz₀⟩ := hDne
     have := congrFun (congrArg Subtype.val h) ⟨z₀, hz₀⟩
-    simpa using this
+    simp at this
   haveI : NoZeroDivisors ↥(R₀ φ D) :=
     ⟨fun {a b} hab => R₀_noZeroDivisors hφ hDo hDc hDΩ a b hab⟩
   haveI : IsDomain ↥(R₀ φ D) := NoZeroDivisors.to_isDomain _
@@ -358,9 +359,7 @@ theorem relSet_false {Ω : Set ℂ} (hΩo : IsOpen Ω) (hΩc : IsPreconnected Ω
     have h1 : dmin - 1 + 1 = dmin := by omega
     rw [h1, hqb, coeff_map, hQcoeff_top]
     have h2 : ((dmin - 1 : ℕ) : K) + 1 = ((dmin : ℕ) : K) := by
-      rw [← Nat.cast_succ]
-      congr 1
-      omega
+      exact_mod_cast congrArg (fun n : ℕ => (n : K)) (by omega : dmin - 1 + 1 = dmin)
     rw [h2]
   have hqb'ne : qb' ≠ 0 := by
     intro h
@@ -428,6 +427,7 @@ theorem relSet_false {Ω : Set ℂ} (hΩo : IsOpen Ω) (hΩc : IsPreconnected Ω
     have hkey : (C ((cd : ↥(R₀ φ D)) * sB) * A₁) * Q
         + (C ((cd : ↥(R₀ φ D)) * sA) * B₁) * derivative Q = C s := by
       apply hmap_inj
+      rw [hs]
       rw [Polynomial.map_add, Polynomial.map_mul, Polynomial.map_mul,
         Polynomial.map_mul, Polynomial.map_mul, Polynomial.map_C, Polynomial.map_C,
         Polynomial.map_C, hA₁', hB₁', ← hqb, hderiv_map]
@@ -451,20 +451,23 @@ theorem relSet_false {Ω : Set ℂ} (hΩo : IsOpen Ω) (hΩc : IsPreconnected Ω
     set ev : ↥(R₀ φ D) →+* ℂ := (Pi.evalRingHom (fun _ : ↥D => ℂ) w).comp (R₀ φ D).subtype
       with hev
     -- specialize the Bézout identity
-    have hkeyw := congrArg (Polynomial.map ev) hkey
-    simp only [Polynomial.map_add, Polynomial.map_mul, Polynomial.map_C] at hkeyw
+    have hkeyw : (C (ev ((cd : ↥(R₀ φ D)) * sB)) * A₁.map ev) * Q.map ev
+        + (C (ev ((cd : ↥(R₀ φ D)) * sA)) * B₁.map ev) * (derivative Q).map ev
+        = C (ev s) := by
+      have h0 := congrArg (Polynomial.map ev) hkey
+      simpa [Polynomial.map_add, Polynomial.map_mul, Polynomial.map_C] using h0
     have hsep : (Q.map ev).Separable := by
       unfold Polynomial.Separable
-      refine ⟨C ((ev s)⁻¹) * ((C ((cd : ↥(R₀ φ D)) * sB) * A₁).map ev),
-        C ((ev s)⁻¹) * ((C ((cd : ↥(R₀ φ D)) * sA) * B₁).map ev), ?_⟩
+      refine ⟨C ((ev s)⁻¹) * (C (ev ((cd : ↥(R₀ φ D)) * sB)) * A₁.map ev),
+        C ((ev s)⁻¹) * (C (ev ((cd : ↥(R₀ φ D)) * sA)) * B₁.map ev), ?_⟩
       have hevs : ev s ≠ 0 := hsw
-      have hder : (derivative Q).map ev = derivative (Q.map ev) := by
-        rw [derivative_map]
-      rw [← hder]
-      calc C (ev s)⁻¹ * ((C ((cd : ↥(R₀ φ D)) * sB) * A₁).map ev) * (Q.map ev)
-            + C (ev s)⁻¹ * ((C ((cd : ↥(R₀ φ D)) * sA) * B₁).map ev) * ((derivative Q).map ev)
-          = C (ev s)⁻¹ * (((C ((cd : ↥(R₀ φ D)) * sB) * A₁).map ev) * (Q.map ev)
-            + ((C ((cd : ↥(R₀ φ D)) * sA) * B₁).map ev) * ((derivative Q).map ev)) := by ring
+      rw [derivative_map]
+      calc C (ev s)⁻¹ * (C (ev ((cd : ↥(R₀ φ D)) * sB)) * A₁.map ev) * (Q.map ev)
+            + C (ev s)⁻¹ * (C (ev ((cd : ↥(R₀ φ D)) * sA)) * B₁.map ev)
+              * ((derivative Q).map ev)
+          = C (ev s)⁻¹ * ((C (ev ((cd : ↥(R₀ φ D)) * sB)) * A₁.map ev) * (Q.map ev)
+            + (C (ev ((cd : ↥(R₀ φ D)) * sA)) * B₁.map ev) * ((derivative Q).map ev)) := by
+            ring
         _ = C (ev s)⁻¹ * C (ev s) := by rw [hkeyw]
         _ = 1 := by rw [← map_mul C, inv_mul_cancel₀ hevs, map_one]
     -- feed the windowed engine
@@ -630,3 +633,52 @@ theorem relSet_false {Ω : Set ℂ} (hΩo : IsOpen Ω) (hΩc : IsPreconnected Ω
       exact fun z hz => by simpa [hHf] using hHzero z hz
 
 end U0WindowNormalization
+
+namespace U0WindowNormalization
+
+/-- **Windowed relation contradiction with NO separability inputs (general form).** A polynomial
+relation `P(z, φ z, u₀ z) = 0` on a nonempty open piece of the window annulus is impossible as
+soon as it genuinely involves `u₀`: some coefficient function of positive index is not
+identically zero on `Ω ∩ Ext`.  The leading/separability data of the windowed engine is produced
+internally (minimal-degree normalization + fraction-field gcd dichotomy). -/
+theorem u0_windowed_no_relation_nondegenerate {Ω : Set ℂ} (hΩo : IsOpen Ω)
+    (hΩc : IsPreconnected Ω) (hDc : IsPreconnected (Ω ∩ Ext))
+    {φ : ℂ → ℂ} (hφ : AnalyticOnNhd ℂ φ Ω)
+    {z₁ : ℂ} (hz₁ : z₁ ∈ Ω) (hz₁norm : ‖z₁‖ = 1)
+    (P : (Polynomial (Polynomial ℂ))[X]) {i₀ : ℕ} (hi₀ : 1 ≤ i₀)
+    (hnondeg : ∃ z ∈ Ω ∩ Ext, coeffFun φ (P.coeff i₀) z ≠ 0)
+    {V : Set ℂ} (hVo : IsOpen V) (hVne : V.Nonempty) (hVD : V ⊆ Ω ∩ Ext)
+    (hrel : ∀ z ∈ V, P.eval₂ (eval₂RingHom (evalRingHom z) (φ z)) (u0 z) = 0) : False := by
+  refine relSet_false hΩo hΩc hDc hφ hz₁ hz₁norm ?_
+  exact relSet_of_nondegenerate P hi₀ hnondeg
+    (relation_propagates hDc hφ P hVo hVne hVD hrel)
+
+end U0WindowNormalization
+
+namespace U0PhiFourWindow
+
+open U0WindowNormalization
+
+/-- **u₀ ⟂ the `b = 4` Böttcher branch, separability-free.** No polynomial relation
+`P(z, phiFour z, u₀ z) = 0` on a nonempty open subset of the annulus `{1 < ‖z‖ < 21/20}` can
+genuinely involve `u₀`: if some coefficient `P.coeff i₀` (`i₀ ≥ 1`) has
+`P.coeff i₀ (z, phiFour z)` not identically zero on the annulus, we get `False`.  The window
+object is constructed and the separable normalization is internal — the only inputs are the
+relation and its nondegeneracy witness. -/
+theorem u0_phiFour_no_relation_nondegenerate
+    (P : (Polynomial (Polynomial ℂ))[X]) {i₀ : ℕ} (hi₀ : 1 ≤ i₀)
+    (hnondeg : ∃ z ∈ Metric.ball (0 : ℂ) (21 / 20) ∩ Ext,
+      coeffFun phiFour (P.coeff i₀) z ≠ 0)
+    {V : Set ℂ} (hVo : IsOpen V) (hVne : V.Nonempty)
+    (hVD : V ⊆ Metric.ball (0 : ℂ) (21 / 20) ∩ Ext)
+    (hrel : ∀ z ∈ V, P.eval₂ (eval₂RingHom (evalRingHom z) (phiFour z)) (u0 z) = 0) :
+    False := by
+  refine u0_windowed_no_relation_nondegenerate isOpen_ball
+    ((convex_ball (0 : ℂ) (21 / 20)).isPreconnected) isPreconnected_annulus
+    phiFour_analytic (z₁ := 1) ?_ ?_ P hi₀ hnondeg hVo hVne hVD hrel
+  · show (1 : ℂ) ∈ Metric.ball (0 : ℂ) (21 / 20)
+    simp only [Metric.mem_ball, dist_zero_right, norm_one]
+    norm_num
+  · simp
+
+end U0PhiFourWindow

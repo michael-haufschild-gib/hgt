@@ -28,6 +28,7 @@ import GaloisForLFunctions.Hurwitz.PolylogPoleTower
 import GaloisForLFunctions.U0.U0CardTheorems
 import GaloisForLFunctions.U0.U0PhiCircleWindow
 import GaloisForLFunctions.U0.U0PhiFourWindow
+import GaloisForLFunctions.U0.U0WindowNormalization
 import GaloisForLFunctions.U0.U0CoverMono
 import GaloisForLFunctions.U0.U0CoverTransport
 import GaloisForLFunctions.U0.U0PhiLifts
@@ -4343,5 +4344,33 @@ def U0PhiFourWindowTarget : Prop :=
 theorem u0_phi_four_window : U0PhiFourWindowTarget := by
   intro P hd w hw hleadw hsepw V hVo hVne hVD hrel
   exact U0PhiFourWindow.u0_phiFour_no_relation P hd hw hleadw hsepw hVo hVne hVD hrel
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-! ## u₀ ⟂ φ — separability-free window closure
+
+The min-poly/separability normalization is now internal (`U0WindowNormalization`): a windowed
+relation needs only its nondegeneracy witness (some positive-index coefficient function not
+identically zero).  With the constructed `b = 4` window this closes the u₀-side of the card at
+`b = 4` with no analytic side conditions at all. -/
+
+/-- `b = 4` separability-free target: a polynomial relation `P(z, phiFour z, u₀ z) = 0` on a
+nonempty open piece of the annulus, together with a nondegeneracy witness for some positive
+`u₀`-degree coefficient, is contradictory. -/
+def U0PhiFourNondegenerateTarget : Prop :=
+  ∀ (P : (Polynomial (Polynomial ℂ))[X]) (i₀ : ℕ), 1 ≤ i₀ →
+  (∃ z ∈ Metric.ball (0 : ℂ) (21 / 20) ∩ U0NaturalBoundary.Ext,
+    U0WindowNormalization.coeffFun U0PhiFourWindow.phiFour (P.coeff i₀) z ≠ 0) →
+  ∀ (V : Set ℂ), IsOpen V → V.Nonempty →
+    V ⊆ Metric.ball (0 : ℂ) (21 / 20) ∩ U0NaturalBoundary.Ext →
+    (∀ z ∈ V, P.eval₂ (eval₂RingHom (evalRingHom z) (U0PhiFourWindow.phiFour z)) (U0.u0 z) = 0) →
+  False
+
+/-- The `b = 4` separability-free closure, proved. -/
+theorem u0_phi_four_nondegenerate : U0PhiFourNondegenerateTarget := by
+  intro P i₀ hi₀ hnondeg V hVo hVne hVD hrel
+  exact U0PhiFourWindow.u0_phiFour_no_relation_nondegenerate P hi₀ hnondeg hVo hVne hVD hrel
 
 end FullyProvenNewTargets
