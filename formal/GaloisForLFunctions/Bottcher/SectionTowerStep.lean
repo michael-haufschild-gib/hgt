@@ -207,9 +207,10 @@ theorem even_section_winding_ne {a b : ℝ} {s : ℂ → ℂ} (ha : 0 < a)
       ring
     have h3 : (∫ u in (0:ℝ)..(2 * Real.pi), F (u / 2))
         = (2⁻¹ : ℝ)⁻¹ • ∫ u in ((2⁻¹ : ℝ) * 0)..((2⁻¹ : ℝ) * (2 * Real.pi)), F u := by
-      have := intervalIntegral.integral_comp_mul_left
+      have h4 := intervalIntegral.integral_comp_mul_left
         (a := (0:ℝ)) (b := 2 * Real.pi) F (by norm_num : (2⁻¹ : ℝ) ≠ 0)
-      simpa [div_eq_inv_mul] using this
+      simp only [div_eq_inv_mul]
+      exact h4
     rw [h1, h2, h3]
     rw [show ((2⁻¹ : ℝ) * 0 : ℝ) = 0 from by ring,
       show ((2⁻¹ : ℝ) * (2 * Real.pi) : ℝ) = Real.pi from by ring]
