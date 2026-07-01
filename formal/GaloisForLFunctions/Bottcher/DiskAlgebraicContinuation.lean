@@ -2,6 +2,7 @@ import GaloisForLFunctions.Bottcher.BoundaryArcCovering
 import Mathlib.Analysis.Normed.Module.Connected
 import Mathlib.Topology.Separation.Connected
 import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+import Mathlib.Analysis.Normed.Module.RCLike.Real
 
 /-!
 # Disk-side algebraic continuation (the Fatou-free connected-transcendence route)
@@ -317,5 +318,68 @@ theorem eventually_norm_h_le {A : ℕ → ℂ → ℂ} {N : ℕ} {ζ : ℂ} {h :
     apply div_le_div₀ (by positivity) hSbound (by linarith) (le_of_lt hzlow)
   calc ‖h z‖ ≤ 1 + (∑ i ∈ Finset.range N, ‖A i z‖) / ‖A N z‖ := hcauchy
     _ ≤ 1 + (∑ i ∈ Finset.range N, (‖A i ζ‖ + 1)) / (‖A N ζ‖ / 2) := by linarith
+
+/-- **THE E-LIMIT SUPPLIER: a boundary limit for `h` at every non-degenerate boundary point — with
+no Fatou/Carathéodory theory.** If `h` (continuous on the unit disk) satisfies the fibre relation
+`∑_{i≤N} Aᵢ(z)·h(z)ⁱ = 0` near a circle point `ζ` where the leading coefficient does not vanish
+(`A N ζ ≠ 0`), then `h` has a limit `w₀` along `𝓝[ball 0 1] ζ`, and `w₀` is a root of the limit
+fibre polynomial `∑ᵢ Aᵢ(ζ)·wⁱ`. Assembly of the whole brick suite: `eventually_norm_h_le` (Cauchy
+bound ⟹ `h` bounded on `s' = ball 0 1 ∩ ball ζ r₀`), `nhdsWithin_hasBasis_nat_ball` (antitone convex
+lens basis, transported through `𝓝[s'] ζ = 𝓝[ball 0 1] ζ`), convexity ⟹ connected lens images,
+`finite_roots_of_fibre` + `eq_zero_of_mapClusterPt_relation` (cluster values in the finite root set),
+and the cluster engine `tendsto_of_mapClusterPt_finite`. This is the input `Tendsto h (𝓝[ball 0 1] ζ)
+(𝓝 w₀)` that `continuesAcross_of_relation`/`cmem_of_arc_relation` consume: the "Fatou-type input"
+those lemmas isolate is hereby produced from the algebraic relation itself. -/
+theorem exists_boundary_limit_of_fibre_relation {A : ℕ → ℂ → ℂ} {N : ℕ} {ζ : ℂ} {h : ℂ → ℂ}
+    (hAcont : ∀ i, Continuous (A i)) (hlead : A N ζ ≠ 0) (hζ : ‖ζ‖ = 1)
+    (hhc : ContinuousOn h (ball 0 1))
+    (hrel : ∀ᶠ z in nhdsWithin ζ (ball 0 1),
+      ∑ i ∈ Finset.range (N + 1), A i z * h z ^ i = 0) :
+    ∃ w₀ : ℂ, Filter.Tendsto h (nhdsWithin ζ (ball 0 1)) (nhds w₀) ∧
+      ∑ i ∈ Finset.range (N + 1), A i ζ * w₀ ^ i = 0 := by
+  haveI hne : (nhdsWithin ζ (ball (0:ℂ) 1)).NeBot := by
+    rw [← mem_closure_iff_nhdsWithin_neBot, closure_ball 0 one_ne_zero, mem_closedBall,
+      dist_zero_right, hζ]
+  obtain ⟨M, hM⟩ := eventually_norm_h_le (fun i => (hAcont i).continuousAt) hlead hrel
+  rw [eventually_nhdsWithin_iff, Metric.eventually_nhds_iff] at hM
+  obtain ⟨r₀, hr₀, hMball⟩ := hM
+  set s' : Set ℂ := ball (0:ℂ) 1 ∩ ball ζ r₀ with hs'
+  have hfeq : nhdsWithin ζ s' = nhdsWithin ζ (ball (0:ℂ) 1) :=
+    nhdsWithin_inter_of_mem' (mem_nhdsWithin_of_mem_nhds (ball_mem_nhds ζ hr₀))
+  have hbasis : (nhdsWithin ζ (ball (0:ℂ) 1)).HasBasis (fun _ : ℕ => True)
+      (fun n => Metric.ball ζ (1/(n+1)) ∩ s') := by
+    rw [← hfeq]; exact nhdsWithin_hasBasis_nat_ball
+  have hbnd : ∀ z ∈ s', ‖h z‖ ≤ M := fun z hz => hMball (mem_ball.mp hz.2) hz.1
+  have hsub : ∀ n : ℕ, closure (h '' (Metric.ball ζ (1/(n+1)) ∩ s')) ⊆ closedBall 0 M := by
+    intro n
+    apply closure_minimal _ isClosed_closedBall
+    rintro w ⟨z, hz, rfl⟩
+    rw [mem_closedBall, dist_zero_right]
+    exact hbnd z hz.2
+  have hlensanti : Antitone (fun n : ℕ => Metric.ball ζ (1/(n+1)) ∩ s') := by
+    intro n m hnm
+    apply inter_subset_inter_left
+    apply ball_subset_ball
+    apply one_div_le_one_div_of_le (by positivity)
+    exact_mod_cast Nat.succ_le_succ hnm
+  have hanti : Antitone (fun n : ℕ => closure (h '' (Metric.ball ζ (1/(n+1)) ∩ s'))) :=
+    fun n m hnm => closure_mono (image_mono (hlensanti hnm))
+  have hconn : ∀ n : ℕ, IsPreconnected (h '' (Metric.ball ζ (1/(n+1)) ∩ s')) := by
+    intro n
+    have hcvx : Convex ℝ (Metric.ball ζ (1/(n+1)) ∩ s') :=
+      (convex_ball ζ _).inter ((convex_ball 0 1).inter (convex_ball ζ r₀))
+    exact hcvx.isPreconnected.image h (hhc.mono (fun z hz => hz.2.1))
+  have hRfin : {w : ℂ | ∑ i ∈ Finset.range (N + 1), A i ζ * w ^ i = 0}.Finite :=
+    finite_roots_of_fibre (a := fun i => A i ζ) hlead
+  have hgcont : Continuous (fun p : ℂ × ℂ => ∑ i ∈ Finset.range (N + 1), A i p.1 * p.2 ^ i) :=
+    continuous_finset_sum _
+      (fun i _ => ((hAcont i).comp continuous_fst).mul (continuous_snd.pow i))
+  have hcl : ∀ x, MapClusterPt x (nhdsWithin ζ (ball (0:ℂ) 1)) h →
+      x ∈ {w : ℂ | ∑ i ∈ Finset.range (N + 1), A i ζ * w ^ i = 0} := by
+    intro x hx
+    exact eq_zero_of_mapClusterPt_relation hgcont hrel hx
+  obtain ⟨w₀, hw₀⟩ := tendsto_of_mapClusterPt_finite hbasis (isCompact_closedBall (0:ℂ) M)
+    hsub hanti hconn hRfin hcl
+  exact ⟨w₀, hw₀, eq_zero_of_mapClusterPt_relation hgcont hrel hw₀.mapClusterPt⟩
 
 end Bottcher
