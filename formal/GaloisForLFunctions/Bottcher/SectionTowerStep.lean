@@ -772,7 +772,7 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     fun w h1 h2 => hTn_s ⟨h1, h2⟩
   have hmem₂ : ∀ w : ℂ, rlo < ‖w‖ → ‖w‖ < R₀ → Tn w = S.T w :=
     fun w h1 h2 => hTn_T ⟨h1, h2⟩
-  refine ⟨⟨Tn, ?_, ?_, ?_, ?_, ?_, ?_⟩⟩
+  refine ⟨{ T := Tn, an := ?_, level := ?_, odd := ?_, fe := ?_, inj := ?_, dne := ?_, wind := ?_ }⟩
   · rw [← hunion]
     exact hTn_an
   · -- level
@@ -893,6 +893,55 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
         rw [h6, hs'_odd w₁ hw₁B] at heq
         have h7 : s' w₁ = 0 := by linear_combination ((1:ℂ)/2) * heq
         exact hs'_ne w₁ hw₁B h7
+  · -- derivative nonvanishing
+    rintro w ⟨h1, h2⟩
+    by_cases h : ‖w‖ < Real.sqrt σ₂
+    · have hwB₁ : w ∈ B₁ := ⟨h1, h⟩
+      have hder : deriv Tn w = deriv s' w := by
+        apply Filter.EventuallyEq.deriv_eq
+        filter_upwards [(isOpen_annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)).mem_nhds hwB₁]
+          with z hz
+        exact hTn_s hz
+      rw [hder]
+      have hs'd : HasDerivAt s' (deriv s' w) w :=
+        (hs'_an w hwB₁).differentiableAt.hasDerivAt
+      have hLd : HasDerivAt (fun x => s' x ^ 2) (2 * s' w * deriv s' w) w := by
+        have h4 := hs'd.pow 2
+        have h5 : (2:ℕ) * s' w ^ (2 - 1) * deriv s' w = 2 * s' w * deriv s' w := by
+          push_cast
+          ring
+        rwa [h5] at h4
+      have hRd : HasDerivAt (fun x : ℂ => S.T (x ^ 2) - c)
+          (deriv S.T (w ^ 2) * (2 * w)) w := by
+        have h3 : HasDerivAt S.T (deriv S.T (w ^ 2)) (w ^ 2) :=
+          (S.an _ (hsrcmem _ (hsqmem w hwB₁))).differentiableAt.hasDerivAt
+        have h4 : HasDerivAt (fun x : ℂ => x ^ 2) (2 * w) w := by
+          have h5 := hasDerivAt_pow 2 w
+          have h6 : ((2:ℕ):ℂ) * w ^ (2 - 1) = 2 * w := by push_cast; ring
+          rwa [h6] at h5
+        exact (HasDerivAt.comp w h3 h4).sub_const c
+      have hEqF : (fun x => s' x ^ 2) =ᶠ[nhds w] (fun x : ℂ => S.T (x ^ 2) - c) := by
+        filter_upwards [(isOpen_annulusSet (Real.sqrt σ₁) (Real.sqrt σ₂)).mem_nhds hwB₁]
+          with z hz
+        exact hs'_sq z hz
+      have h7 : HasDerivAt (fun x : ℂ => S.T (x ^ 2) - c) (2 * s' w * deriv s' w) w :=
+        hLd.congr_of_eventuallyEq hEqF.symm
+      have hEqD : deriv S.T (w ^ 2) * (2 * w) = 2 * s' w * deriv s' w := hRd.unique h7
+      intro h0
+      rw [h0, mul_zero] at hEqD
+      have hwne : w ≠ 0 := annulus_mem_ne_zero hs₁pos hwB₁
+      have hne : deriv S.T (w ^ 2) * (2 * w) ≠ 0 :=
+        mul_ne_zero (S.dne _ (hsrcmem _ (hsqmem w hwB₁)))
+          (mul_ne_zero two_ne_zero hwne)
+      exact hne hEqD
+    · push Not at h
+      have hwB₂ : w ∈ B₂ := ⟨lt_of_lt_of_le hs₂ h, h2⟩
+      have hder : deriv Tn w = deriv S.T w := by
+        apply Filter.EventuallyEq.deriv_eq
+        filter_upwards [(isOpen_annulusSet rlo R₀).mem_nhds hwB₂] with z hz
+        exact hTn_T hz
+      rw [hder]
+      exact S.dne w hwB₂
   · -- winding
     intro r hr1 hr2
     have hrpos : (0:ℝ) < r := lt_trans hs₁pos hr1

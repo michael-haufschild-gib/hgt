@@ -14,6 +14,11 @@ across that piece of the cut.  This file provides the analytic bricks:
 -/
 import GaloisForLFunctions.Hurwitz.HurwitzZeta
 import Mathlib.Order.Interval.Set.Infinite
+import Mathlib.Analysis.Complex.Convex
+import Mathlib.Analysis.Complex.LocallyUniformLimit
+import Mathlib.Analysis.Analytic.IsolatedZeros
+import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
 
 open Complex Filter Topology
 
@@ -548,3 +553,180 @@ theorem revPoly_eval_inv' {D : ℕ} {E : Polynomial ℂ} (hdeg : E.natDegree ≤
 
 end HurwitzRayPeeling
 
+
+namespace HurwitzRayPeeling
+
+open Polynomial
+
+/-- **The compactified kill: an eventual ℕ multi-ray shifted-power relation has zero
+coefficients.**  Substituting `u = 1/n`, the relation becomes the vanishing of the analytic
+function `G(u) = Σ_t (1−tu)^{−s}·(revPoly D (E t))(u)` at points accumulating at `0`; the
+identity theorem on the cut complement extends it off the axis, and `multiRay_eq_zero` kills
+every reversal, hence every coefficient polynomial. -/
+theorem multiRay_nat_relation_kill {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k : ℂ)) (T D : ℕ) (hT : 1 ≤ T)
+    (E : ℕ → Polynomial ℂ) (hdeg : ∀ t, (E t).natDegree ≤ D) {M : ℕ}
+    (hrel : ∀ n : ℕ, M ≤ n → T < n →
+      ∑ t ∈ Finset.range (T + 1), (((n - t : ℕ) : ℂ)) ^ (-s) * (E t).eval ((n : ℂ)) = 0) :
+    ∀ t ≤ T, E t = 0 := by
+  classical
+  have hσ : ∀ k : ℤ, -s ≠ (k : ℂ) := by
+    intro k h
+    apply hs (-k)
+    push_cast
+    linear_combination -h
+  set G : ℂ → ℂ := fun u =>
+    ∑ t ∈ Finset.range (T + 1), (1 - (t : ℂ) * u) ^ (-s) * (revPoly D (E t)).eval u with hG
+  set Ω : Set ℂ := {u : ℂ | (1 - (T : ℂ) * u) ∈ Complex.slitPlane} with hΩ
+  have hTne : ((T : ℂ)) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  have hcuts : ∀ u ∈ Ω, ∀ t ∈ Finset.range (T + 1), (1 - (t : ℂ) * u) ∈ Complex.slitPlane := by
+    intro u hu t htmem
+    rcases Nat.eq_zero_or_pos t with ht0 | htpos
+    · subst ht0
+      simp only [Nat.cast_zero, zero_mul, sub_zero]
+      exact Complex.one_mem_slitPlane
+    by_contra hnot
+    rw [Complex.mem_slitPlane_iff] at hnot
+    push Not at hnot
+    obtain ⟨hre, him⟩ := hnot
+    have hre' : (1 - (t : ℂ) * u).re = 1 - (t : ℝ) * u.re := by simp
+    have him' : (1 - (t : ℂ) * u).im = -((t : ℝ) * u.im) := by simp
+    rw [hre'] at hre
+    rw [him'] at him
+    have huim : u.im = 0 := by
+      have htR : ((t : ℝ)) ≠ 0 := by
+        exact_mod_cast Nat.pos_iff_ne_zero.mp htpos
+      rcases mul_eq_zero.mp (neg_eq_zero.mp him) with h | h
+      · exact absurd h htR
+      · exact h
+    have htT : (t : ℝ) ≤ (T : ℝ) := by
+      exact_mod_cast Nat.lt_succ_iff.mp (Finset.mem_range.mp htmem)
+    have htpos' : (0 : ℝ) < (t : ℝ) := by exact_mod_cast htpos
+    have hxpos : 0 < u.re := by nlinarith
+    have hTx : 1 ≤ (T : ℝ) * u.re := by nlinarith
+    have hbad : (1 - (T : ℂ) * u) ∉ Complex.slitPlane := by
+      rw [Complex.mem_slitPlane_iff]
+      push Not
+      constructor
+      · have h1 : (1 - (T : ℂ) * u).re = 1 - (T : ℝ) * u.re := by simp
+        rw [h1]
+        linarith
+      · have h1 : (1 - (T : ℂ) * u).im = -((T : ℝ) * u.im) := by simp
+        rw [h1, huim]
+        ring
+    exact hbad hu
+  have hΩo : IsOpen Ω := Complex.isOpen_slitPlane.preimage (by fun_prop)
+  have h0Ω : (0 : ℂ) ∈ Ω := by
+    show (1 - (T : ℂ) * 0) ∈ Complex.slitPlane
+    simp only [mul_zero, sub_zero]
+    exact Complex.one_mem_slitPlane
+  have hΩc : IsPreconnected Ω := by
+    have himg : Ω = (fun w : ℂ => (1 - w) / (T : ℂ)) '' Complex.slitPlane := by
+      ext u
+      constructor
+      · intro hu
+        refine ⟨1 - (T : ℂ) * u, hu, ?_⟩
+        field_simp
+        ring
+      · rintro ⟨w, hw, rfl⟩
+        show (1 - (T : ℂ) * ((1 - w) / (T : ℂ))) ∈ Complex.slitPlane
+        have hval : (1 - (T : ℂ) * ((1 - w) / (T : ℂ))) = w := by
+          field_simp
+          ring
+        rwa [hval]
+    rw [himg]
+    have hpc : IsPreconnected Complex.slitPlane :=
+      (Complex.starConvex_one_slitPlane.isPathConnected
+        Complex.one_mem_slitPlane).isConnected.isPreconnected
+    exact hpc.image _ (by fun_prop : Continuous fun w : ℂ => (1 - w) / (T : ℂ)).continuousOn
+  have hGan : AnalyticOnNhd ℂ G Ω := by
+    rw [hG]
+    apply DifferentiableOn.analyticOnNhd _ hΩo
+    apply DifferentiableOn.fun_sum
+    intro t htmem u hu
+    apply DifferentiableAt.differentiableWithinAt
+    refine DifferentiableAt.mul ?_
+      ((revPoly D (E t)).differentiable.differentiableAt)
+    exact DifferentiableAt.cpow_const (by fun_prop) (hcuts u hu t htmem)
+  have hGz : ∀ n : ℕ, M ≤ n → T < n → G (((n : ℂ))⁻¹) = 0 := by
+    intro n hMn hTn
+    have hn0 : ((n : ℂ)) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+    have hnR0 : ((n : ℝ)) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+    show (∑ t ∈ Finset.range (T + 1),
+      (1 - (t : ℂ) * ((n : ℂ))⁻¹) ^ (-s) * (revPoly D (E t)).eval (((n : ℂ))⁻¹)) = 0
+    have hterm : ∀ t ∈ Finset.range (T + 1),
+        (1 - (t : ℂ) * ((n : ℂ))⁻¹) ^ (-s) * (revPoly D (E t)).eval (((n : ℂ))⁻¹)
+          = (((((n : ℝ)) : ℂ)) ^ (-s))⁻¹ * ((((n : ℂ)) ^ D)⁻¹)
+            * (((((n - t : ℕ)) : ℂ)) ^ (-s) * (E t).eval ((n : ℂ))) := by
+      intro t htmem
+      have htn : t ≤ n := by
+        have := Finset.mem_range.mp htmem
+        omega
+      have hnt_nn : (0 : ℝ) ≤ ((n - t : ℕ) : ℝ) / (n : ℝ) := by positivity
+      have hn_nn : (0 : ℝ) ≤ (n : ℝ) := by positivity
+      have hsplit := mul_cpow_ofReal_nonneg hnt_nn hn_nn (-s)
+      have hAB : ((((n - t : ℕ) : ℝ) / (n : ℝ) : ℝ) : ℂ) * (((n : ℝ) : ℝ) : ℂ)
+          = ((n - t : ℕ) : ℂ) := by
+        push_cast
+        field_simp
+      rw [hAB] at hsplit
+      have hratio : ((((n - t : ℕ) : ℝ) / (n : ℝ) : ℝ) : ℂ) = 1 - (t : ℂ) * ((n : ℂ))⁻¹ := by
+        rw [Nat.cast_sub htn]
+        push_cast
+        field_simp
+      rw [hratio] at hsplit
+      have hnpow_ne : ((((n : ℝ)) : ℂ)) ^ (-s) ≠ 0 := by
+        rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast hn0)]
+        exact Complex.exp_ne_zero _
+      have hcut : (1 - (t : ℂ) * ((n : ℂ))⁻¹) ^ (-s)
+          = (((n - t : ℕ)) : ℂ) ^ (-s) * (((((n : ℝ)) : ℂ)) ^ (-s))⁻¹ := by
+        rw [hsplit, mul_assoc, mul_inv_cancel₀ hnpow_ne, mul_one]
+      have hrev := revPoly_eval_inv' (hdeg t) hn0
+      have hrev' : (revPoly D (E t)).eval (((n : ℂ))⁻¹)
+          = (E t).eval ((n : ℂ)) * ((((n : ℂ)) ^ D)⁻¹) := by
+        rw [← hrev]
+        field_simp
+      rw [hcut, hrev']
+      ring
+    rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum, hrel n hMn hTn, mul_zero]
+  -- the zeros accumulate at 0
+  have hfreq : ∃ᶠ u in nhdsWithin 0 {(0 : ℂ)}ᶜ, G u = 0 := by
+    have hrealseq : Filter.Tendsto (fun j : ℕ => (((j + (M + T + 1) : ℕ)) : ℝ)⁻¹)
+        Filter.atTop (nhds 0) :=
+      tendsto_natCast_atTop_atTop.inv_tendsto_atTop.comp (tendsto_add_atTop_nat (M + T + 1))
+    have hcseq : Filter.Tendsto (fun j : ℕ => (((j + (M + T + 1) : ℕ)) : ℂ)⁻¹)
+        Filter.atTop (nhds 0) := by
+      have h1 := (Complex.continuous_ofReal.tendsto 0).comp hrealseq
+      simp only [Function.comp_def, Complex.ofReal_zero] at h1
+      refine h1.congr fun j => ?_
+      rw [Complex.ofReal_inv, Complex.ofReal_natCast]
+    have htend : Filter.Tendsto (fun j : ℕ => (((j + (M + T + 1) : ℕ)) : ℂ)⁻¹)
+        Filter.atTop (nhdsWithin 0 {(0 : ℂ)}ᶜ) := by
+      rw [tendsto_nhdsWithin_iff]
+      refine ⟨hcseq, Filter.Eventually.of_forall fun j => ?_⟩
+      have hne : (((j + (M + T + 1) : ℕ)) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+      simp only [Set.mem_compl_iff, Set.mem_singleton_iff, inv_eq_zero]
+      exact hne
+    exact htend.frequently ((Filter.Eventually.of_forall fun j =>
+      hGz (j + (M + T + 1)) (by omega) (by omega)).frequently)
+  -- identity theorem, off-axis restriction, and the kill
+  have hGeq : Set.EqOn G 0 Ω :=
+    hGan.eqOn_zero_of_preconnected_of_frequently_eq_zero hΩc h0Ω hfreq
+  have hoff : ∀ u : ℂ, u.im ≠ 0 →
+      ∑ t ∈ Finset.range (T + 1), (1 - (t : ℂ) * u) ^ (-s) * (revPoly D (E t)).eval u = 0 := by
+    intro u hu
+    have huΩ : u ∈ Ω := by
+      show (1 - (T : ℂ) * u) ∈ Complex.slitPlane
+      refine Or.inr ?_
+      have h1 : (1 - (T : ℂ) * u).im = -((T : ℝ) * u.im) := by simp
+      rw [h1]
+      intro h
+      rcases mul_eq_zero.mp (neg_eq_zero.mp h) with h' | h'
+      · exact absurd h' (Nat.cast_ne_zero.mpr (by omega))
+      · exact hu h'
+    have := hGeq huΩ
+    simpa [hG] using this
+  have hrev0 := multiRay_eq_zero hσ T (fun t => revPoly D (E t)) hoff
+  intro t ht
+  exact eq_zero_of_revPoly_eq_zero (hdeg t) (hrev0 t ht)
+
+end HurwitzRayPeeling

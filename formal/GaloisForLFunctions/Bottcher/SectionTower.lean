@@ -34,6 +34,7 @@ structure TowerSection (c : ℂ) (rlo rhi : ℝ) where
   fe : ∀ w : ℂ, w ∈ annulusSet rlo rhi → w ^ 2 ∈ annulusSet rlo rhi →
     T (w ^ 2) = (T w) ^ 2 + c
   inj : Set.InjOn T (annulusSet rlo rhi)
+  dne : ∀ w ∈ annulusSet rlo rhi, deriv T w ≠ 0
   wind : ∀ r : ℝ, rlo < r → r < rhi →
     (∫ θ in (0:ℝ)..(2 * Real.pi), (T (circleMap 0 r θ))⁻¹
       * (deriv T (circleMap 0 r θ) * (circleMap 0 r θ * Complex.I)))
@@ -108,6 +109,35 @@ theorem exists_tower_anchor (c : ℂ) :
     obtain ⟨z, hz, hzeq, _⟩ := hwit v hv
     rw [← hzeq]
     exact hψan z hz
+  have hψdne : ∀ v : ℂ, R₁ < ‖v‖ → deriv ψ v ≠ 0 := by
+    intro v hv
+    obtain ⟨z, hz, hzeq, _⟩ := hwit v hv
+    -- ψ ∘ φ = id near z, so the chain rule forces deriv ψ (φ z) ≠ 0
+    have hφan : AnalyticAt ℂ (bottcherCoord c) z := by
+      have h1 : z ∈ escapeOpen c := by
+        show max 2 ‖c‖ < ‖z‖
+        exact lt_trans hmaxR hz
+      exact (differentiableOn_bottcherCoord c).analyticOnNhd (isOpen_escapeOpen c) z h1
+    have hφd : HasDerivAt (bottcherCoord c) (deriv (bottcherCoord c) z) z :=
+      hφan.differentiableAt.hasDerivAt
+    have hψd : HasDerivAt ψ (deriv ψ (bottcherCoord c z)) (bottcherCoord c z) := by
+      have := (hψan z hz).differentiableAt.hasDerivAt
+      exact this
+    have hcomp : HasDerivAt (ψ ∘ bottcherCoord c)
+        (deriv ψ (bottcherCoord c z) * deriv (bottcherCoord c) z) z :=
+      HasDerivAt.comp z hψd hφd
+    have hidev : (ψ ∘ bottcherCoord c) =ᶠ[nhds z] id := by
+      have hopen : IsOpen {x : ℂ | R < ‖x‖} := isOpen_lt continuous_const continuous_norm
+      filter_upwards [hopen.mem_nhds hz] with x hx
+      exact hψleft x hx
+    have hid : HasDerivAt (ψ ∘ bottcherCoord c) 1 z := by
+      have h1 : HasDerivAt (id : ℂ → ℂ) 1 z := hasDerivAt_id z
+      exact h1.congr_of_eventuallyEq hidev
+    have huniq := hcomp.unique hid
+    intro h0
+    rw [hzeq] at huniq
+    rw [h0] at huniq
+    simp at huniq
   have hψinj : ∀ v₁ : ℂ, R₁ < ‖v₁‖ → ∀ v₂ : ℂ, R₁ < ‖v₂‖ → ψ v₁ = ψ v₂ → v₁ = v₂ := by
     intro v₁ hv₁ v₂ hv₂ h
     obtain ⟨z₁, hz₁, hzeq₁, hψv₁⟩ := hwit v₁ hv₁
@@ -157,13 +187,14 @@ theorem exists_tower_anchor (c : ℂ) :
   have hdeep : ∀ w ∈ annulusSet Ra rhi, R₁ < ‖w‖ := by
     intro w hw
     exact lt_of_lt_of_le hRaR₁ (le_of_lt hw.1)
-  refine ⟨⟨ψ, ?_, ?_, ?_, ?_, ?_, ?_⟩⟩
+  refine ⟨⟨ψ, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩⟩
   · exact fun w hw => hψanv w (hdeep w hw)
   · exact fun w hw => hGψ w (hdeep w hw)
   · exact fun w hw => hψodd w (hdeep w hw)
   · exact fun w hw _ => hψfe w (hdeep w hw)
   · intro w₁ h₁ w₂ h₂ h
     exact hψinj w₁ (hdeep w₁ h₁) w₂ (hdeep w₂ h₂) h
+  · exact fun w hw => hψdne w (hdeep w hw)
   · intro r hr hrhi'
     have hrpos : (0:ℝ) < r := lt_trans (by linarith) hr
     have hr1 : (1:ℝ) < r := lt_trans hRa1 hr
