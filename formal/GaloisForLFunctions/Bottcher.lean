@@ -306,3 +306,4 @@ import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
 import GaloisForLFunctions.Bottcher.BottcherNotRational
 import GaloisForLFunctions.Bottcher.RealPairExposed
+import GaloisForLFunctions.Bottcher.OneSidedCofinal

@@ -22,3 +22,16 @@ blow-up + Fatou), the Jordan/Schoenflies collar for the #4 class, the mixed/disc
 tower wiring — all classical or derived mathematics; the full single-coordinate
 transcendence (`phiMero_transcendental_of_mem_mandelbrot`, all `c ∈ M ∖ {0,−2}`) is already
 machine-checked via the disk-model natural boundary.
+
+## Live open problems (self-contained, no project context needed)
+
+| # | File | Status | One-line statement | Unlocks |
+|---|------|--------|--------------------|---------|
+| 8 | [08-exposed-cofinally-onesided.md](08-exposed-cofinally-onesided.md) | **OPEN** | For every nonexceptional connected pair, `∂W ∖ K₂` (nonempty after a swap, of positive equilibrium measure — both proved inline) contains a **cofinally one-sided** point of `J₁` (connected punctured ball at arbitrarily small radii). Corrected successor of #5–#7: the strict local form is numerically false at natural witnesses (`c = −0.9` rim pockets), the measure/density selection routes are proved dead inline; the cofinal a.e. question (W2) is reopened even at the basilica. | The general both-connected exposure input; with rigidity, Böttcher independence for all nonexceptional connected pairs. |
+| 9 | [09-beta-cofinal-ball-connectivity.md](09-beta-cofinal-ball-connectivity.md) | **OPEN** | For real `c ∈ [−2, 1/4]`: arbitrarily small `ρ` with `B(β,ρ) ∖ K_c` connected, at the β fixed point. Single point, single parameter; the strong (all-`ρ`) form is numerically FALSE at `c = −0.9` (log-periodic rim pockets, data in the file); any subrange is a complete partial solution. | Real pairs: `β₁` is already off `K₂` and visible from infinity, so this bare clause completes the exposure input for the whole real-pair class (feeds #8-W1). |
+
+Problems 8 and 9 are written fully self-contained (all nonclassical inputs proved
+inline, literature by citation only) and are the exact residual open mathematics of the
+both-connected programme; the smooth-piece rigidity endgame is tracked internally (a
+blow-up-covering + Zdunik dimension-rigidity route is on file) and is not an open
+problem in this sense.

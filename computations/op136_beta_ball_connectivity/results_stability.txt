@@ -1,0 +1,22 @@
+c=-0.9 beta=1.572381 lambda=3.144761
+
+-- fine phase scan around k=5 (n=401, maxit=1500) --
+  frac=4.00 rho=0.11647 comps>=10px: [(110869, np.float64(1.58182), np.float64(-0.0))]
+  frac=4.25 rho=0.11104 comps>=10px: [(109813, np.float64(1.58243), np.float64(-0.0))]
+  frac=4.50 rho=0.10586 comps>=10px: [(109058, np.float64(1.58271), np.float64(-0.0))]
+  frac=4.75 rho=0.10093 comps>=10px: [(108529, np.float64(1.58274), np.float64(0.0))]
+  frac=5.00 rho=0.09622 comps>=10px: [(108042, np.float64(1.58273), np.float64(-0.0)), (44, np.float64(1.48423), np.float64(0.03499)), (44, np.float64(1.48423), np.float64(-0.03499))]
+  frac=5.25 rho=0.09174 comps>=10px: [(108008, np.float64(1.5823), np.float64(0.0))]
+  frac=5.50 rho=0.08746 comps>=10px: [(107887, np.float64(1.58198), np.float64(-0.0))]
+  frac=5.75 rho=0.08338 comps>=10px: [(107858, np.float64(1.58162), np.float64(-0.0))]
+  frac=6.00 rho=0.07950 comps>=10px: [(107915, np.float64(1.5812), np.float64(-0.0))]
+  frac=6.25 rho=0.07579 comps>=10px: [(107894, np.float64(1.58085), np.float64(0.0)), (65, np.float64(1.50718), np.float64(-0.0356)), (65, np.float64(1.50718), np.float64(0.0356))]
+  frac=6.50 rho=0.07226 comps>=10px: [(108756, np.float64(1.57996), np.float64(-0.0))]
+
+-- stability matrix at rho of frac=5.0 --
+  n=401 maxit=800: 3 comps>=10px  (size, frac, cx, cy) = [(108042, 0.999168, np.float64(1.58273), np.float64(-0.0)), (44, 0.000407, np.float64(1.48423), np.float64(0.03499)), (44, 0.000407, np.float64(1.48423), np.float64(-0.03499))]
+  n=401 maxit=3200: 3 comps>=10px  (size, frac, cx, cy) = [(108042, 0.999168, np.float64(1.58273), np.float64(-0.0)), (44, 0.000407, np.float64(1.48423), np.float64(0.03499)), (44, 0.000407, np.float64(1.48423), np.float64(-0.03499))]
+  n=801 maxit=800: 3 comps>=10px  (size, frac, cx, cy) = [(432542, 0.999875, np.float64(1.58267), np.float64(-0.0)), (18, 4.2e-05, np.float64(1.48552), np.float64(0.04052)), (18, 4.2e-05, np.float64(1.48552), np.float64(-0.04052))]
+  n=801 maxit=3200: 3 comps>=10px  (size, frac, cx, cy) = [(432542, 0.999875, np.float64(1.58267), np.float64(-0.0)), (18, 4.2e-05, np.float64(1.48552), np.float64(0.04052)), (18, 4.2e-05, np.float64(1.48552), np.float64(-0.04052))]
+  n=1601 maxit=800: 5 comps>=10px  (size, frac, cx, cy) = [(1728816, 0.999052, np.float64(1.58275), np.float64(0.0)), (733, 0.000424, np.float64(1.48417), np.float64(0.03492)), (733, 0.000424, np.float64(1.48417), np.float64(-0.03492)), (66, 3.8e-05, np.float64(1.48551), np.float64(-0.04052))]
+  n=1601 maxit=3200: 5 comps>=10px  (size, frac, cx, cy) = [(1728816, 0.999052, np.float64(1.58275), np.float64(0.0)), (733, 0.000424, np.float64(1.48417), np.float64(0.03492)), (733, 0.000424, np.float64(1.48417), np.float64(-0.03492)), (66, 3.8e-05, np.float64(1.48551), np.float64(-0.04052))]

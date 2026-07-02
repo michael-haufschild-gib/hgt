@@ -139,6 +139,19 @@ prevents this, so the quadratic dynamics must be used in an essential way.
    boundary points are dense in `J_c`. Hence one-sided points are dense in `J_c` for
    `c ∈ M ∖ {0, −2}`, and each such point is the landing point of a single external ray
    of dyadic angle.
+
+   **CORRECTION (2026-07-02, numerically certified).** The step "one access ⟹ one-sided
+   in the ball sense of this file" in the previous paragraph is INVALID — the same
+   access-vs-ball-connectivity conflation exposed in the answers to this problem and to
+   Problem 7. At `c = −0.9` the β-fixed point has a single access, yet `B(β,ρ) ∖ K_c`
+   is disconnected for `ρ` in log-periodically recurring bands at every depth
+   (self-similar rim pockets pinched by limbs of `K`; multiplier `2β` real ⟹ the germ is
+   log-periodic in scale; pocket pair verified at `ρ ≈ 0.096, 0.031, 0.0097, 0.0031`,
+   stable under grid refinement and iteration depth). What KF3 correctly supplies is the
+   single-ACCESS statement and its pullback density. Consumers needing ball-connectivity
+   should use the **cofinal** form — `B(β,ρ) ∖ K_c` connected for arbitrarily small `ρ` —
+   which the periodic pockets do not obstruct (clean bands recur every period) and which
+   suffices for the downstream certificate (`OneSidedCofinal` re-cut in the formal tree).
 4. Every hole `H` of `X` satisfies `∂H ∩ K_{c₁} ≠ ∅` and `∂H ∩ K_{c₂} ≠ ∅`; after a
    suitable choice of indices, `∂W ∖ K_{c₂}` is a nonempty subset of `J_{c₁}`.
 5. Anything from the standard literature on polynomial dynamics, plane topology, and

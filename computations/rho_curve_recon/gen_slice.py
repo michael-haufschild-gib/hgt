@@ -39,13 +39,13 @@ class Gen:
         return 0
 
     def emit_chain(self, cx, ci, h):
-        out = ["    refine U0DiskEscape.escape_square_coords (by norm_num) ?_ z hre him"]
+        out = ["  refine U0DiskEscape.escape_square_coords (by norm_num) ?_ z hre him"]
         r = F(283,200)*h
         c = (F(cx), F(ci))
         for _ in range(20):
             M = rdown(np.sqrt(float(c[0]**2+c[1]**2))*0.999999)
             if M >= 0 and M*M <= c[0]**2+c[1]**2 and self.X + r < M:
-                out.append(f"    exact U0DiskEscape.escape_terminal_coords (M := {lf(M)}) (Nb := {lf(self.Nb)}) (S := {lf(self.S)})"
+                out.append(f"  exact U0DiskEscape.escape_terminal_coords (M := {lf(M)}) (Nb := {lf(self.Nb)}) (S := {lf(self.S)})"
                            " (by norm_num) (by norm_num) (by norm_num) (by norm_num)"
                            " (by norm_num) (by norm_num) (by norm_num) (by norm_num)")
                 return out
@@ -60,46 +60,48 @@ class Gen:
             assert N*N >= c[0]**2+c[1]**2
             rp = rup(float(E + r*(2*N+r))*1.001)
             assert rp >= E + r*(2*N+r)
-            out.append(f"    refine U0DiskEscape.escape_step_coords (c'x := {lf(nx)}) (c'i := {lf(ni)}) (r' := {lf(rp)}) (E := {lf(E)}) (N := {lf(N)})"
+            out.append(f"  refine U0DiskEscape.escape_step_coords (c'x := {lf(nx)}) (c'i := {lf(ni)}) (r' := {lf(rp)}) (E := {lf(E)}) (N := {lf(N)})"
                        " (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) ?_")
             c, r = (nx, ni), rp
         raise RuntimeError("chain too long")
 
     def node(self, cx, cy, h):
         cx, cy, h = F(cx), F(cy), F(h)
-        nm = self.fresh()
+        nm = f"{self.name}_nd{self.ctr + 1}"
+        self.ctr += 1
         B = f"(⟨{lf(self.bx)}, {lf(self.bi)}⟩ : ℂ)"
-        hdr = (f"  have {nm} : ∀ z : ℂ, |z.re - {lf(cx)}| ≤ {lf(h)} → |z.im - {lf(cy)}| ≤ {lf(h)} → "
+        hdr = (f"private theorem {nm} : ∀ z : ℂ, |z.re - {lf(cx)}| ≤ {lf(h)} → |z.im - {lf(cy)}| ≤ {lf(h)} → "
                f"‖z‖ ≤ 1 → z ∉ filledJulia {B} := by")
         dx, dy = abs(cx)-h, abs(cy)-h
         if dx > 1:
-            self.lines += [hdr, "    intro z hre _ hz",
-                "    exact absurd hz (U0DiskEscape.square_outside_unit_re (by norm_num) z hre)"]
+            self.lines += [hdr, "  intro z hre _ hz",
+                "  exact absurd hz (U0DiskEscape.square_outside_unit_re (by norm_num) z hre)", ""]
             return nm
         if dy > 1:
-            self.lines += [hdr, "    intro z _ him hz",
-                "    exact absurd hz (U0DiskEscape.square_outside_unit_im (by norm_num) z him)"]
+            self.lines += [hdr, "  intro z _ him hz",
+                "  exact absurd hz (U0DiskEscape.square_outside_unit_im (by norm_num) z him)", ""]
             return nm
         if dx >= 0 and dy >= 0 and dx*dx+dy*dy > 1:
-            self.lines += [hdr, "    intro z hre him hz",
-                f"    exact absurd hz (U0DiskEscape.square_outside_unit_corner (dx := {lf(dx)}) (dy := {lf(dy)})"
-                " (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) z hre him)"]
+            self.lines += [hdr, "  intro z hre him hz",
+                f"  exact absurd hz (U0DiskEscape.square_outside_unit_corner (dx := {lf(dx)}) (dy := {lf(dy)})"
+                " (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) z hre him)", ""]
             return nm
         if self.chain_ok(complex(cx,cy), float(F(283,200)*h)):
-            body = ["    intro z hre him _"] + self.emit_chain(cx, cy, h)
-            self.lines += [hdr] + body
+            body = ["  intro z hre him _"] + self.emit_chain(cx, cy, h)
+            self.lines += [hdr] + body + [""]
             return nm
         if h < F(1, 4096): raise RuntimeError(f"hmin at ({cx},{cy},{h})")
         h2 = h/2
         kids = [self.node(cx-h2, cy-h2, h2), self.node(cx-h2, cy+h2, h2),
                 self.node(cx+h2, cy-h2, h2), self.node(cx+h2, cy+h2, h2)]
-        self.lines += [hdr, "    intro z hre him hz",
-            "    rcases U0DiskEscape.interval_split hre with h1 | h1 <;>",
-            "      rcases U0DiskEscape.interval_split him with h2 | h2"]
+        self.lines += [hdr, "  intro z hre him hz",
+            "  rcases U0DiskEscape.interval_split hre with h1 | h1 <;>",
+            "    rcases U0DiskEscape.interval_split him with h2 | h2"]
         glue = ("(by rcases abs_le.mp h1 with ⟨ha, hb⟩; rw [abs_le]; constructor <;> linarith) "
                 "(by rcases abs_le.mp h2 with ⟨ha, hb⟩; rw [abs_le]; constructor <;> linarith)")
         for k in kids:
-            self.lines.append(f"    · exact {k} z {glue} hz")
+            self.lines.append(f"  · exact {k} z {glue} hz")
+        self.lines.append("")
         return nm
 
     def theorem(self, doc):
@@ -108,10 +110,10 @@ class Gen:
         root = self.node(0, 0, 1)
         body = self.lines[pre:]
         self.lines = self.lines[:pre]
-        out = [f"/-- {doc} -/",
-               f"theorem {self.name} : ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia {B} := by"]
-        out += body
-        out.append(f"  exact U0DiskEscape.viable_of_root_square {root}")
+        out = body
+        out += [f"/-- {doc} -/",
+                f"theorem {self.name} : ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia {B} :=",
+                f"  U0DiskEscape.viable_of_root_square {root}"]
         return "\n".join(out)
 
 HEADER = """/-
@@ -127,7 +129,7 @@ open Complex Set Bottcher
 
 namespace U0DichotomySlice
 
-set_option maxHeartbeats 4000000
+set_option maxHeartbeats 1000000
 
 """
 

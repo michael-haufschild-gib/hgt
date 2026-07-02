@@ -37,15 +37,11 @@ theorem betaFixed_lt_betaFixed {c₁ c₂ : ℝ} (hlt : c₁ < c₂) (hc₂4 : c
     Real.sqrt_lt_sqrt (by linarith) (by linarith)
   linarith
 
-/-- **Real-pair exposed one-sided point.**  For real parameters with `β₂ < β₁`, the β-fixed
-point of `c₁` is off `K_{c₂}` (real slice `K_{c₂} ∩ ℝ = [−β₂, β₂]`) and visible from infinity
-along the real ray `(β₁, ∞)`; one-sidedness at the single point `β₁` is the only remaining
-input. -/
-theorem realPair_exposedOneSided_of_oneSidedAt_beta {c₁ c₂ : ℝ}
-    (hc₁4 : c₁ ≤ 1 / 4) (hc₂4 : c₂ ≤ 1 / 4) (hβ : betaFixed c₂ < betaFixed c₁)
-    (hos : OneSidedAt (c₁ : ℂ) (betaFixed c₁ : ℂ)) :
-    ExposedOneSided (c₁ : ℂ) (c₂ : ℂ) := by
-  refine ⟨(betaFixed c₁ : ℂ), hos, not_mem_filledJulia_of_betaFixed_lt hc₂4 hβ, ?_⟩
+/-- **Visibility of `β₁` from infinity along the real ray `(β₁, ∞)`** — the ray misses both
+real-slice filled Julia sets, is unbounded and preconnected, and closes up on `β₁`. -/
+theorem realPair_beta_visibleFromInfinity {c₁ c₂ : ℝ}
+    (hc₁4 : c₁ ≤ 1 / 4) (hc₂4 : c₂ ≤ 1 / 4) (hβ : betaFixed c₂ < betaFixed c₁) :
+    VisibleFromInfinity (c₁ : ℂ) (c₂ : ℂ) (betaFixed c₁ : ℂ) := by
   refine ⟨(fun t : ℝ => (t : ℂ)) '' Ioi (betaFixed c₁), ?_, ?_, ?_, ?_⟩
   · exact isPreconnected_Ioi.image _ Complex.continuous_ofReal.continuousOn
   · intro hbd
@@ -75,6 +71,17 @@ theorem realPair_exposedOneSided_of_oneSidedAt_beta {c₁ c₂ : ℝ}
       abs_of_pos (by linarith : (0 : ℝ) < ε / 2)]
     linarith
 
+/-- **Real-pair exposed one-sided point.**  For real parameters with `β₂ < β₁`, the β-fixed
+point of `c₁` is off `K_{c₂}` (real slice `K_{c₂} ∩ ℝ = [−β₂, β₂]`) and visible from infinity
+along the real ray `(β₁, ∞)`; one-sidedness at the single point `β₁` is the only remaining
+input. -/
+theorem realPair_exposedOneSided_of_oneSidedAt_beta {c₁ c₂ : ℝ}
+    (hc₁4 : c₁ ≤ 1 / 4) (hc₂4 : c₂ ≤ 1 / 4) (hβ : betaFixed c₂ < betaFixed c₁)
+    (hos : OneSidedAt (c₁ : ℂ) (betaFixed c₁ : ℂ)) :
+    ExposedOneSided (c₁ : ℂ) (c₂ : ℂ) :=
+  ⟨(betaFixed c₁ : ℂ), hos, not_mem_filledJulia_of_betaFixed_lt hc₂4 hβ,
+    realPair_beta_visibleFromInfinity hc₁4 hc₂4 hβ⟩
+
 /-- **Real-pair both-connected capstone (conditional).**  For real `−2 ≤ c₁ < c₂ ≤ 1/4`, both
 nonexceptional, the whole both-connected chain fires from `OneSidedAt c₁ β₁` (the single
 remaining analytic clause of the exposure input) plus smooth-piece rigidity (both
@@ -98,5 +105,28 @@ theorem q62_phiMero_realPair_of_oneSidedAt_beta
     (Or.inl (realPair_exposedOneSided_of_oneSidedAt_beta hc₁4 hc₂4
       (betaFixed_lt_betaFixed hlt hc₂4) hos))
     hrig12 hrig21
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **`β` is a Julia point, full real slice**: `β ∈ K` (real slice) while every neighborhood
+contains real escapers `β + ε`, so `β` lies on the frontier of the filled Julia set.  Extends
+`betaFixed_mem_frontier` (DendriteTip, `c ≤ 0`) to the whole slice `[−2, 1/4]`. -/
+theorem betaFixed_mem_frontier_slice {c : ℝ} (hc2 : -2 ≤ c) (hc4 : c ≤ 1 / 4) :
+    (betaFixed c : ℂ) ∈ frontier (filledJulia (c : ℂ)) := by
+  rw [(isClosed_filledJulia (c : ℂ)).frontier_eq]
+  refine ⟨real_mem_filledJulia_of_abs_le hc2 hc4 (le_of_eq (abs_of_pos (betaFixed_pos c))), ?_⟩
+  intro hint
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp (mem_interior_iff_mem_nhds.mp hint)
+  have hmem : ((betaFixed c + ε / 2 : ℝ) : ℂ) ∈ Metric.ball ((betaFixed c : ℝ) : ℂ) ε := by
+    rw [Metric.mem_ball, dist_eq_norm]
+    have h1 : ((betaFixed c + ε / 2 : ℝ) : ℂ) - ((betaFixed c : ℝ) : ℂ) = ((ε / 2 : ℝ) : ℂ) := by
+      push_cast
+      ring
+    rw [h1, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
+    linarith
+  exact not_mem_filledJulia_of_betaFixed_lt hc4
+    (by linarith : betaFixed c < betaFixed c + ε / 2) (hball hmem)
 
 end Bottcher
