@@ -418,3 +418,95 @@ theorem exists_period_value_threshold (c : ℂ) :
     exact h2.mul (h6.mul ℓ.cont')
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **The disjointness gap.**  When the filled Julia sets are disjoint, the second one sits at a
+positive Green level of the first: below that level, nothing belongs to `K₂`. -/
+theorem exists_green_gap_of_disjoint (c₁ c₂ : ℂ)
+    (hdisj : ∀ z, z ∈ filledJulia c₂ → z ∉ filledJulia c₁) :
+    ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ z : ℂ, greenFunctionDyn c₁ z ≤ ε₀ → z ∉ filledJulia c₂ := by
+  classical
+  rcases (filledJulia c₂).eq_empty_or_nonempty with hKe | hKne
+  · exact ⟨1, one_pos, fun z _ hz => by rw [hKe] at hz; exact absurd hz (Set.notMem_empty z)⟩
+  obtain ⟨z₀, hz₀K, hz₀min⟩ := (isCompact_filledJulia c₂).exists_isMinOn hKne
+    (continuous_greenFunctionDyn c₁).continuousOn
+  have hz₀pos : 0 < greenFunctionDyn c₁ z₀ := by
+    rcases lt_or_eq_of_le (greenFunctionDyn_nonneg c₁ z₀) with h1 | h1
+    · exact h1
+    · exact absurd ((greenFunctionDyn_eq_zero_iff c₁ z₀).mp h1.symm) (hdisj z₀ hz₀K)
+  refine ⟨greenFunctionDyn c₁ z₀ / 2, by positivity, ?_⟩
+  intro z hz hzK
+  have h1 : greenFunctionDyn c₁ z₀ ≤ greenFunctionDyn c₁ z := hz₀min hzK
+  linarith
+
+/-- **Uniform escape.**  A compact set in the basin escapes uniformly: beyond some iterate,
+the whole set is past any prescribed radius. -/
+theorem exists_uniform_escape (c : ℂ) {L : Set ℂ} (hL : IsCompact L) (hLne : L.Nonempty)
+    (hLb : ∀ z ∈ L, z ∉ filledJulia c) (M : ℝ) :
+    ∃ N : ℕ, ∀ n : ℕ, N ≤ n → ∀ z ∈ L, M < ‖(quadratic c)^[n] z‖ := by
+  classical
+  obtain ⟨z₀, hz₀L, hz₀min⟩ := hL.exists_isMinOn hLne
+    (continuous_greenFunctionDyn c).continuousOn
+  have hε : 0 < greenFunctionDyn c z₀ := by
+    rcases lt_or_eq_of_le (greenFunctionDyn_nonneg c z₀) with h1 | h1
+    · exact h1
+    · exact absurd ((greenFunctionDyn_eq_zero_iff c z₀).mp h1.symm) (hLb z₀ hz₀L)
+  set ε : ℝ := greenFunctionDyn c z₀ with hεdef
+  -- the Green bound on the crude ball
+  obtain ⟨Cb, hCb⟩ : ∃ Cb : ℝ, ∀ w : ℂ, ‖w‖ ≤ max 2 ‖c‖ → greenFunctionDyn c w ≤ Cb := by
+    have hcpt : IsCompact {w : ℂ | ‖w‖ ≤ max 2 ‖c‖} := by
+      have h1 : {w : ℂ | ‖w‖ ≤ max 2 ‖c‖} = Metric.closedBall 0 (max 2 ‖c‖) := by
+        ext w
+        simp [Metric.mem_closedBall, dist_zero_right]
+      rw [h1]
+      exact isCompact_closedBall 0 _
+    rcases {w : ℂ | ‖w‖ ≤ max 2 ‖c‖}.eq_empty_or_nonempty with hbe | hbne
+    · exact ⟨0, fun w hw => absurd (show w ∈ {w : ℂ | ‖w‖ ≤ max 2 ‖c‖} from hw)
+        (by rw [hbe]; exact Set.notMem_empty w)⟩
+    obtain ⟨w₀, _, hw₀max⟩ := hcpt.exists_isMaxOn hbne
+      (continuous_greenFunctionDyn c).continuousOn
+    exact ⟨greenFunctionDyn c w₀, fun w hw => hw₀max hw⟩
+  -- choose N beyond both the ball bound and the norm target
+  obtain ⟨N, hN⟩ : ∃ N : ℕ, max Cb (Real.log (max M 1) + 1) < 2 ^ N * ε := by
+    obtain ⟨N, hN⟩ := pow_unbounded_of_one_lt
+      ((max Cb (Real.log (max M 1) + 1) + 1) / ε) (by norm_num : (1:ℝ) < 2)
+    refine ⟨N, ?_⟩
+    rw [div_lt_iff₀ hε] at hN
+    nlinarith
+  refine ⟨N, ?_⟩
+  intro n hn z hzL
+  have hG : (2:ℝ) ^ n * ε ≤ greenFunctionDyn c ((quadratic c)^[n] z) := by
+    rw [greenFunctionDyn_iterate]
+    have h1 : ε ≤ greenFunctionDyn c z := hz₀min hzL
+    have h2 : (0:ℝ) < 2 ^ n := by positivity
+    nlinarith
+  have hNn : (2:ℝ) ^ N * ε ≤ 2 ^ n * ε := by
+    apply mul_le_mul_of_nonneg_right _ (le_of_lt hε)
+    apply pow_le_pow_right₀ (by norm_num) hn
+  -- the iterate has left the crude ball
+  have hfar : max 2 ‖c‖ < ‖(quadratic c)^[n] z‖ := by
+    by_contra hcon
+    push Not at hcon
+    have h1 := hCb _ hcon
+    have h2 : max Cb (Real.log (max M 1) + 1) < greenFunctionDyn c ((quadratic c)^[n] z) := by
+      linarith
+    have h3 : Cb ≤ max Cb (Real.log (max M 1) + 1) := le_max_left _ _
+    linarith
+  -- crude bound: the norm exceeds the target
+  have hcrude := greenFunctionDyn_le_crude
+    (le_of_lt (lt_of_le_of_lt (le_max_right _ _) hfar))
+    (lt_of_le_of_lt (le_max_left _ _) hfar)
+  have h4 : Real.log (max M 1) < Real.log ‖(quadratic c)^[n] z‖ := by
+    have h5 : Real.log (max M 1) + 1 ≤ max Cb (Real.log (max M 1) + 1) := le_max_right _ _
+    linarith
+  have h6 : max M 1 < ‖(quadratic c)^[n] z‖ := by
+    have h7 : (0:ℝ) < max M 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
+    have h8 : (0:ℝ) < ‖(quadratic c)^[n] z‖ :=
+      lt_trans (by norm_num) (lt_of_le_of_lt (le_max_left _ _) hfar)
+    calc max M 1 = Real.exp (Real.log (max M 1)) := (Real.exp_log h7).symm
+      _ < Real.exp (Real.log ‖(quadratic c)^[n] z‖) := Real.exp_lt_exp.mpr h4
+      _ = ‖(quadratic c)^[n] z‖ := Real.exp_log h8
+  exact lt_of_le_of_lt (le_max_left _ _) h6
+
+end Bottcher
