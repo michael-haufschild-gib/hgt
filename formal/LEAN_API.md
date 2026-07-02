@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4411 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4412 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -2560,6 +2560,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `perfect_frontier_filledJulia_of_mem_mandelbrot_emptyInterior` | `GaloisForLFunctions.Bottcher.FilledJuliaConnectedConsequences` | `formal/GaloisForLFunctions/Bottcher/FilledJuliaConnectedConsequences.lean:24` | Frontier of a Mandelbrot-parameter filled Julia set with empty interior is perfect. |
 | theorem | `not_countable_ball_inter_frontier_filledJulia_of_mem_mandelbrot_emptyInterior` | `GaloisForLFunctions.Bottcher.FilledJuliaConnectedConsequences` | `formal/GaloisForLFunctions/Bottcher/FilledJuliaConnectedConsequences.lean:30` | Uncountable local frontier for a Mandelbrot parameter with empty interior. |
 | theorem | `exists_local_frontier_target_set_of_mem_mandelbrot_emptyInterior` | `GaloisForLFunctions.Bottcher.FilledJuliaConnectedConsequences` | `formal/GaloisForLFunctions/Bottcher/FilledJuliaConnectedConsequences.lean:39` | Local frontier target-set package (countable avoidance / closure / off-other) for a Mandelbrot parameter — the connected hRigid lane input, with `hconn` discharged. |
+| theorem | `exists_relOpen_subset_of_finite_closed_cover` | `GaloisForLFunctions.Bottcher.FiniteCoverRelInterior` | `formal/GaloisForLFunctions/Bottcher/FiniteCoverRelInterior.lean:20` | Finite-cover relative interior (Baire).** For a closed nonempty `S ⊆ ℂ` covered by finitely many closed sets `F i`, some `F i` contains a nonempty relatively open subset `U ∩ S` of |
 | theorem | `separable_of_derivative_ne_zero_at_roots` | `GaloisForLFunctions.Bottcher.FixedPointSeparable` | `formal/GaloisForLFunctions/Bottcher/FixedPointSeparable.lean:20` | A nonzero complex polynomial is separable if its derivative is nonzero at every root. This is the converse of the repeatedly used `eval_derivative_ne_zero_of_separable`, specialize |
 | theorem | `fixedPointPoly_separable_of_multiplier_ne_one` | `GaloisForLFunctions.Bottcher.FixedPointSeparable` | `formal/GaloisForLFunctions/Bottcher/FixedPointSeparable.lean:35` | If no fixed point of `f_c^[p]` has multiplier `1`, then `f_c^[p] - X` is separable. |
 | theorem | `eventually_fixedPointPoly_separable_of_eventually_multiplier_ne_one` | `GaloisForLFunctions.Bottcher.FixedPointSeparable` | `formal/GaloisForLFunctions/Bottcher/FixedPointSeparable.lean:45` | Eventual no-multiplier-one data supplies eventual fixed-point separability. |
