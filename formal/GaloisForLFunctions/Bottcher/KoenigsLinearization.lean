@@ -9,6 +9,7 @@ recursion, and the geometric orbit-drift bound `‖f^[k](β+v) − β‖ ≤ 2�
 error control — the inputs for the Cauchy telescope.  Route R1 of the dendrite-tip lane.
 -/
 import GaloisForLFunctions.Bottcher.GreenFunction
+import GaloisForLFunctions.Bottcher.DendriteTip
 import Mathlib.Analysis.Complex.LocallyUniformLimit
 
 open Complex Set Metric Finset
@@ -691,5 +692,86 @@ theorem koenigsFun_hasDerivAt_zero {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 :
     _ ≤ ε * ‖w - 0‖ := by
         rw [sub_zero]
         apply mul_le_mul_of_nonneg_right hwε (norm_nonneg w)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Parabolic location of the Julia pullback** (real parameters): in linearizing coordinates
+the filled Julia set lies in the parabolic region `{Re v ≤ ‖v‖²}` — because `K` sits inside the
+`β`-disk whose boundary through `β` is vertical, and `ψ` is tangent to the identity.  The sector
+`{Re v > ‖v‖²}` is therefore basin, at every scale: the formal lune. -/
+theorem koenigs_pullback_re_le {c : ℝ} (hc0 : c ≤ 0)
+    {v : ℂ} (hv : ‖v‖ ≤ 1 / 32)
+    (hmem : koenigsFun (c:ℂ) ((betaFixed c : ℝ) : ℂ) v ∈ filledJulia (c:ℂ)) :
+    v.re ≤ ‖v‖ ^ 2 := by
+  set β : ℂ := ((betaFixed c : ℝ) : ℂ) with hβdef
+  have hβsq : β ^ 2 + (c:ℂ) = β := by
+    rw [hβdef]
+    exact_mod_cast congrArg (fun t : ℝ => (t : ℂ)) (betaFixed_sq hc0)
+  have hβ1 : 1 ≤ betaFixed c := one_le_betaFixed hc0
+  have hlam2 : 2 ≤ ‖2 * β‖ := by
+    rw [hβdef]
+    have h1 : (2 * ((betaFixed c : ℝ) : ℂ)) = (((2 * betaFixed c : ℝ)) : ℂ) := by
+      push_cast
+      ring
+    rw [h1, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
+    linarith
+  -- the norm bound from the extreme-radius localization
+  have hnorm : ‖koenigsFun (c:ℂ) β v‖ ≤ betaFixed c := by
+    have h2 := filledJulia_subset_closedBall_betaFixed hc0 hmem
+    rwa [Metric.mem_closedBall, dist_zero_right] at h2
+  -- the tangency decomposition
+  have htang := koenigsFun_normalization hβsq hlam2 hv
+  set e : ℂ := koenigsFun (c:ℂ) β v - (β + v) with hedef
+  have hψ : koenigsFun (c:ℂ) β v = β + v + e := by
+    rw [hedef]
+    ring
+  -- real parts:  β + Re v + Re e ≤ ‖ψ v‖ ≤ β
+  have hre : (β + v + e).re ≤ ‖koenigsFun (c:ℂ) β v‖ := by
+    rw [hψ] at *
+    exact Complex.re_le_norm _
+  have hβre : (β + v + e).re = betaFixed c + v.re + e.re := by
+    rw [hβdef]
+    simp [Complex.add_re, Complex.ofReal_re]
+  rw [hβre] at hre
+  have h3 : v.re + e.re ≤ 0 := by linarith
+  have h4 : -e.re ≤ ‖e‖ := by
+    calc -e.re = (-e).re := by simp
+      _ ≤ ‖-e‖ := Complex.re_le_norm _
+      _ = ‖e‖ := norm_neg e
+  linarith [htang]
+
+/-- **The scale-invariant sector lune**: the convex sector `{Re v > ‖v‖/2}` inside the working
+disk is disjoint from the Julia pullback and closed under shrinking by any positive real factor
+— the fixed connected target for all scale-level connectors. -/
+theorem sector_disjoint_pullback {c : ℝ} (hc0 : c ≤ 0)
+    {v : ℂ} (hv : ‖v‖ ≤ 1 / 32) (hsec : ‖v‖ / 2 < v.re) :
+    koenigsFun (c:ℂ) ((betaFixed c : ℝ) : ℂ) v ∉ filledJulia (c:ℂ) := by
+  intro hmem
+  have h1 := koenigs_pullback_re_le hc0 hv hmem
+  have h2 : ‖v‖ ^ 2 ≤ ‖v‖ / 32 := by
+    have h3 := norm_nonneg v
+    nlinarith
+  have h4 : (0:ℝ) ≤ ‖v‖ := norm_nonneg v
+  nlinarith
+
+/-- The sector is convex (superlevel set of the concave `Re v − ‖v‖/2`), hence preconnected. -/
+theorem sector_convex : Convex ℝ {v : ℂ | ‖v‖ / 2 < v.re} := by
+  intro x hx y hy s t hs ht hst
+  simp only [Set.mem_setOf_eq] at hx hy ⊢
+  have h1 : ‖s • x + t • y‖ ≤ s * ‖x‖ + t * ‖y‖ := by
+    calc ‖s • x + t • y‖ ≤ ‖s • x‖ + ‖t • y‖ := norm_add_le _ _
+      _ = s * ‖x‖ + t * ‖y‖ := by
+          rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
+            abs_of_nonneg hs, abs_of_nonneg ht]
+  have h2 : (s • x + t • y).re = s * x.re + t * y.re := by
+    simp [Complex.add_re, Complex.smul_re]
+  rw [h2]
+  rcases lt_or_eq_of_le hs with hs' | hs'
+  · nlinarith [mul_lt_mul_of_pos_left hx hs', mul_le_mul_of_nonneg_left (le_of_lt hy) ht]
+  · have ht1 : t = 1 := by linarith
+    rw [← hs', ht1]
+    simpa using hy
 
 end Bottcher
