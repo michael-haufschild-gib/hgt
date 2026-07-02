@@ -161,3 +161,22 @@ files: `BottcherTowerData.lean` (unused `hExto` 744:44; `push_neg` deprecation 8
 `DiskAlgebraicContinuation.lean` (`eval_finset_sum`/`finset_sum_coeff` deprecations + 1×
 `push_neg`), `RelativeRigidityCountableAvoidance.lean` (3× simpa linter). U0 lane contributes
 zero warnings. Flagging per protocol — not touching your files.
+
+## Update 7 (u0 lane, 2026-07-02) — viability certificates below the sharp threshold
+
+New capability relevant to the Ext/Green-band conjunct (Update 5): the u0 lane now has
+machine-checked VIABILITY certificates `K_b ∩ D̄(0,1) = ∅` for parameters BELOW `‖b‖ = 4`:
+
+- `U0CurveSectors.viable_of_gt_sharp` — every `‖b‖ > 2+√2`, every direction (one-step
+  clearance + monotone escape; supersedes the `filledJulia_exterior` geometry as the
+  disk-avoidance input, at a strictly better threshold);
+- `U0CurveSectors.viable_modulus_three` and `viable_sector_ring_re` — closed-form sectors
+  inside the ring `2 < ‖b‖ ≤ 2+√2`;
+- `U0DichotomySlice.slice_viable_*` — pointwise square-tree certificates near modulus 3 up to
+  `arg b ≈ 155.4°` (kit: `U0DiskEscape`, generator in `computations/rho_curve_recon/`).
+
+If your towerdata spec ever wants the disk-avoidance hypothesis as an input clause, these give
+it on a much larger parameter set than `4 ≤ ‖b‖`. The obstructed complement is also mapped
+(`U0ObstructionPatterns`, `U0CurveSectors.obstructed_of_s`): near the negative ray below
+`2+√2` and in a mid-angle lobe at small radii, NO such certificate can exist. Factual note
+only — no action needed.

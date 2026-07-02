@@ -4775,3 +4775,18 @@ theorem curve_sectors_card : CurveSectorsTarget :=
    fun hcond => U0CurveSectors.obstructed_of_s hcond⟩
 
 end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **`ρ(π) = 2+√2`, two-sided**: every parameter of modulus above `2+√2` is viable in every
+direction (the closed unit disk escapes), and at modulus `2+√2` the negative-ray parameter is
+obstructed.  The critical curve of the window geometry attains its maximum on the negative ray
+at exactly the sharp window threshold. -/
+def RhoPiPinnedTarget : Prop :=
+  (∀ b : ℂ, 2 + Real.sqrt 2 < ‖b‖ → ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia b) ∧
+  (∃ b : ℂ, ‖b‖ = 2 + Real.sqrt 2 ∧ ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ Bottcher.filledJulia b)
+
+/-- Formal wrapper for the two-sided pin of `ρ(π)`. -/
+theorem rho_pi_pinned_card : RhoPiPinnedTarget := U0CurveSectors.rho_pi_pinned
+
+end FullyProvenNewTargets

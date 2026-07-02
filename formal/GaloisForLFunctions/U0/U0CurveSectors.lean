@@ -17,6 +17,7 @@ Before any grid, two explicit regions bound the viability set
 -/
 import GaloisForLFunctions.U0.U0DiskEscape
 import GaloisForLFunctions.U0.U0ObstructionPatterns
+import GaloisForLFunctions.U0.U0WindowObstruction
 
 open Complex Set Bottcher U0MonotoneEscape
 
@@ -93,5 +94,41 @@ theorem obstructed_real_segment {s : ℝ} (h3 : 3 ≤ s) (hup : s ≤ 1 + 2 * Re
   rw [h1, h2, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
     abs_of_nonneg (by linarith), abs_of_nonneg (by linarith)]
   nlinarith [hs2, Real.sqrt_nonneg 2]
+
+end U0CurveSectors
+
+namespace U0CurveSectors
+
+/-- **Viability above the sharp threshold, every direction**: for `‖b‖ > 2+√2` the closed unit
+disk escapes — one quadratic step clears the fixed point (`xStar ‖b‖ < ‖b‖ − 1`), monotone
+escape does the rest.  Geometrically: `ρ(θ) ≤ 2+√2` for EVERY direction `θ`. -/
+theorem viable_of_gt_sharp {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
+    ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia b := by
+  have hs1 : (1 : ℝ) ≤ Real.sqrt 2 := by
+    nlinarith [Real.sq_sqrt (show (0:ℝ) ≤ 2 by norm_num), Real.sqrt_nonneg 2]
+  refine U0DiskEscape.viable_of_sharp (by linarith) ?_
+  have := U0MonotoneEscape.xStar_lt_of_sharp hb
+  linarith
+
+/-- **`ρ(π) = 2+√2`, two-sided**: every parameter of modulus `> 2+√2` is viable (any
+direction), and AT modulus `2+√2` the parameter `−(2+√2)` is obstructed — the critical curve
+attains its maximum exactly at the negative ray, at exactly the window threshold. -/
+theorem rho_pi_pinned :
+    (∀ b : ℂ, 2 + Real.sqrt 2 < ‖b‖ → ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia b) ∧
+    (∃ b : ℂ, ‖b‖ = 2 + Real.sqrt 2 ∧ ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia b) := by
+  refine ⟨fun b hb => viable_of_gt_sharp hb, ⟨(((-2 - Real.sqrt 2 : ℝ)) : ℂ), ?_, ?_⟩⟩
+  · rw [Complex.norm_real, Real.norm_eq_abs,
+      abs_of_neg (show (-2 - Real.sqrt 2 : ℝ) < 0 by linarith [Real.sqrt_nonneg 2])]
+    ring
+  · exact U0WindowObstruction.filledJulia_meets_unit_disk
+      (by linarith [Real.sqrt_nonneg 2]) (le_refl _)
+
+/-- The real negative-ray corollary: every real `b < −(2+√2)` is viable. -/
+theorem negative_ray_viable {b : ℝ} (hb : b < -(2 + Real.sqrt 2)) :
+    ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia ((b : ℝ) : ℂ) := by
+  refine viable_of_gt_sharp ?_
+  rw [Complex.norm_real, Real.norm_eq_abs,
+    abs_of_neg (show b < 0 by linarith [Real.sqrt_nonneg 2])]
+  linarith
 
 end U0CurveSectors
