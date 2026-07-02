@@ -197,6 +197,7 @@ import GaloisForLFunctions.Bottcher.RelativeDenseApproach
 import GaloisForLFunctions.Bottcher.RelativeFibreGeneric
 import GaloisForLFunctions.Bottcher.RelativeBasinBranch
 import GaloisForLFunctions.Bottcher.RelativeTranscendenceBridge
+import GaloisForLFunctions.Bottcher.RelativeMinimalRelation
 import GaloisForLFunctions.Bottcher.RelativeRigidityCapstone
 import GaloisForLFunctions.Bottcher.IndexFormula
 import GaloisForLFunctions.Bottcher.IndexResonance
