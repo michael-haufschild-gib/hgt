@@ -380,3 +380,90 @@ theorem false_of_global_basin_branch_analytic_denseApproach_on
     exact hAne ρ hρ (le_trans hρle hρ₀r)
 
 end Bottcher
+
+namespace Bottcher
+
+open Metric Filter
+
+/-- **Relative dendrite obstruction from a single-scale preconnected basis family.**  The
+∀ρ-preconnectivity of the dense-approach model is needed at ONE scale only (the branch-following
+step); this variant takes a shrinking family `T t` of preconnected approach sets with a
+fat-margin clause supplying density and nonemptiness.  Exactly the shape the linearization
+collapse produces at a repelling boundary fixed point. -/
+theorem false_of_global_basin_branch_analytic_basisApproach
+    {a : ℕ → ℂ → ℂ} {s : Finset ℕ} {N : ℕ} {c z₀ : ℂ}
+    {r : ℝ} {T : ℝ → Set ℂ}
+    (hsupp : s ⊆ Finset.range (N + 1)) (hN : N ∈ s) (hN1 : 1 ≤ N)
+    (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
+    (hlead : a N z₀ ≠ 0) (hsep : (fibrePoly a s z₀).Separable)
+    {β : ℂ → ℂ}
+    (hr : 0 < r) (hz₀ : z₀ ∈ filledJulia c)
+    (hempty : Metric.ball z₀ r ∩ interior (filledJulia c) = ∅)
+    (hT_sub : ∀ t : ℝ, 0 < t → t ≤ r → T t ⊆ Metric.ball z₀ t ∩ (filledJulia c)ᶜ)
+    (hT_pre : ∀ t : ℝ, 0 < t → t ≤ r → IsPreconnected (T t))
+    (hT_fat : ∀ t : ℝ, 0 < t → t ≤ r →
+      (filledJulia c)ᶜ ∩ Metric.ball z₀ (t/2) ⊆ T t)
+    (hβc : ContinuousOn β (Metric.ball z₀ r ∩ (filledJulia c)ᶜ))
+    (hβrel : ∀ z ∈ Metric.ball z₀ r ∩ (filledJulia c)ᶜ, ∑ i ∈ s, a i z * (β z) ^ i = 0)
+    (hβmod : ∀ z ∈ Metric.ball z₀ r ∩ (filledJulia c)ᶜ,
+        ‖β z‖ = Real.exp (greenFunctionDyn c z)) :
+    False := by
+  obtain ⟨rBranch, w, hrBranch, hwc, hwsep, hwdeg, hwrel⟩ :=
+    exists_branch_family_analytic hsupp hN hN1 ha hlead hsep
+  set ρ₀ : ℝ := min r rBranch with hρ₀def
+  have hρ₀ : 0 < ρ₀ := lt_min hr hrBranch
+  have hρ₀r : ρ₀ ≤ r := min_le_left _ _
+  have hρ₀B : ρ₀ ≤ rBranch := min_le_right _ _
+  set Approach := T ρ₀ with hAdef
+  have hAsubfull := hT_sub ρ₀ hρ₀ hρ₀r
+  have hABallBranch : Approach ⊆ Metric.ball z₀ rBranch := fun z hz =>
+    Metric.ball_subset_ball hρ₀B (hAsubfull hz).1
+  have hAbasin : Approach ⊆ (filledJulia c)ᶜ := fun z hz => (hAsubfull hz).2
+  have hApre : IsPreconnected Approach := hT_pre ρ₀ hρ₀ hρ₀r
+  have hAballr : Approach ⊆ Metric.ball z₀ r := fun z hz =>
+    Metric.ball_subset_ball hρ₀r (hAsubfull hz).1
+  have hβcA : ContinuousOn β Approach := hβc.mono (fun z hz => ⟨hAballr hz, hAbasin hz⟩)
+  have hβrelA : ∀ z ∈ Approach, ∑ i ∈ s, a i z * (β z) ^ i = 0 := fun z hz =>
+    hβrel z ⟨hAballr hz, hAbasin hz⟩
+  have hz₀notint : z₀ ∉ interior (filledJulia c) := by
+    intro hcon
+    have h1 : z₀ ∈ Metric.ball z₀ r ∩ interior (filledJulia c) :=
+      ⟨Metric.mem_ball_self hr, hcon⟩
+    rw [hempty] at h1
+    exact h1
+  obtain ⟨z₁, hz₁ball, hz₁basin⟩ :=
+    exists_mem_ball_compl_filledJulia_of_not_mem_interior hz₀notint (half_pos hρ₀)
+  have hz₁A : z₁ ∈ Approach := hT_fat ρ₀ hρ₀ hρ₀r ⟨hz₁basin, hz₁ball⟩
+  obtain ⟨w₀, d, hroot, hpart, hd, htend⟩ :=
+    dendrite_branch_limit_analytic_within hN1 hrBranch hsep w hwc hwsep hwdeg hwrel
+      hABallBranch hApre hβcA hβrelA hz₁A
+  have hrelFilt : ∀ᶠ z in 𝓝[Approach] z₀, ∑ i ∈ s, a i z * (β z) ^ i = 0 :=
+    Filter.eventually_of_mem self_mem_nhdsWithin hβrelA
+  have hmodFilt : ∀ᶠ z in 𝓝[Approach] z₀, ‖β z‖ = Real.exp (greenFunctionDyn c z) :=
+    Filter.eventually_of_mem self_mem_nhdsWithin (fun z hz =>
+      hβmod z ⟨hAballr hz, hAbasin hz⟩)
+  refine false_of_basin_branch_dendrite_analytic_denseApproach
+    (c := c) (z₀ := z₀) (w₀ := w₀) (d := d) (r := ρ₀ / 2) (A := Approach)
+    ha (half_pos hρ₀) hz₀ ?_ hAbasin ?_ hroot hpart hd htend hrelFilt hmodFilt
+  · intro ρ hρ hρle
+    have hsubT : Metric.ball z₀ ρ ∩ (filledJulia c)ᶜ ⊆ Metric.ball z₀ ρ ∩ Approach := by
+      rintro z ⟨hz1, hz2⟩
+      refine ⟨hz1, hT_fat ρ₀ hρ₀ hρ₀r ⟨hz2, ?_⟩⟩
+      exact Metric.ball_subset_ball (by linarith) hz1
+    have hemptyρ : Metric.ball z₀ ρ ∩ interior (filledJulia c) = ∅ := by
+      apply Set.eq_empty_of_subset_empty
+      rw [← hempty]
+      apply Set.inter_subset_inter_left
+      apply Metric.ball_subset_ball
+      linarith
+    have hdense := density_basin_of_empty_interior hemptyρ
+    exact fun z hz => closure_mono hsubT (hdense hz)
+  · intro ρ hρ hρle
+    obtain ⟨z₂, hz₂ball, hz₂basin⟩ :=
+      exists_mem_ball_compl_filledJulia_of_not_mem_interior hz₀notint
+        (by linarith : (0:ℝ) < ρ/2)
+    refine ⟨z₂, ⟨Metric.ball_subset_ball (by linarith) hz₂ball,
+      hT_fat ρ₀ hρ₀ hρ₀r ⟨hz₂basin, ?_⟩⟩⟩
+    exact Metric.ball_subset_ball (by linarith) hz₂ball
+
+end Bottcher
