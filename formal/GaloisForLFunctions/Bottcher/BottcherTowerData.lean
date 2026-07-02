@@ -572,3 +572,90 @@ theorem TowerSection.inv_iterate_coherence {c : ℂ} {rlo rhi : ℝ} (S : TowerS
   rw [h1, S.inv_left (hpow m le_rfl)]
 
 end Bottcher
+
+namespace Bottcher
+
+open Classical in
+/-- **The global radicand.**  On a domain with the `k`-step reach-back property, the coherent
+family `F_j = (S.inv ∘ f^[j])^(2^(k−j))` glues to a single analytic nonvanishing `F` that equals
+`(S.inv)^(2^k)` on the tower image and collapses along depth-`k` sections. -/
+theorem exists_tower_radicand {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
+    (hrlo : 1 < rlo) (k : ℕ) {Ext : Set ℂ} (hExto : IsOpen Ext)
+    (hreach : ∀ z ∈ Ext, ∃ j : ℕ, j ≤ k ∧ (quadratic c)^[j] z ∈ S.T '' annulusSet rlo R₀) :
+    ∃ F : ℂ → ℂ,
+      AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
+      (∀ z ∈ S.T '' annulusSet rlo R₀, F z = (S.inv z) ^ (2 ^ k)) ∧
+      (∀ z ∈ Ext, ∀ j : ℕ, j ≤ k → (quadratic c)^[j] z ∈ S.T '' annulusSet rlo R₀ →
+        F z = (S.inv ((quadratic c)^[j] z)) ^ (2 ^ (k - j))) := by
+  classical
+  set P0 : Set ℂ := S.T '' annulusSet rlo R₀ with hP0def
+  have hP0open : IsOpen P0 :=
+    isOpen_image_of_analytic_dne (isOpen_annulusSet _ _) S.an S.dne
+  set good : ℂ → Prop := fun z => ∃ j : ℕ, j ≤ k ∧ (quadratic c)^[j] z ∈ P0 with hgooddef
+  set F : ℂ → ℂ := fun z =>
+    if hz : good z then (S.inv ((quadratic c)^[Nat.find hz] z)) ^ (2 ^ (k - Nat.find hz))
+    else 1 with hFdef
+  -- iterates are analytic everywhere
+  have hquad_an : ∀ j : ℕ, ∀ z : ℂ, AnalyticAt ℂ ((quadratic c)^[j]) z := by
+    intro j
+    induction j with
+    | zero => intro z; simpa using analyticAt_id
+    | succ n ih =>
+        intro z
+        have h1 : (quadratic c)^[n+1] = (quadratic c)^[n] ∘ quadratic c := by
+          rw [Function.iterate_succ]
+        rw [h1]
+        have h2 : AnalyticAt ℂ (quadratic c) z := by
+          unfold quadratic
+          exact (analyticAt_id.pow 2).add analyticAt_const
+        exact (ih (quadratic c z)).comp h2
+  -- the fixed-depth branch is analytic wherever its iterate lands in P0
+  have hbranch_an : ∀ j : ℕ, ∀ z : ℂ, (quadratic c)^[j] z ∈ P0 →
+      AnalyticAt ℂ (fun x => (S.inv ((quadratic c)^[j] x)) ^ (2 ^ (k - j))) z := by
+    intro j z hz
+    have h1 : AnalyticAt ℂ S.inv ((quadratic c)^[j] z) := S.inv_analytic _ hz
+    exact ((h1.comp (hquad_an j z)).pow _)
+  -- the coherent value identity: F agrees with any valid branch
+  have hFval : ∀ z : ℂ, ∀ j : ℕ, j ≤ k → (quadratic c)^[j] z ∈ P0 →
+      F z = (S.inv ((quadratic c)^[j] z)) ^ (2 ^ (k - j)) := by
+    intro z j hjk hjP
+    have hgz : good z := ⟨j, hjk, hjP⟩
+    have hFz : F z = (S.inv ((quadratic c)^[Nat.find hgz] z)) ^ (2 ^ (k - Nat.find hgz)) := by
+      rw [hFdef]
+      simp only [hgz, dif_pos]
+    obtain ⟨hle, hfindP⟩ := Nat.find_spec hgz
+    set i : ℕ := Nat.find hgz with hidef
+    have hij : i ≤ j := Nat.find_le ⟨hjk, hjP⟩
+    have hcoh := S.inv_iterate_coherence hrlo hij hfindP hjP
+    rw [hFz, hcoh, ← pow_mul]
+    congr 1
+    have h2 : 2 ^ (j - i) * 2 ^ (k - j) = 2 ^ (k - i) := by
+      rw [← pow_add]
+      congr 1
+      omega
+    exact h2.symm
+  refine ⟨F, ?_, ?_, ?_, fun z _ => hFval z⟩
+  · -- analyticity: near any point, F agrees with the branch at the point's own witness depth
+    intro z hz
+    obtain ⟨j, hjk, hjP⟩ := hreach z hz
+    have hev : F =ᶠ[nhds z] (fun x => (S.inv ((quadratic c)^[j] x)) ^ (2 ^ (k - j))) := by
+      have hcont : ContinuousAt ((quadratic c)^[j]) z := (hquad_an j z).continuousAt
+      filter_upwards [hcont.preimage_mem_nhds (hP0open.mem_nhds hjP)] with x hx
+      exact hFval x j hjk hx
+    exact ((hbranch_an j z hjP).congr hev.symm)
+  · -- nonvanishing: the inverse takes values in the annulus, norms above rlo > 1
+    intro z hz
+    obtain ⟨j, hjk, hjP⟩ := hreach z hz
+    rw [hFval z j hjk hjP]
+    apply pow_ne_zero
+    intro h0
+    have h1 := S.inv_mem hjP
+    rw [h0] at h1
+    simp only [annulusSet, mem_setOf_eq, norm_zero] at h1
+    linarith [h1.1]
+  · -- the tower-image identity (depth 0)
+    intro z hzP
+    have h1 := hFval z 0 (Nat.zero_le k) (by simpa using hzP)
+    simpa using h1
+
+end Bottcher
