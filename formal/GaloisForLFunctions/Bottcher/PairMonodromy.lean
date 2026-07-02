@@ -511,3 +511,77 @@ theorem exists_uniform_escape (c : ℂ) {L : Set ℂ} (hL : IsCompact L) (hLne :
 
 end Bottcher
 
+
+namespace Bottcher
+
+/-- **The far Green comparison**: in the joint far field, the two Green functions differ by at
+most `2`. -/
+theorem green_far_compare (c₁ c₂ : ℂ) {z : ℂ}
+    (h1 : max 2 ‖c₁‖ < ‖z‖) (h2 : max 2 ‖c₂‖ < ‖z‖) :
+    greenFunctionDyn c₁ z - 2 ≤ greenFunctionDyn c₂ z := by
+  have hz2 : (2:ℝ) < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) h1
+  have hzpos : (0:ℝ) < ‖z‖ := by linarith
+  -- upper crude bound for the first
+  have hup := greenFunctionDyn_le_crude
+    (le_of_lt (lt_of_le_of_lt (le_max_right _ _) h1)) hz2
+  -- lower crude bound for the second, through the series estimate
+  have hzK₂ : z ∉ filledJulia c₂ := not_mem_filledJulia
+    (le_of_lt (lt_of_le_of_lt (le_max_right _ _) h2)) hz2
+  have habs := greenLimit_abs_sub_log
+    (le_of_lt (lt_of_le_of_lt (le_max_right _ _) h2)) hz2
+  have hval : greenFunctionDyn c₂ z = greenLimit c₂ z := by
+    unfold greenFunctionDyn
+    rw [if_neg hzK₂]
+  have hcorr : 2 * ‖c₂‖ / ‖z‖ ^ 2 ≤ 1 := by
+    have h3 : ‖c₂‖ ≤ ‖z‖ := le_of_lt (lt_of_le_of_lt (le_max_right _ _) h2)
+    rw [div_le_one (by positivity)]
+    nlinarith
+  have hlow : Real.log ‖z‖ - 1 ≤ greenFunctionDyn c₂ z := by
+    rw [hval]
+    have h4 := abs_le.mp habs
+    linarith [h4.1]
+  linarith
+
+/-- The Green bound on the crude ball exists. -/
+theorem bottcherBallBound_exists (c : ℂ) :
+    ∃ Cb : ℝ, ∀ w : ℂ, ‖w‖ ≤ max 2 ‖c‖ → greenFunctionDyn c w ≤ Cb := by
+  classical
+  have hcpt : IsCompact {w : ℂ | ‖w‖ ≤ max 2 ‖c‖} := by
+    have h1 : {w : ℂ | ‖w‖ ≤ max 2 ‖c‖} = Metric.closedBall 0 (max 2 ‖c‖) := by
+      ext w
+      simp [Metric.mem_closedBall, dist_zero_right]
+    rw [h1]
+    exact isCompact_closedBall 0 _
+  rcases {w : ℂ | ‖w‖ ≤ max 2 ‖c‖}.eq_empty_or_nonempty with hbe | hbne
+  · exact ⟨0, fun w hw => absurd (show w ∈ {w : ℂ | ‖w‖ ≤ max 2 ‖c‖} from hw)
+      (by rw [hbe]; exact Set.notMem_empty w)⟩
+  obtain ⟨w₀, _, hw₀max⟩ := hcpt.exists_isMaxOn hbne
+    (continuous_greenFunctionDyn c).continuousOn
+  exact ⟨greenFunctionDyn c w₀, fun w hw => hw₀max hw⟩
+
+/-- The Green bound on the crude ball, as a choice function. -/
+noncomputable def bottcherBallBound (c : ℂ) : ℝ := (bottcherBallBound_exists c).choose
+
+theorem le_bottcherBallBound (c : ℂ) {w : ℂ} (hw : ‖w‖ ≤ max 2 ‖c‖) :
+    greenFunctionDyn c w ≤ bottcherBallBound c :=
+  (bottcherBallBound_exists c).choose_spec w hw
+
+end Bottcher
+
+namespace Bottcher
+
+/-- Above the ball bound, points are crude-far and their norms dominate `exp (G − 1)`. -/
+theorem far_of_green_gt_ballBound (c : ℂ) {z : ℂ}
+    (h : bottcherBallBound c < greenFunctionDyn c z) :
+    max 2 ‖c‖ < ‖z‖ ∧ greenFunctionDyn c z - 1 ≤ Real.log ‖z‖ := by
+  have hfar : max 2 ‖c‖ < ‖z‖ := by
+    by_contra hcon
+    push Not at hcon
+    exact absurd (le_bottcherBallBound c hcon) (by linarith)
+  refine ⟨hfar, ?_⟩
+  have hcrude := greenFunctionDyn_le_crude
+    (le_of_lt (lt_of_le_of_lt (le_max_right _ _) hfar))
+    (lt_of_le_of_lt (le_max_left _ _) hfar)
+  linarith
+
+end Bottcher
