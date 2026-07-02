@@ -270,6 +270,7 @@ import GaloisForLFunctions.Bottcher.PairMonodromy
 import GaloisForLFunctions.Bottcher.PairCapstone
 import GaloisForLFunctions.Bottcher.ConnectedPairReduction
 import GaloisForLFunctions.Bottcher.DendriteTip
+import GaloisForLFunctions.Bottcher.KoenigsLinearization
 import GaloisForLFunctions.Bottcher.RhoPathLift
 import GaloisForLFunctions.Bottcher.ConnectedBranchModulusAuto
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
