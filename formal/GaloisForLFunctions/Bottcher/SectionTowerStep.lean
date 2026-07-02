@@ -987,19 +987,21 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
 /-- **The tower descent.**  For every `ε > 0` there is a tower section whose bottom level is
 within `ε` of the critical level `h = G_c(0)`, on an annulus whose top `R₀` clears
 `exp(4h + 1)` (room for the sub-critical chain). -/
-theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
-    ∃ (rlo Rb R₀ Rinj : ℝ), 1 < rlo ∧ rlo ≤ Rb ∧ Rb < R₀ ∧ rlo ^ 2 < R₀ ∧
+theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ)
+    {Ra Rinj : ℝ} (hRa1 : 1 < Ra) (hRaG : Real.exp (greenFunctionDyn c 0) < Ra)
+    (hanchor : ∀ rhi : ℝ, Ra < rhi → ∃ S : TowerSection c Ra rhi,
+      ∀ w ∈ annulusSet Ra rhi,
+        bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) :
+    ∃ (rlo R₀ : ℝ), 1 < rlo ∧ rlo ≤ Ra ∧ Ra < R₀ ∧ rlo ^ 2 < R₀ ∧
       M < R₀ ∧
       greenFunctionDyn c 0 < Real.log rlo ∧
       Real.log rlo < greenFunctionDyn c 0 + ε ∧
-      Set.InjOn (bottcherCoord c) {z : ℂ | Rinj < ‖z‖} ∧
       ∃ S : TowerSection c rlo R₀,
-        ∀ w : ℂ, Rb < ‖w‖ → ‖w‖ < R₀ →
+        ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
           bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖ := by
   classical
   set h : ℝ := greenFunctionDyn c 0 with hhdef
   have hh0 : 0 ≤ h := greenFunctionDyn_nonneg c 0
-  obtain ⟨Ra, Rinj, hRa1, hRaG, hInj, hanchor⟩ := exists_tower_anchor c
   set R₀ : ℝ := Ra ^ 2 + max M 0 + 1 with hR₀def
   have hMnn : (0:ℝ) ≤ max M 0 := le_max_right M 0
   have hR₀Ra : Ra < R₀ := by
@@ -1127,6 +1129,21 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
     rw [lt_div_iff₀ hgap0] at hn
     nlinarith
   obtain ⟨rlo, h1, h2, h3, hle, h4, hS⟩ := hiter n
-  exact ⟨rlo, Ra, R₀, Rinj, h1, hle, hR₀Ra, h2, hR₀exp, h3, by linarith, hInj, hS⟩
+  exact ⟨rlo, R₀, h1, hle, hR₀Ra, h2, hR₀exp, h3, by linarith, hS⟩
+
+/-- The self-contained form: anchor obtained internally. -/
+theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
+    ∃ (rlo Rb R₀ Rinj : ℝ), 1 < rlo ∧ rlo ≤ Rb ∧ Rb < R₀ ∧ rlo ^ 2 < R₀ ∧
+      M < R₀ ∧
+      greenFunctionDyn c 0 < Real.log rlo ∧
+      Real.log rlo < greenFunctionDyn c 0 + ε ∧
+      Set.InjOn (bottcherCoord c) {z : ℂ | Rinj < ‖z‖} ∧
+      ∃ S : TowerSection c rlo R₀,
+        ∀ w : ℂ, Rb < ‖w‖ → ‖w‖ < R₀ →
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖ := by
+  obtain ⟨Ra, Rinj, hRa1, hRaG, hInj, hanchor⟩ := exists_tower_anchor c
+  obtain ⟨rlo, R₀, h1, h2, h3, h4, h5, h6, h7, hS⟩ :=
+    exists_tower_deep_of_anchor c hε M hRa1 hRaG hanchor
+  exact ⟨rlo, Ra, R₀, Rinj, h1, h2, h3, h4, h5, h6, h7, hInj, hS⟩
 
 end Bottcher
