@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4415 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4417 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -4803,6 +4803,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `arcAnnulus_mono` | `GaloisForLFunctions.Bottcher.SlitAnnulus` | `formal/GaloisForLFunctions/Bottcher/SlitAnnulus.lean:310` | Points of an arc annulus off a given argument ray, with the ray's argument in the arc, still cover: any point of the arc annulus whose log-lift argument differs from `θ*` stays in  |
 | theorem | `notMem_slitAnnulus_arg` | `GaloisForLFunctions.Bottcher.SlitCrossing` | `formal/GaloisForLFunctions/Bottcher/SlitCrossing.lean:17` | A nonzero point is never in the annulus slit along its own argument ray. |
 | theorem | `exists_slit_sqrt` | `GaloisForLFunctions.Bottcher.SlitCrossing` | `formal/GaloisForLFunctions/Bottcher/SlitCrossing.lean:38` | The crossing root.** For injective analytic `P` with nonvanishing derivative on a band, some slit annulus carries an analytic square root of `P − c`, itself injective with nonvanis |
+| theorem | `exists_branch_eq_of_isRoot` | `GaloisForLFunctions.Bottcher.SmoothPieceAssembly` | `formal/GaloisForLFunctions/Bottcher/SmoothPieceAssembly.lean:26` | A modulus-one root is a branch value.** At `w`, if the `N` distinct branch values `b j` are roots of the degree-`N` fibre polynomial, then every root — in particular a modulus-one  |
+| theorem | `exists_relOpen_smooth_piece_of_modulus_one_roots` | `GaloisForLFunctions.Bottcher.SmoothPieceAssembly` | `formal/GaloisForLFunctions/Bottcher/SmoothPieceAssembly.lean:43` | Modulus-one fibre roots yield a relatively open smooth Julia piece.** On a closed nonempty `S ⊆ ℂ` where the fibre polynomial has nonvanishing leading coefficient and a complete fa |
 | theorem | `sphericalDeriv_nonneg` | `GaloisForLFunctions.Bottcher.SphericalDeriv` | `formal/GaloisForLFunctions/Bottcher/SphericalDeriv.lean:30` | The spherical derivative is non-negative. |
 | theorem | `sphericalDeriv_le_norm_deriv` | `GaloisForLFunctions.Bottcher.SphericalDeriv` | `formal/GaloisForLFunctions/Bottcher/SphericalDeriv.lean:34` | The spherical derivative is bounded above by the ordinary derivative norm. |
 | theorem | `sphericalDeriv_inv` | `GaloisForLFunctions.Bottcher.SphericalDeriv` | `formal/GaloisForLFunctions/Bottcher/SphericalDeriv.lean:45` | Inversion-invariance** `σ(1/f) = σf` — the characteristic symmetry of the spherical derivative. Because the round metric on `ℂ̂` is invariant under `z ↦ 1/z`, the distortion of `1/ |
