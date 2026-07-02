@@ -8,6 +8,7 @@ target `K ⊆ ℂ` are closed with empty interior, and a common closed subwindow
 every arc can be extracted by induction.  Pure topology; no dynamics.  Axiom-clean.
 -/
 import Mathlib.Analysis.Complex.Basic
+import Mathlib.Topology.MetricSpace.HausdorffDistance
 
 open Set Metric Topology
 
@@ -115,5 +116,53 @@ theorem exists_steering_window {ι : Type*} [DecidableEq ι] (s : Finset ι) {K 
     · intro hK'
       exact havoid' t ht ⟨hsub'' ht, hK'⟩
     · exact havoid i hi' t (hsub'' ht)
+
+/-- **The steering window with a positive margin (open-neighbourhood form).**  Strengthening
+`exists_steering_window` from a compact totally disconnected target `K`: on the extracted window
+`[c, d]` there is a uniform radius `ε > 0` such that the whole `ε`-tube around every arc misses
+`K`.  This upgrades set-avoidance to *open* avoidance — the arcs together with their tubes lie in
+the open set `Kᶜ`, which is what a basin/far-field extension domain needs.  Proof: the finite union
+`Γ` of the compact arc images over `[c, d]` is compact and disjoint from `K`; `p ↦ infDist p K` is
+continuous and positive on `Γ` (as `K` is closed and nonempty), so attains a positive minimum `ε`;
+any `z` within `ε` of an arc point would force `infDist (arc point) K < ε`. -/
+theorem exists_steering_window_margin {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    (hs : s.Nonempty) {K : Set ℂ} (hKcpt : IsCompact K) (hKne : K.Nonempty)
+    (hKtd : IsTotallyDisconnected K)
+    {a b : ℝ} (hab : a < b) (η : ι → ℝ → ℂ)
+    (hc : ∀ i ∈ s, ContinuousOn (η i) (Icc a b))
+    (hinj : ∀ i ∈ s, InjOn (η i) (Icc a b)) :
+    ∃ c d : ℝ, c < d ∧ Icc c d ⊆ Ioo a b ∧ ∃ ε : ℝ, 0 < ε ∧
+      ∀ i ∈ s, ∀ t ∈ Icc c d, ∀ z : ℂ, dist z (η i t) < ε → z ∉ K := by
+  classical
+  obtain ⟨c, d, hcd, hsub, havoid⟩ :=
+    exists_steering_window s hKcpt.isClosed hKtd hab η hc hinj
+  have hIccsub : Icc c d ⊆ Icc a b := hsub.trans Ioo_subset_Icc_self
+  -- the compact union of arc images over `[c, d]`
+  set Γ : Set ℂ := ⋃ i ∈ s, η i '' Icc c d with hΓdef
+  have hΓcpt : IsCompact Γ :=
+    s.finite_toSet.isCompact_biUnion fun i hi =>
+      isCompact_Icc.image_of_continuousOn ((hc i hi).mono hIccsub)
+  have hΓne : Γ.Nonempty := by
+    obtain ⟨i, hi⟩ := hs
+    exact ⟨η i c, mem_biUnion hi ⟨c, ⟨le_refl c, le_of_lt hcd⟩, rfl⟩⟩
+  have hΓoff : ∀ p ∈ Γ, p ∉ K := by
+    rintro p hp
+    rw [hΓdef, mem_iUnion₂] at hp
+    obtain ⟨i, hi, t, ht, rfl⟩ := hp
+    exact havoid i hi t ht
+  -- `infDist · K` attains a positive minimum on `Γ`
+  obtain ⟨p₀, hp₀Γ, hp₀min⟩ :=
+    hΓcpt.exists_isMinOn hΓne (continuous_infDist_pt K).continuousOn
+  set ε : ℝ := Metric.infDist p₀ K with hεdef
+  have hεpos : 0 < ε :=
+    (hKcpt.isClosed.notMem_iff_infDist_pos hKne).mp (hΓoff p₀ hp₀Γ)
+  refine ⟨c, d, hcd, hsub, ε, hεpos, ?_⟩
+  intro i hi t ht z hz hzK
+  have hpΓ : η i t ∈ Γ := mem_biUnion hi ⟨t, ht, rfl⟩
+  have h1 : ε ≤ Metric.infDist (η i t) K := hp₀min hpΓ
+  have h2 : Metric.infDist (η i t) K ≤ dist (η i t) z :=
+    Metric.infDist_le_dist_of_mem hzK
+  rw [dist_comm] at h2
+  linarith [h1.trans h2]
 
 end Bottcher
