@@ -34,3 +34,4 @@ import GaloisForLFunctions.U0.U0PhiCircleWindow
 import GaloisForLFunctions.U0.U0PhiFourWindow
 import GaloisForLFunctions.U0.U0WindowNormalization
 import GaloisForLFunctions.U0.U0TowerBridge
+import GaloisForLFunctions.U0.U0TowerData

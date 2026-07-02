@@ -659,3 +659,107 @@ theorem exists_tower_radicand {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
     simpa using h1
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **The odd loop.**  A depth-`k` lobe circle, at a radius dodging any countable set through the
+level fibration; the radicand collapses along it to the identity chart, so its `dlog`-period is
+exactly `2πi`. -/
+theorem exists_tower_loop {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
+    (hrlo : 1 < rlo) (k : ℕ)
+    {ra rb : ℝ} (hra : rlo < ra) (hrb : ra < rb) (hrbR : rb < R₀)
+    {SL : ℂ → ℂ} (hSLan : AnalyticOnNhd ℂ SL (annulusSet ra rb))
+    (hSLit : ∀ v ∈ annulusSet ra rb, (quadratic c)^[k] (SL v) = S.T v)
+    (hSLlev : ∀ v ∈ annulusSet ra rb, greenFunctionDyn c (SL v) = Real.log ‖v‖ / 2 ^ k)
+    {Ext : Set ℂ} (hSLExt : ∀ v ∈ annulusSet ra rb, SL v ∈ Ext)
+    {F : ℂ → ℂ} (hFan : AnalyticOnNhd ℂ F Ext)
+    (hFbr : ∀ z ∈ Ext, ∀ j : ℕ, j ≤ k → (quadratic c)^[j] z ∈ S.T '' annulusSet rlo R₀ →
+      F z = (S.inv ((quadratic c)^[j] z)) ^ (2 ^ (k - j)))
+    (T : Set ℂ) (hT : T.Countable) :
+    ∃ (γ γ' : ℝ → ℂ),
+      (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+      (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+      γ (2 * Real.pi) = γ 0 ∧
+      (∀ θ : ℝ, γ θ ∉ T) ∧
+      (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv F (γ θ) * γ' θ)
+        = 2 * (Real.pi : ℂ) * Complex.I * (2 * ((0:ℤ) : ℂ) + 1) := by
+  classical
+  have hrapos : (0:ℝ) < ra := by linarith
+  -- dodge the countable set through the level fibration
+  set badR : Set ℝ := (fun t => Real.exp (2 ^ k * greenFunctionDyn c t)) '' T with hbadRdef
+  have hbadRc : badR.Countable := hT.image _
+  obtain ⟨r, hrIoo, hrbad⟩ : ∃ r ∈ Set.Ioo ra rb, r ∉ badR := by
+    by_contra hcon
+    push_neg at hcon
+    have h2 : (Set.Ioo ra rb).Countable := hbadRc.mono hcon
+    have h3 := Cardinal.mk_le_aleph0_iff.mpr h2
+    rw [Cardinal.mk_Ioo_real hrb] at h3
+    exact absurd h3 (not_le.mpr Cardinal.aleph0_lt_continuum)
+  obtain ⟨hr1, hr2⟩ := hrIoo
+  have hrpos : (0:ℝ) < r := lt_trans hrapos hr1
+  have hcm : ∀ θ : ℝ, circleMap 0 r θ ∈ annulusSet ra rb :=
+    circleMap_mem_annulusSet hrpos hr1 hr2
+  set ℓ : C1Loop := sectionLoop hSLan hcm with hℓdef
+  -- the collapse F ∘ γ = circleMap
+  have hcmS : ∀ θ : ℝ, circleMap 0 r θ ∈ annulusSet rlo R₀ := by
+    intro θ
+    obtain ⟨h1, h2⟩ := hcm θ
+    exact ⟨lt_trans hra h1, lt_trans h2 hrbR⟩
+  have hiter : ∀ θ : ℝ, (quadratic c)^[k] (SL (circleMap 0 r θ))
+      ∈ S.T '' annulusSet rlo R₀ := by
+    intro θ
+    rw [hSLit _ (hcm θ)]
+    exact ⟨circleMap 0 r θ, hcmS θ, rfl⟩
+  have hcollapse : ∀ θ : ℝ, F (SL (circleMap 0 r θ)) = circleMap 0 r θ := by
+    intro θ
+    have h1 := hFbr (SL (circleMap 0 r θ)) (hSLExt _ (hcm θ)) k le_rfl (hiter θ)
+    rw [h1, hSLit _ (hcm θ), S.inv_left (hcmS θ)]
+    simp
+  -- avoidance
+  have havoid : ∀ θ : ℝ, SL (circleMap 0 r θ) ∉ T := by
+    intro θ hmem
+    apply hrbad
+    refine ⟨SL (circleMap 0 r θ), hmem, ?_⟩
+    show Real.exp (2 ^ k * greenFunctionDyn c (SL (circleMap 0 r θ))) = r
+    rw [hSLlev _ (hcm θ)]
+    have h1 : ‖circleMap 0 r θ‖ = r := by
+      simp [circleMap, abs_of_pos hrpos]
+    rw [h1]
+    have h2 : (2:ℝ) ^ k * (Real.log r / 2 ^ k) = Real.log r := by
+      field_simp
+    rw [h2, Real.exp_log hrpos]
+  -- the winding: the integrand is constantly I
+  have hFγd : ∀ θ : ℝ, deriv F (ℓ.γ θ) * ℓ.γ' θ = circleMap 0 r θ * Complex.I := by
+    intro θ
+    have hFd : HasDerivAt F (deriv F (ℓ.γ θ)) (ℓ.γ θ) :=
+      (hFan _ (hSLExt _ (hcm θ))).differentiableAt.hasDerivAt
+    have hγd : HasDerivAt ℓ.γ (ℓ.γ' θ) θ := by
+      have h1 : HasDerivAt SL (deriv SL (circleMap 0 r θ)) (circleMap 0 r θ) :=
+        (hSLan _ (hcm θ)).differentiableAt.hasDerivAt
+      have h2 := hasDerivAt_circleMap 0 r θ
+      exact h1.comp θ h2
+    have hcomp : HasDerivAt (fun t => F (ℓ.γ t)) (deriv F (ℓ.γ θ) * ℓ.γ' θ) θ :=
+      hFd.comp θ hγd
+    have hFγ : (fun t => F (ℓ.γ t)) = fun t => circleMap 0 r t := by
+      funext t
+      exact hcollapse t
+    rw [hFγ] at hcomp
+    have hcm_d : HasDerivAt (fun t => circleMap 0 r t) (circleMap 0 r θ * Complex.I) θ := by
+      simpa using hasDerivAt_circleMap 0 r θ
+    exact hcomp.unique hcm_d
+  refine ⟨ℓ.γ, ℓ.γ', fun θ => hSLExt _ (hcm θ), ℓ.cont, ℓ.cont', ℓ.deriv, ℓ.closed,
+    havoid, ?_⟩
+  have hcongr : ∀ θ : ℝ, logDeriv F (ℓ.γ θ) * ℓ.γ' θ = Complex.I := by
+    intro θ
+    rw [logDeriv_apply]
+    have h1 := hFγd θ
+    have h2 : F (ℓ.γ θ) = circleMap 0 r θ := hcollapse θ
+    have h3 : circleMap 0 r θ ≠ 0 := circleMap_ne_center (ne_of_gt hrpos)
+    rw [h2, div_mul_eq_mul_div, h1, mul_comm (circleMap 0 r θ) Complex.I,
+      mul_div_assoc, div_self h3, mul_one]
+  rw [intervalIntegral.integral_congr (fun θ _ => hcongr θ)]
+  rw [intervalIntegral.integral_const, sub_zero, Complex.real_smul]
+  push_cast
+  ring
+
+end Bottcher
