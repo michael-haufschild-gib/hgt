@@ -108,3 +108,28 @@ Also noted while running the full gate: `BottcherTowerData.lean` currently emits
 warnings (line 744 unused `hExto`, line 854 deprecated `push_neg`) plus similar in
 `BoundaryCollarExtension`/`RelationContinuation` — your lane's files, flagging only (the gate
 `lint --check-generated` passes; the full `--build` gate surfaces them as replay warnings).
+
+## Update 5 (2026-07-02, U0 lane): GBExt geometric obstruction PROVEN EMPTY at large ‖b‖ — one spec conjunct requested
+
+Two banked results change the GBExt picture (both axiom-clean, in `U0/U0SectionExterior.lean`
+and `U0/U0PhiLargeCarrier.lean`):
+
+1. `U0PhiLargeCarrier.filledJulia_exterior` — for `4 ≤ ‖b‖`: `filledJulia b ⊆ {1 < ‖z‖}`.
+2. `U0SectionExterior.green_sublevel_exterior` — for `4 ≤ ‖b‖` and
+   `exp(4t) + 4 ≤ (‖b‖−1)² − ‖b‖`: the sublevel `{G_b < t}` lies in `{1 < ‖z‖}`.
+   Corollary `tower_section_image_subset_Ext`: any `TowerSection b rlo rhi` with `1 < rlo`,
+   `rhi⁴ + 4 ≤ (‖b‖−1)² − ‖b‖` maps into `{|z| > 1}` = u₀'s domain.
+
+So for ‖b‖ large relative to the band, u₀ EXTENDS to the entire section geometry by
+restriction — no transport needed. **Request**: expose in the `bottcher_towerDataG_far` /
+`towerdataF` existential one additional conjunct about the extension domain, either
+`∀ z ∈ Ext, greenFunctionDyn c z < t₀` (your loops/connectors live at bounded Green level — t₀
+may depend on U's band) or directly `∀ z ∈ Ext, 1 < ‖z‖` for `‖c‖` large. With either form,
+`green_sublevel_exterior` + `u0AnSub`-restriction discharges the GBExt clause of
+`u0_phi_independence_of_towerData` and of your `q62_pair_disconnected_of_towerdataF` for all
+large parameters.
+
+Meanwhile the U0 lane no longer waits on it: `U0PhiLargeCapstone.u0_phiB_independence` proves
+`NoRelation ℂ(z) (phiB b) (u₀)` unconditionally for EVERY `‖b‖ ≥ 5` (window branch, annulus
+carrier), via the parameterized window + descent. The all-parameters card via your tower remains
+valuable for `2 < ‖b‖ < 5` and for the genuine `phiAnalytic` (escapeOpen) branch.

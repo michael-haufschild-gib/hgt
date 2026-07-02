@@ -57,6 +57,8 @@ import GaloisForLFunctions.Hurwitz.MixedClose
 import GaloisForLFunctions.Hurwitz.AllNComplete
 import GaloisForLFunctions.U0.U0TowerBridge
 import GaloisForLFunctions.U0.U0PhiFourCapstone
+import GaloisForLFunctions.U0.U0PhiLargeCapstone
+import GaloisForLFunctions.U0.U0SectionExterior
 
 noncomputable section
 
@@ -4525,5 +4527,53 @@ def U0PhiFourIndependenceTarget : Prop :=
 /-- Formal wrapper for the unconditional `b = 4` window capstone. -/
 theorem u0_phiFour_independence_card : U0PhiFourIndependenceTarget :=
   U0PhiFourCapstone.u0_phiFour_independence
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+open U0PhiFourFarCarrier U0PhiLargeWindow U0PhiLargeDescent U0PhiLargeCapstone
+open U0SectionExterior U0MeroCarrier Bottcher
+
+/-- The window branch of EVERY parameter `‖b‖ ≥ 5` is transcendental over `ℂ(z)` — the
+parameterized descent through the dyadic pullback onto the far Böttcher carrier. -/
+def PhiBTranscendentalTarget : Prop :=
+  ∀ {b : ℂ} (hb : 5 ≤ ‖b‖),
+    letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
+    letI : Algebra (RatFunc ℂ) (meroField annW) :=
+      (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+    Transcendental (RatFunc ℂ)
+      (algebraMap (analyticSubring annW) (meroField annW) (phiBAn b hb))
+
+/-- Formal wrapper for the parameterized φ-transcendence. -/
+theorem phiB_transcendental_card : PhiBTranscendentalTarget :=
+  fun hb => phiB_transcendental hb
+
+/-- **The parameterized window capstone**: `NoRelation ℂ(z) (phiB b) (u₀)` for EVERY `‖b‖ ≥ 5` —
+the `u0_phi_independence` conclusion at an OPEN SET of parameters, with zero hypotheses. -/
+def U0PhiBIndependenceTarget : Prop :=
+  ∀ {b : ℂ} (hb : 5 ≤ ‖b‖),
+    letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
+    letI : Algebra (RatFunc ℂ) (meroField annW) :=
+      (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+    NoRelation (RatFunc ℂ)
+      (algebraMap (analyticSubring annW) (meroField annW) (phiBAn b hb))
+      (algebraMap (analyticSubring annW) (meroField annW) (u0AnSub annW_subset_Ext))
+
+/-- Formal wrapper for the all-large-parameters window capstone. -/
+theorem u0_phiB_independence_card : U0PhiBIndependenceTarget :=
+  fun hb => u0_phiB_independence hb
+
+/-- Green sublevel sets of large parameters avoid the closed unit disk — the geometric
+obstruction to the `GBExt` (`u₀`-extension) clause of the tower certificate is empty at large
+`‖b‖`: the whole tower geometry lives inside `u₀`'s domain `{|z| > 1}`. -/
+def GreenSublevelExteriorTarget : Prop :=
+  ∀ {b : ℂ}, 4 ≤ ‖b‖ → ∀ {t : ℝ}, Real.exp (4 * t) + 4 ≤ (‖b‖ - 1) ^ 2 - ‖b‖ →
+    ∀ {z : ℂ}, greenFunctionDyn b z < t → 1 < ‖z‖
+
+/-- Formal wrapper for the sublevel-exterior geometry. -/
+theorem green_sublevel_exterior_card : GreenSublevelExteriorTarget := by
+  intro b hb t hband z hz
+  exact green_sublevel_exterior hb hband hz
 
 end FullyProvenNewTargets
