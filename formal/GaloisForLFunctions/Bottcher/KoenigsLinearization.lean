@@ -444,3 +444,162 @@ theorem koenigsApprox_cauchy_step {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 
         field_simp
 
 end Bottcher
+
+namespace Bottcher
+
+/-- The Koenigs linearizer as a pointwise limit. -/
+noncomputable def koenigsFun (c β : ℂ) (w : ℂ) : ℂ :=
+  Filter.limUnder Filter.atTop (fun n => koenigsApprox c β n w)
+
+/-- Each approximant is entire in `w`. -/
+theorem koenigsApprox_differentiable (c β : ℂ) (n : ℕ) :
+    Differentiable ℂ (koenigsApprox c β n) := by
+  have h1 : Differentiable ℂ (quadratic c) := by
+    unfold quadratic
+    fun_prop
+  have h2 : Differentiable ℂ ((quadratic c)^[n]) := h1.iterate n
+  have h3 : Differentiable ℂ (fun w : ℂ => β + w / (2 * β) ^ n) := by
+    fun_prop
+  exact h2.comp h3
+
+/-- The approximant sequence is geometrically Cauchy on the working disk. -/
+theorem koenigsApprox_cauchySeq {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+    {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) :
+    CauchySeq (fun n => koenigsApprox c β n w) := by
+  apply cauchySeq_of_le_geometric (r := 1/2) (C := ‖w‖ ^ 2 / 2) (by norm_num)
+  intro n
+  rw [dist_eq_norm]
+  have h1 : ‖koenigsApprox c β n w - koenigsApprox c β (n+1) w‖
+      = ‖koenigsApprox c β (n+1) w - koenigsApprox c β n w‖ := norm_sub_rev _ _
+  rw [h1]
+  have h2 := koenigsApprox_cauchy_step hβ hlam2 hw n
+  have hL2 : (2:ℝ) ^ (n + 2) ≤ ‖2 * β‖ ^ (n + 2) :=
+    pow_le_pow_left₀ (by norm_num) hlam2 (n + 2)
+  have h2pos : (0:ℝ) < 2 ^ (n + 2) := by positivity
+  have hLpos : (0:ℝ) < ‖2 * β‖ ^ (n + 2) :=
+    pow_pos (lt_of_lt_of_le (by norm_num) hlam2) _
+  have h3 : 2 * ‖w‖ ^ 2 / ‖2 * β‖ ^ (n + 2) ≤ 2 * ‖w‖ ^ 2 / 2 ^ (n + 2) := by
+    apply div_le_div_of_nonneg_left _ h2pos hL2
+    positivity
+  have h4 : 2 * ‖w‖ ^ 2 / 2 ^ (n + 2) = ‖w‖ ^ 2 / 2 * (1/2) ^ n := by
+    rw [div_pow, one_pow, pow_add]
+    field_simp
+  calc ‖koenigsApprox c β (n+1) w - koenigsApprox c β n w‖
+      ≤ 2 * ‖w‖ ^ 2 / ‖2 * β‖ ^ (n + 2) := h2
+    _ ≤ 2 * ‖w‖ ^ 2 / 2 ^ (n + 2) := h3
+    _ = ‖w‖ ^ 2 / 2 * (1/2) ^ n := h4
+
+/-- The approximants converge to `koenigsFun` on the working disk. -/
+theorem koenigsApprox_tendsto {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+    {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) :
+    Filter.Tendsto (fun n => koenigsApprox c β n w) Filter.atTop
+      (nhds (koenigsFun c β w)) := by
+  obtain ⟨l, hl⟩ := cauchySeq_tendsto_of_complete (koenigsApprox_cauchySeq hβ hlam2 hw)
+  have h1 : koenigsFun c β w = l := hl.limUnder_eq
+  rw [h1]
+  exact hl
+
+/-- **Distance to the limit**: the tail of the geometric telescope. -/
+theorem koenigsFun_dist_approx {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+    {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) (n : ℕ) :
+    dist (koenigsApprox c β n w) (koenigsFun c β w) ≤ ‖w‖ ^ 2 / 2 * (1/2) ^ n / (1 - 1/2) := by
+  have hstep : ∀ m : ℕ, dist (koenigsApprox c β m w) (koenigsApprox c β (m+1) w)
+      ≤ ‖w‖ ^ 2 / 2 * (1/2) ^ m := by
+    intro m
+    rw [dist_eq_norm, norm_sub_rev]
+    have h2 := koenigsApprox_cauchy_step hβ hlam2 hw m
+    have hL2 : (2:ℝ) ^ (m + 2) ≤ ‖2 * β‖ ^ (m + 2) :=
+      pow_le_pow_left₀ (by norm_num) hlam2 (m + 2)
+    have h2pos : (0:ℝ) < 2 ^ (m + 2) := by positivity
+    have h3 : 2 * ‖w‖ ^ 2 / ‖2 * β‖ ^ (m + 2) ≤ 2 * ‖w‖ ^ 2 / 2 ^ (m + 2) := by
+      apply div_le_div_of_nonneg_left _ h2pos hL2
+      positivity
+    have h4 : 2 * ‖w‖ ^ 2 / 2 ^ (m + 2) = ‖w‖ ^ 2 / 2 * (1/2) ^ m := by
+      rw [div_pow, one_pow, pow_add]
+      field_simp
+    calc ‖koenigsApprox c β (m+1) w - koenigsApprox c β m w‖
+        ≤ 2 * ‖w‖ ^ 2 / ‖2 * β‖ ^ (m + 2) := h2
+      _ ≤ 2 * ‖w‖ ^ 2 / 2 ^ (m + 2) := h3
+      _ = ‖w‖ ^ 2 / 2 * (1/2) ^ m := h4
+  exact dist_le_of_le_geometric_of_tendsto (1/2) (‖w‖ ^ 2 / 2) (by norm_num) hstep
+    (koenigsApprox_tendsto hβ hlam2 hw) n
+
+end Bottcher
+
+namespace Bottcher
+
+/-- `g₀ = β + w` exactly. -/
+theorem koenigsApprox_zero_fun (c β : ℂ) (w : ℂ) : koenigsApprox c β 0 w = β + w := by
+  unfold koenigsApprox
+  simp
+
+/-- **Quadratic normalization of the linearizer**: `‖ψ(w) − β − w‖ ≤ ‖w‖²` on the working disk.
+The tangency to the identity at the fixed point — derivative-free. -/
+theorem koenigsFun_normalization {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+    {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) :
+    ‖koenigsFun c β w - (β + w)‖ ≤ ‖w‖ ^ 2 := by
+  have h1 := koenigsFun_dist_approx hβ hlam2 hw 0
+  rw [koenigsApprox_zero_fun, dist_eq_norm, norm_sub_rev] at h1
+  have h2 : ‖w‖ ^ 2 / 2 * (1/2) ^ 0 / (1 - 1/2) = ‖w‖ ^ 2 := by
+    ring_nf
+  rw [h2] at h1
+  exact h1
+
+/-- The linearizer sends `0` to the fixed point. -/
+theorem koenigsFun_zero {c β : ℂ} (hβ : β ^ 2 + c = β) : koenigsFun c β 0 = β := by
+  have hfix : quadratic c β = β := by
+    unfold quadratic
+    exact hβ
+  have h1 : ∀ n : ℕ, koenigsApprox c β n 0 = β := by
+    intro n
+    unfold koenigsApprox
+    rw [zero_div, add_zero]
+    induction n with
+    | zero => simp
+    | succ m ih => rw [Function.iterate_succ_apply', ih, hfix]
+  unfold koenigsFun
+  have h2 : (fun n => koenigsApprox c β n 0) = fun _ : ℕ => β := funext h1
+  rw [h2]
+  exact tendsto_const_nhds.limUnder_eq
+
+/-- **The Koenigs functional equation**: `ψ(λw) = f(ψ(w))` on the working disk. -/
+theorem koenigsFun_semiconj {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+    {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) (hw2 : ‖2 * β * w‖ ≤ 1 / 32) :
+    koenigsFun c β (2 * β * w) = quadratic c (koenigsFun c β w) := by
+  have hlam : (2 * β) ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hlam2
+    linarith
+  -- the shift identity g_{m+1}(λw) = f(g_m(w))
+  have hshift : ∀ m : ℕ, koenigsApprox c β (m + 1) (2 * β * w)
+      = quadratic c (koenigsApprox c β m w) := by
+    intro m
+    unfold koenigsApprox
+    rw [Function.iterate_succ_apply']
+    congr 1
+    congr 1
+    have hβ0 : β ≠ 0 := by
+      intro h
+      apply hlam
+      rw [h]
+      ring
+    have h1 : ((2 * β) ^ (m + 1) : ℂ) ≠ 0 := pow_ne_zero _ hlam
+    have h2 : ((2 * β) ^ m : ℂ) ≠ 0 := pow_ne_zero _ hlam
+    rw [pow_succ]
+    field_simp
+  -- limits on both sides
+  have hL : Filter.Tendsto (fun m => koenigsApprox c β (m + 1) (2 * β * w)) Filter.atTop
+      (nhds (koenigsFun c β (2 * β * w))) :=
+    (koenigsApprox_tendsto hβ hlam2 hw2).comp (Filter.tendsto_add_atTop_nat 1)
+  have hquadcont : Continuous (quadratic c) := by
+    unfold quadratic
+    fun_prop
+  have hR : Filter.Tendsto (fun m => quadratic c (koenigsApprox c β m w)) Filter.atTop
+      (nhds (quadratic c (koenigsFun c β w))) :=
+    (hquadcont.tendsto _).comp (koenigsApprox_tendsto hβ hlam2 hw)
+  have h3 : (fun m => koenigsApprox c β (m + 1) (2 * β * w))
+      = fun m => quadratic c (koenigsApprox c β m w) := funext hshift
+  rw [h3] at hL
+  exact tendsto_nhds_unique hL hR
+
+end Bottcher
