@@ -71,6 +71,8 @@ import GaloisForLFunctions.U0.U0CriticalCurveSlice
 import GaloisForLFunctions.U0.U0LobeInstances
 import GaloisForLFunctions.U0.U0UniformClearance
 import GaloisForLFunctions.U0.U0ParameterSpace
+import GaloisForLFunctions.U0.U0PhiMStep
+import GaloisForLFunctions.U0.U0MStepInstances
 
 noncomputable section
 
@@ -4880,5 +4882,73 @@ def ObstructedFrontierTarget : Prop :=
 /-- Formal wrapper: `Obstructed` closed + a certified frontier point. -/
 theorem obstructed_frontier_card : ObstructedFrontierTarget :=
   ⟨U0ParameterSpace.isClosed_obstructed, U0ParameterSpace.exists_frontier_obstructed_on_ray⟩
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **The concrete m-step branch geometry**: a viable parameter's window disk clears into the
+escape region uniformly, where the Böttcher branch `ψ = bottcherCoord ∘ f^[N]` is analytic — the
+concrete construction behind the branch-conditional independence capstone. -/
+def MStepBranchBuiltTarget : Prop :=
+  ∀ b : ℂ, (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia b) →
+    ∃ r : ℝ, 1 < r ∧ ∃ N : ℕ, ∀ z : ℂ, ‖z‖ ≤ r →
+      (Bottcher.quadratic b)^[N] z ∈ Bottcher.escapeOpen b
+
+theorem mstep_branch_built_card : MStepBranchBuiltTarget :=
+  fun _ hv => U0PhiMStep.exists_clearance_escapeOpen hv
+
+/-- **The reducible half of the `∂𝒱 = closure(pattern)` conjecture** (conditional on the classical
+density of preperiodic points in `K_b`): if the preperiodic points are dense in `K_b`, a parameter
+whose filled Julia set meets the open unit disk is a pattern parameter. -/
+def ObstructedReducibleHalfTarget : Prop :=
+  ∀ b : ℂ, filledJulia b ⊆ closure (U0ParameterSpace.Preperiodic b) →
+    (∃ z : ℂ, ‖z‖ < 1 ∧ z ∈ filledJulia b) → b ∈ U0ParameterSpace.PatternRegion
+
+theorem obstructed_reducible_half_card : ObstructedReducibleHalfTarget :=
+  fun _ hd hb => U0ParameterSpace.obstructed_open_sub_pattern_of_dense hd hb
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **The m-step Böttcher branch exists analytically, for every viable parameter (UNCONDITIONAL).**
+For a viable `b`, a window disk `ball 0 r` (`r > 1`, crossing `u₀`'s natural boundary `|z| = 1`)
+carries the analytic, nowhere-zero branch `ψ = bottcherCoord ∘ f^[N]`.  No assumed transcendence —
+the sole remaining input to the m-step INDEPENDENCE is `ψ`'s transcendence over `ℂ(z)`. -/
+def MStepBranchExistsTarget : Prop :=
+  ∀ b : ℂ, (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia b) →
+    ∃ (r : ℝ) (N : ℕ), 1 < r ∧
+      AnalyticOnNhd ℂ (U0PhiMStep.psiN b N) (Metric.ball (0 : ℂ) r) ∧
+      (∀ z : ℂ, U0PhiMStep.psiN b N z ≠ 0)
+
+theorem mstep_branch_exists_card : MStepBranchExistsTarget :=
+  fun _ hv => U0PhiMStep.exists_mstep_branch hv
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **UNCONDITIONAL m-step independence over the whole viable region** — the closed gap.  For every
+parameter whose filled Julia set avoids the closed unit disk, `u₀` and the m-step Böttcher branch
+`ψ = bottcherCoord ∘ f^[N]` are algebraically independent over `ℂ(z)` on a window crossing
+`|z| = 1` (`MStepIndependence b`).  No `‖b‖ > 2+√2`, no assumed transcendence: `ψ`'s transcendence
+is discharged by descending `bottcher_transcendental_far` along `f^[N]` on the unpunctured carrier,
+using the open mapping theorem for positive-degree polynomials in place of the sharp-threshold
+derivative hypothesis. -/
+def MStepIndependenceViableTarget : Prop :=
+  ∀ b : ℂ, (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia b) →
+    U0PhiMStepFar.MStepIndependence b
+
+theorem mstep_independence_viable_card : MStepIndependenceViableTarget :=
+  fun _ hv => U0PhiMStepFar.u0_mstep_independence hv
+
+/-- **First sub-threshold independence instance**: `u₀ ⟂ ψ` at `b = 3` — modulus `3 < 2+√2`, in a
+direction where the sharp window pass does not reach.  Witnesses that the unconditional m-step
+independence genuinely extends independence below the direction-independent threshold. -/
+def MStepSubThresholdTarget : Prop := U0PhiMStepFar.MStepIndependence (3 : ℂ)
+
+theorem mstep_subthreshold_card : MStepSubThresholdTarget :=
+  U0MStepInstances.u0_mstep_independence_three
 
 end FullyProvenNewTargets

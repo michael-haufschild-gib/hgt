@@ -1,15 +1,15 @@
 # The m-step window branch: independence over the certified-viable region
 
 - **ID:** m-step-window-branch
-- **Stage:** 3-formalized (reduction + geometric core banked; branch construction = located open core)
-- **Type:** THEOREM (Lean, conditional) + [OPEN CORE] - grade **BRIDGE**
+- **Stage:** 3-formalized (FULLY UNCONDITIONAL — the ψ-transcendence gap is closed)
+- **Type:** THEOREM (Lean, unconditional) - grade **BRIDGE**
 - **Source:** the far end of the critical-curve program; generalizes the sharp window pass
   (`u0-phib-window-independence`) from `‖b‖ > 2+√2` to the full viability region.
-- **Statement:** For a viable parameter (`K_b ∩ D̄(0,1) = ∅`), the algebraic independence
-  `NoRelation ℂ(z) (window branch) (u₀)` holds on a `b`-dependent annulus crossing `|z| = 1`,
-  REDUCED to the single analytic input "an analytic branch on the window ball, transcendental over
-  ℂ(z)".  The natural-boundary engine, the descent, and the capstone assembly are all discharged
-  generically; the uniform-clearance geometry is unconditional.
+- **Statement:** For EVERY viable parameter (`K_b ∩ D̄(0,1) = ∅`), the algebraic independence
+  `NoRelation ℂ(z) ψ u₀` holds on a `b`-dependent window disk crossing `|z| = 1`, where
+  `ψ = bottcherCoord ∘ f_b^[N]` (`U0PhiMStepFar.u0_mstep_independence`, `MStepIndependence b`).  NO
+  assumed transcendence, NO `‖b‖ > 2+√2`: the natural-boundary engine, the descent, the capstone
+  assembly, the uniform-clearance geometry, AND `ψ`'s transcendence are all discharged.
 
 ## What is banked (axiom-clean `[propext, Classical.choice, Quot.sound]`)
 
@@ -34,20 +34,49 @@
   capstone recovers the full sharp `u0_phiB_independence`.  The interface is exactly right — the
   m-step generalization changes ONLY the branch, not the assembly.
 
-## The located open core (the sole remaining analytic input)
+## The branch is now BUILT: `ψ = bottcherCoord ∘ f^[N]` (`U0PhiMStep`)
 
-Construct `phiB_m` : an analytic branch on the window ball `ball 0 r` (`r` from clearance),
-transcendental over ℂ(z).  The one-step branch `phiB` uses the normalization
-`log(1 + z²/b)` valid on `ball 0 (rB b)` only for `‖b‖ > 2+√2` (`ratio_re_ge`).  The N-step
-generalization pulls the far Böttcher log back `N` steps (each step `×2⁻¹` + a log-correction).
+The naive per-step log-normalization (`phiB_m` with corrections `log(1 + (f^[k] z)²/·)`) crosses
+the branch cut at intermediate orbit points — a dead route.  The CLEAN branch avoids it entirely:
 
-**The precise obstruction.**  The per-step log-corrections `log(1 + (f^[k] z)²/·)` must each stay
-in the right half-plane along the clearance chain, but the INTERMEDIATE points `f^[k] z`
-(`k < N`) are not small — they can sit anywhere in the disk before escaping, so the naive per-step
-normalization can cross the branch cut.  Equivalently: analytically continue the Böttcher
-coordinate across `|z| = 1` into a window disk that does not encircle `K_b` (single-valued), for
-viable `b` where `K_b` is strictly inside the unit disk.  `exists_uniform_clearance` guarantees the
-chain reaches the far field; the open piece is the branch-cut bookkeeping of the continuation.
+  **`ψ(z) = bottcherCoord b (f_b^[N] z)`** — the genuine Böttcher coordinate `N` steps ahead, no
+  root extraction, no per-step normalization.
+
+Banked (axiom-clean):
+- `U0PhiMStep.exists_clearance_escapeOpen` — viability ⟹ `∃ r>1, N`, `f^[N](D̄(0,r)) ⊆ escapeOpen b`
+  (clearance past `max 2 ‖b‖`, elementary persistence `escapeOpen_persist` + the compactness of
+  `exists_uniform_clearance`).  Card `mstep_branch_built_card`.
+- `psiN` (def), `psiN_ne_zero`, `psiN_analyticOnNhd` — ψ analytic on the window ball via
+  `analyticAt_iterate` (polynomial iterate) composed with the slit-free
+  `Bottcher.analyticOnNhd_bottcherCoord_full`.
+- `u0_psiN_independence` — feeds the CONCRETE ψ to `u0_mstep_independence_of_branch`: `u₀ ⟂ ψ` for
+  every viable parameter, with the branch built in, modulo one hypothesis: ψ's transcendence.
+
+## The ψ-transcendence gap — CLOSED (`U0PhiMStepFar`)
+
+`ψ = bottcherCoord ∘ f^[N] = bottcherCoord ∘ pMapB b (N−1)` is exactly the object
+`phiB_transcendental` descends (there `phiB^{2^{m+1}} = bottcherCoord ∘ pMapB`; here ψ IS
+`bottcherCoord ∘ pMapB`, no `2^k` power).  ψ's transcendence is
+`Bottcher.bottcher_transcendental_far` transported along `f^[N]` by `descend_algebraicP` — the SAME
+descent, on carrier `annMB r` instead of `annWB b` (`U0PhiMStepFar.psiN_transcendental`).
+
+**The key that closed it:** the sharp descent used `‖b‖ > 2+√2` at exactly ONE point —
+`pMapB_deriv_ne_zero` → openness of the far image `f^[N] '' annMB r`.  That derivative hypothesis
+is UNNECESSARY.  A positive-degree polynomial map is an OPEN map on all of `ℂ`
+(`Polynomial.isOpenQuotientMap_eval` applied to `pPolyB b (N−1)`, `natDegree = 2^N ≠ 0`), regardless
+of where its derivative vanishes.  So the far image is open with no orbit-avoids-`0` condition — no
+puncturing, no genericity, no `IsPreconnected (open ∖ finite)` topology lemma.  `pPolyB`/`pullAn`/
+`kappaP`/`Φ` transfer verbatim (all carrier-generic, none needs `pMapB` injective).
+
+Banked (axiom-clean `[propext, Classical.choice, Quot.sound]`, `U0PhiMStepFar`):
+- `zero_not_mem_of_viable`, `persist_past_M`, `exists_clearance_farBound` (uniform clearance past
+  `bottcherFarBound b hc`, one compactness argument at threshold `max (bottcherFarBound) (max 2‖b‖)`);
+- `isOpen_pMapB_image_annMB` (the deriv-free far-image openness, open mapping theorem);
+- `psiN_transcendental` (ψ transcendental over ℂ(z) on `annMB r`, every viable `b`);
+- `u0_mstep_independence : viable b → MStepIndependence b` (UNCONDITIONAL);
+- six sub-threshold instances (`U0MStepInstances`): `b = 3` and five slice points at
+  `arg b ≈ 105°…155°`, all `‖b‖ ≈ 3.00 < 2+√2` — the first `u₀`–Böttcher independence theorems
+  strictly below the direction-independent threshold.
 
 ## Lean surface
 
@@ -56,20 +85,23 @@ chain reaches the far field; the open piece is the branch-cut bookkeeping of the
 - Consumes: `U0PhiLargeWindow` (farB, isPreconnected_annulus), `U0MonotoneEscape` (xStar),
   `U0WindowNormalization` (generic engine), `U0PhiLargeCapstone` (generic assembly).
 
-## Open
+## What this OPENS (next generative moves)
 
-- Build `phiB_m` (the located open core above); then `u0_mstep_independence` unconditional over the
-  viable region follows by feeding it to `u0_mstep_independence_of_branch`, with instances at the
-  6 certified-viable parameters (`b = 3`, the 5 slice points) — the first independence theorems
-  strictly below the sharp threshold `2+√2`.
-- Kummer layers for `phiB_m` (the ψ-route deliberately skips root extraction; the 2^k-th-root
-  transfer meets a winding obstruction on the annulus — assess once the branch exists).
+- **Kummer for ψ (root-level independence):** the ψ-route targets the FULL Böttcher coordinate, so
+  independence of `u₀` from `2^k`-th ROOTS of ψ (the `U0PhiKummerLayers` refinement) is now a
+  downstream question resting on the SAME (discharged) transcendence — a concrete next construction.
+- **The whole viable region, not just witnesses:** `u0_mstep_independence` holds for every viable
+  `b`; the natural next object is the map `b ↦ (r, N)` (window radius / clearance depth) as a
+  function on the viable set, and whether it extends continuously to the critical curve `ρ`.
+- **The exact independence locus:** independence now holds on ALL of `Viable = 𝒪ᶜ`; pairing this
+  with `ObstructedEqClosurePattern` (the `∂𝒱 = closure(pattern)` conjecture, `dV-pattern-closure`)
+  would pin the boundary of the independence region exactly.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [x] 1 → 2  fully-proven (the banked reduction + clearance are proven; branch is open core)
-- [~] 2 → 3  formalized: clearance + carrier + conditional capstone axiom-clean, build + lint
-  green; the UNCONDITIONAL capstone awaits the branch construction
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized: the FULL unconditional capstone is axiom-clean, build + lint green
+  (`U0PhiMStepFar`, `U0MStepInstances`); `#print axioms = [propext, Classical.choice, Quot.sound]`
 - [ ] 3 → 4  publication-ready
 
 ## Log
@@ -78,3 +110,9 @@ chain reaches the far field; the open piece is the branch-cut bookkeeping of the
   (#45–#50); the natural-boundary engine found to be GENERIC in the branch, so the m-step reduces
   to the single branch-construction input; obstruction located (intermediate-point branch-cut
   validity in the N-step normalization).  Promoted 0-backlog → 3-formalized.
+- 2026-07-02 — **ψ-transcendence gap CLOSED, capstone now fully unconditional.**  The located
+  residual (`pMapB_deriv_ne_zero` on `annMB`) dissolved: `deriv ≠ 0` was only ever needed for
+  openness of the far image, and a positive-degree polynomial is an open map unconditionally
+  (`Polynomial.isOpenQuotientMap_eval`) — no puncturing, no `IsPreconnected (open ∖ finite)` lemma.
+  Descent ported verbatim to the unpunctured `annMB` (`U0PhiMStepFar`); `u0_mstep_independence`
+  unconditional over the viable region; six sub-threshold instances banked (`U0MStepInstances`).

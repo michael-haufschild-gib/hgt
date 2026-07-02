@@ -63,10 +63,20 @@ sub-question.  **Action:** keep `ObstructedEqClosurePattern` as the formal targe
 non-reducing content to pursue is the narrowed OPEN CORE (interior-witness approximation for
 `b ∈ Obstructed ∩ M`).  Do NOT claim the full conjecture as a moonshot — its clean half is search.
 
+## Reducible half — now a banked (conditional) theorem
+
+`U0ParameterSpace.obstructed_open_sub_pattern_of_dense` (card `obstructed_reducible_half_card`):
+given `filledJulia b ⊆ closure (Preperiodic b)` (the classical density input, not in mathlib) and a
+witness in the OPEN unit disk, `b ∈ PatternRegion`.  Elementary core
+`patternRegion_of_preperiodic_le_one`: a preperiodic point `p` with `‖p‖ ≤ 1` gives the pattern
+parameter directly (`y = f_b(p)`, `‖y−b‖ = ‖p‖² ≤ 1`).  So the reduction is banked; only the
+classical density is assumed, and only the Fatou-interior sub-case (`b ∈ Obstructed ∩ M` with no
+`J_b`-witness in the open disk) is genuinely open.
+
 ## Next generative move
 
-- Prove `Obstructed ∖ M ⊆ PatternRegion` in Lean (the reduces-to-known half, made rigorous via
-  a `J_b`-density input) — turns the "search" half into a banked theorem and isolates the open core.
+- Discharge the density input on the Cantor locus (`b ∉ M`, `K_b = J_b`) from an IFS / shift-model
+  argument to make `Obstructed ∖ M ⊆ PatternRegion` unconditional.
 - Sharpen the interior-witness predicate into a decidable/testable form, THEN a targeted probe.
 
 ## Log
