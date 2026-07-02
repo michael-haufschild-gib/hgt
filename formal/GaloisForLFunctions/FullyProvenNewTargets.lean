@@ -4536,35 +4536,41 @@ end FullyProvenNewTargets
 
 namespace FullyProvenNewTargets
 
-open U0PhiFourFarCarrier U0PhiLargeWindow U0PhiLargeDescent U0PhiLargeCapstone
+open U0PhiFourFarCarrier U0PhiLargeWindow U0PhiLargeCarrier U0PhiLargeDescent U0PhiLargeCapstone
 open U0SectionExterior U0MeroCarrier Bottcher
 
-/-- The window branch of EVERY parameter `‖b‖ ≥ 4` is transcendental over `ℂ(z)` — the
-parameterized descent through the dyadic pullback onto the far Böttcher carrier. -/
+/-- The window branch of EVERY parameter `‖b‖ > 2+√2` is transcendental over `ℂ(z)` — the
+sharp descent through the dyadic pullback onto the monotone-escape far carrier. -/
 def PhiBTranscendentalTarget : Prop :=
-  ∀ {b : ℂ} (hb : 4 ≤ ‖b‖),
-    letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
-    letI : Algebra (RatFunc ℂ) (meroField annW) :=
-      (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+  ∀ {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖),
+    letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb)
+      (annWB_nonempty hb)
+    letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+      (ratfuncToMero (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb) (annWB_nonempty hb)
+        (annWB_infinite hb)).toAlgebra
     Transcendental (RatFunc ℂ)
-      (algebraMap (analyticSubring annW) (meroField annW) (phiBAn b hb))
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b)) (phiBAn b hb))
 
-/-- Formal wrapper for the parameterized φ-transcendence. -/
+/-- Formal wrapper for the sharp φ-transcendence. -/
 theorem phiB_transcendental_card : PhiBTranscendentalTarget :=
   fun hb => phiB_transcendental hb
 
-/-- **The parameterized window capstone**: `NoRelation ℂ(z) (phiB b) (u₀)` for EVERY `‖b‖ ≥ 4` —
-the `u0_phi_independence` conclusion at an OPEN SET of parameters, with zero hypotheses. -/
+/-- **The sharp window capstone**: `NoRelation ℂ(z) (phiB b) (u₀)` for EVERY `‖b‖ > 2+√2` —
+the `u0_phi_independence` conclusion at an OPEN SET of parameters, with zero hypotheses, at the
+sharp uniform threshold (the obstruction certificate meets it from below at `b = −(2+√2)`). -/
 def U0PhiBIndependenceTarget : Prop :=
-  ∀ {b : ℂ} (hb : 4 ≤ ‖b‖),
-    letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
-    letI : Algebra (RatFunc ℂ) (meroField annW) :=
-      (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+  ∀ {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖),
+    letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb)
+      (annWB_nonempty hb)
+    letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+      (ratfuncToMero (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb) (annWB_nonempty hb)
+        (annWB_infinite hb)).toAlgebra
     NoRelation (RatFunc ℂ)
-      (algebraMap (analyticSubring annW) (meroField annW) (phiBAn b hb))
-      (algebraMap (analyticSubring annW) (meroField annW) (u0AnSub annW_subset_Ext))
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b)) (phiBAn b hb))
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b))
+        (u0AnSub annWB_subset_Ext))
 
-/-- Formal wrapper for the all-large-parameters window capstone. -/
+/-- Formal wrapper for the sharp all-parameters window capstone. -/
 theorem u0_phiB_independence_card : U0PhiBIndependenceTarget :=
   fun hb => u0_phiB_independence hb
 
@@ -4584,7 +4590,7 @@ end FullyProvenNewTargets
 
 namespace FullyProvenNewTargets
 
-open U0PhiFourFarCarrier U0PhiLargeDescent U0PhiKummerLayers U0GreenBandBridge
+open U0PhiFourFarCarrier U0PhiLargeCarrier U0PhiLargeDescent U0PhiKummerLayers U0GreenBandBridge
 open U0MeroCarrier Bottcher
 
 /-- **The Green-band tower consumer**: the all-parameters U0 conclusion from a tower certificate
@@ -4625,16 +4631,19 @@ theorem u0_phi_independence_greenBand_card : U0PhiIndependenceGreenBandTarget :=
   exact U0GreenBandBridge.u0_phi_independence_of_towerData_greenBand hUo hUc hUne hUinf hU_ext
     hb hU_esc towerdata
 
-/-- **`u₀ ⟂` every Kummer layer of the window branch**, every `‖b‖ ≥ 4` — the window-side
-radical tower is `u₀`-free, unconditionally. -/
+/-- **`u₀ ⟂` every Kummer layer of the window branch**, every `‖b‖ > 2+√2` — the window-side
+radical tower is `u₀`-free, unconditionally, at the sharp threshold. -/
 def U0PhiKummerIndependenceTarget : Prop :=
-  ∀ {b : ℂ} (hb : 4 ≤ ‖b‖) (k : ℕ),
-    letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
-    letI : Algebra (RatFunc ℂ) (meroField annW) :=
-      (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+  ∀ {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (k : ℕ),
+    letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb)
+      (annWB_nonempty hb)
+    letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+      (ratfuncToMero (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb) (annWB_nonempty hb)
+        (annWB_infinite hb)).toAlgebra
     NoRelation (RatFunc ℂ)
-      (algebraMap (analyticSubring annW) (meroField annW) (phiBRootAn k b hb))
-      (algebraMap (analyticSubring annW) (meroField annW) (u0AnSub annW_subset_Ext))
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b)) (phiBRootAn k b hb))
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b))
+        (u0AnSub annWB_subset_Ext))
 
 /-- Formal wrapper for the Kummer-layer independence. -/
 theorem u0_phiBRoot_independence_card : U0PhiKummerIndependenceTarget :=

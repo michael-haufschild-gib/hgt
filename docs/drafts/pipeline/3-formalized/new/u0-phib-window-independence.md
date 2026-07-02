@@ -54,3 +54,5 @@ the φ-generic engine.
 ## Log
 - 2026-07-02 — b = 4 window capstone closed; parameterized to ‖b‖ ≥ 4; Kummer layers added.
 - 2026-07-02 — B₀ lowered 5 → 4 (far radius ‖b‖−23/20, growth 7/5); window obstruction proven for real b ∈ [−2−√2,−2) (see `U0WindowObstruction`): coverage below 2+√2 requires direction-dependent hypotheses.
+- 2026-07-02 — dichotomy companion: window viability at fixed modulus is direction-dependent
+  (`window-dichotomy-modulus-three`, witnesses b = ±3).

@@ -1,23 +1,25 @@
 /-
-# The far carrier at every large parameter, and the exterior Julia geometry
+# The far carrier at every sharp parameter, and the exterior Julia geometry
 
-Parameterization of the `b = 4` far carrier (`U0PhiFourFarCarrier`) over `‖b‖ ≥ 4`, plus the
-geometry that large parameters buy for free:
+Sharp-threshold parameterization of the far carrier: the annulus becomes the b-dependent
+`annWB b = {1 < ‖z‖ < rB b}`, and the far-field entry runs on the monotone-escape comparison
+(`U0MonotoneEscape`) instead of a geometric rate — one quadratic step from the annulus clears
+the escape fixed point (`‖b‖ − rB² > xStar ‖b‖`, exactly the sharp clearance), and above the
+fixed point the real comparison orbit `t ↦ t² − ‖b‖` grows linearly and exceeds every bound.
+This is what reaches arbitrarily close to `‖b‖ = 2+√2`, where the escape rate degenerates.
+
+Kept verbatim from the `‖b‖ ≥ 4` pass (tower-lane geometry, thresholds unchanged):
 
 * `zero_not_mem_filledJulia_large` — every `‖b‖ > 2` is an escape parameter;
 * `filledJulia_exterior` — for `‖b‖ ≥ 4` the WHOLE filled Julia set lies outside the closed unit
-  disk (`‖z‖ ≤ 1 ⟹ ‖f²(z)‖ ≥ (‖b‖−1)² − ‖b‖ ≥ ‖b‖ > 2`).  This is the enabling input for
-  discharging the `GBExt` clause of the tower certificate: `u₀`'s natural boundary is `|z| = 1`,
-  and for large `‖b‖` the tower's dynamical geometry (loops near the Julia set) lives entirely in
-  `u₀`'s domain `{|z| > 1}`;
-* `pMapB`, its nonvanishing derivative on the annulus, the open/preconnected/nonempty/infinite
-  image, and `exists_far_carrier_B` — the carrier consumed by the parameterized descent.
+  disk.  (Below `2+√2` this must fail at some parameters — `U0WindowObstruction`; between, the
+  dichotomy is directional — `U0DichotomyWitness`.)
 -/
 import GaloisForLFunctions.U0.U0PhiLargeWindow
 import GaloisForLFunctions.U0.U0PhiFourFarCarrier
 import GaloisForLFunctions.Bottcher.BottcherTowerData
 
-open Complex Set Metric Polynomial Bottcher U0NaturalBoundary
+open Complex Set Metric Polynomial Bottcher U0NaturalBoundary U0MonotoneEscape
 open U0PhiLargeWindow U0PhiFourFarCarrier
 
 namespace U0PhiLargeCarrier
@@ -62,19 +64,50 @@ theorem filledJulia_exterior {b : ℂ} (hb : 4 ≤ ‖b‖) {z : ℂ} (hz : z �
   rw [hval] at h2
   exact not_mem_filledJulia hffz.1 hffz.2 h2
 
+/-! ## The b-dependent window annulus -/
+
+/-- **The sharp window annulus** `{1 < ‖z‖ < rB b}` — b-dependent, nonempty exactly above the
+sharp threshold where `rB b > 1`. -/
+noncomputable def annWB (b : ℂ) : Set ℂ := ball (0 : ℂ) (rB b) ∩ Ext
+
+theorem annWB_subset_ball {b : ℂ} : annWB b ⊆ ball (0 : ℂ) (rB b) := inter_subset_left
+
+theorem annWB_subset_Ext {b : ℂ} : annWB b ⊆ Ext := inter_subset_right
+
+theorem isOpen_annWB (b : ℂ) : IsOpen (annWB b) :=
+  isOpen_ball.inter U0NaturalBoundary.isOpen_Ext
+
+theorem isPreconnected_annWB {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
+    IsPreconnected (annWB b) :=
+  isPreconnected_annulus_of_one_lt (one_lt_rB hb)
+
+theorem annWB_nonempty {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) : (annWB b).Nonempty := by
+  have hr := one_lt_rB hb
+  refine ⟨(((1 + rB b) / 2 : ℝ) : ℂ), ?_, ?_⟩
+  · simp only [mem_ball, dist_zero_right]
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
+    linarith
+  · show 1 < ‖(((1 + rB b) / 2 : ℝ) : ℂ)‖
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
+    linarith
+
+theorem annWB_infinite {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) : (annWB b).Infinite :=
+  infinite_of_isOpen_nonempty (isOpen_annWB b) (annWB_nonempty hb)
+
 /-! ## The parameterized escape map and its far image -/
 
 /-- The escape map at parameter `b`: one step into the far field, then `m` more. -/
 noncomputable def pMapB (b : ℂ) (m : ℕ) : ℂ → ℂ := fun z => (quadratic b)^[m] (quadratic b z)
 
-theorem pMapB_mem_farB {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
-    pMapB b m z ∈ farB b :=
-  farB_iterate hb m (quadB_mem_farB hb (annW_subset_ball hz))
+theorem pMapB_mem_farB {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) {z : ℂ}
+    (hz : z ∈ annWB b) : pMapB b m z ∈ farB b :=
+  farB_iterate (norm_gt_two hb) m (quadB_mem_farB hb (annWB_subset_ball hz))
 
 /-- The dyadic pullback chain lands on `pMapB`. -/
-theorem phiB_pow_pMapB {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
+theorem phiB_pow_pMapB {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) {z : ℂ}
+    (hz : z ∈ annWB b) :
     phiB b z ^ (2 ^ (m + 1)) = bottcherCoord b (pMapB b m z) :=
-  phiB_pow_iterate hb (annW_subset_ball hz) m
+  phiB_pow_iterate hb (annWB_subset_ball hz) m
 
 theorem quadratic_analyticOnNhd_univ_B (b : ℂ) : AnalyticOnNhd ℂ (quadratic b) univ := by
   have h : AnalyticOnNhd ℂ (fun z : ℂ => z ^ 2 + b) univ :=
@@ -100,11 +133,12 @@ theorem pMapB_analyticOnNhd (b : ℂ) (m : ℕ) : AnalyticOnNhd ℂ (pMapB b m) 
     exact (quadratic_analyticOnNhd_univ_B b).comp ih (mapsTo_univ _ _)
 
 /-- The chain-rule derivative of `pMapB` is nonzero on the annulus. -/
-theorem pMapB_hasDerivAt_ne_zero {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
+theorem pMapB_hasDerivAt_ne_zero {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) {z : ℂ}
+    (hz : z ∈ annWB b) :
     ∃ d : ℂ, HasDerivAt (pMapB b m) d z ∧ d ≠ 0 := by
   have hz0 : z ≠ 0 := by
     intro h0
-    have h1 : (1 : ℝ) < ‖z‖ := annW_subset_Ext hz
+    have h1 : (1 : ℝ) < ‖z‖ := annWB_subset_Ext hz
     rw [h0] at h1
     simp at h1
     linarith
@@ -131,7 +165,7 @@ theorem pMapB_hasDerivAt_ne_zero {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {z : �
   | succ m ih =>
     obtain ⟨d, hd, hdne⟩ := ih
     have hfar : pMapB b m z ∈ farB b := pMapB_mem_farB hb m hz
-    have hne : pMapB b m z ≠ 0 := farB_ne_zero hb hfar
+    have hne : pMapB b m z ≠ 0 := farB_ne_zero (norm_gt_two hb) hfar
     have hqm : HasDerivAt (quadratic b) (2 * pMapB b m z) (pMapB b m z) := by
       have h : HasDerivAt (fun w : ℂ => w ^ 2 + b) ((2 : ℕ) * (pMapB b m z) ^ (2 - 1))
           (pMapB b m z) := (hasDerivAt_pow 2 (pMapB b m z)).add_const b
@@ -155,45 +189,92 @@ theorem pMapB_hasDerivAt_ne_zero {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {z : �
     rw [he]
     exact hqm.comp z hd
 
-theorem pMapB_deriv_ne_zero {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
+theorem pMapB_deriv_ne_zero {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) {z : ℂ}
+    (hz : z ∈ annWB b) :
     deriv (pMapB b m) z ≠ 0 := by
   obtain ⟨d, hd, hdne⟩ := pMapB_hasDerivAt_ne_zero hb m hz
   rw [hd.deriv]
   exact hdne
 
-theorem isOpen_pMapB_image {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) : IsOpen (pMapB b m '' annW) :=
-  isOpen_image_of_analytic_dne isOpen_annW ((pMapB_analyticOnNhd b m).mono (subset_univ _))
+theorem isOpen_pMapB_image {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) :
+    IsOpen (pMapB b m '' annWB b) :=
+  isOpen_image_of_analytic_dne (isOpen_annWB b)
+    ((pMapB_analyticOnNhd b m).mono (subset_univ _))
     (fun _ hz => pMapB_deriv_ne_zero hb m hz)
 
-theorem isPreconnected_pMapB_image (b : ℂ) (m : ℕ) : IsPreconnected (pMapB b m '' annW) :=
-  isPreconnected_annW.image _ (((pMapB_analyticOnNhd b m).continuousOn).mono (subset_univ _))
+theorem isPreconnected_pMapB_image {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) :
+    IsPreconnected (pMapB b m '' annWB b) :=
+  (isPreconnected_annWB hb).image _
+    (((pMapB_analyticOnNhd b m).continuousOn).mono (subset_univ _))
 
-theorem pMapB_image_nonempty (b : ℂ) (m : ℕ) : (pMapB b m '' annW).Nonempty :=
-  Set.Nonempty.image _ annW_nonempty
+theorem pMapB_image_nonempty {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) :
+    (pMapB b m '' annWB b).Nonempty :=
+  Set.Nonempty.image _ (annWB_nonempty hb)
 
-theorem pMapB_image_infinite {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) : (pMapB b m '' annW).Infinite :=
-  infinite_of_isOpen_nonempty (isOpen_pMapB_image hb m) (pMapB_image_nonempty b m)
+theorem pMapB_image_infinite {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) :
+    (pMapB b m '' annWB b).Infinite :=
+  infinite_of_isOpen_nonempty (isOpen_pMapB_image hb m) (pMapB_image_nonempty hb m)
 
-/-- **The far carrier exists at every large parameter**: for `m` large the image clears the
-Böttcher far bound of `b`. -/
-theorem exists_far_carrier_B {b : ℂ} (hb : 4 ≤ ‖b‖) :
-    ∃ m : ℕ, ∀ w ∈ pMapB b m '' annW,
-      bottcherFarBound b (zero_not_mem_filledJulia_large (by linarith)) < ‖w‖ := by
-  set B : ℝ := bottcherFarBound b (zero_not_mem_filledJulia_large (by linarith)) with hB
-  obtain ⟨m, hm⟩ := pow_unbounded_of_one_lt (B / (57 / 20)) (show (1 : ℝ) < 7 / 5 by norm_num)
+/-! ## The far-field entry by monotone escape -/
+
+/-- **Norm comparison with the real escape dynamics**: the orbit norm dominates the iterates of
+`t ↦ t² − ‖b‖` from any starting level above the fixed point. -/
+theorem iterate_norm_ge {b : ℂ} (hb : 2 < ‖b‖) {s : ℝ} (hs : xStar ‖b‖ ≤ s)
+    {w : ℂ} (hw : s ≤ ‖w‖) (m : ℕ) :
+    (fun t => t ^ 2 - ‖b‖)^[m] s ≤ ‖(quadratic b)^[m] w‖ := by
+  induction m generalizing s w with
+  | zero => simpa using hw
+  | succ m ih =>
+    rw [Function.iterate_succ_apply, Function.iterate_succ_apply]
+    have hxs0 : (0 : ℝ) ≤ xStar ‖b‖ :=
+      le_of_lt (lt_trans one_pos (one_lt_xStar (by linarith)))
+    have hgs : xStar ‖b‖ ≤ s ^ 2 - ‖b‖ := by
+      have := step_ge (show (0:ℝ) < ‖b‖ by linarith) hs
+      linarith
+    have hstep : s ^ 2 - ‖b‖ ≤ ‖quadratic b w‖ := by
+      have htri : ‖w ^ 2‖ ≤ ‖w ^ 2 + b‖ + ‖b‖ := norm_le_add_norm_add _ _
+      have hp : ‖w ^ 2‖ = ‖w‖ ^ 2 := norm_pow w 2
+      show s ^ 2 - ‖b‖ ≤ ‖w ^ 2 + b‖
+      nlinarith [htri, hw, hs, hxs0,
+        mul_nonneg (sub_nonneg.mpr hw) (show (0:ℝ) ≤ ‖w‖ + s by linarith)]
+    exact ih hgs hstep
+
+/-- **The far carrier exists at every sharp parameter**: for `m` large the image clears the
+Böttcher far bound of `b`.  The entry is by monotone escape — one step from the annulus clears
+the fixed point (`‖b‖ − rB² > xStar`), then the linear growth of the comparison orbit exceeds
+the (abstract) far bound.  No rate constant appears; this is what works arbitrarily close to
+the sharp threshold. -/
+theorem exists_far_carrier_B {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
+    ∃ m : ℕ, ∀ w ∈ pMapB b m '' annWB b,
+      bottcherFarBound b (zero_not_mem_filledJulia_large (norm_gt_two hb)) < ‖w‖ := by
+  set M : ℝ := bottcherFarBound b (zero_not_mem_filledJulia_large (norm_gt_two hb)) with hM
+  have hb2 : 2 < ‖b‖ := norm_gt_two hb
+  have hb0 : (0 : ℝ) < ‖b‖ := by linarith
+  have hcl := xStar_lt_of_sharp hb
+  set s₀ : ℝ := ‖b‖ - rB b ^ 2 with hs₀
+  have hs₀gt : xStar ‖b‖ < s₀ := by
+    have hrsq := rB_sq_le hb
+    rw [hs₀]
+    linarith
+  obtain ⟨m, hm⟩ := exists_iterate_gt hb0 hs₀gt M
   refine ⟨m, ?_⟩
   rintro w ⟨z, hz, rfl⟩
-  have hqz : quadratic b z ∈ farB b := quadB_mem_farB hb (annW_subset_ball hz)
-  have hgrow : (7 / 5 : ℝ) ^ m * ‖quadratic b z‖ ≤ ‖pMapB b m z‖ := farB_growth hb m hqz
-  have hqnorm : (57 / 20 : ℝ) ≤ ‖quadratic b z‖ := by
-    have h1 : ‖b‖ - 23 / 20 < ‖quadratic b z‖ := hqz
-    linarith
-  have hpow : (0 : ℝ) < (7 / 5 : ℝ) ^ m := by positivity
-  have h1 : B < (7 / 5 : ℝ) ^ m * (57 / 20) := by
-    rw [div_lt_iff₀ (by norm_num : (0 : ℝ) < 57 / 20)] at hm
-    linarith
-  calc B < (7 / 5 : ℝ) ^ m * (57 / 20) := h1
-    _ ≤ (7 / 5 : ℝ) ^ m * ‖quadratic b z‖ := by nlinarith
-    _ ≤ ‖pMapB b m z‖ := hgrow
+  have hz' : ‖z‖ < rB b := by
+    have := annWB_subset_ball hz
+    simpa [mem_ball, dist_zero_right] using this
+  have hfirst : s₀ ≤ ‖quadratic b z‖ := by
+    have htri : ‖b‖ ≤ ‖z ^ 2 + b‖ + ‖z ^ 2‖ := by
+      calc ‖b‖ = ‖z ^ 2 + b - z ^ 2‖ := by ring_nf
+        _ ≤ ‖z ^ 2 + b‖ + ‖z ^ 2‖ := norm_sub_le _ _
+    have hp : ‖z ^ 2‖ = ‖z‖ ^ 2 := norm_pow z 2
+    have hzr : ‖z‖ ^ 2 ≤ rB b ^ 2 := by
+      nlinarith [hz', norm_nonneg z, one_lt_rB hb]
+    show s₀ ≤ ‖z ^ 2 + b‖
+    rw [hs₀]
+    nlinarith [htri, hzr]
+  have hcomp := iterate_norm_ge hb2 hs₀gt.le hfirst m
+  calc M < (fun t => t ^ 2 - ‖b‖)^[m] s₀ := hm
+    _ ≤ ‖(quadratic b)^[m] (quadratic b z)‖ := hcomp
+    _ = ‖pMapB b m z‖ := rfl
 
 end U0PhiLargeCarrier

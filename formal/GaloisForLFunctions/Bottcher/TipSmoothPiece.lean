@@ -39,11 +39,12 @@ theorem exists_relOpen_smooth_piece_of_holeFreeTip {U : Set ℂ}
     (hEqOn : Set.EqOn (fun z => ∑ i ∈ s,
         ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
           * (bottcherCoord c₁ z) ^ i) 0 U) :
-    ∃ (N : ℕ) (a : ℕ → ℂ → ℂ) (sT : Finset ℕ) (wfam : Fin N → ℂ → ℂ) (z₁ : ℂ) (ρ : ℝ)
+    ∃ (N : ℕ) (a : ℕ → ℂ → ℂ) (sT : Finset ℕ) (wfam : Fin N → ℂ → ℂ) (z₁ : ℂ) (ρ ρ₂ : ℝ)
       (k : Fin N) (Uop S : Set ℂ),
-      sT ⊆ Finset.range (N + 1) ∧ N ∈ sT ∧ 1 ≤ N ∧ 0 < ρ ∧
+      sT ⊆ Finset.range (N + 1) ∧ N ∈ sT ∧ 1 ≤ N ∧ 0 < ρ ∧ 0 < ρ₂ ∧
       (∀ i ∈ sT, AnalyticOnNhd ℂ (a i) (filledJulia c₂)ᶜ) ∧
       a N z₁ ≠ 0 ∧ (fibrePoly a sT z₁).Separable ∧
+      (∀ ζ : ℂ, ‖ζ‖ = 1 → ¬ ∀ z ∈ (filledJulia c₂)ᶜ, ∑ i ∈ sT, a i z * ζ ^ i = 0) ∧
       (∀ k', ContinuousOn (wfam k') (Metric.ball z₁ ρ)) ∧
       (∀ z ∈ Metric.ball z₁ ρ, ∀ k' l, k' ≠ l → wfam k' z ≠ wfam l z) ∧
       (∀ z ∈ Metric.ball z₁ ρ, (fibrePoly a sT z).natDegree = N) ∧
@@ -51,6 +52,7 @@ theorem exists_relOpen_smooth_piece_of_holeFreeTip {U : Set ℂ}
       z₁ ∈ frontier (filledJulia c₁) ∧
       IsClosed S ∧ S.Nonempty ∧ S ⊆ frontier (filledJulia c₁) ∧ S ⊆ Metric.ball z₁ ρ ∧
       S ⊆ (filledJulia c₂)ᶜ ∧
+      S = frontier (filledJulia c₁) ∩ Metric.closedBall z₁ ρ₂ ∧
       IsOpen Uop ∧ (Uop ∩ S).Nonempty ∧ ∀ x ∈ Uop ∩ S, ‖wfam k x‖ = 1 := by
   classical
   -- global basin branches for both connected parameters
@@ -58,8 +60,8 @@ theorem exists_relOpen_smooth_piece_of_holeFreeTip {U : Set ℂ}
     exists_global_branch_with_inverse_of_mem_mandelbrot c₁ h1M
   obtain ⟨β₂, _ψ₂, hβ₂an, hβ₂esc, _, _, _, _, _, _, _⟩ :=
     exists_global_branch_with_inverse_of_mem_mandelbrot c₂ h2M
-  -- the minimal separable relation with its far-field witness
-  obtain ⟨T', wfar, hdeg', hwU, hwΩ₂, hlead_bc, hsep_bc, hEqOn'⟩ :=
+  -- the minimal separable relation with its far-field witness and unit-root exclusion
+  obtain ⟨T', wfar, hdeg', hwU, hwΩ₂, hlead_bc, hsep_bc, hEqOn', hnoζ⟩ :=
     exists_separable_relation_of_relation hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hG Q s hpos hEqOn
   set N := T'.natDegree with hNdef
   set a : ℕ → ℂ → ℂ :=
@@ -90,6 +92,20 @@ theorem exists_relOpen_smooth_piece_of_holeFreeTip {U : Set ℂ}
     have := h z hz
     rw [hadef]
     exact this
+  -- no constant unit root of the coefficient family on the whole basin: transported from
+  -- the relation-level exclusion via `β₂ = bottcherCoord c₂` on `U ⊆ escapeOpen c₂`
+  have hnc : ∀ ζ : ℂ, ‖ζ‖ = 1 →
+      ¬ ∀ z ∈ (filledJulia c₂)ᶜ, ∑ i ∈ T'.support, a i z * ζ ^ i = 0 := by
+    intro ζ hζ1 hall
+    apply hnoζ ζ hζ1
+    intro z hzU
+    have h0 := hall z (escapeOpen_subset_compl_filledJulia c₂ (hU₂ hzU))
+    calc ∑ i ∈ T'.support,
+        ((T'.coeff i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) * ζ ^ i
+        = ∑ i ∈ T'.support, a i z * ζ ^ i := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [haeval, hβ₂esc z (hU₂ hzU)]
+      _ = 0 := h0
   -- support bookkeeping
   have hT'ne : T' ≠ 0 := by
     intro h
@@ -158,8 +174,8 @@ theorem exists_relOpen_smooth_piece_of_holeFreeTip {U : Set ℂ}
   have hSK₂ : S ⊆ (filledJulia c₂)ᶜ := fun x hx => hSΩ ⟨hStip hx, hSJ hx⟩
   -- the Baire pigeonhole fires
   obtain ⟨k, Uop, hUop, hUopne, hmod1⟩ := hspine S hScl hSne hSball hsupply
-  exact ⟨N, a, T'.support, wfam, z₁, ρ, k, Uop, S, hsupp, hN, hdeg', hρ, haan, hlead₁,
-    hsep₁, hwc, hwsep, hwdeg, hwrel, hz₁S.2, hScl, hSne, hSJ, hSball, hSK₂,
+  exact ⟨N, a, T'.support, wfam, z₁, ρ, ρ', k, Uop, S, hsupp, hN, hdeg', hρ, hρ', haan, hlead₁,
+    hsep₁, hnc, hwc, hwsep, hwdeg, hwrel, hz₁S.2, hScl, hSne, hSJ, hSball, hSK₂, hSdef,
     hUop, hUopne, hmod1⟩
 
 end Bottcher

@@ -20,13 +20,23 @@ namespace Bottcher
 /-- **The smooth-piece rigidity interface (P6).**  For nonexceptional parameters, no relatively
 open piece of `J_{c₁}` lies inside the modulus-one locus of one branch of a continuous root family
 of a separable analytic-coefficient fibre polynomial.  The full branch-family data is carried so
-the discharge can upgrade continuity to analyticity via the implicit function theorem. -/
+the discharge can upgrade continuity to analyticity via the implicit function theorem.
+
+Two clauses pin the Prop to the configuration the discharge can actually refute (without them the
+statement is falsifiable by artificial instantiations, so the epic could never land):
+* the **shape clause** `S = J₁ ∩ closedBall z₁ ρ₂` makes `S` a full Julia-ball piece — a thin
+  closed subset of `J₁` (a singleton, or a Cantor slice of a real Julia set inside a line) can
+  genuinely sit on an analytic curve without forcing exceptional parameters;
+* the **unit-root exclusion** rules out a constant branch `wfam k ≡ ζ`, `‖ζ‖ = 1`, whose
+  modulus-one locus is the whole ball and carries no rigidity.  The engine discharges this clause
+  from irreducibility of the minimal relation and `‖φ_{c₁}‖ > 1` on the escape region. -/
 def SmoothPieceRigidity (c₁ c₂ : ℂ) : Prop :=
-  ∀ (a : ℕ → ℂ → ℂ) (sT : Finset ℕ) (N : ℕ) (wfam : Fin N → ℂ → ℂ) (z₁ : ℂ) (ρ : ℝ)
+  ∀ (a : ℕ → ℂ → ℂ) (sT : Finset ℕ) (N : ℕ) (wfam : Fin N → ℂ → ℂ) (z₁ : ℂ) (ρ ρ₂ : ℝ)
     (k : Fin N) (Uop S : Set ℂ),
-    sT ⊆ Finset.range (N + 1) → N ∈ sT → 1 ≤ N → 0 < ρ →
+    sT ⊆ Finset.range (N + 1) → N ∈ sT → 1 ≤ N → 0 < ρ → 0 < ρ₂ →
     (∀ i ∈ sT, AnalyticOnNhd ℂ (a i) (filledJulia c₂)ᶜ) →
     a N z₁ ≠ 0 → (fibrePoly a sT z₁).Separable →
+    (∀ ζ : ℂ, ‖ζ‖ = 1 → ¬ ∀ z ∈ (filledJulia c₂)ᶜ, ∑ i ∈ sT, a i z * ζ ^ i = 0) →
     (∀ k', ContinuousOn (wfam k') (Metric.ball z₁ ρ)) →
     (∀ z ∈ Metric.ball z₁ ρ, ∀ k' l, k' ≠ l → wfam k' z ≠ wfam l z) →
     (∀ z ∈ Metric.ball z₁ ρ, (fibrePoly a sT z).natDegree = N) →
@@ -34,6 +44,7 @@ def SmoothPieceRigidity (c₁ c₂ : ℂ) : Prop :=
     z₁ ∈ frontier (filledJulia c₁) →
     IsClosed S → S.Nonempty → S ⊆ frontier (filledJulia c₁) → S ⊆ Metric.ball z₁ ρ →
     S ⊆ (filledJulia c₂)ᶜ →
+    S = frontier (filledJulia c₁) ∩ Metric.closedBall z₁ ρ₂ →
     IsOpen Uop → (Uop ∩ S).Nonempty → (∀ x ∈ Uop ∩ S, ‖wfam k x‖ = 1) → False
 
 /-- **hbothconn, conditional on the two named Props.**  A `HoleFreeTip` plus `SmoothPieceRigidity`
@@ -97,11 +108,12 @@ theorem noRelation_phiMero_of_holeFreeTip_of_rigidity {U : Set ℂ}
       exact Filter.eventually_principal.mpr fun z hz => hfun z hz
     exact Subtype.ext hval
   · -- genuine bivariate relation: run the pigeonhole chain into the rigidity Prop
-    obtain ⟨N, a, sT, wfam, z₁, ρ, k, Uop, S, hsupp, hN, hN1, hρ, haan, hlead, hsep,
-      hwc, hwsep, hwdeg, hwrel, hz₁J, hScl, hSne, hSJ, hSball, hSK₂, hUop, hUopne, hmod1⟩ :=
+    obtain ⟨N, a, sT, wfam, z₁, ρ, ρ₂, k, Uop, S, hsupp, hN, hN1, hρ, hρ₂, haan, hlead, hsep,
+      hnc, hwc, hwsep, hwdeg, hwrel, hz₁J, hScl, hSne, hSJ, hSball, hSK₂, hSshape,
+      hUop, hUopne, hmod1⟩ :=
       exists_relOpen_smooth_piece_of_holeFreeTip hUo hUc hUne hUinf h1M h2M hU₁ hU₂ hG
         htip Q s hpos hEqOn
-    exact hrig a sT N wfam z₁ ρ k Uop S hsupp hN hN1 hρ haan hlead hsep hwc hwsep hwdeg
-      hwrel hz₁J hScl hSne hSJ hSball hSK₂ hUop hUopne hmod1
+    exact hrig a sT N wfam z₁ ρ ρ₂ k Uop S hsupp hN hN1 hρ hρ₂ haan hlead hsep hnc hwc hwsep
+      hwdeg hwrel hz₁J hScl hSne hSJ hSball hSK₂ hSshape hUop hUopne hmod1
 
 end Bottcher

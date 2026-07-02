@@ -8,7 +8,7 @@ Use this as the quick map before opening large proof files.
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 32 | 262 | `hurwitz_n2_unconditional` |
-| `u0_pui` | `GaloisForLFunctions.U0` | 41 | 405 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
+| `u0_pui` | `GaloisForLFunctions.U0` | 43 | 429 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
 | `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 313 | 4498 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Wiring
@@ -32,7 +32,7 @@ Use this as the quick map before opening large proof files.
 | Lines | File |
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 4676 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 4685 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |

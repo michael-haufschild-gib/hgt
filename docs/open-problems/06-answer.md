@@ -184,3 +184,91 @@ x\in J_1.
 Thus (x) is exactly the desired one-sided boundary point visible from infinity.
 
 The same argument with the indices reversed gives a one-sided point of (J_2\setminus K_1) on (\partial W). Hence no exceptional pairs occur under the stated assumptions (c_1\neq c_2\in M\setminus{0,-2}).
+
+---
+
+# Verification report (2026-07-02)
+
+## Verdict
+
+**Steps 1–2 are correct and are new, load-bearing progress: the exposed set
+`E₁ = ∂W ∖ K₂ ⊆ J₁ ∖ K₂` carries positive equilibrium measure, `μ₁(E₁) ≥ μ_Y(E₁) > 0`, and
+simultaneously for both orderings.**  This settles the caution in weakening (W2)
+measure-theoretically: `∂W ∖ K₂` is not merely nonempty, it is μ-large.
+
+**Step 3 has a gap and the strict Problem statement remains open.**  The quoted
+"one-sided full measure theorem" is stronger than what the cited literature provides.
+
+## Audit of steps 1–2 (verified)
+
+1. *Strict capacity monotonicity* — correct.  For compact `E` of capacity 1 and compact
+   `A ⊆ ℂ ∖ E` of positive capacity with `G_E > 0` on `A`, the mixture
+   `(1−t)μ_E + tσ` has negative energy for small `t` because the cross term
+   `I(μ_E, σ) = −∫ G_E dσ < 0` dominates; hence `cap(E ∪ A) > 1`.  Applied twice this
+   gives `K₂ ⊄ K₁`, `K₁ ⊄ K₂` (using `cap(K_i) = 1` and that distinct parameters have
+   distinct filled Julia sets), then `R := cap(Y) ≥ cap(K₁ ∪ K₂) > 1`.  The positive-capacity
+   input (`K₁ ∩ D̄` for `a ∈ J₁`) is sound: `supp μ₁ = J₁` (Brolin), and a restriction of a
+   finite-energy measure has finite energy.
+2. *Energy identity* — correct.  `G_i = −U^{μ_i}` off a polar set (capacity 1, Robin
+   constant 0), `U^{μ_Y} = −log R` q.e. on `Y ⊇ K_i`, and `μ_i` charges no polar set
+   (finite energy), so Fubini gives `∫ G_i dμ_Y = log R > 0`.  Since `G₂ = 0` exactly on
+   `K₂` and `μ_Y` is carried by `∂W ⊆ K₁ ∪ K₂`, positivity forces `μ_Y(∂W ∖ K₂) > 0`.
+   `∂W ∖ K₂ ⊆ J₁` is sound (interior points of `K₁` cannot lie on `∂W`).
+3. *Domain monotonicity* — correct.  `E₁` is relatively open in `∂W` (complement of the
+   closed `K₂`), hence Borel; `W ⊆ Ω₁ = ℂ ∖ K₁` share the boundary portion `E₁ ⊆ ∂W ∩ J₁`,
+   and `ω_W(∞,·) ≤ ω_{Ω₁}(∞,·)` on common boundary portions by the maximum principle.
+   Hence `μ₁(E₁) ≥ μ_Y(E₁) > 0`.
+
+## The gap in step 3
+
+Fatou (radial landing a.e.), Lindelöf (accesses ↔ landing rays), and Zdunik/Zakeri/Smirnov
+(biaccessible points have zero harmonic measure unless Chebyshev) together give:
+
+> for `c ∉ {0, −2}`, μ_c-a.e. point of `J_c` is the landing point of **exactly one** external
+> ray — equivalently, has **exactly one access** from `ℂ ∖ K_c`.
+
+The Problem's definition of one-sided is strictly stronger: `B(p,ρ) ∖ K_c` **connected for
+every** small `ρ`.  Uniaccessibility does not imply it.  A comb (a full compact set: a base
+segment with teeth accumulating on a limit tooth) has its limit endpoint uniaccessible while
+every small ball around it is sliced into infinitely many components by the neighboring
+teeth: **accumulation without access**.  Access-counting is blind to strands of `K₁` (or, in
+the pair setting, to holes of `K₁ ∪ K₂`) that accumulate at a point at all scales without
+contributing an access there.  Nothing in the cited biaccessibility literature excludes this
+configuration at μ-a.e. point, and its exclusion is exactly the open content of the Problem.
+So the selection "μ₁(E₁) > 0 ∧ one-sided μ₁-a.e. ⟹ a one-sided point in E₁" rests on an
+unproven premise.  The Problem as stated (and its consumer, the strict hole-free-ball
+certificate) remains open.
+
+**Sharpened residual question (new, and of independent interest):** for `c ∈ M ∖ {0,−2}`, is
+μ_c-a.e. point of `J_c` one-sided in the strict ball sense?  Equivalently: can strands of a
+quadratic Julia set accumulate, at positive harmonic measure many of its points, at all
+scales, without access?  A comb shows general full compacta allow it; self-similarity of
+`J_c` and the Makarov–Zdunik twist-point theory are the natural tools against it.
+
+## What the verified part already buys (the measure route)
+
+The application consuming this Problem was re-examined against the verified steps 1–2, with
+two consequences (recorded here so the answer file is self-contained about its own impact):
+
+1. **The formal rigidity interface was strengthened (Lean, done).**  The engine that turns a
+   Böttcher relation into a smooth Julia piece now carries two extra certified clauses: the
+   piece is a full Julia-ball piece `S = J₁ ∩ closedBall(z₁, ρ₂)`, and **no constant unit root**:
+   no `ζ` with `|ζ| = 1` kills the fibre polynomial identically on `ℂ ∖ K₂` (proved from
+   irreducibility of the minimal relation, transcendence of `φ_{c₂}`, and `‖φ_{c₁}‖ > 1` on
+   the escape region).  Without these clauses the rigidity endgame was refutable by
+   artificial instantiations (a singleton piece, or a constant unit branch) and could never
+   have been proven.
+2. **A measure-quantified variant of the endgame is the designated consumer of THIS answer**
+   `[CONJECTURE — route, citations to be pinned]`: from `μ₁(E₁) > 0`, pick
+   `x ∈ E₁ ∩ supp μ_Y` and take the piece `F := supp μ_Y ∩ closedBall(x, δ)` with
+   `δ < dist(x, K₂)`.  Every point of `supp μ_Y ⊆ ∂W` is a limit of escaping points, so the
+   relation propagates to all of `F` (no hole-free ball needed); `μ_Y` is non-atomic (finite
+   energy), so `F` is uncountable and every relatively open piece of `F` has positive
+   `μ_Y`-, hence `μ₁`-measure.  The measure pigeonhole then puts a positive-`μ₁` subset of
+   `J₁` inside the modulus-one locus of one analytic root branch — a rectifiable set.  By
+   Bishop–Jones (positive harmonic measure on a rectifiable curve forces a positive-measure
+   set of cone points) against Przytycki–Urbański–Zdunik / Makarov–Zdunik (for
+   `c ∉ {0,−2}`, μ_c-a.e. point is a twist point), this is impossible.  The two bracketed
+   citations are load-bearing and must be verified before this route is promoted; if they
+   hold, steps 1–2 of this answer discharge the both-connected case without the strict
+   one-sided selection ever being needed.

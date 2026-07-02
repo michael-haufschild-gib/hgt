@@ -44,3 +44,5 @@ germ — contradicting `bottcher_transcendental_far`.
 ## Log
 - 2026-07-02 — b = 4 descent closed; generalized to arbitrary monic p and all ‖b‖ ≥ 4.
 - 2026-07-02 — B₀ lowered 5 → 4 across the descent chain.
+- 2026-07-02 — dichotomy companion: window viability at fixed modulus is direction-dependent
+  (`window-dichotomy-modulus-three`, witnesses b = ±3).

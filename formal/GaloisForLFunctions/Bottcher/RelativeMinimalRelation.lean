@@ -333,7 +333,9 @@ theorem exists_separable_relation_of_relation
         T'.support w).Separable ∧
       Set.EqOn (fun z => ∑ i ∈ T'.support,
         ((T'.coeff i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
-          * (bottcherCoord c₁ z) ^ i) 0 U := by
+          * (bottcherCoord c₁ z) ^ i) 0 U ∧
+      ∀ ζ : ℂ, ‖ζ‖ = 1 → ¬ (∀ z ∈ U, ∑ i ∈ T'.support,
+        ((T'.coeff i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) * ζ ^ i = 0) := by
   -- descend to an irreducible relation
   obtain ⟨T', hirr, hdeg', hrel'⟩ :=
     exists_irreducible_relation hUo hUc c₁ c₂ hU₁ hU₂ (bivarPoly Q s) hpos (by
@@ -346,9 +348,109 @@ theorem exists_separable_relation_of_relation
   obtain ⟨w, hwU, hwJ, hlead, hsepw⟩ :=
     exists_separable_fibre_witness_of_separable_over_field hUo hUc hUne hUinf c₂ hU₂ hG
       (bottcherCoord c₂) (fun _ _ => rfl) T' hsep' hdeg'
-  refine ⟨T', w, hdeg', hwU, hwJ, hlead, hsepw, ?_⟩
-  intro z hz
-  simp only [Pi.zero_apply]
-  rw [← relFun_eq_sum]; exact hrel' z hz
+  refine ⟨T', w, hdeg', hwU, hwJ, hlead, hsepw, ?_, ?_⟩
+  · intro z hz
+    simp only [Pi.zero_apply]
+    rw [← relFun_eq_sum]; exact hrel' z hz
+  · -- **no constant unit root**: a unit `ζ` killing every specialized fibre on `U` makes
+    -- `ζ` a root of `T'` over `ℂ[z,Y]` (transcendence of `φ_{c₂}` zeroes the substituted
+    -- polynomial `T'(ζ)`), so `(X - C ζ) ∣ T'`; irreducibility over the fraction field then
+    -- forces `T'` linear with the constant root `ζ`, and the relation factors as
+    -- `g(z, φ_{c₂}(z)) · (φ_{c₁}(z) - ζ) ≡ 0` on `U`.  Since `‖φ_{c₁}‖ > 1 = ‖ζ‖` on the
+    -- escape region, the second factor never vanishes, so `g` dies by transcendence — but
+    -- `g` is the (nonzero) cofactor of a nonzero `T'`.  Contradiction.
+    intro ζ hζ1 hall
+    set R := Polynomial (Polynomial ℂ)
+    set a : R := Polynomial.C (Polynomial.C ζ) with hadef
+    -- the substituted polynomial `T'(ζ) ∈ ℂ[z,Y]` vanishes along the curve `Y = φ_{c₂}`
+    have hqeval : ∀ z : ℂ,
+        (T'.eval a).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)
+          = ∑ i ∈ T'.support,
+              ((T'.coeff i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) * ζ ^ i := by
+      intro z
+      rw [show T'.eval a = ∑ i ∈ T'.support, T'.coeff i * a ^ i by
+        rw [Polynomial.eval_eq_sum, Polynomial.sum_def]]
+      rw [show ((∑ i ∈ T'.support, T'.coeff i * a ^ i).eval₂
+            (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
+          = Polynomial.eval₂RingHom (Polynomial.evalRingHom z) (bottcherCoord c₂ z)
+              (∑ i ∈ T'.support, T'.coeff i * a ^ i) from rfl]
+      rw [map_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [map_mul, map_pow]
+      simp [hadef, Polynomial.coe_eval₂RingHom, Polynomial.eval₂_C]
+    have hq0 : T'.eval a = 0 := by
+      by_contra hne
+      obtain ⟨w', hw'U, _, hw'ne⟩ :=
+        exists_mem_compl_filledJulia_gamma_ne_zero_of_bivariate_ne_zero_transcendental
+          hUo hUc hUne hUinf c₂ hU₂ hG (bottcherCoord c₂) (fun _ _ => rfl) hne
+      exact hw'ne ((hqeval w').trans (hall w' hw'U))
+    have hroot : (Polynomial.X - Polynomial.C a) ∣ T' := Polynomial.dvd_iff_isRoot.mpr hq0
+    -- transport to the fraction field: irreducibility forces `T'` linear
+    set alg := algebraMap R (FractionRing R) with halg
+    have halginj : Function.Injective alg := IsFractionRing.injective _ _
+    obtain ⟨e, he⟩ := hroot
+    have heF : T'.map alg = (Polynomial.X - Polynomial.C (alg a)) * e.map alg := by
+      rw [he, Polynomial.map_mul, Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C]
+    have hXnu : ¬ IsUnit (Polynomial.X - Polynomial.C (alg a)) := by
+      intro hu
+      have h0 := Polynomial.natDegree_eq_zero_of_isUnit hu
+      rw [Polynomial.natDegree_X_sub_C] at h0
+      exact one_ne_zero h0
+    have heunit : IsUnit (e.map alg) := (hirr.isUnit_or_isUnit heF).resolve_left hXnu
+    have hT'deg1 : T'.natDegree = 1 := by
+      have hmap : (T'.map alg).natDegree = T'.natDegree :=
+        natDegree_map_eq_of_injective halginj T'
+      have hedeg : (e.map alg).natDegree = 0 := Polynomial.natDegree_eq_zero_of_isUnit heunit
+      have hX0 : (Polynomial.X - Polynomial.C (alg a)) ≠ 0 := Polynomial.X_sub_C_ne_zero _
+      have he0 : e.map alg ≠ 0 := heunit.ne_zero
+      have hm := Polynomial.natDegree_mul hX0 he0
+      rw [← heF, hmap, Polynomial.natDegree_X_sub_C, hedeg] at hm
+      omega
+    -- the cofactor in `ℂ[z,Y][X]` is a nonzero constant `g`
+    have hT'ne : T' ≠ 0 := fun h => by rw [h, Polynomial.natDegree_zero] at hdeg'; omega
+    have he_ne : e ≠ 0 := fun h => hT'ne (by rw [he, h, mul_zero])
+    have hXa_ne : (Polynomial.X - Polynomial.C a) ≠ 0 := Polynomial.X_sub_C_ne_zero _
+    have hedeg0 : e.natDegree = 0 := by
+      have hm := Polynomial.natDegree_mul hXa_ne he_ne
+      rw [← he, hT'deg1, Polynomial.natDegree_X_sub_C] at hm
+      omega
+    have hec : e = Polynomial.C (e.coeff 0) := Polynomial.eq_C_of_natDegree_eq_zero hedeg0
+    have hg_ne : e.coeff 0 ≠ 0 := by
+      intro h
+      apply he_ne
+      rw [hec, h, Polynomial.C_0]
+    -- the relation factors as `(φ₁ - ζ)·g(z,φ₂) ≡ 0` on `U`
+    have hfac : ∀ z ∈ U, (bottcherCoord c₁ z - ζ)
+        * ((e.coeff 0).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) = 0 := by
+      intro z hz
+      have h1 : relFun c₁ c₂ T' z = 0 := hrel' z hz
+      rw [he, hec, relFun_mul] at h1
+      have hX : relFun c₁ c₂ (Polynomial.X - Polynomial.C a) z = bottcherCoord c₁ z - ζ := by
+        simp [relFun, hadef, Polynomial.eval₂_C]
+      have hC : relFun c₁ c₂ (Polynomial.C (e.coeff 0)) z
+          = (e.coeff 0).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z) := by
+        simp [relFun, Polynomial.coe_eval₂RingHom, Polynomial.eval₂_C]
+      rw [hX, hC] at h1
+      exact h1
+    -- the first factor never vanishes on the escape region: `‖φ₁‖ > 1 = ‖ζ‖`
+    have hφne : ∀ z ∈ U, bottcherCoord c₁ z - ζ ≠ 0 := by
+      intro z hz h0
+      have hesc : max 2 ‖c₁‖ < ‖z‖ := hU₁ hz
+      have hgt : 1 < ‖bottcherCoord c₁ z‖ :=
+        one_lt_norm_bottcherCoord (le_of_lt (lt_of_le_of_lt (le_max_right _ _) hesc))
+          (lt_of_le_of_lt (le_max_left _ _) hesc)
+      rw [sub_eq_zero] at h0
+      rw [h0, hζ1] at hgt
+      exact lt_irrefl _ hgt
+    -- so `g` vanishes along the curve, hence `g = 0` by transcendence — contradiction
+    have hgz : ∀ z ∈ U, (e.coeff 0).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z) = 0 := by
+      intro z hz
+      rcases mul_eq_zero.mp (hfac z hz) with h | h
+      · exact absurd h (hφne z hz)
+      · exact h
+    obtain ⟨w', hw'U, _, hw'ne⟩ :=
+      exists_mem_compl_filledJulia_gamma_ne_zero_of_bivariate_ne_zero_transcendental
+        hUo hUc hUne hUinf c₂ hU₂ hG (bottcherCoord c₂) (fun _ _ => rfl) hg_ne
+    exact hw'ne (hgz w' hw'U)
 
 end Bottcher

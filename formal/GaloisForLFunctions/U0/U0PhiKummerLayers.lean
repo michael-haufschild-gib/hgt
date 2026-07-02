@@ -2,7 +2,7 @@
 # `u₀ ⟂` every Kummer layer: the dyadic roots of the window branch
 
 The assembly functor (`u0_window_independence_of_transcendental_engine`) applied to the whole
-dyadic root tower of the window branch: for `‖b‖ ≥ 4` and every `k`,
+dyadic root tower of the window branch: for `‖b‖ > 2+√2` and every `k`,
 
   `phiBRoot k b z := exp(2^{-(k+1)}·(log b + log(1 + z²/b) + tail(z² + b)))`
 
@@ -13,15 +13,15 @@ is a `2^k`-th root of `phiB b` (`phiBRoot 0 = phiB`), analytic on the whole wind
 * the (φ-generic) natural-boundary window engine.
 
 Conclusion: `u0_phiBRoot_independence` — `u₀` is algebraically independent over `ℂ(z)` of EVERY
-Kummer layer of the window branch, for every `‖b‖ ≥ 4`.  This is the window-side analog of the
-tower certificate's radicand clause (`aExt` with `restrict = φ^{2^k}`): the whole radical tower
-above the window branch is `u₀`-free, unconditionally.
+Kummer layer of the window branch, for every `‖b‖ > 2+√2`.  This is the window-side analog of
+the tower certificate's radicand clause (`aExt` with `restrict = φ^{2^k}`): the whole radical
+tower above the window branch is `u₀`-free, unconditionally, at the sharp threshold.
 -/
 import GaloisForLFunctions.U0.U0PhiLargeCapstone
 
 open Complex Filter Topology Metric Set Polynomial Bottcher
 open U0 U0NaturalBoundary U0WindowNormalization U0PhiFourFarCarrier U0PhiFourDescent
-open U0MeroCarrier U0PhiLargeWindow U0PhiLargeDescent U0PhiLargeCapstone
+open U0MeroCarrier U0PhiLargeWindow U0PhiLargeCarrier U0PhiLargeDescent U0PhiLargeCapstone
 
 namespace U0PhiKummerLayers
 
@@ -49,8 +49,8 @@ theorem phiBRoot_pow (k : ℕ) (b z : ℂ) : phiBRoot k b z ^ (2 ^ k) = phiB b z
   field_simp
 
 /-- Every root layer is analytic on the whole window disk. -/
-theorem phiBRoot_analytic {b : ℂ} (hb : 4 ≤ ‖b‖) (k : ℕ) :
-    AnalyticOnNhd ℂ (phiBRoot k b) (ball (0 : ℂ) (21 / 20)) := by
+theorem phiBRoot_analytic {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (k : ℕ) :
+    AnalyticOnNhd ℂ (phiBRoot k b) (ball (0 : ℂ) (rB b)) := by
   apply DifferentiableOn.analyticOnNhd _ isOpen_ball
   intro z hz
   apply DifferentiableAt.differentiableWithinAt
@@ -67,7 +67,7 @@ theorem phiBRoot_analytic {b : ℂ} (hb : 4 ≤ ‖b‖) (k : ℕ) :
     exact hin.clog (ratio_mem_slitPlane hb hz)
   have htail : DifferentiableAt ℂ (fun v => ∑' j, bottcherLogTerm b (quadratic b v) j) z := by
     have hT : DifferentiableAt ℂ (fun w => ∑' j, bottcherLogTerm b w j) (quadratic b z) :=
-      (tail_differentiableOn_B hb).differentiableAt
+      (tail_differentiableOn_B (norm_gt_two hb)).differentiableAt
         ((isOpen_farB b).mem_nhds (quadB_mem_farB hb hz))
     exact hT.comp z hqd
   have hsum : DifferentiableAt ℂ (fun v => Complex.log b + Complex.log (1 + v ^ 2 / b)
@@ -75,58 +75,72 @@ theorem phiBRoot_analytic {b : ℂ} (hb : 4 ≤ ‖b‖) (k : ℕ) :
     ((differentiableAt_const _).add hratio).add htail
   exact (hsum.const_mul _).cexp
 
-/-- The root layer as an analytic germ on the annulus. -/
-noncomputable def phiBRootAn (k : ℕ) (b : ℂ) (hb : 4 ≤ ‖b‖) : analyticSubring annW :=
-  ⟨Germ.coeRingHom (𝓟 annW) (phiBRoot k b),
-    ⟨phiBRoot k b, (phiBRoot_analytic hb k).mono annW_subset_ball, rfl⟩⟩
+/-- The root layer as an analytic germ on the sharp annulus. -/
+noncomputable def phiBRootAn (k : ℕ) (b : ℂ) (hb : 2 + Real.sqrt 2 < ‖b‖) :
+    analyticSubring (annWB b) :=
+  ⟨Germ.coeRingHom (𝓟 (annWB b)) (phiBRoot k b),
+    ⟨phiBRoot k b, (phiBRoot_analytic hb k).mono annWB_subset_ball, rfl⟩⟩
 
 /-- **Every Kummer layer is transcendental over `ℂ(z)`** — a relation for the root descends to a
 relation for its `2^k`-th power `phiB`, against `phiB_transcendental`. -/
-theorem phiBRoot_transcendental {b : ℂ} (hb : 4 ≤ ‖b‖) (k : ℕ) :
-    letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
-    letI : Algebra (RatFunc ℂ) (meroField annW) :=
-      (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+theorem phiBRoot_transcendental {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (k : ℕ) :
+    letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb)
+      (annWB_nonempty hb)
+    letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+      (ratfuncToMero (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb) (annWB_nonempty hb)
+        (annWB_infinite hb)).toAlgebra
     Transcendental (RatFunc ℂ)
-      (algebraMap (analyticSubring annW) (meroField annW) (phiBRootAn k b hb)) := by
-  letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
-  letI : Algebra (RatFunc ℂ) (meroField annW) :=
-    (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b)) (phiBRootAn k b hb)) := by
+  letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb)
+    (annWB_nonempty hb)
+  letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+    (ratfuncToMero (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb) (annWB_nonempty hb)
+      (annWB_infinite hb)).toAlgebra
   intro halg
   have hpow : (phiBRootAn k b hb) ^ (2 ^ k) = phiBAn b hb := by
     apply Subtype.ext
     rw [SubmonoidClass.coe_pow]
-    show ((↑(phiBRoot k b) : Germ (𝓟 annW) ℂ)) ^ (2 ^ k) = (↑(phiB b) : Germ (𝓟 annW) ℂ)
+    show ((↑(phiBRoot k b) : Germ (𝓟 (annWB b)) ℂ)) ^ (2 ^ k)
+      = (↑(phiB b) : Germ (𝓟 (annWB b)) ℂ)
     rw [← Germ.coe_pow, Germ.coe_eq]
     apply Filter.eventually_principal.mpr
     intro z _
     exact phiBRoot_pow k b z
   have halg2 : IsAlgebraic (RatFunc ℂ)
-      (algebraMap (analyticSubring annW) (meroField annW) (phiBAn b hb)) := by
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b)) (phiBAn b hb)) := by
     rw [← hpow, map_pow]
     exact ((isAlgebraic_iff_isIntegral.mp halg).pow _).isAlgebraic
   exact phiB_transcendental hb halg2
 
-/-- **`u₀ ⟂ phiBRoot k b` — every Kummer layer, every `‖b‖ ≥ 4`, unconditionally.** -/
-theorem u0_phiBRoot_independence {b : ℂ} (hb : 4 ≤ ‖b‖) (k : ℕ) :
-    letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
-    letI : Algebra (RatFunc ℂ) (meroField annW) :=
-      (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+/-- **`u₀ ⟂ phiBRoot k b` — every Kummer layer, every `‖b‖ > 2+√2`, unconditionally.** -/
+theorem u0_phiBRoot_independence {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (k : ℕ) :
+    letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb)
+      (annWB_nonempty hb)
+    letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+      (ratfuncToMero (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb) (annWB_nonempty hb)
+        (annWB_infinite hb)).toAlgebra
     NoRelation (RatFunc ℂ)
-      (algebraMap (analyticSubring annW) (meroField annW) (phiBRootAn k b hb))
-      (algebraMap (analyticSubring annW) (meroField annW) (u0AnSub annW_subset_Ext)) := by
-  letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
-  letI : Algebra (RatFunc ℂ) (meroField annW) :=
-    (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
-  refine u0_window_independence_of_transcendental_engine (phiBRoot k b) (phiBRootAn k b hb) rfl
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b)) (phiBRootAn k b hb))
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b))
+        (u0AnSub annWB_subset_Ext)) := by
+  letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb)
+    (annWB_nonempty hb)
+  letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+    (ratfuncToMero (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb) (annWB_nonempty hb)
+      (annWB_infinite hb)).toAlgebra
+  refine u0_window_independence_of_transcendental_engine (isOpen_annWB b)
+    (isPreconnected_annWB hb) (annWB_nonempty hb) (annWB_infinite hb) annWB_subset_Ext
+    (phiBRoot k b) (phiBRootAn k b hb) rfl
     (phiBRoot_transcendental hb k) ?_
   intro P' j₀ hj₀ hnd hrel
   refine u0_windowed_no_relation_nondegenerate isOpen_ball
-    ((convex_ball (0 : ℂ) (21 / 20)).isPreconnected) U0PhiFourWindow.isPreconnected_annulus
-    (phiBRoot_analytic hb k) (z₁ := 1) ?_ ?_ P' hj₀ hnd isOpen_annW annW_nonempty
+    ((convex_ball (0 : ℂ) (rB b)).isPreconnected)
+    (isPreconnected_annulus_of_one_lt (one_lt_rB hb))
+    (phiBRoot_analytic hb k) (z₁ := 1) ?_ ?_ P' hj₀ hnd (isOpen_annWB b) (annWB_nonempty hb)
     (fun z hz => hz) hrel
-  · show (1 : ℂ) ∈ Metric.ball (0 : ℂ) (21 / 20)
+  · show (1 : ℂ) ∈ Metric.ball (0 : ℂ) (rB b)
     simp only [Metric.mem_ball, dist_zero_right, norm_one]
-    norm_num
+    exact one_lt_rB hb
   · simp
 
 end U0PhiKummerLayers
