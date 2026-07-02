@@ -8,8 +8,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
-| `u0_pui` | `GaloisForLFunctions.U0` | 294 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4317 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `u0_pui` | `GaloisForLFunctions.U0` | 295 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4318 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -544,6 +544,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `u0_phi_independence_of_towerData` | `GaloisForLFunctions.U0.U0TowerBridge` | `formal/GaloisForLFunctions/U0/U0TowerBridge.lean:21` | `u₀ ⟂ φ_b` from tower data.** The all-parameters U0 independence conclusion, consuming exactly the deep-tower certificate (per relation degree: an extension domain, the `2^k`-radic |
 | theorem | `tower_iterate_eq` | `GaloisForLFunctions.U0.U0TowerData` | `formal/GaloisForLFunctions/U0/U0TowerData.lean:21` | Iterate transport along the tower.** `f^[m](T v) = T(v^{2^m})` as soon as both endpoint moduli lie in the annulus: the intermediate moduli `‖v‖^{2^i}` are monotone in `i`, so every |
 | theorem | `radicand_welldef` | `GaloisForLFunctions.U0.U0TowerData` | `formal/GaloisForLFunctions/U0/U0TowerData.lean:52` | Radicand well-definedness.** Two tower hits of the same orbit agree after the matching dyadic powers: if `f^[j] z = T v` and `f^[j'] z = T v'` with `j ≤ j' ≤ k`, then `v'^{2^{k−j'} |
+| theorem | `norm_sub_ge_of_angle` | `GaloisForLFunctions.U0.U0TowerData` | `formal/GaloisForLFunctions/U0/U0TowerData.lean:102` | The slit-gap plane geometry.** A point whose angle from `c` is at least `θ₀` (encoded by the inner-product bound) stays at distance `‖c‖·sin θ₀` from `c`, regardless of modulus. Th |
 | theorem | `lens_starConvex` | `GaloisForLFunctions.U0.U0Transcendence` | `formal/GaloisForLFunctions/U0/U0Transcendence.lean:35` |  |
 | theorem | `lens_preconnected` | `GaloisForLFunctions.U0.U0Transcendence` | `formal/GaloisForLFunctions/U0/U0Transcendence.lean:98` |  |
 | theorem | `isConnected_Ext` | `GaloisForLFunctions.U0.U0Transcendence` | `formal/GaloisForLFunctions/U0/U0Transcendence.lean:115` |  |
@@ -859,6 +860,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `exists_tower_loop` | `GaloisForLFunctions.Bottcher.BottcherTowerData` | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:669` | The odd loop.** A depth-`k` lobe circle, at a radius dodging any countable set through the level fibration; the radicand collapses along it to the identity chart, so its `dlog`-per |
 | theorem | `bottcher_towerDataG` | `GaloisForLFunctions.Bottcher.BottcherTowerData` | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:773` | The tower data for the genuine Böttcher germ.** For every escape parameter, there is a far domain `U` carrying the Böttcher coordinate's germ, with per-depth extended domains, radi |
 | theorem | `bottcher_transcendental_of_escape` | `GaloisForLFunctions.Bottcher.BottcherTowerData` | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:953` | [W3 — single-coordinate transcendence, all escape parameters.]** For every `c` with `0 ∉ K_c` (equivalently `c ∉ M`), the inverse Böttcher coordinate's germ on a far domain is tran |
+| theorem | `bottcher_towerDataG_far` | `GaloisForLFunctions.Bottcher.BottcherTowerData` | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:988` | Tower data on an arbitrary far domain.** Beyond a `c`-dependent radius `Bmin`, EVERY open connected infinite `U` carries the Böttcher germ's full `towerdataG` package: the per-dept |
 | theorem | `isOpen_image_of_analytic_dne` | `GaloisForLFunctions.Bottcher.BottcherTowerScaffold` | `formal/GaloisForLFunctions/Bottcher/BottcherTowerScaffold.lean:18` | An analytic map with nonvanishing derivative is open (image version). |
 | theorem | `TowerSection.iterate_fe` | `GaloisForLFunctions.Bottcher.BottcherTowerScaffold` | `formal/GaloisForLFunctions/Bottcher/BottcherTowerScaffold.lean:41` | Iterated section functional equation**: as long as the dyadic powers of `w` stay in the annulus, `f^[m] (T w) = T (w^(2^m))`. |
 | theorem | `exp_lift_unique` | `GaloisForLFunctions.Bottcher.BottcherTowerScaffold` | `formal/GaloisForLFunctions/Bottcher/BottcherTowerScaffold.lean:62` | Unique log-lift into a width-`≤ 2π` argument window at fixed radius band. |

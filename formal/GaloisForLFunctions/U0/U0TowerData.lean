@@ -92,3 +92,28 @@ theorem radicand_welldef {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
   rw [harith]
 
 end U0TowerData
+
+namespace U0TowerData
+
+/-- **The slit-gap plane geometry.**  A point whose angle from `c` is at least `θ₀` (encoded by
+the inner-product bound) stays at distance `‖c‖·sin θ₀` from `c`, regardless of modulus.  This is
+the consumable core of the quantitative slit gap: combined with a `‖T v − v‖ ≤ 1` proximity
+clause on the anchor band, it yields `‖T v − c‖ ≥ ‖c‖·sin θ₀ − 1 > 1` for `‖c‖` large. -/
+theorem norm_sub_ge_of_angle {v c : ℂ} {θ₀ : ℝ}
+    (hang : (starRingEnd ℂ c * v).re ≤ Real.cos θ₀ * (‖c‖ * ‖v‖)) :
+    ‖c‖ ^ 2 * Real.sin θ₀ ^ 2 ≤ ‖v - c‖ ^ 2 := by
+  have hvc : ((starRingEnd ℂ c) * v).re = c.re * v.re + c.im * v.im := by
+    simp [Complex.mul_re]
+  have hexp : ‖v - c‖ ^ 2 = ‖v‖ ^ 2 + ‖c‖ ^ 2 - 2 * (c.re * v.re + c.im * v.im) := by
+    rw [Complex.sq_norm, Complex.sq_norm, Complex.sq_norm]
+    simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
+    ring
+  have hs2 : Real.sin θ₀ ^ 2 = 1 - Real.cos θ₀ ^ 2 := by
+    have := Real.sin_sq_add_cos_sq θ₀
+    linarith
+  rw [hvc] at hang
+  rw [hexp, hs2]
+  nlinarith [sq_nonneg (‖v‖ - Real.cos θ₀ * ‖c‖), norm_nonneg v, norm_nonneg c,
+    Real.neg_one_le_cos θ₀, Real.cos_le_one θ₀, hang, sq_nonneg (Real.cos θ₀)]
+
+end U0TowerData

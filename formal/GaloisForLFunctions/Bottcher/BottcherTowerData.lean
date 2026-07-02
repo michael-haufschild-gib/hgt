@@ -285,6 +285,8 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
       IsOpen Ext ∧ IsConnected Ext ∧
       S.T '' annulusSet rlo R₀ ⊆ Ext ∧
       (∀ z ∈ Ext, ∃ j : ℕ, j ≤ k ∧ (quadratic c)^[j] z ∈ S.T '' annulusSet rlo R₀) ∧
+      (∀ z ∈ Ext, z ∈ S.T '' annulusSet rlo R₀ ∨
+        greenFunctionDyn c z < 2 * greenFunctionDyn c 0) ∧
       AnalyticOnNhd ℂ SL (annulusSet ra rb) ∧
       (∀ v ∈ annulusSet ra rb, (quadratic c)^[k] (SL v) = S.T v) ∧
       (∀ v ∈ annulusSet ra rb, greenFunctionDyn c (SL v) = Real.log ‖v‖ / 2 ^ k) ∧
@@ -470,7 +472,51 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
             refine ⟨v, ?_, rfl⟩
             obtain ⟨h1, h2⟩ := hv
             exact ⟨lt_trans hra h1, lt_trans h2 (lt_trans hrbRW hRWR)⟩
-  refine ⟨Conn k, SL k, (hConnConn k).2, (hConnConn k).1, hP0Conn k, hreach k,
+  have hlogRWh : Real.log RW < 4 * greenFunctionDyn c 0 := hRW4h
+  have hlevels : ∀ n : ℕ, ∀ z ∈ Conn n, z ∈ P0 ∨
+      greenFunctionDyn c z < 2 * greenFunctionDyn c 0 := by
+    intro n
+    induction n with
+    | zero =>
+        intro z hz
+        exact Or.inl hz
+    | succ n ih =>
+        intro z hz
+        rw [hConnsucc n] at hz
+        rcases hz with hz | hz
+        · exact ih z hz
+        · right
+          rcases hz with hzσ | hzL
+          · obtain ⟨v, hv, rfl⟩ := hzσ
+            rw [(hσP (n+1)).2.1 v hv]
+            have h1 : Real.log ‖v‖ < Real.log RW := by
+              have h2 := (arcAnnulus_subset _ _ hrapos hraRW' hv).2
+              exact Real.log_lt_log (lt_trans hrapos
+                (arcAnnulus_subset _ _ hrapos hraRW' hv).1) h2
+            have h3 : (2:ℝ) ≤ 2 ^ (n+1) := by
+              calc (2:ℝ) = 2 ^ 1 := by norm_num
+                _ ≤ 2 ^ (n+1) := by
+                  apply pow_le_pow_right₀ (by norm_num)
+                  omega
+            have h4 : (0:ℝ) < Real.log ‖v‖ := by
+              have h5 := (arcAnnulus_subset _ _ hrapos hraRW' hv).1
+              exact Real.log_pos (lt_trans (by nlinarith : (1:ℝ) < ra) h5)
+            rw [div_lt_iff₀ (by positivity)]
+            nlinarith
+          · obtain ⟨v, hv, rfl⟩ := hzL
+            rw [(hSLP (n+1)).2.1 v hv]
+            have h1 : Real.log ‖v‖ < Real.log rb :=
+              Real.log_lt_log (lt_trans hrapos hv.1) hv.2
+            have h3 : (2:ℝ) ≤ 2 ^ (n+1) := by
+              calc (2:ℝ) = 2 ^ 1 := by norm_num
+                _ ≤ 2 ^ (n+1) := by
+                  apply pow_le_pow_right₀ (by norm_num)
+                  omega
+            have h4 : (0:ℝ) < Real.log ‖v‖ :=
+              Real.log_pos (lt_trans (by nlinarith : (1:ℝ) < ra) hv.1)
+            rw [div_lt_iff₀ (by positivity)]
+            nlinarith
+  refine ⟨Conn k, SL k, (hConnConn k).2, (hConnConn k).1, hP0Conn k, hreach k, hlevels k,
     (hSLP k).1, (hSLP k).2.2.2.2, (hSLP k).2.1, (hSLP k).2.2.2.1, ?_⟩
   intro v hv
   rcases Nat.eq_zero_or_pos k with hk0 | hkpos
@@ -885,7 +931,8 @@ theorem bottcher_towerDataG (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
   refine ⟨U, hUo, hUconn.isPreconnected, hUne, hUinf, hUesc, a₂, rfl, ?_⟩
   intro d
   set k : ℕ := d + 1 with hkdef
-  obtain ⟨Ext, SL, hExto, hExtc, hP0Ext, hreach, hSLan, hSLit, hSLlev, hSLdne, hSLExt⟩ :=
+  obtain ⟨Ext, SL, hExto, hExtc, hP0Ext, hreach, hlevels, hSLan, hSLit, hSLlev, hSLdne,
+    hSLExt⟩ :=
     exists_tower_ext S hrlo1 hh0 hlow hra hrb hrbRW hRWR hrb2h hraRW hRW4h k
   obtain ⟨F, hFan, hFne, hFtop, hFbr⟩ :=
     exists_tower_radicand S hrlo1 k hExto hreach
@@ -975,5 +1022,322 @@ theorem bottcher_transcendental_of_escape (c : ℂ) (hc : (0:ℂ) ∉ filledJuli
     exact h2
   obtain ⟨z, hz⟩ := hUne
   exact bottcherCoord_ne_zero c z ((Filter.eventually_principal.mp h3) z hz)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Tower data on an arbitrary far domain.**  Beyond a `c`-dependent radius `Bmin`, EVERY open
+connected infinite `U` carries the Böttcher germ's full `towerdataG` package: the per-depth
+extended domain is the old one glued with the unbounded far region `{Bmin < ‖z‖}`, where the
+radicand is the crude `φ^(2^k)`.  This frees the pair capstone to use one common far domain for
+both coordinates. -/
+theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
+    ∃ Bmin : ℝ, 1 < Bmin ∧
+    ∀ (U : Set ℂ), IsOpen U → IsPreconnected U → U.Nonempty → U.Infinite →
+      (∀ z ∈ U, Bmin < ‖z‖) →
+      ∃ a₂ : analyticSubring U,
+      (Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c)) = (a₂ : Filter.Germ (𝓟 U) ℂ) ∧
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (hUExt : U ⊆ Ext) (F : ℂ → ℂ) (aExt : analyticSubring Ext) (k : ℕ),
+        1 ≤ k ∧ d < 2 ^ k ∧
+        AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
+        (Filter.Germ.coeRingHom (𝓟 Ext) F) = (aExt : Filter.Germ (𝓟 Ext) ℂ) ∧
+        restrictAnalytic hUExt aExt = a₂ ^ (2 ^ k) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, γ θ ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv F (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1)) := by
+  classical
+  set h : ℝ := greenFunctionDyn c 0 with hhdef
+  have hh0 : 0 < h := by
+    rcases lt_or_eq_of_le (greenFunctionDyn_nonneg c 0) with h1 | h1
+    · exact h1
+    · exact absurd ((greenFunctionDyn_eq_zero_iff c 0).mp h1.symm) hc
+  obtain ⟨Ra, Rinj, hRa1, hRaG, hInj, hanchor⟩ := exists_tower_anchor c
+  -- the far cut, from the anchor and c alone; strict beyond every crude threshold
+  set Bmin : ℝ := max (max (‖c‖ + 3) (Real.exp (Real.log Ra + 2)))
+    (max (Real.exp (4 * h + 2)) 2) + 1 with hBmindef
+  have hBmin1 : (1:ℝ) < Bmin := by
+    have h1 : (2:ℝ) ≤ max (Real.exp (4 * h + 2)) 2 := le_max_right _ _
+    have h2 : max (Real.exp (4 * h + 2)) 2
+        ≤ max (max (‖c‖ + 3) (Real.exp (Real.log Ra + 2))) (max (Real.exp (4 * h + 2)) 2) :=
+      le_max_right _ _
+    rw [hBmindef]
+    linarith
+  have hBminc3 : ‖c‖ + 3 < Bmin := by
+    have h1 : ‖c‖ + 3 ≤ max (max (‖c‖ + 3) (Real.exp (Real.log Ra + 2)))
+        (max (Real.exp (4 * h + 2)) 2) := le_trans (le_max_left _ _) (le_max_left _ _)
+    rw [hBmindef]
+    linarith
+  have hBminRb : Real.exp (Real.log Ra + 2) < Bmin := by
+    have h1 : Real.exp (Real.log Ra + 2) ≤ max (max (‖c‖ + 3) (Real.exp (Real.log Ra + 2)))
+        (max (Real.exp (4 * h + 2)) 2) := le_trans (le_max_right _ _) (le_max_left _ _)
+    rw [hBmindef]
+    linarith
+  have hBmin4h : Real.exp (4 * h + 2) < Bmin := by
+    have h1 : Real.exp (4 * h + 2) ≤ max (max (‖c‖ + 3) (Real.exp (Real.log Ra + 2)))
+        (max (Real.exp (4 * h + 2)) 2) := le_trans (le_max_left _ _) (le_max_right _ _)
+    rw [hBmindef]
+    linarith
+  have hBminpos : (0:ℝ) < Bmin := by linarith
+  obtain ⟨rlo, R₀, hrlo1, hrloRb, hRbR₀, hrlosq, hMR₀, hlow, hhi, S, hfar⟩ :=
+    exists_tower_deep_of_anchor c (by positivity : (0:ℝ) < h / 2)
+      (max (Real.exp (4 * h + 2)) (Bmin * Real.exp 3)) hRa1 hRaG hanchor
+  set Rb : ℝ := Ra with hRbdef
+  have hlogR₀ : 4 * h + 2 < Real.log R₀ := by
+    have h0 : Real.exp (4 * h + 2) < R₀ :=
+      lt_of_le_of_lt (le_max_left _ _) hMR₀
+    have h1 : Real.log (Real.exp (4 * h + 2)) < Real.log R₀ :=
+      Real.log_lt_log (Real.exp_pos _) h0
+    rwa [Real.log_exp] at h1
+  have hBminR₀ : Bmin * Real.exp 3 < R₀ := lt_of_le_of_lt (le_max_right _ _) hMR₀
+  have hRbpos : (0:ℝ) < Rb := by
+    rw [hRbdef]
+    linarith
+  -- points beyond Bmin have Green value above log Rb, and are crude-escaping
+  have hGfar : ∀ z : ℂ, Bmin < ‖z‖ → Real.log Rb < greenFunctionDyn c z := by
+    intro z hz
+    apply green_far_gt c (Real.log Rb) z
+    apply max_lt
+    · exact lt_trans hBminc3 hz
+    · exact lt_trans hBminRb hz
+  have hEscfar : ∀ z : ℂ, Bmin < ‖z‖ → z ∈ escapeOpen c := by
+    intro z hz
+    show max 2 ‖c‖ < ‖z‖
+    apply max_lt
+    · have h1 : (2:ℝ) < Bmin := by
+        have h2 : (2:ℝ) ≤ max (max (‖c‖ + 3) (Real.exp (Real.log Ra + 2)))
+            (max (Real.exp (4 * h + 2)) 2) := le_trans (le_max_right _ _) (le_max_right _ _)
+        rw [hBmindef]
+        linarith
+      linarith
+    · linarith [hBminc3, hz]
+  set Afar : Set ℂ := {z : ℂ | Bmin < ‖z‖} with hAfardef
+  have hAfaro : IsOpen Afar := isOpen_lt continuous_const continuous_norm
+  have hAfarconn : IsConnected Afar := isConnected_norm_gt (by linarith : (0:ℝ) < Bmin)
+  have hφanA : AnalyticOnNhd ℂ (bottcherCoord c) Afar := fun z hz =>
+    (differentiableOn_bottcherCoord c).analyticOnNhd (isOpen_escapeOpen c) z (hEscfar z hz)
+  refine ⟨Bmin, hBmin1, ?_⟩
+  intro U hUo hUc hUne hUinf hUfar
+  have hUA : U ⊆ Afar := fun z hz => hUfar z hz
+  have hφanU : AnalyticOnNhd ℂ (bottcherCoord c) U := fun z hz => hφanA z (hUA hz)
+  set a₂ : analyticSubring U :=
+    ⟨Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c), bottcherCoord c, hφanU, rfl⟩ with ha₂def
+  refine ⟨a₂, rfl, ?_⟩
+  intro d
+  -- the working radii, exactly as in `bottcher_towerDataG`
+  have hlrbound : Real.log rlo < 3 * h / 2 := by
+    rw [hhdef] at hhi ⊢
+    linarith
+  set lr : ℝ := Real.log rlo with hlrdef
+  have hlrh : h < lr := hlow
+  set ra : ℝ := Real.exp ((3 * lr + 2 * h) / 4) with hradef
+  set rb : ℝ := Real.exp ((lr + 2 * h) / 2) with hrbdef
+  set RW : ℝ := Real.exp (7 * h / 2) with hRWdef
+  have hrloexp : rlo = Real.exp lr := (Real.exp_log (by linarith)).symm
+  have hR₀exp : R₀ = Real.exp (Real.log R₀) := (Real.exp_log (by
+    nlinarith [Real.exp_pos (4 * h + 2), hMR₀])).symm
+  have hra : rlo < ra := by
+    rw [hradef, hrloexp]
+    apply Real.exp_lt_exp.mpr
+    linarith
+  have hrb : ra < rb := by
+    rw [hradef, hrbdef]
+    apply Real.exp_lt_exp.mpr
+    linarith
+  have hrbRW : rb < RW := by
+    rw [hrbdef, hRWdef]
+    apply Real.exp_lt_exp.mpr
+    linarith
+  have hRWR : RW < R₀ := by
+    rw [hRWdef, hR₀exp]
+    apply Real.exp_lt_exp.mpr
+    linarith
+  have hrb2h : Real.log rb < 2 * h := by
+    rw [hrbdef, Real.log_exp]
+    linarith
+  have hraRW : ra ^ 2 < RW := by
+    rw [hradef, hRWdef, ← Real.exp_nat_mul]
+    apply Real.exp_lt_exp.mpr
+    push_cast
+    linarith
+  have hRW4h : Real.log RW < 4 * h := by
+    rw [hRWdef, Real.log_exp]
+    linarith
+  set k : ℕ := d + 1 with hkdef
+  obtain ⟨Ext, SL, hExto, hExtc, hP0Ext, hreach, hlevels, hSLan, hSLit, hSLlev, hSLdne,
+    hSLExt⟩ :=
+    exists_tower_ext S hrlo1 hh0 hlow hra hrb hrbRW hRWR hrb2h hraRW hRW4h k
+  obtain ⟨F, hFan, hFne, hFtop, hFbr⟩ :=
+    exists_tower_radicand S hrlo1 k hExto hreach
+  -- the far-glued radicand
+  set F' : ℂ → ℂ := fun z => if Bmin < ‖z‖ then bottcherCoord c z ^ (2 ^ k) else F z
+    with hF'def
+  -- agreement on the overlap: far Ext-points are far tower-image points
+  have hBmin2h : Real.exp (2 * h + 2) < Bmin := by
+    refine lt_of_le_of_lt ?_ hBmin4h
+    apply Real.exp_le_exp.mpr
+    linarith
+  have hoverlap : ∀ z ∈ Ext, Bmin < ‖z‖ → F z = bottcherCoord c z ^ (2 ^ k) := by
+    intro z hz hzfar
+    have hG2h : 2 * h < greenFunctionDyn c z := by
+      apply green_far_gt c (2 * h) z
+      apply max_lt
+      · exact lt_trans hBminc3 hzfar
+      · exact lt_trans hBmin2h hzfar
+    have hzP0 : z ∈ S.T '' annulusSet rlo R₀ := by
+      rcases hlevels z hz with h1 | h1
+      · exact h1
+      · linarith
+    have h1 := hFtop z hzP0
+    obtain ⟨w, hw, rfl⟩ := hzP0
+    have h2 : S.inv (S.T w) = w := S.inv_left hw
+    have hwfar : Rb < ‖w‖ := by
+      have h3 : Real.log Rb < Real.log ‖w‖ := by
+        rw [← S.level w hw]
+        exact hGfar _ hzfar
+      have h4 : (0:ℝ) < ‖w‖ := lt_trans (by linarith) hw.1
+      calc Rb = Real.exp (Real.log Rb) := (Real.exp_log (by nlinarith)).symm
+        _ < Real.exp (Real.log ‖w‖) := Real.exp_lt_exp.mpr h3
+        _ = ‖w‖ := Real.exp_log h4
+    have h3 : bottcherCoord c (S.T w) = w := (hfar w hwfar hw.2).1
+    rw [h1, h2, h3]
+  -- the far-glued extended domain
+  set Ext' : Set ℂ := Ext ∪ Afar with hExt'def
+  have hExt'o : IsOpen Ext' := hExto.union hAfaro
+  have hover : (Ext ∩ Afar).Nonempty := by
+    set w₀ : ℂ := ((Bmin * Real.exp 2 : ℝ) : ℂ) with hw₀def
+    have hnw₀ : ‖w₀‖ = Bmin * Real.exp 2 := by
+      rw [hw₀def, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+    have hexp2 : (1:ℝ) < Real.exp 2 := by
+      calc (1:ℝ) = Real.exp 0 := Real.exp_zero.symm
+        _ < Real.exp 2 := Real.exp_lt_exp.mpr (by norm_num)
+    have hRaw₀ : Ra < ‖w₀‖ := by
+      rw [hnw₀]
+      have h1 : Ra = Real.exp (Real.log Ra) := (Real.exp_log (by linarith)).symm
+      have h2 : Real.exp (Real.log Ra) < Real.exp (Real.log Ra + 2) :=
+        Real.exp_lt_exp.mpr (by linarith)
+      have h4 : Ra < Bmin := by
+        rw [h1]
+        linarith [hBminRb]
+      calc Ra < Bmin := h4
+        _ = Bmin * 1 := (mul_one _).symm
+        _ < Bmin * Real.exp 2 := by
+            exact mul_lt_mul_of_pos_left hexp2 hBminpos
+    have hw₀R₀ : ‖w₀‖ < R₀ := by
+      rw [hnw₀]
+      have h1 : Real.exp 2 < Real.exp 3 := Real.exp_lt_exp.mpr (by norm_num)
+      calc Bmin * Real.exp 2 < Bmin * Real.exp 3 :=
+            mul_lt_mul_of_pos_left h1 hBminpos
+        _ < R₀ := hBminR₀
+    have hw₀ann : w₀ ∈ annulusSet rlo R₀ := ⟨lt_of_le_of_lt hrloRb hRaw₀, hw₀R₀⟩
+    refine ⟨S.T w₀, hP0Ext ⟨w₀, hw₀ann, rfl⟩, ?_⟩
+    show Bmin < ‖S.T w₀‖
+    obtain ⟨hφid, hesc, hRinj⟩ := hfar w₀ hRaw₀ hw₀R₀
+    have hcrude1 : ‖c‖ ≤ ‖S.T w₀‖ := by
+      have h1 : max 2 ‖c‖ < ‖S.T w₀‖ := hesc
+      exact le_of_lt (lt_of_le_of_lt (le_max_right _ _) h1)
+    have hcrude2 : (2:ℝ) < ‖S.T w₀‖ :=
+      lt_of_le_of_lt (le_max_left _ _) hesc
+    have hGle := greenFunctionDyn_le_crude hcrude1 hcrude2
+    have hGval : greenFunctionDyn c (S.T w₀) = Real.log ‖w₀‖ := S.level w₀ hw₀ann
+    have hlogw₀ : Real.log ‖w₀‖ = Real.log Bmin + 2 := by
+      rw [hnw₀, Real.log_mul (by positivity) (by positivity), Real.log_exp]
+    have h4 : Real.log Bmin + 1 ≤ Real.log ‖S.T w₀‖ := by
+      rw [hGval, hlogw₀] at hGle
+      linarith
+    have h5 : Bmin < ‖S.T w₀‖ := by
+      calc Bmin = Real.exp (Real.log Bmin) := (Real.exp_log hBminpos).symm
+        _ < Real.exp (Real.log Bmin + 1) := Real.exp_lt_exp.mpr (by linarith)
+        _ ≤ Real.exp (Real.log ‖S.T w₀‖) := Real.exp_le_exp.mpr h4
+        _ = ‖S.T w₀‖ := Real.exp_log (by linarith)
+    exact h5
+  have hExt'c : IsConnected Ext' := by
+    obtain ⟨z, hz1, hz2⟩ := hover
+    exact IsConnected.union ⟨z, hz1, hz2⟩ hExtc hAfarconn
+  have hF'an : AnalyticOnNhd ℂ F' Ext' := by
+    intro z hz
+    rcases hz with hzE | hzA
+    · have hev : F' =ᶠ[nhds z] F := by
+        filter_upwards [hExto.mem_nhds hzE] with z' hz'
+        show (if Bmin < ‖z'‖ then bottcherCoord c z' ^ (2 ^ k) else F z') = F z'
+        by_cases hf : Bmin < ‖z'‖
+        · rw [if_pos hf, ← hoverlap z' hz' hf]
+        · rw [if_neg hf]
+      exact (hFan z hzE).congr hev.symm
+    · have hev : F' =ᶠ[nhds z] (fun z' => bottcherCoord c z' ^ (2 ^ k)) := by
+        filter_upwards [hAfaro.mem_nhds hzA] with z' hz'
+        exact if_pos hz'
+      exact ((hφanA z hzA).pow _).congr hev.symm
+  have hF'ne : ∀ z ∈ Ext', F' z ≠ 0 := by
+    intro z hz
+    show (if Bmin < ‖z‖ then bottcherCoord c z ^ (2 ^ k) else F z) ≠ 0
+    by_cases hf : Bmin < ‖z‖
+    · rw [if_pos hf]
+      exact pow_ne_zero _ (bottcherCoord_ne_zero c z)
+    · rw [if_neg hf]
+      rcases hz with hzE | hzA
+      · exact hFne z hzE
+      · exact absurd hzA hf
+  set aExt : analyticSubring Ext' :=
+    ⟨Filter.Germ.coeRingHom (𝓟 Ext') F', F', hF'an, rfl⟩ with haExtdef
+  have hUExt' : U ⊆ Ext' := fun z hz => Or.inr (hUA hz)
+  have hEqOn' : Set.EqOn F' (fun z => bottcherCoord c z ^ (2 ^ k)) U := by
+    intro z hz
+    show (if Bmin < ‖z‖ then bottcherCoord c z ^ (2 ^ k) else F z) = _
+    rw [if_pos (hUfar z hz)]
+  refine ⟨Ext', hExt'o, hExt'c, hUinf.mono hUExt', hUExt', F', aExt, k, ?_, ?_, hF'an, hF'ne,
+    rfl, ?_, ?_⟩
+  · omega
+  · calc d < 2 ^ d := Nat.lt_two_pow_self
+      _ ≤ 2 ^ k := Nat.pow_le_pow_right (by norm_num) (by omega)
+  · apply Subtype.ext
+    have hL : ((restrictAnalytic hUExt' aExt : analyticSubring U) : Filter.Germ (𝓟 U) ℂ)
+        = Filter.Germ.coeRingHom (𝓟 U) F' := by
+      show ((aExt : Filter.Germ (𝓟 Ext') ℂ).compTendsto id
+        (Filter.tendsto_principal_principal.mpr (fun x hx => hUExt' hx))) = _
+      have h1 : (aExt : Filter.Germ (𝓟 Ext') ℂ)
+          = Filter.Germ.coeRingHom (𝓟 Ext') F' := rfl
+      rw [h1]
+      show ((F' : Filter.Germ (𝓟 Ext') ℂ).compTendsto id _) = (F' : Filter.Germ (𝓟 U) ℂ)
+      rw [Filter.Germ.coe_compTendsto]
+      rfl
+    have hR : (((a₂ ^ (2 ^ k) : analyticSubring U)) : Filter.Germ (𝓟 U) ℂ)
+        = Filter.Germ.coeRingHom (𝓟 U) (fun z => bottcherCoord c z ^ (2 ^ k)) := by
+      have h1 : (((a₂ ^ (2 ^ k) : analyticSubring U)) : Filter.Germ (𝓟 U) ℂ)
+          = ((a₂ : Filter.Germ (𝓟 U) ℂ)) ^ (2 ^ k) := by
+        push_cast
+        rfl
+      rw [h1]
+      have h2 : (a₂ : Filter.Germ (𝓟 U) ℂ)
+          = Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c) := rfl
+      rw [h2, ← map_pow]
+      rfl
+    rw [hL, hR]
+    have hev : (F' : ℂ → ℂ) =ᶠ[𝓟 U] (fun z => bottcherCoord c z ^ (2 ^ k)) :=
+      Filter.eventually_principal.mpr hEqOn'
+    exact Filter.Germ.coe_eq.mpr hev
+  · intro T hT
+    obtain ⟨γ, γ', hγExt, hγc, hγ'c, hγd, hγcl, hγT, hγwind⟩ :=
+      exists_tower_loop S hrlo1 k hra hrb (lt_trans hrbRW hRWR) hSLan hSLit hSLlev
+        hSLExt hFan hFbr T hT
+    refine ⟨γ, γ', 0, fun θ => Or.inl (hγExt θ), hγc, hγ'c, hγd, hγcl, hγT, ?_⟩
+    have hcongr : ∀ θ : ℝ, logDeriv F' (γ θ) * γ' θ = logDeriv F (γ θ) * γ' θ := by
+      intro θ
+      congr 1
+      apply logDeriv_congr_of_eventuallyEq
+      filter_upwards [hExto.mem_nhds (hγExt θ)] with z' hz'
+      show (if Bmin < ‖z'‖ then bottcherCoord c z' ^ (2 ^ k) else F z') = F z'
+      by_cases hf : Bmin < ‖z'‖
+      · rw [if_pos hf, ← hoverlap z' hz' hf]
+      · rw [if_neg hf]
+    rw [intervalIntegral.integral_congr (fun θ _ => hcongr θ)]
+    exact hγwind
 
 end Bottcher
