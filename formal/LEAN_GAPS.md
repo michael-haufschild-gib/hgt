@@ -184,6 +184,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:379` | `exists_fullBottcherBranch_of_primitive`; the only remaining input is a *geometric* ball-chain from |
 | `formal/GaloisForLFunctions/Bottcher/GreenSuperlevel.lean:10` | component missing the far field would be bounded; the maximum of `G_c` over its closure is |
 | `formal/GaloisForLFunctions/Bottcher/GreenUnique.lean:12` | basin is preconnected (`K_c` full), the one remaining topological input. |
+| `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:10` | hole/W-approach clause — the remaining open-math content.  Axiom-clean. |
+| `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:111` | outside `K_{c₂}`, with a `K_{c₂}`-free ball around it.  The sole missing OP4 clause is that |
 | `formal/GaloisForLFunctions/Bottcher/IndexEstimate.lean:56` | bulk strictly dominates. Discharging `hG`/`hrep` for an actual relation is the remaining dynamical wiring; |
 | `formal/GaloisForLFunctions/Bottcher/IndexFormula.lean:8` | the spectrum **algebraically** — flagged in the tower's status as the missing piece for a *Zdunik-free* |
 | `formal/GaloisForLFunctions/Bottcher/IndexResonance.lean:178` | residue identity forbids it, with no ergodic input. The remaining work to discharge an actual relation is |
@@ -289,8 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:969` | This is the first non-opaque form of the remaining third-derivative excess obligation: it turns the |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1013` | This packages the current remaining analytic task in the sharp form: the caller supplies a |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1102` | containment automatic.  The remaining local input is only the scaled derivative-variation estimate, |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1315` | The base fixed-tail second-derivative contribution is discharged internally.  The remaining local |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1634` | `K = 1/2`, `μ = 1/4`, and scaled radius `4‖α-z‖`; the only remaining local input is the |
 
 ## Historical Status Logs
 

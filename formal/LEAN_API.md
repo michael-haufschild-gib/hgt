@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4434 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4442 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -2787,6 +2787,14 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `exists_differentiableOn_exp_eq` | `GaloisForLFunctions.Bottcher.HolomorphicBranch` | `formal/GaloisForLFunctions/Bottcher/HolomorphicBranch.lean:27` | Holomorphic logarithm on a simply connected domain.** A holomorphic non-vanishing `f` on an open simply connected `U` has a holomorphic branch of `log f`: some holomorphic `g` with |
 | theorem | `exists_differentiableOn_pow_eq` | `GaloisForLFunctions.Bottcher.HolomorphicBranch` | `formal/GaloisForLFunctions/Bottcher/HolomorphicBranch.lean:55` | Holomorphic `n`-th root on a simply connected domain.** A holomorphic non-vanishing `f` on an open simply connected `U` has a holomorphic `n`-th root: some holomorphic `g` with `g  |
 | theorem | `differentiableOn_of_continuousOn_lift` | `GaloisForLFunctions.Bottcher.HolomorphicBranch` | `formal/GaloisForLFunctions/Bottcher/HolomorphicBranch.lean:72` | Holomorphic lift through a holomorphic covering.** If `μ` is a holomorphic local biholomorphism (`HasStrictDerivAt μ (μ' w) w`, `μ' w ≠ 0` everywhere — the analytic shape of a holo |
+| theorem | `tipHeight_nonneg` | `GaloisForLFunctions.Bottcher.ImaginaryAxisTip` | `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:21` |  |
+| theorem | `imag_mem_filledJulia_iff` | `GaloisForLFunctions.Bottcher.ImaginaryAxisTip` | `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:28` | The imaginary slice of the filled Julia set**: for real `c ∈ [−2, 1/4]`, `it ∈ K_c ↔ |t| ≤ t_c` — one quadratic step lands on the real axis at `c − t²`. |
+| theorem | `imagTip_mem_filledJulia` | `GaloisForLFunctions.Bottcher.ImaginaryAxisTip` | `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:53` | The tip lies in the filled Julia set. |
+| theorem | `imagTip_mem_frontier` | `GaloisForLFunctions.Bottcher.ImaginaryAxisTip` | `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:59` | The tip is a Julia point**: `imagTip c ∈ ∂K_c` — imaginary points just above it escape. |
+| theorem | `betaFixed_add_lt` | `GaloisForLFunctions.Bottcher.ImaginaryAxisTip` | `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:81` | Tip-height monotonicity on `(−2, 0]`**: `β(c)+c = 1 − (√(1−4c)−1)²/4` is strictly increasing for `c ≤ 0` (where `√(1−4c) ≥ 1`). This FAILS on `(0, 1/4]` — the height peaks at `c =  |
+| theorem | `tipHeight_lt` | `GaloisForLFunctions.Bottcher.ImaginaryAxisTip` | `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:94` |  |
+| theorem | `imagTip_notMem_filledJulia_of_lt` | `GaloisForLFunctions.Bottcher.ImaginaryAxisTip` | `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:102` | Tip escape**: for a real pair `c₂ < c₁ ≤ 0` (both `> −2` not needed here), the tip of `K_{c₁}` lies outside `K_{c₂}`. |
+| theorem | `exists_real_pair_tip` | `GaloisForLFunctions.Bottcher.ImaginaryAxisTip` | `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:113` | The real-pair tip package (OP4, all but the hole clause)**: for a distinct real pair `−2 ≤ c₂ < c₁ ≤ 0`, the explicit point `imagTip c₁ = i·√(β₁+c₁)` is a Julia point of `K_{c₁}` o |
 | theorem | `norm_index_le` | `GaloisForLFunctions.Bottcher.IndexEstimate` | `formal/GaloisForLFunctions/Bottcher/IndexEstimate.lean:22` | The fixed-point index is bounded by the reverse-triangle estimate.** For `‖λ‖ > 1`, `‖(λ - 1)⁻¹‖ ≤ (‖λ‖ - 1)⁻¹` (since `‖λ - 1‖ ≥ ‖λ‖ - 1 > 0`). |
 | theorem | `prod_multiplier_at_fixed` | `GaloisForLFunctions.Bottcher.IndexEstimate` | `formal/GaloisForLFunctions/Bottcher/IndexEstimate.lean:30` | The period-`p` multiplier at a **fixed** point `z` of `f_c` is `(2z)^p`: the orbit is constant `z`, so `∏_{k<p} 2·f_c^[k] z = ∏_{k<p} 2z = (2z)^p`. |
 | theorem | `norm_index_at_fixed_le` | `GaloisForLFunctions.Bottcher.IndexEstimate` | `formal/GaloisForLFunctions/Bottcher/IndexEstimate.lean:40` | Geometric decay of a repelling fixed point's index.** If `z` is a fixed point of `f_c` with `‖2z‖^p > 1` (repelling), its index as a fixed point of `f_c^[p]` is bounded by `(‖2z‖^p |
