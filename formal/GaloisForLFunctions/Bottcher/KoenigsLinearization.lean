@@ -9,6 +9,7 @@ recursion, and the geometric orbit-drift bound `‖f^[k](β+v) − β‖ ≤ 2�
 error control — the inputs for the Cauchy telescope.  Route R1 of the dendrite-tip lane.
 -/
 import GaloisForLFunctions.Bottcher.GreenFunction
+import Mathlib.Analysis.Complex.LocallyUniformLimit
 
 open Complex Set Metric Finset
 
@@ -601,5 +602,94 @@ theorem koenigsFun_semiconj {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ 
       = fun m => quadratic c (koenigsApprox c β m w) := funext hshift
   rw [h3] at hL
   exact tendsto_nhds_unique hL hR
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The linearizer is analytic** on the working disk: locally uniform limit of entire maps. -/
+theorem koenigsFun_analyticOnNhd {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+    AnalyticOnNhd ℂ (koenigsFun c β) (Metric.ball (0:ℂ) (1/32)) := by
+  have huniform : TendstoUniformlyOn (fun n => koenigsApprox c β n) (koenigsFun c β)
+      Filter.atTop (Metric.ball (0:ℂ) (1/32)) := by
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    -- uniform tail: dist ≤ (1/32)²·(1/2)^n → 0
+    have htail : Filter.Tendsto (fun n : ℕ => ((1:ℝ)/32) ^ 2 * (1/2) ^ n)
+        Filter.atTop (nhds 0) := by
+      have h1 : Filter.Tendsto (fun n : ℕ => ((1:ℝ)/2) ^ n) Filter.atTop (nhds 0) :=
+        tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)
+      have h2 := h1.const_mul (((1:ℝ)/32) ^ 2)
+      simpa using h2
+    have hev : ∀ᶠ n in Filter.atTop, ((1:ℝ)/32) ^ 2 * (1/2) ^ n < ε := by
+      filter_upwards [htail.eventually_lt_const hε] with n hn
+      exact hn
+    filter_upwards [hev] with n hn w hw
+    have hw32 : ‖w‖ ≤ 1 / 32 := by
+      rw [Metric.mem_ball, dist_zero_right] at hw
+      linarith
+    have h3 := koenigsFun_dist_approx hβ hlam2 hw32 n
+    have h4 : ‖w‖ ^ 2 / 2 * (1/2) ^ n / (1 - 1/2) = ‖w‖ ^ 2 * (1/2) ^ n := by
+      ring_nf
+    rw [h4] at h3
+    have h5 : ‖w‖ ^ 2 * (1/2) ^ n ≤ ((1:ℝ)/32) ^ 2 * (1/2) ^ n := by
+      apply mul_le_mul_of_nonneg_right _ (by positivity)
+      have := norm_nonneg w
+      nlinarith
+    calc dist (koenigsFun c β w) (koenigsApprox c β n w)
+        = dist (koenigsApprox c β n w) (koenigsFun c β w) := dist_comm _ _
+      _ ≤ ‖w‖ ^ 2 * (1/2) ^ n := h3
+      _ ≤ ((1:ℝ)/32) ^ 2 * (1/2) ^ n := h5
+      _ < ε := hn
+  have hdiff : DifferentiableOn ℂ (koenigsFun c β) (Metric.ball (0:ℂ) (1/32)) := by
+    apply TendstoLocallyUniformlyOn.differentiableOn
+      (huniform.tendstoLocallyUniformlyOn) ?_ Metric.isOpen_ball
+    filter_upwards with n
+    exact (koenigsApprox_differentiable c β n).differentiableOn
+  intro z hz
+  exact (hdiff.analyticAt (Metric.isOpen_ball.mem_nhds hz))
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **λ-self-similarity of the Julia pullback**: through the linearizer, membership of the filled
+Julia set is invariant under multiplication by the multiplier — the formal germ of the
+self-similar cone structure of `K` at the repelling fixed point. -/
+theorem koenigs_pullback_invariant {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖)
+    {w : ℂ} (hw : ‖w‖ ≤ 1 / 32) (hw2 : ‖2 * β * w‖ ≤ 1 / 32) :
+    koenigsFun c β (2 * β * w) ∈ filledJulia c ↔ koenigsFun c β w ∈ filledJulia c := by
+  rw [koenigsFun_semiconj hβ hlam2 hw hw2]
+  exact (mem_filledJulia_iff_quadratic_mem (c := c) (z := koenigsFun c β w)).symm
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The linearizer is tangent to the identity**: `ψ'(0) = 1`, derivative-free from the
+quadratic normalization bound. -/
+theorem koenigsFun_hasDerivAt_zero {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+    HasDerivAt (koenigsFun c β) 1 0 := by
+  rw [hasDerivAt_iff_isLittleO]
+  rw [Asymptotics.isLittleO_iff]
+  intro ε hε
+  have hball : Metric.ball (0:ℂ) (min ε (1/32)) ∈ nhds (0:ℂ) :=
+    Metric.ball_mem_nhds 0 (lt_min hε (by norm_num))
+  filter_upwards [hball] with w hw
+  rw [Metric.mem_ball, dist_zero_right] at hw
+  have hw32 : ‖w‖ ≤ 1 / 32 := le_of_lt (lt_of_lt_of_le hw (min_le_right _ _))
+  have hwε : ‖w‖ ≤ ε := le_of_lt (lt_of_lt_of_le hw (min_le_left _ _))
+  have h1 := koenigsFun_normalization hβ hlam2 hw32
+  have h2 : koenigsFun c β w - koenigsFun c β 0 - (w - 0) • (1:ℂ)
+      = koenigsFun c β w - (β + w) := by
+    rw [koenigsFun_zero hβ]
+    simp
+    ring
+  rw [h2]
+  calc ‖koenigsFun c β w - (β + w)‖ ≤ ‖w‖ ^ 2 := h1
+    _ = ‖w‖ * ‖w‖ := sq ‖w‖
+    _ ≤ ε * ‖w - 0‖ := by
+        rw [sub_zero]
+        apply mul_le_mul_of_nonneg_right hwε (norm_nonneg w)
 
 end Bottcher
