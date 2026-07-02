@@ -311,3 +311,142 @@ theorem u0_not_rational_in_phiFour (A B : Polynomial (Polynomial ℂ))
     simp only [eval₂_sub, eval₂_mul, eval₂_C, eval₂_X, coe_eval₂RingHom]
     rw [hrel z hz]
     ring
+
+
+/-- Summability of the Böttcher log tail on the far window. -/
+theorem summable_term {w : ℂ} (hw : w ∈ farW) :
+    Summable (fun k => bottcherLogTerm 4 w k) := by
+  apply Summable.of_norm
+  apply Summable.of_nonneg_of_le (fun k => norm_nonneg _) (fun k => norm_term_le hw k)
+  have h := summable_geometric_of_lt_one (r := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
+  exact (h.mul_left (1 / 2)).congr fun k => by ring
+
+/-- **The Böttcher functional equation on the far window** — branch-free at the `exp` level:
+`φ(z² + 4) = φ(z)²` for every `‖z‖ > 289/100`, well below the crude `‖z‖ > 4` regime. -/
+theorem bottcherCoord_quadratic_farW {z : ℂ} (hz : z ∈ farW) :
+    bottcherCoord 4 (quadratic 4 z) = (bottcherCoord 4 z) ^ 2 := by
+  have hz0 : z ≠ 0 := farW_ne_zero hz
+  have hz2 : (289 / 100 : ℝ) < ‖z‖ := hz
+  have hzsq : z ^ 2 + 4 ≠ 0 := by
+    intro h0
+    have h1 : ‖z ^ 2‖ = ‖(-4 : ℂ)‖ := by
+      rw [show z ^ 2 = -4 from by linear_combination h0]
+    rw [norm_pow] at h1
+    simp only [norm_neg] at h1
+    have h4 : ‖(4 : ℂ)‖ = 4 := by
+      rw [show (4 : ℂ) = ((4 : ℝ) : ℂ) from by norm_num, Complex.norm_real]
+      norm_num
+    nlinarith [h1, h4.symm ▸ h1]
+  have hratio : (1 : ℂ) + 4 / z ^ 2 ≠ 0 := by
+    intro h0
+    have h1 : z ^ 2 + 4 = 0 := by
+      field_simp at h0
+      linear_combination h0
+    exact hzsq h1
+  -- the tail shift
+  have hshift : ∀ k, bottcherLogTerm 4 (quadratic 4 z) k = 2 * bottcherLogTerm 4 z (k + 1) := by
+    intro k
+    unfold bottcherLogTerm
+    have hiter : (quadratic 4)^[k] (quadratic 4 z) = (quadratic 4)^[k + 1] z := by
+      rw [Function.iterate_succ_apply]
+    rw [hiter]
+    have h2 : ((2 : ℂ) ^ (k + 1 + 1))⁻¹ * 2 = ((2 : ℂ) ^ (k + 1))⁻¹ := by
+      rw [pow_succ]
+      field_simp
+    rw [← h2]
+    ring
+  have hsum : ∑' k, bottcherLogTerm 4 (quadratic 4 z) k
+      = 2 * (∑' k, bottcherLogTerm 4 z k) - 2 * bottcherLogTerm 4 z 0 := by
+    have hsummable := summable_term hz
+    have h1 : ∑' k, bottcherLogTerm 4 (quadratic 4 z) k
+        = ∑' k, 2 * bottcherLogTerm 4 z (k + 1) := by
+      exact tsum_congr hshift
+    rw [h1, tsum_mul_left]
+    have h2 : ∑' k, bottcherLogTerm 4 z (k + 1)
+        = (∑' k, bottcherLogTerm 4 z k) - bottcherLogTerm 4 z 0 := by
+      have := hsummable.tsum_eq_zero_add
+      linear_combination -this
+    rw [h2]
+    ring
+  -- assemble at the exp level
+  unfold bottcherCoord bottcherLog
+  rw [hsum]
+  have hterm0 : bottcherLogTerm 4 z 0 = (2 : ℂ)⁻¹ * Complex.log (1 + 4 / z ^ 2) := by
+    unfold bottcherLogTerm
+    simp
+  rw [hterm0]
+  have hqz : quadratic 4 z = z ^ 2 + 4 := rfl
+  have hδ : Complex.exp (Complex.log (z ^ 2 + 4) - Complex.log (1 + 4 / z ^ 2)
+      - 2 * Complex.log z) = 1 := by
+    rw [sub_sub, Complex.exp_sub, Complex.exp_add, Complex.exp_log hzsq,
+      Complex.exp_log hratio]
+    rw [show (2 : ℂ) * Complex.log z = Complex.log z + Complex.log z from by ring,
+      Complex.exp_add, Complex.exp_log hz0]
+    rw [div_eq_one_iff_eq (by
+      intro h0
+      rcases mul_eq_zero.mp h0 with h1 | h1
+      · exact hratio h1
+      · exact hz0 (by rcases mul_eq_zero.mp h1 with h2 | h2 <;> exact h2))]
+    field_simp
+  calc Complex.exp (Complex.log (quadratic 4 z)
+        + (2 * (∑' k, bottcherLogTerm 4 z k) - 2 * ((2 : ℂ)⁻¹
+            * Complex.log (1 + 4 / z ^ 2))))
+      = Complex.exp ((2 : ℂ) * (Complex.log z + ∑' k, bottcherLogTerm 4 z k)
+          + (Complex.log (z ^ 2 + 4) - Complex.log (1 + 4 / z ^ 2)
+            - 2 * Complex.log z)) := by
+        rw [hqz]
+        congr 1
+        ring
+    _ = Complex.exp ((2 : ℂ) * (Complex.log z + ∑' k, bottcherLogTerm 4 z k))
+          * Complex.exp (Complex.log (z ^ 2 + 4) - Complex.log (1 + 4 / z ^ 2)
+            - 2 * Complex.log z) := Complex.exp_add _ _
+    _ = Complex.exp ((2 : ℂ) * (Complex.log z + ∑' k, bottcherLogTerm 4 z k)) := by
+        rw [hδ, mul_one]
+    _ = Complex.exp (Complex.log z + ∑' k, bottcherLogTerm 4 z k) ^ 2 := by
+        rw [pow_two, ← Complex.exp_add]
+        congr 1
+        ring
+
+
+
+/-- **Escape growth on the far window**: each quadratic step multiplies the modulus by `3/2`. -/
+theorem farW_growth (m : ℕ) {w : ℂ} (hw : w ∈ farW) :
+    (3 / 2 : ℝ) ^ m * ‖w‖ ≤ ‖(quadratic 4)^[m] w‖ := by
+  induction m with
+  | zero =>
+    simp
+  | succ m ihm =>
+    have hmem : (quadratic 4)^[m] w ∈ farW := farW_iterate m hw
+    have hx : (289 / 100 : ℝ) < ‖(quadratic 4)^[m] w‖ := hmem
+    have hstep : (3 / 2 : ℝ) * ‖(quadratic 4)^[m] w‖ ≤ ‖(quadratic 4)^[m + 1] w‖ := by
+      rw [Function.iterate_succ_apply']
+      have hq : quadratic 4 ((quadratic 4)^[m] w)
+          = ((quadratic 4)^[m] w) ^ 2 + 4 := rfl
+      rw [hq]
+      have h4 : ‖(4 : ℂ)‖ = 4 := by
+        rw [show (4 : ℂ) = ((4 : ℝ) : ℂ) from by norm_num, Complex.norm_real]
+        norm_num
+      have h1 : ‖((quadratic 4)^[m] w) ^ 2‖ ≤ ‖((quadratic 4)^[m] w) ^ 2 + 4‖ + ‖(4 : ℂ)‖ :=
+        norm_le_add_norm_add _ _
+      rw [norm_pow] at h1
+      rw [h4] at h1
+      nlinarith [hx]
+    calc (3 / 2 : ℝ) ^ (m + 1) * ‖w‖ = (3 / 2) * ((3 / 2 : ℝ) ^ m * ‖w‖) := by ring
+      _ ≤ (3 / 2) * ‖(quadratic 4)^[m] w‖ := by nlinarith [ihm]
+      _ ≤ ‖(quadratic 4)^[m + 1] w‖ := hstep
+
+/-- **The dyadic pullback chain**: on the window, `phiFour^(2^(m+1))` is the genuine Böttcher
+coordinate `m+1` quadratic steps ahead. -/
+theorem phiFour_pow_iterate {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) (21 / 20)) (m : ℕ) :
+    phiFour z ^ (2 ^ (m + 1)) = bottcherCoord 4 ((quadratic 4)^[m] (quadratic 4 z)) := by
+  induction m with
+  | zero =>
+    simpa using phiFour_sq z
+  | succ m ihm =>
+    have hmem : (quadratic 4)^[m] (quadratic 4 z) ∈ farW :=
+      farW_iterate m (quadFour_mem_farW hz)
+    have hpow : phiFour z ^ (2 ^ (m + 1 + 1)) = (phiFour z ^ (2 ^ (m + 1))) ^ 2 := by
+      rw [← pow_mul, ← pow_succ]
+    rw [hpow, ihm, Function.iterate_succ_apply', bottcherCoord_quadratic_farW hmem]
+
+end U0PhiFourWindow

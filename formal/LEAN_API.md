@@ -8,8 +8,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
-| `u0_pui` | `GaloisForLFunctions.U0` | 295 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4322 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `u0_pui` | `GaloisForLFunctions.U0` | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4329 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -524,6 +524,10 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `isPreconnected_annulus` | `GaloisForLFunctions.U0.U0PhiFourWindow` | `formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean:197` | The window annulus `ball 0 (21/20) ∩ Ext = {1 < ‖z‖ < 21/20}` is preconnected (polar image of `Ioo (1, 21/20) × 𝕊¹`). |
 | theorem | `u0_phiFour_no_relation` | `GaloisForLFunctions.U0.U0PhiFourWindow` | `formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean:233` | u₀ ⟂ the `b = 4` Böttcher branch — UNCONDITIONAL window instance.** No polynomial relation `P(z, phiFour z, u₀ z) = 0` of positive `u₀`-degree (with separable specialization at som |
 | theorem | `u0_not_rational_in_phiFour` | `GaloisForLFunctions.U0.U0PhiFourWindow` | `formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean:262` | u₀ is not a rational expression in `z` and the Böttcher branch (UNCONDITIONAL, `b = 4`).** There are no polynomials `A, B ∈ ℂ[z][W]` with `A(z, phiFour z)` not identically zero and |
+| theorem | `summable_term` | `GaloisForLFunctions.U0.U0PhiFourWindow` | `formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean:317` | Summability of the Böttcher log tail on the far window. |
+| theorem | `bottcherCoord_quadratic_farW` | `GaloisForLFunctions.U0.U0PhiFourWindow` | `formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean:326` | The Böttcher functional equation on the far window** — branch-free at the `exp` level: `φ(z² + 4) = φ(z)²` for every `‖z‖ > 289/100`, well below the crude `‖z‖ > 4` regime. |
+| theorem | `farW_growth` | `GaloisForLFunctions.U0.U0PhiFourWindow` | `formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean:413` | Escape growth on the far window**: each quadratic step multiplies the modulus by `3/2`. |
+| theorem | `phiFour_pow_iterate` | `GaloisForLFunctions.U0.U0PhiFourWindow` | `formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean:440` | The dyadic pullback chain**: on the window, `phiFour^(2^(m+1))` is the genuine Böttcher coordinate `m+1` quadratic steps ahead. |
 | theorem | `u0_phi_independence_abstract` | `GaloisForLFunctions.U0.U0PhiIndep` | `formal/GaloisForLFunctions/U0/U0PhiIndep.lean:51` |  |
 | theorem | `u0_phi_independence` | `GaloisForLFunctions.U0.U0PhiIndep` | `formal/GaloisForLFunctions/U0/U0PhiIndep.lean:75` |  |
 | theorem | `u0_phi_independence_disconnected` | `GaloisForLFunctions.U0.U0PhiIndep` | `formal/GaloisForLFunctions/U0/U0PhiIndep.lean:95` |  |
@@ -3565,6 +3569,13 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `univariate_scaled_eval_tendsto_leadingCoeff_of_tendsto_div` | `GaloisForLFunctions.Bottcher.PolyAsymptotic` | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:1135` | A univariate polynomial's leading term survives along any real-ray coordinate `A(t)` with `A(t)/t → 1`. This is the exact asymptotic gate needed for the shifted-parabola remainder: |
 | theorem | `polynomial_eq_zero_of_scaled_eval_tendsto_zero_of_tendsto_div` | `GaloisForLFunctions.Bottcher.PolyAsymptotic` | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:1196` | If a univariate polynomial evaluated along `A(t) ~ t` is smaller than its own leading scale, then the polynomial is zero. The analytic burden in the Böttcher remainder route is the |
 | theorem | `polynomial_eq_zero_of_bottcher_scaled_eval_tendsto_zero` | `GaloisForLFunctions.Bottcher.PolyAsymptotic` | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:1208` | Böttcher-specialized zero criterion for a univariate shifted-parabola remainder. |
+| theorem | `rootsProd_zero` | `GaloisForLFunctions.Bottcher.PolyWinding` | `formal/GaloisForLFunctions/Bottcher/PolyWinding.lean:21` |  |
+| theorem | `rootsProd_cons` | `GaloisForLFunctions.Bottcher.PolyWinding` | `formal/GaloisForLFunctions/Bottcher/PolyWinding.lean:25` |  |
+| theorem | `differentiable_rootsProd` | `GaloisForLFunctions.Bottcher.PolyWinding` | `formal/GaloisForLFunctions/Bottcher/PolyWinding.lean:30` |  |
+| theorem | `rootsProd_ne_zero` | `GaloisForLFunctions.Bottcher.PolyWinding` | `formal/GaloisForLFunctions/Bottcher/PolyWinding.lean:39` |  |
+| theorem | `analyticAt_rootsProd` | `GaloisForLFunctions.Bottcher.PolyWinding` | `formal/GaloisForLFunctions/Bottcher/PolyWinding.lean:51` |  |
+| theorem | `windInt_logDeriv_rootsProd` | `GaloisForLFunctions.Bottcher.PolyWinding` | `formal/GaloisForLFunctions/Bottcher/PolyWinding.lean:61` | The winding sum over a root multiset.** |
+| theorem | `windInt_logDeriv_polynomial` | `GaloisForLFunctions.Bottcher.PolyWinding` | `formal/GaloisForLFunctions/Bottcher/PolyWinding.lean:126` | The argument principle, winding form**: for a nonzero polynomial and a loop avoiding its roots, the `dlog` period is the winding sum over the roots with multiplicity. |
 | theorem | `analyticOnNhd_domain_gen` | `GaloisForLFunctions.Bottcher.ProductCover` | `formal/GaloisForLFunctions/Bottcher/ProductCover.lean:29` | Several-variable identity-theorem domain property.** If `f, g` are analytic on a connected open `U ⊆ E` (any normed `ℂ`-space `E`) and `f·g ≡ 0` on `U`, then `f ≡ 0` or `g ≡ 0` on  |
 | def | `analyticSubringGen` | `GaloisForLFunctions.Bottcher.ProductCover` | `formal/GaloisForLFunctions/Bottcher/ProductCover.lean:52` | Several-variable analytic-germ subring.** Germs (modulo agreement on `U ⊆ E`) of functions `E → ℂ` with an analytic-on-`U` representative; a subring of `Germ (𝓟 U) ℂ`. The `E = ℂ³` |
 | theorem | `isDomain_analyticSubringGen` | `GaloisForLFunctions.Bottcher.ProductCover` | `formal/GaloisForLFunctions/Bottcher/ProductCover.lean:65` | The several-variable analytic-germ ring is an integral domain** on a connected open nonempty `U ⊆ E`. No nonzero zero-divisors is the general identity theorem (`analyticOnNhd_domai |
