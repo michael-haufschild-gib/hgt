@@ -1046,6 +1046,7 @@ theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
         AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
         (Filter.Germ.coeRingHom (𝓟 Ext) F) = (aExt : Filter.Germ (𝓟 Ext) ℂ) ∧
         restrictAnalytic hUExt aExt = a₂ ^ (2 ^ k) ∧
+        (∀ z ∈ Ext, 0 < greenFunctionDyn c z) ∧
         (∀ T : Set ℂ, T.Countable →
           ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
             (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
@@ -1293,8 +1294,25 @@ theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
     intro z hz
     show (if Bmin < ‖z‖ then bottcherCoord c z ^ (2 ^ k) else F z) = _
     rw [if_pos (hUfar z hz)]
+  have hExt'pos : ∀ z ∈ Ext', 0 < greenFunctionDyn c z := by
+    rintro z (hzE | hzA)
+    · obtain ⟨j, hjk, hjP⟩ := hreach z hzE
+      obtain ⟨w, hw, hweq⟩ := hjP
+      have h1 : greenFunctionDyn c ((quadratic c)^[j] z) = Real.log ‖w‖ := by
+        rw [← hweq, S.level w hw]
+      have h2 : greenFunctionDyn c ((quadratic c)^[j] z)
+          = 2 ^ j * greenFunctionDyn c z := by
+        rw [greenFunctionDyn_iterate]
+      have h3 : 0 < Real.log ‖w‖ := Real.log_pos (lt_trans hrlo1 hw.1)
+      have h4 : (0:ℝ) < 2 ^ j := by positivity
+      nlinarith
+    · have h1 : Real.log Rb < greenFunctionDyn c z := hGfar z hzA
+      have h2 : 0 < Real.log Rb := Real.log_pos (by
+        rw [hRbdef]
+        exact hRa1)
+      linarith
   refine ⟨Ext', hExt'o, hExt'c, hUinf.mono hUExt', hUExt', F', aExt, k, ?_, ?_, hF'an, hF'ne,
-    rfl, ?_, ?_⟩
+    rfl, ?_, hExt'pos, ?_⟩
   · omega
   · calc d < 2 ^ d := Nat.lt_two_pow_self
       _ ≤ 2 ^ k := Nat.pow_le_pow_right (by norm_num) (by omega)
@@ -1364,6 +1382,7 @@ theorem bottcherFarBound_spec (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
         AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
         (Filter.Germ.coeRingHom (𝓟 Ext) F) = (aExt : Filter.Germ (𝓟 Ext) ℂ) ∧
         restrictAnalytic hUExt aExt = a₂ ^ (2 ^ k) ∧
+        (∀ z ∈ Ext, 0 < greenFunctionDyn c z) ∧
         (∀ T : Set ℂ, T.Countable →
           ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
             (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
@@ -1389,7 +1408,27 @@ theorem bottcher_transcendental_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
   obtain ⟨a₂', ha₂', hdata⟩ := bottcherFarBound_spec c hc U hUo hUc hUne hUinf hUfar
   have haeq : a₂' = a₂ := Subtype.ext (by rw [← ha₂, ← ha₂'])
   subst haeq
-  apply transcendental_of_towerDataG hUo hUc hUne hUinf a₂' ?_ hdata
+  have hdata' : ∀ d : ℕ, ∃ (Ext : Set ℂ)
+      (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+      (hUExt : U ⊆ Ext) (F : ℂ → ℂ) (aExt : analyticSubring Ext) (k : ℕ),
+      1 ≤ k ∧ d < 2 ^ k ∧
+      AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
+      (Filter.Germ.coeRingHom (𝓟 Ext) F) = (aExt : Filter.Germ (𝓟 Ext) ℂ) ∧
+      restrictAnalytic hUExt aExt = a₂' ^ (2 ^ k) ∧
+      (∀ T : Set ℂ, T.Countable →
+        ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+          (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+          (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+          γ (2 * Real.pi) = γ 0 ∧
+          (∀ θ : ℝ, γ θ ∉ T) ∧
+          (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv F (γ θ) * γ' θ)
+            = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1)) := by
+    intro d
+    obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, F, aExt, k, hk1, hdk, hFan, hFne, hae,
+      hrad, _hpos, hloops⟩ := hdata d
+    exact ⟨Ext, hExto, hExtc, hExtinf, hUExt, F, aExt, k, hk1, hdk, hFan, hFne, hae,
+      hrad, hloops⟩
+  apply transcendental_of_towerDataG hUo hUc hUne hUinf a₂' ?_ hdata'
   intro hzero
   have h1 : a₂' = 0 := by
     have hinj := IsFractionRing.injective (analyticSubring U) (meroField U)
