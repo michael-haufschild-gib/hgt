@@ -64,6 +64,9 @@ import GaloisForLFunctions.U0.U0PhiKummerLayers
 import GaloisForLFunctions.U0.U0WindowObstruction
 import GaloisForLFunctions.U0.U0DichotomyWitness
 import GaloisForLFunctions.U0.U0WindowSharpness
+import GaloisForLFunctions.U0.U0ObstructionPatterns
+import GaloisForLFunctions.U0.U0DiskEscape
+import GaloisForLFunctions.U0.U0CurveSectors
 
 noncomputable section
 
@@ -4710,5 +4713,65 @@ def WindowThresholdSharpTarget : Prop :=
 /-- Formal wrapper for the sharp-threshold pair. -/
 theorem window_threshold_sharp_card : WindowThresholdSharpTarget :=
   U0WindowSharpness.window_threshold_sharp
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **The complex obstruction patterns**: two closed-form regions of parameters whose filled
+Julia set meets the closed unit disk — the fixed-point pattern (`‖(1+s)/2 + b‖ ≤ 1` for a
+square root `s` of `1−4b`) and the 2-cycle pattern (`‖γ−b‖ ≤ 1` for a root of the 2-cycle
+equation).  The complex generalization of the real-interval window obstruction; the building
+blocks of the obstructed lobes of the critical curve `ρ(arg b)`. -/
+def ObstructionPatternsTarget : Prop :=
+  (∀ {b s : ℂ}, s ^ 2 = 1 - 4 * b → ‖(1 + s) / 2 + b‖ ≤ 1 →
+    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ Bottcher.filledJulia b) ∧
+  (∀ {b γ : ℂ}, γ ^ 2 + γ + b + 1 = 0 → ‖γ - b‖ ≤ 1 →
+    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ Bottcher.filledJulia b)
+
+/-- Formal wrapper for the obstruction patterns. -/
+theorem obstruction_patterns_card : ObstructionPatternsTarget :=
+  ⟨fun hs hcond => U0ObstructionPatterns.filledJulia_meets_unit_disk_P1 hs hcond,
+   fun hγ hcond => U0ObstructionPatterns.filledJulia_meets_unit_disk_P2 hγ hcond⟩
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **The disk-escape viability kit, closed forms**: everything beyond the escape fixed point is
+outside `K_b`; one quadratic step certifies viability for EVERY `b` with `xStar ‖b‖ + 1 < ‖b‖`
+(all of `‖b‖ > 2+√2`, every direction); two steps certify the closed-form sector
+`xStar ‖b‖ + 2‖b‖ + 1 < ‖b‖·‖b+1‖` reaching `b = 3`. -/
+def DiskEscapeViabilityTarget : Prop :=
+  (∀ {b z : ℂ}, 2 < ‖b‖ → U0MonotoneEscape.xStar ‖b‖ < ‖z‖ → z ∉ Bottcher.filledJulia b) ∧
+  (∀ {b : ℂ}, 2 < ‖b‖ → U0MonotoneEscape.xStar ‖b‖ + 1 < ‖b‖ →
+    ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia b) ∧
+  (∀ {b : ℂ}, 2 < ‖b‖ → U0MonotoneEscape.xStar ‖b‖ + (2 * ‖b‖ + 1) < ‖b‖ * ‖b + 1‖ →
+    ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia b)
+
+/-- Formal wrapper for the disk-escape kit. -/
+theorem disk_escape_viability_card : DiskEscapeViabilityTarget :=
+  ⟨fun hb hz => U0DiskEscape.not_mem_filledJulia_of_gt_xStar hb hz,
+   fun hb h => U0DiskEscape.viable_of_sharp hb h,
+   fun hb h => U0DiskEscape.viable_of_one_chain hb h⟩
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **Closed-form sectors of the critical curve `ρ(arg b)`**: (i) the rational viable sector on
+the dichotomy ring (`121/50 + 2‖b‖ + 1 < ‖b‖·‖b+1‖`, reaching past `arg = 90°` at modulus 3);
+(ii) the EXACT `s`-parameterized P1 obstructed region (`‖s−3‖·‖s+1‖ ≤ 4`, `b = (1−s²)/4`) —
+the first two-sided closed-form bounds on the curve. -/
+def CurveSectorsTarget : Prop :=
+  (∀ {b : ℂ}, ‖b‖ = 3 → -(3 / 50) ≤ b.re →
+    ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia b) ∧
+  (∀ {s : ℂ}, ‖s - 3‖ * ‖s + 1‖ ≤ 4 →
+    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ Bottcher.filledJulia ((1 - s ^ 2) / 4))
+
+/-- Formal wrapper for the curve sectors. -/
+theorem curve_sectors_card : CurveSectorsTarget :=
+  ⟨fun hmod hre => U0CurveSectors.viable_modulus_three hmod hre,
+   fun hcond => U0CurveSectors.obstructed_of_s hcond⟩
 
 end FullyProvenNewTargets

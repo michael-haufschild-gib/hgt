@@ -5,6 +5,19 @@
 literature may be used freely with citation. **The request:** solve the Problem as stated
 and provide a complete rigorous proof.
 
+> **STATUS (2026-07-02): PARTIALLY ANSWERED — see the verification report in
+> [06-answer.md](06-answer.md) and the author's follow-up
+> [06-answer-addition.md](06-answer-addition.md).** The potential-theoretic half is
+> proven: after a swap, the exposed set `∂W ∖ K_{c₂}` is nonempty and carries positive
+> `K_{c₁}`-equilibrium measure. The selection half (a *strictly one-sided* point inside
+> that set) was retracted by the answer's author after audit: the a.e. theorem it
+> invoked gives uniaccessibility, which is strictly weaker than the ball-connectivity
+> definition below. The residual is exactly one statement — "strictly one-sided points
+> carry full `μ_c`-measure" — restated self-contained as
+> [07-full-measure-one-sided.md](07-full-measure-one-sided.md). Suggested attack
+> route 2 below originally asserted that statement as a known fact; it has been
+> corrected in place.
+
 ## Setting
 
 For a parameter `c ∈ ℂ` let
@@ -142,9 +155,16 @@ prevents this, so the quadratic dynamics must be used in an essential way.
    some (equivalently, a dense or positive-measure set of) dyadic ray of `K_{c₁}` avoid
    `K_{c₂}` entirely AND land off `K_{c₂}`?
 2. **Harmonic measure.** `∂W` carries the harmonic measure of `W` at `∞`. If the
-   `J_{c₁} ∖ K_{c₂}` part of `∂W` has positive harmonic measure, combine with the fact
-   that one-sided landing points carry the full equilibrium measure of `J_{c₁}` to
-   produce a one-sided point on `∂W` measure-theoretically.
+   `J_{c₁} ∖ K_{c₂}` part of `∂W` has positive harmonic measure, combine with a
+   full-measure statement for one-sided points to produce a one-sided point on `∂W`
+   measure-theoretically. **Correction (2026-07-02):** the first half of this route is
+   now proven (the exposed set has positive equilibrium measure). But the second half
+   as originally phrased here — "one-sided landing points carry the full equilibrium
+   measure of `J_{c₁}`" — is NOT a known fact and must not be used without proof: what
+   the literature gives a.e. is *uniaccessibility* (a single landing ray), and a
+   topologist's comb has a uniquely accessible tip that fails the ball-connectivity
+   definition of one-sidedness at every scale. The needed full-measure statement is
+   itself open — Problem 7 of this series.
 3. **Cap accounting.** A capped one-sided point's hole `H` has `∂H` meeting the
    connected set `K_{c₂}`, which misses the ball `B(x,r)`. Study whether one connected
    `K_{c₂}` can simultaneously cap a dense family of one-sided exteriors of `J_{c₁}`

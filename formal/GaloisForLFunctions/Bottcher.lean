@@ -305,3 +305,4 @@ import GaloisForLFunctions.Bottcher.ConnectedBranchModulusAuto
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
 import GaloisForLFunctions.Bottcher.BottcherNotRational
+import GaloisForLFunctions.Bottcher.RealPairExposed

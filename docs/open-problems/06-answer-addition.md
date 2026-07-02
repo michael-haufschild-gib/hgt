@@ -323,3 +323,56 @@ or a special substitute saying that the particular exposed set
 must meet (S_{c_1}), or even just the countable dense beta-preimage subset (B_{c_1}).
 
 The first substitute is exactly the full-measure theorem above. The second substitute is not implied by positive measure, because (B_{c_1}) is countable and measure zero. Therefore a valid proof must add a new geometric argument controlling the special outer-boundary set (\partial W\setminus K_{c_2}), not just invoke harmonic measure or density.
+
+---
+
+# Audit of the additions (2026-07-02)
+
+Verdict: **both additions verified; retraction accepted; the conditional theorem is
+correct and is the right re-cut.** Detail:
+
+1. **Addition 1 (retraction).** Agrees exactly with the independent audit already
+   recorded in the verification report of `06-answer.md`: the invalid inference was
+   `μ₁(E) > 0` + "one-sided a.e." ⟹ `E` meets a strict one-sided point, where the
+   literature supplies only *uniaccessible* a.e.; the comb separates the notions.
+   Accepted.
+
+2. **Addition 2 §1 (equivalence (P) ⟺ (Q)).** Correct, with one footnote: as stated it
+   uses measurability of `S_c`; the clean formulation is via a Borel hull
+   (`J_c ∖ S_c` contained in a Borel null set), which is how Problem 7 states it.
+
+3. **Addition 2 §2 (β-preimage no-go).** Correct and load-bearing: `B_c` is countable
+   (≤ 2ⁿ preimages at level `n`) and `μ_c` is non-atomic (Brolin measure, positive
+   entropy), so `μ_c(B_c) = 0` — measure positivity can never force meeting the dense
+   one-sided set we actually possess. This permanently closes every "density +
+   positive measure" shortcut, including for the special set `∂W ∖ K_{c₂}`.
+
+4. **Addition 2 §3 (conditional theorem).** The potential-theoretic recap matches the
+   verified argument of the report, except one loose line: "strict monotonicity of
+   capacity would force K₁ = K₂" is not a valid principle as stated (capacity is not
+   strictly monotone — polar additions change nothing). The verified repair, already in
+   the report, is the energy identity: if `cap(Y) = 1` then `∫G_i dν = log 1 = 0` for
+   both `i`, so `supp ν ⊆ K₁ ∩ K₂`, hence `∂Y ⊆ K_i` and fullness gives `Y = K₁ = K₂`,
+   contradiction. With that substitution the conditional theorem stands: **`μ_c(S_c)=1`
+   for all `c ∈ M ∖ {0,−2}` ⟹ Problem 6 in full.** The pigeonhole and domain
+   monotonicity steps are correct as written.
+
+5. **Addition 2 §4 (what remains).** Correct framing. Two additions of our own:
+   (i) the required statement is genuinely non-generic — it is FALSE for `c = −2`
+   (`K = [−2,2]`: interior segment points are two-sided, `S_{−2} = {±2}`, so
+   `μ_{−2}(S_{−2}) = 0`), so any proof must use non-smoothness of `J_c`, matching
+   Zdunik's smooth/singular dichotomy; (ii) since no Jordan arc separates the plane, a
+   single spiraling (twist-point) access does not by itself break ball-connectivity —
+   a refutation needs positive measure of *comb-type* points, a proof must exclude
+   them a.e.
+
+**Consequences applied.** The residual is restated self-contained as
+`07-full-measure-one-sided.md` (full form, special-set form (W1), subclass form (W2),
+refutation form (W3)); the README table carries the new row. Suggested attack route 2
+of the problem file `06-onesided-exposed-on-outer-boundary.md` asserted the missing
+statement as a known fact — that seeded the original error — and has been corrected in
+place, with a status banner added. On the Lean side nothing changes shape:
+`ExposedOneSided c₁ c₂` (OneSidedCertificate.lean) remains the named analytic input
+consumed by `q62_phiMero_bothconnected_of_op6`, and the internal measure-quantified
+engine variant (support-piece rigidity consuming `μ₁(∂W∖K₂) > 0` directly) remains the
+route that bypasses Problem 7 entirely.

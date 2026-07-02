@@ -50,3 +50,6 @@ import GaloisForLFunctions.U0.U0DichotomyWitness
 import GaloisForLFunctions.U0.U0MonotoneEscape
 import GaloisForLFunctions.U0.U0LogBoundGeneral
 import GaloisForLFunctions.U0.U0WindowSharpness
+import GaloisForLFunctions.U0.U0ObstructionPatterns
+import GaloisForLFunctions.U0.U0DiskEscape
+import GaloisForLFunctions.U0.U0CurveSectors
