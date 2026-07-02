@@ -53,3 +53,7 @@ import GaloisForLFunctions.U0.U0WindowSharpness
 import GaloisForLFunctions.U0.U0ObstructionPatterns
 import GaloisForLFunctions.U0.U0DiskEscape
 import GaloisForLFunctions.U0.U0CurveSectors
+import GaloisForLFunctions.U0.U0SliceViableA
+import GaloisForLFunctions.U0.U0SliceViableB
+import GaloisForLFunctions.U0.U0DichotomySliceObstructed
+import GaloisForLFunctions.U0.U0CriticalCurveSlice

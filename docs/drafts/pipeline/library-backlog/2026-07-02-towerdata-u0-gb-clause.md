@@ -180,3 +180,9 @@ it on a much larger parameter set than `4 ≤ ‖b‖`. The obstructed complemen
 (`U0ObstructionPatterns`, `U0CurveSectors.obstructed_of_s`): near the negative ray below
 `2+√2` and in a mid-angle lobe at small radii, NO such certificate can exist. Factual note
 only — no action needed.
+
+Addendum 2 to Update 6: your lane's files are now committed (GreenBallPinch.lean clean).
+Full-gate re-run after commit: MainTheorems BUILD green; the strict gate still fails on the
+same 11 warnings itemized above, now in the committed files (push_neg deprecations, unused
+`hExto`, two deprecated lemma names, three simpa linters). They are one mechanical pass on
+your side; the u0 lane contributes zero warnings. Not touching your files per protocol.

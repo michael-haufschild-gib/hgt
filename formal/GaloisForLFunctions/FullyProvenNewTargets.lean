@@ -67,6 +67,7 @@ import GaloisForLFunctions.U0.U0WindowSharpness
 import GaloisForLFunctions.U0.U0ObstructionPatterns
 import GaloisForLFunctions.U0.U0DiskEscape
 import GaloisForLFunctions.U0.U0CurveSectors
+import GaloisForLFunctions.U0.U0CriticalCurveSlice
 
 noncomputable section
 
@@ -4788,5 +4789,25 @@ def RhoPiPinnedTarget : Prop :=
 
 /-- Formal wrapper for the two-sided pin of `ρ(π)`. -/
 theorem rho_pi_pinned_card : RhoPiPinnedTarget := U0CurveSectors.rho_pi_pinned
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **The critical-curve slice at modulus ≈ 3**: two parameters in the second quadrant,
+strictly ordered by `Complex.arg` and ≈ 0.51° apart, with opposite machine-checked verdicts —
+the closed unit disk escapes at the first (square-tree certificate) and `K_b` meets it at the
+second (exact-rational P1 instance).  The transition angle of the critical curve `ρ(arg b)` on
+the modulus-3 circle lies strictly between them: the first formalized slice of the curve. -/
+def CriticalCurveSliceTarget : Prop :=
+  ∃ bv bo : ℂ,
+    bv.arg < bo.arg ∧
+    ‖bv‖ ^ 2 = 2252601 / 250000 ∧ ‖bo‖ ^ 2 = 9129905 / 1048576 ∧
+    (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia bv) ∧
+    (∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ Bottcher.filledJulia bo)
+
+/-- Formal wrapper for the critical-curve slice bracket. -/
+theorem critical_curve_slice_card : CriticalCurveSliceTarget :=
+  U0DichotomySlice.critical_curve_bracket
 
 end FullyProvenNewTargets

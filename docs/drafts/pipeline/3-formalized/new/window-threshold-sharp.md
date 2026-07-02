@@ -46,3 +46,6 @@ the explicit finite orbit of the window-obstruction interval at its endpoint.
 ## Log
 - 2026-07-02 — proven and registered (`window_threshold_sharp_card`); dichotomy companion at
   fixed modulus in `window-dichotomy-modulus-three`.
+- 2026-07-02 — geometric upgrade: `U0CurveSectors.viable_of_gt_sharp` shows the closed unit
+  disk escapes for EVERY direction above 2+√2 (not only that the window capstone holds), and
+  `rho_pi_pinned` makes the threshold the exact maximum of the critical curve ρ(arg b).

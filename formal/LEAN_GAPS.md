@@ -12,12 +12,14 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | Lines | File |
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 4777 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 4813 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
+| 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
+| 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
 | 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
@@ -34,8 +36,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1278 | `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean` |
 | 1267 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean` |
 | 1249 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryTruncation.lean` |
-| 1217 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean` |
-| 1206 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingPeriodicAvoidance.lean` |
 
 ## Gap Markers
 
@@ -250,6 +250,9 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:24` | algebraic surface of the disconnected case: the lone remaining input is the *geometric* non-squareness |
 | `formal/GaloisForLFunctions/Bottcher/QuarticDefect.lean:72` | remaining input is the Γ(2) cusp-form finiteness (modular-curve compactness / valence), absent from |
 | `formal/GaloisForLFunctions/Bottcher/QuarticModularForm.lean:6` | `zero_at_cusps'`) is the remaining input toward `F ≡ 0` via `NormTrace` to level-one weight-12. |
+| `formal/GaloisForLFunctions/Bottcher/RealPairExposed.lean:13` | so `ExposedOneSided (c₁, c₂)` reduces to the SINGLE remaining clause |
+| `formal/GaloisForLFunctions/Bottcher/RealPairExposed.lean:76` | along the real ray `(β₁, ∞)`; one-sidedness at the single point `β₁` is the only remaining |
+| `formal/GaloisForLFunctions/Bottcher/RealPairExposed.lean:87` | remaining analytic clause of the exposure input) plus smooth-piece rigidity (both |
 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:7` | fibre with support in `range (N+1)` is the dense degree-`N` polynomial whose missing coefficients are zero, |
 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:30` | /-- A sparse fibre equals its dense degree-`N` presentation with zero-filled missing coefficients. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:397` | `exists_sparse_fibre_separable_crossing`, while the remaining target-set geometry is supplied pointwise on |
@@ -288,9 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedPoint.lean:103` | point in the Julia set, for all non-exceptional `c ≠ 1/4`. The remaining data (non-resonance, location off |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedPreimageSelector.lean:348` | remaining local dynamical input is the explicit fixed-tail Newton window. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:813` | `eventually_scaled_base_third_deriv_term_le_of_repelling_hit`; the remaining analytic input is only |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:857` | This is the algebraic step behind the remaining uniform fixed-tail window: once the basepoint term |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:894` | The basepoint part is discharged by the fixed-tail scalar estimate; the only remaining analytic |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:969` | This is the first non-opaque form of the remaining third-derivative excess obligation: it turns the |
 
 ## Historical Status Logs
 

@@ -45,3 +45,6 @@ orbit `x₀ ↦ −β ↦ β ↦ β` of the window obstruction.
 ## Log
 - 2026-07-02 — witness `b = 3` proven (two-step escape), paired with `b = −3`; registered as
   `window_dichotomy_card`.
+- 2026-07-02 — superseded in scope by the critical-curve program: the dichotomy is now a
+  bracketed CURVE slice (`critical-curve-slice`, transition at modulus 3 inside
+  (155.43°, 155.94°)); ρ(π) = 2+√2 pinned two-sided (`rho_pi_pinned`).

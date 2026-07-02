@@ -27,6 +27,8 @@ open Complex Set Bottcher
 
 namespace U0DichotomySlice
 
+set_option maxHeartbeats 1600000
+
 /-- Argument comparison in the second quadrant from squared rational data:
 `o.im²·‖v‖² < v.im²·‖o‖²` (cross-multiplied tangents) gives `arg v < arg o`. -/
 theorem arg_lt_arg_Q2 {v o : ℂ} (hvre : v.re < 0) (hvim : 0 < v.im)
@@ -74,7 +76,7 @@ theorem critical_curve_bracket :
       ‖bv‖ ^ 2 = 2252601 / 250000 ∧ ‖bo‖ ^ 2 = 9129905 / 1048576 ∧
       (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia bv) ∧
       (∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia bo) := by
-  refine ⟨(⟨-(273 / 100), (156 / 125)⟩ : ℂ), (⟨-(2759 / 1024), (77 / 64)⟩ : ℂ),
+  refine ⟨(⟨(-273/100), (156/125)⟩ : ℂ), (⟨-(2759/1024), (77/64)⟩ : ℂ),
     ?_, ?_, ?_, slice_viable_155, slice_obstructed_156⟩
   · exact arg_lt_arg_Q2 (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
   · rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
