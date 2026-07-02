@@ -1,5 +1,5 @@
 /-
-# `u₀ ⟂ phiB b` for EVERY `‖b‖ ≥ 5` — the parameterized window capstone
+# `u₀ ⟂ phiB b` for EVERY `‖b‖ ≥ 4` — the parameterized window capstone
 
 The `b = 4` capstone assembly (`U0PhiFourCapstone`) abstracted over the window branch: the
 generic theorem `u0_window_independence_of_transcendental_engine` consumes exactly
@@ -11,7 +11,7 @@ generic theorem `u0_window_independence_of_transcendental_engine` consumes exact
 and produces the unconditional `NoRelation ℂ(z) (branch) (u₀)`.  Instantiating at
 `phiB b` (`U0PhiLargeWindow` engine + `U0PhiLargeDescent` transcendence) yields
 **`u0_phiB_independence`: the full algebraic independence of `u₀` and the Böttcher window branch
-over `ℂ(z)`, for every parameter `‖b‖ ≥ 5`** — an OPEN SET of parameters, no tower certificate,
+over `ℂ(z)`, for every parameter `‖b‖ ≥ 4`** — an OPEN SET of parameters, no tower certificate,
 no `GBExt` clause, no open input.
 -/
 import GaloisForLFunctions.U0.U0PhiFourCapstone
@@ -292,12 +292,12 @@ theorem u0_window_independence_of_transcendental_engine
     obtain ⟨z₀, hz₀, hcw⟩ := hwitness
     exact (engine P' j₀ hj₀pos ⟨z₀, hz₀, hcw⟩ hrel').elim
 
-/-- **`u₀ ⟂ phiB b` — UNCONDITIONAL algebraic independence for EVERY `‖b‖ ≥ 5`.**  The window
+/-- **`u₀ ⟂ phiB b` — UNCONDITIONAL algebraic independence for EVERY `‖b‖ ≥ 4`.**  The window
 capstone at an OPEN SET of parameters: in the meromorphic field of the window annulus
-`{1 < ‖z‖ < 21/20}`, the Böttcher window branch of any parameter `‖b‖ ≥ 5` and the c-velocity
+`{1 < ‖z‖ < 21/20}`, the Böttcher window branch of any parameter `‖b‖ ≥ 4` and the c-velocity
 `u₀` satisfy no nonzero bivariate polynomial relation over `ℂ(z)`.  No tower certificate, no
 `GBExt` clause, no open input. -/
-theorem u0_phiB_independence {b : ℂ} (hb : 5 ≤ ‖b‖) :
+theorem u0_phiB_independence {b : ℂ} (hb : 4 ≤ ‖b‖) :
     letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
     letI : Algebra (RatFunc ℂ) (meroField annW) :=
       (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra

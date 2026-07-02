@@ -59,6 +59,9 @@ import GaloisForLFunctions.U0.U0TowerBridge
 import GaloisForLFunctions.U0.U0PhiFourCapstone
 import GaloisForLFunctions.U0.U0PhiLargeCapstone
 import GaloisForLFunctions.U0.U0SectionExterior
+import GaloisForLFunctions.U0.U0GreenBandBridge
+import GaloisForLFunctions.U0.U0PhiKummerLayers
+import GaloisForLFunctions.U0.U0WindowObstruction
 
 noncomputable section
 
@@ -4535,10 +4538,10 @@ namespace FullyProvenNewTargets
 open U0PhiFourFarCarrier U0PhiLargeWindow U0PhiLargeDescent U0PhiLargeCapstone
 open U0SectionExterior U0MeroCarrier Bottcher
 
-/-- The window branch of EVERY parameter `‖b‖ ≥ 5` is transcendental over `ℂ(z)` — the
+/-- The window branch of EVERY parameter `‖b‖ ≥ 4` is transcendental over `ℂ(z)` — the
 parameterized descent through the dyadic pullback onto the far Böttcher carrier. -/
 def PhiBTranscendentalTarget : Prop :=
-  ∀ {b : ℂ} (hb : 5 ≤ ‖b‖),
+  ∀ {b : ℂ} (hb : 4 ≤ ‖b‖),
     letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
     letI : Algebra (RatFunc ℂ) (meroField annW) :=
       (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
@@ -4549,10 +4552,10 @@ def PhiBTranscendentalTarget : Prop :=
 theorem phiB_transcendental_card : PhiBTranscendentalTarget :=
   fun hb => phiB_transcendental hb
 
-/-- **The parameterized window capstone**: `NoRelation ℂ(z) (phiB b) (u₀)` for EVERY `‖b‖ ≥ 5` —
+/-- **The parameterized window capstone**: `NoRelation ℂ(z) (phiB b) (u₀)` for EVERY `‖b‖ ≥ 4` —
 the `u0_phi_independence` conclusion at an OPEN SET of parameters, with zero hypotheses. -/
 def U0PhiBIndependenceTarget : Prop :=
-  ∀ {b : ℂ} (hb : 5 ≤ ‖b‖),
+  ∀ {b : ℂ} (hb : 4 ≤ ‖b‖),
     letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
     letI : Algebra (RatFunc ℂ) (meroField annW) :=
       (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
@@ -4575,5 +4578,82 @@ def GreenSublevelExteriorTarget : Prop :=
 theorem green_sublevel_exterior_card : GreenSublevelExteriorTarget := by
   intro b hb t hband z hz
   exact green_sublevel_exterior hb hband hz
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+open U0PhiFourFarCarrier U0PhiLargeDescent U0PhiKummerLayers U0GreenBandBridge
+open U0MeroCarrier Bottcher
+
+/-- **The Green-band tower consumer**: the all-parameters U0 conclusion from a tower certificate
+whose `u₀`-clause (`GBExt`) is replaced by a Green sublevel bound on the extension domains — for
+`‖b‖ ≥ 4` the sublevel exterior geometry places them inside `u₀`'s domain, where `GBExt` is the
+restriction of `u₀` itself.  One q62-lane spec conjunct away from closing the card at large `‖b‖`. -/
+def U0PhiIndependenceGreenBandTarget : Prop :=
+  ∀ {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hUinf : U.Infinite) (hU_ext : U ⊆ U0NaturalBoundary.Ext) {b : ℂ} (_hb : 4 ≤ ‖b‖)
+    (hU_esc : U ⊆ escapeOpen b),
+    (∀ d : ℕ, ∃ (Ext' : Set ℂ)
+        (_hExto : IsOpen Ext') (_hExtc : IsConnected Ext') (_hExtinf : Ext'.Infinite)
+        (hUExt : U ⊆ Ext') (F : ℂ → ℂ) (aExt : analyticSubring Ext') (k : ℕ),
+        1 ≤ k ∧ d < 2 ^ k ∧
+        AnalyticOnNhd ℂ F Ext' ∧ (∀ z ∈ Ext', F z ≠ 0) ∧
+        (Filter.Germ.coeRingHom (Filter.principal Ext') F)
+          = (aExt : Filter.Germ (Filter.principal Ext') ℂ) ∧
+        restrictAnalytic hUExt aExt = (phiAnalytic b hU_esc) ^ (2 ^ k) ∧
+        (∃ t : ℝ, Real.exp (4 * t) + 4 ≤ (‖b‖ - 1) ^ 2 - ‖b‖ ∧
+          ∀ z ∈ Ext', greenFunctionDyn b z < t) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext') ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, γ θ ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv F (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) →
+    letI := isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (meroField U) :=
+      (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero b hU_esc)
+      (algebraMap (analyticSubring U) (meroField U) (U0MeroCarrier.u0AnSub hU_ext))
+
+/-- Formal wrapper for the Green-band tower consumer. -/
+theorem u0_phi_independence_greenBand_card : U0PhiIndependenceGreenBandTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hb hU_esc towerdata
+  exact U0GreenBandBridge.u0_phi_independence_of_towerData_greenBand hUo hUc hUne hUinf hU_ext
+    hb hU_esc towerdata
+
+/-- **`u₀ ⟂` every Kummer layer of the window branch**, every `‖b‖ ≥ 4` — the window-side
+radical tower is `u₀`-free, unconditionally. -/
+def U0PhiKummerIndependenceTarget : Prop :=
+  ∀ {b : ℂ} (hb : 4 ≤ ‖b‖) (k : ℕ),
+    letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
+    letI : Algebra (RatFunc ℂ) (meroField annW) :=
+      (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+    NoRelation (RatFunc ℂ)
+      (algebraMap (analyticSubring annW) (meroField annW) (phiBRootAn k b hb))
+      (algebraMap (analyticSubring annW) (meroField annW) (u0AnSub annW_subset_Ext))
+
+/-- Formal wrapper for the Kummer-layer independence. -/
+theorem u0_phiBRoot_independence_card : U0PhiKummerIndependenceTarget :=
+  fun hb k => u0_phiBRoot_independence hb k
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **The window obstruction**: near the escape boundary the filled Julia set can meet the closed
+unit disk — for every real `b ∈ [−2−√2, −2)`, explicitly.  The exterior geometry (`‖b‖ ≥ 4`) and
+the window capstone (`‖b‖ ≥ 4`) cannot extend to all `‖b‖ > 2`: below `2+√2` the window route is
+void at explicit parameters, and any further extension must be direction-dependent. -/
+def WindowObstructionTarget : Prop :=
+  ∀ {b : ℝ}, b ≤ -2 → -2 - Real.sqrt 2 ≤ b →
+    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ Bottcher.filledJulia (b : ℂ)
+
+/-- Formal wrapper for the window obstruction. -/
+theorem window_obstruction_card : WindowObstructionTarget := by
+  intro b hb2 hb
+  exact U0WindowObstruction.filledJulia_meets_unit_disk hb2 hb
 
 end FullyProvenNewTargets

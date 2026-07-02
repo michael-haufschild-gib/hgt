@@ -112,3 +112,74 @@ So the clean certified conclusion is:
 ]
 
 The proof of the final step from such a point to the required hole-free ball is complete above. I do not have a certified proof of the missing exposure statement for arbitrary non-locally connected quadratic Julia sets, so I cannot honestly present this as a complete solution of the original universal problem.
+
+
+# Addition
+
+Assume (f_c(z)=z^2+c), (M) is the Mandelbrot set, (K_c) is the filled Julia set, (J_c=\partial K_c), and (W=\mathbb C\setminus(K_{c_1}\cup K_{c_2})). The same argument works for the complementary component reached by the selected external access.
+
+Let (\beta_c) be the (\beta)-fixed point of (f_c), equivalently the landing point of the external ray (R_c(0)). For (c\in M), rational external rays land on (J_c), and (R_c(0)) lands at (\beta_c); moreover (\beta_c) is the landing point of the unique ray (R_c(0)).
+
+Use the standard fact that, for (c\in M\setminus{0,-2}), the one-sided points in the backward orbit
+[
+O_c^-(\beta_c)={z:\ f_c^n(z)=\beta_c\text{ for some }n\ge 0}
+]
+are dense in (J_c). Briefly: the full backward orbit of any point of (J_c) is dense in (J_c), and regular pullbacks of the unique (\beta)-ray are one-sided (\beta)-preimages; the excluded cases (c=0) and (c=-2) are exactly the disk/Chebyshev degeneracies where this one-sided (\beta)-preimage statement has to be modified. ([matem.unam.mx][1])
+
+Now argue by contradiction. Suppose that neither ordering works. Then every one-sided point in (O_{c_1}^-(\beta_{c_1})) lies in (K_{c_2}), and every one-sided point in (O_{c_2}^-(\beta_{c_2})) lies in (K_{c_1}). By density and closedness,
+[
+J_{c_1}\subset K_{c_2},
+\qquad
+J_{c_2}\subset K_{c_1}.
+]
+Since each (K_c) is full, (J_{c_1}\subset K_{c_2}) implies (K_{c_1}\subset K_{c_2}): every bounded complementary component of (\mathbb C\setminus J_{c_1}) is forced to lie inside the full compact set (K_{c_2}). Similarly,
+[
+K_{c_2}\subset K_{c_1}.
+]
+Hence
+[
+K_{c_1}=K_{c_2}.
+]
+
+This forces (c_1=c_2). Indeed, if (K_{c_1}=K_{c_2}=K), then the Green functions coincide:
+[
+G_{c_1}=G_{c_2}=:G.
+]
+For quadratic polynomials,
+[
+G_c(f_c(z))=2G_c(z),
+]
+so
+[
+G(z^2+c_1)=2G(z)=G(z^2+c_2)
+]
+for every (z). Since (z^2) ranges over all of (\mathbb C),
+[
+G(w+c_1)=G(w+c_2)\qquad\forall w\in\mathbb C.
+]
+Let (\delta=c_2-c_1). Then (G(u)=G(u+\delta)) for all (u). If (\delta\ne0), this makes (G) periodic, but (G(z)=\log|z|+o(1)) as (z\to\infty), so (G(u+n\delta)\to\infty), a contradiction. Thus (\delta=0), hence (c_1=c_2), contradicting the hypothesis.
+
+Therefore, after possibly swapping (c_1,c_2), there exists a one-sided point
+[
+x\in O_{c_1}^-(\beta_{c_1})
+]
+such that
+[
+x\notin K_{c_2}.
+]
+Because (J_{c_1}) is backward invariant and (\beta_{c_1}\in J_{c_1}), we have (x\in J_{c_1}). Thus
+[
+x\in J_{c_1}\setminus K_{c_2}.
+]
+
+Finally, since (K_{c_2}) is closed and (x\notin K_{c_2}), a small disk around (x) misses (K_{c_2}). Inside that disk,
+[
+W=\mathbb C\setminus(K_{c_1}\cup K_{c_2})
+]
+locally agrees with (\mathbb C\setminus K_{c_1}). Since (x\in J_{c_1}=\partial K_{c_1}), this gives (x\in\partial W). Hence
+[
+x\in \partial W\cap J_{c_1}\setminus K_{c_2},
+]
+and (x) is a one-sided boundary point of (K_{c_1}), chosen in the backward orbit of (\beta_{c_1}).
+
+[1]: https://www.matem.unam.mx/~omar/no-wandering-domains.html "Iteration of Rational Functions"

@@ -1,12 +1,12 @@
 /-
-# `phiB b` is transcendental over `ℂ(z)` for every `‖b‖ ≥ 5`
+# `phiB b` is transcendental over `ℂ(z)` for every `‖b‖ ≥ 4`
 
 The parameterized descent.  The `b = 4` machinery (`U0PhiFourDescent`) generalizes verbatim:
 the compose-with-`p` embedding and the finite-tower descent work for ANY monic nonconstant
 `p ∈ ℂ[z]` (`kappaP`, `descend_algebraicP`), and the germ-field pullback (`germPullback`/`pullAn`)
 was already generic.  Instantiating `p := pPolyB b m` (the escape polynomial of parameter `b`)
 and consuming `Bottcher.bottcher_transcendental_far` at the parameterized far carrier gives
-`phiB_transcendental`: the window branch of EVERY parameter `‖b‖ ≥ 5` is transcendental over
+`phiB_transcendental`: the window branch of EVERY parameter `‖b‖ ≥ 4` is transcendental over
 `ℂ(z)` in the meromorphic field of the annulus.
 -/
 import GaloisForLFunctions.U0.U0PhiFourDescent
@@ -186,11 +186,11 @@ theorem descend_algebraicP {p : Polynomial ℂ} (hp : p.Monic) (h0 : p.natDegree
 /-! ## The parameterized transcendence theorem -/
 
 /-- The window branch at parameter `b` as an analytic germ on the annulus. -/
-noncomputable def phiBAn (b : ℂ) (hb : 5 ≤ ‖b‖) : analyticSubring annW :=
+noncomputable def phiBAn (b : ℂ) (hb : 4 ≤ ‖b‖) : analyticSubring annW :=
   ⟨Germ.coeRingHom (𝓟 annW) (phiB b), ⟨phiB b, (phiB_analytic hb).mono annW_subset_ball, rfl⟩⟩
 
-/-- **`phiB b` is transcendental over `ℂ(z)` for EVERY `‖b‖ ≥ 5` (UNCONDITIONAL).** -/
-theorem phiB_transcendental {b : ℂ} (hb : 5 ≤ ‖b‖) :
+/-- **`phiB b` is transcendental over `ℂ(z)` for EVERY `‖b‖ ≥ 4` (UNCONDITIONAL).** -/
+theorem phiB_transcendental {b : ℂ} (hb : 4 ≤ ‖b‖) :
     letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
     letI : Algebra (RatFunc ℂ) (meroField annW) :=
       (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra

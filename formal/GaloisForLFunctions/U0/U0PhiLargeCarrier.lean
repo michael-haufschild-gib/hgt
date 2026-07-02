@@ -1,7 +1,7 @@
 /-
 # The far carrier at every large parameter, and the exterior Julia geometry
 
-Parameterization of the `b = 4` far carrier (`U0PhiFourFarCarrier`) over `‖b‖ ≥ 5`, plus the
+Parameterization of the `b = 4` far carrier (`U0PhiFourFarCarrier`) over `‖b‖ ≥ 4`, plus the
 geometry that large parameters buy for free:
 
 * `zero_not_mem_filledJulia_large` — every `‖b‖ > 2` is an escape parameter;
@@ -67,12 +67,12 @@ theorem filledJulia_exterior {b : ℂ} (hb : 4 ≤ ‖b‖) {z : ℂ} (hz : z �
 /-- The escape map at parameter `b`: one step into the far field, then `m` more. -/
 noncomputable def pMapB (b : ℂ) (m : ℕ) : ℂ → ℂ := fun z => (quadratic b)^[m] (quadratic b z)
 
-theorem pMapB_mem_farB {b : ℂ} (hb : 5 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
+theorem pMapB_mem_farB {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
     pMapB b m z ∈ farB b :=
   farB_iterate hb m (quadB_mem_farB hb (annW_subset_ball hz))
 
 /-- The dyadic pullback chain lands on `pMapB`. -/
-theorem phiB_pow_pMapB {b : ℂ} (hb : 5 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
+theorem phiB_pow_pMapB {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
     phiB b z ^ (2 ^ (m + 1)) = bottcherCoord b (pMapB b m z) :=
   phiB_pow_iterate hb (annW_subset_ball hz) m
 
@@ -100,7 +100,7 @@ theorem pMapB_analyticOnNhd (b : ℂ) (m : ℕ) : AnalyticOnNhd ℂ (pMapB b m) 
     exact (quadratic_analyticOnNhd_univ_B b).comp ih (mapsTo_univ _ _)
 
 /-- The chain-rule derivative of `pMapB` is nonzero on the annulus. -/
-theorem pMapB_hasDerivAt_ne_zero {b : ℂ} (hb : 5 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
+theorem pMapB_hasDerivAt_ne_zero {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
     ∃ d : ℂ, HasDerivAt (pMapB b m) d z ∧ d ≠ 0 := by
   have hz0 : z ≠ 0 := by
     intro h0
@@ -155,13 +155,13 @@ theorem pMapB_hasDerivAt_ne_zero {b : ℂ} (hb : 5 ≤ ‖b‖) (m : ℕ) {z : �
     rw [he]
     exact hqm.comp z hd
 
-theorem pMapB_deriv_ne_zero {b : ℂ} (hb : 5 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
+theorem pMapB_deriv_ne_zero {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {z : ℂ} (hz : z ∈ annW) :
     deriv (pMapB b m) z ≠ 0 := by
   obtain ⟨d, hd, hdne⟩ := pMapB_hasDerivAt_ne_zero hb m hz
   rw [hd.deriv]
   exact hdne
 
-theorem isOpen_pMapB_image {b : ℂ} (hb : 5 ≤ ‖b‖) (m : ℕ) : IsOpen (pMapB b m '' annW) :=
+theorem isOpen_pMapB_image {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) : IsOpen (pMapB b m '' annW) :=
   isOpen_image_of_analytic_dne isOpen_annW ((pMapB_analyticOnNhd b m).mono (subset_univ _))
     (fun _ hz => pMapB_deriv_ne_zero hb m hz)
 
@@ -171,29 +171,29 @@ theorem isPreconnected_pMapB_image (b : ℂ) (m : ℕ) : IsPreconnected (pMapB b
 theorem pMapB_image_nonempty (b : ℂ) (m : ℕ) : (pMapB b m '' annW).Nonempty :=
   Set.Nonempty.image _ annW_nonempty
 
-theorem pMapB_image_infinite {b : ℂ} (hb : 5 ≤ ‖b‖) (m : ℕ) : (pMapB b m '' annW).Infinite :=
+theorem pMapB_image_infinite {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) : (pMapB b m '' annW).Infinite :=
   infinite_of_isOpen_nonempty (isOpen_pMapB_image hb m) (pMapB_image_nonempty b m)
 
 /-- **The far carrier exists at every large parameter**: for `m` large the image clears the
 Böttcher far bound of `b`. -/
-theorem exists_far_carrier_B {b : ℂ} (hb : 5 ≤ ‖b‖) :
+theorem exists_far_carrier_B {b : ℂ} (hb : 4 ≤ ‖b‖) :
     ∃ m : ℕ, ∀ w ∈ pMapB b m '' annW,
       bottcherFarBound b (zero_not_mem_filledJulia_large (by linarith)) < ‖w‖ := by
   set B : ℝ := bottcherFarBound b (zero_not_mem_filledJulia_large (by linarith)) with hB
-  obtain ⟨m, hm⟩ := pow_unbounded_of_one_lt (B / (7 / 2)) (show (1 : ℝ) < 3 / 2 by norm_num)
+  obtain ⟨m, hm⟩ := pow_unbounded_of_one_lt (B / (57 / 20)) (show (1 : ℝ) < 7 / 5 by norm_num)
   refine ⟨m, ?_⟩
   rintro w ⟨z, hz, rfl⟩
   have hqz : quadratic b z ∈ farB b := quadB_mem_farB hb (annW_subset_ball hz)
-  have hgrow : (3 / 2 : ℝ) ^ m * ‖quadratic b z‖ ≤ ‖pMapB b m z‖ := farB_growth hb m hqz
-  have hqnorm : (7 / 2 : ℝ) ≤ ‖quadratic b z‖ := by
-    have h1 : ‖b‖ - 3 / 2 < ‖quadratic b z‖ := hqz
+  have hgrow : (7 / 5 : ℝ) ^ m * ‖quadratic b z‖ ≤ ‖pMapB b m z‖ := farB_growth hb m hqz
+  have hqnorm : (57 / 20 : ℝ) ≤ ‖quadratic b z‖ := by
+    have h1 : ‖b‖ - 23 / 20 < ‖quadratic b z‖ := hqz
     linarith
-  have hpow : (0 : ℝ) < (3 / 2 : ℝ) ^ m := by positivity
-  have h1 : B < (3 / 2 : ℝ) ^ m * (7 / 2) := by
-    rw [div_lt_iff₀ (by norm_num : (0 : ℝ) < 7 / 2)] at hm
+  have hpow : (0 : ℝ) < (7 / 5 : ℝ) ^ m := by positivity
+  have h1 : B < (7 / 5 : ℝ) ^ m * (57 / 20) := by
+    rw [div_lt_iff₀ (by norm_num : (0 : ℝ) < 57 / 20)] at hm
     linarith
-  calc B < (3 / 2 : ℝ) ^ m * (7 / 2) := h1
-    _ ≤ (3 / 2 : ℝ) ^ m * ‖quadratic b z‖ := by nlinarith
+  calc B < (7 / 5 : ℝ) ^ m * (57 / 20) := h1
+    _ ≤ (7 / 5 : ℝ) ^ m * ‖quadratic b z‖ := by nlinarith
     _ ≤ ‖pMapB b m z‖ := hgrow
 
 end U0PhiLargeCarrier

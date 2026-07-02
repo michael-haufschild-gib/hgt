@@ -1,12 +1,12 @@
 /-
-# The window branch for EVERY large parameter: `phiB b` on the disk, `‖b‖ ≥ 5`
+# The window branch for EVERY large parameter: `phiB b` on the disk, `‖b‖ ≥ 4`
 
-Parameterization of the `b = 4` window construction (`U0PhiFourWindow`) over all `‖b‖ ≥ 5`.
-The far field becomes `farB b = {‖w‖ > ‖b‖ − 3/2}`:
+Parameterization of the `b = 4` window construction (`U0PhiFourWindow`) over all `‖b‖ ≥ 4`.
+The far field becomes `farB b = {‖w‖ > ‖b‖ − 23/20}`:
 
 * one quadratic step from the disk `‖z‖ < 21/20` lands in it (`‖z² + b‖ ≥ ‖b‖ − (21/20)²`);
-* it is forward invariant with escape factor `3/2` and series ratio `‖b/w²‖ ≤ 1/2`
-  (all margins are polynomial inequalities in `‖b‖`, valid from `‖b‖ = 5`).
+* it is forward invariant with escape factor `7/5` and series ratio `‖b/w²‖ ≤ 1/2`
+  (all margins are polynomial inequalities in `‖b‖`, valid from `‖b‖ = 4`).
 
 For complex `b` the one-step image `z² + b` need not avoid the negative real slit, so the branch
 is rotated through the parameter:
@@ -26,28 +26,29 @@ open U0 U0NaturalBoundary U0WindowNormalization
 
 namespace U0PhiLargeWindow
 
-/-- The parameterized far field `{‖w‖ > ‖b‖ − 3/2}`. -/
-def farB (b : ℂ) : Set ℂ := {w : ℂ | ‖b‖ - 3 / 2 < ‖w‖}
+/-- The parameterized far field `{‖w‖ > ‖b‖ − 23/20}`. -/
+def farB (b : ℂ) : Set ℂ := {w : ℂ | ‖b‖ - 23 / 20 < ‖w‖}
 
 theorem isOpen_farB (b : ℂ) : IsOpen (farB b) := isOpen_lt continuous_const continuous_norm
 
-theorem farB_ne_zero {b w : ℂ} (hb : 5 ≤ ‖b‖) (hw : w ∈ farB b) : w ≠ 0 := by
+theorem farB_ne_zero {b w : ℂ} (hb : 4 ≤ ‖b‖) (hw : w ∈ farB b) : w ≠ 0 := by
   intro h0
-  have h1 : ‖b‖ - 3 / 2 < ‖w‖ := hw
+  have h1 : ‖b‖ - 23 / 20 < ‖w‖ := hw
   rw [h0] at h1
   simp at h1
   linarith
 
 /-- One quadratic step grows the norm on `farB`. -/
-theorem farB_invariant {b w : ℂ} (hb : 5 ≤ ‖b‖) (hw : w ∈ farB b) :
+theorem farB_invariant {b w : ℂ} (hb : 4 ≤ ‖b‖) (hw : w ∈ farB b) :
     quadratic b w ∈ farB b := by
-  have h1 : ‖b‖ - 3 / 2 < ‖w‖ := hw
-  show ‖b‖ - 3 / 2 < ‖w ^ 2 + b‖
+  have h1 : ‖b‖ - 23 / 20 < ‖w‖ := hw
+  show ‖b‖ - 23 / 20 < ‖w ^ 2 + b‖
   have htri : ‖w ^ 2‖ ≤ ‖w ^ 2 + b‖ + ‖b‖ := norm_le_add_norm_add _ _
   have hp : ‖w ^ 2‖ = ‖w‖ ^ 2 := norm_pow w 2
-  nlinarith [h1, htri, hb, norm_nonneg w]
+  nlinarith [h1, htri, hb, norm_nonneg w, sq_nonneg (‖b‖ - 4),
+    sq_nonneg (‖w‖ - (‖b‖ - 23 / 20))]
 
-theorem farB_iterate {b : ℂ} (hb : 5 ≤ ‖b‖) (k : ℕ) {w : ℂ} (hw : w ∈ farB b) :
+theorem farB_iterate {b : ℂ} (hb : 4 ≤ ‖b‖) (k : ℕ) {w : ℂ} (hw : w ∈ farB b) :
     (quadratic b)^[k] w ∈ farB b := by
   induction k with
   | zero => simpa using hw
@@ -56,15 +57,15 @@ theorem farB_iterate {b : ℂ} (hb : 5 ≤ ‖b‖) (k : ℕ) {w : ℂ} (hw : w 
     exact farB_invariant hb ih
 
 /-- The series ratio is uniformly small on `farB`: `‖b/w²‖ ≤ 1/2`. -/
-theorem farB_ratio_le {b w : ℂ} (hb : 5 ≤ ‖b‖) (hw : w ∈ farB b) :
+theorem farB_ratio_le {b w : ℂ} (hb : 4 ≤ ‖b‖) (hw : w ∈ farB b) :
     ‖b / w ^ 2‖ ≤ 1 / 2 := by
-  have h1 : ‖b‖ - 3 / 2 < ‖w‖ := hw
+  have h1 : ‖b‖ - 23 / 20 < ‖w‖ := hw
   rw [norm_div, norm_pow]
   rw [div_le_iff₀ (by nlinarith [hb, h1])]
-  nlinarith [h1, hb]
+  nlinarith [h1, hb, sq_nonneg (‖b‖ - 4), sq_nonneg (‖w‖ - (‖b‖ - 23 / 20))]
 
 /-- Geometric term bound on the parameterized far field. -/
-theorem norm_term_le_B {b w : ℂ} (hb : 5 ≤ ‖b‖) (hw : w ∈ farB b) (k : ℕ) :
+theorem norm_term_le_B {b w : ℂ} (hb : 4 ≤ ‖b‖) (hw : w ∈ farB b) (k : ℕ) :
     ‖bottcherLogTerm b w k‖ ≤ (1 / 2 : ℝ) ^ (k + 1) := by
   have hA : (quadratic b)^[k] w ∈ farB b := farB_iterate hb k hw
   have hq : ‖b / ((quadratic b)^[k] w) ^ 2‖ ≤ 1 / 2 := farB_ratio_le hb hA
@@ -81,7 +82,7 @@ theorem norm_term_le_B {b w : ℂ} (hb : 5 ≤ ‖b‖) (hw : w ∈ farB b) (k :
         rw [one_div, inv_pow]
         norm_num
 
-theorem summable_term_B {b w : ℂ} (hb : 5 ≤ ‖b‖) (hw : w ∈ farB b) :
+theorem summable_term_B {b w : ℂ} (hb : 4 ≤ ‖b‖) (hw : w ∈ farB b) :
     Summable (fun k => bottcherLogTerm b w k) := by
   apply Summable.of_norm
   apply Summable.of_nonneg_of_le (fun k => norm_nonneg _) (fun k => norm_term_le_B hb hw k)
@@ -89,7 +90,7 @@ theorem summable_term_B {b w : ℂ} (hb : 5 ≤ ‖b‖) (hw : w ∈ farB b) :
   exact (h.mul_left (1 / 2)).congr fun k => by ring
 
 /-- The Böttcher log-series tail is differentiable on the parameterized far field. -/
-theorem tail_differentiableOn_B {b : ℂ} (hb : 5 ≤ ‖b‖) :
+theorem tail_differentiableOn_B {b : ℂ} (hb : 4 ≤ ‖b‖) :
     DifferentiableOn ℂ (fun w => ∑' k, bottcherLogTerm b w k) (farB b) := by
   have hqd : Differentiable ℂ (quadratic b) := by
     have : (quadratic b) = fun z => z ^ 2 + b := by
@@ -129,21 +130,21 @@ theorem tail_differentiableOn_B {b : ℂ} (hb : 5 ≤ ‖b‖) :
 /-! ## The parameterized branch -/
 
 /-- **The window branch at parameter `b`**: the branch is rotated through `log b`, so it is
-well defined for every complex `b` with `‖b‖ ≥ 5` — no slit-plane condition on `z² + b`. -/
+well defined for every complex `b` with `‖b‖ ≥ 4` — no slit-plane condition on `z² + b`. -/
 noncomputable def phiB (b z : ℂ) : ℂ :=
   Complex.exp ((2 : ℂ)⁻¹ * (Complex.log b + Complex.log (1 + z ^ 2 / b)
     + ∑' k, bottcherLogTerm b (quadratic b z) k))
 
 theorem phiB_ne_zero (b z : ℂ) : phiB b z ≠ 0 := Complex.exp_ne_zero _
 
-theorem b_ne_zero {b : ℂ} (hb : 5 ≤ ‖b‖) : b ≠ 0 := by
+theorem b_ne_zero {b : ℂ} (hb : 4 ≤ ‖b‖) : b ≠ 0 := by
   intro h0
   rw [h0] at hb
   simp at hb
   linarith
 
 /-- On the window disk the normalized ratio stays in the right half-plane. -/
-theorem ratio_re_ge {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
+theorem ratio_re_ge {b z : ℂ} (hb : 4 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
     (1 / 2 : ℝ) ≤ (1 + z ^ 2 / b).re := by
   have hz' : ‖z‖ < 21 / 20 := by simpa [mem_ball, dist_zero_right] using hz
   have hb0 : (0 : ℝ) < ‖b‖ := by linarith
@@ -157,7 +158,7 @@ theorem ratio_re_ge {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) 
   rw [h1]
   linarith [habs.1]
 
-theorem ratio_ne_zero {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
+theorem ratio_ne_zero {b z : ℂ} (hb : 4 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
     (1 : ℂ) + z ^ 2 / b ≠ 0 := by
   intro h0
   have := ratio_re_ge hb hz
@@ -165,32 +166,32 @@ theorem ratio_ne_zero {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ
   simp at this
   linarith
 
-theorem ratio_mem_slitPlane {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
+theorem ratio_mem_slitPlane {b z : ℂ} (hb : 4 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
     (1 : ℂ) + z ^ 2 / b ∈ slitPlane := by
   refine Or.inl ?_
   have := ratio_re_ge hb hz
   linarith
 
 /-- One quadratic step from the disk lands in the parameterized far field. -/
-theorem quadB_mem_farB {b z : ℂ} (_hb : 5 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
+theorem quadB_mem_farB {b z : ℂ} (_hb : 4 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
     quadratic b z ∈ farB b := by
   have hz' : ‖z‖ < 21 / 20 := by simpa [mem_ball, dist_zero_right] using hz
-  show ‖b‖ - 3 / 2 < ‖z ^ 2 + b‖
+  show ‖b‖ - 23 / 20 < ‖z ^ 2 + b‖
   have htri : ‖b‖ ≤ ‖z ^ 2 + b‖ + ‖z ^ 2‖ := by
     calc ‖b‖ = ‖z ^ 2 + b - z ^ 2‖ := by ring_nf
       _ ≤ ‖z ^ 2 + b‖ + ‖z ^ 2‖ := norm_sub_le _ _
   have hp : ‖z ^ 2‖ = ‖z‖ ^ 2 := norm_pow z 2
   nlinarith [htri, hz', norm_nonneg z]
 
-theorem quadB_ne_zero {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
+theorem quadB_ne_zero {b z : ℂ} (hb : 4 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
     z ^ 2 + b ≠ 0 := by
   have hfar : quadratic b z ∈ farB b := quadB_mem_farB hb hz
   have := farB_ne_zero hb hfar
   simpa [quadratic_apply] using this
 
 /-- The branch squares to the genuine Böttcher coordinate one step ahead — branch-free at the
-`exp` level, for every `‖b‖ ≥ 5`. -/
-theorem phiB_sq {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
+`exp` level, for every `‖b‖ ≥ 4`. -/
+theorem phiB_sq {b z : ℂ} (hb : 4 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 / 20)) :
     phiB b z ^ 2 = bottcherCoord b (quadratic b z) := by
   have hb0 : b ≠ 0 := b_ne_zero hb
   have hrne : (1 : ℂ) + z ^ 2 / b ≠ 0 := ratio_ne_zero hb hz
@@ -224,7 +225,7 @@ theorem phiB_sq {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ ball (0 : ℂ) (21 
         rw [hδ, mul_one]
 
 /-- **`phiB b` is analytic on the whole disk `ball 0 (21/20)` — across the unit circle.** -/
-theorem phiB_analytic {b : ℂ} (hb : 5 ≤ ‖b‖) :
+theorem phiB_analytic {b : ℂ} (hb : 4 ≤ ‖b‖) :
     AnalyticOnNhd ℂ (phiB b) (ball (0 : ℂ) (21 / 20)) := by
   apply DifferentiableOn.analyticOnNhd _ isOpen_ball
   intro z hz
@@ -253,11 +254,11 @@ theorem phiB_analytic {b : ℂ} (hb : 5 ≤ ‖b‖) :
 /-! ## The functional equation and escape growth on the far field -/
 
 /-- **The Böttcher functional equation on the parameterized far field** — branch-free at the
-`exp` level: `φ(z² + b) = φ(z)²` for every `‖z‖ > ‖b‖ − 3/2`. -/
-theorem bottcherCoord_quadratic_farB {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ farB b) :
+`exp` level: `φ(z² + b) = φ(z)²` for every `‖z‖ > ‖b‖ − 23/20`. -/
+theorem bottcherCoord_quadratic_farB {b z : ℂ} (hb : 4 ≤ ‖b‖) (hz : z ∈ farB b) :
     bottcherCoord b (quadratic b z) = (bottcherCoord b z) ^ 2 := by
   have hz0 : z ≠ 0 := farB_ne_zero hb hz
-  have hz2 : ‖b‖ - 3 / 2 < ‖z‖ := hz
+  have hz2 : ‖b‖ - 23 / 20 < ‖z‖ := hz
   have hzsq : z ^ 2 + b ≠ 0 := by
     have hfar : quadratic b z ∈ farB b := farB_invariant hb hz
     have := farB_ne_zero hb hfar
@@ -331,16 +332,16 @@ theorem bottcherCoord_quadratic_farB {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z �
         congr 1
         ring
 
-/-- **Escape growth on the parameterized far field**: factor `3/2` per quadratic step. -/
-theorem farB_growth {b : ℂ} (hb : 5 ≤ ‖b‖) (m : ℕ) {w : ℂ} (hw : w ∈ farB b) :
-    (3 / 2 : ℝ) ^ m * ‖w‖ ≤ ‖(quadratic b)^[m] w‖ := by
+/-- **Escape growth on the parameterized far field**: factor `7/5` per quadratic step. -/
+theorem farB_growth {b : ℂ} (hb : 4 ≤ ‖b‖) (m : ℕ) {w : ℂ} (hw : w ∈ farB b) :
+    (7 / 5 : ℝ) ^ m * ‖w‖ ≤ ‖(quadratic b)^[m] w‖ := by
   induction m with
   | zero =>
     simp
   | succ m ihm =>
     have hmem : (quadratic b)^[m] w ∈ farB b := farB_iterate hb m hw
-    have hx : ‖b‖ - 3 / 2 < ‖(quadratic b)^[m] w‖ := hmem
-    have hstep : (3 / 2 : ℝ) * ‖(quadratic b)^[m] w‖ ≤ ‖(quadratic b)^[m + 1] w‖ := by
+    have hx : ‖b‖ - 23 / 20 < ‖(quadratic b)^[m] w‖ := hmem
+    have hstep : (7 / 5 : ℝ) * ‖(quadratic b)^[m] w‖ ≤ ‖(quadratic b)^[m + 1] w‖ := by
       rw [Function.iterate_succ_apply']
       have hq : quadratic b ((quadratic b)^[m] w)
           = ((quadratic b)^[m] w) ^ 2 + b := rfl
@@ -348,14 +349,15 @@ theorem farB_growth {b : ℂ} (hb : 5 ≤ ‖b‖) (m : ℕ) {w : ℂ} (hw : w �
       have h1 : ‖((quadratic b)^[m] w) ^ 2‖ ≤ ‖((quadratic b)^[m] w) ^ 2 + b‖ + ‖b‖ :=
         norm_le_add_norm_add _ _
       rw [norm_pow] at h1
-      nlinarith [hx, hb]
-    calc (3 / 2 : ℝ) ^ (m + 1) * ‖w‖ = (3 / 2) * ((3 / 2 : ℝ) ^ m * ‖w‖) := by ring
-      _ ≤ (3 / 2) * ‖(quadratic b)^[m] w‖ := by nlinarith [ihm]
+      nlinarith [hx, hb, sq_nonneg (‖b‖ - 4),
+        sq_nonneg (‖(quadratic b)^[m] w‖ - (‖b‖ - 23 / 20))]
+    calc (7 / 5 : ℝ) ^ (m + 1) * ‖w‖ = (7 / 5) * ((7 / 5 : ℝ) ^ m * ‖w‖) := by ring
+      _ ≤ (7 / 5) * ‖(quadratic b)^[m] w‖ := by nlinarith [ihm]
       _ ≤ ‖(quadratic b)^[m + 1] w‖ := hstep
 
 /-- **The dyadic pullback chain at parameter `b`**: on the window,
 `phiB^(2^(m+1))` is the genuine Böttcher coordinate `m + 1` quadratic steps ahead. -/
-theorem phiB_pow_iterate {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ Metric.ball (0 : ℂ) (21 / 20))
+theorem phiB_pow_iterate {b z : ℂ} (hb : 4 ≤ ‖b‖) (hz : z ∈ Metric.ball (0 : ℂ) (21 / 20))
     (m : ℕ) :
     phiB b z ^ (2 ^ (m + 1)) = bottcherCoord b ((quadratic b)^[m] (quadratic b z)) := by
   induction m with
@@ -370,11 +372,11 @@ theorem phiB_pow_iterate {b z : ℂ} (hb : 5 ≤ ‖b‖) (hz : z ∈ Metric.bal
 
 /-! ## The window engine instance at parameter `b` -/
 
-/-- **`u₀ ⟂ phiB b`, separability-free, for every `‖b‖ ≥ 5`.**  A polynomial relation
+/-- **`u₀ ⟂ phiB b`, separability-free, for every `‖b‖ ≥ 4`.**  A polynomial relation
 `P(z, phiB b z, u₀ z) = 0` on a nonempty open subset of the annulus `{1 < ‖z‖ < 21/20}` with some
 positive-index coefficient not identically zero is impossible.  The natural-boundary window engine
 is φ-generic; only the constructed branch was parameter-specific. -/
-theorem u0_phiB_no_relation_nondegenerate {b : ℂ} (hb : 5 ≤ ‖b‖)
+theorem u0_phiB_no_relation_nondegenerate {b : ℂ} (hb : 4 ≤ ‖b‖)
     (P : (Polynomial (Polynomial ℂ))[X]) {i₀ : ℕ} (hi₀ : 1 ≤ i₀)
     (hnondeg : ∃ z ∈ Metric.ball (0 : ℂ) (21 / 20) ∩ Ext,
       coeffFun (phiB b) (P.coeff i₀) z ≠ 0)
