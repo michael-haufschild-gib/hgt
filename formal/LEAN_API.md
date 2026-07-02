@@ -8,8 +8,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
-| `u0_pui` | `GaloisForLFunctions.U0` | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4464 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `u0_pui` | `GaloisForLFunctions.U0` | 319 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4466 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -507,6 +507,26 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `continuesAcross_of_inter` | `GaloisForLFunctions.U0.U0PhiCircleWindow` | `formal/GaloisForLFunctions/U0/U0PhiCircleWindow.lean:38` | Window localization of continuation.** Continuing `f` across `z₀` with respect to the windowed domain `Ω ∩ D` is continuing it with respect to `D`, once `Ω` is a neighbourhood of ` |
 | theorem | `u0_windowed_relation_false` | `GaloisForLFunctions.U0.U0PhiCircleWindow` | `formal/GaloisForLFunctions/U0/U0PhiCircleWindow.lean:51` | The windowed relation contradiction (coefficient form).** Coefficients `a i` analytic on an open preconnected window `Ω` containing a unit-circle point `z₁`, with `Ω ∩ Ext` preconn |
 | theorem | `u0_phi_windowed_no_relation_3var` | `GaloisForLFunctions.U0.U0PhiCircleWindow` | `formal/GaloisForLFunctions/U0/U0PhiCircleWindow.lean:128` | u₀ ⟂ φ, circle-window form (the corrected reduction).** No nonzero polynomial relation `P(z, φ(z), u₀(z)) = 0` of positive `u₀`-degree can hold on a nonempty open piece `V` of the  |
+| def | `annW` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:24` | The window annulus `{1 < ‖z‖ < 21/20}` — the carrier of the `b = 4` capstone. |
+| theorem | `isOpen_annW` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:26` |  |
+| theorem | `isPreconnected_annW` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:28` |  |
+| theorem | `annW_subset_ball` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:30` |  |
+| theorem | `annW_subset_Ext` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:32` |  |
+| theorem | `annW_nonempty` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:34` |  |
+| theorem | `infinite_of_isOpen_nonempty` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:46` | A nonempty open subset of `ℂ` is infinite (it contains a real segment). |
+| theorem | `annW_infinite` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:66` |  |
+| theorem | `zero_not_mem_filledJulia_four` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:70` | `c = 4` is an escape parameter**: the critical orbit `0 ↦ 4 ↦ 20` leaves every bound. |
+| theorem | `pMap_mem_farW` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:92` |  |
+| theorem | `phiFour_pow_pMap` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:97` | The dyadic pullback chain lands on `pMap`: on the annulus, `phiFour^(2^(m+1)) = bottcherCoord 4 ∘ pMap m`. |
+| theorem | `quadratic_analyticOnNhd_univ` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:101` |  |
+| theorem | `pMap_analyticOnNhd` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:109` |  |
+| theorem | `pMap_hasDerivAt_ne_zero` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:126` | The chain-rule derivative of `pMap m` is nonzero on the annulus: the first factor is `2z` (`z ≠ 0` on `annW`), all later factors are `2·(far-field iterate)` (nonzero on `farW`). |
+| theorem | `pMap_deriv_ne_zero` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:181` |  |
+| theorem | `isOpen_pMap_image` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:187` | The far image is open**: `pMap m` is analytic with nonvanishing derivative on the annulus. |
+| theorem | `isPreconnected_pMap_image` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:191` |  |
+| theorem | `pMap_image_nonempty` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:194` |  |
+| theorem | `pMap_image_infinite` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:197` |  |
+| theorem | `exists_far_carrier` | `GaloisForLFunctions.U0.U0PhiFourFarCarrier` | `formal/GaloisForLFunctions/U0/U0PhiFourFarCarrier.lean:202` | The far carrier exists**: for `m` large enough, the open connected infinite image `pMap m '' annW` lies entirely beyond the Böttcher far bound of `c = 4`. |
 | def | `farW` | `GaloisForLFunctions.U0.U0PhiFourWindow` | `formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean:35` | The `b = 4` window far field `{‖w‖ > 289/100}`: reached from the disk `‖z‖ < 21/20` in one quadratic step, forward invariant, and inside the geometric-convergence regime of the Böt |
 | theorem | `isOpen_farW` | `GaloisForLFunctions.U0.U0PhiFourWindow` | `formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean:37` |  |
 | theorem | `farW_invariant` | `GaloisForLFunctions.U0.U0PhiFourWindow` | `formal/GaloisForLFunctions/U0/U0PhiFourWindow.lean:40` | One quadratic step grows the norm on `farW`: `‖w² + 4‖ ≥ ‖w‖² − 4 > 289/100`. |
@@ -2168,6 +2188,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `exists_rotInvariant_a2` | `GaloisForLFunctions.Bottcher.DeckAnnulus` | `formal/GaloisForLFunctions/Bottcher/DeckAnnulus.lean:99` | The genuine second coordinate `a₂(ξ) = φ_{c₂}(ψ₁(ξ^{2ⁿ}))` as an analytic germ on the cover.** With `ψ₁ = φ_{c₁}^{-1}` (the inverse Böttcher of `c₁` on its far value field, `FarFie |
 | theorem | `a2_rotation_invariant` | `GaloisForLFunctions.Bottcher.DeckAnnulus` | `formal/GaloisForLFunctions/Bottcher/DeckAnnulus.lean:121` | `a₂` is fixed by the deck.** `a₂(ξ) = φ_{c₂}(ψ₁(ξ^{2ⁿ}))` depends on `ξ` only through the deck-invariant `ξ^{2ⁿ}`, so rotation by any `2ⁿ`-th root of unity `ζ₀` fixes it (`pow_comp |
 | theorem | `monoF_step_from_inverse` | `GaloisForLFunctions.Bottcher.DeckAnnulus` | `formal/GaloisForLFunctions/Bottcher/DeckAnnulus.lean:138` | Per-depth `hliftF` step from the inverse-Böttcher data (live deck route, fully assembled).** Combining `exists_rotInvariant_a2` (the genuine `φ_{c₂}` germ `a₂`), `a2_rotation_invar |
+| theorem | `exists_rotInvariant_carried` | `GaloisForLFunctions.Bottcher.DeckAnnulusCarried` | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusCarried.lean:24` | The carried germ, general form.** Any function `h` analytic on a carrier `Ω` hit by the tower base points `ψ₁(ξ^{2ⁿ})` defines an element of the cover's analytic subring. |
+| theorem | `monoF_step_from_inverse_carried` | `GaloisForLFunctions.Bottcher.DeckAnnulusCarried` | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusCarried.lean:48` | Per-depth σ-step with a general carried coordinate.** Verbatim `monoF_step_from_inverse` with the carried far-field composite `bottcherCoord c₂ ∘ ψ₁` replaced by `h ∘ ψ₁` for any ` |
 | theorem | `isPreconnected_exterior` | `GaloisForLFunctions.Bottcher.DeckAnnulusData` | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean:32` | The exterior annulus `{R' < ‖ξ‖}` is preconnected.** It is the continuous image of the convex half-plane `{w | log R' < w.re}` under `exp` (`‖exp w‖ = exp w.re`, and `exp` is onto  |
 | theorem | `isOpen_exterior` | `GaloisForLFunctions.Bottcher.DeckAnnulusData` | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean:51` | The exterior annulus is open.** |
 | theorem | `nonempty_exterior` | `GaloisForLFunctions.Bottcher.DeckAnnulusData` | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean:55` | The exterior annulus is nonempty** (it contains the real point `R'+1`). |

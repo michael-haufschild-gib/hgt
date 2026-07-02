@@ -54,7 +54,7 @@ theorem infinite_of_isOpen_nonempty {S : Set ℂ} (hSo : IsOpen S) (hSne : S.Non
     have : z₀ + (t : ℂ) - z₀ = (t : ℂ) := by ring
     rw [this, Complex.norm_real, Real.norm_eq_abs, abs_of_pos ht0]
     linarith
-  have hIoo : (Ioo (0 : ℝ) (ε / 2)).Infinite := Set.Ioo.infinite (by linarith)
+  have hIoo : (Ioo (0 : ℝ) (ε / 2)).Infinite := Set.Ioo_infinite (by linarith)
   have hinj : InjOn (fun t : ℝ => z₀ + (t : ℂ)) (Ioo 0 (ε / 2)) := by
     intro a _ b _ hab
     have h1 : (a : ℂ) = (b : ℂ) := by
@@ -186,13 +186,13 @@ theorem pMap_deriv_ne_zero (m : ℕ) {z : ℂ} (hz : z ∈ annW) : deriv (pMap m
 /-- **The far image is open**: `pMap m` is analytic with nonvanishing derivative on the annulus. -/
 theorem isOpen_pMap_image (m : ℕ) : IsOpen (pMap m '' annW) :=
   isOpen_image_of_analytic_dne isOpen_annW ((pMap_analyticOnNhd m).mono (subset_univ _))
-    (fun z hz => pMap_deriv_ne_zero m hz)
+    (fun _ hz => pMap_deriv_ne_zero m hz)
 
 theorem isPreconnected_pMap_image (m : ℕ) : IsPreconnected (pMap m '' annW) :=
   isPreconnected_annW.image _ (((pMap_analyticOnNhd m).continuousOn).mono (subset_univ _))
 
 theorem pMap_image_nonempty (m : ℕ) : (pMap m '' annW).Nonempty :=
-  annW_nonempty.image _
+  Set.Nonempty.image _ annW_nonempty
 
 theorem pMap_image_infinite (m : ℕ) : (pMap m '' annW).Infinite :=
   infinite_of_isOpen_nonempty (isOpen_pMap_image m) (pMap_image_nonempty m)
