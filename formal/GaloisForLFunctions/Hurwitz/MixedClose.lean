@@ -70,7 +70,7 @@ noncomputable def mixedDiffA {N : ℕ} (h : Fin (N + 1) → Polynomial ℂ) (T :
     (A : ℕ → Fin (N + 1) → Polynomial ℂ) (t : ℕ) (i : Fin (N + 1)) : Polynomial ℂ :=
   (if t ≤ T then A t i else 0)
     + (if t = 0 then (h i).comp (Polynomial.X - Polynomial.C 1) else 0)
-    - (if ht : 1 ≤ t then
+    - (if _ht : 1 ≤ t then
         (if t - 1 ≤ T then (A (t - 1) i).comp (Polynomial.X - Polynomial.C 1) else 0)
       else 0)
 
@@ -288,7 +288,6 @@ theorem cpow_nat_shift {w : ℂ} (hw : w ≠ 0) {i N : ℕ} (hiN : i ≤ N) (s :
     ← Complex.cpow_add _ _ hw, ← Complex.cpow_add _ _ hw]
   congr 1
   rw [Nat.cast_sub hiN]
-  push_cast
   ring
 
 /-- Beyond ray `T+1` the differenced coefficients vanish. -/
@@ -575,5 +574,136 @@ theorem constants_harmonic_kill {N : ℕ} {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k 
   refine HurwitzNonRat.shiftedPowerPolynomial_const_coeff_eq_zero (N := N) (c := c) ?_ i
   rw [HurwitzNonRat.shiftedPowerPolynomial]
   exact hconst
+
+end HurwitzMixedClose
+
+namespace HurwitzMixedClose
+
+/-- **The mixed multi-ray harmonic kill.**  In any eventual mixed harmonic/shifted-power
+multi-ray relation with `s ∉ ℤ`, the harmonic coefficient polynomials vanish.  Induction on the
+harmonic degree bound: one difference lowers it, and the constants case is
+`constants_harmonic_kill`. -/
+theorem mixed_multiRay_harmonic_kill {N : ℕ} {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k : ℂ)) :
+    ∀ (m : ℕ) (h : Fin (N + 1) → Polynomial ℂ), (∀ i, h i = 0 ∨ (h i).natDegree < m) →
+    ∀ (T : ℕ) (A : ℕ → Fin (N + 1) → Polynomial ℂ) (Q : Polynomial ℂ) (M : ℕ),
+      (∀ n : ℕ, M ≤ n → T < n →
+        (∑ i : Fin (N + 1), (h i).eval ((n : ℂ)) * harmonicTail (N := N) s i n)
+          + (∑ t ∈ Finset.range (T + 1), ∑ i : Fin (N + 1),
+              (A t i).eval ((n : ℂ)) * (((n - t : ℕ)) : ℂ) ^ (-(s + (i : ℂ))))
+          = Q.eval ((n : ℂ))) →
+      ∀ i, h i = 0 := by
+  intro m
+  induction m with
+  | zero =>
+    intro h hbound T A Q M hrel i
+    rcases hbound i with h0 | h0
+    · exact h0
+    · omega
+  | succ m ih =>
+    intro h hbound T A Q M hrel
+    have hdiff := mixed_diff_step (N := N) (s := s) h T A Q M hrel
+    have hbound' : ∀ i, (h i - (h i).comp (Polynomial.X - Polynomial.C 1)) = 0
+        ∨ (h i - (h i).comp (Polynomial.X - Polynomial.C 1)).natDegree < m := by
+      intro i
+      by_cases hzero : h i = 0
+      · left
+        rw [hzero]
+        simp
+      · rcases natDegree_sub_comp_lt (Q := h i) hzero with hz | hlt
+        · left
+          exact hz
+        · right
+          rcases hbound i with h0 | hdeg
+          · exact absurd h0 hzero
+          · omega
+    have hΔ := ih (fun i => h i - (h i).comp (Polynomial.X - Polynomial.C 1)) hbound'
+      (T + 1) (mixedDiffA h T A) (Q - Q.comp (Polynomial.X - Polynomial.C 1)) (M + 1) hdiff
+    have hconst : ∀ i, h i = Polynomial.C ((h i).eval 0) := by
+      intro i
+      apply eq_C_of_comp_X_sub_one_eq
+      exact (sub_eq_zero.mp (hΔ i)).symm
+    intro i
+    have hc := constants_harmonic_kill (N := N) hs (fun i => (h i).eval 0) T A Q M ?_ i
+    · rw [hconst i, hc]
+      simp
+    · intro n hMn hTn
+      have horig := hrel n hMn hTn
+      have hsum : (∑ i : Fin (N + 1),
+          (Polynomial.C ((h i).eval 0)).eval ((n : ℂ)) * harmonicTail (N := N) s i n)
+          = ∑ i : Fin (N + 1), (h i).eval ((n : ℂ)) * harmonicTail (N := N) s i n := by
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [← hconst i]
+      rw [hsum]
+      exact horig
+
+/-- **`MixedTailIndependent` holds for every nonintegral `s` — proven.**  This discharges the
+single unproven leaf of the all-N row-descent chain. -/
+theorem mixedTailIndependent_proved {N : ℕ} {s : ℂ} (hsZ : ∀ k : ℤ, s ≠ (k : ℂ)) :
+    MixedTailIndependent N s := by
+  intro hcoeff scoeff P M hrel
+  have hh : ∀ i, hcoeff i = 0 := by
+    apply mixed_multiRay_harmonic_kill hsZ
+      ((Finset.sup Finset.univ fun i => (hcoeff i).natDegree) + 1) hcoeff ?_ 0
+      (fun _ i => scoeff i) P M ?_
+    · intro i
+      right
+      exact Nat.lt_succ_of_le (Finset.le_sup (f := fun i => (hcoeff i).natDegree) (Finset.mem_univ i))
+    · intro n hMn h0n
+      have horig := hrel n hMn
+      rw [Finset.sum_range_one]
+      have hshape : (∑ i : Fin (N + 1),
+          (scoeff i).eval ((n : ℂ)) * (((n - 0 : ℕ)) : ℂ) ^ (-(s + (i : ℂ))))
+          = ∑ i : Fin (N + 1), (scoeff i).eval ((n : ℂ)) * ((n : ℂ)) ^ (-(s + (i : ℂ))) := by
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [Nat.sub_zero]
+      rw [hshape]
+      exact horig
+  exact mixedTailIndependent_zero_harmonic_part hsZ hcoeff scoeff P hh hrel
+
+end HurwitzMixedClose
+
+namespace HurwitzMixedClose
+
+/-- **Harmonic-tail rational independence — proven** for every nonintegral `s`.  This was the
+last analytic input of the all-`N` row descent. -/
+theorem rationalTailIndependent_harmonic_proved {N : ℕ} {s : ℂ}
+    (hsZ : ∀ k : ℤ, s ≠ (k : ℂ)) :
+    RationalTailIndependent (N := N) (harmonicTail (N := N) s) :=
+  rationalTailIndependent_harmonic_of_mixedTailIndependent hsZ
+    (mixedTailIndependent_proved hsZ)
+
+/-- The mixed pole-root bridge — proven. -/
+theorem mixedPoleRootInput_proved {N : ℕ} {s : ℂ} (hsZ : ∀ k : ℤ, s ≠ (k : ℂ)) :
+    MixedPoleRootInput N s :=
+  mixedPoleRootInput_of_mixedTailIndependent (mixedTailIndependent_proved hsZ)
+
+/-- The harmonic pole-root bridge — proven. -/
+theorem harmonicPoleRootInput_proved {N : ℕ} {s : ℂ} (hsZ : ∀ k : ℤ, s ≠ (k : ℂ)) :
+    HarmonicPoleRootInput N s :=
+  harmonicPoleRootInput_of_rationalTailIndependent (rationalTailIndependent_harmonic_proved hsZ)
+
+/-- Actual shifted-Hurwitz tail independence `n ↦ ζ(s+i,−n)` — unconditional. -/
+theorem rationalTailIndependent_hzeta_shift_proved {N : ℕ} {s : ℂ} (hs1 : 1 < s.re)
+    (hsZ : ∀ k : ℤ, s ≠ (k : ℂ)) :
+    RationalTailIndependent (N := N)
+      (fun i n => hzeta (s + (i : ℂ)) (-(n : ℂ))) :=
+  rationalTailIndependent_hzeta_shift_neg_nat_of_harmonic hs1
+    (rationalTailIndependent_harmonic_proved hsZ)
+
+/-- **The all-`N` Hurwitz row/constant close — unconditional.**  Every eventual row relation in
+the genuine shifted Hurwitz values `ζ(s+i,−n)` kills all row coefficients and the constant. -/
+theorem rows_and_constant_close_unconditional {N : ℕ} {s : ℂ} (hs1 : 1 < s.re)
+    (hsZ : ∀ k : ℤ, s ≠ (k : ℂ))
+    (q : Fin (N + 1) → Fin (N + 1) → Polynomial ℂ)
+    (l : Fin (N + 1) → Polynomial ℂ) (cc : Polynomial ℂ)
+    (hrow : ∀ j : Fin (N + 1), ∃ M : ℕ, ∀ n, M ≤ n →
+      (l j).eval (-(n : ℂ)) +
+        (∑ i : Fin (N + 1),
+          (q i j).eval (-(n : ℂ)) *
+            (2 * hzeta (s + (i : ℂ)) (-(n : ℂ)))) = 0)
+    (hcc : ∃ M : ℕ, ∀ n, M ≤ n → cc.eval (-(n : ℂ)) = 0) :
+    (∀ i j, q i j = 0) ∧ (∀ j, l j = 0) ∧ cc = 0 :=
+  rows_and_constant_close_of_hzeta_shift_neg_nat_of_harmonic hs1
+    (rationalTailIndependent_harmonic_proved hsZ) q l cc hrow hcc
 
 end HurwitzMixedClose

@@ -152,3 +152,164 @@ theorem mem_slitAnnulus_of_arg_ne {r R θ₀ : ℝ} (hr : 0 < r) {z : ℂ}
     exact h3.symm
 
 end Bottcher
+
+namespace Bottcher
+
+/-- The open log-coordinate box over radii `(r, R)` and arguments `(α, β)`. -/
+def arcBox (r R α β : ℝ) : Set ℂ :=
+  {ξ : ℂ | Real.log r < ξ.re ∧ ξ.re < Real.log R ∧ α < ξ.im ∧ ξ.im < β}
+
+/-- The arc annulus: radii `(r, R)`, arguments `(α, β)`. -/
+def arcAnnulus (r R α β : ℝ) : Set ℂ := Complex.exp '' arcBox r R α β
+
+theorem isOpen_arcBox (r R α β : ℝ) : IsOpen (arcBox r R α β) := by
+  have h : arcBox r R α β =
+      ({ξ : ℂ | Real.log r < ξ.re} ∩ {ξ : ℂ | ξ.re < Real.log R})
+        ∩ ({ξ : ℂ | α < ξ.im} ∩ {ξ : ℂ | ξ.im < β}) := by
+    ext ξ
+    simp only [arcBox, mem_setOf_eq, mem_inter_iff]
+    tauto
+  rw [h]
+  exact (((isOpen_lt continuous_const continuous_re).inter
+    (isOpen_lt continuous_re continuous_const)).inter
+    ((isOpen_lt continuous_const continuous_im).inter
+      (isOpen_lt continuous_im continuous_const)))
+
+theorem convex_arcBox (r R α β : ℝ) : Convex ℝ (arcBox r R α β) := by
+  have h : arcBox r R α β =
+      ({ξ : ℂ | Real.log r < ξ.re} ∩ {ξ : ℂ | ξ.re < Real.log R})
+        ∩ ({ξ : ℂ | α < ξ.im} ∩ {ξ : ℂ | ξ.im < β}) := by
+    ext ξ
+    simp only [arcBox, mem_setOf_eq, mem_inter_iff]
+    tauto
+  rw [h]
+  exact (((convex_halfSpace_re_gt _).inter (convex_halfSpace_re_lt _)).inter
+    ((convex_halfSpace_im_gt _).inter (convex_halfSpace_im_lt _)))
+
+theorem exp_injOn_arcBox (r R α β : ℝ) (hβα : β ≤ α + 2 * Real.pi) :
+    Set.InjOn Complex.exp (arcBox r R α β) := by
+  rintro a ⟨_, _, ha3, ha4⟩ b ⟨_, _, hb3, hb4⟩ hab
+  obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp hab
+  have him : a.im = b.im + (n : ℝ) * (2 * Real.pi) := by
+    have h := congrArg Complex.im hn
+    simpa [Complex.add_im, Complex.mul_im, Complex.mul_re] using h
+  have hn0 : n = 0 := by
+    by_contra hne
+    have h1 : (1:ℝ) ≤ |(n:ℝ)| := by exact_mod_cast Int.one_le_abs hne
+    have h2 : |a.im - b.im| < 2 * Real.pi := by
+      rw [abs_lt]
+      constructor <;> nlinarith [Real.pi_pos]
+    rw [him] at h2
+    have h3 : |(n:ℝ) * (2 * Real.pi)| = |(n:ℝ)| * (2 * Real.pi) := by
+      rw [abs_mul, abs_of_pos (by positivity : (0:ℝ) < 2 * Real.pi)]
+    have h4 : |b.im + (n:ℝ) * (2 * Real.pi) - b.im| = |(n:ℝ) * (2 * Real.pi)| := by
+      congr 1
+      ring
+    rw [h4, h3] at h2
+    nlinarith [Real.pi_pos]
+  rw [hn0] at hn
+  simpa using hn
+
+theorem isOpen_arcAnnulus (r R α β : ℝ) : IsOpen (arcAnnulus r R α β) :=
+  Complex.isOpenMap_exp _ (isOpen_arcBox r R α β)
+
+theorem arcAnnulus_subset {r R : ℝ} (α β : ℝ) (hr : 0 < r) (hrR : r < R) :
+    arcAnnulus r R α β ⊆ annulusSet r R := by
+  rintro z ⟨ξ, ⟨h1, h2, _, _⟩, rfl⟩
+  have hR : 0 < R := lt_trans hr hrR
+  constructor
+  · rw [Complex.norm_exp]
+    calc r = Real.exp (Real.log r) := (Real.exp_log hr).symm
+      _ < Real.exp ξ.re := Real.exp_lt_exp.mpr h1
+  · rw [Complex.norm_exp]
+    calc Real.exp ξ.re < Real.exp (Real.log R) := Real.exp_lt_exp.mpr h2
+      _ = R := Real.exp_log hR
+
+theorem isConnected_arcAnnulus {r R α β : ℝ} (hr : 0 < r) (hrR : r < R) (hαβ : α < β) :
+    IsConnected (arcAnnulus r R α β) := by
+  have hne : (arcBox r R α β).Nonempty := by
+    refine ⟨(((Real.log r + Real.log R) / 2 : ℝ) : ℂ)
+      + (((α + β) / 2 : ℝ) : ℂ) * Complex.I, ?_, ?_, ?_, ?_⟩ <;>
+      simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
+        Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im]
+    · linarith [Real.log_lt_log hr hrR]
+    · linarith [Real.log_lt_log hr hrR]
+    · linarith
+    · linarith
+  have hconn : IsConnected (arcBox r R α β) :=
+    ⟨hne, (convex_arcBox r R α β).isPreconnected⟩
+  exact hconn.image _ Complex.continuous_exp.continuousOn
+
+theorem isSimplyConnected_arcAnnulus {r R α β : ℝ} (hr : 0 < r) (hrR : r < R)
+    (hαβ : α < β) (hβα : β ≤ α + 2 * Real.pi) :
+    IsSimplyConnected (arcAnnulus r R α β) := by
+  have hne : (arcBox r R α β).Nonempty := by
+    refine ⟨(((Real.log r + Real.log R) / 2 : ℝ) : ℂ)
+      + (((α + β) / 2 : ℝ) : ℂ) * Complex.I, ?_, ?_, ?_, ?_⟩ <;>
+      simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
+        Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im]
+    · linarith [Real.log_lt_log hr hrR]
+    · linarith [Real.log_lt_log hr hrR]
+    · linarith
+    · linarith
+  have hemb : IsEmbedding fun ξ : arcBox r R α β => Complex.exp (ξ : ℂ) := by
+    have hcont : Continuous fun ξ : arcBox r R α β => Complex.exp (ξ : ℂ) :=
+      Complex.continuous_exp.comp continuous_subtype_val
+    have hinj : Function.Injective fun ξ : arcBox r R α β => Complex.exp (ξ : ℂ) := by
+      rintro ⟨a, ha⟩ ⟨b, hb⟩ h
+      exact Subtype.ext (exp_injOn_arcBox r R α β hβα ha hb h)
+    have hopen : IsOpenMap fun ξ : arcBox r R α β => Complex.exp (ξ : ℂ) :=
+      Complex.isOpenMap_exp.comp ((isOpen_arcBox r R α β).isOpenMap_subtype_val)
+    exact (IsOpenEmbedding.of_continuous_injective_isOpenMap hcont hinj hopen).isEmbedding
+  have himg : (fun ξ : arcBox r R α β => Complex.exp (ξ : ℂ)) '' univ
+      = arcAnnulus r R α β := by
+    ext z
+    constructor
+    · rintro ⟨⟨ξ, hξ⟩, -, rfl⟩
+      exact ⟨ξ, hξ, rfl⟩
+    · rintro ⟨ξ, hξ, rfl⟩
+      exact ⟨⟨ξ, hξ⟩, mem_univ _, rfl⟩
+  show IsSimplyConnected (arcAnnulus r R α β)
+  rw [← himg, hemb.isSimplyConnected_image]
+  haveI : ContractibleSpace (arcBox r R α β) :=
+    (convex_arcBox r R α β).contractibleSpace hne
+  haveI : SimplyConnectedSpace (arcBox r R α β) :=
+    SimplyConnectedSpace.ofContractible _
+  exact ((Homeomorph.Set.univ (arcBox r R α β)).toHomotopyEquiv).simplyConnectedSpace_iff.mpr
+    ‹_›
+
+/-- Membership in an arc annulus from a polar witness. -/
+theorem mem_arcAnnulus {r R α β : ℝ} (hr : 0 < r) {ρ θ : ℝ}
+    (h1 : r < ρ) (h2 : ρ < R) (h3 : α < θ) (h4 : θ < β) :
+    (ρ : ℂ) * Complex.exp (θ * Complex.I) ∈ arcAnnulus r R α β := by
+  have hρpos : (0:ℝ) < ρ := lt_trans hr h1
+  refine ⟨((Real.log ρ : ℝ) : ℂ) + (θ : ℂ) * Complex.I, ⟨?_, ?_, ?_, ?_⟩, ?_⟩
+  · show Real.log r < (((Real.log ρ : ℝ) : ℂ) + (θ : ℂ) * Complex.I).re
+    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im]
+    have := Real.log_lt_log hr h1
+    linarith
+  · show (((Real.log ρ : ℝ) : ℂ) + (θ : ℂ) * Complex.I).re < Real.log R
+    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
+      Complex.I_re, Complex.I_im]
+    have := Real.log_lt_log hρpos h2
+    linarith
+  · show α < (((Real.log ρ : ℝ) : ℂ) + (θ : ℂ) * Complex.I).im
+    simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+      Complex.I_re, Complex.I_im]
+    linarith
+  · show (((Real.log ρ : ℝ) : ℂ) + (θ : ℂ) * Complex.I).im < β
+    simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+      Complex.I_re, Complex.I_im]
+    linarith
+  · rw [Complex.exp_add, ← Complex.ofReal_exp, Real.exp_log hρpos]
+
+/-- Points of an arc annulus off a given argument ray, with the ray's argument in the arc,
+still cover: any point of the arc annulus whose log-lift argument differs from `θ*` stays in
+one of the two sub-arcs.  (Interval-splitting helper for the slit recursion.) -/
+theorem arcAnnulus_mono {r R α β α' β' : ℝ} (hα : α ≤ α') (hβ : β' ≤ β) :
+    arcAnnulus r R α' β' ⊆ arcAnnulus r R α β := by
+  rintro z ⟨ξ, ⟨h1, h2, h3, h4⟩, rfl⟩
+  exact ⟨ξ, ⟨h1, h2, by linarith, by linarith⟩, rfl⟩
+
+end Bottcher
