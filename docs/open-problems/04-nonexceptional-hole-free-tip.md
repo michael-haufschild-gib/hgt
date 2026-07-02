@@ -1,5 +1,18 @@
 # Open Problem 4: Hole-free accessible tip for a NONEXCEPTIONAL pair of connected filled Julia sets
 
+> **STATUS (2026-07-02): ANSWERED — see [04-answer.md](04-answer.md); proof audited and
+> correct.** The Statement holds for the explicit nonexceptional both-connected class
+> `−3/4 < c₂ < c₁ < 0` (real main cardioid), with the tip `z₀ = i·t₁`, `t₁ = √(β₁+c₁)`,
+> exactly the file's recommended candidate. New ingredient beyond the file's elementary
+> bricks: for hyperbolic `c` the Julia set is a Jordan curve (quasicircle), so Schoenflies
+> gives a local exterior collar `U ∖ K₁` connected at `z₀`; the collar plus the imaginary
+> ray `{iy : y ≥ t₁+ε}` (disjoint from both filled sets) puts all of `B(z₀,r) ∖ (K₁ ∪ K₂)`
+> in the unbounded component `W`, so no hole meets the ball. (Note: the monotonicity of
+> `t(c)` claimed below holds on `(−2, 0]`, which contains this class; it fails on
+> `(0, 1/4]`.) The q62 programme now has **no open mathematical input**; what remains is
+> formalization, chiefly the collar (Jordan/Schoenflies) and the smooth-piece rigidity
+> endgame.
+
 **Field:** plane topology / complex dynamics / potential theory.
 ## Setting
 

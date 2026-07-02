@@ -9,7 +9,7 @@ Use this as the quick map before opening large proof files.
 |---|---|---:|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 32 | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 29 | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 297 | 4442 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 298 | 4449 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Wiring
 

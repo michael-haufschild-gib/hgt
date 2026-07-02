@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4442 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4449 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -4917,6 +4917,13 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `modularLambda_deriv_ne_zero'` | `GaloisForLFunctions.Bottcher.ThetaWronskian` | `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean:767` | `λ' ≠ 0` on `ℍ`, unconditionally** — the local-biholomorphism datum for `IsCoveringMap λ`. |
 | theorem | `deriv_modularLambda_eq'` | `GaloisForLFunctions.Bottcher.ThetaWronskian` | `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean:771` | `λ' = πi·θ₂⁴θ₄⁴/θ₃⁴`, unconditionally.** |
 | theorem | `deriv_modularLambda_eq_lambda'` | `GaloisForLFunctions.Bottcher.ThetaWronskian` | `formal/GaloisForLFunctions/Bottcher/ThetaWronskian.lean:776` | `λ' = πi·θ₃⁴·λ·(1−λ)`, unconditionally.** |
+| def | `HoleFreeTip` | `GaloisForLFunctions.Bottcher.TipWApproach` | `formal/GaloisForLFunctions/Bottcher/TipWApproach.lean:26` | The hole-free-tip datum** (open problem 04, W-approach form): `z₀` is a Julia point of `K_{c₁}`, the `r`-ball at `z₀` misses `K_{c₂}`, and every basin point of the ball lies in an  |
+| def | `imagRay` | `GaloisForLFunctions.Bottcher.TipWApproach` | `formal/GaloisForLFunctions/Bottcher/TipWApproach.lean:34` | The imaginary escape ray `{iy : y ≥ y₀}` above the tip height. |
+| theorem | `imagRay_preconnected` | `GaloisForLFunctions.Bottcher.TipWApproach` | `formal/GaloisForLFunctions/Bottcher/TipWApproach.lean:36` |  |
+| theorem | `imagRay_not_isBounded` | `GaloisForLFunctions.Bottcher.TipWApproach` | `formal/GaloisForLFunctions/Bottcher/TipWApproach.lean:39` |  |
+| theorem | `imagRay_subset_pair_compl` | `GaloisForLFunctions.Bottcher.TipWApproach` | `formal/GaloisForLFunctions/Bottcher/TipWApproach.lean:52` | The ray escapes both filled Julia sets**: for a real pair `c₂ < c₁ ≤ 0` and any height `y₀ > t₁`, the ray `{iy : y ≥ y₀}` lies in the joint complement. |
+| theorem | `holeFreeTip_of_collar` | `GaloisForLFunctions.Bottcher.TipWApproach` | `formal/GaloisForLFunctions/Bottcher/TipWApproach.lean:71` | `HoleFreeTip` from the Schoenflies collar** (the 04-answer, formalized modulo its one topological input). Given the exterior collar — arbitrarily small open `U ∋ imagTip c₁` with ` |
+| theorem | `holeFreeTip_frontier_approach` | `GaloisForLFunctions.Bottcher.TipWApproach` | `formal/GaloisForLFunctions/Bottcher/TipWApproach.lean:128` | The frontier-approach consumer**: at a hole-free tip, every Julia point of the ball is approached, at every scale, by basin points that carry an unbounded preconnected escape set i |
 | theorem | `sectionLoop_` | `GaloisForLFunctions.Bottcher.TowerCertificates` | `formal/GaloisForLFunctions/Bottcher/TowerCertificates.lean:40` |  |
 | theorem | `sectionLoop_avoids` | `GaloisForLFunctions.Bottcher.TowerCertificates` | `formal/GaloisForLFunctions/Bottcher/TowerCertificates.lean:45` | A section loop at constant Green level avoids every point at a different level. |
 | theorem | `windInt_eq_windInt_zero_of_level` | `GaloisForLFunctions.Bottcher.TowerCertificates` | `formal/GaloisForLFunctions/Bottcher/TowerCertificates.lean:57` | Sublevel transport of the winding.** If a loop runs at constant Green level `L > G_c(0)`, its winding about any point of level `< L` equals its winding about `0`. |
