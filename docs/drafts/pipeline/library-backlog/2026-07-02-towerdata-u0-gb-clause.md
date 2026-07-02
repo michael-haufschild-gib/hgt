@@ -85,3 +85,26 @@ Remaining for the GB-variant, ALL construction-internal and elementary given you
 descent step down via the explicit sqrt-branch formula;
 (3) then Ext ⊆ {|z|>1} via the closed estimates of Updates 1–2 + this gap, `GBExt` := the
 `u₀`-germ, and `U0TowerBridge.u0_phi_independence_of_towerData` fires.
+
+## Update 4 (2026-07-02, U0 lane): b = 4 window capstone CLOSED unconditionally; reusable pullback machinery for the GBExt clause
+
+The U0 lane has closed `NoRelation ℂ(z) (phiFour) (u₀)` UNCONDITIONALLY at `b = 4` on the window
+annulus (`U0PhiFourCapstone.u0_phiFour_independence`, axiom-clean), consuming your landed
+`bottcher_transcendental_far` + `bottcherFarBound_spec` through a dyadic pullback
+(`phiFour^(2^(m+1)) = bottcherCoord 4 ∘ pMap m`). Two pieces built for it are generic and may
+serve the `GBExt` clause of `q62_pair_disconnected_of_towerdataF` / the all-parameters U0 card:
+
+1. `U0PhiFourDescent.germPullback` / `pullAn` / the fraction-field lift `Φ`: precomposition with
+   an analytic map `g : S → T` (onto `T`) as an injective ring hom
+   `meroField T ↪ meroField S`. For a tower section `T` this transports `u₀`-germs between the
+   annulus and extension domains — potentially producing the `GBExt` element
+   (`restrictAnalytic hUExt GBExt = u0AnSub`) as `pullAn` of `u₀` along the section, IF the
+   section's domain geometry cooperates (the Ext ⊆ {|z|>1} clause remains the crux).
+2. `U0PhiFourDescent.descend_algebraic`: algebraicity over `ℂ(z)` descends to algebraicity over
+   `ℂ(p(z))` for any monic nonconstant `p` (IntermediateField tower, eval₂-only signature, no
+   instance diamond). Reusable wherever a dyadic radicand needs its coefficient field rebased.
+
+Also noted while running the full gate: `BottcherTowerData.lean` currently emits two build
+warnings (line 744 unused `hExto`, line 854 deprecated `push_neg`) plus similar in
+`BoundaryCollarExtension`/`RelationContinuation` — your lane's files, flagging only (the gate
+`lint --check-generated` passes; the full `--build` gate surfaces them as replay warnings).

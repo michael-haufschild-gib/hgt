@@ -56,6 +56,7 @@ import GaloisForLFunctions.Bottcher.HDiscLoopDeck
 import GaloisForLFunctions.Hurwitz.MixedClose
 import GaloisForLFunctions.Hurwitz.AllNComplete
 import GaloisForLFunctions.U0.U0TowerBridge
+import GaloisForLFunctions.U0.U0PhiFourCapstone
 
 noncomputable section
 
@@ -4489,5 +4490,40 @@ def U0PhiIndependenceOfTowerDataTarget : Prop :=
 theorem u0_phi_independence_of_towerData_card : U0PhiIndependenceOfTowerDataTarget := by
   intro U hUo hUc hUne hUinf hU_ext b hU_esc towerdata
   exact U0TowerBridge.u0_phi_independence_of_towerData hUo hUc hUne hUinf hU_ext hU_esc towerdata
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+open U0PhiFourFarCarrier U0PhiFourDescent U0PhiFourCapstone U0MeroCarrier Bottcher
+
+/-- The `b = 4` window branch is transcendental over `ℂ(z)` — the φ-side residue of the window
+engine, closed unconditionally by the dyadic-pullback descent onto the far Böttcher carrier
+(`Bottcher.bottcher_transcendental_far`). -/
+def PhiFourTranscendentalTarget : Prop :=
+  letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
+  letI : Algebra (RatFunc ℂ) (meroField annW) :=
+    (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+  Transcendental (RatFunc ℂ)
+    (algebraMap (analyticSubring annW) (meroField annW) phiAnnAn)
+
+/-- Formal wrapper for the φ-transcendence half of the window capstone. -/
+theorem phiFour_transcendental_card : PhiFourTranscendentalTarget :=
+  U0PhiFourDescent.phiFour_transcendental
+
+/-- **The unconditional `b = 4` U0 capstone**: `NoRelation ℂ(z) (phiFour) (u₀)` in the
+meromorphic field of the window annulus `{1 < ‖z‖ < 21/20}` — the `u0_phi_independence`
+conclusion realized with ZERO hypotheses at the constructed window branch. -/
+def U0PhiFourIndependenceTarget : Prop :=
+  letI := isDomain_analyticSubring annW isOpen_annW isPreconnected_annW annW_nonempty
+  letI : Algebra (RatFunc ℂ) (meroField annW) :=
+    (ratfuncToMero annW isOpen_annW isPreconnected_annW annW_nonempty annW_infinite).toAlgebra
+  NoRelation (RatFunc ℂ)
+    (algebraMap (analyticSubring annW) (meroField annW) phiAnnAn)
+    (algebraMap (analyticSubring annW) (meroField annW) (u0AnSub annW_subset_Ext))
+
+/-- Formal wrapper for the unconditional `b = 4` window capstone. -/
+theorem u0_phiFour_independence_card : U0PhiFourIndependenceTarget :=
+  U0PhiFourCapstone.u0_phiFour_independence
 
 end FullyProvenNewTargets
