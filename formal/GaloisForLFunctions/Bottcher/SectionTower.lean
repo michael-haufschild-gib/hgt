@@ -47,8 +47,10 @@ theorem exists_tower_anchor (c : ℂ) :
     ∃ Ra Rinj : ℝ, 1 < Ra ∧ Real.exp (greenFunctionDyn c 0) < Ra ∧
       Set.InjOn (bottcherCoord c) {z : ℂ | Rinj < ‖z‖} ∧
       ∀ rhi : ℝ, Ra < rhi → ∃ S : TowerSection c Ra rhi,
-        ∀ w ∈ annulusSet Ra rhi,
-          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖ := by
+        (∀ w ∈ annulusSet Ra rhi,
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) ∧
+        (∀ z : ℂ, Real.log Ra < greenFunctionDyn c z →
+          greenFunctionDyn c z < Real.log rhi → z ∈ S.T '' annulusSet Ra rhi) := by
   classical
   have hmax2 : (2:ℝ) ≤ max 2 ‖c‖ := le_max_left _ _
   have hmaxc : ‖c‖ ≤ max 2 ‖c‖ := le_max_right _ _
@@ -175,22 +177,50 @@ theorem exists_tower_anchor (c : ℂ) :
     rw [← hfz, hψleft _ hfzdeep, hψv]
     rfl
   -- the anchor radius
-  set Ra : ℝ := max (R₁ + 1) (max 2 (Real.exp (greenFunctionDyn c 0) + 1)) with hRadef
+  -- the Green bound on the crude ball (for the norm-from-level argument)
+  obtain ⟨Cb, hCb⟩ : ∃ Cb : ℝ, ∀ w : ℂ, ‖w‖ ≤ max 2 ‖c‖ → greenFunctionDyn c w ≤ Cb := by
+    have hcpt : IsCompact {w : ℂ | ‖w‖ ≤ max 2 ‖c‖} := by
+      have h1 : {w : ℂ | ‖w‖ ≤ max 2 ‖c‖} = Metric.closedBall 0 (max 2 ‖c‖) := by
+        ext w
+        simp [Metric.mem_closedBall, dist_zero_right]
+      rw [h1]
+      exact isCompact_closedBall 0 _
+    rcases {w : ℂ | ‖w‖ ≤ max 2 ‖c‖}.eq_empty_or_nonempty with hbe | hbne
+    · exact ⟨0, fun w hw => absurd (show w ∈ {w : ℂ | ‖w‖ ≤ max 2 ‖c‖} from hw)
+        (by rw [hbe]; exact Set.notMem_empty w)⟩
+    obtain ⟨w₀, _, hw₀max⟩ := hcpt.exists_isMaxOn hbne
+      (continuous_greenFunctionDyn c).continuousOn
+    exact ⟨greenFunctionDyn c w₀, fun w hw => hw₀max hw⟩
+  set Ra : ℝ := max (max (R₁ + 1) ((R + 1) * Real.exp 1))
+    (max (max 2 (Real.exp (greenFunctionDyn c 0) + 1)) (Real.exp Cb + 1)) with hRadef
+  have hexp1 : (1:ℝ) < Real.exp 1 := by
+    calc (1:ℝ) = Real.exp 0 := Real.exp_zero.symm
+      _ < Real.exp 1 := Real.exp_lt_exp.mpr (by norm_num)
   have hRa1 : (1:ℝ) < Ra := lt_of_lt_of_le one_lt_two
-    (le_trans (le_max_left _ _) (le_max_right _ _))
+    (le_trans (le_max_left _ _) (le_trans (le_max_left _ _) (le_max_right _ _)))
   have hRaR₁ : R₁ < Ra := by
-    have := le_max_left (R₁ + 1) (max 2 (Real.exp (greenFunctionDyn c 0) + 1))
+    have h1 : R₁ + 1 ≤ max (R₁ + 1) ((R + 1) * Real.exp 1) := le_max_left _ _
+    have h2 : max (R₁ + 1) ((R + 1) * Real.exp 1) ≤ Ra := le_max_left _ _
     linarith
   have hRaG : Real.exp (greenFunctionDyn c 0) < Ra := by
-    have := le_trans (le_max_right 2 (Real.exp (greenFunctionDyn c 0) + 1))
-      (le_max_right (R₁ + 1) _)
+    have h1 : Real.exp (greenFunctionDyn c 0) + 1
+        ≤ max 2 (Real.exp (greenFunctionDyn c 0) + 1) := le_max_right _ _
+    have h2 : max 2 (Real.exp (greenFunctionDyn c 0) + 1)
+        ≤ max (max 2 (Real.exp (greenFunctionDyn c 0) + 1)) (Real.exp Cb + 1) :=
+      le_max_left _ _
+    have h3 : max (max 2 (Real.exp (greenFunctionDyn c 0) + 1)) (Real.exp Cb + 1) ≤ Ra :=
+      le_max_right _ _
     linarith
+  have hRaRe : (R + 1) * Real.exp 1 ≤ Ra :=
+    le_trans (le_max_right _ _) (le_max_left _ _)
+  have hRaCb : Real.exp Cb + 1 ≤ Ra :=
+    le_trans (le_max_right _ _) (le_max_right _ _)
   refine ⟨Ra, R, hRa1, hRaG, bottcherCoord_injOn_far hR1 hR2, ?_⟩
   intro rhi hrhi
   have hdeep : ∀ w ∈ annulusSet Ra rhi, R₁ < ‖w‖ := by
     intro w hw
     exact lt_of_lt_of_le hRaR₁ (le_of_lt hw.1)
-  refine ⟨⟨ψ, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ?_⟩
+  refine ⟨⟨ψ, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ?_, ?_⟩
   · exact fun w hw => hψanv w (hdeep w hw)
   · exact fun w hw => hGψ w (hdeep w hw)
   · exact fun w hw => hψodd w (hdeep w hw)
@@ -256,5 +286,60 @@ theorem exists_tower_anchor (c : ℂ) :
     · show R < ‖ψ w‖
       rw [hψv]
       exact hz
+  · -- band surjectivity: every band-level point is a section value
+    intro z hz1 hz2
+    -- the point is far: its level exceeds the crude-ball bound, so the crude estimate applies
+    have hzK : z ∉ filledJulia c := by
+      intro hcon
+      have h1 : greenFunctionDyn c z = 0 := (greenFunctionDyn_eq_zero_iff c z).mpr hcon
+      rw [h1] at hz1
+      have h2 : (0:ℝ) < Real.log Ra := Real.log_pos hRa1
+      linarith
+    have hznotball : max 2 ‖c‖ < ‖z‖ := by
+      by_contra hcon
+      push Not at hcon
+      have h1 := hCb z hcon
+      have h2 : Real.log Ra ≤ Cb := by linarith
+      have h3 : Ra ≤ Real.exp Cb := by
+        calc Ra = Real.exp (Real.log Ra) := (Real.exp_log (by linarith)).symm
+          _ ≤ Real.exp Cb := Real.exp_le_exp.mpr h2
+      linarith
+    have hcrude := greenFunctionDyn_le_crude
+      (le_of_lt (lt_of_le_of_lt (le_max_right _ _) hznotball))
+      (lt_of_le_of_lt (le_max_left _ _) hznotball)
+    have hzR : R < ‖z‖ := by
+      have h1 : Real.log Ra - 1 ≤ Real.log ‖z‖ := by linarith
+      have h2 : Real.log ((R + 1) * Real.exp 1) ≤ Real.log Ra :=
+        Real.log_le_log (by positivity) hRaRe
+      have h3 : Real.log ((R + 1) * Real.exp 1) = Real.log (R + 1) + 1 := by
+        rw [Real.log_mul (by positivity) (by positivity), Real.log_exp]
+      have h4 : Real.log (R + 1) ≤ Real.log ‖z‖ := by
+        rw [h3] at h2
+        linarith
+      have hz2' : (2:ℝ) < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) hznotball
+      have h5 : R + 1 ≤ ‖z‖ := by
+        calc R + 1 = Real.exp (Real.log (R + 1)) := (Real.exp_log (by positivity)).symm
+          _ ≤ Real.exp (Real.log ‖z‖) := Real.exp_le_exp.mpr h4
+          _ = ‖z‖ := Real.exp_log (by linarith)
+      linarith
+    -- the Böttcher value of z is in the annulus, and ψ pulls it back to z
+    have hnormφ : ‖bottcherCoord c z‖ = Real.exp (greenFunctionDyn c z) := by
+      rw [norm_bottcherCoord
+        (le_of_lt (lt_of_le_of_lt (le_max_right _ _) hznotball))
+        (lt_of_le_of_lt (le_max_left _ _) hznotball)]
+      unfold bottcherModulus
+      congr 1
+      unfold greenFunctionDyn
+      rw [if_neg hzK]
+    have hφann : bottcherCoord c z ∈ annulusSet Ra rhi := by
+      constructor
+      · rw [hnormφ]
+        calc Ra = Real.exp (Real.log Ra) := (Real.exp_log (by linarith)).symm
+          _ < Real.exp (greenFunctionDyn c z) := Real.exp_lt_exp.mpr hz1
+      · rw [hnormφ]
+        calc Real.exp (greenFunctionDyn c z) < Real.exp (Real.log rhi) :=
+              Real.exp_lt_exp.mpr hz2
+          _ = rhi := Real.exp_log (by linarith)
+    exact ⟨bottcherCoord c z, hφann, hψleft z hzR⟩
 
 end Bottcher

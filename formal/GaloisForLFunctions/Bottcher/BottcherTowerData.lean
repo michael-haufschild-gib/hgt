@@ -843,7 +843,8 @@ theorem bottcher_towerDataG (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
     · exact h1
     · exact absurd ((greenFunctionDyn_eq_zero_iff c 0).mp h1.symm) hc
   -- one tower serves every depth
-  obtain ⟨rlo, Rb, R₀, Rinj, hrlo1, hrloRb, hRbR₀, hrlosq, hMR₀, hlow, hhi, hInj, S, hfar⟩ :=
+  obtain ⟨rlo, Rb, R₀, Rinj, hrlo1, hrloRb, hRbR₀, hrlosq, hMR₀, hlow, hhi, hInj, S, hfar,
+    hbandsurj⟩ :=
     exists_tower_deep c (by positivity : (0:ℝ) < h / 2) (Real.exp (4 * h + 2))
   have hlogR₀ : 4 * h + 2 < Real.log R₀ := by
     have h1 : Real.log (Real.exp (4 * h + 2)) < Real.log R₀ :=
@@ -1086,7 +1087,7 @@ theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
     rw [hBmindef]
     linarith
   have hBminpos : (0:ℝ) < Bmin := by linarith
-  obtain ⟨rlo, R₀, hrlo1, hrloRb, hRbR₀, hrlosq, hMR₀, hlow, hhi, S, hfar⟩ :=
+  obtain ⟨rlo, R₀, hrlo1, hrloRb, hRbR₀, hrlosq, hMR₀, hlow, hhi, S, hfar, hbandsurj⟩ :=
     exists_tower_deep_of_anchor c (by positivity : (0:ℝ) < h / 2)
       (max (Real.exp (4 * h + 2)) (Bmin * Real.exp 3)) hRa1 hRaG hanchor
   set Rb : ℝ := Ra with hRbdef

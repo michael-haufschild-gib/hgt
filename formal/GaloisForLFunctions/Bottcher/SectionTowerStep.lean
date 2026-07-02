@@ -287,6 +287,7 @@ theorem sign_constant_on_connected {A : Set ℂ} (hAo : IsOpen A) (hconn : IsCon
   · exact hz2 h
   · exact hz1 h
 
+set_option maxHeartbeats 1600000 in
 /-- **The extension step.**  A tower section on `{rlo < ‖w‖ < R₀}` whose source band
 `(σ₁, σ₂)` lies strictly above the critical value's level extends across the square root of the
 band: there is a tower section on `{√σ₁ < ‖w‖ < R₀}`. -/
@@ -296,9 +297,14 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     (h0 : greenFunctionDyn c 0 < Real.log rlo)
     {σ₁ σ₂ : ℝ} (hσ₁lo : rlo < σ₁) (hσ₁hi : σ₁ < rlo ^ 2)
     (hσ₂lo : rlo ^ 2 < σ₂) (hσ₂hi : σ₂ ≤ R₀)
-    (hcab : greenFunctionDyn c c < Real.log σ₁) :
+    (hcab : greenFunctionDyn c c < Real.log σ₁)
+    (hsurj : ∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
+      greenFunctionDyn c z < Real.log R₀ → z ∈ S.T '' annulusSet rlo R₀) :
     ∃ S' : TowerSection c (Real.sqrt σ₁) R₀,
-      ∀ w ∈ annulusSet rlo R₀, S'.T w = S.T w := by
+      (∀ w ∈ annulusSet rlo R₀, S'.T w = S.T w) ∧
+      (∀ z : ℂ, Real.log (Real.sqrt σ₁) < greenFunctionDyn c z →
+        greenFunctionDyn c z < Real.log R₀ →
+        z ∈ S'.T '' annulusSet (Real.sqrt σ₁) R₀) := by
   classical
   have hσ₁pos : (0:ℝ) < σ₁ := by nlinarith
   have hσ₂pos : (0:ℝ) < σ₂ := by nlinarith
@@ -773,8 +779,44 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
     fun w h1 h2 => hTn_s ⟨h1, h2⟩
   have hmem₂ : ∀ w : ℂ, rlo < ‖w‖ → ‖w‖ < R₀ → Tn w = S.T w :=
     fun w h1 h2 => hTn_T ⟨h1, h2⟩
+  -- level identity of the glued map, for the surjectivity clause
+  have hTnlev : ∀ w ∈ annulusSet (Real.sqrt σ₁) R₀,
+      greenFunctionDyn c (Tn w) = Real.log ‖w‖ := by
+    rintro w ⟨h1, h2⟩
+    by_cases h : ‖w‖ < Real.sqrt σ₂
+    · rw [hmem₁ w h1 h]
+      have hwB₁ : w ∈ B₁ := ⟨h1, h⟩
+      have hfe : quadratic c (s' w) = S.T (w ^ 2) := by
+        unfold quadratic
+        rw [hs'_sq w hwB₁]
+        ring
+      have h3 := greenFunctionDyn_quadratic c (s' w)
+      rw [hfe, S.level _ (hsrcmem _ (hsqmem w hwB₁))] at h3
+      have h4 : Real.log ‖w ^ 2‖ = 2 * Real.log ‖w‖ := by
+        rw [norm_pow, Real.log_pow]
+        push_cast
+        ring
+      rw [h4] at h3
+      linarith
+    · push Not at h
+      rw [hmem₂ w (lt_of_lt_of_le hs₂ h) h2]
+      exact S.level w ⟨lt_of_lt_of_le hs₂ h, h2⟩
+  -- oddness of the glued map, for the sign correction in the pull-back
+  have hTnodd : ∀ w ∈ annulusSet (Real.sqrt σ₁) R₀, Tn (-w) = -Tn w := by
+    rintro w ⟨h1, h2⟩
+    by_cases h : ‖w‖ < Real.sqrt σ₂
+    · have hneg : Tn (-w) = s' (-w) := by
+        apply hmem₁ <;> rwa [norm_neg]
+      rw [hneg, hmem₁ w h1 h, hs'_odd w ⟨h1, h⟩]
+    · push Not at h
+      have hneg : Tn (-w) = S.T (-w) := by
+        apply hmem₂ <;> rw [norm_neg]
+        · exact lt_of_lt_of_le hs₂ h
+        · exact h2
+      rw [hneg, hmem₂ w (lt_of_lt_of_le hs₂ h) h2,
+        S.odd w ⟨lt_of_lt_of_le hs₂ h, h2⟩]
   refine ⟨{ T := Tn, an := ?_, level := ?_, odd := ?_, fe := ?_, inj := ?_, dne := ?_, wind := ?_ },
-    fun w hw => hTn_T hw⟩
+    fun w hw => hTn_T hw, ?_⟩
   · rw [← hunion]
     exact hTn_an
   · -- level
@@ -982,6 +1024,101 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
         rw [hval, hder]
       rw [intervalIntegral.integral_congr (fun θ _ => hcongr θ)]
       exact hs'_wind r hr1 hb
+  · -- band surjectivity
+    intro z hz1 hz2
+    rcases lt_or_ge (Real.log rlo) (greenFunctionDyn c z) with hcase | hcase
+    · obtain ⟨w, hw, hweq⟩ := hsurj z hcase hz2
+      refine ⟨w, ⟨lt_trans hs₁ hw.1, hw.2⟩, ?_⟩
+      show Tn w = z
+      rw [hmem₂ w hw.1 hw.2]
+      exact hweq
+    · -- pull the point back through the quadratic and take the odd-corrected root
+      have hlogsq : Real.log (Real.sqrt σ₁) = Real.log σ₁ / 2 :=
+        Real.log_sqrt (le_of_lt hσ₁pos)
+      have hfz1 : Real.log rlo < greenFunctionDyn c (quadratic c z) := by
+        rw [greenFunctionDyn_quadratic]
+        have h1 : Real.log rlo < Real.log σ₁ :=
+          Real.log_lt_log (by linarith) hσ₁lo
+        rw [hlogsq] at hz1
+        linarith
+      have hfz2 : greenFunctionDyn c (quadratic c z) < Real.log R₀ := by
+        rw [greenFunctionDyn_quadratic]
+        have h1 : Real.log (rlo ^ 2) < Real.log R₀ :=
+          Real.log_lt_log (by positivity) hrloR₀
+        rw [Real.log_pow] at h1
+        push_cast at h1
+        have h2 : greenFunctionDyn c z ≤ Real.log rlo := hcase
+        linarith
+      obtain ⟨w', hw', hw'eq⟩ := hsurj (quadratic c z) hfz1 hfz2
+      obtain ⟨w, hwsq⟩ := IsSepClosed.exists_pow_nat_eq w' 2
+      -- the root coordinate sits in the new band, at the level of z
+      have hGz0 : 0 < greenFunctionDyn c z := by
+        have h1 : 0 < Real.log (Real.sqrt σ₁) := by
+          rw [hlogsq]
+          have := Real.log_pos (show (1:ℝ) < σ₁ from by nlinarith)
+          linarith
+        linarith
+      have hnw' : Real.log ‖w'‖ = 2 * greenFunctionDyn c z := by
+        have h1 := S.level w' hw'
+        rw [hw'eq, greenFunctionDyn_quadratic] at h1
+        linarith
+      have hnw : Real.log ‖w‖ = greenFunctionDyn c z := by
+        have h1 : ‖w‖ ^ 2 = ‖w'‖ := by
+          rw [← hwsq, norm_pow]
+        have h2 : 2 * Real.log ‖w‖ = Real.log ‖w'‖ := by
+          rw [← h1, Real.log_pow]
+          push_cast
+          ring
+        linarith [hnw', h2]
+      have hwann : w ∈ annulusSet (Real.sqrt σ₁) R₀ := by
+        have hwpos : (0:ℝ) < ‖w‖ := by
+          by_contra hcon
+          push Not at hcon
+          have h1 : ‖w‖ = 0 := le_antisymm hcon (norm_nonneg w)
+          rw [h1] at hnw
+          have h2 : Real.log (0:ℝ) = 0 := Real.log_zero
+          rw [h2] at hnw
+          linarith
+        constructor
+        · calc Real.sqrt σ₁ = Real.exp (Real.log (Real.sqrt σ₁)) :=
+              (Real.exp_log (Real.sqrt_pos.mpr hσ₁pos)).symm
+            _ < Real.exp (Real.log ‖w‖) := Real.exp_lt_exp.mpr (by rw [hnw]; exact hz1)
+            _ = ‖w‖ := Real.exp_log hwpos
+        · calc ‖w‖ = Real.exp (Real.log ‖w‖) := (Real.exp_log hwpos).symm
+            _ < Real.exp (Real.log R₀) := Real.exp_lt_exp.mpr (by rw [hnw]; exact hz2)
+            _ = R₀ := Real.exp_log (by nlinarith)
+      -- the squared relation: Tn w is a square root of z², so ±z
+      have hwB₁ : w ∈ B₁ := by
+        refine ⟨hwann.1, ?_⟩
+        have h1 : Real.log ‖w‖ ≤ Real.log rlo := by
+          rw [hnw]
+          exact hcase
+        have h2 : ‖w‖ ≤ rlo := by
+          have hwpos : (0:ℝ) < ‖w‖ := lt_trans (Real.sqrt_pos.mpr hσ₁pos) hwann.1
+          calc ‖w‖ = Real.exp (Real.log ‖w‖) := (Real.exp_log hwpos).symm
+            _ ≤ Real.exp (Real.log rlo) := Real.exp_le_exp.mpr h1
+            _ = rlo := Real.exp_log (by linarith)
+        exact lt_of_le_of_lt h2 hs₂
+      have hsq : Tn w ^ 2 = z ^ 2 := by
+        rw [hmem₁ w hwB₁.1 hwB₁.2, hs'_sq w hwB₁]
+        have h1 : w ^ 2 = w' := hwsq
+        rw [h1, hw'eq]
+        unfold quadratic
+        ring
+      have hpm : Tn w = z ∨ Tn w = -z := by
+        have h5 : (Tn w - z) * (Tn w + z) = 0 := by linear_combination hsq
+        rcases mul_eq_zero.mp h5 with h6 | h6
+        · exact Or.inl (sub_eq_zero.mp h6)
+        · exact Or.inr (by linear_combination h6)
+      rcases hpm with h6 | h6
+      · exact ⟨w, hwann, h6⟩
+      · refine ⟨-w, ?_, ?_⟩
+        · constructor <;> rw [norm_neg]
+          · exact hwann.1
+          · exact hwann.2
+        · show Tn (-w) = z
+          rw [hTnodd w hwann, h6]
+          ring
 
 
 /-- **The tower descent.**  For every `ε > 0` there is a tower section whose bottom level is
@@ -990,15 +1127,19 @@ within `ε` of the critical level `h = G_c(0)`, on an annulus whose top `R₀` c
 theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ)
     {Ra Rinj : ℝ} (hRa1 : 1 < Ra) (hRaG : Real.exp (greenFunctionDyn c 0) < Ra)
     (hanchor : ∀ rhi : ℝ, Ra < rhi → ∃ S : TowerSection c Ra rhi,
-      ∀ w ∈ annulusSet Ra rhi,
-        bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) :
+      (∀ w ∈ annulusSet Ra rhi,
+        bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) ∧
+      (∀ z : ℂ, Real.log Ra < greenFunctionDyn c z →
+        greenFunctionDyn c z < Real.log rhi → z ∈ S.T '' annulusSet Ra rhi)) :
     ∃ (rlo R₀ : ℝ), 1 < rlo ∧ rlo ≤ Ra ∧ Ra < R₀ ∧ rlo ^ 2 < R₀ ∧
       M < R₀ ∧
       greenFunctionDyn c 0 < Real.log rlo ∧
       Real.log rlo < greenFunctionDyn c 0 + ε ∧
       ∃ S : TowerSection c rlo R₀,
-        ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
-          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖ := by
+        (∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) ∧
+        (∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
+          greenFunctionDyn c z < Real.log R₀ → z ∈ S.T '' annulusSet rlo R₀) := by
   classical
   set h : ℝ := greenFunctionDyn c 0 with hhdef
   have hh0 : 0 ≤ h := greenFunctionDyn_nonneg c 0
@@ -1011,22 +1152,26 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
   have hR₀exp : M < R₀ := by
     have h1 : M ≤ max M 0 := le_max_left M 0
     rw [hR₀def]; nlinarith
-  obtain ⟨S₀, hS₀φ⟩ := hanchor R₀ hR₀Ra
+  obtain ⟨S₀, hS₀φ, hS₀surj⟩ := hanchor R₀ hR₀Ra
   have hhRa : h < Real.log Ra := by
     calc h = Real.log (Real.exp h) := (Real.log_exp h).symm
       _ < Real.log Ra := Real.log_lt_log (Real.exp_pos h) hRaG
   -- the one-step descent with uniform gap contraction
   have hstep : ∀ rlo : ℝ, 1 < rlo → rlo ^ 2 < R₀ → h < Real.log rlo → rlo ≤ Ra →
       (∃ S : TowerSection c rlo R₀,
-        ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
-          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) →
+        (∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) ∧
+        (∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
+          greenFunctionDyn c z < Real.log R₀ → z ∈ S.T '' annulusSet rlo R₀)) →
       ∃ rlo' : ℝ, 1 < rlo' ∧ rlo' ^ 2 < R₀ ∧ h < Real.log rlo' ∧ rlo' ≤ Ra ∧
         Real.log rlo' - h ≤ (3/4) * (Real.log rlo - h) ∧
         ∃ S' : TowerSection c rlo' R₀,
-          ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
-            bottcherCoord c (S'.T w) = w ∧ S'.T w ∈ escapeOpen c ∧ Rinj < ‖S'.T w‖ := by
+          (∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
+            bottcherCoord c (S'.T w) = w ∧ S'.T w ∈ escapeOpen c ∧ Rinj < ‖S'.T w‖) ∧
+          (∀ z : ℂ, Real.log rlo' < greenFunctionDyn c z →
+            greenFunctionDyn c z < Real.log R₀ → z ∈ S'.T '' annulusSet rlo' R₀) := by
     intro rlo h1 h2 h3 hRale hS
-    obtain ⟨S, hSφ⟩ := hS
+    obtain ⟨S, hSφ, hSsurj⟩ := hS
     set ℓ : ℝ := Real.log rlo with hℓdef
     have hℓ0 : 0 < ℓ := Real.log_pos h1
     have hrlopos : (0:ℝ) < rlo := by linarith
@@ -1070,7 +1215,8 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
     have hcab : greenFunctionDyn c c < Real.log σ₁ := by
       rw [hσ₁def, Real.log_exp, greenFunctionDyn_critical_value c]
       exact hτ2h
-    obtain ⟨S', hS'T⟩ := tower_extension_step h1 h2 S h3 hσ₁rlo hσ₁sq h2 le_rfl hcab
+    obtain ⟨S', hS'T, hS'surj⟩ :=
+      tower_extension_step h1 h2 S h3 hσ₁rlo hσ₁sq h2 le_rfl hcab hSsurj
     have hS'φ : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
         bottcherCoord c (S'.T w) = w ∧ S'.T w ∈ escapeOpen c ∧ Rinj < ‖S'.T w‖ := by
       intro w hw1 hw2
@@ -1080,7 +1226,10 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
     have hs₁rlo : Real.sqrt σ₁ < rlo := by
       rw [Real.sqrt_lt' (by linarith)]
       exact hσ₁sq
-    refine ⟨Real.sqrt σ₁, ?_, ?_, ?_, by linarith, ?_, S', hS'φ⟩
+    have hS'surj' : ∀ z : ℂ, Real.log (Real.sqrt σ₁) < greenFunctionDyn c z →
+        greenFunctionDyn c z < Real.log R₀ → z ∈ S'.T '' annulusSet (Real.sqrt σ₁) R₀ :=
+      hS'surj
+    refine ⟨Real.sqrt σ₁, ?_, ?_, ?_, by linarith, ?_, S', hS'φ, hS'surj'⟩
     · have h4 : (0:ℝ) < τ := by linarith
       have h5 : (1:ℝ) < σ₁ := by
         rw [hσ₁def]
@@ -1104,12 +1253,14 @@ theorem exists_tower_deep_of_anchor (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ
   have hiter : ∀ n : ℕ, ∃ rlo : ℝ, 1 < rlo ∧ rlo ^ 2 < R₀ ∧ h < Real.log rlo ∧ rlo ≤ Ra ∧
       Real.log rlo - h ≤ (3/4) ^ n * (Real.log Ra - h) ∧
       ∃ S : TowerSection c rlo R₀,
-        ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
-          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖ := by
+        (∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) ∧
+        (∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
+          greenFunctionDyn c z < Real.log R₀ → z ∈ S.T '' annulusSet rlo R₀) := by
     intro n
     induction n with
     | zero =>
-        refine ⟨Ra, hRa1, hRasqR₀, hhRa, le_refl Ra, by norm_num, S₀, ?_⟩
+        refine ⟨Ra, hRa1, hRasqR₀, hhRa, le_refl Ra, by norm_num, S₀, ?_, hS₀surj⟩
         intro w hw1 hw2
         exact hS₀φ w ⟨hw1, hw2⟩
     | succ m ih =>
@@ -1139,8 +1290,10 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
       Real.log rlo < greenFunctionDyn c 0 + ε ∧
       Set.InjOn (bottcherCoord c) {z : ℂ | Rinj < ‖z‖} ∧
       ∃ S : TowerSection c rlo R₀,
-        ∀ w : ℂ, Rb < ‖w‖ → ‖w‖ < R₀ →
-          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖ := by
+        (∀ w : ℂ, Rb < ‖w‖ → ‖w‖ < R₀ →
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) ∧
+        (∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
+          greenFunctionDyn c z < Real.log R₀ → z ∈ S.T '' annulusSet rlo R₀) := by
   obtain ⟨Ra, Rinj, hRa1, hRaG, hInj, hanchor⟩ := exists_tower_anchor c
   obtain ⟨rlo, R₀, h1, h2, h3, h4, h5, h6, h7, hS⟩ :=
     exists_tower_deep_of_anchor c hε M hRa1 hRaG hanchor
