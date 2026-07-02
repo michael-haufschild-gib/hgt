@@ -164,7 +164,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/DeckAutomorphism.lean:88` | analytic fact, not an assumed one. This pins the remaining work to the analytic continuation layer. |
 | `formal/GaloisForLFunctions/Bottcher/DeckBiholo.lean:12` | This file supplies that missing link.  From a **global biholomorphism** `φ : U ≃ V` of the cover |
 | `formal/GaloisForLFunctions/Bottcher/DendriteBoundary.lean:564` | the basin can exist. The only remaining inputs are the empty-interior condition (the dendrite case |
-| `formal/GaloisForLFunctions/Bottcher/DendriteTipDischarge.lean:8` | `SectorConnectorProp` (Open Problem 1), which is the ONLY remaining input.  Axiom-clean. |
 | `formal/GaloisForLFunctions/Bottcher/DisconnectedPointwiseLifts.lean:47` | `φ₁ = bottcherCoord c₁`, `φ₂ = bottcherCoord c₂`.  The remaining input is thus purely the *pointwise* |
 | `formal/GaloisForLFunctions/Bottcher/DyadicMonodromy.lean:10` | The remaining (analytic) half of `mono` — that continuation around the cylinder loop |
 | `formal/GaloisForLFunctions/Bottcher/EscapeLevelRoot.lean:14` | wind(βlev n)`. That dynamical evenness is the remaining geometric input, now isolated as exactly the |
@@ -291,6 +290,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1013` | This packages the current remaining analytic task in the sharp form: the caller supplies a |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1102` | containment automatic.  The remaining local input is only the scaled derivative-variation estimate, |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1315` | The base fixed-tail second-derivative contribution is discharged internally.  The remaining local |
+| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1634` | `K = 1/2`, `μ = 1/4`, and scaled radius `4‖α-z‖`; the only remaining local input is the |
 
 ## Historical Status Logs
 

@@ -273,6 +273,7 @@ import GaloisForLFunctions.Bottcher.ConnectedPairReduction
 import GaloisForLFunctions.Bottcher.JuliaSwapDichotomy
 import GaloisForLFunctions.Bottcher.RelativeCoeffContinuation
 import GaloisForLFunctions.Bottcher.RelativeBasisApproachConsumer
+import GaloisForLFunctions.Bottcher.SteeringWindow
 import GaloisForLFunctions.Bottcher.DendriteTip
 import GaloisForLFunctions.Bottcher.KoenigsLinearization
 import GaloisForLFunctions.Bottcher.ScaleCollapse
