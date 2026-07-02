@@ -21,13 +21,14 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
 | 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
+| 1617 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
 | 1475 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
-| 1442 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
 | 1417 | `formal/GaloisForLFunctions/Bottcher/CrossRatioNormalBridge.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
+| 1302 | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean` |
 | 1292 | `formal/GaloisForLFunctions/Bottcher/CrossRatioCuspBridge.lean` |
 | 1289 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean` |
 | 1278 | `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean` |
@@ -35,7 +36,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1249 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryTruncation.lean` |
 | 1217 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean` |
 | 1206 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingPeriodicAvoidance.lean` |
-| 1202 | `formal/GaloisForLFunctions/Bottcher/Brolin/GapAMuCore.lean` |
 
 ## Gap Markers
 
@@ -58,7 +58,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/BottcherCoord.lean:276` | `∑ₖ termₖ(f_c z) = 2·(∑ₖ termₖ(z) − term₀(z))`. The remaining `log z` vs `log(z²+c)` |
 | `formal/GaloisForLFunctions/Bottcher/BottcherDetermines.lean:158` | in the connected-case independence, with no remaining hypotheses. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BottcherInverse.lean:4` | The dyadic-cover lift `hliftF`/`hliftG` (the genuine remaining analytic input of the disconnected case, |
-| `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:1408` | file's machinery; `GBExt` is the one remaining analytic input of the disconnected pair case. -/ |
+| `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:1583` | file's machinery; `GBExt` is the one remaining analytic input of the disconnected pair case. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BottcherWinding.lean:59` | escape-level subtypes: the remaining winding problem becomes the pure winding of the iterate image loop |
 | `formal/GaloisForLFunctions/Bottcher/BoundaryCollarExtension.lean:199` | isolates the sole remaining geometric input of §1 as the elementary combinatorial fact `hgen` — a |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean:203` | needed for the remaining boundary singular-potential lower semicontinuity. -/ |
@@ -103,6 +103,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/ConnectedBranchMandelbrot.lean:63` | /-- **Unconditional connected Böttcher branch for `c ∈ mandelbrot`.** Both remaining topological |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedBranchMandelbrot.lean:70` | no remaining hypothesis beyond `c ∈ mandelbrot`. This closes the connected-branch Gap 2. -/ |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedNaturalBoundaryMandelbrot.lean:16` | empty-interior (dendrite) connected parameters. The remaining connected input is the branch boundary |
+| `formal/GaloisForLFunctions/Bottcher/ConnectedPairReduction.lean:6` | needs exactly ONE remaining input — the bivariate dendrite no-relation `hno`, itself isolated to |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:112` | homeomorphy of `ρ_{n+1}`. This closes the local-unbranched half of the remaining `ρ_n` covering input; |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:113` | the remaining covering work is to assemble evenly-covered neighborhoods from the dyadic fiber/period |
 | `formal/GaloisForLFunctions/Bottcher/ConnectedPi1.lean:245` | This is the concrete bridge from the remaining exact-fiber statement for `ρ_{n+1}` to the |
@@ -163,6 +164,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/DeckAutomorphism.lean:88` | analytic fact, not an assumed one. This pins the remaining work to the analytic continuation layer. |
 | `formal/GaloisForLFunctions/Bottcher/DeckBiholo.lean:12` | This file supplies that missing link.  From a **global biholomorphism** `φ : U ≃ V` of the cover |
 | `formal/GaloisForLFunctions/Bottcher/DendriteBoundary.lean:564` | the basin can exist. The only remaining inputs are the empty-interior condition (the dendrite case |
+| `formal/GaloisForLFunctions/Bottcher/DendriteTipDischarge.lean:8` | `SectorConnectorProp` (Open Problem 1), which is the ONLY remaining input.  Axiom-clean. |
 | `formal/GaloisForLFunctions/Bottcher/DisconnectedPointwiseLifts.lean:47` | `φ₁ = bottcherCoord c₁`, `φ₂ = bottcherCoord c₂`.  The remaining input is thus purely the *pointwise* |
 | `formal/GaloisForLFunctions/Bottcher/DyadicMonodromy.lean:10` | The remaining (analytic) half of `mono` — that continuation around the cylinder loop |
 | `formal/GaloisForLFunctions/Bottcher/EscapeLevelRoot.lean:14` | wind(βlev n)`. That dynamical evenness is the remaining geometric input, now isolated as exactly the |
@@ -289,8 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1013` | This packages the current remaining analytic task in the sharp form: the caller supplies a |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1102` | containment automatic.  The remaining local input is only the scaled derivative-variation estimate, |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1315` | The base fixed-tail second-derivative contribution is discharged internally.  The remaining local |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1634` | `K = 1/2`, `μ = 1/4`, and scaled radius `4‖α-z‖`; the only remaining local input is the |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1863` | /-- q62 target-density reduction with concrete Newton parameters.  The remaining hRigid local |
 
 ## Historical Status Logs
 
