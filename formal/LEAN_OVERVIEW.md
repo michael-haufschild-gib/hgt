@@ -9,13 +9,13 @@ Use this as the quick map before opening large proof files.
 |---|---|---:|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 32 | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 28 | 292 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 276 | 4307 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 277 | 4311 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
-- Shared and bridge declarations outside the three theorem areas: **1039**.
-- Active proof-debt findings: **0**.
+- Shared and bridge declarations outside the three theorem areas: **1041**.
+- Active proof-debt findings: **1**.
 
 ## Local Commands
 
@@ -32,7 +32,7 @@ Use this as the quick map before opening large proof files.
 | Lines | File |
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 4452 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 4493 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |

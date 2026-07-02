@@ -5,14 +5,16 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
+| Kind | Location | Context | Text |
+|---|---|---|---|
+| proof-debt | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:432` | `theorem exists_tower_ext` | `sorry` |
 
 ## Large Files
 
 | Lines | File |
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 4452 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 4493 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |

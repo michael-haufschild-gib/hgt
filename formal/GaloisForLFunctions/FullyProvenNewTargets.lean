@@ -4450,3 +4450,44 @@ theorem hurwitz_allN_independence_card : HurwitzAllNIndependenceTarget := by
   exact HurwitzAllNComplete.hurwitz_allN_independence hs1 hsZ h2sZ q l cc hSymm hrel
 
 end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- The all-parameters U0 independence from the deep-tower certificate: `NoRelation ℂ(z) φ_b u₀`
+on any admissible carrier, consuming exactly the (radicand + odd loop + `u₀`-germ) data that the
+q62 section tower produces.  The `φ_b ≠ 0` and `u₀`-transcendence inputs are proven in-tree. -/
+def U0PhiIndependenceOfTowerDataTarget : Prop :=
+  ∀ {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hUinf : U.Infinite) (hU_ext : U ⊆ U0NaturalBoundary.Ext) {b : ℂ}
+    (hU_esc : U ⊆ Bottcher.escapeOpen b),
+    (∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (hUExt : U ⊆ Ext) (F : ℂ → ℂ)
+        (aExt GBExt : Bottcher.analyticSubring Ext) (k : ℕ),
+        1 ≤ k ∧ d < 2 ^ k ∧
+        AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
+        (Filter.Germ.coeRingHom (Filter.principal Ext) F)
+          = (aExt : Filter.Germ (Filter.principal Ext) ℂ) ∧
+        Bottcher.restrictAnalytic hUExt aExt = (Bottcher.phiAnalytic b hU_esc) ^ (2 ^ k) ∧
+        Bottcher.restrictAnalytic hUExt GBExt = U0MeroCarrier.u0AnSub hU_ext ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, γ θ ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv F (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) →
+    letI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
+    letI : Algebra (RatFunc ℂ) (Bottcher.meroField U) :=
+      (Bottcher.ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    Bottcher.NoRelation (RatFunc ℂ) (Bottcher.phiMero b hU_esc)
+      (algebraMap (Bottcher.analyticSubring U) (Bottcher.meroField U)
+        (U0MeroCarrier.u0AnSub hU_ext))
+
+/-- Formal wrapper for the U0 tower-bridge capstone. -/
+theorem u0_phi_independence_of_towerData_card : U0PhiIndependenceOfTowerDataTarget := by
+  intro U hUo hUc hUne hUinf hU_ext b hU_esc towerdata
+  exact U0TowerBridge.u0_phi_independence_of_towerData hUo hUc hUne hUinf hU_ext hU_esc towerdata
+
+end FullyProvenNewTargets

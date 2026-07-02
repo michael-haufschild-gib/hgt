@@ -263,6 +263,7 @@ import GaloisForLFunctions.Bottcher.SlitAnnulus
 import GaloisForLFunctions.Bottcher.SlitCrossing
 import GaloisForLFunctions.Bottcher.BottcherTowerScaffold
 import GaloisForLFunctions.Bottcher.BottcherScaffoldChain
+import GaloisForLFunctions.Bottcher.BottcherTowerData
 import GaloisForLFunctions.Bottcher.RhoPathLift
 import GaloisForLFunctions.Bottcher.ConnectedBranchModulusAuto
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
