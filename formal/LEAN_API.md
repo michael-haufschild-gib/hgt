@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4462 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4464 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -1565,6 +1565,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `gapAMu_hasGreenPotentialRepresentation_of_antipodalFreeCylinderCover_subtwoExponentialSeparation_control` | `GaloisForLFunctions.Bottcher.BrolinCylinder` | `formal/GaloisForLFunctions/Bottcher/BrolinCylinder.lean:377` | hDisc closure from forward antipodal-free cylinder covers whose count grows like `O(qⁿ)` for some `q < 2`, plus exponential finite separation. |
 | theorem | `gapAMu_hasGreenPotentialRepresentation_of_halfplaneCylinderCover_subtwoExponentialSeparation_control` | `GaloisForLFunctions.Bottcher.BrolinCylinder` | `formal/GaloisForLFunctions/Bottcher/BrolinCylinder.lean:424` | hDisc closure from forward half-plane cylinder covers whose count grows like `O(qⁿ)` for some `q < 2`, plus exponential finite separation. |
 | theorem | `gapAMu_hasGreenPotentialRepresentation_of_ballSeparatedCylinderCover_subtwoExponentialSeparation_control` | `GaloisForLFunctions.Bottcher.BrolinCylinder` | `formal/GaloisForLFunctions/Bottcher/BrolinCylinder.lean:471` | hDisc closure from shrinking-ball cylinder covers whose count grows like `O(qⁿ)` for some `q < 2`, plus exponential finite separation. |
+| class | `that` | `GaloisForLFunctions.Bottcher.CantorFilledJulia` | `formal/GaloisForLFunctions/Bottcher/CantorFilledJulia.lean:11` |  |
+| theorem | `isTotallyDisconnected_filledJulia_of_four_le` | `GaloisForLFunctions.Bottcher.CantorFilledJulia` | `formal/GaloisForLFunctions/Bottcher/CantorFilledJulia.lean:23` | `K_c` is totally disconnected for `‖c‖ ≥ 4`** — the elementary two-cell expansion argument. |
 | def | `IsProbOn` | `GaloisForLFunctions.Bottcher.Capacity` | `formal/GaloisForLFunctions/Bottcher/Capacity.lean:24` | `μ` is a probability measure carried by the compact set `K` (mass `0` off `K`). |
 | def | `IsEquilibrium` | `GaloisForLFunctions.Bottcher.Capacity` | `formal/GaloisForLFunctions/Bottcher/Capacity.lean:37` | `μ` is an equilibrium measure of `K`: a probability measure on `K` whose energy attains the Robin constant. |
 | theorem | `logCapacity_lt_of_robinConstant_lt` | `GaloisForLFunctions.Bottcher.Capacity` | `formal/GaloisForLFunctions/Bottcher/Capacity.lean:49` | Capacity is monotone-compatible with the Robin constant: smaller Robin constant means larger capacity. (Immediate from `exp` monotonicity; recorded for use in the separation argume |
