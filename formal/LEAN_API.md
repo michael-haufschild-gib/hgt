@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4460 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4462 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -3786,6 +3786,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `q62_phiMero_independence_conditional` | `GaloisForLFunctions.Bottcher.Q62PhiMeroConditional` | `formal/GaloisForLFunctions/Bottcher/Q62PhiMeroConditional.lean:31` | Conditional Q6.2 on the genuine carrier.** For distinct nonexceptional `c₁, c₂`, the Böttcher coordinates `phiMero c₁, phiMero c₂` are algebraically independent over `ℂ(z)`, condit |
 | theorem | `q62_disconnected_of_radical_data` | `GaloisForLFunctions.Bottcher.Q62RadicalReduction` | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:27` | q62 disconnected/disconnected from per-depth NON-SQUARE radical data.** For the genuine Böttcher coordinates `a₁ = φ_{c₁}`, `a₂ = φ_{c₂}` as germs in `meroField U`, algebraic indep |
 | theorem | `q62_disconnected_of_two_radical_data` | `GaloisForLFunctions.Bottcher.Q62RadicalReduction` | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:72` | Two-coordinate disconnected close from non-square radical data on both coordinates. This removes the separate `φ₂` transcendence input from `q62_disconnected_of_radical_data`: the  |
+| theorem | `q62_phiMero_independence_of_monodromy_tip_rigidity` | `GaloisForLFunctions.Bottcher.Q62TipRigidityCapstone` | `formal/GaloisForLFunctions/Bottcher/Q62TipRigidityCapstone.lean:28` | q62 with the genuine Mandelbrot placement.** Connected-side transcendence is discharged outright; the both-connected case needs a hole-free tip and the rigidity Prop; disconnected  |
+| theorem | `q62_phiMero_independence_real_pair` | `GaloisForLFunctions.Bottcher.Q62TipRigidityCapstone` | `formal/GaloisForLFunctions/Bottcher/Q62TipRigidityCapstone.lean:72` | The first concrete nonexceptional pair class (OP4, answered): real `−2 < c₂ < c₁ < 0`.** Both parameters are connected and nonexceptional; the tip is the explicit `imagTip c₁`; the |
 | theorem | `tendsto_quarticDefect_atImInfty` | `GaloisForLFunctions.Bottcher.QuarticCusp` | `formal/GaloisForLFunctions/Bottcher/QuarticCusp.lean:21` |  |
 | theorem | `thetaFour_ne_zero_of_im_pos` | `GaloisForLFunctions.Bottcher.QuarticCusp` | `formal/GaloisForLFunctions/Bottcher/QuarticCusp.lean:32` |  |
 | theorem | `modularLambda_ne_one_of_quartic` | `GaloisForLFunctions.Bottcher.QuarticCusp` | `formal/GaloisForLFunctions/Bottcher/QuarticCusp.lean:36` |  |

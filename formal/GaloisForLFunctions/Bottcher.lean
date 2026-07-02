@@ -286,6 +286,7 @@ import GaloisForLFunctions.Bottcher.PairComponentPropagation
 import GaloisForLFunctions.Bottcher.FrontierPerfectGeneral
 import GaloisForLFunctions.Bottcher.TipSmoothPiece
 import GaloisForLFunctions.Bottcher.HbothconnAssembly
+import GaloisForLFunctions.Bottcher.Q62TipRigidityCapstone
 import GaloisForLFunctions.Bottcher.KoenigsLinearization
 import GaloisForLFunctions.Bottcher.ScaleCollapse
 import GaloisForLFunctions.Bottcher.DendriteTipDischarge
