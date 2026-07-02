@@ -1341,3 +1341,102 @@ theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
     exact hγwind
 
 end Bottcher
+namespace Bottcher
+
+/-- The far radius beyond which every domain carries the Böttcher tower data. -/
+noncomputable def bottcherFarBound (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) : ℝ :=
+  (bottcher_towerDataG_far c hc).choose
+
+theorem one_lt_bottcherFarBound (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
+    1 < bottcherFarBound c hc :=
+  (bottcher_towerDataG_far c hc).choose_spec.1
+
+theorem bottcherFarBound_spec (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
+    ∀ (U : Set ℂ), IsOpen U → IsPreconnected U → U.Nonempty → U.Infinite →
+      (∀ z ∈ U, bottcherFarBound c hc < ‖z‖) →
+      ∃ a₂ : analyticSubring U,
+      (Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c)) = (a₂ : Filter.Germ (𝓟 U) ℂ) ∧
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (hUExt : U ⊆ Ext) (F : ℂ → ℂ) (aExt : analyticSubring Ext) (k : ℕ),
+        1 ≤ k ∧ d < 2 ^ k ∧
+        AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
+        (Filter.Germ.coeRingHom (𝓟 Ext) F) = (aExt : Filter.Germ (𝓟 Ext) ℂ) ∧
+        restrictAnalytic hUExt aExt = a₂ ^ (2 ^ k) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, γ θ ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv F (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1)) :=
+  (bottcher_towerDataG_far c hc).choose_spec.2
+
+/-- **W3, far form**: on every domain beyond the far bound, the Böttcher germ is transcendental
+over `ℂ(z)`. -/
+theorem bottcher_transcendental_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hUinf : U.Infinite) (hUfar : ∀ z ∈ U, bottcherFarBound c hc < ‖z‖)
+    {a₂ : analyticSubring U}
+    (ha₂ : (Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c)) = (a₂ : Filter.Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  obtain ⟨a₂', ha₂', hdata⟩ := bottcherFarBound_spec c hc U hUo hUc hUne hUinf hUfar
+  have haeq : a₂' = a₂ := Subtype.ext (by rw [← ha₂, ← ha₂'])
+  subst haeq
+  apply transcendental_of_towerDataG hUo hUc hUne hUinf a₂' ?_ hdata
+  intro hzero
+  have h1 : a₂' = 0 := by
+    have hinj := IsFractionRing.injective (analyticSubring U) (meroField U)
+    apply hinj
+    rw [hzero, map_zero]
+  have h2 : (a₂' : Filter.Germ (𝓟 U) ℂ) = 0 := by rw [h1]; rfl
+  rw [← ha₂'] at h2
+  have h3 : (bottcherCoord c : ℂ → ℂ) =ᶠ[𝓟 U] (fun _ => (0:ℂ)) :=
+    Filter.Germ.coe_eq.mp h2
+  obtain ⟨z, hz⟩ := hUne
+  exact bottcherCoord_ne_zero c z ((Filter.eventually_principal.mp h3) z hz)
+
+/-- **The conditional pair capstone.**  For `c₂` an escape parameter and any germ `a₁` on a
+common far domain, `NoRelation ℂ(z) a₁ a₂` (with `a₂` the genuine `φ_{c₂}` germ) follows from the
+`towerdataF`-package for `a₁` — the dyadic radical tower with the `φ_{c₂}`-compatibility clause
+`GBExt`.  With `a₁ := φ_{c₁}`-germ, everything except the `GBExt` conjunct is supplied by this
+file's machinery; `GBExt` is the one remaining analytic input of the disconnected pair case. -/
+theorem q62_pair_disconnected_of_towerdataF {c₂ : ℂ} (hc₂ : (0:ℂ) ∉ filledJulia c₂)
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    (hUinf : U.Infinite) (hUfar : ∀ z ∈ U, bottcherFarBound c₂ hc₂ < ‖z‖)
+    (a₁ a₂ : analyticSubring U)
+    (ha₂ : (Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c₂)) = (a₂ : Filter.Germ (𝓟 U) ℂ))
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (towerdataF : ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (hUExt : U ⊆ Ext) (F : ℂ → ℂ) (aExt GBExt : analyticSubring Ext) (k : ℕ),
+        1 ≤ k ∧ d < 2 ^ k ∧
+        AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
+        (Filter.Germ.coeRingHom (𝓟 Ext) F) = (aExt : Filter.Germ (𝓟 Ext) ℂ) ∧
+        restrictAnalytic hUExt aExt = a₁ ^ (2 ^ k) ∧
+        restrictAnalytic hUExt GBExt = a₂ ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, γ θ ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv F (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  have hGtr := bottcher_transcendental_far c₂ hc₂ hUo hUc hUne hUinf hUfar ha₂
+  exact q62_disconnected_of_towerData hUo hUc hUne hUinf a₁ a₂ hF hGtr towerdataF
+
+end Bottcher
