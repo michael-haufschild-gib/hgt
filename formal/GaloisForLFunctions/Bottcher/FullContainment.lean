@@ -12,6 +12,7 @@ the audited answer to open problem 5 (the exclusion dichotomy "fullness upgrades
 inclusion to full inclusion").  Axiom-clean.
 -/
 import GaloisForLFunctions.Bottcher.BasinConnected
+import GaloisForLFunctions.Bottcher.BottcherDetermines
 
 open Set Metric
 
@@ -29,7 +30,7 @@ theorem closure_subset_of_full_of_frontier_subset {K U : Set ℂ}
     by_contra hxc
     rw [mem_union, not_or] at hxc
     obtain ⟨hxU, hxcl⟩ := hxc
-    rw [not_mem_compl_iff] at hxcl
+    simp only [Set.mem_compl_iff, not_not] at hxcl
     -- `x ∈ closure U`, `x ∉ U = interior U`, so `x ∈ frontier U ⊆ K`, contradicting `x ∈ Kᶜ`.
     rw [← hUopen.interior_eq] at hxU
     exact hx (hfront ⟨hxcl, hxU⟩)
@@ -89,5 +90,32 @@ theorem filledJulia_subset_of_frontier_subset {c₁ c₂ : ℂ}
     apply hfront
     rw [(isClosed_filledJulia c₁).frontier_eq]
     exact ⟨hx, hxi⟩
+
+/-- **Exposure dichotomy.** For distinct parameters `c₁ ≠ c₂`, if `D₁` is dense in the Julia
+set `frontier (filledJulia c₁)` and `D₂` is dense in `frontier (filledJulia c₂)`, then not both
+can be trapped: some point of `D₁` lies off `filledJulia c₂`, or some point of `D₂` lies off
+`filledJulia c₁`.
+
+This is the sound "part B" of the audited answer to open problem 5: were both trapped, density
+plus closedness would give `frontier K₁ ⊆ K₂` and `frontier K₂ ⊆ K₁`, the full-containment
+lemma would upgrade these to `K₁ = K₂`, and `K` determines `c` — forcing `c₁ = c₂`. -/
+theorem exists_exposed_of_dense_frontier {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂) {D₁ D₂ : Set ℂ}
+    (hD₁ : frontier (filledJulia c₁) ⊆ closure D₁)
+    (hD₂ : frontier (filledJulia c₂) ⊆ closure D₂) :
+    (∃ x ∈ D₁, x ∉ filledJulia c₂) ∨ (∃ x ∈ D₂, x ∉ filledJulia c₁) := by
+  by_contra hcon
+  rw [not_or] at hcon
+  obtain ⟨hc1, hc2⟩ := hcon
+  have h1 : D₁ ⊆ filledJulia c₂ := fun x hx => by
+    by_contra hxK; exact hc1 ⟨x, hx, hxK⟩
+  have h2 : D₂ ⊆ filledJulia c₁ := fun x hx => by
+    by_contra hxK; exact hc2 ⟨x, hx, hxK⟩
+  have hfr1 : frontier (filledJulia c₁) ⊆ filledJulia c₂ :=
+    hD₁.trans ((isClosed_filledJulia c₂).closure_subset_iff.mpr h1)
+  have hfr2 : frontier (filledJulia c₂) ⊆ filledJulia c₁ :=
+    hD₂.trans ((isClosed_filledJulia c₁).closure_subset_iff.mpr h2)
+  have hK1 : filledJulia c₁ ⊆ filledJulia c₂ := filledJulia_subset_of_frontier_subset hfr1
+  have hK2 : filledJulia c₂ ⊆ filledJulia c₁ := filledJulia_subset_of_frontier_subset hfr2
+  exact hne (c_eq_of_filledJulia_eq' (Subset.antisymm hK1 hK2))
 
 end Bottcher
