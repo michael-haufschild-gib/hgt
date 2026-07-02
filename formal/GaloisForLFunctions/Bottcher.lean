@@ -282,6 +282,7 @@ import GaloisForLFunctions.Bottcher.DendriteTip
 import GaloisForLFunctions.Bottcher.RealSliceDynamics
 import GaloisForLFunctions.Bottcher.ImaginaryAxisTip
 import GaloisForLFunctions.Bottcher.TipWApproach
+import GaloisForLFunctions.Bottcher.PairComponentPropagation
 import GaloisForLFunctions.Bottcher.KoenigsLinearization
 import GaloisForLFunctions.Bottcher.ScaleCollapse
 import GaloisForLFunctions.Bottcher.DendriteTipDischarge

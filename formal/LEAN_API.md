@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4449 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4452 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -3474,6 +3474,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `bottcher_towerDataF_pair` | `GaloisForLFunctions.Bottcher.PairCapstone` | `formal/GaloisForLFunctions/Bottcher/PairCapstone.lean:22` | The pair tower data.** Beyond an explicit threshold, level compatibility supplies the full `towerdataF` package for the genuine pair of Böttcher germs on a common far domain: `F₁`  |
 | theorem | `q62_pair_of_level_compatible` | `GaloisForLFunctions.Bottcher.PairCapstone` | `formal/GaloisForLFunctions/Bottcher/PairCapstone.lean:393` | [q62, disconnected pair, level-compatible case.]** For escape parameters `c₁, c₂` whose geometry is level-compatible beyond the explicit threshold — every NON-PRECRITICAL point of  |
 | theorem | `exists_GBExt_glue` | `GaloisForLFunctions.Bottcher.PairCapstone` | `formal/GaloisForLFunctions/Bottcher/PairCapstone.lean:435` | The glued second coordinate, abstractly.** Given a band tower for `c₂` whose image covers the bounded window and whose fibres are far over the collar, the crude coordinate and the  |
+| theorem | `isConnected_escapeOpen_inter` | `GaloisForLFunctions.Bottcher.PairComponentPropagation` | `formal/GaloisForLFunctions/Bottcher/PairComponentPropagation.lean:26` | The joint far field is one of the two escape annuli (the one with the larger radius), hence preconnected and nonempty. |
+| theorem | `pair_relation_at_escape_point` | `GaloisForLFunctions.Bottcher.PairComponentPropagation` | `formal/GaloisForLFunctions/Bottcher/PairComponentPropagation.lean:46` | Relation propagation to an escape-carrying point.** If the cleared bivariate relation vanishes on a far-field set `U`, then it holds — evaluated through the global basin branches ` |
+| theorem | `holeFreeTip_modulus_one_supply` | `GaloisForLFunctions.Bottcher.PairComponentPropagation` | `formal/GaloisForLFunctions/Bottcher/PairComponentPropagation.lean:128` | Modulus-one supply at every Julia point of the tip ball.** Under a hole-free tip and the far-field relation, every `w ∈ J₁ ∩ B(z₀, r)` carries a modulus-one root of the limiting fi |
 | theorem | `finite_precritical_of_compact_basin` | `GaloisForLFunctions.Bottcher.PairMonodromy` | `formal/GaloisForLFunctions/Bottcher/PairMonodromy.lean:22` | Finiteness of precritical points in basin compacts.** Only finitely many precritical points of `c` meet a compact set avoiding the filled Julia set. |
 | theorem | `period_logDeriv_double` | `GaloisForLFunctions.Bottcher.PairMonodromy` | `formal/GaloisForLFunctions/Bottcher/PairMonodromy.lean:89` | The period doubling.** Once the loop's `n`-th iterate image is in the crude far field, the `dlog` period of `φ_c ∘ f_c^[n+1]` is exactly twice that of `φ_c ∘ f_c^[n]` — the Böttche |
 | theorem | `exists_period_value_threshold` | `GaloisForLFunctions.Bottcher.PairMonodromy` | `formal/GaloisForLFunctions/Bottcher/PairMonodromy.lean:155` | The period value.** Far enough out, composing with the Böttcher coordinate does not change the `dlog` period: `φ_c/z` stays in the right half-plane, so its log is exact and its per |

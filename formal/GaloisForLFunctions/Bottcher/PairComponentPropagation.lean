@@ -15,6 +15,7 @@ import GaloisForLFunctions.Bottcher.TipWApproach
 import GaloisForLFunctions.Bottcher.RootLimitModulus
 import GaloisForLFunctions.Bottcher.TranscendenceReduction
 import GaloisForLFunctions.Bottcher.BasinConnected
+import GaloisForLFunctions.Bottcher.GlobalBasinBranch
 
 open Polynomial Set Metric Bornology Filter Topology
 
@@ -104,10 +105,6 @@ theorem pair_relation_at_escape_point {c₁ c₂ : ℂ}
     simp only [Pi.zero_apply] at h1
     rw [hFdef]
     simp only
-    rw [show ∀ i ∈ s, ((Q i).eval₂ (Polynomial.evalRingHom z) (β₂ z)) * (β₁ z) ^ i
-        = ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
-          * (bottcherCoord c₁ z) ^ i from fun i _ => by
-      rw [hβ₁esc z (hU₁ hzU), hβ₂esc z (hU₂ hzU)]] at *
     calc ∑ i ∈ s, ((Q i).eval₂ (Polynomial.evalRingHom z) (β₂ z)) * (β₁ z) ^ i
         = ∑ i ∈ s, ((Q i).eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z))
           * (bottcherCoord c₁ z) ^ i := by
@@ -156,24 +153,10 @@ theorem holeFreeTip_modulus_one_supply {c₁ c₂ : ℂ}
   choose z hz1 hz2 hz3 V hV1 hV2 hV3 hV4 using hchoice
   -- convergence of the approach sequence
   have hztend : Tendsto z atTop (𝓝 w) := by
-    rw [Metric.tendsto_atTop]
-    intro ε hε
-    obtain ⟨K, hK⟩ := exists_nat_gt (1 / ε)
-    refine ⟨K, fun k hk => ?_⟩
-    have h1 : dist (z k) w < 1 / (k + 1) := by
-      have := hz1 k
-      rwa [Metric.mem_ball] at this
-    have h2 : (1 : ℝ) / (k + 1) ≤ 1 / K := by
-      apply one_div_le_one_div_of_le
-      · exact_mod_cast Nat.pos_of_lt_succ (Nat.lt_succ_of_le (Nat.zero_le K)) |>.trans_le
-          (by exact_mod_cast hk)
-      · push_cast
-        linarith [Nat.cast_le.mpr hk (α := ℝ)]
-    have h3 : (1 : ℝ) / K < ε := by
-      rw [div_lt_iff₀ (by positivity : (0:ℝ) < K)]
-      rw [div_lt_iff₀ hε] at hK
-      linarith
-    linarith
+    have hd : ∀ k : ℕ, dist (z k) w ≤ 1 / ((k : ℝ) + 1) := fun k =>
+      (Metric.mem_ball.mp (hz1 k)).le
+    rw [tendsto_iff_dist_tendsto_zero]
+    exact squeeze_zero (fun k => dist_nonneg) hd tendsto_one_div_add_atTop_nhds_zero_nat
   -- the coefficients, continuous at `w` (the ball is K₂-free)
   set a : ℕ → ℂ → ℂ := fun i z => (Q i).eval₂ (Polynomial.evalRingHom z) (β₂ z) with hadef
   have hwK₂ : w ∈ (filledJulia c₂)ᶜ := by
