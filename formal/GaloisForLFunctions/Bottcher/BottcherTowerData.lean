@@ -478,3 +478,97 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
   · exact hPLConn k k le_rfl ⟨v, hv, rfl⟩
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **The inverse collapse**: on the tower image, `S.inv` intertwines `f` with squaring. -/
+theorem TowerSection.inv_map_quadratic {c : ℂ} {rlo rhi : ℝ} (S : TowerSection c rlo rhi)
+    (hrlo : 0 < rlo)
+    {y : ℂ} (hy : y ∈ S.T '' annulusSet rlo rhi)
+    (hfy : quadratic c y ∈ S.T '' annulusSet rlo rhi) :
+    S.inv (quadratic c y) = (S.inv y) ^ 2 := by
+  obtain ⟨w, hw, rfl⟩ := hy
+  rw [S.inv_left hw]
+  obtain ⟨w', hw', hw'eq⟩ := hfy
+  have hlev : greenFunctionDyn c (quadratic c (S.T w)) = 2 * Real.log ‖w‖ := by
+    rw [greenFunctionDyn_quadratic, S.level w hw]
+  have hlev' : Real.log ‖w'‖ = 2 * Real.log ‖w‖ := by
+    rw [← S.level w' hw', hw'eq, hlev]
+  have hnorm : ‖w ^ 2‖ = ‖w'‖ := by
+    rw [norm_pow]
+    have h1 : Real.log (‖w‖ ^ 2) = Real.log ‖w'‖ := by
+      rw [Real.log_pow, hlev']
+      push_cast
+      ring
+    have h2 : (0:ℝ) < ‖w‖ ^ 2 := by
+      have := lt_trans hrlo hw.1
+      positivity
+    have h3 : (0:ℝ) < ‖w'‖ := lt_trans hrlo hw'.1
+    calc ‖w‖ ^ 2 = Real.exp (Real.log (‖w‖ ^ 2)) := (Real.exp_log h2).symm
+      _ = Real.exp (Real.log ‖w'‖) := by rw [h1]
+      _ = ‖w'‖ := Real.exp_log h3
+  have hsqmem : w ^ 2 ∈ annulusSet rlo rhi := by
+    rw [annulusSet, mem_setOf_eq, hnorm]
+    exact hw'
+  have hfe : quadratic c (S.T w) = S.T (w ^ 2) := by
+    unfold quadratic
+    rw [S.fe w hw hsqmem]
+  rw [hfe, S.inv_left hsqmem]
+
+/-- **Iterated coherence**: if both the `i`-th and `j`-th iterates land on the tower image,
+the inverse of the deeper iterate is the dyadic power of the shallower one. -/
+theorem TowerSection.inv_iterate_coherence {c : ℂ} {rlo rhi : ℝ} (S : TowerSection c rlo rhi)
+    (hrlo : 1 < rlo)
+    {z : ℂ} {i j : ℕ} (hij : i ≤ j)
+    (hi : (quadratic c)^[i] z ∈ S.T '' annulusSet rlo rhi)
+    (hj : (quadratic c)^[j] z ∈ S.T '' annulusSet rlo rhi) :
+    S.inv ((quadratic c)^[j] z) = (S.inv ((quadratic c)^[i] z)) ^ (2 ^ (j - i)) := by
+  have hrlopos : (0:ℝ) < rlo := by linarith
+  set w : ℂ := S.inv ((quadratic c)^[i] z) with hwdef
+  have hwmem : w ∈ annulusSet rlo rhi := S.inv_mem hi
+  have hTw : S.T w = (quadratic c)^[i] z := S.inv_right hi
+  set m : ℕ := j - i with hmdef
+  -- level bookkeeping: powers of w stay in the annulus up to m
+  have hlogw : 0 < Real.log ‖w‖ := Real.log_pos (lt_trans hrlo hwmem.1)
+  have hlevj : greenFunctionDyn c ((quadratic c)^[j] z) = 2 ^ m * Real.log ‖w‖ := by
+    have h1 : (quadratic c)^[j] z = (quadratic c)^[m] ((quadratic c)^[i] z) := by
+      rw [← Function.iterate_add_apply]
+      congr 1
+      omega
+    rw [h1, ← hTw, greenFunctionDyn_iterate, S.level w hwmem]
+  obtain ⟨wj, hwj, hwjeq⟩ := hj
+  have hlogwj : Real.log ‖wj‖ = 2 ^ m * Real.log ‖w‖ := by
+    rw [← S.level wj hwj, hwjeq, hlevj]
+  have hpow : ∀ l : ℕ, l ≤ m → w ^ (2 ^ l) ∈ annulusSet rlo rhi := by
+    intro l hl
+    have h1 : ‖w ^ (2 ^ l)‖ = ‖w‖ ^ (2 ^ l) := norm_pow _ _
+    constructor
+    · rw [h1]
+      have hw1 : (1:ℝ) ≤ ‖w‖ := le_of_lt (lt_trans hrlo hwmem.1)
+      calc rlo < ‖w‖ := hwmem.1
+        _ ≤ ‖w‖ ^ (2 ^ l) := le_self_pow₀ hw1 (by positivity)
+    · rw [h1]
+      have h2 : Real.log (‖w‖ ^ (2 ^ l)) ≤ Real.log ‖wj‖ := by
+        rw [Real.log_pow, hlogwj]
+        have h3 : (2:ℝ) ^ l ≤ 2 ^ m := by
+          apply pow_le_pow_right₀ (by norm_num) hl
+        push_cast
+        nlinarith
+      have h4 : (0:ℝ) < ‖w‖ ^ (2 ^ l) := by
+        have := lt_trans hrlopos hwmem.1
+        positivity
+      have h5 : ‖w‖ ^ (2 ^ l) ≤ ‖wj‖ := by
+        calc ‖w‖ ^ (2 ^ l) = Real.exp (Real.log (‖w‖ ^ (2 ^ l))) := (Real.exp_log h4).symm
+          _ ≤ Real.exp (Real.log ‖wj‖) := Real.exp_le_exp.mpr h2
+          _ = ‖wj‖ := Real.exp_log (lt_trans hrlopos hwj.1)
+      exact lt_of_le_of_lt h5 hwj.2
+  have hfe := S.iterate_fe m hpow
+  have h1 : (quadratic c)^[j] z = S.T (w ^ (2 ^ m)) := by
+    have h2 : (quadratic c)^[j] z = (quadratic c)^[m] ((quadratic c)^[i] z) := by
+      rw [← Function.iterate_add_apply]
+      congr 1
+      omega
+    rw [h2, ← hTw, hfe]
+  rw [h1, S.inv_left (hpow m le_rfl)]
+
+end Bottcher
