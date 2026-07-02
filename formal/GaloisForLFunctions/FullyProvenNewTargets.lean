@@ -70,6 +70,7 @@ import GaloisForLFunctions.U0.U0CurveSectors
 import GaloisForLFunctions.U0.U0CriticalCurveSlice
 import GaloisForLFunctions.U0.U0LobeInstances
 import GaloisForLFunctions.U0.U0UniformClearance
+import GaloisForLFunctions.U0.U0ParameterSpace
 
 noncomputable section
 
@@ -4841,5 +4842,43 @@ def LobePeriod3Target : Prop :=
 /-- Formal wrapper for the period-3 mid-angle obstruction. -/
 theorem lobe_period3_card : LobePeriod3Target :=
   U0LobeInstances.lobe_obstructed_112
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **Uniform clearance from viability** — the m-step bridge.  For `2 < ‖b‖`, if `K_b` avoids the
+closed unit disk, a strictly larger disk `D̄(0,r)` (`r > 1`, crossing `u₀`'s natural boundary
+`|z| = 1`) escapes past the escape fixed point `xStar ‖b‖` after a single uniform number of steps
+`N`.  This is the unconditional geometric core enabling the m-step window branch over the whole
+viable region — the branch-conditional independence capstone
+`U0MStepBranch.u0_mstep_independence_of_branch` consumes exactly this window. -/
+def UniformClearanceTarget : Prop :=
+  ∀ b : ℂ, 2 < ‖b‖ → (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia b) →
+    ∃ r : ℝ, 1 < r ∧ ∃ N : ℕ, ∀ z : ℂ, ‖z‖ ≤ r →
+      U0MonotoneEscape.xStar ‖b‖ < ‖(Bottcher.quadratic b)^[N] z‖
+
+/-- Formal wrapper for the uniform-clearance bridge. -/
+theorem uniform_clearance_card : UniformClearanceTarget :=
+  fun _ hb hv => U0UniformClearance.exists_uniform_clearance hb hv
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **The obstructed set is closed; `∂Obstructed` has a certified point.**  `Obstructed` (the
+`b`-plane set where `K_b` meets the closed unit disk) is closed — a projection of a closed joint
+set along the compact witness disk.  Its frontier (the critical curve `ρ`) has a machine-checked
+point on the ray `arg b ≈ 126.9°` between the obstructed `‖b‖ = 11/5` and the viable `‖b‖ = 22/5`.
+The standing conjecture `Obstructed = closure(preperiodic pattern region)` is now a NAMED
+proposition (`U0ParameterSpace.ObstructedEqClosurePattern`), with its easy half a theorem. -/
+def ObstructedFrontierTarget : Prop :=
+  IsClosed U0ParameterSpace.Obstructed ∧
+  ∃ b : ℂ, b ∈ frontier U0ParameterSpace.Obstructed ∧
+    b ∈ segment ℝ (⟨-33/25, 44/25⟩ : ℂ) (⟨-66/25, 88/25⟩ : ℂ)
+
+/-- Formal wrapper: `Obstructed` closed + a certified frontier point. -/
+theorem obstructed_frontier_card : ObstructedFrontierTarget :=
+  ⟨U0ParameterSpace.isClosed_obstructed, U0ParameterSpace.exists_frontier_obstructed_on_ray⟩
 
 end FullyProvenNewTargets

@@ -159,3 +159,49 @@ For the remaining real fractal parameters, the proof reduces to finding cofinall
 
 [1]: https://arxiv.org/abs/math/9504227 "https://arxiv.org/abs/math/9504227"
 [2]: https://en.wikipedia.org/wiki/Carath%C3%A9odory%27s_theorem_%28conformal_mapping%29 "https://en.wikipedia.org/wiki/Carath%C3%A9odory%27s_theorem_%28conformal_mapping%29"
+
+---
+
+# Verification report (2026-07-02)
+
+**Verdict: the reduction is ACCEPTED (with a one-paragraph repair) and materially
+advances the problem; the certified cases remain the trivial ones.**
+
+1. **Levin–van Strien** — correctly cited and applicable: `J_c` is locally connected
+   for ALL real `c ∈ [−2, 1/4]`, including non-hyperbolic parameters. This puts the
+   Carathéodory landing parametrization `γ_c(t) = Ψ_c(e^{2πit})` on the whole real
+   slice. A genuinely new structural input for this problem.
+2. **The lemma (`E_ρ` connected ⟹ `B(β,ρ) ∖ K_c` connected)** — audit:
+   - Components of `Ω_ρ` accumulate on the unit circle: sound (`Ω_ρ` is bounded since
+     `Ψ_c(ζ) ~ ζ` at `∞`; positive harmonic `log ρ − u` with vanishing boundary values
+     on a compactly contained component contradicts the maximum principle).
+   - Collar + open partition of `E_ρ`: sound.
+   - **GAP:** a component of `Ω_ρ` could accumulate only at angles with
+     `|γ_c(t) − β| = ρ` EXACTLY (empty boundary trace); then a connected `E_ρ` would
+     not force a single component. **REPAIR:** if a component is traceless, each of
+     its accumulation angles `t₀` satisfies `φ(t₀) = ρ` with `φ ≥ ρ` on a
+     neighborhood (otherwise nearby sublevel angles' collar boxes capture the
+     component and give it a trace), i.e. `t₀` is a local minimum of
+     `φ(t) := |γ_c(t) − β|` with value `ρ`. The set of local-minimum VALUES of a
+     continuous function is countable, so for all but countably many `ρ` there are no
+     traceless components and the lemma holds — which is all the cofinal application
+     needs.
+3. **Sharpened residual (now 1-dimensional).** With the repair, the Problem for real
+   `c` reduces to: the continuous function `φ = φ_c : ℝ/ℤ → [0,∞)`,
+   `φ(t) = |γ_c(t) − β|`, vanishing exactly at `t = 0`, has arbitrarily small
+   connected sublevel sets `{φ < ρ}`. Moreover `φ` obeys the EXACT functional
+   self-similarity (from `Ψ(ζ²) = f_c(Ψ(ζ))` and `f_c(z) − β = (z−β)(z+β)`):
+
+   > `φ(2t) = φ(t) · |γ_c(t) + β|`, with `|γ_c(t) + β| → 2β = λ` as `t → 0`,
+
+   so `φ` is doubling-self-similar with factor `λ` near `0` — the log-periodicity
+   seen numerically, as a functional equation on the circle. Disconnection wells of
+   `{φ < ρ}` away from the `t = 0` arc are exactly the rim pockets; the target is
+   that the fundamental-domain well pattern leaves clean levels in every period.
+   (Caution at `c = 1/4`: `λ = 1`, the self-similarity degenerates — the parabolic
+   endpoint needs separate treatment.)
+
+The problem file has been updated with this reduced form; it is now aligned with the
+crossing-count reduction of the companion quasidisk problem — both residuals are
+one-dimensional counting/connectivity statements about a dynamically self-similar
+profile.

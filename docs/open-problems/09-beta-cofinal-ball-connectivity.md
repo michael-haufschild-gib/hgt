@@ -5,6 +5,18 @@
 proved inline; classical results from the literature may be used freely with citation.
 **The request:** prove the Problem as stated with a complete rigorous proof, or refute it.
 
+> **STATUS (2026-07-02): REDUCED to a one-dimensional sublevel statement** (see
+> [09-answer-addition.md](09-answer-addition.md) and its verification report). By
+> Levin–van Strien, `J_c` is locally connected for ALL real `c ∈ [−2,1/4]`, so the
+> Carathéodory landing map `γ_c(t) = Ψ_c(e^{2πit})` exists, `γ_c⁻¹(β) = {0}`, and (for
+> all but countably many `ρ` — the local-minimum values of `φ`) connectivity of the
+> circle sublevel set `{t : φ(t) < ρ}`, `φ(t) := |γ_c(t) − β|`, forces connectivity of
+> `B(β,ρ) ∖ K_c`. The residual Problem: **`{φ < ρ}` is connected for arbitrarily small
+> `ρ`**, where `φ` vanishes only at `t = 0` and satisfies the exact self-similarity
+> `φ(2t) = φ(t)·|γ_c(t) + β|` with factor `→ 2β = λ` at `0` (parabolic endpoint
+> `c = 1/4`, `λ = 1`, degenerates — treat separately). Wells of `{φ < ρ}` away from
+> the `t = 0` arc are exactly the rim pockets of the numerical section below.
+
 ## Setting
 
 For REAL `c ∈ [−2, 1/4]` let `f_c(z) = z² + c` on `ℂ`,
