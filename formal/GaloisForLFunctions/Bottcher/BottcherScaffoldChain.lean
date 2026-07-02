@@ -55,14 +55,21 @@ def ScaffoldProps (c : ℂ) (S : ℂ → ℂ) (A : Set ℂ) (j : ℕ) (σj : ℂ
   (∀ v ∈ A, deriv σj v ≠ 0) ∧
   (∀ v ∈ A, (quadratic c)^[j] (σj v) = S v)
 
-/-- **The one-slit scaffold chain.** -/
-theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
+/-- **The one-slit scaffold chain at a prescribed slit angle.**  The slit center `θs` is an
+input, and the window `(θs + π/8, θs + 2π − π/8)` is exported by equations: any caller that
+knows the critical-value preimage patch sits inside the excluded wedge (e.g. via
+`PatchSquareLocalize`) can convert its own avoidance knowledge onto the working arc. -/
+theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
     (hrlo : 1 < rlo)
     {ra RW : ℝ} (hra : rlo < ra) (hraRW : ra ^ 2 < RW) (hRWR : RW < R₀)
     (hRW4h : Real.log RW < 4 * greenFunctionDyn c 0)
     (hh0 : 0 < greenFunctionDyn c 0)
-    (hlow : greenFunctionDyn c 0 < Real.log rlo) :
-    ∃ α β J₁ J₂ : ℝ, α < β ∧ β ≤ α + 2 * Real.pi ∧
+    (hlow : greenFunctionDyn c 0 < Real.log rlo)
+    {θs : ℝ} (hθs1 : -Real.pi ≤ θs) (hθs2 : θs ≤ Real.pi)
+    (hslitne : ∀ v ∈ arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
+      S.T v ≠ c) :
+    ∃ α β J₁ J₂ : ℝ, α = θs + Real.pi / 8 ∧ β = θs + 2 * Real.pi - Real.pi / 8 ∧
+      α < β ∧ β ≤ α + 2 * Real.pi ∧
       α ≤ J₁ ∧ J₁ < J₂ ∧ J₂ ≤ β ∧ α ≤ 2 * J₁ - 2 * Real.pi ∧ 2 * J₂ - 2 * Real.pi ≤ β ∧
       ∃ σ : ℕ → ℂ → ℂ,
         σ 0 = S.T ∧
@@ -86,47 +93,6 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
     rwa [Real.log_pow, Nat.cast_ofNat] at h1
   set m : ℝ := Real.pi / 8 with hmdef
   have hπ := Real.pi_pos
-  -- the slit angle: through the unique S.T = c point of the band, or 0
-  have hslit : ∃ θs : ℝ, -Real.pi ≤ θs ∧ θs ≤ Real.pi ∧
-      ∀ v ∈ arcAnnulus ra RW (θs + m) (θs + 2 * Real.pi - m), S.T v ≠ c := by
-    by_cases hzero : ∃ vz ∈ annulusSet ra RW, S.T vz = c
-    · obtain ⟨vz, hvz, hPvz⟩ := hzero
-      have hvzne : vz ≠ 0 := by
-        intro h0
-        rw [h0] at hvz
-        simp only [annulusSet, mem_setOf_eq, norm_zero] at hvz
-        linarith [hvz.1]
-      refine ⟨Complex.arg vz, (Complex.neg_pi_lt_arg vz).le, Complex.arg_le_pi vz, ?_⟩
-      intro v hv hveq
-      have hvann : v ∈ annulusSet ra RW :=
-        arcAnnulus_subset _ _ hrapos hraRW' hv
-      have hveqz : v = vz := S.inj
-        ⟨lt_trans hra hvann.1, lt_trans hvann.2 hRWR⟩
-        ⟨lt_trans hra hvz.1, lt_trans hvz.2 hRWR⟩ (by rw [hveq, hPvz])
-      obtain ⟨ξ, hξbox, hξexp⟩ := hv
-      have hlogeq : Complex.exp ξ = Complex.exp (Complex.log vz) := by
-        rw [hξexp, Complex.exp_log hvzne, hveqz]
-      obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp hlogeq
-      have him' : ξ.im = Complex.arg vz + (n : ℝ) * (2 * Real.pi) := by
-        have him := congrArg Complex.im hn
-        rw [show ((n : ℂ) * (2 * Real.pi * Complex.I)) = (((n : ℝ) * (2 * Real.pi) : ℝ) : ℂ) * Complex.I from by push_cast; ring] at him
-        simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
-          Complex.I_re, Complex.I_im, Complex.log_im] at him
-        rw [him]
-        ring
-      have h3 := hξbox.2.2.1
-      have h4 := hξbox.2.2.2
-      rw [him'] at h3 h4
-      have h5 : m < (n : ℝ) * (2 * Real.pi) := by linarith
-      have h6 : (n : ℝ) * (2 * Real.pi) < 2 * Real.pi - m := by linarith
-      have h7 : (0:ℝ) < (n:ℝ) := by nlinarith
-      have h8 : (n:ℝ) < 1 := by nlinarith
-      have h9 : (0:ℤ) < n := by exact_mod_cast h7
-      have h10 : n < (1:ℤ) := by exact_mod_cast h8
-      omega
-    · exact ⟨0, by linarith, by linarith, fun v hv hveq =>
-        hzero ⟨v, arcAnnulus_subset _ _ hrapos hraRW' hv, hveq⟩⟩
-  obtain ⟨θs, hθs1, hθs2, hslitne⟩ := hslit
   set α : ℝ := θs + m with hαdef
   set β : ℝ := θs + 2 * Real.pi - m with hβdef
   have hαβ : α < β := by rw [hαdef, hβdef, hmdef]; linarith
@@ -438,7 +404,7 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
   have hchainlink : ∀ j : ℕ, (chain (j+1)).1 = (chain j).2 := fun j => rfl
   set σ : ℕ → ℂ → ℂ := fun j => (chain j).1 with hσdef
   have hσsucc : ∀ j : ℕ, σ (j+1) = (chain j).2 := fun j => rfl
-  refine ⟨α, β, J₁, J₂, hαβ, hβα, hαJ₁, hJ₁J₂, hJ₂β, hJ₁dbl, hJ₂dbl, σ, rfl, ?_, ?_, ?_, ?_⟩
+  refine ⟨α, β, J₁, J₂, by rw [hαdef, hmdef], by rw [hβdef, hmdef], hαβ, hβα, hαJ₁, hJ₁J₂, hJ₂β, hJ₁dbl, hJ₂dbl, σ, rfl, ?_, ?_, ?_, ?_⟩
   · intro j
     exact (hchain j).1
   · intro j v hv
@@ -449,3 +415,71 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
     rwa [← hσsucc j] at this
   · intro j v hv
     exact (hchain j).2.2.2.2.1 v hv
+
+/-- **The one-slit scaffold chain.** -/
+theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
+    (hrlo : 1 < rlo)
+    {ra RW : ℝ} (hra : rlo < ra) (hraRW : ra ^ 2 < RW) (hRWR : RW < R₀)
+    (hRW4h : Real.log RW < 4 * greenFunctionDyn c 0)
+    (hh0 : 0 < greenFunctionDyn c 0)
+    (hlow : greenFunctionDyn c 0 < Real.log rlo) :
+    ∃ α β J₁ J₂ : ℝ, α < β ∧ β ≤ α + 2 * Real.pi ∧
+      α ≤ J₁ ∧ J₁ < J₂ ∧ J₂ ≤ β ∧ α ≤ 2 * J₁ - 2 * Real.pi ∧ 2 * J₂ - 2 * Real.pi ≤ β ∧
+      ∃ σ : ℕ → ℂ → ℂ,
+        σ 0 = S.T ∧
+        (∀ j : ℕ, ScaffoldProps c S.T (arcAnnulus ra RW α β) j (σ j)) ∧
+        (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW α β, σ (j+1) v ^ 2 = σ j v - c) ∧
+        (∀ j : ℕ, ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂,
+          σ (j+1) (w ^ 2) = σ j w) ∧
+        (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW α β, σ j v ≠ 0) := by
+  classical
+  set h : ℝ := greenFunctionDyn c 0 with hhdef
+  have hrapos : (0:ℝ) < ra := by linarith
+  have hraRW' : ra < RW := by nlinarith
+  set m : ℝ := Real.pi / 8 with hmdef
+  have hπ := Real.pi_pos
+  -- the slit angle: through the unique S.T = c point of the band, or 0
+  have hslit : ∃ θs : ℝ, -Real.pi ≤ θs ∧ θs ≤ Real.pi ∧
+      ∀ v ∈ arcAnnulus ra RW (θs + m) (θs + 2 * Real.pi - m), S.T v ≠ c := by
+    by_cases hzero : ∃ vz ∈ annulusSet ra RW, S.T vz = c
+    · obtain ⟨vz, hvz, hPvz⟩ := hzero
+      have hvzne : vz ≠ 0 := by
+        intro h0
+        rw [h0] at hvz
+        simp only [annulusSet, mem_setOf_eq, norm_zero] at hvz
+        linarith [hvz.1]
+      refine ⟨Complex.arg vz, (Complex.neg_pi_lt_arg vz).le, Complex.arg_le_pi vz, ?_⟩
+      intro v hv hveq
+      have hvann : v ∈ annulusSet ra RW :=
+        arcAnnulus_subset _ _ hrapos hraRW' hv
+      have hveqz : v = vz := S.inj
+        ⟨lt_trans hra hvann.1, lt_trans hvann.2 hRWR⟩
+        ⟨lt_trans hra hvz.1, lt_trans hvz.2 hRWR⟩ (by rw [hveq, hPvz])
+      obtain ⟨ξ, hξbox, hξexp⟩ := hv
+      have hlogeq : Complex.exp ξ = Complex.exp (Complex.log vz) := by
+        rw [hξexp, Complex.exp_log hvzne, hveqz]
+      obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp hlogeq
+      have him' : ξ.im = Complex.arg vz + (n : ℝ) * (2 * Real.pi) := by
+        have him := congrArg Complex.im hn
+        rw [show ((n : ℂ) * (2 * Real.pi * Complex.I)) = (((n : ℝ) * (2 * Real.pi) : ℝ) : ℂ) * Complex.I from by push_cast; ring] at him
+        simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+          Complex.I_re, Complex.I_im, Complex.log_im] at him
+        rw [him]
+        ring
+      have h3 := hξbox.2.2.1
+      have h4 := hξbox.2.2.2
+      rw [him'] at h3 h4
+      have h5 : m < (n : ℝ) * (2 * Real.pi) := by linarith
+      have h6 : (n : ℝ) * (2 * Real.pi) < 2 * Real.pi - m := by linarith
+      have h7 : (0:ℝ) < (n:ℝ) := by nlinarith
+      have h8 : (n:ℝ) < 1 := by nlinarith
+      have h9 : (0:ℤ) < n := by exact_mod_cast h7
+      have h10 : n < (1:ℤ) := by exact_mod_cast h8
+      omega
+    · exact ⟨0, by linarith, by linarith, fun v hv hveq =>
+        hzero ⟨v, arcAnnulus_subset _ _ hrapos hraRW' hv, hveq⟩⟩
+  obtain ⟨θs, hθs1, hθs2, hslitne⟩ := hslit
+  obtain ⟨α, β, J₁, J₂, _, _, hrest⟩ :=
+    exists_scaffold_chain_window S hrlo hra hraRW hRWR hRW4h hh0 hlow hθs1 hθs2
+      (by rw [← hmdef]; exact hslitne)
+  exact ⟨α, β, J₁, J₂, hrest⟩
