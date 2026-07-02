@@ -270,6 +270,7 @@ import GaloisForLFunctions.Bottcher.CoComponent
 import GaloisForLFunctions.Bottcher.PairMonodromy
 import GaloisForLFunctions.Bottcher.PairCapstone
 import GaloisForLFunctions.Bottcher.ConnectedPairReduction
+import GaloisForLFunctions.Bottcher.JuliaSwapDichotomy
 import GaloisForLFunctions.Bottcher.DendriteTip
 import GaloisForLFunctions.Bottcher.KoenigsLinearization
 import GaloisForLFunctions.Bottcher.ScaleCollapse
