@@ -62,6 +62,7 @@ import GaloisForLFunctions.U0.U0SectionExterior
 import GaloisForLFunctions.U0.U0GreenBandBridge
 import GaloisForLFunctions.U0.U0PhiKummerLayers
 import GaloisForLFunctions.U0.U0WindowObstruction
+import GaloisForLFunctions.U0.U0DichotomyWitness
 
 noncomputable section
 
@@ -4655,5 +4656,21 @@ def WindowObstructionTarget : Prop :=
 theorem window_obstruction_card : WindowObstructionTarget := by
   intro b hb2 hb
   exact U0WindowObstruction.filledJulia_meets_unit_disk hb2 hb
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **The window dichotomy at modulus `3`**: at the same modulus `3 ∈ (2, 2+√2)` the filled
+Julia set of `b = 3` avoids the closed unit disk while the filled Julia set of `b = −3` meets
+it.  Window viability in the ring `2 < ‖b‖ ≤ 2+√2` is a directional property of `arg b` — no
+threshold in the modulus alone separates viable from obstructed parameters. -/
+def WindowDichotomyTarget : Prop :=
+  (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia (3 : ℂ)) ∧
+  (∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ Bottcher.filledJulia (((-3 : ℝ) : ℂ)))
+
+/-- Formal wrapper for the modulus-3 window dichotomy. -/
+theorem window_dichotomy_card : WindowDichotomyTarget :=
+  U0DichotomyWitness.window_dichotomy_modulus_three
 
 end FullyProvenNewTargets

@@ -12,7 +12,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | Lines | File |
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 4659 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 4676 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
@@ -244,6 +244,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62Assembly.lean:522` | Mathlib-supported degree-2 case — **bypassing the `p=2` Vahlen–Capelli gap entirely**. The remaining |
 | `formal/GaloisForLFunctions/Bottcher/Q62Assembly.lean:611` | consumes — the remaining piece being `exp(∮ d log h) = 1` (the closed-loop fundamental theorem, an |
 | `formal/GaloisForLFunctions/Bottcher/Q62Assembly.lean:839` | Every algebraic step is now built and axiom-clean; the lone remaining input is the analytic lift — the |
+| `formal/GaloisForLFunctions/Bottcher/Q62BothConnectedExposed.lean:8` | point of one set off the other filled set (after a swap).  The *only* remaining gap to |
 | `formal/GaloisForLFunctions/Bottcher/Q62Field.lean:269` | by `mvEval_deepBall_eq_zero_iff` (faithfulness); the single remaining input `hFunIndep` is precisely |
 | `formal/GaloisForLFunctions/Bottcher/Q62KummerAssembly.lean:35` | against `meroField`. The remaining work to make it unconditional is the *mechanical* construction of |
 | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:24` | algebraic surface of the disconnected case: the lone remaining input is the *geometric* non-squareness |
@@ -290,7 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:857` | This is the algebraic step behind the remaining uniform fixed-tail window: once the basepoint term |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:894` | The basepoint part is discharged by the fixed-tail scalar estimate; the only remaining analytic |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:969` | This is the first non-opaque form of the remaining third-derivative excess obligation: it turns the |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1013` | This packages the current remaining analytic task in the sharp form: the caller supplies a |
 
 ## Historical Status Logs
 
