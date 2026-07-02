@@ -25,7 +25,7 @@ theorem arcAnnulus_mono_radius {ra rb RW α β : ℝ} (hpos : 0 < rb) (hle : rb 
 band `(ra, rb)` below the critical-value level, agreeing with the scaffold chain on the common
 arc. -/
 theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
-    (hrlo : 1 < rlo)
+    (hrlo : 1 < rlo) (hlow : greenFunctionDyn c 0 < Real.log rlo)
     {ra rb RW α β : ℝ} (hra : rlo < ra) (hrb : ra < rb) (hrbRW : rb < RW) (hRWR : RW < R₀)
     (hrb2h : Real.log rb < 2 * greenFunctionDyn c 0)
     (hαβ : α < β)
@@ -37,7 +37,8 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
       SL 0 = S.T ∧
       (∀ j, ScaffoldProps c S.T (annulusSet ra rb) j (SL j)) ∧
       (∀ j, ∀ v ∈ annulusSet ra rb, SL (j+1) v ^ 2 = SL j v - c) ∧
-      (∀ j, ∀ v ∈ arcAnnulus ra rb α β, SL j v = σ j v) := by
+      (∀ j, ∀ v ∈ arcAnnulus ra rb α β, SL j v = σ j v) ∧
+      (∀ j, ∀ v ∈ annulusSet ra rb, SL j v ≠ 0) := by
   classical
   set h : ℝ := greenFunctionDyn c 0 with hhdef
   have hrapos : (0:ℝ) < ra := by linarith
@@ -89,7 +90,8 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
       ScaffoldProps c S.T B j SLj → (∀ v ∈ C, SLj v = σ j v) →
       ∃ SLj1 : ℂ → ℂ, ScaffoldProps c S.T B (j+1) SLj1 ∧
         (∀ v ∈ B, SLj1 v ^ 2 = SLj v - c) ∧
-        (∀ v ∈ C, SLj1 v = σ (j+1) v) := by
+        (∀ v ∈ C, SLj1 v = σ (j+1) v) ∧
+        (∀ v ∈ B, SLj1 v ≠ 0) := by
     intro j SLj hP hmatch
     obtain ⟨han, hlev, hinj, hdne, hit⟩ := hP
     have hg_ne := hrad_ne j SLj hlev
@@ -220,9 +222,14 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
       (fun v hv => (hs_an v (hCB hv)).continuousAt)
       (fun v hv => ((hσ (j+1)).1 v (hCA hv)).continuousAt)
       hσne hdich
+    have hs_ne'' : ∀ v ∈ B, s v ≠ 0 := by
+      intro v hv h0
+      have h1 := hs_sq' v hv
+      rw [h0, zero_pow (by norm_num : (2:ℕ) ≠ 0)] at h1
+      exact hrad_ne j SLj hlev v hv h1.symm
     rcases hsign with hpos | hneg
-    · exact ⟨s, hProps s hs_sq' hs_an, hs_sq', hpos⟩
-    · refine ⟨fun v => -s v, hProps _ ?_ hs_an.neg, ?_, ?_⟩
+    · exact ⟨s, hProps s hs_sq' hs_an, hs_sq', hpos, hs_ne''⟩
+    · refine ⟨fun v => -s v, hProps _ ?_ hs_an.neg, ?_, ?_, ?_⟩
       · intro v hv
         have := hs_sq' v hv
         show (-s v) ^ 2 = SLj v - c
@@ -237,6 +244,9 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
         show -s v = σ (j+1) v
         rw [hneg v hv]
         ring
+      · intro v hv
+        show -s v ≠ 0
+        simpa using hs_ne'' v hv
   -- assemble the chain
   have hbase : ScaffoldProps c S.T B 0 S.T ∧ (∀ v ∈ C, S.T v = σ 0 v) := by
     constructor
@@ -251,20 +261,35 @@ theorem exists_matched_lobes {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo 
   choose! nextfn hnextfn using hstep
   set SL : ℕ → ℂ → ℂ := fun n =>
     Nat.rec S.T (fun j prev => nextfn j prev) n with hSLdef
+  have hTneB : ∀ v ∈ B, S.T v ≠ 0 := by
+    intro v hv hcon
+    have h1 := S.level v (hBsub v hv)
+    rw [hcon] at h1
+    have h3' : Real.log ra < Real.log ‖v‖ := Real.log_lt_log hrapos hv.1
+    have h4 : Real.log rlo < Real.log ra := Real.log_lt_log (by linarith) hra
+    linarith [hlow]
   have hSLprops : ∀ j : ℕ, ScaffoldProps c S.T B j (SL j) ∧ (∀ v ∈ C, SL j v = σ j v) := by
     intro j
     induction j with
     | zero => exact hbase
     | succ n ih =>
         obtain ⟨hP, hmatch⟩ := ih
-        obtain ⟨hP', hsq', hmatch'⟩ := hnextfn n (SL n) hP hmatch
+        obtain ⟨hP', hsq', hmatch', hne'⟩ := hnextfn n (SL n) hP hmatch
         exact ⟨hP', hmatch'⟩
   have hSLsq : ∀ j : ℕ, ∀ v ∈ B, SL (j+1) v ^ 2 = SL j v - c := by
     intro j
     obtain ⟨hP, hmatch⟩ := hSLprops j
-    obtain ⟨_, hsq', _⟩ := hnextfn j (SL j) hP hmatch
+    obtain ⟨_, hsq', _, _⟩ := hnextfn j (SL j) hP hmatch
     exact hsq'
-  exact ⟨SL, rfl, fun j => (hSLprops j).1, hSLsq, fun j => (hSLprops j).2⟩
+  have hSLne : ∀ j : ℕ, ∀ v ∈ B, SL j v ≠ 0 := by
+    intro j
+    cases j with
+    | zero => exact hTneB
+    | succ n =>
+        obtain ⟨hP, hmatch⟩ := hSLprops n
+        obtain ⟨_, _, _, hne'⟩ := hnextfn n (SL n) hP hmatch
+        exact hne'
+  exact ⟨SL, rfl, fun j => (hSLprops j).1, hSLsq, fun j => (hSLprops j).2, hSLne⟩
 
 end Bottcher
 
@@ -287,16 +312,18 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
       (∀ z ∈ Ext, ∃ j : ℕ, j ≤ k ∧ (quadratic c)^[j] z ∈ S.T '' annulusSet rlo R₀) ∧
       (∀ z ∈ Ext, z ∈ S.T '' annulusSet rlo R₀ ∨
         greenFunctionDyn c z < 2 * greenFunctionDyn c 0) ∧
+      (∀ z ∈ Ext, ∀ n : ℕ, (quadratic c)^[n] z ≠ 0) ∧
       AnalyticOnNhd ℂ SL (annulusSet ra rb) ∧
       (∀ v ∈ annulusSet ra rb, (quadratic c)^[k] (SL v) = S.T v) ∧
       (∀ v ∈ annulusSet ra rb, greenFunctionDyn c (SL v) = Real.log ‖v‖ / 2 ^ k) ∧
       (∀ v ∈ annulusSet ra rb, deriv SL v ≠ 0) ∧
       (∀ v ∈ annulusSet ra rb, SL v ∈ Ext) := by
   classical
-  obtain ⟨α, β, J₁, J₂, hαβ, hβα, hαJ₁, hJ₁J₂, hJ₂β, hJ₁dbl, hJ₂dbl, σ, hσ0, hσP, hσsq, hσdbl⟩ :=
+  obtain ⟨α, β, J₁, J₂, hαβ, hβα, hαJ₁, hJ₁J₂, hJ₂β, hJ₁dbl, hJ₂dbl, σ, hσ0, hσP, hσsq, hσdbl,
+    hσne⟩ :=
     exists_scaffold_chain S hrlo hra hraRW hRWR hRW4h hh0 hlow
-  obtain ⟨SL, hSL0, hSLP, hSLsq, hSLmatch⟩ :=
-    exists_matched_lobes S hrlo hra hrb hrbRW hRWR hrb2h hαβ hσ0 hσP hσsq
+  obtain ⟨SL, hSL0, hSLP, hSLsq, hSLmatch, hSLne⟩ :=
+    exists_matched_lobes S hrlo hlow hra hrb hrbRW hRWR hrb2h hαβ hσ0 hσP hσsq
   have hrapos : (0:ℝ) < ra := by linarith
   have hrlopos : (0:ℝ) < rlo := by linarith
   have hraRW' : ra < RW := lt_trans hrb hrbRW
@@ -516,8 +543,95 @@ theorem exists_tower_ext {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
               Real.log_pos (lt_trans (by nlinarith : (1:ℝ) < ra) hv.1)
             rw [div_lt_iff₀ (by positivity)]
             nlinarith
+  -- forward orbits of section values never vanish: level argument above depth, chain below
+  have hne_of_level : ∀ w : ℂ, greenFunctionDyn c 0 < greenFunctionDyn c w → w ≠ 0 := by
+    intro w hG h0
+    rw [h0] at hG
+    exact lt_irrefl _ hG
+  have hT_orbit : ∀ w ∈ annulusSet rlo R₀, ∀ n : ℕ, (quadratic c)^[n] (S.T w) ≠ 0 := by
+    intro w hw n
+    apply hne_of_level
+    rw [greenFunctionDyn_iterate, S.level w hw]
+    have h1 : Real.log rlo < Real.log ‖w‖ := Real.log_lt_log (by linarith) hw.1
+    have h2 : (1:ℝ) ≤ 2 ^ n := one_le_pow₀ (by norm_num)
+    nlinarith [hlow]
+  have hσ_fiter : ∀ n j : ℕ, n ≤ j → ∀ v ∈ arcAnnulus ra RW α β,
+      (quadratic c)^[n] (σ j v) = σ (j - n) v := by
+    intro n
+    induction n with
+    | zero =>
+        intro j _ v _
+        simp
+    | succ m ih =>
+        intro j hmj v hv
+        obtain ⟨j', rfl⟩ : ∃ j', j = j' + 1 := ⟨j - 1, by omega⟩
+        have hlink : quadratic c (σ (j' + 1) v) = σ j' v := by
+          have h1 := hσsq j' v hv
+          unfold quadratic
+          rw [h1]
+          ring
+        rw [Function.iterate_succ_apply, hlink]
+        rw [ih j' (by omega) v hv]
+        congr 1
+        omega
+  have hSL_fiter : ∀ n j : ℕ, n ≤ j → ∀ v ∈ annulusSet ra rb,
+      (quadratic c)^[n] (SL j v) = SL (j - n) v := by
+    intro n
+    induction n with
+    | zero =>
+        intro j _ v _
+        simp
+    | succ m ih =>
+        intro j hmj v hv
+        obtain ⟨j', rfl⟩ : ∃ j', j = j' + 1 := ⟨j - 1, by omega⟩
+        have hlink : quadratic c (SL (j' + 1) v) = SL j' v := by
+          have h1 := hSLsq j' v hv
+          unfold quadratic
+          rw [h1]
+          ring
+        rw [Function.iterate_succ_apply, hlink]
+        rw [ih j' (by omega) v hv]
+        congr 1
+        omega
+  have horb : ∀ nn : ℕ, ∀ z ∈ Conn nn, ∀ n : ℕ, (quadratic c)^[n] z ≠ 0 := by
+    intro nn
+    induction nn with
+    | zero =>
+        rintro z hz n
+        obtain ⟨w, hw, rfl⟩ := hz
+        exact hT_orbit w hw n
+    | succ m ih =>
+        intro z hz n
+        rw [hConnsucc m] at hz
+        rcases hz with hz | hz
+        · exact ih z hz n
+        · rcases hz with hzσ | hzL
+          · obtain ⟨v, hv, rfl⟩ := hzσ
+            rcases le_or_gt n (m+1) with hn | hn
+            · rw [hσ_fiter n (m+1) hn v hv]
+              exact hσne (m+1-n) v hv
+            · have h1 : (quadratic c)^[n] (σ (m+1) v)
+                  = (quadratic c)^[n - (m+1)] ((quadratic c)^[m+1] (σ (m+1) v)) := by
+                rw [← Function.iterate_add_apply]
+                congr 1
+                omega
+              rw [h1, (hσP (m+1)).2.2.2.2 v hv]
+              exact hT_orbit v (hAsubS v hv) (n - (m+1))
+          · obtain ⟨v, hv, rfl⟩ := hzL
+            rcases le_or_gt n (m+1) with hn | hn
+            · rw [hSL_fiter n (m+1) hn v hv]
+              exact hSLne (m+1-n) v hv
+            · have h1 : (quadratic c)^[n] (SL (m+1) v)
+                  = (quadratic c)^[n - (m+1)] ((quadratic c)^[m+1] (SL (m+1) v)) := by
+                rw [← Function.iterate_add_apply]
+                congr 1
+                omega
+              rw [h1, (hSLP (m+1)).2.2.2.2 v hv]
+              apply hT_orbit v _ (n - (m+1))
+              obtain ⟨h2, h3⟩ := hv
+              exact ⟨lt_trans hra h2, lt_trans h3 (lt_trans hrbRW hRWR)⟩
   refine ⟨Conn k, SL k, (hConnConn k).2, (hConnConn k).1, hP0Conn k, hreach k, hlevels k,
-    (hSLP k).1, (hSLP k).2.2.2.2, (hSLP k).2.1, (hSLP k).2.2.2.1, ?_⟩
+    horb k, (hSLP k).1, (hSLP k).2.2.2.2, (hSLP k).2.1, (hSLP k).2.2.2.1, ?_⟩
   intro v hv
   rcases Nat.eq_zero_or_pos k with hk0 | hkpos
   · subst hk0
@@ -932,7 +1046,7 @@ theorem bottcher_towerDataG (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
   refine ⟨U, hUo, hUconn.isPreconnected, hUne, hUinf, hUesc, a₂, rfl, ?_⟩
   intro d
   set k : ℕ := d + 1 with hkdef
-  obtain ⟨Ext, SL, hExto, hExtc, hP0Ext, hreach, hlevels, hSLan, hSLit, hSLlev, hSLdne,
+  obtain ⟨Ext, SL, hExto, hExtc, hP0Ext, hreach, hlevels, horbit, hSLan, hSLit, hSLlev, hSLdne,
     hSLExt⟩ :=
     exists_tower_ext S hrlo1 hh0 hlow hra hrb hrbRW hRWR hrb2h hraRW hRW4h k
   obtain ⟨F, hFan, hFne, hFtop, hFbr⟩ :=
@@ -1028,6 +1142,7 @@ end Bottcher
 
 namespace Bottcher
 
+set_option maxHeartbeats 1600000 in
 /-- **Tower data on an arbitrary far domain.**  Beyond a `c`-dependent radius `Bmin`, EVERY open
 connected infinite `U` carries the Böttcher germ's full `towerdataG` package: the per-depth
 extended domain is the old one glued with the unbounded far region `{Bmin < ‖z‖}`, where the
@@ -1047,6 +1162,7 @@ theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
         (Filter.Germ.coeRingHom (𝓟 Ext) F) = (aExt : Filter.Germ (𝓟 Ext) ℂ) ∧
         restrictAnalytic hUExt aExt = a₂ ^ (2 ^ k) ∧
         (∀ z ∈ Ext, 0 < greenFunctionDyn c z) ∧
+        (∀ z ∈ Ext, ∀ n : ℕ, (quadratic c)^[n] z ≠ 0) ∧
         (∀ T : Set ℂ, T.Countable →
           ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
             (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
@@ -1173,7 +1289,7 @@ theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
     rw [hRWdef, Real.log_exp]
     linarith
   set k : ℕ := d + 1 with hkdef
-  obtain ⟨Ext, SL, hExto, hExtc, hP0Ext, hreach, hlevels, hSLan, hSLit, hSLlev, hSLdne,
+  obtain ⟨Ext, SL, hExto, hExtc, hP0Ext, hreach, hlevels, horbit, hSLan, hSLit, hSLlev, hSLdne,
     hSLExt⟩ :=
     exists_tower_ext S hrlo1 hh0 hlow hra hrb hrbRW hRWR hrb2h hraRW hRW4h k
   obtain ⟨F, hFan, hFne, hFtop, hFbr⟩ :=
@@ -1294,6 +1410,24 @@ theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
     intro z hz
     show (if Bmin < ‖z‖ then bottcherCoord c z ^ (2 ^ k) else F z) = _
     rw [if_pos (hUfar z hz)]
+  have hExt'orbit : ∀ z ∈ Ext', ∀ n : ℕ, (quadratic c)^[n] z ≠ 0 := by
+    rintro z (hzE | hzA) n
+    · exact horbit z hzE n
+    · have h1 : Real.log Rb < greenFunctionDyn c z := hGfar z hzA
+      have h2 : h < Real.log Rb := by
+        have h3 : Real.exp h < Rb := by
+          rw [hRbdef]
+          exact hRaG
+        have h4 := Real.log_lt_log (Real.exp_pos h) h3
+        rwa [Real.log_exp] at h4
+      intro h0
+      have h5 : greenFunctionDyn c ((quadratic c)^[n] z)
+          = 2 ^ n * greenFunctionDyn c z := by
+        rw [greenFunctionDyn_iterate]
+      rw [h0] at h5
+      have h6 : (1:ℝ) ≤ 2 ^ n := one_le_pow₀ (by norm_num)
+      have h7 : greenFunctionDyn c 0 = h := rfl
+      nlinarith
   have hExt'pos : ∀ z ∈ Ext', 0 < greenFunctionDyn c z := by
     rintro z (hzE | hzA)
     · obtain ⟨j, hjk, hjP⟩ := hreach z hzE
@@ -1312,7 +1446,7 @@ theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
         exact hRa1)
       linarith
   refine ⟨Ext', hExt'o, hExt'c, hUinf.mono hUExt', hUExt', F', aExt, k, ?_, ?_, hF'an, hF'ne,
-    rfl, ?_, hExt'pos, ?_⟩
+    rfl, ?_, hExt'pos, hExt'orbit, ?_⟩
   · omega
   · calc d < 2 ^ d := Nat.lt_two_pow_self
       _ ≤ 2 ^ k := Nat.pow_le_pow_right (by norm_num) (by omega)
@@ -1383,6 +1517,7 @@ theorem bottcherFarBound_spec (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
         (Filter.Germ.coeRingHom (𝓟 Ext) F) = (aExt : Filter.Germ (𝓟 Ext) ℂ) ∧
         restrictAnalytic hUExt aExt = a₂ ^ (2 ^ k) ∧
         (∀ z ∈ Ext, 0 < greenFunctionDyn c z) ∧
+        (∀ z ∈ Ext, ∀ n : ℕ, (quadratic c)^[n] z ≠ 0) ∧
         (∀ T : Set ℂ, T.Countable →
           ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
             (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
@@ -1425,7 +1560,7 @@ theorem bottcher_transcendental_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
             = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1)) := by
     intro d
     obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, F, aExt, k, hk1, hdk, hFan, hFne, hae,
-      hrad, _hpos, hloops⟩ := hdata d
+      hrad, _hpos, _horb, hloops⟩ := hdata d
     exact ⟨Ext, hExto, hExtc, hExtinf, hUExt, F, aExt, k, hk1, hdk, hFan, hFne, hae,
       hrad, hloops⟩
   apply transcendental_of_towerDataG hUo hUc hUne hUinf a₂' ?_ hdata'

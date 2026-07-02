@@ -23,6 +23,7 @@ theorem bottcher_towerDataF_pair (c₁ c₂ : ℂ)
     (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc₂ : (0:ℂ) ∉ filledJulia c₂) :
     ∃ cap₀ : ℝ, ∀ cap : ℝ, cap₀ ≤ cap →
     (∀ z : ℂ, 0 < greenFunctionDyn c₁ z → greenFunctionDyn c₁ z ≤ cap →
+      (∀ n : ℕ, (quadratic c₁)^[n] z ≠ 0) →
       2 * greenFunctionDyn c₂ 0 < greenFunctionDyn c₂ z) →
     ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U.Nonempty ∧ U.Infinite ∧
       ∃ (a₁ a₂ : analyticSubring U),
@@ -172,7 +173,7 @@ theorem bottcher_towerDataF_pair (c₁ c₂ : ℂ)
   refine ⟨U, hUo, hUconn.isPreconnected, hUne, hUinf, a₁, a₂, ha₁, rfl, hUfar₂, ?_⟩
   intro d
   obtain ⟨Ext, hExto, hExtc, hExtinf, hUExt, F, aExt, k, hk1, hdk, hFan, hFne, hae,
-    hrad, hExtpos, hloops⟩ := hdata₁ d
+    hrad, hExtpos, hExtorb, hloops⟩ := hdata₁ d
   -- the glued second coordinate on the extended domain
   set GBExtF : ℂ → ℂ := fun z =>
     if cut < ‖z‖ then bottcherCoord c₂ z else S₂.inv z with hGBdef
@@ -198,7 +199,7 @@ theorem bottcher_towerDataF_pair (c₁ c₂ : ℂ)
                   have := lt_of_le_of_lt (le_max_left 2 ‖c₁‖) hfar1
                   linarith)
           linarith
-        have h4 := hlevel z hG₁pos hG₁cap
+        have h4 := hlevel z hG₁pos hG₁cap (hExtorb z hz)
         linarith [hrlo₂2h]
       · -- collar part: the crude comparison fires
         have hesc₂ : max 2 ‖c₂‖ < ‖z‖ := lt_trans hcutc₂ hcase
@@ -381,14 +382,19 @@ end Bottcher
 namespace Bottcher
 
 /-- **[q62, disconnected pair, level-compatible case.]**  For escape parameters `c₁, c₂` whose
-geometry is level-compatible beyond the explicit threshold, the two genuine inverse Böttcher
-germs are algebraically independent over `ℂ(z)` on a common far domain: the first coordinate's
-dyadic radical tower carries the second's extended coordinate, and the Kummer machinery closes.
+geometry is level-compatible beyond the explicit threshold — every NON-PRECRITICAL point of the
+first basin's bounded window sits above the second's critical Green level — the two genuine
+inverse Böttcher germs are algebraically independent over `ℂ(z)` on a common far domain: the
+first coordinate's dyadic radical tower carries the second's extended coordinate, and the Kummer
+machinery closes.  The precritical exemption is what makes the hypothesis satisfiable (the
+critical point `0` itself always lies in the window); its satisfiability locus is the geometric
+condition that `K_{c₂} ∖ K_{c₁}`-points in the window are precritical for `c₁` or absent.
 Axiom-clean, no sorries anywhere below. -/
 theorem q62_pair_of_level_compatible (c₁ c₂ : ℂ)
     (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc₂ : (0:ℂ) ∉ filledJulia c₂) :
     ∃ cap₀ : ℝ, ∀ cap : ℝ, cap₀ ≤ cap →
     (∀ z : ℂ, 0 < greenFunctionDyn c₁ z → greenFunctionDyn c₁ z ≤ cap →
+      (∀ n : ℕ, (quadratic c₁)^[n] z ≠ 0) →
       2 * greenFunctionDyn c₂ 0 < greenFunctionDyn c₂ z) →
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (a₁ a₂ : analyticSubring U),

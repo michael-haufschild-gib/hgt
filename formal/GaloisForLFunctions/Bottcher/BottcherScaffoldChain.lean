@@ -69,7 +69,8 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
         (∀ j : ℕ, ScaffoldProps c S.T (arcAnnulus ra RW α β) j (σ j)) ∧
         (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW α β, σ (j+1) v ^ 2 = σ j v - c) ∧
         (∀ j : ℕ, ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂,
-          σ (j+1) (w ^ 2) = σ j w) := by
+          σ (j+1) (w ^ 2) = σ j w) ∧
+        (∀ j : ℕ, ∀ v ∈ arcAnnulus ra RW α β, σ j v ≠ 0) := by
   classical
   set h : ℝ := greenFunctionDyn c 0 with hhdef
   have hrapos : (0:ℝ) < ra := by linarith
@@ -221,10 +222,12 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
   set PairProps : ℕ → (ℂ → ℂ) → (ℂ → ℂ) → Prop := fun j σa σb =>
     ScaffoldProps c S.T A j σa ∧ ScaffoldProps c S.T A (j+1) σb ∧
     (∀ v ∈ A, σb v ^ 2 = σa v - c) ∧
-    (∀ w ∈ W, σb (w ^ 2) = σa w) with hPPdef
+    (∀ w ∈ W, σb (w ^ 2) = σa w) ∧
+    (∀ v ∈ A, σa v ≠ 0) ∧ (∀ v ∈ A, σb v ≠ 0) with hPPdef
   -- generic root extraction with all ScaffoldProps
   have hroot : ∀ j : ℕ, ∀ σj : ℂ → ℂ, ScaffoldProps c S.T A j σj →
-      ∃ s : ℂ → ℂ, ScaffoldProps c S.T A (j+1) s ∧ (∀ v ∈ A, s v ^ 2 = σj v - c) := by
+      ∃ s : ℂ → ℂ, ScaffoldProps c S.T A (j+1) s ∧ (∀ v ∈ A, s v ^ 2 = σj v - c) ∧
+        (∀ v ∈ A, s v ≠ 0) := by
     intro j σj hP
     obtain ⟨han, hlev, hinj, hdne, hit⟩ := hP
     have hg_ne := hrad_ne j σj ⟨han, hlev, hinj, hdne, hit⟩
@@ -237,7 +240,7 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
       have h1 := hs_sq v hv
       rw [h0, zero_pow (by norm_num : (2:ℕ) ≠ 0)] at h1
       exact hg_ne v hv h1.symm
-    refine ⟨s, ⟨hs_an, ?_, ?_, ?_, ?_⟩, hs_sq⟩
+    refine ⟨s, ⟨hs_an, ?_, ?_, ?_, ?_⟩, hs_sq, hs_ne⟩
     · intro v hv
       have hfe : quadratic c (s v) = σj v := by
         unfold quadratic
@@ -314,8 +317,8 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
   have hstep : ∀ j : ℕ, ∀ σa σb : ℂ → ℂ, PairProps j σa σb →
       ∃ σc : ℂ → ℂ, PairProps (j+1) σb σc := by
     intro j σa σb hPP
-    obtain ⟨hPa, hPb, hsq, hdbl⟩ := hPP
-    obtain ⟨s, hPs, hs_sq⟩ := hroot (j+1) σb hPb
+    obtain ⟨hPa, hPb, hsq, hdbl, haneA, hbneA⟩ := hPP
+    obtain ⟨s, hPs, hs_sq, hs_ne'⟩ := hroot (j+1) σb hPb
     -- the doubling dichotomy against σb
     have hdich : ∀ w ∈ W, s (w ^ 2) = σb w ∨ s (w ^ 2) = -σb w := by
       intro w hw
@@ -344,8 +347,8 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
       hbne
       hdich
     rcases hsign with hpos | hneg
-    · exact ⟨s, hPb, hPs, hs_sq, hpos⟩
-    · refine ⟨fun v => -s v, hPb, hneg_layer (j+2) s (by omega) hPs, ?_, ?_⟩
+    · exact ⟨s, hPb, hPs, hs_sq, hpos, hbneA, hs_ne'⟩
+    · refine ⟨fun v => -s v, hPb, hneg_layer (j+2) s (by omega) hPs, ?_, ?_, hbneA, ?_⟩
       · intro v hv
         have := hs_sq v hv
         show (-s v) ^ 2 = σb v - c
@@ -356,6 +359,9 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
         have h1 : s (w ^ 2) = -σb w := hneg w hw
         rw [h1]
         ring
+      · intro v hv
+        show -s v ≠ 0
+        simpa using hs_ne' v hv
   -- the base pair
   have hbase : ∃ σ₁ : ℂ → ℂ, PairProps 0 S.T σ₁ := by
     have hP0 : ScaffoldProps c S.T A 0 S.T := by
@@ -365,7 +371,15 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
         simp
       · intro v hv
         simp
-    obtain ⟨s, hPs, hs_sq⟩ := hroot 0 S.T hP0
+    obtain ⟨s, hPs, hs_sq, hs_ne'⟩ := hroot 0 S.T hP0
+    have hTneA : ∀ v ∈ A, S.T v ≠ 0 := by
+      intro v hv hcon
+      have h1 := S.level v (hAsubS v hv)
+      rw [hcon] at h1
+      have h3 := (hlogv v hv).1
+      have h4 : Real.log rlo < Real.log ra := Real.log_lt_log (by linarith) hra
+      have h5 : greenFunctionDyn c 0 < Real.log rlo := hlow
+      linarith
     have hdich : ∀ w ∈ W, s (w ^ 2) = S.T w ∨ s (w ^ 2) = -S.T w := by
       intro w hw
       have h1 : s (w ^ 2) ^ 2 = S.T (w ^ 2) - c := hs_sq _ (hWsq w hw)
@@ -395,8 +409,8 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
       hTneW hdich
     have hP0' : ScaffoldProps c S.T A 0 S.T := hP0
     rcases hsign with hpos | hneg
-    · exact ⟨s, hP0', hPs, hs_sq, hpos⟩
-    · refine ⟨fun v => -s v, hP0', hneg_layer 1 s le_rfl hPs, ?_, ?_⟩
+    · exact ⟨s, hP0', hPs, hs_sq, hpos, hTneA, hs_ne'⟩
+    · refine ⟨fun v => -s v, hP0', hneg_layer 1 s le_rfl hPs, ?_, ?_, hTneA, ?_⟩
       · intro v hv
         have := hs_sq v hv
         show (-s v) ^ 2 = S.T v - c
@@ -407,6 +421,9 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
         have h1 : s (w ^ 2) = -S.T w := hneg w hw
         rw [h1]
         ring
+      · intro v hv
+        show -s v ≠ 0
+        simpa using hs_ne' v hv
   obtain ⟨σ₁, hpair0⟩ := hbase
   choose! nextfn hnextfn using hstep
   -- the chain of consecutive pairs
@@ -421,12 +438,14 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
   have hchainlink : ∀ j : ℕ, (chain (j+1)).1 = (chain j).2 := fun j => rfl
   set σ : ℕ → ℂ → ℂ := fun j => (chain j).1 with hσdef
   have hσsucc : ∀ j : ℕ, σ (j+1) = (chain j).2 := fun j => rfl
-  refine ⟨α, β, J₁, J₂, hαβ, hβα, hαJ₁, hJ₁J₂, hJ₂β, hJ₁dbl, hJ₂dbl, σ, rfl, ?_, ?_, ?_⟩
+  refine ⟨α, β, J₁, J₂, hαβ, hβα, hαJ₁, hJ₁J₂, hJ₂β, hJ₁dbl, hJ₂dbl, σ, rfl, ?_, ?_, ?_, ?_⟩
   · intro j
     exact (hchain j).1
   · intro j v hv
     have := (hchain j).2.2.1 v hv
     rwa [← hσsucc j] at this
   · intro j w hw
-    have := (hchain j).2.2.2 w hw
+    have := (hchain j).2.2.2.1 w hw
     rwa [← hσsucc j] at this
+  · intro j v hv
+    exact (hchain j).2.2.2.2.1 v hv
