@@ -295,6 +295,8 @@ import GaloisForLFunctions.Bottcher.TowerSectionRestrict
 import GaloisForLFunctions.Bottcher.SectionIdentityBelowAnchor
 import GaloisForLFunctions.Bottcher.PatchSquareLocalize
 import GaloisForLFunctions.Bottcher.FullContainment
+import GaloisForLFunctions.Bottcher.OneSidedCertificate
+import GaloisForLFunctions.Bottcher.Q62BothConnectedExposed
 import GaloisForLFunctions.Bottcher.KoenigsLinearization
 import GaloisForLFunctions.Bottcher.ScaleCollapse
 import GaloisForLFunctions.Bottcher.DendriteTipDischarge

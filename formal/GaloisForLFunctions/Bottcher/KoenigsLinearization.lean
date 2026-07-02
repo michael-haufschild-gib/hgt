@@ -766,7 +766,7 @@ theorem sector_convex : Convex ℝ {v : ℂ | ‖v‖ / 2 < v.re} := by
           rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
             abs_of_nonneg hs, abs_of_nonneg ht]
   have h2 : (s • x + t • y).re = s * x.re + t * y.re := by
-    simp [Complex.add_re, Complex.smul_re]
+    simp [Complex.add_re]
   rw [h2]
   rcases lt_or_eq_of_le hs with hs' | hs'
   · nlinarith [mul_lt_mul_of_pos_left hx hs', mul_le_mul_of_nonneg_left (le_of_lt hy) ht]
