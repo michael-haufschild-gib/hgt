@@ -420,3 +420,97 @@ theorem q62_pair_of_level_compatible (c₁ c₂ : ℂ)
   exact bottcherCoord_ne_zero c₁ z ((Filter.eventually_principal.mp h3) z hz)
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **The glued second coordinate, abstractly.**  Given a band tower for `c₂` whose image
+covers the bounded window and whose fibres are far over the collar, the crude coordinate and the
+band inverse glue to a single analytic extension of `φ_{c₂}` on any domain in the window. -/
+theorem exists_GBExt_glue (c₂ : ℂ) {rlo₂ R₀₂ Ra₂ Rinj₂ : ℝ} (hrlo₂1 : 1 < rlo₂)
+    (S₂ : TowerSection c₂ rlo₂ R₀₂)
+    (hfar₂ : ∀ w : ℂ, Ra₂ < ‖w‖ → ‖w‖ < R₀₂ →
+      bottcherCoord c₂ (S₂.T w) = w ∧ S₂.T w ∈ escapeOpen c₂ ∧ Rinj₂ < ‖S₂.T w‖)
+    {cut : ℝ} (hcutc₂ : max 2 ‖c₂‖ < cut)
+    {Ext : Set ℂ} (hExto : IsOpen Ext)
+    (hbandmem : ∀ z ∈ Ext, ‖z‖ ≤ 4 * cut → z ∈ S₂.T '' annulusSet rlo₂ R₀₂)
+    (hcollarG : ∀ z ∈ Ext, cut < ‖z‖ → ‖z‖ ≤ 4 * cut →
+      Real.log Ra₂ < greenFunctionDyn c₂ z) :
+    ∃ GBExtF : ℂ → ℂ, AnalyticOnNhd ℂ GBExtF Ext ∧
+      (∀ z : ℂ, cut < ‖z‖ → GBExtF z = bottcherCoord c₂ z) := by
+  classical
+  have hcutpos : (0:ℝ) < cut := lt_trans (lt_of_lt_of_le (by norm_num) (le_max_left _ _))
+    hcutc₂
+  set GBExtF : ℂ → ℂ := fun z =>
+    if cut < ‖z‖ then bottcherCoord c₂ z else S₂.inv z with hGBdef
+  have hRa₂pos : (0:ℝ) < Ra₂ ∨ True := Or.inr trivial
+  -- the collar agreement
+  have hagree : ∀ z ∈ Ext, cut < ‖z‖ → ‖z‖ ≤ 4 * cut →
+      bottcherCoord c₂ z = S₂.inv z := by
+    intro z hz hzlo hzhi
+    have hmem := hbandmem z hz hzhi
+    have hw := S₂.inv_mem hmem
+    have hTw : S₂.T (S₂.inv z) = z := S₂.inv_right hmem
+    have hwlog : Real.log ‖S₂.inv z‖ = greenFunctionDyn c₂ z := S₂.norm_inv hmem
+    have hG₂z : Real.log Ra₂ < greenFunctionDyn c₂ z := hcollarG z hz hzlo hzhi
+    have hwpos : (0:ℝ) < ‖S₂.inv z‖ := lt_trans (by linarith) hw.1
+    have hwRa : Ra₂ < ‖S₂.inv z‖ := by
+      rcases le_or_gt Ra₂ 0 with hRa0 | hRa0
+      · linarith
+      · calc Ra₂ = Real.exp (Real.log Ra₂) := (Real.exp_log hRa0).symm
+          _ < Real.exp (Real.log ‖S₂.inv z‖) := by
+              apply Real.exp_lt_exp.mpr
+              rw [hwlog]
+              linarith
+          _ = ‖S₂.inv z‖ := Real.exp_log hwpos
+    have hid := (hfar₂ (S₂.inv z) hwRa hw.2).1
+    rw [hTw] at hid
+    exact hid
+  refine ⟨GBExtF, ?_, ?_⟩
+  · intro z hz
+    rcases lt_trichotomy ‖z‖ cut with hcase | hcase | hcase
+    · have hev : GBExtF =ᶠ[nhds z] S₂.inv := by
+        have hopen : IsOpen {w : ℂ | ‖w‖ < cut} :=
+          isOpen_lt continuous_norm continuous_const
+        filter_upwards [hopen.mem_nhds hcase] with w hw
+        show (if cut < ‖w‖ then bottcherCoord c₂ w else S₂.inv w) = S₂.inv w
+        rw [if_neg (by push Not; exact le_of_lt hw)]
+      exact ((S₂.inv_analytic z (hbandmem z hz (by linarith))).congr hev.symm)
+    · have hev : GBExtF =ᶠ[nhds z] S₂.inv := by
+        have hopen : IsOpen ({w : ℂ | ‖w‖ < 2 * cut} ∩ Ext) := by
+          apply IsOpen.inter _ hExto
+          exact isOpen_lt continuous_norm continuous_const
+        have hzmem : z ∈ {w : ℂ | ‖w‖ < 2 * cut} ∩ Ext := by
+          constructor
+          · show ‖z‖ < 2 * cut
+            rw [hcase]
+            linarith
+          · exact hz
+        filter_upwards [hopen.mem_nhds hzmem] with w hw
+        show (if cut < ‖w‖ then bottcherCoord c₂ w else S₂.inv w) = S₂.inv w
+        by_cases hf : cut < ‖w‖
+        · rw [if_pos hf]
+          exact hagree w hw.2 hf (by
+            have h9 : ‖w‖ < 2 * cut := hw.1
+            linarith)
+        · rw [if_neg hf]
+      have hzband : z ∈ S₂.T '' annulusSet rlo₂ R₀₂ := by
+        apply hbandmem z hz
+        rw [hcase]
+        linarith
+      exact ((S₂.inv_analytic z hzband).congr hev.symm)
+    · have hev : GBExtF =ᶠ[nhds z] bottcherCoord c₂ := by
+        have hopen : IsOpen {w : ℂ | cut < ‖w‖} :=
+          isOpen_lt continuous_const continuous_norm
+        filter_upwards [hopen.mem_nhds hcase] with w hw
+        show (if cut < ‖w‖ then bottcherCoord c₂ w else S₂.inv w) = bottcherCoord c₂ w
+        rw [if_pos hw]
+      have hφan : AnalyticAt ℂ (bottcherCoord c₂) z := by
+        apply (differentiableOn_bottcherCoord c₂).analyticOnNhd (isOpen_escapeOpen c₂)
+        show max 2 ‖c₂‖ < ‖z‖
+        linarith [hcutc₂]
+      exact (hφan.congr hev.symm)
+  · intro z hzfar
+    show (if cut < ‖z‖ then bottcherCoord c₂ z else S₂.inv z) = bottcherCoord c₂ z
+    rw [if_pos hzfar]
+
+end Bottcher
