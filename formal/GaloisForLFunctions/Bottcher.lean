@@ -276,6 +276,7 @@ import GaloisForLFunctions.Bottcher.RelativeBasisApproachConsumer
 import GaloisForLFunctions.Bottcher.SteeringWindow
 import GaloisForLFunctions.Bottcher.SteeringTowerArcs
 import GaloisForLFunctions.Bottcher.FiniteCoverRelInterior
+import GaloisForLFunctions.Bottcher.RootLimitModulus
 import GaloisForLFunctions.Bottcher.DendriteTip
 import GaloisForLFunctions.Bottcher.KoenigsLinearization
 import GaloisForLFunctions.Bottcher.ScaleCollapse

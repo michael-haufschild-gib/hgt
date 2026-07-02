@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 299 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4412 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4413 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -4748,6 +4748,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `noRelation_symm` | `GaloisForLFunctions.Bottcher.Rigidity` | `formal/GaloisForLFunctions/Bottcher/Rigidity.lean:113` | `NoRelation` is symmetric.** Algebraic independence does not depend on the order of the pair — the variable-swap automorphism turns a relation for `(G, F)` into one for `(F, G)`. |
 | theorem | `hRigid_assemble` | `GaloisForLFunctions.Bottcher.Rigidity` | `formal/GaloisForLFunctions/Bottcher/Rigidity.lean:132` | The assembled `hRigid` slot of `q62_independence`.** Given, per parameter, the analytic data its Mandelbrot placement supplies — for a *disconnected* coordinate its dyadic monodrom |
 | theorem | `q62_independence_of_hDisc_hRigidData` | `GaloisForLFunctions.Bottcher.Rigidity` | `formal/GaloisForLFunctions/Bottcher/Rigidity.lean:158` | Top q62 assembly from the separated hDisc and hRigid data.** This is the final abstract join: `hDisc` handles the both-disconnected branch of `q62_independence`; `hRigid_assemble`  |
+| theorem | `exists_modulus_one_root_of_root_limit` | `GaloisForLFunctions.Bottcher.RootLimitModulus` | `formal/GaloisForLFunctions/Bottcher/RootLimitModulus.lean:28` | Root-limit modulus lemma.** Let `z_k → w`, and for each `k` let `val_k` be a root of the fibre polynomial `∑_{i∈s} a_i(z_k)·X^i` with `‖val_k‖ = M_k → 1`. If every coefficient `a_i |
 | theorem | `scale_inv_pow` | `GaloisForLFunctions.Bottcher.ScaleCollapse` | `formal/GaloisForLFunctions/Bottcher/ScaleCollapse.lean:20` | Iterated multiplier invariance, staying inside the working scale. |
 | theorem | `preconnected_of_scale_connectors` | `GaloisForLFunctions.Bottcher.ScaleCollapse` | `formal/GaloisForLFunctions/Bottcher/ScaleCollapse.lean:52` | The scale collapse.** Sector connectors on one multiplicative period of scales, plus multiplier invariance, give punctured-ball preconnectivity at every scale `ρ ≤ ρ₀`. |
 | theorem | `koenigsFun_localHomeo` | `GaloisForLFunctions.Bottcher.ScaleCollapse` | `formal/GaloisForLFunctions/Bottcher/ScaleCollapse.lean:255` | The linearizer is a local homeomorphism at the fixed point**: injective on a small disk, with nonvanishing derivative there, and mapping open subsets to open sets. The coordinate t |
