@@ -104,6 +104,47 @@ def ObstructedEqClosurePattern : Prop := Obstructed = closure PatternRegion
 theorem closure_pattern_subset_obstructed : closure PatternRegion ⊆ Obstructed :=
   isClosed_obstructed.closure_subset_iff.mpr patternRegion_subset_obstructed
 
+/-- The set of preperiodic points of `f_b`. -/
+def Preperiodic (b : ℂ) : Set ℂ :=
+  {p : ℂ | ∃ k n : ℕ, 1 ≤ n ∧ (quadratic b)^[k + n] p = (quadratic b)^[k] p}
+
+/-- **Elementary reduction: a preperiodic point in the closed unit disk gives a pattern
+parameter.**  If `p` is preperiodic with `‖p‖ ≤ 1`, then `y = f_b(p)` is preperiodic with
+`‖y − b‖ = ‖p‖² ≤ 1`, so `b ∈ PatternRegion`. -/
+theorem patternRegion_of_preperiodic_le_one {b p : ℂ} (hp : p ∈ Preperiodic b) (hnorm : ‖p‖ ≤ 1) :
+    b ∈ PatternRegion := by
+  obtain ⟨k, n, hn, hper⟩ := hp
+  refine ⟨quadratic b p, k, n, hn, ?_, ?_⟩
+  · have key : ∀ m : ℕ, (quadratic b)^[m] (quadratic b p) = (quadratic b)^[m + 1] p :=
+      fun m => (Function.iterate_succ_apply (quadratic b) m p).symm
+    have step : ∀ m : ℕ, quadratic b ((quadratic b)^[m] p) = (quadratic b)^[m + 1] p :=
+      fun m => (Function.iterate_succ_apply' (quadratic b) m p).symm
+    rw [key, key, ← step (k + n), ← step k, hper]
+  · rw [quadratic_apply, add_sub_cancel_right, norm_pow]
+    exact pow_le_one₀ (norm_nonneg p) hnorm
+
+/-- **The reducible half of the conjecture (conditional on the classical density input).**  If the
+preperiodic points of `f_b` are dense in `K_b` (classical — Fatou/Julia density of preperiodic
+points, holds for the Cantor regime `b ∉ M`), then a parameter whose filled Julia set meets the
+OPEN unit disk is a pattern parameter.  This banks the reduction and isolates the sole classical
+input (`hdense`); the residual open core is the Fatou-interior-witness case not covered by density
+in `J_b`. -/
+theorem obstructed_open_sub_pattern_of_dense {b : ℂ}
+    (hdense : filledJulia b ⊆ closure (Preperiodic b))
+    (hb : ∃ z : ℂ, ‖z‖ < 1 ∧ z ∈ filledJulia b) :
+    b ∈ PatternRegion := by
+  obtain ⟨z, hz1, hzK⟩ := hb
+  have hzcl : z ∈ closure (Preperiodic b) := hdense hzK
+  obtain ⟨p, hp_pre, hp_close⟩ :=
+    Metric.mem_closure_iff.mp hzcl (1 - ‖z‖) (by linarith)
+  have hpnorm : ‖p‖ ≤ 1 := by
+    have htri : ‖p‖ ≤ ‖z‖ + ‖p - z‖ := by
+      calc ‖p‖ = ‖z + (p - z)‖ := by ring_nf
+        _ ≤ ‖z‖ + ‖p - z‖ := norm_add_le _ _
+    rw [dist_eq_norm, norm_sub_rev] at hp_close
+    linarith
+  exact patternRegion_of_preperiodic_le_one hp_pre hpnorm
+
 /-- A certified point of the obstructed set inside the window ring (the mid-angle 2-cycle). -/
 theorem ringPoint_mem_obstructed : (⟨-33/25, 44/25⟩ : ℂ) ∈ Obstructed :=
   U0LobeInstances.lobe_obstructed_ring_127
