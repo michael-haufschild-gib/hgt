@@ -16,6 +16,7 @@ import Mathlib.Analysis.Complex.Basic
 import Mathlib.Topology.Sequences
 import Mathlib.Topology.MetricSpace.Sequences
 import Mathlib.Topology.MetricSpace.Bounded
+import GaloisForLFunctions.Bottcher.GreenContinuity
 
 open Set Topology Filter
 
@@ -70,5 +71,27 @@ theorem exists_modulus_one_root_of_root_limit {s : Finset ℕ} {a : ℕ → ℂ 
       simp only [hroot]
       exact tendsto_const_nhds
     exact tendsto_nhds_unique hsum hzero
+
+/-- **Root-limit modulus lemma, Böttcher form.**  The directly-instantiable specialization: at a
+filled-Julia point `w ∈ K_{c₁}` (so `G_{c₁}(w) = 0`), approached by `z_k → w` each carrying a root
+`val_k` of the fibre polynomial with the genuine Böttcher modulus `‖val_k‖ = exp(G_{c₁}(z_k))`, the
+limiting fibre polynomial has a root of modulus `1`.  The modulus hypothesis of the general lemma is
+discharged internally from continuity of the dynamical Green function and its vanishing on `K`. -/
+theorem exists_modulus_one_root_of_root_limit_green {s : Finset ℕ} {a : ℕ → ℂ → ℂ}
+    {c₁ w : ℂ} {z val : ℕ → ℂ}
+    (hwK : w ∈ filledJulia c₁)
+    (hz : Tendsto z atTop (𝓝 w))
+    (hcont : ∀ i ∈ s, ContinuousAt (a i) w)
+    (hroot : ∀ k, ∑ i ∈ s, a i (z k) * (val k) ^ i = 0)
+    (hmod : ∀ k, ‖val k‖ = Real.exp (greenFunctionDyn c₁ (z k))) :
+    ∃ x : ℂ, ‖x‖ = 1 ∧ ∑ i ∈ s, a i w * x ^ i = 0 := by
+  have hGw : greenFunctionDyn c₁ w = 0 := (greenFunctionDyn_eq_zero_iff c₁ w).mpr hwK
+  have hM : Tendsto (fun k => Real.exp (greenFunctionDyn c₁ (z k))) atTop (𝓝 1) := by
+    have hg : Tendsto (fun k => greenFunctionDyn c₁ (z k)) atTop (𝓝 0) := by
+      have := ((continuous_greenFunctionDyn c₁).continuousAt (x := w)).tendsto.comp hz
+      rwa [hGw] at this
+    have := (Real.continuous_exp.continuousAt (x := 0)).tendsto.comp hg
+    simpa using this
+  exact exists_modulus_one_root_of_root_limit hz hcont hroot hmod hM
 
 end Bottcher
