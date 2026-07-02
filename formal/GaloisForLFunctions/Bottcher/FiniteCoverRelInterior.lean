@@ -47,4 +47,25 @@ theorem exists_relOpen_subset_of_finite_closed_cover {S : Set ℂ}
     have hz' : (⟨z, hzS⟩ : S) ∈ V := by rw [← hUeq]; exact hzU
     exact hVsub hz'
 
+/-- **Modulus-one pigeonhole.**  If every point of a closed nonempty `S ⊆ ℂ` lands on the
+modulus-one locus `{‖g_i‖ = 1}` of one of finitely many continuous functions `g_i`, then some
+single `{‖g_i‖ = 1}` contains a nonempty relatively open piece of `S`.  This is the bridge from the
+root-limit lemma (every frontier point carries a modulus-one branch value) to a relatively open
+Julia arc lying in one smooth curve.  Direct Baire pigeonhole on the closed loci. -/
+theorem exists_relOpen_subset_modulus_one {S : Set ℂ} (hScl : IsClosed S) (hSne : S.Nonempty)
+    {ι : Type*} [Finite ι] (g : ι → ℂ → ℂ) (hg : ∀ i, Continuous (g i))
+    (hcov : ∀ w ∈ S, ∃ i, ‖g i w‖ = 1) :
+    ∃ i, ∃ U : Set ℂ, IsOpen U ∧ (U ∩ S).Nonempty ∧ ∀ w ∈ U ∩ S, ‖g i w‖ = 1 := by
+  classical
+  set F : ι → Set ℂ := fun i => {w : ℂ | ‖g i w‖ = 1} with hFdef
+  have hFcl : ∀ i, IsClosed (F i) := fun i =>
+    isClosed_eq ((hg i).norm) continuous_const
+  have hcov' : S ⊆ ⋃ i, F i := by
+    intro w hw
+    obtain ⟨i, hi⟩ := hcov w hw
+    exact mem_iUnion.mpr ⟨i, hi⟩
+  obtain ⟨i, U, hUo, hUSne, hUSsub⟩ :=
+    exists_relOpen_subset_of_finite_closed_cover hScl hSne F hFcl hcov'
+  exact ⟨i, U, hUo, hUSne, fun w hw => hUSsub hw⟩
+
 end Bottcher
