@@ -44,10 +44,11 @@ structure TowerSection (c : ℂ) (rlo rhi : ℝ) where
 `e^{G_c(0)}`) such that on every annulus `{Ra < ‖w‖ < rhi}` the far-field inverse `ψ` of `φ_c` is
 a tower section. -/
 theorem exists_tower_anchor (c : ℂ) :
-    ∃ Ra : ℝ, 1 < Ra ∧ Real.exp (greenFunctionDyn c 0) < Ra ∧
+    ∃ Ra Rinj : ℝ, 1 < Ra ∧ Real.exp (greenFunctionDyn c 0) < Ra ∧
+      Set.InjOn (bottcherCoord c) {z : ℂ | Rinj < ‖z‖} ∧
       ∀ rhi : ℝ, Ra < rhi → ∃ S : TowerSection c Ra rhi,
         ∀ w ∈ annulusSet Ra rhi,
-          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c := by
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖ := by
   classical
   have hmax2 : (2:ℝ) ≤ max 2 ‖c‖ := le_max_left _ _
   have hmaxc : ‖c‖ ≤ max 2 ‖c‖ := le_max_right _ _
@@ -184,7 +185,7 @@ theorem exists_tower_anchor (c : ℂ) :
     have := le_trans (le_max_right 2 (Real.exp (greenFunctionDyn c 0) + 1))
       (le_max_right (R₁ + 1) _)
     linarith
-  refine ⟨Ra, hRa1, hRaG, ?_⟩
+  refine ⟨Ra, R, hRa1, hRaG, bottcherCoord_injOn_far hR1 hR2, ?_⟩
   intro rhi hrhi
   have hdeep : ∀ w ∈ annulusSet Ra rhi, R₁ < ‖w‖ := by
     intro w hw
@@ -245,12 +246,15 @@ theorem exists_tower_anchor (c : ℂ) :
     rw [← hraw, hwind0, hcirc0]
   · intro w hw
     obtain ⟨z, hz, hzeq, hψv⟩ := hwit w (hdeep w hw)
-    constructor
+    refine ⟨?_, ?_, ?_⟩
     · show bottcherCoord c (ψ w) = w
       rw [hψv, hzeq]
     · show ψ w ∈ escapeOpen c
       rw [hψv]
       show max 2 ‖c‖ < ‖z‖
       exact lt_trans hmaxR hz
+    · show R < ‖ψ w‖
+      rw [hψv]
+      exact hz
 
 end Bottcher

@@ -988,17 +988,18 @@ theorem tower_extension_step {c : ℂ} {rlo R₀ : ℝ}
 within `ε` of the critical level `h = G_c(0)`, on an annulus whose top `R₀` clears
 `exp(4h + 1)` (room for the sub-critical chain). -/
 theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
-    ∃ (rlo Rb R₀ : ℝ), 1 < rlo ∧ rlo ≤ Rb ∧ Rb < R₀ ∧ rlo ^ 2 < R₀ ∧
+    ∃ (rlo Rb R₀ Rinj : ℝ), 1 < rlo ∧ rlo ≤ Rb ∧ Rb < R₀ ∧ rlo ^ 2 < R₀ ∧
       M < R₀ ∧
       greenFunctionDyn c 0 < Real.log rlo ∧
       Real.log rlo < greenFunctionDyn c 0 + ε ∧
+      Set.InjOn (bottcherCoord c) {z : ℂ | Rinj < ‖z‖} ∧
       ∃ S : TowerSection c rlo R₀,
         ∀ w : ℂ, Rb < ‖w‖ → ‖w‖ < R₀ →
-          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c := by
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖ := by
   classical
   set h : ℝ := greenFunctionDyn c 0 with hhdef
   have hh0 : 0 ≤ h := greenFunctionDyn_nonneg c 0
-  obtain ⟨Ra, hRa1, hRaG, hanchor⟩ := exists_tower_anchor c
+  obtain ⟨Ra, Rinj, hRa1, hRaG, hInj, hanchor⟩ := exists_tower_anchor c
   set R₀ : ℝ := Ra ^ 2 + max M 0 + 1 with hR₀def
   have hMnn : (0:ℝ) ≤ max M 0 := le_max_right M 0
   have hR₀Ra : Ra < R₀ := by
@@ -1016,12 +1017,12 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
   have hstep : ∀ rlo : ℝ, 1 < rlo → rlo ^ 2 < R₀ → h < Real.log rlo → rlo ≤ Ra →
       (∃ S : TowerSection c rlo R₀,
         ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
-          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c) →
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) →
       ∃ rlo' : ℝ, 1 < rlo' ∧ rlo' ^ 2 < R₀ ∧ h < Real.log rlo' ∧ rlo' ≤ Ra ∧
         Real.log rlo' - h ≤ (3/4) * (Real.log rlo - h) ∧
         ∃ S' : TowerSection c rlo' R₀,
           ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
-            bottcherCoord c (S'.T w) = w ∧ S'.T w ∈ escapeOpen c := by
+            bottcherCoord c (S'.T w) = w ∧ S'.T w ∈ escapeOpen c ∧ Rinj < ‖S'.T w‖ := by
     intro rlo h1 h2 h3 hRale hS
     obtain ⟨S, hSφ⟩ := hS
     set ℓ : ℝ := Real.log rlo with hℓdef
@@ -1069,7 +1070,7 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
       exact hτ2h
     obtain ⟨S', hS'T⟩ := tower_extension_step h1 h2 S h3 hσ₁rlo hσ₁sq h2 le_rfl hcab
     have hS'φ : ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
-        bottcherCoord c (S'.T w) = w ∧ S'.T w ∈ escapeOpen c := by
+        bottcherCoord c (S'.T w) = w ∧ S'.T w ∈ escapeOpen c ∧ Rinj < ‖S'.T w‖ := by
       intro w hw1 hw2
       have hwold : w ∈ annulusSet rlo R₀ := ⟨lt_of_le_of_lt hRale hw1, hw2⟩
       rw [hS'T w hwold]
@@ -1102,7 +1103,7 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
       Real.log rlo - h ≤ (3/4) ^ n * (Real.log Ra - h) ∧
       ∃ S : TowerSection c rlo R₀,
         ∀ w : ℂ, Ra < ‖w‖ → ‖w‖ < R₀ →
-          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c := by
+          bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖ := by
     intro n
     induction n with
     | zero =>
@@ -1126,6 +1127,6 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
     rw [lt_div_iff₀ hgap0] at hn
     nlinarith
   obtain ⟨rlo, h1, h2, h3, hle, h4, hS⟩ := hiter n
-  exact ⟨rlo, Ra, R₀, h1, hle, hR₀Ra, h2, hR₀exp, h3, by linarith, hS⟩
+  exact ⟨rlo, Ra, R₀, Rinj, h1, hle, hR₀Ra, h2, hR₀exp, h3, by linarith, hInj, hS⟩
 
 end Bottcher
