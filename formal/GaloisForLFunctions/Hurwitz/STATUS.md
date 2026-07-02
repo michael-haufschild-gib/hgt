@@ -227,3 +227,17 @@ transform to the Q-free multi-ray form (mirror `mixedTail_relation_finite_differ
 identity-theorem tools); (c) the branch-point peeling lemma (`(1−v)^{−s}·p(v) + analytic-at-0 ≡ 0`
 near `v = 0` off the cut ⟹ `p = 0`, by bounded-blow-up + derivative induction); (d) wire into
 `MixedTailIndependent` → the proven chain closes all-N rows.
+
+## Update 8 (2026-07-02) — THE ROWS ARE CLOSED; THE HURWITZ PROGRAM IS UNCONDITIONAL
+
+`MixedClose.lean` proves **`mixedTailIndependent_proved`** : `MixedTailIndependent N s` for every
+`s ∉ ℤ` — the statement this file's Updates 1–7 tracked as the last analytic input.  Chain:
+`RayPeeling.lean` (branch-cut boundary bricks → `peel_on_slit` → `multiRay_eq_zero` →
+`revPoly` compactification → `multiRay_nat_relation_kill` → `multiRay_nat_relation_poly_kill`)
+＋ `MixedClose.lean` (mixed Δ-step → harmonic degree induction → constants endgame with
+∏(X−t)^N compression and ψ-telescoping).  Downstream, now unconditional (hypotheses only
+`1 < Re s`, `s ∉ ℤ`): `rationalTailIndependent_harmonic_proved`, `mixedPoleRootInput_proved`,
+`harmonicPoleRootInput_proved`, `rationalTailIndependent_hzeta_shift_proved`,
+**`rows_and_constant_close_unconditional`**.  Together with the proven quadratic block
+(`allN_quad_vanish_genuine_all_noninteger`), every analytic input of the all-N Hurwitz descent
+is a theorem.  Axioms: `[propext, Classical.choice, Quot.sound]` throughout; lint gate green.

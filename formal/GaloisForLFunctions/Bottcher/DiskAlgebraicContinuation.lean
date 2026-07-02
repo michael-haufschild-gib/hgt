@@ -372,7 +372,7 @@ theorem exists_boundary_limit_of_fibre_relation {A : ℕ → ℂ → ℂ} {N : �
   have hRfin : {w : ℂ | ∑ i ∈ Finset.range (N + 1), A i ζ * w ^ i = 0}.Finite :=
     finite_roots_of_fibre (a := fun i => A i ζ) hlead
   have hgcont : Continuous (fun p : ℂ × ℂ => ∑ i ∈ Finset.range (N + 1), A i p.1 * p.2 ^ i) :=
-    continuous_finset_sum _
+    continuous_finsetSum _
       (fun i _ => ((hAcont i).comp continuous_fst).mul (continuous_snd.pow i))
   have hcl : ∀ x, MapClusterPt x (nhdsWithin ζ (ball (0:ℂ) 1)) h →
       x ∈ {w : ℂ | ∑ i ∈ Finset.range (N + 1), A i ζ * w ^ i = 0} := by

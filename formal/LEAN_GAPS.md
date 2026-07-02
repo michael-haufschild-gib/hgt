@@ -300,4 +300,4 @@ Use `scripts/formal_tools.py research "<query>"` when you need to search those l
 | Lines | File |
 |---:|---|
 | 2702 | `formal/GaloisForLFunctions/Bottcher/STATUS.md` |
-| 229 | `formal/GaloisForLFunctions/Hurwitz/STATUS.md` |
+| 243 | `formal/GaloisForLFunctions/Hurwitz/STATUS.md` |
