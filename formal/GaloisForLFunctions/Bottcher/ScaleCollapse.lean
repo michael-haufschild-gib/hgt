@@ -423,3 +423,213 @@ theorem exists_inverse_branch (c β : ℂ) (hβ : β ^ 2 + c = β) (hlam2 : 2 �
     exact (hrgball z hz).2.1 (hrgball z hz).1
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Open Problem 1 as a Prop** (docs/open-problems/01): the fixed-scale sector connector
+supply for the Julia pullback in linearizing coordinates.  Everything upstream and downstream
+of this Prop is proven; it is the single dynamical input of the both-connected dendrite lane. -/
+def SectorConnectorProp (c β : ℂ) (ρ₀ : ℝ) : Prop :=
+  ∀ r : ℝ, ρ₀ / ‖2 * β‖ ≤ r → r ≤ ρ₀ →
+    ∀ v : ℂ, koenigsFun c β v ∉ filledJulia c → r / ‖2 * β‖ ^ 2 ≤ ‖v‖ → ‖v‖ < r →
+    ∃ C : Set ℂ, IsPreconnected C ∧ v ∈ C ∧ (∃ u ∈ C, ‖u‖ / 2 < u.re) ∧
+      ∀ u ∈ C, koenigsFun c β u ∉ filledJulia c ∧ ‖u‖ < r
+
+/-- The linearizer admits a ratio-linear local right inverse: every `z` near `β` is `ψ(v)` with
+`‖v‖ ≤ 2‖z − β‖`.  Quantitative surjectivity from the tangency bootstrap. -/
+theorem koenigsFun_ratio_surjective {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+    ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 64 ∧ ∀ z : ℂ, ‖z - β‖ < δ →
+      ∃ v : ℂ, koenigsFun c β v = z ∧ ‖v‖ ≤ 33 / 32 * ‖z - β‖ := by
+  classical
+  have hψ0 : AnalyticAt ℂ (koenigsFun c β) 0 :=
+    (koenigsFun_analyticOnNhd hβ hlam2) 0 (Metric.mem_ball_self (by norm_num))
+  have hd0 : HasDerivAt (koenigsFun c β) 1 0 := koenigsFun_hasDerivAt_zero hβ hlam2
+  have hstrict : HasStrictDerivAt (koenigsFun c β) 1 0 := by
+    have h1 := hψ0.hasStrictDerivAt
+    rwa [hd0.deriv] at h1
+  set gψ := HasStrictDerivAt.localInverse (koenigsFun c β) 1 0 hstrict
+    (by norm_num : (1:ℂ) ≠ 0) with hgdef
+  have hψat0 : koenigsFun c β 0 = β := koenigsFun_zero hβ
+  have hright : ∀ᶠ z in nhds β, koenigsFun c β (gψ z) = z := by
+    have h2 := hstrict.eventually_right_inverse (by norm_num : (1:ℂ) ≠ 0)
+    rwa [hψat0] at h2
+  have hgβ : gψ β = 0 := by
+    have h3 := (hstrict.eventually_left_inverse (by norm_num : (1:ℂ) ≠ 0)).self_of_nhds
+    rwa [hψat0] at h3
+  have hgcont : ContinuousAt gψ β := by
+    have h4 := HasStrictFDerivAt.localInverse_continuousAt
+      (HasStrictDerivAt.hasStrictFDerivAt_equiv hstrict (by norm_num : (1:ℂ) ≠ 0))
+    rwa [hψat0] at h4
+  -- eventually gψ is small
+  have hsmall : ∀ᶠ z in nhds β, ‖gψ z‖ < 1 / 64 := by
+    have h5 : ContinuousAt (fun z => ‖gψ z‖) β := hgcont.norm
+    have h6 : (fun z => ‖gψ z‖) β = 0 := by simp [hgβ]
+    have h7 : {t : ℝ | t < 1/64} ∈ nhds ((fun z => ‖gψ z‖) β) := by
+      rw [h6]
+      apply (isOpen_lt continuous_id continuous_const).mem_nhds
+      show (0:ℝ) < 1/64
+      norm_num
+    exact h5.preimage_mem_nhds h7
+  have hcomb : ∀ᶠ z in nhds β,
+      koenigsFun c β (gψ z) = z ∧ ‖gψ z‖ < 1/64 := hright.and hsmall
+  obtain ⟨δ, hδ, hδball⟩ := Metric.eventually_nhds_iff_ball.mp hcomb
+  refine ⟨min δ (1/64), lt_min hδ (by norm_num), min_le_right _ _, ?_⟩
+  intro z hz
+  have hzball : z ∈ Metric.ball β δ := by
+    rw [Metric.mem_ball, dist_eq_norm]
+    calc ‖z - β‖ < min δ (1/64) := hz
+      _ ≤ δ := min_le_left _ _
+  obtain ⟨hzright, hzsmall⟩ := hδball z hzball
+  refine ⟨gψ z, hzright, ?_⟩
+  -- the tangency bootstrap: ‖gψ z‖ ≤ ‖z − β‖ + ‖gψ z‖²
+  have h8 : ‖z - β - gψ z‖ ≤ ‖gψ z‖ ^ 2 := by
+    have h9 := koenigsFun_normalization hβ hlam2 (le_of_lt hzsmall |>.trans (by norm_num))
+    have h10 : koenigsFun c β (gψ z) - (β + gψ z) = z - β - gψ z := by
+      rw [hzright]
+      ring
+    rwa [h10] at h9
+  have h11 : ‖gψ z‖ - ‖z - β‖ ≤ ‖gψ z‖ ^ 2 := by
+    have h12 := norm_sub_norm_le (gψ z) (z - β)
+    have h13 : ‖gψ z - (z - β)‖ = ‖z - β - gψ z‖ := by
+      rw [← norm_neg]
+      congr 1
+      ring
+    linarith [h8]
+  -- ‖gψ z‖ < 1/64 gives ‖gψ z‖² ≤ ‖gψ z‖/64, hence ‖gψ z‖(1 − 1/64) ≤ ‖z−β‖
+  have h14 : ‖gψ z‖ ^ 2 ≤ ‖gψ z‖ / 64 := by
+    have h15 := norm_nonneg (gψ z)
+    nlinarith
+  have h16 := norm_nonneg (gψ z)
+  nlinarith
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The basis family for the dendrite tip (A1).**  Under the sector-connector Prop (Open
+Problem 1), the linearizer images `T t := ψ({‖v‖ < 2t/3} ∖ P)` form a shrinking family of
+preconnected basin sets at `β` with the fat-margin clause — exactly the shape consumed by
+`false_of_global_basin_branch_analytic_basisApproach`. -/
+theorem koenigs_basis_family {c : ℝ} (hc0 : c ≤ 0)
+    {ρ₀ : ℝ} (hρ₀ : 0 < ρ₀) (hρ₀32 : ρ₀ ≤ 1 / 32)
+    (hfund : SectorConnectorProp (c:ℂ) ((betaFixed c : ℝ) : ℂ) ρ₀) :
+    ∃ rT : ℝ, 0 < rT ∧ ∀ t : ℝ, 0 < t → t ≤ rT →
+      ∃ T : Set ℂ,
+        T ⊆ Metric.ball ((betaFixed c : ℝ) : ℂ) t ∩ (filledJulia (c:ℂ))ᶜ ∧
+        IsPreconnected T ∧
+        (filledJulia (c:ℂ))ᶜ ∩ Metric.ball ((betaFixed c : ℝ) : ℂ) (t/2) ⊆ T := by
+  classical
+  set β : ℂ := ((betaFixed c : ℝ) : ℂ) with hβdef
+  have hβsq : β ^ 2 + (c:ℂ) = β := by
+    rw [hβdef]
+    exact_mod_cast congrArg (fun t : ℝ => (t : ℂ)) (betaFixed_sq hc0)
+  have hβ1 : 1 ≤ betaFixed c := one_le_betaFixed hc0
+  have hlam2 : 2 ≤ ‖2 * β‖ := by
+    rw [hβdef]
+    have h1 : (2 * ((betaFixed c : ℝ) : ℂ)) = (((2 * betaFixed c : ℝ)) : ℂ) := by
+      push_cast
+      ring
+    rw [h1, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
+    linarith
+  -- the real multiplier and the cast alignment
+  set lam : ℝ := ‖2 * β‖ with hlamdef
+  have hlamreal : lam = 2 * betaFixed c := by
+    rw [hlamdef, hβdef]
+    have h2 : (2 * ((betaFixed c : ℝ) : ℂ)) = (((2 * betaFixed c : ℝ)) : ℂ) := by
+      push_cast
+      ring
+    rw [h2, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
+  have hlamcast : ((lam : ℝ) : ℂ) = 2 * β := by
+    rw [hlamreal, hβdef]
+    push_cast
+    ring
+  -- the pullback and the collapse hypotheses
+  set P : Set ℂ := {v : ℂ | koenigsFun (c:ℂ) β v ∈ filledJulia (c:ℂ)} with hPdef
+  have hinv : ∀ v : ℂ, lam * ‖v‖ ≤ ρ₀ → (((lam : ℝ) : ℂ) * v ∈ P ↔ v ∈ P) := by
+    intro v hv
+    have hlam0 : (0:ℝ) < lam := lt_of_lt_of_le (by norm_num) hlam2
+    have hw : ‖v‖ ≤ 1 / 32 := by
+      have h3 : ‖v‖ ≤ ρ₀ / lam := by
+        rw [le_div_iff₀ hlam0]
+        linarith [hv]
+      have h4 : ρ₀ / lam ≤ ρ₀ / 2 := by
+        apply div_le_div_of_nonneg_left (le_of_lt hρ₀) (by norm_num) hlam2
+      linarith [hρ₀32]
+    have hw2 : ‖2 * β * v‖ ≤ 1 / 32 := by
+      rw [norm_mul, ← hlamdef]
+      linarith [hv, hρ₀32]
+    have h5 := koenigs_pullback_invariant hβsq hlam2 hw hw2
+    rw [hlamcast]
+    have h6 : (2 * β * v) = 2 * β * v := rfl
+    constructor
+    · intro h7
+      exact h5.mp h7
+    · intro h7
+      exact h5.mpr h7
+  have hSP : ∀ v : ℂ, ‖v‖ ≤ ρ₀ → ‖v‖ / 2 < v.re → v ∉ P := by
+    intro v hv hsec
+    exact sector_disjoint_pullback hc0 (le_trans hv hρ₀32) hsec
+  have h0P : (0:ℂ) ∈ P := by
+    show koenigsFun (c:ℂ) β 0 ∈ filledJulia (c:ℂ)
+    rw [koenigsFun_zero hβsq, hβdef]
+    exact betaFixed_mem_filledJulia hc0
+  have hfund' : ∀ r : ℝ, ρ₀ / lam ≤ r → r ≤ ρ₀ → ∀ v : ℂ, v ∉ P →
+      r / lam ^ 2 ≤ ‖v‖ → ‖v‖ < r →
+      ∃ C : Set ℂ, IsPreconnected C ∧ v ∈ C ∧ (∃ u ∈ C, ‖u‖ / 2 < u.re) ∧
+        ∀ u ∈ C, u ∉ P ∧ ‖u‖ < r := by
+    intro r hr1 hr2 v hvP hvlo hvhi
+    obtain ⟨C, hC1, hC2, hC3, hC4⟩ := hfund r hr1 hr2 v hvP hvlo hvhi
+    exact ⟨C, hC1, hC2, hC3, fun u hu => ⟨(hC4 u hu).1, (hC4 u hu).2⟩⟩
+  have hcollapse := preconnected_of_scale_connectors P lam ρ₀ hlam2 hρ₀ hinv hSP h0P hfund'
+  -- the surjectivity radius
+  obtain ⟨δ, hδ, hδ64, hδsurj⟩ := koenigsFun_ratio_surjective hβsq hlam2
+  -- the working radius
+  refine ⟨min ((3/2) * ρ₀) (min δ (1/64)), by positivity, ?_⟩
+  intro t ht htle
+  have ht32 : (2/3) * t ≤ ρ₀ := by
+    have h8 : t ≤ (3/2) * ρ₀ := le_trans htle (min_le_left _ _)
+    linarith
+  have htδ : t ≤ δ := le_trans htle (le_trans (min_le_right _ _) (min_le_left _ _))
+  have ht64 : t ≤ 1/64 := le_trans htle (le_trans (min_le_right _ _) (min_le_right _ _))
+  set S : Set ℂ := {v : ℂ | ‖v‖ < (2/3) * t ∧ v ∉ P} with hSdef
+  refine ⟨koenigsFun (c:ℂ) β '' S, ?_, ?_, ?_⟩
+  · -- hT_sub via the tangency sandwich
+    rintro z ⟨v, ⟨hv1, hv2⟩, rfl⟩
+    have hv32 : ‖v‖ ≤ 1/32 := by
+      have := ht64
+      nlinarith [ht]
+    have htang := koenigsFun_normalization hβsq hlam2 hv32
+    constructor
+    · rw [Metric.mem_ball, dist_eq_norm]
+      have h9 : koenigsFun (c:ℂ) β v - β = (koenigsFun (c:ℂ) β v - (β + v)) + v := by
+        ring
+      rw [h9]
+      calc ‖(koenigsFun (c:ℂ) β v - (β + v)) + v‖
+          ≤ ‖koenigsFun (c:ℂ) β v - (β + v)‖ + ‖v‖ := norm_add_le _ _
+        _ ≤ ‖v‖ ^ 2 + ‖v‖ := by linarith [htang]
+        _ < t := by nlinarith [norm_nonneg v, hv1]
+    · exact hv2
+  · -- hT_pre: continuous image of the collapse conclusion
+    have hpre := hcollapse ((2/3) * t) (by linarith) ht32
+    have hSeq : S = {v : ℂ | ‖v‖ < (2/3) * t ∧ v ∉ P} := rfl
+    apply IsPreconnected.image hpre
+    intro v hv
+    have h11 : v ∈ Metric.ball (0:ℂ) (1/32) := by
+      rw [Metric.mem_ball, dist_zero_right]
+      have h10 : ‖v‖ < (2/3) * t := hv.1
+      nlinarith [ht64]
+    exact ((koenigsFun_analyticOnNhd hβsq hlam2) v h11).continuousAt.continuousWithinAt
+  · -- hT_fat via ratio-linear surjectivity
+    rintro z ⟨hz1, hz2⟩
+    rw [Metric.mem_ball, dist_eq_norm] at hz2
+    obtain ⟨v, hveq, hvle⟩ := hδsurj z (by linarith)
+    refine ⟨v, ⟨?_, ?_⟩, hveq⟩
+    · calc ‖v‖ ≤ 33/32 * ‖z - β‖ := hvle
+        _ < 33/32 * (t/2) := by
+            apply mul_lt_mul_of_pos_left hz2 (by norm_num)
+        _ ≤ (2/3) * t := by linarith
+    · show koenigsFun (c:ℂ) β v ∉ filledJulia (c:ℂ)
+      rw [hveq]
+      exact hz1
+
+end Bottcher
