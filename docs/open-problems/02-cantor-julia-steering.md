@@ -1,5 +1,22 @@
 # Open Problem 2: Steering an analytic curve family past a Cantor Julia set
 
+> **STATUS (2026-07-02): ANSWERED — see `02-answer.md`.**
+> **Statement A is TRUE for every disconnected pair, with no exceptional pairs.** The proof
+> is elementary and verified by reading: fix any single admissible `r₀`; the tower piece is
+> finitely many injective analytic arcs; each bad angular set `η_ν⁻¹(K₂)` is a compact
+> totally disconnected subset of an interval, hence nowhere dense; a finite union of such
+> sets still omits a whole angular subwindow `W`, and the tower piece over `W` avoids `K₂`.
+> The angular (second) parameter alone suffices — no radius steering needed.
+> **Statement B is FALSE** (a slanted linear projection of a perturbed Chebyshev Cantor
+> Julia set fills an interval, so every leaf of a straight-line foliation meets `K`). This
+> costs nothing downstream: only Statement A was consumed.
+>
+> Consequence: the disconnected lane has **no remaining open mathematics** — what is left is
+> formalization (tracked as tasks B1a–B1d in the project). The open problems for the
+> connected and mixed lanes moved to `03-hole-free-accessible-tip.md`.
+>
+> The original statement is kept below unchanged, for the record.
+
 **Field:** complex dynamics / plane topology / geometric measure theory.
 **Self-contained:** no knowledge of the surrounding project is needed. A proof of either
 Statement below is a complete solution.

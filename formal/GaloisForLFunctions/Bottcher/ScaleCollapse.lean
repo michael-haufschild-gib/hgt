@@ -17,7 +17,7 @@ open Complex Set Metric
 namespace Bottcher
 
 /-- Iterated multiplier invariance, staying inside the working scale. -/
-theorem scale_inv_pow {P : Set ℂ} {lam ρ₀ : ℝ} (hlam : 2 ≤ lam) (hρ₀ : 0 < ρ₀)
+theorem scale_inv_pow {P : Set ℂ} {lam ρ₀ : ℝ} (hlam : 2 ≤ lam) (_hρ₀ : 0 < ρ₀)
     (hinv : ∀ v : ℂ, lam * ‖v‖ ≤ ρ₀ → (((lam : ℂ) * v ∈ P) ↔ v ∈ P)) :
     ∀ m : ℕ, ∀ v : ℂ, lam ^ m * ‖v‖ ≤ ρ₀ → ((((lam : ℝ) ^ m : ℝ) : ℂ) * v ∈ P ↔ v ∈ P) := by
   intro m
@@ -426,9 +426,13 @@ end Bottcher
 
 namespace Bottcher
 
-/-- **Open Problem 1 as a Prop** (docs/open-problems/01): the fixed-scale sector connector
-supply for the Julia pullback in linearizing coordinates.  Everything upstream and downstream
-of this Prop is proven; it is the single dynamical input of the both-connected dendrite lane. -/
+/-- **Open Problem 1 as a Prop** (docs/open-problems/01) — **REFUTED** (2026-07-02, see
+docs/open-problems/01-answer.md, numerically verified): for real dendrite parameters the
+pulled-back Julia hairs bulge outward in Koenigs radius (`B²−AC > 0`) and crosscut every scale,
+so this Prop is false at least at `c = −1.5436…` and its consumers are vacuous there.  Kept for
+the record and for the true implications proven downstream.  The live connected-lane routes are
+the root-limit pigeonhole (open problem 03) and, as fallback, the factor-2 basis-family form
+consumed by `noRelation_phiMero_of_basin_branch_basisApproach`. -/
 def SectorConnectorProp (c β : ℂ) (ρ₀ : ℝ) : Prop :=
   ∀ r : ℝ, ρ₀ / ‖2 * β‖ ≤ r → r ≤ ρ₀ →
     ∀ v : ℂ, koenigsFun c β v ∉ filledJulia c → r / ‖2 * β‖ ^ 2 ≤ ‖v‖ → ‖v‖ < r →

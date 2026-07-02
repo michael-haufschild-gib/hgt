@@ -5,7 +5,10 @@ Glues the basis family produced by the linearization collapse (`koenigs_basis_fa
 single-scale obstruction interface (`false_of_global_basin_branch_analytic_basisApproach`):
 for a real dendrite parameter, no relation with separable nondegenerate fibre at the extreme
 Julia point `β` can carry a modulus-preserving basin branch — conditionally on
-`SectorConnectorProp` (Open Problem 1), which is the ONLY remaining input.  Axiom-clean.
+`SectorConnectorProp` (Open Problem 1).  **NOTE (2026-07-02): `SectorConnectorProp` is refuted**
+(docs/open-problems/01-answer.md), so this discharge is vacuous at real dendrite parameters; it
+is kept as a true conditional implication.  Live routes: the root-limit pigeonhole (open
+problem 03) and the movable-tip factor-2 basis family (fallback).  Axiom-clean.
 -/
 import GaloisForLFunctions.Bottcher.ScaleCollapse
 import GaloisForLFunctions.Bottcher.RelativeDenseApproach

@@ -153,3 +153,31 @@ Theatre test: the team's source audit is the kill gate. Failure mode would be to
   locus (Turing, Haiku cleanup). E-vS scope extends to all-connected (not just hyperbolic) because
   the theorem requires containment in a smooth curve, not arc topology or local connectivity.
   The hyperbolic subtheorem is also recorded separately in q62a-bottcher-independence-hyperbolic.md.
+
+## 2026-07-02 Formalization audit — Step 3 gap found (identity-theorem propagation)
+
+Formalization (Fable) surfaced a gap in Step 3 as written. The sentence "On any component of
+Ω_{c₁} ∩ D(z₀, r) accumulating at z₀, φ_{c₁} satisfies m(z, φ_{c₂}(z), φ_{c₁}(z)) = 0 (from the
+assumed algebraic relation)" is unjustified: the relation holds a priori on the common far-field
+germ domain and propagates by the identity theorem only through the connected component **W** of
+Ω_{c₁} ∩ Ω_{c₂} containing the far field. Components of Ω_{c₁} ∩ D(z₀,r) lying in *bounded*
+components ("holes") of ℂ ∖ (K_{c₁} ∪ K_{c₂}) carry no relation data. Since both K_{c_i} are
+full, holes exist only when K_{c₁} ∩ K_{c₂} ≠ ∅ — but for real pairs the filled sets always
+overlap, so the gap is in the main case, not an edge case.
+
+Repair (recorded as the root-limit pigeonhole route, task P0):
+
+1. z₀ must be chosen on ∂W ∖ K_{c₂} (exists: first-exit path argument) with a **hole-free**
+   ball B(z₀,r) (open input: docs/open-problems/03-hole-free-accessible-tip.md; automatic
+   when K_{c₁} ∩ K_{c₂} = ∅).
+2. Then every w ∈ J_{c₁} ∩ B(z₀,r) is a limit of W-points; φ_{c₁}-values along such limits
+   accumulate on the root set of the specialized minimal polynomial with modulus
+   e^{G_{c₁}(w)} = 1 (root-limit lemma — bypasses the per-component branch-selection entirely),
+   so J_{c₁} ∩ B ⊆ ⋃_i {|g_i| = 1} for the finitely many local algebraic branches g_i.
+3. Baire pigeonhole on the perfect set J_{c₁} ∩ B puts a relatively open piece of J_{c₁} inside
+   one smooth curve; Step 2 (E–vS) then applies as before.
+
+Status impact: the connected theorem stands **unconditionally when K_{c₁} ∩ K_{c₂} = ∅**, and
+is conditional on the hole-free accessible tip (open problem 03) when the filled sets overlap.
+The card should not be cited as a complete proof for overlapping pairs until 03 is settled.
+Next moves are queued as tasks P0–P6 (formalization) and problem 03 (mathematics).

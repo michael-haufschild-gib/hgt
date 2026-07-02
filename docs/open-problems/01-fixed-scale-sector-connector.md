@@ -1,5 +1,24 @@
 # Open Problem 1: The fixed-scale sector connector at a repelling boundary fixed point
 
+> **STATUS (2026-07-02): REFUTED as stated — see `01-answer.md`.** The Statement below is
+> **false** for the suggested parameter `c = −1.5436…` (and, by the same mechanism, for
+> essentially every real dendrite parameter): the vertical Julia arc through the critical
+> point pulls back along the β-fixed inverse branch to hairs whose Koenigs radius profile
+> bulges *outward* (`|Φ(it)|² = A² + (B²−AC)t² + …` with `B²−AC ≈ 1.186 > 0`, verified here
+> to 500 digits), producing crosscuts at radii `r ∈ (aₙ, μaₙ)`, `μ ≈ 1.031`, that trap shell
+> points away from the sector at every scale. The λ-descent then defeats every `ρ₀`.
+>
+> **What survives.** The downstream consumer never needed the sector connector itself — only
+> a shrinking preconnected family `T(t) ⊆ B(z₀,t) ∖ K` containing `B(z₀,t/2) ∖ K`, for all
+> small `t`, at **some** tip `z₀` (factor-2 slack). The counterexample's own bulge factor
+> `1.031 ≪ 2` does not refute that weaker form. The weakened problem — now a **fallback**,
+> since the primary route moved to Problem 03 — is: *prove the factor-2 basis-family
+> statement at some point of `J₁ ∖ K₂` off a countable exceptional set* (endpoint tips of
+> the dendrite are the natural candidates; the full critical-subtree pullback extent is the
+> quantity to control, measurable by the same `Φ`-recurrence used in the refutation).
+>
+> The original statement is kept below unchanged, for the record.
+
 **Field:** one-dimensional complex dynamics (quadratic Julia sets, local structure).
 **Self-contained:** no knowledge of the surrounding project is needed. A proof of the
 Statement below (for any nonempty class of parameters `c`) is a complete solution.
