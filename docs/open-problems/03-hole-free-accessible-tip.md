@@ -1,5 +1,23 @@
 # Open Problem 3: A hole-free accessible boundary point for a pair of filled Julia sets
 
+> **STATUS (2026-07-02): ANSWERED for the stated acceptance criterion — see
+> [03-amswer.md](03-amswer.md); proof audited and correct.** The answer proves the Statement
+> for the subclass `(c₁, c₂) = (c, −2)`, `−2 < c ≤ 1/4` real: `K₋₂ = [−2, 2]`,
+> `K_c ∩ K₋₂ = [−β, β]` is connected, so by **Janiszewski's theorem** `K₁ ∪ K₂` does not
+> separate the plane — there are **no holes at all** — and the explicit tip
+> `z₀ = i√(β+c)` ∈ `J₁ ∖ K₂` works with `r = ½√(β+c)`.
+>
+> **Audit caveat (our specification error, not the answer's):** the partner `c₂ = −2` is an
+> *exceptional* parameter — `φ₋₂` is algebraic over `ℂ(z)` (Chebyshev/Zhukovsky), so no pair
+> `(c, −2)` is in the scope of the independence theorem, and the single-coordinate consequence
+> (transcendence of `φ_c` over `ℂ(z)`) is already a machine-checked unconditional theorem
+> in-tree (`phiMero_transcendental_of_mem_mandelbrot`) needing no tip. Two ingredients of the
+> answer are load-bearing and reusable: (i) the **Janiszewski reduction** — connected
+> `K₁ ∩ K₂` ⟹ no holes; (ii) the **explicit imaginary-axis tip** with its elementary escape
+> proof. The genuinely load-bearing case (both parameters nonexceptional) is restated, with
+> the acceptance criterion tightened to exclude vacuous classes, as
+> **[Problem 4](04-nonexceptional-hole-free-tip.md)**.
+
 **Field:** plane topology / complex dynamics / potential theory.
 **Self-contained:** no knowledge of the surrounding project is needed. A proof of the
 Statement below (for any nonempty class of parameter pairs) is a complete solution.
