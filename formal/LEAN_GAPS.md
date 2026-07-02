@@ -5,10 +5,7 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-| Kind | Location | Context | Text |
-|---|---|---|---|
-| proof-debt | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:1143` | `theorem bottcher_towerDataG_far` | `sorry` |
-| proof-debt | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:1157` | `theorem bottcher_towerDataG_far` | `sorry` |
+No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 ## Large Files
 
@@ -27,6 +24,7 @@ This is an agent worklist aid, not a mathematical ledger.
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
 | 1475 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
+| 1442 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
 | 1417 | `formal/GaloisForLFunctions/Bottcher/CrossRatioNormalBridge.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
@@ -38,7 +36,6 @@ This is an agent worklist aid, not a mathematical ledger.
 | 1217 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean` |
 | 1206 | `formal/GaloisForLFunctions/Bottcher/ConnectedRepellingPeriodicAvoidance.lean` |
 | 1202 | `formal/GaloisForLFunctions/Bottcher/Brolin/GapAMuCore.lean` |
-| 1172 | `formal/GaloisForLFunctions/Bottcher/Brolin/Cauchy.lean` |
 
 ## Gap Markers
 
@@ -61,6 +58,7 @@ This is an agent worklist aid, not a mathematical ledger.
 | `formal/GaloisForLFunctions/Bottcher/BottcherCoord.lean:276` | `∑ₖ termₖ(f_c z) = 2·(∑ₖ termₖ(z) − term₀(z))`. The remaining `log z` vs `log(z²+c)` |
 | `formal/GaloisForLFunctions/Bottcher/BottcherDetermines.lean:158` | in the connected-case independence, with no remaining hypotheses. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BottcherInverse.lean:4` | The dyadic-cover lift `hliftF`/`hliftG` (the genuine remaining analytic input of the disconnected case, |
+| `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:1408` | file's machinery; `GBExt` is the one remaining analytic input of the disconnected pair case. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BottcherWinding.lean:59` | escape-level subtypes: the remaining winding problem becomes the pure winding of the iterate image loop |
 | `formal/GaloisForLFunctions/Bottcher/BoundaryCollarExtension.lean:199` | isolates the sole remaining geometric input of §1 as the elementary combinatorial fact `hgen` — a |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean:203` | needed for the remaining boundary singular-potential lower semicontinuity. -/ |
@@ -293,7 +291,6 @@ This is an agent worklist aid, not a mathematical ledger.
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1315` | The base fixed-tail second-derivative contribution is discharged internally.  The remaining local |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1634` | `K = 1/2`, `μ = 1/4`, and scaled radius `4‖α-z‖`; the only remaining local input is the |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1863` | /-- q62 target-density reduction with concrete Newton parameters.  The remaining hRigid local |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedZeroSurvival.lean:277` | fixed closed ball, the repelling fixed tail supplies the missing center estimate automatically. -/ |
 
 ## Historical Status Logs
 

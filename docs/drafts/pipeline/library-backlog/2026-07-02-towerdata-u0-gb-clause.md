@@ -49,3 +49,39 @@ extend to that Ext, for ANY c. The fix that survives:
 So the GB-variant = your construction verbatim + the sub-annulus restriction + three elementary
 norm estimates. My banked bricks (`U0TowerData.tower_iterate_eq`, `radicand_welldef`) and the
 consumer (`U0TowerBridge.u0_phi_independence_of_towerData`) are ready.
+
+## Update 2: the exact single missing clause (full obstruction map)
+
+Systematic check of every Ext-piece against the closed unit disk, from EXPOSED interfaces only:
+- **P0 far band** (`annulusSet Rb R₀` image): norms > 2 via the `hfar` escape clause — CLOSED.
+- **Deep lobes**: G-comparison — disk-G ≥ (log(‖c‖−1) − log 2)/2 (two-iterate lower bound, w₁ ∈
+  ball(c,1) is far) versus lobe-G = log‖v‖/2^k ≤ (log‖c‖ + log 2)/2^k < disk-G for k ≥ 2,
+  ‖c‖ ≥ 9 — CLOSED, elementary (no position bounds needed; my earlier "position" route was
+  unnecessary for lobes).
+- **σ-connectors, j ≥ 4**: the exposed chain clause `σ(j+1)v² = σ(j)v − c` gives the
+  stabilizing norm window ‖σ_j‖ ∈ (sqrt(‖c‖/2), sqrt(2‖c‖)) > 1 by downward induction from the
+  unconditional top bound ‖T v‖ ≤ 2e^{4h} + 2‖c‖ (far-regime dichotomy) — CLOSED, elementary.
+- **σ-connectors, j = 1..3**: ‖σ₁‖² = ‖T v − c‖, and the slit construction only gives
+  `S.T v ≠ c` POINTWISE (hslit, margin π/8 in the v-angle).  A compactness gap g₀ > 0 exists
+  but is not ≥ 1 from exposed data; making it quantitative needs T-distortion control near the
+  critical value — construction-internal.  **THE single missing clause**: strengthen
+  `hslit`/`ScaffoldProps` to expose `∀ v ∈ arc, 1 < ‖σ j v‖` (equivalently
+  `‖S.T v − c‖ > 1` on the arc, then chain).  Everything else in the GB-variant is assembled.
+
+## Update 3: the cheapest closing route + its geometry core, PROVEN
+
+The quantitative slit gap has an elementary route after all, IF one proximity clause is exposed:
+on the anchor band, `‖S.T v − v‖ ≤ 1` (your far anchor is built from the dog-on-a-leash bound —
+this is construction-internal but already true there). Then, since `T v_c = c` forces
+`‖v_c − c‖ ≤ 1`, the two bad angles (the `T = c` preimage angle and `arg c`) coincide up to
+`O(1/‖c‖)`, ONE slit covers both, and for `v` in the slit arc the gap follows from pure plane
+geometry + triangle inequality: `‖T v − c‖ ≥ ‖v − c‖ − 1 ≥ ‖c‖·sin(π/8 − ε) − 1 > 1`.
+The plane-geometry core is now PROVEN and consumable:
+`U0TowerData.norm_sub_ge_of_angle` (axiom-clean): an inner-product angle bound
+`re(conj c · v) ≤ cos θ₀·‖c‖‖v‖` gives `‖c‖²·sin²θ₀ ≤ ‖v − c‖²` — modulus-free.
+Remaining for the GB-variant, ALL construction-internal and elementary given your formulas:
+(1) expose `‖S.T v − v‖ ≤ 1` on the anchor band (true for the far anchor by construction);
+(2) IF the σ-descent's arc can sit in the anchor band, done; otherwise thread the proximity one
+descent step down via the explicit sqrt-branch formula;
+(3) then Ext ⊆ {|z|>1} via the closed estimates of Updates 1–2 + this gap, `GBExt` := the
+`u₀`-germ, and `U0TowerBridge.u0_phi_independence_of_towerData` fires.
