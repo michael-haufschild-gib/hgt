@@ -686,7 +686,7 @@ theorem harmonicPoleRootInput_proved {N : ℕ} {s : ℂ} (hsZ : ∀ k : ℤ, s �
 theorem rationalTailIndependent_hzeta_shift_proved {N : ℕ} {s : ℂ} (hs1 : 1 < s.re)
     (hsZ : ∀ k : ℤ, s ≠ (k : ℂ)) :
     RationalTailIndependent (N := N)
-      (fun i n => hzeta (s + (i : ℂ)) (-(n : ℂ))) :=
+      (fun i n => HurwitzZetaShift.hzeta (s + (i : ℂ)) (-(n : ℂ))) :=
   rationalTailIndependent_hzeta_shift_neg_nat_of_harmonic hs1
     (rationalTailIndependent_harmonic_proved hsZ)
 
@@ -700,7 +700,7 @@ theorem rows_and_constant_close_unconditional {N : ℕ} {s : ℂ} (hs1 : 1 < s.r
       (l j).eval (-(n : ℂ)) +
         (∑ i : Fin (N + 1),
           (q i j).eval (-(n : ℂ)) *
-            (2 * hzeta (s + (i : ℂ)) (-(n : ℂ)))) = 0)
+            (2 * HurwitzZetaShift.hzeta (s + (i : ℂ)) (-(n : ℂ)))) = 0)
     (hcc : ∃ M : ℕ, ∀ n, M ≤ n → cc.eval (-(n : ℂ)) = 0) :
     (∀ i j, q i j = 0) ∧ (∀ j, l j = 0) ∧ cc = 0 :=
   rows_and_constant_close_of_hzeta_shift_neg_nat_of_harmonic hs1

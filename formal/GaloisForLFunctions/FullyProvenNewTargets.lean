@@ -53,6 +53,7 @@ import GaloisForLFunctions.Bottcher.RelativeRigidityReturnOrder
 import GaloisForLFunctions.Bottcher.RelativeRigidityMultiplierOnePeriod
 import GaloisForLFunctions.Bottcher.CrossRatioNormalBridge
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
+import GaloisForLFunctions.Hurwitz.MixedClose
 
 noncomputable section
 
@@ -4372,5 +4373,49 @@ def U0PhiFourNondegenerateTarget : Prop :=
 theorem u0_phi_four_nondegenerate : U0PhiFourNondegenerateTarget := by
   intro P i₀ hi₀ hnondeg V hVo hVne hVD hrel
   exact U0PhiFourWindow.u0_phiFour_no_relation_nondegenerate P hi₀ hnondeg hVo hVne hVD hrel
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Mixed harmonic/shifted-power tail independence, proven for every nonintegral `s`.  This was
+the recorded "next analytic obstruction" of the all-`N` Hurwitz descent; it is now a theorem. -/
+def HurwitzMixedTailIndependentTarget : Prop :=
+  ∀ (N : ℕ) {s : ℂ}, (∀ k : ℤ, s ≠ (k : ℂ)) →
+    HurwitzAllNTailIndependence.HurwitzZetaTail.MixedTailIndependent N s
+
+/-- Formal wrapper: the mixed tail provider is unconditional. -/
+theorem hurwitz_mixed_tail_independent : HurwitzMixedTailIndependentTarget := by
+  intro N s hsZ
+  exact HurwitzMixedClose.mixedTailIndependent_proved hsZ
+
+/-- Harmonic-tail rational independence, proven for every nonintegral `s`. -/
+def HurwitzHarmonicTailIndependentTarget : Prop :=
+  ∀ (N : ℕ) {s : ℂ}, (∀ k : ℤ, s ≠ (k : ℂ)) →
+    HurwitzAllNTailIndependence.RationalTailIndependent (N := N)
+      (HurwitzAllNTailIndependence.HurwitzZetaTail.harmonicTail (N := N) s)
+
+/-- Formal wrapper: harmonic-tail rational independence is unconditional. -/
+theorem hurwitz_harmonic_tail_independent : HurwitzHarmonicTailIndependentTarget := by
+  intro N s hsZ
+  exact HurwitzMixedClose.rationalTailIndependent_harmonic_proved hsZ
+
+/-- The all-`N` Hurwitz row/constant close in the genuine shifted Hurwitz values — unconditional. -/
+def HurwitzRowsCloseUnconditionalTarget : Prop :=
+  ∀ (N : ℕ) {s : ℂ}, 1 < s.re → (∀ k : ℤ, s ≠ (k : ℂ)) →
+    ∀ (q : Fin (N + 1) → Fin (N + 1) → Polynomial ℂ)
+      (l : Fin (N + 1) → Polynomial ℂ) (cc : Polynomial ℂ),
+      (∀ j : Fin (N + 1), ∃ M : ℕ, ∀ n, M ≤ n →
+        (l j).eval (-(n : ℂ)) +
+          (∑ i : Fin (N + 1),
+            (q i j).eval (-(n : ℂ)) *
+              (2 * HurwitzZetaShift.hzeta (s + (i : ℂ)) (-(n : ℂ)))) = 0) →
+      (∃ M : ℕ, ∀ n, M ≤ n → cc.eval (-(n : ℂ)) = 0) →
+      (∀ i j, q i j = 0) ∧ (∀ j, l j = 0) ∧ cc = 0
+
+/-- Formal wrapper: the all-`N` row/constant close is unconditional. -/
+theorem hurwitz_rows_close_unconditional : HurwitzRowsCloseUnconditionalTarget := by
+  intro N s hs1 hsZ q l cc hrow hcc
+  exact HurwitzMixedClose.rows_and_constant_close_unconditional hs1 hsZ q l cc hrow hcc
 
 end FullyProvenNewTargets
