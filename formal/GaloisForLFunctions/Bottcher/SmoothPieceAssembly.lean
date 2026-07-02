@@ -83,12 +83,15 @@ theorem exists_relOpen_smooth_piece_of_separable_witness {a : ℕ → ℂ → �
     (ha : ∀ i ∈ s, ContDiffAt ℂ ⊤ (a i) z₀)
     (hlead : a N z₀ ≠ 0) (hsep : (fibrePoly a s z₀).Separable) :
     ∃ (r : ℝ) (w : Fin N → ℂ → ℂ), 0 < r ∧ (∀ k, ContinuousOn (w k) (Metric.ball z₀ r)) ∧
+      (∀ z ∈ Metric.ball z₀ r, ∀ k l, k ≠ l → w k z ≠ w l z) ∧
+      (∀ z ∈ Metric.ball z₀ r, (fibrePoly a s z).natDegree = N) ∧
+      (∀ k, ∀ z ∈ Metric.ball z₀ r, ∑ i ∈ s, a i z * (w k z) ^ i = 0) ∧
       ∀ S : Set ℂ, IsClosed S → S.Nonempty → S ⊆ Metric.ball z₀ r →
         (∀ x ∈ S, ∃ y : ℂ, ‖y‖ = 1 ∧ (fibrePoly a s x).IsRoot y) →
         ∃ k : Fin N, ∃ U : Set ℂ, IsOpen U ∧ (U ∩ S).Nonempty ∧ ∀ x ∈ U ∩ S, ‖w k x‖ = 1 := by
   obtain ⟨r, w, hr, hwc, hwsep, hwdeg, hwrel⟩ :=
     exists_branch_family_analytic hsupp hN hN1 ha hlead hsep
-  refine ⟨r, w, hr, hwc, ?_⟩
+  refine ⟨r, w, hr, hwc, hwsep, hwdeg, hwrel, ?_⟩
   intro S hScl hSne hSsub hmod
   have hcov : ∀ x ∈ S, ∃ k : Fin N, ‖w k x‖ = 1 := by
     intro x hx

@@ -184,6 +184,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:379` | `exists_fullBottcherBranch_of_primitive`; the only remaining input is a *geometric* ball-chain from |
 | `formal/GaloisForLFunctions/Bottcher/GreenSuperlevel.lean:10` | component missing the far field would be bounded; the maximum of `G_c` over its closure is |
 | `formal/GaloisForLFunctions/Bottcher/GreenUnique.lean:12` | basin is preconnected (`K_c` full), the one remaining topological input. |
+| `formal/GaloisForLFunctions/Bottcher/HbothconnAssembly.lean:4` | The both-connected case of q62, reduced to its two remaining inputs.  `SmoothPieceRigidity` is the |
 | `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:10` | hole/W-approach clause — the remaining open-math content.  Axiom-clean. |
 | `formal/GaloisForLFunctions/Bottcher/ImaginaryAxisTip.lean:111` | outside `K_{c₂}`, with a `K_{c₂}`-free ball around it.  The sole missing OP4 clause is that |
 | `formal/GaloisForLFunctions/Bottcher/IndexEstimate.lean:56` | bulk strictly dominates. Discharging `hG`/`hrep` for an actual relation is the remaining dynamical wiring; |
@@ -290,7 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:894` | The basepoint part is discharged by the fixed-tail scalar estimate; the only remaining analytic |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:969` | This is the first non-opaque form of the remaining third-derivative excess obligation: it turns the |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1013` | This packages the current remaining analytic task in the sharp form: the caller supplies a |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:1102` | containment automatic.  The remaining local input is only the scaled derivative-variation estimate, |
 
 ## Historical Status Logs
 
