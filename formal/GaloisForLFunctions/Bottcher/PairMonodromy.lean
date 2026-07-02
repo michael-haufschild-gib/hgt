@@ -510,3 +510,4 @@ theorem exists_uniform_escape (c : ℂ) {L : Set ℂ} (hL : IsCompact L) (hLne :
   exact lt_of_le_of_lt (le_max_left _ _) h6
 
 end Bottcher
+
