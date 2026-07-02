@@ -114,6 +114,82 @@ theorem filledJulia_meets_unit_disk_P2 {b γ : ℂ} (hγ : γ ^ 2 + γ + b + 1 =
   rw [Set.range_subset_iff]
   exact horbit
 
+/-- **Preperiodicity implies a bounded orbit.**  If `y` is preperiodic under `f_b`
+(`f^[k+n] y = f^[k] y` with `n ≥ 1`), its forward orbit is contained in the finite set
+`{f^[j] y : j < k+n}`, hence `y ∈ K_b`.  This is the structural core behind every finite
+obstruction certificate in the Cantor regime, where the only bounded orbits are preperiodic. -/
+theorem filledJulia_of_preperiodic {b y : ℂ} {k n : ℕ} (hn : 1 ≤ n)
+    (hper : (quadratic b)^[k + n] y = (quadratic b)^[k] y) :
+    y ∈ filledJulia b := by
+  rw [mem_filledJulia_iff]
+  have hkey : ∀ m, k ≤ m → (quadratic b)^[m + n] y = (quadratic b)^[m] y := by
+    intro m hm
+    obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hm
+    rw [show k + d + n = d + (k + n) from by omega,
+        Function.iterate_add_apply, hper, ← Function.iterate_add_apply,
+        show d + k = k + d from by omega]
+  have hreduce : ∀ m, ∃ j, j < k + n ∧ (quadratic b)^[m] y = (quadratic b)^[j] y := by
+    intro m
+    induction m using Nat.strong_induction_on with
+    | _ m ih =>
+      by_cases hlt : m < k + n
+      · exact ⟨m, hlt, rfl⟩
+      · push Not at hlt
+        have hmn : n ≤ m := le_trans (Nat.le_add_left n k) hlt
+        have hkm : k ≤ m - n := by omega
+        have hstep : (quadratic b)^[m] y = (quadratic b)^[m - n] y := by
+          have := hkey (m - n) hkm
+          rw [Nat.sub_add_cancel hmn] at this
+          exact this
+        obtain ⟨j, hj, hje⟩ := ih (m - n) (by omega)
+        exact ⟨j, hj, hstep.trans hje⟩
+  have hsub : Set.range (fun m : ℕ => (quadratic b)^[m] y) ⊆
+      (fun j : ℕ => (quadratic b)^[j] y) '' (Set.Iio (k + n)) := by
+    rintro _ ⟨m, rfl⟩
+    obtain ⟨j, hj, hje⟩ := hreduce m
+    exact ⟨j, hj, hje.symm⟩
+  exact (Set.Finite.image _ (Set.finite_Iio (k + n))).isBounded.subset hsub
+
+/-- **The general preperiodic-entry obstruction.**  If `y` is preperiodic and `‖y − b‖ ≤ 1`,
+the square root `x₀` of `y − b` (one step before `y`) lies in the closed unit disk and in `K_b`
+— so `K_b` meets the closed unit disk.  P1 (`k=1, n=1`) and P2 (`k=0, n=2`) are the special
+cases; the period-`n` lobe instances (`U0LobeInstances`) are `k=0, n=3`. -/
+theorem filledJulia_meets_unit_disk_preperiodic {b y : ℂ} {k n : ℕ} (hn : 1 ≤ n)
+    (hper : (quadratic b)^[k + n] y = (quadratic b)^[k] y) (hcond : ‖y - b‖ ≤ 1) :
+    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia b := by
+  obtain ⟨x₀, hx₀⟩ : ∃ x : ℂ, x ^ 2 = y - b :=
+    IsAlgClosed.exists_pow_nat_eq (y - b) (by norm_num : 0 < 2)
+  refine ⟨x₀, norm_le_one_of_sq hx₀ hcond, ?_⟩
+  have hfx : quadratic b x₀ = y := by show x₀ ^ 2 + b = y; rw [hx₀]; ring
+  rw [mem_filledJulia_iff_quadratic_mem, hfx]
+  exact filledJulia_of_preperiodic hn hper
+
+/-- P1 re-derived from the general theorem (subsumption certificate): `y = −β` is preperiodic
+with preperiod `1`, period `1`. -/
+theorem filledJulia_meets_unit_disk_P1_via_prep {b s : ℂ} (hs : s ^ 2 = 1 - 4 * b)
+    (hcond : ‖(1 + s) / 2 + b‖ ≤ 1) :
+    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia b := by
+  set β : ℂ := (1 + s) / 2 with hβ
+  have hβfix : β ^ 2 + b = β := by rw [hβ]; linear_combination hs / 4
+  have e1 : quadratic b (-β) = β := by show (-β) ^ 2 + b = β; linear_combination hβfix
+  have e2 : quadratic b β = β := hβfix
+  refine filledJulia_meets_unit_disk_preperiodic (y := -β) (k := 1) (n := 1) le_rfl ?_ ?_
+  · show quadratic b (quadratic b (-β)) = quadratic b (-β)
+    rw [e1, e2]
+  · rw [show -β - b = -(β + b) from by ring, norm_neg]; exact hcond
+
+/-- P2 re-derived from the general theorem (subsumption certificate): `y = γ` is periodic with
+preperiod `0`, period `2`. -/
+theorem filledJulia_meets_unit_disk_P2_via_prep {b γ : ℂ} (hγ : γ ^ 2 + γ + b + 1 = 0)
+    (hcond : ‖γ - b‖ ≤ 1) :
+    ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia b := by
+  set γ' : ℂ := -1 - γ with hγ'
+  have h1 : quadratic b γ = γ' := by show γ ^ 2 + b = γ'; rw [hγ']; linear_combination hγ
+  have h2 : quadratic b γ' = γ := by show γ' ^ 2 + b = γ; rw [hγ']; linear_combination hγ
+  refine filledJulia_meets_unit_disk_preperiodic (y := γ) (k := 0) (n := 2) (by norm_num) ?_ hcond
+  · show quadratic b (quadratic b γ) = γ
+    rw [h1, h2]
+
 /-- Cross-check at the rational-`s` grid point `s = 29/8`, `b = −777/256` (arg `b` = π,
 `‖b‖ ≈ 3.035`): the P1 condition is pure rational arithmetic. -/
 example : ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia ((-777 / 256 : ℂ)) := by

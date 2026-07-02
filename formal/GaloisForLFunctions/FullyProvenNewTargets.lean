@@ -68,6 +68,7 @@ import GaloisForLFunctions.U0.U0ObstructionPatterns
 import GaloisForLFunctions.U0.U0DiskEscape
 import GaloisForLFunctions.U0.U0CurveSectors
 import GaloisForLFunctions.U0.U0CriticalCurveSlice
+import GaloisForLFunctions.U0.U0LobeInstances
 
 noncomputable section
 
@@ -4809,5 +4810,35 @@ def CriticalCurveSliceTarget : Prop :=
 /-- Formal wrapper for the critical-curve slice bracket. -/
 theorem critical_curve_slice_card : CriticalCurveSliceTarget :=
   U0DichotomySlice.critical_curve_bracket
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **The obstructed set is multi-lobed: a radial bracket of `∂𝒱` at a mid-angle.**  On the ray
+`arg b ≈ 126.9°` the parameter is obstructed at `‖b‖ = 11/5 ∈ (2, 2+√2)` (an exact 2-cycle
+instance) and viable at `‖b‖ = 22/5` (past the sharp threshold), the two colinear — bracketing
+the viability boundary across a single ray, the radial companion of the angular
+`critical_curve_slice_card`.  Together with the period-3 instance `lobe_obstructed_112` at
+`arg b ≈ 111.8°`, this certifies obstruction structure away from the `arg b = π` (P1) lobe. -/
+def LobeRadialBracketTarget : Prop :=
+  ∃ bo bv : ℂ,
+    ‖bo‖ ^ 2 = 121 / 25 ∧ ‖bv‖ ^ 2 = 484 / 25 ∧
+    bv.im * bo.re = bv.re * bo.im ∧
+    (∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ Bottcher.filledJulia bo) ∧
+    (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia bv)
+
+/-- Formal wrapper for the mid-angle radial bracket. -/
+theorem lobe_radial_bracket_card : LobeRadialBracketTarget :=
+  U0LobeInstances.lobe_radial_bracket
+
+/-- A genuine **period-3** obstruction at a mid-angle (`arg b ≈ 111.8°`) — the multi-lobe
+structure realized by a distinct dynamical mechanism (3-cycle, not P1/P2). -/
+def LobePeriod3Target : Prop :=
+  ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ Bottcher.filledJulia (⟨-1/4, 5/8⟩ : ℂ)
+
+/-- Formal wrapper for the period-3 mid-angle obstruction. -/
+theorem lobe_period3_card : LobePeriod3Target :=
+  U0LobeInstances.lobe_obstructed_112
 
 end FullyProvenNewTargets

@@ -54,8 +54,9 @@ cross-multiplied tangent comparison certified through squared rationals.
 ## Open
 
 - The exact transition angle `θ*(3)` (bracketed within 0.51°); tightening is generator-budget.
-- The mid-angle lobe (period-3 and deeper patterns, `arg ≈ 75°–130°` at `‖b‖ ≈ 2.0–2.5`):
-  mapped numerically, no Lean instances yet.
+- The mid-angle lobe (period-3 and deeper patterns, `arg ≈ 75°–130°` at `‖b‖ ≈ 2.0–2.5`): now
+  has Lean instances + the exact period-3 parameterization `b = −(σ²+σ+2)` and a radial bracket
+  (see `period3-lobe-instances`); the deep ring-interior exact certificate stays open.
 - `[CONJECTURE]` `∂𝒱` = closure of pattern-region boundaries; the m-step window branch over
   certified-viable parameters (see `0-backlog/m-step-window-branch.md`).
 

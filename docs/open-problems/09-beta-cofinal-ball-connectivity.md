@@ -3,8 +3,7 @@
 **Field:** complex dynamics (one variable) / plane topology.
 **Self-contained:** everything needed is defined below and every nonclassical input is
 proved inline; classical results from the literature may be used freely with citation.
-**The request:** prove the Problem as stated (any parameter subrange is a valuable
-partial solution) with a complete rigorous proof, or refute it.
+**The request:** prove the Problem as stated with a complete rigorous proof, or refute it.
 
 ## Setting
 
@@ -136,6 +135,6 @@ redirect that program and be equally decisive for this class.
 ## Deliverable
 
 A rigorous, self-contained proof (modulo cited literature) for all real
-`c ∈ [−2, 1/4]` or any explicitly described subrange, written so that each step can be
+`c ∈ [−2, 1/4]`  written so that each step can be
 checked independently; or a refutation exhibiting a real `c` and a scale `ε` below
 which every radius is disconnected.
