@@ -625,3 +625,61 @@ theorem windInt_eq_of_leash (ℓ g : C1Loop) (a : ℂ)
   exact hW
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **The connector certificate.**  The winding vanishes at every point of a preconnected
+avoided set that reaches arbitrarily far out: transport the value along the set to a point
+beyond the loop's size, where it dies by the integral estimate.  This is the localization
+instrument for lobe loops: a point in a co-branch connects to the far field through scaffold
+pieces disjoint from the loop, so the loop does not wind around it. -/
+theorem windInt_eq_zero_of_unbounded_connector (ℓ : C1Loop) {S : Set ℂ}
+    (hS : IsPreconnected S) (hSA : ∀ z ∈ S, ℓ.Avoids z)
+    (hSunb : ∀ R : ℝ, ∃ z ∈ S, R < ‖z‖)
+    {p : ℂ} (hp : p ∈ S) : windInt ℓ p = 0 := by
+  obtain ⟨Mv, hMv0, hMv⟩ := ℓ.exists_velocity_bound
+  obtain ⟨Mγ, hMγ0, hMγ⟩ : ∃ M : ℝ, 0 ≤ M ∧
+      ∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), ‖ℓ.γ θ‖ ≤ M := by
+    obtain ⟨θ₀, _, hmax⟩ := isCompact_Icc.exists_isMaxOn
+      (Set.nonempty_Icc.mpr (by positivity)) (ℓ.cont.norm.continuousOn
+        (s := Set.Icc (0:ℝ) (2 * Real.pi)))
+    exact ⟨‖ℓ.γ θ₀‖, norm_nonneg _, fun θ hθ => hmax hθ⟩
+  obtain ⟨q, hqS, hqfar⟩ := hSunb (Mγ + Mv + 1)
+  have hqwind : windInt ℓ q = 0 := by
+    apply windInt_eq_zero_of_norm_lt ℓ (hSA q hqS)
+    have hbound : ∀ θ ∈ Set.uIoc (0:ℝ) (2 * Real.pi),
+        ‖(ℓ.γ θ - q)⁻¹ * ℓ.γ' θ‖ ≤ Mv / (Mv + 1) := by
+      intro θ hθ
+      have hθI : θ ∈ Set.Icc (0:ℝ) (2 * Real.pi) := by
+        rw [Set.uIoc_of_le (by positivity : (0:ℝ) ≤ 2 * Real.pi)] at hθ
+        exact ⟨le_of_lt hθ.1, hθ.2⟩
+      have hlow : Mv + 1 ≤ ‖ℓ.γ θ - q‖ := by
+        have h1 : ‖q‖ - ‖ℓ.γ θ‖ ≤ ‖ℓ.γ θ - q‖ := by
+          have := norm_sub_norm_le q (ℓ.γ θ)
+          rw [show ‖q - ℓ.γ θ‖ = ‖ℓ.γ θ - q‖ from norm_sub_rev q (ℓ.γ θ)] at this
+          linarith
+        have h3 : ‖ℓ.γ θ‖ ≤ Mγ := hMγ θ hθI
+        linarith
+      rw [norm_mul, norm_inv]
+      have hnz : (0:ℝ) < ‖ℓ.γ θ - q‖ := by linarith
+      calc ‖ℓ.γ θ - q‖⁻¹ * ‖ℓ.γ' θ‖
+          ≤ (Mv + 1)⁻¹ * Mv := by
+            apply mul_le_mul (inv_anti₀ (by linarith) hlow) (hMv θ hθI)
+              (norm_nonneg _) (by positivity)
+        _ = Mv / (Mv + 1) := by field_simp
+    have hnorm : ‖windInt ℓ q‖ ≤ (Mv / (Mv + 1)) * |2 * Real.pi - 0| :=
+      intervalIntegral.norm_integral_le_of_norm_le_const hbound
+    have habs : |2 * Real.pi - 0| = 2 * Real.pi := by
+      rw [sub_zero]
+      exact abs_of_pos (by positivity)
+    rw [habs] at hnorm
+    have hfrac : Mv / (Mv + 1) < 1 := by
+      rw [div_lt_one (by linarith)]
+      linarith
+    calc ‖windInt ℓ q‖ ≤ (Mv / (Mv + 1)) * (2 * Real.pi) := hnorm
+      _ < 1 * (2 * Real.pi) := by
+          apply mul_lt_mul_of_pos_right hfrac (by positivity)
+      _ = 2 * Real.pi := one_mul _
+  rw [windInt_eq_on_preconnected ℓ hS hSA hp hqS, hqwind]
+
+end Bottcher

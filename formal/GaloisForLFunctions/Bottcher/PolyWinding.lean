@@ -9,6 +9,7 @@ a deep loop is `∮ dlog (f₂ⁿ)`, i.e. the winding sum over `quadraticPolyIte
 term killable by the co-branch connector certificates.  Axiom-clean.
 -/
 import GaloisForLFunctions.Bottcher.WindingCertificates
+import GaloisForLFunctions.Bottcher.BasinBranching
 import Mathlib.FieldTheory.IsAlgClosed.Basic
 import Mathlib.Analysis.Complex.Polynomial.Basic
 
@@ -214,5 +215,48 @@ theorem windInt_logDeriv_map (ℓ : C1Loop) (f g : ℂ → ℂ)
     = logDeriv g (f (ℓ.γ θ)) * (deriv f (ℓ.γ θ) * ℓ.γ' θ)
   rw [show (fun z => g (f z)) = g ∘ f from rfl, h1]
   ring
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The iterate monodromy sum**: the `dlog` period of `f_c^[n]` along a loop avoiding the
+level-`n` preimages of `0` is the winding sum over those preimages (the roots of
+`quadraticPolyIterate`). -/
+theorem windInt_logDeriv_quadratic_iterate (c : ℂ) (n : ℕ) (ℓ : C1Loop)
+    (h : ∀ θ : ℝ, ∀ r ∈ (quadraticPolyIterate c n).roots, ℓ.γ θ ≠ r) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi),
+        logDeriv (fun z => (quadratic c)^[n] z) (ℓ.γ θ) * ℓ.γ' θ)
+      = ((quadraticPolyIterate c n).roots.map (fun r => windInt ℓ r)).sum := by
+  have hne : quadraticPolyIterate c n ≠ 0 := by
+    intro h0
+    have h1 := quadraticPolyIterate_natDegree c n
+    rw [h0] at h1
+    simp at h1
+    have h2 : (0:ℕ) < 2 ^ n := Nat.two_pow_pos n
+    omega
+  have hcongr : (fun z => (quadratic c)^[n] z)
+      = fun z => (quadraticPolyIterate c n).eval z := by
+    funext z
+    rw [quadraticPolyIterate_eval]
+  rw [hcongr]
+  exact windInt_logDeriv_polynomial (quadraticPolyIterate c n) hne ℓ h
+
+end Bottcher
+
+namespace Bottcher
+
+/-- If the loop winds around no level-`n` preimage of `0`, the `n`-th iterate's `dlog` period
+vanishes — the `2ⁿ`-th-root existence condition for `φ ∘ f^[n]` along this loop. -/
+theorem windInt_logDeriv_quadratic_iterate_eq_zero (c : ℂ) (n : ℕ) (ℓ : C1Loop)
+    (havoid : ∀ θ : ℝ, ∀ r ∈ (quadraticPolyIterate c n).roots, ℓ.γ θ ≠ r)
+    (hzero : ∀ r ∈ (quadraticPolyIterate c n).roots, windInt ℓ r = 0) :
+    (∫ θ in (0:ℝ)..(2 * Real.pi),
+        logDeriv (fun z => (quadratic c)^[n] z) (ℓ.γ θ) * ℓ.γ' θ) = 0 := by
+  rw [windInt_logDeriv_quadratic_iterate c n ℓ havoid]
+  apply Multiset.sum_eq_zero
+  intro x hx
+  obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.mp hx
+  exact hzero r hr
 
 end Bottcher
