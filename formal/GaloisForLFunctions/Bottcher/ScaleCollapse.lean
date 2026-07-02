@@ -9,6 +9,7 @@ This is the ∀ρ-quantifier elimination that the dendrite-tip clause `htip` nee
 point of the Koenigs linearization route.
 -/
 import GaloisForLFunctions.Bottcher.KoenigsLinearization
+import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Deriv
 
 open Complex Set Metric
 
@@ -242,5 +243,75 @@ theorem preconnected_of_scale_connectors
       IsPreconnected.union bx hbxCx hbxB hCxpre hBconv.isPreconnected
     apply IsPreconnected.union by' _ hbyCy h1 hCypre
     exact Set.mem_union_right _ hbyB
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The linearizer is a local homeomorphism at the fixed point**: injective on a small disk,
+with nonvanishing derivative there, and mapping open subsets to open sets.  The coordinate
+transfer toolkit for the tip clause. -/
+theorem koenigsFun_localHomeo {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+    ∃ r : ℝ, 0 < r ∧ r ≤ 1 / 64 ∧
+      Set.InjOn (koenigsFun c β) (Metric.ball 0 r) ∧
+      (∀ s : Set ℂ, s ⊆ Metric.ball 0 r → IsOpen s → IsOpen (koenigsFun c β '' s)) := by
+  classical
+  have hψan := koenigsFun_analyticOnNhd hβ hlam2
+  have hψ0 : AnalyticAt ℂ (koenigsFun c β) 0 :=
+    hψan 0 (Metric.mem_ball_self (by norm_num))
+  have hd0 : HasDerivAt (koenigsFun c β) 1 0 := koenigsFun_hasDerivAt_zero hβ hlam2
+  have hstrict : HasStrictDerivAt (koenigsFun c β) 1 0 := by
+    have h1 := hψ0.hasStrictDerivAt
+    rwa [hd0.deriv] at h1
+  -- the left inverse gives injectivity near 0
+  have hinj_ev := HasStrictDerivAt.eventually_left_inverse hstrict
+    (by norm_num : (1:ℂ) ≠ 0)
+  -- the derivative is analytic, equals 1 at 0, hence nonzero nearby
+  have hderiv_an : AnalyticOnNhd ℂ (deriv (koenigsFun c β)) (Metric.ball (0:ℂ) (1/32)) :=
+    hψan.deriv
+  have hderiv_cont : ContinuousAt (deriv (koenigsFun c β)) 0 :=
+    (hderiv_an 0 (Metric.mem_ball_self (by norm_num))).continuousAt
+  have hderiv_ne : ∀ᶠ v in nhds (0:ℂ), deriv (koenigsFun c β) v ≠ 0 := by
+    have h2 : deriv (koenigsFun c β) 0 = 1 := hd0.deriv
+    have h3 : ({(0:ℂ)}ᶜ : Set ℂ) ∈ nhds (deriv (koenigsFun c β) 0) := by
+      rw [h2]
+      exact compl_singleton_mem_nhds (by norm_num)
+    have h4 := hderiv_cont.preimage_mem_nhds h3
+    filter_upwards [h4] with v hv
+    simpa using hv
+  -- extract a working radius
+  obtain ⟨r₁, hr₁, hr₁inj⟩ := Metric.eventually_nhds_iff_ball.mp hinj_ev
+  obtain ⟨r₂, hr₂, hr₂ne⟩ := Metric.eventually_nhds_iff_ball.mp hderiv_ne
+  set r : ℝ := min (min r₁ r₂) (1/64) with hrdef
+  have hr0 : 0 < r := lt_min (lt_min hr₁ hr₂) (by norm_num)
+  refine ⟨r, hr0, min_le_right _ _, ?_, ?_⟩
+  · -- injectivity via the left inverse
+    intro x hx y hy hxy
+    have hx1 : x ∈ Metric.ball (0:ℂ) r₁ :=
+      Metric.ball_subset_ball (le_trans (min_le_left _ _) (min_le_left _ _)) hx
+    have hy1 : y ∈ Metric.ball (0:ℂ) r₁ :=
+      Metric.ball_subset_ball (le_trans (min_le_left _ _) (min_le_left _ _)) hy
+    have h5 := hr₁inj x hx1
+    have h6 := hr₁inj y hy1
+    rw [← h5, ← h6, hxy]
+  · -- open mapping via per-point strict derivative and map_nhds_eq
+    intro s hs hso
+    rw [isOpen_iff_mem_nhds]
+    rintro z ⟨v, hvs, rfl⟩
+    have hvball : v ∈ Metric.ball (0:ℂ) (1/32) := by
+      have h7 := hs hvs
+      rw [Metric.mem_ball, dist_zero_right] at h7 ⊢
+      have h8 : r ≤ 1/64 := min_le_right _ _
+      linarith
+    have hvan : AnalyticAt ℂ (koenigsFun c β) v := hψan v hvball
+    have hvderiv : deriv (koenigsFun c β) v ≠ 0 := by
+      apply hr₂ne
+      exact Metric.ball_subset_ball
+        (le_trans (min_le_left _ _) (min_le_right _ _)) (hs hvs)
+    have hvstrict : HasStrictDerivAt (koenigsFun c β) (deriv (koenigsFun c β) v) v :=
+      hvan.hasStrictDerivAt
+    have hmap := hvstrict.map_nhds_eq hvderiv
+    rw [← hmap]
+    exact Filter.image_mem_map (hso.mem_nhds hvs)
 
 end Bottcher
