@@ -153,3 +153,80 @@ theorem filledJulia_subset_closedBall_two_of_mem_mandelbrot {c : ℂ} (hc : c �
   rwa [max_eq_left (norm_le_two_of_mem_mandelbrot hc)] at h1
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Disconnected norm gap.**  For `‖c‖ ≥ 9`, the filled Julia set misses `closedBall 0 2`:
+every `z` with `‖z‖ ≤ 2` escapes within two iterates
+(`‖f_c²(z)‖ ≥ (‖c‖−4)² − ‖c‖ ≥ ‖c‖ > 2`, using `9 ≤ ‖c‖`), so `z ∉ K_c` by backward invariance.
+This is the disconnected analogue of `filledJulia_subset_closedBall_two_of_mem_mandelbrot` and the
+spatial input the mixed-pair tower consumes: the *connected* partner's filled Julia set lives in
+`closedBall 0 2`, so a tower carried near a large-norm *disconnected* `K_c` (spatially at norm
+`≈ √‖c‖`) is disjoint from the partner's set — the requirement that lets the partner's Böttcher
+coordinate extend single-valued over the tower domain. -/
+theorem not_mem_filledJulia_of_norm_le_two_of_large {c z : ℂ}
+    (hc : (9:ℝ) ≤ ‖c‖) (hz : ‖z‖ ≤ 2) : z ∉ filledJulia c := by
+  set M : ℝ := ‖c‖ with hM
+  have hz2 : ‖z‖ ^ 2 ≤ 4 := by nlinarith [norm_nonneg z]
+  -- first iterate: ‖f_c z‖ ≥ ‖c‖ − 4
+  set w₁ : ℂ := quadratic c z with hw₁
+  have hw₁eq : w₁ = z ^ 2 + c := by rw [hw₁, quadratic_apply]
+  have hf1 : M - 4 ≤ ‖w₁‖ := by
+    have key : ‖c‖ ≤ ‖w₁‖ + ‖z‖ ^ 2 := by
+      rw [hw₁eq]
+      calc ‖c‖ = ‖(z ^ 2 + c) - z ^ 2‖ := by rw [show (z ^ 2 + c) - z ^ 2 = c by ring]
+        _ ≤ ‖z ^ 2 + c‖ + ‖z ^ 2‖ := norm_sub_le _ _
+        _ = ‖z ^ 2 + c‖ + ‖z‖ ^ 2 := by rw [norm_pow]
+    rw [← hM] at key
+    nlinarith [key, hz2]
+  -- second iterate: ‖f_c²(z)‖ ≥ (‖c‖ − 4)² − ‖c‖
+  set w₂ : ℂ := quadratic c w₁ with hw₂
+  have hw₂eq : w₂ = w₁ ^ 2 + c := by rw [hw₂, quadratic_apply]
+  have hw1nn : (0:ℝ) ≤ M - 4 := by linarith
+  have hf1sq : (M - 4) ^ 2 ≤ ‖w₁‖ ^ 2 := by nlinarith [hf1, hw1nn]
+  have hf2 : (M - 4) ^ 2 - M ≤ ‖w₂‖ := by
+    have key : ‖w₁‖ ^ 2 ≤ ‖w₂‖ + M := by
+      calc ‖w₁‖ ^ 2 = ‖w₁ ^ 2‖ := (norm_pow w₁ 2).symm
+        _ = ‖(w₁ ^ 2 + c) - c‖ := by rw [show (w₁ ^ 2 + c) - c = w₁ ^ 2 by ring]
+        _ ≤ ‖w₁ ^ 2 + c‖ + ‖c‖ := norm_sub_le _ _
+        _ = ‖w₂‖ + M := by rw [← hw₂eq, ← hM]
+    nlinarith [key, hf1sq]
+  have hMle : ‖c‖ ≤ ‖w₂‖ := by
+    rw [← hM]
+    nlinarith [hf2, mul_nonneg (by linarith : (0:ℝ) ≤ M - 8) (by linarith : (0:ℝ) ≤ M - 2)]
+  have hgt2 : 2 < ‖w₂‖ := by rw [← hM] at hMle; linarith
+  have hw₂K : w₂ ∉ filledJulia c := not_mem_filledJulia hMle hgt2
+  intro hzK
+  have h1 : w₁ ∈ filledJulia c := (quadratic_mem_filledJulia_iff c z).mpr hzK
+  have h2 : w₂ ∈ filledJulia c := (quadratic_mem_filledJulia_iff c w₁).mpr h1
+  exact hw₂K h2
+
+/-- **Disconnected norm gap, disjointness form.**  `K_c` and `closedBall 0 2` are disjoint for
+`‖c‖ ≥ 9`.  The set-level shape the mixed-pair tower's `Ext`-avoidance consumes. -/
+theorem filledJulia_disjoint_closedBall_two_of_large {c : ℂ} (hc : (9:ℝ) ≤ ‖c‖) :
+    Disjoint (filledJulia c) (Metric.closedBall 0 2) := by
+  rw [Set.disjoint_left]
+  intro z hzK hzB
+  rw [Metric.mem_closedBall, dist_zero_right] at hzB
+  exact not_mem_filledJulia_of_norm_le_two_of_large hc hzB hzK
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Mixed-pair geometric separation (the bridge B9 consumes).**  If a set `Ext` lies entirely at
+norm `> 2` — the single hard analytic output of the mixed-case tower construction (`Ext` carried
+near the large-norm *disconnected* `K_{c₁}`, spatially away from the origin) — then `Ext` is
+disjoint from the *connected* partner's filled Julia set `K_{c₂} ⊆ closedBall 0 2`.  This is exactly
+the containment that lets `bottcherCoord c₂` (single-valued on the connected complement `ℂ ∖ K_{c₂}`)
+extend analytically over the whole tower domain as the `GBExt` datum of the pair tower data, with
+the tower loop then fixing it. -/
+theorem subset_compl_filledJulia_of_norm_gt_two_of_mem_mandelbrot
+    {c₂ : ℂ} (hc₂ : c₂ ∈ mandelbrot) {Ext : Set ℂ} (hExt : ∀ z ∈ Ext, 2 < ‖z‖) :
+    Ext ⊆ (filledJulia c₂)ᶜ := by
+  intro z hz hzK
+  have h1 := filledJulia_subset_closedBall_two_of_mem_mandelbrot hc₂ hzK
+  rw [Metric.mem_closedBall, dist_zero_right] at h1
+  exact absurd (hExt z hz) (by linarith)
+
+end Bottcher

@@ -49,3 +49,4 @@ import GaloisForLFunctions.U0.U0WindowObstruction
 import GaloisForLFunctions.U0.U0DichotomyWitness
 import GaloisForLFunctions.U0.U0MonotoneEscape
 import GaloisForLFunctions.U0.U0LogBoundGeneral
+import GaloisForLFunctions.U0.U0WindowSharpness

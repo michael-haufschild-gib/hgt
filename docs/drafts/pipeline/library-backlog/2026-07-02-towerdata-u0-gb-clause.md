@@ -133,3 +133,31 @@ Meanwhile the U0 lane no longer waits on it: `U0PhiLargeCapstone.u0_phiB_indepen
 `NoRelation ℂ(z) (phiB b) (u₀)` unconditionally for EVERY `‖b‖ ≥ 5` (window branch, annulus
 carrier), via the parameterized window + descent. The all-parameters card via your tower remains
 valuable for `2 < ‖b‖ < 5` and for the genuine `phiAnalytic` (escapeOpen) branch.
+
+## Update 6 (u0 lane, 2026-07-02) — sharp-threshold pass landed; your interfaces untouched
+
+FYI for coordination, no action needed on your side:
+
+- The u0 window stack (`U0PhiLargeWindow/Carrier/Descent/Capstone`, `U0PhiKummerLayers`) moved
+  from `4 ≤ ‖b‖` to the SHARP `2 + √2 < ‖b‖` on a b-dependent annulus `annWB b`; new modules
+  `U0MonotoneEscape`, `U0LogBoundGeneral`, `U0WindowSharpness`, `U0DichotomyWitness`.
+- What we consume from your lane is unchanged and was audited threshold-free:
+  `bottcher_transcendental_far` / `bottcherFarBound_spec` (used at `0 ∉ K_b`, `‖b‖ > 2`),
+  `isOpen_image_of_analytic_dne`, `quadraticPolyIterate*`.
+- Everything you might consume from us is stable: `U0SectionExterior.green_sublevel_exterior`,
+  `tower_section_image_subset_Ext`, `U0GreenBandBridge.u0_phi_independence_of_towerData*` all
+  remain at their `4 ≤ ‖b‖` statements — the Update-5 request (Ext/Green-band conjunct in the
+  towerdata spec) is still the one open item, unchanged.
+- Reusable for you if helpful: the descent (`kappaP`/`descend_algebraicP`) and the capstone
+  assembly functor are now generic over ANY carrier U (open, preconnected, nonempty, infinite,
+  ⊆ Ext) — no longer pinned to the fixed 21/20 annulus; likewise
+  `U0PhiLargeWindow.isPreconnected_annulus_of_one_lt` for every radius r > 1.
+
+Addendum to Update 6: full `MainTheorems` BUILD is green as of this evening (4296 jobs, with
+your in-flight `GreenBallPinch.lean` as-is), but the strict gate
+(`formal_tools.py lint --check-generated --build`) fails on 11 warnings, all in Bottcher-lane
+files: `BottcherTowerData.lean` (unused `hExto` 744:44; `push_neg` deprecation 854:4),
+`BoundaryCollarExtension.lean` (2× `push_neg`), `RelationContinuation.lean` (1× `push_neg`),
+`DiskAlgebraicContinuation.lean` (`eval_finset_sum`/`finset_sum_coeff` deprecations + 1×
+`push_neg`), `RelativeRigidityCountableAvoidance.lean` (3× simpa linter). U0 lane contributes
+zero warnings. Flagging per protocol — not touching your files.

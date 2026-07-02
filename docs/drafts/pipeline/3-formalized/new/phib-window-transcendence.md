@@ -1,12 +1,13 @@
-# The Böttcher window branch is transcendental over ℂ(z) (all ‖b‖ ≥ 4)
+# The Böttcher window branch is transcendental over ℂ(z) (all ‖b‖ > 2+√2, sharp)
 
 - **ID:** phib-window-transcendence
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) - grade **BRIDGE**
 - **Source:** φ-side residue of the window engine; consumes the q62 lane's
   `Bottcher.bottcher_transcendental_far` + `bottcherFarBound_spec`.
-- **Statement:** For every `‖b‖ ≥ 4` (and `b = 4`), the window branch `phiB b` is transcendental
-  over `ℂ(z)` in the meromorphic germ field of the annulus `{1 < |z| < 21/20}`.
+- **Statement:** For every `‖b‖ > 2+√2` (and `b = 4`), the window branch `phiB b` is
+  transcendental over `ℂ(z)` in the meromorphic germ field of the b-dependent annulus
+  `{1 < |z| < rB b}`.
 
 ## Goal
 
@@ -17,7 +18,7 @@ transcendence to any bounded window along a polynomial escape map.
 
 ## Lean surface
 
-- `U0PhiLargeDescent.phiB_transcendental` (`‖b‖ ≥ 4`); `U0PhiFourDescent.phiFour_transcendental`
+- `U0PhiLargeDescent.phiB_transcendental` (`‖b‖ > 2+√2`); `U0PhiFourDescent.phiFour_transcendental`
   (`b = 4`); `U0PhiKummerLayers.phiBRoot_transcendental` (all dyadic root layers).
 - Cards: `FullyProvenNewTargets.phiB_transcendental_card`, `phiFour_transcendental_card`.
 - Files: `formal/GaloisForLFunctions/U0/U0PhiFourDescent.lean`, `U0PhiLargeDescent.lean`,
@@ -46,3 +47,5 @@ germ — contradicting `bottcher_transcendental_far`.
 - 2026-07-02 — B₀ lowered 5 → 4 across the descent chain.
 - 2026-07-02 — dichotomy companion: window viability at fixed modulus is direction-dependent
   (`window-dichotomy-modulus-three`, witnesses b = ±3).
+- 2026-07-02 — SHARP PASS: threshold lowered to ‖b‖ > 2+√2. Descent machinery
+  (`kappaP`/`descend_algebraicP`) now carrier-generic; far entry by monotone escape.

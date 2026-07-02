@@ -63,6 +63,7 @@ import GaloisForLFunctions.U0.U0GreenBandBridge
 import GaloisForLFunctions.U0.U0PhiKummerLayers
 import GaloisForLFunctions.U0.U0WindowObstruction
 import GaloisForLFunctions.U0.U0DichotomyWitness
+import GaloisForLFunctions.U0.U0WindowSharpness
 
 noncomputable section
 
@@ -4681,5 +4682,33 @@ def WindowDichotomyTarget : Prop :=
 /-- Formal wrapper for the modulus-3 window dichotomy. -/
 theorem window_dichotomy_card : WindowDichotomyTarget :=
   U0DichotomyWitness.window_dichotomy_modulus_three
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+open U0PhiLargeWindow U0PhiLargeCarrier U0PhiLargeDescent U0PhiLargeCapstone U0MeroCarrier
+
+/-- **The sharp window threshold**: coverage of the full window capstone for every
+`‖b‖ > 2+√2`, matched by an obstruction witness AT modulus `2+√2` (`b = −(2+√2)`, whose filled
+Julia set meets the closed unit disk at the point `x₀ = 1` on the natural-boundary circle).
+The uniform threshold of the window method is exactly `2+√2` — coverage and impossibility meet
+at the same constant. -/
+def WindowThresholdSharpTarget : Prop :=
+  (∀ b : ℂ, ∀ hb : 2 + Real.sqrt 2 < ‖b‖,
+    letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb)
+      (annWB_nonempty hb)
+    letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+      (ratfuncToMero (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb) (annWB_nonempty hb)
+        (annWB_infinite hb)).toAlgebra
+    NoRelation (RatFunc ℂ)
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b)) (phiBAn b hb))
+      (algebraMap (analyticSubring (annWB b)) (meroField (annWB b))
+        (u0AnSub annWB_subset_Ext))) ∧
+  (∃ b : ℂ, ‖b‖ = 2 + Real.sqrt 2 ∧ ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ Bottcher.filledJulia b)
+
+/-- Formal wrapper for the sharp-threshold pair. -/
+theorem window_threshold_sharp_card : WindowThresholdSharpTarget :=
+  U0WindowSharpness.window_threshold_sharp
 
 end FullyProvenNewTargets
