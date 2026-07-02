@@ -6,6 +6,16 @@ topology; a dynamical subclass is offered for extra structure.
 proved inline; classical results from the literature may be used freely with citation.
 **The request:** prove the Problem (the subclass form suffices), or refute it.
 
+> **STATUS (2026-07-02): the RECTIFIABLE subcase is PROVEN** (see
+> [10-answer.md](10-answer.md), verified): if `H¹(J) < ∞` then `μ(Q(K)) = 1`, via
+> F. & M. Riesz + a crossing-count/coarea/density argument. This settles chord-arc
+> quasidisks but NOT the dynamical subclass: for `c ≠ 0` in the main cardioid
+> `dim_H(J_c) > 1` (Ruelle, Zdunik), so `J_c` is never rectifiable. Moreover the
+> counting lemma of that proof is fully general and REDUCES the remaining problem to
+> the sharpened form below (A4), while Bishop–Jones singularity (`μ ⊥ H¹` on purely
+> non-rectifiable curves) provably blocks any arclength-based transfer — a solution
+> must count crossings against `μ` directly.
+
 ## Setting
 
 - A **quasicircle** is a Jordan curve `J ⊂ ℂ` with the Ahlfors bounded-turning
@@ -74,6 +84,22 @@ cut into exactly two pieces, one in `Ω` and one in `int K`, and `B(p,ρ) ∖ K`
 connected. So the Problem is equivalent to: **for `μ`-a.e. `p`, there are arbitrarily
 small scales at which the localized arc through `p` does not double back across the
 sphere `∂B(p,ρ)`** (or at which whatever doubling-back occurs does not separate).
+
+**A4 (sharpened residual form — PROVEN sufficient).** Write
+`N_p(t) = #(J ∩ ∂B(p,t))`. The verified rectifiable-case proof establishes in full
+generality (no rectifiability needed): for all but countably many `t`, `N_p(t) ≤ 3`
+implies `B(p,t) ∖ K` connected — distinct interior components of `J ∩ B(p,t)` have
+disjoint pairs of rim endpoints (a shared endpoint would make the simple curve visit a
+point twice), so `N_p(t) ≤ 3` forces a single crosscut through `p` plus at most a
+tangency. Hence it SUFFICES to prove:
+
+> for `μ`-a.e. `p ∈ J` and every `ε > 0` there is `0 < t < ε` with `N_p(t) ≤ 3`.
+
+CAUTION: for non-rectifiable `J` this cannot be reached through arclength — harmonic
+measure is singular with respect to `H¹` on purely non-rectifiable curves (local
+F. & M. Riesz / Bishop–Jones) — so the crossing count must be estimated against `μ`
+itself (on the dynamical subclass: against the Brolin measure, where `N_p(t) ≤ 3` at
+cylinder scales is a bounded-window symbolic event under Koebe distortion).
 
 ## Suggested routes (take or ignore freely)
 

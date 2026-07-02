@@ -181,3 +181,47 @@ Hence
 This proves the desired cofinal one-sidedness statement for every rectifiable quasidisk.
 
 [1]: https://en.wikipedia.org/wiki/Harmonic_measure?utm_source=chatgpt.com "Harmonic measure"
+
+---
+
+# Verification report (2026-07-02)
+
+**Verdict: VERIFIED — a correct and complete proof of the rectifiable subcase**, the
+first fully proved a.e.-selection statement of this problem series. Details checked:
+
+1. **F. & M. Riesz reduction** — correct: inversion at an interior point turns `Ω` into
+   a Jordan domain with rectifiable boundary; mutual absolute continuity of harmonic
+   measure and arclength is classical; the problem reduces to `H¹(J ∖ Q(K)) = 0`.
+2. **Step 1 (counting lemma)** — sound, including the two subtle points: distinct
+   interior components of `J ∩ B(p,r)` have disjoint rim-endpoint pairs (a shared
+   endpoint would make the simple curve visit a point twice), so `N_p(r) ≤ 3` forces a
+   single crosscut through `p` plus at most a tangency, and the crosscut yields one
+   `K`-side and one `Ω`-side; radii where `J` contains a circle arc are countable,
+   hence negligible in the integral. Note this step uses neither rectifiability nor
+   the quasicircle property — it is fully general.
+3. **Step 2 (Eilenberg coarea)** for the 1-Lipschitz distance function on a rectifiable
+   set — standard and correctly applied on the annulus `(r/2, r)`; persistent
+   disconnection gives `H¹(J ∩ annulus) ≥ 2r`.
+4. **Step 3 (Besicovitch density)** — density 1 at `H¹`-a.e. point of a rectifiable
+   curve gives annulus mass `r + o(r) < 2r`. Contradiction. ∎
+
+**Scope — the application class is untouched.** For `c ≠ 0` in the open main cardioid,
+`dim_H(J_c) > 1` (Ruelle's expansion `1 + |c|²/(4 log 2) + …` near `0`; Zdunik's strict
+inequality in general), so `H¹(J_c) = ∞`: no main-cardioid Julia set except the circle
+is rectifiable. The theorem fully settles chord-arc and all other rectifiable Jordan
+domains — but not one nontrivial `K_c`. The answer states this honestly.
+
+**What the proof changes about the problem.** Step 1 being fully general, the Problem
+is now REDUCED to the sharp counting statement:
+
+> for `μ`-a.e. `p ∈ J` there are arbitrarily small `t` with `N_p(t) ≤ 3`
+> (at most 3 intersections of `J` with the centered circle `∂B(p,t)`),
+
+and the direct transfer of Steps 2–3 is provably blocked in the remaining cases: on a
+purely non-rectifiable curve, harmonic measure is SINGULAR with respect to `H¹`
+(local F. & M. Riesz / Bishop–Jones), so no arclength-based counting can reach `μ`-a.e.
+statements there. A solution for the main-cardioid class must count crossings against
+harmonic measure (equivalently the Brolin measure) directly — e.g. through the
+dynamical route: at cylinder scales, `N_p(t) ≤ 3` is a bounded-window symbolic event
+controlled by Koebe distortion, and ergodicity would give it at infinitely many scales
+a.e. The problem file has been updated with this sharpened residual.

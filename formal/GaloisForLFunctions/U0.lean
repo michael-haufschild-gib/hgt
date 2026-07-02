@@ -58,3 +58,5 @@ import GaloisForLFunctions.U0.U0SliceViableB
 import GaloisForLFunctions.U0.U0DichotomySliceObstructed
 import GaloisForLFunctions.U0.U0CriticalCurveSlice
 import GaloisForLFunctions.U0.U0LobeInstances
+import GaloisForLFunctions.U0.U0UniformClearance
+import GaloisForLFunctions.U0.U0MStepBranch
