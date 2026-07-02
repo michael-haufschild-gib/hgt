@@ -9,6 +9,7 @@ Axiom-clean.
 -/
 import GaloisForLFunctions.Bottcher.BottcherScaffoldChain
 import GaloisForLFunctions.Bottcher.SubCriticalChain
+import GaloisForLFunctions.Bottcher.ExtendedNonSquare
 
 open Complex Set Filter Metric Topology
 
@@ -940,5 +941,39 @@ theorem bottcher_towerDataG (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
       exists_tower_loop S hrlo1 k hra hrb (lt_trans hrbRW hRWR) hSLan hSLit hSLlev
         hSLExt hFan hFbr T hT
     exact ⟨γ, γ', 0, hγExt, hγc, hγ'c, hγd, hγcl, hγT, hγwind⟩
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **[W3 — single-coordinate transcendence, all escape parameters.]**
+For every `c` with `0 ∉ K_c` (equivalently `c ∉ M`), the inverse Böttcher coordinate's germ on a
+far domain is transcendental over `ℂ(z)`: the Branner–Hubbard tower supplies dyadic radicals of
+unbounded depth with odd loops, and the Kummer machinery does the rest.  Fully unconditional. -/
+theorem bottcher_transcendental_of_escape (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (a₂ : analyticSubring U),
+      U ⊆ escapeOpen c ∧
+      (Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c)) = (a₂ : Filter.Germ (𝓟 U) ℂ) ∧
+      (haveI := isDomain_analyticSubring U hUo hUc hUne
+       haveI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+       Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂)) := by
+  obtain ⟨U, hUo, hUc, hUne, hUinf, hUesc, a₂, ha₂, hdata⟩ := bottcher_towerDataG c hc
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  refine ⟨U, hUo, hUc, hUne, hUinf, a₂, hUesc, ha₂, ?_⟩
+  apply transcendental_of_towerDataG hUo hUc hUne hUinf a₂ ?_ hdata
+  intro hzero
+  have h1 : a₂ = 0 := by
+    have hinj := IsFractionRing.injective (analyticSubring U) (meroField U)
+    apply hinj
+    rw [hzero, map_zero]
+  have h2 : (a₂ : Filter.Germ (𝓟 U) ℂ) = 0 := by rw [h1]; rfl
+  rw [← ha₂] at h2
+  have h3 : (bottcherCoord c : ℂ → ℂ) =ᶠ[𝓟 U] (fun _ => (0:ℂ)) := by
+    apply Filter.Germ.coe_eq.mp
+    exact h2
+  obtain ⟨z, hz⟩ := hUne
+  exact bottcherCoord_ne_zero c z ((Filter.eventually_principal.mp h3) z hz)
 
 end Bottcher
