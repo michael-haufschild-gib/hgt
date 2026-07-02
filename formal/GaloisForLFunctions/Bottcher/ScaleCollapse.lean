@@ -10,6 +10,7 @@ point of the Koenigs linearization route.
 -/
 import GaloisForLFunctions.Bottcher.KoenigsLinearization
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Deriv
+import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Analytic
 
 open Complex Set Metric
 
@@ -313,5 +314,112 @@ theorem koenigsFun_localHomeo {c β : ℂ} (hβ : β ^ 2 + c = β) (hlam2 : 2 �
     have hmap := hvstrict.map_nhds_eq hvderiv
     rw [← hmap]
     exact Filter.image_mem_map (hso.mem_nhds hvs)
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The repelling inverse branch at the fixed point**, with the exact contraction algebra
+`g(z) − β = (z − β)/(g(z) + β)`: a continuous right inverse of the quadratic near `β`, fixing
+`β`, contracting distances by almost the multiplier. -/
+theorem exists_inverse_branch (c β : ℂ) (hβ : β ^ 2 + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+    ∃ (g : ℂ → ℂ) (rg : ℝ), 0 < rg ∧
+      g β = β ∧
+      ContinuousOn g (Metric.ball β rg) ∧
+      (∀ z ∈ Metric.ball β rg, quadratic c (g z) = z) ∧
+      (∀ z ∈ Metric.ball β rg, ‖g z - β‖ ≤ 2 / ‖2 * β‖ * ‖z - β‖) := by
+  classical
+  have hlam0 : (0:ℝ) < ‖2 * β‖ := lt_of_lt_of_le (by norm_num) hlam2
+  have hlamne : (2 * β) ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hlam0
+    exact lt_irrefl _ hlam0
+  -- f is analytic with derivative λ = 2β ≠ 0 at β
+  have hquadan : AnalyticAt ℂ (quadratic c) β := by
+    unfold quadratic
+    fun_prop
+  have hderivat : HasDerivAt (quadratic c) (2 * β) β := by
+    have h1 : HasDerivAt (fun z : ℂ => z ^ 2) (2 * β) β := by
+      have h2 := hasDerivAt_pow 2 β
+      simpa [pow_one] using h2
+    exact h1.add_const c
+  have hderivval : deriv (quadratic c) β = 2 * β := hderivat.deriv
+  have hderivne : deriv (quadratic c) β ≠ 0 := by
+    rw [hderivval]
+    exact hlamne
+  set hstrict := hquadan.hasStrictDerivAt with hstrictdef
+  set g : ℂ → ℂ :=
+    HasStrictDerivAt.localInverse (quadratic c) (deriv (quadratic c) β) β hstrict hderivne
+    with hgdef
+  have hfβ : quadratic c β = β := by
+    unfold quadratic
+    exact hβ
+  -- right inverse near f(β) = β
+  have hright : ∀ᶠ z in nhds β, quadratic c (g z) = z := by
+    have h4 := hstrict.eventually_right_inverse hderivne
+    rwa [hfβ] at h4
+  -- g β = β from the left inverse at β
+  have hleft := hstrict.eventually_left_inverse hderivne
+  have hgβ : g β = β := by
+    have h5 := hleft.self_of_nhds
+    rwa [hfβ] at h5
+  -- g is analytic at β, hence eventually continuous
+  have hgan : AnalyticAt ℂ g β := by
+    have h6 := hquadan.analyticAt_localInverse hderivne
+    rwa [hfβ] at h6
+  have hgcont : ContinuousAt g β := hgan.continuousAt
+  have hgcont_ev : ∀ᶠ z in nhds β, ContinuousAt g z := by
+    filter_upwards [hgan.eventually_analyticAt] with z hz
+    exact hz.continuousAt
+  -- eventual contraction bound via the exact algebra
+  have hcontract : ∀ᶠ z in nhds β, quadratic c (g z) = z →
+      ‖g z - β‖ ≤ 2 / ‖2 * β‖ * ‖z - β‖ := by
+    have h7 : ∀ᶠ z in nhds β, ‖g z - β‖ < ‖2 * β‖ / 2 := by
+      have h8 : ContinuousAt (fun z => ‖g z - β‖) β := (hgcont.sub continuousAt_const).norm
+      have h9 : (fun z => ‖g z - β‖) β = 0 := by
+        simp [hgβ]
+      have h10 : {t : ℝ | t < ‖2 * β‖ / 2} ∈ nhds ((fun z => ‖g z - β‖) β) := by
+        rw [h9]
+        apply (isOpen_lt continuous_id continuous_const).mem_nhds
+        show (0:ℝ) < ‖2 * β‖ / 2
+        linarith
+      exact h8.preimage_mem_nhds h10
+    filter_upwards [h7] with z hz hzright
+    have h11 : (g z - β) * (g z + β) = z - β := by
+      have h12 : (g z) ^ 2 + c = z := hzright
+      have h13 : β ^ 2 + c = β := hβ
+      have h14 : (g z) ^ 2 - β ^ 2 = z - β := by
+        calc (g z) ^ 2 - β ^ 2 = ((g z) ^ 2 + c) - (β ^ 2 + c) := by ring
+          _ = z - β := by rw [h12, h13]
+      calc (g z - β) * (g z + β) = (g z) ^ 2 - β ^ 2 := by ring
+        _ = z - β := h14
+    have h15 : ‖2 * β‖ / 2 ≤ ‖g z + β‖ := by
+      have h16 : g z + β = 2 * β - (β - g z) := by ring
+      rw [h16]
+      have h17 := norm_sub_norm_le (2 * β) (β - g z)
+      have h18 : ‖β - g z‖ = ‖g z - β‖ := norm_sub_rev _ _
+      linarith
+    have h19 : ‖g z - β‖ * ‖g z + β‖ = ‖z - β‖ := by
+      rw [← norm_mul, h11]
+    have h20 : (0:ℝ) < ‖g z + β‖ := by linarith
+    rw [div_mul_eq_mul_div, le_div_iff₀ hlam0]
+    calc ‖g z - β‖ * ‖2 * β‖ ≤ ‖g z - β‖ * (2 * ‖g z + β‖) := by
+          apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
+          linarith
+      _ = 2 * (‖g z - β‖ * ‖g z + β‖) := by ring
+      _ = 2 * ‖z - β‖ := by rw [h19]
+  -- extract a ball
+  have hcomb : ∀ᶠ z in nhds β, quadratic c (g z) = z ∧
+      (quadratic c (g z) = z → ‖g z - β‖ ≤ 2 / ‖2 * β‖ * ‖z - β‖) ∧ ContinuousAt g z := by
+    filter_upwards [hright, hcontract, hgcont_ev] with z h1 h2 h3
+    exact ⟨h1, h2, h3⟩
+  obtain ⟨rg, hrg, hrgball⟩ := Metric.eventually_nhds_iff_ball.mp hcomb
+  refine ⟨g, rg, hrg, hgβ, ?_, ?_, ?_⟩
+  · intro z hz
+    exact ((hrgball z hz).2.2).continuousWithinAt
+  · intro z hz
+    exact (hrgball z hz).1
+  · intro z hz
+    exact (hrgball z hz).2.1 (hrgball z hz).1
 
 end Bottcher
