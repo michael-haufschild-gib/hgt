@@ -5,7 +5,8 @@
 - **Type:** THEOREM (Lean) — the closing statement of the u₀ program
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` only (no `sorry`, no assumed hypothesis,
   no q62/Böttcher-lane pending dependency — verified by `#print axioms`).
-- **File:** `formal/GaloisForLFunctions/U0/U0Capstone.lean`.
+- **File:** `formal/GaloisForLFunctions/U0/U0Capstone.lean` (pillar 4 =
+  `U0PhiMStepFar.u0_mstep_independence`; instances in `U0MStepInstances`).
 
 ## The result (four pillars, ALL unconditional)
 
@@ -57,3 +58,7 @@ threshold at six parameters of modulus `< 2+√2` (`U0MStepInstances`: `b = 3`, 
   parameter-space, and m-step-branch results into one axiom-clean statement, independent of the q62
   lane.  The sole located gap to full viable-region independence is ψ's transcendence
   (punctured-carrier descent port).
+- 2026-07-02 — **gap closed; capstone now four-pillar unconditional.**  ψ transcendence discharged
+  via the deriv-free open-mapping descent (`U0PhiMStepFar`); `U0Capstone.u0_topic_capstone` bundles
+  pillars 2–4 (pillar 4 = unconditional viable-region independence) + a `b = 3` sub-threshold
+  witness, axiom-clean.  Pillar 1 remains `u0_boettcher_independence_sharp`.

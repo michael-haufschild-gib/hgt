@@ -188,3 +188,41 @@ a=\frac15,\qquad b=\frac{21}{100},
 ]
 
 and very small (\delta,\eta). But without a certified enclosure proving the two-arc decomposition and the lower radial-slope bound, this is only a candidate, not a proof.
+
+---
+
+# Verification report (2026-07-02)
+
+**Verdict: the criterion's proof is VERIFIED; its hypotheses are empirically
+unsatisfiable; and fresh computations show the repaired problem's STATEMENT is
+itself very likely false — the crossing-count formulation must be replaced.**
+
+1. **The criterion is valid.** Reverse-Lipschitz radial graphs (`|Δρ| ≥ m|Δθ|`, two
+   arcs) against the `ηs`-Lipschitz polar graphs of the curve family give at most
+   one intersection per arc whenever `ηb < m`; the clash of the two Lipschitz bounds
+   is correct, and the conclusion `≤ 2` is even stronger than asked.
+2. **The hypotheses are empirically unsatisfiable.** Reverse-Lipschitz forces the
+   arm's radius to be strictly monotone in polar angle at ALL scales inside the
+   window. Direct computation (c = 1/5, Euclidean landing profile, error floor
+   1e−14; `computations/op14_certificate/results.md`) finds real, saturating radial
+   micro-dips at EVERY probed crossing of the arm (depths 5e−9 … 2.6e−5, stable to
+   33M sample points). A dip breaks either monotonicity or the radial-graph
+   property. The candidate `c = −1/4` was not computed, but the mechanism
+   (decorations of the arm at all scales) is parameter-generic.
+3. **The repaired statement itself appears FALSE, not merely uncertified.** A radial
+   dip straddling radius `s` adds two crossings to every centered curve of that
+   size, so `#(J_c ∩ Γ) ≥ 4` at dip-straddled sizes — and the computations indicate
+   dips straddle essentially every size (every probed crossing carries one). This
+   kills the crossing-count formulation as such, for every window. [Empirical:
+   four sites probed at one parameter; stated as strong evidence, not proof.]
+4. **What survives (new, from the same computations).** Whether a dip creates a
+   PLANAR pocket depends on its chirality — the lens between dip and sphere lies on
+   the Ω-side (pocket) or the K-side (harmless) — and chirality is coherent per
+   decoration site, with both types occurring. Planar connectivity of `B(p,ρ) ∖ K`
+   tolerates arbitrarily many K-side crossings; only Ω-side dips matter. The
+   two-crossings⟹connected lemma was sufficient but far from necessary. The
+   successor problems (for the pointwise β-gate and for the a.e. quasicircle gate)
+   will be posed on the chirality invariant: a radius is clean iff no Ω-side dip
+   straddles it; K-side verdicts are rigorously certifiable by interval escape,
+   and the open mathematics becomes the coherence/classification of site chirality
+   under the dynamics.
