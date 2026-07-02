@@ -763,3 +763,182 @@ theorem exists_tower_loop {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R�
   ring
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **The tower data for the genuine Böttcher germ.**  For every escape parameter, there is a
+far domain `U` carrying the Böttcher coordinate's germ, with per-depth extended domains,
+radicands, and odd loops — the full `towerdataG` package. -/
+theorem bottcher_towerDataG (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
+    ∃ (U : Set ℂ), IsOpen U ∧ IsPreconnected U ∧ U.Nonempty ∧ U.Infinite ∧
+      U ⊆ escapeOpen c ∧
+      ∃ a₂ : analyticSubring U,
+      (Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c)) = (a₂ : Filter.Germ (𝓟 U) ℂ) ∧
+      ∀ d : ℕ, ∃ (Ext : Set ℂ)
+        (_hExto : IsOpen Ext) (_hExtc : IsConnected Ext) (_hExtinf : Ext.Infinite)
+        (hUExt : U ⊆ Ext) (F : ℂ → ℂ) (aExt : analyticSubring Ext) (k : ℕ),
+        1 ≤ k ∧ d < 2 ^ k ∧
+        AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
+        (Filter.Germ.coeRingHom (𝓟 Ext) F) = (aExt : Filter.Germ (𝓟 Ext) ℂ) ∧
+        restrictAnalytic hUExt aExt = a₂ ^ (2 ^ k) ∧
+        (∀ T : Set ℂ, T.Countable →
+          ∃ (γ γ' : ℝ → ℂ) (m : ℤ),
+            (∀ θ, γ θ ∈ Ext) ∧ Continuous γ ∧ Continuous γ' ∧
+            (∀ θ ∈ Set.Icc (0:ℝ) (2 * Real.pi), HasDerivAt γ (γ' θ) θ) ∧
+            γ (2 * Real.pi) = γ 0 ∧
+            (∀ θ : ℝ, γ θ ∉ T) ∧
+            (∫ θ in (0:ℝ)..(2 * Real.pi), logDeriv F (γ θ) * γ' θ)
+              = 2 * (Real.pi : ℂ) * Complex.I * (2 * (m : ℂ) + 1)) := by
+  classical
+  set h : ℝ := greenFunctionDyn c 0 with hhdef
+  have hh0 : 0 < h := by
+    rcases lt_or_eq_of_le (greenFunctionDyn_nonneg c 0) with h1 | h1
+    · exact h1
+    · exact absurd ((greenFunctionDyn_eq_zero_iff c 0).mp h1.symm) hc
+  -- one tower serves every depth
+  obtain ⟨rlo, Rb, R₀, Rinj, hrlo1, hrloRb, hRbR₀, hrlosq, hMR₀, hlow, hhi, hInj, S, hfar⟩ :=
+    exists_tower_deep c (by positivity : (0:ℝ) < h / 2) (Real.exp (4 * h + 2))
+  have hlogR₀ : 4 * h + 2 < Real.log R₀ := by
+    have h1 : Real.log (Real.exp (4 * h + 2)) < Real.log R₀ :=
+      Real.log_lt_log (Real.exp_pos _) hMR₀
+    rwa [Real.log_exp] at h1
+  have hlrbound : Real.log rlo < 3 * h / 2 := by
+    rw [hhdef] at hhi ⊢
+    linarith
+  set lr : ℝ := Real.log rlo with hlrdef
+  have hlrh : h < lr := hlow
+  -- the working radii
+  set ra : ℝ := Real.exp ((3 * lr + 2 * h) / 4) with hradef
+  set rb : ℝ := Real.exp ((lr + 2 * h) / 2) with hrbdef
+  set RW : ℝ := Real.exp (7 * h / 2) with hRWdef
+  have hrloexp : rlo = Real.exp lr := (Real.exp_log (by linarith)).symm
+  have hR₀exp : R₀ = Real.exp (Real.log R₀) := (Real.exp_log (by
+    nlinarith [Real.exp_pos (4 * h + 2), hMR₀])).symm
+  have hra : rlo < ra := by
+    rw [hradef, hrloexp]
+    apply Real.exp_lt_exp.mpr
+    linarith
+  have hrb : ra < rb := by
+    rw [hradef, hrbdef]
+    apply Real.exp_lt_exp.mpr
+    linarith
+  have hrbRW : rb < RW := by
+    rw [hrbdef, hRWdef]
+    apply Real.exp_lt_exp.mpr
+    linarith
+  have hRWR : RW < R₀ := by
+    rw [hRWdef, hR₀exp]
+    apply Real.exp_lt_exp.mpr
+    linarith
+  have hrb2h : Real.log rb < 2 * h := by
+    rw [hrbdef, Real.log_exp]
+    linarith
+  have hraRW : ra ^ 2 < RW := by
+    rw [hradef, hRWdef, ← Real.exp_nat_mul]
+    apply Real.exp_lt_exp.mpr
+    push_cast
+    linarith
+  have hRW4h : Real.log RW < 4 * h := by
+    rw [hRWdef, Real.log_exp]
+    linarith
+  -- the far domain U
+  set Rb' : ℝ := Rb + (R₀ - Rb) / 3 with hRb'def
+  set R₀' : ℝ := Rb + 2 * (R₀ - Rb) / 3 with hR₀'def
+  have hRbR₀' : Rb < R₀ := hRbR₀
+  have hRb'1 : Rb < Rb' := by rw [hRb'def]; linarith
+  have hRb'R₀' : Rb' < R₀' := by rw [hRb'def, hR₀'def]; linarith
+  have hR₀'R₀ : R₀' < R₀ := by rw [hR₀'def]; linarith
+  have hrloRb' : rlo < Rb' := lt_of_le_of_lt hrloRb hRb'1
+  have hsubann : annulusSet Rb' R₀' ⊆ annulusSet rlo R₀ := by
+    rintro w ⟨h1, h2⟩
+    exact ⟨lt_trans hrloRb' h1, lt_trans h2 hR₀'R₀⟩
+  set U : Set ℂ := S.T '' annulusSet Rb' R₀' with hUdef
+  have hUo : IsOpen U :=
+    isOpen_image_of_analytic_dne (isOpen_annulusSet _ _) (S.an.mono hsubann)
+      (fun w hw => S.dne w (hsubann hw))
+  have hUconn : IsConnected U :=
+    (isConnected_annulus (by linarith) hRb'R₀').image _ ((S.an.mono hsubann).continuousOn)
+  have hUne : U.Nonempty := hUconn.nonempty
+  have hUinf : U.Infinite := by
+    have h1 : (Set.Ioo Rb' R₀').Infinite := Set.Ioo_infinite hRb'R₀'
+    have h2 : ((fun t : ℝ => (t : ℂ)) '' Set.Ioo Rb' R₀').Infinite :=
+      h1.image (fun a _ b _ hab => by exact_mod_cast hab)
+    have h3 : ((fun t : ℝ => (t : ℂ)) '' Set.Ioo Rb' R₀') ⊆ annulusSet Rb' R₀' := by
+      rintro z ⟨t, ⟨ht1, ht2⟩, rfl⟩
+      have htpos : (0:ℝ) < t := by
+        have : (0:ℝ) < Rb' := by linarith [lt_of_lt_of_le (by linarith : (0:ℝ) < rlo) hrloRb'.le]
+        linarith
+      constructor <;> simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos htpos]
+      · exact ht1
+      · exact ht2
+    have h4 : (annulusSet Rb' R₀').Infinite := h2.mono h3
+    exact h4.image (S.inj.mono hsubann)
+  have hUesc : U ⊆ escapeOpen c := by
+    rintro z ⟨w, hw, rfl⟩
+    exact (hfar w (lt_trans hRb'1 hw.1) (lt_trans hw.2 hR₀'R₀)).2.1
+  -- the Böttcher germ on U
+  have hφan : AnalyticOnNhd ℂ (bottcherCoord c) U := fun z hz =>
+    (differentiableOn_bottcherCoord c).analyticOnNhd (isOpen_escapeOpen c) z (hUesc hz)
+  set a₂ : analyticSubring U :=
+    ⟨Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c), bottcherCoord c, hφan, rfl⟩ with ha₂def
+  refine ⟨U, hUo, hUconn.isPreconnected, hUne, hUinf, hUesc, a₂, rfl, ?_⟩
+  intro d
+  set k : ℕ := d + 1 with hkdef
+  obtain ⟨Ext, SL, hExto, hExtc, hP0Ext, hreach, hSLan, hSLit, hSLlev, hSLdne, hSLExt⟩ :=
+    exists_tower_ext S hrlo1 hh0 hlow hra hrb hrbRW hRWR hrb2h hraRW hRW4h k
+  obtain ⟨F, hFan, hFne, hFtop, hFbr⟩ :=
+    exists_tower_radicand S hrlo1 k hExto hreach
+  have hUP0 : U ⊆ S.T '' annulusSet rlo R₀ := by
+    rintro z ⟨w, hw, rfl⟩
+    exact ⟨w, hsubann hw, rfl⟩
+  have hUExt : U ⊆ Ext := fun z hz => hP0Ext (hUP0 hz)
+  set aExt : analyticSubring Ext :=
+    ⟨Filter.Germ.coeRingHom (𝓟 Ext) F, F, hFan, rfl⟩ with haExtdef
+  refine ⟨Ext, hExto, hExtc, hUinf.mono hUExt, hUExt, F, aExt, k, ?_, ?_, hFan, hFne,
+    rfl, ?_, ?_⟩
+  · omega
+  · calc d < 2 ^ d := Nat.lt_two_pow_self
+      _ ≤ 2 ^ k := Nat.pow_le_pow_right (by norm_num) (by omega)
+  · -- the restriction clause: F = φ^(2^k) on U
+    have hEqOn : Set.EqOn F (fun z => bottcherCoord c z ^ (2 ^ k)) U := by
+      intro z hz
+      obtain ⟨w, hw, rfl⟩ := hz
+      have h1 := hFtop (S.T w) ⟨w, hsubann hw, rfl⟩
+      have h2 : S.inv (S.T w) = w := S.inv_left (hsubann hw)
+      have h3 : bottcherCoord c (S.T w) = w :=
+        (hfar w (lt_trans hRb'1 hw.1) (lt_trans hw.2 hR₀'R₀)).1
+      show F (S.T w) = bottcherCoord c (S.T w) ^ (2 ^ k)
+      rw [h1, h2, h3]
+    apply Subtype.ext
+    have hL : ((restrictAnalytic hUExt aExt : analyticSubring U) : Filter.Germ (𝓟 U) ℂ)
+        = Filter.Germ.coeRingHom (𝓟 U) F := by
+      show ((aExt : Filter.Germ (𝓟 Ext) ℂ).compTendsto id
+        (Filter.tendsto_principal_principal.mpr (fun x hx => hUExt hx))) = _
+      have h1 : (aExt : Filter.Germ (𝓟 Ext) ℂ)
+          = Filter.Germ.coeRingHom (𝓟 Ext) F := rfl
+      rw [h1]
+      show ((F : Filter.Germ (𝓟 Ext) ℂ).compTendsto id _) = (F : Filter.Germ (𝓟 U) ℂ)
+      rw [Filter.Germ.coe_compTendsto]
+      rfl
+    have hR : (((a₂ ^ (2 ^ k) : analyticSubring U)) : Filter.Germ (𝓟 U) ℂ)
+        = Filter.Germ.coeRingHom (𝓟 U) (fun z => bottcherCoord c z ^ (2 ^ k)) := by
+      have h1 : (((a₂ ^ (2 ^ k) : analyticSubring U)) : Filter.Germ (𝓟 U) ℂ)
+          = ((a₂ : Filter.Germ (𝓟 U) ℂ)) ^ (2 ^ k) := by
+        push_cast
+        rfl
+      rw [h1]
+      have h2 : (a₂ : Filter.Germ (𝓟 U) ℂ)
+          = Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c) := rfl
+      rw [h2, ← map_pow]
+      rfl
+    rw [hL, hR]
+    have hev : (F : ℂ → ℂ) =ᶠ[𝓟 U] (fun z => bottcherCoord c z ^ (2 ^ k)) :=
+      Filter.eventually_principal.mpr hEqOn
+    exact Filter.Germ.coe_eq.mpr hev
+  · intro T hT
+    obtain ⟨γ, γ', hγExt, hγc, hγ'c, hγd, hγcl, hγT, hγwind⟩ :=
+      exists_tower_loop S hrlo1 k hra hrb (lt_trans hrbRW hRWR) hSLan hSLit hSLlev
+        hSLExt hFan hFbr T hT
+    exact ⟨γ, γ', 0, hγExt, hγc, hγ'c, hγd, hγcl, hγT, hγwind⟩
+
+end Bottcher

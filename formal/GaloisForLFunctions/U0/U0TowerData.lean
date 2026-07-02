@@ -34,7 +34,7 @@ theorem tower_iterate_eq {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀
           _ ≤ ‖v‖ ^ (2 ^ m) := le_self_pow₀ (le_of_lt hv1) (by positivity)
           _ = ‖v ^ (2 ^ m)‖ := (norm_pow v (2 ^ m)).symm
       · have h1 : ‖v ^ (2 ^ m)‖ ^ 2 = ‖v ^ (2 ^ (m + 1))‖ := by
-          rw [← norm_pow, ← pow_mul]
+          rw [← norm_pow, ← pow_mul, ← pow_succ]
         have h2 : ‖v ^ (2 ^ (m + 1))‖ < R₀ := hvm.2
         nlinarith [norm_nonneg (v ^ (2 ^ m)), hvm.1,
           lt_trans (lt_trans zero_lt_one hrlo) hvm.1]

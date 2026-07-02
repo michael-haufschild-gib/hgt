@@ -7,7 +7,7 @@ This is an agent worklist aid, not a mathematical ledger.
 
 | Kind | Location | Context | Text |
 |---|---|---|---|
-| proof-debt | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:432` | `theorem exists_tower_ext` | `sorry` |
+| proof-debt | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean:913` | `theorem bottcher_towerDataG` | `sorry` |
 
 ## Large Files
 
