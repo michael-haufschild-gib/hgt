@@ -268,6 +268,7 @@ import GaloisForLFunctions.Bottcher.PolyWinding
 import GaloisForLFunctions.Bottcher.CoComponent
 import GaloisForLFunctions.Bottcher.PairMonodromy
 import GaloisForLFunctions.Bottcher.PairCapstone
+import GaloisForLFunctions.Bottcher.ConnectedPairReduction
 import GaloisForLFunctions.Bottcher.RhoPathLift
 import GaloisForLFunctions.Bottcher.ConnectedBranchModulusAuto
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
