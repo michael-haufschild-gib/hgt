@@ -167,3 +167,13 @@ clause `∂K_{c₁} ⊆ K_{c₂}ᶜ` (#124) and the `hinput` frontier-fibre prod
 Full q62 additionally needs comparable-norm disconnected (external OP16-A) and small-norm coverage.
 The full q62 proof is NOT complete. Next brick: instantiate the engine with
 `hnb_of_mem_mandelbrot_connected` to reduce the both-connected capstone to exposure + `hinput` only.
+
+## `hnb` WIRED — both-connected pair reduced to exposure + `hinput` only (2026-07-03, verified)
+`Bottcher.noRelation_phiMero_bothConnected_hnbFree` (formal/GaloisForLFunctions/Bottcher/
+Q62BothConnectedHnbFree.lean, axiom-clean): the both-connected pair `NoRelation (phiMero c₁) (phiMero
+c₂)` for connected `c₁ ∈ mandelbrot ∖ {0,-2}`, with `hnb` discharged internally
+(`hnb_of_branch_matching`). It is now conditional on **exactly**: `hG` (transcendence of `φ_{c₂}`,
+proven), the **exposure** data (`γ = bottcherCoord c₂` analytic on `K_{c₁}ᶜ` and across `∂K_{c₁}` —
+#124), and `hinput` (the pigeonhole frontier-fibre producer, #112–117 scaffolded). `hnb` (#118) is off
+the critical path. Remaining both-connected obligations: #124 exposure + turning the `hinput` scaffold
+into a theorem. Full q62 additionally needs comparable-norm (OP16-A) + small-norm. NOT complete.
