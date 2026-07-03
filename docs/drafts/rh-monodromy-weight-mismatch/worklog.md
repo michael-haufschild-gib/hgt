@@ -416,3 +416,18 @@ Bottcher/STATUS.md (tail), Bottcher/DyadicMonodromy.lean. Findings for THIS lane
   frequencies on unit windows [the load-bearing new lemma]; (b) effective windowed
   Kronecker, positive density; (c) spike-detection converse constants; (d) = 11 Thm A ✓.
 - C9 queued: Littlewood zero-free-region method (Diophantine flavor) — adjacency audit.
+
+## 2026-07-03 — 12 §4: block structure + C9 audit
+- Lemma-(a) attack: Fejér window ⟹ band-diagonal ⟹ block split; blocks are INDEPENDENT
+  under Haar (disjoint primes); concentration frees all blocks j ≳ log(1/ρ):
+  μ(A_ε) ≥ exp(−C log²(1/εδ)) generic; worst-case γ₀ degrades to exp(−poly(1/δ)) — still
+  under the forging ceiling for small δ (race-close at δ=0.01: 1.6e7 vs 2.4e7). Positive
+  visit density is FREE (Weyl equidistribution + open set) — no effective Kronecker needed.
+- Chain now claims (heuristic grade) a c₁/loglog γ region — beyond VK ⟹ QUARANTINED as a
+  conjecture factory; links proven/refuted one at a time (ladder L1–L4 in 12 §4.5).
+- C9 (checks/c9-littlewood-method-note.md): Littlewood = dVP 3-4-1 + upper bounds, NO
+  Diophantine step (explicit in two sources) ⟹ our mechanism is a different method family;
+  literature recurrence tools only ever give large values/Ω-results; the
+  recurrence→zero-clustering bridge is ABSENT from the corpus — novel as a method.
+- Next: L1 (block small-ball/concentration for random Euler block sums) — self-contained
+  probability, first rigorous link.

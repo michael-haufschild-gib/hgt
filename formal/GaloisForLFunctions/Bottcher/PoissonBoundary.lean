@@ -9,7 +9,10 @@ continuous boundary values (the last Dirichlet ingredient).
   (denominator `‖z - w‖² ≠ 0` there, `w` interior);
 * `poissonKernel_nonneg` — the kernel is `≥ 0` (mathlib's lower bound `le_re_herglotzRieszKernel`);
 * `poissonKernel_circleAverage_eq_one` — the kernel has unit mass (the reproducing property
-  `DiffContOnCl.circleAverage_poissonKernel_smul` applied to the constant `1`).
+  `DiffContOnCl.circleAverage_poissonKernel_smul` applied to the constant `1`);
+* `poissonKernel_le_concentration` — the concentration bound `poissonKernel c w z ≤ 2R‖w-ζ‖/(δ/2)²`
+  for `z` at distance `≥ δ` from a boundary point `ζ` and `w` within `δ/2` of `ζ`: the kernel → 0
+  away from `ζ` as `w → ζ` (the analytic heart of the approximate identity).
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 -/
@@ -62,5 +65,35 @@ theorem poissonKernel_circleAverage_eq_one {c w : ℂ} {R : ℝ} (hw : w ∈ bal
   have h1 : ((Real.circleAverage (poissonKernel c w) c R : ℝ) : ℂ) = 1 := by
     rw [← Complex.ofRealCLM_apply]; exact hcomm.symm
   exact_mod_cast h1
+
+/-- **Concentration bound.**  For `z` on the sphere at distance `≥ δ` from a boundary point `ζ`, and
+`w` within `δ/2` of `ζ`, the Poisson kernel is bounded by `2R‖w-ζ‖/(δ/2)²`.  As `w → ζ`, the bound
+`→ 0`, so the kernel concentrates near `ζ` — the analytic core of the approximate identity. -/
+theorem poissonKernel_le_concentration {c w z ζ : ℂ} {R δ : ℝ} (hR : 0 < R) (hδ : 0 < δ)
+    (hz : z ∈ sphere c R) (hζ : ζ ∈ sphere c R) (hw : w ∈ ball c R)
+    (hzζ : δ ≤ ‖z - ζ‖) (hwζ : ‖w - ζ‖ < δ / 2) :
+    poissonKernel c w z ≤ 2 * R * ‖w - ζ‖ / (δ / 2) ^ 2 := by
+  have hzc : ‖z - c‖ = R := by rw [mem_sphere, dist_eq_norm] at hz; exact hz
+  have hζc : ‖ζ - c‖ = R := by rw [mem_sphere, dist_eq_norm] at hζ; exact hζ
+  have hwc : ‖w - c‖ < R := by rw [mem_ball, dist_eq_norm] at hw; exact hw
+  have hden : δ / 2 ≤ ‖z - w‖ := by
+    have h1 := norm_sub_norm_le (z - ζ) (w - ζ)
+    rw [show (z - ζ) - (w - ζ) = z - w by ring] at h1
+    linarith
+  have hRwc : R - ‖w - c‖ ≤ ‖w - ζ‖ := by
+    have h2 := norm_sub_norm_le (ζ - c) (w - c)
+    rw [show (ζ - c) - (w - c) = ζ - w by ring, hζc, show ζ - w = -(w - ζ) by ring, norm_neg] at h2
+    linarith
+  have hnum : ‖z - c‖ ^ 2 - ‖w - c‖ ^ 2 ≤ 2 * R * ‖w - ζ‖ := by
+    rw [hzc, show R ^ 2 - ‖w - c‖ ^ 2 = (R - ‖w - c‖) * (R + ‖w - c‖) by ring]
+    calc (R - ‖w - c‖) * (R + ‖w - c‖) ≤ ‖w - ζ‖ * (2 * R) :=
+          mul_le_mul hRwc (by linarith) (by linarith [norm_nonneg (w - c)]) (norm_nonneg _)
+      _ = 2 * R * ‖w - ζ‖ := by ring
+  have hnum0 : 0 ≤ ‖z - c‖ ^ 2 - ‖w - c‖ ^ 2 := by rw [hzc]; nlinarith [norm_nonneg (w - c)]
+  rw [poissonKernel_def, show (z - c) - (w - c) = z - w by ring]
+  have hd2 : (δ / 2) ^ 2 ≤ ‖z - w‖ ^ 2 := by gcongr
+  calc (‖z - c‖ ^ 2 - ‖w - c‖ ^ 2) / ‖z - w‖ ^ 2
+      ≤ (‖z - c‖ ^ 2 - ‖w - c‖ ^ 2) / (δ / 2) ^ 2 := by gcongr
+    _ ≤ 2 * R * ‖w - ζ‖ / (δ / 2) ^ 2 := by gcongr
 
 end Bottcher

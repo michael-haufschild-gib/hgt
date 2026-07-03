@@ -114,3 +114,60 @@ N_eff dimensions — standard technology, needs assembling with explicit constan
 (c) the spike-detection converse (Fourier positivity with tolerance ε and the width-slack
 constant C′ tracked);
 (d) DONE — windowed S² ⟹ sup upgrading = 11 Theorem A.
+
+## 4. The block structure — the lemma (a) attack, and the C9 audit (2026-07-03, night)
+
+### 4.1 Window-to-blocks `[DERIVATION, heuristic grade]`
+Majorize the window indicator by a Fejér window w with ŵ supported in |x| ≤ 2: the windowed
+recurrence quadratic form becomes BAND-DIAGONAL in log n, and splits over blocks
+B_j = {n : log n ∈ [2j, 2j+2)}, j ≤ J = (log P)/2. Each block sum has bandwidth 2 on a
+width-1 window — O(1) effective coordinates per block. The recurrence event reduces to
+|G_j(τ)| ≤ ε_j := w_j·ρ (ρ = εη/2, w_j = block weight ≈ 2e^{−2jη}, Σ ε_j ≤ ε/2).
+
+### 4.2 Independence + concentration: the measure collapses further `[DERIVATION, heuristic grade]`
+Distinct blocks use disjoint PRIMES (prime powers carry O(1) total weight — handled
+separately), so under Haar the block sums are INDEPENDENT. Normalized block dispersion
+σ_j ≈ √(2j)·e^{−j}: at (η, ε) = (0.01, 0.05), blocks j ≥ 10 have σ_j < ρ = 2.5·10⁻⁴ — the
+condition holds there automatically by concentration, at NO measure cost. Only the first
+j₀ ≈ log(1/ρ) ≈ 8 blocks pay, generically ρ² each:
+> **μ(A_ε) ≥ exp(−C·log²(1/εδ)) — no 1/δ in the exponent.** (Generic γ₀.)
+Visit density = μ(A_ε) exactly, by unconditional Weyl equidistribution of the Kronecker
+flow ({log p} ℚ-independent — the prime instance of `log_prime_shifts_independent`). NO
+effective/gap Kronecker needed: positive density suffices for the Reduction, and positive
+density is equidistribution + open-set. T_contra ≈ exp(C·log²(1/εδ)).
+
+Worst-case γ₀ (early block phases aligned, small-ball at an extreme mean): cost degrades
+to μ ≥ ρ^{2π(Q)}, Q = e^{2j₀} ≈ (2/εδ)²: log T_contra ≈ poly(1/δ). Numerically at δ = 0.01:
+1.6·10⁷ vs ceiling 2.4·10⁷ — worst case is RACE-CLOSE at δ = 0.01, and wins with room for
+every smaller δ. Verdict of §§3–4: the mechanism chain survives worst case for δ small.
+
+### 4.3 What the chain now claims, and the posture `[CONJECTURE — extraordinary, quarantined]`
+If every heuristic-grade link holds at full rigor, the output is a zero-free region of
+width c₁/loglog γ — beyond Vinogradov–Korobov. No known theorem contradicts it (it is not
+RH-strength; the forging ceiling is intrinsic), but the strength itself is the strongest
+evidence for a hidden gap. QUARANTINE: nothing here is promoted; the chain is a conjecture
+factory whose links get proven or refuted ONE AT A TIME.
+
+### 4.4 C9 audit verdicts (checks/c9-littlewood-method-note.md, fetched verbatim)
+- Littlewood's loglog region is the de la Vallée Poussin 3-4-1 engine + a sharper ζ UPPER
+  bound; explicitly NO Diophantine/Kronecker step (two sources). Our mechanism is NOT a
+  recurrence-strengthened Littlewood — different method family entirely.
+- Kronecker/recurrence in the literature runs the DUAL direction only: large values /
+  Ω-results (Bohr–Landau, Littlewood 1925 |ζ(1+it)| ≥ e^γ log₂t, resonance method), with
+  the value-vs-density trade-off quantified. Never zero-location constraints.
+- **The recurrence → zero-clustering bridge is ABSENT from the fetched corpus** — as a
+  method, 12's mechanism passes the novelty gate. (Absence also means: no known reason it
+  works, no known reason it fails. Virgin territory in both directions.)
+
+### 4.5 Promotion ladder (revised; strictly one link at a time)
+1. **L1 (probability, cleanest):** block independence + concentration + small-ball for
+   random Euler block sums — a self-contained statement about Haar-random multiplicative
+   phases; no zeros involved. Fully rigorizable now; Lean-adjacent pieces exist
+   (log_prime_shifts_independent supplies the equidistribution input's arithmetic core).
+2. **L2 (harmonic analysis):** the Fejér window-to-blocks reduction with explicit constants.
+3. **L3 (classical):** the spike-detection converse — Fourier positivity vs the
+   O(log t)-smooth ambient (whose frequency-Ξ content is ≤ 1/log t — checked) with the
+   width-slack constant C′ tracked.
+4. **L4 (done):** windowed S² ⟹ sup = 11 Thm A; Weyl equidistribution = classical.
+The chain is only as strong as its weakest link; L1 first, then L2 — either a proof or the
+long-sought bug. Both outcomes are theorems about the exact-structure side of the wall.
