@@ -45,6 +45,20 @@ the surjection `K[Y][X] ↠ (range aeval G)[X]`.  Feeding the m-step `NoRelation
 
 Combined: `u0_mstep_kummer_branch_independence` = the concrete branch theorem (capstone pillar 5).
 
+## The coherent tower (`u0_coherent_kummer_tower`)
+
+The level-indexed branches assemble into a SINGLE coherent inverse system.  Built from ONE analytic
+logarithm `L` of `ψ_N` on the window (not a fresh log per level): `χ k := exp(L / 2^k)` for all `k`.
+Then, unconditionally for every viable `b`:
+
+* `χ 0 = ψ_N`;
+* **coherence** `(χ (k+1))² = χ k` — a genuine `ℤ₂`-Kummer pro-branch, automatic from the single `L`;
+* `(χ k)^(2^k) = ψ_N`;
+* every level `χ k` is algebraically independent of `u₀` over `ℂ(z)`.
+
+Strictly stronger than pillar 5's one-at-a-time family: the whole `2`-power root tower is one
+pro-object with a distinguished generating log.  Axiom-clean.
+
 ## What this OPENS
 
 - **Root-level Kummer for the actual `φ_b`:** the FE pins `χ` to `bottcherCoord` on the overlap; the
@@ -68,3 +82,5 @@ Combined: `u0_mstep_kummer_branch_independence` = the concrete branch theorem (c
   application to ψ (`u0_mstep_kummer_independence`) + analytic root lift (`U0KummerBranch`) +
   concrete branch (`u0_mstep_kummer_branch_independence`) = capstone pillar 5.  All axiom-clean;
   the reusable `analyticOnNhd_of_continuousOn_exp_eq` and `exists_analyticOnNhd_pow_eq` banked.
+- 2026-07-03 — coherent tower `u0_coherent_kummer_tower` banked: one log ⟹ the whole `2`-power root
+  tower as a coherent inverse system (`(χ (k+1))² = χ k`), every level ⟂ `u₀`.  Axiom-clean.

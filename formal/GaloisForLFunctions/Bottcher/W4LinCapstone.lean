@@ -4,13 +4,12 @@
 The consumer of `bottcher_towerDataG_linGapRoot`: for disconnected `c₁, c₂` with `‖c₁‖ ≥ 1000`,
 `‖c₂‖ ≥ 2` and the LINEAR gap `(√(2‖c₂‖)+1)² ≤ ‖c₁‖/300` (i.e. `‖c₂‖ ≲ ‖c₁‖/600`), the two
 Böttcher coordinates satisfy no algebraic relation over `ℂ(z)` on a common far domain —
-conditional on exactly ONE connectivity interface of the `s`-floored slit tower:
-`ChainOverlapsConnected`, the preconnectivity of the deep consecutive scaffold overlaps.
-(The former far-band clause is gone: the second-coordinate glue runs over the green-superlevel
-set `{G_{c₁} > max (2h) (bottcherBallBound c₁)}`, whose overlap with the tower is the section
-image of a round sub-annulus — preconnected by continuity.)
+UNCONDITIONALLY.  Both former interfaces are theorems: the far-band clause dissolved into the
+green-superlevel glue (the overlap is the section image of a round sub-annulus), and the
+chain-overlap clause is `chainOverlapsConnected_of_normalized` (certified fold window +
+antipode kills, after renormalizing the slit center by a full turn when below `−3π/8`).
 
-This is topology of the `c₁`-tower alone; no measure theory enters.  Compare
+No measure theory enters.  Compare
 `q62_phiMero_pair_far_general` (unconditional, quadratic gap `300·(max 2 ‖c₂‖)² ≤ ‖c₁‖`): the
 linear gap covers second parameters up to `~‖c₁‖/600` instead of `~√(‖c₁‖/300)`.
 
@@ -23,14 +22,11 @@ open Set Filter
 
 namespace Bottcher
 
-/-- **Both-disconnected q62, linear norm gap** — conditional on the chain-overlap
-connectivity interface of the `c₁`-tower. -/
+/-- **Both-disconnected q62, linear norm gap** — unconditional. -/
 theorem q62_phiMero_linGap {c₁ c₂ : ℂ}
     (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc1000 : (1000:ℝ) ≤ ‖c₁‖)
     (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc₂2 : (2:ℝ) ≤ ‖c₂‖)
-    (hsgap : (Real.sqrt (2 * ‖c₂‖) + 1) ^ 2 ≤ ‖c₁‖ / 300)
-    (hconnAll : ∀ {rlo' R₀' : ℝ} (S : TowerSection c₁ rlo' R₀') (ra rb RW θs : ℝ),
-      ChainOverlapsConnected c₁ S ra rb RW θs) :
+    (hsgap : (Real.sqrt (2 * ‖c₂‖) + 1) ^ 2 ≤ ‖c₁‖ / 300) :
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
       haveI := isDomain_analyticSubring U hUo hUc hUne
@@ -38,7 +34,7 @@ theorem q62_phiMero_linGap {c₁ c₂ : ℂ}
       NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
   classical
   obtain ⟨Bmin, hBmin1, hspec⟩ :=
-    bottcher_towerDataG_linGapRoot c₁ c₂ hc₁ hc1000 hc₂2 hsgap hconnAll
+    bottcher_towerDataG_linGapRoot c₁ c₂ hc₁ hc1000 hc₂2 hsgap
   set FB : ℝ := bottcherFarBound c₂ hc₂ with hFBdef
   have hFB1 : 1 < FB := one_lt_bottcherFarBound c₂ hc₂
   set BU : ℝ := Bmin + FB + ‖c₁‖ + ‖c₂‖ + 2 with hBUdef
@@ -116,16 +112,14 @@ theorem q62_phiMero_linGap {c₁ c₂ : ℂ}
 theorem q62_phiMero_linGap_swapped {c₁ c₂ : ℂ}
     (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc₁2 : (2:ℝ) ≤ ‖c₁‖)
     (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc1000 : (1000:ℝ) ≤ ‖c₂‖)
-    (hsgap : (Real.sqrt (2 * ‖c₁‖) + 1) ^ 2 ≤ ‖c₂‖ / 300)
-    (hconnAll : ∀ {rlo' R₀' : ℝ} (S : TowerSection c₂ rlo' R₀') (ra rb RW θs : ℝ),
-      ChainOverlapsConnected c₂ S ra rb RW θs) :
+    (hsgap : (Real.sqrt (2 * ‖c₁‖) + 1) ^ 2 ≤ ‖c₂‖ / 300) :
     ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
       (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
       haveI := isDomain_analyticSubring U hUo hUc hUne
       letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
       NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
   obtain ⟨U, hUo, hUc, hUne, hUinf, hU₂', hU₁', hNR⟩ :=
-    q62_phiMero_linGap hc₂ hc1000 hc₁ hc₁2 hsgap hconnAll
+    q62_phiMero_linGap hc₂ hc1000 hc₁ hc₁2 hsgap
   refine ⟨U, hUo, hUc, hUne, hUinf, hU₁', hU₂', ?_⟩
   haveI := isDomain_analyticSubring U hUo hUc hUne
   letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra

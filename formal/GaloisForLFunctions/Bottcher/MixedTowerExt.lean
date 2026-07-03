@@ -83,7 +83,8 @@ theorem exists_tower_ext_slit {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
     exact havoid v hv (by rw [heq]; exact Metric.mem_closedBall_self (by norm_num))
   obtain ⟨α, β, J₁, J₂, hαeq, hβeq, hαβ, hβα, hαJ₁, hJ₁J₂, hJ₂β, hJ₁dbl, hJ₂dbl, σ, hσ0, hσP,
     hσsq, hσdbl, hσne⟩ :=
-    exists_scaffold_chain_window S hrlo hra hraRW hRWR hRW4h hh0 hlow hθs1 hθs2 hslitne
+    exists_scaffold_chain_window S hrlo hra hraRW hRWR hRW4h hh0 hlow hθs1
+      (by linarith [Real.pi_pos] : θs ≤ 2 * Real.pi) hslitne
   have havoidA : ∀ v ∈ arcAnnulus ra RW α β, S.T v ∉ Metric.closedBall c 4 := by
     rw [hαeq, hβeq]
     exact havoid
@@ -506,7 +507,8 @@ theorem exists_tower_ext_slit_s {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c r
     exact havoid v hv (by rw [heq]; exact Metric.mem_closedBall_self (by positivity))
   obtain ⟨α, β, J₁, J₂, hαeq, hβeq, hαβ, hβα, hαJ₁, hJ₁J₂, hJ₂β, hJ₁dbl, hJ₂dbl, σ, hσ0, hσP,
     hσsq, hσdbl, hσne⟩ :=
-    exists_scaffold_chain_window S hrlo hra hraRW hRWR hRW4h hh0 hlow hθs1 hθs2 hslitne
+    exists_scaffold_chain_window S hrlo hra hraRW hRWR hRW4h hh0 hlow hθs1
+      (by linarith [Real.pi_pos] : θs ≤ 2 * Real.pi) hslitne
   have havoidA : ∀ v ∈ arcAnnulus ra RW α β, S.T v ∉ Metric.closedBall c (s ^ 2) := by
     rw [hαeq, hβeq]
     exact havoid

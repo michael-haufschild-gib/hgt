@@ -13,6 +13,7 @@ import GaloisForLFunctions.Bottcher.MixedTowerExt
 import GaloisForLFunctions.Bottcher.PatchSquareLocalize
 import GaloisForLFunctions.Bottcher.LiftExists
 import GaloisForLFunctions.Bottcher.PairMonodromy
+import GaloisForLFunctions.Bottcher.W4LinOverlap
 import GaloisForLFunctions.Bottcher.W4LinWinding
 
 open Complex Set Filter Metric Topology
@@ -72,7 +73,7 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     (hRW12 : Real.log RW ≤ 4 * greenFunctionDyn c 0 - 1/2)
     (hRW72 : Real.log RW ≤ 7 * greenFunctionDyn c 0 / 2)
     {s : ℝ} (hs2 : 2 ≤ s) (hs40 : s ^ 2 ≤ ‖c‖ / 40)
-    {θs : ℝ} (hθs1 : -Real.pi ≤ θs) (hθs2 : θs ≤ Real.pi)
+    {θs : ℝ} (hθs1 : -Real.pi ≤ θs) (hθs2 : θs ≤ 2 * Real.pi)
     (havoid : ∀ v ∈ arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
       S.T v ∉ Metric.closedBall c (s ^ 2))
     {c₂ : ℂ} (hc₂2 : (2:ℝ) ≤ ‖c₂‖) (hsc₂ : Real.sqrt (2 * ‖c₂‖) + 1 ≤ s)
@@ -765,16 +766,43 @@ end Bottcher
 
 namespace Bottcher
 
+/-- **The chain-overlap interface is a theorem** (task #140): under the working radius/level
+window and the normalized slit position `θs ∈ [−3π/8, 13π/8]`, `ChainOverlapsConnected` holds —
+each consecutive scaffold overlap is the `σ_j`-image of the certified fold slot
+(`scaffold_scaffold_overlap_preconnected`), and the scaffold–lobe overlap is the image of the
+thin arc annulus (`scaffold_lobe_overlap_preconnected`).  Slit centers below `−3π/8` are served
+by the `+2π` renormalization at the call site. -/
+theorem chainOverlapsConnected_of_normalized {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
+    {ra rb RW θs : ℝ}
+    (hrlo : 1 < rlo) (hra : rlo < ra) (hrab : ra < rb) (hrbRW : rb < RW)
+    (hraRW : ra ^ 2 < RW) (hRWR : RW < R₀)
+    (hh0 : 0 < greenFunctionDyn c 0)
+    (hra54 : 5 * greenFunctionDyn c 0 / 4 ≤ Real.log ra)
+    (hRW72 : Real.log RW ≤ 7 * greenFunctionDyn c 0 / 2)
+    (hθlo : -(3 * Real.pi / 8) ≤ θs) (hθhi : θs ≤ 13 * Real.pi / 8) :
+    ChainOverlapsConnected c S ra rb RW θs := by
+  have hπ := Real.pi_pos
+  intro J₁ J₂ σ SL k _hk1 hαJ₁ hJ₁J₂ hJ₂β hJ₁dbl hJ₂dbl _hσ0 hσP _hσsq hSLP hSLmatch hdbl
+  constructor
+  · intro j _hj1 _hjk
+    exact scaffold_scaffold_overlap_preconnected S hrlo hra hraRW hRWR hh0 hra54 hRW72
+      (by ring) (by linarith) (by linarith)
+      (hσP j) (hσP (j + 1)) hαJ₁ hJ₁J₂ hJ₂β hJ₁dbl hJ₂dbl (hdbl j)
+  · have hover := scaffold_lobe_overlap_preconnected S hra (by linarith) hrab hrbRW hRWR
+      (by linarith : θs + Real.pi / 8 < θs + 2 * Real.pi - Real.pi / 8)
+      (hσP k).1 (hσP k).2.2.2.2 (hSLP k).2.2.2.2 (hSLmatch k)
+    exact hover
+
 set_option maxHeartbeats 3200000 in
 /-- **Linear-gap pair tower data.**  For a disconnected `c` with `‖c‖ ≥ 1000` and any second
 parameter `c₂` with `(√(2‖c₂‖)+1)² ≤ ‖c‖/300`, the far domain carries the full pair package:
 the `c`-radical tower with its odd loops AND the glued second coordinate `GBExt` restricting to
-the `φ_{c₂}` germ — conditional on exactly the chain-overlap connectivity interface. -/
+the `φ_{c₂}` germ — UNCONDITIONAL: the chain-overlap connectivity is a theorem
+(`chainOverlapsConnected_of_normalized`) after renormalizing the slit center by a full turn
+when it falls below `−3π/8`. -/
 theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJulia c)
     (hc1000 : (1000:ℝ) ≤ ‖c‖) (hc₂2 : (2:ℝ) ≤ ‖c₂‖)
-    (hsgap : (Real.sqrt (2 * ‖c₂‖) + 1) ^ 2 ≤ ‖c‖ / 300)
-    (hconnAll : ∀ {rlo' R₀' : ℝ} (S : TowerSection c rlo' R₀') (ra rb RW θs : ℝ),
-      ChainOverlapsConnected c S ra rb RW θs) :
+    (hsgap : (Real.sqrt (2 * ‖c₂‖) + 1) ^ 2 ≤ ‖c‖ / 300) :
     ∃ Bmin : ℝ, 1 < Bmin ∧
     ∀ (U : Set ℂ), IsOpen U → IsPreconnected U → U.Nonempty → U.Infinite →
       (∀ z ∈ U, Bmin < ‖z‖) →
@@ -957,6 +985,37 @@ theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJu
   obtain ⟨θs, hθs1, hθs2, hθwin⟩ :=
     exists_slit_center_avoiding_patch_s S' hc1000 hrlo'1 hRa1 hRbR₀ hfar' hrlo_ceiling
       hrlo2h hR₀4h hsurj' hs2 hs40 hsmall
+  -- renormalize the slit center into the fold-friendly window [−3π/8, 13π/8]
+  have hπ := Real.pi_pos
+  set θsN : ℝ := if θs < -(3 * Real.pi / 8) then θs + 2 * Real.pi else θs with hθsNdef
+  have hθNlo : -(3 * Real.pi / 8) ≤ θsN := by
+    rw [hθsNdef]
+    by_cases hcase : θs < -(3 * Real.pi / 8)
+    · rw [if_pos hcase]
+      linarith
+    · rw [if_neg hcase]
+      linarith [not_lt.mp hcase]
+  have hθNhi : θsN ≤ 13 * Real.pi / 8 := by
+    rw [hθsNdef]
+    by_cases hcase : θs < -(3 * Real.pi / 8)
+    · rw [if_pos hcase]
+      linarith
+    · rw [if_neg hcase]
+      linarith
+  have hθN1 : -Real.pi ≤ θsN := by linarith
+  have hθN2 : θsN ≤ 2 * Real.pi := by linarith
+  have hshiftN : ∀ ra RW : ℝ,
+      arcAnnulus ra RW (θsN + Real.pi / 8) (θsN + 2 * Real.pi - Real.pi / 8)
+        = arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8) := by
+    intro ra RW
+    rw [hθsNdef]
+    by_cases hcase : θs < -(3 * Real.pi / 8)
+    · rw [if_pos hcase,
+        show θs + 2 * Real.pi + Real.pi / 8 = (θs + Real.pi / 8) + 2 * Real.pi from by ring,
+        show θs + 2 * Real.pi + 2 * Real.pi - Real.pi / 8
+          = (θs + 2 * Real.pi - Real.pi / 8) + 2 * Real.pi from by ring,
+        arcAnnulus_shift_two_pi]
+    · rw [if_neg hcase]
   refine ⟨Bmin, hBmin1, ?_⟩
   intro U hUo hUc hUne hUinf hUfar
   have hUA : U ⊆ Afar := fun z hz => hUfar z hz
@@ -1019,12 +1078,19 @@ theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJu
     apply Real.exp_lt_exp.mpr
     linarith [hlr'32]
   set k : ℕ := d + 1 with hkdef
-  have havoid := hθwin ra RW hra (lt_trans hrb hrbRW) hRWR
+  have havoid0 := hθwin ra RW hra (lt_trans hrb hrbRW) hRWR
+  have havoid : ∀ v ∈ arcAnnulus ra RW (θsN + Real.pi / 8)
+      (θsN + 2 * Real.pi - Real.pi / 8), S'.T v ∉ Metric.closedBall c (s ^ 2) := by
+    rw [hshiftN]
+    exact havoid0
+  have hconnN : ChainOverlapsConnected c S' ra rb RW θsN :=
+    chainOverlapsConnected_of_normalized S' hrlo'1 hra hrb hrbRW hraRW hRWR hh0
+      hra54 hRW72 hθNlo hθNhi
   obtain ⟨Ext, SL, hExto, hExtc, hP0Ext, hreach, hlevels, hnorm, hSLan, hSLit, hSLlev,
     hSLExt, m, Φ, hΦan, hΦpow, hΦne⟩ :=
     exists_tower_ext_slit_s_withRoot S' hrlo'1 hc100 hh1 hlow18' hra hrb hrbRW hRWR
-      hra54 hrb14 hraRW hRW12 hRW72 hs2 hs40 hθs1 hθs2 havoid hc₂2 hsc₂ hsurj' hgap'
-      (hconnAll S' ra rb RW θs) k (by omega)
+      hra54 hrb14 hraRW hRW12 hRW72 hs2 hs40 hθN1 hθN2 havoid hc₂2 hsc₂ hsurj' hgap'
+      hconnN k (by omega)
   obtain ⟨F, hFan, hFne, hFtop, hFbr⟩ :=
     exists_tower_radicand S' hrlo'1 k hExto hreach
   set F' : ℂ → ℂ := fun z => if Bmin < ‖z‖ then bottcherCoord c z ^ (2 ^ k) else F z
@@ -1303,3 +1369,4 @@ theorem bottcher_towerDataG_linGapRoot (c c₂ : ℂ) (hc : (0:ℂ) ∉ filledJu
     exact hγwind
 
 end Bottcher
+

@@ -28,9 +28,9 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
 | 1475 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
 | 1417 | `formal/GaloisForLFunctions/Bottcher/CrossRatioNormalBridge.lean` |
+| 1372 | `formal/GaloisForLFunctions/Bottcher/W4LinPack.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
 | 1307 | `formal/GaloisForLFunctions/Bottcher/W4LinWinding.lean` |
-| 1305 | `formal/GaloisForLFunctions/Bottcher/W4LinPack.lean` |
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
 | 1302 | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean` |
 | 1292 | `formal/GaloisForLFunctions/Bottcher/CrossRatioCuspBridge.lean` |
@@ -228,6 +228,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean:2002` | `(|P_n| |2α|^m)⁻¹ |α-z|`.  The only remaining quantitative work is the real window inequality against |
 | `formal/GaloisForLFunctions/Bottcher/NonSquare.lean:122` | route consumes, with no remaining hypothesis. -/ |
 | `formal/GaloisForLFunctions/Bottcher/OmittingNormal.lean:12` | the family `f_n` is normal. The only remaining input to three-value Montel is then the **covering μ |
+| `formal/GaloisForLFunctions/Bottcher/OneSidedCofinal.lean:191` | /-- **Neighbourhood-cofinal one-sidedness**: arbitrarily small OPEN neighbourhoods of `x` |
+| `formal/GaloisForLFunctions/Bottcher/OneSidedCofinal.lean:580` | is a repelling fixed point on the frontier, so the entire remaining content of the real-pair |
 | `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:655` | remaining topological-degree assertion exposed as the `hodd` hypothesis. -/ |
 | `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:722` | `rho_n - c` half-period loops. This packages the remaining connected topological-degree |
 | `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:806` | behind the remaining connected `π₁` theorem. -/ |
@@ -289,8 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean:905` | /-- If the top GhostLeading factor vanished, any remaining GhostLeading stratum is strictly lower in |
 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean:3712` | `Frac(C[z][Y])`.  This packages the remaining squarefree/localization algebra into one hypothesis. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedPoint.lean:103` | point in the Julia set, for all non-exceptional `c ≠ 1/4`. The remaining data (non-resonance, location off |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedPreimageSelector.lean:348` | remaining local dynamical input is the explicit fixed-tail Newton window. -/ |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean:813` | `eventually_scaled_base_third_deriv_term_le_of_repelling_hit`; the remaining analytic input is only |
 
 ## Historical Status Logs
 

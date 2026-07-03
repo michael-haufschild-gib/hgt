@@ -6,7 +6,11 @@
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` only (no `sorry`, no assumed hypothesis,
   no q62/Böttcher-lane pending dependency — verified by `#print axioms`).
 - **File:** `formal/GaloisForLFunctions/U0/U0Capstone.lean` (pillar 4 =
-  `U0PhiMStepFar.u0_mstep_independence`; instances in `U0MStepInstances`).
+  `U0PhiMStepFar.u0_mstep_independence`; pillar 5 = `U0KummerBranch`; instances in
+  `U0MStepInstances`).  **Unified entry point:** `u0_full_bottcher_tower_capstone` bundles all five
+  pillars (sharp `2+√2` window + exact obstruction; closed viability boundary + certified curve
+  point; analytic m-step branch; viable-region m-step independence + `b=3` witness; finite Kummer
+  tower independence ∀ viable `b`, ∀ level `k`) in one axiom-clean statement.
 
 ## The result (five pillars, ALL unconditional)
 

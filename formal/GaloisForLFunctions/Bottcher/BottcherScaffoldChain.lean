@@ -65,7 +65,7 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
     (hRW4h : Real.log RW < 4 * greenFunctionDyn c 0)
     (hh0 : 0 < greenFunctionDyn c 0)
     (hlow : greenFunctionDyn c 0 < Real.log rlo)
-    {θs : ℝ} (hθs1 : -Real.pi ≤ θs) (hθs2 : θs ≤ Real.pi)
+    {θs : ℝ} (hθs1 : -Real.pi ≤ θs) (hθs2 : θs ≤ 2 * Real.pi)
     (hslitne : ∀ v ∈ arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
       S.T v ≠ c) :
     ∃ α β J₁ J₂ : ℝ, α = θs + Real.pi / 8 ∧ β = θs + 2 * Real.pi - Real.pi / 8 ∧
@@ -100,8 +100,6 @@ theorem exists_scaffold_chain_window {c : ℂ} {rlo R₀ : ℝ} (S : TowerSectio
   -- the branch-2 doubling window
   set J₁ : ℝ := max α (α / 2 + Real.pi) with hJ₁def
   set J₂ : ℝ := min β (β / 2 + Real.pi) with hJ₂def
-  have hαbounds : -Real.pi + m ≤ α ∧ α ≤ Real.pi + m := by
-    constructor <;> (rw [hαdef]; linarith)
   have hJ₁J₂ : J₁ < J₂ := by
     rw [hJ₁def, hJ₂def]
     apply max_lt <;> apply lt_min
@@ -480,7 +478,8 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
         hzero ⟨v, arcAnnulus_subset _ _ hrapos hraRW' hv, hveq⟩⟩
   obtain ⟨θs, hθs1, hθs2, hslitne⟩ := hslit
   obtain ⟨α, β, J₁, J₂, _, _, hrest⟩ :=
-    exists_scaffold_chain_window S hrlo hra hraRW hRWR hRW4h hh0 hlow hθs1 hθs2
+    exists_scaffold_chain_window S hrlo hra hraRW hRWR hRW4h hh0 hlow hθs1
+      (by linarith [Real.pi_pos] : θs ≤ 2 * Real.pi)
       (by rw [← hmdef]; exact hslitne)
   exact ⟨α, β, J₁, J₂, hrest⟩
 

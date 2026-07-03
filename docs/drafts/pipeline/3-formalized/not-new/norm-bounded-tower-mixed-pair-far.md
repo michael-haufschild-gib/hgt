@@ -173,3 +173,33 @@ arithmetic); (2) thread the parity through the chain construction (sqrt sign per
 local injectivity of the iterate, antipode intervals); (4) instantiate in
 `exists_tower_ext_slit_s_withRoot` with the `θs`-config test; (5) drop `hconnAll` from
 `bottcher_towerDataG_linGapRoot` — `q62_phiMero_linGap` becomes UNCONDITIONAL.
+
+## Addendum 6 (2026-07-03) — ChainOverlapsConnected DISCHARGED; linear-gap q62 UNCONDITIONAL
+
+**[PROVED HERE]** `Bottcher.q62_phiMero_linGap` / `_swapped` now carry NO interface hypotheses:
+disconnected `c₁, c₂` with `‖c₁‖ ≥ 1000`, `‖c₂‖ ≥ 2`, `(√(2‖c₂‖)+1)² ≤ ‖c₁‖/300` satisfy
+`NoRelation (RatFunc ℂ) (phiMero c₁) (phiMero c₂)` unconditionally.  Axiom-clean
+(`propext, Classical.choice, Quot.sound`); build 4235 jobs; lint passed.
+
+The discharge, per the addendum-5 design (all in `W4LinOverlap.lean` + `W4LinPack.lean` +
+`BottcherScaffoldChain.lean`):
+
+* toolbox — `sq_window_decomposition` (the squaring window = 3 fold slots under
+  `α ∈ [−π/4, 7π/4]`), `sections_eventuallyEq_of_orbit_ne_zero` (covering sections through a
+  noncritical point agree locally), `scaffold_orbit_ne_zero` (`2^{j−k} ∉ (5/4, 7/4)`),
+  `agree_locus_all_or_none` (clopen dichotomy), `not_both_adjacent_folds_agree` (antipode kill,
+  free real slot offsets), `scaffold_lobe_overlap_eq/_preconnected` (lobe clause via `S.inj`),
+  `sq_mem_arcAnnulus_fold0`, `fold0_window_exists`, `arcAnnulus_shift_two_pi`;
+* assembly — `scaffold_scaffold_overlap_preconnected`: the consecutive overlap equals
+  `σ_j''S₁` (the certified fold slot) exactly;
+* the interface as a theorem — `chainOverlapsConnected_of_normalized` for
+  `θs ∈ [−3π/8, 13π/8]`;
+* wiring — the chain lemma and `withRoot` now accept `θs ≤ 2π` (dead `hαbounds` removed, two
+  `MixedTowerExt` call sites weakened), and `bottcher_towerDataG_linGapRoot` renormalizes the
+  slit center by `+2π` when it falls below `−3π/8` (`arcAnnulus_shift_two_pi` transports the
+  patch-avoidance clause), proves the interface inline, and no longer takes `hconnAll`.
+
+The capstone surface rows in `formal/README.md`, `CLAUDE.md`, `AGENTS.md` gained
+`Bottcher.q62_phiMero_linGap`.  The disconnected×disconnected branch of q62 now covers:
+level-compatible pairs (original), quadratic gap (unconditional), linear gap `‖c₂‖ ≲ ‖c₁‖/600`
+(unconditional) — the remaining open regime is comparable norms (OP16-A, task #138/#90).
