@@ -26,3 +26,4 @@ import GaloisForLFunctions.RHTower.DeckCocycle
 import GaloisForLFunctions.RHTower.DeckMonomial
 import GaloisForLFunctions.RHTower.DeckAssembly
 import GaloisForLFunctions.RHTower.DeckMultiZero
+import GaloisForLFunctions.RHTower.XiDeck

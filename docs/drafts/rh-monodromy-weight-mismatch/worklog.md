@@ -547,3 +547,15 @@ Bottcher/STATUS.md (tail), Bottcher/DyadicMonodromy.lean. Findings for THIS lane
   counts single zeros, ADDS over multiple zeros. Remaining wiring: the ξ layer (per-box
   invariant of the actual completed zeta — peel ξ's zeros via analyticOrderAt +
   exists_peel, feed deckClass_multi_zero). Next tick.
+
+## 2026-07-04 — ξ-LAYER WIRED (XiDeck.lean): the lane's reformulation is formal end to end
+- Five theorems, axiom-clean, RHTower green 8566: xi_orderAt_ne_top; xi_peel_ball;
+  xi_deckClass (any local n-roots of ξ at any zero count multiplicity mod n, all small
+  radii); exp criterion (trivial ⟺ n ∣ m); xi_deckClass_eq_one_iff_ladder_dvd (at
+  n = 2^k the class triviality IS RHLadder k's divisibility clause).
+- THE CHAIN, machine-checked with no argument principle at any step:
+  RiemannHypothesis ⟺ ∀k RHLadder k ⟺ (∀ zeros ρ₀ of ξ right of the line, the deck
+  class of local 2^k-th roots is trivial, ∀k). The MWM cocycle w_k = the ladder's local
+  obstruction = a computable-in-principle formal invariant of completedRiemannZeta.
+- 00-approach §3.2–3.4's [REDUCTION — to be formalized] markers are now discharged in
+  full: tower (Arc A), ladder (Arc A), cocycle + zero-counting meaning (A3 arc, today).

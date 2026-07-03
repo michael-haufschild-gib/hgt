@@ -110,3 +110,15 @@ annulus-chart preconnectedness via polar parametrization (continuous image of a 
 rectangle — isPreconnected_chartRA/LA). Supporting: corrRoot + corr_mem_slitPlane +
 shifted_factor + deckClass_congr. All axiom-clean; RHTower green 8565 jobs. NO argument
 principle. Next: wiring to the ξ layer (per-box invariant of completedRiemannZeta).
+
+2026-07-04 — ξ-LAYER WIRED: `RHTower/XiDeck.lean` — the deck calculus instantiated on the
+actual completed zeta. `xi_orderAt_ne_top`; `xi_peel_ball` (exists_peel + continuity
+shrink: ξ = (z−ρ₀)^m·h, h nonvanishing on a ball); `xi_deckClass` (ANY local n-th roots of
+ξ on the slit charts at any ρ₀ have class exp(2πi·m/n), m = vanishing order — for ALL
+sufficiently small radii); `exp_two_pi_mul_div_eq_one_iff` (class trivial ⟺ n ∣ m);
+**`xi_deckClass_eq_one_iff_ladder_dvd`** — at n = 2^k, triviality of the deck class IS the
+divisibility clause of RHLadder k. Chain now closed end to end:
+RiemannHypothesis ⟺ ∀k RHLadder k (rh_iff_forall_ladder, Arc A) ⟺ per-zero clauses that
+are EXACTLY deck-class triviality (XiDeck) — the MWM lane's w_k obstruction cocycle is a
+fully machine-checked reformulation of RH on exact monodromy data, with no argument
+principle anywhere in the entire chain. All axiom-clean; RHTower green 8566 jobs.
