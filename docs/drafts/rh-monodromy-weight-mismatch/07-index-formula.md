@@ -148,3 +148,39 @@ propagate recurrence to the other. This is the wild half of C3; the sober half i
 4. **C4 return feeds §4:** exact Speiser/LM statements decide whether the companion
    cocycle is well-posed; and C4's density-proof reading pins where (D) consumes the
    Euler product — completing the division-of-labor picture of 06-reduction §4.
+
+---
+
+## 6. R6 verdict (2026-07-03, post-registration) — the causal reading of (H) is refuted in the family
+
+R6 ran as registered in §5.1 (`computations/R6-RESULTS.md`): at the certified defect box
+[0.53, 1.2] × [166, 168], margin proxy 0.0235, the deepest boundary-data return over
+τ ∈ (1, 400] is 0.556 ≈ **24× the margin** — zero sub-margin (or even sub-3×-margin)
+returns, while the defect population recurs ≈ 19 times in the same range.
+
+Consequences, stated plainly:
+- The Theorem of §3 stands (mathematics unaffected), but **(H) loses its empirical
+  support route**: in the only world where defects exist, defect recurrence is a
+  population/density phenomenon, not a data-recurrence phenomenon. Defect recurrence ⇏
+  data recurrence.
+- Mechanism re-cut — **(P_k) population-forcing** `[CONJECTURE, new open shape]`: one
+  coarse defect ⟹ N(σ₀', T) ≫ T for some σ₀' > 1/2. Then (P_k) + (D) ⟹ defect sets
+  empty, and 06-reduction Step 2 finishes as before — no recurrence input needed at all.
+  The family realizes the (P)-shape unconditionally (Bombieri–Hejhal regime; exact
+  hypotheses pending C4); the ζ-question becomes whether FE + reality + one seed zero
+  force combination-like population structure. Sharper and colder than (H).
+- The §3 symmetry slack (partial/symmetrized returns) remains untested but is now the
+  weaker sibling; the primary open core of M1 shifts to (P_k).
+
+## 7. C4 verdicts folded in (2026-07-03, late)
+
+§4's `[CHECK]`s are resolved (`checks/c4-density-speiser-note.md`, spot-checked): Speiser —
+RH ⟺ no non-real ζ′-zeros in the OPEN strip 0 < Re s < 1/2; Levinson–Montgomery, verbatim —
+N₁⁻(T) = N⁻(T) + O(log T) on 0 < σ < 1/2, 0 < t < T. The companion cocycle w_k' is therefore
+well-posed against verified statements. Sober note: the LM pairing is blunt below log T —
+a single seed zero is invisible inside O(log T); any index identity for (w_k, w_k') must
+operate at BOX level (local index), not at global-count level. And for (P_k) (§6): the ≫T
+off-line population for linear combinations is UNCONDITIONAL (Voronin; Lee–Nakamura–
+Pańkowski) — no seed needed there; ζ is a combination-of-one where those theorems are
+silent, so (P_k) for ζ is exactly the question "does one seed zero manufacture
+combination-like structure?" — the next Arc B collision target.

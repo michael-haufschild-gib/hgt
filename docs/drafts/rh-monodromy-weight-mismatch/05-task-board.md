@@ -148,3 +148,25 @@ defect box [0.53,1.2]×[166,168], τ ∈ [0,400] step 0.1, 120-pt boundary proxy
 certification for candidates. R6 discriminates "defects recur because data returns
 (M1/(H))" vs "defects recur for a weaker reason" — either verdict reshapes M1. Remaining:
 B1/B2/B3 (B3 next: xi_conj mathlib probe), R3c/R5c, P1 (after C4), P2.
+
+## Wave-2 status, fourth update (2026-07-03 night) — R6 verdict
+
+**R6 DONE, registered prediction REFUTED** (`computations/R6-RESULTS.md`, 07 §6): zero
+sub-margin boundary-data returns over τ ∈ (1,400] (deepest 24× margin) while defects recur
+≈ 19× there. Defect recurrence ⇏ data recurrence — (H)'s causal reading dead in the family;
+C3's theorem stands as mathematics. **M1 primary open core re-cut to (P_k) population-forcing**
+(one coarse defect ⟹ linear off-line count; (P_k) + (D) needs NO recurrence input). C4's
+Bombieri–Hejhal reading now directly feeds the (P_k) statement. B3 scoped: zeta-layer conj
+lemmas absent, ingredients (Gamma_conj/cpow_conj/tsum_star/exp_conj) verified present;
+missing piece = reflection analyticity lemma. Queue: C4-integrate → B1/B2 (informed by
+(P_k)) → B3 → R3c/R5c → P1 → P2.
+
+## Wave-2 status, fifth update — C4 integrated
+
+**C4 DONE** (spot-checked): #9 = mollifier Möbius coefficients (single load-bearing Euler
+step; Tao notes fetched); Ivić anchors the D–H division-of-labor; CORRECTION — off-line ≫T
+in fixed strips is UNCONDITIONAL (Voronin/LNP), BH is the conditional 100%-on-line converse;
+Speiser + LM verified exactly (LM blunt below log T ⟹ companion cocycle must be box-level).
+B3 in progress (all names probed: DifferentiableAt.conj_conj, Gamma_conj, cpow_conj,
+tsum_star, zeta_eq_tsum_one_div_nat_cpow, DifferentiableOn.analyticAt). Queue after B3:
+B1/B2 (target: (P_k) seed⟹population for combination-of-one) → R3c/R5c → P1 → P2.

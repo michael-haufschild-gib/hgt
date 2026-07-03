@@ -120,3 +120,38 @@ and certified ourselves).
   zero-avoiding boundary data), not logical strength. Opened: R6 (launched, pre-registered
   in §5.1), companion-cocycle [CONJECTURE] parked on C4's Speiser/Levinson–Montgomery
   verdicts.
+- **X→F [MEASURED, registered prediction REFUTED — R6, the session's sharpest datum]**
+  Boundary-data returns at the certified defect box [0.53,1.2]×[166,168]: margin 0.0235,
+  deepest return over τ ∈ (1,400] is 0.556 ≈ 24× margin (zero sub-margin returns), while
+  the defect population recurs ≈ 19× in the same range. **Defect recurrence ⇏ data
+  recurrence**: the causal reading of the (H)-mechanism is refuted in the family (the C3
+  theorem stands as mathematics; the negative is robust to the sampling proxy in both
+  directions; (H) itself is not finite-window-refutable). M1's primary open core re-cut to
+  **(P_k) population-forcing**: one coarse defect ⟹ linear off-line count — (P_k) + (D)
+  kills defects with NO recurrence input; the family realizes (P) unconditionally
+  (Bombieri–Hejhal regime, exact hypotheses pending C4). Files: `computations/R6-RESULTS.md`,
+  07-index-formula §6. Engine: `computations/mwm/engine4.py`.
+- **F [Lean probe — B3 scoping]** No conjugation lemma at the zeta layer on this toolchain
+  (riemannZeta_conj / completedRiemannZeta(₀)_conj / Gammaℝ_conj all absent). Ingredients
+  PRESENT and verified: Complex.Gamma_conj, Complex.cpow_conj/conj_cpow (arg ≠ π side
+  condition), tsum_star, Complex.exp_conj. Route for xi_conj: Dirichlet series conj on
+  Re > 2 + identity theorem; missing piece = analyticity of s ↦ conj(xi(conj s))
+  (reflection lemma) — mathlib candidates under Analysis/Calculus/Deriv/Star.lean, to be
+  checked before writing the card.
+- **F [VERIFIED READING — C4: check #9 + Speiser/LM resolved]** Full note
+  `checks/c4-density-speiser-note.md` (delegated; I spot-checked the Ivić quotes verbatim
+  against the ar5iv full text). **#9 RESOLVED:** the Euler product enters density proofs at
+  exactly ONE load-bearing step — the mollifier's Möbius coefficients (= coefficients of
+  1/ζ = ∏(1−p^{−s})); mean-value theorems and the approximate FE are orthogonality/FE-only
+  (Tao 2024 zero-density notes, fetched). Ivić (math/0311162, fetched verbatim) names the
+  missing Euler product as the cause of the D–H off-line population — our 06-reduction §4
+  division of labor now has a literature anchor. **CORRECTION to prior framing:** the ≫T
+  off-line count in any fixed strip ½<σ₁<σ₂<1 is an UNCONDITIONAL theorem (Voronin;
+  Lee–Nakamura–Pańkowski for combinations) — Bombieri–Hejhal's actual result is the
+  OPPOSITE direction (conditional 100%-on-line under GRH + spacing, assumptions A1/A2/A3/A5).
+  For linear combinations the population needs NO seed; ζ is a "combination of one" where
+  the theorem gives nothing — (P_k) stays genuinely open for ζ. **Speiser VERIFIED:** RH ⟺
+  no non-real ζ′-zeros in OPEN 0<Re s<½ (two independent fetched sources). **LM VERIFIED
+  verbatim:** N₁⁻(T) = N⁻(T) + O(log T) — but note the pairing is blunt below log T
+  resolution: one seed zero is invisible to it; the companion-cocycle idea must work at
+  box level, not global-count level. Bonus (a.p. ⟺ RH): still UNRESOLVED.
