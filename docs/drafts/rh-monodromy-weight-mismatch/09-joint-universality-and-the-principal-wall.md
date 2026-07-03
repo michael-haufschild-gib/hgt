@@ -112,6 +112,10 @@ principal line.)
    universality-blind?** — the "blind cone". If the blind cone is exactly the principal
    line for every decomposition, the wall is representation-independent and (H-loc for ζ)
    is irreducibly principal; if not, a covering attack exists. Either answer is structure.
+   **ANSWERED (10-blind-cone.md, 2026-07-03): yes-branch.** The cone = union of canonical
+   coordinate lines; support ≥ 2 steerable (Theorem A), single lines RH-grade (Theorem B),
+   ζ on the trivial line for every q (Theorem C); the carrier in Hurwitz coordinates is
+   unique factorization (explicit witness 2·8 = 4²).
 2. **Primitivity grading `[CONJECTURE]`**: in the Selberg-class family picture (00 §7),
    "provable (H-loc) via component splitting" should align exactly with NON-primitivity
    (≥ 2 jointly-universal components carrying the seed), and the principal wall with

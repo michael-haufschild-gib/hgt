@@ -259,3 +259,26 @@ pre-registered) running. 00-approach §10 inventory updated (items 6–8).
 QUEUE: R7c1 verdict → C6 = verify the joint-universality import (delegatable verified
 reading: exact positive-lower-density joint universality statement + Hurwitz strong
 universality) → B2 collision on the blind cone → P2.
+
+---
+
+## Wave-4 (2026-07-03, seed 382100489098707208) — R8 pre-registration + the blind-cone attack
+
+**R8 chunk 0 (local, seconds) — direct jets at the four centers.** Measure f′(ρᵢ) by central
+difference (h = 1e-8, dps 30) at the chunk-0 centers. PRE-REGISTERED PREDICTIONS:
+(i) |f′(ρ₂)| differs from the {ρ₁, ρ₄} values by ≥ 30% (jet-class hypothesis, direct);
+(ii) |f′(ρ₃)| lands nearer the {ρ₁, ρ₄} class than its naive margin/r proxy 0.42 suggested
+(since ρ₃ demonstrably transfers at r = 0.18). Falsifier: if |f′| values are all within 15%,
+the jet-proximity law's second term is NOT carried by |f′| and the R7 refinement is wrong.
+
+**R8 chunk A (pod, ≤ 10 min) — census extension t ∈ [200, 320).** engine6 localize
+0.52 200 320 1.0, dt = ds = 0.02, dps 20. PRE-REGISTERED: new off-line zeros exist in the
+window (D–H off-line density is positive); each new zero's (β, |f′|) either joins an existing
+jet class or founds a new one — discreteness vs continuum is the question the census answers.
+Chunks B [320, 420) and C [420, 500) follow only after A's verdict.
+
+**Theory task (this tick's center): answer 09 §3.1 — the universality-blind cone.** Target:
+the dichotomy (multi-support steerable / single-line RH-grade), representation-independence
+across moduli, and the exact carrier of the wall in Hurwitz coordinates. Output: new doc
+10-blind-cone.md + Lean witness pair (log-relation dependence + transcendental-shift
+independence) in RHTower/LogIndependence.lean.

@@ -478,3 +478,39 @@ natural-boundary route — restrictive/likely-vacuous for the general pair), the
 Repeated framing as "the both-connected pair reduced to exposure + hunc" OVER-STATED generality: it is
 the NESTED sub-case.  The general pair remains on `SmoothPieceRigidity` (one-sided direct ⊕ even-FE
 two-sided) + local exposure.  The disconnected regimes (OP16-A, small-norm) are independent.
+
+---
+
+## Reflection engine landed on `ReflectionCore` (Q62ReflectionBridge.lean)
+
+The Schwarz-reflection stack (`SchwarzReflection*.lean`), earlier noted as "off the critical path,"
+is now wired directly onto the general both-connected gatekeeper. `smoothPieceRigidity_of_reflectionCore`
+reduces #118 to `ReflectionCore c₁ β`; `Q62ReflectionBridge.lean` discharges its analytic core:
+
+* `arcReflection_continuesAcross` — point-level bridge. At a frontier arc point `z₀`
+  (`AnalyticAt φ z₀`, `deriv φ z₀ ≠ 0`, `‖φ z₀‖ = 1`), a function `f` continuous near `z₀`,
+  holomorphic off `{‖φ‖=1}`, agreeing with `β` on `𝓝[K₁ᶜ] z₀`, IS a `ContinuesAcross β (K₁ᶜ) z₀`
+  witness. Analyticity of `f` at `z₀` = `differentiableAt_of_off_modulus_arc` (mathlib-absent
+  reflection across an analytic modulus-one arc); basin agreement = the `ContinuesAcross` clause
+  verbatim. This is the exact hook contradicting `hnb`.
+
+* `reflectionCore_of_arcReflectionData` — reduces `ReflectionCore` to `ArcReflectionData`: the
+  existence, at some frontier arc point of the piece, of the reflected extension `f`. All reflection
+  analysis is proven here.
+
+Both axiom-clean (`propext, Classical.choice, Quot.sound`); Bottcher umbrella builds green (4246 jobs).
+
+### The genuine residual, stated precisely
+`ArcReflectionData` is NOT vacuous — it is the classical reflected continuation of `β` across a
+smooth Julia arc. Its ONLY real content is: `β = bottcherCoord c₁` admits a continuous boundary
+extension at the piece `S`, holomorphic off the arc (so that `f` exists). This is Carathéodory
+boundary regularity of the exterior Böttcher map at `S`. Where the frontier piece is a genuine smooth
+arc (the smooth-piece hypothesis itself), `K₁` is locally connected AT `S`, so the boundary extension
+exists locally — "smooth piece ⟹ locally connected there ⟹ β extends there ⟹ reflect." Formalizing
+THAT local-connectivity-from-smoothness step is the next load-bearing brick (deep, not open: needs
+no global MLC, only local regularity forced by the smooth-arc hypothesis).
+
+`SmoothPieceRigidity` never mentions `β`: the modulus-1 branch `wfam k` and the exterior branch `β`
+are DIFFERENT branches (`‖wfam k‖=1` on the frontier vs `‖β‖=exp(green)>1` on the basin), which is
+exactly why the discharge needs true reflection, not branch-following — killing the earlier
+"direct branch-identification" idea for the interior-nonempty case.
