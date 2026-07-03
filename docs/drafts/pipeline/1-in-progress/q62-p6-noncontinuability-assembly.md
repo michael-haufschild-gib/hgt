@@ -235,3 +235,50 @@ no further mathlib-absent deep theorem**:
 Open wiring sub-input to verify against the producer internals: that the basin-limit of `β₁` at
 `x ∈ Uop∩S` equals **`wfam k x`** (not merely "some modulus-one root") — trace `hspine` /
 `PairComponentPropagation` / `holeFreeTip_modulus_one_supply`.
+
+## Progress: unit-circle reflection corollary banked (axiom-clean)
+
+`formal/GaloisForLFunctions/Bottcher/SchwarzReflectionArc.lean` (new, umbrella, lint clean,
+`[propext, Classical.choice, Quot.sound]`):
+
+* `differentiableOn_of_off_unit_circle` — on an open preconnected slit-plane region `V`, `f`
+  continuous on `V` and holomorphic off `{‖z‖=1}` ⟹ holomorphic on `V`.  Direct application of
+  `differentiableOn_of_off_biholom_preimage_line` with uniformiser `ψ = Complex.log`, global inverse
+  `Complex.exp` (no IFT), which carries `{‖z‖=1}` to the line `{(I·log z).im = 0}`.  Image-open via the
+  open-mapping theorem (`AnalyticOnNhd.is_constant_or_isOpen`; the constant branch is impossible on a
+  nonempty open set by a two-point argument, `log` injective).
+
+Reflection stack now: horizontal-line → general-line → biholom-preimage-of-line → unit-circle.  Next
+brick = the **general modulus-one arc** `differentiableAt_of_off_modulus_arc` (`f` holo off `{‖g‖=1}`
+for a general analytic `g` with `deriv g z₀ ≠ 0`): compose the unit-circle corollary with the local
+inverse `γ` of `g` (`exists_localInverse_of_continuation`) after a rotation `ρ = (g z₀)⁻¹` placing
+`g z₀` at `1 ∈ slitPlane`.  That is the exact interface the smooth-piece discharge's `F`-construction
+consumes (`g = wfam k`).  Remaining after that: the `F`-construction + the one-sided/two-sided case
+split (two-sided dendrite case needs the Green's-function odd-reflection, a separate argument).
+
+## Structural finding: SmoothPieceRigidity splits one-sided vs two-sided (reflection stack ≠ sufficient)
+
+Tracing the discharge precisely: at a piece point z₀ ∈ Uop∩S with `deriv (wfam k) z₀ ≠ 0`, `wfam k` is a
+local biholo, so `{‖wfam k‖=1}` near z₀ is a real-analytic arc splitting the ball into `{‖wfam k‖>1}`
+(side A) and `{‖wfam k‖<1}` (side B).  `β₁ = wfam k` on side A (basin, `‖β₁‖=‖wfam k‖>1`).  Two cases:
+
+* **One-sided** (positive-interior `c₁`): side B ⊆ interior `K₁`, so side A = the *whole* local basin.
+  Then `wfam k` (analytic across the arc, = β₁ on all local basin) IS a full `ContinuesAcross β₁ z₀`
+  witness ⟹ contradicts `hnb_of_mem_mandelbrot_connected`.  **The reflection stack closes this.**
+* **Two-sided** (dendrite / empty-interior `c₁`): side B is *also* basin, with `β₁ = wfam_{k'}` there,
+  `k' ≠ k` (`‖wfam_{k'}‖>1` on B while `‖wfam k‖<1`).  Then β₁ has DISTINCT one-sided limits
+  `wfam k(z₀) ≠ wfam_{k'}(z₀)` at z₀, so β₁ is *not continuous across* — no single analytic function
+  equals β₁ on both sides.  `ContinuesAcross β₁ z₀` genuinely FAILS, `hnb` holds vacuously, and the
+  reflection route gives NO contradiction.  **The reflection stack does NOT close this case.**
+
+The two-sided case needs a different refutation: `greenFunctionDyn` is harmonic and `>0` on *both*
+sides of the analytic arc, `=0` on the arc — impossible by harmonic odd-reflection (a nonneg harmonic
+function vanishing on an interior analytic arc must be `≡0`).  Equivalently it is the even-FE dynamical
+rigidity the project already carries (`natural_boundary_of_even_fe`, `c_mem_of_even_holo_ball`): a
+smooth two-sided Julia arc forces `c₁ ∈ {0,−2}`.  So SmoothPieceRigidity = one-sided (reflection stack,
+now built) ⊕ two-sided (harmonic odd-reflection / even-FE, project has the ingredient, wiring pending).
+
+NET this session: the mathlib-absent Schwarz/Painlevé reflection engine is PROVEN through the unit
+circle (4 axiom-clean lemmas), closing the one-sided half of the SmoothPieceRigidity discharge and
+locating the two-sided half precisely.  Full q62 NOT complete (SmoothPieceRigidity two-sided + the
+g-arc packaging + ExposedOneSided(OP6) + OneSidedDense(#133) + OP16-A + small-norm all remain).

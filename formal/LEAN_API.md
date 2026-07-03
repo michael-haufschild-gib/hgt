@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4662 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4667 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -5186,6 +5186,11 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | def | `SectorConnectorProp` | `GaloisForLFunctions.Bottcher.ScaleCollapse` | `formal/GaloisForLFunctions/Bottcher/ScaleCollapse.lean:436` | Open Problem 1 as a Prop** (docs/open-problems/01) — **REFUTED** (2026-07-02, see docs/open-problems/01-answer.md, numerically verified): for real dendrite parameters the pulled-ba |
 | theorem | `koenigsFun_ratio_surjective` | `GaloisForLFunctions.Bottcher.ScaleCollapse` | `formal/GaloisForLFunctions/Bottcher/ScaleCollapse.lean:444` | The linearizer admits a ratio-linear local right inverse: every `z` near `β` is `ψ(v)` with `‖v‖ ≤ 2‖z − β‖`. Quantitative surjectivity from the tangency bootstrap. |
 | theorem | `koenigs_basis_family` | `GaloisForLFunctions.Bottcher.ScaleCollapse` | `formal/GaloisForLFunctions/Bottcher/ScaleCollapse.lean:517` | The basis family for the dendrite tip (A1).** Under the sector-connector Prop (Open Problem 1), the linearizer images `T t := ψ({‖v‖ < 2t/3} ∖ P)` form a shrinking family of precon |
+| theorem | `differentiableOn_of_off_horizontal_line` | `GaloisForLFunctions.Bottcher.SchwarzReflection` | `formal/GaloisForLFunctions/Bottcher/SchwarzReflection.lean:38` | Reflection across a horizontal line (Painlevé / Schwarz engine).** If `f` is continuous on an open set `U` and holomorphic on `U` off the horizontal line `{z | z.im = a}`, then `f` |
+| theorem | `differentiableOn_of_off_line` | `GaloisForLFunctions.Bottcher.SchwarzReflection` | `formal/GaloisForLFunctions/Bottcher/SchwarzReflection.lean:118` | Reflection across a general straight line** `{z | (c * z + d).im = a}`, `c ≠ 0`. Affine conjugate of `differentiableOn_of_off_horizontal_line`: the biholomorphism `A z = c z + d` c |
+| theorem | `differentiableOn_of_off_biholom_preimage_line` | `GaloisForLFunctions.Bottcher.SchwarzReflection` | `formal/GaloisForLFunctions/Bottcher/SchwarzReflection.lean:161` | Reflection across the preimage of a straight line under a partial biholomorphism.** If `ψ` is a biholomorphism of the open set `V` onto the open set `ψ '' V` with holomorphic inver |
+| theorem | `needed` | `GaloisForLFunctions.Bottcher.SchwarzReflectionArc` | `formal/GaloisForLFunctions/Bottcher/SchwarzReflectionArc.lean:8` |  |
+| theorem | `differentiableOn_of_off_unit_circle` | `GaloisForLFunctions.Bottcher.SchwarzReflectionArc` | `formal/GaloisForLFunctions/Bottcher/SchwarzReflectionArc.lean:27` | Reflection across the unit circle.** On an open, preconnected slit-plane region `V`, a function continuous on `V` and holomorphic off the unit circle `{‖z‖ = 1}` is holomorphic on  |
 | theorem | `escapeOpen_of_green_gt_halfCeiling` | `GaloisForLFunctions.Bottcher.SectionIdentityBelowAnchor` | `formal/GaloisForLFunctions/Bottcher/SectionIdentityBelowAnchor.lean:23` | Escape forcing by level.** Above Green level `½(log(‖c‖²+‖c‖)+1)`, every point is in the crude escape set: its image has norm at most `‖c‖² + ‖c‖`, so the crude/small-ball ceiling  |
 | theorem | `propagates` | `GaloisForLFunctions.Bottcher.SectionIdentityBelowAnchor` | `formal/GaloisForLFunctions/Bottcher/SectionIdentityBelowAnchor.lean:60` |  |
 | theorem | `sectionInverse_identity_of_level` | `GaloisForLFunctions.Bottcher.SectionIdentityBelowAnchor` | `formal/GaloisForLFunctions/Bottcher/SectionIdentityBelowAnchor.lean:61` | Identity below the anchor.** If the section inverts the Böttcher coordinate beyond the anchor radius, it inverts it on the whole sub-annulus above Green level `½(log(‖c‖²+‖c‖)+1)`: |
