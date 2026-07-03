@@ -125,3 +125,76 @@ before claiming (RittΞ) open.]`
   branch would reopen covers.
 - (RittΞ) itself is a candidate pipeline card for the hgt main line (compositional
   gatekeeper), independent of RH: it advances the branch whichever way it falls.
+
+---
+
+## 7. Correction to §4 and the strip-fiber attack `[added same day]`
+
+**Correction.** §3's "G with finitely many zeros ⟹ ξ with finitely many" is valid only
+for π polynomial (finite fibers). For π TRANSCENDENTAL, a polynomial left factor
+survives the sieve: the honest survivor list for xiDescent = G ∘ π, π transcendental
+entire of order ≤ 1/2, is
+
+  (i)  G = Q polynomial of degree ≥ 2   (pseudo-primeness sector), and
+  (ii) G transcendental of order 0.
+
+**Sector (i), partially closed.** If Q has a single repeated root, xiDescent = (π−w₀)^d
+with d ≥ 2 forces EVERY zero of ξ to have multiplicity ≥ d — refuted unconditionally
+(a positive proportion of ζ-zeros are simple: Levinson–Conrey school). So Q must have
+two distinct roots w₁ ≠ w₂, and then:
+
+**The strip-fiber constraint `[the attack blueprint]`.** All zeros of xiDescent lie in
+the parabolic region P = {u : Re √u < 1/2} (image of the critical strip; zeros hug the
+negative axis). Hence π OMITS both w₁ and w₂ on the complement Ω = ℂ ∖ P — a
+simply-connected domain containing disks of radius → ∞ in every direction except the
+negative axis. A transcendental entire π of order ≤ 1/2 omitting TWO values on such a
+domain is the precise hypothesis pattern of the classical radial-value-distribution
+school (Edrei's radially distributed values; Baernstein spread relation; Schottky–
+Landau on expanding disks). For the model shape cos√: fibers of a value w sit at
+√u ≈ ±(πn + arccos w), and confinement to the width-1 strip |Re √u| < 1/2 forces
+|Im arccos w| ≲ 1/2, i.e. w in a COMPACT set — so a cos√-type π can carry only
+finitely many zero-values of G in ANY case, collapsing sector (ii) toward sector (i)
+for that shape. The open technical heart: upgrade "cos√-type" to all order-≤ 1/2
+functions with two values omitted on Ω — an Edrei/Baernstein-flavored classification.
+[CHECK C11 pending: whether Gross–Yang-school results already settle ζ/Ξ primality or
+pseudo-primeness; fold in on receipt.]
+
+---
+
+## 8. C11 verdict (delegated literature check, 2026-07-03) — (RittΞ) shrinks to one sector
+
+Sourced report (spot-check citations at promotion): primeness IS on record for ζ and Γ
+(Liao–Yang, Math. Nachr. 257, 2003), the Selberg zeta Z (Garunkštis–Steuding 2020;
+Garunkštis, Rev. UMA 62, 2021), Hurwitz ζ(s,a) (Dundulis–Garunkštis–Karikovas–Šimėnas
+2023), and the extended Selberg class has a primality criterion (Garunkštis–Panavas–
+Šimėnas 2025: prime iff gcd of all zero orders and the pole order is 1). **Nothing in
+print states Ξ is prime or pseudo-prime** — and "prime" is impossible: Ξ is even,
+hence decomposes through z² (that decomposition IS our FE descent).
+
+**Ξ is pseudo-prime `[PROVED-VIA-RECORD — reduces-to-known by the gate]`.** Chuang's
+accumulation-line lemma (Chuang, *Several Topics in Theory of One Complex Variable*,
+Science Press 1995, p. 141; quoted as Lemma 3 in arXiv:1908.03108): a finite-order
+meromorphic function whose a₁- and a₂-fibers have finitely many accumulation lines is
+pseudo-prime. Ξ has order 1, no poles (the ∞-fiber is empty), and zeros confined to
+|Im z| ≤ 1/2 — accumulation lines ⊆ {0, π}. One line, unconditional. The same pattern
+is applied by Garunkštis–Steuding to a completed Selberg Ξ₂ but was never stated for
+Riemann's Ξ. **This kills §7's sector (ii) (transcendental ∘ transcendental) entirely.**
+
+**(RittΞ) residual — the genuinely-open sector, confirmed unclaimed in print:**
+Ξ = f ∘ h with f RATIONAL of degree ≥ 2 (polynomial included) and h transcendental
+entire. Already closed inside it: f with a single repeated special value dies on the
+unconditional simple zeros (§7). Remaining: f with ≥ 2 distinct zeros (or zero + finite
+pole, which h must omit): then h carries TWO values' fibers inside the horizontal
+strip — the two-fibers-in-a-strip classification. Model foil: Q(cos(az+b)) has exactly
+this shape and is killed by §2's counting argument (periodic zero set ⟹ N(T) linear
+vs T log T). So the endgame conjecture:
+
+> **[CONJECTURE — the last sector]** An entire transcendental h of finite order with
+> two values' fibers confined to a horizontal strip is (affine ∘) cos-type up to a
+> factor that the N(T) ~ T log T count then rules out for ξ. Classical adjacents:
+> Edrei (radially distributed values, 1955), Ozawa/Kobayashi (zeros and ones on a
+> line). `[CHECK C12: exact statement of the fibers-on-a-line/strip classification.]`
+
+C11 also confirms: an explicit "Ξ is pseudo-prime" statement, primeness of the
+order-1/2 object Ξ(√·) = xiDescent, and any ray-fiber refinement are FREE GROUND —
+publishable as this lane's own results once C12 pins the last classical input.

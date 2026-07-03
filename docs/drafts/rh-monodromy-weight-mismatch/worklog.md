@@ -773,3 +773,38 @@ Gross–Yang/Urabe factorization literature for Ξ pseudo-primeness.]
 **Novelty-ledger correction (doc 17 §1):** xiDescent = the classical Ξ₁ (Pólya–Jensen
 guise); rh_iff_xiDescent_ne_zero_slitPlane's STATEMENT is classically known — the new
 content is the machine-checked descent + the graded deck/ladder calculus on it.
+
+## 2026-07-03 — #127 BANKED: MirrorPencil.lean — the incidence-map/mirror structure is formal
+
+Doc 16 §3, formalized on both layers: abstract FE-pair pencils (mirror involution,
+ε·ε' = 1, zero-set involution, reality, THE INCIDENCE MAP with its exact-algebra
+characterization) + the Dirichlet instantiation (dirichletXi = N^{s/2}-renormalized
+completed L has CONSTANT root number; dirichlet_pencil_mirror on the R3/R5 family via
+mathlib's IsPrimitive.completedLFunction_one_sub). RHTower green 8575 jobs, axiom-clean,
+lint passed. The R9-measured 30-digit identity is now a theorem; the two-coloring's
+algebraic layer is machine-checked (trajectory layer waits on M9's counting).
+
+## 2026-07-03 — #126 opened: doc 17 §7 correction + the strip-fiber attack; C11 delegated
+
+Self-audit found a GAP in 17 §4: "G has infinitely many zeros" is unjustified for
+transcendental π (infinite fibers) — the survivor list is (i) POLYNOMIAL left factor
+Q(deg ≥ 2) ∘ π transcendental (pseudo-primeness sector) and (ii) order-0 transcendental
+G ∘ π. §7 records the correction plus two new closures: repeated-root Q dies on
+UNCONDITIONAL simple zeros (Levinson–Conrey positive proportion); and the STRIP-FIBER
+CONSTRAINT: all xiDescent zeros lie in the parabolic region P = {Re √u < 1/2}, so π
+omits BOTH roots of Q on the huge complement Ω — Edrei/Baernstein radial-value-
+distribution territory, with the model computation: cos√-type fibers confined to the
+width-1 strip force their values into a COMPACT set (|Im arccos w| ≲ 1/2) ⟹ cos√-type
+π can carry only finitely many zero-values in any case. Open heart: upgrade cos√-type
+to all order ≤ 1/2 with two omitted values on Ω. C11 literature check (Gross–Yang/
+Urabe primality of ζ/Ξ) delegated, pending.
+
+## 2026-07-03 — #128 BANKED: CountingSubstitute.lean — Rouché substitute + pinning lemma formal
+
+The large-n deck-class trick works even better than carded: NO a priori bound needed
+(both counts are concrete naturals; compare classes at n = N_f + N_g + 1).
+enclosed_count_eq_of_close = Hurwitz-type count stability under dominated perturbation,
+no argument principle anywhere; pinned_zero_on_line = doc 16 §1 formal (count-1 + the
+reflection q = 1 − conj(ρ') is a zero in the hole ⟹ no off-line zero survives).
+First-compile clean, 8576 jobs, axiom-clean. The shared mathlib gap (no Rouché) is now
+CLOSED for dominated-perturbation counting inside the deck calculus.

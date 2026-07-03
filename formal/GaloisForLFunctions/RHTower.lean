@@ -35,3 +35,4 @@ import GaloisForLFunctions.RHTower.LedgerJump
 import GaloisForLFunctions.RHTower.SeamCocycle
 import GaloisForLFunctions.RHTower.ModulusHolography
 import GaloisForLFunctions.RHTower.MirrorPencil
+import GaloisForLFunctions.RHTower.CountingSubstitute
