@@ -194,3 +194,44 @@ So the earlier note "hnb not load-bearing for the general case" is corrected: `h
 of the general gatekeeper. What remains for general both-connected: `ReflectionCore` (Schwarz reflection
 + boundary regularity, mathlib-absent) + `ExposedOneSided` (OP6) + `OneSidedDense` (#133). Full q62 also
 needs comparable-norm (OP16-A) and small-norm. NOT complete. Next brick: attack `ReflectionCore`.
+
+---
+
+## Progress: Schwarz/Painlevé reflection ENGINE built (mathlib-absent core, axiom-clean)
+
+`formal/GaloisForLFunctions/Bottcher/SchwarzReflection.lean` (new, in umbrella, `#print axioms` =
+`[propext, Classical.choice, Quot.sound]`, lint clean):
+
+* `differentiableOn_of_off_horizontal_line` — **the crown brick.** `f` continuous on open `U`,
+  holomorphic on `U ∖ {im = a}` ⟹ holomorphic on `U`.  Proof is fully mathlib-native: **Morera on
+  disks** (`isConservativeOn_and_continuousOn_iff_isDifferentiableOn`) + split a line-straddling
+  rectangle at height `a` into two closed sub-rectangles whose *open interiors avoid the line*, each
+  with vanishing boundary integral by `integral_boundary_rect_eq_zero_of_continuousOn_of_differentiableOn`
+  (needs holomorphy only on the interior), summed by `intervalIntegral.integral_add_adjacent_intervals`.
+  No limiting argument at the crossing edge.  mathlib has NO Schwarz reflection / Morera-glue / removable-
+  along-a-line theorem — this supplies it.
+* `differentiableOn_of_off_line` — general straight line `{(c z + d).im = a}`, `c ≠ 0`; affine conjugate.
+* `differentiableOn_of_off_biholom_preimage_line` — reflection off `{z ∈ V | (c·ψ z + d).im = a}` for a
+  partial biholomorphism `ψ` with holomorphic inverse `ψinv`.  **This is the exact form the discharge
+  consumes**: with `ψ = Log ∘ wfam k` the modulus-one arc `{‖wfam k‖=1}` becomes `{(I·ψ).im = 0}`.
+
+### Why this reframes the whole P6 epic
+The old plan ("Montel blow-up → J in analytic curve → Fatou classification → c∈{0,−2}") is NOT needed.
+The reflection engine gives a direct route: a modulus-one Julia piece forces the Böttcher branch `β₁`
+to continue analytically across `∂K₁`, contradicting the natural boundary `hnb_of_mem_mandelbrot_connected`.
+Concretely, to discharge `SmoothPieceRigidity` (⟹ general both-connected q62), what remains is **wiring,
+no further mathlib-absent deep theorem**:
+
+1. Pick `z₀ ∈ Uop∩S` with `deriv (wfam k) z₀ ≠ 0`  — DONE (`exists_frontier_piece_deriv_ne_zero`).
+2. Package `ψ = Log∘wfam k` as a local biholo on a small `V ∋ z₀` (holomorphic IFT, already used in
+   `exists_localInverse_frontier_arc`); the arc `= {‖wfam k‖=1}∩V = ψ⁻¹{im=0}`.
+3. Define `F := β₁` on `V∩K₁ᶜ`, `:= wfam k` on `V∖K₁ᶜ`.  Continuous on `V` (β₁→wfam k at arc points of
+   `S` from the modulus-one supply; wfam k continuous), holomorphic off the arc.
+4. `differentiableOn_of_off_biholom_preimage_line` ⟹ `F` holomorphic on `V`.
+5. `F = β₁` eventually on `𝓝[K₁ᶜ] z₀` ⟹ `ContinuesAcross β₁ (filledJulia c₁)ᶜ z₀` — the witness IS `F`.
+6. Contradicts `hnb` (`hnb_of_mem_mandelbrot_connected`).  ∎ (works uniformly for dendrite/empty-interior
+   AND positive-interior `c₁`, since ContinuesAcross only needs `F=β₁` on the basin-side neighbourhood.)
+
+Open wiring sub-input to verify against the producer internals: that the basin-limit of `β₁` at
+`x ∈ Uop∩S` equals **`wfam k x`** (not merely "some modulus-one root") — trace `hspine` /
+`PairComponentPropagation` / `holeFreeTip_modulus_one_supply`.

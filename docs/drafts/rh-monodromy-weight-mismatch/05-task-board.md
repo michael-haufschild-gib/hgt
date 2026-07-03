@@ -103,3 +103,48 @@ writing new Lean (audit F5).
 C2 → C0 → R3b + R5 (parallel with C1 writing) → C1 → C3 → B1/B2 → R3c → P1 → P2.
 At each session start: `scripts/rng seed`; if two consecutive sessions only re-derive,
 force a wild-analogy collision on B2 (research-rules §4).
+
+---
+
+## Wave-2 status (2026-07-03, second half of day)
+
+DONE: **C2** (delegated verified reading, spot-checked — Bagchi confirmed, mechanism =
+full-magnitude count, coarsening ABSENT-FROM-LITERATURE; §8/§9/§10 of 00-approach updated,
+`checks/c2-bagchi-note.md`); **C1** (`06-reduction.md` — (D) × (R_k) ⟹ RHLadder k, cluster-sum
+subtlety handled, level-1 corollary isolated); **R3b** (window-2 replication exact, coeff 4.0);
+**R5** (profile 4 → 29 → 0; Euler point exact minimizer, no anomaly; linear flux n ≈ 120(1−u)
+near u = 1). C0 delegated, in flight. Results: `computations/R3b-R5-RESULTS.md`, worklog.
+
+NEW (opened by wave 2):
+**R5b — near-Euler mobility scan.** u ∈ [0.90, 1.0] step 0.005, σ₀ = 0.51, t ≤ 200.
+Pre-register: the linear law n ≈ 120·(1−u) persists at fine resolution (no staircase
+clustering, i.e. wall-crossings u* roughly uniformly spread); n(0.995) ∈ {0,1,2}; n(1) = 0.
+Deliverable: per-zero wall-crossing estimates u* (mobility distribution) → cross with R3c.
+**C4 = [CHECK #9] — where density proofs consume the Euler product.** Verified reading of
+Carlson/Ingham-style density proofs (mollifier coefficients? mean-value inputs?) + the precise
+structural reason D–H evades them (it must: measured T/21). Feeds §4 of 06-reduction.md.
+
+## Wave-2 status, second update (2026-07-03 evening)
+
+DONE since last block: **C0** (all six checks verdicted, `checks/c0-checks-note.md`; #5 ABSENT
+⟹ §10.1 ladder novelty VERIFIED-ABSENT — with C2, both gating novelty items survived; my added
+caveat: Lamzouri–Lee's near-line asymptotic needs G(T)→∞, fixed-strip linear rests on the
+unfetched Bombieri–Hejhal pointer); **(R_k) weakened** to conditional positive UPPER density
+(Bagchi's own limsup register — user-relayed GPT nuance, verified verbatim, 06-reduction.md
+amended, proof adapted); **R5b** (linear flux to u≈0.955, then collapse + defect-free EULER
+MOAT u∈[0.98,1]; mobility ranking banked). New: **R5c** (moat scaling in T, #106, pre-register
+first). Remaining default order: **C3 → B1/B2 (+B3 small) → R3c/R5c → P1 → P2**; C4 (#105)
+delegatable alongside C3. Hooks for C3/P-track: DRH's √2^{ν(ρ)} factor = literature's one
+multiplicity-sensitive Euler-product law (on-line central) — cite as adjacent, distinguish
+off-line ladder; 237/237 simplicity is publishable new data (no counterpart).
+
+## Wave-2 status, third update (2026-07-03 night)
+
+**C3 DONE** (`07-index-formula.md`): M1 is now a theorem with one isolated hypothesis —
+Rouché-transfer + (H_k) ⟹ (R_k); (D) + (H_k ∀k) ⟹ RH. **C4 delegated** (#105, in flight:
+density-proof Euler-input + Bombieri–Hejhal exact statement + Speiser + Levinson–Montgomery).
+**R6 launched** (#107, pre-registered in 07 §5.1): return-set measurement at the certified
+defect box [0.53,1.2]×[166,168], τ ∈ [0,400] step 0.1, 120-pt boundary proxy, winding
+certification for candidates. R6 discriminates "defects recur because data returns
+(M1/(H))" vs "defects recur for a weaker reason" — either verdict reshapes M1. Remaining:
+B1/B2/B3 (B3 next: xi_conj mathlib probe), R3c/R5c, P1 (after C4), P2.

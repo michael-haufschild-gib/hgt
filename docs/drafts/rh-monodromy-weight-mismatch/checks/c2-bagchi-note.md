@@ -179,3 +179,29 @@ Absence claim rests on: queries 3, 4, 8, 9, 10 returning only ungraded/standard 
 mod-2^k coarsening, a graded RH_{2^k} ladder, an analytic 2^k-th root of ξ, or a parity/winding-valued
 zero-count cocycle — combined with the fetched Sourmelidis passage (S2) showing the actual Bagchi-style
 argument uses the full, un-reduced integer count.
+
+---
+
+## ADDENDUM (2026-07-03, post-delegation) — the limsup/liminf nuance, verified
+
+Second reader (GPT, user-relayed) flagged a refinement missed above; re-fetched and
+CONFIRMED verbatim against ar5iv 2308.07031 (Sourmelidis):
+
+> "Bagchi proves only (1)⇔(3) but the statement cited mostly in the relevant literature
+> is (1)⇔(2)."
+
+where (2) is the liminf (positive LOWER density) self-approximation condition and (3) the
+limsup (positive UPPER density) one. So: **Bagchi's original topological-dynamics
+equivalence is RH ⟺ the limsup/upper-density recurrence**; the liminf form standard in
+later literature follows from RH via Voronin universality (and liminf ⟹ limsup trivially).
+
+Consequence for the lane: the Reduction's open core (R_k) has been restated in the
+positive-UPPER-density register (see 06-reduction.md §2) — weaker than the bounded-gaps
+form first drafted, and exactly matching the register Bagchi actually proved, one
+coarsening down.
+
+Bibliographic additions relayed by the second reader from Springer pages (not fetched
+here — [UNVERIFIED-page, reported]): Bagchi 1987 Acta Math. Hungar. 50:227–240, DOI
+10.1007/BF01903937, received 1984-10-20, published Sept 1987; Steuding, Value-Distribution
+of L-Functions, LNM 1877, Springer 2007, DOI 10.1007/978-3-540-44822-8. Consistent with
+the fetched Sourmelidis reference list (S2).

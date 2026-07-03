@@ -50,8 +50,23 @@ suffices; only o(T) is used. (Exact forms to be re-verified against the sources 
 promotion; the o(T) consequence is classical and load-bearing here.)
 
 **(R_k) Recurrence hypothesis — [OPEN CORE].** For every clean σ₀ > 1/2 and every
-H > 0: if D_{σ₀,H,k} ≠ ∅ then D_{σ₀,H,k} is *relatively dense* in [1, ∞) — there is
-L = L(σ₀,H,k) < ∞ such that every subinterval of [1, ∞) of length L meets D_{σ₀,H,k}.
+H > 0: if D_{σ₀,H,k} ≠ ∅ then D_{σ₀,H,k} has *positive upper density*,
+
+lim sup_{T→∞} meas(D_{σ₀,H,k} ∩ [1, T]) / T > 0.
+
+(D_{σ₀,H,k} is measurable: T ↦ w_k(B(T)) is locally constant off the countable set of
+edge-crossing heights, so the defect set is open up to a countable set.)
+
+Two remarks on the strength chosen. (i) Positive upper density is WEAKER than the
+bounded-gaps / relatively-dense form this document first carried — any syndetic or
+Bohr-almost-periodic recurrence implies it; stating the open core at the weakest
+sufficient strength keeps the relocated burden minimal. (ii) The register now matches
+what Bagchi actually proved: his original topological-dynamics equivalence is RH ⟺ the
+*limsup* (positive-upper-density) self-approximation condition, while the liminf form is
+the later, mostly-cited variant — verified verbatim 2026-07-03 (Sourmelidis
+arXiv:2308.07031: "Bagchi proves only (1)⇔(3) but the statement cited mostly in the
+relevant literature is (1)⇔(2)"; `checks/c2-bagchi-note.md` addendum). (R_k) lives in
+exactly Bagchi's original register, one coarsening down.
 
 The conditional form ("once nonempty") is essential: (R_k) asserts a *structural
 rigidity* — coarsened defects cannot be sporadic — and nothing about whether defects
@@ -72,16 +87,19 @@ forces Ω zero-free, i.e. RH. It remains to prove the fixed-k statement, in two 
 
 ### Step 1 — every defect set is empty.
 
-Fix clean σ₀ and H, and suppose D_{σ₀,H,k} ≠ ∅. By (R_k) pick a gap bound L ≥ H. For
-each integer j ≥ 1 the interval [j(L+H), j(L+H)+L] contains some admissible
-T_j ∈ D_{σ₀,H,k}; the windows B(T_j) = [σ₀,2]×[T_j, T_j+H] are pairwise disjoint since
-T_j + H < (j+1)(L+H). On each, w_k(B(T_j)) ≠ 0 forces n(B(T_j)) ≥ 1: the mod-2^k class
-of the count is nonzero, so the count is a positive integer. Hence for T large,
+Fix clean σ₀ and H, and suppose D := D_{σ₀,H,k} ≠ ∅. By (R_k) there are d > 0 and
+arbitrarily large T with meas(D ∩ [1, T]) ≥ dT. Let {T_1 < ... < T_m} ⊆ D ∩ [1, T] be a
+maximal H-separated subset (pairwise gaps ≥ H). By maximality every point of D ∩ [1, T]
+lies within H of some T_i, so D ∩ [1, T] ⊆ ⋃_i [T_i − H, T_i + H] and m ≥ dT/(2H). The
+windows B(T_i) have pairwise disjoint interiors, and on each w_k(B(T_i)) ≠ 0 forces
+n(B(T_i)) ≥ 1: the mod-2^k class of the count is nonzero, so the count is a positive
+integer. Window edges avoid zeros (admissibility), so the zeros produced are distinct:
 
-N(σ₀, T) ≥ #{j : (j+1)(L+H) ≤ T} ≥ T/(L+H) − 2,
+N(σ₀, T + H) ≥ m ≥ dT/(2H) for arbitrarily large T,
 
-a positive-proportion lower bound, contradicting (D). Therefore D_{σ₀,H,k} = ∅ — *every*
-admissible window at *every* clean parameter pair has w_k = 0.
+an infinitely-often positive-proportion lower bound — and (D) is a full limit o(T), which
+such a bound refutes. Therefore D_{σ₀,H,k} = ∅ — *every* admissible window at *every*
+clean parameter pair has w_k = 0.
 
 ### Step 2 — from all-windows-vanishing to per-zero divisibility.
 
@@ -138,7 +156,8 @@ RH_{2^k} ⟸ (R_k) recurrence-of-coarse-defects × (D) subwindow density o(T).
   holding there.
 - **(R_k) is the open core for ζ**, and is *weaker than what mechanisms must usually
   produce*: it concerns only the 2^k-coarsened class, not the full count, and only
-  conditional relative density, not existence or asymptotics. FE + real structure give the
+  conditional positive upper density — Bagchi's own (limsup) recurrence register — not
+  existence, bounded gaps, or asymptotics. FE + real structure give the
   symmetry raw material (conjugation pairs ρ, ρ̄ and reflection pairs carry equal orders);
   M1 (explicit formula as index formula) is the primary candidate producer.
 
@@ -159,10 +178,10 @@ measurements support exactly this split.
    theorem with an isolated hypothesis; (R_k)'s conditional form fits the almost-periodic
    genre of the prime-side sum.
 3. **Level-1 specialization is already sharp:** (R_1) + (D) ⟹ no odd-order (in
-   particular no simple) zeros off the line. (R_1) only demands: *windows with an odd
-   zero-count, once they occur, recur with bounded gaps.* This is the minimal open
-   statement of the lane and the natural first target for Arc B's FE ∧ positivity
-   machinery.
+   particular no simple) zeros off the line. (R_1) only demands: *the set of T whose
+   window holds an odd zero-count, once nonempty, has positive upper density.* This is
+   the minimal open statement of the lane and the natural first target for Arc B's
+   FE ∧ positivity machinery.
 4. **Lean card (A3-adjacent):** Step 1+2 are formalizable now against RHTower; (D) as a
    named hypothesis `DensityInput σ₀`; check the atlas Schur–Cohn winding bridge for the
    argument-principle layer before writing new code (audit F5).

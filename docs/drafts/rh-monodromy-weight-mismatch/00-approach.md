@@ -369,19 +369,46 @@ universality with zero-free targets.
    anywhere in the fetched line. Primary texts (1981 ISI thesis; Math. Z. 181 (1982) 319–334;
    Acta Math. Hungar. 50 (1987) 227–240) were auth-walled — mechanism read from secondary
    expositions. Verdict: §5 is a *coarsening*, not a rediscovery.
-2. Random Euler product a.s. convergence AND a.s. nonvanishing for σ > 1/2 (Bohr–Jessen
-   circle); exact regularity of the limit.
-3. Hamburger's theorem: exact hypotheses (which regularity class makes FE ⟹ uniqueness).
-4. Deep-RH literature: partial Euler products on the critical line (K. Conrad ~2005;
-   Kurokawa–Kimura–Koyama). Their renormalized-convergence statements vs our
-   coarse-monodromy statements.
-5. Any literature on multiplicity *parity* of hypothetical off-line zeros (search: "even
-   multiplicity", "simple zeros off the critical line"). Expected: nothing — confirms RH_{2^k}
-   ladder as novelty candidate. If something exists, downgrade §3.3 accordingly.
-6. Known off-line zeros of the Davenport–Heilbronn function: numerics exist (recalled:
-   Balanzario–Sánchez-Ortiz); needed for Arc D1.
-7. Almost-periodicity ⟺ zero-free-half-plane statements for Euler-product Dirichlet series
-   (Bohr school) — the precise known perimeter of §4.3.
+2. **RESOLVED 2026-07-03 (C0, `checks/c0-checks-note.md`) — VERIFIED-KNOWN.** Random Euler
+   product converges a.s. for σ > 1/2 via Kolmogorov three-series (Rademacher and Steinhaus),
+   hence a.s. analytic and zero-free there — fetched quote in Harper–Nikeghbali–Radziwiłł
+   arXiv:1505.01443 (intro); classical origin Wintner, Duke 11 (1944) [pointer, unfetched].
+   §4.3's foil stands: the model WITH an Euler product has a.s. NO off-line zeros.
+3. **RESOLVED 2026-07-03 (C0) — VERIFIED-KNOWN.** Hamburger exact hypotheses (Perelli
+   arXiv:1605.02354 Thm 2.1, fetched verbatim): Dirichlet series abs. conv. σ > 1,
+   (s−1)^m F entire of finite order, EXACT ζ-FE (conductor-1 gamma factor) ⟹ F = cζ.
+   Rigidity is FE-specific: D–H (different conductor, no Euler product) is the standing
+   witness that general Riemann-type FEs have large solution spaces — Arc B's grafting
+   question lands exactly in the gap Hamburger leaves open.
+4. **RESOLVED 2026-07-03 (C0) — VERIFIED-KNOWN.** DRH: Kimura–Koyama–Kurokawa
+   arXiv:1210.1216 (Lett. Math. Phys. 104, 2014); precise form Kaneko–Koyama–Kurokawa
+   arXiv:2206.02612 Conj. 5.1 (fetched): partial Euler product on Re s = 1/2 converges to
+   L^{(m)}/(e^{mγ}m!) · √2^{ν(ρ)}, m = vanishing order; convergence on the line ⟹ GRH.
+   NOTE the bridge: the √2^{ν} factor is the one literature place where zero MULTIPLICITY
+   enters an Euler-product convergence law (on-line central; our ladder is off-line).
+   Conrad Canad. J. Math. 57 (2005) [pointer, binary-unfetched].
+5. **RESOLVED 2026-07-03 (C0) — ABSENT-FROM-LITERATURE (auditable).** Only conditional-on-RH
+   on-line simplicity exists (Montgomery ≥ 2/3 simple under RH; simplicity conjecture —
+   fetched Wikipedia RH page carries NO off-line-multiplicity statement; targeted searches
+   null). No "if RH fails, the failing zeros are simple/multiple/divisible" shape anywhere.
+   §10 item 1 upgrades to verified-absent.
+6. Resolved in-house earlier (own certified zeros, R1/R2). Balanzario–Sánchez-Ortiz bib data
+   confirmed (Math. Comp. 76 (2007)), content 403-unfetched — our certificates supersede it
+   for lane purposes.
+7. **PARTIALLY RESOLVED 2026-07-03 (C0).** Bohr's theorem verified (Schoolmann
+   arXiv:1812.04925; Brevig–Kouroupis arXiv:2302.14519, both fetched): bounded holomorphic
+   Dirichlet series in a half-plane ⟹ uniform convergence there (σ_u ≤ θ); with an Euler
+   product, uniform convergence ⟹ zero-free. The finer "a.p. in σ > 1/2 ⟺ RH" equivalence
+   remains [UNRESOLVED] — seen only in search summaries; source from Titchmarsh/Steuding at
+   need (folded into C4's reading batch).
+8. **(added, resolved with caveat) D–H off-line density (check #8):** existence/infinitude/
+   dense real parts VERIFIED-KNOWN (Ferry–Ghișa–Muscutar arXiv:1602.06328; Righetti
+   arXiv:1506.05716 for σ > 1). Near-line asymptotic K₀·T·G(T)/√log G(T) for
+   Re ≥ 1/2 + 1/G(T) VERIFIED (Lamzouri–Lee arXiv:2010.10490, fetched) — but its stated
+   uniformity needs G(T) → ∞; the FIXED-strip linear law our T/21 instantiates rests on the
+   Bombieri–Hejhal Duke 80 (1995) regime [pointer, unfetched]. So: linear-in-T has a strong
+   literature prior, not a fetched theorem at fixed δ. **237/237 SIMPLICITY of off-line D–H
+   zeros: no literature counterpart at all — genuinely new data.**
 
 ---
 
@@ -417,9 +444,11 @@ universality with zero-free targets.
 
 ## 10. What is genuinely new here (novelty inventory, gate-graded)
 
-1. **RH_{2^k} multiplicity-parity ladder + root/tower equivalence** — `[NOVELTY CANDIDATE]`,
-   pending check #5. Bridges: nobody grades RH by divisibility of off-line multiplicities;
-   everyone's prior (simplicity) makes the grading invisible.
+1. **RH_{2^k} multiplicity-parity ladder + root/tower equivalence** — `[NOVELTY — VERIFIED
+   ABSENT 2026-07-03]`: check #5 ran (C0, `checks/c0-checks-note.md`) — the literature has
+   only conditional-on-RH on-line simplicity; nothing on the multiplicity structure of
+   hypothetical off-line zeros. Bridges: nobody grades RH by divisibility of off-line
+   multiplicities; everyone's prior (simplicity) makes the grading invisible.
 2. **Coarse-monodromy (ℤ/2^k cocycle) version of strip recurrence** — `[NOVELTY — VERIFIED
    ABSENT 2026-07-03]`: check #1 ran (C2, `checks/c2-bagchi-note.md`); verdict
    ABSENT-FROM-LITERATURE for the package "mod-2^k coarsening + graded RH_{2^k} ladder +
