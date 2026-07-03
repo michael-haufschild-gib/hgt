@@ -19,15 +19,17 @@ What remains for the full classical statement is exactly the support theorem
 positive mass for the arbitrary-target limiting Brolin measure.
 -/
 import GaloisForLFunctions.Bottcher.Q62OneSidedPullback
+import GaloisForLFunctions.Bottcher.Q62OneSidedDense
 import GaloisForLFunctions.Bottcher.OneSidedCofinal
 import GaloisForLFunctions.Bottcher.Brolin.TargetLimit
 import GaloisForLFunctions.Bottcher.CrossRatioSelectorBridge
 import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
 import GaloisForLFunctions.Bottcher.ConnectedTranscendenceUnconditional
 import GaloisForLFunctions.Bottcher.BottcherArcExtension
+import GaloisForLFunctions.Bottcher.FilledJuliaConnected
 import Mathlib.MeasureTheory.Measure.Support
 
-open Set Metric Filter Topology MeasureTheory CompactlySupported Laplacian
+open Set Metric Filter Topology MeasureTheory CompactlySupported Laplacian Bornology
 open scoped Laplacian
 
 namespace Bottcher
@@ -1878,6 +1880,1518 @@ theorem q62_phiMero_bothconnected_brolin_frontierOffDichotomy_smoothArcSelection
       hbase₁ hsupp₁ hbase₂ hsupp₂ hvis₁₂ hvis₂₁
       (smoothPieceRigidity_of_smoothArcSelection hc₁M hc₁0 hc₁m2 hconn₁ hsel₁)
       (smoothPieceRigidity_of_smoothArcSelection hc₂M hc₂0 hc₂m2 hconn₂ hsel₂)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Placement-free q62 case split with the Brolin/not-postcritical connected
+branch fed by `SmoothArcSelection` only when the corresponding parameter lies in
+`M`.  The disconnected branches remain exactly the supplied monodromy inputs. -/
+theorem q62_phiMero_independence_of_monodromy_brolin_smoothArcSelection_jointFrontierVisibility_all
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAtCofinalNbhd c₁ a)
+    (hsupp₁ : ∀ a : ℂ, quadratic c₁ a = a → LimitingBrolinMeasureAtSupportsJulia c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a →
+      a ∉ positiveCriticalOrbit c₂ → OneSidedAtCofinalNbhd c₂ a)
+    (hsupp₂ : ∀ a : ℂ, quadratic c₂ a = a → LimitingBrolinMeasureAtSupportsJulia c₂ a)
+    (hconn₁ : c₁ ∈ mandelbrot → IsPreconnected (filledJulia c₁))
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁)
+    (hconn₂ : c₂ ∈ mandelbrot → IsPreconnected (filledJulia c₂))
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  refine q62_phiMero_independence_conditional hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂
+    (fun c => c ∉ mandelbrot) hmono₁ hmono₂ ?_ ?_ ?_
+  · intro h₁M
+    exact phiMero_transcendental_of_mem_mandelbrot hUo hUc hUne hUinf
+      (not_not.mp h₁M) hc₁0 hc₁m2 hU₁
+  · intro h₂M
+    exact phiMero_transcendental_of_mem_mandelbrot hUo hUc hUne hUinf
+      (not_not.mp h₂M) hc₂0 hc₂m2 hU₂
+  · intro h₁M h₂M
+    have hc₁M : c₁ ∈ mandelbrot := not_not.mp h₁M
+    have hc₂M : c₂ ∈ mandelbrot := not_not.mp h₂M
+    exact
+      q62_phiMero_bothconnected_brolin_frontierOffDichotomy_smoothArcSelection_jointFrontierVisibility
+        hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2
+        (hconn₁ hc₁M) (hsel₁ hc₁M) (hconn₂ hc₂M) (hsel₂ hc₂M)
+        hU₁ hU₂ hbase₁ hsupp₁ hbase₂ hsupp₂ hvis₁₂ hvis₂₁
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Asymmetric smooth-arc q62 support bridge with connectedness of `K_c`
+supplied internally from `c ∈ M`. -/
+theorem q62_phiMero_oneSide_brolin_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAtCofinalNbhd c₁ a)
+    (hsupp₁ : ∀ a : ℂ, quadratic c₁ a = a → LimitingBrolinMeasureAtSupportsJulia c₁ a)
+    (hoff : ∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∉ filledJulia c₂)
+    (hvis : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact q62_phiMero_oneSide_brolin_frontierOff_smoothArcSelection_jointFrontierVisibility
+    hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2
+    (isPreconnected_filledJulia hc₁M) hsel₁ hU₁ hU₂ hbase₁ hsupp₁ hoff hvis
+
+/-- Distinct-parameter both-connected q62 from fixed-target Brolin support and
+smooth-arc selection, with connectedness of filled Julia sets supplied by
+membership in `M`. -/
+theorem q62_phiMero_bothconnected_brolin_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hsel₂ : SmoothArcSelection c₂)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAtCofinalNbhd c₁ a)
+    (hsupp₁ : ∀ a : ℂ, quadratic c₁ a = a → LimitingBrolinMeasureAtSupportsJulia c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a →
+      a ∉ positiveCriticalOrbit c₂ → OneSidedAtCofinalNbhd c₂ a)
+    (hsupp₂ : ∀ a : ℂ, quadratic c₂ a = a → LimitingBrolinMeasureAtSupportsJulia c₂ a)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact q62_phiMero_bothconnected_brolin_frontierOffDichotomy_smoothArcSelection_jointFrontierVisibility
+    hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2
+    (isPreconnected_filledJulia hc₁M) hsel₁ (isPreconnected_filledJulia hc₂M) hsel₂
+    hU₁ hU₂ hbase₁ hsupp₁ hbase₂ hsupp₂ hvis₁₂ hvis₂₁
+
+/-- Placement-free q62 case split whose connected-connected branch uses only
+`SmoothArcSelection` on connected parameters; connectedness of `K_c` is supplied
+internally from `c ∈ M`. -/
+theorem q62_phiMero_independence_of_monodromy_brolin_smoothArcSelection_of_mem_jointFrontierVisibility_all
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAtCofinalNbhd c₁ a)
+    (hsupp₁ : ∀ a : ℂ, quadratic c₁ a = a → LimitingBrolinMeasureAtSupportsJulia c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a →
+      a ∉ positiveCriticalOrbit c₂ → OneSidedAtCofinalNbhd c₂ a)
+    (hsupp₂ : ∀ a : ℂ, quadratic c₂ a = a → LimitingBrolinMeasureAtSupportsJulia c₂ a)
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁)
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact q62_phiMero_independence_of_monodromy_brolin_smoothArcSelection_jointFrontierVisibility_all
+    hUo hUc hUne hUinf hne hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+    hbase₁ hsupp₁ hbase₂ hsupp₂
+    (fun hc => isPreconnected_filledJulia hc) hsel₁
+    (fun hc => isPreconnected_filledJulia hc) hsel₂
+    hvis₁₂ hvis₂₁
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Both-connected q62 using the ball-positivity Brolin residue directly rather
+than the support-membership wrapper. -/
+theorem q62_phiMero_bothconnected_brolinBall_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hsel₂ : SmoothArcSelection c₂)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAtCofinalNbhd c₁ a)
+    (hpos₁ : ∀ a : ℂ, quadratic c₁ a = a → BrolinJuliaBallPositiveAt c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a →
+      a ∉ positiveCriticalOrbit c₂ → OneSidedAtCofinalNbhd c₂ a)
+    (hpos₂ : ∀ a : ℂ, quadratic c₂ a = a → BrolinJuliaBallPositiveAt c₂ a)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact
+    q62_phiMero_bothconnected_brolin_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hsel₂
+      hU₁ hU₂ hbase₁
+      (fun a hfix => limitingBrolinMeasureAtSupportsJulia_of_brolinJuliaBallPositiveAt (hpos₁ a hfix))
+      hbase₂
+      (fun a hfix => limitingBrolinMeasureAtSupportsJulia_of_brolinJuliaBallPositiveAt (hpos₂ a hfix))
+      hvis₁₂ hvis₂₁
+
+/-- Placement-free q62 case split using the ball-positivity Brolin residue in the
+connected-connected branch and monodromy in the disconnected branches. -/
+theorem q62_phiMero_independence_of_monodromy_brolinBall_smoothArcSelection_of_mem_jointFrontierVisibility_all
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAtCofinalNbhd c₁ a)
+    (hpos₁ : ∀ a : ℂ, quadratic c₁ a = a → BrolinJuliaBallPositiveAt c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a →
+      a ∉ positiveCriticalOrbit c₂ → OneSidedAtCofinalNbhd c₂ a)
+    (hpos₂ : ∀ a : ℂ, quadratic c₂ a = a → BrolinJuliaBallPositiveAt c₂ a)
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁)
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact
+    q62_phiMero_independence_of_monodromy_brolin_smoothArcSelection_of_mem_jointFrontierVisibility_all
+      hUo hUc hUne hUinf hne hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+      hbase₁
+      (fun a hfix => limitingBrolinMeasureAtSupportsJulia_of_brolinJuliaBallPositiveAt (hpos₁ a hfix))
+      hbase₂
+      (fun a hfix => limitingBrolinMeasureAtSupportsJulia_of_brolinJuliaBallPositiveAt (hpos₂ a hfix))
+      hsel₁ hsel₂ hvis₁₂ hvis₂₁
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Strong one-sidedness implies the neighbourhood-cofinal form used by the Brolin q62 bridge. -/
+theorem oneSidedAtCofinalNbhd_of_oneSidedAt {c x : ℂ} (h : OneSidedAt c x) :
+    OneSidedAtCofinalNbhd c x :=
+  h.cofinal.nbhd
+
+/-- Both-connected q62 using strong fixed-point one-sidedness plus the
+ball-positivity Brolin residue. -/
+theorem q62_phiMero_bothconnected_brolinBall_oneSided_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hsel₂ : SmoothArcSelection c₂)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAt c₁ a)
+    (hpos₁ : ∀ a : ℂ, quadratic c₁ a = a → BrolinJuliaBallPositiveAt c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a →
+      a ∉ positiveCriticalOrbit c₂ → OneSidedAt c₂ a)
+    (hpos₂ : ∀ a : ℂ, quadratic c₂ a = a → BrolinJuliaBallPositiveAt c₂ a)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact
+    q62_phiMero_bothconnected_brolinBall_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hsel₂ hU₁ hU₂
+      (fun a hfix hcrit => oneSidedAtCofinalNbhd_of_oneSidedAt (hbase₁ a hfix hcrit))
+      hpos₁
+      (fun a hfix hcrit => oneSidedAtCofinalNbhd_of_oneSidedAt (hbase₂ a hfix hcrit))
+      hpos₂ hvis₁₂ hvis₂₁
+
+/-- Placement-free q62 using strong fixed-point one-sidedness in the
+connected-connected Brolin branch. -/
+theorem q62_phiMero_independence_of_monodromy_brolinBall_oneSided_smoothArcSelection_of_mem_jointFrontierVisibility_all
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAt c₁ a)
+    (hpos₁ : ∀ a : ℂ, quadratic c₁ a = a → BrolinJuliaBallPositiveAt c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a →
+      a ∉ positiveCriticalOrbit c₂ → OneSidedAt c₂ a)
+    (hpos₂ : ∀ a : ℂ, quadratic c₂ a = a → BrolinJuliaBallPositiveAt c₂ a)
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁)
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact
+    q62_phiMero_independence_of_monodromy_brolinBall_smoothArcSelection_of_mem_jointFrontierVisibility_all
+      hUo hUc hUne hUinf hne hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+      (fun a hfix hcrit => oneSidedAtCofinalNbhd_of_oneSidedAt (hbase₁ a hfix hcrit))
+      hpos₁
+      (fun a hfix hcrit => oneSidedAtCofinalNbhd_of_oneSidedAt (hbase₂ a hfix hcrit))
+      hpos₂ hsel₁ hsel₂ hvis₁₂ hvis₂₁
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Both-connected q62 when strong one-sidedness is known for every fixed point;
+the internally selected fixed point supplies the not-postcritical condition. -/
+theorem q62_phiMero_bothconnected_brolinBall_allFixedOneSided_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hsel₂ : SmoothArcSelection c₂)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a → OneSidedAt c₁ a)
+    (hpos₁ : ∀ a : ℂ, quadratic c₁ a = a → BrolinJuliaBallPositiveAt c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a → OneSidedAt c₂ a)
+    (hpos₂ : ∀ a : ℂ, quadratic c₂ a = a → BrolinJuliaBallPositiveAt c₂ a)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact
+    q62_phiMero_bothconnected_brolinBall_oneSided_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hsel₂ hU₁ hU₂
+      (fun a hfix _hcrit => hbase₁ a hfix) hpos₁
+      (fun a hfix _hcrit => hbase₂ a hfix) hpos₂
+      hvis₁₂ hvis₂₁
+
+/-- Placement-free q62 when strong one-sidedness is known for every fixed point
+in the connected-connected Brolin branch. -/
+theorem q62_phiMero_independence_of_monodromy_brolinBall_allFixedOneSided_smoothArcSelection_of_mem_jointFrontierVisibility_all
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a → OneSidedAt c₁ a)
+    (hpos₁ : ∀ a : ℂ, quadratic c₁ a = a → BrolinJuliaBallPositiveAt c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a → OneSidedAt c₂ a)
+    (hpos₂ : ∀ a : ℂ, quadratic c₂ a = a → BrolinJuliaBallPositiveAt c₂ a)
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁)
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact
+    q62_phiMero_independence_of_monodromy_brolinBall_oneSided_smoothArcSelection_of_mem_jointFrontierVisibility_all
+      hUo hUc hUne hUinf hne hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+      (fun a hfix _hcrit => hbase₁ a hfix) hpos₁
+      (fun a hfix _hcrit => hbase₂ a hfix) hpos₂
+      hsel₁ hsel₂ hvis₁₂ hvis₂₁
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Asymmetric q62 from a single explicitly supplied Brolin target.  This avoids
+selecting a fixed point internally: any target with neighbourhood-cofinal
+one-sidedness, Brolin ball-positivity, and positive-critical-orbit avoidance can
+feed the exposed side. -/
+theorem q62_phiMero_oneSide_target_brolinBall_oneSidedNbhd_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : OneSidedAtCofinalNbhd c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hoff : ∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∉ filledJulia c₂)
+    (hvis : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact
+    q62_phiMero_bothconnected_of_oneSide_base_limitingBrolinMeasureAtSupportsJulia_frontier_offOther_jointFrontierVisibility
+      hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
+      (locOneSided_of_oneSidedAtCofinalNbhd hbase₁)
+      (limitingBrolinMeasureAtSupportsJulia_of_brolinJuliaBallPositiveAt hpos₁)
+      (criticalOrbitAvoidingTarget_of_not_mem_positiveCriticalOrbit hcrit₁)
+      hoff hvis
+      (smoothPieceRigidity_of_smoothArcSelection hc₁M hc₁0 hc₁m2
+        (isPreconnected_filledJulia hc₁M) hsel₁)
+
+/-- Both-connected q62 from explicitly supplied targets on both sides.  The
+frontier-off-other dichotomy chooses the orientation; the proof uses only the
+target data belonging to that orientation. -/
+theorem q62_phiMero_bothconnected_target_brolinBall_oneSidedNbhd_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ z₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hsel₂ : SmoothArcSelection c₂)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : OneSidedAtCofinalNbhd c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hbase₂ : OneSidedAtCofinalNbhd c₂ z₂)
+    (hpos₂ : BrolinJuliaBallPositiveAt c₂ z₂)
+    (hcrit₂ : z₂ ∉ positiveCriticalOrbit c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  rcases exists_frontier_filledJulia_off_other hne with hoff₁₂ | hoff₂₁
+  · exact
+      q62_phiMero_oneSide_target_brolinBall_oneSidedNbhd_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+        hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hU₁ hU₂
+        hbase₁ hpos₁ hcrit₁ hoff₁₂ hvis₁₂
+  · exact noRelation_symm
+      (q62_phiMero_oneSide_target_brolinBall_oneSidedNbhd_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+        hUo hUc hUne hUinf hc₂M hc₁M hc₂0 hc₂m2 hc₁0 hc₁m2 hsel₂ hU₂ hU₁
+        hbase₂ hpos₂ hcrit₂ hoff₂₁ hvis₂₁)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Explicit-target asymmetric q62 with cofinal ball one-sidedness converted to
+the neighbourhood-cofinal interface. -/
+theorem q62_phiMero_oneSide_target_brolinBall_oneSidedCofinal_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : OneSidedAtCofinal c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hoff : ∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∉ filledJulia c₂)
+    (hvis : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact
+    q62_phiMero_oneSide_target_brolinBall_oneSidedNbhd_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hU₁ hU₂
+      (OneSidedAtCofinal.nbhd hbase₁) hpos₁ hcrit₁ hoff hvis
+
+/-- Explicit-target both-connected q62 with cofinal ball one-sidedness on both
+possible orientations. -/
+theorem q62_phiMero_bothconnected_target_brolinBall_oneSidedCofinal_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ z₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hsel₂ : SmoothArcSelection c₂)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : OneSidedAtCofinal c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hbase₂ : OneSidedAtCofinal c₂ z₂)
+    (hpos₂ : BrolinJuliaBallPositiveAt c₂ z₂)
+    (hcrit₂ : z₂ ∉ positiveCriticalOrbit c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact
+    q62_phiMero_bothconnected_target_brolinBall_oneSidedNbhd_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hsel₂ hU₁ hU₂
+      (OneSidedAtCofinal.nbhd hbase₁) hpos₁ hcrit₁
+      (OneSidedAtCofinal.nbhd hbase₂) hpos₂ hcrit₂
+      hvis₁₂ hvis₂₁
+
+/-- Explicit-target asymmetric q62 with strong one-sidedness converted to the
+neighbourhood-cofinal interface. -/
+theorem q62_phiMero_oneSide_target_brolinBall_oneSided_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : OneSidedAt c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hoff : ∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∉ filledJulia c₂)
+    (hvis : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact
+    q62_phiMero_oneSide_target_brolinBall_oneSidedNbhd_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hU₁ hU₂
+      (oneSidedAtCofinalNbhd_of_oneSidedAt hbase₁) hpos₁ hcrit₁ hoff hvis
+
+/-- Explicit-target both-connected q62 with strong one-sidedness on both
+possible orientations. -/
+theorem q62_phiMero_bothconnected_target_brolinBall_oneSided_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ z₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hsel₂ : SmoothArcSelection c₂)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : OneSidedAt c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hbase₂ : OneSidedAt c₂ z₂)
+    (hpos₂ : BrolinJuliaBallPositiveAt c₂ z₂)
+    (hcrit₂ : z₂ ∉ positiveCriticalOrbit c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact
+    q62_phiMero_bothconnected_target_brolinBall_oneSidedNbhd_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hsel₂ hU₁ hU₂
+      (oneSidedAtCofinalNbhd_of_oneSidedAt hbase₁) hpos₁ hcrit₁
+      (oneSidedAtCofinalNbhd_of_oneSidedAt hbase₂) hpos₂ hcrit₂
+      hvis₁₂ hvis₂₁
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Placement-free q62 case split with explicitly supplied connected-branch
+Brolin targets.  Disconnected placements are still handled by the supplied
+monodromy inputs; the connected-connected branch uses the frontier-off-other
+dichotomy and then only the target on the chosen side. -/
+theorem q62_phiMero_independence_of_monodromy_target_brolinBall_oneSidedNbhd_smoothArcSelection_of_mem_jointFrontierVisibility_all
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ z₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hbase₁ : OneSidedAtCofinalNbhd c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hbase₂ : OneSidedAtCofinalNbhd c₂ z₂)
+    (hpos₂ : BrolinJuliaBallPositiveAt c₂ z₂)
+    (hcrit₂ : z₂ ∉ positiveCriticalOrbit c₂)
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁)
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  refine q62_phiMero_independence_conditional hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂
+    (fun c => c ∉ mandelbrot) hmono₁ hmono₂ ?_ ?_ ?_
+  · intro h₁M
+    exact phiMero_transcendental_of_mem_mandelbrot hUo hUc hUne hUinf
+      (not_not.mp h₁M) hc₁0 hc₁m2 hU₁
+  · intro h₂M
+    exact phiMero_transcendental_of_mem_mandelbrot hUo hUc hUne hUinf
+      (not_not.mp h₂M) hc₂0 hc₂m2 hU₂
+  · intro h₁M h₂M
+    have hc₁M : c₁ ∈ mandelbrot := not_not.mp h₁M
+    have hc₂M : c₂ ∈ mandelbrot := not_not.mp h₂M
+    exact
+      q62_phiMero_bothconnected_target_brolinBall_oneSidedNbhd_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility
+        hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2
+        (hsel₁ hc₁M) (hsel₂ hc₂M) hU₁ hU₂
+        hbase₁ hpos₁ hcrit₁ hbase₂ hpos₂ hcrit₂ hvis₁₂ hvis₂₁
+
+/-- Placement-free explicit-target q62 with cofinal ball one-sidedness. -/
+theorem q62_phiMero_independence_of_monodromy_target_brolinBall_oneSidedCofinal_smoothArcSelection_of_mem_jointFrontierVisibility_all
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ z₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hbase₁ : OneSidedAtCofinal c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hbase₂ : OneSidedAtCofinal c₂ z₂)
+    (hpos₂ : BrolinJuliaBallPositiveAt c₂ z₂)
+    (hcrit₂ : z₂ ∉ positiveCriticalOrbit c₂)
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁)
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact
+    q62_phiMero_independence_of_monodromy_target_brolinBall_oneSidedNbhd_smoothArcSelection_of_mem_jointFrontierVisibility_all
+      hUo hUc hUne hUinf hne hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+      (OneSidedAtCofinal.nbhd hbase₁) hpos₁ hcrit₁
+      (OneSidedAtCofinal.nbhd hbase₂) hpos₂ hcrit₂
+      hsel₁ hsel₂ hvis₁₂ hvis₂₁
+
+/-- Placement-free explicit-target q62 with strong one-sidedness. -/
+theorem q62_phiMero_independence_of_monodromy_target_brolinBall_oneSided_smoothArcSelection_of_mem_jointFrontierVisibility_all
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ z₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hbase₁ : OneSidedAt c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hbase₂ : OneSidedAt c₂ z₂)
+    (hpos₂ : BrolinJuliaBallPositiveAt c₂ z₂)
+    (hcrit₂ : z₂ ∉ positiveCriticalOrbit c₂)
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁)
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact
+    q62_phiMero_independence_of_monodromy_target_brolinBall_oneSidedNbhd_smoothArcSelection_of_mem_jointFrontierVisibility_all
+      hUo hUc hUne hUinf hne hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+      (oneSidedAtCofinalNbhd_of_oneSidedAt hbase₁) hpos₁ hcrit₁
+      (oneSidedAtCofinalNbhd_of_oneSidedAt hbase₂) hpos₂ hcrit₂
+      hsel₁ hsel₂ hvis₁₂ hvis₂₁
+
+end
+
+end Bottcher
+
+/-! ## Visible off-other frontier witnesses from common-basin crossing -/
+
+namespace Bottcher
+
+/-- A far real ray certifies that some common-basin component of
+`(filledJulia a)ᶜ ∩ (filledJulia b)ᶜ` is unbounded. -/
+theorem exists_unbounded_common_basin_component (a b : ℂ) :
+    ∃ u, u ∈ (filledJulia a)ᶜ ∩ (filledJulia b)ᶜ ∧
+      ¬ IsBounded (connectedComponentIn ((filledJulia a)ᶜ ∩ (filledJulia b)ᶜ) u) := by
+  set K : Set ℂ := filledJulia a ∪ filledJulia b with hKdef
+  have hKcomp : IsCompact K := (isCompact_filledJulia a).union (isCompact_filledJulia b)
+  obtain ⟨R, hR0, hRK⟩ := hKcomp.isBounded.subset_closedBall_lt 0 0
+  set u : ℂ := ((R + 1 : ℝ) : ℂ) with hudef
+  have hunorm : ‖u‖ = R + 1 := by
+    rw [hudef, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith)]
+  have huKc : u ∈ Kᶜ := by
+    intro huK
+    have hbound := hRK huK
+    rw [Metric.mem_closedBall, dist_zero_right, hunorm] at hbound
+    linarith
+  have hu : u ∈ (filledJulia a)ᶜ ∩ (filledJulia b)ᶜ := by
+    refine ⟨?_, ?_⟩
+    · intro ha; exact huKc (Or.inl ha)
+    · intro hb; exact huKc (Or.inr hb)
+  set T : Set ℂ := (fun t : ℝ => u + ((t : ℝ) : ℂ)) '' Set.Ici 0 with hTdef
+  have hTconn : IsPreconnected T :=
+    (isPreconnected_Ici).image _ (by fun_prop : Continuous fun t : ℝ => u + ((t : ℝ) : ℂ)).continuousOn
+  have hTnorm : ∀ p ∈ T, R + 1 ≤ ‖p‖ := by
+    rintro _ ⟨t, ht, rfl⟩
+    simp only [Set.mem_Ici] at ht
+    show R + 1 ≤ ‖u + (t : ℂ)‖
+    rw [show u + (t : ℂ) = (((R + 1 + t : ℝ)) : ℂ) by rw [hudef]; push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith)]
+    linarith
+  have hTK : T ⊆ Kᶜ := by
+    intro p hp hpK
+    have hbound := hRK hpK
+    rw [Metric.mem_closedBall, dist_zero_right] at hbound
+    linarith [hTnorm p hp]
+  have hTS : T ⊆ (filledJulia a)ᶜ ∩ (filledJulia b)ᶜ := by
+    intro p hp
+    have hpKc := hTK hp
+    refine ⟨?_, ?_⟩
+    · intro ha; exact hpKc (Or.inl ha)
+    · intro hb; exact hpKc (Or.inr hb)
+  have huT : u ∈ T := ⟨0, Set.mem_Ici.mpr le_rfl, by simp⟩
+  have hTunb : ¬ IsBounded T := by
+    intro hbd
+    obtain ⟨C, hC⟩ := isBounded_iff_forall_norm_le.mp hbd
+    have hp : (u + ((max C 0 + 1 : ℝ) : ℂ)) ∈ T :=
+      ⟨max C 0 + 1, Set.mem_Ici.mpr (by positivity), rfl⟩
+    have h1 := hC _ hp
+    rw [show u + ((max C 0 + 1 : ℝ) : ℂ) =
+        (((R + 1 + (max C 0 + 1) : ℝ)) : ℂ) by rw [hudef]; push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)] at h1
+    have h2 : C ≤ max C 0 := le_max_left _ _
+    linarith
+  exact ⟨u, hu, unbounded_connectedComponentIn_of_subset hTconn huT hTS hTunb⟩
+
+/-- A point in the closure of an unbounded common-basin component is visible from infinity for the
+joint complement. -/
+theorem visibleFromInfinity_of_common_component_closure {a b u p : ℂ}
+    (hunb : ¬ IsBounded (connectedComponentIn ((filledJulia a)ᶜ ∩ (filledJulia b)ᶜ) u))
+    (hpcl : p ∈ closure (connectedComponentIn ((filledJulia a)ᶜ ∩ (filledJulia b)ᶜ) u)) :
+    VisibleFromInfinity a b p := by
+  set S : Set ℂ := (filledJulia a)ᶜ ∩ (filledJulia b)ᶜ with hSdef
+  set W : Set ℂ := connectedComponentIn S u with hWdef
+  refine ⟨W, isPreconnected_connectedComponentIn, ?_, ?_, ?_⟩
+  · simpa [W, S] using hunb
+  · intro z hz
+    have hzS : z ∈ S := by simpa [W] using connectedComponentIn_subset S u hz
+    rcases hzS with ⟨hza, hzb⟩
+    intro hzUnion
+    rcases hzUnion with hzaK | hzbK
+    · exact hza hzaK
+    · exact hzb hzbK
+  · simpa [W, S] using hpcl
+
+/-- If `K_a` has any point outside `K_b`, then the common basin accumulates on a visible frontier
+point of `K_a` still outside `K_b`. -/
+theorem exists_frontier_off_other_visible_of_point_off {a b x : ℂ}
+    (hxK : x ∈ filledJulia a) (hxB : x ∈ (filledJulia b)ᶜ) :
+    ∃ p, p ∈ frontier (filledJulia a) ∧ p ∈ (filledJulia b)ᶜ ∧ VisibleFromInfinity a b p := by
+  obtain ⟨u, hu, hunb⟩ := exists_unbounded_common_basin_component a b
+  obtain ⟨p, hpfront, hpB, hpcl⟩ :=
+    exists_frontier_off_other_in_closure_common_component (a := a) (b := b) (u := u) (x := x)
+      hu hxK hxB
+  exact ⟨p, hpfront, hpB, visibleFromInfinity_of_common_component_closure hunb hpcl⟩
+
+/-- Distinct parameters: after choosing the ordering in which one filled Julia set meets the other's
+basin, the off-other frontier point can be chosen visible from infinity. -/
+theorem exists_frontier_filledJulia_off_other_visible {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂) :
+    (∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∈ (filledJulia c₂)ᶜ ∧ VisibleFromInfinity c₁ c₂ p) ∨
+    (∃ p, p ∈ frontier (filledJulia c₂) ∧ p ∈ (filledJulia c₁)ᶜ ∧ VisibleFromInfinity c₂ c₁ p) := by
+  rcases exists_frontier_filledJulia_off_other hne with hoff | hoff
+  · obtain ⟨x, hxfront, hxoff⟩ := hoff
+    have hxK : x ∈ filledJulia c₁ := by
+      rw [(isClosed_filledJulia c₁).frontier_eq] at hxfront
+      exact hxfront.1
+    exact Or.inl (exists_frontier_off_other_visible_of_point_off hxK hxoff)
+  · obtain ⟨x, hxfront, hxoff⟩ := hoff
+    have hxK : x ∈ filledJulia c₂ := by
+      rw [(isClosed_filledJulia c₂).frontier_eq] at hxfront
+      exact hxfront.1
+    exact Or.inr (exists_frontier_off_other_visible_of_point_off hxK hxoff)
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- The residual after the common-basin visibility bridge: whenever an off-other frontier point is
+visible from infinity, it is neighbourhood-cofinally one-sided for the corresponding filled Julia
+set.  This is deliberately weaker and more localized than a global off-other visibility assumption:
+visibility is now proven separately, and this predicate names only the remaining one-sided access
+content at visible off-other points. -/
+def VisibleOffOtherFrontierOneSidedCofinalNbhd (c₁ c₂ : ℂ) : Prop :=
+  ∀ x, x ∈ frontier (filledJulia c₁) → x ∈ (filledJulia c₂)ᶜ →
+    VisibleFromInfinity c₁ c₂ x → OneSidedAtCofinalNbhd c₁ x
+
+/-- Distinct parameters plus one-sidedness at visible off-other frontier accesses give the exposed
+neighbourhood-cofinal disjunction consumed by the q62 capstone. -/
+theorem exposedOneSidedCofinalNbhd_or_swap_of_visibleOffOtherFrontierOneSidedCofinalNbhd
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hone₁₂ : VisibleOffOtherFrontierOneSidedCofinalNbhd c₁ c₂)
+    (hone₂₁ : VisibleOffOtherFrontierOneSidedCofinalNbhd c₂ c₁) :
+    ExposedOneSidedCofinalNbhd c₁ c₂ ∨ ExposedOneSidedCofinalNbhd c₂ c₁ := by
+  rcases exists_frontier_filledJulia_off_other_visible hne with h₁₂ | h₂₁
+  · obtain ⟨p, hpfront, hpoff, hpvis⟩ := h₁₂
+    exact Or.inl ⟨p, hone₁₂ p hpfront hpoff hpvis, hpoff, hpvis⟩
+  · obtain ⟨p, hpfront, hpoff, hpvis⟩ := h₂₁
+    exact Or.inr ⟨p, hone₂₁ p hpfront hpoff hpvis, hpoff, hpvis⟩
+
+/-- Both-connected q62 with visibility discharged by the common-basin bridge: after the visible
+off-other frontier point is produced, the only remaining local-access input is that visible off-other
+frontier points are neighbourhood-cofinally one-sided. -/
+theorem q62_phiMero_bothconnected_visibleOffOtherFrontierOneSided_smoothArcSelection_of_mem
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁) (hsel₂ : SmoothArcSelection c₂)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hone₁₂ : VisibleOffOtherFrontierOneSidedCofinalNbhd c₁ c₂)
+    (hone₂₁ : VisibleOffOtherFrontierOneSidedCofinalNbhd c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact q62_phiMero_bothconnected_of_op6_cofinalNbhd hUo hUc hUne hUinf
+    hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
+    (exposedOneSidedCofinalNbhd_or_swap_of_visibleOffOtherFrontierOneSidedCofinalNbhd
+      hne hone₁₂ hone₂₁)
+    (smoothPieceRigidity_of_smoothArcSelection hc₁M hc₁0 hc₁m2
+      (isPreconnected_filledJulia hc₁M) hsel₁)
+    (smoothPieceRigidity_of_smoothArcSelection hc₂M hc₂0 hc₂m2
+      (isPreconnected_filledJulia hc₂M) hsel₂)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Real-pair q62 on the beta neighbourhood-connectivity clause, with the smooth-piece gatekeeper
+supplied by `SmoothArcSelection` in both orientations.  The remaining real-pair access input is exactly
+an adapted connected punctured neighbourhood basis at `β₁`; connectedness of both filled Julia sets is
+supplied internally from real Mandelbrot membership. -/
+theorem q62_phiMero_realPair_connected_beta_nbhd_smoothArcSelection
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℝ} (hlt : c₁ < c₂) (hc₁2 : -2 ≤ c₁) (hc₂4 : c₂ ≤ 1 / 4)
+    (hc₁0 : (c₁ : ℂ) ≠ 0) (hc₁m2 : (c₁ : ℂ) ≠ -2)
+    (hc₂0 : (c₂ : ℂ) ≠ 0) (hc₂m2 : (c₂ : ℂ) ≠ -2)
+    (hU₁ : U ⊆ escapeOpen (c₁ : ℂ)) (hU₂ : U ⊆ escapeOpen (c₂ : ℂ))
+    (hconn : ∀ ε > 0, ∃ V : Set ℂ, IsOpen V ∧ (betaFixed c₁ : ℂ) ∈ V ∧
+      V ⊆ Metric.ball (betaFixed c₁ : ℂ) ε ∧
+      IsConnected (V \ filledJulia (c₁ : ℂ)))
+    (hsel₁ : SmoothArcSelection (c₁ : ℂ))
+    (hsel₂ : SmoothArcSelection (c₂ : ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero (c₁ : ℂ) hU₁) (phiMero (c₂ : ℂ) hU₂) := by
+  have hc₁4 : c₁ ≤ 1 / 4 := hlt.le.trans hc₂4
+  have hc₂2 : -2 ≤ c₂ := hc₁2.trans hlt.le
+  have hc₁M : (c₁ : ℂ) ∈ mandelbrot := real_mem_mandelbrot hc₁2 hc₁4
+  have hc₂M : (c₂ : ℂ) ∈ mandelbrot := real_mem_mandelbrot hc₂2 hc₂4
+  exact q62_phiMero_realPair_of_connected_beta_nbhd hUo hUc hUne hUinf hlt hc₁2 hc₂4
+    hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hconn
+    (smoothPieceRigidity_of_smoothArcSelection hc₁M hc₁0 hc₁m2
+      (isPreconnected_filledJulia hc₁M) hsel₁)
+    (smoothPieceRigidity_of_smoothArcSelection hc₂M hc₂0 hc₂m2
+      (isPreconnected_filledJulia hc₂M) hsel₂)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Real-pair q62 from strong ball one-sidedness at `β₁`, with the smooth-piece gatekeeper supplied
+by `SmoothArcSelection` in both orientations. -/
+theorem q62_phiMero_realPair_oneSidedAt_beta_smoothArcSelection
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℝ} (hlt : c₁ < c₂) (hc₁2 : -2 ≤ c₁) (hc₂4 : c₂ ≤ 1 / 4)
+    (hc₁0 : (c₁ : ℂ) ≠ 0) (hc₁m2 : (c₁ : ℂ) ≠ -2)
+    (hc₂0 : (c₂ : ℂ) ≠ 0) (hc₂m2 : (c₂ : ℂ) ≠ -2)
+    (hU₁ : U ⊆ escapeOpen (c₁ : ℂ)) (hU₂ : U ⊆ escapeOpen (c₂ : ℂ))
+    (hos : OneSidedAt (c₁ : ℂ) (betaFixed c₁ : ℂ))
+    (hsel₁ : SmoothArcSelection (c₁ : ℂ))
+    (hsel₂ : SmoothArcSelection (c₂ : ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero (c₁ : ℂ) hU₁) (phiMero (c₂ : ℂ) hU₂) := by
+  have hc₁4 : c₁ ≤ 1 / 4 := hlt.le.trans hc₂4
+  have hc₂2 : -2 ≤ c₂ := hc₁2.trans hlt.le
+  have hc₁M : (c₁ : ℂ) ∈ mandelbrot := real_mem_mandelbrot hc₁2 hc₁4
+  have hc₂M : (c₂ : ℂ) ∈ mandelbrot := real_mem_mandelbrot hc₂2 hc₂4
+  exact q62_phiMero_realPair_of_oneSidedAt_beta hUo hUc hUne hUinf hlt hc₁2 hc₂4
+    hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hos
+    (smoothPieceRigidity_of_smoothArcSelection hc₁M hc₁0 hc₁m2
+      (isPreconnected_filledJulia hc₁M) hsel₁)
+    (smoothPieceRigidity_of_smoothArcSelection hc₂M hc₂0 hc₂m2
+      (isPreconnected_filledJulia hc₂M) hsel₂)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Real-pair q62 with the beta access clause reduced to one connected punctured neighbourhood below
+an internally produced threshold.  This packages the repelling inverse-branch propagation from
+`exists_threshold_realPair_beta` with the `SmoothArcSelection` smooth-piece discharge. -/
+theorem exists_threshold_q62_phiMero_realPair_beta_nbhd_smoothArcSelection
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℝ} (hlt : c₁ < c₂) (hc₁2 : -2 ≤ c₁) (hc₂4 : c₂ ≤ 1 / 4)
+    (hc₁0 : (c₁ : ℂ) ≠ 0) (hc₁m2 : (c₁ : ℂ) ≠ -2)
+    (hc₂0 : (c₂ : ℂ) ≠ 0) (hc₂m2 : (c₂ : ℂ) ≠ -2)
+    (hU₁ : U ⊆ escapeOpen (c₁ : ℂ)) (hU₂ : U ⊆ escapeOpen (c₂ : ℂ))
+    (hsel₁ : SmoothArcSelection (c₁ : ℂ))
+    (hsel₂ : SmoothArcSelection (c₂ : ℂ)) :
+    ∃ r₀ > 0, ∀ V₀ : Set ℂ, IsOpen V₀ → (betaFixed c₁ : ℂ) ∈ V₀ →
+      V₀ ⊆ Metric.ball (betaFixed c₁ : ℂ) r₀ →
+      IsConnected (V₀ \ filledJulia (c₁ : ℂ)) →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      NoRelation (RatFunc ℂ) (phiMero (c₁ : ℂ) hU₁) (phiMero (c₂ : ℂ) hU₂) := by
+  have hc₁4lt : c₁ < 1 / 4 := hlt.trans_le hc₂4
+  obtain ⟨r₀, hr₀, hthreshold⟩ := exists_threshold_realPair_beta hc₁2 hc₁4lt
+  refine ⟨r₀, hr₀, fun V₀ hV₀o hβV₀ hV₀sub hV₀conn => ?_⟩
+  have hone : OneSidedAtCofinalNbhd (c₁ : ℂ) (betaFixed c₁ : ℂ) :=
+    hthreshold V₀ hV₀o hβV₀ hV₀sub hV₀conn
+  exact q62_phiMero_realPair_connected_beta_nbhd_smoothArcSelection hUo hUc hUne hUinf
+    hlt hc₁2 hc₂4 hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hone.2 hsel₁ hsel₂
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Conditional all-placement q62 bridge using the visible-access connected capstone.  The disconnected
+branches are left as explicit monodromy inputs; connected single-coordinate transcendence is discharged
+internally from `c ∈ M`; and the both-connected branch is supplied by
+`VisibleOffOtherFrontierOneSidedCofinalNbhd` plus `SmoothArcSelection`. -/
+theorem q62_phiMero_independence_conditional_visibleOffOtherFrontierOneSided_smoothArcSelection
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁)
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂)
+    (hone₁₂ : c₁ ∈ mandelbrot → c₂ ∈ mandelbrot →
+      VisibleOffOtherFrontierOneSidedCofinalNbhd c₁ c₂)
+    (hone₂₁ : c₂ ∈ mandelbrot → c₁ ∈ mandelbrot →
+      VisibleOffOtherFrontierOneSidedCofinalNbhd c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  refine q62_phiMero_independence_conditional hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂
+    (fun c => c ∉ mandelbrot) ?_ ?_ ?_ ?_ ?_
+  · intro hc₁notM
+    exact hmono₁ hc₁notM
+  · intro hc₂notM
+    exact hmono₂ hc₂notM
+  · intro hc₁notNotM
+    have hc₁M : c₁ ∈ mandelbrot := by
+      by_contra hc₁notM
+      exact hc₁notNotM hc₁notM
+    exact phiMero_transcendental_of_mem_mandelbrot hUo hUc hUne hUinf
+      hc₁M hc₁0 hc₁m2 hU₁
+  · intro hc₂notNotM
+    have hc₂M : c₂ ∈ mandelbrot := by
+      by_contra hc₂notM
+      exact hc₂notNotM hc₂notM
+    exact phiMero_transcendental_of_mem_mandelbrot hUo hUc hUne hUinf
+      hc₂M hc₂0 hc₂m2 hU₂
+  · intro hc₁notNotM hc₂notNotM
+    have hc₁M : c₁ ∈ mandelbrot := by
+      by_contra hc₁notM
+      exact hc₁notNotM hc₁notM
+    have hc₂M : c₂ ∈ mandelbrot := by
+      by_contra hc₂notM
+      exact hc₂notNotM hc₂notM
+    exact q62_phiMero_bothconnected_visibleOffOtherFrontierOneSided_smoothArcSelection_of_mem
+      hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2
+      (hsel₁ hc₁M) (hsel₂ hc₂M) hU₁ hU₂
+      (hone₁₂ hc₁M hc₂M) (hone₂₁ hc₂M hc₁M)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Swapped-orientation real-pair q62 with the beta access clause reduced to one connected punctured
+neighbourhood below an internally produced threshold.  This is the `c₂ < c₁` companion to
+`exists_threshold_q62_phiMero_realPair_beta_nbhd_smoothArcSelection`, returning the original
+`(c₁,c₂)` orientation by `noRelation_symm`. -/
+theorem exists_threshold_q62_phiMero_realPair_beta_nbhd_smoothArcSelection_swapped
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℝ} (hlt : c₂ < c₁) (hc₂2 : -2 ≤ c₂) (hc₁4 : c₁ ≤ 1 / 4)
+    (hc₁0 : (c₁ : ℂ) ≠ 0) (hc₁m2 : (c₁ : ℂ) ≠ -2)
+    (hc₂0 : (c₂ : ℂ) ≠ 0) (hc₂m2 : (c₂ : ℂ) ≠ -2)
+    (hU₁ : U ⊆ escapeOpen (c₁ : ℂ)) (hU₂ : U ⊆ escapeOpen (c₂ : ℂ))
+    (hsel₁ : SmoothArcSelection (c₁ : ℂ))
+    (hsel₂ : SmoothArcSelection (c₂ : ℂ)) :
+    ∃ r₀ > 0, ∀ V₀ : Set ℂ, IsOpen V₀ → (betaFixed c₂ : ℂ) ∈ V₀ →
+      V₀ ⊆ Metric.ball (betaFixed c₂ : ℂ) r₀ →
+      IsConnected (V₀ \ filledJulia (c₂ : ℂ)) →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      NoRelation (RatFunc ℂ) (phiMero (c₁ : ℂ) hU₁) (phiMero (c₂ : ℂ) hU₂) := by
+  obtain ⟨r₀, hr₀, hthreshold⟩ :=
+    exists_threshold_q62_phiMero_realPair_beta_nbhd_smoothArcSelection
+      hUo hUc hUne hUinf hlt hc₂2 hc₁4 hc₂0 hc₂m2 hc₁0 hc₁m2 hU₂ hU₁ hsel₂ hsel₁
+  refine ⟨r₀, hr₀, fun V₀ hV₀o hβV₀ hV₀sub hV₀conn => ?_⟩
+  letI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact noRelation_symm (K := RatFunc ℂ) (M := meroField U)
+    (hthreshold V₀ hV₀o hβV₀ hV₀sub hV₀conn)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Unordered real-pair q62 with the beta access clause reduced to one connected punctured
+neighbourhood below a threshold at the lower real parameter.  The conclusion is a disjunction because
+the beta access point is orientation-dependent: if `c₁ < c₂` it is `β(c₁)`, and if `c₂ < c₁` it is
+`β(c₂)`. -/
+theorem exists_threshold_q62_phiMero_realPair_beta_nbhd_smoothArcSelection_or_swap
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℝ} (hne : c₁ ≠ c₂)
+    (hc₁2 : -2 ≤ c₁) (hc₁4 : c₁ ≤ 1 / 4)
+    (hc₂2 : -2 ≤ c₂) (hc₂4 : c₂ ≤ 1 / 4)
+    (hc₁0 : (c₁ : ℂ) ≠ 0) (hc₁m2 : (c₁ : ℂ) ≠ -2)
+    (hc₂0 : (c₂ : ℂ) ≠ 0) (hc₂m2 : (c₂ : ℂ) ≠ -2)
+    (hU₁ : U ⊆ escapeOpen (c₁ : ℂ)) (hU₂ : U ⊆ escapeOpen (c₂ : ℂ))
+    (hsel₁ : SmoothArcSelection (c₁ : ℂ))
+    (hsel₂ : SmoothArcSelection (c₂ : ℂ)) :
+    (∃ r₀ > 0, ∀ V₀ : Set ℂ, IsOpen V₀ → (betaFixed c₁ : ℂ) ∈ V₀ →
+      V₀ ⊆ Metric.ball (betaFixed c₁ : ℂ) r₀ →
+      IsConnected (V₀ \ filledJulia (c₁ : ℂ)) →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      NoRelation (RatFunc ℂ) (phiMero (c₁ : ℂ) hU₁) (phiMero (c₂ : ℂ) hU₂)) ∨
+    (∃ r₀ > 0, ∀ V₀ : Set ℂ, IsOpen V₀ → (betaFixed c₂ : ℂ) ∈ V₀ →
+      V₀ ⊆ Metric.ball (betaFixed c₂ : ℂ) r₀ →
+      IsConnected (V₀ \ filledJulia (c₂ : ℂ)) →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      NoRelation (RatFunc ℂ) (phiMero (c₁ : ℂ) hU₁) (phiMero (c₂ : ℂ) hU₂)) := by
+  rcases lt_or_gt_of_ne hne with hlt | hlt
+  · exact Or.inl
+      (exists_threshold_q62_phiMero_realPair_beta_nbhd_smoothArcSelection
+        hUo hUc hUne hUinf hlt hc₁2 hc₂4 hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hsel₁ hsel₂)
+  · exact Or.inr
+      (exists_threshold_q62_phiMero_realPair_beta_nbhd_smoothArcSelection_swapped
+        hUo hUc hUne hUinf hlt hc₂2 hc₁4 hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hsel₁ hsel₂)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Unordered real-pair q62 on the beta neighbourhood-connectivity clause.  Supplying the connected
+punctured-neighbourhood basis at both beta fixed points lets the proof choose the lower parameter and
+then orient the already-proved real-pair capstone. -/
+theorem q62_phiMero_realPair_connected_beta_nbhd_smoothArcSelection_or_swap
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℝ} (hne : c₁ ≠ c₂)
+    (hc₁2 : -2 ≤ c₁) (hc₁4 : c₁ ≤ 1 / 4)
+    (hc₂2 : -2 ≤ c₂) (hc₂4 : c₂ ≤ 1 / 4)
+    (hc₁0 : (c₁ : ℂ) ≠ 0) (hc₁m2 : (c₁ : ℂ) ≠ -2)
+    (hc₂0 : (c₂ : ℂ) ≠ 0) (hc₂m2 : (c₂ : ℂ) ≠ -2)
+    (hU₁ : U ⊆ escapeOpen (c₁ : ℂ)) (hU₂ : U ⊆ escapeOpen (c₂ : ℂ))
+    (hconn₁ : ∀ ε > 0, ∃ V : Set ℂ, IsOpen V ∧ (betaFixed c₁ : ℂ) ∈ V ∧
+      V ⊆ Metric.ball (betaFixed c₁ : ℂ) ε ∧
+      IsConnected (V \ filledJulia (c₁ : ℂ)))
+    (hconn₂ : ∀ ε > 0, ∃ V : Set ℂ, IsOpen V ∧ (betaFixed c₂ : ℂ) ∈ V ∧
+      V ⊆ Metric.ball (betaFixed c₂ : ℂ) ε ∧
+      IsConnected (V \ filledJulia (c₂ : ℂ)))
+    (hsel₁ : SmoothArcSelection (c₁ : ℂ))
+    (hsel₂ : SmoothArcSelection (c₂ : ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero (c₁ : ℂ) hU₁) (phiMero (c₂ : ℂ) hU₂) := by
+  rcases lt_or_gt_of_ne hne with hlt | hlt
+  · exact q62_phiMero_realPair_connected_beta_nbhd_smoothArcSelection hUo hUc hUne hUinf
+      hlt hc₁2 hc₂4 hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hconn₁ hsel₁ hsel₂
+  · letI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    exact noRelation_symm (K := RatFunc ℂ) (M := meroField U)
+      (q62_phiMero_realPair_connected_beta_nbhd_smoothArcSelection hUo hUc hUne hUinf
+        hlt hc₂2 hc₁4 hc₂0 hc₂m2 hc₁0 hc₁m2 hU₂ hU₁ hconn₂ hsel₂ hsel₁)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Unordered real-pair q62 from strong one-sidedness at both beta fixed points.  The proof orients by
+the lower real parameter and uses symmetry in the swapped branch. -/
+theorem q62_phiMero_realPair_oneSidedAt_beta_smoothArcSelection_or_swap
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℝ} (hne : c₁ ≠ c₂)
+    (hc₁2 : -2 ≤ c₁) (hc₁4 : c₁ ≤ 1 / 4)
+    (hc₂2 : -2 ≤ c₂) (hc₂4 : c₂ ≤ 1 / 4)
+    (hc₁0 : (c₁ : ℂ) ≠ 0) (hc₁m2 : (c₁ : ℂ) ≠ -2)
+    (hc₂0 : (c₂ : ℂ) ≠ 0) (hc₂m2 : (c₂ : ℂ) ≠ -2)
+    (hU₁ : U ⊆ escapeOpen (c₁ : ℂ)) (hU₂ : U ⊆ escapeOpen (c₂ : ℂ))
+    (hos₁ : OneSidedAt (c₁ : ℂ) (betaFixed c₁ : ℂ))
+    (hos₂ : OneSidedAt (c₂ : ℂ) (betaFixed c₂ : ℂ))
+    (hsel₁ : SmoothArcSelection (c₁ : ℂ))
+    (hsel₂ : SmoothArcSelection (c₂ : ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero (c₁ : ℂ) hU₁) (phiMero (c₂ : ℂ) hU₂) := by
+  rcases lt_or_gt_of_ne hne with hlt | hlt
+  · exact q62_phiMero_realPair_oneSidedAt_beta_smoothArcSelection hUo hUc hUne hUinf
+      hlt hc₁2 hc₂4 hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hos₁ hsel₁ hsel₂
+  · letI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    exact noRelation_symm (K := RatFunc ℂ) (M := meroField U)
+      (q62_phiMero_realPair_oneSidedAt_beta_smoothArcSelection hUo hUc hUne hUinf
+        hlt hc₂2 hc₁4 hc₂0 hc₂m2 hc₁0 hc₁m2 hU₂ hU₁ hos₂ hsel₂ hsel₁)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Real connected-slice q62 from the visible-off-other frontier one-sided residual.  Real membership in
+`M` is discharged internally from `-2 ≤ c ≤ 1/4`; the remaining connected-case inputs are exactly
+smooth-arc selection and neighbourhood-cofinal one-sidedness at visible off-other frontier accesses. -/
+theorem q62_phiMero_realPair_visibleOffOtherFrontierOneSided_smoothArcSelection
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℝ} (hne : c₁ ≠ c₂)
+    (hc₁2 : -2 ≤ c₁) (hc₁4 : c₁ ≤ 1 / 4)
+    (hc₂2 : -2 ≤ c₂) (hc₂4 : c₂ ≤ 1 / 4)
+    (hc₁0 : (c₁ : ℂ) ≠ 0) (hc₁m2 : (c₁ : ℂ) ≠ -2)
+    (hc₂0 : (c₂ : ℂ) ≠ 0) (hc₂m2 : (c₂ : ℂ) ≠ -2)
+    (hsel₁ : SmoothArcSelection (c₁ : ℂ))
+    (hsel₂ : SmoothArcSelection (c₂ : ℂ))
+    (hU₁ : U ⊆ escapeOpen (c₁ : ℂ)) (hU₂ : U ⊆ escapeOpen (c₂ : ℂ))
+    (hone₁₂ : VisibleOffOtherFrontierOneSidedCofinalNbhd (c₁ : ℂ) (c₂ : ℂ))
+    (hone₂₁ : VisibleOffOtherFrontierOneSidedCofinalNbhd (c₂ : ℂ) (c₁ : ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero (c₁ : ℂ) hU₁) (phiMero (c₂ : ℂ) hU₂) := by
+  have hneC : (c₁ : ℂ) ≠ (c₂ : ℂ) := by
+    intro h
+    exact hne (Complex.ofReal_injective h)
+  exact q62_phiMero_bothconnected_visibleOffOtherFrontierOneSided_smoothArcSelection_of_mem
+    hUo hUc hUne hUinf hneC
+    (real_mem_mandelbrot hc₁2 hc₁4) (real_mem_mandelbrot hc₂2 hc₂4)
+    hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hsel₂ hU₁ hU₂ hone₁₂ hone₂₁
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Asymmetric visible-access exposure: once a single point of `K_{c₁}` lies outside `K_{c₂}`, the
+common-basin bridge produces a visible off-other frontier point; the local-access residual then turns it
+into the exposed neighbourhood-cofinal input. -/
+theorem exposedOneSidedCofinalNbhd_of_visibleOffOtherFrontierOneSidedCofinalNbhd_filledJulia_off
+    {c₁ c₂ : ℂ}
+    (hoff : ∃ x, x ∈ filledJulia c₁ ∧ x ∉ filledJulia c₂)
+    (hone : VisibleOffOtherFrontierOneSidedCofinalNbhd c₁ c₂) :
+    ExposedOneSidedCofinalNbhd c₁ c₂ := by
+  obtain ⟨x, hxK, hxoff⟩ := hoff
+  obtain ⟨p, hpfront, hpoff, hpvis⟩ := exists_frontier_off_other_visible_of_point_off hxK hxoff
+  exact ⟨p, hone p hpfront hpoff hpvis, hpoff, hpvis⟩
+
+/-- Asymmetric both-connected q62 from the visible-off-other local-access residual.  Compared with the
+symmetric visible-access capstone, this needs only the exposed orientation: a known point of
+`K_{c₁} \ K_{c₂}`, one visible-off-other one-sided residual for `(c₁,c₂)`, and smooth-arc selection for
+`c₁`. -/
+theorem q62_phiMero_bothconnected_oneSide_visibleOffOtherFrontierOneSided_smoothArcSelection_of_mem
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hoff : ∃ x, x ∈ filledJulia c₁ ∧ x ∉ filledJulia c₂)
+    (hone₁₂ : VisibleOffOtherFrontierOneSidedCofinalNbhd c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact q62_phiMero_independence_of_exposed_oneSidedCofinalNbhd hUo hUc hUne hUinf
+    c₁ c₂ hU₁ hU₂ hc₁0 hc₁m2 hc₂0 hc₂m2
+    (fun h => absurd hc₁M h) (fun h => absurd hc₂M h)
+    (fun _ _ =>
+      exposedOneSidedCofinalNbhd_of_visibleOffOtherFrontierOneSidedCofinalNbhd_filledJulia_off
+        hoff hone₁₂)
+    (fun _ _ => smoothPieceRigidity_of_smoothArcSelection hc₁M hc₁0 hc₁m2
+      (isPreconnected_filledJulia hc₁M) hsel₁)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- One-sided conditional all-placement q62 bridge.  The disconnected cases remain explicit monodromy
+inputs; the connected single-coordinate transcendence is discharged from membership in `M`; and the
+both-connected branch uses only the exposed orientation `K_{c₁} \ K_{c₂}` with the corresponding
+visible-off-other one-sided residual and smooth selection for `c₁`. -/
+theorem q62_phiMero_independence_conditional_oneSide_visibleOffOtherFrontierOneSided_smoothArcSelection
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ}
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁)
+    (hoff₁₂ : c₁ ∈ mandelbrot → c₂ ∈ mandelbrot →
+      ∃ x, x ∈ filledJulia c₁ ∧ x ∉ filledJulia c₂)
+    (hone₁₂ : c₁ ∈ mandelbrot → c₂ ∈ mandelbrot →
+      VisibleOffOtherFrontierOneSidedCofinalNbhd c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  refine q62_phiMero_independence_conditional hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂
+    (fun c => c ∉ mandelbrot) hmono₁ hmono₂ ?_ ?_ ?_
+  · intro hc₁notNotM
+    have hc₁M : c₁ ∈ mandelbrot := by
+      by_contra hc₁notM
+      exact hc₁notNotM hc₁notM
+    exact phiMero_transcendental_of_mem_mandelbrot hUo hUc hUne hUinf
+      hc₁M hc₁0 hc₁m2 hU₁
+  · intro hc₂notNotM
+    have hc₂M : c₂ ∈ mandelbrot := by
+      by_contra hc₂notM
+      exact hc₂notNotM hc₂notM
+    exact phiMero_transcendental_of_mem_mandelbrot hUo hUc hUne hUinf
+      hc₂M hc₂0 hc₂m2 hU₂
+  · intro hc₁notNotM hc₂notNotM
+    have hc₁M : c₁ ∈ mandelbrot := by
+      by_contra hc₁notM
+      exact hc₁notNotM hc₁notM
+    have hc₂M : c₂ ∈ mandelbrot := by
+      by_contra hc₂notM
+      exact hc₂notNotM hc₂notM
+    exact q62_phiMero_bothconnected_oneSide_visibleOffOtherFrontierOneSided_smoothArcSelection_of_mem
+      hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2
+      (hsel₁ hc₁M) hU₁ hU₂ (hoff₁₂ hc₁M hc₂M) (hone₁₂ hc₁M hc₂M)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Swapped one-sided conditional all-placement q62 bridge.  This is the companion to
+`q62_phiMero_independence_conditional_oneSide_visibleOffOtherFrontierOneSided_smoothArcSelection` when
+the exposed connected orientation is `K_{c₂} \ K_{c₁}`; the conclusion is returned in the original
+`(c₁,c₂)` order by `noRelation_symm`. -/
+theorem q62_phiMero_independence_conditional_oneSide_visibleOffOtherFrontierOneSided_smoothArcSelection_swapped
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ}
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂)
+    (hoff₂₁ : c₂ ∈ mandelbrot → c₁ ∈ mandelbrot →
+      ∃ x, x ∈ filledJulia c₂ ∧ x ∉ filledJulia c₁)
+    (hone₂₁ : c₂ ∈ mandelbrot → c₁ ∈ mandelbrot →
+      VisibleOffOtherFrontierOneSidedCofinalNbhd c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact noRelation_symm (K := RatFunc ℂ) (M := meroField U)
+    (q62_phiMero_independence_conditional_oneSide_visibleOffOtherFrontierOneSided_smoothArcSelection
+      hUo hUc hUne hUinf hc₂0 hc₂m2 hc₁0 hc₁m2 hU₂ hU₁ hmono₂ hmono₁
+      hsel₂ hoff₂₁ hone₂₁)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- One-sided conditional all-placement q62 from either exposed connected orientation.  This packages
+the two asymmetric bridges after a caller has proved which filled Julia set supplies the off-other
+point. -/
+theorem q62_phiMero_independence_conditional_oneSide_visibleOffOtherFrontierOneSided_smoothArcSelection_or_swap
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ}
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (horient :
+      ((c₁ ∈ mandelbrot → SmoothArcSelection c₁) ∧
+        (c₁ ∈ mandelbrot → c₂ ∈ mandelbrot →
+          ∃ x, x ∈ filledJulia c₁ ∧ x ∉ filledJulia c₂) ∧
+        (c₁ ∈ mandelbrot → c₂ ∈ mandelbrot →
+          VisibleOffOtherFrontierOneSidedCofinalNbhd c₁ c₂)) ∨
+      ((c₂ ∈ mandelbrot → SmoothArcSelection c₂) ∧
+        (c₂ ∈ mandelbrot → c₁ ∈ mandelbrot →
+          ∃ x, x ∈ filledJulia c₂ ∧ x ∉ filledJulia c₁) ∧
+        (c₂ ∈ mandelbrot → c₁ ∈ mandelbrot →
+          VisibleOffOtherFrontierOneSidedCofinalNbhd c₂ c₁))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  rcases horient with hleft | hright
+  · rcases hleft with ⟨hsel₁, hoff₁₂, hone₁₂⟩
+    exact q62_phiMero_independence_conditional_oneSide_visibleOffOtherFrontierOneSided_smoothArcSelection
+      hUo hUc hUne hUinf hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+      hsel₁ hoff₁₂ hone₁₂
+  · rcases hright with ⟨hsel₂, hoff₂₁, hone₂₁⟩
+    exact q62_phiMero_independence_conditional_oneSide_visibleOffOtherFrontierOneSided_smoothArcSelection_swapped
+      hUo hUc hUne hUinf hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+      hsel₂ hoff₂₁ hone₂₁
 
 end
 

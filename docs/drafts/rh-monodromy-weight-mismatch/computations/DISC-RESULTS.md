@@ -66,3 +66,18 @@ Consistency triangle (pre-registered PN, forced by the banked deck transport + R
 verified at T ≈ 221): domination q = max|ζ−g₅|/|g₅| on that window boundary MUST be
 ≥ 1 — measured **q = 4.72 (r = 0.20), q = 1.17 (r = 0.35)**: domination fails
 exactly where parity is odd. The theorem's contrapositive observed in the data.
+
+## Run 6 — P-U: u-plane reader on the #136 instance (theorem-track carrier; task #140)
+Script: `computations/mwm/uplane_reader_136.py` (pod). Completion Φ(s) = π^{−s/2}Γ(s/2)g₅(s)
+(Φ(1−s) = Φ(s) exact ⟹ descends to H(u), real on u < 0); recenter at u₀ = −t₀²,
+h(v) = Φ(1/2 + i√(t₀²−v)); jets by 256-node Cauchy trapezoid at r = 8, dps 120.
+- **P-U0 PASS**: refined zero ρ = 0.60941068066066512213 + 221.07888411131592586i,
+  |Φ(ρ)| = 1.9e−196; pair at v = 0.011970697 ± 48.376782i (one-sided-far: nearest
+  on-line zeros at |v| ~ 4e2).
+- **P-U1/P-U2 PASS**: truncation carrier reads 1 non-real pair, disc < 0, at d = 4, 6, 8
+  (coeff-Im-noise ≤ 3.5e−107) — u-plane reading ≡ t-plane reading (run 5).
+- **P-U3 PASS**: ζ control (ξ jets at the SAME u₀): 0 pairs, disc > 0, at d = 4, 6, 8.
+Verdict: the first fully finite window-relation instance now lives on the u-plane
+one-sided-far carrier — the shape with PROVED tracking clearance (doc 25) and T = 1
+counting (doc 24 §3). The reader's verdict is unchanged by the carrier transposition;
+what remains between this instance and a theorem-grade reading is (AMP-mono)(iii) alone.

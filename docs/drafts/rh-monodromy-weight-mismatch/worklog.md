@@ -990,3 +990,95 @@ on truncation jets with (CPI) as the evaluation tool.
 Archives: AMP-RESULTS.md; scripts amp_margin_landscape.py, amp_crossing_probe.py.
 Next: prove tracking/dip clearance; attack outer monotonicity via the equilibrium
 constraint; u-plane reader on the #136 truncation window.
+
+## 2026-07-04 — Tracking clearance PROVED: (AMP-mono) parts (i)+(ii) closed (doc 25)
+- PROVED (Thm A): margin ≥ κ_A·d² at every window critical point off the zero set of g.
+  The expected obstruction — the far-zero tail of ℰ needing a spacing input — does not
+  exist: at critical points ℰ = −A″/A exactly (E1), and the identity carries the tail.
+  Proof = rescaling brick + Cauchy + the exact identity; ~15 lines.
+- PROVED (E4/E5): operator identity Ã_d = φ_d(θ)g, θ(θ−1) = z²∂² — the section chain is
+  a BACKWARD-HEAT smoothing of the carrier at time 1/d with diffusion z² (flow on the
+  approximants, constraint on the object); elementary two-sided bound
+  |φ_d(j) − 1 + C(j,2)/d| ≤ C(j,2)²/2d² for ALL j, d (Weierstrass + e^{−S} ≤ 1−S+S²/2).
+- PROVED (Lemma W): at every zero k of He_m′: −He_m″(k)/He_m(k) = m — Hermite equilibrium
+  energy = charge count (two lines from the recurrence). Makes the cluster constant
+  universal.
+- PROVED (Thm B, m ≤ 3; proof-shaped m ≥ 4 via Lemma R): an m-fold zero x* of g splits at
+  the SINGLE scale σ = |x*|/√d into the He_m configuration; cluster margins
+  = |x*−τ|²d/(m·x*²)·(1+O(d^{−1/2})) — rate d, multiplicity enters linearly. The heat
+  resummation forbids the Newton-cascade that would have violated clearance from m = 4.
+- PROVED (Cor C): the q_d-dip z_c → a sits INSIDE the tracking window — part (ii) is
+  subsumed by part (i); the d = 8 transient = the definiteness threshold's shadow.
+- P-B PASS (pod, pre-registered, run 3 in AMP-RESULTS.md): half-gap and ALL margin ratios
+  → 1 at O(d^{−1/2}) over d = 10²…10⁵, m = 2 and m = 4 (three critical points, uniform
+  constant 4 = Lemma W's prediction).
+- Residual of (SPUR-R): (AMP-mono)(iii) ALONE — outer single crossing of c⁴ℰ/q_d.
+  Registered attack [CONJECTURE]: equilibrium constraint near-symmetrizes neighbors ⟹
+  c⁴ℰ increases between consecutive equilibria while q_d grows only quadratically.
+Archives: doc 25; AMP-RESULTS.md run 3; script amp_cluster_hermite.py. New pod
+157.157.221.30:31867. Next: (iii) via the equilibrium constraint; u-plane reader on #136.
+
+## 2026-07-04 — #140 u-plane theorem-track instance PASS; #138 attack: the reversal (doc 26)
+- #140 DONE (DISC-RESULTS run 6, all four predictions PASS): the #136 truncation
+  off-line pair reads identically on the u-plane one-sided-far carrier (1 pair,
+  disc < 0 at d = 4, 6, 8; ζ control clean at the same u₀; refined zero certified to
+  1.9e−196). The finite instance now lives on the carrier shape with PROVED tracking
+  legs (doc 25) and T = 1 counting.
+- #138 round 1 (entropy: reverse / ant-foraging / percolation) — doc 26 banked:
+  - PROVED (REV): at equilibria, F̂(1/c) = dc and c⁴ℰ(c) = ℰ̂(1/c) − dc²;
+    margin > 1 ⟺ ℰ̂ < |F̂ − τ|² — intrinsic in the reversed configuration.
+  - PROVED (OSC): V = Âe^{−ay}: copy ⟺ (V″+b²V)V > 0 — theorem-m's oscillator
+    energy E_b = b²V²+V′² reappears exactly (E_b′ = 2V′(V″+b²V)), frequency b = Im τ.
+  - PROVED (ΞSUM): pole weights ξ_k = y/(y−β_k) obey Σξ_k = d at EVERY equilibrium;
+    flip ⟺ Σξ² > (d−ay)²+b²y² ≈ d² — copy→flip = delocalization→localization
+    transition (participation ratio) under a conserved budget.
+  - P-C/P-D PASS (identity exact to 63+ digits; oscillator ≡ margin pointwise, single
+    transition). P-E REFUTED load-bearing: outer log-gaps NOT monotone (≈0.15d
+    violations) yet crossing stays single — gap monotonicity is the wrong mechanism.
+    P-F: O(1) race (d·δ* ≈ 3.7, θ ≈ 0.27, far margin saturates ≈ 0.28).
+  - P-H: full majorization REFUTED (Schur route dead in full strength); dominant
+    weight ξ_max monotone at ZERO violations; S = Σξ² monotone at ZERO violations.
+  - Kernel re-cut: **(S-mono)** — S_i strictly increasing along outer equilibria ⟹
+    T = 1 ⟹ (SPUR-R) closes with doc 25. Proof shape: dominant-weight drift lemma
+    (θ-drift from the one-sided trail) + sum-rule remainder control; wild route =
+    monotone-event coupling (percolation).
+Archives: DISC-RESULTS run 6; AMP-RESULTS runs 4–5; scripts uplane_reader_136.py,
+amp_reversal_probe.py, amp_majorization_probe.py. Next: the θ-drift law (equilibrium
+position vs trail mass — closed-form monotone bound from the ant-trail kernel sum).
+
+## 2026-07-04 — #138 round 2: the θ-drift attack (doc 27) — (S-mono) reduced to (LEG)
+- PROVED: weight flow η_k = c/(c−α_k), η′ = −η(η−1)/c; hierarchy p_r′ = −(r/c)(p_{r+1}−p_r);
+  S = d + p₂ = d + c²ℰ(c) exact — (S-mono) ⟺ c²ℰ increasing along outer criticals.
+- PROVED: pole removal — S_{i+1} − S_i = ∫Φ̃′ over the smooth reduced path, with the
+  signed integrand Φ̃′ = −(2/c)Σw_k(η_k + p̃₁), w_k = η_k(η_k−1) > 0 (weights never in
+  (0,1)); endpoint signs (dip at c_i, rise at c_{i+1}).
+- PROVED: midpoint-push lemma — nondecreasing gaps + outer half ⟹ θ_i < 1/2 (termwise
+  pairing at the gap midpoint + left surplus).
+- PROVED (representation): log-time t = log c makes the flow autonomous logistic;
+  weights = translated sigmoids ½ + ½coth((t−t_k)/2), interaction w = 1/(4sinh²) —
+  hyperbolic CALOGERO kernel; equilibria at Σcoth = −d; S = ¾d + ¼Σcoth²; flip ⟺
+  Σcoth² ≳ 4d². Whole outer problem now translation-invariant in the log-zeros.
+- P-I/P-J/P-K ALL PASS at 0 violations (AMP-RESULTS run 6): dip-then-rise shape +
+  net-positive integral on every outer interval; outer gap growth; θ < 1/2 with the
+  drift deepening (θ_last = 0.19/0.16/0.14 at d = 16/24/40).
+- Residual named: (LEG) — the leg-comparison integral (rise beats dip); length
+  asymmetry already proved (θ < 1/2 + gap growth ⟹ up-leg longer). Next: integrate
+  the coth/csch² legs in closed form → a two-variable inequality in (θ, Δ_i/Δ_{i+1}).
+
+## 2026-07-04 — #138 round 3 (doc 28, all by reasoning): operator identity, winding, no-go
+- PROVED: Ĵ = R[J^d_{Pg}] = (D−τ)(D−τ̄)Â — the pair acts as theorem-m's oscillator
+  operator on reversed sections; B = (D−τ̄)Â UHP-stable; Z_c(J) = 2·wind(F_B(ℝ), τ):
+  the DISC reader is exact ⟺ the Stieltjes field curve winds ONCE around τ — the
+  lane's deck-class/winding language closes at the section level.
+- PROVED (first order): every petal of the field curve is TANGENT to τ at leading
+  order — the enclosure (winding) is decided by the dressed-background drift; explains
+  the O(1) race, 0.28 saturation, and why all one-parameter proxies failed.
+- PROVED (no-go): Â = y²(y−K)² with D²+1 has 4 non-real zeros — "operator adds ≤ 1
+  pair" is FALSE in general; the one-sided window shape is a necessary hypothesis of
+  (SPUR-R). Degenerate cluster re-derives the (CPI) threshold d > 1 + a²/b².
+- Lattice skeleton for (LEG): θ-drift law is a ONE-LINE consequence of the constraint
+  (swap jump coth > 1 exact ⟹ Δθ ≤ −1/(δW)); (L1) dW/dθ < 0 proved in outline
+  (φ = csch²coth termwise domination, cubic head vs exponential tail); (L3) far-end
+  direct. Residual = adiabatic comparison (#142): bound the loss 2∫W̃dt against the
+  swap gain on nondecreasing-gap fields (q-digamma sums).
+- Anti-theatre correction (user): round 3 done entirely by hand; unused probe deleted.

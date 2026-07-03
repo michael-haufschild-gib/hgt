@@ -59,11 +59,13 @@ threshold d > 1 + a²/b² — matching the measured visibility threshold of doc 
 
 > **(AMP-mono) [OPEN — the last analytic kernel of (SPUR-R)]:** for
 > d ≥ d₁(a,b,g), the margin sequence q_d(c_i)/(c_i⁴ℰ(c_i)) crosses 1 exactly once.
-> Sufficient: (i) tracking-regime clearance — margin ≳ d²·|x*−τ|²/(x*⁴ℰ_g(x*)) → ∞
-> (locally uniform convergence + the 1/d² curvature decay; proof-shaped);
-> (ii) dip clearance for d > d₁ (same mechanism at c ≈ a/(d−1)); (iii) outer
-> monotonicity of c⁴ℰ(c)/q_d(c) along extrema — the theorem-m E′ ≥ 0 statement in
-> electrostatic form; measured at ZERO violations, unproven.
+> Sufficient: (i) tracking-regime clearance — **PROVED, doc 25** (Thm A: κd² off the
+> zero set; Thm B: |x*−τ|²d/(m·x*²) inside multiplicity-m clusters via the Hermite
+> splitting, m ≤ 3 unconditional, m ≥ 4 modulo the proof-shaped Lemma R);
+> (ii) dip clearance — **SUBSUMED by (i), doc 25 Cor C** (the dip z_c → a sits inside
+> the tracking window); (iii) outer monotonicity of c⁴ℰ(c)/q_d(c) along extrema — the
+> theorem-m E′ ≥ 0 statement in electrostatic form; measured at ZERO violations;
+> attacked and re-cut in doc 26 via the reversal: OPEN core is now (S-mono).
 
 The average version of (iii) is free (d charges total — pigeonhole gives spacing
 ~ c/d on dyadic blocks); the pointwise-at-extrema version with the right constant is
@@ -78,7 +80,7 @@ With (AMP-mono): (SPUR-R) closes for one-sided-far carriers ⟹ the DISC reader
 u₀ = −T², whose zero set has exactly the model-2 shape (bounded on the right by 0⁻,
 infinite far range on the left only ⟹ T = 1). The t-plane recentered carrier is
 two-sided-far (T = 2 risk, Z_c ≤ 4): theorem-grade reading should use the u-plane
-carrier; the t-plane reader stays as the cheap instrument. Next: prove (i)+(ii)
-rigorously (they are Hurwitz-regime estimates), then attack (iii) via the
-equilibrium constraint — and in parallel run the u-plane reader on the #136
-truncation instance, the first theorem-track finite window.
+carrier; the t-plane reader stays as the cheap instrument. Parts (i)+(ii) are now
+PROVED (doc 25, with the heat-operator identity and the Hermite cluster splitting);
+next: attack (iii) via the equilibrium constraint — and run the u-plane reader on
+the #136 truncation instance, the first theorem-track finite window.
