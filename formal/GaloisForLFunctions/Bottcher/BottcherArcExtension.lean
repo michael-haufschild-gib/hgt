@@ -132,14 +132,16 @@ theorem continuesAcross_of_greenPotential_harmonic_extension
 
 /-- **Local Kellogg–Warschawski extension from Green boundary regularity alone.**  The `hu`
 hypothesis of `continuesAcross_of_greenPotential_harmonic_extension` is now discharged by the harmonic
-Schwarz reflection across the unit circle (`harmonicOnNhd_reflectCircle`): the extended potential is the
-*odd reflection* `reflectCircle (log‖β∘γ‖)`, harmonic on a ball straddling the circle.  What remains is
-exactly the **Green boundary regularity** of the exterior Böttcher map — the outer potential
-`u₀ = log‖β∘γ‖` is harmonic on the exterior side, continuous up to the arc, and **vanishes on the arc**
-(`hzero`, i.e. `‖β∘γ‖ → 1`).  Under those data (plus the local-biholomorphism / basin-side geometry),
-the branch `β` continues analytically across the frontier point `z₀`. -/
+Schwarz reflection across the unit circle (`harmonicOnNhd_reflectCircle`): the extension is the *odd
+reflection* `reflectCircle u₀`, harmonic on a ball straddling the circle.  What remains is exactly the
+**Green boundary regularity** of the exterior Böttcher map, packaged as an *extended potential* `u₀`:
+harmonic on the exterior side, agreeing there with `log‖β∘γ‖` (`houter`), continuous up to the arc
+(`hcont`), and **vanishing on the arc** (`hzero`, i.e. `‖β∘γ‖ → 1`).  Note `u₀` is a genuine extension:
+on the arc `β∘γ` is not defined (its argument is a Julia point), so the boundary value `0` is the Green
+*limit*, not the pointwise `log‖β∘γ‖`.  Under those data (plus the local-biholomorphism / basin
+geometry), the branch `β` continues analytically across the frontier point `z₀`. -/
 theorem continuesAcross_of_greenBoundaryRegularity
-    {c₁ : ℂ} {β φ γ : ℂ → ℂ} {z₀ : ℂ} {r : ℝ}
+    {c₁ : ℂ} {β φ γ : ℂ → ℂ} {u₀ : ℂ → ℝ} {z₀ : ℂ} {r : ℝ}
     (hr : 0 < r) (hr1 : r ≤ 1/2) (hw₀ : ‖φ z₀‖ = 1)
     (hφAt : AnalyticAt ℂ φ z₀)
     (hγφ : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, γ (φ z) = z)
@@ -147,11 +149,10 @@ theorem continuesAcross_of_greenBoundaryRegularity
     (hβγhol : DifferentiableOn ℂ (fun w => β (γ w))
       (Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}))
     (hβγne : ∀ w ∈ Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}, β (γ w) ≠ 0)
-    (hharm : ∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ →
-      InnerProductSpace.HarmonicAt (fun v => Real.log ‖β (γ v)‖) w)
-    (hcont : ContinuousOn (fun v => Real.log ‖β (γ v)‖)
-      ({w : ℂ | 1 ≤ ‖w‖} ∩ Metric.ball (φ z₀) r))
-    (hzero : ∀ w ∈ Metric.ball (φ z₀) r, ‖w‖ = 1 → Real.log ‖β (γ w)‖ = 0) :
+    (hharm : ∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ → InnerProductSpace.HarmonicAt u₀ w)
+    (hcont : ContinuousOn u₀ ({w : ℂ | 1 ≤ ‖w‖} ∩ Metric.ball (φ z₀) r))
+    (hzero : ∀ w ∈ Metric.ball (φ z₀) r, ‖w‖ = 1 → u₀ w = 0)
+    (houter : ∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ → u₀ w = Real.log ‖β (γ w)‖) :
     U0NaturalBoundary.ContinuesAcross β (filledJulia c₁)ᶜ z₀ := by
   obtain ⟨r₁, hr₁0, hr₁r, hharmRefl⟩ :=
     harmonicOnNhd_reflectCircle hr hr1 hw₀ hharm hcont hzero
@@ -160,5 +161,42 @@ theorem continuesAcross_of_greenBoundaryRegularity
     (fun w hw => hβγne w ⟨Metric.ball_subset_ball hr₁r hw.1, hw.2⟩) hharmRefl ?_
   intro w hw
   rw [reflectCircle_outer (le_of_lt hw.2)]
+  exact houter w (Metric.ball_subset_ball hr₁r hw.1) hw.2
+
+/-- **KW extension reduced to Green-limit boundary regularity.**  Taking the extended potential to be
+the dynamical Green limit `u₀ = greenLimit c₁ ∘ γ`, the harmonic + outer-agreement inputs are supplied
+by the tree's Böttcher/Green facts: `harmonicOnNhd_greenLimit_basin` (Green harmonic on the basin) via
+the analytic `γ`, and `norm_bottcherCoord_eq_exp_green_escape` for `log‖β∘γ‖ = greenLimit ∘ γ` on the
+exterior side.  What is left is exactly the **potential-theoretic boundary regularity** of the Green
+function at the Julia frontier: it *vanishes* on the arc (`hgzero`) and is *continuous up to* it
+(`hgcont`).  Under those two inputs (plus the local-biholomorphism / basin geometry), `β` continues
+analytically across `z₀`. -/
+theorem continuesAcross_of_greenLimit_boundary
+    {c₁ : ℂ} {β φ γ : ℂ → ℂ} {z₀ : ℂ} {r : ℝ}
+    (hr : 0 < r) (hr1 : r ≤ 1/2) (hw₀ : ‖φ z₀‖ = 1)
+    (hφAt : AnalyticAt ℂ φ z₀)
+    (hγφ : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, γ (φ z) = z)
+    (hbasin : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, 1 < ‖φ z‖)
+    (hβγhol : DifferentiableOn ℂ (fun w => β (γ w))
+      (Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}))
+    (hβγne : ∀ w ∈ Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}, β (γ w) ≠ 0)
+    (hγAn : ∀ w ∈ Metric.ball (φ z₀) r, AnalyticAt ℂ γ w)
+    (hγesc : ∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ → γ w ∈ escapeOpen c₁)
+    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hgzero : ∀ w ∈ Metric.ball (φ z₀) r, ‖w‖ = 1 → greenLimit c₁ (γ w) = 0)
+    (hgcont : ContinuousOn (fun w => greenLimit c₁ (γ w))
+      ({w : ℂ | 1 ≤ ‖w‖} ∩ Metric.ball (φ z₀) r)) :
+    U0NaturalBoundary.ContinuesAcross β (filledJulia c₁)ᶜ z₀ := by
+  refine continuesAcross_of_greenBoundaryRegularity hr hr1 hw₀ hφAt hγφ hbasin hβγhol hβγne
+    ?_ hgcont hgzero ?_
+  · -- Green ∘ γ is harmonic on the exterior side
+    intro w hw hnorm
+    exact harmonicAt_comp_analytic
+      (harmonicOnNhd_greenLimit_basin c₁ (γ w)
+        (escapeOpen_subset_compl_filledJulia c₁ (hγesc w hw hnorm))) (hγAn w hw)
+  · -- log‖β∘γ‖ = greenLimit ∘ γ on the exterior side
+    intro w hw hnorm
+    have hesc := hγesc w hw hnorm
+    rw [hβesc _ hesc, norm_bottcherCoord_eq_exp_green_escape hesc, Real.log_exp]
 
 end Bottcher

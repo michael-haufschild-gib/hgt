@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4724 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4725 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -1023,7 +1023,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `isPreconnected_compl_filledJulia` | `GaloisForLFunctions.Bottcher.BasinConnected` | `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:229` | Basin-connectedness, UNCONDITIONAL.** `ℂ ∖ K_c` is preconnected (the basin of `∞` is connected), discharging the hypothesis of the E1/E-rigidity chain. |
 | theorem | `exists_global_branch_with_inverse_of_mem_mandelbrot` | `GaloisForLFunctions.Bottcher.BasinGlobalInverse` | `formal/GaloisForLFunctions/Bottcher/BasinGlobalInverse.lean:25` | The connected branch together with its global analytic inverse.** For `c ∈ mandelbrot` there are `β, ψ` with `β` the Gap-2 branch (analytic on the basin, extending the Böttcher coo |
 | theorem | `continuesAcross_of_greenPotential_harmonic_extension` | `GaloisForLFunctions.Bottcher.BottcherArcExtension` | `formal/GaloisForLFunctions/Bottcher/BottcherArcExtension.lean:52` | Local Kellogg–Warschawski boundary extension (via the Green-potential harmonic reflection).** At a frontier point `z₀` where the branch `φ` is a local biholomorphism onto the unit  |
-| theorem | `continuesAcross_of_greenBoundaryRegularity` | `GaloisForLFunctions.Bottcher.BottcherArcExtension` | `formal/GaloisForLFunctions/Bottcher/BottcherArcExtension.lean:141` | Local Kellogg–Warschawski extension from Green boundary regularity alone.** The `hu` hypothesis of `continuesAcross_of_greenPotential_harmonic_extension` is now discharged by the h |
+| theorem | `continuesAcross_of_greenBoundaryRegularity` | `GaloisForLFunctions.Bottcher.BottcherArcExtension` | `formal/GaloisForLFunctions/Bottcher/BottcherArcExtension.lean:143` | Local Kellogg–Warschawski extension from Green boundary regularity alone.** The `hu` hypothesis of `continuesAcross_of_greenPotential_harmonic_extension` is now discharged by the h |
+| theorem | `continuesAcross_of_greenLimit_boundary` | `GaloisForLFunctions.Bottcher.BottcherArcExtension` | `formal/GaloisForLFunctions/Bottcher/BottcherArcExtension.lean:174` | KW extension reduced to Green-limit boundary regularity.** Taking the extended potential to be the dynamical Green limit `u₀ = greenLimit c₁ ∘ γ`, the harmonic + outer-agreement in |
 | theorem | `tendsto_bottcherCoord_sub_id` | `GaloisForLFunctions.Bottcher.BottcherAsymptotic` | `formal/GaloisForLFunctions/Bottcher/BottcherAsymptotic.lean:21` | Normalization asymptotic** `φ_c(z) − z → 0` as `z → ∞`. |
 | theorem | `tendsto_sq_add_cobounded` | `GaloisForLFunctions.Bottcher.BottcherAsymptotic` | `formal/GaloisForLFunctions/Bottcher/BottcherAsymptotic.lean:51` | `z ↦ z²+c` tends to `∞` (cobounded → cobounded): `‖z²+c‖ ≥ ‖z‖²−‖c‖ → ∞`. |
 | theorem | `c_eq_of_bottcherCoord_eqOn` | `GaloisForLFunctions.Bottcher.BottcherAsymptotic` | `formal/GaloisForLFunctions/Bottcher/BottcherAsymptotic.lean:71` | E2 functional-equation core.** If `φ_{c₁} = φ_{c₂}` on the deep exterior, then `c₁ = c₂`. From the functional equation `φ_c(z²+c)=φ_c(z)²`, equal coordinates force `φ_{c₂}(z²+c₁)=φ |

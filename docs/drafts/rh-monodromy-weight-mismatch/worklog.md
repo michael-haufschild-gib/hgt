@@ -580,3 +580,32 @@ about domination on the charts.
 
 Next: far-field anchor (#118) gives the endpoint the conservation argument drains to;
 then the program doc (#119) states where annihilation consumes Arc B's parity.
+
+## 2026-07-03 — waves banked (M3, B4) + q62 cross-read yields three transpositions
+
+**M3 DONE — FarFieldAnchor.lean** (deckClass_of_nonvanishing = the m=0 instance;
+xi_deckClass_far_field: boxes right of Re s = 1 carry zero charge at every rung).
+Conservation now has its drain endpoint.
+
+**B4 DONE — ReflectionParity.lean**, and the planned FEDescent construction was
+REPLACED by a five-line reflection-cancellation argument (peel, reflect, cancel the
+monomial off the puncture, evaluate at the fixed point): analyticOrderAt_even_of_reflection
+(generic — applies to every FE-symmetric pencil member), xi_central_order_even,
+xi_central_ladder_two, xi_deckClass_central_sq_trivial (w₁ trivial at s = 1/2, from FE
+alone). Mechanism named: parity is seen at the FIXED/RAMIFIED locus of a constraint
+symmetry; D–H certifies FE alone cannot force it off-line.
+
+**q62 cross-read (their new formal work):** SchwarzReflection.lean (Painlevé/Morera:
+continuous + holomorphic-off-a-line ⟹ holomorphic; affine and biholomorphic-preimage
+forms; compiles standalone, mathlib-only) + in-flight PoissonHarmonic/HarmonicMaxPrinciple
+(Dirichlet stack). Three transpositions carded:
+- **#121 u-plane descent**: F(w) = ξ(1/2 + √w) is continuous across the slit by evenness,
+  their Painlevé engine makes it ENTIRE — the global descent #114 skipped becomes cheap.
+  Capstone: RH ⟺ F ≠ 0 on the slit plane ⟺ ℤ₂-tower of F on the slit plane. The critical
+  line becomes the SLIT; the deck charts' local slitPlane geometry goes GLOBAL.
+- **#122 seam cocycle**: reflection gluing of the two half-plane towers across the
+  critical line; on-line zeros enter as seam jumps exp(2πi·m/2^k) — M4's seam-absorption
+  account made formal.
+- **#123 [CONJECTURE] modulus-only holography**: deck class = period of the harmonic
+  conjugate of (1/n)log|f| — the charge from |ξ| alone on boundary circles; waits on
+  their Dirichlet stack landing.
