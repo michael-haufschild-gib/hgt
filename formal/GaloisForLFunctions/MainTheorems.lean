@@ -17,3 +17,4 @@ import GaloisForLFunctions.Bottcher
 import GaloisForLFunctions.FullyProvenNewTargets
 import GaloisForLFunctions.KummerRootApplications
 import GaloisForLFunctions.Q62RootTower
+import GaloisForLFunctions.RHTower

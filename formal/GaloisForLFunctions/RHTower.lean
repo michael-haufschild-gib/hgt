@@ -1,0 +1,20 @@
+/-
+# RHTower — the ξ-Kummer tower and the RH_{2^k} multiplicity-parity ladder
+
+Umbrella for the MWM lane's Arc A (docs/drafts/rh-monodromy-weight-mismatch/):
+
+* `KummerObstruction` — roots force order divisibility; root rigidity; convex ⟹ simply
+  connected.
+* `Peeling` — global single-zero factorisation `f = (·-ρ)^m · h`.
+* `RootExistence` — `exists_root_iff_orders_dvd`: analytic `n`-th roots exist iff every
+  vanishing order is divisible by `n` (convex exhaustion + gluing).
+* `CoherentTower` — the ℤ₂-Kummer tower; existence ⟺ nonvanishing.
+* `RiemannTower` — the entire completed `xi`, the ladder `RHLadder k`, and the capstones
+  `rh_iff_xi_ne_zero_right`, `rhLadder_iff_root`, `rh_iff_tower`, `rh_iff_forall_ladder`
+  against mathlib's `RiemannHypothesis`.
+-/
+import GaloisForLFunctions.RHTower.KummerObstruction
+import GaloisForLFunctions.RHTower.Peeling
+import GaloisForLFunctions.RHTower.RootExistence
+import GaloisForLFunctions.RHTower.CoherentTower
+import GaloisForLFunctions.RHTower.RiemannTower

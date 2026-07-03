@@ -252,6 +252,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62Field.lean:269` | by `mvEval_deepBall_eq_zero_iff` (faithfulness); the single remaining input `hFunIndep` is precisely |
 | `formal/GaloisForLFunctions/Bottcher/Q62KummerAssembly.lean:35` | against `meroField`. The remaining work to make it unconditional is the *mechanical* construction of |
 | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:24` | algebraic surface of the disconnected case: the lone remaining input is the *geometric* non-squareness |
+| `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:20` | Böttcher branch `β_{c₁}` reflects across it — the isolated `ReflectionCore`, the one remaining input; |
+| `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:119` | /-- **The reflection core — the one remaining deep input of smooth-piece rigidity.** A non-constant |
 | `formal/GaloisForLFunctions/Bottcher/QuarticDefect.lean:72` | remaining input is the Γ(2) cusp-form finiteness (modular-curve compactness / valence), absent from |
 | `formal/GaloisForLFunctions/Bottcher/QuarticModularForm.lean:6` | `zero_at_cusps'`) is the remaining input toward `F ≡ 0` via `NormTrace` to level-one weight-12. |
 | `formal/GaloisForLFunctions/Bottcher/RealPairExposed.lean:13` | so `ExposedOneSided (c₁, c₂)` reduces to the SINGLE remaining clause |
@@ -289,8 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchEventual.lean:16` | non-strong roots.  The remaining `c₁` datum is the native frontier separable nonresonant periodic |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityHNBCrossing.lean:660` | remaining input is the common-basin sparse crossing geometry for the continued `c₂` branch. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean:1720` | are constructed internally from coherent level-root towers; the remaining per-relation datum is purely |
-| `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean:655` | The only remaining primitive/squarefree output is the bad-locus polynomial forcing separability of one |
-| `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean:905` | /-- If the top GhostLeading factor vanished, any remaining GhostLeading stratum is strictly lower in |
 
 ## Historical Status Logs
 
