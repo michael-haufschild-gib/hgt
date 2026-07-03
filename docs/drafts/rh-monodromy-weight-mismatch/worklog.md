@@ -532,3 +532,18 @@ Bottcher/STATUS.md (tail), Bottcher/DyadicMonodromy.lean. Findings for THIS lane
 - Lean traps: Complex.norm_real lands in ‖·‖_ℝ (insert Real.norm_eq_abs before
   abs_of_pos); simp [sub_im] closes flip-identities (no trailing ring); affine star-convex
   identities need t+s=1 via linear_combination.
+
+## 2026-07-04 — multi-zero ADDITIVITY banked (DeckMultiZero.lean)
+- deckClass_multi_zero PROVED, axiom-clean, RHTower green 8565: any local n-roots of
+  ∏(z−ρᵢ)^{mᵢ}·h on the slit annulus charts have class exp(2πi·Σmᵢ/n) — the cocycle is
+  additive over enclosed zeros. The design discovery that kept it cheap: off-center
+  corrections u(z) = 1 − (ρ−a)/(z−a) map the WHOLE annulus into B(1,1) ⊂ slitPlane ⟹
+  their roots are global and invisible to the class; every zero contributes exactly its
+  monomial class at the common anchor.
+- New infrastructure: deckClass_mul/prod (unconditional field identities);
+  slit-annulus charts with polar-image preconnectedness (convex rectangle → continuous
+  image; arg/norm_mul_exp_arg_mul_I bookkeeping); corrRoot with slitPlane containment.
+- w_k is now: μ_n-valued, choice-independent, coherent in k, trivial ⟺ root-glues,
+  counts single zeros, ADDS over multiple zeros. Remaining wiring: the ξ layer (per-box
+  invariant of the actual completed zeta — peel ξ's zeros via analyticOrderAt +
+  exists_peel, feed deckClass_multi_zero). Next tick.

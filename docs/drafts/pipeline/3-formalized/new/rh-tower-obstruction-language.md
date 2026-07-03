@@ -99,3 +99,14 @@ h-root from Arc A root existence with vacuous zero set. All axiom-clean
 [propext, Classical.choice, Quot.sound]; RHTower green 8564 jobs. Files of the A3 arc:
 DeckCocycle.lean (class + gluing iff + coherence), DeckMonomial.lean (branches +
 dictionary), DeckAssembly.lean (geometry + capstone).
+
+2026-07-04 — extended: `RHTower/DeckMultiZero.lean` — multi-zero ADDITIVITY of the cocycle:
+`deckClass_multi_zero` — for f = ∏(z−ρᵢ)^{mᵢ}·h on ball a R with all ρᵢ ∈ closedBall a r₀
+and h nonvanishing, ANY local n-th roots on the slit ANNULUS charts carry deck class
+exp(2πi·(Σmᵢ)/n): w_n counts the TOTAL enclosed order. Mechanism: off-center factorization
+z−ρ = (z−a)·u(z) with u(annulus) ⊆ B(1,1) ⊆ slitPlane ⟹ correction roots are GLOBAL and
+cancel (deckClass_mul_global); per-zero monomial classes multiply (deckClass_mul/prod);
+annulus-chart preconnectedness via polar parametrization (continuous image of a convex
+rectangle — isPreconnected_chartRA/LA). Supporting: corrRoot + corr_mem_slitPlane +
+shifted_factor + deckClass_congr. All axiom-clean; RHTower green 8565 jobs. NO argument
+principle. Next: wiring to the ξ layer (per-box invariant of completedRiemannZeta).

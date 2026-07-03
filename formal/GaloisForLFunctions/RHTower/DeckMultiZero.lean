@@ -252,4 +252,192 @@ theorem shifted_factor {a ρ z : ℂ} (hz : z ≠ a) :
   field_simp
   ring
 
+/-- Deck classes only see the four point values. -/
+theorem deckClass_congr {F F' G G' : ℂ → ℂ} {pP pM : ℂ}
+    (h1P : F pP = F' pP) (h1M : F pM = F' pM)
+    (h2P : G pP = G' pP) (h2M : G pM = G' pM) :
+    deckClass F G pP pM = deckClass F' G' pP pM := by
+  simp only [deckClass, h1P, h1M, h2P, h2M]
+
+/-- **Multi-zero additivity.** If `f = ∏ᵢ (z − ρᵢ)^{mᵢ} · h` on `ball a R` with every
+`ρᵢ` inside `closedBall a r₀` and `h` analytic nonvanishing, then ANY local analytic
+`n`-th roots of `f` on the two slit annulus charts have deck class
+`exp(2πi·(Σᵢ mᵢ)/n)` at the basepoints `a ± ((r₀+R)/2)i`: the coarse cocycle counts the
+TOTAL enclosed order mod `n`. No argument principle. -/
+theorem deckClass_multi_zero {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) (m : ι → ℕ)
+    {f h G₁ G₂ : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    {n : ℕ} (hn : 0 < n)
+    (hρ : ∀ i ∈ s, ‖ρ i - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hfact : ∀ z ∈ ball a R, f z = (∏ i ∈ s, (z - ρ i) ^ m i) * h z)
+    (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ n = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ n = f z) :
+    deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) =
+      exp (2 * (Real.pi : ℂ) * I * (∑ i ∈ s, (m i : ℂ)) / n) := by
+  classical
+  set ε : ℝ := (r₀ + R) / 2 with hε_def
+  have hεr : r₀ < ε := by rw [hε_def]; linarith
+  have hεR : ε < R := by rw [hε_def]; linarith
+  have hεpos : 0 < ε := lt_of_le_of_lt h0 hεr
+  -- annulus membership facts
+  have hchart_ball : ∀ z ∈ chartRA a r₀ R, z ∈ ball a R := fun z hz => hz.2.1
+  have hchart_ballL : ∀ z ∈ chartLA a r₀ R, z ∈ ball a R := fun z hz => hz.2.1
+  have hchart_far : ∀ z, z ∈ ball a R \ closedBall a r₀ → ∀ i ∈ s, ‖ρ i - a‖ < ‖z - a‖ := by
+    intro z hz i hi
+    have : r₀ < ‖z - a‖ := by
+      have := hz.2
+      rw [mem_closedBall, Complex.dist_eq, not_le] at this
+      exact this
+    exact lt_of_le_of_lt (hρ i hi) this
+  have hchart_ne : ∀ z, z ∈ ball a R \ closedBall a r₀ → z ≠ a := by
+    intro z hz
+    have : r₀ < ‖z - a‖ := by
+      have := hz.2
+      rw [mem_closedBall, Complex.dist_eq, not_le] at this
+      exact this
+    intro hza
+    rw [hza] at this
+    simp at this
+    linarith
+  -- the h-root on the ball
+  have hZloc : ∀ N : ℕ, {w ∈ ball a R ∩ ball a ((N : ℝ) + 1) | h w = 0}.Finite := by
+    intro N
+    have : {w ∈ ball a R ∩ ball a ((N : ℝ) + 1) | h w = 0} = ∅ := by
+      ext w
+      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_and]
+      intro hw
+      exact hh0 w hw.1
+    rw [this]
+    exact Set.finite_empty
+  obtain ⟨r, hran, hrpow⟩ :=
+    (exists_root_iff_orders_dvd hn isOpen_ball (convex_ball a R)
+      (mem_ball_self (lt_of_le_of_lt h0 hrR))
+      hh (hh0 a (mem_ball_self (lt_of_le_of_lt h0 hrR))) hZloc).mpr
+      (fun w hw h0' => absurd h0' (hh0 w hw))
+  -- basepoints
+  set pP := a + ((ε : ℝ) : ℂ) * I with hpP_def
+  set pM := a - ((ε : ℝ) : ℂ) * I with hpM_def
+  have hεC : ((ε : ℝ) : ℂ) ≠ 0 := by
+    simpa using hεpos.ne'
+  have hPsub : pP - a = ((ε : ℝ) : ℂ) * I := by rw [hpP_def]; ring
+  have hMsub : pM - a = -(((ε : ℝ) : ℂ) * I) := by rw [hpM_def]; ring
+  have hnormP : ‖pP - a‖ = ε := by
+    rw [hPsub, norm_mul, Complex.norm_real, Complex.norm_I, mul_one, Real.norm_eq_abs,
+      abs_of_pos hεpos]
+  have hnormM : ‖pM - a‖ = ε := by
+    rw [hMsub, norm_neg, norm_mul, Complex.norm_real, Complex.norm_I, mul_one,
+      Real.norm_eq_abs, abs_of_pos hεpos]
+  have hannP : pP ∈ ball a R \ closedBall a r₀ := by
+    constructor
+    · rw [mem_ball, Complex.dist_eq, hnormP]; exact hεR
+    · rw [mem_closedBall, Complex.dist_eq, hnormP, not_le]; exact hεr
+  have hannM : pM ∈ ball a R \ closedBall a r₀ := by
+    constructor
+    · rw [mem_ball, Complex.dist_eq, hnormM]; exact hεR
+    · rw [mem_closedBall, Complex.dist_eq, hnormM, not_le]; exact hεr
+  have himP : (pP - a).im = ε := by rw [hPsub]; simp
+  have himM : (pM - a).im = -ε := by rw [hMsub]; simp
+  have hPmemR : pP ∈ chartRA a r₀ R :=
+    ⟨Complex.mem_slitPlane_iff.mpr (Or.inr (by rw [himP]; exact hεpos.ne')), hannP⟩
+  have hPmemL : pP ∈ chartLA a r₀ R := by
+    refine ⟨Complex.mem_slitPlane_iff.mpr (Or.inr ?_), hannP⟩
+    have : (a - pP).im = -((pP - a).im) := by simp [Complex.sub_im]
+    rw [this, himP]
+    exact neg_ne_zero.mpr hεpos.ne'
+  have hMmemR : pM ∈ chartRA a r₀ R := by
+    refine ⟨Complex.mem_slitPlane_iff.mpr (Or.inr ?_), hannM⟩
+    rw [himM]
+    exact neg_ne_zero.mpr hεpos.ne'
+  have hMmemL : pM ∈ chartLA a r₀ R := by
+    refine ⟨Complex.mem_slitPlane_iff.mpr (Or.inr ?_), hannM⟩
+    have : (a - pM).im = -((pM - a).im) := by simp [Complex.sub_im]
+    rw [this, himM]
+    simpa using hεpos.ne'
+  -- f nonvanishing at the basepoints
+  have hfactor_ne : ∀ p, p ∈ ball a R \ closedBall a r₀ → ∀ i ∈ s, p - ρ i ≠ 0 := by
+    intro p hp i hi
+    have hlt := hchart_far p hp i hi
+    intro h0'
+    rw [sub_eq_zero] at h0'
+    rw [h0'] at hlt
+    have : ‖ρ i - a‖ = ‖ρ i - a‖ := rfl
+    exact lt_irrefl _ hlt
+  have hfP : f pP ≠ 0 := by
+    rw [hfact pP hannP.1]
+    refine mul_ne_zero (Finset.prod_ne_zero_iff.mpr fun i hi =>
+      pow_ne_zero _ (hfactor_ne pP hannP i hi)) (hh0 pP hannP.1)
+  have hfM : f pM ≠ 0 := by
+    rw [hfact pM hannM.1]
+    refine mul_ne_zero (Finset.prod_ne_zero_iff.mpr fun i hi =>
+      pow_ne_zero _ (hfactor_ne pM hannM i hi)) (hh0 pM hannM.1)
+  -- reference roots
+  set g₁ : ℂ → ℂ := fun z =>
+    (∏ i ∈ s, (monoRoot₁ a (m i) n z * corrRoot a (ρ i) (m i) n z)) * r z with hg₁_def
+  set g₂ : ℂ → ℂ := fun z =>
+    (∏ i ∈ s, (monoRoot₂ a (m i) n z * corrRoot a (ρ i) (m i) n z)) * r z with hg₂_def
+  have hg₁an : AnalyticOnNhd ℂ g₁ (chartRA a r₀ R) := by
+    intro z hz
+    refine AnalyticAt.mul ?_ (hran z hz.2.1)
+    refine Finset.analyticAt_fun_prod s (fun i hi => ?_)
+    exact (monoRoot₁_analyticOnNhd a (m i) n z hz.1).mul
+      (corrRoot_analyticAt (m i) n (hchart_ne z hz.2) (hchart_far z hz.2 i hi))
+  have hg₂an : AnalyticOnNhd ℂ g₂ (chartLA a r₀ R) := by
+    intro z hz
+    refine AnalyticAt.mul ?_ (hran z hz.2.1)
+    refine Finset.analyticAt_fun_prod s (fun i hi => ?_)
+    exact (monoRoot₂_analyticOnNhd a (m i) n z hz.1).mul
+      (corrRoot_analyticAt (m i) n (hchart_ne z hz.2) (hchart_far z hz.2 i hi))
+  have hpg₁ : ∀ z ∈ chartRA a r₀ R, g₁ z ^ n = f z := by
+    intro z hz
+    rw [hg₁_def]
+    simp only
+    rw [mul_pow, ← Finset.prod_pow, hrpow z hz.2.1, hfact z hz.2.1]
+    congr 1
+    refine Finset.prod_congr rfl fun i hi => ?_
+    rw [mul_pow, monoRoot₁_pow hn hz.1, corrRoot_pow hn (hchart_far z hz.2 i hi),
+      ← mul_pow, ← shifted_factor (hchart_ne z hz.2)]
+  have hpg₂ : ∀ z ∈ chartLA a r₀ R, g₂ z ^ n = f z := by
+    intro z hz
+    rw [hg₂_def]
+    simp only
+    rw [mul_pow, ← Finset.prod_pow, hrpow z hz.2.1, hfact z hz.2.1]
+    congr 1
+    refine Finset.prod_congr rfl fun i hi => ?_
+    rw [mul_pow, monoRoot₂_pow hn hz.1, corrRoot_pow hn (hchart_far z hz.2 i hi),
+      ← mul_pow, ← shifted_factor (hchart_ne z hz.2)]
+  -- r nonvanishing at basepoints
+  have hrP : r pP ≠ 0 := fun h0' => (hh0 pP hannP.1) (by
+    rw [← hrpow pP hannP.1, h0', zero_pow hn.ne'])
+  have hrM : r pM ≠ 0 := fun h0' => (hh0 pM hannM.1) (by
+    rw [← hrpow pM hannM.1, h0', zero_pow hn.ne'])
+  -- assemble
+  have step1 : deckClass G₁ G₂ pP pM = deckClass g₁ g₂ pP pM :=
+    deckClass_root_indep hn (isOpen_chartRA a r₀ R) (isPreconnected_chartRA a h0)
+      (isOpen_chartLA a r₀ R) (isPreconnected_chartLA a h0)
+      hg₁an hG₁ hg₂an hG₂ hpg₁ hpG₁ hpg₂ hpG₂
+      hPmemR hPmemL hMmemR hMmemL hfP hfM
+  have step2 : deckClass g₁ g₂ pP pM =
+      deckClass (fun z => ∏ i ∈ s, (monoRoot₁ a (m i) n z * corrRoot a (ρ i) (m i) n z))
+        (fun z => ∏ i ∈ s, (monoRoot₂ a (m i) n z * corrRoot a (ρ i) (m i) n z)) pP pM := by
+    rw [hg₁_def, hg₂_def]
+    exact deckClass_mul_global hrP hrM
+  have step3 : deckClass
+      (fun z => ∏ i ∈ s, (monoRoot₁ a (m i) n z * corrRoot a (ρ i) (m i) n z))
+      (fun z => ∏ i ∈ s, (monoRoot₂ a (m i) n z * corrRoot a (ρ i) (m i) n z)) pP pM =
+      ∏ i ∈ s, deckClass (fun z => monoRoot₁ a (m i) n z * corrRoot a (ρ i) (m i) n z)
+        (fun z => monoRoot₂ a (m i) n z * corrRoot a (ρ i) (m i) n z) pP pM :=
+    deckClass_prod s _ _ pP pM
+  have step4 : ∀ i ∈ s,
+      deckClass (fun z => monoRoot₁ a (m i) n z * corrRoot a (ρ i) (m i) n z)
+        (fun z => monoRoot₂ a (m i) n z * corrRoot a (ρ i) (m i) n z) pP pM =
+      exp (2 * (Real.pi : ℂ) * I * (m i) / n) := by
+    intro i hi
+    rw [deckClass_mul_global (corrRoot_ne_zero a (ρ i) (m i) n pP)
+      (corrRoot_ne_zero a (ρ i) (m i) n pM), hpP_def, hpM_def]
+    exact deckClass_monomial' a (m i) n hεpos
+  rw [step1, step2, step3, Finset.prod_congr rfl step4, ← Complex.exp_sum]
+  congr 1
+  rw [Finset.mul_sum, Finset.sum_div]
+
 end RHTower

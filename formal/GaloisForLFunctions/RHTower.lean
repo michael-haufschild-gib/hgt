@@ -25,3 +25,4 @@ import GaloisForLFunctions.RHTower.PerturbationZero
 import GaloisForLFunctions.RHTower.DeckCocycle
 import GaloisForLFunctions.RHTower.DeckMonomial
 import GaloisForLFunctions.RHTower.DeckAssembly
+import GaloisForLFunctions.RHTower.DeckMultiZero
