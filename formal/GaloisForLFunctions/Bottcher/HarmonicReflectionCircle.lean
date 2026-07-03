@@ -147,7 +147,7 @@ real axis by `Ψ = reflTransport`: `reflectCircle u₀ ∘ Ψ` is the odd reflec
 `u₀ ∘ Ψ`, so `harmonicAt_reflect_line` gives harmonicity at `t₁ = i·log w₁`; the analytic local inverse
 of `Ψ` (`exists_localInverse_of_continuation`) transports it back to `w₁`. -/
 theorem harmonicAt_reflectCircle_arc {u₀ : ℂ → ℝ} {w₀ w₁ : ℂ} {R : ℝ}
-    (hR : 0 < R) (hw₁circ : ‖w₁‖ = 1) (hw₁ball : w₁ ∈ ball w₀ R)
+    (hw₁circ : ‖w₁‖ = 1) (hw₁ball : w₁ ∈ ball w₀ R)
     (hharm : ∀ w ∈ ball w₀ R, 1 < ‖w‖ → HarmonicAt u₀ w)
     (hcont : ContinuousOn u₀ ({w : ℂ | 1 ≤ ‖w‖} ∩ ball w₀ R))
     (hzero : ∀ w ∈ ball w₀ R, ‖w‖ = 1 → u₀ w = 0) :
@@ -251,7 +251,7 @@ theorem harmonicAt_reflectCircle_arc {u₀ : ℂ → ℝ} {w₀ w₁ : ℂ} {R :
             (show t ∈ {z : ℂ | 0 ≤ z.im} by
               rw [mem_setOf_eq, ← Real.one_le_exp_iff, ← norm_reflTransport]; exact hn)]
       · rw [reflectCircle_inner (not_le.mp hn),
-          Set.piecewise_eq_of_not_mem _ _ _
+          Set.piecewise_eq_of_notMem _ _ _
             (show t ∉ {z : ℂ | 0 ≤ z.im} by
               rw [mem_setOf_eq, not_le, ← Real.exp_lt_one_iff, ← norm_reflTransport]
               exact not_le.mp hn),
@@ -295,7 +295,7 @@ theorem harmonicOnNhd_reflectCircle {u₀ : ℂ → ℝ} {w₀ : ℂ} {R : ℝ}
   have hr₁ball : ball w₀ r₁ ⊆ ball w₀ R := fun w hw => (hr₁sub hw).1
   have hr₁R : r₁ ≤ R := by
     by_contra h
-    push_neg at h
+    have h : R < r₁ := not_le.mp h
     have : w₀ + (((R + r₁) / 2 : ℝ) : ℂ) ∈ ball w₀ r₁ := by
       rw [mem_ball, dist_eq_norm, show w₀ + (((R + r₁) / 2 : ℝ) : ℂ) - w₀ = (((R + r₁) / 2 : ℝ) : ℂ) by ring,
         Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
@@ -320,7 +320,7 @@ theorem harmonicOnNhd_reflectCircle {u₀ : ℂ → ℝ} {w₀ : ℂ} {R : ℝ}
     have hσnorm : 1 < ‖circleInv w‖ := by
       rw [norm_circleInv]; exact (one_lt_inv₀ (norm_pos_iff.mpr hwne)).mpr hlt
     exact harmonicAt_reflectCircle_inner hlt hwne (hharm _ hσin hσnorm)
-  · exact harmonicAt_reflectCircle_arc hR heq hwR hharm hcont hzero
+  · exact harmonicAt_reflectCircle_arc heq hwR hharm hcont hzero
   · exact harmonicAt_reflectCircle_outer hgt (hharm _ hwR hgt)
 
 end Bottcher

@@ -34,6 +34,7 @@ Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 -/
 import GaloisForLFunctions.Bottcher.Q62ReflectionTransport
 import GaloisForLFunctions.Bottcher.InteriorModulusObstruction
+import GaloisForLFunctions.Bottcher.HarmonicReflectionCircle
 import Mathlib.Analysis.Complex.Harmonic.Analytic
 
 open Complex Set Filter Topology InnerProductSpace
@@ -129,5 +130,35 @@ theorem continuesAcross_of_greenPotential_harmonic_extension
     rw [← hBGeq (φ z) hφzV, hz2]
   exact ⟨fun z => Θ (φ z), hfAn, hagree⟩
 
+/-- **Local Kellogg–Warschawski extension from Green boundary regularity alone.**  The `hu`
+hypothesis of `continuesAcross_of_greenPotential_harmonic_extension` is now discharged by the harmonic
+Schwarz reflection across the unit circle (`harmonicOnNhd_reflectCircle`): the extended potential is the
+*odd reflection* `reflectCircle (log‖β∘γ‖)`, harmonic on a ball straddling the circle.  What remains is
+exactly the **Green boundary regularity** of the exterior Böttcher map — the outer potential
+`u₀ = log‖β∘γ‖` is harmonic on the exterior side, continuous up to the arc, and **vanishes on the arc**
+(`hzero`, i.e. `‖β∘γ‖ → 1`).  Under those data (plus the local-biholomorphism / basin-side geometry),
+the branch `β` continues analytically across the frontier point `z₀`. -/
+theorem continuesAcross_of_greenBoundaryRegularity
+    {c₁ : ℂ} {β φ γ : ℂ → ℂ} {z₀ : ℂ} {r : ℝ}
+    (hr : 0 < r) (hr1 : r ≤ 1/2) (hw₀ : ‖φ z₀‖ = 1)
+    (hφAt : AnalyticAt ℂ φ z₀)
+    (hγφ : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, γ (φ z) = z)
+    (hbasin : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, 1 < ‖φ z‖)
+    (hβγhol : DifferentiableOn ℂ (fun w => β (γ w))
+      (Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}))
+    (hβγne : ∀ w ∈ Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}, β (γ w) ≠ 0)
+    (hharm : ∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ →
+      InnerProductSpace.HarmonicAt (fun v => Real.log ‖β (γ v)‖) w)
+    (hcont : ContinuousOn (fun v => Real.log ‖β (γ v)‖)
+      ({w : ℂ | 1 ≤ ‖w‖} ∩ Metric.ball (φ z₀) r))
+    (hzero : ∀ w ∈ Metric.ball (φ z₀) r, ‖w‖ = 1 → Real.log ‖β (γ w)‖ = 0) :
+    U0NaturalBoundary.ContinuesAcross β (filledJulia c₁)ᶜ z₀ := by
+  obtain ⟨r₁, hr₁0, hr₁r, hharmRefl⟩ :=
+    harmonicOnNhd_reflectCircle hr hr1 hw₀ hharm hcont hzero
+  refine continuesAcross_of_greenPotential_harmonic_extension hr₁0 hw₀ hφAt hγφ hbasin
+    (hβγhol.mono (fun w hw => ⟨Metric.ball_subset_ball hr₁r hw.1, hw.2⟩))
+    (fun w hw => hβγne w ⟨Metric.ball_subset_ball hr₁r hw.1, hw.2⟩) hharmRefl ?_
+  intro w hw
+  rw [reflectCircle_outer (le_of_lt hw.2)]
 
 end Bottcher
