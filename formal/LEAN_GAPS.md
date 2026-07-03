@@ -191,6 +191,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/IndexFormula.lean:8` | the spectrum **algebraically** — flagged in the tower's status as the missing piece for a *Zdunik-free* |
 | `formal/GaloisForLFunctions/Bottcher/IndexResonance.lean:178` | residue identity forbids it, with no ergodic input. The remaining work to discharge an actual relation is |
 | `formal/GaloisForLFunctions/Bottcher/InteriorBoundary.lean:8` | the OPEN interior of `K_c` (where `G_c = 0`), forcing `g` constant on the connected ball (max-modulus / |
+| `formal/GaloisForLFunctions/Bottcher/InteriorModulusObstruction.lean:496` | The separation is the one genuinely-topological remaining input for interior-nonempty `hnb` (#118) — it |
+| `formal/GaloisForLFunctions/Bottcher/InteriorModulusObstruction.lean:536` | /-- **Frontier separation (the named remaining topological input for interior-nonempty `hnb`).** A |
 | `formal/GaloisForLFunctions/Bottcher/InverseBranchPeriodic.lean:501` | /-- Density form of the local inverse-function-theorem near-return splice.  The remaining dynamical |
 | `formal/GaloisForLFunctions/Bottcher/JuliaExpansion.lean:9` | (`Q62RadicalReduction.q62_disconnected_of_radical_data`: the lone remaining input is, per depth `k`, a |
 | `formal/GaloisForLFunctions/Bottcher/JuliaFrontierPerfect.lean:475` | /-- Slit-good local-frontier target selector.  The remaining geometric input is now exactly |
@@ -289,8 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean:1720` | are constructed internally from coherent level-root towers; the remaining per-relation datum is purely |
 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean:655` | The only remaining primitive/squarefree output is the bad-locus polynomial forcing separability of one |
 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean:905` | /-- If the top GhostLeading factor vanished, any remaining GhostLeading stratum is strictly lower in |
-| `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean:3712` | `Frac(C[z][Y])`.  This packages the remaining squarefree/localization algebra into one hypothesis. -/ |
-| `formal/GaloisForLFunctions/Bottcher/RepellingFixedPoint.lean:103` | point in the Julia set, for all non-exceptional `c ≠ 1/4`. The remaining data (non-resonance, location off |
 
 ## Historical Status Logs
 

@@ -111,3 +111,59 @@ point→arc step without the empty-interior hypothesis (it may need only `β`-co
   empty-interior connected `c₁`; the one remaining sub-gap is `hnb` for interior-nonempty (hyperbolic)
   `c₁`, reachable from the PROVEN even-FE natural boundary + quasidisk Carathéodory. Reframes the epic
   from Montel/Fatou to one located natural-boundary packaging lemma.
+
+## BREAKTHROUGH (2026-07-03) — the "quasidisk topology" wall was not real
+The previous PROGRESS/next-brick blocks framed interior-nonempty `hnb` as gated on a deep topological
+input (`FrontierSeparation` = the frontier locally separating basin from interior, quasidisk Jordan-arc
+structure) plus an "arc assembly" also needing frontier local-connectivity. Both are now ELIMINATED —
+they were an over-estimate. In the `deriv g z₀ ≠ 0` case (reached via the proven
+`exists_frontier_deriv_ne_zero_of_connected`), the continuation `g` is a LOCAL BIHOLOMORPHISM, so the
+level set `{|g| = 1}` near `z₀` is automatically the biholomorphic image of the unit circle. The
+exterior side `{|g| > 1}` near `z₀` is then a CONNECTED set (biholomorphic image of the connected lune
+`ball(w₀,ε) ∩ {|w|>1}`) disjoint from the frontier and meeting the basin; and since
+`Kᶜ ⊔ interior K = frontierᶜ` is a disjoint union of two opens, a connected subset meeting `Kᶜ` lands
+wholly in `Kᶜ`. That IS `FrontierSeparation`, from elementary topology — no nodal-set/harmonic/
+quasicircle theory.
+
+**Verified Lean (InteriorModulusObstruction.lean, axiom-clean, in the Bottcher umbrella, +7 decls):**
+- `isPreconnected_ball_one_inter_exterior` / `isPreconnected_ball_inter_exterior` — the exterior lune
+  at any unit-circle point is preconnected (star-convex at `p = (1+ε/2)·w₀`, `0<ε≤1/2`).
+- `eqOn_lune_of_seed` — identity theorem on the lune (`γ = ψ` on the whole exterior side from one seed).
+- `eventuallyEq_gamma_psi_seed` — the basin side supplies the seed agreement `γ = ψ`.
+- `hγψ_of_continuation` — `γ = ψ` on the exterior near `w₀` with **no** `FrontierSeparation`.
+- `continuesAcross_h_of_continuation_unconditional` — the `FrontierSeparation`-FREE single-point bridge:
+  raw local-inverse data + connected Böttcher package ⟹ `ContinuesAcross h t₀` (`t₀·w₀ = 1`).
+- `arc_of_continuesAcross` — `ContinuesAcross h t₀` ⟹ arc-continuation (the witness set is OPEN, so the
+  arc is free); this is the exact hypothesis `natural_boundary_of_even_fe` refutes.
+
+**Remaining work for interior-nonempty `hnb` is now pure WIRING of proven pieces (no new deep math):**
+(a) reduce raw `ContinuesAcross β Kᶜ z₀` to `deriv ≠ 0` at a nearby frontier point + local inverse `γ`
+    analytic on a ball (`exists_localInverse_of_continuation`, shrink `ε ≤ 1/2`);
+(b) supply the connected Böttcher package — `ψ` analytic on the exterior + `hβmod` + `hψβ`
+    (`exists_global_branch_covering_bijective_of_mem_mandelbrot`) + even-FE disk model `h` with bridge
+    `h t = t·ψ(1/t)` (`exists_full_disk_model_of_mem_mandelbrot` / DiskModelGlobal);
+(c) `natural_boundary_of_even_fe` (proven) fed by `arc_of_continuesAcross` ⟹ contradiction for
+    `c ∉ {0,-2}`.
+This does NOT close the full both-connected pair: `#124` exposure (`∂K_{c₁} ⊆ K_{c₂}ᶜ`) and the
+`hinput` pigeonhole producer remain co-equal obligations; and full q62 still needs comparable-norm
+(external OP16-A) and small-norm coverage. The full q62 proof is NOT complete.
+
+## INTERIOR-NONEMPTY `hnb` CLOSED (2026-07-03) — the sub-gap of #118 is proven, unconditionally
+`Bottcher.hnb_of_mem_mandelbrot_connected` (formal/GaloisForLFunctions/Bottcher/InteriorNonemptyHnb.lean,
+axiom-clean): for EVERY connected `c ∈ mandelbrot ∖ {0,-2}` — interior-nonempty (hyperbolic / quasidisk)
+included, with no empty-interior hypothesis — the global Böttcher branch `β` has the Julia frontier as a
+genuine natural boundary, `∀ z₀ ∈ frontier, ¬ ContinuesAcross β (filledJulia c)ᶜ z₀`. This is the crux
+input `hnb` of the both-connected rigidity engine, and it needed NONE of the quasidisk / harmonic-nodal
+theory earlier feared. The package (`β, ψ, h` + modulus + bridge) is instantiated unconditionally from
+`exists_full_disk_model_of_mem_mandelbrot` and `exists_global_branch_with_inverse_of_mem_mandelbrot`.
+
+Reduction lemmas (all axiom-clean): `false_of_continuation_deriv_ne_zero_package`,
+`false_of_continuation_connected_package` (deriv-dichotomy; no interior hypothesis, subsumes the
+empty-interior case), `not_continuesAcross_beta_of_connected_package` (abstract-predicate adapter).
+
+**Gate 1 → 2 (the `hnb` half): DONE.** What remains for the both-connected PAIR `NoRelation` is the
+OTHER inputs of `noRelation_phiMero_of_naturalBoundary_global_gamma_frontier_separable`: the exposure
+clause `∂K_{c₁} ⊆ K_{c₂}ᶜ` (#124) and the `hinput` frontier-fibre producer (#112–117, scaffolded).
+Full q62 additionally needs comparable-norm disconnected (external OP16-A) and small-norm coverage.
+The full q62 proof is NOT complete. Next brick: instantiate the engine with
+`hnb_of_mem_mandelbrot_connected` to reduce the both-connected capstone to exposure + `hinput` only.

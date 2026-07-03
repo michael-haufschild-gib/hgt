@@ -1,0 +1,429 @@
+# RH via Monodromy-Weight Mismatch — the constraint-route proof shape
+
+- **Register:** SEARCH. Everything here is `[CONJECTURE]` / `[REDUCTION]` / `[OPEN CORE]` unless
+  marked `[KNOWN]` or `[PROVED HERE]` with a file anchor. Nothing in this document is promoted.
+- **Origin:** synthesis of the three formal lanes of this repo (Hurwitz, u₀, Böttcher/q62),
+  2026-07-03. This is a *downstream-application* map of the hgt branch: the branch (constraint,
+  not flow) is the ground; RH is the hoped-for downstream payoff, not the mission.
+- **Companion:** `01-research-plan.md` (concrete moves, sequencing, terminalization).
+
+---
+
+## 1. The thesis in one paragraph
+
+The three lanes prove algebraic-independence statements by three different **obstruction
+mechanisms** — unbounded-order monodromy (q62), natural boundary (u₀), asymptotic scale
+separation (Hurwitz) — and in every case the algebra was cheap while the single analytic
+obstruction carried the whole proof. Transposed to ζ: RH is equivalent to a **branching
+statement** (the coherent ℤ₂-Kummer tower of ξ exists on the half-plane Re s > 1/2), the
+branching data is a **coarse ℤ/2^k-valued monodromy cocycle**, and the q62 template says an
+off-line zero should be killed not by a positivity inequality (Weil) and not by function-level
+recurrence (Bagchi) but by a **weight mismatch**: the defect a zero creates in the cocycle
+cannot be matched by anything the two constraints (functional equation + Euler positivity) can
+produce, because the constraint side is (almost-)invariant under a group action under which the
+defect transforms with unbounded weight. The graded ladder RH_{2^k} (all off-line multiplicities
+divisible by 2^k) turns RH into a sequence of parity statements, of which level 1 — *no
+odd-multiplicity, in particular no simple, off-line zeros* — is the first genuinely new
+intermediate target.
+
+---
+
+## 2. Evidence base: what the three lanes actually established
+
+### 2.1 The meta-theorem `[PROVED HERE, meta-level]`
+
+Every independence result shipped in this repo was proven by obstruction, never by identity.
+The generic algebra is banked and reusable; the entire cost was always one analytic detector.
+
+| Lane | Mechanism | Key results | Anchors |
+|---|---|---|---|
+| q62 disconnected | unbounded-order monodromy: a relation must be σ-fixed, but σ scales one coordinate by roots of unity of unbounded order | `q62_independence`, `q62_disconnected_both` | `formal/GaloisForLFunctions/Bottcher/Q62.lean` |
+| u₀ | natural boundary: a relation would force continuation across a wall | `u0_mstep_independence` | `formal/GaloisForLFunctions/U0/U0PhiMStepFar.lean:267` |
+| Hurwitz | asymptotic scale separation: relation coefficients pinned to zero one growth scale at a time | `hurwitz_n2_unconditional`, `MixedTailIndependent` | `formal/GaloisForLFunctions/Hurwitz/N2Final.lean:207`, `Hurwitz/AllNTailIndependence.lean:948` |
+
+Side-of-the-weld assignment: monodromy is a **{σ_p}-side** tool (discrete, Galois-flavored),
+scale separation is a **∂_s-side** tool (archimedean, asymptotic), natural boundary is the seam
+itself. `q62_mixed` is the only proof in the codebase where two different mechanisms fired in a
+single carrier (transcendence/growth on one coordinate, monodromy on the other) — the seam
+prototype in miniature. A weld proof for ζ must have exactly that shape.
+
+### 2.2 The exact q62 monodromy shape (the thing to transpose)
+
+`NoRelation` (`Bottcher/Q62.lean:27`):
+
+```
+def NoRelation (K) {M} [Field K] [Field M] [Algebra K M] (F G : M) : Prop :=
+  ∀ P : Polynomial (Polynomial K),
+    (P.map (aeval G : Polynomial K →ₐ[K] M).toRingHom).eval F = 0 → P = 0
+```
+
+The disconnected-case hypothesis that kills relations (verbatim from `q62_independence`):
+
+```
+∀ d : ℕ, ∃ (σ : M ≃ₐ[K] M) (ζ : M) (m : ℕ),
+  d < m ∧ orderOf ζ = m ∧ σ G = G ∧ σ ζ = ζ ∧ σ F = ζ * F
+```
+
+Read it as: *for every weight bound d there is a symmetry fixing the base and the partner while
+scaling F with weight exceeding d.* A polynomial relation P(F,G) = 0 must be fixed by every σ,
+but σ multiplies the F-graded pieces by distinct characters of unbounded order — the pieces
+vanish one weight at a time. **No inequality, no positivity: relations die of weight mismatch.**
+
+### 2.3 The banked machinery this approach can consume directly
+
+- Kummer descent: `noRelation_pow_descent` (`U0/U0MStepKummer.lean:41`), two-sided
+  `noRelation_pow_descent_both` (`KummerRootApplications.lean:28`).
+- Analytic roots and coherent towers: `analyticOnNhd_of_continuousOn_exp_eq`
+  (`U0/U0KummerBranch.lean:40`), `exists_analyticOnNhd_pow_eq` (`U0/U0KummerBranch.lean:100`,
+  variant `Bottcher/AnalyticRoot.lean:107`), coherent ℤ₂-tower from ONE log
+  `u0_coherent_kummer_tower` (`U0/U0KummerBranch.lean:224`).
+- Faithful germ carrier: `analyticSubring` / `meroField` (`Bottcher/MeromorphicField.lean:34`)
+  — makes "no algebraic relation" a statement about actual functions.
+- Index-formula-with-resonance-pinning pattern: `index_formula_split`
+  (`Bottcher/IndexFormula.lean:254`) + `IndexWiring*` — a global sum rule over fixed points used
+  to exclude configurations. The explicit formula will play this role for ζ (§6).
+
+### 2.4 Banked no-gos this approach must respect
+
+- **ω = 0 ⇏ RH** (ledger, 2026-06-19): hypertranscendence/independence of ζ does NOT force zero
+  location. So this approach must NOT argue "ζ independent of X ⟹ RH". The lanes contribute a
+  *proof template and machinery*, not a lemma. The divisor is a different invariant than the
+  relation ideal; §3 is precisely the bridge from divisor to monodromy (not to relations).
+- **Natural boundary ≠ hypertranscendence** — obstruction types are not interchangeable; each
+  target needs its matched detector.
+- **Computations-are-theatre guard:** pre-register predictions; never run theory-predictable
+  compute.
+
+---
+
+## 3. The reformulation: RH as a Kummer-tower / branching statement
+
+### 3.1 Objects
+
+- ξ(s) := ½ s(s−1) π^{−s/2} Γ(s/2) ζ(s): entire, order 1. `[KNOWN]`
+- Constraints: FE ξ(s) = ξ(1−s); reality ξ(s̄) = conj ξ(s); ξ real and **positive on the whole
+  real axis** (no zeros in [0,1] real, ξ(0) = ξ(1) = 1/2). `[KNOWN]`
+- Ω := {s : Re s > 1/2}, simply connected. Z_Ω := zero set of ξ in Ω, with multiplicities
+  m(ρ) ≥ 1. All of Z_Ω lies in the open substrip 1/2 < Re s < 1 (zero-free line Re s = 1,
+  Hadamard–de la Vallée Poussin). Z_Ω is conjugation-symmetric (ρ ∈ Z_Ω ⟺ ρ̄ ∈ Z_Ω) and
+  disjoint from ℝ. RH ⟺ Z_Ω = ∅. `[KNOWN]`
+
+### 3.2 The tower equivalence `[REDUCTION — elementary; to be formalized, Arc A]`
+
+Since Ω is simply connected: ξ nonvanishing on Ω ⟺ ξ has an analytic logarithm on Ω ⟺ the
+coherent ℤ₂-Kummer tower exists on Ω (χ_k := exp(L/2^k), (χ_{k+1})² = χ_k, χ_0 = ξ — exactly
+the `u0_coherent_kummer_tower` construction). So:
+
+> **RH ⟺ the coherent ℤ₂-Kummer tower of ξ exists on Re s > 1/2.**
+
+Trivial as an equivalence; its value is that it lands RH inside the branch's native,
+theorem-bearing, already-formalized language, and that it **grades**:
+
+### 3.3 The ladder RH_{2^k} `[NOVELTY CANDIDATE — literature check pending]`
+
+For k ≥ 1 define
+
+> **RH_{2^k}:** every ρ ∈ Z_Ω has 2^k | m(ρ).
+
+Facts (elementary, proof sketches below):
+
+1. **Root form.** RH_{2^k} ⟺ there is an analytic g on Ω with g^{2^k} = ξ|_Ω.
+   (⟸) ord_ρ(g^{2^k}) = 2^k·ord_ρ(g). (⟹) On Ω∖Z_Ω the multivalued log ξ has monodromy
+   2πi·m(ρ) around ρ; if all m(ρ) ≡ 0 mod 2^k then exp((log ξ)/2^k) is single-valued on
+   Ω∖Z_Ω, and |g| = |ξ|^{1/2^k} → 0 at each ρ, so the singularities are removable and g
+   extends with g(ρ) = 0.
+2. **Ladder completeness.** (∀k, RH_{2^k}) ⟺ RH: a positive integer divisible by every 2^k
+   does not exist, so all-levels forces Z_Ω = ∅. RH_{2^0} is vacuous; the levels strictly
+   interpolate.
+3. **Level 1 reads:** *off-line zeros, if any, have even multiplicity — in particular there are
+   no simple off-line zeros.* No classical detector for off-line multiplicity parity exists (on
+   the line, parity IS detectable: sign changes of the real function Ξ(t) = ξ(1/2+it) see odd
+   multiplicities — Hardy's method lives there; off the line ξ is not real-valued along any
+   natural curve and the classical toolbox goes silent). This asymmetry — parity visible on the
+   line, invisible off it — is exactly the kind of gap a monodromy/topological method is native
+   to.
+4. Caveat, stated plainly: under the (open) simplicity conjecture RH_2 ⟺ RH, so RH_2 is not
+   "easier" by inclusion; it is easier by **mechanism** — it is a ℤ/2 topological invariant, so
+   detectors unavailable for the full metric statement (winding parity, real-structure
+   equivariance, Landau-mod-2 positivity shadows) can engage it.
+
+### 3.4 The obstruction cocycle
+
+Fix σ₀ > 1/2, H > 0. For T ∈ ℝ let B(T) := (σ₀, 2) × (T, T+H) and define the **level-k
+obstruction cocycle**
+
+> w_k(T) := (number of zeros of ξ in B(T), with multiplicity) mod 2^k
+> = (1/2πi) ∮_{∂B(T)} ξ′/ξ  mod 2^k   (argument principle; boundary-zero-free T),
+
+a ℤ/2^k-valued step function of T. The tower on {Re s > σ₀} exists iff w_k ≡ 0 for all boxes
+and all k iff no zeros right of σ₀. The cocycle is the branch-native, coarse shadow of the
+zero-counting function — an S(T)-type quantity reduced mod 2^k.
+
+Real-structure equivariance `[REDUCTION — small, Arc B3]`: conjugation pairs the boxes at
+heights ±T; conjugation-invariant 1-cycles in Ω∖Z_Ω carry even total winding (zeros pair as
+ρ, ρ̄), so the level-1 character kills the conjugation-invariant part of H₁ and the obstruction
+is concentrated on classes that *separate* ρ from ρ̄ — i.e., that cross the real axis between
+the pair. The FE transports the whole tower across the critical line (the reflected root
+g(1−s̄)‾ is a root on the left half-plane), so the critical line is the **seam of a double
+tower**; RH says the two towers glue along the seam with all branching ON the seam.
+
+---
+
+## 4. Where each constraint enters
+
+### 4.1 The {σ_p} side: Euler product = a canonical log, with positivity
+
+- log ζ(s) = Σ_{n≥2} (Λ(n)/log n)·n^{−s}, **nonnegative coefficients**, convergent for
+  Re s > 1. The Euler product IS an explicit analytic log — the tower exists for free on
+  Re s > 1, constructed purely from σ_p-side data. `[KNOWN]`
+- Every finite partial product ∏_{p≤X}(1−p^{−s})^{−1} is analytic and **nonvanishing on all of
+  Re s > 0** (local factors vanish nowhere; their poles sit on Re s = 0), with explicit
+  principal log −Σ_{p≤X} log(1−p^{−s}). So *no finite sub-constraint produces the zeros*: the
+  strip zeros are **emergent** — present at no finite level, appearing only in the limit, and
+  (Hurwitz's theorem, contrapositive) the partial products fail to converge locally uniformly
+  near every strip zero. The zeros live exactly where the σ_p-side construction breaks. This is
+  the constraint-not-flow picture verbatim. `[KNOWN]`
+- Landau's theorem (nonneg coefficients ⟹ singularity at the real point of the convergence
+  abscissa) fixes σ_c(log ζ) = 1 via the pole at s = 1; subtracting the pole destroys the
+  nonneg-coefficient structure — that is the classical wall at Re s = 1. The parity question of
+  §3.3 asks whether a **mod-2^k shadow of Landau positivity** survives pole subtraction.
+  `[OPEN — Arc B2]`
+
+### 4.2 The ∂_s side: FE + reality + growth
+
+The FE contributes the seam geometry (§3.4), the four-fold zero symmetry ρ, 1−ρ, ρ̄, 1−ρ̄, and
+— through Γ — the archimedean scale structure that the Hurwitz lane's scale-separation detector
+speaks. Hamburger's rigidity theorem `[KNOWN — verify exact hypotheses before citing in
+promoted text]` (a Dirichlet series with ζ's FE and mild regularity IS ζ) is the constraint
+side's rigidity kernel: within Dirichlet series, the FE has essentially one solution. The
+flexibility that permits Davenport–Heilbronn-type off-line zeros only opens up when the Euler
+positivity is dropped while keeping the FE. So the two constraints are *jointly* load-bearing
+in exactly the way the family picture (§7) predicts.
+
+### 4.3 The vertical flow: Bohr lift and the compact group
+
+Bohr's view `[KNOWN in outline — precise statements to verify, see §8]`: for Re s > 1 the map
+t ↦ ζ(s+it) extends to the infinite torus T^∞ = closure of {(p^{−it})_p} (Kronecker flow;
+dense orbit since {log p} is ℚ-linearly independent). The **random Euler product**
+∏_p (1 − ω_p p^{−σ})^{−1}, ω ∈ T^∞ Haar-random, converges a.s. for σ > 1/2 and is a.s.
+nonvanishing `[CHECK — recalled as classical Bohr–Jessen-circle material]`. If that holds, the
+picture is: *the Bohr-generic point is zero-free right of 1/2; ζ's strip zeros — if any — are a
+pathology of the single deterministic orbit against its own compactification.* RH = "the orbit
+is generic for zero-freeness." **Banked refinement (audit F7, object_x ~256):** genericity is
+MODEL-DEPENDENT — the Gaussian-analytic-function model, which is EXACT for log ζ's marginals
+(ℚ-independence ⟹ Selberg CLT), has strictly POSITIVE off-line zero density (Edelman–Kostlan
+~ 1/(π(2σ−1)²)); the zero functional is discontinuous under Gaussian convergence and carried by
+the multiplicative cumulants. So RH = the zero functional follows the Euler-random model, NOT
+the marginal-exact Gaussian model — the gap between the two IS the arithmetic content.
+
+Key dynamical fact powering the mechanism: the Kronecker flow on T^∞ is minimal and
+equicontinuous, so **visits to any open set recur syndetically** (relatively dense return
+times). If "a monodromy defect occurs in this height window" were an open condition through the
+Bohr lift, syndetic recurrence of defects would be automatic — and §5 turns syndetic recurrence
+into a contradiction. The entire difficulty is that the strip-evaluation map is not known to
+factor continuously through T^∞ below Re s = 1 (that failure IS the emergence of zeros). The
+open core is a *coarse* continuity: not the function, only its ℤ/2^k monodromy data, needs to
+pass through the compactification.
+
+---
+
+## 5. The mechanism: defect recurrence + zero-density `[REDUCTION — rigorous proof is Arc C1]`
+
+**Reduction.** Fix σ₀ > 1/2, H > 0, k ≥ 1. Suppose the cocycle w_k has the *defect-recurrence
+property*: if w_k(T₀) ≠ 0 for some T₀, then w_k(T) ≠ 0 for a relatively dense (syndetic) set
+of T. Then w_k ≡ 0. Proof shape: a syndetic set of defect windows gives ≫ T zeros with
+Re s > σ₀ up to height T; Ingham's zero-density theorem `[KNOWN]` gives
+N(σ₀, T) ≪ T^{3(1−σ₀)/(2−σ₀)} log^C T = o(T) for every fixed σ₀ > 1/2; contradiction. Hence
+every box count ≡ 0 mod 2^k; shrinking boxes around an isolated zero localizes to
+2^k | m(ρ) for every ρ with Re ρ > σ₀. Quantifying over σ₀ gives RH_{2^k}; over k, RH.
+
+So the whole route compresses to one question:
+
+> **[OPEN CORE — MWM] Why must monodromy defects recur?** Equivalently: is the level-k
+> obstruction cocycle of ξ almost periodic (defect-recurrent) on every closed half-plane
+> Re s ≥ σ₀ > 1/2, unconditionally?
+
+Three candidate forcing mechanisms, in decreasing order of wildness:
+
+- **(M1) Weight mismatch via the explicit formula (the q62 transposition, §6):** a
+  non-recurrent defect is a term in the explicit-formula sum rule that no prime-side
+  (almost-periodic) term can match; kill it by resonance pinning, as `index_formula_split` +
+  `IndexResonance` killed off-pattern fixed-point configurations. `[CONJECTURE]`
+- **(M2) Coarse Bohr continuity:** the ℤ/2^k monodromy datum (unlike the function) extends
+  continuously/measurably to T^∞; then Kronecker minimality forces syndetic recurrence.
+  `[CONJECTURE — DOWNGRADED, audit F3/F6]`: the parent ledger PROVES ambient-torus data (Haar
+  equidistribution, ℚ-independence of {log p}, torus cohomology) is projection-blind — winding
+  is linking with the source zero fiber, not an invariant of the flow (pure_facts ~9994,
+  proof_shape ~5195). Any surviving M2 must inject source data (Euler stream, FE); it cannot
+  run on ambient almost-periodicity, so the burden sits on M1.
+- **(M3) Landau-mod-2 positivity:** nonneg log-coefficients force a divisibility/parity
+  structure on the emergent divisor. `[REFUTED as positivity-alone, audit F2]`: banked DMV
+  import (door bucket X5) — positive Beurling systems with off-line zeros exist, off-line
+  zeros are GENERIC in the positive-prime moduli. Survives only as the conjunction
+  FE ∧ positivity (Arc B's re-cut target).
+
+**Honesty of scope (register note):** by the Reduction, defect-recurrence at all levels is
+*equivalent* to RH — this is a re-routing of the proof burden, not a weakening. Its value: (i)
+the burden lands on an **almost-periodicity statement about σ_p-side data**, where the Euler
+structure can act; (ii) it grades by k (parity first); (iii) the invariant is coarse — ℤ/2^k,
+locally constant — so far weaker regularity than function-level recurrence could suffice.
+
+**Positioning against the known** `[CHECK — both items must be verified before any promotion]`:
+Voronin universality (unconditional) approximates only **zero-free** targets on discs in the
+strip, and the standard proof that "strong universality" (targets with zeros) must fail is
+exactly Rouché + zero-density — the same engine as the Reduction. Bagchi's theorem (recalled:
+RH ⟺ strong recurrence of ζ in the strip, ~1981–82) is the function-level ancestor of this
+reformulation. The mod-2^k cocycle version is a **strict coarsening** of the hypothesis side of
+Bagchi (a ℤ/2^k invariant vs sup-norm germ recurrence); verify Bagchi's exact statement and
+proof to confirm the coarsening is genuinely new and not already implicit.
+
+---
+
+## 6. Explicit formula as index formula `[CONJECTURE — Arc C3]`
+
+The q62 connected case was closed by a global sum rule (holomorphic fixed-point index formula
+Σ 1/(1−λ) = 0 over the fixed points, `Bottcher/IndexFormula.lean`) plus resonance pinning: any
+hypothetical off-pattern configuration had to feed the sum rule, and its contribution could not
+be balanced. The ζ-side analogue of the index formula is the **explicit formula**: for suitable
+test h,
+
+  Σ_ρ h(ρ) = (archimedean/Γ terms) − Σ_p Σ_j (log p) p^{−j/2} ĥ(j log p) + (pole terms),
+
+a sum rule every zero must feed, forced jointly by FE and Euler product. Weil's criterion
+chooses positive-definite h — an inequality. The MWM alternative: choose h (or carrier
+elements) transforming in a **weight** under the vertical-flow/Bohr action such that a
+non-recurrent off-line defect contributes a component of weight that the prime side — which is
+a limit of almost-periodic objects — cannot produce at any weight. Concretely: the prime side
+is supported on the frequency set {j log p} (a countable, multiplicatively structured set); a
+single non-recurrent zero at β+iγ contributes a *non-almost-periodic* (transient) term with
+continuous frequency content; the mismatch to exploit is transient-vs-almost-periodic, i.e.
+weight-0-recurrent versus weight-unbounded, the exact q62 dichotomy. The argument principle
+mod 2^k makes w_k itself a contour functional of ξ′/ξ, so the cocycle IS an explicit-formula
+quantity: the missing piece is a parity-sensitive family of test functions. `[OPEN]`
+
+Transposition dictionary (q62 → ζ):
+
+| q62 ingredient | ζ transposition |
+|---|---|
+| carrier M = `meroField U` (germs on U) | germs/monodromy data on substrips {Re s > σ₀} |
+| base K = ℂ(z) | almost-periodic closure of Dirichlet polynomials (Bohr lift) |
+| F = φ_{c₁}, FE φ(z²+b) = φ(z)² | ξ, FE ξ(s) = ξ(1−s), Euler log on Re s > 1 |
+| σ ∈ M ≃ₐ[K] M fixing G, scaling F by ζ_m | vertical-flow recurrence acting on cocycle; defect transforms, background invariant |
+| ∀d ∃ σ with weight m > d | ∀k: level-k defect non-matchable (ℤ₂-tower = unbounded 2-weight) |
+| relation P(F,G) = 0 killed by weight mismatch | off-line zero killed by defect-recurrence × Ingham density |
+| index formula Σ 1/(1−λ) = 0 + resonance pinning | explicit formula + parity-sensitive tests |
+| disconnected case: monodromy for free | no-Euler members (Davenport–Heilbronn): off-line zeros exist freely `[KNOWN]` |
+| connected case: rigidity is the work | Euler members: defect-recurrence is the work |
+| mixed case: two mechanisms, one carrier | seam: Γ-side scale separation + p-side recurrence jointly |
+
+---
+
+## 7. The family picture `[CONJECTURE — orientation]`
+
+| Quadratic family (q62 ground) | ζ-side family |
+|---|---|
+| all degree-2 maps z² + c | Selberg-class-like family: FE + order-1 growth |
+| bounded critical orbit (c ∈ M) | Euler product with positivity |
+| connected Julia set | all branching on the seam (RH-true) |
+| disconnected: escaping critical orbit, free dyadic monodromy, off-seam structure | Davenport–Heilbronn members: FE without Euler product, off-line zeros, constructible at will |
+| Mandelbrot set = connectedness locus | conjectural "RH locus" = the Euler-positive members |
+| Böttcher coordinate φ_c | the ξ-tower / its log (Euler log where convergent) |
+| q62 rigidity in the connected case | Hamburger rigidity: FE + Dirichlet series ⟹ ζ (the locus has rigid kernel) |
+
+The analogy's *predictions* (things to test, not believe): (i) the hard case is the
+"connected" one and needs a rigidity input, not more analysis of the disconnected examples;
+(ii) intermediate families (Beurling systems: positivity with no FE; D–H: FE with no
+positivity) are the moduli in which to run attack-as-false on every proposed mechanism;
+(iii) "mixed" members with partial Euler structure should show partial seam-pinning — a
+quantitative interpolation worth a card of its own.
+
+---
+
+## 8. Known ground — verified vs to-verify
+
+**Verified in this workspace (do not re-derive):**
+- All Lean anchors of §2 (build green, axiom-clean [propext, Classical.choice, Quot.sound]).
+- ADH arXiv:2010.09266 + Schäfke–Singer arXiv:1605.02616 are linear+monomial only (checked
+  2026-07-03, abstracts fetched — see `docs/drafts/formalization-paper-claim-map.md`).
+- ω = 0 ⇏ RH; DSS and RH decoupled (parent-lab ledger, 2026-06-19).
+- **Prior-work audit F1–F9 (`04-prior-work-audit.md`, 2026-07-03) — banked in the parent
+  ledger, do not re-derive:** D–H off-line zero at 18 digits + coefficient stream + mandatory
+  DH-test; DMV positive-Beurling off-line genericity (kills positivity-alone M3); Bohr-torus
+  projection-blindness no-go (downgrades M2); "faithful detection = quadratic/signature OR
+  global winding/index" + S(T)-CLT RH-blindness; formalized Schur–Cohn winding=inertia bridge;
+  Avila quantized-winding lens with its two named obstructions; GAF-vs-Euler-random dichotomy;
+  in-house Bohr–Jessen/effective-Voronin lane history.
+
+**Classical, safe at the level cited:** Hadamard–de la Vallée Poussin zero-free line; Ingham
+zero-density N(σ,T) ≪ T^{3(1−σ)/(2−σ)} log^C T; Landau's theorem on nonneg coefficients;
+Hurwitz's theorem on locally uniform limits; Kronecker/Weyl on T^∞; ξ's FE/reality/positivity
+on ℝ; Davenport–Heilbronn (1936) FE-with-off-line-zeros; Hardy's Ξ sign-change method; Voronin
+universality with zero-free targets.
+
+**[CHECK] — recalled, NOT yet verified; verify before any use in promoted text:**
+1. Bagchi's theorem, exact statement + proof route (RH ⟺ strong recurrence of ζ in the strip;
+   thesis 1981 / Math. Z. ~1982). Decides how much of §5 is a coarsening vs a rediscovery.
+2. Random Euler product a.s. convergence AND a.s. nonvanishing for σ > 1/2 (Bohr–Jessen
+   circle); exact regularity of the limit.
+3. Hamburger's theorem: exact hypotheses (which regularity class makes FE ⟹ uniqueness).
+4. Deep-RH literature: partial Euler products on the critical line (K. Conrad ~2005;
+   Kurokawa–Kimura–Koyama). Their renormalized-convergence statements vs our
+   coarse-monodromy statements.
+5. Any literature on multiplicity *parity* of hypothetical off-line zeros (search: "even
+   multiplicity", "simple zeros off the critical line"). Expected: nothing — confirms RH_{2^k}
+   ladder as novelty candidate. If something exists, downgrade §3.3 accordingly.
+6. Known off-line zeros of the Davenport–Heilbronn function: numerics exist (recalled:
+   Balanzario–Sánchez-Ortiz); needed for Arc D1.
+7. Almost-periodicity ⟺ zero-free-half-plane statements for Euler-product Dirichlet series
+   (Bohr school) — the precise known perimeter of §4.3.
+
+---
+
+## 9. Attack-as-false — what kills this, and what survives each death
+
+1. **Bagchi already did the coarsening** (check #1 fails novel): then §5's reformulation
+   reduces-to-known; survives: the RH_{2^k} ladder (§3.3), the index/weight mechanism M1 (§6),
+   the Lean-native tower language (Arc A) and the family picture (§7).
+2. **An FE + positive-log system with an odd-multiplicity off-seam zero exists** (Arc B1
+   succeeds as constructor): kills M3's last stand — positivity-ALONE is already dead (banked
+   DMV import, audit F2: off-line zeros generic in the positive-prime moduli); the open cell is
+   the FE ∧ positivity conjunction. Survives: M1, and the counterexample itself sharpens WHICH
+   Euler feature
+   (full multiplicativity? boundedness of local factors?) carries the rigidity. Note Hamburger
+   rigidity already forbids such a system inside the strict Dirichlet-series-with-ζ's-FE class
+   — the hunt must widen the class (Beurling FE-less systems have no seam; engineered FEs
+   needed), and if the hunt PROVES the intersection empty in a usable class, that is itself a
+   parity theorem.
+3. **The cocycle fails a.p. for trivial reasons unrelated to zeros** (e.g. boundary effects of
+   on-line zeros entering boxes): then re-cut the invariant (boxes strictly right of σ₀,
+   defect defined by *interior* winding) — this is invariant-engineering, expected iteration,
+   not death.
+4. **The whole route is secretly the Weil positivity criterion in disguise:** it is not — no
+   positive-definiteness enters anywhere; the killing move is weight/recurrence mismatch and a
+   density theorem. But keep the check standing: if some step quietly needs a positive kernel,
+   name it immediately.
+5. **Respect the banked no-go:** any draft that drifts toward "independence/hypertranscendence
+   of ζ ⟹ RH" is dead on arrival (ω = 0 ⇏ RH). The monodromy cocycle is divisor data, not
+   relation data — keep it that way.
+
+---
+
+## 10. What is genuinely new here (novelty inventory, gate-graded)
+
+1. **RH_{2^k} multiplicity-parity ladder + root/tower equivalence** — `[NOVELTY CANDIDATE]`,
+   pending check #5. Bridges: nobody grades RH by divisibility of off-line multiplicities;
+   everyone's prior (simplicity) makes the grading invisible.
+2. **Coarse-monodromy (ℤ/2^k cocycle) version of strip recurrence** — `[NOVELTY CANDIDATE]`,
+   pending check #1 (vs Bagchi). The coarsening is the new degree of freedom.
+3. **Weight-mismatch mechanism transposed from q62** (M1: explicit formula as index formula +
+   resonance pinning, defects killed by unbounded weight, not positivity) — `[CONJECTURE]`, no
+   literature counterpart known; this is the wild leap of the document.
+4. **Family picture** (Selberg-like family ↔ quadratic family; Euler positivity ↔ bounded
+   critical orbit; D–H ↔ disconnected locus; Hamburger ↔ rigidity kernel) — orientation-level
+   `[CONJECTURE]`; generates testable sub-questions (§7).
+5. **Lean-native ground:** this repo owns the only machine-checked Kummer-tower / monodromy /
+   germ-carrier infrastructure; Arc A statements are formalizable *now* against mathlib's ζ.
+
+Forward moves live in `01-research-plan.md`. The next object to construct is the obstruction
+cocycle w_k as a formal object (Arc A) and the reduction of §5 as a paper theorem (Arc C1);
+the first genuinely open mathematics is the parity question at level 1 (Arc B).
