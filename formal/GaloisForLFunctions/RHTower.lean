@@ -21,3 +21,4 @@ import GaloisForLFunctions.RHTower.RiemannTower
 import GaloisForLFunctions.RHTower.Reflection
 import GaloisForLFunctions.RHTower.DirichletRigidity
 import GaloisForLFunctions.RHTower.LogIndependence
+import GaloisForLFunctions.RHTower.PerturbationZero

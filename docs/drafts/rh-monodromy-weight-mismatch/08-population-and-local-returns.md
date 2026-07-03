@@ -220,3 +220,36 @@ plants a lone FE-symmetric zero-quadruple below an a.p. zone leaving NO almost-p
 trace at any mean degree — a.p. structure above cannot by itself force recurrence below.
 Any leakage argument for ζ must consume the pointwise representation (approximate
 functional equation / Euler product), not just mean/a.p. structure. See 11 §3.
+
+### 7.2 The naive exactness route CLOSED; the Turán question opened (2026-07-03)
+
+**Landau/Riemann–Weil budget analysis `[DERIVATION — route closure]`.** Attempt: force
+companions for a lone zero ρ₀ = β₀ + iγ₀ (β₀ = 1−δ) from an exact identity a lone term
+cannot balance (the q62 index-formula shape). Take the Riemann–Weil explicit formula with
+test h(γ) = w(γ−γ₀)·x^{iγ}, w localized of width W:
+- lone-zero signal: |w(−i(β₀−½))|·x^{β₀−1/2} (the off-line zero enters at complex height,
+  picking up the x^{β₀−1/2} amplification);
+- on-line zero side: ≤ Σw ≈ W log γ₀ (no growth in x);
+- prime side: ŵ concentrates at log x; Σ Λ(n)n^{−1/2} over the window gives ≍ √x.
+Since β₀ − ½ < ½ for EVERY β₀ < 1, the prime diagonal √x dominates the lone-zero signal
+x^{β₀−1/2} at every x, T, W. The same computation with Landau's formula directly (lone
+term O(x^{β₀}) vs x-uniform error O(x log xT)) gives the same verdict. **No single-test
+exact-identity configuration can detect — a fortiori force companions for — a lone
+off-line zero at any β₀ < 1.** (At β₀ = 1 the two scales meet: the analysis degenerates to
+the classical "no zeros on the 1-line" boundary — a consistency check.) Killing the
+diagonal requires mollification, i.e. density-theorem technology, which produces UPPER
+bounds on zero counts — the wrong direction for the rung. Sub-route closed.
+
+**What survives — the Turán question `[OPEN — next attack]`.** The one exact technology
+with intrinsic LOWER-bound character is Turán's power-sum method (lower bounds on
+max_ν |Σ b_j z_j^ν|), which is historically the engine of Deuring–Heilbronn-type
+repulsion/clustering proofs — and the method itself is aspect-agnostic even though C7
+found only q-aspect statements in the literature. Precise target: with s₀ near 1 + iγ₀,
+the Taylor coefficients of ζ′/ζ at s₀ are power sums Σ_ρ (s₀−ρ)^{−ν−1} over nearby zeros;
+Turán's second main theorem lower-bounds max_ν of these; upper bounds on ζ′/ζ near σ = 1
+cap them. A lone zero makes the power sums those of a SINGLE geometric sequence — maximally
+rigid. Question: does the tension (Turán lower bound vs 1-line upper bound) force either
+extra zeros near (β₀, γ₀) — a local drove, feeding M1 — or a zero-free improvement
+contradicting β₀ = 1−δ? This is exactly how Turán-type quasi-repulsion arguments run in
+the q-aspect; whether a t-aspect one-zero-implies-cluster theorem exists, or fails for a
+nameable reason, is checkable (C8) and then provable/refutable here.

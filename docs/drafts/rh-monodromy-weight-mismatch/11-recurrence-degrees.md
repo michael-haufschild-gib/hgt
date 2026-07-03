@@ -138,3 +138,76 @@ inside the a.p. category by explicit example.
 3. Theorem A's transfer clause makes the S²-threshold quantitative: any future partial
    S²-control of ζ on a substrip (e.g. conditionally, or for other L-functions on
    σ > abscissae where they ARE bounded) immediately yields droves there.
+
+---
+
+## 5. Route-closure capstone (2026-07-03, same day): the soft route is CLOSED
+
+### 5.1 Theorem B strengthened — pointwise-asymptotic representations are also insufficient
+
+The §2 counterexample satisfies, uniformly on interior substrips,
+|f(σ+it) − g(σ+it)| = |h| ≤ C·e^{M}·(1+t²)·e^{−2Mt²} → 0 (gaussian rate),
+with g a FIXED FE-symmetric Dirichlet polynomial. So f admits a pointwise
+"approximate-functional-equation-grade" representation — Dirichlet main term plus an error
+DECAYING FASTER than ζ's own AFE error — and still carries a lone quadruple.
+`[PROVED — three-line estimate]` Hence the candidate hypothesis list of §4.1 collapses
+further: growth bounds, mean a.p. of every degree, exact FE, AND pointwise asymptotic
+Dirichlet representation are simultaneously insufficient. The reason is structural, not
+technical: **any hypothesis invariant under adding a t-localized holomorphic perturbation
+is blind to finite zero sets at bounded height.** Call this the bump-stability principle.
+
+### 5.2 Theorem B′ `[PROVED HERE, class level — paper register, Rouché used]` — on-line zeros do not obstruct the bump
+
+Objection to B: real L-functions have infinitely many zeros ON the symmetry line; maybe
+their presence blocks the surgery. It does not. Let F be holomorphic with the FE
+F(s) = F(1−s), real on the line σ = 1/2 (after the standard rotation: the restriction
+t ↦ F(1/2+it) is real-valued), all its strip zeros simple, on-line, and
+envelope-normalized non-degenerate: writing F = E·F̂ with E a nonvanishing holomorphic
+envelope (for ξ: the Γ_ℝ-factor) and |F̂′(ρ_n)| ≥ γ_n^{−A}. Perturb with
+h := E·(FE-and-reality-symmetrized gaussian bump, planted at s₀ off the line, global size
+η(t) = ε·e^{−2Mt²}). Then for suitable parameters f := F + h has:
+(i) at each on-line zero ρ_n, a disc D_n of radius γ_n^{−A−1} on whose boundary
+|F| > |h| (non-degeneracy beats the gaussian-small η) — Rouché keeps exactly one zero in
+D_n, and the REALITY protection pins it to the line: the real restriction of f still
+changes sign (simple sign change of F̂ minus a smaller real perturbation), so the unique
+zero in D_n is real — on-line, merely displaced. No quadruple is created at any ρ_n.
+(ii) off ⋃D_n and off the planting disc, |F| ≥ (local non-degeneracy) > |h|: no new zeros.
+(iii) in the planting disc, the §2 max-modulus argument plants the off-line quadruple.
+So even classes whose members have the FULL on-line zero structure of an L-function admit
+lone-quadruple members. (For F = ξ itself the construction is conditional on a
+zero-non-collision hypothesis — |ξ̂′(ρ_n)| not decaying super-polynomially — unproven
+unconditionally; the CLASS-level statement needs no such input.)
+
+### 5.3 The trichotomy — where the class-level dichotomy route ends
+
+Combine 10 (blind cone), 11 §§1–2, 5.1–5.2, no_polynomial_surgery (Lean), and the
+C0-verified Hamburger rigidity (check #3). For a class 𝓕 (FE + reality + strip-analytic)
+containing a candidate function, exactly three regimes exist:
+
+1. **Soft** (𝓕 defined by asymptotic/statistical/mean conditions — any a.p. degree,
+   growth, pointwise-asymptotic Dirichlet representation, with or without on-line zero
+   structure): 𝓕 contains lone-quadruple members (B, B′). The dichotomy is FALSE in 𝓕;
+   no soft hypothesis proves droves.
+2. **Categorical** (𝓕 = exact Dirichlet series + FE + growth, Hamburger-rigid): 𝓕 = {ζ}.
+   The dichotomy for 𝓕 IS RH verbatim — nothing is gained by the class framing.
+3. **Family-structured** (𝓕 = multi-support combinations, D–H-like): droves are a THEOREM
+   (10 Thm A / 11 Thm A where S² holds) — but ζ is not in any such 𝓕 (10 Thm C:
+   single-support in every Dirichlet decomposition).
+
+**Verdict: the class-level dichotomy route to RH is closed, except for one named gap.**
+> **The Goldilocks class problem `[OPEN CORE — the lane's class-language form]`:** does
+> there exist a class 𝓕 with (i) ζ ∈ 𝓕; (ii) 𝓕 rigid against bump surgery (no
+> t-localized-perturbation freedom); (iii) 𝓕 carrying a recurrence mechanism not
+> RH-graded (a family/joint structure as in regime 3)? Every known 𝓕 satisfies at most
+> two of the three. (i)+(ii) Hamburger ⟹ singleton (no mechanism); (i)+(iii) fails by the
+> blind cone (ζ single-support); (ii)+(iii) is the D–H world (ζ absent).
+
+The primitivity wall has now been derived from THREE independent directions: value
+distribution (10: principal pinning / unique factorization), almost-periodicity (11:
+S²-vs-B² gap at exactly ζ's regularity), and class rigidity (5.3: soft/categorical
+trichotomy). Three angles, one wall — strong evidence the remaining live routes are the
+EXACT-STRUCTURE ones, which the wall does not touch:
+(a) exactness-forcing near σ = 1 (#112: Landau/index-formula budget — an exact identity a
+lone term cannot balance is not a soft hypothesis);
+(b) the deck-class cocycle w_k (#113: exact monodromy data, not statistical);
+(c) the measured jet/phase transfer structure as a guide to (a)'s mechanism.
