@@ -220,3 +220,16 @@ and certified ourselves).
   Rule appended to runpod memory: winding cost scales with t; ≤ ~10 min/job; never chain a
   10× stage behind small ones; per-stage DONE flags. Also regressed on cwd drift (gate ran
   outside formal/ after terminal restart) — explicit cd in every gate command.
+- **F [MEASURED — R6-loc/b/c: the local transfer channel is REAL; certified transfer
+  instance]** τ-scan at the banked zero: no strict sub-margin return in τ ≤ 200 BUT kill
+  clause not triggered (min ratio 1.70 vs threshold 3) and the local channel is ≈ 14×
+  deeper than R6's global one; near-returns land EXACTLY on the other population zeros
+  (τ = 91.0 → t≈176.7 etc.) — the off-line zeros' local jets are approximate copies
+  ("species similarity"). Radius scan (pre-registered, both clauses CONFIRMED): ratio
+  d/m falls monotonically in r (4.11 → 0.64); at r = 0.12, 0.15 the return is STRICTLY
+  SUB-MARGIN (hardened 192 pts/dps 20: 0.769, 0.639 at τ = 91.005) ⟹ via the 07 §3
+  transfer lemma, **the zero at t ≈ 176.70 is the certified local Rouché-transfer image
+  of the banked zero at t ≈ 85.699 — first non-counterfactual instance of the M1
+  transfer mechanism.** R6's negative was a contour-size artifact: transfer works locally
+  where it fails globally. Mechanism ranking updated in 08 §4; opened R7 (transfer graph
+  = the population's recurrence skeleton). Data: `computations/R6LOC-RESULTS.md`.

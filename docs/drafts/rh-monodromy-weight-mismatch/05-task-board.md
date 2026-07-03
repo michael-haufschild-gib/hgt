@@ -222,3 +222,15 @@ a certified local Rouché transfer between two actual zeros (first non-counterfa
 instance). Kill clause: ratio > 1.5 at every r ⟹ the near-miss is intrinsic (the two jets
 genuinely differ at all scales) — local transfer then needs the symmetry slack (07 §3).
 Job size: 5 × 51 × 48 ≈ 12k evals — seconds.
+
+## Wave-2b close (2026-07-03 night)
+
+DONE: quantified Reduction (06 §6: open core → T^{θ(σ₀)} recurrence, graded burden);
+`no_polynomial_surgery` Lean-banked (dichotomy fragment); C5 verified (FE = load-bearing
+axiom; Hilberdink–Lapidus testbed lead); R3c (anti-correlated FE/Euler mobility spectra;
+two-population asymmetry, only the banked zero pinned both sides); R5c (moat persists,
+shrinks faster than 1/log T; partial at T=1000 — job was oversized, killed, salvaged);
+**R6-loc/b/c: certified local Rouché transfer between two actual zeros (r=0.15, τ=91.005,
+hardened ratio 0.639) — first non-counterfactual instance of M1; R6's negative was a
+contour-size artifact.** Pod idle. NEXT: R7 transfer graph (#108, chunked!), B1' =
+Hilberdink–Lapidus FE-class reading (delegatable), B2 collision, P2.

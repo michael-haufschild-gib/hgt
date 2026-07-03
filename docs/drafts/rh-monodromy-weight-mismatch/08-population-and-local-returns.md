@@ -108,3 +108,30 @@ certified D–H zero at t ≈ 85.7; τ ∈ [0, 400] step 0.05.
 4. Cross-link to hgt proper: the dichotomy is a "constraint, not flow" statement — the
    population is fixed by the class axioms (FE + Dirichlet-series rigidity), not grown
    zero-by-zero; the moat/fiber geometry (R5b) is its measured shadow in the c-plane.
+
+---
+
+## 6. Experiment verdicts (2026-07-03, same day) — §4's decision tree resolved
+
+R6-loc + the radius scan (`computations/R6LOC-RESULTS.md`, pre-registered): the middle
+outcome, sharper than either registered branch. No positive-density statement is measured
+(that clause of (H-loc) stays open), but **certified fixed-τ local transfers EXIST**: with
+the radius as a free dial, the banked zero's circle data returns strictly within margin at
+τ = 91.005, transferring it onto the zero at t ≈ 176.70. The R6 negative was a
+contour-size artifact — transfer fails globally and works locally. Measured structure
+behind it: the local jets of distinct off-line zeros are approximate copies of one another
+(near-returns land exactly on the population), so the family's defect recurrence is
+sustained by a lattice of pairwise local similarities rather than by ambient
+almost-periodicity.
+
+C5 (verified, spot-checked) calibrates §2: FE-free Beurling systems DO realize the
+sparse-but-nonempty regime (finitely-many-zero systems exist; no zero-count asymptotic
+without FE — Révész–Pintz, verbatim), so **the FE is the load-bearing axiom of the droves
+dichotomy**; and Hilberdink–Lapidus's generalized-FE Beurling class is the candidate
+testbed (B1' first move). The Lean fragment is banked: `RHTower.no_polynomial_surgery`
+(no finite divisor surgery within the Dirichlet-series class, axiom-clean).
+
+Updated ranking: (H-loc) = instantiated-but-ungraded (needs the density clause);
+(P_k)/power-droves = co-primary (thresholds now T^{θ(σ₀)+ε} after the quantified
+Reduction). Next objects: **R7 transfer graph** (recurrence skeleton of the population;
+pre-register density of the graph), and the Hilberdink–Lapidus FE-class reading.
