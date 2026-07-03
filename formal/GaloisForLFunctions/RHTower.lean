@@ -30,3 +30,4 @@ import GaloisForLFunctions.RHTower.XiDeck
 import GaloisForLFunctions.RHTower.DeckHomotopy
 import GaloisForLFunctions.RHTower.FarFieldAnchor
 import GaloisForLFunctions.RHTower.ReflectionParity
+import GaloisForLFunctions.RHTower.UPlaneDescent

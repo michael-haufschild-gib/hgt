@@ -55,6 +55,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean:454` | remaining winding step. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:13` | connected. That step (the branched-cover / critical-value structure of `z²+c`) is the lone remaining |
 | `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:99` | /-- **Basin-connectedness from the Riemann–Hurwitz step.** The full reduction: the single remaining |
+| `formal/GaloisForLFunctions/Bottcher/BottcherArcExtension.lean:297` | remaining content of the both-connected gatekeeper's boundary half to the `z`-space geometry |
 | `formal/GaloisForLFunctions/Bottcher/BottcherCoord.lean:276` | `∑ₖ termₖ(f_c z) = 2·(∑ₖ termₖ(z) − term₀(z))`. The remaining `log z` vs `log(z²+c)` |
 | `formal/GaloisForLFunctions/Bottcher/BottcherDetermines.lean:158` | in the connected-case independence, with no remaining hypotheses. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BottcherInverse.lean:4` | The dyadic-cover lift `hliftF`/`hliftG` (the genuine remaining analytic input of the disconnected case, |
@@ -258,7 +259,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionTransport.lean:17` | boundary `hnb`.  The remaining inputs are exactly the boundary datum of `F = β ∘ γ` at the arc |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:20` | Böttcher branch `β_{c₁}` reflects across it — the isolated `ReflectionCore`, the one remaining input; |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:119` | /-- **The reflection core — the one remaining deep input of smooth-piece rigidity.** A non-constant |
-| `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:195` | `β` across the arc then runs on (the remaining, genuinely mathlib-absent, input). -/ |
+| `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:197` | `β` across the arc then runs on (the remaining, genuinely mathlib-absent, input). -/ |
 | `formal/GaloisForLFunctions/Bottcher/QuarticDefect.lean:72` | remaining input is the Γ(2) cusp-form finiteness (modular-curve compactness / valence), absent from |
 | `formal/GaloisForLFunctions/Bottcher/QuarticModularForm.lean:6` | `zero_at_cusps'`) is the remaining input toward `F ≡ 0` via `NormTrace` to level-one weight-12. |
 | `formal/GaloisForLFunctions/Bottcher/RealPairExposed.lean:13` | so `ExposedOneSided (c₁, c₂)` reduces to the SINGLE remaining clause |
@@ -290,7 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean:128` | transcendence produced internally.** The remaining callback is geometric/dynamical: it supplies an |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean:1396` | frontier-fibre `Separable` datum from the callback.  The remaining per-target geometry is a boundary |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:132` | remaining local task is exactly to convert regular positive-depth hits into positive periodic points; |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:267` | remaining target-side dynamical input is the local conversion of a positive forward hit to either |
 
 ## Historical Status Logs
 

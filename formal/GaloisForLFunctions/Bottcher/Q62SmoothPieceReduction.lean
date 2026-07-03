@@ -140,7 +140,9 @@ theorem smoothPieceRigidity_of_reflectionCore {c₁ c₂ : ℂ}
     (hc₁M : c₁ ∈ mandelbrot) (hc₁0 : c₁ ≠ 0) (hc₁2 : c₁ ≠ -2)
     (hconn₁ : IsPreconnected (filledJulia c₁))
     (hrefl : ∀ β : ℂ → ℂ, AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ →
-        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) → ReflectionCore c₁ β) :
+        (∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z) →
+        (∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) →
+        ReflectionCore c₁ β) :
     SmoothPieceRigidity c₁ c₂ := by
   obtain ⟨β, hβan, hβesc, hβmod, hnb⟩ := hnb_of_mem_mandelbrot_connected hc₁M hc₁0 hc₁2 hconn₁
   intro a sT N wfam z₁ ρ ρ₂ k Uop S hsT hNsT hN1 hρ hρ₂ ha haN hsep hunit hcont hdist hdeg
@@ -158,7 +160,7 @@ theorem smoothPieceRigidity_of_reflectionCore {c₁ c₂ : ℂ}
   have hwanB : AnalyticOnNhd ℂ (wfam k) (Metric.ball x r) := hwan.mono hrΩ
   by_cases hne : ∃ z' ∈ Metric.ball x r, deriv (wfam k) z' ≠ 0
   · obtain ⟨z₀, hz₀front, hz₀cont⟩ :=
-      hrefl β hβan hβesc (wfam k) (Metric.ball x r) (Uop ∩ S ∩ Metric.ball x r)
+      hrefl β hβan hβesc hβmod (wfam k) (Metric.ball x r) (Uop ∩ S ∩ Metric.ball x r)
         isOpen_ball (convex_ball x r).isPreconnected hwanB hne
         (fun z hz => hz.2) (fun z hz => hSfront hz.1.2)
         ⟨Uop, hUopen, ⟨x, hxP.1, hxP, Metric.mem_ball_self hr⟩⟩ (fun z hz => hmod1 z hz.1)

@@ -609,3 +609,68 @@ forms; compiles standalone, mathlib-only) + in-flight PoissonHarmonic/HarmonicMa
 - **#123 [CONJECTURE] modulus-only holography**: deck class = period of the harmonic
   conjugate of (1/n)log|f| — the charge from |ξ| alone on boundary circles; waits on
   their Dirichlet stack landing.
+
+## 2026-07-03 — #121 BANKED: the u-plane descent (first cross-lane consumption)
+
+UPlaneDescent.lean, axiom-clean, RHTower green (8571 jobs). The q62 agent's Painlevé
+engine did exactly what the cross-read predicted: xiDescent(w) = ξ(1/2 + √w) is
+continuous across the slit because evenness matches the two one-sided branch values
+(the lower limit is xi(1/2 − √|w|·i·…) = reflected, bridged by xi_half_sub), and
+differentiableOn_of_off_horizontal_line upgrades it to ENTIRE — the global descent
+that #114 skipped, at ~250 lines with zero power-series surgery.
+
+Capstone: **RH ⟺ xiDescent ≠ 0 on the slit plane** (rh_iff_xiDescent_ne_zero_slitPlane).
+The critical line is now the SLIT; on-line zeros are absorbed into the boundary; the FE
+involution is quotiented away; the deck charts' local slitPlane geometry is the GLOBAL
+domain. Descent identity xi_eq_xiDescent holds with no branch bookkeeping — evenness
+absorbs the square-root sign, so the two roots of (s−1/2)² give the same value.
+
+What this opens: (i) the seam cocycle (#122) now has its natural carrier — the slit
+boundary of the u-plane, where the two-sided boundary values of F-roots meet; (ii) the
+ladder on the u-plane — the ℤ₂-tower of xiDescent on the star-convex slit plane (needs
+root-existence off convexity: star-convex version of exists_root_iff_orders_dvd, or
+direct via simply-connectedness); (iii) B6's correspondence hunt gains a straight target:
+in the u-plane the FE is already used up, so any residual exact-identity transport acts
+on the slit geometry alone.
+
+## 2026-07-03 — #115 BANKED: 14-parity-stratum.md (three filters + audit)
+
+The parity front's discipline document. Three filters a w₁-detector must pass BEFORE
+proof attempts: **I (D–H)** — must consume genuine multiplicativity (kills FE-only,
+reality, growth, a.p. in every packaging; certified by the banked simple off-line
+population); **II (symmetry discount, PROVED from xi_orderAt_conj + xi_orderAt_one_sub)**
+— quadruples force symmetric-region charge ≡ 0 mod 4, so symmetric aggregates are blind
+at k ≤ 2: detectors must be QUADRANT-LOCAL (first structural justification for the
+per-box deck class); **III (regularity wall)** — imported from docs 10–12.
+
+Audit outcomes: FE-covers = base case only (ramified locus is the mechanism); dyadic/
+Adams family = ORDER-BALANCED at off-line zeros (elementary telescope; affine transport
+can move w₁ but never anchor it — affine identity families exhausted as detectors);
+positivity class = real-locus-only mechanism, retargeted to the seam (#122), off-line
+use doubly dead (M3/DMV + Filter II). SURVIVORS: (1) conservation+family (M-lane #119 —
+quadrant-local ✓ exact ✓ Euler-moat-separated ✓), (2) constructed quadrant-ramified
+covers (#116 re-aimed: build a two-sheeted cover of the u-plane branched at a movable
+far-field-anchored point; q62's biholomorphic-preimage reflection is the local model).
+New [CHECK] candidate C10: literature absence of nonlinear ζ-identities beyond FE∧Adams.
+
+## 2026-07-03 — #120 + #119 BANKED: the two-front map + the conservation program
+
+**00-approach §12** appended: wave-5 state — Turán arc concluded (priced), A3+ξ wired,
+u-plane capstone, the two fronts (M conservation / B parity) and their coupling at the
+quadrant-local charge, live-route priority list, the wall's four derivations confined to
+registers the deck charge does not factor through.
+
+**15-conservation-program.md** written. The pencil pinned from R3/R3b/R5/R5b/R5c
+(f_c = c·L(χ) + (1−c)·L(χ̄); FE fiber = transversal minimizer floor > 0; Euler moat =
+open basin floor 0; disjoint two-side populations, box 84 the lone exception). The
+LEDGER identity (L): charge difference ≡ boundary multiplicity flux mod 2^k — no-flux
+case banked (deckClass_deformation_invariant), jump case = cheap Lean target
+deckClass_jump (ratio of two deckClass_multi_zero evaluations). Interior events FREE at
+k=1 (annihilation changes counts by 2m — the whole mod-2 burden is boundary flux).
+Program: rung ⟸ (P-flux) even mod-2 flux per upper-quadrant box; open core itemized:
+OC1 band-edge crossing PAIRING ([CONJECTURE] two-coloring by FE-fiber side, per R3c's
+disjoint populations; box 84 = designated counterexample candidate for attack-as-false),
+OC2 seam accounting (#122), OC3 anchor below σ=1 (tall boxes / certified windows /
+u-plane). Honesty clause: (P-flux) is RH-grade by Bagchi-consistency — reshaped burden
+(discrete pairing structure), not shrunk. 07's (H_k) transfer = the t-translation
+instance of (L).

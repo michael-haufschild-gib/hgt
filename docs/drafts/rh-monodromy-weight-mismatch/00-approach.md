@@ -536,3 +536,71 @@ S²-vs-B² a.p. gap (11) ≡ soft/categorical trichotomy (11 §5.3) — three in
 derivations of one obstruction. The live routes above are exactly the ones the wall does
 not touch: exact identities with lower-bound character, exact monodromy data, and class
 rigidity engineering.
+
+---
+
+## 12. Wave-5 state of the map (2026-07-03, night) — the two-front program
+
+Since §11, three arcs concluded and the board was rebuilt around two coupled fronts.
+
+**Concluded arcs.** (i) The Turán hybrid (§11's top route) was built, raced, and KILLED
+with a priced death certificate (`12-turan-hybrid.md`, `13-block-lemmas.md`): the spike's
+own share of Perron block means closes the loophole; replication is a coherent large
+deviation of ~e^{1/δ} primes, measure exp(−c·e^{1/δ}) against forging ceiling
+exp(e^{c₁/δ}), c₁ < 1. Recurrence-shaped routes to (R_k) are now closed at exact-Euler
+strength — the wall's fourth independent derivation (large-deviation RATE separation),
+the sharpest. Salvage banked: L1a concentration, tilted small-ball (D′), rotation
+invariance, the Perron self-repair dichotomy, and a standalone threshold-theorem
+candidate (12 §6.3.2). (ii) A3 completed end to end and wired to ξ
+(DeckCocycle → DeckMonomial → DeckAssembly → DeckMultiZero → XiDeck):
+**RH ⟺ ∀k RHLadder k ⟺ deck-class triviality at every off-line ξ-zero**, machine-checked
+with no argument principle anywhere. (iii) First cross-lane consumption: the q62 agent's
+Painlevé/Morera engine (`Bottcher/SchwarzReflection.lean`) powers `UPlaneDescent.lean` —
+xiDescent(w) = ξ(1/2 + √w) is ENTIRE, the descent identity is global and branch-free, and
+**RH ⟺ xiDescent ≠ 0 on the slit plane** (`rh_iff_xiDescent_ne_zero_slitPlane`). The
+critical line is the slit; the FE is quotiented away; the deck calculus's local
+slit-chart geometry is the global domain.
+
+**FRONT M — conservation (the dynamic front).** Banked spine, all axiom-clean:
+`deckClass_step` / `deckClass_chain` / `deckClass_deformation_invariant`
+(DeckHomotopy.lean — dominated perturbation ‖f−g‖ < ‖g‖ on the annulus charts cannot
+move the charge; the global correction root replaces all covering machinery);
+`deckClass_of_nonvanishing` + `xi_deckClass_far_field` (FarFieldAnchor.lean — boxes
+right of Re s = 1 carry zero charge at every rung: the drain);
+`analyticOrderAt_even_of_reflection` (ReflectionParity.lean — central parity for every
+FE-symmetric pencil member: the family-wide fixed-point anchor). Program doc:
+`15-conservation-program.md` (global bookkeeping; residual open core located there).
+
+**FRONT B — parity (the static front).** `xi_central_order_even` /
+`xi_deckClass_central_sq_trivial`: w₁ is trivial at the FE fixed point, from FE alone —
+the first constraint-forces-parity theorem; mechanism = the RAMIFIED/FIXED locus of a
+constraint symmetry. `14-parity-stratum.md` imposes three filters (D–H
+multiplicativity; the symmetry discount — quadruples make symmetric-region charge ≡ 0
+mod 4, so symmetric aggregates are blind at k ≤ 2 and detectors must be QUADRANT-LOCAL;
+the regularity wall) and audits the classical families: affine/Adams transport is
+order-balanced at off-line zeros (can move w₁, never anchor it — exhausted as
+detectors); the positivity class lives on the real locus only (re-routed to the seam).
+Survivors: conservation-bookkeeping, and a CONSTRUCTED quadrant-ramified cover (#116).
+
+**The coupling (load-bearing).** Conservation forbids interior creation/destruction of
+charge; annihilation of a defect pair requires MATCHING charges — a parity input.
+Conversely, both surviving parity detectors run through conservation's objects (the
+quadrant-local box charge, the far-field anchor, the family deformation). The two
+fronts consume each other at a single object: **the quadrant-local charge of the
+measured pencil**. Neither front alone is a route; the program is their composition.
+
+**Live routes, current priority.**
+1. `15-conservation-program.md` — state the bookkeeping reduction, locate the residual
+   open core exactly (boundary/crossing control), grade it per rung.
+2. #116 — construct the quadrant-ramified cover (attack-as-false first: a no-go is a
+   theorem too; local model = q62's biholomorphic-preimage reflection).
+3. #122 seam cocycle — the slit ledger in the u-plane; positivity instruments live here.
+4. The u-plane ladder — ℤ₂-tower of xiDescent on the star-convex slit plane (needs
+   root-existence beyond convexity; would make each rung one global root statement).
+5. Standing: Goldilocks class (11 §5.3), Beurling coherence dial (#96), modulus-only
+   holography (#123, blocked on the q62 Dirichlet stack), publication surface (#103).
+
+**The wall, final form this wave:** four independent derivations (principal pinning /
+S²∖B² gap / trichotomy / LD rate separation), all confined to value-distribution and
+measure registers. The deck charge factors through none of them — that separation is
+the reason both live fronts are built exclusively from exact monodromy data.

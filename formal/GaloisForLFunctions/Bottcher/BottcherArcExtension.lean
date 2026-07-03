@@ -167,58 +167,177 @@ theorem continuesAcross_of_greenBoundaryRegularity
 potential to be the *global* dynamical Green function `u₀ = greenFunctionDyn c₁ ∘ γ` (`= 0` on `K_{c₁}`,
 `= greenLimit` on the basin), the two potential-theoretic boundary inputs are already discharged by the
 tree: `continuous_greenFunctionDyn` gives continuity up to the arc for free, and
-`greenFunctionDyn_eq_zero_iff` gives vanishing wherever `γ` lands in `K_{c₁}`.  The harmonic and
-outer-agreement inputs come from `harmonicOnNhd_greenLimit_basin` and
-`norm_bottcherCoord_eq_exp_green_escape` (via `greenFunctionDyn = greenLimit` off `K_{c₁}`).  What is
-left is exactly the **geometric** content of the smooth piece: `γ` maps the exterior side to the escape
-region (`hγesc`) and the arc `{‖w‖ = 1}` into the filled Julia set (`hγarc`) — i.e. the branch `φ`
-carries the smooth Julia arc to the unit circle.  Under those data, `β` continues analytically across
-`z₀`. -/
+`greenFunctionDyn_eq_zero_iff` gives vanishing wherever `γ` lands in `K_{c₁}`.  The harmonic input comes
+from `harmonicOnNhd_greenLimit_basin`, and outer agreement `log‖β∘γ‖ = greenFunctionDyn ∘ γ` is the
+**global** Böttcher modulus `hβmod` (`‖β‖ = exp(green)` on the whole basin — `norm_eq_exp_green_basin`),
+valid at the *frontier* arc (not just the far escape region).  The holomorphy/nonvanishing of `β∘γ` are
+derived from `β` analytic-nonvanishing on the basin.  What is left is exactly the **geometric** content
+of the smooth piece: `γ` maps the exterior side into the basin (`hγbasin`) and the arc `{‖w‖ = 1}` into
+the filled Julia set (`hγarc`) — i.e. the branch `φ` carries the smooth Julia arc to the unit circle.
+Under those data, `β` continues analytically across `z₀`. -/
 theorem continuesAcross_of_smoothJuliaArc
     {c₁ : ℂ} {β φ γ : ℂ → ℂ} {z₀ : ℂ} {r : ℝ}
     (hr : 0 < r) (hr1 : r ≤ 1/2) (hw₀ : ‖φ z₀‖ = 1)
     (hφAt : AnalyticAt ℂ φ z₀)
     (hγφ : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, γ (φ z) = z)
     (hbasin : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, 1 < ‖φ z‖)
-    (hβγhol : DifferentiableOn ℂ (fun w => β (γ w))
-      (Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}))
-    (hβγne : ∀ w ∈ Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}, β (γ w) ≠ 0)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
     (hγAn : ∀ w ∈ Metric.ball (φ z₀) r, AnalyticAt ℂ γ w)
-    (hγesc : ∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ → γ w ∈ escapeOpen c₁)
-    (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
+    (hγbasin : ∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ → γ w ∈ (filledJulia c₁)ᶜ)
     (hγarc : ∀ w ∈ Metric.ball (φ z₀) r, ‖w‖ = 1 → γ w ∈ filledJulia c₁) :
     U0NaturalBoundary.ContinuesAcross β (filledJulia c₁)ᶜ z₀ := by
   have hγcont : ContinuousOn γ (Metric.ball (φ z₀) r) :=
     fun w hw => (hγAn w hw).continuousAt.continuousWithinAt
-  -- off `K_{c₁}`, `greenFunctionDyn = greenLimit`
-  have hgdyn_esc : ∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ →
-      greenFunctionDyn c₁ (γ w) = greenLimit c₁ (γ w) := by
-    intro w hw hnorm
-    rw [greenFunctionDyn, if_neg (escapeOpen_subset_compl_filledJulia c₁ (hγesc w hw hnorm))]
+  -- `β ∘ γ` holomorphic and nonvanishing on the exterior side (from `β` on the basin)
+  have hβγhol : DifferentiableOn ℂ (fun w => β (γ w))
+      (Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}) := fun w hw =>
+    ((hβan (γ w) (hγbasin w hw.1 hw.2)).comp (hγAn w hw.1)).differentiableAt.differentiableWithinAt
+  have hβγne : ∀ w ∈ Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}, β (γ w) ≠ 0 := fun w hw =>
+    norm_ne_zero_iff.mp (by rw [hβmod (γ w) (hγbasin w hw.1 hw.2)]; exact (Real.exp_pos _).ne')
   refine continuesAcross_of_greenBoundaryRegularity (u₀ := fun w => greenFunctionDyn c₁ (γ w))
     hr hr1 hw₀ hφAt hγφ hbasin hβγhol hβγne ?_ ?_ ?_ ?_
   · -- `greenFunctionDyn ∘ γ` is harmonic on the exterior side
     intro w hw hnorm
-    have hesc := hγesc w hw hnorm
+    have hbasinw := hγbasin w hw hnorm
     have hglHarm : InnerProductSpace.HarmonicAt (fun v => greenLimit c₁ (γ v)) w :=
-      harmonicAt_comp_analytic
-        (harmonicOnNhd_greenLimit_basin c₁ (γ w) (escapeOpen_subset_compl_filledJulia c₁ hesc))
-        (hγAn w hw)
+      harmonicAt_comp_analytic (harmonicOnNhd_greenLimit_basin c₁ (γ w) hbasinw) (hγAn w hw)
     refine (InnerProductSpace.harmonicAt_congr_nhds ?_).mpr hglHarm
     have hopen : IsOpen (Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}) :=
       Metric.isOpen_ball.inter (isOpen_lt continuous_const continuous_norm)
     filter_upwards [hopen.mem_nhds ⟨hw, hnorm⟩] with v hv
-    exact hgdyn_esc v hv.1 hv.2
+    rw [greenFunctionDyn, if_neg (hγbasin v hv.1 hv.2)]
   · -- continuity up to the arc — from global continuity of `greenFunctionDyn`
     exact (continuous_greenFunctionDyn c₁).comp_continuousOn (hγcont.mono inter_subset_right)
   · -- vanishing on the arc — `γ` lands in `K_{c₁}`
     intro w hw hnorm
     show greenFunctionDyn c₁ (γ w) = 0
     exact (greenFunctionDyn_eq_zero_iff c₁ (γ w)).mpr (hγarc w hw hnorm)
-  · -- outer agreement `greenFunctionDyn ∘ γ = log‖β∘γ‖`
+  · -- outer agreement `greenFunctionDyn ∘ γ = log‖β∘γ‖` (global Böttcher modulus)
     intro w hw hnorm
     show greenFunctionDyn c₁ (γ w) = Real.log ‖β (γ w)‖
-    have hesc := hγesc w hw hnorm
-    rw [hgdyn_esc w hw hnorm, hβesc _ hesc, norm_bottcherCoord_eq_exp_green_escape hesc, Real.log_exp]
+    rw [hβmod (γ w) (hγbasin w hw hnorm), Real.log_exp]
+
+/-- **The smooth-arc geometric datum — the harmonic-reflection replacement of `ArcReflectionData`.**
+For a non-constant analytic `φ` with modulus one on a relatively-open frontier piece `P`, there is a
+frontier arc point `z₀` and a local inverse `γ` of `φ` carrying the exterior side `{‖w‖ > 1}` into the
+basin and the arc `{‖w‖ = 1}` into the filled Julia set.  Unlike `ArcReflectionData`, this datum asks
+for **no pre-existing reflected extension** of `β`: the continuation is *constructed* by the harmonic
+Schwarz reflection of the Green potential (`continuesAcross_of_smoothJuliaArc`).  Its only content is
+the geometry of the smooth piece — `φ` is a local biholomorphism carrying the smooth Julia arc to the
+unit circle. -/
+def GreenArcData (c₁ : ℂ) : Prop :=
+  ∀ (φ : ℂ → ℂ) (Ω P : Set ℂ), IsOpen Ω → IsPreconnected Ω → AnalyticOnNhd ℂ φ Ω →
+    (∃ z' ∈ Ω, deriv φ z' ≠ 0) → P ⊆ Ω → P ⊆ frontier (filledJulia c₁) →
+    (∃ Uop, IsOpen Uop ∧ (Uop ∩ P).Nonempty) → (∀ z ∈ P, ‖φ z‖ = 1) →
+    ∃ (z₀ : ℂ) (γ : ℂ → ℂ) (r : ℝ), z₀ ∈ frontier (filledJulia c₁) ∧ 0 < r ∧ r ≤ 1 / 2 ∧
+      ‖φ z₀‖ = 1 ∧ AnalyticAt ℂ φ z₀ ∧
+      (∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, γ (φ z) = z) ∧
+      (∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, 1 < ‖φ z‖) ∧
+      (∀ w ∈ Metric.ball (φ z₀) r, AnalyticAt ℂ γ w) ∧
+      (∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ → γ w ∈ (filledJulia c₁)ᶜ) ∧
+      (∀ w ∈ Metric.ball (φ z₀) r, ‖w‖ = 1 → γ w ∈ filledJulia c₁)
+
+/-- **`ReflectionCore` ⟸ `GreenArcData` — the harmonic route.**  Given the smooth-arc geometry
+(`GreenArcData`) and the global Böttcher modulus `hβmod` (`‖β‖ = exp(green)` on the basin, carried by
+every branch produced by the tree's colimit construction), `ReflectionCore c₁ β` holds: the
+continuation across the arc is the harmonic reflection of the Green potential
+(`continuesAcross_of_smoothJuliaArc`).  This lands the entire harmonic Schwarz-reflection stack on the
+reflection-core input of the general both-connected gatekeeper — non-circular, requiring no
+holomorphic-extension hypothesis, only the geometry of the smooth piece and the basin-wide modulus. -/
+theorem reflectionCore_of_greenArcData {c₁ : ℂ} {β : ℂ → ℂ}
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z))
+    (hdata : GreenArcData c₁) : ReflectionCore c₁ β := by
+  intro φ Ω P hΩo hΩc hφ hnc hPΩ hPfront hUP hmodP
+  obtain ⟨z₀, γ, r, hz₀front, hr, hr1, hmod, hφAt, hγφ, hbasin, hγAn, hγbasin, hγarc⟩ :=
+    hdata φ Ω P hΩo hΩc hφ hnc hPΩ hPfront hUP hmodP
+  exact ⟨z₀, hz₀front,
+    continuesAcross_of_smoothJuliaArc hr hr1 hmod hφAt hγφ hbasin hβan hβmod hγAn hγbasin hγarc⟩
+
+/-- **Smooth-piece rigidity from the smooth-arc geometry alone (harmonic route).**  Composing the
+reflection-core reduction with the harmonic Schwarz-reflection stack: for connected
+`c₁ ∈ mandelbrot ∖ {0,-2}`, the smooth-arc geometric datum `GreenArcData c₁` (a local biholomorphism
+carrying the smooth Julia arc to the unit circle at some frontier piece point) yields
+`SmoothPieceRigidity c₁ c₂`.  The branch's modulus `hβmod` and analyticity `hβan` are supplied by the
+tree's colimit branch (`hnb_of_mem_mandelbrot_connected`, threaded through
+`smoothPieceRigidity_of_reflectionCore`); the continuation across the arc is the harmonic reflection of
+the Green potential, contradicting the natural boundary.  This reduces the general both-connected
+gatekeeper (#118) to exactly the smooth-piece **geometry** `GreenArcData` — no analytic input remains. -/
+theorem smoothPieceRigidity_of_greenArcData {c₁ c₂ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₁0 : c₁ ≠ 0) (hc₁2 : c₁ ≠ -2)
+    (hconn₁ : IsPreconnected (filledJulia c₁))
+    (hdata : GreenArcData c₁) :
+    SmoothPieceRigidity c₁ c₂ :=
+  smoothPieceRigidity_of_reflectionCore hc₁M hc₁0 hc₁2 hconn₁
+    (fun _β hβan _hβesc hβmod => reflectionCore_of_greenArcData hβan hβmod hdata)
+
+/-- **The smooth-arc selection datum — the geometric core, in `z`-space.**  For a non-constant
+analytic `φ` with modulus one on a relatively-open frontier piece, there is a *non-critical* arc point
+`z₀` (`deriv φ z₀ ≠ 0`) at which the modulus-one locus is the local separator between the basin and the
+interior: the basin side has `‖φ‖ > 1` (`hbasin`), the whole `{‖φ‖ > 1}` germ lies in the basin
+(`hlevelOut`), and the whole `{‖φ‖ = 1}` germ lies in the filled Julia set (`hlevelArc`).  This is the
+residual geometry of the smooth piece (Montel blow-up ⟹ the Julia piece is a real-analytic arc carrying
+`φ` to the unit circle with the basin on the exterior side); it references only `φ` and the level sets,
+not the local inverse. -/
+def SmoothArcSelection (c₁ : ℂ) : Prop :=
+  ∀ (φ : ℂ → ℂ) (Ω P : Set ℂ), IsOpen Ω → IsPreconnected Ω → AnalyticOnNhd ℂ φ Ω →
+    (∃ z' ∈ Ω, deriv φ z' ≠ 0) → P ⊆ Ω → P ⊆ frontier (filledJulia c₁) →
+    (∃ Uop, IsOpen Uop ∧ (Uop ∩ P).Nonempty) → (∀ z ∈ P, ‖φ z‖ = 1) →
+    ∃ z₀ ∈ frontier (filledJulia c₁), AnalyticAt ℂ φ z₀ ∧ deriv φ z₀ ≠ 0 ∧ ‖φ z₀‖ = 1 ∧
+      (∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, 1 < ‖φ z‖) ∧
+      (∀ᶠ z in 𝓝 z₀, 1 < ‖φ z‖ → z ∈ (filledJulia c₁)ᶜ) ∧
+      (∀ᶠ z in 𝓝 z₀, ‖φ z‖ = 1 → z ∈ filledJulia c₁)
+
+/-- **`GreenArcData` ⟸ `SmoothArcSelection` — the local-inverse scaffolding.**  Given a non-critical
+arc point with the level-set orientation (`SmoothArcSelection`), the local analytic inverse
+`γ = φ⁻¹` (`exists_localInverse_of_continuation`) transports the orientation to the geometric datum
+`GreenArcData`: on a small disk `ball (φ z₀) r`, `φ(γ w) = w` turns `1 < ‖w‖` into `γ w` in the basin
+and `‖w‖ = 1` into `γ w` in the filled Julia set, and `γ` is analytic there.  This isolates the entire
+remaining content of the both-connected gatekeeper's boundary half to the `z`-space geometry
+`SmoothArcSelection` — all the local-inverse analysis is discharged here. -/
+theorem greenArcData_of_smoothArcSelection {c₁ : ℂ} (hsel : SmoothArcSelection c₁) :
+    GreenArcData c₁ := by
+  intro φ Ω P hΩo hΩc hφ hnc hPΩ hPfront hUP hmodP
+  obtain ⟨z₀, hz₀front, hφAt, hd0, hmod, hbasin, hlevelOut, hlevelArc⟩ :=
+    hsel φ Ω P hΩo hΩc hφ hnc hPΩ hPfront hUP hmodP
+  obtain ⟨γ, hγAn0, hγleft, hγright⟩ := exists_localInverse_of_continuation hφAt hd0
+  have hγz₀ : γ (φ z₀) = z₀ := hγleft.self_of_nhds
+  have htend : Tendsto γ (𝓝 (φ z₀)) (𝓝 z₀) := by
+    have h : Tendsto γ (𝓝 (φ z₀)) (𝓝 (γ (φ z₀))) := hγAn0.continuousAt
+    rwa [hγz₀] at h
+  -- gather the eventually-facts on a common disk around `φ z₀`
+  have hev : ∀ᶠ w in 𝓝 (φ z₀), AnalyticAt ℂ γ w ∧ φ (γ w) = w ∧
+      (1 < ‖φ (γ w)‖ → γ w ∈ (filledJulia c₁)ᶜ) ∧ (‖φ (γ w)‖ = 1 → γ w ∈ filledJulia c₁) :=
+    hγAn0.eventually_analyticAt |>.and <| hγright.and <|
+      (htend.eventually hlevelOut).and (htend.eventually hlevelArc)
+  obtain ⟨ε, hε, hball⟩ := Metric.eventually_nhds_iff.mp hev
+  refine ⟨z₀, γ, min ε (1/2), hz₀front, lt_min hε (by norm_num), min_le_right _ _, hmod, hφAt, ?_,
+    hbasin, ?_, ?_, ?_⟩
+  · exact nhdsWithin_le_nhds hγleft
+  · intro w hw
+    exact (hball (lt_of_lt_of_le (Metric.mem_ball.mp hw) (min_le_left _ _))).1
+  · intro w hw hnorm
+    obtain ⟨_, hφγ, hout, _⟩ := hball (lt_of_lt_of_le (Metric.mem_ball.mp hw) (min_le_left _ _))
+    exact hout (by rw [hφγ]; exact hnorm)
+  · intro w hw hnorm
+    obtain ⟨_, hφγ, _, harc⟩ := hball (lt_of_lt_of_le (Metric.mem_ball.mp hw) (min_le_left _ _))
+    exact harc (by rw [hφγ]; exact hnorm)
+
+/-- **Smooth-piece rigidity from the `z`-space arc geometry (full harmonic route).**  The composition
+of the whole harmonic Schwarz-reflection stack: for connected `c₁ ∈ mandelbrot ∖ {0,-2}`, the smooth-arc
+selection datum `SmoothArcSelection c₁` — a non-critical frontier arc point at which the `‖φ‖ = 1` level
+set separates the basin (`‖φ‖ > 1`) from the interior — yields `SmoothPieceRigidity c₁ c₂`.  This is the
+tightest reduction of the both-connected gatekeeper's boundary half: every analytic ingredient (Dirichlet
+problem, harmonic max principle, line and circle Koebe reflection, Green boundary regularity, the global
+Böttcher modulus, and the local-inverse construction) is discharged, leaving only the level-set geometry
+of the smooth piece. -/
+theorem smoothPieceRigidity_of_smoothArcSelection {c₁ c₂ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₁0 : c₁ ≠ 0) (hc₁2 : c₁ ≠ -2)
+    (hconn₁ : IsPreconnected (filledJulia c₁))
+    (hsel : SmoothArcSelection c₁) :
+    SmoothPieceRigidity c₁ c₂ :=
+  smoothPieceRigidity_of_greenArcData hc₁M hc₁0 hc₁2 hconn₁
+    (greenArcData_of_smoothArcSelection hsel)
 
 end Bottcher
