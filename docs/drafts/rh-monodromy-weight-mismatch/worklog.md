@@ -559,3 +559,24 @@ Bottcher/STATUS.md (tail), Bottcher/DyadicMonodromy.lean. Findings for THIS lane
   obstruction = a computable-in-principle formal invariant of completedRiemannZeta.
 - 00-approach §3.2–3.4's [REDUCTION — to be formalized] markers are now discharged in
   full: tower (Arc A), ladder (Arc A), cocycle + zero-counting meaning (A3 arc, today).
+
+## 2026-07-03 — TWO-FRONT PLAN + CONSERVATION LAW FORMALIZED (M2)
+
+Task board rewritten around the two live fronts (tasks #114–#120): **Arc B re-armed**
+(parity stratum: FEDescent central-parity brick #114, D–H filter + exact-identity audit
+#115, correspondence-monodromy conjecture #116, re-cut Beurling foil #96 and w_1-lemma
+#97) and **M1 final form** (conservation: DeckHomotopy #117, far-field anchor #118,
+15-conservation-program.md #119). rng pick chose deckhomotopy-first.
+
+**M2 DONE — `DeckHomotopy.lean` banked, axiom-clean, RHTower green (8567 jobs).** The
+deck class is a deformation invariant with NO argument principle: `deckClass_step`
+(‖f−g‖ < ‖g‖ on the annulus charts ⟹ the principal root of f/g is a GLOBAL correction —
+f/g lands in B(1,1) ⊆ slitPlane — so the class cannot move), `deckClass_perturb`,
+`deckClass_chain`, `deckClass_deformation_invariant` (any roots of F N vs any roots of
+F 0). This is the formal version of the R3-measured charge dynamics: enclosed
+multiplicity mod 2^k is CONSERVED while no zero touches the charts. Note the step lemma
+needs no basepoint geometry at all (hR dropped) — the conservation inequality is purely
+about domination on the charts.
+
+Next: far-field anchor (#118) gives the endpoint the conservation argument drains to;
+then the program doc (#119) states where annihilation consumes Arc B's parity.

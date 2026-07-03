@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4706 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4715 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -3079,6 +3079,15 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `conj_mem_sphere_of_real` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:158` |  |
 | theorem | `conj_mem_closedBall_of_real` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:165` |  |
 | theorem | `harmonicAt_reflect_line` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:174` |  |
+| theorem | `norm_circleInv` | `GaloisForLFunctions.Bottcher.HarmonicReflectionCircle` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflectionCircle.lean:40` |  |
+| theorem | `circleInv_ne_zero` | `GaloisForLFunctions.Bottcher.HarmonicReflectionCircle` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflectionCircle.lean:43` |  |
+| theorem | `circleInv_circleInv` | `GaloisForLFunctions.Bottcher.HarmonicReflectionCircle` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflectionCircle.lean:46` |  |
+| theorem | `circleInv_fixes` | `GaloisForLFunctions.Bottcher.HarmonicReflectionCircle` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflectionCircle.lean:49` |  |
+| theorem | `reflectCircle_outer` | `GaloisForLFunctions.Bottcher.HarmonicReflectionCircle` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflectionCircle.lean:59` |  |
+| theorem | `reflectCircle_inner` | `GaloisForLFunctions.Bottcher.HarmonicReflectionCircle` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflectionCircle.lean:62` |  |
+| theorem | `reflectCircle_circleInv` | `GaloisForLFunctions.Bottcher.HarmonicReflectionCircle` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflectionCircle.lean:67` | Oddness of the circle reflection under inversion.** `reflectCircle u₀ (σ w) = -reflectCircle u₀ w` for `w ≠ 0`, provided `u₀` vanishes on the circle (needed only at `‖w‖ = 1`, wher |
+| theorem | `harmonicAt_reflectCircle_outer` | `GaloisForLFunctions.Bottcher.HarmonicReflectionCircle` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflectionCircle.lean:80` | Off-circle harmonicity, exterior side.** Where `1 < ‖w‖` and `u₀` is harmonic, so is the reflection (there `reflectCircle u₀ = u₀`). |
+| theorem | `harmonicAt_reflectCircle_inner` | `GaloisForLFunctions.Bottcher.HarmonicReflectionCircle` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflectionCircle.lean:89` | Off-circle harmonicity, interior side.** Where `‖w‖ < 1` (and `w ≠ 0`) and `u₀` is harmonic at the reflected point `σ w`, the reflection `= -u₀ ∘ σ` is harmonic. `σ = conj ∘ (·)⁻¹` |
 | def | `SmoothPieceRigidity` | `GaloisForLFunctions.Bottcher.HbothconnAssembly` | `formal/GaloisForLFunctions/Bottcher/HbothconnAssembly.lean:33` | The smooth-piece rigidity interface (P6).** For nonexceptional parameters, no relatively open piece of `J_{c₁}` lies inside the modulus-one locus of one branch of a continuous root |
 | theorem | `noRelation_phiMero_of_holeFreeTip_of_rigidity` | `GaloisForLFunctions.Bottcher.HbothconnAssembly` | `formal/GaloisForLFunctions/Bottcher/HbothconnAssembly.lean:53` | hbothconn, conditional on the two named Props.** A `HoleFreeTip` plus `SmoothPieceRigidity` give the bivariate no-relation for the pair — the both-connected input of `q62_phiMero_i |
 | theorem | `exists_differentiableOn_exp_eq` | `GaloisForLFunctions.Bottcher.HolomorphicBranch` | `formal/GaloisForLFunctions/Bottcher/HolomorphicBranch.lean:27` | Holomorphic logarithm on a simply connected domain.** A holomorphic non-vanishing `f` on an open simply connected `U` has a holomorphic branch of `log f`: some holomorphic `g` with |
@@ -6552,6 +6561,20 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `deckClass_root_indep` | `GaloisForLFunctions.RHTower.DeckCocycle` | `formal/GaloisForLFunctions/RHTower/DeckCocycle.lean:60` | Changing either local root multiplies both overlap ratios by the same constant, so the deck class is independent of the choice of local roots. Stated on the standard cover data: `U |
 | theorem | `deckClass_sq` | `GaloisForLFunctions.RHTower.DeckCocycle` | `formal/GaloisForLFunctions/RHTower/DeckCocycle.lean:86` | Coherence in the dyadic tower: the deck class of the squared roots is the square of the deck class — `w_k = w_{k+1}²` in the ladder's notation. |
 | theorem | `deckClass_eq_one_iff_exists_root` | `GaloisForLFunctions.RHTower.DeckCocycle` | `formal/GaloisForLFunctions/RHTower/DeckCocycle.lean:95` | Triviality ⟺ gluing.** On the standard two-chart annulus data — overlap exactly `VP ∪ VM` with each piece open, preconnected, carrying a basepoint where `f` does not vanish — the d |
+| theorem | `mem_slitPlane_of_norm_sub_one_lt` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:30` | A complex number within distance `1` of `1` has positive real part. |
+| theorem | `right_ne_zero_of_close` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:40` | Under the domination `‖f z − g z‖ < ‖g z‖`, the base function does not vanish. |
+| theorem | `left_ne_zero_of_close` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:47` | Under the domination `‖f z − g z‖ < ‖g z‖`, the perturbed function does not vanish. |
+| theorem | `ratio_mem_slitPlane` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:54` | Under the domination, the ratio `f z / g z` lies in `B(1,1) ⊆ slitPlane`. |
+| theorem | `ratioRoot_ne_zero` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:67` |  |
+| theorem | `ratioRoot_pow` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:70` |  |
+| theorem | `ratioRoot_analyticAt` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:80` |  |
+| theorem | `basepointP_mem_charts` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:93` | The upper basepoint `a + (R/2)i` lies in both charts. |
+| theorem | `basepointM_mem_charts` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:114` | The lower basepoint `a − (R/2)i` lies in both charts. |
+| theorem | `deckClass_step` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:141` | Conservation step.** If `f` is dominated-close to `g` on both charts (`‖f − g‖ < ‖g‖`), then any roots of `g` transport to roots of `f` — multiply by the global correction root of  |
+| theorem | `deckClass_perturb` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:182` | Perturbation invariance, both-roots-given form.** Under domination, ANY roots of `f` and ANY roots of `g` on the two charts have the same deck class. |
+| theorem | `deckClass_chain` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:210` | Chain transport.** Along a finite chain of consecutive dominations, roots of `F 0` transport to roots of `F N` with the same deck class. |
+| class | `of` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:234` |  |
+| theorem | `deckClass_deformation_invariant` | `GaloisForLFunctions.RHTower.DeckHomotopy` | `formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:236` | Charge conservation.** Along a finite chain of consecutive dominations, the deck class of ANY roots of the endpoint `F N` equals the class of ANY roots of the start `F 0`: enclosed |
 | theorem | `deckClass_mul_global` | `GaloisForLFunctions.RHTower.DeckMonomial` | `formal/GaloisForLFunctions/RHTower/DeckMonomial.lean:22` | Multiplying both local roots by one global nonvanishing factor does not change the deck class. |
 | theorem | `monoRoot` | `GaloisForLFunctions.RHTower.DeckMonomial` | `formal/GaloisForLFunctions/RHTower/DeckMonomial.lean:39` |  |
 | theorem | `monoRoot` | `GaloisForLFunctions.RHTower.DeckMonomial` | `formal/GaloisForLFunctions/RHTower/DeckMonomial.lean:49` |  |
@@ -6569,10 +6592,12 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `isPreconnected_chartRA` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:78` |  |
 | theorem | `isPreconnected_chartLA` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:127` |  |
 | theorem | `corr_mem_slitPlane` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:206` | Polar parametrization map. noncomputable def polarMap (a : ℂ) : ℝ × ℝ → ℂ := fun p => a + (p.1 : ℂ) * exp ((p.2 : ℂ) * I) theorem continuous_polarMap (a : ℂ) : Continuous (polarMap |
-| theorem | `corrRoot_pow` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:225` |  |
-| theorem | `corrRoot_ne_zero` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:235` |  |
-| theorem | `corrRoot_analyticAt` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:238` |  |
-| theorem | `shifted_factor` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:250` | Off-center factorization on the punctured plane. |
+| theorem | `corrRoot_pow` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:224` |  |
+| theorem | `corrRoot_ne_zero` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:234` |  |
+| theorem | `corrRoot_analyticAt` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:237` |  |
+| theorem | `shifted_factor` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:249` | Off-center factorization on the punctured plane. |
+| theorem | `deckClass_congr` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:256` | Deck classes only see the four point values. |
+| theorem | `deckClass_multi_zero` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:267` | Multi-zero additivity.** If `f = ∏ᵢ (z − ρᵢ)^{mᵢ} · h` on `ball a R` with every `ρᵢ` inside `closedBall a r₀` and `h` analytic nonvanishing, then ANY local analytic `n`-th roots of |
 | class | `cannot` | `GaloisForLFunctions.RHTower.DirichletRigidity` | `formal/GaloisForLFunctions/RHTower/DirichletRigidity.lean:8` |  |
 | theorem | `no_polynomial_surgery` | `GaloisForLFunctions.RHTower.DirichletRigidity` | `formal/GaloisForLFunctions/RHTower/DirichletRigidity.lean:112` | No polynomial surgery on Dirichlet series.** If `f` and `g` are coefficient sequences whose L-series converge somewhere, `g` is not (essentially) zero, and `P` is a polynomial of p |
 | theorem | `no_polynomial_surgery_zeta` | `GaloisForLFunctions.RHTower.DirichletRigidity` | `formal/GaloisForLFunctions/RHTower/DirichletRigidity.lean:267` | ζ-instance of the surgery no-go**: no somewhere-convergent L-series agrees on a right half-line with P(s)·ζ(s) for a polynomial P of positive degree. One cannot insert finitely man |
@@ -6620,6 +6645,11 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `rh_iff_forall_ladder` | `GaloisForLFunctions.RHTower.RiemannTower` | `formal/GaloisForLFunctions/RHTower/RiemannTower.lean:211` | RH ⟺ every ladder level.** The multiplicity-parity ladder exhausts RH. |
 | theorem | `exists_root_of_finite` | `GaloisForLFunctions.RHTower.RootExistence` | `formal/GaloisForLFunctions/RHTower/RootExistence.lean:24` | Root existence when the zero set is finite: induction on the number of zeros, peeling one zero per step. |
 | theorem | `exists_root_iff_orders_dvd` | `GaloisForLFunctions.RHTower.RootExistence` | `formal/GaloisForLFunctions/RHTower/RootExistence.lean:125` | Root existence ⟺ order divisibility.** On a convex open `Ω` with a marked point `z₀` where `f` does not vanish, and whose zero set meets every bounded piece `Ω ∩ ball z₀ (R+1)` in  |
+| theorem | `xi_orderAt_ne_top` | `GaloisForLFunctions.RHTower.XiDeck` | `formal/GaloisForLFunctions/RHTower/XiDeck.lean:25` | ξ has finite vanishing order everywhere (it is not identically zero). |
+| theorem | `xi_peel_ball` | `GaloisForLFunctions.RHTower.XiDeck` | `formal/GaloisForLFunctions/RHTower/XiDeck.lean:35` | Around any point, ξ peels on a small ball with a nonvanishing analytic cofactor. |
+| theorem | `xi_deckClass` | `GaloisForLFunctions.RHTower.XiDeck` | `formal/GaloisForLFunctions/RHTower/XiDeck.lean:56` | The deck class of ξ counts multiplicity.** Around any ρ₀ there is R₀ > 0 such that for every radius 0 < R ≤ R₀ and every n > 0, ANY local analytic n-th roots of ξ on the two slit c |
+| theorem | `exp_two_pi_mul_div_eq_one_iff` | `GaloisForLFunctions.RHTower.XiDeck` | `formal/GaloisForLFunctions/RHTower/XiDeck.lean:71` | The root-of-unity criterion: `exp(2πi·m/n) = 1 ↔ n ∣ m`. |
+| theorem | `xi_deckClass_eq_one_iff_ladder_dvd` | `GaloisForLFunctions.RHTower.XiDeck` | `formal/GaloisForLFunctions/RHTower/XiDeck.lean:99` | The ladder's local obstruction is the deck class.** At `n = 2^k`, triviality of the deck class of any local roots of ξ at a zero ρ₀ is EXACTLY the divisibility clause `(2^k : ℕ∞) ∣ |
 | def | `commutingActions` | `GaloisForLFunctions.RankOneCohomology` | `formal/GaloisForLFunctions/RankOneCohomology.lean:29` | The difference actions commute pairwise. |
 | def | `scalarCocycle` | `GaloisForLFunctions.RankOneCohomology` | `formal/GaloisForLFunctions/RankOneCohomology.lean:33` | The scalar rank-one cocycle condition `a_p * σ_p(a_q) = a_q * σ_q(a_p)`. |
 | lemma | `scalarCocycle_one` | `GaloisForLFunctions.RankOneCohomology` | `formal/GaloisForLFunctions/RankOneCohomology.lean:38` |  |

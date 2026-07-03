@@ -27,3 +27,4 @@ import GaloisForLFunctions.RHTower.DeckMonomial
 import GaloisForLFunctions.RHTower.DeckAssembly
 import GaloisForLFunctions.RHTower.DeckMultiZero
 import GaloisForLFunctions.RHTower.XiDeck
+import GaloisForLFunctions.RHTower.DeckHomotopy
