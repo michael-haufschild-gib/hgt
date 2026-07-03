@@ -379,3 +379,33 @@ frontier-local structure as `FrontierSeparation` / #124).  The dense-approach va
 
 Everything except that one topological input is built and named above; `hinput` is a mechanical
 assembly of steps 1–5 once it is supplied.
+
+## hinput DISCHARGED as a theorem (2026-07-03, verified axiom-clean, plugs into the engine)
+
+`formal/GaloisForLFunctions/Bottcher/Q62HinputAssembly.lean` (new, umbrella, lint clean,
+`[propext, Classical.choice, Quot.sound]`).  The natural-boundary engine's `hinput` — previously
+NOWHERE discharged in the tree, always passed up as a hypothesis — is now a theorem, built by composing
+`exists_branch_family_analytic` + `relation_eq_zero_basin_analytic_of_open` + `dendrite_branch_limit_analytic`
++ `exists_sparse_fibre_separable_uncountable`.  Four decls:
+
+* `hinput_tuple_of_basin_locally_connected` — back-half: separable frontier point + β-root-on-basin +
+  local basis of preconnected basin nhds ⟹ the tuple (separable, frontier, `Tendsto β (𝓝[K₁ᶜ] z₀) w₀`).
+* `hinput_tuple_of_relation` — middle: relocate a separable-fibre witness onto the frontier (avoiding the
+  discriminant AND the non-locally-connected points) via the uncountable-LC input.
+* `hinput_tuple_of_engine_relation` — wiring: instantiate with the engine's `a i = (Q i)(γ)`, deriving
+  analyticity across the frontier and `β`-root-on-basin from the engine's own hypotheses.
+* `hinput_of_witness_of_uncountableLC` — the ∀-form matching the engine's `hinput` signature EXACTLY;
+  verified to discharge `noRelation_phiMero_of_naturalBoundary_global_gamma_frontier_separable` (a
+  `plug.lean` example produces `NoRelation` from it).
+
+`hinput` is reduced to exactly **two isolated inputs**, both cleanly named:
+1. `UncountableLocallyConnectedFrontier c₁` — the topological one-sidedness (co-countable for connected
+   `c₁`: countable branch points on a dendrite, a quasicircle for hyperbolic parameters).
+2. `hwitness` — a per-relation separable-fibre witness in the basin (the squarefree / minimal-relation
+   content, from `exists_separable_relation_of_relation`).
+
+NET: the natural-boundary route's `hinput` is off the open list — it is a theorem modulo (1)+(2).
+Combined with `hnb` (PROVEN, `hnb_of_mem_mandelbrot_connected`) and the exposure/#124 collar, the
+both-connected pair via the natural-boundary engine now needs only: exposure (#124) + the two hinput
+inputs above.  Full q62 still open (SmoothPieceRigidity route, OP16-A, small-norm), but the `hinput`
+gatekeeper the plan named is discharged.

@@ -255,3 +255,26 @@ theorem no_polynomial_surgery
       exact hAnorm.not_tendsto (disjoint_nhds_atTop _) hblow
 
 end RHTower
+
+namespace RHTower
+
+open Filter LSeries
+
+/-- **ζ-instance of the surgery no-go**: no somewhere-convergent L-series agrees on a right
+half-line with P(s)·ζ(s) for a polynomial P of positive degree. One cannot insert finitely
+many zeros into (or excise them from) the divisor of ζ by a polynomial factor — e.g. a lone
+off-line zero quadruple (s−ρ)(s−ρ̄)(1−s−ρ)(1−s−ρ̄) — and remain a Dirichlet series. -/
+theorem no_polynomial_surgery_zeta
+    {P : Polynomial ℂ} (hP : 0 < P.natDegree)
+    {f : ℕ → ℂ} (hfa : abscissaOfAbsConv f < ⊤)
+    (heq : ∀ᶠ x : ℝ in atTop,
+      LSeries f (x : ℂ) = P.eval (x : ℂ) * riemannZeta (x : ℂ)) :
+    False := by
+  have h1a : abscissaOfAbsConv (1 : ℕ → ℂ) < ⊤ := by
+    rw [LSeries.abscissaOfAbsConv_one]
+    simpa using EReal.coe_lt_top 1
+  refine no_polynomial_surgery hP h1a ⟨1, one_ne_zero, by norm_num⟩ hfa ?_
+  filter_upwards [heq, eventually_gt_atTop (1 : ℝ)] with x hx hx1
+  rw [hx, LSeries_one_eq_riemannZeta (by simpa using hx1)]
+
+end RHTower
