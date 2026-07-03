@@ -171,3 +171,44 @@ factory whose links get proven or refuted ONE AT A TIME.
 4. **L4 (done):** windowed S² ⟹ sup = 11 Thm A; Weyl equidistribution = classical.
 The chain is only as strong as its weakest link; L1 first, then L2 — either a proof or the
 long-sought bug. Both outcomes are theorems about the exact-structure side of the wall.
+
+## 5. L1 opened: rotation invariance, and the self-repair dichotomy (2026-07-03, late)
+
+### 5.1 Rotation invariance kills half of L1 `[DERIVATION — clean]`
+The block variable is Y_j = Σ_{p∈B_j} c_p u_p x_p with x_p iid uniform phases and u_p the
+fixed γ₀-reference phases. But u_p·x_p is again a uniform phase: **Y_j's distribution is
+rotation-invariant and INDEPENDENT of γ₀ entirely.** The reference height enters only
+through the ball CENTER m_j (the block mean = the block sum of the Φ-series at γ₀). So L1
+reduces to: radial-density lower bounds for the FIXED laws Y_j = Σ c_p x_p at radius
+|m_j| — small-ball P(Y_j ∈ B(m_j, ε_j)) ≥ c·(ε_j/s_j)²·(radial factor at |m_j|/s_j).
+For CLT blocks (many comparable weights) this is Berry–Esseen/Esseen with explicit
+constants; the finitely many sparse early blocks (j ≲ 3) get explicit per-block densities.
+The only obstruction left in L1: the radial factor dies when |m_j| ≫ s_j (large
+deviation — reaching far beyond the law's bulk).
+
+### 5.2 The self-repair dichotomy `[DERIVATION at proof-strategy grade — the discovery]`
+When IS |m_j| ≫ s_j? The means are the block sums of −ζ′/ζ(1+η+iγ₀) — and by
+Perron/contour-shift, LARGE block sums at height γ₀ certify ZEROS NEAR γ₀: if ζ were
+zero-free in D(1+iγ₀, R) apart from ρ₀, the contour shifts into the disc and the
+early-block means decay as |m_j| ≤ w_j·(e^{−2j(R/2−η)}·polylog γ₀ + spike share). So:
+
+> **Either** all early-block means are moderate (|m_j| ≲ K·s_j) — the small-ball is cheap,
+> the recurrence fires, and companions appear at the recurrence sites (density
+> contradiction); **or** some early-block mean is huge — which by the Perron converse
+> certifies companion zeros AT γ₀ itself. The adversarial case IS the conclusion:
+> clustering either way. The mechanism is self-repairing.
+
+This replaces §4.2's worst-case degradation entirely: no case analysis over adversarial
+γ₀ survives — adversarial means are not an obstruction but the second branch of the
+forcing. (The 5/3-power loss from unconditional early-block equidistribution is also
+obsolete: no equidistribution of the u_p is needed anywhere — rotation invariance ate it.)
+
+### 5.3 Revised ladder
+- **L1 (probability, now half-done):** radial small-ball for Σc_p x_p at radius ≤ Ks_j —
+  Berry–Esseen 2d + explicit early blocks. No arithmetic content left.
+- **L5 (complex analysis, NEW):** the Perron converse — "no zeros in D(1+iγ₀, R) ⟹
+  early-block means decay". Classical-shaped (contour shift); the spike's own share of the
+  means must be tracked (it is the one term that does not decay).
+- L2 (Fejér window-to-blocks constants), L3 (spike converse), L4 (done).
+The chain's claim strength (≈ c/loglog region + forced clustering) is unchanged and stays
+QUARANTINED until L1, L5, L2, L3 are theorems. Next action: prove L1 in full.

@@ -431,3 +431,39 @@ Bottcher/STATUS.md (tail), Bottcher/DyadicMonodromy.lean. Findings for THIS lane
   recurrence→zero-clustering bridge is ABSENT from the corpus — novel as a method.
 - Next: L1 (block small-ball/concentration for random Euler block sums) — self-contained
   probability, first rigorous link.
+
+## 2026-07-03 — 12 §5 + 13: L1 attacked, half proved
+- 12 §5: TWO structural discoveries. (1) ROTATION INVARIANCE: u_p·x_p uniform ⟹ block law
+  independent of γ₀ entirely — the reference height enters only through ball centers;
+  half of L1's difficulty evaporates, and the worst-case-γ₀ equidistribution machinery
+  (incl. the 5/3-power loss) is obsolete. (2) SELF-REPAIR DICHOTOMY: large block means
+  |m_j| ≫ s_j would break small-ball — but block means are block sums of −ζ′/ζ(1+η+iγ₀),
+  and by Perron large block sums CERTIFY zeros near γ₀: the adversarial case is the
+  clustering conclusion by another route. Mechanism forces companions EITHER WAY.
+- 13-block-lemmas.md: L1a (concentration) PROVED (Hoeffding, complete; deep blocks free).
+  L1b reduced to ONE named estimate (D): local-CLT lower bound for Pearson random-flight
+  densities f_Y(y) ≥ c₀e^{−C₀|y|²/s²}/s² — pure Bessel analysis, no arithmetic; sparse
+  early blocks by compactness. All extremal/mean cases route to L5.
+- L5 promoted to second pillar: Perron converse (zero-free disc at 1+iγ₀ ⟹ block-mean
+  decay; spike + pole shares separated). Next attack: L5, then (D).
+
+## 2026-07-03 — 13 §4: L5 attack ⟹ mean-size correction, chain absorbs (3rd audit)
+- L5's moderate-means branch UNOBTAINABLE: needed square-root cancellation ⟺ zero-free
+  disc radius > 1 (crosses the line — impossible). Honest accounting: block means are
+  FORCED to |m_j| ≈ s_j·logγ₀/√(2j) by the on-line zeros' own residues; earliest
+  ~loglogγ₀ blocks near-extremal.
+- Chain ABSORBS it: μ ≥ exp(−Clog²γ₀·polyloglog), T_contra = exp(Clog²γ₀) ≤ T_forge ⟺
+  δ ≤ c₁/((2+o(1))loglogγ₀) — region degrades only in the constant: (c₁/2)/loglog γ.
+  Third audit survived (ambient burial, forging ceiling, mean size).
+- Pillars revised, all with NAMED classical toolsets: (D′) LDP lower bounds for Pearson
+  flights (Cramér/Gärtner–Ellis — replaces (D)); L5′ mean-size as a THEOREM (contour,
+  shares separated); L2 Fejér constants; L3 spike converse. Next: (D′).
+
+## 2026-07-03 — (D′) PROVED (13 §5): the probability half of the mechanism is done
+- Tilted Cramér lower bound for Pearson blocks: von Mises tilt, likelihood ratio ≥
+  exp(−Λ*−λt) on the ball, Q-Chebyshev for t ≥ 2s, 2d Berry–Esseen for mid blocks,
+  one-time compactness for the 3 sparse laws (γ₀-independent by rotation invariance).
+  Rate: Λ*(r) = (1+o(1))r²/s² moderate; von Mises rate near-extremal; total measure
+  exponent Σ Λ*_j ≈ (1/2)log²γ₀·loglog(1/ρ) — 13 §4.2's μ is now theorem-backed.
+- Status: L1a ✓, (D′) ✓ — everything still open in the chain is COMPLEX ANALYSIS:
+  L5′ (mean-size contour theorem), L2 (Fejér constants), L3 (spike converse).
