@@ -215,3 +215,8 @@ convergent, so log ζ(σ+it) is a UNIFORMLY almost periodic function there — B
 applies directly, with no universality needed. A zero at σ₀ = 1−δ sits just below this a.p.
 zone; the rung asks whether the a.p. structure immediately above it can be made to force
 recurrence just below it. `[CONJECTURE space — boundary-leakage of almost periodicity]`
+**REFUTED as a bare mechanism (2026-07-03, doc 11 Theorem B):** a Weyl-null gaussian bump
+plants a lone FE-symmetric zero-quadruple below an a.p. zone leaving NO almost-periodic
+trace at any mean degree — a.p. structure above cannot by itself force recurrence below.
+Any leakage argument for ζ must consume the pointwise representation (approximate
+functional equation / Euler product), not just mean/a.p. structure. See 11 §3.

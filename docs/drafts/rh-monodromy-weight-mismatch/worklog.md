@@ -328,3 +328,63 @@ and certified ourselves).
   (R8, chunk A census running), #110 done, #111 done; #96/#97 redirected at the trichotomy.
 - X (fixed): pod launch used `python3` (no mpmath) instead of `python3.13` — job died at
   import; relaunched. Check the interpreter when launching pod jobs.
+
+## 2026-07-03 — q62/Böttcher lane cross-read (user-requested; files read, nothing edited there)
+
+Read: pipeline/1-in-progress/q62-p6-noncontinuability-assembly.md (today's +40 lines),
+Bottcher/STATUS.md (tail), Bottcher/DyadicMonodromy.lean. Findings for THIS lane:
+
+1. **A3 un-deferred by the deck pattern.** A3 (cocycle Lean) was deferred because mathlib
+   lacks Rouché/argument principle. The q62 lane formalizes ℤ/2^k monodromy WITHOUT contour
+   integrals — deck/torsor classes (DyadicMonodromy.lean: exact Prüfer multipliers with
+   dyadicRoot_succ_sq coherence — literally our RHTower ℤ₂-tower structure realized as deck
+   data; their "technical correction" note: the loop/period route is delicate, the deck
+   route handles monodromy abstractly). RE-CUT A3: define w_k as the deck class of the
+   2^k-th-root torsor of ξ on an annulus around the box (RHTower root-existence + deck
+   pattern), NOT as ∮ξ′/ξ. No argument principle needed.
+2. **The KW mechanism (BottcherArcExtension.lean, today, axiom-clean) = modulus→argument
+   upgrading.** |β| = exp(Green) + harmonic conjugate (mathlib HAS
+   HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq) ⟹ β itself continues, pinned up to ONE
+   unimodular constant κ on a connected lune. Structural echo for the phase law: modulus
+   data determines everything except one phase constant per patch; our measured phase
+   floor is the distribution of exactly that constant. Consistent with (not beyond) our
+   Cauchy-estimate derivation — noted, no overclaim.
+3. **Index-formula engine as population-forcing shape.** Their Zdunik-free route:
+   holomorphic fixed-point index ∑ 1/(1−λ) = exact pinned value ⟹ one anomalous multiplier
+   FORCES compensation from the rest — a worked, formalized instance of "lone term cannot
+   balance an exact identity ⟹ companions exist." That is precisely the logic shape
+   #112's rung program needs (not positivity — exactness/quantization). Concrete MWM
+   transposition to try: Landau's formula ∑_{0<γ≤T} x^ρ = −(T/2π)Λ(x) + O(log T) — budget
+   analysis of how a lone x^{β₀}-sized term at level 1−δ coexists with the pinned main
+   term as x varies. Added to #112.
+4. **Shared mathlib-gap ledger.** Their hu-interface names the gap: Poisson/Dirichlet
+   solution operator + harmonic max principle + harmonic Schwarz reflection (they built
+   the KW mechanism around it). Ours: Rouché/argument principle. Adjacent developments —
+   whoever builds Poisson first serves both (harmonic measure ↔ winding).
+
+## 2026-07-03 — proof tick (user directive: prove/disprove, not compute)
+
+- **11-recurrence-degrees.md — the droves dichotomy PROVED at one level and REFUTED at
+  ζ's level, full proofs in-doc:**
+  - Theorem A [PROVED HERE]: holomorphic + strip-S² a.p. ⟹ Bohr on interior substrips
+    (mean-value upgrading, elementary) ⟹ one zero forces relatively dense zeros — linear
+    droves at Stepanov regularity.
+  - Theorem B [PROVED HERE]: explicit counterexample f = g + h (g = 2 + 2^{−s} + ½·2^s,
+    FE-exact, |g| ≥ ½; h = FE-symmetrized gaussian-localized bump): holomorphic on the
+    strip, EXACT FE f(s)=f(1−s), Weyl/B²-a.p. on every line, and a FINITE nonempty
+    off-line zero set. Zero-existence via a max-modulus trick (g/f < 1 on ∂D but = 1 at
+    the bump's zero) — NO Rouché needed, so it is Lean-formalizable with current mathlib.
+  - Corollary: ζ is B²-a.p. but provably NOT strip-S²-a.p. in (1/2,1) (S²⟹Bohr⟹bounded
+    vs Ω-results) — ζ's regularity is exactly the degree where the dichotomy fails.
+  - Verdicts: the dichotomy's burden = CLASS RIGIDITY, not recurrence strength; dual-pillar
+    necessity now complete (FE necessary by Révész–Pintz/C5; series-structure necessary by
+    Theorem B). Growth bounds alone also insufficient (same example — h bounded).
+    Projection-blindness realized in the a.p. category (f's B² spectrum = g's).
+  - My own 08 §7.1 boundary-leakage conjecture REFUTED as a bare mechanism (marked in
+    place); rung program (#112) redirected at approximate-FE/Euler-grade pointwise input.
+- R8 CLOSED (chunk D): 4th certified edge ρ₄→ρ₇ (τ=154.355, largest Δt yet); must-pass
+  passed; final law ratio ≈ 1.25·(|Δf′|/|f′| + amp·Δβ/r), hard jet gate, line-proximity
+  cutoff. No further census computation — theory took over.
+- Earlier same day: 10-blind-cone.md (09 §3.1 answered), LogIndependence.lean banked,
+  08 §7 rung + C7 verdicts (budget T^{cδ^{3/2}}, c<1/2; DH guard vacant in t-aspect),
+  q62 cross-read (deck-class re-cut of A3 → #113; index-formula shape → #112).

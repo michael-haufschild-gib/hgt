@@ -116,3 +116,72 @@ scaling?); arg f′ shows no t-trend. Sharpest new prediction from the table: **
 (Δ arg f′ = 0.0000, Δβ = 0.0495, τ ≈ 154.36) should be the best transfer edge in the whole
 population — floor ≈ 0, ratio ≈ Δβ/r cleanly. Chunk D candidate alongside ρ₈'s
 intermediate-phase probes (8→1: Δarg 0.26; 8→5: Δarg 0.19).
+
+## Chunk C — the duel verdict (raw: r8c1.out, r8c2.out): BOTH naive laws lose
+
+| pair | r | margin | best d | ratio | sub-margin? |
+|------|------|--------|--------|-------|----|
+| 2→5 | 0.24 | 0.0799 | 0.7369 | 9.22 | no |
+| 2→5 | 0.28 | 0.0408 | 0.8137 | 19.95 | no |
+| 2→5 | 0.315 | 0.0165 | 0.8830 | 53.51 | no |
+| 1→5 | 0.059 | 0.0673 | 0.1497 | 2.23 | no |
+| 1→5 | 0.072 | 0.0831 | 0.1621 | 1.95 | no |
+| 1→5 | 0.089 | 0.1037 | 0.1788 | 1.73 | no |
+| 1→5 | 0.15 | 0.1746 | 0.2441 | 1.40 | no |
+| 1→5 | 0.20 | 0.2292 | 0.3048 | 1.33 | no |
+| 1→5 | 0.25 | 0.2807 | 0.3712 | 1.32 | no |
+
+Scorecard vs pre-registration: clause (i) REFUTED (2→5 fails catastrophically); clause (ii)
+direction CONFIRMED, magnitude wrong (floor ≈ 1.1, not 0.45); clause (iii) resolved to the
+HARD-GATE branch (1→5 ratio saturates at ≈ 1.32 > 1 as Δβ/r → 0.23 — no large-r rescue).
+The falsifier ("2→5 fails while 1→5 succeeds") did NOT fire: 1→5 never transfers either.
+
+Two identified mechanisms behind the failures:
+1. **Line-proximity cutoff (geometric, new).** 2→5 needs r ≳ Δβ = 0.21, but ρ₂ sits only
+   0.156 from the critical line: the required circle STRADDLES the zero-dense line and the
+   margin collapses (0.08 → 0.016 with growing r). A zero can only receive β-distant
+   transfers if its distance to the line exceeds Δβ. ρ₂'s R7 isolation was overdetermined:
+   phase mismatch AND no geometric room.
+2. **The floor is the FULL COMPLEX jet difference, as a hard gate.** First-order model
+   (centers aligned at τ*): d ≈ r·|f′_tgt − f′_base| + |f′_tgt|·Δβ, margin ≈ |f′_base|·r,
+   so ratio ≈ |Δf′|/|f′_base| + (|f′_tgt|/|f′_base|)·Δβ/r — amplitude AND phase enter
+   through |Δf′|; the floor term does not decay with r. For 1→5: |Δf′|/|f′₁| = 0.55
+   predicted vs ≈ 1.1 measured — the model captures the shape (saturation) but
+   under-predicts by ~1.4–2×; second-order (f″) correction unquantified.
+
+> **Law, current form [MEASURED]: transfer ⟺ r ≳ (|f′_tgt|/|f′_base|)·Δβ AND
+> |Δf′|/|f′_base| well below 1 AND r < dist(base, critical line).** Full-jet proximity
+> plus geometric room. All three R7 certified edges satisfy all three clauses; all six
+> measured failures violate at least one.
+
+## Chunk D pre-registration — the calibration pair ρ₄→ρ₇ (best full-jet match)
+
+ρ₄ = (0.7202, 176.695), f′₄ = 1.211·e^{−0.2566i}; ρ₇ = (0.7697, 331.055),
+f′₇ = 1.425·e^{−0.2571i}. Δβ = 0.0495, |Δf′|/|f′₄| = 0.177, amp ratio 1.177,
+line distances 0.22/0.27 (room OK), τ ≈ 154.360. PRE-REGISTERED: sub-margin at r = 0.14
+under BOTH calibrations (pure model ratio 0.59; ×1.4 corrected 0.83); r = 0.09 and 0.11
+discriminate the correction factor (pure: 0.82, 0.71 → YES; ×1.4: 1.15, 0.99 → NO/borderline).
+Radii {0.07, 0.09, 0.11, 0.14}. FALSIFIER: no sub-margin at r = 0.14 refutes the full-jet
+law's sufficiency side outright (best-matched pair in the population).
+
+## Chunk D — calibration verdict (raw: r8d.out): must-pass PASSED, κ ≈ 1.25
+
+| r | margin | best d | ratio | sub-margin? | pure model | ×1.4 model |
+|------|--------|--------|-------|----|------|------|
+| 0.07 | 0.0735 | 0.0880 | 1.197 | no | 1.01 | 1.41 |
+| 0.09 | 0.0972 | 0.0954 | 0.981 | YES | 0.82 | 1.15 |
+| 0.11 | 0.1207 | 0.1032 | 0.855 | YES | 0.71 | 0.99 |
+| 0.14 | 0.1554 | 0.1157 | 0.744 | YES | 0.59 | 0.83 |
+
+**Fourth certified transfer edge: ρ₄ → ρ₇** (τ = 154.355, Δt = 154.36 — the largest
+certified transfer distance yet). The full-jet law's sufficiency side CONFIRMED on the
+best-matched pair; measured ratios sit uniformly at ≈ 1.2–1.3 × the first-order model:
+
+> **Final R8 law [MEASURED]: ratio ≈ κ·( |Δf′|/|f′_base| + (|f′_tgt|/|f′_base|)·Δβ/r ),
+> κ ≈ 1.25, valid when r < dist(base, critical line); the jet term is a hard gate.**
+
+R8 arc CLOSED. Population t ≤ 420: nine zeros, four certified edges (1→4, 1→3, 4→3, 4→7),
+law derived + calibrated, two structural discoveries (phase/jet carrier; line-proximity
+cutoff). Opened and NOT pursued by more computation (theory takes over, doc 11): what
+forces copies at all — the recurrence-degree analysis now locates the answer in class
+rigidity, not a.p. strength.

@@ -630,3 +630,37 @@ NEXT: either build the harmonic reflection principle (Poisson Dirichlet solution
 reusable mathlib-gap development) to discharge `hu`; or wire `continuesAcross_of_greenPotential_
 harmonic_extension` into `ReflectionCore`/`smoothPieceRigidity_of_reflectionCore` (it produces exactly
 `∃z₀∈frontier, ContinuesAcross β z₀`), reducing #118 to (frontier arc point + φ biholo + `hu`).
+
+---
+
+## Harmonic reflection principle: scoped + first ingredient built (HarmonicMaxPrinciple.lean)
+
+To discharge `hu` (BottcherArcExtension), the harmonic Schwarz reflection principle is needed. It
+reduces to the **Dirichlet problem on a disk**, which needs exactly three ingredients:
+
+1. **Harmonic maximum principle** — ✅ BUILT. `Bottcher.harmonic_eqOn_const_of_isMaxOn`
+   (HarmonicMaxPrinciple.lean, axiom-clean, umbrella green 4251 jobs, lint passed): a real harmonic
+   function on a preconnected open set with an interior max is constant. Proof reads it off the
+   holomorphic max-modulus principle via `exp F` (`u=Re F` locally by
+   `exists_analyticOnNhd_ball_re_eq`; `‖exp F‖=exp u`). mathlib-absent, reusable.
+2. **Poisson solution is harmonic** — NOT built. `poissonSolution c R g w = circleAverage(poissonKernel
+   c w • g) c R` is harmonic in `w` because `poissonKernel c w z = Re(herglotzRieszKernel c w z)` with
+   the Herglotz kernel holomorphic in `w`; harmonicity via differentiation under the integral
+   (mathlib has `hasFDerivAt_integral_of_dominated_loc_of_lip` + `Continuous.deriv_integral`, but the
+   kernel domination bounds are a real analytic effort).
+3. **Poisson solution attains continuous boundary values** — NOT built. The approximate-identity
+   argument (kernel ≥0, mass 1, concentrates near the boundary point) — the hardest piece.
+
+Koebe assembly (harmonic across the arc): at a line/circle point, the odd reflection `ũ` equals the
+Poisson solution `P` of its own boundary values on a small ball (`ũ` odd ⟹ `P` odd ⟹ `P=0` on the
+diameter; `ũ-P` harmonic and `=0` on the half-disk boundary ⟹ `=0` by max principle). Needs 1+2+3.
+
+mathlib genuinely lacks the Dirichlet-problem solution (2+3); it has only "harmonic ⟹ Poisson/MVP
+reproducing", never the converse. Building 2+3+assembly is a multi-session potential-theory
+development (several hundred lines). The holomorphic route to `hu` is provably blocked (argument /
+C¹-derivative boundary continuity is exactly what KW proves — circular), so the harmonic route
+through Koebe is unavoidable.
+
+STATUS: ingredient 1/3 done. Alternative to the whole harmonic route: the DYNAMICAL even-FE rigidity
+(analytic Julia arc ⟹ c∈{0,−2} via the tree's `c_mem_of_even_holo_ball`) discharges SmoothPieceRigidity
+WITHOUT KW/harmonic reflection — worth weighing before committing the multi-session Dirichlet build.

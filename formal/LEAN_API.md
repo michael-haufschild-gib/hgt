@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4689 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4690 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -3065,6 +3065,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `concreteAnnulusHLiftGOutput_of_fixed_inverse` | `GaloisForLFunctions.Bottcher.HDiscLoopDeck` | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean:3020` | Forget the explicit fixed inverse branch from the fixed-inverse `hliftG` package. |
 | theorem | `HarmonicAt.comp_analytic` | `GaloisForLFunctions.Bottcher.HarmonicComp` | `formal/GaloisForLFunctions/Bottcher/HarmonicComp.lean:21` | Harmonic ∘ holomorphic is harmonic.** If `g : ℂ → ℝ` is harmonic at `f x` and `f : ℂ → ℂ` is analytic (holomorphic) at `x`, then `g ∘ f` is harmonic at `x`. |
 | theorem | `HarmonicOnNhd.comp_analytic` | `GaloisForLFunctions.Bottcher.HarmonicComp` | `formal/GaloisForLFunctions/Bottcher/HarmonicComp.lean:40` | `HarmonicOnNhd` version: `g` harmonic near `f '' s` and `f` analytic on `s` ⟹ `g ∘ f` harmonic near `s`. The pointwise transport, packaged for an open domain. |
+| theorem | `harmonic_eqOn_const_of_isMaxOn` | `GaloisForLFunctions.Bottcher.HarmonicMaxPrinciple` | `formal/GaloisForLFunctions/Bottcher/HarmonicMaxPrinciple.lean:30` | Maximum principle for harmonic functions.** A real harmonic function on a preconnected open set that attains a maximum at an interior point is constant. Proof: locally `u = Re F` f |
 | theorem | `harmonic_eq_zero_on_ball_of_nonneg` | `GaloisForLFunctions.Bottcher.HarmonicMinPrinciple` | `formal/GaloisForLFunctions/Bottcher/HarmonicMinPrinciple.lean:26` | Minimum principle on a ball.** A non-negative harmonic `u` on `ball z₀ r` with `u z₀ = 0` vanishes on the whole ball. |
 | theorem | `harmonic_eqOn_zero_of_nonneg` | `GaloisForLFunctions.Bottcher.HarmonicMinPrinciple` | `formal/GaloisForLFunctions/Bottcher/HarmonicMinPrinciple.lean:57` | Minimum principle on a preconnected domain.** A non-negative harmonic `u` on a preconnected open set `V` that vanishes at one point of `V` vanishes on all of `V`. The zero set is o |
 | theorem | `harmonic_exterior_unique` | `GaloisForLFunctions.Bottcher.HarmonicMinPrinciple` | `formal/GaloisForLFunctions/Bottcher/HarmonicMinPrinciple.lean:99` | Harmonic uniqueness on an exterior (unbounded) domain — E1 core.** A function continuous on `ℂ`, harmonic on a preconnected unbounded open `Ω`, vanishing off `Ω`, and tending to `0 |
