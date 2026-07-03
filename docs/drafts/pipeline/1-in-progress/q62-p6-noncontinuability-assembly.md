@@ -590,3 +590,43 @@ So the interior-nonempty both-connected q62 gatekeeper reduces to Kellogg–Wars
 regularity of β at a smooth Julia arc) + in-tree Green/nonzero facts + the basin-orientation datum.
 Next bricks: discharge `hFmod`/`hFne` from the in-tree Green + Böttcher-nonzero lemmas; then the sole
 remaining mathlib-absent input is the Kellogg–Warschawski boundary extension.
+
+---
+
+## Local Kellogg–Warschawski boundary extension BUILT (BottcherArcExtension.lean)
+
+`continuesAcross_of_greenPotential_harmonic_extension` (axiom-clean, umbrella green 4250 jobs, lint
+passed; MainTheorems green 8925). THE local KW boundary-extension theorem the reflection route needed:
+at a frontier arc point `z₀` where `φ` is a local biholomorphism onto the unit circle (`AnalyticAt φ z₀`,
+`‖φ z₀‖=1`, local inverse `γ`), with `β∘γ` holomorphic+nonzero on the outer side and `‖β∘γ‖=exp(u)`
+there for a function `u` that extends harmonically across the circle to the whole ball, the exterior
+Böttcher branch `β` continues analytically across `z₀` — `ContinuesAcross β (filledJulia c₁)ᶜ z₀`, the
+natural-boundary target (contradicts `hnb`). Produces the continuation `(κ·exp∘Φ)∘φ` DIRECTLY, so it
+also bypasses the `reflectUnit` route.
+
+The load-bearing content — the actual KW mechanism — is fully discharged here:
+* `|β∘γ|=exp(u)`, `u=log‖β∘γ‖` harmonic on outer (`AnalyticAt.harmonicAt_log_norm`, mathlib);
+* harmonic conjugate `Φ` of the reflected `u` (`HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq`, mathlib);
+* `(β∘γ)/exp(Φ)` holo, modulus 1 on the connected outer lune (`isPreconnected_ball_inter_exterior`,
+  tree) ⟹ unimodular constant `κ` (`eqOn_const_of_norm_const`, tree) ⟹ `β∘γ=κ·exp(Φ)`;
+* `κ·exp(Φ)` analytic on the WHOLE ball = the analytic continuation across the circle; pull back by `φ`,
+  use `‖φ‖>1` on basin, get the continuation of `β`.
+This is the subtle half of KW: turning the *modulus* regularity (`|β|→1`, from Green) into the *argument*
+regularity (β itself continues) via the harmonic conjugate.
+
+### Residual `hu` — the harmonic reflection of the Green potential
+`hu` = "`u=log‖β∘γ‖` (harmonic on outer, `→0` at the circle) extends harmonically across the analytic
+arc." This is the classical harmonic Schwarz reflection. It reduces to:
+* (a) Green boundary regularity `log‖β∘γ‖ → 0` at the circle (`|β|=exp(green)`, green→0 at ∂K₁ — the
+  tree's `norm_bottcherCoord_eq_exp_green` + greenFunctionDyn boundary facts); and
+* (b) the harmonic reflection principle (odd reflection across an analytic arc is harmonic across).
+mathlib LACKS (b): it has the Poisson kernel + the reproducing property (harmonic ⟹ Poisson average)
+but NOT the Poisson/Dirichlet *solution* operator nor a harmonic max principle. Building (b) is a
+mathlib-scale harmonic-analysis development (Poisson-integral-is-harmonic + Dirichlet boundary behavior
++ max principle + oddness), NOT a q62 brick. Left as the honest `hu` interface; the KW *mechanism* is
+proven.
+
+NEXT: either build the harmonic reflection principle (Poisson Dirichlet solution + max principle — a
+reusable mathlib-gap development) to discharge `hu`; or wire `continuesAcross_of_greenPotential_
+harmonic_extension` into `ReflectionCore`/`smoothPieceRigidity_of_reflectionCore` (it produces exactly
+`∃z₀∈frontier, ContinuesAcross β z₀`), reducing #118 to (frontier arc point + φ biholo + `hu`).

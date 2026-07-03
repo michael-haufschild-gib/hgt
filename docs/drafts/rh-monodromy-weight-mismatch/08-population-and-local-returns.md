@@ -176,3 +176,42 @@ Note the alignment: repulsion is an EXPLICIT-FORMULA effect (power sums, not val
 distribution), i.e. it lives on M1's side of the house (07), untouched by the blind cone
 (10). The rung program and the phase law are the two currently open non-universality
 surfaces; the saddle question is where the first one becomes quantitative.
+
+### 7.1 C7 verdicts (2026-07-03, verified-fetched — checks/c7-repulsion-density-note.md)
+
+**Budget, updated with real constants.** Near σ = 1 the density input to (Rung_δ) is not
+Ingham but the Halász–Turán shape N(σ,T) ≪ T^{c(1−σ)^{3/2}}(log T)^B:
+- explicit (Bellotti arXiv:2311.05136 Thm 1.2, σ₀ ≥ 0.98): c = 57.8875, B = 11.548 —
+  beats Ingham's 3δ/(1+δ) for δ < 0.0027 and Huxley's 3δ/(2−3δ) for δ < 0.00067;
+- non-explicit (Heath-Brown 2017, via Richert-shape bounds): c < 1/2 — at δ = 0.01 the
+  rung budget is T^{0.0005}, at δ = 0.001 it is T^{0.000016}: the demand on the forcing
+  mechanism is essentially polylog at the thin end. (Bookkeeping: the rung's log-power is
+  B+1 of the zone used — 6 in the Ingham zone, 45 in Huxley's, 12.5 in explicit-HT's.
+  A log-free zone for ζ also exists: Bellotti arXiv:2405.12545.)
+
+**Guard, vacated.** The Deuring–Heilbronn phenomenon is intrinsically q-aspect and
+cross-family (a real exceptional zero of one L(s,χ_D) repelling zeros of the OTHER
+L-functions of the modulus); the delegate's targeted search for a t-aspect self-repulsion
+analogue for ζ (a lone high zero at height t₀ repelling companions at other heights) came
+back NEGATIVE (queries logged in the note). So §7's stress test softens decisively: no
+theorem OPPOSES population-forcing near σ = 1 in the t-aspect — and none provides it. The
+territory is mechanism-empty in both directions, consistent with C0 #5's verified absence
+of any literature on hypothetical off-line populations.
+
+**The saddle question, re-cut constructively.** With the guard vacant, the thin end is
+genuinely thin, and the program's sharpest form is no longer "locate σ₀*" but:
+
+> `[OPEN TARGET]` Build ANY t-aspect population-forcing mechanism at σ near 1: one zero of
+> ζ at Re ρ ≥ 1−δ forces ≥ T^{cδ^{3/2}}(log T)^{B+1} zeros at level 1−δ−ε infinitely often
+> — with c < 1/2 available, a nearly-polylog yield suffices. Candidate raw materials, none
+> universality-shaped (so the blind cone is silent here): the explicit-formula resonance of
+> a near-unity zero (x^{β₀} term of near-main-term size — M1/07's side of the house), the
+> a.p. structure of log ζ near σ = 1 (absolutely convergent Euler tail — the ONE region
+> where the Euler product converges and might act on the recurrence side for once, cf. the
+> chiasmus 10 §6), and Turán power-sum lower bounds.
+
+That last point deserves its own flag: near σ = 1 the Euler product is absolutely
+convergent, so log ζ(σ+it) is a UNIFORMLY almost periodic function there — Bohr's theory
+applies directly, with no universality needed. A zero at σ₀ = 1−δ sits just below this a.p.
+zone; the rung asks whether the a.p. structure immediately above it can be made to force
+recurrence just below it. `[CONJECTURE space — boundary-leakage of almost periodicity]`
