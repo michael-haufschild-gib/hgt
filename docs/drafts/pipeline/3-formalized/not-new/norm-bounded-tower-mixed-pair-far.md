@@ -203,3 +203,57 @@ The capstone surface rows in `formal/README.md`, `CLAUDE.md`, `AGENTS.md` gained
 `Bottcher.q62_phiMero_linGap`.  The disconnected×disconnected branch of q62 now covers:
 level-compatible pairs (original), quadratic gap (unconditional), linear gap `‖c₂‖ ≲ ‖c₁‖/600`
 (unconditional) — the remaining open regime is comparable norms (OP16-A, task #138/#90).
+
+## Addendum 7 — concrete finite-root-tower capstones (`Bottcher.q62_phiMero_*_roots`)
+
+The abstract two-coordinate Kummer descent `KummerRootApplications.noRelation_pow_descent_both`
+(`χ^m = F`, `η^n = G`, `NoRelation K F G ⟹ NoRelation K χ η`; descend first coord, flip with
+`Bottcher.noRelation_symm`, descend second, flip back) is field-generic, so it applies to the two
+shipped disconnected-pair capstones directly.  `GaloisForLFunctions/Q62RootTower.lean` (top-level,
+imported by `MainTheorems`) instantiates it at the CONCRETE inverse-Böttcher coordinates:
+
+* `q62_phiMero_linGap_roots` — for the linear-gap regime (`‖c₁‖≥1000`, `‖c₂‖≥2`,
+  `(√(2‖c₂‖)+1)² ≤ ‖c₁‖/300`), on the common far domain `U` every `p`-th root of `φ_{c₁}` in
+  `meroField U` is algebraically independent over `ℂ(z)` of every `q`-th root of `φ_{c₂}`;
+* `q62_phiMero_norm_gap_roots` — same conclusion for the quadratic-gap/mixed regime
+  (`‖c₁‖≥1000`, `c₂∉{0,-2}`, `300·(max 2‖c₂‖)² ≤ ‖c₁‖`), consuming `q62_phiMero_norm_gap`.
+
+So the finite-root-tower independence is now stated at the genuine Böttcher coordinates, not only
+abstract field elements: every `2^j`-th Böttcher root of one coordinate is independent of every
+`2^k`-th root of the other in the two unconditional gap regimes.  Axiom-clean
+(`propext, Classical.choice, Quot.sound`); the Böttcher-lane files are untouched — the file only
+consumes the two capstones and the descent.  Capstone rows in `formal/README.md`, `CLAUDE.md`,
+`AGENTS.md` gained `Bottcher.q62_phiMero_linGap_roots`, `Bottcher.q62_phiMero_norm_gap_roots`.
+
+Addendum 7 extension — a third concrete root-tower capstone `Bottcher.q62_phiMero_mixed_far_roots`
+(gap-free) covers the MIXED regime: far disconnected `c₁` (`‖c₁‖≥1000`) × ANY connected
+`c₂ ∈ mandelbrot ∖ {0,-2}`, with no norm-gap hypothesis — strictly broader than the mixed branch of
+`norm_gap_roots`.  It consumes `q62_phiMero_mixed_far` (mixed case needs no E–vS rigidity; the
+disconnected coordinate's monodromy settles it).  So the shipped concrete finite-root-tower surface
+now spans: linear-gap disconnected, quadratic-gap disconnected, and the full mixed regime (all of
+Mandelbrot minus two points for the second parameter).  Axiom-clean, MainTheorems green, lint pass.
+
+## Addendum 8 — comparable-norm no-go findings (verified, so the team does not re-attempt)
+
+Two routes toward the still-open disconnected×disconnected COMPARABLE-norm regime
+(`‖c₁‖/600 < ‖c₂‖ < 600‖c₁‖`, both disconnected) were traced to structural dead-ends this session:
+
+1. **The linear-gap winding machinery is structurally gap-bound — it cannot reach comparable norms
+   by tuning constants.**  In `bottcher_towerDataG_linGapRoot` (`W4LinPack.lean`) the gap is consumed
+   at `hsmall`: `2·s²·‖c‖ + s⁴ + 1 ≤ (‖c‖² − ‖c‖)/100` with `s² ≈ 2‖c₂‖`.  The binding term
+   `2s²‖c‖ ≈ 4‖c₂‖‖c‖` must sit below `‖c‖²/100`, forcing `‖c₂‖ ≲ ‖c‖/400`.  Reaching `‖c₂‖ ≈ ‖c‖`
+   would require `4‖c‖² ≤ ‖c‖²/100`, impossible.  The winding-parity mechanism needs the `c₂`
+   coordinate's contribution DOMINATED by `c`'s; that domination IS the gap.  Constant optimisation
+   (relaxing `1/100`) at best moves `1/600` to another fraction `≪ 1`, never to comparable norms.
+   ⟹ comparable norms need the genuinely different OP16-A enclosure argument, not a sharper constant.
+
+2. **The index-formula (Zdunik-free) route also rests on a conditional deep input.**  Its endpoint
+   `IndexWiring.phiMero_transcendental_via_index_eventual_fixedB` gives single-coordinate
+   transcendence only under `hinput`: at every bulk period-`p` cycle root, the relation-derived
+   branch has nonzero derivative (`deriv g z ≠ 0`).  That branch-nonvanishing datum is the connected-
+   case difficulty repackaged (the smooth-piece analog), not an unconditional closure.  Both
+   both-connected routes in the tree (SmoothPieceRigidity #118 and the index route) are conditional.
+
+Neither is a Lean gap to grind; both are genuine mathematical inputs (external OP16-A; deep dynamical
+rigidity).  Concrete root-tower surface extended this session to the swapped mixed orientation:
+`Bottcher.q62_phiMero_mixed_far_roots_swapped` (connected `c₁ ∈ M∖{0,-2}` × far disconnected `c₂`).

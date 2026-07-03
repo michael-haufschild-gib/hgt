@@ -15,3 +15,5 @@ import GaloisForLFunctions.Hurwitz
 import GaloisForLFunctions.U0
 import GaloisForLFunctions.Bottcher
 import GaloisForLFunctions.FullyProvenNewTargets
+import GaloisForLFunctions.KummerRootApplications
+import GaloisForLFunctions.Q62RootTower

@@ -81,3 +81,50 @@ generic transcendence machinery is new.
 - <https://arxiv.org/abs/2408.15180>
 - <https://jjaassoonn.github.io/transcendental/src/doc/main.pdf>
 - <https://www.cst.cam.ac.uk/seminars/list/212209>
+
+---
+
+## Check #1 — cross-substitution Mahler independence (verified 2026-07-03)
+
+Question: does existing difference-Galois / Mahler theory already give `u₀ ⟂ φ_b`, where u₀ is under
+the monomial substitution `z↦z²` (a linear Mahler eqn) and φ_b is under the nonlinear dynamical
+`z↦z²+b` (nonlinear eqn `φ_b(z²+b)=φ_b(z)²`)?
+
+**Verdict: NO — the pair is outside the frontier of the state-of-the-art. Novelty claim survives.**
+
+6. **Adamczewski–Dreyfus–Hardouin(–Wibmer), "Algebraic independence and linear difference equations"**
+   — arXiv:2010.09266 (JEMS). VERIFIED 2026-07-03 (abstract fetched). THE state-of-the-art for
+   cross-substitution independence: pairs of operators `(φ,σ)` including **Mahler** `φ:x↦x^{p₁},
+   σ:x↦x^{p₂}`; solutions `f` (φ-linear) and `g` (σ-linear), both transcendental, are alg. independent
+   over ℂ(x) if the parameters are sufficiently independent (settles Loxton–van der Poorten). **SCOPE
+   (verified by fetch):** equations must be **LINEAR**; operators must be **MONOMIAL** (shift `x+h`,
+   q-dilation `qx`, Mahler `x^p`). "Arbitrary nonlinear substitutions like `x↦x²+b` are not
+   addressed." ⟹ φ_b (nonlinear eqn, non-monomial substitution `z²+b`) is DOUBLY outside ADH; the
+   natural-boundary method reaching `u₀⟂φ_b` is a genuine bridge beyond difference-Galois theory.
+
+7. **Schäfke–Singer, "Consistent systems of linear differential and difference equations"** —
+   arXiv:1605.02616. VERIFIED 2026-07-03. Linear systems + consistency hypothesis; Mahler among the
+   operators; hypertranscendence via Galois theory. Same LINEAR/MONOMIAL restriction — does not reach
+   `(z↦z², z↦z²+b)`.
+
+8. **Saleh, "Bialgebraic geometry of Böttcher coordinates"** — arXiv:2606.24553 (2026). VERIFIED
+   2026-07-03 (abstract fetched). Ax–Lindemann / Ax–Schanuel functional-transcendence classification
+   of a SINGLE Böttcher coordinate `Ψ_f` (f-bialgebraic sets). NO parameter-derivative/c-velocity, NO
+   Mahler pairing, NO natural-boundary method. Complementary to our `u₀=∂_c φ ⟂ φ_b` — no collision.
+   (Note: relevant to CITE for single-coordinate Böttcher functional transcendence.)
+
+9. **Costin–Huang, "Behavior of lacunary series at the natural boundary"** — arXiv:0810.3027 (Adv.
+   Math.). VERIFIED 2026-07-03. Analytic behavior of lacunary series (u₀'s class) AT the natural
+   boundary; background for the boundary side, NOT an algebraic-independence result.
+
+**Refined claim C2′ (novelty-bearing, labelled [CONJECTURE] pending referee):** the joint independence
+`u₀ ⟂ φ_b` under DIFFERENT substitutions (monomial Mahler `z↦z²` vs. nonlinear dynamical `z↦z²+b`)
+is beyond the linear/monomial frontier of ADH/Schäfke–Singer; the natural-boundary obstruction reaches
+it precisely because it is substitution-agnostic. Referee action: confirm no ADH follow-up extends to
+nonlinear dynamical substitutions.
+
+## Sources (added 2026-07-03)
+- <https://arxiv.org/abs/2010.09266>  (ADH — algebraic independence & linear difference equations)
+- <https://arxiv.org/abs/1605.02616>  (Schäfke–Singer — consistent systems)
+- <https://arxiv.org/abs/2606.24553>  (Saleh — bialgebraic geometry of Böttcher coordinates)
+- <https://arxiv.org/abs/0810.3027>   (Costin–Huang — lacunary series at natural boundary)

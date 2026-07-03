@@ -64,9 +64,12 @@ pro-object with a distinguished generating log.  Axiom-clean.
 - **Root-level Kummer for the actual `φ_b`:** the FE pins `χ` to `bottcherCoord` on the overlap; the
   next object is the precise identification of `χ` with the analytic continuation of `φ_b` ACROSS the
   natural boundary (the branch that lands on `|z| = 1`), and its `2^k`-root Galois structure.
-- **A general lemma banked for reuse:** `noRelation_pow_descent` turns any single-generator
-  independence in the codebase into whole-`n`-power-tower independence — usable for the q62 Böttcher
-  pairs and the Hurwitz rows, not just `u₀`.
+- **A general lemma banked for reuse (q62 done):** `noRelation_pow_descent` turns any
+  single-generator independence into whole-`n`-power-tower independence.  Applied cross-program in
+  `KummerRootApplications`: `noRelation_pow_descent_both` (two-coordinate descent via the committed
+  `Bottcher.noRelation_symm`) + `q62_roots_independence` — for distinct nonexceptional parameters,
+  every finite root of `φ_{c₁}` is independent of every finite root of `φ_{c₂}`, consuming
+  `Bottcher.q62_independence` with the Böttcher lane's files untouched.  Hurwitz rows remain.
 - **Transcendence-degree bridge:** the direct proof shows `NoRelation` behaves as a rank-2
   algebraic-matroid statement; a full `NoRelation ↔ AlgebraicIndependent` bridge would import
   mathlib's matroid API for free.
