@@ -234,3 +234,28 @@ shrinks faster than 1/log T; partial at T=1000 — job was oversized, killed, sa
 hardened ratio 0.639) — first non-counterfactual instance of M1; R6's negative was a
 contour-size artifact.** Pod idle. NEXT: R7 transfer graph (#108, chunked!), B1' =
 Hilberdink–Lapidus FE-class reading (delegatable), B2 collision, P2.
+
+## R7 chunk-1 pre-registration (2026-07-03, before launch)
+
+Localized zeros (r7c0.out, winding-certified ±0.01): ρ₁ = (0.8065, 85.695), ρ₂ = (0.6555,
+114.164), ρ₃ = (0.5693, 166.477), ρ₄ = (0.7202, 176.695). Discovered candidate law from
+R6-loc depths vs Δβ: **d_min(ρᵢ→ρⱼ) ≈ (1.1–1.3)·|βᵢ−βⱼ|**, hence sub-margin transfer ⟺
+r ≳ |Δβ| (vertical shifts cannot move β; margin ≈ |f′|·r; jet distance ≈ |f′|·Δβ).
+Pre-register for all 6 pairs, radii {0.8, 1.0, 1.2, 1.5}×|Δβ| (capped to keep disc right of
+σ = 0.52), τ = Δt ± 0.5 step 0.05: (i) sub-margin appears iff r ≳ 1.05·|Δβ| (±15%);
+(ii) min ratio ≈ Δβ/r within ±25% at every pair; (iii) hence the transfer graph at radius r
+is the β-proximity graph. Failure of (i)/(ii) at any pair kills the law (then jets differ
+through more than β). Job ≈ 24k evals — minutes.
+
+## Wave-3 status (2026-07-03, theory-first tick)
+
+DONE: **09** (family (H-loc) THEOREM modulo [CHECK]-marked joint-universality imports +
+the principal wall located: (H-loc for ζ) ⟺ principal-direction self-approximation at a
+vanishing target; opened the blind cone + primitivity grading); **no_polynomial_surgery_zeta**
+(Lean, axiom-clean, gate green; mathlib has NO Rouché — noted for A3); **R7 chunk 0** (four
+zeros winding-localized ±0.01) + the **β-proximity law** discovered (d_min ≈ 1.1·|Δβ|;
+sub-margin ⟺ r ≳ Δβ; matches R6-loc ratios to ~10%); chunk 1 (six-pair law test,
+pre-registered) running. 00-approach §10 inventory updated (items 6–8).
+QUEUE: R7c1 verdict → C6 = verify the joint-universality import (delegatable verified
+reading: exact positive-lower-density joint universality statement + Hurwitz strong
+universality) → B2 collision on the blind cone → P2.

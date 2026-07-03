@@ -233,3 +233,38 @@ and certified ourselves).
   transfer mechanism.** R6's negative was a contour-size artifact: transfer works locally
   where it fails globally. Mechanism ranking updated in 08 §4; opened R7 (transfer graph
   = the population's recurrence skeleton). Data: `computations/R6LOC-RESULTS.md`.
+
+## 2026-07-03 (wave 3 — theory-first tick)
+
+- **F [THEOREM modulo imports — 09 §1, the family (H-loc) proven]**
+  `09-joint-universality-and-the-principal-wall.md`: for the D–H combination, at any seed
+  disc where BOTH component L-functions are zero-free ((Z), machine-checkable per disc),
+  Voronin joint universality of the two distinct non-principal characters gives
+  positive-lower-density sup-returns of the pair ⟹ every ε < margin return transfers the
+  seed (07 §3) ⟹ (H-loc) HOLDS in the family. The measured recurrence is now explained,
+  the R6 big-box negative reinterpreted as sample-scale, and R7 upgraded to a
+  falsification test of the imports. Imports marked [CHECK]: exact joint-universality
+  statement (positive-lower-density form).
+- **F [structural — the principal wall]** 09 §2: transposing to ζ via
+  ζ = q^{−s}Σ ζ(s,a/q) fails at exactly one point — the change of basis puts ζ itself in
+  the PRINCIPAL-character direction, where universality demands a nonvanishing target,
+  and the seed vanishes there. Every modulus erects the same wall; consistency with
+  Bagchi re-derived (else RH would follow). Open core renamed in representation terms:
+  **(H-loc for ζ) ⟺ principal-direction self-approximation at a vanishing target.**
+  Opened: the universality-blind cone of jet functionals; primitivity grading of the
+  family (non-primitive ⟹ provable (H-loc); primitive ⟹ walled) — testable.
+- **F [PROVED, Lean — ζ surgery corollary]** `RHTower.no_polynomial_surgery_zeta` banked
+  (DirichletRigidity.lean, axiom-clean, umbrella+Main+lint green): no somewhere-convergent
+  L-series agrees on a right half-line with P(s)·ζ(s), deg P ≥ 1 — the surgery no-go
+  instantiated at ζ via `LSeries_one_eq_riemannZeta`. Also probed: mathlib has NO Rouché
+  theorem (A3's transfer-lemma formalization must build the argument principle route).
+- **F [MEASURED — R7 chunk 0 + the β-proximity law]** Four off-line zeros localized
+  (winding-certified ±0.01): β = 0.8065, 0.6555, 0.5693, 0.7202 at t = 85.695, 114.164,
+  166.477, 176.695. Cross-referencing R6-loc return depths vs |Δβ| exposed a quantitative
+  law: **d_min ≈ (1.1–1.3)·|Δβ|**, hence sub-margin transfer ⟺ r ≳ |Δβ| — vertical
+  shifts cannot move β, so the transfer graph is a β-proximity graph; measured ratios
+  match Δβ/r to ~10% (0.72 pred / 0.769 meas; 0.575 / 0.639). Coheres with the known
+  density of D–H zero real parts (C0 #8): tiny-ε universality returns must land on
+  β-near zeros, which exist by density. Chunk 1 (all six pairs, law-testing,
+  pre-registered on board) launched. Caught + killed a mis-parametrized first attempt
+  (guessed centers) before it produced garbage — localization first, always.

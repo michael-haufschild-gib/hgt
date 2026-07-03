@@ -323,6 +323,7 @@ import GaloisForLFunctions.Bottcher.InteriorModulusObstruction
 import GaloisForLFunctions.Bottcher.SchwarzReflectionModulusArc
 import GaloisForLFunctions.Bottcher.Q62DirectDischarge
 import GaloisForLFunctions.Bottcher.Q62HinputAssembly
+import GaloisForLFunctions.Bottcher.Q62NaturalBoundaryMinimal
 import GaloisForLFunctions.Bottcher.InteriorNonemptyHnb
 import GaloisForLFunctions.Bottcher.Q62BothConnectedHnbFree
 import GaloisForLFunctions.Bottcher.Q62SmoothPieceReduction

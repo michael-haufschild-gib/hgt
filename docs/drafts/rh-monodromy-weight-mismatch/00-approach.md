@@ -462,6 +462,19 @@ universality with zero-free targets.
    `[CONJECTURE]`; generates testable sub-questions (§7).
 5. **Lean-native ground:** this repo owns the only machine-checked Kummer-tower / monodromy /
    germ-carrier infrastructure; Arc A statements are formalizable *now* against mathlib's ζ.
+6. **(added wave 2/3, 2026-07-03) The Reduction + its quantification** — (R_k^θ) × (D) ⟹
+   ladder, burden graded in σ₀ (06 §3, §6); with the division of labor "Euler enters only
+   through (D), at the μ(n) mollifier" now literature-anchored (C4).
+7. **(added wave 3) The family (H-loc) theorem and the principal wall** (09): local
+   transfers PROVEN for the D–H family via joint universality threaded through the
+   component split; for ζ the obstruction is located exactly — principal-direction
+   self-approximation at a vanishing target. New objects opened: the universality-blind
+   cone; the primitivity grading of the family picture.
+8. **(added wave 3) Measured laws of the family:** FE fiber = transversal defect minimizer
+   (linear plateau, coeff ≈ 4); Euler moat (open basin, shrinking in T); anti-correlated
+   FE/Euler mobility spectra; the β-proximity law d_min ≈ 1.1·|Δβ| governing certified
+   local transfers (R6-loc; first non-counterfactual Rouché transfer between two actual
+   zeros). Raw + RESULTS under `computations/`; worklog carries the F/X ledger.
 
 Forward moves live in `01-research-plan.md`. The next object to construct is the obstruction
 cocycle w_k as a formal object (Arc A) and the reduction of §5 as a paper theorem (Arc C1);

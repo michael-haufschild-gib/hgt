@@ -409,3 +409,25 @@ Combined with `hnb` (PROVEN, `hnb_of_mem_mandelbrot_connected`) and the exposure
 both-connected pair via the natural-boundary engine now needs only: exposure (#124) + the two hinput
 inputs above.  Full q62 still open (SmoothPieceRigidity route, OP16-A, small-norm), but the `hinput`
 gatekeeper the plan named is discharged.
+
+## Input (2) DISCHARGED: hinput internalized via minimal reduction (2026-07-03, verified axiom-clean)
+
+`formal/GaloisForLFunctions/Bottcher/Q62NaturalBoundaryMinimal.lean` (new, umbrella, lint clean,
+`[propext, Classical.choice, Quot.sound]`, MainTheorems green 8920 jobs).  The separable-fibre witness
+(`hinput` input (2)) is discharged: the engine's `hinput` names the ORIGINAL relation's continued fibre
+(which need not be squarefree), so instead of feeding the engine, reduce to the MINIMAL relation `T'`
+(`exists_separable_relation_of_relation` — squarefree by construction, separable-fibre witness free) and
+replicate the natural-boundary contradiction on `T'`.  Separability transfers `bottcherCoord c₂ → γ` at
+the witness `w ∈ U`.  Two theorems:
+
+* `noRelation_phiMero_of_naturalBoundary_of_uncountableLC` — connected-pair `NoRelation` via natural
+  boundary with `hinput` discharged internally; needs exposure + `hnb` + `UncountableLocallyConnectedFrontier c₁`.
+* `noRelation_phiMero_bothConnected_of_uncountableLC` — the both-connected capstone: additionally
+  discharges `hnb` (via `hnb_of_branch_matching`), so it needs ONLY `c₁ ∈ mandelbrot∖{0,-2}` connected +
+  exposure (`hβan/hγan/hγfront/hγmatch`, the #124 collar) + the topological `hunc`.  `hG` proven.
+
+NET: the both-connected pair via the natural-boundary route is reduced to EXACTLY two inputs —
+**exposure (#124 collar)** and **`UncountableLocallyConnectedFrontier c₁`** (the topological one-sidedness,
+co-countable for connected `c₁`).  Both `hnb` and `hinput` are off the open list.  Remaining for full q62:
+#124 exposure, `hunc` (topological), the disconnected regimes (OP16-A, small-norm), and the separate
+SmoothPieceRigidity route.
