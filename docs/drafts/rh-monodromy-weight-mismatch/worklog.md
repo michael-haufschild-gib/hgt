@@ -722,3 +722,54 @@ charge = boundary-modulus slope (M6) — conserved under deformation (M2) — ju
 quantized units at crossings (M7) and at the seam (M5) — draining to the far field (M3)
 — with parity pinned at the FE fixed locus (B4). Open mathematics: OC1 pairing, #116
 cover construction, #96 foil.
+
+## 2026-07-03 — #125 BANKED: 16-pinning-and-emission.md — OC1 re-cut, two theorems, one new object
+
+**Pinning lemma [PROVED, paper]:** FE ∧ reality pin simple on-line zeros against any
+FE-preserving deformation (reflection + local uniqueness, 5 lines). **Emission ports:**
+off-line charge is created only at on-line multiple points — (P-flux) for FE∧real
+families = parity of emission events + lateral flux; the k=1 rung along such families
+is exactly "no odd emission count per quadrant box".
+
+**Mirror identity [PROVED + VERIFIED 30 digits, R9]:** on the two-character family
+G_{c,d} = cΛ(χ) + dΛ(χ̄), reflection across the line = parameter involution; on the
+k-pencil, k' = tan(2·arctan κ − arctan k). Pre-registered pod test: first Muller run
+FAILED (converged to the wrong zero — root-finder artifact, recorded); the exact
+linear-pencil solve confirmed the identity to 8.5e-30 and verified the κ closed form
+(√(10−2√5)−2)/(√5−1) against the certified zero (3.5e-17). **Two-coloring theorem:**
+R3c's disjoint populations = sign classes of unpinning velocity; box 84 DERIVED (the
+one box with the pre-existing off-line zero; measured dβ/dk ≈ 0.50, mirror partners
+are separate left-strip zeros). OC1 relocated to (OC1′) emission parity at Euler
+endpoints, with honest dBN-shape + GSH-interaction clauses.
+
+**Opened — the INCIDENCE MAP r(s) = −L(s,χ̄)/L(s,χ):** the pencil is linear, so the
+member vanishing at any point is exact algebra; the entire measured family dynamics
+(trajectories, FE fiber, mirror, moat, velocities) is the level-set geometry of this
+ONE meromorphic function. Natural carrier for (OC1′) beyond the model family; candidate
+composition with the u-plane descent. Lean targets: mirror identity (needs mathlib
+Dirichlet FE names); pinning lemma blocked on counting — NOTE the large-n deck-class
+counting trick (ledger at level n > a priori bound pins exact counts) as a possible
+full Rouché substitute for both lanes.
+
+## 2026-07-03 — #116 TERMINALIZED: 17-cover-no-go.md — compositional rigidity closes the hunt
+
+Attack-as-false WON. **Affine no-go [PROVED]:** the compositional symmetry group of ξ
+is exactly {id, 1−s} (zeros→strip pins a real; N(T) ~ T log T pins |a| = 1 and kills
+translations via the linear-count contradiction; composition with FE pins the rest) ⟹
+the FE descent is the UNIQUE degree-2 polynomial factorization; Möbius deck
+involutions die on the essential singularity. **Higher-degree/rational no-go
+[PROVED]:** rational π accumulates zero-fibers at finite poles (Z discrete ✗);
+polynomial π of degree d spreads fibers along d asymptotic directions vs Z in a
+horizontal strip ⟹ d ≤ 2 ⟹ §2. u-plane: zeros hug ONE ray ⟹ no degree ≥ 2 at all.
+**Survivor (Pólya):** only G(order 0) ∘ π(transcendental, order ≤ 1/2, fibers on the
+negative ray — cos√-type tract) remains ⟹ **(RittΞ) [OPEN CORE]: compositional
+primeness of Ξ** — decision-complete for #116 (holds ⟹ covers fully dead, parity
+burden all on OC1′; fails ⟹ a new hidden symmetry of ζ and a genuine detector).
+(RittΞ) is hgt-NATIVE: compositional rigidity of a seed object = the composition-
+monoid analogue of hypertranscendence — a new gatekeeper candidate for the main
+branch, attackable with mathlib's new Nevanlinna stack. [CHECK C11 at promotion:
+Gross–Yang/Urabe factorization literature for Ξ pseudo-primeness.]
+
+**Novelty-ledger correction (doc 17 §1):** xiDescent = the classical Ξ₁ (Pólya–Jensen
+guise); rh_iff_xiDescent_ne_zero_slitPlane's STATEMENT is classically known — the new
+content is the machine-checked descent + the graded deck/ladder calculus on it.

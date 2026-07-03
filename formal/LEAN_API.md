@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4734 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4736 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -4232,6 +4232,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `smoothPieceRigidity_of_reflectionCore` | `GaloisForLFunctions.Bottcher.Q62SmoothPieceReduction` | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:139` | Smooth-piece rigidity ⟸ the reflection core alone.** For connected `c₁ ∈ mandelbrot ∖ {0,-2}`, given the reflection core for every Böttcher branch (`hrefl`), `SmoothPieceRigidity c |
 | theorem | `exists_frontier_piece_deriv_ne_zero` | `GaloisForLFunctions.Bottcher.Q62SmoothPieceReduction` | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:198` | `ReflectionCore` discharge, step 1 — point selection.** A non-constant analytic `φ` (`deriv φ z' ≠ 0` somewhere) on a preconnected open `Ω` has `deriv φ ≠ 0` at some frontier point |
 | theorem | `exists_localInverse_frontier_arc` | `GaloisForLFunctions.Bottcher.Q62SmoothPieceReduction` | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:219` | `ReflectionCore` discharge, step 2 — local biholomorphism at the frontier arc point.** At a frontier point `zc` where the analytic `φ` has `deriv φ zc ≠ 0` and modulus one on the f |
+| def | `SmoothPieceReflectionData` | `GaloisForLFunctions.Bottcher.Q62SmoothPieceReflectionDischarge` | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReflectionDischarge.lean:36` | The reflection datum for smooth-piece rigidity.** For the smooth-piece configuration (the `SmoothPieceRigidity` hypotheses) and a Böttcher branch `β` on the basin, a frontier point |
+| theorem | `smoothPieceRigidity_of_reflectionData` | `GaloisForLFunctions.Bottcher.Q62SmoothPieceReflectionDischarge` | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReflectionDischarge.lean:62` | Smooth-piece rigidity from the reflection datum.** For connected `c₁ ∈ mandelbrot ∖ {0,-2}`, if every Böttcher branch admits the reflection datum, then `SmoothPieceRigidity c₁ c₂`  |
 | theorem | `q62_phiMero_independence_of_monodromy_tip_rigidity` | `GaloisForLFunctions.Bottcher.Q62TipRigidityCapstone` | `formal/GaloisForLFunctions/Bottcher/Q62TipRigidityCapstone.lean:28` | q62 with the genuine Mandelbrot placement.** Connected-side transcendence is discharged outright; the both-connected case needs a hole-free tip and the rigidity Prop; disconnected  |
 | theorem | `q62_phiMero_independence_real_pair` | `GaloisForLFunctions.Bottcher.Q62TipRigidityCapstone` | `formal/GaloisForLFunctions/Bottcher/Q62TipRigidityCapstone.lean:72` | The first concrete nonexceptional pair class (OP4, answered): real `−2 < c₂ < c₁ < 0`.** Both parameters are connected and nonexceptional; the tip is the explicit `imagTip c₁`; the |
 | theorem | `tendsto_quarticDefect_atImInfty` | `GaloisForLFunctions.Bottcher.QuarticCusp` | `formal/GaloisForLFunctions/Bottcher/QuarticCusp.lean:21` |  |

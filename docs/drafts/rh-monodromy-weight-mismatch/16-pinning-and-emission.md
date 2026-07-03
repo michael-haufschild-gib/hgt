@@ -73,13 +73,15 @@ fixing ±ε; in the k-coordinate:
   k' = tan(2·arctan κ − arctan k)   (a real Möbius involution fixing κ; k' ≈ 2κ − k).
 
 Composing with reality (zeros of each member are conjugation-symmetric), for a zero
-trajectory ρ_j(k) continuing through k = κ:
+trajectory ρ_j(k) passing through an on-line SIMPLE point at k = κ (local uniqueness
+at κ identifies the trajectory with its mirror — see §7 for why this hypothesis is
+necessary):
 
   **ρ_j(k') = 1 − conj ρ_j(k),  i.e.  β_j(k') − 1/2 = −(β_j(k) − 1/2) exactly.**
 
-The displacement of every zero from the critical line is exactly ODD across the FE
-fiber (in the Möbius coordinate). `[Promotion checks: the ε-algebra above; the
-classical FE normalization for the specific χ; both routine.]`
+The displacement of every unpinned zero from the critical line is exactly ODD across
+the FE fiber (in the Möbius coordinate). `[VERIFIED to 30 digits — §7 / R9-RESULTS;
+the ε-algebra and FE normalization are measurement-backed.]`
 
 ## 4. The two-coloring theorem, and box 84 explained
 
@@ -151,3 +153,35 @@ excited (§4): the model family shows the MECHANISM (unpinning by FE-breaking), 
    counting arguments in this lane and the q62 lane.
 3. **Emission-port corollary** — follows formally from 1–2 plus the banked seam
    cocycle; no new analysis expected.
+
+---
+
+## 7. Verification record (R9, 2026-07-03) — §3 CONFIRMED, §4 sharpened
+
+The mirror identity was put to a pre-registered numerical test (R9-RESULTS.md in
+`computations/`; scripts archived in `computations/mwm/`). Outcome:
+
+- **§3 CONFIRMED to 30 digits.** The pencil is LINEAR in (c,d), so the unique member
+  vanishing at any point is exact algebra: the INCIDENCE MAP r(s₀) = −L(s₀,χ̄)/L(s₀,χ).
+  At the reflected points 1−ρ(k₁), 1−conj ρ(k₁) of the certified box-84 zero continued
+  to k₁ = κ + 0.03, the required member is |r| = 1 (to 3e-29) with k equal to the
+  Möbius prediction k' = tan(2·arctan κ − arctan k₁) to 8.5e-30. The κ closed form
+  (√(10−2√5) − 2)/(√5 − 1) is verified against the certified zero (residual 3.5e-17).
+- **§4 proof sharpened.** The trajectory identity ρ_j(k') = 1 − conj ρ_j(k) holds for
+  zeros passing through an on-line SIMPLE point at κ (where local uniqueness applies)
+  — exactly the two-coloring's population. Pre-existing off-line zeros are NOT subject
+  to it: their mirror images are SEPARATE zeros in the left half-strip (measured:
+  f_{k'} carries both the continued trajectory zero at β = 0.794 and the mirror
+  partner at β = 0.176 near t ≈ 85.7). Box 84's measured velocity: dβ/dk ≈ 0.50.
+- **Method note.** The initial Muller run from the correct seed converged to the wrong
+  zero — a reminder that root-finder failure is not refutation; the exact linear-pencil
+  incidence solve is the robust instrument.
+
+**Opened (the next object):** the incidence map r(s) = −L(s,χ̄)/L(s,χ) packages the
+ENTIRE family dynamics as the level-set geometry of one meromorphic function — zeros
+of f_k are the level curve r = r(k); the FE fiber and the mirror involution are its
+symmetries; unpinning velocities v_j are its boundary derivatives on the critical
+line; the Euler moat is the geometry of its exceptional level r = 0/∞. The measured
+R3/R5/R5b laws are value-distribution statements about r. This is the natural carrier
+for (OC1′)'s two-coloring beyond the model family, and a candidate meeting point with
+the u-plane calculus (compose r with the descent).
