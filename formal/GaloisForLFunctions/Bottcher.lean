@@ -336,3 +336,4 @@ import GaloisForLFunctions.Bottcher.PoissonHarmonic
 import GaloisForLFunctions.Bottcher.PoissonBoundary
 import GaloisForLFunctions.Bottcher.HarmonicReflection
 import GaloisForLFunctions.Bottcher.HarmonicReflectionCircle
+import GaloisForLFunctions.Bottcher.Q62SmoothBranchReflection
