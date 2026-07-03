@@ -242,7 +242,7 @@ theorem log_prime_shifts_independent {q : ℕ} (hq : q.Prime) (s : Finset ℕ)
   rw [hvq, mul_zero] at hval
   have hterm : ∀ p ∈ s, padicValRat p₀ ((p : ℚ) ^ (ε p)) = if p = p₀ then ε p else 0 := by
     intro p hp
-    rw [padicValRat.zpow (by exact_mod_cast (hs p hp).1.pos.ne')]
+    rw [padicValRat_zpow (by exact_mod_cast (hs p hp).1.pos.ne')]
     by_cases hpp : p = p₀
     · subst hpp
       rw [padicValRat.self (by exact_mod_cast hp₀p.one_lt), mul_one]
