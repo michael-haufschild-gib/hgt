@@ -163,15 +163,18 @@ theorem continuesAcross_of_greenBoundaryRegularity
   rw [reflectCircle_outer (le_of_lt hw.2)]
   exact houter w (Metric.ball_subset_ball hr₁r hw.1) hw.2
 
-/-- **KW extension reduced to Green-limit boundary regularity.**  Taking the extended potential to be
-the dynamical Green limit `u₀ = greenLimit c₁ ∘ γ`, the harmonic + outer-agreement inputs are supplied
-by the tree's Böttcher/Green facts: `harmonicOnNhd_greenLimit_basin` (Green harmonic on the basin) via
-the analytic `γ`, and `norm_bottcherCoord_eq_exp_green_escape` for `log‖β∘γ‖ = greenLimit ∘ γ` on the
-exterior side.  What is left is exactly the **potential-theoretic boundary regularity** of the Green
-function at the Julia frontier: it *vanishes* on the arc (`hgzero`) and is *continuous up to* it
-(`hgcont`).  Under those two inputs (plus the local-biholomorphism / basin geometry), `β` continues
-analytically across `z₀`. -/
-theorem continuesAcross_of_greenLimit_boundary
+/-- **KW extension across a smooth Julia arc — the isolated geometric input.**  Taking the extended
+potential to be the *global* dynamical Green function `u₀ = greenFunctionDyn c₁ ∘ γ` (`= 0` on `K_{c₁}`,
+`= greenLimit` on the basin), the two potential-theoretic boundary inputs are already discharged by the
+tree: `continuous_greenFunctionDyn` gives continuity up to the arc for free, and
+`greenFunctionDyn_eq_zero_iff` gives vanishing wherever `γ` lands in `K_{c₁}`.  The harmonic and
+outer-agreement inputs come from `harmonicOnNhd_greenLimit_basin` and
+`norm_bottcherCoord_eq_exp_green_escape` (via `greenFunctionDyn = greenLimit` off `K_{c₁}`).  What is
+left is exactly the **geometric** content of the smooth piece: `γ` maps the exterior side to the escape
+region (`hγesc`) and the arc `{‖w‖ = 1}` into the filled Julia set (`hγarc`) — i.e. the branch `φ`
+carries the smooth Julia arc to the unit circle.  Under those data, `β` continues analytically across
+`z₀`. -/
+theorem continuesAcross_of_smoothJuliaArc
     {c₁ : ℂ} {β φ γ : ℂ → ℂ} {z₀ : ℂ} {r : ℝ}
     (hr : 0 < r) (hr1 : r ≤ 1/2) (hw₀ : ‖φ z₀‖ = 1)
     (hφAt : AnalyticAt ℂ φ z₀)
@@ -183,20 +186,39 @@ theorem continuesAcross_of_greenLimit_boundary
     (hγAn : ∀ w ∈ Metric.ball (φ z₀) r, AnalyticAt ℂ γ w)
     (hγesc : ∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ → γ w ∈ escapeOpen c₁)
     (hβesc : ∀ z ∈ escapeOpen c₁, β z = bottcherCoord c₁ z)
-    (hgzero : ∀ w ∈ Metric.ball (φ z₀) r, ‖w‖ = 1 → greenLimit c₁ (γ w) = 0)
-    (hgcont : ContinuousOn (fun w => greenLimit c₁ (γ w))
-      ({w : ℂ | 1 ≤ ‖w‖} ∩ Metric.ball (φ z₀) r)) :
+    (hγarc : ∀ w ∈ Metric.ball (φ z₀) r, ‖w‖ = 1 → γ w ∈ filledJulia c₁) :
     U0NaturalBoundary.ContinuesAcross β (filledJulia c₁)ᶜ z₀ := by
-  refine continuesAcross_of_greenBoundaryRegularity hr hr1 hw₀ hφAt hγφ hbasin hβγhol hβγne
-    ?_ hgcont hgzero ?_
-  · -- Green ∘ γ is harmonic on the exterior side
+  have hγcont : ContinuousOn γ (Metric.ball (φ z₀) r) :=
+    fun w hw => (hγAn w hw).continuousAt.continuousWithinAt
+  -- off `K_{c₁}`, `greenFunctionDyn = greenLimit`
+  have hgdyn_esc : ∀ w ∈ Metric.ball (φ z₀) r, 1 < ‖w‖ →
+      greenFunctionDyn c₁ (γ w) = greenLimit c₁ (γ w) := by
     intro w hw hnorm
-    exact harmonicAt_comp_analytic
-      (harmonicOnNhd_greenLimit_basin c₁ (γ w)
-        (escapeOpen_subset_compl_filledJulia c₁ (hγesc w hw hnorm))) (hγAn w hw)
-  · -- log‖β∘γ‖ = greenLimit ∘ γ on the exterior side
+    rw [greenFunctionDyn, if_neg (escapeOpen_subset_compl_filledJulia c₁ (hγesc w hw hnorm))]
+  refine continuesAcross_of_greenBoundaryRegularity (u₀ := fun w => greenFunctionDyn c₁ (γ w))
+    hr hr1 hw₀ hφAt hγφ hbasin hβγhol hβγne ?_ ?_ ?_ ?_
+  · -- `greenFunctionDyn ∘ γ` is harmonic on the exterior side
     intro w hw hnorm
     have hesc := hγesc w hw hnorm
-    rw [hβesc _ hesc, norm_bottcherCoord_eq_exp_green_escape hesc, Real.log_exp]
+    have hglHarm : InnerProductSpace.HarmonicAt (fun v => greenLimit c₁ (γ v)) w :=
+      harmonicAt_comp_analytic
+        (harmonicOnNhd_greenLimit_basin c₁ (γ w) (escapeOpen_subset_compl_filledJulia c₁ hesc))
+        (hγAn w hw)
+    refine (InnerProductSpace.harmonicAt_congr_nhds ?_).mpr hglHarm
+    have hopen : IsOpen (Metric.ball (φ z₀) r ∩ {w : ℂ | 1 < ‖w‖}) :=
+      Metric.isOpen_ball.inter (isOpen_lt continuous_const continuous_norm)
+    filter_upwards [hopen.mem_nhds ⟨hw, hnorm⟩] with v hv
+    exact hgdyn_esc v hv.1 hv.2
+  · -- continuity up to the arc — from global continuity of `greenFunctionDyn`
+    exact (continuous_greenFunctionDyn c₁).comp_continuousOn (hγcont.mono inter_subset_right)
+  · -- vanishing on the arc — `γ` lands in `K_{c₁}`
+    intro w hw hnorm
+    show greenFunctionDyn c₁ (γ w) = 0
+    exact (greenFunctionDyn_eq_zero_iff c₁ (γ w)).mpr (hγarc w hw hnorm)
+  · -- outer agreement `greenFunctionDyn ∘ γ = log‖β∘γ‖`
+    intro w hw hnorm
+    show greenFunctionDyn c₁ (γ w) = Real.log ‖β (γ w)‖
+    have hesc := hγesc w hw hnorm
+    rw [hgdyn_esc w hw hnorm, hβesc _ hesc, norm_bottcherCoord_eq_exp_green_escape hesc, Real.log_exp]
 
 end Bottcher
