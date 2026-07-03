@@ -329,3 +329,5 @@ import GaloisForLFunctions.Bottcher.Q62BothConnectedHnbFree
 import GaloisForLFunctions.Bottcher.Q62SmoothPieceReduction
 import GaloisForLFunctions.Bottcher.Q62ReflectionBridge
 import GaloisForLFunctions.Bottcher.SchwarzReflectionUnitFormula
+import GaloisForLFunctions.Bottcher.Q62ReflectionTransport
+import GaloisForLFunctions.Bottcher.BottcherArcExtension

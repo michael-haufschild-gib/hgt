@@ -52,3 +52,11 @@ New reusable helper: `natCast_dvd_natCast_of_enat` (ℕ∞ dvd descent — absen
 - 2026-07-03 (night) — DirichletRigidity.lean added: `no_polynomial_surgery` (finite-divisor
   rigidity of the Dirichlet-series class; droves-dichotomy fragment), axiom-clean
   [propext, Classical.choice, Quot.sound], umbrella + MainTheorems + lint green.
+
+2026-07-03 — extended: `RHTower/LogIndependence.lean` — the principal wall's arithmetic
+carrier, both sides (lane doc 10-blind-cone.md §5): `log_third_shifts_dependent` (explicit
+ℚ-dependence of Hurwitz-shift logs at q=3, witness 2·8=4²), `log_shifts_independent`
+(transcendental shifts multiplicatively free — transcendence→polynomial-identity→eval at −n₀),
+`log_prime_shifts_independent` (prime-supported shifts free at rational denominator, via
+padicValRat helpers padicValRat_prod/padicValRat_zpow). All axiom-clean
+[propext, Classical.choice, Quot.sound]; umbrella imports updated; lint gate green.

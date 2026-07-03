@@ -135,3 +135,44 @@ Updated ranking: (H-loc) = instantiated-but-ungraded (needs the density clause);
 (P_k)/power-droves = co-primary (thresholds now T^{θ(σ₀)+ε} after the quantified
 Reduction). Next objects: **R7 transfer graph** (recurrence skeleton of the population;
 pre-register density of the graph), and the Hilberdink–Lapidus FE-class reading.
+
+## 7. The graded rung, and the Deuring–Heilbronn stress test (2026-07-03)
+
+**The rung, explicit.** Fix δ ∈ (0, 1/2) and write the quantified Reduction's open core
+(06 §6) at level σ₀ = 1−δ as a single statement:
+
+> **(Rung_δ)** `[OPEN CORE]` If ζ has a zero ρ with Re ρ ≥ 1−δ, then for infinitely many T
+> the count of zeros with Re ≥ 1−δ−ε, 0 < Im ≤ T is ≥ T^{3δ/(1+δ)}·(log T)^6.
+
+By 06 §6, (Rung_δ for all δ) ⟹ RH, one strip at a time; each rung needs only ITS OWN level.
+The budget θ(1−δ) = 3δ/(1+δ) → 0 as δ → 0: at δ = 0.01 the demand is T^{0.0297} companions —
+barely more than polylog. The population data (R2: D–H droves are LINEAR, T/21) sits far
+above every rung, so the FE-class behaviour, where a strip zero exists at all, over-fulfils
+the budget by a power.
+
+**Attack-as-false: the repulsion guard.** The droves dichotomy (§D) must survive the one
+classical configuration engineered to violate it: the exceptional-zero world. The
+Deuring–Heilbronn phenomenon `[CHECK at promotion: exceptional zero repels other zeros —
+Linnik, log-free density; Iwaniec–Kowalski ch. 18]` is the ONLY known mechanism by which a
+single high zero constrains the rest of the population — and its sign is REPULSION: a lone
+zero near σ = 1 makes companions scarcer, not denser. A Siegel-type configuration (one
+zero, cleared neighbourhood) is precisely "non-absent without droves" — it is the shape a
+COUNTEREXAMPLE to (Rung_δ)'s provability at small δ would take. Two consequences:
+
+1. **The difficulty profile of the ladder is non-monotone.** Small δ: tiny budget
+   (T^{3δ}), but the repulsion guard is strongest exactly there (repulsion technology
+   lives near σ = 1) — the hypothesis "one zero forces companions" fights the one proven
+   phenomenon in the region. Large δ (σ₀ → 1/2+): droves are the measured/expected
+   behaviour (Voronin ≫T in fixed strips for the classes that do have zeros; D–H linear),
+   but the budget grows to linear. The rungs are guarded at the weak end by
+   Deuring–Heilbronn and at the strong end by the budget.
+2. **The right attack point is an interior saddle** `[new question]`: the crossover σ₀*
+   where the repulsion guard has decayed (repulsion constants degrade polynomially away
+   from σ = 1) while θ(σ₀) is still ≪ 1. Locating σ₀* — even heuristically, from the
+   explicit constants in log-free density theorems vs θ(σ₀) — is a concrete, bounded task
+   and would name the thinnest point of the whole Reduction.
+
+Note the alignment: repulsion is an EXPLICIT-FORMULA effect (power sums, not value
+distribution), i.e. it lives on M1's side of the house (07), untouched by the blind cone
+(10). The rung program and the phase law are the two currently open non-universality
+surfaces; the saddle question is where the first one becomes quantitative.

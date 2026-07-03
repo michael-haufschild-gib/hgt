@@ -514,3 +514,79 @@ no global MLC, only local regularity forced by the smooth-arc hypothesis).
 are DIFFERENT branches (`‖wfam k‖=1` on the frontier vs `‖β‖=exp(green)>1` on the basin), which is
 exactly why the discharge needs true reflection, not branch-following — killing the earlier
 "direct branch-identification" idea for the interior-nonempty case.
+
+---
+
+## Constructive reflection formula built (SchwarzReflectionUnitFormula.lean)
+
+The constructive half of the reflection route — previously the missing piece between
+`differentiableAt_of_off_modulus_arc` (proves a glued function holomorphic) and an actual reflected
+extension — is now a verified, axiom-clean theorem.
+
+`schwarzReflect_unit_circle`: for `F` holomorphic on the outer side `{1<‖w‖}` of a ball around a
+unit-circle point `w₀`, continuous up to the circle, nonzero on the closed outer side, and modulus-1
+ON the circle, the reflection
+    `reflectUnit F w = if 1 ≤ ‖w‖ then F w else (conj (F (1/conj w)))⁻¹`
+is `AnalyticAt ℂ (reflectUnit F) w₀`. Since `reflectUnit F = F` on `{1≤‖w‖}`, this continues `F`
+across the circle.
+
+Mechanism (all proven):
+* inner piece `= (conj∘F∘conj)(1/w)⁻¹`, holomorphic by mathlib `differentiableAt_conj_conj_iff`
+  (`reflInner_differentiableAt`);
+* on the circle `1/conj w = w` and `|F|=1` force `reflInner F = F` (`reflInner_eq_of_unit`), so the
+  glue is continuous across — via `nhds`/`continuousWithinAt_union` over the covering
+  `{1≤‖·‖} ∪ {‖·‖≤1}` (`reflInner_continuousWithinAt` + arc-agreement congr);
+* `differentiableAt_of_off_modulus_arc` with `g = id` finishes.
+
+Axiom-clean (`propext, Classical.choice, Quot.sound`); Bottcher umbrella green (4248 jobs), lint passed.
+
+### What this reduces
+The `ArcReflectionData` datum of `Q62ReflectionBridge.lean` had two contents: (i) the reflection
+formula (analytic continuation across the arc), (ii) boundary regularity of `β` (that `F=β∘γ`
+extends continuously up to the arc, modulus 1). Content (i) is now DISCHARGED — the reflection
+formula exists as a theorem. What remains for `ArcReflectionData`:
+  - transport through the local biholomorphism `φ` (routine: `γ=φ⁻¹` carries `{‖φ‖=1}` to the unit
+    circle; `exists_localInverse_frontier_arc` already gives `γ`); and
+  - the boundary regularity (ii) = `β∘γ` continuous up to the circle with modulus 1. Modulus-1 comes
+    from the Böttcher/Green identity `|β|=exp(green)→1` at ∂K₁ (green→0 at the boundary, in-tree via
+    `greenFunctionDyn`). Continuous EXTENSION of `β` up to the smooth arc is the last deep input =
+    Kellogg–Warschawski (smooth boundary ⟹ conformal map extends continuously) LOCALLY at the piece.
+    The smooth-arc hypothesis furnishes exactly the local smoothness Kellogg–Warschawski consumes.
+
+Next brick: the transport lemma `F = β∘γ` + assemble `schwarzReflect_unit_circle` into a partial
+`ArcReflectionData` discharge conditional only on the local boundary-extension datum. `F≠0` is free
+(β = bottcherCoord nonzero on basin).
+
+---
+
+## Reflection route fully assembled at the analytic level (Q62ReflectionTransport.lean)
+
+`continuesAcross_of_reflected_boundary`: at a frontier arc point `z₀` where `φ` is a local
+biholomorphism (`AnalyticAt φ z₀`, `‖φ z₀‖=1`, local inverse `γ`), given the boundary datum of
+`F = β∘γ` on the unit circle around `w₀=φ z₀` (holo outside / continuous up / nonzero outside /
+modulus-1 on circle) and that the basin side maps to the outer side (`‖φ‖>1` on `𝓝[K₁ᶜ]z₀`), then
+`ContinuesAcross β (K₁ᶜ) z₀` — the natural-boundary contradiction target. The continuation is the
+pullback `reflectUnit(β∘γ)∘φ`, analytic at `z₀` by composition (the reflection formula gives analytic
+at `φ z₀`; `φ` analytic at `z₀`), equal to `β` on the basin side (`‖φ‖>1 ⟹ reflectUnit=F∘φ=β∘γ∘φ=β`).
+
+Axiom-clean; Bottcher umbrella green (4249 jobs), lint passed.
+
+### The sole deep residual, now exactly isolated
+The reflection ANALYSIS is now entirely discharged (bridge + formula + transport). The remaining
+hypotheses of `continuesAcross_of_reflected_boundary` are all in-tree or a single named classical
+theorem:
+* `γ` local inverse + basin→outer geometry: `exists_localInverse_frontier_arc` (in-tree) + `‖φ‖>1`
+  on basin (the one-sidedness / orientation datum, #133-adjacent).
+* `hFne` (β∘γ ≠ 0 outside): `bottcherCoord c₁` is nonzero on `K₁ᶜ` — in-tree fact.
+* `hFmod` (‖β∘γ‖=1 on circle): `‖β‖=exp(green)` and green→0 at `∂K₁` — in-tree Green facts
+  (`greenFunctionDyn` continuity, green=0 on `∂K₁`).
+* `hFcont`+`hFhol` (β∘γ holo outside / CONTINUOUS up to the circle): this is the genuine deep input
+  = **Kellogg–Warschawski** (a conformal map onto a domain with a smooth boundary arc extends
+  continuously — even smoothly — to that arc). It is LOCAL at the smooth piece (the smooth-arc
+  hypothesis of `SmoothPieceRigidity` furnishes exactly the local smoothness it consumes); it does
+  NOT require global MLC. Mathlib-absent, hard, but not open.
+
+So the interior-nonempty both-connected q62 gatekeeper reduces to Kellogg–Warschawski (local boundary
+regularity of β at a smooth Julia arc) + in-tree Green/nonzero facts + the basin-orientation datum.
+Next bricks: discharge `hFmod`/`hFne` from the in-tree Green + Böttcher-nonzero lemmas; then the sole
+remaining mathlib-absent input is the Kellogg–Warschawski boundary extension.

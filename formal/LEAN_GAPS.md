@@ -255,6 +255,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:24` | algebraic surface of the disconnected case: the lone remaining input is the *geometric* non-squareness |
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:20` | * `reflectionCore_of_arcReflectionData` — the **reduction**.  It isolates the one remaining input of |
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:52` | /-- **The reflected-extension datum — the one remaining input of `ReflectionCore`.**  For a |
+| `formal/GaloisForLFunctions/Bottcher/Q62ReflectionTransport.lean:17` | boundary `hnb`.  The remaining inputs are exactly the boundary datum of `F = β ∘ γ` at the arc |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:20` | Böttcher branch `β_{c₁}` reflects across it — the isolated `ReflectionCore`, the one remaining input; |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:119` | /-- **The reflection core — the one remaining deep input of smooth-piece rigidity.** A non-constant |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:195` | `β` across the arc then runs on (the remaining, genuinely mathlib-absent, input). -/ |
@@ -290,7 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean:1396` | frontier-fibre `Separable` datum from the callback.  The remaining per-target geometry is a boundary |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:132` | remaining local task is exactly to convert regular positive-depth hits into positive periodic points; |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:267` | remaining target-side dynamical input is the local conversion of a positive forward hit to either |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:392` | center fit, while the caller supplies the genuine remaining quantitative window. -/ |
 
 ## Historical Status Logs
 

@@ -297,3 +297,34 @@ and certified ourselves).
   family's recurrence skeleton is now measured, certified, and law-governed. Caveat:
   margin/r misestimates |f′| at small radii (measure f′ directly in the census).
   `computations/R7-RESULTS.md` final.
+
+## 2026-07-03 — wave-4: the blind cone answered + the phase law (seed 382100489098707208)
+
+- **R8 chunk 0 [MEASURED]** (`computations/r8c0.out`, `R8-RESULTS.md`): direct f′ at the four
+  R7 centers. |f′|-magnitude REFUTED as jet-class carrier (ρ₃ lowest |f′| yet transfers; ρ₂
+  middle |f′| yet isolated). Carrier = PHASE: arg f′ separates the transfer graph perfectly
+  ({ρ₁,ρ₃,ρ₄} at −0.32..−0.19, ρ₂ at +0.32; certified edges |Δarg| ≤ 0.13, failures ≥ 0.51).
+  Law refined and first-order DERIVED: ratio ≈ Δβ/r + |Δ arg f′| (measured c ≈ 1.0–1.4,
+  model c = 1). Pre-registration scorecard: clause (i) marginal fail (24–26% < 30%),
+  proxy-was-bad clause confirmed, falsifier fired at the |f′| reading.
+- **10-blind-cone.md — 09 §3.1 ANSWERED (B2 target)**: blind cone = union of canonical
+  coordinate lines. Theorem A (support ≥ 2 ⟹ (H-loc), r-component 09 §1); Theorem B (single
+  lines: (Z′) unsatisfiable at seeds + (H-loc) ⟹ RH(χ) via quantified Reduction — blindness
+  is intrinsic and RH-grade); Theorem C (ζ collects to the trivial line for EVERY q —
+  yes-branch: wall representation-independent, primitivity grading now a theorem in the
+  Dirichlet world, multi-modulus covering impossible). §5: the wall's carrier in Hurwitz
+  coordinates = unique factorization — ζ(s,1/3)+ζ(s,2/3) = (3^s−1)ζ collapses to the
+  principal line; the missing tool (joint-strong at self-targets) MUST fail, and does:
+  explicit witness log(2/3)+log(8/3)=2log(4/3) (2·8=4²); transcendental shifts free. §6
+  chiasmus: multiplicativity powers (D) [mollifier] and blocks (R_k) [log-relations]. §7
+  opened: phase-weighted universality (R8 data), Beurling trichotomy (B1×B2 merged), minimal
+  relation-blindness.
+- **Lean banked** (`RHTower/LogIndependence.lean`, umbrella updated, build 9008 jobs green,
+  lint gate green): `log_third_shifts_dependent`, `log_shifts_independent`,
+  `log_prime_shifts_independent` (+ private `padicValRat_prod`, `padicValRat_zpow`) — all
+  [propext, Classical.choice, Quot.sound]. The wall's two sides machine-checked; the prime-
+  support freedom lemma is the Beurling-design clause of 10 §7.2.
+- 09 §3.1 marked ANSWERED in place. Board: wave-4 pre-registration block. Tasks: #109
+  (R8, chunk A census running), #110 done, #111 done; #96/#97 redirected at the trichotomy.
+- X (fixed): pod launch used `python3` (no mpmath) instead of `python3.13` — job died at
+  import; relaunched. Check the interpreter when launching pod jobs.

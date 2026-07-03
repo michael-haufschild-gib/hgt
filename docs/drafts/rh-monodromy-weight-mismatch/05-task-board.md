@@ -282,3 +282,11 @@ the dichotomy (multi-support steerable / single-line RH-grade), representation-i
 across moduli, and the exact carrier of the wall in Hurwitz coordinates. Output: new doc
 10-blind-cone.md + Lean witness pair (log-relation dependence + transcendental-shift
 independence) in RHTower/LogIndependence.lean.
+
+**R8 chunk 0′ (pre-registered BEFORE chunk A centers are measured):** for every new zero the
+census returns, measure (|f′|, arg f′) locally (fprime.py). PREDICTION under the phase-class
+law: the arg f′ values will NOT be uniform on (−π, π]; they will cluster, with the dominant
+cluster near the existing class [−0.33, −0.19]. Falsifier: phases uniform/scattered with
+pairwise gaps ≫ 0.15 and no cluster ⟹ the phase-carrier reading of R8c0 is a 4-point
+accident. Secondary: first new zero (β≈0.865, t≈240.4) — if its phase lands in the {ρ₁,ρ₃,ρ₄}
+band, predict certified transfer ρ₁→new at r ≳ Δβ = 0.059 (a testable edge for chunk B).

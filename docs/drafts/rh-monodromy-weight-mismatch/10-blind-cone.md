@@ -155,10 +155,18 @@ universality-shaped (§7.1) or change the arithmetic itself (§7.2).
    one fails, as the system's arithmetic is dialed, is a measurable diagnostic of what
    carries RH. First move: the Hilberdink–Lapidus FE-class reading (board #96), now with a
    sharp question to ask of each system.
-3. **Minimal relation-blindness `[CONJECTURE]`.** ζ's Dirichlet series is supported on ALL
-   integers; the obstruction of §5 is carried by composite support. Conjecture: there is a
-   MINIMAL enlargement of the universality toolkit that sees exactly one multiplicative
-   relation (e.g. 2·8 = 4² alone) and already fails — i.e. the wall is not an accumulation
-   of relations but is present in each single one. If true, the blind cone is "locally
-   principal" and any covering-style attack dies at the FIRST relation, not asymptotically.
-   Test: a two-frequency toy system {log 2, log 4} vs {log 2, log 3}.
+3. **Minimal relation-blindness `[CONJECTURE]`, with a proved miniature `[DERIVATION]`.**
+   ζ's Dirichlet series is supported on ALL integers; the obstruction of §5 is carried by
+   composite support. Conjecture: the wall is not an accumulation of relations but is
+   present in each single one — the blind cone is "locally principal" and any covering-style
+   attack dies at the FIRST relation, not asymptotically.
+   The two-frequency miniature is already a theorem modulo Kronecker: on a vertical line,
+   g_A(σ+it) = a·2^{−σ}z + b·4^{−σ}z² with z = 2^{−it} — the SINGLE relation 4 = 2² pins the
+   value orbit to the algebraic curve (z, z²), one real dimension; whereas
+   g_B(σ+it) = a·2^{−σ}z + b·3^{−σ}w has (z, w) dense in the 2-torus (Kronecker + the
+   ℚ-independence of log 2, log 3 — the prime instance of
+   `RHTower.log_prime_shifts_independent`), so the value set fills the full 2-dimensional
+   region. One relation costs exactly one steering dimension; steering onto a generic target
+   (in particular a vanishing one) is lost at the first relation. What remains open is the
+   INFINITE-frequency version: whether the relation module's rank deficit equals the lost
+   steering codimension for genuine Dirichlet series (the "rank–codimension law").
