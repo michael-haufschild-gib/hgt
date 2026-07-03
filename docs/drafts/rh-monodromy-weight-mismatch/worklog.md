@@ -964,3 +964,29 @@ Next: (SPUR-R) stability theorem; (DISC-fin) first instance on a g_N off-line pa
   ladder as continuation of the Euler germ, machine-checked. 8579 jobs, axiom-clean.
 Next: (AMP) via the two-variable energy on e^u g(xu); then the finite (DISC-fin) inequality
 on truncation jets with (CPI) as the evaluation tool.
+
+## 2026-07-03 — (AMP) attack: the two-variable energy and the single crossing (doc 24)
+- PROVED: transport PDE xG_x − uG_u + uG = 0 ⟺ polar chain (characteristic form);
+  energy factorization E_G = (G_u)² − G·G_uu = x²e^{2u}L_g(xu), L_g/g² = Σ(w−x_k)^{−2}
+  — theorem-m's ODE energy reappears as the PULLBACK of the carrier's electrostatic
+  zero-energy (no ODE exists for the ζ-carrier: hypertranscendence forces the energy
+  to be a constraint on the configuration, not an evolution — constraint, not flow).
+- PROVED: electrostatic reduction — at critical points Σ(c−α_k)^{−1} = 0 (Stieltjes
+  equilibrium) and −A″/A = Σ(c−α_k)^{−2}: sign transfer ⟺ margin q_d/(c⁴ℰ) > 1,
+  amplitudes cancel.
+- PO REFUTED (pod, pre-registered): copy-everywhere is false — permanent far flip
+  block (failures ~0.4d, margin_min → 0.28). The refutation produced the CORRECTED
+  counting lemma: strict failure forces the flipped sign (still alternating);
+  Z_c ≤ 2 + T, T = #copy↔flip crossings; T = 1 + evenness ⟹ Z_c ≤ 2 (doc 23 §3
+  corrected in place).
+- PQ/PR PASS (pod): T = 1 at ALL d ≥ 10 (model 1) / d ≥ 4 (model 2); zero outer
+  monotone violations; no negative-side crossings; T = 2 transient at d = 8 sits in
+  the q_d-dip and clears at the definiteness threshold d > 1 + a²/b² — matching
+  doc 20's measured visibility threshold.
+- Kernel re-cut: (AMP-mono) — single crossing (sufficient: tracking + dip clearance
+  [proof-shaped Hurwitz estimates] + outer monotonicity of c⁴ℰ/q_d [open, measured
+  0 violations]). Application: u-plane slit carrier recentered at −T² has the
+  one-sided-far shape ⟹ T = 1 ⟹ theorem-grade DISC reader lives on the u-plane.
+Archives: AMP-RESULTS.md; scripts amp_margin_landscape.py, amp_crossing_probe.py.
+Next: prove tracking/dip clearance; attack outer monotonicity via the equilibrium
+constraint; u-plane reader on the #136 truncation window.

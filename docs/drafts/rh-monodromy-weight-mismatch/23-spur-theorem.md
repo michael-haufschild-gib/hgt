@@ -83,9 +83,10 @@ hence [verified 41 digits on the pod]
 and q_d is POSITIVE DEFINITE on ℝ exactly when d > 1 + a²/b². Sign transfer: at
 every critical point where q_d(c)|A_d(c)| > c⁴|A_d''(c)|, the section J^d_{Pg}
 copies the sign of A_d; each preserved sign alternation forces a real zero between
-consecutive critical points, so
-
-> Z_c(J^d_{Pg}) ≤ 2·#{critical points where transfer fails}.
+consecutive critical points, so the non-real count is controlled by the failure
+structure. [CORRECTED in doc 24 §3: strict failure FORCES the flipped sign, which
+still alternates; the right bound is Z_c ≤ 2 + T with T = #copy↔flip transitions,
+and T = 1 + evenness gives Z_c ≤ 2.]
 
 The curvature term opposes the amplitude at every extremum (A·A'' ≤ 0 there), so
 the needed input is a lower bound on extremal amplitudes against the local
@@ -99,7 +100,11 @@ frequency — precisely theorem-m's energy object, now for the section chain.
 > (theorem-m's E = C² + C'² is the Kummer-equation case); the chain's pointwise
 > Turán (§2c) is the algebraic half of the estimate.
 
-Status: (SPUR-R) = bricks (a),(b),(e) [done] + (CPI) [done] + (AMP) [open]. With
+[SUPERSEDED: the (AMP) attack (doc 24) refuted the all-but-one form — the far flip
+block is permanent — and re-cut the residual as (AMP-mono): the margin sequence
+crosses 1 exactly once. See doc 24 §5.]
+
+Status: (SPUR-R) = bricks (a),(b),(e) [done] + (CPI) [done] + (AMP-mono) [open]. With
 (AMP), the DISC reader (doc 20) is provably exact on LP×pair carriers, and the
 measured finite instance (#136: the truncation's off-line zero read correctly at
 d = 4, 6, 8; domination provably failing there, as banked transport forces) sits on

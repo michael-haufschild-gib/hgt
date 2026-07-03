@@ -19,6 +19,7 @@ What remains for the full classical statement is exactly the support theorem
 positive mass for the arbitrary-target limiting Brolin measure.
 -/
 import GaloisForLFunctions.Bottcher.Q62OneSidedPullback
+import GaloisForLFunctions.Bottcher.OneSidedCofinal
 import GaloisForLFunctions.Bottcher.Brolin.TargetLimit
 
 open Set Metric Filter Topology MeasureTheory CompactlySupported Laplacian
@@ -246,6 +247,164 @@ theorem locOneSidedDense_of_base_brolinJuliaBallPositiveAt
     LocOneSidedDense c :=
   locOneSidedDense_of_base_backwardDense hbase
     (backwardOrbitDense_of_brolinJuliaBallPositiveAt hpos hcrit)
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- The pullback-stable local one-sided notion is strong enough for the
+neighbourhood-cofinal q62 interface. -/
+theorem oneSidedAtCofinalNbhd_of_locOneSided {c z : ℂ}
+    (h : LocOneSided c z) : OneSidedAtCofinalNbhd c z := by
+  obtain ⟨hzfront, hbasis⟩ := h
+  refine ⟨hzfront, ?_⟩
+  intro ε hε
+  obtain ⟨V, hVo, hzV, hVsub, hVpre, hVne⟩ := hbasis ε hε
+  refine ⟨V, hVo, hzV, hVsub, ?_⟩
+  rw [Set.diff_eq]
+  exact ⟨hVne, hVpre⟩
+
+/-- Density of neighbourhood-cofinal one-sided points on the Julia frontier. -/
+def OneSidedAtCofinalNbhdDense (c : ℂ) : Prop :=
+  ∀ p ∈ frontier (filledJulia c), ∀ ε > 0,
+    ∃ z, OneSidedAtCofinalNbhd c z ∧ dist p z < ε
+
+/-- Dense `LocOneSided` points give dense neighbourhood-cofinal one-sided
+points. -/
+theorem oneSidedAtCofinalNbhdDense_of_locOneSidedDense
+    {c : ℂ} (hd : LocOneSidedDense c) : OneSidedAtCofinalNbhdDense c := by
+  intro p hp ε hε
+  obtain ⟨z, hz, hdist⟩ := hd p hp ε hε
+  exact ⟨z, oneSidedAtCofinalNbhd_of_locOneSided hz, hdist⟩
+
+/-- Set-closure form of neighbourhood-cofinal one-sided density. -/
+theorem frontier_subset_closure_oneSidedAtCofinalNbhd_of_dense
+    {c : ℂ} (hd : OneSidedAtCofinalNbhdDense c) :
+    frontier (filledJulia c) ⊆ closure {z | OneSidedAtCofinalNbhd c z} := by
+  intro p hp
+  rw [Metric.mem_closure_iff]
+  intro ε hε
+  obtain ⟨z, hz, hdist⟩ := hd p hp ε hε
+  exact ⟨z, hz, hdist⟩
+
+/-- If the neighbourhood-cofinal one-sided points are dense on both Julia
+frontiers, one orientation has such a point outside the other filled Julia set. -/
+theorem exists_oneSidedCofinalNbhd_offOther_of_dense
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hd₁ : OneSidedAtCofinalNbhdDense c₁)
+    (hd₂ : OneSidedAtCofinalNbhdDense c₂) :
+    (∃ x, OneSidedAtCofinalNbhd c₁ x ∧ x ∉ filledJulia c₂) ∨
+      (∃ x, OneSidedAtCofinalNbhd c₂ x ∧ x ∉ filledJulia c₁) := by
+  have hD₁ : frontier (filledJulia c₁) ⊆ closure {z | OneSidedAtCofinalNbhd c₁ z} :=
+    frontier_subset_closure_oneSidedAtCofinalNbhd_of_dense hd₁
+  have hD₂ : frontier (filledJulia c₂) ⊆ closure {z | OneSidedAtCofinalNbhd c₂ z} :=
+    frontier_subset_closure_oneSidedAtCofinalNbhd_of_dense hd₂
+  rcases exists_exposed_of_dense_frontier hne hD₁ hD₂ with ⟨x, hx, hx2⟩ | ⟨x, hx, hx1⟩
+  · exact Or.inl ⟨x, hx, hx2⟩
+  · exact Or.inr ⟨x, hx, hx1⟩
+
+/-- Version of the exposure dichotomy fed by the pullback-stable local
+one-sided density. -/
+theorem exists_oneSidedCofinalNbhd_offOther_of_locOneSidedDense
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hd₁ : LocOneSidedDense c₁) (hd₂ : LocOneSidedDense c₂) :
+    (∃ x, OneSidedAtCofinalNbhd c₁ x ∧ x ∉ filledJulia c₂) ∨
+      (∃ x, OneSidedAtCofinalNbhd c₂ x ∧ x ∉ filledJulia c₁) :=
+  exists_oneSidedCofinalNbhd_offOther_of_dense hne
+    (oneSidedAtCofinalNbhdDense_of_locOneSidedDense hd₁)
+    (oneSidedAtCofinalNbhdDense_of_locOneSidedDense hd₂)
+
+/-- The visibility upgrade still needed after an off-other
+neighbourhood-cofinal one-sided point is found. -/
+def OffOtherCofinalNbhdVisible (c₁ c₂ : ℂ) : Prop :=
+  ∀ x, OneSidedAtCofinalNbhd c₁ x → x ∉ filledJulia c₂ →
+    VisibleFromInfinity c₁ c₂ x
+
+/-- Local one-sidedness plus off-other visibility gives the exposed
+neighbourhood-cofinal input consumed by the q62 capstone. -/
+theorem exposedOneSidedCofinalNbhd_of_locOneSided_visible
+    {c₁ c₂ x : ℂ} (hloc : LocOneSided c₁ x)
+    (hx2 : x ∉ filledJulia c₂) (hvis : VisibleFromInfinity c₁ c₂ x) :
+    ExposedOneSidedCofinalNbhd c₁ c₂ :=
+  ⟨x, oneSidedAtCofinalNbhd_of_locOneSided hloc, hx2, hvis⟩
+
+/-- Dense local one-sidedness plus the visibility upgrade gives the exposed
+neighbourhood-cofinal disjunction. -/
+theorem exposedOneSidedCofinalNbhd_or_swap_of_locOneSidedDense
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hd₁ : LocOneSidedDense c₁) (hd₂ : LocOneSidedDense c₂)
+    (hvis₁₂ : OffOtherCofinalNbhdVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdVisible c₂ c₁) :
+    ExposedOneSidedCofinalNbhd c₁ c₂ ∨ ExposedOneSidedCofinalNbhd c₂ c₁ := by
+  rcases exists_oneSidedCofinalNbhd_offOther_of_locOneSidedDense hne hd₁ hd₂ with
+    ⟨x, hx, hx2⟩ | ⟨x, hx, hx1⟩
+  · exact Or.inl ⟨x, hx, hx2, hvis₁₂ x hx hx2⟩
+  · exact Or.inr ⟨x, hx, hx1, hvis₂₁ x hx hx1⟩
+
+/-- Brolin support-positivity plus critical-orbit avoidance produces dense
+neighbourhood-cofinal one-sided points from one local base point. -/
+theorem oneSidedAtCofinalNbhdDense_of_base_brolinJuliaBallPositiveAt
+    {c z₀ : ℂ} (hbase : LocOneSided c z₀)
+    (hpos : BrolinJuliaBallPositiveAt c z₀)
+    (hcrit : CriticalOrbitAvoidingTarget c z₀) :
+    OneSidedAtCofinalNbhdDense c :=
+  oneSidedAtCofinalNbhdDense_of_locOneSidedDense
+    (locOneSidedDense_of_base_brolinJuliaBallPositiveAt hbase hpos hcrit)
+
+/-- Q62-facing Brolin bridge up to the remaining visibility upgrade: from one
+local base point on each side, Brolin support-positivity yields the exposed
+neighbourhood-cofinal disjunction once off-other witnesses are visible from
+infinity. -/
+theorem exposedOneSidedCofinalNbhd_or_swap_of_base_brolinJuliaBallPositiveAt
+    {c₁ c₂ z₁ z₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hbase₁ : LocOneSided c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : CriticalOrbitAvoidingTarget c₁ z₁)
+    (hbase₂ : LocOneSided c₂ z₂)
+    (hpos₂ : BrolinJuliaBallPositiveAt c₂ z₂)
+    (hcrit₂ : CriticalOrbitAvoidingTarget c₂ z₂)
+    (hvis₁₂ : OffOtherCofinalNbhdVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdVisible c₂ c₁) :
+    ExposedOneSidedCofinalNbhd c₁ c₂ ∨ ExposedOneSidedCofinalNbhd c₂ c₁ :=
+  exposedOneSidedCofinalNbhd_or_swap_of_locOneSidedDense hne
+    (locOneSidedDense_of_base_brolinJuliaBallPositiveAt hbase₁ hpos₁ hcrit₁)
+    (locOneSidedDense_of_base_brolinJuliaBallPositiveAt hbase₂ hpos₂ hcrit₂)
+    hvis₁₂ hvis₂₁
+
+/-- Both-connected q62 from the Brolin backward-orbit bridge, separated into
+its remaining residues: Brolin Julia-ball positivity, critical-orbit avoidance,
+one local base point on each side, off-other visibility, and smooth-piece
+rigidity. -/
+theorem q62_phiMero_bothconnected_of_base_brolinJuliaBallPositiveAt_visibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ z₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : LocOneSided c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : CriticalOrbitAvoidingTarget c₁ z₁)
+    (hbase₂ : LocOneSided c₂ z₂)
+    (hpos₂ : BrolinJuliaBallPositiveAt c₂ z₂)
+    (hcrit₂ : CriticalOrbitAvoidingTarget c₂ z₂)
+    (hvis₁₂ : OffOtherCofinalNbhdVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdVisible c₂ c₁)
+    (hrig₁₂ : SmoothPieceRigidity c₁ c₂)
+    (hrig₂₁ : SmoothPieceRigidity c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact q62_phiMero_bothconnected_of_op6_cofinalNbhd hUo hUc hUne hUinf
+    hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
+    (exposedOneSidedCofinalNbhd_or_swap_of_base_brolinJuliaBallPositiveAt hne
+      hbase₁ hpos₁ hcrit₁ hbase₂ hpos₂ hcrit₂ hvis₁₂ hvis₂₁)
+    hrig₁₂ hrig₂₁
 
 end
 
