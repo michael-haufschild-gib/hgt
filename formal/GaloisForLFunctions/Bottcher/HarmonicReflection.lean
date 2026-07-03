@@ -16,9 +16,11 @@ Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 -/
 import Mathlib
 import GaloisForLFunctions.Bottcher.HarmonicMaxPrinciple
+import GaloisForLFunctions.Bottcher.PoissonHarmonic
 import GaloisForLFunctions.Bottcher.PoissonBoundary
 
 open Complex Set Metric InnerProductSpace Topology Filter
+open scoped Classical
 
 namespace Bottcher
 
@@ -105,5 +107,67 @@ theorem harmonicAt_comp_analytic {u : ℂ → ℝ} {h : ℂ → ℂ} {w : ℂ}
   filter_upwards [hhmem] with z hz
   show (F (h z)).re = u (h z)
   exact hFre hz
+
+
+noncomputable def poissonExt (p : ℂ) (R : ℝ) (f : ℂ → ℝ) : ℂ → ℝ :=
+  fun w => if w ∈ ball p R then Real.circleAverage (poissonKernel p w • f) p R else f w
+
+theorem poissonExt_harmonicOnNhd {p : ℂ} {R : ℝ} (hR : 0 < R) {f : ℂ → ℝ}
+    (hf : ContinuousOn f (sphere p R)) : HarmonicOnNhd (poissonExt p R f) (ball p R) := by
+  have hHar := poissonInt_harmonicOnNhd hR hf
+  intro w hw
+  refine (harmonicAt_congr_nhds ?_).mpr (hHar w hw)
+  filter_upwards [isOpen_ball.mem_nhds hw] with z hz
+  simp only [poissonExt, if_pos hz]
+
+theorem poissonExt_eq_on_sphere {p : ℂ} {R : ℝ} {f : ℂ → ℝ} :
+    ∀ z ∈ sphere p R, poissonExt p R f z = f z := by
+  intro z hz
+  have hnb : z ∉ ball p R := by
+    rw [mem_sphere] at hz; rw [mem_ball, hz]; exact lt_irrefl R
+  simp only [poissonExt, if_neg hnb]
+
+theorem poissonExt_continuousOn {p : ℂ} {R : ℝ} (hR : 0 < R) {f : ℂ → ℝ}
+    (hf : ContinuousOn f (closedBall p R)) : ContinuousOn (poissonExt p R f) (closedBall p R) := by
+  intro ζ hζcl
+  rcases eq_or_lt_of_le (mem_closedBall.mp hζcl) with hζsp | hζin
+  · have hζs : ζ ∈ sphere p R := mem_sphere.mpr hζsp
+    have hcover : (closedBall p R : Set ℂ) = ball p R ∪ sphere p R := ball_union_sphere.symm
+    rw [ContinuousWithinAt, poissonExt_eq_on_sphere ζ hζs, hcover, nhdsWithin_union, tendsto_sup]
+    refine ⟨?_, ?_⟩
+    · have htend := poissonInt_tendsto_boundary hR (hf.mono sphere_subset_closedBall) hζs
+      refine htend.congr' ?_
+      filter_upwards [self_mem_nhdsWithin] with z hz
+      simp only [poissonExt, if_pos hz]
+    · have hfc : Tendsto f (𝓝[sphere p R] ζ) (𝓝 (f ζ)) :=
+        (hf ζ hζcl).mono sphere_subset_closedBall
+      refine hfc.congr' ?_
+      filter_upwards [self_mem_nhdsWithin] with z hz using (poissonExt_eq_on_sphere z hz).symm
+  · have hin : ζ ∈ ball p R := mem_ball.mpr hζin
+    exact ((poissonExt_harmonicOnNhd hR (hf.mono sphere_subset_closedBall) ζ hin).1.continuousAt).continuousWithinAt
+
+
+-- geometry helpers for p real (im p = 0)
+theorem conj_mem_ball_of_real {p : ℂ} (hp : p.im = 0) {R : ℝ} {z : ℂ} (hz : z ∈ ball p R) :
+    (starRingEnd ℂ) z ∈ ball p R := by
+  rw [mem_ball, dist_eq_norm] at hz ⊢
+  have : (starRingEnd ℂ) z - p = (starRingEnd ℂ) (z - p) := by
+    rw [map_sub]; congr 1; exact (Complex.conj_eq_iff_im.mpr hp).symm
+  rw [this, RCLike.norm_conj]; exact hz
+
+theorem conj_mem_sphere_of_real {p : ℂ} (hp : p.im = 0) {R : ℝ} {z : ℂ} (hz : z ∈ sphere p R) :
+    (starRingEnd ℂ) z ∈ sphere p R := by
+  rw [mem_sphere, dist_eq_norm] at hz ⊢
+  have : (starRingEnd ℂ) z - p = (starRingEnd ℂ) (z - p) := by
+    rw [map_sub]; congr 1; exact (Complex.conj_eq_iff_im.mpr hp).symm
+  rw [this, RCLike.norm_conj]; exact hz
+
+theorem conj_mem_closedBall_of_real {p : ℂ} (hp : p.im = 0) {R : ℝ} {z : ℂ}
+    (hz : z ∈ closedBall p R) : (starRingEnd ℂ) z ∈ closedBall p R := by
+  rw [mem_closedBall, dist_eq_norm] at hz ⊢
+  have : (starRingEnd ℂ) z - p = (starRingEnd ℂ) (z - p) := by
+    rw [map_sub]; congr 1; exact (Complex.conj_eq_iff_im.mpr hp).symm
+  rw [this, RCLike.norm_conj]; exact hz
+
 
 end Bottcher

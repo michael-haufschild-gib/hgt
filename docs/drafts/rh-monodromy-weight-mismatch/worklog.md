@@ -505,3 +505,30 @@ Bottcher/STATUS.md (tail), Bottcher/DyadicMonodromy.lean. Findings for THIS lane
   anchor point (rewrite only the far-point equalities).
 - Full-tree gate deferred: parallel agent's HarmonicMaxPrinciple.lean mid-edit (their
   Poisson development — the shared-gap item — actively growing; do not touch).
+
+## 2026-07-03 — #113 chunk 2 BANKED: the monomial dictionary (DeckMonomial.lean)
+- deckClass_monomial: w_n((z−a)^m) = exp(2πi·m/n), computed from explicit clog branches at
+  a ± i — pure exp/log arithmetic, no argument principle, axiom-clean, RHTower green 8563.
+- Plus deckClass_mul_global (global nonvanishing factors cancel — the peeling interface),
+  branch root-properties and analyticity on the slit charts.
+- The lane's coarse invariant now has PROVEN zero-counting meaning on the monomial model:
+  the deck class realizes the enclosed multiplicity mod n as the q62 dyadic multiplier.
+- Chunk 3 (assembly, next): slit-chart preconnectedness (star-convex about a+t, hand
+  proof) + root_indep + exists_peel ⟹ ANY roots of a peeled f = (z−a)^m·h carry class
+  exp(2πim/2^k) — then w_k(box with one zero) is a theorem, and the RH_{2^k} ladder's
+  local obstruction is fully formal.
+
+## 2026-07-03 — A3 COMPLETE: deckClass_single_zero (DeckAssembly.lean)
+- CAPSTONE PROVED: any local n-th roots of a peeled single-zero function carry deck class
+  exp(2πi·m/n) at a ± (R/2)i. With DeckCocycle's triviality⟺gluing and coherence
+  w_{k+1}² = w_k, the lane's obstruction cocycle is now a FULLY FORMAL object with proven
+  zero-counting meaning — no argument principle, no Rouché, anywhere in the chain.
+- Route: slit-chart star-convexity (linear_combination a*hts' for the affine identity),
+  translated half-plane overlaps, chart_inter_eq, generalized dictionary at a ± εi,
+  Arc A root existence (vacuous zero set) + mul_global + root_indep.
+- The RH_{2^k} ladder's local obstruction is machine-checked end-to-end: w_k(box with one
+  zero of order m) = dyadic multiplier^m; w_k trivial ⟺ 2^k-th root extends. Exact
+  monodromy data — the invariant the four-times-derived wall does not touch.
+- Lean traps: Complex.norm_real lands in ‖·‖_ℝ (insert Real.norm_eq_abs before
+  abs_of_pos); simp [sub_im] closes flip-identities (no trailing ring); affine star-convex
+  identities need t+s=1 via linear_combination.

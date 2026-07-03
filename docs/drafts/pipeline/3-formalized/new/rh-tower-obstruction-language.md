@@ -77,3 +77,25 @@ jobs). NOTE: full-tree gate temporarily blocked by the parallel agent's in-fligh
 Bottcher/HarmonicMaxPrinciple.lean — not this lane's file; re-run the full gate after their
 session lands. Remaining A3 chunk: the monomial dictionary (w_k of (z−a)^m·h =
 dyadicRoot(k)^m via exists_peel + explicit slit-plane cpow branches — still no Rouché).
+
+2026-07-03 — extended: `RHTower/DeckMonomial.lean` — A3 chunk 2, the monomial dictionary:
+`deckClass_monomial` — the deck class of the explicit slit-chart branches of the n-th root
+of (z−a)^m at basepoints a ± i equals exp(2πi·m/n) (the enclosed order mod n as a root of
+unity; the q62 dyadic multiplier at n = 2^k). Supporting: `monoRoot₁/₂` branch defs (clog on
+slitPlane + sign-correcting constant), `monoRoot₁/₂_pow` (root property), `_analyticOnNhd`,
+`deckClass_mul_global` (global factors cancel). All axiom-clean; RHTower green 8563 jobs.
+NO argument principle anywhere. Remaining A3 chunk 3 (assembly): slit-chart star-convexity
+⟹ preconnectedness + deckClass_root_indep + exists_peel ⟹ ANY local roots of a peeled
+single-zero function carry class exp(2πi·m/2^k) — w_k literally counts the enclosed order.
+
+2026-07-03 — A3 COMPLETE: `RHTower/DeckAssembly.lean` — the capstone
+`deckClass_single_zero`: for f = (z−a)^m·h on a ball (h analytic nonvanishing), ANY local
+n-th roots on the two slit charts have deck class exp(2πi·m/n) at a ± (R/2)i — **the coarse
+box invariant w_n counts the enclosed order mod n, machine-checked with NO argument
+principle**. Supporting layer: chart geometry (isOpen/star-convex slit charts via
+linear_combination-corrected affine algebra, translated half-plane overlaps,
+chart_inter_eq), generalized dictionary deckClass_monomial' at a ± εi (log_ofReal_mul),
+h-root from Arc A root existence with vacuous zero set. All axiom-clean
+[propext, Classical.choice, Quot.sound]; RHTower green 8564 jobs. Files of the A3 arc:
+DeckCocycle.lean (class + gluing iff + coherence), DeckMonomial.lean (branches +
+dictionary), DeckAssembly.lean (geometry + capstone).
