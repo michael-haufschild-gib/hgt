@@ -340,3 +340,42 @@ Session net: reflection stack built (correct, reusable, OFF the q62 critical pat
 clarified (direct one-sided ⊕ even-FE two-sided); confirmed branch-following already assembled.  Full
 q62 NOT complete — remaining work is the multi-session `hinput`/#124/even-FE sub-projects + external
 open problems, not isolated bricks.
+
+## hinput as a theorem — exact construction, single gap isolated
+
+Traced `hinput` (RelativeRigidityNaturalBoundary.lean:31) to a composition of **five already-proven
+reusable lemmas** plus **one isolated topological input**.  Given a candidate relation `(Q,s)` vanishing
+on `U`, with continued-fibre coeffs `a i z = (Q i).eval₂ (evalRingHom z) (γ z)`:
+
+1. **Minimal separable relation** — `exists_separable_relation_of_relation` (RelativeMinimalRelation.lean:319):
+   reduce `(Q,s)` to a minimal `T'` with a separable-fibre witness + leading-coeff-nonzero + no-constant.
+   (Subtlety: the engine's `hinput` conclusion names the *original* `(Q,s)` continued fibre, so the
+   producer must carry separability of the fibre that the engine consumes — reconcile the minimal `T'`
+   with the original `a s`, or restate `hinput` on the minimal relation.)
+2. **Relocate onto the frontier** — `exists_sparse_fibre_separable_countableAvoidance` (RelativeFibreGeneric.lean:125):
+   countable-avoidance against the discriminant zero-set (a countable set, `analyticOnNhd_zeros_countable`)
+   using perfectness of `frontier (filledJulia c₁)` — gives `z₀ ∈ frontier` with `a N z₀ ≠ 0 ∧ (fibrePoly a s z₀).Separable`.
+3. **Branch family at z₀** — `exists_branch_family_analytic` (RelativeBranchFamily.lean:84): the `N` continuous
+   separated roots `w k` on `ball z₀ r` (`a i` are `ContDiffAt` at `z₀` since `γ` is analytic across the
+   frontier, `hγfront`).
+4. **β is a root on the whole basin** — `relation_eq_zero_basin_analytic_of_open` (BasinColimit.lean:1030):
+   from the relation on `U` + `β`, `a` analytic on `K₁ᶜ`, the identity theorem gives `∀ z ∈ K₁ᶜ, ∑ a_i z (β z)^i = 0`.
+5. **Boundary limit** — `dendrite_branch_limit_analytic` (RelativeBranchFamily.lean:169): from the branch
+   family + a **preconnected basin neighbourhood `U ∈ 𝓝[K₁ᶜ] z₀`** + `β` root on `U`, produce
+   `Tendsto β (𝓝[K₁ᶜ] z₀) (𝓝 w₀)` with `w₀` a simple root — the `hinput` tuple.
+
+**The single isolated gap** is step 5's input: a *preconnected basin neighbourhood* at `z₀` (equivalently
+a `𝓝[K₁ᶜ]z₀`-basis of preconnected basin sets = local connectivity / one-sidedness of the basin at `z₀`).
+This is co-countable for connected `c₁` (dendrite: countable branch points; hyperbolic: quasicircle,
+one-sided everywhere), so it combines with step 2's countable-avoidance — relocate to avoid BOTH the
+discriminant AND the countably-many non-one-sided points.  Hence:
+
+> **`hinput` ⟸ `{z ∈ frontier(filledJulia c₁) : the basin has no preconnected 𝓝[K₁ᶜ]z-basis}` is countable.**
+
+That co-countable-one-sidedness statement is the genuine remaining topological content (the same
+frontier-local structure as `FrontierSeparation` / #124).  The dense-approach variant
+(`false_of_global_basin_branch_analytic_denseApproach`, RelativeDenseApproach.lean:129) trades it for a
+`hApre`+`hAdense` dense preconnected basin approach — weaker, but still a per-point topological fact.
+
+Everything except that one topological input is built and named above; `hinput` is a mechanical
+assembly of steps 1–5 once it is supplied.
