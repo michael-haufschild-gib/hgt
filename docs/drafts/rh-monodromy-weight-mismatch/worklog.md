@@ -155,3 +155,29 @@ and certified ourselves).
   verbatim:** N₁⁻(T) = N⁻(T) + O(log T) — but note the pairing is blunt below log T
   resolution: one seed zero is invisible to it; the companion-cocycle idea must work at
   box level, not global-count level. Bonus (a.p. ⟺ RH): still UNRESOLVED.
+- **F [PROVED, Lean — B3]** Real-structure equivariance banked:
+  `formal/GaloisForLFunctions/RHTower/Reflection.lean` (in the umbrella, MainTheorems
+  green, lint green after index regen). Five theorems, all axiom-clean
+  [propext, Classical.choice, Quot.sound]: `xi_conj` (ξ(s̄) = conj ξ(s), Schwarz reflection
+  via Dirichlet series on Re>1 + identity theorem — mathlib had NO zeta-layer conj lemmas;
+  built from Gamma_conj/cpow_conj/tsum_star), generic `analyticOrderAt_conj_conj` and
+  `analyticOrderAt_comp_one_sub` (order equivariance under reflection and s ↦ 1−s,
+  reusable), and the two pairings `xi_orderAt_conj`, `xi_orderAt_one_sub`. Consequence:
+  the level-k cocycle is dihedral-equivariant; level-1 obstruction lives on classes
+  separating ρ from ρ̄ — the symmetry-slack input of 07 §3 is now machine-checked.
+  Lesson repeated the hard way: `| tail` masked the lint exit AGAIN (stale generated
+  index) — pipefail on every gate, no exceptions.
+- **F [DERIVATION + re-cut doc — B-arc opened]** `08-population-and-local-returns.md`:
+  (i) sub-Bagchi constraint [DERIVATION] — in the seed-world strong recurrence already
+  fails (Bagchi + density), so any propagation mechanism is necessarily weaker than
+  full-data recurrence; R6's negative is the family-side echo. (ii) (P_k) population
+  forcing + DROVES DICHOTOMY [CONJECTURE]: FE + Dirichlet-series ⟹ off-line zeros linear
+  or absent; the P(s)·ζ(s) surgery counterexample is excluded by the class axiom itself
+  (polynomial×Dirichlet-series is not a Dirichlet series — Dirichlet-series rigidity as
+  the analogue of bounded-critical-orbit). B1 reframed: hunt FE + o(T)-density + one
+  off-line zero; either exit terminalizes. (iii) (H-loc) [OPEN CORE candidate]: the
+  transfer lemma is shape-free — small-circle returns are a FINITE-dimensional jet
+  value-recurrence event (sub-Bagchi, evades the R6 negative); rates subtlety recorded
+  (Bohr–Courant denseness has no rates — can neither manufacture zeros nor prove
+  (H-loc); fixed-margin circle is the right register). R6-loc (pre-registered) decides
+  the mechanism ranking. P1 retired (mailbox unused, single-agent context).

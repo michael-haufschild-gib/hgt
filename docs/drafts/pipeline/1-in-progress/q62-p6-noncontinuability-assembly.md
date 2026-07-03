@@ -282,3 +282,33 @@ NET this session: the mathlib-absent Schwarz/Painlevé reflection engine is PROV
 circle (4 axiom-clean lemmas), closing the one-sided half of the SmoothPieceRigidity discharge and
 locating the two-sided half precisely.  Full q62 NOT complete (SmoothPieceRigidity two-sided + the
 g-arc packaging + ExposedOneSided(OP6) + OneSidedDense(#133) + OP16-A + small-norm all remain).
+
+## Correction: the one-sided discharge is DIRECT — reflection is not the tool it needs
+
+Building `differentiableAt_of_off_modulus_arc` and tracing the concrete discharge revealed the
+"Schwarz reflection core" framing was a detour.  Key fact (now verified against the producer):
+`wfam k` is analytic on `ball z₁ ρ ∩ K₂ᶜ`, and the piece `S ⊆ K₂ᶜ` (the `hSK₂` clause), so at a piece
+point `z₀ ∈ Uop∩S` **`wfam k` is already analytic ACROSS the Julia frontier** (a full 2-D neighbourhood,
+`z₀ ∈ ball∩K₂ᶜ` open).  Therefore:
+
+* **One-sided case** (the `{‖wfam k‖<1}` side is interior `K₁`): the local basin = the `{‖wfam k‖>1}`
+  side, and `β = wfam k` there (root-matching + distinctness pin the branch index to `k`).  So
+  `⟨wfam k, (analytic at z₀), (wfam k = β on 𝓝[Kᶜ]z₀)⟩` IS a `ContinuesAcross β z₀` witness — **directly,
+  with no reflection**.  Contradicts `hnb`.
+* **Two-sided case** (the `{‖wfam k‖<1}` side is ALSO basin): this is exactly the smooth-Julia-arc
+  configuration — and a smooth two-sided Julia arc occurs precisely for `c ∈ {0,−2}` (`[-2,2]` / the
+  circle).  Ruling it out for `c ∉ {0,−2}` is the even-FE dichotomy `c_mem_of_even_holo_ball` (the
+  project has it), NOT holomorphic reflection.
+
+So the SmoothPieceRigidity discharge = **direct one-sided** (root-matching + one-sidedness) ⊕
+**even-FE two-sided** (`c_mem_of_even_holo_ball`).  Neither branch uses the Schwarz/Painlevé reflection
+stack.  The 5 reflection lemmas (`SchwarzReflection*.lean`) are correct, axiom-clean, reusable
+mathlib-absent infrastructure (Morera-gluing / reflection across a line / biholo-preimage / unit-circle
+/ modulus-arc) — a formal Böttcher–Julia library legitimately wants them — but they are **not on the
+q62 critical path**.  Kept in-tree as general infrastructure; not load-bearing for any capstone.
+
+REAL remaining discharge bricks (no reflection): (1) the root-matching sub-fact `β = wfam k` on the
+one-sided local basin (trace `hspine`/`PairComponentPropagation`: the pigeonhole index `k` = the
+`β`-limit branch); (2) the one-sided/two-sided dichotomy as a clean Lean split; (3) wire
+`c_mem_of_even_holo_ball` into the two-sided branch.  These are genuine dynamics/analysis, the true
+content of #118.

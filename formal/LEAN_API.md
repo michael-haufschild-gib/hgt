@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4667 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4668 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -5191,6 +5191,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `differentiableOn_of_off_biholom_preimage_line` | `GaloisForLFunctions.Bottcher.SchwarzReflection` | `formal/GaloisForLFunctions/Bottcher/SchwarzReflection.lean:161` | Reflection across the preimage of a straight line under a partial biholomorphism.** If `ψ` is a biholomorphism of the open set `V` onto the open set `ψ '' V` with holomorphic inver |
 | theorem | `needed` | `GaloisForLFunctions.Bottcher.SchwarzReflectionArc` | `formal/GaloisForLFunctions/Bottcher/SchwarzReflectionArc.lean:8` |  |
 | theorem | `differentiableOn_of_off_unit_circle` | `GaloisForLFunctions.Bottcher.SchwarzReflectionArc` | `formal/GaloisForLFunctions/Bottcher/SchwarzReflectionArc.lean:27` | Reflection across the unit circle.** On an open, preconnected slit-plane region `V`, a function continuous on `V` and holomorphic off the unit circle `{‖z‖ = 1}` is holomorphic on  |
+| theorem | `differentiableAt_of_off_modulus_arc` | `GaloisForLFunctions.Bottcher.SchwarzReflectionModulusArc` | `formal/GaloisForLFunctions/Bottcher/SchwarzReflectionModulusArc.lean:30` | Reflection across a general analytic modulus-one arc.** If `g` is analytic at `z₀` with `deriv g z₀ ≠ 0` and `‖g z₀‖ = 1`, and `f` is continuous near `z₀` and holomorphic wherever  |
 | theorem | `escapeOpen_of_green_gt_halfCeiling` | `GaloisForLFunctions.Bottcher.SectionIdentityBelowAnchor` | `formal/GaloisForLFunctions/Bottcher/SectionIdentityBelowAnchor.lean:23` | Escape forcing by level.** Above Green level `½(log(‖c‖²+‖c‖)+1)`, every point is in the crude escape set: its image has norm at most `‖c‖² + ‖c‖`, so the crude/small-ball ceiling  |
 | theorem | `propagates` | `GaloisForLFunctions.Bottcher.SectionIdentityBelowAnchor` | `formal/GaloisForLFunctions/Bottcher/SectionIdentityBelowAnchor.lean:60` |  |
 | theorem | `sectionInverse_identity_of_level` | `GaloisForLFunctions.Bottcher.SectionIdentityBelowAnchor` | `formal/GaloisForLFunctions/Bottcher/SectionIdentityBelowAnchor.lean:61` | Identity below the anchor.** If the section inverts the Böttcher coordinate beyond the anchor radius, it inverts it on the whole sub-annulus above Green level `½(log(‖c‖²+‖c‖)+1)`: |
@@ -6492,6 +6493,16 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `pow_root_unique` | `GaloisForLFunctions.RHTower.KummerObstruction` | `formal/GaloisForLFunctions/RHTower/KummerObstruction.lean:43` | Root rigidity.** Two analytic `n`-th roots (`0 < n`) of the same function on a preconnected open set that agree at one point where the function does not vanish agree everywhere. |
 | theorem | `natCast_dvd_natCast_of_enat` | `GaloisForLFunctions.RHTower.KummerObstruction` | `formal/GaloisForLFunctions/RHTower/KummerObstruction.lean:75` | Divisibility descends along the coercion `ℕ → ℕ∞` when the divisor is nonzero. |
 | theorem | `exists_peel` | `GaloisForLFunctions.RHTower.Peeling` | `formal/GaloisForLFunctions/RHTower/Peeling.lean:19` | Global peeling.** If `f` is analytic on an open `U` and has finite vanishing order `m` at `ρ ∈ U`, then `f = (· - ρ) ^ m * h` on `U` for an analytic `h` with `h ρ ≠ 0` whose orders |
+| theorem | `differentiable_conj_reflect` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:23` | If `f` is entire then so is its Schwarz reflection `w ↦ conj (f (conj w))`. |
+| theorem | `riemannZeta_conj_of_one_lt` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:39` | Conjugation equivariance of ζ on the abscissa of absolute convergence. |
+| theorem | `Gamma` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:55` | Conjugation equivariance of the archimedean factor Γ_ℝ. |
+| theorem | `completedRiemannZeta_conj_of_one_lt` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:82` | Conjugation equivariance of Λ on Re s > 1. |
+| theorem | `completedRiemannZeta` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:102` | Conjugation equivariance of Λ₀ on Re s > 1. |
+| theorem | `xi_conj` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:116` | Reality of ξ**: ξ commutes with complex conjugation. Proof: on Re s > 1 by the Dirichlet series and factor-wise equivariance; globally by the identity theorem, since both sides are |
+| theorem | `analyticOrderAt_conj_conj` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:145` | Vanishing orders are equivariant under Schwarz reflection (generic, entire case). |
+| theorem | `xi_orderAt_conj` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:188` | Reality pairing of orders**: ord_{conj ρ}(ξ) = ord_ρ(ξ). |
+| theorem | `analyticOrderAt_comp_one_sub` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:197` | Vanishing orders are equivariant under the affine involution w ↦ 1 − w (generic). |
+| theorem | `xi_orderAt_one_sub` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:246` | FE pairing of orders**: ord_{1−ρ}(ξ) = ord_ρ(ξ). |
 | theorem | `xi_differentiable` | `GaloisForLFunctions.RHTower.RiemannTower` | `formal/GaloisForLFunctions/RHTower/RiemannTower.lean:29` |  |
 | theorem | `xi_analyticOnNhd_univ` | `GaloisForLFunctions.RHTower.RiemannTower` | `formal/GaloisForLFunctions/RHTower/RiemannTower.lean:34` |  |
 | theorem | `xi_analyticOnNhd` | `GaloisForLFunctions.RHTower.RiemannTower` | `formal/GaloisForLFunctions/RHTower/RiemannTower.lean:37` |  |

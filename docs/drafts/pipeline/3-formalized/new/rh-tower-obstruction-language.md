@@ -45,3 +45,7 @@ New reusable helper: `natCast_dvd_natCast_of_enat` (ℕ∞ dvd descent — absen
 - 2026-07-03 — formalized same day: 5 modules + umbrella, all capstones axiom-clean, lint
   green; moved 0-backlog → 3-formalized. Lesson recorded in worklog: pipeline exit-code
   masking (`| tail`) hid failures — gate builds now use pipefail.
+- 2026-07-03 (late) — B3 extension banked: `RHTower/Reflection.lean` (xi_conj; generic
+  analyticOrderAt equivariance under conjugation and s ↦ 1−s; pairings xi_orderAt_conj,
+  xi_orderAt_one_sub). All five axiom-clean [propext, Classical.choice, Quot.sound];
+  umbrella + MainTheorems green; lint green (index regenerated).

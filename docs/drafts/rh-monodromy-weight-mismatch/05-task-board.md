@@ -170,3 +170,44 @@ Speiser + LM verified exactly (LM blunt below log T ⟹ companion cocycle must b
 B3 in progress (all names probed: DifferentiableAt.conj_conj, Gamma_conj, cpow_conj,
 tsum_star, zeta_eq_tsum_one_div_nat_cpow, DifferentiableOn.analyticAt). Queue after B3:
 B1/B2 (target: (P_k) seed⟹population for combination-of-one) → R3c/R5c → P1 → P2.
+
+## Wave-2 status, sixth update — B3 banked
+
+**B3 DONE**: `RHTower/Reflection.lean` — xi_conj + generic order-equivariance (conj, 1−s)
++ the two pairings, axiom-clean, full gate green. The 07 §3 symmetry slack is now
+machine-checked infrastructure. Remaining queue: B1/B2 (primary target re-cut to (P_k):
+seed ⟹ population for a combination-of-one; Hamburger gap + Ivić anchor as start points)
+→ R3c/R5c (pre-register first) → P1 (mailbox: ladder + Reduction + two-minimizer/moat
+measurements + R6 negative) → P2 (publication surface; both novelty gates verified-absent).
+
+## Wave-2b compute pre-registrations (2026-07-03, before launch)
+
+**R3c (window 1, t∈[2,102), k∈[0.27,0.30] step 0.0025, bands σ₀∈{0.5025,0.505,0.51}).**
+Pre-register: (a) plateau stays linear at coeff ≈ 4 down to σ₀−½ = 0.0025 (predicted width
+≈ 0.01, i.e. ~4 grid points); (b) pinning order (which boxes stay defective longest as
+k→κ) is STABLE across bands; (c) open comparison: does the k-pinning order correlate with
+R5b's Euler-resistance ranking? Correlation ⟹ one mobility spectrum under both constraints;
+anti-correlation ⟹ the two constraints grade zeros differently. Either is a finding.
+
+**R5c (moat scaling; already registered in R3b-R5-RESULTS.md).** Windows t ≤ 500 (u∈[0.94,1],
+step 0.0025·... = 24 steps) and t ≤ 1000 (u∈[0.96,1], 16 steps), σ₀ = 0.51. Pre-register:
+moat persists (n = 0 at u = 1 AND on a final u-interval); width shrinks with T (candidate
+1−u*_max ~ c/log T ⟹ widths ≈ 0.020 (T=500), 0.017 (T=1000) if c calibrated at T=200 width
+0.025... treat the log-law as the hypothesis under test, not assumed).
+
+**R6-loc (NEW — local return measurement; the (H-loc) probe).** Circle of radius 0.05,
+48 points, centered at the banked certified D–H zero 0.808517182456637386 + 85.6993484853775922i;
+τ ∈ [0, 400] step 0.05; margin = sampled min |f| on the circle. Pre-register: CONTRAST with
+R6 — local sub-margin returns DO occur (∃ τ > 0.5 with d(τ) < margin), at gap scale
+comparable to tens; rationale: the circle data is ≈ finitely many Taylor coefficients
+(f, f′ dominate at this radius), so returns are a finite-dimensional value-recurrence event
+(Bohr–Jessen/Voronin-denseness genre), unlike R6's 120-point box sup-norm. Kill criterion:
+min_τ d/margin > 3 over the whole range ⟹ NO recurrence mechanism at any scale supports
+the family population; the (P) population route then stands alone as M1's re-cut.
+
+## P1 retired (2026-07-03)
+
+The parent-lab mailbox is not in use (single-agent context; only the q62/Böttcher agent runs
+in parallel, and it coordinates through the pipeline, not the mailbox). P1 dropped; its
+content lives in worklog.md + the lane docs. P2 (publication surface) remains the outward
+channel.
