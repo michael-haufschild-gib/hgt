@@ -276,6 +276,103 @@ theorem continuesAcross_of_smoothArcSides
     have := mem_closure_of_tendsto hcw hmem
     rwa [(isClosed_filledJulia c₁).closure_eq] at this
 
+/-- **Böttcher continuation across a smooth arc from the basin-branch identification.**  The whole
+geometry is discharged from a single input: on the basin side of a neighbourhood of a non-critical
+frontier point `z₀`, the arc branch `φ` *equals the Böttcher branch* `β` (`hgβ`).  Then the global
+modulus makes `‖φ‖ = ‖β‖ = exp(green) > 1` strictly on the basin (so `{‖φ‖ < 1}` avoids the basin —
+`hInFilled`), `‖φ‖ = 1` on the frontier arc (`norm_continuation_eq_one_on_frontier`), and the exterior
+germ `{‖φ‖ > 1}` — a *connected* set (image of `ball ∩ exterior` under the local inverse `γ`) meeting
+the basin and avoiding `J₁` — lies wholly in the basin (`IsPreconnected.subset_left_of_subset_union`),
+giving `hOutBasin`.  `continuesAcross_of_smoothArcSides` then produces the continuation.  This reduces
+the smooth-piece boundary content to the **root-matching** `φ = β` on the basin. -/
+theorem continuesAcross_of_basinBranch
+    {c₁ : ℂ} {β φ : ℂ → ℂ} {z₀ : ℂ}
+    (hφAt : AnalyticAt ℂ φ z₀) (hd0 : deriv φ z₀ ≠ 0) (hmod : ‖φ z₀‖ = 1)
+    (hz₀front : z₀ ∈ frontier (filledJulia c₁))
+    (hgβ : ∀ᶠ z in 𝓝 z₀, z ∈ (filledJulia c₁)ᶜ → φ z = β z)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) :
+    U0NaturalBoundary.ContinuesAcross β (filledJulia c₁)ᶜ z₀ := by
+  classical
+  have hgreenpos : ∀ z ∈ (filledJulia c₁)ᶜ, 0 < greenFunctionDyn c₁ z := by
+    intro z hz
+    rcases (greenFunctionDyn_nonneg c₁ z).lt_or_eq with h | h
+    · exact h
+    · exact absurd ((greenFunctionDyn_eq_zero_iff c₁ z).mp h.symm) hz
+  obtain ⟨δ₀, hδ₀, hballz⟩ :=
+    Metric.eventually_nhds_iff.mp (hgβ.and hφAt.eventually_analyticAt)
+  have hφ1front : ∀ z' ∈ Metric.ball z₀ δ₀, z' ∈ frontier (filledJulia c₁) → ‖φ z'‖ = 1 := by
+    intro z' hz'U hz'f
+    refine norm_continuation_eq_one_on_frontier hβmod Metric.isOpen_ball
+      (fun z hz => (hballz (Metric.mem_ball.mp hz)).2) (fun z hz => ?_) hz'U hz'f
+    exact (hballz (Metric.mem_ball.mp hz.1)).1 hz.2
+  obtain ⟨γ, hγAn0, hγleft, hγright⟩ := exists_localInverse_of_continuation hφAt hd0
+  have hγz₀ : γ (φ z₀) = z₀ := hγleft.self_of_nhds
+  have hγtend : Tendsto γ (𝓝 (φ z₀)) (𝓝 z₀) := by
+    have h : Tendsto γ (𝓝 (φ z₀)) (𝓝 (γ (φ z₀))) := hγAn0.continuousAt
+    rwa [hγz₀] at h
+  have hγpre : ∀ᶠ w in 𝓝 (φ z₀), γ w ∈ Metric.ball z₀ δ₀ := hγtend (Metric.ball_mem_nhds z₀ hδ₀)
+  obtain ⟨ε₀, hε₀, hballw⟩ :=
+    Metric.eventually_nhds_iff.mp (hγAn0.eventually_analyticAt.and (hγright.and hγpre))
+  set ε : ℝ := min ε₀ (1/2) with hεdef
+  have hε : 0 < ε := lt_min hε₀ (by norm_num)
+  have hε2 : ε ≤ 1/2 := min_le_right _ _
+  have hballw' : ∀ w ∈ Metric.ball (φ z₀) ε,
+      AnalyticAt ℂ γ w ∧ φ (γ w) = w ∧ γ w ∈ Metric.ball z₀ δ₀ :=
+    fun w hw => hballw (lt_of_lt_of_le (Metric.mem_ball.mp hw) (min_le_left _ _))
+  set W : Set ℂ := Metric.ball (φ z₀) ε ∩ {w : ℂ | 1 < ‖w‖} with hWdef
+  have hWconn : IsPreconnected W := isPreconnected_ball_inter_exterior hmod hε hε2
+  set s : Set ℂ := γ '' W with hsdef
+  have hsconn : IsPreconnected s :=
+    hWconn.image γ (fun w hw => (hballw' w hw.1).1.continuousAt.continuousWithinAt)
+  have hdecomp : ∀ z, z ∉ frontier (filledJulia c₁) →
+      z ∈ (filledJulia c₁)ᶜ ∪ interior (filledJulia c₁) := by
+    intro z hz
+    by_cases hzK : z ∈ filledJulia c₁
+    · exact Or.inr (by by_contra hint; exact hz ⟨subset_closure hzK, hint⟩)
+    · exact Or.inl hzK
+  have hsdisj : s ⊆ (filledJulia c₁)ᶜ ∪ interior (filledJulia c₁) := by
+    rintro p ⟨w, hwW, rfl⟩
+    apply hdecomp
+    intro hpf
+    have hp1 : ‖φ (γ w)‖ = 1 := hφ1front (γ w) (hballw' w hwW.1).2.2 hpf
+    rw [(hballw' w hwW.1).2.1] at hp1
+    have h2 : 1 < ‖w‖ := hwW.2
+    rw [hp1] at h2
+    exact lt_irrefl 1 h2
+  have hdisjuv : Disjoint ((filledJulia c₁)ᶜ) (interior (filledJulia c₁)) := by
+    rw [Set.disjoint_iff]; intro z ⟨h1, h2⟩; exact h1 (interior_subset h2)
+  have hbasin : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, 1 < ‖φ z‖ := by
+    filter_upwards [nhdsWithin_le_nhds (Metric.ball_mem_nhds z₀ hδ₀), self_mem_nhdsWithin]
+      with z hzU hzKc
+    rw [(hballz (Metric.mem_ball.mp hzU)).1 hzKc, hβmod z hzKc]
+    exact Real.one_lt_exp_iff.mpr (hgreenpos z hzKc)
+  have hnebot : (𝓝[(filledJulia c₁)ᶜ] z₀).NeBot :=
+    mem_closure_iff_nhdsWithin_neBot.mp (frontier_subset_closure (by rwa [frontier_compl]))
+  have hwit : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀,
+      1 < ‖φ z‖ ∧ φ z ∈ Metric.ball (φ z₀) ε ∧ γ (φ z) = z ∧ z ∈ (filledJulia c₁)ᶜ := by
+    filter_upwards [hbasin,
+      nhdsWithin_le_nhds (hφAt.continuousAt.preimage_mem_nhds (Metric.ball_mem_nhds (φ z₀) hε)),
+      nhdsWithin_le_nhds hγleft, self_mem_nhdsWithin] with z h1 h2 h3 h4
+    exact ⟨h1, h2, h3, h4⟩
+  obtain ⟨zb, hzb1, hzbball, hzbleft, hzbKc⟩ := hwit.exists
+  have hsmeet : (s ∩ (filledJulia c₁)ᶜ).Nonempty :=
+    ⟨zb, ⟨φ zb, ⟨hzbball, hzb1⟩, hzbleft⟩, hzbKc⟩
+  have hsK : s ⊆ (filledJulia c₁)ᶜ :=
+    hsconn.subset_left_of_subset_union ((isClosed_filledJulia c₁).isOpen_compl) isOpen_interior
+      hdisjuv hsdisj hsmeet
+  have hOutBasin : ∀ᶠ z in 𝓝 z₀, 1 < ‖φ z‖ → z ∈ (filledJulia c₁)ᶜ := by
+    filter_upwards [hφAt.continuousAt.preimage_mem_nhds (Metric.ball_mem_nhds (φ z₀) hε), hγleft]
+      with z hzball hzleft hznorm
+    exact hsK ⟨φ z, ⟨hzball, hznorm⟩, hzleft⟩
+  have hInFilled : ∀ᶠ z in 𝓝 z₀, ‖φ z‖ < 1 → z ∈ filledJulia c₁ := by
+    filter_upwards [hgβ] with z hgβz hlt
+    by_contra hzK
+    rw [hgβz hzK, hβmod z hzK] at hlt
+    have := Real.one_le_exp (greenFunctionDyn_nonneg c₁ z)
+    linarith
+  exact continuesAcross_of_smoothArcSides hφAt hd0 hmod hbasin hOutBasin hInFilled hβan hβmod
+
 /-- **The smooth-arc geometric datum — the harmonic-reflection replacement of `ArcReflectionData`.**
 For a non-constant analytic `φ` with modulus one on a relatively-open frontier piece `P`, there is a
 frontier arc point `z₀` and a local inverse `γ` of `φ` carrying the exterior side `{‖w‖ > 1}` into the

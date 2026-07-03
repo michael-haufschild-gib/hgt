@@ -704,3 +704,21 @@ front has zero formal debt. The open mathematics of the program is now exactly O
 (crossing pairing / two-coloring at the band edge) — everything else is bookkeeping
 with banked bricks. Next: OC1 formulation + attack-as-false at box 84, or #116
 (quadrant-ramified cover construction), or #96 (Beurling foil).
+
+## 2026-07-03 — #123 BANKED: ModulusHolography.lean — the charge from |ξ| alone
+
+The M6 conjecture is a THEOREM, and it needed less than expected: mathlib's new
+JensenFormula/ValueDistribution development already contains the zero-free mean value
+(AnalyticOnNhd.circleAverage_log_norm_of_ne_zero), so the whole module is single-zero
+Jensen (A(r) = m·log r + log‖h(a)‖) + slope elimination of the unknown constant +
+deckClass_single_zero. Capstone: deckClass = exp(2πi·slope/n) with slope read from the
+circle-averages of log‖f‖ at two radii — the charge is a boundary-MODULUS functional:
+no phases, no root choices. Instance on ξ: |ξ| on two circles determines the box charge
+(xi_deckClass_eq_circleAverage_slope) — retroactively formalizes the R-series winding
+measurement method. RHTower green 8574 jobs, axiom-clean, lint passed.
+
+The holography clause of the charter ("bulk fixed by boundary") is now a theorem chain:
+charge = boundary-modulus slope (M6) — conserved under deformation (M2) — jumping by
+quantized units at crossings (M7) and at the seam (M5) — draining to the far field (M3)
+— with parity pinned at the FE fixed locus (B4). Open mathematics: OC1 pairing, #116
+cover construction, #96 foil.

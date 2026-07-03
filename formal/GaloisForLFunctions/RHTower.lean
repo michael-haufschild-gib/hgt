@@ -33,3 +33,4 @@ import GaloisForLFunctions.RHTower.ReflectionParity
 import GaloisForLFunctions.RHTower.UPlaneDescent
 import GaloisForLFunctions.RHTower.LedgerJump
 import GaloisForLFunctions.RHTower.SeamCocycle
+import GaloisForLFunctions.RHTower.ModulusHolography

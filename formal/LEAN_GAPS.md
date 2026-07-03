@@ -55,7 +55,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/BasinColimit.lean:454` | remaining winding step. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:13` | connected. That step (the branched-cover / critical-value structure of `z²+c`) is the lone remaining |
 | `formal/GaloisForLFunctions/Bottcher/BasinConnected.lean:99` | /-- **Basin-connectedness from the Riemann–Hurwitz step.** The full reduction: the single remaining |
-| `formal/GaloisForLFunctions/Bottcher/BottcherArcExtension.lean:297` | remaining content of the both-connected gatekeeper's boundary half to the `z`-space geometry |
+| `formal/GaloisForLFunctions/Bottcher/BottcherArcExtension.lean:373` | remaining content of the both-connected gatekeeper's boundary half to the `z`-space geometry |
 | `formal/GaloisForLFunctions/Bottcher/BottcherCoord.lean:276` | `∑ₖ termₖ(f_c z) = 2·(∑ₖ termₖ(z) − term₀(z))`. The remaining `log z` vs `log(z²+c)` |
 | `formal/GaloisForLFunctions/Bottcher/BottcherDetermines.lean:158` | in the connected-case independence, with no remaining hypotheses. -/ |
 | `formal/GaloisForLFunctions/Bottcher/BottcherInverse.lean:4` | The dyadic-cover lift `hliftF`/`hliftG` (the genuine remaining analytic input of the disconnected case, |
