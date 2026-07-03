@@ -249,13 +249,19 @@ Three candidate forcing mechanisms, in decreasing order of wildness:
   non-recurrent defect is a term in the explicit-formula sum rule that no prime-side
   (almost-periodic) term can match; kill it by resonance pinning, as `index_formula_split` +
   `IndexResonance` killed off-pattern fixed-point configurations. `[CONJECTURE]`
+  **(wave-4 update, 08 §7.2): the single-test form is CLOSED** — in any Landau/Riemann–Weil
+  configuration the lone-zero signal x^{β₀−1/2} is dominated by the prime diagonal √x for
+  every β₀ < 1. M1 survives only in lower-bound technology: the Turán power-sum question
+  (t-aspect clustering — C8 check running) and the graded rung program (08 §7, budget
+  T^{cδ^{3/2}} with c < 1/2 near σ = 1, repulsion guard verified VACANT in t-aspect by C7).
 - **(M2) Coarse Bohr continuity:** the ℤ/2^k monodromy datum (unlike the function) extends
   continuously/measurably to T^∞; then Kronecker minimality forces syndetic recurrence.
-  `[CONJECTURE — DOWNGRADED, audit F3/F6]`: the parent ledger PROVES ambient-torus data (Haar
-  equidistribution, ℚ-independence of {log p}, torus cohomology) is projection-blind — winding
-  is linking with the source zero fiber, not an invariant of the flow (pure_facts ~9994,
-  proof_shape ~5195). Any surviving M2 must inject source data (Euler stream, FE); it cannot
-  run on ambient almost-periodicity, so the burden sits on M1.
+  `[CONJECTURE — DOWNGRADED, audit F3/F6; wave-4: REFUTED as a soft mechanism]`: the parent
+  ledger proves ambient-torus data is projection-blind (pure_facts ~9994), and 11 Theorem B
+  now PROVES the a.p.-category version — a Weyl-null bump plants a lone FE-symmetric
+  quadruple leaving NO trace in any mean/a.p./asymptotic datum, so no coarse-continuity
+  mechanism running on soft structure can force defect recurrence. Any surviving M2 must
+  consume exact class structure (pointwise series / Euler), not compactified flow data.
 - **(M3) Landau-mod-2 positivity:** nonneg log-coefficients force a divisibility/parity
   structure on the emergent divisor. `[REFUTED as positivity-alone, audit F2]`: banked DMV
   import (door bucket X5) — positive Beurling systems with off-line zeros exist, off-line
@@ -470,12 +476,63 @@ universality with zero-free targets.
    component split; for ζ the obstruction is located exactly — principal-direction
    self-approximation at a vanishing target. New objects opened: the universality-blind
    cone; the primitivity grading of the family picture.
-8. **(added wave 3) Measured laws of the family:** FE fiber = transversal defect minimizer
-   (linear plateau, coeff ≈ 4); Euler moat (open basin, shrinking in T); anti-correlated
-   FE/Euler mobility spectra; the β-proximity law d_min ≈ 1.1·|Δβ| governing certified
-   local transfers (R6-loc; first non-counterfactual Rouché transfer between two actual
-   zeros). Raw + RESULTS under `computations/`; worklog carries the F/X ledger.
+8. **(added wave 3; FINALIZED wave 4) Measured laws of the family:** FE fiber = transversal
+   defect minimizer (linear plateau, coeff ≈ 4); Euler moat (open basin, shrinking in T);
+   anti-correlated FE/Euler mobility spectra. The wave-3 β-proximity law was REFINED twice
+   by pre-registered refutation (R7, R8) into the final jet-transfer law:
+   ratio ≈ 1.25·(|Δf′|/|f′_base| + (|f′_tgt|/|f′_base|)·Δβ/r), a HARD jet gate (no large-r
+   rescue) plus the line-proximity cutoff (a zero receives β-distant transfers only if its
+   distance to the critical line exceeds Δβ). Population t ≤ 420: nine localized zeros,
+   four certified transfer edges. Raw + RESULTS under `computations/` (R7-, R8-RESULTS).
 
 Forward moves live in `01-research-plan.md`. The next object to construct is the obstruction
 cocycle w_k as a formal object (Arc A) and the reduction of §5 as a paper theorem (Arc C1);
 the first genuinely open mathematics is the parity question at level 1 (Arc B).
+
+---
+
+## 11. Wave-4 state of the map (2026-07-03, evening) — routes closed, routes open
+
+Documents added since §10 items 7–8: `10-blind-cone.md`, `11-recurrence-degrees.md`,
+08 §§7–7.2; checks c7 (repulsion/density constants), c8 (Turán t-aspect). Lean added:
+`RHTower/LogIndependence.lean` (wall's two sides + prime-support freedom),
+`RHTower/PerturbationZero.lean` (Rouché-free zero-planting). All axiom-clean, gate green.
+
+**CLOSED routes (each with a proof or verified-negative, not a mood):**
+- Multi-modulus universality covering for ζ — closed by 10 Thm C (ζ collects to the trivial
+  line in EVERY finite Dirichlet decomposition; blind cone representation-independent).
+- Soft-hypothesis droves (any a.p. degree, growth, exact FE, pointwise-asymptotic Dirichlet
+  representation, on-line zero structure) — closed by 11 Thm B/B′ (bump surgery); the
+  class-level dichotomy route reduces to the trichotomy soft/Goldilocks/categorical, with
+  Hamburger collapsing the categorical cell to {ζ}. Sole survivor: the Goldilocks class
+  problem (11 §5.3).
+- Single-test exact-identity detection of a lone off-line zero (Landau/Riemann–Weil) —
+  closed by the signal-vs-prime-diagonal budget (08 §7.2): x^{β₀−1/2} < √x for all β₀ < 1.
+- M2 as soft coarse continuity — refuted (11 Thm B realizes projection-blindness in the
+  a.p. category).
+- a.p.-boundary-leakage near σ = 1 — refuted as bare mechanism (08 §7.1 marker).
+
+**OPEN routes (the live frontier, in current priority order):**
+- **The Turán hybrid (#112, sharpened by C8):** t-aspect one-zero-forces-zeros for ζ is
+  ABSENT from the literature, but both flanks are proved by the same power-sum method
+  (q-aspect Deuring–Heilbronn: Kadiri–Ng–Wong Thm 2.6; t-aspect zero→ψ-oscillation:
+  Turán/Pintz/Révész, |ψ(x)−x| ≥ (1−ε)x^{β₀}/|ρ₀|). The missing hybrid is exactly the rung
+  mechanism (08 §7): budget near σ = 1 is T^{cδ^{3/2}}, c < 1/2 (C7), guard vacant.
+  Attack: power sums s_ν = Σ_ρ (s₀−ρ)^{−ν} at s₀ near 1+iγ₀; a LONE zero makes them a
+  single geometric sequence — maximally rigid; play Turán's lower bound against 1-line
+  upper bounds for ζ′/ζ.
+- **The Goldilocks class problem (11 §5.3):** a class with ζ ∈ 𝓕, bump-rigidity, and a
+  non-RH-grade family recurrence mechanism — or a proof that (ii)+(iii) exclude (i), which
+  would be the primitivity wall's fourth independent derivation and likely its sharpest.
+- **A3 deck-class cocycle (#113):** w_k as the deck class of the 2^k-th-root torsor on
+  box annuli (q62 DyadicMonodromy pattern) — formalizable now, no argument principle.
+- **Jet/phase structure as mechanism guide:** the measured hard jet gate says recurrence in
+  the family is a species-copy mechanism; whatever forces companions for ζ must produce
+  jet-copies (constrains the Turán hybrid's expected output: clustered zeros with matched
+  local data).
+
+**The wall, triangulated:** primitivity/principal-pinning (10, unique factorization) ≡
+S²-vs-B² a.p. gap (11) ≡ soft/categorical trichotomy (11 §5.3) — three independent
+derivations of one obstruction. The live routes above are exactly the ones the wall does
+not touch: exact identities with lower-bound character, exact monodromy data, and class
+rigidity engineering.

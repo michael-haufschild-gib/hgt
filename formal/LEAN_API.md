@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4690 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4691 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -3974,6 +3974,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `preimage_exp_escapeOpen` | `GaloisForLFunctions.Bottcher.Pi1EscapeOpen` | `formal/GaloisForLFunctions/Bottcher/Pi1EscapeOpen.lean:28` | The `exp`-preimage of `escapeOpen c` is the open half-plane `{ Re z > log R }`. |
 | theorem | `convex_preimage_exp_escapeOpen` | `GaloisForLFunctions.Bottcher.Pi1EscapeOpen` | `formal/GaloisForLFunctions/Bottcher/Pi1EscapeOpen.lean:33` | That half-plane is convex. |
 | theorem | `isCoveringMap_exp_escapeOpen` | `GaloisForLFunctions.Bottcher.Pi1EscapeOpen` | `formal/GaloisForLFunctions/Bottcher/Pi1EscapeOpen.lean:49` | `exp` restricted to its preimage is a covering map onto `escapeOpen c`. |
+| theorem | `poissonInt_harmonicOnNhd` | `GaloisForLFunctions.Bottcher.PoissonHarmonic` | `formal/GaloisForLFunctions/Bottcher/PoissonHarmonic.lean:26` | The Poisson integral of continuous boundary data is harmonic in the disc.** |
 | theorem | `norm_eval_le_of_one_le` | `GaloisForLFunctions.Bottcher.PolyAsymptotic` | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:26` | Elementary polynomial growth bound.** For `‖z‖ ≥ 1`, `‖Q(z)‖ ≤ (∑ᵢ ‖Qᵢ‖)·‖z‖^{deg Q}`: bound the support sum termwise, using `‖z‖^i ≤ ‖z‖^{deg Q}` for `i ≤ deg Q`. |
 | theorem | `tendsto_eval_div_pow_zero` | `GaloisForLFunctions.Bottcher.PolyAsymptotic` | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:37` | A polynomial of degree `< d` over `z^d` vanishes at `∞`.** `Q.eval z / z^d → 0` along the cobounded filter, by the growth bound (`Q.eval z / z^d ≍ ‖z‖^{deg Q - d} → 0`). |
 | theorem | `quadraticPoly_monic` | `GaloisForLFunctions.Bottcher.PolyAsymptotic` | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:59` | The quadratic polynomial `z^2 + c` is monic. |
@@ -6521,6 +6522,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `log_shifts_independent` | `GaloisForLFunctions.RHTower.LogIndependence` | `formal/GaloisForLFunctions/RHTower/LogIndependence.lean:39` | Transcendental shifts are multiplicatively free: for transcendental `α > 0` the logarithms `log (n + α)`, `n ∈ ℕ`, admit no nontrivial ℤ-linear relation. This is the independence h |
 | theorem | `log_prime_shifts_independent` | `GaloisForLFunctions.RHTower.LogIndependence` | `formal/GaloisForLFunctions/RHTower/LogIndependence.lean:178` | Prime-supported shifts are free even at RATIONAL denominator: for a prime q the logarithms `log (p / q)` over primes `p ≠ q` admit no nontrivial ℤ-relation — the FTA argument that  |
 | theorem | `exists_peel` | `GaloisForLFunctions.RHTower.Peeling` | `formal/GaloisForLFunctions/RHTower/Peeling.lean:19` | Global peeling.** If `f` is analytic on an open `U` and has finite vanishing order `m` at `ρ ∈ U`, then `f = (· - ρ) ^ m * h` on `U` for an analytic `h` with `h ρ ≠ 0` whose orders |
+| theorem | `exists_zero_of_sphere_domination` | `GaloisForLFunctions.RHTower.PerturbationZero` | `formal/GaloisForLFunctions/RHTower/PerturbationZero.lean:20` | Sphere domination plants a zero: if `h` vanishes at the center, `g` does not, and `3‖g‖ ≤ ‖h‖` on the sphere, then `g + h` vanishes somewhere in the closed ball. |
 | theorem | `differentiable_conj_reflect` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:23` | If `f` is entire then so is its Schwarz reflection `w ↦ conj (f (conj w))`. |
 | theorem | `riemannZeta_conj_of_one_lt` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:39` | Conjugation equivariance of ζ on the abscissa of absolute convergence. |
 | theorem | `Gamma` | `GaloisForLFunctions.RHTower.Reflection` | `formal/GaloisForLFunctions/RHTower/Reflection.lean:55` | Conjugation equivariance of the archimedean factor Γ_ℝ. |

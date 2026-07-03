@@ -60,3 +60,8 @@ carrier, both sides (lane doc 10-blind-cone.md §5): `log_third_shifts_dependent
 `log_prime_shifts_independent` (prime-supported shifts free at rational denominator, via
 padicValRat helpers padicValRat_prod/padicValRat_zpow). All axiom-clean
 [propext, Classical.choice, Quot.sound]; umbrella imports updated; lint gate green.
+
+2026-07-03 — extended: `RHTower/PerturbationZero.lean` — `exists_zero_of_sphere_domination`,
+the Rouché-free zero-planting lemma (max-modulus on g/(g+h); mathlib has no Rouché): sphere
+domination 3‖g‖ ≤ ‖h‖ + h(s₀)=0 + g(s₀)≠0 ⟹ g+h vanishes in the ball. Existence engine of
+the Weyl counterexample (lane doc 11 §2). Axiom-clean; build 9012 jobs; lint green.

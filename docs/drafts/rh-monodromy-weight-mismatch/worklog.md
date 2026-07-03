@@ -388,3 +388,17 @@ Bottcher/STATUS.md (tail), Bottcher/DyadicMonodromy.lean. Findings for THIS lane
 - Earlier same day: 10-blind-cone.md (09 §3.1 answered), LogIndependence.lean banked,
   08 §7 rung + C7 verdicts (budget T^{cδ^{3/2}}, c<1/2; DH guard vacant in t-aspect),
   q62 cross-read (deck-class re-cut of A3 → #113; index-formula shape → #112).
+
+## 2026-07-03 — C8 verdict + 00-approach wave-4 refresh + PerturbationZero.lean
+- C8 (checks/c8-turan-taspect-note.md, spot-checked): Turán second main theorem fetched
+  verbatim (+ Kadiri–Ng–Wong Thm 2.2, Révész Lemma 3 working variants). The t-aspect
+  "one ζ-zero forces other zeros" object is ABSENT — but BOTH flanks are proved by power
+  sums: q-aspect Deuring–Heilbronn (KNW Thm 2.6, exceptional zero repels, C≈14.14) and
+  t-aspect zero→ψ-oscillation (Turán/Pintz/Révész, |ψ(x)−x| ≥ (1−ε)x^{β₀}/|ρ₀|). The
+  MISSING HYBRID = the rung mechanism's precise target (#112).
+- Lean banked: RHTower/PerturbationZero.lean — exists_zero_of_sphere_domination (the
+  Rouché-free zero-planting engine of 11 Thm B), axiom-clean, build 9012 jobs, lint green.
+- 00-approach.md refreshed for wave-4 (user request): M1 annotated (single-test form
+  closed, Turán hybrid open), M2 marked refuted-as-soft (11 Thm B), §10 item 8 updated to
+  the final jet law, NEW §11 state-of-the-map (closed routes with proofs; open routes:
+  Turán hybrid, Goldilocks class, deck cocycle, jet-guide; the wall triangulated 3 ways).
