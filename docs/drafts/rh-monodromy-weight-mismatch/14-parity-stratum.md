@@ -207,3 +207,38 @@ Two shapes pass all three filters:
 The parity stratum's live geometry after the audit: **one lane through conservation
 (dynamic, family-fed), one lane through construction (static, cover-fed), meeting at
 the same object — the quadrant-local charge.**
+
+---
+
+## 6. The Révész filter (B-foil verdict, 2026-07-04) — the detector lives on the weld
+
+Delegated check, primary sources verified (arXiv:2202.01837 §7 Thm 8 = Révész, IMRN
+2023; arXiv:2309.01567 Thm 3.2 = Broucke–Debruyne–Révész, TAMS 378 (2025); full texts
+grepped): **discrete Beurling systems with GENUINE Euler products exist whose zeta has
+any prescribed finite symmetric multiset of zeros in 1/2 < Re s < 1 — in particular a
+certified SIMPLE off-line zero. Proved, not numerical.** (These systems have NO
+functional equation. DMV/Zhang: multiplicity not addressed; Broucke–Vindas 2024 solves
+Balazard's Problem 24 with the unique strip zero at s = 1 — adjacent, not off-line.
+No theorem in print forces multiplicity structure from Euler product alone — and none
+CAN, by the Révész construction.)
+
+**Filter I′ (Révész).** Any w₁-detector must break on Révész systems: P must consume
+the FUNCTIONAL EQUATION, not just multiplicativity.
+
+**The pincer.** Filter I (D–H: FE ∧ reality ∧ regularity, NO Euler — simple off-line
+zeros exist) and Filter I′ (Révész: Euler ∧ reality, NO FE — simple off-line zeros
+exist) together prove: **neither constraint alone forces off-line parity; any
+detector lives strictly in the FE × Euler INTERACTION** — the weld/seam of the hgt
+charter, exactly. This also sharpens the Goldilocks problem (11 §5.3) from the
+counterexample side: the two known surgery technologies each destroy one constraint
+(bump surgery keeps FE, kills Euler; Beurling freedom keeps Euler, kills FE); a
+JOINT-preserving surgery is the missing counterexample machinery, and its absence is
+the wall seen from the other side. Verified record: Euler + FE + certified simple
+off-line zero exists nowhere in print.
+
+**Consequence for the window relation (doc 18):** the bookkeeping identity (ID) is
+FE-predicated (the {ρ, 1−ρ̄} pairing), and the bridge identity (WR-core, #130) must
+consume Euler — the relation is a weld statement by construction, passing both
+filters. Any candidate bridge must break on BOTH foils: on D–H (it does: WR₁ fails at
+the certified zero) and on Révész (it does: without FE the identity (ID) itself has
+no pairing to stand on).

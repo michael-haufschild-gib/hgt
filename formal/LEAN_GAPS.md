@@ -253,6 +253,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62Field.lean:269` | by `mvEval_deepBall_eq_zero_iff` (faithfulness); the single remaining input `hFunIndep` is precisely |
 | `formal/GaloisForLFunctions/Bottcher/Q62HinputAssembly.lean:16` | This is the genuine remaining content of the natural-boundary route (co-countable for connected `c₁`: |
 | `formal/GaloisForLFunctions/Bottcher/Q62KummerAssembly.lean:35` | against `meroField`. The remaining work to make it unconditional is the *mechanical* construction of |
+| `formal/GaloisForLFunctions/Bottcher/Q62OneSidedDense.lean:21` | So #133's remaining content is exactly `SingleAccessDense c` — supporting-ball points with a *single* |
+| `formal/GaloisForLFunctions/Bottcher/Q62OneSidedDense.lean:150` | /-- **The single-access density Prop — the crisp remaining core of #133.**  Supporting-ball points with |
 | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:24` | algebraic surface of the disconnected case: the lone remaining input is the *geometric* non-squareness |
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:20` | * `reflectionCore_of_arcReflectionData` — the **reduction**.  It isolates the one remaining input of |
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:52` | /-- **The reflected-extension datum — the one remaining input of `ReflectionCore`.**  For a |
@@ -289,8 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:118` | input `TranscendentalOverAdjoin φ_{c₁} φ_{c₂}`. The remaining inputs are now exactly: the per-level |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:1410` | hRigid interface in this file: nonresonance is derived from `(2^p : ℝ) < ‖λ‖`, and the remaining callback |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean:2376` | frontier-analytic γ endpoint by deriving it via `phiMero_transcendental_of_repelling_input`.  The remaining |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean:128` | transcendence produced internally.** The remaining callback is geometric/dynamical: it supplies an |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean:1396` | frontier-fibre `Separable` datum from the callback.  The remaining per-target geometry is a boundary |
 
 ## Historical Status Logs
 

@@ -808,3 +808,68 @@ no argument principle anywhere; pinned_zero_on_line = doc 16 §1 formal (count-1
 reflection q = 1 − conj(ρ') is a zero in the hole ⟹ no off-line zero survives).
 First-compile clean, 8576 jobs, axiom-clean. The shared mathlib gap (no Rouché) is now
 CLOSED for dominated-perturbation counting inside the deck calculus.
+
+## 2026-07-04 — #103 BANKED: rhtower-paper-surface.md (P2); C12 + B-foil delegated
+
+Publication surface written (formal/docs/drafts/rhtower-paper-surface.md): title
+candidates (method-led recommended: "zero counting without the argument principle"),
+the 16-module result surface organized in five arcs (ladder / deck calculus / ledger /
+potential-theory+counting / continuation+families), gate-checked novelty positioning
+(primary claim = the contour-free counting METHOD — mathlib lacks argument principle,
+Rouché, Hurwitz; scope vs Isabelle's Li–Paulson Rouché flagged for verification),
+the three honesty clauses (ladder classically trivial as statement; xiDescent = Ξ₁;
+no rung mechanism claimed), venue split (ITP/CPP method paper + optional expository
+note; RittΞ/pseudo-primeness material = separate classical paper pending C12), and
+the five blocking pre-submission items (full-tree gate on q62 landing; delegated-note
+spot-checks; naming pass; R-series stays out).
+
+Delegated in parallel: C12 (two-fibers-on-a-line classification — Edrei/Ozawa/
+Kobayashi exact statements; decides the (RittΞ) endgame) and the B-foil literature
+component (#96: multiplicity/simplicity of off-line zeros in Beurling/DMV
+constructions — is a genuine-Euler-product simple off-line zero exhibited anywhere?).
+
+## 2026-07-04 — USER DIRECTIVE + #18 BANKED: the window relation (family variable dissolved)
+
+DIRECTIVE (Michael): no paper without progress on RH — P2 surface is PARKED as an
+internal map; all effort on the path itself; the target is RH through
+"constraint, not flow".
+
+**18-window-relation.md:** pushing (OC1′) through the constraint filter dissolved the
+family entirely. In any line-centered disk window with zero-free edges, FE ∧ reality
+give the identity D = L + 2N (total order = on-line order + twice the right-half
+order), and hence the LADDER REFORMULATION:
+
+  RH ⟺ ∀k, ∀ line-centered windows: D ≡ L (mod 2^{k+1})   (WR_k)
+
+— shrunk windows give the per-zero rung exactly (D = 2m, L = 0). Both sides are exact
+boundary invariants with BANKED dictionaries: D = deck class at n = 2^{k+1} (readable
+from |ξ| on two circles by holography); L = seam ledger at level k+1 (at k = 1
+literally Hardy's sign sequence of Ξ; higher k = ℤ/2^{k+1} gluing refinement). No
+family, no flow, no events — the bulk pinned by two boundary strata of one window.
+Filter checks pass: D–H VIOLATES (WR_1) at its certified zero (D=2, L=0) ⟹ the
+ζ-instance needs Euler; the symmetry discount is explained (right-parity costs one
+extra rung — the coherent tower appearing inside the bookkeeping).
+
+Carded: #129 (Lean: window_relation_iff_ladder + dictionary wiring — all ingredients
+banked) and #130 [OPEN CORE] (the bridge identity: Euler structure ⟹ WR_1; the
+sharpest constraint-not-flow form the lane has produced). C12 + B-foil delegations
+still pending.
+
+## 2026-07-04 — B-foil ANSWERED (#96): the Révész filter — the detector lives on the weld
+
+Delegated check returned with primary-source verification: **Révész (IMRN 2023,
+arXiv:2202.01837 §7 Thm 8) and Broucke–Debruyne–Révész (TAMS 378 (2025), arXiv:
+2309.01567 Thm 3.2): discrete Beurling systems with GENUINE Euler products realizing
+ANY prescribed finite symmetric zero multiset in the strip — certified SIMPLE off-line
+zero included, proved not numerical.** (No FE in these systems. DMV/Zhang leave
+multiplicity unaddressed; Broucke–Vindas 2024 = Balazard Problem 24, zero at s = 1.)
+Verified complement: Euler + FE + certified simple off-line zero exists NOWHERE.
+
+Doc 14 §6 (the PINCER): D–H (FE, no Euler) and Révész (Euler, no FE) BOTH carry simple
+off-line zeros ⟹ neither constraint alone forces parity ⟹ **any w₁-detector lives
+strictly in the FE × Euler interaction — the weld of the hgt charter**. Goldilocks
+sharpened from the counterexample side: bump surgery keeps FE and kills Euler; Beurling
+freedom keeps Euler and kills FE; JOINT-preserving surgery is the missing
+counterexample technology — the wall seen from the other side. Window relation
+consistency: (ID) is FE-predicated, the bridge must consume Euler — WR is a weld
+statement by construction, breaking correctly on both foils.
