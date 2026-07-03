@@ -170,4 +170,156 @@ theorem conj_mem_closedBall_of_real {p : ℂ} (hp : p.im = 0) {R : ℝ} {z : ℂ
   rw [this, RCLike.norm_conj]; exact hz
 
 
+
+theorem harmonicAt_reflect_line {f : ℂ → ℝ} {p : ℂ} {ρ : ℝ}
+    (hρ : 0 < ρ) (hp : p.im = 0)
+    (hf_off : ∀ z ∈ ball p ρ, z.im ≠ 0 → HarmonicAt f z)
+    (hf_cont : ContinuousOn f (ball p ρ))
+    (hf_odd : ∀ z ∈ ball p ρ, f ((starRingEnd ℂ) z) = - f z) :
+    HarmonicAt f p := by
+  set ρ' : ℝ := ρ / 2 with hρ'
+  have hρ'0 : 0 < ρ' := by rw [hρ']; linarith
+  have hρ'ρ : ρ' ≤ ρ := by rw [hρ']; linarith
+  have hballsub : ball p ρ' ⊆ ball p ρ := ball_subset_ball hρ'ρ
+  have hcb : closedBall p ρ' ⊆ ball p ρ := Metric.closedBall_subset_ball (by rw [hρ']; linarith)
+  have hfcb : ContinuousOn f (closedBall p ρ') := hf_cont.mono hcb
+  set P : ℂ → ℝ := poissonExt p ρ' f with hPdef
+  have hPharm : HarmonicOnNhd P (ball p ρ') :=
+    poissonExt_harmonicOnNhd hρ'0 (hfcb.mono sphere_subset_closedBall)
+  have hPcont : ContinuousOn P (closedBall p ρ') := poissonExt_continuousOn hρ'0 hfcb
+  have hPsph : ∀ z ∈ sphere p ρ', P z = f z := poissonExt_eq_on_sphere
+  have hfront : frontier (ball p ρ') = sphere p ρ' := frontier_ball p hρ'0.ne'
+  -- P is odd: P = 0 on the real axis
+  have hPaxis : ∀ z ∈ ball p ρ', z.im = 0 → P z = 0 := by
+    have hQharm : HarmonicOnNhd (fun z => P z + P ((starRingEnd ℂ) z)) (ball p ρ') := fun z hz =>
+      (hPharm z hz).add (harmonicAt_comp_conj (hPharm _ (conj_mem_ball_of_real hp hz)))
+    have hQcont : ContinuousOn (fun z => P z + P ((starRingEnd ℂ) z)) (closure (ball p ρ')) := by
+      rw [closure_ball p hρ'0.ne']
+      exact hPcont.add (hPcont.comp Complex.continuous_conj.continuousOn
+        (fun z hz => conj_mem_closedBall_of_real hp hz))
+    have hQbdry : ∀ z ∈ frontier (ball p ρ'), (fun z => P z + P ((starRingEnd ℂ) z)) z = 0 := by
+      rw [hfront]; intro z hz
+      have hzball : z ∈ ball p ρ := hcb (sphere_subset_closedBall hz)
+      show P z + P ((starRingEnd ℂ) z) = 0
+      rw [hPsph z hz, hPsph _ (conj_mem_sphere_of_real hp hz), hf_odd z hzball]; ring
+    have hQ0 := harmonic_eqZero_of_boundary_zero isOpen_ball (convex_ball p ρ').isPreconnected
+      isBounded_ball (hfront ▸ NormedSpace.sphere_nonempty.mpr hρ'0.le) hQharm hQcont hQbdry
+    intro z hz hzim
+    have hcz : (starRingEnd ℂ) z = z := Complex.conj_eq_iff_im.mpr hzim
+    have h := hQ0 z hz
+    simp only [hcz] at h; linarith
+  -- half-plane vanishing helper
+  have hhalf : ∀ (S : Set ℂ), IsOpen S → IsPreconnected S → S ⊆ ball p ρ' →
+      (∀ z ∈ S, z.im ≠ 0) → (frontier S).Nonempty →
+      (∀ w ∈ frontier S, w.im = 0 ∨ w ∈ sphere p ρ') → ∀ z ∈ S, f z = P z := by
+    intro S hSo hSc hSsub hSim hSfne hSfr z hzS
+    have hSbdd : Bornology.IsBounded S := (isBounded_ball (x := p) (r := ρ')).subset hSsub
+    have hclS : closure S ⊆ closedBall p ρ' :=
+      (closure_mono hSsub).trans (le_of_eq (closure_ball p hρ'0.ne'))
+    have hg : HarmonicOnNhd (fun w => f w - P w) S := fun w hw =>
+      (hf_off w (hballsub (hSsub hw)) (hSim w hw)).sub (hPharm w (hSsub hw))
+    have hgc : ContinuousOn (fun w => f w - P w) (closure S) :=
+      (hf_cont.mono (hclS.trans hcb)).sub (hPcont.mono hclS)
+    have hgb : ∀ w ∈ frontier S, (fun w => f w - P w) w = 0 := by
+      intro w hwf
+      have hwcl : w ∈ closedBall p ρ' := hclS (frontier_subset_closure hwf)
+      have hwball : w ∈ ball p ρ := hcb hwcl
+      rcases hSfr w hwf with him | hsph
+      · rcases lt_or_eq_of_le (mem_closedBall.mp hwcl) with hlt | heq
+        · have hf0 : f w = 0 := by
+            have := hf_odd w hwball; rw [Complex.conj_eq_iff_im.mpr him] at this; linarith
+          show f w - P w = 0; rw [hf0, hPaxis w (mem_ball.mpr hlt) him]; ring
+        · show f w - P w = 0; rw [hPsph w (mem_sphere.mpr heq)]; ring
+      · show f w - P w = 0; rw [hPsph w hsph]; ring
+    have := harmonic_eqZero_of_boundary_zero hSo hSc hSbdd hSfne hg hgc hgb z hzS
+    linarith
+  -- f = P on the ball
+  have hfP : ∀ z ∈ ball p ρ', f z = P z := by
+    have hSu_o : IsOpen ({z : ℂ | 0 < z.im} ∩ ball p ρ') :=
+      (isOpen_lt continuous_const continuous_im).inter isOpen_ball
+    have hSl_o : IsOpen ({z : ℂ | z.im < 0} ∩ ball p ρ') :=
+      (isOpen_lt continuous_im continuous_const).inter isOpen_ball
+    have hclim_up : closure {z : ℂ | 0 < z.im} = {z : ℂ | 0 ≤ z.im} := by
+      exact closure_setOf_lt_im 0
+    have hclim_lo : closure {z : ℂ | z.im < 0} = {z : ℂ | z.im ≤ 0} := by
+      exact closure_setOf_im_lt 0
+    -- upper
+    have hfrSu : ∀ w ∈ frontier ({z : ℂ | 0 < z.im} ∩ ball p ρ'), w.im = 0 ∨ w ∈ sphere p ρ' := by
+      intro w hwf
+      have hwcl := frontier_subset_closure hwf
+      have hwnS : w ∉ {z : ℂ | 0 < z.im} ∩ ball p ρ' := by
+        rw [← hSu_o.interior_eq]; exact hwf.2
+      have hclSu : closure ({z : ℂ | 0 < z.im} ∩ ball p ρ') ⊆
+          {z : ℂ | 0 ≤ z.im} ∩ closedBall p ρ' := by
+        refine closure_inter_subset.trans ?_
+        rw [closure_ball p hρ'0.ne', hclim_up]
+      obtain ⟨hwim, hwcb⟩ := hclSu hwcl
+      by_cases hwsph : w ∈ sphere p ρ'
+      · exact Or.inr hwsph
+      · have hwball : w ∈ ball p ρ' := by
+          rcases lt_or_eq_of_le (mem_closedBall.mp hwcb) with h | h
+          · exact mem_ball.mpr h
+          · exact absurd (mem_sphere.mpr h) hwsph
+        exact Or.inl (le_antisymm (not_lt.mp fun h => hwnS ⟨h, hwball⟩) hwim)
+    have hfrSl : ∀ w ∈ frontier ({z : ℂ | z.im < 0} ∩ ball p ρ'), w.im = 0 ∨ w ∈ sphere p ρ' := by
+      intro w hwf
+      have hwcl := frontier_subset_closure hwf
+      have hwnS : w ∉ {z : ℂ | z.im < 0} ∩ ball p ρ' := by
+        rw [← hSl_o.interior_eq]; exact hwf.2
+      have hclSl : closure ({z : ℂ | z.im < 0} ∩ ball p ρ') ⊆
+          {z : ℂ | z.im ≤ 0} ∩ closedBall p ρ' := by
+        refine closure_inter_subset.trans ?_
+        rw [closure_ball p hρ'0.ne', hclim_lo]
+      obtain ⟨hwim, hwcb⟩ := hclSl hwcl
+      by_cases hwsph : w ∈ sphere p ρ'
+      · exact Or.inr hwsph
+      · have hwball : w ∈ ball p ρ' := by
+          rcases lt_or_eq_of_le (mem_closedBall.mp hwcb) with h | h
+          · exact mem_ball.mpr h
+          · exact absurd (mem_sphere.mpr h) hwsph
+        exact Or.inl (le_antisymm hwim (not_lt.mp fun h => hwnS ⟨h, hwball⟩))
+    have hmk : ∀ (σ : ℝ), σ = 1 ∨ σ = -1 → p ∈ closure ({z : ℂ | 0 < σ * z.im} ∩ ball p ρ') := by
+      intro σ hσ
+      rw [Metric.mem_closure_iff]
+      intro ε hε
+      set t : ℝ := min (ε / 2) (ρ' / 2) with ht
+      have ht0 : 0 < t := lt_min (by linarith) (by linarith)
+      have hnorm : ‖p + Complex.I * (σ * t : ℝ) - p‖ = t := by
+        rw [show p + Complex.I * (σ * t : ℝ) - p = Complex.I * (σ * t : ℝ) by ring,
+          norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
+        rcases hσ with h | h <;> rw [h] <;> simp [abs_of_pos ht0]
+      refine ⟨p + Complex.I * (σ * t : ℝ), ⟨?_, ?_⟩, ?_⟩
+      · show 0 < σ * (p + Complex.I * (σ * t : ℝ)).im
+        have him : (p + Complex.I * (σ * t : ℝ)).im = σ * t := by
+          simp only [Complex.add_im, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
+            Complex.ofReal_im, hp]; ring
+        rw [him]; rcases hσ with h | h <;> rw [h] <;> nlinarith [ht0]
+      · rw [mem_ball, dist_eq_norm, hnorm]; calc t ≤ ρ'/2 := min_le_right _ _
+          _ < ρ' := by linarith
+      · rw [dist_comm, dist_eq_norm, hnorm]; calc t ≤ ε/2 := min_le_left _ _
+          _ < ε := by linarith
+    have hpfrU : p ∈ frontier ({z : ℂ | 0 < z.im} ∩ ball p ρ') := by
+      refine ⟨?_, ?_⟩
+      · have := hmk 1 (Or.inl rfl); simpa using this
+      · rw [hSu_o.interior_eq]; exact fun h => lt_irrefl (0:ℝ) (hp ▸ h.1)
+    have hpfrL : p ∈ frontier ({z : ℂ | z.im < 0} ∩ ball p ρ') := by
+      refine ⟨?_, ?_⟩
+      · have := hmk (-1) (Or.inr rfl)
+        have heq : ({z : ℂ | 0 < (-1 : ℝ) * z.im} ∩ ball p ρ') = ({z : ℂ | z.im < 0} ∩ ball p ρ') := by
+          ext w; simp only [mem_inter_iff, mem_setOf_eq]; constructor <;> (rintro ⟨h1, h2⟩; exact ⟨by linarith, h2⟩)
+        rwa [heq] at this
+      · rw [hSl_o.interior_eq]; exact fun h => lt_irrefl (0:ℝ) (hp ▸ h.1)
+    intro z hz
+    rcases lt_trichotomy z.im 0 with hlt | heq | hgt
+    · exact hhalf _ hSl_o ((convex_halfSpace_im_lt 0).inter (convex_ball p ρ')).isPreconnected
+        inter_subset_right (fun w hw => ne_of_lt hw.1) ⟨p, hpfrL⟩ hfrSl z ⟨hlt, hz⟩
+    · have := hf_odd z (hballsub hz); rw [Complex.conj_eq_iff_im.mpr heq] at this
+      rw [(by linarith : f z = 0), hPaxis z hz heq]
+    · exact hhalf _ hSu_o ((convex_halfSpace_im_gt 0).inter (convex_ball p ρ')).isPreconnected
+        inter_subset_right (fun w hw => ne_of_gt hw.1) ⟨p, hpfrU⟩ hfrSu z ⟨hgt, hz⟩
+  have hfharm : HarmonicOnNhd f (ball p ρ') := fun z hz =>
+    (harmonicAt_congr_nhds (by
+      filter_upwards [isOpen_ball.mem_nhds hz] with y hy using (hfP y hy))).mpr (hPharm z hz)
+  exact hfharm p (mem_ball_self hρ'0)
+
 end Bottcher

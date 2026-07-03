@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4699 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4706 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -3069,9 +3069,16 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `harmonic_eq_zero_on_ball_of_nonneg` | `GaloisForLFunctions.Bottcher.HarmonicMinPrinciple` | `formal/GaloisForLFunctions/Bottcher/HarmonicMinPrinciple.lean:26` | Minimum principle on a ball.** A non-negative harmonic `u` on `ball z₀ r` with `u z₀ = 0` vanishes on the whole ball. |
 | theorem | `harmonic_eqOn_zero_of_nonneg` | `GaloisForLFunctions.Bottcher.HarmonicMinPrinciple` | `formal/GaloisForLFunctions/Bottcher/HarmonicMinPrinciple.lean:57` | Minimum principle on a preconnected domain.** A non-negative harmonic `u` on a preconnected open set `V` that vanishes at one point of `V` vanishes on all of `V`. The zero set is o |
 | theorem | `harmonic_exterior_unique` | `GaloisForLFunctions.Bottcher.HarmonicMinPrinciple` | `formal/GaloisForLFunctions/Bottcher/HarmonicMinPrinciple.lean:99` | Harmonic uniqueness on an exterior (unbounded) domain — E1 core.** A function continuous on `ℂ`, harmonic on a preconnected unbounded open `Ω`, vanishing off `Ω`, and tending to `0 |
-| theorem | `harmonic_eqZero_of_boundary_zero` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:29` | Bounded-domain vanishing (Koebe keystone).** A harmonic function on a bounded preconnected open set `B` (nonempty frontier), continuous up to `closure B` and vanishing on `frontier |
-| theorem | `harmonicAt_comp_conj` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:67` | Harmonicity under domain conjugation.** If `u` is harmonic at `conj w`, then `u ∘ conj` is harmonic at `w`. Locally `u = Re F` (`F` analytic), so `u(conj z) = Re(conj (F (conj z))) |
-| theorem | `harmonicAt_comp_analytic` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:94` | Harmonic ∘ holomorphic is harmonic.** If `u` is harmonic at `h w` and `h` is analytic at `w`, then `u ∘ h` is harmonic at `w`. Locally `u = Re F`, so `u(h z) = Re(F(h z))` with `F  |
+| theorem | `harmonic_eqZero_of_boundary_zero` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:31` | Bounded-domain vanishing (Koebe keystone).** A harmonic function on a bounded preconnected open set `B` (nonempty frontier), continuous up to `closure B` and vanishing on `frontier |
+| theorem | `harmonicAt_comp_conj` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:69` | Harmonicity under domain conjugation.** If `u` is harmonic at `conj w`, then `u ∘ conj` is harmonic at `w`. Locally `u = Re F` (`F` analytic), so `u(conj z) = Re(conj (F (conj z))) |
+| theorem | `harmonicAt_comp_analytic` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:96` | Harmonic ∘ holomorphic is harmonic.** If `u` is harmonic at `h w` and `h` is analytic at `w`, then `u ∘ h` is harmonic at `w`. Locally `u = Re F`, so `u(h z) = Re(F(h z))` with `F  |
+| theorem | `poissonExt_harmonicOnNhd` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:115` |  |
+| theorem | `poissonExt_eq_on_sphere` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:123` |  |
+| theorem | `poissonExt_continuousOn` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:130` |  |
+| theorem | `conj_mem_ball_of_real` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:151` |  |
+| theorem | `conj_mem_sphere_of_real` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:158` |  |
+| theorem | `conj_mem_closedBall_of_real` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:165` |  |
+| theorem | `harmonicAt_reflect_line` | `GaloisForLFunctions.Bottcher.HarmonicReflection` | `formal/GaloisForLFunctions/Bottcher/HarmonicReflection.lean:174` |  |
 | def | `SmoothPieceRigidity` | `GaloisForLFunctions.Bottcher.HbothconnAssembly` | `formal/GaloisForLFunctions/Bottcher/HbothconnAssembly.lean:33` | The smooth-piece rigidity interface (P6).** For nonexceptional parameters, no relatively open piece of `J_{c₁}` lies inside the modulus-one locus of one branch of a continuous root |
 | theorem | `noRelation_phiMero_of_holeFreeTip_of_rigidity` | `GaloisForLFunctions.Bottcher.HbothconnAssembly` | `formal/GaloisForLFunctions/Bottcher/HbothconnAssembly.lean:53` | hbothconn, conditional on the two named Props.** A `HoleFreeTip` plus `SmoothPieceRigidity` give the bivariate no-relation for the pair — the both-connected input of `q62_phiMero_i |
 | theorem | `exists_differentiableOn_exp_eq` | `GaloisForLFunctions.Bottcher.HolomorphicBranch` | `formal/GaloisForLFunctions/Bottcher/HolomorphicBranch.lean:27` | Holomorphic logarithm on a simply connected domain.** A holomorphic non-vanishing `f` on an open simply connected `U` has a holomorphic branch of `log f`: some holomorphic `g` with |
@@ -6519,6 +6526,27 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | structure | `CoherentTower` | `GaloisForLFunctions.RHTower.CoherentTower` | `formal/GaloisForLFunctions/RHTower/CoherentTower.lean:19` | A coherent ℤ₂-Kummer tower over `U`: level 0 is `f`, each level an analytic square root of the previous one. |
 | theorem | `CoherentTower.pow_eq` | `GaloisForLFunctions.RHTower.CoherentTower` | `formal/GaloisForLFunctions/RHTower/CoherentTower.lean:26` | Level `k` of a coherent tower is a `2^k`-th root of `f`. |
 | theorem | `coherentTower_iff_nonvanishing` | `GaloisForLFunctions.RHTower.CoherentTower` | `formal/GaloisForLFunctions/RHTower/CoherentTower.lean:40` | The coherent ℤ₂-tower exists iff `f` is nonvanishing.** The obstruction to the whole 2-power root tower of an analytic function is exactly its zero divisor. |
+| def | `chartR` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:23` | Right slit chart around `a`, inside the ball of radius `R`. |
+| def | `chartL` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:26` | Left slit chart around `a`, inside the ball of radius `R`. |
+| def | `overlapU` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:29` | Upper overlap piece. |
+| def | `overlapD` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:32` | Lower overlap piece. |
+| theorem | `isOpen_chartR` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:34` |  |
+| theorem | `isOpen_chartL` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:37` |  |
+| theorem | `isOpen_overlapU` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:40` |  |
+| theorem | `isOpen_overlapD` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:44` |  |
+| theorem | `convex_upperShift` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:48` |  |
+| theorem | `convex_lowerShift` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:59` |  |
+| theorem | `isPreconnected_overlapU` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:70` |  |
+| theorem | `isPreconnected_overlapD` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:73` |  |
+| theorem | `starConvex_slitChartR` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:77` | The unballed right slit chart is star-convex about `a + c` for real `c > 0`. |
+| theorem | `starConvex_slitChartL` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:111` | The unballed left slit chart is star-convex about `a − c` for real `c > 0`. |
+| theorem | `center_mem_chartR` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:144` |  |
+| theorem | `center_mem_chartL` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:158` |  |
+| theorem | `isPreconnected_chartR` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:172` |  |
+| theorem | `isPreconnected_chartL` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:180` |  |
+| theorem | `chart_inter_eq` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:189` | The two charts overlap in exactly the two half-plane pieces. |
+| theorem | `deckClass_monomial'` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:229` | The two charts overlap in exactly the two half-plane pieces. theorem chart_inter_eq (a : ℂ) (R : ℝ) : chartR a R ∩ chartL a R = overlapU a R ∪ overlapD a R := by ext z simp only [c |
+| theorem | `deckClass_single_zero` | `GaloisForLFunctions.RHTower.DeckAssembly` | `formal/GaloisForLFunctions/RHTower/DeckAssembly.lean:253` | Zero-counting meaning of the deck cocycle.** If `f = (z−a)^m · h` on the ball `B(a,R)` with `h` analytic and nonvanishing there, then ANY local analytic `n`-th roots of `f` on the  |
 | theorem | `pow_root_ratio` | `GaloisForLFunctions.RHTower.DeckCocycle` | `formal/GaloisForLFunctions/RHTower/DeckCocycle.lean:25` | Two analytic `n`-th roots of the same function on a preconnected open set differ by a constant `n`-th root of unity, read off at any anchor where `f` does not vanish. |
 | theorem | `deckClass_pow_eq_one` | `GaloisForLFunctions.RHTower.DeckCocycle` | `formal/GaloisForLFunctions/RHTower/DeckCocycle.lean:48` | The deck class is a `n`-th root of unity. |
 | theorem | `deckClass_root_indep` | `GaloisForLFunctions.RHTower.DeckCocycle` | `formal/GaloisForLFunctions/RHTower/DeckCocycle.lean:60` | Changing either local root multiplies both overlap ratios by the same constant, so the deck class is independent of the choice of local roots. Stated on the standard cover data: `U |
@@ -6530,6 +6558,21 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `monoRoot` | `GaloisForLFunctions.RHTower.DeckMonomial` | `formal/GaloisForLFunctions/RHTower/DeckMonomial.lean:63` |  |
 | theorem | `monoRoot` | `GaloisForLFunctions.RHTower.DeckMonomial` | `formal/GaloisForLFunctions/RHTower/DeckMonomial.lean:71` |  |
 | theorem | `deckClass_monomial` | `GaloisForLFunctions.RHTower.DeckMonomial` | `formal/GaloisForLFunctions/RHTower/DeckMonomial.lean:85` | The monomial dictionary**: the deck class of the standard branches of the `n`-th root of `(z−a)^m`, read at the overlap basepoints `a ± i`, is `exp(2πi·m/n)` — the enclosed order ` |
+| theorem | `deckClass_mul` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:25` | /- Multi-zero additivity of the deck cocycle (MWM lane, A3 extension; task #113+). Capstone: `deckClass_multi_zero` — on an annulus a < |z−a| < R whose inner hole contains finitely |
+| theorem | `deckClass_prod` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:32` |  |
+| def | `chartRA` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:45` | Right slit annulus chart. |
+| def | `chartLA` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:49` | Left slit annulus chart. |
+| theorem | `isOpen_chartRA` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:52` |  |
+| theorem | `isOpen_chartLA` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:56` |  |
+| theorem | `continuous_polarMap` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:64` |  |
+| theorem | `norm_polarMap_sub` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:70` |  |
+| theorem | `isPreconnected_chartRA` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:78` |  |
+| theorem | `isPreconnected_chartLA` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:127` |  |
+| theorem | `corr_mem_slitPlane` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:206` | Polar parametrization map. noncomputable def polarMap (a : ℂ) : ℝ × ℝ → ℂ := fun p => a + (p.1 : ℂ) * exp ((p.2 : ℂ) * I) theorem continuous_polarMap (a : ℂ) : Continuous (polarMap |
+| theorem | `corrRoot_pow` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:225` |  |
+| theorem | `corrRoot_ne_zero` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:235` |  |
+| theorem | `corrRoot_analyticAt` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:238` |  |
+| theorem | `shifted_factor` | `GaloisForLFunctions.RHTower.DeckMultiZero` | `formal/GaloisForLFunctions/RHTower/DeckMultiZero.lean:250` | Off-center factorization on the punctured plane. |
 | class | `cannot` | `GaloisForLFunctions.RHTower.DirichletRigidity` | `formal/GaloisForLFunctions/RHTower/DirichletRigidity.lean:8` |  |
 | theorem | `no_polynomial_surgery` | `GaloisForLFunctions.RHTower.DirichletRigidity` | `formal/GaloisForLFunctions/RHTower/DirichletRigidity.lean:112` | No polynomial surgery on Dirichlet series.** If `f` and `g` are coefficient sequences whose L-series converge somewhere, `g` is not (essentially) zero, and `P` is a polynomial of p |
 | theorem | `no_polynomial_surgery_zeta` | `GaloisForLFunctions.RHTower.DirichletRigidity` | `formal/GaloisForLFunctions/RHTower/DirichletRigidity.lean:267` | ζ-instance of the surgery no-go**: no somewhere-convergent L-series agrees on a right half-line with P(s)·ζ(s) for a polynomial P of positive degree. One cannot insert finitely man |
