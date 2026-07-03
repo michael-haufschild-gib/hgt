@@ -254,7 +254,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62HinputAssembly.lean:16` | This is the genuine remaining content of the natural-boundary route (co-countable for connected `c₁`: |
 | `formal/GaloisForLFunctions/Bottcher/Q62KummerAssembly.lean:35` | against `meroField`. The remaining work to make it unconditional is the *mechanical* construction of |
 | `formal/GaloisForLFunctions/Bottcher/Q62OneSidedDense.lean:21` | So #133's remaining content is exactly `SingleAccessDense c` — supporting-ball points with a *single* |
-| `formal/GaloisForLFunctions/Bottcher/Q62OneSidedDense.lean:150` | /-- **The single-access density Prop — the crisp remaining core of #133.**  Supporting-ball points with |
+| `formal/GaloisForLFunctions/Bottcher/Q62OneSidedDense.lean:152` | /-- **The single-access density Prop — the crisp remaining core of #133.**  Supporting-ball points with |
 | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:24` | algebraic surface of the disconnected case: the lone remaining input is the *geometric* non-squareness |
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:20` | * `reflectionCore_of_arcReflectionData` — the **reduction**.  It isolates the one remaining input of |
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:52` | /-- **The reflected-extension datum — the one remaining input of `ReflectionCore`.**  For a |

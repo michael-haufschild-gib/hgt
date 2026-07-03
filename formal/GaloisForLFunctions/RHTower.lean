@@ -37,3 +37,4 @@ import GaloisForLFunctions.RHTower.ModulusHolography
 import GaloisForLFunctions.RHTower.MirrorPencil
 import GaloisForLFunctions.RHTower.CountingSubstitute
 import GaloisForLFunctions.RHTower.WindowRelation
+import GaloisForLFunctions.RHTower.SquareLadder

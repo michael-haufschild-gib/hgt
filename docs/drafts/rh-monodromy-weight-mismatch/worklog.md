@@ -873,3 +873,47 @@ freedom keeps Euler and kills FE; JOINT-preserving surgery is the missing
 counterexample technology — the wall seen from the other side. Window relation
 consistency: (ID) is FE-predicated, the bridge must consume Euler — WR is a weld
 statement by construction, breaking correctly on both foils.
+
+## 2026-07-04 — #129 BANKED: WindowRelation.lean — doc 18's core is machine-checked
+
+window_identity (D = L + 2N under reflection closure), window_modEq_iff,
+xi_window_relation_of_ladder (rung ⟹ relation for every reflection-closed ξ
+configuration), pair_window_relation_iff (shrunk window = per-zero rung). 8577 jobs,
+axiom-clean, lint green. The lane's sharpest reformulation now has its counting core
+formal; remaining wiring (W1b): the two dictionary readings + the sign(Ξ) base case.
+
+## 2026-07-04 — (RittΞ) RESOLVED (#126): Ξ(√·) is compositionally PRIME (doc 17 §9)
+
+C12 returned the black box: **Kobayashi 1977 Thm 4** (entire, finite lower order, zeros
+AND 1-points in a strip ⟹ order ≤ 1 MEAN TYPE ⟹ n(r,c) = O(r) ∀c; strip version
+verbatim, source linked). The last open sector (f rational with two distinct special
+values ∘ h transcendental) dies by: both fibers of h in the critical strip +
+Valiron–Mohon'ko T(r,h) ≍ r log r vs Kobayashi's O(r). Combined with §2–3 (polynomial
+h), §8 (Chuang pseudo-primeness), and Levinson–Conrey (repeated-value f):
+
+  **ξ = f∘h forces f or h affine beyond the FE descent — Ξ(√·) is PRIME.**
+
+Cover route dead permanently; the parity burden rests provably and solely on the
+window/conservation front: (WR-core) is the lane's UNIQUE open core. Free-ground
+theorems (unclaimed in print per C11; PARKED per no-paper directive): Ξ pseudo-prime,
+Ξ prime mod FE descent, Ξ(√·) prime — an hgt-native gatekeeper result (compositional
+rigidity of a seed object = composition-monoid analogue of hypertranscendence).
+Bonus instrument pointer: Marchenko–Ostrovskii comb representation (real entire with
+real ±1-points = cos θ(z), θ comb-conformal) — exactly the class where the k=1 seam
+ledger lives; potential (WR_1) instrument.
+
+## 2026-07-03 — #130 attack round 1: the square class (doc 19)
+rng seed 1749846374244417905; move: extreme-cases; domains: ant-foraging × glassblowing.
+- BANKED `SquareLadder.lean`: global-extreme window relation — RH_2 ⟺ Ξ₁ (= xiDescent) is a
+  square on slitPlane; full tower rh_iff_forall_root_slitPlane. First-compile clean, axiom-clean.
+- Square class ε(Ξ₁) ∈ ⊕_{non-real pairs} ℤ/2 defined; RH_2 ⟺ ε = 0; RH = depth-∞ = Pólya frame
+  [KNOWN at the top; the graded intermediate object is ours — novelty audit in doc 19 §3].
+- No-go (a): the window-preserving symmetry subgroup is {id, mirror} — spent by (ID); even-team
+  enforcement cannot be geometric. No-go (b): zero-free comparisons (all Euler truncations) can
+  never dominate on zero-enclosing window boundaries (counting substitute forces count ≡ 0);
+  (ANNEAL) survives only as hybrid Euler×zero products.
+- NEW instrument (DISC): sign(disc) = (−1)^{#non-real pairs} — the polynomial shadow of the
+  square class; one inequality per Jensen-type section vs Sturm-chain hyperbolicity; regimes
+  beyond GORZ. Foil prediction: D–H sections go disc < 0; Révész has no real carrier.
+- Weld layering sharpened: FE builds the carrier, Euler must kill the class on it.
+Next: (DISC) window↔section dictionary (#132); residue-parity pairing (#133); hybrid domination (#134).

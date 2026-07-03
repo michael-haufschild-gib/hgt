@@ -23,8 +23,10 @@ round exterior access are dense — the sharp elementary-geometric form of ray-l
 (the deep, still-open core).  The round-access density (part A) is discharged outright.  Axiom-clean.
 -/
 import GaloisForLFunctions.Bottcher.OneSidedCertificate
+import Mathlib.Tactic.ComputeDegree
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
-open Set Metric Filter Topology
+open Set Metric Filter Topology Bornology
 
 namespace Bottcher
 
@@ -168,5 +170,152 @@ theorem oneSidedDense_of_singleAccessDense {c : ℂ} (h : SingleAccessDense c) :
   obtain ⟨z, y, r, hzf, hzp, hr, hyz, hball, hsingle⟩ := h p hp ε hε
   exact ⟨z, oneSidedAt_of_supportBall_singleAccess hzf hr hyz hball hsingle, by
     rw [dist_comm]; exact hzp⟩
+
+/-! ## Visibility from infinity — the provable half of `ExposedOneSided` (OP6)
+
+`ExposedOneSided c₁ c₂` needs a one-sided point of `J_{c₁}`, off `K_{c₂}`, **visible from infinity**
+(`VisibleFromInfinity`).  The one-sidedness is the deep prime-end residual above; the visibility half is
+elementary and proven here from the unbounded component of the joint complement `(K₁ ∪ K₂)ᶜ`: a boundary
+point reached by an exterior ball whose component is unbounded lies in the closure of that unbounded
+preconnected set. -/
+
+/-- **Unbounded component from an unbounded preconnected subset.**  If a preconnected `T ⊆ S` through `y`
+is unbounded, so is the connected component of `y` in `S` (it contains `T`).  The usual way to certify
+that a component reaches infinity: exhibit one unbounded preconnected set inside it. -/
+theorem unbounded_connectedComponentIn_of_subset {S T : Set ℂ} {y : ℂ}
+    (hT : IsPreconnected T) (hyT : y ∈ T) (hTS : T ⊆ S) (hTunb : ¬ IsBounded T) :
+    ¬ IsBounded (connectedComponentIn S y) := fun hbd =>
+  hTunb (hbd.subset (hT.subset_connectedComponentIn hyT hTS))
+
+/-- **Visibility from an exterior ball in the unbounded component.**  If `x` lies on the sphere of a
+ball `ball y r ⊆ (K₁ ∪ K₂)ᶜ` (`dist x y = r`) whose connected component in the joint complement is
+unbounded, then `x` is visible from infinity: that component is an unbounded preconnected subset of
+`(K₁ ∪ K₂)ᶜ` containing `ball y r`, hence containing `x` in its closure.  This is the visibility clause of
+`ExposedOneSided` discharged for any boundary point exposed to the unbounded joint exterior. -/
+theorem visibleFromInfinity_of_supportBall_unbounded {c₁ c₂ x y : ℂ} {r : ℝ} (hr : r ≠ 0)
+    (hxy : dist x y = r)
+    (hball : Metric.ball y r ⊆ (filledJulia c₁ ∪ filledJulia c₂)ᶜ)
+    (hunb : ¬ IsBounded (connectedComponentIn ((filledJulia c₁ ∪ filledJulia c₂)ᶜ) y)) :
+    VisibleFromInfinity c₁ c₂ x := by
+  have hrpos : 0 < r := lt_of_le_of_ne (hxy ▸ dist_nonneg) (Ne.symm hr)
+  set S : Set ℂ := (filledJulia c₁ ∪ filledJulia c₂)ᶜ with hSdef
+  set W : Set ℂ := connectedComponentIn S y with hWdef
+  have hballW : Metric.ball y r ⊆ W :=
+    (convex_ball y r).isPreconnected.subset_connectedComponentIn (Metric.mem_ball_self hrpos) hball
+  refine ⟨W, isPreconnected_connectedComponentIn, hunb, connectedComponentIn_subset S y, ?_⟩
+  have hxcl : x ∈ closure (Metric.ball y r) := by
+    rw [closure_ball y hr, Metric.mem_closedBall]; exact le_of_eq hxy
+  exact closure_mono hballW hxcl
+
+/-- **The filled Julia set is always nonempty.**  A fixed point of `z ↦ z² + c` (a root of `z² − z + c`,
+which exists over `ℂ`) has a constant, hence bounded, orbit, so lies in `filledJulia c`. -/
+theorem nonempty_filledJulia (c : ℂ) : (filledJulia c).Nonempty := by
+  have hdeg : (Polynomial.X ^ 2 - Polynomial.X + Polynomial.C c).degree = 2 := by compute_degree!
+  obtain ⟨z, hz⟩ := IsAlgClosed.exists_root
+    (p := Polynomial.X ^ 2 - Polynomial.X + Polynomial.C c) (by rw [hdeg]; decide)
+  have hfix : quadratic c z = z := by
+    simp only [Polynomial.IsRoot, Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_pow,
+      Polynomial.eval_X, Polynomial.eval_C] at hz
+    rw [quadratic_apply]; linear_combination hz
+  refine ⟨z, ?_⟩
+  rw [mem_filledJulia_iff]
+  have horbit : ∀ n : ℕ, (quadratic c)^[n] z = z := by
+    intro n; induction n with
+    | zero => rfl
+    | succ k ih => rw [Function.iterate_succ', Function.comp_apply, ih, hfix]
+  have hset : (Set.range fun n : ℕ => (quadratic c)^[n] z) = {z} := by
+    ext w; simp only [Set.mem_range, Set.mem_singleton_iff]
+    exact ⟨fun ⟨n, hn⟩ => hn ▸ horbit n, fun h => ⟨0, h ▸ rfl⟩⟩
+  rw [hset]; exact (Set.finite_singleton z).isBounded
+
+/-- **A visible frontier point of the joint set always exists.**  For the joint set `K₁ ∪ K₂` (compact),
+a far real point `y₀` (beyond a bounding radius) has a nearest joint-set point `x₀`, giving an exterior
+ball tangent at `x₀`; the outward ray from `y₀` certifies its component is unbounded, so `x₀ ∈
+frontier (K₁ ∪ K₂)` is visible from infinity.  The visibility half of `ExposedOneSided`, unconditionally. -/
+theorem exists_visible_frontier_point (c₁ c₂ : ℂ) :
+    ∃ x ∈ frontier (filledJulia c₁ ∪ filledJulia c₂), VisibleFromInfinity c₁ c₂ x := by
+  set K : Set ℂ := filledJulia c₁ ∪ filledJulia c₂ with hKdef
+  have hKcomp : IsCompact K := (isCompact_filledJulia c₁).union (isCompact_filledJulia c₂)
+  have hKne : K.Nonempty := (nonempty_filledJulia c₁).mono subset_union_left
+  -- a bounding radius `R` for `K`
+  obtain ⟨R, hR0, hRK⟩ := hKcomp.isBounded.subset_closedBall_lt 0 0
+  -- a far real anchor `y₀`
+  set y₀ : ℂ := ((R + 1 : ℝ) : ℂ) with hy₀def
+  have hy₀norm : ‖y₀‖ = R + 1 := by rw [hy₀def, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (by linarith)]
+  have hy₀K : y₀ ∉ K := by
+    intro h; have := hRK h; rw [Metric.mem_closedBall, dist_zero_right, hy₀norm] at this; linarith
+  -- nearest joint-set point to `y₀`
+  obtain ⟨x₀, hx₀K, hx₀min⟩ :=
+    hKcomp.exists_isMinOn hKne (by fun_prop : ContinuousOn (fun w => dist y₀ w) K)
+  set r : ℝ := dist y₀ x₀ with hrdef
+  have hr : 0 < r := by rw [hrdef, dist_pos]; rintro rfl; exact hy₀K hx₀K
+  -- the tangent ball misses `K`
+  have hball : Metric.ball y₀ r ⊆ Kᶜ := by
+    intro w hw hwK
+    rw [Metric.mem_ball, dist_comm] at hw
+    exact absurd (lt_of_lt_of_le hw (hx₀min hwK)) (lt_irrefl _)
+  -- outward ray from `y₀` (real direction), unbounded, in `Kᶜ`
+  set T : Set ℂ := (fun t : ℝ => y₀ + ((t : ℝ) : ℂ)) '' Set.Ici 0 with hTdef
+  have hTconn : IsPreconnected T :=
+    (isPreconnected_Ici).image _ (by fun_prop : Continuous fun t : ℝ => y₀ + ((t : ℝ) : ℂ)).continuousOn
+  have hTnorm : ∀ p ∈ T, R + 1 ≤ ‖p‖ := by
+    rintro _ ⟨t, ht, rfl⟩
+    simp only [Set.mem_Ici] at ht
+    show R + 1 ≤ ‖y₀ + (t : ℂ)‖
+    rw [show y₀ + (t : ℂ) = (((R + 1 + t : ℝ)) : ℂ) by rw [hy₀def]; push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith)]
+    linarith
+  have hTK : T ⊆ Kᶜ := by
+    intro p hp hpK; have := hRK hpK
+    rw [Metric.mem_closedBall, dist_zero_right] at this
+    linarith [hTnorm p hp]
+  have hy₀T : y₀ ∈ T := ⟨0, Set.mem_Ici.mpr le_rfl, by simp⟩
+  have hTunb : ¬ IsBounded T := by
+    intro hbd
+    obtain ⟨C, hC⟩ := isBounded_iff_forall_norm_le.mp hbd
+    have hp : (y₀ + ((max C 0 + 1 : ℝ) : ℂ)) ∈ T :=
+      ⟨max C 0 + 1, Set.mem_Ici.mpr (by positivity), rfl⟩
+    have h1 := hC _ hp
+    have h2 := hTnorm _ hp
+    have h3 : R + 1 ≤ C := le_trans h2 h1
+    -- but the point has norm ≥ R + 1 + (max C 0 + 1) > C
+    rw [show y₀ + ((max C 0 + 1 : ℝ) : ℂ) = (((R + 1 + (max C 0 + 1) : ℝ)) : ℂ) by
+        rw [hy₀def]; push_cast; ring, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (by positivity)] at h1
+    have : C ≤ max C 0 := le_max_left _ _
+    linarith
+  have hunb : ¬ IsBounded (connectedComponentIn Kᶜ y₀) :=
+    unbounded_connectedComponentIn_of_subset hTconn hy₀T hTK hTunb
+  -- `x₀ ∈ frontier K`
+  have hx₀front : x₀ ∈ frontier K := by
+    rw [frontier_eq_closure_inter_closure]
+    refine ⟨subset_closure hx₀K, ?_⟩
+    rw [Metric.mem_closure_iff]
+    intro δ hδ
+    set t : ℝ := min (δ / 2) (r / 2) with htdef
+    have ht0 : 0 < t := lt_min (by linarith) (by linarith)
+    set w : ℂ := x₀ + ((t / r : ℝ) : ℂ) * (y₀ - x₀) with hwdef
+    have hnorm : ‖y₀ - x₀‖ = r := by rw [← dist_eq_norm]
+    have hwx : w - x₀ = ((t / r : ℝ) : ℂ) * (y₀ - x₀) := by rw [hwdef]; ring
+    have hwmem : w ∈ Metric.ball y₀ r := by
+      rw [Metric.mem_ball, dist_eq_norm]
+      have : w - y₀ = ((t / r - 1 : ℝ) : ℂ) * (y₀ - x₀) := by rw [hwdef]; push_cast; ring
+      rw [this, norm_mul, hnorm]
+      have hnn : ‖((t / r - 1 : ℝ) : ℂ)‖ = 1 - t / r := by
+        have htr1 : t / r ≤ 1 := by
+          rw [div_le_one hr]; calc t ≤ r / 2 := min_le_right _ _
+            _ ≤ r := by linarith
+        rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by linarith)]; ring
+      rw [hnn, sub_mul, one_mul, div_mul_cancel₀ t (ne_of_gt hr)]; linarith
+    refine ⟨w, hball hwmem, ?_⟩
+    rw [dist_comm, dist_eq_norm, hwx, norm_mul, hnorm]
+    have hnn : ‖((t / r : ℝ) : ℂ)‖ = t / r := by
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    rw [hnn, div_mul_cancel₀ t (ne_of_gt hr)]
+    calc t ≤ δ / 2 := min_le_left _ _
+      _ < δ := by linarith
+  exact ⟨x₀, hx₀front, visibleFromInfinity_of_supportBall_unbounded (ne_of_gt hr)
+    (by rw [hrdef, dist_comm]) hball hunb⟩
 
 end Bottcher

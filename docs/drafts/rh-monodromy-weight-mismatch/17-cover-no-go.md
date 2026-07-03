@@ -198,3 +198,51 @@ vs T log T). So the endgame conjecture:
 C11 also confirms: an explicit "Ξ is pseudo-prime" statement, primeness of the
 order-1/2 object Ξ(√·) = xiDescent, and any ray-fiber refinement are FREE GROUND —
 publishable as this lane's own results once C12 pins the last classical input.
+
+---
+
+## 9. C12 verdict and the resolution of (RittΞ) `[THEOREM — paper, promotion checks listed]`
+
+C12 (delegated, primary sources with links; spot-check at promotion) supplies the
+missing black box. **Kobayashi 1977** (Kodai Math. Sem. Rep. 29, Thm 4, verbatim strip
+version): *an entire function of finite lower order whose zeros and 1-points all lie
+in a strip has order at most one, MEAN TYPE* — so T(r) = O(r) and n(r, c) = O(r) for
+every value c. (Also on record: Ostrovskii's Blaschke-condition version in
+Goldberg–Ostrovskii Ch. VI; Baker/Kobayashi parallel-lines ⟹ P(e^{az}); Edrei 1955
+gives order ≤ 1 for the one-line case; the Marchenko–Ostrovskii comb representation
+for real entire functions with real ±1-points — noted for the seam program.)
+
+**Theorem ((RittΞ), resolved).** ξ admits no factorization ξ = f ∘ h with h entire and
+f nonlinear beyond the FE descent; equivalently, xiDescent = Ξ(√·) is compositionally
+PRIME. Sector by sector:
+
+1. h polynomial: §2–3 (affine no-go; fiber directions) — only the FE cover.
+2. f transcendental, h transcendental: dead by pseudo-primeness (§8, Chuang's
+   accumulation-line lemma — Ξ's zeros lie in a strip, no poles).
+3. f rational with a single repeated special value: every ξ-zero multiplicity would be
+   divisible by j ≥ 2 — dead on the unconditional simple zeros (Levinson–Conrey).
+4. f rational (deg ≥ 2) with two distinct special values w₁, w₂ (two zeros, or zero +
+   omitted pole — ξ entire forces h to omit poles of f; and ξ omits no value, since
+   ξ = v + e^{az+b} would have a linear zero count against N(T) ~ T log T, so Möbius
+   f is impossible and pole-avoidance is the only option): both fibers h⁻¹(w₁),
+   h⁻¹(w₂) lie inside the critical strip (they are ξ-zeros; an empty omitted-pole
+   fiber lies in the strip trivially). Valiron–Mohon'ko gives
+   T(r, h) = T(r, ξ)/deg f + O(log r) ≍ r log r; Kobayashi Thm 4 forces
+   T(r, h) = O(r). Contradiction — dead. ∎
+
+**Promotion checks:** Kobayashi Thm 4 verbatim (source PDF linked in C12 note);
+Valiron–Mohon'ko for rational compositions; Chuang lemma p. 141; Levinson-type
+unconditional simplicity (positive proportion suffices); T(r, ξ) ≍ r log r.
+
+**Consequences.**
+- The cover route of 14 §4.4 is dead PERMANENTLY: no compositional detector exists.
+  The parity burden rests entirely and provably on the conservation/window front —
+  (WR-core), doc 18 §5, is the lane's unique open core.
+- Free-ground theorems now held by the lane (C11 confirmed unclaimed in print;
+  parked per the no-paper directive): Ξ is pseudo-prime; Ξ is prime modulo the FE
+  descent; Ξ(√·) is prime. The last is an hgt-native gatekeeper result:
+  compositional rigidity of a seed object, the composition-monoid analogue of
+  hypertranscendence.
+- The Marchenko–Ostrovskii comb representation (real entire, real ±1-points ⟹
+  cos θ(z), θ onto a comb domain) is a NEW instrument pointer for the seam program:
+  the k = 1 seam ledger (sign(Ξ) data) lives exactly on that function class.
