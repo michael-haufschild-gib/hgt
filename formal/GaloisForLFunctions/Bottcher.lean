@@ -340,3 +340,4 @@ import GaloisForLFunctions.Bottcher.Q62SmoothBranchReflection
 import GaloisForLFunctions.Bottcher.Q62SmoothPieceReflectionDischarge
 import GaloisForLFunctions.Bottcher.Q62OneSidedBranch
 import GaloisForLFunctions.Bottcher.Q62OneSidedDense
+import GaloisForLFunctions.Bottcher.Q62OneSidedPullback
