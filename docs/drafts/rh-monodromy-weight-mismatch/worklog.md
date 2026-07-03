@@ -917,3 +917,26 @@ rng seed 1749846374244417905; move: extreme-cases; domains: ant-foraging × glas
   beyond GORZ. Foil prediction: D–H sections go disc < 0; Révész has no real carrier.
 - Weld layering sharpened: FE builds the carrier, Euler must kill the class on it.
 Next: (DISC) window↔section dictionary (#132); residue-parity pairing (#133); hybrid domination (#134).
+
+## 2026-07-03 — #132 → #133 → #134 (the three coordinates of the bridge)
+- #132 (DISC, doc 20 + DISC-RESULTS.md): pre-registered synthetic runs — no spurious
+  pairs anywhere; P4 FAILED (load-bearing): global shift-n does NOT localize (cost
+  d ≳ c·x_pair); recentering IS localization (pair visible at d = 4 once expansion
+  sits at the window). POD run on the real objects: degree-4 n=0 recentered jet
+  section reads disc < 0 at the certified D–H off-line zero and disc > 0 for ζ at the
+  identical window — first measured finite square-class detector. Literature delegate:
+  (SPUR) 2k-exactness unpublished; disc-sign literature stops at d=3 (= higher-order
+  Turán, Dimitrov–Lucas 2011, global center only). Recentered program is open ground.
+- #133 (doc 21): (SMOOTH) no-go shaped exactly — pairings output ℝ, target is ℤ/2;
+  only known sign-extraction is conjugate-pair positivity (L-side). Reroute (GERM):
+  Euler product = the whole formal ℤ₂-tower as convergent Dirichlet series on Re s>1
+  (a_{p^j} = C(2j,j)/4^j etc.); RH_{2^k} ⟺ the arithmetic germ continues to
+  Re s > 1/2. Landau route dead (pole caps σ_c). Cheap Lean repackaging carded.
+- #134 (doc 22 + ANNEAL-RESULTS.md, pod): exact FE of the symmetric truncation
+  g_N(1−s) = χ(1−s)g_N(s) (one line); domination 7/7 rng windows at r=0.20 up to
+  T≈2800 (PE PASS; single r=0.35 failure at a g-zero 0.003 from the circle);
+  reduction: ζ's window parity = truncation's window parity on dominated windows
+  (modulo seam-transport wiring, with #131). Convergence: (DISC-fin) — the fully
+  finite bridge target: disc > 0 for recentered jet sections of the truncation.
+Next: (SPUR-R) stability theorem; (DISC-fin) first instance on a g_N off-line pair;
+(GERM)-Lean packaging.
