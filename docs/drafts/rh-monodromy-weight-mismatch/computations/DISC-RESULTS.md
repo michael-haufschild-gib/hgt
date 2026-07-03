@@ -52,3 +52,17 @@ Pre-registered PD (ζ control all 0): **PASS** — 0 at all six (d,n).
 of the square class on the real objects — disc < 0 at the D–H off-line zero,
 disc > 0 for ζ at the identical window.** The w₁-detector question (Arc B) has its
 first concretely measured candidate instrument.
+
+## Run 5 — the truncation carrier (pod): first fully finite window-relation instance (#136)
+Scripts: `computations/mwm/truncation_boxcount.py`, `/root/trunc_reader_run.py` (pod).
+Box-count (winding, σ ∈ [0.53,1.35], Δt = 5, T ∈ [200,1030]): **5 off-line zero
+boxes** of the exact-FE truncations g_N — pre-registered PL′ **PASS**. First zero
+refined: **ρ_g = 0.60941068066067 + 221.0788841113159·i** of g₅ (|g| = 1.5e−49).
+Reader on g₅'s completed carrier (PA2 reality 7e−49) at t₀ = Im ρ_g:
+**non-real pairs = 1 at d = 4, 6, 8** (pre-registered PM′ PASS) — disc < 0 reads the
+truncation's own local square class. Direct right-half count in the window: 1. This
+is the first measured window-relation instance on a FINITE arithmetic object.
+Consistency triangle (pre-registered PN, forced by the banked deck transport + RH
+verified at T ≈ 221): domination q = max|ζ−g₅|/|g₅| on that window boundary MUST be
+≥ 1 — measured **q = 4.72 (r = 0.20), q = 1.17 (r = 0.35)**: domination fails
+exactly where parity is odd. The theorem's contrapositive observed in the data.

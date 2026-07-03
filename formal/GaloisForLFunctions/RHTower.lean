@@ -38,3 +38,4 @@ import GaloisForLFunctions.RHTower.MirrorPencil
 import GaloisForLFunctions.RHTower.CountingSubstitute
 import GaloisForLFunctions.RHTower.WindowRelation
 import GaloisForLFunctions.RHTower.SquareLadder
+import GaloisForLFunctions.RHTower.GermExtension

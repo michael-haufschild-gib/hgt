@@ -940,3 +940,27 @@ Next: (DISC) window↔section dictionary (#132); residue-parity pairing (#133); 
   finite bridge target: disc > 0 for recentered jet sections of the truncation.
 Next: (SPUR-R) stability theorem; (DISC-fin) first instance on a g_N off-line pair;
 (GERM)-Lean packaging.
+
+## 2026-07-03 — #135 → #136 → #137 (SPUR-R bricks, the finite instance, the germ bank)
+- #135 (doc 23): identity stack derived (one-step / three-term / Appell / POLAR CHAIN —
+  consecutive Jensen sections are polar derivatives at pole 0, not in print per delegate /
+  generating e^u f(xu)). Bricks proved: universal rescaling + Hurwitz visibility; pointwise
+  Turán for the chain (e^u g(xu) ∈ LP(u) + Laguerre inequality); one-sided interlacing with
+  measured two-sided breakdown. (HBJ) = THEOREM via Levin's angle theorem (UHP = angle at
+  vertex 0; {(d)_k} nonneg MS; delegate-verified route) — probes had found all-strictly-upper
+  before the theorem was located. BB symbol of the Jensen operator = homogenized Laguerre
+  (real stable) — independent route, unpublished per delegate. Two failed intermediates
+  recorded (half-step stability: sign error, probe-refuted; PJ/PK superseded).
+  THEOREM-M TRANSFER (user pointer): sign-transfer-at-critical-points + energy skeleton →
+  the critical-point collapse (CPI): A_{d−1}(c) = A_d(c) and J^d_{Pg}(c) = q_d(c)A_d(c) +
+  c⁴A_d''(c), q_d positive definite for d > 1 + a²/b² (verified 41 digits, pod). Residual
+  named (AMP): transfer inequality at all-but-one extremum. #135 stays open at (AMP).
+- #136 (DISC-RESULTS run 5, pod): box-count found 5 off-line-zero boxes of g_N; refined
+  ρ_g = 0.60941068066067 + 221.0788841113159i (g₅). Reader counts 1 pair at d = 4,6,8 on the
+  truncation's own carrier (PM′ PASS) — first fully finite window-relation instance. PN PASS:
+  domination fails (q = 4.72 / 1.17) at the odd-parity window, as banked transport + verified
+  RH force. (ANNEAL) exceptional set = square-class defects of the truncation, not noise.
+- #137 BANKED: GermExtension.lean (exists_farHalf_root, rhLadder_iff_germ_extends) — the
+  ladder as continuation of the Euler germ, machine-checked. 8579 jobs, axiom-clean.
+Next: (AMP) via the two-variable energy on e^u g(xu); then the finite (DISC-fin) inequality
+on truncation jets with (CPI) as the evaluation tool.

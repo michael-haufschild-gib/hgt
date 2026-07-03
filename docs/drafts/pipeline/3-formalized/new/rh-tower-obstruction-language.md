@@ -148,3 +148,11 @@ principle anywhere in the entire chain. All axiom-clean; RHTower green 8566 jobs
   `rh_iff_forall_root_slitPlane`. Pure transport along u = (s−1/2)² (center_sq_mem_slitPlane /
   half_add_uSqrt_mem_rightHalf); no new analytic machinery. 8578 jobs, axiom-clean
   [propext, Classical.choice, Quot.sound], formal lint passed. Theory: doc 19-square-class.md.
+- 2026-07-03 (#137, W2g): `RHTower/GermExtension.lean` — the arithmetic-germ packaging.
+  `farHalf` layer (open/convex/2∈/⊆rightHalf), `exists_farHalf_root` (the level-k germ is
+  the Euler side's free gift: ξ ≠ 0 on Re s > 1 ⟹ root exists via exists_root_iff_orders_dvd
+  with vacuous divisibility), `rhLadder_iff_germ_extends` (RH_{2^k} ⟺ every level-k root germ
+  on Re s > 1 extends analytically to Re s > 1/2, extension agreeing with the germ; uniqueness
+  up to μ_{2^k} via pow_root_unique, normalization ω = h(2)/g₁(2)). Doc 21 §3's continuation
+  form banked. 8579 jobs, first-compile clean, axiom-clean [propext, Classical.choice,
+  Quot.sound], formal lint passed.

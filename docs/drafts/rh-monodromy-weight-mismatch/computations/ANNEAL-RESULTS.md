@@ -30,3 +30,10 @@ Domination of ζ by its exact-FE symmetric truncation on r=0.20 line-centered wi
 boundaries is the ROBUST regime at accessible heights; exceptional windows are those
 whose boundary passes near a truncation zero. This calibrates the (ANNEAL) reduction
 of doc 22: on dominated windows the banked deck-transport machinery applies verbatim.
+
+## Addendum (#136 consistency): the exceptional set contains odd-parity windows
+At the g₅ off-line zero window (T ≈ 221.079): q = 4.72 (r=0.20), 1.17 (r=0.35) —
+domination fails, as the banked transport + RH-verification at that height FORCE
+(dominated ⟹ parity equal ⟹ N_g even, but N_g = 1 there). Pre-registered PN PASS.
+The (ANNEAL) exceptional set is not noise: it is pinned to the truncation's own
+square-class defects.
