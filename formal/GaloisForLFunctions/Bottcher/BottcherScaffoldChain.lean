@@ -484,8 +484,6 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
       (by rw [← hmdef]; exact hslitne)
   exact ⟨α, β, J₁, J₂, hrest⟩
 
-namespace Bottcher
-
 /-- **Fold-0 doubling inclusion.**  Squaring maps an arc annulus into the arc annulus of
 doubled logs with arguments doubled IN PLACE (no full-turn shift) — the branch-0 twin of
 `sq_mem_arcAnnulus`.  Together the two folds realize both sign classes of the doubling link:
@@ -528,8 +526,6 @@ theorem fold0_window_exists {θs m : ℝ} (hm : 0 < m) (hm8 : m ≤ Real.pi / 8)
     · rw [hαdef, hβdef]; linarith
     · rw [hαdef, hβdef]; linarith
   · have h1 : α / 2 ≤ max α (α / 2) := le_max_right _ _
-    rw [← hαdef]
     linarith
   · have h1 : min β (β / 2) ≤ β / 2 := min_le_right _ _
-    rw [← hβdef]
     linarith

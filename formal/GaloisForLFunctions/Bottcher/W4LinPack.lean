@@ -19,12 +19,22 @@ open Complex Set Filter Metric Topology
 
 namespace Bottcher
 
-/-- **The conditional connectivity interface** (task #139): every deep consecutive overlap of
-a wedge-slit scaffold chain — scaffold pair or scaffold–lobe — is preconnected.  The banked
-level-1 case (`overlap_section_scaffold_connected`) needs no clause. -/
+/-- **The conditional connectivity interface** (tasks #139/#140): every deep consecutive
+overlap of a wedge-slit scaffold chain — scaffold pair or scaffold–lobe — is preconnected.
+The banked level-1 case (`overlap_section_scaffold_connected`) needs no clause.
+
+The chain data carries the certified doubling window `(J₁, J₂)` (fold-1 form,
+`2J − 2π ∈ (α, β)`): this pins the equality locus of `σ_{j+1}∘sq` and `σ_j` to the window's
+component, which — for slit centers with the window in the middle fold-slot — is the unique
+component of its antipodal parity class; the antipode argument kills the rest.  Without the
+doubling clause the statement is FALSE (an adversarial branch choice puts the equality locus
+on both end components; see the pipeline card addendum 5). -/
 def ChainOverlapsConnected (c : ℂ) {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
     (ra rb RW θs : ℝ) : Prop :=
-  ∀ (σ : ℕ → ℂ → ℂ) (SL : ℕ → ℂ → ℂ) (k : ℕ), 1 ≤ k →
+  ∀ (J₁ J₂ : ℝ) (σ : ℕ → ℂ → ℂ) (SL : ℕ → ℂ → ℂ) (k : ℕ), 1 ≤ k →
+    θs + Real.pi / 8 ≤ J₁ → J₁ < J₂ → J₂ ≤ θs + 2 * Real.pi - Real.pi / 8 →
+    θs + Real.pi / 8 ≤ 2 * J₁ - 2 * Real.pi →
+    2 * J₂ - 2 * Real.pi ≤ θs + 2 * Real.pi - Real.pi / 8 →
     σ 0 = S.T →
     (∀ j : ℕ, ScaffoldProps c S.T
       (arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8)) j (σ j)) →
@@ -33,6 +43,7 @@ def ChainOverlapsConnected (c : ℂ) {rlo R₀ : ℝ} (S : TowerSection c rlo R�
     (∀ j : ℕ, ScaffoldProps c S.T (annulusSet ra rb) j (SL j)) →
     (∀ j : ℕ, ∀ v ∈ arcAnnulus ra rb (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8),
       SL j v = σ j v) →
+    (∀ j : ℕ, ∀ w ∈ arcAnnulus ra (Real.sqrt RW) J₁ J₂, σ (j + 1) (w ^ 2) = σ j w) →
     (∀ j : ℕ, 1 ≤ j → j + 1 ≤ k → IsPreconnected
       ((σ j '' arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8)) ∩
        (σ (j + 1) '' arcAnnulus ra RW (θs + Real.pi / 8) (θs + 2 * Real.pi - Real.pi / 8)))) ∧
@@ -421,7 +432,10 @@ theorem exists_tower_ext_slit_s_withRoot {c : ℂ} {rlo R₀ : ℝ} (S : TowerSe
     apply hSLmatch j v
     rw [hαeq, hβeq]
     exact hv
-  obtain ⟨hconnσ, hconnL⟩ := hconn σ SL k hk1 hσ0 hσP' hσsq' hSLP hSLmatch'
+  obtain ⟨hconnσ, hconnL⟩ := hconn J₁ J₂ σ SL k hk1
+    (by rw [← hαeq]; exact hαJ₁) hJ₁J₂ (by rw [← hβeq]; exact hJ₂β)
+    (by rw [← hαeq]; exact hJ₁dbl) (by rw [← hβeq]; exact hJ₂dbl)
+    hσ0 hσP' hσsq' hSLP hSLmatch' hσdbl
   have hconnσA : ∀ j : ℕ, 1 ≤ j → j + 1 ≤ k → IsPreconnected (Pσ j ∩ Pσ (j + 1)) := by
     intro j h1 h2
     have := hconnσ j h1 h2

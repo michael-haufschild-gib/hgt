@@ -8,8 +8,8 @@ Use this as the quick map before opening large proof files.
 | Area | Umbrella | Lean modules | Declarations | Capstones |
 |---|---|---:|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 32 | 262 | `hurwitz_n2_unconditional` |
-| `u0_pui` | `GaloisForLFunctions.U0` | 61 | 542 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 324 | 4597 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `u0_pui` | `GaloisForLFunctions.U0` | 61 | 543 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 325 | 4603 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Wiring
 

@@ -6,7 +6,7 @@ proven right now: no `sorry`, no assumed hypothesis, and the standard axiom set
 `[propext, Classical.choice, Quot.sound]` only.  It depends on nothing from the pending q62/Böttcher
 lane — only on the committed Böttcher base.
 
-## The four pillars — now all four UNCONDITIONAL
+## The five pillars — now all five UNCONDITIONAL
 
 1. **Sharp independence (`u0_boettcher_independence_sharp = window_threshold_sharp`).**
    For every parameter with `‖b‖ > 2+√2`, `u₀` and the Böttcher window branch `φ_b` are
@@ -49,7 +49,8 @@ import GaloisForLFunctions.U0.U0MStepInstances
 import GaloisForLFunctions.U0.U0KummerBranch
 
 open Complex Set Metric Bottcher Filter Topology
-open U0ParameterSpace U0PhiMStep U0PhiMStepFar U0WindowSharpness
+open U0ParameterSpace U0PhiLargeCarrier U0PhiLargeDescent U0PhiMStep U0PhiMStepFar
+open U0WindowSharpness
 open U0MStepBranch U0MeroCarrier
 
 namespace U0Capstone
@@ -125,5 +126,52 @@ theorem u0_kummer_tower_independence {b : ℂ}
         (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
           (u0AnSub annMB_subset_Ext)) :=
   U0KummerBranch.u0_mstep_kummer_branch_independence hviab k
+
+/-- **The full u₀ Böttcher-tower capstone (pillars 1–5).**  This packages the whole
+current U0 proof surface in one theorem: the sharp `2+√2` window theorem with its exact
+obstruction, the viable-region branch/existence/independence capstone, and the finite
+Kummer tower strengthening for every viable parameter and every level.  It introduces no
+new proof ingredient; it is the unified formal entry point for the U0 result. -/
+theorem u0_full_bottcher_tower_capstone :
+    -- pillar 1: sharp window independence plus exact obstruction
+    ((∀ b : ℂ, ∀ hb : 2 + Real.sqrt 2 < ‖b‖,
+      letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb)
+        (annWB_nonempty hb)
+      letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+        (ratfuncToMero (annWB b) (isOpen_annWB b) (isPreconnected_annWB hb)
+          (annWB_nonempty hb) (annWB_infinite hb)).toAlgebra
+      NoRelation (RatFunc ℂ)
+        (algebraMap (analyticSubring (annWB b)) (meroField (annWB b)) (phiBAn b hb))
+        (algebraMap (analyticSubring (annWB b)) (meroField (annWB b))
+          (u0AnSub annWB_subset_Ext))) ∧
+    (∃ b : ℂ, ‖b‖ = 2 + Real.sqrt 2 ∧ ∃ x : ℂ, ‖x‖ ≤ 1 ∧ x ∈ filledJulia b)) ∧
+    -- pillars 2–4: viable-region structure, m-step branch, and m-step independence
+    (IsClosed Obstructed ∧
+    (∃ b : ℂ, b ∈ frontier Obstructed ∧
+      b ∈ segment ℝ (⟨-33/25, 44/25⟩ : ℂ) (⟨-66/25, 88/25⟩ : ℂ)) ∧
+    (∀ b : ℂ, (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia b) →
+      ∃ (r : ℝ) (N : ℕ), 1 < r ∧
+        AnalyticOnNhd ℂ (psiN b N) (ball (0 : ℂ) r) ∧ (∀ z : ℂ, psiN b N z ≠ 0)) ∧
+    (∀ b : ℂ, (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia b) → MStepIndependence b) ∧
+    MStepIndependence (3 : ℂ)) ∧
+    -- pillar 5: every finite Kummer layer of the viable m-step branch
+    (∀ b : ℂ, (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia b) → ∀ k : ℕ,
+      ∃ (r : ℝ) (N : ℕ) (hr : 1 < r) (χ : ℂ → ℂ)
+        (hχ : AnalyticOnNhd ℂ χ (ball (0 : ℂ) r)),
+        (∀ z, χ z ≠ 0) ∧
+        (∀ z ∈ ball (0 : ℂ) r, χ z ^ (2 ^ k) = psiN b N z) ∧
+        letI := isDomain_analyticSubring (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr)
+          (annMB_nonempty hr)
+        letI : Algebra (RatFunc ℂ) (meroField (annMB r)) :=
+          (ratfuncToMero (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr) (annMB_nonempty hr)
+            (annMB_infinite hr)).toAlgebra
+        NoRelation (RatFunc ℂ)
+          (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+            ⟨Germ.coeRingHom (𝓟 (annMB r)) χ, ⟨χ, hχ.mono inter_subset_left, rfl⟩⟩)
+          (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+            (u0AnSub annMB_subset_Ext))) := by
+  refine ⟨u0_boettcher_independence_sharp, u0_topic_capstone, ?_⟩
+  intro b hviab k
+  exact u0_kummer_tower_independence hviab k
 
 end U0Capstone
