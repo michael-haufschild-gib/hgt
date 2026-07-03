@@ -211,3 +211,14 @@ The parent-lab mailbox is not in use (single-agent context; only the q62/Böttch
 in parallel, and it coordinates through the pipeline, not the mailbox). P1 dropped; its
 content lives in worklog.md + the lane docs. P2 (publication surface) remains the outward
 channel.
+
+## R6-loc-b pre-registration (2026-07-03, before launch)
+
+Radius scan at the deepest R6-loc near-return (τ ≈ 91.0, mapping the banked zero t≈85.7 onto
+the defect zero t≈176.7): r ∈ {0.02, 0.05, 0.08, 0.12, 0.15}, τ ∈ [90.5, 91.5] step 0.02,
+48 pts. Pre-register: ratio min_τ d(τ,r)/m(r) DECREASES with r (d ≈ jet-difference-dominated,
+m ≈ r·|f′|); [CONJECTURE, prior ≈ 0.5] some r ≤ 0.15 achieves a strict sub-margin return —
+a certified local Rouché transfer between two actual zeros (first non-counterfactual
+instance). Kill clause: ratio > 1.5 at every r ⟹ the near-miss is intrinsic (the two jets
+genuinely differ at all scales) — local transfer then needs the symmetry slack (07 §3).
+Job size: 5 × 51 × 48 ≈ 12k evals — seconds.

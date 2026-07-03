@@ -181,3 +181,42 @@ and certified ourselves).
   (Bohr–Courant denseness has no rates — can neither manufacture zeros nor prove
   (H-loc); fixed-margin circle is the right register). R6-loc (pre-registered) decides
   the mechanism ranking. P1 retired (mailbox unused, single-agent context).
+
+## 2026-07-03 (wave 2b + rigidity bricks)
+
+- **F [PROVED HERE (paper) — quantified Reduction]** 06-reduction §6: master counting lemma
+  (H-separated defects ≤ N(σ₀, T+H)) ⟹ the open core weakens from positive upper density to
+  **(R_k^θ): T^{θ(σ₀)}·polylog defect recurrence i.o.**, θ = 3(1−σ₀)/(2−σ₀) < 1 — the burden
+  is GRADED in σ₀ (θ(3/4) = 3/5; θ → 0 as σ₀ → 1). Downstream: droves dichotomy relaxes to
+  power-droves; D–H overshoots every threshold by a full power (linear).
+- **F [PROVED, Lean — surgery no-go]** `RHTower.no_polynomial_surgery` banked
+  (`RHTower/DirichletRigidity.lean`, axiom-clean [propext, Classical.choice, Quot.sound],
+  umbrella + MainTheorems + lint green): no somewhere-convergent L-series agrees on a right
+  half-line with P(s)·(another L-series), deg P ≥ 1. The droves dichotomy's first
+  unconditional fragment: the Dirichlet-series class admits NO finite divisor surgery — one
+  cannot insert a lone off-line zero quadruple into ζ within the class. Engine: mathlib's
+  `LSeries.tendsto_cpow_mul_atTop` + three-case norm asymptotics (new reusable helpers:
+  eventual poly bound, poly×rpow-decay→0, cpow-prefactor norm).
+- **F [VERIFIED READING — C5, spot-checked verbatim]** Beurling calibration
+  (`checks/c5-beurling-density-note.md`): Révész–Pintz (2407.12746): "contrary to zeta
+  functions with a functional equation, there is no asymptotic formula for the number of
+  zeroes of a Beurling zeta function"; sparse-but-nonempty IS realized FE-free
+  (Broucke–Debruyne–Vindas: RH-true systems; finitely-many-zero systems exist, in regions
+  Re s > θ). ⟹ the FE is the load-bearing axiom of the droves dichotomy — exactly the
+  forbidden regime exists once FE is dropped. GOLD lead: Hilberdink–Lapidus (math/0410270)
+  "generalised functional equation" for Beurling zetas = candidate FE-carrying testbed class
+  for the dichotomy (exact conditions unresolved/paywalled → B1' first move).
+- **F [MEASURED — R3c: anti-correlated mobility spectra]** Fine k-scan: plateau coeff 3–4
+  replicates at σ₀ = 0.5025; NEW two-population asymmetry (k<κ and k>κ excite disjoint
+  defect families; only the banked zero t≈84.5 pinned both sides); and the pre-registered
+  cross-question ANSWERED: FE-pinning and Euler-resistance orders are nearly OPPOSITE (the
+  most FE-pinned zero is among the least Euler-resistant) — the two constraints carry
+  distinct mobility spectra. Data: R3b-R5-RESULTS.md.
+- **F [MEASURED — R5c: moat scaling]** Moat persists at T = 200/500/1000 but shrinks
+  (0.025 → 0.02 → 0.01), FASTER than 1/log T at T=1000; inf_T width > 0 open, trending 0.
+  New most-resistant zero t ≈ 686. (T=1000 row partial 13/17 — job killed as oversized.)
+- **X [tooling — job sizing]** Wave-2b chained an oversized late stage (t ≤ 1000 cpath ≈
+  hours): violated the minutes-per-batch rule; killed at user request, partials salvaged.
+  Rule appended to runpod memory: winding cost scales with t; ≤ ~10 min/job; never chain a
+  10× stage behind small ones; per-stage DONE flags. Also regressed on cwd drift (gate ran
+  outside formal/ after terminal restart) — explicit cd in every gate command.

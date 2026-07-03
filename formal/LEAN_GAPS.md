@@ -250,6 +250,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62Assembly.lean:839` | Every algebraic step is now built and axiom-clean; the lone remaining input is the analytic lift — the |
 | `formal/GaloisForLFunctions/Bottcher/Q62BothConnectedExposed.lean:8` | point of one set off the other filled set (after a swap).  The *only* remaining gap to |
 | `formal/GaloisForLFunctions/Bottcher/Q62Field.lean:269` | by `mvEval_deepBall_eq_zero_iff` (faithfulness); the single remaining input `hFunIndep` is precisely |
+| `formal/GaloisForLFunctions/Bottcher/Q62HinputAssembly.lean:16` | This is the genuine remaining content of the natural-boundary route (co-countable for connected `c₁`: |
 | `formal/GaloisForLFunctions/Bottcher/Q62KummerAssembly.lean:35` | against `meroField`. The remaining work to make it unconditional is the *mechanical* construction of |
 | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:24` | algebraic surface of the disconnected case: the lone remaining input is the *geometric* non-squareness |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:20` | Böttcher branch `β_{c₁}` reflects across it — the isolated `ReflectionCore`, the one remaining input; |
@@ -290,7 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:392` | center fit, while the caller supplies the genuine remaining quantitative window. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:459` | is the shrinking-radius fixed-tail interface: the remaining quantitative task is to produce the scale |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchEventual.lean:16` | non-strong roots.  The remaining `c₁` datum is the native frontier separable nonresonant periodic |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityHNBCrossing.lean:660` | remaining input is the common-basin sparse crossing geometry for the continued `c₂` branch. -/ |
 
 ## Historical Status Logs
 

@@ -95,3 +95,30 @@ height (t ≤ 200 / 500 / 1000) and band σ₀. [CONJECTURE] the moat shrinks as
 (slowest zeros get slower; u*_max ↑ 1), plausibly like 1 − u*_max ~ c/log T; whether
 inf_T (moat width) > 0 at fixed σ₀ is the sharp question — a positive answer would be a
 strong (and suspicious — attack it) family-picture statement.
+
+## R3c + R5c results (2026-07-03 night) — [MEASURED]
+
+Raw: `r3c.out` (complete), `r5c_500.out` (complete), `r5c_1000.out` (PARTIAL 13/17 — job
+killed at user request, remaining stage oversized; salvaged rows suffice for the verdicts).
+
+**R3c (window t ∈ [2,102), k ∈ [0.27, 0.30] step 0.0025, bands σ₀ ∈ {0.5025, 0.505, 0.51}):**
+1. Plateau coefficient replicates at the finest band: σ₀ = 0.5025 floor (n = 1, box 84) on
+   k ∈ [0.280, 0.285], width/(σ₀−½) ≈ 3–4; κ inside every plateau. Pre-reg (a) CONFIRMED.
+2. **Two-population asymmetry (new structure):** the defect populations on the two sides of
+   the FE fiber are DISJOINT except for one box — k < κ activates {8,18,26,34,36,54,64,70,
+   80,88,98}, k > κ activates {4,12,14,22,30,32,40,50,56,58,68,74,78,92,94,96}; only box 84
+   (the banked certified zero t ≈ 85.7) is defective on BOTH sides. Detuning the FE in the
+   two directions excites two different zero families. Pre-reg (b): pinning order stable
+   across bands ✓ (84 ≫ {4} ≫ {8,54,98} in every band).
+3. Pre-reg (c) ANSWERED: **anti-correlation.** The most FE-pinned zero (t ≈ 84.5, pinned
+   from both sides at every band) is among the LEAST Euler-resistant (R5b: gone before
+   u = 0.9), while the most Euler-resistant zeros (178; 686 at T=1000) are not
+   FE-distinguished. The FE and Euler constraints grade the zero population in nearly
+   opposite orders — two distinct mobility spectra, not one.
+
+**R5c (moat scaling; σ₀ = 0.51):** moat persists at every window tested and shrinks:
+width ≈ 0.025 (T=200, R5b) → 0.0175–0.020 (T=500: last defect u = 0.98) → ≈ 0.0075–0.010
+(T=1000 partial: last defect u = 0.99, box 686; n = 0 at 0.9925). Log-law calibration held
+at T=500 and FAILED LOW at T=1000 (measured 0.01 vs predicted 0.017) — decay faster than
+1/log T at this grid; rate undetermined (grid-coarse). inf_T width > 0 remains open,
+trending to 0. New most-Euler-resistant zero: t ≈ 686.
