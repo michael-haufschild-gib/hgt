@@ -5,6 +5,7 @@ This module is part of the split Brolin/Riesz-measure interface. Import
 `GaloisForLFunctions.Bottcher.Brolin` for the full public surface.
 -/
 import GaloisForLFunctions.Bottcher.Brolin.BoundaryCriteria
+import Mathlib.MeasureTheory.Measure.Support
 
 open Filter Topology MeasureTheory CompactlySupported Laplacian
 open scoped Laplacian
@@ -765,5 +766,94 @@ theorem brolinMuOne_hDiscLimitingRieszMeasureCore (c : ℂ) :
   · exact brolinMuOneRieszMeasure_hasSubseqLogPotentialLimitAt c
   · intro z hz
     exact green_eq_neg_logPotential_brolinMuOneRieszMeasure_on_basin hz
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Arbitrary-target hDisc limiting-measure package: the selected limiting
+Brolin measure is carried by `K_c`, is the weak subsequential limit of the
+finite target-`a` pre-Brolin measures, has the corresponding logarithmic
+potential subsequential limit on the basin, and represents `G_c` there. -/
+theorem limitingBrolinMeasureAt_hDiscCore (c a : ℂ) :
+    IsProbOn (limitingBrolinMeasureAt c a) (filledJulia c) ∧
+      IsWeakSubseqLimitOfPreBrolinAt c a (brolinLimitAtSubsequence c a)
+        (limitingBrolinMeasureAt c a) ∧
+      HasSubseqLogPotentialLimitAt c a (brolinLimitAtSubsequence c a)
+        (limitingBrolinMeasureAt c a) ∧
+      ∀ z : ℂ, z ∉ filledJulia c →
+        greenFunctionDyn c z = - logPotential (limitingBrolinMeasureAt c a) z := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · exact limitingBrolinMeasureAt_isProbOn_filledJulia c a
+  · exact limitingBrolinMeasureAt_isWeakSubseqLimitOfPreBrolinAt c a
+  · exact limitingBrolinMeasureAt_hasSubseqLogPotentialLimitAt c a
+  · intro z hz
+    exact green_eq_neg_logPotential_limitingBrolinMeasureAt_on_basin
+      (c := c) (a := a) (z := z) hz
+
+/-- Arbitrary-target Riesz-measure package for the same selected limiting
+Brolin measure. -/
+theorem limitingBrolinRieszMeasureAt_hDiscCore (c a : ℂ) :
+    limitingBrolinRieszMeasureAt c a = limitingBrolinMeasureAt c a ∧
+      IsProbOn (limitingBrolinRieszMeasureAt c a) (filledJulia c) ∧
+      IsWeakSubseqLimitOfPreBrolinAt c a (brolinLimitAtSubsequence c a)
+        (limitingBrolinRieszMeasureAt c a) ∧
+      HasSubseqLogPotentialLimitAt c a (brolinLimitAtSubsequence c a)
+        (limitingBrolinRieszMeasureAt c a) ∧
+      ∀ z : ℂ, z ∉ filledJulia c →
+        greenFunctionDyn c z = - logPotential (limitingBrolinRieszMeasureAt c a) z := by
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · exact limitingBrolinRieszMeasureAt_eq_limitingBrolinMeasureAt c a
+  · exact limitingBrolinRieszMeasureAt_isProbOn_filledJulia c a
+  · rw [limitingBrolinRieszMeasureAt_eq_limitingBrolinMeasureAt]
+    exact (limitingBrolinMeasureAt_hDiscCore c a).2.1
+  · rw [limitingBrolinRieszMeasureAt_eq_limitingBrolinMeasureAt]
+    exact (limitingBrolinMeasureAt_hDiscCore c a).2.2.1
+  · intro z hz
+    exact green_eq_neg_logPotential_limitingBrolinRieszMeasureAt_on_basin
+      (c := c) (a := a) (z := z) hz
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- The arbitrary-target limiting Brolin measure has no support outside the
+filled Julia set.  This is the easy support inclusion coming from the proven
+carrier statement `μ((K_c)ᶜ)=0`; the hard remaining support theorem is the
+opposite Julia-frontier inclusion. -/
+theorem limitingBrolinMeasureAt_support_subset_filledJulia (c a : ℂ) :
+    (limitingBrolinMeasureAt c a).support ⊆ filledJulia c := by
+  intro z hz
+  by_contra hzK
+  have hpos : 0 < limitingBrolinMeasureAt c a (filledJulia c)ᶜ := by
+    rw [Measure.mem_support_iff_forall] at hz
+    exact hz (filledJulia c)ᶜ ((isClosed_filledJulia c).isOpen_compl.mem_nhds hzK)
+  rw [limitingBrolinMeasureAt_filledJulia_compl] at hpos
+  exact (lt_irrefl _) hpos
+
+/-- Riesz-measure variant of the same support inclusion. -/
+theorem limitingBrolinRieszMeasureAt_support_subset_filledJulia (c a : ℂ) :
+    (limitingBrolinRieszMeasureAt c a).support ⊆ filledJulia c := by
+  rw [limitingBrolinRieszMeasureAt_eq_limitingBrolinMeasureAt]
+  exact limitingBrolinMeasureAt_support_subset_filledJulia c a
+
+/-- The target-one hDisc measure has no support outside the filled Julia set. -/
+theorem brolinMuOne_support_subset_filledJulia (c : ℂ) :
+    (brolinMuOne c).support ⊆ filledJulia c := by
+  simpa [brolinMuOne] using limitingBrolinMeasureAt_support_subset_filledJulia c 1
+
+/-- Riesz target-one hDisc measure support inclusion. -/
+theorem brolinMuOneRieszMeasure_support_subset_filledJulia (c : ℂ) :
+    (brolinMuOneRieszMeasure c).support ⊆ filledJulia c := by
+  rw [brolinMuOneRieszMeasure_eq_brolinMuOne]
+  exact brolinMuOne_support_subset_filledJulia c
+
+end
 
 end Bottcher
