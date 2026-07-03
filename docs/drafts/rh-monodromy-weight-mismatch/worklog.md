@@ -686,3 +686,21 @@ it jumps by the crossing zero's factor. The conservation front's formal spine is
 complete: conservation + additivity + jump + far-field anchor + central anchor. The
 open mathematics is now exactly OC1 (crossing pairing / two-coloring, box 84 the
 designated counterexample candidate) and OC2 (seam, #122).
+
+## 2026-07-03 — #122 BANKED: SeamCocycle.lean — OC2 has its instrument
+
+The seam ledger is formal, on the u-plane carrier as planned: seam classes = gluing
+ratios of bank roots (overlapU/overlapD half-disks) against the chart roots (analytic
+across the right/left seam segments); crossing an on-seam zero multiplies the class by
+exp(2πi·m/n) (seam_jump — VALUE-LEVEL identity, reduces to deckClass_basepoint_indep +
+deckClass_single_zero, zero new analysis); instantiated on xiDescent at every u-plane
+point, where on-slit points ARE the on-line ξ-zeros (xiDescent_seam_jump). RHTower
+green 8573 jobs, axiom-clean, lint passed.
+
+The three ledger accounts of 15-conservation-program.md are now ALL theorem-grade:
+interior conservation (DeckHomotopy) + crossing jumps (LedgerJump) + seam jumps
+(SeamCocycle), draining to the far-field anchor (FarFieldAnchor). The conservation
+front has zero formal debt. The open mathematics of the program is now exactly OC1
+(crossing pairing / two-coloring at the band edge) — everything else is bookkeeping
+with banked bricks. Next: OC1 formulation + attack-as-false at box 84, or #116
+(quadrant-ramified cover construction), or #96 (Beurling foil).

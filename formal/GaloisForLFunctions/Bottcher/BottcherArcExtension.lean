@@ -218,6 +218,64 @@ theorem continuesAcross_of_smoothJuliaArc
     show greenFunctionDyn c₁ (γ w) = Real.log ‖β (γ w)‖
     rw [hβmod (γ w) (hγbasin w hw hnorm), Real.log_exp]
 
+/-- **Böttcher continuation across a smooth arc from the two `z`-space side facts.**  At a non-critical
+frontier arc point `z₀` (`deriv φ z₀ ≠ 0`, `‖φ z₀‖ = 1`), the modulus-one locus of `φ` is a local
+separator.  Given only that the exterior germ `{‖φ‖ > 1}` lies in the basin (`hOutBasin`) and the
+interior germ `{‖φ‖ < 1}` in the filled set (`hInFilled`), the modulus-one arc itself is forced into
+`J₁` — every `{‖φ‖ = 1}` point has basin on one side and interior on the other, hence is a frontier
+point (formalised as a closure/`NeBot` limit).  Constructing the local inverse `γ = φ⁻¹` and feeding
+`continuesAcross_of_smoothJuliaArc`, `β` continues analytically across `z₀`.  This reduces the geometry
+to the two atomic **which-side** facts, discharging the local-inverse construction and the
+arc-is-frontier separation. -/
+theorem continuesAcross_of_smoothArcSides
+    {c₁ : ℂ} {β φ : ℂ → ℂ} {z₀ : ℂ}
+    (hφAt : AnalyticAt ℂ φ z₀) (hd0 : deriv φ z₀ ≠ 0) (hmod : ‖φ z₀‖ = 1)
+    (hbasin : ∀ᶠ z in 𝓝[(filledJulia c₁)ᶜ] z₀, 1 < ‖φ z‖)
+    (hOutBasin : ∀ᶠ z in 𝓝 z₀, 1 < ‖φ z‖ → z ∈ (filledJulia c₁)ᶜ)
+    (hInFilled : ∀ᶠ z in 𝓝 z₀, ‖φ z‖ < 1 → z ∈ filledJulia c₁)
+    (hβan : AnalyticOnNhd ℂ β (filledJulia c₁)ᶜ)
+    (hβmod : ∀ z ∈ (filledJulia c₁)ᶜ, ‖β z‖ = Real.exp (greenFunctionDyn c₁ z)) :
+    U0NaturalBoundary.ContinuesAcross β (filledJulia c₁)ᶜ z₀ := by
+  obtain ⟨γ, hγAn0, hγleft, hγright⟩ := exists_localInverse_of_continuation hφAt hd0
+  have hγz₀ : γ (φ z₀) = z₀ := hγleft.self_of_nhds
+  have htend : Tendsto γ (𝓝 (φ z₀)) (𝓝 z₀) := by
+    have h : Tendsto γ (𝓝 (φ z₀)) (𝓝 (γ (φ z₀))) := hγAn0.continuousAt
+    rwa [hγz₀] at h
+  have hOut' : ∀ᶠ w in 𝓝 (φ z₀), 1 < ‖φ (γ w)‖ → γ w ∈ (filledJulia c₁)ᶜ := htend.eventually hOutBasin
+  have hIn' : ∀ᶠ w in 𝓝 (φ z₀), ‖φ (γ w)‖ < 1 → γ w ∈ filledJulia c₁ := htend.eventually hInFilled
+  have hev : ∀ᶠ w in 𝓝 (φ z₀), AnalyticAt ℂ γ w ∧ φ (γ w) = w ∧
+      (1 < ‖φ (γ w)‖ → γ w ∈ (filledJulia c₁)ᶜ) ∧ (‖φ (γ w)‖ < 1 → γ w ∈ filledJulia c₁) :=
+    hγAn0.eventually_analyticAt |>.and <| hγright.and <| hOut'.and hIn'
+  obtain ⟨ε, hε, hball⟩ := Metric.eventually_nhds_iff.mp hev
+  set r : ℝ := min ε (1/2) with hrdef
+  have hball' : ∀ w ∈ Metric.ball (φ z₀) r, AnalyticAt ℂ γ w ∧ φ (γ w) = w ∧
+      (1 < ‖φ (γ w)‖ → γ w ∈ (filledJulia c₁)ᶜ) ∧ (‖φ (γ w)‖ < 1 → γ w ∈ filledJulia c₁) :=
+    fun w hw => hball (lt_of_lt_of_le (Metric.mem_ball.mp hw) (min_le_left _ _))
+  refine continuesAcross_of_smoothJuliaArc (lt_min hε (by norm_num)) (min_le_right _ _) hmod hφAt
+    (nhdsWithin_le_nhds hγleft) hbasin hβan hβmod (fun w hw => (hball' w hw).1) ?_ ?_
+  · -- exterior side maps into the basin
+    intro w hw hnorm
+    obtain ⟨_, hφγ, hout, _⟩ := hball' w hw
+    exact hout (by rw [hφγ]; exact hnorm)
+  · -- arc maps into `J₁`: `γ w` is a limit of `{‖φ‖ < 1}` points, all in the (closed) filled set
+    intro w hw hnorm
+    have hnebot : (𝓝[Metric.ball (0:ℂ) 1] w).NeBot := by
+      apply mem_closure_iff_nhdsWithin_neBot.mp
+      rw [closure_ball (0:ℂ) (by norm_num)]
+      simp [Metric.mem_closedBall, hnorm]
+    have hcw : Tendsto γ (𝓝[Metric.ball (0:ℂ) 1] w) (𝓝 (γ w)) :=
+      (hball' w hw).1.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+    have hmem : ∀ᶠ w' in 𝓝[Metric.ball (0:ℂ) 1] w, γ w' ∈ filledJulia c₁ := by
+      filter_upwards [self_mem_nhdsWithin,
+        nhdsWithin_le_nhds (Metric.isOpen_ball.mem_nhds hw)] with w' hw'disk hw'ball
+      obtain ⟨_, hφγ, _, hin⟩ := hball' w' hw'ball
+      refine hin ?_
+      rw [hφγ]
+      have := Metric.mem_ball.mp hw'disk
+      rwa [dist_zero_right] at this
+    have := mem_closure_of_tendsto hcw hmem
+    rwa [(isClosed_filledJulia c₁).closure_eq] at this
+
 /-- **The smooth-arc geometric datum — the harmonic-reflection replacement of `ArcReflectionData`.**
 For a non-constant analytic `φ` with modulus one on a relatively-open frontier piece `P`, there is a
 frontier arc point `z₀` and a local inverse `γ` of `φ` carrying the exterior side `{‖w‖ > 1}` into the
