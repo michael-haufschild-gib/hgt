@@ -1177,7 +1177,7 @@ theorem bottcher_towerDataG_far (c : ℂ) (hc : (0:ℂ) ∉ filledJulia c) :
     rcases lt_or_eq_of_le (greenFunctionDyn_nonneg c 0) with h1 | h1
     · exact h1
     · exact absurd ((greenFunctionDyn_eq_zero_iff c 0).mp h1.symm) hc
-  obtain ⟨Ra, Rinj, hRa1, hRaG, hInj, hanchor⟩ := exists_tower_anchor c
+  obtain ⟨Ra, Rinj, hRa1, hRaG, hInj, _hRinjbd, hanchor⟩ := exists_tower_anchor c
   -- the far cut, from the anchor and c alone; strict beyond every crude threshold
   set Bmin : ℝ := max (max (‖c‖ + 3) (Real.exp (Real.log Ra + 2)))
     (max (Real.exp (4 * h + 2)) 2) + 1 with hBmindef

@@ -62,6 +62,8 @@ import GaloisForLFunctions.U0.U0UniformClearance
 import GaloisForLFunctions.U0.U0MStepBranch
 import GaloisForLFunctions.U0.U0PhiMStep
 import GaloisForLFunctions.U0.U0PhiMStepFar
+import GaloisForLFunctions.U0.U0MStepKummer
+import GaloisForLFunctions.U0.U0KummerBranch
 import GaloisForLFunctions.U0.U0ParameterSpace
 import GaloisForLFunctions.U0.U0MStepInstances
 import GaloisForLFunctions.U0.U0Capstone

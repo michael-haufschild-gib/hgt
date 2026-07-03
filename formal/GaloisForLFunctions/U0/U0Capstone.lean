@@ -33,14 +33,24 @@ lane — only on the committed Böttcher base.
    strictly below the sharp threshold, in every direction — witnessed at six concrete parameters of
    modulus `< 2+√2` (`U0MStepInstances.u0_mstep_independence_subthreshold`: `b = 3` and five
    critical-curve slice points at `arg b ≈ 105°…155°`).
+
+5. **Independence from the whole finite Böttcher tower — UNCONDITIONAL** (`u0_kummer_tower_independence`).
+   For every viable parameter and every level `k`, a genuine analytic nowhere-zero branch `χ` on the
+   window — a `2^k`-th root of `ψ` (the sub-threshold inverse Böttcher branch `φ_b` carried `k`
+   levels down the tower, FE `ψ = φ_b^(2^N)`) — is algebraically independent of `u₀` over `ℂ(z)`.
+   The single m-step branch is lifted to its entire `2`-power root tower by a purely algebraic
+   Kummer descent (`U0MStepKummer.noRelation_pow_descent`), with the concrete root supplied by the
+   simply-connectedness of the window disk (`U0KummerBranch`) — no new transcendence input.
 -/
 import GaloisForLFunctions.U0.U0WindowSharpness
 import GaloisForLFunctions.U0.U0ParameterSpace
 import GaloisForLFunctions.U0.U0PhiMStep
 import GaloisForLFunctions.U0.U0MStepInstances
+import GaloisForLFunctions.U0.U0KummerBranch
 
-open Complex Set Metric Bottcher
+open Complex Set Metric Bottcher Filter Topology
 open U0ParameterSpace U0PhiMStep U0PhiMStepFar U0WindowSharpness
+open U0MStepBranch U0MeroCarrier
 
 namespace U0Capstone
 
@@ -90,5 +100,30 @@ theorem u0_topic_capstone :
   ⟨isClosed_obstructed, exists_frontier_obstructed_on_ray,
     (fun _ hv => exists_mstep_branch hv), (fun _ hv => u0_mstep_independence hv),
     U0MStepInstances.u0_mstep_independence_three⟩
+
+/-- **Pillar 5 — independence from the whole finite Böttcher tower (unconditional).**  For every
+viable parameter and every level `k`, there is a genuine analytic, nowhere-zero branch `χ` on the
+window — a `2^k`-th root of `ψ = bottcherCoord ∘ f_b^[N]`, i.e. the sub-threshold inverse Böttcher
+branch `φ_b` carried `k` levels down the tower (FE: `ψ = φ_b^(2^N)`) — that is algebraically
+independent of `u₀` over `ℂ(z)`.  Not a single branch but the entire `2`-power root tower, all
+independent of `u₀`, all from one algebraic descent (`U0MStepKummer.noRelation_pow_descent`) with no
+new analytic input beyond the concrete root lift (`U0KummerBranch`). -/
+theorem u0_kummer_tower_independence {b : ℂ}
+    (hviab : ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia b) (k : ℕ) :
+    ∃ (r : ℝ) (N : ℕ) (hr : 1 < r) (χ : ℂ → ℂ)
+      (hχ : AnalyticOnNhd ℂ χ (ball (0 : ℂ) r)),
+      (∀ z, χ z ≠ 0) ∧
+      (∀ z ∈ ball (0 : ℂ) r, χ z ^ (2 ^ k) = psiN b N z) ∧
+      letI := isDomain_analyticSubring (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr)
+        (annMB_nonempty hr)
+      letI : Algebra (RatFunc ℂ) (meroField (annMB r)) :=
+        (ratfuncToMero (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr) (annMB_nonempty hr)
+          (annMB_infinite hr)).toAlgebra
+      NoRelation (RatFunc ℂ)
+        (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+          ⟨Germ.coeRingHom (𝓟 (annMB r)) χ, ⟨χ, hχ.mono inter_subset_left, rfl⟩⟩)
+        (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+          (u0AnSub annMB_subset_Ext)) :=
+  U0KummerBranch.u0_mstep_kummer_branch_independence hviab k
 
 end U0Capstone

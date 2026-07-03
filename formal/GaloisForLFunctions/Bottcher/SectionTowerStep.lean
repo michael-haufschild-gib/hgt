@@ -1294,7 +1294,7 @@ theorem exists_tower_deep (c : ℂ) {ε : ℝ} (hε : 0 < ε) (M : ℝ) :
           bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) ∧
         (∀ z : ℂ, Real.log rlo < greenFunctionDyn c z →
           greenFunctionDyn c z < Real.log R₀ → z ∈ S.T '' annulusSet rlo R₀) := by
-  obtain ⟨Ra, Rinj, hRa1, hRaG, hInj, hanchor⟩ := exists_tower_anchor c
+  obtain ⟨Ra, Rinj, hRa1, hRaG, hInj, _hRinjbd, hanchor⟩ := exists_tower_anchor c
   obtain ⟨rlo, R₀, h1, h2, h3, h4, h5, h6, h7, hS⟩ :=
     exists_tower_deep_of_anchor c hε M hRa1 hRaG hanchor
   exact ⟨rlo, Ra, R₀, Rinj, h1, h2, h3, h4, h5, h6, h7, hInj, hS⟩

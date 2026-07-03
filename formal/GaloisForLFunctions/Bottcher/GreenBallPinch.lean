@@ -230,3 +230,29 @@ theorem subset_compl_filledJulia_of_norm_gt_two_of_mem_mandelbrot
   exact absurd (hExt z hz) (by linarith)
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Green-pinch contrapositive, upper side.**  For `‖c‖ ≥ 100`, a point whose dynamical Green
+value exceeds `G_c(0) + 1/8` must lie outside `closedBall 0 2` — the section end of the mixed
+tower (its Green level `> G_c(0) + 1/8`) is norm-bounded below by `2` this way. -/
+theorem two_lt_norm_of_greenFunctionDyn_gt {c z : ℂ} (hc : (100:ℝ) ≤ ‖c‖)
+    (hg : greenFunctionDyn c 0 + 1/8 < greenFunctionDyn c z) : 2 < ‖z‖ := by
+  by_contra h
+  push_neg at h
+  have hpin := abs_greenFunctionDyn_sub_crit_le hc h
+  rw [abs_le] at hpin
+  linarith [hpin.2]
+
+/-- **Green-pinch contrapositive, lower side.**  For `‖c‖ ≥ 100`, a point whose dynamical Green
+value is below `G_c(0) − 1/8` lies outside `closedBall 0 2` — the deep-lobe end of the mixed tower
+(Green level `→ 0`) is norm-bounded below by `2` this way. -/
+theorem two_lt_norm_of_greenFunctionDyn_lt {c z : ℂ} (hc : (100:ℝ) ≤ ‖c‖)
+    (hg : greenFunctionDyn c z < greenFunctionDyn c 0 - 1/8) : 2 < ‖z‖ := by
+  by_contra h
+  push_neg at h
+  have hpin := abs_greenFunctionDyn_sub_crit_le hc h
+  rw [abs_le] at hpin
+  linarith [hpin.1]
+
+end Bottcher

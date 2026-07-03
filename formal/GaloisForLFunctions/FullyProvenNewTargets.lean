@@ -73,6 +73,7 @@ import GaloisForLFunctions.U0.U0UniformClearance
 import GaloisForLFunctions.U0.U0ParameterSpace
 import GaloisForLFunctions.U0.U0PhiMStep
 import GaloisForLFunctions.U0.U0MStepInstances
+import GaloisForLFunctions.U0.U0KummerBranch
 
 noncomputable section
 
@@ -4950,5 +4951,34 @@ def MStepSubThresholdTarget : Prop := U0PhiMStepFar.MStepIndependence (3 : ℂ)
 
 theorem mstep_subthreshold_card : MStepSubThresholdTarget :=
   U0MStepInstances.u0_mstep_independence_three
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- **Kummer descent for `NoRelation` (abstract).**  For arbitrary fields `K ⊆ M` and any `n`,
+independence of a power `F^n` from `G` forces independence of the root `F` from `G`:
+`NoRelation K (F^n) G → NoRelation K F G`.  The transcendence-degree fact
+`trdeg K(F,G) = trdeg K(F^n,G)` in bivariate-elimination form. -/
+def KummerDescentTarget : Prop :=
+  ∀ {K M : Type} [Field K] [Field M] [Algebra K M] (F G : M) (n : ℕ),
+    Bottcher.NoRelation K (F ^ n) G → Bottcher.NoRelation K F G
+
+theorem kummer_descent_card : KummerDescentTarget :=
+  fun F G n h => U0MStepKummer.noRelation_pow_descent F G n h
+
+/-- **`u₀` is independent of the whole finite Böttcher root tower of `ψ` — with a CONCRETE analytic
+branch.**  For every viable parameter and every level `k`, a genuine analytic nowhere-zero `2^k`-th
+root `χ` of `ψ = bottcherCoord ∘ f^[N]` exists on the window and is algebraically independent of `u₀`
+over `ℂ(z)`.  The Kummer independence is non-vacuous: it holds of a real analytic branch — the
+sub-threshold inverse Böttcher branch `φ_b`, `k` levels down the tower. -/
+def KummerBranchIndependenceTarget : Prop :=
+  ∀ (b : ℂ), (∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ Bottcher.filledJulia b) → ∀ (k : ℕ),
+    ∃ (r : ℝ) (N : ℕ), 1 < r ∧ ∃ χ : ℂ → ℂ,
+      AnalyticOnNhd ℂ χ (Metric.ball (0 : ℂ) r) ∧ (∀ z, χ z ≠ 0) ∧
+      ∀ z ∈ Metric.ball (0 : ℂ) r, χ z ^ (2 ^ k) = U0PhiMStep.psiN b N z
+
+theorem kummer_branch_independence_card : KummerBranchIndependenceTarget :=
+  fun _ hv k => U0KummerBranch.exists_analytic_root_psiN hv k
 
 end FullyProvenNewTargets

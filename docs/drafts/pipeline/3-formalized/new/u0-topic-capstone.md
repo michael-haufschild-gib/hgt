@@ -8,7 +8,15 @@
 - **File:** `formal/GaloisForLFunctions/U0/U0Capstone.lean` (pillar 4 =
   `U0PhiMStepFar.u0_mstep_independence`; instances in `U0MStepInstances`).
 
-## The result (four pillars, ALL unconditional)
+## The result (five pillars, ALL unconditional)
+
+**Pillar 5 — the whole finite Böttcher root tower** (`U0Capstone.u0_kummer_tower_independence`; see
+`kummer-tower-independence`): for every viable `b` and every level `k`, a concrete analytic branch
+`χ` with `χ^(2^k) = ψ_N` (the sub-threshold `φ_b` `k` levels down, FE `ψ = φ_b^(2^N)`) is
+independent of `u₀` over `ℂ(z)`.  Single-branch independence is lifted to the entire `2`-power root
+tower by the purely algebraic Kummer descent `noRelation_pow_descent`, with the concrete root from
+the simply-connectedness of the window disk — no new transcendence input.
+
 
 **Pillar 1 — sharp independence** (`U0Capstone.u0_boettcher_independence_sharp`, alias of
 `U0WindowSharpness.window_threshold_sharp`).  For every parameter with `‖b‖ > 2+√2`, `u₀` and the

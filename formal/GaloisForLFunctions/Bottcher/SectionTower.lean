@@ -46,6 +46,7 @@ a tower section. -/
 theorem exists_tower_anchor (c : ℂ) :
     ∃ Ra Rinj : ℝ, 1 < Ra ∧ Real.exp (greenFunctionDyn c 0) < Ra ∧
       Set.InjOn (bottcherCoord c) {z : ℂ | Rinj < ‖z‖} ∧
+      16 * ‖c‖ + 17 ≤ Rinj ∧
       ∀ rhi : ℝ, Ra < rhi → ∃ S : TowerSection c Ra rhi,
         (∀ w ∈ annulusSet Ra rhi,
           bottcherCoord c (S.T w) = w ∧ S.T w ∈ escapeOpen c ∧ Rinj < ‖S.T w‖) ∧
@@ -215,7 +216,7 @@ theorem exists_tower_anchor (c : ℂ) :
     le_trans (le_max_right _ _) (le_max_left _ _)
   have hRaCb : Real.exp Cb + 1 ≤ Ra :=
     le_trans (le_max_right _ _) (le_max_right _ _)
-  refine ⟨Ra, R, hRa1, hRaG, bottcherCoord_injOn_far hR1 hR2, ?_⟩
+  refine ⟨Ra, R, hRa1, hRaG, bottcherCoord_injOn_far hR1 hR2, hRc, ?_⟩
   intro rhi hrhi
   have hdeep : ∀ w ∈ annulusSet Ra rhi, R₁ < ‖w‖ := by
     intro w hw

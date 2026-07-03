@@ -307,3 +307,6 @@ import GaloisForLFunctions.Bottcher.Q62PhiMeroConditional
 import GaloisForLFunctions.Bottcher.BottcherNotRational
 import GaloisForLFunctions.Bottcher.RealPairExposed
 import GaloisForLFunctions.Bottcher.OneSidedCofinal
+import GaloisForLFunctions.Bottcher.MixedPairCapstone
+import GaloisForLFunctions.Bottcher.MixedTowerNormBound
+import GaloisForLFunctions.Bottcher.BottcherSectionBound

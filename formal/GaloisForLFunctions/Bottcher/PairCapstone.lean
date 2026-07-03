@@ -52,7 +52,7 @@ theorem bottcher_towerDataF_pair (c₁ c₂ : ℂ)
     rcases lt_or_eq_of_le (greenFunctionDyn_nonneg c₂ 0) with h1 | h1
     · exact h1
     · exact absurd ((greenFunctionDyn_eq_zero_iff c₂ 0).mp h1.symm) hc₂
-  obtain ⟨Ra₂, Rinj₂, hRa₂1, hRa₂G, hInj₂, hanchor₂⟩ := exists_tower_anchor c₂
+  obtain ⟨Ra₂, Rinj₂, hRa₂1, hRa₂G, hInj₂, _hRinj₂bd, hanchor₂⟩ := exists_tower_anchor c₂
   -- the threshold absorbing every internal choice
   set cap₀ : ℝ := max (max (bottcherBallBound c₁ + 1) (Real.log Ra₂ + 3))
     (max (max (Real.log (max 2 ‖c₁‖) + 2) (Real.log (max 2 ‖c₂‖) + 2))
