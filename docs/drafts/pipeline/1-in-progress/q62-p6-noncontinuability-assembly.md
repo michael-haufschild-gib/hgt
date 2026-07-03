@@ -312,3 +312,31 @@ one-sided local basin (trace `hspine`/`PairComponentPropagation`: the pigeonhole
 `β`-limit branch); (2) the one-sided/two-sided dichotomy as a clean Lean split; (3) wire
 `c_mem_of_even_holo_ball` into the two-sided branch.  These are genuine dynamics/analysis, the true
 content of #118.
+
+## Confirmed: the branch-following machinery is already built; #118 gap = hinput + #124 + even-FE
+
+Tracing the direct-discharge inputs shows the pieces I was about to build already exist:
+* `eqOn_branch_of_relation_analytic` / `dendrite_branch_limit_analytic` (RelativeBranchFamily.lean 145,
+  169) — given `hβrel` (β a root on a preconnected basin sector), β follows a single branch `w k` to a
+  *simple-root* boundary limit `Tendsto β (𝓝[K₁ᶜ]z₀) (𝓝 w₀)`.  This IS the one-sided root-matching.
+* `hβrel_all` (RelativeRigidityGlobalBranch.lean:486) — β is a root of the fibre polynomial on ALL of
+  `K₁ᶜ` (identity theorem on the connected basin) — already proven.
+* The natural-boundary engine `noRelation_phiMero_of_naturalBoundary_global_gamma_frontier_separable`
+  packages all this behind ONE hypothesis `hinput` (RelativeRigidityNaturalBoundary.lean:31): a producer
+  giving, for any candidate relation, a frontier `z₀` + separable continued fibre + boundary limit.
+
+So the genuine remaining q62 gaps are exactly the previously-identified deep/external inputs, unchanged
+by this session's reflection work:
+1. **`hinput` as a full theorem** — turn the pigeonhole scaffold (RelativeRigidityGlobalBranch, #112–117)
+   into the producer the engine consumes.  (Load-bearing, deep — entangles the relation relocation onto
+   the frontier.)
+2. **Exposure / #124 collar** — `γ = φ_{c₂}` analytic across `∂K₁` (`∂K₁ ⊆ K₂ᶜ`), the Jordan/Schoenflies
+   collar.  Co-equal deep input.
+3. **even-FE two-sided** — wire `c_mem_of_even_holo_ball` into the two-sided (dendrite / `c∈{0,−2}`) branch.
+4. External/other regimes: OP6, #133, OP16-A (external open problem), small-norm (tower degenerates as
+   `h→0`; `1000→100` relaxable but does not close it).
+
+Session net: reflection stack built (correct, reusable, OFF the q62 critical path); discharge structure
+clarified (direct one-sided ⊕ even-FE two-sided); confirmed branch-following already assembled.  Full
+q62 NOT complete — remaining work is the multi-session `hinput`/#124/even-FE sub-projects + external
+open problems, not isolated bricks.

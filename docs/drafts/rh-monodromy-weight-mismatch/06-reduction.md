@@ -189,3 +189,55 @@ measurements support exactly this split.
    vanishing only *at* c = 1, the family picture sharpens to "(D) fails on the whole
    pencil except the Euler point" — (D) as the Euler cut's signature, measurable in the
    c-plane.
+
+---
+
+## 6. Quantified Reduction (added 2026-07-03, second pass) — the burden is graded in σ₀
+
+The proof of Step 1 gives more than stated: the contradiction never needed a LINEAR
+defect supply, only one that beats the density theorem. Extracting that constant-free
+skeleton weakens the open core substantially.
+
+**Master counting lemma. [PROVED HERE]** Fix k, clean σ₀ ∈ (1/2, 1), H > 0. If
+T_1 < T_2 < ... < T_m are admissible heights in D_{σ₀,H,k} ∩ [1, T] with pairwise gaps
+≥ H, then
+
+m ≤ N(σ₀, T + H).
+
+*Proof.* The windows B(T_i) have pairwise disjoint interiors; on each, w_k ≠ 0 forces a
+positive integer zero count; edges avoid zeros, so the zeros are distinct and all lie in
+[σ₀, 2] × [0, T + H]. ∎
+
+Write sep_{σ₀,H,k}(T) for the maximal size of such an H-separated defect family below T.
+The lemma says: **any density theorem is an upper bound on defect recurrence.** Two
+consequences.
+
+**Theorem (Reduction, quantified). [PROVED HERE]** Fix k ≥ 1 and set
+θ(σ₀) := 3(1−σ₀)/(2−σ₀) (Ingham's exponent; any density exponent < 1 works verbatim).
+Assume, for every clean σ₀ > 1/2 and H > 0:
+
+(R_k^θ) if D_{σ₀,H,k} ≠ ∅ then sep_{σ₀,H,k}(T) ≥ T^{θ(σ₀)} (log T)^6 for arbitrarily
+large T.
+
+Then RHLadder k; and (R_k^θ for all k) ⟹ RH.
+
+*Proof.* If some defect exists, (R_k^θ) and the master lemma give
+T^{θ} (log T)^6 ≤ N(σ₀, T+H) ≤ C (T+H)^{θ} (log (T+H))^5 for arbitrarily large T — false.
+So every defect set is empty, and Step 2 of §3 (unchanged: co-countably many (σ₀, H)
+pairs, left-edge telescoping) yields per-zero divisibility. ∎
+
+Remarks:
+1. **Strictly weaker open core.** Positive upper density ⟹ sep(T) ≥ cT/(2H) i.o. ⟹
+   (R_k^θ). The old (R_k) is retired as the stated open core; it survives as the
+   "comfortable" sufficient form.
+2. **The burden is graded in σ₀.** θ(3/4) = 3/5; θ(σ₀) → 0 as σ₀ → 1⁻. A seed far to the
+   right needs only T^ε-many recurring defects to be self-destructive. The counterfactual
+   is squeezed hardest exactly where the classical toolbox is strongest — the two inputs
+   cooperate instead of competing.
+3. **Downstream weakening of the mechanism targets (08).** The droves dichotomy can be
+   relaxed to a POWER-droves dichotomy: mechanisms (P_k), (H-loc) only need to produce
+   T^{θ(σ₀)+ε} zeros/returns, not a linear population. In the D–H family the measured
+   population is linear (T/21) — far above every θ-threshold; the family overshoots the
+   requirement by a full power.
+4. With the Density Hypothesis (exponent 2(1−σ₀), unproven) or Lindelöf-type inputs the
+   threshold drops further; the statement is modular in the density input by design.
