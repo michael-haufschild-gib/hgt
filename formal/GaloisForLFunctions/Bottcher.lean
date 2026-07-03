@@ -317,3 +317,4 @@ import GaloisForLFunctions.Bottcher.W4LinWinding
 import GaloisForLFunctions.Bottcher.W4LinPack
 import GaloisForLFunctions.Bottcher.W4LinCapstone
 import GaloisForLFunctions.Bottcher.W4LinOverlap
+import GaloisForLFunctions.Bottcher.InteriorModulusObstruction
