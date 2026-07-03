@@ -29,13 +29,13 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1475 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
 | 1417 | `formal/GaloisForLFunctions/Bottcher/CrossRatioNormalBridge.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
+| 1307 | `formal/GaloisForLFunctions/Bottcher/W4LinWinding.lean` |
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
 | 1302 | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean` |
 | 1292 | `formal/GaloisForLFunctions/Bottcher/CrossRatioCuspBridge.lean` |
+| 1291 | `formal/GaloisForLFunctions/Bottcher/W4LinPack.lean` |
 | 1289 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean` |
 | 1278 | `formal/GaloisForLFunctions/Bottcher/ConnectedBranchAssembly.lean` |
-| 1267 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryAtom.lean` |
-| 1249 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryTruncation.lean` |
 
 ## Gap Markers
 

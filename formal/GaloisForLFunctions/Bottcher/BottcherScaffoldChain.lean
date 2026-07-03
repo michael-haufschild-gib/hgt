@@ -483,3 +483,53 @@ theorem exists_scaffold_chain {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo
     exists_scaffold_chain_window S hrlo hra hraRW hRWR hRW4h hh0 hlow hθs1 hθs2
       (by rw [← hmdef]; exact hslitne)
   exact ⟨α, β, J₁, J₂, hrest⟩
+
+namespace Bottcher
+
+/-- **Fold-0 doubling inclusion.**  Squaring maps an arc annulus into the arc annulus of
+doubled logs with arguments doubled IN PLACE (no full-turn shift) — the branch-0 twin of
+`sq_mem_arcAnnulus`.  Together the two folds realize both sign classes of the doubling link:
+which one a given chain satisfies is exactly the branch parity of `σ_{j+1}`. -/
+theorem sq_mem_arcAnnulus_fold0 {r R α β r' R' J₁ J₂ : ℝ}
+    (hr' : Real.log r ≤ 2 * Real.log r') (hR' : 2 * Real.log R' ≤ Real.log R)
+    (hJ₁ : α ≤ 2 * J₁) (hJ₂ : 2 * J₂ ≤ β)
+    {w : ℂ} (hw : w ∈ arcAnnulus r' R' J₁ J₂) : w ^ 2 ∈ arcAnnulus r R α β := by
+  obtain ⟨ξ, ⟨h1, h2, h3, h4⟩, rfl⟩ := hw
+  refine ⟨2 * ξ, ⟨?_, ?_, ?_, ?_⟩, ?_⟩
+  · show Real.log r < (2 * ξ).re
+    simp only [Complex.mul_re, Complex.re_ofNat, Complex.im_ofNat]
+    nlinarith
+  · show (2 * ξ).re < Real.log R
+    simp only [Complex.mul_re, Complex.re_ofNat, Complex.im_ofNat]
+    nlinarith
+  · show α < (2 * ξ).im
+    simp only [Complex.mul_im, Complex.re_ofNat, Complex.im_ofNat]
+    nlinarith
+  · show (2 * ξ).im < β
+    simp only [Complex.mul_im, Complex.re_ofNat, Complex.im_ofNat]
+    nlinarith
+  · rw [sq, ← Complex.exp_add]
+    ring_nf
+
+/-- **The fold-0 doubling window always exists**: under the `[−π, π]` slit normalization the
+in-place window `(max α (α/2), min β (β/2))` is a nonempty sub-interval of `(α, β)` whose
+doubling stays in `(α, β)`. -/
+theorem fold0_window_exists {θs m : ℝ} (hm : 0 < m) (hm8 : m ≤ Real.pi / 8)
+    (hθs1 : -Real.pi ≤ θs) (hθs2 : θs ≤ Real.pi) :
+    ∃ K₁ K₂ : ℝ, θs + m ≤ K₁ ∧ K₁ < K₂ ∧ K₂ ≤ θs + 2 * Real.pi - m ∧
+      θs + m ≤ 2 * K₁ ∧ 2 * K₂ ≤ θs + 2 * Real.pi - m := by
+  have hπ := Real.pi_pos
+  set α : ℝ := θs + m with hαdef
+  set β : ℝ := θs + 2 * Real.pi - m with hβdef
+  refine ⟨max α (α / 2), min β (β / 2), le_max_left _ _, ?_, min_le_left _ _, ?_, ?_⟩
+  · apply max_lt <;> apply lt_min
+    · rw [hαdef, hβdef]; linarith
+    · rw [hαdef, hβdef]; linarith
+    · rw [hαdef, hβdef]; linarith
+    · rw [hαdef, hβdef]; linarith
+  · have h1 : α / 2 ≤ max α (α / 2) := le_max_right _ _
+    rw [← hαdef]
+    linarith
+  · have h1 : min β (β / 2) ≤ β / 2 := min_le_right _ _
+    rw [← hβdef]
+    linarith

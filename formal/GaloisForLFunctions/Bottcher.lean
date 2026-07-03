@@ -310,3 +310,9 @@ import GaloisForLFunctions.Bottcher.OneSidedCofinal
 import GaloisForLFunctions.Bottcher.MixedPairCapstone
 import GaloisForLFunctions.Bottcher.MixedTowerNormBound
 import GaloisForLFunctions.Bottcher.BottcherSectionBound
+import GaloisForLFunctions.Bottcher.MixedTowerExt
+import GaloisForLFunctions.Bottcher.MixedTowerData
+import GaloisForLFunctions.Bottcher.MoatPiece
+import GaloisForLFunctions.Bottcher.W4LinWinding
+import GaloisForLFunctions.Bottcher.W4LinPack
+import GaloisForLFunctions.Bottcher.W4LinCapstone

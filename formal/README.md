@@ -6,7 +6,7 @@ This Lean project has three theorem areas:
 |---|---|---|
 | Hurwitz | `GaloisForLFunctions.Hurwitz` | `hurwitz_n2_unconditional` |
 | u0_pui | `GaloisForLFunctions.U0` | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap` |
 
 `GaloisForLFunctions.MainTheorems` imports all three areas.  The root module
 `GaloisForLFunctions` imports `MainTheorems`, so the default Lake build covers

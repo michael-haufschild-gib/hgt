@@ -256,3 +256,138 @@ theorem two_lt_norm_of_greenFunctionDyn_lt {c z : ℂ} (hc : (100:ℝ) ≤ ‖c�
   linarith [hpin.1]
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Parametric core pinch.**  Every point within `ρ ≤ ‖c‖/40` of `c` has Green value
+`log‖c‖ ± 1/8` — the `closedBall c 4` pinch with the radius freed up to the linear scale. -/
+theorem abs_greenFunctionDyn_sub_log_le_of_near_s {c w : ℂ} {ρ : ℝ} (hc : (100:ℝ) ≤ ‖c‖)
+    (hρ : ρ ≤ ‖c‖ / 40) (hw : ‖w - c‖ ≤ ρ) :
+    |greenFunctionDyn c w - Real.log ‖c‖| ≤ 1/8 := by
+  set R : ℝ := ‖c‖ with hRdef
+  have hR0 : (0:ℝ) < R := by linarith
+  have hρ0 : (0:ℝ) ≤ ρ := le_trans (norm_nonneg _) hw
+  have h2Rρ : 2 * R * ρ ≤ R ^ 2 / 20 := by nlinarith
+  have hρsq : ρ ^ 2 ≤ R ^ 2 / 1600 := by nlinarith
+  have hRR : R ≤ R ^ 2 / 100 := by nlinarith
+  -- norm window for `w`
+  have hwhi : ‖w‖ ≤ R + ρ := by
+    have h1 : ‖(w - c) + c‖ ≤ ‖w - c‖ + ‖c‖ := norm_add_le _ _
+    rw [sub_add_cancel] at h1
+    linarith
+  have hwlo : R - ρ ≤ ‖w‖ := by
+    have h1 : ‖(c - w) + w‖ ≤ ‖c - w‖ + ‖w‖ := norm_add_le _ _
+    rw [sub_add_cancel, norm_sub_rev] at h1
+    linarith
+  -- norm window for the image `f_c w = w² + c`
+  set fw : ℂ := quadratic c w with hfwdef
+  have hfweq : fw = w ^ 2 + c := rfl
+  have hsqhi : ‖w‖ ^ 2 ≤ (R + ρ) ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg w) hwhi 2
+  have hsqlo : (R - ρ) ^ 2 ≤ ‖w‖ ^ 2 :=
+    pow_le_pow_left₀ (by nlinarith) hwlo 2
+  have hfwhi : ‖fw‖ ≤ (11/10) * R ^ 2 := by
+    have h1 : ‖w ^ 2 + c‖ ≤ ‖w ^ 2‖ + ‖c‖ := norm_add_le _ _
+    rw [norm_pow] at h1
+    rw [hfweq]
+    nlinarith
+  have hfwlo : (91/100) * R ^ 2 ≤ ‖fw‖ := by
+    have h1 : ‖(w ^ 2 + c) + (-c)‖ ≤ ‖w ^ 2 + c‖ + ‖-c‖ := norm_add_le _ _
+    rw [add_neg_cancel_right, norm_neg, norm_pow] at h1
+    rw [hfweq]
+    nlinarith
+  have hfwc : ‖c‖ ≤ ‖fw‖ := by
+    rw [← hRdef]
+    nlinarith
+  have hfw2 : (2:ℝ) < ‖fw‖ := by nlinarith
+  have hfwK : fw ∉ filledJulia c := not_mem_filledJulia hfwc hfw2
+  -- crude asymptotic at the image, with the effective error `≤ 1/40`
+  have hcrude : |greenLimit c fw - Real.log ‖fw‖| ≤ 2 * ‖c‖ / ‖fw‖ ^ 2 :=
+    greenLimit_abs_sub_log hfwc hfw2
+  have herr : 2 * ‖c‖ / ‖fw‖ ^ 2 ≤ 1/40 := by
+    rw [div_le_iff₀ (by positivity)]
+    have hsq : ((91/100) * R ^ 2) ^ 2 ≤ ‖fw‖ ^ 2 :=
+      pow_le_pow_left₀ (by positivity) hfwlo 2
+    rw [← hRdef]
+    nlinarith [sq_nonneg R, sq_nonneg (R - 100), pow_pos hR0 4]
+  have hcrude' := abs_le.mp (le_trans hcrude herr)
+  -- log window for the image norm
+  have hlogfw_hi : Real.log ‖fw‖ ≤ 2 * Real.log R + 1/10 := by
+    have h1 : Real.log ‖fw‖ ≤ Real.log ((11/10) * R ^ 2) :=
+      Real.log_le_log (by nlinarith) hfwhi
+    rw [Real.log_mul (by norm_num) (by positivity), Real.log_pow, Nat.cast_ofNat] at h1
+    have h2 : Real.log (11/10) ≤ 1/10 := by
+      have := Real.log_le_sub_one_of_pos (show (0:ℝ) < 11/10 by norm_num)
+      linarith
+    linarith
+  have hlogfw_lo : 2 * Real.log R - 1/10 ≤ Real.log ‖fw‖ := by
+    have h1 : Real.log ((91/100) * R ^ 2) ≤ Real.log ‖fw‖ :=
+      Real.log_le_log (by positivity) hfwlo
+    rw [Real.log_mul (by norm_num) (by positivity), Real.log_pow, Nat.cast_ofNat] at h1
+    have h2 : -(1/10) ≤ Real.log (91/100) := by
+      have h3 : Real.log (100/91) ≤ 100/91 - 1 :=
+        Real.log_le_sub_one_of_pos (by norm_num)
+      have h4 : Real.log (91/100) = -Real.log (100/91) := by
+        rw [show (91/100:ℝ) = (100/91)⁻¹ by norm_num, Real.log_inv]
+      rw [h4]
+      have : (100:ℝ)/91 - 1 ≤ 1/10 := by norm_num
+      linarith
+    linarith
+  -- halve back through the functional equation
+  have hGfw : greenFunctionDyn c fw = greenLimit c fw := by
+    unfold greenFunctionDyn
+    rw [if_neg hfwK]
+  have hdouble : greenFunctionDyn c fw = 2 * greenFunctionDyn c w :=
+    greenFunctionDyn_quadratic c w
+  have hkey : 2 * greenFunctionDyn c w = greenLimit c fw := by
+    rw [← hdouble, hGfw]
+  rw [abs_le]
+  constructor <;> nlinarith [hcrude'.1, hcrude'.2]
+
+/-- **Parametric `closedBall c ρ` pinch**: `G_c = 2·G_c(0) ± 1/4` up to radius `ρ ≤ ‖c‖/40`. -/
+theorem abs_greenFunctionDyn_sub_two_crit_le_s {c w : ℂ} {ρ : ℝ} (hc : (100:ℝ) ≤ ‖c‖)
+    (hρ : ρ ≤ ‖c‖ / 40) (hw : ‖w - c‖ ≤ ρ) :
+    |greenFunctionDyn c w - 2 * greenFunctionDyn c 0| ≤ 1/4 := by
+  have h1 := abs_le.mp (abs_greenFunctionDyn_sub_log_le_of_near_s hc hρ hw)
+  have h2 := abs_le.mp (abs_two_greenCritical_sub_log_le hc)
+  rw [abs_le]
+  constructor <;> linarith [h1.1, h1.2, h2.1, h2.2]
+
+/-- **Parametric `closedBall 0 s` pinch**: `G_c = G_c(0) ± 1/8` up to radius `s` with
+`s² ≤ ‖c‖/40`. -/
+theorem abs_greenFunctionDyn_sub_crit_le_s {c z : ℂ} {s : ℝ} (hc : (100:ℝ) ≤ ‖c‖)
+    (hs : s ^ 2 ≤ ‖c‖ / 40) (hz : ‖z‖ ≤ s) :
+    |greenFunctionDyn c z - greenFunctionDyn c 0| ≤ 1/8 := by
+  have hfz : ‖quadratic c z - c‖ ≤ s ^ 2 := by
+    have h1 : quadratic c z - c = z ^ 2 := by simp [quadratic]
+    rw [h1, norm_pow]
+    have hz0 : (0:ℝ) ≤ ‖z‖ := norm_nonneg z
+    nlinarith
+  have h1 := abs_greenFunctionDyn_sub_two_crit_le_s hc hs hfz
+  rw [greenFunctionDyn_quadratic c z] at h1
+  have h2 := abs_le.mp h1
+  rw [abs_le]
+  constructor <;> linarith [h2.1, h2.2]
+
+/-- **Parametric Green-pinch contrapositive, upper side**: Green value above `G_c(0) + 1/8`
+places the point outside `closedBall 0 s` whenever `s² ≤ ‖c‖/40`. -/
+theorem lt_norm_of_greenFunctionDyn_gt_s {c z : ℂ} {s : ℝ} (hc : (100:ℝ) ≤ ‖c‖)
+    (hs : s ^ 2 ≤ ‖c‖ / 40)
+    (hg : greenFunctionDyn c 0 + 1/8 < greenFunctionDyn c z) : s < ‖z‖ := by
+  by_contra h
+  rw [not_lt] at h
+  have hpin := abs_greenFunctionDyn_sub_crit_le_s hc hs h
+  rw [abs_le] at hpin
+  linarith [hpin.2]
+
+/-- **Parametric Green-pinch contrapositive, lower side.** -/
+theorem lt_norm_of_greenFunctionDyn_lt_s {c z : ℂ} {s : ℝ} (hc : (100:ℝ) ≤ ‖c‖)
+    (hs : s ^ 2 ≤ ‖c‖ / 40)
+    (hg : greenFunctionDyn c z < greenFunctionDyn c 0 - 1/8) : s < ‖z‖ := by
+  by_contra h
+  rw [not_lt] at h
+  have hpin := abs_greenFunctionDyn_sub_crit_le_s hc hs h
+  rw [abs_le] at hpin
+  linarith [hpin.1]
+
+end Bottcher

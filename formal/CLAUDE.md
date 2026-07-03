@@ -8,7 +8,7 @@ This folder is the Lean 4 proof project.  The three main proof programs are:
 |---|---|---|
 | Hurwitz | `GaloisForLFunctions.Hurwitz` | `hurwitz_n2_unconditional` |
 | u0_pui | `GaloisForLFunctions.U0` | `U0CardTheorems.u0_phi_independence_all_parameters` |
-| q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| q62 Böttcher | `GaloisForLFunctions.Bottcher` | `Bottcher.q62_independence`, `Bottcher.q62_mixed`, `Bottcher.q62_phiMero_norm_gap` |
 
 `GaloisForLFunctions.MainTheorems` imports all three.
 
