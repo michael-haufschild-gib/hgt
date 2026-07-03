@@ -71,4 +71,18 @@ theorem pow_root_unique {f g₁ g₂ : ℂ → ℂ} {U : Set ℂ} {n : ℕ} (hn 
     · exact sub_eq_zero.mp h
   exact h₁.eqOn_of_preconnected_of_eventuallyEq h₂ hUc hz hev
 
+/-- Divisibility descends along the coercion `ℕ → ℕ∞` when the divisor is nonzero. -/
+theorem natCast_dvd_natCast_of_enat {a b : ℕ} (ha : a ≠ 0) (h : (a : ℕ∞) ∣ (b : ℕ∞)) :
+    a ∣ b := by
+  obtain ⟨c, hc⟩ := h
+  have hcne : c ≠ ⊤ := by
+    intro hct
+    rw [hct, ENat.mul_top (by exact_mod_cast ha)] at hc
+    exact (by simp : ((b : ℕ∞)) ≠ ⊤) hc
+  refine ⟨c.toNat, ?_⟩
+  have h1 : ((b : ℕ∞)) = ((a * c.toNat : ℕ) : ℕ∞) := by
+    rw [Nat.cast_mul, ENat.coe_toNat hcne]
+    exact hc
+  exact_mod_cast h1
+
 end RHTower

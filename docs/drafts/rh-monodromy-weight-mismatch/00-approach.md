@@ -361,8 +361,14 @@ on ℝ; Davenport–Heilbronn (1936) FE-with-off-line-zeros; Hardy's Ξ sign-cha
 universality with zero-free targets.
 
 **[CHECK] — recalled, NOT yet verified; verify before any use in promoted text:**
-1. Bagchi's theorem, exact statement + proof route (RH ⟺ strong recurrence of ζ in the strip;
-   thesis 1981 / Math. Z. ~1982). Decides how much of §5 is a coarsening vs a rediscovery.
+1. **RESOLVED 2026-07-03 — C2 verified reading (`checks/c2-bagchi-note.md`), spot-checked.**
+   Bagchi's theorem confirmed as recalled: strong recurrence (sup-norm self-approximation of
+   ζ(s+iτ) on compacts of ½ < Re s < 1, shift set of positive lower density) ⟺ RH. Proof route
+   = Rouché + the FULL zero count (≥ cT, driven to ∞) + zero-density — fetched verbatim
+   (Sourmelidis arXiv:2308.07031). NO mod-2^k / parity / divisibility coarsening appears
+   anywhere in the fetched line. Primary texts (1981 ISI thesis; Math. Z. 181 (1982) 319–334;
+   Acta Math. Hungar. 50 (1987) 227–240) were auth-walled — mechanism read from secondary
+   expositions. Verdict: §5 is a *coarsening*, not a rediscovery.
 2. Random Euler product a.s. convergence AND a.s. nonvanishing for σ > 1/2 (Bohr–Jessen
    circle); exact regularity of the limit.
 3. Hamburger's theorem: exact hypotheses (which regularity class makes FE ⟹ uniqueness).
@@ -383,7 +389,8 @@ universality with zero-free targets.
 
 1. **Bagchi already did the coarsening** (check #1 fails novel): then §5's reformulation
    reduces-to-known; survives: the RH_{2^k} ladder (§3.3), the index/weight mechanism M1 (§6),
-   the Lean-native tower language (Arc A) and the family picture (§7).
+   the Lean-native tower language (Arc A) and the family picture (§7). *Check #1 ran
+   2026-07-03: he did not — verdict ABSENT (§8.1); this attack is answered.*
 2. **An FE + positive-log system with an odd-multiplicity off-seam zero exists** (Arc B1
    succeeds as constructor): kills M3's last stand — positivity-ALONE is already dead (banked
    DMV import, audit F2: off-line zeros generic in the positive-prime moduli); the open cell is
@@ -413,8 +420,11 @@ universality with zero-free targets.
 1. **RH_{2^k} multiplicity-parity ladder + root/tower equivalence** — `[NOVELTY CANDIDATE]`,
    pending check #5. Bridges: nobody grades RH by divisibility of off-line multiplicities;
    everyone's prior (simplicity) makes the grading invisible.
-2. **Coarse-monodromy (ℤ/2^k cocycle) version of strip recurrence** — `[NOVELTY CANDIDATE]`,
-   pending check #1 (vs Bagchi). The coarsening is the new degree of freedom.
+2. **Coarse-monodromy (ℤ/2^k cocycle) version of strip recurrence** — `[NOVELTY — VERIFIED
+   ABSENT 2026-07-03]`: check #1 ran (C2, `checks/c2-bagchi-note.md`); verdict
+   ABSENT-FROM-LITERATURE for the package "mod-2^k coarsening + graded RH_{2^k} ladder +
+   analytic 2^k-th root of ξ". Bagchi's own mechanism uses the count at full magnitude and
+   never reduces it. The coarsening is the new degree of freedom.
 3. **Weight-mismatch mechanism transposed from q62** (M1: explicit formula as index formula +
    resonance pinning, defects killed by unbounded weight, not positivity) — `[CONJECTURE]`, no
    literature counterpart known; this is the wild leap of the document.

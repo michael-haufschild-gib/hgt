@@ -177,3 +177,20 @@ proven), the **exposure** data (`γ = bottcherCoord c₂` analytic on `K_{c₁}�
 #124), and `hinput` (the pigeonhole frontier-fibre producer, #112–117 scaffolded). `hnb` (#118) is off
 the critical path. Remaining both-connected obligations: #124 exposure + turning the `hinput` scaffold
 into a theorem. Full q62 additionally needs comparable-norm (OP16-A) + small-norm. NOT complete.
+
+## SMOOTHPIECERIGIDITY (general #118 gatekeeper) REDUCED TO ONE INPUT (2026-07-03, verified)
+`Bottcher.smoothPieceRigidity_of_reflectionCore` (formal/GaloisForLFunctions/Bottcher/
+Q62SmoothPieceReduction.lean, axiom-clean): for connected `c₁ ∈ mandelbrot ∖ {0,-2}`,
+`SmoothPieceRigidity c₁ c₂` (the *general* both-connected gatekeeper, route 2, used by
+`q62_phiMero_bothconnected_of_op6`) reduces to **exactly** `ReflectionCore c₁` — Schwarz reflection
+across an analytic Julia arc. Everything else is proven internally:
+- `separable_of_distinct_roots` (degree-N poly with N distinct roots ⟹ separable);
+- `wfam_analyticOnNhd_of_smoothPiece` (the branch-analyticity upgrade: continuous root ⟹ analytic on
+  `ball ∩ K_{c₂}ᶜ`, via IFT + branch uniqueness);
+- the constant-branch case (unit-root exclusion + identity theorem on the connected basin);
+- the endgame (contradiction via the proven `hnb_of_mem_mandelbrot_connected`).
+
+So the earlier note "hnb not load-bearing for the general case" is corrected: `hnb` **is** the endgame
+of the general gatekeeper. What remains for general both-connected: `ReflectionCore` (Schwarz reflection
++ boundary regularity, mathlib-absent) + `ExposedOneSided` (OP6) + `OneSidedDense` (#133). Full q62 also
+needs comparable-norm (OP16-A) and small-norm. NOT complete. Next brick: attack `ReflectionCore`.

@@ -56,7 +56,7 @@ theorem coherentTower_iff_nonvanishing {f : ℂ → ℂ} {U : Set ℂ}
       have hdvd' : ((2 ^ k : ℕ) : ℕ∞) ∣ analyticOrderAt f ρ :=
         root_orders_dvd hUo (T.analytic k) (T.pow_eq k) hρ
       rw [← hm] at hdvd'
-      exact_mod_cast hdvd'
+      exact natCast_dvd_natCast_of_enat (pow_ne_zero k two_ne_zero) hdvd'
     have hm0 : m = 0 := by
       by_contra hm0
       have h2 : 2 ^ m ≤ m := Nat.le_of_dvd (Nat.pos_of_ne_zero hm0) (hdvd m)
@@ -83,13 +83,11 @@ theorem coherentTower_iff_nonvanishing {f : ℂ → ℂ} {U : Set ℂ}
     · intro s hs
       simpa using hLeq hs
     · intro k s hs
-      have h1 : Complex.exp (L s / 2 ^ (k + 1)) ^ 2 = Complex.exp (2 * (L s / 2 ^ (k + 1))) := by
-        rw [Complex.exp_nat_mul]
-        norm_num
-      rw [h1]
+      rw [← Complex.exp_nat_mul (L s / 2 ^ (k + 1)) 2]
       congr 1
       have h2 : ((2 : ℂ)) ^ (k + 1) ≠ 0 := pow_ne_zero _ two_ne_zero
       have h3 : ((2 : ℂ)) ^ k ≠ 0 := pow_ne_zero _ two_ne_zero
+      push_cast
       field_simp
       ring
 

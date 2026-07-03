@@ -77,14 +77,18 @@ theorem xi_eq_zero_iff {s : ℂ} (hre : 0 < s.re) (h1 : s ≠ 1) :
   have hΓ : Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos hre
   have hs2 : s * (s - 1) / 2 ≠ 0 :=
     div_ne_zero (mul_ne_zero h0 (sub_ne_zero.mpr h1)) two_ne_zero
-  rw [xi_eq_half_mul h0 h1, riemannZeta_def_of_ne_zero h0, mul_eq_zero, div_eq_zero_iff]
+  rw [xi_eq_half_mul h0 h1, riemannZeta_def_of_ne_zero h0]
   constructor
-  · rintro (h | h)
-    · exact absurd h hs2
-    · exact Or.inl h
-  · rintro (h | h)
-    · exact Or.inr h
-    · exact absurd h hΓ
+  · intro h
+    rcases mul_eq_zero.mp h with h' | h'
+    · exact absurd h' hs2
+    · rw [h', zero_div]
+  · intro h
+    have hΛ : completedRiemannZeta s = 0 := by
+      rcases div_eq_zero_iff.mp h with h' | h'
+      · exact h'
+      · exact absurd h' hΓ
+    rw [hΛ, mul_zero]
 
 /-- A nontrivial zero of `ζ` (other than the guards of mathlib's `RiemannHypothesis`) is a
 zero of `ξ` — valid at every real part, via `Λ = ζ · Γℝ` and `Γℝ`'s zeros being trivial. -/
@@ -125,7 +129,7 @@ theorem mem_rightHalf {s : ℂ} : s ∈ rightHalf ↔ 1 / 2 < s.re := Iff.rfl
 theorem isOpen_rightHalf : IsOpen rightHalf :=
   isOpen_Ioi.preimage Complex.continuous_re
 
-theorem convex_rightHalf : Convex ℝ rightHalf := convex_halfSpace_re_gt
+theorem convex_rightHalf : Convex ℝ rightHalf := convex_halfSpace_re_gt (1 / 2)
 
 theorem two_mem_rightHalf : (2 : ℂ) ∈ rightHalf := by
   simp [mem_rightHalf]
@@ -188,13 +192,13 @@ theorem rh_iff_xi_ne_zero_right :
   · intro hnz s hζ htriv hs1
     have hxi : xi s = 0 := xi_eq_zero_of_zeta_eq_zero hζ htriv hs1
     by_contra hre
-    rcases Ne.lt_or_lt hre with hlt | hgt
-    · exact hnz s (mem_rightHalf.mpr hlt) hxi
+    rcases lt_or_gt_of_ne hre with hlt | hgt
     · have hmem : (1 : ℂ) - s ∈ rightHalf := by
         rw [mem_rightHalf]
         simp only [Complex.sub_re, Complex.one_re]
         linarith
       exact hnz _ hmem (by rw [xi_one_sub]; exact hxi)
+    · exact hnz s (mem_rightHalf.mpr hgt) hxi
 
 /-- **RH ⟺ the coherent ℤ₂-Kummer tower of ξ exists on `Re s > ½`.** -/
 theorem rh_iff_tower : RiemannHypothesis ↔ Nonempty (CoherentTower xi rightHalf) := by
@@ -222,9 +226,9 @@ theorem rh_iff_forall_ladder : RiemannHypothesis ↔ ∀ k, RHLadder k := by
     have hm : (m : ℕ∞) = analyticOrderAt xi ρ := ENat.coe_toNat hord
     have hdvd : ∀ k : ℕ, 2 ^ k ∣ m := by
       intro k
-      have := h k ρ hρ hρ0
-      rw [← hm] at this
-      exact_mod_cast this
+      have hthis := h k ρ hρ hρ0
+      rw [← hm] at hthis
+      exact natCast_dvd_natCast_of_enat (pow_ne_zero k two_ne_zero) hthis
     have hm0 : m = 0 := by
       by_contra hm0
       have h2 : 2 ^ m ≤ m := Nat.le_of_dvd (Nat.pos_of_ne_zero hm0) (hdvd m)

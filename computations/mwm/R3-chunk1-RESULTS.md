@@ -44,3 +44,18 @@ Observed off-line zero count in the window (sum of windings over defect boxes):
 
 Verdict line: **lead + encouragement** (family picture's constraint-pinning made measurable);
 no early fail.
+
+## Fine k-scan (same day, k ∈ [0.25, 0.32], step 0.005, same window/band)
+
+| k | .25 | .255 | .26 | .265 | .27 | .275 | .28 | .285 | .29 | .295 | .30 | .305 | .31 | .315 | .32 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| count | 3 | 3 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 2 | 4 | 5 | 7 |
+
+- The minimum is a **plateau** [0.26, 0.305] of width ≈ 0.045, and κ = 0.28408 sits at its
+  **center** (midpoint 0.2825). Steep walls on both sides.
+- `[CONJECTURE, next probe]`: the plateau is an artifact of the finite band σ > 0.51 —
+  deformed line-zeros need finite |k−κ| to cross the box edge. As σ₀ → 1/2⁺ the plateau
+  should shrink to the single point κ: **the FE fiber as the unique defect minimizer in the
+  σ₀ → 1/2 limit**, with plateau width ~ (σ₀ − 1/2)-scaling giving a measurable exponent for
+  how fast deformation pushes zeros off the line. Run with σ₀ ∈ {0.53, 0.52, 0.51, 0.505}.
+- Raw: pod /root/mwm/pencil-fine-k.out.

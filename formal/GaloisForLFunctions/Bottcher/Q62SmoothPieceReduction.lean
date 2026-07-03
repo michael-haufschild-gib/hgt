@@ -123,7 +123,7 @@ some frontier point. Content: the modulus-one locus of a non-constant analytic f
 real-analytic curve, so the `J_{c₁}` piece is a real-analytic arc, and `β` reflects across it (Schwarz
 reflection across the arc + Carathéodory boundary regularity) — the one genuinely mathlib-absent input. -/
 def ReflectionCore (c₁ : ℂ) (β : ℂ → ℂ) : Prop :=
-  ∀ (φ : ℂ → ℂ) (Ω P : Set ℂ), IsOpen Ω → AnalyticOnNhd ℂ φ Ω →
+  ∀ (φ : ℂ → ℂ) (Ω P : Set ℂ), IsOpen Ω → IsPreconnected Ω → AnalyticOnNhd ℂ φ Ω →
     (∃ z' ∈ Ω, deriv φ z' ≠ 0) → P ⊆ Ω → P ⊆ frontier (filledJulia c₁) →
     (∃ Uop, IsOpen Uop ∧ (Uop ∩ P).Nonempty) → (∀ z ∈ P, ‖φ z‖ = 1) →
     ∃ z₀ ∈ frontier (filledJulia c₁), U0NaturalBoundary.ContinuesAcross β (filledJulia c₁)ᶜ z₀
@@ -154,20 +154,22 @@ theorem smoothPieceRigidity_of_reflectionCore {c₁ c₂ : ℂ}
   have hxK₂ : x ∈ (filledJulia c₂)ᶜ := hSK₂ hxS
   have hxball : x ∈ Metric.ball z₁ ρ := hSball hxS
   have hxΩ : x ∈ Ω := ⟨hxball, hxK₂⟩
-  by_cases hne : ∃ z' ∈ Ω, deriv (wfam k) z' ≠ 0
+  obtain ⟨r, hr, hrΩ⟩ := Metric.isOpen_iff.mp hΩopen x hxΩ
+  have hwanB : AnalyticOnNhd ℂ (wfam k) (Metric.ball x r) := hwan.mono hrΩ
+  by_cases hne : ∃ z' ∈ Metric.ball x r, deriv (wfam k) z' ≠ 0
   · obtain ⟨z₀, hz₀front, hz₀cont⟩ :=
-      hrefl β hβan hβesc (wfam k) Ω (Uop ∩ S) hΩopen hwan hne
-        (fun z hz => ⟨hSball hz.2, hSK₂ hz.2⟩) (fun z hz => hSfront hz.2)
-        ⟨Uop, hUopen, ⟨x, hxP.1, hxP⟩⟩ hmod1
+      hrefl β hβan hβesc (wfam k) (Metric.ball x r) (Uop ∩ S ∩ Metric.ball x r)
+        isOpen_ball (convex_ball x r).isPreconnected hwanB hne
+        (fun z hz => hz.2) (fun z hz => hSfront hz.1.2)
+        ⟨Uop, hUopen, ⟨x, hxP.1, hxP, Metric.mem_ball_self hr⟩⟩ (fun z hz => hmod1 z hz.1)
     exact hnb z₀ hz₀front hz₀cont
-  · have hd0 : ∀ z ∈ Ω, deriv (wfam k) z = 0 := fun z hz => by
+  · have hd0 : ∀ z ∈ Metric.ball x r, deriv (wfam k) z = 0 := fun z hz => by
       by_contra h; exact hne ⟨z, hz, h⟩
-    obtain ⟨r, hr, hrΩ⟩ := Metric.isOpen_iff.mp hΩopen x hxΩ
     set ζ := wfam k x with hζdef
     have hζ1 : ‖ζ‖ = 1 := hmod1 x hxP
     have hwconst : ∀ z ∈ Metric.ball x r, wfam k z = ζ := fun z hz =>
       isOpen_ball.is_const_of_deriv_eq_zero (convex_ball x r).isPreconnected
-        (hwan.mono hrΩ).differentiableOn (fun y hy => hd0 y (hrΩ hy)) hz (mem_ball_self hr)
+        hwanB.differentiableOn (fun y hy => hd0 y hy) hz (mem_ball_self hr)
     have hFrel : ∀ z ∈ Metric.ball x r, ∑ i ∈ sT, a i z * ζ ^ i = 0 := fun z hz => by
       have h0 := hroot k z (hrΩ hz).1
       rw [hwconst z hz] at h0; exact h0
@@ -181,5 +183,46 @@ theorem smoothPieceRigidity_of_reflectionCore {c₁ c₂ : ℂ}
       haF.eqOn_of_preconnected_of_eventuallyEq analyticOnNhd_const
         (isPreconnected_compl_filledJulia c₂) hxK₂ hev
     exact hunit ζ hζ1 (fun z hz => hEq hz)
+
+/-- **`ReflectionCore` discharge, step 1 — point selection.** A non-constant analytic `φ`
+(`deriv φ z' ≠ 0` somewhere) on a preconnected open `Ω` has `deriv φ ≠ 0` at some frontier point in any
+open `W` meeting `frontier (filledJulia c₁) ∩ Ω`. The zeros of `deriv φ` are countable
+(`analyticOnNhd_zeros_countable`) while the connected Julia frontier is uncountable in every open region
+(`countableAvoidance_frontier_open_of_perfect_frontier` +
+`perfect_frontier_filledJulia_of_preconnected`), so a good frontier point survives. This is the first
+step of discharging `ReflectionCore`: it produces the point where `φ` is a local biholomorphism, so the
+frontier is locally the real-analytic arc `φ⁻¹(unit circle)` — the geometry the Schwarz reflection of
+`β` across the arc then runs on (the remaining, genuinely mathlib-absent, input). -/
+theorem exists_frontier_piece_deriv_ne_zero {c₁ : ℂ} {φ : ℂ → ℂ} {Ω W : Set ℂ}
+    (hconn₁ : IsPreconnected (filledJulia c₁))
+    (hΩo : IsOpen Ω) (hΩc : IsPreconnected Ω) (hφ : AnalyticOnNhd ℂ φ Ω)
+    {z' : ℂ} (hz'Ω : z' ∈ Ω) (hderiv : deriv φ z' ≠ 0)
+    (hWo : IsOpen W) {p : ℂ} (hpf : p ∈ frontier (filledJulia c₁)) (hpW : p ∈ W) (hpΩ : p ∈ Ω) :
+    ∃ z ∈ frontier (filledJulia c₁), z ∈ W ∧ z ∈ Ω ∧ deriv φ z ≠ 0 := by
+  have hcount : {z ∈ Ω | deriv φ z = 0}.Countable :=
+    analyticOnNhd_zeros_countable hφ.deriv hΩc hz'Ω hderiv
+  obtain ⟨z, hzfront, hzWΩ, hznotT⟩ :=
+    countableAvoidance_frontier_open_of_perfect_frontier
+      (perfect_frontier_filledJulia_of_preconnected hconn₁) (hWo.inter hΩo) hpf ⟨hpW, hpΩ⟩
+      {z ∈ Ω | deriv φ z = 0} hcount
+  exact ⟨z, hzfront, hzWΩ.1, hzWΩ.2, fun h0 => hznotT ⟨hzWΩ.2, h0⟩⟩
+
+/-- **`ReflectionCore` discharge, step 2 — local biholomorphism at the frontier arc point.** At a
+frontier point `zc` where the analytic `φ` has `deriv φ zc ≠ 0` and modulus one on the frontier piece,
+`‖φ zc‖ = 1` and `φ` has a local analytic inverse `γ` (`γ (φ zc) = zc`, two-sided inverse near `zc` /
+`φ zc`). So near `zc`, `φ` is a biholomorphism carrying the frontier into the unit circle, and the level
+set `φ⁻¹(unit circle)` is the real-analytic arc `γ(unit circle)`. This is the coordinate setup on which
+the Schwarz reflection of `β_{c₁}` across the arc runs — the geometry is now explicit; what remains is
+the reflection principle plus boundary regularity (the mathlib-absent core). -/
+theorem exists_localInverse_frontier_arc {c₁ : ℂ} {φ : ℂ → ℂ} {zc : ℂ} {W : Set ℂ}
+    (hφAt : AnalyticAt ℂ φ zc) (hd0 : deriv φ zc ≠ 0)
+    (hzcW : zc ∈ W)
+    (hmod : ∀ z ∈ W ∩ frontier (filledJulia c₁), ‖φ z‖ = 1)
+    (hzcfront : zc ∈ frontier (filledJulia c₁)) :
+    ‖φ zc‖ = 1 ∧ ∃ γ : ℂ → ℂ, AnalyticAt ℂ γ (φ zc) ∧ γ (φ zc) = zc ∧
+      (∀ᶠ z in 𝓝 zc, γ (φ z) = z) ∧ (∀ᶠ w in 𝓝 (φ zc), φ (γ w) = w) := by
+  refine ⟨hmod zc ⟨hzcW, hzcfront⟩, ?_⟩
+  obtain ⟨γ, hγAn, hleft, hright⟩ := exists_localInverse_of_continuation hφAt hd0
+  exact ⟨γ, hγAn, hleft.self_of_nhds, hleft, hright⟩
 
 end Bottcher

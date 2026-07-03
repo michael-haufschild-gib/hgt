@@ -103,14 +103,14 @@ def run_sweep(t1, t2, H, s1, s2, workers, dps):
     print(json.dumps({"done": [float(t1), float(t2)], "boxes": len(boxes),
                       "defects_or_flags": ndef}), flush=True)
 
-def run_pencil(k1, k2, steps, t1, t2, H, workers=30, dps=18):
+def run_pencil(k1, k2, steps, t1, t2, H, s1="0.51", workers=30, dps=18):
     # walk k along [k1,k2] in f_k = (1-ik)/2 L + (1+ik)/2 Lbar; k=kappa ~ 0.2841 is D-H (FE)
     for j in range(steps + 1):
         kv = mpf(k1) + (mpf(k2) - mpf(k1)) * j / steps
         boxes = []
         T = mpf(t1)
         while T < mpf(t2):
-            boxes.append((T, mpf(H), mpf("0.51"), mpf("1.2")))
+            boxes.append((T, mpf(H), mpf(s1), mpf("1.2")))
             T += mpf(H)
         found = []
         with Pool(workers, initializer=_init, initargs=(dps, str(kv))) as pool:
@@ -131,7 +131,8 @@ if __name__ == "__main__":
                   int(a[6]) if len(a) > 6 else 18)
     elif cmd == "pencil":
         a = sys.argv[2:]
-        run_pencil(a[0], a[1], int(a[2]), a[3], a[4], a[5] if len(a) > 5 else 2)
+        run_pencil(a[0], a[1], int(a[2]), a[3], a[4], a[5] if len(a) > 5 else 2,
+                   a[6] if len(a) > 6 else "0.51")
     else:
         print(json.dumps({"error": "unknown", "cmd": cmd}))
         sys.exit(1)
