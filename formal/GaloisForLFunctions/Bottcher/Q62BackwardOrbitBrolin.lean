@@ -21,6 +21,7 @@ positive mass for the arbitrary-target limiting Brolin measure.
 import GaloisForLFunctions.Bottcher.Q62OneSidedPullback
 import GaloisForLFunctions.Bottcher.OneSidedCofinal
 import GaloisForLFunctions.Bottcher.Brolin.TargetLimit
+import Mathlib.MeasureTheory.Measure.Support
 
 open Set Metric Filter Topology MeasureTheory CompactlySupported Laplacian
 open scoped Laplacian
@@ -405,6 +406,56 @@ theorem q62_phiMero_bothconnected_of_base_brolinJuliaBallPositiveAt_visibility
     (exposedOneSidedCofinalNbhd_or_swap_of_base_brolinJuliaBallPositiveAt hne
       hbase₁ hpos₁ hcrit₁ hbase₂ hpos₂ hcrit₂ hvis₁₂ hvis₂₁)
     hrig₁₂ hrig₂₁
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Standard support-theorem form of the remaining arbitrary-target Brolin gap:
+the selected limiting Brolin measure has every Julia-frontier point in its
+measure-theoretic support. -/
+def LimitingBrolinMeasureAtSupportsJulia (c a : ℂ) : Prop :=
+  frontier (filledJulia c) ⊆ (limitingBrolinMeasureAt c a).support
+
+/-- The standard support statement implies the ball-positivity form used by the
+backward-orbit bridge. -/
+theorem brolinJuliaBallPositiveAt_of_limitingBrolinMeasureAtSupportsJulia
+    {c a : ℂ} (hsupp : LimitingBrolinMeasureAtSupportsJulia c a) :
+    BrolinJuliaBallPositiveAt c a := by
+  intro p hp ε hε
+  have hpμ : p ∈ (limitingBrolinMeasureAt c a).support := hsupp hp
+  rw [Measure.mem_support_iff_forall] at hpμ
+  exact hpμ (Metric.ball p ε) (Metric.ball_mem_nhds p hε)
+
+/-- Support-on-Julia plus critical-orbit avoidance discharges
+`BackwardOrbitDense`. -/
+theorem backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia
+    {c a : ℂ} (hsupp : LimitingBrolinMeasureAtSupportsJulia c a)
+    (hcrit : CriticalOrbitAvoidingTarget c a) :
+    BackwardOrbitDense c a :=
+  backwardOrbitDense_of_brolinJuliaBallPositiveAt
+    (brolinJuliaBallPositiveAt_of_limitingBrolinMeasureAtSupportsJulia hsupp) hcrit
+
+/-- Support-on-Julia is also enough for ordinary density of target preimages in
+`J_c`. -/
+theorem preimagesDenseInJulia_of_limitingBrolinMeasureAtSupportsJulia
+    {c a : ℂ} (hsupp : LimitingBrolinMeasureAtSupportsJulia c a) :
+    PreimagesDenseInJulia c a :=
+  preimagesDenseInJulia_of_brolinJuliaBallPositiveAt
+    (brolinJuliaBallPositiveAt_of_limitingBrolinMeasureAtSupportsJulia hsupp)
+
+/-- Q62-facing local one-sided density from the standard support-theorem form. -/
+theorem locOneSidedDense_of_base_limitingBrolinMeasureAtSupportsJulia
+    {c z₀ : ℂ} (hbase : LocOneSided c z₀)
+    (hsupp : LimitingBrolinMeasureAtSupportsJulia c z₀)
+    (hcrit : CriticalOrbitAvoidingTarget c z₀) :
+    LocOneSidedDense c :=
+  locOneSidedDense_of_base_backwardDense hbase
+    (backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia hsupp hcrit)
 
 end
 
