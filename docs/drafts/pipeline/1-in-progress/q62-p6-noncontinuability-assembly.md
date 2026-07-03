@@ -664,3 +664,27 @@ through Koebe is unavoidable.
 STATUS: ingredient 1/3 done. Alternative to the whole harmonic route: the DYNAMICAL even-FE rigidity
 (analytic Julia arc ⟹ c∈{0,−2} via the tree's `c_mem_of_even_holo_ball`) discharges SmoothPieceRigidity
 WITHOUT KW/harmonic reflection — worth weighing before committing the multi-session Dirichlet build.
+
+---
+
+## The complete Dirichlet problem on a disk — BUILT (all 3 ingredients, mathlib had none)
+
+The harmonic Schwarz reflection principle (to discharge `hu` of BottcherArcExtension) needs the
+Dirichlet problem on a disk, entirely absent from mathlib. All three ingredients are now proven,
+axiom-clean, in the Bottcher umbrella, lint green:
+
+1. **Max principle** — `harmonic_eqOn_const_of_isMaxOn` (HarmonicMaxPrinciple.lean). Via holomorphic
+   max-modulus of `exp(F)`, `u = Re F` locally.
+2. **Poisson solution harmonic** — `poissonInt_harmonicOnNhd` (PoissonHarmonic.lean). Via mathlib's
+   `hasFPowerSeriesOn_cauchy_integral` + the partial fraction `(z-c)⁻¹·herglotz = -(z-c)⁻¹+2(z-w)⁻¹`:
+   `poissonInt = Re(-circleAverage g + 2·CauchyTransform)`, analytic.
+3. **Poisson boundary values** — `poissonInt_tendsto_boundary` (PoissonBoundary.lean), with helpers
+   `poissonKernel_{continuousOn_sphere, nonneg, circleAverage_eq_one, le_concentration}`. Approximate
+   identity via the pointwise majorant `kernel·|g-g ζ| ≤ ε/2·kernel + C` (C constant in z), giving
+   `circleAverage ≤ ε/2 + C → ε` — no indicator splitting.
+
+This is the genuine mathlib-scale gap-fill; every hard analytic step is now done. REMAINING for `hu`
+is assembly/geometry: Koebe (odd reflection harmonic across a line, via `ũ-P=0` on the half-disk
+boundary by the max principle) + odd-reflection-harmonic-off-line + transport to the circle + Green
+boundary regularity (`log‖β∘γ‖→0`) + wire into `continuesAcross_of_greenPotential_harmonic_extension`.
+Recipe recorded in memory `harmonic-reflection-build`.

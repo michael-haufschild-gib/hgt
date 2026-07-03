@@ -65,3 +65,15 @@ padicValRat helpers padicValRat_prod/padicValRat_zpow). All axiom-clean
 the Rouché-free zero-planting lemma (max-modulus on g/(g+h); mathlib has no Rouché): sphere
 domination 3‖g‖ ≤ ‖h‖ + h(s₀)=0 + g(s₀)≠0 ⟹ g+h vanishes in the ball. Existence engine of
 the Weyl counterexample (lane doc 11 §2). Axiom-clean; build 9012 jobs; lint green.
+
+2026-07-03 — extended: `RHTower/DeckCocycle.lean` — A3 revived (task #113, q62 deck pattern):
+the box invariant as deck class, NO argument principle. `pow_root_ratio` (roots differ by a
+constant root of unity, anchored derivative-free via pow_root_unique), `deckClass` def,
+`deckClass_pow_eq_one` (values in μ_n), `deckClass_root_indep` (choice-independence),
+`deckClass_sq` (dyadic coherence w_k = w_{k+1}²), `deckClass_eq_one_iff_exists_root`
+(triviality ⟺ global root on U₁ ∪ U₂ — the ladder link, with the two-chart annulus glue).
+All axiom-clean [propext, Classical.choice, Quot.sound]; RHTower target builds green (8562
+jobs). NOTE: full-tree gate temporarily blocked by the parallel agent's in-flight
+Bottcher/HarmonicMaxPrinciple.lean — not this lane's file; re-run the full gate after their
+session lands. Remaining A3 chunk: the monomial dictionary (w_k of (z−a)^m·h =
+dyadicRoot(k)^m via exists_peel + explicit slit-plane cpow branches — still no Rouché).

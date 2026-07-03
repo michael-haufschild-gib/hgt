@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4695 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4696 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -3978,6 +3978,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `poissonKernel_nonneg` | `GaloisForLFunctions.Bottcher.PoissonBoundary` | `formal/GaloisForLFunctions/Bottcher/PoissonBoundary.lean:40` |  |
 | theorem | `poissonKernel_circleAverage_eq_one` | `GaloisForLFunctions.Bottcher.PoissonBoundary` | `formal/GaloisForLFunctions/Bottcher/PoissonBoundary.lean:50` |  |
 | theorem | `poissonKernel_le_concentration` | `GaloisForLFunctions.Bottcher.PoissonBoundary` | `formal/GaloisForLFunctions/Bottcher/PoissonBoundary.lean:72` | Concentration bound.** For `z` on the sphere at distance `≥ δ` from a boundary point `ζ`, and `w` within `δ/2` of `ζ`, the Poisson kernel is bounded by `2R‖w-ζ‖/(δ/2)²`. As `w → ζ` |
+| theorem | `poissonInt_tendsto_boundary` | `GaloisForLFunctions.Bottcher.PoissonBoundary` | `formal/GaloisForLFunctions/Bottcher/PoissonBoundary.lean:104` | Poisson integral attains continuous boundary values (Dirichlet ingredient 3/3).** For `g` continuous on `sphere c R` and a boundary point `ζ`, the Poisson integral tends to `g ζ` a |
 | theorem | `poissonInt_harmonicOnNhd` | `GaloisForLFunctions.Bottcher.PoissonHarmonic` | `formal/GaloisForLFunctions/Bottcher/PoissonHarmonic.lean:26` | The Poisson integral of continuous boundary data is harmonic in the disc.** |
 | theorem | `norm_eval_le_of_one_le` | `GaloisForLFunctions.Bottcher.PolyAsymptotic` | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:26` | Elementary polynomial growth bound.** For `‖z‖ ≥ 1`, `‖Q(z)‖ ≤ (∑ᵢ ‖Qᵢ‖)·‖z‖^{deg Q}`: bound the support sum termwise, using `‖z‖^i ≤ ‖z‖^{deg Q}` for `i ≤ deg Q`. |
 | theorem | `tendsto_eval_div_pow_zero` | `GaloisForLFunctions.Bottcher.PolyAsymptotic` | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:37` | A polynomial of degree `< d` over `z^d` vanishes at `∞`.** `Q.eval z / z^d → 0` along the cobounded filter, by the growth bound (`Q.eval z / z^d ≍ ‖z‖^{deg Q - d} → 0`). |

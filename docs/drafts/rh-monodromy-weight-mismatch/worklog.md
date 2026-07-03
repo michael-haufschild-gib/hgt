@@ -467,3 +467,41 @@ Bottcher/STATUS.md (tail), Bottcher/DyadicMonodromy.lean. Findings for THIS lane
   exponent Σ Λ*_j ≈ (1/2)log²γ₀·loglog(1/ρ) — 13 §4.2's μ is now theorem-backed.
 - Status: L1a ✓, (D′) ✓ — everything still open in the chain is COMPLEX ANALYSIS:
   L5′ (mean-size contour theorem), L2 (Fejér constants), L3 (spike converse).
+
+## 2026-07-03 — L5′ FOUND THE BUG: 12-chain terminated with a priced death certificate
+- Exact Perron mean formula: the SPIKE'S OWN SHARE of block means = w_j·e^{−2jδ} for all
+  2j ≲ 1/δ — missed by the §4.1 audit. Spike replication = large deviation of ~e^{1/δ}
+  coherent primes: μ_spike ≈ exp(−c·e^{1/δ}) ≫-dead vs ceiling exp(e^{c₁/δ}), c₁ < 1.
+  The bug sat exactly where three survived audits predicted a fourth would be.
+- DEATH CERTIFICATE: the Euler/Kronecker flow recurs ambient fields at exp(−log²γ₀) but
+  prices width-δ off-line spikes at the random-model rate exp(−e^{1/δ}). Recurrence-based
+  forcing of off-line zeros: closed as designed; re-cuts (signature-only, lower fidelity)
+  die with it.
+- FOUR ASSETS: (1) the wall's 4th derivation — primitivity = large-deviation RATE
+  separation (ζ: spikes are e^{−e^{1/δ}}-rare; D–H: bulk events — explains the measured
+  family recurrence); (2) threshold-theorem candidate: spike-event density
+  exp(−e^{(1+o(1))/δ}) for random Euler products [provable standalone]; (3) L1a + (D′)
+  reusable — and the Beurling reading: DESIGNED coherence makes spike events cheap ⟹
+  recurrence-forcing works in engineered systems (feeds #96/#97 trichotomy); (4) the
+  Perron self-repair dichotomy survives as a free tool.
+- Live weight moves to: #113 deck-class monodromy, Goldilocks (11 §5.3), Beurling dial.
+  (Rung_δ) mechanism must not factor through the Bohr flow's measure.
+
+## 2026-07-03 — #113 core BANKED: DeckCocycle.lean (w_k without the argument principle)
+- RHTower/DeckCocycle.lean, all axiom-clean, RHTower target green (8562 jobs):
+  pow_root_ratio (constant-ratio form of pow_root_unique, anchor-based, derivative-free);
+  deckClass (g₁ pP/g₂ pP)/(g₁ pM/g₂ pM); deckClass_pow_eq_one (∈ μ_n);
+  deckClass_root_indep (independent of both local root choices);
+  deckClass_sq (dyadic tower coherence — the q62 dyadicRoot pattern at germ level);
+  deckClass_eq_one_iff_exists_root (trivial ⟺ local roots glue to a global root on
+  U₁ ∪ U₂ — the RH_{2^k} ladder link, two-chart annulus glue with if-piecewise analyticity).
+- The lane's central invariant w_k now EXISTS as a formal object on exact monodromy data —
+  the one construction the four-times-derived wall does not touch (it never factors
+  through the Bohr flow's measure).
+- Remaining A3 chunk (next): the monomial dictionary w_k((z−a)^m·h) = dyadicRoot(k)^m via
+  exists_peel + slit-chart cpow branches — Rouché-free zero-counting meaning for w_k.
+- Lean traps this file: ₊/₋ are NOT identifier characters (renamed P/M); if-glue needs
+  `classical`; analyticAt_const.mul needs the constant named; self-referential rw at the
+  anchor point (rewrite only the far-point equalities).
+- Full-tree gate deferred: parallel agent's HarmonicMaxPrinciple.lean mid-edit (their
+  Poisson development — the shared-gap item — actively growing; do not touch).

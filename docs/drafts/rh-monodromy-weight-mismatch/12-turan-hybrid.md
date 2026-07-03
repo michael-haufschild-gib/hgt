@@ -212,3 +212,60 @@ obsolete: no equidistribution of the u_p is needed anywhere — rotation invaria
 - L2 (Fejér window-to-blocks constants), L3 (spike converse), L4 (done).
 The chain's claim strength (≈ c/loglog region + forced clustering) is unchanged and stays
 QUARANTINED until L1, L5, L2, L3 are theorems. Next action: prove L1 in full.
+
+## 6. L5′ found the bug — the death certificate, and what it prices (2026-07-03, end of night)
+
+### 6.1 The exact mean formula exposes the missing share
+Perron with the smooth block window, contour pushed fully left, gives the EXACT formula
+m_j = Φ_j(−η−iγ₀) − Σ_ρ m(ρ)·Φ_j(ρ−1−η−iγ₀) − (trivial-zero share).
+Pole and trivial shares: negligible (γ₀^{−A}). On-line share: ≈ log γ₀·e^{−j(1+2η)} — the
+13 §4.1 accounting. **But the spike's own share is Φ_j(−(η+δ)) ≈ w_j·e^{−2jδ} — an
+e^{−2jδ}-FRACTION OF THE ENTIRE BLOCK WEIGHT, for every block with 2j ≲ 1/δ.** The §4.1
+audit missed it. The recurrence event must place ~1/(2δ) consecutive blocks at Θ(1)
+fractions of their maximal reach — a large-deviation event of rate Σ_{j≲1/2δ} n_j·I(Θ(1))
+≈ e^{1/δ}·δ. By (D′) (now used as an upper-bound sanity: the Cramér rate is also the true
+exponential rate), the visit density of spike-replication is
+> **μ_spike ≈ exp(−c·e^{1/δ})** — not exp(−C log²γ₀).
+
+### 6.2 Death certificate `[DERIVATION — the bug the claim-strength predicted]`
+T_contra = exp(c·e^{1/δ}·δ⁻¹ᵒ⁽¹⁾) vs T_forge = exp(e^{c₁/δ}) with c₁ = log(1/ε₀)/4 < 1:
+dead for ALL small δ — 0.83/δ > log(1/δ) always. Structural reading, both constants
+explicit: the 1 in e^{1/δ} is the Dirichlet cutoff needed to RESOLVE width-δ features;
+c₁ < 1 is the broad-vs-narrow Fourier geometry of the on-line population. **The Kronecker/
+Euler flow recurs the ambient field cheaply (exp(−log²γ₀)) but prices a width-δ off-line
+spike at the random-model rate exp(−e^{1/δ}) — coherent alignment of ~e^{1/δ} primes.
+Recurrence-based forcing of off-line zeros is dead as designed.** Re-cuts that fail with
+it: demanding only the frequency-Ξ₀ signature (same coherence, same rate); lowering
+fidelity (L3's converse needs exactly the content that costs the rate).
+
+### 6.3 What the death buys — four assets `[the forward moves]`
+1. **The wall, fourth derivation, sharpest form:** primitivity as a LARGE-DEVIATION RATE
+   SEPARATION. For ζ (primitive), off-line spike events cost exp(−e^{1/δ}) under the
+   Euler-flow measure — they are catastrophic large deviations of the random model (the
+   model that a.s. has NO off-line zeros — C0 #2 — now with a RATE). For D–H
+   (non-primitive), the component split makes off-line zeros BULK events (positive
+   measure — that is why the family's recurrence is measured to work, R6-loc/R7/R8).
+   The blind cone (10), the S²/B² gap (11), the soft/categorical trichotomy (11 §5.3),
+   and now the rate gap (12) — one wall, four independent derivations, and this one
+   PRICES it: any future recurrence-shaped route must beat exp(−e^{1/δ}) and cannot.
+2. **The threshold theorem candidate `[CONJECTURE → provable]`:** "the visit density of
+   width-δ spike configurations under the Bohr flow is exp(−e^{(1+o(1))/δ})" — upper
+   bound from §6.1's shares + (D′)-as-upper; lower bound from explicit coherent tilting.
+   A publishable standalone statement about random Euler products; prices the (R_k)
+   burden exactly.
+3. **Reusable theorems banked on the way:** L1a, (D′) (probability of Pearson blocks —
+   directly applicable to the Beurling program, where the DESIGNED arithmetic can make
+   spike events cheap: a Beurling system with e^{1/δ}-coherence built in is exactly a
+   system where recurrence-forcing works — feeding the trichotomy #96/#97!).
+4. **The Perron/self-repair dichotomy** (large block sums certify nearby zeros) survives
+   as a free-standing tool, independent of the dead mechanism.
+
+### 6.4 Where the lane's live weight moves
+Recurrence-shaped routes to (R_k): CLOSED at all regularities (11) and at exact-Euler
+strength (12) — the closure is now complete on the soft AND recurrence sides. The live
+routes are exactly the non-recurrence ones: **A3/#113 deck-class monodromy (exact
+topological data), the Goldilocks class problem (11 §5.3), and the Beurling-designed
+arithmetic where the rate gap is a dial (§6.3.3).** The rung (Rung_δ) remains the open
+core; its mechanism must now come from exact structure that does not factor through the
+Bohr flow's measure — the monodromy cocycle is the lane's own candidate, and it was built
+for exactly this.
