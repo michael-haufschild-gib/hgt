@@ -268,3 +268,32 @@ and certified ourselves).
   β-near zeros, which exist by density. Chunk 1 (all six pairs, law-testing,
   pre-registered on board) launched. Caught + killed a mis-parametrized first attempt
   (guessed centers) before it produced garbage — localization first, always.
+- **F [VERIFIED READING — C6: 09's imports closed]** `checks/c6-joint-universality-note.md`
+  (delegated; Thm 7 + Thm 10 spot-checked verbatim against ar5iv 1407.4216). Import 1
+  VERIFIED: joint universality for pairwise non-equivalent Dirichlet characters, positive
+  LOWER density, targets nonvanishing/analytic — 09 §1's usage covered in FULL (r = 2,
+  χ ≠ χ̄ mod 5, self-targets nonvanishing by (Z)). The family (H-loc) theorem now stands
+  with verified imports + one machine-checkable hypothesis (Z). Import 2 VERIFIED (single
+  Hurwitz strong universality, Bagchi/Gonek, α rational ≠ 1, 1/2); joint-STRONG needs
+  ℚ-independence of {log(n+α_j)} (Matsumoto Thm 15) which FAILS for common-denominator
+  families — the tool needed to push a seed through the ζ-decomposition is provably
+  unavailable in exactly our case (nuance kept honest: unavailability verified;
+  impossibility not printed; Bagchi-consistency carries the wall). 09 §1/§2 updated in
+  place.
+- **F/X [MEASURED — R7 chunks 0–1: β-law partially refuted → jet-proximity law]** Four
+  zeros localized (β = 0.8065, 0.6555, 0.5693, 0.7202; winding-certified). Law test
+  (pre-registered): ρ₁-anchored pairs OBEY d_min ≈ 1.1|Δβ| (ratios within ~10%;
+  **new certified transfer edge ρ₁ → ρ₃ at r = 0.285, Δβ = 0.237**, second after
+  ρ₁ → ρ₄); every ρ₂-pair FAILS with an r-independent ratio floor tracking the
+  derivative mismatch (|f′(ρ₂)| ≈ 0.75 vs 1.16). Refined law: ratio ≈ Δβ/r + δ′(jet
+  mismatch) — **transfer condition = JET proximity; the graph stratifies into jet
+  classes; within a class it is a β-proximity graph.** ρ₂ is transfer-isolated in
+  t ≤ 200 (its class partners live at other heights — consistent with 09 §1). Chunk 2
+  (rebased 4→3, 4→2) in flight. Data: `computations/R7-RESULTS.md`.
+- **F [MEASURED — R7 complete on t ≤ 200]** Chunk 2: **third certified edge ρ₄ → ρ₃**
+  (r = 0.181, τ = −10.22, law-conforming); 4→2 fails with the same floor as 2→4 (ρ₂'s
+  isolation intrinsic). Final fragment: jet classes {ρ₁, ρ₃, ρ₄} (complete) and {ρ₂}
+  (isolated). The transfer graph is a jet-class-stratified β-proximity graph — the
+  family's recurrence skeleton is now measured, certified, and law-governed. Caveat:
+  margin/r misestimates |f′| at small radii (measure f′ directly in the census).
+  `computations/R7-RESULTS.md` final.

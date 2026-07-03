@@ -24,8 +24,11 @@ density — (H-loc) holds at every (Z)-admissible seed of the family.
 
 *Proof.* The pair (L(·, χ), L(·, χ̄)) consists of L-functions of distinct (hence
 non-equivalent) Dirichlet characters, so the **joint universality theorem** applies
-`[CHECK: Voronin 1975 joint universality for distinct Dirichlet L-functions; positive
-LOWER density form as in the Laurinčikas/Steuding expositions]`: for any compact K with
+`[VERIFIED 2026-07-03 — C6, checks/c6-joint-universality-note.md, spot-checked verbatim:
+Matsumoto survey Thm 7 (Voronin, Gonek, Bagchi), pairwise non-equivalent characters,
+positive LOWER density, targets continuous non-vanishing on K, analytic interior — our
+usage (r = 2, χ ≠ χ̄ mod 5, closed disc, self-targets nonvanishing by (Z)) is covered in
+full]`: for any compact K with
 connected complement and any pair of targets continuous and NON-VANISHING on K, analytic
 in its interior, the set of τ for which both L(· + iτ, χ), L(· + iτ, χ̄) are ε′-close to
 the targets on K has positive lower density. Take K = D̄ (closed disc: connected
@@ -66,8 +69,14 @@ Try to transpose: write ζ as a combination over a modulus q,
 and decompose the Hurwitz family over characters mod q: span{ζ(s, a/q)} =
 span{L(s, χ) : χ mod q} (plus imprimitivity bookkeeping). Individual Hurwitz zetas with
 rational parameter are STRONGLY universal (targets with zeros allowed)
-`[CHECK: Bagchi/Gonek, rational-parameter Hurwitz universality]` — which is exactly why
-such functions provably have off-line zeros. One might hope: self-approximate the VECTOR
+`[VERIFIED 2026-07-03 — C6, spot-checked verbatim: Matsumoto Thm 10 (Bagchi, Gonek),
+α transcendental or rational ≠ 1, 1/2, targets in H^c(K) with NO nonvanishing clause]`
+— which is exactly why such functions provably have off-line zeros. Literature support
+for the wall itself: the joint-STRONG theorems (Matsumoto Thm 15) require ℚ-linear
+independence of {log(n + α_j)} — a condition that demonstrably FAILS for
+common-denominator rational families {a/q}_a — so the tool needed to push a seed through
+the full family is provably unavailable in exactly our case (impossibility is not printed
+in the survey; unavailability + the Bagchi-consistency argument below carry the wall). One might hope: self-approximate the VECTOR
 (ζ(·, a/q))_a on a seed disc, sum, and transfer a hypothetical ζ-seed — (H-loc) for ζ,
 hence (with the quantified Reduction) RH.
 

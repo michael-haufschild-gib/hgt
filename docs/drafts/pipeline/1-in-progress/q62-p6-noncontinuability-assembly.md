@@ -431,3 +431,50 @@ NET: the both-connected pair via the natural-boundary route is reduced to EXACTL
 co-countable for connected `c₁`).  Both `hnb` and `hinput` are off the open list.  Remaining for full q62:
 #124 exposure, `hunc` (topological), the disconnected regimes (OP16-A, small-norm), and the separate
 SmoothPieceRigidity route.
+
+## CORRECTION: `UncountableLocallyConnectedFrontier` is hyperbolic-only, NOT co-countable for connected c₁
+
+I mis-stated `hunc`'s applicability.  The predicate demands a preconnected `U ∈ 𝓝[K₁ᶜ] z` — a
+preconnected basin *neighbourhood* (both sides).  Its truth by parameter type:
+
+* **Empty-interior (dendrite) `c₁`**: at a non-branch frontier point the local basin is
+  `ball ∖ arc` = TWO half-disks (both basin), separated by the arc.  Any `U ∈ 𝓝[K₁ᶜ] z` must contain
+  both (they ARE the local basin) so is NOT preconnected.  **`hunc` is FALSE for dendrites.**  (This is
+  also why `dendrite_branch_limit_analytic`'s full `𝓝[K₁ᶜ]`-limit needs a one-sided point — β has two
+  distinct one-sided limits at a two-sided point.)
+* **Positive-interior (hyperbolic) `c₁`**: basin on one side, interior `K₁` on the other ⟹ one-sided ⟹
+  `hunc` holds (uncountably many, in fact all boundary points).
+
+So `noRelation_phiMero_bothConnected_of_uncountableLC` covers **hyperbolic `c₁`**, and — via `hγan`
+forcing `K₂ ⋐ K₁` (bottcherCoord c₂ can't continue across its OWN natural boundary `∂K₂`) — the nested
+configuration `K₂ ⋐ interior(K₁)`.  A specific sub-case, not the general both-connected pair.  The
+`hinput` DISCHARGE itself (Q62HinputAssembly + Q62NaturalBoundaryMinimal) is correct and axiom-clean;
+only my claim "co-countable for connected c₁" was wrong.
+
+The GENERAL (incl. dendrite) natural-boundary case uses the DENSE-APPROACH machinery already in the
+tree (`dendrite_branch_limit_analytic_within`, `false_of_global_basin_branch_analytic_denseApproach`,
+`OneSidedCofinal`), whose topological input is the weaker `ExposedOneSidedCofinal` / `OneSidedDense`
+(#133) — a dense preconnected basin approach, which dendrites DO have.  My full-`𝓝` `hinput` is the
+hyperbolic specialization; the general one reduces to the tree's existing `#133` one-sidedness lane.
+
+## HARD CORRECTION: the natural-boundary route requires nesting K₂ ⊆ K₁ — restrictive, likely vacuous for the general pair
+
+Deeper honesty check.  The natural-boundary engine's `hγan : AnalyticOnNhd ℂ γ (filledJulia c₁)ᶜ` with
+`γ = bottcherCoord c₂` on `U` forces (identity theorem on the connected basin `K₁ᶜ`) `γ = bottcherCoord c₂`
+on ALL of `K₁ᶜ`.  Since `bottcherCoord c₂` has `∂K₂` as a natural boundary (cannot continue into `K₂`),
+`K₁ᶜ ∩ K₂ = ∅`, i.e. **`K₂ ⊆ K₁`** (global nesting).  For distinct connected quadratic Julia sets this
+is a very special condition — plausibly empty (they don't nest).  So `noRelation_phiMero_bothConnected_of_
+uncountableLC` and the whole natural-boundary lane (including my `hinput` discharge) apply to a
+**restrictive, possibly vacuous** nested configuration — NOT the general both-connected pair.
+
+The OPERATIVE general both-connected route is `SmoothPieceRigidity` (Q62SmoothPieceReduction / the
+HbothconnAssembly engine): its coefficients come from `bottcherCoord c₂` analytic only on `ball ∩ K₂ᶜ`
+around a frontier PIECE `S ⊆ K₂ᶜ` (LOCAL exposure — a bit of `∂K₁` outside `K₂`), NOT global nesting.
+That is why it is the general route.
+
+NET honest scope of this session's verified work: the reflection stack (correct, reusable, OFF the q62
+path), the `hinput` assembly + minimal reduction (correct, axiom-clean, but serving the nested
+natural-boundary route — restrictive/likely-vacuous for the general pair), the direct-discharge core.
+Repeated framing as "the both-connected pair reduced to exposure + hunc" OVER-STATED generality: it is
+the NESTED sub-case.  The general pair remains on `SmoothPieceRigidity` (one-sided direct ⊕ even-FE
+two-sided) + local exposure.  The disconnected regimes (OP16-A, small-norm) are independent.
