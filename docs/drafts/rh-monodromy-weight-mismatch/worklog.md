@@ -402,3 +402,17 @@ Bottcher/STATUS.md (tail), Bottcher/DyadicMonodromy.lean. Findings for THIS lane
   closed, Turán hybrid open), M2 marked refuted-as-soft (11 Thm B), §10 item 8 updated to
   the final jet law, NEW §11 state-of-the-map (closed routes with proofs; open routes:
   Turán hybrid, Goldilocks class, deck cocycle, jet-guide; the wall triangulated 3 ways).
+
+## 2026-07-03 — the race, run (12 §3)
+- Full-line sup-recurrence of −ζ′/ζ(1+η+i·): DEAD — loglog L_full ≈ (1/δ)log(4/εδ) vs
+  ceiling c₁/δ with c₁ = log(1/ε₀)/4 ≈ 0.17: inner-exponent deficit ≈ 43–53×. Death
+  certificate = the first measured constant on the exact-structure side of the wall.
+- WINDOWED recurrence: time-bandwidth collapse N_eff ≈ (1/2πδ)log(4/εδ) ⟹
+  log L_win ≈ (1/2πδ)log²(1/εδ) ⟹ T₁ ≪ T_forge for δ ≲ 0.02 — ALIVE exactly in the rung
+  regime. Would-be region (loglog γ)²/(2πlog γ): between Littlewood and VK (consistent,
+  region reduce-to-known); the new object = FORCED CLUSTERING at recurrence sites (the
+  (Rung_δ) step, which no zero-free-region method provides). Numerics banked in 12 §3.
+- Promotion checklist opened: (a) Gram/prolate time-bandwidth lemma for Dirichlet
+  frequencies on unit windows [the load-bearing new lemma]; (b) effective windowed
+  Kronecker, positive density; (c) spike-detection converse constants; (d) = 11 Thm A ✓.
+- C9 queued: Littlewood zero-free-region method (Diophantine flavor) — adjacency audit.

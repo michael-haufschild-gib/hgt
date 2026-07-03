@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4691 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 4694 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -3974,6 +3974,9 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `preimage_exp_escapeOpen` | `GaloisForLFunctions.Bottcher.Pi1EscapeOpen` | `formal/GaloisForLFunctions/Bottcher/Pi1EscapeOpen.lean:28` | The `exp`-preimage of `escapeOpen c` is the open half-plane `{ Re z > log R }`. |
 | theorem | `convex_preimage_exp_escapeOpen` | `GaloisForLFunctions.Bottcher.Pi1EscapeOpen` | `formal/GaloisForLFunctions/Bottcher/Pi1EscapeOpen.lean:33` | That half-plane is convex. |
 | theorem | `isCoveringMap_exp_escapeOpen` | `GaloisForLFunctions.Bottcher.Pi1EscapeOpen` | `formal/GaloisForLFunctions/Bottcher/Pi1EscapeOpen.lean:49` | `exp` restricted to its preimage is a covering map onto `escapeOpen c`. |
+| theorem | `poissonKernel_continuousOn_sphere` | `GaloisForLFunctions.Bottcher.PoissonBoundary` | `formal/GaloisForLFunctions/Bottcher/PoissonBoundary.lean:22` |  |
+| theorem | `poissonKernel_nonneg` | `GaloisForLFunctions.Bottcher.PoissonBoundary` | `formal/GaloisForLFunctions/Bottcher/PoissonBoundary.lean:37` |  |
+| theorem | `poissonKernel_circleAverage_eq_one` | `GaloisForLFunctions.Bottcher.PoissonBoundary` | `formal/GaloisForLFunctions/Bottcher/PoissonBoundary.lean:47` |  |
 | theorem | `poissonInt_harmonicOnNhd` | `GaloisForLFunctions.Bottcher.PoissonHarmonic` | `formal/GaloisForLFunctions/Bottcher/PoissonHarmonic.lean:26` | The Poisson integral of continuous boundary data is harmonic in the disc.** |
 | theorem | `norm_eval_le_of_one_le` | `GaloisForLFunctions.Bottcher.PolyAsymptotic` | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:26` | Elementary polynomial growth bound.** For `‖z‖ ≥ 1`, `‖Q(z)‖ ≤ (∑ᵢ ‖Qᵢ‖)·‖z‖^{deg Q}`: bound the support sum termwise, using `‖z‖^i ≤ ‖z‖^{deg Q}` for `i ≤ deg Q`. |
 | theorem | `tendsto_eval_div_pow_zero` | `GaloisForLFunctions.Bottcher.PolyAsymptotic` | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:37` | A polynomial of degree `< d` over `z^d` vanishes at `∞`.** `Q.eval z / z^d → 0` along the cobounded filter, by the growth bound (`Q.eval z / z^d ≍ ‖z‖^{deg Q - d} → 0`). |

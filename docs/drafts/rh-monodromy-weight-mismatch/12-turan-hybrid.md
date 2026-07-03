@@ -63,3 +63,54 @@ outcome is a theorem either way:
 - c″ beats c: the mechanism is dead at σ = 1+η, and the death certificate (recurrence too
   slow vs forging too easy) quantifies EXACTLY how much a.p. rigidity the Euler product
   buys — the first measured constant on the exact-structure side of the wall.
+
+## 3. The race, run (2026-07-03) `[DERIVATION at heuristic grade — every constant named, gaps listed]`
+
+**Side A (forging ceiling).** Broad floor at frequency Ξ: C₀·log γ·e^{−Ξ/2}; spike content
+e^{−2δΞ} (η = δ). Detection frequency Ξ₀ = log(C₀ log γ)/(½ − 2δ); spike content there
+(C₀ log γ)^{−4δ}; detectable at tolerance ε₀ iff **δ ≤ c₁/loglog γ, c₁ = log(1/ε₀)/4**
+(c₁ ≈ 0.17 at ε₀ = ½). Ceiling: log T_forge = e^{c₁/δ}.
+
+**Side B (recurrence gap).** Series cutoff P = (4/εη)^{1/η}; full-line sup-recurrence must
+match N ≈ P/log P prime phases to precision ε′ ≈ εδ/C; Kac/equidistribution return time
+L_full ≈ ε′^{−N}: loglog L_full ≈ (1/δ)·log(4/εδ).
+
+**Verdict 1 — full-line: DEAD, by a factor ≈ 40–55.** loglog T₁ ≈ (1/δ)log(4/εδ) vs
+loglog T_forge = c₁/δ: the inner exponents differ by log(4/εδ)/c₁ ≈ 43× (δ=0.05, ε=0.05)
+to 53× (δ=0.01). Death certificate, quantified: full sup-norm Euler recurrence is
+doubly-exponentially too slow — the a.p. rigidity the Euler product buys at full-line
+sup-norm falls short of spike visibility by a factor ~50 in the inner exponent.
+
+**Verdict 2 — windowed: ALIVE for δ ≲ 0.02.** On a unit window the Dirichlet system's
+effective dimension collapses by time–bandwidth: N_eff ≈ (bandwidth)·W/2π =
+(1/2πδ)·log(4/εδ) — exponentially below N. Windowed return time:
+log L_win ≈ N_eff·log(1/ε′) ≈ (1/2πδ)·(log(1/εδ))². Numerically (ε = 0.05):
+| δ | log T₁ (windowed) | log T_forge = e^{0.17/δ} | verdict |
+|------|------|------|------|
+| 0.05 | 195 | 30 | dead (ceiling too low) |
+| 0.01 | 1 417 | 2.4·10⁷ | ALIVE |
+| 0.001 | 21 932 | 6.8·10⁷³ | ALIVE |
+The mechanism switches on exactly in the rung regime (small δ, σ near 1) and wins its race
+there by an enormous margin. The windowed-S²-to-sup upgrading it needs on the profile
+window is 11 Theorem A — already proved, and legitimate here because σ = 1+η > 1.
+
+**Output shape + the autopsy.** If made rigorous, the would-be zero-free region is
+δ*(γ) ≈ (loglog γ)²/(2π log γ): numerically comparable to Littlewood's loglog γ/log γ at
+moderate heights, asymptotically one loglog factor beyond it, and strictly WEAKER than
+Vinogradov–Korobov (log γ)^{−2/3} — so no consistency alarm fires; as a REGION this
+reduces-to-known (VK is stronger). The lane's actual prize is different: **at every
+recurrence site the mechanism forces a COMPANION zero with matched narrow profile —
+clustering, the (Rung_δ) hypothesis-to-conclusion step — which neither Littlewood nor VK
+provides.** Littlewood's own proof is Diophantine-approximation-flavored; the windowed
+mechanism is plausibly a recurrence-strengthened Littlewood — C9 check queued: if the
+rigorous version collapses to Littlewood strength, the region is known but the forced
+clustering remains the new object.
+
+**Rigor gaps, named (the promotion checklist):**
+(a) the time–bandwidth collapse N → N_eff for Dirichlet frequencies restricted to unit
+windows (Gram-matrix/prolate-type theorem — the load-bearing new lemma);
+(b) effective windowed Kronecker recurrence with positive density (effective Weyl in
+N_eff dimensions — standard technology, needs assembling with explicit constants);
+(c) the spike-detection converse (Fourier positivity with tolerance ε and the width-slack
+constant C′ tracked);
+(d) DONE — windowed S² ⟹ sup upgrading = 11 Theorem A.
