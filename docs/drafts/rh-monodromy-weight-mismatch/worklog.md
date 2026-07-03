@@ -674,3 +674,15 @@ OC2 seam accounting (#122), OC3 anchor below σ=1 (tall boxes / certified window
 u-plane). Honesty clause: (P-flux) is RH-grade by Bagchi-consistency — reshaped burden
 (discrete pairing structure), not shrunk. 07's (H_k) transfer = the t-translation
 instance of (L).
+
+## 2026-07-03 — #124 BANKED: deckClass_jump — the ledger (L) is theorem-grade
+
+LedgerJump.lean, axiom-clean, RHTower green (8572 jobs), first-compile clean. One
+transversal crossing multiplies the box charge by exp(2πi·m'/n) — proved as the ratio
+of two deckClass_multi_zero evaluations over ι vs Option ι (new zero at none). Combined
+with deckClass_deformation_invariant, identity (L) of 15-conservation-program.md holds
+for piecewise-generic paths: between crossings the class is constant; at each crossing
+it jumps by the crossing zero's factor. The conservation front's formal spine is
+complete: conservation + additivity + jump + far-field anchor + central anchor. The
+open mathematics is now exactly OC1 (crossing pairing / two-coloring, box 84 the
+designated counterexample candidate) and OC2 (seam, #122).
