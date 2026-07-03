@@ -253,6 +253,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62HinputAssembly.lean:16` | This is the genuine remaining content of the natural-boundary route (co-countable for connected `c₁`: |
 | `formal/GaloisForLFunctions/Bottcher/Q62KummerAssembly.lean:35` | against `meroField`. The remaining work to make it unconditional is the *mechanical* construction of |
 | `formal/GaloisForLFunctions/Bottcher/Q62RadicalReduction.lean:24` | algebraic surface of the disconnected case: the lone remaining input is the *geometric* non-squareness |
+| `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:20` | * `reflectionCore_of_arcReflectionData` — the **reduction**.  It isolates the one remaining input of |
+| `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:52` | /-- **The reflected-extension datum — the one remaining input of `ReflectionCore`.**  For a |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:20` | Böttcher branch `β_{c₁}` reflects across it — the isolated `ReflectionCore`, the one remaining input; |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:119` | /-- **The reflection core — the one remaining deep input of smooth-piece rigidity.** A non-constant |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:195` | `β` across the arc then runs on (the remaining, genuinely mathlib-absent, input). -/ |
@@ -289,8 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:132` | remaining local task is exactly to convert regular positive-depth hits into positive periodic points; |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:267` | remaining target-side dynamical input is the local conversion of a positive forward hit to either |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:392` | center fit, while the caller supplies the genuine remaining quantitative window. -/ |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchDenseNonres.lean:459` | is the shrinking-radius fixed-tail interface: the remaining quantitative task is to produce the scale |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchEventual.lean:16` | non-strong roots.  The remaining `c₁` datum is the native frontier separable nonresonant periodic |
 
 ## Historical Status Logs
 
