@@ -117,6 +117,96 @@ theorem laplacian_convolution (G : ℂ → ℝ) (hG : LocallyIntegrable G)
   rw [convolution_def, convolution_def, convolution_def, ← integral_add hint1 hint2]
   congr 1; funext t; rw [← ContinuousLinearMap.map_add]
 
+/-- **Reflection invariance of the Laplacian.** `Δ (f ∘ (-·)) = (Δ f) ∘ (-·)`. -/
+theorem laplacian_comp_neg (f : ℂ → ℝ) (hf : ContDiff ℝ 2 f) :
+    Δ (fun w => f (-w)) = fun w => (Δ f) (-w) := by
+  set g : ℂ →L[ℝ] ℂ := -ContinuousLinearMap.id ℝ ℂ with hg
+  have hcomp : (fun w : ℂ => f (-w)) = f ∘ (⇑g) := by funext z; simp [hg]
+  funext w
+  have key : ∀ u : ℂ, iteratedFDeriv ℝ 2 (fun w => f (-w)) w ![u, u]
+      = iteratedFDeriv ℝ 2 f (-w) ![u, u] := by
+    intro u
+    rw [hcomp, ContinuousLinearMap.iteratedFDeriv_comp_right g hf w (le_refl 2)]
+    have hgw : g w = -w := by simp [hg]
+    rw [hgw, ContinuousMultilinearMap.compContinuousLinearMap_apply]
+    have hval : (fun i => g (![u,u] i)) = fun i => (-1 : ℝ) • (![u,u] i) := by
+      funext i; fin_cases i <;> simp [hg]
+    rw [hval, ContinuousMultilinearMap.map_smul_univ]; simp
+  rw [laplacian_eq_iteratedFDeriv_complexPlane (fun w => f (-w))]
+  show iteratedFDeriv ℝ 2 (fun w => f (-w)) w ![1,1] + iteratedFDeriv ℝ 2 (fun w => f (-w)) w ![I,I]
+    = (Δ f) (-w)
+  rw [key 1, key I, laplacian_eq_iteratedFDeriv_complexPlane f]
+
+/-- **Laplacian of the reflected-translated bump** `Δ (fun y => ρ(x−y)) = (Δρ)(x−·)`.
+This is what turns the convolution Laplacian into a test-function pairing. -/
+theorem laplacian_translate_reflect (ρ : ℂ → ℝ) (hρ : ContDiff ℝ 2 ρ) (x : ℂ) :
+    Δ (fun y => ρ (x - y)) = fun y => (Δ ρ) (x - y) := by
+  have hσ : ContDiff ℝ 2 (fun w => ρ (w + x)) := hρ.comp (contDiff_id.add contDiff_const)
+  have h1 : (fun y => ρ (x - y)) = fun y => (fun w => ρ (w + x)) (-y) := by
+    funext y; simp [sub_eq_neg_add]
+  rw [h1, laplacian_comp_neg _ hσ]
+  funext y
+  rw [laplacian_comp_add_right ρ x]
+  simp [sub_eq_neg_add]
+
+/-- **`Δ G_δ = 0` on the interior.** The mollification `G ⋆ η` of a weakly-harmonic
+`G` has vanishing Laplacian wherever the reflected bump `η(x−·)` is supported inside
+the weak-harmonicity ball.  `Δ(G⋆η)(x) = ∫ G · (Δη)(x−·) = ∫ G · Δ(η(x−·)) = 0`. -/
+theorem laplacian_mollified_eq_zero (G : ℂ → ℝ) (hG : LocallyIntegrable G)
+    (η : ℂ → ℝ) (hηc : HasCompactSupport η) (hη : ContDiff ℝ 3 η)
+    {p : ℂ} {ε rOut : ℝ}
+    (hηsupp : tsupport η ⊆ Metric.closedBall 0 rOut)
+    (hweak : ∀ φ : ℂ → ℝ, ContDiff ℝ 2 φ → HasCompactSupport φ → tsupport φ ⊆ Metric.ball p ε →
+      ∫ z, G z * Δ φ z = 0)
+    {x : ℂ} (hx : x ∈ Metric.ball p (ε - rOut)) :
+    Δ (convolution G η (ContinuousLinearMap.lsmul ℝ ℝ) volume) x = 0 := by
+  set φ := fun y => η (x - y) with hφdef
+  have hΔφ : Δ φ = fun y => (Δ η) (x - y) :=
+    laplacian_translate_reflect η (hη.of_le (by norm_num)) x
+  have hφC2 : ContDiff ℝ 2 φ := (hη.of_le (by norm_num)).comp (contDiff_const.sub contDiff_id)
+  have hsuppsub : Function.support φ ⊆ Metric.closedBall x rOut := by
+    intro y hy
+    rw [Function.mem_support] at hy
+    have : x - y ∈ tsupport η := subset_tsupport η (by rw [Function.mem_support]; exact hy)
+    have h2 : x - y ∈ Metric.closedBall 0 rOut := hηsupp this
+    rw [Metric.mem_closedBall, dist_zero_right] at h2
+    rw [Metric.mem_closedBall, Complex.dist_eq, norm_sub_rev]; exact h2
+  have hφcs : HasCompactSupport φ :=
+    HasCompactSupport.of_support_subset_isCompact (isCompact_closedBall x rOut) hsuppsub
+  have hφsupp : tsupport φ ⊆ Metric.ball p ε := by
+    have hsub : Metric.closedBall x rOut ⊆ Metric.ball p ε := by
+      intro z hz
+      rw [Metric.mem_closedBall] at hz
+      rw [Metric.mem_ball] at hx ⊢
+      calc dist z p ≤ dist z x + dist x p := dist_triangle z x p
+        _ < rOut + (ε - rOut) := by
+              apply add_lt_add_of_le_of_lt hz hx
+        _ = ε := by ring
+    exact (closure_minimal hsuppsub (isClosed_closedBall)).trans hsub
+  rw [laplacian_convolution G hG η hηc hη x, convolution_def]
+  calc ∫ t, (ContinuousLinearMap.lsmul ℝ ℝ) (G t) ((Δ η) (x - t))
+      = ∫ z, G z * Δ φ z := by
+        apply integral_congr_ae; filter_upwards with t
+        rw [ContinuousLinearMap.lsmul_apply, smul_eq_mul, hΔφ]
+    _ = 0 := hweak φ hφC2 hφcs hφsupp
+
+/-- **The mollification is harmonic.** `G ⋆ η` is `HarmonicOnNhd` on the interior
+`ball p (ε − rOut)`: smooth (compact-support convolution) with vanishing Laplacian. -/
+theorem harmonicOnNhd_mollified (G : ℂ → ℝ) (hG : LocallyIntegrable G)
+    (η : ℂ → ℝ) (hηc : HasCompactSupport η) (hη : ContDiff ℝ 3 η)
+    {p : ℂ} {ε rOut : ℝ}
+    (hηsupp : tsupport η ⊆ Metric.closedBall 0 rOut)
+    (hweak : ∀ φ : ℂ → ℝ, ContDiff ℝ 2 φ → HasCompactSupport φ → tsupport φ ⊆ Metric.ball p ε →
+      ∫ z, G z * Δ φ z = 0) :
+    HarmonicOnNhd (convolution G η (ContinuousLinearMap.lsmul ℝ ℝ) volume)
+      (Metric.ball p (ε - rOut)) := by
+  have hC2 : ContDiff ℝ 2 (convolution G η (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+    hηc.contDiff_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) hG (hη.of_le (by norm_num))
+  intro x hx
+  refine ⟨hC2.contDiffAt, ?_⟩
+  filter_upwards [(isOpen_ball).mem_nhds hx] with y hy
+  exact laplacian_mollified_eq_zero G hG η hηc hη hηsupp hweak hy
+
 end
 
 end Bottcher

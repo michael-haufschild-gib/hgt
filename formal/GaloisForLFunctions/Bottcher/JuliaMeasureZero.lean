@@ -166,6 +166,20 @@ lemma tendsto_zero_of_geometric_bound_ennreal
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hmul0
     (fun n => bot_le) hbound
 
+/-- Eventual finite geometric decay is enough for an `ℝ≥0∞` sequence to tend to zero. -/
+lemma tendsto_zero_of_eventually_geometric_bound_ennreal
+    {u : ℕ → ℝ≥0∞} {N : ℕ} {q : ℝ≥0∞} (hq : q < 1) (huN : u N < ⊤)
+    (hdecay : ∀ n : ℕ, N ≤ n → u (n + 1) ≤ q * u n) :
+    Tendsto u atTop (𝓝 0) := by
+  have hshift : Tendsto (fun m : ℕ => u (m + N)) atTop (𝓝 0) := by
+    apply tendsto_zero_of_geometric_bound_ennreal (u := fun m : ℕ => u (m + N)) hq
+    · simpa using huN
+    · intro m
+      have hle : N ≤ m + N := by omega
+      have h := hdecay (m + N) hle
+      simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using h
+  exact (Filter.tendsto_add_atTop_iff_nat N).mp hshift
+
 /-- A uniform geometric decay estimate for the trapping-disk pullbacks implies
 `volume K_c = 0`. -/
 theorem volume_filledJulia_eq_zero_of_geometric_preimage_decay {c : ℂ} {q : ℝ≥0∞}
@@ -177,6 +191,18 @@ theorem volume_filledJulia_eq_zero_of_geometric_preimage_decay {c : ℂ} {q : �
   exact volume_filledJulia_eq_zero_of_tendsto_preimage_closedBall_zero
     (tendsto_zero_of_geometric_bound_ennreal hq
       (volume_quadraticPreimageClosedBall_lt_top c 0) hdecay)
+
+/-- An eventual uniform geometric decay estimate for the trapping-disk pullbacks implies
+`volume K_c = 0`. -/
+theorem volume_filledJulia_eq_zero_of_eventually_geometric_preimage_decay {c : ℂ} {N : ℕ}
+    {q : ℝ≥0∞} (hq : q < 1)
+    (hdecay : ∀ n : ℕ, N ≤ n →
+      volume (quadraticPreimageClosedBall c (n + 1)) ≤
+        q * volume (quadraticPreimageClosedBall c n)) :
+    volume (filledJulia c) = 0 := by
+  exact volume_filledJulia_eq_zero_of_tendsto_preimage_closedBall_zero
+    (tendsto_zero_of_eventually_geometric_bound_ennreal hq
+      (volume_quadraticPreimageClosedBall_lt_top c N) hdecay)
 
 /-- If the quadratic preimage area formula is available and its kernel is uniformly bounded by
 `q < 1` on every trapping-disk pullback, then `K_c` is null. -/
@@ -198,6 +224,29 @@ theorem volume_filledJulia_eq_zero_of_forall_dist {c : ℂ} {q : ℝ≥0∞}
         ≤ ∫⁻ _w in quadraticPreimageClosedBall c n, q ∂(volume : Measure ℂ) := by
           exact setLIntegral_mono' (measurableSet_quadraticPreimageClosedBall c n)
             (fun w hw => hkernel n w hw)
+    _ = q * volume (quadraticPreimageClosedBall c n) := by
+          rw [setLIntegral_const]
+
+/-- Tail version of `volume_filledJulia_eq_zero_of_forall_dist`: the kernel bound only needs to hold
+from one pullback level onward. -/
+theorem volume_filledJulia_eq_zero_of_eventually_forall_dist {c : ℂ} {N : ℕ} {q : ℝ≥0∞}
+    (hq : q < 1)
+    (hpreimage : ∀ A : Set ℂ, MeasurableSet A →
+      volume ((quadratic c) ⁻¹' A) =
+        ∫⁻ w in A, ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ))
+    (hkernel : ∀ n : ℕ, N ≤ n → ∀ w ∈ quadraticPreimageClosedBall c n,
+      ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ≤ q) :
+    volume (filledJulia c) = 0 := by
+  apply volume_filledJulia_eq_zero_of_eventually_geometric_preimage_decay hq
+  intro n hn
+  rw [quadraticPreimageClosedBall_succ_eq_preimage,
+    hpreimage (quadraticPreimageClosedBall c n) (measurableSet_quadraticPreimageClosedBall c n)]
+  calc
+    ∫⁻ w in quadraticPreimageClosedBall c n,
+        ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ)
+        ≤ ∫⁻ _w in quadraticPreimageClosedBall c n, q ∂(volume : Measure ℂ) := by
+          exact setLIntegral_mono' (measurableSet_quadraticPreimageClosedBall c n)
+            (fun w hw => hkernel n hn w hw)
     _ = q * volume (quadraticPreimageClosedBall c n) := by
           rw [setLIntegral_const]
 
@@ -236,6 +285,49 @@ theorem iterate_preimage_closedBall_disjoint_ball_c {c : ℂ} (hc : Disconnected
   rw [Set.disjoint_left]
   intro z hzball hzS
   exact hball hzball hzS
+
+/-- A point outside a ball around the critical value has the corresponding quadratic
+preimage-area kernel bounded by the ball radius. -/
+theorem quadratic_kernel_le_of_disjoint_ball_c {c w : ℂ} {r : ℝ} {q : ℝ≥0∞}
+    (hr : 0 < r) (hw : w ∉ Metric.ball c r)
+    (hq : ENNReal.ofReal ((2 * r)⁻¹) ≤ q) :
+    ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ≤ q := by
+  have hnotlt : ¬ dist w c < r := fun h => hw (Metric.mem_ball.mpr h)
+  have hdist : r ≤ dist w c := le_of_not_gt hnotlt
+  have hnorm : r ≤ ‖w - c‖ := by
+    simpa [dist_eq_norm] using hdist
+  have h2 : 2 * r ≤ 2 * ‖w - c‖ := by nlinarith
+  have h2pos : 0 < 2 * r := by nlinarith
+  have hinv : (2 * ‖w - c‖)⁻¹ ≤ (2 * r)⁻¹ := inv_anti₀ h2pos h2
+  exact (ENNReal.ofReal_le_ofReal hinv).trans hq
+
+/-- Setwise version of `quadratic_kernel_le_of_disjoint_ball_c` for one trapping-disk pullback. -/
+theorem quadraticPreimageClosedBall_kernel_le_of_disjoint_ball_c {c : ℂ} {n : ℕ} {r : ℝ}
+    {q : ℝ≥0∞} (hr : 0 < r)
+    (hdisj : Disjoint (Metric.ball c r) (quadraticPreimageClosedBall c n))
+    (hq : ENNReal.ofReal ((2 * r)⁻¹) ≤ q) :
+    ∀ w ∈ quadraticPreimageClosedBall c n,
+      ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ≤ q := by
+  intro w hw
+  have hwball : w ∉ Metric.ball c r := fun hwb => (Set.disjoint_left.mp hdisj hwb) hw
+  exact quadratic_kernel_le_of_disjoint_ball_c hr hwball hq
+
+/-- A separated pullback level plus the quadratic preimage area formula gives the nullity theorem,
+provided the separation radius yields a contraction factor `q < 1`. -/
+theorem volume_filledJulia_eq_zero_of_disjoint_ball_c
+    {c : ℂ} {N : ℕ} {r : ℝ} {q : ℝ≥0∞}
+    (hq : q < 1)
+    (hpreimage : ∀ A : Set ℂ, MeasurableSet A →
+      volume ((quadratic c) ⁻¹' A) =
+        ∫⁻ w in A, ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ))
+    (hr : 0 < r)
+    (hdisj : Disjoint (Metric.ball c r) (quadraticPreimageClosedBall c N))
+    (hqkernel : ENNReal.ofReal ((2 * r)⁻¹) ≤ q) :
+    volume (filledJulia c) = 0 := by
+  apply volume_filledJulia_eq_zero_of_eventually_forall_dist hq hpreimage
+  intro n hn
+  exact quadraticPreimageClosedBall_kernel_le_of_disjoint_ball_c hr
+    (Disjoint.mono_right (antitone_quadraticPreimageClosedBall c hn) hdisj) hqkernel
 
 /-- Complex-plane area formula for an injective real-`C¹` map on a measurable set, in
 `lintegral` form. -/
