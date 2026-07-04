@@ -42,8 +42,10 @@ import GaloisForLFunctions.RHTower.GermExtension
 import GaloisForLFunctions.RHTower.SpurHermite
 import GaloisForLFunctions.RHTower.SpurRescale
 import GaloisForLFunctions.RHTower.PolynomialTruncation
+import GaloisForLFunctions.RHTower.RangeArithmetic
 import GaloisForLFunctions.RHTower.SpurCumulant
 import GaloisForLFunctions.RHTower.SpurCumulantBounds
+import GaloisForLFunctions.RHTower.CoefficientTail
 import GaloisForLFunctions.RHTower.SpurEnvelope
 import GaloisForLFunctions.RHTower.SpurClearance
 import GaloisForLFunctions.RHTower.SpurOperator

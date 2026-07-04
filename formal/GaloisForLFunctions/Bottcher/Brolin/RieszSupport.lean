@@ -26,6 +26,7 @@ identity is available.  The two remaining unconditional inputs are `WeylOnBall`
 (elliptic regularity) and `volume (filledJulia c) = 0` (hyperbolic Julia null).
 -/
 import GaloisForLFunctions.Bottcher.Brolin.RieszLimit
+import GaloisForLFunctions.Bottcher.Brolin.TargetLimit
 import GaloisForLFunctions.Bottcher.HarmonicMaxPrinciple
 import Mathlib.MeasureTheory.Measure.Support
 
@@ -112,6 +113,37 @@ theorem frontier_filledJulia_subset_support_gapAMu (c : ℂ)
     frontier (filledJulia c) ⊆ (gapAMu c).support :=
   frontier_filledJulia_subset_support_of_isRieszMeasureOfSmooth
     (isRieszMeasureOfSmooth_gapAMu_of_filledJulia_null c hnull) hWeyl
+
+/-- **The GAP-A limit Riesz identity for the arbitrary-target Brolin measure.**
+`limitingBrolinMeasureAt c a = (2π)⁻¹ Δ G_c` for every target `a`, conditional on
+Julia-null.  Same Fubini bridge as the zero-target case, now using the target-`a`
+basin representation `green_eq_neg_logPotential_limitingBrolinMeasureAt_on_basin`.
+This is what the q62 support consumer reads (it is stated on `limitingBrolinMeasureAt`,
+not `gapAMu`). -/
+theorem isRieszMeasureOfSmooth_limitingBrolinMeasureAt_of_filledJulia_null (c a : ℂ)
+    (hnull : volume (filledJulia c) = 0) :
+    IsRieszMeasureOfSmooth (limitingBrolinMeasureAt c a) (greenFunctionDyn c) := by
+  have hcarrier : limitingBrolinMeasureAt c a (Metric.closedBall 0 (max 2 ‖c‖))ᶜ = 0 :=
+    measure_mono_null (compl_subset_compl.mpr (filledJulia_subset_closedBall c))
+      (limitingBrolinMeasureAt_filledJulia_compl c a)
+  have hae : ∀ᵐ z ∂(volume : Measure ℂ), z ∉ filledJulia c := by
+    rw [ae_iff]; simpa using hnull
+  have hrep : (fun z => greenFunctionDyn c z)
+      =ᵐ[volume] fun z => - logPotential (limitingBrolinMeasureAt c a) z := by
+    filter_upwards [hae] with z hz
+    exact green_eq_neg_logPotential_limitingBrolinMeasureAt_on_basin hz
+  exact isRieszMeasureOfSmooth_of_potentialRep_ae_carrier
+    (limitingBrolinMeasureAt c a) hcarrier _ hrep
+
+/-- **The GAP-A support theorem for the arbitrary-target Brolin measure**, conditional
+on Julia-null (`hnull`) and Weyl's lemma (`hWeyl`).  This conclusion is definitionally
+`LimitingBrolinMeasureAtSupportsJulia c a`, the q62 both-connected support input. -/
+theorem frontier_filledJulia_subset_support_limitingBrolinMeasureAt (c a : ℂ)
+    (hnull : volume (filledJulia c) = 0)
+    (hWeyl : WeylOnBall (greenFunctionDyn c)) :
+    frontier (filledJulia c) ⊆ (limitingBrolinMeasureAt c a).support :=
+  frontier_filledJulia_subset_support_of_isRieszMeasureOfSmooth
+    (isRieszMeasureOfSmooth_limitingBrolinMeasureAt_of_filledJulia_null c a hnull) hWeyl
 
 end
 

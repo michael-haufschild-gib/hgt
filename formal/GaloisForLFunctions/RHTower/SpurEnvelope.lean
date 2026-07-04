@@ -5,6 +5,8 @@ R1 envelope layer.
 tail and the scalar exponential truncation error.  This module packages those
 pieces into the single polynomial envelope consumed by the MWM R1 lane.
 -/
+import GaloisForLFunctions.RHTower.RangeArithmetic
+import GaloisForLFunctions.RHTower.CoefficientTail
 import GaloisForLFunctions.RHTower.SpurCumulantBounds
 
 namespace RHTower
@@ -68,24 +70,6 @@ theorem phi_product_multiplierTruncPoly_abs_bound_half_order (P : ℕ) {j d : �
       (2 + ((P - 1 : ℕ) : ℝ) ^ P / (P.factorial : ℝ)) *
         ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
   exact phi_product_multiplierTruncPoly_abs_bound_half_constant P (P - 1) hd hj hhalf (by omega)
-
-/-- Cube-square range implies the half-range needed by the elementary log estimate.
-
-This is the integer form of `j <= d^(2/3) => 2*j <= d` once `d >= 8`. -/
-theorem two_mul_le_of_cube_le_square {j d : ℕ} (hjd : j ^ 3 ≤ d ^ 2) (hd : 8 ≤ d) :
-    2 * j ≤ d := by
-  by_contra h
-  have hltNat : d < 2 * j := Nat.lt_of_not_ge h
-  have hlt : (d : ℝ) < 2 * (j : ℝ) := by exact_mod_cast hltNat
-  have hdpos : (0 : ℝ) < d := by exact_mod_cast (lt_of_lt_of_le (by norm_num : 0 < 8) hd)
-  have hjdR : (j : ℝ) ^ 3 ≤ (d : ℝ) ^ 2 := by exact_mod_cast hjd
-  have hcube_lt : (d : ℝ) ^ 3 < (2 * (j : ℝ)) ^ 3 :=
-    pow_lt_pow_left₀ hlt (le_of_lt hdpos) (by norm_num)
-  have hbound : (d : ℝ) ^ 3 < 8 * (d : ℝ) ^ 2 := by
-    nlinarith [hcube_lt, hjdR]
-  have hd8R : (8 : ℝ) ≤ d := by exact_mod_cast hd
-  have hd2pos : 0 < (d : ℝ) ^ 2 := pow_pos hdpos 2
-  nlinarith
 
 /-- R1's single-constant envelope on the paper range `j^3 <= d^2`.
 
@@ -223,39 +207,6 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_with_tail_cube_square_orde
   rw [eval_multiplierJetPoly] at hQ
   exact hQ
 
-/-- Provider interface for bounding the exact polynomial tail after the multiplier jet. -/
-def multiplierJetTailEvalBound (K : ℝ) (P n j d : ℕ) : Prop :=
-  ∃ Q : ℝ[X],
-    (multiplierTruncPoly P n j).eval ((d : ℝ)⁻¹) =
-        (multiplierJetPoly P n j).eval ((d : ℝ)⁻¹) +
-          ((d : ℝ)⁻¹) ^ P * Q.eval ((d : ℝ)⁻¹) ∧
-      |Q.eval ((d : ℝ)⁻¹)| ≤ K * (j : ℝ) ^ (2 * P)
-
-/-- A provider bound for `Q(1/d)` gives the scaled `d^{-P}` tail bound. -/
-theorem tail_term_bound_of_multiplierJetTailEvalBound {K : ℝ} {P n j d : ℕ}
-    (hd : 0 < d) (hTail : multiplierJetTailEvalBound K P n j d) :
-    ∃ Q : ℝ[X],
-      (multiplierTruncPoly P n j).eval ((d : ℝ)⁻¹) =
-          (multiplierJetPoly P n j).eval ((d : ℝ)⁻¹) +
-            ((d : ℝ)⁻¹) ^ P * Q.eval ((d : ℝ)⁻¹) ∧
-        |((d : ℝ)⁻¹) ^ P * Q.eval ((d : ℝ)⁻¹)| ≤
-          K * ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
-  obtain ⟨Q, hQeq, hQbound⟩ := hTail
-  refine ⟨Q, hQeq, ?_⟩
-  have hdR : (0 : ℝ) < d := by exact_mod_cast hd
-  have hscale_nonneg : 0 ≤ |((d : ℝ)⁻¹) ^ P| := abs_nonneg _
-  have hmul := mul_le_mul_of_nonneg_left hQbound hscale_nonneg
-  have hscale : |((d : ℝ)⁻¹) ^ P| = ((d : ℝ) ^ P)⁻¹ := by
-    rw [abs_of_nonneg (pow_nonneg (inv_nonneg.mpr (le_of_lt hdR)) P), inv_pow]
-  calc
-    |((d : ℝ)⁻¹) ^ P * Q.eval ((d : ℝ)⁻¹)|
-        = |((d : ℝ)⁻¹) ^ P| * |Q.eval ((d : ℝ)⁻¹)| := abs_mul _ _
-    _ ≤ |((d : ℝ)⁻¹) ^ P| * (K * (j : ℝ) ^ (2 * P)) := hmul
-    _ = K * ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
-      rw [hscale]
-      rw [div_eq_mul_inv]
-      ring
-
 /-- Paper-range low-sum R1 once the coefficient-tail provider is supplied. -/
 theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_order
     (K : ℝ) (P : ℕ) {j d : ℕ}
@@ -302,30 +253,6 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_
     _ = (2 + ((P - 1 : ℕ) : ℝ) ^ P / (P.factorial : ℝ) + K) *
         ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by ring
 
-/-- Coefficient-sum provider for the exact multiplier-jet tail.
-
-This replaces the anonymous tail quotient in `multiplierJetTailEvalBound` by the
-explicit shifted high-coefficient quotient.  The remaining R1 tail task is now
-the finite coefficient sum on the hypothesis line. -/
-theorem multiplierJetTailEvalBound_of_coeff_sum_bound {K : ℝ} (P : ℕ) {j d : ℕ}
-    (hCoeff :
-      ∑ r ∈ Finset.range (P * (P - 1) + 1),
-        |multiplierCoeff P (P - 1) j (P + r)| * |((d : ℝ)⁻¹)| ^ r ≤
-          K * (j : ℝ) ^ (2 * P)) :
-    multiplierJetTailEvalBound K P (P - 1) j d := by
-  let Q : ℝ[X] := PolynomialTruncation.shiftedTailUpTo
-    (multiplierTruncPoly P (P - 1) j) P (P * (P - 1))
-  refine ⟨Q, ?_, ?_⟩
-  · have hdeg : (multiplierTruncPoly P (P - 1) j).natDegree ≤
-        P + P * (P - 1) := by
-      exact le_trans (natDegree_multiplierTruncPoly_le P (P - 1) j) (by omega)
-    have hsplit := PolynomialTruncation.eval_eq_lowTrunc_add_pow_mul_shiftedTailUpTo_of_natDegree_le
-      (P := multiplierTruncPoly P (P - 1) j) P (P * (P - 1)) ((d : ℝ)⁻¹) hdeg
-    simpa [Q, multiplierJetPoly] using hsplit
-  · have hbound := PolynomialTruncation.abs_eval_shiftedTailUpTo_le
-      (P := multiplierTruncPoly P (P - 1) j) P (P * (P - 1)) ((d : ℝ)⁻¹)
-    exact le_trans (by simpa [Q, multiplierCoeff] using hbound) hCoeff
-
 /-- Paper-range low-sum R1 from a concrete finite high-coefficient tail bound. -/
 theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_sum_bound_cube_square_order
     (K : ℝ) (P : ℕ) {j d : ℕ}
@@ -340,41 +267,6 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_sum_bound_cube_sq
         ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
   exact phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_order K P
     hd hj hjd hP (multiplierJetTailEvalBound_of_coeff_sum_bound (K := K) P hCoeff)
-
-/-- If the explicit high-coefficient sum is bounded without the `d` weights, it
-supplies the tail provider for every positive `d`.
-
-This removes `d` from the remaining R1 coefficient-tail obligation: under `0 < d`,
-all factors `|1/d|^r` are at most `1`. -/
-theorem multiplierJetTailEvalBound_of_coeff_abs_sum_bound {K : ℝ} (P : ℕ) {j d : ℕ}
-    (hd : 0 < d)
-    (hCoeff :
-      ∑ r ∈ Finset.range (P * (P - 1) + 1),
-        |multiplierCoeff P (P - 1) j (P + r)| ≤ K * (j : ℝ) ^ (2 * P)) :
-    multiplierJetTailEvalBound K P (P - 1) j d := by
-  refine multiplierJetTailEvalBound_of_coeff_sum_bound (K := K) P ?_
-  have hweighted_le :
-      ∑ r ∈ Finset.range (P * (P - 1) + 1),
-        |multiplierCoeff P (P - 1) j (P + r)| * |((d : ℝ)⁻¹)| ^ r ≤
-      ∑ r ∈ Finset.range (P * (P - 1) + 1),
-        |multiplierCoeff P (P - 1) j (P + r)| := by
-    apply Finset.sum_le_sum
-    intro r _
-    have hdR : (0 : ℝ) < d := by exact_mod_cast hd
-    have h1dNat : 1 ≤ d := Nat.succ_le_iff.mpr hd
-    have h1d : (1 : ℝ) ≤ d := by exact_mod_cast h1dNat
-    have hinv_abs_le_one : |((d : ℝ)⁻¹)| ≤ 1 := by
-      rw [abs_of_nonneg (inv_nonneg.mpr (le_of_lt hdR))]
-      exact inv_le_one_of_one_le₀ h1d
-    have hpow : |((d : ℝ)⁻¹)| ^ r ≤ 1 :=
-      pow_le_one₀ (abs_nonneg _) hinv_abs_le_one
-    have hcoeff_nonneg : 0 ≤ |multiplierCoeff P (P - 1) j (P + r)| := abs_nonneg _
-    calc
-      |multiplierCoeff P (P - 1) j (P + r)| * |((d : ℝ)⁻¹)| ^ r
-          ≤ |multiplierCoeff P (P - 1) j (P + r)| * 1 :=
-            mul_le_mul_of_nonneg_left hpow hcoeff_nonneg
-      _ = |multiplierCoeff P (P - 1) j (P + r)| := by ring
-  exact le_trans hweighted_le hCoeff
 
 /-- Paper-range low-sum R1 from an unweighted high-coefficient tail bound. -/
 theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_abs_sum_bound_cube_square_order
