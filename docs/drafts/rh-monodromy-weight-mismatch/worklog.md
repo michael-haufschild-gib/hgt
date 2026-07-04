@@ -1661,3 +1661,25 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
   agent's SweepCascade.lean (list-level localization) composes with it.
 - OPEN, force order: (HOLD-phase) |H|-kernel; (DRIFT-dip) bookkeeping;
   (CR-density) via log|F_N| variance; (DEEP-FATE) sanctioned computation.
+
+## Cycle 17 (2026-07-04) — the four lemmas formalized + (DEEP-FATE) run (goal-locked)
+- Lean BANKED (4 modules, umbrella 8618 jobs, lint green, axiom-clean):
+  DriftDip.lean — (DRIFT-dip) core FULLY PROVED (drift_dip + excursion form:
+  bounded-step angle walk provably dips (L+1)a/2 within one wrap; drift-robust,
+  no lattice needed); HoldPhase.lean — factorization Z′(iη) = 2iηg(iη),
+  kill-margin ⟺ cos(slip)·R ≥ 1, coherent accumulation ≥ half-mass;
+  CreationRate.lean — finite Chebyshev, far-kernel ≥ −1/c, pricing pigeonhole;
+  MidCentral.lean — assembly THEOREM: MidCentralInput (depth_pos + dip_kills +
+  creation_rate) ⟹ survivors ≤ K, localized to the slip window; prefix-dip ⟹
+  killed bridge into SweepCascade.
+- (DEEP-FATE) RUN (deep_fate_tracker.py, pre-registered): P-DF2 PASS
+  (runs ≤ 3N^{1/3}); P-DF3 PASS for resonant survivors (6/8 live exactly ONE
+  entry epoch: N−1 online → N pair → N+1 online); P-DF1 FAIL informatively —
+  the deepen branch is REAL in the over-resolved regime k > N (edge event
+  reaches η = 0.425 ≈ N^{−1/4}, doc 48's scale) but SATURATES and dies within
+  ~3.3·N^{1/3} entries. No accumulation anywhere. Doc 53 records adjudication.
+- Doc 53 BANKED: assembly record; open content isolated to exactly TWO
+  hypothesis fields (dip_kills amplitude floor vs |H|; creation_rate K).
+- Next: (HOLD-phase) kernel = one inequality (amplitude floor via
+  coherent_sum_lower across the window transition); partial-fraction module
+  for Re(F_N′/F_N); K-counting in the 0.19-window through the deck relation.

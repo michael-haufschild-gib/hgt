@@ -19,6 +19,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 3518 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
+| 2635 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
@@ -26,7 +27,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1711 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
 | 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
 | 1604 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
-| 1597 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
 | 1417 | `formal/GaloisForLFunctions/Bottcher/CrossRatioNormalBridge.lean` |
@@ -271,12 +271,15 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62BothConnectedExposed.lean:8` | point of one set off the other filled set (after a swap).  The *only* remaining gap to |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:20` | Half A is proved here modulo `BrolinScalingAt`; the two remaining inputs — the doubling law |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:132` | The remaining nontrivial GAP-A task is to prove the two measure invariances for |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:293` | /-- Half A with the free antipodal symmetry discharged.  The only remaining |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:504` | and antipodal symmetry are internal; the remaining assumption is exactly that |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:525` | /-- GAP-A bridge for Half A.  The remaining shifted-measure input is exactly the |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1057` | remaining boundary value and vanishing-atom-mass gates needed to pass it through the |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1233` | remaining limit input is that the selected subsequence at `f_c z` and the |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1551` | /-- Disconnected GAP-A support from the precise remaining shifted-potential identification. |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:363` | /-- The remaining Half A analytic gate: the arbitrary-target compact-carrier |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:372` | /-- The remaining Half B analytic gate: finite target log potentials on the |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:434` | points.  This is the topological form of the remaining Half A uniqueness |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:561` | /-- Half A with the free antipodal symmetry discharged.  The only remaining |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:772` | and antipodal symmetry are internal; the remaining assumption is exactly that |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:807` | /-- GAP-A bridge for Half A.  The remaining shifted-measure input is exactly the |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1488` | remaining boundary value and vanishing-atom-mass gates needed to pass it through the |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1713` | remaining limit input is that the selected subsequence at `f_c z` and the |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:2589` | /-- Disconnected GAP-A support from the precise remaining shifted-potential identification. |
 | `formal/GaloisForLFunctions/Bottcher/Q62Field.lean:269` | by `mvEval_deepBall_eq_zero_iff` (faithfulness); the single remaining input `hFunIndep` is precisely |
 | `formal/GaloisForLFunctions/Bottcher/Q62HinputAssembly.lean:16` | This is the genuine remaining content of the natural-boundary route (co-countable for connected `c₁`: |
 | `formal/GaloisForLFunctions/Bottcher/Q62KummerAssembly.lean:35` | against `meroField`. The remaining work to make it unconditional is the *mechanical* construction of |
@@ -288,9 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionTransport.lean:17` | boundary `hnb`.  The remaining inputs are exactly the boundary datum of `F = β ∘ γ` at the arc |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothBranchReflection.lean:15` | The remaining inputs are the ones the whole #118 chain shares — a **preconnected basin neighbourhood** |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:20` | Böttcher branch `β_{c₁}` reflects across it — the isolated `ReflectionCore`, the one remaining input; |
-| `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:119` | /-- **The reflection core — the one remaining deep input of smooth-piece rigidity.** A non-constant |
-| `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:197` | `β` across the arc then runs on (the remaining, genuinely mathlib-absent, input). -/ |
-| `formal/GaloisForLFunctions/Bottcher/QuarticDefect.lean:72` | remaining input is the Γ(2) cusp-form finiteness (modular-curve compactness / valence), absent from |
 
 ## Historical Status Logs
 

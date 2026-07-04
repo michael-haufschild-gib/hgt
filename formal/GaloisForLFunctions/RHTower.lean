@@ -78,3 +78,4 @@ import GaloisForLFunctions.RHTower.DriftDip
 import GaloisForLFunctions.RHTower.HoldPhase
 import GaloisForLFunctions.RHTower.CreationRate
 import GaloisForLFunctions.RHTower.MidCentral
+import GaloisForLFunctions.RHTower.RotationDip
