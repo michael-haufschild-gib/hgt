@@ -1751,3 +1751,16 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
   order-1 + Rouché certificates [execution, formalizable] and (R3) CR-density
   [OPEN mathematics]. The goal "fully proven" is blocked on (R3) being an open
   problem — no Lean closes it. All formalizable-without-solving-open-math is done.
+
+## Cycle 24 (2026-07-04) — CR-density probed + precisely targeted (open core)
+- cr_density_probe.py RUN (pre-registered): 3 signals SUPPORT CR-density being
+  TRUE — SATURATION (count(c=2)=count(c=4): zeros don't accumulate AT the line),
+  bounded near/far σ-density ratio ~2, N-stable slope κ~0.025-0.040. Small-N
+  (≤28), preliminary but decisive on "true not false".
+- Doc 55 BANKED: (CR-density) ⟸ (AC) small-ball anti-concentration of |F_N| on
+  the line. SELF-CORRECTION (attack-as-false): the 4th-moment/Paley-Zygmund
+  route was WRONG — it bounds the LARGE-value tail, near-line zeros are the
+  SMALL-value tail. Genuine target = value distribution (Selberg-CLT-grade
+  small-ball for Σn^{-s} in matched regime) — the frontier GM/RS leave open.
+  2nd moment (MV mean value) is the Lean-tractable scale input.
+- MID-central open core now cleanly isolated to (AC), numerically true.

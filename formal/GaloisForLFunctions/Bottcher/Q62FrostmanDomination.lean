@@ -9,6 +9,7 @@ truncated integral is continuous along `u k → z`.  For disconnected `c` (`K_c 
 discharges the `hnonpos` gate of `PotentialDominatedOnFilledJulia_of_truncatedLogKernel_inv_nat_nonpos`.
 -/
 import GaloisForLFunctions.Bottcher.Q62EquilibriumVanishing
+import GaloisForLFunctions.Bottcher.CantorFilledJulia
 open MeasureTheory Complex Filter Metric Set Topology
 namespace Bottcher
 noncomputable section
@@ -130,6 +131,112 @@ theorem potentialDominatedOnFilledJulia_of_subset_frontier_of_atomless {c a : �
     (fun z hz _n =>
       integral_truncatedLogKernel_limitingBrolinMeasureAt_nonpos_of_mem_frontier
         (hsub hz) (by positivity))
+
+/-- **Brick 2: pointwise Frostman domination `Uᵘ ≤ 0` at any Julia-frontier point** (all `c`,
+both-connected included), given the measure has no atom there.  Upgrades the truncated brick 1 to
+the full logarithmic potential via dominated convergence of the `1/(n+1)` truncations.  This is the
+boundary half of Half B for the consumer-relevant regime. -/
+theorem logPotential_limitingBrolinMeasureAt_nonpos_of_mem_frontier_of_atom
+    {c a z : ℂ} (hz : z ∈ frontier (filledJulia c))
+    (hatom : limitingBrolinMeasureAt c a {z} = 0) :
+    logPotential (limitingBrolinMeasureAt c a) z ≤ 0 := by
+  by_cases hint : Integrable (fun w => logKernel z w) (limitingBrolinMeasureAt c a)
+  · have hne_ae : ∀ᵐ w ∂(limitingBrolinMeasureAt c a), w ∈ ({z} : Set ℂ)ᶜ :=
+      (mem_ae_iff).2 (by simpa using hatom)
+    have hlim :
+        Tendsto
+          (fun n : ℕ =>
+            ∫ w, truncatedLogKernel z (((n + 1 : ℕ) : ℝ)⁻¹) w
+              ∂limitingBrolinMeasureAt c a)
+          atTop (𝓝 (logPotential (limitingBrolinMeasureAt c a) z)) := by
+      unfold logPotential
+      refine tendsto_integral_of_dominated_convergence
+        (fun w => ‖logKernel z w‖) ?_ hint.norm ?_ ?_
+      · exact fun n => (continuous_truncatedLogKernel (z := z) (by positivity)).aestronglyMeasurable
+      · intro n
+        have hδle : (((n + 1 : ℕ) : ℝ)⁻¹) ≤ 1 :=
+          inv_le_one_of_one_le₀ (by exact_mod_cast Nat.succ_le_succ (Nat.zero_le n))
+        filter_upwards [hne_ae] with w hw
+        exact norm_truncatedLogKernel_le_norm_logKernel_of_ne_of_le_one
+          (by positivity) hδle (fun hzw => hw hzw.symm)
+      · filter_upwards [hne_ae] with w hw
+        exact truncatedLogKernel_inv_nat_succ_tendsto_logKernel_of_ne (fun hzw => hw hzw.symm)
+    exact le_of_tendsto hlim (Filter.Eventually.of_forall
+      (fun n => integral_truncatedLogKernel_limitingBrolinMeasureAt_nonpos_of_mem_frontier
+        hz (by positivity)))
+  · have : logPotential (limitingBrolinMeasureAt c a) z = 0 := by
+      unfold logPotential; exact integral_undef hint
+    rw [this]
+
+/-- **Atomlessness on the Julia set, unconditional.**  Brick 1 (truncated domination) is exactly
+the hypothesis of Codex's atom-pressure lemma, so the Brolin measure has no atom at any
+Julia-frontier point — no `CriticalOrbitAvoidingTarget`, no equidistribution. -/
+theorem limitingBrolinMeasureAt_singleton_eq_zero_of_mem_frontier
+    {c a z : ℂ} (hz : z ∈ frontier (filledJulia c)) :
+    limitingBrolinMeasureAt c a {z} = 0 :=
+  limitingBrolinMeasureAt_singleton_eq_zero_of_truncatedLogKernel_nonpos
+    ((isClosed_filledJulia c).frontier_subset hz)
+    (fun {_δ} hδ _ => integral_truncatedLogKernel_limitingBrolinMeasureAt_nonpos_of_mem_frontier hz hδ)
+
+/-- **Pointwise Frostman domination on `J_c`, fully unconditional** (all `c`).  Brick 2 with the
+atom hypothesis now discharged internally. -/
+theorem logPotential_limitingBrolinMeasureAt_nonpos_of_mem_frontier
+    {c a z : ℂ} (hz : z ∈ frontier (filledJulia c)) :
+    logPotential (limitingBrolinMeasureAt c a) z ≤ 0 :=
+  logPotential_limitingBrolinMeasureAt_nonpos_of_mem_frontier_of_atom hz
+    (limitingBrolinMeasureAt_singleton_eq_zero_of_mem_frontier hz)
+
+/-- **Half B unconditional for empty-interior `K_c`.**  Only the empty-interior hypothesis remains;
+atom-freeness is now automatic.  Covers every disconnected `c` and every dendrite (e.g. `c = −2`). -/
+theorem potentialDominatedOnFilledJulia_of_subset_frontier {c a : ℂ}
+    (hsub : filledJulia c ⊆ frontier (filledJulia c)) :
+    PotentialDominatedOnFilledJulia c a :=
+  potentialDominatedOnFilledJulia_of_subset_frontier_of_atomless hsub
+    (fun _ hz => limitingBrolinMeasureAt_singleton_eq_zero_of_mem_frontier (hsub hz))
+
+/-! ### Concrete unconditional Half B for `‖c‖ ≥ 4` (large disconnected parameters) -/
+
+/-- A totally-disconnected subset of `ℂ` has empty interior: a ball of positive radius is
+preconnected with more than one point, contradicting total disconnectedness. -/
+theorem interior_eq_empty_of_isTotallyDisconnected_complex {E : Set ℂ}
+    (hE : IsTotallyDisconnected E) : interior E = ∅ := by
+  rw [eq_empty_iff_forall_notMem]
+  intro z hz
+  obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp (isOpen_interior.mem_nhds hz)
+  have hballE : Metric.ball z r ⊆ E := hball.trans interior_subset
+  have hss : (Metric.ball z r).Subsingleton := hE _ hballE (convex_ball z r).isPreconnected
+  have h1 : z ∈ Metric.ball z r := Metric.mem_ball_self hr
+  have h2 : z + ((r / 2 : ℝ) : ℂ) ∈ Metric.ball z r := by
+    have hd : dist (z + ((r / 2 : ℝ) : ℂ)) z = r / 2 := by
+      rw [Complex.dist_eq]
+      have he : (z + ((r / 2 : ℝ) : ℂ)) - z = ((r / 2 : ℝ) : ℂ) := by ring
+      rw [he, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (show (0:ℝ) < r/2 by positivity)]
+    rw [Metric.mem_ball, hd]; linarith
+  have heq : z = z + ((r / 2 : ℝ) : ℂ) := hss h1 h2
+  have h0 : ((r / 2 : ℝ) : ℂ) = 0 := by linear_combination -heq
+  have : (r / 2 : ℝ) = 0 := by exact_mod_cast h0
+  linarith
+
+/-- A closed set with empty interior is contained in its frontier (indeed equals it). -/
+theorem filledJulia_subset_frontier_of_interior_empty {c : ℂ}
+    (h : interior (filledJulia c) = ∅) :
+    filledJulia c ⊆ frontier (filledJulia c) := by
+  have hf : frontier (filledJulia c) = filledJulia c := by
+    rw [frontier, (isClosed_filledJulia c).closure_eq, h, Set.diff_empty]
+  rw [hf]
+
+/-- `K_c` has empty interior for `‖c‖ ≥ 4` (Cantor regime). -/
+theorem interior_filledJulia_eq_empty_of_four_le {c : ℂ} (hc : 4 ≤ ‖c‖) :
+    interior (filledJulia c) = ∅ :=
+  interior_eq_empty_of_isTotallyDisconnected_complex (isTotallyDisconnected_filledJulia_of_four_le hc)
+
+/-- **Half B (Frostman domination) fully unconditional for `‖c‖ ≥ 4`.**  Large disconnected
+parameters have Cantor (empty-interior) filled Julia sets, so brick 1's frontier domination
+covers all of `K_c`. -/
+theorem potentialDominatedOnFilledJulia_of_four_le {c a : ℂ} (hc : 4 ≤ ‖c‖) :
+    PotentialDominatedOnFilledJulia c a :=
+  potentialDominatedOnFilledJulia_of_subset_frontier
+    (filledJulia_subset_frontier_of_interior_empty (interior_filledJulia_eq_empty_of_four_le hc))
 
 end
 end Bottcher
