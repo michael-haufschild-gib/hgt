@@ -27,6 +27,7 @@ import Mathlib.Analysis.Complex.Isometry
 import Mathlib.MeasureTheory.Integral.CircleIntegral
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
+import Mathlib.MeasureTheory.Integral.Prod
 
 open Filter Topology MeasureTheory Laplacian InnerProductSpace Complex Real Set
 open scoped Laplacian
@@ -265,6 +266,48 @@ theorem hasDerivAt_B (φ : ℂ → ℝ) (hφ : ContDiff ℝ 2 φ) (r : ℝ) :
     intervalIntegrable_const
     (Filter.Eventually.of_forall (fun θ _ x _ => hasDerivAt_radialProfile φ hφ θ x))
   exact key.2
+
+/-- **Shell reduction of the disk integral** (brick d-A).  Fubini + `symm = circleMap`
+turn `A(r) = ∫_{ball 0 r} Δφ` into the iterated `∫_{(0,r)} ρ·(∫_{(-π,π)} Δφ(circleMap 0 ρ θ)) dρ`.
+Continuity of `Δφ` (`ContDiff ℝ 2`, via `laplacian_eq_iteratedFDeriv_complexPlane`) gives
+integrability on the compact box. -/
+theorem integral_ball_laplacian_eq_shell (φ : ℂ → ℝ) (hφ : ContDiff ℝ 2 φ) (r : ℝ) :
+    (∫ z in Metric.ball (0:ℂ) r, Δ φ z)
+      = ∫ ρ in Set.Ioo 0 r, ρ • ∫ θ in Set.Ioo (-π) π, Δ φ (circleMap 0 ρ θ) := by
+  have hcΔ : Continuous (Δ φ) := by
+    have hcont : Continuous (fun x => iteratedFDeriv ℝ 2 φ x) :=
+      hφ.continuous_iteratedFDeriv (by norm_num)
+    rw [show (Δ φ) = fun x => iteratedFDeriv ℝ 2 φ x ![1, 1] + iteratedFDeriv ℝ 2 φ x ![I, I] from
+      laplacian_eq_iteratedFDeriv_complexPlane φ]
+    exact ((ContinuousMultilinearMap.apply ℝ (fun _ : Fin 2 => ℂ) ℝ ![1,1]).continuous.comp hcont).add
+      ((ContinuousMultilinearMap.apply ℝ (fun _ : Fin 2 => ℂ) ℝ ![I,I]).continuous.comp hcont)
+  have hsymm : Continuous (Complex.polarCoord.symm : ℝ × ℝ → ℂ) := by
+    have heq : (Complex.polarCoord.symm : ℝ × ℝ → ℂ) = fun p => circleMap 0 p.1 p.2 := by
+      funext p; rw [Complex.polarCoord_symm_apply, circleMap, zero_add, Complex.exp_mul_I,
+        Complex.ofReal_cos, Complex.ofReal_sin]
+    rw [heq, show (fun p : ℝ × ℝ => circleMap 0 p.1 p.2)
+        = fun p : ℝ × ℝ => (p.1 : ℂ) * Complex.exp (p.2 * I) from by funext p; simp [circleMap]]
+    exact (Complex.continuous_ofReal.comp continuous_fst).mul
+      (Complex.continuous_exp.comp
+        ((Complex.continuous_ofReal.comp continuous_snd).mul continuous_const))
+  set f : ℝ × ℝ → ℝ := fun p => p.1 • Δ φ (Complex.polarCoord.symm p) with hfdef
+  have hcf : Continuous f := continuous_fst.smul (hcΔ.comp hsymm)
+  have hInt : IntegrableOn f (Set.Ioo 0 r ×ˢ Set.Ioo (-π) π) := by
+    apply (hcf.continuousOn.integrableOn_compact
+      ((isCompact_Icc (a := (0:ℝ)) (b := r)).prod (isCompact_Icc (a := -π) (b := π)))).mono_set
+    exact Set.prod_mono Ioo_subset_Icc_self Ioo_subset_Icc_self
+  have hfub : (∫ p in Set.Ioo 0 r ×ˢ Set.Ioo (-π) π, f p)
+      = ∫ ρ in Set.Ioo 0 r, ∫ θ in Set.Ioo (-π) π, f (ρ, θ) := setIntegral_prod f hInt
+  rw [integral_ball_eq_polar (Δ φ) r, hfub]
+  refine setIntegral_congr_fun measurableSet_Ioo (fun ρ _ => ?_)
+  show (∫ θ in Set.Ioo (-π) π, ρ • Δ φ (Complex.polarCoord.symm (ρ, θ)))
+      = ρ • ∫ θ in Set.Ioo (-π) π, Δ φ (circleMap 0 ρ θ)
+  rw [integral_smul]
+  congr 1
+  refine setIntegral_congr_fun measurableSet_Ioo (fun θ _ => ?_)
+  rw [show Complex.polarCoord.symm (ρ, θ) = circleMap 0 ρ θ from by
+    rw [Complex.polarCoord_symm_apply, circleMap, zero_add, Complex.exp_mul_I,
+      Complex.ofReal_cos, Complex.ofReal_sin]]
 
 end
 

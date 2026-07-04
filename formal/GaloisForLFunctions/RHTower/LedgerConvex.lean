@@ -394,4 +394,83 @@ theorem corrected_endpoint_regime_assembly_pos {δ M inc response error ΔS : �
   rw [hΔS]
   linarith
 
+/-- Deep-band S′ closure in the theorem range: Lemma H's finite reversal budget,
+`C₀ ≤ 1/15`, the `W̄` bound, and the response/error hypotheses imply `ΔS > 0`. -/
+theorem corrected_deep_regime_of_sum_tail {ι : Type*} (s : Finset ι)
+    {C₀ δ extra paired tail ΔG W inc M response error ΔS : ℝ} (a : ι → ℝ)
+    (hC₀ : 0 ≤ C₀) (hCsmall : C₀ ≤ (1 : ℝ) / 15)
+    (hδ : 0 < δ) (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
+    (hcard : (s.card : ℝ) * δ ≤ 4)
+    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ 2 * δ)
+    (htail : tail ≤ 28 * C₀ ^ 2)
+    (hΔG : ΔG = extra + paired - ((∑ x ∈ s, a x) + tail))
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hinc : inc = ΔG / (2 * W))
+    (hM : 36 ≤ M ^ 2 * δ)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
+    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hΔS : ΔS = inc * response - error) :
+    0 < ΔS := by
+  have hΔG1 : 1 ≤ ΔG :=
+    corrected_march_ge_one_of_sum_tail s a hC₀ hCsmall hextra hpaired hcard ha htail hΔG
+  have hincLower : δ ^ 2 / 80 ≤ inc :=
+    corrected_march_increment_lower_bound hδ hWpos hΔG1 hW hinc
+  exact corrected_deep_regime_assembly_pos hδ hM hincLower hresponse herror hΔS
+
+/-- Endpoint-band S′ closure in the theorem range. -/
+theorem corrected_endpoint_regime_of_sum_tail {ι : Type*} (s : Finset ι)
+    {C₀ δ extra paired tail ΔG W inc M response error ΔS : ℝ} (a : ι → ℝ)
+    (hC₀ : 0 ≤ C₀) (hCsmall : C₀ ≤ (1 : ℝ) / 15)
+    (hδ : 0 < δ) (hextra : 2 ≤ extra) (hpaired : 0 ≤ paired)
+    (hcard : (s.card : ℝ) * δ ≤ 4)
+    (ha : ∀ x ∈ s, a x ≤ 43 * C₀ ^ 2 * δ)
+    (htail : tail ≤ 28 * C₀ ^ 2)
+    (hΔG : ΔG = extra + paired - ((∑ x ∈ s, a x) + tail))
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hinc : inc = ΔG / (2 * W))
+    (hM : 3136 ≤ M ^ 2 * δ ^ 2)
+    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
+    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hΔS : ΔS = inc * response - error) :
+    0 < ΔS := by
+  have hΔG1 : 1 ≤ ΔG :=
+    corrected_march_ge_one_of_sum_tail s a hC₀ hCsmall hextra hpaired hcard ha htail hΔG
+  have hincLower : δ ^ 2 / 80 ≤ inc :=
+    corrected_march_increment_lower_bound hδ hWpos hΔG1 hW hinc
+  exact corrected_endpoint_regime_assembly_pos hδ hM hincLower hresponse herror hΔS
+
+/-- Deep-band S′ closure from the per-carrier direct unit-margin evaluation. -/
+theorem corrected_deep_regime_of_direct_eval
+    {δ extra paired reversal ΔG γᵢ W inc M response error ΔS : ℝ}
+    (hδ : 0 < δ) (hγᵢ : 1 ≤ γᵢ) (heval : γᵢ ≤ extra + paired - reversal)
+    (hΔG : ΔG = extra + paired - reversal)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hinc : inc = ΔG / (2 * W))
+    (hM : 36 ≤ M ^ 2 * δ)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
+    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hΔS : ΔS = inc * response - error) :
+    0 < ΔS := by
+  have hΔG1 : 1 ≤ ΔG := corrected_march_ge_one_of_direct_eval hγᵢ heval hΔG
+  have hincLower : δ ^ 2 / 80 ≤ inc :=
+    corrected_march_increment_lower_bound hδ hWpos hΔG1 hW hinc
+  exact corrected_deep_regime_assembly_pos hδ hM hincLower hresponse herror hΔS
+
+/-- Endpoint-band S′ closure from the per-carrier direct unit-margin evaluation. -/
+theorem corrected_endpoint_regime_of_direct_eval
+    {δ extra paired reversal ΔG γᵢ W inc M response error ΔS : ℝ}
+    (hδ : 0 < δ) (hγᵢ : 1 ≤ γᵢ) (heval : γᵢ ≤ extra + paired - reversal)
+    (hΔG : ΔG = extra + paired - reversal)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hinc : inc = ΔG / (2 * W))
+    (hM : 3136 ≤ M ^ 2 * δ ^ 2)
+    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
+    (herror : error ≤ 16 / (M ^ 2 * δ ^ 2))
+    (hΔS : ΔS = inc * response - error) :
+    0 < ΔS := by
+  have hΔG1 : 1 ≤ ΔG := corrected_march_ge_one_of_direct_eval hγᵢ heval hΔG
+  have hincLower : δ ^ 2 / 80 ≤ inc :=
+    corrected_march_increment_lower_bound hδ hWpos hΔG1 hW hinc
+  exact corrected_endpoint_regime_assembly_pos hδ hM hincLower hresponse herror hΔS
+
 end RHTower
