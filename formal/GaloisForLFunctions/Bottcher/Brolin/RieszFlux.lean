@@ -28,6 +28,8 @@ import Mathlib.MeasureTheory.Integral.CircleIntegral
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
 import Mathlib.MeasureTheory.Integral.Prod
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 open Filter Topology MeasureTheory Laplacian InnerProductSpace Complex Real Set
 open scoped Laplacian
@@ -308,6 +310,139 @@ theorem integral_ball_laplacian_eq_shell (φ : ℂ → ℝ) (hφ : ContDiff ℝ 
   rw [show Complex.polarCoord.symm (ρ, θ) = circleMap 0 ρ θ from by
     rw [Complex.polarCoord_symm_apply, circleMap, zero_add, Complex.exp_mul_I,
       Complex.ofReal_cos, Complex.ofReal_sin]]
+
+/-- **Range reconciliation** for the shell integral (brick d-match, step 1).  For a
+`2π`-periodic integrand the angular integral over `(-π,π)` (the polar chart range in
+`integral_ball_laplacian_eq_shell`) equals the one over `0..2π` (the `circleAverage`
+range in `hasDerivAt_B`). -/
+theorem integral_Ioo_pi_eq_zero_two_pi {g : ℝ → ℝ} (hper : Function.Periodic g (2*π)) :
+    (∫ θ in Set.Ioo (-π) π, g θ) = ∫ θ in (0:ℝ)..(2*π), g θ := by
+  have h1 : (∫ θ in Set.Ioo (-π) π, g θ) = ∫ θ in (-π)..π, g θ := by
+    rw [intervalIntegral.integral_of_le (by linarith [Real.pi_pos])]
+    exact setIntegral_congr_set Ioo_ae_eq_Ioc
+  rw [h1]
+  have h2 := hper.intervalIntegral_add_eq (-π) 0
+  rw [zero_add, show (-π) + 2*π = π by ring] at h2
+  rw [h2]
+
+/-- **(d-match): `B'(ρ)` equals the shell integrand** for `ρ > 0`.  The derivative
+`B'(ρ) = ∫₀²π F'(ρ,θ)dθ` (from `hasDerivAt_B`) equals `ρ·∫_{(-π,π)} Δφ(circleMap 0 ρ θ)`
+(the `integral_ball_laplacian_eq_shell` integrand).  Uses `z = ρ·w` (`w = circleMap 0 1 θ`,
+`‖w‖=1`), `ContinuousLinearMap.map_smul` to factor `ρ`, `laplacian_rotated_frame'` (K1′)
+pointwise, the range bridge, and `tangential_periodicity` (c) at radius `ρ` divided by `ρ`. -/
+theorem hasDerivAt_B_eq_shell (φ : ℂ → ℝ) (hφ : ContDiff ℝ 2 φ) {ρ : ℝ} (hρ : 0 < ρ) :
+    (∫ θ in (0:ℝ)..(2*π),
+        (fderiv ℝ (fderiv ℝ φ) (circleMap 0 ρ θ) (circleMap 0 1 θ)) (circleMap 0 ρ θ)
+          + fderiv ℝ φ (circleMap 0 ρ θ) (circleMap 0 1 θ))
+      = ρ • ∫ θ in Set.Ioo (-π) π, Δ φ (circleMap 0 ρ θ) := by
+  set z : ℝ → ℂ := circleMap 0 ρ with hz
+  set w : ℝ → ℂ := circleMap 0 1 with hw
+  have hzw : ∀ θ, z θ = ρ • w θ := fun θ => by simp [hz, hw, circleMap, Complex.real_smul]
+  have hw1 : ∀ θ, ‖w θ‖ = 1 := fun θ => by
+    show ‖circleMap 0 1 θ‖ = 1; rw [norm_circleMap_zero]; norm_num
+  set a : ℝ → ℝ := fun θ => (fderiv ℝ (fderiv ℝ φ) (z θ) (w θ)) (w θ) with ha
+  set b : ℝ → ℝ := fun θ => (fderiv ℝ (fderiv ℝ φ) (z θ) (I * w θ)) (I * w θ) with hb
+  set cc : ℝ → ℝ := fun θ => fderiv ℝ φ (z θ) (w θ) with hcc
+  have hcfd1 : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv (by norm_num)
+  have hcfd2 : Continuous (fderiv ℝ (fderiv ℝ φ)) :=
+    (hφ.fderiv_right (m := 1) (by norm_num)).continuous_fderiv (by norm_num)
+  have hcz : Continuous z := continuous_circleMap 0 ρ
+  have hcw : Continuous w := continuous_circleMap 0 1
+  have hca : Continuous a := ((hcfd2.comp hcz).clm_apply hcw).clm_apply hcw
+  have hcb : Continuous b :=
+    ((hcfd2.comp hcz).clm_apply (continuous_const.mul hcw)).clm_apply (continuous_const.mul hcw)
+  have hccc : Continuous cc := (hcfd1.comp hcz).clm_apply hcw
+  have hLHS : (∫ θ in (0:ℝ)..(2*π),
+      (fderiv ℝ (fderiv ℝ φ) (z θ) (w θ)) (z θ) + fderiv ℝ φ (z θ) (w θ))
+      = (ρ • ∫ θ in (0:ℝ)..(2*π), a θ) + ∫ θ in (0:ℝ)..(2*π), cc θ := by
+    rw [show (fun θ => (fderiv ℝ (fderiv ℝ φ) (z θ) (w θ)) (z θ) + fderiv ℝ φ (z θ) (w θ))
+        = fun θ => ρ • a θ + cc θ from by
+      funext θ
+      congr 1
+      rw [congrArg (fderiv ℝ (fderiv ℝ φ) (z θ) (w θ)) (hzw θ), ContinuousLinearMap.map_smul]]
+    rw [intervalIntegral.integral_add ((hca.const_smul ρ).intervalIntegrable _ _)
+      (hccc.intervalIntegrable _ _), intervalIntegral.integral_smul]
+  have hper : Function.Periodic (fun θ => Δ φ (z θ)) (2*π) :=
+    fun θ => congrArg (Δ φ) (by rw [hz]; exact periodic_circleMap 0 ρ θ)
+  have hRHS : (ρ • ∫ θ in Set.Ioo (-π) π, Δ φ (z θ))
+      = (ρ • ∫ θ in (0:ℝ)..(2*π), a θ) + ρ • ∫ θ in (0:ℝ)..(2*π), b θ := by
+    rw [integral_Ioo_pi_eq_zero_two_pi hper]
+    rw [show (fun θ => Δ φ (z θ)) = fun θ => a θ + b θ from by
+      funext θ; exact laplacian_rotated_frame' φ (z θ) (w θ) (hw1 θ)]
+    rw [intervalIntegral.integral_add (hca.intervalIntegrable _ _) (hcb.intervalIntegrable _ _),
+      smul_add]
+  rw [hLHS, hRHS]
+  have hIII : (∫ θ in (0:ℝ)..(2*π), cc θ) = ρ • ∫ θ in (0:ℝ)..(2*π), b θ := by
+    have hc := tangential_periodicity φ hφ ρ
+    have hcL : (∫ θ in (0:ℝ)..(2*π),
+        (fderiv ℝ (fderiv ℝ φ) (z θ) (z θ * I)) (z θ * I))
+        = ρ • ρ • ∫ θ in (0:ℝ)..(2*π), b θ := by
+      rw [show (fun θ => (fderiv ℝ (fderiv ℝ φ) (z θ) (z θ * I)) (z θ * I))
+          = fun θ => ρ • ρ • b θ from by
+        funext θ
+        have hzi : z θ * I = ρ • (I * w θ) := by rw [hzw θ]; simp only [Complex.real_smul]; ring
+        rw [hzi, ContinuousLinearMap.map_smul, ContinuousLinearMap.map_smul,
+          ContinuousLinearMap.smul_apply]]
+      rw [intervalIntegral.integral_smul, intervalIntegral.integral_smul]
+    have hcR : (∫ θ in (0:ℝ)..(2*π), fderiv ℝ φ (z θ) (z θ))
+        = ρ • ∫ θ in (0:ℝ)..(2*π), cc θ := by
+      rw [show (fun θ => fderiv ℝ φ (z θ) (z θ)) = fun θ => ρ • cc θ from by
+        funext θ
+        rw [congrArg (fderiv ℝ φ (z θ)) (hzw θ), ContinuousLinearMap.map_smul]]
+      rw [intervalIntegral.integral_smul]
+    rw [hcL, hcR] at hc
+    have hcm : ρ * (ρ * ∫ θ in (0:ℝ)..(2*π), b θ) = ρ * ∫ θ in (0:ℝ)..(2*π), cc θ := by
+      simpa [smul_eq_mul] using hc
+    have := mul_left_cancel₀ hρ.ne' hcm
+    rw [smul_eq_mul]; linarith [this]
+  rw [hIII]
+
+/-- **Green's first identity for the planar Laplacian** (the flux identity, brick d
+assembled).  For `r ≥ 0`,
+`∫_{ball 0 r} Δφ = ∫₀²π Dφ(circleMap 0 r θ)(circleMap 0 r θ) dθ`.
+The right side is `2π·r·M'(r)` with `M(r) = circleAverage φ 0 r` (since
+`∂_r φ(circleMap 0 r θ) = Dφ(z)(circleMap 0 1 θ)` and `z = r·(circleMap 0 1 θ)`), so this
+is the ball-integral-of-Laplacian = boundary-flux statement.  Proof: shell reduction
+(`integral_ball_laplacian_eq_shell`) + FTC in `r` (`hasDerivAt_B`, `B 0 = 0`, parametric-
+integral continuity) + the shell-equals-derivative match (`hasDerivAt_B_eq_shell`). -/
+theorem integral_ball_laplacian_eq_boundary_flux
+    (φ : ℂ → ℝ) (hφ : ContDiff ℝ 2 φ) {r : ℝ} (hr : 0 ≤ r) :
+    (∫ z in Metric.ball (0:ℂ) r, Δ φ z)
+      = ∫ θ in (0:ℝ)..(2*π), fderiv ℝ φ (circleMap 0 r θ) (circleMap 0 r θ) := by
+  set F' : ℝ → ℝ → ℝ := fun s θ =>
+    (fderiv ℝ (fderiv ℝ φ) (circleMap 0 s θ) (circleMap 0 1 θ)) (circleMap 0 s θ)
+      + fderiv ℝ φ (circleMap 0 s θ) (circleMap 0 1 θ) with hF'
+  have hcfd1 : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv (by norm_num)
+  have hcfd2 : Continuous (fderiv ℝ (fderiv ℝ φ)) :=
+    (hφ.fderiv_right (m := 1) (by norm_num)).continuous_fderiv (by norm_num)
+  have hcm : Continuous (fun p : ℝ × ℝ => circleMap 0 p.1 p.2) := by
+    have heq : (fun p : ℝ × ℝ => circleMap 0 p.1 p.2)
+        = fun p : ℝ × ℝ => (p.1 : ℂ) * Complex.exp (p.2 * I) := by funext p; simp [circleMap]
+    rw [heq]
+    exact (Complex.continuous_ofReal.comp continuous_fst).mul
+      (Complex.continuous_exp.comp
+        ((Complex.continuous_ofReal.comp continuous_snd).mul continuous_const))
+  have hcF'p : Continuous (Function.uncurry F') := by
+    apply Continuous.add
+    · exact ((hcfd2.comp hcm).clm_apply
+        ((continuous_circleMap 0 1).comp continuous_snd)).clm_apply hcm
+    · exact (hcfd1.comp hcm).clm_apply ((continuous_circleMap 0 1).comp continuous_snd)
+  have hB'cont : Continuous (fun ρ => ∫ θ in (0:ℝ)..(2*π), F' ρ θ) :=
+    intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' hcF'p 0 (2*π)
+  have hFTC : (∫ ρ in (0:ℝ)..r, ∫ θ in (0:ℝ)..(2*π), F' ρ θ)
+      = (∫ θ in (0:ℝ)..(2*π), fderiv ℝ φ (circleMap 0 r θ) (circleMap 0 r θ))
+        - (∫ θ in (0:ℝ)..(2*π), fderiv ℝ φ (circleMap 0 0 θ) (circleMap 0 0 θ)) :=
+    intervalIntegral.integral_eq_sub_of_hasDerivAt (fun ρ _ => hasDerivAt_B φ hφ ρ)
+      (hB'cont.intervalIntegrable 0 r)
+  have hB0 : (∫ θ in (0:ℝ)..(2*π), fderiv ℝ φ (circleMap 0 0 θ) (circleMap 0 0 θ)) = 0 := by
+    rw [show (fun θ => fderiv ℝ φ (circleMap 0 0 θ) (circleMap 0 0 θ)) = fun _ => (0:ℝ) from by
+      funext θ; simp [circleMap]]
+    simp
+  rw [hB0, sub_zero] at hFTC
+  rw [integral_ball_laplacian_eq_shell φ hφ r, ← hFTC,
+    intervalIntegral.integral_of_le hr, ← setIntegral_congr_set Ioo_ae_eq_Ioc]
+  refine setIntegral_congr_fun measurableSet_Ioo (fun ρ hρ => ?_)
+  exact (hasDerivAt_B_eq_shell φ hφ hρ.1).symm
 
 end
 
