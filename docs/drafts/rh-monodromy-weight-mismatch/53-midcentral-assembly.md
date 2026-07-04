@@ -88,3 +88,54 @@ bookkeeping should reproduce.
 4. Feed `midCentral_survivors_in_window` back through the deck relation: the
    (SWEEP-margin) boundary term is now formally the in-window population —
    the bridge's remaining arithmetic is K-counting in a 0.19-wide window.
+
+## 5. Cycle-18 update: the walk tier is COMPLETE (RotationDip + PerturbedDip)
+
+New Lean, all proved, axiom-clean (umbrella 8620 jobs, lint green):
+- `sum_cos_closed_form` — the walk's prefix sums are the circle chord
+  r·cos γ − r·cos(γ + Mθ), exactly (geometric sums, no estimates).
+- `exists_orbit_cos_ge` + `rotation_dip` — the first-wrap dip: a misaligned
+  start (cos γ ≤ 1 − δ) dips below −r(δ − (1 − cos(θ/2))) within one wrap.
+  Kill-power fades exactly at anti-phase (θ ≈ π) — marginal dominance, as the
+  physics demands.
+- `perturbed_rotation_dip` + `birthKilled_of_perturbed_rotation` — phase
+  errors ≤ e₀ (the certified cubic drift) and envelope decay [a_min, a_max]
+  absorbed as explicit budgets; `dip_kills` discharged for REAL pushes.
+- `polar_ratio_explicit` — the polar data in closed form: γ = β − θ/2 + π/2,
+  r = 1/(2 sin(θ/2)); the alignment window is now an explicit condition on
+  (β, θ) alone. Plus `one_sub_exp_eq`, `abs_cos_sub_cos_le`,
+  `log_ratio_bounds` (the step-angle input 1/j ≤ log(j/(j−1)) ≤ 1/(j−1)).
+
+**Nothing below the carrier boundary remains unproven.** The complete
+remaining distance to (MID-central) fully-proven is three named tiers:
+- (T1) birth-phase supply: β at birth = the stationary value πn₀ − 2πd² + π/8
+  (certified numerically; Lean needs the RS-theta/Stirling expansion) — this
+  converts "out of slip window" into the misalignment hypothesis of
+  `birthKilled_of_perturbed_rotation`.
+- (T2) carrier-per-entry reading: each tower entry updates a pair's depth by
+  one real push of the stated cosine form (doc 48's dichotomy globalized —
+  zero-continuation/IFT grade).
+- (T3) (CR-density) — the in-window creation bound: OPEN mathematics (doc 52
+  §4, §8), not merely unformalized.
+
+## 6. Cycle-19 update: (T2) general machinery COMPLETE; (T1) reframed
+
+- `DepthUpdate.lean` BANKED: the walk update η² ← η² + εq₀ is the LITERAL
+  zero motion (zeros of v² + D exactly ±i√D / ±√(−D)); center-over-cofactor
+  d = Z(0)/h(0).
+- `PairPeel.lean` BANKED: double application of the banked `exists_peel`
+  gives the global factored form Z = (v² + η²)·h with h analytic and
+  zero-free on all of U, from "two simple zeros, no others" — plus the exact
+  depth reading η² = Z(0)/h(0) (`pair_peel_depth`). Umbrella 8622 jobs, lint
+  green, axiom-clean. **Tier (T2) is now complete at the general level**; the
+  residue is per-instance (doc 48 §2's checkable Rouché count) plus the
+  analytic supply of order-1 data.
+- **(T1) reframed after the Stirling audit** (user prompt: "don't we have
+  that stirling already?"): mathlib has only real asymptotic Stirling and a
+  64-line Complex.digamma stub (definition, recursion, meromorphy) — BUT the
+  assembly consumes only derivative-level data (θ′, θ″); the absolute π/8
+  rides abstractly. (T1) = digamma partial fractions from
+  `Complex.GammaSeq_tendsto_Gamma` + vertical-line bounds via the banked
+  `log_ratio_bounds` — a contained module, not a Binet build.
+- Open ledger for full (MID-central): (T1) contained-module grade; (T2)
+  per-instance + order-1 supply; (T3) (CR-density) — open mathematics.

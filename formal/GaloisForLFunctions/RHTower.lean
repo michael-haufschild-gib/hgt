@@ -79,3 +79,8 @@ import GaloisForLFunctions.RHTower.HoldPhase
 import GaloisForLFunctions.RHTower.CreationRate
 import GaloisForLFunctions.RHTower.MidCentral
 import GaloisForLFunctions.RHTower.RotationDip
+import GaloisForLFunctions.RHTower.PerturbedDip
+import GaloisForLFunctions.RHTower.DepthUpdate
+import GaloisForLFunctions.RHTower.PairPeel
+import GaloisForLFunctions.RHTower.DigammaBounds
+import GaloisForLFunctions.RHTower.DipKillsWiring

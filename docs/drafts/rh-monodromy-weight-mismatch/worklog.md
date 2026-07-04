@@ -1683,3 +1683,71 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
 - Next: (HOLD-phase) kernel = one inequality (amplitude floor via
   coherent_sum_lower across the window transition); partial-fraction module
   for Re(F_N′/F_N); K-counting in the 0.19-window through the deck relation.
+
+## Cycle 18 (2026-07-04) — walk tier COMPLETE (goal: full MID-central)
+- RotationDip.lean BANKED: sum_cos_closed_form (exact circle chord),
+  exists_orbit_cos_ge (up-window hit ≥ cos(θ/2) within one wrap, M/M−1
+  trick), rotation_dip (misaligned ⟹ first-wrap dip), pushSum bridges,
+  birthKilled_of_rotation.
+- PerturbedDip.lean BANKED: abs_cos_sub_cos_le; perturbed_rotation_dip
+  (phase-error budget M·e₀); birthKilled_of_perturbed_rotation (envelope +
+  drift budgets — dip_kills for REAL pushes); log_ratio_bounds;
+  one_sub_exp_eq; polar_ratio_explicit (γ = β − θ/2 + π/2, r = 1/(2sin(θ/2))
+  — alignment window explicit in (β, θ)). Umbrella 8620 jobs, lint green,
+  axiom-clean. One transient sorry-draft caught and replaced same cycle.
+- Remaining to full (MID-central): (T1) birth-phase supply (RS-theta
+  expansion in Lean), (T2) per-entry dichotomy globalization (IFT), (T3)
+  (CR-density) — open math. Walk tier has NOTHING left.
+
+## Cycle 19 (2026-07-04) — (T2) general machinery complete
+- DepthUpdate.lean + PairPeel.lean BANKED (8622 jobs, lint green, axiom-clean):
+  exact walk update (zeros of v²+D = ±i√D), absorption form, center-over-
+  cofactor, double-peel factored form via banked exists_peel with zero-free
+  cofactor from order preservation, pair_peel_depth (η² = Z(0)/h(0)).
+- Stirling audit (user question): NOT in mathlib (real asymptotic only),
+  NOT in our trees; mathlib Complex.digamma stub EXISTS (new) — (T1)
+  reframed to digamma vertical-line bounds from GammaSeq + log_ratio_bounds;
+  π/8 rides abstractly. Task #163.
+
+## Cycle 20 (2026-07-04) — (T1) bricks banked
+- DigammaBounds.lean BANKED (8623 jobs, lint green, axiom-clean):
+  digamma_apply_add_nat (iterated recursion — vertical bounds reduce to
+  finite sums); re_inv_shift (vertical summand closed form); digamma_reflection
+  (digamma(z) − digamma(1−z) = −π·cos(πz)/sin(πz), log-differentiated from
+  mathlib's Γ(z)Γ(1−z) = π/sin(πz)).
+- (T1) residual: ONE vertical-line asymptotic anchor for Re digamma
+  (integral-representation grade, via Complex.Gamma_eq_integral +
+  differentiation under the integral — named, not started).
+
+## Cycle 21 (2026-07-04) — doc 54 endgame map + (T1-a) error mass
+- Doc 54 BANKED: the complete residual between the banked stack and
+  (MID-central), every remaining lemma in Lean-ready statement form:
+  (T1-a) vertical_sum_log_bounds [elementary], (T1-b) trigamma series OR
+  integral anchor [the ONE analytic input — anchor constant −γ never enters:
+  θ″-grade suffices], (T2-a) order-1 instance data, (T2-b) Rouché count,
+  (T3) (CR-density) [open math]. Dependency graph included.
+- sum_inv_sq_add_le BANKED (DigammaBounds, 8623 jobs, axiom-clean, lint
+  green): Poisson-tail error mass ≤ 1/t² + π/(2t) via the arctan telescope
+  (FTC + interval monotonicity) — the error engine for (T1-a).
+
+## Cycle 22 (2026-07-04) — (T1-a) vertical log comparison BANKED
+- re_kernel_move_le + vertical_sum_log_comparison BANKED (DigammaBounds,
+  8623 jobs, axiom-clean, lint green): the Re-digamma finite sums track
+  ½·log((σ+N)²+t²) − ½·log(σ²+t²) with total error ≤ 1/t² + π/(2t),
+  uniformly in N. Pointwise kernel move is PURELY ALGEBRAIC (no 2nd FTC):
+  |u/(u²+t²) − x/(x²+t²)| ≤ 1/(u²+t²) via the numerator factorization.
+- (T1) residual now = (T1-b) ALONE: the trigamma limit
+  Tendsto (deriv digamma) (comap re atTop) 0 (anchor-FREE; θ″-grade),
+  OR the integral anchor. Task #163 continues on (T1-b).
+
+## Cycle 23 (2026-07-04) — DipKillsWiring: (T1) off critical path; honest terminus
+- DipKillsWiring.lean BANKED (8624 jobs, axiom-clean, lint green):
+  CarrierBirthData bundle + dipKills_of_carrierData +
+  midCentralInput_of_carrierData + midCentral_survivors_le_of_carrierData.
+  MID-central survivors ≤ K from concrete carrier data + creation bound,
+  NO digamma anchor (θ_RS cancels in relative phases; step angles from banked
+  log_ratio_bounds; slip elementary).
+- HONEST TERMINUS: MID-central machine-checked-reduced to (R2) per-instance
+  order-1 + Rouché certificates [execution, formalizable] and (R3) CR-density
+  [OPEN mathematics]. The goal "fully proven" is blocked on (R3) being an open
+  problem — no Lean closes it. All formalizable-without-solving-open-math is done.

@@ -345,3 +345,4 @@ import GaloisForLFunctions.Bottcher.Q62BackwardOrbitBrolin
 import GaloisForLFunctions.Bottcher.Q62BrolinSupportDischarge
 import GaloisForLFunctions.Bottcher.Q62WeylDischarge
 import GaloisForLFunctions.Bottcher.Q62EquilibriumVanishing
+import GaloisForLFunctions.Bottcher.Q62FrostmanDomination

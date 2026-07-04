@@ -2630,6 +2630,46 @@ theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_scaling_of_dom
     ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
   fun a ha => limitingBrolinMeasureAtSupportsJulia_of_scaling_of_dominated c a (hscale a ha) (hdom a ha)
 
+/-! ## Unification with the tree's canonical Brolin representation
+
+The whole GAP-A stack — the Weyl/Frostman support route (this session) and the tree's
+Cauchy-transform / log-potential program (`Brolin/Cauchy`, `Brolin/SingularTail`,
+`GapAMuCore`) — converges on a single classical input:
+`HasGreenPotentialRepresentation c (limitingBrolinMeasureAt c a)`, the everywhere identity
+`G_c = −Uᵘ`.  By `GapAMuCore` this is equivalent to the boundary vanishing
+`Uᵘ = 0` on `filledJulia c` (Robin `= −log cap K_c = 0`), i.e. `BrolinScalingAt` (half A) ∧
+`PotentialDominatedOnFilledJulia` (half B).  It is Brolin's theorem for `z²+c` and is
+mathlib-absent; the tree's best reductions (`SingularTail`) leave it conditional on a
+small-ball-mass non-concentration control and gated on `Disconnected c`. -/
+
+/-- **Bridge: the canonical Brolin representation discharges the GAP-A support input.**
+`HasGreenPotentialRepresentation c μ` gives `Uᵘ = 0` pointwise on `K_c` (since `G_c = 0`
+there), hence `EquilibriumPotentialVanishesAe`. -/
+theorem equilibriumPotentialVanishesAe_of_hasGreenPotentialRepresentation (c a : ℂ)
+    (hrep : HasGreenPotentialRepresentation c (limitingBrolinMeasureAt c a)) :
+    EquilibriumPotentialVanishesAe c a :=
+  ae_of_all _ (fun z hzK => by
+    have h := hrep z
+    rw [(greenFunctionDyn_eq_zero_iff c z).mpr hzK, greenFunction] at h
+    linarith)
+
+/-- **The q62 support datum from the canonical Brolin representation**, for every `c`
+(Weyl discharged internally).  This is the single named classical input the entire GAP-A
+support route now reduces to. -/
+theorem limitingBrolinMeasureAtSupportsJulia_of_hasGreenPotentialRepresentation (c a : ℂ)
+    (hrep : HasGreenPotentialRepresentation c (limitingBrolinMeasureAt c a)) :
+    LimitingBrolinMeasureAtSupportsJulia c a :=
+  limitingBrolinMeasureAtSupportsJulia_of_equilibriumVanishes c a
+    (equilibriumPotentialVanishesAe_of_hasGreenPotentialRepresentation c a hrep)
+
+/-- `∀`-fixed-point canonical-representation form. -/
+theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_hasGreenPotentialRepresentation
+    (c : ℂ)
+    (hrep : ∀ a : ℂ, quadratic c a = a →
+      HasGreenPotentialRepresentation c (limitingBrolinMeasureAt c a)) :
+    ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
+  fun a ha => limitingBrolinMeasureAtSupportsJulia_of_hasGreenPotentialRepresentation c a (hrep a ha)
+
 end
 
 end Bottcher
