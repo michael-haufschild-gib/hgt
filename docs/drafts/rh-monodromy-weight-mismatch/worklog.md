@@ -1277,3 +1277,75 @@ position vs trail mass — closed-form monotone bound from the ant-trail kernel 
 - Formal stack: 9 modules / 31 theorems, all axiom-clean. Remaining #131(2): the
   seam-continuation lemma (pow_root_ratio chained along overlapping discs on the line
   segment — converts Ξ's sign changes into the deck class); #131(3): seam_jump chain.
+
+## 2026-07-04 (cont.) — doc 35 Part I: constants write-out (a)+(b′)
+
+The 1→2 gate began. Doc 35: (F1)-(F4) with fixed constants (C₀ ≤ 1/2, δ ≤ 1, NEW (F4)
+ahead-span comparability — automatic from one-sidedness for c/j fields, the structural
+content of the outer condition); toolbox (T1)-(T6) with complete elementary proofs
+(partial-fractions coth bound, e²−1 cushion constant 0.313, csch² exponential 5.36);
+Lemma A (midpoint, constant-free — pairing MUST run in x-coordinates, AM-GM ports);
+Lemma B (losses ≤ 8C₀(1+log(5/δ̂)) + 4.4C₀, two ranges, no far-tail range — (F4) kills
+it); Lemma C (cushion ≥ 0.417/δ); Theorem B′ with per-index criterion
+(M): 8C₀log(28/δ) + 4.4C₀ ≤ 2 + 0.417/δ. Honest evaluation: on c/j models i₀ ≈ 150
+(c=2), ≈ 120 (c=4); the i < i₀ band is covered by doc 25 tracking clearance, not
+(S-mono). CAUGHT during write-out: first-draft far-tail chain broke at C₀ ~ 1/2 (real
+carriers!) — fixed structurally by (F4), which the outer condition supplies free.
+Remaining: doc 36 Part II — (c) response bound (χ2 exact), (d) tail, (e) assembly,
+per-carrier protocol, Lemma R constants.
+
+## 2026-07-04 (cont.) — doc 36 Part II: response/tail/assembly constants
+
+Doc 36 banked. Content: Lemma A′ — the endpoint margin is EXACT, δ/2 − s_i ≥
+log cosh(δ/2) ≥ δ²/9 (the AM-GM gap itself; constant-free). (T7) |φ′| two-sided.
+Lemma D — dW/ds ≤ −5/(12δ²) on the band M ≥ ⌈2/√δ⌉ via the SHIFTED pairing
+(pole↔behind₁ then ahead_{k−1}↔behind_k: every bracket ≤ 0 termwise under (F2)).
+Lemma E — swap bound (folding deferred, mechanical). Theorem S — assembly with
+two-case split (path integral vs direct-jump), criterion (M′). CORRECTIONS FOUND:
+doc 31 §5 (χ2) constants wrong (φ ~ 1/u³ not 8/u³ variable slip; factor-40 claim
+dead); doc 29(c) unbanded claim false near field edge (dW/ds > 0 possible at
+M = O(1)) — band restriction + doc 28 (L3) delegation repair it, as doc 29(e) had
+anticipated. Gate remainder: (α) Lemma E folding; (β) per-carrier protocol run on
+#136/#140 window (pre-register); (γ) Lemma R constants (#139).
+
+## 2026-07-04 (cont.) — doc 36 §7: Lemma E folded → swap SIGN lemma + closure map
+
+(α) done, and the folding upgraded the result: every drift term of the W-ledger is
+≥ 0 (both behind and ahead distances SHRINK under the step) — the swap is positive
+except for the single removed far-ahead term R ≤ 16/(M²δ²). No gap-variation lower
+bounds needed; §3's magnitude estimate superseded by sign structure. Sharpened
+W ≤ 1/s² + 31/δ². Theorem S′ three-regime closure: deep band s ≤ δ/3 closes for
+M ≥ 9 (margin 0.2/δ²); endpoint band closes for M ≥ 86/√δ (margin 2.2e−3/δ);
+residual = (E-band), the last ~87√(d/c) indices at the far tip — (L3)-extension or
+per-carrier direct evaluation. (S-mono) now PROVED WITH EXPLICIT CONSTANTS on the
+outer half minus (E-band). New task: (E-band) closure. Then: (β) per-carrier
+protocol pre-registration, (γ) Lemma R constants, Lean queue.
+
+## 2026-07-04 (cont.) — doc 37: LEDGER CORRECTED — the gate catches its biggest fish
+
+Re-deriving doc 30 §1's ΔG for the Lean queue exposed a bookkeeping error: the
+matched-index regrouping leaves TWO FAR-FIELD extras (far-behind + far-ahead,
+matching doc 29(b)'s lattice terms); the "near swap extra coth((δ̂+s)/2)" was a
+mislabel — it is a paired drift term. The O(1/δ) bulk cushion (doc 30 §5's
+ADB-crude) is therefore phantom; doc 35 Lemma C/Thm B′ inherited it and are
+superseded. REPAIR (doc 37): convexity hypothesis (F5) ⟹ termwise gain ≥ loss up to
+k* = √(2s/C₀δ²) (increment ordering × weight nearness), reversal remainder ≤ 200C₀²
+⟹ Theorem B″: march unconditional for C₀ ≤ 1/10 (+ tip cushion 0.63/(t_d−t_{i+1}) at
+the far end — the cushion is a TIP phenomenon, matching measurements). For c < 10
+carriers the bulk march = finite per-index evaluation (per-carrier protocol).
+Theorem S′ renumbered (deep band M ≥ 6/√δ; endpoint M ≥ 56/δ but endpoint band is an
+INITIAL march segment since s decreases). Lean of the §1 regrouping identity queued —
+it would have caught the error mechanically. Next: that Lean brick, then Lemma H
+constant folding + per-carrier pre-registration.
+
+## 2026-07-04 (cont.) — LedgerIdentity.lean: the corrected ledger machine-checked
+
+Doc 37 §1's regrouping identity banked in Lean (8589 jobs, axiom-clean, lint green):
+`ledger_regroup` — ΔG's leftovers are EXACTLY the far-behind and far-ahead extras,
+generic in kernel f and positions t (pure Finset algebra; the theorem doc 30's
+display violates and doc 29(b) satisfies). Plus sign lemmas `ledger_gain_nonneg` /
+`ledger_loss_nonpos` (antitone kernel + nonincreasing gaps). The formal statement is
+now the authoritative ledger; any future march argument must type against it.
+Remaining board: Lemma H constant folding, per-carrier protocol pre-registration
+(bulk march γᵢ + regime map + (E-band) tip, #145), Lemma R constants (#139), doc 25
+Thm A + doc 24 counting lemma (Lean, #143), exp-family run.
