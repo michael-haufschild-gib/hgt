@@ -1794,3 +1794,98 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
   mollification + convolution_mollN_le = the Esseen-smoothing bricks for
   formalizing (K-bdd) consumption; harmonic_reproduction/poissonInt = the
   per-cell Jensen cap substrate. Recorded for the MollifiedDip Lean arc.
+
+## Cycle 26b (2026-07-04) — budget audit, kernel attack map, cofinality, chain audit
+- MollifiedDip.lean BANKED (umbrella 8626 jobs, lint green, axiom-clean):
+  sublevel_half_of_average (interval Chebyshev), dip_measure_lower (doc 56 §2
+  conclusion form), gapped_Icc_disjoint + separated_dips_count_le (Vitali
+  counting bridge), sliverCount_le_of_kernel ((K-bdd) ⟹ count, the doc 56 §4
+  endpoint). Route B's entire counting layer is machine-checked; the kernel is
+  the sole hypothesis.
+- Doc 57 BANKED (creation-budget audit): consumer takes K RAW; slip bands are
+  ≍N-blocks; NEW transport dichotomy (deep survivor ⟹ ζ-pair per instance ⟹
+  RH forces depth shrinkage ≲ T^{-1/8}); (EPH) level-shift dodge typed —
+  Tier-0 budget would remove (CR-density) from the critical path.
+- Doc 58 BANKED (kernel attack): Esseen interface; degree-2 wall no-go (no
+  moment expansion crosses D = 2 in matched windows, any θ, any U ≤ T);
+  ergodic×transfer split: (K-bdd-∞) with full proof skeleton (two-phase
+  co-area + dyadic-scale induction + Baker-effective base case — the {σ_p}
+  transcendence toolbox doing constructive work inside the bridge) ×
+  (SPEC-decay) (random-model spectral smoothness); P4/P5 pre-registered, not run.
+- Doc 59 BANKED (cofinality): (C1) PROVED-sketch — mean-Littlewood bound
+  meas{|g_N| ≤ E*} ≤ C·loglogT/logT per unit via rectangle Littlewood to σ=3 +
+  Jensen; retires the (D′) import for the measure clause; vertical threading +
+  almost-all-gap test points closed. Residue (C2) horizontal threading — route
+  1 (strata match: Ingham for w ≫ 1/logT, windows at w ≍ 1/logT) is an audit,
+  not analysis.
+- Doc 60 BANKED (full-chain audit): trunk T1–T4 Lean-anchored; Route I parked;
+  Route II spine W1–W11 with per-link status; open cores exactly five —
+  (CR-density) [two engines], (EPH), (C2), (WR-core), (HANK-fin)_k.
+  Consumption order: (EPH) → (K-bdd-∞) → (C2) → (SPEC-decay) → (HANK-fin)_2.
+
+## Cycle 27 (2026-07-04) — doc 55 §§7-8 lead composed: the self-mollified carrier (Route C)
+- Doc 55 reread (user flag): Langevin closed form ε(c) = L(c)/4π, ζ(1−2k)
+  Taylor tower, variance law ε′_W(0) = Var_μ/π, Casimir strong form refuted,
+  and the NEW chirality discovery (decreasing carriers empty the RIGHT
+  near-line strip ×8–13, GAF-blind) + E–K design lead.
+- Doc 61 BANKED: (i) self-mollification — F_W/W(0) = 1 + G_W is Route B's
+  normal form with NO mollifier; MollifiedDip.lean consumes the designed
+  carrier verbatim; kernel becomes (SM-bdd) with a designed-small constant;
+  (ii) chirality mechanism [CONJECTURE]: mean-share gradient m²/K growing in σ
+  (GAF-with-mean e^{−m²/K} factor) — pre-registered P-SM1/2/3 sweep;
+  (iii) calibration: elementary E–K reaches only σ ≈ 1 — sliver stays
+  kernel-class; the design buys layer-removal + constant-collapse +
+  smoothed-AFE E_W(T); (iv) block-static weights as the tower-compatibility
+  cut (damped-edge entries at birth scale).
+- Doc 60 addendum: Route C inserted at W5; consumption order updated.
+- meanshare_probe.py LAUNCHED (runpod): α-sweep W²_α = (α+1)(1−y)^α,
+  CCW winding, both sides, c ∈ {1,2}, N=40, U=240.
+- P-SM ADJUDICATED (meanshare_probe, archived): P-SM1 PASS decisive — right
+  sliver EXACTLY EMPTY from mean-share ≈ 0.54 (0 zeros/240 units at c≤2,
+  left side 47); P-SM2 fails-as-registered in the STRONG direction (measured
+  suppression beats the crude e^{−m²/(K−m²)} law 4–50× — gradient form is the
+  correct one); P-SM3 variance law holds α ≤ 2, breaks α = 4 (both-sides
+  emptying, GAF regime exit). NEW typed target (EK-sliver): zero-free right
+  sliver for decreasing-weight carriers at ς ≥ ς* — would give creation K = 0
+  (midCentral_empty grade) with NO kernel; Abel-mixture (positive mixture of
+  sharp partial sums) is the proof handle; next number: ς*(N) scaling.
+
+## Cycle 28 (2026-07-04) — (EK-sliver) as obstruction; mechanism identified = order/Cesàro depth
+- Doc 62 BANKED: Abel reformulation [PROVED]: F_W zero ⟹ 0 ∈ conv{Z_n} (hull/
+  half-plane obstruction — endpoint event → spread event; E–K = degenerate
+  case); Cesàro hierarchy [PROVED, iterated Abel]: convex decreasing weights
+  ⟹ zero forces 0 ∈ conv{Cesàro means}; m-fold monotone ⟹ (C,m)-hull;
+  mean-share and order-structure = two ends of one ladder; Spitzer-winding
+  erosion of the m=0 test predicted BEFORE data.
+- P-SC sweep RUN + ADJUDICATED (N ≤ 400, α ∈ {1,2,4}, 0 bad contours):
+  P-SC1 = ORDER branch decisively (α=2 emptiness persists to N=400 while
+  share decays 0.54→0.385; share-matched prediction 13 zeros, measured 1);
+  P-SC2 fails-as-registered exactly as pre-recorded (m=0 hull erodes 57→47/60,
+  weak necessary condition) while exploratory (CES-1) is stable: right
+  60/60/60/58 vs left 51→36; the 2/60 CES-1 failures at N=400 match the single
+  measured zero — obstruction accounting closes. P-SC3: rate N-stable at
+  fixed α; invariant = weight order, not share.
+- NEW single core for Route C: (CES-1) — winding suppression of the
+  Cesàro-averaged matched walk (classical-probability shape; dpoly supplies
+  exact L² data). Consumption: exceptional-set count = K via MollifiedDip
+  layer; K = 0 where unconditional. ς*(N) question DISSOLVED (no share
+  threshold; the invariant is Cesàro depth, N-uniform).
+
+## Cycle 29 (2026-07-04) — (CES-1) random-model argument banked; conjecture corrected; explicit K
+- Doc 63 BANKED: EMA/OU representation [PROVED (model)]: Cesàro in log-clock
+  = unit-bandwidth EMA, dZ̄/dθ = Z − Z̄, deviation D = OU(1); angular-variation
+  density ≲ θ^{−1/2}. ATTACK-AS-FALSE on the session conjecture: "finite
+  expected variation" FAILS (TV ≍ √logN); the finite invariant is the
+  NEAR-ORIGIN PASS COUNT ≍ logloglog N (dyadic capacitance). Model law:
+  δ₁(N) = q₀(a₀ + a₁·logloglogN); m-dial δ_m ≈ q₀^{m−1}δ₁ — m = 2 pins the
+  exceptional density below any fixed ε₀ for all sub-astronomical N. First
+  explicit K: K_m(N) ≤ δ_m(N)·U·logN, measured calibration q₀a₀ ≈ 0.03 (m=1).
+  Transfer NOT degree-2-walled: all functionals quadratic in monomials —
+  MV/dpoly grade; typed transfer lemma = block Paley–Zygmund + chaining.
+- P-CES2 RUN + PASS (ces2_probe, archived): right m2 60/60 at ALL N; left
+  m2 > m1 everywhere (59/56/57/56 vs 52/46/52/47); falsifier silent.
+  P-CES1b vacuous (0 m1-fails in 240 fresh samples ⟹ fail rate ≲ 1%).
+  Order-2 designed carrier: measured right exceptional density 0/240 pooled.
+- Route C status: model-grade K explicit; remaining to theorem-grade =
+  §5 transfer lemma (second-moment technology) + Lean of the discrete EMA
+  recursion + doc 62 §1 hull exclusion (both Finset-algebra grade).

@@ -281,3 +281,107 @@ critical line has a vacuum energy," and the zeros' reluctance to leave it is pri
 zeta-regularized vacuum term. Forward handle: if the intensity slope is a central-charge
 shadow, what plays c=1? Does a weighted carrier (smoothing the truncation edge) shift
 the effective central charge and hence the 1/12? — a computable question on the K-profile.
+
+## 8. The Casimir rabbit hole, resolved: it is a VARIANCE, not a central charge [PROVED HERE (limit calculus) + probe]
+
+Goal: fail early or extract the lead from §7.4's "critical line has a Casimir
+pressure" conjecture. The decisive test (smooth the truncation edge, watch the 1/12)
+is exact calculus in the matched limit — run analytically first.
+
+### 8.1 The general weighted-carrier law [PROVED HERE — matched limit]
+Log-scale carrier `a_n = W(log n/log N)/√n` (sharp cut = W ≡ 1). Substituting
+`n = N^y` in `K_W(½+u/log N) = Σ W(y_n)² n^{−1−2u/log N}`:
+
+> `K_W/log N → κ_W(u) = ∫₀¹ W(y)² e^{−2uy} dy = E_μ[e^{−2uY}]`,
+
+the MOMENT GENERATING FUNCTION of the log-placement measure `μ ∝ W²(y)dy` on [0,1].
+Hence `log κ_W` = cumulant generating function, and the GAF intensity gives exactly:
+
+> `ε_W(c) = (E_μ[Y] − E_{μ_c}[Y])/2π`  (`μ_c` = `μ` tilted by `e^{−2cY}` — a Gibbs tilt)
+> `ε′_W(0) = Var_μ(Y)/π`
+> `ε_W(∞) = E_μ[Y]/2π`  (the right-of-line zero share; mean splits the zeros)
+
+Sharp cut: `μ = Uniform[0,1]` ⟹ `Var = 1/12` ⟹ slope `1/12π`; `mean = ½` ⟹ split
+`¼π : ¼π`, total `1/2π` = full density ✓. The §7 Bernoulli/ζ tower is now explained
+at one level deeper: **the cumulants of Uniform[0,1] are `B_n/n`** — the ζ(1−2k)
+appearance is the uniform-cumulant identity + Euler, nothing more.
+
+### 8.2 Verdict on the conjecture
+- **REFUTED (strong form).** Not a central-charge-type invariant: log-scale
+  reweighting moves it as a variance. `W² = 2y` (ramp): `Var = 1/18` ⟹ slope
+  `1/18π ≠ 1/12π`. Anomalies are rigid under smooth deformation; this is not.
+- **PROVED (weak form).** Invariant under EVERY multiplicative-scale smoothing
+  `w(n/N)`: such an edge has log-measure `O(1/log N) → 0`, so `μ → Uniform[0,1]`
+  regardless of edge shape — `1/12` stable, by measure concentration, NOT conformal
+  symmetry. §7.4's stability inference had the wrong mechanism.
+- **CORRECTED READING.** Thermodynamic, not vacuum-energetic: `ε_W(c)` is a
+  Gibbs-tilt displacement, `ε′_W(0)` a SUSCEPTIBILITY — near-line zero density =
+  linear response of the coefficient measure to exponential tilting. "Casimir
+  pressure" → "tilting susceptibility." The B₂ kinship with ζ(−1) survives as stated
+  in §7.1 (same germ of `1/(e^t−1)`), but its carrier here is statistical (cumulants
+  of uniform), not anomalous.
+
+### 8.3 The lead: a parameterized, falsifiable dictionary + a design knob
+1. **Parameterized GAF test.** The variance law predicts, for the DETERMINISTIC
+   carriers: equal-variance opposite-edge pair `W²=2y` / `W²=2(1−y)` must show the
+   SAME near-line slope (`1/18π`), and right:left splits `2/3:1/3`, `1/3:2/3`
+   (sharp `½:½`) following the MEAN. Probe pre-registered (P-CAS1/2/3) at
+   `computations/mwm/casimir_weighted_probe.py`. This tests the GAF-comparison open
+   core with a PARAMETER, not one constant.
+2. **The creation-rate design knob [CONJECTURE].** `Var_μ` is tunable: concentrated
+   `μ` ⟹ slope → 0 ⟹ near-line births RARE in the GAF model. For MID-central this
+   suggests a weighted tower whose `creation_rate` constant is designed small. The
+   tension to quantify: AFE fidelity needs mass spread over [0,1]; birth suppression
+   wants mass concentrated. The well-posed new question:
+   > minimize `Var(μ)` subject to `F_W` remaining an AFE-grade approximation of ζ
+   > on the matched window
+   — an optimal-mollifier-for-birth-suppression variational problem. Mollifier
+   technology reweights for moment control; this objective (suppress the tower
+   carrier's near-line births) is native to the cascade program.
+
+### 8.4 Probe adjudication [MEASURED — casimir_weighted_probe.py + casimir_leftband_probe.py, N=28/40, U=60]
+
+Right bands (det/GAF, N=40): sharp 8/3.6, 12/6.7, 13/10.8; ramp 2/1.9, 7/4.0,
+15/7.9; iramp 1/2.1, 1/3.7, 1/5.9. Splits fracR: sharp 0.39, ramp 0.70 (GAF 0.62 ✓),
+iramp 0.03 (GAF 0.26 ✗✗). Left bands (N=40): sharp 5/3.7, 12/7.0, 15/11.8; ramp
+0/1.7, 1/3.2, 5/5.4; iramp 3/2.5, 9/5.4, 21/10.9.
+
+- **P-CAS3 PASS (qualitative + ramp quantitative):** splits ordered by the mean;
+  ramp matches GAF; iramp far MORE extreme than the mean law.
+- **P-CAS2 as registered (right bands) FAIL — but P-CAS2′/2″ PASS:** iramp's left
+  counts exceed its right by ×21 and exceed the GAF one-sided prediction; the
+  TWO-SIDED near-line totals of the equal-variance pair agree: ramp 20, iramp 22
+  (ratio 0.91; sharp 28 with Var 1/12 > 1/18 ✓ larger). **The variance law survives
+  as a two-sided law.** All carriers sit ×1.2–1.5 above finite-N GAF (the known
+  finite-N inflation).
+- **NEW DISCOVERY — near-line CHIRALITY, invisible to the GAF:** the SIDE of the
+  near-line pile-up is set by the deterministic coefficient structure, not by K(σ).
+  Monotone-decreasing carriers (iramp; frozen-term ratio W(0)/√K(½) ≈ 0.73) empty
+  the RIGHT near-line strip almost completely (1 zero vs sharp's 13 at c=2);
+  monotone-increasing carriers (ramp, W(0)=0) empty the LEFT. GAF predicts local
+  symmetry; the deterministic zeros are strongly chiral.
+
+### 8.5 The lead this hands to MID-central [CONJECTURE — the E–K route]
+(CR-density) counts RIGHT-side near-line zeros only (0 < β−½ ≤ c/log N). The probe
+shows a decreasing-weight carrier deterministically COLLAPSES exactly that count
+(×8–13 suppression vs sharp at N=40). So the rabbit hole exits onto a new route:
+
+> **Design, don't estimate.** Replace "prove ε(c)→0 for the sharp carrier"
+> (value-distribution frontier, open) by "choose a monotone-decreasing tower
+> carrier whose right near-line strip is provably near-empty" — an
+> Eneström–Kakeya-type POSITIVITY statement (zeros of Σa_n n^{−s} with a_n > 0
+> decreasing avoid a right zone), which is elementary-deterministic in kind,
+> hence potentially provable AND formalizable, sidestepping the small-ball
+> frontier entirely.
+
+Open sub-questions this creates: (i) quantitative E–K for Dirichlet polynomials —
+how far right of ½ does strict monotone decrease push the zero support? (Montgomery's
+β ≤ 1+loglog/log for a_n=1 is the weak-monotone boundary case); (ii) does the
+cascade's birth/push recursion survive a weighted tower (the pushes were derived for
+sharp truncation steps Φ_N → Φ_{N+1}); (iii) the finite-N GAF-with-mean correction:
+ρ = (1/4π)Δ[log K + h(|m|²/K)] with the frozen n=1 term as mean — computable, would
+explain the sharp carrier's ×1.2–1.5 near-line excess.
+
+Register note: the Casimir strong form is dead (§8.2); the corrected invariant
+(two-sided Var law) is experimentally supported; the chirality/E–K design principle
+is the genuinely new object this hole produced.

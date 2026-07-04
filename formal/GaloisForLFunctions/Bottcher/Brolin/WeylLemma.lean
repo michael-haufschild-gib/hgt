@@ -322,7 +322,7 @@ theorem tendsto_mollified (G : ℂ → ℝ) (hG : Continuous G) (w : ℂ) :
     Tendsto (fun n => convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume w)
       atTop (𝓝 (G w)) := by
   have hflip : (ContinuousLinearMap.lsmul ℝ ℝ).flip = ContinuousLinearMap.lsmul ℝ ℝ := by
-    ext a b; simp [mul_comm]
+    ext1; ext1; exact mul_comm _ _
   have happrox : Tendsto
       (fun n => convolution ((bumpN n).normed volume) G (ContinuousLinearMap.lsmul ℝ ℝ) volume w)
       atTop (𝓝 (G w)) := by
@@ -391,7 +391,7 @@ theorem Gn_continuous {G : ℂ → ℝ} (hG : Continuous G) (n : ℕ) :
     hG.locallyIntegrable (mollN_contDiff n)).continuous
 
 theorem poissonInt_mollN_tendsto {G : ℂ → ℝ} (hG : Continuous G) {x : ℂ} {R : ℝ} (hR : 0 < R)
-    {w : ℂ} (hw : w ∈ Metric.ball x R) {M : ℝ} (hMnn : 0 ≤ M)
+    {w : ℂ} (hw : w ∈ Metric.ball x R) {M : ℝ} (_hMnn : 0 ≤ M)
     (hM : ∀ z : ℂ, ‖z - x‖ = R → ∀ t, ‖z - t‖ ≤ R + 1 → |G t| ≤ M) :
     Tendsto (fun n => poissonInt (fun z => convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume z) x R w)
       atTop (𝓝 (poissonInt G x R w)) := by

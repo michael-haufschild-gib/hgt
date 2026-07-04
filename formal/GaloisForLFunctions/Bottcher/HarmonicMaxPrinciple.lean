@@ -84,4 +84,60 @@ theorem harmonic_eqOn_const_of_isMaxOn
   rw [← hW] at this
   exact this.1 hyS.2
 
+/-- **Boundary maximum principle for harmonic functions.**  A real function harmonic on a bounded,
+preconnected open `U`, continuous up to `closure U`, and bounded above by `M` on the topological
+frontier `∂U`, is bounded above by `M` throughout `U`.  Derived from the strong interior-maximum
+form `harmonic_eqOn_const_of_isMaxOn`: the maximum over the compact `closure U` is either attained on
+`∂U` (done) or in `U`, where strong maximality forces `u` constant on `U` and continuity carries that
+constant to a frontier point.  Boundedness excludes the `U = univ` escape (via `noncompact_univ ℂ`).
+The usable packaging that mathlib lacks. -/
+theorem harmonic_le_of_frontier_le_of_isPreconnected
+    {u : ℂ → ℝ} {U : Set ℂ} {M : ℝ}
+    (hUo : IsOpen U) (hUb : Bornology.IsBounded U) (hUc : IsPreconnected U)
+    (hu : HarmonicOnNhd u U) (hcont : ContinuousOn u (closure U))
+    (hfront : ∀ z ∈ frontier U, u z ≤ M) :
+    ∀ z ∈ U, u z ≤ M := by
+  rcases U.eq_empty_or_nonempty with hUe | hUne
+  · intro z hz; rw [hUe] at hz; exact absurd hz (Set.notMem_empty z)
+  have hKcompact : IsCompact (closure U) :=
+    Metric.isCompact_of_isClosed_isBounded isClosed_closure hUb.closure
+  have hKne : (closure U).Nonempty := hUne.closure
+  obtain ⟨z₀, hz₀cl, hz₀max⟩ := hKcompact.exists_isMaxOn hKne hcont
+  have hfronteq : frontier U = closure U \ U := by rw [frontier, hUo.interior_eq]
+  have hz₀le : u z₀ ≤ M := by
+    by_cases hz₀U : z₀ ∈ U
+    · have hmaxU : IsMaxOn u U z₀ := hz₀max.on_subset subset_closure
+      have hEqU : Set.EqOn u (fun _ => u z₀) U :=
+        harmonic_eqOn_const_of_isMaxOn hUc hUo hu hz₀U hmaxU
+      have hfrne : (frontier U).Nonempty := by
+        rw [Set.nonempty_iff_ne_empty]
+        intro h
+        have hsub : closure U ⊆ U := by
+          intro x hx; by_contra hxU
+          have : x ∈ frontier U := by rw [hfronteq]; exact ⟨hx, hxU⟩
+          rw [h] at this; exact this
+        have hClosed : IsClosed U := by
+          rw [← closure_eq_iff_isClosed]
+          exact Set.Subset.antisymm hsub subset_closure
+        have hClopen : IsClopen U := ⟨hClosed, hUo⟩
+        rcases isClopen_iff.mp hClopen with h0 | h1
+        · exact hUne.ne_empty h0
+        · have hcU : IsCompact (univ : Set ℂ) := by
+            rw [← closure_univ, ← h1]; exact hKcompact
+          exact noncompact_univ ℂ hcU
+      obtain ⟨z₁, hz₁⟩ := hfrne
+      have hz₁cl : z₁ ∈ closure U := (hfronteq ▸ hz₁).1
+      haveI : (nhdsWithin z₁ U).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hz₁cl
+      have ht1 : Tendsto u (nhdsWithin z₁ U) (𝓝 (u z₁)) :=
+        (hcont z₁ hz₁cl).tendsto.mono_left (nhdsWithin_mono z₁ subset_closure)
+      have ht2 : Tendsto u (nhdsWithin z₁ U) (𝓝 (u z₀)) := by
+        refine Tendsto.congr' ?_ tendsto_const_nhds
+        exact eventually_nhdsWithin_of_forall (fun x hx => (hEqU hx).symm)
+      have hval : u z₁ = u z₀ := tendsto_nhds_unique ht1 ht2
+      rw [← hval]; exact hfront z₁ hz₁
+    · have : z₀ ∈ frontier U := by rw [hfronteq]; exact ⟨hz₀cl, hz₀U⟩
+      exact hfront z₀ this
+  intro z hz
+  exact le_trans (hz₀max (subset_closure hz)) hz₀le
+
 end Bottcher
