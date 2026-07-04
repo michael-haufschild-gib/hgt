@@ -1619,3 +1619,19 @@ push (classical Gauss/Weyl bounds; effective tail m ≲ N^{1/3} — SHORT sums).
 De-randomized program: dichotomy [proved] + lattice [proved] + Gauss bounds
 [classical] + creation-rate [small-ball at rate level]. The bridge's
 arithmetic input has become QUADRATIC PHASES — Γ-θ/weld home ground.
+
+## 2026-07-04 (cycle 15 addendum) — SweepDichotomy + GaussLattice BANKED; doc tree repaired
+Repair: cwd-drift misplacements found via the user's commit — docs 45/46 moved
+to the docs tree, doc 39's MISSING §6 (the near/far-split refutation) merged
+from its stray fragment; only RESULTS files remain in computations/mwm.
+Lean (per Michael's pointer to the sibling Weyl code — SatoTateMoment.lean has
+the Weyl moment-criterion analytic backbone; Q62WeylDischarge is the elliptic
+lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
+- SweepDichotomy.lean — doc 48 §2 machine-checked: sweepW = v²+η²+εq;
+  sweepW_kill (εq(0) ≤ −η² + positive edges ⟹ on-line zero each side, IVT);
+  sweepW_survive (εq > −η² on segment ⟹ pair stays off-line).
+- GaussLattice.lean — doc 49 §2 integer skeleton: pi_msq_phase_alternates
+  (m² ≡ m mod 2: the p≈0 anti-phase); lattice_coherent_iff (m(m+a) even ∀m ⟺
+  a odd: quarter-phase coherence at 4p odd — the sharp p = 1/4, 3/4 law);
+  norm_geom_sum_le (unit-circle geometric bound — first Weyl-differencing
+  ingredient; cross-referenced to SatoTateMoment's equidistribution side).

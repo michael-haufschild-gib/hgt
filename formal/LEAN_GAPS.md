@@ -26,6 +26,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1711 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
 | 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
 | 1604 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
+| 1597 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
 | 1417 | `formal/GaloisForLFunctions/Bottcher/CrossRatioNormalBridge.lean` |
@@ -35,7 +36,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
 | 1302 | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean` |
 | 1300 | `formal/GaloisForLFunctions/Bottcher/MixedTowerData.lean` |
-| 1292 | `formal/GaloisForLFunctions/Bottcher/CrossRatioCuspBridge.lean` |
 
 ## Gap Markers
 
@@ -270,10 +270,13 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:3155` | `M` is discharged internally from `-2 ≤ c ≤ 1/4`; the remaining connected-case inputs are exactly |
 | `formal/GaloisForLFunctions/Bottcher/Q62BothConnectedExposed.lean:8` | point of one set off the other filled set (after a swap).  The *only* remaining gap to |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:20` | Half A is proved here modulo `BrolinScalingAt`; the two remaining inputs — the doubling law |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:55` | /-- GAP-A bridge for Half A.  The remaining shifted-measure input is exactly the |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:131` | the hypotheses here are the exact remaining boundary value and atom gates needed |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:197` | remaining limit input is that the selected subsequence at `f_c z` and the |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:398` | /-- Disconnected GAP-A support from the precise remaining shifted-potential identification. |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:132` | The remaining nontrivial GAP-A task is to prove the two measure invariances for |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:293` | /-- Half A with the free antipodal symmetry discharged.  The only remaining |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:504` | and antipodal symmetry are internal; the remaining assumption is exactly that |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:525` | /-- GAP-A bridge for Half A.  The remaining shifted-measure input is exactly the |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1057` | remaining boundary value and vanishing-atom-mass gates needed to pass it through the |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1233` | remaining limit input is that the selected subsequence at `f_c z` and the |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1551` | /-- Disconnected GAP-A support from the precise remaining shifted-potential identification. |
 | `formal/GaloisForLFunctions/Bottcher/Q62Field.lean:269` | by `mvEval_deepBall_eq_zero_iff` (faithfulness); the single remaining input `hFunIndep` is precisely |
 | `formal/GaloisForLFunctions/Bottcher/Q62HinputAssembly.lean:16` | This is the genuine remaining content of the natural-boundary route (co-countable for connected `c₁`: |
 | `formal/GaloisForLFunctions/Bottcher/Q62KummerAssembly.lean:35` | against `meroField`. The remaining work to make it unconditional is the *mechanical* construction of |
@@ -288,9 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:119` | /-- **The reflection core — the one remaining deep input of smooth-piece rigidity.** A non-constant |
 | `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:197` | `β` across the arc then runs on (the remaining, genuinely mathlib-absent, input). -/ |
 | `formal/GaloisForLFunctions/Bottcher/QuarticDefect.lean:72` | remaining input is the Γ(2) cusp-form finiteness (modular-curve compactness / valence), absent from |
-| `formal/GaloisForLFunctions/Bottcher/QuarticModularForm.lean:6` | `zero_at_cusps'`) is the remaining input toward `F ≡ 0` via `NormTrace` to level-one weight-12. |
-| `formal/GaloisForLFunctions/Bottcher/RealPairExposed.lean:13` | so `ExposedOneSided (c₁, c₂)` reduces to the SINGLE remaining clause |
-| `formal/GaloisForLFunctions/Bottcher/RealPairExposed.lean:76` | along the real ray `(β₁, ∞)`; one-sidedness at the single point `β₁` is the only remaining |
 
 ## Historical Status Logs
 

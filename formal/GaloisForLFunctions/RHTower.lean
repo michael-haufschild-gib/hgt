@@ -70,3 +70,7 @@ import GaloisForLFunctions.RHTower.SpurStack
 import GaloisForLFunctions.RHTower.SpurCarrier
 import GaloisForLFunctions.RHTower.SpurMovingThreshold
 import GaloisForLFunctions.RHTower.ReversalClosedForm
+import GaloisForLFunctions.RHTower.SweepDichotomy
+import GaloisForLFunctions.RHTower.GaussLattice
+import GaloisForLFunctions.RHTower.SweepCascade
+import GaloisForLFunctions.RHTower.CascadeGeometric
