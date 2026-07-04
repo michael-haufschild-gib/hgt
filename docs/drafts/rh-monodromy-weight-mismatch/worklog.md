@@ -1635,3 +1635,29 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
   a odd: quarter-phase coherence at 4p odd — the sharp p = 1/4, 3/4 law);
   norm_geom_sum_le (unit-circle geometric bound — first Weyl-differencing
   ingredient; cross-referenced to SatoTateMoment's equidistribution side).
+
+## Cycle 16 (2026-07-04) — sweep-cascade exhaustion pass (goal-locked)
+- Doc 50 BANKED: lattice COLLAPSE (e^{−i(4πpm+πm²)} = w^m, pure geometric — no
+  Gauss sum at lattice order); resonance denominator ‖1−w‖ = 2|cos 2πp|; Abel
+  master bound a₀/|cos 2πp| (sharp); drift p_eff certified (P-L1..L4 PASS);
+  RS-consonance (RS denominator = ours; stationary value πn₀ − 2πd² + π/8
+  certified P-L5, error (2π/3)d³/N); Roy–You (2411.08364) full-text mined —
+  their Thm 1.3 reaches matched regime, on-line bound dies in O(U log N):
+  the mid-band lives inside the printed error term.
+- Census graded (archived only): P-QP2 PASS decisive (0/19 near p = 1/2,
+  null 0.004); survivor support = {d(p) ≤ 0.194}; tail-only law REFUTED
+  (no re-appearance at 0.35); births 1-periodic (42 vs 14 /106).
+- Doc 51 BANKED: de-randomized walk — rotation cannot close (frozen-alignment
+  escape PROVED), drift is the de-randomizer; (DRIFT-dip) typed;
+  (HOLD-phase) OPEN CORE typed; §9: slip identity (slip = 2πd², window =
+  0.236 rad budget), reach coupling cos(slip)·R ≥ 1, naive corollary refuted,
+  open kernel isolated to configurational |H|.
+- Doc 52 BANKED: births = tangencies of A(t) = −2θ_RS − 2φ; A′ = −2θ_RS′ −
+  2Re(F_N′/F_N); creation priced by RIGHT-of-line near-line zeros of the
+  NAKED partial sum; (CR-density) typed; §8 audit: bare Jensen no-go recorded.
+- Lean BANKED: CascadeGeometric.lean (lattice_collapse, norm_one_sub_exp,
+  resonance_denominator, abel_geom_bound, collective_push_le, one_wrap_hit,
+  survival_floor) — umbrella 8614 jobs, lint green, axiom-clean. Parallel
+  agent's SweepCascade.lean (list-level localization) composes with it.
+- OPEN, force order: (HOLD-phase) |H|-kernel; (DRIFT-dip) bookkeeping;
+  (CR-density) via log|F_N| variance; (DEEP-FATE) sanctioned computation.

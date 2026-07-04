@@ -115,3 +115,30 @@ pairs the deck relation counts as the (SWEEP-margin) boundary term.
    O(N^{1/3}) entries, no η ~ N^{−1/4} deepening (census bound: max η 0.178).
 4. The B(p)-envelope prediction: birth depth ∝ B(p) — gradable if a future
    census stores birth-level depths, not just final ones.
+
+## 9. Same-session sharpening: the slip identity and the reach coupling
+
+(a) **Slip identity [PROVED — the lattice again]:** the resonant term's phase
+slip between its stationary point and the entry at fractional offset d is
+2πd² (θ″ = 1/2t against entry spacing 4πN: slip after k entries = 2πk²). So
+the (HOLD-phase) window of §5 reads: **survival while the resonance's own
+slip stays under the budget κ_slip ≈ 0.236 rad** — the window edge d* = 0.194
+is the budget exhausted, not a new constant.
+
+(b) **Reach coupling [ANALYSIS + testable]:** the dichotomy applied to the
+holding term gives survival iff cos(slip)·R ≥ 1, R the (REACH) ratio. Census
+consistency: at the edge cos(0.236) = 0.972 requires R ≥ 1.03 (all measured
+R ≥ 1.10 ✓). The naive corollary — max-reach configurations (R ≈ 2.1) could
+survive to slip ≈ 1.08, d ≈ 0.41 — is REFUTED by the census (0 events in
+(0.194, 0.855)): reach and slip must be anti-correlated, as doc 46 §5 already
+noted ("the (HOLD) phase window and the (REACH) amplitude window are one
+object"). But the leading cosines are all ≈ 1 in the window
+(cos(x)·|cos(π/8 − x)| ∈ [0.92, 0.97] on x ∈ [0, 0.236], nearly flat), so the
+anti-correlation lives in the configurational factor |H| — the open kernel of
+(HOLD-phase), now isolated to one object.
+
+(c) **Edge shape [measured, undecided]:** the 19 survivor d-values are
+near-uniform on [0, 0.194] with no thinning at the edge — favoring a HARD
+slip-budget edge over a soft configurational tail; 19 points cannot settle
+it. Discriminating measurement (when a census extension is next sanctioned):
+the d-histogram shape near 0.19 and per-event (d, R) pairs — store both.

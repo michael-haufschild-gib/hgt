@@ -290,6 +290,76 @@ theorem map_limitingBrolinMeasureAt_quadratic_of_adjacent_subseq_comp_quadratic_
   · exact (continuous_quadratic c).aemeasurable
   · exact φ.continuous.aestronglyMeasurable
 
+/-- Restrict a compactly supported plane test after one quadratic step to the
+target-dependent compact carrier. -/
+noncomputable def compactQuadraticRestrictionOnTargetEscapeDisk
+    (c a : ℂ) (φ : C_c(ℂ, ℝ)) :
+    BoundedContinuousFunction (targetEscapeDisk c a) ℝ :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun z : targetEscapeDisk c a => φ (quadratic c (z : ℂ)),
+      φ.continuous.comp ((continuous_quadratic c).comp continuous_subtype_val)⟩
+
+/-- Compact-carrier form of the shifted/full-limit Half A gap.  If the
+adjacent selected target measures `μ_{ψ k + 1}` converge to the same compact
+limit as `μ_{ψ k}`, then the quadratic-test convergence input required for
+`(f_c)_* μ = μ` follows. -/
+theorem adjacent_targetEscapeDisk_subseq_tendsto_comp_quadratic
+    {c a : ℂ}
+    (hadj :
+      Tendsto
+        (fun k =>
+          preBrolinProbabilityAtOnTargetEscapeDisk c a
+            (brolinLimitAtSubsequence c a k + 1))
+        atTop
+        (𝓝 (brolinLimitAtOnTargetEscapeDisk c a))) :
+    ∀ φ : C_c(ℂ, ℝ),
+      Tendsto
+        (fun k =>
+          ∫ z, φ (quadratic c z)
+            ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k + 1))
+        atTop
+        (𝓝 (∫ z, φ (quadratic c z) ∂limitingBrolinMeasureAt c a)) := by
+  intro φ
+  have htarget :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp hadj)
+      (compactQuadraticRestrictionOnTargetEscapeDisk c a φ)
+  have hlim :
+      ∫ z : targetEscapeDisk c a, φ (quadratic c (z : ℂ))
+          ∂(brolinLimitAtOnTargetEscapeDisk c a :
+            Measure (targetEscapeDisk c a)) =
+        ∫ z, φ (quadratic c z) ∂limitingBrolinMeasureAt c a := by
+    rw [limitingBrolinMeasureAt, integral_map]
+    · exact measurable_subtype_coe.aemeasurable
+    · exact (φ.continuous.comp (continuous_quadratic c)).aestronglyMeasurable
+  rw [← hlim]
+  refine htarget.congr' ?_
+  filter_upwards with k
+  rw [preBrolinMeasureAt_eq_map_preBrolinMeasureAtOnTargetEscapeDisk, integral_map]
+  · simp [compactQuadraticRestrictionOnTargetEscapeDisk,
+      preBrolinProbabilityAtOnTargetEscapeDisk]
+  · exact measurable_subtype_coe.aemeasurable
+  · exact (φ.continuous.comp (continuous_quadratic c)).aestronglyMeasurable
+
+/-- Full compact-carrier convergence of arbitrary-target pullback measures
+implies the adjacent selected convergence needed by Half A. -/
+theorem adjacent_targetEscapeDisk_subseq_tendsto_of_full_target_tendsto
+    {c a : ℂ}
+    (hfull :
+      Tendsto
+        (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n)
+        atTop
+        (𝓝 (brolinLimitAtOnTargetEscapeDisk c a))) :
+    Tendsto
+      (fun k =>
+        preBrolinProbabilityAtOnTargetEscapeDisk c a
+          (brolinLimitAtSubsequence c a k + 1))
+      atTop
+      (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)) := by
+  exact hfull.comp
+    (tendsto_atTop_mono
+      (fun k => Nat.le_succ (brolinLimitAtSubsequence c a k))
+      (brolinLimitAtSubsequence_tendsto_atTop c a))
+
 /-- Half A with the free antipodal symmetry discharged.  The only remaining
 measure-invariance input is the full limiting balancedness identity
 `(f_c)_* μ = μ`, i.e. the shifted-measure/full-limit gap. -/
@@ -1459,6 +1529,165 @@ theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift
   fun a ha =>
     limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift_and_subseq_logPotential_nonpos
       (hshift a ha) (hlogNonpos a ha) (hcrit a ha)
+
+/-- Full GAP-A support route with the weaker Half B boundary-potential limit
+surface.  Half A is still the adjacent shifted/full-limit convergence gate;
+Half B is finite boundary-potential convergence to zero plus the explicit
+finite singleton-mass decay from critical-orbit avoidance. -/
+theorem limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift_and_boundary_potential_tendsto_zero
+    {c a : ℂ}
+    (hshift :
+      ∀ φ : C_c(ℂ, ℝ),
+        Tendsto
+          (fun k =>
+            ∫ z, φ (quadratic c z)
+              ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k + 1))
+          atTop
+          (𝓝 (∫ z, φ (quadratic c z) ∂limitingBrolinMeasureAt c a)))
+    (hlog0 :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Tendsto
+          (fun k =>
+            logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+          atTop (𝓝 0))
+    (hcrit : CriticalOrbitAvoidingTarget c a) :
+    LimitingBrolinMeasureAtSupportsJulia c a :=
+  let hatom : ∀ z : ℂ, z ∈ filledJulia c → limitingBrolinMeasureAt c a {z} = 0 :=
+    fun z hzK =>
+      limitingBrolinMeasureAt_singleton_eq_zero_of_subseq_boundary_potential_tendsto_zero_of_criticalOrbitAvoidingTarget
+        hzK (hlog0 z hzK) hcrit
+  limitingBrolinMeasureAtSupportsJulia_of_scaling_and_boundary_potential_tendsto_zero
+    (BrolinScalingAt_of_adjacent_subseq_comp_quadratic_tendsto hshift hatom)
+    hlog0 hcrit
+
+/-- Fixed-point form of the adjacent-shift plus boundary-potential-zero route. -/
+theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift_and_boundary_potential_tendsto_zero
+    {c : ℂ}
+    (hshift :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ φ : C_c(ℂ, ℝ),
+          Tendsto
+            (fun k =>
+              ∫ z, φ (quadratic c z)
+                ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k + 1))
+            atTop
+            (𝓝 (∫ z, φ (quadratic c z) ∂limitingBrolinMeasureAt c a)))
+    (hlog0 :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          Tendsto
+            (fun k =>
+              logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+            atTop (𝓝 0))
+    (hcrit :
+      ∀ a : ℂ, quadratic c a = a → CriticalOrbitAvoidingTarget c a) :
+    ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
+  fun a ha =>
+    limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift_and_boundary_potential_tendsto_zero
+      (hshift a ha) (hlog0 a ha) (hcrit a ha)
+
+/-- Full GAP-A support from the compact-carrier adjacent convergence gate for
+Half A and boundary-potential convergence for Half B.  This is the direct
+formal statement of the shifted/full-limit obstruction: prove adjacent compact
+target convergence, prove boundary potentials tend to zero, and q62 support
+follows without a Julia-nullity input. -/
+theorem limitingBrolinMeasureAtSupportsJulia_of_adjacent_target_tendsto_and_boundary_potential_tendsto_zero
+    {c a : ℂ}
+    (hadj :
+      Tendsto
+        (fun k =>
+          preBrolinProbabilityAtOnTargetEscapeDisk c a
+            (brolinLimitAtSubsequence c a k + 1))
+        atTop
+        (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)))
+    (hlog0 :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Tendsto
+          (fun k =>
+            logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+          atTop (𝓝 0))
+    (hcrit : CriticalOrbitAvoidingTarget c a) :
+    LimitingBrolinMeasureAtSupportsJulia c a :=
+  limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift_and_boundary_potential_tendsto_zero
+    (adjacent_targetEscapeDisk_subseq_tendsto_comp_quadratic hadj)
+    hlog0 hcrit
+
+/-- Fixed-point form of the compact adjacent-convergence plus boundary-potential route. -/
+theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_adjacent_target_tendsto_and_boundary_potential_tendsto_zero
+    {c : ℂ}
+    (hadj :
+      ∀ a : ℂ, quadratic c a = a →
+        Tendsto
+          (fun k =>
+            preBrolinProbabilityAtOnTargetEscapeDisk c a
+              (brolinLimitAtSubsequence c a k + 1))
+          atTop
+          (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)))
+    (hlog0 :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          Tendsto
+            (fun k =>
+              logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+            atTop (𝓝 0))
+    (hcrit :
+      ∀ a : ℂ, quadratic c a = a → CriticalOrbitAvoidingTarget c a) :
+    ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
+  fun a ha =>
+    limitingBrolinMeasureAtSupportsJulia_of_adjacent_target_tendsto_and_boundary_potential_tendsto_zero
+      (hadj a ha) (hlog0 a ha) (hcrit a ha)
+
+/-- Full GAP-A support from full compact-carrier convergence of the arbitrary
+target pullback sequence and boundary-potential convergence.  This packages
+the Half A obstruction in its strongest usable form: full weak convergence
+implies the adjacent shifted/full-limit identification. -/
+theorem limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_boundary_potential_tendsto_zero
+    {c a : ℂ}
+    (hfull :
+      Tendsto
+        (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n)
+        atTop
+        (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)))
+    (hlog0 :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Tendsto
+          (fun k =>
+            logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+          atTop (𝓝 0))
+    (hcrit : CriticalOrbitAvoidingTarget c a) :
+    LimitingBrolinMeasureAtSupportsJulia c a :=
+  limitingBrolinMeasureAtSupportsJulia_of_adjacent_target_tendsto_and_boundary_potential_tendsto_zero
+    (adjacent_targetEscapeDisk_subseq_tendsto_of_full_target_tendsto hfull)
+    hlog0 hcrit
+
+/-- Fixed-point form of the full compact-target convergence plus boundary-potential route. -/
+theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_boundary_potential_tendsto_zero
+    {c : ℂ}
+    (hfull :
+      ∀ a : ℂ, quadratic c a = a →
+        Tendsto
+          (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n)
+          atTop
+          (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)))
+    (hlog0 :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          Tendsto
+            (fun k =>
+              logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+            atTop (𝓝 0))
+    (hcrit :
+      ∀ a : ℂ, quadratic c a = a → CriticalOrbitAvoidingTarget c a) :
+    ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
+  fun a ha =>
+    limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_boundary_potential_tendsto_zero
+      (hfull a ha) (hlog0 a ha) (hcrit a ha)
 
 /-- GAP-A support from the finite Half A and Half B gates in subsequence form.
 This statement contains no Julia-nullity input: Half A is the adjacent-limit
