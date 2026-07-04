@@ -157,3 +157,55 @@ fit the birth-depth p-profile; if it tracks `|cos 2πp²|`, the two census facts
 (survival: frozen dip, low edge, with π/8 in the dip phase) × (creation: frozen-max
 depth, half-emptiness, no π/8) — welded at the shared slip `2πp²`, the π/8 living
 only on the survival ledger.
+
+## 10. Off-line depth census: depth tracks |cos 2πp²| (NO π/8) — the π/8 is survival-only [MEASURED — 2026-07-04]
+
+The §9 relocation (envelope in birth DEPTH, not tangency COUNT) tested directly:
+a depth-graded off-line census of the Hardy function `Z_N(t) = 2 Σ_{n≤N} n^{−½}
+cos(θ_RS − t log n)` (the FE-symmetrized truncation, prefactor divided out — the
+completed `ξ_N` itself underflows as `e^{−πt/4}`). Off-line pairs = non-crossing
+valleys of `Z_N` at anomalously large on-line-zero gaps; depth `η = √(2|Z_min|/
+|Z″|)` from a local parabola (isotropic near the pair by analyticity). Cert:
+`computations/mwm/offline_depth_census.py` (pre-registered D1–D4) +
+`offline_depth_census.out` (pod, numpy; Stirling `loggamma` for the RS θ, exact at
+these heights). N band 45–95, 127 pairs, η median 0.053, max 0.142 (census 0.09–
+0.18; this reader also catches shallower pairs).
+
+**THE FORK, resolved [D2]:** all depth measures PEAK at `d ≈ 0`, not `d = ¼`:
+mean_η peaks at d = 0.075, q90 and max at d = 0.025. `B(p)` peaks at `d = ¼` — the
+data do NOT. Fits (depth linear in modulus): frozen-max `|cos 2πp²|` beats
+`B = |cos(π/8 − 2πp²)|` by 2.5–10× in R² (mean 0.42 vs 0.17; q90 0.19 vs 0.01; max
+0.20 vs 0.02). The pair COUNT is modulated too (ratio [d<0.15]:[d>0.35] = 2.52,
+census births ≈ 3.0) — these pairs ARE marginal-selected, unlike §9's flat
+`h`-deficits, confirming the envelope shows only in marginal-selected objects.
+
+> **[MEASURED] The birth-depth envelope is the frozen-max modulus `|cos 2πp²|`
+> (phase offset 0), NOT `B(p) = |cos(π/8 − 2πp²)|` (offset π/8). The π/8 — which
+> would move the depth peak from p = 0 to p = ¼ — is ABSENT from creation. It lives
+> only on the survival ledger (the frozen-dip phase `β = π/8 − 2πp²`, docs 50 §5,
+> 51 §10).**
+
+Caveats (honest): modest statistics (127 pairs, some bins < 10); the mean-η
+suppression toward `d = ½` is softer (ratio 1.33) than pure frozen-max (2.48) —
+shallow pairs survive at all p and dilute the mean — though the DEEP measures
+(max, q90) suppress ~1.8× and peak sharply at 0. The decisive datum is the PEAK
+LOCATION: births track a modulus peaking at 0, so they carry no π/8.
+
+**Correction:** doc 51 §5's "B(p) caps birth depth (2.4× at d = ½)" conflated the
+two objects. The CREATION depth cap is `|cos 2πp²|` (offset 0, → 0 at d = ½); the
+`B(p)` with π/8 is the SURVIVAL dip-phase (doc 51 §10). Same slip `2πp²`, different
+offset.
+
+**The welded picture, now measured on both sides:**
+- **survival** = frozen dip, low edge `d* = 0.194`, π/8 IN the dip phase (doc 51 §10);
+- **creation** = frozen-max depth `|cos 2πp²|`, half-emptiness, NO π/8 (here);
+- welded at the shared slip `2πp²`; the metaplectic π/8 is a survival-ledger object
+  alone — a precise, now-tested claim about where the constant does and doesn't live.
+
+**What this opens.** With the π/8 localized, the object to make precise is the slip
+`2πp²` as the shared coordinate: it is the RS-remainder second-order phase (θ″ =
+1/2t against entry spacing, doc 51 §9a). Next: derive the two envelopes from ONE
+generating function of the slip — creation `= |cos(slip)|` (frozen-max, the bare
+line modulus) and survival `= |cos(slip − π/8)|` (the dip after the metaplectic
+half-turn) — i.e. the π/8 as the single phase shift between the creation modulus
+and the survival modulus, a one-parameter weld to state as a lemma.
