@@ -87,3 +87,26 @@ theorem pricing_pigeonhole {ι : Type*} {Z : Finset ι} {kernel : ι → ℝ}
   linarith
 
 end RHTower
+
+namespace RHTower
+
+/-- **Pricing-to-close-zero endpoint (doc 52 §3).** For the planar Poisson
+kernel `-u/(u^2+w^2)`, a value below `-(B + #Z/c)` forces one contributing zero
+to be genuinely `c`-close to the evaluation point. This composes the banked
+pigeonhole with `far_kernel_lower`, so downstream consumers no longer need the
+intermediate kernel-threshold witness. -/
+theorem pricing_close_zero {ι : Type*} {Z : Finset ι} {u w : ι → ℝ}
+    {E B c v : ℝ} (hc : 0 < c) (hu : ∀ ρ ∈ Z, 0 ≤ u ρ)
+    (hE : |E| ≤ B)
+    (hval : v = (∑ ρ ∈ Z, -(u ρ / (u ρ ^ 2 + w ρ ^ 2))) + E)
+    (hv : v < -(B + (Z.card : ℝ) / c)) :
+    ∃ ρ ∈ Z, u ρ ^ 2 + w ρ ^ 2 < c ^ 2 := by
+  obtain ⟨ρ, hρ, hkernel⟩ := pricing_pigeonhole (Z := Z)
+    (kernel := fun ρ => -(u ρ / (u ρ ^ 2 + w ρ ^ 2))) hE hval hv
+  refine ⟨ρ, hρ, ?_⟩
+  by_contra hfar_not
+  have hfar : c ^ 2 ≤ u ρ ^ 2 + w ρ ^ 2 := le_of_not_gt hfar_not
+  have hlow := far_kernel_lower hc (hu ρ hρ) hfar
+  linarith
+
+end RHTower

@@ -278,3 +278,54 @@ theorem polar_ratio_explicit {θ : ℝ} (h0 : 0 < θ) (h2 : θ < 2 * Real.pi)
         ring
 
 end RHTower
+
+namespace RHTower
+
+/-- Nonresonance of the unit rotation for `0 < θ < 2π`, in the exact form
+consumed by the rotation-dip constructors. -/
+theorem exp_mul_I_ne_one_of_pos_lt_two_pi {θ : ℝ} (h0 : 0 < θ)
+    (h2 : θ < 2 * Real.pi) :
+    Complex.exp ((θ : ℂ) * Complex.I) ≠ 1 := by
+  intro h
+  have hzero : 1 - Complex.exp ((θ : ℂ) * Complex.I) = 0 := by
+    rw [h, sub_self]
+  rw [one_sub_exp_eq] at hzero
+  have hs : ((Real.sin (θ / 2) : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast (Real.sin_pos_of_pos_of_lt_pi (by linarith) (by linarith)).ne'
+  have hprod : -2 * Complex.I * ((Real.sin (θ / 2) : ℝ) : ℂ)
+      * Complex.exp (((θ / 2 : ℝ) : ℂ) * Complex.I) ≠ 0 := by
+    exact mul_ne_zero (mul_ne_zero (mul_ne_zero (by norm_num) Complex.I_ne_zero) hs)
+      (Complex.exp_ne_zero _)
+  exact hprod hzero
+
+/-- The explicit rotation-circle radius is nonnegative on `0 < θ < 2π`. -/
+theorem polar_radius_nonneg_of_pos_lt_two_pi {θ : ℝ} (h0 : 0 < θ)
+    (h2 : θ < 2 * Real.pi) : 0 ≤ 1 / (2 * Real.sin (θ / 2)) := by
+  have hs : 0 < Real.sin (θ / 2) :=
+    Real.sin_pos_of_pos_of_lt_pi (by linarith) (by linarith)
+  positivity
+
+/-- **Perturbed kill with explicit polar data.** The closed polar form of
+`e^{iβ}/(1-e^{iθ})` discharges the separate `r`, `γ`, polar, and nonresonance
+premises of `birthKilled_of_perturbed_rotation`. -/
+theorem birthKilled_of_perturbed_rotation_explicit_polar {pushes : List ℝ}
+    {birth : CascadeBirth} {θ β δ e₀ amin amax : ℝ} {amp ε : ℕ → ℝ} {P : ℕ}
+    (hθ0 : 0 < θ) (hθπ : θ ≤ Real.pi)
+    (hamin : 0 ≤ amin) (hamp : ∀ m : ℕ, amin ≤ amp m ∧ amp m ≤ amax)
+    (hdep : 0 < birth.depthSq)
+    (hpush : futurePushes pushes birth
+      = (List.range P).map fun m : ℕ => amp m * Real.cos (β + (m : ℝ) * θ + ε m))
+    (hlen : 2 * Real.pi + 2 * θ ≤ (P : ℝ) * θ)
+    (hmis : Real.cos (β - θ / 2 + Real.pi / 2) ≤ 1 - δ)
+    (hε : ∀ m : ℕ, |ε m| ≤ e₀)
+    (hdeep : birth.depthSq
+      ≤ amin * ((1 / (2 * Real.sin (θ / 2))) * (δ - (1 - Real.cos (θ / 2))))
+        - ((2 * Real.pi + 2 * θ) / θ) * (amin * e₀ + (amax - amin))) :
+    BirthKilled pushes birth := by
+  have hθ2 : θ < 2 * Real.pi := by linarith [Real.pi_pos]
+  exact birthKilled_of_perturbed_rotation hθ0 hθπ
+    (polar_radius_nonneg_of_pos_lt_two_pi hθ0 hθ2) hamin hamp hdep hpush hlen
+    (polar_ratio_explicit hθ0 hθ2 β) (exp_mul_I_ne_one_of_pos_lt_two_pi hθ0 hθ2)
+    hmis hε hdeep
+
+end RHTower

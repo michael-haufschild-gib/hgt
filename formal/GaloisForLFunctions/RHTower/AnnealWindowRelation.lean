@@ -1,0 +1,319 @@
+/-
+Doc 22 §2 ASSEMBLED (task #165): the mod-2^k window relation transports to the
+concrete finite carrier — D-transport + L-transport + (ID) on both carriers,
+composed into single statements.
+
+The reduction's endgame arithmetic, machine-checked end to end on the actual
+objects (ξ and `completedGN`):
+
+* `analyticOrderAt_conj_conj_of_analyticAt` / `analyticOrderAt_conj_of_conjEquivariant`
+  — the Schwarz-reflection order equivariance LOCALIZED (entirety dropped): the
+  last missing multiplicity input for the meromorphic completed carrier.
+* `completedGN_analyticAt`, `completedGN_orderAt_conj`,
+  `completedGN_orderAt_lineReflect` — the finite carrier now has the FULL
+  line-reflection equivariance package on the strip; `xi_orderAt_lineReflect`
+  names ξ's. These are exactly what `window_identity` (ID) consumes.
+* `window_N_congruence` — the arithmetic core: two (ID)s + boundary congruences
+  `D₁ ≡ D₂`, `L₁ ≡ L₂ (mod 2^{k+1})` ⟹ `N₁ ≡ N₂ (mod 2^k)`.
+* `anneal_window_parity_transport` — the assembly on the carriers: the (ID)s are
+  DERIVED from the banked equivariances (not assumed); only the two transported
+  boundary congruences remain as inputs.
+* `xi_rung_of_finite_side` — the reduction payoff: 2^k-divisibility of the
+  truncation's right-half count forces ξ's.
+* `anneal_mod_two_window_relation` — the k = 1 headline: level-4 boundary
+  congruences ⟹ `N_ξ(W) ≡ N_g(W) (mod 2)`.
+
+Where the two congruence inputs come from (the "doubly-dominated" reading):
+the deck side `hD` is fed by chart-wide domination via `anneal_deck_transport`
+(+ the level-2^{k+1} deck↔counting dictionary); the seam side `hL` is fed at
+level 2 by `anneal_seam_L_transport` (two-point on-line domination). The
+residual between the seam datum (L mod 2) and the required `hL` (L mod 2^{k+1})
+is precisely the (K1)-blindness measured by `deckClass_blind_to_split` —
+boundary data at level 2 cannot separate an on-line double zero from an
+off-line pair. That lift is the remaining dictionary item, typed here as the
+`hL` hypothesis; it is finite-side-checkable per window (the truncation's zeros
+are computable), which is what the instance runs discharge.
+-/
+import GaloisForLFunctions.RHTower.SeamSignTransport
+import GaloisForLFunctions.RHTower.CountingSubstitute
+
+namespace RHTower
+
+open Complex
+
+/-! ### §1 Localized Schwarz-reflection order equivariance -/
+
+/-- Vanishing orders are equivariant under Schwarz reflection, LOCALIZED: only
+analyticity at the two mirror points is needed (drops the entirety hypothesis of
+`analyticOrderAt_conj_conj` — required for the meromorphic completed carrier). -/
+theorem analyticOrderAt_conj_conj_of_analyticAt {f : ℂ → ℂ} {z : ℂ}
+    (hfa : AnalyticAt ℂ f z)
+    (hFa : AnalyticAt ℂ (fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w)))
+      ((starRingEnd ℂ) z)) :
+    analyticOrderAt (fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w))) ((starRingEnd ℂ) z)
+      = analyticOrderAt f z := by
+  set F : ℂ → ℂ := fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w)) with hFdef
+  have hten : Filter.Tendsto (⇑(starRingEnd ℂ)) (nhds ((starRingEnd ℂ) z)) (nhds z) := by
+    have h := Complex.continuous_conj.tendsto ((starRingEnd ℂ) z)
+    rwa [Complex.conj_conj] at h
+  rcases eq_or_ne (analyticOrderAt f z) ⊤ with htop | hne
+  · rw [htop, analyticOrderAt_eq_top]
+    rw [analyticOrderAt_eq_top] at htop
+    filter_upwards [hten.eventually htop] with w hw
+    simp only [hFdef, hw, map_zero]
+  · set n := (analyticOrderAt f z).toNat with hndef
+    have hcoe : (n : ℕ∞) = analyticOrderAt f z := ENat.coe_toNat hne
+    obtain ⟨p, hp, hpz, hev⟩ := (hfa.analyticOrderAt_eq_natCast).mp hcoe.symm
+    set P : ℂ → ℂ := fun w => (starRingEnd ℂ) (p ((starRingEnd ℂ) w)) with hPdef
+    have hPa : AnalyticAt ℂ P ((starRingEnd ℂ) z) := by
+      have hpd : ∀ᶠ w in nhds z, DifferentiableAt ℂ p w :=
+        hp.eventually_analyticAt.mono fun w hw => hw.differentiableAt
+      have hPd : ∀ᶠ w in nhds ((starRingEnd ℂ) z), DifferentiableAt ℂ P w := by
+        filter_upwards [hten.eventually hpd] with w hw
+        have h := hw.conj_conj
+        rw [Complex.conj_conj] at h
+        exact h
+      exact Complex.analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt
+        (hPd.filter_mono nhdsWithin_le_nhds) hPd.self_of_nhds.continuousAt
+    have hPz : P ((starRingEnd ℂ) z) ≠ 0 := by
+      simp only [hPdef, Complex.conj_conj]
+      exact fun h => hpz (by rwa [map_eq_zero] at h)
+    have hevF : ∀ᶠ w in nhds ((starRingEnd ℂ) z),
+        F w = (w - (starRingEnd ℂ) z) ^ n • P w := by
+      filter_upwards [hten.eventually hev] with w hw
+      simp only [hFdef, hPdef, smul_eq_mul]
+      rw [hw]
+      simp only [smul_eq_mul, map_mul, map_pow, map_sub, Complex.conj_conj]
+    exact ((hFa.analyticOrderAt_eq_natCast).mpr ⟨P, hPa, hPz, hevF⟩).trans hcoe
+
+/-- Order equivariance under conjugation for conj-equivariant carriers, from
+analyticity at the two mirror points only. -/
+theorem analyticOrderAt_conj_of_conjEquivariant {f : ℂ → ℂ} {z : ℂ}
+    (hconj : ∀ s, f ((starRingEnd ℂ) s) = (starRingEnd ℂ) (f s))
+    (hfa : AnalyticAt ℂ f z) (hfa' : AnalyticAt ℂ f ((starRingEnd ℂ) z)) :
+    analyticOrderAt f ((starRingEnd ℂ) z) = analyticOrderAt f z := by
+  have hfun : (fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w))) = f := by
+    funext w
+    rw [hconj, Complex.conj_conj]
+  have h := analyticOrderAt_conj_conj_of_analyticAt hfa (by rw [hfun]; exact hfa')
+  rwa [hfun] at h
+
+/-! ### §2 The completed carrier: analyticity and full line-reflection equivariance -/
+
+/-- The completed carrier is analytic on the open strip. -/
+theorem completedGN_analyticAt {N : ℕ} {z : ℂ} (h0 : 0 < z.re) (h1 : z.re < 1) :
+    AnalyticAt ℂ (completedGN N) z := by
+  have hG : Gammaℝ z ≠ 0 := Gammaℝ_ne_zero_of_re_pos h0
+  have hG1 : Gammaℝ (1 - z) ≠ 0 :=
+    Gammaℝ_ne_zero_of_re_pos (by simp only [Complex.sub_re, Complex.one_re]; linarith)
+  have hpoly : AnalyticAt ℂ (fun s : ℂ => s * (s - 1) / 2) z := by fun_prop
+  have harch : AnalyticAt ℂ archFactor z := by
+    have h := hpoly.mul (Gammaℝ_analyticAt hG)
+    exact h
+  exact harch.mul (gN_analyticAt hG1)
+
+/-- Reality pairing of orders for the completed carrier on the strip. -/
+theorem completedGN_orderAt_conj {N : ℕ} {z : ℂ} (h0 : 0 < z.re) (h1 : z.re < 1) :
+    analyticOrderAt (completedGN N) ((starRingEnd ℂ) z)
+      = analyticOrderAt (completedGN N) z :=
+  analyticOrderAt_conj_of_conjEquivariant (completedGN_conj N)
+    (completedGN_analyticAt h0 h1)
+    (completedGN_analyticAt (by rwa [Complex.conj_re]) (by rwa [Complex.conj_re]))
+
+/-- FULL line-reflection order equivariance for the completed carrier on the strip:
+the multiplicity structure the window identity (ID) consumes on the finite side. -/
+theorem completedGN_orderAt_lineReflect {N : ℕ} {z : ℂ} (h0 : 0 < z.re) (h1 : z.re < 1) :
+    analyticOrderAt (completedGN N) (lineReflect z)
+      = analyticOrderAt (completedGN N) z := by
+  have hc0 : 0 < ((starRingEnd ℂ) z).re := by rwa [Complex.conj_re]
+  have hc1 : ((starRingEnd ℂ) z).re < 1 := by rwa [Complex.conj_re]
+  rw [show lineReflect z = 1 - (starRingEnd ℂ) z from rfl,
+    completedGN_orderAt_one_sub hc0 hc1, completedGN_orderAt_conj h0 h1]
+
+/-- Line-reflection order equivariance for ξ (named; the inline chain of
+`xi_window_relation_of_ladder`). -/
+theorem xi_orderAt_lineReflect (z : ℂ) :
+    analyticOrderAt xi (lineReflect z) = analyticOrderAt xi z := by
+  simp only [lineReflect]
+  rw [xi_orderAt_one_sub, xi_orderAt_conj]
+
+/-! ### §3 The arithmetic core of the reduction -/
+
+/-- **The window-parity transport, arithmetic core** (doc 22 §2's conclusion): two
+(ID)s plus the two boundary congruences at level `2^(k+1)` force the right-half
+counts to agree mod `2^k`. -/
+theorem window_N_congruence {k D₁ L₁ N₁ D₂ L₂ N₂ : ℕ}
+    (hID₁ : D₁ = L₁ + 2 * N₁) (hID₂ : D₂ = L₂ + 2 * N₂)
+    (hD : D₁ ≡ D₂ [MOD 2 ^ (k + 1)]) (hL : L₁ ≡ L₂ [MOD 2 ^ (k + 1)]) :
+    N₁ ≡ N₂ [MOD 2 ^ k] := by
+  subst hID₁ hID₂
+  have h2 : 2 * N₁ ≡ 2 * N₂ [MOD 2 ^ (k + 1)] := hL.add_left_cancel hD
+  have hpow : (2 : ℕ) ^ (k + 1) = 2 * 2 ^ k := by
+    rw [pow_succ]
+    ring
+  rw [hpow] at h2
+  unfold Nat.ModEq at h2 ⊢
+  rw [Nat.mul_mod_mul_left, Nat.mul_mod_mul_left] at h2
+  exact Nat.eq_of_mul_eq_mul_left two_pos h2
+
+/-! ### §4 The assembled window-parity transport on the actual carriers -/
+
+/-- **The mod-2^k window-parity transport, assembled** (doc 22 §2 end to end):
+for a reflection-closed ξ-configuration and a reflection-closed strip configuration
+of the concrete completed truncation, the two transported boundary congruences
+(deck side at level 2^{k+1}, seam side at level 2^{k+1}) force
+`N_ξ(W) ≡ N_g(W) (mod 2^k)`. The (ID)s are DERIVED from the carriers' banked
+equivariances, not assumed. -/
+theorem anneal_window_parity_transport {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ}
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hD : ∑ z ∈ t₁, m₁ z ≡ ∑ z ∈ t₂, m₂ z [MOD 2 ^ (k + 1)])
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)]) :
+    ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z
+      ≡ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z [MOD 2 ^ k] := by
+  classical
+  have hmr₁ : ∀ z ∈ t₁, m₁ (lineReflect z) = m₁ z := by
+    intro z hz
+    have h1 := xi_orderAt_lineReflect z
+    have h2 := hm₁ _ (hcl₁ z hz)
+    rw [h1, ← hm₁ z hz] at h2
+    exact Nat.cast_inj.mp h2
+  have hmr₂ : ∀ z ∈ t₂, m₂ (lineReflect z) = m₂ z := by
+    intro z hz
+    obtain ⟨h0, h1⟩ := hstrip z hz
+    have h1eq := completedGN_orderAt_lineReflect (N := N) h0 h1
+    have h2 := hm₂ _ (hcl₂ z hz)
+    rw [h1eq, ← hm₂ z hz] at h2
+    exact Nat.cast_inj.mp h2
+  exact window_N_congruence (window_identity hcl₁ hmr₁) (window_identity hcl₂ hmr₂) hD hL
+
+/-- **The rung reads off the finite side**: under the same transported congruences,
+2^k-divisibility of the truncation's right-half count forces ξ's. -/
+theorem xi_rung_of_finite_side {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ}
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hD : ∑ z ∈ t₁, m₁ z ≡ ∑ z ∈ t₂, m₂ z [MOD 2 ^ (k + 1)])
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])
+    (hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z) :
+    2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z := by
+  have h := anneal_window_parity_transport k hm₁ hcl₁ hstrip hm₂ hcl₂ hD hL
+  exact Nat.modEq_zero_iff_dvd.mp (h.trans (Nat.modEq_zero_iff_dvd.mpr hfin))
+
+/-- **The mod-2 window relation on doubly-dominated strip windows** (k = 1
+headline): boundary congruences at level 4 give `N_ξ(W) ≡ N_g(W) (mod 2)`. -/
+theorem anneal_mod_two_window_relation {N : ℕ}
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ}
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hD : ∑ z ∈ t₁, m₁ z ≡ ∑ z ∈ t₂, m₂ z [MOD 4])
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 4]) :
+    ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z
+      ≡ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z [MOD 2] := by
+  have h4 : (4 : ℕ) = 2 ^ (1 + 1) := by norm_num
+  have h2 : (2 : ℕ) = 2 ^ 1 := by norm_num
+  rw [h4] at hD hL
+  rw [h2]
+  exact anneal_window_parity_transport 1 hm₁ hcl₁ hstrip hm₂ hcl₂ hD hL
+
+end RHTower
+
+namespace RHTower
+
+open Metric
+
+/-- **The D-transport, discharged at the counting level** (executable (i)): peeled
+factorizations of ξ and the completed truncation on a window ball, zeros in the
+hole, domination on the slit-annulus charts ⟹ the enclosed multiplicity counts are
+EQUAL — not merely congruent. Instantiates `enclosed_count_eq_of_close`
+(the Rouché substitute) on the concrete carriers. -/
+theorem anneal_D_transport {N : ℕ} {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ}
+    {h h' : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖xi z - completedGN N z‖ < ‖completedGN N z‖) :
+    ∑ w ∈ t₁, m₁ w = ∑ w ∈ t₂, m₂ w :=
+  enclosed_count_eq_of_close t₂ t₁ id m₂ id m₁ h0 hrR hρ₂ hρ₁ hh' hh0' hh hh0
+    hfact₂ hfact₁ hdom
+
+/-- **The mod-2 window relation under domination** (doc 22 §2, maximally
+discharged): on a strip window with peeled factorizations of both carriers and
+domination on the slit-annulus charts, the deck-side input hD is PROVED (exact
+count equality); the single remaining analytic input is the seam congruence hL —
+the on-line multiplicity sums mod 4, computable from the finite side's certified
+zero data. Conclusion: `N_ξ(W) ≡ N_g(W) (mod 2)`. -/
+theorem anneal_mod_two_window_relation_of_domination {N : ℕ}
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖xi z - completedGN N z‖ < ‖completedGN N z‖)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 4]) :
+    ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z
+      ≡ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z [MOD 2] := by
+  have hDeq : ∑ w ∈ t₁, m₁ w = ∑ w ∈ t₂, m₂ w :=
+    anneal_D_transport h0 hrR hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hdom
+  exact anneal_mod_two_window_relation hm₁ hcl₁ hstrip hm₂ hcl₂
+    (hDeq ▸ Nat.ModEq.refl _) hL
+
+end RHTower
+
+namespace RHTower
+
+open Metric
+
+/-- **General window-parity transport under domination.** The domination/counting
+substitute proves the deck-side congruence exactly, so every `2^k` rung only
+keeps the seam congruence as an input. -/
+theorem anneal_window_parity_transport_of_domination {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖xi z - completedGN N z‖ < ‖completedGN N z‖)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)]) :
+    ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z
+      ≡ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z [MOD 2 ^ k] := by
+  have hDeq : ∑ w ∈ t₁, m₁ w = ∑ w ∈ t₂, m₂ w :=
+    anneal_D_transport h0 hrR hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hdom
+  exact anneal_window_parity_transport k hm₁ hcl₁ hstrip hm₂ hcl₂
+    (hDeq ▸ Nat.ModEq.refl _) hL
+
+end RHTower

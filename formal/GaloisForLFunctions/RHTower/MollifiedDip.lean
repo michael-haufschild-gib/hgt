@@ -154,3 +154,40 @@ theorem sliverCount_le_of_kernel {E : Set ℝ} (hE : MeasurableSet E)
   rwa [ENNReal.toReal_ofReal (by positivity)] at h4
 
 end RHTower
+
+namespace RHTower
+
+open MeasureTheory Set
+
+/-- **Average-to-count endpoint (doc 56 §§2,4).** If every separated center has
+the path-average bound from the dip lemma, and the resulting sublevel set has
+the kernel measure bound, then the sliver count follows. This removes the
+intermediate per-center `hdip` package from downstream consumers. -/
+theorem sliverCount_le_of_average_kernel
+    {h B2 L2 C r U : ℝ} (hh : 0 < h) (hpos : 0 < B2 + 2 * h * L2)
+    (hCU : 0 ≤ C * r ^ 2 * U)
+    {f : ℝ → ℝ} (hf : Continuous f) (hnn : ∀ t, 0 ≤ f t) (S : Finset ℝ)
+    (hsep : (↑S : Set ℝ).Pairwise fun x y => 3 * h ≤ |x - y|)
+    (havg : ∀ γ ∈ S,
+      ∫ t in Icc (γ - h) (γ + h), f t ≤ 2 * h * B2 + 4 * h ^ 2 * L2)
+    (hker : volume {t | f t ≤ 2 * (B2 + 2 * h * L2)} ≤ ENNReal.ofReal (C * r ^ 2 * U)) :
+    (S.card : ℝ) * h ≤ C * r ^ 2 * U := by
+  let E : Set ℝ := {t | f t ≤ 2 * (B2 + 2 * h * L2)}
+  have hE : MeasurableSet E := by
+    change MeasurableSet (f ⁻¹' Iic (2 * (B2 + 2 * h * L2)))
+    exact hf.measurable measurableSet_Iic
+  have hdip : ∀ γ ∈ S, ENNReal.ofReal h ≤ volume (E ∩ Icc (γ - h) (γ + h)) := by
+    intro γ hγ
+    have hmeasure := dip_measure_lower hh hpos hf hnn (havg γ hγ)
+    have hset : {t ∈ Icc (γ - h) (γ + h) | f t ≤ 2 * (B2 + 2 * h * L2)}
+        = E ∩ Icc (γ - h) (γ + h) := by
+      ext t
+      constructor
+      · intro ht
+        exact ⟨ht.2, ht.1⟩
+      · intro ht
+        exact ⟨ht.2, ht.1⟩
+    rwa [hset] at hmeasure
+  exact sliverCount_le_of_kernel hE hh hCU S hsep hdip hker
+
+end RHTower

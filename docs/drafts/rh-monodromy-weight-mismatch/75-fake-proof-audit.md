@@ -11,8 +11,8 @@ verdict is at §5; it is neither "route sound" nor "route dead".
 |---|---|---|
 | 1 | RH ⟺ ∀k RHLadder(k) | **Lean** ✓ |
 | 2 | RH_{2^k} ⟺ (WR_k): D(W) ≡ L(W) mod 2^{k+1} | elementary ✓ (doc 18) |
-| 3 | D-transport under domination (Rouché) | banked ✓ |
-| 4 | **L-transport (seam side)** | **WIRING GAP** — doc 22 §2's named piece, untouched 15+ cycles; classical-shaped (sign-matching on dominated segments) but load-bearing |
+| 3 | D-transport under domination (Rouché) | **Lean** ✓ — `seam_transport_ladder`; on the concrete carrier `anneal_deck_transport` (ZetaCarrier.lean), analytic residues typed as `AFEAccurateOn`/`CarrierFloorOn` |
+| 4 | **L-transport (seam side)** | **Lean** ✓ (2026-07-04, `SeamSignTransport.lean`) — k=1 seam datum = (K1) sign product; transports under domination at the TWO on-line basepoints alone; capstone `anneal_seam_L_transport` on the concrete `completedGN` (doc 22 §8) |
 | 5 | Self-domination replaces ζ-domination (E(T) explicit) | ✓ (doc 43 §1 + doc 71's numeric R–S) |
 | 6 | Shallow odd pairs (η ≤ η₀ ~ T^{−1/8}) self-exclude via their own moat | lemma-shape ✓ (doc 43 §2) — but note: self-exclusion means UNREADABLE, not refuted; the RS tower shrinks η₀, it does not kill the band |
 | 7 | Very deep pairs (η ≥ η₁ = O(1)) excluded absolutely | ✓-sketch (leading-coefficient first-moment bound; works for D–H too, consistently — D–H's zeros live below η₁) |
@@ -21,6 +21,15 @@ verdict is at §5; it is neither "route sound" nor "route dead".
 | 10 | Cofinality (C1/C2) | ✓-sketch (docs 59 corr., 70 §3) |
 | 11 | **The contradiction step** | **THE LIE IS HERE — §2** |
 | 12 | k ≥ 2 rungs ((HANK-fin)) | untouched |
+
+*(Table updated 2026-07-04: links 3–4 upgraded — the carrier is now CONCRETE in Lean
+(ZetaCarrier.lean: `gN`/`completedGN`, exact FEs, order equivariances, domination
+cancellation) and BOTH window-relation transports are machine-checked on it; link 4's
+15-cycle wiring gap is closed, discharging §5's executable (3). The (ID)-assembly of
+links 2+3+4 is ALSO banked (`AnnealWindowRelation.lean`: `anneal_mod_two_window_relation`,
+N_ξ ≡ N_g mod 2 from level-4 boundary congruences, (ID)s derived not assumed; the hL
+mod-4 lift is finite-side-computable, NOT boundary-transportable — `deckClass_blind_to_split`);
+§2's (XLD) core and links 8/9/12 are unaffected.)*
 
 ## 2. The located lie: density cannot kill a single zero — and the mechanism that could is not banked
 

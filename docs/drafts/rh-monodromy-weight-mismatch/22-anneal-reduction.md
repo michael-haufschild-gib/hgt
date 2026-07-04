@@ -149,3 +149,64 @@ explicit remainder as a formalized theorem (classical-shaped, months-grade — k
 doc 32 §7 minimum-modulus argument, killing `CarrierFloorOn` off exceptional discs).
 Next generative object: (i) on the #136 window — the first end-to-end machine-checked
 window-parity transfer on the actual ζ.
+
+## 8. §2's named wiring gap CLOSED: the seam-side L-transport in Lean (2026-07-04)
+
+The last unformalized clause of §2 — "the seam-side transport (the L-invariant under
+domination on slit-adjacent charts — the one unproven wiring piece, same shape as
+#131's dictionary)" — is banked as `SeamSignTransport.lean` (12 declarations,
+axiom-clean, lint green). It lands in exactly #131's shape: the k = 1 seam datum IS
+the (K1) sign product at the two on-line basepoints, and the transport is the
+one-line fact that domination at a REAL value forces equal sign.
+
+- Atomic: `re_pos_iff_of_dominated` (‖a−b‖<‖b‖ at real values ⟹ same sign);
+  domination also forces nonvanishing of both carriers at the point.
+- `sign_product_eq_of_dominated`: the seam product transports on TWO POINTS of
+  domination — not chart-wide, not homotopy; the dictionary carries it.
+- (K1) generalized off ξ: `deckClass_eq_sign_product_of_realFE` for any carrier with
+  the real FE on the mirrored chart (localized `mirrorRoot_pow_of_mem` — needed
+  because `completedGN`'s real FE is strip-local, proved as `completedGN_lineReflect`).
+- **Capstone `anneal_seam_L_transport`**: on a strip chart, deckClass(ξ-roots) =
+  deckClass(Φ̃_N-roots) at k = 1, given domination at only the two on-line basepoints.
+
+Both §2 transports now machine-checked on the concrete objects: D-side
+(`seam_transport_ladder`, chart-wide domination, all levels 2^k) and L-side
+(`anneal_seam_L_transport`, two-point domination, the k = 1 seam reading). The (ID)
+consumes exactly these two invariants; its finite-side order-equivariance inputs are
+banked (`completedGN_orderAt_one_sub`). Next generative object: the mod-2 window
+relation ASSEMBLED — compose D-transport + L-transport + (ID) on both carriers into
+the single Lean statement N_ξ(W) ≡ N_g(W) (mod 2) on doubly-dominated strip windows;
+then the #136-window instance run discharges its interfaces numerically.
+
+## 9. §2 ASSEMBLED: the mod-2^k window relation as one Lean statement (2026-07-04)
+
+`AnnealWindowRelation.lean` (10 declarations, axiom-clean — the arithmetic core
+`window_N_congruence` needs only [propext]) composes everything §2 promised:
+
+- **Localized Schwarz order equivariance** (`analyticOrderAt_conj_conj_of_analyticAt`):
+  entirety dropped from the Reflection.lean engine — the meromorphic completed carrier
+  now has the FULL line-reflection multiplicity package on the strip
+  (`completedGN_orderAt_lineReflect`), i.e. the last (ID) input on the finite side.
+- **`anneal_window_parity_transport`** (general k): for reflection-closed
+  configurations of ξ and completedGN on a strip window, the two boundary congruences
+  D_ξ ≡ D_g and L_ξ ≡ L_g (mod 2^{k+1}) force N_ξ ≡ N_g (mod 2^k). The (ID)s are
+  derived inside from the carriers' banked equivariances, not assumed.
+- **`xi_rung_of_finite_side`**: 2^k ∣ N_g ⟹ 2^k ∣ N_ξ — the reduction payoff: the
+  rung is read off the computable finite side.
+- **`anneal_mod_two_window_relation`** (k = 1 headline): level-4 boundary congruences
+  ⟹ N_ξ(W) ≡ N_g(W) (mod 2).
+
+Input provenance (the "doubly-dominated" reading): hD ← chart-wide domination via
+`anneal_deck_transport` + the level-2^{k+1} deck↔counting dictionary; hL ← at level 2
+via `anneal_seam_L_transport` (two-point domination). The gap between the seam datum
+(L mod 2) and hL (L mod 4 at k = 1) is exactly the (K1)-blindness
+(`deckClass_blind_to_split`): level-2 boundary data cannot separate an on-line double
+zero from an off-line pair — so the mod-4 lift is NOT a transport statement and must
+come from the finite side, where it is computable per window (the truncation's zeros
+are certifiable objects; #136-style instance runs discharge hL directly as a
+configuration congruence). This re-types the remaining work: not more boundary
+dictionary, but per-window certified zero data of g_N. Next generative objects:
+(i) the deck↔counting dictionary write-out that discharges hD from
+`anneal_deck_transport` (level-4 deck class ⟹ D mod 4); (ii) the #136-window
+instance run producing certified t₂/m₂ data — the first fully machine-checked
+N_ξ ≡ N_g (mod 2) on a real window of ζ.

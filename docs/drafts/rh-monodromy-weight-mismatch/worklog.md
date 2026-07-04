@@ -2274,3 +2274,95 @@ on the two interfaces. Doc 22 §7 appended with the discharge routes (interval
 instances / Gabcke remainder / Jensen+Cartan — mathlib now HAS JensenFormula.lean).
 Key trick: Γ_ℝ analyticity off zeros via inv_inv of the ENTIRE reciprocal
 differentiable_Gammaℝ_inv — no half-plane plumbing.
+
+## 2026-07-04 — SeamSignTransport.lean: doc 22 §2's L-transport gap closed (#143)
+
+The seam-side L-transport (doc 22 §2's "one unproven wiring piece") formalized:
+`formal/GaloisForLFunctions/RHTower/SeamSignTransport.lean` — 12 declarations,
+axiom-clean, ✔ 8569 jobs, lint green, umbrella wired. Shape: (K1) sign-product
+dictionary + the atomic fact that domination at a real value forces equal sign ⟹
+the k=1 seam datum transports on TWO POINTS of domination (no homotopy). Includes
+the generic (K1) `deckClass_eq_sign_product_of_realFE` (real FE localized to the
+mirrored chart — what completedGN's strip-only FE supplies via
+completedGN_lineReflect) and capstone `anneal_seam_L_transport` (deckClass of ξ's
+k=1 roots = completedGN's under two-point on-line domination). Doc 22 §8 appended.
+Next: assemble the mod-2 window relation (D-transport + L-transport + (ID)×2) into
+one statement; then the #136 instance run.
+
+## 2026-07-04 — AnnealWindowRelation.lean: the mod-2^k window relation assembled (#165)
+
+Composed D-transport + L-transport + (ID)×2 into single statements:
+`formal/GaloisForLFunctions/RHTower/AnnealWindowRelation.lean` — 10 declarations,
+axiom-clean (window_N_congruence: [propext] only), ✔ 8570 jobs, lint green, umbrella
+wired. New engine piece: analyticOrderAt_conj_conj_of_analyticAt (Schwarz order
+equivariance localized, entirety dropped) ⟹ completedGN_orderAt_lineReflect — the
+finite carrier's full (ID) multiplicity package on the strip. Capstones:
+anneal_window_parity_transport (D,L congruences mod 2^{k+1} ⟹ N congruence mod 2^k;
+(ID)s derived, not assumed), xi_rung_of_finite_side (2^k ∣ N_g ⟹ 2^k ∣ N_ξ),
+anneal_mod_two_window_relation (k=1: mod-4 inputs ⟹ N_ξ ≡ N_g mod 2). Honesty note
+banked in doc 22 §9: the hL mod-4 lift is NOT transportable from level-2 boundary
+data (deckClass_blind_to_split) — it is finite-side-computable per window instead.
+Next: deck↔counting dictionary discharge of hD; #136 instance run for certified
+t₂/m₂.
+
+## Cycle 42 (2026-07-04) — (H1) verified against the ledger; (XLD)₂ probed; the RELAY finding (doc 76, task #22)
+
+(1) (H1) READ AND SETTLED (doc 76 §1): the cascade ledger IS cross-level at
+fixed height (CascadeBirth.time = tower level; futurePushes = drop time,
+SweepCascade.lean:169) — doc 75's fear fails. But J-level forced presence =
+ONE walker (budget consumed once), so doc 75 §2's J-fold-budget mechanism is
+wrong-shaped. The exact gap: SlipWindow is STATIC (MidCentral.lean:32); all
+proven kills fire only on ¬SlipWindow; in-window births are immortal in the
+formal ledger. The missing kill exists at proof shape: slip identity (doc 51
+§9a) makes the window sub-entry (k* = 0.194 < 1). Ledger upgrade typed:
+dynamic slip + relay graph. (2) RELAY RE-CUT (doc 76 §2): a ζ-pair crossing
+the domination window must be a chain of ~δN^{1/6} re-creations pinned at one
+height — (XLD) localizes to consecutive-level RE-CREATION, one explicit
+increment. (3) (XLD)₂ stated + pre-registered P-X1..P-X5, THEN probed
+(probe_xld_zeta.py + probe_xld_dh.py, runpod, archived mwm_xld/). ζ: median
+lifetime 2 at all N ∈ {63,126,398,1261}; survival/null = 0.94–1.02 (P-X2
+strong pass); p95 flat ~21–27, α ≈ −0.09 (P-X5 pass, no window-filling). D–H
+self-certified (κ = 0.2840790438 recovered from FE in-script; 83 off-line
+zeros findroot-certified): run median 18 (censored at 31), covers matched
+81%, cond persistence 0.950 (P-X3/P-X4 pass). THE FINDING: the relay channel
+— deaths re-create at same height at 0.46–0.56 vs 0.004–0.025 chance (18×
+→128×, growing ~N^{0.6}); deaths are 100% absorption. So naive
+creation-set-independence is FALSE for ζ; what holds is SUB-CRITICALITY
+(geometric relay chains, N-uniform) vs D–H SUPER-critical (window-covering).
+(XLD) restated as a relay-criticality statement — the correct quantitative
+open core. Two-channel attack surface: survival channel = phase-null
+(provable via log-lattice discrepancy, no zero-density); re-creation rate ~½
+(frozen-lattice geometry, doc 51 §2–3). Task #8 (EPH) = the chain-length
+object, now with measured targets. Parallel session closed force item (3)
+(SeamSignTransport.lean + AnnealWindowRelation.lean — chain link 4 banked).
+Next: two-level relay-rate derivation from the frozen lattice; log-lattice
+discrepancy for the survival channel; relay-ledger Lean upgrade.
+
+## 2026-07-04 — hD DISCHARGED + doc 76 + #136 instance run (#166)
+
+(i) Deck-side input eliminated: `anneal_D_transport` instantiates the banked Rouché
+substitute (enclosed_count_eq_of_close, #128) on ξ vs completedGN — EXACT count
+equality under slit-annulus domination, subsuming D mod 2^{k+1} for every k. New
+capstone `anneal_mod_two_window_relation_of_domination` (AnnealWindowRelation.lean,
+axiom-clean, lint green): strip window + peeled factorizations + domination + hL
+(mod 4) ⟹ N_ξ ≡ N_g (mod 2). Remaining analytic inputs: certified zero data +
+domination + hL only. (ii) Doc 76 banked (seam mod-4 blindness = structural, not a
+missing lemma; work re-types to per-window certified finite-side data). (iii)
+window_instance_136.py (pre-registered P-W0..P-W4): first run — window A PASSES the
+contrapositive test: off-line pair confirmed (rel. residual 1e-60), D₁=0≠D₂=2, and
+domination fails q_max=9.76 at the inner circle toward the pair (the doc 22 §3
+exceptional mechanism, measured); window B rerunning after a scale-vacuous assert
+fix (completed-scale |Φ| ~ 1e-70 at t≈221 — residual/simplicity now at raw scale).
+
+## 2026-07-04 — #136 instance run COMPLETE (all verdicts in; doc 76 §4)
+
+P-W0/P-W1/P-W2/P-W3 all PASS (P-W2 re-scoped to zero-free control, recorded as
+finding). Sharp datum: displacement map shows the #136 off-line pair = merger of
+the two flanking on-line slots (220.715, 221.431 both root-find to the same pair
+member; L differs by exactly 2) — the (K1)-blind move instantiated on real data;
+219.068's partner is ON-line at 218.9988. Window B: q_max = 0.287, first
+end-to-end positive instance of anneal_mod_two_window_relation_of_domination.
+Matched-pair windows don't exist at N=5/t≈221 (displacements 0.07–0.36) —
+instrument-level confirmation of the doc 32 §6 exponential-family switch.
+Archived: computations/mwm/window_instance_136.{py,out}. Next: Jerby-family
+instance; interval hardening of the reader.

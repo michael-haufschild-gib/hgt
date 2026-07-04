@@ -330,3 +330,70 @@ theorem sq_tail_bound_of_moment (μ : Measure ℝ) (f : ℝ → ℝ) (a M : ℝ)
   (sq_tail_bound μ f a hf).trans hM
 
 end RHTower
+
+namespace RHTower
+
+open MeasureTheory Set
+
+/-- **Width-refined average-to-count endpoint.** Per-center average dips land in the
+thick part of the sublevel set; if that sublevel set is contained in a tail part
+`A` plus a thin floor `B`, the floor-exclusion estimate prices the count by the
+tail kernel alone. -/
+theorem thickSliverCount_le_of_average_floor_kernel
+    {h B2 L2 β C r U : ℝ} (hh : 0 < h) (hpos : 0 < B2 + 2 * h * L2)
+    (hβ0 : 0 ≤ β) (hβ1 : β < 1) (hCU : 0 ≤ C * r ^ 2 * U)
+    {f : ℝ → ℝ} (hf : Continuous f) (hnn : ∀ t, 0 ≤ f t) (S : Finset ℝ)
+    (hsep : (↑S : Set ℝ).Pairwise fun x y => 3 * h ≤ |x - y|)
+    (havg : ∀ γ ∈ S,
+      ∫ t in Icc (γ - h) (γ + h), f t ≤ 2 * h * B2 + 4 * h ^ 2 * L2)
+    {A B : Set ℝ} (hA : MeasurableSet A)
+    (hsub : {t | f t ≤ 2 * (B2 + 2 * h * L2)} ⊆ A ∪ B)
+    (hB : ∀ t : ℝ, volume (B ∩ Icc (t - 2 * h) (t + 2 * h))
+      ≤ ENNReal.ofReal (β * h))
+    (hker : volume A ≤ ENNReal.ofReal (C * r ^ 2 * U)) :
+    (S.card : ℝ) * h ≤ (4 / (1 - β)) * (C * r ^ 2 * U) := by
+  let E : Set ℝ := {t | f t ≤ 2 * (B2 + 2 * h * L2)}
+  have hcost_nonneg : 0 ≤ 4 / (1 - β) := by positivity
+  have hdip : ∀ γ ∈ S, ENNReal.ofReal h ≤ volume (E ∩ Icc (γ - h) (γ + h)) := by
+    intro γ hγ
+    have hmeasure := dip_measure_lower hh hpos hf hnn (havg γ hγ)
+    have hset : {t ∈ Icc (γ - h) (γ + h) | f t ≤ 2 * (B2 + 2 * h * L2)}
+        = E ∩ Icc (γ - h) (γ + h) := by
+      ext t
+      constructor
+      · intro ht
+        exact ⟨ht.2, ht.1⟩
+      · intro ht
+        exact ⟨ht.2, ht.1⟩
+    rwa [hset] at hmeasure
+  have hcount := thick_dips_count_le (E := E) hh S hsep hdip
+  have hmono_thick : E ∩ thickPart E h ⊆ (A ∪ B) ∩ thickPart (A ∪ B) h := by
+    intro t ht
+    refine ⟨hsub ht.1, ?_⟩
+    dsimp [thickPart] at ht ⊢
+    refine ht.2.trans (measure_mono ?_)
+    intro u hu
+    exact ⟨hsub hu.1, hu.2⟩
+  have hcount_tail : (S.card : ENNReal) * ENNReal.ofReal h
+      ≤ volume (thickPart (A ∪ B) h) := by
+    exact hcount.trans ((measure_mono hmono_thick).trans (measure_mono inter_subset_right))
+  have hfloor := thickPart_union_measure_le' hA hh hβ0 hβ1 hB
+  have htail : (S.card : ENNReal) * ENNReal.ofReal h
+      ≤ ENNReal.ofReal (4 / (1 - β)) * volume A := hcount_tail.trans hfloor
+  have hbound : (S.card : ENNReal) * ENNReal.ofReal h
+      ≤ ENNReal.ofReal (4 / (1 - β)) * ENNReal.ofReal (C * r ^ 2 * U) :=
+    htail.trans (mul_le_mul_right hker _)
+  have hleft : ENNReal.ofReal ((S.card : ℝ) * h)
+      = (S.card : ENNReal) * ENNReal.ofReal h := by
+    rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_natCast]
+  have hright : ENNReal.ofReal ((4 / (1 - β)) * (C * r ^ 2 * U))
+      = ENNReal.ofReal (4 / (1 - β)) * ENNReal.ofReal (C * r ^ 2 * U) := by
+    rw [ENNReal.ofReal_mul hcost_nonneg]
+  have hofReal : ENNReal.ofReal ((S.card : ℝ) * h)
+      ≤ ENNReal.ofReal ((4 / (1 - β)) * (C * r ^ 2 * U)) := by
+    rw [hleft, hright]
+    exact hbound
+  have hreal := ENNReal.toReal_le_of_le_ofReal (mul_nonneg hcost_nonneg hCU) hofReal
+  rwa [ENNReal.toReal_ofReal (by positivity)] at hreal
+
+end RHTower
