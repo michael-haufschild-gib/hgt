@@ -12,6 +12,7 @@ Weyl/Besicovitch regularity because a gaussian-null bump h can plant a lone off-
 into an FE-symmetric base. The lemma is generic and reusable for any such surgery.
 -/
 import Mathlib
+import GaloisForLFunctions.RHTower.RiemannTower
 
 namespace RHTower
 
@@ -23,7 +24,7 @@ theorem exists_zero_of_sphere_domination {g h : ℂ → ℂ} {s₀ : ℂ} {r : �
     (hdom : ∀ z ∈ Metric.sphere s₀ r, 3 * ‖g z‖ ≤ ‖h z‖) :
     ∃ z ∈ Metric.closedBall s₀ r, g z + h z = 0 := by
   by_contra hno
-  push_neg at hno
+  push Not at hno
   have hne : ∀ z ∈ Metric.closedBall s₀ r, g z + h z ≠ 0 := hno
   have hgc : ContinuousOn g (Metric.closedBall s₀ r) := by
     have := hg.continuousOn; rwa [closure_ball s₀ hr.ne'] at this
@@ -62,5 +63,49 @@ theorem exists_zero_of_sphere_domination {g h : ℂ → ℂ} {s₀ : ℂ} {r : �
     rw [hcenter, add_zero, div_self hg0]
   simp only [hone] at hcen
   norm_num at hcen
+
+end RHTower
+
+namespace RHTower
+
+/-- A sphere-domination zero planted inside the right half-plane contradicts RH
+when the perturbed carrier is ξ on the closed ball. -/
+theorem not_riemannHypothesis_of_sphere_domination_right {g h : ℂ → ℂ} {s₀ : ℂ} {r : ℝ}
+    (hr : 0 < r)
+    (hball : Metric.closedBall s₀ r ⊆ rightHalf)
+    (hg : DiffContOnCl ℂ g (Metric.ball s₀ r))
+    (hh : DiffContOnCl ℂ h (Metric.ball s₀ r))
+    (hcenter : h s₀ = 0) (hg0 : g s₀ ≠ 0)
+    (hdom : ∀ z ∈ Metric.sphere s₀ r, 3 * ‖g z‖ ≤ ‖h z‖)
+    (hxi : ∀ z ∈ Metric.closedBall s₀ r, xi z = g z + h z) :
+    ¬ RiemannHypothesis := by
+  intro hRH
+  obtain ⟨z, hz, hzero⟩ := exists_zero_of_sphere_domination hr hg hh hcenter hg0 hdom
+  exact (rh_iff_xi_ne_zero_right.mp hRH z (hball hz)) (by rw [hxi z hz, hzero])
+
+end RHTower
+
+namespace RHTower
+
+/-- A sphere-domination zero planted in a ball whose radius is smaller than the
+right-half margin of its center contradicts RH. -/
+theorem not_riemannHypothesis_of_sphere_domination_center_margin {g h : ℂ → ℂ}
+    {s₀ : ℂ} {r : ℝ}
+    (hr : 0 < r)
+    (hmargin : 1 / 2 + r < s₀.re)
+    (hg : DiffContOnCl ℂ g (Metric.ball s₀ r))
+    (hh : DiffContOnCl ℂ h (Metric.ball s₀ r))
+    (hcenter : h s₀ = 0) (hg0 : g s₀ ≠ 0)
+    (hdom : ∀ z ∈ Metric.sphere s₀ r, 3 * ‖g z‖ ≤ ‖h z‖)
+    (hxi : ∀ z ∈ Metric.closedBall s₀ r, xi z = g z + h z) :
+    ¬ RiemannHypothesis := by
+  refine not_riemannHypothesis_of_sphere_domination_right hr ?_ hg hh hcenter hg0 hdom hxi
+  intro z hz
+  rw [mem_rightHalf]
+  have hzdist : dist z s₀ ≤ r := by simpa [Metric.mem_closedBall] using hz
+  have hznorm : ‖z - s₀‖ ≤ r := by simpa [Complex.dist_eq] using hzdist
+  have hproj : s₀.re ≤ z.re + ‖z - s₀‖ := by
+    simpa [Complex.sub_re] using (abs_le.mp (Complex.abs_re_le_norm (z - s₀))).1
+  linarith
 
 end RHTower

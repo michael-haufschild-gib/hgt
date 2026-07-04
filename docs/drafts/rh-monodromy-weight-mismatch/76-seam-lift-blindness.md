@@ -96,3 +96,51 @@ Jerby-family instance (matched windows should exist and give the first
 NONTRIVIAL positive transfer); (b) interval-arithmetic hardening of the reader
 (sign-change counts and q_max bounds as certified inequalities) so the window
 data can cross into Lean as configuration hypotheses.
+
+## 5. Executables (a)+(b) DONE: nontrivial positive transfer + certified reader
+
+**(a) Symmetrized exponential-family instance [MEASURED — jerby_instance.py, all
+five pre-registered verdicts PASS].** Window at the ζ zero 220.71491883931400337
+(the slot whose g₅ partner went off-line), r₀ = 0.15, R = 0.30. Carrier
+Φ* = symmetrize(arch·Z) per the Lean `symmetrize`:
+
+- P-J0 PASS with a FLAG: the Euler–Maclaurin family (M=500, J=20) validates at
+  max|ζ−Z| = 5.7e−49; the doc 32 §7 Jerby transcription at y = 1 reaches only
+  1.2e−3 — NOT exponential-grade at t ≈ 221. Family-agnostic architecture
+  unaffected (E–M is finite, Schwarz-real, elementary); but the y=1 reading of
+  the Jerby formula goes on the doc 32 §8 promotion-grade re-read list (possible
+  causes: transcription incomplete, y=1 outside the regime, larger y needed).
+- P-J1/P-J2 PASS: Φ* has EXACTLY ONE on-line zero in the ball, displacement
+  1e−50 from the ζ zero (vs 0.36 for g₅); Newton stays on-line (off-line
+  component 1.5e−67). The exponential family's matched windows EXIST, as doc 32
+  §6 predicted.
+- P-J3 PASS: domination q_max = 3.8e−49 — forty-three orders inside the premise.
+- **P-J4 PASS: the first NONTRIVIAL positive transfer.** D₁ = D₂ = 1,
+  L₁ = L₂ = 1, N₁ = N₂ = 0: every hypothesis of
+  `anneal_mod_two_window_relation_of_domination` holds with measured values on
+  a window with actual zero content, and the mod-2 relation transfers.
+
+**(b) Certified reader [RIGOROUS — certified_reader.py, python-flint/ARB ball
+arithmetic, dps 40; certificate JSON archived].** ALL CERTIFIED:
+
+- C1/C2: ζ and g₅ have NO zeros in the closed ball(1/2+220i, 0.30) — box
+  coverings (777 boxes each), certified lower bounds |ζ| ≥ 0.1038, |g₅| ≥ 0.5325.
+- C3: |ζ−g₅| < |g₅| on the closed annulus [0.15, 0.30] — adaptive covering
+  (3448 boxes; ARB's ζ enclosure radius ≈ 33× box half-side at t≈220 forces
+  bisection), certified min margin 1.01e−3. Via the machine-checked
+  `completed_domination_iff` this IS the completed-level hdom pointwise.
+- C4: interval-Newton certificate for the #136 pair: N(X) ⊂ X on the 1e−8 box
+  (offsets 4e−31, 1.2e−28) with g₅′ ≠ 0 on X — EXACTLY ONE SIMPLE zero: the
+  first certified t₂/m₂ configuration entry (box, multiplicity 1).
+- C5: certified domination-failure witness on window A (lower|ζ−g₅| = 0.2388 >
+  upper|g₅| = 0.0245 at a+0.16) — the exceptional mechanism, now rigorous.
+
+Every numerical hypothesis of the Lean capstone is now certifiable by rigorous
+ball arithmetic; the zero-free window B instance is certified END TO END
+(t₁ = t₂ = ∅, hL trivial, hdom via C3 + the banked bridge). What this opens:
+the certificate→Lean ingestion step — a `Prop`-level window-certificate
+interface whose fields are exactly C1–C4's outputs (interval bounds as rational
+inequalities), letting a Lean instance consume the JSON data as the
+configuration hypotheses; and the same certified protocol on the E–M carrier's
+window (C3-analogue at q ~ 1e−49 is trivially certifiable) for the nontrivial
+certified transfer.

@@ -2366,3 +2366,86 @@ Matched-pair windows don't exist at N=5/t≈221 (displacements 0.07–0.36) —
 instrument-level confirmation of the doc 32 §6 exponential-family switch.
 Archived: computations/mwm/window_instance_136.{py,out}. Next: Jerby-family
 instance; interval hardening of the reader.
+
+## 2026-07-04 — (a) exponential-family instance + (b) certified reader (#167)
+
+(a) jerby_instance.py: all five pre-registered verdicts PASS — E–M family
+(M=500, J=20) validates at 5.7e−49; Φ* has one on-line zero, displacement 1e−50;
+q_max = 3.8e−49; D=L=1, N=0=0 both carriers: FIRST NONTRIVIAL POSITIVE TRANSFER
+of the assembled mod-2 window relation. FLAG: doc 32 §7 Jerby transcription at
+y=1 reaches only 1.2e−3 → promotion-grade re-read item. (b) certified_reader.py
+(python-flint/ARB, scratchpad venv): ALL CERTIFIED — no-zero coverings (C1/C2),
+adaptive domination covering (C3, min margin 1.0e−3, 3448 boxes; ARB ζ enclosure
+≈33× box half-side ⟹ bisection), interval-Newton #136 pair box (C4: unique
+simple zero, the first certified t₂/m₂ entry), domination-failure witness (C5).
+Certificate JSON archived. Doc 76 §5 records both. Next: Prop-level
+window-certificate interface in Lean to ingest C1–C4 as configuration
+hypotheses.
+
+## Cycle 43 (2026-07-04) — THE RELAY TIER: half-law proved, (SURV-EQ) written out, RelayLedger.lean banked (doc 77, task #23)
+
+(i) TWO-LEVEL RELAY RATE (doc 77 §1): the signed walk IS the banked exact
+zero motion (DepthUpdate both signs); relay criterion = reverse dichotomy in
+the signed coordinate (v₀² < a·cosφ); HALF-LAW proved (one line,
+parameter-free): P₁(x) = arccos(x)/π → ½ — measure of a half-circle, no
+lattice/envelope/height input. Doc 76's 18–128× "alignment" was the wrong
+baseline: the walker persists through the barrier. Null checks
+(mc_relay_null.py, pre-registered P-R1..P-R3, archived mwm_xld/): P-R1 PASS
+(iid 3-step recross 0.550 brackets measured ζ 0.46–0.56 — relay fully
+explained by the signed-walk null); P-R3 PASS to 4 decimals on
+iid/envelope (0.3637 vs 0.3632 — arccos formula exact); P-R2 FAIL
+informative: frozen-lattice null recrosses at 0.805 ≫ iid 0.550 (rotation
+ENHANCES relay; lattice 1-step = 0.5027 = ½ exactly); measured ζ sits on the
+IID side ⟹ real mid-walk is phase-mixed, not frozen. CONSEQUENCE: relay rate
+is O(1) under every null ⟹ (XLD) sub-criticality must be a CHAIN-tail
+statement; named (CHAIN-geo): geometric chain tail from slip growth
+(2π(iΔ)² detuning per relay) + rotation_dip — inputs banked, D–H escapes via
+pinned increments. (ii) (SURV-EQ) (doc 77 §3): survival channel = two APs of
+step 4p displaced ½ (from doc 49 §2 proved lattice); Koksma (BV ≤ 4) ⟹
+|window-avg survival − null| ≤ 4D_L; AP regime Erdős–Turán log L/L; coherent
+p ≈ ¼,¾ rescued by certified cubic drift on N^{1/3}; expansion error O(L³/N)
+harmless below the drift clock. HONEST BOUNDARY recorded: window-averaged
+only; the pointwise conditional is (XLD) proper (D–H shares the discrepancy
+— its conspiracy is amplitude-sign, not phase-distribution). (iii)
+RelayLedger.lean BANKED (umbrella 8637 jobs green, lint passed, axiom-clean
+[propext, Classical.choice, Quot.sound]): signedDepth;
+exists_last_nonpos_between (discrete first passage w/ last-crossing witness);
+run_bounded_of_excursionBound ((EXC-ℓ) ⟹ no off-line run > ℓ — the deep-pair
+contradiction shape); exists_upcross_chain + card_upcross_ge_of_spread
+(ℓ-separated presence at k+1 levels ⟹ ≥ k+1 upcrossings);
+spread_lt_of_upcross_budget (budget R ⟹ no (R+1)-fold spread — consumption
+point for (CR)×(XLD)); survivesFrom_iff_forall_signedDepth_pos (old ledger =
+off-line at every prefix). (EXC-ℓ)/budget are explicit Prop inputs, nothing
+silent. Next: (CHAIN-geo) derivation; (T2) per-instance bridge from Rouché
+presence to signedDepth > 0; relay-delay field for the next census.
+
+## Cycle 44 (2026-07-05) — CHAIN LINK 5 UNCONDITIONAL: the EM carrier machine-checked (doc 78, EMCarrier.lean, task #25)
+
+Doc 75 table item 5 worked to its unconditional floor. NEW MODULE
+EMCarrier.lean (umbrella 8638 jobs green, lint passed, axiom-clean
+[propext, Classical.choice, Quot.sound]): the Euler–Maclaurin representation
+ζ(s) = emCarrier N s − s·emTail N s on {re s > 0} \ {1}, every N ≥ 1, with
+EXACT remainder ‖s·emTail‖ ≤ ‖s‖·N^(−σ)/σ (telescope, no asymptotics).
+Proof route: per-interval closed forms (emTerm_key — one zeta tail term
+exactly, pure cpow algebra); integral form for the two norm bounds (sharp
+telescope + crude M-test); telescoped finite identity + σ>1 anchor against
+mathlib's zeta_eq_tsum_one_div_nat_cpow (limits via HasSum.tendsto_sum_nat,
+rpow decay); Weierstrass M-test differentiability of the tail on the strip;
+punctured-half-plane connectivity from four convex pieces; identity theorem
+(AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq at anchor 2). WIRED
+CONSEQUENCES: zeta_ne_zero_of_em_domination (unconditional per-point
+zero-free certificate from finite data); afeAccurateOn_of_emCarrier_close
+(ZetaCarrier's (AFE) interface discharged: EM bound + finite-vs-finite
+closeness); completed_domination_of_em (the exact hdom premise of
+anneal_seam_L_transport / anneal_deck_transport). THE RELOCATION: link 5's
+entire classical R–S debt is now (EM-CLOSE) — ‖emCarrier M − gN N‖ ≤ δ on
+windows, a comparison of two FINITE Dirichlet expressions with no ζ in it
+(stationary-phase/Gauss-sum territory, the doc 49 lattice again). Cost:
+EM needs N ~ t² vs matched √(t/2π) — a bridge, not a replacement; the
+2^k-tower arithmetic stays native to gN. D–H filter respected: the EM rep
+holds for D–H too; discrimination stays at (XLD)+budget. Doc 75 addendum
+appended. Opens: (EM-CLOSE) as finite theorem target; the certificate
+instrument (interval-arithmetic evaluator → first end-to-end machine-checked
+zero-free windows + one full seam-transport instance with zero unformalized
+inputs); reusable strip scaffold (M-test + connectivity + identity theorem)
+for any Dirichlet-type representation the lane needs.

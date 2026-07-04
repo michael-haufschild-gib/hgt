@@ -114,7 +114,7 @@ theorem run_bounded_of_excursionBound {D₀ : ℝ} {pushes : List ℝ} {ℓ : �
     · exact hrun k (le_of_lt (lt_of_not_ge hks)) hk'
   have hgt : e < m₀ + 1 + j := by
     by_contra hle
-    exact absurd (hallpos (m₀ + 1 + j) (by omega) (le_of_not_lt hle))
+    exact absurd (hallpos (m₀ + 1 + j) (by omega) (not_lt.mp hle))
       (not_lt.mpr hjnp)
   omega
 
@@ -161,6 +161,7 @@ theorem exists_upcross_chain {D₀ : ℝ} {pushes : List ℝ} {ℓ : ℕ}
         exists_last_nonpos_between hmstar_le hjjnp (hpres (k + 1) le_rfl)
       refine ⟨fun i => if i ≤ k then u i else m₁, ?_, ?_, ?_⟩
       · intro i hi
+        dsimp only
         by_cases hik : i ≤ k
         · rw [if_pos hik]
           exact hu₁ i hik
@@ -170,6 +171,7 @@ theorem exists_upcross_chain {D₀ : ℝ} {pushes : List ℝ} {ℓ : ℕ}
           exact ⟨⟨hm₁np, hm₁pos (m₁ + 1) (Nat.lt_succ_self m₁)
             (Nat.succ_le_of_lt hm₁lt)⟩, hm₁lt⟩
       · intro i j hij hj
+        dsimp only
         by_cases hjk : j ≤ k
         · rw [if_pos (le_trans (le_of_lt hij) hjk), if_pos hjk]
           exact hu₂ i j hij hjk
@@ -183,6 +185,7 @@ theorem exists_upcross_chain {D₀ : ℝ} {pushes : List ℝ} {ℓ : ℕ}
             · exact le_of_lt (hu₂ i k h le_rfl)
           omega
       · intro m hm hm'
+        dsimp only at hm
         rw [if_neg (by omega : ¬ (k + 1 ≤ k))] at hm
         exact hm₁pos m hm hm'
 
@@ -200,13 +203,12 @@ theorem card_upcross_ge_of_spread {D₀ : ℝ} {pushes : List ℝ} {ℓ k : ℕ}
   have hlev : ∀ d i, i + d ≤ k → levels i ≤ levels (i + d) := by
     intro d
     induction d with
-    | zero => intro i _; simp
+    | zero => intro i _; exact le_rfl
     | succ d ihd =>
         intro i hik
         have h1 : levels i ≤ levels (i + d) := ihd i (by omega)
         have h2 : levels (i + d) ≤ levels (i + d + 1) := hstep _ (by omega)
-        have := le_trans h1 h2
-        simpa [Nat.add_succ] using this
+        exact le_trans h1 h2
   have hlev' : ∀ i, i ≤ k → levels i ≤ levels k := by
     intro i hi
     have := hlev (k - i) i (by omega)
@@ -224,7 +226,7 @@ theorem card_upcross_ge_of_spread {D₀ : ℝ} {pushes : List ℝ} {ℓ k : ℕ}
     · exact absurd hab (ne_of_lt (hu₂ a b h (Nat.lt_succ_iff.mp b.isLt)))
     · exact Fin.ext h
     · exact absurd hab.symm (ne_of_lt (hu₂ b a h (Nat.lt_succ_iff.mp a.isLt)))
-  calc k + 1 = (Finset.univ : Finset (Fin (k + 1))).card := by simp
+  calc k + 1 = (Finset.univ : Finset (Fin (k + 1))).card := (Finset.card_fin _).symm
     _ = (Finset.univ.image fun i : Fin (k + 1) => u ↑i).card :=
         (Finset.card_image_of_injective _ hinj).symm
     _ ≤ ((Finset.range (levels k)).filter (UpcrossAt D₀ pushes)).card := by
@@ -249,7 +251,9 @@ theorem spread_lt_of_upcross_budget {D₀ : ℝ} {pushes : List ℝ} {ℓ k M R 
   have h2 : ((Finset.range (levels k)).filter (UpcrossAt D₀ pushes)).card
       ≤ ((Finset.range M).filter (UpcrossAt D₀ pushes)).card :=
     Finset.card_le_card
-      (Finset.filter_subset_filter _ (Finset.range_subset.mpr hM))
+      (Finset.filter_subset_filter _ (by
+        intro x hx
+        exact Finset.mem_range.mpr (lt_of_lt_of_le (Finset.mem_range.mp hx) hM)))
   omega
 
 /-- The old one-way ledger is the special case "off-line at every prefix":

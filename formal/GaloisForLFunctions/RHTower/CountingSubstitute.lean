@@ -288,3 +288,34 @@ theorem pinned_zero_on_line {κ : Type*} (t : Finset κ) (ρ' : κ → ℂ) (m' 
   omega
 
 end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Real-part form of `pinned_zero_on_line`: the public boundary is the geometric
+critical-line condition rather than the algebraic reflection equation. -/
+theorem pinned_zero_re_eq_half {κ : Type*} (t : Finset κ) (ρ' : κ → ℂ) (m' : κ → ℕ)
+    {f g h h' : ℂ → ℂ} {ρ₀ : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hρ₀re : ρ₀.re = 1 / 2)
+    (hsym : ∀ z ∈ ball ρ₀ R, f (1 - (starRingEnd ℂ) z) = (starRingEnd ℂ) (f z))
+    (hh : AnalyticOnNhd ℂ h (ball ρ₀ R)) (hh0 : ∀ z ∈ ball ρ₀ R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball ρ₀ R)) (hh0' : ∀ z ∈ ball ρ₀ R, h' z ≠ 0)
+    (hfactg : ∀ z ∈ ball ρ₀ R, g z = (z - ρ₀) * h z)
+    (hρ' : ∀ j ∈ t, ‖ρ' j - ρ₀‖ ≤ r₀)
+    (hfactf : ∀ z ∈ ball ρ₀ R, f z = (∏ j ∈ t, (z - ρ' j) ^ m' j) * h' z)
+    (hclose : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R, ‖f z - g z‖ < ‖g z‖) :
+    ∀ j ∈ t, m' j ≠ 0 → (ρ' j).re = 1 / 2 := by
+  have hρ₀ : (1 : ℂ) - (starRingEnd ℂ) ρ₀ = ρ₀ := by
+    apply Complex.ext
+    · simp [Complex.sub_re, hρ₀re]
+      norm_num
+    · simp [Complex.sub_im]
+  intro j hj hm
+  have hfix := pinned_zero_on_line t ρ' m' h0 hrR hρ₀ hsym hh hh0 hh' hh0' hfactg hρ'
+    hfactf hclose j hj hm
+  have hre := congrArg Complex.re hfix
+  simp [Complex.sub_re] at hre
+  linarith
+
+end RHTower

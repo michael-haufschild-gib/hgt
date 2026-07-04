@@ -317,3 +317,34 @@ theorem anneal_window_parity_transport_of_domination {N : ℕ} (k : ℕ)
     (hDeq ▸ Nat.ModEq.refl _) hL
 
 end RHTower
+
+namespace RHTower
+
+open Metric
+
+/-- **Finite-side rung under domination.** Domination proves the deck count transport;
+combined with the seam congruence and finite-side rung, this gives the ξ rung. -/
+theorem xi_rung_of_finite_side_of_domination {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖xi z - completedGN N z‖ < ‖completedGN N z‖)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])
+    (hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z) :
+    2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z := by
+  have hparity := anneal_window_parity_transport_of_domination k h0 hrR hm₁ hcl₁ hstrip hm₂ hcl₂
+    hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hdom hL
+  exact Nat.modEq_zero_iff_dvd.mp (hparity.trans (Nat.modEq_zero_iff_dvd.mpr hfin))
+
+end RHTower

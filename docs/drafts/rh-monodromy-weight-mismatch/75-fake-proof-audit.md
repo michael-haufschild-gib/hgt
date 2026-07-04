@@ -118,3 +118,12 @@ consecutive levels (the n → n+1 update adds ONE term (n+1)^{−s} + mirror —
 the minimal scrambling question, concrete and finite); (3) the seam-transport
 wiring write-out (link 4, classical-shaped, overdue); (4) only then resume
 any constants work.
+
+## Addendum (2026-07-05, task #25): table row 5 upgraded
+
+Row 5 (self-domination with explicit E) is now UNCONDITIONAL at EM grade in
+Lean: `EMCarrier.lean` proves ζ = emCarrier N − s·emTail N on
+{re > 0} \ {1} with the machine-checked remainder ‖s·emTail‖ ≤ ‖s‖N^(−σ)/σ,
+discharges the (AFE) interface, and supplies the seam/deck `hdom` premises.
+The R–S-grade residue is relocated into (EM-CLOSE) — a finite-vs-finite
+comparison ‖emCarrier M − gN N‖, no ζ in it. Details: doc 78.

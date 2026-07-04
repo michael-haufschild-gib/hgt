@@ -21,6 +21,10 @@ the deck class is `exp(2πi·slope/n)`:
   engines measured, now formal.
 -/
 import GaloisForLFunctions.RHTower.XiDeck
+import GaloisForLFunctions.RHTower.ReflectionParity
+import GaloisForLFunctions.RHTower.GermExtension
+import GaloisForLFunctions.RHTower.SquareLadder
+import GaloisForLFunctions.RHTower.PerturbationZero
 import Mathlib.Analysis.Complex.JensenFormula
 
 namespace RHTower
@@ -125,5 +129,238 @@ theorem xi_deckClass_eq_circleAverage_slope (ρ₀ : ℂ) :
   exact deckClass_eq_exp_circleAverage_slope hr₁ hr₁₂ hr₂R hn
     (fun z hz => hhan z (hsub hz)) (fun z hz => hh0 z (hsub hz))
     (fun z hz => hfact z (hsub hz)) hG₁ hG₂ hp₁ hp₂
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- The two-circle modulus slope of ξ is the local vanishing order. -/
+theorem xi_circleAverage_slope_eq_order (ρ₀ : ℂ) :
+    ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+      (Real.circleAverage (fun z => Real.log ‖xi z‖) ρ₀ r₂ -
+          Real.circleAverage (fun z => Real.log ‖xi z‖) ρ₀ r₁) /
+        (Real.log r₂ - Real.log r₁) = ((analyticOrderAt xi ρ₀).toNat : ℝ) := by
+  obtain ⟨R₀, hR₀, h, hhan, hh0, hfact⟩ := xi_peel_ball ρ₀
+  refine ⟨R₀, hR₀, ?_⟩
+  intro R r₁ r₂ hr₁ hr₁₂ hr₂R hRle
+  have hsub : ball ρ₀ R ⊆ ball ρ₀ R₀ := ball_subset_ball hRle
+  rw [circleAverage_log_norm_single_zero (hr₁.trans hr₁₂) hr₂R
+      (fun z hz => hhan z (hsub hz)) (fun z hz => hh0 z (hsub hz))
+      (fun z hz => hfact z (hsub hz)),
+    circleAverage_log_norm_single_zero hr₁ (hr₁₂.trans hr₂R)
+      (fun z hz => hhan z (hsub hz)) (fun z hz => hh0 z (hsub hz))
+      (fun z hz => hfact z (hsub hz))]
+  have hlog : Real.log r₁ < Real.log r₂ := Real.log_lt_log hr₁ hr₁₂
+  rw [div_eq_iff (sub_ne_zero.mpr hlog.ne')]
+  ring
+
+/-- Boundary modulus criterion for the local ξ rung: the two-circle slope of
+`log ‖ξ‖` has trivial `2^k` exponential exactly when the local ladder divisibility
+holds. -/
+theorem xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd (ρ₀ : ℂ) (k : ℕ) :
+    ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+      (exp (2 * (Real.pi : ℂ) * I *
+          (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ₀ r₂ -
+              Real.circleAverage (fun z => Real.log ‖xi z‖) ρ₀ r₁) /
+            (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 ↔
+        ((2 ^ k : ℕ) : ℕ∞) ∣ analyticOrderAt xi ρ₀) := by
+  obtain ⟨R₀, hR₀, hslope⟩ := xi_circleAverage_slope_eq_order ρ₀
+  refine ⟨R₀, hR₀, ?_⟩
+  intro R r₁ r₂ hr₁ hr₁₂ hr₂R hRle
+  rw [hslope hr₁ hr₁₂ hr₂R hRle]
+  have h2k : 0 < 2 ^ k := pow_pos (by norm_num) k
+  have hcast : ((((analyticOrderAt xi ρ₀).toNat : ℝ) : ℂ) =
+      (((analyticOrderAt xi ρ₀).toNat : ℕ) : ℂ)) := by norm_cast
+  rw [hcast, exp_two_pi_mul_div_eq_one_iff h2k]
+  set m : ℕ := (analyticOrderAt xi ρ₀).toNat with hm_def
+  have hm : (m : ℕ∞) = analyticOrderAt xi ρ₀ := ENat.coe_toNat (xi_orderAt_ne_top ρ₀)
+  constructor
+  · rintro ⟨c, hc⟩
+    rw [← hm, hc]
+    exact ⟨(c : ℕ∞), by push_cast; ring⟩
+  · intro hdvd
+    rw [← hm] at hdvd
+    exact natCast_dvd_natCast_of_enat (pow_ne_zero k two_ne_zero) hdvd
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- A ladder rung is equivalent to the corresponding modulus-slope root-of-unity
+condition at every right-half zero of ξ. -/
+theorem rhLadder_iff_circleAverage_slope_exp_eq_one (k : ℕ) :
+    RHLadder k ↔
+      ∀ ρ ∈ rightHalf, xi ρ = 0 →
+        ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+          exp (2 * (Real.pi : ℂ) * I *
+              (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                  Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+  constructor
+  · intro hlad ρ hρ hzero
+    obtain ⟨R₀, hR₀, hiff⟩ := xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd ρ k
+    refine ⟨R₀, hR₀, ?_⟩
+    intro R r₁ r₂ hr₁ hr₁₂ hr₂R hRle
+    exact (hiff hr₁ hr₁₂ hr₂R hRle).mpr (hlad ρ hρ hzero)
+  · intro hmod ρ hρ hzero
+    obtain ⟨R₁, hR₁, hiff⟩ := xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd ρ k
+    obtain ⟨R₂, hR₂, hexp⟩ := hmod ρ hρ hzero
+    set Rm : ℝ := min R₁ R₂ with hRm_def
+    have hRm_pos : 0 < Rm := by
+      rw [hRm_def]
+      exact lt_min hR₁ hR₂
+    have hr₁ : 0 < Rm / 4 := by linarith
+    have hr₁₂ : Rm / 4 < Rm / 2 := by linarith
+    have hr₂R : Rm / 2 < Rm := by linarith
+    have hRle₁ : Rm ≤ R₁ := by
+      rw [hRm_def]
+      exact min_le_left _ _
+    have hRle₂ : Rm ≤ R₂ := by
+      rw [hRm_def]
+      exact min_le_right _ _
+    have hcrit := hiff (R := Rm) (r₁ := Rm / 4) (r₂ := Rm / 2) hr₁ hr₁₂ hr₂R hRle₁
+    have hval := hexp (R := Rm) (r₁ := Rm / 4) (r₂ := Rm / 2) hr₁ hr₁₂ hr₂R hRle₂
+    exact hcrit.mp hval
+
+/-- RH is equivalent to the all-level modulus-slope root-of-unity condition at
+every right-half zero of ξ. -/
+theorem rh_iff_forall_circleAverage_slope_exp_eq_one :
+    RiemannHypothesis ↔
+      ∀ k, ∀ ρ ∈ rightHalf, xi ρ = 0 →
+        ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+          exp (2 * (Real.pi : ℂ) * I *
+              (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                  Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+  rw [rh_iff_forall_ladder]
+  constructor
+  · intro h k
+    exact (rhLadder_iff_circleAverage_slope_exp_eq_one k).mp (h k)
+  · intro h k
+    exact (rhLadder_iff_circleAverage_slope_exp_eq_one k).mpr (h k)
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- The FE fixed-point parity makes the level-2 modulus slope root-of-unity
+trivial at the central point. -/
+theorem xi_central_circleAverage_slope_exp_eq_one :
+    ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+      exp (2 * (Real.pi : ℂ) * I *
+          (((Real.circleAverage (fun z => Real.log ‖xi z‖) (1 / 2 : ℂ) r₂ -
+              Real.circleAverage (fun z => Real.log ‖xi z‖) (1 / 2 : ℂ) r₁) /
+            (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / 2) = 1 := by
+  obtain ⟨R₀, hR₀, hiff⟩ :=
+    xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd (1 / 2 : ℂ) 1
+  refine ⟨R₀, hR₀, ?_⟩
+  intro R r₁ r₂ hr₁ hr₁₂ hr₂R hRle
+  have hdiv : ((2 ^ 1 : ℕ) : ℕ∞) ∣ analyticOrderAt xi (1 / 2 : ℂ) := by
+    simpa only [pow_one] using xi_central_ladder_two
+  simpa only [pow_one, Nat.cast_ofNat] using (hiff hr₁ hr₁₂ hr₂R hRle).mpr hdiv
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- At the FE fixed point, the two-circle modulus slope of ξ is an even integer. -/
+theorem xi_central_circleAverage_slope_eq_even_integer :
+    ∃ R₀ > 0, ∃ q : ℕ, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+      (Real.circleAverage (fun z => Real.log ‖xi z‖) (1 / 2 : ℂ) r₂ -
+          Real.circleAverage (fun z => Real.log ‖xi z‖) (1 / 2 : ℂ) r₁) /
+        (Real.log r₂ - Real.log r₁) = (2 * q : ℝ) := by
+  obtain ⟨R₀, hR₀, hslope⟩ := xi_circleAverage_slope_eq_order (1 / 2 : ℂ)
+  obtain ⟨q, hq⟩ := xi_central_order_even
+  refine ⟨R₀, hR₀, q, ?_⟩
+  intro R r₁ r₂ hr₁ hr₁₂ hr₂R hRle
+  rw [hslope hr₁ hr₁₂ hr₂R hRle]
+  have hq' : (analyticOrderAt xi (1 / 2 : ℂ)).toNat = 2 * q := by omega
+  exact_mod_cast hq'
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Arithmetic germ continuation is equivalent to the boundary-modulus slope
+criterion for the same ladder rung. -/
+theorem germ_extends_iff_circleAverage_slope_exp_eq_one (k : ℕ) :
+    (∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
+        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+        ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+          Set.EqOn g g₁ farHalf) ↔
+      ∀ ρ ∈ rightHalf, xi ρ = 0 →
+        ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+          exp (2 * (Real.pi : ℂ) * I *
+              (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                  Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+  rw [← rhLadder_iff_germ_extends k, rhLadder_iff_circleAverage_slope_exp_eq_one k]
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- The slit-plane root formulation is equivalent to the boundary-modulus slope
+criterion for the same ladder rung. -/
+theorem root_slitPlane_iff_circleAverage_slope_exp_eq_one (k : ℕ) :
+    (∃ g, AnalyticOnNhd ℂ g slitPlane ∧
+        ∀ w ∈ slitPlane, g w ^ 2 ^ k = xiDescent w) ↔
+      ∀ ρ ∈ rightHalf, xi ρ = 0 →
+        ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+          exp (2 * (Real.pi : ℂ) * I *
+              (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                  Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+  rw [← rhLadder_iff_root_slitPlane k, rhLadder_iff_circleAverage_slope_exp_eq_one k]
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Zero planting in a right-half ball forces a concrete failure of the all-level
+boundary-modulus slope criterion. -/
+theorem exists_circleAverage_slope_obstruction_of_sphere_domination_center_margin {g h : ℂ → ℂ}
+    {s₀ : ℂ} {r : ℝ}
+    (hr : 0 < r)
+    (hmargin : 1 / 2 + r < s₀.re)
+    (hg : DiffContOnCl ℂ g (Metric.ball s₀ r))
+    (hh : DiffContOnCl ℂ h (Metric.ball s₀ r))
+    (hcenter : h s₀ = 0) (hg0 : g s₀ ≠ 0)
+    (hdom : ∀ z ∈ Metric.sphere s₀ r, 3 * ‖g z‖ ≤ ‖h z‖)
+    (hxi : ∀ z ∈ Metric.closedBall s₀ r, xi z = g z + h z) :
+    ∃ k, ∃ ρ ∈ rightHalf, xi ρ = 0 ∧
+      ¬ ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+        exp (2 * (Real.pi : ℂ) * I *
+            (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+              (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+  classical
+  have hnotRH := not_riemannHypothesis_of_sphere_domination_center_margin hr hmargin hg hh
+    hcenter hg0 hdom hxi
+  by_contra hno
+  push Not at hno
+  have hmod : ∀ k, ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+        exp (2 * (Real.pi : ℂ) * I *
+            (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+              (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+    intro k ρ hρ hzero
+    exact hno k ρ hρ hzero
+  exact hnotRH (rh_iff_forall_circleAverage_slope_exp_eq_one.mpr hmod)
 
 end RHTower

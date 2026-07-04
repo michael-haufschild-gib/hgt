@@ -8,10 +8,9 @@ path for `dip_kills`. The tower's relative phases φ_{N−m} − φ_N are θ_RS-
 (the Riemann–Siegel theta term is m-independent, cancels in the difference),
 so the walk step angles come from the banked, Gamma-free `log_ratio_bounds`
 and the slip 2πd² is elementary in √(t/2π). What `dip_kills` genuinely needs,
-per non-resonant birth, is exactly the hypothesis bundle of
-`birthKilled_of_perturbed_rotation`: polar data (banked closed form), a
-misalignment witness (non-resonant ⇒ cos γ ≤ 1 − δ), step-angle bounds,
-envelope bounds, phase-error budget, and the depth inequality.
+per non-resonant birth, is the explicit-polar hypothesis bundle:
+misalignment of the closed-form angle, step-angle bounds, envelope bounds,
+phase-error budget, and the depth inequality.
 
 `CarrierBirthData` packages that bundle per birth; `dipKills_of_carrierData`
 produces the `dip_kills` field. Hence `MidCentralInput` (and so
@@ -24,17 +23,13 @@ import GaloisForLFunctions.RHTower.PerturbedDip
 
 namespace RHTower
 
-/-- Concrete per-birth carrier data sufficient to kill a non-resonant birth,
-matching the hypothesis interface of `birthKilled_of_perturbed_rotation`.
-All fields are supplied by banked lemmas (polar closed form, log-ratio step
-bounds) or elementary carrier readings (slip, envelope), EXCEPT the two
-per-instance certificates (T2): the depth is positive (order-1 zero) and the
-push list realizes the rotation form (Rouché count fixing the pair). -/
+/-- Concrete per-birth carrier data sufficient to kill a non-resonant birth.
+The polar identity and nonresonance are now discharged from `0 < θ ≤ π/3` by
+`birthKilled_of_perturbed_rotation_explicit_polar`; callers supply only the
+closed-form-angle misalignment and matching depth inequality. -/
 structure CarrierBirthData (pushes : List ℝ) (birth : CascadeBirth) where
   θ : ℝ
   β : ℝ
-  r : ℝ
-  γ : ℝ
   δ : ℝ
   e₀ : ℝ
   amin : ℝ
@@ -44,30 +39,25 @@ structure CarrierBirthData (pushes : List ℝ) (birth : CascadeBirth) where
   P : ℕ
   θ_pos : 0 < θ
   θ_le : θ ≤ Real.pi / 3
-  r_nonneg : 0 ≤ r
   amin_nonneg : 0 ≤ amin
   amp_bounds : ∀ m : ℕ, amin ≤ amp m ∧ amp m ≤ amax
   depth_pos : 0 < birth.depthSq
   push_form : futurePushes pushes birth
     = (List.range P).map fun m : ℕ => amp m * Real.cos (β + (m : ℝ) * θ + ε m)
   len_ok : 2 * Real.pi + 2 * θ ≤ (P : ℝ) * θ
-  polar : Complex.exp ((β : ℂ) * Complex.I)
-      / (1 - Complex.exp ((θ : ℂ) * Complex.I))
-    = (r : ℂ) * Complex.exp ((γ : ℂ) * Complex.I)
-  no_res : Complex.exp ((θ : ℂ) * Complex.I) ≠ 1
-  misaligned : Real.cos γ ≤ 1 - δ
+  misaligned : Real.cos (β - θ / 2 + Real.pi / 2) ≤ 1 - δ
   phase_err : ∀ m : ℕ, |ε m| ≤ e₀
   deep : birth.depthSq
-    ≤ amin * (r * (δ - (1 - Real.cos (θ / 2))))
+    ≤ amin * ((1 / (2 * Real.sin (θ / 2))) * (δ - (1 - Real.cos (θ / 2))))
       - ((2 * Real.pi + 2 * θ) / θ) * (amin * e₀ + (amax - amin))
 
 /-- The carrier data kills the birth. -/
 theorem birthKilled_of_carrierData {pushes : List ℝ} {birth : CascadeBirth}
     (d : CarrierBirthData pushes birth) : BirthKilled pushes birth :=
-  birthKilled_of_perturbed_rotation d.θ_pos
+  birthKilled_of_perturbed_rotation_explicit_polar d.θ_pos
     (le_trans d.θ_le (by linarith [Real.pi_pos] : Real.pi / 3 ≤ Real.pi))
-    d.r_nonneg d.amin_nonneg d.amp_bounds d.depth_pos d.push_form d.len_ok
-    d.polar d.no_res d.misaligned d.phase_err d.deep
+    d.amin_nonneg d.amp_bounds d.depth_pos d.push_form d.len_ok
+    d.misaligned d.phase_err d.deep
 
 /-- **`dip_kills` from carrier data**: if every non-resonant birth carries the
 concrete data bundle, the `dip_kills` field of `MidCentralInput` holds — with

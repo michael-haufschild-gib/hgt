@@ -149,7 +149,47 @@ up: whether the walk INCREMENTS are conditionally unbiased given the
 walk's own past at that height. That conditional statement is (XLD) proper;
 (SURV-EQ) fences it to a single, sharply-typed residue.
 
-## 4. Null-check results [appended after the run]
+## 4. Null-check results [MEASURED — mc_relay_null.py, runpod, archived mwm_xld/]
+
+| model | crossings | 1-step | 3-step | E[arccos(V/a)]/π |
+|---|---|---|---|---|
+| iid phases | 657,795 | 0.3637 | **0.5503** | 0.3632 |
+| frozen lattice | 13,360,340 | **0.5027** | 0.8046 | 0.3630 |
+| iid + envelope | 679,855 | 0.3635 | 0.5502 | 0.3632 |
+
+- **P-R1 PASS:** iid 3-step recross = 0.550 ∈ [0.40, 0.60], bracketing the
+  measured ζ relay 0.46–0.56. The relay channel is explained by the
+  signed-walk null; no residual cross-level alignment is needed for ζ.
+- **P-R3 PASS on iid/envelope, to 4 decimals** (0.3637 vs 0.3632): §1's
+  arccos formula is exact where its independence premise holds. On the
+  lattice it under-predicts (0.363 vs 0.503) — as it must: the deterministic
+  rotation correlates the next phase with the overshoot, in the FAVORABLE
+  direction. Registered as a per-run bind, so: fails on lattice,
+  informatively.
+- **P-R2 FAIL, informative (the finding of this run):** lattice 3-step =
+  0.805 vs iid 0.550 — the frozen rotation ENHANCES recrossing (the chord
+  oscillates back deterministically within a wrap; note the lattice 1-step
+  is 0.5027 ≈ ½ EXACTLY — on the lattice the overshoot penalty is exactly
+  compensated and the half-law holds with no correction). The measured ζ
+  rates (0.46–0.56) sit on the IID side, not the lattice side: the actual
+  mid-walk at a random height is phase-MIXED (multi-frequency + drift), not
+  frozen — consistent with doc 51 §6's regime split.
+
+**Consequence for (XLD):** under EVERY null the relay rate is O(1)
+(≥ 1/3, up to 0.8 under coherence). Sub-criticality of the ζ relay chain
+CANNOT come from a small per-step relay rate; it must come from the chain
+structure — each relay inherits GROWING slip (the slip identity: detuning
+2πk² accumulates from the original stationary point), so successive
+excursions die faster and the chain tail is geometric. That is the next
+lemma target, named:
+
+> **(CHAIN-geo) [OPEN, lemma-shaped]:** under the banked slip identity and
+> the dip machinery, the i-th relay of a chain at fixed height survives at
+> most as long as a pair with slip offset 2π·(iΔ)² — summable lifetimes,
+> geometric chain tail, N-uniform. Supply: doc 51 §9a + `rotation_dip`;
+> this is the analytic face of (XLD) sub-criticality for ζ, and it is
+> exactly what D–H's pinned walk escapes (its increments are configuration-
+> correlated, not slip-governed).
 
 ## 5. The signed relay ledger (Lean upgrade)
 
@@ -176,3 +216,34 @@ CONTINUOUS presence — one excursion of length J — so for them the excursion
 bound alone contradicts, no relay counting needed; the chain accounting is
 only for the marginal regime η ~ AFE error. This matches the D–H probe's
 depth split (deep zeros: window-covering presence; shallow: frayed runs).
+
+**§5 status update [LEDGER]:** `RelayLedger.lean` BANKED — all six
+declarations proven through (`exists_last_nonpos_between`,
+`run_bounded_of_excursionBound`, `exists_upcross_chain`,
+`card_upcross_ge_of_spread`, `spread_lt_of_upcross_budget`,
+`survivesFrom_iff_forall_signedDepth_pos`), axiom-clean
+[propext, Classical.choice, Quot.sound], umbrella 8637 jobs green, lint
+passed. No hypothesis is consumed silently: (EXC-ℓ) and the upcrossing
+budget are explicit `Prop` inputs.
+
+## 6. What this opens
+
+1. **(CHAIN-geo)** is the new analytic head: derive the geometric chain
+   tail from slip growth (doc 51 §9a) + `rotation_dip`. It replaces the
+   vague "(XLD) sub-criticality" with one lemma whose inputs are already
+   banked, and whose D–H failure mode is visible (pinned increments escape
+   the slip clock). With (CHAIN-geo): (EXC-ℓ) discharges for relays, and
+   `spread_lt_of_upcross_budget` turns any per-height creation budget into
+   a window-crossing impossibility.
+2. **The bridge's remaining wiring is unchanged and now minimal:** carrier
+   presence (Rouché-forced) ⟹ `signedDepth > 0` at the corresponding
+   levels — the (T2) per-instance supply feeding the new ledger; then
+   (CR-density)-type budgets feed the `R` of the budget capstone.
+3. **(SURV-EQ)** stays paper-grade (AP discrepancy + drift rescue at
+   p ≈ ¼, ¾); its formal consumption point is the rate constant inside
+   (CHAIN-geo), not a separate Lean module.
+4. The lattice-vs-iid split (0.80 vs 0.55) is itself measurable on the real
+   carrier: the relay DELAY distribution (1 vs 2 vs 3 levels) discriminates
+   frozen-coherent from phase-mixed relays per event — a free field for the
+   next census extension, and a direct test of doc 51 §6's regime split at
+   relay level.
