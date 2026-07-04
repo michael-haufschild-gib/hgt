@@ -76,6 +76,13 @@ theorem quadraticPreimageClosedBall_succ_subset (c : ℂ) (n : ℕ) :
   rw [Function.iterate_succ' (quadratic c) n, Function.comp_apply] at hz
   exact quadratic_preimage_closedBall_subset c hz
 
+/-- The next trapping-disk pullback is the quadratic preimage of the previous one. -/
+theorem quadraticPreimageClosedBall_succ_eq_preimage (c : ℂ) (n : ℕ) :
+    quadraticPreimageClosedBall c (n + 1) =
+      (quadratic c) ⁻¹' quadraticPreimageClosedBall c n := by
+  ext z
+  simp [quadraticPreimageClosedBall]
+
 /-- Antitone form of `quadraticPreimageClosedBall_succ_subset`. -/
 theorem antitone_quadraticPreimageClosedBall (c : ℂ) :
     Antitone (quadraticPreimageClosedBall c) :=
@@ -83,10 +90,15 @@ theorem antitone_quadraticPreimageClosedBall (c : ℂ) :
     show quadraticPreimageClosedBall c (n + 1) ≤ quadraticPreimageClosedBall c n from
       quadraticPreimageClosedBall_succ_subset c n)
 
+/-- Each trapping-disk pullback is closed. -/
+theorem isClosed_quadraticPreimageClosedBall (c : ℂ) (n : ℕ) :
+    IsClosed (quadraticPreimageClosedBall c n) := by
+  dsimp [quadraticPreimageClosedBall]
+  exact isClosed_closedBall.preimage ((continuous_quadratic c).iterate n)
+
 theorem measurableSet_quadraticPreimageClosedBall (c : ℂ) (n : ℕ) :
     MeasurableSet (quadraticPreimageClosedBall c n) := by
-  dsimp [quadraticPreimageClosedBall]
-  exact isClosed_closedBall.measurableSet.preimage ((continuous_quadratic c).iterate n).measurable
+  exact (isClosed_quadraticPreimageClosedBall c n).measurableSet
 
 /-- Every pullback of the trapping disk is still contained in the original trapping disk. -/
 theorem quadraticPreimageClosedBall_subset_closedBall (c : ℂ) (n : ℕ) :
@@ -127,6 +139,103 @@ theorem volume_filledJulia_eq_zero_of_tendsto_preimage_closedBall_zero {c : ℂ}
       fun n : ℕ => volume (quadraticPreimageClosedBall c n) :=
     Filter.Eventually.of_forall (volume_filledJulia_le_quadraticPreimageClosedBall c)
   exact le_antisymm (le_of_tendsto_of_tendsto tendsto_const_nhds hlim hle) bot_le
+
+/-- A finite geometrically decaying `ℝ≥0∞` sequence tends to zero. -/
+lemma tendsto_zero_of_geometric_bound_ennreal
+    {u : ℕ → ℝ≥0∞} {q : ℝ≥0∞} (hq : q < 1) (hu0 : u 0 < ⊤)
+    (hdecay : ∀ n : ℕ, u (n + 1) ≤ q * u n) :
+    Tendsto u atTop (𝓝 0) := by
+  have hbound : ∀ n : ℕ, u n ≤ q ^ n * u 0 := by
+    intro n
+    induction n with
+    | zero => simp
+    | succ n ih =>
+      calc
+        u (n + 1) ≤ q * u n := hdecay n
+        _ ≤ q * (q ^ n * u 0) := mul_le_mul_right ih q
+        _ = q ^ (n + 1) * u 0 := by
+          rw [pow_succ', mul_assoc]
+  have hqpow : Tendsto (fun n : ℕ => q ^ n) atTop (𝓝 0) :=
+    ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one hq
+  have hu0_ne_top : u 0 ≠ ⊤ := ne_of_lt hu0
+  have htop : (0 : ℝ≥0∞) ≠ 0 ∨ u 0 ≠ ⊤ := Or.inr hu0_ne_top
+  have hmul : Tendsto (fun n : ℕ => u 0 * q ^ n) atTop (𝓝 (u 0 * 0)) :=
+    ENNReal.Tendsto.const_mul hqpow htop
+  have hmul0 : Tendsto (fun n : ℕ => q ^ n * u 0) atTop (𝓝 0) := by
+    simpa [mul_comm] using hmul
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hmul0
+    (fun n => bot_le) hbound
+
+/-- A uniform geometric decay estimate for the trapping-disk pullbacks implies
+`volume K_c = 0`. -/
+theorem volume_filledJulia_eq_zero_of_geometric_preimage_decay {c : ℂ} {q : ℝ≥0∞}
+    (hq : q < 1)
+    (hdecay : ∀ n : ℕ,
+      volume (quadraticPreimageClosedBall c (n + 1)) ≤
+        q * volume (quadraticPreimageClosedBall c n)) :
+    volume (filledJulia c) = 0 := by
+  exact volume_filledJulia_eq_zero_of_tendsto_preimage_closedBall_zero
+    (tendsto_zero_of_geometric_bound_ennreal hq
+      (volume_quadraticPreimageClosedBall_lt_top c 0) hdecay)
+
+/-- If the quadratic preimage area formula is available and its kernel is uniformly bounded by
+`q < 1` on every trapping-disk pullback, then `K_c` is null. -/
+theorem volume_filledJulia_eq_zero_of_forall_dist {c : ℂ} {q : ℝ≥0∞}
+    (hq : q < 1)
+    (hpreimage : ∀ A : Set ℂ, MeasurableSet A →
+      volume ((quadratic c) ⁻¹' A) =
+        ∫⁻ w in A, ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ))
+    (hkernel : ∀ n : ℕ, ∀ w ∈ quadraticPreimageClosedBall c n,
+      ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ≤ q) :
+    volume (filledJulia c) = 0 := by
+  apply volume_filledJulia_eq_zero_of_geometric_preimage_decay hq
+  intro n
+  rw [quadraticPreimageClosedBall_succ_eq_preimage,
+    hpreimage (quadraticPreimageClosedBall c n) (measurableSet_quadraticPreimageClosedBall c n)]
+  calc
+    ∫⁻ w in quadraticPreimageClosedBall c n,
+        ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ)
+        ≤ ∫⁻ _w in quadraticPreimageClosedBall c n, q ∂(volume : Measure ℂ) := by
+          exact setLIntegral_mono' (measurableSet_quadraticPreimageClosedBall c n)
+            (fun w hw => hkernel n w hw)
+    _ = q * volume (quadraticPreimageClosedBall c n) := by
+          rw [setLIntegral_const]
+
+/-- It is enough for one trapping-disk pullback to already be null. -/
+theorem volume_filledJulia_eq_zero_of_preimage_closedBall_zero {c : ℂ} {n : ℕ}
+    (hzero : volume (quadraticPreimageClosedBall c n) = 0) :
+    volume (filledJulia c) = 0 := by
+  have hle := volume_filledJulia_le_quadraticPreimageClosedBall c n
+  rw [hzero] at hle
+  exact le_antisymm hle bot_le
+
+/-- In the disconnected case, the critical value is not in `K_c`. -/
+theorem criticalValue_not_mem_filledJulia_of_disconnected {c : ℂ} (hc : Disconnected c) :
+    c ∉ filledJulia c := by
+  have h0 : (0 : ℂ) ∉ filledJulia c := (disconnected_iff_zero_not_mem c).mp hc
+  intro hcK
+  exact h0 ((mem_filledJulia_iff_quadratic_mem c 0).mpr (by simpa [quadratic_apply] using hcK))
+
+/-- In the disconnected case, some trapping-disk pullback misses a positive ball around the
+critical value `c`. -/
+theorem iterate_preimage_closedBall_disjoint_ball_c {c : ℂ} (hc : Disconnected c) :
+    ∃ n : ℕ, ∃ r : ℝ, 0 < r ∧
+      Disjoint (Metric.ball c r) (quadraticPreimageClosedBall c n) := by
+  obtain ⟨n, hn⟩ := exists_orbit_gt (criticalValue_not_mem_filledJulia_of_disconnected hc)
+    (quadraticEscapeRadius c)
+  have hcnot : c ∉ quadraticPreimageClosedBall c n := by
+    intro hcS
+    change (quadratic c)^[n] c ∈ Metric.closedBall (0 : ℂ) (quadraticEscapeRadius c) at hcS
+    rw [Metric.mem_closedBall, dist_zero_right] at hcS
+    linarith
+  have hclosed : IsClosed (quadraticPreimageClosedBall c n) := isClosed_quadraticPreimageClosedBall c n
+  have hnhds : (quadraticPreimageClosedBall c n)ᶜ ∈ nhds c :=
+    hclosed.isOpen_compl.mem_nhds hcnot
+  obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp hnhds
+  refine ⟨n, r, hr, ?_⟩
+  rw [Set.disjoint_left]
+  intro z hzball hzS
+  exact hball hzball hzS
 
 /-- Complex-plane area formula for an injective real-`C¹` map on a measurable set, in
 `lintegral` form. -/
