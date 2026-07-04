@@ -89,3 +89,4 @@ import GaloisForLFunctions.RHTower.MollifiedDip
 import GaloisForLFunctions.RHTower.CesaroHull
 import GaloisForLFunctions.RHTower.SelbergTransfer
 import GaloisForLFunctions.RHTower.LedgerReversalConstants
+import GaloisForLFunctions.RHTower.WeldEnvelope

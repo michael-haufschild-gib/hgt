@@ -28,6 +28,8 @@ For `c = 0`, `0` is the (exceptional) totally-invariant point, `gₙ ≡ log‖�
 -/
 import GaloisForLFunctions.Bottcher.Q62BrolinEquidistribution
 import GaloisForLFunctions.Bottcher.GreenContinuity
+import GaloisForLFunctions.Bottcher.Brolin.RieszSupport
+import GaloisForLFunctions.Bottcher.Brolin.WeylLemma
 
 open Real Filter Topology MeasureTheory Metric Complex Set InnerProductSpace
 open scoped Laplacian Real Topology
@@ -160,6 +162,22 @@ theorem isRieszMeasureOfSmooth_gapAMu_of_tailIntegral_vanish {c : ℂ}
     (tendsto_integral_greenApproxPlus_mul c hcΔ hΔc).comp (brolinLimitSubsequence_tendsto_atTop c)
   have hsum := (hTail φ hφ hφc).add hConvPlus
   simpa using hsum
+
+/-- **gapAMu support datum from the negative-log tail.**  The zero-target Brolin measure charges
+every Julia-frontier ball, conditional only on `hTail` — the terminus of the dominated-convergence
+route.  `Δ`-Weyl is discharged internally (`weylOnBall_greenFunctionDyn`), applied to the
+tail-reduced Riesz identity via `frontier_filledJulia_subset_support_of_isRieszMeasureOfSmooth`.
+For the norm-separated / empty-interior lanes this is unconditional (`Q62BrolinThread`,
+`Q62WeylDischarge`); this is the both-connected positive-area form, isolating `hTail`. -/
+theorem frontier_filledJulia_subset_support_gapAMu_of_tailIntegral_vanish {c : ℂ}
+    (hTail : ∀ φ : ℂ → ℝ, ContDiff ℝ 2 φ → HasCompactSupport φ →
+      Tendsto (fun k => (∫ z, greenApprox c z (brolinLimitSubsequence c k) * Δ φ z)
+                      - (∫ z, greenApproxPlus c z (brolinLimitSubsequence c k) * Δ φ z))
+        atTop (𝓝 0)) :
+    frontier (filledJulia c) ⊆ (gapAMu c).support :=
+  frontier_filledJulia_subset_support_of_isRieszMeasureOfSmooth
+    (isRieszMeasureOfSmooth_gapAMu_of_tailIntegral_vanish hTail)
+    (weylOnBall_greenFunctionDyn c)
 
 end
 

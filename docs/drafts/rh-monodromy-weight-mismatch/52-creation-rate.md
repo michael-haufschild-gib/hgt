@@ -209,3 +209,29 @@ generating function of the slip — creation `= |cos(slip)|` (frozen-max, the ba
 line modulus) and survival `= |cos(slip − π/8)|` (the dip after the metaplectic
 half-turn) — i.e. the π/8 as the single phase shift between the creation modulus
 and the survival modulus, a one-parameter weld to state as a lemma.
+
+## 11. The weld lemma, formalized [Lean — WeldEnvelope.lean, axiom-clean 2026-07-04]
+
+The §10 weld is banked in `formal/GaloisForLFunctions/RHTower/WeldEnvelope.lean`
+(namespace `RHTower.Weld`; builds, axiom-clean `[propext, Classical.choice,
+Quot.sound]`, lint green). One modulus `M θ = |cos θ|`, shared slip `slip p = 2π p²`:
+
+    creation p = M (slip p),   survival p = M (slip p − π/8).
+
+Proved (the STRUCTURE, not the empirical identification — that stays §10's labelled
+conjecture): `weld` (both are one modulus, offset exactly π/8); `creation_zero = 1`
+and `survival_quarter = 1` (peaks displaced by the metaplectic shift — creation at
+p = 0, survival at p = ¼ where slip = π/8); `creation_quarter = survival_zero =
+cos(π/8)` (each is only cos(π/8) at the other's peak); `creation_half = 0` vs
+`survival_half = sin(π/8)` (creation vanishes at the half-integer, survival stays
+finite); and the exact constant
+
+> **`survival_suppression : survival 0 / survival ½ = 1 + √2`**  (= cot(π/8);
+> rational form `survival_suppression_sq : (·)² = 3 + 2√2`).
+
+So the census's measured "2.4× suppression at p ≈ ½" is EXACTLY `1 + √2` — a fit
+promoted to a closed constant, with the metaplectic π/8 as the single phase shift
+between the (no-π/8) creation modulus and the (π/8) survival modulus. Next: derive
+the π/8 shift itself from the metaplectic square-root of the theta factor (§6 /
+doc 51 §10) rather than posit it — i.e. prove `survival = M(slip − ½·arg 𝔉)` with
+`𝔉 = e^{iπ/4}` the Fresnel/theta factor, closing the weld to its 2-cover origin.
