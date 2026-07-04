@@ -81,3 +81,68 @@ Verdict: the first fully finite window-relation instance now lives on the u-plan
 one-sided-far carrier — the shape with PROVED tracking clearance (doc 25) and T = 1
 counting (doc 24 §3). The reader's verdict is unchanged by the carrier transposition;
 what remains between this instance and a theorem-grade reading is (AMP-mono)(iii) alone.
+
+## Run 7 — Euler-suppression discrimination (pod): what the arithmetic input really is (#146)
+Script: `computations/mwm/euler_suppression_boxcount.py` (all pre-registrations in
+the docstring and appended blocks BEFORE each run; raw outputs `es146.out`,
+`es146_q.out`, `es146_x.out`; session seed 1920367149821033252, all seeds CSPRNG).
+Design: exact-FE carriers Φ_a(s) = π^(−s/2)Γ(s/2)A_N(s) + reflection, A_N(s) =
+Σ_{n≤N} a_n n^(−s) — FE and line-reality hold for EVERY real coefficient stream;
+only the stream varies. Box sweeps σ ∈ [0.53,1.35], Δt = 5, N = ⌊√(T/2π)⌋:
+band1 T ∈ [200,1030) (N = 5–12), band2 T ∈ [5000,5830) (N = 28–30, primary).
+Classes: E (a_n = 1), M (random completely multiplicative ±1, 8 seeds), R (iid ±1,
+8 seeds), Q (iid ±1 with a_{n²} = +1 forced — matches M's mean vector exactly,
+kills dependence; 8 seeds), X-coh/X-incoh (the character stream χ₋₄ in its OWN
+completion frame vs in ζ's frame — identical multiplicativity, coherence toggled).
+
+Counts (total right-half off-line winding per sweep):
+
+| class | band1 | band2 |
+|---|---|---|
+| E (ζ-truncation) | 5 | 4 |
+| X-coh (χ₋₄, own frame) | 2 | 2 |
+| X-incoh (χ₋₄, ζ frame) | 24 | 54 |
+| M mean (8 seeds) | 43.8 [48,5,52,48,54,54,43,46] | 91.0 [95,77,92,91,94,97,92,90] |
+| R mean (8 seeds) | 78.9 [69,74,80,82,95,76,89,66] | 138.0 [122,148,121,135,138,153,140,147] |
+| Q mean (8 seeds) | 71.3 [77,67,67,66,72,76,88,57] | 150.8 [146,174,140,139,147,158,155,147] |
+
+Pre-registered outcomes:
+- **P-A PASS** (E band1 = 5, first hit (220,5,1) — exact run-5 replication through
+  the symmetric Φ form).
+- **P-B PASS** (R band2 = 138 ≫ 15: FE alone leaves a large off-line population).
+- **P-C FAIL as registered, effect real**: M/R band2 ratio 0.66 (registered ≤ 0.5),
+  dose-response REVERSED (band1 ratio 0.55). Every M below every R (~10σ):
+  multiplicative dependence suppresses, but modestly and not gradedly.
+- **P-F PASS (dependence-dominant)**: Q ≈ R (150.8 vs 138.0 ≥ registered 114.5) —
+  the M-vs-R gap is carried by multiplicative DEPENDENCE, not the square-mean bias.
+- **P-G PASS** (X-coh band2 = 2 ≤ 12) and **P-H PASS** (X-incoh band2 = 54 ≥ 30):
+  the SAME character stream moves 2 → 54 when only the frame is toggled.
+- **P-D PASS** (reader exactness on the new classes): refined off-line zeros of M
+  and R carriers read pair count = 1, disc < 0, at d = 4,6,8 AND d = 10,12,16
+  (jet Im-noise ≤ 1e−122). No blind reader, no spurious pairs — the falsifiers
+  did not fire on any carrier class.
+- **P-E PASS** (#146(a)): exact-ξ reader at both banked windows (t₀ = 85.699…,
+  221.078…): 0 pairs, disc > 0, at d ∈ {10,12,16}, n ∈ {0,1} — (SPUR) stable to
+  degree 16.
+Structural half (settled by reasoning, not run): the Révész/BDR foil (Euler, no
+FE) admits NO real carrier — the instrument requires the FE for line-reality
+(doc 19 §5); its pincer role stays with doc 14 §6.
+
+**Sharpest single datum**: M seed 894929634 has f(p) = +1 for all p ≤ 12, so in
+band1 it IS the ζ-truncation — it scores exactly 5; in band2 it differs from E at
+THREE primes (13, 19, 29) and scores 77. Three sign flips: 4 → 77.
+
+**Verdict (the #146 discrimination).** The off-line-zero rate of exact-FE carriers
+is governed by stream↔frame COHERENCE — whether the reflected coefficient stream
+completes to an actual analytic L-object in that frame (the AFE identity) — with
+multiplicativity a secondary, non-graded suppression. Measured gradient:
+weld-coherent 2–5 ≪ character-in-wrong-frame 54 < random-multiplicative 91 <
+structureless 138–151. This RE-CUTS #130's arithmetic clause: the bridge input
+"Euler structure in the coefficients" is insufficient as stated; what (DISC-fin)
+must consume is the WELD — the exact AFE/completion identity in which Euler
+product and FE cohere. Doc 14 §6's qualitative pincer now has a quantitative
+gradient on the lane's own instrument. Opens: (i) restate (DISC-fin) with the AFE
+identity as the named input; (ii) the coherence dial is continuous — a pencil
+between frames (e.g. interpolate the conductor) would measure the moat shape the
+R5-series saw in the u-pencil, now for the window reader; (iii) doc 38's minor
+chain as the margin statistic along that dial.

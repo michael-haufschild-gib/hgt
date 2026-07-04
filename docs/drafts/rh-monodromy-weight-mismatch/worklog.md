@@ -1349,3 +1349,37 @@ now the authoritative ledger; any future march argument must type against it.
 Remaining board: Lemma H constant folding, per-carrier protocol pre-registration
 (bulk march γᵢ + regime map + (E-band) tip, #145), Lemma R constants (#139), doc 25
 Thm A + doc 24 counting lemma (Lean, #143), exp-family run.
+
+## 2026-07-04 — #146 Euler-suppression discrimination run (pod) + #148 answered
+Session seed 1920367149821033252. Main run banked (`computations/mwm/es146.out`,
+script `euler_suppression_boxcount.py`, pre-registration in docstring BEFORE run):
+exact-FE carriers Φ_a with toggled coefficients, E (a_n=1) / M (random completely
+multiplicative ±1) / R (iid ±1), 8 CSPRNG seeds each, box sweeps band1 [200,1030)
+N=5..12, band2 [5000,5830) N=28..30 (primary). Outcomes: P-A PASS (E band1 = 5,
+first hit (220,5,1) — exact run-5 replication through the Φ symmetric form).
+P-B PASS (R band2 mean 138 ≫ 15). P-C FAIL AS REGISTERED — but not null: M band2
+mean 91 vs R 138, every M below every R (~10σ), ratio 0.66 (registered ≤ 0.5);
+dose-response REVERSED (band1 ratio 0.55). P-D PASS (reader count = 1 at
+d=4,6,8 AND exploratory 10,12,16 on M/R off-line zeros; one R refinement converged
+on-line, skipped). P-E PASS (ζ disc > 0 at d=10,12,16, n=0,1 at both banked
+windows — SPUR stable to degree 16; card #146(a) closed). Structural half settled
+by reasoning (doc 19 §5): Révész foil admits no real carrier; pincer stays with
+doc 14 §6. KEY UNPREDICTED FINDING: E ≪ M (4 vs 91): M seed 894929634 has
+f(p)=+1 ∀p≤12 ⟹ band1-identical to E, scores exactly 5; in band2 THREE flipped
+primes (13,19,29) take it to 77. Off-line rate is nearly all-or-nothing in
+χ-coherence, not graded in multiplicativity. Q control launched (a_{n²}=+1 forced,
+else iid — matches M's mean vector, kills dependence; P-F prior 0.5 registered in
+script). #148 answered same session: doc 38-hermite-ladder.md — disc = determinant
+shadow of the Hermite–Hankel form; Jacobi minor chain reads exact pair count;
+(HANK-fin)_k generalizes (DISC-fin); lane NOT intrinsically RH_2; GORZ = the n≥2
+blindness band; recentered Turán = isolated provable fragment.
+
+## 2026-07-04 (addendum) — #146 controls landed; verdict = COHERENCE, not multiplicativity
+Q control (a_{n²}=+1, else iid): band2 mean 150.8 ≈ R's 138 — P-F PASS,
+dependence-dominant (mean bias explains nothing). X-frame isolation: χ₋₄ stream in
+its OWN frame = 2 off-line zeros (band2); the SAME stream in ζ's frame = 54 —
+P-G/P-H both PASS. Full measured gradient: weld-coherent 2–5 ≪ wrong-frame
+character 54 < random multiplicative 91 < structureless 138–151. Run 7 appended to
+computations/DISC-RESULTS.md (raw: es146*.out archived). #130's arithmetic clause
+re-cut: the bridge must consume the AFE/weld identity, not coefficientwise Euler
+structure. #146 CLOSED.

@@ -285,3 +285,136 @@ if __name__ == "__main__":
             phase_reader(per)
     if phase in ('zeta', 'all'):
         phase_zeta()
+
+
+# --- Q-control extension (pre-registered BEFORE its run, after the main run) ---
+# Q: a_n iid uniform +-1 EXCEPT a_(m^2) = +1 forced (and a_1 = 1). This matches the
+# M class's MEAN vector exactly (E_f[f(n)] = 1 if n is a square, else 0) while
+# destroying all multiplicative dependence.
+# P-F (prior 0.5): band2 mean_Q >= 114.5 (= midpoint of measured mean_M = 91 and
+# mean_R = 138)  ==> the 10-sigma M-vs-R suppression is carried by multiplicative
+# DEPENDENCE, not by the positive-square mean bias. mean_Q < 114.5 ==> the mean
+# bias carries it. Seeds (scripts/rng, drawn 2026-07-04 after main run): 736938496
+# 332468424 639884945 464857008 16860898 450872636 189292430 375173710.
+Q_SEEDS = [736938496, 332468424, 639884945, 464857008,
+           16860898, 450872636, 189292430, 375173710]
+
+
+def coeffs_q(seed, nmax=NMAX):
+    import math
+    g = lcg(seed)
+    a = [0] * (nmax + 1)
+    for n in range(1, nmax + 1):
+        r = math.isqrt(n)
+        a[n] = 1 if r * r == n else next(g)
+    return a
+
+
+def phase_q():
+    global coeffs
+    orig = coeffs
+
+    def patched(cls, seed, nmax=NMAX):
+        if cls == 'Q':
+            return coeffs_q(seed, nmax)
+        return orig(cls, seed, nmax)
+    coeffs = patched
+    import euler_suppression_boxcount as m
+    m.coeffs = patched
+    jobs = [('Q', s, b) for s in Q_SEEDS for b in (1, 2)]
+    with Pool(16) as pool:
+        results = pool.map(sweep_q, jobs)
+    per = {}
+    for cls, seed, band, hits in results:
+        tot = sum(h[2] for h in hits)
+        per[(cls, seed, band)] = tot
+        print(f"Q seed={seed} band{band}: count = {tot}")
+    for band in (1, 2):
+        qq = [per[('Q', s, band)] for s in Q_SEEDS]
+        print(f"BAND{band}: Q mean = {sum(qq)/len(qq):.3f} {qq}")
+
+
+def sweep_q(job):
+    cls, seed, band = job
+    mp.dps = 25
+    t_lo, t_hi = BANDS[band]
+    a = coeffs_q(seed)
+    hits = []
+    T = mpf(t_lo)
+    while T < t_hi:
+        N = int(floor(sqrt(T / (2 * pi))))
+        phi = make_phi(a, N)
+        w, susp = winding(phi, mpf('0.53'), mpf('1.35'), T, T + 5)
+        if susp:
+            w, _ = winding(phi, mpf('0.53'), mpf('1.35'), T, T + 5, m=320)
+        if w != 0:
+            hits.append((float(T), N, w))
+        T += 5
+    return cls, seed, band, hits
+
+
+# --- X-frame extension (pre-registered BEFORE its run, after Q results) ---
+# Coherence isolation: a_n = chi_{-4}(n) (real primitive character mod 4; genuinely
+# completely multiplicative) run in TWO frames:
+#   X-coh:   its own completion  (4/pi)^((s+1)/2) Gamma((s+1)/2) A_N(s) + reflect,
+#            AFE length N = floor(sqrt(4T/2pi))   (odd character, epsilon = +1)
+#   X-incoh: zeta's frame pi^(-s/2) Gamma(s/2) A_N(s) + reflect, N = floor(sqrt(T/2pi))
+# Multiplicativity is IDENTICAL in both; only frame coherence toggles.
+# P-G (prior 0.75): X-coh band2 count <= 12 (E-like; L(s,chi_-4) is RH-clean here).
+# P-H (prior 0.70): X-incoh band2 count >= 30 (M-like; a true character stream in
+#     the WRONG frame behaves like a random multiplicative stream).
+# PASS both ==> off-line rate is governed by stream-frame COHERENCE, not by
+# multiplicativity: (DISC-fin)'s arithmetic input is the weld (AFE identity),
+# re-cutting #130's "Euler structure" clause. FAIL P-H (X-incoh small) ==> true
+# characters are clean in any frame — multiplicativity of an actual character IS
+# sufficient; FAIL P-G ==> frame story wrong, redesign.
+
+def chi4(n):
+    return 0 if n % 2 == 0 else (1 if n % 4 == 1 else -1)
+
+
+def make_phi_x(coh, N):
+    def A(s):
+        return sum(chi4(n) * mpf(n) ** (-s) for n in range(1, N + 1) if n % 2)
+
+    if coh:
+        def phi(s):
+            return ((4 / pi) ** ((s + 1) / 2) * Gamma((s + 1) / 2) * A(s)
+                    + (4 / pi) ** ((2 - s) / 2) * Gamma((2 - s) / 2) * A(1 - s))
+    else:
+        def phi(s):
+            return (pi ** (-s / 2) * Gamma(s / 2) * A(s)
+                    + pi ** (-(1 - s) / 2) * Gamma((1 - s) / 2) * A(1 - s))
+    return phi
+
+
+def sweep_x(job):
+    coh, band = job
+    mp.dps = 25
+    t_lo, t_hi = BANDS[band]
+    hits = []
+    T = mpf(t_lo)
+    while T < t_hi:
+        if coh:
+            N = int(floor(sqrt(4 * T / (2 * pi))))
+        else:
+            N = int(floor(sqrt(T / (2 * pi))))
+        phi = make_phi_x(coh, N)
+        w, susp = winding(phi, mpf('0.53'), mpf('1.35'), T, T + 5)
+        if susp:
+            w, _ = winding(phi, mpf('0.53'), mpf('1.35'), T, T + 5, m=320)
+        if w != 0:
+            hits.append((float(T), N, w))
+        T += 5
+    return coh, band, hits
+
+
+def phase_x():
+    jobs = [(c, b) for c in (True, False) for b in (1, 2)]
+    with Pool(4) as pool:
+        results = pool.map(sweep_x, jobs)
+    for coh, band, hits in results:
+        tot = sum(h[2] for h in hits)
+        tag = 'X-coh' if coh else 'X-incoh'
+        print(f"{tag} band{band}: count = {tot}  hits = {hits[:12]}"
+              f"{' ...' if len(hits) > 12 else ''}")

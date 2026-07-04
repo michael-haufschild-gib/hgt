@@ -297,6 +297,88 @@ theorem harmonic_reproduction {h : ℂ → ℝ} {c : ℂ} {R R' : ℝ} (hR : 0 <
   rw [huw] at this
   simpa [sub_eq_zero] using this.symm
 
+/-! ## Mollifier sequence and approximate identity -/
+
+noncomputable def bumpN (n : ℕ) : ContDiffBump (0:ℂ) where
+  rIn := 1/(n+2)
+  rOut := 1/(n+1)
+  rIn_pos := by positivity
+  rIn_lt_rOut := by apply one_div_lt_one_div_of_lt <;> [positivity; · push_cast; linarith]
+
+noncomputable def mollN (n : ℕ) : ℂ → ℝ := (bumpN n).normed volume
+
+theorem mollN_contDiff (n : ℕ) : ContDiff ℝ 3 (mollN n) := (bumpN n).contDiff_normed
+
+theorem mollN_hasCompactSupport (n : ℕ) : HasCompactSupport (mollN n) :=
+  (bumpN n).hasCompactSupport_normed
+
+theorem mollN_tsupport (n : ℕ) : tsupport (mollN n) ⊆ Metric.closedBall 0 (1/(n+1)) := by
+  show closure (Function.support (mollN n)) ⊆ Metric.closedBall 0 (1/(n+1))
+  refine closure_minimal ?_ isClosed_closedBall
+  rw [show mollN n = (bumpN n).normed volume from rfl, (bumpN n).support_normed_eq]
+  exact ball_subset_closedBall
+
+theorem tendsto_mollified (G : ℂ → ℝ) (hG : Continuous G) (w : ℂ) :
+    Tendsto (fun n => convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume w)
+      atTop (𝓝 (G w)) := by
+  have hflip : (ContinuousLinearMap.lsmul ℝ ℝ).flip = ContinuousLinearMap.lsmul ℝ ℝ := by
+    ext a b; simp [mul_comm]
+  have happrox : Tendsto
+      (fun n => convolution ((bumpN n).normed volume) G (ContinuousLinearMap.lsmul ℝ ℝ) volume w)
+      atTop (𝓝 (G w)) := by
+    refine ContDiffBump.convolution_tendsto_right (φ := bumpN) (g := fun _ => G)
+      (k := fun _ => w) (x₀ := w) (z₀ := G w) ?_ ?_ ?_ ?_
+    · simp only [bumpN]; exact tendsto_one_div_add_atTop_nhds_zero_nat
+    · exact Filter.Eventually.of_forall (fun n => hG.aestronglyMeasurable)
+    · exact (hG.tendsto w).comp tendsto_snd
+    · exact tendsto_const_nhds
+  refine happrox.congr (fun n => ?_)
+  show convolution ((bumpN n).normed volume) G (ContinuousLinearMap.lsmul ℝ ℝ) volume w
+     = convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume w
+  rw [show mollN n = (bumpN n).normed volume from rfl, ← convolution_flip, hflip]
+
+/-! ## Uniform bound on the mollification -/
+
+theorem mollN_continuous (n : ℕ) : Continuous (mollN n) := (mollN_contDiff n).continuous
+theorem mollN_nonneg (n : ℕ) (t : ℂ) : 0 ≤ mollN n t := (bumpN n).nonneg_normed t
+
+theorem integrable_mollN_comp (n : ℕ) (z : ℂ) : Integrable (fun t => mollN n (z - t)) := by
+  have hcs : HasCompactSupport (fun t => mollN n (z - t)) := by
+    have : HasCompactSupport ((mollN n) ∘ (fun t => z - t)) :=
+      (mollN_hasCompactSupport n).comp_homeomorph (Homeomorph.subLeft z)
+    simpa [Function.comp] using this
+  exact ((mollN_continuous n).comp (continuous_const.sub continuous_id)).integrable_of_hasCompactSupport hcs
+
+theorem integral_mollN_comp (n : ℕ) (z : ℂ) : ∫ t, mollN n (z - t) = 1 := by
+  rw [integral_sub_left_eq_self (mollN n) volume z]
+  exact (bumpN n).integral_normed
+
+theorem convolution_mollN_le {G : ℂ → ℝ} {M : ℝ} {z : ℂ} {r : ℝ} (n : ℕ)
+    (hrOut : 1/((n:ℝ)+1) ≤ r)
+    (hM : ∀ t, ‖z - t‖ ≤ r → |G t| ≤ M) :
+    |convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume z| ≤ M := by
+  rw [convolution_def]
+  have hpt : ∀ t, |(ContinuousLinearMap.lsmul ℝ ℝ) (G t) (mollN n (z - t))|
+      ≤ M * mollN n (z - t) := by
+    intro t
+    rw [ContinuousLinearMap.lsmul_apply, smul_eq_mul, abs_mul, abs_of_nonneg (mollN_nonneg n _)]
+    by_cases ht : mollN n (z - t) = 0
+    · rw [ht]; simp
+    · have hball : ‖z - t‖ ≤ r := by
+        have hmem := mollN_tsupport n (subset_tsupport _ (by rw [Function.mem_support]; exact ht))
+        rw [Metric.mem_closedBall, dist_zero_right] at hmem
+        exact le_trans hmem hrOut
+      exact mul_le_mul_of_nonneg_right (hM t hball) (mollN_nonneg n _)
+  have hMint : Integrable (fun t => M * mollN n (z - t)) := (integrable_mollN_comp n z).const_mul M
+  calc |∫ t, (ContinuousLinearMap.lsmul ℝ ℝ) (G t) (mollN n (z - t))|
+      ≤ ∫ t, M * mollN n (z - t) := by
+        rw [← Real.norm_eq_abs]
+        refine (norm_integral_le_integral_norm _).trans ?_
+        refine integral_mono_of_nonneg (Filter.Eventually.of_forall (fun t => norm_nonneg _))
+          hMint (Filter.Eventually.of_forall (fun t => ?_))
+        simp only [Real.norm_eq_abs]; exact hpt t
+    _ = M := by rw [integral_const_mul, integral_mollN_comp, mul_one]
+
 end
 
 end Bottcher

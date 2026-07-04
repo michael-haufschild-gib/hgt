@@ -6,6 +6,7 @@ filled-Julia nullity theorem.  The first reusable layer is the standard
 backward-trapping escape disk and the named nested-preimage characterization.
 -/
 import GaloisForLFunctions.Bottcher.Dynamics
+import GaloisForLFunctions.Bottcher.DisconnectedLoop
 import Mathlib.MeasureTheory.Function.Jacobian
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
@@ -114,6 +115,12 @@ theorem volume_quadraticPreimageClosedBall_lt_top (c : ℂ) (n : ℕ) :
   exact lt_of_le_of_lt (measure_mono (quadraticPreimageClosedBall_subset_closedBall c n))
     ((isCompact_closedBall (0 : ℂ) (quadraticEscapeRadius c)).measure_lt_top)
 
+theorem isCompact_quadraticPreimageClosedBall (c : ℂ) (n : ℕ) :
+    IsCompact (quadraticPreimageClosedBall c n) :=
+  (isCompact_closedBall (0 : ℂ) (quadraticEscapeRadius c)).of_isClosed_subset
+    (isClosed_quadraticPreimageClosedBall c n)
+    (quadraticPreimageClosedBall_subset_closedBall c n)
+
 theorem filledJulia_subset_quadraticPreimageClosedBall (c : ℂ) (n : ℕ) :
     filledJulia c ⊆ quadraticPreimageClosedBall c n := by
   rw [filledJulia_eq_iInter_preimage_closedBall]
@@ -183,6 +190,44 @@ lemma tendsto_zero_of_eventually_geometric_bound_ennreal
       simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using h
   exact (Filter.tendsto_add_atTop_iff_nat N).mp hshift
 
+/-- A monotone finite sequence with geometric decay along a fixed positive block length tends to
+zero. This is the sequence-level bridge needed for multi-step inverse-branch contraction estimates. -/
+lemma tendsto_zero_of_antitone_block_geometric_bound_ennreal
+    {u : ℕ → ℝ≥0∞} {M : ℕ} {q : ℝ≥0∞} (hM : 0 < M) (hq : q < 1)
+    (hu0 : u 0 < ⊤) (hanti : Antitone u)
+    (hdecay : ∀ n : ℕ, u (n + M) ≤ q * u n) :
+    Tendsto u atTop (𝓝 0) := by
+  have hblock : Tendsto (fun m : ℕ => u (m * M)) atTop (𝓝 0) := by
+    apply tendsto_zero_of_geometric_bound_ennreal (u := fun m : ℕ => u (m * M)) hq
+    · simpa using hu0
+    · intro m
+      have h := hdecay (m * M)
+      simpa [Nat.succ_mul] using h
+  have hdiv : Tendsto (fun n : ℕ => n / M) atTop atTop :=
+    (map_div_atTop_eq_nat M hM).le
+  have hblock_div : Tendsto (fun n : ℕ => u ((n / M) * M)) atTop (𝓝 0) :=
+    hblock.comp hdiv
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hblock_div
+    (fun n => bot_le) (fun n => hanti (Nat.div_mul_le_self n M))
+
+/-- Eventual version of `tendsto_zero_of_antitone_block_geometric_bound_ennreal`. -/
+lemma tendsto_zero_of_eventually_antitone_block_geometric_bound_ennreal
+    {u : ℕ → ℝ≥0∞} {N M : ℕ} {q : ℝ≥0∞} (hM : 0 < M) (hq : q < 1)
+    (huN : u N < ⊤) (hanti : Antitone u)
+    (hdecay : ∀ n : ℕ, N ≤ n → u (n + M) ≤ q * u n) :
+    Tendsto u atTop (𝓝 0) := by
+  have hshift : Tendsto (fun m : ℕ => u (m + N)) atTop (𝓝 0) := by
+    apply tendsto_zero_of_antitone_block_geometric_bound_ennreal
+        (u := fun m : ℕ => u (m + N)) hM hq
+    · simpa using huN
+    · intro a b hab
+      exact hanti (Nat.add_le_add_right hab N)
+    · intro m
+      have hle : N ≤ m + N := by omega
+      have h := hdecay (m + N) hle
+      simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using h
+  exact (Filter.tendsto_add_atTop_iff_nat N).mp hshift
+
 /-- A uniform geometric decay estimate for the trapping-disk pullbacks implies
 `volume K_c = 0`. -/
 theorem volume_filledJulia_eq_zero_of_geometric_preimage_decay {c : ℂ} {q : ℝ≥0∞}
@@ -207,9 +252,40 @@ theorem volume_filledJulia_eq_zero_of_eventually_geometric_preimage_decay {c : �
     (tendsto_zero_of_eventually_geometric_bound_ennreal hq
       (volume_quadraticPreimageClosedBall_lt_top c N) hdecay)
 
+/-- A uniform block-geometric decay estimate for the trapping-disk pullbacks implies
+`volume K_c = 0`. This is the measure-facing target for any future multi-step expansion theorem. -/
+theorem volume_filledJulia_eq_zero_of_block_geometric_preimage_decay {c : ℂ} {M : ℕ}
+    {q : ℝ≥0∞} (hM : 0 < M) (hq : q < 1)
+    (hdecay : ∀ n : ℕ,
+      volume (quadraticPreimageClosedBall c (n + M)) ≤
+        q * volume (quadraticPreimageClosedBall c n)) :
+    volume (filledJulia c) = 0 := by
+  apply volume_filledJulia_eq_zero_of_tendsto_preimage_closedBall_zero
+  apply tendsto_zero_of_antitone_block_geometric_bound_ennreal hM hq
+  · exact volume_quadraticPreimageClosedBall_lt_top c 0
+  · intro n m hnm
+    exact measure_mono (antitone_quadraticPreimageClosedBall c hnm)
+  · exact hdecay
+
+/-- An eventual block-geometric decay estimate for the trapping-disk pullbacks implies
+`volume K_c = 0`. This matches the shape of disconnected escape estimates, which usually start only
+after a finite critical-orbit escape time. -/
+theorem volume_filledJulia_eq_zero_of_eventually_block_geometric_preimage_decay
+    {c : ℂ} {N M : ℕ} {q : ℝ≥0∞} (hM : 0 < M) (hq : q < 1)
+    (hdecay : ∀ n : ℕ, N ≤ n →
+      volume (quadraticPreimageClosedBall c (n + M)) ≤
+        q * volume (quadraticPreimageClosedBall c n)) :
+    volume (filledJulia c) = 0 := by
+  apply volume_filledJulia_eq_zero_of_tendsto_preimage_closedBall_zero
+  apply tendsto_zero_of_eventually_antitone_block_geometric_bound_ennreal hM hq
+  · exact volume_quadraticPreimageClosedBall_lt_top c N
+  · intro n m hnm
+    exact measure_mono (antitone_quadraticPreimageClosedBall c hnm)
+  · exact hdecay
+
 /-- If the quadratic preimage area formula is available and its kernel is uniformly bounded by
 `q < 1` on every trapping-disk pullback, then `K_c` is null. -/
-theorem volume_filledJulia_eq_zero_of_forall_dist {c : ℂ} {q : ℝ≥0∞}
+theorem volume_filledJulia_eq_zero_of_kernel_bound {c : ℂ} {q : ℝ≥0∞}
     (hq : q < 1)
     (hpreimage : ∀ A : Set ℂ, MeasurableSet A →
       volume ((quadratic c) ⁻¹' A) =
@@ -230,9 +306,9 @@ theorem volume_filledJulia_eq_zero_of_forall_dist {c : ℂ} {q : ℝ≥0∞}
     _ = q * volume (quadraticPreimageClosedBall c n) := by
           rw [setLIntegral_const]
 
-/-- Tail version of `volume_filledJulia_eq_zero_of_forall_dist`: the kernel bound only needs to hold
+/-- Tail version of `volume_filledJulia_eq_zero_of_kernel_bound`: the kernel bound only needs to hold
 from one pullback level onward. -/
-theorem volume_filledJulia_eq_zero_of_eventually_forall_dist {c : ℂ} {N : ℕ} {q : ℝ≥0∞}
+theorem volume_filledJulia_eq_zero_of_eventually_kernel_bound {c : ℂ} {N : ℕ} {q : ℝ≥0∞}
     (hq : q < 1)
     (hpreimage : ∀ A : Set ℂ, MeasurableSet A →
       volume ((quadratic c) ⁻¹' A) =
@@ -327,7 +403,7 @@ theorem volume_filledJulia_eq_zero_of_disjoint_ball_c
     (hdisj : Disjoint (Metric.ball c r) (quadraticPreimageClosedBall c N))
     (hqkernel : ENNReal.ofReal ((2 * r)⁻¹) ≤ q) :
     volume (filledJulia c) = 0 := by
-  apply volume_filledJulia_eq_zero_of_eventually_forall_dist hq hpreimage
+  apply volume_filledJulia_eq_zero_of_eventually_kernel_bound hq hpreimage
   intro n hn
   exact quadraticPreimageClosedBall_kernel_le_of_disjoint_ball_c hr
     (Disjoint.mono_right (antitone_quadraticPreimageClosedBall c hn) hdisj) hqkernel
@@ -418,6 +494,135 @@ theorem volume_quadratic_branch_eq_lintegral_kernel {c : ℂ} {s : Set ℂ}
     _ = volume s := by
           rw [setLIntegral_one]
 
+/-- Area formula for the positive half-plane quadratic inverse sheet over a boundary-avoiding set. -/
+theorem volume_quadratic_halfplane_branch_eq_lintegral_kernel {c v : ℂ} {A : Set ℂ}
+    (hA : MeasurableSet A)
+    (hboundary :
+      ∀ w ∈ A, ∀ z : ℂ, quadratic c z = w → (starRingEnd ℂ v * z).re ≠ 0) :
+    volume ({z : ℂ | 0 < (starRingEnd ℂ v * z).re} ∩ (quadratic c ⁻¹' A)) =
+      ∫⁻ w in A, ENNReal.ofReal ((4 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ) := by
+  let H : Set ℂ := {z : ℂ | 0 < (starRingEnd ℂ v * z).re}
+  let s : Set ℂ := H ∩ (quadratic c ⁻¹' A)
+  have hhalf_open : IsOpen H := by
+    dsimp [H]
+    exact isOpen_lt continuous_const (by fun_prop)
+  have hs : MeasurableSet s := by
+    dsimp [s]
+    exact hhalf_open.measurableSet.inter (hA.preimage (continuous_quadratic c).measurable)
+  have hbij : Set.BijOn (quadratic c) s A := by
+    dsimp [s, H]
+    exact quadratic_bijOn_halfplane_preimage_of_boundary_avoid
+      (c := c) (v := v) (A := A) hboundary
+  have himage : quadratic c '' s = A := hbij.image_eq
+  have hzero : ∀ z ∈ s, z ≠ 0 := by
+    intro z hz hz0
+    have hzA : quadratic c z ∈ A := hz.2
+    have hne := hboundary (quadratic c z) hzA z rfl
+    simp [hz0] at hne
+  change volume s =
+    ∫⁻ w in A, ENNReal.ofReal ((4 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ)
+  rw [← himage]
+  exact volume_quadratic_branch_eq_lintegral_kernel hs hbij.injOn hzero
+
+lemma quadratic_two_kernel4_eq_kernel2 (c w : ℂ) :
+    (2 : ℝ≥0∞) * ENNReal.ofReal ((4 * ‖w - c‖)⁻¹) =
+      ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) := by
+  by_cases hw : w = c
+  · simp [hw]
+  · have hnorm_ne : ‖w - c‖ ≠ 0 := by
+      simpa [sub_eq_zero] using sub_ne_zero.mpr hw
+    rw [show (2 : ℝ≥0∞) = ENNReal.ofReal (2 : ℝ) by norm_num]
+    rw [← ENNReal.ofReal_mul (by norm_num : 0 ≤ (2 : ℝ))]
+    congr 1
+    field_simp [hnorm_ne]
+    norm_num
+
+lemma measurable_quadratic_kernel4 (c : ℂ) :
+    Measurable (fun w : ℂ => ENNReal.ofReal ((4 * ‖w - c‖)⁻¹)) := by
+  fun_prop
+
+/-- Two-sheet quadratic area formula for targets avoiding one sheet boundary. -/
+theorem volume_quadratic_preimage_eq_lintegral_kernel_of_boundary_avoid
+    {c v : ℂ} {A : Set ℂ} (hA : MeasurableSet A)
+    (hboundary : ∀ z : ℂ, quadratic c z ∈ A → (starRingEnd ℂ v * z).re ≠ 0) :
+    volume ((quadratic c) ⁻¹' A) =
+      ∫⁻ w in A, ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ) := by
+  let Hpos : Set ℂ := {z : ℂ | 0 < (starRingEnd ℂ v * z).re}
+  let Hneg : Set ℂ := {z : ℂ | (starRingEnd ℂ v * z).re < 0}
+  have hsplit :
+      (quadratic c) ⁻¹' A = (Hpos ∩ (quadratic c ⁻¹' A)) ∪
+        (Hneg ∩ (quadratic c ⁻¹' A)) := by
+    dsimp [Hpos, Hneg]
+    exact quadratic_preimage_eq_halfplane_union_of_boundary_avoid
+      (c := c) (v := v) (A := A) hboundary
+  have hneg_open : IsOpen Hneg := by
+    dsimp [Hneg]
+    exact isOpen_lt (by fun_prop) continuous_const
+  have hneg_meas : MeasurableSet (Hneg ∩ (quadratic c ⁻¹' A)) :=
+    hneg_open.measurableSet.inter (hA.preimage (continuous_quadratic c).measurable)
+  have hdisj : Disjoint (Hpos ∩ (quadratic c ⁻¹' A)) (Hneg ∩ (quadratic c ⁻¹' A)) := by
+    rw [Set.disjoint_left]
+    intro z hzpos hzneg
+    have hpos : 0 < (starRingEnd ℂ v * z).re := hzpos.1
+    have hneg : (starRingEnd ℂ v * z).re < 0 := hzneg.1
+    linarith
+  have hboundary_pos :
+      ∀ w ∈ A, ∀ z : ℂ, quadratic c z = w → (starRingEnd ℂ v * z).re ≠ 0 := by
+    intro w hw z hzw
+    exact hboundary z (by rwa [hzw])
+  have hboundary_neg :
+      ∀ w ∈ A, ∀ z : ℂ, quadratic c z = w → (starRingEnd ℂ (-v) * z).re ≠ 0 := by
+    intro w hw z hzw hzero
+    have hpos_zero : (starRingEnd ℂ v * z).re = 0 := by
+      have hneg_re : -((starRingEnd ℂ v * z).re) = 0 := by
+        simpa only [map_neg, neg_mul, Complex.neg_re] using hzero
+      linarith
+    exact hboundary z (by rwa [hzw]) hpos_zero
+  have hpos_vol :
+      volume (Hpos ∩ (quadratic c ⁻¹' A)) =
+        ∫⁻ w in A, ENNReal.ofReal ((4 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ) := by
+    dsimp [Hpos]
+    exact volume_quadratic_halfplane_branch_eq_lintegral_kernel
+      (c := c) (v := v) (A := A) hA hboundary_pos
+  have hnegset :
+      {z : ℂ | 0 < (starRingEnd ℂ (-v) * z).re} ∩ (quadratic c ⁻¹' A) =
+        Hneg ∩ (quadratic c ⁻¹' A) := by
+    dsimp [Hneg]
+    ext z
+    constructor
+    · intro hz
+      refine ⟨?_, hz.2⟩
+      have hlt : 0 < -((starRingEnd ℂ v * z).re) := by
+        simpa only [map_neg, neg_mul, Complex.neg_re] using hz.1
+      exact neg_pos.mp hlt
+    · intro hz
+      refine ⟨?_, hz.2⟩
+      have hlt : (starRingEnd ℂ v * z).re < 0 := hz.1
+      have : 0 < -((starRingEnd ℂ v * z).re) := neg_pos.mpr hlt
+      simpa only [map_neg, neg_mul, Complex.neg_re] using this
+  have hneg_vol :
+      volume (Hneg ∩ (quadratic c ⁻¹' A)) =
+        ∫⁻ w in A, ENNReal.ofReal ((4 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ) := by
+    rw [← hnegset]
+    exact volume_quadratic_halfplane_branch_eq_lintegral_kernel
+      (c := c) (v := -v) (A := A) hA hboundary_neg
+  rw [hsplit, measure_union hdisj hneg_meas, hpos_vol, hneg_vol]
+  let k4 : ℂ → ℝ≥0∞ := fun w => ENNReal.ofReal ((4 * ‖w - c‖)⁻¹)
+  have hk4_meas : Measurable k4 := measurable_quadratic_kernel4 c
+  calc
+    (∫⁻ w in A, k4 w ∂(volume : Measure ℂ)) +
+        ∫⁻ w in A, k4 w ∂(volume : Measure ℂ)
+        = ∫⁻ w in A, k4 w + k4 w ∂(volume : Measure ℂ) := by
+          rw [lintegral_add_left (μ := (volume : Measure ℂ).restrict A) hk4_meas]
+    _ = ∫⁻ w in A, (2 : ℝ≥0∞) * k4 w ∂(volume : Measure ℂ) := by
+          apply setLIntegral_congr_fun hA
+          intro w _hw
+          exact (two_mul (k4 w)).symm
+    _ = ∫⁻ w in A, ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ) := by
+          apply setLIntegral_congr_fun hA
+          intro w _hw
+          exact quadratic_two_kernel4_eq_kernel2 c w
+
 /-- The critical value `c` has the unique preimage `0` under `z ↦ z^2+c`. -/
 theorem quadratic_preimage_singleton_criticalValue (c : ℂ) :
     (quadratic c) ⁻¹' ({c} : Set ℂ) = ({0} : Set ℂ) := by
@@ -472,6 +677,310 @@ theorem volume_quadraticBoundaryLine_eq_zero {v : ℂ} (hv : v ≠ 0) :
   rw [quadraticBoundaryLine_eq_ker]
   exact Measure.addHaar_submodule (volume : Measure ℂ)
     (LinearMap.ker (quadraticBoundaryLineMap v)) (quadraticBoundaryLine_ker_ne_top hv)
+
+/-- The horizontal affine line through `c`. -/
+def horizontalLineThrough (c : ℂ) : Set ℂ :=
+  {w : ℂ | (w - c).im = 0}
+
+lemma realAxis_eq_ker_imLm :
+    ({z : ℂ | z.im = 0} : Set ℂ) = (LinearMap.ker (Complex.imLm : ℂ →ₗ[ℝ] ℝ) : Set ℂ) := by
+  ext z
+  simp
+
+lemma imLm_ker_ne_top :
+    LinearMap.ker (Complex.imLm : ℂ →ₗ[ℝ] ℝ) ≠ ⊤ := by
+  intro htop
+  have him : (Complex.imLm : ℂ →ₗ[ℝ] ℝ) = 0 := LinearMap.ker_eq_top.mp htop
+  have hI : (Complex.imLm : ℂ →ₗ[ℝ] ℝ) Complex.I = (0 : ℂ →ₗ[ℝ] ℝ) Complex.I := by
+    rw [him]
+  norm_num at hI
+
+lemma volume_realAxis_eq_zero :
+    volume ({z : ℂ | z.im = 0} : Set ℂ) = 0 := by
+  rw [realAxis_eq_ker_imLm]
+  exact Measure.addHaar_submodule (volume : Measure ℂ)
+    (LinearMap.ker (Complex.imLm : ℂ →ₗ[ℝ] ℝ)) imLm_ker_ne_top
+
+lemma imagAxis_eq_ker_reLm :
+    ({z : ℂ | z.re = 0} : Set ℂ) = (LinearMap.ker (Complex.reLm : ℂ →ₗ[ℝ] ℝ) : Set ℂ) := by
+  ext z
+  simp
+
+lemma reLm_ker_ne_top :
+    LinearMap.ker (Complex.reLm : ℂ →ₗ[ℝ] ℝ) ≠ ⊤ := by
+  intro htop
+  have hre : (Complex.reLm : ℂ →ₗ[ℝ] ℝ) = 0 := LinearMap.ker_eq_top.mp htop
+  have hI : (Complex.reLm : ℂ →ₗ[ℝ] ℝ) 1 = (0 : ℂ →ₗ[ℝ] ℝ) 1 := by
+    rw [hre]
+  norm_num at hI
+
+lemma volume_imagAxis_eq_zero :
+    volume ({z : ℂ | z.re = 0} : Set ℂ) = 0 := by
+  rw [imagAxis_eq_ker_reLm]
+  exact Measure.addHaar_submodule (volume : Measure ℂ)
+    (LinearMap.ker (Complex.reLm : ℂ →ₗ[ℝ] ℝ)) reLm_ker_ne_top
+
+/-- Every horizontal affine line in the complex plane is Lebesgue-null. -/
+theorem volume_horizontalLineThrough_eq_zero (c : ℂ) :
+    volume (horizontalLineThrough c) = 0 := by
+  have hpre :
+      (fun z : ℂ => c + z) ⁻¹' horizontalLineThrough c = ({z : ℂ | z.im = 0} : Set ℂ) := by
+    ext z
+    simp [horizontalLineThrough]
+  have h := measure_preimage_add (volume : Measure ℂ) c (horizontalLineThrough c)
+  rw [hpre, volume_realAxis_eq_zero] at h
+  exact h.symm
+
+lemma measurableSet_horizontalLineThrough (c : ℂ) :
+    MeasurableSet (horizontalLineThrough c) := by
+  dsimp [horizontalLineThrough]
+  exact (isClosed_eq (Complex.continuous_im.comp (continuous_id.sub continuous_const))
+    continuous_const).measurableSet
+
+/-- The quadratic preimage of the horizontal line through `c` is contained in the two coordinate
+axes, hence is null. -/
+theorem volume_quadratic_preimage_horizontalLineThrough_eq_zero (c : ℂ) :
+    volume ((quadratic c) ⁻¹' horizontalLineThrough c) = 0 := by
+  have hsubset :
+      (quadratic c) ⁻¹' horizontalLineThrough c ⊆
+        ({z : ℂ | z.re = 0} : Set ℂ) ∪ ({z : ℂ | z.im = 0} : Set ℂ) := by
+    intro z hz
+    have him : (z ^ 2).im = 0 := by
+      simpa [horizontalLineThrough, quadratic_apply] using hz
+    have hmul : z.re * z.im = 0 := by
+      have htwo : (2 : ℝ) * (z.re * z.im) = 0 := by
+        simpa [pow_two, Complex.mul_im, mul_assoc, mul_comm, mul_left_comm] using him
+      nlinarith
+    rcases mul_eq_zero.mp hmul with hre | him'
+    · exact Or.inl hre
+    · exact Or.inr him'
+  have hunion_null :
+      volume (({z : ℂ | z.re = 0} : Set ℂ) ∪ ({z : ℂ | z.im = 0} : Set ℂ)) = 0 :=
+    measure_union_null volume_imagAxis_eq_zero volume_realAxis_eq_zero
+  exact measure_mono_null hsubset hunion_null
+
+/-- The quadratic preimage area formula. -/
+theorem volume_preimage_quadratic_eq (c : ℂ) {A : Set ℂ} (hA : MeasurableSet A) :
+    volume ((quadratic c) ⁻¹' A) =
+      ∫⁻ w in A, ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ) := by
+  let H : Set ℂ := horizontalLineThrough c
+  have hHmeas : MeasurableSet H := measurableSet_horizontalLineThrough c
+  have hAoff : MeasurableSet (A \ H) := hA.diff hHmeas
+  have hboundary :
+      ∀ z : ℂ, quadratic c z ∈ A \ H → (starRingEnd ℂ (1 : ℂ) * z).re ≠ 0 := by
+    intro z hz hline
+    have hH : quadratic c z ∈ H := by
+      have hre : z.re = 0 := by
+        simpa using hline
+      dsimp [H, horizontalLineThrough]
+      simp [pow_two, Complex.mul_im, hre]
+    exact hz.2 hH
+  have hslit :=
+    volume_quadratic_preimage_eq_lintegral_kernel_of_boundary_avoid
+      (c := c) (v := 1) (A := A \ H) hAoff hboundary
+  have hpre_ae :
+      (quadratic c ⁻¹' A) =ᵐ[volume] (quadratic c ⁻¹' (A \ H)) := by
+    rw [ae_eq_set]
+    constructor
+    · apply measure_mono_null ?_ (volume_quadratic_preimage_horizontalLineThrough_eq_zero c)
+      intro z hz
+      exact by_contra fun hzH => hz.2 ⟨hz.1, hzH⟩
+    · apply measure_mono_null ?_ (by simp : volume (∅ : Set ℂ) = 0)
+      intro z hz
+      exact False.elim (hz.2 hz.1.1)
+  have hmeasure :
+      volume ((quadratic c) ⁻¹' A) = volume ((quadratic c) ⁻¹' (A \ H)) :=
+    measure_congr hpre_ae
+  have htarget_ae : A =ᵐ[volume] A \ H := by
+    rw [ae_eq_set]
+    constructor
+    · apply measure_mono_null ?_ (volume_horizontalLineThrough_eq_zero c)
+      intro w hw
+      exact by_contra fun hwH => hw.2 ⟨hw.1, hwH⟩
+    · apply measure_mono_null ?_ (by simp : volume (∅ : Set ℂ) = 0)
+      intro w hw
+      exact False.elim (hw.2 hw.1.1)
+  have hintegral :
+      (∫⁻ w in A, ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ)) =
+        ∫⁻ w in A \ H, ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ) :=
+    setLIntegral_congr htarget_ae
+  rw [hmeasure, hslit]
+  exact hintegral.symm
+
+/-- Iterating one-step kernel bounds gives a block estimate for trapping-disk pullback volumes. -/
+theorem volume_quadraticPreimageClosedBall_add_le_prod_step_kernel_bounds
+    (c : ℂ) (n M : ℕ) (qstep : ℕ → ℝ≥0∞)
+    (hkernel : ∀ j : ℕ, j < M → ∀ w ∈ quadraticPreimageClosedBall c (n + j),
+      ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ≤ qstep j) :
+    volume (quadraticPreimageClosedBall c (n + M)) ≤
+      (∏ j ∈ Finset.range M, qstep j) * volume (quadraticPreimageClosedBall c n) := by
+  induction M generalizing n with
+  | zero =>
+      simp
+  | succ M ih =>
+      have hprev :
+          volume (quadraticPreimageClosedBall c (n + M)) ≤
+            (∏ j ∈ Finset.range M, qstep j) *
+              volume (quadraticPreimageClosedBall c n) :=
+        ih n (fun j hj => hkernel j (Nat.lt_trans hj (Nat.lt_succ_self M)))
+      have hlast :
+          volume (quadraticPreimageClosedBall c (n + (M + 1))) ≤
+            qstep M * volume (quadraticPreimageClosedBall c (n + M)) := by
+        rw [show n + (M + 1) = n + M + 1 by omega,
+          quadraticPreimageClosedBall_succ_eq_preimage,
+          volume_preimage_quadratic_eq c
+            (A := quadraticPreimageClosedBall c (n + M))
+            (measurableSet_quadraticPreimageClosedBall c (n + M))]
+        calc
+          ∫⁻ w in quadraticPreimageClosedBall c (n + M),
+              ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ)
+              ≤ ∫⁻ _w in quadraticPreimageClosedBall c (n + M),
+                  qstep M ∂(volume : Measure ℂ) := by
+                exact setLIntegral_mono'
+                  (measurableSet_quadraticPreimageClosedBall c (n + M))
+                  (fun w hw => hkernel M (Nat.lt_succ_self M) w hw)
+          _ = qstep M * volume (quadraticPreimageClosedBall c (n + M)) := by
+                rw [setLIntegral_const]
+      calc
+        volume (quadraticPreimageClosedBall c (n + (M + 1)))
+            ≤ qstep M * volume (quadraticPreimageClosedBall c (n + M)) := hlast
+        _ ≤ qstep M *
+              ((∏ j ∈ Finset.range M, qstep j) *
+                volume (quadraticPreimageClosedBall c n)) := by
+              simpa [mul_assoc, mul_comm, mul_left_comm] using
+                mul_le_mul_right hprev (qstep M)
+        _ = (∏ j ∈ Finset.range (M + 1), qstep j) *
+              volume (quadraticPreimageClosedBall c n) := by
+              rw [Finset.prod_range_succ]
+              ac_rfl
+
+/-- An eventual block of one-step kernel bounds whose product is a contraction makes `K_c` null. -/
+theorem volume_filledJulia_eq_zero_of_eventually_block_kernel_product
+    {c : ℂ} {N M : ℕ} {q : ℝ≥0∞} (qstep : ℕ → ℝ≥0∞)
+    (hM : 0 < M) (hq : q < 1)
+    (hprod : (∏ j ∈ Finset.range M, qstep j) ≤ q)
+    (hkernel : ∀ n : ℕ, N ≤ n → ∀ j : ℕ, j < M →
+      ∀ w ∈ quadraticPreimageClosedBall c (n + j),
+        ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ≤ qstep j) :
+    volume (filledJulia c) = 0 := by
+  apply volume_filledJulia_eq_zero_of_eventually_block_geometric_preimage_decay
+      (c := c) (N := N) (M := M) hM hq
+  intro n hn
+  have hblock :=
+    volume_quadraticPreimageClosedBall_add_le_prod_step_kernel_bounds
+      c n M qstep (hkernel n hn)
+  calc
+    volume (quadraticPreimageClosedBall c (n + M))
+        ≤ (∏ j ∈ Finset.range M, qstep j) *
+            volume (quadraticPreimageClosedBall c n) := hblock
+    _ ≤ q * volume (quadraticPreimageClosedBall c n) := by
+          exact mul_le_mul_left hprod (volume (quadraticPreimageClosedBall c n))
+
+/-- Kernel-bound nullity using the proved quadratic preimage area formula. -/
+theorem volume_filledJulia_eq_zero_of_forall_dist_area {c : ℂ} {q : ℝ≥0∞}
+    (hq : q < 1)
+    (hkernel : ∀ n : ℕ, ∀ w ∈ quadraticPreimageClosedBall c n,
+      ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ≤ q) :
+    volume (filledJulia c) = 0 :=
+  volume_filledJulia_eq_zero_of_kernel_bound hq
+    (fun A hA => volume_preimage_quadratic_eq c (A := A) hA) hkernel
+
+/-- If the whole trapping disk is separated from the critical value by distance strictly greater
+than `1 / 2`, then the one-step area formula gives geometric decay and `K_c` is null. -/
+theorem volume_filledJulia_eq_zero_of_forall_dist {c : ℂ}
+    (hdist : ∀ w ∈ Metric.closedBall (0 : ℂ) (quadraticEscapeRadius c),
+      ((1 : ℝ) / 2) < ‖w - c‖) :
+    volume (filledJulia c) = 0 := by
+  let D : Set ℂ := Metric.closedBall (0 : ℂ) (quadraticEscapeRadius c)
+  have hcompact : IsCompact D := by
+    dsimp [D]
+    exact isCompact_closedBall (0 : ℂ) (quadraticEscapeRadius c)
+  have hcont : ContinuousOn (fun w : ℂ => ‖w - c‖) D := by
+    fun_prop
+  have hdistD : ∀ w ∈ D, ((1 : ℝ) / 2) < ‖w - c‖ := by
+    simpa [D] using hdist
+  obtain ⟨a, ha_gt, ha_lower⟩ :=
+    hcompact.exists_forall_le' (a := ((1 : ℝ) / 2)) hcont hdistD
+  have ha_pos : 0 < a := by nlinarith
+  have h2a_gt_one : 1 < 2 * a := by nlinarith
+  have hq : ENNReal.ofReal ((2 * a)⁻¹) < 1 := by
+    rw [ENNReal.ofReal_lt_one]
+    exact inv_lt_one_of_one_lt₀ h2a_gt_one
+  apply volume_filledJulia_eq_zero_of_forall_dist_area
+      (c := c) (q := ENNReal.ofReal ((2 * a)⁻¹)) hq
+  intro n w hw
+  have hwD : w ∈ D := quadraticPreimageClosedBall_subset_closedBall c n hw
+  have ha_le : a ≤ ‖w - c‖ := ha_lower w hwD
+  have h2le : 2 * a ≤ 2 * ‖w - c‖ := by nlinarith
+  have h2apos : 0 < 2 * a := by nlinarith
+  have hinv : (2 * ‖w - c‖)⁻¹ ≤ (2 * a)⁻¹ := inv_anti₀ h2apos h2le
+  exact ENNReal.ofReal_le_ofReal hinv
+
+/-- Eventual kernel-bound nullity using the proved quadratic preimage area formula. -/
+theorem volume_filledJulia_eq_zero_of_eventually_forall_dist_area {c : ℂ} {N : ℕ}
+    {q : ℝ≥0∞} (hq : q < 1)
+    (hkernel : ∀ n : ℕ, N ≤ n → ∀ w ∈ quadraticPreimageClosedBall c n,
+      ENNReal.ofReal ((2 * ‖w - c‖)⁻¹) ≤ q) :
+    volume (filledJulia c) = 0 :=
+  volume_filledJulia_eq_zero_of_eventually_kernel_bound hq
+    (fun A hA => volume_preimage_quadratic_eq c (A := A) hA) hkernel
+
+/-- If some trapping-disk pullback is separated from the critical value by distance strictly greater
+than `1 / 2`, then all later pullbacks satisfy a uniform one-step contraction and `K_c` is null. -/
+theorem volume_filledJulia_eq_zero_of_eventually_forall_dist {c : ℂ} {N : ℕ}
+    (hdist : ∀ w ∈ quadraticPreimageClosedBall c N, ((1 : ℝ) / 2) < ‖w - c‖) :
+    volume (filledJulia c) = 0 := by
+  let S : Set ℂ := quadraticPreimageClosedBall c N
+  have hcompact : IsCompact S := by
+    dsimp [S]
+    exact isCompact_quadraticPreimageClosedBall c N
+  have hcont : ContinuousOn (fun w : ℂ => ‖w - c‖) S := by
+    fun_prop
+  have hdistS : ∀ w ∈ S, ((1 : ℝ) / 2) < ‖w - c‖ := by
+    simpa [S] using hdist
+  obtain ⟨a, ha_gt, ha_lower⟩ :=
+    hcompact.exists_forall_le' (a := ((1 : ℝ) / 2)) hcont hdistS
+  have ha_pos : 0 < a := by nlinarith
+  have h2a_gt_one : 1 < 2 * a := by nlinarith
+  have hq : ENNReal.ofReal ((2 * a)⁻¹) < 1 := by
+    rw [ENNReal.ofReal_lt_one]
+    exact inv_lt_one_of_one_lt₀ h2a_gt_one
+  apply volume_filledJulia_eq_zero_of_eventually_forall_dist_area
+      (c := c) (N := N) (q := ENNReal.ofReal ((2 * a)⁻¹)) hq
+  intro n hn w hw
+  have hwS : w ∈ S := (antitone_quadraticPreimageClosedBall c hn) hw
+  have ha_le : a ≤ ‖w - c‖ := ha_lower w hwS
+  have h2le : 2 * a ≤ 2 * ‖w - c‖ := by nlinarith
+  have h2apos : 0 < 2 * a := by nlinarith
+  have hinv : (2 * ‖w - c‖)⁻¹ ≤ (2 * a)⁻¹ := inv_anti₀ h2apos h2le
+  exact ENNReal.ofReal_le_ofReal hinv
+
+/-- Separated-pullback nullity using the proved quadratic preimage area formula. -/
+theorem volume_filledJulia_eq_zero_of_disjoint_ball_c_area
+    {c : ℂ} {N : ℕ} {r : ℝ} {q : ℝ≥0∞}
+    (hq : q < 1)
+    (hr : 0 < r)
+    (hdisj : Disjoint (Metric.ball c r) (quadraticPreimageClosedBall c N))
+    (hqkernel : ENNReal.ofReal ((2 * r)⁻¹) ≤ q) :
+    volume (filledJulia c) = 0 :=
+  volume_filledJulia_eq_zero_of_disjoint_ball_c hq
+    (fun A hA => volume_preimage_quadratic_eq c (A := A) hA) hr hdisj hqkernel
+
+/-- A separated pullback level gives nullity when the separation radius is already large enough to
+make the one-step quadratic area kernel a contraction. -/
+theorem volume_filledJulia_eq_zero_of_disjoint_ball_c_radius_gt_half
+    {c : ℂ} {N : ℕ} {r : ℝ}
+    (hrhalf : ((1 : ℝ) / 2) < r)
+    (hdisj : Disjoint (Metric.ball c r) (quadraticPreimageClosedBall c N)) :
+    volume (filledJulia c) = 0 := by
+  have hr : 0 < r := by nlinarith
+  have h2r_gt_one : 1 < 2 * r := by nlinarith
+  have hq : ENNReal.ofReal ((2 * r)⁻¹) < 1 := by
+    rw [ENNReal.ofReal_lt_one]
+    exact inv_lt_one_of_one_lt₀ h2r_gt_one
+  exact volume_filledJulia_eq_zero_of_disjoint_ball_c_area
+    (c := c) (N := N) (r := r) (q := ENNReal.ofReal ((2 * r)⁻¹))
+    hq hr hdisj le_rfl
 
 end
 

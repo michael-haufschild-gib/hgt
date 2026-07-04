@@ -49,6 +49,8 @@ import GaloisForLFunctions.RHTower.CoefficientTail
 import GaloisForLFunctions.RHTower.SpurEnvelope
 import GaloisForLFunctions.RHTower.SpurClearance
 import GaloisForLFunctions.RHTower.SpurOperator
+import GaloisForLFunctions.RHTower.SpurCPI
+import GaloisForLFunctions.RHTower.SpurAMP
 import GaloisForLFunctions.RHTower.SpurStability
 import GaloisForLFunctions.RHTower.SpurNoGo
 import GaloisForLFunctions.RHTower.SeamTransport
