@@ -84,3 +84,4 @@ import GaloisForLFunctions.RHTower.DepthUpdate
 import GaloisForLFunctions.RHTower.PairPeel
 import GaloisForLFunctions.RHTower.DigammaBounds
 import GaloisForLFunctions.RHTower.DipKillsWiring
+import GaloisForLFunctions.RHTower.SecondMoment

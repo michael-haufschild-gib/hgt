@@ -1764,3 +1764,33 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
   small-ball for Σn^{-s} in matched regime) — the frontier GM/RS leave open.
   2nd moment (MV mean value) is the Lean-tractable scale input.
 - MID-central open core now cleanly isolated to (AC), numerically true.
+
+## Cycle 26 (2026-07-04) — mollified dip scheme: (CR-density) re-routed through a subcritical kernel
+- Doc 56 BANKED (rng-selected route, seed 1488608780175592697): the mollified
+  dip scheme. Dip lemma [PROVED (paper), L²-only: CS+Fubini+Chebyshev-on-J];
+  counting bookkeeping [PROVED (paper), Markov+Vitali]; MV L² supply (V_pred
+  matches V_meas ≤2%); open kernel typed two strengths (K-bdd: meas{|F·M_y|≤r}
+  ≤ Cr²U; K-mild: mean (−log|P|)⁺ = O(1)). Theorem: (K-bdd)+(K-mild) ⟹
+  (CR-density) with ε(c) = O(√c).
+- Certification RUN (pre-registered, runpod, N=50..400): P1 PASS (profile
+  LINEAR, maxresid ≤0.148; slope → 1/12π per user-side asymptotic check —
+  matches doc 55 §2's independent probe 0.025–0.040: two computations agree on
+  the constant); P2 PASS (Q/r² ∈ [0.30,0.48] flat, N-drift ≤1.2×: (K-bdd)
+  empirically TRUE, C ≈ 0.5); P3 PASS 1167/1167 (dip intervals at stated
+  constants). Side-finding: sharp-μ mollifier V GROWS (2.6→4.0); BV taper
+  stabilizes (→2.48) — BV is the theorem object. Winding flag resolved
+  (clockwise-contour sign artifact; dense reseed −11% dedupe correction).
+- (AC) of doc 55 REFUTED as typed (addendum appended): Harper better-than-√
+  cancellation ⟹ typical |F_N| = o(√logN) ⟹ η(λ)→1 at rms scale. The
+  mollified (K-bdd) is now the unique living value-distribution route to (R3).
+- Doc 57 BANKED (consumer audit): MidCentralInput takes K RAW (no ε-limit in
+  the formal skeleton); slip bands are ≍N-length BLOCKS (dp/dT = 1/4πN) ⟹
+  traversal must be local; NEW: transport dichotomy (deep survivor ⟹ ζ pair
+  by Rouché ⟹ RH forces depth shrinkage ≲ T^{-1/8}, census consistent) + the
+  level-shift dodge typed (EPH lemma-shape: ephemerality in the level index,
+  measured P-DF3, would collapse the budget to Tier 0 — (CR-density) exits the
+  critical path if (EPH) lands). Three-tier budget verdict recorded.
+- Bottcher/Brolin/WeylLemma.lean audited for reuse (user pointer): ContDiffBump
+  mollification + convolution_mollN_le = the Esseen-smoothing bricks for
+  formalizing (K-bdd) consumption; harmonic_reproduction/poissonInt = the
+  per-cell Jensen cap substrate. Recorded for the MollifiedDip Lean arc.

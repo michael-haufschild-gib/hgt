@@ -1,9 +1,10 @@
 /-
 # SecondMoment — the Montgomery–Vaughan diagonal mean value for the AFE carrier
 
-**The (a) brick of doc 55 §4.** The scale input to the (AC) small-ball on which
-the (CR-density) open core of MID-central rests: the exact second-moment identity
-for the Dirichlet polynomial `F(t) = ∑_{n∈s} a n · n^{-it}`.
+**The (a) brick of doc 55 §4/§6.** The covariance-profile input to the (CR-density)
+open core of MID-central: the exact second-moment identity for the Dirichlet
+polynomial `F(t) = ∑_{n∈s} a n · n^{-it}`. (The value-small-ball reduction this brick
+was first written to feed is REFUTED — see the corrected role below and doc 55 §6.)
 
 The content is the diagonal orthogonality of the characters `n^{-it}` on a finite
 `t`-window: cross terms `m ≠ n` integrate to a bounded oscillatory remainder
@@ -14,13 +15,22 @@ length `U`. Hence
 
 with `Remainder` an explicit, absolutely-bounded off-diagonal double sum. For the
 matched carrier `a n = 1/√n` on `s = Icc 1 N` (so `F(t) = F_N(½+it)`), the main
-term is `U · ∑_{n≤N} 1/n ≥ U · log(N+1)` — the `√(log N)` RMS scale that fixes the
-threshold in (AC).
+term is `U · ∑_{n≤N} 1/n ≥ U · log(N+1)`. More generally (`secondMoment_sigma`) the
+`a n = n^{-σ}` carrier gives the covariance profile `K(σ) = ∑_{n≤N} n^{-2σ}`.
+
+**Corrected role (doc 55 §6).** This σ-profile — NOT a value small-ball at the RMS
+scale `√(log N)` — is the correct input to the near-line zero density. The
+Gaussian-analytic zero intensity is `(1/4π)·(log K)″(σ)`; its integral over the
+microscopic strip `0<σ−½≤c/log N` gives `ε(c)·U·log N` with `ε(c) ~ c/12π → 0`
+(cross-checked: `1/12π ≈ 0.0265` matches the doc 55 §2 winding probe `κ ≈ 0.025–0.040`).
+The earlier `√(log N)` value-small-ball reduction is REFUTED — Kronecker–Weyl
+equidistribution of `{n^{-it}}` plus Harper's better-than-squareroot moments make
+that ball asymptotically FULL, not empty.
 
 This is the classical Montgomery–Vaughan diagonal main term made axiom-clean; it
 consumes NO open input. The sharp `O(n)`-per-coefficient off-diagonal bound
 (the full Montgomery–Vaughan inequality) is not needed here — the elementary
-`2/|log(n/m)|` remainder suffices to isolate the scale.
+`2/|log(n/m)|` remainder suffices to isolate the profile.
 -/
 import Mathlib
 
@@ -238,9 +248,29 @@ theorem secondMoment_meanValue_sqrt (N : ℕ) (T U : ℝ) :
   exact sq_sqrt_inv m hm.1
 
 /-- **The scale.** The diagonal main term grows at least like `U · log(N+1)` —
-the `√(log N)` RMS amplitude that sets the small-ball threshold in (AC). -/
+the `√(log N)` RMS amplitude of `F_N(½+it)`. -/
 theorem secondMoment_mainTerm_ge_log (N : ℕ) (U : ℝ) (hU : 0 ≤ U) :
     U * Real.log ((N : ℝ) + 1) ≤ U * (∑ m ∈ Finset.Icc 1 N, (1 : ℝ) / (m : ℝ)) :=
   mul_le_mul_of_nonneg_left (harmonic_Icc_ge_log N) hU
+
+/-- **The σ-profile.** For general `σ`, the carrier `a n = n^{-σ}` (so `F = F_N(σ+it)`)
+has diagonal main term the covariance profile `K(σ) = ∑_{n≤N} n^{-2σ}`. This profile —
+its log-second-derivative giving the Gaussian-analytic near-line zero intensity
+`(1/4π)·(log K)″(σ)` (doc 55 §6) — is the corrected input to (CR-density), replacing
+the refuted value-small-ball. At `σ = ½` it recovers `secondMoment_meanValue_sqrt`. -/
+theorem secondMoment_sigma (N : ℕ) (σ T U : ℝ) :
+    (∫ t in T..(T + U), ‖dpoly (fun n => (n : ℝ) ^ (-σ)) (Finset.Icc 1 N) t‖ ^ 2)
+      = U * (∑ n ∈ Finset.Icc 1 N, (n : ℝ) ^ (-2 * σ))
+        + ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+            ((m : ℝ) ^ (-σ)) * ((n : ℝ) ^ (-σ))
+              * cosInt (Real.log n - Real.log m) T U := by
+  have hmain : ∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-σ)) ^ 2
+      = ∑ n ∈ Finset.Icc 1 N, (n : ℝ) ^ (-2 * σ) := by
+    apply Finset.sum_congr rfl
+    intro m hm
+    rw [Finset.mem_Icc] at hm
+    have hpos : (0 : ℝ) < (m : ℝ) := Nat.cast_pos.mpr (by omega)
+    rw [sq, ← Real.rpow_add hpos]; congr 1; ring
+  rw [secondMoment_meanValue, hmain]
 
 end RHTower

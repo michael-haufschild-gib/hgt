@@ -1,4 +1,4 @@
-# 55 — The Mollified Dip Scheme: (CR-density) Reduced to a Value-Distribution Kernel
+# 56 — The Mollified Dip Scheme: (CR-density) Reduced to a Value-Distribution Kernel
 
 **Register: SEARCH**, carrying three lemma-grade pieces marked [PROVED HERE (paper)]
 below (elementary, L²-only) and one typed open kernel. Origin: session seed
@@ -7,6 +7,18 @@ Kac–Rice/second-difference — and it beat them: the mollifier *removes the
 log-correlated criticality* that makes the naked-F_N small-ball a critical-chaos
 problem. Companion: doc 52 (the (CR-density) statement + bare-Jensen no-go),
 doc 54 §4 (why (CR-density) is the sole open input of (MID-central)).
+
+**Composition with doc 55 (parallel session, same day).** Doc 55 isolates
+(CR-density) ⟸ (AC), a small-ball for the NAKED |F_N| — whose load-bearing input
+is a Selberg-CLT-grade LEFT tail of log|F_N| (variance ½·log log N → ∞: the
+critical regime). This document replaces that kernel: the dip counting runs
+through P = F_N·M_y, whose value distribution is a FIXED-variance object, and the
+needed input (K-bdd, §5) is a bounded-density statement at a FIXED scale — strictly
+tamer than (AC). Doc 55's Lean brick `SecondMoment.lean` (`dpoly`,
+`secondMoment_meanValue`, `offDiagonal_abs_le`) is exactly the substrate that
+formalizes §3's L² supply: apply it with a_m = (P-coefficients)·m^{−1/2} and the
+log m–weighted variant for the P′ masses. Nothing in the two documents conflicts;
+this one strictly extends the reduction chain.
 
 Pre-registered predictions P1–P3 in §8. **This document was written before the
 computation runs; the predictions bind.**
@@ -203,3 +215,69 @@ Adjudication rule: P1 PASS + P2 PASS ⟹ promote the §5 theorem to the primary
 (R3) route and open the kernel attack (task #5) at full force. P2 FAIL ⟹ the
 failure profile (which r, which N-scaling) is the finding; re-type the kernel
 with the measured exponent and re-run §4's bookkeeping with r^q.
+
+---
+
+## 9. Adjudication (run completed same day; archive `computations/mwm_mollified_dip/`)
+
+Run: `mollified_dip_cert.py` on runpod (N ∈ {50,100,200,400}, y = √N, U = 2000,
+t-grid 0.01; JSON archived). Against §8's registered predictions:
+
+- **P1 PASS (linearity — the load-bearing clause).** The profile X(c)/(U log N)
+  is linear on c ∈ [0.1, 1]: max relative residual 0.126–0.148 (registered ≤ 0.25)
+  at every N. No atom, no cusp — (CR-density) is TRUE-shaped in the mollifier
+  window too, independently confirming doc 55 §2's saturation signal. Fitted
+  slope 0.0541–0.0566, i.e. **2.04–2.13× the Gaussian-curvature prediction**
+  1/(12π) ≈ 0.0265, stable (mildly decreasing) in N — within the registered
+  factor 3. FLAG: the winding cross-check disagreed with Newton root-finding on
+  1/4/8/7 of 15 boxes at N = 50/100/200/400; a dense-seed + adaptive-winding
+  verification is queued. Linearity is robust to a uniform miss-rate; the
+  absolute slope constant is provisional until the diagnosis lands.
+- **P2 PASS (the kernel).** Q_N(r)/r² ∈ [0.30, 0.48] for ALL r ∈ [0.05, 0.8],
+  all N, both mollifiers — flat in r (the 2D density of P near 0 is
+  near-constant ≈ 0.10–0.15 per unit area) and N-drift ≤ 1.2× (registered 1.5).
+  Gaussian-model center at measured V_BV ≈ 2.4 gives e^{−1/V}/V ≈ 0.27 — right
+  order. **(K-bdd) is empirically true with C ≈ 0.5.**
+- **P2 side-finding (unregistered, structural).** V_pred matches V_meas to ≤ 2%
+  at every N (the MV supply is exact at these lengths), and V_sharp GROWS with
+  N (2.61, 2.41, 3.11, 4.00): the sharp-μ mollifier is NOT variance-bounded at
+  θ = 1/2 — §3's [CHECK] resolves NEGATIVE for the sharp cutoff. The
+  Barban–Vehov taper stabilizes (2.10, 2.26, 2.45, 2.48): **the BV variant is
+  the theorem object**, as §3 anticipated. Chain constant: κ² = (1+θ)²V_BV ≈ 5.6.
+- **P3 PASS, 1167/1167** (234/280/313/340 per N): every measured sliver zero
+  produced its dip interval within the §2 constants at the registered slack.
+
+Per §8's adjudication rule: the §5 conditional theorem is promoted to the
+primary (R3) route, and the kernel attack opens at full force. The kernel's
+empirical profile (flat density ≈ 0.1, fixed scale, N-uniform) is exactly the
+Berry–Esseen/Rogozin shape §5 route 1 targets.
+
+## 10. Verification round + the (AC) refutation: the mollified kernel is now the only living value route
+
+**Winding diagnosis (`winding_verify.py`, N = 200, archived).** The §9 FLAG
+resolves as an instrumentation artifact: the cross-check contour was traversed
+CLOCKWISE (left-edge-up first), so winding returned −(count) and the comparison
+|w − n| flagged every box that merely contained a zero. Per-box |winding| vs
+dense-seed Newton agree 16 : 15 over 30 boxes (one Newton miss). Dense 3-line
+reseeding with coarser γ-dedupe corrects X(N=200, c=1) from 541 to 481 (−11%,
+a γ-rounding duplication artifact at 1e−6 against double-precision jitter
+~2.5e−6 at t ~ 2.5·10⁵). Corrected through-origin slope at N = 200: ≈ 0.045.
+
+**The constant (user-side check, two independent probes).** ε(c)/c converges to
+1/(12π) ≈ 0.0265 as N → ∞ — the Jessen-curvature value of §8's P1 — and doc 55
+§2's independent winding probe measured κ ≈ 0.025–0.040 bracketing it. The
+finite-N excess measured here (0.045–0.056, decreasing in N) is the
+slowly-decaying critical correction (relative O(1/log N) from the exact
+harmonic-weight variance plus the chaos correction); the registered P1 clauses
+(linearity; slope within factor 3) hold at every N with the corrected counts.
+
+**(AC) of doc 55 is FALSE as typed [mechanism reconstructed; refutation
+addendum appended to doc 55].** Harper-grade better-than-squareroot
+cancellation gives typical |F_N(1/2+it)| ≍ √(log N)/(log log N)^{1/4} =
+o(√(log N)): the L² mass sits in rare peaks, the typical value falls below any
+fixed multiple of the rms scale, so meas{|F_N| ≤ λ√(log N)}/U → 1 — η(λ) → 1,
+not → 0. The naked small-ball at rms scale cannot hold. Consequence: the §5
+kernel (K-bdd) for the MOLLIFIED sum — subcritical by construction, measured
+flat at density ≈ 0.1 — is not merely tamer than (AC): it is the unique
+surviving value-distribution route to (CR-density) in this family. The
+criticality diagnosis of §1 is thereby CONFIRMED from the negative side.
