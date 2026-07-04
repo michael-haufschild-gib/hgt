@@ -69,3 +69,4 @@ import GaloisForLFunctions.RHTower.SpurRegime
 import GaloisForLFunctions.RHTower.SpurStack
 import GaloisForLFunctions.RHTower.SpurCarrier
 import GaloisForLFunctions.RHTower.SpurMovingThreshold
+import GaloisForLFunctions.RHTower.ReversalClosedForm

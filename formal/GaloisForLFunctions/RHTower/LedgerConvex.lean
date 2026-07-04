@@ -473,4 +473,86 @@ theorem corrected_endpoint_regime_of_direct_eval
     corrected_march_increment_lower_bound hδ hWpos hΔG1 hW hinc
   exact corrected_endpoint_regime_assembly_pos hδ hM hincLower hresponse herror hΔS
 
+/-- Doc 42 S″ band arithmetic: the squared band `64 ≤ M²*c₈*δ`
+makes the retained-drift swap lower bound nonnegative. -/
+theorem sdouble_swap_lower_nonneg {c₈ δ M : ℝ}
+    (hδ : 0 < δ) (hband : 64 ≤ M ^ 2 * c₈ * δ) :
+    0 ≤ c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) := by
+  have hprod_pos : 0 < M ^ 2 * c₈ * δ := lt_of_lt_of_le (by norm_num) hband
+  have hM2pos : 0 < M ^ 2 := by
+    by_contra hnot
+    have hM2le : M ^ 2 ≤ 0 := le_of_not_gt hnot
+    have hM2nonneg : 0 ≤ M ^ 2 := sq_nonneg M
+    have hM2zero : M ^ 2 = 0 := le_antisymm hM2le hM2nonneg
+    rw [hM2zero] at hprod_pos
+    norm_num at hprod_pos
+  rw [sub_nonneg]
+  rw [div_le_div_iff₀ (by positivity : 0 < M ^ 2 * δ ^ 2)
+    (by positivity : 0 < 4 * δ)]
+  nlinarith [hband, hδ, hM2pos]
+
+/-- Doc 42 S″ swap sign: if the actual swap is above Lemma E″'s lower bound,
+then it is nonnegative on the S″ band. -/
+theorem sdouble_swap_nonneg {c₈ δ M swap : ℝ}
+    (hδ : 0 < δ) (hband : 64 ≤ M ^ 2 * c₈ * δ)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap) :
+    0 ≤ swap :=
+  le_trans (sdouble_swap_lower_nonneg hδ hband) hswap
+
+/-- Doc 42 S″ assembly once the response term is positive and the swap is nonnegative. -/
+theorem sdouble_regime_assembly_pos {inc response swap ΔS : ℝ}
+    (hinc : 0 < inc) (hresponse : 0 < response)
+    (hswap : 0 ≤ swap) (hΔS : ΔS = inc * response + swap) :
+    0 < ΔS := by
+  rw [hΔS]
+  exact add_pos_of_pos_of_nonneg (mul_pos hinc hresponse) hswap
+
+/-- Generic S″ step closure from unit march, the `W` bound, positive response,
+and the retained-drift swap band. -/
+theorem corrected_sdouble_regime_of_unit_march
+    {δ c₈ M ΔG W inc response swap ΔS : ℝ}
+    (hδ : 0 < δ) (hΔG : 1 ≤ ΔG)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hinc : inc = ΔG / (2 * W))
+    (hband : 64 ≤ M ^ 2 * c₈ * δ)
+    (hresponse : 0 < response)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap)
+    (hΔS : ΔS = inc * response + swap) :
+    0 < ΔS := by
+  have hincLower : δ ^ 2 / 80 ≤ inc :=
+    corrected_march_increment_lower_bound hδ hWpos hΔG hW hinc
+  have hincpos : 0 < inc := lt_of_lt_of_le (by positivity) hincLower
+  have hswap0 : 0 ≤ swap := sdouble_swap_nonneg hδ hband hswap
+  exact sdouble_regime_assembly_pos hincpos hresponse hswap0 hΔS
+
+/-- Deep-response S″ closure, using the same response lower bound as the deep S′ shell. -/
+theorem corrected_sdouble_deep_regime_of_unit_march
+    {δ c₈ M ΔG W inc response swap ΔS : ℝ}
+    (hδ : 0 < δ) (hΔG : 1 ≤ ΔG)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hinc : inc = ΔG / (2 * W))
+    (hband : 64 ≤ M ^ 2 * c₈ * δ)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap)
+    (hΔS : ΔS = inc * response + swap) :
+    0 < ΔS := by
+  have hresppos : 0 < response := lt_of_lt_of_le (by positivity) hresponse
+  exact corrected_sdouble_regime_of_unit_march hδ hΔG hWpos hW hinc hband hresppos
+    hswap hΔS
+
+/-- Endpoint-response S″ closure, using the same response lower bound as the endpoint S′ shell. -/
+theorem corrected_sdouble_endpoint_regime_of_unit_march
+    {δ c₈ M ΔG W inc response swap ΔS : ℝ}
+    (hδ : 0 < δ) (hΔG : 1 ≤ ΔG)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hinc : inc = ΔG / (2 * W))
+    (hband : 64 ≤ M ^ 2 * c₈ * δ)
+    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap)
+    (hΔS : ΔS = inc * response + swap) :
+    0 < ΔS := by
+  have hresppos : 0 < response := lt_of_lt_of_le (by positivity) hresponse
+  exact corrected_sdouble_regime_of_unit_march hδ hΔG hWpos hW hinc hband hresppos
+    hswap hΔS
+
 end RHTower

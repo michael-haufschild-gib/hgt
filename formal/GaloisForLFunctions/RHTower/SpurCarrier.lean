@@ -96,6 +96,25 @@ structure DirectEvalStepCore (S₀ S₁ : ℝ) where
   herror : error ≤ 16 / (M ^ 2 * delta ^ 2)
   hdeltaS : S₁ - S₀ = inc * response - error
 
+/-- Common data for a doc-42 S″ certified adjacent S-step. -/
+structure SDoubleStepCore (S₀ S₁ : ℝ) where
+  delta : ℝ
+  c8 : ℝ
+  M : ℝ
+  deltaG : ℝ
+  W : ℝ
+  inc : ℝ
+  response : ℝ
+  swap : ℝ
+  hdelta : 0 < delta
+  hdeltaG : 1 ≤ deltaG
+  hWpos : 0 < W
+  hW : W ≤ 40 / delta ^ 2
+  hinc : inc = deltaG / (2 * W)
+  hband : 64 ≤ M ^ 2 * c8 * delta
+  hswap : c8 / (4 * delta) - 16 / (M ^ 2 * delta ^ 2) ≤ swap
+  hdeltaS : S₁ - S₀ = inc * response + swap
+
 /-- Deep-band direct finite-evaluation certificate for one intended-carrier S-step. -/
 structure DeepDirectCarrierStep (S₀ S₁ : ℝ) where
   core : DirectEvalStepCore S₀ S₁
@@ -108,12 +127,24 @@ structure EndpointDirectCarrierStep (S₀ S₁ : ℝ) where
   hM : 3136 ≤ core.M ^ 2 * core.delta ^ 2
   hresponse : (5 : ℝ) / (12 * core.delta ^ 2) ≤ core.response
 
+/-- Deep-response S″ certificate for one intended-carrier S-step. -/
+structure DeepSDoubleCarrierStep (S₀ S₁ : ℝ) where
+  core : SDoubleStepCore S₀ S₁
+  hresponse : ((189 : ℝ) / 5) / core.delta ^ 3 ≤ core.response
+
+/-- Endpoint-response S″ certificate for one intended-carrier S-step. -/
+structure EndpointSDoubleCarrierStep (S₀ S₁ : ℝ) where
+  core : SDoubleStepCore S₀ S₁
+  hresponse : (5 : ℝ) / (12 * core.delta ^ 2) ≤ core.response
+
 /-- One adjacent step in the intended one-sided-far SPUR-R carrier protocol. -/
 inductive SpurROneSidedFarStep (S₀ S₁ : ℝ) : Type 2
   | deepSumTail (data : DeepSumTailCarrierStep S₀ S₁)
   | endpointSumTail (data : EndpointSumTailCarrierStep S₀ S₁)
   | deepDirect (data : DeepDirectCarrierStep S₀ S₁)
   | endpointDirect (data : EndpointDirectCarrierStep S₀ S₁)
+  | deepSDouble (data : DeepSDoubleCarrierStep S₀ S₁)
+  | endpointSDouble (data : EndpointSDoubleCarrierStep S₀ S₁)
 
 /-- Any intended-carrier step certificate produces the S-mono step certificate. -/
 def SpurROneSidedFarStep.toSMonoStepCert {S₀ S₁ : ℝ} :
@@ -136,6 +167,14 @@ def SpurROneSidedFarStep.toSMonoStepCert {S₀ S₁ : ℝ} :
       smonoStepCert_of_endpoint_direct_eval data.core.hdelta data.core.hgamma data.core.heval
         data.core.hdeltaG data.core.hWpos data.core.hW data.core.hinc data.hM data.hresponse
         data.core.herror data.core.hdeltaS
+  | .deepSDouble data =>
+      smonoStepCert_of_sdouble_deep data.core.hdelta data.core.hdeltaG data.core.hWpos
+        data.core.hW data.core.hinc data.core.hband data.hresponse data.core.hswap
+        data.core.hdeltaS
+  | .endpointSDouble data =>
+      smonoStepCert_of_sdouble_endpoint data.core.hdelta data.core.hdeltaG data.core.hWpos
+        data.core.hW data.core.hinc data.core.hband data.hresponse data.core.hswap
+        data.core.hdeltaS
 
 /-- A chain of intended-carrier adjacent step certificates. -/
 inductive SpurROneSidedFarChain : List ℝ → Type 2

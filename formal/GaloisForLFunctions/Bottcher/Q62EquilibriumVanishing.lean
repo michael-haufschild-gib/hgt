@@ -192,6 +192,52 @@ theorem PotentialDominatedOnFilledJulia_of_subseq_boundary_potential_tendsto_zer
       exact integral_undef hint
     rw [hzero]
 
+/-- GAP-A bridge for Half A in adjacent-subsequence form.  Finite
+arbitrary-target scaling gives the equality at levels `n` and `n+1`; the exact
+remaining limit input is that the selected subsequence at `f_c z` and the
+adjacent selected subsequence at `z` converge to the same target limiting
+potential. -/
+theorem BrolinScalingAt_of_adjacent_subseq_potential_tendsto
+    {c a : ℂ}
+    (hleft :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Tendsto
+          (fun k =>
+            - logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k))
+              (quadratic c z))
+          atTop
+          (𝓝 (- logPotential (limitingBrolinMeasureAt c a) (quadratic c z))))
+    (hright :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Tendsto
+          (fun k =>
+            - logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k + 1)) z)
+          atTop
+          (𝓝 (- logPotential (limitingBrolinMeasureAt c a) z)))
+    (hnotAtom :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        ∀ᶠ k in atTop,
+          (quadratic c)^[brolinLimitAtSubsequence c a k + 1] z - a ≠ 0) :
+    BrolinScalingAt c a := by
+  intro z hzK
+  have hfinite :
+      ∀ᶠ k in atTop,
+        - logPotential
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k))
+            (quadratic c z) =
+          2 * (- logPotential
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k + 1)) z) := by
+    filter_upwards [hnotAtom z hzK] with k hk
+    exact
+      neg_logPotential_preBrolinMeasureAt_quadratic_eq_two_succ
+        (c := c) (a := a) (z := z)
+        (n := brolinLimitAtSubsequence c a k) hk
+  have hleftLimit := (hleft z hzK).congr' hfinite
+  have hrightLimit := (hright z hzK).const_mul 2
+  exact tendsto_nhds_unique hleftLimit hrightLimit
+
 /-- **Half A (doubling ⟹ `Uᵘ ≥ 0` on `K_c`).**  From the scaling law: a point of `K_c`
 with `−Uᵘ > 0` would double `−Uᵘ` along its bounded forward orbit past the uniform
 upper bound.  Hence `−Uᵘ ≤ 0`, i.e. `Uᵘ ≥ 0`, on `K_c`. -/
@@ -251,6 +297,103 @@ theorem limitingBrolinMeasureAtSupportsJulia_of_scaling_of_dominated (c a : ℂ)
     LimitingBrolinMeasureAtSupportsJulia c a :=
   limitingBrolinMeasureAtSupportsJulia_of_equilibriumVanishes c a
     (equilibriumPotentialVanishesAe_of_scaling_of_dominated c a hscale hdom)
+
+/-- GAP-A support from the finite Half A and Half B gates in subsequence form.
+This statement contains no Julia-nullity input: Half A is the adjacent-limit
+promotion of finite scaling, and Half B is the finite pressure/Fatou promotion
+of boundary domination. -/
+theorem limitingBrolinMeasureAtSupportsJulia_of_subseq_scaling_and_boundary_potential_tendsto_zero
+    {c a : ℂ}
+    (hscaleLeft :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Tendsto
+          (fun k =>
+            - logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k))
+              (quadratic c z))
+          atTop
+          (𝓝 (- logPotential (limitingBrolinMeasureAt c a) (quadratic c z))))
+    (hscaleRight :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Tendsto
+          (fun k =>
+            - logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k + 1)) z)
+          atTop
+          (𝓝 (- logPotential (limitingBrolinMeasureAt c a) z)))
+    (hscaleNotAtom :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        ∀ᶠ k in atTop,
+          (quadratic c)^[brolinLimitAtSubsequence c a k + 1] z - a ≠ 0)
+    (hdomAtom :
+      ∀ z : ℂ, z ∈ filledJulia c → limitingBrolinMeasureAt c a {z} = 0)
+    (hdomLog0 :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Tendsto
+          (fun k =>
+            logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+          atTop (𝓝 0))
+    (hdomNotAtom :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        ∀ᶠ k in atTop,
+          (quadratic c)^[brolinLimitAtSubsequence c a k] z - a ≠ 0) :
+    LimitingBrolinMeasureAtSupportsJulia c a :=
+  limitingBrolinMeasureAtSupportsJulia_of_scaling_of_dominated c a
+    (BrolinScalingAt_of_adjacent_subseq_potential_tendsto
+      hscaleLeft hscaleRight hscaleNotAtom)
+    (PotentialDominatedOnFilledJulia_of_subseq_boundary_potential_tendsto_zero
+      hdomAtom hdomLog0 hdomNotAtom)
+
+/-- Fixed-point q62 support surface from the finite Half A/Half B subsequence
+gates.  This is the form consumed by the q62 Brolin/backward-orbit capstones. -/
+theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_subseq_scaling_and_boundary_potential_tendsto_zero
+    {c : ℂ}
+    (hscaleLeft :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          Tendsto
+            (fun k =>
+              - logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k))
+                (quadratic c z))
+            atTop
+            (𝓝 (- logPotential (limitingBrolinMeasureAt c a) (quadratic c z))))
+    (hscaleRight :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          Tendsto
+            (fun k =>
+              - logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k + 1)) z)
+            atTop
+            (𝓝 (- logPotential (limitingBrolinMeasureAt c a) z)))
+    (hscaleNotAtom :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          ∀ᶠ k in atTop,
+            (quadratic c)^[brolinLimitAtSubsequence c a k + 1] z - a ≠ 0)
+    (hdomAtom :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c → limitingBrolinMeasureAt c a {z} = 0)
+    (hdomLog0 :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          Tendsto
+            (fun k =>
+              logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+            atTop (𝓝 0))
+    (hdomNotAtom :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          ∀ᶠ k in atTop,
+            (quadratic c)^[brolinLimitAtSubsequence c a k] z - a ≠ 0) :
+    ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
+  fun a ha =>
+    limitingBrolinMeasureAtSupportsJulia_of_subseq_scaling_and_boundary_potential_tendsto_zero
+      (hscaleLeft a ha) (hscaleRight a ha) (hscaleNotAtom a ha)
+      (hdomAtom a ha) (hdomLog0 a ha) (hdomNotAtom a ha)
 
 /-- Disconnected GAP-A support from the precise remaining shifted-potential identification.
 This isolates the obstruction: promote the selected target limit to the canonical shifted

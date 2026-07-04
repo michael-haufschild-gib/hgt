@@ -95,6 +95,34 @@ theorem smonoStepCert_of_endpoint_direct_eval {S₀ S₁ : ℝ}
   exact corrected_endpoint_regime_of_direct_eval hδ hγᵢ heval hΔG hWpos hW hinc hM hresponse
     herror hΔS
 
+/-- Deep-response S″ closure as one S-mono step. -/
+theorem smonoStepCert_of_sdouble_deep {S₀ S₁ : ℝ}
+    {δ c₈ M ΔG W inc response swap : ℝ}
+    (hδ : 0 < δ) (hΔG : 1 ≤ ΔG)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hinc : inc = ΔG / (2 * W))
+    (hband : 64 ≤ M ^ 2 * c₈ * δ)
+    (hresponse : ((189 : ℝ) / 5) / δ ^ 3 ≤ response)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap)
+    (hΔS : S₁ - S₀ = inc * response + swap) :
+    SMonoStepCert S₀ S₁ := by
+  exact corrected_sdouble_deep_regime_of_unit_march hδ hΔG hWpos hW hinc hband
+    hresponse hswap hΔS
+
+/-- Endpoint-response S″ closure as one S-mono step. -/
+theorem smonoStepCert_of_sdouble_endpoint {S₀ S₁ : ℝ}
+    {δ c₈ M ΔG W inc response swap : ℝ}
+    (hδ : 0 < δ) (hΔG : 1 ≤ ΔG)
+    (hWpos : 0 < W) (hW : W ≤ 40 / δ ^ 2)
+    (hinc : inc = ΔG / (2 * W))
+    (hband : 64 ≤ M ^ 2 * c₈ * δ)
+    (hresponse : (5 : ℝ) / (12 * δ ^ 2) ≤ response)
+    (hswap : c₈ / (4 * δ) - 16 / (M ^ 2 * δ ^ 2) ≤ swap)
+    (hΔS : S₁ - S₀ = inc * response + swap) :
+    SMonoStepCert S₀ S₁ := by
+  exact corrected_sdouble_endpoint_regime_of_unit_march hδ hΔG hWpos hW hinc hband
+    hresponse hswap hΔS
+
 /-- Extract the positive adjacent S-increment from a one-step regime certificate. -/
 theorem stepPos_of_smonoStepCert {S₀ S₁ : ℝ} (h : SMonoStepCert S₀ S₁) :
     0 < S₁ - S₀ := h

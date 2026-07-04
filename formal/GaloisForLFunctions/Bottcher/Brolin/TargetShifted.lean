@@ -90,6 +90,40 @@ theorem neg_logPotential_preBrolinMeasureAt_eq_log_norm {c a z : ℂ} {n : ℕ}
     _ = (2 ^ n : ℝ)⁻¹ * Real.log ‖(quadratic c)^[n] z - a‖ := by
           rw [Polynomial.eval_sub, Polynomial.eval_C, quadraticPolyIterate_eval]
 
+/-- Finite arbitrary-target potentials scale exactly under `f_c`: the signed
+potential at `f_c z` on level `n` is twice the signed potential at `z` on
+level `n+1`, away from the finite atoms. -/
+theorem neg_logPotential_preBrolinMeasureAt_quadratic_eq_two_succ
+    {c a z : ℂ} {n : ℕ} (hz : (quadratic c)^[n + 1] z - a ≠ 0) :
+    - logPotential (preBrolinMeasureAt c a n) (quadratic c z) =
+      2 * (- logPotential (preBrolinMeasureAt c a (n + 1)) z) := by
+  have hzq : (quadratic c)^[n] (quadratic c z) - a ≠ 0 := by
+    rwa [← Function.iterate_succ_apply (quadratic c) n z]
+  calc
+    - logPotential (preBrolinMeasureAt c a n) (quadratic c z)
+        = (2 ^ n : ℝ)⁻¹ *
+            Real.log ‖(quadratic c)^[n] (quadratic c z) - a‖ :=
+          neg_logPotential_preBrolinMeasureAt_eq_log_norm hzq
+    _ = (2 ^ n : ℝ)⁻¹ *
+          Real.log ‖(quadratic c)^[n + 1] z - a‖ := by
+          rw [← Function.iterate_succ_apply (quadratic c) n z]
+    _ = 2 * ((2 ^ (n + 1) : ℝ)⁻¹ *
+          Real.log ‖(quadratic c)^[n + 1] z - a‖) := by
+          rw [pow_succ]
+          ring
+    _ = 2 * (- logPotential (preBrolinMeasureAt c a (n + 1)) z) := by
+          rw [neg_logPotential_preBrolinMeasureAt_eq_log_norm hz]
+
+/-- Unsigned form of finite arbitrary-target quadratic scaling. -/
+theorem logPotential_preBrolinMeasureAt_quadratic_eq_two_succ
+    {c a z : ℂ} {n : ℕ} (hz : (quadratic c)^[n + 1] z - a ≠ 0) :
+    logPotential (preBrolinMeasureAt c a n) (quadratic c z) =
+      2 * logPotential (preBrolinMeasureAt c a (n + 1)) z := by
+  have h :=
+    neg_logPotential_preBrolinMeasureAt_quadratic_eq_two_succ
+      (c := c) (a := a) (z := z) (n := n) hz
+  linarith
+
 /-- Finite arbitrary-target truncated-kernel integrals are bounded above by
 the true finite potential whenever the evaluation point is not a level-`n`
 atom over the target. -/
@@ -298,6 +332,46 @@ theorem roots_quadraticPolyIterate_succ_sub_C (c a : ℂ) (n : ℕ) :
     _ = ((quadraticPolyIterate c n - Polynomial.C a).roots.bind fun r =>
           (quadraticPoly c - Polynomial.C r).roots) := by
           rw [Multiset.bind_map]
+
+/-- Arbitrary-target pullback roots are antipodally symmetric at every positive
+level, with multiplicity. -/
+theorem roots_quadraticPolyIterate_succ_sub_C_map_neg (c a : ℂ) (n : ℕ) :
+    ((quadraticPolyIterate c (n + 1) - Polynomial.C a).roots.map Neg.neg) =
+      (quadraticPolyIterate c (n + 1) - Polynomial.C a).roots := by
+  have hdecomp := roots_quadraticPolyIterate_succ_sub_C c a n
+  rw [hdecomp, Multiset.map_bind]
+  apply Multiset.bind_congr
+  intro r _hr
+  exact roots_quadraticPoly_sub_C_map_neg c r
+
+/-- Finite arbitrary-target pre-Brolin measures are antipodally invariant at
+every positive level, in test-integral form. -/
+theorem integral_preBrolinMeasureAt_succ_neg_eq
+    (c a : ℂ) (n : ℕ) (g : ℂ → ℝ) :
+    ∫ z, g (-z) ∂preBrolinMeasureAt c a (n + 1) =
+      ∫ z, g z ∂preBrolinMeasureAt c a (n + 1) := by
+  rw [integral_preBrolinMeasureAt_eq_root_average,
+    integral_preBrolinMeasureAt_eq_root_average]
+  congr 1
+  calc
+    (((quadraticPolyIterate c (n + 1) - Polynomial.C a).roots.map
+        fun z => g (-z)).sum)
+        = ((((quadraticPolyIterate c (n + 1) - Polynomial.C a).roots.map
+          Neg.neg).map g).sum) := by
+          rw [Multiset.map_map]
+          rfl
+    _ = (((quadraticPolyIterate c (n + 1) - Polynomial.C a).roots.map
+          g).sum) := by
+          rw [roots_quadraticPolyIterate_succ_sub_C_map_neg]
+
+/-- Measure-level antipodal invariance of finite arbitrary-target pre-Brolin
+measures at every positive level. -/
+theorem map_preBrolinMeasureAt_succ_neg (c a : ℂ) (n : ℕ) :
+    Measure.map Neg.neg (preBrolinMeasureAt c a (n + 1)) =
+      preBrolinMeasureAt c a (n + 1) := by
+  rw [preBrolinMeasureAt, Measure.map_smul,
+    map_rootCountingMeasure _ _ continuous_neg.measurable]
+  rw [roots_quadraticPolyIterate_succ_sub_C_map_neg]
 
 /-- Zero-target pullback roots are antipodally symmetric at every finite
 level, with multiplicity. -/

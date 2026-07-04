@@ -156,9 +156,114 @@ theorem amp_reader_exact_pair_of_movingThresholdLists {values thresholds : List 
 def reversedCarrierAMPThreshold (d : ℕ) (a b y : ℝ) : ℝ :=
   ((d : ℝ) - a * y) ^ 2 + b ^ 2 * y ^ 2
 
+/-- Difference identity for the intended reversed-carrier threshold quadratic. -/
+theorem reversedCarrierAMPThreshold_sub (d : ℕ) (a b y z : ℝ) :
+    reversedCarrierAMPThreshold d a b z - reversedCarrierAMPThreshold d a b y =
+      (z - y) * (((a ^ 2 + b ^ 2) * (z + y)) - 2 * a * (d : ℝ)) := by
+  unfold reversedCarrierAMPThreshold
+  ring
+
+/--
+On the decreasing side of the quadratic threshold, increasing adjacent `y` values
+make the threshold antitone.
+-/
+theorem reversedCarrierAMPThreshold_le_of_leftOfVertex {d : ℕ} {a b y z : ℝ}
+    (hyz : y ≤ z)
+    (hvertex : (a ^ 2 + b ^ 2) * (z + y) ≤ 2 * a * (d : ℝ)) :
+    reversedCarrierAMPThreshold d a b z ≤ reversedCarrierAMPThreshold d a b y := by
+  have hnonneg : 0 ≤ z - y := by linarith
+  have hnonpos : (a ^ 2 + b ^ 2) * (z + y) - 2 * a * (d : ℝ) ≤ 0 := by
+    linarith
+  have hprod :
+      (z - y) * (((a ^ 2 + b ^ 2) * (z + y)) - 2 * a * (d : ℝ)) ≤ 0 :=
+    mul_nonpos_of_nonneg_of_nonpos hnonneg hnonpos
+  have hdiff := reversedCarrierAMPThreshold_sub d a b y z
+  linarith
+
+/--
+On the increasing side of the quadratic threshold, decreasing adjacent `y` values
+make the threshold antitone along the list order.
+-/
+theorem reversedCarrierAMPThreshold_le_of_rightOfVertex {d : ℕ} {a b y z : ℝ}
+    (hzy : z ≤ y)
+    (hvertex : 2 * a * (d : ℝ) ≤ (a ^ 2 + b ^ 2) * (z + y)) :
+    reversedCarrierAMPThreshold d a b z ≤ reversedCarrierAMPThreshold d a b y := by
+  have hnonpos : z - y ≤ 0 := by linarith
+  have hnonneg : 0 ≤ (a ^ 2 + b ^ 2) * (z + y) - 2 * a * (d : ℝ) := by
+    linarith
+  have hprod :
+      (z - y) * (((a ^ 2 + b ^ 2) * (z + y)) - 2 * a * (d : ℝ)) ≤ 0 :=
+    mul_nonpos_of_nonpos_of_nonneg hnonpos hnonneg
+  have hdiff := reversedCarrierAMPThreshold_sub d a b y z
+  linarith
+
+/--
+Adjacent carrier coordinates ordered on the left/decreasing side of the REV
+threshold quadratic.
+-/
+def ReversedCarrierThresholdLeftOfVertex (d : ℕ) (a b : ℝ) : List ℝ → Prop
+  | [] => True
+  | [_] => True
+  | y :: z :: ys =>
+      y ≤ z ∧ (a ^ 2 + b ^ 2) * (z + y) ≤ 2 * a * (d : ℝ) ∧
+        ReversedCarrierThresholdLeftOfVertex d a b (z :: ys)
+
+/--
+Adjacent carrier coordinates ordered on the right/increasing side of the REV
+threshold quadratic, so a decreasing `y` list still gives antitone thresholds.
+-/
+def ReversedCarrierThresholdRightOfVertex (d : ℕ) (a b : ℝ) : List ℝ → Prop
+  | [] => True
+  | [_] => True
+  | y :: z :: ys =>
+      z ≤ y ∧ 2 * a * (d : ℝ) ≤ (a ^ 2 + b ^ 2) * (z + y) ∧
+        ReversedCarrierThresholdRightOfVertex d a b (z :: ys)
+
 /-- Threshold readings along a reversed one-sided-far carrier. -/
 def reversedCarrierThresholds (d : ℕ) (a b : ℝ) (ys : List ℝ) : List ℝ :=
   ys.map (reversedCarrierAMPThreshold d a b)
+
+/-- Left-of-vertex carrier coordinates produce antitone REV thresholds. -/
+theorem adjacentAntitone_reversedCarrierThresholds_of_leftOfVertex (d : ℕ) (a b : ℝ) :
+    ∀ ys : List ℝ,
+      ReversedCarrierThresholdLeftOfVertex d a b ys →
+        AdjacentAntitone (reversedCarrierThresholds d a b ys) := by
+  intro ys
+  induction ys with
+  | nil =>
+      intro _h
+      trivial
+  | cons y ys ih =>
+      intro h
+      cases ys with
+      | nil =>
+          trivial
+      | cons z zs =>
+          rcases h with ⟨hyz, hvertex, htail⟩
+          constructor
+          · exact reversedCarrierAMPThreshold_le_of_leftOfVertex hyz hvertex
+          · exact ih htail
+
+/-- Right-of-vertex carrier coordinates produce antitone REV thresholds. -/
+theorem adjacentAntitone_reversedCarrierThresholds_of_rightOfVertex (d : ℕ) (a b : ℝ) :
+    ∀ ys : List ℝ,
+      ReversedCarrierThresholdRightOfVertex d a b ys →
+        AdjacentAntitone (reversedCarrierThresholds d a b ys) := by
+  intro ys
+  induction ys with
+  | nil =>
+      intro _h
+      trivial
+  | cons y ys ih =>
+      intro h
+      cases ys with
+      | nil =>
+          trivial
+      | cons z zs =>
+          rcases h with ⟨hzy, hvertex, htail⟩
+          constructor
+          · exact reversedCarrierAMPThreshold_le_of_rightOfVertex hzy hvertex
+          · exact ih htail
 
 /-- Intended SPUR-R moving-threshold margin differences along the reversed carrier. -/
 def reversedCarrierMarginDiffs (β : Multiset ℝ) (d : ℕ) (a b : ℝ) (ys : List ℝ) :
@@ -227,5 +332,85 @@ theorem amp_reader_exact_pair_of_oneSidedFarMovingCarrierInput {β : Multiset �
     Z = 2 :=
   amp_reader_exact_pair_of_spurRAMPInput
     (spurRAMPInput_of_oneSidedFarMovingCarrierInput h)
+
+/--
+Moving-threshold carrier input with the REV-threshold antitonicity certified by
+left-of-vertex quadratic monotonicity.
+-/
+structure SpurROneSidedFarMovingCarrierLeftInput (β : Multiset ℝ) (ys : List ℝ)
+    (Z d : ℕ) (a b : ℝ) : Type 2 where
+  chain : SpurROneSidedFarChain (reversedCarrierReadings β ys)
+  threshold_left : ReversedCarrierThresholdLeftOfVertex d a b ys
+  visible : 0 < Z
+  even : Even Z
+  counting_bound :
+    Z ≤ 2 + copyFlipTransitions (reversedCarrierMovingAmpStates β d a b ys)
+
+/--
+Moving-threshold carrier input with the REV-threshold antitonicity certified by
+right-of-vertex quadratic monotonicity.
+-/
+structure SpurROneSidedFarMovingCarrierRightInput (β : Multiset ℝ) (ys : List ℝ)
+    (Z d : ℕ) (a b : ℝ) : Type 2 where
+  chain : SpurROneSidedFarChain (reversedCarrierReadings β ys)
+  threshold_right : ReversedCarrierThresholdRightOfVertex d a b ys
+  visible : 0 < Z
+  even : Even Z
+  counting_bound :
+    Z ≤ 2 + copyFlipTransitions (reversedCarrierMovingAmpStates β d a b ys)
+
+/-- Left-of-vertex carrier data instantiate the generic moving-threshold carrier input. -/
+def oneSidedFarMovingCarrierInput_of_leftInput {β : Multiset ℝ} {ys : List ℝ}
+    {Z d : ℕ} {a b : ℝ} (h : SpurROneSidedFarMovingCarrierLeftInput β ys Z d a b) :
+    SpurROneSidedFarMovingCarrierInput β ys Z d a b where
+  chain := h.chain
+  threshold_antitone :=
+    adjacentAntitone_reversedCarrierThresholds_of_leftOfVertex d a b ys h.threshold_left
+  visible := h.visible
+  even := h.even
+  counting_bound := h.counting_bound
+
+/-- Right-of-vertex carrier data instantiate the generic moving-threshold carrier input. -/
+def oneSidedFarMovingCarrierInput_of_rightInput {β : Multiset ℝ} {ys : List ℝ}
+    {Z d : ℕ} {a b : ℝ} (h : SpurROneSidedFarMovingCarrierRightInput β ys Z d a b) :
+    SpurROneSidedFarMovingCarrierInput β ys Z d a b where
+  chain := h.chain
+  threshold_antitone :=
+    adjacentAntitone_reversedCarrierThresholds_of_rightOfVertex d a b ys h.threshold_right
+  visible := h.visible
+  even := h.even
+  counting_bound := h.counting_bound
+
+/-- Left-of-vertex intended carrier data instantiate `SpurRAMPInput`. -/
+theorem spurRAMPInput_of_oneSidedFarMovingCarrierLeftInput {β : Multiset ℝ}
+    {ys : List ℝ} {Z d : ℕ} {a b : ℝ}
+    (h : SpurROneSidedFarMovingCarrierLeftInput β ys Z d a b) :
+    SpurRAMPInput (reversedCarrierMarginDiffs β d a b ys) Z movingThresholdDressing :=
+  spurRAMPInput_of_oneSidedFarMovingCarrierInput
+    (oneSidedFarMovingCarrierInput_of_leftInput h)
+
+/-- Right-of-vertex intended carrier data instantiate `SpurRAMPInput`. -/
+theorem spurRAMPInput_of_oneSidedFarMovingCarrierRightInput {β : Multiset ℝ}
+    {ys : List ℝ} {Z d : ℕ} {a b : ℝ}
+    (h : SpurROneSidedFarMovingCarrierRightInput β ys Z d a b) :
+    SpurRAMPInput (reversedCarrierMarginDiffs β d a b ys) Z movingThresholdDressing :=
+  spurRAMPInput_of_oneSidedFarMovingCarrierInput
+    (oneSidedFarMovingCarrierInput_of_rightInput h)
+
+/-- Exact reader pair from left-of-vertex intended carrier data. -/
+theorem amp_reader_exact_pair_of_oneSidedFarMovingCarrierLeftInput {β : Multiset ℝ}
+    {ys : List ℝ} {Z d : ℕ} {a b : ℝ}
+    (h : SpurROneSidedFarMovingCarrierLeftInput β ys Z d a b) :
+    Z = 2 :=
+  amp_reader_exact_pair_of_oneSidedFarMovingCarrierInput
+    (oneSidedFarMovingCarrierInput_of_leftInput h)
+
+/-- Exact reader pair from right-of-vertex intended carrier data. -/
+theorem amp_reader_exact_pair_of_oneSidedFarMovingCarrierRightInput {β : Multiset ℝ}
+    {ys : List ℝ} {Z d : ℕ} {a b : ℝ}
+    (h : SpurROneSidedFarMovingCarrierRightInput β ys Z d a b) :
+    Z = 2 :=
+  amp_reader_exact_pair_of_oneSidedFarMovingCarrierInput
+    (oneSidedFarMovingCarrierInput_of_rightInput h)
 
 end RHTower
