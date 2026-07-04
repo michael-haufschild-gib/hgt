@@ -352,3 +352,4 @@ import GaloisForLFunctions.Bottcher.Q62BrolinThread
 import GaloisForLFunctions.Bottcher.Q62BrolinEquidistribution
 import GaloisForLFunctions.Bottcher.Q62BrolinL2
 import GaloisForLFunctions.Bottcher.Q62BrolinDominated
+import GaloisForLFunctions.Bottcher.Q62FrostmanScaling

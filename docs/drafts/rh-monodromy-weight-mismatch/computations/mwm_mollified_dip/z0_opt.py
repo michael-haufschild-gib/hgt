@@ -59,7 +59,9 @@ def triple(tier, k=0, eta=0.0):
     sigma = math.sqrt(0.5*math.log(math.log(2*math.pi)+2*lN))
     lam0 = math.exp(-z0*sigma)
     ell = (1-alpha)*EPS*lam0**2/4.0
-    rs_floor = 2.0*(T0/(2*math.pi))**(-0.25)   # cG = 1
+    # R-S floor: |zeta - g_N| <= 1.463 t^{-1/4} + 0.127 t^{-3/4}, t>=200
+    # (Hiary-Patel-Yang 2024 / Revers 2026, bare main sum; numeric now)
+    rs_floor = 1.463*T0**(-0.25) + 0.127*T0**(-0.75)
     return dict(tier=tier, k=k, eta=eta, alpha=alpha, z0=z0, logN0=lN,
                 log10T0=math.log10(T0), lam0=lam0, ell=ell,
                 rs_ratio=lam0/rs_floor, taper_ints=math.exp(lN)*ell)
@@ -83,12 +85,19 @@ for eta in (0.0,1.0):
           f"z0*={best['z0']:.2f}, log10 T0 = {best['log10T0']:.1f}")
 
 # sensitivity: eps* better by factor s (constants pass tightening C'/c_deck)
+# rigorous verified height = 3e12 = 10^12.48 (Platt-Trudgian 2021, interval-arith)
+VERIFIED = math.log10(3e12)
+print(f"\nrigorous verified height (Platt-Trudgian 2021): 3e12 = 10^{VERIFIED:.2f}")
+print("(Gourdon 10^13 is NOT interval-certified)")
 print()
-for s in (1,2,4,8):
+for s in (1,2,4,8,16):
     EPS_s = s/512.0
     EPS_save = EPS
     globals()['EPS'] = EPS_s
     rG = triple('G'); r7 = triple('M',7)
-    print(f"eps* = {s}/512:  G tier log10 T0 = {rG['log10T0']:.1f}   "
-          f"M14 tier log10 T0 = {r7['log10T0']:.1f}")
+    gapG = rG['log10T0'] - VERIFIED
+    gap7 = r7['log10T0'] - VERIFIED
+    print(f"eps* = {s:>2}/512:  G log10 T0 = {rG['log10T0']:5.1f} (gap {gapG:+.1f})   "
+          f"M14 log10 T0 = {r7['log10T0']:5.1f} (gap {gap7:+.1f})   "
+          f"M14 lam0/RSfloor = {r7['rs_ratio']:.0f}")
     globals()['EPS'] = EPS_save

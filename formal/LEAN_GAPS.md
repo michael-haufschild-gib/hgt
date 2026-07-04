@@ -281,6 +281,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1713` | remaining limit input is that the selected subsequence at `f_c z` and the |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:2589` | /-- Disconnected GAP-A support from the precise remaining shifted-potential identification. |
 | `formal/GaloisForLFunctions/Bottcher/Q62Field.lean:269` | by `mvEval_deepBall_eq_zero_iff` (faithfulness); the single remaining input `hFunIndep` is precisely |
+| `formal/GaloisForLFunctions/Bottcher/Q62FrostmanScaling.lean:18` | from the exact `Uᵘ ≤ 0` to mere upper-boundedness `Uᵘ ≤ C` — the genuine remaining potential-theoretic |
+| `formal/GaloisForLFunctions/Bottcher/Q62FrostmanScaling.lean:192` | sole remaining input is the hyperbolic-basin convergence of the interior dynamics. -/ |
 | `formal/GaloisForLFunctions/Bottcher/Q62HinputAssembly.lean:16` | This is the genuine remaining content of the natural-boundary route (co-countable for connected `c₁`: |
 | `formal/GaloisForLFunctions/Bottcher/Q62KummerAssembly.lean:35` | against `meroField`. The remaining work to make it unconditional is the *mechanical* construction of |
 | `formal/GaloisForLFunctions/Bottcher/Q62OneSidedDense.lean:21` | So #133's remaining content is exactly `SingleAccessDense c` — supporting-ball points with a *single* |
@@ -289,8 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:20` | * `reflectionCore_of_arcReflectionData` — the **reduction**.  It isolates the one remaining input of |
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionBridge.lean:52` | /-- **The reflected-extension datum — the one remaining input of `ReflectionCore`.**  For a |
 | `formal/GaloisForLFunctions/Bottcher/Q62ReflectionTransport.lean:17` | boundary `hnb`.  The remaining inputs are exactly the boundary datum of `F = β ∘ γ` at the arc |
-| `formal/GaloisForLFunctions/Bottcher/Q62SmoothBranchReflection.lean:15` | The remaining inputs are the ones the whole #118 chain shares — a **preconnected basin neighbourhood** |
-| `formal/GaloisForLFunctions/Bottcher/Q62SmoothPieceReduction.lean:20` | Böttcher branch `β_{c₁}` reflects across it — the isolated `ReflectionCore`, the one remaining input; |
 
 ## Historical Status Logs
 

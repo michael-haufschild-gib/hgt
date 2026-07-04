@@ -137,12 +137,21 @@ the line, delivered at strength loglog (demand was (loglog)²).
 at second-moment grade (§3), all known consumers fed. What remains for the
 onset number (doc 69 §4's T ~ 10¹³):
 
-- (i) an effective Berry–Esseen-grade rate for Selberg's CLT at fixed
-  z₀ ≈ 3 [CHECK: rates (loglog T)^{−1/2} exist in the modern literature];
-  at loglog T = 3.4 the correction is O(1)-grade, so the finite-T constant
-  genuinely decides the onset;
-- (ii) the explicit R–S error constant [CHECK: Gabcke's thesis];
-- (iii) MV block constants and C′ under the χ′-terms (§2 flag).
+- (i) an effective rate for Selberg's CLT at fixed z₀ ≈ 3. **RESOLVED by
+  mining (doc 71 §1/§6(ii)):** the uniform-in-y bound IS in print (Selberg
+  1992 / Tsang 1984, via Ivić arXiv:math/0312097) with rate SHAPE
+  O((logloglogT)²/√(loglogT)) — but its constant is not numeric AND the
+  error is O(1)-grade at the onset heights, so the Gaussian tier cannot
+  deliver the tail at any finite height. The finite-height design is
+  MOMENT-forced; the load-bearing analytic object is (EFF-M14), an
+  effective even moment of log|ζ|, confirmed NOT in print (doc 71 §6(i)).
+- (ii) the explicit R–S error constant. **RESOLVED (doc 71 §1 items 7–9):**
+  |ζ(½+it) − g_N| ≤ 1.463 t^{−1/4}+0.127 t^{−3/4} (t≥200, Hiary–Patel–Yang
+  2024 / Revers 2026), sharpening to <0.127 t^{−3/4} with C₀ (Gabcke). The
+  "O(t^{−1/4})" of §1 is now an explicit constant; confirmed a spectator
+  (λ₀/floor ≈ 65 at the M14 optimum).
+- (iii) MV block constants and C′ under the χ′-terms (§2 flag) — still owed
+  to the constants-promotion pass.
 
 Bracket arithmetic (labelled illustration, first-pass constants): a 10×
 effectivity slack in λ₀ costs +4.6 in log N — onset moves 10¹³ → ~10^{18}.

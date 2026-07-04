@@ -72,6 +72,20 @@ range.** First-pass constants, so treat the coincidence with suspicion —
 but as computed, the verified range covers below the onset and the
 CLT-designed tower covers above it, with no gap.
 
+**CORRECTION (doc 71 §6, after the literature mining).** This §4 coincidence
+was too optimistic on two counts. (a) The CLT-grade (Tier-G) onset at
+z₀ ≈ 3.1 is UNUSABLE at finite heights: the uniform-in-y Selberg CLT
+(Selberg 1992 / Tsang 1984) has additive error O((logloglogT)²/√(loglogT)),
+which is O(1)-grade — ~400× the target tail — at T ~ 10¹⁵, and its constant
+is not numeric in print. The finite-height design is forced onto the MOMENT
+tier (EFF-M14), whose onset at ε₀\* = 1/512 is T ~ 10¹⁷, not 10¹³. (b) The
+rigorous verified boundary is 3·10¹² = 10^12.48 (Platt–Trudgian 2021,
+interval arithmetic), NOT Gourdon's uncertified 10¹³. Closing the M14-tier
+gap to 3·10¹² needs ε₀\* ≈ 1/32 — a factor ~16 in c_deck/C′, not 8. The
+no-gap statement survives as a TARGET requiring (EFF-M14) + 16× in the
+placement constants; both finite, neither open-problem-shaped. The R–S
+error constant is now numeric and a confirmed spectator (doc 71 §6(iv)).
+
 ## 5. Status and force order after this pass
 
 - (DOM-W): closed in threading form [sketch]; no new analytic class.

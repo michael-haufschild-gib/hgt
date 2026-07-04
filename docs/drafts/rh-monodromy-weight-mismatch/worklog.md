@@ -2050,3 +2050,75 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
   effectivization lands the onset in [10^13, ~10^18] vs (TIGHT)-only
   e^650. Tasks: #15 CLOSED; #16 opened (effectivization pass); #10
   demoted-optional.
+
+## Cycle 37 (2026-07-04) — Effectivization pass, literature half: mining + z₀-optimization + three corrections
+- Doc 71 BANKED. z₀-optimization (z0_opt.py, archived computations/): design
+  triple at the MOMENT tier = (z₀*, ℓ*, N₀*) = (3.86, 8.1e−9, e^18.6),
+  onset T₀ ~ 10^17; flat optimum over moment orders 10–16; α ≈ 43% tail /
+  57% taper. Full tier table in doc 71 §3.
+- Two delegate literature agents completed (survived a mid-run session
+  crash; transcripts salvaged by bounded JSONL extraction — did NOT re-run).
+  Citations in doc 71 §1 (all read from fetched sources; Gabcke thesis
+  itself 403-blocked, quoted via Kuznetsov arXiv:2312.03261).
+- THREE CORRECTIONS the mining forced (doc 71 §6; the wins-and-catches are
+  co-equal per the no-terminus rule):
+  (i) (EFF-M14) confirmed NOT in print — no numeric ∫(log|ζ(½+it)|)^{2k} for
+      any k≥1. Strongest adjacent = Tsang 1986 for S(t)=Im (arg), constant
+      un-numerized. So the task is a real effectivization, not a citation.
+  (ii) Tier G (Gaussian) is UNUSABLE at finite heights, two independent
+      reasons: uniform-in-y Selberg CLT (Selberg 1992/Tsang 1984, via Ivić
+      math/0312097) has additive error O((logloglogT)²/√loglogT) = O(1)-grade
+      at onset (~400× the 1/512 target), AND its constant isn't numeric.
+      Finite-height design is MOMENT-forced — upgrades doc 71 §4 reading 1
+      from suspicion to literature fact.
+  (iii) Rigorous verified boundary = 3·10^12 = 10^12.48 (Platt–Trudgian 2021,
+      interval arithmetic); Gourdon 10^13 NOT interval-certified. Doc 69 §4's
+      "10^13, no gap" coincidence CORRECTED: M14-tier onset at ε*=1/512 is
+      10^17 (gap +4.5 orders); closing to 3·10^12 needs ε* ≈ 1/32 = factor
+      ~16 in c_deck/C′ (not 8). No-gap now a TARGET = (EFF-M14) + 16×.
+- ONE clean win (iv): R–S floor constant now NUMERIC — |ζ−g_N| ≤
+  1.463 t^{−1/4}+0.127 t^{−3/4} (t≥200, Hiary–Patel–Yang 2024 / Revers 2026),
+  <0.127 t^{−3/4} with C₀ (Gabcke). Resolves doc 70 §6's [CHECK Gabcke];
+  spectator confirmed (λ₀/floor ≈ 65 at M14 optimum). Doc 70 §6 flags (i),(ii)
+  updated to RESOLVED.
+- Corrections propagated to doc 69 §4 (inline) and doc 70 §6. Task #16
+  literature half DONE; analytic half (EFF-M14 proof + Lean) NOT started per
+  user hold. No fresh computation beyond the deterministic optimization
+  (nothing theory-unpredictable to measure this cycle).
+
+## Cycle 38 (2026-07-04) — (EFF-M14) attacked and dissolved: two walls, the thickness dodge, the sharp-truncation collapse, and a 5/5 probe
+- Doc 72 BANKED. Attack-as-false on (EFF-M14) BEFORE proving it found TWO walls:
+  (W1) the ZERO-DIP FLOOR — meas{|ζ(½+it)|≤λ} has a linear floor c_fl·λ from
+  on-line zeros that dominates the lognormal tail at design depth; missing
+  from docs 65-71's small-ball accounting. (W2) the FINITE-HEIGHT MOMENT
+  WALL — Gaussian 2k-moments need s₁ ≫ k²s₂; at X^{2k} ≤ T, T ~ 10^17,
+  2k=14: s₁ ≈ 1 ≪ 22 — the M14 tier was a fiction at its own onset; honest
+  orders are k ≤ 3. Degree-budget principle: at T ~ 10^13 any polynomial
+  method owns only degree ~4 on the dominant small-prime block.
+- THE COLLAPSE: sup-norm taper accounting ⟹ taper VESTIGIAL ⟹ carrier =
+  the sharp exact-FE truncation g_N (doc 22's anneal object). Domination
+  trivial (explicit R–S, no (DOM-W) at all); creation = thick-dip count of
+  ζ's own small values; onset = R–S validity T₀ = e^{4A}, A = log(1/λ₀).
+  Docs 61-71's design scaffolding (plateau split, taper, ℓ, α) removed.
+- THE DODGE (Lean BANKED, ThickDips.lean, 5 thms axiom-clean, umbrella 8631
+  green, lint passed): thickPart + thick_dips_count_le (counting vs the
+  h-locally-thick part only — NO measurability of E needed, restrict-trick)
+  + thickPart_union_measure_le (Fubini-Markov: floor excluded at cost 8) +
+  window-mass measurability/Fubini. Typed residue (FLAT-ZERO).
+- PROBE 5/5 (pre-registered §6, run on runpod, validation vs mpmath 2e-6,
+  archived probe_floor.{py,json}): c_fl = 0.61/0.64/0.68 at 10^{6,7,8},
+  FLAT in λ over 1.5 decades; harmonic zero-sum = small-ball slope to THREE
+  DIGITS (0.610/0.609 etc) — floor mechanism exact; zerocomp = 100% at
+  λ≤0.05 (floor is the whole story at depth); thick-fraction ≈ 1% at design
+  λ₀ (dodge removes ≥99%); σ² = ½loglogT + 0.65 (stable offset); moment
+  corruption μ₄/3σ⁴ ≈ 1.5, μ₆/15σ⁶ ≈ 3.6-4.1 (Wall 2 confirmed live).
+- Corrected design point (doc 72 §8): first-pass k=3 stack A ≈ 8.8-9 ⟹
+  T₀ ~ 10^{17.5}; optimization headroom → [10^15, 10^18]; the 3·10^12
+  meeting = (TAIL-6): certified meas{log|Z| ≤ −6.1} ≤ 2e-4·T at T ~ 3e12 —
+  truth measured ~1e-4 (fine), low-moment Markov is the lossy tool. Named
+  routes: non-polynomial input (effective equidistribution of the 168-cosine
+  small-prime block) or constant harvest. Dead recorded: mollified detector
+  (2×), (EFF-M14)-as-specified, Chebyshev taper pricing.
+- Tasks: #16 CLOSED, #17 CLOSED (dissolved into doc 72's re-cut), #18
+  opened ((EFF-M4)+(EFF-E)+(TAIL-6) instrument). No terminus: the carrier
+  search is OVER (g_N), everything left is ζ's own value distribution.

@@ -235,3 +235,78 @@ between the (no-π/8) creation modulus and the (π/8) survival modulus. Next: de
 the π/8 shift itself from the metaplectic square-root of the theta factor (§6 /
 doc 51 §10) rather than posit it — i.e. prove `survival = M(slip − ½·arg 𝔉)` with
 `𝔉 = e^{iπ/4}` the Fresnel/theta factor, closing the weld to its 2-cover origin.
+
+## 12. The Fresnel phase, BUILT — and the honest boundary [Lean, axiom-clean 2026-07-04]
+
+§11's first attempt at "derive the π/8 from the 2-cover" was vacuous: it DEFINED
+`fresnelSqrt := e^{iπ/8}` and proved its argument is π/8 — i.e. `π/8 = ½·π/4`
+dressed in names. That block was removed. What replaced it is a real theorem.
+
+**Part 1 — PROVED (WeldEnvelope.lean, `section Fresnel`).** `e^{iπ/4}` is genuinely
+the phase of the Gaussian/Fresnel integral, not a posited constant. The Fresnel
+integrand `e^{ix²}` is NOT Bochner-integrable (`|e^{ix²}|=1`), so it is built as the
+regularized limit:
+
+> `fresnel_integral_tendsto : Tendsto (fun ε => ∫ x:ℝ, exp(-((ε:ℂ)-I)·x²)) (𝓝[>]0)
+>   (𝓝 fresnelValue)`,  with `fresnelValue = √π · e^{iπ/4}` (`fresnelValue_eq`) and
+> `arg fresnelValue = π/4` (`fresnelValue_arg`).
+
+Each `ε>0` integral is a genuine Gaussian (Mathlib `integral_gaussian_complex`,
+`Re b>0`); the limit closes because `b ↦ (π/b)^{1/2}` is continuous down to `b=-i`.
+Then `survival_eq_half_arg_fresnelValue : survival p = M(slip p − ½·arg fresnelValue)`
+— the survival offset is HALF the argument of the ACTUAL Fresnel/Gaussian integral
+(the metaplectic half-turn), tied to a real analytic object. All axiom-clean
+`[propext, Classical.choice, Quot.sound]`, lint green.
+
+**Part 2 — NOT proved, and not provable as a Lean theorem.** That this Fresnel/theta
+phase is the constant of the CENSUS survival envelope is a different claim, and it is
+NOT formalized because it cannot be: (a) the census survival constant is EMPIRICAL —
+a fit from 127 pairs (doc 52 §10), with the mean-suppression already off the pure
+modulus (1.33 vs 2.48); "it equals π/8 exactly" is a conjecture, not a theorem; and
+(b) the analytic route (RS-remainder saddle → π/8) is classical unformalized analysis
+whose LINK to the survival envelope is itself the doc 51/52 conjecture. So the honest
+state: the metaplectic-phase side (`π/8 = ½·arg` of the real Fresnel integral) is a
+theorem; the census-identification side stays `[CONJECTURE]`. The two must not be
+conflated — that conflation was the §11 error.
+
+**What this opens (a REAL analytic target, not a naming exercise):** formalize the
+Riemann–Siegel remainder constant `−1/16 ⟺ π/8` from the theta functional equation
+(the θ-transformation `θ(−1/τ)=√(−iτ)θ(τ)`, whose `√(−iτ)` factor at the self-dual
+point carries exactly this Fresnel phase). THAT would connect the proved Fresnel side
+to the RS constant analytically — a bounded classical formalization — leaving only the
+(empirical) census identification as the single remaining `[CONJECTURE]`.
+
+## 13. Theta functional equation ↔ Fresnel: same Gaussian phase [Lean, axiom-clean 2026-07-04]
+
+Formalized the theta-side of the bridge in `WeldEnvelope.lean` (`section ThetaBridge`;
+builds, axiom-clean, lint green), tying Mathlib's Jacobi theta functional equation to
+the Part-1 Fresnel build:
+
+* `theta_functional_equation` — re-exposes `jacobiTheta_S_smul`: the S-transformation
+  factor is `(-i·τ)^{1/2}`.
+* `thetaSFactor_cusp` / `thetaSFactor_cusp_arg` — at the real cusp `τ = 1` the factor
+  is `(-i)^{1/2} = e^{-iπ/4}`, argument `-π/4`.
+* `thetaSFactor_arg_eq_neg_fresnel` — **`arg(theta S-factor) = -arg(fresnelValue)`**:
+  the theta functional-equation factor and the Fresnel integral carry the SAME
+  Gaussian phase `π/4` (opposite sign = the `e^{+ix²}` vs `e^{-iπn²τ}` convention).
+
+Reading: for `τ ∈ ℍ`, `-i·τ = Im τ − i Re τ` has `Re > 0`, so the factor's argument
+is `½·arg(-iτ) ∈ (-π/4, π/4)`, hitting `±π/4` only at the real cusps — the Gauss-sum
+/ Landsberg–Schaar limit. So the modular theta functional equation and the Fresnel
+integral are the SAME object: Gaussian self-duality, the source of the RS `e^{iπ/4}`.
+
+**Honest boundary (unchanged from §12).** This bridges theta ↔ Fresnel; it does NOT
+reach the RS remainder constant `−1/16 ⟺ π/8`. That `π/8` is HALF the shared `π/4`
+(the ℤ₂-Kummer 2-cover square-root) — formalizing the halving is just `π/8 = ½·π/4`,
+no content. The exact `−1/16` needs the quadratic Gauss sum at the half-integer
+(Landsberg–Schaar reciprocity), the classical residual, NOT done. The census
+identification stays `[CONJECTURE]` (§10). Proven so far, end to end: Gaussian phase
+`e^{iπ/4}` is real (Part 1) and is shared by θ's functional equation (here); the
+`−1/16` and the census are not.
+
+**What this opens (the one real remaining analytic step):** Mathlib has `gaussSum`
+and quadratic characters. Formalize the quadratic Gauss sum phase
+`∑_{n} e^{2πi n²/N} ~ (1+i)√N` = the `e^{iπ/4}` at a half-integer completion — the
+Landsberg–Schaar reciprocity that carries the theta factor to the actual RS remainder
+`−1/16`. That is the last classical brick between the proven Gaussian phase and the RS
+constant; the 2-cover halving and the census identification remain conjecture beyond it.
