@@ -47,3 +47,4 @@ import GaloisForLFunctions.RHTower.SpurNoGo
 import GaloisForLFunctions.RHTower.SeamTransport
 import GaloisForLFunctions.RHTower.SpurWeights
 import GaloisForLFunctions.RHTower.DictionaryBase
+import GaloisForLFunctions.RHTower.DictionarySign

@@ -6,8 +6,9 @@ characterized by the two basepoint ratios (`deckClass_eq_neg_one_iff`), and over
 carrier values (Ξ real on the critical line) every level-2 root value is itself real or
 purely imaginary according to the sign of the carrier (`sq_root_real_of_pos`,
 `sq_root_im_of_neg`) — the ingredients of the classical sign-change reading. The
-remaining piece of (K1) is the seam-continuation lemma (sign change along the seam ⟺
-odd enclosed count), which composes these with `pow_root_ratio` along the line segment.
+root/conjugate ratio lemmas (`sq_conj_ratio_of_pos/neg`) evaluate `z / conj z` to the
+carrier's sign; DictionarySign.lean composes them with the line-mirror chart into the
+(K1) capstone — no seam continuation is needed.
 -/
 import GaloisForLFunctions.RHTower.DeckCocycle
 
@@ -78,5 +79,33 @@ theorem real_root_ratio {z₁ z₂ w : ℂ} (h₁ : z₁ ^ 2 = w) (h₂ : z₂ ^
   rcases mul_eq_zero.mp hfactor with h0 | h0
   · exact Or.inl (by linear_combination h0)
   · exact Or.inr (by linear_combination h0)
+
+/-- Over a positive real carrier value the root/conjugate ratio is `+1`. -/
+theorem sq_conj_ratio_of_pos {z w : ℂ} (hw : z ^ 2 = w) (hre : w.im = 0)
+    (hpos : 0 < w.re) : z / (starRingEnd ℂ) z = 1 := by
+  have him : z.im = 0 := sq_root_real_of_pos hw hre hpos
+  have hz0 : z ≠ 0 := by
+    intro h0
+    rw [h0] at hw
+    have hw0 : w = 0 := by rw [← hw]; norm_num
+    rw [hw0] at hpos
+    simp at hpos
+  rw [Complex.conj_eq_iff_im.mpr him, div_self hz0]
+
+/-- Over a negative real carrier value the root/conjugate ratio is `−1`. -/
+theorem sq_conj_ratio_of_neg {z w : ℂ} (hw : z ^ 2 = w) (hre : w.im = 0)
+    (hneg : w.re < 0) : z / (starRingEnd ℂ) z = -1 := by
+  have hzre : z.re = 0 := sq_root_im_of_neg hw hre hneg
+  have hz0 : z ≠ 0 := by
+    intro h0
+    rw [h0] at hw
+    have hw0 : w = 0 := by rw [← hw]; norm_num
+    rw [hw0] at hneg
+    simp at hneg
+  have hconj : (starRingEnd ℂ) z = -z := by
+    apply Complex.ext
+    · simp [hzre]
+    · simp
+  rw [hconj, div_neg, div_self hz0]
 
 end RHTower

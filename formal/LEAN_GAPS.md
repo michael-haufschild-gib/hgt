@@ -34,8 +34,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1307 | `formal/GaloisForLFunctions/Bottcher/W4LinWinding.lean` |
 | 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
 | 1302 | `formal/GaloisForLFunctions/Bottcher/SectionTowerStep.lean` |
+| 1300 | `formal/GaloisForLFunctions/Bottcher/MixedTowerData.lean` |
 | 1292 | `formal/GaloisForLFunctions/Bottcher/CrossRatioCuspBridge.lean` |
-| 1289 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean` |
 
 ## Gap Markers
 

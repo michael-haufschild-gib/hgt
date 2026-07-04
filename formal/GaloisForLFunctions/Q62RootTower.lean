@@ -24,6 +24,27 @@ import GaloisForLFunctions.Bottcher.Q62BothConnectedExposed
 
 namespace Bottcher
 
+/-- Domain-specific root lift for concrete inverse-Böttcher coordinates.  Any established
+`NoRelation` between `phiMero c₁` and `phiMero c₂` on a common far domain lifts to every finite
+root of both coordinates. -/
+theorem q62_phiMero_roots_of_noRelation
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} {hU₁ : U ⊆ escapeOpen c₁} {hU₂ : U ⊆ escapeOpen c₂}
+    (hNR :
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    ∀ {χ η : meroField U} {p q : ℕ},
+      χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+      NoRelation (RatFunc ℂ) χ η := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  intro χ η p q hχ hη
+  exact KummerRootApplications.noRelation_pow_descent_both hχ hη hNR
+
 /-- **Linear-gap disconnected q62 — full finite root tower.**  For disconnected `c₁, c₂` with
 `‖c₁‖ ≥ 1000`, `‖c₂‖ ≥ 2` and the linear gap `(√(2‖c₂‖)+1)² ≤ ‖c₁‖/300`, on the common far domain
 `U` every `p`-th root `χ` of `φ_{c₁}` is algebraically independent over `ℂ(z)` of every `q`-th root
