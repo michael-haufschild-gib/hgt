@@ -66,3 +66,4 @@ import GaloisForLFunctions.RHTower.DictionarySign
 import GaloisForLFunctions.RHTower.LedgerIdentity
 import GaloisForLFunctions.RHTower.LedgerConvex
 import GaloisForLFunctions.RHTower.SpurRegime
+import GaloisForLFunctions.RHTower.SpurStack

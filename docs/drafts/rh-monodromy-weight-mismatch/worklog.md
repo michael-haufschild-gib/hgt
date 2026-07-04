@@ -1420,3 +1420,14 @@ Run-5 q-trend puzzle resolved (failure lives on the segment). Measurement
 launched (oddwindow_phase.py, P-D1 p-locus prior 0.5 / P-D2 depth prior 0.7):
 odd-event RS-phase statistics on [1030,5000). Routes for the mid-band: p-locus
 traversal / large-deviation exclusion / RS-tower balance.
+
+## 2026-07-04 (cycle 7 addendum) — MOAT-shallow PROVED; p-measurement suggestive
+Doc 43 §6: (MOAT-shallow) fully proved (max-principle two-zero bound
+|Φ(1/2+it₀)| ≤ η²M_r/(r−η)²; corollary: η ≤ η₀(T,r) = (r/2)√(E*/M_r) pairs
+self-exclude from (SD-parity)). Sweep [1030,5000): 28 new odd boxes (37 total);
+n ≈ 19 clean refinements; mean |p−int| = 0.167 vs 0.25 (≈2.6σ, mass at
+.003/.010/.019/.027/.870/.921/.938) — P-D1 FAIL AS REGISTERED (n < 25;
+12 refine-failures = selection risk; one filter leak η = 0.000 at T = 1889).
+P-D2 PASS: all η ∈ [0.039, 0.178] — no deep pairs; both shallow and mid-band
+populated. Next: refinement fix + [5830,12000] extension + per-event η vs
+η₀(T,r) classification (measures the exact residual wall).

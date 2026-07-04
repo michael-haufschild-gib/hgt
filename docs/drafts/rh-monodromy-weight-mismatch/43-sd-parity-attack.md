@@ -141,3 +141,55 @@ M_r is explicit per window (Stirling for the γ-factors, trivial bounds for the
 finite sums), and the domination ratio is normalization-free on the line, so
 the uncompleted and completed statements agree. The open mid-depth band of §2
 now has a sharp lower edge: η₀(T, r) with r at the local spacing scale.
+
+## 7. Measurement outcome (same day; archive `computations/mwm/oddphase.out`)
+
+The [1030, 5000) sweep found 28 new odd boxes (37 events total with the banked
+9). Refinement succeeded on 20; of these one is a filter leak (T = 1889 refined
+onto the line, η = 0.000 — the muller root left the box through the σ = 0.53
+edge and the acceptance test used σ > 0.5; pipeline fix needed). Honest stats on
+n ≈ 19–20: mean |p − nearest integer| = 0.167 vs uniform 0.25 — a ≈ 2.6σ deficit,
+with visible mass very close to integers (p = .003, .010, .019, .027, .081,
+.870, .921, .938). **P-D1 FAILS AS REGISTERED** (required n ≥ 25) — the effect
+direction is present but the sample and the 12 unrefined events (possible
+selection bias) block the claim. **P-D2 PASSES**: every measured depth
+η ∈ [0.039, 0.178] — no deep pairs at accessible heights, and the range brackets
+the estimated η₀ ~ 0.07: both the shallow regime (self-excluded by §6) and the
+mid-depth band are populated. Next round: fix the refinement (winding-guided
+subdivision as in run 5, box-strict acceptance), extend to [5830, 12000] for
+n ≥ 30, and per-event compute η₀(T, r) to classify each event
+shallow-vs-mid-band directly — the fraction of odd events NOT killed by the
+proven lemma is the exact size of the remaining wall.
+
+## 8. Correction to §1's definition, and the transport it actually buys
+
+**The §1 definition is broken as stated**: "min over the segment > E(T)" is
+violated by every window containing an on-line zero of Z_g (the min is 0).
+Corrected:
+
+> **Self-domination (corrected).** (i) min_{∂W} |g_N| > E(T); (ii) between
+> consecutive zeros of Z_g on the central segment (and between the segment
+> endpoints and their nearest zeros) there is a TEST POINT with |Z_g| > E(T).
+
+Both are properties of the finite object. What transports:
+
+- (i) + banked boundary transport (deck/ANNEAL, #134): **N_ζ ≡ N_g (mod 2)** —
+  the parity form needs the boundary only.
+- (i) + (ii): the test-point sign pattern of Z_g transfers to Z_ζ
+  (|Z_ζ − Z_g| ≤ E < |Z_g| there), so L_ζ ≥ L_g; with Rouché D-equality:
+  **N_ζ ≤ N_g** — a one-sided COUNT transport, strictly stronger than parity
+  when N_g is small. With N_g = 0: N_ζ = 0 (RH on the window); with N_g = 2:
+  N_ζ ∈ {0, 2} (parity via deck + bound via signs).
+
+So the bridge architecture sharpens: on self-dominated windows with N_g = 0 —
+the generic case; odd/nonzero events are the measured ~37 boxes per 11800
+height units — the transport gives N_ζ = 0 outright, and the parity ladder is
+needed only across the exceptional heights (#144's traversal).
+
+**The corridor caveat, and its resolution by the lemma.** The box census counts
+only η > 0.03 (the inner box edge); pairs in the corridor η ∈ (0, 0.03) are in
+N but invisible to the sweep. But (MOAT-shallow) kills every pair with
+η ≤ η₀(T, r) — so the corridor is entirely lemma-excluded at heights where
+η₀(T, r) ≥ 0.03, a per-height computable condition (the classification run's
+lemma-margins measure exactly this). Census blindness is harmless wherever
+η₀ ≥ 0.03.
