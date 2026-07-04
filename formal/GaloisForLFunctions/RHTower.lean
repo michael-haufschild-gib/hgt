@@ -56,6 +56,8 @@ import GaloisForLFunctions.RHTower.SpurNoGo
 import GaloisForLFunctions.RHTower.SeamTransport
 import GaloisForLFunctions.RHTower.SpurWeights
 import GaloisForLFunctions.RHTower.SpurCounting
+import GaloisForLFunctions.RHTower.SpurTransitions
+import GaloisForLFunctions.RHTower.SpurThreshold
 import GaloisForLFunctions.RHTower.DictionaryBase
 import GaloisForLFunctions.RHTower.DictionarySign
 import GaloisForLFunctions.RHTower.LedgerIdentity

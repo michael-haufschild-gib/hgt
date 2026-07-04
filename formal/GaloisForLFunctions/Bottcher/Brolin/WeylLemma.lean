@@ -379,6 +379,118 @@ theorem convolution_mollN_le {G : ℂ → ℝ} {M : ℝ} {z : ℂ} {r : ℝ} (n 
         simp only [Real.norm_eq_abs]; exact hpt t
     _ = M := by rw [integral_const_mul, integral_mollN_comp, mul_one]
 
+/-! ## Poisson-integral limit of the mollification -/
+
+theorem mollN_le_one (n : ℕ) : (1:ℝ)/((n:ℝ)+1) ≤ 1 := by
+  have : (0:ℝ) ≤ (n:ℝ) := Nat.cast_nonneg n
+  rw [div_le_one (by positivity)]; linarith
+
+theorem Gn_continuous {G : ℂ → ℝ} (hG : Continuous G) (n : ℕ) :
+    Continuous (fun z => convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume z) :=
+  ((mollN_hasCompactSupport n).contDiff_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ)
+    hG.locallyIntegrable (mollN_contDiff n)).continuous
+
+theorem poissonInt_mollN_tendsto {G : ℂ → ℝ} (hG : Continuous G) {x : ℂ} {R : ℝ} (hR : 0 < R)
+    {w : ℂ} (hw : w ∈ Metric.ball x R) {M : ℝ} (hMnn : 0 ≤ M)
+    (hM : ∀ z : ℂ, ‖z - x‖ = R → ∀ t, ‖z - t‖ ≤ R + 1 → |G t| ≤ M) :
+    Tendsto (fun n => poissonInt (fun z => convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume z) x R w)
+      atTop (𝓝 (poissonInt G x R w)) := by
+  set Gn : ℕ → ℂ → ℝ := fun n z => convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume z with hGn
+  set zc : ℝ → ℂ := fun θ => circleMap x R θ with hzc
+  have hzsphere : ∀ θ, ‖zc θ - x‖ = R := fun θ => by
+    rw [hzc, show circleMap x R θ - x = circleMap 0 R θ by simp [circleMap], norm_circleMap_zero]
+    exact abs_of_pos hR
+  have hzmem : ∀ θ, zc θ ∈ Metric.sphere x R := fun θ => by
+    rw [Metric.mem_sphere, Complex.dist_eq]; exact hzsphere θ
+  have hKcont : Continuous (fun θ => poissonKernel x w (zc θ)) :=
+    (poissonKernel_continuousOn_sphere hw).comp_continuous (continuous_circleMap x R) hzmem
+  have hbdd : ∀ (n : ℕ) (θ : ℝ), |Gn n (zc θ)| ≤ M := fun n θ =>
+    convolution_mollN_le n (le_trans (mollN_le_one n) (by linarith))
+      (fun t ht => hM (zc θ) (hzsphere θ) t ht)
+  have hunf : ∀ g : ℂ → ℝ, poissonInt g x R w
+      = (2*π)⁻¹ • ∫ θ in Ioc (0:ℝ) (2*π), poissonKernel x w (zc θ) * g (zc θ) := by
+    intro g
+    rw [poissonInt, Real.circleAverage_def, ← intervalIntegral.integral_of_le (by positivity)]
+    rfl
+  simp only [hunf]
+  refine Tendsto.const_smul ?_ _
+  obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0:ℝ)) (b := 2*π)).exists_bound_of_continuousOn
+    hKcont.continuousOn
+  refine tendsto_integral_of_dominated_convergence (fun _ => C * M) ?_ ?_ ?_ ?_
+  · intro n
+    exact (hKcont.mul ((Gn_continuous hG n).comp (continuous_circleMap x R))).aestronglyMeasurable
+  · exact integrableOn_const (hs := measure_Ioc_lt_top.ne)
+  · intro n
+    filter_upwards [ae_restrict_mem measurableSet_Ioc] with θ hθ
+    rw [Real.norm_eq_abs, abs_mul]
+    have hKle : |poissonKernel x w (zc θ)| ≤ C := Real.norm_eq_abs _ ▸ hC θ (Ioc_subset_Icc_self hθ)
+    exact mul_le_mul hKle (hbdd n θ) (abs_nonneg _) (le_trans (abs_nonneg _) hKle)
+  · filter_upwards with θ
+    exact (tendsto_mollified G hG (zc θ)).const_mul (poissonKernel x w (zc θ))
+
+/-! ## Weyl's lemma: assembly -/
+
+theorem weylOnBall_of_continuous {G : ℂ → ℝ} (hG : Continuous G) : WeylOnBall G := by
+  intro p ε hε hweak x hx
+  -- reduce to: G = poissonInt G x R on ball x R
+  set δ : ℝ := ε - dist x p with hδ
+  have hδpos : 0 < δ := by rw [hδ]; rw [Metric.mem_ball] at hx; linarith
+  set R : ℝ := δ/4 with hR
+  set R' : ℝ := δ/2 with hR'
+  have hRpos : 0 < R := by positivity
+  have hRR' : R < R' := by rw [hR, hR']; linarith
+  -- uniform bound datum M on closedBall x (2R+1)
+  obtain ⟨M, hMbound⟩ := (isCompact_closedBall x (2*R+1)).exists_bound_of_continuousOn hG.continuousOn
+  have hMnn : 0 ≤ M := le_trans (norm_nonneg _) (hMbound x (Metric.mem_closedBall_self (by positivity)))
+  have hM : ∀ z : ℂ, ‖z - x‖ = R → ∀ t, ‖z - t‖ ≤ R + 1 → |G t| ≤ M := by
+    intro z hz t ht
+    have : t ∈ Metric.closedBall x (2*R+1) := by
+      rw [Metric.mem_closedBall, Complex.dist_eq]
+      calc ‖t - x‖ = ‖(z - x) - (z - t)‖ := by ring_nf
+        _ ≤ ‖z - x‖ + ‖z - t‖ := norm_sub_le _ _
+        _ ≤ R + (R + 1) := by rw [hz]; linarith
+        _ = 2*R+1 := by ring
+    exact Real.norm_eq_abs _ ▸ hMbound t this
+  -- the key: G = poissonInt G x R on ball x R
+  have hkey : ∀ w ∈ Metric.ball x R, G w = poissonInt G x R w := by
+    intro w hw
+    -- eventually: G_δ_n harmonic on ball x R', so reproduction on ball x R
+    have hNev : ∀ᶠ n : ℕ in atTop, (1:ℝ)/((n:ℝ)+1) ≤ δ/2 :=
+      tendsto_one_div_add_atTop_nhds_zero_nat.eventually_le_const (by positivity)
+    have hrepro : ∀ᶠ n in atTop,
+        (fun z => convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume z) w
+          = poissonInt (fun z => convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume z) x R w := by
+      filter_upwards [hNev] with n hn
+      have hsub : Metric.ball x R' ⊆ Metric.ball p (ε - 1/((n:ℝ)+1)) := by
+        intro z hz
+        rw [Metric.mem_ball] at hz ⊢
+        calc dist z p ≤ dist z x + dist x p := dist_triangle z x p
+          _ < R' + dist x p := by linarith
+          _ ≤ ε - 1/((n:ℝ)+1) := by rw [hR']; rw [hδ] at hn; linarith
+      have hharm := (harmonicOnNhd_mollified G hG.locallyIntegrable (mollN n)
+        (mollN_hasCompactSupport n) (mollN_contDiff n) (mollN_tsupport n) hweak).mono hsub
+      exact harmonic_reproduction hRpos hRR' hharm hw
+    -- limits
+    have h1 : Tendsto (fun n => poissonInt (fun z => convolution G (mollN n) (ContinuousLinearMap.lsmul ℝ ℝ) volume z) x R w)
+        atTop (𝓝 (G w)) := by
+      refine (tendsto_mollified G hG w).congr' ?_
+      filter_upwards [hrepro] with n hn using hn
+    have h2 := poissonInt_mollN_tendsto hG hRpos hw hMnn hM
+    exact tendsto_nhds_unique h1 h2
+  -- conclude HarmonicAt G x
+  have hPharm : HarmonicOnNhd (poissonInt G x R) (Metric.ball x R) :=
+    poissonInt_harmonicOnNhd hRpos (hG.continuousOn)
+  have hGharm : HarmonicOnNhd G (Metric.ball x R) := by
+    intro z hz
+    refine (harmonicAt_congr_nhds (Filter.eventuallyEq_of_mem ((isOpen_ball).mem_nhds hz)
+      (fun y hy => (hkey y hy)))).mpr (hPharm z hz)
+  exact hGharm x (Metric.mem_ball_self hRpos)
+
+/-- **Weyl's lemma for `G_c`.** The dynamical Green function satisfies the `WeylOnBall`
+elliptic-regularity interface, discharging the last hypothesis of the GAP-A support theorem. -/
+theorem weylOnBall_greenFunctionDyn (c : ℂ) : WeylOnBall (greenFunctionDyn c) :=
+  weylOnBall_of_continuous (continuous_greenFunctionDyn c)
+
 end
 
 end Bottcher

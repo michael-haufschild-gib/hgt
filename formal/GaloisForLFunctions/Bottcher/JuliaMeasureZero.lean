@@ -121,6 +121,63 @@ theorem isCompact_quadraticPreimageClosedBall (c : ℂ) (n : ℕ) :
     (isClosed_quadraticPreimageClosedBall c n)
     (quadraticPreimageClosedBall_subset_closedBall c n)
 
+/-- If an open set contains `K_c`, then a sufficiently deep trapping-disk pullback is already
+contained in it. This is compactness for the decreasing closed pullbacks. -/
+theorem exists_quadraticPreimageClosedBall_subset_of_filledJulia_subset_open
+    {c : ℂ} {U : Set ℂ} (hU : IsOpen U) (hKU : filledJulia c ⊆ U) :
+    ∃ N : ℕ, quadraticPreimageClosedBall c N ⊆ U := by
+  by_contra h
+  rw [not_exists] at h
+  let T : ℕ → Set ℂ := fun n => quadraticPreimageClosedBall c n \ U
+  have hTanti : ∀ n : ℕ, T (n + 1) ⊆ T n := by
+    intro n z hz
+    exact ⟨quadraticPreimageClosedBall_succ_subset c n hz.1, hz.2⟩
+  have hTnonempty : ∀ n : ℕ, (T n).Nonempty := by
+    intro n
+    obtain ⟨z, hzS, hzU⟩ := Set.not_subset.mp (h n)
+    exact ⟨z, hzS, hzU⟩
+  have hTclosed : ∀ n : ℕ, IsClosed (T n) := by
+    intro n
+    exact (isClosed_quadraticPreimageClosedBall c n).sdiff hU
+  have hTcompact0 : IsCompact (T 0) := by
+    exact (isCompact_quadraticPreimageClosedBall c 0).inter_right hU.isClosed_compl
+  have hnonempty : (⋂ n : ℕ, T n).Nonempty :=
+    IsCompact.nonempty_iInter_of_sequence_nonempty_isCompact_isClosed
+      T hTanti hTnonempty hTcompact0 hTclosed
+  obtain ⟨z, hz⟩ := hnonempty
+  have hzK : z ∈ filledJulia c := by
+    rw [filledJulia_eq_iInter_preimage_closedBall]
+    exact Set.mem_iInter.mpr fun n => (Set.mem_iInter.mp hz n).1
+  exact (Set.mem_iInter.mp hz 0).2 (hKU hzK)
+
+/-- Finite-block version of
+`exists_quadraticPreimageClosedBall_subset_of_filledJulia_subset_open`: if finitely many open sets
+contain `K_c`, then one tail index works for the corresponding shifted trapping pullbacks. -/
+theorem exists_forall_quadraticPreimageClosedBall_add_subset_of_filledJulia_subset_open
+    {c : ℂ} (M : ℕ) (U : ℕ → Set ℂ)
+    (hU : ∀ j : ℕ, j < M → IsOpen (U j))
+    (hKU : ∀ j : ℕ, j < M → filledJulia c ⊆ U j) :
+    ∃ N : ℕ, ∀ j : ℕ, j < M → quadraticPreimageClosedBall c (N + j) ⊆ U j := by
+  induction M with
+  | zero =>
+      exact ⟨0, by intro j hj; omega⟩
+  | succ M ih =>
+      obtain ⟨N₀, hN₀⟩ := ih (fun j hj => hU j (Nat.lt_trans hj (Nat.lt_succ_self M)))
+        (fun j hj => hKU j (Nat.lt_trans hj (Nat.lt_succ_self M)))
+      obtain ⟨N₁, hN₁⟩ :=
+        exists_quadraticPreimageClosedBall_subset_of_filledJulia_subset_open
+          (hU M (Nat.lt_succ_self M)) (hKU M (Nat.lt_succ_self M))
+      refine ⟨max N₀ N₁, ?_⟩
+      intro j hj
+      rcases Nat.lt_succ_iff_lt_or_eq.mp hj with hjM | hjM
+      · have hle : N₀ + j ≤ max N₀ N₁ + j :=
+          Nat.add_le_add_right (le_max_left N₀ N₁) j
+        exact (antitone_quadraticPreimageClosedBall c hle).trans (hN₀ j hjM)
+      · subst j
+        have hle : N₁ ≤ max N₀ N₁ + M :=
+          le_trans (le_max_right N₀ N₁) (Nat.le_add_right (max N₀ N₁) M)
+        exact (antitone_quadraticPreimageClosedBall c hle).trans hN₁
+
 theorem filledJulia_subset_quadraticPreimageClosedBall (c : ℂ) (n : ℕ) :
     filledJulia c ⊆ quadraticPreimageClosedBall c n := by
   rw [filledJulia_eq_iInter_preimage_closedBall]
@@ -344,6 +401,23 @@ theorem criticalValue_not_mem_filledJulia_of_disconnected {c : ℂ} (hc : Discon
   intro hcK
   exact h0 ((mem_filledJulia_iff_quadratic_mem c 0).mpr (by simpa [quadratic_apply] using hcK))
 
+/-- In the disconnected case, `K_c` is positively separated from the critical value `c`. -/
+theorem exists_dist_filledJulia_criticalValue_pos_of_disconnected {c : ℂ}
+    (hc : Disconnected c) :
+    ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ filledJulia c, ρ ≤ ‖z - c‖ := by
+  have hcnot : c ∉ filledJulia c := criticalValue_not_mem_filledJulia_of_disconnected hc
+  rcases (filledJulia c).eq_empty_or_nonempty with hemp | hne
+  · refine ⟨1, one_pos, fun z hz => ?_⟩
+    rw [hemp] at hz
+    simp at hz
+  · obtain ⟨z₀, hz₀mem, hz₀min⟩ :=
+      (isCompact_filledJulia c).exists_isMinOn hne (by fun_prop :
+        ContinuousOn (fun z : ℂ => ‖z - c‖) (filledJulia c))
+    have hz₀ne : z₀ - c ≠ 0 := by
+      intro hz₀c
+      exact hcnot (by simpa [sub_eq_zero.mp hz₀c] using hz₀mem)
+    exact ⟨‖z₀ - c‖, norm_pos_iff.mpr hz₀ne, fun z hz => hz₀min hz⟩
+
 /-- In the disconnected case, some trapping-disk pullback misses a positive ball around the
 critical value `c`. -/
 theorem iterate_preimage_closedBall_disjoint_ball_c {c : ℂ} (hc : Disconnected c) :
@@ -390,6 +464,80 @@ theorem quadraticPreimageClosedBall_kernel_le_of_disjoint_ball_c {c : ℂ} {n : 
   intro w hw
   have hwball : w ∉ Metric.ball c r := fun hwb => (Set.disjoint_left.mp hdisj hwb) hw
   exact quadratic_kernel_le_of_disjoint_ball_c hr hwball hq
+
+/-- For `‖c‖ ≥ 4`, the first trapping-disk pullback is already separated from the
+critical value by the unit ball. -/
+theorem quadraticPreimageClosedBall_one_disjoint_ball_c_of_four_le_norm {c : ℂ}
+    (hc : (4 : ℝ) ≤ ‖c‖) :
+    Disjoint (Metric.ball c 1) (quadraticPreimageClosedBall c 1) := by
+  rw [Set.disjoint_left]
+  intro z hzball hzpre
+  have hzdist : ‖z - c‖ < 1 := by
+    simpa [Metric.mem_ball, dist_eq_norm] using hzball
+  have hcz : ‖c‖ - ‖z‖ ≤ ‖z - c‖ := by
+    simpa [norm_sub_rev] using norm_sub_norm_le c z
+  have hznorm : ‖c‖ - 1 < ‖z‖ := by linarith
+  have hR : quadraticEscapeRadius c = ‖c‖ := by
+    unfold quadraticEscapeRadius
+    exact max_eq_right (by linarith : (2 : ℝ) ≤ ‖c‖)
+  have hzpre_norm : ‖quadratic c z‖ ≤ ‖c‖ := by
+    simpa [quadraticPreimageClosedBall, hR, Metric.mem_closedBall, dist_zero_right] using hzpre
+  have htri : ‖z‖ ^ 2 - ‖c‖ ≤ ‖quadratic c z‖ := by
+    have h := norm_sub_norm_le (z ^ 2) (-c)
+    rw [norm_neg, sub_neg_eq_add, norm_pow] at h
+    simpa [quadratic_apply] using h
+  have hgt : ‖c‖ < ‖quadratic c z‖ := by
+    nlinarith [sq_nonneg (‖z‖ - (‖c‖ - 1)), htri, hznorm, norm_nonneg z,
+      norm_nonneg c, hc]
+  exact not_lt_of_ge hzpre_norm hgt
+
+/-- A quantitative first-pullback separation criterion. If the circle centered at `c`
+with radius `r` is far enough from the escape disk after one quadratic step, then the
+first trapping-disk pullback misses `ball c r`. -/
+theorem quadraticPreimageClosedBall_one_disjoint_ball_c_of_radius {c : ℂ} {r : ℝ}
+    (h2c : (2 : ℝ) ≤ ‖c‖) (hrc : r < ‖c‖)
+    (hbig : 2 * ‖c‖ < (‖c‖ - r) ^ 2) :
+    Disjoint (Metric.ball c r) (quadraticPreimageClosedBall c 1) := by
+  rw [Set.disjoint_left]
+  intro z hzball hzpre
+  have hzdist : ‖z - c‖ < r := by
+    simpa [Metric.mem_ball, dist_eq_norm] using hzball
+  have hcz : ‖c‖ - ‖z‖ ≤ ‖z - c‖ := by
+    simpa [norm_sub_rev] using norm_sub_norm_le c z
+  have hznorm : ‖c‖ - r < ‖z‖ := by linarith
+  have hR : quadraticEscapeRadius c = ‖c‖ := by
+    unfold quadraticEscapeRadius
+    exact max_eq_right h2c
+  have hzpre_norm : ‖quadratic c z‖ ≤ ‖c‖ := by
+    simpa [quadraticPreimageClosedBall, hR, Metric.mem_closedBall, dist_zero_right] using hzpre
+  have htri : ‖z‖ ^ 2 - ‖c‖ ≤ ‖quadratic c z‖ := by
+    have h := norm_sub_norm_le (z ^ 2) (-c)
+    rw [norm_neg, sub_neg_eq_add, norm_pow] at h
+    simpa [quadratic_apply] using h
+  have hrpos : 0 < ‖c‖ - r := by linarith
+  have hgt : ‖c‖ < ‖quadratic c z‖ := by
+    nlinarith [hbig, htri, hznorm, hrpos, norm_nonneg z]
+  exact not_lt_of_ge hzpre_norm hgt
+
+/-- For `‖c‖ ≥ 3`, the first trapping-disk pullback is already separated from the
+critical value by the ball of radius `51 / 100`, which is large enough for contraction. -/
+theorem quadraticPreimageClosedBall_one_disjoint_ball_c_of_three_le_norm {c : ℂ}
+    (hc : (3 : ℝ) ≤ ‖c‖) :
+    Disjoint (Metric.ball c ((51 : ℝ) / 100)) (quadraticPreimageClosedBall c 1) := by
+  apply quadraticPreimageClosedBall_one_disjoint_ball_c_of_radius
+  · linarith
+  · linarith
+  · nlinarith [sq_nonneg (‖c‖ - 3), hc]
+
+/-- For `‖c‖ ≥ 73 / 25`, the first trapping-disk pullback is already separated from the
+critical value by the ball of radius `501 / 1000`, still large enough for contraction. -/
+theorem quadraticPreimageClosedBall_one_disjoint_ball_c_of_seventy_three_div_twenty_five_le_norm
+    {c : ℂ} (hc : ((73 : ℝ) / 25) ≤ ‖c‖) :
+    Disjoint (Metric.ball c ((501 : ℝ) / 1000)) (quadraticPreimageClosedBall c 1) := by
+  apply quadraticPreimageClosedBall_one_disjoint_ball_c_of_radius
+  · linarith
+  · linarith
+  · nlinarith [sq_nonneg (‖c‖ - (73 : ℝ) / 25), hc]
 
 /-- A separated pullback level plus the quadratic preimage area formula gives the nullity theorem,
 provided the separation radius yields a contraction factor `q < 1`. -/
@@ -876,6 +1024,42 @@ theorem volume_filledJulia_eq_zero_of_eventually_block_kernel_product
     _ ≤ q * volume (quadraticPreimageClosedBall c n) := by
           exact mul_le_mul_left hprod (volume (quadraticPreimageClosedBall c n))
 
+/-- A finite block of strict distance lower bounds on `K_c`, whose one-step area kernels have
+contracting product, implies `K_c` is null. Compactness promotes the strict `K_c` bounds to an
+eventual tail of trapping-disk pullbacks, then `volume_filledJulia_eq_zero_of_eventually_block_kernel_product`
+applies. -/
+theorem volume_filledJulia_eq_zero_of_filledJulia_block_dist_bounds
+    {c : ℂ} {M : ℕ} (rstep : ℕ → ℝ) {q : ℝ≥0∞}
+    (hM : 0 < M) (hq : q < 1)
+    (hprod :
+      (∏ j ∈ Finset.range M, ENNReal.ofReal ((2 * rstep j)⁻¹)) ≤ q)
+    (hrpos : ∀ j : ℕ, j < M → 0 < rstep j)
+    (hdist : ∀ j : ℕ, j < M → ∀ w ∈ filledJulia c, rstep j < ‖w - c‖) :
+    volume (filledJulia c) = 0 := by
+  let U : ℕ → Set ℂ := fun j => {w : ℂ | rstep j < ‖w - c‖}
+  have hUopen : ∀ j : ℕ, j < M → IsOpen (U j) := by
+    intro j _hj
+    dsimp [U]
+    exact isOpen_lt continuous_const (by fun_prop)
+  have hKU : ∀ j : ℕ, j < M → filledJulia c ⊆ U j := by
+    intro j hj w hw
+    exact hdist j hj w hw
+  obtain ⟨N, hN⟩ :=
+    exists_forall_quadraticPreimageClosedBall_add_subset_of_filledJulia_subset_open
+      (c := c) M U hUopen hKU
+  apply volume_filledJulia_eq_zero_of_eventually_block_kernel_product
+      (c := c) (N := N) (M := M) (q := q)
+      (fun j => ENNReal.ofReal ((2 * rstep j)⁻¹)) hM hq hprod
+  intro n hn j hj w hw
+  have hle : N + j ≤ n + j := Nat.add_le_add_right hn j
+  have hwN : w ∈ quadraticPreimageClosedBall c (N + j) :=
+    antitone_quadraticPreimageClosedBall c hle hw
+  have hrlt : rstep j < ‖w - c‖ := hN j hj hwN
+  have h2le : 2 * rstep j ≤ 2 * ‖w - c‖ := by nlinarith
+  have h2pos : 0 < 2 * rstep j := by nlinarith [hrpos j hj]
+  have hinv : (2 * ‖w - c‖)⁻¹ ≤ (2 * rstep j)⁻¹ := inv_anti₀ h2pos h2le
+  exact ENNReal.ofReal_le_ofReal hinv
+
 /-- Kernel-bound nullity using the proved quadratic preimage area formula. -/
 theorem volume_filledJulia_eq_zero_of_forall_dist_area {c : ℂ} {q : ℝ≥0∞}
     (hq : q < 1)
@@ -955,6 +1139,38 @@ theorem volume_filledJulia_eq_zero_of_eventually_forall_dist {c : ℂ} {N : ℕ}
   have hinv : (2 * ‖w - c‖)⁻¹ ≤ (2 * a)⁻¹ := inv_anti₀ h2apos h2le
   exact ENNReal.ofReal_le_ofReal hinv
 
+/-- A strict distance lower bound on `K_c` itself can be promoted to a finite pullback-level
+distance bound by compactness, then to nullity by the area formula. -/
+theorem volume_filledJulia_eq_zero_of_filledJulia_dist_gt_half {c : ℂ}
+    (hdist : ∀ w ∈ filledJulia c, ((1 : ℝ) / 2) < ‖w - c‖) :
+    volume (filledJulia c) = 0 := by
+  let U : Set ℂ := {w : ℂ | ((1 : ℝ) / 2) < ‖w - c‖}
+  have hU : IsOpen U := by
+    dsimp [U]
+    exact isOpen_lt continuous_const (by fun_prop)
+  have hKU : filledJulia c ⊆ U := by
+    intro w hw
+    exact hdist w hw
+  obtain ⟨N, hN⟩ :=
+    exists_quadraticPreimageClosedBall_subset_of_filledJulia_subset_open hU hKU
+  exact volume_filledJulia_eq_zero_of_eventually_forall_dist (c := c) (N := N)
+    (fun w hw => hN hw)
+
+/-- Ball-disjointness form of the `K_c`-level separation criterion. -/
+theorem volume_filledJulia_eq_zero_of_filledJulia_disjoint_ball_c_radius_gt_half
+    {c : ℂ} {r : ℝ}
+    (hrhalf : ((1 : ℝ) / 2) < r)
+    (hdisj : Disjoint (Metric.ball c r) (filledJulia c)) :
+    volume (filledJulia c) = 0 := by
+  apply volume_filledJulia_eq_zero_of_filledJulia_dist_gt_half
+  intro w hw
+  have hwball : w ∉ Metric.ball c r := fun hwb => (Set.disjoint_left.mp hdisj hwb) hw
+  have hnotlt : ¬ dist w c < r := fun h => hwball (Metric.mem_ball.mpr h)
+  have hdist : r ≤ dist w c := le_of_not_gt hnotlt
+  have hnorm : r ≤ ‖w - c‖ := by
+    simpa [dist_eq_norm] using hdist
+  linarith
+
 /-- Separated-pullback nullity using the proved quadratic preimage area formula. -/
 theorem volume_filledJulia_eq_zero_of_disjoint_ball_c_area
     {c : ℂ} {N : ℕ} {r : ℝ} {q : ℝ≥0∞}
@@ -981,6 +1197,41 @@ theorem volume_filledJulia_eq_zero_of_disjoint_ball_c_radius_gt_half
   exact volume_filledJulia_eq_zero_of_disjoint_ball_c_area
     (c := c) (N := N) (r := r) (q := ENNReal.ofReal ((2 * r)⁻¹))
     hq hr hdisj le_rfl
+
+/-- Quantitative first-pullback radius criterion for nullity. -/
+theorem volume_filledJulia_eq_zero_of_first_pullback_radius {c : ℂ} {r : ℝ}
+    (hrhalf : ((1 : ℝ) / 2) < r)
+    (h2c : (2 : ℝ) ≤ ‖c‖) (hrc : r < ‖c‖)
+    (hbig : 2 * ‖c‖ < (‖c‖ - r) ^ 2) :
+    volume (filledJulia c) = 0 :=
+  volume_filledJulia_eq_zero_of_disjoint_ball_c_radius_gt_half
+    (c := c) (N := 1) (r := r) hrhalf
+    (quadraticPreimageClosedBall_one_disjoint_ball_c_of_radius h2c hrc hbig)
+
+/-- Large parameters give Lebesgue-null filled Julia sets by the explicit first-pullback
+separation from the critical value. -/
+theorem volume_filledJulia_eq_zero_of_four_le_norm {c : ℂ} (hc : (4 : ℝ) ≤ ‖c‖) :
+    volume (filledJulia c) = 0 :=
+  volume_filledJulia_eq_zero_of_disjoint_ball_c_radius_gt_half
+    (c := c) (N := 1) (r := 1) (by norm_num)
+    (quadraticPreimageClosedBall_one_disjoint_ball_c_of_four_le_norm hc)
+
+/-- Parameters with `‖c‖ ≥ 3` give Lebesgue-null filled Julia sets by the explicit
+first-pullback separation radius `51 / 100`. -/
+theorem volume_filledJulia_eq_zero_of_three_le_norm {c : ℂ} (hc : (3 : ℝ) ≤ ‖c‖) :
+    volume (filledJulia c) = 0 :=
+  volume_filledJulia_eq_zero_of_disjoint_ball_c_radius_gt_half
+    (c := c) (N := 1) (r := (51 : ℝ) / 100) (by norm_num)
+    (quadraticPreimageClosedBall_one_disjoint_ball_c_of_three_le_norm hc)
+
+/-- Parameters with `‖c‖ ≥ 73 / 25` give Lebesgue-null filled Julia sets by the explicit
+first-pullback separation radius `501 / 1000`. -/
+theorem volume_filledJulia_eq_zero_of_seventy_three_div_twenty_five_le_norm {c : ℂ}
+    (hc : ((73 : ℝ) / 25) ≤ ‖c‖) :
+    volume (filledJulia c) = 0 :=
+  volume_filledJulia_eq_zero_of_disjoint_ball_c_radius_gt_half
+    (c := c) (N := 1) (r := (501 : ℝ) / 1000) (by norm_num)
+    (quadraticPreimageClosedBall_one_disjoint_ball_c_of_seventy_three_div_twenty_five_le_norm hc)
 
 end
 
