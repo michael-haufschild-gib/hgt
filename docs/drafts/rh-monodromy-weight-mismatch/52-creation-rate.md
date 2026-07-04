@@ -110,3 +110,50 @@ profile fact. Routes that can carry it: second/fourth moments of log|F_N|
 (variance ⟹ anti-concentration), or the σ-profile in the partial-sum zeros
 literature (arXiv:0807.0019, 1507.01340). (CR-density) stands as typed, with
 the no-go recorded so nobody re-walks bare Jensen.
+
+## 9. Creation reader across p: intensity is p-FLAT; the envelope is depth, not count [MEASURED — 2026-07-04]
+
+Ran the §1–§3 reader across p ∈ [0, ½] to test whether birth INTENSITY carries the
+`B(p) = |cos(π/8 − 2πp²)|` envelope (the weld hope: survival + creation both ∝ B²).
+Certification: `computations/mwm/creation_rate_envelope.py` (pre-registered C1–C4)
++ `creation_rate_envelope.out` (pod, numpy). Deficit function
+`h(t) = θ_RS′(t) + Re(F_N′/F_N)(½+it)`, mean `+½log N`; births = downward
+excursions of `h` to 0. Aggregated over N = 40…120, 4000 p-points each, 25 d-bins.
+
+**Result — the "births ∝ B²" conjecture is REFUTED at the reader level.** The
+first-order birth-proxy intensity (density of low-h / near-tangency events) is
+FLAT in p: intensity ratio `[d<0.125]:[d>0.375] = 0.99` (census births 3.0);
+mean-h, low tail q05, and near-tangency density all p-independent; R² of both
+`H_B = cos²(π/8−2πp²)` and `H_frz = cos²(2πp²)` ≈ 0.01 (i.e. no fit — the data are
+flat). The on-line zeros of ζ_N (the `min h` spikes) are uniform in p, confirming
+the reader is sound; there is simply no first-order p-structure.
+
+**Why flat, and where the envelope actually is.** The marginal-term resonance is
+ONE term out of N — a `1/√N`-diluted modulation on the full-sum `h`, below the
+bulk's O(1) on-line-zero fluctuations. The census sees the p-structure because
+off-line pairs are MARGINAL-SELECTED (they exist only by the resonance); `h` is
+not marginal-selected, so it averages the resonance away. The census
+birth-clustering therefore lives NOT in the tangency DENSITY (p-flat) but in the
+depth-graded LIFT-OFF — whether the tangency detaches deep enough to be mid-band
+(doc 52 §5's depth small-ball, `η ≥ 0.09`). This is consistent with `B(p)` being a
+birth-DEPTH cap (doc 51 §8(4)), not an intensity.
+
+**The weld, corrected — the π/8 is SURVIVAL-only.** The fork (peak at p=0 vs p=¼)
+resolves from the census directly: births peak at p≈0 (42/106 within 0.125 of
+p≡0), and the frozen-max marginal line modulus `|cos 2πp²|` (doc 46 §6) peaks at
+p=0 — while `B(p)` peaks at p=¼. So the creation-depth envelope is the FROZEN-MAX
+modulus (phase offset **0**), NOT `B` (offset **π/8**). Creation and survival share
+the SLIP variable `2πp²` but not the offset: the `π/8` is the RS-remainder /
+metaplectic constant of the survival stationary VALUE (docs 50 §5, 51 §10), absent
+from the creation modulus. The census birth-peak at p=0 is the fingerprint that
+creation carries NO π/8.
+
+**What this opens.** The right instrument for the depth envelope is the off-line
+pair-depth census (doc 52 §7(2)): store per-event `(p, birth-depth)` and test
+whether the birth DEPTH (not count) follows `|cos 2πp²|` (frozen-max, predicted)
+vs `B(p)`. That is the weld test — 2D depth-graded, not the 1D reader. Next:
+regenerate a small depth-graded off-line census over p ∈ [0,½] at one matched N and
+fit the birth-depth p-profile; if it tracks `|cos 2πp²|`, the two census facts are
+(survival: frozen dip, low edge, with π/8 in the dip phase) × (creation: frozen-max
+depth, half-emptiness, no π/8) — welded at the shared slip `2πp²`, the π/8 living
+only on the survival ledger.

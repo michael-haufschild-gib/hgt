@@ -142,3 +142,113 @@ near-uniform on [0, 0.194] with no thinning at the edge — favoring a HARD
 slip-budget edge over a soft configurational tail; 19 points cannot settle
 it. Discriminating measurement (when a census extension is next sanctioned):
 the d-histogram shape near 0.19 and per-event (d, R) pairs — store both.
+
+## 10. The drift-birth fixed point: the window constant, mechanism-pinned [derived; frozen-dip closed form PROVED, constant numeric — 2026-07-04]
+
+The §5 (HOLD-phase) tolerance `κ ≈ 0.24` was a FIT to the census edge. It is now
+replaced by a mechanism-pinned, N-independent value.
+Certification: `computations/mwm/drift_birth_frozen.py` (pre-registered Q1–Q4;
+Q1 confirmed, Q3 confirmed) + `drift_birth_frozen.out` (pod, mpmath dps=40).
+The naive full-tower first-passage was phase-fragile (scattered islands, edge
+slides with birth depth — `drift_birth_fixed_point.py`, Q1/Q2 FAILED); the dip
+lives in the FROZEN lattice geometry (§2–3), which is smooth.
+
+**(i) The frozen dip, closed form [PROVED — two lines of algebra].** On the
+frozen circle `S_M = a₀ e^{iβ}(1−w^M)/(1−w)`, write `e^{iβ}/(1−w) =
+e^{iψ}/|1−w|`, `ψ = β − arg(1−w)`. Then `Re S_M = (a₀/|1−w|)(cos ψ − cos(ψ+Mϑ))`,
+`ϑ = arg w`; the one-wrap density (§2) reaches the minimum within ⌈2π/ϑ⌉ ≤ 2
+entries — inside the frozen block, before drift acts. Hence
+
+> **frozen dip(d) = (a₀ / (2|cos 2πd|)) · (1 − cos ψ(d)),
+> ψ(d) = β(d) − arg(1 − w),  β(d) = π/8 − 2πd²,  w = e^{−iπ(1+4d)}.**
+
+Smooth and monotone increasing on `[0, ¼]`, → ∞ at the quarter-point `d = ¼`.
+There is NO free birth-phase parameter: `β(d) = π/8 − 2πd²` is the certified
+stationary value (doc 50 §5), the SAME object as the birth amplitude
+`B(d) = cos β(d)`. The dip is fast (≤ 2 entries), matching doc 51 §6's O(1)-e-fold
+absorption; drift's role is to move survivors OFF the circle on the slower N^{1/3}
+scale, not to set the edge.
+
+**(ii) The fixed point.** Birth depth `= ρ·a₀·B(d)` (ρ = birth-depth/envelope
+ratio; doc 51 §8(4) birth depth ∝ B(d)). Survival ⟺ birth depth > frozen dip(d):
+
+> **ρ·B(d) > (1/(2|cos 2πd|))(1 − cos ψ(d)).**
+
+The edge d*(ρ) solves equality. Facts (certified):
+
+1. **N-independent.** d*(ρ) is identical to 4 digits for N ∈ {100, 300, 1000,
+   3000}: `ρ = 1.1832` gives `d* = 0.1935` at every N. The window is a genuine
+   constant of the matched regime — this is WHY the census edge is N-stable.
+2. **Parameter-free within 4%.** At the natural scale `ρ = 1` (birth depth =
+   marginal envelope a₀, no fine-tuning): `d* = 0.1855`, `2πd*² = 0.216` — vs
+   census `d* = 0.194`, `2πd*² = 0.236`. A 4%/9% match with ZERO free parameters.
+3. **Exact edge = the reach ratio.** `d* = 0.194` is reproduced at `ρ = 1.183`,
+   which sits at the low end of the independently-measured REACH ratio
+   R ∈ [1.10, 2.11] (§9b, doc 46 §5). So the fit tolerance κ of §5 is replaced by
+   a MEASURABLE physical ratio ρ = reach, with a matching independent value.
+
+**(iii) Status.** The frozen-dip closed form is PROVED algebra. The constant
+`2πd*² = 0.216` (parameter-free) → `0.236` (at ρ = min-reach) is a mechanism
+derivation at numeric grade, N-independent — no longer a fit. Open to close it to
+a theorem: (a) verify ρ = reach directly (compute `|P_N|/(η|Φ′|)` in the frozen
+model and check it equals the birth-depth/envelope ratio at the edge); (b) the
+growing envelope `a_m = 2(N−m)^{−1/2}` vs the constant-envelope circle shifts the
+edge down slightly, needing ρ a touch above 1.18 — recompute the antitone-envelope
+dip in closed form (doc 50 §3 master bound gives the same denominator, so the
+correction is an explicit Abel factor); (c) the anti-correlation of reach and d
+(§9b) is the sign that ρ is edge-selected, not per-event free — pin which config
+saturates the edge.
+
+**What this opens:** the window constant is now a computable output of the
+lattice, not an input. Next: push (a)–(c) to a closed ρ; and run the SAME
+frozen-dip fixed point at the p ≈ ½ suppression (B drops 2.4×, doc 50 §5) to
+derive the SECOND measured fact — that the near-half-integer band is empty at the
+amplitude level, not just the phase level — from one mechanism.
+
+## 11. Half-band test: the two census facts are TWO mechanisms, not one [2026-07-04]
+
+Pushed doc 51 §10's frozen fixed point to (b) the envelope correction and to the
+full band `d ∈ [0, ½]`, to test whether ONE mechanism gives both the low edge
+`d* = 0.194` AND the half-integer emptiness (p ≈ ½). Certification:
+`computations/mwm/drift_birth_halfband.py` (pre-registered R1–R4) +
+`drift_birth_halfband.out` (pod). Result: the one-mechanism hope is REFUTED, and
+the refutation cleanly SEPARATES the two facts.
+
+**(b) envelope correction — NOT negligible, ~10% [correcting §10's "4%"].**
+The true exact-step antitone-envelope dip (walk the frozen block with
+`a_m = 2(N−m)^{−1/2}` and the exact `Δ(m)`) differs from the constant-envelope
+closed form by rel-gap 0.07–0.39 (non-monotone, ~10% at large N). So the closed
+form is a leading-order model good to ~10%, and `ρ* ≈ 1.18` carries ~10% model
+uncertainty. The §10 agreement is at the ~10% MECHANISM level, not 4%-precise; the
+exact-value close of ρ needs the carrier-level birth normalization (still open,
+= the doc 46 reach/(BVAL) object). (a)/(c) do NOT close from this model.
+
+**The half-band test [R2, REFUTED — and this is the finding].** At `ρ = 1.18` the
+frozen fixed point gives survival set `[0, 0.192] ∪ [0.310, 0.500]` — it RE-OPENS
+near `d = ½`. Census has NOTHING above 0.194. The frozen SURVIVAL dip therefore
+does NOT explain the half-emptiness; it favors it. Exact reason (table, R3): at
+`d = ½`, `|cos 2πd| = 1` is maximal ⟹ collective dip is MINIMAL (`0.31 a₀`, the
+p = ½ maximal-suppression of doc 50 §2), so even the 2.4×-reduced birth
+`B(½) = 0.383` beats it. The dip amplification `1/|cos 2πd|` blows up only toward
+the quarter-point `d = ¼`, which is what kills the low band's neighbourhood
+`(0.194, 0.30)` — phase-limited, correct.
+
+**Consequence — the census facts split by mechanism:**
+- **Low edge `d* = 0.194`** ← SURVIVAL (frozen dip; §10). Robust: low edge moves
+  0.184 → 0.204 as ρ: 1.0 → 1.5, census 0.194 at ρ = 1.18.
+- **Half-integer emptiness (p ≈ ½)** ← CREATION, not survival. Pairs near p = ½
+  are 3× less likely to be BORN (doc 50 §6's measured birth 1-periodicity) and
+  born shallower (B suppression is a birth-DEPTH property, doc 51 §8(4)). The
+  frozen dip favouring `d = ½` proves the emptiness there is UPSTREAM of the
+  survival walk. This CORRECTS §5's parenthetical: the 2.4× B-suppression is real
+  but acts on the creation side (shallow/rare births), NOT as a survival dip.
+
+**What this opens:** the survival mechanism (frozen dip) owns exactly one census
+fact; the other is doc 52's creation rate. Next: run the creation-rate reader
+(`A′(t) = θ′ − 2 Im(F_N′/F_N)`, births = tangential crossings, doc 52) across
+`p ∈ [0, ½]` and test whether the birth INTENSITY carries the `B(p)` = |cos(π/8 −
+2πp²)| envelope — if births ∝ B(p)² (intensity), the 1-periodic birth suppression
+and the 2.4× depth cap fall out of ONE creation object, and the full census
+(low edge from survival, half from creation) is two clean mechanisms welded at
+the same birth phase π/8. That weld — survival and creation sharing β(d) = π/8 −
+2πd² — is the object to make precise.

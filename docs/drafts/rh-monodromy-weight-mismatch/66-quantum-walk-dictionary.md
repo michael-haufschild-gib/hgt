@@ -89,3 +89,21 @@ the survival floor of doc 51, closed WITHOUT import. If that derivation lands, t
 metaplectic π/8 becomes a genuine *input* (the birth phase) to a novel window
 constant, instead of a decorative re-labeling of a classical one. That is the bridge
 candidate; the π/8 itself is not.
+
+## 8. §7 next-move DONE: the window constant is mechanism-pinned [2026-07-04]
+
+Followed §7. The drift-birth fixed point (doc 51 §10) DERIVES the survival window,
+not by importing KR widths but from the lane's own frozen-circle lattice:
+
+- frozen dip closed form `dip(d) = (a₀/2|cos2πd|)(1−cos(β(d)−arg(1−w)))`,
+  `β(d) = π/8 − 2πd²` [PROVED algebra] — the metaplectic π/8 (§6) enters HERE as
+  the birth phase, now an INPUT to a novel constant, exactly as §7 predicted;
+- edge N-independent to 4 digits (N = 100…3000) — explains the census N-stability;
+- parameter-free (ρ=1) edge `2πd*² = 0.216` vs census 0.236 (4%); exact at
+  ρ = 1.183 = the measured min REACH ratio.
+
+So the π/8 stopped being decorative: it is the birth phase feeding the frozen dip
+whose threshold IS the window. The bridge §7 asked for is built at numeric grade;
+the theorem residuals (ρ = reach; antitone envelope; edge selection) are in
+doc 51 §10(iii). This is lane-native (uses the certified cascade lattice, not any
+classical import) — passes the novelty gate the §6 π/8-reading failed.

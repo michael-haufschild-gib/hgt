@@ -9,7 +9,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 |---|---|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 5281 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 5282 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Declarations
 
@@ -4558,6 +4558,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `noRelation_phiMero_bothConnected_hnbFree` | `GaloisForLFunctions.Bottcher.Q62BothConnectedHnbFree` | `formal/GaloisForLFunctions/Bottcher/Q62BothConnectedHnbFree.lean:37` | Both-connected q62 pair with `hnb` discharged.** For a connected `c₁ ∈ mandelbrot ∖ {0,-2}` and a Böttcher branch `β` on `K_{c₁}ᶜ` matching `bottcherCoord c₁` on `escapeOpen c₁`, t |
 | theorem | `isRieszMeasureOfSmooth_gapAMu_of_greenApprox_integral_tendsto` | `GaloisForLFunctions.Bottcher.Q62BrolinEquidistribution` | `formal/GaloisForLFunctions/Bottcher/Q62BrolinEquidistribution.lean:45` | Brolin equidistribution keystone.** The unconditional Riesz identity `IsRieszMeasureOfSmooth (gapAMu c) G_c` follows from the single analytic convergence `hConv` — the weak-`*` lim |
 | theorem | `map_quadratic_gapAMu_eq_of_volume_filledJulia_zero` | `GaloisForLFunctions.Bottcher.Q62BrolinFInvariance` | `formal/GaloisForLFunctions/Bottcher/Q62BrolinFInvariance.lean:18` |  |
+| theorem | `logsq_le_const_div` | `GaloisForLFunctions.Bottcher.Q62BrolinL2` | `formal/GaloisForLFunctions/Bottcher/Q62BrolinL2.lean:35` | `L²`-kernel domination.** `(log t)² ≤ (max 4 (S (log S)²)) · t⁻¹` for `0 < t ≤ S`, `1 ≤ S`. The decay exponent `−1` (`> −2 = −dim ℝ ℂ`) is what makes `(log‖· − r‖)²` Lebesgue-integ |
 | theorem | `limitingBrolinMeasureAtSupportsJulia_of_filledJulia_null_of_weyl` | `GaloisForLFunctions.Bottcher.Q62BrolinSupportDischarge` | `formal/GaloisForLFunctions/Bottcher/Q62BrolinSupportDischarge.lean:31` | The q62 Brolin support input, discharged from GAP-A.** For every target `a`, the arbitrary-target Brolin measure charges every Julia-frontier ball — conditional only on Julia-null  |
 | theorem | `forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_filledJulia_null_of_weyl` | `GaloisForLFunctions.Bottcher.Q62BrolinSupportDischarge` | `formal/GaloisForLFunctions/Bottcher/Q62BrolinSupportDischarge.lean:40` | The `∀ fixed-point target` form consumed by the q62 both-connected capstones (`hsupp` hypothesis). Discharges the support datum for the fixed point the bridge selects internally. |
 | theorem | `backwardOrbitDense_of_filledJulia_null_of_weyl` | `GaloisForLFunctions.Bottcher.Q62BrolinSupportDischarge` | `formal/GaloisForLFunctions/Bottcher/Q62BrolinSupportDischarge.lean:49` | Backward-orbit density from GAP-A.** At a fixed point with critical-orbit avoidance, `BackwardOrbitDense` follows from Julia-null + Weyl. This is the dynamical input the one-sided  |

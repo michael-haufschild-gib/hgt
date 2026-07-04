@@ -96,3 +96,21 @@ suppression. This adds:
 - Consumption order update: (EPH) → **P-SM probe adjudication → (K-bdd-∞)
   at large mean-share** (the co-area induction may terminate at depth 1
   against a dominant frozen term) → (C2) → (SPEC-decay) → (HANK-fin)_2.
+
+## 7. Addendum (cycles 31–34): the Route C-direct spine
+
+Docs 65–68 changed the map. (TIGHT) — the convexity-tangent mean-log floor —
+closes the designed carrier's creation bound UNCONDITIONALLY with a free dial
+ε₀ (doc 67), p-uniformly (doc 68 §2). The deck demand extracts as
+SUBCRITICALITY r(N) ≤ c_deck·log N (doc 68 §1), so the meeting number is the
+absolute constant ε₀* = c_deck/C′ — extraction, not analysis. Consequence
+[REDUCTION-conjecture, doc 68 §4]: for the DESIGNED tower, W3/W4/W5/W8
+collapse — the RH₂ rung runs ladder → window relation → (DOM-W) smoothed-AFE
+domination → (MOAT-W)/(DEEP-W) transplants [read carrier-generic] →
+plateau-split creation [unconditional] → cofinality (C1 corrected §59.4 + C2)
+→ isolation. No cascade, no (CR-density), no (EPH) on the designed spine.
+Open items on this spine, all classical-shaped: (DOM-W), the constants pass
+(C′, c_deck), C2 strata-match, k ≥ 2 rungs (W9/W10 unchanged). The sharp-
+carrier cascade tier is re-classified: explanation layer, not load-bearing.
+Doc 59 §1's proof was corrected (§59.4 — convexity-tangent replaces the
+broken Littlewood sketch; conclusions survive).

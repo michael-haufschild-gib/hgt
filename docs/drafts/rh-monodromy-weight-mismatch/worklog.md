@@ -1973,3 +1973,80 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
   open ground, no longer load-bearing. [CHECK at promotion]
 - Tasks: #12 closed (resolved); #13 opened ((SWEEP-margin) write-out +
   back-solve ε₀* — the one number left in the meeting equation).
+
+## Cycle 34 (2026-07-04) — (SWEEP-margin) written; the meeting is an absolute constant; THE BYPASS
+- Doc 68 BANKED: M_deck extracted as SUBCRITICALITY — r(N) ≤ c_deck·logN
+  (placement bookkeeping: isolation windows H_iso ≍ C₁/logT, edge-threading
+  via corrected (C1); the margin was never in-N smallness). Supply is
+  p-UNIFORM (plateau split never used p-centrality — the resonance-window
+  boundary term is suppressed at source). Meeting: ε₀* = c_deck/C′, absolute;
+  both factors extraction-grade.
+- THE BYPASS [REDUCTION-conjecture, doc 68 §4]: the designed carrier has
+  ε₀-few sliver zeros at EVERY height directly — for the designed tower the
+  RH₂ chain drops the entire cascade tier (no dichotomy/walk/DRIFT-dip/
+  HOLD-phase/CR-density/EPH): ladder → window relation → (DOM-W) → (MOAT-W)/
+  (DEEP-W) → plateau-split bound → cofinality → isolation. Transplant reads:
+  MOAT-shallow is literally carrier-generic (doc 43 §6); DEEP-pair argument
+  shape-generic (modulus asymmetry + Bernstein — weight enters via bounded
+  norms). Residual: (DOM-W) smoothed-AFE for the weighted completion
+  [classical-shaped], constants pass (C′, c_deck), C2, k≥2 rungs.
+- Doc 60 §7 addendum: Route C-direct spine recorded; cascade tier
+  re-classified as explanation layer. Doc 59 correction cross-referenced.
+- Tasks: #13 CLOSED (margin written; meeting = absolute constant); next
+  executable = (DOM-W) + constants pass.
+
+## Cycle 35 (2026-07-04) — (DOM-W) closed in threading form; constants pass: ε₀* ≈ 1/512; the onset finding
+- Doc 69 BANKED. (DOM-W) [PROVED-sketch]: D_W = taper-difference polynomial
+  (E|·|² ≤ ℓ by MV) + sharp-AFE error; threading form: off (ε₁+ε₀)U,
+  |D_W| < τ < |Z_W| — the SAME (TIGHT) lemma prices the carrier-largeness
+  clause (carrier-generic, σ-uniform). No new AFE machinery; IK-class
+  smoothed AFEs = luxury upgrade only. No-tension confirmed at inequality
+  level: all design pressure lives in the onset.
+- Constants pass (first-pass): c_deck ≈ 1/16 (H_iso = 8 spacings);
+  C′ ≤ 32 (split 2 × dip 12 × dyadic 4/3); ε₀* = c_deck/C′ ≈ 1/512.
+- ONSET FINDING (honest catch): (TIGHT)-only onset N ≥ e^{~650} —
+  asymptotic spine closed unconditionally past it, ALL-heights not.
+  Doc 67 §3's demotion CORRECTED: (SEL-PS)-lognormal is load-bearing for
+  the finite range. With CLT-grade λ₀ at z₀ ≈ 3.1: onset N ~ e^{14},
+  T ~ 10^{13} = the classically VERIFIED range boundary — verified range
+  below + CLT tower above, no gap (first-pass constants; verify at
+  promotion).
+- Force order now: (SEL-PS)-lognormal [single load-bearing analytic item;
+  = Selberg-method moments; its 2nd moment doubles as doc 59 route-3
+  defect variance — prove once, consume twice] → promotion pass →
+  C2 → k≥2.
+
+## Cycle 36 (2026-07-04) — (SEL-PS) CLOSED BY TRANSFER: the R–S block pins the carrier's line profile to ζ; Selberg 1946 polices creation
+- Doc 70 BANKED. The load-bearing discovery: on Riemann–Siegel blocks
+  B_n = [2πn², 2π(n+1)²) the completed matched truncation g_N (doc 22's
+  anneal object) has line profile = ζ(½+it) + O(t^{−1/4}) [KNOWN,
+  Titchmarsh 4.15] — so the designed completion Z_W = A₀·g_N − completed-Δ
+  (Δ = the SAME taper-difference polynomial as doc 69's (DOM-W) defect)
+  has NO independent line statistics. Small-ball transfers:
+  meas{|Z_W(½+it)| ≤ A₀λ₀} ≤ Selberg-1946 left tail + 4(ℓ/λ₀²)U.
+  K_designed ≤ C′(Φ(−z₀)+o(1))·U·logN, z₀ FREE, unconditional — the
+  doc 65 §3 endgame FIRES; the not-in-print partial-sum CLT is BYPASSED.
+- Attack-as-false catch (structural): fixed cutoff N′ per U≍T window FAILS
+  (mismatch to R–S sum has rms ½log2 — above λ₀-scale). Forced fix:
+  re-anchor the tower per R–S block (matched length exactly constant on
+  B_n). Native-object bonus: R–S block = tower epoch; t = 2πn² is the
+  lane's constraint clock-surface.
+- Off-line zones for (C2): zone M (σ−½ ≥ 3loglog/logN) damped-mirror
+  transfer + classical 2nd moment [CHECK Tsang 1984 uniformity]; zone N
+  (narrow, O(loglog) grid pts) by (C1) alone. (C2) route 3 met at
+  strength O(loglog) vs demand O((loglog)²); strata-match audit (#10)
+  demoted to optimization. Defect 2nd moment at the line: O(loglog) by
+  3-range assembly (Selberg 2nd/4th moments + Boutroux–Cartan deep tail).
+- Lean BANKED: SelbergTransfer.lean — norm_add_sq_unit_conj_eq (half-sum
+  identity), norm_add_sq_unit_conj_le, sublevel_split_subset,
+  sublevel_transfer_subset, blockwise_transfer_measure_le. Umbrella green
+  (8629 jobs), lint passed, all axiom-clean [propext, Classical.choice,
+  Quot.sound]. No computation this cycle: every link is inequality-chained
+  from classical theorems (nothing theory-unpredictable to measure).
+- Residue is EFFECTIVITY, not existence: (i) Berry–Esseen rate for
+  Selberg's CLT at z₀ ≈ 3 (at loglogT = 3.4 the correction is O(1)-grade —
+  it decides the onset); (ii) explicit R–S error constant [Gabcke];
+  (iii) MV block constants + C′ under χ′-terms. Bracket: any reasonable
+  effectivization lands the onset in [10^13, ~10^18] vs (TIGHT)-only
+  e^650. Tasks: #15 CLOSED; #16 opened (effectivization pass); #10
+  demoted-optional.
