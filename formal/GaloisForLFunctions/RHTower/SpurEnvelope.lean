@@ -341,6 +341,56 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_sum_bound_cube_sq
   exact phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_order K P
     hd hj hjd hP (multiplierJetTailEvalBound_of_coeff_sum_bound (K := K) P hCoeff)
 
+/-- If the explicit high-coefficient sum is bounded without the `d` weights, it
+supplies the tail provider for every positive `d`.
+
+This removes `d` from the remaining R1 coefficient-tail obligation: under `0 < d`,
+all factors `|1/d|^r` are at most `1`. -/
+theorem multiplierJetTailEvalBound_of_coeff_abs_sum_bound {K : ℝ} (P : ℕ) {j d : ℕ}
+    (hd : 0 < d)
+    (hCoeff :
+      ∑ r ∈ Finset.range (P * (P - 1) + 1),
+        |multiplierCoeff P (P - 1) j (P + r)| ≤ K * (j : ℝ) ^ (2 * P)) :
+    multiplierJetTailEvalBound K P (P - 1) j d := by
+  refine multiplierJetTailEvalBound_of_coeff_sum_bound (K := K) P ?_
+  have hweighted_le :
+      ∑ r ∈ Finset.range (P * (P - 1) + 1),
+        |multiplierCoeff P (P - 1) j (P + r)| * |((d : ℝ)⁻¹)| ^ r ≤
+      ∑ r ∈ Finset.range (P * (P - 1) + 1),
+        |multiplierCoeff P (P - 1) j (P + r)| := by
+    apply Finset.sum_le_sum
+    intro r _
+    have hdR : (0 : ℝ) < d := by exact_mod_cast hd
+    have h1dNat : 1 ≤ d := Nat.succ_le_iff.mpr hd
+    have h1d : (1 : ℝ) ≤ d := by exact_mod_cast h1dNat
+    have hinv_abs_le_one : |((d : ℝ)⁻¹)| ≤ 1 := by
+      rw [abs_of_nonneg (inv_nonneg.mpr (le_of_lt hdR))]
+      exact inv_le_one_of_one_le₀ h1d
+    have hpow : |((d : ℝ)⁻¹)| ^ r ≤ 1 :=
+      pow_le_one₀ (abs_nonneg _) hinv_abs_le_one
+    have hcoeff_nonneg : 0 ≤ |multiplierCoeff P (P - 1) j (P + r)| := abs_nonneg _
+    calc
+      |multiplierCoeff P (P - 1) j (P + r)| * |((d : ℝ)⁻¹)| ^ r
+          ≤ |multiplierCoeff P (P - 1) j (P + r)| * 1 :=
+            mul_le_mul_of_nonneg_left hpow hcoeff_nonneg
+      _ = |multiplierCoeff P (P - 1) j (P + r)| := by ring
+  exact le_trans hweighted_le hCoeff
+
+/-- Paper-range low-sum R1 from an unweighted high-coefficient tail bound. -/
+theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_abs_sum_bound_cube_square_order
+    (K : ℝ) (P : ℕ) {j d : ℕ}
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P)
+    (hCoeff :
+      ∑ r ∈ Finset.range (P * (P - 1) + 1),
+        |multiplierCoeff P (P - 1) j (P + r)| ≤ K * (j : ℝ) ^ (2 * P)) :
+    |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
+        ∑ p ∈ Finset.range P, multiplierCoeff P (P - 1) j p * ((d : ℝ)⁻¹) ^ p| ≤
+      (2 + ((P - 1 : ℕ) : ℝ) ^ P / (P.factorial : ℝ) + K) *
+        ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
+  have hdpos : 0 < d := lt_of_lt_of_le (by norm_num : 0 < 8) hd
+  exact phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_order K P
+    hd hj hjd hP (multiplierJetTailEvalBound_of_coeff_abs_sum_bound (K := K) P hdpos hCoeff)
+
 end
 
 end RHTower
