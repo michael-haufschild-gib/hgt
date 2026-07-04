@@ -41,11 +41,14 @@ import GaloisForLFunctions.RHTower.SquareLadder
 import GaloisForLFunctions.RHTower.GermExtension
 import GaloisForLFunctions.RHTower.SpurHermite
 import GaloisForLFunctions.RHTower.SpurRescale
+import GaloisForLFunctions.RHTower.SpurClearance
 import GaloisForLFunctions.RHTower.SpurOperator
 import GaloisForLFunctions.RHTower.SpurStability
 import GaloisForLFunctions.RHTower.SpurNoGo
 import GaloisForLFunctions.RHTower.SeamTransport
 import GaloisForLFunctions.RHTower.SpurWeights
+import GaloisForLFunctions.RHTower.SpurCounting
 import GaloisForLFunctions.RHTower.DictionaryBase
 import GaloisForLFunctions.RHTower.DictionarySign
 import GaloisForLFunctions.RHTower.LedgerIdentity
+import GaloisForLFunctions.RHTower.LedgerConvex

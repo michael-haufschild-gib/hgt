@@ -79,6 +79,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryTruncation.lean:19` | finite-to-limit half of the remaining monotone singular-kernel passage. -/ |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryTruncation.lean:530` | below the actual shifted logarithmic potential; the remaining value passage is |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/FiniteLimits.lean:244` | Brolin measure.  The remaining GAP-A analytic step is to identify this |
+| `formal/GaloisForLFunctions/Bottcher/Brolin/RieszFlux.lean:21` | The remaining assembly (angular periodicity `∫∂²_θ = 0`; differentiation under the |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean:141` | remaining hDisc analytic problem into a concrete estimate over the zero |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean:562` | /-- Finite-level singular-tail control implies the missing canonical boundary |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean:634` | of the remaining analytic passage: no boundary value is assumed for `μ_c`; |
@@ -290,7 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:375` | axiom-clean; the sole remaining input is the *existence* of such a repelling cycle — Fatou's classical |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:2077` | form of the remaining slit geometry: for each relation it is enough to provide an uncountable local |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:3114` | `Ω` is fixed as the full basin complement `(filledJulia c₂)ᶜ`.  Thus the remaining per-relation input is |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:5579` | current interface for the remaining geometry: for each common-component closure point, the locus of |
 
 ## Historical Status Logs
 

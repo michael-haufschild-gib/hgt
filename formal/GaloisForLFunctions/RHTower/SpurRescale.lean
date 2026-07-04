@@ -90,6 +90,12 @@ theorem sum_range_id_cast (j : ℕ) :
     push_cast at hc ⊢
     linarith [hc]
 
+/-- The rescaling product has a zero factor once `j > d`. -/
+theorem phi_product_eq_zero_of_d_lt_j {j d : ℕ} (hd : 0 < d) (hjd : d < j) :
+    ∏ i ∈ Finset.range j, (1 - (i : ℝ) / d) = 0 := by
+  have hd0 : (d : ℝ) ≠ 0 := by positivity
+  exact Finset.prod_eq_zero (Finset.mem_range.mpr hjd) (by rw [div_self hd0]; norm_num)
+
 /-- **(E5).** The rescaling multiplier `φ_d(j) = ∏_{i<j}(1 − i/d)` matches its
 first-order heat expansion `1 − C(j,2)/d` to quadratic accuracy, for ALL `j, d ≥ 1`. -/
 theorem phi_first_order (j : ℕ) {d : ℕ} (hd : 1 ≤ d) :
@@ -136,5 +142,21 @@ theorem phi_first_order (j : ℕ) {d : ℕ} (hd : 1 ≤ d) :
       ring
     rw [this]
     nlinarith [hS1]
+
+/-- Lower one-sided form of `(E5)`. -/
+theorem phi_first_order_lower_bound (j : ℕ) {d : ℕ} (hd : 1 ≤ d) :
+    1 - (j.choose 2 : ℝ) / d - ((j.choose 2 : ℝ) / d) ^ 2 / 2
+      ≤ ∏ i ∈ Finset.range j, (1 - (i : ℝ) / d) := by
+  have h := phi_first_order j hd
+  rw [abs_le] at h
+  linarith [h.1]
+
+/-- Upper one-sided form of `(E5)`. -/
+theorem phi_first_order_upper_bound (j : ℕ) {d : ℕ} (hd : 1 ≤ d) :
+    ∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)
+      ≤ 1 - (j.choose 2 : ℝ) / d + ((j.choose 2 : ℝ) / d) ^ 2 / 2 := by
+  have h := phi_first_order j hd
+  rw [abs_le] at h
+  linarith [h.2]
 
 end RHTower

@@ -17,3 +17,5 @@ import GaloisForLFunctions.Bottcher.Brolin.BoundaryCriteria
 import GaloisForLFunctions.Bottcher.Brolin.TargetLimit
 import GaloisForLFunctions.Bottcher.Brolin.Cauchy
 import GaloisForLFunctions.Bottcher.Brolin.UnitCircle
+import GaloisForLFunctions.Bottcher.Brolin.RieszFundamental
+import GaloisForLFunctions.Bottcher.Brolin.RieszFlux
