@@ -74,3 +74,7 @@ import GaloisForLFunctions.RHTower.SweepDichotomy
 import GaloisForLFunctions.RHTower.GaussLattice
 import GaloisForLFunctions.RHTower.SweepCascade
 import GaloisForLFunctions.RHTower.CascadeGeometric
+import GaloisForLFunctions.RHTower.DriftDip
+import GaloisForLFunctions.RHTower.HoldPhase
+import GaloisForLFunctions.RHTower.CreationRate
+import GaloisForLFunctions.RHTower.MidCentral

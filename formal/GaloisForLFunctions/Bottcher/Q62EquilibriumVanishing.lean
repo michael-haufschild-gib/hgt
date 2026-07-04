@@ -360,6 +360,122 @@ theorem adjacent_targetEscapeDisk_subseq_tendsto_of_full_target_tendsto
       (fun k => Nat.le_succ (brolinLimitAtSubsequence c a k))
       (brolinLimitAtSubsequence_tendsto_atTop c a))
 
+/-- The remaining Half A analytic gate: the arbitrary-target compact-carrier
+finite Brolin measures converge to the chosen target cluster, with no
+subsequence selection. -/
+def FullTargetBrolinConvergenceAt (c a : ℂ) : Prop :=
+  Tendsto
+    (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n)
+    atTop
+    (𝓝 (brolinLimitAtOnTargetEscapeDisk c a))
+
+/-- The remaining Half B analytic gate: finite target log potentials on the
+chosen compact subsequence have nonpositive limsup on `K_c`.  This is the
+epsilon form used to absorb finite atoms before passing to the truncation
+limit. -/
+def SubseqFinitePressureLimsupAt (c a : ℂ) : Prop :=
+  ∀ z : ℂ, z ∈ filledJulia c →
+    ∀ ε : ℝ, 0 < ε →
+      ∀ᶠ k in atTop,
+        logPotential
+          (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε
+
+/-- Finite-level Half B pressure input along the chosen compact subsequence:
+the target finite log potentials are nonpositive on the filled Julia set. -/
+def SubseqFinitePressureNonposAt (c a : ℂ) : Prop :=
+  ∀ z : ℂ, z ∈ filledJulia c →
+    ∀ k : ℕ,
+      logPotential
+        (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ 0
+
+/-- Finite nonpositivity implies the epsilon-limsup pressure gate used by the
+truncation/Fatou passage. -/
+theorem SubseqFinitePressureLimsupAt_of_nonpos
+    {c a : ℂ}
+    (h : SubseqFinitePressureNonposAt c a) :
+    SubseqFinitePressureLimsupAt c a := by
+  intro z hzK ε hε
+  exact Filter.Eventually.of_forall fun k =>
+    le_trans (h z hzK k) hε.le
+
+/-- Per-target GAP-A analytic contract: full target convergence for Half A and
+subsequential finite-pressure limsup for Half B. -/
+def GapATargetAnalyticContract (c a : ℂ) : Prop :=
+  FullTargetBrolinConvergenceAt c a ∧ SubseqFinitePressureLimsupAt c a
+
+/-- Fixed-point GAP-A analytic contract, stated only at the fixed targets used
+by the backward-orbit capstone. -/
+def GapAFixedPointAnalyticContract (c : ℂ) : Prop :=
+  ∀ a : ℂ, quadratic c a = a → GapATargetAnalyticContract c a
+
+/-- Full target convergence follows from uniqueness of compact-carrier cluster
+points.  This is the topological form of the remaining Half A uniqueness
+problem. -/
+theorem FullTargetBrolinConvergenceAt_of_unique_mapClusterPt
+    {c a : ℂ}
+    (huniq :
+      ∀ μ : ProbabilityMeasure (targetEscapeDisk c a),
+        MapClusterPt μ atTop
+          (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n) →
+          μ = brolinLimitAtOnTargetEscapeDisk c a) :
+    FullTargetBrolinConvergenceAt c a := by
+  simpa [FullTargetBrolinConvergenceAt] using
+    (tendsto_nhds_of_unique_mapClusterPt huniq)
+
+/-- Sequential version of the Half A uniqueness gate: it is enough to identify
+every convergent compact-carrier subsequence with the chosen target cluster. -/
+theorem FullTargetBrolinConvergenceAt_of_unique_subseq_limit
+    {c a : ℂ}
+    (huniq :
+      ∀ (μ : ProbabilityMeasure (targetEscapeDisk c a)) (ψ : ℕ → ℕ),
+        StrictMono ψ →
+          Tendsto
+            (fun k => preBrolinProbabilityAtOnTargetEscapeDisk c a (ψ k))
+            atTop (𝓝 μ) →
+          μ = brolinLimitAtOnTargetEscapeDisk c a) :
+    FullTargetBrolinConvergenceAt c a := by
+  refine FullTargetBrolinConvergenceAt_of_unique_mapClusterPt ?_
+  intro μ hμ
+  rcases MapClusterPt.tendsto_subseq hμ with ⟨ψ, hψmono, hψlim⟩
+  exact huniq μ ψ hψmono (by simpa [Function.comp_def] using hψlim)
+
+/-- Build the fixed-point GAP-A contract from subsequential target-cluster
+uniqueness plus the finite-pressure limsup gate. -/
+theorem GapAFixedPointAnalyticContract_of_unique_subseq_limit_and_pressure
+    {c : ℂ}
+    (huniq :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ (μ : ProbabilityMeasure (targetEscapeDisk c a)) (ψ : ℕ → ℕ),
+          StrictMono ψ →
+            Tendsto
+              (fun k => preBrolinProbabilityAtOnTargetEscapeDisk c a (ψ k))
+              atTop (𝓝 μ) →
+            μ = brolinLimitAtOnTargetEscapeDisk c a)
+    (hlog : ∀ a : ℂ, quadratic c a = a → SubseqFinitePressureLimsupAt c a) :
+    GapAFixedPointAnalyticContract c := by
+  intro a ha
+  exact
+    ⟨FullTargetBrolinConvergenceAt_of_unique_subseq_limit (huniq a ha),
+      hlog a ha⟩
+
+/-- Build the fixed-point GAP-A contract from subsequential target-cluster
+uniqueness plus finite-level pressure nonpositivity. -/
+theorem GapAFixedPointAnalyticContract_of_unique_subseq_limit_and_pressure_nonpos
+    {c : ℂ}
+    (huniq :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ (μ : ProbabilityMeasure (targetEscapeDisk c a)) (ψ : ℕ → ℕ),
+          StrictMono ψ →
+            Tendsto
+              (fun k => preBrolinProbabilityAtOnTargetEscapeDisk c a (ψ k))
+              atTop (𝓝 μ) →
+            μ = brolinLimitAtOnTargetEscapeDisk c a)
+    (hlog : ∀ a : ℂ, quadratic c a = a → SubseqFinitePressureNonposAt c a) :
+    GapAFixedPointAnalyticContract c :=
+  GapAFixedPointAnalyticContract_of_unique_subseq_limit_and_pressure
+    huniq
+    (fun a ha => SubseqFinitePressureLimsupAt_of_nonpos (hlog a ha))
+
 /-- Half A with the free antipodal symmetry discharged.  The only remaining
 measure-invariance input is the full limiting balancedness identity
 `(f_c)_* μ = μ`, i.e. the shifted-measure/full-limit gap. -/
@@ -801,6 +917,70 @@ theorem integral_truncatedLogKernel_limitingBrolinMeasureAt_nonpos_of_subseq_log
     linarith
   exact le_of_tendsto_of_tendsto hleft herr hle
 
+/-- Arbitrary-target finite-to-limit boundary truncation passage from a
+limsup-style finite pressure bound.  It is enough that, for every positive
+`ε`, the selected finite log potentials are eventually `≤ ε`; the singleton
+atom error is explicit and tends to zero. -/
+theorem integral_truncatedLogKernel_limitingBrolinMeasureAt_nonpos_of_subseq_logPotential_eventually_le_eps_of_atom_mass
+    {c a z : ℂ}
+    (hlogEps :
+      ∀ ε : ℝ, 0 < ε →
+        ∀ᶠ k in atTop,
+          logPotential
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hatom0 :
+      Tendsto
+        (fun k =>
+          (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)
+            ({z} : Set ℂ)).toReal)
+        atTop (𝓝 0))
+    {δ : ℝ} (hδ : 0 < δ) :
+    ∫ w, truncatedLogKernel z δ w ∂limitingBrolinMeasureAt c a ≤ 0 := by
+  let I : ℝ := ∫ w, truncatedLogKernel z δ w ∂limitingBrolinMeasureAt c a
+  have hleft :
+      Tendsto
+        (fun k =>
+          ∫ w, truncatedLogKernel z δ w
+            ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k))
+        atTop (𝓝 I) := by
+    dsimp [I]
+    exact truncatedLogKernel_preBrolinMeasureAt_subseq_integral_tendsto_limiting
+      c a z hδ
+  have herr :
+      Tendsto
+        (fun k =>
+          (- Real.log δ) *
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)
+              ({z} : Set ℂ)).toReal)
+        atTop (𝓝 0) := by
+    simpa using hatom0.const_mul (- Real.log δ)
+  have hIle_eps : ∀ ε : ℝ, 0 < ε → I ≤ ε := by
+    intro ε hε
+    let η : ℝ := ε / 2
+    have hη : 0 < η := by dsimp [η]; linarith
+    have hlogEv := hlogEps η hη
+    have herrEv :
+        ∀ᶠ k in atTop,
+          (- Real.log δ) *
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)
+              ({z} : Set ℂ)).toReal ≤ η := by
+      exact (herr.eventually (eventually_lt_nhds hη)).mono fun _ hk => le_of_lt hk
+    have hle :
+        ∀ᶠ k in atTop,
+          ∫ w, truncatedLogKernel z δ w
+              ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k) ≤ ε := by
+      filter_upwards [hlogEv, herrEv] with k hklog hkerr
+      have h :=
+        integral_truncatedLogKernel_preBrolinMeasureAt_sub_logPotential_le_atom
+          c a z (brolinLimitAtSubsequence c a k) hδ
+      dsimp [η] at hklog hkerr
+      linarith
+    exact le_of_tendsto hleft hle
+  by_contra hnot
+  have hpos : 0 < I := lt_of_not_ge hnot
+  have hhalf := hIle_eps (I / 2) (by linarith)
+  linarith
+
 /-- If the target avoids the positive critical orbit, every level-`n` pullback root of
 `a` is simple.  A multiple root would be a critical point of `f_c^[n]`, hence would
 force a positive critical-orbit hit on `a`. -/
@@ -1083,6 +1263,43 @@ theorem limitingBrolinMeasureAt_singleton_eq_zero_of_subseq_logPotential_nonpos_
     (preBrolinMeasureAt_subseq_singleton_toReal_tendsto_zero_of_criticalOrbitAvoidingTarget
       hcrit)
 
+/-- Atomlessness from limsup finite-pressure control plus finite singleton-mass
+decay. -/
+theorem limitingBrolinMeasureAt_singleton_eq_zero_of_subseq_logPotential_eventually_le_eps_of_atom_mass
+    {c a z : ℂ} (hzK : z ∈ filledJulia c)
+    (hlogEps :
+      ∀ ε : ℝ, 0 < ε →
+        ∀ᶠ k in atTop,
+          logPotential
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hatom0 :
+      Tendsto
+        (fun k =>
+          (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)
+            ({z} : Set ℂ)).toReal)
+        atTop (𝓝 0)) :
+    limitingBrolinMeasureAt c a ({z} : Set ℂ) = 0 :=
+  limitingBrolinMeasureAt_singleton_eq_zero_of_truncatedLogKernel_nonpos hzK
+    (fun hδ _hδle =>
+      integral_truncatedLogKernel_limitingBrolinMeasureAt_nonpos_of_subseq_logPotential_eventually_le_eps_of_atom_mass
+        (c := c) (a := a) (z := z) hlogEps hatom0 hδ)
+
+/-- Atomlessness from limsup finite-pressure control, with finite singleton-mass
+decay discharged by critical-orbit avoidance. -/
+theorem limitingBrolinMeasureAt_singleton_eq_zero_of_subseq_logPotential_eventually_le_eps_of_criticalOrbitAvoidingTarget
+    {c a z : ℂ} (hzK : z ∈ filledJulia c)
+    (hlogEps :
+      ∀ ε : ℝ, 0 < ε →
+        ∀ᶠ k in atTop,
+          logPotential
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hcrit : CriticalOrbitAvoidingTarget c a) :
+    limitingBrolinMeasureAt c a ({z} : Set ℂ) = 0 :=
+  limitingBrolinMeasureAt_singleton_eq_zero_of_subseq_logPotential_eventually_le_eps_of_atom_mass
+    hzK hlogEps
+    (preBrolinMeasureAt_subseq_singleton_toReal_tendsto_zero_of_criticalOrbitAvoidingTarget
+      hcrit)
+
 /-- Atomlessness from boundary-potential convergence plus finite singleton-mass
 decay. -/
 theorem limitingBrolinMeasureAt_singleton_eq_zero_of_subseq_boundary_potential_tendsto_zero_of_atom_mass
@@ -1121,6 +1338,54 @@ theorem limitingBrolinMeasureAt_singleton_eq_zero_of_subseq_boundary_potential_t
     hzK hlog0
     (preBrolinMeasureAt_subseq_singleton_toReal_tendsto_zero_of_criticalOrbitAvoidingTarget
       hcrit)
+
+/-- Convert nonpositive limiting truncation pressures at the standard
+`1/(n+1)` radii into Frostman domination on `K_c`. -/
+theorem PotentialDominatedOnFilledJulia_of_truncatedLogKernel_inv_nat_nonpos
+    {c a : ℂ}
+    (hatom :
+      ∀ z : ℂ, z ∈ filledJulia c → limitingBrolinMeasureAt c a {z} = 0)
+    (hnonpos :
+      ∀ z : ℂ, z ∈ filledJulia c → ∀ n : ℕ,
+        ∫ w, truncatedLogKernel z (((n + 1 : ℕ) : ℝ)⁻¹) w
+          ∂limitingBrolinMeasureAt c a ≤ 0) :
+    PotentialDominatedOnFilledJulia c a := by
+  intro z hzK
+  by_cases hint : Integrable (fun w => logKernel z w) (limitingBrolinMeasureAt c a)
+  · have hzero :
+        limitingBrolinMeasureAt c a (({z} : Set ℂ)ᶜ)ᶜ = 0 := by
+      simpa using hatom z hzK
+    have hne_ae : ∀ᵐ w ∂limitingBrolinMeasureAt c a, w ∈ ({z} : Set ℂ)ᶜ :=
+      (mem_ae_iff).2 hzero
+    have hlim :
+        Tendsto
+          (fun n : ℕ =>
+            ∫ w, truncatedLogKernel z (((n + 1 : ℕ) : ℝ)⁻¹) w
+              ∂limitingBrolinMeasureAt c a)
+          atTop (𝓝 (logPotential (limitingBrolinMeasureAt c a) z)) := by
+      unfold logPotential
+      refine tendsto_integral_of_dominated_convergence
+        (fun w => ‖logKernel z w‖) ?_ hint.norm ?_ ?_
+      · intro n
+        exact (continuous_truncatedLogKernel
+          (z := z) (δ := (((n + 1 : ℕ) : ℝ)⁻¹))
+          (by positivity)).aestronglyMeasurable
+      · intro n
+        have hδle : (((n + 1 : ℕ) : ℝ)⁻¹) ≤ 1 := by
+          have hn : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by
+            exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
+          exact inv_le_one_of_one_le₀ hn
+        filter_upwards [hne_ae] with w hw
+        exact norm_truncatedLogKernel_le_norm_logKernel_of_ne_of_le_one
+          (by positivity) hδle (fun hzw => hw hzw.symm)
+      · filter_upwards [hne_ae] with w hw
+        exact truncatedLogKernel_inv_nat_succ_tendsto_logKernel_of_ne
+          (fun hzw => hw hzw.symm)
+    exact le_of_tendsto hlim (Filter.Eventually.of_forall (hnonpos z hzK))
+  · have hzero : logPotential (limitingBrolinMeasureAt c a) z = 0 := by
+      unfold logPotential
+      exact integral_undef hint
+    rw [hzero]
 
 /-- GAP-A bridge for Half B in the arbitrary-target subsequence language.  The
 finite pressure estimate has a singleton atom error; the hypotheses here are the exact
@@ -1273,6 +1538,55 @@ theorem PotentialDominatedOnFilledJulia_of_subseq_logPotential_nonpos_of_critica
       limitingBrolinMeasureAt_singleton_eq_zero_of_subseq_logPotential_nonpos_of_criticalOrbitAvoidingTarget
         hzK (hlogNonpos z hzK) hcrit)
     hlogNonpos
+    (fun _z _hzK =>
+      preBrolinMeasureAt_subseq_singleton_toReal_tendsto_zero_of_criticalOrbitAvoidingTarget
+        hcrit)
+
+/-- Half B from limsup finite log-potential control along the selected pullback
+levels.  This is the Fatou/u.s.c. surface: finite potentials only need to be
+eventually below every positive `ε`; the explicit singleton error vanishes. -/
+theorem PotentialDominatedOnFilledJulia_of_subseq_logPotential_eventually_le_eps
+    {c a : ℂ}
+    (hatom :
+      ∀ z : ℂ, z ∈ filledJulia c → limitingBrolinMeasureAt c a {z} = 0)
+    (hlogEps :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        ∀ ε : ℝ, 0 < ε →
+          ∀ᶠ k in atTop,
+            logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hatom0 :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Tendsto
+          (fun k =>
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)
+              ({z} : Set ℂ)).toReal)
+          atTop (𝓝 0)) :
+    PotentialDominatedOnFilledJulia c a :=
+  PotentialDominatedOnFilledJulia_of_truncatedLogKernel_inv_nat_nonpos
+    hatom
+    (fun z hzK n =>
+      integral_truncatedLogKernel_limitingBrolinMeasureAt_nonpos_of_subseq_logPotential_eventually_le_eps_of_atom_mass
+        (c := c) (a := a) (z := z) (hlogEps z hzK) (hatom0 z hzK)
+        (by positivity))
+
+/-- Half B from limsup finite log-potential control, with finite singleton-mass
+decay discharged by critical-orbit avoidance. -/
+theorem PotentialDominatedOnFilledJulia_of_subseq_logPotential_eventually_le_eps_of_criticalOrbitAvoidingTarget
+    {c a : ℂ}
+    (hlogEps :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        ∀ ε : ℝ, 0 < ε →
+          ∀ᶠ k in atTop,
+            logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hcrit : CriticalOrbitAvoidingTarget c a) :
+    PotentialDominatedOnFilledJulia c a :=
+  PotentialDominatedOnFilledJulia_of_subseq_logPotential_eventually_le_eps
+    (fun z hzK =>
+      limitingBrolinMeasureAt_singleton_eq_zero_of_subseq_logPotential_eventually_le_eps_of_criticalOrbitAvoidingTarget
+        hzK (hlogEps z hzK) hcrit)
+    hlogEps
     (fun _z _hzK =>
       preBrolinMeasureAt_subseq_singleton_toReal_tendsto_zero_of_criticalOrbitAvoidingTarget
         hcrit)
@@ -1477,6 +1791,41 @@ theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_scaling_and_su
     limitingBrolinMeasureAtSupportsJulia_of_scaling_and_subseq_logPotential_nonpos
       (hscale a ha) (hdomLogNonpos a ha) (hdomCrit a ha)
 
+/-- GAP-A support from the genuine Half A scaling law and limsup finite Half B
+pressure control. -/
+theorem limitingBrolinMeasureAtSupportsJulia_of_scaling_and_subseq_logPotential_eventually_le_eps
+    {c a : ℂ}
+    (hscale : BrolinScalingAt c a)
+    (hdomLogEps :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        ∀ ε : ℝ, 0 < ε →
+          ∀ᶠ k in atTop,
+            logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hdomCrit : CriticalOrbitAvoidingTarget c a) :
+    LimitingBrolinMeasureAtSupportsJulia c a :=
+  limitingBrolinMeasureAtSupportsJulia_of_scaling_of_dominated c a hscale
+    (PotentialDominatedOnFilledJulia_of_subseq_logPotential_eventually_le_eps_of_criticalOrbitAvoidingTarget
+      hdomLogEps hdomCrit)
+
+/-- Fixed-point form of the limsup finite-pressure GAP-A support route. -/
+theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_scaling_and_subseq_logPotential_eventually_le_eps
+    {c : ℂ}
+    (hscale : ∀ a : ℂ, quadratic c a = a → BrolinScalingAt c a)
+    (hdomLogEps :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          ∀ ε : ℝ, 0 < ε →
+            ∀ᶠ k in atTop,
+              logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hdomCrit :
+      ∀ a : ℂ, quadratic c a = a → CriticalOrbitAvoidingTarget c a) :
+    ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
+  fun a ha =>
+    limitingBrolinMeasureAtSupportsJulia_of_scaling_and_subseq_logPotential_eventually_le_eps
+      (hscale a ha) (hdomLogEps a ha) (hdomCrit a ha)
+
 /-- Full GAP-A support route in the current sharp formal form.  Half A is the
 adjacent shifted/full-limit convergence gate; Half B is finite log-potential
 nonpositivity pushed through the weak limit.  No Julia-nullity input appears. -/
@@ -1529,6 +1878,60 @@ theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift
   fun a ha =>
     limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift_and_subseq_logPotential_nonpos
       (hshift a ha) (hlogNonpos a ha) (hcrit a ha)
+
+/-- Full GAP-A support route with adjacent shifted/full-limit convergence for
+Half A and limsup finite-pressure control for Half B. -/
+theorem limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift_and_subseq_logPotential_eventually_le_eps
+    {c a : ℂ}
+    (hshift :
+      ∀ φ : C_c(ℂ, ℝ),
+        Tendsto
+          (fun k =>
+            ∫ z, φ (quadratic c z)
+              ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k + 1))
+          atTop
+          (𝓝 (∫ z, φ (quadratic c z) ∂limitingBrolinMeasureAt c a)))
+    (hlogEps :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        ∀ ε : ℝ, 0 < ε →
+          ∀ᶠ k in atTop,
+            logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hcrit : CriticalOrbitAvoidingTarget c a) :
+    LimitingBrolinMeasureAtSupportsJulia c a :=
+  let hatom : ∀ z : ℂ, z ∈ filledJulia c → limitingBrolinMeasureAt c a {z} = 0 :=
+    fun z hzK =>
+      limitingBrolinMeasureAt_singleton_eq_zero_of_subseq_logPotential_eventually_le_eps_of_criticalOrbitAvoidingTarget
+        hzK (hlogEps z hzK) hcrit
+  limitingBrolinMeasureAtSupportsJulia_of_scaling_and_subseq_logPotential_eventually_le_eps
+    (BrolinScalingAt_of_adjacent_subseq_comp_quadratic_tendsto hshift hatom)
+    hlogEps hcrit
+
+/-- Fixed-point form of the adjacent-shift plus limsup finite-pressure route. -/
+theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift_and_subseq_logPotential_eventually_le_eps
+    {c : ℂ}
+    (hshift :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ φ : C_c(ℂ, ℝ),
+          Tendsto
+            (fun k =>
+              ∫ z, φ (quadratic c z)
+                ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k + 1))
+            atTop
+            (𝓝 (∫ z, φ (quadratic c z) ∂limitingBrolinMeasureAt c a)))
+    (hlogEps :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          ∀ ε : ℝ, 0 < ε →
+            ∀ᶠ k in atTop,
+              logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hcrit :
+      ∀ a : ℂ, quadratic c a = a → CriticalOrbitAvoidingTarget c a) :
+    ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
+  fun a ha =>
+    limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift_and_subseq_logPotential_eventually_le_eps
+      (hshift a ha) (hlogEps a ha) (hcrit a ha)
 
 /-- Full GAP-A support route with the weaker Half B boundary-potential limit
 surface.  Half A is still the adjacent shifted/full-limit convergence gate;
@@ -1688,6 +2091,171 @@ theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_full_target_te
   fun a ha =>
     limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_boundary_potential_tendsto_zero
       (hfull a ha) (hlog0 a ha) (hcrit a ha)
+
+/-- Full GAP-A support from full compact-carrier convergence of the arbitrary
+target pullback sequence and limsup finite-pressure control.  This is the
+current sharp #162 + #163 formal surface: full weak convergence gives Brolin
+`f`-invariance, antipodal symmetry is free, and limsup finite pressure gives
+Frostman domination. -/
+theorem limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
+    {c a : ℂ}
+    (hfull :
+      Tendsto
+        (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n)
+        atTop
+        (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)))
+    (hlogEps :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        ∀ ε : ℝ, 0 < ε →
+          ∀ᶠ k in atTop,
+            logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hcrit : CriticalOrbitAvoidingTarget c a) :
+    LimitingBrolinMeasureAtSupportsJulia c a :=
+  limitingBrolinMeasureAtSupportsJulia_of_adjacent_shift_and_subseq_logPotential_eventually_le_eps
+    (adjacent_targetEscapeDisk_subseq_tendsto_comp_quadratic
+      (adjacent_targetEscapeDisk_subseq_tendsto_of_full_target_tendsto hfull))
+    hlogEps hcrit
+
+/-- Fixed-point form of the full compact-target convergence plus limsup
+finite-pressure route. -/
+theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
+    {c : ℂ}
+    (hfull :
+      ∀ a : ℂ, quadratic c a = a →
+        Tendsto
+          (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n)
+          atTop
+          (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)))
+    (hlogEps :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          ∀ ε : ℝ, 0 < ε →
+            ∀ᶠ k in atTop,
+              logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε)
+    (hcrit :
+      ∀ a : ℂ, quadratic c a = a → CriticalOrbitAvoidingTarget c a) :
+    ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
+  fun a ha =>
+    limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
+      (hfull a ha) (hlogEps a ha) (hcrit a ha)
+
+/-- Backward-orbit density from the full GAP-A surface.  The fixed target is
+selected internally, so critical-orbit avoidance is not an external hypothesis:
+it comes from the existing fixed-point selector. -/
+theorem exists_fixedPoint_backwardOrbitDense_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
+    {c : ℂ} (hc : c ≠ 1 / 4)
+    (hfull :
+      ∀ a : ℂ, quadratic c a = a →
+        Tendsto
+          (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n)
+          atTop
+          (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)))
+    (hlogEps :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          ∀ ε : ℝ, 0 < ε →
+            ∀ᶠ k in atTop,
+              logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε) :
+    ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a := by
+  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget c hc
+  exact ⟨a, hfix,
+    backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia
+      (limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
+        (hfull a hfix) (hlogEps a hfix) hcrit)
+      hcrit⟩
+
+/-- No-parabolic-exception version of the full GAP-A backward-orbit capstone. -/
+theorem exists_fixedPoint_backwardOrbitDense_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps_all
+    {c : ℂ}
+    (hfull :
+      ∀ a : ℂ, quadratic c a = a →
+        Tendsto
+          (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n)
+          atTop
+          (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)))
+    (hlogEps :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          ∀ ε : ℝ, 0 < ε →
+            ∀ᶠ k in atTop,
+              logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε) :
+    ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a := by
+  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget_all c
+  exact ⟨a, hfix,
+    backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia
+      (limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
+        (hfull a hfix) (hlogEps a hfix) hcrit)
+      hcrit⟩
+
+/-- Per-target support from the named GAP-A analytic contract. -/
+theorem limitingBrolinMeasureAtSupportsJulia_of_gapATargetAnalyticContract
+    {c a : ℂ}
+    (hgap : GapATargetAnalyticContract c a)
+    (hcrit : CriticalOrbitAvoidingTarget c a) :
+    LimitingBrolinMeasureAtSupportsJulia c a :=
+  limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
+    hgap.1 hgap.2 hcrit
+
+/-- Fixed-point support from the named GAP-A analytic contract, with
+critical-orbit avoidance supplied separately when all fixed points are needed. -/
+theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_gapAFixedPointAnalyticContract
+    {c : ℂ}
+    (hgap : GapAFixedPointAnalyticContract c)
+    (hcrit :
+      ∀ a : ℂ, quadratic c a = a → CriticalOrbitAvoidingTarget c a) :
+    ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
+  fun a ha =>
+    limitingBrolinMeasureAtSupportsJulia_of_gapATargetAnalyticContract
+      (hgap a ha) (hcrit a ha)
+
+/-- Backward-orbit density from the named fixed-point GAP-A analytic contract.
+The target with critical-orbit avoidance is selected internally. -/
+theorem exists_fixedPoint_backwardOrbitDense_of_gapAFixedPointAnalyticContract
+    {c : ℂ}
+    (hgap : GapAFixedPointAnalyticContract c) :
+    ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a :=
+  exists_fixedPoint_backwardOrbitDense_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps_all
+    (fun a ha => (hgap a ha).1)
+    (fun a ha => (hgap a ha).2)
+
+/-- Backward-orbit density from the sequential Half A uniqueness gate plus the
+Half B finite-pressure limsup gate. -/
+theorem exists_fixedPoint_backwardOrbitDense_of_unique_subseq_limit_and_pressure
+    {c : ℂ}
+    (huniq :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ (μ : ProbabilityMeasure (targetEscapeDisk c a)) (ψ : ℕ → ℕ),
+          StrictMono ψ →
+            Tendsto
+              (fun k => preBrolinProbabilityAtOnTargetEscapeDisk c a (ψ k))
+              atTop (𝓝 μ) →
+            μ = brolinLimitAtOnTargetEscapeDisk c a)
+    (hlog : ∀ a : ℂ, quadratic c a = a → SubseqFinitePressureLimsupAt c a) :
+    ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a :=
+  exists_fixedPoint_backwardOrbitDense_of_gapAFixedPointAnalyticContract
+    (GapAFixedPointAnalyticContract_of_unique_subseq_limit_and_pressure huniq hlog)
+
+/-- Backward-orbit density from the sequential Half A uniqueness gate plus
+finite-level pressure nonpositivity, the direct #162 + #163 surface. -/
+theorem exists_fixedPoint_backwardOrbitDense_of_unique_subseq_limit_and_pressure_nonpos
+    {c : ℂ}
+    (huniq :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ (μ : ProbabilityMeasure (targetEscapeDisk c a)) (ψ : ℕ → ℕ),
+          StrictMono ψ →
+            Tendsto
+              (fun k => preBrolinProbabilityAtOnTargetEscapeDisk c a (ψ k))
+              atTop (𝓝 μ) →
+            μ = brolinLimitAtOnTargetEscapeDisk c a)
+    (hlog : ∀ a : ℂ, quadratic c a = a → SubseqFinitePressureNonposAt c a) :
+    ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a :=
+  exists_fixedPoint_backwardOrbitDense_of_gapAFixedPointAnalyticContract
+    (GapAFixedPointAnalyticContract_of_unique_subseq_limit_and_pressure_nonpos
+      huniq hlog)
 
 /-- GAP-A support from the finite Half A and Half B gates in subsequence form.
 This statement contains no Julia-nullity input: Half A is the adjacent-limit
