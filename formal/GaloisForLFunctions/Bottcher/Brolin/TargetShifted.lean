@@ -28,6 +28,17 @@ theorem integral_preBrolinMeasureAt_eq_root_average
   rw [preBrolinMeasureAt, integral_smul_measure, integral_rootCountingMeasure]
   simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
 
+/-- The arbitrary-target finite pre-Brolin potential is the normalized root
+log-kernel sum. -/
+theorem logPotential_preBrolinMeasureAt_eq_scaled_rootLogKernelSum
+    (c a z : ℂ) (n : ℕ) :
+    logPotential (preBrolinMeasureAt c a n) z =
+      (2 ^ n : ℝ)⁻¹ *
+        (((quadraticPolyIterate c n - Polynomial.C a).roots.map
+          (fun r => logKernel z r)).sum) := by
+  rw [preBrolinMeasureAt, logPotential_smul, logPotential_rootCountingMeasure]
+  simp [ENNReal.toReal_inv, ENNReal.toReal_pow]
+
 /-- `f_c^[n](X) - a` is monic. -/
 theorem quadraticPolyIterate_sub_C_monic (c a : ℂ) (n : ℕ) :
     (quadraticPolyIterate c n - Polynomial.C a).Monic := by
@@ -78,6 +89,50 @@ theorem neg_logPotential_preBrolinMeasureAt_eq_log_norm {c a z : ℂ} {n : ℕ}
           rw [hroots]
     _ = (2 ^ n : ℝ)⁻¹ * Real.log ‖(quadratic c)^[n] z - a‖ := by
           rw [Polynomial.eval_sub, Polynomial.eval_C, quadraticPolyIterate_eval]
+
+/-- Finite arbitrary-target truncated-kernel integrals are bounded above by
+the true finite potential whenever the evaluation point is not a level-`n`
+atom over the target. -/
+theorem integral_truncatedLogKernel_preBrolinMeasureAt_le_logPotential_of_iterate_ne_target
+    {c a z : ℂ} {δ : ℝ} {n : ℕ} (hδ : 0 < δ)
+    (hz : (quadratic c)^[n] z - a ≠ 0) :
+    ∫ w, truncatedLogKernel z δ w ∂preBrolinMeasureAt c a n ≤
+      logPotential (preBrolinMeasureAt c a n) z := by
+  rw [integral_preBrolinMeasureAt_eq_root_average,
+    logPotential_preBrolinMeasureAt_eq_scaled_rootLogKernelSum]
+  have hsum :
+      (((quadraticPolyIterate c n - Polynomial.C a).roots.map
+          (fun w => truncatedLogKernel z δ w)).sum) ≤
+        (((quadraticPolyIterate c n - Polynomial.C a).roots.map
+          (fun w => logKernel z w)).sum) := by
+    suffices hsum' : ∀ s : Multiset ℂ,
+        (∀ w ∈ s, truncatedLogKernel z δ w ≤ logKernel z w) →
+          (s.map (fun w => truncatedLogKernel z δ w)).sum ≤
+            (s.map (fun w => logKernel z w)).sum by
+      apply hsum'
+      intro w hw
+      have hzw : z ≠ w := by
+        intro h
+        have hwroot : (quadraticPolyIterate c n - Polynomial.C a).IsRoot w :=
+          (Polynomial.mem_roots (quadraticPolyIterate_sub_C_monic c a n).ne_zero).mp hw
+        have hiter : (quadratic c)^[n] w - a = 0 := by
+          simpa [Polynomial.IsRoot.def, Polynomial.eval_sub, Polynomial.eval_C,
+            quadraticPolyIterate_eval] using hwroot
+        exact hz (by rwa [h])
+      exact truncatedLogKernel_le_logKernel_of_ne hδ hzw
+    intro s
+    induction s using Multiset.induction_on with
+    | empty =>
+        intro _h
+        simp
+    | cons x s ih =>
+        intro h
+        have hx : truncatedLogKernel z δ x ≤ logKernel z x := h x (by simp)
+        have hs : ∀ w ∈ s, truncatedLogKernel z δ w ≤ logKernel z w := by
+          intro w hw
+          exact h w (by simp [hw])
+        simpa using add_le_add hx (ih hs)
+  exact mul_le_mul_of_nonneg_left hsum (by positivity)
 
 /-- Pulling back any point by `f_c^[n]` gives exactly `2^n` roots over `ℂ`,
 counted with multiplicity. -/

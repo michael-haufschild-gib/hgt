@@ -1445,3 +1445,15 @@ mean 0.056): mid-band mechanism = the N → N+1 birth jump. p-central family
 Residue: (1) no mid-depth pairs at p-central heights [hard core, now sharp];
 (2) restricted-family cofinality [classical shape + doc 12 (D′) small-ball];
 (3) G–M full-text mining. Doc 43 §§8–9; archives oddclass.out.
+
+## 2026-07-04 (cycle 9) — MOAT⁺ proved; its no-go measured; the wall's final form
+Route (3) executed: Lemma MOAT⁺ (multi-zero + r-free) proved — and refuted as a
+survivor-killer (P-M1/P-M2 FAIL 0/8): survivors sit in wide zero-free gaps
+(S-dial empty — pairs consume their flanking on-line zeros), M_r outruns
+(r−η)² (r-dial flat), true error = 65–95% of declared E (P-M3 PASS — near-sharp
+at transitions, |Ψ(p)| ≈ 0.92). Wall irreducible by window geometry ⟹ re-cut to
+(MID-central): fixed Φ_N has no mid-depth pairs at p ∈ [0.2,0.8] of its matched
+interval — one rigid polynomial per N; birth-jump mechanism lives at interval
+ends. #149 mining now targeted (G–M fixed-N methods on the matched slice).
+Next: zero-trajectory tracking across one N → N+1 transition (birth mechanism,
+cheap); doc-12 small-ball for the polynomial valley; G–M full text.

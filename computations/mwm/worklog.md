@@ -48,3 +48,57 @@ corner (2,1), P-R12), curvature ≤ 0.24/i² (∫|Ψ″| = 80/27 at c = 2 exactl
 C_ψ ≤ 6 named — the ONE remaining constant; empirical total 3.3/i). THEOREM B⁗
 FINAL: ΔG ≥ 7/4 − err(i) on the whole c ≥ 2 class, ΔG ≥ 1 for i ≥ 200.
 Next: C_ψ page; Lemma P → Lean brick; (m,r)-frame re-cut of Lemma D/E′ bands.
+
+## 2026-07-04 (cycle 10) — birth mechanism FILMED; the program's halves converge
+birth_homotopy.py (P-B1/B2/B3 all PASS): marginal-term homotopy λ·35^{−s} on
+the two N = 35 survivors + p-central control. Pairs absent at λ = 0, born in a
+filmed on-line collision (gap .295→.101 then count −2, η grows .037→.097);
+control at p ≈ .45: the SAME term REPELS (gap .359→.440 monotone). Mechanism =
+stationary phase: the marginal term's Z-perturbation 2λ|γ|N^{−1/2}cos(θ_γ −
+t log N) is stationary exactly at t = 2πN² — attraction coherent near
+resonance, averaged repulsion off it. (MID-central) now has a provable shape:
+oscillatory-integral sign profile + selectivity (gap stiffness vs N^{−1/2}
+push = doc-12 small-ball with a mechanism anchor). CONVERGENCE: pair birth =
+local disc sign flip under one-parameter perturbation = the SPUR arc's native
+tracking object (doc 25 clearance, doc 38 minors, B⁗/S″ march) — the arithmetic
+wall's final form is a disc-stability statement in the analytic arc's own
+format; arithmetic enters only via the explicit phase/amplitude of the marginal
+term. Doc 45 banked. Next: σ(p) attraction-boundary run; stationary-phase
+write-out; #149 full text.
+
+## 2026-07-04 (cycle 11) — σ(p) refutes pointwise attraction; (HOLD) model fits to 5%
+sigma_profile.py P-S1 FAIL (registered fail-branch): uniform p-grids (N=22,35;
+19×3 windows) show NO systematic push-sign profile — push sign configurational
+(first-order theory right); doc 45 §2's coherent-attraction explanation
+superseded; the film's survivor attraction was selection. Replacement: the
+HOLDING model — pairs are term-held (λ* ≈ 0.7, load-bearing) and persist only
+while the marginal term's beat phase Δφ = 2πp² ≤ Δφ* ≈ 0.2 rad: all 8 survivors
+have Δφ ≤ 0.21 (max possible 1.6); predicted p* = 0.18 vs observed 0.19. No
+other term can hold (all ≥ 10 rad off their own resonance at p-central).
+(MID-central) proof shape = (HOLD-lemma) [oscillatory bookkeeping on the
+explicit pair equation, single-term share isolated] + (GEN-valley) [doc-12
+small-ball; measured census: ZERO generic-type mid-band pairs in [200,12000]].
+Doc 46 banked. Next: τ-share statistic at survivors; (HOLD-lemma) write-out;
+T ~ 2–3·10⁴ census decade cross-check.
+
+## 2026-07-04 (cycle 12) — the reach law: 8/8, min margin 1.10
+tau_share.py P-T1 PASS (stronger than registered): reach = |P_N(ρ)|/|Φ′(ρ)| ≥ η
+at ALL 8 survivors (ratios 1.10–2.11; transcription Φ_{N−1}(ρ) = −P_N(ρ) to
+1e−37). (REACH) conjecture banked: mid-band pairs only within the marginal
+term's reach ⟹ subsumes (GEN-valley) if proved. Structural identity: |Φ′(ρ)| =
+2η|H(ρ)| exactly (two-zero factorization) ⟹ (REACH) ⟺ |P_N(ρ)| ≥ 2η²|H(ρ)| —
+the SAME η²|H| object as (MOAT-shallow); and |P_N| off-line has near-zeros at
+rate η·(beat phase) — the amplitude and phase windows are ONE object. Census
+decade [20000,30000) running on pod (P-H1/P-H2 registered).
+
+## 2026-07-04 (cycle 12 addendum) — (BVAL): the wall's irreducible form
+Exact-identity chain: pair ⟺ B(ρ) = −P_N(ρ), B = Φ_{N−1}; |P_N| on line =
+2|γ|N^{−1/2}|cos φ|; ⟹ mid-band pair REQUIRES an N^{−1/2}-deep off-line valley
+of the ONE-TERM-UNDER-RESOLVED background at p-central heights. (BVAL) named as
+the irreducible statement; film's λ = 0 frames are its first instance checks
+(background clean at both survivors). p-mechanism derived at sketch grade:
+resonance = frozen-maximum window of |cos φ| ⟹ shallowest-possible valley
+requirement ⟹ pairs easiest there; off-resonance the joint (depth ∧ phase)
+requirement is deeper on average. G–M connection exact: (BVAL) = one
+quantitative step of their under-resolution rigidity (their 100% theorem is the
+extreme case). Census decade P-H1/P-H2 pending.

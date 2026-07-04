@@ -67,3 +67,5 @@ import GaloisForLFunctions.RHTower.LedgerIdentity
 import GaloisForLFunctions.RHTower.LedgerConvex
 import GaloisForLFunctions.RHTower.SpurRegime
 import GaloisForLFunctions.RHTower.SpurStack
+import GaloisForLFunctions.RHTower.SpurCarrier
+import GaloisForLFunctions.RHTower.SpurMovingThreshold

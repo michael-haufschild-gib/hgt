@@ -20,9 +20,10 @@ This module cuts that input into two named, standard halves and proves the assem
 Half A is proved here modulo `BrolinScalingAt`; the two remaining inputs — the doubling law
 (from invariance+symmetry) and the domination bound — are the sharp GAP-A frontier.
 -/
+import GaloisForLFunctions.Bottcher.Brolin.TargetShifted
 import GaloisForLFunctions.Bottcher.Q62WeylDischarge
 
-open MeasureTheory Complex Filter Metric Set
+open MeasureTheory Complex Filter Metric Set Topology
 
 namespace Bottcher
 
@@ -50,6 +51,146 @@ def BrolinScalingAt (c a : ℂ) : Prop :=
 `K_c` (the equilibrium-potential maximum principle, Robin constant `= 0`). -/
 def PotentialDominatedOnFilledJulia (c a : ℂ) : Prop :=
   ∀ z : ℂ, z ∈ filledJulia c → logPotential (limitingBrolinMeasureAt c a) z ≤ 0
+
+/-- GAP-A bridge for Half A.  The remaining shifted-measure input is exactly the
+identification of the target-`a` potential with the canonical shifted potentials on the two
+arguments used by the quadratic identity. -/
+theorem BrolinScalingAt_of_target_potential_eq_gapAMu_and_shifted
+    {c a : ℂ} (hc : Disconnected c)
+    (hquad :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        logPotential (limitingBrolinMeasureAt c a) (quadratic c z) =
+          logPotential (gapAMu c) (quadratic c z))
+    (hbase :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        logPotential (limitingBrolinMeasureAt c a) z =
+          logPotential (shiftedLimitingBrolinMeasure c) z) :
+    BrolinScalingAt c a := by
+  intro z hzK
+  have h :=
+    neg_logPotential_gapAMu_quadratic_eq_two_neg_shiftedPotential_unconditional
+      (c := c) (z := z) hc hzK
+  rw [← hquad z hzK, ← hbase z hzK] at h
+  exact h
+
+/-- GAP-A bridge for Half B.  The finite-level nonpositivity already proved for the shifted
+limit gives Frostman domination once the target-`a` boundary potential is identified with the
+shifted one. -/
+theorem PotentialDominatedOnFilledJulia_of_target_potential_eq_shifted
+    {c a : ℂ} (hc : Disconnected c)
+    (hbase :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        logPotential (limitingBrolinMeasureAt c a) z =
+          logPotential (shiftedLimitingBrolinMeasure c) z) :
+    PotentialDominatedOnFilledJulia c a := by
+  intro z hzK
+  rw [hbase z hzK]
+  exact
+    logPotential_shiftedLimitingBrolinMeasure_nonpos_of_mem_filledJulia_of_disconnected
+      (c := c) (z := z) hc hzK
+
+/-- Arbitrary-target finite-to-limit boundary truncation passage.  If the
+selected finite target potentials tend to zero at `z`, and `z` is eventually
+not an atom of the selected pullback levels, then every positive truncation of
+the target limiting potential is nonpositive. -/
+theorem integral_truncatedLogKernel_limitingBrolinMeasureAt_nonpos_of_subseq_boundary_potential_tendsto_zero
+    {c a z : ℂ}
+    (hlog0 :
+      Tendsto
+        (fun k =>
+          logPotential
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+        atTop (𝓝 0))
+    (hnotAtom :
+      ∀ᶠ k in atTop,
+        (quadratic c)^[brolinLimitAtSubsequence c a k] z - a ≠ 0)
+    {δ : ℝ} (hδ : 0 < δ) :
+    ∫ w, truncatedLogKernel z δ w ∂limitingBrolinMeasureAt c a ≤ 0 := by
+  have hleft :=
+    truncatedLogKernel_preBrolinMeasureAt_subseq_integral_tendsto_limiting
+      c a z hδ
+  have hdiff := hleft.sub hlog0
+  have hle :
+      ∀ᶠ k in atTop,
+        ∫ w, truncatedLogKernel z δ w
+            ∂preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k) -
+          logPotential
+            (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ 0 := by
+    filter_upwards [hnotAtom] with k hk
+    have hineq :=
+      integral_truncatedLogKernel_preBrolinMeasureAt_le_logPotential_of_iterate_ne_target
+        (c := c) (a := a) (z := z) (δ := δ)
+        (n := brolinLimitAtSubsequence c a k) hδ hk
+    linarith
+  have hlim := le_of_tendsto hdiff hle
+  simpa using hlim
+
+/-- GAP-A bridge for Half B in the arbitrary-target subsequence language.  The
+finite pressure estimate is supplied by
+`integral_truncatedLogKernel_preBrolinMeasureAt_le_logPotential_of_iterate_ne_target`;
+the hypotheses here are the exact remaining boundary value and atom gates needed
+to pass it through the selected weak limit. -/
+theorem PotentialDominatedOnFilledJulia_of_subseq_boundary_potential_tendsto_zero
+    {c a : ℂ}
+    (hatom :
+      ∀ z : ℂ, z ∈ filledJulia c → limitingBrolinMeasureAt c a {z} = 0)
+    (hlog0 :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        Tendsto
+          (fun k =>
+            logPotential
+              (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z)
+          atTop (𝓝 0))
+    (hnotAtom :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        ∀ᶠ k in atTop,
+          (quadratic c)^[brolinLimitAtSubsequence c a k] z - a ≠ 0) :
+    PotentialDominatedOnFilledJulia c a := by
+  intro z hzK
+  by_cases hint : Integrable (fun w => logKernel z w) (limitingBrolinMeasureAt c a)
+  · have hzero :
+        limitingBrolinMeasureAt c a (({z} : Set ℂ)ᶜ)ᶜ = 0 := by
+      simpa using hatom z hzK
+    have hne_ae : ∀ᵐ w ∂limitingBrolinMeasureAt c a, w ∈ ({z} : Set ℂ)ᶜ :=
+      (mem_ae_iff).2 hzero
+    have hlim :
+        Tendsto
+          (fun n : ℕ =>
+            ∫ w, truncatedLogKernel z (((n + 1 : ℕ) : ℝ)⁻¹) w
+              ∂limitingBrolinMeasureAt c a)
+          atTop (𝓝 (logPotential (limitingBrolinMeasureAt c a) z)) := by
+      unfold logPotential
+      refine tendsto_integral_of_dominated_convergence
+        (fun w => ‖logKernel z w‖) ?_ hint.norm ?_ ?_
+      · intro n
+        exact (continuous_truncatedLogKernel
+          (z := z) (δ := (((n + 1 : ℕ) : ℝ)⁻¹))
+          (by positivity)).aestronglyMeasurable
+      · intro n
+        have hδle : (((n + 1 : ℕ) : ℝ)⁻¹) ≤ 1 := by
+          have hn : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by
+            exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
+          exact inv_le_one_of_one_le₀ hn
+        filter_upwards [hne_ae] with w hw
+        exact norm_truncatedLogKernel_le_norm_logKernel_of_ne_of_le_one
+          (by positivity) hδle (fun hzw => hw hzw.symm)
+      · filter_upwards [hne_ae] with w hw
+        exact truncatedLogKernel_inv_nat_succ_tendsto_logKernel_of_ne
+          (fun hzw => hw hzw.symm)
+    have hnonpos :
+        ∀ n : ℕ,
+          ∫ w, truncatedLogKernel z (((n + 1 : ℕ) : ℝ)⁻¹) w
+              ∂limitingBrolinMeasureAt c a ≤ 0 := by
+      intro n
+      exact
+        integral_truncatedLogKernel_limitingBrolinMeasureAt_nonpos_of_subseq_boundary_potential_tendsto_zero
+          (c := c) (a := a) (z := z) (hlog0 z hzK) (hnotAtom z hzK)
+          (by positivity)
+    exact le_of_tendsto hlim (Filter.Eventually.of_forall hnonpos)
+  · have hzero : logPotential (limitingBrolinMeasureAt c a) z = 0 := by
+      unfold logPotential
+      exact integral_undef hint
+    rw [hzero]
 
 /-- **Half A (doubling ⟹ `Uᵘ ≥ 0` on `K_c`).**  From the scaling law: a point of `K_c`
 with `−Uᵘ > 0` would double `−Uᵘ` along its bounded forward orbit past the uniform
@@ -110,6 +251,42 @@ theorem limitingBrolinMeasureAtSupportsJulia_of_scaling_of_dominated (c a : ℂ)
     LimitingBrolinMeasureAtSupportsJulia c a :=
   limitingBrolinMeasureAtSupportsJulia_of_equilibriumVanishes c a
     (equilibriumPotentialVanishesAe_of_scaling_of_dominated c a hscale hdom)
+
+/-- Disconnected GAP-A support from the precise remaining shifted-potential identification.
+This isolates the obstruction: promote the selected target limit to the canonical shifted
+boundary potential, and the support theorem follows without any volume-zero input. -/
+theorem limitingBrolinMeasureAtSupportsJulia_of_target_potential_eq_gapAMu_and_shifted
+    {c a : ℂ} (hc : Disconnected c)
+    (hquad :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        logPotential (limitingBrolinMeasureAt c a) (quadratic c z) =
+          logPotential (gapAMu c) (quadratic c z))
+    (hbase :
+      ∀ z : ℂ, z ∈ filledJulia c →
+        logPotential (limitingBrolinMeasureAt c a) z =
+          logPotential (shiftedLimitingBrolinMeasure c) z) :
+    LimitingBrolinMeasureAtSupportsJulia c a :=
+  limitingBrolinMeasureAtSupportsJulia_of_scaling_of_dominated c a
+    (BrolinScalingAt_of_target_potential_eq_gapAMu_and_shifted hc hquad hbase)
+    (PotentialDominatedOnFilledJulia_of_target_potential_eq_shifted hc hbase)
+
+/-- Fixed-point q62 support surface from the same shifted-potential identification. -/
+theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_target_potential_eq_gapAMu_and_shifted
+    {c : ℂ} (hc : Disconnected c)
+    (hquad :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          logPotential (limitingBrolinMeasureAt c a) (quadratic c z) =
+            logPotential (gapAMu c) (quadratic c z))
+    (hbase :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          logPotential (limitingBrolinMeasureAt c a) z =
+            logPotential (shiftedLimitingBrolinMeasure c) z) :
+    ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a :=
+  fun a ha =>
+    limitingBrolinMeasureAtSupportsJulia_of_target_potential_eq_gapAMu_and_shifted
+      hc (hquad a ha) (hbase a ha)
 
 /-- `∀`-fixed-point form of the two-half support datum, consumed by the q62 both-connected
 capstones. -/
