@@ -7,7 +7,10 @@ backward-trapping escape disk and the named nested-preimage characterization.
 -/
 import GaloisForLFunctions.Bottcher.Dynamics
 import Mathlib.MeasureTheory.Function.Jacobian
+import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.RingTheory.Complex
+import Mathlib.RingTheory.Norm.Transitivity
 
 open MeasureTheory Metric Set Filter Topology
 open scoped ENNReal Topology
@@ -329,6 +332,52 @@ theorem volume_filledJulia_eq_zero_of_disjoint_ball_c
   exact quadraticPreimageClosedBall_kernel_le_of_disjoint_ball_c hr
     (Disjoint.mono_right (antitone_quadraticPreimageClosedBall c hn) hdisj) hqkernel
 
+/-- `f_c(z)=z²+c` has strict complex derivative `2z`. -/
+theorem quadratic_hasStrictDerivAt (c z : ℂ) :
+    HasStrictDerivAt (quadratic c) (2 * z) z := by
+  have h : HasStrictDerivAt (quadratic c) ((2 : ℕ) * z ^ (2 - 1)) z :=
+    (hasStrictDerivAt_pow 2 z).add_const c
+  convert h using 1
+  norm_num
+
+/-- Real Frechet derivative of `f_c(z)=z²+c`, viewed on the real plane. -/
+theorem hasFDerivWithinAt_quadratic_real (c z : ℂ) (s : Set ℂ) :
+    HasFDerivWithinAt (quadratic c) ((2 * z) • (1 : ℂ →L[ℝ] ℂ)) s z := by
+  exact (quadratic_hasStrictDerivAt c z).hasDerivAt.complexToReal_fderiv.hasFDerivWithinAt
+
+/-- The real Jacobian determinant of multiplication by the complex scalar `2z`. -/
+lemma quadratic_real_fderiv_det (z : ℂ) :
+    (((2 * z) • (1 : ℂ →L[ℝ] ℂ)).det) = ‖2 * z‖ ^ 2 := by
+  have hmap :
+      ((2 * z) • (1 : ℂ →L[ℝ] ℂ)) =
+        (ContinuousLinearMap.toSpanSingleton ℂ (2 * z)).restrictScalars ℝ := by
+    ext w
+    simp
+    ring
+  rw [hmap]
+  simp [ContinuousLinearMap.det, LinearMap.det_restrictScalars, Algebra.norm_complex_apply,
+    Complex.normSq_eq_norm_sq]
+
+/-- On each noncritical quadratic branch, the real Jacobian cancels the inverse-branch kernel. -/
+lemma quadratic_jacobian_kernel_mul_eq_one {c z : ℂ} (hz : z ≠ 0) :
+    ENNReal.ofReal |(((2 * z) • (1 : ℂ →L[ℝ] ℂ)).det)| *
+        ENNReal.ofReal ((4 * ‖quadratic c z - c‖)⁻¹) = 1 := by
+  have hz_norm : ‖z‖ ≠ 0 := by simpa using (norm_ne_zero_iff.mpr hz)
+  have hdist : ‖quadratic c z - c‖ = ‖z‖ ^ 2 := by
+    rw [quadratic_apply]
+    simp [norm_pow]
+  have hdet : |(((2 * z) • (1 : ℂ →L[ℝ] ℂ)).det)| = 4 * ‖z‖ ^ 2 := by
+    rw [quadratic_real_fderiv_det]
+    rw [abs_of_nonneg (sq_nonneg ‖2 * z‖)]
+    rw [norm_mul, Complex.norm_ofNat]
+    ring
+  rw [hdet, hdist]
+  rw [← ENNReal.ofReal_mul (by positivity : 0 ≤ 4 * ‖z‖ ^ 2)]
+  have hreal : (4 * ‖z‖ ^ 2) * (4 * ‖z‖ ^ 2)⁻¹ = 1 := by
+    field_simp [hz_norm]
+  rw [hreal]
+  simp
+
 /-- Complex-plane area formula for an injective real-`C¹` map on a measurable set, in
 `lintegral` form. -/
 theorem lintegral_image_eq_lintegral_abs_det_fderiv_mul_complex
@@ -347,6 +396,28 @@ theorem volume_image_eq_lintegral_abs_det_fderiv_complex
     volume (f '' s) = ∫⁻ z in s, ENNReal.ofReal |(f' z).det| ∂(volume : Measure ℂ) := by
   exact (MeasureTheory.lintegral_abs_det_fderiv_eq_addHaar_image (μ := volume) hs hf' hf).symm
 
+/-- Area formula on a single noncritical injective quadratic branch. -/
+theorem volume_quadratic_branch_eq_lintegral_kernel {c : ℂ} {s : Set ℂ}
+    (hs : MeasurableSet s) (hinj : Set.InjOn (quadratic c) s)
+    (hzero : ∀ z ∈ s, z ≠ 0) :
+    volume s =
+      ∫⁻ w in quadratic c '' s,
+        ENNReal.ofReal ((4 * ‖w - c‖)⁻¹) ∂(volume : Measure ℂ) := by
+  symm
+  rw [lintegral_image_eq_lintegral_abs_det_fderiv_mul_complex hs
+    (fun z _hz => hasFDerivWithinAt_quadratic_real c z s) hinj
+    (fun w => ENNReal.ofReal ((4 * ‖w - c‖)⁻¹))]
+  calc
+    ∫⁻ z in s,
+        ENNReal.ofReal |(((2 * z) • (1 : ℂ →L[ℝ] ℂ)).det)| *
+          ENNReal.ofReal ((4 * ‖quadratic c z - c‖)⁻¹) ∂(volume : Measure ℂ)
+        = ∫⁻ _z in s, (1 : ℝ≥0∞) ∂(volume : Measure ℂ) := by
+          apply setLIntegral_congr_fun hs
+          intro z hz
+          exact quadratic_jacobian_kernel_mul_eq_one (hzero z hz)
+    _ = volume s := by
+          rw [setLIntegral_one]
+
 /-- The critical value `c` has the unique preimage `0` under `z ↦ z^2+c`. -/
 theorem quadratic_preimage_singleton_criticalValue (c : ℂ) :
     (quadratic c) ⁻¹' ({c} : Set ℂ) = ({0} : Set ℂ) := by
@@ -358,6 +429,49 @@ theorem volume_quadratic_preimage_singleton_criticalValue (c : ℂ) :
     volume ((quadratic c) ⁻¹' ({c} : Set ℂ)) = 0 := by
   rw [quadratic_preimage_singleton_criticalValue]
   exact measure_singleton 0
+
+/-- The real linear functional cutting out the branch boundary orthogonal to `v`. -/
+def quadraticBoundaryLineMap (v : ℂ) : ℂ →ₗ[ℝ] ℝ :=
+  Complex.reLm.comp (LinearMap.mulLeft ℝ (starRingEnd ℂ v))
+
+lemma quadraticBoundaryLineMap_apply (v z : ℂ) :
+    quadraticBoundaryLineMap v z = (starRingEnd ℂ v * z).re := by
+  rfl
+
+/-- The line separating the two quadratic inverse sheets determined by `v`. -/
+def quadraticBoundaryLine (v : ℂ) : Set ℂ :=
+  {z : ℂ | (starRingEnd ℂ v * z).re = 0}
+
+lemma quadraticBoundaryLine_eq_ker (v : ℂ) :
+    quadraticBoundaryLine v = (LinearMap.ker (quadraticBoundaryLineMap v) : Set ℂ) := by
+  ext z
+  simp [quadraticBoundaryLine, quadraticBoundaryLineMap]
+
+lemma quadraticBoundaryLineMap_ne_zero {v : ℂ} (hv : v ≠ 0) :
+    quadraticBoundaryLineMap v ≠ 0 := by
+  intro hzero
+  have h_apply : quadraticBoundaryLineMap v v = (0 : ℂ →ₗ[ℝ] ℝ) v := by rw [hzero]
+  rw [quadraticBoundaryLineMap_apply] at h_apply
+  simp only [LinearMap.zero_apply] at h_apply
+  have hnorm : (starRingEnd ℂ v * v).re = Complex.normSq v := by
+    have hcomplex : ((Complex.normSq v : ℝ) : ℂ) = starRingEnd ℂ v * v := by
+      simpa using (Complex.normSq_eq_conj_mul_self (z := v))
+    exact (congrArg Complex.re hcomplex).symm
+  rw [hnorm] at h_apply
+  have hnorm_ne : Complex.normSq v ≠ 0 := mt Complex.normSq_eq_zero.mp hv
+  exact hnorm_ne h_apply
+
+lemma quadraticBoundaryLine_ker_ne_top {v : ℂ} (hv : v ≠ 0) :
+    LinearMap.ker (quadraticBoundaryLineMap v) ≠ ⊤ := by
+  intro htop
+  exact quadraticBoundaryLineMap_ne_zero hv (LinearMap.ker_eq_top.mp htop)
+
+/-- Every nondegenerate quadratic inverse-sheet boundary line is Lebesgue-null. -/
+theorem volume_quadraticBoundaryLine_eq_zero {v : ℂ} (hv : v ≠ 0) :
+    volume (quadraticBoundaryLine v) = 0 := by
+  rw [quadraticBoundaryLine_eq_ker]
+  exact Measure.addHaar_submodule (volume : Measure ℂ)
+    (LinearMap.ker (quadraticBoundaryLineMap v)) (quadraticBoundaryLine_ker_ne_top hv)
 
 end
 

@@ -24,7 +24,7 @@ import GaloisForLFunctions.Bottcher.Brolin.RieszSupport
 import GaloisForLFunctions.Bottcher.PoissonHarmonic
 import GaloisForLFunctions.Bottcher.PoissonBoundary
 
-open MeasureTheory Complex Metric Laplacian InnerProductSpace
+open MeasureTheory Complex Metric Laplacian InnerProductSpace Filter Set
 open scoped Laplacian Real Topology
 
 namespace Bottcher
@@ -206,6 +206,96 @@ theorem harmonicOnNhd_mollified (G : ℂ → ℝ) (hG : LocallyIntegrable G)
   refine ⟨hC2.contDiffAt, ?_⟩
   filter_upwards [(isOpen_ball).mem_nhds hx] with y hy
   exact laplacian_mollified_eq_zero G hG η hηc hη hηsupp hweak hy
+
+noncomputable def poissonInt (g : ℂ → ℝ) (c : ℂ) (R : ℝ) (w : ℂ) : ℝ :=
+  Real.circleAverage (poissonKernel c w • g) c R
+
+/-- Interior Dirichlet maximum principle: a function harmonic on `ball c R`, continuous on
+`closedBall c R`, vanishing on the sphere, is `≤ 0` inside. -/
+theorem harmonic_le_zero_of_sphere_zero {v : ℂ → ℝ} {c : ℂ} {R : ℝ} (hR : 0 < R)
+    (hvh : HarmonicOnNhd v (Metric.ball c R)) (hvc : ContinuousOn v (Metric.closedBall c R))
+    (hvs : ∀ z ∈ Metric.sphere c R, v z = 0) : ∀ y ∈ Metric.ball c R, v y ≤ 0 := by
+  intro y hy
+  obtain ⟨z₀, hz₀mem, hz₀max⟩ := (isCompact_closedBall c R).exists_isMaxOn
+    ⟨c, Metric.mem_closedBall_self hR.le⟩ hvc
+  by_contra hcon
+  push_neg at hcon
+  have hz₀pos : 0 < v z₀ := lt_of_lt_of_le hcon (hz₀max (Metric.ball_subset_closedBall hy))
+  have hz₀ball : z₀ ∈ Metric.ball c R := by
+    rcases (Metric.mem_closedBall.mp hz₀mem).lt_or_eq with hlt | heq
+    · exact Metric.mem_ball.mpr hlt
+    · exact absurd (hvs z₀ (Metric.mem_sphere.mpr heq)) (ne_of_gt hz₀pos)
+  have hmaxball : IsMaxOn v (Metric.ball c R) z₀ :=
+    fun x hx => hz₀max (Metric.ball_subset_closedBall hx)
+  have heqc := harmonic_eqOn_const_of_isMaxOn (convex_ball c R).isPreconnected
+    isOpen_ball hvh hz₀ball hmaxball
+  obtain ⟨z₁, hz₁⟩ := (NormedSpace.sphere_nonempty (x := c) (r := R)).mpr hR.le
+  have hz₁cl : z₁ ∈ closure (Metric.ball c R) := by
+    rw [closure_ball c hR.ne']; exact Metric.sphere_subset_closedBall hz₁
+  haveI : (𝓝[Metric.ball c R] z₁).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hz₁cl
+  have t1 : Tendsto v (𝓝[Metric.ball c R] z₁) (𝓝 (v z₁)) :=
+    ((hvc.continuousWithinAt (Metric.sphere_subset_closedBall hz₁)).mono
+      Metric.ball_subset_closedBall).tendsto
+  have t2 : Tendsto v (𝓝[Metric.ball c R] z₁) (𝓝 (v z₀)) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with x hx using (heqc hx).symm
+  have hz10 : v z₁ = v z₀ := tendsto_nhds_unique t1 t2
+  rw [hvs z₁ hz₁] at hz10
+  exact absurd hz10.symm (ne_of_gt hz₀pos)
+
+theorem harmonic_reproduction {h : ℂ → ℝ} {c : ℂ} {R R' : ℝ} (hR : 0 < R) (hRR' : R < R')
+    (hh : HarmonicOnNhd h (Metric.ball c R')) {w : ℂ} (hw : w ∈ Metric.ball c R) :
+    h w = poissonInt h c R w := by
+  have hball_sub : Metric.ball c R ⊆ Metric.ball c R' := Metric.ball_subset_ball hRR'.le
+  have hclosed_sub : Metric.closedBall c R ⊆ Metric.ball c R' := Metric.closedBall_subset_ball hRR'
+  have hhball : HarmonicOnNhd h (Metric.ball c R) := hh.mono hball_sub
+  have hhsphere : ContinuousOn h (Metric.sphere c R) :=
+    (hh.continuousOn).mono (Metric.sphere_subset_closedBall.trans hclosed_sub)
+  have hPharm : HarmonicOnNhd (poissonInt h c R) (Metric.ball c R) :=
+    poissonInt_harmonicOnNhd hR hhsphere
+  set u : ℂ → ℝ := (Metric.ball c R).indicator (h - poissonInt h c R) with hu
+  have huEq : Set.EqOn u (h - poissonInt h c R) (Metric.ball c R) :=
+    fun z hz => Set.indicator_of_mem hz _
+  have huball : HarmonicOnNhd u (Metric.ball c R) := by
+    intro z hz
+    refine (harmonicAt_congr_nhds (Filter.eventuallyEq_of_mem
+      ((isOpen_ball).mem_nhds hz) (fun y hy => huEq hy))).mpr ((hhball.sub hPharm) z hz)
+  have huzero : ∀ z, z ∉ Metric.ball c R → u z = 0 := fun z hz => Set.indicator_of_notMem hz _
+  have husphere0 : ∀ z ∈ Metric.sphere c R, u z = 0 := fun z hz =>
+    huzero z (by rw [Metric.mem_sphere] at hz; rw [Metric.mem_ball, hz]; exact lt_irrefl _)
+  have hucont : ContinuousOn u (Metric.closedBall c R) := by
+    intro z hz
+    by_cases hzb : z ∈ Metric.ball c R
+    · have hnb : Metric.ball c R ∈ 𝓝 z := (isOpen_ball).mem_nhds hzb
+      have hdc : ContinuousAt (h - poissonInt h c R) z :=
+        ((hhball.continuousOn).continuousAt hnb).sub ((hPharm.continuousOn).continuousAt hnb)
+      exact (hdc.congr (Filter.eventuallyEq_of_mem hnb (fun y hy => huEq hy)).symm).continuousWithinAt
+    · have hzs : z ∈ Metric.sphere c R := by
+        rw [Metric.mem_sphere]
+        rcases (Metric.mem_closedBall.mp hz).lt_or_eq with hlt | heq
+        · exact absurd (Metric.mem_ball.mpr hlt) hzb
+        · exact heq
+      rw [ContinuousWithinAt, huzero z hzb, ← Metric.ball_union_sphere, nhdsWithin_union, tendsto_sup]
+      refine ⟨?_, ?_⟩
+      · have hcAt : ContinuousAt h z := (hh.continuousOn).continuousAt
+          ((isOpen_ball).mem_nhds (hclosed_sub hz))
+        have hd0 : Tendsto (h - poissonInt h c R) (𝓝[Metric.ball c R] z) (𝓝 0) := by
+          have := (hcAt.continuousWithinAt.tendsto).sub (poissonInt_tendsto_boundary hR hhsphere hzs)
+          simpa using this
+        refine hd0.congr' ?_
+        filter_upwards [self_mem_nhdsWithin] with x hx using (huEq hx).symm
+      · refine tendsto_const_nhds.congr' ?_
+        filter_upwards [self_mem_nhdsWithin] with x hx
+        exact (huzero x (fun hxb => by
+          rw [Metric.mem_sphere] at hx; exact absurd (Metric.mem_ball.mp hxb) (by rw [hx]; exact lt_irrefl _))).symm
+  have hle := harmonic_le_zero_of_sphere_zero hR huball hucont husphere0 w hw
+  have hge := harmonic_le_zero_of_sphere_zero hR huball.neg hucont.neg
+    (fun z hz => by rw [Pi.neg_apply, husphere0 z hz, neg_zero]) w hw
+  rw [Pi.neg_apply] at hge
+  have huw : u w = 0 := le_antisymm hle (by linarith)
+  have := huEq hw
+  rw [huw] at this
+  simpa [sub_eq_zero] using this.symm
 
 end
 
