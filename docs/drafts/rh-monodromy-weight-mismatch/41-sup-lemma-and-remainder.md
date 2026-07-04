@@ -163,3 +163,24 @@ the pair difference against the O(ξ) shift asymmetry; a fully-certified one-pag
 deferred rather than asserted (the naive single-side estimate is 1/ξ²-divergent — the
 cancellation must be tracked explicitly, so this is not the mechanical write-out the §5(2)
 note assumed).
+
+## 7. Lean update — item (a) RESOLVED (task #143, 2026-07-04)
+
+`formal/GaloisForLFunctions/RHTower/ReversalPositivity.lean` (namespace `RHTower`, axiom-clean
+`[propext, Classical.choice, Quot.sound]`, in the RHTower umbrella, lint green) closes the §6
+item (a): the `(POS₂) → (POS_c)` lift for all `c ≥ 2`. Three Mathlib-absent reusable bricks +
+the capstone:
+
+- `sinh_lt_mul_cosh` : `0 < x → sinh x < x·cosh x` (the atomic driver `tanh x < x`; via the
+  strictly increasing `t·cosh t − sinh t` with derivative `t·sinh t`).
+- `div_sinh_strictAntiOn` : `y ↦ y/sinh y` strictly decreasing on `(0,∞)` (derivative
+  `(sinh y − y·cosh y)/sinh²y < 0` by the first brick).
+- `tanh_div_tanh_monotoneOn` : for `0 < a < b`, `c ↦ tanh(ca)/tanh(cb)` monotone on `(0,∞)`,
+  via the log surrogate `Φ` with `Φ'(c) = a/(sinh(ca)cosh(ca)) − b/(sinh(cb)cosh(cb)) > 0`, the
+  sign delivered by `div_sinh_strictAntiOn` at `2ca < 2cb` (`sinh(2u)=2 sinh u cosh u`).
+- `posC_of_posTwo` : given the `c=2` base `tanh(m/2) ≤ tanh r / tanh m` (the tanh form of
+  `(POS₂)`, i.e. `posTwo_algebraic_criterion`), the criterion holds for every `c ≥ 2`.
+
+Doc 41 §1's monotonicity argument is now machine-checked. §6 residual for the (SPUR-R)/(AMP)
+Lean stack narrows to item (b): the certified-numerics Sup Lemma `sup_{c≥2} R(1/2,c,0) < 1/4`
+(interval-arithmetic replication).

@@ -2122,3 +2122,59 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
 - Tasks: #16 CLOSED, #17 CLOSED (dissolved into doc 72's re-cut), #18
   opened ((EFF-M4)+(EFF-E)+(TAIL-6) instrument). No terminus: the carrier
   search is OVER (g_N), everything left is ζ's own value distribution.
+
+## Cycle 39 (2026-07-04) — the certified-tail calculus: (EFF-M4/M10) closed exactly; Christoffel upgrade; (TAIL-6) priced to a factor 4-8
+- Doc 73 BANKED. (EFF-M4/M10) CLOSED at exact-numerics grade: ReP_X
+  (X = T^{1/5} = 313 at T = 3e12, 64 primes, support |ReP| ≤ 8.401) has
+  EXACT rational cumulants (κ₄(cos) = −3/8, κ₆ = 5/4, κ₈ = −1155/128, ...)
+  and a SUB-Gaussian ladder at every order: m₄/G = 0.945, m₆/G = 0.848,
+  m₈/G = 0.727, m₁₀/G = 0.598, m₁₂/G = 0.473. Wall 2 half-reversed:
+  collisions LIGHTEN (κ₄ < 0); corruption only pushes ratios below 1.
+- SPACING-MV: the actual Montgomery–Vaughan (per-frequency δ_N ≥ 1/2N;
+  the 1/N in |c_N|² cancels δ⁻¹) doubles the degree budget: 2k ≤
+  2logT/logX = 10 certified (rel. transfer err 2e-4 at k=5; k=6 fails).
+  Corrects doc 72 §2's naive X^{2k} ≤ T.
+- Chernoff ceiling exact: P(ReP ≤ −4.1) ≤ 2.5e-5, ≤ −6.1: 2.3e-14
+  (support-edge collapse) — but certified Chernoff dies at v ≥ 1.2
+  (exp-truncation within degree budget); ladder methods win.
+- CHRISTOFFEL–MARKOV UPGRADE (new instrument): sharp one-sided moment-
+  problem bound 1/K_n(−a) via one Hankel Cholesky of the exact ladder:
+  deg-10 at a = 4.1: 1.06e-4 (×5 better than single-m₁₀ Markov; only
+  ×3-12 above Gaussian truth at z ≈ 3.5-4 vs ×30-60 for single-moment).
+  Prime chunk of (TAIL-6) CERTIFIED under budget with s_B = 2.0 to spare.
+- (EFF-E) demand made exact — the VARIANCE MAP at 3e12: p ≤ 313: 1.01
+  (deg 10 ✓); (313,10⁴]: 0.235 (deg 6); (10⁴,10⁶]: 0.205 (deg 4);
+  (10⁶,√T]: 0.22 (Chebyshev-grade — the leak); offset 0.65 (thin-zero
+  mass? [CONJECTURE], decisive + measurable: rerun probe m₂ excluding dip
+  nbhds). Joint degree budget SHARED: Σ2k_j·logY_j ≤ 2logT (block degrees
+  trade off); union-split preserves the Gaussian exponent only at
+  per-block Gaussian grade.
+- (TAIL-6) ADJUDICATED: assembled certified stack ~1e-3 at A = 6.1
+  (near-optimal for the moment/degree class: union-vs-joint ×10-30 +
+  shared budget); target ε₀*/8 = 2.4e-4; GAP = factor 4-8, ALL in named
+  constants (thickness 8→~3, ε₀* 1/512→1/256, allocation). Tonight's
+  movement: 5.4e-2 (naive k=2 Markov) → ~1e-3 — factor ~50, machine-
+  checkable arithmetic. Only open direction beyond constants: effective
+  equidistribution of the 64-cosine block (not priced by degree budget).
+- Archived: effm_moments.py/.out, christoffel.py/.out. Crash note: local
+  terminal died mid-sympy (exit 137); rerun lean on runpod — fractions-
+  based series, no sympy. Tasks: #18 CLOSED (delivered M4/M10 + priced
+  TAIL-6 + exact EFF-E demand); #19 opened (EFF-E mid-block ladders +
+  offset-location probe + harvest: thickness constant, ε₀* audit,
+  allocation optimizer + Lean hankel_psd_tail_bound).
+
+## 2026-07-04 — #143 (taken over from codex): the (POS₂)→(POS_c) lift machine-checked
+- ReversalPositivity.lean BANKED (8475 jobs, axiom-clean [propext, Classical.choice, Quot.sound],
+  lint green, in RHTower umbrella): closes doc 41 §6 item (a), the one analytic step
+  LedgerReversalConstants flagged as still open for the (SPUR-R)/(AMP) stack.
+- Three Mathlib-absent reusable bricks: `sinh_lt_mul_cosh` (0<x → sinh x < x cosh x, via the
+  strictly increasing t·cosh t − sinh t with deriv t·sinh t); `div_sinh_strictAntiOn` (y/sinh y
+  strict-anti on (0,∞), deriv (sinh y − y cosh y)/sinh²y < 0 from the first brick);
+  `tanh_div_tanh_monotoneOn` (0<a<b ⟹ c↦tanh(ca)/tanh(cb) monotone via log surrogate Φ,
+  Φ'(c)=a/(sinh(ca)cosh(ca))−b/(sinh(cb)cosh(cb))>0 from brick 2 at 2ca<2cb + sinh double-angle).
+- Capstone `posC_of_posTwo`: the c=2 base `tanh(m/2) ≤ tanh r/tanh m` (= posTwo_algebraic_criterion,
+  r=log cosh m) lifts to `tanh(m/2) ≤ tanh(c·r/2)/tanh(c·m/2)` for every c≥2. Doc 41 §1's
+  ∂_c-monotonicity argument now machine-checked end to end.
+- #143 queue remaining: doc 25 Thm A (heavy), counting lemma, and the certified-numerics
+  Sup Lemma (doc 41 §4, interval-arithmetic Lean replication) — item (b). The (S-mono)/(LEG)/AMP
+  paper items (#142/#138) promote before their Lean is due.

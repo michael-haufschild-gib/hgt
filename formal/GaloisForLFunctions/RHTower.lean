@@ -91,3 +91,4 @@ import GaloisForLFunctions.RHTower.SelbergTransfer
 import GaloisForLFunctions.RHTower.ThickDips
 import GaloisForLFunctions.RHTower.LedgerReversalConstants
 import GaloisForLFunctions.RHTower.WeldEnvelope
+import GaloisForLFunctions.RHTower.ReversalPositivity
