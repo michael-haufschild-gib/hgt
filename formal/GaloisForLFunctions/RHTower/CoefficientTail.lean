@@ -5,6 +5,7 @@ This is the RHTower analogue of the factored-tail/provider pattern used in the
 Hurwitz and Böttcher/U0 formal lanes: the envelope theorem should consume a
 named tail interface, while the polynomial coefficient bookkeeping lives here.
 -/
+import GaloisForLFunctions.RHTower.RangeArithmetic
 import GaloisForLFunctions.RHTower.SpurCumulant
 
 namespace RHTower
@@ -69,6 +70,115 @@ theorem multiplierJetTailEvalBound_of_coeff_sum_bound {K : ℝ} (P : ℕ) {j d :
   · have hbound := PolynomialTruncation.abs_eval_shiftedTailUpTo_le
       (P := multiplierTruncPoly P (P - 1) j) P (P * (P - 1)) ((d : ℝ)⁻¹)
     exact le_trans (by simpa [Q, multiplierCoeff] using hbound) hCoeff
+
+/-- Sharper high-tail provider in terms of powers of the cumulant polynomial.
+
+This exposes the exponential-composition structure hidden inside
+`multiplierCoeff`.  The remaining task is now to bound the explicit coefficients
+of `(cumulantLogPoly (P - 1) j)^q`, where each monomial can be handled by the
+range arithmetic lemmas. -/
+def cumulantPowerTailCoeffBound (K : ℝ) (P j d : ℕ) : Prop :=
+  ∑ r ∈ Finset.range (P * (P - 1) + 1),
+    (∑ q ∈ Finset.range P,
+      (1 / (q.factorial : ℝ)) *
+        |((cumulantLogPoly (P - 1) j) ^ q).coeff (P + r)|) *
+      |((d : ℝ)⁻¹)| ^ r ≤
+    K * (j : ℝ) ^ (2 * P)
+
+/-- Explicit finite constant for the cumulant-power high tail. -/
+def cumulantPowerTailConstant (P : ℕ) : ℝ :=
+  ∑ r ∈ Finset.range (P * (P - 1) + 1),
+    ∑ q ∈ Finset.range P,
+      (1 / (q.factorial : ℝ)) * ((P + r + 1 : ℕ) : ℝ) ^ q
+
+/-- The cumulant-power high-tail provider is discharged on the paper range by a
+finite constant depending only on `P`. -/
+theorem cumulantPowerTailCoeffBound_explicit (P : ℕ) {j d : ℕ}
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) :
+    cumulantPowerTailCoeffBound (cumulantPowerTailConstant P) P j d := by
+  rw [cumulantPowerTailCoeffBound, cumulantPowerTailConstant]
+  have hterm : ∀ r ∈ Finset.range (P * (P - 1) + 1), ∀ q ∈ Finset.range P,
+      (1 / (q.factorial : ℝ)) * |((cumulantLogPoly (P - 1) j) ^ q).coeff (P + r)| *
+          |((d : ℝ)⁻¹)| ^ r ≤
+        ((1 / (q.factorial : ℝ)) * ((P + r + 1 : ℕ) : ℝ) ^ q) *
+          (j : ℝ) ^ (2 * P) := by
+    intro r _ q hq
+    have hqP : q ≤ P := Nat.le_of_lt (Finset.mem_range.mp hq)
+    have hcoeff := abs_coeff_cumulantLogPoly_pow_le (P - 1) j q (P + r)
+    have hweight := tail_monomial_weight_le_cube_square_order P q r hd hj hjd hqP
+    calc
+      (1 / (q.factorial : ℝ)) * |((cumulantLogPoly (P - 1) j) ^ q).coeff (P + r)| *
+          |((d : ℝ)⁻¹)| ^ r
+          ≤ (1 / (q.factorial : ℝ)) *
+              (((P + r + 1 : ℕ) : ℝ) ^ q * (j : ℝ) ^ (P + r + q)) *
+              |((d : ℝ)⁻¹)| ^ r := by
+                exact mul_le_mul_of_nonneg_right
+                  (mul_le_mul_of_nonneg_left hcoeff (by positivity)) (by positivity)
+      _ = ((1 / (q.factorial : ℝ)) * ((P + r + 1 : ℕ) : ℝ) ^ q) *
+            ((j : ℝ) ^ (P + r + q) * |((d : ℝ)⁻¹)| ^ r) := by ring
+      _ ≤ ((1 / (q.factorial : ℝ)) * ((P + r + 1 : ℕ) : ℝ) ^ q) *
+            (j : ℝ) ^ (2 * P) :=
+              mul_le_mul_of_nonneg_left hweight (by positivity)
+  calc
+    ∑ r ∈ Finset.range (P * (P - 1) + 1),
+      (∑ q ∈ Finset.range P,
+        (1 / (q.factorial : ℝ)) *
+          |((cumulantLogPoly (P - 1) j) ^ q).coeff (P + r)|) *
+        |((d : ℝ)⁻¹)| ^ r
+        = ∑ r ∈ Finset.range (P * (P - 1) + 1),
+            ∑ q ∈ Finset.range P,
+              ((1 / (q.factorial : ℝ)) *
+                |((cumulantLogPoly (P - 1) j) ^ q).coeff (P + r)|) *
+                |((d : ℝ)⁻¹)| ^ r := by
+              apply Finset.sum_congr rfl
+              intro r _
+              rw [Finset.sum_mul]
+    _ ≤ ∑ r ∈ Finset.range (P * (P - 1) + 1),
+            ∑ q ∈ Finset.range P,
+              ((1 / (q.factorial : ℝ)) * ((P + r + 1 : ℕ) : ℝ) ^ q) *
+                (j : ℝ) ^ (2 * P) := by
+              apply Finset.sum_le_sum
+              intro r hr
+              apply Finset.sum_le_sum
+              intro q hq
+              exact hterm r hr q hq
+    _ = (∑ r ∈ Finset.range (P * (P - 1) + 1),
+            ∑ q ∈ Finset.range P,
+              (1 / (q.factorial : ℝ)) * ((P + r + 1 : ℕ) : ℝ) ^ q) *
+          (j : ℝ) ^ (2 * P) := by
+              rw [Finset.sum_mul]
+              apply Finset.sum_congr rfl
+              intro r _
+              rw [Finset.sum_mul]
+
+/-- The cumulant-power tail provider implies the older multiplier-coefficient
+tail provider. -/
+theorem multiplierJetTailEvalBound_of_cumulant_power_tail_bound {K : ℝ} (P : ℕ) {j d : ℕ}
+    (hPower : cumulantPowerTailCoeffBound K P j d) :
+    multiplierJetTailEvalBound K P (P - 1) j d := by
+  refine multiplierJetTailEvalBound_of_coeff_sum_bound (K := K) P ?_
+  calc
+    ∑ r ∈ Finset.range (P * (P - 1) + 1),
+        |multiplierCoeff P (P - 1) j (P + r)| * |((d : ℝ)⁻¹)| ^ r
+        ≤ ∑ r ∈ Finset.range (P * (P - 1) + 1),
+            (∑ q ∈ Finset.range P,
+              (1 / (q.factorial : ℝ)) *
+                |((cumulantLogPoly (P - 1) j) ^ q).coeff (P + r)|) *
+              |((d : ℝ)⁻¹)| ^ r := by
+          apply Finset.sum_le_sum
+          intro r _
+          exact mul_le_mul_of_nonneg_right
+            (abs_multiplierCoeff_le_cumulant_power_coeff_sum P (P - 1) j (P + r))
+            (by positivity)
+    _ ≤ K * (j : ℝ) ^ (2 * P) := hPower
+
+/-- Explicit paper-range multiplier-jet tail bound, with no external
+high-coefficient provider. -/
+theorem multiplierJetTailEvalBound_explicit (P : ℕ) {j d : ℕ}
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) :
+    multiplierJetTailEvalBound (cumulantPowerTailConstant P) P (P - 1) j d :=
+  multiplierJetTailEvalBound_of_cumulant_power_tail_bound P
+    (cumulantPowerTailCoeffBound_explicit P hd hj hjd)
 
 /-- If the explicit high-coefficient sum is bounded without the `d` weights, it
 supplies the tail provider for every positive `d`.

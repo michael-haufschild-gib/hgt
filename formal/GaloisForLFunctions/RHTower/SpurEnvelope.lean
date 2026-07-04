@@ -268,6 +268,33 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_sum_bound_cube_sq
   exact phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_order K P
     hd hj hjd hP (multiplierJetTailEvalBound_of_coeff_sum_bound (K := K) P hCoeff)
 
+/-- Paper-range low-sum R1 from the sharper cumulant-power high-tail provider. -/
+theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_cumulant_power_tail_bound_cube_square_order
+    (K : ℝ) (P : ℕ) {j d : ℕ}
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P)
+    (hPower : cumulantPowerTailCoeffBound K P j d) :
+    |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
+        ∑ p ∈ Finset.range P, multiplierCoeff P (P - 1) j p * ((d : ℝ)⁻¹) ^ p| ≤
+      (2 + ((P - 1 : ℕ) : ℝ) ^ P / (P.factorial : ℝ) + K) *
+        ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
+  exact phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_order K P
+    hd hj hjd hP
+      (multiplierJetTailEvalBound_of_cumulant_power_tail_bound (K := K) P hPower)
+
+/-- Paper-range low-sum R1 with the high-tail provider discharged by an explicit
+finite constant depending only on `P`. -/
+theorem phi_product_multiplierCoeff_low_sum_abs_bound_explicit_cube_square_order
+    (P : ℕ) {j d : ℕ}
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P) :
+    |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
+        ∑ p ∈ Finset.range P, multiplierCoeff P (P - 1) j p * ((d : ℝ)⁻¹) ^ p| ≤
+      (2 + ((P - 1 : ℕ) : ℝ) ^ P / (P.factorial : ℝ) +
+          cumulantPowerTailConstant P) *
+        ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
+  exact phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_order
+    (cumulantPowerTailConstant P) P hd hj hjd hP
+    (multiplierJetTailEvalBound_explicit P hd hj hjd)
+
 /-- Paper-range low-sum R1 from an unweighted high-coefficient tail bound. -/
 theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_abs_sum_bound_cube_square_order
     (K : ℝ) (P : ℕ) {j d : ℕ}
