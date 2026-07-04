@@ -98,3 +98,56 @@ right and left slivers (σ = ½ ± u/log N, u ∈ (0.1, 2)).
 - **FALSIFIER:** a right m = 1 fail rate rising ∝ log log N or faster kills
   the triple-log law and demotes doc 63 §3 to heuristic; a left rate that
   stays flat kills the pass-count mechanism itself.
+
+## 7. Census adjudication: THE FALSIFIER FIRED — and handed back two better laws
+
+Run (triplelog_census.py, archived; 1200 samples/side/N, N up to 4·10⁴):
+
+| N | log log N | R m1 /1200 | R m2 /1200 | L m1 rate | m2/m1 ratio |
+|---|---|---|---|---|---|
+| 40 | 1.31 | 1 | 0 | 0.143 | — |
+| 400 | 1.79 | 10 | 3 | 0.238 | 0.30 |
+| 4000 | 2.12 | 39 | 14 | 0.318 | 0.36 |
+| 40000 | 2.36 | 73 | 25 | 0.368 | 0.34 |
+
+- **P-TL1 FAIL — the falsifier fired.** The right m = 1 rate rises ×73 across
+  the range — far faster than triple-log. Doc 63 §3's pass-count law is
+  DEMOTED to a small-L heuristic; the near-pass/capacitance count is not the
+  operative asymptotic mechanism at full weight support.
+- **P-TL2 PASS, decisively:** left rates fit a₀ + a₁·log log N with
+  interior residuals < 0.01 (slope 0.21) — the log-time-linear shadow law
+  confirmed on the side where it was predicted.
+- **P-TL3 FAIL as registered** (3, 14, 25 events), BUT the m-dial law is
+  CONFIRMED in corrected form: **the m2/m1 ratio is constant ≈ 1/3** at every
+  N — each Cesàro level buys a fixed factor q₀ ≈ 0.34, exactly the
+  multiplicative dial doc 63 §3 claimed, without the absolute-level claim.
+- **The corrected right-side law [measured, mechanism identified]:**
+  ln δ₁ is LINEAR in 1/log log N (consecutive slope estimates −11.3, −16.1,
+  −12.5) — the Gaussian-tail signature of ANGLE DIFFUSION: the trajectory's
+  direction diffuses ~O(1) per e-fold of log-time (fitted diffusivity
+  D ≈ 0.19/e-fold), and spread ≥ π is the Gaussian range-tail
+  P ≈ exp(−π²/(4D·log log N)). Consequence: δ₁ → O(1) as N → ∞ — the GLOBAL
+  hull obstruction over full weight support [1, N] degrades asymptotically,
+  because the trajectory is given unboundedly many e-folds to spread.
+
+**The design fix the mechanism forces (and doc 61 §4 already wanted).** The
+hull condition involves ONLY k ∈ supp(ΔA). A plateau-then-taper carrier
+(A ≡ A₀ on [1, N′], monotone taper on [N′, N] with log(N/N′) = O(1)) puts the
+whole mixture on {S_{N′}} ∪ (a BOUNDED log-length arc): the spread of a
+bounded arc is N-UNIFORM, and the m-dial's measured 1/3-per-level applies on
+top. This is the same object the tower-compatibility cut demanded
+(block-static weights, doc 61 §4) and the same shape as the classical
+smoothed-AFE edge — three independent pressures now select one design.
+
+> **(HULL-taper) [registered for the next probe, prior 0.7]:** plateau+taper
+> carriers with log(N/N′) ≤ 1 have N-UNIFORM right-side hull-fail rates
+> (no rise from N = 400 to 4·10⁴), at a level ≤ the α = 2 full-support rate
+> at N = 400, with the m-dial ratio ≈ 1/3 preserved.
+
+Register note: everything machine-checked this cycle (`CesaroHull.lean`:
+`abel_pos_mixture`, `pos_mixture_ne_zero`, `carrier_ne_zero_of_psum_halfplane`,
+`carrier_ne_zero_of_cesaro_halfplane`, `cesaroPsum_step/speed` — umbrella 8627
+jobs, lint green, axiom-clean) is support-agnostic: the Lean layer consumes
+whatever support the design chooses. Only the analytic pass-count/spread
+input moves; the corrected target is the bounded-arc confinement bound —
+strictly easier than the global statement the census just killed.

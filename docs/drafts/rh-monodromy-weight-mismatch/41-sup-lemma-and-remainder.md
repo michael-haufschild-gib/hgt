@@ -138,3 +138,28 @@ per-index delegation.
    interval bounds. LedgerConvex's shells consume the result directly.
 4. The extremal c* ≈ 2.53 of the class: test whether the response and swap
    ledgers share the same extremal profile (one cheap probe).
+
+## 6. Lean bricks banked (task #147, 2026-07-04)
+
+`formal/GaloisForLFunctions/RHTower/LedgerReversalConstants.lean` (axiom-clean
+`[propext, Classical.choice, Quot.sound]`, lint green, in the RHTower umbrella):
+
+- `four_thirds_sub_log_three_lt_quarter` : `4/3 − log 3 < 1/4` — the (B⁗-a) base point
+  `R(1/2,2,0) = 4/3 − log 3 < 1/4`. Proof: `2^11 < 3^7` (2048 < 2187) through `log`
+  monotonicity + `Real.log_two_gt_d9` gives `log 3 > 13/12`; `norm_num`/`nlinarith`.
+- `posTwo_algebraic_criterion` : `cosh²m + 1 ≤ cosh m·(1+cosh m)` — the algebraic heart of
+  Lemma P at `c = 2` (`(POS₂) ⟺ cosh m ≥ 1`, `Real.one_le_cosh`), making the `⁺`-clip
+  vacuous at the base point so the `LedgerConvex` reversal shells apply.
+
+STILL OPEN on the Lean side (not banked here, flagged honestly): (a) the `(POS₂) → (POS_c)`
+lift for all `c ≥ 2` needs `sinh x < x·cosh x` (the `y/sinh(cy)` monotonicity) — a
+multi-derivative analysis lemma left to the #143 stack to avoid collision; (b) the full
+Sup Lemma `sup_{c≥2} R(1/2,c,0) < 1/4` is certified-numerics (1601-pt grid + proven
+Lipschitz + proven tail) — interval-arithmetic Lean replication still queued (doc 41 §4).
+
+Paper-side residual unchanged: `C_ψ` remains at named grade (route = common/asymmetric
+split, magnitude ≤ 6). The asymmetric-shift integrability turns on the ξ²-cancellation of
+the pair difference against the O(ξ) shift asymmetry; a fully-certified one-page bound is
+deferred rather than asserted (the naive single-side estimate is 1/ξ²-divergent — the
+cancellation must be tracked explicitly, so this is not the mechanical write-out the §5(2)
+note assumed).

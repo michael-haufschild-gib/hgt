@@ -204,4 +204,31 @@ theorem cesaroPsum_speed (g : ℕ → ℂ) (k : ℕ) (hk : 1 ≤ k) :
   push_cast
   ring
 
+/-- **The plateau split (doc 65 §1).** For a plateau+taper carrier (constant
+weight `A0` below `M`), a zero of the carrier forces the plateau partial sum
+down to the taper term's size: `‖S_M‖ = ‖T‖/A0`. The counting consumer pairs
+this with a Chebyshev bound on the taper term `T` (pure MV) and one fixed-scale
+anti-concentration input for `S_M` — Route C's minimal split. -/
+theorem plateau_split {A : ℕ → ℝ} {g : ℕ → ℂ} {n M : ℕ} {A0 : ℝ}
+    (hM : M ≤ n) (hplat : ∀ i < M, A i = A0) (hA0 : 0 < A0)
+    (h0 : ∑ i ∈ range n, (A i : ℂ) * g i = 0) :
+    ‖psum g M‖ = ‖∑ i ∈ Finset.Ico M n, (A i : ℂ) * g i‖ / A0 := by
+  have hsplit : (A0 : ℂ) * psum g M + ∑ i ∈ Finset.Ico M n, (A i : ℂ) * g i
+      = ∑ i ∈ range n, (A i : ℂ) * g i := by
+    rw [← Finset.sum_range_add_sum_Ico (fun i => (A i : ℂ) * g i) hM]
+    congr 1
+    unfold psum
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [hplat i (Finset.mem_range.mp hi)]
+  have hneg : (A0 : ℂ) * psum g M = -∑ i ∈ Finset.Ico M n, (A i : ℂ) * g i := by
+    have := hsplit.trans h0
+    linear_combination this
+  have hnorm : A0 * ‖psum g M‖ = ‖∑ i ∈ Finset.Ico M n, (A i : ℂ) * g i‖ := by
+    rw [← norm_neg (∑ i ∈ Finset.Ico M n, (A i : ℂ) * g i), ← hneg, norm_mul,
+      Complex.norm_real, Real.norm_of_nonneg hA0.le]
+  field_simp [hA0.ne']
+  linarith [hnorm]
+
 end RHTower

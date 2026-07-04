@@ -354,4 +354,64 @@ theorem vertical_sum_log_comparison {σ t : ℝ} (hσ : 0 ≤ σ) (ht : 0 < t)
         Finset.sum_le_sum fun n _ => herr n
     _ ≤ 1 / t ^ 2 + Real.pi / (2 * t) := sum_inv_sq_add_le hσ ht N
 
+/-- **(T1) The vertical-line anchor identity.** Combining the digamma recursion
+`digamma_apply_add_nat`, the summand `re_inv_shift`, and the log comparison
+`vertical_sum_log_comparison`: for every `N` the real part of digamma on the vertical
+line equals `½·log(σ²+t²)` up to a `far-field anchor` term
+`Re digamma(σ+N+it) − ½·log((σ+N)²+t²)`, with the difference controlled by the same
+`1/t² + π/(2t)` error. The two `½·log((σ+N)²+t²)` terms cancel between the recursion and
+the comparison — the anchor is all that survives, and it vanishes as `N → ∞`
+(the digamma asymptotic, the one input off the `dip_kills` critical path, doc 54 §6). -/
+theorem re_digamma_vertical_anchor {σ t : ℝ} (hσ : 0 ≤ σ) (ht : 0 < t) (N : ℕ) :
+    |(Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re
+        - (1 / 2) * Real.log (σ ^ 2 + t ^ 2)
+      - ((Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I + N)).re
+          - (1 / 2) * Real.log ((σ + N) ^ 2 + t ^ 2))|
+      ≤ 1 / t ^ 2 + Real.pi / (2 * t) := by
+  have hz : ∀ m : ℕ, (σ : ℂ) + (t : ℂ) * Complex.I ≠ -(m : ℂ) := by
+    intro m hc
+    have him := congrArg Complex.im hc
+    simp at him
+    linarith
+  have hrec := digamma_apply_add_nat ((σ : ℂ) + (t : ℂ) * Complex.I) hz N
+  have hre : (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I + N)).re
+      = (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re
+        + ∑ n ∈ Finset.range N, (σ + (n : ℝ)) / ((σ + (n : ℝ)) ^ 2 + t ^ 2) := by
+    rw [hrec, Complex.add_re, Complex.re_sum]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro n _
+    exact re_inv_shift σ t n
+  have hcomp := vertical_sum_log_comparison hσ ht N
+  rw [hre]
+  have halg : (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re
+        - (1 / 2) * Real.log (σ ^ 2 + t ^ 2)
+      - ((Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re
+          + ∑ n ∈ Finset.range N, (σ + (n : ℝ)) / ((σ + (n : ℝ)) ^ 2 + t ^ 2)
+          - (1 / 2) * Real.log ((σ + N) ^ 2 + t ^ 2))
+      = -((∑ n ∈ Finset.range N, (σ + (n : ℝ)) / ((σ + (n : ℝ)) ^ 2 + t ^ 2))
+          - ((1 / 2) * Real.log ((σ + (N : ℝ)) ^ 2 + t ^ 2)
+             - (1 / 2) * Real.log (σ ^ 2 + t ^ 2))) := by ring
+  rw [halg, abs_neg]
+  exact hcomp
+
+/-- **(T1) The vertical-line bound.** With the far-field anchor supplied as the explicit
+asymptotic hypothesis `hanchor` (`Re digamma(σ+N+it) − ½·log((σ+N)²+t²) → 0`, the
+integral-representation-grade digamma input named in doc 53), the anchor identity's
+`N → ∞` limit gives the clean two-sided bound
+`|Re digamma(σ+it) − ½·log(σ²+t²)| ≤ 1/t² + π/(2t)`. -/
+theorem re_digamma_vertical_bound {σ t : ℝ} (hσ : 0 ≤ σ) (ht : 0 < t)
+    (hanchor : Filter.Tendsto
+      (fun N : ℕ => (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I + N)).re
+          - (1 / 2) * Real.log ((σ + N) ^ 2 + t ^ 2)) Filter.atTop (nhds 0)) :
+    |(Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re
+        - (1 / 2) * Real.log (σ ^ 2 + t ^ 2)|
+      ≤ 1 / t ^ 2 + Real.pi / (2 * t) := by
+  have key := Filter.Tendsto.sub
+    (tendsto_const_nhds (x := (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re
+      - (1 / 2) * Real.log (σ ^ 2 + t ^ 2)) (f := Filter.atTop (α := ℕ))) hanchor
+  rw [sub_zero] at key
+  refine le_of_tendsto key.abs (Filter.Eventually.of_forall (fun N => ?_))
+  exact re_digamma_vertical_anchor hσ ht N
+
 end RHTower

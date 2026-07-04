@@ -1889,3 +1889,50 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
 - Route C status: model-grade K explicit; remaining to theorem-grade =
   §5 transfer lemma (second-moment technology) + Lean of the discrete EMA
   recursion + doc 62 §1 hull exclusion (both Finset-algebra grade).
+
+## Cycle 30 (2026-07-04) — transfer write-out, Lean CesaroHull banked, census: falsifier FIRED productively
+- Doc 64 BANKED: the transfer lemma write-out — MV supply exact for the Fejér/
+  triangular Cesàro field (covariance, OU deviation, 4th moments off top
+  block); occupation-to-pass conversion; residual input typed (TRI-bdd);
+  theorem-shape K₁ ≤ C(loglogN)^{3/2} conditional (moments-only price √loglog
+  over model).
+- CesaroHull.lean BANKED (umbrella 8627 jobs, lint green, axiom-clean):
+  abel_pos_mixture (doc 62 §1 exact), pos_mixture_ne_zero (hull exclusion),
+  carrier_ne_zero_of_psum_halfplane (m=0), carrier_ne_zero_of_cesaro_halfplane
+  (m=1 — the (CES-1) consumer), cesaroPsum_step/speed (exact discrete EMA).
+  Route C machine-checked from the obstruction down to midCentral's creation
+  bound; sole analytic input = the confinement/pass bound.
+- P-TL census RUN (N ≤ 4·10⁴, 1200/side): P-TL1 FALSIFIER FIRED — right m1
+  rate rises ×73, triple-log law DEMOTED (small-L heuristic). P-TL2 PASS
+  (left linear in loglogN, slope 0.21, residuals <0.01). P-TL3 corrected:
+  m-dial ratio CONSTANT ≈ 1/3 per level (0.30/0.36/0.34). Corrected law:
+  ln δ₁ linear in 1/loglogN (slopes ≈ −13) = ANGLE-DIFFUSION Gaussian tail
+  (D ≈ 0.19/e-fold); global-support hull obstruction degrades as N→∞.
+- Design fix forced + registered (HULL-taper, prior 0.7): plateau+taper
+  carriers (ΔA support = bounded log-arc) ⟹ N-uniform confinement; same
+  object as doc 61 §4's block-static tower AND the smoothed-AFE edge — three
+  pressures select one design. Corrected analytic target: bounded-arc
+  confinement (strictly easier than the killed global form).
+
+## Cycle 31 (2026-07-04) — plateau split + Selberg endgame: Route C's K on one free z-score
+- plateau_split BANKED (CesaroHull.lean, axiom-clean, lint green): zero of a
+  plateau+taper carrier ⟹ ‖S_{N′}‖ = ‖T‖/A₀ — the counting route needs no
+  hull at all; composes with MollifiedDip's sliverCount_le_of_kernel.
+- (HULL-taper) probe RUN + ADJUDICATED (1500/side/N ≤ 4e4, archived): m0
+  clause FAILS mildly (2.9→4.9% — bounded arc helps ×3 vs full support but
+  raw hull not N-uniform); arc-Cesàro m1 PASSES N-uniform (0.27/0.73/0.40%,
+  no trend); arc m-dial ≈ 1/8. THE FINDING (exploratory anchor measurement):
+  P(|S_{N′}| ≤ 1) ≈ 0.47 FLAT across logN′ = 5→9.6 — the matched-length sharp
+  sum is SELBERG-LOGNORMAL (median-1; AFE made distributional). Gaussian-scale
+  decay expectation refuted; m0-rise mechanism explained (constant anchor
+  mass at O(1)).
+- Doc 65 BANKED: the split + Chebyshev(MV) counting chain; the Selberg
+  endgame: λ₀ = e^{−z₀√(½loglogT)}, ℓ = Φ(−z₀)λ₀² ⟹ K ≤ 2Φ(−z₀)·conv·UlogN
+  with z₀ FREE — Tier-1-grade smallness, uniform in N, conditional on ONE
+  input (SEL-PS): fixed-z-score Selberg-CLT left tail for the matched-length
+  sharp sum (ζ-instance = Selberg 1946 unconditional; truth at matched length
+  measured flat). The weakest anti-concentration any route has needed.
+- Openings: mine Selberg/Steinhaus-CLT literature for the partial-sum CLT
+  (method research); back-solve z₀ from the deck margin (bridge demand meets
+  route supply in one number); the lognormal two-tails card (self-domination
+  = right tail, creation = left tail of the SAME law).
