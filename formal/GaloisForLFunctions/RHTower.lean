@@ -58,7 +58,11 @@ import GaloisForLFunctions.RHTower.SpurWeights
 import GaloisForLFunctions.RHTower.SpurCounting
 import GaloisForLFunctions.RHTower.SpurTransitions
 import GaloisForLFunctions.RHTower.SpurThreshold
+import GaloisForLFunctions.RHTower.SpurMonotone
+import GaloisForLFunctions.RHTower.SpurCapstone
+import GaloisForLFunctions.RHTower.SpurSMono
 import GaloisForLFunctions.RHTower.DictionaryBase
 import GaloisForLFunctions.RHTower.DictionarySign
 import GaloisForLFunctions.RHTower.LedgerIdentity
 import GaloisForLFunctions.RHTower.LedgerConvex
+import GaloisForLFunctions.RHTower.SpurRegime

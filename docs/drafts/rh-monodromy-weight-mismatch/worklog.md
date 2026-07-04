@@ -1383,3 +1383,40 @@ character 54 < random multiplicative 91 < structureless 138–151. Run 7 appende
 computations/DISC-RESULTS.md (raw: es146*.out archived). #130's arithmetic clause
 re-cut: the bridge must consume the AFE/weld identity, not coefficientwise Euler
 structure. #146 CLOSED.
+
+## 2026-07-04 (cycle 6, push) — E-band closed as architecture: doc 42
+Audit catch #3 of the arc: S′ regime 2 (M ≥ 56/δ) VACUOUS on one-sided windows
+for c ≤ 56 (needs c > 56; doc 37's renumbering silently emptied doc 36's
+satisfiable 86/√δ band) — the endpoint band had NO theorem coverage at actual
+carriers. Fix: Lemma E″ [PROVED, (F8) added: lower drop regularity c₈ ≥ 1/(2c)]:
+retain the k = 1 behind drift in Lemma E′'s all-positive ledger:
+swap ≥ c₈/(4δ) − 16/(M²δ²) ≥ 0 for M ≥ 8/√(c₈δ). P-R14 certified on c = 2
+fields (d up to 2000): bound holds everywhere; TRUE swap ≈ 3.3/δ, positive even
+at M = 59/99 (full-drift sharpening κ ≈ 3, band ~2.3/√δ, available). THEOREM S″:
+single band M ≥ 8/√(c₈δ) replaces the three-regime map — swap and response
+decoupled, no balance anywhere; covers all outer indices except the last
+~8√(2i) ≈ O(√d). Residual tip = ONE shrinking cluster (m = M poles, span → 0) =
+doc 34 Lemma R at m ~ √d; (L3) = its m = O(1) case. #145 CLOSED-as-merged into
+#139. Chain now: B⁗ + S″ + #139(m~√d) + (F)-checks ⟹ (AMP-mono) ⟹ #138/#142 ⟹
+(SPUR-R) on banked bricks. The exposed wall: (DISC-fin)-unconditional — even
+off-line parity of the exact-FE truncation on dominated windows, from the
+AFE/weld identity itself (#146 gradient = mechanism; doc 38 minors = instrument).
+
+## 2026-07-04 (cycle 7, attack) — (DISC-fin)-unconditional opened: doc 43
+The recast: ζ removed from the bridge's arithmetic input via the UNCONDITIONAL
+classical AFE bound E(T) = O(T^{−1/4}) (Hardy–Littlewood symmetric form) —
+"self-dominated" windows (min |g_N| > E(T) on ∂W + segment) are a property of
+the finite object; target = (SD-parity): self-dominated ⟹ even off-line parity.
+The cut: odd pair = TWO zeros straddling the line at ±η, forcing the line dip
+|Z_g(t₀)| = η²|H| — (MOAT-shallow): η ≤ η₀ ~ T^{−1/8} pairs self-exclude
+(segment fails self-domination; max-principle H-bound checked — no obstacle;
+write-out queued). Deep pairs η ≥ 1/4 dig automatic wide moats (Bernstein slope:
+valley width ≳ η). Open residue = mid-depth band η ∈ (η₀, 1/4): N^{−η}-atypical
+valleys of the coherent sum — large-deviation regime (doc 12 salvage applies;
+#146 coherence gradient is the measured mechanism). RS-tower sharpening: carrier
+upgrades g^(k) with parity coherent along the tower (consecutive-level
+transport, no ζ); one level with cofinal self-dominated windows suffices.
+Run-5 q-trend puzzle resolved (failure lives on the segment). Measurement
+launched (oddwindow_phase.py, P-D1 p-locus prior 0.5 / P-D2 depth prior 0.7):
+odd-event RS-phase statistics on [1030,5000). Routes for the mid-band: p-locus
+traversal / large-deviation exclusion / RS-tower balance.

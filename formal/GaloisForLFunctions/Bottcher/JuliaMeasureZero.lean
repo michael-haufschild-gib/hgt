@@ -1060,6 +1060,32 @@ theorem volume_filledJulia_eq_zero_of_filledJulia_block_dist_bounds
   have hinv : (2 * ‖w - c‖)⁻¹ ≤ (2 * rstep j)⁻¹ := inv_anti₀ h2pos h2le
   exact ENNReal.ofReal_le_ofReal hinv
 
+/-- Disconnected-facing block-distance gate. The remaining dynamical input for the full theorem is
+exactly a finite block of strict `K_c`-distance lower bounds whose one-step kernel product is a
+contraction. -/
+theorem volume_filledJulia_eq_zero_of_disconnected_of_filledJulia_block_dist_bounds
+    {c : ℂ} (_hc : Disconnected c) {M : ℕ} (rstep : ℕ → ℝ) {q : ℝ≥0∞}
+    (hM : 0 < M) (hq : q < 1)
+    (hprod :
+      (∏ j ∈ Finset.range M, ENNReal.ofReal ((2 * rstep j)⁻¹)) ≤ q)
+    (hrpos : ∀ j : ℕ, j < M → 0 < rstep j)
+    (hdist : ∀ j : ℕ, j < M → ∀ w ∈ filledJulia c, rstep j < ‖w - c‖) :
+    volume (filledJulia c) = 0 :=
+  volume_filledJulia_eq_zero_of_filledJulia_block_dist_bounds
+    (c := c) (M := M) rstep hM hq hprod hrpos hdist
+
+/-- Disconnected parameters always give a positive `K_c`-separation scale from the critical value.
+The missing final step is not positivity, but producing a finite block whose kernel product is
+strictly below one. -/
+theorem exists_filledJulia_criticalValue_dist_bounds_pos_of_disconnected {c : ℂ}
+    (hc : Disconnected c) :
+    ∃ r : ℝ, 0 < r ∧ ∀ w ∈ filledJulia c, r < ‖w - c‖ := by
+  obtain ⟨ρ, hρ, hρle⟩ := exists_dist_filledJulia_criticalValue_pos_of_disconnected hc
+  refine ⟨ρ / 2, by linarith, ?_⟩
+  intro w hw
+  have := hρle w hw
+  linarith
+
 /-- Kernel-bound nullity using the proved quadratic preimage area formula. -/
 theorem volume_filledJulia_eq_zero_of_forall_dist_area {c : ℂ} {q : ℝ≥0∞}
     (hq : q < 1)

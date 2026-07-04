@@ -1,0 +1,143 @@
+# 43 — (DISC-fin)-Unconditional: Self-Domination, and the Shallow/Deep Cut of the Wall
+
+**Register: SEARCH** (task #130's arithmetic core, opened for direct attack).
+Companion measurement: `computations/mwm/oddwindow_phase.py` (P-D1/P-D2,
+pre-registered, running). Everything here is labelled; the two lemma-shaped
+claims are marked for write-out.
+
+## 1. The recast: remove ζ from the statement
+
+The only ζ-reference in the bridge's arithmetic input is domination
+|ζ − g_N| < |g_N|. But |ζ − g_N| has the CLASSICAL UNCONDITIONAL bound: for the
+symmetric sharp-cutoff AFE (x = y = √(t/2π), Hardy–Littlewood; Titchmarsh
+ch. IV), |ζ(s) − g_N(s)| ≤ E(T) with E(T) = O(T^{−1/4}) effective, uniformly on
+the window strip. Define a window **self-dominated** iff
+
+> min over ∂W AND the central line segment of |g_N| > E(T)
+
+— a property of the finite object plus one classical bound. Self-domination ⟹
+domination ⟹ (banked transport: Rouché on ∂W for D-equality + segment sign-
+matching for L-equality) N_ζ(W) = N_{g_N}(W). The unconditional target is
+therefore exactly:
+
+> **(SD-parity):** every self-dominated admissible window of the exact-FE
+> truncation has even off-line parity.
+
+No ζ anywhere. (SD-parity) + cofinality of self-dominated windows (#144's
+traversal, now with E(T) in place of measured q) ⟹ (WR_1) ⟹ RH_2; iterated
+through doc 38's minor chain ⟹ the full ladder. Contrapositive form — the shape
+to attack: **an odd pair forces an E(T)-moat: some point of every admissible
+∂W-or-segment around it has |g_N| ≤ E(T).**
+
+## 2. The cut: shallow pairs dig their own moat; deep pairs are large deviations
+
+An odd configuration in the right half-window is a zero ρ = 1/2 + η + it₀
+together with its FE partner 1 − ρ̄ = 1/2 − η + it₀ — two zeros at the SAME
+height, straddling the line at distance η each side.
+
+**(MOAT-shallow) [lemma-shape, elementary — write-out queued].** Factor the
+completed carrier: Φ(s) = (s−ρ)(s−(1−ρ̄))H(s). On the line at t₀:
+|Z_g(t₀)| = η²·|H(1/2+it₀)|. So whenever
+
+> η² ≤ E(T)/|H| (threshold η₀(T) ≍ √(E/‖H‖) ~ T^{−1/8}·log-corrections),
+
+the central segment point t₀ itself has |g| ≤ E(T): the window is NOT
+self-dominated — the pair's own geometry digs the moat. Proof needs only the
+two-zero factorization plus an upper bound for H on a disc (Cauchy + Stirling +
+trivial bounds on the finite sum; per-window explicit). **Shallow odd pairs
+self-exclude from (SD-parity).** This also resolves run 5's q-trend puzzle
+(q = 4.72 → 1.17 as r grows, apparently heading under 1): the forced failure
+lives on the SEGMENT, which every admissible window contains regardless of r.
+
+**Deep pairs (η > η₀) are exponentially atypical events of the finite sum.**
+g_N(ρ) = 0 ⟺ A(ρ) = −χ(ρ)A(1−ρ), and |χ(1/2+η+it)| = (t/2π)^{−η} = N^{−2η}. So
+a depth-η zero forces |A(1/2+η+it₀)| = N^{−2η}|A(1/2−η−it₀)| — the polynomial
+must sit a factor ~N^{−η} BELOW its rms at the upper point (or symmetrically
+above at the lower): a valley of depth e^{−η log N} in a Dirichlet polynomial of
+length N. By the Bernstein-type slope bound |d log A/dt| ≲ log N off zeros, such
+a valley has t-width ≳ η — deep pairs force WIDE structures, and for η ≥ 1/4 the
+valley floor itself sits below E(T) = N^{−1/2}-scale (an automatic wide moat).
+**The residual open band is η ∈ (η₀(T), ~1/4): mid-depth pairs.** This is where
+the arithmetic must act, and it is a LARGE-DEVIATION statement about the
+coherent finite sum — the regime where #146 measured the coherence suppression
+(4–5 events per 830 height units for a_n = 1, vs 91–151 for incoherent
+streams), and where doc 12's large-deviation rate-separation machinery (banked
+salvage: L1a concentration, tilted small-ball) applies to a FINITE object.
+
+## 3. The RS tower: the moat threshold is a dial, not a constant
+
+The carrier upgrades: g^(k) := g_N + (first k Riemann–Siegel correction terms)
+— still finite, explicit, exact-FE (RS terms respect the functional equation),
+with |ζ − g^(k)| ≤ E_k(T) = O(T^{−(2k+3)/4}) and exp-small at resurgent-optimal
+truncation. Two consequences:
+
+1. **Parity is coherent along the tower**: consecutive carriers differ by less
+   than E_k + E_{k+1}, so windows self-dominated at one level transport their
+   parity to the next by the same Rouché+segment logic — no ζ needed. It
+   suffices to prove (SD-parity) at ANY ONE level with cofinal self-dominated
+   windows.
+2. **η₀(k) grows with k**: at level k the shallow-moat threshold is
+   η₀ ~ T^{−(2k+3)/8}→ (log T/T-grade at optimal truncation)^{1/2}·… — the
+   shallow regime EXPANDS and the open mid-depth band (η₀(k), 1/4) shrinks from
+   below as k grows... [correction: E_k smaller ⟹ η₀ = √(E_k/|H|) SHRINKS — the
+   shallow band contracts, but the deep-valley requirement at level k is
+   unchanged (χ-modulus is the same), while self-domination becomes easier to
+   satisfy (smaller E_k) — the trade is: harder to self-exclude shallow pairs,
+   easier to certify windows. The optimal level balances the two; the balance
+   point is a computable function of the valley statistics.] The weld reading:
+   the RS asymptotic series vs the exact object is precisely the archimedean
+   seam of the hgt charter, and (SD-parity) interrogates it level by level.
+
+## 4. The measurable half [running]
+
+If odd events of g_N cluster at truncation transitions (RS phase
+p = frac √(T/2π) near integers — the "birth of a term" discontinuity), the
+exceptional heights are p-localized and the cofinal family dodges them; the
+mid-depth band then needs only a p-locus theorem. Pre-registered (P-D1, prior
+0.5): mean |p − nearest integer| ≤ 0.17 over ≥ 25 events. P-D2 (prior 0.7): all
+measured pair depths η < 0.35 (no deep pairs at accessible heights —
+consistency of the cut). Banked 9 events give mean ≈ 0.20 — inconclusive; the
+[1030, 5000) sweep is running.
+
+## 5. What closes (WR_1) from here — the honest ledger
+
+1. (MOAT-shallow) write-out — elementary, one page, per-window explicit. [next]
+2. Cofinality of self-dominated windows with the E(T) bound — an |g_N|-lower-
+   bound-off-zeros statement for the finite object; classical-technique shape.
+3. **The mid-depth band η ∈ (η₀, 1/4)** — the true residue of the wall. Routes,
+   in current order: (a) p-locus (if P-D1 passes: transition-birth mechanism +
+   traversal); (b) large-deviation exclusion — the valley of a coherent
+   (multiplicative, positive) stream of length N cannot reach depth N^{−2η}
+   within a self-dominated neighborhood (doc 12 salvage + #146 mechanism);
+   (c) the RS-tower balance of §3.
+4. Then (WR_1) = RH_2; doc 38's Hankel-minor ladder for k ≥ 2.
+
+The wall has not moved — but it now has a coordinate system: one elementary
+lemma, one classical-shape lemma, and ONE named band of exceptional events with
+three independent attack routes and a running measurement to pick among them.
+
+## 6. (MOAT-shallow), written out [PROVED HERE]
+
+**Lemma (MOAT-shallow).** Let Φ be the completed carrier (real on the line),
+with zeros ρ = 1/2 + η + it₀ and its FE partner ρ' = 1 − ρ̄ (0 < η < r), and
+let M_r := max_{|s−s₀|=r} |Φ|, s₀ = 1/2 + it₀. Then
+
+> |Φ(1/2 + it₀)| ≤ η²·M_r/(r − η)².
+
+*Proof.* H := Φ/((s−ρ)(s−ρ')) is analytic on the closed disc (removable
+singularities; other zeros of Φ are harmless). On the boundary |s−ρ| ≥ r − η
+and |s−ρ'| ≥ r − η, so |H| ≤ M_r/(r−η)² there, and by the maximum principle
+also at s₀. Since (s₀−ρ)(s₀−ρ') = −η², the claim follows. ∎
+
+**Corollary (self-exclusion of shallow pairs).** With E*(T) the completed-
+normalization AFE bound and η ≤ r/2: if
+
+> η ≤ η₀(T, r) := (r/2)·√(E*(T)/M_r),
+
+then |Φ(1/2+it₀)| ≤ E*(T): the central segment point t₀ already violates
+self-domination — no admissible window around the pair is self-dominated. ∎
+
+M_r is explicit per window (Stirling for the γ-factors, trivial bounds for the
+finite sums), and the domination ratio is normalization-free on the line, so
+the uncompleted and completed statements agree. The open mid-depth band of §2
+now has a sharp lower edge: η₀(T, r) with r at the local spacing scale.

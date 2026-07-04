@@ -203,6 +203,8 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/InverseBranchPeriodic.lean:501` | /-- Density form of the local inverse-function-theorem near-return splice.  The remaining dynamical |
 | `formal/GaloisForLFunctions/Bottcher/JuliaExpansion.lean:9` | (`Q62RadicalReduction.q62_disconnected_of_radical_data`: the lone remaining input is, per depth `k`, a |
 | `formal/GaloisForLFunctions/Bottcher/JuliaFrontierPerfect.lean:475` | /-- Slit-good local-frontier target selector.  The remaining geometric input is now exactly |
+| `formal/GaloisForLFunctions/Bottcher/JuliaMeasureZero.lean:1063` | /-- Disconnected-facing block-distance gate. The remaining dynamical input for the full theorem is |
+| `formal/GaloisForLFunctions/Bottcher/JuliaMeasureZero.lean:1078` | The missing final step is not positivity, but producing a finite block whose kernel product is |
 | `formal/GaloisForLFunctions/Bottcher/LiftPeriod.lean:11` | The remaining geometric input of the whole disconnected case is hereby isolated as a single clean |
 | `formal/GaloisForLFunctions/Bottcher/LiftPeriod.lean:48` | analytic core of the dyadic tower — realized for the genuine `φ_c`. The only remaining hypothesis is |
 | `formal/GaloisForLFunctions/Bottcher/LiftPeriod.lean:102` | derivatives. The remaining input of the disconnected case is thus exactly: *a differentiable lift of |
@@ -289,8 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:30` | /-- A sparse fibre equals its dense degree-`N` presentation with zero-filled missing coefficients. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:397` | `exists_sparse_fibre_separable_crossing`, while the remaining target-set geometry is supplied pointwise on |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:21` | the connected case down to the one remaining dynamical input. |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:128` | branch* and the *dendrite tip*, not the pre-digested simple-root boundary value. The remaining #24 content |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:289` | a distinct obstruction — the genuine remaining frontier). -/ |
 
 ## Historical Status Logs
 

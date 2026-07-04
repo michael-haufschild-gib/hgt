@@ -206,3 +206,53 @@ def closed_pass():
     ok = mpf('0.2330') < rev < mpf('0.2360')
     print(f"P-R7 discrete d=10000 s=0.001delta: rev = {float(rev):.6f}  "
           f"{'PASS' if ok else 'FAIL'}")
+
+
+# --- (B4-a) certified grid (pre-registered BEFORE this run) ---
+# Unified form (doc 41 SS2): R(1/2,c,0) = c*J1(c) - c*J2(c),
+#   J1 = int_0^{log2} 2 sinh(z/2)^2 csch(cz/2)^2 dz,
+#   J2 = int_{log2}^inf (1-e^-z) (1/2) csch(cz/2)^2 dz.
+# Positivity lemma (doc 41 SS1) makes the + clip vacuous for c >= 2, so this IS R.
+# Tail bound R(c) <= 8.16/c^2 for c >= 3  ==> < 1/4 for c >= 6.
+# Lipschitz on [2,6]: |R'(c)| <= L0 = 1.6 (doc 41 SS2 fold).
+# P-R11 (prior 0.9): unified = direct xi-integrand quad to 1e-10 at c in
+#   {2, 2.5, 4}; and unified(2) = 4/3 - log 3 to 1e-12 (partial-fraction check).
+# P-R10 (prior 0.85): grid c = 2(0.0025)6: max_c [R_hat(c) + L0*eps/2] < 1/4,
+#   i.e. max R_hat < 0.248.  PASS completes (B4-a): sup_{c>=2} R(1/2,c,0) < 1/4.
+def R_unified(c):
+    from mpmath import quad, sinh, csch, exp as mexp
+    c = mpf(c)
+    j1 = quad(lambda z: 2 * sinh(z / 2) ** 2 * csch(c * z / 2) ** 2,
+              [0, mpf('0.05'), mpf('0.35'), log(2)])
+    j2 = quad(lambda z: (1 - mexp(-z)) * csch(c * z / 2) ** 2 / 2,
+              [log(2), 3, 8, mp.inf])
+    return c * (j1 - j2)
+
+
+def grid_pass():
+    from mpmath import quad
+    mp.dps = 25
+    print("P-R11:")
+    for cc in ('2', '2.5', '4'):
+        c = mpf(cc)
+        direct = quad(lambda x: R_integrand(c, mpf(0), x),
+                      [mpf('1e-6'), mpf('0.01'), mpf('0.5'), 1])
+        uni = R_unified(c)
+        print(f"  c={cc}: unified = {float(uni):.12f}  "
+              f"|diff| = {float(abs(uni - direct)):.2e}")
+    v2 = R_unified(2)
+    cf = mpf(4) / 3 - log(3)
+    print(f"  c=2 vs 4/3-log3: |diff| = {float(abs(v2 - cf)):.2e}")
+    best, bc, n = mpf(0), None, 0
+    c = mpf(2)
+    step = mpf('0.0025')
+    while c <= 6 + step / 2:
+        v = R_unified(c)
+        if v > best:
+            best, bc = v, c
+        n += 1
+        c += step
+    guard = best + mpf('1.6') * step / 2
+    print(f"P-R10: {n} grid points on [2,6]; max R = {float(best):.9f} at "
+          f"c = {float(bc):.4f}; max + L0*eps/2 = {float(guard):.9f}  "
+          f"{'PASS' if guard < mpf('0.25') else 'FAIL'}")

@@ -30,3 +30,9 @@ unchanged: ΔG ≥ 2 − B ≥ 7/4 on the model class for all C₀ ≤ 1/2; rout
 honest. The 3/4 ratio itself is suspicious-clean — [CONJECTURE] it is exactly
 3/4 in the continuum limit (from 2·2/(16/3) = 3/4), making the deficit integral
 (1/4)·∫debit — check in the closed-form pass.
+
+**[Answered next session-cycle: doc 40.]** The closed-form pass verified the
+continuum limit exactly (R(1/2,2,0) = 4/3 − log 3 = 0.23472, matching the
+certified discrete limit) and REFUTED the exact-3/4 reading — the 3/4 was the
+uniform-F″-bound artifact; with exact kernels every pair is net-loss and the
+reversal is the full integral 8ξ²/(4−ξ²)² (c = 2). See doc 40 for Theorem B⁗.
