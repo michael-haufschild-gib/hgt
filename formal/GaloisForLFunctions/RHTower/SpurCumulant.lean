@@ -9,6 +9,7 @@ This file packages the algebraic side of doc 34 Lemma R/R1: the logarithmic cumu
 truncation as a polynomial in `T = 1/d`, the formal truncation of `exp (-x)`, and the
 composite multiplier polynomial whose coefficients are the finite-order `e_p(j)`.
 -/
+import GaloisForLFunctions.RHTower.PolynomialTruncation
 import GaloisForLFunctions.RHTower.SpurRescale
 
 namespace RHTower
@@ -39,6 +40,14 @@ def multiplierTruncPoly (P n j : ℕ) : ℝ[X] :=
 coefficients from doc 34 R1, after choosing truncation orders `P` and `n`. -/
 def multiplierCoeff (P n j p : ℕ) : ℝ :=
   (multiplierTruncPoly P n j).coeff p
+
+/-- The low-degree jet of the finite multiplier polynomial, retaining terms `< P`.
+
+Doc 34's `Σ_{p<P} e_p(j)/d^p` is the evaluation of this polynomial at `T = 1/d`.
+The discarded tail is exactly divisible by `T^P`; see
+`X_pow_dvd_multiplierTruncPoly_sub_jet`. -/
+def multiplierJetPoly (P n j : ℕ) : ℝ[X] :=
+  PolynomialTruncation.lowTrunc (multiplierTruncPoly P n j) P
 
 /-- Evaluate the positive logarithmic cumulant polynomial. -/
 theorem eval_cumulantLogPoly (n j : ℕ) (t : ℝ) :
@@ -118,6 +127,46 @@ theorem eval_multiplierTruncPoly_coeff_sum (P n j : ℕ) (t : ℝ) :
         simp [multiplierCoeff]]
   exact Polynomial.eval_eq_sum_range' (p := multiplierTruncPoly P n j) (x := t)
     (by exact Nat.lt_succ_of_le (natDegree_multiplierTruncPoly_le P n j))
+
+/-- Evaluate the retained low-degree multiplier jet. -/
+theorem eval_multiplierJetPoly (P n j : ℕ) (t : ℝ) :
+    (multiplierJetPoly P n j).eval t =
+      ∑ p ∈ Finset.range P, multiplierCoeff P n j p * t ^ p := by
+  simpa [multiplierJetPoly, multiplierCoeff] using
+    PolynomialTruncation.eval_lowTrunc (P := multiplierTruncPoly P n j) P t
+
+/-- Coefficients of the retained jet agree with the multiplier coefficients below the
+cutoff. -/
+theorem coeff_multiplierJetPoly_of_lt (P n j p : ℕ) (hp : p < P) :
+    (multiplierJetPoly P n j).coeff p = multiplierCoeff P n j p := by
+  simpa [multiplierJetPoly, multiplierCoeff] using
+    PolynomialTruncation.coeff_lowTrunc_of_lt (P := multiplierTruncPoly P n j) hp
+
+/-- Below the cutoff, the retained jet has exactly the same coefficients as the full
+finite multiplier polynomial. -/
+theorem coeff_multiplierJetPoly_eq_coeff_of_lt (P n j p : ℕ) (hp : p < P) :
+    (multiplierJetPoly P n j).coeff p = (multiplierTruncPoly P n j).coeff p := by
+  rw [coeff_multiplierJetPoly_of_lt P n j p hp, multiplierCoeff]
+
+/-- The part discarded by `multiplierJetPoly` is divisible by `T^P`. -/
+theorem X_pow_dvd_multiplierTruncPoly_sub_jet (P n j : ℕ) :
+    Polynomial.X ^ P ∣ multiplierTruncPoly P n j - multiplierJetPoly P n j := by
+  simpa [PolynomialTruncation.highTail, multiplierJetPoly] using
+    PolynomialTruncation.X_pow_dvd_highTail (P := multiplierTruncPoly P n j) P
+
+/-- Exact tail factorization of the full multiplier polynomial beyond the retained jet. -/
+theorem exists_multiplierTailPoly (P n j : ℕ) :
+    ∃ Q : ℝ[X], multiplierTruncPoly P n j =
+      multiplierJetPoly P n j + Polynomial.X ^ P * Q := by
+  simpa [multiplierJetPoly] using
+    PolynomialTruncation.exists_tailFactor (P := multiplierTruncPoly P n j) P
+
+/-- Evaluated form of the exact tail factorization. -/
+theorem exists_eval_multiplierTailPoly (P n j : ℕ) (t : ℝ) :
+    ∃ Q : ℝ[X], (multiplierTruncPoly P n j).eval t =
+      (multiplierJetPoly P n j).eval t + t ^ P * Q.eval t := by
+  simpa [multiplierJetPoly] using
+    PolynomialTruncation.exists_eval_tailFactor (P := multiplierTruncPoly P n j) P t
 
 end
 
