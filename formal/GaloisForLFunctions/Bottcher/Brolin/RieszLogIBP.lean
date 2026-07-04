@@ -254,6 +254,91 @@ theorem fundamentalSolution_centered_of_layerCake (φ : ℂ → ℝ) (hφ : Cont
     circleIntegral_zero_radius φ]
   ring
 
+/-- **The centered planar fundamental solution:** `∫_ℂ log‖z‖·Δφ = 2π·φ(0)` for every
+`C²` compactly supported `φ`.  Proof: the layer-cake identity holds — extend `A(r)=∫_{ball r}Δφ`
+by indicator, swap (`integral_integral_swap`, `layerCake_integrable`), evaluate the inner
+`r`-integral a.e. (`∫_{‖z‖}^R r⁻¹ = log R − log‖z‖`), and cancel `log R·∫Δφ = 0`
+(`integral_laplacian_eq_zero`) — then `fundamentalSolution_centered_of_layerCake` finishes. -/
+theorem fundamentalSolution_centered (φ : ℂ → ℝ) (hφ : ContDiff ℝ 2 φ)
+    (hφc : HasCompactSupport φ) : (∫ z, Real.log ‖z‖ * Δ φ z) = 2 * π * φ 0 := by
+  have hcΔ : Continuous (Δ φ) := by
+    have hcont : Continuous (fun x => iteratedFDeriv ℝ 2 φ x) :=
+      hφ.continuous_iteratedFDeriv (by norm_num)
+    rw [show (Δ φ) = fun x => iteratedFDeriv ℝ 2 φ x ![1, 1] + iteratedFDeriv ℝ 2 φ x ![I, I] from
+      laplacian_eq_iteratedFDeriv_complexPlane φ]
+    exact ((ContinuousMultilinearMap.apply ℝ (fun _ : Fin 2 => ℂ) ℝ ![1,1]).continuous.comp hcont).add
+      ((ContinuousMultilinearMap.apply ℝ (fun _ : Fin 2 => ℂ) ℝ ![I,I]).continuous.comp hcont)
+  obtain ⟨R, hR0, hR⟩ := hφc.exists_pos_le_norm
+  have hΔloc : ∀ z : ℂ, R < ‖z‖ → Δ φ z = 0 := by
+    intro z hz
+    have hEZ : φ =ᶠ[𝓝 z] (fun _ => (0:ℝ)) :=
+      eventuallyEq_of_mem ((isOpen_lt continuous_const continuous_norm).mem_nhds hz)
+        (fun x hx => hR x (le_of_lt hx))
+    rw [(laplacian_congr_nhds hEZ).eq_of_nhds]; simp
+  have hΔc : HasCompactSupport (Δ φ) := HasCompactSupport.of_support_subset_isCompact
+    (isCompact_closedBall 0 R) (fun z hz => by
+      rw [Function.mem_support] at hz; rw [Metric.mem_closedBall, dist_zero_right]
+      by_contra h; exact hz (hΔloc z (by linarith [not_le.mp h])))
+  obtain ⟨M, hM⟩ := hΔc.exists_bound_of_continuous hcΔ
+  have hΔintM : Integrable (Δ φ) := hcΔ.integrable_of_hasCompactSupport hΔc
+  set f : ℝ → ℂ → ℝ := fun r z => r⁻¹ • (Metric.ball (0:ℂ) r).indicator (Δ φ) z with hf
+  have hfint : Integrable (Function.uncurry f) ((volume.restrict (Set.Ioo 0 R)).prod volume) :=
+    layerCake_integrable φ hcΔ hM
+  refine fundamentalSolution_centered_of_layerCake φ hφ hR0 (fun z hz => hR z (le_of_eq hz.symm)) ?_
+  show (∫ z, Real.log ‖z‖ * Δ φ z) = -(∫ r in Set.Ioo 0 R, r⁻¹ * ∫ z in Metric.ball (0:ℂ) r, Δ φ z)
+  have hstep1 : (∫ r in Set.Ioo 0 R, r⁻¹ * ∫ z in Metric.ball (0:ℂ) r, Δ φ z)
+      = ∫ r in Set.Ioo 0 R, ∫ z, f r z := by
+    apply setIntegral_congr_fun measurableSet_Ioo
+    intro r _
+    show r⁻¹ * ∫ z in Metric.ball (0:ℂ) r, Δ φ z = ∫ z, r⁻¹ • (Metric.ball (0:ℂ) r).indicator (Δ φ) z
+    rw [integral_smul, integral_indicator measurableSet_ball, smul_eq_mul]
+  have hae : ∀ᵐ z ∂(volume : Measure ℂ), 0 < ‖z‖ ∧ ‖z‖ ≠ R := by
+    have ha : ∀ᵐ z ∂(volume : Measure ℂ), z ≠ 0 := by
+      rw [ae_iff]; simp only [not_ne_iff]
+      rw [show {z : ℂ | z = 0} = {0} from by ext z; simp]; exact measure_singleton 0
+    have hb : ∀ᵐ z ∂(volume : Measure ℂ), ‖z‖ ≠ R := by
+      rw [ae_iff]
+      rw [show {z : ℂ | ¬ ‖z‖ ≠ R} = Metric.sphere 0 R from by ext z; simp]
+      exact MeasureTheory.Measure.addHaar_sphere _ 0 R
+    filter_upwards [ha, hb] with z hz hzR using ⟨norm_pos_iff.mpr hz, hzR⟩
+  have hinner : (fun z => ∫ r in Set.Ioo 0 R, f r z) =ᵐ[volume]
+      fun z => (Real.log R - Real.log ‖z‖) • Δ φ z := by
+    filter_upwards [hae] with z ⟨hz0, hzR⟩
+    rcases lt_or_gt_of_ne hzR with hlt | hgt
+    · have hfe : (fun r => f r z) = fun r => (Set.Ioi ‖z‖).indicator (fun r => r⁻¹ • Δ φ z) r := by
+        funext r
+        simp only [hf, Set.indicator, Metric.mem_ball, dist_zero_right, Set.mem_Ioi, smul_ite, smul_zero]
+      rw [hfe, setIntegral_indicator measurableSet_Ioi,
+        show Set.Ioo (0:ℝ) R ∩ Set.Ioi ‖z‖ = Set.Ioo ‖z‖ R from by
+          rw [Set.inter_comm, Set.Ioi_inter_Ioo, max_eq_left (norm_nonneg z)],
+        integral_smul_const]
+      congr 1
+      rw [setIntegral_congr_set Ioo_ae_eq_Ioc, ← intervalIntegral.integral_of_le (le_of_lt hlt),
+        integral_inv_of_pos hz0 (lt_trans hz0 hlt),
+        Real.log_div (ne_of_gt (lt_trans hz0 hlt)) (ne_of_gt hz0)]
+    · rw [setIntegral_congr_fun measurableSet_Ioo (fun r hr => by
+        show r⁻¹ • (Metric.ball (0:ℂ) r).indicator (Δ φ) z = 0
+        rw [Set.indicator_of_notMem (by
+          simp only [Metric.mem_ball, dist_zero_right, not_lt]; linarith [hr.2]), smul_zero]),
+        integral_zero, hΔloc z hgt, smul_zero]
+  rw [hstep1, integral_integral_swap hfint, integral_congr_ae hinner]
+  have hmarg : Integrable (fun z => (Real.log R - Real.log ‖z‖) • Δ φ z) :=
+    (hfint.swap.integral_prod_left).congr hinner
+  have heq2 : (fun z => (Real.log R - Real.log ‖z‖) • Δ φ z)
+      = fun z => Real.log R * Δ φ z - Real.log ‖z‖ * Δ φ z := by
+    funext z; rw [sub_smul, smul_eq_mul, smul_eq_mul]
+  have hlogΔ : Integrable (fun z => Real.log ‖z‖ * Δ φ z) := by
+    have h := (hΔintM.const_mul (Real.log R)).sub (heq2 ▸ hmarg)
+    exact h.congr (Filter.Eventually.of_forall (fun z => by simp only [Pi.sub_apply]; ring))
+  rw [heq2, integral_sub (hΔintM.const_mul _) hlogΔ, integral_const_mul,
+    integral_laplacian_eq_zero φ hφ hφc, mul_zero, zero_sub, neg_neg]
+
+/-- **GAP-A fundamental solution discharged:** `FundamentalSolutionProp` holds — the
+`(2π)⁻¹Δ log‖·−ρ‖ = δ_ρ` identity, for every `C²` compact-support test function.  Combines
+`fundamentalSolution_centered` with the translation reduction `fundamentalSolutionProp_of_center`. -/
+theorem fundamentalSolutionProp_holds : FundamentalSolutionProp :=
+  fundamentalSolutionProp_of_center fundamentalSolution_centered
+
 end
 
 end Bottcher

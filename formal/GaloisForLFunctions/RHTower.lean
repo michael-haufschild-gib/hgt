@@ -43,6 +43,7 @@ import GaloisForLFunctions.RHTower.SpurHermite
 import GaloisForLFunctions.RHTower.SpurRescale
 import GaloisForLFunctions.RHTower.SpurCumulant
 import GaloisForLFunctions.RHTower.SpurCumulantBounds
+import GaloisForLFunctions.RHTower.SpurEnvelope
 import GaloisForLFunctions.RHTower.SpurClearance
 import GaloisForLFunctions.RHTower.SpurOperator
 import GaloisForLFunctions.RHTower.SpurStability
