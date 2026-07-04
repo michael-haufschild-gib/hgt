@@ -98,3 +98,4 @@ import GaloisForLFunctions.RHTower.SeamSignTransport
 import GaloisForLFunctions.RHTower.AnnealWindowRelation
 import GaloisForLFunctions.RHTower.RelayLedger
 import GaloisForLFunctions.RHTower.EMCarrier
+import GaloisForLFunctions.RHTower.SeamCongruence

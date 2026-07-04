@@ -18,6 +18,7 @@ Together: rational shifts (= the decompositions that reach ζ) are multiplicativ
 the fundamental theorem of arithmetic; generic shifts are free. The wall is arithmetic.
 -/
 import Mathlib
+import GaloisForLFunctions.Hurwitz.ExpIndependence
 
 namespace RHTower
 
@@ -256,5 +257,46 @@ theorem log_prime_shifts_independent {q : ℕ} (hq : q.Prime) (s : Finset ℕ)
   rw [Finset.sum_congr rfl hterm, Finset.sum_ite_eq' s p₀ ε] at hval
   simp [hp₀] at hval
   exact hne0 hval
+
+end RHTower
+
+namespace RHTower
+
+open Polynomial Finset
+open Complex
+
+/-- Prime-ratio Dirichlet frequencies are analytically independent on any nonempty
+open set. This feeds the RHTower prime-support arithmetic into the Hurwitz
+Vandermonde exponential-independence engine. -/
+theorem prime_shift_exp_packet_eq_zero_on_open {n q : ℕ} (hq : q.Prime) {p : Fin n → ℕ}
+    (hp : ∀ k, (p k).Prime ∧ p k ≠ q) (hpinj : Function.Injective p)
+    {c : Fin n → ℂ} {U : Set ℂ} (hUo : IsOpen U) (hUne : U.Nonempty)
+    (hzero : ∀ z ∈ U,
+      ∑ k, c k * Complex.exp (-((Real.log (((p k : ℝ) / (q : ℝ))) : ℂ)) * z) = 0) :
+    c = 0 := by
+  have hqpos : (0 : ℝ) < q := by exact_mod_cast hq.pos
+  have hβ : Function.Injective
+      (fun k : Fin n => -((Real.log (((p k : ℝ) / (q : ℝ))) : ℂ))) := by
+    intro i j hij
+    have hreal : Real.log (((p i : ℝ) / (q : ℝ))) =
+        Real.log (((p j : ℝ) / (q : ℝ))) := by
+      have hre := congrArg Complex.re hij
+      simpa using hre
+    have hposi : 0 < ((p i : ℝ) / (q : ℝ)) := by
+      have : (0 : ℝ) < p i := by exact_mod_cast (hp i).1.pos
+      positivity
+    have hposj : 0 < ((p j : ℝ) / (q : ℝ)) := by
+      have : (0 : ℝ) < p j := by exact_mod_cast (hp j).1.pos
+      positivity
+    have hratio : ((p i : ℝ) / (q : ℝ)) = ((p j : ℝ) / (q : ℝ)) := by
+      have hexp := congrArg Real.exp hreal
+      simpa [Real.exp_log hposi, Real.exp_log hposj] using hexp
+    have hpijR : (p i : ℝ) = (p j : ℝ) := by
+      have hqne : (q : ℝ) ≠ 0 := ne_of_gt hqpos
+      have hmul := congrArg (fun x : ℝ => x * (q : ℝ)) hratio
+      field_simp [hqne] at hmul
+      exact hmul
+    exact hpinj (Nat.cast_inj.mp hpijR)
+  exact HurwitzExp.expLin_eq_zero_on_open hβ hUo hUne hzero
 
 end RHTower

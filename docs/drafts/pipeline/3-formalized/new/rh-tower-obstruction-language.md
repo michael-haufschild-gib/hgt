@@ -156,3 +156,51 @@ principle anywhere in the entire chain. All axiom-clean; RHTower green 8566 jobs
   up to μ_{2^k} via pow_root_unique, normalization ω = h(2)/g₁(2)). Doc 21 §3's continuation
   form banked. 8579 jobs, first-compile clean, axiom-clean [propext, Classical.choice,
   Quot.sound], formal lint passed.
+
+2026-07-05 — extended (codex batch, reviewed + verified this date): the modulus-holography
+branch now reaches the GLOBAL ladder/RH surface. `ModulusHolography.lean`:
+`xi_circleAverage_slope_eq_order` (the two-circle slope of the circle-average of log‖ξ‖ IS
+the local vanishing order), `xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd` (slope
+root-of-unity at level 2^k ⟺ local ladder divisibility), `rhLadder_iff_circleAverage_slope_exp_eq_one`
+and `rh_iff_forall_circleAverage_slope_exp_eq_one` — **RH ⟺ at every right-half ξ zero, for
+every k, the two-circle modulus slope has trivial 2^k exponential**: a machine-checked
+equivalent of RH stated in |ξ| alone (no phases, no root choices, no argument principle).
+Central instances: `xi_central_circleAverage_slope_exp_eq_one` (FE fixed-point parity makes
+level 2 trivial at s = 1/2), `xi_central_circleAverage_slope_eq_even_integer` (central slope
+= exact even integer). Weld of formulations: `germ_extends_iff_circleAverage_slope_exp_eq_one`
+and `root_slitPlane_iff_circleAverage_slope_exp_eq_one` — germ continuation, slit-plane root,
+and boundary-modulus criterion are now formally the SAME gate per rung. Zero-surgery reach:
+`not_riemannHypothesis_of_sphere_domination_right` / `_center_margin` (planted zero with the
+checkable margin 1/2 + r < Re s₀ ⟹ ¬RH) and
+`exists_circleAverage_slope_obstruction_of_sphere_domination_center_margin` (planting forces
+an explicit failed modulus-slope criterion at some rung). Chain composition in
+`AnnealWindowRelation.lean`: `anneal_window_parity_transport_of_domination` (domination proves
+the deck-side congruence at EVERY rung) and `xi_rung_of_finite_side_of_domination`
+(domination + seam congruence at 2^(k+1) + finite-side rung ⟹ ξ rung). EM supply composed in
+`EMCarrier.lean`: `anneal_deck_transport_of_emCarrier_close`, `anneal_seam_L_transport_of_emCarrier_close`
+(EM remainder + finite closeness replace the abstract (AFE)/domination premises). Interface
+work: `pinned_zero_re_eq_half` (CountingSubstitute, geometric re = 1/2 form),
+`CarrierBirthData` shrunk (DipKillsWiring; polar + nonresonance now proved internally via
+`birthKilled_of_perturbed_rotation_explicit_polar`), count endpoints
+`pricing_close_zero` / `sliverCount_le_of_average_kernel` / `thickSliverCount_le_of_average_floor_kernel`.
+All 23 new/changed endpoints verified axiom-clean [propext, Classical.choice, Quot.sound];
+RHTower green (8638 jobs); formal lint passed.
+
+2026-07-05 — extended (task #27, the seam grind): `SeamCongruence.lean` — the hL seam
+congruence exhausted. **The blindness identity**: `seam_iff_rung` (pure [propext]) and
+`anneal_seam_iff_rung_of_domination` — under the window identities D = L + 2N and
+D-transport, the seam congruence hL at 2^(k+1) is EQUIVALENT to the rung congruence at
+2^k; tower limit `seam_tower_iff_offline_eq` / `_zero`: all levels simultaneously ⟺
+exact off-line matching N₁ = N₂ (⟺ window RH when the finite side is all on-line). The
+seam datum IS the rung in on-line coordinates — machine-checked in both directions; its
+value is the 2D→1D coordinate change. **The sign instrument** (Turing's counting core,
+no argument principle): `exists_interleaved_zeros` (IVT engine),
+`window_online_of_sign_data` (squeeze s ≤ L ≤ D ≤ s ⟹ L = D, N = 0),
+`xi_online_of_sign_data` (every window zero on the line),
+`window_simple_of_sign_data` / `xi_simple_online_of_sign_data` (every window zero
+SIMPLE), `hL_exact_of_sign_data` (hL as equality, all levels at once), and the two
+consumable endpoints `xi_window_online_of_domination_sign_certificate` and
+`xi_window_online_of_em_sign_certificate` (the EM weld: domination supplied from the
+doc 78 Euler–Maclaurin finite data — window RH from purely finite certifiable
+inequalities). Umbrella 8640 jobs green; lint passed; all 14 endpoints axiom-clean
+[propext, Classical.choice, Quot.sound].

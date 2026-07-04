@@ -111,3 +111,13 @@ d = 4, 6, 8; domination provably failing there, as banked transport forces) sits
 theorem legs. Next: hunt w_d via the generating identity — e^u g(xu) turns the chain
 into ONE two-variable object, and theorem-m's energy argument is an ODE statement;
 the u-direction supplies the missing differential equation.
+
+---
+**STATUS 2026-07-05 (tasks #135/#138/#139 verdict — doc 79):** RETIRED as a route. The
+reader-exactness this theorem targets is **superseded** by the Rouché+EM counting spine
+(`enclosed_count_eq_of_close` + `completed_domination_of_em`, axiom-clean, Spur-independent
+island — doc 79 §1), which delivers exact off-line-pair counting from DOMINATION alone,
+where SPUR-R needs the carrier's zero-geometry ((F1)–(F3), measured-only). Core is SOUND not
+false (winding formula + `Z_c=2` verified, doc 79 §3); Lean form honest-complete
+(`AMPReaderInput` hypothesis-typed). Open core (S-mono)+(Lemma R) isolated as a standalone
+entire-function conjecture, not a #130 blocker.

@@ -102,3 +102,10 @@ blocked only by the (χ)-constants' final write-out and per-carrier (F)-checks.
 Also noted: the #136/#140 truncation instance has verified SIMPLE zeros in its window,
 so the instance-level theorem needs only doc 25's m ≤ 3 case — Lemma R (#139) is needed
 for multiplicity-uniform generality (Ξ₁-grade statements), not for the finite instance.
+
+---
+**STATUS 2026-07-05 (task #138 verdict — doc 79):** (S-mono) is isolated as a **standalone**
+open conjecture (proved in outline here; corroborated numerically, doc 79 §3), NOT a blocker
+of #130. Its consumer, the DISC/SPUR-R reader, is retired: the live #130 counting is the
+Rouché+EM spine (domination-only, unconditional). Promotion of this arc is not pursued — it
+would discharge a hypothesis (`AMPReaderInput`) that no live object consumes.

@@ -364,3 +364,30 @@ theorem exists_circleAverage_slope_obstruction_of_sphere_domination_center_margi
   exact hnotRH (rh_iff_forall_circleAverage_slope_exp_eq_one.mpr hmod)
 
 end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Zero planting in a right-half ball forces a local ladder obstruction: at some
+right-half zero, a finite dyadic rung fails divisibility of the local ξ order. -/
+theorem exists_ladder_order_obstruction_of_sphere_domination_center_margin {g h : ℂ → ℂ}
+    {s₀ : ℂ} {r : ℝ}
+    (hr : 0 < r)
+    (hmargin : 1 / 2 + r < s₀.re)
+    (hg : DiffContOnCl ℂ g (Metric.ball s₀ r))
+    (hh : DiffContOnCl ℂ h (Metric.ball s₀ r))
+    (hcenter : h s₀ = 0) (hg0 : g s₀ ≠ 0)
+    (hdom : ∀ z ∈ Metric.sphere s₀ r, 3 * ‖g z‖ ≤ ‖h z‖)
+    (hxi : ∀ z ∈ Metric.closedBall s₀ r, xi z = g z + h z) :
+    ∃ k, ∃ ρ ∈ rightHalf, xi ρ = 0 ∧ ¬ ((2 ^ k : ℕ) : ℕ∞) ∣ analyticOrderAt xi ρ := by
+  obtain ⟨k, ρ, hρ, hzero, hnotSlope⟩ :=
+    exists_circleAverage_slope_obstruction_of_sphere_domination_center_margin hr hmargin hg hh
+      hcenter hg0 hdom hxi
+  refine ⟨k, ρ, hρ, hzero, ?_⟩
+  intro hdiv
+  obtain ⟨R₀, hR₀pos, hiff⟩ := xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd ρ k
+  exact hnotSlope ⟨R₀, hR₀pos, fun {R r₁ r₂} hr₁ hr₁₂ hr₂R hRle =>
+    (hiff hr₁ hr₁₂ hr₂R hRle).mpr hdiv⟩
+
+end RHTower

@@ -117,3 +117,15 @@ Buys, immediately usable:
 3. The connectivity + M-test + identity-theorem scaffold built here is
    reusable for ANY Dirichlet-type representation the lane needs on the
    strip (the mollified/tapered variants of docs 55–70 included).
+
+## 7. Addendum (2026-07-05): buy #2 composed into one-call theorems
+
+The "hdom on demand" buy of §5 is now itself a theorem pair (codex batch,
+verified 2026-07-05): `anneal_deck_transport_of_emCarrier_close` (deck
+transport at every rung from EM remainder control + finite closeness + the
+`gN` floor — the abstract (AFE) premise eliminated) and
+`anneal_seam_L_transport_of_emCarrier_close` (the two-point seam L-transport
+from the same EM data at the two critical-line basepoints). A window instance
+now consumes ONLY finite-data inequalities: no caller ever manufactures a
+completed-domination or accuracy hypothesis by hand. Both axiom-clean; umbrella
+8638 green.

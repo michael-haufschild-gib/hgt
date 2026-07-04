@@ -33,6 +33,7 @@ pieces, and the identity theorem.
 import Mathlib
 import GaloisForLFunctions.RHTower.ZetaCarrier
 import GaloisForLFunctions.RHTower.SeamSignTransport
+import GaloisForLFunctions.RHTower.AnnealWindowRelation
 
 noncomputable section
 
@@ -752,5 +753,47 @@ theorem anneal_seam_L_transport_of_emCarrier_close {N M : ℕ} {g₁ g₂ G₁ G
     (Gammaℝ_ne_zero_of_re_pos hMσ) hEMM
   exact anneal_seam_L_transport hU hUc hUstrip hg₁ hg₂ hG₁ hG₂ hp₁ hp₂ hP₁ hP₂ hpP
     hpM hPline hMline hdomP hdomM
+
+end RHTower
+
+namespace RHTower
+
+open Complex Filter Topology Metric
+
+/-- EM-supplied finite-side rung theorem: chart domination is replaced by the
+Euler-Maclaurin remainder plus finite EM-to-`gN` comparison on the annulus charts. -/
+theorem xi_rung_of_finite_side_of_emCarrier_close {N M : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ}
+    (hMpos : 1 ≤ M) (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z.re < 1)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hEMdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖ < ‖gN N z‖)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])
+    (hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z) :
+    2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z := by
+  have hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖xi z - completedGN N z‖ < ‖completedGN N z‖ := by
+    intro z hz
+    have hσ : 0 < z.re := (hchartStrip z hz).1
+    have hz_ne_one : z ≠ 1 := by
+      intro hz1
+      have hzlt : z.re < 1 := (hchartStrip z hz).2
+      rw [hz1] at hzlt
+      norm_num at hzlt
+    exact completed_domination_of_em hMpos hσ hz_ne_one (Gammaℝ_ne_zero_of_re_pos hσ)
+      (hEMdom z hz)
+  exact xi_rung_of_finite_side_of_domination k h0 hrR hm₁ hcl₁ hstrip hm₂ hcl₂ hρ₁ hρ₂
+    hh hh0 hh' hh0' hfact₁ hfact₂ hdom hL hfin
 
 end RHTower

@@ -94,7 +94,7 @@ theorem dipKills_of_carrierData {pushes : List ℝ} {births : List CascadeBirth}
 /-- **The concrete (MID-central) input**: carrier data for the non-resonant
 births plus the creation-rate bound (the (T3) open core) gives
 `MidCentralInput` — hence at most `K` survivors, all in the slip window. This
-is the honest reduction: everything but `creation_rate` is discharged from
+is the exact reduction: everything but `creation_rate` is discharged from
 banked lemmas and elementary/per-instance carrier data. -/
 theorem midCentralInput_of_carrierData {pushes : List ℝ}
     {births : List CascadeBirth} {κ : ℝ} {slip : CascadeBirth → ℝ} {K : ℕ}

@@ -19,6 +19,7 @@ roots of `f`, and `deckClass_mul_global` says the class does not move.
   zero touches the charts — the conservation law the M1 program runs on.
 -/
 import GaloisForLFunctions.RHTower.DeckAssembly
+import GaloisForLFunctions.U0.U0LogBoundGeneral
 
 namespace RHTower
 
@@ -257,5 +258,57 @@ theorem deckClass_deformation_invariant {F : ℕ → ℂ → ℂ} {G₁ G₂ K�
     (isOpen_chartL a R) (isPreconnected_chartL a hR)
     hH₁ hK₁ hH₂ hK₂ hpH₁ hpK₁ hpH₂ hpK₂
     hPP.1 hPP.2 hPM.1 hPM.2 hFNP hFNM
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Quantitative version of the dominated-ratio step: if the relative error is at
+most `r < 1`, the principal log of `f/g` is controlled by the sharp `log(1+w)`
+bound from the U0 window analysis. -/
+theorem ratio_log_norm_le_of_relative_close {f g : ℂ → ℂ} {z : ℂ} {r : ℝ}
+    (hr : r < 1) (hg : g z ≠ 0) (hrel : ‖(f z - g z) / g z‖ ≤ r) :
+    ‖Complex.log (f z / g z)‖ ≤ (1 - r)⁻¹ * ‖(f z - g z) / g z‖ := by
+  have hratio : f z / g z = 1 + (f z - g z) / g z := by
+    field_simp [hg]
+    ring
+  rw [hratio]
+  exact U0LogBoundGeneral.norm_clog_one_add_le_of_le hr hrel
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **Charge conservation with endpoint nonvanishing discharged.** For a positive
+finite deformation chain, the final domination step already proves that the
+endpoint is nonzero at the two deck basepoints, so callers of the both-roots-given
+invariant do not have to certify those two nonvanishing facts separately. -/
+theorem deckClass_deformation_invariant_of_pos_chain
+    {F : ℕ → ℂ → ℂ} {G₁ G₂ K₁ K₂ : ℂ → ℂ}
+    {a : ℂ} {R : ℝ} {n : ℕ} {N : ℕ} (hR : 0 < R) (hn : 0 < n) (hN : 0 < N)
+    (hFan : ∀ i, 0 < i → i ≤ N → AnalyticOnNhd ℂ (F i) (chartR a R ∪ chartL a R))
+    (hG₁ : AnalyticOnNhd ℂ G₁ (chartR a R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartL a R))
+    (hK₁ : AnalyticOnNhd ℂ K₁ (chartR a R)) (hK₂ : AnalyticOnNhd ℂ K₂ (chartL a R))
+    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ n = F 0 z)
+    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ n = F 0 z)
+    (hpK₁ : ∀ z ∈ chartR a R, K₁ z ^ n = F N z)
+    (hpK₂ : ∀ z ∈ chartL a R, K₂ z ^ n = F N z)
+    (hclose : ∀ i, i < N →
+      ∀ z ∈ chartR a R ∪ chartL a R, ‖F (i + 1) z - F i z‖ < ‖F i z‖) :
+    deckClass K₁ K₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) =
+      deckClass G₁ G₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) := by
+  obtain ⟨N', rfl⟩ := Nat.exists_eq_succ_of_ne_zero hN.ne'
+  have hPP := basepointP_mem_charts (a := a) hR
+  have hPM := basepointM_mem_charts (a := a) hR
+  have hFNP : F (N' + 1) (a + ((R / 2 : ℝ) : ℂ) * I) ≠ 0 :=
+    left_ne_zero_of_close (hclose N' (Nat.lt_succ_self N') _ (Set.mem_union_left _ hPP.1))
+  have hFNM : F (N' + 1) (a - ((R / 2 : ℝ) : ℂ) * I) ≠ 0 :=
+    left_ne_zero_of_close (hclose N' (Nat.lt_succ_self N') _ (Set.mem_union_left _ hPM.1))
+  exact deckClass_deformation_invariant hR hn hFan hG₁ hG₂ hK₁ hK₂ hpG₁ hpG₂ hpK₁ hpK₂
+    hclose hFNP hFNM
 
 end RHTower

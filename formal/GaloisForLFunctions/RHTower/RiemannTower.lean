@@ -15,6 +15,7 @@ correspondence with `riemannZeta`, and the three main statements:
 Everything is unconditional bookkeeping about branching; no zero-location input.
 -/
 import GaloisForLFunctions.RHTower.CoherentTower
+import GaloisForLFunctions.Bottcher.ZeroSet
 
 namespace RHTower
 
@@ -238,5 +239,30 @@ theorem rh_iff_forall_ladder : RiemannHypothesis ↔ ∀ k, RHLadder k := by
       analyticOrderAt_ne_zero.mpr ⟨xi_analyticOnNhd_univ ρ (Set.mem_univ ρ), hρ0⟩
     rw [← hm, hm0] at hne
     exact hne rfl
+
+end RHTower
+
+namespace RHTower
+
+open Complex Filter Set Metric
+
+/-- Around any center, every nondegenerate radius interval contains a circle with no ξ-zero. -/
+theorem exists_radius_avoiding_xi_zeros (a : ℂ) {r R : ℝ} (hrR : r < R) :
+    ∃ ρ ∈ Set.Ioo r R, ∀ z : ℂ, ‖z - a‖ = ρ → xi z ≠ 0 := by
+  let f : ℂ → ℂ := fun w => xi (a + w)
+  have hf : AnalyticOnNhd ℂ f Set.univ := by
+    intro w _
+    exact (xi_analyticOnNhd_univ (a + w) (Set.mem_univ _)).comp (by fun_prop)
+  have hfx : f (2 - a) ≠ 0 := by
+    change xi (a + (2 - a)) ≠ 0
+    simpa [sub_eq_add_neg, add_assoc, add_comm, add_left_comm] using xi_two_ne_zero
+  obtain ⟨ρ, hρ, havoid⟩ := Bottcher.exists_radius_avoiding_zeros hf isPreconnected_univ
+    (Set.mem_univ (2 - a)) hfx hrR
+  refine ⟨ρ, hρ, ?_⟩
+  intro z hnorm hzero
+  have hwzero : f (z - a) = 0 := by
+    change xi (a + (z - a)) = 0
+    simpa [sub_eq_add_neg, add_assoc, add_comm, add_left_comm] using hzero
+  exact havoid (z - a) (Set.mem_univ _) hnorm hwzero
 
 end RHTower

@@ -2449,3 +2449,94 @@ instrument (interval-arithmetic evaluator → first end-to-end machine-checked
 zero-free windows + one full seam-transport instance with zero unformalized
 inputs); reusable strip scaffold (M-test + connectivity + identity theorem)
 for any Dirichlet-type representation the lane needs.
+
+## Cycle 45 (2026-07-05) — review of the codex Lean batch (task #26)
+
+Scope: all 20 entries of lean_updates_codex.md, read at source. Verdict:
+CORRECT. No cheap hypotheses found — spot checks: the margin geometry of
+`not_riemannHypothesis_of_sphere_domination_center_margin` (Re z ≥ Re s₀ − r >
+1/2 via abs_re_le_norm, sound); `pinned_zero_re_eq_half`'s fixed-point algebra
+(1 − conj ρ₀ = ρ₀ ⟺ re = 1/2, sound); the Jensen slope arithmetic in
+`xi_circleAverage_slope_eq_order` (two evaluations of the banked single-zero
+formula, division legal since log r₁ < log r₂); the ε-splitting in
+`anneal_deck_transport_of_emCarrier_close` (ε₁ + δ matches AFEAccurateOn
+through `afeAccurateOn_of_emCarrier_close` exactly). RelayLedger.lean and
+EMCarrier.lean carry no foreign changes beyond the two documented EM
+transports. Verification: RHTower 8638 jobs green; formal lint passed; all 23
+new/changed endpoints print axioms [propext, Classical.choice, Quot.sound].
+
+Two headline results the batch banks (now fed back into docs):
+1. `rh_iff_forall_circleAverage_slope_exp_eq_one` — RH ⟺ two-circle modulus
+   slopes at right-half ξ zeros have trivial 2^k exponentials, all k: an
+   RH-equivalent in |ξ| alone, welded to the germ and slit-plane gates.
+2. `xi_rung_of_finite_side_of_domination` — chain links 3–4 composed:
+   domination + seam congruence + finite-side rung ⟹ ξ rung, every k.
+
+Feedback appended: doc 75 Addendum 2 (spine = EM-CLOSE ⟹ domination ⟹ rung
+transfer; three named unformalized inputs), doc 78 §7 (EM one-call
+transports), 3-formalized card dated entry. Cleanup: banned-word docstrings
+fixed in DipKillsWiring.lean + WeldEnvelope.lean (comment-only; rebuild green).
+
+Opens: the composed spine makes the seam congruence hL at 2^(k+1) the single
+seam-side object every rung waits on — exactly doc 76-seam-lift-blindness's
+target; and the modulus-slope RH surface suggests a numeric instrument (two
+circle averages of log|ξ| per zero) that the EM certificate evaluator could
+feed directly.
+
+## 2026-07-05 — #135/#138/#139 SPUR-R route driven to verdict (doc 79)
+
+Goal: resolve #139/#138/#135 + blockers as Lean or proven dead-end, no partial results.
+Verdict: the DISC/SPUR-R reader is a non-load-bearing, DOMINATED instrument — retired.
+- §1 machine-checked: #130 counting spine (enclosed_count_eq_of_close, anneal_deck/seam
+  transport_of_emCarrier_close, completed_domination_of_em, xi_rung_of_finite_side_of_domination,
+  anneal_mod_two_window_relation_of_domination) all axiom-clean [propext,Classical.choice,
+  Quot.sound]; transitive-import ISLAND, zero dependence on any of 23 Spur* modules
+  (checked full import closure). Counting unconditional modulo (EM-CLOSE).
+- §2 rigorous: Rouché needs DOMINATION (size) only; SPUR-R needs carrier zero-geometry
+  (F1)-(F3), measured-only. Dominated.
+- §3 verified: winding formula + two-cluster no-go sound (winding_check.py); target Z_c=2
+  robust over d=6..60 × six (a,b), never >2 (smono_check.py). Sound, not false. Lean form
+  honest-complete (AMPReaderInput hypothesis-typed).
+- #135/#138/#139 → completed (retired). #130's blocked-by-#135 edge cleared.
+- Open residue isolated as standalone (S-mono) entire-function conjecture (doc 79 §4);
+  NOT a #130 blocker. Siblings #142(LEG)/#143(Lean)/#147(B⁗) are the same superseded
+  cluster (left for codex/user; codex is on the live chain not Spur).
+Forward: #130's whole load is now (XLD)₂ (doc 76-xld §3) — size/phase arithmetic on one
+added Dirichlet term, not zero-geometry.
+
+## Cycle 46 (2026-07-05) — the seam congruence exhausted (task #27, /goal)
+
+Target: doc 76-seam-lift-blindness's hL at 2^(k+1), ground to its structural
+floor and formalized. Module: SeamCongruence.lean (banked; umbrella 8640 jobs
+green, lint passed, 14 endpoints axiom-clean; seam_iff_rung is pure [propext]).
+
+The finding that closes the topic's shape: hL is NOT an independent object.
+`seam_iff_rung` / `anneal_seam_iff_rung_of_domination`: under the window
+identities + D-transport, hL at 2^(k+1) ⟺ the rung congruence at 2^k — both
+directions. Doc 76 §1's blindness upgraded from "no boundary transport
+exists" to "the seam datum IS the rung in on-line coordinates". Tower limit
+(`seam_tower_iff_offline_eq/_zero`): all levels at once ⟺ N₁ = N₂; with an
+on-line finite side ⟺ window RH. The seam's real content = a 2D→1D change
+of coordinates.
+
+The discharge instrument (the 1D coordinates cashed): ξ real on the line +
+IVT (`exists_interleaved_zeros`, no argument principle) + the peeling + the
+Rouché-substitute count ⟹ the squeeze s ≤ L₁ ≤ D₁ ≤ s:
+`window_online_of_sign_data` (L₁ = D₁, N₁ = 0), `xi_online_of_sign_data`
+(every window zero on-line), `hL_exact_of_sign_data` (hL as EQUALITY, all
+levels at once), `window_simple_of_sign_data` + `xi_simple_online_of_sign_data`
+(every window zero simple — the tight squeeze pins each multiplicity to 1),
+endpoints `xi_window_online_of_domination_sign_certificate` and the EM weld
+`xi_window_online_of_em_sign_certificate` (domination from doc 78's finite
+EM data — every hypothesis a finite computable inequality).
+
+D–H filter: identity holds verbatim for D–H; the instrument refuses to fire
+where D–H's off-line pairs eat the count (sign count < total) — no false
+proof derivable. Doc 79 written; the universal hL re-localizes with a proof
+onto the exceptional-window census = (CR)×(XLD), doc 77's territory.
+
+Opens: (1) run the E–M window instance through the weld — first end-to-end
+machine-checked window-RH certificate (reader has C1–C4; needs a 2-entry
+sign table); (2) #24 (CHAIN-geo) re-statable in 1D: bound the density of
+sign-deficient windows — the mollified machinery of docs 55–70 prices this
+in mean square.

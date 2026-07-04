@@ -127,3 +127,37 @@ Lean: `EMCarrier.lean` proves ζ = emCarrier N − s·emTail N on
 discharges the (AFE) interface, and supplies the seam/deck `hdom` premises.
 The R–S-grade residue is relocated into (EM-CLOSE) — a finite-vs-finite
 comparison ‖emCarrier M − gN N‖, no ζ in it. Details: doc 78.
+
+## Addendum 2 (2026-07-05, codex batch review): links 3–4 composed formally
+
+`AnnealWindowRelation.xi_rung_of_finite_side_of_domination` now composes the
+deck transport chain into one theorem: domination on the two charts + the seam
+congruence at 2^(k+1) + a certified finite-side rung ⟹ the ξ rung — at every
+k. With `EMCarrier.completed_domination_of_em` supplying domination from EM
+data, the formal spine of the chain reads
+
+  (EM-CLOSE numbers) ⟹ domination ⟹ deck parity at every rung
+    ⟹ [+ seam congruence at 2^(k+1), + finite-side rung] ⟹ ξ rung,
+
+so the UNFORMALIZED content of rows 3–5 is now exactly three named inputs:
+(EM-CLOSE) per window, the seam congruence hL (the (WR_k) on-line lift — the
+seam-blindness object of doc 76-seam-lift-blindness), and finite-side rung
+certification. Separately, `ModulusHolography.rh_iff_forall_circleAverage_slope_exp_eq_one`
+banks a new machine-checked RH-equivalent surface in |ξ| alone (two-circle
+modulus slopes), and the zero-surgery endpoints
+(`not_riemannHypothesis_of_sphere_domination_center_margin`,
+`exists_circleAverage_slope_obstruction_...`) give the counterexample side a
+checkable geometric trigger. Ledger: docs/drafts/rh-monodromy-weight-mismatch/lean_updates_codex.md;
+verification 2026-07-05: 8638 jobs green, lint passed, 23 endpoints axiom-clean.
+
+## Addendum 3 (2026-07-05, task #135/#138/#139 verdict): the reader is not in the chain
+
+The DISC/SPUR-R **reader** (docs 20, 23–42) never was one of the 12 links above. Row 3's
+D-transport is the **Rouché** substitute (`enclosed_count_eq_of_close`, exact count under
+domination), not the section-stability reader. Machine-checked (doc 79 §1): the whole #130
+counting spine is an axiom-clean transitive-import ISLAND independent of all 23 `Spur*`
+modules; counting is unconditional modulo (EM-CLOSE). SPUR-R (#135) and its open pieces
+(#138 (S-mono), #139 Lemma R) are therefore **retired** — a dominated instrument (needs
+carrier zero-geometry where Rouché needs only size), sound not false (winding formula +
+`Z_c=2` target verified, doc 79 §3), its open core isolated as a standalone conjecture. The
+located lie (§2, the contradiction step) and the true open core **(XLD)** are unchanged.

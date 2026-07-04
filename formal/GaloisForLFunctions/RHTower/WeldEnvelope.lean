@@ -7,7 +7,7 @@ functions of the shared slip `slip p = 2π p²`, differing ONLY by the offset `�
 
     creation p = M (slip p),   survival p = M (slip p − π/8).
 
-Scope, stated honestly. What is PROVED here is the algebra of the two defined
+Scope, stated exactly. What is PROVED here is the algebra of the two defined
 envelopes:
 
 * `weld` — both are the one modulus of the shared slip, shifted by `π/8`.
@@ -178,7 +178,7 @@ theorem fresnelValue_arg : Complex.arg fresnelValue = Real.pi / 4 := by
 
 /-- **The Fresnel integral, built by regularization.** The oscillatory Gaussian
 `∫ e^{-(ε-i)x²}dx` (Bochner-integrable for `ε>0`) converges as `ε→0⁺` to
-`fresnelValue = √π·e^{iπ/4}` — the honest construction of the Fresnel integral from
+`fresnelValue = √π·e^{iπ/4}` — the direct construction of the Fresnel integral from
 Mathlib's `Re b > 0` Gaussian. -/
 theorem fresnel_integral_tendsto :
     Filter.Tendsto (fun ε : ℝ => ∫ x : ℝ, Complex.exp (-((ε : ℂ) - Complex.I) * (x : ℂ) ^ 2))
@@ -220,7 +220,7 @@ theorem survival_eq_half_arg_fresnelValue (p : ℝ) :
 end Fresnel
 
 /-!
-### The theta functional equation carries the same Gaussian phase (bridge, honest scope)
+### The theta functional equation carries the same Gaussian phase (bridge, exact scope)
 
 Mathlib's Jacobi theta functional equation
 `jacobiTheta (S•τ) = (-i·τ)^{1/2}·jacobiTheta τ` (`jacobiTheta_S_smul`) has factor
