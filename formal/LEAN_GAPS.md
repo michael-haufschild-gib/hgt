@@ -80,6 +80,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Brolin/BoundaryTruncation.lean:530` | below the actual shifted logarithmic potential; the remaining value passage is |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/FiniteLimits.lean:244` | Brolin measure.  The remaining GAP-A analytic step is to identify this |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/RieszFlux.lean:21` | The remaining assembly (angular periodicity `∫∂²_θ = 0`; differentiation under the |
+| `formal/GaloisForLFunctions/Bottcher/Brolin/RieszLimit.lean:16` | null.  The remaining input `volume (filledJulia c) = 0` is the single named |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/RieszLogIBP.lean:239` | /-- **The layer-cake Fubini identity** — the single remaining standard analytic fact. |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean:141` | remaining hDisc analytic problem into a concrete estimate over the zero |
 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean:562` | /-- Finite-level singular-tail control implies the missing canonical boundary |
@@ -290,7 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:128` | branch* and the *dendrite tip*, not the pre-digested simple-root boundary value. The remaining #24 content |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:289` | a distinct obstruction — the genuine remaining frontier). -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:375` | axiom-clean; the sole remaining input is the *existence* of such a repelling cycle — Fatou's classical |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean:2077` | form of the remaining slit geometry: for each relation it is enough to provide an uncountable local |
 
 ## Historical Status Logs
 

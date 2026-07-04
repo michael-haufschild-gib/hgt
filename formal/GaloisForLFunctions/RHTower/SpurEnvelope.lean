@@ -302,6 +302,45 @@ theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_
     _ = (2 + ((P - 1 : ℕ) : ℝ) ^ P / (P.factorial : ℝ) + K) *
         ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by ring
 
+/-- Coefficient-sum provider for the exact multiplier-jet tail.
+
+This replaces the anonymous tail quotient in `multiplierJetTailEvalBound` by the
+explicit shifted high-coefficient quotient.  The remaining R1 tail task is now
+the finite coefficient sum on the hypothesis line. -/
+theorem multiplierJetTailEvalBound_of_coeff_sum_bound {K : ℝ} (P : ℕ) {j d : ℕ}
+    (hCoeff :
+      ∑ r ∈ Finset.range (P * (P - 1) + 1),
+        |multiplierCoeff P (P - 1) j (P + r)| * |((d : ℝ)⁻¹)| ^ r ≤
+          K * (j : ℝ) ^ (2 * P)) :
+    multiplierJetTailEvalBound K P (P - 1) j d := by
+  let Q : ℝ[X] := PolynomialTruncation.shiftedTailUpTo
+    (multiplierTruncPoly P (P - 1) j) P (P * (P - 1))
+  refine ⟨Q, ?_, ?_⟩
+  · have hdeg : (multiplierTruncPoly P (P - 1) j).natDegree ≤
+        P + P * (P - 1) := by
+      exact le_trans (natDegree_multiplierTruncPoly_le P (P - 1) j) (by omega)
+    have hsplit := PolynomialTruncation.eval_eq_lowTrunc_add_pow_mul_shiftedTailUpTo_of_natDegree_le
+      (P := multiplierTruncPoly P (P - 1) j) P (P * (P - 1)) ((d : ℝ)⁻¹) hdeg
+    simpa [Q, multiplierJetPoly] using hsplit
+  · have hbound := PolynomialTruncation.abs_eval_shiftedTailUpTo_le
+      (P := multiplierTruncPoly P (P - 1) j) P (P * (P - 1)) ((d : ℝ)⁻¹)
+    exact le_trans (by simpa [Q, multiplierCoeff] using hbound) hCoeff
+
+/-- Paper-range low-sum R1 from a concrete finite high-coefficient tail bound. -/
+theorem phi_product_multiplierCoeff_low_sum_abs_bound_of_coeff_sum_bound_cube_square_order
+    (K : ℝ) (P : ℕ) {j d : ℕ}
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) (hP : 1 ≤ P)
+    (hCoeff :
+      ∑ r ∈ Finset.range (P * (P - 1) + 1),
+        |multiplierCoeff P (P - 1) j (P + r)| * |((d : ℝ)⁻¹)| ^ r ≤
+          K * (j : ℝ) ^ (2 * P)) :
+    |(∏ i ∈ Finset.range j, (1 - (i : ℝ) / d)) -
+        ∑ p ∈ Finset.range P, multiplierCoeff P (P - 1) j p * ((d : ℝ)⁻¹) ^ p| ≤
+      (2 + ((P - 1 : ℕ) : ℝ) ^ P / (P.factorial : ℝ) + K) *
+        ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
+  exact phi_product_multiplierCoeff_low_sum_abs_bound_of_tail_bound_cube_square_order K P
+    hd hj hjd hP (multiplierJetTailEvalBound_of_coeff_sum_bound (K := K) P hCoeff)
+
 end
 
 end RHTower
