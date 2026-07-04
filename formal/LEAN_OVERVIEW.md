@@ -9,12 +9,12 @@ Use this as the quick map before opening large proof files.
 |---|---|---:|---:|---|
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 32 | 262 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 62 | 547 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
-| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 350 | 4767 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
+| `q62_boettcher` | `GaloisForLFunctions.Bottcher` | 350 | 4964 | `Bottcher.q62_independence`, `Bottcher.q62_mixed` |
 
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
-- Shared and bridge declarations outside the three theorem areas: **1287**.
+- Shared and bridge declarations outside the three theorem areas: **1326**.
 - Active proof-debt findings: **0**.
 
 ## Local Commands
@@ -33,13 +33,13 @@ Use this as the quick map before opening large proof files.
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 4984 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
-| 3957 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
+| 3982 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
+| 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
-| 3284 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
-| 3029 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
+| 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
+| 3518 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
-| 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |

@@ -1615,3 +1615,97 @@ theorem q62_pair_disconnected_of_towerdataF {c₂ : ℂ} (hc₂ : (0:ℂ) ∉ fi
   exact q62_disconnected_of_towerData hUo hUc hUne hUinf a₁ a₂ hF hGtr towerdataF
 
 end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- **Generic bivariate eval-germ identity for a represented analytic coordinate.**
+If `a` has germ representative `g`, then substituting `a` into a polynomial over `ℂ[z]` has the
+concrete germ `z ↦ q(z, g z)`. -/
+theorem eval₂_polyToAnalytic_val_of_germ_eq {a : analyticSubring U} {g : ℂ → ℂ}
+    (ha : (a : Germ (𝓟 U) ℂ) = ↑g) (q : Polynomial (Polynomial ℂ)) :
+    ((q.eval₂ (polyToAnalytic U) a : analyticSubring U) : Germ (𝓟 U) ℂ)
+      = ↑(fun z => q.eval₂ (Polynomial.evalRingHom z) (g z)) := by
+  rw [show ((q.eval₂ (polyToAnalytic U) a : analyticSubring U) : Germ (𝓟 U) ℂ)
+        = (analyticSubring U).subtype (q.eval₂ (polyToAnalytic U) a) from rfl]
+  rw [Polynomial.hom_eval₂ q (polyToAnalytic U) (analyticSubring U).subtype a]
+  have hpi : (fun z => q.eval₂ (Polynomial.evalRingHom z) (g z))
+      = q.eval₂ (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z)) g := by
+    funext z
+    change Polynomial.eval₂ (Polynomial.evalRingHom z) (g z) q
+      = Pi.evalRingHom (fun _ : ℂ => ℂ) z
+          (Polynomial.eval₂ (Pi.ringHom fun z : ℂ => Polynomial.evalRingHom z) g q)
+    rw [Polynomial.hom_eval₂ q (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z))
+      (Pi.evalRingHom (fun _ : ℂ => ℂ) z) g]
+    rfl
+  rw [hpi]
+  rw [show (↑(q.eval₂ (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z)) g)
+        : Germ (𝓟 U) ℂ)
+      = Germ.coeRingHom (𝓟 U)
+          (q.eval₂ (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z)) g) from rfl]
+  rw [Polynomial.hom_eval₂ q (Pi.ringHom (fun z : ℂ => Polynomial.evalRingHom z))
+    (Germ.coeRingHom (𝓟 U)) g]
+  change q.eval₂ ((analyticSubring U).subtype.comp (polyToAnalytic U)) (a : Germ (𝓟 U) ℂ)
+    = q.eval₂ ((Germ.coeRingHom (𝓟 U)).comp (Pi.ringHom fun z : ℂ => Polynomial.evalRingHom z))
+        ((g : ℂ → ℂ) : Germ (𝓟 U) ℂ)
+  rw [ha]
+  rfl
+
+/-- **Function-level no-relation from analytic-subring transcendence.**
+For any analytic coordinate `a` represented by `g`, transcendence of its meromorphic image over
+`ℂ(z)` forbids a nonzero polynomial `q ∈ ℂ[z][Y]` from vanishing pointwise as `q(z, g z)` on `U`. -/
+theorem no_eval₂_relation_of_analyticSubring_transcendental
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {a : analyticSubring U} {g : ℂ → ℂ}
+    (ha : (a : Germ (𝓟 U) ℂ) = ↑g)
+    (hG : haveI := isDomain_analyticSubring U hUo hUc hUne
+          letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a)) :
+    ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+      ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (g z)) 0 U := by
+  intro q hq hEq
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI algK : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  letI algA : Algebra (Polynomial ℂ) (meroField U) := (polyToMero U).toAlgebra
+  haveI hst : IsScalarTower (Polynomial ℂ) (RatFunc ℂ) (meroField U) := by
+    apply IsScalarTower.of_algebraMap_eq
+    intro p
+    show polyToMero U p = ratfuncToMero U hUo hUc hUne hUinf
+      (algebraMap (Polynomial ℂ) (RatFunc ℂ) p)
+    rw [ratfuncToMero_algebraMap_polynomial]
+  apply hG
+  rw [← IsFractionRing.isAlgebraic_iff (Polynomial ℂ) (RatFunc ℂ) (meroField U)]
+  refine ⟨q, hq, ?_⟩
+  rw [Polynomial.aeval_def]
+  have hAzero : q.eval₂ (polyToAnalytic U) a = 0 := by
+    apply Subtype.ext
+    rw [eval₂_polyToAnalytic_val_of_germ_eq ha q, ZeroMemClass.coe_zero, ← Germ.coe_zero,
+      Germ.coe_eq]
+    exact Filter.eventually_principal.mpr hEq
+  have halg : (algebraMap (Polynomial ℂ) (meroField U)) = polyToMero U := rfl
+  rw [halg]
+  rw [show q.eval₂ (polyToMero U) (algebraMap (analyticSubring U) (meroField U) a)
+        = algebraMap (analyticSubring U) (meroField U) (q.eval₂ (polyToAnalytic U) a) from by
+      rw [show polyToMero U = (algebraMap (analyticSubring U) (meroField U)).comp
+          (polyToAnalytic U) from rfl]
+      exact (Polynomial.hom_eval₂ q (polyToAnalytic U)
+        (algebraMap (analyticSubring U) (meroField U)) a).symm]
+  rw [hAzero, map_zero]
+
+/-- **Far-domain no-relation for the Böttcher coordinate.**
+On any open preconnected infinite domain lying beyond the Böttcher far bound, the far tower
+transcendence theorem immediately rules out nonzero pointwise relations `q(z, φ_c z)=0`. -/
+theorem no_eval₂_bottcher_relation_of_bottcher_transcendental_far
+    (c : ℂ) (hc : (0 : ℂ) ∉ filledJulia c)
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (hUfar : ∀ z ∈ U, bottcherFarBound c hc < ‖z‖)
+    {a : analyticSubring U}
+    (ha : (Filter.Germ.coeRingHom (𝓟 U) (bottcherCoord c)) = (a : Filter.Germ (𝓟 U) ℂ)) :
+    ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+      ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c z)) 0 U := by
+  have hG := bottcher_transcendental_far c hc hUo hUc hUne hUinf hUfar ha
+  exact no_eval₂_relation_of_analyticSubring_transcendental hUo hUc hUne hUinf ha.symm hG
+
+end Bottcher

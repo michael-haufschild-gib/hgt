@@ -19,9 +19,14 @@ non-real count: Z_c(J) = Z_c(Ĵ).
 
 ## 2. Stability and the winding formula [PROVED HERE]
 
-**(a) B := (D−τ̄)Â is UHP-stable.** At a zero, Â′/Â = τ̄; for z with Im z ≤ 0 and Â
-hyperbolic, Im(Â′/Â)(z) = −Im z·Σ|z−β_k|^{−2} ≥ 0 ≠ Im τ̄ = −b < 0. So all d zeros ρ_j of B
-have Im ρ_j > 0.
+**(a) B := (D−τ̄)Â is UHP-stable off the multiple-root set.** At a zero z of B with
+Â(z) ≠ 0: Â′/Â(z) = τ̄; for Im z ≤ 0 and Â hyperbolic, Im(Â′/Â)(z) = −Im z·Σ|z−β_k|^{−2}
+≥ 0 ≠ Im τ̄ = −b < 0, so every such zero has Im z > 0. [CORRECTION 2026-07-04, caught at
+formalization: an m-fold real root β of Â is an (m−1)-fold REAL zero of B (B(β) = Â′(β)
+= 0). For SIMPLE-rooted Â all d zeros of B are strictly in the open UHP and (b) applies
+verbatim; with multiple roots, B carries real zeros at exactly the repeated β's and the
+boundary bookkeeping of (b) is done by perturbation (both sides of the winding formula are
+stable under splitting the multiplicity).]
 
 **(b) Winding formula.** Ĵ = B′ − τB and B ≠ 0 on the closed lower half-plane, so
 LHP-zeros of Ĵ are the LHP-solutions of F_B(z) := B′/B = τ. By the argument principle over
@@ -124,3 +129,29 @@ and gap growth enters only through the loss integral and the near-energy scale. 
 integral is a lattice sum of the same csch² family (q-digamma closed forms, q = e^{−δ});
 bounding 2∫W̃ dt < 2 + (swap surplus) on nondecreasing-gap fields is the single remaining
 inequality between the identity stack and (SPUR-R).
+
+## 5c. Round-4 ledger findings [reasoned; sharpens #142]
+
+- **Exact step identity.** With D := d + σ̃₁ (so D(t*) = coth(s_near/2) entering,
+  = −coth(r_behind/2) leaving) and Ψ = (D²−1)/4 + W̃:
+  **ΔS = ¼(Y²−X²) + ΔW̃** where X = coth(θ_iδ_i/2), Y = coth((1−θ_{i+1})δ_{i+1}/2); since
+  θ < 1/2 forces Y < X, (S-mono) states precisely that the SPECTATOR energy gain beats the
+  pole-energy drop: **ΔW̃ > ¼(X² − Y²)** — the near-pole handoff to t_{i+2} (inside W̃) is
+  the carrier of the gain.
+- **Rigidity of the doubly-infinite lattice.** On a two-sided-infinite constant-δ field
+  every equilibrium is a shift of the last: θ, S, margin are constant — NO crossing exists.
+  The drift is entirely a boundary/one-sidedness effect: each step converts one ahead-charge
+  into one behind-charge, worth +2 in D asymptotically (coth-excess at the two far ends).
+  This is the same fact as §4's shape necessity, seen from the constraint side: the window's
+  one-sidedness is not a technical hypothesis but the ENGINE of the crossing. Constraint,
+  not flow — the crossing exists because the configuration is finite on one side.
+- **Finite constant-δ lattice: linear march.** ΔD = +2 + O(e^{−Nδ} + e^{−Mδ}) per step, so
+  D_i ≈ 2i − d + C — with (L1)–(L3) this proves (S-mono) on the constant-δ lattice.
+- **The real march is gap-variation-dominated.** The measured crossing (D* ≈ 2d at
+  i* ≈ 0.59d) is far above the slope-2 line — on real section fields the gap variation is a
+  leading term of ΔD, not a perturbation. The correct object for #142 is the coupled system
+  (D, W̃): Ḋ = −2W̃, Ẇ̃ = −Σχ_kw_k, with jumps at pole crossings; useful bound banked:
+  Σχ²w = 4Σw² + W̃ ≤ 4W̃² + W̃, so |Ẇ̃| ≤ (2W̃+1)√W̃; positivity of dΨ/dt on the second
+  leg holds once |D| > 2√W̃ + W̃^{−1/2}. The remaining work: control the first-leg deficit
+  by the second-leg gain using θ < 1/2 + gap growth — now a two-leg comparison for an
+  explicit ODE-with-jumps system, no free parameters.

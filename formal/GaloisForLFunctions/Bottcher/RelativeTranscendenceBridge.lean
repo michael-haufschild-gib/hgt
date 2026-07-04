@@ -3955,3 +3955,28 @@ theorem primitiveSqfreeBad_of_sparse_relation
     (fractionField_separable_of_squarefree_CzY D hDsq)
 
 end Bottcher
+
+namespace Bottcher
+
+variable {U : Set ℂ}
+
+/-- **Function-level no-relation from `phiMero` transcendence.**
+This is the reverse use of the analytic-subring bridge: a pointwise vanishing relation on `U` would
+make `q.eval₂ (polyToAnalytic U) (phiAnalytic c hU)` zero, contradicting transcendence unless
+`q = 0`. -/
+theorem no_eval₂_bottcher_relation_of_phiMero_transcendental
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c : ℂ) (hU : U ⊆ escapeOpen c)
+    (hG : letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+          Transcendental (RatFunc ℂ) (phiMero c hU)) :
+    ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+      ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c z)) 0 U := by
+  intro q hq hEq
+  have hzero : q.eval₂ (polyToAnalytic U) (phiAnalytic c hU) = 0 :=
+    eval₂_polyToAnalytic_eq_zero_of_eqOn_bridge (c := c) (hU := hU) q hEq
+  have hqzero : q = 0 :=
+    (eval₂_polyToAnalytic_phiAnalytic_eq_zero_iff_of_transcendental
+      hUo hUc hUne hUinf c hU hG q).mp hzero
+  exact hq hqzero
+
+end Bottcher

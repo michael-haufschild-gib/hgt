@@ -984,3 +984,204 @@ theorem noRelation_pow_left {K M : Type*} [Field K] [Field M] [Algebra K M] {a b
   exact expand_injective hk (hP'0.trans (map_zero _).symm)
 
 end Bottcher
+
+namespace Bottcher
+open Polynomial Filter Set
+
+/-- **Projection-base disconnected q62 from lift data.**  This is the top-theorem
+`q62_independence_disconnected_of_lifts` with the `RatFunc`-fixing clause discharged by projection-base
+linearity: if the deck fixes the projection coordinate `p₀`, then it fixes every element of
+`ℂ(p₀)` via `precompMeroEquiv_ratfuncToMeroVia_fix`.  Thus the remaining lift data is just the deck,
+its inverse, projection invariance, and the two Böttcher-germ scaling/fixing identities. -/
+theorem q62_independence_disconnected_of_projection_base_lifts {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U} {f₀ : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (a₁ a₂ : analyticSubring U) (c₁ c₂ : ℂ) (hne : c₁ ≠ c₂)
+    (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
+    (hF0 : haveI := isDomain_analyticSubring U hUo hUc hUne
+           algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hG0 : haveI := isDomain_analyticSubring U hUo hUc hUne
+           algebraMap (analyticSubring U) (meroField U) a₂ ≠ 0)
+    (hliftF : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (hg : AnalyticOnNhd ℂ g U) (_hg' : AnalyticOnNhd ℂ g' U)
+        (hmaps : Set.MapsTo g U U) (_hmaps' : Set.MapsTo g' U U)
+        (_hgg' : Set.EqOn (g ∘ g') id U) (_hg'g : Set.EqOn (g' ∘ g) id U),
+        d < orderOf ζ₀ ∧
+        precompAnalytic hg hmaps p₀ = p₀ ∧
+        (a₁ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+          = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (a₁ : Germ (𝓟 U) ℂ) ∧
+        (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+          = (a₂ : Germ (𝓟 U) ℂ))
+    (hliftG : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (hg : AnalyticOnNhd ℂ g U) (_hg' : AnalyticOnNhd ℂ g' U)
+        (hmaps : Set.MapsTo g U U) (_hmaps' : Set.MapsTo g' U U)
+        (_hgg' : Set.EqOn (g ∘ g') id U) (_hg'g : Set.EqOn (g' ∘ g) id U),
+        d < orderOf ζ₀ ∧
+        precompAnalytic hg hmaps p₀ = p₀ ∧
+        (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+          = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (a₂ : Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+  refine q62_independence_disconnected_of_lifts hUo hUc hUne a₁ a₂ c₁ c₂ hne hx₁ hx₂
+    hF0 hG0 ?_ ?_
+  · intro d
+    obtain ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hpfix, hscale, hinv⟩ :=
+      hliftF d
+    refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale, hinv, ?_⟩
+    intro k
+    simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+      hUo hUc hUne hp0 hinf hpfix k
+  · intro d
+    obtain ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hpfix, hscale⟩ :=
+      hliftG d
+    refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale, ?_⟩
+    intro k
+    simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+      hUo hUc hUne hp0 hinf hpfix k
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter Set
+
+/-- **Projection-base transcendence from lift data.**  A scaling deck for `a₂` proves
+`Transcendental (RatFunc ℂ) a₂` over the projection base `ℂ(p₀)` once the deck fixes `p₀`; the required
+`RatFunc`-fixing clause is supplied by `precompMeroEquiv_ratfuncToMeroVia_fix`. -/
+theorem transcendental_of_projection_base_lifts {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U} {f₀ : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (a₂ : analyticSubring U)
+    (hG0 : haveI := isDomain_analyticSubring U hUo hUc hUne
+           algebraMap (analyticSubring U) (meroField U) a₂ ≠ 0)
+    (hliftG : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (hg : AnalyticOnNhd ℂ g U) (_hg' : AnalyticOnNhd ℂ g' U)
+        (hmaps : Set.MapsTo g U U) (_hmaps' : Set.MapsTo g' U U)
+        (_hgg' : Set.EqOn (g ∘ g') id U) (_hg'g : Set.EqOn (g' ∘ g) id U),
+        d < orderOf ζ₀ ∧
+        precompAnalytic hg hmaps p₀ = p₀ ∧
+        (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+          = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (a₂ : Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+    Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+  refine transcendental_of_lifts hUo hUc hUne a₂ hG0 ?_
+  intro d
+  obtain ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hpfix, hscale⟩ := hliftG d
+  refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale, ?_⟩
+  intro k
+  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+    hUo hUc hUne hp0 hinf hpfix k
+
+/-- **Projection-base mixed q62 from lift data.**  In the mixed case, the disconnected coordinate only
+needs a scaling/fixing deck over the projection base; fixing `p₀` automatically fixes all of `ℂ(p₀)`,
+so the generic `noRelation_of_mixed_lifts` base-fixing hypothesis is discharged internally. -/
+theorem noRelation_of_mixed_projection_base_lifts {U : Set ℂ}
+    (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+    {p₀ : analyticSubring U} {f₀ : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (a₁ a₂ : analyticSubring U)
+    (hF : haveI := isDomain_analyticSubring U hUo hUc hUne
+          algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hG : haveI := isDomain_analyticSubring U hUo hUc hUne
+          haveI := (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+          Transcendental (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₂))
+    (hliftF : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (hg : AnalyticOnNhd ℂ g U) (_hg' : AnalyticOnNhd ℂ g' U)
+        (hmaps : Set.MapsTo g U U) (_hmaps' : Set.MapsTo g' U U)
+        (_hgg' : Set.EqOn (g ∘ g') id U) (_hg'g : Set.EqOn (g' ∘ g) id U),
+        d < orderOf ζ₀ ∧
+        precompAnalytic hg hmaps p₀ = p₀ ∧
+        (a₁ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+          = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (a₁ : Germ (𝓟 U) ℂ) ∧
+        (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmaps)
+          = (a₂ : Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    haveI := (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+    NoRelation (RatFunc ℂ) (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+  refine noRelation_of_mixed_lifts hUo hUc hUne a₁ a₂ hF hG ?_
+  intro d
+  obtain ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hpfix, hscale, hinv⟩ := hliftF d
+  refine ⟨ζ₀, g, g', hg, hg', hmaps, hmaps', hgg', hg'g, hord, hscale, hinv, ?_⟩
+  intro k
+  simpa using precompMeroEquiv_ratfuncToMeroVia_fix hg hg' hmaps hmaps' hgg' hg'g
+    hUo hUc hUne hp0 hinf hpfix k
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter Set
+
+/-- **Projection-base lift data descends to the downstairs carrier.**  Combine the projection-base
+hDisc capstone on the cover with `noRelation_of_precompMap`: if the cover deck data scales/fixes the
+two cover germs over the projection coordinate `p₀`, then the pulled-back downstairs meromorphic
+coordinates along `ι` are algebraically independent over the genuine downstairs base `ℂ(z)`.  The only
+remaining analytic input after this theorem is the identification of these pullbacks with the actual
+Böttcher germs on the downstairs domain. -/
+theorem noRelation_of_precompMap_projection_base_lifts {U V : Set ℂ} {ι : ℂ → ℂ}
+    (hι : AnalyticOnNhd ℂ ι V) (hmaps : Set.MapsTo ι V U) (hUc : IsPreconnected U)
+    (hopen : IsOpen (ι '' V)) (himgne : (ι '' V).Nonempty)
+    (hUo : IsOpen U) (hUne : U.Nonempty)
+    (hVo : IsOpen V) (hVc : IsPreconnected V) (hVne : V.Nonempty) (hVinf : V.Infinite)
+    {p₀ : analyticSubring U} {f₀ : ℂ → ℂ}
+    (hp0 : (p₀ : Germ (𝓟 U) ℂ) = ↑f₀) (hinf : (f₀ '' U).Infinite)
+    (hp0ι : (p₀ : Germ (𝓟 U) ℂ).compTendsto ι (tendsto_principal_principal.mpr hmaps)
+        = (↑(fun w : ℂ => w) : Germ (𝓟 V) ℂ))
+    (a₁ a₂ : analyticSubring U) (c₁ c₂ : ℂ) (hcne : c₁ ≠ c₂)
+    (hx₁ : c₁ ∉ Exceptional) (hx₂ : c₂ ∉ Exceptional)
+    (hF0 : haveI := isDomain_analyticSubring U hUo hUc hUne
+           algebraMap (analyticSubring U) (meroField U) a₁ ≠ 0)
+    (hG0 : haveI := isDomain_analyticSubring U hUo hUc hUne
+           algebraMap (analyticSubring U) (meroField U) a₂ ≠ 0)
+    (hliftF : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (hg : AnalyticOnNhd ℂ g U) (_hg' : AnalyticOnNhd ℂ g' U)
+        (hmapsg : Set.MapsTo g U U) (_hmapsg' : Set.MapsTo g' U U)
+        (_hgg' : Set.EqOn (g ∘ g') id U) (_hg'g : Set.EqOn (g' ∘ g) id U),
+        d < orderOf ζ₀ ∧
+        precompAnalytic hg hmapsg p₀ = p₀ ∧
+        (a₁ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmapsg)
+          = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (a₁ : Germ (𝓟 U) ℂ) ∧
+        (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmapsg)
+          = (a₂ : Germ (𝓟 U) ℂ))
+    (hliftG : ∀ d : ℕ, ∃ (ζ₀ : ℂ) (g g' : ℂ → ℂ)
+        (hg : AnalyticOnNhd ℂ g U) (_hg' : AnalyticOnNhd ℂ g' U)
+        (hmapsg : Set.MapsTo g U U) (_hmapsg' : Set.MapsTo g' U U)
+        (_hgg' : Set.EqOn (g ∘ g') id U) (_hg'g : Set.EqOn (g' ∘ g) id U),
+        d < orderOf ζ₀ ∧
+        precompAnalytic hg hmapsg p₀ = p₀ ∧
+        (a₂ : Germ (𝓟 U) ℂ).compTendsto g (tendsto_principal_principal.mpr hmapsg)
+          = ((constToAnalytic U ζ₀ : analyticSubring U) : Germ (𝓟 U) ℂ) * (a₂ : Germ (𝓟 U) ℂ)) :
+    haveI := isDomain_analyticSubring V hVo hVc hVne
+    haveI := (ratfuncToMero V hVo hVc hVne hVinf).toAlgebra
+    NoRelation (RatFunc ℂ)
+      (precompMeroMap hι hmaps hUc hopen himgne hUo hUne hVo hVc hVne
+        (algebraMap (analyticSubring U) (meroField U) a₁))
+      (precompMeroMap hι hmaps hUc hopen himgne hUo hUne hVo hVc hVne
+        (algebraMap (analyticSubring U) (meroField U) a₂)) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI : Algebra (RatFunc ℂ) (meroField U) :=
+    (ratfuncToMeroVia p₀ hp0 hinf hUo hUc hUne).toAlgebra
+  have hcover : NoRelation (RatFunc ℂ)
+      (algebraMap (analyticSubring U) (meroField U) a₁)
+      (algebraMap (analyticSubring U) (meroField U) a₂) :=
+    q62_independence_disconnected_of_projection_base_lifts hUo hUc hUne hp0 hinf
+      a₁ a₂ c₁ c₂ hcne hx₁ hx₂ hF0 hG0 hliftF hliftG
+  exact noRelation_of_precompMap hι hmaps hUc hopen himgne hUo hUne hVo hVc hVne hVinf
+    hp0 hinf hp0ι
+    (algebraMap (analyticSubring U) (meroField U) a₁)
+    (algebraMap (analyticSubring U) (meroField U) a₂) hcover
+
+end Bottcher

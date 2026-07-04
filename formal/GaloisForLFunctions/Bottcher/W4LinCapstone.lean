@@ -126,3 +126,29 @@ theorem q62_phiMero_linGap_swapped {c₁ c₂ : ℂ}
   exact noRelation_symm hNR
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **Both-disconnected q62, linear norm gap in either orientation.**
+This packages `q62_phiMero_linGap` and its swapped form behind the residual split: one disconnected
+parameter is norm-large, the other is at least radius `2`, and the linear gap holds in that orientation. -/
+theorem q62_phiMero_linGap_either {c₁ c₂ : ℂ}
+    (hor :
+      ((0:ℂ) ∉ filledJulia c₁ ∧ (1000:ℝ) ≤ ‖c₁‖ ∧
+        (0:ℂ) ∉ filledJulia c₂ ∧ (2:ℝ) ≤ ‖c₂‖ ∧
+        (Real.sqrt (2 * ‖c₂‖) + 1) ^ 2 ≤ ‖c₁‖ / 300) ∨
+      ((0:ℂ) ∉ filledJulia c₁ ∧ (2:ℝ) ≤ ‖c₁‖ ∧
+        (0:ℂ) ∉ filledJulia c₂ ∧ (1000:ℝ) ≤ ‖c₂‖ ∧
+        (Real.sqrt (2 * ‖c₁‖) + 1) ^ 2 ≤ ‖c₂‖ / 300)) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  rcases hor with hleft | hright
+  · rcases hleft with ⟨hc₁, hc1000, hc₂, hc₂2, hsgap⟩
+    exact q62_phiMero_linGap hc₁ hc1000 hc₂ hc₂2 hsgap
+  · rcases hright with ⟨hc₁, hc₁2, hc₂, hc1000, hsgap⟩
+    exact q62_phiMero_linGap_swapped hc₁ hc₁2 hc₂ hc1000 hsgap
+
+end Bottcher

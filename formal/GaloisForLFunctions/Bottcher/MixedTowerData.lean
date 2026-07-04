@@ -1249,3 +1249,52 @@ theorem q62_phiMero_norm_gap {c₁ c₂ : ℂ}
   · exact q62_phiMero_pair_far_general hc₁ hc1000 hM hgap
 
 end Bottcher
+
+namespace Bottcher
+
+/-- **q62 with a quadratic norm gap, swapped orientation.**
+This is the placement-free symmetric form of `q62_phiMero_norm_gap`: a far disconnected second
+parameter, sufficiently larger than the first, is independent from any nonexceptional first parameter
+under the same quadratic gap. -/
+theorem q62_phiMero_norm_gap_swapped {c₁ c₂ : ℂ}
+    (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc1000 : (1000:ℝ) ≤ ‖c₂‖)
+    (hc₁0 : c₁ ≠ 0) (hc₁2 : c₁ ≠ -2)
+    (hgap : 300 * (max 2 ‖c₁‖) ^ 2 ≤ ‖c₂‖) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  obtain ⟨U, hUo, hUc, hUne, hUinf, hU₂, hU₁, hNR⟩ :=
+    q62_phiMero_norm_gap (c₁ := c₂) (c₂ := c₁) hc₂ hc1000 hc₁0 hc₁2 hgap
+  refine ⟨U, hUo, hUc, hUne, hUinf, hU₁, hU₂, ?_⟩
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact noRelation_symm hNR
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **q62 with a quadratic norm gap in either orientation.**
+This packages `q62_phiMero_norm_gap` and its swapped form behind the actual residual split: if either
+parameter is disconnected, has norm at least `1000`, and dominates the other by the quadratic gap,
+then the Böttcher coordinates are algebraically independent on a common far carrier. -/
+theorem q62_phiMero_norm_gap_either {c₁ c₂ : ℂ}
+    (hor :
+      ((0:ℂ) ∉ filledJulia c₁ ∧ (1000:ℝ) ≤ ‖c₁‖ ∧ c₂ ≠ 0 ∧ c₂ ≠ -2 ∧
+        300 * (max 2 ‖c₂‖) ^ 2 ≤ ‖c₁‖) ∨
+      ((0:ℂ) ∉ filledJulia c₂ ∧ (1000:ℝ) ≤ ‖c₂‖ ∧ c₁ ≠ 0 ∧ c₁ ≠ -2 ∧
+        300 * (max 2 ‖c₁‖) ^ 2 ≤ ‖c₂‖)) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  rcases hor with hleft | hright
+  · rcases hleft with ⟨hc₁, hc1000, hc₂0, hc₂2, hgap⟩
+    exact q62_phiMero_norm_gap hc₁ hc1000 hc₂0 hc₂2 hgap
+  · rcases hright with ⟨hc₂, hc1000, hc₁0, hc₁2, hgap⟩
+    exact q62_phiMero_norm_gap_swapped hc₂ hc1000 hc₁0 hc₁2 hgap
+
+end Bottcher

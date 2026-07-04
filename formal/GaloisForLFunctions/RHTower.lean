@@ -39,3 +39,11 @@ import GaloisForLFunctions.RHTower.CountingSubstitute
 import GaloisForLFunctions.RHTower.WindowRelation
 import GaloisForLFunctions.RHTower.SquareLadder
 import GaloisForLFunctions.RHTower.GermExtension
+import GaloisForLFunctions.RHTower.SpurHermite
+import GaloisForLFunctions.RHTower.SpurRescale
+import GaloisForLFunctions.RHTower.SpurOperator
+import GaloisForLFunctions.RHTower.SpurStability
+import GaloisForLFunctions.RHTower.SpurNoGo
+import GaloisForLFunctions.RHTower.SeamTransport
+import GaloisForLFunctions.RHTower.SpurWeights
+import GaloisForLFunctions.RHTower.DictionaryBase

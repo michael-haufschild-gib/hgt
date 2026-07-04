@@ -20,6 +20,7 @@ two shipped capstones and the field-generic descent.
 import GaloisForLFunctions.KummerRootApplications
 import GaloisForLFunctions.Bottcher.W4LinCapstone
 import GaloisForLFunctions.Bottcher.MixedTowerData
+import GaloisForLFunctions.Bottcher.Q62BothConnectedExposed
 
 namespace Bottcher
 
@@ -118,6 +119,300 @@ theorem q62_phiMero_mixed_far_roots_swapped {c₁ c₂ : ℂ}
   refine ⟨U, hUo, hUc, hUne, hUinf, hU₁, hU₂, ?_⟩
   haveI := isDomain_analyticSubring U hUo hUc hUne
   letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  intro χ η p q hχ hη
+  exact KummerRootApplications.noRelation_pow_descent_both hχ hη hNR
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Linear-gap q62 in either orientation — full finite root tower.**
+This consumes `q62_phiMero_linGap_either` and lifts the resulting Böttcher-coordinate independence to
+all finite roots of both coordinates. -/
+theorem q62_phiMero_linGap_either_roots {c₁ c₂ : ℂ}
+    (hor :
+      ((0:ℂ) ∉ filledJulia c₁ ∧ (1000:ℝ) ≤ ‖c₁‖ ∧
+        (0:ℂ) ∉ filledJulia c₂ ∧ (2:ℝ) ≤ ‖c₂‖ ∧
+        (Real.sqrt (2 * ‖c₂‖) + 1) ^ 2 ≤ ‖c₁‖ / 300) ∨
+      ((0:ℂ) ∉ filledJulia c₁ ∧ (2:ℝ) ≤ ‖c₁‖ ∧
+        (0:ℂ) ∉ filledJulia c₂ ∧ (1000:ℝ) ≤ ‖c₂‖ ∧
+        (Real.sqrt (2 * ‖c₁‖) + 1) ^ 2 ≤ ‖c₂‖ / 300)) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ {χ η : meroField U} {p q : ℕ},
+        χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+        NoRelation (RatFunc ℂ) χ η := by
+  obtain ⟨U, hUo, hUc, hUne, hUinf, hU₁, hU₂, hNR⟩ := q62_phiMero_linGap_either hor
+  refine ⟨U, hUo, hUc, hUne, hUinf, hU₁, hU₂, ?_⟩
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  intro χ η p q hχ hη
+  exact KummerRootApplications.noRelation_pow_descent_both hχ hη hNR
+
+/-- **Quadratic-gap / mixed q62 in either orientation — full finite root tower.**
+This consumes `q62_phiMero_norm_gap_either` and lifts the resulting Böttcher-coordinate independence
+to all finite roots of both coordinates. -/
+theorem q62_phiMero_norm_gap_either_roots {c₁ c₂ : ℂ}
+    (hor :
+      ((0:ℂ) ∉ filledJulia c₁ ∧ (1000:ℝ) ≤ ‖c₁‖ ∧ c₂ ≠ 0 ∧ c₂ ≠ -2 ∧
+        300 * (max 2 ‖c₂‖) ^ 2 ≤ ‖c₁‖) ∨
+      ((0:ℂ) ∉ filledJulia c₂ ∧ (1000:ℝ) ≤ ‖c₂‖ ∧ c₁ ≠ 0 ∧ c₁ ≠ -2 ∧
+        300 * (max 2 ‖c₁‖) ^ 2 ≤ ‖c₂‖)) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ {χ η : meroField U} {p q : ℕ},
+        χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+        NoRelation (RatFunc ℂ) χ η := by
+  obtain ⟨U, hUo, hUc, hUne, hUinf, hU₁, hU₂, hNR⟩ := q62_phiMero_norm_gap_either hor
+  refine ⟨U, hUo, hUc, hUne, hUinf, hU₁, hU₂, ?_⟩
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  intro χ η p q hχ hη
+  exact KummerRootApplications.noRelation_pow_descent_both hχ hη hNR
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Linear-gap q62, swapped orientation — full finite root tower.**
+Direct swapped-orientation API for the finite-root tower over the linear-gap disconnected capstone. -/
+theorem q62_phiMero_linGap_roots_swapped {c₁ c₂ : ℂ}
+    (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc₁2 : (2:ℝ) ≤ ‖c₁‖)
+    (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc1000 : (1000:ℝ) ≤ ‖c₂‖)
+    (hsgap : (Real.sqrt (2 * ‖c₁‖) + 1) ^ 2 ≤ ‖c₂‖ / 300) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ {χ η : meroField U} {p q : ℕ},
+        χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+        NoRelation (RatFunc ℂ) χ η := by
+  obtain ⟨U, hUo, hUc, hUne, hUinf, hU₁, hU₂, hNR⟩ :=
+    q62_phiMero_linGap_swapped hc₁ hc₁2 hc₂ hc1000 hsgap
+  refine ⟨U, hUo, hUc, hUne, hUinf, hU₁, hU₂, ?_⟩
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  intro χ η p q hχ hη
+  exact KummerRootApplications.noRelation_pow_descent_both hχ hη hNR
+
+/-- **Quadratic-gap / mixed q62, swapped orientation — full finite root tower.**
+Direct swapped-orientation API for finite roots over `q62_phiMero_norm_gap_swapped`. -/
+theorem q62_phiMero_norm_gap_roots_swapped {c₁ c₂ : ℂ}
+    (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc1000 : (1000:ℝ) ≤ ‖c₂‖)
+    (hc₁0 : c₁ ≠ 0) (hc₁2 : c₁ ≠ -2)
+    (hgap : 300 * (max 2 ‖c₁‖) ^ 2 ≤ ‖c₂‖) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ {χ η : meroField U} {p q : ℕ},
+        χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+        NoRelation (RatFunc ℂ) χ η := by
+  obtain ⟨U, hUo, hUc, hUne, hUinf, hU₁, hU₂, hNR⟩ :=
+    q62_phiMero_norm_gap_swapped hc₂ hc1000 hc₁0 hc₁2 hgap
+  refine ⟨U, hUo, hUc, hUne, hUinf, hU₁, hU₂, ?_⟩
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  intro χ η p q hχ hη
+  exact KummerRootApplications.noRelation_pow_descent_both hχ hη hNR
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Mixed disconnected/connected q62 in either orientation — full finite root tower.**
+A single API for the gap-free mixed far regime: one parameter is far disconnected (`‖c‖ ≥ 1000`) and
+the other is connected nonexceptional.  The conclusion lifts Böttcher-coordinate independence to all
+finite roots of both coordinates. -/
+theorem q62_phiMero_mixed_far_roots_either {c₁ c₂ : ℂ}
+    (hor :
+      ((0:ℂ) ∉ filledJulia c₁ ∧ (1000:ℝ) ≤ ‖c₁‖ ∧
+        c₂ ∈ mandelbrot ∧ c₂ ≠ 0 ∧ c₂ ≠ -2) ∨
+      (c₁ ∈ mandelbrot ∧ c₁ ≠ 0 ∧ c₁ ≠ -2 ∧
+        (0:ℂ) ∉ filledJulia c₂ ∧ (1000:ℝ) ≤ ‖c₂‖)) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ {χ η : meroField U} {p q : ℕ},
+        χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+        NoRelation (RatFunc ℂ) χ η := by
+  rcases hor with hleft | hright
+  · rcases hleft with ⟨hc₁, hc1000, hc₂M, hc₂0, hc₂2⟩
+    exact q62_phiMero_mixed_far_roots hc₁ hc1000 hc₂M hc₂0 hc₂2
+  · rcases hright with ⟨hc₁M, hc₁0, hc₁2, hc₂, hc1000⟩
+    exact q62_phiMero_mixed_far_roots_swapped hc₁M hc₁0 hc₁2 hc₂ hc1000
+
+end Bottcher
+
+namespace Bottcher
+
+theorem q62_phiMero_large_disconnected_mixed_or_norm_gap_roots {c₁ c₂ : ℂ}
+    (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc1000 : (1000:ℝ) ≤ ‖c₁‖)
+    (hc₂0 : c₂ ≠ 0) (hc₂2 : c₂ ≠ -2)
+    (hcase : c₂ ∈ mandelbrot ∨ 300 * (max 2 ‖c₂‖) ^ 2 ≤ ‖c₁‖) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ {χ η : meroField U} {p q : ℕ},
+        χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+        NoRelation (RatFunc ℂ) χ η := by
+  rcases hcase with hc₂M | hgap
+  · exact q62_phiMero_mixed_far_roots hc₁ hc1000 hc₂M hc₂0 hc₂2
+  · exact q62_phiMero_norm_gap_roots hc₁ hc1000 hc₂0 hc₂2 hgap
+
+theorem q62_phiMero_large_disconnected_mixed_or_norm_gap_roots_swapped {c₁ c₂ : ℂ}
+    (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc1000 : (1000:ℝ) ≤ ‖c₂‖)
+    (hc₁0 : c₁ ≠ 0) (hc₁2 : c₁ ≠ -2)
+    (hcase : c₁ ∈ mandelbrot ∨ 300 * (max 2 ‖c₁‖) ^ 2 ≤ ‖c₂‖) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ {χ η : meroField U} {p q : ℕ},
+        χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+        NoRelation (RatFunc ℂ) χ η := by
+  rcases hcase with hc₁M | hgap
+  · exact q62_phiMero_mixed_far_roots_swapped hc₁M hc₁0 hc₁2 hc₂ hc1000
+  · exact q62_phiMero_norm_gap_roots_swapped hc₂ hc1000 hc₁0 hc₁2 hgap
+
+theorem q62_phiMero_large_disconnected_mixed_or_norm_gap_roots_either {c₁ c₂ : ℂ}
+    (hor :
+      ((0:ℂ) ∉ filledJulia c₁ ∧ (1000:ℝ) ≤ ‖c₁‖ ∧
+        c₂ ≠ 0 ∧ c₂ ≠ -2 ∧
+        (c₂ ∈ mandelbrot ∨ 300 * (max 2 ‖c₂‖) ^ 2 ≤ ‖c₁‖)) ∨
+      ((0:ℂ) ∉ filledJulia c₂ ∧ (1000:ℝ) ≤ ‖c₂‖ ∧
+        c₁ ≠ 0 ∧ c₁ ≠ -2 ∧
+        (c₁ ∈ mandelbrot ∨ 300 * (max 2 ‖c₁‖) ^ 2 ≤ ‖c₂‖))) :
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂),
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ {χ η : meroField U} {p q : ℕ},
+        χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+        NoRelation (RatFunc ℂ) χ η := by
+  rcases hor with hleft | hright
+  · rcases hleft with ⟨hc₁, hc1000, hc₂0, hc₂2, hcase⟩
+    exact q62_phiMero_large_disconnected_mixed_or_norm_gap_roots
+      hc₁ hc1000 hc₂0 hc₂2 hcase
+  · rcases hright with ⟨hc₂, hc1000, hc₁0, hc₁2, hcase⟩
+    exact q62_phiMero_large_disconnected_mixed_or_norm_gap_roots_swapped
+      hc₂ hc1000 hc₁0 hc₁2 hcase
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Both-connected q62 from open problem 6 — full finite root tower.**
+On any connected meromorphic carrier `U`, the exposed-one-sided/smooth-piece connected capstone
+`q62_phiMero_bothconnected_of_op6` lifts to all finite roots of both Böttcher coordinates. -/
+theorem q62_phiMero_bothconnected_of_op6_roots
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁2 : c₁ ≠ -2) (hc₂0 : c₂ ≠ 0) (hc₂2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hexp : ExposedOneSided c₁ c₂ ∨ ExposedOneSided c₂ c₁)
+    (hrig12 : SmoothPieceRigidity c₁ c₂) (hrig21 : SmoothPieceRigidity c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    ∀ {χ η : meroField U} {p q : ℕ},
+      χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+      NoRelation (RatFunc ℂ) χ η := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  have hNR := q62_phiMero_bothconnected_of_op6 hUo hUc hUne hUinf
+    hc₁M hc₂M hc₁0 hc₁2 hc₂0 hc₂2 hU₁ hU₂ hexp hrig12 hrig21
+  intro χ η p q hχ hη
+  exact KummerRootApplications.noRelation_pow_descent_both hχ hη hNR
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **General exposed-one-sided q62 capstone — full finite root tower.**
+This is the root-tower lift of `q62_phiMero_independence_of_exposed_oneSided`: once the connected
+exposed-tip input and the disconnected monodromy inputs prove Böttcher-coordinate independence on a
+carrier `U`, every finite root of one coordinate is independent of every finite root of the other. -/
+theorem q62_phiMero_independence_of_exposed_oneSided_roots
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁2 : c₁ ≠ -2) (hc₂0 : c₂ ≠ 0) (hc₂2 : c₂ ≠ -2)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hexp : c₁ ∈ mandelbrot → c₂ ∈ mandelbrot → ExposedOneSided c₁ c₂)
+    (hrig : c₁ ∈ mandelbrot → c₂ ∈ mandelbrot → SmoothPieceRigidity c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    ∀ {χ η : meroField U} {p q : ℕ},
+      χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+      NoRelation (RatFunc ℂ) χ η := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  have hNR := q62_phiMero_independence_of_exposed_oneSided hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂
+    hc₁0 hc₁2 hc₂0 hc₂2 hmono₁ hmono₂ hexp hrig
+  intro χ η p q hχ hη
+  exact KummerRootApplications.noRelation_pow_descent_both hχ hη hNR
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Conditional q62 dispatcher — full finite root tower.**
+This lifts `q62_phiMero_independence_conditional`: for any placement predicate `Disc`, once the two
+monodromy inputs, the connected transcendence inputs, and the both-connected independence input
+settle the Böttcher coordinates, all finite roots of both coordinates are independent. -/
+theorem q62_phiMero_independence_conditional_roots
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty) (hUinf : U.Infinite)
+    (c₁ c₂ : ℂ) (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (Disc : ℂ → Prop)
+    (hmono₁ : Disc c₁ →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : Disc c₂ →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (htrans₁ : ¬ Disc c₁ →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      Transcendental (RatFunc ℂ) (phiMero c₁ hU₁))
+    (htrans₂ : ¬ Disc c₂ →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      Transcendental (RatFunc ℂ) (phiMero c₂ hU₂))
+    (hbothconn : ¬ Disc c₁ → ¬ Disc c₂ →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂)) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    ∀ {χ η : meroField U} {p q : ℕ},
+      χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+      NoRelation (RatFunc ℂ) χ η := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  have hNR := q62_phiMero_independence_conditional hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ Disc
+    hmono₁ hmono₂ htrans₁ htrans₂ hbothconn
   intro χ η p q hχ hη
   exact KummerRootApplications.noRelation_pow_descent_both hχ hη hNR
 

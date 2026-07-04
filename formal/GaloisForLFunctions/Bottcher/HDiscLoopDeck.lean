@@ -14,6 +14,7 @@ the monodromy loop and the z-fixing deck can be requested together at the same
 dyadic depth.
 -/
 import GaloisForLFunctions.Bottcher.CylinderDeck
+import GaloisForLFunctions.Bottcher.BottcherTowerData
 import GaloisForLFunctions.Bottcher.DeckAnnulusData
 import GaloisForLFunctions.Bottcher.LiftExists
 import GaloisForLFunctions.Bottcher.ProductCover
@@ -3025,5 +3026,568 @@ theorem concreteAnnulusHLiftGOutput_of_fixed_inverse {c₁ : ℂ} {ψ₂ : ℂ �
     hζeq, hζ0, hord, hζpow, hζnorm, ha₁, ha₂, htail⟩ := h
   exact ⟨ψ₂, hpInf, p₀, hp0, a₁, a₂, ζ₀, hg, hg', hmaps, hmaps', hgg', hg'g,
     hζeq, hζ0, hord, hζpow, hζnorm, ha₁, ha₂, htail⟩
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Uniform fixed-inverse hLiftF plus the matching pulled-back transcendence witness.**  The annulus
+root coordinate changes the projection base with the dyadic depth, so this deliberately packages the
+handoff per depth rather than forcing a single fixed-field tower.  For each `d`, the same far-field
+inverse branch gives the concrete `hliftF` datum at level `d+1`; if the far high-value downstairs set
+has no nonzero relation `q(z,φ_{c₂}(z))`, it also gives the exact projection-base transcendence of the
+pulled-back coordinate on that same annulus. -/
+theorem exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_no_far_high_relation
+    (c₁ c₂ : ℂ) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₁ : ℂ → ℂ),
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₁ c₂ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z) ∧
+      ∀ d : ℕ,
+        concreteAnnulusHLiftFOutputWithFixedInverse c₂ ψ₁ (d + 1) d R' hR'pos ∧
+        ((∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+          ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0
+            {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₁ z‖}) →
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₂ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₂ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₂ (ψ₁ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₂))) := by
+  obtain ⟨R, B, R', hR'pos, ψ₁, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_data_with_fixed_inverse_projection_and_image c₁ c₂
+  refine ⟨R, B, R', hR'pos, ψ₁, hall, hψleft, fun d => ?_⟩
+  let U : Set ℂ := {ξ : ℂ | R' < ‖ξ‖}
+  let N : ℕ := 2 ^ (d + 1)
+  obtain ⟨hψan, hcont, _hproj, hpInf, _himage⟩ := hdata d
+  constructor
+  · exact concreteAnnulusHLiftFOutputWithFixedInverse_of_projection_data hpInf hψan hcont rfl
+  · intro hno
+    obtain ⟨p₀, hp0⟩ := exists_projection_p0 (U := U) (ψ₁ := ψ₁) (n := d + 1) (by
+      simpa [U] using hψan)
+    obtain ⟨a₂, ha₂⟩ := exists_rotInvariant_a2 (c₂ := c₂) (U := U) (ψ₁ := ψ₁) (n := d + 1)
+      (by simpa [U] using hψan) (by simpa [U] using hcont)
+    have hNpos : 0 < N := by
+      dsimp [N]
+      exact pow_pos (by norm_num : (0 : ℕ) < 2) (d + 1)
+    have htr := transcendental_pullback_bottcher_of_no_far_high_relation
+      (c₁ := c₁) (c₂ := c₂) (ψ₁ := ψ₁) (R := R) (R' := R') (N := N)
+      hR'pos hNpos hψleft (p₀ := p₀) (a := a₂) hp0
+      (by simpa [U, N] using hpInf) (by simpa [U, N] using ha₂)
+      (by simpa [N] using hno)
+    refine ⟨by simpa [U] using p₀, by simpa [U, N] using hp0,
+      by simpa [U, N] using hpInf, by simpa [U] using a₂,
+      by simpa [U, N] using ha₂, ?_⟩
+    simpa [U, N] using htr
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Symmetric uniform fixed-inverse hLiftG plus pulled-back transcendence witness.**  This is the
+coordinate-reversed form of
+`exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_no_far_high_relation`: the fixed
+inverse branch is now for `c₂`, the concrete datum is `hliftG`, and the far high-value obstruction
+proves transcendence of the pulled-back `c₁` coordinate over the projection base. -/
+theorem exists_uniform_cover_annulus_hliftG_tower_with_transcendence_of_no_far_high_relation
+    (c₁ c₂ : ℂ) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₂ : ℂ → ℂ),
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₂ c₁ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₂ (bottcherCoord c₂ z) = z) ∧
+      ∀ d : ℕ,
+        concreteAnnulusHLiftGOutputWithFixedInverse c₁ ψ₂ (d + 1) d R' hR'pos ∧
+        ((∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+          ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₁ z)) 0
+            {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₂ z‖}) →
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₂ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₂ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₁ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₁ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₁ (ψ₂ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₁))) := by
+  obtain ⟨R, B, R', hR'pos, ψ₂, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_no_far_high_relation c₂ c₁
+  refine ⟨R, B, R', hR'pos, ψ₂, hall, hψleft, fun d => ?_⟩
+  obtain ⟨hF, htr⟩ := hdata d
+  constructor
+  · exact concreteAnnulusHLiftGOutputWithFixedInverse_of_hliftFOutputWithFixedInverse hF
+  · intro hno
+    obtain ⟨p₀, hp0, hpInf, a₁, ha₁, htrans⟩ := htr hno
+    exact ⟨p₀, hp0, hpInf, a₁, ha₁, htrans⟩
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Uniform fixed-inverse hLiftF plus transcendence from far-domain topology.**
+This closes the algebraic obstruction input of
+`exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_no_far_high_relation` whenever the
+far high-value downstairs set itself satisfies the hypotheses of `bottcher_transcendental_far` for
+`c₂`.  The analytic representative on that set is supplied by `bottcherFarBound_spec`. -/
+theorem exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high_domain
+    (c₁ c₂ : ℂ) (hc₂ : (0 : ℂ) ∉ filledJulia c₂) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₁ : ℂ → ℂ),
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₁ c₂ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z) ∧
+      ∀ d : ℕ,
+        concreteAnnulusHLiftFOutputWithFixedInverse c₂ ψ₁ (d + 1) d R' hR'pos ∧
+        (∀ S : Set ℂ,
+          S = {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₁ z‖} →
+          IsOpen S → IsPreconnected S → S.Nonempty → S.Infinite →
+          (∀ z ∈ S, bottcherFarBound c₂ hc₂ < ‖z‖) →
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₂ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₂ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₂ (ψ₁ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₂))) := by
+  obtain ⟨R, B, R', hR'pos, ψ₁, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_no_far_high_relation c₁ c₂
+  refine ⟨R, B, R', hR'pos, ψ₁, hall, hψleft, fun d => ?_⟩
+  obtain ⟨hF, htr⟩ := hdata d
+  constructor
+  · exact hF
+  · intro S hSdef hSo hSc hSne hSinf hSfar
+    have hno : ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+        ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0 S := by
+      obtain ⟨aS, haS, _htower⟩ := bottcherFarBound_spec c₂ hc₂ S hSo hSc hSne hSinf hSfar
+      exact no_eval₂_bottcher_relation_of_bottcher_transcendental_far
+        c₂ hc₂ hSo hSc hSne hSinf hSfar haS
+    exact htr (by simpa [hSdef] using hno)
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Symmetric fixed-inverse hLiftG plus transcendence from far-domain topology.**
+This is the coordinate-reversed form of
+`exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high_domain`: the fixed inverse
+branch is for `c₂`, the concrete datum is `hliftG`, and the far high-value downstairs set is tested
+against the far bound for `c₁`. -/
+theorem exists_uniform_cover_annulus_hliftG_tower_with_transcendence_of_far_high_domain
+    (c₁ c₂ : ℂ) (hc₁ : (0 : ℂ) ∉ filledJulia c₁) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₂ : ℂ → ℂ),
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₂ c₁ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₂ (bottcherCoord c₂ z) = z) ∧
+      ∀ d : ℕ,
+        concreteAnnulusHLiftGOutputWithFixedInverse c₁ ψ₂ (d + 1) d R' hR'pos ∧
+        (∀ S : Set ℂ,
+          S = {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₂ z‖} →
+          IsOpen S → IsPreconnected S → S.Nonempty → S.Infinite →
+          (∀ z ∈ S, bottcherFarBound c₁ hc₁ < ‖z‖) →
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₂ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₂ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₁ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₁ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₁ (ψ₂ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₁))) := by
+  obtain ⟨R, B, R', hR'pos, ψ₂, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high_domain c₂ c₁ hc₁
+  refine ⟨R, B, R', hR'pos, ψ₂, hall, hψleft, fun d => ?_⟩
+  obtain ⟨hF, htr⟩ := hdata d
+  constructor
+  · exact concreteAnnulusHLiftGOutputWithFixedInverse_of_hliftFOutputWithFixedInverse hF
+  · intro S hSdef hSo hSc hSne hSinf hSfar
+    obtain ⟨p₀, hp0, hpInf, a₁, ha₁, htrans⟩ := htr S hSdef hSo hSc hSne hSinf hSfar
+    exact ⟨p₀, hp0, hpInf, a₁, ha₁, htrans⟩
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The far high-value Böttcher subset is open.**
+The exterior condition places the domain inside `escapeOpen c`; on that open exterior,
+`bottcherCoord c` is continuous, so the Böttcher-value superlevel condition is open there. -/
+theorem isOpen_far_high_bottcher_value {c : ℂ} {R Λ : ℝ}
+    (hR : max 2 ‖c‖ < R) :
+    IsOpen {z : ℂ | R < ‖z‖ ∧ Λ < ‖bottcherCoord c z‖} := by
+  let E : Set ℂ := {z : ℂ | R < ‖z‖}
+  have hEopen : IsOpen E := isOpen_lt continuous_const continuous_norm
+  have hEsub : E ⊆ escapeOpen c := by
+    intro z hz
+    exact lt_trans hR hz
+  have hcont : ContinuousOn (fun z : ℂ => ‖bottcherCoord c z‖) E :=
+    ((analyticOnNhd_bottcherCoord_full c).continuousOn.mono hEsub).norm
+  simpa [E] using hcont.isOpen_inter_preimage hEopen isOpen_Ioi
+
+/-- **Radius-package form of `isOpen_far_high_bottcher_value`.** -/
+theorem isOpen_far_high_bottcher_value_of_coverAnnulusRadiusIneqs
+    {c₁ c₂ : ℂ} {n : ℕ} {R B R' : ℝ}
+    (h : coverAnnulusRadiusIneqs c₁ c₂ n R B R') :
+    IsOpen {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ n) < ‖bottcherCoord c₁ z‖} := by
+  have hMpos : 0 < max 2 ‖c₁‖ := lt_of_lt_of_le (by norm_num : (0 : ℝ) < 2) (le_max_left _ _)
+  have hR : max 2 ‖c₁‖ < R := by nlinarith [h.1]
+  exact isOpen_far_high_bottcher_value (c := c₁) (R := R) (Λ := R' ^ (2 ^ n)) hR
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **F-side annulus handoff with automatic far-bound and openness.**
+The radii are chosen with `R > bottcherFarBound c₂ hc₂`, so the far-bound hypothesis needed by
+`bottcher_transcendental_far` follows from membership in the far high-value set.  The open-set
+hypothesis is discharged by `isOpen_far_high_bottcher_value_of_coverAnnulusRadiusIneqs`; callers only
+supply preconnectedness, nonemptiness, and infinitude of the far high-value set. -/
+theorem exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high_preconnected
+    (c₁ c₂ : ℂ) (hc₂ : (0 : ℂ) ∉ filledJulia c₂) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₁ : ℂ → ℂ),
+      bottcherFarBound c₂ hc₂ < R ∧
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₁ c₂ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z) ∧
+      ∀ d : ℕ,
+        concreteAnnulusHLiftFOutputWithFixedInverse c₂ ψ₁ (d + 1) d R' hR'pos ∧
+        (∀ S : Set ℂ,
+          S = {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₁ z‖} →
+          IsPreconnected S → S.Nonempty → S.Infinite →
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₂ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₂ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₂ (ψ₁ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₂))) := by
+  obtain ⟨R, B, R', hR'pos, ψ₁, hRgt, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_data_with_fixed_inverse_projection_and_image_with_R_gt
+      c₁ c₂ (bottcherFarBound c₂ hc₂)
+  refine ⟨R, B, R', hR'pos, ψ₁, hRgt, hall, hψleft, fun d => ?_⟩
+  let U : Set ℂ := {ξ : ℂ | R' < ‖ξ‖}
+  let N : ℕ := 2 ^ (d + 1)
+  obtain ⟨hψan, hcont, _hproj, hpInf, _himage⟩ := hdata d
+  constructor
+  · exact concreteAnnulusHLiftFOutputWithFixedInverse_of_projection_data hpInf hψan hcont rfl
+  · intro S hSdef hSc hSne hSinf
+    have hSo : IsOpen S := by
+      rw [hSdef]
+      exact isOpen_far_high_bottcher_value_of_coverAnnulusRadiusIneqs (hall d)
+    have hSfar : ∀ z ∈ S, bottcherFarBound c₂ hc₂ < ‖z‖ := by
+      intro z hz
+      rw [hSdef] at hz
+      exact lt_trans hRgt hz.1
+    have hnoS : ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+        ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0 S := by
+      obtain ⟨aS, haS, _htower⟩ := bottcherFarBound_spec c₂ hc₂ S hSo hSc hSne hSinf hSfar
+      exact no_eval₂_bottcher_relation_of_bottcher_transcendental_far
+        c₂ hc₂ hSo hSc hSne hSinf hSfar haS
+    have hno : ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+        ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0
+          {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₁ z‖} := by
+      simpa [hSdef] using hnoS
+    obtain ⟨p₀, hp0⟩ := exists_projection_p0 (U := U) (ψ₁ := ψ₁) (n := d + 1) (by
+      simpa [U] using hψan)
+    obtain ⟨a₂, ha₂⟩ := exists_rotInvariant_a2 (c₂ := c₂) (U := U) (ψ₁ := ψ₁) (n := d + 1)
+      (by simpa [U] using hψan) (by simpa [U] using hcont)
+    have hNpos : 0 < N := by
+      dsimp [N]
+      exact pow_pos (by norm_num : (0 : ℕ) < 2) (d + 1)
+    have htr := transcendental_pullback_bottcher_of_no_far_high_relation
+      (c₁ := c₁) (c₂ := c₂) (ψ₁ := ψ₁) (R := R) (R' := R') (N := N)
+      hR'pos hNpos hψleft (p₀ := p₀) (a := a₂) hp0
+      (by simpa [U, N] using hpInf) (by simpa [U, N] using ha₂)
+      (by simpa [N] using hno)
+    refine ⟨by simpa [U] using p₀, by simpa [U, N] using hp0,
+      by simpa [U, N] using hpInf, by simpa [U] using a₂,
+      by simpa [U, N] using ha₂, ?_⟩
+    simpa [U, N] using htr
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **G-side annulus handoff with automatic far-bound and openness.**
+The symmetric form of
+`exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high_preconnected`. -/
+theorem exists_uniform_cover_annulus_hliftG_tower_with_transcendence_of_far_high_preconnected
+    (c₁ c₂ : ℂ) (hc₁ : (0 : ℂ) ∉ filledJulia c₁) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₂ : ℂ → ℂ),
+      bottcherFarBound c₁ hc₁ < R ∧
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₂ c₁ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₂ (bottcherCoord c₂ z) = z) ∧
+      ∀ d : ℕ,
+        concreteAnnulusHLiftGOutputWithFixedInverse c₁ ψ₂ (d + 1) d R' hR'pos ∧
+        (∀ S : Set ℂ,
+          S = {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₂ z‖} →
+          IsPreconnected S → S.Nonempty → S.Infinite →
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₂ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₂ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₁ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₁ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₁ (ψ₂ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₁))) := by
+  obtain ⟨R, B, R', hR'pos, ψ₂, hRgt, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high_preconnected c₂ c₁ hc₁
+  refine ⟨R, B, R', hR'pos, ψ₂, hRgt, hall, hψleft, fun d => ?_⟩
+  obtain ⟨hF, htr⟩ := hdata d
+  constructor
+  · exact concreteAnnulusHLiftGOutputWithFixedInverse_of_hliftFOutputWithFixedInverse hF
+  · intro S hSdef hSc hSne hSinf
+    obtain ⟨p₀, hp0, hpInf, a₁, ha₁, htrans⟩ := htr S hSdef hSc hSne hSinf
+    exact ⟨p₀, hp0, hpInf, a₁, ha₁, htrans⟩
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **F-side annulus handoff with only preconnectedness left as topology.**
+The far high-value set is automatically open, nonempty, infinite, and beyond the `c₂` far bound by the
+preceding radius and real-ray lemmas.  The only remaining topological input is preconnectedness. -/
+theorem exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high_preconnected_only
+    (c₁ c₂ : ℂ) (hc₂ : (0 : ℂ) ∉ filledJulia c₂) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₁ : ℂ → ℂ),
+      bottcherFarBound c₂ hc₂ < R ∧
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₁ c₂ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z) ∧
+      ∀ d : ℕ,
+        concreteAnnulusHLiftFOutputWithFixedInverse c₂ ψ₁ (d + 1) d R' hR'pos ∧
+        (∀ S : Set ℂ,
+          S = {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₁ z‖} →
+          IsPreconnected S →
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₂ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₂ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₂ (ψ₁ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₂))) := by
+  obtain ⟨R, B, R', hR'pos, ψ₁, hRgt, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high_preconnected c₁ c₂ hc₂
+  refine ⟨R, B, R', hR'pos, ψ₁, hRgt, hall, hψleft, fun d => ?_⟩
+  obtain ⟨hF, htr⟩ := hdata d
+  constructor
+  · exact hF
+  · intro S hSdef hSc
+    have hSne : S.Nonempty := by
+      simpa [hSdef] using far_high_bottcher_value_nonempty c₁ R (R' ^ (2 ^ (d + 1)))
+    have hSinf : S.Infinite := by
+      simpa [hSdef] using far_high_bottcher_value_infinite c₁ R (R' ^ (2 ^ (d + 1)))
+    exact htr S hSdef hSc hSne hSinf
+
+/-- **G-side annulus handoff with only preconnectedness left as topology.** -/
+theorem exists_uniform_cover_annulus_hliftG_tower_with_transcendence_of_far_high_preconnected_only
+    (c₁ c₂ : ℂ) (hc₁ : (0 : ℂ) ∉ filledJulia c₁) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₂ : ℂ → ℂ),
+      bottcherFarBound c₁ hc₁ < R ∧
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₂ c₁ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₂ (bottcherCoord c₂ z) = z) ∧
+      ∀ d : ℕ,
+        concreteAnnulusHLiftGOutputWithFixedInverse c₁ ψ₂ (d + 1) d R' hR'pos ∧
+        (∀ S : Set ℂ,
+          S = {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₂ z‖} →
+          IsPreconnected S →
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₂ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₂ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₁ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₁ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₁ (ψ₂ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₁))) := by
+  obtain ⟨R, B, R', hR'pos, ψ₂, hRgt, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high_preconnected_only c₂ c₁ hc₁
+  refine ⟨R, B, R', hR'pos, ψ₂, hRgt, hall, hψleft, fun d => ?_⟩
+  obtain ⟨hF, htr⟩ := hdata d
+  constructor
+  · exact concreteAnnulusHLiftGOutputWithFixedInverse_of_hliftFOutputWithFixedInverse hF
+  · intro S hSdef hSc
+    obtain ⟨p₀, hp0, hpInf, a₁, ha₁, htrans⟩ := htr S hSdef hSc
+    exact ⟨p₀, hp0, hpInf, a₁, ha₁, htrans⟩
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **F-side annulus handoff with all far high-value topology discharged.**
+The fixed inverse makes the far high-value Böttcher set preconnected as the image of an exterior;
+nonemptiness and infinitude come from the real ray, and openness/far-bound membership come from the
+radius package. -/
+theorem exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high
+    (c₁ c₂ : ℂ) (hc₂ : (0 : ℂ) ∉ filledJulia c₂) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₁ : ℂ → ℂ),
+      bottcherFarBound c₂ hc₂ < R ∧
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₁ c₂ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z) ∧
+      ∀ d : ℕ,
+        concreteAnnulusHLiftFOutputWithFixedInverse c₂ ψ₁ (d + 1) d R' hR'pos ∧
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₂ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₂ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₂ (ψ₁ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₂)) := by
+  obtain ⟨R, B, R', hR'pos, ψ₁, hRgt, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_data_with_fixed_inverse_projection_and_image_with_R_gt
+      c₁ c₂ (bottcherFarBound c₂ hc₂)
+  refine ⟨R, B, R', hR'pos, ψ₁, hRgt, hall, hψleft, fun d => ?_⟩
+  let U : Set ℂ := {ξ : ℂ | R' < ‖ξ‖}
+  let S : Set ℂ := {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₁ z‖}
+  let N : ℕ := 2 ^ (d + 1)
+  obtain ⟨hψan, hcont, _hproj, hpInf, _himage⟩ := hdata d
+  have hF : concreteAnnulusHLiftFOutputWithFixedInverse c₂ ψ₁ (d + 1) d R' hR'pos :=
+    concreteAnnulusHLiftFOutputWithFixedInverse_of_projection_data hpInf hψan hcont rfl
+  have hSc : IsPreconnected S := by
+    dsimp [S]
+    exact isPreconnected_far_high_bottcher_value_of_coverAnnulusRadiusIneqs
+      (h := hall d) hψleft hψan
+  have hSne : S.Nonempty := by
+    dsimp [S]
+    exact far_high_bottcher_value_nonempty c₁ R (R' ^ (2 ^ (d + 1)))
+  have hSinf : S.Infinite := by
+    dsimp [S]
+    exact far_high_bottcher_value_infinite c₁ R (R' ^ (2 ^ (d + 1)))
+  have hSo : IsOpen S := by
+    dsimp [S]
+    exact isOpen_far_high_bottcher_value_of_coverAnnulusRadiusIneqs (hall d)
+  have hSfar : ∀ z ∈ S, bottcherFarBound c₂ hc₂ < ‖z‖ := by
+    intro z hz
+    exact lt_trans hRgt hz.1
+  have hnoS : ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+      ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0 S := by
+    obtain ⟨aS, haS, _htower⟩ := bottcherFarBound_spec c₂ hc₂ S hSo hSc hSne hSinf hSfar
+    exact no_eval₂_bottcher_relation_of_bottcher_transcendental_far
+      c₂ hc₂ hSo hSc hSne hSinf hSfar haS
+  have hno : ∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+      ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0
+        {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₁ z‖} := by
+    simpa [S] using hnoS
+  obtain ⟨p₀, hp0⟩ := exists_projection_p0 (U := U) (ψ₁ := ψ₁) (n := d + 1) (by
+    simpa [U] using hψan)
+  obtain ⟨a₂, ha₂⟩ := exists_rotInvariant_a2 (c₂ := c₂) (U := U) (ψ₁ := ψ₁) (n := d + 1)
+    (by simpa [U] using hψan) (by simpa [U] using hcont)
+  have hNpos : 0 < N := by
+    dsimp [N]
+    exact pow_pos (by norm_num : (0 : ℕ) < 2) (d + 1)
+  have htr := transcendental_pullback_bottcher_of_no_far_high_relation
+    (c₁ := c₁) (c₂ := c₂) (ψ₁ := ψ₁) (R := R) (R' := R') (N := N)
+    hR'pos hNpos hψleft (p₀ := p₀) (a := a₂) hp0
+    (by simpa [U, N] using hpInf) (by simpa [U, N] using ha₂)
+    (by simpa [N] using hno)
+  refine ⟨hF, by simpa [U] using p₀, by simpa [U, N] using hp0,
+    by simpa [U, N] using hpInf, by simpa [U] using a₂,
+    by simpa [U, N] using ha₂, ?_⟩
+  simpa [U, N] using htr
+
+/-- **G-side annulus handoff with all far high-value topology discharged.** -/
+theorem exists_uniform_cover_annulus_hliftG_tower_with_transcendence_of_far_high
+    (c₁ c₂ : ℂ) (hc₁ : (0 : ℂ) ∉ filledJulia c₁) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₂ : ℂ → ℂ),
+      bottcherFarBound c₁ hc₁ < R ∧
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₂ c₁ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₂ (bottcherCoord c₂ z) = z) ∧
+      ∀ d : ℕ,
+        concreteAnnulusHLiftGOutputWithFixedInverse c₁ ψ₂ (d + 1) d R' hR'pos ∧
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₂ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₂ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₁ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₁ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₁ (ψ₂ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₁)) := by
+  obtain ⟨R, B, R', hR'pos, ψ₂, hRgt, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_hliftF_tower_with_transcendence_of_far_high c₂ c₁ hc₁
+  refine ⟨R, B, R', hR'pos, ψ₂, hRgt, hall, hψleft, fun d => ?_⟩
+  obtain ⟨hF, p₀, hp0, hpInf, a₁, ha₁, htrans⟩ := hdata d
+  exact ⟨concreteAnnulusHLiftGOutputWithFixedInverse_of_hliftFOutputWithFixedInverse hF,
+    p₀, hp0, hpInf, a₁, ha₁, htrans⟩
 
 end Bottcher

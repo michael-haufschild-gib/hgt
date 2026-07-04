@@ -3282,3 +3282,441 @@ theorem exists_shifted_topQuotient_descent_step_of_transported_relation
   refine ⟨R₁, Q, hdecomp, rfl, hQ, hstep.1, hstep.2⟩
 
 end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Uniform fixed-inverse annulus transcendence bridge.**  The fixed inverse branch supplied by
+`exists_uniform_cover_annulus_data_with_fixed_inverse_projection_and_image` gives, at each dyadic depth,
+the exact projection-base transcendence witness for the pulled-back coordinate
+`ξ ↦ φ_{c₂}(ψ₁(ξ^(2^(d+1))))`, provided the corresponding far high-value `z`-domain admits no nonzero
+polynomial relation `q(z,φ_{c₂}(z))`.  This is the faithful root-coordinate bridge: it keeps the
+annulus coordinate `ξ` and uses the projection-image transfer rather than pretending the annulus
+projection is a left inverse to the iterate-coordinate cover. -/
+theorem exists_uniform_cover_annulus_transcendental_pullback_of_no_far_high_relation
+    (c₁ c₂ : ℂ) :
+    ∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₁ : ℂ → ℂ),
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₁ c₂ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z) ∧
+      ∀ d : ℕ,
+        (∀ q : Polynomial (Polynomial ℂ), q ≠ 0 →
+          ¬ Set.EqOn (fun z => q.eval₂ (Polynomial.evalRingHom z) (bottcherCoord c₂ z)) 0
+            {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₁ z‖}) →
+        ∃ (p₀ : analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+          (hp0 : (p₀ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+            ↑(fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))))
+          (hpInf : ((fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite)
+          (a₂ : analyticSubring {ξ : ℂ | R' < ‖ξ‖}),
+            (a₂ : Germ (𝓟 {ξ : ℂ | R' < ‖ξ‖}) ℂ) =
+              ↑(fun ξ => bottcherCoord c₂ (ψ₁ (ξ ^ (2 ^ (d + 1))))) ∧
+            (letI : IsDomain (analyticSubring {ξ : ℂ | R' < ‖ξ‖}) :=
+              isDomain_analyticSubring {ξ : ℂ | R' < ‖ξ‖} isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)
+             letI : Algebra (RatFunc ℂ) (meroField {ξ : ℂ | R' < ‖ξ‖}) :=
+              (ratfuncToMeroVia p₀ hp0 hpInf isOpen_exterior
+                (isPreconnected_exterior hR'pos) (nonempty_exterior hR'pos)).toAlgebra
+             Transcendental (RatFunc ℂ)
+              (algebraMap (analyticSubring {ξ : ℂ | R' < ‖ξ‖})
+                (meroField {ξ : ℂ | R' < ‖ξ‖}) a₂)) := by
+  obtain ⟨R, B, R', hR'pos, ψ₁, hall, hψleft, hdata⟩ :=
+    exists_uniform_cover_annulus_data_with_fixed_inverse_projection_and_image c₁ c₂
+  refine ⟨R, B, R', hR'pos, ψ₁, hall, hψleft, fun d hno => ?_⟩
+  let U : Set ℂ := {ξ : ℂ | R' < ‖ξ‖}
+  let N : ℕ := 2 ^ (d + 1)
+  obtain ⟨hψan, hcont, _hproj, hpInf, _himage⟩ := hdata d
+  obtain ⟨p₀, hp0⟩ := exists_projection_p0 (U := U) (ψ₁ := ψ₁) (n := d + 1) (by
+    simpa [U] using hψan)
+  obtain ⟨a₂, ha₂⟩ := exists_rotInvariant_a2 (c₂ := c₂) (U := U) (ψ₁ := ψ₁) (n := d + 1)
+    (by simpa [U] using hψan) (by simpa [U] using hcont)
+  have hNpos : 0 < N := by
+    dsimp [N]
+    exact pow_pos (by norm_num : (0 : ℕ) < 2) (d + 1)
+  have htr := transcendental_pullback_bottcher_of_no_far_high_relation
+    (c₁ := c₁) (c₂ := c₂) (ψ₁ := ψ₁) (R := R) (R' := R') (N := N)
+    hR'pos hNpos hψleft (p₀ := p₀) (a := a₂) hp0
+    (by simpa [U, N] using hpInf) (by simpa [U, N] using ha₂)
+    (by simpa [N] using hno)
+  refine ⟨by simpa [U] using p₀, by simpa [U, N] using hp0,
+    by simpa [U, N] using hpInf, by simpa [U] using a₂,
+    by simpa [U, N] using ha₂, ?_⟩
+  simpa [U, N] using htr
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- **Far-field no-relation criterion with pointwise nonparabola instead of extension.**  The general
+exact-division criterion needs an extension hypothesis from the non-parabola locus back to the full
+far-field carrier.  If the transported quadratic defect is pointwise nonzero on that carrier, the
+non-parabola locus is the whole carrier, so the extension hypothesis is automatic. -/
+theorem no_relation_of_far_bottcher_exact_division_weightedSupport_quotient_descent_nonparabola
+    {c₁ c₂ : ℂ} {Rfar R' : ℝ}
+    (hquot : ∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+      Set.EqOn
+        (fun z => R.eval₂ (Polynomial.evalRingHom (bottcherCoord c₁ z))
+          (bottcherCoord c₁ (quadratic c₂ z))) (fun _ => (0 : ℂ))
+        {z : ℂ | Rfar < ‖z‖ ∧ R' < ‖bottcherCoord c₁ z‖} →
+      ∃ Q : Polynomial (Polynomial ℂ), ∃ WQ : ℕ,
+        R = Polynomial.C (R.eval (Polynomial.X ^ 2 + Polynomial.C (c₂ - c₁))) +
+            quadraticRelationFactor (c₂ - c₁) * Q ∧
+          weightedSupportBelow Q WQ ∧
+          WQ ≤ (R.eval (Polynomial.X ^ 2 + Polynomial.C (c₂ - c₁))).natDegree + 1)
+    (hne : ∀ z ∈ {z : ℂ | Rfar < ‖z‖ ∧ R' < ‖bottcherCoord c₁ z‖},
+      bottcherCoord c₁ (quadratic c₂ z) ≠ (bottcherCoord c₁ z) ^ 2 + (c₂ - c₁)) :
+    ∀ R : Polynomial (Polynomial ℂ), R ≠ 0 →
+      ¬ Set.EqOn
+        (fun z => R.eval₂ (Polynomial.evalRingHom (bottcherCoord c₁ z))
+          (bottcherCoord c₁ (quadratic c₂ z))) (fun _ => (0 : ℂ))
+        {z : ℂ | Rfar < ‖z‖ ∧ R' < ‖bottcherCoord c₁ z‖} := by
+  refine no_relation_of_far_bottcher_exact_division_weightedSupport_quotient_descent
+    (c₁ := c₁) (c₂ := c₂) (Rfar := Rfar) (R' := R') hquot ?_
+  intro Q hQ z hz
+  exact hQ ⟨hz, hne z hz⟩
+
+end Bottcher
+
+namespace Bottcher
+open Polynomial Filter
+
+/-- Support weight bounds are monotone in the bound. -/
+theorem weightedSupportBelow_mono {R : Polynomial (Polynomial ℂ)} {W W' : ℕ}
+    (h : weightedSupportBelow R W) (hle : W ≤ W') : weightedSupportBelow R W' := by
+  intro j hj i hi
+  exact le_trans (h j hj i hi) hle
+
+/-- Every bivariate polynomial has a finite support-weight bound.  This support-indexed form avoids
+rectangular degree boxes and is the bookkeeping input for finite weighted descent. -/
+theorem exists_weightedSupportBelow (R : Polynomial (Polynomial ℂ)) :
+    ∃ W : ℕ, weightedSupportBelow R W := by
+  classical
+  let inner : ℕ → ℕ := fun j => ((R.coeff j).support.sum fun i => i + 2 * j)
+  let W : ℕ := R.support.sum inner
+  refine ⟨W, ?_⟩
+  intro j hj i hi
+  have hinner : i + 2 * j ≤ inner j := by
+    dsimp [inner]
+    exact Finset.single_le_sum (s := (R.coeff j).support) (f := fun i => i + 2 * j)
+      (fun _ _ => Nat.zero_le _) hi
+  have houter : inner j ≤ W := by
+    dsimp [W]
+    exact Finset.single_le_sum (s := R.support) (f := inner)
+      (fun _ _ => Nat.zero_le _) hj
+  exact le_trans hinner houter
+
+/-- Exact quadratic-substitution remainder with an explicit finite support-weight bound for the
+quotient.  This packages `exists_quadratic_substitution_remainder` with the support-indexed finite bound
+needed by the asymptotic descent lemmas. -/
+theorem exists_quadratic_substitution_remainder_with_weightedSupportBound
+    (R : Polynomial (Polynomial ℂ)) (d : ℂ) :
+    ∃ Q : Polynomial (Polynomial ℂ), ∃ WQ : ℕ,
+      R = Polynomial.C (R.eval (Polynomial.X ^ 2 + Polynomial.C d)) +
+          quadraticRelationFactor d * Q ∧
+        weightedSupportBelow Q WQ := by
+  obtain ⟨Q, hQ⟩ := exists_quadratic_substitution_remainder R d
+  obtain ⟨WQ, hWQ⟩ := exists_weightedSupportBelow Q
+  exact ⟨Q, WQ, hQ, hWQ⟩
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Cover-annulus radii with a caller-supplied lower bound for `R`.**
+This is the bounded-below variant of `exists_cover_annulus_radii`: the far-field radius can be chosen
+past any real threshold `L`, while preserving all annulus inequalities. -/
+theorem exists_cover_annulus_radii_with_R_gt (c₁ c₂ : ℂ) (n : ℕ) (L : ℝ) :
+    ∃ R B R' : ℝ, L < R ∧ coverAnnulusRadiusIneqs c₁ c₂ n R B R' := by
+  let TR : ℝ := max L (max (2 * max 2 ‖c₁‖) (max (16 * ‖c₁‖) (max (max 2 ‖c₂‖) 1)))
+  obtain ⟨NR, hNR⟩ := exists_nat_gt TR
+  let R : ℝ := (NR : ℝ)
+  have hLR : L < R := lt_of_le_of_lt (by dsimp [TR]; exact le_max_left _ _) hNR
+  have hR1 : 2 * max 2 ‖c₁‖ < R := lt_of_le_of_lt (by
+    dsimp [TR]
+    exact le_trans (le_max_left _ _) (le_max_right _ _)) hNR
+  have hR16 : 16 * ‖c₁‖ < R := lt_of_le_of_lt (by
+    dsimp [TR]
+    exact le_trans (le_max_left _ _)
+      (le_trans (le_max_right _ _) (le_max_right _ _))) hNR
+  have hRc₂ : max 2 ‖c₂‖ < R := lt_of_le_of_lt (by
+    dsimp [TR]
+    exact le_trans (le_max_left _ _)
+      (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) (le_max_right _ _)))) hNR
+  have hRgt1 : 1 < R := lt_of_le_of_lt (by
+    dsimp [TR]
+    exact le_trans (le_max_right _ _)
+      (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) (le_max_right _ _)))) hNR
+  have hR2 : 16 * ‖c₁‖ < R ^ 2 := by
+    have hRsq : R < R ^ 2 := by
+      simpa using (lt_self_pow₀ hRgt1 (by norm_num : (1 : ℕ) < 2))
+    exact lt_trans hR16 hRsq
+  let TB : ℝ := max (8 * max 2 ‖c₁‖) (max (2 * R) (max (768 * ‖c₁‖ + 64) 1))
+  obtain ⟨NB, hNB⟩ := exists_nat_gt TB
+  let B : ℝ := (NB : ℝ)
+  have hB8 : 8 * max 2 ‖c₁‖ < B := lt_of_le_of_lt (by dsimp [TB]; exact le_max_left _ _) hNB
+  have hBR : 2 * R < B := lt_of_le_of_lt (by dsimp [TB]; exact le_trans (le_max_left _ _) (le_max_right _ _)) hNB
+  have hBbig : 768 * ‖c₁‖ + 64 < B := lt_of_le_of_lt (by
+    dsimp [TB]
+    exact le_trans (le_max_left _ _) (le_trans (le_max_right _ _) (le_max_right _ _))) hNB
+  have hBgt1 : 1 < B := lt_of_le_of_lt (by
+    dsimp [TB]
+    exact le_trans (le_max_right _ _) (le_trans (le_max_right _ _) (le_max_right _ _))) hNB
+  have hBpos : 0 < B := lt_trans zero_lt_one hBgt1
+  have hBsq : 768 * ‖c₁‖ + 64 ≤ B ^ 2 := by
+    have hBs : B < B ^ 2 := by
+      simpa using (lt_self_pow₀ hBgt1 (by norm_num : (1 : ℕ) < 2))
+    exact le_of_lt (lt_trans hBbig hBs)
+  let TRp : ℝ := max B 1
+  obtain ⟨NRp, hNRp⟩ := exists_nat_gt TRp
+  let R' : ℝ := (NRp : ℝ)
+  have hBltR' : B < R' := lt_of_le_of_lt (by dsimp [TRp]; exact le_max_left _ _) hNRp
+  have hR'gt1 : 1 < R' := lt_of_le_of_lt (by dsimp [TRp]; exact le_max_right _ _) hNRp
+  have hR'pos : 0 < R' := lt_trans zero_lt_one hR'gt1
+  have hR'B : B < R' ^ (2 ^ n) := by
+    have hle : R' ≤ R' ^ (2 ^ n) :=
+      le_self_pow₀ (le_of_lt hR'gt1) (pow_ne_zero n (by norm_num : (2 : ℕ) ≠ 0))
+    exact lt_of_lt_of_le hBltR' hle
+  exact ⟨R, B, R', hLR, hR1, hR2, hRc₂, hBsq, hB8, hBR, hBpos, hR'pos, hR'B⟩
+
+/-- **Uniform dyadic cover-annulus radii with a caller-supplied lower bound for `R`.** -/
+theorem exists_cover_annulus_radii_uniform_dyadic_with_R_gt (c₁ c₂ : ℂ) (L : ℝ) :
+    ∃ R B R' : ℝ, L < R ∧ 1 < R' ∧
+      ∀ d : ℕ, coverAnnulusRadiusIneqs c₁ c₂ (d + 1) R B R' := by
+  obtain ⟨R, B, R0, hLR, hR1, hR2, hRc₂, hBsq, hB8, hBR, hBpos, hR0pos, hR0B⟩ :=
+    exists_cover_annulus_radii_with_R_gt c₁ c₂ 1 L
+  let R' : ℝ := max R0 1 + 1
+  have hR'gt1 : 1 < R' := by
+    dsimp [R']
+    have hle : (1 : ℝ) ≤ max R0 1 := le_max_right _ _
+    linarith
+  have hR'pos : 0 < R' := lt_trans zero_lt_one hR'gt1
+  have hR0leR' : R0 ≤ R' := by
+    dsimp [R']
+    have hle : R0 ≤ max R0 1 := le_max_left _ _
+    linarith
+  have hR0B2 : B < R0 ^ 2 := by
+    simpa using hR0B
+  have hR0sq_le_R'sq : R0 ^ 2 ≤ R' ^ 2 :=
+    pow_le_pow_left₀ (le_of_lt hR0pos) hR0leR' 2
+  refine ⟨R, B, R', hLR, hR'gt1, fun d => ?_⟩
+  have htwole : 2 ≤ 2 ^ (d + 1) := by
+    simpa using (Nat.pow_le_pow_right (n := 2) (by norm_num)
+      (Nat.succ_le_succ (Nat.zero_le d)))
+  have hR'pow : R' ^ 2 ≤ R' ^ (2 ^ (d + 1)) :=
+    pow_le_pow_right₀ (le_of_lt hR'gt1) htwole
+  have hBR' : B < R' ^ (2 ^ (d + 1)) :=
+    lt_of_lt_of_le (lt_of_lt_of_le hR0B2 hR0sq_le_R'sq) hR'pow
+  exact ⟨hR1, hR2, hRc₂, hBsq, hB8, hBR, hBpos, hR'pos, hBR'⟩
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Uniform fixed-inverse annulus data with an explicit lower bound for `R`.**
+This is the lower-bound variant of
+`exists_uniform_cover_annulus_data_with_fixed_inverse_projection_and_image`: the far-field inverse
+branch and projection-image facts are built with `R` chosen beyond an arbitrary threshold `L`. -/
+theorem exists_uniform_cover_annulus_data_with_fixed_inverse_projection_and_image_with_R_gt
+    (c₁ c₂ : ℂ) (L : ℝ) :
+    ∃ (R B R' : ℝ) (_hR'pos : 0 < R') (ψ₁ : ℂ → ℂ),
+      L < R ∧
+      (∀ d : ℕ, coverAnnulusRadiusIneqs c₁ c₂ (d + 1) R B R') ∧
+      (∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z) ∧
+      ∀ d : ℕ,
+        (∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖}, AnalyticAt ℂ ψ₁ (ξ ^ (2 ^ (d + 1)))) ∧
+        (∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖}, ψ₁ (ξ ^ (2 ^ (d + 1))) ∈ escapeOpen c₂) ∧
+        (∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖},
+          bottcherCoord c₁ (ψ₁ (ξ ^ (2 ^ (d + 1)))) = ξ ^ (2 ^ (d + 1))) ∧
+        ((fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite ∧
+        (∀ z, R < ‖z‖ → R' ^ (2 ^ (d + 1)) < ‖bottcherCoord c₁ z‖ →
+          z ∈ (fun ξ => ψ₁ (ξ ^ (2 ^ (d + 1)))) '' {ξ : ℂ | R' < ‖ξ‖}) := by
+  obtain ⟨R, B, R', hLR, hR'gt1, hall⟩ :=
+    exists_cover_annulus_radii_uniform_dyadic_with_R_gt c₁ c₂ L
+  have hR'pos : 0 < R' := lt_trans zero_lt_one hR'gt1
+  obtain ⟨hR1, hR2, _hRc₂0, _hB_far10, _hB_far20, _hBR0, _hBpos0,
+      _hR'pos0, _hR'B0⟩ := hall 0
+  obtain ⟨ψ₁, hψleft, hψan, _hψright⟩ := exists_analytic_inverse_far (c := c₁) hR1 hR2
+  refine ⟨R, B, R', hR'pos, ψ₁, hLR, hall, hψleft, fun d => ?_⟩
+  obtain ⟨_hR1, _hR2, hRc₂, hB_far1, hB_far2, hBR, hBpos, _hR'pos, hR'B⟩ := hall d
+  let n : ℕ := d + 1
+  have hR'B_n : B < R' ^ (2 ^ n) := by simpa [n] using hR'B
+  have key : ∀ ξ : ℂ, R' < ‖ξ‖ → ∃ z, R < ‖z‖ ∧ bottcherCoord c₁ z = ξ ^ (2 ^ n) := by
+    intro ξ hξR'
+    have hwnorm : ‖ξ ^ (2 ^ n)‖ = ‖ξ‖ ^ (2 ^ n) := by rw [norm_pow]
+    have hwB : B < ‖ξ ^ (2 ^ n)‖ := by
+      rw [hwnorm]
+      exact lt_of_lt_of_le hR'B_n (pow_le_pow_left₀ (le_of_lt hR'pos) (le_of_lt hξR') (2 ^ n))
+    have hwfar1 : 768 * ‖c₁‖ + 64 < ‖ξ ^ (2 ^ n)‖ ^ 2 :=
+      lt_of_le_of_lt hB_far1 (by nlinarith [hBpos, hwB])
+    have hwfar2 : 8 * max 2 ‖c₁‖ < ‖ξ ^ (2 ^ n)‖ := lt_trans hB_far2 hwB
+    obtain ⟨z, hz, hbz⟩ := exists_far_preimage (c := c₁) hwfar1 hwfar2
+    have hzR : R < ‖z‖ := by
+      have h1 : B / 2 ≤ ‖z‖ := le_trans (by linarith [hwB]) hz
+      linarith [hBR]
+    exact ⟨z, hzR, hbz⟩
+  have hψan' : ∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖}, AnalyticAt ℂ ψ₁ (ξ ^ (2 ^ n)) := by
+    intro ξ hξ
+    obtain ⟨z, hzR, hbz⟩ := key ξ hξ
+    rw [← hbz]
+    exact hψan z hzR
+  have hcont' : ∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖}, ψ₁ (ξ ^ (2 ^ n)) ∈ escapeOpen c₂ := by
+    intro ξ hξ
+    obtain ⟨z, hzR, hbz⟩ := key ξ hξ
+    have hψw : ψ₁ (ξ ^ (2 ^ n)) = z := by
+      rw [← hbz]
+      exact hψleft z hzR
+    rw [hψw]
+    show max 2 ‖c₂‖ < ‖z‖
+    exact lt_trans hRc₂ hzR
+  have hproj : ∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖},
+      bottcherCoord c₁ (ψ₁ (ξ ^ (2 ^ n))) = ξ ^ (2 ^ n) := by
+    intro ξ hξ
+    obtain ⟨z, hzR, hbz⟩ := key ξ hξ
+    have hψw : ψ₁ (ξ ^ (2 ^ n)) = z := by
+      rw [← hbz]
+      exact hψleft z hzR
+    rw [hψw]
+    exact hbz
+  have hpInf : ((fun ξ => ψ₁ (ξ ^ (2 ^ n))) '' {ξ : ℂ | R' < ‖ξ‖}).Infinite :=
+    projection_image_infinite_exterior hR'pos hproj
+  have himage : ∀ z, R < ‖z‖ → R' ^ (2 ^ n) < ‖bottcherCoord c₁ z‖ →
+      z ∈ (fun ξ => ψ₁ (ξ ^ (2 ^ n))) '' {ξ : ℂ | R' < ‖ξ‖} := by
+    intro z hzR hzval
+    exact mem_projection_image_of_far_bottcher_value
+      (c₁ := c₁) (ψ₁ := ψ₁) (R := R) (R' := R') (N := 2 ^ n)
+      (pow_pos (by norm_num : (0 : ℕ) < 2) n) hψleft hzR hzval
+  exact ⟨by simpa [n] using hψan', by simpa [n] using hcont', by simpa [n] using hproj,
+    by simpa [n] using hpInf, by simpa [n] using himage⟩
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **The far high-value Böttcher set is nonempty.**
+This is the nonempty form of `eventually_real_mem_bottcher_pullback_far`: the positive real ray is
+eventually far in both source norm and Böttcher-value norm. -/
+theorem far_high_bottcher_value_nonempty (c : ℂ) (Rfar Λ : ℝ) :
+    ({z : ℂ | Rfar < ‖z‖ ∧ Λ < ‖bottcherCoord c z‖}).Nonempty := by
+  obtain ⟨T, hT⟩ := eventually_atTop.mp (eventually_real_mem_bottcher_pullback_far c Rfar Λ)
+  let t : ℝ := max T 0
+  refine ⟨(t : ℂ), ?_⟩
+  have htT : T ≤ t := by dsimp [t]; exact le_max_left _ _
+  exact hT t htT
+
+/-- **The far high-value Böttcher set is infinite.**
+A tail of the positive real ray lies in the set, and real points on that tail are injectively indexed
+by `ℕ`. -/
+theorem far_high_bottcher_value_infinite (c : ℂ) (Rfar Λ : ℝ) :
+    ({z : ℂ | Rfar < ‖z‖ ∧ Λ < ‖bottcherCoord c z‖}).Infinite := by
+  obtain ⟨T, hT⟩ := eventually_atTop.mp (eventually_real_mem_bottcher_pullback_far c Rfar Λ)
+  let M : ℝ := max T 0
+  refine Set.infinite_of_injective_forall_mem
+    (f := fun k : ℕ => ((M + (k : ℝ) : ℝ) : ℂ)) ?_ ?_
+  · intro a b hab
+    have hreal : M + (a : ℝ) = M + (b : ℝ) := Complex.ofReal_inj.mp hab
+    exact Nat.cast_injective (show (a : ℝ) = (b : ℝ) by linarith)
+  · intro k
+    have hge : T ≤ M + (k : ℝ) := by
+      have hTM : T ≤ M := by dsimp [M]; exact le_max_left _ _
+      have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+      linarith
+    exact hT (M + (k : ℝ)) hge
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Far inverse values land back in the far source exterior.**
+If a value `w` lies beyond the dyadic Böttcher-value threshold, the fixed far inverse is a source
+point beyond `R` and projects back to `w`. -/
+theorem far_inverse_maps_value_exterior_to_far_high
+    {c : ℂ} {ψ : ℂ → ℂ} {R B R' : ℝ} {N : ℕ}
+    (hNpos : 0 < N)
+    (hψleft : ∀ z, R < ‖z‖ → ψ (bottcherCoord c z) = z)
+    (hB_far1 : 768 * ‖c‖ + 64 ≤ B ^ 2) (hB_far2 : 8 * max 2 ‖c‖ < B)
+    (hBR : 2 * R < B) (hBpos : 0 < B)
+    (hR'B : B < R' ^ N) :
+    ∀ w : ℂ, R' ^ N < ‖w‖ → R < ‖ψ w‖ ∧ bottcherCoord c (ψ w) = w := by
+  intro w hw
+  obtain ⟨ξ, hξpow⟩ := IsAlgClosed.exists_pow_nat_eq w hNpos
+  have hξann : R' < ‖ξ‖ := by
+    by_contra hle
+    push Not at hle
+    have hpow_le : ‖ξ‖ ^ N ≤ R' ^ N := pow_le_pow_left₀ (norm_nonneg ξ) hle N
+    have hval_le : ‖w‖ ≤ R' ^ N := by
+      rw [← hξpow, norm_pow]
+      exact hpow_le
+    exact not_lt_of_ge hval_le hw
+  have hwB : B < ‖w‖ := lt_trans hR'B hw
+  have hwfar1 : 768 * ‖c‖ + 64 < ‖w‖ ^ 2 :=
+    lt_of_le_of_lt hB_far1 (by nlinarith [hBpos, hwB])
+  have hwfar2 : 8 * max 2 ‖c‖ < ‖w‖ := lt_trans hB_far2 hwB
+  obtain ⟨z, hzhalf, hbz⟩ := exists_far_preimage (c := c) (w := w) hwfar1 hwfar2
+  have hzR : R < ‖z‖ := by
+    have hBhalf : B / 2 < ‖w‖ / 2 := by linarith
+    exact lt_of_lt_of_le (lt_of_lt_of_le (by linarith [hBR]) (le_of_lt hBhalf)) hzhalf
+  have hψw : ψ w = z := by
+    rw [← hbz]
+    exact hψleft z hzR
+  rw [hψw]
+  exact ⟨hzR, hbz⟩
+
+/-- **The far high-value Böttcher set is preconnected from the fixed inverse.**
+It is the continuous image of the connected exterior under the inverse branch, using the exact
+projection identity on the far value exterior. -/
+theorem isPreconnected_far_high_bottcher_value_of_inverse
+    {c : ℂ} {ψ : ℂ → ℂ} {R R' : ℝ} {N : ℕ}
+    (hR'pos : 0 < R') (hNpos : 0 < N)
+    (hψleft : ∀ z, R < ‖z‖ → ψ (bottcherCoord c z) = z)
+    (hψan : ∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖}, AnalyticAt ℂ ψ (ξ ^ N))
+    (hpre : ∀ w : ℂ, R' ^ N < ‖w‖ → R < ‖ψ w‖ ∧ bottcherCoord c (ψ w) = w) :
+    IsPreconnected {z : ℂ | R < ‖z‖ ∧ R' ^ N < ‖bottcherCoord c z‖} := by
+  let V : Set ℂ := {w : ℂ | R' ^ N < ‖w‖}
+  have hVpre : IsPreconnected V := isPreconnected_exterior (pow_pos hR'pos N)
+  have hψcont : ContinuousOn ψ V := by
+    intro w hw
+    obtain ⟨ξ, hξpow⟩ := IsAlgClosed.exists_pow_nat_eq w hNpos
+    have hξann : R' < ‖ξ‖ := by
+      by_contra hle
+      push Not at hle
+      have hpow_le : ‖ξ‖ ^ N ≤ R' ^ N := pow_le_pow_left₀ (norm_nonneg ξ) hle N
+      have hval_le : ‖w‖ ≤ R' ^ N := by
+        rw [← hξpow, norm_pow]
+        exact hpow_le
+      exact not_lt_of_ge hval_le hw
+    simpa [hξpow] using (hψan ξ hξann).continuousAt.continuousWithinAt
+  have himage : ψ '' V = {z : ℂ | R < ‖z‖ ∧ R' ^ N < ‖bottcherCoord c z‖} := by
+    ext z
+    constructor
+    · rintro ⟨w, hw, rfl⟩
+      exact ⟨(hpre w hw).1, by rw [(hpre w hw).2]; exact hw⟩
+    · intro hz
+      refine ⟨bottcherCoord c z, hz.2, ?_⟩
+      exact hψleft z hz.1
+  rw [← himage]
+  exact hVpre.image ψ hψcont
+
+end Bottcher
+
+namespace Bottcher
+
+/-- **Radius-package form of far high-value preconnectedness.**
+For a fixed inverse branch analytic on the exterior annulus at level `2 ^ n`, the annulus radius
+inequalities make the far high-value Böttcher set preconnected. -/
+theorem isPreconnected_far_high_bottcher_value_of_coverAnnulusRadiusIneqs
+    {c₁ c₂ : ℂ} {n : ℕ} {R B R' : ℝ} {ψ₁ : ℂ → ℂ}
+    (h : coverAnnulusRadiusIneqs c₁ c₂ n R B R')
+    (hψleft : ∀ z, R < ‖z‖ → ψ₁ (bottcherCoord c₁ z) = z)
+    (hψan : ∀ ξ ∈ {ξ : ℂ | R' < ‖ξ‖}, AnalyticAt ℂ ψ₁ (ξ ^ (2 ^ n))) :
+    IsPreconnected {z : ℂ | R < ‖z‖ ∧ R' ^ (2 ^ n) < ‖bottcherCoord c₁ z‖} := by
+  obtain ⟨_hR1, _hR2, _hRc₂, hB_far1, hB_far2, hBR, hBpos, hR'pos, hR'B⟩ := h
+  have hNpos : 0 < 2 ^ n := pow_pos (by norm_num : (0 : ℕ) < 2) n
+  have hpre : ∀ w : ℂ, R' ^ (2 ^ n) < ‖w‖ →
+      R < ‖ψ₁ w‖ ∧ bottcherCoord c₁ (ψ₁ w) = w :=
+    far_inverse_maps_value_exterior_to_far_high
+      (c := c₁) (ψ := ψ₁) (R := R) (B := B) (R' := R') (N := 2 ^ n)
+      hNpos hψleft hB_far1 hB_far2 hBR hBpos hR'B
+  exact isPreconnected_far_high_bottcher_value_of_inverse
+    (c := c₁) (ψ := ψ₁) (R := R) (R' := R') (N := 2 ^ n)
+    hR'pos hNpos hψleft hψan hpre
+
+end Bottcher

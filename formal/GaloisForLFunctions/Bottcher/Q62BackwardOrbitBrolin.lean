@@ -3396,3 +3396,123 @@ theorem q62_phiMero_independence_conditional_oneSide_visibleOffOtherFrontierOneS
 end
 
 end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Conditional all-placement q62 from an exposed neighbourhood-cofinal one-sided point, with the
+smooth-piece rigidity input discharged by `SmoothArcSelection` on the exposed side. -/
+theorem q62_phiMero_independence_conditional_exposedOneSidedCofinalNbhd_smoothArcSelection
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ}
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hexp : c₁ ∈ mandelbrot → c₂ ∈ mandelbrot → ExposedOneSidedCofinalNbhd c₁ c₂)
+    (hsel₁ : c₁ ∈ mandelbrot → SmoothArcSelection c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  exact q62_phiMero_independence_of_exposed_oneSidedCofinalNbhd
+    hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂ hc₁0 hc₁m2 hc₂0 hc₂m2
+    hmono₁ hmono₂ hexp
+    (fun hc₁M _hc₂M => smoothPieceRigidity_of_smoothArcSelection hc₁M hc₁0 hc₁m2
+      (isPreconnected_filledJulia hc₁M) (hsel₁ hc₁M))
+
+end
+
+end Bottcher
+
+namespace Bottcher
+
+noncomputable section
+
+/-- Swapped exposed-point conditional q62 wrapper.  This consumes an exposed
+`ExposedOneSidedCofinalNbhd c₂ c₁` input and returns the original `(c₁,c₂)` orientation by symmetry. -/
+theorem q62_phiMero_independence_conditional_exposedOneSidedCofinalNbhd_smoothArcSelection_swapped
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ}
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hexp₂₁ : c₂ ∈ mandelbrot → c₁ ∈ mandelbrot → ExposedOneSidedCofinalNbhd c₂ c₁)
+    (hsel₂ : c₂ ∈ mandelbrot → SmoothArcSelection c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  haveI := isDomain_analyticSubring U hUo hUc hUne
+  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+  exact noRelation_symm (K := RatFunc ℂ) (M := meroField U)
+    (q62_phiMero_independence_conditional_exposedOneSidedCofinalNbhd_smoothArcSelection
+      hUo hUc hUne hUinf hc₂0 hc₂m2 hc₁0 hc₁m2 hU₂ hU₁ hmono₂ hmono₁
+      hexp₂₁ hsel₂)
+
+/-- Conditional all-placement q62 from either exposed one-sided neighbourhood orientation, with the
+corresponding smooth-piece rigidity discharged by `SmoothArcSelection` on the exposed side. -/
+theorem q62_phiMero_independence_conditional_exposedOneSidedCofinalNbhd_smoothArcSelection_or_swap
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ}
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (horient :
+      ((c₁ ∈ mandelbrot → c₂ ∈ mandelbrot → ExposedOneSidedCofinalNbhd c₁ c₂) ∧
+        (c₁ ∈ mandelbrot → SmoothArcSelection c₁)) ∨
+      ((c₂ ∈ mandelbrot → c₁ ∈ mandelbrot → ExposedOneSidedCofinalNbhd c₂ c₁) ∧
+        (c₂ ∈ mandelbrot → SmoothArcSelection c₂))) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
+  rcases horient with hleft | hright
+  · rcases hleft with ⟨hexp₁₂, hsel₁⟩
+    exact q62_phiMero_independence_conditional_exposedOneSidedCofinalNbhd_smoothArcSelection
+      hUo hUc hUne hUinf hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+      hexp₁₂ hsel₁
+  · rcases hright with ⟨hexp₂₁, hsel₂⟩
+    exact q62_phiMero_independence_conditional_exposedOneSidedCofinalNbhd_smoothArcSelection_swapped
+      hUo hUc hUne hUinf hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+      hexp₂₁ hsel₂
+
+end
+
+end Bottcher

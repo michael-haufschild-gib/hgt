@@ -1082,3 +1082,198 @@ position vs trail mass — closed-form monotone bound from the ant-trail kernel 
   direct. Residual = adiabatic comparison (#142): bound the loss 2∫W̃dt against the
   swap gain on nondecreasing-gap fields (q-digamma sums).
 - Anti-theatre correction (user): round 3 done entirely by hand; unused probe deleted.
+
+## 2026-07-04 — #143 Lean: first two SPUR bricks banked (standing order: formalize proven)
+- SpurHermite.lean (8580 jobs, axiom-clean, lint passed): derivative_hermite (Appell
+  He_{n+1}′ = (n+1)He_n — absent from mathlib, proved by induction), hermite_rec
+  (three-term recurrence), aeval_hermite_ne_zero_of_succ (adjacent Hermites share no
+  real zero, descent), hermite_equilibrium_energy (Lemma W division-free:
+  He_m″(k) = −m·He_m(k), He_m(k) ≠ 0 at critical points), hermite_energy_eq_charge
+  (−He″/He = m — doc 25 §3's universal cluster constant, machine-checked).
+- SpurRescale.lean (8581 jobs, axiom-clean, lint passed): one_sub_sum_le_prod_one_sub
+  (Weierstrass), prod_one_sub_le_exp_neg_sum, exp_neg_le_quadratic (e^{−x} ≤ 1−x+x²/2,
+  monotonicity route), sum_range_id_cast, phi_first_order ((E5): |φ_d(j) − 1 + C(j,2)/d|
+  ≤ (C(j,2)/d)²/2 for ALL j, d ≥ 1 — incl. the j > d zero-product branch via S ≥ 1).
+- Umbrella RHTower.lean extended; queue next: operator identity Ĵ = (D−τ)(D−τ̄)Â
+  (doc 28 §1, Polynomial.reflect route), UHP-stability, weight sum rules, no-go instance.
+
+## 2026-07-04 — #143 Lean round 2: the operator identity machine-checked
+- SpurOperator.lean (8582 jobs, axiom-clean, lint passed):
+  - polarStep n A := n·A − X·A′ (denominator-cleared polar companion) + coeff formula
+    + natDegree_polarStep_le;
+  - reflect_polarStep: **reflect (n−1) (polarStep n A) = derivative (reflect n A)** —
+    the polar/derivative duality (doc 26 §0), coefficient-wise proof;
+  - reflect_pair_operator: **reflect d (u·A − v·X·B₁ + X²·B₂) = Â″ − v·Â′ + u·Â** over
+    any CommRing (doc 28 §1's three-term reflection identity, general form);
+  - reflect_pair_operator_complex: the (D−τ)(D−τ̄) factorized ℂ-form — the pair as
+    theorem-m's damped oscillator, machine-checked;
+  - helpers: reflect_zero_eq, reflect_X_pow_self, reflect_C_mul'.
+- #143 queue remaining: UHP-stability of B (doc 28 §2a), weight sum rules (docs 26–27),
+  two-cluster no-go instance (doc 28 §4), doc 25 Thm A (heavy), winding formula
+  (argument-principle coverage in mathlib to be checked).
+
+## 2026-07-04 — #143 Lean round 3: UHP-stability banked + doc 28 §2a corrected
+- CORRECTION (caught at formalization, banked in doc 28 §2a): an m-fold real root of Â
+  is an (m−1)-fold REAL zero of B = Â′ − τ̄Â — strict UHP-stability needs simple roots;
+  the right hypothesis-free statement is "every zero z of B with Â(z) ≠ 0 has Im z > 0";
+  the winding formula's boundary bookkeeping for multiple roots goes by perturbation.
+- SpurStability.lean (8583 jobs, axiom-clean, lint passed):
+  - im_derivative_mul_conj_nonneg: division-free Hermite–Biehler positivity
+    Im(P′(z)·conj P(z)) ≥ 0 for Im z ≤ 0, P = ∏(X−r) over a real root multiset —
+    proved by multiset induction, no log-derivative machinery;
+  - uhp_of_pair_shift_root: the corrected doc 28 §2a statement, machine-checked.
+- Formal stack for the SPUR arc now: SpurHermite + SpurRescale + SpurOperator +
+  SpurStability (4 files, 16 theorems, all axiom-clean).
+
+## 2026-07-04 — #143 Lean round 4: two-cluster no-go machine-checked
+- SpurNoGo.lean (8584 jobs, axiom-clean, lint passed, index regenerated):
+  twoCluster := (X(X−100))² (hyperbolic, roots 0,0,100,100); twoCluster_operator_expand
+  ((D²+1)-image as explicit quartic); twoCluster_operator_pos (strictly positive on ℝ —
+  SOS-certificate via nlinarith); twoCluster_operator_no_real_root (degree 4 + no real
+  zeros ⟹ two non-real pairs). Doc 28 §4's shape-necessity no-go is machine-checked:
+  "the operator adds ≤ 1 pair" is FALSE for two-cluster hyperbolic carriers.
+- SPUR formal stack complete for this round: 5 files (SpurHermite, SpurRescale,
+  SpurOperator, SpurStability, SpurNoGo), 20 theorems, all axiom-clean
+  [propext, Classical.choice, Quot.sound].
+
+## 2026-07-04 — #142 rounds 2–3 (doc 30): exact adiabatic ledger + the cushion finding
+- PROVED (exact): the step comparison ΔG(s) = G_{i+1}(s) − G_i(s) decomposes into two
+  swap extras (each coth > 1) + termwise gap-increment coth-differences (behind vs
+  ahead drift pairs) — no approximation; constant lattice recovers doc 29(b).
+- Orientation: measured section fields have DECREASING log-gaps (δ_j ~ c/j — P-E's
+  refutation now load-bearing again): behind drift = gains, ahead = losses; both sums
+  log-divergent with k-wise pairing cancelling to log(i/(d−i)) ≥ 0 outer.
+- ROUND-3 FINDING (doc 30 §5): the near swap extra is coth((δ+s)/2) ~ 2i/c — the march
+  cushion is O(1/δ), NOT O(1); drift losses are O(log i/c): monotonicity clears by
+  ~ i/log i. The measured O(1)-tightness (0.28, dδ* ≈ 3.7) is about the crossing LEVEL,
+  which the theorem never needs. Closing inequality re-cut as (ADB-crude):
+  total-variation-weighted spectator energy < near-swap cushion — crude-provable for
+  |Δδ| = O(δ²) fields.
+- (LEG) proof shape COMPLETE: (b′) march via cushion domination + (c) dW/ds < 0
+  [proved, gap-shape-free] + (d) exp tail + (e) assembly. Remaining = doc 31 write-up
+  with one constant chase; then (S-mono) ⟹ (SPUR-R) on one-sided-far carriers with
+  doc 25. Promotion gated by #141 (citations).
+
+## 2026-07-04 — doc 31: (S-mono) assembled as a theorem on (F)-fields
+- Field class (F): one-sided + midpoint-push input (x-gaps nondecreasing) + regularity
+  |Δδ| = O(δ²). Theorem: S-mono on outer equilibria ⟹ T = 1 ⟹ Z_c = 2 ⟹ DISC reader
+  exact on one-sided-far carriers. Proof = 5 assembled pieces (docs 27, 29, 30), all
+  proved except two marked constant-chases (χ1: cushion-domination summation; χ2:
+  disjoint-interval nesting on general (F2) fields).
+- Consequence map: reader side of the bridge identity CLOSED modulo (χ1)(χ2)(#141);
+  remaining structural inputs of #130 = seam transport (#131) + doc 22 exceptional-set
+  bookkeeping. Next: chase (χ1)/(χ2); Lean the doc 30 ledger; back to the ladder front.
+
+## 2026-07-04 — #142 round 5: (χ1)/(χ2) chased + citation audit (doc 31 §5–§6)
+- (χ2) CHASED: k-th behind/ahead pairing intervals have length ≤ 2s; bracket sum
+  ≤ 26s/δ⁴ vs near term ≥ 512/δ³ at worst s = δ/2 — dW/ds < 0 clears by factor ≈ 40.
+- (χ1) CHASED: drift losses ≤ 2C₀log d + O(C₀) vs cushion ~ 4/(3δ) ~ O(d/c) —
+  clears by factor ~ d/log d.
+- CITATION AUDIT: the (SPUR-R) critical chain (docs 24, 25, 26–31) is
+  delegate-citation-FREE (in-lane proofs + machine-checked Hermite facts); Levin/CC
+  gate only doc 23's (HBJ) context brick — #141 downgraded to LOW, no longer blocks
+  the (S-mono) promotion path. Also: the #136/#140 instance has simple zeros ⟹ needs
+  only m ≤ 3 tracking — Lemma R (#139) is for Ξ₁-grade generality only.
+- (S-mono) on (F)-fields: proved in outline at EVERY step with explicit margins.
+  Remaining: per-carrier (F2)/(F3) verification, final polished write-out, then
+  promotion; and the ladder front (#131 seam wiring) is now the binding structural
+  input of #130.
+
+## 2026-07-04 — #131 unblocked (doc 32): seam transport = banked homotopy invariance
+- PROVED (2 lines + banked #117): dominated windows transport deck classes — segment
+  homotopy under |f−g| < |g| on ∂W + DeckHomotopy invariance. Rouché with no argument
+  principle: the deck-class language makes transport a homotopy statement; the bulk is
+  fixed by its boundary (lane holography). Doc 22's reduction wiring gap is closed at
+  the paper level.
+- #131 remainder made executable: SeamTransport.lean (plumbing), k = 1 base via
+  ReflectionParity, L-as-seam-product via SeamCocycle + MirrorPencil.
+- #130 residue after that: exceptional-set traversal + cofinality of dominated windows.
+
+## 2026-07-04 — #131 item 1 DONE: SeamTransport.lean machine-checked
+- SeamTransport.lean (8585 jobs, axiom-clean, lint passed): seam_transport (strict
+  boundary domination transports level-n deck classes — deckClass_perturb packaged in
+  the doc-32 vocabulary) + seam_transport_ladder (level 2^k: each RUNG of the RH ladder
+  can be read off the finite truncation wherever domination holds).
+- The ANNEAL reduction's transport step is now Lean-checked end to end; #131 remainder:
+  (2) k = 1 base case via ReflectionParity; (3) L-as-seam-product via SeamCocycle +
+  MirrorPencil.
+
+## 2026-07-04 — #144 round 2: (LOW) reduced to good-lines (doc 32 §5)
+- (DOM) divides out: |ζ − g_N| < |g_N| pointwise (arch + polynomial factors cancel).
+- (LOW) routes assessed: Boutroux–Cartan gives T^{−C loglog T} (fallback, insufficient
+  vs the T^{−1/4+r/2} AFE error); GOOD-LINES (Titchmarsh/Ramachandra inverse bounds on
+  chosen horizontal lines) gives |g_N| ≥ ½T^{−ε} on contours through good segments —
+  the route; second moment supports. Window centers at good heights: the Lean charts'
+  center is already free — no new machinery.
+- #144 now = two classical cite-and-check items ((AFE) HL remainder; (LOW) good-lines)
+  + center-selection bookkeeping. Next cycle: verify both statements against sources
+  (instrument verification), then #142 write-out, #131(2,3), #143 queue.
+
+## 2026-07-04 — #144 round 3: (LOW) DISSOLVED via symmetrized exponential-AFE (doc 32 §6)
+- Good-lines route honestly refuted (classical strength e^{C log²T} insufficient vs
+  T^{−1/4} HL error; fixed-power near-line minima = small-values/negative-moment depth).
+- Corrected: (AFE-exp) exponential-error AFE (1910.05754-type, O(e^{−ωt})) + (SYM) free
+  symmetrization preserving exact even FE (ξ(1−s) = ξ(s), one line) + (LOW-BC)
+  Boutroux–Cartan T^{−C loglog T} ≫ e^{−ωT} ⟹ (DOM) UNCONDITIONAL. No small-values
+  input anywhere. Citation checks logged: HL-AFE error shape confirmed via web.
+- The failure was load-bearing: the free degree of freedom is the truncation FAMILY,
+  not the contour. Architecture family-agnostic; g₅ instances remain valid HL-family
+  measurements.
+
+## 2026-07-04 — #144 round 4: (DOM) unconditional end to end (doc 32 §7)
+- (AFE-exp) VERIFIED from the source PDF (Jerby 1910.05754v2, Thm 1.1 read pages 1–4):
+  Hasse–Sondow finite side, O(e^{−ωt}) with explicit ω > 0, degenerate y excluded;
+  fixed y ⟹ constant ω along height families; prefactor poles on σ = 1 only.
+- (SYM) and (LOW-BC) written paper-grade and PROVED (σ = 2 Euler anchor + Jensen count
+  + Cartan minimum modulus; e^{−C log T loglog T} ≫ e^{−ωT}).
+- Sole remaining #144 item: σ-uniformity fine print in Jerby Sections 2–4 + eventual
+  exponential-family instance run. The reduction's analytic side is otherwise closed.
+
+## 2026-07-04 — #144 CLOSED (doc 32 §8): σ-uniformity structural, (DOM) stands
+- Read Jerby §2 from the source PDF: saddle PHASE f(w;α) is σ-independent (σ only in
+  the amplitude e^{−w}w^{σ−1}) ⟹ saddle equation, w_k(α), and ω(α) carry no σ ⟹
+  compact-strip uniformity of the O(e^{−ωt}) constant is automatic; same phase governs
+  Ĩ₁/Ĩ₂ (Thms 3.1/4.1). Fine print resolved; promotion-grade re-read of §§3–4 noted as
+  optional prudence.
+- #144 completed at SEARCH grade: the ANNEAL reduction's analytic side stands
+  unconditionally on the symmetrized Jerby family. Board: #142 write-out, #131(2,3),
+  #143 queue, #139, exp-family instance run.
+
+## 2026-07-04 — #131(2,3) made precise (doc 33): the dictionary base
+- (K1) k = 1 base case stated + outlined: deckClass(W;2) = sign ratio of Ξ at seam
+  basepoints (deckClass_pow_eq_one n=2 + Ξ real + central triviality + IVT gluing).
+- (K2) L as seam product stated + outlined: L mod 2^k = composed xiDescent_seam_jump
+  data along ∂W ∩ line; mod-4 relation = cocycle identity (seam_jump ∘ window_identity).
+- #131 remainder = DictionaryBase.lean plumbing only; every ingredient is a banked
+  theorem. Board: #142 write-out, #143 queue, #139, DictionaryBase.lean, exp-family
+  instance run.
+
+## 2026-07-04 — pipeline card created: smono-reader-exactness (stage 1)
+- The (S-mono)/(SPUR-R) arc is now a pipeline card with explicit gates: 1→2 needs the
+  line-by-line constant write-out + per-carrier (F)-checks; 2→3 lists the remaining
+  Lean items. The claim, its status, and its full doc chain are pinned in the kanban.
+
+## 2026-07-04 — #143: SpurWeights.lean banked (8586 jobs, axiom-clean, lint passed)
+- eval_derivative_rootProd (product-form log-derivative sum, multiset induction);
+  weight_sum_rule (Ση = 0 — the Stieltjes constraint in weight form);
+  energy_eq_neg_second_derivative ((E1): Σ(c−r)⁻² = −P″(c)/P(c), via HasDerivAt.unique
+  on the eventually-equal product identity — the exactness that dissolved the far-tail
+  obstruction, doc 25 §1, now machine-checked);
+  S_eq_card_add_energy (S = d + c²ℰ — doc 27 §0's scale-invariant energy identity).
+- Formal SPUR stack: 8 modules, 26 theorems, all axiom-clean. #143 queue remaining:
+  ledger identity (doc 30 §1), doc 25 Thm A, counting lemma, DictionaryBase.lean.
+
+## 2026-07-04 — #139 proved in outline (doc 34): Lemma R by the elementary ladder
+- (R1) iterated-(E5) cumulant expansion with explicit remainder; (R2) degree filtration
+  (only j-degree 2p survives at scale σ; heat semigroup emerges); (R3) freezing costs
+  d^{−1/2}; (R4) exact Hermite resummation. All pieces elementary; composition =
+  bookkeeping. Doc 25 Thm B now multiplicity-blind in outline — Ξ₁-grade clearance
+  without simplicity hypotheses. Remaining = constants (same register as card 1→2).
+
+## 2026-07-05 — #131(2) algebra layer banked: DictionaryBase.lean (8587 jobs, axiom-clean)
+- deckClass_level_two (k=1 dichotomy ±1); deckClass_eq_neg_one_iff (flip criterion);
+  sq_root_real_of_pos / sq_root_im_of_neg (roots over real values are real/imaginary
+  by carrier sign — the Ξ-realness bridge); real_root_ratio.
+- Formal stack: 9 modules / 31 theorems, all axiom-clean. Remaining #131(2): the
+  seam-continuation lemma (pow_root_ratio chained along overlapping discs on the line
+  segment — converts Ξ's sign changes into the deck class); #131(3): seam_jump chain.
