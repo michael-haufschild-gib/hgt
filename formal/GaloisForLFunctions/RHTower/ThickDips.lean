@@ -221,3 +221,112 @@ theorem thickPart_union_measure_le {A B : Set ℝ} (hA : MeasurableSet A)
   exact step1.trans (step2.trans step3.le)
 
 end RHTower
+
+/-! Doc 74 §5 harvest: the parametric thickness constant (the crude `h/2`
+split of `thickPart_union_measure_le` cost a factor 8; with the measured
+thin-mass fraction β ≈ 0.006 per window, the sharp split costs 4/(1−β) ≈ 4)
+and the elementary polynomial tail bound (the unconditional half of the
+Christoffel–Markov mechanism of doc 73 §3). -/
+
+namespace RHTower
+
+open MeasureTheory Set
+
+/-- Parametric split: if the thin part `B` carries at most `β·h` mass in
+every `4h`-window, an `h`-thick point of `A ∪ B` is a `((1−β)h)`-thick
+point of `A`. -/
+theorem thickPart_union_subset' {A B : Set ℝ} {h β : ℝ} (hβh2 : 0 ≤ β * h)
+    (hβh : 0 ≤ (1 - β) * h)
+    (hB : ∀ t : ℝ, volume (B ∩ Icc (t - 2 * h) (t + 2 * h))
+      ≤ ENNReal.ofReal (β * h)) :
+    thickPart (A ∪ B) h ⊆
+      {t | ENNReal.ofReal ((1 - β) * h)
+        ≤ volume (A ∩ Icc (t - 2 * h) (t + 2 * h))} := by
+  intro t ht
+  have hsplit : volume ((A ∪ B) ∩ Icc (t - 2 * h) (t + 2 * h))
+      ≤ volume (A ∩ Icc (t - 2 * h) (t + 2 * h))
+        + volume (B ∩ Icc (t - 2 * h) (t + 2 * h)) := by
+    rw [union_inter_distrib_right]
+    exact measure_union_le _ _
+  have hsum : ENNReal.ofReal ((1 - β) * h) + ENNReal.ofReal (β * h)
+      = ENNReal.ofReal h := by
+    rw [← ENNReal.ofReal_add hβh hβh2]
+    congr 1
+    ring
+  have h1 : ENNReal.ofReal ((1 - β) * h) + ENNReal.ofReal (β * h)
+      ≤ volume (A ∩ Icc (t - 2 * h) (t + 2 * h)) + ENNReal.ofReal (β * h) :=
+    hsum.le.trans (ht.trans (hsplit.trans (add_le_add le_rfl (hB t))))
+  exact (ENNReal.add_le_add_iff_right ENNReal.ofReal_ne_top).mp h1
+
+/-- **The harvested floor-exclusion bound (doc 74 §5).** With per-window
+thin mass `≤ β·h`, the thick part of `A ∪ B` is measured by the tail alone
+at cost `4/(1−β)` — replacing the factor 8 of `thickPart_union_measure_le`
+(which is the case `β = 1/2`). At the measured β ≈ 0.006 the cost is ≈ 4. -/
+theorem thickPart_union_measure_le' {A B : Set ℝ} (hA : MeasurableSet A)
+    {h β : ℝ} (hh : 0 < h) (hβ0 : 0 ≤ β) (hβ1 : β < 1)
+    (hB : ∀ t : ℝ, volume (B ∩ Icc (t - 2 * h) (t + 2 * h))
+      ≤ ENNReal.ofReal (β * h)) :
+    volume (thickPart (A ∪ B) h) ≤ ENNReal.ofReal (4 / (1 - β)) * volume A := by
+  have hbh : 0 < (1 - β) * h := by
+    have : 0 < 1 - β := by linarith
+    positivity
+  have hg := measurable_window_mass hA (2 * h)
+  have step1 : volume (thickPart (A ∪ B) h)
+      ≤ volume {t : ℝ | ENNReal.ofReal ((1 - β) * h)
+          ≤ volume (A ∩ Icc (t - 2 * h) (t + 2 * h))} :=
+    measure_mono (thickPart_union_subset' (by positivity) hbh.le hB)
+  have step2 : volume {t : ℝ | ENNReal.ofReal ((1 - β) * h)
+        ≤ volume (A ∩ Icc (t - 2 * h) (t + 2 * h))}
+      ≤ (∫⁻ t, volume (A ∩ Icc (t - 2 * h) (t + 2 * h)))
+          / ENNReal.ofReal ((1 - β) * h) :=
+    meas_ge_le_lintegral_div hg.aemeasurable
+      (by simp [ENNReal.ofReal_eq_zero]; linarith) ENNReal.ofReal_ne_top
+  have hfub := lintegral_window_mass hA (2 * h)
+  have step3 : (∫⁻ t, volume (A ∩ Icc (t - 2 * h) (t + 2 * h)))
+      / ENNReal.ofReal ((1 - β) * h)
+      = ENNReal.ofReal (4 / (1 - β)) * volume A := by
+    rw [hfub, div_eq_mul_inv, mul_right_comm]
+    congr 1
+    rw [← div_eq_mul_inv, ← ENNReal.ofReal_div_of_pos hbh,
+      show (2 * (2 * h)) / ((1 - β) * h) = 4 / (1 - β) by
+        have hne : h ≠ 0 := ne_of_gt hh
+        have hbne : (1 : ℝ) - β ≠ 0 := by intro hz; rw [sub_eq_zero] at hz; linarith [hβ1, hz]
+        field_simp
+        ring]
+  exact step1.trans (step2.trans step3.le)
+
+/-- **The elementary tail bound behind Christoffel–Markov (doc 73 §3).**
+For any function whose square is ≥ 1 on the tail ray, the tail measure is
+bounded by the integral of the square — with `f = q.eval` for a certified
+polynomial `q`, the right side is a finite quadratic form in the moment
+ladder. The sharp Krein version (1/K_n) is the promotion target; this
+unconditional half already certifies any table entry once `q² ≥ 1` on the
+ray is checked. -/
+theorem sq_tail_bound (μ : Measure ℝ) (f : ℝ → ℝ) (a : ℝ)
+    (hf : ∀ x ≤ -a, 1 ≤ (f x) ^ 2) :
+    μ {x | x ≤ -a} ≤ ∫⁻ x, ENNReal.ofReal ((f x) ^ 2) ∂μ := by
+  have hS : MeasurableSet {x : ℝ | x ≤ -a} := measurableSet_Iic
+  have h1 : μ {x | x ≤ -a}
+      = ∫⁻ x, ({x : ℝ | x ≤ -a}).indicator 1 x ∂μ := by
+    rw [lintegral_indicator hS]
+    simp
+  rw [h1]
+  refine lintegral_mono fun x => ?_
+  rw [Set.indicator_apply]
+  split_ifs with hx
+  · simpa using ENNReal.one_le_ofReal.mpr (hf x hx)
+  · exact bot_le
+
+/-- **The certified-tail consumable, fully proven.** Given the ray
+condition `q² ≥ 1` on `(−∞, −a]` and a certified bound `M` on the
+`q²`-moment of `μ` (in applications: the quadratic form of `q` against the
+spacing-MV moment ladder of doc 73 §1), the tail measure is at most `M`.
+Machine-checks any entry of the doc 73 §3 table once its polynomial and
+moment bound are supplied. -/
+theorem sq_tail_bound_of_moment (μ : Measure ℝ) (f : ℝ → ℝ) (a M : ℝ)
+    (hf : ∀ x ≤ -a, 1 ≤ (f x) ^ 2)
+    (hM : (∫⁻ x, ENNReal.ofReal ((f x) ^ 2) ∂μ) ≤ ENNReal.ofReal M) :
+    μ {x | x ≤ -a} ≤ ENNReal.ofReal M :=
+  (sq_tail_bound μ f a hf).trans hM
+
+end RHTower

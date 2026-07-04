@@ -2178,3 +2178,99 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
 - #143 queue remaining: doc 25 Thm A (heavy), counting lemma, and the certified-numerics
   Sup Lemma (doc 41 §4, interval-arithmetic Lean replication) — item (b). The (S-mono)/(LEG)/AMP
   paper items (#142/#138) promote before their Lean is due.
+
+## 2026-07-04 — doc 22 audit: carrier layer formalized (AnnealCarrier.lean, #143)
+
+Question worked: can doc 22 be expanded/precised/researched/Lean-ified. Audit found the
+doc STALE — its named gaps (seam transport; domination) were closed by doc 32 (§1 proof +
+SeamTransport.lean; §§6–8 (DOM) unconditional on the symmetrized Jerby family). The one
+genuinely unformalized layer was the SYMMETRIZATION itself. Banked:
+
+- `formal/GaloisForLFunctions/RHTower/AnnealCarrier.lean` — 2 defs + 10 theorems, all
+  axiom-clean [propext, Classical.choice, Quot.sound], build ✔ 8558 jobs, lint green,
+  umbrella wired: `symmetrize`/`chiSymmetrize`; exact FEs (`symmetrize_one_sub`,
+  `chiSymmetrize_one_sub`); ξ fixed point; (SYM-err) error preservation; entirety +
+  Schwarz structure preserved; order equivariances `symmetrize_orderAt_one_sub`/`_conj`
+  (finite-side analogues of the ξ pair — instantiates WindowRelation's (ID) on the
+  truncation carrier); `symmetrize_domination` = doc 32 §6 (DOM) assembly emitting
+  seam_transport's hdom premise, analytic inputs as hypotheses.
+- Doc 22 §6 appended: status refresh + the machine-checked chain
+  (AFE-exp)+(LOW-BC) → symmetrize_domination → seam_transport_ladder → (ID) transfer.
+- Next generative object: Prop interface for (AFE-exp)/(LOW-BC) so instance runs can
+  discharge the two hypotheses per window; consumer remains #130.
+
+## Cycle 40 (2026-07-04) — offset located, optimizer convicts doc 73, (EQD) named; Lean harvest proven through
+- Doc 74 BANKED. Offset probe (pre-registered, 6 pass / 1 informative
+  fail, archived probe_offset.{py,json}): AWAY FROM ZEROS log|Z| is
+  near-Gaussian with prime-model variance — restricted μ₆-ratio 1.43 (vs
+  3.6-4.1 full), restricted m₂ − v_pm = 0.18 T-stable, mean +0.45. "The
+  corruption is all floor." P-OL5 FAILED: thick-part residual is real —
+  σ_R² ≈ 0.23 T-stable, mean +0.36, m₄-ratio 2.0 (deg-4-grade). (EFF-E)
+  reframed: certify three measured numbers, not a cascade.
+- P-OPT FAILED (record loud): the allocation optimizer with exact
+  mid-block ladders (B2/B3 pure-Gaussian: ratios 0.999/1.000) says
+  4-block union stack = 1.22e-1 (fragmenting A across blocks puts each at
+  z≈2.7 where low-deg Christoffel is weak); 2-block (full prime sum
+  deg-4 + residual deg-4) = ~1.5e-2. Doc 73 §5's "~1e-3, factor 4-8"
+  CORRECTED: shortfall is ~5-15× and deg-6-full is beyond spacing-MV
+  (Σr₃² ≫ T). Fully-certified onset with today's toolkit: T₀ ~
+  10^{21}-10^{22}. The 3e12 meeting needs (EQD): effective
+  equidistribution / exponential sums for mid-prime blocks at joint
+  degree > 4 — THE named open core; first probe = ET-Koksma with
+  unique-factorization spacing on the (313,10⁴] torus.
+- Lean HARVEST (user order: no deferred placeholders — proven through):
+  thickPart_union_subset'/measure_le' (parametric 4/(1−β) replaces 8;
+  at measured β=0.006: 4.02) + sq_tail_bound + sq_tail_bound_of_moment
+  (certified-tail consumable; premises = genuine inputs only). Umbrella
+  8632 green, axiom-clean, lint passed.
+- ε₀* audit note: sharp carrier drops doc 69's taper split-factor 2:
+  ε₀* = 1/256 available [verify in C′ write-out].
+- Onset ladder now: e^650 (TIGHT-only) → 10^{21±1} (certified toolkit) →
+  3e12 (with EQD). Tasks: #19 CLOSED; #20 = (EQD).
+
+## Cycle 41 (2026-07-04) — THE FAKE-PROOF AUDIT: the lie located at the contradiction step; (XLD) named
+- Doc 75 BANKED. RH₂ walked end-to-end as if done (user's anti-theatre
+  challenge → attack-as-false at chain scale). Chain table: Lean tier ✓;
+  (WR_k) ✓; D-transport ✓; L-transport = WIRING GAP (doc 22, 15 cycles
+  untouched); moat/deep exclusions ✓-sketch; walk tier = COUNTING SHELL
+  (MidCentralInput.dip_kills/.creation_rate are hypothesis FIELDS;
+  (T2)-general hypothesis-typed); creation density ✓-arc; THE LIE at the
+  contradiction step.
+- THE LIE (three holes): (H1) level-multiplication accounting (one ζ-pair
+  forces births at ~δ√n consecutive tower levels — kill-exempt by Rouché)
+  is reconstruction, VERIFY vs banked cascade ledger; (H2) walk/kill
+  operates at sliver depth, putative pairs at fixed η sit in the MID-BAND
+  above it; (H3) THE KILLER: per-level density bounds cannot contradict
+  J-fold forced presence at a FIXED height (bad sets can align) — needs
+  CROSS-LEVEL DECORRELATION, unproven, un-density-provable.
+- (XLD) NAMED: mid-band deficit events at fixed height cannot persist
+  across consecutive levels — the new primes scramble faster than the
+  per-level density. Euler-specific, (EQD)-genre, and refuted-by-
+  construction for D–H: the FIRST statement in the lane with that
+  property. D–H filter run architecturally: the chain currently contains
+  NO proven step that fails for D–H — the discriminator ((H3)+budget) is
+  exactly the unproven core. Constants war retroactively load-bearing IN
+  PRINCIPLE (quantitative discriminator leg) but was polish on a
+  subordinate constant while links 4/8/11/12 sat unexamined.
+- Honest ledger status: REDUCTION MACHINE — RH₂ ⟸ (XLD) + seam wiring +
+  (T2)-general + (EQD) + k≥2. Force order: verify (H1) (reading, hours) →
+  state (XLD) at TWO consecutive levels (the +(n+1)^{-s} minimal
+  scrambling question — concrete, finite) → seam-transport write-out →
+  only then constants. Tasks: #21 CLOSED; #22 = (H1)-verify + (XLD)-2level.
+
+## 2026-07-04 — ZetaCarrier.lean: the concrete carrier, hypotheses → proofs (#143)
+
+Follow-up to the AnnealCarrier round, driven by doc 72 §4 (carrier = g_N). Banked
+`formal/GaloisForLFunctions/RHTower/ZetaCarrier.lean` — 24 declarations, all
+axiom-clean [propext, Classical.choice, Quot.sound], ✔ 8564 jobs, lint green:
+concrete dirichletPoly/zetaChi/gN/completedGN with FE, reality, analyticity, order
+equivariance all PROVED on the open strip (χ-identity unconditional via
+Gammaℝ_ne_zero_of_re_pos; ζ-FE validator via riemannZeta_def_of_ne_zero);
+hypothesis-free analyticOrderAt_one_sub (entirety dropped via
+analyticOrderAt_comp_of_deriv_ne_zero); completed_domination_iff (doc 32 §5
+cancellation); AFEAccurateOn/CarrierFloorOn interfaces; capstone
+anneal_deck_transport = doc 22's reduction on the actual objects, conditional only
+on the two interfaces. Doc 22 §7 appended with the discharge routes (interval
+instances / Gabcke remainder / Jensen+Cartan — mathlib now HAS JensenFormula.lean).
+Key trick: Γ_ℝ analyticity off zeros via inv_inv of the ENTIRE reciprocal
+differentiable_Gammaℝ_inv — no half-plane plumbing.
