@@ -455,6 +455,146 @@ theorem q62_phiMero_independence_of_monodromy_fixedPoint_cofinalNbhd_brolin_notP
   intro χ η p q hχ hη
   exact KummerRootApplications.noRelation_pow_descent_both hχ hη hNR
 
+/-- Asymmetric fixed-target Brolin support q62, lifted directly to finite roots. -/
+theorem q62_phiMero_oneSide_brolin_frontierOff_smoothArcSelection_jointFrontierVisibility_roots
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hconn₁ : IsPreconnected (filledJulia c₁))
+    (hsel₁ : SmoothArcSelection c₁)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAtCofinalNbhd c₁ a)
+    (hsupp₁ : ∀ a : ℂ, quadratic c₁ a = a → LimitingBrolinMeasureAtSupportsJulia c₁ a)
+    (hoff : ∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∉ filledJulia c₂)
+    (hvis : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    ∀ {χ η : meroField U} {p q : ℕ},
+      χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+      NoRelation (RatFunc ℂ) χ η := by
+  have hNR :=
+    q62_phiMero_oneSide_brolin_frontierOff_smoothArcSelection_jointFrontierVisibility
+      hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hconn₁ hsel₁
+      hU₁ hU₂ hbase₁ hsupp₁ hoff hvis
+  intro χ η p q hχ hη
+  exact q62_phiMero_roots_of_noRelation hUo hUc hUne hUinf hNR hχ hη
+
+/-- Asymmetric fixed-target Brolin support q62 with connectedness supplied by
+membership in `mandelbrot`, lifted directly to finite roots. -/
+theorem q62_phiMero_oneSide_brolin_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility_roots
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAtCofinalNbhd c₁ a)
+    (hsupp₁ : ∀ a : ℂ, quadratic c₁ a = a → LimitingBrolinMeasureAtSupportsJulia c₁ a)
+    (hoff : ∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∉ filledJulia c₂)
+    (hvis : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    ∀ {χ η : meroField U} {p q : ℕ},
+      χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+      NoRelation (RatFunc ℂ) χ η := by
+  have hNR :=
+    q62_phiMero_oneSide_brolin_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁
+      hU₁ hU₂ hbase₁ hsupp₁ hoff hvis
+  intro χ η p q hχ hη
+  exact q62_phiMero_roots_of_noRelation hUo hUc hUne hUinf hNR hχ hη
+
+/-- Asymmetric explicit-target Brolin ball q62 with one-sided cofinal-neighborhood
+data, lifted directly to finite roots. -/
+theorem q62_phiMero_oneSide_target_brolinBall_oneSidedNbhd_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility_roots
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : OneSidedAtCofinalNbhd c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hoff : ∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∉ filledJulia c₂)
+    (hvis : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    ∀ {χ η : meroField U} {p q : ℕ},
+      χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+      NoRelation (RatFunc ℂ) χ η := by
+  have hNR :=
+    q62_phiMero_oneSide_target_brolinBall_oneSidedNbhd_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hU₁ hU₂
+      hbase₁ hpos₁ hcrit₁ hoff hvis
+  intro χ η p q hχ hη
+  exact q62_phiMero_roots_of_noRelation hUo hUc hUne hUinf hNR hχ hη
+
+/-- Asymmetric explicit-target Brolin ball q62 with one-sided cofinal data,
+lifted directly to finite roots. -/
+theorem q62_phiMero_oneSide_target_brolinBall_oneSidedCofinal_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility_roots
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : OneSidedAtCofinal c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hoff : ∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∉ filledJulia c₂)
+    (hvis : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    ∀ {χ η : meroField U} {p q : ℕ},
+      χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+      NoRelation (RatFunc ℂ) χ η := by
+  have hNR :=
+    q62_phiMero_oneSide_target_brolinBall_oneSidedCofinal_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hU₁ hU₂
+      hbase₁ hpos₁ hcrit₁ hoff hvis
+  intro χ η p q hχ hη
+  exact q62_phiMero_roots_of_noRelation hUo hUc hUne hUinf hNR hχ hη
+
+/-- Asymmetric explicit-target Brolin ball q62 with strong one-sided data,
+lifted directly to finite roots. -/
+theorem q62_phiMero_oneSide_target_brolinBall_oneSided_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility_roots
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ z₁ : ℂ}
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hsel₁ : SmoothArcSelection c₁)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : OneSidedAt c₁ z₁)
+    (hpos₁ : BrolinJuliaBallPositiveAt c₁ z₁)
+    (hcrit₁ : z₁ ∉ positiveCriticalOrbit c₁)
+    (hoff : ∃ p, p ∈ frontier (filledJulia c₁) ∧ p ∉ filledJulia c₂)
+    (hvis : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    ∀ {χ η : meroField U} {p q : ℕ},
+      χ ^ p = phiMero c₁ hU₁ → η ^ q = phiMero c₂ hU₂ →
+      NoRelation (RatFunc ℂ) χ η := by
+  have hNR :=
+    q62_phiMero_oneSide_target_brolinBall_oneSided_frontierOff_smoothArcSelection_of_mem_jointFrontierVisibility
+      hUo hUc hUne hUinf hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hsel₁ hU₁ hU₂
+      hbase₁ hpos₁ hcrit₁ hoff hvis
+  intro χ η p q hχ hη
+  exact q62_phiMero_roots_of_noRelation hUo hUc hUne hUinf hNR hχ hη
+
 /-- Both-connected Brolin support q62, lifted directly to finite roots without
 the all-placement monodromy dispatcher. -/
 theorem q62_phiMero_bothconnected_brolin_frontierOffDichotomy_smoothArcSelection_of_mem_jointFrontierVisibility_roots
