@@ -20,6 +20,9 @@ This file collects the two foundational bricks:
 import GaloisForLFunctions.Bottcher.Brolin.RieszFlux
 import Mathlib.MeasureTheory.Integral.CircleAverage
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.MeasureTheory.Integral.Prod
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 open Laplacian InnerProductSpace Complex MeasureTheory Filter Real
 open scoped Laplacian Topology
@@ -169,6 +172,87 @@ theorem integral_ball_laplacian_div_r (φ : ℂ → ℝ) (hφ : ContDiff ℝ 2 �
       ((hcfd1.comp hcm).clm_apply ((continuous_circleMap 0 1).comp continuous_snd)) 0 (2*π)
   exact intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun r _ => hasDerivAt_circleIntegral φ hφ r) (hG'cont.intervalIntegrable 0 R)
+
+/-- **Integrability of the layer-cake product integrand** `(r,z) ↦ r⁻¹·1_{‖z‖<r}·Δφ(z)`
+on `(0,R) × ℂ`.  Via `integrable_prod_iff`: the inner `z`-slices are integrable (indicator
+of the integrable `Δφ`), and the outer `r`-mass is dominated by `M·π·r` (ball-mass bound
+`∫_{ball r}‖Δφ‖ ≤ M·πr²` from `Complex.volume_ball`). -/
+theorem layerCake_integrable (φ : ℂ → ℝ) (hcΔ : Continuous (Δ φ)) {R M : ℝ}
+    (hM : ∀ z, ‖Δ φ z‖ ≤ M) :
+    Integrable (Function.uncurry
+        (fun (r : ℝ) (z : ℂ) => r⁻¹ • (Metric.ball (0:ℂ) r).indicator (Δ φ) z))
+      ((volume.restrict (Set.Ioo 0 R)).prod volume) := by
+  set f : ℝ → ℂ → ℝ := fun r z => r⁻¹ • (Metric.ball (0:ℂ) r).indicator (Δ φ) z with hf
+  have hmeas : AEStronglyMeasurable (Function.uncurry f)
+      ((volume.restrict (Set.Ioo 0 R)).prod volume) := by
+    apply Measurable.aestronglyMeasurable
+    have hset : MeasurableSet {q : ℝ × ℂ | ‖q.2‖ < q.1} :=
+      (isOpen_lt (continuous_norm.comp continuous_snd) continuous_fst).measurableSet
+    have he : (Function.uncurry f)
+        = fun q : ℝ × ℂ => q.1⁻¹ • {q : ℝ × ℂ | ‖q.2‖ < q.1}.indicator (fun q => Δ φ q.2) q := by
+      funext q
+      simp only [hf, Function.uncurry, Set.indicator, Metric.mem_ball, dist_zero_right, Set.mem_setOf_eq]
+    rw [he]; exact (measurable_fst.inv).smul ((hcΔ.comp continuous_snd).measurable.indicator hset)
+  rw [integrable_prod_iff hmeas]
+  refine ⟨Filter.Eventually.of_forall (fun r => ?_), ?_⟩
+  · have hΔint : IntegrableOn (Δ φ) (Metric.ball (0:ℂ) r) :=
+      (hcΔ.continuousOn.integrableOn_compact (isCompact_closedBall 0 r)).mono_set
+        Metric.ball_subset_closedBall
+    exact ((hΔint.integrable_indicator measurableSet_ball).smul r⁻¹)
+  · have hbound : ∀ r ∈ Set.Ioo (0:ℝ) R, (∫ z, ‖f r z‖) ≤ M * π * r := by
+      intro r hr
+      have hΔint : IntegrableOn (Δ φ) (Metric.ball (0:ℂ) r) :=
+        (hcΔ.continuousOn.integrableOn_compact (isCompact_closedBall 0 r)).mono_set
+          Metric.ball_subset_closedBall
+      have hcInt : IntegrableOn (fun _ : ℂ => M) (Metric.ball (0:ℂ) r) :=
+        (continuous_const.continuousOn.integrableOn_compact (isCompact_closedBall 0 r)).mono_set
+          Metric.ball_subset_closedBall
+      have hvol : volume.real (Metric.ball (0:ℂ) r) = π * r^2 := by
+        rw [Measure.real, Complex.volume_ball, ENNReal.toReal_mul, ENNReal.coe_toReal,
+          NNReal.coe_real_pi, ← ENNReal.ofReal_pow (le_of_lt hr.1),
+          ENNReal.toReal_ofReal (by positivity)]; ring
+      have hballmass : (∫ z in Metric.ball (0:ℂ) r, ‖Δ φ z‖) ≤ M * (π * r^2) := by
+        calc (∫ z in Metric.ball (0:ℂ) r, ‖Δ φ z‖)
+            ≤ ∫ _ in Metric.ball (0:ℂ) r, M :=
+              setIntegral_mono_on hΔint.norm hcInt measurableSet_ball (fun z _ => hM z)
+          _ = M * (π * r^2) := by rw [setIntegral_const, hvol, smul_eq_mul, mul_comm]
+      have hstep : (∫ z, ‖f r z‖) = r⁻¹ * ∫ z in Metric.ball (0:ℂ) r, ‖Δ φ z‖ := by
+        have hpt : ∀ z, ‖f r z‖ = r⁻¹ * (Metric.ball (0:ℂ) r).indicator (fun z => ‖Δ φ z‖) z := by
+          intro z
+          simp only [hf, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hr.1)]
+          congr 1
+          by_cases hz : z ∈ Metric.ball (0:ℂ) r <;> simp [Set.indicator, hz]
+        simp_rw [hpt]
+        rw [integral_const_mul, integral_indicator measurableSet_ball]
+      rw [hstep]
+      calc r⁻¹ * ∫ z in Metric.ball (0:ℂ) r, ‖Δ φ z‖
+          ≤ r⁻¹ * (M * (π * r^2)) :=
+            mul_le_mul_of_nonneg_left hballmass (le_of_lt (inv_pos.mpr hr.1))
+        _ = M * π * r := by field_simp
+    apply Integrable.mono' (g := fun r => M * π * r)
+    · exact (Continuous.integrableOn_Icc (by fun_prop)).mono_set Set.Ioo_subset_Icc_self
+    · exact hmeas.norm.integral_prod_right'
+    · exact (ae_restrict_iff' measurableSet_Ioo).mpr (Filter.Eventually.of_forall (fun r hr => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (integral_nonneg (fun z => norm_nonneg _))]
+        exact hbound r hr))
+
+/-- **The layer-cake Fubini identity** — the single remaining standard analytic fact.
+`log‖z‖ = log R − ∫_{‖z‖}^R dr/r` (`φ` supported in `ball 0 R`) plus Fubini
+`⟹ ∫_ℂ log‖z‖·Δφ = −∫_{(0,R)} r⁻¹·(∫_{ball 0 r} Δφ) dr`. -/
+def LayerCakeIdentity (φ : ℂ → ℝ) (R : ℝ) : Prop :=
+  (∫ z, Real.log ‖z‖ * Δ φ z)
+    = -(∫ r in Set.Ioo 0 R, r⁻¹ * ∫ z in Metric.ball (0:ℂ) r, Δ φ z)
+
+/-- **Centered fundamental solution, given the layer-cake identity.**  Combining the
+layer-cake identity with the FTC glue `integral_ball_laplacian_div_r` and the endpoint
+values `G(R)=0`, `G(0)=2π·φ(0)` yields `∫_ℂ log‖z‖·Δφ = 2π·φ(0)`. -/
+theorem fundamentalSolution_centered_of_layerCake (φ : ℂ → ℝ) (hφ : ContDiff ℝ 2 φ)
+    {R : ℝ} (hR0 : 0 < R) (hRsupp : ∀ z : ℂ, ‖z‖ = R → φ z = 0)
+    (hLC : LayerCakeIdentity φ R) : (∫ z, Real.log ‖z‖ * Δ φ z) = 2 * π * φ 0 := by
+  rw [hLC, integral_ball_laplacian_div_r φ hφ hR0,
+    circleIntegral_eq_zero_of_forall_sphere φ (le_of_lt hR0) hRsupp,
+    circleIntegral_zero_radius φ]
+  ring
 
 end
 
