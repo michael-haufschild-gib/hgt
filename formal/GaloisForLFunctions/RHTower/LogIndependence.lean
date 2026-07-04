@@ -300,3 +300,64 @@ theorem prime_shift_exp_packet_eq_zero_on_open {n q : ℕ} (hq : q.Prime) {p : F
   exact HurwitzExp.expLin_eq_zero_on_open hβ hUo hUne hzero
 
 end RHTower
+
+namespace RHTower
+
+open Polynomial Finset
+open Complex Filter
+
+/-- Prime-ratio Dirichlet frequencies are independent from any local accumulation
+of zeros.  This strengthens the open-set packet theorem to the shape used by
+window data: a packet that vanishes frequently in a punctured neighbourhood of
+one point is identically zero, hence all coefficients vanish. -/
+theorem prime_shift_exp_packet_eq_zero_of_frequently {n q : ℕ} (hq : q.Prime)
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime ∧ p k ≠ q) (hpinj : Function.Injective p)
+    {c : Fin n → ℂ} {z₀ : ℂ}
+    (hfreq : ∃ᶠ z in nhdsWithin z₀ ({z₀} : Set ℂ)ᶜ,
+      ∑ k, c k * Complex.exp (-((Real.log (((p k : ℝ) / (q : ℝ))) : ℂ)) * z) = 0) :
+    c = 0 := by
+  set β : Fin n → ℂ := fun k => -((Real.log (((p k : ℝ) / (q : ℝ))) : ℂ)) with hβdef
+  have hqpos : (0 : ℝ) < q := by exact_mod_cast hq.pos
+  have hβinj : Function.Injective β := by
+    intro i j hij
+    have hreal : Real.log (((p i : ℝ) / (q : ℝ))) =
+        Real.log (((p j : ℝ) / (q : ℝ))) := by
+      have hre := congrArg Complex.re hij
+      simpa [β] using hre
+    have hposi : 0 < ((p i : ℝ) / (q : ℝ)) := by
+      have : (0 : ℝ) < p i := by exact_mod_cast (hp i).1.pos
+      positivity
+    have hposj : 0 < ((p j : ℝ) / (q : ℝ)) := by
+      have : (0 : ℝ) < p j := by exact_mod_cast (hp j).1.pos
+      positivity
+    have hratio : ((p i : ℝ) / (q : ℝ)) = ((p j : ℝ) / (q : ℝ)) := by
+      have hexp := congrArg Real.exp hreal
+      simpa [Real.exp_log hposi, Real.exp_log hposj] using hexp
+    have hpijR : (p i : ℝ) = (p j : ℝ) := by
+      have hqne : (q : ℝ) ≠ 0 := ne_of_gt hqpos
+      have hmul := congrArg (fun x : ℝ => x * (q : ℝ)) hratio
+      field_simp [hqne] at hmul
+      exact hmul
+    exact hpinj (Nat.cast_inj.mp hpijR)
+  set g : ℂ → ℂ := fun z => ∑ k, c k * Complex.exp (β k * z) with hgdef
+  have hdiff : Differentiable ℂ g := by
+    rw [hgdef]
+    apply Differentiable.fun_sum
+    intro k _
+    exact (differentiable_const _).mul
+      (Complex.differentiable_exp.comp ((differentiable_const _).mul differentiable_id))
+  have hg_an : AnalyticOnNhd ℂ g Set.univ := hdiff.differentiableOn.analyticOnNhd isOpen_univ
+  have hfreqg : ∃ᶠ z in nhdsWithin z₀ ({z₀} : Set ℂ)ᶜ, g z = 0 := by
+    simpa [g, β] using hfreq
+  have hg0 : ∀ z, g z = 0 := fun z =>
+    hg_an.eqOn_zero_of_preconnected_of_frequently_eq_zero isPreconnected_univ (Set.mem_univ z₀)
+      hfreqg (Set.mem_univ z)
+  have hLI := HurwitzExp.expLin_linearIndependent hβinj
+  rw [Fintype.linearIndependent_iff] at hLI
+  have hsum : (∑ i, c i • fun z => Complex.exp (β i * z)) = 0 := by
+    funext z
+    simpa [g, Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using hg0 z
+  funext k
+  exact hLI c hsum k
+
+end RHTower
