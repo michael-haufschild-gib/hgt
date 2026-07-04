@@ -133,33 +133,6 @@ the twisted 4th moment `∫|F_N|⁴ = U·∑_{mn=kl≤N²}(mnkl)^{−1/2} + Rem`
 Halász–Montgomery large-values bound, a *conditional finite-c* small-ball on the
 exact range the census needs — the bracket the numerics of §2 already fixed.
 
-## 6. Addendum (same day, mollified-dip session): (AC) as typed is REFUTED; the repair
-
-**(AC) of §3 is FALSE at the stated scale.** [Mechanism — Harper-grade
-better-than-squareroot cancellation, Kronecker–Weyl transfer to t-averages;
-exact citation to pin at promotion.] The typical size of |F_N(1/2+it)| is
-≍ √(log N)/(log log N)^{1/4} = o(√(log N)): the second moment U·log N is
-carried by rare large peaks. Hence for every fixed λ > 0,
-meas{t : |F_N(1/2+it)| ≤ λ√(log N)}/U → 1, i.e. η(λ) → 1 ≠ 0. The Selberg-CLT
-left tail cannot rescue the rms normalization: the CLT median itself sits
-below it by the (log log N)^{1/4} factor.
-
-Two repairs, one dead, one alive:
-1. Rescale (AC) to the typical size (λ·median). Still a critical-chaos
-   small-ball — the genuinely hard frontier object; no known technology.
-2. Doc 56's mollified route: count sliver zeros through P = F_N·M_y (dip
-   lemma + L² bookkeeping, both elementary), landing on (K-bdd) — a bounded-
-   density statement for a SUBcritical fixed-variance object, measured flat
-   (Q/r² ≈ 0.3–0.5, N-stable). This is now the primary (R3) route; §5's
-   `SecondMoment.lean` bricks remain the Lean substrate for its L² supply.
-
-The §2 probe's positive signals (saturation, bounded ratio, N-stable κ) are
-unaffected — they measured the ZERO statistics, which stay true-shaped; it was
-the VALUE-distribution normalization in §3 that was wrong. The constant closes
-the loop: §2's κ ≈ 0.025–0.040 brackets the Jessen-curvature value 1/(12π) ≈
-0.0265 that doc 56's profile converges to as N → ∞ — two independent
-computations agree on the (CR-density) slope.
-
 ## 6. CORRECTION — §3/§4.1/§5's value-small-ball route is REFUTED; the real route is the σ-profile / GAF zero-intensity [SEARCH]
 
 External adversarial check (GPT) + independent verification here. **§3, §4 item 1,
@@ -231,3 +204,80 @@ estimates (Gonek–Ledoan reach only the global count `+O(X)` and a weighted
 - The Steinhaus-vs-Gaussian gap is the real question: does the multiplicative phase
   structure change the local zero intensity at leading order? (Conjecture: no — local
   statistics are covariance-driven. That is the bridge to make rigorous.)
+
+## 7. Synthesis (mollified-dip session, same day): two independent live routes to (CR-density)
+
+§6's refutation of the value small-ball was found independently in the doc 56
+session (same mechanism, recorded doc 56 §10); the two positive programs that
+remain are DIFFERENT and complementary, and both should run:
+
+- **Route A (§6.2–6.4, this doc): GAF σ-profile universality.** Engine: zero
+  intensity ρ(σ) = (1/4π)(log K)″(σ) with K = `secondMoment_sigma`'s profile;
+  open core = local-statistics universality (Steinhaus phases vs Gaussian at
+  leading order). Explains the exact constant ε(c) ~ c/12π.
+- **Route B (doc 56): mollified dip + (K-bdd).** Engine: every sliver zero of
+  F_N digs a measurable dip of P = F_N·M_y (proved, L²-only); open core =
+  (K-bdd), a FIXED-scale bounded-density statement for the SUBcritical
+  mollified sum — measured flat (Q/r² ≈ 0.3–0.5, N-stable, doc 56 §9). Yields
+  the consumer-sufficient ε(c) = O(√c) with explicit constants; does not need
+  universality.
+
+Cross-constraints: B's admissible window U ≫ N^{1+θ} sits inside A's
+Gonek–Ledoan range N/log N ≪ U ≪ N² for θ < 1; B's measured density ≈ 0.1 near
+0 is exactly the finite-N shadow of A's intensity at the mollified covariance.
+If A's universality bridge stalls, B's anti-concentration is the fallback that
+still closes the (R3) consumer (doc 57's Tier 1–2 budget); if B's (K-bdd)
+stalls, A's intensity formula is the fallback. Either closes MID-central's
+last open input.
+
+## 7. The closed form: ε(c) is the Langevin function; its Taylor tower is ζ at negative odd integers [PROVED HERE (elementary) + CONJECTURE readings]
+
+Prompted by the user's question "is the 1/12 related to 1+2+3+⋯ = −1/12?" — answer: yes,
+through a common ancestor, and chasing it yields the closed form of the whole profile.
+
+### 7.1 Closed form [PROVED HERE — calculus]
+`φ(u) = d/du log((1−e^{−2u})/2u) = 2/(e^{2u}−1) − 1/u = coth u − 1/u − 1`, so
+
+> **ε(c) = (coth c − 1/c)/4π = L(c)/4π**,  L = the Langevin function.
+
+Bernoulli series `coth u − 1/u = Σ_{k≥1} 2^{2k}B_{2k}u^{2k−1}/(2k)!` + Euler
+`ζ(1−2k) = −B_{2k}/2k` give the Taylor tower:
+
+> **ε(c) = −(1/2π) Σ_{k≥1} ζ(1−2k)·(2c)^{2k−1}/(2k−1)! = c/12π − c³/180π + …**
+
+i.e. `ε′(0) = −ζ(−1)/π = 1/12π`; the k-th odd coefficient is a shadow of ζ(1−2k)
+(ζ(−1)=−1/12, ζ(−3)=1/120, …). Checked k=2 both ways (−c³/180π). The GAF near-line
+zero-density profile of the matched partial sum is the EGF of ζ at negative odd integers.
+
+Mechanism of the kinship [PROVED HERE]: the common ancestor is the Bose/Todd kernel
+`1/(e^t−1)`. Zeta regularization reads its Taylor germ via Mellin continuation
+(`ζ(s)Γ(s)=∫t^{s−1}/(e^t−1)dt`); our covariance profile reads the SAME germ because the
+matched truncation cuts ζ's pole at s=1 with exponential profile —
+`K(½+u/logN)/logN → (1−e^{−2u})/2u = e^{−u}·sinh(u)/u`. Same germ, two readings. NOT the
+literal continuation to s=−1; no divergent series is regularized in our derivation.
+
+### 7.2 Hard consistency check: Gonek–Ledoan's constant reproduces [VERIFIED reasoning]
+Langevin predicts the weighted sum `Σ_{β>½}(β−½) = (U/4π)·∫ c·L′(c)dc ≈ (U/4π)·loglog N`
+(since `∫₀^X cL′ = log X + O(1)`, cutoff X ~ log N). Gonek–Ledoan's PROVEN bound is
+`(T/4π)·loglog X` — same 1/4π, same loglog. The GAF model is the strip-local
+disintegration of the proven weighted theorem; the open GAF-comparison = promoting the
+proven average to the strip-local count. This calibrates the model against a theorem.
+
+### 7.3 Correction to §2's reading: "SATURATION" was over-read
+Langevin says counts grow ~40% from c=2 (L=0.537) to c=4 (L=0.751), not flat; the §2
+winding counts (5–8 zeros) cannot resolve that. Tail is POWER LAW `1−L(c) ~ 1/c`
+(not exponential); `ε(∞)=1/4π` per side, total `1/2π` = the full Gonek–Ledoan density —
+all zeros at scale O(1)/log N, slow approach. FALSIFIABLE PREDICTION for the
+deterministic F_N (a direct test of the GAF-comparison open core): the c-profile of
+near-line counts should follow L(c)/4π — ratios ε(1):ε(2):ε(4) = 0.313:0.537:0.751
+(×1/4π·UlogN). A larger-U winding probe can accept/reject this against hard saturation.
+
+### 7.4 Wild reading [CONJECTURE — bank the metaphor]
+Same 1/12-family as the free boson Casimir energy (−1/24 per chiral half, c=1 CFT) and
+Dedekind η's q^{1/24} — all Taylor shadows of 1/(e^t−1). Read the zero gas near σ=½ as a
+1D system: `ε′(0) = −ζ(−1)/π` says the linear response of zero density to
+distance-from-line is a Casimir-type vacuum coefficient of the truncation — "the
+critical line has a vacuum energy," and the zeros' reluctance to leave it is priced by a
+zeta-regularized vacuum term. Forward handle: if the intensity slope is a central-charge
+shadow, what plays c=1? Does a weighted carrier (smoothing the truncation edge) shift
+the effective central charge and hence the 1/12? — a computable question on the K-profile.
