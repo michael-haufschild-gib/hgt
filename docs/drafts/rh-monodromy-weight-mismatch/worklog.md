@@ -1936,3 +1936,40 @@ lane): two new RHTower bricks, umbrella 8612 jobs, lint green, axiom-clean:
   (method research); back-solve z₀ from the deck margin (bridge demand meets
   route supply in one number); the lognormal two-tails card (self-domination
   = right tail, creation = left tail of the SAME law).
+
+## Cycle 32 (2026-07-04) — ideation: quantum-walk collision banked (doc 66)
+- User-injected wild-analogy collision adjudicated: QW-as-vocabulary false
+  (affine non-unitary update, diffusive in log-clock); QW-as-structure lands
+  on three anchors — kicked-rotor/quantum-resonance dictionary for the
+  cascade lattice (doc 50's collapse/denominator = dynamical localization,
+  PROVED; survivor support = resonances, MEASURED); AFE = DFT self-duality
+  with matched length as fixed point (Landsberg–Schaar as the classical home
+  of doc 50's collapse); m-dial = inverse-Grover mean-projection.
+- HIT: [CONJECTURE] the measured birth phase π/8 (P-L5) = half the
+  Fresnel/Maslov π/4 = the metaplectic phase of the ℤ₂-tower's square-root
+  weight (theta-multiplier 8th roots). Cheap symbolic check queued (re-run
+  P-L5 stationary phase with symbolic Fresnel phase). If confirmed, (T1)
+  birth layer becomes structural and the cascade constants become
+  reciprocity phases.
+
+## Cycle 33 (2026-07-04) — mining fired attack-as-false; (SEL-PS) closed UNCONDITIONALLY (ε₀-dial)
+- Executing "mine Selberg's method": re-derivation exposed a SIGN/ARG GAP in
+  doc 59 §1's Littlewood sketch (horizontal argument terms are O(U·density·
+  width) — same order as the zero-sum, cancel only to fluctuation order).
+  CORRECTION appended (doc 59 §4); conclusion survives via the repair.
+- The repair is stronger than the mined target: window Jensen-function
+  CONVEXITY + tangent at σ=3 gives Φ(σ) ≥ −1.36 on [½,3] unconditionally
+  (no zero data — zeros only add convexity). With Jensen/MV upper side +
+  Markov: (TIGHT) meas{|S_{N′}| ≤ λ} ≤ U(½loglogN+C)/log(1/λ).
+- Doc 67 BANKED: (TIGHT) + plateau_split [Lean] + MV-Chebyshev + dip layer
+  [Lean] ⟹ K_designed ≤ C′·ε₀·U·logN, ε₀ FREE, UNCONDITIONAL (taper
+  ℓ = ε₀λ₀², λ₀ = e^{−(½loglogN+C)/ε₀} — a power of 1/logN; explicit onset).
+  Selberg CLT demoted to optional refinement (milder tapers). Route C's
+  creation-side analytics CLOSED at sketch grade; residue = write-out pass +
+  tower integration + (SWEEP-margin) number (meeting equation doc 67 §6).
+- Mining record: Selberg CLT + near-line expansions in print for ζ
+  (arXiv:2101.00632, 2301.01925 — σ = ½+(logT)^{-θ} covers sliver
+  abscissae); deterministic matched-length partial-sum CLT NOT in print —
+  open ground, no longer load-bearing. [CHECK at promotion]
+- Tasks: #12 closed (resolved); #13 opened ((SWEEP-margin) write-out +
+  back-solve ε₀* — the one number left in the meeting equation).

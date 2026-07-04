@@ -67,3 +67,27 @@ bridge is converging on a single architecture: **density theorems govern
 w ≫ 1/log T, windows govern w ≍ 1/log T, and (CR-density)/Route A/B governs
 creation inside the window scale.** Doc 60 (chain audit) should draw this as
 the master diagram.
+
+## 4. CORRECTION (same lane, cycle 33): §1's Littlewood sketch has a sign/arg gap; the convexity-tangent repair is stronger
+
+Attack-as-false, fired on our own claim while mining Selberg's method. §1's
+step (i) treated the horizontal/argument terms of the Littlewood rectangle as
+O(edge/U). That is wrong at scale: the vertical-argument integral carries
+O(U·density)·(σ-width) — the SAME order as the zero-sum — and the two cancel
+only to fluctuation order. As sketched, step (i) does not prove the mean
+lower bound. (§1's conclusion survives; the proof is replaced.)
+
+**Repair [PROVED HERE (sketch) — convexity + tangent, no zero data at all].**
+Φ(σ) := (1/U)∫ log|g(σ+it)| dt is CONVEX in σ (∂²_σ Φ = (2π/U)·(zero measure
+on the line) ≥ 0 distributionally; window-end corrections O(log N/U)). At
+σ = 3: Φ(3) ≥ log(1 − (ζ(3)−1)) ≥ −0.23 pointwise, and |Φ′(3)| =
+|mean Re(g′/g)(3)| ≤ Σ_{n≥2} n^{−3}log n / (1 − Σ_{n≥2} n^{−3}) ≤ 0.45.
+A convex function lies above every tangent: for σ ∈ [½, 3],
+
+> Φ(σ) ≥ Φ(3) + Φ′(3)(σ − 3) ≥ −0.23 − 0.45·2.5 ≥ −1.36.
+
+Zeros only increase convexity; they cannot break the tangent bound. All §1
+consequences (vertical threading, almost-all-gap test points) survive with
+the constant −1.36 in place of the broken step. The same repair applies
+verbatim to any Dirichlet polynomial with leading coefficient 1 — consumed
+at scale in doc 67.
