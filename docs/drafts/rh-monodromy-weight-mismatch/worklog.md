@@ -1431,3 +1431,17 @@ n ≈ 19 clean refinements; mean |p−int| = 0.167 vs 0.25 (≈2.6σ, mass at
 P-D2 PASS: all η ∈ [0.039, 0.178] — no deep pairs; both shallow and mid-band
 populated. Next: refinement fix + [5830,12000] extension + per-event η vs
 η₀(T,r) classification (measures the exact residual wall).
+
+## 2026-07-04 (cycle 8) — the wall measured: 8 events, all at the truncation seam
+Fixed pipeline (guided refinement 76/81 clean; +44 events in [5830,12000)).
+P-D1′ PASS (mean |p−int| = 0.1685, ≈4.9σ below uniform, n = 76); P-D2′ PASS
+(max η = 0.178 — no deep pairs anywhere); P-D3 PASS: 89% of odd events SHALLOW
+(proven lemma kills them); 8 mid-band survivors ≈ 1 per 1500 heights, ALL
+lemma-margin ≤ 2.74, and 7/8 within 0.086 of a truncation transition (survivor
+mean 0.056): mid-band mechanism = the N → N+1 birth jump. p-central family
+(p ∈ [0.2, 0.8], 60% of heights): ZERO measured survivors in [200,12000].
+#149 abstract-verified: Gonek–Montgomery IMRN 2013 studies exactly this family;
+100%-on-line theorem needs N ≤ T^{o(1)} — AFE-matched regime open in print.
+Residue: (1) no mid-depth pairs at p-central heights [hard core, now sharp];
+(2) restricted-family cofinality [classical shape + doc 12 (D′) small-ball];
+(3) G–M full-text mining. Doc 43 §§8–9; archives oddclass.out.

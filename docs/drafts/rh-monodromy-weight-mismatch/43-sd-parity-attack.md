@@ -193,3 +193,48 @@ N but invisible to the sweep. But (MOAT-shallow) kills every pair with
 η₀(T, r) ≥ 0.03, a per-height computable condition (the classification run's
 lemma-margins measure exactly this). Census blindness is harmless wherever
 η₀ ≥ 0.03.
+
+## 9. Classification outcome: the wall is eight events, all at the seam of the truncation
+
+Run: `oddwindow_classify.py` (guided refinement — 76/81 events clean vs 20/37
+before; archive `oddclass.out`). All three registered predictions PASS:
+
+- **P-D1′ PASS** (n = 76): mean |p − nearest integer| = 0.1685 vs uniform 0.25
+  — a ≈ 4.9σ deficit. The transition-clustering of odd events is real.
+- **P-D2′ PASS**: max η = 0.178 across [200, 12000] — deep pairs (η ≥ 1/4) do
+  not occur; §2's upper regime is empty in practice.
+- **P-D3 PASS**: **89% of all odd events are SHALLOW — killed by the proven
+  §6 lemma** (with the E*-proxy constant 1, r = 0.5). The measured wall is the
+  **8 mid-band survivors** in 11,800 height units (≈ 1 per 1,500):
+
+  | T | p | η | lemma-margin |
+  |---|---|---|---|
+  | 1415.7 | .010 | .171 | 2.74 |
+  | 4253.5 | .019 | .115 | 1.35 |
+  | 4589.7 | .027 | .178 | 2.51 |
+  | 4990.4 | .182 | .142 | 1.63 |
+  | 6430.8 | .992 | .116 | 1.25 |
+  | 7712.9 | .036 | .096 | 1.19 |
+  | 7734.7 | .086 | .097 | 1.08 |
+  | 11127.6 | .083 | .122 | 1.66 |
+
+Two structural facts about the survivors: (a) **seven of eight sit within 0.086
+of a truncation transition** (survivor mean |p − int| = 0.056 — three times more
+concentrated than the odd population, five times more than uniform): the
+mid-band mechanism is the BIRTH JUMP at N → N+1. (b) every lemma-margin is
+≤ 2.74: a factor-3 sharpening of (MOAT-shallow) — multi-zero factorization
+(remove the flanking on-line zeros from H as well; each nearby zero tightens),
+per-event r-optimization, or the true AFE constant — would kill every measured
+survivor.
+
+**The p-central family.** Define the window family at heights with
+p(T) ∈ [0.2, 0.8] (60% of all heights, cofinal by construction). Measured
+mid-band survivors in it: **zero** (the closest, T = 4990.4, has p = 0.182).
+(SD-parity) restricted to the p-central family has no measured counterexample
+in [200, 12000]. The unconditional residue is now: (1) NO mid-depth pairs at
+p-central heights — the sharp hard core; (2) cofinality of the restricted
+family (classical shape: MV theorem + Paley–Zygmund for test points and
+boundaries; small-ball via doc 12's banked (D′) for the |A|-lower bounds);
+(3) mine Gonek–Montgomery's rectangle counts (#149: family in print, IMRN 2013;
+their 100%-on-line theorem needs N ≤ T^{o(1)} — the AFE-matched regime is open
+ground) for a printed off-line density input.

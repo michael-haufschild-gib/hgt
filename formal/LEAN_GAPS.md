@@ -269,6 +269,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2823` | supplied by `SmoothArcSelection` in both orientations.  The remaining real-pair access input is exactly |
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:3155` | `M` is discharged internally from `-2 ≤ c ≤ 1/4`; the remaining connected-case inputs are exactly |
 | `formal/GaloisForLFunctions/Bottcher/Q62BothConnectedExposed.lean:8` | point of one set off the other filled set (after a swap).  The *only* remaining gap to |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:20` | Half A is proved here modulo `BrolinScalingAt`; the two remaining inputs — the doubling law |
 | `formal/GaloisForLFunctions/Bottcher/Q62Field.lean:269` | by `mvEval_deepBall_eq_zero_iff` (faithfulness); the single remaining input `hFunIndep` is precisely |
 | `formal/GaloisForLFunctions/Bottcher/Q62HinputAssembly.lean:16` | This is the genuine remaining content of the natural-boundary route (co-countable for connected `c₁`: |
 | `formal/GaloisForLFunctions/Bottcher/Q62KummerAssembly.lean:35` | against `meroField`. The remaining work to make it unconditional is the *mechanical* construction of |
@@ -290,7 +291,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:7` | fibre with support in `range (N+1)` is the dense degree-`N` polynomial whose missing coefficients are zero, |
 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:30` | /-- A sparse fibre equals its dense degree-`N` presentation with zero-filled missing coefficients. -/ |
 | `formal/GaloisForLFunctions/Bottcher/RelativeFibreGeneric.lean:397` | `exists_sparse_fibre_separable_crossing`, while the remaining target-set geometry is supplied pointwise on |
-| `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCapstone.lean:21` | the connected case down to the one remaining dynamical input. |
 
 ## Historical Status Logs
 

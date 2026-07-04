@@ -344,3 +344,4 @@ import GaloisForLFunctions.Bottcher.Q62OneSidedPullback
 import GaloisForLFunctions.Bottcher.Q62BackwardOrbitBrolin
 import GaloisForLFunctions.Bottcher.Q62BrolinSupportDischarge
 import GaloisForLFunctions.Bottcher.Q62WeylDischarge
+import GaloisForLFunctions.Bottcher.Q62EquilibriumVanishing
