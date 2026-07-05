@@ -152,6 +152,7 @@ import GaloisForLFunctions.RHTower.FloorFailureDensity
 import GaloisForLFunctions.RHTower.PinnedWindow
 import GaloisForLFunctions.RHTower.BohrMoments
 import GaloisForLFunctions.RHTower.LegStripThreshold
+import GaloisForLFunctions.RHTower.LegStripContinuum
 import GaloisForLFunctions.RHTower.BohrMomentDensity
 import GaloisForLFunctions.RHTower.WeierstrassMajorant
 import GaloisForLFunctions.RHTower.FloorFailureUnconditional
@@ -163,3 +164,4 @@ import GaloisForLFunctions.RHTower.GNCarrierBridge
 import GaloisForLFunctions.RHTower.DpolyBallFloor
 import GaloisForLFunctions.RHTower.RouteBFullSupport
 import GaloisForLFunctions.RHTower.RouteBFullSupportMeasure
+import GaloisForLFunctions.RHTower.RouteBFullSupportDensity

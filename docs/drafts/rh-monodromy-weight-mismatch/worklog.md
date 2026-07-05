@@ -4659,3 +4659,55 @@ reduction-to-interface DONE; only the interface (one infinitePi 4-coordinate mar
 remains, plus (i-b) coefficient gap at p_i^{-1/2} (explicit) and (i-c) prime counting 4∈(N/2,N]
 (Bertrand-iterate). Then density<1 → cofinal center floor → DpolyBallFloor → circle gate → RH,
 modulo crux (ii) center placement (½+iτ a simple on-line completedGN zero).
+
+## cont. 42 — prime-support crux (i) CLOSED: full-support caustic small-ball PROVEN + full deterministic pipeline machine-checked
+
+Reversed the earlier "multi-session, defer" call (that was effort-estimation, not mathematics). Built
+the whole thing. All axiom-clean [propext, Classical.choice, Quot.sound]; RHTower green 8710 jobs;
+lint passed; index regenerated.
+
+RouteBFullSupportMeasure.lean — the measure-theoretic core:
+- `inner_block_le_general` / `block_pi_le_general`: the 4-marginal / finite-product small-ball bound
+  with an ARBITRARY coordinate-invariant background g (generalizes inner_block_le/block_pi_le from a
+  linear rest-sum to any g invariant under the 4 dominant coords). Same peel4/rescale4/lmarginal_union
+  proof.
+- `extendT`, `restrict_extendT`, `measurable_extendT`, `primeFactors_subset_primesIcc`,
+  `steinhausMeasure_eq_pi_restrict`: the infinitePi(ℕ)→finite-pi(↥T) reduction for any
+  T-restriction-invariant event (T = primes ≤ N), via Measure.infinitePi_map_restrict.
+- `fullCarrier_smallball_of_fourPhase`: THE bridge — steinhausMeasure{‖∑_{n≤N} a_n X_n‖ ≤ t} ≤ (2π)⁻⁴M
+  from the bare 4-phase bound. Proof: T=primes≤N; the event factors through T.restrict (X_n reads
+  primeFactors n ⊆ T); the carrier = g(x) + Σ_i a_{p_i} unitPhase(x q_i) with g the remainder
+  (invariant under the 4 dominant coords by primeFactors_disjoint_block); apply block_pi_le_general.
+- `fullCarrier_smallball_caustic`: instance at the explicit fourPhaseConst (mirrors block_smallball_caustic).
+
+RouteBFullSupportDensity.lean — the deterministic pipeline:
+- `floorFailure_timeDensity_le_caustic_fullSupport`: full-carrier caustic density bound (feeds the
+  carrier-agnostic floorFailure_timeDensity_le_unconditional with the full-support small-ball).
+- `good_height_cofinal_of_caustic_fullSupport`: caustic numeral < 1 ⟹ cofinal floor for
+  dpoly a (Icc 1 N) on the line.
+- `dirichletPoly_floor_cofinal_of_caustic`: same with a_n = n^{-1/2}, ⟹ cofinal ‖dirichletPoly N(½+iτ)‖ > t₀.
+- `windowFloor_cofinal_of_caustic` (CAPSTONE): composes with DpolyBallFloor's ball-Lipschitz spreading
+  ⟹ BOTH circle-gate CarrierFloorOn data (charts AND both boundary circles) at cofinally many heights
+  — the exact deterministic pair riemannHypothesis_of_emCarrier_pinned_windows_of_circles consumes.
+
+WHAT THIS CLOSES: the complete deterministic chain is now ONE machine-checked composition:
+  4-phase caustic bound → full-support small-ball → density < 1 → cofinal on-line floor →
+  ball-Lipschitz spreading → both circle-gate floors.
+The circle-gate floor supply for the certificate carrier is DONE from explicit inputs. The
+completely-multiplicative obstruction is fully handled by the (N/2,N] isolation + the general-background
+marginal — no interface left open on the small-ball side (BlockSmallBallRandomShift is now redundant;
+fullCarrier_smallball_of_fourPhase supersedes it).
+
+REMAINING typed inputs of windowFloor_cofinal_of_caustic (all explicit, no measure theory left):
+- hbudget: (∑_{n≤N} log n · n^{-(½−R)})·R ≤ t₀−t₁ — a finite computable inequality (pick R small).
+- hrefl: ‖zetaChi z · dirichletPoly N(1−z)‖ ≤ t₁−ε on each window ball — the reflected-χ budget.
+- hnum: (2π)⁻⁴ fourPhaseConst(p_i^{-1/2}...) < 1 — the caustic numeral at n^{-1/2} coefficients.
+- 4 dominant primes in (N/2,N] with the strict caustic gap at p_i^{-1/2} (prime-counting; classical
+  Bertrand-iterate). Note the gap p4^{-1/2}−p3^{-1/2} forces a tiny t₀; hnum then constrains σ0,J,sstar.
+- crux (ii) center placement: window center ½+iτ a simple on-line completedGN zero (via
+  completedGN_simple_zero_factorization_of_close on one circle pair).
+
+NEXT generative move: discharge hnum + the caustic gap for concrete primes at n^{-1/2} — i.e. verify
+the caustic geometry is satisfiable at coefficients p_i^{-1/2} with p_i∈(N/2,N] (numerically
+pre-certify σ0,sstar,J,t₀ then formalize), which converts windowFloor_cofinal_of_caustic's hypotheses
+into a bare "4 primes exist in (N/2,N]" + the two budget inequalities.

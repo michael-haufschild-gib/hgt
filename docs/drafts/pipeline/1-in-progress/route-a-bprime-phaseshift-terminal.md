@@ -297,3 +297,24 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
   (tiny positive t₀); (i-c) prime counting — 4 primes in (N/2,N] (Bertrand-iterate / PNT interface).
 - Chain once landed: full-carrier small-ball → density<1 → cofinal center floor → DpolyBallFloor →
   both circle-gate floors → codex circle gate → RH (modulo center placement, crux ii).
+
+## cont. 40 — prime-support crux CLOSED: full deterministic circle-gate floor pipeline machine-checked
+
+- Reversed an effort-estimate "defer"; built the whole measure-theoretic core. All axiom-clean;
+  RHTower 8710 jobs; lint green.
+- RouteBFullSupportMeasure.lean: fullCarrier_smallball_of_fourPhase — steinhausMeasure of the FULL
+  carrier ∑_{n≤N} a_n X_n ≤ (2π)⁻⁴M from the bare 4-phase bound. The completely-multiplicative
+  obstruction (composites correlated with the prime block) is fully resolved by (N/2,N]-isolation +
+  a general-background marginal (inner_block_le_general/block_pi_le_general with arbitrary g invariant
+  under the 4 dominant coords) + the infinitePi→finite reduction (steinhausMeasure_eq_pi_restrict).
+  fullCarrier_smallball_caustic instances the explicit constant.
+- RouteBFullSupportDensity.lean: floorFailure_timeDensity_le_caustic_fullSupport →
+  good_height_cofinal_of_caustic_fullSupport → dirichletPoly_floor_cofinal_of_caustic →
+  windowFloor_cofinal_of_caustic (capstone). ONE machine-checked composition:
+  4-phase bound → full small-ball → density<1 → cofinal on-line floor → ball spreading → BOTH
+  circle-gate CarrierFloorOn (charts + both circles) at cofinal heights = the circle gate's input.
+- Circle-gate floor supply DONE from explicit inputs. Remaining typed items of the capstone: hbudget
+  (finite sum inequality), hrefl (reflected-χ budget), hnum (caustic numeral <1 at p_i^{-1/2}),
+  4 primes in (N/2,N] with the caustic gap (Bertrand-iterate), and crux (ii) center placement.
+- NEXT: pre-certify + formalize the caustic geometry at n^{-1/2} coefficients (σ0,sstar,J,t₀), reducing
+  the capstone hypotheses to "4 primes in (N/2,N]" + two budget inequalities.
