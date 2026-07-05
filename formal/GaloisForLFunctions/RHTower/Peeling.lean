@@ -112,6 +112,7 @@ theorem exists_multi_peel {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
         ih hh₁an (fun w hw => htU w (Finset.mem_insert_of_mem hw)) hzeros₁ hord₁
       refine ⟨fun w => if w = ρ then mρ else m' w, h', hh'an, hh'0, fun z hz => ?_⟩
       rw [Finset.prod_insert hρs]
+      beta_reduce
       have hif : (if ρ = ρ then mρ else m' ρ) = mρ := if_pos rfl
       have hprods : (∏ w ∈ s, (z - w) ^ (if w = ρ then mρ else m' w))
           = ∏ w ∈ s, (z - w) ^ m' w :=

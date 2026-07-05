@@ -4212,3 +4212,35 @@ now has mean(q(‖F‖²)) = α + β∑aₙ² + γ∑(convSq)² matched to the m
 density bound past the degree-1 (second-moment) rung. NEXT: dpoly_mul (general
 product, not just square) → F^k by induction → the full even-moment tower; then the
 (APPROX) polynomial step-majorant closes δ→0 to the sharp small-ball bound.
+
+cont.48 (2026-07-05): c_strip=2 FORMALIZED (LegStripThreshold.lean, axiom-clean, umbrella+lint
+green). Two exact endpoints: (1) discrete reduction — poleExcess + rcoth_half_pos/neg (from
+rcoth_sub_one) → cothField_midpoint_split (F(m)=(#behind−#ahead)+2(B−A), exact ∀ config) →
+strip_iff_excess (strip ⟺ A−B>#behind, coth eliminated, monotone-field iff built manually since
+StrictAntiOn.lt_iff_lt absent); (2) trig threshold — stripResidue=1−(π/c)cot(π/c),
+stripResidue_eq_one_iff (=1⟺c=2 via cos(π/c)=0 only at π/2 on (0,π), strictAntiOn_cos.injOn, NO
+calculus), stripResidue_gt_one_iff (>1⟺c<2, sub-harmonic side, cos sign). Continuum bridge
+(A−B)/i→Φ(c) scoped as paper analytic layer (Euler–Maclaurin, not Lean). Doc 30 §15 Lean note.
+Plumbing fixes: open Classical for filter decidability, mem_filter via simp not ▸, div_eq_div_iff
+wants ≠0, push_neg→not_lt (lint fails on deprec warnings). #176 formalization done.
+
+## cont. 32 — dpoly_mul, full Fᵏ even-moment tower, sharp δ→0 composition
+
+The even-moment tower collapses via ‖F‖^{2k}=‖Fᵏ‖² + "a power of a Dirichlet poly is a
+Dirichlet poly". BohrMoments.lean rewritten as the GENERAL tower (replacing degree-2-only;
+nothing depended on it): dpolyConv/prodSupport + dpoly_mul (line) + model_mul (model);
+powSupport/powConv (recursive) + dpoly_pow/model_pow (Fᵏ by induction);
+tendsto_evenMoment_average / integral_normPow_dpoly /
+**tendsto_evenMoment_average_steinhaus** — the GENERAL Bohr identity time-avg ‖F‖^{2k} =
+model E‖∑aX‖^{2k} = ∑(powConv)², every k.
+
+BohrMomentDensity.lean (new): tendsto_polyMoment_average_steinhaus (linearity over the
+tower); cesaroUpperDensity_le_polyMoment; **floorFailure_timeDensity_le_sharp** — density ≤
+B.toReal from a polynomial-majorant FAMILY + model small-ball bound B; the δ→0 collapse
+(le_of_forall_pos_le_add) is DONE. Sharp bound reduced to EXACTLY (APPROX).
+
+All axiom-clean; lint green; 8496 jobs. SOLE remaining = (APPROX): ∀δ>0 ∃ poly q, q≥1 on
+[0,t₀²], q≥0 on [0,R²] (R=∑|aₙ|), E[q(‖∑aX‖²)]≤modelMeasure+δ. Formulate on Ω (Y=‖∑aX‖²∈
+[0,R²]): continuity-from-above (tendsto_measure_iInter_atTop) picks ε; tent h; Weierstrass
+(polynomialFunctions_closure_eq_top) p; q=p+δ/3. mathlib pieces all present. NEXT: build
+exists_poly_majorant_expectation.

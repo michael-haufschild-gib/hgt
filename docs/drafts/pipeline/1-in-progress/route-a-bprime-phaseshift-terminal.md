@@ -184,3 +184,13 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
 - Unlocks the degree-2 majorant q(u)=α+βu+γu² with mean matched to the model,
   sharpening the density bound past the degree-1 rung. NEXT: dpoly_mul (general
   product) → F^k tower → (APPROX) step-majorant → sharp small-ball bound.
+
+## UPDATE (cycle 55, cont. 32) — full even-moment tower + sharp δ→0 composition
+
+- **BohrMoments.lean** rewritten as the GENERAL tower: dpoly_mul + model_mul (general product),
+  powConv/powSupport + dpoly_pow/model_pow (Fᵏ by induction), **tendsto_evenMoment_average_steinhaus**
+  (general 2k-moment Bohr identity, every k).
+- **BohrMomentDensity.lean** (new): tendsto_polyMoment_average_steinhaus, cesaroUpperDensity_le_polyMoment,
+  **floorFailure_timeDensity_le_sharp** — density ≤ B.toReal from a polynomial-majorant family + model bound B.
+  δ→0 drive DONE; sharp bound reduced to EXACTLY (APPROX).
+- Axiom-clean; lint green; 8496 jobs. SOLE remaining = (APPROX) Weierstrass step-majorant (on Ω; mathlib pieces present).

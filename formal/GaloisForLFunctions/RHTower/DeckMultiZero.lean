@@ -441,3 +441,38 @@ theorem deckClass_multi_zero {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) (m :
   rw [Finset.mul_sum, Finset.sum_div]
 
 end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- The two slit annulus charts cover the annulus: a point off both slits is
+real from both sides of the center, hence equals the center, which lies in the
+hole. -/
+theorem annulus_subset_charts {a : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀) :
+    ball a R \ closedBall a r₀ ⊆ chartRA a r₀ R ∪ chartLA a r₀ R := by
+  intro z hz
+  by_cases hR : z - a ∈ slitPlane
+  · exact Or.inl ⟨hR, hz⟩
+  · refine Or.inr ⟨?_, hz⟩
+    rw [Complex.mem_slitPlane_iff] at hR
+    have hre : (z - a).re ≤ 0 := le_of_not_gt fun hh => hR (Or.inl hh)
+    have him : (z - a).im = 0 := by
+      by_contra hh
+      exact hR (Or.inr hh)
+    show a - z ∈ slitPlane
+    rw [Complex.mem_slitPlane_iff]
+    rcases lt_or_eq_of_le hre with hlt | heq
+    · left
+      simp only [Complex.sub_re] at hlt ⊢
+      linarith
+    · exfalso
+      have hza : z = a := by
+        apply Complex.ext
+        · simp only [Complex.sub_re] at heq
+          linarith
+        · simp only [Complex.sub_im] at him
+          linarith
+      exact hz.2 (by rw [hza]; exact mem_closedBall_self h0)
+
+end RHTower

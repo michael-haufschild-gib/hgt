@@ -402,34 +402,42 @@ namespace RHTower
 open Complex Metric
 
 /-- **The pinning RH gate.**  If around every hypothetical right-half ξ-zero
-there is a counting window — a critical-line center `ρ₀`, a dominated
-one-simple-zero reference `g = (z − ρ₀)·h`, and a factorization of ξ through
-finitely many hole-supported zeros — then every ξ-zero of every window is
-pinned to the line (`pinned_zero_re_eq_half`; the ξ symmetry input is supplied
-by `xi_one_sub` and `xi_conj`), and RH follows through the local-window gate.
-No argument principle: the on-line location is forced by the counting
-substitute alone. -/
+there is a counting window — a critical-line center `ρ₀` and a dominated
+one-simple-zero reference `g = (z − ρ₀)·h` — then every window ξ-zero is
+pinned to the line, and RH follows through the local-window gate.  Everything
+ξ-side is internal: domination forbids annulus zeros (the slit charts cover
+the annulus), ξ multi-peels through its hole zeros by `xi_ball_factorization`,
+the symmetry input is `xi_one_sub` + `xi_conj`, and `pinned_zero_re_eq_half`
+forces the hole zeros onto the line.  No argument principle. -/
 theorem riemannHypothesis_of_pinned_windows
     (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
-      ∃ (t : Finset ℂ) (m' : ℂ → ℕ) (g h h' : ℂ → ℂ) (ρ₀ : ℂ) (r₀ R : ℝ),
+      ∃ (g h : ℂ → ℂ) (ρ₀ : ℂ) (r₀ R : ℝ),
         0 ≤ r₀ ∧ r₀ < R ∧ ρ ∈ ball ρ₀ R ∧ ρ₀.re = 1 / 2
         ∧ AnalyticOnNhd ℂ h (ball ρ₀ R) ∧ (∀ z ∈ ball ρ₀ R, h z ≠ 0)
-        ∧ AnalyticOnNhd ℂ h' (ball ρ₀ R) ∧ (∀ z ∈ ball ρ₀ R, h' z ≠ 0)
         ∧ (∀ z ∈ ball ρ₀ R, g z = (z - ρ₀) * h z)
-        ∧ (∀ w ∈ t, ‖w - ρ₀‖ ≤ r₀)
-        ∧ (∀ z ∈ ball ρ₀ R, xi z = (∏ w ∈ t, (z - w) ^ m' w) * h' z)
         ∧ (∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R, ‖xi z - g z‖ < ‖g z‖)) :
     RiemannHypothesis := by
   apply riemannHypothesis_of_local_online_windows
   intro ρ hρ hzero
-  obtain ⟨t, m', g, h, h', ρ₀, r₀, R, h0, hrR, hρball, hρ₀re, hh, hh0, hh', hh0',
-    hfactg, hρ't, hfactf, hclose⟩ := hwin ρ hρ hzero
+  obtain ⟨g, h, ρ₀, r₀, R, h0, hrR, hρball, hρ₀re, hh, hh0, hfactg, hclose⟩ :=
+    hwin ρ hρ hzero
+  have hhole : ∀ p ∈ ball ρ₀ R, xi p = 0 → ‖p - ρ₀‖ ≤ r₀ := by
+    intro p hp hxi
+    by_contra hout
+    have hann : p ∈ ball ρ₀ R \ closedBall ρ₀ r₀ :=
+      ⟨hp, fun hmem => hout (by rwa [mem_closedBall, Complex.dist_eq] at hmem)⟩
+    have hcl := hclose p (annulus_subset_charts h0 hann)
+    rw [hxi, zero_sub, norm_neg] at hcl
+    exact lt_irrefl _ hcl
+  obtain ⟨t, m', h', htmem, hh'an, hh'0, hfactf⟩ := xi_ball_factorization ρ₀ R
+  have hρ't : ∀ w ∈ t, ‖w - ρ₀‖ ≤ r₀ := fun w hw =>
+    hhole w ((htmem w).mp hw).1 ((htmem w).mp hw).2
   have hsym : ∀ z ∈ ball ρ₀ R,
       xi (1 - (starRingEnd ℂ) z) = (starRingEnd ℂ) (xi z) := by
     intro z _
     rw [xi_one_sub]
     exact xi_conj z
-  have hpin := pinned_zero_re_eq_half t id m' h0 hrR hρ₀re hsym hh hh0 hh' hh0'
+  have hpin := pinned_zero_re_eq_half t id m' h0 hrR hρ₀re hsym hh hh0 hh'an hh'0
     hfactg hρ't hfactf hclose
   refine ⟨ρ₀, R, hρball, ?_⟩
   intro p hp hxi
@@ -438,7 +446,7 @@ theorem riemannHypothesis_of_pinned_windows
   have hprod : (∏ w ∈ t, (p - w) ^ m' w) = 0 := by
     rcases mul_eq_zero.mp hfa.symm with hc | hc
     · exact hc
-    · exact absurd hc (hh0' p hp)
+    · exact absurd hc (hh'0 p hp)
   obtain ⟨w, hwmem, hwzero⟩ := Finset.prod_eq_zero_iff.mp hprod
   have hm : m' w ≠ 0 := by
     intro hzero'

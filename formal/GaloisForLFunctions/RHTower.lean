@@ -151,3 +151,5 @@ import GaloisForLFunctions.RHTower.WeylEquidistribution
 import GaloisForLFunctions.RHTower.FloorFailureDensity
 import GaloisForLFunctions.RHTower.PinnedWindow
 import GaloisForLFunctions.RHTower.BohrMoments
+import GaloisForLFunctions.RHTower.LegStripThreshold
+import GaloisForLFunctions.RHTower.BohrMomentDensity

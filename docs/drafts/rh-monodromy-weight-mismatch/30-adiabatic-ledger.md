@@ -599,3 +599,26 @@ governs it); (b) does an analogous `Φ`-residue control the `dW/ds` sign in the 
 branch, i.e. is the reversed energy response also a `cot`-threshold object; (c) `c_strip = 2`
 against §3's log-divergence cancellation, now the SAME statement — the pairing that cancels the
 `Σ 1/k` divergence leaves precisely this `1 − (π/c)cot(π/c)`.
+
+### §15 formalized [PROVED HERE — Lean]
+
+`formal/GaloisForLFunctions/RHTower/LegStripThreshold.lean` (axiom-clean
+`[propext, Classical.choice, Quot.sound]`, in the umbrella, lint-green) formalizes the two exact
+endpoints of the proof; the continuum-limit bridge between them (Prop 2) is the paper's stated
+analytic layer.
+
+* `poleExcess u = 1/(e^u − 1)`; `rcoth_half_pos` / `rcoth_half_neg` — the exact
+  `coth(u/2) = 1 + 2·poleExcess u` decomposition (from `rcoth_sub_one`) and its odd reflection.
+* `cothField_midpoint_split` — **Prop 1, exact**: `F(m) = (#behind − #ahead) + 2(B − A)` for any
+  finite pole set and any `m` avoided by the poles. Pure finite rearrangement.
+* `strip_iff_excess` — **the strip criterion**: with the gap pole-free and the equilibrium at
+  level `−(pole count)`, `xEq < m ⟺ A − B > #behind`. The `coth` field is gone; the criterion is
+  a finite inequality among `1/(e^·−1)` terms.
+* `stripResidue c = 1 − (π/c)cot(π/c)`; `stripResidue_two` (`Φ(2) = 1`),
+  `stripResidue_eq_one_iff` (**`Φ(c) = 1 ⟺ c = 2`**, via `cos(π/c) = 0` only at `π/c = π/2` on
+  `(0,π)`, using `strictAntiOn_cos`), `stripResidue_gt_one_iff` (**`Φ(c) > 1 ⟺ c < 2`**, the
+  strip is the sub-harmonic side) — the cotangent threshold, `c > 1`.
+
+The discrete reduction quantifies over ALL configurations (any pole set, position, level); the
+threshold is the exact `c = 2`. What is NOT in Lean is Prop 2's Euler–Maclaurin passage
+`(A−B)/i → Φ(c)` — the one analytic step, scoped as the connecting note.

@@ -144,15 +144,48 @@ theorem xi_ne_zero_codiscrete : {x | xi x ≠ 0} ∈ codiscreteWithin (Set.univ 
   · exact absurd (by simpa using h (Set.mem_univ (2 : ℂ))) xi_two_ne_zero
   · exact h
 
-/-- Local finiteness of the ξ-zeros: finitely many in each bounded piece of the half-plane. -/
-theorem xi_zeros_finite_in_ball (R : ℕ) :
-    {s ∈ rightHalf ∩ ball (2 : ℂ) ((R : ℝ) + 1) | xi s = 0}.Finite := by
-  have hK : IsCompact (closedBall (2 : ℂ) ((R : ℝ) + 1)) := isCompact_closedBall _ _
-  have hmem : {x | xi x ≠ 0} ∈ codiscreteWithin (closedBall (2 : ℂ) ((R : ℝ) + 1)) :=
+/-- ξ has finite vanishing order everywhere: it is entire and not identically zero. -/
+theorem xi_order_ne_top (ρ : ℂ) : analyticOrderAt xi ρ ≠ ⊤ := by
+  intro htop
+  have hev0 : xi =ᶠ[nhds ρ] (0 : ℂ → ℂ) := by
+    filter_upwards [analyticOrderAt_eq_top.mp htop] with z hz
+    simpa using hz
+  exact xi_two_ne_zero
+    (xi_analyticOnNhd_univ.eqOn_zero_of_preconnected_of_eventuallyEq_zero
+      isPreconnected_univ (Set.mem_univ ρ) hev0 (Set.mem_univ 2))
+
+/-- Local finiteness of the ξ-zeros in an arbitrary ball. -/
+theorem xi_zeros_finite_ball (a : ℂ) (R : ℝ) : {z ∈ ball a R | xi z = 0}.Finite := by
+  have hK : IsCompact (closedBall a R) := isCompact_closedBall _ _
+  have hmem : {x | xi x ≠ 0} ∈ codiscreteWithin (closedBall a R) :=
     Filter.codiscreteWithin_mono (subset_univ _) xi_ne_zero_codiscrete
   refine (hK.finite_diff_of_mem_codiscreteWithin hmem).subset ?_
-  rintro x ⟨⟨_, hxb⟩, hx0⟩
+  rintro x ⟨hxb, hx0⟩
   exact ⟨ball_subset_closedBall hxb, by simpa using hx0⟩
+
+/-- Local finiteness of the ξ-zeros: finitely many in each bounded piece of the half-plane. -/
+theorem xi_zeros_finite_in_ball (R : ℕ) :
+    {s ∈ rightHalf ∩ ball (2 : ℂ) ((R : ℝ) + 1) | xi s = 0}.Finite :=
+  (xi_zeros_finite_ball 2 ((R : ℝ) + 1)).subset fun _ hx => ⟨hx.1.2, hx.2⟩
+
+/-- **ξ multi-peels through its ball zeros**: on any ball, ξ is the finite product
+of its local zero factors times a zero-free analytic cofactor — local finiteness,
+finite orders, and iterated peeling. -/
+theorem xi_ball_factorization (a : ℂ) (R : ℝ) :
+    ∃ (t : Finset ℂ) (m : ℂ → ℕ) (h : ℂ → ℂ),
+      (∀ w, w ∈ t ↔ w ∈ ball a R ∧ xi w = 0)
+      ∧ AnalyticOnNhd ℂ h (ball a R) ∧ (∀ z ∈ ball a R, h z ≠ 0)
+      ∧ ∀ z ∈ ball a R, xi z = (∏ w ∈ t, (z - w) ^ m w) * h z := by
+  classical
+  have hfin : {z ∈ ball a R | xi z = 0}.Finite := xi_zeros_finite_ball a R
+  have htmem : ∀ w, w ∈ hfin.toFinset ↔ w ∈ ball a R ∧ xi w = 0 := by
+    intro w
+    rw [Set.Finite.mem_toFinset]
+    rfl
+  obtain ⟨m, h, hhan, hh0, hfact⟩ := exists_multi_peel isOpen_ball
+    (xi_analyticOnNhd _) hfin.toFinset (fun w hw => ((htmem w).mp hw).1)
+    (fun z hz h0 => (htmem z).mpr ⟨hz, h0⟩) (fun w _ => xi_order_ne_top w)
+  exact ⟨hfin.toFinset, m, h, htmem, hhan, hh0, hfact⟩
 
 /-! ## The ladder and the main equivalences -/
 
@@ -228,14 +261,7 @@ theorem rh_iff_forall_ladder : RiemannHypothesis ↔ ∀ k, RHLadder k := by
   · intro h k ρ hρ h0
     exact absurd h0 (h ρ hρ)
   · intro h ρ hρ hρ0
-    have hord : analyticOrderAt xi ρ ≠ ⊤ := by
-      intro htop
-      have hev0 : xi =ᶠ[nhds ρ] (0 : ℂ → ℂ) := by
-        filter_upwards [analyticOrderAt_eq_top.mp htop] with z hz
-        simpa using hz
-      exact xi_two_ne_zero
-        (xi_analyticOnNhd_univ.eqOn_zero_of_preconnected_of_eventuallyEq_zero
-          isPreconnected_univ (Set.mem_univ ρ) hev0 (Set.mem_univ 2))
+    have hord : analyticOrderAt xi ρ ≠ ⊤ := xi_order_ne_top ρ
     set m : ℕ := (analyticOrderAt xi ρ).toNat with hmdef
     have hm : (m : ℕ∞) = analyticOrderAt xi ρ := ENat.coe_toNat hord
     have hdvd : ∀ k : ℕ, 2 ^ k ∣ m := by
