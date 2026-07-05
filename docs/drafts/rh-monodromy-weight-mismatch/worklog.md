@@ -4545,3 +4545,117 @@ circle route):
      completedGN_simple_zero_factorization_of_close + completedGN_linear_domination_of_circles. The
      pairing "cofinal floor heights ∩ carrier on-line zero set" is the placement question, now
      entirely on one circle pair.
+
+## cont. 40 — prime-support bridge: the completely-multiplicative obstruction + (N/2,N] isolation core BUILT (RouteBFullSupport.lean)
+
+The crux (i) — bridging the PRIME-BLOCK small-ball (block_smallball_caustic, support = 4 primes) to
+the FULL-support carrier dirichletPoly N (support Icc 1 N) — was diagnosed and its number-theoretic
+core proven.
+
+OBSTRUCTION (why the naive bridge fails): the Steinhaus model is COMPLETELY MULTIPLICATIVE —
+X n ω = exp(2πi Σ_{q|n} v_q(n) ω_q) reads the phases of n's PRIME FACTORS. So composite terms of
+dirichletPoly N are PRODUCTS of the same prime phases as any prime block; "condition on the rest,
+absorb composites into an independent shift w" is FALSE in general (a composite p_i·m shares the
+coordinate ω_{p_i} with the block).
+
+FIX (the standard large-prime isolation): choose the 4 dominant primes in (N/2, N]. Then for each i,
+the only n ≤ N divisible by p_i is p_i itself (2p_i > N, p_i·q > N). Conditioning on all other prime
+phases, the carrier becomes EXACTLY w(ω_rest) + Σ_i p_i^{-1/2} X_{p_i} with w reading only
+coordinates ∉ {p_1..p_4} — the rest-measurable shift the block law already integrates against
+(inner_block_le/block_pi_le carry a coordinate-dependent V = w + Σ_{rest of s} via lmarginal_union;
+the machinery to integrate a uniform 4-phase bound over an independent complement EXISTS).
+
+BUILT (RouteBFullSupport.lean, axiom-clean [propext, Classical.choice, Quot.sound]; RHTower green
+8491 jobs; lint passed; index regenerated):
+- `eq_of_dvd_of_mem_Icc_of_lt_two_mul`: 1≤n≤N, N<2p, p∣n ⟹ n=p (large-prime isolation).
+- `dominant_multiples_eq`: {n∈Icc 1 N : ∃i p_i∣n} = {p1,p2,p3,p4} for distinct p_i∈Icc 1 N with N<2p_i.
+- `carrier_dominant_decomp`: ∑_{n∈Icc 1 N} f n = (f p1+f p2+f p3+f p4) + ∑_{n: no p_i|n} f n
+  (for ANY f:ℕ→ℂ; the pure-block-plus-remainder split).
+- `X_congr_of_eqOn_primeFactors`: X n ω depends only on ω|primeFactors n (congruence).
+- `not_mem_primeFactors_of_not_dvd`, `primeFactors_disjoint_block`: for n divisible by no p_i,
+  primeFactors n ∩ {p1,p2,p3,p4} = ∅ — the remainder is measurable w.r.t. the complement σ-algebra,
+  i.e. INDEPENDENT of the 4 dominant phases. This is the rigorous form of "rest ⊥ block".
+
+REMAINING for the full bridge (typed, not fabricated):
+(i-a) [measure integration] generalize block_smallball_condition to a rest-measurable shift
+      W : Omega → ℂ (depends only on coords ∉ {p1..p4}) — same lmarginal_union proof, W frozen in the
+      inner 4-marginal exactly as the constant w is now. The decomp + disjointness above supply W and
+      its measurability. Then steinhausMeasure{‖dirichletPoly-carrier‖ ≤ t} ≤ (2π)⁻⁴·fourPhaseConst.
+(i-b) [coefficients] the caustic gap conditions at a_{p_i} = p_i^{-1/2}: with p4<p3 (so
+      p4^{-1/2}>p3^{-1/2}) the strict gap holds; t₀ ≤ ½(p4^{-1/2}−p3^{-1/2}) — a tiny but positive
+      floor. Explicit inequalities, no new analysis.
+(i-c) [prime counting] (N/2,N] contains 4 distinct primes for N ≥ N₀. Classical (PNT / iterated
+      Bertrand); mathlib has Nat.exists_prime_lt_and_le_two_mul (Bertrand). State as an interface
+      `∃ 4 primes in (N/2,N]` first; discharge via prime-counting later.
+
+Once (i-a)–(i-c) land: full-carrier small-ball ⟹ floorFailure density < 1 (existing density chain)
+⟹ cofinal on-line center floor for dirichletPoly N ⟹ (via DpolyBallFloor cont.39) BOTH circle-gate
+CarrierFloorOn data ⟹ codex circle gate ⟹ RH, modulo center placement (crux ii).
+
+NEXT generative move: (i-a) — the rest-measurable-shift generalization of block_smallball_condition.
+It is a restructuring of block_marginal/inner_block_le with w:Omega→ℂ complement-measurable instead
+of constant; the decomposition and disjointness lemmas above are its two inputs.
+
+## cont. 39 — harmonic-to-log substitution + Φ strict monotonicity formalized (both goal deliverables)
+Goal: fully prove/formalize/integrate (1) telescoping-log sandwich and (2) Φ'(c)<0 StrictAnti.
+Both DONE in LegStripThreshold.lean (axiom-clean [propext, Classical.choice, Quot.sound]; module +
+full RHTower build green 8708 jobs; lint passed).
+
+(1) HarmonicLog section: log_ge_one_sub_inv (1−1/x≤log x via reflected log_le_sub_one_of_pos);
+log_step_bounds (per-step 1/(y+1)≤log((y+1)/y)≤1/y); sum_log_step (telescoping Σ log((i+j+1)/(i+j))
+=log((i+k)/i), by induction + log_mul); harmonic_log_lower/upper (two-sided sandwich Σ_{l=i+1}^{i+k}1/l
+≤ log((i+k)/i) ≤ Σ_{l=i}^{i+k-1}1/l via Finset.sum_le_sum on log_step_bounds); harmonic_diff_eq
+(telescoping gap =1/i−1/(i+k)); harmonic_sub_log_le CAPSTONE (0 ≤ log((i+k)/i)−Σ1/l ≤ 1/i uniform in k).
+This is component (ii) of the continuum bridge — the change of variables u=c·log.
+
+(2) stripResidue_strictAntiOn : StrictAntiOn stripResidue (Ioi 1). CLEAN route — NOT the cot-derivative:
+from stripResidue_eq_tsum, each term 2/((cn)²−1) strictly decreases in c (denominator grows), so
+Summable.tsum_lt_tsum gives Φ(b)<Φ(a) for a<b. Per-term ≤ via gcongr on (an)²≤(bn)²; strict at n=1.
+Upgrades c=2 from "a crossing" to "the UNIQUE crossing" by monotonicity; strip depth Φ(c)−1 strictly
+increasing in (2−c) — the continuum slope whose finite-d avatar is the edge margin 1/(π√d).
+
+CONSEQUENCE: EVERY analytic brick of the continuum bridge (A−B)/i→∫_0^∞ is now machine-checked
+(endpoints, Σ_n∫=∫Σ_n interchange, half-line Riemann limit, AND harmonic-to-log). What remains is
+only mechanical wiring: fix the discrete pole model T_j=c·H_{j−1}, identify poleExcess(c·Σ1/l) with
+g(k/i) via harmonic_sub_log_le, invoke tendsto_riemann_sum_antitone_Ioi — assembly of proved pieces,
+no new idea. Doc 30 §15 updated (StrictAnti bullet + bridge-complete paragraph). NEXT generative move:
+either the mechanical bridge assembly (concrete carrier → capstone theorem (A−B)/i→Φ(c)), or push to
+the QUANTITATIVE slope Φ'(2)=−? (actual derivative value, connecting the continuum slope to the exact
+1/(π√d) edge constant) — the natural harder rung past StrictAnti.
+
+## cont. 41 — full-carrier small-ball MACHINE-CHECKED-REDUCED to one measure interface (RouteBFullSupport.lean)
+
+Banked (axiom-clean [propext, Classical.choice, Quot.sound]; RHTower green 8491 jobs; lint passed;
+index regenerated):
+- `BlockSmallBallRandomShift p1 p2 p3 p4 a t M` — interface: the four-phase block small-ball bound
+  with a COMPLEMENT-MEASURABLE random shift W (W depends on ω only through coords ∉ {p1,p2,p3,p4}):
+  steinhausMeasure{‖W ω + Σ_i a_{p_i} X_{p_i} ω‖ ≤ t} ≤ (2π)⁻⁴ M.
+- `fullCarrier_smallball_of_randomShift`: FROM that interface + the (N/2,N] hypotheses,
+  steinhausMeasure{‖∑_{n∈Icc 1 N} a_n X_n‖ ≤ t} ≤ (2π)⁻⁴ M. Proof: carrier_dominant_decomp gives the
+  pointwise split carrier = W + Σ_i a_{p_i}X_{p_i} with W = remainder sum; hWmeas proves W
+  complement-measurable via primeFactors_disjoint_block + X_congr_of_eqOn_primeFactors; then apply
+  the interface. The full-support anti-concentration is now reduced to ONE named measure lemma.
+
+INTERFACE-PROOF PLAN (the sole remaining measure obligation; mechanism fully identified from
+block_marginal/RouteBFourPhaseUniform.lean line 275 + inner_block_le/block_pi_le):
+- block_marginal's engine is `Measure.infinitePi_map_restrict`: the pushforward of steinhausMeasure
+  under `s.restrict` = finite `Measure.pi` over ↥s, valid because the event depends only on
+  ω|s (X_p reads only ω_p for prime p, via X_prime).
+- For the interface: the full-carrier W reads only P_N := {primes ≤ N} coordinates (primeFactors n ⊆
+  P_N for n ≤ N), and the block reads {p1..p4} ⊆ P_N. So the event depends only on ω|P_N — reduce via
+  infinitePi_map_restrict to a finite Measure.pi over ↥P_N.
+- Within the finite pi: lmarginal-split over {p1,p2,p3,p4} ⊆ P_N vs P_N∖{p1..p4} (lmarginal_union),
+  inner 4-marginal bounded by (2π)⁻⁴M via inner_block_le with V = frozen W (inner_block_le's hM is
+  uniform over all shift values V, so it applies at V = W(conditioning)); outer complement integrates
+  the constant against a probability measure (block_pi_le's closing step, measure_univ · = ·).
+- This mirrors block_pi_le (~150 lines) for the general random-shift event; multi-session, path clear,
+  every input (decomp, disjointness, X_prime, infinitePi_map_restrict, inner_block_le) proven.
+  NOTE: the interface may need W additionally P_N-measurable (finitely supported) for the finite
+  reduction — the full-carrier W satisfies this; strengthen the interface hypothesis to
+  "∃ finite T ⊇{p1..p4}, W factors through ω|T" if the {p1..p4}-only form proves too weak.
+
+STATE OF crux (i) prime-support bridge: number-theoretic core (isolation, decomp, independence) DONE;
+reduction-to-interface DONE; only the interface (one infinitePi 4-coordinate marginal + inner bound)
+remains, plus (i-b) coefficient gap at p_i^{-1/2} (explicit) and (i-c) prime counting 4∈(N/2,N]
+(Bertrand-iterate). Then density<1 → cofinal center floor → DpolyBallFloor → circle gate → RH,
+modulo crux (ii) center placement (½+iτ a simple on-line completedGN zero).

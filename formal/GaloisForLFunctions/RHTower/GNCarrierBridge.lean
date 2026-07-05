@@ -74,6 +74,19 @@ theorem dirichletPoly_line_eq (N : ℕ) (τ : ℝ) :
   funext n
   rw [one_mul]
 
+/-- **Critical-line center form.**  At any center with real part `1/2`, the
+Dirichlet part of the certificate carrier is the one-dimensional `dpoly` at the
+center height. -/
+theorem dirichletPoly_criticalLine_eq (N : ℕ) {ρ₀ : ℂ} (hρ₀re : ρ₀.re = 1 / 2) :
+    dirichletPoly N ρ₀ =
+      dpoly (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) ρ₀.im := by
+  have hρ : (((1 / 2 : ℝ) : ℂ) + (ρ₀.im : ℂ) * I) = ρ₀ := by
+    apply Complex.ext <;> simp [hρ₀re]
+  have hD := dirichletPoly_line_eq N ρ₀.im
+  change dirichletPoly N (((1 / 2 : ℝ) : ℂ) + (ρ₀.im : ℂ) * I) =
+      dpoly (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) ρ₀.im at hD
+  rwa [hρ] at hD
+
 /-- **Two-level seam product.** On the critical line, the product of the level-`N` and level-`N'`
 Dirichlet carriers is a single convolution Dirichlet polynomial (via `dpoly_mul`): the mixed
 carrier `dpoly_mul` is the native handle for correlating two levels across the seam. -/

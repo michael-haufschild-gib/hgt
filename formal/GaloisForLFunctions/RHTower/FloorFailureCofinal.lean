@@ -10,6 +10,7 @@ A carrier zero on the line is itself a failure height (`carrier_line_zero_le`), 
 also bounds the on-line carrier zeros.
 -/
 import GaloisForLFunctions.RHTower.FloorFailureCaustic
+import GaloisForLFunctions.RHTower.RouteBFullSupport
 
 open MeasureTheory intervalIntegral Filter Topology Complex
 
@@ -106,5 +107,73 @@ theorem good_height_cofinal_of_caustic
         h12 h13 h14 h23 h24 h34 hA hB hC hD hρB hr0 hr2 hσ0 hσ0G hJ hHσ0 hss hss2
         fail hfail0 hfle1 hfsupp hfail_int)
       hnum)
+
+/-- **Native `[1,N]` cofinal floor from a model small-ball bound.**  For the
+critical-line certificate coefficients `n^{-1/2}` on the full support
+`Icc 1 N`, any Steinhaus model small-ball bound with `B.toReal < 1` forces the
+deterministic line floor to hold at cofinally many heights. This is the
+model-to-window floor bridge consumed by `DpolyBallFloor`. -/
+theorem good_height_cofinal_of_native_Icc_model_lt_one
+    (N : ℕ) {t₀ : ℝ} (ht0 : 0 ≤ t₀)
+    (ht0R : t₀ ≤ ∑ n ∈ Finset.Icc 1 N, |(n : ℝ) ^ (-(1 / 2 : ℝ))|)
+    {B : ENNReal} (hBtop : B ≠ ⊤)
+    (hmodel : steinhausMeasure {ω : Omega |
+      ‖∑ n ∈ Finset.Icc 1 N,
+        (((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) * X n ω‖ ≤ t₀} ≤ B)
+    (fail : ℝ → ℝ) (hfail0 : ∀ τ, 0 ≤ fail τ) (hfle1 : ∀ τ, fail τ ≤ 1)
+    (hfsupp : ∀ τ,
+      t₀ < ‖dpoly (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) τ‖ →
+        fail τ = 0)
+    (hfailfull : ∀ τ,
+      ‖dpoly (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) τ‖ ≤ t₀ →
+        fail τ = 1)
+    (hfail_int : ∀ T : ℝ, IntervalIntegrable fail volume 0 T)
+    (hnum : B.toReal < 1) :
+    ∀ M : ℝ, ∃ τ, M < τ ∧
+      t₀ < ‖dpoly (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) τ‖ := by
+  refine good_height_cofinal_of_density_lt_one
+    (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) t₀
+    fail hfail_int hfailfull ?_
+  exact lt_of_le_of_lt
+    (floorFailure_timeDensity_le_unconditional
+      (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N)
+      (fun n hn => (Finset.mem_Icc.mp hn).1) t₀ ht0 ht0R B hBtop hmodel
+      fail hfail0 hfle1 hfsupp hfail_int)
+    hnum
+
+/-- **Native `[1,N]` cofinal floor from an isolated random-shift block.**  If
+four primes in `(N/2,N]` satisfy the random-shift four-phase small-ball
+interface for the native coefficients, then the full certificate carrier over
+`Icc 1 N` has cofinally many critical-line floor heights. The large-prime
+isolation theorem supplies the full-support model bound; the density bridge
+then makes the deterministic line floor. -/
+theorem good_height_cofinal_of_native_Icc_randomShift
+    {N : ℕ} {t₀ : ℝ} {p1 p2 p3 p4 : ℕ}
+    (hp1I : p1 ∈ Finset.Icc 1 N) (hp2I : p2 ∈ Finset.Icc 1 N)
+    (hp3I : p3 ∈ Finset.Icc 1 N) (hp4I : p4 ∈ Finset.Icc 1 N)
+    (hN1 : N < 2 * p1) (hN2 : N < 2 * p2) (hN3 : N < 2 * p3) (hN4 : N < 2 * p4)
+    (h12 : p1 ≠ p2) (h13 : p1 ≠ p3) (h14 : p1 ≠ p4)
+    (h23 : p2 ≠ p3) (h24 : p2 ≠ p4) (h34 : p3 ≠ p4)
+    (ht0 : 0 ≤ t₀)
+    (ht0R : t₀ ≤ ∑ n ∈ Finset.Icc 1 N, |(n : ℝ) ^ (-(1 / 2 : ℝ))|)
+    {M : ENNReal} (hMtop : ENNReal.ofReal (2 * Real.pi)⁻¹ ^ 4 * M ≠ ⊤)
+    (hRS : BlockSmallBallRandomShift p1 p2 p3 p4
+      (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) t₀ M)
+    (fail : ℝ → ℝ) (hfail0 : ∀ τ, 0 ≤ fail τ) (hfle1 : ∀ τ, fail τ ≤ 1)
+    (hfsupp : ∀ τ,
+      t₀ < ‖dpoly (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) τ‖ →
+        fail τ = 0)
+    (hfailfull : ∀ τ,
+      ‖dpoly (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) τ‖ ≤ t₀ →
+        fail τ = 1)
+    (hfail_int : ∀ T : ℝ, IntervalIntegrable fail volume 0 T)
+    (hnum : (ENNReal.ofReal (2 * Real.pi)⁻¹ ^ 4 * M).toReal < 1) :
+    ∀ M₀ : ℝ, ∃ τ, M₀ < τ ∧
+      t₀ < ‖dpoly (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) τ‖ := by
+  refine good_height_cofinal_of_native_Icc_model_lt_one N ht0 ht0R hMtop ?_
+    fail hfail0 hfle1 hfsupp hfailfull hfail_int hnum
+  exact fullCarrier_smallball_of_randomShift
+    (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ)))
+    hp1I hp2I hp3I hp4I hN1 hN2 hN3 hN4 h12 h13 h14 h23 h24 h34 hRS
 
 end RHTower

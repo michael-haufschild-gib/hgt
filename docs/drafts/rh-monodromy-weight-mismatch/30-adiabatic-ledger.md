@@ -618,6 +618,13 @@ analytic layer.
   `stripResidue_eq_one_iff` (**`Φ(c) = 1 ⟺ c = 2`**, via `cos(π/c) = 0` only at `π/c = π/2` on
   `(0,π)`, using `strictAntiOn_cos`), `stripResidue_gt_one_iff` (**`Φ(c) > 1 ⟺ c < 2`**, the
   strip is the sub-harmonic side) — the cotangent threshold, `c > 1`.
+* `stripResidue_strictAntiOn` — **`Φ` is strictly decreasing on `(1, ∞)`**. From the series form
+  `Φ(c) = Σ_{n≥1} 2/((cn)²−1)`, every term strictly decreases in `c` (the denominator strictly
+  grows), so the sum decreases termwise (`Summable.tsum_lt_tsum`). This upgrades "`c = 2` is *a*
+  crossing" to "`c = 2` is the *unique* crossing" by monotonicity, and makes the strip depth
+  `Φ(c) − 1` a strictly increasing function of `2 − c` on the sub-harmonic side — the continuum slope
+  whose finite-`d` avatar is the measured edge margin `1/(π√d)`. No `cot`-derivative needed: the
+  monotonicity is read straight off the series.
 
 The discrete reduction quantifies over ALL configurations (any pole set, position, level); the
 threshold is the exact `c = 2`.
@@ -663,13 +670,17 @@ the shell interchange `Σ_n ∫ = ∫ Σ_n` (the old step (c)) are now both mach
 `poleExcess_integral_eq_tsum`. Both endpoints of the continuum integral — its series value and its
 `cot` closed form — are proven.
 
-**What still remains outside Lean** has shrunk to a *single substitution*. The discrete-to-continuum
-passage `(A−B)/i → ∫_0^∞ (2/c)sinh(u/c)/(e^u−1) du` had two components: the improper monotone
-Riemann-sum convergence `(1/i)Σ_k f(k/i) → ∫_0^∞ f`, and (a) the harmonic-to-log substitution
+**Every analytic brick of the continuum bridge is now machine-checked.** The discrete-to-continuum
+passage `(A−B)/i → ∫_0^∞ (2/c)sinh(u/c)/(e^u−1) du` decomposed into (i) the improper monotone
+Riemann-sum convergence `(1/i)Σ_k f(k/i) → ∫_0^∞ f`, and (ii) the harmonic-to-log substitution
 `Σ_{l=i+1}^{i+k} 1/l → log((i+k)/i)` turning pole distances into the continuum variable
-`u = c·log(k/i)`. The Riemann-sum convergence is now machine-checked
-(`tendsto_riemann_sum_antitone_Ioi`); what remains is only (a) — the telescoping-`log` identification
-of the harmonic pole distances with the sample points `k/i`, plus the routine algebra recasting the
-excess balance as `Σ_k g(k/i)` for the profile `g`. Every endpoint (series value, `cot` closed form),
-the `Σ_n ∫ = ∫ Σ_n` interchange, and the half-line Riemann-sum limit are all in Lean; the lone open
-step is the change of variables — named exactly, not scoped out for effort.
+`u = c·log(k/i)`. Both are now in Lean: (i) is `tendsto_riemann_sum_antitone_Ioi`; (ii) is the
+`HarmonicLog` cluster — `log_step_bounds` (per-step `1/(y+1) ≤ log((y+1)/y) ≤ 1/y`), `sum_log_step`
+(telescoping `Σ log((i+j+1)/(i+j)) = log((i+k)/i)`), the two-sided `harmonic_log_lower/upper`, and the
+capstone `harmonic_sub_log_le` (the harmonic tail approximates the log with defect `≤ 1/i → 0`). So
+every endpoint (series value, `cot` closed form), the `Σ_n ∫ = ∫ Σ_n` interchange, the half-line
+Riemann-sum limit, **and** the change of variables are formalized. What is left is no longer an
+analytic gap but the *mechanical wiring*: fixing the concrete discrete pole model `T_j = c·H_{j−1}`,
+identifying the summand `poleExcess(c·Σ 1/l)` with `g(k/i)` for the shell profile `g` via
+`harmonic_sub_log_le`, and invoking `tendsto_riemann_sum_antitone_Ioi` — an assembly of already-proved
+pieces with no new idea in it.

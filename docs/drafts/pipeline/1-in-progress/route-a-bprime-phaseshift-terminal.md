@@ -281,3 +281,19 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
   two analytic inputs remain: (i) that cofinal center-floor set (caustic density chain +
   prime-support bridge, or full-support small-ball); (ii) center placement — each ½+iτ a simple
   on-line completedGN zero (producible from one circle-pair domination).
+
+## cont. 39 — prime-support bridge core BUILT (RouteBFullSupport.lean); obstruction + fix banked
+
+- Diagnosed the prime-support crux: the model is COMPLETELY MULTIPLICATIVE (X_n reads prime-factor
+  phases), so composites of dirichletPoly N are correlated with any prime block — naive conditioning
+  fails. Fix = 4 dominant primes in (N/2,N]: then only n≤N divisible by p_i is p_i itself, so the
+  carrier = w(ω_rest) + Σ_i p_i^{-1/2}X_{p_i} with w ⊥ block.
+- BUILT (RouteBFullSupport.lean, axiom-clean; RHTower 8491 jobs; lint green): large-prime isolation
+  (eq_of_dvd_of_mem_Icc_of_lt_two_mul), dominant-multiples set equality (dominant_multiples_eq),
+  the block+remainder carrier split (carrier_dominant_decomp), and the independence structural facts
+  (X_congr_of_eqOn_primeFactors, primeFactors_disjoint_block: remainder ⊥ 4 dominant phases).
+- Remaining for full bridge: (i-a) rest-measurable-shift generalization of block_smallball_condition
+  (same lmarginal_union proof, W frozen in inner 4-marginal); (i-b) caustic gap at a_{p_i}=p_i^{-1/2}
+  (tiny positive t₀); (i-c) prime counting — 4 primes in (N/2,N] (Bertrand-iterate / PNT interface).
+- Chain once landed: full-carrier small-ball → density<1 → cofinal center floor → DpolyBallFloor →
+  both circle-gate floors → codex circle gate → RH (modulo center placement, crux ii).
