@@ -322,6 +322,35 @@ theorem stripResidue_series_summable {c : ℝ} (hc : 1 < c) :
 
 end Series
 
+/-- **The residue is strictly decreasing in `c`.** `Φ(c) = 1 − (π/c)cot(π/c)` is strictly antitone
+on `(1, ∞)`: since `Φ(c) = Σ_{n≥1} 2/((cn)² − 1)` and every term strictly decreases as `c` grows (the
+denominator `(cn)² − 1` strictly increases), the sum decreases termwise (`Summable.tsum_lt_tsum`).
+Hence `c = 2` is the unique crossing of `Φ = 1`, and the strip depth `Φ(c) − 1` on the sub-harmonic
+side `c < 2` grows monotonically as `c` decreases — the continuum slope underlying the strip's
+opening. -/
+theorem stripResidue_strictAntiOn : StrictAntiOn stripResidue (Set.Ioi 1) := by
+  intro a ha b hb hab
+  have ha1 : 1 < a := ha
+  have hb1 : 1 < b := hb
+  rw [stripResidue_eq_tsum ha1, stripResidue_eq_tsum hb1]
+  have hle : ∀ n : ℕ+, 2 / ((b * (n:ℝ))^2 - 1) ≤ 2 / ((a * (n:ℝ))^2 - 1) := by
+    intro n
+    have hn1 : (1:ℝ) ≤ (n:ℝ) := by exact_mod_cast n.pos
+    have han0 : (0:ℝ) ≤ a * (n:ℝ) := by positivity
+    have han : a * (n:ℝ) ≤ b * (n:ℝ) := by nlinarith [hab.le, hn1]
+    have hsq : (a * (n:ℝ))^2 ≤ (b * (n:ℝ))^2 := by nlinarith [han, han0]
+    have hDa : 0 < (a * (n:ℝ))^2 - 1 := by
+      nlinarith [hn1, ha1, mul_nonneg (show (0:ℝ) ≤ a by linarith) (show (0:ℝ) ≤ (n:ℝ)-1 by linarith)]
+    gcongr
+  have hlt : 2 / ((b * ((1:ℕ+):ℝ))^2 - 1) < 2 / ((a * ((1:ℕ+):ℝ))^2 - 1) := by
+    have h1 : ((1:ℕ+):ℝ) = 1 := by norm_num
+    rw [h1, mul_one, mul_one]
+    have hDa : 0 < a^2 - 1 := by nlinarith [ha1]
+    have hDab : a^2 - 1 < b^2 - 1 := by nlinarith [ha1, hb1, hab]
+    gcongr
+  exact Summable.tsum_lt_tsum hle hlt
+    (stripResidue_series_summable hb1) (stripResidue_series_summable ha1)
+
 /-! ### The continuum residue as an improper integral
 
 The excess series has an integral avatar. Expanding `1/(e^u − 1) = Σ_{n≥1} e^{−nu}` and using
@@ -704,5 +733,104 @@ theorem tendsto_riemann_sum_antitone_Ioi {f : ℝ → ℝ}
     exact hupp i (by exact_mod_cast hi1)
 
 end RiemannSum
+
+/-! ### Harmonic-to-log: the change of variables closing the continuum bridge
+
+The pole distances on the harmonic carrier are partial harmonic sums `Σ c/l`; the continuum
+variable of the strip integral is `u = c·log`. These lemmas are the exact substitution: the
+harmonic tail `Σ_{l=i+1}^{i+k} 1/l` equals `log((i+k)/i)` up to an error `≤ 1/i → 0`, so after
+scaling by `c` the discrete pole-distance sum becomes the continuum log-length. Together with
+`tendsto_riemann_sum_antitone_Ioi` this is the last analytic brick of the passage
+`(A−B)/i → ∫_0^∞ (2/c)sinh(u/c)/(e^u−1) du`. -/
+
+section HarmonicLog
+
+/-- `1 − 1/x ≤ log x` for `x > 0` (the reflected form of `log x ≤ x − 1`). -/
+theorem log_ge_one_sub_inv {x : ℝ} (hx : 0 < x) : 1 - 1/x ≤ Real.log x := by
+  have h := Real.log_le_sub_one_of_pos (show (0:ℝ) < 1/x by positivity)
+  rw [Real.log_div (by norm_num) (ne_of_gt hx), Real.log_one] at h
+  linarith
+
+/-- Per-step sandwich `1/(y+1) ≤ log((y+1)/y) ≤ 1/y` for `y > 0`. -/
+theorem log_step_bounds {y : ℝ} (hy : 0 < y) :
+    1/(y+1) ≤ Real.log ((y+1)/y) ∧ Real.log ((y+1)/y) ≤ 1/y := by
+  have hy1 : (0:ℝ) < y+1 := by linarith
+  have hpos : (0:ℝ) < (y+1)/y := by positivity
+  have hy0 := ne_of_gt hy
+  have hy10 := ne_of_gt hy1
+  refine ⟨?_, ?_⟩
+  · have h := log_ge_one_sub_inv hpos
+    have e : 1 - 1/((y+1)/y) = 1/(y+1) := by field_simp; ring
+    linarith [e ▸ h]
+  · have h := Real.log_le_sub_one_of_pos hpos
+    have e : (y+1)/y - 1 = 1/y := by field_simp; ring
+    linarith [e ▸ h]
+
+/-- Telescoping identity `Σ_{j<k} log((i+j+1)/(i+j)) = log((i+k)/i)` for `i ≥ 1`. -/
+theorem sum_log_step (i : ℕ) (hi : 1 ≤ i) (k : ℕ) :
+    (∑ j ∈ Finset.range k, Real.log (((i:ℝ)+j+1)/((i:ℝ)+j))) = Real.log (((i:ℝ)+k)/i) := by
+  have hipos : (0:ℝ) < i := by exact_mod_cast hi
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    have hjnn : (0:ℝ) ≤ (k:ℝ) := Nat.cast_nonneg k
+    have h1 : (0:ℝ) < (i:ℝ)+k := by linarith
+    have h2 : (0:ℝ) < (i:ℝ)+k+1 := by linarith
+    rw [Finset.sum_range_succ, ih,
+      ← Real.log_mul (ne_of_gt (by positivity)) (ne_of_gt (by positivity : (0:ℝ) < ((i:ℝ)+k+1)/((i:ℝ)+k)))]
+    congr 1
+    push_cast
+    field_simp
+    ring
+
+/-- Harmonic tail lower bound `Σ_{l=i+1}^{i+k} 1/l ≤ log((i+k)/i)`. -/
+theorem harmonic_log_lower (i : ℕ) (hi : 1 ≤ i) (k : ℕ) :
+    (∑ j ∈ Finset.range k, 1/((i:ℝ)+j+1)) ≤ Real.log (((i:ℝ)+k)/i) := by
+  have hipos : (0:ℝ) < i := by exact_mod_cast hi
+  rw [← sum_log_step i hi k]
+  apply Finset.sum_le_sum
+  intro j _
+  have hy : (0:ℝ) < (i:ℝ)+j := by have := Nat.cast_nonneg (α := ℝ) j; linarith
+  exact (log_step_bounds hy).1
+
+/-- Harmonic tail upper bound `log((i+k)/i) ≤ Σ_{l=i}^{i+k−1} 1/l`. -/
+theorem harmonic_log_upper (i : ℕ) (hi : 1 ≤ i) (k : ℕ) :
+    Real.log (((i:ℝ)+k)/i) ≤ ∑ j ∈ Finset.range k, 1/((i:ℝ)+j) := by
+  have hipos : (0:ℝ) < i := by exact_mod_cast hi
+  rw [← sum_log_step i hi k]
+  apply Finset.sum_le_sum
+  intro j _
+  have hy : (0:ℝ) < (i:ℝ)+j := by have := Nat.cast_nonneg (α := ℝ) j; linarith
+  exact (log_step_bounds hy).2
+
+/-- Telescoping gap `Σ 1/(i+j) − Σ 1/(i+j+1) = 1/i − 1/(i+k)`. -/
+theorem harmonic_diff_eq (i : ℕ) (hi : 1 ≤ i) (k : ℕ) :
+    (∑ j ∈ Finset.range k, 1/((i:ℝ)+j)) - (∑ j ∈ Finset.range k, 1/((i:ℝ)+j+1))
+      = 1/(i:ℝ) - 1/((i:ℝ)+k) := by
+  have hipos : (0:ℝ) < i := by exact_mod_cast hi
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [Finset.sum_range_succ, Finset.sum_range_succ,
+      show ((i:ℝ)+((k:ℕ)+1 : ℕ)) = (i:ℝ)+(k:ℝ)+1 by push_cast; ring]
+    linarith [ih]
+
+/-- **Harmonic-to-log approximation.** The harmonic tail `Σ_{l=i+1}^{i+k} 1/l` approximates
+`log((i+k)/i)` from below, with error at most `1/i`, uniformly in `k`. Scaled by `c`, this recasts
+a harmonic pole-distance sum as a continuum log-length with a vanishing (`1/i → 0`) defect — the
+change of variables the continuum passage needs. -/
+theorem harmonic_sub_log_le (i : ℕ) (hi : 1 ≤ i) (k : ℕ) :
+    0 ≤ Real.log (((i:ℝ)+k)/i) - (∑ j ∈ Finset.range k, 1/((i:ℝ)+j+1))
+      ∧ Real.log (((i:ℝ)+k)/i) - (∑ j ∈ Finset.range k, 1/((i:ℝ)+j+1)) ≤ 1/(i:ℝ) := by
+  have hipos : (0:ℝ) < i := by exact_mod_cast hi
+  have hlow := harmonic_log_lower i hi k
+  have hup := harmonic_log_upper i hi k
+  have hdiff := harmonic_diff_eq i hi k
+  have hk : (0:ℝ) ≤ 1/((i:ℝ)+k) := by
+    have : (0:ℝ) < (i:ℝ)+k := by have := Nat.cast_nonneg (α := ℝ) k; linarith
+    positivity
+  exact ⟨by linarith, by linarith [hdiff, hup, hk]⟩
+
+end HarmonicLog
 
 end RHTower

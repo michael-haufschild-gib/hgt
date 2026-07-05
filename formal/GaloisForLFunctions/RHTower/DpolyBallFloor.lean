@@ -14,6 +14,7 @@ triangle inequality. The certificate charts `chartRA ∪ chartLA` and the two bo
 -/
 import GaloisForLFunctions.RHTower.GNCarrierBridge
 import GaloisForLFunctions.RHTower.DeckMultiZero
+import GaloisForLFunctions.RHTower.PinnedWindow
 
 open Complex Finset Metric
 
@@ -220,5 +221,72 @@ theorem window_floor_cofinal_of_line_cofinal (N : ℕ) {r₀ R t₀ t₁ ε : �
   refine carrierFloorOn_charts_spheres_of_center N hR hr₀R hτfloor ?_ (hrefl τ)
   rw [hre]
   exact hbudget
+
+/-- **Circle-data EM-pinned RH from one center floor.**  The explicit chart and
+circle `CarrierFloorOn` assumptions of the circle pinning gate are discharged by
+one Dirichlet-part floor at the window center, the ball variation budget, and the
+reflected χ-term budget on the closed ball. -/
+theorem riemannHypothesis_of_emCarrier_center_floor_pinned_windows_of_circles
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (ε₁ δ t₀ t₁ : ℝ) (h : ℂ → ℂ) (ρ₀ : ℂ) (r₀ R : ℝ),
+        1 ≤ M ∧ 0 ≤ ε₁ + δ ∧ 0 ≤ r₀ ∧ r₀ < R ∧ ρ ∈ ball ρ₀ R ∧
+        ρ₀.re = 1 / 2 ∧
+        (∀ z ∈ closedBall ρ₀ R, 0 < z.re ∧ z.re < 1) ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+          ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁) ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+          ‖emCarrier M z - gN N z‖ ≤ δ) ∧
+        t₀ < ‖dirichletPoly N ρ₀‖ ∧
+        (∑ n ∈ Finset.Icc 1 N, Real.log n * (n : ℝ) ^ (-(ρ₀.re - R))) * R ≤
+          t₀ - t₁ ∧
+        (∀ z ∈ closedBall ρ₀ R,
+          ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ t₁ - 2 * (ε₁ + δ)) ∧
+        AnalyticOnNhd ℂ h (ball ρ₀ R) ∧ (∀ z ∈ ball ρ₀ R, h z ≠ 0) ∧
+        (∀ z ∈ ball ρ₀ R, completedGN N z = (z - ρ₀) * h z)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_emCarrier_pinned_windows_of_circles
+  intro ρ hρ hzero
+  obtain ⟨N, M, ε₁, δ, t₀, t₁, h, ρ₀, r₀, R, hM, hεδ, h0, hrR, hρball,
+    hρ₀re, hball, hE, hclose, hcenter, hbudget, hrefl, hh, hh0, hfactg⟩ :=
+    hwin ρ hρ hzero
+  have hR : 0 ≤ R := le_trans h0 hrR.le
+  obtain ⟨hF, hFcirc⟩ :=
+    carrierFloorOn_charts_spheres_of_center N hR hrR.le hcenter hbudget hrefl
+  exact ⟨N, M, ε₁, δ, h, ρ₀, r₀, R, hM, hεδ, h0, hrR, hρball,
+    hρ₀re, hball, hE, hclose, hF, hFcirc, hh, hh0, hfactg⟩
+
+/-- **Exact-budget same-circle RH from one center floor.**  The same center
+Dirichlet floor that spreads over the closed ball supplies the boundary-circle
+floor required by the primitive same-circle EM gate, so the remaining local data
+are only the carrier-vs-linear bound, the EM/closeness bounds, and the exact
+linear-reference budget. -/
+theorem riemannHypothesis_of_emCarrier_single_circle_pair_center_floor_windows
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (ε₁ δ ηC t₀ t₁ : ℝ) (ρ₀ c : ℂ) (r₀ R : ℝ),
+        1 ≤ M ∧ 0 ≤ ε₁ + δ ∧ c ≠ 0 ∧ 0 < r₀ ∧ r₀ < R ∧
+        ηC + (1 + ηC) / 2 < 1 ∧ ρ ∈ ball ρ₀ R ∧ ρ₀.re = 1 / 2 ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R, 0 < z.re ∧ z ≠ 1) ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+          ‖completedGN N z - c * (z - ρ₀)‖ ≤ ηC * ‖c * (z - ρ₀)‖) ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+          ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁) ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+          ‖emCarrier M z - gN N z‖ ≤ δ) ∧
+        t₀ < ‖dirichletPoly N ρ₀‖ ∧
+        (∑ n ∈ Finset.Icc 1 N, Real.log n * (n : ℝ) ^ (-(ρ₀.re - R))) * R ≤
+          t₀ - t₁ ∧
+        (∀ z ∈ closedBall ρ₀ R,
+          ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ t₁ - 2 * (ε₁ + δ))) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_emCarrier_single_circle_pair_windows
+  intro ρ hρ hzero
+  obtain ⟨N, M, ε₁, δ, ηC, t₀, t₁, ρ₀, c, r₀, R, hM, hεδ, hc, h0, hrR,
+    hηC, hρball, hρ₀re, hstripCirc, hcarrier, hE, hclose, hcenter, hbudget, hrefl⟩ :=
+    hwin ρ hρ hzero
+  have hR : 0 ≤ R := le_trans h0.le hrR.le
+  obtain ⟨_, hFcirc⟩ :=
+    carrierFloorOn_charts_spheres_of_center N hR hrR.le hcenter hbudget hrefl
+  exact ⟨N, M, ε₁, δ, ηC, ρ₀, c, r₀, R, hM, hεδ, hc, h0, hrR, hηC, hρball,
+    hρ₀re, hstripCirc, hcarrier, hE, hclose, hFcirc⟩
 
 end RHTower

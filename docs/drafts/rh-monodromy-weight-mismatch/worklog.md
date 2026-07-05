@@ -4499,3 +4499,49 @@ recasting of the excess balance as Σ_k g(k/i). Doc 30 §15 updated. NEXT genera
 — the telescoping-log bounds 1/(l+1) ≤ log((l+1)/l) ≤ 1/l sandwiching Σ_{l=i+1}^{i+k}1/l by
 log((i+k)/i) → the last brick of the continuum bridge; OR pivot to Φ'(c)<0 (StrictAnti, the continuum
 slope shadow of the 1/√d edge margin).
+
+## cont. 39 — L1 BUILT: point-floor → whole-ball floor → both circle-gate data at once (DpolyBallFloor.lean)
+
+The circle-data pinning gate (codex batch 3) demands CarrierFloorOn on charts AND on both boundary
+circles. Built the brick that supplies both from ONE center floor. Axiom-clean
+[propext, Classical.choice, Quot.sound]; RHTower build green 8707 jobs; lint passed; index regenerated.
+
+New module DpolyBallFloor.lean:
+- `norm_cpow_sub_cpow_le`: per-term half-plane Lipschitz — ‖n^{−z}−n^{−w}‖ ≤ log n·n^{−σ₋}·‖z−w‖
+  on {Re ≥ σ₋}, via mean value inequality for v↦exp(−(log n)v) on the convex half-plane
+  (Convex.norm_image_sub_le_of_norm_hasDerivWithin_le + convex_halfSpace_re_ge). The derivative
+  norm is log n·n^{−Re v} ≤ log n·n^{−σ₋}.
+- `norm_dpoly2_sub_le`: carrier Lipschitz — ‖F z − F w‖ ≤ (∑|aₙ|·log n·n^{−σ₋})·‖z−w‖ (termwise sum).
+- `re_ge_of_mem_closedBall`: closedBall z₀ R ⊆ {Re ≥ z₀.re − R} (|Re(z−z₀)| ≤ ‖z−z₀‖ ≤ R).
+- `dpoly2_ball_floor`: center floor t₀<‖F z₀‖ + budget (∑|aₙ|log n·n^{−(z₀.re−R)})·R ≤ t₀−ε
+  ⟹ ε<‖F z‖ on the WHOLE closedBall z₀ R (reverse triangle).
+- `carrierFloorOn_closedBall_of_center`: same for gN's Dirichlet part (unit coeffs) + reflected-χ
+  budget ⟹ CarrierFloorOn (closedBall ρ₀ R) N ε.
+- `charts_subset_closedBall`, `spheres_subset_closedBall` (r₀≤R), `carrierFloorOn_mono`.
+- `carrierFloorOn_charts_spheres_of_center`: ONE center floor ⟹ BOTH
+  CarrierFloorOn (chartRA∪chartLA) N ε AND CarrierFloorOn (sphere r₀ ∪ sphere R) N ε.
+- `window_floor_cofinal_of_line_cofinal`: cofinal on-line center floor + budgets ⟹ cofinally many
+  τ with both chart-floor and circle-floor at level ε.
+
+PLUG VERIFIED (scratch, type-checks): carrierFloorOn_charts_spheres_of_center at ε := 2*(ε₁+δ)
+produces exactly the pair
+  CarrierFloorOn (chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R) N (2*(ε₁+δ))
+  CarrierFloorOn (sphere ρ₀ r₀ ∪ sphere ρ₀ R) N (2*(ε₁+δ))
+i.e. the two floor hypotheses of riemannHypothesis_of_emCarrier_pinned_windows_of_circles.
+
+CONSEQUENCE: L1 closed. This SUBSUMES the σ-only DpolyOffline chart step — instead of extending a
+line floor to one shifted real part, the ball floor covers the whole 2-D window (charts + circles)
+in one move, and the budget is a single explicit finite sum ∑_{n≤N} log n·n^{−(½−R)} times R. The
+deterministic floor supply for BOTH the chart gate and the circle gate now flows from one cofinal
+line-floor set.
+
+NEXT generative move (the two remaining typed inputs are now the ONLY analytic obligations of the
+circle route):
+(i) the cofinal on-line center floor set {τ : t₀<‖dirichletPoly N(½+iτ)‖} — supplied by the caustic
+    density chain (good_height_cofinal_of_caustic) once prime-support is bridged (block small-ball
+    vs full Icc 1 N), OR directly if a full-support small-ball is proven;
+(ii) center placement [CONJECTURE]: each window center ½+iτ must be a SIMPLE on-line zero of
+     completedGN — producible from a single circle-pair domination via
+     completedGN_simple_zero_factorization_of_close + completedGN_linear_domination_of_circles. The
+     pairing "cofinal floor heights ∩ carrier on-line zero set" is the placement question, now
+     entirely on one circle pair.

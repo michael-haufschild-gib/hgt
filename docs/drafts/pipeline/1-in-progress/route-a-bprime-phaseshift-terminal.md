@@ -265,3 +265,19 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
 - Typed remainders: prime-support gap; reflected-χ budget; NEW — center placement (window center
   must be a simple on-line zero of completedGN; producible from one circle-pair domination via
   completedGN_simple_zero_factorization_of_close + completedGN_linear_domination_of_circles).
+
+## cont. 38 — L1 ball-floor brick BUILT (DpolyBallFloor.lean); circle-gate floor supply closed
+
+- **DpolyBallFloor.lean** (axiom-clean; RHTower 8707 jobs; lint green; index regenerated):
+  half-plane Lipschitz for dpoly2 (norm_cpow_sub_cpow_le, mean value on {Re≥σ₋}) → whole-ball
+  floor from a center floor (dpoly2_ball_floor) → CarrierFloorOn on charts AND both boundary
+  circles from ONE center floor (carrierFloorOn_charts_spheres_of_center) → cofinal window version
+  (window_floor_cofinal_of_line_cofinal).
+- **PLUG VERIFIED** (scratch type-check): the produced pair at ε := 2(ε₁+δ) IS exactly the two
+  CarrierFloorOn hypotheses of riemannHypothesis_of_emCarrier_pinned_windows_of_circles.
+- Subsumes the σ-only DpolyOffline chart step: one 2-D ball floor covers charts+circles at once,
+  budget = ∑_{n≤N} log n·n^{−(½−R)} · R (single explicit finite sum).
+- Circle route's floor supply is now DETERMINISTIC from a cofinal on-line center-floor set. Only
+  two analytic inputs remain: (i) that cofinal center-floor set (caustic density chain +
+  prime-support bridge, or full-support small-ball); (ii) center placement — each ½+iτ a simple
+  on-line completedGN zero (producible from one circle-pair domination).
