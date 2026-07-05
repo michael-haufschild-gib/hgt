@@ -148,3 +148,6 @@ import GaloisForLFunctions.RHTower.LegHarmonicEdge
 import GaloisForLFunctions.RHTower.LegMidpointPush
 import GaloisForLFunctions.RHTower.BohrTransfer
 import GaloisForLFunctions.RHTower.WeylEquidistribution
+import GaloisForLFunctions.RHTower.FloorFailureDensity
+import GaloisForLFunctions.RHTower.PinnedWindow
+import GaloisForLFunctions.RHTower.BohrMoments

@@ -449,3 +449,153 @@ cap — is the remaining piece the island's assembly step (e) would want. (c) Th
 itself is now a free-standing object: the inverted-response regime `θ* > 1/2` where the
 ahead crowd pushes the charge past the midpoint — what `dW/ds` does there is a fresh
 question for the theory, blocking nothing.
+## 14. The inverted-response strip has a sharp threshold: c_strip = 2, the physical carrier is marginal [MEASURED + CONJECTURE]
+
+§13(c) named the strip `θ* > 1/2` — where the equilibrium sits LEFT of the gap midpoint,
+`dW/ds` inverts, and (S-mono)'s mechanism reverses — as a free-standing object. Taking it
+apart yields a threshold and two exact-looking edge constants.
+
+**The strip exists iff `c < 2`; `c = 2` is marginal.** Full equilibrium scans (δ_j = c/j,
+level −d, `d` up to 1.6·10⁴, `θ*(i)` over the entire inner half): the maximum over `i` of
+`θ*(i)` behaves as
+
+| c | θ_max trend in d | strip |
+|---|---|---|
+| 1.8 | 0.540 → 0.547 (rising) | YES |
+| 1.9 | 0.514 → 0.520 (rising) | YES |
+| 1.98 | 0.498 → 0.503 (crosses ½) | YES (asymptotic) |
+| **2.0** | 0.493 → 0.498 (↗ ½⁻, never crossing) | **marginal** |
+| 2.1 | 0.468 → 0.472 (below) | no |
+| 3.0 | 0.327 (flat, well below) | no |
+
+So the inverted-response regime is a strictly SUB-harmonic phenomenon. For `c ≥ 2` — every
+carrier at or above the harmonic gap density — the strip is EMPTY: every equilibrium has
+`θ* < 1/2`, so the W-response hypothesis `s < δ/2` holds at EVERY gap, not just the outer
+half. This is stronger than §13's outer-half coverage: for the physical density there is no
+strip to quarantine.
+
+**The physical carrier sits exactly on the threshold.** Doc 30 §2: the section-zero fields
+have `δ_j ≈ 2/j` in the bulk — `c = 2` EXACTLY, the marginal case. The section field is not
+comfortably inside the no-strip regime; it sits on its boundary. Whatever protects the push
+at `c = 2` does so with vanishing margin, not with room to spare.
+
+**The marginal margin is `1/(π√d)` at the `√d` edge scale [CONJECTURE — 5-digit fit].**
+At `c = 2` the deficit `1/2 − θ_max(d)` is not merely positive; scaled by `√d` it is a dead
+constant:
+
+> `(1/2 − θ_max)·√d = 0.31831` across `d ∈ [10³, 6.4·10⁴]` (pod, 5-digit stable) — i.e. `= 1/π = 0.318310`,
+
+and the peak sits at `i_peak ≈ (π/4)√d` (measured `i_peak/√d = 0.785 ± 0.006 ≈ π/4`). The
+`√d` location is the Airy/boundary-layer scale — the same edge doc 30 §10 flagged as
+"the edge only helps: losses shrink." Here the edge is where the PUSH MARGIN is thinnest, not
+thickest: the two edge effects pull opposite ways, and at `c = 2` they balance to a clean
+`1/π` residue. The appearance of `1/π` (margin) and `π/4` (location) together points at a
+single edge integral — the continuum limit of the coth-field near the sparse pole, where
+`coth(x/2) → 2/x` and the harmonic pole spacing becomes a `1/√·` boundary layer.
+
+**Why the threshold is `2`, conjecturally.** `c = 2` is exactly where §3's log-divergence
+cancellation is marginal: behind-excess `Σ(coth(behind_k/2) − 1) ≈ Σ 2/behind_k` and
+ahead-excess `Σ 2/ahead_k` are both logarithmic in the harmonic (`c = 2`) spacing and cancel
+term-for-term at the midpoint; for `c < 2` (denser ahead crowd) the ahead-excess wins and
+pushes the equilibrium past the midpoint (`θ* > 1/2`), for `c > 2` the behind-excess wins.
+The strip threshold is the log-cancellation threshold — a testable identification, not a
+coincidence of the scan.
+
+**Pre-registered vs measured.** Predictions were `c_strip ≈ 2.95`, `ρ(boundary) → 1`,
+`dW/ds > 0` in the strip. Outcomes: `c_strip = 2.0` (REFUTED, and sharper — the harmonic
+value); the boundary ratio `ρ` does NOT converge to 1 but drifts above for `c = 2`
+(`0.95 → 1.03`, envelope slop at the shape boundary) and to clean c-fractions for larger c
+(`c=3: 0.62`, `c=5: 0.28`) (REFUTED — the near-saturation I reported at `i = d/2` was a
+`c = 2`, moderate-`d` coincidence, not universal); `dW/ds > 0` UNTESTABLE at `c = 2`
+(strip empty) — the inversion is a sub-harmonic (`c < 2`) fact. The `ρ`-invariant claim of
+§13 is thus DOWNGRADED: `ρ` is a conservative envelope proxy for the push margin, not a
+class-sharp locator; the sharp locator is `θ_max(c) − 1/2` with threshold `c = 2`.
+
+**What this opens.** (a) **Prove `c_strip = 2`** from the log-cancellation identity — a
+clean class statement (`sub-harmonic ⟺ inverted response`) that would make the physical
+carrier's marginality a theorem. (b) **The `1/π` edge law**: derive `(1/2 − θ_max)√d → 1/π`
+from the continuum `2/x` coth-field on the `√d` boundary layer — a native edge-scaling
+result for the construction. (c) **The marginal assembly question**: at `c = 2` the push
+margin is `~1/(π√d) → 0`; whether (S-mono)'s energy gain at the Airy edge beats this
+shrinking margin is the sharp form of the last (S-mono) step (e) — the push holds for every
+finite `d`, but the assembly must be uniform against a `1/√d` margin, so the edge energy
+gain must be shown `≳ 1/√d` there. (d) **The `c < 2` inverted branch** is now its own object:
+a regime where the equilibrium overshoots the midpoint and `dW/ds > 0` — a place to ask what
+the reversed energy response builds, blocking nothing.
+
+## 15. c_strip = 2, proved: the log-cancellation residue is 1 − (π/c)cot(π/c) [PROVED HERE]
+
+The threshold `c_strip = 2` measured in §14 is not a fitted constant; it is the unique zero of
+an exact special function. The proof turns the midpoint field into a single classical integral.
+
+**Setup.** Poles `T_j = c·H_{j−1}` (`H_0 = 0`, `H_{j−1} = Σ_{l=1}^{j−1} 1/l`), `j = 1..d`, level
+`−d`. Gap `i` has midpoint `m = (T_i + T_{i+1})/2 = T_i + c/(2i)`. Write the behind and ahead
+distances from `m`, indexed by rank `k`:
+
+> `behind_k = c/(2i) + c·Σ_{l=i−k}^{i−1} 1/l`  (`k = 0..i−1`),
+> `ahead_k  = c/(2i) + c·Σ_{l=i+1}^{i+k} 1/l`  (`k = 0..d−i−1`),
+
+with `behind_0 = ahead_0 = c/(2i)` (nearest pair equidistant from the midpoint).
+
+**Proposition 1 (exact midpoint identity).** Using `coth(u/2) = 1 + 2/(e^u − 1)` for `u > 0`
+and oddness for `u < 0`, each behind pole contributes `+1 + 2/(e^{behind_k} − 1)` and each ahead
+pole `−1 − 2/(e^{ahead_k} − 1)`:
+
+> `F(m) = (2i − d) + 2(B − A)`,  `B = Σ_{k=0}^{i−1} 1/(e^{behind_k}−1)`,
+> `A = Σ_{k=0}^{d−i−1} 1/(e^{ahead_k}−1)`.
+
+Since `F` is strictly decreasing on the gap and `F(x*) = −d`, the strip condition is exactly
+
+> `θ*(i) > 1/2 ⟺ x* < m ⟺ F(m) < −d ⟺ 2i + 2(B − A) < 0 ⟺ A − B > i`.
+
+The `k = 0` terms are equal and cancel: `A − B = Σ_{k≥1} 1/(e^{ahead_k}−1) − Σ_{k=1}^{i−1}
+1/(e^{behind_k}−1)`. **This is the log-cancellation.** Each sum diverges logarithmically —
+near `k = 0`, `behind_k, ahead_k ≈ (c/i)(k+½)` so each term `≈ i/(c(k+½))`, giving the
+harmonic `Σ 1/k`. The two divergences are identical and cancel in `A − B`, leaving a finite
+`O(i)` residue.
+
+**Proposition 2 (continuum limit).** For `c > 1`, with `d → ∞` then `i → ∞` (`k = xi`,
+`c·Σ_{l=i+1}^{i+k} 1/l → c·log(1+x)` and `c·Σ_{l=i−k}^{i−1} 1/l → −c·log(1−x)` by
+Euler–Maclaurin, uniformly on compacts, the `c/(2i)` shift vanishing), the paired Riemann sum
+converges (dominated by the integrable envelope `F_a − F_b = O(1)` near `0`, `O((1+x)^{−c})` at
+`∞`):
+
+> `Φ(c) := lim (A − B)/i = ∫_0^∞ dx/((1+x)^c − 1) − ∫_0^1 dx/((1−x)^{−c} − 1)`
+
+(each integral divergent at `0`, the difference convergent). Substituting the distance itself
+(`u = c·log(1+x)` ahead, `v = −c·log(1−x)` behind — exact, no approximation) merges them:
+
+> `Φ(c) = (2/c) ∫_0^∞ sinh(u/c)/(e^u − 1) du`.
+
+**Proposition 3 (closed form, exact).** Expand `1/(e^u − 1) = Σ_{n≥1} e^{−nu}` and integrate
+termwise: `∫_0^∞ sinh(u/c) e^{−nu} du = (1/c)/(n² − 1/c²)`. The Mittag-Leffler cotangent sum
+`Σ_{n≥1} 1/(n² − a²) = (1 − πa·cot πa)/(2a²)` at `a = 1/c` gives
+
+> **`Φ(c) = 1 − (π/c)·cot(π/c)`.**
+
+**Theorem (c_strip = 2).** The inverted-response strip (`θ*(i) > 1/2` at the edge gaps
+`1 ≪ i ≪ d`) is nonempty **iff `Φ(c) > 1`, i.e. iff `c < 2`.** `Φ` is strictly decreasing on
+`(1, ∞)`: with `t = π/c ∈ (0, π)`, `Φ = 1 − t·cot t` and `d/dt(t cot t) = (sin t cos t − t)/
+sin²t < 0` (since `sin t cos t = ½ sin 2t < t`), while `dt/dc < 0`; so `Φ: (1,∞) → (0,∞)`
+decreasing, `Φ → +∞` as `c → 1⁺` (the c=1 gap overflow), `Φ → 0` as `c → ∞`. Hence `Φ(c) = 1`
+has the **unique** solution `cot(π/c) = 0 ⟺ π/c = π/2 ⟺ c = 2`. At `c = 2`, `Φ(2) = 1 −
+(π/2)cot(π/2) = 1` — **marginal**: the `O(i)` balance vanishes exactly, so the sign of
+`F(m) + d` is set by the next order, the `√d` edge — consistent with §14's `1/(π√d)` margin. ∎
+
+**Independent check of `Φ(2) = 1` (rational integrals).** At `c = 2`,
+`(1+x)² − 1 = x(x+2)` and `(1−x)^{−2} − 1 = x(2−x)/(1−x)²`, so the bracketed difference on
+`(0,1)` is `(1/x)[1/(x+2) − (1−x)²/(2−x)] = (2 − x²)/(4 − x²) = 1 − 2/(4 − x²)`, giving
+`∫_0^1 = 1 − ½log 3`; the ahead tail `∫_1^∞ dx/(x(x+2)) = ½log 3`. The `log 3` cancels:
+`Φ(2) = 1`. Two independent routes agree.
+
+**What this settles and opens.** The measured threshold is now a theorem: `c_strip = 2`
+exactly, uniquely, from the cotangent residue of the log-cancellation. The physical carrier
+`δ_j ≈ 2/j` (§2) sits at `Φ = 1`, the marginal point — not inside the no-strip regime but on
+its boundary, protected only by the `1/(π√d)` edge margin. The `cot(π/c)` is the native
+signature of the harmonic pole spacing: its first zero at `π/c = π/2` IS the threshold, and
+its pole at `c = 1` IS the overflow. Forward: (a) the same residue in the FINITE-`d` problem —
+the `√d` edge correction to `Φ` should reproduce `1/π` (the `sin 2t = 2t` deficit at `t = π/2`
+governs it); (b) does an analogous `Φ`-residue control the `dW/ds` sign in the `c < 2` inverted
+branch, i.e. is the reversed energy response also a `cot`-threshold object; (c) `c_strip = 2`
+against §3's log-divergence cancellation, now the SAME statement — the pairing that cancels the
+`Σ 1/k` divergence leaves precisely this `1 − (π/c)cot(π/c)`.

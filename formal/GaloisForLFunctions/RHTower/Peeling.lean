@@ -64,3 +64,60 @@ theorem exists_peel {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U) (hf : Analyt
   rw [analyticOrderAt_congr hfev, analyticOrderAt_mul hpowσ (hhan σ hσU), hpow0, zero_add]
 
 end RHTower
+
+namespace RHTower
+
+open Complex Filter Set
+
+/-- **Global multi-peeling.**  An analytic function on an open set whose zeros
+there all lie in a finite set `t` of finite vanishing orders factors globally
+through `t` with a nonvanishing analytic cofactor: `f = ∏_{w ∈ t} (·−w)^{m w} · h`
+with `h` analytic and zero-free on `U`.  Iterated single-zero peeling; the order
+bookkeeping of `exists_peel` keeps the induction hypotheses alive. -/
+theorem exists_multi_peel {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hf : AnalyticOnNhd ℂ f U) (t : Finset ℂ) (htU : ∀ w ∈ t, w ∈ U)
+    (hzeros : ∀ z ∈ U, f z = 0 → z ∈ t)
+    (hord : ∀ w ∈ t, analyticOrderAt f w ≠ ⊤) :
+    ∃ (m : ℂ → ℕ) (h : ℂ → ℂ), AnalyticOnNhd ℂ h U ∧ (∀ z ∈ U, h z ≠ 0) ∧
+      ∀ z ∈ U, f z = (∏ w ∈ t, (z - w) ^ m w) * h z := by
+  classical
+  revert f htU hzeros hord
+  induction t using Finset.induction_on with
+  | empty =>
+      intro f hf _ hzeros _
+      exact ⟨fun _ => 0, f, hf,
+        fun z hz h0 => absurd (hzeros z hz h0) (Finset.notMem_empty z),
+        fun z _ => by simp⟩
+  | insert ρ s hρs ih =>
+      intro f hf htU hzeros hord
+      have hρU : ρ ∈ U := htU ρ (Finset.mem_insert_self ρ s)
+      have hordρ : analyticOrderAt f ρ ≠ ⊤ := hord ρ (Finset.mem_insert_self ρ s)
+      set mρ : ℕ := (analyticOrderAt f ρ).toNat with hmρ
+      have hmcast : analyticOrderAt f ρ = (mρ : ℕ∞) := (ENat.coe_toNat hordρ).symm
+      obtain ⟨h₁, hh₁an, hh₁ρ, hfact₁, hords₁⟩ := exists_peel hU hf hρU hmcast
+      have hzeros₁ : ∀ z ∈ U, h₁ z = 0 → z ∈ s := by
+        intro z hz h10
+        by_cases hzρ : z = ρ
+        · exact absurd (hzρ ▸ h10) hh₁ρ
+        · have hf0 : f z = 0 := by rw [hfact₁ z hz, h10, mul_zero]
+          rcases Finset.mem_insert.mp (hzeros z hz hf0) with h | h
+          · exact absurd h hzρ
+          · exact h
+      have hord₁ : ∀ w ∈ s, analyticOrderAt h₁ w ≠ ⊤ := by
+        intro w hw
+        have hwρ : w ≠ ρ := fun h => hρs (h ▸ hw)
+        rw [hords₁ w (htU w (Finset.mem_insert_of_mem hw)) hwρ]
+        exact hord w (Finset.mem_insert_of_mem hw)
+      obtain ⟨m', h', hh'an, hh'0, hfact'⟩ :=
+        ih hh₁an (fun w hw => htU w (Finset.mem_insert_of_mem hw)) hzeros₁ hord₁
+      refine ⟨fun w => if w = ρ then mρ else m' w, h', hh'an, hh'0, fun z hz => ?_⟩
+      rw [Finset.prod_insert hρs]
+      have hif : (if ρ = ρ then mρ else m' ρ) = mρ := if_pos rfl
+      have hprods : (∏ w ∈ s, (z - w) ^ (if w = ρ then mρ else m' w))
+          = ∏ w ∈ s, (z - w) ^ m' w :=
+        Finset.prod_congr rfl fun w hw => by
+          rw [if_neg (ne_of_mem_of_not_mem hw hρs)]
+      rw [hif, hprods, hfact₁ z hz, hfact' z hz]
+      ring
+
+end RHTower

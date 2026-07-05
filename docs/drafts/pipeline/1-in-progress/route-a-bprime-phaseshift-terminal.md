@@ -127,3 +127,60 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
   to the count face), (B3) count budget via the banked Rouché+EM counting
   island. The graded ladder and (B1)–(B2) consume the same per-level engine —
   the Route B′ remainder and the RH-gate residue are now one object.
+
+## UPDATE (cycle 55, cont. 29) — Kronecker–Weyl equidistribution built; FloorFailureDensity
+
+- **The named mathlib gap is now filled.** Probed: mathlib has NO linear-flow
+  Weyl equidistribution / Weyl criterion / pointwise Birkhoff. Built
+  `RHTower/WeylEquidistribution.lean` (axiom-clean, in-tree): `char_integral_eq`,
+  `char_time_average_tendsto` (Weyl's criterion: (1/T)∫₀ᵀexp(iθt)→0 for θ≠0),
+  `trig_time_average` ((1/T)∫₀ᵀ∑cᵢexp(iθᵢt)→∑_{θᵢ=0}cᵢ, the finite-torus
+  equidistribution). Reusable, mathlib-grade.
+- **FloorFailureDensity built (`RHTower/FloorFailureDensity.lean`, axiom-clean).**
+  The indicator/small-ball transfer the L² Bohr method (already in-tree as
+  `tendsto_secondMoment_average_steinhaus`) provably cannot reach. Chain:
+  `cesaroUpperDensity` observable → `realTrig_time_average_tendsto` (Weyl
+  density identity) → `cesaroUpperDensity_mono` → `cesaroUpperDensity_le_of_realTrigMajorant`
+  (the transfer) → **`floorFailure_timeDensity_le`**, which GENUINELY CONSUMES
+  `block_smallball_condition` for the ensemble measure and Weyl equidistribution
+  for the transfer: Cesàro upper TIME density of the line failure-event
+  ≤ (2π)⁻⁴·M + δ, carrier zeros budgeted not forbidden.
+- **Sole remaining input, sharply typed:** the real trigonometric MAJORANT of
+  the failure indicator with mean ≈ model measure (a Fejér/Jackson kernel on the
+  finite prime torus). That is the next buildable gap — mathlib has
+  `span_fourier_closure_eq_top` for one `AddCircle`; the product-torus version is
+  the target. Everything else (equidistribution + block_smallball consumption) is
+  proved. This is the (B1)/(B2) lane's analytic core, now isolated to one
+  approximation-theory construction.
+
+## UPDATE (cycle 55, cont. 30) — unconditional density bound (degree-1 majorant rung)
+
+- The majorant is `q ∘ ‖F‖²` for a polynomial `q ≥ 1_{[0,t₀²]}` — cleaner than
+  torus Stone–Weierstrass, and automatically a real trig poly with a computable
+  (model-moment) mean.
+- **`cesaroUpperDensity_secondMoment_le` (RHTower/FloorFailureDensity.lean,
+  axiom-clean): UNCONDITIONAL.** Cesàro upper time density of any [0,1]-observable
+  on the floor-failure set {‖F‖≤t₀} ≤ (B²−∑aₙ²)/(B²−t₀²). Degree-1 majorant
+  `q(u)=(B²−u)/(B²−t₀²)`, mean fixed by the second-moment Bohr transfer. No
+  hypothesis on the majorant — it is constructed. Plus `continuous_dpoly`.
+- This is the base rung of the polynomial-majorant tower and a genuine
+  Paley–Zygmund-grade unconditional density bound. The SHARP (2π)⁻⁴M version needs
+  the degree-d tower: (BOHR-n) general moment identity (Weyl time-mean of q(‖F‖²)
+  = model E[q(‖∑aX‖²)], all degrees) + (APPROX) polynomial step-majorant with
+  model mean → floor-failure measure. Composing with block_smallball sends δ→0.
+  NEXT: (BOHR-n) degree-2 (4-fold sum), the first non-linear rung.
+
+## UPDATE (cycle 55, cont. 31) — degree-2 Bohr moment rung
+
+- Project check: only the second moment existed anywhere (no higher moments in
+  RHTower/BohrTransfer/SteinhausModel; SpurCumulant + theorem-m Moments unrelated).
+- **BohrMoments.lean (axiom-clean, 8478 jobs):** the tower collapses via
+  ‖F‖^{2k} = ‖F^k‖² + "a power of a Dirichlet poly is a Dirichlet poly". Keystone
+  **`dpoly_sq`**: F² = dpoly(convSq)(sqSupport); `model_sq` its model twin via X_mul.
+  Consequences: `tendsto_fourthMoment_average` (time ‖F‖⁴ → ∑convSq²),
+  `integral_normSq_sq_dpoly` (model E‖·‖⁴ = ∑convSq²), and
+  **`tendsto_fourthMoment_average_steinhaus`** — the degree-2 Bohr identity: time-avg
+  ‖F‖⁴ = model fourth moment. Reuses the whole second-moment machinery on F².
+- Unlocks the degree-2 majorant q(u)=α+βu+γu² with mean matched to the model,
+  sharpening the density bound past the degree-1 rung. NEXT: dpoly_mul (general
+  product) → F^k tower → (APPROX) step-majorant → sharp small-ball bound.

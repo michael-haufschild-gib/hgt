@@ -16,8 +16,8 @@ all `c ≥ 2` follows from `(POS₂)`.
 
 The three bricks, all Mathlib-absent and reusable:
 
-* `sinh_lt_mul_cosh` — `sinh x < x·cosh x` for `x > 0` (the atomic driver; `= tanh x < x`).
-  Proof: `x·cosh x − sinh x` has derivative `x·sinh x > 0` and value `0` at `0`.
+* `sinh_lt_mul_cosh` (in `CothInfra`) — `sinh x < x·cosh x` for `x > 0` (the atomic
+  driver; `= tanh x < x`).
 * `div_sinh_strictAntiOn` — `y ↦ y/sinh y` is strictly decreasing on `(0,∞)`
   (its derivative `(sinh y − y·cosh y)/sinh²y` is negative by the first brick).
 * `tanh_div_tanh_monotoneOn` — for `0 < a < b`, `c ↦ tanh(ca)/tanh(cb)` is monotone on `(0,∞)`.
@@ -32,34 +32,11 @@ Capstone:
   `c ≥ 2`. Instantiate `a = r/2, b = m/2` in the monotone lemma and compose at `c = 2`.
 -/
 import Mathlib
+import GaloisForLFunctions.RHTower.CothInfra
 
 open Real Set
 
 namespace RHTower
-
-/-- **(A)** `sinh x < x·cosh x` for `x > 0` — equivalently `tanh x < x`, the atomic driver of
-Lemma P's monotonicity. `t·cosh t − sinh t` is `0` at `0` and strictly increasing on `[0,∞)`
-(derivative `t·sinh t > 0`). -/
-theorem sinh_lt_mul_cosh {x : ℝ} (hx : 0 < x) : Real.sinh x < x * Real.cosh x := by
-  have key : StrictMonoOn (fun t : ℝ => t * Real.cosh t - Real.sinh t) (Ici 0) := by
-    apply strictMonoOn_of_deriv_pos (convex_Ici 0)
-    · exact Continuous.continuousOn (by fun_prop)
-    · intro t ht
-      rw [interior_Ici] at ht
-      have htp : (0:ℝ) < t := ht
-      have hderiv : HasDerivAt (fun t : ℝ => t * Real.cosh t - Real.sinh t)
-          (t * Real.sinh t) t := by
-        have h1 : HasDerivAt (fun t : ℝ => t * Real.cosh t)
-            (1 * Real.cosh t + t * Real.sinh t) t :=
-          (hasDerivAt_id t).mul (Real.hasDerivAt_cosh t)
-        have h2 := h1.sub (Real.hasDerivAt_sinh t)
-        convert h2 using 1
-        ring
-      rw [hderiv.deriv]
-      exact mul_pos htp (Real.sinh_pos_iff.mpr htp)
-  have h := key (self_mem_Ici) (mem_Ici.mpr hx.le) hx
-  simp only [Real.cosh_zero, Real.sinh_zero, mul_one, sub_zero] at h
-  linarith
 
 /-- **(B)** `y ↦ y/sinh y` is strictly decreasing on `(0,∞)`. Its derivative
 `(sinh y − y·cosh y)/sinh²y` is negative by `sinh_lt_mul_cosh`. -/

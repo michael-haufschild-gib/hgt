@@ -4075,3 +4075,140 @@ obstruction migrates to the count face); (B3) count budget = banked
 Rouché+EM counting vs ξ sign alternations. NEXT: probe mathlib for
 Kronecker–Weyl / Weyl equidistribution on the finite torus; formalize
 FloorFailureDensity consuming block_smallball_condition.
+
+## cont. 29 — Kronecker–Weyl equidistribution BUILT (mathlib gap) + FloorFailureDensity
+
+Mathlib probe (verified): NO linear-flow Weyl equidistribution, NO Weyl's
+criterion, NO pointwise Birkhoff. Only "Weyl" = root-system sense;
+`ergodic_add_right` gives orbit DENSITY, not equidistribution. Confirmed gap.
+Reusable inputs already in-tree: ℚ-independence of {log p}
+(RHTower.log_prime_shifts_independent), model character orthogonality
+(SteinhausModel.charInt, integral_normSq_dpoly), and the L² Bohr transfer
+(BohrTransfer.tendsto_secondMoment_average_steinhaus — the SECOND-MOMENT
+time↔model bridge already existed). The NEW engine needed is the indicator /
+small-ball transfer, which the L² method provably cannot reach (second moment
+sees only upper tails).
+
+BUILT (2 modules, 8 endpoints, all axiom-clean [propext, Classical.choice,
+Quot.sound]; lint green; RHTower.FloorFailureDensity builds at 8492 jobs):
+
+WeylEquidistribution.lean (the gap fill):
+- char_integral_eq: ∫₀ᵀ exp(iθt) dt = (exp(iθT)−1)/(iθ).
+- char_time_average_tendsto: θ≠0 ⟹ (1/T)∫₀ᵀ exp(iθt) → 0. Weyl's criterion:
+  numerator bounded by 2, 1/T weight kills it.
+- trig_time_average: (1/T)∫₀ᵀ ∑ᵢ cᵢ exp(iθᵢt) → ∑_{θᵢ=0} cᵢ (the Haar mean).
+  Finite-torus Kronecker–Weyl, on the characters that determine the flow.
+
+FloorFailureDensity.lean (the indicator transfer, consuming block_smallball):
+- cesaroUpperDensity f := limsup (1/T)∫₀ᵀ f.
+- realTrig_time_average_tendsto / cesaroUpperDensity_realTrig: Weyl density
+  identity for a real function whose complexification is a phase polynomial.
+- cesaroUpperDensity_mono: monotone under domination + convergent majorant.
+- cesaroUpperDensity_le_of_realTrigMajorant: THE transfer — nonneg observable
+  under a real trig majorant has upper density ≤ the majorant mean.
+- floorFailure_timeDensity_le: the composite. GENUINELY CONSUMES
+  block_smallball_condition for the ensemble side + Weyl equidistribution for
+  the transfer: with a real trig majorant of the line failure-indicator whose
+  mean approximates the model floor-failure measure to within δ, the Cesàro
+  upper TIME density ≤ (2π)⁻⁴·M + δ. Carrier zeros budgeted, not forbidden.
+
+Structure of the remaining (B1)/(B2) core, now sharply typed: the ONE input
+that is a hypothesis (not proved) is the real trigonometric MAJORANT of the
+failure indicator with mean ≈ model measure (Fejér/Jackson kernel on the
+finite torus). That is the next buildable gap in the Mertens pattern — the
+torus-approximation piece (mathlib has span_fourier_closure_eq_top for one
+AddCircle; the product-torus version is the target). Everything else — the
+equidistribution engine and the block_smallball consumption — is proved.
+NEXT: build the Fejér majorant (product-torus trig approximation) to discharge
+hmq/hfg and make floorFailure_timeDensity_le unconditional.
+
+cont.46 (2026-07-05): INVESTIGATED the §13 residuals (deficit-budget invariant + θ*>1/2 strip).
+Result overturns §10/§13's framing. Pod scans (δ_j=c/j, level −d, d up to 6.4·10⁴): the strip
+threshold is SHARP — c_strip=2 exactly. Strip nonempty iff c<2 (c=1.8→θ_max 0.55; c=1.9→0.52,
+both rising in d); c=2 MARGINAL (θ_max↗1/2⁻ never crossing); c>2 empty. §10's "θ*=0.78 at c=2"
+was mislabeled c=1 data. Two exact-looking edge constants at c=2: (1/2−θ_max)·√d = 0.31831 =
+1/π (dead constant across d=10³→1.6·10⁴), peak at i_peak≈(π/4)√d (Airy edge scale). Physical
+carrier δ_j≈2/j is c=2 EXACTLY ⟹ sits ON the strip threshold, marginal not safe. Consequence:
+for c≥2 the strip is empty ⟹ W-response s<δ/2 holds at EVERY equilibrium (stronger than §13
+outer-half), but c=2 margin→0 as 1/(π√d) ⟹ (S-mono) assembly (e) must be uniform against a
+1/√d margin. Pre-registered predictions REFUTED: c_strip≈2.95 (→2.0), ρ→1 (→drifts, c-fractions
+0.62/0.28 for c=3/5 — ρ downgraded to conservative envelope proxy, NOT class-sharp; sharp locator
+= θ_max(c)−1/2). Doc 30 §14. Conjectured mechanism: c=2 = §3 log-cancellation threshold. Forward:
+prove c_strip=2 from log-cancellation; derive 1/π from continuum 2/x field on √d boundary layer.
+
+## cont. 30 — UNCONDITIONAL floor-failure density bound (degree-1 majorant rung)
+
+The path to an unconditional density bound is the polynomial-majorant tower:
+g = q ∘ ‖F‖² for a polynomial q majorizing the step 1_{[0,t₀²]} — CLEANER than
+product-torus Stone–Weierstrass (which the Fejér framing suggested). q ∘ ‖F‖²
+is automatically a real trig poly, majorizes the line failure-indicator, and
+its time mean is a MODEL moment via the Bohr transfer.
+
+BUILT (base rung, axiom-clean [propext, Classical.choice, Quot.sound]; lint
+green; FloorFailureDensity builds 8494 jobs):
+- continuous_dpoly: the Dirichlet carrier is continuous in t.
+- cesaroUpperDensity_secondMoment_le: **UNCONDITIONAL**. Any [0,1]-observable
+  supported on the vertical floor-failure set {‖F‖≤t₀} has Cesàro upper time
+  density ≤ (B² − ∑aₙ²)/(B² − t₀²), B any carrier bound. The degree-1 majorant
+  q(u) = (B²−u)/(B²−t₀²) satisfies q≥1 on [0,t₀²], q≥0 on [0,B²]; g = q(‖F‖²)
+  dominates the indicator, and mean(g) = q(∑aₙ²) via the second-moment Bohr
+  transfer tendsto_secondMoment_average at basepoint 0. No hypotheses on the
+  majorant — it is CONSTRUCTED. This is a genuine Paley–Zygmund-grade
+  anti-concentration density bound, unconditional.
+
+WHAT REMAINS for the SHARP (2π)⁻⁴M-level unconditional bound: the degree-1 rung
+uses only the second moment, so it saturates near 1−1/k for k equal blocks —
+weak but real. The sharp small-ball needs a degree-d majorant q_d ↓ 1_{[0,t₀²]}
+in L¹(pushforward), whose mean is a d-th MODEL moment. Two named next cores:
+(BOHR-n) the general moment identity — Weyl time-mean of q(‖F‖²) = model
+E[q(‖∑aX‖²)] for any polynomial q (generalizes the second-moment bridge to all
+degrees; both = the diagonal/zero-freq coefficient); (APPROX) a polynomial
+majorant q_d of the step with model mean → floor-failure measure (Weierstrass
+L¹ at an a.e. threshold t₀). Composing (BOHR-n)+(APPROX) with block_smallball
+sends δ→0 and makes floorFailure_timeDensity_le unconditional at (2π)⁻⁴M.
+NEXT: (BOHR-n) degree-2 case (4-fold sum) as the first non-linear rung.
+
+cont.47 (2026-07-05): c_strip=2 PROVED (doc 30 §15), closed form. Chain: (1) exact midpoint
+identity F(m_i)=(2i−d)+2(B−A), strip θ*>1/2 ⟺ A−B>i [elementary, coth=±1±2/(e^u−1)]; (2) behind/
+ahead coth-excess sums B,A each log-diverge (Σ1/k), cancel → finite O(i) residue [the
+log-cancellation, = §3 made exact]; (3) continuum limit (A−B)/i → Φ(c)=(2/c)∫₀^∞ sinh(u/c)/(e^u−1)du
+[Euler–Maclaurin]; (4) closed form via geometric series + Mittag-Leffler cot: **Φ(c)=1−(π/c)cot(π/c)**;
+(5) strip ⟺ Φ>1 ⟺ c<2, Φ strictly decreasing (t cot t monotone via sin t cos t<t), UNIQUE root
+c=2, Φ(2)=1 marginal (cot(π/2)=0). Cross-checked Φ(2)=1 by rational integral (log3 cancels, two
+routes). The cot(π/c): first zero = threshold, pole c=1 = overflow — native signature of harmonic
+spacing. Pod went down mid-check (load 91, ephemeral); proof needs no numerics — threshold already
+validated by earlier θ_max scans landing exactly at c=2. #176 proof-half done; residual = 1/π edge
+law as √d finite-d correction to Φ (sin2t=2t deficit at t=π/2).
+
+## cont. 31 — degree-2 Bohr moment rung (BohrMoments.lean)
+
+Project check first: only the SECOND moment existed anywhere
+(integral_normSq_dpoly, tendsto_secondMoment_average). No higher moments;
+SpurCumulant = unrelated formal cumulant polys; theorem-m Moments = a
+different (CP) measure. Genuine gap.
+
+The tower COLLAPSES via one structural fact: ‖F‖^{2k} = ‖F^k‖², and a power of
+a Dirichlet polynomial is again a Dirichlet polynomial (convolution
+coefficients). So every even moment reduces to the second moment of a power —
+no 4-fold-sum (BOHR-n) proof from scratch, just the algebraic square identity +
+reuse of the entire second-moment machinery.
+
+BUILT (BohrMoments.lean, 8 endpoints, axiom-clean [propext, Classical.choice,
+Quot.sound]; lint green; builds 8478 jobs):
+- convSq a s k = ∑_{mn=k, m,n∈s} aₘaₙ; sqSupport s = {mn : m,n∈s}.
+- cterm_mul: e^{-iτ log m}·e^{-iτ log n} = e^{-iτ log(mn)} (per-term frequency merge).
+- dpoly_sq: **F(τ)² = dpoly (convSq a s)(sqSupport s) τ** — the square of a
+  Dirichlet poly is a Dirichlet poly (fiberwise over the product mn). THE reusable
+  multiplicativity keystone; generalizes to dpoly_mul → all powers.
+- model_sq: (∑aₙXₙ)² = ∑ convSq·X on sqSupport, via X_{mn}=XₘXₙ (X_mul).
+- tendsto_fourthMoment_average: time-avg ‖F‖⁴ → ∑(convSq)² (second-moment MV on F²).
+- integral_normSq_sq_dpoly: model E‖∑aX‖⁴ = ∑(convSq)² (model second moment of F²).
+- **tendsto_fourthMoment_average_steinhaus**: the DEGREE-2 BOHR IDENTITY —
+  time-average of ‖F‖⁴ = model fourth moment E‖∑aₙXₙ‖⁴. Squaring commutes with the
+  line↔model correspondence.
+
+This is the first non-linear rung of (BOHR-n): the degree-2 majorant q(u)=α+βu+γu²
+now has mean(q(‖F‖²)) = α + β∑aₙ² + γ∑(convSq)² matched to the model, sharpening the
+density bound past the degree-1 (second-moment) rung. NEXT: dpoly_mul (general
+product, not just square) → F^k by induction → the full even-moment tower; then the
+(APPROX) polynomial step-majorant closes δ→0 to the sharp small-ball bound.

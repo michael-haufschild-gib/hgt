@@ -170,24 +170,35 @@ theorem cosh_one_lt_two : Real.cosh 1 < 2 := by
     exact inv_lt_one_of_one_lt₀ (by nlinarith [Real.exp_one_gt_d9])
   nlinarith [h1, h2, h3]
 
-/-- `sinh x ≤ x·cosh x` for `x ≥ 0` (the function `x cosh x − sinh x` has derivative
-`x sinh x ≥ 0` and vanishes at `0`). -/
-theorem sinh_le_mul_cosh {x : ℝ} (hx : 0 ≤ x) : Real.sinh x ≤ x * Real.cosh x := by
-  have hmono : MonotoneOn (fun t => t * Real.cosh t - Real.sinh t) (Set.Icc 0 x) := by
-    apply monotoneOn_of_deriv_nonneg (convex_Icc 0 x) (by fun_prop) (by fun_prop)
-    intro y hy
-    rw [interior_Icc, mem_Ioo] at hy
-    have hd : HasDerivAt (fun t => t * Real.cosh t - Real.sinh t) (y * Real.sinh y) y := by
-      have h1 : HasDerivAt (fun t : ℝ => t * Real.cosh t)
-          (1 * Real.cosh y + y * Real.sinh y) y :=
-        (hasDerivAt_id y).mul (Real.hasDerivAt_cosh y)
-      have h2 := h1.sub (Real.hasDerivAt_sinh y)
-      convert h2 using 1; ring
-    rw [hd.deriv]
-    exact mul_nonneg (le_of_lt hy.1) (le_of_lt (Real.sinh_pos_iff.mpr hy.1))
-  have key := hmono (Set.left_mem_Icc.mpr hx) (Set.right_mem_Icc.mpr hx) hx
-  simp only [Real.cosh_zero, Real.sinh_zero, mul_one, sub_zero] at key
+/-- **`sinh x < x·cosh x` for `x > 0`** — equivalently `tanh x < x`:
+`t·cosh t − sinh t` is `0` at `0` and strictly increasing on `[0,∞)`
+(derivative `t·sinh t > 0`). -/
+theorem sinh_lt_mul_cosh {x : ℝ} (hx : 0 < x) : Real.sinh x < x * Real.cosh x := by
+  have key : StrictMonoOn (fun t : ℝ => t * Real.cosh t - Real.sinh t) (Ici 0) := by
+    apply strictMonoOn_of_deriv_pos (convex_Ici 0)
+    · exact Continuous.continuousOn (by fun_prop)
+    · intro t ht
+      rw [interior_Ici] at ht
+      have htp : (0:ℝ) < t := ht
+      have hderiv : HasDerivAt (fun t : ℝ => t * Real.cosh t - Real.sinh t)
+          (t * Real.sinh t) t := by
+        have h1 : HasDerivAt (fun t : ℝ => t * Real.cosh t)
+            (1 * Real.cosh t + t * Real.sinh t) t :=
+          (hasDerivAt_id t).mul (Real.hasDerivAt_cosh t)
+        have h2 := h1.sub (Real.hasDerivAt_sinh t)
+        convert h2 using 1
+        ring
+      rw [hderiv.deriv]
+      exact mul_pos htp (Real.sinh_pos_iff.mpr htp)
+  have h := key (self_mem_Ici) (mem_Ici.mpr hx.le) hx
+  simp only [Real.cosh_zero, Real.sinh_zero, mul_one, sub_zero] at h
   linarith
+
+/-- `sinh x ≤ x·cosh x` for `x ≥ 0`. -/
+theorem sinh_le_mul_cosh {x : ℝ} (hx : 0 ≤ x) : Real.sinh x ≤ x * Real.cosh x := by
+  rcases hx.eq_or_lt with rfl | hx0
+  · simp
+  · exact (sinh_lt_mul_cosh hx0).le
 
 /-- **`φ` near-cubic lower bound**: `φ(x) = cosh x/sinh³x ≥ 1/(4x³)` for `0 < x ≤ 1`
 (from `sinh x ≤ x cosh x` and `cosh x ≤ cosh 1 < 2`). The cubic near term that dominates the

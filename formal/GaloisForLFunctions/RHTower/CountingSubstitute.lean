@@ -20,6 +20,7 @@ a residue below the modulus determines the number. No a priori bounds, no contou
 -/
 import GaloisForLFunctions.RHTower.XiDeck
 import GaloisForLFunctions.RHTower.DeckHomotopy
+import GaloisForLFunctions.RHTower.Reflection
 
 namespace RHTower
 
@@ -393,5 +394,58 @@ theorem pinned_zero_re_eq_half_of_relative_close {κ : Type*} (t : Finset κ)
       hfactf hclose
   · intro z hz
     exact ratio_log_norm_le_of_relative_close hη (hg0 z hz) (hrel z hz)
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **The pinning RH gate.**  If around every hypothetical right-half ξ-zero
+there is a counting window — a critical-line center `ρ₀`, a dominated
+one-simple-zero reference `g = (z − ρ₀)·h`, and a factorization of ξ through
+finitely many hole-supported zeros — then every ξ-zero of every window is
+pinned to the line (`pinned_zero_re_eq_half`; the ξ symmetry input is supplied
+by `xi_one_sub` and `xi_conj`), and RH follows through the local-window gate.
+No argument principle: the on-line location is forced by the counting
+substitute alone. -/
+theorem riemannHypothesis_of_pinned_windows
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (t : Finset ℂ) (m' : ℂ → ℕ) (g h h' : ℂ → ℂ) (ρ₀ : ℂ) (r₀ R : ℝ),
+        0 ≤ r₀ ∧ r₀ < R ∧ ρ ∈ ball ρ₀ R ∧ ρ₀.re = 1 / 2
+        ∧ AnalyticOnNhd ℂ h (ball ρ₀ R) ∧ (∀ z ∈ ball ρ₀ R, h z ≠ 0)
+        ∧ AnalyticOnNhd ℂ h' (ball ρ₀ R) ∧ (∀ z ∈ ball ρ₀ R, h' z ≠ 0)
+        ∧ (∀ z ∈ ball ρ₀ R, g z = (z - ρ₀) * h z)
+        ∧ (∀ w ∈ t, ‖w - ρ₀‖ ≤ r₀)
+        ∧ (∀ z ∈ ball ρ₀ R, xi z = (∏ w ∈ t, (z - w) ^ m' w) * h' z)
+        ∧ (∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R, ‖xi z - g z‖ < ‖g z‖)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_local_online_windows
+  intro ρ hρ hzero
+  obtain ⟨t, m', g, h, h', ρ₀, r₀, R, h0, hrR, hρball, hρ₀re, hh, hh0, hh', hh0',
+    hfactg, hρ't, hfactf, hclose⟩ := hwin ρ hρ hzero
+  have hsym : ∀ z ∈ ball ρ₀ R,
+      xi (1 - (starRingEnd ℂ) z) = (starRingEnd ℂ) (xi z) := by
+    intro z _
+    rw [xi_one_sub]
+    exact xi_conj z
+  have hpin := pinned_zero_re_eq_half t id m' h0 hrR hρ₀re hsym hh hh0 hh' hh0'
+    hfactg hρ't hfactf hclose
+  refine ⟨ρ₀, R, hρball, ?_⟩
+  intro p hp hxi
+  have hfa := hfactf p hp
+  rw [hxi] at hfa
+  have hprod : (∏ w ∈ t, (p - w) ^ m' w) = 0 := by
+    rcases mul_eq_zero.mp hfa.symm with hc | hc
+    · exact hc
+    · exact absurd hc (hh0' p hp)
+  obtain ⟨w, hwmem, hwzero⟩ := Finset.prod_eq_zero_iff.mp hprod
+  have hm : m' w ≠ 0 := by
+    intro hzero'
+    rw [hzero', pow_zero] at hwzero
+    exact one_ne_zero hwzero
+  have hpw : p = w := sub_eq_zero.mp ((pow_eq_zero_iff hm).mp hwzero)
+  rw [hpw]
+  exact hpin w hwmem hm
 
 end RHTower
