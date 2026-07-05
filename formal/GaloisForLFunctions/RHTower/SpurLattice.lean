@@ -126,37 +126,6 @@ theorem cothField_exists_equilibrium {ι : Type*} (s : Finset ι) (t : ι → �
   obtain ⟨x, hx, hxc⟩ := intermediate_value_Icc' hxle hcont hmem
   exact ⟨x, hx, hxc⟩
 
-/-- `coth' = −csch²` at every nonzero point (quotient rule + `cosh²−sinh²=1`). -/
-theorem rcoth_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
-    HasDerivAt rcoth (-(rcsch u) ^ 2) u := by
-  have hs : Real.sinh u ≠ 0 := Real.sinh_ne_zero.mpr hu
-  have h := (Real.hasDerivAt_cosh u).div (Real.hasDerivAt_sinh u) hs
-  convert h using 1
-  rw [rcsch]
-  have hid : Real.cosh u ^ 2 - Real.sinh u ^ 2 = 1 := Real.cosh_sq_sub_sinh_sq u
-  field_simp
-  nlinarith [hid]
-
-/-- `csch' = −coth·csch` at every nonzero point. -/
-theorem rcsch_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
-    HasDerivAt rcsch (-rcoth u * rcsch u) u := by
-  have hs : Real.sinh u ≠ 0 := Real.sinh_ne_zero.mpr hu
-  have h : HasDerivAt (fun x => (Real.sinh x)⁻¹) (-Real.cosh u / Real.sinh u ^ 2) u :=
-    (Real.hasDerivAt_sinh u).inv hs
-  have hfun : (fun x => (Real.sinh x)⁻¹) = rcsch := by funext x; rw [rcsch, one_div]
-  rw [hfun] at h
-  have hval : -Real.cosh u / Real.sinh u ^ 2 = -rcoth u * rcsch u := by
-    unfold rcoth rcsch; field_simp
-  rw [hval] at h
-  exact h
-
-/-- `(csch²)' = −2φ` where `φ = csch²·coth` (`rphi`). -/
-theorem rcsch_sq_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
-    HasDerivAt (fun u => (rcsch u) ^ 2) (-2 * rphi u) u := by
-  have h := (rcsch_hasDerivAt hu).pow 2
-  convert h using 1
-  rw [rphi]; ring
-
 /-- The reduced spectator energy `W(x) = ¼ Σ csch²((x − t_k)/2)` (doc 27–29). -/
 noncomputable def spurLatticeEnergy {ι : Type*} (s : Finset ι) (t : ι → ℝ) (x : ℝ) : ℝ :=
   (1 / 4) * ∑ k ∈ s, (rcsch ((x - t k) / 2)) ^ 2

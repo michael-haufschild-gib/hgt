@@ -13,6 +13,7 @@ constant through a probability measure.
 import Mathlib
 import GaloisForLFunctions.RHTower.RouteBProdFubini
 import GaloisForLFunctions.RHTower.RouteBFourPhaseUniform
+import GaloisForLFunctions.RHTower.RouteBHierarchy
 
 namespace RHTower
 namespace Sublevel
@@ -370,6 +371,90 @@ theorem block_smallball_caustic
     (Sublevel.fourPhaseConst (a p4:ℂ) (a p3:ℂ) (a p2:ℂ) (a p1:ℂ) t σ0 sstar J)
     (fun V => Sublevel.four_phase_nested_uniform (w := V) hA hB hC hD hρB hr0 hr2
       hσ0 hσ0G hJ hHσ0 hss hss2)
+
+end SteinhausModel
+end RHTower
+
+namespace RHTower
+namespace SteinhausModel
+
+open MeasureTheory
+
+/-- The four-phase constant is finite: every term is a finite product of
+`ENNReal.ofReal` factors. -/
+theorem fourPhaseConst_lt_top (A B C D : ℂ) (r σ0 sstar : ℝ) (J : ℕ) :
+    Sublevel.fourPhaseConst A B C D r σ0 sstar J < ⊤ := by
+  unfold Sublevel.fourPhaseConst
+  finiteness
+
+/-- Every Steinhaus block sum satisfies the trivial small-ball law with rate
+`1`: the model is a probability measure. -/
+theorem blockSmallBall_one (a : ℕ → ℝ) (s : Finset ℕ) :
+    BlockSmallBall a s fun _ => 1 := by
+  intro w t _
+  rw [ENNReal.ofReal_one]
+  exact prob_le_one
+
+/-- The caustic block small-ball rate: the explicit four-phase constant inside
+the caustic radius window `t ≤ t₀`, the trivial probability bound beyond it. -/
+noncomputable def causticBlockRate (A B C D : ℂ) (σ0 sstar t₀ : ℝ) (J : ℕ)
+    (t : ℝ) : ℝ :=
+  if t ≤ t₀ then
+    (ENNReal.ofReal (2 * Real.pi)⁻¹ ^ 4
+      * Sublevel.fourPhaseConst A B C D t σ0 sstar J).toReal
+  else 1
+
+/-- **The caustic block law instantiates the hierarchical small-ball
+interface.**  A prime-supported block with four dominant primes in caustic
+position at threshold radius `t₀` satisfies `BlockSmallBall` with the
+explicit `causticBlockRate`: below `t₀` the four-phase constant applies (the
+radius-dependent caustic hypotheses propagate from `t₀` to every smaller
+radius by monotonicity of the margin ratio), above `t₀` the probability
+bound. -/
+theorem blockSmallBall_of_caustic
+    (s : Finset ℕ) (hs : ∀ p ∈ s, p.Prime) (a : ℕ → ℝ)
+    {σ0 sstar t₀ : ℝ} {J : ℕ}
+    (p1 p2 p3 p4 : ℕ) (hp1 : p1 ∈ s) (hp2 : p2 ∈ s) (hp3 : p3 ∈ s) (hp4 : p4 ∈ s)
+    (h12 : p1 ≠ p2) (h13 : p1 ≠ p3) (h14 : p1 ≠ p4)
+    (h23 : p2 ≠ p3) (h24 : p2 ≠ p4) (h34 : p3 ≠ p4)
+    (hA : (a p4:ℂ) ≠ 0) (hB : (a p3:ℂ) ≠ 0) (hC : (a p2:ℂ) ≠ 0) (hD : (a p1:ℂ) ≠ 0)
+    (hρB : ‖(a p3:ℂ)‖ < ‖(a p4:ℂ)‖)
+    (ht₀2 : 2 * t₀ ≤ ‖(a p4:ℂ)‖ - ‖(a p3:ℂ)‖) (hσ0 : 0 < σ0)
+    (hσ0G : σ0 ≤ ((‖(a p4:ℂ)‖ + ‖(a p3:ℂ)‖) ^ 2 - (‖(a p4:ℂ)‖ - ‖(a p3:ℂ)‖) ^ 2) / 3)
+    (hJ : ((‖(a p4:ℂ)‖ + ‖(a p3:ℂ)‖) ^ 2 - (‖(a p4:ℂ)‖ - ‖(a p3:ℂ)‖) ^ 2) / 3
+        < 2 ^ J * σ0)
+    (hHσ0 : 2 * (t₀ * (2 * ‖(a p4:ℂ)‖ + t₀)
+        / ((‖(a p4:ℂ)‖ - ‖(a p3:ℂ)‖) * ‖(a p3:ℂ)‖))
+        ≤ σ0 * Sublevel.causticKappa ‖(a p4:ℂ)‖ ‖(a p3:ℂ)‖)
+    (hss : 0 < sstar) (hss2 : 2 * sstar ≤ ‖(a p1:ℂ)‖) :
+    BlockSmallBall a s
+      (causticBlockRate (a p4) (a p3) (a p2) (a p1) σ0 sstar t₀ J) := by
+  intro w t ht
+  unfold causticBlockRate
+  by_cases hcase : t ≤ t₀
+  · have hfin : ENNReal.ofReal (2 * Real.pi)⁻¹ ^ 4
+        * Sublevel.fourPhaseConst (a p4) (a p3) (a p2) (a p1) t σ0 sstar J ≠ ⊤ :=
+      (ENNReal.mul_lt_top (ENNReal.pow_lt_top ENNReal.ofReal_lt_top)
+        (fourPhaseConst_lt_top _ _ _ _ _ _ _ _)).ne
+    rw [if_pos hcase, ENNReal.ofReal_toReal hfin]
+    have hApos : 0 < ‖(a p4:ℂ)‖ := norm_pos_iff.mpr hA
+    have hBpos : 0 < ‖(a p3:ℂ)‖ := norm_pos_iff.mpr hB
+    have hgap : 0 < ‖(a p4:ℂ)‖ - ‖(a p3:ℂ)‖ := by linarith [hρB]
+    have hD0 : 0 < (‖(a p4:ℂ)‖ - ‖(a p3:ℂ)‖) * ‖(a p3:ℂ)‖ := mul_pos hgap hBpos
+    have hnum : t * (2 * ‖(a p4:ℂ)‖ + t) ≤ t₀ * (2 * ‖(a p4:ℂ)‖ + t₀) := by
+      nlinarith [ht.le, hcase, hApos]
+    have hmono : 2 * (t * (2 * ‖(a p4:ℂ)‖ + t)
+        / ((‖(a p4:ℂ)‖ - ‖(a p3:ℂ)‖) * ‖(a p3:ℂ)‖))
+        ≤ σ0 * Sublevel.causticKappa ‖(a p4:ℂ)‖ ‖(a p3:ℂ)‖ := by
+      refine le_trans ?_ hHσ0
+      rw [div_eq_mul_inv, div_eq_mul_inv]
+      have hinv : (0:ℝ) ≤ ((‖(a p4:ℂ)‖ - ‖(a p3:ℂ)‖) * ‖(a p3:ℂ)‖)⁻¹ := by positivity
+      nlinarith [mul_le_mul_of_nonneg_right hnum hinv]
+    exact block_smallball_caustic s hs a w p1 p2 p3 p4 hp1 hp2 hp3 hp4
+      h12 h13 h14 h23 h24 h34 hA hB hC hD hρB ht
+      (le_trans (by linarith) ht₀2) hσ0 hσ0G hJ hmono hss hss2
+  · rw [if_neg hcase, ENNReal.ofReal_one]
+    exact prob_le_one
 
 end SteinhausModel
 end RHTower

@@ -203,3 +203,71 @@ FORMAL; **(L3) block STEP FORMAL (model level)**. Open above: the graded ladder
 (assemble the STEP across dyadic levels; per-level J = the t-graded log), then
 (L1)/(L2) (PNT pole). Next generative move: type the graded-ladder interface
 consuming `block_smallball_condition` as its per-level engine.
+
+### (LOW) CONVERGENCE [cycle 55, cont. 28]: the certificate side has arrived at the same object
+
+Codex batch (lean_updates_codex.md, 31 items; verified: lint green, six
+load-bearing endpoints axiom-checked [propext, Classical.choice, Quot.sound]).
+Two structural moves land directly on this doc's target.
+
+**1. Every consumer now runs through ONE floor interface.** All seam / ANNEAL /
+rung / sign endpoints (SeamCongruence, EMCarrier, AnnealWindowRelation) were
+refactored to consume the single static predicate
+
+    CarrierFloorOn S N ε  :=  ∀ z ∈ S, ε < ‖gN N z‖        (ZetaCarrier.lean:327)
+
+— the (LOW) interface itself — in place of every raw `gN ≠ 0` oracle and every
+pointwise EM-domination table. And three terminal RH gates were added:
+
+- `riemannHypothesis_of_local_online_windows` — RH from local on-line exclusion;
+- `riemannHypothesis_of_emCarrier_close_floor_sign_local_windows` — RH from
+  per-window FINITE data: (AFE remainder ≤ ε₁) + (‖emCarrier − gN‖ ≤ δ on the
+  charts) + `CarrierFloorOn (chartRA ∪ chartLA) N (ε₁+δ)` + a ξ sign table with
+  the carrier-zero count budget Σ m₂ ≤ s;
+- `riemannHypothesis_of_relative_floor_sign_local_windows` — same gate on the
+  relative/U0 path.
+
+Machine-checked shape now standing: **RH follows from a family of per-window
+certificates whose only analytic input is the (LOW) floor on annulus charts** —
+the sign table and count budget are finite/computable data. The certificate
+TOLERATES carrier zeros: they may sit in the inner disc `r₀`, priced by the
+count budget, and the floor is demanded only on the shell `r₀ < |z−a| < R`.
+
+**2. The convergence.** The (LOW) floor is exactly the observable this doc's
+smooth-low attack controls probabilistically: `block_smallball_condition`
+bounds `steinhausMeasure{ ‖w + Σ_{n∈s} aₙXₙ‖ ≤ t } ≤ (2π)⁻⁴·M` — the measure
+of the floor-FAILURE set in the model, uniform in conditioning. Deterministic
+demand (certificate) and probabilistic supply (small-ball) meet at the same
+quantity: ‖gN‖ near the line. The graded ladder and the certificate lane
+consume the SAME per-level engine.
+
+**Typed bridge lane (new lead, three named steps):**
+
+- **(B1) Bohr transfer** [OPEN CORE, provable-shaped for fixed N]: for the
+  finite carrier the frequencies {log p : p ≤ N} are ℚ-independent, so
+  Kronecker–Weyl on the finite torus gives: limiting t-density of
+  { t ∈ [0,T] : ‖gN(σ+it)‖ ≤ ε } ≤ steinhausMeasure{ ‖·‖ ≤ ε } (Portmanteau at
+  a.e. threshold ε). The model IS the Bohr lift; `block_smallball_condition`
+  then bounds the density of LOW-failure heights. Mathlib status of
+  Kronecker–Weyl for the finite prime torus: to probe; if absent, it is the
+  next buildable gap (same class as the Mertens pole — build it).
+- **(B2) Movable-shell pigeonhole** [CONJECTURE]: the certificate needs the
+  floor only at SOME shell radius r₀ ∈ [r_min, R). Integrating the failure
+  measure over shell radii: a good radius exists unless failure has full
+  radial measure — converting a.e.-HEIGHT floors into every-WINDOW floors, at
+  the cost of the count budget. The a.e.→every obstruction MIGRATES from the
+  analytic floor to the count face.
+- **(B3) Count budget** [instrument banked]: Σ m₂ ≤ s compares carrier zeros
+  in the disc (Rouché+EM counting — machine-checked island already in tree)
+  with ξ sign alternations on the line (the classical density face).
+
+Consequence: the RH-gate residue splits into (measure of floor failure) ×
+(count of sign alternations) — the same two faces as the O(1)-fluctuation
+mixture (§3 here = doc 88 §2), now on the CERTIFICATE side of the ledger.
+
+Ledger: (L4) FORMAL; two/three-phase FORMAL; (L3) block STEP FORMAL;
+**(LOW) certificate surface consolidated + three RH gates FORMAL (codex)**.
+Next generative move: formalize (B1) as `FloorFailureDensity` on
+SteinhausModel — t-density of LOW-failure heights on a vertical segment ≤ the
+model small-ball bound — consuming `block_smallball_condition`; then (B2) as a
+shell-selection lemma over r₀.

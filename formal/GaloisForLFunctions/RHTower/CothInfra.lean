@@ -7,7 +7,11 @@ lattice-energy analysis (docs 29–31, tasks #138/#142) needs:
 * `rcoth x = cosh x / sinh x`, `rcsch x = 1 / sinh x`;
 * positivity and `1 < rcoth x` on `x > 0` (the swap-step bound `coth > 1`);
 * strict antitonicity of `rcoth`, `rcsch`, and `phi = rcsch² · rcoth` on `(0,∞)`
-  — all via the `sinh` subtraction formula and `sinh` monotonicity, no derivatives.
+  — via the `sinh` subtraction formula and `sinh` monotonicity, no derivatives;
+* the derivatives at every nonzero point: `rcoth′ = −rcsch²`,
+  `rcsch′ = −rcoth·rcsch`, `(rcsch²)′ = −2·rphi`;
+* the asymptote excess `rcoth v − 1 = 2/(e^{2v} − 1)` and the two-sided bound
+  `1/v ≤ rcoth v < 1 + 1/v` on `v > 0`.
 
 The lattice field `Σ coth((t−t_k)/2)` is built from these; its strict monotonicity
 between consecutive poles and the `coth > 1` swap bound are the two engines of the
@@ -217,5 +221,80 @@ theorem rphi_strictAntiOn_pos : StrictAntiOn rphi (Ioi 0) := by
   have hcsy : 0 < (rcsch y)^2 := pow_pos (rcsch_pos_of_pos hy) 2
   rw [rphi, rphi]
   nlinarith [hcs, hco, hcoy, hcsy]
+
+end RHTower
+
+namespace RHTower
+
+open Real Set
+
+/-! ### Derivatives at nonzero points, and the exponential form of the asymptote excess -/
+
+/-- `coth' = −csch²` at every nonzero point (quotient rule + `cosh²−sinh²=1`). -/
+theorem rcoth_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
+    HasDerivAt rcoth (-(rcsch u) ^ 2) u := by
+  have hs : Real.sinh u ≠ 0 := Real.sinh_ne_zero.mpr hu
+  have h := (Real.hasDerivAt_cosh u).div (Real.hasDerivAt_sinh u) hs
+  convert h using 1
+  rw [rcsch]
+  have hid : Real.cosh u ^ 2 - Real.sinh u ^ 2 = 1 := Real.cosh_sq_sub_sinh_sq u
+  field_simp
+  nlinarith [hid]
+
+/-- `csch' = −coth·csch` at every nonzero point. -/
+theorem rcsch_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
+    HasDerivAt rcsch (-rcoth u * rcsch u) u := by
+  have hs : Real.sinh u ≠ 0 := Real.sinh_ne_zero.mpr hu
+  have h : HasDerivAt (fun x => (Real.sinh x)⁻¹) (-Real.cosh u / Real.sinh u ^ 2) u :=
+    (Real.hasDerivAt_sinh u).inv hs
+  have hfun : (fun x => (Real.sinh x)⁻¹) = rcsch := by funext x; rw [rcsch, one_div]
+  rw [hfun] at h
+  have hval : -Real.cosh u / Real.sinh u ^ 2 = -rcoth u * rcsch u := by
+    unfold rcoth rcsch; field_simp
+  rw [hval] at h
+  exact h
+
+/-- `(csch²)' = −2φ` where `φ = csch²·coth` (`rphi`). -/
+theorem rcsch_sq_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
+    HasDerivAt (fun u => (rcsch u) ^ 2) (-2 * rphi u) u := by
+  have h := (rcsch_hasDerivAt hu).pow 2
+  convert h using 1
+  rw [rphi]; ring
+
+/-- The excess of `coth` over its limit: `coth v − 1 = 2/(e^{2v} − 1)` for `v > 0`. -/
+theorem rcoth_sub_one {v : ℝ} (hv : 0 < v) :
+    rcoth v - 1 = 2 / (Real.exp (2 * v) - 1) := by
+  have hs : 0 < Real.sinh v := sinh_pos_of_pos hv
+  have hE : 0 < Real.exp v := Real.exp_pos v
+  have h2 : Real.exp (2 * v) = Real.exp v * Real.exp v := by
+    rw [← Real.exp_add]; ring_nf
+  have hkey : Real.exp (2 * v) - 1 = 2 * Real.exp v * Real.sinh v := by
+    rw [h2, Real.sinh_eq, Real.exp_neg]
+    field_simp
+  have hrc : rcoth v - 1 = (Real.cosh v - Real.sinh v) / Real.sinh v := by
+    rw [rcoth]; field_simp
+  have hcs : Real.cosh v - Real.sinh v = Real.exp (-v) := by
+    rw [Real.cosh_eq, Real.sinh_eq]; ring
+  rw [hrc, hcs, hkey, Real.exp_neg]
+  rw [div_eq_div_iff hs.ne' (by positivity)]
+  field_simp
+
+/-- `coth v < 1 + 1/v`: the exponential excess `2/(e^{2v} − 1)` is below `1/v` because
+`2v + 1 < e^{2v}`. -/
+theorem rcoth_lt_one_add_inv {v : ℝ} (hv : 0 < v) : rcoth v < 1 + 1 / v := by
+  have h := Real.add_one_lt_exp (show 2 * v ≠ 0 by positivity)
+  have hE1 : 0 < Real.exp (2 * v) - 1 := by linarith
+  have heq := rcoth_sub_one hv
+  have hlt : 2 / (Real.exp (2 * v) - 1) < 1 / v := by
+    rw [div_lt_div_iff₀ hE1 hv]
+    linarith
+  linarith
+
+/-- `1/v ≤ coth v`: the tangent-line comparison `sinh v ≤ v·cosh v` read as a ratio. -/
+theorem inv_le_rcoth {v : ℝ} (hv : 0 < v) : 1 / v ≤ rcoth v := by
+  have hs : 0 < Real.sinh v := sinh_pos_of_pos hv
+  have h := sinh_le_mul_cosh hv.le
+  rw [rcoth, div_le_div_iff₀ hv hs]
+  linarith
 
 end RHTower

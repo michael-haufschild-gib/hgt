@@ -360,3 +360,28 @@ theorem secondMoment_sigma (N : ℕ) (σ T U : ℝ) :
   rw [secondMoment_meanValue, hmain]
 
 end RHTower
+
+namespace RHTower
+
+/-- **Threshold-form window positivity.**  A Dirichlet polynomial with one
+nonzero coefficient has strictly positive `L²` mass on EVERY window longer
+than the explicit threshold `B / ∑(a n)²`, where
+`B = ∑∑ 2|aₘaₙ|/|log(n/m)|` is the `U`- and `T`-independent off-diagonal
+constant: the per-window domination hypothesis of
+`secondMoment_pos_of_offDiagonal_bound_lt_diagonal` is discharged by window
+length alone, uniformly in the basepoint.  The carrier cannot be `L²`-silent
+on any sufficiently long vertical window anywhere on the line. -/
+theorem secondMoment_pos_of_large_window
+    (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n)
+    {n₀ : ℕ} (hn₀ : n₀ ∈ s) (ha : a n₀ ≠ 0) (T U : ℝ)
+    (hU : (∑ m ∈ s, ∑ n ∈ s.erase m, 2 * |a m * a n| / |Real.log n - Real.log m|)
+        / (∑ n ∈ s, (a n) ^ 2) < U) :
+    0 < ∫ t in T..(T + U), ‖dpoly a s t‖ ^ 2 := by
+  have hsum : 0 < ∑ n ∈ s, (a n) ^ 2 :=
+    Finset.sum_pos' (fun n _ => sq_nonneg (a n))
+      ⟨n₀, hn₀, (sq_nonneg (a n₀)).lt_of_ne (Ne.symm (pow_ne_zero 2 ha))⟩
+  refine secondMoment_pos_of_offDiagonal_bound_lt_diagonal a s T U hs ?_
+  rw [div_lt_iff₀ hsum] at hU
+  linarith [hU]
+
+end RHTower

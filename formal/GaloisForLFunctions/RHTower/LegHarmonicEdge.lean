@@ -20,43 +20,6 @@ namespace RHTower
 
 open Finset
 
-/-! ### `coth` against its horizontal asymptote, in exponential form -/
-
-/-- The excess of `coth` over its limit: `coth v − 1 = 2/(e^{2v} − 1)` for `v > 0`. -/
-theorem rcoth_sub_one {v : ℝ} (hv : 0 < v) :
-    rcoth v - 1 = 2 / (Real.exp (2 * v) - 1) := by
-  have hs : 0 < Real.sinh v := sinh_pos_of_pos hv
-  have hE : 0 < Real.exp v := Real.exp_pos v
-  have h2 : Real.exp (2 * v) = Real.exp v * Real.exp v := by
-    rw [← Real.exp_add]; ring_nf
-  have hkey : Real.exp (2 * v) - 1 = 2 * Real.exp v * Real.sinh v := by
-    rw [h2, Real.sinh_eq, Real.exp_neg]
-    field_simp
-  have hrc : rcoth v - 1 = (Real.cosh v - Real.sinh v) / Real.sinh v := by
-    rw [rcoth]; field_simp
-  have hcs : Real.cosh v - Real.sinh v = Real.exp (-v) := by
-    rw [Real.cosh_eq, Real.sinh_eq]; ring
-  rw [hrc, hcs, hkey, Real.exp_neg]
-  rw [div_eq_div_iff hs.ne' (by positivity)]
-  field_simp
-
-/-- `coth v < 1 + 1/v`: the exponential excess `2/(e^{2v} − 1)` is below `1/v` because
-`2v + 1 < e^{2v}`. -/
-theorem rcoth_lt_one_add_inv {v : ℝ} (hv : 0 < v) : rcoth v < 1 + 1 / v := by
-  have h := Real.add_one_lt_exp (show 2 * v ≠ 0 by positivity)
-  have hE1 : 0 < Real.exp (2 * v) - 1 := by linarith
-  have heq := rcoth_sub_one hv
-  have hlt : 2 / (Real.exp (2 * v) - 1) < 1 / v := by
-    rw [div_lt_div_iff₀ hE1 hv]
-    linarith
-  linarith
-
-/-- `1/v ≤ coth v`: the tangent-line comparison `sinh v ≤ v·cosh v` read as a ratio. -/
-theorem inv_le_rcoth {v : ℝ} (hv : 0 < v) : 1 / v ≤ rcoth v := by
-  have hs : 0 < Real.sinh v := sinh_pos_of_pos hv
-  have h := sinh_le_mul_cosh hv.le
-  rw [rcoth, div_le_div_iff₀ hv hs]
-  linarith
 
 /-! ### Harmonic slices dominate logarithms -/
 

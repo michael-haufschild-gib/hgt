@@ -4021,3 +4021,57 @@ at boundary 198.7/202, prediction 0.1–0.3 MISSED — the shape constraint E≥
 theorem range ≡ (S-mono) quantification range; strip doubly outside. Doc 30 §13. Residuals named:
 budget-ratio invariant symbolic form, margin variant for island assembly (e), the θ*>1/2
 inverted-response regime as a new object. Goal items (i)/(ii)/(iii) all delivered.
+
+## cont. 28 — codex batch 2 review (lean_updates_codex.md, 31 items)
+
+Verification evidence:
+- `python3 scripts/formal_tools.py lint` → "formal lint passed" (only
+  large-file warnings, pre-existing).
+- Name existence greps: 3 RH gates found (RiemannTower.lean:206,
+  SeamCongruence.lean:1127, SeamCongruence.lean:1483); seedGapCoeff surface
+  found (RouteBSeedGap.lean:222–400).
+- /tmp scratch `#print axioms` on six load-bearing endpoints — ALL
+  [propext, Classical.choice, Quot.sound]:
+  riemannHypothesis_of_local_online_windows,
+  riemannHypothesis_of_emCarrier_close_floor_sign_local_windows,
+  riemannHypothesis_of_relative_floor_sign_local_windows,
+  seedGap_rough_boundary_component_secondMoment_eq_prime_packet,
+  rh_iff_exists_xiDescent_coherentTower_levels_nonzero_slitPlane,
+  all_farHalf_germs_extend_all_levels_iff_all_clean_circleAverage_slope_exp_eq_one.
+- Statements read in full for the two certificate gates + CarrierFloorOn
+  (ZetaCarrier.lean:327 = ∀ z ∈ S, ε < ‖gN N z‖) + the seed-gap identities.
+  Codex's per-item descriptions match the tree.
+
+Digest by weight:
+1. CONSOLIDATION: every seam/ANNEAL/rung/sign endpoint now consumes
+   CarrierFloorOn instead of raw `gN ≠ 0` oracles / pointwise EM domination
+   tables. (LOW) is now the single analytic residue on the certificate side
+   (with (AFE) closeness), as the ZetaCarrier header already declared.
+2. THREE TERMINAL RH GATES: local on-line windows; EM-carrier close+floor+
+   sign local windows; relative floor+sign local windows. Reductio shape:
+   a certificate window around a hypothetical right-half ξ-zero forces
+   Re = 1/2, contradiction. Per-window burden = finite data + LOW floor on
+   annulus charts; carrier zeros in the inner disc tolerated via count
+   budget Σ m₂ ≤ s.
+3. SEED-GAP UPGRADE (our Front 3): seedGapCoeff reaches the ACTUAL
+   windowed-divisor packet; boundary mass = prime-packet mass exactly;
+   rough term = 0 at λ 1 = 1; positivity iff λ_d ≠ 0. Model-level
+   terminal-positive → real-packet terminal-positive.
+4. Constraint-language web (ModulusHolography/SquareLadder): germ
+   continuation ⟺ finite windows ⟺ zero-free xiDescent tower ⟺ clean
+   circle-average certificates, all levelwise-nonzero grade; local windows
+   feed the tower surface directly.
+5. Scaffolding: SpurHermite theorem-m ports (Hermite ODE + even-Gaussian
+   factor); U0PhiTower unified `4 ≤ ‖b‖` packet.
+
+NEW LEAD RECORDED (doc 87 "(LOW) CONVERGENCE" + master card): the RH-gate
+residue and the Route B′ (L3) small-ball control are the SAME observable
+(‖gN‖ near the line) approached from the two sides. Bridge lane typed:
+(B1) Bohr/Kronecker–Weyl transfer steinhausMeasure → t-density of
+LOW-failure heights (fixed N, finitely many ℚ-independent log p; mathlib
+status to probe — if absent, next buildable gap after Mertens);
+(B2) movable-shell pigeonhole r₀-selection (a.e.-height → every-window,
+obstruction migrates to the count face); (B3) count budget = banked
+Rouché+EM counting vs ξ sign alternations. NEXT: probe mathlib for
+Kronecker–Weyl / Weyl equidistribution on the finite torus; formalize
+FloorFailureDensity consuming block_smallball_condition.

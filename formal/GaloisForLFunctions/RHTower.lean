@@ -146,3 +146,5 @@ import GaloisForLFunctions.RHTower.RouteBBlockStep
 import GaloisForLFunctions.RHTower.MertensFirst
 import GaloisForLFunctions.RHTower.LegHarmonicEdge
 import GaloisForLFunctions.RHTower.LegMidpointPush
+import GaloisForLFunctions.RHTower.BohrTransfer
+import GaloisForLFunctions.RHTower.WeylEquidistribution

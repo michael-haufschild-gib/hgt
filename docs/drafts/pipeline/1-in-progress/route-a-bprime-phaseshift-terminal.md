@@ -94,3 +94,36 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
 - Remaining to terminal: graded-ladder assembly (block STEP × (SPREAD)) →
   (K-bdd-n-log); partial-summation bridge Mertens → (L1)/(L2) carrier pole;
   (A1) martingale-CLT write-out (mathlib has only iid CLT); (SCALAR-MIX).
+
+## UPDATE (cycle 55, cont. 28) — codex batch reviewed; certificate side converges on (LOW)
+
+- Codex batch (31 items, docs/drafts/rh-monodromy-weight-mismatch/
+  lean_updates_codex.md) VERIFIED: formal lint green; six load-bearing
+  endpoints axiom-checked [propext, Classical.choice, Quot.sound]
+  (both local-window RH gates, the relative gate, the rough+boundary
+  prime-packet identity, the zero-free-tower iff, the germ⟺circle-average
+  equivalence).
+- **Front 3 (phase-shift) STRENGTHENED model → actual carrier.**
+  `seedGapCoeff` (RouteBSeedGap.lean) is the windowed-divisor coefficient of
+  carrier − rough seed; exact identities: on singleton boundary packets
+  seedGapCoeff = λ_d; with λ 1 = 1 the rough component vanishes and
+  ∫‖dpoly(seedGapCoeff, P ∪ P·d)‖² = ∫‖dpoly(λ_d, P)‖² EXACTLY
+  (`seedGap_rough_boundary_component_secondMoment_eq_prime_packet`);
+  interval mass positive iff λ_d ≠ 0. Terminal-positive now holds on the
+  real packet by equality, not by model comparison.
+- **New terminal RH gates (SeamCongruence/RiemannTower):**
+  `riemannHypothesis_of_local_online_windows`,
+  `riemannHypothesis_of_emCarrier_close_floor_sign_local_windows`,
+  `riemannHypothesis_of_relative_floor_sign_local_windows`. All seam/rung/
+  sign endpoints consolidated onto the single `CarrierFloorOn` interface;
+  RH is machine-checked-reduced to per-window finite certificates whose ONE
+  analytic input is the (LOW) floor — the exact observable the (L3)
+  small-ball theorem bounds in the Steinhaus model. Carrier zeros are
+  budgeted (Σ m₂ ≤ s), not forbidden.
+- New typed lane appended to doc 87 ((LOW) CONVERGENCE): (B1) Bohr transfer
+  (model small-ball → t-density of floor failure; Kronecker–Weyl for the
+  finite prime torus = next buildable gap if absent from mathlib), (B2)
+  movable-shell pigeonhole (a.e.-height → every-window; obstruction migrates
+  to the count face), (B3) count budget via the banked Rouché+EM counting
+  island. The graded ladder and (B1)–(B2) consume the same per-level engine —
+  the Route B′ remainder and the RH-gate residue are now one object.
