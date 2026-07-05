@@ -855,6 +855,23 @@ theorem xiDescent_coherentTower_slitPlane_iff_all_circleAverage_slope_exp_eq_one
     have hval := hexp (R := Rm) (r₁ := Rm / 4) (r₂ := Rm / 2) hr₁ hr₁₂ hr₂R hRle₂
     exact hcrit.mp hval
 
+/-- **Euler germ continuation is exactly the `xiDescent` modulus surface.**  The
+all-level continuation of far-half dyadic ξ-root germs is equivalent to all-level
+two-circle boundary-modulus constraints on descended `xiDescent` zeros. -/
+theorem all_farHalf_germs_extend_all_levels_iff_xiDescent_all_circleAverage_slope_exp_eq_one :
+    (∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
+      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+        Set.EqOn g g₁ farHalf) ↔
+      ∀ k : ℕ, ∀ w ∈ slitPlane, xiDescent w = 0 →
+        ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+          exp (2 * (Real.pi : ℂ) * I *
+              (((Real.circleAverage (fun z => Real.log ‖xiDescent z‖) w r₂ -
+                  Real.circleAverage (fun z => Real.log ‖xiDescent z‖) w r₁) /
+                (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+  exact all_farHalf_germs_extend_all_levels_iff_xiDescent_coherentTower_slitPlane.trans
+    xiDescent_coherentTower_slitPlane_iff_all_circleAverage_slope_exp_eq_one
+
 end RHTower
 
 namespace RHTower

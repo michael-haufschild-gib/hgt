@@ -158,12 +158,12 @@ theorem rcsch_sq_hasDerivAt {u : ℝ} (hu : u ≠ 0) :
   rw [rphi]; ring
 
 /-- The reduced spectator energy `W(x) = ¼ Σ csch²((x − t_k)/2)` (doc 27–29). -/
-noncomputable def spurEnergy {ι : Type*} (s : Finset ι) (t : ι → ℝ) (x : ℝ) : ℝ :=
+noncomputable def spurLatticeEnergy {ι : Type*} (s : Finset ι) (t : ι → ℝ) (x : ℝ) : ℝ :=
   (1 / 4) * ∑ k ∈ s, (rcsch ((x - t k) / 2)) ^ 2
 
-theorem spurEnergy_nonneg {ι : Type*} (s : Finset ι) (t : ι → ℝ) (x : ℝ) :
-    0 ≤ spurEnergy s t x := by
-  rw [spurEnergy]
+theorem spurLatticeEnergy_nonneg {ι : Type*} (s : Finset ι) (t : ι → ℝ) (x : ℝ) :
+    0 ≤ spurLatticeEnergy s t x := by
+  rw [spurLatticeEnergy]
   positivity
 
 /-- **The exact field–energy identity `field′ = −2·W`** (doc 28 §5c, `σ̇₁ = −2W̃`): on a
@@ -171,7 +171,7 @@ pole-free gap the lattice field's slope is minus twice the reduced energy. This 
 (S-mono) `W(t*_{i+1}) > W(t*_i)` into a slope statement about the field at its equilibria. -/
 theorem cothField_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b x : ℝ}
     (hpoles : ∀ k ∈ s, t k ≤ a ∨ b ≤ t k) (hx : x ∈ Ioo a b) :
-    HasDerivAt (cothField s t) (-2 * spurEnergy s t x) x := by
+    HasDerivAt (cothField s t) (-2 * spurLatticeEnergy s t x) x := by
   simp only [mem_Ioo] at hx
   have hterm : ∀ k ∈ s, HasDerivAt (fun y => rcoth ((y - t k) / 2))
       (-(1 / 2) * (rcsch ((x - t k) / 2)) ^ 2) x := by
@@ -186,9 +186,9 @@ theorem cothField_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b 
     convert this using 1
     ring
   have hsum := HasDerivAt.fun_sum (fun k hk => hterm k hk)
-  have hval : (-2 : ℝ) * spurEnergy s t x
+  have hval : (-2 : ℝ) * spurLatticeEnergy s t x
       = ∑ k ∈ s, -(1 / 2) * (rcsch ((x - t k) / 2)) ^ 2 := by
-    rw [spurEnergy, ← mul_assoc, Finset.mul_sum]
+    rw [spurLatticeEnergy, ← mul_assoc, Finset.mul_sum]
     exact Finset.sum_congr rfl (fun k hk => by ring)
   rw [hval]
   exact hsum
@@ -196,9 +196,9 @@ theorem cothField_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b 
 /-- **The energy slope `W′ = −¼ Σ φ`** (`φ = rphi = csch²·coth`), on a pole-free gap. With
 `cothField_hasDerivAt` (`field′ = −2W`) this is the second derivative of the field:
 `field″ = −2W′ = ½ Σ φ`. -/
-theorem spurEnergy_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b x : ℝ}
+theorem spurLatticeEnergy_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b x : ℝ}
     (hpoles : ∀ k ∈ s, t k ≤ a ∨ b ≤ t k) (hx : x ∈ Ioo a b) :
-    HasDerivAt (spurEnergy s t) (-(1 / 4) * ∑ k ∈ s, rphi ((x - t k) / 2)) x := by
+    HasDerivAt (spurLatticeEnergy s t) (-(1 / 4) * ∑ k ∈ s, rphi ((x - t k) / 2)) x := by
   simp only [mem_Ioo] at hx
   have hterm : ∀ k ∈ s, HasDerivAt (fun y => (rcsch ((y - t k) / 2)) ^ 2)
       (-rphi ((x - t k) / 2)) x := by
@@ -221,14 +221,14 @@ theorem spurEnergy_hasDerivAt {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b
   exact hsum.const_mul (1 / 4)
 
 /-- **Field second derivative `field″ = ½ Σ φ`** on a pole-free gap: differentiating
-`field′ = −2W` (`cothField_hasDerivAt`) via `W′ = −¼Σφ` (`spurEnergy_hasDerivAt`). Its sign
+`field′ = −2W` (`cothField_hasDerivAt`) via `W′ = −¼Σφ` (`spurLatticeEnergy_hasDerivAt`). Its sign
 is set by the balance of behind (`φ > 0`) and ahead (`φ < 0`) charges — the field is convex
 where behind-dominated, concave where ahead-dominated. -/
 theorem cothField_secondDeriv {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b x : ℝ}
     (hpoles : ∀ k ∈ s, t k ≤ a ∨ b ≤ t k) (hx : x ∈ Ioo a b) :
-    HasDerivAt (fun y => -2 * spurEnergy s t y)
+    HasDerivAt (fun y => -2 * spurLatticeEnergy s t y)
       ((1 / 2) * ∑ k ∈ s, rphi ((x - t k) / 2)) x := by
-  have h := (spurEnergy_hasDerivAt s t hpoles hx).const_mul (-2 : ℝ)
+  have h := (spurLatticeEnergy_hasDerivAt s t hpoles hx).const_mul (-2 : ℝ)
   convert h using 1
   ring
 

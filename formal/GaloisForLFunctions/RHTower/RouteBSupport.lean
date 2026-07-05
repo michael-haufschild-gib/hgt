@@ -92,3 +92,65 @@ theorem not_support_of_large_prime_sq
   exact Nat.lt_irrefl m (Nat.lt_of_le_of_lt hwin (Nat.lt_of_lt_of_le hgt hle))
 
 end RHTower
+
+namespace RHTower
+
+/-- **The window-geometry lemma (doc 85 §3).** A divisor window of
+multiplicative length below `min d e` contains no common multiple of `d` and
+`e` unless `d = e`: if `lcm d e ∣ k` and `k ≤ min d e` with `k > 0`, then
+`d = e`. This is the geometric fact that disables the off-diagonal Möbius
+cancellation in the boundary band of the mollified product — the mechanism
+behind the windowed-divisor criticality V_bd ~ loglog N. -/
+theorem window_diagonal_only {d e k : ℕ} (hk0 : 0 < k)
+    (hdvd : Nat.lcm d e ∣ k) (hkle : k ≤ min d e) : d = e := by
+  have hlcm_le : Nat.lcm d e ≤ k := Nat.le_of_dvd hk0 hdvd
+  have hlcm_pos : 0 < Nat.lcm d e := Nat.pos_of_dvd_of_pos hdvd hk0
+  have hd_le : d ≤ Nat.lcm d e := Nat.le_of_dvd hlcm_pos (Nat.dvd_lcm_left d e)
+  have he_le : e ≤ Nat.lcm d e := Nat.le_of_dvd hlcm_pos (Nat.dvd_lcm_right d e)
+  have h1 : d ≤ min d e := le_trans hd_le (le_trans hlcm_le hkle)
+  have h2 : e ≤ min d e := le_trans he_le (le_trans hlcm_le hkle)
+  have := min_le_left d e
+  have := min_le_right d e
+  omega
+
+end RHTower
+
+namespace RHTower
+
+/-- **The singleton-window lemma (doc 85 §3′).** For m = p·d with p prime
+above both y and N/minFac(d), the mollified divisor window collapses to {d}:
+any e ∣ p·d with e ≤ y and p·d ≤ N·e equals d. Consequence: b_{p·d} = λ_d
+exactly — a cancellation-free sub-family whose Mertens mass delivers the
+loglog lower bound on the boundary variance. -/
+theorem singleton_window_coeff {N y p d e : ℕ}
+    (hp : p.Prime) (hpy : y < p) (hd : 0 < d)
+    (hbig : N < p * d.minFac)
+    (he : e ∣ p * d) (hey : e ≤ y) (hwin : p * d ≤ N * e) : e = d := by
+  have hepos : 0 < e := Nat.pos_of_dvd_of_pos he (Nat.mul_pos hp.pos hd)
+  have hpe : ¬ p ∣ e := fun h => absurd (Nat.le_of_dvd hepos h) (by omega)
+  have hed : e ∣ d :=
+    (Nat.Coprime.dvd_of_dvd_mul_left ((hp.coprime_iff_not_dvd).mpr hpe).symm he)
+  by_contra hne
+  have helt : e < d := lt_of_le_of_ne (Nat.le_of_dvd hd hed) hne
+  obtain ⟨t, ht⟩ := hed
+  have ht2 : 2 ≤ t := by
+    rcases Nat.lt_or_ge t 2 with h | h
+    · interval_cases t <;> omega
+    · exact h
+  have htd : t ∣ d := ⟨e, by rw [ht]; ring⟩
+  have hmf : d.minFac ≤ t := Nat.minFac_le_of_dvd ht2 htd
+  have hde : e * d.minFac ≤ d := by
+    calc e * d.minFac ≤ e * t := Nat.mul_le_mul_left e hmf
+      _ = d := by rw [ht]
+  have h1 : p * d * d.minFac ≤ N * e * d.minFac :=
+    Nat.mul_le_mul_right _ hwin
+  have h2 : N * (e * d.minFac) ≤ N * d := Nat.mul_le_mul_left N hde
+  have h3 : p * d.minFac * d ≤ N * d := by
+    calc p * d.minFac * d = p * d * d.minFac := by ring
+      _ ≤ N * e * d.minFac := h1
+      _ = N * (e * d.minFac) := by ring
+      _ ≤ N * d := h2
+  have h4 : p * d.minFac ≤ N := Nat.le_of_mul_le_mul_right h3 hd
+  omega
+
+end RHTower

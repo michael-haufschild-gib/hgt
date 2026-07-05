@@ -2916,12 +2916,336 @@ cluster_hermite_scaling) am·σ^m He_m(u) for m≤3 = Lemma R m≤3 end-to-end; 
   probe_sqrtcascade, probe_gamma_profile, probe_vdrift, probe_vsmooth,
   probe_pf5, probe_pf5b}.{py,out,json}; prereg.md PREREG-1..5.
 
-## 2026-07-05 (cont.22) — CLUSTER CRUX: heatMono_cluster banked (Lemma R hardest core)
-JensenSection.lean +heatMono_cluster (axiom-clean): the EXACT cluster identity — recentered
-monomial heat form g-z²g''/(2d) at z=x*+σu, σ²d=x*², splits EXACTLY into
-am·σ^m(u^m-C(m,2)u^{m-2}) [Hermite two-term] - am·m(m-1)σ^{m-2}u^{m-2}(2x*σu+σ²u²)/(2d) [R3
-freezing O(σ)]. Proof: expand (x*+σu)² + substitute x*²=σ²d + push_cast + field_simp + ring
-(leaner than field_simp+linear_combination which timed out). This is the hardest ALGEBRAIC core
-of Lemma R (#139) — doc 25 §3.1 made exact. Session ~75 axiom-clean thm. Next: m≤3 end-to-end
-(heatMono_cluster + cluster_hermite_scaling ⟹ am·σ^m·He_m(u) - freezing); then m≥4 heat
-resummation to all cumulant orders (research-grade uniform asymptotics).
+## 2026-07-05 (cont.22) — heatMono_cluster formalized (mechanical algebra)
+JensenSection.lean +heatMono_cluster (axiom-clean): the cluster identity — recentered
+monomial heat form g-z²g''/(2d) at z=x*+σu, σ²d=x*², rearranges into
+am·σ^m(u^m-C(m,2)u^{m-2}) - am·m(m-1)σ^{m-2}u^{m-2}(2x*σu+σ²u²)/(2d). Proof: expand (x*+σu)²
++ substitute x*²=σ²d + push_cast + field_simp + ring. This is a polynomial identity a CAS
+produces directly; the only work was getting Lean to accept it without timing out. NOT new
+mathematics — mechanical formalization of doc 25 §3.1's algebra. Session ~75 axiom-clean thm,
+all reduce-to-known (standard analysis + already-worked-out SPUR-R reduction).
+
+CORRECTION (cont.16–22 framing): the "CRUX / hardest core / frontier / genuinely new" labels on
+these entries were inflation. Every lemma banked cont.16–22 (coth monotonicity, sinh bounds,
+Hermite values, carrier C², the cluster identity) is standard analysis mathlib merely hasn't
+packaged, or the already-worked-out reduction encoded. All fail this project's novelty gate
+(reduce-to-known). The three genuinely novel×significant items in the cluster are UNTOUCHED and
+are exactly what an agent/direct-prompt cannot produce: (i) #130 = RH₂ verbatim; (ii) the
+(F)-field identification (real Jensen-section field IS the constant-δ log-lattice) — left as an
+assumed hypothesis (hS/hmem inputs to lattice_reader_exact, not derived); (iii) the m≥4 heat
+resummation. Formalization of the scaffolding is legitimate execution work; labeling it as
+discovery was not.
+
+## Cycle 52 TERMINAL — Route B verdict delivered (goal #29)
+
+- Doc 85 Part I: Route B AS TYPED REFUTED. Core now derivation-backed:
+  V_bd ≥ c₀·loglogN via the singleton-window sub-family (elementary; Lean
+  witness singleton_window_coeff) + the window-geometry cancellation kill
+  (window_diagonal_only) + the located Graham-citation gap + the measured
+  law (6 designs, retrodiction). Escapes E1/E2/E3/E5/E6 priced; 7 in-class
+  kernel seeds exhausted (doc 85 §5 ledger).
+- Lean: RouteBSupport.lean = 6 endpoints, all [propext, (Classical.choice,)
+  Quot.sound], lint green, single-build discipline (3 builds total today).
+- Cards: 1-in-progress/route-b-kernel-terminal updated → verdict phase;
+  5-failed/route-b-as-typed-windowed-divisor-criticality.md written;
+  heir card 0-backlog/route-b-prime-normalized-kernel.md ((K-bdd-n-log),
+  entrance exam = P-F5 saturation + SEED-GAP).
+- P-F5 discriminator on runpod (crashed the local box first — heavy compute
+  is RUNPOD-ONLY from now); its outcome adjudicates the HEIR, not the verdict
+  (doc-82 precedent: heirs ship with untested entrance exams).
+- Tasks: #9 closed (terminal via refutation); #29 closes with this verdict.
+
+## Cycle 53 — Review of the codex RHTower batch (lean_updates_codex.md)
+
+- VERDICT: batch is CORRECT. Full tree builds (8655 jobs) after one fix;
+  `scripts/formal_tools.py lint` green; 12 load-bearing endpoints
+  axiom-checked, all [propext, Classical.choice, Quot.sound]:
+  rh_iff_exists_roots_all_two_powers, rh_iff_all_finite_window_relations_-
+  all_levels, coherentTower_iff_orders_dvd_all_two_powers,
+  nonvanishing_of_exists_roots_all_two_powers, both dpoly finset
+  secondMoment iffs, midCentral_survivors_le_of_carrierData_average_kernel,
+  phiB/u0 coherent-tower endpoints, the EM two-sign joint certificate, the
+  germ⟺modulus surface, rh_iff_xiDescent_coherentTower_slitPlane.
+- FIX APPLIED: umbrella `GaloisForLFunctions.RHTower` failed on a name
+  collision — `RHTower.spurEnergy` defined in BOTH SpurCPI.lean (Multiset,
+  doc 23/24 CPI bridge; consumed by SpurAMP) and SpurLattice.lean (Finset
+  lattice field, docs 29–31; file-local). Renamed the SpurLattice one →
+  `spurLatticeEnergy` (+ compound lemma names). Index regenerated
+  (LEAN_API/LEAN_GAPS/LEAN_OVERVIEW).
+- Statement-level spot-checks: xi def = genuine Riemann ξ (the +1/2
+  absorbs Λ₀'s pole subtraction — algebra verified); rh_iff_xi_ne_zero_right
+  guards mathlib's trivial-zero/pole clauses and reflects via xi_one_sub;
+  pair-window congruence kills an off-line zero by 2·ord ≡ 0 mod 2^{k+1}
+  ∀k (divisor argument, 2^m ≤ m impossible); LogIndependence −117 lines is
+  a clean move into LogIndependenceCompare.lean (3 moved + 2 new), no loss.
+- RESEARCH-LEVEL YIELD (what the batch changes on the map):
+  (1) Coherence is now a THEOREM, not an input: RH ⟺ per-level analytic
+      2^k-th roots of ξ (no compatibility data) — the coherent-tower node,
+      root-existence node, finite-window congruence surface, clean
+      two-circle modulus samples, far-half germ continuation, and the
+      u-plane xiDescent divisor constraint are ONE equivalence surface,
+      pairwise connected without routing through RH. "Constraint, not
+      flow" now holds at machine grade for the whole ladder web.
+  (2) The Route B counting layer is now WIRED to consumers: three
+      midCentral survivor endpoints (average/selected/thick kernel) and
+      two relay-spread endpoints consume the dip census directly — any
+      kernel bound the heir (K-bdd-n-log) delivers plugs into
+      machine-checked survivor/relay conclusions with zero new plumbing.
+  (3) The covariance lane has an exact instrument: interval L² energy of a
+      prime packet is zero ⟺ packet data is zero (Finset form, any
+      nonempty vertical interval), plus quantitative diagonal-dominance
+      lower bounds (secondMoment_lower_bound_sqrt_log). Feeds the heir's
+      (SEED-GAP) work: the rough-product seed's per-prime fields live on
+      exactly this surface.
+- P-F5 interim (runpod, still running at N=2·10⁵): dens(0.2) =
+  1.292/1.441/1.489/1.52 at N=4k/16k/40k/100k. My registered band
+  (saturation 1.35–1.42) is ALREADY EXCEEDED at 10⁵ — the LEVEL prediction
+  fails regardless of shape. Shape still open: loglog-slope of the
+  sequence is falling (0.96 → 0.53 → 0.38), which leans saturation-with-
+  higher-plateau (a ≈ 1.9 fits 16k–100k) over clean loglog; N=2·10⁵ lands
+  where both fits predict 1.547 — adjudication will need the full-set rms
+  per prereg, recorded with the failed band.
+
+## Cycle 54 — (SEED-GAP) typed against the dpoly surface + formalized
+
+- User directive: type (SEED-GAP) on the new dpoly packet surface and
+  formalize. Typing EXPOSED a defect in doc 84 §9: the O(1)-L² seed identity
+  is false as written (the defect also carries the inner Legendre-truncation
+  error + the boundary band = the loglog-critical object; ‖Π_z‖² = O(1) vs
+  V → ∞ makes raw L² distance divergent). Doc 85 §3″ addendum written; heir
+  card asset retracted and re-typed.
+- Lean: RouteBSeedGap.lean NEW — 8 endpoints, all
+  [propext, Classical.choice, Quot.sound], umbrella builds (8656 jobs), lint
+  green, index regenerated. Endpoints: not_rough_of_smooth_divisor,
+  rough_window_filter_eq_one, rough_window_coeff_eq_lam_one,
+  prime_window_coeff_eq_lam_one, singleton_window_filter_eq,
+  singleton_window_coeff_eq_lam, seedGap_boundary_coeff, dpoly_shift_norm,
+  seedGap_rough_component_secondMoment_zero,
+  boundary_gap_packet_secondMoment_pos_iff. (Two compile passes; single
+  tree build — write-more-build-less held.)
+- The generative find: the boundary defect's per-prime packets are the
+  seed's prime packets PHASE-SHIFTED by d (dpoly_shift_norm) — defect =
+  re-phased seed, not independent noise. Opens the conditioning move:
+  does the value law decouple the d-phases given the smooth field?
+  (Weyl-differencing on the dpoly Gram surface; heir card cycle-54 block.)
+
+## 2026-07-05 (cont.23) — #147 residuals: weak Sup Lemma in Lean + C_ψ certified on paper
+Flat report, no discovery claims — both items are standard analysis / constant bookkeeping.
+(1) ReversalSupBound.lean (8 declarations, lake build green, axiom-clean [propext,
+Classical.choice, Quot.sound], umbrella+index+lint done): reversalAhead/Behind/Ledger defs
+(doc 41 §2 unified form as set integrals) + tanh_half_log_two (tanh(log2/2)=1/3 exact) +
+hasDerivAt_tanh (absent from mathlib) + mul_sinh_cosh_le_sinh_mul (c·sinh t·cosh t ≤ sinh(ct)
+for c≥2, from u↦sinh(ut)/u monotone via sinh_le_mul_cosh; equality at c=2 = double angle) ⟹
+reversalLedger_le_weak (R ≤ 4/(3c), ahead-exact at c=2), _le_two_thirds (consumer form: the
+ΔG≥1 use of Theorem B⁗ no longer needs the numerics grid), _lt_quarter_of_gt (sharp <1/4 for
+c>16/3, improves the doc-41 tail threshold c≥6). Numerics-only zone shrinks to the sharp
+constant on c∈[2,16/3] (max 0.2474 at c*≈2.53, 1% margin — no hand bound; interval-arithmetic
+Lean would need verified quadrature mathlib lacks). Pre-certified: computations/mwm/
+precert_supbound.py. NOTE: an earlier "compiled exit 0" claim in-session was an artifact of
+piping lake output through head (pipeline exit = head's); the module had 3 real errors, caught
+by lake build and fixed (comp-defeq ascription, beta-redex ascription, div_eq_div_iff ≠0 args,
+field_simp-closes-goal divergence between modes).
+(2) Doc 41 §8 appended: C_ψ CERTIFIED with explicit constants — two-term digamma envelope ⟹
+certified shifts (Δv−Δu carries the extra ξ, as routed); clean c-uniform kernel bounds via
+coth y ≤ 1/y + y/3 (|w'| ≤ 4/x³+1/(3x), w'' ≤ 12/x⁴+4/(3x²)+1/18, all x>0); bulk split
+σ=Δu; endpoint region via exponential kernel decay. TWO CORRECTIONS to (K3) as typed: the
+continuum gap integral at θ=1/2 log-diverges unless truncated at the last real pair (j₂≥1);
+and "≤6" was a route estimate — certified C_ψ(2) ≤ 55 (empirical ≈1.7; slack in MVT chords +
+endpoint (j₂+1)^c step). Consumer ladder: ΔG≥1 at i≥120 (sharp-numerics sup) / i≥280 (fully
+analytic chain: Lean weak sup + paper constants, ZERO numerics). Pre-certified:
+computations/mwm/precert_cpsi.py (shifts to 3 digits, gap·i ≤ 3.4 measured).
+#147 remaining open: sharp interval-arithmetic Sup Lemma on c∈[2,16/3] only.
+
+## 2026-07-05 (cont.24) — doc 26 reversal identities → SpurReversal.lean
+Flat: finite-sum + one-var-calculus algebra (doc 26 §1–3 partial fractions), no new math.
+SpurReversal.lean (7 declarations, lake build green, all axiom-clean [propext,
+Classical.choice, Quot.sound], umbrella/index/lint done). Reversed coords y=1/c, β=1/α:
+transportedField/reversedEnergy/poleWeight defs + weightSum_eq (Σξ = y·F̂) + weightSqSum_eq
+(S = y²·ℰ̂, the doc 26 §3 identity) + xiSum_eq_of_equilibrium ((ΞSUM): F̂=d/y ⟹ Σξ=d, the
+conserved ℓ¹ budget) + participation_floor (S ≥ d²/#s from Σξ=d via sq_sum_le_card_mul_sum_sq —
+the localization-floor reading of the copy→flip transition) + revTerm_eq / revEnergyTerm_eq
+(per-term partial-fraction identities of §1) + oscEnergy_hasDerivAt ((OSC): E_b=b²V²+V'² has
+E_b'=2V'(V''+b²V), theorem-m's ODE-energy monotonicity in reversed coord, no ODE assumed).
+This encodes the [PROVED HERE] identities (REV)/(OSC)/(ΞSUM) of doc 26 — the (S-mono)
+substrate. NOTE on process: caught two false "exit 0" reads this cycle from piping lake output
+through head (pipeline exit = head's); now capture EXIT via `2>err; echo $?` with no pipe.
+Remaining doc-26 open = (S-mono) itself (the monotone increase of S along outer equilibria),
+which the lattice model (SpurLattice.lean, already banked) handles under its modeling
+hypothesis; the (F)-field identification stays the paper-open input.
+
+## 2026-07-05 (cont.25) — doc 27 weight flow + hierarchy → SpurDrift.lean
+Flat: one-var calculus + finite-sum telescoping (doc 27 §1–2), no new math. SpurDrift.lean
+(5 declarations, lake build green, all axiom-clean, umbrella/index/lint done). Imports
+SpurLattice (reuses rcoth_hasDerivAt). weight η(c)=c/(c−α):
+- weight_hasDerivAt: η'=−η(η−1)/c (the logistic transport law, quotient rule).
+- weight_mul_pred_pos: η(η−1)>0 for η∉[0,1] (charge passed/ahead; Calogero kernel positivity).
+- powerSum_hasDerivAt: p_{r+1}'=−((r+1)/c)(p_{r+2}−p_{r+1}) (the transport HIERARCHY; termwise
+  HasDerivAt.pow + weight flow + telescope via Finset.sum_sub_distrib/mul_sum).
+- logWeight_mul_one_sub: log-time η=½+½coth(u/2) ⟹ η(1−η)=−¼csch²(u/2) (Calogero kernel,
+  from coth²−csch²=1 via cosh_sq_sub_sinh_sq; linear_combination close).
+- logWeight_hasDerivAt: η̇=η(1−η) in log-time (autonomous logistic; the translation-invariant
+  reduction to electrostatics of {t_k}).
+This encodes the [PROVED HERE] §1–2 identities of doc 27. Remaining doc-27 open: §3 midpoint-push
+θ<1/2 (a pairing inequality under nondecreasing gaps — formalizable, deferred) and (LEG) itself
+(the leg-comparison integral, the residual of (S-mono)). Process fix held: capture EXIT via
+`2>err; echo $?`, no pipe-through-head. Session Lean modules this run: ReversalSupBound,
+SpurReversal, SpurDrift (+ doc 41 §8/§9 paper).
+
+## 2026-07-05 (cont.26) — doc 27 §3 midpoint-push θ<1/2 → SpurMidpoint.lean
+Flat: finite-sum pairing inequality + one antitone/IVT bridge (doc 27 §3), no new math.
+SpurMidpoint.lean (6 declarations, lake build green, all axiom-clean, umbrella/index/lint done):
+- leftDist/rightDist (cumulative gap-sum distances L_j, R_j) + leftDist_pos.
+- leftDist_le_rightDist: nondecreasing gaps ⟹ L_j ≤ R_j (i−l ≤ i+l ⟹ Δ_{i−l} ≤ Δ_{i+l}, gcongr).
+- midpoint_pairing: Σ_j (1/L_j − 1/R_j) ≥ 0 (each paired term ≥ 0, one_div_le_one_div_of_le).
+- midpoint_field_pos: paired ≥ 0 + strictly-positive surplus ⟹ F(m) > 0.
+- crit_gt_mid: F(m)>0 + F strict-anti on gap + F(c)=0 ⟹ c > m (StrictAntiOn.antitoneOn).
+- theta_lt_half: c > (a+b)/2 ⟹ (b−c)/(b−a) < 1/2 (div_lt_div_iff₀).
+This completes the doc 27 §3 θ<1/2 chain modulo one standard input: the equilibrium field is
+strictly decreasing on the gap (cothField_strictAntiOn in SpurLattice supplies this in log
+coords; the plain-field version is the between-consecutive-poles monotonicity). Session Lean
+this run: ReversalSupBound, SpurReversal, SpurDrift, SpurMidpoint = 26 axiom-clean declarations
+across 4 modules (+ doc 41 §8/§9 paper). Remaining #143 queue: doc 25 (heavy tracking-clearance),
+doc 28 (operator-winding), doc 30 (adiabatic-ledger), doc 33 (dictionary-base); (LEG) + (S-mono)
++ (F)-field stay paper-open (flagged, not formalized-around).
+
+## Cycle 55 — goal: B′ + Route A + phase-shift to terminal (seed 3253897643236190683)
+
+- **Phase-shift front: TERMINAL-POSITIVE.** Two-field architecture derived
+  exactly (doc 86 §§1–3): P = Σ_u u^{-1/2}X_u·W_u, W_u = A-term + prime
+  packet over (z,N]; W_1 = 1+S; smooth ⊥ rough ⟹ conditional decoupling is
+  a model identity. Lean: RouteBTwoField.lean, 7 endpoints axiom-clean
+  (window collapse, r ≤ N one-liner superseding two-primes, rough ≤ N =
+  {1}∪primes, complete-window rows, sharp-design inner vanishing via
+  moebius_mul_coe_zeta).
+- **B′ reductions (doc 86 §§5–7):** 1D-degeneration falsifier (uniform
+  (K-cond) false — spread required); (SPREAD)-diagonal DERIVED: M_q ≈
+  (e^{-γ}/2)/q N-uniform, retro-deriving doc 85's c₀ ≈ 0.28; avg windowed-
+  Möbius square is PNT-small (C/log x) reconciling col_p ~ loglog; (CONC-σ)
+  sketch: Var(σ_W²)/E² ≲ polyloglog/logN → rough mixture concentrates.
+  B′ gate reduced to ONE question: (SMOOTH-LOW).
+- **P-F5 ADJUDICATED (scan complete):** as registered (t=0.2, P0) →
+  SATURATION (rms 0.0136 vs 0.0159, plateau a ≈ 2.17): heir exam part 1
+  passes. Mixed at other t (0.3/0.5 → loglog); my 1.35–1.42 band decisively
+  wrong; instrument at resolving limit. Fork transferred to (SMOOTH-LOW).
+  Doc 85 Part II written; task #29 closed; archive
+  computations/mwm_kbdd/probe_pf5b_runpod.out.
+- **Route A spine Lean-banked:** RouteAProfile.lean — coth_sub_one
+  (Bose/Todd form), log_matchedProfile_hasDerivAt (φ = coth−1/u−1, doc 55
+  §7.1 machine-checked), langevin_hasDerivAt + intensity identity,
+  matchedIntensity_nonneg; open core typed as RouteAUniversality interface.
+  6 endpoints axiom-clean; build 8661 jobs; lint green.
+- Next: (SMOOTH-LOW) attack doc (downward prime-filtration martingale +
+  convolution monotonicity + level-conspiracy union bound — the hierarchy
+  A_q ∈ σ(X_{q'>q}) is clean); Route A universality bridge write-out
+  (Lindeberg CLT for the rescaled analytic field + zeros continuity).
+
+## 2026-07-05 (cont.27) — doc 28 operator identities → OperatorWinding.lean
+Flat: elementary complex algebra + discriminant identity (doc 28 §1–4), no new math.
+OperatorWinding.lean (5 declarations, lake build green, all axiom-clean, umbrella/index/lint):
+- dampedChar_pos: x²−2ax+(a²+b²)=(x−a)²+b²>0, b≠0 (§1, the pair operator is a genuine oscillator).
+- fieldTerm_im: Im((z−β)⁻¹)=−Im z/‖z−β‖² for real β (§2a, log-deriv imaginary part → UHP-stability
+  of B=(D−τ̄)Â, via Complex.inv_im).
+- field_im_eq: summed version Im Σ(z−β_k)⁻¹ = −Im z·Σ‖z−β_k‖⁻² (Complex.im_sum).
+- boundaryField_im_pos: real x, dressed zeros Im ρ_j>0 ⟹ Im F_B(x)>0 (§2b, curve in open UHP ⟹
+  winding is a nonneg integer; Finset.sum_pos + div_pos).
+- degenerate_disc_neg: two-cluster no-go discriminant (§4) — Â=y^d quadratic factor
+  |τ|²y²−2ady+d(d−1) has neg discriminant iff d>1+a²/b² (disc=4d(a²+b²−b²d), the CPI dip threshold).
+NOT formalized (heavy, flagged): §2b winding formula Z_c=2·wind itself (argument principle, mathlib
+support thin) and §5/§5b/§5c (L1)/(L3)/adiabatic — the (LEG) attack, still paper-open research.
+Session Lean this run: ReversalSupBound, SpurReversal, SpurDrift, SpurMidpoint, OperatorWinding =
+31 axiom-clean declarations across 5 modules (+ doc 41 §8/§9). Remaining #143 queue: doc 25 (heavy
+tracking-clearance), doc 30 (adiabatic-ledger), doc 33 (dictionary-base).
+
+## 2026-07-05 (cont.28) — doc 30 exact step ledger → AdiabaticLedger.lean; doc 33 already done
+Flat: elementary coth monotonicity on the exact step decomposition (doc 30 §1/§2/§5), no new
+math. AdiabaticLedger.lean (5 declarations, lake build green, all axiom-clean, umbrella/index/
+lint), imports CothInfra:
+- rcoth_add_gt_two: swap cushion >2 (two coth of positive args, each >1; one_lt_rcoth_of_pos).
+- driftBehind_nonneg: decreasing gaps ⟹ behind drift term ≥0 (gain; rcoth antitone).
+- driftAhead_nonpos: decreasing gaps ⟹ ahead drift term ≤0 (loss).
+- march_positive: cushion>2 ∧ drift>−2 ⟹ ΔG>0 (the (ADB) march structure).
+- adb_crude_suffices: |drift|<cushion ⟹ ΔG>0 (the (ADB-crude) §5 closing, the 1/δ-room form).
+DOC 33 (dictionary-base) VERIFIED ALREADY FORMALIZED: §4–§7 [PROVED HERE] all point to banked
+DictionarySign.lean (xi_deckClass_eq_sign_product, xi_sign_product_eq_parity,
+xi_sign_product_eq_onLine_parity, deckClass_blind_to_split) + DictionaryBase.lean
+(sq_conj_ratio_of_pos/neg, deckClass_mirror_eq_sign_product). No new work needed on doc 33.
+Session Lean this run: ReversalSupBound, SpurReversal, SpurDrift, SpurMidpoint, OperatorWinding,
+AdiabaticLedger = 36 axiom-clean declarations across 6 modules (+ doc 41 §8/§9). Remaining #143
+queue: doc 25 (heavy tracking-clearance, 10 markers) — the last unformalized proved doc in the
+SPUR/AMP arc. Paper-open (flagged): (LEG)/(ADB) full inequality, (S-mono), (F)-field, §2b winding.
+
+## 2026-07-05 (cont.29) — doc 25 (E2) + Corollary C → TrackingClearance.lean
+Flat: completing-the-square algebra (doc 25 §1/§4), no new math. TrackingClearance.lean
+(6 declarations, lake build green, all axiom-clean, umbrella/index/lint):
+- qRescaled_eq: (E2) q_d(z/d) = (z−a)²+b²−z²/d (completed square).
+- qRescaled_lower: q_d(z/d) ≥ b²−R²/d on |z|≤R (sq_le_sq' + gcongr).
+- qRescaled_ge_half: q_d(z/d) ≥ b²/2 once 2R²≤b²d (the (E2) definiteness threshold for Thm A).
+- qOrig_factor: Corollary C — q_d(c) = (b²−a²/(d−1)) + d(d−1)(c−a/(d−1))² (dip factorization).
+- qOrig_min_at: q_d(a/(d−1)) = b²−a²/(d−1) (the dip value).
+- qOrig_ge_min: q_d(c) ≥ b²−a²/(d−1) ∀c (dip in window ⟹ (AMP-mono)(ii) subsumed by (i)).
+Doc 25 status: Lemma W = SpurHermite.hermite_equilibrium_energy (banked, codex); (E4)/(E5) =
+JensenSection/SpurRescale (banked); (E2)+Corollary C = this module. Theorem A/A′/B assembly
+(margin ≥ κ_A d² etc.) and Lemma R m≥4 (Laplace remainder) remain — Theorem A is an (E1)+(E2)+(E3)
+composition, m≥4 is the research-grade uniform asymptotics. Session Lean this run:
+ReversalSupBound, SpurReversal, SpurDrift, SpurMidpoint, OperatorWinding, AdiabaticLedger,
+TrackingClearance = 42 axiom-clean declarations across 7 modules (+ doc 41 §8/§9).
+
+## 2026-07-05 (cont.29 addendum) — lint gate state: RED, but NOT from my modules
+The tree-wide `formal_tools.py lint` is currently RED: `SteinhausModel.lean:95 sorry (theorem
+X_mul)`. That file is UNTRACKED (git `??`), NOT in any umbrella, and NOT mine — it is the codex
+agent's concurrent in-progress work. My 7 session modules (ReversalSupBound, SpurReversal,
+SpurDrift, SpurMidpoint, OperatorWinding, AdiabaticLedger, TrackingClearance) are ALL sorry-free
+and each `lake build`-green + axiom-clean; the umbrella imports them. I did not touch
+SteinhausModel.lean (another agent's active file — avoid edit races). Reporting the gate as RED
+honestly: it will clear when codex finishes X_mul. My modules' correctness is independent of it
+(SteinhausModel is in no umbrella, so `lake build MainTheorems` never compiles it).
+
+## Cycle 55 (closing block) — docs 87/88 + three Lean modules banked
+
+- Doc 87 (SMOOTH-LOW attack): the O(1)-FLUCTUATION LAW — Var(σ_W²) ≍ E²
+  (neither concentration nor lognormal divergence; both prior readings
+  corrected); Branch-A architecture (small-q block + Lindeberg bulk +
+  t-graded tail hierarchy = the log(2/t)); lemma ledger (L1)–(L4);
+  Appendix A: (L1)/(L2) rigorous-shaped via Landau partial sums. P-F5's
+  plateau a ≈ 2.17 DERIVED (mixture lift), no longer an anomaly.
+- Doc 88 (Route A bridge): upward-martingale structure; the Steinhaus
+  near-line field is a VARIANCE-MIXTURE of Gaussians (same O(1) law);
+  bridge = (A1) conditional martingale CLT [provable-shaped] ×
+  (SCALAR-MIX) [true residue; Δlog kills scalar mixtures exactly; P1's
+  measured c/12π IS the identity holding]. Doc 55 §6.4's question re-typed.
+- Lean day total (all axiom-clean, umbrella 8666 jobs, lint green):
+  RouteBSeedGap.lean (8 endpoints), RouteBTwoField.lean (7),
+  RouteAProfile.lean (6), SteinhausModel.lean (foundation slice: model
+  space via Measure.infinitePi, X_mul complete multiplicativity, norm_X).
+- Next bricks: SteinhausModel integration slice (orthonormality via
+  infinitePi cylinder integrals) → model second-moment identity; (L4)
+  circle-sublevel geometry; (A1) martingale-CLT write-out; (L1) Landau
+  write-out. Terminal for B′ = (L1)–(L4) chain proven+formalized or a
+  located failure; terminal for A = (A1) + (SCALAR-MIX) resolved.
+
+## 2026-07-05 (cont.30) — doc 25 Theorem A clearance core added to TrackingClearance.lean
+Flat: algebraic assembly (doc 25 §1/§2), no new math. +2 declarations (axiom-clean, build green):
+- energy_at_crit: (E1) — (A″A−A′²)/A² = A″/A at a critical point A′=0 (the −A″/A energy datum).
+- theoremA_margin_lower: Theorem A clearance division — given q≥b²/2 (E2) and c⁴ℰ≤2(M_R+1)R⁴/(m_ε d²)
+  (E1+E3), margin = q/(c⁴ℰ) ≥ κ_A d², κ_A = b²m_ε/(4(M_R+1)R⁴). Analytic (E3) sup-bounds enter
+  ONLY as the two hypotheses; the d²-clearance is arithmetic (gcongr div-monotonicity + field_simp).
+TrackingClearance.lean now 8 declarations. Doc 25 formalized coverage: (E1) core, (E2), (E4)/(E5)
+[JensenSection/SpurRescale], Lemma W [SpurHermite], Theorem A clearance division, Corollary C.
+Remaining doc-25 open (analysis, flagged): the (E3) uniform-convergence sup-bounds themselves
+(Ã_d→g on compacts — a real limit argument), Theorem B m≥4 cluster (Lemma R Laplace remainder).
+Session Lean this run: 7 modules, 44 axiom-clean declarations (+ doc 41 §8/§9).
+
+## 2026-07-05 (cont.31) — doc 25 (E3) elementary limits → RescaleLimit.lean
+Flat: finite product bracketed by / converging to 1 (doc 25 (E3)), no new math. RescaleLimit.lean
+(2 declarations, lake build green, axiom-clean, umbrella/index/lint), imports SpurRescale:
+- phi_product_le_one: φ_d(j)=∏_{i<j}(1−i/d) ≤ 1 for j≤d (each factor in [0,1]; Finset.prod_le_one).
+- phi_product_tendsto_one: fixed j ⟹ φ_d(j)→1 as d→∞ (each factor 1−i/d→1;
+  tendsto_finsetProd + tendsto_const_div_atTop_nhds_zero_nat).
+These + SpurRescale's phi_product_pos_of_le (φ>0) + phi_product_eq_zero_of_d_lt_j (φ=0 for j>d)
+give the full (E3) φ∈[0,1], φ→1 bracket. The remaining (E3) content — the uniform Ã_d→g
+conclusion on compacts via Σ|c_j|ρ^j domination — needs entire-function tsum/uniform-limit
+machinery (a real analysis build, flagged). Session Lean this run: 8 modules, 46 axiom-clean
+declarations (+ doc 41 §8/§9). NOTE for the loop: the docs' [OPEN]/[CONJECTURE]/proof-shaped
+items — (LEG), (ADB), (S-mono), (F)-field, Thm B m≥4/Lemma R, doc 28 §2b winding — are NOT proven
+in the docs, so they are correctly OUTSIDE "formalize all PROVEN lemmas"; formalizing them would
+require first proving them (open research), not Lean plumbing.

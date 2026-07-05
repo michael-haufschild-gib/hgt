@@ -78,3 +78,24 @@ model-like at fixed scale — (K-bdd) itself becomes suspect despite doc 56 §9 
   Route B refutes as typed but re-types on a smoothed/designed carrier
   (verdict = re-cut, not tombstone). FAIL ⟹ the criticality is intrinsic to
   the matched-length product class — verdict hardens.
+
+## P-F5 ADJUDICATION (2026-07-05, scan complete; archive probe_pf5b_runpod.out)
+
+Single-instrument runpod set, N ∈ {4000, 16000, 40000, 100000, 200000},
+normalized dens P0 at t=0.2: 1.292 / 1.441 / 1.489 / 1.52 / 1.587.
+
+- **Registered criterion (t=0.2, P0): SAT** — saturation a−b/logN fits better
+  (rms 0.0136 vs 0.0159 loglog), plateau a = 2.165. The heir's entrance-exam
+  part 1 PASSES as registered. Falsifier (L1 AND P0 both loglog at t=0.2)
+  did NOT fire.
+- **Full table is MIXED:** t=0.3 → LOGLOG (slope 0.638, rms 0.0238 vs
+  0.0262); t=0.5 → LOGLOG (slope 0.406, rms 0.0083 vs 0.0102).
+- **Failed side-prediction recorded loudly:** my registered saturation BAND
+  1.35–1.42 at t=0.2 is decisively exceeded (1.587 and rising at 2·10⁵);
+  the fitted plateau is a ≈ 2.17, not 1.4. Level prediction WRONG; shape
+  call ambiguous at instrument resolution (sat and loglog fits differ by
+  < 0.03 at any reachable N — the scan has saturated its resolving power).
+- **Standing conclusion:** the exam is a WEAK pass; the fork's decision
+  moves to the analytic gate (SMOOTH-LOW) (doc 86 §7(c)); observational
+  side leans slow-growth-or-high-plateau, incompatible with the original
+  doc 56 O(1)-variance reading either way (that refutation stands).

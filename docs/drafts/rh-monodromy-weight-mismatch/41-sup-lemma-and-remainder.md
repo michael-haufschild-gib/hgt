@@ -184,3 +184,119 @@ the capstone:
 Doc 41 §1's monotonicity argument is now machine-checked. §6 residual for the (SPUR-R)/(AMP)
 Lean stack narrows to item (b): the certified-numerics Sup Lemma `sup_{c≥2} R(1/2,c,0) < 1/4`
 (interval-arithmetic replication).
+
+## 8. C_ψ certified (task #147 item (c)) — the (K3) frame gap with explicit constants
+
+**Register: promotion.** Grading: standard analysis, execution work; corrects two
+imprecisions in §3 (K3) as typed. Numeric pre-certification:
+`computations/mwm/precert_cpsi.py` (shift formulas to 3 digits incl. ξ = 0.9; measured
+gap·i at c ∈ {2, 2.5, 4, 6}, i ∈ {100,…,10³}: |gap·i| ≤ 3.4, largest at c = 2).
+
+**Setup.** Positions are exact harmonic sums t(j) = c·H_j = c(ψ(j+1)+γ); the log frame
+is t_log(j) = c log j + cγ. Pair weights E_k = δ_i − δ_{i+k+1} = (c/i)ξ/(1+ξ) and
+D_k = δ_{i−k−1} − δ_i = (c/i)ξ/(1−ξ) are EXACT in both frames (differences of the given
+profile δ_j = c/j), so the frame gap lives only in the kernel arguments:
+
+> Ψ_ψ − Ψ_log = cξ[(w(v_ψ) − w(v))/(1+ξ) − (w(u_ψ) − w(u))/(1−ξ)],
+> v_ψ = c(ψ(i(1+ξ)+1) − ψ(i+1)), u_ψ = c(ψ(i+1) − ψ(i(1−ξ)+1)),
+> v = c log(1+ξ), u = −c log(1−ξ).
+
+**(8a) Endpoint correction to (K3) as typed.** At θ = 1/2 (ξ_A = 1) the continuum gap
+integral extended to ξ_A DIVERGES logarithmically: as j₂ := i(1−ξ) → 0, u_ψ stays
+finite (→ c·H_i) while u → ∞, so the gap integrand ~ c·w(u_ψ)/(1−ξ) ~ K(i)/(1−ξ) with
+K(i) = O(e^{−cγ}/i^c). The (K3) interpolation must stop at the last real pair,
+j₂ ≥ 1 (κ ≤ N with i−N−1 ≥ 1); the [N, iξ_A] stub belongs to the boundary term of the
+Euler–Maclaurin ledger, not to the frame gap. With that convention everything below is
+finite. (The coefficient is O(i^{−c}), which is why quadrature and the measured 3.3/i
+never noticed.)
+
+**(8b) Certified shifts.** Two-term digamma envelope (Binet/E–M, alternating):
+ψ(x+1) = log x + 1/(2x) − 1/(12x²) + η/(120x⁴), η ∈ (0,1). (The ONE-term envelope is
+not enough in the bulk: its remainder does not vanish as ξ → 0 and breaks the
+ξ-integral at the 1/i cutoff.) Writing Δv = v_ψ − v, Δu = u_ψ − u:
+
+> Δv = −(c/2)·ξ/(i(1+ξ)) + r_v,  |r_v| ≤ cξ/(4i²) + c/(120i⁴);
+> Δu = −(c/2)·ξ/(i(1−ξ)) + r_u,  |r_u| ≤ (2c/3)ξ/i² + 2c/(15i⁴)  (ξ ≤ 1/2);
+> Δv − Δu = (c/i)·ξ²/(1−ξ²) + r_a,  |r_a| ≤ |r_v| + |r_u|.
+
+For i ≥ 20, ξ ≤ 1/2: |Δu| ≤ 1.04cξ/i, |Δv| ≤ 0.52cξ/i,
+|Δv − Δu| ≤ (4/3)cξ²/i + 0.92cξ/i². Both shifts carry ξ; their DIFFERENCE carries ξ²
+— the §3 route statement, now with certified remainders.
+
+**(8c) Clean global kernel bounds (c-uniform, no cutoff).** With y = x/2:
+w′(x) = −½csch²y·coth y, w″(x) = ¼csch²y(2coth²y + csch²y). From sinh y ≥ y and
+
+> coth y ≤ 1/y + y/3  (series: coefficientwise, (2n+1)·3 ≤ 3 + 2n(2n+1) ⟺ 4n ≤ 4n²),
+
+follow, for ALL x > 0:
+
+> |w′(x)| ≤ 4/x³ + 1/(3x),   w″(x) ≤ 12/x⁴ + 4/(3x²) + 1/18.
+
+**(8d) Bulk (1/i ≤ ξ ≤ 1/2): the split.** Second-order Taylor at the log-frame points,
+then split the first-order term with COMMON shift σ := Δu:
+
+> G₁ = Δu·cξ[w′(v)/(1+ξ) − w′(u)/(1−ξ)] + cξ·w′(v)(Δv − Δu)/(1+ξ) =: G₁a + G₁b.
+
+- G₁a (common × cancelling bracket): |w′(v) − w′(u)| ≤ sup_{[v,u]}w″·(u−v) with
+  u − v = −c log(1−ξ²) ≤ 1.16cξ² and x ≥ 0.811cξ on [v,u] (chords of log(1+ξ),
+  −log(1−a)); prefactor asymmetry |w′(u)|·2ξ/(1−ξ²) ≤ (4/(cξ)³ + 1/(3cξ))·(8/3)ξ.
+  Integrated: ∫|G₁a| ≤ (22.2/c + 0.14c + 0.0005c³)/i.
+- G₁b (asymmetric × non-cancelling): |w′(v)| ≤ 7.5/(cξ)³ + 0.42/(cξ);
+  ∫|G₁b| ≤ (5.8/c + 0.03c)/i (incl. the r_a-piece, i ≥ 20).
+- G₂ (second order): points ṽ, ũ within 3% of v, u for i ≥ 20;
+  ∫|G₂| ≤ (2.3/c + 0.02c)/i (the ∫dξ/ξ picks log(i/2)/i² ≤ 0.115/i at i = 20).
+
+Bulk total: **(30.3/c + 0.19c + 0.0007c³)/i**.
+
+**(8e) Endpoint (1/2 < ξ, 1 ≤ j₂ = i(1−ξ) ≤ i/2).**
+- Ahead: v ≥ c log(3/2), |Δv| ≤ 0.27c/i, |w′| ≤ 66/c³ + 0.85/c ⟹ ≤ (5.9/c + 0.08c)/i.
+- Behind: exponential regime. ū ≥ c log(i/(j₂+1)) in BOTH frames
+  (log j₂ < ψ(j₂+1) < log(j₂+1)); e^{−ū} ≤ ((j₂+1)/i)^c ≤ 0.55^… so
+  |w′(ū)| ≤ 7.7e^{−ū}; |Δu| ≤ 0.584c/j₂ (one-term envelope, j₂ ≥ 1). Then
+  ∫ ≤ 4.5c²·2^c(i/2)^{c−1}/((c−1)i^c) = **9c²/((c−1)i)**; second order ≤ 0.2/i (i ≥ 20).
+
+**(8f) Assembly.**
+
+> **C_ψ(c) ≤ 37/c + 0.3c + 9c²/(c−1) + 0.5**  (θ = 1/2, i ≥ 20; θ = 1/2 is worst —
+> larger θ shrinks the domain). C_ψ(2) ≤ 55; sup over c ∈ [2,6]: ≤ 73.
+> For θ ≥ 2/3 (ξ_A ≤ 1/2) the endpoint region is empty: C_ψ ≤ 31/c + 0.2c ≤ 16.
+
+**Corrections to §3/§4 as typed.** (i) The "magnitude ≤ 6" was a route estimate, not a
+bound; the certified constant is ≈ 55 at c = 2 (measured truth ≈ 1.7 — the slack is in
+the w″-MVT chord factors and the endpoint (j₂+1)^c ≤ (2j₂)^c step, deliberately lenient).
+(ii) (K3) needs the j₂ ≥ 1 truncation of (8a). The measured TOTAL discretization gap
+3.3/i (doc 40 P-R7) is unchanged and remains the observed value.
+
+**Consequences (grade ladder for Theorem B⁗'s ΔG ≥ 1, c = 2).** err(i) as in §3 with
+C_ψ = 55:
+1. Sharp sup (certified numerics, §2): ΔG ≥ 7/4 − err ≥ 1 for **i ≥ 120**.
+2. Weak sup R ≤ 2/3 (Lean, `ReversalSupBound.lean`) + this C_ψ: ΔG ≥ 4/3 − err ≥ 1 for
+   **i ≥ 280** — this chain contains NO numerics anywhere: Lean weak sup + paper-proved
+   (E1)/(K1)/(K2)/(K3 constants)/C_ψ.
+Smaller i stays a finite per-index check (the per-carrier protocol's clause).
+
+With §8 the (B⁗-b) grade sheet closes: (K1), (K2), (E1) proved; (K3) proved with all
+three constants certified (supΨ, ∫|Ψ″|, C_ψ). Remaining OPEN of #147: the sharp
+interval-arithmetic Sup Lemma on c ∈ [2, 16/3] (§2 numerics-grade; Lean replication
+would need verified-quadrature machinery mathlib does not have).
+
+## 9. The G-form of the ledger [PROVED HERE — one integration by parts]
+
+The §2 unified integrand is an exact derivative: with
+`G(ξ) := 1/(1−(1−ξ)^c) − 1/((1+ξ)^c−1)` one has `Ψ(ξ) = 2ξ·G′(ξ)` (both terms of Ψ are
+`2ξ·d/dξ[−1/((1±ξ)^c ∓ 1)]` after writing `w(c log(1±ξ))` algebraically in `(1±ξ)^c`).
+G extends continuously to `[0,1]`: `G(0⁺) = (c−1)/c`, `G(1) = 1 − 1/(2^c−1)`. Parts:
+
+> **R(1/2, c, 0) = 2 − 2/(2^c−1) − 2∫₀¹ G(ξ) dξ.**
+
+Check at c = 2: `G = 2/(4−ξ²)`, `∫ = ½log 3`, `R = 4/3 − log 3` ✓ (= §2/doc 40 closed form).
+
+Consequences: (i) the sharp Sup Lemma becomes `∫₀¹G > 7/8 − 1/(2^c−1)`, one positive
+smooth integrand, no cancellation; (ii) for integer `c` the integrand is RATIONAL
+(partial fractions ⟹ closed forms at c = 3, 4, 5 like the c = 2 one); (iii) for a Lean
+attack on `c ∈ [2, 16/3]`: pointwise-in-c enclosures of the two G-terms fail near ξ = 0
+(the 1/(cξ) poles must cancel at the SAME c), so any interval-in-c certification must
+split ξ at some ξ₀, using the ξ-Taylor of G with remainder on [0, ξ₀] and term-wise
+c-monotone enclosures on [ξ₀, 1] (term 1 and term 2 are each decreasing in c). The
+margin at the peak (c* ≈ 2.53) is ≈ 0.0013 on ∫G — intrinsically 1%-tight; this stays
+the one certified-numerics-grade item of #147.

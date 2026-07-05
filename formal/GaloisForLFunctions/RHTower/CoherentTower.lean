@@ -35,6 +35,21 @@ theorem CoherentTower.pow_eq {f : ℂ → ℂ} {U : Set ℂ} (T : CoherentTower 
     rw [h2, pow_mul, T.sq k s hs]
     exact ih s hs
 
+/-- A coherent tower level is nonzero exactly when the base function is nonzero at
+the same point.  Coherence cannot create or remove zeros on the tower domain. -/
+theorem CoherentTower.level_ne_zero_iff {f : ℂ → ℂ} {U : Set ℂ}
+    (T : CoherentTower f U) (k : ℕ) {s : ℂ} (hs : s ∈ U) :
+    T.level k s ≠ 0 ↔ f s ≠ 0 := by
+  constructor
+  · intro hlev
+    rw [← T.pow_eq k s hs]
+    exact pow_ne_zero _ hlev
+  · intro hf hzero
+    apply hf
+    have hpow := T.pow_eq k s hs
+    rw [hzero] at hpow
+    simpa [pow_ne_zero k two_ne_zero] using hpow.symm
+
 /-- **The coherent ℤ₂-tower exists iff `f` is nonvanishing.**  The obstruction to the whole
 2-power root tower of an analytic function is exactly its zero divisor. -/
 theorem coherentTower_iff_nonvanishing {f : ℂ → ℂ} {U : Set ℂ}

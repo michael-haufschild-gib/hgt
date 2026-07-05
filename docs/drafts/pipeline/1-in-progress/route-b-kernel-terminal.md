@@ -45,3 +45,16 @@ kernel walled against the certified instrument class).
 - ζ-transfer for the kernel (atom wall, above).
 - Naive Fourier/moment expansion of φ_P (degree-2 wall, doc 58 §2).
 - Naked-F_N small-ball (AC) (doc 56 §10 — FALSE as typed).
+
+## UPDATE (cycle 52, verdict phase)
+Doc 85 Part I written: Route B AS TYPED is REFUTED — doc 56 §3's V = O(1)
+premise is (a) an unsupported citation on the boundary band (Graham covers
+complete sums only), (b) measured false (V = −1.58 + 2.27·loglogN, six
+designs, retrodicts V_BV(400) = 2.48), (c) derivation-backed:
+V_bd ≥ c₀·loglogN via the singleton-window sub-family (b_{pd} = λ_d exactly,
+no cancellation possible). In-class seed exhaustion complete (7 mechanisms,
+each failure derivation- or measurement-backed). Lean:
+RouteBSupport.lean — 6 endpoints axiom-clean (coefficient-vanishing,
+squarefreeness, window-diagonal-only, singleton-window). Remaining: the
+P-F5 fork (runpod) decides Part II — heir (K-bdd-n-log) vs total-class
+refutation; then this card moves.
