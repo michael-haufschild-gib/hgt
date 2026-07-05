@@ -97,4 +97,126 @@ theorem l1_neg_of_head_gt_tail {M N : ℕ} (hMN : M ≤ N) (fa fb : ℕ → ℝ)
   have hD := l1_reduction hMN fa fb
   linarith [hD, hhead]
 
+/-- **The far-behind tail bound** (the piece §5b never wrote as a lemma). The unpaired behind
+charges `k ∈ [M, N)` contribute `Σ φ((1−θ+k)δ/2) ≤ 64 e^{−(1−θ+M)δ}/(1−e^{−δ})` once the nearest
+far charge is at hyperbolic distance `≥ 1` (`(1−θ+M)δ/2 ≥ 1`). Reindex `Ico M N → range (N−M)`,
+then the banked geometric-tail bound `rphi_geom_tail_le`. -/
+theorem tail_geom_bound {θ δ : ℝ} {M N : ℕ} (hδ : 0 < δ)
+    (ha : 1 ≤ (1 - θ + M) * (δ / 2)) :
+    ∑ k ∈ Ico M N, rphi ((1 - θ + k) * (δ / 2))
+      ≤ 64 * Real.exp (-2 * ((1 - θ + M) * (δ / 2))) / (1 - Real.exp (-2 * (δ / 2))) := by
+  rw [Finset.sum_Ico_eq_sum_range]
+  have hstep : ∀ n : ℕ, (1 - θ + (↑(M + n) : ℝ)) * (δ / 2)
+      = (1 - θ + M) * (δ / 2) + (n : ℝ) * (δ / 2) := by
+    intro n; push_cast; ring
+  simp_rw [hstep]
+  exact rphi_geom_tail_le ha (by positivity) (N - M)
+
+/-- **(L1), CLOSED in the small-θ regime** — the complete, end-to-end theorem (no reasoning-only
+step). On the constant-δ lattice with `M ≥ 1` ahead charges and `N ≥ M` behind, if `θ ≤ 1/2`,
+the head/subtrahend arguments lie in the cubic window (`θδ/2 ≤ 1`, `(1−θ)δ/2 ≤ 1`), the nearest
+far charge is at distance `≥ 1`, and the explicit head-beats-tail inequality `hbeat` holds, then
+`Σ_{k<N} φ(b_k) < Σ_{k<M} φ(a_k)`, i.e. **`dW/dθ < 0`**. Assembles `tail_geom_bound` (tail),
+`headGain_lower` (head, `k=0`), `rphi_strictAntiOn_pos` (paired `k≥1` terms `≥ 0`), and
+`l1_neg_of_head_gt_tail` (the reduction). For `δ = 2, θ ≤ 1/8, M ≥ 1` the head `≥ 125` beats the
+tail `≤ 1.8`, so `hbeat` holds unconditionally there — a genuine closed instance of (L1). -/
+theorem dW_dtheta_neg {θ δ : ℝ} {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 ≤ M)
+    (hθ0 : 0 < θ) (hθhalf : θ ≤ 1 / 2) (hδ : 0 < δ)
+    (hx1 : θ * δ / 2 ≤ 1) (hy1 : (1 - θ) * δ / 2 ≤ 1)
+    (ha : 1 ≤ (1 - θ + M) * (δ / 2))
+    (hbeat : 64 * Real.exp (-2 * ((1 - θ + M) * (δ / 2))) / (1 - Real.exp (-2 * (δ / 2)))
+      < 1 / (4 * (θ * δ / 2) ^ 3) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3) :
+    (∑ k ∈ range N, rphi ((1 - θ + k) * (δ / 2)))
+      < ∑ k ∈ range M, rphi ((θ + k) * (δ / 2)) := by
+  set fa : ℕ → ℝ := fun k => rphi ((θ + k) * (δ / 2)) with hfa
+  set fb : ℕ → ℝ := fun k => rphi ((1 - θ + k) * (δ / 2)) with hfb
+  have hxpos : 0 < θ * δ / 2 := by positivity
+  have hypos : 0 < (1 - θ) * δ / 2 := by
+    have : (0 : ℝ) < 1 - θ := by linarith
+    positivity
+  -- head (k = 0) lower bound
+  have hhead0 : 1 / (4 * (θ * δ / 2) ^ 3) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3
+      ≤ fa 0 - fb 0 := by
+    simp only [hfa, hfb, Nat.cast_zero, add_zero]
+    rw [show θ * (δ / 2) = θ * δ / 2 from by ring,
+      show (1 - θ) * (δ / 2) = (1 - θ) * δ / 2 from by ring]
+    exact headGain_lower hxpos hx1 hypos hy1
+  -- every paired term ≥ 0
+  have hnonneg : ∀ k ∈ range M, 0 ≤ fa k - fb k := by
+    intro k _
+    simp only [hfa, hfb]
+    have h1 : (0 : ℝ) < (θ + k) * (δ / 2) := by positivity
+    have h2 : (θ + k) * (δ / 2) ≤ (1 - θ + k) * (δ / 2) := by
+      have hδ2 : (0 : ℝ) < δ / 2 := by positivity
+      nlinarith [hθhalf, hδ2]
+    have hanti := rphi_strictAntiOn_pos.antitoneOn (Set.mem_Ioi.mpr h1)
+      (Set.mem_Ioi.mpr (lt_of_lt_of_le h1 h2)) h2
+    linarith
+  have hheadsum : fa 0 - fb 0 ≤ ∑ k ∈ range M, (fa k - fb k) :=
+    Finset.single_le_sum hnonneg (Finset.mem_range.mpr (by omega))
+  -- tail upper bound
+  have htail : (∑ k ∈ Ico M N, fb k)
+      ≤ 64 * Real.exp (-2 * ((1 - θ + M) * (δ / 2))) / (1 - Real.exp (-2 * (δ / 2))) := by
+    simp only [hfb]
+    exact tail_geom_bound hδ ha
+  refine l1_neg_of_head_gt_tail hMN fa fb ?_
+  calc (∑ k ∈ Ico M N, fb k)
+      ≤ _ := htail
+    _ < 1 / (4 * (θ * δ / 2) ^ 3) - Real.cosh 1 / ((1 - θ) * δ / 2) ^ 3 := hbeat
+    _ ≤ fa 0 - fb 0 := hhead0
+    _ ≤ ∑ k ∈ range M, (fa k - fb k) := hheadsum
+
+/-- **(L1), an UNCONDITIONAL closed instance** at `δ = 2, θ = 1/8`. For every `M ≥ 1` ahead and
+`N ≥ M` behind charges, `dW/dθ < 0` — the head gain (`≥ 125`) beats the far-behind tail (`≤ 8`),
+with the head-vs-tail inequality discharged from real `exp`/`cosh` bounds (no hypothesis left).
+The mechanism of (L1) genuinely fires; this is not a vacuous conditional. -/
+theorem dW_dtheta_neg_at_eighth {M N : ℕ} (hMN : M ≤ N) (hM1 : 1 ≤ M) :
+    (∑ k ∈ range N, rphi ((1 - 1 / 8 + k) * (2 / 2 : ℝ)))
+      < ∑ k ∈ range M, rphi ((1 / 8 + k) * (2 / 2 : ℝ)) := by
+  have hM : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM1
+  -- real exp anchors
+  have he1 : (2.718 : ℝ) < Real.exp 1 := by nlinarith [Real.exp_one_gt_d9]
+  have hexp3 : Real.exp 3 = Real.exp 1 ^ 3 := by
+    rw [← Real.exp_nat_mul]; norm_num
+  have he3 : (16 : ℝ) ≤ Real.exp 3 := by
+    rw [hexp3]
+    have h := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 2.718) he1.le 3
+    have h16 : (16 : ℝ) ≤ (2.718 : ℝ) ^ 3 := by norm_num
+    linarith
+  have hexp2 : Real.exp 2 = Real.exp 1 ^ 2 := by
+    rw [← Real.exp_nat_mul]; norm_num
+  have he2 : (2 : ℝ) ≤ Real.exp 2 := by
+    rw [hexp2]
+    have h := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 2.718) he1.le 2
+    have h2 : (2 : ℝ) ≤ (2.718 : ℝ) ^ 2 := by norm_num
+    linarith
+  refine dW_dtheta_neg hMN hM1 (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    (by norm_num) (by nlinarith [hM]) ?_
+  -- hbeat: head ≥ 125 beats tail ≤ 8
+  have htailexp : Real.exp (-2 * ((1 - 1 / 8 + (M : ℝ)) * (2 / 2))) ≤ Real.exp (-3) := by
+    apply Real.exp_le_exp.mpr; nlinarith [hM]
+  have he3inv : Real.exp (-3) ≤ 1 / 16 := by
+    rw [Real.exp_neg]
+    rw [inv_le_comm₀ (Real.exp_pos 3) (by norm_num)]; linarith [he3]
+  have he2inv : Real.exp (-2 * (2 / 2 : ℝ)) ≤ 1 / 2 := by
+    rw [show (-2 * (2 / 2) : ℝ) = -2 by norm_num, Real.exp_neg,
+      inv_le_comm₀ (Real.exp_pos 2) (by norm_num)]; linarith [he2]
+  have hden : (1 : ℝ) / 2 ≤ 1 - Real.exp (-2 * (2 / 2 : ℝ)) := by linarith [he2inv]
+  have hnumpos : (0 : ℝ) ≤ 64 * Real.exp (-2 * ((1 - 1 / 8 + (M : ℝ)) * (2 / 2))) := by positivity
+  have hlhs : 64 * Real.exp (-2 * ((1 - 1 / 8 + (M : ℝ)) * (2 / 2)))
+      / (1 - Real.exp (-2 * (2 / 2 : ℝ))) ≤ 8 := by
+    rw [div_le_iff₀ (by linarith [hden] : (0:ℝ) < 1 - Real.exp (-2 * (2 / 2 : ℝ)))]
+    have h1 : 64 * Real.exp (-2 * ((1 - 1 / 8 + (M : ℝ)) * (2 / 2))) ≤ 64 * (1 / 16) := by
+      have := le_trans htailexp he3inv; nlinarith [this, Real.exp_pos (-2 * ((1 - 1 / 8 + (M : ℝ)) * (2 / 2)))]
+    nlinarith [h1, hden, Real.exp_pos (-2 * (2 / 2 : ℝ))]
+  have hcosh : Real.cosh 1 < 2 := cosh_one_lt_two
+  have hrhs : (125 : ℝ) < 1 / (4 * ((1 / 8) * 2 / 2) ^ 3) - Real.cosh 1 / ((1 - 1 / 8) * 2 / 2) ^ 3 := by
+    rw [show ((1 / 8) * 2 / 2 : ℝ) = 1 / 8 by norm_num,
+      show ((1 - 1 / 8) * 2 / 2 : ℝ) = 7 / 8 by norm_num]
+    rw [show (1 : ℝ) / (4 * (1 / 8) ^ 3) = 128 by norm_num]
+    rw [show ((7 : ℝ) / 8) ^ 3 = 343 / 512 by norm_num]
+    rw [div_eq_mul_inv, show ((343 : ℝ) / 512)⁻¹ = 512 / 343 by norm_num]
+    nlinarith [hcosh, Real.cosh_pos (1 : ℝ)]
+  linarith [hlhs, hrhs]
+
 end RHTower

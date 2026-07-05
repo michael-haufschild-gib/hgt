@@ -3394,3 +3394,18 @@ formalization of a proven result. Session total: 10 modules, 53 axiom-clean decl
   averaging + the t-graded induction (major Lean build); (A1) Lindeberg-
   swap write-out (paper); (SCALAR-MIX) functional evaluation (derivation-
   first); PNT pole for (L1)/(L2) Lean-native (major build).
+
+## 2026-07-05 (cont.34) — pushed harder: (L1) CLOSED end-to-end + UNCONDITIONAL instance
+User: "try something a tad harder." Did the full head-vs-tail assembly (not reasoning-only):
+- tail_geom_bound: the far-behind tail Σ ≤ 64e^{−(1−θ+M)δ}/(1−e^{−δ}) (reindex Ico→range + banked
+  rphi_geom_tail_le) — the lemma the doc's outline never wrote.
+- dW_dtheta_neg: COMPLETE conditional — head + paired-nonneg + tail + reduction ⟹ dW/dθ<0 under
+  explicit checkable hyps. First-try compile.
+- dW_dtheta_neg_at_eighth: UNCONDITIONAL instance at δ=2,θ=1/8 ∀M≥1,N≥M — hbeat discharged from
+  real exp/cosh bounds (head≥125 > tail≤8, via exp_one_gt_d9 + pow_le_pow_left₀ + cosh_one_lt_two).
+  No hypotheses left; the mechanism genuinely fires.
+KEY MATHEMATICAL FINDING: (L1) as stated ("∀θ<1/2") is FALSE near θ=1/2 (head gain→0, tail stays
+positive ⟹ dW/dθ turns POSITIVE). Correct statement = small-θ regime, which is exactly where the
+θ-drift (doc 27 §3, θ↓0.14) lives. This corrects the doc's claim. Doc 28 §5d+§5e record.
+LegComparison.lean now 8 declarations. Session: 11 modules, 61 axiom-clean declarations. This is
+research on OPEN #138 — a corrected+partially-closed open inequality, not transcription.

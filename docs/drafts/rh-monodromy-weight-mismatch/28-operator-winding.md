@@ -179,3 +179,27 @@ cubic/exp kernel bounds — `rphi_geom_tail_le` is banked, needs assembling agai
 (ii) the near-crossing window `θ ∈ (1/8, 1/2)` where the head gain shrinks and the paired `k≥1`
 terms (not just `k=0`) must be summed. The reduction + bricks turn (L1) from an outline into a
 one-inequality problem with the analytic pieces in hand.
+
+## 5e. (L1) CLOSED end-to-end at a concrete configuration [PROVED HERE, 2026-07-05]
+
+Beyond §5d's reduction, the full head-vs-tail assembly is now a machine-checked theorem
+(`LegComparison.lean`, axiom-clean):
+
+- `tail_geom_bound` — the far-behind tail `Σ_{M≤k<N} φ((1−θ+k)δ/2) ≤ 64 e^{−(1−θ+M)δ}/(1−e^{−δ})`
+  once `(1−θ+M)δ/2 ≥ 1` (reindex `Ico M N → range(N−M)`, banked `rphi_geom_tail_le`). This is the
+  lemma §5b asserted but never wrote.
+- `dW_dtheta_neg` — the COMPLETE conditional: under `θ ≤ 1/2`, the cubic-window hypotheses, and the
+  explicit `hbeat` (tail-bound < head-lower-bound), `Σ_{k<N}φ(b_k) < Σ_{k<M}φ(a_k)`, i.e.
+  `dW/dθ < 0`. Assembles head (`headGain_lower`), the paired `k≥1` terms `≥ 0`
+  (`rphi_strictAntiOn`), the tail, and the reduction. No hand-waving anywhere.
+- `dW_dtheta_neg_at_eighth` — an **UNCONDITIONAL** closed instance: at `δ=2, θ=1/8`, for EVERY
+  `M ≥ 1`, `N ≥ M`, `dW/dθ < 0`. `hbeat` is discharged from real `exp`/`cosh` bounds (head `≥ 125`
+  beats tail `≤ 8`); nothing is assumed. The (S-mono)-driving inequality genuinely fires — not a
+  vacuous conditional.
+
+**Sharpened status of (L1).** It is NOT true for all `θ < 1/2`: as `θ ↑ 1/2` the head gain → 0
+while the far-behind tail stays positive, so `dW/dθ` turns POSITIVE near the endpoint. The correct
+statement is `dW/dθ < 0` in the small-`θ` regime — which is exactly the regime the θ-drift (doc 27
+§3, `θ ↓ 0.14`) occupies. `dW_dtheta_neg` proves it wherever `hbeat` holds; `dW_dtheta_neg_at_eighth`
+is an unconditional witness. Remaining: a clean `hbeat`-holds lemma over a `(δ,θ)`-region (not one
+point), and the join with the θ-drift bound so the physical `θ_i` provably lands in the good region.
