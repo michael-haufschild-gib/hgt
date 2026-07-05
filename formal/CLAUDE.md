@@ -42,6 +42,11 @@ This gate fails on Lean build warnings.
 ## Keep It Organized
 
 - No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+- **Comments are mathematics, not diary.** No references to research docs, task numbers,
+  sessions, dates, or process notes ("pre-certified", "banked", "round N") — in two days
+  nobody can decode them. A Lean project is self-contained: it stands for itself as a
+  proof. A docstring states what the declaration says mathematically and, briefly, the
+  proof mechanism — nothing else.
 - Represent missing analytic inputs as explicit hypotheses or `Prop` interfaces.
 - Verify mathlib names in `/tmp` scratch files before using them.
 - Prefer the narrowest import that contains the needed declarations.

@@ -124,3 +124,12 @@ import GaloisForLFunctions.RHTower.RescaleLimit
 import GaloisForLFunctions.RHTower.RescaleTannery
 import GaloisForLFunctions.RHTower.RouteBSublevel
 import GaloisForLFunctions.RHTower.LegComparison
+import GaloisForLFunctions.RHTower.RouteBThreePhase
+import GaloisForLFunctions.RHTower.RouteBCausticShell
+import GaloisForLFunctions.RHTower.RouteBShellBounds
+import GaloisForLFunctions.RHTower.RouteBDyadicCore
+import GaloisForLFunctions.RHTower.RouteBCausticAssembly
+import GaloisForLFunctions.RHTower.RouteBCausticSum
+import GaloisForLFunctions.RHTower.RouteBCausticCapstone
+import GaloisForLFunctions.RHTower.LegWindow
+import GaloisForLFunctions.RHTower.RouteBThreePhaseLog

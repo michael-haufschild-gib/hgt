@@ -203,3 +203,65 @@ statement is `dW/dθ < 0` in the small-`θ` regime — which is exactly the regi
 §3, `θ ↓ 0.14`) occupies. `dW_dtheta_neg` proves it wherever `hbeat` holds; `dW_dtheta_neg_at_eighth`
 is an unconditional witness. Remaining: a clean `hbeat`-holds lemma over a `(δ,θ)`-region (not one
 point), and the join with the θ-drift bound so the physical `θ_i` provably lands in the good region.
+
+## 5f. dW/dθ<0 UNCONDITIONAL over a region [PROVED HERE, 2026-07-05]
+
+`dW_dtheta_neg_region` (LegComparison.lean, axiom-clean): the `hbeat` hypothesis of §5e is now
+DISCHARGED over a genuine two-parameter band. For `θ ∈ (0, 1/8]`, `δ ∈ [3/2, 2]`, every `M ≥ 1`,
+`N ≥ M`: `dW/dθ < 0`, with NO head-vs-tail assumption. Head gain `≥ 112` (`θδ/2 ≤ 1/8` ⟹
+`1/(4(θδ/2)³) ≥ 128`; `(1−θ)δ/2 ≥ 1/2` ⟹ subtrahend `≤ 8cosh1 < 16`) beats the far tail `≤ 36`
+(`(1−θ+M)δ ≥ 2` ⟹ `exp ≤ e^{−2} ≤ 1/3`; `1−e^{−δ} ≥ 3/5`), all from crude `add_one_le_exp` +
+`cosh_one_lt_two`. This is (L1) proved outright on a region — no outline, no conditional.
+
+**Honest boundary.** The band `δ ∈ [3/2, 2]` is where the geometric tail bound `rphi_geom_tail_le`
+(needs the nearest far charge at hyperbolic distance `≥ 1`) applies cleanly. The PHYSICAL regime is
+`δ = c/j → 0` (small), where that tool fails (tail arguments are small) and the tail must instead be
+bounded by the CUBIC upper bound. The missing brick for that: `coth s < 1/s + 1` for all `s > 0`,
+provable via `g(s) = (1+s)sinh s − s cosh s`, `g(0)=0`, `g'(s) = sinh s + s·e^{−s} > 0` — then
+`φ(s) = csch²s·coth s < 1/s³ + 1/s²`, whose `k`-tail is a `p=2,3` series bounded by an integral.
+With it the region extends to small `δ`, the physical case. That is the next concrete step.
+
+## 5g. The small-δ brick PROVED: coth s < 1/s + 1 [PROVED HERE, 2026-07-05]
+
+The brick §5f named as missing for the physical `δ → 0` regime is now proved (LegComparison.lean,
+axiom-clean):
+
+- `rcoth_lt_inv_add_one` — **`coth s < 1/s + 1` for ALL `s > 0`**. Proof: the auxiliary
+  `g(s) = (1+s)sinh s − s cosh s` has `g(0)=0` and derivative
+  `g'(s) = sinh s + s cosh s − s sinh s = sinh s + s·e^{−s} > 0` (via `sinh s > 0` and
+  `cosh s > sinh s`), so `strictMonoOn_of_deriv_pos` gives `g(s) > 0`, i.e. `s cosh s < (1+s) sinh s`,
+  i.e. `coth s < (1+s)/s`. A genuine transcendental monotonicity inequality — not algebra.
+- `rcsch_sq_le_inv_sq` — `csch² s ≤ 1/s²` (from `sinh s ≥ s`).
+- `rphi_lt_cubic_quadratic` — **the global tail bound** `φ(s) < 1/s³ + 1/s²` for ALL `s > 0`
+  (`= csch²·coth < (1/s²)(1/s+1)`). Unlike `rphi_le_cubic` (only on `(0,1]`) this holds at every
+  scale, so the far tail `Σ_{k≥M} φ((1−θ+k)δ/2) < Σ (1/·³ + 1/·²)` is a `p=2,3` series valid for
+  `δ → 0`.
+
+**What now closes small-δ.** With `rphi_lt_cubic_quadratic` termwise, the tail is `< (8/δ³)Σ1/(1−θ+k)³
++ (4/δ²)Σ1/(1−θ+k)²`; both are telescoping (`1/(a+k)² ≤ 1/(a+k−1) − 1/(a+k)`) with sums `≤` a
+constant, giving tail `< C₁/δ³ + C₂/δ²`, beaten by the head `≥ 2/(θδ)³ ~ 1/δ³` for `θ` small and
+any `δ`. The one remaining Lean step is the telescoping `p=2,3` tail bound, then the small-δ region
+assembly — no new analytic ideas, only Finset telescoping.
+
+## 5h. (L1) CLOSED for the PHYSICAL (small-δ) regime [PROVED HERE, 2026-07-05]
+
+The small-δ analytic toolkit is complete and assembled (LegComparison.lean, all axiom-clean):
+`rcoth_lt_inv_add_one` (coth s<1/s+1) ⟹ `rphi_lt_cubic_quadratic` (global φ(s)<1/s³+1/s²) ⟹
+`inv_sq_telescope`/`inv_cube_telescope` (p=2,3 tail sums, telescoping) ⟹ `phi_tail_small_delta`
+(tail ≤ (8/δ³)/((1−θ+M)(M−θ)) + (4/δ²)/(M−θ)).
+
+- `dW_dtheta_neg_small_delta` — **UNCONDITIONAL on `θ ∈ (0,1/8]`, `δ ∈ (0,1]`, `M ≥ 1`, `N ≥ M`:
+  `dW/dθ < 0`.** Head `≥ 1000/δ³` (θ small ⟹ `2/(θδ)³ ≥ 1024/δ³`, minus `≤24/δ³`) beats tail
+  `≤ 10/δ³` (`δ ≤ 1` folds the `1/δ²` term into `1/δ³`). No hypothesis, no exp-tail restriction —
+  reaches `δ → 0`, the regime `δ = c/j` where the θ-drift (doc 27 §3, `θ ↓ 0.14`) actually lives.
+
+**Arc summary of (L1).** From doc 28 §5b's mere "[PROVED HERE, OUTLINE]": corrected the false
+`∀θ<1/2` claim (fails near `θ=1/2`) → exact reduction `D = tail − headGain` → unconditional at a
+point (`δ=2,θ=1/8`) → unconditional on the exp-region `δ∈[3/2,2]` → unconditional on the physical
+small-δ region `δ≤1`. All machine-checked, axiom-clean.
+
+**Genuinely remaining for full (L1)⟹(S-mono):** (i) the `δ∈(1,3/2)` seam and the near-crossing
+`θ∈(1/8,1/2)` window (where the k=0 head no longer dominates — the paired k≥1 sum must be used);
+(ii) the JOIN with a proven θ-drift lower bound, so the physical `θ_i` provably lands in `(0,1/8]`
+— that is the (F)-field/θ-drift research, still open. The constant-δ lattice piece of (S-mono) is
+now rigorous on the physical band.

@@ -3409,3 +3409,166 @@ positive ⟹ dW/dθ turns POSITIVE). Correct statement = small-θ regime, which 
 θ-drift (doc 27 §3, θ↓0.14) lives. This corrects the doc's claim. Doc 28 §5d+§5e record.
 LegComparison.lean now 8 declarations. Session: 11 modules, 61 axiom-clean declarations. This is
 research on OPEN #138 — a corrected+partially-closed open inequality, not transcription.
+
+## 2026-07-05 (cont.35) — made dW_dtheta_neg UNCONDITIONAL over a region
+User: "try to make dW_dtheta_neg unconditional." Done over a genuine 2-param band, not a point:
+dW_dtheta_neg_region (axiom-clean, lint green): θ∈(0,1/8], δ∈[3/2,2], M≥1, N≥M ⟹ dW/dθ<0, NO
+hbeat hyp. hbeat discharged internally: head≥112 (θδ/2≤1/8 ⟹ head1≥128; (1−θ)δ/2≥1/2 ⟹ sub≤8cosh1)
+beats tail≤36 ((1−θ+M)δ≥2 ⟹ exp≤e^{−2}≤1/3 via add_one_le_exp; 1−e^{−δ}≥3/5), all crude exp/cosh.
+Compiled after 1 fix (−3/2 = (−3)/2 not −(3/2), exp_neg pattern). LegComparison.lean now 9 decls.
+HONEST BOUNDARY: δ∈[3/2,2] is the exp-tail regime (rphi_geom_tail_le needs far-charge dist ≥1). The
+PHYSICAL regime δ=c/j→0 (small) needs the CUBIC tail instead: missing brick coth s<1/s+1 (proof:
+g=(1+s)sinh−s cosh, g'=sinh+s·e^{−s}>0) ⟹ φ<1/s³+1/s², p=2,3 tail via integral. Doc 28 §5f records.
+Session: 11 modules, 62 axiom-clean declarations. Genuine progress on OPEN #138: (L1) now
+unconditional on a region, with the small-δ extension isolated to one named brick.
+
+## Cycle 55 (cont. 7) — the transversal r² rung + the three-phase reduction surface
+
+**New module `RouteBThreePhase.lean`** (6 endpoints, first-compile clean,
+build 9146 jobs, lint green, axioms [propext, Classical.choice, Quot.sound]):
+`cos_band_measure_shifted_gap` (covering isolated at 4·arccos-gap),
+`arccos_gap_mul` (the transversal gap inequality by sin_add_sin + Jordan —
+found a division-free multiplied form that dodges the u=±1 junk-value trap),
+`cos_band_measure_shifted_linear`, `bandCenter`/`bandHalf` +
+`radial_band_measure_transversal` (linear-in-r radial band at margin m),
+`two_phase_sublevel_r2` (caustic-ladder rung 3 FORMAL), and
+`three_phase_sublevel` (3D sublevel ≤ arc bound × 2D annulus measure — the
+exact surface the (L3) third-phase averaging integrates). Doc 87 App B
+updated: every rung below the dyadic averaging assembly is machine-checked.
+
+Goal total now 57 axiom-clean endpoints across 7 modules. Remaining queue:
+(L3) dyadic layer-cake assembly on the annulus (last Lean step of the base
+case; all analytic inputs banked), (A1) Lindeberg-swap write-out (paper),
+(SCALAR-MIX) functional evaluation (derivation-first), PNT pole for
+(L1)/(L2) Lean-native (major build).
+
+## 2026-07-05 (cont.36) — pushed harder: the small-δ brick coth s<1/s+1 PROVED (transcendental)
+User: "a tad harder." Proved the transcendental monotonicity inequality that unlocks the physical
+δ→0 regime (LegComparison.lean, 3 new axiom-clean decls, lint green):
+- rcoth_lt_inv_add_one: coth s < 1/s+1 ∀s>0. Via g(s)=(1+s)sinh−s cosh, g(0)=0, g'=sinh+s·e^{−s}>0
+  (strictMonoOn_of_deriv_pos) ⟹ g>0. Genuine analysis, not algebra. Fixes: derivative combinators
+  needed const_add + simpa (id normalization); two field_simp already close (dropped dead ring).
+- rcsch_sq_le_inv_sq: csch²≤1/s² (sinh≥s).
+- rphi_lt_cubic_quadratic: GLOBAL φ(s)<1/s³+1/s² ∀s>0 (vs rphi_le_cubic only on (0,1]) — the small-δ
+  tail control (p=2,3 series valid as δ→0).
+Doc 28 §5g records. Remaining to close small-δ: telescoping p=2,3 tail bound (Finset, no new ideas)
++ region assembly. LegComparison.lean now 12 decls. Session: 11 modules, 65 axiom-clean declarations.
+Arc on OPEN (L1): corrected false claim → exact reduction → point → region → physical-regime brick.
+
+## Cycle 55 (cont. 8) — the shell toolkit: every dyadic-averaging input formal
+
+**New module `RouteBCausticShell.lean`** (9 endpoints, build 9147 jobs, lint
+green, axioms clean): the three band laws at ARBITRARY real shift
+(`cos_band_measure_shift_gap'/_sqrt'/_linear'`, mod-2π reduction via
+Int.fract — no more [0,2π) bookkeeping at call sites);
+`radial_band_subset_cos_band` (the radial→cosine-band reduction extracted
+once, explicit shift arg(c̄B)); `radial_band_measure_zero_of_high/_low`
+(empty band outside the reachable annulus);
+`one_sub_bandCenter_sq` — the caustic factorization
+1−U₀² = ((ρ+‖B‖)²−x²)(x²−(ρ−‖B‖)²)/(4x²‖B‖²): tangency margin = product of
+squared-variable distances to the caustic radii x₊ = ρ+‖B‖, x₋ = |ρ−‖B‖|;
+`norm_center_sq_cos` — ‖c+Ce^{iη}‖² is affine in cos(η+arg(c̄C)), so
+y-shells ARE cosine bands (shell measure = √-law, no new machinery);
+`one_sub_abs_ge` — (1−u²)/2 ≤ 1−|u| converts the factorized margin into the
+transversal law's hypothesis.
+
+Goal total 66 axiom-clean endpoints across 8 modules. The (L3) base-case
+assembly is now pure composition: split Icc(η) into y-shells dyadic in
+distance-to-caustic, pay √-law on the two core shells + linear law on the
+rest, sum the geometric series. Then (A1), (SCALAR-MIX), PNT pole.
+
+## Cycle 55 (cont. 9) — the three shell arms banked
+
+**New module `RouteBShellBounds.lean`** (4 endpoints, axioms clean, module
+tree 8478 jobs green, lint green): `setLIntegral_le_of_bound` (sup bound),
+`shell_contribution` (transversal shell arm: margin-m shell pays the linear
+law × vol E, center-modulus floor xmin threaded through), `core_contribution`
+(caustic core arm: √-law × vol E), `center_shell_measure` (y-shell measure
+≤ 2π√((a₂−a₁)/(‖c‖‖C‖)) — the shell IS a cosine band via norm_center_sq_cos
++ the any-shift √-law; the a₁ ≤ a₂ hypothesis turned out unnecessary).
+
+NOTE: full-library build currently red at `LegComparison.lean:393` — the
+parallel codex session's module, mid-edit (mtime 11:18, ring failure);
+none of my modules import it; my tree gated green independently.
+
+Goal total 70 axiom-clean endpoints across 9 modules. Remaining for the
+(L3) base case: ONE module — the dyadic assembly (margin inversion via
+one_sub_bandCenter_sq on each shell + Finset.range geometric sum + the
+r²·log capstone through three_phase_sublevel). Then (A1), (SCALAR-MIX),
+PNT pole.
+
+## 2026-07-05 (cont.37) — CAPSTONE: (L1) closed for the physical small-δ regime
+Built the complete small-δ toolkit + assembled it (LegComparison.lean, all axiom-clean, lint green,
+maxHeartbeats 1e6 on the capstone):
+- inv_sq_telescope, inv_cube_telescope: p=2,3 tail sums via telescoping (1/(a+k)²≤1/(a+k−1)−1/(a+k)).
+- phi_tail_small_delta: tail ≤ (8/δ³)/((1−θ+M)(M−θ))+(4/δ²)/(M−θ), via global φ-bound + telescopes.
+- dW_dtheta_neg_small_delta: UNCONDITIONAL θ≤1/8, δ≤1, M≥1, N≥M ⟹ dW/dθ<0. Head≥1000/δ³ beats
+  tail≤10/δ³ (δ≤1 folds 1/δ² into 1/δ³). Reaches δ→0, the physical c/j regime.
+Fixes: div_le_div_iff→div_le_div_iff₀; linarith couldn't combine 1024/δ³−24/δ³=1000/δ³ (ring bridge);
+heartbeat timeout (rphi-carrying set + heavy nlinarith) → maxHeartbeats 1e6.
+LegComparison.lean now 16 declarations. Session: 11 modules, 69 axiom-clean declarations.
+(L1) ARC COMPLETE on the physical band: outline→corrected→reduction→point→exp-region→small-δ region.
+Remaining for full (L1)⟹(S-mono): the δ∈(1,3/2)+θ∈(1/8,1/2) seams, and the JOIN with a θ-drift
+lower bound (θ_i∈(0,1/8]) = the open (F)-field/θ-drift research. Doc 28 §5h records.
+
+## Cycle 55 (cont. 10) — margin inversion + the pointwise cover FORMAL
+
+**`RouteBDyadicCore.lean`** (8 endpoints): triangle emptiness ×3
+(reachable window, no band machinery), `exists_dyadic_cover`,
+`one_sub_abs_bandCenter_of_dist` (margin inversion: distance σ from both
+caustic values in the squared variable ⟹ 1−|U₀| ≥ σ(y₊−y₋)/(16y₊b²)),
+plus pointwise arms `vol_K_le_of_margin`, `vol_K_le_sqrt` (xmin-floored)
+and `sqrt_div_sqrt_cancel` (the 2^j cancellation).
+**`RouteBCausticAssembly.lean` part I** (7 endpoints): `causticKappa`,
+the piece sets (shellSetP/M, coreSetP/M, midSet) + measurability,
+`vol_K_le_shell` (ONE arm serving every dyadic shell AND the mid-annulus,
+margin min(σκ/2, 1/2)), and **`annulus_cover`** — the pointwise cover:
+every η ∈ [0,2π] has a null radial band or lands in coreM/coreP/mid/a
+dyadic shell 2^jσ0, j < J. Toolchain quirk found: the unusedVariables
+linter does not register usage inside `linarith [...]` lists — route
+load-bearing hypotheses through term positions (sub_nonneg.mpr etc.).
+
+Goal total 85 axiom-clean endpoints, 11 modules, lint green. Remaining for
+the (L3) base case: assembly part II ONLY — the integration bookkeeping
+(pointwise indicator bound from the cover disjunction; lintegral_finsetSum;
+per-shell j-free product via sqrt_div_sqrt_cancel + center_shell_measure;
+capstone ∫ vol K ≤ J•ofReal(2CS) + ofReal(2CC) + ofReal(CM), then compose
+with three_phase_sublevel + the annulus Fubini identity for the r²·J law).
+
+## Cycle 55 (cont. 11) — THE DYADIC ASSEMBLY CAPSTONE FORMAL
+
+**`RouteBCausticSum.lean`** (3 endpoints): `shell_term_le` (the abstract
+two-regime product bound — uncapped regime cancels the shell scale via
+sqrt_div_sqrt_cancel, capped regime dominated by vol ≤ 2π),
+`shellP_prod_le`/`shellM_prod_le` (dyadic shells: arm × measure ≤ ofReal CS,
+j-FREE).
+**`RouteBCausticCapstone.lean`** (1 endpoint): **`annulus_lintegral_le`** —
+∫_η vol K(η) ≤ J·(shell const) + 2·(core const) + (mid const), all constants
+EXPLICIT, J free under the cover hypothesis G/3 < 2^J·σ0. With σ0 at its
+minimal admissible scale (~r via hHσ0) the consumer takes J ~ log(1/r):
+the r·log(1/r) annulus law, hence via three_phase_sublevel the
+**r²·log(1/r) three-phase small-ball — the (L3) base case — is now a
+COMPOSITION OF TWO BANKED THEOREMS.** No logarithms formalized: J carries
+the log at the consumer, dodging that entire mathlib surface.
+Proof architecture that worked: pointwise cover disjunction → indicator-sum
+bound (le_of_eq∘indicator_of_mem + single_le_sum + le_self_add chains, no
+set-aliases) → lintegral linearity (lintegral_add_left + lintegral_finsetSum'
++ lintegral_indicator + setLIntegral_const) → per-piece products.
+
+Goal total **89 axiom-clean endpoints across 13 modules**, build green,
+lint green. Remaining queue: (A1) Lindeberg-swap write-out (paper),
+(SCALAR-MIX) functional evaluation (derivation-first), PNT pole for
+(L1)/(L2) Lean-native (major build), plus the (L3) induction step above
+the base case (t-graded hierarchy). Next: the composition corollary
+(three_phase × annulus bound) + doc 87 §(L3) status update.
+
+## Cycle 55 (cont. 12) — the (L3) BASE CASE NAMED AND BANKED
+
+`RouteBThreePhaseLog.lean` (2 endpoints, first-compile clean):
+`annulus_fubini` (product-measure slice identity for the annulus) +
+**`three_phase_sublevel_r2log`** — the three-phase small-ball law at
+dyadic depth J, the composition endpoint the hierarchical Esseen induction
+cites as its floor. Doc 87 (L3) ledger updated: all four caustic-ladder
+rungs formal. Goal total **91 axiom-clean endpoints across 14 modules**,
+build 8483 green, lint green. Queue: (L3) induction-step interface typing
+(next), (A1) write-out, (SCALAR-MIX) derivation, PNT pole.

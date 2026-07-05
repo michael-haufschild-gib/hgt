@@ -129,3 +129,54 @@ cos φ ∈ [u₁,u₂]} ≤ π·√(2(u₂−u₁)) + the transversal linear ver
 real analysis, no obstructions); then the three-phase composition
 (two_phase_sublevel + caustic-averaging over the third phase) = the (L3)
 base case with the r² law.
+
+### App B status update [same session, later]: rungs 1–3 + the reduction surface ALL FORMAL
+
+`RouteBThreePhase.lean` (6 endpoints, axiom-clean) closes every declared
+"next Lean brick" and one more:
+
+- `cos_band_measure_shifted_gap` — the covering step isolated: any shifted
+  band ≤ 4·(arccos u₁ − arccos u₂); √-law and linear law both specialize it.
+- `arccos_gap_mul` — (arccos u₁ − arccos u₂)·(√(1−u₁²)+√(1−u₂²)) ≤ π(u₂−u₁),
+  by sin_add_sin + Jordan only (no MVT): the transversal gap inequality in
+  division-free form.
+- `cos_band_measure_shifted_linear` — band ≤ 4π(u₂−u₁)/m at margin m.
+- `bandCenter`/`bandHalf` + `radial_band_measure_transversal` — the radial
+  band at caustic margin m: ≤ 2π·r(2ρ+r)/(√m·‖c‖‖B‖), LINEAR in r.
+- `two_phase_sublevel_r2` — rung 3 (two phases, transversal): the r² law,
+  fully formal, constant 2π²·... explicit: (2πr/‖A‖)·(2πr(2‖A‖+r)/(√m‖c‖‖B‖)).
+- `three_phase_sublevel` — the 3D Fubini reduction: three-phase sublevel ≤
+  (2πr/‖A‖) × μ²(ANNULUS of the remaining two-phase field around ‖A‖).
+
+Remaining for the (L3) base case r²·log(2/r): slice the annulus in the
+third phase (its η-section IS the moving radial band, with center
+c + Ce^{iη} whose modulus sweeps a cosine band — `radial_band_measure`
+applies to the caustic-distance distribution itself), then the dyadic
+layer-cake: transversal scales pay the linear law, the O(r)-neighborhood
+of the caustic pays the √-law once; sum = r·(const + log(2/r)). All
+inputs to that assembly are now machine-checked; the assembly is pure
+ENNReal bookkeeping over a finite dyadic family.
+
+### (L3) LEDGER UPDATE [same session]: the base case is a THEOREM
+
+`three_phase_sublevel_r2log` (RouteBThreePhaseLog.lean, axiom-clean):
+for ‖B‖ < ‖A‖ (strict, generic position), r ≤ (‖A‖−‖B‖)/2, any σ0 in the
+admissible window [2H̄/κ, G/3] and any dyadic depth J with G/3 < 2^J σ0:
+
+  μ³{ |c + Ce^{iθ₃} + Be^{iθ₂} + Ae^{iθ₁}| ≤ r }
+    ≤ (2πr/‖A‖) · [ J·C_shell(r) + 2·C_core(r,σ0) + C_mid(r) ]
+
+with every constant explicit (κ = causticKappa, C_shell ~ r, C_core ~
+√(r·(σ0+r)) ~ r at σ0 ~ r, C_mid ~ r). Taking J = ⌈log₂(G/(3σ0))⌉+1 at the
+minimal σ0 ≃ 2H̄/κ ~ r yields the r²·log(1/r) law — the (L3) base case,
+now a two-theorem composition (three_phase_sublevel ∘ annulus_lintegral_le)
+with no logarithm formalized (J carries it).
+
+Ledger: (L4) one-phase FORMAL (arc_sublevel); two-phase r^{3/2} FORMAL;
+two-phase transversal r² FORMAL; **three-phase r²·log FORMAL**. Open above
+the base case: the t-graded hierarchical induction (L3-step) — its
+per-level engine is exactly the banked pointwise-cover + shell-arm pattern
+applied to block sums conditioned on coarser blocks; and (L1)/(L2) supply
+(PNT pole). Next generative move: type the induction step's interface
+(conditional small-ball predicate on the Steinhaus model of
+SteinhausModel.lean, consuming three_phase_sublevel_r2log as the floor).
