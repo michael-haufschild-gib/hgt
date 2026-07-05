@@ -2706,3 +2706,222 @@ sum of the overhang Σ_{m≥M} φ((δ-s+mδ)/2) ≤ 64 e^{-(δ-s)} e^{-Mδ}/(1-e
 mδ~1 since rphi_le_exp needs arg≥1 and δ may be small]; (iii) assembly: near surplus
 φ(s/2)-φ((δ-s)/2) > overhang ⟹ dW/ds<0 in outer range ⟹ latticeEnergyS_strictAntiOn
 extends to N>M. Then (F)-fields χ1/χ2, Lemma R, capstone, #147.
+
+## 2026-07-05 (cont.6) — outer-range: near cubic lower bound banked
+CothInfra.lean: cosh_one_lt_two, sinh_le_mul_cosh (sinh x ≤ x cosh x via monotoneOn_of_deriv_nonneg),
+rphi_ge_cubic (φ(x) ≥ 1/(4x³) for 0<x≤1) — all axiom-clean. BOTH outer-range bounds now in hand:
+rphi_le_exp (φ(u)≤64e^{-2u}, u≥1, far overhang) + rphi_ge_cubic (near cubic). Session ~48 thm/590
+lines. Remaining outer-range: geometric tail sum Σ_{m≥M}64e^{-(δ-s+mδ)} (δ-split at mδ~1) +
+assembly (near surplus φ(s/2)-φ((δ-s)/2) via cubic > overhang via geom tail ⟹ dW/ds<0 for N>M).
+Then (F)-fields, Lemma R, capstone, #147.
+
+## 2026-07-05 (cont.7) — outer-range: geometric overhang bound banked
+CothInfra.lean: rphi_geom_tail_le (Σ_{n<K} φ(a+nδ) ≤ 64 e^{-2a}/(1-e^{-2δ}), a≥1, δ>0) —
+axiom-clean, via rphi_le_exp per-term + telescoping geom_sum_mul. ALL THREE outer-range
+φ-ingredients now banked: rphi_ge_cubic (near cubic lower), rphi_le_exp (far per-term),
+rphi_geom_tail_le (far overhang geometric). Session ~49 axiom-clean thm.
+Remaining: final outer-range assembly — dW/ds<0 for N>M by (near cubic surplus >
+geometric overhang), handling the arg≥1 δ-split (only far terms mδ≳1 use rphi_le_exp;
+near terms use rphi_ge_cubic + rphi_paired_sum_gt). Then latticeEnergyS_strictAntiOn extends
+to N>M ⟹ full constant-δ lattice (S-mono). Then (F)-fields, Lemma R, capstone, #147.
+
+## 2026-07-05 (cont.8) — outer-range REDUCED to a scalar inequality
+SpurLattice.lean (axiom-clean): latticeEnergyS_deriv_neg_outer (dW/ds<0 for N>M given
+overhang < paired surplus, via range/Ico split) + latticeEnergyS_deriv_neg_outer_of_near
+(sharper: given overhang < NEAR MARGIN φ(s/2)-φ((δ-s)/2), since paired surplus ≥ its m=0 term
+via Finset.single_le_sum + rphi_pair_gt). So the FULL outer range now reduces to ONE scalar
+inequality hnear, dischargeable by rphi_geom_tail_le (overhang ≤ geom) + rphi_ge_cubic (near
+≥ cubic). Session ~51 axiom-clean thm. Remaining: prove hnear under explicit s-smallness
+(cubic>geom+δ-split) ⟹ unconditional outer strictAntiOn ⟹ full constant-δ lattice (S-mono);
+then (F)-fields, Lemma R, capstone, #147.
+
+## 2026-07-05 (cont.9) — outer range CLOSED modulo one scalar inequality
+SpurLattice.lean (axiom-clean): overhang_le_geom (Ico-sum reindex + rphi_geom_tail_le ⟹
+overhang ≤ 64e^{-(δ-s+Mδ)}/(1-e^{-δ}), closed form) + latticeEnergyS_deriv_neg_outer_scalar
+(composes overhang_le_geom + rphi_ge_cubic (2/s³) + rphi_le_exp ⟹ dW/ds<0 for N>M given the
+single scalar `64e^{-(δ-s+Mδ)}/(1-e^{-δ}) + 64e^{-(δ-s)} < 2/s³`, NO sums). So BOTH ranges of
+constant-δ lattice dW/ds<0 are Lean theorems: no-overhang (unconditional, latticeEnergyS_deriv_neg
+/strictAntiOn) + outer (scalar-conditional). Session ~53 axiom-clean thm / ~730 lines.
+Remaining: (i) the scalar holds for s ≤ s₀(δ,M) [2/s³→∞ calculus] ⟹ unconditional outer
+strictAntiOn; (ii) assemble both ranges ⟹ full constant-δ lattice (S-mono); (iii) (F)-fields,
+Lemma R, capstone, #147.
+
+## 2026-07-05 (cont.10) — MILESTONE: constant-δ lattice dW/ds<0 both ranges Lean-closed
+scalar_lhs_le (outer scalar LHS ≤ δ-only constant C(δ)=64e^{-δ/2}(1/(1-e^{-δ})+1), via δ-s≥δ/2)
++ latticeEnergyS_deriv_neg_outer_small (outer dW/ds<0 needs only C(δ)<2/s³, holds ∀ s≤(2/C(δ))^{1/3}).
+So constant-δ lattice dW/ds<0 mechanism CLOSED: no-overhang unconditional + outer for small s
+(= the outer range's actual s~1/d). Session ~55 axiom-clean thm / ~750 lines coth/csch+lattice
+theory (new to mathlib). Remaining for #142/#138: (a) assemble outer_small into strictAntiOn on
+the small-s interval + combine with no-overhang ⟹ full lattice (S-mono) sequence-monotone;
+(b) (F)-field lift (χ1/χ2 = nondecreasing-gap variant, same disjoint-interval bound);
+(c) Lemma R (#139, Hermite uniform asymptotics — the hardest, likely new mathlib); (d) SPUR-R
+capstone (discharge AMPReaderInput); (e) #147 (B⁗ writeouts). #130 = RH frontier (reduction-banked).
+
+## 2026-07-05 (cont.11) — (S-mono) CONCLUSION in sequence form banked
+latticeEnergyS_seq_strictMono (axiom-clean): given the march's strictly-decreasing s-sequence
+(s i ∈(0,δ/2), from equilibrium_gt_of_field_gt), W(s i) is strictly INCREASING = S_{i+1}>S_i,
+the reader-exactness monotonicity, unconditional for no-overhang 1≤N≤M. This is the (S-mono)
+CONCLUSION (no-overhang). Session ~56 axiom-clean thm. Feeds amp_reader_exact_pair_of_chain
+(SpurCapstone, already banked) ⟹ Z_c=2. Remaining: outer strictMono (compose outer_small over
+the small-s march tail), (F)-field lift, Lemma R (#139), SPUR-R capstone (AMPReaderInput), #147.
+
+## 2026-07-05 (cont.12) — CAPSTONE: lattice (S-mono) ⟹ reader-exactness Z=2 wired
+SpurLatticeReader.lean (NEW, axiom-clean, umbrella-wired): latticeEnergyS_antitoneOn (the (S-mono)
+dressing) + isChain_map_ge_on (local AntitoneOn dressing → nonincreasing AMP chain, the
+global-Antitone SpurSMono lemma relaxed to the (0,δ/2) domain) + lattice_reader_exact (CAPSTONE:
+lattice (S-mono) dressing over in-domain AdjacentStepPos s-list + finite reader hyps ⟹ Z=2, via
+amp_reader_exact_pair_of_chain_ge). So the ENTIRE CothInfra+SpurLattice (S-mono) stack (~57 thm)
+now provably feeds the SPUR-R reader capstone → Z_c=2. Remaining input = the (F)-field
+identification (actual section margins = W over the equilibrium s-list), stated as hS+hmem.
+Session ~58 axiom-clean thm / ~800 lines. Remaining for #135/#142: discharge (F)-field
+identification (section↔lattice modeling); outer strictMono; Lemma R (#139); #147.
+
+## 2026-07-05 (cont.13) — (S-mono) strictAntiOn BOTH ranges Lean-closed
+latticeEnergyS_strictAntiOn_outer (axiom-clean): outer-range strictAntiOn on the small-s
+interval (0,r) via latticeEnergyS_deriv_neg_outer_small pointwise + strictAntiOn_of_deriv_neg,
+under the explicit regime (hbase/hfar/hsmall on (0,r)). So the (S-mono) strictAntiOn is now
+closed for BOTH charge regimes: no-overhang (unconditional, latticeEnergyS_strictAntiOn) + outer
+(latticeEnergyS_strictAntiOn_outer). Feeds latticeEnergyS_seq_strictMono (S_{i+1}>S_i) and the
+lattice_reader_exact capstone (Z_c=2) for both ranges. Session ~59 axiom-clean thm / ~830 lines.
+Remaining SPUR-R: (F)-field identification (section↔lattice modeling, = hS+hmem of
+lattice_reader_exact); Lemma R (#139, Hermite asymptotics); #147.
+
+## 2026-07-05 (cont.14) — Lemma R (#139) two-term boundary banked
+HermiteTwoTerm.lean (NEW, axiom-clean, umbrella-wired): hermite_two_eq (He₂=X²-1),
+hermite_three_eq (He₃=X³-3X), hermite_four_eq (He₄=X⁴-6X²+3), hermite_two_term_boundary —
+proves the EXACT structural reason for #139's m≤3/m≥4 split: He_m is the two-term Xᵐ-C(m,2)Xᵐ⁻²
+iff m≤3, so doc 25's (E5) two-term expansion closes the cluster splitting unconditionally for
+m≤3; He₄'s trailing +3 is the third term the two-term form misses ⟹ m≥4 needs the full
+heat-resummed Lemma R (all cumulant orders). Session ~63 axiom-clean thm. Remaining #139: the
+FULL Lemma R uniform asymptotic Ã_d(x*+σs)=aₘσᵐ(Heₘ(s)+O(d^{-1/2})) — research-grade uniform
+complex asymptotics (Laplace/heat method on Jensen sections), needs section-asymptotic mathlib
+infra not yet built. Remaining SPUR-R: (F)-field modeling; full Lemma R; #147.
+
+## Cycle 52 (2026-07-05) — Route B goal opened: audit + engine census + the √-cascade
+
+Goal (/goal #29): Route B ground to terminal state — full Lean (CR-density) via
+mollified dip, or detailed refutation. Session seed 1111089585816317988.
+
+- Map rebuilt: Route B = doc 56 chain; counting layer verified banked
+  (MollifiedDip/SecondMoment/ParityCounting/Registration); sole open input
+  (K-bdd) [+ (K-mild), shown reducible]. Card:
+  pipeline/1-in-progress/route-b-kernel-terminal.md. Doc 84 opened.
+- AUDIT (doc 84 §1): found + fixed arithmetic bug in doc 56 §5 (ε(c) = O(√c)
+  wrong with A=B=c^{-1/2}; corrected ε(c) = O(κ²c^{1/3}) at δ = 1/3); added
+  third pruning clause (P-mass); BV support corrected (y₁ not y); (K-mild) ⟸
+  kernel-q₀ + Boutroux–Cartan. Chain SURVIVES — no registration-gap-class
+  unsoundness (dip fires unconditionally at σ = ½; mollified registers).
+- NEGATIVE (doc 84 §3): the line-zero atom wall — every ζ-transfer route for
+  the kernel dies at exponent 1 (ζ's on-line zeros = linear atom; (2k)!-moments
+  cap Chernoff; parity-excision → ζ's own pair census, circular). Kernel is
+  polynomial-native (P's zeros 2D-spread, atom r²-grade, feedback o(1)).
+- ENGINE CENSUS (doc 84 §2; prereg + probe_kbdd_engine, first run of doc 58
+  §5): P4a FALSIFIER FIRED (codim-2 not codim-4; single dominant direction =
+  mollifier value); P4b PASS 40×; P5 fails at τ ∈ {1,2} (the 4-point
+  collision-census defect, ~20%, lag-localized — same object as docs 80–81);
+  P6 PASS asymptotically (one-point transfer err(N) → 0).
+- MACHINE (doc 84 §4): slice-Esseen — top band (N^{3/4}, N] conditionally
+  LINEAR (pairs vanish at θ = ½), product-J₀ ⟹
+  sup_z P(|P_∞ − z| ≤ r) ≤ C r² E[1/w ∧ r^{−2}]; exponent-preserving.
+- CRUX (doc 84 §5): (FLOOR); obstruction = self-similar cascade (W3-species).
+  Floor probe: eigen-spread REAL and growing (λ₂/λ₁ 0.22→0.29), w linear
+  (κ = 2 borderline, slope 0.95–0.97), densities bounded every level; flag:
+  L1 density drifts up (Graham-limit transient? must prove N-uniformity).
+- BREAKTHROUGH CANDIDATE (doc 84 §7): the √-cascade — two mutually pair-free
+  slices (N^{15/16}, N] × (N^{9/16}, N^{5/8}] ⟹ per-level dens ≤ B·√(deeper)
+  ⟹ 𝒦 ≤ B² regardless of B; boundary badness attenuates as 2^{−J} =
+  (logN)^{−2.41}. Concavity beats the compounding. P-F4 registered (joint
+  slope ∈ [1.6, 2.2]); probe running.
+- Literature mined: Bohr–Jessen/Jessen–Wintner density results live at the
+  limit law σ > 1/2; RMF small-ball uniform-in-N not in print. (FLOOR) is
+  open ground as typed.
+
+## 2026-07-05 (cont.15) — Jensen-section substrate FOUNDED (Lemma R #139 layer)
+JensenSection.lean (NEW, axiom-clean, umbrella-wired): rescaledSection (Ã_d(z)=Σφ_d(j)c_j z^j),
+heatApprox (Σc_j(1-C(j,2)/d)z^j = g-z²g''/(2d)), rescaledSection_sub_heatApprox_abs_le (the (E5)
+TWO-TERM section bound: |Ã_d - heatApprox| ≤ (Σ|c_j|C(j,2)²ρ^j)/(2d²) on |z|≤ρ, by summing
+SpurRescale.phi_first_order coefficientwise). This is the (R1) FOUNDATION of Lemma R — the
+section-asymptotics layer the directive said to build ("not in mathlib → create it").
+Session ~64 axiom-clean thm. Next Lemma R layers: cluster-scale expansion near an m-fold zero
+(z=x*+σu, σ=|x*|/√d) ⟹ leading a_m σ^m(u^m - C(m,2)u^{m-2}) = a_m σ^m He_m(u) for m≤3
+(hermite_two_term_boundary); then heat resummation to all orders for m≥4 (full Lemma R).
+
+## 2026-07-05 (cont.16) — Jensen-section (E4) heat-form identity
+JensenSection.lean +carrier, curvatureTerm, heatApprox_eq (axiom-clean): heatApprox = g -
+(z²g''/2)/d, the exact backward-heat form (doc 25 (E4)). Section-substrate now: rescaledSection,
+heatApprox, carrier, curvatureTerm + (E5) two-term bound + (E4) heat-form. Session ~65 axiom-clean
+thm. Next Lemma R layer: recentered-monomial cluster form (g=a_m(z-x*)^m, z=x*+σu, σ²=x*²/d) ⟹
+heatApprox = a_m σ^m(u^m - C(m,2)u^{m-2}) + freezing-O(σ) = a_m σ^m He_m(u) for m≤3
+(hermite_two_term_boundary); then Rouché zero-location + heat resummation (m≥4).
+
+## 2026-07-05 (cont.17) — Lemma R cluster-Hermite scaling (m≤3) banked
+HermiteTwoTerm.lean +aeval_hermite_two/three (He₂(u)=u²-1, He₃(u)=u³-3u real evals) +
+cluster_hermite_scaling_two/three (a_m σ^m(u^m - C(m,2)u^{m-2}) = a_m σ^m He_m(u) for m=2,3 —
+the m≤3 cluster conclusion at the algebraic level). Session ~69 axiom-clean thm. Lemma R (#139)
+substrate now: (E5) two-term section bound + (E4) heat-form + Hermite two-term boundary + cluster
+scaling m≤3. Remaining full Lemma R: recentered-monomial (E4) evaluation at z=x*+σu (connecting
+heatApprox to the a_m σ^m cluster form, incl. R3 freezing O(σ)); Rouché zero-location; heat
+resummation to all cumulant orders for m≥4. (F)-field modeling; #147; #130=RH-banked.
+
+## 2026-07-05 (cont.18) — Jensen-section carrier derivative banked
+JensenSection.lean +carrier_hasDerivAt (g'(z)=Σc_j·j·z^{j-1}, via hasDerivAt_pow + fun_sum) —
+connects the section substrate to the actual carrier derivative, toward the recentered cluster
+evaluation g(x*+σu). Session ~70 axiom-clean thm. Next: carrier second derivative + curvatureTerm
+= z²g''/2 (E4 derivative form); then recentered-monomial cluster evaluation ⟹ Lemma R m≤3
+end-to-end; then m≥4 heat resummation.
+
+## 2026-07-05 (cont.19) — Jensen-section carrier is C² (both derivatives banked)
+JensenSection.lean +carrier_deriv_hasDerivAt (g''(z)=Σc_j·j·(j-1)·z^{j-2}, via hasDerivAt_pow +
+ℕ-exp omega). Carrier now C² with explicit g', g''. Session ~71 axiom-clean thm. Next: curvatureTerm
+= z²g''/2 (E4 deriv form, needs j=0,1 case analysis for ℕ-cast) ⟹ heatApprox = g - z²g''/(2d) at
+function level; then recentered-monomial cluster eval; then m≥4 heat resummation (research-grade).
+
+## 2026-07-05 (cont.20) — Jensen-section (E4) derivative form banked
+JensenSection.lean +curvatureTerm_eq_deriv (curvatureTerm = z²g''/2, coefficient curvature =
+analytic z²g''/2, via j=0/1/k+2 case split + Nat.cast_choose_two + pow_add). With heatApprox_eq +
+carrier_deriv_hasDerivAt this gives heatApprox = g - z²g''/(2d) at function level (both E4 forms).
+Session ~72 axiom-clean thm. Substrate now: carrier C², (E4) coeff+deriv forms, (E5) two-term
+bound, Hermite boundary+cluster scaling m≤3. Next: recentered-monomial cluster eval (g''(x*+σu)
+for the pure monomial) ⟹ Lemma R m≤3 end-to-end; then m≥4 heat resummation.
+
+## 2026-07-05 (cont.21) — recentered monomial C² (cluster carrier) banked
+JensenSection.lean +monomial_hasDerivAt (g'=am·m·(z-x*)^{m-1}) +monomial_hasDerivAt2
+(g''=am·m·(m-1)·(z-x*)^{m-2}), the recentered m-fold-zero carrier, C² with clean derivatives.
+Session ~74 axiom-clean thm. Next: assemble heat form g-z²g''/(2d) at z=x*+σu using
+monomial_hasDerivAt2 ⟹ am·σ^m(u^m-C(m,2)u^{m-2}) + freezing-O(σ) at σ²d=x*² ⟹ (via
+cluster_hermite_scaling) am·σ^m He_m(u) for m≤3 = Lemma R m≤3 end-to-end; then m≥4 heat resummation.
+
+## Cycle 52 (continued) — the premise falls; escapes priced; the fork
+
+- P-F6 falsifier FIRED (no low-variance γ-range; profile grows ~1.9×Δloglog).
+- P-F7 Branch B: V(N) = −1.58 + 2.27·loglogN; retrodicts doc 56 §9's
+  V_BV(400) = 2.48 exactly. Doc 56 §3's V = O(1) FALSE as typed. All growth
+  in the boundary band (V_inner → Graham constant, decelerating).
+- P-F8 FAIL: smooth cutoff does not kill it — intrinsic to the class.
+- SCALE-COVARIANCE find: κ² cancels under the normalized re-typing
+  (K-bdd-n); V-growth alone is not the executioner — the normalized density
+  is. P-F5 fork: saturation ⟹ re-type and continue; growth ⟹ terminal.
+- √-cascade RETRACTED (doc 84 §9 — linear self-reference, a₁ ≫ 1); P-F4
+  measured joint exponent 1.25 (fails registration band, above falsifier).
+- Rough-product seed identified (Π_z: char factorizes, N-uniform density —
+  the one unconditional seed; separated by O(1)-L² gap (SEED-GAP)).
+- Coefficient-vanishing lemma PROVED + Lean-banked (RouteBSupport.lean, 4
+  endpoints axiom-clean): boundary band is single-large-prime ⟹ carrier
+  conditionally linear in ALL large primes (mass log 2). P4a falsifier had
+  fired (codim-2, not 4); P4b passed 40×.
+- Escapes: E1 consumer CLOSED, E2 smooth CLOSED, E5 θ-dial CLOSED (two dials
+  fight; V(θ=¼) worse in total), E3 finite-height survives below crossover,
+  E6 typed as the universality no-go conjecture.
+- Probes archived: computations/mwm_kbdd/{probe_kbdd_engine, probe_floor,
+  probe_sqrtcascade, probe_gamma_profile, probe_vdrift, probe_vsmooth,
+  probe_pf5, probe_pf5b}.{py,out,json}; prereg.md PREREG-1..5.
+
+## 2026-07-05 (cont.22) — CLUSTER CRUX: heatMono_cluster banked (Lemma R hardest core)
+JensenSection.lean +heatMono_cluster (axiom-clean): the EXACT cluster identity — recentered
+monomial heat form g-z²g''/(2d) at z=x*+σu, σ²d=x*², splits EXACTLY into
+am·σ^m(u^m-C(m,2)u^{m-2}) [Hermite two-term] - am·m(m-1)σ^{m-2}u^{m-2}(2x*σu+σ²u²)/(2d) [R3
+freezing O(σ)]. Proof: expand (x*+σu)² + substitute x*²=σ²d + push_cast + field_simp + ring
+(leaner than field_simp+linear_combination which timed out). This is the hardest ALGEBRAIC core
+of Lemma R (#139) — doc 25 §3.1 made exact. Session ~75 axiom-clean thm. Next: m≤3 end-to-end
+(heatMono_cluster + cluster_hermite_scaling ⟹ am·σ^m·He_m(u) - freezing); then m≥4 heat
+resummation to all cumulant orders (research-grade uniform asymptotics).

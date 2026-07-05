@@ -26,6 +26,7 @@ import GaloisForLFunctions.RHTower.GermExtension
 import GaloisForLFunctions.RHTower.SquareLadder
 import GaloisForLFunctions.RHTower.PerturbationZero
 import GaloisForLFunctions.RHTower.WindowRelation
+import GaloisForLFunctions.RHTower.SeamCocycle
 import Mathlib.Analysis.Complex.JensenFormula
 
 namespace RHTower
@@ -741,5 +742,153 @@ theorem xiDescent_coherentTower_slitPlane_iff_all_finite_window_relations_all_le
           ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z [MOD 2 ^ (k + 1)]) := by
   exact (rh_iff_xiDescent_coherentTower_slitPlane).symm.trans
     rh_iff_all_finite_window_relations_all_levels
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **Euler-side germ continuation is the u-plane coherent tower surface.**  The
+all-level continuation of every far-half dyadic ξ root germ is equivalent to the
+coherent dyadic Kummer tower for `xiDescent` on the slit plane. -/
+theorem all_farHalf_germs_extend_all_levels_iff_xiDescent_coherentTower_slitPlane :
+    (∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
+      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+        Set.EqOn g g₁ farHalf) ↔
+      Nonempty (CoherentTower xiDescent slitPlane) := by
+  exact (rh_iff_all_farHalf_germs_extend_all_levels).symm.trans
+    rh_iff_xiDescent_coherentTower_slitPlane
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- The two-circle modulus slope of `xiDescent` is the local vanishing order.
+This is the u-plane version of `xi_circleAverage_slope_eq_order`, using the
+Bottcher-backed descent and the seam-cocycle peel of the descended divisor. -/
+theorem xiDescent_circleAverage_slope_eq_order (w₀ : ℂ) :
+    ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+      (Real.circleAverage (fun z => Real.log ‖xiDescent z‖) w₀ r₂ -
+          Real.circleAverage (fun z => Real.log ‖xiDescent z‖) w₀ r₁) /
+        (Real.log r₂ - Real.log r₁) = ((analyticOrderAt xiDescent w₀).toNat : ℝ) := by
+  obtain ⟨R₀, hR₀, h, hhan, hh0, hfact⟩ := xiDescent_peel_ball w₀
+  refine ⟨R₀, hR₀, ?_⟩
+  intro R r₁ r₂ hr₁ hr₁₂ hr₂R hRle
+  have hsub : ball w₀ R ⊆ ball w₀ R₀ := ball_subset_ball hRle
+  rw [circleAverage_log_norm_single_zero (hr₁.trans hr₁₂) hr₂R
+      (fun z hz => hhan z (hsub hz)) (fun z hz => hh0 z (hsub hz))
+      (fun z hz => hfact z (hsub hz)),
+    circleAverage_log_norm_single_zero hr₁ (hr₁₂.trans hr₂R)
+      (fun z hz => hhan z (hsub hz)) (fun z hz => hh0 z (hsub hz))
+      (fun z hz => hfact z (hsub hz))]
+  have hlog : Real.log r₁ < Real.log r₂ := Real.log_lt_log hr₁ hr₁₂
+  rw [div_eq_iff (sub_ne_zero.mpr hlog.ne')]
+  ring
+
+/-- Local `xiDescent` modulus criterion for a dyadic rung.  The root-of-unity value
+of the two-circle slope of `log ‖xiDescent‖` is trivial exactly when the descended
+zero order is divisible by `2^k`. -/
+theorem xiDescent_circleAverage_slope_exp_eq_one_iff_order_dvd (w₀ : ℂ) (k : ℕ) :
+    ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+      (exp (2 * (Real.pi : ℂ) * I *
+          (((Real.circleAverage (fun z => Real.log ‖xiDescent z‖) w₀ r₂ -
+              Real.circleAverage (fun z => Real.log ‖xiDescent z‖) w₀ r₁) /
+            (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 ↔
+        ((2 ^ k : ℕ) : ℕ∞) ∣ analyticOrderAt xiDescent w₀) := by
+  obtain ⟨R₀, hR₀, hslope⟩ := xiDescent_circleAverage_slope_eq_order w₀
+  refine ⟨R₀, hR₀, ?_⟩
+  intro R r₁ r₂ hr₁ hr₁₂ hr₂R hRle
+  rw [hslope hr₁ hr₁₂ hr₂R hRle]
+  have h2k : 0 < 2 ^ k := pow_pos (by norm_num) k
+  have hcast : ((((analyticOrderAt xiDescent w₀).toNat : ℝ) : ℂ) =
+      (((analyticOrderAt xiDescent w₀).toNat : ℕ) : ℂ)) := by norm_cast
+  rw [hcast, exp_two_pi_mul_div_eq_one_iff h2k]
+  set m : ℕ := (analyticOrderAt xiDescent w₀).toNat with hm_def
+  have hm : (m : ℕ∞) = analyticOrderAt xiDescent w₀ :=
+    ENat.coe_toNat (xiDescent_orderAt_ne_top w₀)
+  constructor
+  · rintro ⟨c, hc⟩
+    rw [← hm, hc]
+    exact ⟨(c : ℕ∞), by push_cast; ring⟩
+  · intro hdvd
+    rw [← hm] at hdvd
+    exact natCast_dvd_natCast_of_enat (pow_ne_zero k two_ne_zero) hdvd
+
+/-- **The u-plane coherent tower is exactly the all-level `xiDescent` modulus surface.**
+On the slit plane, the coherent dyadic Kummer tower exists iff every descended zero
+has trivial two-circle modulus-slope root-of-unity at every finite dyadic level. -/
+theorem xiDescent_coherentTower_slitPlane_iff_all_circleAverage_slope_exp_eq_one :
+    Nonempty (CoherentTower xiDescent slitPlane) ↔
+      ∀ k : ℕ, ∀ w ∈ slitPlane, xiDescent w = 0 →
+        ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+          exp (2 * (Real.pi : ℂ) * I *
+              (((Real.circleAverage (fun z => Real.log ‖xiDescent z‖) w r₂ -
+                  Real.circleAverage (fun z => Real.log ‖xiDescent z‖) w r₁) /
+                (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+  rw [xiDescent_coherentTower_slitPlane_iff_all_order_dvd]
+  constructor
+  · intro hdiv k w hw hwzero
+    obtain ⟨R₀, hR₀, hiff⟩ := xiDescent_circleAverage_slope_exp_eq_one_iff_order_dvd w k
+    exact ⟨R₀, hR₀, fun {R r₁ r₂} hr₁ hr₁₂ hr₂R hRle =>
+      (hiff hr₁ hr₁₂ hr₂R hRle).mpr (hdiv k w hw hwzero)⟩
+  · intro hmod k w hw hwzero
+    obtain ⟨R₁, hR₁, hiff⟩ := xiDescent_circleAverage_slope_exp_eq_one_iff_order_dvd w k
+    obtain ⟨R₂, hR₂, hexp⟩ := hmod k w hw hwzero
+    set Rm : ℝ := min R₁ R₂ with hRm_def
+    have hRm_pos : 0 < Rm := by
+      rw [hRm_def]
+      exact lt_min hR₁ hR₂
+    have hr₁ : 0 < Rm / 4 := by linarith
+    have hr₁₂ : Rm / 4 < Rm / 2 := by linarith
+    have hr₂R : Rm / 2 < Rm := by linarith
+    have hRle₁ : Rm ≤ R₁ := by
+      rw [hRm_def]
+      exact min_le_left _ _
+    have hRle₂ : Rm ≤ R₂ := by
+      rw [hRm_def]
+      exact min_le_right _ _
+    have hcrit := hiff (R := Rm) (r₁ := Rm / 4) (r₂ := Rm / 2) hr₁ hr₁₂ hr₂R hRle₁
+    have hval := hexp (R := Rm) (r₁ := Rm / 4) (r₂ := Rm / 2) hr₁ hr₁₂ hr₂R hRle₂
+    exact hcrit.mp hval
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **The descended seam ledger is modulus-readable.**  The seam jump of bank roots of
+`xiDescent` can be written using only the two-circle slope of `log ‖xiDescent‖`, so the
+u-plane seam charge is a boundary-modulus constraint rather than an internal order count. -/
+theorem xiDescent_seam_jump_eq_circleAverage_slope (x₀ : ℂ) :
+    ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+      ∀ {n : ℕ}, 0 < n →
+      ∀ {GU GD G₁ G₂ : ℂ → ℂ},
+      AnalyticOnNhd ℂ G₁ (chartR x₀ R) → AnalyticOnNhd ℂ G₂ (chartL x₀ R) →
+      (∀ z ∈ chartR x₀ R, G₁ z ^ n = xiDescent z) →
+      (∀ z ∈ chartL x₀ R, G₂ z ^ n = xiDescent z) →
+      ∀ {qP qM : ℂ}, qP ∈ overlapU x₀ R → qM ∈ overlapD x₀ R →
+      GU qP ^ n = xiDescent qP → GD qM ^ n = xiDescent qM →
+      (GU qP / G₂ qP) / (GD qM / G₂ qM) =
+        exp (2 * (Real.pi : ℂ) * I *
+            (((Real.circleAverage (fun z => Real.log ‖xiDescent z‖) x₀ r₂ -
+                Real.circleAverage (fun z => Real.log ‖xiDescent z‖) x₀ r₁) /
+              (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / n) *
+          ((GU qP / G₁ qP) / (GD qM / G₁ qM)) := by
+  obtain ⟨Rs, hRs, hseam⟩ := xiDescent_seam_jump x₀
+  obtain ⟨Rm, hRm, hslope⟩ := xiDescent_circleAverage_slope_eq_order x₀
+  refine ⟨min Rs Rm, lt_min hRs hRm, ?_⟩
+  intro R r₁ r₂ hr₁ hr₁₂ hr₂R hRle n hn GU GD G₁ G₂ hG₁ hG₂ hpG₁ hpG₂ qP qM hqP hqM hpGU hpGD
+  have hRpos : 0 < R := lt_trans hr₁ (lt_trans hr₁₂ hr₂R)
+  have hRleS : R ≤ Rs := le_trans hRle (min_le_left _ _)
+  have hRleM : R ≤ Rm := le_trans hRle (min_le_right _ _)
+  have hjump := hseam hRpos hRleS hn hG₁ hG₂ hpG₁ hpG₂ hqP hqM hpGU hpGD
+  have hs := hslope hr₁ hr₁₂ hr₂R hRleM
+  rw [hjump, hs]
+  norm_cast
 
 end RHTower

@@ -125,6 +125,38 @@ theorem rphi_le_exp {u : ℝ} (hu : 1 ≤ u) : rphi u ≤ 64 * Real.exp (-2 * u)
       ≤ Real.exp u / (Real.exp (3 * u) / 64) := by gcongr
     _ = 64 * Real.exp (-2 * u) := hfinal
 
+/-- **Geometric tail bound**: `Σ_{n<K} φ(a+nδ) ≤ 64 e^{−2a}/(1−e^{−2δ})` for `a ≥ 1`,
+`δ > 0`. The far-behind overhang is a convergent geometric series — each `φ` at argument
+`≥ 1` decays like `e^{−2·arg}` (via `rphi_le_exp`). -/
+theorem rphi_geom_tail_le {a δ : ℝ} (ha : 1 ≤ a) (hδ : 0 < δ) (K : ℕ) :
+    ∑ n ∈ Finset.range K, rphi (a + n * δ)
+      ≤ 64 * Real.exp (-2 * a) / (1 - Real.exp (-2 * δ)) := by
+  set r := Real.exp (-2 * δ) with hr_def
+  have hr0 : 0 < r := Real.exp_pos _
+  have hr1 : r < 1 := by rw [hr_def, Real.exp_lt_one_iff]; linarith
+  have hden : (0 : ℝ) < 1 - r := by linarith
+  have hbound : ∀ n ∈ Finset.range K, rphi (a + n * δ) ≤ 64 * Real.exp (-2 * a) * r ^ n := by
+    intro n _
+    have han : (1 : ℝ) ≤ a + n * δ := by
+      have : (0 : ℝ) ≤ (n : ℝ) * δ := by positivity
+      linarith
+    calc rphi (a + n * δ) ≤ 64 * Real.exp (-2 * (a + n * δ)) := rphi_le_exp han
+      _ = 64 * Real.exp (-2 * a) * r ^ n := by
+          rw [hr_def, ← Real.exp_nat_mul,
+            show -2 * (a + (n : ℝ) * δ) = -2 * a + (n : ℝ) * (-2 * δ) from by ring,
+            Real.exp_add]
+          ring
+  have hgeom : ∑ n ∈ Finset.range K, r ^ n ≤ 1 / (1 - r) := by
+    rw [le_div_iff₀ hden]
+    have htel : (∑ n ∈ Finset.range K, r ^ n) * (1 - r) = 1 - r ^ K := by
+      linear_combination -(geom_sum_mul r K)
+    rw [htel]; nlinarith [pow_nonneg hr0.le K]
+  calc ∑ n ∈ Finset.range K, rphi (a + n * δ)
+      ≤ ∑ n ∈ Finset.range K, 64 * Real.exp (-2 * a) * r ^ n := Finset.sum_le_sum hbound
+    _ = 64 * Real.exp (-2 * a) * ∑ n ∈ Finset.range K, r ^ n := by rw [Finset.mul_sum]
+    _ ≤ 64 * Real.exp (-2 * a) * (1 / (1 - r)) := by gcongr
+    _ = 64 * Real.exp (-2 * a) / (1 - r) := by ring
+
 theorem cosh_one_lt_two : Real.cosh 1 < 2 := by
   rw [Real.cosh_eq]
   have h1 : Real.exp 1 < 2.7182818286 := Real.exp_one_lt_d9

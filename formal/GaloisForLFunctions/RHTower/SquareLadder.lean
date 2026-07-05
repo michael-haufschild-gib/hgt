@@ -121,3 +121,33 @@ theorem rh_iff_xiDescent_coherentTower_slitPlane :
   rw [rh_iff_xiDescent_ne_zero_slitPlane, ← htower]
 
 end RHTower
+
+namespace RHTower
+
+open Complex
+
+/-- **The u-plane coherent tower is exactly the all-level descended divisor constraint.**
+This connects the Bottcher-backed slit-plane descent to the U0 Kummer obstruction without
+routing through `RiemannHypothesis`: the coherent tower exists precisely when every
+slit-plane zero of `xiDescent` has order divisible by every finite dyadic level. -/
+theorem xiDescent_coherentTower_slitPlane_iff_all_order_dvd :
+    Nonempty (CoherentTower xiDescent slitPlane) ↔
+      ∀ k : ℕ, ∀ w ∈ slitPlane, xiDescent w = 0 →
+        ((2 ^ k : ℕ) : ℕ∞) ∣ analyticOrderAt xiDescent w := by
+  have hsc : IsSimplyConnected slitPlane := by
+    haveI : ContractibleSpace slitPlane :=
+      Complex.starConvex_one_slitPlane.contractibleSpace ⟨(1 : ℂ), Complex.one_mem_slitPlane⟩
+    exact SimplyConnectedSpace.ofContractible _
+  have hpc : IsPreconnected slitPlane :=
+    (Complex.starConvex_one_slitPlane.isPathConnected
+      Complex.one_mem_slitPlane).isConnected.isPreconnected
+  have hz : ((9 : ℂ) / 4) ∈ slitPlane := by
+    norm_num [Complex.mem_slitPlane_iff]
+  have hne : xiDescent ((9 : ℂ) / 4) ≠ 0 := by
+    rw [show ((9 : ℂ) / 4) = ((2 : ℂ) - 1 / 2) ^ 2 from by norm_num,
+      ← xi_eq_xiDescent]
+    exact xi_two_ne_zero
+  exact coherentTower_iff_orders_dvd_all_two_powers
+    Complex.isOpen_slitPlane hsc hpc (fun w hw => xiDescent_analyticAt hw) hz hne
+
+end RHTower

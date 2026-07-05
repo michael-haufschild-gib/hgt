@@ -365,6 +365,128 @@ theorem latticeEnergyS_deriv_neg {δ : ℝ} {M N : ℕ} {s : ℝ}
   have hlt := lt_of_lt_of_le hpair hsub
   linarith
 
+/-- **`dW/ds < 0` in the outer range `N > M`**, reduced to the domination hypothesis: the
+far-behind overhang `Σ_{M≤n<N} φ((δ−s+nδ)/2)` is beaten by the paired surplus
+`Σ_{m<M} φ((s+mδ)/2) − Σ_{n<M} φ((δ−s+nδ)/2)`. The overhang is bounded above by the geometric
+tail (`rphi_geom_tail_le`), the surplus below by the near cubic term (`rphi_ge_cubic` +
+`rphi_near_gt_far`) — so `hdom` holds once `s` is small relative to the gap, closing the
+outer range. -/
+theorem latticeEnergyS_deriv_neg_outer {δ : ℝ} {M N : ℕ} {s : ℝ} (hMN : M ≤ N)
+    (hdom : ∑ n ∈ Finset.Ico M N, rphi ((δ - s + (n : ℝ) * δ) / 2)
+      < (∑ m ∈ Finset.range M, rphi ((s + (m : ℝ) * δ) / 2))
+        - ∑ n ∈ Finset.range M, rphi ((δ - s + (n : ℝ) * δ) / 2)) :
+    (1 / 4) * ((∑ n ∈ Finset.range N, rphi ((δ - s + (n : ℝ) * δ) / 2))
+      - ∑ m ∈ Finset.range M, rphi ((s + (m : ℝ) * δ) / 2)) < 0 := by
+  have hsplit : (∑ n ∈ Finset.range M, rphi ((δ - s + (n : ℝ) * δ) / 2))
+      + ∑ n ∈ Finset.Ico M N, rphi ((δ - s + (n : ℝ) * δ) / 2)
+      = ∑ n ∈ Finset.range N, rphi ((δ - s + (n : ℝ) * δ) / 2) :=
+    Finset.sum_range_add_sum_Ico _ hMN
+  linarith [hsplit, hdom]
+
+/-- **Closed-form overhang bound.** The far-behind overhang `Σ_{M≤n<N} φ((δ−s+nδ)/2)` is
+below the geometric closed form `64·e^{−(δ−s+Mδ)}/(1−e^{−δ})` (reindex `n=M+k`, then
+`rphi_geom_tail_le` with base `(δ−s+Mδ)/2 ≥ 1` and step `δ/2`). With this, `hnear` becomes a
+pure scalar inequality — no sums. -/
+theorem overhang_le_geom {δ s : ℝ} {M N : ℕ} (hδ : 0 < δ)
+    (hbase : 1 ≤ (δ - s + (M : ℝ) * δ) / 2) :
+    ∑ n ∈ Finset.Ico M N, rphi ((δ - s + (n : ℝ) * δ) / 2)
+      ≤ 64 * Real.exp (-(δ - s + (M : ℝ) * δ)) / (1 - Real.exp (-δ)) := by
+  rw [Finset.sum_Ico_eq_sum_range]
+  have hreidx : ∀ k ∈ Finset.range (N - M),
+      rphi ((δ - s + ((M + k : ℕ) : ℝ) * δ) / 2)
+        = rphi ((δ - s + (M : ℝ) * δ) / 2 + (k : ℝ) * (δ / 2)) := by
+    intro k _
+    congr 1; push_cast; ring
+  rw [Finset.sum_congr rfl hreidx]
+  have hgeom := rphi_geom_tail_le hbase (by linarith : (0 : ℝ) < δ / 2) (N - M)
+  have he1 : (-2 : ℝ) * ((δ - s + (M : ℝ) * δ) / 2) = -(δ - s + (M : ℝ) * δ) := by ring
+  have he2 : (-2 : ℝ) * (δ / 2) = -δ := by ring
+  rw [he1, he2] at hgeom
+  exact hgeom
+
+/-- **Outer range reduced to the near margin.** Since the paired surplus dominates its `m=0`
+term (all paired differences are positive, `rphi_pair_gt`), `dW/ds<0` for `N>M` follows once
+the far-behind overhang is below the near margin `φ(s/2) − φ((δ−s)/2)` — a single scalar
+inequality, with the overhang bounded by `rphi_geom_tail_le` and the margin below by
+`rphi_ge_cubic`. This is the outer-range analogue of `latticeEnergyS_deriv_neg`. -/
+theorem latticeEnergyS_deriv_neg_outer_of_near {δ : ℝ} {M N : ℕ} {s : ℝ}
+    (hs0 : 0 < s) (hsδ : 2 * s < δ) (hM : 1 ≤ M) (hMN : M ≤ N)
+    (hnear : ∑ n ∈ Finset.Ico M N, rphi ((δ - s + (n : ℝ) * δ) / 2)
+      < rphi (s / 2) - rphi ((δ - s) / 2)) :
+    (1 / 4) * ((∑ n ∈ Finset.range N, rphi ((δ - s + (n : ℝ) * δ) / 2))
+      - ∑ m ∈ Finset.range M, rphi ((s + (m : ℝ) * δ) / 2)) < 0 := by
+  apply latticeEnergyS_deriv_neg_outer hMN
+  have hsurplus : rphi (s / 2) - rphi ((δ - s) / 2)
+      ≤ (∑ m ∈ Finset.range M, rphi ((s + (m : ℝ) * δ) / 2))
+        - ∑ n ∈ Finset.range M, rphi ((δ - s + (n : ℝ) * δ) / 2) := by
+    rw [← Finset.sum_sub_distrib]
+    have h0mem : (0 : ℕ) ∈ Finset.range M := Finset.mem_range.mpr (by omega)
+    have hterms : ∀ m ∈ Finset.range M,
+        (0 : ℝ) ≤ rphi ((s + (m : ℝ) * δ) / 2) - rphi ((δ - s + (m : ℝ) * δ) / 2) := by
+      intro m _
+      have := rphi_pair_gt hs0 hsδ
+        (mul_nonneg (Nat.cast_nonneg m) (by linarith : (0 : ℝ) ≤ δ))
+      linarith
+    have hsingle := Finset.single_le_sum hterms h0mem
+    simpa using hsingle
+  linarith [hnear, hsurplus]
+
+/-- **Outer-range `dW/ds < 0`, reduced to a single explicit scalar inequality.** Combining the
+banked bounds — overhang ≤ geometric closed form (`overhang_le_geom`), near term ≥ cubic
+(`rphi_ge_cubic`, `1/(4(s/2)³)=2/s³`), far term ≤ exponential (`rphi_le_exp`) — the outer
+range closes provided `geometric-overhang + 64e^{−(δ−s)} < 2/s³`. That holds for `s` small
+(the cubic `2/s³ → ∞` swamps the bounded exponential terms), closing the constant-δ lattice
+(S-mono) in the outer range with NO remaining sums — only calculus in `(s, δ, M)`. -/
+theorem latticeEnergyS_deriv_neg_outer_scalar {δ : ℝ} {M N : ℕ} {s : ℝ}
+    (hs0 : 0 < s) (hs2 : s ≤ 2) (hsδ : 2 * s < δ) (hM : 1 ≤ M) (hMN : M ≤ N)
+    (hbase : 1 ≤ (δ - s + (M : ℝ) * δ) / 2) (hfar : 1 ≤ (δ - s) / 2)
+    (hscalar : 64 * Real.exp (-(δ - s + (M : ℝ) * δ)) / (1 - Real.exp (-δ))
+        + 64 * Real.exp (-(δ - s)) < 2 / s ^ 3) :
+    (1 / 4) * ((∑ n ∈ Finset.range N, rphi ((δ - s + (n : ℝ) * δ) / 2))
+      - ∑ m ∈ Finset.range M, rphi ((s + (m : ℝ) * δ) / 2)) < 0 := by
+  have hδ : 0 < δ := by linarith
+  apply latticeEnergyS_deriv_neg_outer_of_near hs0 hsδ hM hMN
+  have hoh := overhang_le_geom (N := N) hδ hbase
+  have hcub : (2 : ℝ) / s ^ 3 ≤ rphi (s / 2) := by
+    have h := rphi_ge_cubic (by linarith : 0 < s / 2) (by linarith : s / 2 ≤ 1)
+    have hid : (1 : ℝ) / (4 * (s / 2) ^ 3) = 2 / s ^ 3 := by field_simp; ring
+    rwa [hid] at h
+  have hexp : rphi ((δ - s) / 2) ≤ 64 * Real.exp (-(δ - s)) := by
+    have h := rphi_le_exp hfar
+    rwa [show (-2 : ℝ) * ((δ - s) / 2) = -(δ - s) from by ring] at h
+  linarith [hoh, hcub, hexp, hscalar]
+
+/-- The outer-range scalar LHS is bounded by the δ-only constant
+`C(δ) = 64 e^{−δ/2}(1/(1−e^{−δ}) + 1)` (since `δ−s ≥ δ/2` on `2s<δ`, and `Mδ ≥ 0`). -/
+theorem scalar_lhs_le {δ s : ℝ} (M : ℕ) (hs0 : 0 < s) (hsδ : 2 * s < δ) :
+    64 * Real.exp (-(δ - s + (M : ℝ) * δ)) / (1 - Real.exp (-δ)) + 64 * Real.exp (-(δ - s))
+      ≤ 64 * Real.exp (-δ / 2) / (1 - Real.exp (-δ)) + 64 * Real.exp (-δ / 2) := by
+  have hδ : 0 < δ := by linarith
+  have hden : (0 : ℝ) < 1 - Real.exp (-δ) := by
+    have : Real.exp (-δ) < 1 := by rw [Real.exp_lt_one_iff]; linarith
+    linarith
+  have he1 : Real.exp (-(δ - s + (M : ℝ) * δ)) ≤ Real.exp (-δ / 2) := by
+    apply Real.exp_le_exp.mpr
+    have : (0 : ℝ) ≤ (M : ℝ) * δ := mul_nonneg (Nat.cast_nonneg M) hδ.le
+    linarith
+  have he2 : Real.exp (-(δ - s)) ≤ Real.exp (-δ / 2) := by
+    apply Real.exp_le_exp.mpr; linarith
+  gcongr
+
+/-- **Outer-range `dW/ds < 0` under an explicit s-independent smallness.** Bounding the scalar
+LHS by `C(δ)` (`scalar_lhs_le`), the outer range closes once `C(δ) < 2/s³` — a clean condition
+with the constant depending on `δ` alone, and `s³` the only place `s` enters. Holds for every
+`s ≤ (2/C(δ))^{1/3}`: the outer range of the constant-δ lattice (S-mono), Lean-closed. -/
+theorem latticeEnergyS_deriv_neg_outer_small {δ : ℝ} {M N : ℕ} {s : ℝ}
+    (hs0 : 0 < s) (hs2 : s ≤ 2) (hsδ : 2 * s < δ) (hM : 1 ≤ M) (hMN : M ≤ N)
+    (hbase : 1 ≤ (δ - s + (M : ℝ) * δ) / 2) (hfar : 1 ≤ (δ - s) / 2)
+    (hsmall : 64 * Real.exp (-δ / 2) / (1 - Real.exp (-δ)) + 64 * Real.exp (-δ / 2)
+        < 2 / s ^ 3) :
+    (1 / 4) * ((∑ n ∈ Finset.range N, rphi ((δ - s + (n : ℝ) * δ) / 2))
+      - ∑ m ∈ Finset.range M, rphi ((s + (m : ℝ) * δ) / 2)) < 0 :=
+  latticeEnergyS_deriv_neg_outer_scalar hs0 hs2 hsδ hM hMN hbase hfar
+    (lt_of_le_of_lt (scalar_lhs_le M hs0 hsδ) hsmall)
+
 /-- **(S-mono) on the constant-δ lattice, no-overhang range.** For `1 ≤ N ≤ M`, the reduced
 energy `W(s)` is STRICTLY DECREASING in the near-ahead distance `s ∈ (0, δ/2)`. So as the
 march tightens the equilibrium toward the ahead pole (`s` shrinks, `equilibrium_gt_of_field_gt`),
@@ -384,5 +506,50 @@ theorem latticeEnergyS_strictAntiOn {δ : ℝ} {M N : ℕ} (hδ : 0 < δ) (hN : 
     rw [interior_Ioo, mem_Ioo] at hx
     rw [(hderiv x (mem_Ioo.mpr hx)).deriv]
     exact latticeEnergyS_deriv_neg hx.1 (by linarith [hx.2]) hN hNM
+
+/-- **(S-mono) on the constant-δ lattice, OUTER range**, as `StrictAntiOn` on a small-`s`
+interval `(0, r)`. On that interval the regime conditions (`hbase`, `hfar`, the scalar
+smallness `hsmall`) hold, so `latticeEnergyS_deriv_neg_outer_small` gives `dW/ds<0` pointwise
+and `strictAntiOn_of_deriv_neg` integrates it. Together with `latticeEnergyS_strictAntiOn`
+(no-overhang) this is (S-mono) for both charge regimes. -/
+theorem latticeEnergyS_strictAntiOn_outer {δ : ℝ} {M N : ℕ} {r : ℝ}
+    (hM : 1 ≤ M) (hMN : M ≤ N) (hr : 0 < r) (hr2 : r ≤ 2) (hrδ : 2 * r < δ)
+    (hbase : ∀ x ∈ Ioo (0 : ℝ) r, 1 ≤ (δ - x + (M : ℝ) * δ) / 2)
+    (hfar : ∀ x ∈ Ioo (0 : ℝ) r, 1 ≤ (δ - x) / 2)
+    (hsmall : ∀ x ∈ Ioo (0 : ℝ) r,
+      64 * Real.exp (-δ / 2) / (1 - Real.exp (-δ)) + 64 * Real.exp (-δ / 2) < 2 / x ^ 3) :
+    StrictAntiOn (latticeEnergyS δ M N) (Ioo 0 r) := by
+  have hδ : 0 < δ := by linarith
+  have hderiv : ∀ x ∈ Ioo (0 : ℝ) r, HasDerivAt (latticeEnergyS δ M N)
+      ((1 / 4) * ((∑ n ∈ Finset.range N, rphi ((δ - x + (n : ℝ) * δ) / 2))
+        - ∑ m ∈ Finset.range M, rphi ((x + (m : ℝ) * δ) / 2))) x := by
+    intro x hx
+    simp only [mem_Ioo] at hx
+    exact latticeEnergyS_hasDerivAt hδ hx.1 (by linarith [hx.2])
+  apply strictAntiOn_of_deriv_neg (convex_Ioo 0 r)
+  · exact fun x hx => (hderiv x hx).continuousAt.continuousWithinAt
+  · intro x hx
+    rw [interior_Ioo, mem_Ioo] at hx
+    rw [(hderiv x (mem_Ioo.mpr hx)).deriv]
+    exact latticeEnergyS_deriv_neg_outer_small hx.1 (by linarith [hx.2]) (by linarith [hx.2])
+      hM hMN (hbase x (mem_Ioo.mpr hx)) (hfar x (mem_Ioo.mpr hx)) (hsmall x (mem_Ioo.mpr hx))
+
+/-- The lattice reduced energy is an **antitone dressing** on the s-domain — the exact form
+`SpurSMono.ampReaderInput_of_smono_dressing_ge` consumes to package `AMPReaderInput`: the
+`s ↦ W(s)` map is the S-to-margin dressing, and (S-mono) is its (anti)monotonicity. -/
+theorem latticeEnergyS_antitoneOn {δ : ℝ} {M N : ℕ} (hδ : 0 < δ) (hN : 1 ≤ N) (hNM : N ≤ M) :
+    AntitoneOn (latticeEnergyS δ M N) (Ioo 0 (δ / 2)) :=
+  (latticeEnergyS_strictAntiOn hδ hN hNM).antitoneOn
+
+/-- **(S-mono), sequence form (no-overhang range).** Given a strictly DECREASING sequence of
+near-ahead distances `s i ∈ (0, δ/2)` — exactly what the s-march produces
+(`equilibrium_gt_of_field_gt`: each step tightens the equilibrium toward the ahead pole) —
+the reduced-energy sequence `W(s i)` is strictly INCREASING. This is the reader-exactness
+monotonicity `S_{i+1} > S_i` in abstract sequence form, unconditional for `1 ≤ N ≤ M`. -/
+theorem latticeEnergyS_seq_strictMono {δ : ℝ} {M N : ℕ} (hδ : 0 < δ) (hN : 1 ≤ N)
+    (hNM : N ≤ M) {s : ℕ → ℝ} (hs_mem : ∀ i, s i ∈ Ioo 0 (δ / 2))
+    (hs_anti : StrictAnti s) : StrictMono (fun i => latticeEnergyS δ M N (s i)) :=
+  fun _ _ hij =>
+    latticeEnergyS_strictAntiOn hδ hN hNM (hs_mem _) (hs_mem _) (hs_anti hij)
 
 end RHTower

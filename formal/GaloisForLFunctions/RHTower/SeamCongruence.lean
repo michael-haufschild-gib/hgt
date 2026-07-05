@@ -1293,6 +1293,76 @@ namespace RHTower
 
 open Complex Metric
 
+/-- **Relative EM two-sign parity certificate.** The explicit Euler-Maclaurin
+relative error ratio supplies relative ξ/completed-carrier control; the two sign
+tables discharge the seam `hL` congruence, giving the ANNEAL right-half window-count
+congruence and the U0 principal-log correction bound. -/
+theorem xi_window_parity_of_em_relative_two_sign_data {N M : ℕ} (k : ℕ) (hM : 1 ≤ M)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R η : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hη : η < 1)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip₂ : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hgN0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, gN N z ≠ 0)
+    (hEMrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      (‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖) /
+        ‖gN N z‖ ≤ η)
+    {s₁ : ℕ} {ts₁ : ℕ → ℝ}
+    (hmono₁ : ∀ i, i < s₁ → ts₁ i < ts₁ (i + 1))
+    (hsign₁ : ∀ i, i < s₁ →
+      (xi (linePoint (ts₁ i))).re * (xi (linePoint (ts₁ (i + 1)))).re < 0)
+    (hseg₁ : ∀ u : ℝ, ts₁ 0 ≤ u → u ≤ ts₁ s₁ → linePoint u ∈ ball a R)
+    (hcount₂₁ : ∑ z ∈ t₂, m₂ z ≤ s₁)
+    {s₂ : ℕ} {ts₂ : ℕ → ℝ}
+    (hmono₂ : ∀ i, i < s₂ → ts₂ i < ts₂ (i + 1))
+    (hsign₂ : ∀ i, i < s₂ →
+      (completedGN N (linePoint (ts₂ i))).re *
+        (completedGN N (linePoint (ts₂ (i + 1)))).re < 0)
+    (hseg₂ : ∀ u : ℝ, ts₂ 0 ≤ u → u ≤ ts₂ s₂ → linePoint u ∈ ball a R)
+    (hcount₂₂ : ∑ z ∈ t₂, m₂ z ≤ s₂) :
+    (∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z
+      ≡ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z [MOD 2 ^ k]) ∧
+      ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hG0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, completedGN N z ≠ 0 := by
+    intro z hz
+    obtain ⟨hσ, hz1⟩ := hchartStrip z hz
+    exact completedGN_ne_zero_of_gN_ne_zero hσ hz1 (hgN0 z hz)
+  have hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η := by
+    intro z hz
+    obtain ⟨hσ, hz1⟩ := hchartStrip z hz
+    exact completed_relative_error_of_em hM hσ hz1 (hgN0 z hz) (hEMrel z hz)
+  have hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖xi z - completedGN N z‖ < ‖completedGN N z‖ := by
+    intro z hz
+    have hzrel := hrel z hz
+    rw [norm_div] at hzrel
+    have hpos : 0 < ‖completedGN N z‖ := norm_pos_iff.mpr (hG0 z hz)
+    have hmul := mul_le_mul_of_nonneg_right hzrel (le_of_lt hpos)
+    rw [div_mul_cancel₀ _ hpos.ne'] at hmul
+    exact lt_of_le_of_lt hmul (by simpa using mul_lt_mul_of_pos_right hη hpos)
+  have hLeq : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+      = ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z :=
+    hL_exact_of_two_sign_data h0 hrR hm₁ hcl₁ hstrip₂ hm₂ hcl₂ hρ₁ hρ₂
+      hh hh0 hh' hh0' hfact₁ hfact₂ hdom hmono₁ hsign₁ hseg₁ hcount₂₁
+      hmono₂ hsign₂ hseg₂ hcount₂₂
+  have hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+      ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)] := by
+    rw [hLeq]
+  exact anneal_window_parity_transport_of_relative_close_gN_nonzero k h0 hrR hη
+    hchartStrip hm₁ hcl₁ hstrip₂ hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂
+    hgN0 hrel hL
+
 /-- **Relative EM two-sign rung certificate with the finite-side rung discharged.**
 The completed finite carrier's sign table proves its right-half count is zero, while
 relative EM control supplies the ANNEAL count transport and U0 log bound. Thus the ξ
@@ -1333,40 +1403,19 @@ theorem xi_rung_of_em_relative_two_sign_data {N M : ℕ} (k : ℕ) (hM : 1 ≤ M
       ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
         ‖Complex.log (xi z / completedGN N z)‖ ≤
           (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
-  have hG0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, completedGN N z ≠ 0 := by
-    intro z hz
-    obtain ⟨hσ, hz1⟩ := hchartStrip z hz
-    exact completedGN_ne_zero_of_gN_ne_zero hσ hz1 (hgN0 z hz)
-  have hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
-      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η := by
-    intro z hz
-    obtain ⟨hσ, hz1⟩ := hchartStrip z hz
-    exact completed_relative_error_of_em hM hσ hz1 (hgN0 z hz) (hEMrel z hz)
-  have hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
-      ‖xi z - completedGN N z‖ < ‖completedGN N z‖ := by
-    intro z hz
-    have hzrel := hrel z hz
-    rw [norm_div] at hzrel
-    have hpos : 0 < ‖completedGN N z‖ := norm_pos_iff.mpr (hG0 z hz)
-    have hmul := mul_le_mul_of_nonneg_right hzrel (le_of_lt hpos)
-    rw [div_mul_cancel₀ _ hpos.ne'] at hmul
-    exact lt_of_le_of_lt hmul (by simpa using mul_lt_mul_of_pos_right hη hpos)
-  have hLeq : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
-      = ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z :=
-    hL_exact_of_two_sign_data h0 hrR hm₁ hcl₁ hstrip₂ hm₂ hcl₂ hρ₁ hρ₂
-      hh hh0 hh' hh0' hfact₁ hfact₂ hdom hmono₁ hsign₁ hseg₁ hcount₂₁
-      hmono₂ hsign₂ hseg₂ hcount₂₂
-  have hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
-      ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)] := by
-    rw [hLeq]
+  obtain ⟨hparity, hlog⟩ :=
+    xi_window_parity_of_em_relative_two_sign_data k hM h0 hrR hη hchartStrip hm₁ hcl₁
+      hstrip₂ hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hgN0 hEMrel
+      hmono₁ hsign₁ hseg₁ hcount₂₁ hmono₂ hsign₂ hseg₂ hcount₂₂
   obtain ⟨-, hfin_zero⟩ :=
     completedGN_window_online_of_sign_data hstrip₂ hm₂ hcl₂ hh0' hfact₂
       hmono₂ hsign₂ hseg₂ hcount₂₂
   have hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z := by
     rw [hfin_zero]
     exact dvd_zero _
-  exact xi_rung_of_finite_side_of_em_relative_close k hM h0 hrR hη hchartStrip hm₁ hcl₁
-    hstrip₂ hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hgN0 hEMrel hL hfin
+  have hrung : 2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z :=
+    Nat.modEq_zero_iff_dvd.mp (hparity.trans (Nat.modEq_zero_iff_dvd.mpr hfin))
+  exact ⟨hrung, hlog⟩
 
 end RHTower
 
@@ -1511,5 +1560,132 @@ theorem xi_simple_window_and_rung_of_em_two_sign_data {N M : ℕ} (k : ℕ) (hM 
       hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hstripC hEM hmono₁ hsign₁ hseg₁ hcount₂₁
       hmono₂ hsign₂ hseg₂ hcount₂₂
   exact ⟨hsimple, hrung⟩
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **Raw relative two-sign parity certificate.** Relative `η < 1` closeness plus
+raw finite-carrier nonvanishing and two sign tables discharge the seam `hL`
+congruence and prove the ANNEAL right-half window-count congruence, while retaining
+the U0 principal-log correction bound. -/
+theorem xi_window_parity_of_relative_two_sign_data_gN_nonzero {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R η : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hη : η < 1)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip₂ : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hgN0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, gN N z ≠ 0)
+    (hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η)
+    {s₁ : ℕ} {ts₁ : ℕ → ℝ}
+    (hmono₁ : ∀ i, i < s₁ → ts₁ i < ts₁ (i + 1))
+    (hsign₁ : ∀ i, i < s₁ →
+      (xi (linePoint (ts₁ i))).re * (xi (linePoint (ts₁ (i + 1)))).re < 0)
+    (hseg₁ : ∀ u : ℝ, ts₁ 0 ≤ u → u ≤ ts₁ s₁ → linePoint u ∈ ball a R)
+    (hcount₂₁ : ∑ z ∈ t₂, m₂ z ≤ s₁)
+    {s₂ : ℕ} {ts₂ : ℕ → ℝ}
+    (hmono₂ : ∀ i, i < s₂ → ts₂ i < ts₂ (i + 1))
+    (hsign₂ : ∀ i, i < s₂ →
+      (completedGN N (linePoint (ts₂ i))).re *
+        (completedGN N (linePoint (ts₂ (i + 1)))).re < 0)
+    (hseg₂ : ∀ u : ℝ, ts₂ 0 ≤ u → u ≤ ts₂ s₂ → linePoint u ∈ ball a R)
+    (hcount₂₂ : ∑ z ∈ t₂, m₂ z ≤ s₂) :
+    (∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z
+      ≡ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z [MOD 2 ^ k]) ∧
+      ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hG0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, completedGN N z ≠ 0 := by
+    intro z hz
+    obtain ⟨hσ, hz1⟩ := hchartStrip z hz
+    exact completedGN_ne_zero_of_gN_ne_zero hσ hz1 (hgN0 z hz)
+  have hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖xi z - completedGN N z‖ < ‖completedGN N z‖ := by
+    intro z hz
+    have hzrel := hrel z hz
+    rw [norm_div] at hzrel
+    have hpos : 0 < ‖completedGN N z‖ := norm_pos_iff.mpr (hG0 z hz)
+    have hmul := mul_le_mul_of_nonneg_right hzrel (le_of_lt hpos)
+    rw [div_mul_cancel₀ _ hpos.ne'] at hmul
+    exact lt_of_le_of_lt hmul (by simpa using mul_lt_mul_of_pos_right hη hpos)
+  have hLeq : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+      = ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z :=
+    hL_exact_of_two_sign_data h0 hrR hm₁ hcl₁ hstrip₂ hm₂ hcl₂ hρ₁ hρ₂
+      hh hh0 hh' hh0' hfact₁ hfact₂ hdom hmono₁ hsign₁ hseg₁ hcount₂₁
+      hmono₂ hsign₂ hseg₂ hcount₂₂
+  have hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+      ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)] := by
+    rw [hLeq]
+  exact anneal_window_parity_transport_of_relative_close_gN_nonzero k h0 hrR hη
+    hchartStrip hm₁ hcl₁ hstrip₂ hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂
+    hgN0 hrel hL
+
+/-- **Raw relative two-sign joint certificate.** Relative `η < 1` closeness plus raw
+finite-carrier nonvanishing, a ξ sign table, and a completed-carrier sign table certify
+both ξ on-line simplicity and the ξ dyadic rung; the seam congruence and finite-side
+rung are derived from the same sign data. -/
+theorem xi_simple_window_and_rung_of_relative_two_sign_data_gN_nonzero {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R η : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hη : η < 1)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip₂ : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hgN0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, gN N z ≠ 0)
+    (hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η)
+    {s₁ : ℕ} {ts₁ : ℕ → ℝ}
+    (hmono₁ : ∀ i, i < s₁ → ts₁ i < ts₁ (i + 1))
+    (hsign₁ : ∀ i, i < s₁ →
+      (xi (linePoint (ts₁ i))).re * (xi (linePoint (ts₁ (i + 1)))).re < 0)
+    (hseg₁ : ∀ u : ℝ, ts₁ 0 ≤ u → u ≤ ts₁ s₁ → linePoint u ∈ ball a R)
+    (hcount₂₁ : ∑ z ∈ t₂, m₂ z ≤ s₁)
+    {s₂ : ℕ} {ts₂ : ℕ → ℝ}
+    (hmono₂ : ∀ i, i < s₂ → ts₂ i < ts₂ (i + 1))
+    (hsign₂ : ∀ i, i < s₂ →
+      (completedGN N (linePoint (ts₂ i))).re *
+        (completedGN N (linePoint (ts₂ (i + 1)))).re < 0)
+    (hseg₂ : ∀ u : ℝ, ts₂ 0 ≤ u → u ≤ ts₂ s₂ → linePoint u ∈ ball a R)
+    (hcount₂₂ : ∑ z ∈ t₂, m₂ z ≤ s₂) :
+    (∀ p ∈ ball a R, xi p = 0 → p.re = 1 / 2 ∧ analyticOrderAt xi p = 1) ∧
+      (2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z) ∧
+        ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+          ‖Complex.log (xi z / completedGN N z)‖ ≤
+            (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hsimple :=
+    xi_window_simple_online_of_relative_sign_certificate_gN_nonzero h0 hrR hη hchartStrip
+      hm₁ hcl₁ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hgN0 hrel
+      hmono₁ hsign₁ hseg₁ hcount₂₁
+  obtain ⟨hparity, hlog⟩ :=
+    xi_window_parity_of_relative_two_sign_data_gN_nonzero k h0 hrR hη hchartStrip
+      hm₁ hcl₁ hstrip₂ hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hgN0 hrel
+      hmono₁ hsign₁ hseg₁ hcount₂₁ hmono₂ hsign₂ hseg₂ hcount₂₂
+  obtain ⟨-, hfin_zero⟩ :=
+    completedGN_window_online_of_sign_data hstrip₂ hm₂ hcl₂ hh0' hfact₂
+      hmono₂ hsign₂ hseg₂ hcount₂₂
+  have hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z := by
+    rw [hfin_zero]
+    exact dvd_zero _
+  have hrung : 2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z :=
+    Nat.modEq_zero_iff_dvd.mp (hparity.trans (Nat.modEq_zero_iff_dvd.mpr hfin))
+  exact ⟨hsimple.1, hrung, hlog⟩
 
 end RHTower

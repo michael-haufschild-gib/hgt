@@ -103,3 +103,7 @@ import GaloisForLFunctions.RHTower.CothInfra
 import GaloisForLFunctions.RHTower.SpurLattice
 import GaloisForLFunctions.RHTower.ParityCounting
 import GaloisForLFunctions.RHTower.Registration
+import GaloisForLFunctions.RHTower.SpurLatticeReader
+import GaloisForLFunctions.RHTower.HermiteTwoTerm
+import GaloisForLFunctions.RHTower.JensenSection
+import GaloisForLFunctions.RHTower.RouteBSupport

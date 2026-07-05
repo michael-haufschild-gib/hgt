@@ -25,9 +25,9 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
 | 1711 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
+| 1691 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
 | 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
 | 1604 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
-| 1515 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
 | 1417 | `formal/GaloisForLFunctions/Bottcher/CrossRatioNormalBridge.lean` |

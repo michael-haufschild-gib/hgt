@@ -748,3 +748,265 @@ theorem dpoly_prime_packet_secondMoment_eq_zero_iff_eq_zero_on_vertical_interval
     dpoly_prime_packet_eq_zero_on_vertical_interval_iff_coeff_eq_zero hp hpinj hAB]
 
 end RHTower
+
+namespace RHTower
+
+open Finset
+
+/-- Finset-facing prime-packet interval-zero criterion. A Dirichlet packet supported
+on a finite set of primes vanishes throughout a nonempty vertical interval exactly
+when every coefficient on that finite set vanishes. -/
+theorem dpoly_prime_finset_eq_zero_on_vertical_interval_iff_coeff_eq_zero
+    (s : Finset ℕ) (hp : ∀ p ∈ s, p.Prime) {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    (∀ t ∈ Set.Ioo A B, dpoly a s t = 0) ↔ ∀ p ∈ s, a p = 0 := by
+  classical
+  let enum : Fin s.card → ℕ := fun i => ((s.equivFin.symm i).1 : ℕ)
+  have henum_image : Finset.univ.image enum = s := by
+    ext n
+    constructor
+    · intro hn
+      rw [Finset.mem_image] at hn
+      rcases hn with ⟨i, _hi, hni⟩
+      rw [← hni]
+      exact (s.equivFin.symm i).2
+    · intro hn
+      refine Finset.mem_image.mpr ?_
+      let x : {n // n ∈ s} := ⟨n, hn⟩
+      refine ⟨s.equivFin x, Finset.mem_univ _, ?_⟩
+      simp [enum, x]
+  have hprime : ∀ k, (enum k).Prime := fun k => hp (enum k) (by
+    change ((s.equivFin.symm k).1 : ℕ) ∈ s
+    exact (s.equivFin.symm k).2)
+  have hinj : Function.Injective enum := by
+    intro i j hij
+    have hsub : s.equivFin.symm i = s.equivFin.symm j := Subtype.ext hij
+    exact s.equivFin.symm.injective hsub
+  constructor
+  · intro hzero p hpmem
+    have hcoeff : ∀ k, a (enum k) = 0 :=
+      dpoly_prime_packet_coeff_eq_zero_on_vertical_interval hprime hinj hAB (by
+        intro t ht
+        rw [henum_image]
+        exact hzero t ht)
+    let x : {n // n ∈ s} := ⟨p, hpmem⟩
+    simpa [enum, x] using hcoeff (s.equivFin x)
+  · intro hcoeff t _ht
+    rw [dpoly]
+    apply Finset.sum_eq_zero
+    intro p hpmem
+    unfold cterm
+    rw [hcoeff p hpmem]
+    simp
+
+/-- Finset-facing second-moment zero criterion for prime packets. The interval `L²`
+observable vanishes exactly when the finite prime packet vanishes pointwise on the
+same vertical interval. -/
+theorem dpoly_prime_finset_secondMoment_eq_zero_iff_eq_zero_on_vertical_interval
+    (s : Finset ℕ) (hp : ∀ p ∈ s, p.Prime) {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    (∫ t in A..B, ‖dpoly a s t‖ ^ 2) = 0 ↔
+      ∀ t ∈ Set.Ioo A B, dpoly a s t = 0 := by
+  classical
+  let enum : Fin s.card → ℕ := fun i => ((s.equivFin.symm i).1 : ℕ)
+  have henum_image : Finset.univ.image enum = s := by
+    ext n
+    constructor
+    · intro hn
+      rw [Finset.mem_image] at hn
+      rcases hn with ⟨i, _hi, hni⟩
+      rw [← hni]
+      exact (s.equivFin.symm i).2
+    · intro hn
+      refine Finset.mem_image.mpr ?_
+      let x : {n // n ∈ s} := ⟨n, hn⟩
+      refine ⟨s.equivFin x, Finset.mem_univ _, ?_⟩
+      simp [enum, x]
+  have hprime : ∀ k, (enum k).Prime := fun k => hp (enum k) (by
+    change ((s.equivFin.symm k).1 : ℕ) ∈ s
+    exact (s.equivFin.symm k).2)
+  have hinj : Function.Injective enum := by
+    intro i j hij
+    have hsub : s.equivFin.symm i = s.equivFin.symm j := Subtype.ext hij
+    exact s.equivFin.symm.injective hsub
+  rw [← henum_image]
+  exact dpoly_prime_packet_secondMoment_eq_zero_iff_eq_zero_on_vertical_interval hprime hinj hAB
+
+end RHTower
+
+namespace RHTower
+
+open Finset
+
+/-- Finset-facing second-moment coefficient-zero criterion for finite prime support.
+The interval `L²` observable vanishes exactly when every coefficient on the finite
+prime set vanishes. -/
+theorem dpoly_prime_finset_secondMoment_eq_zero_iff_coeff_eq_zero_on_vertical_interval
+    (s : Finset ℕ) (hp : ∀ p ∈ s, p.Prime) {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    (∫ t in A..B, ‖dpoly a s t‖ ^ 2) = 0 ↔ ∀ p ∈ s, a p = 0 := by
+  rw [dpoly_prime_finset_secondMoment_eq_zero_iff_eq_zero_on_vertical_interval s hp hAB,
+    dpoly_prime_finset_eq_zero_on_vertical_interval_iff_coeff_eq_zero s hp hAB]
+
+/-- Finset-facing positive second-moment criterion for finite prime support.  A
+finite prime packet has positive interval `L²` mass exactly when one coefficient on
+its support is nonzero. -/
+theorem dpoly_prime_finset_secondMoment_pos_iff_exists_coeff_ne_zero_on_vertical_interval
+    (s : Finset ℕ) (hp : ∀ p ∈ s, p.Prime) {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    0 < ∫ t in A..B, ‖dpoly a s t‖ ^ 2 ↔ ∃ p ∈ s, a p ≠ 0 := by
+  classical
+  let enum : Fin s.card → ℕ := fun i => ((s.equivFin.symm i).1 : ℕ)
+  have henum_image : Finset.univ.image enum = s := by
+    ext n
+    constructor
+    · intro hn
+      rw [Finset.mem_image] at hn
+      rcases hn with ⟨i, _hi, hni⟩
+      rw [← hni]
+      exact (s.equivFin.symm i).2
+    · intro hn
+      refine Finset.mem_image.mpr ?_
+      let x : {n // n ∈ s} := ⟨n, hn⟩
+      refine ⟨s.equivFin x, Finset.mem_univ _, ?_⟩
+      simp [enum, x]
+  have hprime : ∀ k, (enum k).Prime := fun k => hp (enum k) (by
+    change ((s.equivFin.symm k).1 : ℕ) ∈ s
+    exact (s.equivFin.symm k).2)
+  have hinj : Function.Injective enum := by
+    intro i j hij
+    have hsub : s.equivFin.symm i = s.equivFin.symm j := Subtype.ext hij
+    exact s.equivFin.symm.injective hsub
+  constructor
+  · intro hpos
+    have hpacket : ∃ k, a (enum k) ≠ 0 :=
+      (dpoly_prime_packet_secondMoment_pos_iff_exists_coeff_ne_zero_on_vertical_interval
+        hprime hinj hAB).mp (by simpa [henum_image] using hpos)
+    rcases hpacket with ⟨k, hk⟩
+    exact ⟨enum k, by
+      change ((s.equivFin.symm k).1 : ℕ) ∈ s
+      exact (s.equivFin.symm k).2, hk⟩
+  · rintro ⟨p, hpmem, hpne⟩
+    let x : {n // n ∈ s} := ⟨p, hpmem⟩
+    have hpacket : ∃ k, a (enum k) ≠ 0 := by
+      refine ⟨s.equivFin x, ?_⟩
+      simpa [enum, x] using hpne
+    have hpos :=
+      (dpoly_prime_packet_secondMoment_pos_iff_exists_coeff_ne_zero_on_vertical_interval
+        hprime hinj hAB).mpr hpacket
+    simpa [henum_image] using hpos
+
+end RHTower
+
+namespace RHTower
+
+open Finset
+
+/-- Algebraic support-padding identity for comparing two Dirichlet packets.  The
+padded coefficient difference on `s ∪ t` is exactly the pointwise packet difference. -/
+theorem dpoly_sub_eq_union (s t : Finset ℕ) (a b : ℕ → ℝ) (x : ℝ) :
+    dpoly (fun p => (if p ∈ s then a p else 0) - (if p ∈ t then b p else 0)) (s ∪ t) x =
+      dpoly a s x - dpoly b t x := by
+  classical
+  let as : ℕ → ℝ := fun p => if p ∈ s then a p else 0
+  let bt : ℕ → ℝ := fun p => if p ∈ t then b p else 0
+  have hsplit : dpoly (fun p => as p - bt p) (s ∪ t) x =
+      dpoly as (s ∪ t) x - dpoly bt (s ∪ t) x := by
+    rw [dpoly, dpoly, dpoly]
+    calc
+      (∑ n ∈ s ∪ t, cterm (fun p => as p - bt p) x n)
+          = ∑ n ∈ s ∪ t, (cterm as x n - cterm bt x n) := by
+            apply Finset.sum_congr rfl
+            intro p _hp
+            unfold cterm
+            push_cast
+            ring
+      _ = ∑ n ∈ s ∪ t, cterm as x n - ∑ n ∈ s ∪ t, cterm bt x n := by
+            rw [Finset.sum_sub_distrib]
+  have hsupp_s : dpoly as (s ∪ t) x = dpoly a s x := by
+    rw [dpoly, dpoly]
+    calc
+      (∑ p ∈ s ∪ t, cterm as x p) = ∑ p ∈ s, cterm as x p := by
+        exact (Finset.sum_subset (by intro p hp; exact Finset.mem_union_left t hp)
+          (by intro p _hpU hps; simp [cterm, as, hps])).symm
+      _ = ∑ p ∈ s, cterm a x p := by
+        apply Finset.sum_congr rfl
+        intro p hps
+        simp [cterm, as, hps]
+  have hsupp_t : dpoly bt (s ∪ t) x = dpoly b t x := by
+    rw [dpoly, dpoly]
+    calc
+      (∑ p ∈ s ∪ t, cterm bt x p) = ∑ p ∈ t, cterm bt x p := by
+        exact (Finset.sum_subset (by intro p hp; exact Finset.mem_union_right s hp)
+          (by intro p _hpU hpt; simp [cterm, bt, hpt])).symm
+      _ = ∑ p ∈ t, cterm b x p := by
+        apply Finset.sum_congr rfl
+        intro p hpt
+        simp [cterm, bt, hpt]
+  simpa [as, bt, hsupp_s, hsupp_t] using hsplit
+
+/-- Two finite prime packets agree on a vertical interval exactly when their
+coefficients agree after padding by zero on the union support. -/
+theorem dpoly_prime_finset_eq_on_vertical_interval_iff_coeff_eq_on_union
+    (s t : Finset ℕ) (hs : ∀ p ∈ s, p.Prime) (ht : ∀ p ∈ t, p.Prime)
+    {a b : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    (∀ x ∈ Set.Ioo A B, dpoly a s x = dpoly b t x) ↔
+      ∀ p ∈ s ∪ t, (if p ∈ s then a p else 0) = (if p ∈ t then b p else 0) := by
+  classical
+  let c : ℕ → ℝ := fun p => (if p ∈ s then a p else 0) - (if p ∈ t then b p else 0)
+  have hprime : ∀ p ∈ s ∪ t, p.Prime := by
+    intro p hp
+    rcases Finset.mem_union.mp hp with hps | hpt
+    · exact hs p hps
+    · exact ht p hpt
+  have hcrit := dpoly_prime_finset_eq_zero_on_vertical_interval_iff_coeff_eq_zero
+    (s ∪ t) hprime (a := c) hAB
+  have hdiff : ∀ x, dpoly c (s ∪ t) x = dpoly a s x - dpoly b t x := by
+    intro x
+    exact dpoly_sub_eq_union s t a b x
+  constructor
+  · intro heq p hp
+    have hzero : ∀ x ∈ Set.Ioo A B, dpoly c (s ∪ t) x = 0 := by
+      intro x hx
+      rw [hdiff x, heq x hx, sub_self]
+    have hc0 := hcrit.mp hzero p hp
+    dsimp [c] at hc0
+    exact sub_eq_zero.mp hc0
+  · intro hcoeff x hx
+    have hc0 : ∀ p ∈ s ∪ t, c p = 0 := by
+      intro p hp
+      exact sub_eq_zero.mpr (hcoeff p hp)
+    have hzero := hcrit.mpr hc0 x hx
+    rw [hdiff x] at hzero
+    exact sub_eq_zero.mp hzero
+
+/-- The interval `L²` distance between two finite prime packets vanishes exactly when
+their coefficients agree after padding by zero on the union support. -/
+theorem dpoly_prime_finset_secondMoment_sub_eq_zero_iff_coeff_eq_on_union
+    (s t : Finset ℕ) (hs : ∀ p ∈ s, p.Prime) (ht : ∀ p ∈ t, p.Prime)
+    {a b : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ 2) = 0 ↔
+      ∀ p ∈ s ∪ t, (if p ∈ s then a p else 0) = (if p ∈ t then b p else 0) := by
+  classical
+  let c : ℕ → ℝ := fun p => (if p ∈ s then a p else 0) - (if p ∈ t then b p else 0)
+  have hprime : ∀ p ∈ s ∪ t, p.Prime := by
+    intro p hp
+    rcases Finset.mem_union.mp hp with hps | hpt
+    · exact hs p hps
+    · exact ht p hpt
+  have hdiff : ∀ x, dpoly c (s ∪ t) x = dpoly a s x - dpoly b t x := by
+    intro x
+    exact dpoly_sub_eq_union s t a b x
+  have hint : (∫ x in A..B, ‖dpoly a s x - dpoly b t x‖ ^ 2) =
+      ∫ x in A..B, ‖dpoly c (s ∪ t) x‖ ^ 2 := by
+    apply intervalIntegral.integral_congr
+    intro x _hx
+    exact congrArg (fun z : ℂ => ‖z‖ ^ 2) (hdiff x).symm
+  rw [hint, dpoly_prime_finset_secondMoment_eq_zero_iff_eq_zero_on_vertical_interval
+    (s ∪ t) hprime hAB]
+  rw [← dpoly_prime_finset_eq_on_vertical_interval_iff_coeff_eq_on_union s t hs ht hAB]
+  constructor
+  · intro hzero x hx
+    have hz := hzero x hx
+    rw [hdiff x] at hz
+    exact sub_eq_zero.mp hz
+  · intro heq x hx
+    rw [hdiff x, heq x hx, sub_self]
+
+end RHTower

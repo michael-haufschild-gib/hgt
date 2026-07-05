@@ -353,6 +353,40 @@ namespace RHTower
 
 open Metric
 
+/-- **Window-parity transport under relative control.** Relative `η < 1` closeness
+between ξ and the completed finite carrier proves the count transport used by
+ANNEAL, so the right-half window counts agree mod `2^k`; the same certificate
+also gives U0 principal-log control of the correction ratio on the charts. -/
+theorem anneal_window_parity_transport_of_relative_close {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R η : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hη : η < 1)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hG0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, completedGN N z ≠ 0)
+    (hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)]) :
+    (∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z
+      ≡ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z [MOD 2 ^ k]) ∧
+      ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  obtain ⟨hDeq, hlog⟩ :=
+    enclosed_count_eq_of_relative_close t₂ t₁ id m₂ id m₁ h0 hrR hη hρ₂ hρ₁
+      hh' hh0' hh hh0 hfact₂ hfact₁ hG0 hrel
+  have hparity := anneal_window_parity_transport k hm₁ hcl₁ hstrip hm₂ hcl₂
+    (hDeq ▸ Nat.ModEq.refl _) hL
+  exact ⟨hparity, hlog⟩
+
 /-- **Finite-side rung under relative control.** Relative `η < 1` closeness between ξ
 and the completed finite carrier on the annulus charts proves the count transport
 used by ANNEAL, so the finite-side rung still transfers to ξ; the same certificate
@@ -380,11 +414,9 @@ theorem xi_rung_of_finite_side_of_relative_close {N : ℕ} (k : ℕ)
       ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
         ‖Complex.log (xi z / completedGN N z)‖ ≤
           (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
-  obtain ⟨hDeq, hlog⟩ :=
-    enclosed_count_eq_of_relative_close t₂ t₁ id m₂ id m₁ h0 hrR hη hρ₂ hρ₁
-      hh' hh0' hh hh0 hfact₂ hfact₁ hG0 hrel
-  have hparity := anneal_window_parity_transport k hm₁ hcl₁ hstrip hm₂ hcl₂
-    (hDeq ▸ Nat.ModEq.refl _) hL
+  obtain ⟨hparity, hlog⟩ :=
+    anneal_window_parity_transport_of_relative_close k h0 hrR hη hm₁ hcl₁ hstrip hm₂ hcl₂
+      hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hG0 hrel hL
   exact ⟨Nat.modEq_zero_iff_dvd.mp (hparity.trans (Nat.modEq_zero_iff_dvd.mpr hfin)), hlog⟩
 
 end RHTower
@@ -402,6 +434,41 @@ theorem completedGN_ne_zero_of_gN_ne_zero {N : ℕ} {z : ℂ}
   have hz0 : z ≠ 0 := fun hzero => by simp [hzero] at hσ
   unfold completedGN
   exact mul_ne_zero (archFactor_ne_zero hz0 hz1 (Gammaℝ_ne_zero_of_re_pos hσ)) hgN0
+
+/-- **Window-parity transport under relative control with raw finite-carrier
+nonvanishing.** On charts contained in the positive strip and away from `1`,
+nonvanishing of `gN` gives nonvanishing of `completedGN`, so the relative ANNEAL
+window-parity transport consumes the finite carrier's natural nonzero check. -/
+theorem anneal_window_parity_transport_of_relative_close_gN_nonzero {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R η : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hη : η < 1)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hgN0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, gN N z ≠ 0)
+    (hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)]) :
+    (∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z
+      ≡ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z [MOD 2 ^ k]) ∧
+      ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hG0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, completedGN N z ≠ 0 := by
+    intro z hz
+    obtain ⟨hσ, hz1⟩ := hchartStrip z hz
+    exact completedGN_ne_zero_of_gN_ne_zero hσ hz1 (hgN0 z hz)
+  exact anneal_window_parity_transport_of_relative_close k h0 hrR hη hm₁ hcl₁ hstrip hm₂ hcl₂
+    hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hG0 hrel hL
 
 /-- **Finite-side rung under relative control with completed-carrier nonvanishing
 supplied by the raw finite carrier.**  On charts contained in the positive strip and
@@ -431,11 +498,105 @@ theorem xi_rung_of_finite_side_of_relative_close_gN_nonzero {N : ℕ} (k : ℕ)
       ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
         ‖Complex.log (xi z / completedGN N z)‖ ≤
           (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
-  have hG0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, completedGN N z ≠ 0 := by
+  obtain ⟨hparity, hlog⟩ :=
+    anneal_window_parity_transport_of_relative_close_gN_nonzero k h0 hrR hη hchartStrip
+      hm₁ hcl₁ hstrip hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hgN0 hrel hL
+  exact ⟨Nat.modEq_zero_iff_dvd.mp (hparity.trans (Nat.modEq_zero_iff_dvd.mpr hfin)), hlog⟩
+
+end RHTower
+
+namespace RHTower
+
+open Complex
+
+/-- **Relative ANNEAL deck transport with raw finite-carrier nonvanishing.**
+Relative `η < 1` control between `xi` and `completedGN` transports the level-`2^k`
+deck reading and gives the U0 principal-log bound; nonvanishing of `completedGN` on
+the charts is derived from the raw finite carrier `gN`. -/
+theorem anneal_deck_transport_of_relative_close_gN_nonzero {N : ℕ}
+    {F₁ F₂ G₁ G₂ : ℂ → ℂ} {a : ℂ} {R η : ℝ} (k : ℕ)
+    (hR : 0 < R) (hη : η < 1)
+    (hchartStrip : ∀ z ∈ chartR a R ∪ chartL a R, 0 < z.re ∧ z ≠ 1)
+    (hF₁ : AnalyticOnNhd ℂ F₁ (chartR a R)) (hF₂ : AnalyticOnNhd ℂ F₂ (chartL a R))
+    (hG₁ : AnalyticOnNhd ℂ G₁ (chartR a R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartL a R))
+    (hpF₁ : ∀ z ∈ chartR a R, F₁ z ^ 2 ^ k = xi z)
+    (hpF₂ : ∀ z ∈ chartL a R, F₂ z ^ 2 ^ k = xi z)
+    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ 2 ^ k = completedGN N z)
+    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ 2 ^ k = completedGN N z)
+    (hgN0 : ∀ z ∈ chartR a R ∪ chartL a R, gN N z ≠ 0)
+    (hrel : ∀ z ∈ chartR a R ∪ chartL a R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η) :
+    deckClass F₁ F₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) =
+        deckClass G₁ G₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) ∧
+      ∀ z ∈ chartR a R ∪ chartL a R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hG0 : ∀ z ∈ chartR a R ∪ chartL a R, completedGN N z ≠ 0 := by
     intro z hz
     obtain ⟨hσ, hz1⟩ := hchartStrip z hz
     exact completedGN_ne_zero_of_gN_ne_zero hσ hz1 (hgN0 z hz)
-  exact xi_rung_of_finite_side_of_relative_close k h0 hrR hη hm₁ hcl₁ hstrip hm₂ hcl₂
-    hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hG0 hrel hL hfin
+  exact seam_transport_of_relative_close hR (pow_pos two_pos k) hη (xi_analyticOnNhd _)
+    hF₁ hF₂ hG₁ hG₂ hpF₁ hpF₂ hpG₁ hpG₂ hG0 hrel
+
+end RHTower
+
+namespace RHTower
+
+open Complex
+
+/-- **Relative ANNEAL seam L-transport with raw finite-carrier nonvanishing.**
+Relative `η < 1` control at the two on-line seam basepoints supplies the strict
+pointwise domination used by the k = 1 sign dictionary, and the same data gives U0
+principal-log bounds at both basepoints. -/
+theorem anneal_seam_L_transport_of_relative_close_gN_nonzero {N : ℕ}
+    {g₁ g₂ G₁ G₂ : ℂ → ℂ} {U : Set ℂ} {η : ℝ}
+    (hη : η < 1)
+    (hU : IsOpen U) (hUc : IsPreconnected U)
+    (hUstrip : ∀ z ∈ U, 0 < z.re ∧ z.re < 1)
+    (hg₁ : AnalyticOnNhd ℂ g₁ U) (hg₂ : AnalyticOnNhd ℂ g₂ (lineReflect ⁻¹' U))
+    (hG₁ : AnalyticOnNhd ℂ G₁ U) (hG₂ : AnalyticOnNhd ℂ G₂ (lineReflect ⁻¹' U))
+    (hp₁ : ∀ s ∈ U, g₁ s ^ 2 = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ 2 = xi s)
+    (hP₁ : ∀ s ∈ U, G₁ s ^ 2 = completedGN N s)
+    (hP₂ : ∀ s ∈ lineReflect ⁻¹' U, G₂ s ^ 2 = completedGN N s)
+    {pP pM : ℂ} (hpP : pP ∈ U) (hpM : pM ∈ U)
+    (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2)
+    (hgN0P : gN N pP ≠ 0) (hgN0M : gN N pM ≠ 0)
+    (hrelP : ‖(xi pP - completedGN N pP) / completedGN N pP‖ ≤ η)
+    (hrelM : ‖(xi pM - completedGN N pM) / completedGN N pM‖ ≤ η) :
+    deckClass g₁ g₂ pP pM = deckClass G₁ G₂ pP pM ∧
+      ‖Complex.log (xi pP / completedGN N pP)‖ ≤
+        (1 - η)⁻¹ * ‖(xi pP - completedGN N pP) / completedGN N pP‖ ∧
+      ‖Complex.log (xi pM / completedGN N pM)‖ ≤
+        (1 - η)⁻¹ * ‖(xi pM - completedGN N pM) / completedGN N pM‖ := by
+  have hPσ : 0 < pP.re := by rw [hPline]; norm_num
+  have hMσ : 0 < pM.re := by rw [hMline]; norm_num
+  have hPne1 : pP ≠ 1 := by
+    intro hp
+    rw [hp] at hPline
+    norm_num at hPline
+  have hMne1 : pM ≠ 1 := by
+    intro hp
+    rw [hp] at hMline
+    norm_num at hMline
+  have hG0P : completedGN N pP ≠ 0 := completedGN_ne_zero_of_gN_ne_zero hPσ hPne1 hgN0P
+  have hG0M : completedGN N pM ≠ 0 := completedGN_ne_zero_of_gN_ne_zero hMσ hMne1 hgN0M
+  have hdomP : ‖xi pP - completedGN N pP‖ < ‖completedGN N pP‖ := by
+    have hpos : 0 < ‖completedGN N pP‖ := norm_pos_iff.mpr hG0P
+    have hdiv : ‖xi pP - completedGN N pP‖ / ‖completedGN N pP‖ ≤ η := by
+      simpa [norm_div] using hrelP
+    have hmul : ‖xi pP - completedGN N pP‖ ≤ η * ‖completedGN N pP‖ :=
+      (div_le_iff₀ hpos).mp hdiv
+    exact lt_of_le_of_lt hmul (by simpa using mul_lt_mul_of_pos_right hη hpos)
+  have hdomM : ‖xi pM - completedGN N pM‖ < ‖completedGN N pM‖ := by
+    have hpos : 0 < ‖completedGN N pM‖ := norm_pos_iff.mpr hG0M
+    have hdiv : ‖xi pM - completedGN N pM‖ / ‖completedGN N pM‖ ≤ η := by
+      simpa [norm_div] using hrelM
+    have hmul : ‖xi pM - completedGN N pM‖ ≤ η * ‖completedGN N pM‖ :=
+      (div_le_iff₀ hpos).mp hdiv
+    exact lt_of_le_of_lt hmul (by simpa using mul_lt_mul_of_pos_right hη hpos)
+  have hdeck := anneal_seam_L_transport hU hUc hUstrip hg₁ hg₂ hG₁ hG₂ hp₁ hp₂ hP₁ hP₂
+    hpP hpM hPline hMline hdomP hdomM
+  exact ⟨hdeck, ratio_log_norm_le_of_relative_close hη hG0P hrelP,
+    ratio_log_norm_le_of_relative_close hη hG0M hrelM⟩
 
 end RHTower

@@ -159,3 +159,86 @@ theorem coherentTower_iff_exists_roots_all_two_powers {f : ℂ → ℂ} {Ω : Se
   · exact coherentTower_of_exists_roots_all_two_powers hΩo hΩc hz₀ hf hf0
 
 end RHTower
+
+namespace RHTower
+
+open Complex Filter Set
+
+/-- A coherent dyadic Kummer tower is equivalent to the all-level divisor constraint.
+The forward direction reads divisibility from the tower levels; the reverse direction
+says a positive finite zero order cannot be divisible by every `2^k`, so the U0
+logarithmic construction supplies the coherent tower from zero-freeness. -/
+theorem coherentTower_iff_orders_dvd_all_two_powers {f : ℂ → ℂ} {U : Set ℂ}
+    (hUo : IsOpen U) (hUsc : IsSimplyConnected U) (hUpc : IsPreconnected U)
+    (hf : AnalyticOnNhd ℂ f U) {z₀ : ℂ} (hz₀ : z₀ ∈ U) (hf0 : f z₀ ≠ 0) :
+    Nonempty (CoherentTower f U) ↔
+      ∀ k : ℕ, ∀ ρ ∈ U, f ρ = 0 → ((2 ^ k : ℕ) : ℕ∞) ∣ analyticOrderAt f ρ := by
+  constructor
+  · rintro ⟨T⟩ k ρ hρ _
+    exact root_orders_dvd hUo (T.analytic k) (T.pow_eq k) hρ
+  · intro hdiv
+    have hnz : ∀ ρ ∈ U, f ρ ≠ 0 := by
+      intro ρ hρ hρ0
+      have hord : analyticOrderAt f ρ ≠ ⊤ := by
+        intro htop
+        have hev0 : f =ᶠ[nhds ρ] (0 : ℂ → ℂ) := by
+          filter_upwards [analyticOrderAt_eq_top.mp htop] with z hz
+          simpa using hz
+        exact hf0 (hf.eqOn_zero_of_preconnected_of_eventuallyEq_zero hUpc hρ hev0 hz₀)
+      set m : ℕ := (analyticOrderAt f ρ).toNat with hmdef
+      have hm : (m : ℕ∞) = analyticOrderAt f ρ := ENat.coe_toNat hord
+      have hdvd : ∀ k : ℕ, 2 ^ k ∣ m := by
+        intro k
+        have hthis := hdiv k ρ hρ hρ0
+        rw [← hm] at hthis
+        exact natCast_dvd_natCast_of_enat (pow_ne_zero k two_ne_zero) hthis
+      have hm0 : m = 0 := by
+        by_contra hm0
+        have h2 : 2 ^ m ≤ m := Nat.le_of_dvd (Nat.pos_of_ne_zero hm0) (hdvd m)
+        have h3 : m < 2 ^ m := Nat.lt_pow_self (by norm_num)
+        omega
+      have hne : analyticOrderAt f ρ ≠ 0 := analyticOrderAt_ne_zero.mpr ⟨hf ρ hρ, hρ0⟩
+      rw [← hm, hm0] at hne
+      exact hne rfl
+    exact (coherentTower_iff_nonvanishing hUo hUsc hUpc hf hz₀ hf0).2 hnz
+
+end RHTower
+
+namespace RHTower
+
+open Complex Filter Set Metric Bottcher
+open U0MStepBranch U0PhiMStep U0MeroCarrier
+
+/-- **The concrete U0 Kummer tower as an RHTower coherent tower.**  For every viable
+U0 parameter, the U0 `psiN` tower can be consumed through the generic `CoherentTower`
+API, while every coherent level retains its meromorphic `NoRelation` certificate against
+`u₀`. -/
+theorem u0_coherentTower_with_noRelation_of_viable {b : ℂ}
+    (hviab : ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia b) :
+    ∃ (r : ℝ) (N : ℕ) (hr : 1 < r) (T : CoherentTower (psiN b N) (ball (0 : ℂ) r)),
+      (∀ k z, T.level k z ≠ 0) ∧
+      (∀ k,
+        letI := isDomain_analyticSubring (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr)
+          (annMB_nonempty hr)
+        letI : Algebra (RatFunc ℂ) (meroField (annMB r)) :=
+          (ratfuncToMero (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr) (annMB_nonempty hr)
+            (annMB_infinite hr)).toAlgebra
+        NoRelation (RatFunc ℂ)
+          (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+            ⟨Germ.coeRingHom (𝓟 (annMB r)) (T.level k),
+              ⟨T.level k, (T.analytic k).mono inter_subset_left, rfl⟩⟩)
+          (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+            (u0AnSub annMB_subset_Ext))) := by
+  obtain ⟨r, N, hr, χ, hχ, hχ0, hbase, hsq, _hpow, hrel⟩ :=
+    U0KummerBranch.u0_coherent_kummer_tower hviab
+  let T : CoherentTower (psiN b N) (ball (0 : ℂ) r) :=
+    { level := χ
+      level_zero := hbase
+      analytic := hχ
+      sq := hsq }
+  refine ⟨r, N, hr, T, ?_, ?_⟩
+  · exact hχ0
+  · intro k
+    exact hrel k
+
+end RHTower
