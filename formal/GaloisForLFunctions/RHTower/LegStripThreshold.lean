@@ -226,4 +226,100 @@ theorem stripResidue_gt_one_iff {c : ℝ} (hc : 1 < c) : 1 < stripResidue c ↔ 
     have : (π / c) * Real.cos (π / c) / Real.sin (π / c) < 0 := div_neg_of_neg_of_pos hnum hsin
     linarith
 
+/-! ### The residue as an explicit convergent series (the continuum-limit closed form) -/
+
+section Series
+open Complex
+
+/-- **The residue is the excess series** `Φ(c) = Σ_{n≥1} 2/((cn)² − 1)`, for `c > 1`. This is the
+closed-form half of the continuum limit: evaluating the Mittag-Leffler cotangent expansion
+(`cot_series_rep`) at `x = 1/c` turns the paired excess balance into this explicit sum. It makes
+the threshold transparent — at `c = 2` the terms `2/(4n²−1) = 1/(2n−1) − 1/(2n+1)` telescope to
+`1`, and `Φ` is manifestly decreasing in `c`. -/
+theorem stripResidue_eq_tsum {c : ℝ} (hc : 1 < c) :
+    stripResidue c = ∑' n : ℕ+, 2 / ((c * (n : ℝ)) ^ 2 - 1) := by
+  have hcpos : 0 < c := by linarith
+  have hcne : c ≠ 0 := ne_of_gt hcpos
+  have hmem : ((1 / c : ℝ) : ℂ) ∈ integerComplement := by
+    rw [mem_integerComplement_iff]
+    rintro ⟨n, hn⟩
+    have hnr : (n : ℝ) = 1 / c := by
+      have h : (((n : ℤ) : ℝ) : ℂ) = ((1 / c : ℝ) : ℂ) := by rw [← hn]; push_cast; ring
+      have := Complex.ofReal_injective h; simpa using this
+    have h0 : (0 : ℝ) < 1 / c := by positivity
+    have h1 : 1 / c < 1 := by rw [div_lt_one hcpos]; exact hc
+    have hn0 : (0 : ℤ) < n := by
+      have : (0 : ℝ) < (n : ℝ) := by rw [hnr]; exact h0
+      exact_mod_cast this
+    have hn1 : n < 1 := by
+      have : (n : ℝ) < 1 := by rw [hnr]; exact h1
+      exact_mod_cast this
+    omega
+  have hseries := cot_series_rep hmem
+  have hterm : ∀ n : ℕ+,
+      (1 / (((1 / c : ℝ) : ℂ) - ((n : ℕ) : ℂ)) + 1 / (((1 / c : ℝ) : ℂ) + ((n : ℕ) : ℂ)))
+        = (((-2 * c / ((c * (n : ℝ)) ^ 2 - 1) : ℝ)) : ℂ) := by
+    intro n
+    have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.one_le
+    have hnpos : (0 : ℝ) < (n : ℝ) := by linarith
+    have h1c : 1 / c < 1 := by rw [div_lt_one hcpos]; exact hc
+    have h0c : (0 : ℝ) < 1 / c := by positivity
+    have hcn : 1 < c * (n : ℝ) := by
+      nlinarith [hm1, hc, hcpos,
+        mul_nonneg (le_of_lt hcpos) (show (0 : ℝ) ≤ (n : ℝ) - 1 by linarith)]
+    have hden : (0 : ℝ) < (c * (n : ℝ)) ^ 2 - 1 := by nlinarith [hcn]
+    have hr1 : (1 / c - (n : ℝ)) ≠ 0 := by intro h; nlinarith [hm1, h1c, h]
+    have hr2 : (1 / c + (n : ℝ)) ≠ 0 := by intro h; nlinarith [hnpos, h0c, h]
+    have hRealId : 1 / (1 / c - (n : ℝ)) + 1 / (1 / c + (n : ℝ))
+        = -2 * c / ((c * (n : ℝ)) ^ 2 - 1) := by
+      rw [div_add_div _ _ hr1 hr2, div_eq_div_iff (mul_ne_zero hr1 hr2) (ne_of_gt hden)]
+      field_simp
+      ring
+    rw [← hRealId]; push_cast; ring
+  have hsumeq : (∑' n : ℕ+,
+        (1 / (((1 / c : ℝ) : ℂ) - ((n : ℕ) : ℂ)) + 1 / (((1 / c : ℝ) : ℂ) + ((n : ℕ) : ℂ))))
+      = ∑' n : ℕ+, (((-2 * c / ((c * (n : ℝ)) ^ 2 - 1) : ℝ)) : ℂ) := tsum_congr hterm
+  rw [hsumeq, ← Complex.ofReal_tsum] at hseries
+  have hL : (↑π * (↑π * ((1 / c : ℝ) : ℂ)).cot) = ((π * Real.cot (π / c) : ℝ) : ℂ) := by
+    rw [show (↑π * ((1 / c : ℝ) : ℂ)) = ((π / c : ℝ) : ℂ) by push_cast; ring,
+      ← Complex.ofReal_cot]
+    push_cast; ring
+  have hInv : (1 : ℂ) / ((1 / c : ℝ) : ℂ) = ((c : ℝ) : ℂ) := by
+    rw [Complex.ofReal_div, Complex.ofReal_one, one_div_one_div]
+  rw [hL, hInv, ← Complex.ofReal_add] at hseries
+  have hreal : π * Real.cot (π / c) = c + ∑' n : ℕ+, (-2 * c / ((c * (n : ℝ)) ^ 2 - 1)) :=
+    Complex.ofReal_injective hseries
+  rw [stripResidue]
+  have hdiv : (∑' n : ℕ+, (-2 * c / ((c * (n : ℝ)) ^ 2 - 1))) / c
+      = -∑' n : ℕ+, 2 / ((c * (n : ℝ)) ^ 2 - 1) := by
+    rw [div_eq_mul_inv, ← tsum_mul_right, ← tsum_neg]
+    exact tsum_congr (fun n => by field_simp)
+  have hkey : (π / c) * Real.cot (π / c) = 1 - ∑' n : ℕ+, 2 / ((c * (n : ℝ)) ^ 2 - 1) := by
+    rw [show (π / c) * Real.cot (π / c) = (π * Real.cot (π / c)) / c by ring, hreal, add_div,
+      div_self hcne, hdiv]; ring
+  rw [hkey]; ring
+
+/-- The excess series `Σ 2/((cn)² − 1)` converges for `c > 1`: term by term it is dominated by
+`(2/(c²−1))·(1/n²)`, using `(cn)² − 1 ≥ (c²−1)n²`. -/
+theorem stripResidue_series_summable {c : ℝ} (hc : 1 < c) :
+    Summable (fun n : ℕ+ => 2 / ((c * (n : ℝ)) ^ 2 - 1)) := by
+  have hc2 : (0 : ℝ) < c ^ 2 - 1 := by nlinarith [hc]
+  have hbase : Summable (fun n : ℕ+ => 1 / ((n : ℝ)) ^ 2) :=
+    ((Real.summable_one_div_nat_pow (p := 2)).mpr (by norm_num)).comp_injective PNat.coe_injective
+  have hmaj : Summable (fun n : ℕ+ => (2 / (c ^ 2 - 1)) * (1 / (n : ℝ) ^ 2)) := hbase.mul_left _
+  refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) hmaj
+  · have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.one_le
+    have hden : (0 : ℝ) < (c * (n : ℝ)) ^ 2 - 1 := by
+      nlinarith [hm1, hc, mul_nonneg (show (0:ℝ) ≤ c by linarith) (show (0:ℝ) ≤ (n:ℝ) - 1 by linarith)]
+    positivity
+  · have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.one_le
+    have hnpos : (0 : ℝ) < (n : ℝ) := by linarith
+    have hlow : (c ^ 2 - 1) * (n : ℝ) ^ 2 ≤ (c * (n : ℝ)) ^ 2 - 1 := by nlinarith [hm1]
+    have hElow : (0 : ℝ) < (c ^ 2 - 1) * (n : ℝ) ^ 2 := by positivity
+    calc 2 / ((c * (n : ℝ)) ^ 2 - 1)
+        ≤ 2 / ((c ^ 2 - 1) * (n : ℝ) ^ 2) := by gcongr
+      _ = (2 / (c ^ 2 - 1)) * (1 / (n : ℝ) ^ 2) := by field_simp
+
+end Series
+
 end RHTower

@@ -153,3 +153,4 @@ import GaloisForLFunctions.RHTower.PinnedWindow
 import GaloisForLFunctions.RHTower.BohrMoments
 import GaloisForLFunctions.RHTower.LegStripThreshold
 import GaloisForLFunctions.RHTower.BohrMomentDensity
+import GaloisForLFunctions.RHTower.WeierstrassMajorant

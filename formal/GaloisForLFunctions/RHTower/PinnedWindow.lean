@@ -319,3 +319,93 @@ theorem completedGN_simple_zero_factorization_of_close
   rwa [hρ'eq, Finset.prod_singleton, hmρ', pow_one] at hfa
 
 end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **The double-domination pinned window.**  Two dominations produce the whole
+certificate: the carrier dominated by a linear reference on the outer window
+yields its unique simple on-line zero `ρ'`
+(`completedGN_simple_zero_factorization_of_close`), and the EM/LOW data on the
+window recentered at `ρ'` pins every ξ-zero there to the critical line
+(`xi_window_pinned_of_carrier_simple_zero`), with the U0 log control on the
+recentered charts. -/
+theorem xi_window_pinned_of_double_domination
+    {N M : ℕ} (hM : 1 ≤ M) {ε₁ δ : ℝ} (hεδ : 0 ≤ ε₁ + δ)
+    {ρ₀ c : ℂ} (hc : c ≠ 0) {r₀ R r₀' R' : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (h0' : 0 ≤ r₀') (hrR' : r₀' < R')
+    (hRR' : R' + r₀ ≤ R) (hρ₀re : ρ₀.re = 1 / 2)
+    (hball : ∀ z ∈ ball ρ₀ R, 0 < z.re ∧ z.re < 1)
+    (hcloseC : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ < ‖c * (z - ρ₀)‖)
+    (hdata : ∀ ρ' : ℂ, ρ'.re = 1 / 2 → ‖ρ' - ρ₀‖ ≤ r₀ →
+      (∀ z ∈ chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R', 0 < z.re ∧ z ≠ 1)
+      ∧ (∀ z ∈ chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R',
+          ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+      ∧ (∀ z ∈ chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R',
+          ‖emCarrier M z - gN N z‖ ≤ δ)
+      ∧ CarrierFloorOn (chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R') N (2 * (ε₁ + δ))) :
+    ∃ ρ' : ℂ, ρ'.re = 1 / 2 ∧ ‖ρ' - ρ₀‖ ≤ r₀
+      ∧ (∀ p ∈ ball ρ' R', xi p = 0 → p.re = 1 / 2)
+      ∧ ∀ z ∈ chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R',
+          ‖Complex.log (xi z / completedGN N z)‖ ≤
+            (1 - (1 / 2 : ℝ))⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  obtain ⟨ρ', h, hρ're, hρ'hole, hhan, hh0, hfact⟩ :=
+    completedGN_simple_zero_factorization_of_close hc h0 hrR hρ₀re hball hcloseC
+  have hsub : ball ρ' R' ⊆ ball ρ₀ R := by
+    intro z hz
+    rw [mem_ball] at hz ⊢
+    calc dist z ρ₀ ≤ dist z ρ' + dist ρ' ρ₀ := dist_triangle z ρ' ρ₀
+      _ < R' + r₀ := by
+          have h2 : dist ρ' ρ₀ ≤ r₀ := by rwa [Complex.dist_eq]
+          linarith
+      _ ≤ R := hRR'
+  obtain ⟨hstrip', hE', hclose', hF'⟩ := hdata ρ' hρ're hρ'hole
+  obtain ⟨honline, hlog⟩ := xi_window_pinned_of_carrier_simple_zero hM hεδ h0' hrR'
+    hρ're hstrip' hE' hclose' hF' (hhan.mono hsub) (fun z hz => hh0 z (hsub hz))
+    (fun z hz => hfact z (hsub hz))
+  exact ⟨ρ', hρ're, hρ'hole, honline, hlog⟩
+
+/-- **The double-domination RH gate.**  RH from a family of two-domination
+certificates, one per hypothetical right-half ξ-zero: a linear-reference
+domination of the completed carrier on the outer window (which locates the
+carrier's unique simple on-line zero), and EM/closeness/LOW-floor data on the
+recentered window.  Every structural clause — carrier factorization, ξ
+factorization, symmetry, zero location — is internal. -/
+theorem riemannHypothesis_of_double_domination_windows
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (ε₁ δ : ℝ) (ρ₀ c : ℂ) (r₀ R r₀' R' : ℝ),
+        1 ≤ M ∧ 0 ≤ ε₁ + δ ∧ c ≠ 0
+        ∧ 0 ≤ r₀ ∧ r₀ < R ∧ 0 ≤ r₀' ∧ r₀' < R' ∧ R' + r₀ ≤ R
+        ∧ ρ₀.re = 1 / 2 ∧ ρ ∈ ball ρ₀ (R' - r₀)
+        ∧ (∀ z ∈ ball ρ₀ R, 0 < z.re ∧ z.re < 1)
+        ∧ (∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+            ‖completedGN N z - c * (z - ρ₀)‖ < ‖c * (z - ρ₀)‖)
+        ∧ (∀ ρ' : ℂ, ρ'.re = 1 / 2 → ‖ρ' - ρ₀‖ ≤ r₀ →
+            (∀ z ∈ chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R', 0 < z.re ∧ z ≠ 1)
+            ∧ (∀ z ∈ chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R',
+                ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+            ∧ (∀ z ∈ chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R',
+                ‖emCarrier M z - gN N z‖ ≤ δ)
+            ∧ CarrierFloorOn (chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R')
+                N (2 * (ε₁ + δ)))) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_local_online_windows
+  intro ρ hρ hzero
+  obtain ⟨N, M, ε₁, δ, ρ₀, c, r₀, R, r₀', R', hM, hεδ, hc, h0, hrR, h0', hrR', hRR',
+    hρ₀re, hρball, hball, hcloseC, hdata⟩ := hwin ρ hρ hzero
+  obtain ⟨ρ', hρ're, hρ'hole, honline, -⟩ :=
+    xi_window_pinned_of_double_domination hM hεδ hc h0 hrR h0' hrR' hRR' hρ₀re
+      hball hcloseC hdata
+  refine ⟨ρ', R', ?_, honline⟩
+  rw [mem_ball] at hρball ⊢
+  calc dist ρ ρ' ≤ dist ρ ρ₀ + dist ρ₀ ρ' := dist_triangle ρ ρ₀ ρ'
+    _ < (R' - r₀) + r₀ := by
+        have h2 : dist ρ₀ ρ' ≤ r₀ := by
+          rw [Complex.dist_eq, norm_sub_rev]
+          exact hρ'hole
+        linarith
+    _ = R' := by ring
+
+end RHTower
