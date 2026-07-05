@@ -260,7 +260,7 @@ theorem stripResidue_eq_tsum {c : ℝ} (hc : 1 < c) :
       (1 / (((1 / c : ℝ) : ℂ) - ((n : ℕ) : ℂ)) + 1 / (((1 / c : ℝ) : ℂ) + ((n : ℕ) : ℂ)))
         = (((-2 * c / ((c * (n : ℝ)) ^ 2 - 1) : ℝ)) : ℂ) := by
     intro n
-    have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.one_le
+    have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.pos
     have hnpos : (0 : ℝ) < (n : ℝ) := by linarith
     have h1c : 1 / c < 1 := by rw [div_lt_one hcpos]; exact hc
     have h0c : (0 : ℝ) < 1 / c := by positivity
@@ -308,11 +308,11 @@ theorem stripResidue_series_summable {c : ℝ} (hc : 1 < c) :
     ((Real.summable_one_div_nat_pow (p := 2)).mpr (by norm_num)).comp_injective PNat.coe_injective
   have hmaj : Summable (fun n : ℕ+ => (2 / (c ^ 2 - 1)) * (1 / (n : ℝ) ^ 2)) := hbase.mul_left _
   refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) hmaj
-  · have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.one_le
+  · have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.pos
     have hden : (0 : ℝ) < (c * (n : ℝ)) ^ 2 - 1 := by
       nlinarith [hm1, hc, mul_nonneg (show (0:ℝ) ≤ c by linarith) (show (0:ℝ) ≤ (n:ℝ) - 1 by linarith)]
     positivity
-  · have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.one_le
+  · have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.pos
     have hnpos : (0 : ℝ) < (n : ℝ) := by linarith
     have hlow : (c ^ 2 - 1) * (n : ℝ) ^ 2 ≤ (c * (n : ℝ)) ^ 2 - 1 := by nlinarith [hm1]
     have hElow : (0 : ℝ) < (c ^ 2 - 1) * (n : ℝ) ^ 2 := by positivity
@@ -321,6 +321,213 @@ theorem stripResidue_series_summable {c : ℝ} (hc : 1 < c) :
       _ = (2 / (c ^ 2 - 1)) * (1 / (n : ℝ) ^ 2) := by field_simp
 
 end Series
+
+/-! ### The continuum residue as an improper integral
+
+The excess series has an integral avatar. Expanding `1/(e^u − 1) = Σ_{n≥1} e^{−nu}` and using
+the Laplace transform of `sinh`, the residue equals
+`Φ(c) = ∫_0^∞ (2/c) · sinh(u/c) · 1/(e^u − 1) du`. This is the shape in which the continuum limit
+of the discrete excess balance `(A − B)/i` is naturally read: the integrand is exactly the
+`u → 0` scaling profile of a `coth`-excess pair separated by log-distance `u`. -/
+
+section EulerMaclaurin
+open MeasureTheory
+
+/-- The elementary Laplace integral `∫_0^∞ e^{−a u} du = a⁻¹` for `a > 0`, obtained from the unit
+exponential integral by the scaling `u ↦ a u`. -/
+theorem integral_exp_neg_mul_Ioi {a : ℝ} (ha : 0 < a) :
+    ∫ u in Set.Ioi (0:ℝ), Real.exp (-(a * u)) = a⁻¹ := by
+  have h := integral_comp_mul_left_Ioi (fun x => Real.exp (-x)) 0 ha
+  simp only [mul_zero, smul_eq_mul] at h
+  rw [integral_exp_neg_Ioi] at h
+  simp only [neg_zero, Real.exp_zero, mul_one] at h
+  simpa using h
+
+/-- **Geometric expansion of the pole excess.** For `u > 0`, `poleExcess u = 1/(e^u − 1)` is the
+sum of the geometric shells `Σ_{n≥1} e^{−n u}`. This is the series that turns the excess balance
+into a sum of Laplace-integrable pieces. -/
+theorem poleExcess_hasSum {u : ℝ} (hu : 0 < u) :
+    HasSum (fun n : ℕ+ => Real.exp (-(n : ℝ) * u)) (poleExcess u) := by
+  set x := Real.exp (-u) with hx
+  have hx0 : 0 ≤ x := (Real.exp_pos _).le
+  have hx1 : x < 1 := by rw [hx]; exact Real.exp_lt_one_iff.mpr (by linarith)
+  have hgeo : HasSum (fun n : ℕ => x ^ n) (1 - x)⁻¹ := hasSum_geometric_of_lt_one hx0 hx1
+  have hshift : HasSum (fun n : ℕ => x ^ (n + 1)) ((1 - x)⁻¹ - 1) :=
+    (hasSum_nat_add_iff (f := fun n : ℕ => x ^ n) 1).mpr (by simpa using hgeo)
+  have hfun : (fun m : ℕ+ => x ^ (m : ℕ)) ∘ (Equiv.pnatEquivNat.symm : ℕ → ℕ+)
+      = fun n : ℕ => x ^ (n + 1) := by
+    funext n
+    simp only [Function.comp_apply]
+    congr 1
+  have hre : HasSum (fun m : ℕ+ => x ^ (m : ℕ)) ((1 - x)⁻¹ - 1) := by
+    refine (Equiv.hasSum_iff Equiv.pnatEquivNat.symm).mp ?_
+    rw [hfun]; exact hshift
+  have hE : (1 : ℝ) < Real.exp u := Real.one_lt_exp_iff.mpr hu
+  have hval : (1 - x)⁻¹ - 1 = poleExcess u := by
+    have hx' : x = (Real.exp u)⁻¹ := by rw [hx, Real.exp_neg]
+    rw [poleExcess, hx']
+    have h1 : Real.exp u - 1 ≠ 0 := by linarith
+    have hEpos : 0 < Real.exp u := Real.exp_pos _
+    have h2 : (1 : ℝ) - (Real.exp u)⁻¹ ≠ 0 := by
+      have : (Real.exp u)⁻¹ < 1 := by rw [inv_lt_one₀ hEpos]; exact hE
+      linarith
+    field_simp
+    ring
+  have hpow : ∀ m : ℕ+, Real.exp (-(m : ℝ) * u) = x ^ (m : ℕ) := by
+    intro m
+    rw [hx, ← Real.exp_nat_mul]
+    congr 1
+    ring
+  rw [← hval, show (fun n : ℕ+ => Real.exp (-(n : ℝ) * u)) = (fun m : ℕ+ => x ^ (m : ℕ))
+    from funext hpow]
+  exact hre
+
+/-- Positivity of the near exponent `n − 1/c > 0` for `n ≥ 1`, `c > 1`. -/
+theorem shell_ha1 {c : ℝ} (hc : 1 < c) (n : ℕ+) : 0 < (n : ℝ) - 1 / c := by
+  have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.pos
+  have hc0 : 0 < c := by linarith
+  have : 1 / c < 1 := by rw [div_lt_one hc0]; exact hc
+  linarith
+
+/-- Positivity of the far exponent `n + 1/c > 0`. -/
+theorem shell_ha2 {c : ℝ} (hc : 1 < c) (n : ℕ+) : 0 < (n : ℝ) + 1 / c := by
+  have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.pos
+  have hc0 : 0 < c := by linarith
+  have : 0 < 1 / c := by positivity
+  linarith
+
+/-- The `n`-th shell `(2/c)·sinh(u/c)·e^{−n u}` as a difference of two decaying exponentials with
+rates `n − 1/c` and `n + 1/c`. -/
+theorem shell_eq {c : ℝ} (n : ℕ+) (u : ℝ) :
+    (2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u)
+      = (1 / c) * (Real.exp (-(((n : ℝ) - 1 / c) * u)) - Real.exp (-(((n : ℝ) + 1 / c) * u))) := by
+  rw [Real.sinh_eq]
+  rw [show -(((n : ℝ) - 1 / c) * u) = u / c + (-(n : ℝ) * u) by ring,
+      show -(((n : ℝ) + 1 / c) * u) = (-(u / c)) + (-(n : ℝ) * u) by ring,
+      Real.exp_add, Real.exp_add]
+  ring
+
+/-- Each shell is integrable on `(0, ∞)`, being a difference of decaying exponentials. -/
+theorem shell_integrableOn {c : ℝ} (hc : 1 < c) (n : ℕ+) :
+    IntegrableOn (fun u => (2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u)) (Set.Ioi 0) := by
+  have h1 : IntegrableOn (fun u => Real.exp (-(((n : ℝ) - 1 / c) * u))) (Set.Ioi 0) := by
+    have := exp_neg_integrableOn_Ioi (0 : ℝ) (shell_ha1 hc n)
+    exact this.congr_fun (fun u _ => congrArg Real.exp (by ring)) measurableSet_Ioi
+  have h2 : IntegrableOn (fun u => Real.exp (-(((n : ℝ) + 1 / c) * u))) (Set.Ioi 0) := by
+    have := exp_neg_integrableOn_Ioi (0 : ℝ) (shell_ha2 hc n)
+    exact this.congr_fun (fun u _ => congrArg Real.exp (by ring)) measurableSet_Ioi
+  have hd : IntegrableOn
+      (fun u => (1 / c) * (Real.exp (-(((n : ℝ) - 1 / c) * u)) - Real.exp (-(((n : ℝ) + 1 / c) * u))))
+      (Set.Ioi 0) := (h1.sub h2).const_mul (1 / c)
+  exact hd.congr_fun (fun u _ => (shell_eq n u).symm) measurableSet_Ioi
+
+/-- Each shell is nonnegative on `(0, ∞)` (positive `sinh` times positive exponentials). -/
+theorem shell_nonneg {c : ℝ} (hc : 1 < c) (n : ℕ+) : ∀ u ∈ Set.Ioi (0 : ℝ),
+    0 ≤ (2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u) := by
+  intro u hu
+  have hu0 : (0 : ℝ) < u := hu
+  have hc0 : 0 < c := by linarith
+  have huc : 0 < u / c := by positivity
+  have hsinh : 0 < Real.sinh (u / c) := Real.sinh_pos_iff.mpr huc
+  have hexp : 0 < Real.exp (-(n : ℝ) * u) := Real.exp_pos _
+  have h2c : 0 < 2 / c := by positivity
+  exact (mul_pos (mul_pos h2c hsinh) hexp).le
+
+/-- **The shell Laplace transform.** The `n`-th shell integrates to `2/((cn)² − 1)`:
+`∫_0^∞ (2/c)·sinh(u/c)·e^{−n u} du = (1/c)·[(n−1/c)⁻¹ − (n+1/c)⁻¹] = 2/((cn)² − 1)`. -/
+theorem shell_integral {c : ℝ} (hc : 1 < c) (n : ℕ+) :
+    (∫ u in Set.Ioi (0 : ℝ), (2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u))
+      = 2 / ((c * (n : ℝ)) ^ 2 - 1) := by
+  have hc0 : 0 < c := by linarith
+  have ha1 := shell_ha1 hc n
+  have ha2 := shell_ha2 hc n
+  have h1 : IntegrableOn (fun u => Real.exp (-(((n : ℝ) - 1 / c) * u))) (Set.Ioi 0) := by
+    have := exp_neg_integrableOn_Ioi (0 : ℝ) ha1
+    exact this.congr_fun (fun u _ => congrArg Real.exp (by ring)) measurableSet_Ioi
+  have h2 : IntegrableOn (fun u => Real.exp (-(((n : ℝ) + 1 / c) * u))) (Set.Ioi 0) := by
+    have := exp_neg_integrableOn_Ioi (0 : ℝ) ha2
+    exact this.congr_fun (fun u _ => congrArg Real.exp (by ring)) measurableSet_Ioi
+  rw [setIntegral_congr_fun measurableSet_Ioi (fun u _ => shell_eq n u)]
+  rw [integral_const_mul, integral_sub h1 h2, integral_exp_neg_mul_Ioi ha1,
+    integral_exp_neg_mul_Ioi ha2]
+  have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.pos
+  have hcn : (1 : ℝ) < c * (n : ℝ) := by
+    nlinarith [hm1, hc, mul_nonneg (show (0:ℝ) ≤ c by linarith) (show (0:ℝ) ≤ (n:ℝ) - 1 by linarith)]
+  have hne1 : ((n : ℝ) - 1 / c) ≠ 0 := ne_of_gt ha1
+  have hne2 : ((n : ℝ) + 1 / c) ≠ 0 := ne_of_gt ha2
+  have hd1 : c * (n : ℝ) - 1 ≠ 0 := ne_of_gt (by linarith)
+  have hd2 : c * (n : ℝ) + 1 ≠ 0 := ne_of_gt (by linarith)
+  rw [show (c * (n : ℝ)) ^ 2 - 1 = (c * (n : ℝ) - 1) * (c * (n : ℝ) + 1) by ring]
+  field_simp
+  ring
+
+/-- **The Euler–Maclaurin integral is the excess series.** For `c > 1`,
+`∫_0^∞ (2/c)·sinh(u/c)·1/(e^u − 1) du = Σ_{n≥1} 2/((cn)² − 1)`. The geometric expansion of the
+excess splits the integrand into the shells `poleExcess_hasSum`; the sum and the integral are
+exchanged by the `L¹` interchange (`integral_tsum`), whose hypothesis is finiteness of
+`Σ_n ∫ |shell_n|`, itself finite because each `∫ shell_n = 2/((cn)² − 1)` and that series
+converges; each shell is then evaluated by `shell_integral`. -/
+theorem poleExcess_integral_eq_tsum {c : ℝ} (hc : 1 < c) :
+    (∫ u in Set.Ioi (0 : ℝ), (2 / c) * Real.sinh (u / c) * poleExcess u)
+      = ∑' n : ℕ+, 2 / ((c * (n : ℝ)) ^ 2 - 1) := by
+  have hc0 : 0 < c := by linarith
+  have hmeas : ∀ n : ℕ+, AEStronglyMeasurable
+      (fun u => (2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u))
+      (volume.restrict (Set.Ioi 0)) := by
+    intro n
+    apply Continuous.aestronglyMeasurable
+    fun_prop
+  have hpt : ∀ u ∈ Set.Ioi (0 : ℝ),
+      (2 / c) * Real.sinh (u / c) * poleExcess u
+        = ∑' n : ℕ+, (2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u) := by
+    intro u hu
+    have hu0 : 0 < u := hu
+    have hsum : poleExcess u = ∑' n : ℕ+, Real.exp (-(n : ℝ) * u) :=
+      (poleExcess_hasSum hu0).tsum_eq.symm
+    rw [hsum, ← tsum_mul_left]
+  have hL1 : ∑' n : ℕ+, ∫⁻ u, ‖(2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u)‖ₑ
+      ∂(volume.restrict (Set.Ioi 0)) ≠ ⊤ := by
+    have hterm : ∀ n : ℕ+,
+        (∫⁻ u, ‖(2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u)‖ₑ
+          ∂(volume.restrict (Set.Ioi 0)))
+          = ENNReal.ofReal (2 / ((c * (n : ℝ)) ^ 2 - 1)) := by
+      intro n
+      have hnn_ae : 0 ≤ᵐ[volume.restrict (Set.Ioi 0)]
+          (fun u => (2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u)) := by
+        filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu using shell_nonneg hc n u hu
+      calc ∫⁻ u, ‖(2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u)‖ₑ
+              ∂(volume.restrict (Set.Ioi 0))
+          = ∫⁻ u, ENNReal.ofReal ((2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u))
+              ∂(volume.restrict (Set.Ioi 0)) := by
+            apply lintegral_congr_ae
+            filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
+            rw [enorm_eq_ofReal (shell_nonneg hc n u hu)]
+        _ = ENNReal.ofReal (∫ u, (2 / c) * Real.sinh (u / c) * Real.exp (-(n : ℝ) * u)
+              ∂(volume.restrict (Set.Ioi 0))) :=
+            (ofReal_integral_eq_lintegral_ofReal (shell_integrableOn hc n) hnn_ae).symm
+        _ = ENNReal.ofReal (2 / ((c * (n : ℝ)) ^ 2 - 1)) := by rw [shell_integral hc n]
+    rw [tsum_congr hterm]
+    have hnn : ∀ n : ℕ+, 0 ≤ 2 / ((c * (n : ℝ)) ^ 2 - 1) := by
+      intro n
+      have hm1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.pos
+      have hden : 0 < (c * (n : ℝ)) ^ 2 - 1 := by
+        nlinarith [hm1, hc, mul_nonneg (show (0:ℝ) ≤ c by linarith) (show (0:ℝ) ≤ (n:ℝ) - 1 by linarith)]
+      positivity
+    rw [← ENNReal.ofReal_tsum_of_nonneg hnn (stripResidue_series_summable hc)]
+    exact ENNReal.ofReal_ne_top
+  rw [setIntegral_congr_fun measurableSet_Ioi hpt, integral_tsum hmeas hL1]
+  exact tsum_congr (fun n => shell_integral hc n)
+
+/-- **The strip residue as an improper integral.** For `c > 1`,
+`Φ(c) = 1 − (π/c)cot(π/c) = ∫_0^∞ (2/c)·sinh(u/c)·1/(e^u − 1) du`. Chaining the series form
+(`stripResidue_eq_tsum`) with the integral evaluation (`poleExcess_integral_eq_tsum`) closes the
+loop between the closed-form residue and the continuum integral of the excess balance. -/
+theorem stripResidue_eq_integral {c : ℝ} (hc : 1 < c) :
+    stripResidue c
+      = ∫ u in Set.Ioi (0 : ℝ), (2 / c) * Real.sinh (u / c) * poleExcess u :=
+  (stripResidue_eq_tsum hc).trans (poleExcess_integral_eq_tsum hc).symm
+
+end EulerMaclaurin
 
 /-! ### The Riemann-sum step of the continuum limit -/
 
@@ -398,6 +605,103 @@ theorem tendsto_riemann_sum_shell {r : ℝ} (hr : 0 ≤ r) :
       (𝓝 (∫ x in (0:ℝ)..1, (1 + x) ^ (-r))) := by
   refine tendsto_riemann_sum_antitone (fun a ha b hb hab => ?_)
   exact Real.rpow_le_rpow_of_nonpos (by linarith [ha.1]) (by linarith) (by linarith)
+
+/-- **Improper monotone Riemann sums converge to the half-line integral.** For `f` antitone and
+nonnegative on `[0,∞)` and integrable on `(0,∞)`, the mesh-`1/i` sample average
+`(1/i)·Σ_{k≥0} f(k/i)` tends to `∫_0^∞ f`. This is the infinite-domain upgrade of
+`tendsto_riemann_sum_antitone`: a genuine improper Riemann sum, with the summability of the sample
+sequence part of the conclusion. Proof: for each mesh the finite sum↔integral sandwich (rescaled by
+`integral_comp_div`) squeezes `∫_0^{N/i} f` between `(1/i)Σ_{k<N} f((k+1)/i)` and
+`(1/i)Σ_{k<N} f(k/i)`; letting `N → ∞` (`intervalIntegral_tendsto_integral_Ioi`, the tail bounded by
+`∫_0^∞ f`) pins `∫_0^∞ f ≤ (1/i)·∑' ≤ ∫_0^∞ f + f(0)/i`, and `f(0)/i → 0` gives the outer limit. -/
+theorem tendsto_riemann_sum_antitone_Ioi {f : ℝ → ℝ}
+    (hanti : AntitoneOn f (Set.Ici 0)) (hnn : ∀ x ∈ Set.Ici (0:ℝ), 0 ≤ f x)
+    (hint : IntegrableOn f (Set.Ioi 0)) :
+    Tendsto (fun i : ℕ => (1 / (i:ℝ)) * ∑' k : ℕ, f ((k:ℝ) / i)) atTop
+      (𝓝 (∫ x in Set.Ioi 0, f x)) := by
+  set I : ℝ := ∫ x in Set.Ioi 0, f x with hI
+  have hf0nn : (0:ℝ) ≤ f 0 := hnn 0 (Set.mem_Ici.mpr le_rfl)
+  have hI0 : 0 ≤ I := by
+    rw [hI]; exact setIntegral_nonneg measurableSet_Ioi (fun x hx => hnn x (Set.mem_Ici.mpr (le_of_lt hx)))
+  have hganti : ∀ (i:ℕ), 0 < (i:ℝ) → ∀ N:ℕ,
+      AntitoneOn (fun x => f (x / (i:ℝ))) (Set.Icc 0 (0 + (N:ℝ))) := by
+    intro i hi N a ha b hb hab
+    rw [zero_add] at ha hb
+    exact hanti (div_nonneg ha.1 hi.le) (div_nonneg hb.1 hi.le) (by gcongr)
+  have hscale : ∀ (i:ℕ), 0 < (i:ℝ) → ∀ N:ℕ,
+      (∫ x in (0:ℝ)..(N:ℝ), f (x / (i:ℝ))) = (i:ℝ) * ∫ x in (0:ℝ)..((N:ℝ)/i), f x := by
+    intro i hi N
+    rw [integral_comp_div f (ne_of_gt hi), zero_div, smul_eq_mul]
+  have hsum_le : ∀ (i:ℕ), 0 < (i:ℝ) → ∀ N:ℕ,
+      (∑ k ∈ Finset.range N, f (((k+1 : ℕ):ℝ)/i)) ≤ (i:ℝ) * ∫ x in (0:ℝ)..((N:ℝ)/i), f x := by
+    intro i hi N
+    have hsil := (hganti i hi N).sum_le_integral
+    simp only [zero_add] at hsil
+    rwa [hscale i hi N] at hsil
+  have hint_le : ∀ (i:ℕ), 0 < (i:ℝ) → ∀ N:ℕ,
+      (i:ℝ) * ∫ x in (0:ℝ)..((N:ℝ)/i), f x ≤ ∑ k ∈ Finset.range N, f ((k:ℝ)/i) := by
+    intro i hi N
+    have hils := (hganti i hi N).integral_le_sum
+    simp only [zero_add] at hils
+    rwa [hscale i hi N] at hils
+  have htail : ∀ (i:ℕ), 0 < (i:ℝ) → ∀ N:ℕ, ∫ x in (0:ℝ)..((N:ℝ)/i), f x ≤ I := by
+    intro i hi N
+    have hNi : (0:ℝ) ≤ (N:ℝ)/i := by positivity
+    rw [intervalIntegral.integral_of_le hNi, hI]
+    refine setIntegral_mono_set hint ?_ ?_
+    · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx using hnn x (Set.mem_Ici.mpr (le_of_lt hx))
+    · exact Filter.Eventually.of_forall (fun x hx => hx.1)
+  have htends : ∀ (i:ℕ), 0 < (i:ℝ) →
+      Tendsto (fun N:ℕ => ∫ x in (0:ℝ)..((N:ℝ)/i), f x) atTop (𝓝 I) := by
+    intro i hi
+    rw [hI]
+    exact intervalIntegral_tendsto_integral_Ioi 0 hint
+      (tendsto_natCast_atTop_atTop.atTop_div_const hi)
+  have hpartial : ∀ (i:ℕ), 0 < (i:ℝ) → ∀ N:ℕ,
+      ∑ k ∈ Finset.range N, f ((k:ℝ)/i) ≤ (i:ℝ)*I + f 0 := by
+    intro i hi N
+    have e1 : (∑ k ∈ Finset.range N, f ((k:ℝ)/i)) + f ((N:ℝ)/i)
+        = (∑ k ∈ Finset.range N, f (((k+1 : ℕ):ℝ)/i)) + f 0 := by
+      have s1 := Finset.sum_range_succ (fun k => f ((k:ℝ)/i)) N
+      have s2 := Finset.sum_range_succ' (fun k => f ((k:ℝ)/i)) N
+      rw [s1] at s2
+      simpa using s2
+    have hshift_le : ∑ k ∈ Finset.range N, f (((k+1 : ℕ):ℝ)/i) ≤ (i:ℝ) * I :=
+      le_trans (hsum_le i hi N) (mul_le_mul_of_nonneg_left (htail i hi N) hi.le)
+    have hNnn : 0 ≤ f ((N:ℝ)/i) := hnn _ (Set.mem_Ici.mpr (by positivity))
+    linarith [e1, hshift_le, hNnn]
+  have hsummable : ∀ (i:ℕ), 0 < (i:ℝ) → Summable (fun k:ℕ => f ((k:ℝ)/i)) := by
+    intro i hi
+    exact summable_of_sum_range_le (c := (i:ℝ)*I + f 0)
+      (fun k => hnn _ (Set.mem_Ici.mpr (by positivity))) (hpartial i hi)
+  have hlow : ∀ (i:ℕ), 0 < (i:ℝ) → I ≤ (1/(i:ℝ)) * ∑' k : ℕ, f ((k:ℝ)/i) := by
+    intro i hi
+    have hbound : ∀ N:ℕ, ∫ x in (0:ℝ)..((N:ℝ)/i), f x ≤ (1/(i:ℝ)) * ∑' k : ℕ, f ((k:ℝ)/i) := by
+      intro N
+      have h2 : ∑ k ∈ Finset.range N, f ((k:ℝ)/i) ≤ ∑' k : ℕ, f ((k:ℝ)/i) :=
+        (hsummable i hi).sum_le_tsum (Finset.range N) (fun k _ => hnn _ (Set.mem_Ici.mpr (by positivity)))
+      have hle : (i:ℝ) * ∫ x in (0:ℝ)..((N:ℝ)/i), f x ≤ ∑' k : ℕ, f ((k:ℝ)/i) :=
+        le_trans (hint_le i hi N) h2
+      rw [one_div, inv_mul_eq_div, le_div_iff₀ hi]
+      linarith [hle]
+    exact le_of_tendsto (htends i hi) (Filter.Eventually.of_forall hbound)
+  have hupp : ∀ (i:ℕ), 0 < (i:ℝ) → (1/(i:ℝ)) * ∑' k : ℕ, f ((k:ℝ)/i) ≤ I + f 0 / i := by
+    intro i hi
+    have htsum_le : ∑' k : ℕ, f ((k:ℝ)/i) ≤ (i:ℝ)*I + f 0 :=
+      tsum_le_of_sum_range_le (fun k => hnn _ (Set.mem_Ici.mpr (by positivity))) (hpartial i hi)
+    rw [one_div, inv_mul_le_iff₀ hi]
+    have hrw : (i:ℝ)*(I + f 0/i) = (i:ℝ)*I + f 0 := by field_simp
+    rw [hrw]
+    exact htsum_le
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' (g := fun _ : ℕ => I)
+    (h := fun i:ℕ => I + f 0 / (i:ℝ)) tendsto_const_nhds ?_ ?_ ?_
+  · have h0 : Tendsto (fun i:ℕ => f 0 / (i:ℝ)) atTop (𝓝 0) :=
+      tendsto_const_div_atTop_nhds_zero_nat _
+    simpa using tendsto_const_nhds.add h0
+  · filter_upwards [eventually_ge_atTop 1] with i hi1
+    exact hlow i (by exact_mod_cast hi1)
+  · filter_upwards [eventually_ge_atTop 1] with i hi1
+    exact hupp i (by exact_mod_cast hi1)
 
 end RiemannSum
 

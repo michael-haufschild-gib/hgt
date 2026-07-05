@@ -4297,3 +4297,205 @@ shell bounded+antitone). Genuinely mathlib-absent, reusable. Remaining assembly 
 bounds; (b) [0,1]→[0,∞) improper extension; (c) shell interchange Σ_n lim=lim Σ_n by dominated conv.
 Key names: AntitoneOn.integral_le_sum/sum_le_integral, integral_comp_div, tendsto_of_tendsto_of_tendsto_of_le_of_le',
 tendsto_const_div_atTop_nhds_zero_nat, Real.rpow_le_rpow_of_nonpos, Finset.sum_range_sub'.
+
+## cont. 34 — integration: caustic numeral (a), density→cofinal-floor (b), seam moment (c)
+
+Three new modules, all axiom-clean [propext, Classical.choice, Quot.sound]; lint green;
+builds 8500 jobs.
+
+(a) FloorFailureCaustic.lean — floorFailure_timeDensity_le_caustic: instantiates
+    floorFailure_timeDensity_le_unconditional at block_smallball_caustic (w=0). Under the
+    caustic geometry the Cesàro upper time density of any [0,1]-observable on {‖F‖≤t₀} ≤
+    ((2π)⁻⁴·fourPhaseConst).toReal — the explicit numeral, ON THE LINE. (fourPhaseConst≠⊤
+    via `finiteness`; ht0R via t₀≤|a p4|≤∑|aₙ| from the caustic margin.)
+
+(c) SeamMoments.lean — tendsto_mixedSecondMoment_average_steinhaus: the mixed-carrier
+    (cross-level) second moment. Via dpoly_mul/model_mul, mean_τ ‖F·G‖² = E‖(∑aX)(∑bX)‖² =
+    ∑(dpolyConv a b s t)². The native handle to correlate two carriers (two levels) — general
+    dpoly_mul for DIFFERENT supports, exactly as flagged.
+
+(b) FloorFailureCofinal.lean — the density→floor bridge:
+    - carrier_line_zero_le: a line-zero is a failure height (line-zeros ⊆ failure set, bounding
+      on-line carrier zeros by the failure density — the count-budget link).
+    - good_height_cofinal_of_density_lt_one: cesaroUpperDensity fail < 1 ⟹ floor-holding heights
+      {τ: ‖F τ‖>t₀} cofinal (if bounded, fail eventually =1 ⟹ density=1). The a.e.-height floor.
+    - good_height_cofinal_of_caustic: COMPOSES (a)+(b) — caustic geometry + numeral<1 ⟹ floor
+      holds at cofinally many heights. End-to-end: explicit constant to deterministic floor.
+
+REMAINING (B2) core (typed, honest): the 2D off-line extension — from "floor holds on cofinal
+LINE heights" to CarrierFloorOn on the annulus CHARTS (2D region S) the certificate consumes.
+That needs off-line control (max principle / Borel–Carathéodory around each hypothetical zero) +
+the movable-shell radius selection. The 1D density→line-floor is done; the chart extension is the
+next analytic step. NEXT: build the off-line floor extension (line floor + carrier boundedness ⟹
+chart floor) to feed CarrierFloorOn directly.
+
+## cont. 35 — (B2) 2D off-line extension: line floor → chart floor (DpolyOffline.lean)
+
+The remaining (B2) core is now built, axiom-clean [propext, Classical.choice, Quot.sound];
+lint green; full RHTower umbrella builds 8705 jobs.
+
+DpolyOffline.lean:
+- dpoly2 a s z = ∑_{n∈s} aₙ n^{-z} — the 2D finite Dirichlet carrier (dirichletPoly-shaped).
+- dpoly2_line_eq: dpoly2 a s (σ+iτ) = dpoly (fun n => aₙ·n^{-σ}) s τ. The line restriction is
+  the 1D carrier (rescaled coeffs) — so ALL the density/cofinality machinery transfers verbatim
+  to any vertical line of the 2D carrier. (cpow→exp via cpow_def_of_ne_zero + ofReal_log.)
+- cpow_line_diff_norm: ‖n^{-(σ₁+iτ)} − n^{-(σ₂+iτ)}‖ = |n^{-σ₁} − n^{-σ₂}| (shared phase has
+  modulus 1; via cpow_add + ofReal_cpow + norm_cpow_eq_rpow_re).
+- norm_dpoly2_offline_le: ‖F(σ₁+iτ) − F(σ₂+iτ)‖ ≤ ∑|aₙ|·|n^{-σ₁}−n^{-σ₂}| (Lipschitz-in-σ,
+  height-INDEPENDENT budget).
+- dpoly2_chart_floor: line floor ‖F(σ₂+iτ)‖>t₀ + budget ≤ t₀−ε ⟹ ‖F(σ₁+iτ)‖>ε. The off-line
+  floor extension (reverse triangle).
+- chart_floor_cofinal_of_line_cofinal: cofinal LINE floor + off-line budget ⟹ cofinal CHART
+  floor (floor on the whole σ-shifted strip over an unbounded height set).
+
+FULL CHAIN now assembled and axiom-clean: caustic geometry → block_smallball_caustic →
+floorFailure_timeDensity_le_caustic ((2π)⁻⁴·fourPhaseConst numeral, on the line) →
+good_height_cofinal_of_caustic (numeral<1 ⟹ cofinal LINE floor) → chart_floor_cofinal_of_line_cofinal
+(⟹ cofinal CHART floor). The 1D→2D dimension gap the certificate's CarrierFloorOn needed is bridged
+by the Lipschitz-in-σ off-line extension. Remaining to plug the ACTUAL certificate: identify dpoly2
+with gN = chiSymmetrize zetaChi (dirichletPoly N) (the chiSymmetrize wrapper) and the movable-shell
+radius/chart-geometry match to CarrierFloorOn's exact chart set — a bookkeeping bridge, the analytic
+mechanism is complete. NEXT: dpoly2 ↔ dirichletPoly N coefficient identification.
+
+## cont. 36 — dpoly2 ↔ gN/dirichletPoly identification; CarrierFloorOn plug (GNCarrierBridge.lean)
+
+All axiom-clean [propext, Classical.choice, Quot.sound]; lint green; builds 8592 jobs.
+
+The certificate carrier: gN N = chiSymmetrize zetaChi (dirichletPoly N), i.e.
+gN N z = dirichletPoly N z + zetaChi z · dirichletPoly N (1−z); dirichletPoly N s = ∑_{n∈Icc 1 N} n^{-s}.
+
+Built:
+- dirichletPoly_eq_dpoly2: dirichletPoly N = dpoly2 (fun _=>1) (Icc 1 N). THE coefficient match
+  (the goal's "immediate next move") — unit coefficients.
+- gN_eq_dpoly2: gN N s = dpoly2 1 (Icc 1 N) s + zetaChi s · dpoly2 1 (Icc 1 N) (1−s). The χ-wrapper
+  in dpoly2 terms.
+- carrierFloorOn_of_dirichletPoly_floor / carrierFloorOn_of_dpoly2_floor: CarrierFloorOn S N ε from a
+  Dirichlet-part floor on S + reflected-χ budget ≤ t₀−ε (reverse triangle on gN = D + χ·D(1−·)).
+- VERIFIED PLUG (type-check): carrierFloorOn_of_dpoly2_floor N (S := chartRA a r₀ R ∪ chartLA a r₀ R)
+  produces EXACTLY CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N (ε₁+δ) — the shape the codex
+  riemannHypothesis_of_…_floor_sign_local_windows gates consume. Direct plug confirmed.
+- dirichletPoly_line_eq: dirichletPoly N (½+iτ) = dpoly (n^{-1/2}) (Icc 1 N) τ. Density/cofinality
+  machinery transfers to the certificate carrier on the line, verbatim.
+- dirichletPoly_mul_line: dirichletPoly N · dirichletPoly N' on the line = one convolution dpoly (via
+  dpoly_mul) — the mixed-carrier seam handle for correlating two levels simultaneously.
+
+FULL CHAIN now type-connected end to end: caustic geometry → block_smallball_caustic → density
+(floorFailure_timeDensity_le_caustic) → cofinal line floor (good_height_cofinal_of_caustic) → chart
+floor (chart_floor_cofinal_of_line_cofinal, via off-line Lipschitz) → dpoly2 ≡ dirichletPoly N ≡ gN
+Dirichlet part → CarrierFloorOn (carrierFloorOn_of_dpoly2_floor) → codex RH gates.
+
+HONEST remaining analytic items (typed, not fabricated): (i) PRIME-SUPPORT — block_smallball_caustic
+is a prime-block small-ball; dirichletPoly N has full support Icc 1 N, so the density→line-floor for
+the full carrier needs either a full-support small-ball or a prime sub-block argument. (ii) The
+reflected-χ-term budget ‖zetaChi z · dirichletPoly N (1−z)‖ ≤ t₀−ε (control of D at the reflected
+point via the off-line bound at 1−z). Both are analytic bounds; the identification/plumbing is
+complete and axiom-clean. NEXT: (i) prime sub-block density bound, or (ii) reflected-term off-line
+bound at 1−z.
+
+## cont. 37 — Euler–Maclaurin integral↔series identity formalized; Φ(c)=∫_0^∞ closed loop
+RNG seed 4099078061212829110; method pick "full-assembly". Target picked one notch above the
+Riemann-sum lemma: the integral↔series identity (the analytic heart of the continuum limit).
+Formalized in LegStripThreshold.lean (axiom-clean [propext, Classical.choice, Quot.sound], full
+RHTower build green 8706 jobs, lint passed):
+- `integral_exp_neg_mul_Ioi` (∫_0^∞ e^{−au}=1/a, from unit exp integral by scaling),
+- `poleExcess_hasSum` (1/(e^u−1)=Σ_{n≥1}e^{−nu} for u>0; geometric HasSum → drop n=0 via
+  hasSum_nat_add_iff → reindex ℕ≃ℕ+ via Equiv.pnatEquivNat),
+- `shell_eq`/`shell_integrableOn`/`shell_nonneg`/`shell_integral` (per-shell Laplace transform of
+  sinh: ∫_0^∞ (2/c)sinh(u/c)e^{−nu}du = 2/((cn)²−1)),
+- `poleExcess_integral_eq_tsum` (the interchange: ∫_0^∞ (2/c)sinh(u/c)/(e^u−1)du = Σ 2/((cn)²−1),
+  via mathlib integral_tsum; L¹ bound Σ_n∫|shell_n|<∞ discharged through enorm=ofReal + ofReal_tsum
+  + series_summable),
+- `stripResidue_eq_integral` (capstone: Φ(c)=1−(π/c)cot(π/c)=∫_0^∞, chaining series+integral).
+This closes the analytic half completely — old steps (b) improper per-shell integral and (c) shell
+interchange are now machine-checked inside poleExcess_integral_eq_tsum. Both endpoints of the
+continuum integral (series value + cot closed form) proven. Also fixed 3 pre-existing PNat.one_le
+deprecation warnings (→ n.pos) so the warnings-fail lint gate stays green. Doc 30 §15 updated.
+REMAINS: a single bridge — the discrete (A−B)/i → the continuum integral (harmonic-to-log
+substitution welded to the half-line upgrade of tendsto_riemann_sum_antitone). NEXT generative move:
+the improper monotone Riemann-sum convergence (1/i)Σ_k f(k/i)→∫_0^∞ f for antitone integrable f —
+the half-line partner of the [0,1] lemma, one notch harder again (infinite sum + tail control).
+
+## cont. 38 — codex batch 3 review (lean_updates_codex.md, 33 items): the pinning route + CarrierFloorOn uniformization
+
+VERIFIED (all 33 items): every named declaration present, every claimed deletion executed
+(four_thirds_sub_log_three_lt_quarter gone from LedgerReversalConstants; local sinh_lt_mul_cosh
+gone from ReversalPositivity; local coth gone from RouteAProfile; moved coth/csch lemmas absent
+from SpurLattice/LegHarmonicEdge). Tree builds green (9181 jobs), formal lint passed. Axiom check
+on 18 load-bearing endpoints — all [propext, Classical.choice, Quot.sound]:
+riemannHypothesis_of_pinned_windows, riemannHypothesis_of_emCarrier_pinned_windows,
+riemannHypothesis_of_double_domination_windows, riemannHypothesis_of_emCarrier_pinned_windows_of_circles,
+riemannHypothesis_of_em_relative_floor_sign_local_windows, completedGN_simple_zero_factorization_of_close,
+xi_window_pinned_of_double_domination_fixed, xi_window_pinned_of_carrier_simple_zero_of_circles,
+relative_error_le_on_annulus_of_circles, SteinhausModel.blockSmallBall_of_caustic,
+SteinhausModel.blockSmallBall_one, SteinhausModel.fourPhaseConst_lt_top,
+tendsto_secondMoment_average_steinhaus, tendsto_carrier_profile_matched,
+secondMoment_pos_of_large_window, xi_ball_factorization, exists_multi_peel, annulus_subset_charts.
+
+STRUCTURAL MAP of the batch (three arcs):
+(a) THE PINNING ROUTE (items 11–23, 32–33) — a fourth terminal RH gate family, argument-principle-free
+    and sign-table-free. Progressive internalization: ξ factorization (xi_ball_factorization),
+    hole confinement (annulus_subset_charts ⟹ derived), carrier one-simple-zero PRODUCED from a
+    domination against a bare linear reference (completedGN_simple_zero_factorization_of_close),
+    recentering composed (double_domination), moving window data collapsed to one fixed fattened
+    annulus (double_domination_fixed), then 2-D chart data reduced to 1-D circle data by the
+    annulus maximum principle (relative_error_le_on_annulus_of_circles). Terminal circle gate
+    riemannHypothesis_of_emCarrier_pinned_windows_of_circles: per hypothetical zero the burden is
+    circle EM bounds (ε₁, δ on sphere r₀ ∪ sphere R), CarrierFloorOn on charts AND on the two
+    spheres at level 2(ε₁+δ), and the (z−ρ₀)·h factorization of completedGN at an on-line center.
+    Every ξ-facing clause is now a theorem.
+(b) CarrierFloorOn UNIFORMIZATION (items 24–31): all seam/deck/rung/two-sign endpoints
+    (SeamCongruence, AnnealWindowRelation) rewired to consume the LOW-floor interface instead of
+    raw gN nonvanishing tables; new EM-relative sign gate
+    riemannHypothesis_of_em_relative_floor_sign_local_windows consumes
+    CarrierFloorOn (chartRA ∪ chartLA) N ε directly. Consequence for this lane: our
+    carrierFloorOn_of_dirichletPoly_floor / _of_dpoly2_floor (GNCarrierBridge) is the tree's ONLY
+    deterministic CarrierFloorOn producer — the uniformization multiplies its reach to every gate
+    family at once.
+(c) ROUTE A/B CARRIER ANALYSIS (items 4–7): BohrTransfer (time avg = Steinhaus ensemble avg at the
+    second moment, effective B/U error) — independently rebuilt by codex, consistent with our
+    BohrMoments tower; secondMoment_pos_of_large_window (carrier never L²-silent on windows longer
+    than B/∑aₙ², uniformly in basepoint); BlockSmallBall interface now INHABITED by the caustic
+    law (blockSmallBall_of_caustic) so the graded small-ball induction consumes a proven node;
+    tendsto_carrier_profile_matched — matchedProfile is the PROVEN limit of the secondMoment_sigma
+    diagonal in matched coordinates u = (σ−½)·log N with effective 1/log N error. ROUTE A STATUS
+    CHANGE: the carrier side is closed; the route's owed input is the universality interface alone.
+
+LEADS OPENED:
+L1 (buildable now): point-floor → ball-floor Lipschitz brick. The circle gate demands
+    CarrierFloorOn on charts ∪ spheres; both sets lie in closedBall ρ₀ R. One lemma —
+    ‖n^{−z} − n^{−w}‖ ≤ log n · n^{−σ₋} · ‖z−w‖ on the half-plane Re ≥ σ₋ (mean value on the
+    convex half-plane; scratch-verified against this toolchain) — spreads our cofinal single-point
+    line floors to the whole closed ball, covering BOTH floor demands simultaneously and
+    subsuming the σ-only DpolyOffline step.
+L2 [CONJECTURE]: the circle certificates (EM remainder, closeness, dominations) are finite-carrier
+    quantities of exactly the observable species the Bohr moment tower averages; ensemble moments
+    of the circle data are computable via dpoly_mul/dpolyConv, so a positive-density window-placement
+    statement for the double-domination certificate is a moment computation, not new analysis.
+L3 (new typed item): the circle gate's center must be a SIMPLE ZERO of completedGN at ρ₀ on the
+    line — complementary to our floor heights (the floor lives on the annulus AROUND a zero).
+    Placement = pairing a cofinal floor-height set with the carrier's on-line zero set; the
+    factorization clause is itself produced by a circle-data domination (items 18+21), so the
+    whole placement question lives on one circle pair.
+Standing typed remainders unchanged: prime-support gap (block small-ball vs full Icc 1 N support)
+and the reflected-χ budget ‖zetaChi z · dirichletPoly N (1−z)‖ ≤ t₀−ε.
+
+## cont. 38 — improper half-line Riemann-sum convergence formalized (bridge shrinks to harmonic-to-log)
+RNG seed 2854501126629886779; target pick "improper-riemann-sum-halfline" (dice confirmed the
+load-bearing escalation). Checked mathlib FIRST: only finite-range AntitoneOn.sum_le_integral /
+integral_le_sum exist — no tsum comparison, no improper Riemann-sum limit. So genuinely mathlib-absent,
+one notch above the [0,1] lemma (two nested limits). Formalized tendsto_riemann_sum_antitone_Ioi in
+LegStripThreshold.lean (RiemannSum section; axiom-clean [propext, Classical.choice, Quot.sound]; module
++ full RHTower build green 8706 jobs; lint passed):
+  ∀ f antitone+nonneg on [0,∞), integrable on (0,∞):  (1/i)·∑'_{k≥0} f(k/i) → ∫_0^∞ f.
+Summability of Σ_k f(k/i) is proven as PART of the conclusion (summable_of_sum_range_le from bounded
+partial sums). Proof structure: per-mesh finite sandwich (AntitoneOn.sum_le/integral_le, rescaled by
+intervalIntegral.integral_comp_div), N→∞ via intervalIntegral_tendsto_integral_Ioi with tail bounded
+by ∫_0^∞ f (setIntegral_mono_set), pinning ∫≤(1/i)∑'≤∫+f(0)/i; then outer squeeze f(0)/i→0. Key lemmas:
+sum_range_succ/succ' telescoping, Summable.sum_le_tsum, tsum_le_of_sum_range_le, Tendsto.atTop_div_const.
+CONSEQUENCE: this IS the "half-line upgrade" flagged in cont.37 as half the remaining bridge. So the
+discrete→continuum passage (A−B)/i → ∫_0^∞ now reduces to a SINGLE open step: (a) harmonic-to-log
+substitution Σ_{l}1/l→log identifying the harmonic pole distances with sample points k/i + routine
+recasting of the excess balance as Σ_k g(k/i). Doc 30 §15 updated. NEXT generative move: formalize (a)
+— the telescoping-log bounds 1/(l+1) ≤ log((l+1)/l) ≤ 1/l sandwiching Σ_{l=i+1}^{i+k}1/l by
+log((i+k)/i) → the last brick of the continuum bridge; OR pivot to Φ'(c)<0 (StrictAnti, the continuum
+slope shadow of the 1/√d edge margin).

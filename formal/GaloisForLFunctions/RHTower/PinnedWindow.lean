@@ -699,4 +699,453 @@ theorem xi_window_pinned_of_carrier_simple_zero_of_circles
   rw [hpw]
   exact hpin w hwmem hm0
 
+/-- EM finite-data circle certificate for the pinned window.  EM remainder bounds,
+finite `emCarrier`/`gN` closeness, and doubled LOW floors on the two boundary
+circles supply the circle relative-error input of
+`xi_window_pinned_of_carrier_simple_zero_of_circles`; the chart LOW floor still
+provides the interior zero-free carrier constraint. -/
+theorem xi_window_pinned_of_emCarrier_close_half_floor_of_circles
+    {N M : ℕ} (hM : 1 ≤ M) {ε₁ δ : ℝ} (hεδ : 0 ≤ ε₁ + δ)
+    {ρ₀ : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hρ₀re : ρ₀.re = 1 / 2)
+    (hball : ∀ z ∈ closedBall ρ₀ R, 0 < z.re ∧ z.re < 1)
+    (hE : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hF : CarrierFloorOn (chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R) N (2 * (ε₁ + δ)))
+    (hFcirc : CarrierFloorOn (sphere ρ₀ r₀ ∪ sphere ρ₀ R) N (2 * (ε₁ + δ)))
+    {h : ℂ → ℂ}
+    (hh : AnalyticOnNhd ℂ h (ball ρ₀ R)) (hh0 : ∀ z ∈ ball ρ₀ R, h z ≠ 0)
+    (hfactg : ∀ z ∈ ball ρ₀ R, completedGN N z = (z - ρ₀) * h z) :
+    (∀ p ∈ ball ρ₀ R, xi p = 0 → p.re = 1 / 2) ∧
+      ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - (1 / 2 : ℝ))⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hη : (1 / 2 : ℝ) < 1 := by norm_num
+  have hfloor_nonneg : 0 ≤ 2 * (ε₁ + δ) := mul_nonneg (by norm_num) hεδ
+  have hsphsub : sphere ρ₀ r₀ ∪ sphere ρ₀ R ⊆ closedBall ρ₀ R := by
+    rintro z (hz | hz) <;> rw [mem_sphere] at hz
+    · exact mem_closedBall.mpr (hz.le.trans hrR.le)
+    · exact mem_closedBall.mpr hz.le
+  have hstripCirc : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R, 0 < z.re ∧ z ≠ 1 := by
+    intro z hz
+    refine ⟨(hball z (hsphsub hz)).1, ?_⟩
+    intro hz1
+    have hlt := (hball z (hsphsub hz)).2
+    rw [hz1] at hlt
+    norm_num at hlt
+  have hcirc : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ (1 / 2 : ℝ) :=
+    completed_relative_error_of_emCarrier_close_half_floor hM hεδ hstripCirc hE hclose hFcirc
+  exact xi_window_pinned_of_carrier_simple_zero_of_circles h0 hrR hη hfloor_nonneg hρ₀re
+    hball hF hFcirc hcirc hh hh0 hfactg
+
+/-- **Linear-reference circle pinning.**  A direct relative bound
+`‖(ξ - c·(z−ρ₀))/(c·(z−ρ₀))‖ ≤ η < 1` on the two boundary circles pins every
+ξ-zero in the ball to the critical line.  This is the primitive one-circle-pair
+constraint endpoint; finite-carrier data can feed it, but it does not mention a
+finite carrier. -/
+theorem xi_window_pinned_of_linear_relative_circles
+    {ρ₀ c : ℂ} (hc : c ≠ 0) {r₀ R η : ℝ}
+    (h0 : 0 < r₀) (hrR : r₀ < R) (hη : η < 1)
+    (hρ₀re : ρ₀.re = 1 / 2)
+    (hcirc : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖(xi z - c * (z - ρ₀)) / (c * (z - ρ₀))‖ ≤ η) :
+    (∀ p ∈ ball ρ₀ R, xi p = 0 → p.re = 1 / 2) ∧
+      ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+        ‖Complex.log (xi z / (c * (z - ρ₀)))‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - c * (z - ρ₀)) / (c * (z - ρ₀))‖ := by
+  have hG0 : ∀ z ∈ closedBall ρ₀ R \ ball ρ₀ r₀, c * (z - ρ₀) ≠ 0 := by
+    intro z hz
+    have hne : z ≠ ρ₀ := by
+      intro hzρ
+      apply hz.2
+      rw [hzρ]
+      exact mem_ball_self h0
+    exact mul_ne_zero hc (sub_ne_zero.mpr hne)
+  have hrelann := relative_error_le_on_annulus_of_circles (f := xi)
+    (G := fun z => c * (z - ρ₀)) h0.le hrR
+    (fun z hz => xi_analyticOnNhd _ z hz) (fun z _ => by fun_prop) hG0 hcirc
+  have hchartsub : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+      z ∈ ball ρ₀ R \ closedBall ρ₀ r₀ := by
+    intro z hz
+    rcases hz with h | h
+    · exact h.2
+    · exact h.2
+  have hrel : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+      ‖(xi z - c * (z - ρ₀)) / (c * (z - ρ₀))‖ ≤ η := fun z hz =>
+    hrelann z (hchartsub z hz)
+  have hg0ch : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R, c * (z - ρ₀) ≠ 0 := by
+    intro z hz
+    have hzA := hchartsub z hz
+    exact hG0 z ⟨ball_subset_closedBall hzA.1, fun hm => hzA.2 (ball_subset_closedBall hm)⟩
+  have hhole : ∀ p ∈ ball ρ₀ R, xi p = 0 → ‖p - ρ₀‖ ≤ r₀ := by
+    intro p hp hxi
+    by_contra hout
+    have hann : p ∈ ball ρ₀ R \ closedBall ρ₀ r₀ :=
+      ⟨hp, fun hmem => hout (by rwa [mem_closedBall, Complex.dist_eq] at hmem)⟩
+    have h1 := hrelann p hann
+    have hGp : c * (p - ρ₀) ≠ 0 :=
+      hG0 p ⟨ball_subset_closedBall hp, fun hm => hann.2 (ball_subset_closedBall hm)⟩
+    rw [hxi, zero_sub, norm_div, norm_neg,
+      div_self (norm_ne_zero_iff.mpr hGp)] at h1
+    linarith
+  obtain ⟨t, m', h', htmem, hh'an, hh'0, hfactf⟩ := xi_ball_factorization ρ₀ R
+  have hρ't : ∀ w ∈ t, ‖w - ρ₀‖ ≤ r₀ := fun w hw =>
+    hhole w ((htmem w).mp hw).1 ((htmem w).mp hw).2
+  have hsym : ∀ z ∈ ball ρ₀ R,
+      xi (1 - (starRingEnd ℂ) z) = (starRingEnd ℂ) (xi z) := by
+    intro z _
+    rw [xi_one_sub]
+    exact xi_conj z
+  obtain ⟨hpin, hlog⟩ := pinned_zero_re_eq_half_of_relative_close
+    (f := xi) (g := fun z => c * (z - ρ₀)) (h := fun _ => c) (h' := h')
+    t id m' h0.le hrR hη hρ₀re hsym (fun z _ => analyticAt_const)
+    (fun z _ => hc) hh'an hh'0 (fun z _ => by ring) hρ't hfactf hg0ch hrel
+  refine ⟨?_, hlog⟩
+  intro p hp hxi
+  have hfa := hfactf p hp
+  rw [hxi] at hfa
+  have hprod : (∏ w ∈ t, (p - w) ^ m' w) = 0 := by
+    rcases mul_eq_zero.mp hfa.symm with hzc | hzc
+    · exact hzc
+    · exact absurd hzc (hh'0 p hp)
+  obtain ⟨w, hwmem, hwzero⟩ := Finset.prod_eq_zero_iff.mp hprod
+  have hm0 : m' w ≠ 0 := by
+    intro hzero'
+    rw [hzero', pow_zero] at hwzero
+    exact one_ne_zero hwzero
+  have hpw : p = w := sub_eq_zero.mp ((pow_eq_zero_iff hm0).mp hwzero)
+  rw [hpw]
+  exact hpin w hwmem hm0
+
+/-- **Linear-reference circle RH gate.**  RH follows if every hypothetical
+right-half ξ-zero lies in a window where ξ is directly relatively close to one
+critical-line linear reference on the two boundary circles. -/
+theorem riemannHypothesis_of_linear_relative_circle_windows
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (η : ℝ) (ρ₀ c : ℂ) (r₀ R : ℝ),
+        c ≠ 0 ∧ 0 < r₀ ∧ r₀ < R ∧ η < 1 ∧ ρ ∈ ball ρ₀ R
+        ∧ ρ₀.re = 1 / 2
+        ∧ (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+            ‖(xi z - c * (z - ρ₀)) / (c * (z - ρ₀))‖ ≤ η)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_local_online_windows
+  intro ρ hρ hzero
+  obtain ⟨η, ρ₀, c, r₀, R, hc, h0, hrR, hη, hρball, hρ₀re, hcirc⟩ :=
+    hwin ρ hρ hzero
+  exact ⟨ρ₀, R, hρball,
+    (xi_window_pinned_of_linear_relative_circles hc h0 hrR hη hρ₀re hcirc).1⟩
+
+/-- Same-circle triangle bridge.  Carrier-vs-linear control and ξ-vs-carrier
+control on the same two boundary circles give the direct relative ξ-vs-linear
+circle bound consumed by `xi_window_pinned_of_linear_relative_circles`. -/
+theorem xi_linear_relative_bound_of_single_circle_pair
+    {N : ℕ} {ρ₀ c : ℂ} (hc : c ≠ 0) {r₀ R ηG ηξ : ℝ}
+    (h0 : 0 < r₀) (hrR : r₀ < R)
+    (hcarrier : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ ≤ ηG * ‖c * (z - ρ₀)‖)
+    (hxiCarrier : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖xi z - completedGN N z‖ ≤ ηξ * ‖c * (z - ρ₀)‖) :
+    ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖(xi z - c * (z - ρ₀)) / (c * (z - ρ₀))‖ ≤ ηG + ηξ := by
+  have hG0 : ∀ z ∈ closedBall ρ₀ R \ ball ρ₀ r₀, c * (z - ρ₀) ≠ 0 := by
+    intro z hz
+    have hne : z ≠ ρ₀ := by
+      intro hzρ
+      apply hz.2
+      rw [hzρ]
+      exact mem_ball_self h0
+    exact mul_ne_zero hc (sub_ne_zero.mpr hne)
+  have hsphsub : sphere ρ₀ r₀ ∪ sphere ρ₀ R ⊆ closedBall ρ₀ R \ ball ρ₀ r₀ := by
+    rintro z (hz | hz) <;> rw [mem_sphere] at hz
+    · exact ⟨mem_closedBall.mpr (hz.le.trans hrR.le),
+        fun hm => absurd (mem_ball.mp hm) (by rw [hz]; exact lt_irrefl _)⟩
+    · exact ⟨mem_closedBall.mpr hz.le,
+        fun hm => absurd (mem_ball.mp hm) (by rw [hz]; exact not_lt.mpr hrR.le)⟩
+  intro z hz
+  have hgz : c * (z - ρ₀) ≠ 0 := hG0 z (hsphsub hz)
+  rw [norm_div, div_le_iff₀ (norm_pos_iff.mpr hgz)]
+  have htri :
+      ‖xi z - c * (z - ρ₀)‖ ≤
+        ‖xi z - completedGN N z‖ + ‖completedGN N z - c * (z - ρ₀)‖ := by
+    have hdecomp :
+        xi z - c * (z - ρ₀) =
+          (xi z - completedGN N z) + (completedGN N z - c * (z - ρ₀)) := by
+      ring
+    rw [hdecomp]
+    exact norm_add_le _ _
+  calc
+    ‖xi z - c * (z - ρ₀)‖
+        ≤ ‖xi z - completedGN N z‖ + ‖completedGN N z - c * (z - ρ₀)‖ := htri
+    _ ≤ ηξ * ‖c * (z - ρ₀)‖ + ηG * ‖c * (z - ρ₀)‖ :=
+        add_le_add (hxiCarrier z hz) (hcarrier z hz)
+    _ = (ηG + ηξ) * ‖c * (z - ρ₀)‖ := by ring
+
+/-- **Single-circle-pair linear chain.**  On one annulus, if the completed
+finite carrier is close to a critical-line linear reference on the two boundary
+circles and ξ is close to that carrier on the same two circles, with total
+relative budget `< 1`, then ξ is pinned directly against the linear reference.
+The carrier is used as a boundary certificate, not as a recentered flow. -/
+theorem xi_window_pinned_of_single_circle_pair_chain
+    {N : ℕ} {ρ₀ c : ℂ} (hc : c ≠ 0) {r₀ R ηG ηξ : ℝ}
+    (h0 : 0 < r₀) (hrR : r₀ < R) (hη : ηG + ηξ < 1)
+    (hρ₀re : ρ₀.re = 1 / 2)
+    (hcarrier : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ ≤ ηG * ‖c * (z - ρ₀)‖)
+    (hxiCarrier : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖xi z - completedGN N z‖ ≤ ηξ * ‖c * (z - ρ₀)‖) :
+    (∀ p ∈ ball ρ₀ R, xi p = 0 → p.re = 1 / 2) ∧
+      ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+        ‖Complex.log (xi z / (c * (z - ρ₀)))‖ ≤
+          (1 - (ηG + ηξ))⁻¹ * ‖(xi z - c * (z - ρ₀)) / (c * (z - ρ₀))‖ := by
+  have hcirc : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖(xi z - c * (z - ρ₀)) / (c * (z - ρ₀))‖ ≤ ηG + ηξ :=
+    xi_linear_relative_bound_of_single_circle_pair hc h0 hrR hcarrier hxiCarrier
+  exact xi_window_pinned_of_linear_relative_circles hc h0 hrR hη hρ₀re hcirc
+
+/-- EM/floor circle data measured against a linear reference.  If the completed
+carrier is within `ηC` of `c·(z−ρ₀)` on the two boundary circles, then the
+half-relative ξ/completed-carrier estimate gives a direct ξ/completed-carrier
+bound in the same linear scale, with budget `(1+ηC)/2`. -/
+theorem xi_completedGN_linear_bound_of_emCarrier_circles
+    {N M : ℕ} (hM : 1 ≤ M) {ε₁ δ ηC : ℝ} (hεδ : 0 ≤ ε₁ + δ)
+    {ρ₀ c : ℂ} {r₀ R : ℝ}
+    (hstripCirc : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R, 0 < z.re ∧ z ≠ 1)
+    (hcarrier : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ ≤ ηC * ‖c * (z - ρ₀)‖)
+    (hE : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hFcirc : CarrierFloorOn (sphere ρ₀ r₀ ∪ sphere ρ₀ R) N (2 * (ε₁ + δ))) :
+    ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖xi z - completedGN N z‖ ≤ ((1 + ηC) / 2) * ‖c * (z - ρ₀)‖ := by
+  have hfloor_nonneg : 0 ≤ 2 * (ε₁ + δ) := mul_nonneg (by norm_num) hεδ
+  have hrelHalf : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ (1 / 2 : ℝ) :=
+    completed_relative_error_of_emCarrier_close_half_floor hM hεδ hstripCirc hE hclose hFcirc
+  intro z hz
+  have hG0 : completedGN N z ≠ 0 :=
+    completedGN_ne_zero_of_gN_ne_zero (hstripCirc z hz).1 (hstripCirc z hz).2
+      (gN_ne_zero_of_carrierFloorOn hfloor_nonneg hFcirc z hz)
+  have hGpos : 0 < ‖completedGN N z‖ := norm_pos_iff.mpr hG0
+  have hxiG : ‖xi z - completedGN N z‖ ≤ (1 / 2 : ℝ) * ‖completedGN N z‖ := by
+    have hrel := hrelHalf z hz
+    rwa [norm_div, div_le_iff₀ hGpos] at hrel
+  have hGlin : ‖completedGN N z‖ ≤ (1 + ηC) * ‖c * (z - ρ₀)‖ := by
+    have hdecomp :
+        (completedGN N z - c * (z - ρ₀)) + c * (z - ρ₀) = completedGN N z := by
+      ring
+    calc
+      ‖completedGN N z‖ = ‖(completedGN N z - c * (z - ρ₀)) + c * (z - ρ₀)‖ := by
+        rw [hdecomp]
+      _ ≤ ‖completedGN N z - c * (z - ρ₀)‖ + ‖c * (z - ρ₀)‖ := norm_add_le _ _
+      _ ≤ ηC * ‖c * (z - ρ₀)‖ + ‖c * (z - ρ₀)‖ :=
+        add_le_add (hcarrier z hz) (le_refl _)
+      _ = (1 + ηC) * ‖c * (z - ρ₀)‖ := by ring
+  calc
+    ‖xi z - completedGN N z‖ ≤ (1 / 2 : ℝ) * ‖completedGN N z‖ := hxiG
+    _ ≤ (1 / 2 : ℝ) * ((1 + ηC) * ‖c * (z - ρ₀)‖) :=
+      mul_le_mul_of_nonneg_left hGlin (by norm_num)
+    _ = ((1 + ηC) / 2) * ‖c * (z - ρ₀)‖ := by ring
+
+/-- EM/floor circle data produces the primitive linear-reference relative
+constraint.  This composes the EM ξ/completed-carrier estimate with the
+same-circle triangle bridge, yielding the direct bound that the linear pinning
+theorem consumes. -/
+theorem xi_linear_relative_bound_of_emCarrier_circles
+    {N M : ℕ} (hM : 1 ≤ M) {ε₁ δ ηC : ℝ} (hεδ : 0 ≤ ε₁ + δ)
+    {ρ₀ c : ℂ} (hc : c ≠ 0) {r₀ R : ℝ}
+    (h0 : 0 < r₀) (hrR : r₀ < R)
+    (hstripCirc : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R, 0 < z.re ∧ z ≠ 1)
+    (hcarrier : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ ≤ ηC * ‖c * (z - ρ₀)‖)
+    (hE : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hFcirc : CarrierFloorOn (sphere ρ₀ r₀ ∪ sphere ρ₀ R) N (2 * (ε₁ + δ))) :
+    ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖(xi z - c * (z - ρ₀)) / (c * (z - ρ₀))‖ ≤ ηC + (1 + ηC) / 2 := by
+  have hxiCarrier : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖xi z - completedGN N z‖ ≤ ((1 + ηC) / 2) * ‖c * (z - ρ₀)‖ :=
+    xi_completedGN_linear_bound_of_emCarrier_circles hM hεδ hstripCirc hcarrier hE hclose hFcirc
+  exact xi_linear_relative_bound_of_single_circle_pair hc h0 hrR hcarrier hxiCarrier
+
+/-- **Single-circle-pair EM endpoint.**  A carrier-vs-linear bound whose induced
+total linear-reference budget is `< 1`, together with EM remainder, finite-carrier closeness, and a
+LOW floor on the same two boundary circles, pins ξ directly against the linear
+critical-line reference.  No recentered circle family is needed. -/
+theorem xi_window_pinned_of_emCarrier_single_circle_pair
+    {N M : ℕ} (hM : 1 ≤ M) {ε₁ δ ηC : ℝ} (hεδ : 0 ≤ ε₁ + δ)
+    {ρ₀ c : ℂ} (hc : c ≠ 0) {r₀ R : ℝ}
+    (h0 : 0 < r₀) (hrR : r₀ < R) (hηC : ηC + (1 + ηC) / 2 < 1)
+    (hρ₀re : ρ₀.re = 1 / 2)
+    (hstripCirc : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R, 0 < z.re ∧ z ≠ 1)
+    (hcarrier : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ ≤ ηC * ‖c * (z - ρ₀)‖)
+    (hE : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hFcirc : CarrierFloorOn (sphere ρ₀ r₀ ∪ sphere ρ₀ R) N (2 * (ε₁ + δ))) :
+    (∀ p ∈ ball ρ₀ R, xi p = 0 → p.re = 1 / 2) ∧
+      ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+        ‖Complex.log (xi z / (c * (z - ρ₀)))‖ ≤
+          (1 - (ηC + (1 + ηC) / 2))⁻¹ *
+            ‖(xi z - c * (z - ρ₀)) / (c * (z - ρ₀))‖ := by
+  have hcirc : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖(xi z - c * (z - ρ₀)) / (c * (z - ρ₀))‖ ≤ ηC + (1 + ηC) / 2 :=
+    xi_linear_relative_bound_of_emCarrier_circles hM hεδ hc h0 hrR hstripCirc
+      hcarrier hE hclose hFcirc
+  exact xi_window_pinned_of_linear_relative_circles hc h0 hrR hηC hρ₀re hcirc
+
+/-- **Single-circle-pair EM RH gate.**  RH follows from per-zero certificates
+on one pair of boundary circles: an exact `< 1` total linear-reference budget, EM
+remainder and finite-carrier closeness on the same pair, and a LOW floor on
+that pair.  The pinning is against the linear critical-line reference itself. -/
+theorem riemannHypothesis_of_emCarrier_single_circle_pair_windows
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (ε₁ δ ηC : ℝ) (ρ₀ c : ℂ) (r₀ R : ℝ),
+        1 ≤ M ∧ 0 ≤ ε₁ + δ ∧ c ≠ 0 ∧ 0 < r₀ ∧ r₀ < R
+        ∧ ηC + (1 + ηC) / 2 < 1 ∧ ρ ∈ ball ρ₀ R ∧ ρ₀.re = 1 / 2
+        ∧ (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R, 0 < z.re ∧ z ≠ 1)
+        ∧ (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+            ‖completedGN N z - c * (z - ρ₀)‖ ≤ ηC * ‖c * (z - ρ₀)‖)
+        ∧ (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+            ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+        ∧ (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+            ‖emCarrier M z - gN N z‖ ≤ δ)
+        ∧ CarrierFloorOn (sphere ρ₀ r₀ ∪ sphere ρ₀ R) N (2 * (ε₁ + δ))) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_linear_relative_circle_windows
+  intro ρ hρ hzero
+  obtain ⟨N, M, ε₁, δ, ηC, ρ₀, c, r₀, R, hM, hεδ, hc, h0, hrR, hηC,
+    hρball, hρ₀re, hstripCirc, hcarrier, hE, hclose, hFcirc⟩ := hwin ρ hρ hzero
+  refine ⟨ηC + (1 + ηC) / 2, ρ₀, c, r₀, R, hc, h0, hrR, ?_, hρball,
+    hρ₀re, ?_⟩
+  · exact hηC
+  · exact xi_linear_relative_bound_of_emCarrier_circles hM hεδ hc h0 hrR hstripCirc
+      hcarrier hE hclose hFcirc
+
+/-- **Circle-data double-domination pinned window.**  The outer carrier zero
+is located from two circle checks against a linear reference, and the ξ-side
+pinning around that zero is also checked on two boundary circles.  The result
+connects the carrier and ξ maximum-principle reductions while keeping the LOW
+floors explicit on the chart and circle sets where they are used. -/
+theorem xi_window_pinned_of_double_domination_circles
+    {N M : ℕ} (hM : 1 ≤ M) {ε₁ δ : ℝ} (hεδ : 0 ≤ ε₁ + δ)
+    {ρ₀ c : ℂ} (hc : c ≠ 0) {r₀ R r₀' R' ηC : ℝ}
+    (h0 : 0 < r₀) (hrR : r₀ < R) (h0' : 0 ≤ r₀') (hrR' : r₀' < R')
+    (hRR' : R' + r₀ ≤ R) (hρ₀re : ρ₀.re = 1 / 2) (hηC : ηC < 1)
+    (hball : ∀ z ∈ closedBall ρ₀ R, 0 < z.re ∧ z.re < 1)
+    (hcloseC : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ ≤ ηC * ‖c * (z - ρ₀)‖)
+    (hdata : ∀ ρ' : ℂ, ρ'.re = 1 / 2 → ‖ρ' - ρ₀‖ ≤ r₀ →
+      (∀ z ∈ closedBall ρ' R', 0 < z.re ∧ z.re < 1)
+      ∧ (∀ z ∈ sphere ρ' r₀' ∪ sphere ρ' R',
+          ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+      ∧ (∀ z ∈ sphere ρ' r₀' ∪ sphere ρ' R',
+          ‖emCarrier M z - gN N z‖ ≤ δ)
+      ∧ CarrierFloorOn (chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R')
+          N (2 * (ε₁ + δ))
+      ∧ CarrierFloorOn (sphere ρ' r₀' ∪ sphere ρ' R') N (2 * (ε₁ + δ))) :
+    ∃ ρ' : ℂ, ρ'.re = 1 / 2 ∧ ‖ρ' - ρ₀‖ ≤ r₀
+      ∧ (∀ p ∈ ball ρ' R', xi p = 0 → p.re = 1 / 2)
+      ∧ ∀ z ∈ chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R',
+          ‖Complex.log (xi z / completedGN N z)‖ ≤
+            (1 - (1 / 2 : ℝ))⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hballOpen : ∀ z ∈ ball ρ₀ R, 0 < z.re ∧ z.re < 1 := by
+    intro z hz
+    exact hball z (ball_subset_closedBall hz)
+  have hcloseChart : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ < ‖c * (z - ρ₀)‖ :=
+    completedGN_linear_domination_of_circles hc h0 hrR hηC hball hcloseC
+  obtain ⟨ρ', h, hρ're, hρ'hole, hhan, hh0, hfact⟩ :=
+    completedGN_simple_zero_factorization_of_close hc h0.le hrR hρ₀re hballOpen hcloseChart
+  have hsub : ball ρ' R' ⊆ ball ρ₀ R := by
+    intro z hz
+    rw [mem_ball] at hz ⊢
+    calc dist z ρ₀ ≤ dist z ρ' + dist ρ' ρ₀ := dist_triangle z ρ' ρ₀
+      _ < R' + r₀ := by
+          have h2 : dist ρ' ρ₀ ≤ r₀ := by rwa [Complex.dist_eq]
+          linarith
+      _ ≤ R := hRR'
+  obtain ⟨hball', hE', hclose', hF', hFcirc'⟩ := hdata ρ' hρ're hρ'hole
+  obtain ⟨honline, hlog⟩ :=
+    xi_window_pinned_of_emCarrier_close_half_floor_of_circles hM hεδ h0' hrR'
+      hρ're hball' hE' hclose' hF' hFcirc' (hhan.mono hsub)
+      (fun z hz => hh0 z (hsub hz)) (fun z hz => hfact z (hsub hz))
+  exact ⟨ρ', hρ're, hρ'hole, honline, hlog⟩
+
+/-- **Circle-data double-domination RH gate.**  RH follows from per-zero
+certificates whose two carrier conditions are both boundary constraints:
+linear domination of `completedGN` on the outer two circles locates the simple
+carrier zero, and EM/floor circle data on the recentered two circles pins ξ
+inside the resulting window. -/
+theorem riemannHypothesis_of_double_domination_circles_windows
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (ε₁ δ : ℝ) (ρ₀ c : ℂ) (r₀ R r₀' R' ηC : ℝ),
+        1 ≤ M ∧ 0 ≤ ε₁ + δ ∧ c ≠ 0
+        ∧ 0 < r₀ ∧ r₀ < R ∧ 0 ≤ r₀' ∧ r₀' < R' ∧ R' + r₀ ≤ R
+        ∧ ρ₀.re = 1 / 2 ∧ ηC < 1 ∧ ρ ∈ ball ρ₀ (R' - r₀)
+        ∧ (∀ z ∈ closedBall ρ₀ R, 0 < z.re ∧ z.re < 1)
+        ∧ (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+            ‖completedGN N z - c * (z - ρ₀)‖ ≤ ηC * ‖c * (z - ρ₀)‖)
+        ∧ (∀ ρ' : ℂ, ρ'.re = 1 / 2 → ‖ρ' - ρ₀‖ ≤ r₀ →
+            (∀ z ∈ closedBall ρ' R', 0 < z.re ∧ z.re < 1)
+            ∧ (∀ z ∈ sphere ρ' r₀' ∪ sphere ρ' R',
+                ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+            ∧ (∀ z ∈ sphere ρ' r₀' ∪ sphere ρ' R',
+                ‖emCarrier M z - gN N z‖ ≤ δ)
+            ∧ CarrierFloorOn (chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R')
+                N (2 * (ε₁ + δ))
+            ∧ CarrierFloorOn (sphere ρ' r₀' ∪ sphere ρ' R')
+                N (2 * (ε₁ + δ)))) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_local_online_windows
+  intro ρ hρ hzero
+  obtain ⟨N, M, ε₁, δ, ρ₀, c, r₀, R, r₀', R', ηC, hM, hεδ, hc, h0, hrR,
+    h0', hrR', hRR', hρ₀re, hηC, hρball, hball, hcloseC, hdata⟩ := hwin ρ hρ hzero
+  obtain ⟨ρ', hρ're, hρ'hole, honline, -⟩ :=
+    xi_window_pinned_of_double_domination_circles hM hεδ hc h0 hrR h0' hrR' hRR'
+      hρ₀re hηC hball hcloseC hdata
+  refine ⟨ρ', R', ?_, honline⟩
+  rw [mem_ball] at hρball ⊢
+  calc dist ρ ρ' ≤ dist ρ ρ₀ + dist ρ₀ ρ' := dist_triangle ρ ρ₀ ρ'
+    _ < (R' - r₀) + r₀ := by
+        have h2 : dist ρ₀ ρ' ≤ r₀ := by
+          rw [Complex.dist_eq, norm_sub_rev]
+          exact hρ'hole
+        linarith
+    _ = R' := by ring
+
+/-- **Circle-data EM-pinned RH gate.**  RH from a family of pinned windows whose
+ξ-side EM certificate is checked only on the two boundary circles of the annulus:
+circle EM remainder bounds, circle finite `emCarrier`/`gN` closeness, doubled
+LOW floors on charts and circles, and the carrier's one-simple-zero factorization. -/
+theorem riemannHypothesis_of_emCarrier_pinned_windows_of_circles
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (ε₁ δ : ℝ) (h : ℂ → ℂ) (ρ₀ : ℂ) (r₀ R : ℝ),
+        1 ≤ M ∧ 0 ≤ ε₁ + δ ∧ 0 ≤ r₀ ∧ r₀ < R ∧ ρ ∈ ball ρ₀ R ∧
+        ρ₀.re = 1 / 2 ∧
+        (∀ z ∈ closedBall ρ₀ R, 0 < z.re ∧ z.re < 1) ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+          ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁) ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+          ‖emCarrier M z - gN N z‖ ≤ δ) ∧
+        CarrierFloorOn (chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R) N (2 * (ε₁ + δ)) ∧
+        CarrierFloorOn (sphere ρ₀ r₀ ∪ sphere ρ₀ R) N (2 * (ε₁ + δ)) ∧
+        AnalyticOnNhd ℂ h (ball ρ₀ R) ∧ (∀ z ∈ ball ρ₀ R, h z ≠ 0) ∧
+        (∀ z ∈ ball ρ₀ R, completedGN N z = (z - ρ₀) * h z)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_local_online_windows
+  intro ρ hρ hzero
+  obtain ⟨N, M, ε₁, δ, h, ρ₀, r₀, R, hM, hεδ, h0, hrR, hρball, hρ₀re,
+    hball, hE, hclose, hF, hFcirc, hh, hh0, hfactg⟩ := hwin ρ hρ hzero
+  exact ⟨ρ₀, R, hρball,
+    (xi_window_pinned_of_emCarrier_close_half_floor_of_circles hM hεδ h0 hrR hρ₀re
+      hball hE hclose hF hFcirc hh hh0 hfactg).1⟩
+
 end RHTower

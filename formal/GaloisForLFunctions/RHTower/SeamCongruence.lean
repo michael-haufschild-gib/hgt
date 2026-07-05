@@ -1392,14 +1392,50 @@ theorem anneal_deck_transport_of_emCarrier_close_half_floor {N M : ℕ}
     have hzlt : z.re < 1 := (hstrip z hz).2
     rw [hz1] at hzlt
     norm_num at hzlt
-  have hgN0 : ∀ z ∈ chartR a R ∪ chartL a R, gN N z ≠ 0 := by
-    intro z hz
-    exact gN_ne_zero_of_carrierFloorOn hfloor_nonneg hF z hz
   have hrel : ∀ z ∈ chartR a R ∪ chartL a R,
       ‖(xi z - completedGN N z) / completedGN N z‖ ≤ (1 / 2 : ℝ) :=
     completed_relative_error_of_emCarrier_close_half_floor hM hεδ hchartStrip hE hclose hF
-  exact anneal_deck_transport_of_relative_close_gN_nonzero k hR hη hchartStrip
-    hF₁ hF₂ hG₁ hG₂ hpF₁ hpF₂ hpG₁ hpG₂ hgN0 hrel
+  exact anneal_deck_transport_of_relative_close_carrierFloorOn k hR hη hfloor_nonneg hF
+    hchartStrip hF₁ hF₂ hG₁ hG₂ hpF₁ hpF₂ hpG₁ hpG₂ hrel
+
+/-- EM finite-data seam L-transport with a doubled LOW floor.  The doubled floor
+turns the EM numerator into a uniform `1/2` relative completed-carrier error at
+both seam basepoints, so seam transport also carries both U0 principal-log
+correction bounds. -/
+theorem anneal_seam_L_transport_of_emCarrier_close_half_floor {N M : ℕ}
+    {g₁ g₂ G₁ G₂ : ℂ → ℂ} {U : Set ℂ} {ε₁ δ : ℝ}
+    (hMpos : 1 ≤ M) (hεδ : 0 ≤ ε₁ + δ)
+    (hU : IsOpen U) (hUc : IsPreconnected U)
+    (hUstrip : ∀ z ∈ U, 0 < z.re ∧ z.re < 1)
+    (hE : ∀ z ∈ U, ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ U, ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hF : CarrierFloorOn U N (2 * (ε₁ + δ)))
+    (hg₁ : AnalyticOnNhd ℂ g₁ U) (hg₂ : AnalyticOnNhd ℂ g₂ (lineReflect ⁻¹' U))
+    (hG₁ : AnalyticOnNhd ℂ G₁ U) (hG₂ : AnalyticOnNhd ℂ G₂ (lineReflect ⁻¹' U))
+    (hp₁ : ∀ s ∈ U, g₁ s ^ 2 = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ 2 = xi s)
+    (hP₁ : ∀ s ∈ U, G₁ s ^ 2 = completedGN N s)
+    (hP₂ : ∀ s ∈ lineReflect ⁻¹' U, G₂ s ^ 2 = completedGN N s)
+    {pP pM : ℂ} (hpP : pP ∈ U) (hpM : pM ∈ U)
+    (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2) :
+    deckClass g₁ g₂ pP pM = deckClass G₁ G₂ pP pM ∧
+      ‖Complex.log (xi pP / completedGN N pP)‖ ≤
+        (1 - (1 / 2 : ℝ))⁻¹ * ‖(xi pP - completedGN N pP) / completedGN N pP‖ ∧
+      ‖Complex.log (xi pM / completedGN N pM)‖ ≤
+        (1 - (1 / 2 : ℝ))⁻¹ * ‖(xi pM - completedGN N pM) / completedGN N pM‖ := by
+  have hη : (1 / 2 : ℝ) < 1 := by norm_num
+  have hfloor_nonneg : 0 ≤ 2 * (ε₁ + δ) := mul_nonneg (by norm_num) hεδ
+  have hstrip : ∀ z ∈ U, 0 < z.re ∧ z ≠ 1 := by
+    intro z hz
+    refine ⟨(hUstrip z hz).1, ?_⟩
+    intro hz1
+    have hzlt : z.re < 1 := (hUstrip z hz).2
+    rw [hz1] at hzlt
+    norm_num at hzlt
+  have hrel : ∀ z ∈ U, ‖(xi z - completedGN N z) / completedGN N z‖ ≤ (1 / 2 : ℝ) :=
+    completed_relative_error_of_emCarrier_close_half_floor hMpos hεδ hstrip hE hclose hF
+  exact anneal_seam_L_transport_of_relative_close_carrierFloorOn hη hfloor_nonneg hF
+    hU hUc hUstrip hg₁ hg₂ hG₁ hG₂ hp₁ hp₂ hP₁ hP₂ hpP hpM hPline hMline
+    (hrel pP hpP) (hrel pM hpM)
 
 /-- EM-supplied relative sign-certificate with simplicity.  An explicit
 Euler-Maclaurin error ratio against the finite carrier supplies the relative
@@ -1517,6 +1553,52 @@ theorem riemannHypothesis_of_relative_floor_sign_local_windows
     xi_window_simple_online_of_relative_sign_certificate_carrierFloorOn
       (N := N) h0 hrR hη hε hF hchartStrip hm₁ hcl₁ hρ₁ hρ₂ hHan hH0 hHpan
       hHp0 hfact₁ hfact₂ hrel hmono hsign hseg hcount₂
+  have hline : ρ.re = 1 / 2 := (hsimple.1 ρ hρball hzero).1
+  have hright := mem_rightHalf.mp hρ
+  linarith
+
+/-- **Final local-window RH gate from EM-relative LOW-floor sign data.** If every
+hypothetical right-half ξ-zero admits one EM-relative sign certificate whose finite
+carrier is kept nonzero by a nonnegative LOW floor, then RH follows. -/
+theorem riemannHypothesis_of_em_relative_floor_sign_local_windows
+    (hcert : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ N M : ℕ, ∃ t₁ t₂ : Finset ℂ, ∃ m₁ m₂ : ℂ → ℕ,
+      ∃ H H' : ℂ → ℂ, ∃ a : ℂ, ∃ r₀ R η ε : ℝ, ∃ s : ℕ, ∃ ts : ℕ → ℝ,
+        ρ ∈ ball a R ∧
+        1 ≤ M ∧
+        0 ≤ r₀ ∧ r₀ < R ∧ η < 1 ∧ 0 ≤ ε ∧
+        (∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z) ∧
+        (∀ z ∈ t₁, lineReflect z ∈ t₁) ∧
+        (∀ w ∈ t₁, ‖w - a‖ ≤ r₀) ∧
+        (∀ w ∈ t₂, ‖w - a‖ ≤ r₀) ∧
+        AnalyticOnNhd ℂ H (ball a R) ∧
+        (∀ z ∈ ball a R, H z ≠ 0) ∧
+        AnalyticOnNhd ℂ H' (ball a R) ∧
+        (∀ z ∈ ball a R, H' z ≠ 0) ∧
+        (∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * H z) ∧
+        (∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * H' z) ∧
+        (∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1) ∧
+        CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N ε ∧
+        (∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+          (‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖) /
+            ‖gN N z‖ ≤ η) ∧
+        (∀ i, i < s → ts i < ts (i + 1)) ∧
+        (∀ i, i < s →
+          (xi (linePoint (ts i))).re * (xi (linePoint (ts (i + 1)))).re < 0) ∧
+        (∀ u : ℝ, ts 0 ≤ u → u ≤ ts s → linePoint u ∈ ball a R) ∧
+        (∑ z ∈ t₂, m₂ z ≤ s)) :
+    RiemannHypothesis := by
+  rw [rh_iff_xi_ne_zero_right]
+  intro ρ hρ hzero
+  rcases hcert ρ hρ hzero with
+    ⟨N, M, t₁, t₂, m₁, m₂, H, H', a, r₀, R, η, ε, s, ts,
+      hρball, hM, h0, hrR, hη, hε, hm₁, hcl₁, hρ₁, hρ₂, hHan, hH0,
+      hHpan, hHp0, hfact₁, hfact₂, hchartStrip, hF, hEMrel, hmono,
+      hsign, hseg, hcount₂⟩
+  have hsimple :=
+    xi_window_simple_online_of_em_relative_sign_certificate_carrierFloorOn
+      (N := N) (M := M) hM h0 hrR hη hε hF hm₁ hcl₁ hρ₁ hρ₂ hHan hH0
+      hHpan hHp0 hfact₁ hfact₂ hchartStrip hEMrel hmono hsign hseg hcount₂
   have hline : ρ.re = 1 / 2 := (hsimple.1 ρ hρball hzero).1
   have hright := mem_rightHalf.mp hρ
   linarith
@@ -1751,6 +1833,55 @@ theorem xi_simple_window_and_rung_of_em_relative_two_sign_data {N M : ℕ} (k : 
       hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hgN0 hEMrel hmono₁ hsign₁ hseg₁ hcount₂₁
       hmono₂ hsign₂ hseg₂ hcount₂₂
   exact ⟨hsimple.1, hrung.1, hrung.2⟩
+
+/-- **EM-relative LOW-floor two-sign joint certificate.** A nonnegative LOW floor
+discharges the raw finite-carrier nonvanishing side condition in the strongest
+EM-relative two-sign endpoint, while preserving ξ simplicity, dyadic rung
+divisibility, and U0 principal-log control. -/
+theorem xi_simple_window_and_rung_of_em_relative_two_sign_data_carrierFloorOn
+    {N M : ℕ} (k : ℕ) (hM : 1 ≤ M)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ}
+    {r₀ R η ε : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hη : η < 1) (hε : 0 ≤ ε)
+    (hF : CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N ε)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip₂ : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hEMrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      (‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖) /
+        ‖gN N z‖ ≤ η)
+    {s₁ : ℕ} {ts₁ : ℕ → ℝ}
+    (hmono₁ : ∀ i, i < s₁ → ts₁ i < ts₁ (i + 1))
+    (hsign₁ : ∀ i, i < s₁ →
+      (xi (linePoint (ts₁ i))).re * (xi (linePoint (ts₁ (i + 1)))).re < 0)
+    (hseg₁ : ∀ u : ℝ, ts₁ 0 ≤ u → u ≤ ts₁ s₁ → linePoint u ∈ ball a R)
+    (hcount₂₁ : ∑ z ∈ t₂, m₂ z ≤ s₁)
+    {s₂ : ℕ} {ts₂ : ℕ → ℝ}
+    (hmono₂ : ∀ i, i < s₂ → ts₂ i < ts₂ (i + 1))
+    (hsign₂ : ∀ i, i < s₂ →
+      (completedGN N (linePoint (ts₂ i))).re *
+        (completedGN N (linePoint (ts₂ (i + 1)))).re < 0)
+    (hseg₂ : ∀ u : ℝ, ts₂ 0 ≤ u → u ≤ ts₂ s₂ → linePoint u ∈ ball a R)
+    (hcount₂₂ : ∑ z ∈ t₂, m₂ z ≤ s₂) :
+    (∀ p ∈ ball a R, xi p = 0 → p.re = 1 / 2 ∧ analyticOrderAt xi p = 1) ∧
+      (2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z) ∧
+        ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+          ‖Complex.log (xi z / completedGN N z)‖ ≤
+            (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hgN0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, gN N z ≠ 0 :=
+    gN_ne_zero_of_carrierFloorOn hε hF
+  exact xi_simple_window_and_rung_of_em_relative_two_sign_data k hM h0 hrR hη
+    hchartStrip hm₁ hcl₁ hstrip₂ hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0'
+    hfact₁ hfact₂ hgN0 hEMrel hmono₁ hsign₁ hseg₁ hcount₂₁
+    hmono₂ hsign₂ hseg₂ hcount₂₂
 
 end RHTower
 
@@ -2114,14 +2245,12 @@ theorem xi_simple_window_and_rung_of_emCarrier_close_half_floor_two_sign_data
             (1 - (1 / 2 : ℝ))⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
   have hη : (1 / 2 : ℝ) < 1 := by norm_num
   have hfloor_nonneg : 0 ≤ 2 * (ε₁ + δ) := mul_nonneg (by norm_num) hεδ
-  have hgN0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, gN N z ≠ 0 := by
-    intro z hz
-    exact gN_ne_zero_of_carrierFloorOn hfloor_nonneg hF z hz
   have hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
       ‖(xi z - completedGN N z) / completedGN N z‖ ≤ (1 / 2 : ℝ) :=
     completed_relative_error_of_emCarrier_close_half_floor hM hεδ hchartStrip hE hclose hF
-  exact xi_simple_window_and_rung_of_relative_two_sign_data_gN_nonzero k h0 hrR hη hchartStrip
-    hm₁ hcl₁ hstrip₂ hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hgN0 hrel
+  exact xi_simple_window_and_rung_of_relative_two_sign_data_carrierFloorOn k h0 hrR hη
+    hfloor_nonneg hF hchartStrip hm₁ hcl₁ hstrip₂ hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0'
+    hfact₁ hfact₂ hrel
     hmono₁ hsign₁ hseg₁ hcount₂₁ hmono₂ hsign₂ hseg₂ hcount₂₂
 
 end RHTower

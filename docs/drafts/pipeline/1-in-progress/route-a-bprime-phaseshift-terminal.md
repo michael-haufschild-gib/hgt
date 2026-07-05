@@ -208,3 +208,60 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
 - The entire chain (Weyl equidistribution → tower → poly bridge → sharp δ→0 → APPROX) is now
   complete, unconditional, axiom-clean; 8498 jobs, lint green. The indicator/small-ball
   time↔model transfer is done.
+
+## UPDATE (cycle 55, cont. 34) — caustic numeral + density→cofinal-floor + seam moment
+
+- **FloorFailureCaustic.lean**: floorFailure_timeDensity_le_caustic — density ≤
+  ((2π)⁻⁴·fourPhaseConst).toReal on the line (instantiates block_smallball_caustic, w=0).
+- **SeamMoments.lean**: tendsto_mixedSecondMoment_average_steinhaus — mixed-carrier
+  (cross-level) second moment via dpoly_mul, mean‖F·G‖²=E‖(∑aX)(∑bX)‖²=∑convᵃᵇ².
+- **FloorFailureCofinal.lean**: carrier_line_zero_le (line-zeros ⊆ failures),
+  good_height_cofinal_of_density_lt_one (density<1 ⟹ floor at cofinal heights),
+  good_height_cofinal_of_caustic (composes (a)+(b): caustic numeral<1 ⟹ cofinal line floor).
+- Axiom-clean; lint green; 8500 jobs. REMAINING (B2) = 2D off-line extension (line floor +
+  boundedness ⟹ CarrierFloorOn on annulus charts) via max principle + movable-shell radius.
+
+## UPDATE (cycle 55, cont. 35) — (B2) 2D off-line extension complete
+
+- **DpolyOffline.lean** (axiom-clean; full umbrella 8705 jobs): dpoly2 (2D carrier), dpoly2_line_eq
+  (line = 1D dpoly, machinery transfers), cpow_line_diff_norm + norm_dpoly2_offline_le
+  (Lipschitz-in-σ, height-independent budget), dpoly2_chart_floor (line floor → off-line floor),
+  chart_floor_cofinal_of_line_cofinal (cofinal line floor → cofinal chart floor).
+- FULL CHAIN axiom-clean: caustic → floorFailure_timeDensity_le_caustic (numeral) →
+  good_height_cofinal_of_caustic (cofinal line floor) → chart_floor_cofinal_of_line_cofinal
+  (cofinal chart floor). The 1D→2D gap CarrierFloorOn needed is bridged.
+- Remaining plug = dpoly2 ↔ gN/dirichletPoly N identification + chart-geometry match to
+  CarrierFloorOn's exact set — bookkeeping; the analytic mechanism is complete.
+
+## UPDATE (cycle 55, cont. 36) — dpoly2 ↔ gN identification; CarrierFloorOn plug verified
+
+- **GNCarrierBridge.lean** (axiom-clean; 8592 jobs): dirichletPoly_eq_dpoly2 (coeff match, unit coeffs),
+  gN_eq_dpoly2 (χ-wrapper), carrierFloorOn_of_dpoly2_floor (CarrierFloorOn from Dirichlet floor +
+  reflected budget), dirichletPoly_line_eq (line = dpoly n^{-1/2}, machinery transfers),
+  dirichletPoly_mul_line (two-level seam product = one convolution dpoly via dpoly_mul).
+- **PLUG VERIFIED**: carrierFloorOn_of_dpoly2_floor produces exactly
+  CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N (ε₁+δ) — the codex gates' input shape.
+- Chain type-connected: caustic → density → cofinal line floor → chart floor → dpoly2≡dirichletPoly≡gN
+  → CarrierFloorOn → RH gates. Typed remaining = prime-support (block vs full Icc 1 N) + reflected-χ
+  budget; identification/plumbing complete.
+
+## cont. 37 — codex batch 3 (33 items) verified; route status updates
+
+- All 33 items verified (declarations + deletions + 9181-job build + lint + 18 endpoint axiom
+  checks, all [propext, Classical.choice, Quot.sound]). Full map in worklog cont. 38.
+- ROUTE A: tendsto_carrier_profile_matched closes the carrier side — matchedProfile is the proven
+  limit of the secondMoment_sigma diagonal (matched coordinates, effective 1/log N). The route's
+  open core is now exactly the universality interface (martingale CLT / (SCALAR-MIX)); no carrier
+  analysis remains on the Lean side.
+- ROUTE B′: BlockSmallBall is inhabited (blockSmallBall_of_caustic) — the graded small-ball
+  induction consumes our proven caustic node. CarrierFloorOn is now the single floor interface of
+  every gate family (seam/deck/rung/two-sign/pinning/EM-relative-sign), and GNCarrierBridge is its
+  only deterministic producer.
+- NEW GATE GEOMETRY: the circle-data pinning gate (riemannHypothesis_of_emCarrier_pinned_windows_of_circles)
+  wants CarrierFloorOn on chartRA ∪ chartLA AND on sphere r₀ ∪ sphere R — both inside
+  closedBall ρ₀ R. Next brick: half-plane Lipschitz bound for dpoly2
+  (‖n^{−z}−n^{−w}‖ ≤ log n·n^{−σ₋}·‖z−w‖, scratch-verified) spreads a cofinal point floor at
+  ½+iτ to the whole ball = both demands at once; subsumes the σ-only DpolyOffline step.
+- Typed remainders: prime-support gap; reflected-χ budget; NEW — center placement (window center
+  must be a simple on-line zero of completedGN; producible from one circle-pair domination via
+  completedGN_simple_zero_factorization_of_close + completedGN_linear_domination_of_circles).

@@ -636,11 +636,40 @@ step that mathlib does not package (it has only the one-sided sum↔integral san
 both sides, the gap being the telescoping `(f 0 − f 1)/i → 0`). `tendsto_riemann_sum_shell`
 instantiates it on the concrete shell profile `(1+x)^{−r}` — the `n`-th ahead term after expanding
 `1/(e^u−1) = Σ_{n≥1} e^{−nu}`, bounded and antitone unlike the singular full excess.
+`tendsto_riemann_sum_antitone_Ioi` is the **infinite-domain upgrade**: for any `f` antitone and
+nonnegative on `[0,∞)` and integrable on `(0,∞)`, `(1/i)·Σ_{k≥0} f(k/i) → ∫_0^∞ f`, with the
+summability of the sample sequence `Σ_k f(k/i)` proven as part of the conclusion (mathlib has neither
+the tsum comparison nor the improper Riemann-sum limit). Its proof runs two nested limits — the
+finite sandwich per mesh, then `N → ∞` with the tail controlled by `∫_0^∞ f` — and is exactly the
+half-line convergence the continuum passage `(A−B)/i → ∫_0^∞` needs.
 
-**What still remains outside Lean**, precisely: to assemble `(A−B)/i → Σ 2/((cn)²−1)` from these
-Riemann-sum limits one needs three further standard-analysis steps, each provable-in-principle but
-not yet formalized — (a) the harmonic-to-log substitution `Σ_{l=i+1}^{i+k} 1/l → log((i+k)/i)` in
-the exponent (telescoping `log`-bounds); (b) the `[0,1] → [0,∞)` extension of each shell to the
-improper integral; (c) the shell interchange `Σ_n lim = lim Σ_n` by dominated convergence. The
-Riemann-sum heart — the genuinely mathlib-absent piece — is now machine-checked; these three are
-the remaining assembly, named exactly, not scoped out for effort.
+**Prop 2's integral avatar, formalized — the closed loop `Φ(c) = ∫_0^∞`.** The continuum integral
+`∫_0^∞ (2/c)·sinh(u/c)·1/(e^u−1) du` is now proven equal to the excess series, and hence to the
+cotangent residue, over the whole half-line:
+
+* `poleExcess_hasSum` — the geometric shell expansion `1/(e^u−1) = Σ_{n≥1} e^{−nu}` for `u > 0`,
+  as a `HasSum` over `ℕ+` (geometric `HasSum`, drop the `n=0` term, reindex `ℕ ≃ ℕ+`).
+* `integral_exp_neg_mul_Ioi` (`∫_0^∞ e^{−au} = 1/a`) and `shell_integral` — the per-shell Laplace
+  transform `∫_0^∞ (2/c)·sinh(u/c)·e^{−nu} du = (1/c)[(n−1/c)⁻¹ − (n+1/c)⁻¹] = 2/((cn)²−1)`, an
+  exact improper-integral evaluation on `(0,∞)`.
+* `poleExcess_integral_eq_tsum` — **the interchange**: `∫_0^∞ (2/c)sinh(u/c)/(e^u−1) du =
+  Σ_{n≥1} 2/((cn)²−1)`, via mathlib's `L¹` sum↔integral exchange `integral_tsum` (whose hypothesis
+  `Σ_n ∫|shell_n| < ∞` is discharged from `∫ shell_n = 2/((cn)²−1)` and the series' convergence).
+* `stripResidue_eq_integral` — the capstone weld: `Φ(c) = 1 − (π/c)cot(π/c) =
+  ∫_0^∞ (2/c)sinh(u/c)/(e^u−1) du`, chaining the series form with the integral evaluation.
+
+This closes the *analytic* half completely: the improper per-shell integral (the old step (b)) and
+the shell interchange `Σ_n ∫ = ∫ Σ_n` (the old step (c)) are now both machine-checked inside
+`poleExcess_integral_eq_tsum`. Both endpoints of the continuum integral — its series value and its
+`cot` closed form — are proven.
+
+**What still remains outside Lean** has shrunk to a *single substitution*. The discrete-to-continuum
+passage `(A−B)/i → ∫_0^∞ (2/c)sinh(u/c)/(e^u−1) du` had two components: the improper monotone
+Riemann-sum convergence `(1/i)Σ_k f(k/i) → ∫_0^∞ f`, and (a) the harmonic-to-log substitution
+`Σ_{l=i+1}^{i+k} 1/l → log((i+k)/i)` turning pole distances into the continuum variable
+`u = c·log(k/i)`. The Riemann-sum convergence is now machine-checked
+(`tendsto_riemann_sum_antitone_Ioi`); what remains is only (a) — the telescoping-`log` identification
+of the harmonic pole distances with the sample points `k/i`, plus the routine algebra recasting the
+excess balance as `Σ_k g(k/i)` for the profile `g`. Every endpoint (series value, `cot` closed form),
+the `Σ_n ∫ = ∫ Σ_n` interchange, and the half-line Riemann-sum limit are all in Lean; the lone open
+step is the change of variables — named exactly, not scoped out for effort.

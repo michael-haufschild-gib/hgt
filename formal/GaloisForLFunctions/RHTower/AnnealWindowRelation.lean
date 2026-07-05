@@ -540,11 +540,12 @@ theorem xi_rung_of_finite_side_of_relative_close_carrierFloorOn {N : ℕ} (k : �
       ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
         ‖Complex.log (xi z / completedGN N z)‖ ≤
           (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
-  have hgN0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, gN N z ≠ 0 :=
-    gN_ne_zero_of_carrierFloorOn hε hF
-  exact xi_rung_of_finite_side_of_relative_close_gN_nonzero k h0 hrR hη hchartStrip
-    hm₁ hcl₁ hstrip hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂
-    hgN0 hrel hL hfin
+  have hG0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, completedGN N z ≠ 0 := by
+    intro z hz
+    obtain ⟨hσ, hz1⟩ := hchartStrip z hz
+    exact completedGN_ne_zero_of_carrierFloorOn hε hF hz hσ hz1
+  exact xi_rung_of_finite_side_of_relative_close k h0 hrR hη hm₁ hcl₁ hstrip hm₂ hcl₂
+    hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hG0 hrel hL hfin
 
 end RHTower
 
@@ -580,6 +581,33 @@ theorem anneal_deck_transport_of_relative_close_gN_nonzero {N : ℕ}
     exact completedGN_ne_zero_of_gN_ne_zero hσ hz1 (hgN0 z hz)
   exact seam_transport_of_relative_close hR (pow_pos two_pos k) hη (xi_analyticOnNhd _)
     hF₁ hF₂ hG₁ hG₂ hpF₁ hpF₂ hpG₁ hpG₂ hG0 hrel
+
+/-- **Relative ANNEAL deck transport with LOW-floor nonvanishing.**
+A nonnegative `CarrierFloorOn` certificate supplies the finite-carrier
+nonvanishing needed by the relative deck transport, while preserving the
+deck-class equality and U0 principal-log control conclusions. -/
+theorem anneal_deck_transport_of_relative_close_carrierFloorOn {N : ℕ}
+    {F₁ F₂ G₁ G₂ : ℂ → ℂ} {a : ℂ} {R η ε : ℝ} (k : ℕ)
+    (hR : 0 < R) (hη : η < 1) (hε : 0 ≤ ε)
+    (hF : CarrierFloorOn (chartR a R ∪ chartL a R) N ε)
+    (hchartStrip : ∀ z ∈ chartR a R ∪ chartL a R, 0 < z.re ∧ z ≠ 1)
+    (hF₁ : AnalyticOnNhd ℂ F₁ (chartR a R)) (hF₂ : AnalyticOnNhd ℂ F₂ (chartL a R))
+    (hG₁ : AnalyticOnNhd ℂ G₁ (chartR a R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartL a R))
+    (hpF₁ : ∀ z ∈ chartR a R, F₁ z ^ 2 ^ k = xi z)
+    (hpF₂ : ∀ z ∈ chartL a R, F₂ z ^ 2 ^ k = xi z)
+    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ 2 ^ k = completedGN N z)
+    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ 2 ^ k = completedGN N z)
+    (hrel : ∀ z ∈ chartR a R ∪ chartL a R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η) :
+    deckClass F₁ F₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) =
+        deckClass G₁ G₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) ∧
+      ∀ z ∈ chartR a R ∪ chartL a R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hgN0 : ∀ z ∈ chartR a R ∪ chartL a R, gN N z ≠ 0 :=
+    gN_ne_zero_of_carrierFloorOn hε hF
+  exact anneal_deck_transport_of_relative_close_gN_nonzero k hR hη hchartStrip
+    hF₁ hF₂ hG₁ hG₂ hpF₁ hpF₂ hpG₁ hpG₂ hgN0 hrel
 
 end RHTower
 
@@ -641,5 +669,34 @@ theorem anneal_seam_L_transport_of_relative_close_gN_nonzero {N : ℕ}
     hpP hpM hPline hMline hdomP hdomM
   exact ⟨hdeck, ratio_log_norm_le_of_relative_close hη hG0P hrelP,
     ratio_log_norm_le_of_relative_close hη hG0M hrelM⟩
+
+/-- **Relative ANNEAL seam L-transport with LOW-floor nonvanishing.**
+A nonnegative `CarrierFloorOn` certificate supplies the two pointwise finite-carrier
+nonvanishing inputs needed by the relative seam dictionary, while preserving deck
+transport and both U0 principal-log bounds. -/
+theorem anneal_seam_L_transport_of_relative_close_carrierFloorOn {N : ℕ}
+    {g₁ g₂ G₁ G₂ : ℂ → ℂ} {U : Set ℂ} {η ε : ℝ}
+    (hη : η < 1) (hε : 0 ≤ ε) (hF : CarrierFloorOn U N ε)
+    (hU : IsOpen U) (hUc : IsPreconnected U)
+    (hUstrip : ∀ z ∈ U, 0 < z.re ∧ z.re < 1)
+    (hg₁ : AnalyticOnNhd ℂ g₁ U) (hg₂ : AnalyticOnNhd ℂ g₂ (lineReflect ⁻¹' U))
+    (hG₁ : AnalyticOnNhd ℂ G₁ U) (hG₂ : AnalyticOnNhd ℂ G₂ (lineReflect ⁻¹' U))
+    (hp₁ : ∀ s ∈ U, g₁ s ^ 2 = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ 2 = xi s)
+    (hP₁ : ∀ s ∈ U, G₁ s ^ 2 = completedGN N s)
+    (hP₂ : ∀ s ∈ lineReflect ⁻¹' U, G₂ s ^ 2 = completedGN N s)
+    {pP pM : ℂ} (hpP : pP ∈ U) (hpM : pM ∈ U)
+    (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2)
+    (hrelP : ‖(xi pP - completedGN N pP) / completedGN N pP‖ ≤ η)
+    (hrelM : ‖(xi pM - completedGN N pM) / completedGN N pM‖ ≤ η) :
+    deckClass g₁ g₂ pP pM = deckClass G₁ G₂ pP pM ∧
+      ‖Complex.log (xi pP / completedGN N pP)‖ ≤
+        (1 - η)⁻¹ * ‖(xi pP - completedGN N pP) / completedGN N pP‖ ∧
+      ‖Complex.log (xi pM / completedGN N pM)‖ ≤
+        (1 - η)⁻¹ * ‖(xi pM - completedGN N pM) / completedGN N pM‖ := by
+  have hgN0P : gN N pP ≠ 0 := gN_ne_zero_of_carrierFloorOn hε hF pP hpP
+  have hgN0M : gN N pM ≠ 0 := gN_ne_zero_of_carrierFloorOn hε hF pM hpM
+  exact anneal_seam_L_transport_of_relative_close_gN_nonzero hη hU hUc hUstrip
+    hg₁ hg₂ hG₁ hG₂ hp₁ hp₂ hP₁ hP₂ hpP hpM hPline hMline
+    hgN0P hgN0M hrelP hrelM
 
 end RHTower
