@@ -5,12 +5,7 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-| Kind | Location | Context | Text |
-|---|---|---|---|
-| proof-debt | `formal/GaloisForLFunctions/RHTower/LegLatticeStep.lean:452` | `theorem lattice_step_energy_increase` | `sorry` |
-| proof-debt | `formal/GaloisForLFunctions/RHTower/LegLatticeStep.lean:453` | `theorem lattice_step_energy_increase` | `sorry` |
-| proof-debt | `formal/GaloisForLFunctions/RHTower/LegLatticeStep.lean:454` | `theorem lattice_step_energy_increase` | `sorry` |
-| proof-debt | `formal/GaloisForLFunctions/RHTower/LegLatticeStep.lean:455` | `theorem lattice_step_energy_increase` | `sorry` |
+No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 ## Large Files
 
@@ -29,8 +24,8 @@ This is an agent worklist aid, not a mathematical ledger.
 | 2369 | `formal/GaloisForLFunctions/U0/U0SliceViableA.lean` |
 | 2229 | `formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean` |
 | 1899 | `formal/GaloisForLFunctions/Bottcher/RepellingFixedScaledContainment.lean` |
+| 1832 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
 | 1711 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
-| 1691 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
 | 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
 | 1604 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |

@@ -319,3 +319,29 @@ quantitative: unpaired-left-charge count replaces the exact coincidence at ϑ = 
 (ii) a sup bound on h′ over the half-gap (the same csch²-telescope calculus with δ_k-varying
 steps). Next object: `field_theta_gap` on nondecreasing-gap configurations — the general-gap
 join. After that, general-gap (L1) legs = the §5b adiabatic comparison.
+
+## 5k. The one-step lattice theorem: consecutive equilibria raise energy [PROVED HERE — Lean]
+
+`LegLatticeStep.lean` (axiom-clean) proves that advancing one lattice step strictly increases
+the Calogero energy, unconditionally on the small-δ band. Setup: an equilibrium with `N`
+behind and `m+1` ahead charges at position `θ`, level `−(N+m+1)`, advances to an equilibrium
+with `N+1` behind and `m` ahead at position `θ′`, same charge.
+
+`lattice_step_energy_increase` — for `1 ≤ m`, `m+1 ≤ N`, `0 < θ ≤ 1/8`, `0 < θ′ < 1`,
+`0 < δ ≤ 1`, `4 ≤ δm²`, with both configurations at equilibrium:
+`W(N, m+1, θ) < W(N+1, m, θ′)`, where `W = ¼[Σcsch²(behind) + Σcsch²(ahead)]`.
+
+Mechanism, all machine-checked:
+* the swap identity `g(θ′) − g(θ) = swap ∈ (2, 2 + 4/(mδ)]` (charge conservation across the
+  step), giving `θ′ < θ` by strict monotonicity of the constraint `g` (`g′ = 2δW > 0`);
+* the drift bracket `(32/39)δθ′² ≤ θ − θ′ ≤ (3/7)θ` from the swap value against the `g′`-bracket
+  `7/(4θ²δ) ≤ g′ ≤ 39/(16δθ′²)` (both via `e^{−2s}/s² ≤ csch²(s) ≤ 1/s²` and inverse-square
+  telescopes);
+* the θ-sharp energy margin `−W′(η) ≥ (2/θ³ − 34)/δ³` (`dW_margin_small_delta`: head
+  `2/(θ³δ³)`, tail `≤ 10/δ³`);
+* gain `≥ 1/δ` via the polynomial core `39θ³ ≤ 8θ′²(2 − 34θ³)`, against loss `≤ 1/(4δ)` (the
+  removed-charge energy under `δm² ≥ 4`).
+
+With §5j (the constraint forces long-train equilibria into `θ < 1/8`, `dW/dθ < 0`), this closes
+the constant-lattice leg of (S-mono): both the interior slope and the step jump point the same
+way. The general-gap leg is doc 30 (the adiabatic ledger `LegAdiabatic.lean`, §6 there).

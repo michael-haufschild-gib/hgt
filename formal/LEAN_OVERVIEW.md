@@ -14,8 +14,8 @@ Use this as the quick map before opening large proof files.
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
-- Shared and bridge declarations outside the three theorem areas: **2435**.
-- Active proof-debt findings: **4**.
+- Shared and bridge declarations outside the three theorem areas: **2462**.
+- Active proof-debt findings: **0**.
 
 ## Local Commands
 

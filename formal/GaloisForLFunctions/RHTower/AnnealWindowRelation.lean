@@ -435,6 +435,15 @@ theorem completedGN_ne_zero_of_gN_ne_zero {N : ℕ} {z : ℂ}
   unfold completedGN
   exact mul_ne_zero (archFactor_ne_zero hz0 hz1 (Gammaℝ_ne_zero_of_re_pos hσ)) hgN0
 
+/-- A nonnegative LOW floor certificate supplies completed-carrier nonvanishing
+on the positive strip away from `1`. -/
+theorem completedGN_ne_zero_of_carrierFloorOn {S : Set ℂ} {N : ℕ} {ε : ℝ}
+    (hε : 0 ≤ ε) (hF : CarrierFloorOn S N ε) {z : ℂ}
+    (hz : z ∈ S) (hσ : 0 < z.re) (hz1 : z ≠ 1) :
+    completedGN N z ≠ 0 :=
+  completedGN_ne_zero_of_gN_ne_zero hσ hz1
+    (gN_ne_zero_of_carrierFloorOn hε hF z hz)
+
 /-- **Window-parity transport under relative control with raw finite-carrier
 nonvanishing.** On charts contained in the positive strip and away from `1`,
 nonvanishing of `gN` gives nonvanishing of `completedGN`, so the relative ANNEAL

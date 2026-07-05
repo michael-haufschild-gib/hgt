@@ -120,6 +120,22 @@ theorem rh_iff_xiDescent_coherentTower_slitPlane :
       Complex.isOpen_slitPlane hsc hpc (fun w hw => xiDescent_analyticAt hw) hz hne
   rw [rh_iff_xiDescent_ne_zero_slitPlane, ← htower]
 
+/-- **RH ⟺ a zero-free coherent dyadic tower on the descended slit plane.**  The
+constraint is stronger than mere tower inhabitation as data: one coherent tower exists
+and none of its dyadic levels has a slit-plane zero. -/
+theorem rh_iff_exists_xiDescent_coherentTower_levels_nonzero_slitPlane :
+    RiemannHypothesis ↔
+      ∃ T : CoherentTower xiDescent slitPlane,
+        ∀ k : ℕ, ∀ w ∈ slitPlane, T.level k w ≠ 0 := by
+  constructor
+  · intro hRH
+    obtain ⟨T⟩ := (rh_iff_xiDescent_coherentTower_slitPlane.mp hRH)
+    refine ⟨T, ?_⟩
+    intro k w hw
+    exact (T.level_ne_zero_iff k hw).2 ((rh_iff_xiDescent_ne_zero_slitPlane.mp hRH) w hw)
+  · rintro ⟨T, _hlevels⟩
+    exact rh_iff_xiDescent_coherentTower_slitPlane.mpr ⟨T⟩
+
 end RHTower
 
 namespace RHTower

@@ -100,3 +100,72 @@ real section fields — then (SPUR-R) closes on one-sided-far carriers with doc 
 the DISC reader is provably exact on the u-plane theorem-track carrier (doc 24 §6,
 DISC run 6). Next: the write-up as doc 31 with theorem-grade statements, then the
 promotion gate (#141 citations) before anything crosses to 2-fully-proven.
+
+## 6. The ledger and its march, formalized [PROVED HERE — Lean]
+
+`formal/GaloisForLFunctions/RHTower/LegAdiabatic.lean` states the §1 identity and the §5
+closing over arbitrary gaps, axiom-clean `[propext, Classical.choice, Quot.sound]`.
+
+Model. A charge between two poles at ahead-distance `s`, with behind spectator distances
+`c₀,…,c_{L−1}`, ahead spectator distances `e₀,…,e_{R−1}`, the nearest ahead pole at `s`, the
+about-to-be-swapped pole at `δ+s`:
+
+* `legFieldOld = Σ_m coth(c_m/2) − coth(s/2) − coth((δ+s)/2) − Σ_r coth(e_r/2)`.
+* `legFieldNew` is the same charge advanced by exactly the swapped gap `δ`: behind distances
+  become `c_m+δ`, the old nearest-ahead pole becomes the nearest behind pole at `δ−s`, the
+  swapped pole becomes the nearest ahead pole at `s`, ahead distances become `e_r−δ`:
+  `legFieldNew = Σ_m coth((c_m+δ)/2) + coth((δ−s)/2) − coth(s/2) − Σ_r coth((e_r−δ)/2)`.
+
+The advance-by-`δ` keeps the ahead-distance `s` invariant and crosses exactly one pole; the
+two `coth(s/2)` cancel.
+
+* `adiabatic_ledger`: **exactly**
+  `ΔG = coth((δ−s)/2) + coth((δ+s)/2) + Σ_m [coth((c_m+δ)/2) − coth(c_m/2)]
+        + Σ_r [coth(e_r/2) − coth((e_r−δ)/2)]` — the §1 identity, finite sums.
+* `swap_cushion_gt_two`: `0 < s < δ ⟹ coth((δ−s)/2) + coth((δ+s)/2) > 2`.
+* `behind_drift_abs_le` / `ahead_drift_abs_le`: each spectator increment has magnitude
+  `≤ (δ/2)·csch²(nearer/2)` — the mean value theorem for `coth`, `coth′ = −csch²`.
+* `adiabatic_march_pos`: **the closing** — if
+  `Σ_m (δ/2)csch²(c_m/2) + Σ_r (δ/2)csch²((e_r−δ)/2) < coth((δ−s)/2) + coth((δ+s)/2)`
+  (the (ADB-crude) hypothesis), then `ΔG > 0`. Every spectator is charged at full magnitude
+  against the cushion; no sign cancellation, no convexity.
+
+What remains is the field-class instantiation: verifying the (ADB-crude) hypothesis for the
+concrete section-field gap sequences (`|δ_{j+1}−δ_j| = O(δ²)`, one-sided, `s < δ/2`), where
+the LHS is `O(log/δ)` against a cushion `~ 2i/δ`. That is the general-gap join — a bounded
+comparison of the two explicit `csch²`-series against the near-swap `coth`.
+
+## 7. The crude no-signs bound is TIGHT; the clearing form is the rank pairing [PROVED HERE — Lean, correction to §5]
+
+§5 claimed (ADB-crude) — the total-variation spectator energy against the near cushion — clears
+with `1/δ` room. It does not. In the pole pairing (`legFieldOld/New`, `adiabatic_march_pos`)
+each behind spectator's distance grows by the FULL swapped gap `δ`, so the nearest weight
+`(δ/2)csch²(c₀/2)` alone is the same order as the near cushion `coth((δ±s)/2)`. Direct check on
+the constant lattice: with `c_m = mδ − s` the LHS `Σ_m (δ/2)csch²(c_m/2)` exceeds the cushion
+for every `s ≳ δ/4` (e.g. `δ = 0.1`, `s = δ/2`: LHS `≈ 94`, cushion `≈ 53`). The pole crude
+bound is a correct sufficient condition but its hypothesis is UNMEETABLE on the physical fields.
+
+The reason: the pole pairing hides the telescoping cancellation. Pairing by RANK instead — the
+`k`-th nearest behind pole of one gap against the `k`-th of the next — makes each increment a
+gap DIFFERENCE and exposes the two FAR poles as the cushion. Formalized in the same module:
+
+* `legRankOld`, `legRankNew` — the rank fields (behind rank distances, shared nearest-ahead at
+  `s`, ahead rank distances, and the single far pole each gap carries that the other has swapped).
+* `adiabatic_ledger_rank` — **the exact rank identity**
+  `ΔG = coth(fB/2) + coth(fA/2) + Σ_k [coth(newB_k/2) − coth(oldB_k/2)]
+        + Σ_k [coth(oldA_k/2) − coth(newA_k/2)]`, with `newB_k − oldB_k = δ_{i+1} − δ_{i+1−k}`,
+  `newA_k − oldA_k = δ_{i+1+k} − δ_{i+1}` — gap DIFFERENCES, zero on the constant lattice.
+* `far_cushion_gt_two` — `coth(fB/2) + coth(fA/2) > 2` for `fA, fB > 0` (the two far poles):
+  the ONLY unconditional input.
+* `behind_gain_nonneg` / `ahead_loss_nonpos` — under gaps decreasing outward, behind increments
+  are gains (`≥ 0`), ahead increments are losses (`≤ 0`).
+* `rank_march_pos` — **the clearing closing**: if the net spectator drift is nonnegative (behind
+  gains at least offset ahead losses), then `ΔG > 2`. The constant lattice is immediate (all
+  increments zero, `ΔG =` far cushion `> 2`); a smooth field perturbs it by `O(δ²)`-weighted
+  drifts.
+
+So the genuine (ADB) is the SIGNED inequality `Σ behind gains ≥ Σ ahead losses` (§3), not the
+no-signs total-variation bound (§5). The residual (#170) is exactly this: prove the net-drift
+nonnegativity for the concrete section gap sequences — the `k`-wise pairing of the `k`-th
+outward behind gain against the `k`-th ahead loss under `δ` convexity (`|Δδ| = O(δ²)`,
+decreasing outward), so the outer half has gains dominating and `rank_march_pos` fires.

@@ -327,6 +327,14 @@ def AFEAccurateOn (S : Set ℂ) (N : ℕ) (ε : ℝ) : Prop :=
 def CarrierFloorOn (S : Set ℂ) (N : ℕ) (ε : ℝ) : Prop :=
   ∀ z ∈ S, ε < ‖gN N z‖
 
+/-- A nonnegative carrier floor discharges the raw finite-carrier nonvanishing
+obligation on the same set. -/
+theorem gN_ne_zero_of_carrierFloorOn {S : Set ℂ} {N : ℕ} {ε : ℝ} (hε : 0 ≤ ε)
+    (hF : CarrierFloorOn S N ε) :
+    ∀ z ∈ S, gN N z ≠ 0 := by
+  intro z hz
+  exact norm_pos_iff.mp (lt_of_le_of_lt hε (hF z hz))
+
 /-- Raw domination from the two interfaces. -/
 theorem raw_domination_of_interfaces {S : Set ℂ} {N : ℕ} {ε : ℝ}
     (hA : AFEAccurateOn S N ε) (hF : CarrierFloorOn S N ε) :

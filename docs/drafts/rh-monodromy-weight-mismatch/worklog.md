@@ -3777,3 +3777,31 @@ measure so the uniform bound passes through (lmarginal_const-mono).
 Then BlockSmallBall for prime blocks = the (L3) STEP. Behind: graded
 ladder, (A1), (SCALAR-MIX), PNT pole. (Codex's LegLatticeStep sorry
 still red on tree lint — theirs.)
+
+## cont.39 — (LEG) both legs formalized
+
+Constant-lattice leg: `LegLatticeStep.lattice_step_energy_increase` (axiom-clean) — one
+lattice step between consecutive equilibria strictly raises Calogero energy on the small-δ
+band (θ ≤ 1/8, δ ≤ 1, δm² ≥ 4). Two MVTs (constraint + energy), drift bracket
+(32/39)δθ′² ≤ θ−θ′ ≤ (3/7)θ, gain ≥ 1/δ vs loss ≤ 1/(4δ). Recorded doc 28 §5k.
+
+General-gap leg: `LegAdiabatic.lean` (axiom-clean) — the exact §1 ledger identity
+`adiabatic_ledger` (advance-by-δ keeps ahead-distance s invariant, crosses one pole, ΔG =
+two swap extras + one coth-increment per spectator), the cushion `swap_cushion_gt_two`,
+per-term MVT drift bounds `behind/ahead_drift_abs_le` ((δ/2)csch²), and the closing
+`adiabatic_march_pos` = (ADB-crude) ⟹ ΔG > 0. Recorded doc 30 §6.
+
+Residual = the field-class instantiation: verify (ADB-crude) `Σ(δ/2)csch² < cushion` for the
+concrete section gap sequences (|Δδ|=O(δ²), one-sided, s<δ/2), LHS O(log/δ) vs cushion ~2i/δ.
+That is #170 (field_theta_gap).
+
+## cont.40 — adiabatic ledger CORRECTION: pole-crude tight, rank form clears
+
+Attacked own §5 (ADB-crude) as false: the pole-pairing no-signs bound Σ(δ/2)csch²(c_m/2) <
+cushion FAILS for s ≳ δ/4 even on the constant lattice (mpmath: δ=0.1,s=δ/2 → LHS 94 vs
+cushion 53). Full-δ increments hide the telescoping cancellation. Fix = rank pairing
+(LegAdiabatic.lean, axiom-clean): adiabatic_ledger_rank (increments = gap DIFFERENCES, 0 on
+constant lattice), far_cushion_gt_two (>2 unconditional), behind_gain_nonneg/ahead_loss_nonpos,
+rank_march_pos (net drift ≥ 0 ⟹ ΔG > 2). Constant lattice immediate. Real (ADB) = SIGNED
+Σgains ≥ Σlosses, not no-signs TV bound. Recorded doc 30 §7. Residual #170 = net-drift
+nonnegativity for concrete section gaps (k-wise gain/loss pairing under δ-convexity).

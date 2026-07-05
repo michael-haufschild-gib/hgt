@@ -139,3 +139,5 @@ import GaloisForLFunctions.RHTower.LegEquilibrium
 import GaloisForLFunctions.RHTower.RouteBFourPhase
 import GaloisForLFunctions.RHTower.RouteBFourPhaseUniform
 import GaloisForLFunctions.RHTower.LegLatticeStep
+import GaloisForLFunctions.RHTower.LegAdiabatic
+import GaloisForLFunctions.RHTower.RouteBProdFubini
