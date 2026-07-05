@@ -102,3 +102,30 @@ tail of σ_W² (log-integrability near 0) is separate and standard-shaped
 consumes P(σ_W ≤ s) scale-by-scale rather than a literal e^{O(v)}.
 Ledger update: (L1) rigorous-shaped; (L2) upper bound PROVABLE; (L3)
 remains the technical core; (L4) standard.
+
+## Appendix B — the caustic ladder, derived [same session; Lean two_phase_sublevel banked]
+
+`two_phase_sublevel` (RouteBSublevel.lean) factors the 2D sublevel as
+(per-phase arc bound 2πr/ρ) × meas(K), K = {φ : |‖c + Be^{iφ}‖ − ρ| ≤ r},
+ρ = ‖A‖. Squaring the radial condition, K is a COSINE BAND:
+  cos(φ − ψ) ∈ [u₁, u₂],  u₂ − u₁ = 2ρr/(‖c‖·‖B‖)
+(exact algebra). Cosine-band measure: ≤ C·(u₂−u₁) in the transversal
+regime (band away from ±1), ≤ C·√(u₂−u₁) unconditionally (arccos √-law at
+tangency). Hence the CAUSTIC LADDER:
+
+- one phase:   sublevel ≲ r/ρ                         [arc_sublevel — Lean]
+- two phases:  ≲ (r/ρ)·√(ρr/(‖c‖‖B‖)) ~ r^{3/2}       [unconditional; the
+  known two-arm caustic exponent — derived, matches the classical density
+  singularity on |‖c‖ ± ‖B‖| circles]
+- two phases, transversal: ≲ r²·ρ/(‖c‖‖B‖)·(1/incidence) [linear band]
+- full hierarchy: the THIRD phase averages the caustic location (the band
+  center ψ and radius ‖c‖ move with the remaining field), and the caustic's
+  √-singularity is integrable — this is precisely where (L3)'s bounded
+  r²·log(2/t) density comes from. The log is the t-graded depth (§4); the
+  caustic contributes only a bounded constant after one averaging.
+
+Next Lean bricks, in order: (CAUSTIC-cos) — meas{φ ∈ [0,2π] :
+cos φ ∈ [u₁,u₂]} ≤ π·√(2(u₂−u₁)) + the transversal linear version (pure
+real analysis, no obstructions); then the three-phase composition
+(two_phase_sublevel + caustic-averaging over the third phase) = the (L3)
+base case with the r² law.

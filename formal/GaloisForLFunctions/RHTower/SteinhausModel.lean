@@ -236,7 +236,7 @@ theorem integral_X_mul_conj {n m : ℕ} (hn : n ≠ 0) (hm : m ≠ 0) :
   · rw [if_neg hne]
     have hdiff : ∃ p ∈ s, freq n m p ≠ 0 := by
       by_contra hall
-      push_neg at hall
+      push Not at hall
       apply hne
       apply Nat.eq_of_factorization_eq hn hm
       intro p
@@ -258,6 +258,100 @@ theorem integral_X_mul_conj {n m : ℕ} (hn : n ≠ 0) (hm : m ≠ 0) :
     obtain ⟨p, hps, hpk⟩ := hdiff
     apply Finset.prod_eq_zero (Finset.mem_univ (⟨p, hps⟩ : ↥s))
     rw [charInt, if_neg hpk]
+
+end SteinhausModel
+end RHTower
+
+namespace RHTower
+namespace SteinhausModel
+
+open MeasureTheory Complex
+
+theorem measurable_X (n : ℕ) : Measurable (X n) := by
+  unfold X
+  have h1 : Measurable fun ω : Omega =>
+      ∑ p ∈ n.primeFactors, (n.factorization p : ℝ) * ω p := by
+    apply Finset.measurable_sum
+    intro p _
+    exact (measurable_pi_apply p).const_mul _
+  exact Complex.continuous_exp.measurable.comp
+    ((Complex.measurable_ofReal.comp h1).const_mul _)
+
+instance : IsProbabilityMeasure steinhausMeasure := by
+  unfold steinhausMeasure
+  infer_instance
+
+theorem integrable_X_mul_conj (n m : ℕ) :
+    Integrable (fun ω => X n ω * (starRingEnd ℂ) (X m ω)) steinhausMeasure := by
+  apply Integrable.mono' (integrable_const (1 : ℝ))
+  · exact ((measurable_X n).mul
+      (continuous_star.measurable.comp (measurable_X m))).aestronglyMeasurable
+  · filter_upwards with ω
+    rw [norm_mul, norm_X, RCLike.norm_conj, norm_X, one_mul]
+
+/-- **The model second-moment identity, complex form**:
+`E[|Σ aₙ Xₙ|²] = Σ aₙ²` via orthonormality. -/
+theorem integral_dpoly_mul_conj (a : ℕ → ℝ) (s : Finset ℕ)
+    (hs : ∀ n ∈ s, n ≠ 0) :
+    ∫ ω, (∑ n ∈ s, (a n : ℂ) * X n ω)
+        * (starRingEnd ℂ) (∑ n ∈ s, (a n : ℂ) * X n ω) ∂steinhausMeasure
+      = ((∑ n ∈ s, (a n) ^ 2 : ℝ) : ℂ) := by
+  classical
+  have hexp : ∀ ω : Omega, (∑ n ∈ s, (a n : ℂ) * X n ω)
+      * (starRingEnd ℂ) (∑ n ∈ s, (a n : ℂ) * X n ω)
+      = ∑ n ∈ s, ∑ m ∈ s,
+          ((a n : ℂ) * (a m : ℂ)) * (X n ω * (starRingEnd ℂ) (X m ω)) := by
+    intro ω
+    rw [map_sum, Finset.sum_mul_sum]
+    refine Finset.sum_congr rfl fun n _ => Finset.sum_congr rfl fun m _ => ?_
+    rw [map_mul, Complex.conj_ofReal]
+    ring
+  rw [integral_congr_ae (Filter.Eventually.of_forall hexp)]
+  rw [integral_finsetSum _ (fun n _ => integrable_finsetSum _
+    (fun m _ => ((integrable_X_mul_conj n m).const_mul _)))]
+  have hinner : ∀ n ∈ s,
+      ∫ ω, ∑ m ∈ s, ((a n : ℂ) * (a m : ℂ)) * (X n ω * (starRingEnd ℂ) (X m ω))
+        ∂steinhausMeasure = ((a n : ℂ)) * (a n : ℂ) := by
+    intro n hn
+    rw [integral_finsetSum _ (fun m _ => ((integrable_X_mul_conj n m).const_mul _))]
+    have hterm : ∀ m ∈ s,
+        ∫ ω, ((a n : ℂ) * (a m : ℂ)) * (X n ω * (starRingEnd ℂ) (X m ω))
+          ∂steinhausMeasure
+        = if n = m then (a n : ℂ) * (a m : ℂ) else 0 := by
+      intro m hm
+      rw [integral_const_mul, integral_X_mul_conj (hs n hn) (hs m hm)]
+      rcases eq_or_ne n m with rfl | hne
+      · rw [if_pos rfl, if_pos rfl, mul_one]
+      · rw [if_neg hne, if_neg hne, mul_zero]
+    rw [Finset.sum_congr rfl hterm]
+    have : ∀ m ∈ s, (if n = m then (a n : ℂ) * (a m : ℂ) else 0)
+        = if m = n then (a n : ℂ) * (a m : ℂ) else 0 := by
+      intro m _
+      simp only [eq_comm]
+    rw [Finset.sum_congr rfl this, Finset.sum_ite_eq' s n
+      (fun m => (a n : ℂ) * (a m : ℂ)), if_pos hn]
+  rw [Finset.sum_congr rfl hinner]
+  push_cast
+  refine Finset.sum_congr rfl fun n _ => ?_
+  ring
+
+/-- **The model second-moment identity**: `E‖Σ aₙ Xₙ‖² = Σ aₙ²` — the
+Steinhaus-model face of `SecondMoment.secondMoment_eq`'s diagonal. -/
+theorem integral_normSq_dpoly (a : ℕ → ℝ) (s : Finset ℕ)
+    (hs : ∀ n ∈ s, n ≠ 0) :
+    ∫ ω, ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ 2 ∂steinhausMeasure
+      = ∑ n ∈ s, (a n) ^ 2 := by
+  have h := integral_dpoly_mul_conj a s hs
+  have hpoint : ∀ ω : Omega, (∑ n ∈ s, (a n : ℂ) * X n ω)
+      * (starRingEnd ℂ) (∑ n ∈ s, (a n : ℂ) * X n ω)
+      = ((‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ^ 2 : ℝ) : ℂ) := by
+    intro ω
+    rw [Complex.mul_conj']
+    push_cast
+    ring
+  rw [integral_congr_ae (Filter.Eventually.of_forall hpoint),
+    integral_complex_ofReal] at h
+  exact_mod_cast h
 
 end SteinhausModel
 end RHTower

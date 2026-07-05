@@ -60,3 +60,20 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
   probability space via Measure.infinitePi (EXISTS in toolchain), X_n
   orthonormality, model second-moment identity. Foundation for (L4)/(L3)
   skeleton and (A1). Multi-session; start next cycle.
+
+## UPDATE (cycle 55, cont.)
+
+- Lean banked this goal so far: 6 modules / 40 axiom-clean endpoints
+  (RouteBSeedGap 8, RouteBTwoField 7, RouteAProfile 6, SteinhausModel 12,
+  RouteBSublevel 7 incl. two_phase_sublevel). SteinhausModel COMPLETE
+  (orthonormality + model second-moment identity — the lane's probability
+  space is real). (L4)-seed + two-phase composition DONE; caustic factor
+  isolated as (CAUSTIC).
+- PNT/Mertens NOT in toolchain (probed): (L1)/(L2) Lean-native = own
+  multi-session pole (build Möbius partial-sum decay); interim = typed
+  interfaces + Landau-grade paper proofs (doc 87 App A).
+- Remaining to terminal: (CAUSTIC) transversal bound → (L3)
+  caustic-averaging induction (paper then Lean); (A1) martingale-CLT
+  write-out; (SCALAR-MIX) resolution; PNT pole. No internal forks left
+  anywhere; every remaining item is named, typed, and consumed by a
+  machine-checked downstream chain.

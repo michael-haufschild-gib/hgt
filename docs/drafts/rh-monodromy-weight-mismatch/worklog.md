@@ -3249,3 +3249,97 @@ declarations (+ doc 41 §8/§9). NOTE for the loop: the docs' [OPEN]/[CONJECTURE
 items — (LEG), (ADB), (S-mono), (F)-field, Thm B m≥4/Lemma R, doc 28 §2b winding — are NOT proven
 in the docs, so they are correctly OUTSIDE "formalize all PROVEN lemmas"; formalizing them would
 require first proving them (open research), not Lean plumbing.
+
+## 2026-07-05 (cont.32) — doc 25 (E3) uniform convergence → RescaleTannery.lean
+Flat: direct application of Tannery's theorem (mathlib tendsto_tsum_of_dominated_convergence),
+no new math. RescaleTannery.lean (2 declarations, lake build green, axiom-clean, umbrella/index/
+lint). This closes the (E3) item the loop flagged as proven-but-unformalized:
+- rescaledSection_tendsto: (E3) POINTWISE — ‖z‖≤ρ, Σ‖c_j‖ρ^j<∞ (entire g), φ_d(j)∈[0,1]→1 ⟹
+  Ã_d(z)=Σφ_d(j)c_j z^j → g(z)=Σc_j z^j. Tannery bound ‖c_j‖ρ^j; per-j limit via Complex.ofReal
+  continuity; domination via norm_mul + Complex.norm_real.
+- rescale_defect_tendsto_zero: (E3) UNIFORM bound → 0 — Σ_j(1−φ_d(j))‖c_j‖ρ^j → 0 (Tannery, g=0);
+  since sup_{‖z‖≤ρ}‖Ã_d−g‖ ≤ this majorant, convergence is uniform on the disc.
+The domination hyp Summable(‖c_j‖ρ^j) IS the entire-function condition; φ hyps supplied by
+RescaleLimit (phi_product_le_one/tendsto_one). Session Lean this run: 9 modules, 48 axiom-clean
+declarations (+ doc 41 §8/§9).
+
+DOC-25 PROVEN COVERAGE NOW COMPLETE at the identity/lemma level: (E1) energy_at_crit, (E2)
+qRescaled bounds, (E3) φ-bracket + Tannery convergence, (E4)/(E5) [JensenSection/SpurRescale],
+Lemma W [SpurHermite], Theorem A clearance division, Corollary C. The ONLY doc-25 items not
+formalized are those the doc itself labels non-proven: Theorem B m≥4 (proof-shaped, modulo
+Lemma R). All [OPEN]/[CONJECTURE]/proof-shaped items across the arc — (LEG), (ADB), (S-mono),
+(F)-field, Lemma R m≥4, doc 28 §2b winding — are NOT proven in the docs and so are outside
+"formalize all PROVEN lemmas"; they require research (proving them), not Lean transcription.
+
+## Cycle 55 (cont.) — SteinhausModel integration slice COMPLETE
+
+- The "next-session" slice landed same-session: `integral_X_mul_conj`
+  (orthonormality E[X_n X̄_m] = δ_{nm}; full cylinder-Fubini chain
+  infinitePi → map restrict → Measure.pi → integral_fintype_prod_eq_prod →
+  single-phase character integral) and `integral_normSq_dpoly`
+  (E‖Σ aₙXₙ‖² = Σ aₙ² — the model face of SecondMoment's diagonal), plus
+  measurable_X / integrable_X_mul_conj / charInt / X_mul_conj_eq_prod.
+  All axiom-clean; umbrella 8668 jobs; lint green. The MWM lane now has a
+  REAL probability space: every doc 86–88 model statement has a home.
+- Next brick: (L4)-seed `arc_sublevel` — the 1D circle anti-concentration
+  (angular measure of {θ : ‖c + A·e^{iθ}‖ ≤ r} ≤ π r/‖A‖ for r < ‖A‖, via
+  the chord-vs-arc estimate) — first analytic small-ball brick for (L3).
+
+## Cycle 55 (cont. 2) — (L4)-seed banked: one-phase anti-concentration
+
+- RouteBSublevel.lean NEW (6 endpoints, axiom-clean, 8669 jobs, lint
+  green): two_I_sin, norm_exp_I_sub_exp_I (chord identity), chord_lower
+  (Jordan via Real.mul_le_sin), sublevel_pair_close (two sublevel angles
+  within π are within πr/‖A‖), subset_two_intervals (the two-cluster
+  covering on [0,2π] — inf-based, ε capped by π), arc_sublevel
+  (volume of the circle-map sublevel ≤ 2πr/‖A‖). This is the per-phase
+  exponent-one anti-concentration that (L3)'s hierarchical Esseen consumes;
+  two independent phases will give the ε² via the same covering pattern.
+- Lemma-ledger Lean status: (L4)-seed DONE; SteinhausModel foundation +
+  integration DONE; (L1)/(L2) paper-rigorous (Lean needs PNT-grade Möbius
+  partial sums — check toolchain for PNT availability, else interface);
+  (L3) = the remaining technical core; (A1)/(SCALAR-MIX) = paper next.
+- Day total: 5 new modules, 39 axiom-clean endpoints
+  (RouteBSeedGap 8, RouteBTwoField 7, RouteAProfile 6, SteinhausModel 12,
+  RouteBSublevel 6).
+
+## Cycle 55 (cont. 3) — two-phase composition banked; PNT gap located
+
+- RouteBSublevel.lean extended: `two_phase_sublevel` (first-pass clean,
+  axiom-clean, 8669 jobs, lint green) — the 2D sublevel of a two-phase
+  circle sum ≤ (per-phase arc bound 2πr/‖A‖) × (measure of the CAUSTIC set
+  {φ : |‖c + Be^{iφ}‖ − ‖A‖| ≤ r}); away from the caustic the θ-section is
+  EMPTY (reverse triangle). The caustic factor is now an isolated, named
+  object — (CAUSTIC): its transversal-regime bound (radial-crossing
+  measure ≲ r/(incidence angle)) is the next analytic brick; its
+  AVERAGING over the third phase is where (L3)'s bounded density comes
+  from (two arms alone have the integrable caustic singularity — the
+  known r^{3/2} law on the degenerate circle; three arms are bounded).
+- ARCHITECTURE DECISION (probe): mathlib has NO Mertens/PNT — the Möbius
+  partial-sum decay M(x) → 0 is not in the toolchain. (L1)/(L2) fully
+  Lean-native therefore requires building PNT-grade Möbius bounds (its own
+  multi-session pole, declared per the goal's not-in-mathlib rule). Interim
+  discipline: (L1)/(L2) enter the Lean chain as typed hypotheses (house
+  style: classical imports as interfaces), discharged on paper at Landau
+  grade (doc 87 App A).
+- Ledger after this cycle: (L4) seed + two-phase composition DONE (Lean);
+  SteinhausModel foundation + integration DONE (Lean); (L1)/(L2) paper-
+  rigorous + interface-typed plan; (L3) = caustic-averaging induction
+  (paper next, Lean after); (A1)/(SCALAR-MIX) = paper write-outs next.
+
+## Cycle 55 (cont. 4) — (CAUSTIC-cos) banked
+
+- RouteBSublevel.lean extended (build 8669, lint green, axiom-clean):
+  `arccos_gap_sq` — (arccos u₁ − arccos u₂)² ≤ (π²/2)(u₂−u₁), the double-
+  Jordan √-law (the mean sits at least the half-gap from both endpoints of
+  [0,π], so BOTH sine factors admit the Jordan bound); `cos_band_measure` —
+  meas{φ ∈ [0,2π] : cos φ ∈ [u₁,u₂]} ≤ π√(2(u₂−u₁)), via the two-arc
+  arccos covering. The caustic ladder's Lean rungs below the three-phase
+  composition are now ALL in place: arc_sublevel (r¹), two_phase_sublevel
+  (factorization), cos_band_measure (band √-law).
+- Next brick (loaded): the radial→cosine conversion
+  (‖c+Be^{iφ}‖² = ‖c‖²+‖B‖²+2‖c‖‖B‖cos(φ−ψ) in Lean) composing
+  two_phase_sublevel ∘ cos_band_measure into the unconditional two-phase
+  r^{3/2} corollary; then (A1) write-out; then the (L3) induction; then
+  the PNT pole ((L1)/(L2) Lean-native).
+- Goal running total: 6 modules, 43 axiom-clean endpoints.
