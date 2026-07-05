@@ -201,6 +201,19 @@ theorem rh_iff_xi_ne_zero_right :
       exact hnz _ hmem (by rw [xi_one_sub]; exact hxi)
     · exact hnz s (mem_rightHalf.mpr hgt) hxi
 
+/-- A local-window endpoint for RH: if every hypothetical right-half ξ-zero lies
+in a certified window whose ξ-zeros are all on the critical line, then RH follows. -/
+theorem riemannHypothesis_of_local_online_windows
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ a R, ρ ∈ ball a R ∧ ∀ p ∈ ball a R, xi p = 0 → p.re = 1 / 2) :
+    RiemannHypothesis := by
+  rw [rh_iff_xi_ne_zero_right]
+  intro ρ hρ hzero
+  obtain ⟨a, R, hρball, honline⟩ := hwin ρ hρ hzero
+  have hline := honline ρ hρball hzero
+  have hright := mem_rightHalf.mp hρ
+  linarith
+
 /-- **RH ⟺ the coherent ℤ₂-Kummer tower of ξ exists on `Re s > ½`.** -/
 theorem rh_iff_tower : RiemannHypothesis ↔ Nonempty (CoherentTower xi rightHalf) := by
   rw [rh_iff_xi_ne_zero_right,

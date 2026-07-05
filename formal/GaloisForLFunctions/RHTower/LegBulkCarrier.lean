@@ -188,4 +188,53 @@ theorem harm_bulk_march :
           simp only [harmNewA, harmOldA, harmT]
           norm_num [Finset.sum_range_succ, Finset.sum_range_zero]⟩
 
+/-!
+### The wide-gap crossover: the march survives where the box certificate dies
+
+A carrier of five poles at `0, 12, 18, 22, 25` (gaps `12, 6, 4, 3`) — the sparse, wide-gap
+regime — with the charge at `11.1`, one behind pole and two ahead spectators. Here the behind
+gain is smaller than the ahead loss, so the net spectator drift is NEGATIVE and neither
+`section_march_pos` nor `bulk_march_pos` applies: their common premise is that the gains offset
+the losses, and it fails. Yet the march still clears, `ΔG > 0`, because the receding ahead poles
+make the total loss (bounded here by `≈ 0.26` through the `csch² ≤ 1/v²` envelope) fall far
+below the far cushion `> 2`. `section_march_pos_weak` closes it; the loss bound is exact rational
+arithmetic. This is the certificate hand-off: at wide gaps the net-drift route is dead and the
+loss-below-cushion route carries the march. -/
+
+/-- Behind distance of the current charge (one behind pole, distance `11.1`). -/
+def wideOldB : ℕ → ℝ := fun _ => 111 / 10
+/-- Behind distance of the advanced charge (the swapped pole becomes the near behind pole). -/
+def wideNewB : ℕ → ℝ := fun _ => 51 / 10
+/-- Ahead spectator distances of the current charge: `6.9` then `10.9`. -/
+def wideOldA : ℕ → ℝ := fun k => if k = 0 then 69 / 10 else 109 / 10
+/-- Ahead spectator distances of the advanced charge: `4.9` then `7.9`. -/
+def wideNewA : ℕ → ℝ := fun k => if k = 0 then 49 / 10 else 79 / 10
+
+/-- **The wide-gap march clears through the weak certificate**: on the five-pole carrier with
+negative net drift, `ΔG > 0`. The behind signs hold and the two ahead losses, each boxed above
+by `((oldA−newA)/2)·(1/(newA/2)²)`, sum to under `2 < ` cushion — so the loss-below-cushion
+route closes the march that the net-drift route cannot. -/
+theorem wide_bulk_march :
+    0 < legRankNew 1 2 wideNewB wideNewA (9 / 10) (171 / 10)
+        - legRankOld 1 2 wideOldB wideOldA (9 / 10) (139 / 10) := by
+  refine section_march_pos_weak ?_ ?_
+  · intro k hk
+    fin_cases hk
+    exact ⟨by norm_num [wideNewB], by norm_num [wideNewB, wideOldB]⟩
+  · have hcush : (2 : ℝ) < rcoth (171 / 10 / 2) + rcoth (139 / 10 / 2) :=
+      far_cushion_gt_two (by norm_num) (by norm_num)
+    have hbd : (∑ k ∈ range 2, (rcoth (wideNewA k / 2) - rcoth (wideOldA k / 2)))
+        ≤ ∑ k ∈ range 2, ((wideOldA k / 2 - wideNewA k / 2) * (1 / (wideNewA k / 2) ^ 2)) := by
+      refine Finset.sum_le_sum (fun k hk => ?_)
+      fin_cases hk <;>
+        · simp only [wideNewA, wideOldA]
+          norm_num only
+          refine le_trans (rcoth_pair_le' (by norm_num) (by norm_num)) ?_
+          exact mul_le_mul_of_nonneg_left (rcsch_sq_le_inv_sq (by norm_num)) (by norm_num)
+    have henv : (∑ k ∈ range 2, ((wideOldA k / 2 - wideNewA k / 2) * (1 / (wideNewA k / 2) ^ 2)))
+        < 2 := by
+      simp only [wideOldA, wideNewA]
+      norm_num [Finset.sum_range_succ, Finset.sum_range_zero]
+    linarith [hbd, henv, hcush]
+
 end RHTower

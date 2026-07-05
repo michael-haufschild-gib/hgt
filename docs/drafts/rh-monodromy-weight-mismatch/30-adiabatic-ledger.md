@@ -309,3 +309,43 @@ i ≲ 0.04d (c = 2) needs either a W-response argument valid at s > δ/2 or a pr
 (SPUR-R) never routes a charge there. (iii) The symbolic c/j class theorem: the concrete
 instance's envelope arithmetic is uniform enough to parameterize (harmonic-sum log bounds
 are the only new ingredient).
+
+## 11. The certificate union closes the march for ALL c; the crossover is Lean [PROVED HERE — Lean]
+
+The gap-scale boundary c\* of §10 is not a boundary of the MARCH — only of the box certificate.
+The march needs `ΔG > 0`, and the ledger `ΔG = cushion + gains − loss` supports a second,
+weaker certificate that carries exactly where the box one dies:
+
+> **weak certificate:** behind gains `≥ 0` and total ahead loss `< cushion` ⟹ `ΔG > 0`.
+
+Since `gains ≥ 0` and `cushion > 2`, this needs only `loss < cushion` — no net-drift sign, no
+outer-half count, no interval-position condition. As the gaps widen the ahead poles recede and
+`loss → 0` while `cushion` stays above `2`, so the sparse, wide-gap regime is where the weak
+certificate is EASIEST — precisely the regime the box certificate cannot reach.
+
+**Certificate map (measured, δ_j = c/j, d ≤ 300, every position):** box-OR-weak covers EVERY
+`(c, i)` for `c ∈ [2, 50]`, zero uncovered, zero march failures. The binding (minimum-margin)
+certificate is `box` for `c ≤ 8` and flips to `weak` at `c ≈ 10–12`, staying weak thereafter —
+the crossover c\* is the switch of the binding certificate, not a wall. In the whole
+net-drift-negative region the total loss never exceeds `0.05`, vastly under the cushion.
+
+**Lean** (`LegAdiabatic.lean`, `LegBulkCarrier.lean`, axiom-clean):
+
+* `rank_march_pos_weak` — `ΔG > 0` from `gains ≥ 0` and `loss < cushion`, straight off the
+  ledger. Strictly weaker premise than `rank_march_pos`'s `ΔG > 2`.
+* `section_march_pos_weak` — the section form: behind inward-drift signs give `gains ≥ 0`, and
+  one summed loss-below-cushion bound closes `ΔG > 0`.
+* `wide_bulk_march` — the crossover made concrete: five poles at `0, 12, 18, 22, 25` (gaps
+  `12, 6, 4, 3` — the wide, sparse regime), charge at `11.1`. Net drift is NEGATIVE here (the
+  one behind gain is under the two ahead losses), so `section_march_pos` / `bulk_march_pos` are
+  both inapplicable; the two ahead losses, each boxed by `((oldA−newA)/2)(1/(newA/2)²)`, sum to
+  `≈ 0.26 < 2 < cushion`, and `section_march_pos_weak` clears the march — exact rational
+  arithmetic. The certificate hand-off, machine-checked at a single carrier.
+
+**What this opens.** The march is now certified across the entire gap-scale axis by a UNION of
+two coth-free certificates — box (dense, gains carry it) and weak (sparse, cushion carries it).
+The remaining objects: (a) a single self-contained theorem taking the disjunction as hypothesis
+(`box-data ∨ weak-data ⟹ ΔG > 0`) so a carrier picks its regime once; (b) the exact hand-off
+locus in `(c, i)` — where does `loss = cushion` and where does `net drift = 0`, and do the two
+loci coincide at c\*? Those two curves bounding a thin overlap band is the sharp form of the
+crossover.

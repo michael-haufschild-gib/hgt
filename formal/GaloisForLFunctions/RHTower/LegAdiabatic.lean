@@ -249,6 +249,41 @@ theorem rank_march_pos {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ} {s fA fB 
   have hcush := far_cushion_gt_two hA hB
   linarith [hADB, hcush]
 
+/-- **The rank march stays positive when the loss falls short of the cushion** — the certificate
+that survives where `rank_march_pos` dies. The march needs only `ΔG > 0`, not `ΔG > 2`; from the
+ledger `ΔG = cushion + gains − loss` with the behind gains nonnegative, `ΔG > 0` follows the
+instant the total ahead loss is below the far cushion, EVEN when it exceeds the gains (net drift
+negative, so `rank_march_pos` is inapplicable). As the gap scale grows the ahead losses collapse
+— the ahead poles recede — while the cushion stays above `2`, so this bound closes the sparse,
+wide-gap regime that the net-drift bound cannot. -/
+theorem rank_march_pos_weak {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ} {s fA fB : ℝ}
+    (hgain : 0 ≤ ∑ k ∈ range L, (rcoth (newB k / 2) - rcoth (oldB k / 2)))
+    (hloss : (∑ k ∈ range R, (rcoth (newA k / 2) - rcoth (oldA k / 2)))
+        < rcoth (fB / 2) + rcoth (fA / 2)) :
+    0 < legRankNew L R newB newA s fB - legRankOld L R oldB oldA s fA := by
+  rw [adiabatic_ledger_rank]
+  have hswap : (∑ k ∈ range R, (rcoth (oldA k / 2) - rcoth (newA k / 2)))
+      = -(∑ k ∈ range R, (rcoth (newA k / 2) - rcoth (oldA k / 2))) := by
+    rw [← Finset.sum_neg_distrib]
+    exact Finset.sum_congr rfl (fun k _ => by ring)
+  rw [hswap]
+  linarith [hgain, hloss]
+
+/-- **The section march stays positive from signs and a loss-below-cushion bound**: the behind
+inward-drift signs make the gains nonnegative, and if the total ahead loss is below the far
+cushion then `ΔG > 0`. No outer-half count, no per-rank domination, no interval-position
+condition — only the behind signs and one summed loss bound. This is the certificate for the
+wide-gap sparse regime, where the net drift genuinely turns negative but the receding ahead
+poles make the loss negligible against the cushion. -/
+theorem section_march_pos_weak {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ} {s fA fB : ℝ}
+    (hsignB : ∀ k ∈ range L, 0 < newB k ∧ newB k ≤ oldB k)
+    (hloss : (∑ k ∈ range R, (rcoth (newA k / 2) - rcoth (oldA k / 2)))
+        < rcoth (fB / 2) + rcoth (fA / 2)) :
+    0 < legRankNew L R newB newA s fB - legRankOld L R oldB oldA s fA := by
+  refine rank_march_pos_weak (Finset.sum_nonneg (fun k hk => ?_)) hloss
+  obtain ⟨hnB, hBle⟩ := hsignB k hk
+  exact behind_gain_nonneg hnB hBle
+
 /-!
 ### Discharging (ADB): the net drift is nonnegative for a section gap field
 

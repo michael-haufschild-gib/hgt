@@ -41,6 +41,34 @@ theorem hermite_rec (n : ℕ) :
     hermite (n + 2) = X * hermite (n + 1) - (((n : ℤ[X])) + 1) * hermite n := by
   rw [show n + 2 = n + 1 + 1 from rfl, hermite_succ (n + 1), derivative_hermite n]
 
+/-- Probabilists' Hermite ODE over `ℤ[X]`: `Heₙ'' - X Heₙ' + n Heₙ = 0`. -/
+theorem hermite_ode (n : ℕ) :
+    derivative (derivative (hermite n)) - X * derivative (hermite n)
+      + (((n : ℤ[X])) * hermite n) = 0 := by
+  have h := derivative_hermite n
+  rw [Polynomial.hermite_succ] at h
+  rw [derivative_sub, derivative_mul, derivative_X] at h
+  have h1 : X * derivative (Polynomial.hermite n)
+      - derivative (derivative (Polynomial.hermite n)) =
+        ((n : ℤ[X])) * Polynomial.hermite n := by
+    calc
+      X * derivative (Polynomial.hermite n) - derivative (derivative (Polynomial.hermite n))
+          = (1 * Polynomial.hermite n + X * derivative (Polynomial.hermite n)
+              - derivative (derivative (Polynomial.hermite n))) - Polynomial.hermite n := by
+            ring
+      _ = (((n : ℤ[X])) + 1) * Polynomial.hermite n - Polynomial.hermite n := by rw [h]
+      _ = ((n : ℤ[X])) * Polynomial.hermite n := by ring
+  rw [← h1]
+  ring
+
+/-- Real-evaluation form of the probabilists' Hermite ODE. -/
+theorem aeval_hermite_ode (n : ℕ) (x : ℝ) :
+    (aeval x (derivative (derivative (hermite n))) : ℝ)
+      - x * (aeval x (derivative (hermite n)) : ℝ)
+      + (n : ℝ) * (aeval x (hermite n) : ℝ) = 0 := by
+  have h := congrArg (fun p : Polynomial ℤ => (aeval x p : ℝ)) (hermite_ode n)
+  simpa only [map_add, map_sub, map_mul, map_natCast, aeval_X, map_zero] using h
+
 /-- Adjacent Hermite polynomials share no real zero: a real zero of `He_{m+1}`
 is never a zero of `He_m` (descent through the recurrence to `He_0 = 1`). -/
 theorem aeval_hermite_ne_zero_of_succ {k : ℝ} :
