@@ -512,6 +512,40 @@ theorem xi_rung_of_finite_side_of_relative_close_gN_nonzero {N : ℕ} (k : ℕ)
       hm₁ hcl₁ hstrip hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hgN0 hrel hL
   exact ⟨Nat.modEq_zero_iff_dvd.mp (hparity.trans (Nat.modEq_zero_iff_dvd.mpr hfin)), hlog⟩
 
+/-- **Finite-side rung under relative control with LOW-floor nonvanishing.**
+A nonnegative `CarrierFloorOn` certificate supplies the finite-carrier nonvanishing
+needed by the relative ANNEAL rung transfer. -/
+theorem xi_rung_of_finite_side_of_relative_close_carrierFloorOn {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ}
+    {r₀ R η ε : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hη : η < 1) (hε : 0 ≤ ε)
+    (hF : CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N ε)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])
+    (hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z) :
+    (2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z) ∧
+      ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hgN0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, gN N z ≠ 0 :=
+    gN_ne_zero_of_carrierFloorOn hε hF
+  exact xi_rung_of_finite_side_of_relative_close_gN_nonzero k h0 hrR hη hchartStrip
+    hm₁ hcl₁ hstrip hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂
+    hgN0 hrel hL hfin
+
 end RHTower
 
 namespace RHTower

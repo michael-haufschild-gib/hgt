@@ -69,6 +69,20 @@ theorem aeval_hermite_ode (n : ℕ) (x : ℝ) :
   have h := congrArg (fun p : Polynomial ℤ => (aeval x p : ℝ)) (hermite_ode n)
   simpa only [map_add, map_sub, map_mul, map_natCast, aeval_X, map_zero] using h
 
+/-- Gaussian derivative representation of the even probabilists' Hermite polynomial. -/
+theorem aeval_hermite_even_gaussian_factor (d : ℕ) (x : ℝ) :
+    (aeval x (hermite (2 * d)) : ℝ) =
+      (-1 : ℝ) ^ (2 * d) *
+        deriv^[2 * d] (fun y => Real.exp (-(y ^ 2 / 2))) x * Real.exp (x ^ 2 / 2) := by
+  simpa using Polynomial.hermite_eq_deriv_gaussian' (2 * d) x
+
+/-- Even-order Gaussian derivative representation with the sign removed. -/
+theorem aeval_hermite_even_gaussian_factor_even (d : ℕ) (x : ℝ) :
+    (aeval x (hermite (2 * d)) : ℝ) =
+      deriv^[2 * d] (fun y => Real.exp (-(y ^ 2 / 2))) x * Real.exp (x ^ 2 / 2) := by
+  rw [aeval_hermite_even_gaussian_factor]
+  simp
+
 /-- Adjacent Hermite polynomials share no real zero: a real zero of `He_{m+1}`
 is never a zero of `He_m` (descent through the recurrence to `He_0 = 1`). -/
 theorem aeval_hermite_ne_zero_of_succ {k : ℝ} :

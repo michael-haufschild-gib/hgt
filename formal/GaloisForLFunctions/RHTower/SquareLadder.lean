@@ -136,6 +136,16 @@ theorem rh_iff_exists_xiDescent_coherentTower_levels_nonzero_slitPlane :
   · rintro ⟨T, _hlevels⟩
     exact rh_iff_xiDescent_coherentTower_slitPlane.mpr ⟨T⟩
 
+/-- Local certified on-line windows around every hypothetical right-half ξ-zero produce
+the zero-free coherent dyadic tower of the descended ξ on the slit plane. -/
+theorem exists_xiDescent_coherentTower_levels_nonzero_slitPlane_of_local_online_windows
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ a R, ρ ∈ Metric.ball a R ∧ ∀ p ∈ Metric.ball a R, xi p = 0 → p.re = 1 / 2) :
+    ∃ T : CoherentTower xiDescent slitPlane,
+      ∀ k : ℕ, ∀ w ∈ slitPlane, T.level k w ≠ 0 :=
+  rh_iff_exists_xiDescent_coherentTower_levels_nonzero_slitPlane.mp
+    (riemannHypothesis_of_local_online_windows hwin)
+
 end RHTower
 
 namespace RHTower

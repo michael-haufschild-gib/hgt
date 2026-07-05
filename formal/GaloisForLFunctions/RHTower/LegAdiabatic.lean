@@ -284,6 +284,26 @@ theorem section_march_pos_weak {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ} {
   obtain ⟨hnB, hBle⟩ := hsignB k hk
   exact behind_gain_nonneg hnB hBle
 
+/-- **The rank march stays positive from a gain floor against a raised budget**: if the behind
+gains total at least `γ` and the ahead losses stay strictly below `2 + γ`, then `ΔG > 0`. The
+far cushion contributes its unconditional `2`, and the gain floor raises the admissible loss
+budget above it. The two pure certificates are endpoints: `γ = 0` is the loss-below-cushion
+bound, while a loss below the gains alone is the nonnegative-net-drift bound. The interior is
+what a configuration with a strong near-behind pair but non-negligible ahead losses needs. -/
+theorem rank_march_pos_of_gain_loss {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ}
+    {s fA fB γ : ℝ} (hA : 0 < fA) (hB : 0 < fB)
+    (hgain : γ ≤ ∑ k ∈ range L, (rcoth (newB k / 2) - rcoth (oldB k / 2)))
+    (hloss : (∑ k ∈ range R, (rcoth (newA k / 2) - rcoth (oldA k / 2))) < 2 + γ) :
+    0 < legRankNew L R newB newA s fB - legRankOld L R oldB oldA s fA := by
+  rw [adiabatic_ledger_rank]
+  have hcush := far_cushion_gt_two hA hB
+  have hswap : (∑ k ∈ range R, (rcoth (oldA k / 2) - rcoth (newA k / 2)))
+      = -(∑ k ∈ range R, (rcoth (newA k / 2) - rcoth (oldA k / 2))) := by
+    rw [← Finset.sum_neg_distrib]
+    exact Finset.sum_congr rfl (fun k _ => by ring)
+  rw [hswap]
+  linarith [hgain, hloss, hcush]
+
 /-!
 ### Discharging (ADB): the net drift is nonnegative for a section gap field
 

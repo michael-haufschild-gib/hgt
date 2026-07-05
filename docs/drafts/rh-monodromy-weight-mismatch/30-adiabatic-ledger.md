@@ -335,12 +335,13 @@ net-drift-negative region the total loss never exceeds `0.05`, vastly under the 
   ledger. Strictly weaker premise than `rank_march_pos`'s `ΔG > 2`.
 * `section_march_pos_weak` — the section form: behind inward-drift signs give `gains ≥ 0`, and
   one summed loss-below-cushion bound closes `ΔG > 0`.
-* `wide_bulk_march` — the crossover made concrete: five poles at `0, 12, 18, 22, 25` (gaps
-  `12, 6, 4, 3` — the wide, sparse regime), charge at `11.1`. Net drift is NEGATIVE here (the
-  one behind gain is under the two ahead losses), so `section_march_pos` / `bulk_march_pos` are
-  both inapplicable; the two ahead losses, each boxed by `((oldA−newA)/2)(1/(newA/2)²)`, sum to
-  `≈ 0.26 < 2 < cushion`, and `section_march_pos_weak` clears the march — exact rational
-  arithmetic. The certificate hand-off, machine-checked at a single carrier.
+* `wide_bulk_march` — a satisfiability WITNESS only, not a result: one fixed five-pole
+  configuration (`0, 12, 18, 22, 25`, charge at `11.1`) where the box premise fails (net drift
+  negative) while the weak premise holds (loss `≈ 0.26 < 2 < cushion`). A `norm_num` evaluation
+  at a handpicked tuple proves nothing about the class; its sole content is that the two
+  certificate premises are incomparable. The class-level, length-uniform statement is §12.
+  (Same demotion applies to `harm_bulk_march` in §9: witness that the summed box premise is
+  non-vacuous where per-rank domination fails — nothing more.)
 
 **What this opens.** The march is now certified across the entire gap-scale axis by a UNION of
 two coth-free certificates — box (dense, gains carry it) and weak (sparse, cushion carries it).
@@ -349,3 +350,102 @@ The remaining objects: (a) a single self-contained theorem taking the disjunctio
 locus in `(c, i)` — where does `loss = cushion` and where does `net drift = 0`, and do the two
 loci coincide at c\*? Those two curves bounding a thin overlap band is the sharp form of the
 crossover.
+
+## 12. The length-uniform edge theorem: the first quantifier moved [PROVED HERE — Lean]
+
+The measure separating a class result from a witness: does the theorem MOVE A QUANTIFIER
+(fixed tuple → ∀ carrier length → ∀ positions → ∀ configurations the cascade visits)? §§9/11's
+instances sit at level zero. This section moves the first quantifier: the march at the sparse
+edge of the harmonic class, uniformly in the carrier length.
+
+**Mixed certificate** (`rank_march_pos_of_gain_loss`, `LegAdiabatic.lean`): if the behind
+gains total at least `γ` and the ahead losses stay below `2 + γ`, then `ΔG > 0`. This is the
+formal hand-off object of §11(a) in interior form — `γ = 0` is the weak certificate,
+`loss ≤ gains` is the box one, and the interior is what a configuration with a strong near
+pair but non-negligible losses uses. The budget `2 + γ` prices the hand-off exactly.
+
+**Theorem** (`harmonic_edge_march`, `LegHarmonicEdge.lean`, axiom-clean): on the harmonic
+carrier (poles at partial sums of `2/j`, gaps `2/j`), with the charge in the widest gap at
+ahead-offset `s ∈ [3/5, 1)` — a window containing the measured equilibrium `s* ≈ 0.78` (§10)
+— the rank ledger of the step into the second gap is positive for EVERY number `R` of paired
+ahead poles. No finite check can state this; `R` is universally quantified.
+
+Ingredients, each a small reusable lemma:
+* gain floor `2`: `1/v ≤ coth v` (tangent comparison `sinh v ≤ v·cosh v`) at the shrunken
+  behind distance `(1−s)/2` against `coth v < 1 + 1/v` (from `2v + 1 < e^{2v}`) at the old
+  one — `2/(1−s) − 1 − 2/(2−s) ≥ 2` on the window;
+* loss cap `< 4 = 2 + γ`: exact excess `coth(a/2) − 1 = 2/(e^a − 1)`; the harmonic slice
+  dominates the log, `harmT(3+k) − harmT 2 ≥ 2·log((k+4)/3)` (tangent-line bound per step);
+  `e^s ≥ 1 + s ≥ 8/5`; together the `k`-th loss is at most the RATIONAL envelope
+  `90/(8(k+4)² − 45)`; six explicit terms plus a telescoping tail `45/(4·9)` give
+  `3.8867 < 4`, uniformly in `R`.
+
+Pre-registered numerics (pure python, exact rationals where the proof is rational): envelope
+cap `3.8867 < 4`; true loss saturates at `≈ 1.26` (`R = 2000, s = 3/5`) — the envelope is 3×
+lossy and the gain floor pays for it; per-term envelope, telescope domination (`k ≥ 2`), and
+gain floor verified on grids before writing Lean. Zero failures.
+
+**What the theorem settles about §11's conjecture.** The goal's premise — "the instance's
+envelope arithmetic is uniform enough to parameterize, with harmonic-sum log bounds the only
+new ingredient" — is CONFIRMED at the sparse edge and REFUTED at mid-carrier: the edge column
+needed exactly the log bounds (plus the mixed certificate), but the mid-carrier box inequality
+has leading boxes `≈ 2/(ck)` on both sides that CANCEL, so log bounds alone cannot close it —
+its content is the subleading midpoint-push asymmetry. The two residuals, precisely:
+
+* **(MID-∀d)** the mid-carrier box theorem, ∀ carrier length: needs the subleading asymmetry
+  of the harmonic boxes, not log envelopes. The convexity width inequality
+  `wB_k ≥ wA_k` (indices `i−k, i+2+k` symmetric about `i+1`) is symbolic and banked on paper;
+  the `csch²` weight comparison against it is the open half.
+* **(EDGE-c)** the same edge theorem with the gap scale `c` as a parameter: the loss chain
+  survives verbatim through `((k+4)/3)^c ≥ ((k+4)/3)²` for `c ≥ 2`, but the gain floor
+  `2/(c/2−s) − 1 − 2/(c−s)` thins as `c` grows, so the `c`-power envelope must carry the
+  shrinkage of the loss — an `rpow`-monotone elaboration of the same six-term-plus-tail chain.
+* **(EDGE-i)** interior gaps at fixed rank `i`, ∀ length: same mixed certificate with gain
+  floor from the rank-0 behind pair of width `c/i − c/(i+1) ~ c/i²` — the floor decays toward
+  mid-carrier, quantifying exactly where the mixed route hands off to (MID-∀d). The hand-off
+  curve `γ(i) = loss-cap(i)` is the next computable boundary object.
+
+## 13. The push-horizon strip resolved: nothing consumes it, and the outer half self-discharges [PROVED HERE — Lean + doc 79]
+
+§10(ii) asked for a W-response argument valid at `s > δ/2` in the sparse strip (`i ≲ 0.04d`,
+c = 2) OR a proof that (SPUR-R) never routes a charge there. Both branches close, the second
+in a stronger form than posed:
+
+**No load-bearing consumer.** Doc 79 §1 (machine-checked import audit): the live #130
+counting spine is a transitive-import island disjoint from every `Spur*` module. Nothing in
+the load-bearing chain consumes the W-response ANYWHERE — the reader that would have routed
+charges was retired. The strip question survives only inside the conditional (S-mono) island.
+
+**The island never quantifies over the strip, and its outer range self-discharges.**
+(S-mono) as isolated (doc 79 §4) quantifies over the OUTER equilibria — behind train at
+least as long as ahead. The general-gap midpoint push is now Lean
+(`LegMidpointPush.lean`, axiom-clean):
+
+* `equilibrium_gt_midpoint` — on any pole-free gap, if the field's midpoint value exceeds
+  the equilibrium level, the equilibrium sits right of the midpoint (`s < δ/2`);
+* `paired_train_sum_ge` — the paired deficit envelope: each behind/ahead pair with the
+  ahead partner nearer loses at most the mean-value box `((B−A)/2)·csch²(A/2)`; unpaired
+  behind terms each add `> 1`;
+* `midpoint_push_of_deficit` — the capstone: on ANY decreasing-gap-paired configuration
+  (`M` pairs, `E` extra behind poles, two gap-edge poles), total deficit under the budget
+  `2M + 2E + 2` ⟹ the level-`−(2M+E+2)` equilibrium has `s < δ/2`. The lattice is the
+  zero-deficit case (exact cancellation), recovering the localization of
+  `equilibrium_theta_gap`.
+
+**Measured coverage (c/j, c = 2, d ∈ {200, 1000}):** the capstone's hypothesis-shape gates
+it to the outer half by construction (`E ≥ 0`), and the budget holds from `i/d ≈ 0.503`
+upward — nearly saturated at the boundary (`D = 198.7` vs budget `202` at `d = 200`, ratio
+`0.98`), relaxing fast outward (`59` vs `300` at `i/d = 0.75`). The theorem's hypothesis
+range and (S-mono)'s quantification range COINCIDE: every equilibrium the island quantifies
+over satisfies the W-response hypothesis, provably; the strip (`θ* > 1/2`, inner edge) is
+outside both the live chain and the island's scope.
+
+**What this opens.** (a) The near-saturation at `i = d/2` says the budget `2M + 2E + 2` is
+the RIGHT scale — the deficit-vs-budget ratio along the carrier is a sharp new invariant;
+its symbolic c/j form (harmonic arithmetic, §12's toolkit) would locate the coverage
+boundary as a class function. (b) The margin variant — budget slack ⟹ quantitative
+`δ/2 − s` gap via the MVT pattern of `equilibrium_theta_gap` with a general-gap derivative
+cap — is the remaining piece the island's assembly step (e) would want. (c) The strip
+itself is now a free-standing object: the inverted-response regime `θ* > 1/2` where the
+ahead crowd pushes the charge past the midpoint — what `dW/ds` does there is a fresh
+question for the theory, blocking nothing.

@@ -77,3 +77,20 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
   write-out; (SCALAR-MIX) resolution; PNT pole. No internal forks left
   anywhere; every remaining item is named, typed, and consumed by a
   machine-checked downstream chain.
+
+## UPDATE (cycle 55, cont. 24–25) — (L3) block STEP + Mertens pole FORMALIZED
+
+- **(L3) block anti-concentration STEP: Lean THEOREM.**
+  `SteinhausModel.block_smallball_condition` + concrete `block_smallball_caustic`
+  (RouteBBlockStep.lean, axiom-clean): the Steinhaus prime-block small-ball
+  ≤ (2π)⁻⁴·fourPhaseConst, uniform in conditioning. Full plumbing formal:
+  block marginal → lmarginal peel of 4 dominant phases → angle rescale
+  (Jacobian (2π)⁻⁴) → the caustic four-phase engine → conditioning wrap.
+  Supporting: prod-Fubini adapter (four_phase_prod_eq_nested), sum_phase_update4,
+  rescale4, peel4, inner_block_le, block_pi_le, four_phase_nested_uniform.
+- **(L1)/(L2) pole: Mertens' first theorem BUILT** (MertensFirst.lean):
+  |∑_{d≤n} Λ(d)/d − log n| ≤ log 4 + 4, elementary, no PNT — the "PNT not in
+  mathlib" pole is no longer a gap. Partial summation → the carrier log-derivative.
+- Remaining to terminal: graded-ladder assembly (block STEP × (SPREAD)) →
+  (K-bdd-n-log); partial-summation bridge Mertens → (L1)/(L2) carrier pole;
+  (A1) martingale-CLT write-out (mathlib has only iid CLT); (SCALAR-MIX).

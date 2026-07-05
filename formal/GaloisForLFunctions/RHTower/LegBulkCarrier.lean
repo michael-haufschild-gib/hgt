@@ -1,5 +1,5 @@
 /-
-# LegBulkCarrier — rational `csch²` envelopes and a concrete bulk march
+# LegBulkCarrier — rational `csch²` envelopes and certificate satisfiability witnesses
 
 Two algebraic envelopes squeeze `csch²` between rational functions:
 
@@ -11,12 +11,18 @@ Two algebraic envelopes squeeze `csch²` between rational functions:
 With both, the summed `csch²` box inequality of `bulk_march_pos` at RATIONAL distances
 reduces to exact rational arithmetic, and a march instance can be certified end to end.
 
-The instance: the harmonic carrier of 24 poles at positions `T m = Σ_{j<m} 2/(j+1)` —
-consecutive gaps `2/1, 2/2, …, 2/23`, decreasing and convex — with the charge in the gap
-between the 12th and 13th pole at ahead-distance `2/39` (one third of the swapped gap
-`2/13`). On this configuration the interval condition `oldB ≤ newA` FAILS at eight of the
-ten paired ranks (`harm_dist_fails` certifies rank 5), so `section_march_pos` cannot close
-the march; `harm_bulk_march` closes it through the box comparison alone: `ΔG > 2`.
+The two fixed configurations below are satisfiability witnesses for the two summed march
+certificates — exact rational evaluations showing each certificate's premise is non-vacuous
+precisely where the other's fails, nothing more. Class-level content lives in the
+quantified certificate theorems and in the length-uniform `harmonic_edge_march`:
+
+* `harm_bulk_march` — a 24-pole harmonic carrier (`T m = Σ_{j<m} 2/(j+1)`, charge one third
+  into the gap between poles 11 and 12) where the interval condition `oldB ≤ newA` fails at
+  eight of the ten paired ranks (`harm_dist_fails` certifies rank 5), so no per-rank
+  criterion applies, yet the summed box hypothesis of `bulk_march_pos` holds.
+* `wide_bulk_march` — a five-pole wide-gap carrier where the net drift is negative, so the
+  box premise fails, yet the loss stays below the far cushion and the weak certificate
+  applies.
 -/
 import GaloisForLFunctions.RHTower.LegAdiabatic
 import Mathlib.Tactic.FinCases
@@ -128,10 +134,11 @@ theorem harm_dist_fails : harmNewA 5 < harmOldB 5 := by
   simp only [harmNewA, harmOldB, harmT]
   norm_num [Finset.sum_range_succ, Finset.sum_range_zero]
 
-/-- **A concrete bulk march**: on the 24-pole harmonic carrier with the charge one third
-into its gap, the next-gap constraint field exceeds the current one by more than the far
-cushion: `ΔG > 2`. The `csch²` boxes of the ten paired ranks are compared through the
-rational envelopes, so the entire march certificate is exact rational arithmetic. -/
+/-- **Satisfiability witness for the summed box hypothesis**: a single exact rational
+evaluation on the 24-pole harmonic carrier where per-rank domination fails
+(`harm_dist_fails`) but the summed `csch²` box comparison still holds, so `bulk_march_pos`
+gives `ΔG > 2`. This is a witness that the box premise is non-vacuous in the genuinely
+summed regime — a fixed configuration, not a class statement. -/
 theorem harm_bulk_march :
     2 < legRankNew 12 10 harmNewB harmNewA (2 / 39) (harmT 13 - 2 / 39)
         - legRankOld 12 10 harmOldB harmOldA (2 / 39) (harmT 23 - harmT 12 + 2 / 39) := by
@@ -189,17 +196,15 @@ theorem harm_bulk_march :
           norm_num [Finset.sum_range_succ, Finset.sum_range_zero]⟩
 
 /-!
-### The wide-gap crossover: the march survives where the box certificate dies
+### Witness that the weak certificate's premise survives where the box premise dies
 
-A carrier of five poles at `0, 12, 18, 22, 25` (gaps `12, 6, 4, 3`) — the sparse, wide-gap
-regime — with the charge at `11.1`, one behind pole and two ahead spectators. Here the behind
-gain is smaller than the ahead loss, so the net spectator drift is NEGATIVE and neither
-`section_march_pos` nor `bulk_march_pos` applies: their common premise is that the gains offset
-the losses, and it fails. Yet the march still clears, `ΔG > 0`, because the receding ahead poles
-make the total loss (bounded here by `≈ 0.26` through the `csch² ≤ 1/v²` envelope) fall far
-below the far cushion `> 2`. `section_march_pos_weak` closes it; the loss bound is exact rational
-arithmetic. This is the certificate hand-off: at wide gaps the net-drift route is dead and the
-loss-below-cushion route carries the march. -/
+A carrier of five poles at `0, 12, 18, 22, 25` (gaps `12, 6, 4, 3`) with the charge at
+`11.1`: one behind pole, two ahead spectators. The behind gain falls short of the ahead
+loss, so the net spectator drift is negative and the common premise of `section_march_pos`
+and `bulk_march_pos` fails; the total loss (bounded by `≈ 0.26` through `csch² ≤ 1/v²`)
+still sits far below the far cushion `> 2`, so the premise of `section_march_pos_weak`
+holds. A fixed configuration certifying the two premises are incomparable — not a class
+statement. -/
 
 /-- Behind distance of the current charge (one behind pole, distance `11.1`). -/
 def wideOldB : ℕ → ℝ := fun _ => 111 / 10
@@ -210,10 +215,11 @@ def wideOldA : ℕ → ℝ := fun k => if k = 0 then 69 / 10 else 109 / 10
 /-- Ahead spectator distances of the advanced charge: `4.9` then `7.9`. -/
 def wideNewA : ℕ → ℝ := fun k => if k = 0 then 49 / 10 else 79 / 10
 
-/-- **The wide-gap march clears through the weak certificate**: on the five-pole carrier with
-negative net drift, `ΔG > 0`. The behind signs hold and the two ahead losses, each boxed above
-by `((oldA−newA)/2)·(1/(newA/2)²)`, sum to under `2 < ` cushion — so the loss-below-cushion
-route closes the march that the net-drift route cannot. -/
+/-- **Satisfiability witness for the weak certificate under negative net drift**: a single
+exact rational evaluation on the five-pole carrier where the gains fall short of the losses
+(the box premise fails) yet the two ahead losses, boxed by `((oldA−newA)/2)·(1/(newA/2)²)`,
+sum to under `2 <` cushion, so `section_march_pos_weak` gives `ΔG > 0`. A fixed
+configuration, not a class statement. -/
 theorem wide_bulk_march :
     0 < legRankNew 1 2 wideNewB wideNewA (9 / 10) (171 / 10)
         - legRankOld 1 2 wideOldB wideOldA (9 / 10) (139 / 10) := by

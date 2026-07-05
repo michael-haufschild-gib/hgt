@@ -143,3 +143,6 @@ import GaloisForLFunctions.RHTower.LegAdiabatic
 import GaloisForLFunctions.RHTower.LegBulkCarrier
 import GaloisForLFunctions.RHTower.RouteBProdFubini
 import GaloisForLFunctions.RHTower.RouteBBlockStep
+import GaloisForLFunctions.RHTower.MertensFirst
+import GaloisForLFunctions.RHTower.LegHarmonicEdge
+import GaloisForLFunctions.RHTower.LegMidpointPush

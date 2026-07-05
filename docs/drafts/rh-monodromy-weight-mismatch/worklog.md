@@ -3922,3 +3922,102 @@ across dyadic levels; per-level J = t-graded log of CR-density; strictness
 |a₂|<|a₁| generic-position), then (A1) Lindeberg-swap write-out, (SCALAR-MIX),
 PNT pole. Next generative move: type the graded-ladder interface consuming
 block_smallball_condition as the per-level engine.
+
+## Cycle 55 (cont. 25) — Mertens' first theorem BUILT (the (L1)/(L2) pole input, mathlib gap FILLED)
+
+`mertens_first` (MertensFirst.lean, axiom-clean [propext, Classical.choice,
+Quot.sound], tree lint green): |∑_{d≤n} Λ(d)/d − log n| ≤ log 4 + 4, uniformly
+for n ≥ 1. ELEMENTARY — no PNT. mathlib had only the DIVERGENCE of ∑1/p
+(SumPrimeReciprocals), NOT the quantitative asymptotic; this is the gap the
+card flagged as a "multi-session pole." Now filled.
+
+Proof chain (6 endpoints, all elementary):
+- log_summatory_eq: ∑_{m≤n} log m = ∑_{d≤n} Λ(d)·⌊n/d⌋ (divisor swap via
+  vonMangoldt_sum + Finset.sum_comm' + Ioc_filter_dvd_card_eq_div).
+- sum_log_le / sum_log_ge: n log n − n ≤ ∑ log m ≤ n log n (Stirling-FREE
+  lower bound by induction on log(1+1/k) ≤ 1/k).
+- sum_vonMangoldt_Icc_le: ∑Λd = ψ(n) ≤ (log4+4)n (Chebyshev.psi_le_const_mul_self).
+- cast_div_lt: (n:ℝ)/d < ⌊n/d⌋+1.
+- mertens_first: combine (⌊n/d⌋ = n/d + O(1), Λd≥0, sum) → the two-sided bound.
+
+WHAT IT OPENS (the (L1)/(L2) pole is now Lean-reachable): Abel/partial
+summation of mertens_first gives ∑_{p≤x} (log p)/p = log x + O(1) and the
+log-derivative −ζ'/ζ(σ) ~ 1/(σ−1) behaviour near the pole — the (L1)
+Landau-grade input for the near-critical carrier, previously owed to a
+"PNT-not-in-mathlib" pole. Next: partial-summation bridge mertens_first →
+prime-weighted form → the carrier's second-moment/log-derivative pole (L1),
+and the Mertens-second ∑1/p = loglog + O(1) if the loglog scale is needed.
+Also this turn: (L3) block STEP + concrete block_smallball_caustic banked
+(cont. 24), phase-shift identity already terminal-positive (doc 86).
+
+## Cycle 55 (cont. 26) — Mertens prime-power tail: convergence input BANKED
+
+`summable_log_div_sq` (MertensFirst.lean, axiom-clean): Summable (log n / n²),
+via log x ≤ 2·x^{1/2} (log_le_two_rpow_half) + comparison to ∑ 1/n^{3/2}.
+This is the convergence input for the prime-power tail
+∑_{p^k, k≥2}(log p)/p^k ≤ 2∑_p (log p)/p² < ∞ of the prime-weighted Mertens.
+
+STATE of the (L1)/(L2) pole chain:
+- von Mangoldt Mertens first: DONE (mertens_first + isBigO). = −ζ'/ζ partial sum.
+- prime-weighted first ∑_{p≤x}(log p)/p = log x + O(1): remaining WALL = the
+  weighted prime-power reindexing ∑_{n≤x, IsPrimePow, ¬Prime} Λn/n = ∑_p ∑_{k≥2}
+  (log p)/p^k. Pieces located: isPrimePow_nat_iff (extract p,k),
+  summable_log_div_sq (convergence), psi_eq_theta_add_sum_theta (mathlib's
+  UNWEIGHTED analogue). This is the isolated next brick.
+- Mertens second ∑_{p≤x} 1/p = loglog x + O(1): Abel summation
+  (Finset.sum_Ioc_by_parts, mathlib ✓) of prime-weighted first with weight
+  1/log. = the carrier VARIANCE scale (doc 88: V_N = Σ_p |B_p|²/p, loglog).
+- Then Abel again → ∑_p p^{-1-δ} ~ log(1/δ) = the pole the carrier normalization
+  needs.
+Route B′ (L3) engine DONE; Route A (A1) needs a martingale CLT (mathlib has
+iid CLT only — the next mathlib gap); (SCALAR-MIX) open. This turn: 3 new
+modules / 23 axiom-clean endpoints (prod-Fubini adapter + (L3) block STEP +
+Mertens first + convergence machinery).
+
+cont.44 (2026-07-05): DEMOTION + FIRST QUANTIFIER MOVED. Michael's challenge upheld: fixed-value
+Lean instances are theatre (Lean twin of computation-theatre). Demoted harm_bulk_march /
+wide_bulk_march to satisfiability witnesses (docstrings + doc 30 §11 re-cut). Then the real (iii)
+deliverable: rank_march_pos_of_gain_loss (mixed certificate, gain floor γ vs budget 2+γ — the
+formal hand-off object) + LegHarmonicEdge.lean: harmonic_edge_march — the widest-gap march of the
+c=2 harmonic class clears for EVERY carrier length R, offsets s ∈ [3/5,1) ∋ s*≈0.78. Chain:
+gain ≥ 2 (1/v ≤ coth v < 1+1/v), loss < 4 via coth(a/2)−1 = 2/(e^a−1) + harmonic-slice ≥ 2log((k+4)/3)
++ e^s ≥ 8/5 ⟹ rational envelope 90/(8(k+4)²−45), 6 terms + telescope tail = 3.8867 < 4. Pre-cert
+clean (cap exact rational; true loss ≈1.26; envelope 3× lossy, gain floor pays). Axiom-clean, lint
+green. Goal-(iii) premise CONFIRMED at edge / REFUTED at mid-carrier (leading boxes cancel ⟹ log
+bounds insufficient there). Residuals named in doc 30 §12: (MID-∀d) subleading asymmetry box
+theorem, (EDGE-c) c-power envelope vs thinning gain floor, (EDGE-i) hand-off curve γ(i)=loss-cap(i).
+Next: item (ii) push-horizon strip (W-response at s > δ/2 vs SPUR-R routing).
+
+## Cycle 55 (cont. 27) — PRIME-WEIGHTED Mertens BUILT (classical Mertens' first, via Abel)
+
+`mertens_first_prime` (MertensFirst.lean, axiom-clean): |∑_{p≤N}(log p)/p − log N|
+≤ (log4+4) + (8 + mertensTail), uniformly N≥1. THE CLASSICAL Mertens' first
+theorem, fully formal, no PNT. Built the whole Abel chain this cont.:
+- abel_tail_identity: general reciprocal-weight summation-by-parts
+  ∑a(i)/i = A(N)/N + ∑A(i)/(i(i+1)) (via Finset.sum_Ioc_by_parts).
+- sum_notPrimeVonMangoldt: the partial sums A(k) = ψ(k) − θ(k) (prime-power
+  excess) via psi_sub_theta_eq_sum_not_prime.
+- log_le_rpow / summable_log_div_rpow: general log ≤ (1/α)x^α + ∑ log n/n^s
+  converges (s>1) — the convergence toolkit.
+- psi_theta_div_le (boundary term A(N)/N ≤ 8) + psi_theta_term_le (summand
+  ≤ 2 log i/i^{3/2}) + tail_bounded (prime-power tail ≤ 8 + mertensTail).
+The prime/von-Mangoldt split closes it against mertens_first (cont. 25).
+
+POLE CHAIN now: von Mangoldt Mertens (log-derivative pole) ✓; prime-weighted
+Mertens (∑ log p/p = log N + O(1)) ✓. NEXT = Mertens second ∑_{p≤N} 1/p =
+loglog N + O(1) via Abel again (weight 1/log p) on mertens_first_prime — the
+carrier VARIANCE scale (doc 88 V_N = Σ_p |B_p|²/p). Then ∑_p p^{-1-δ}~log(1/δ).
+This turn total: 4 modules, ~30 axiom-clean endpoints (prod-Fubini + (L3)
+block STEP + von-Mangoldt Mertens + prime-weighted Mertens + Abel/convergence
+machinery). Route A's (A1) martingale CLT remains the other mathlib gap.
+
+cont.45 (2026-07-05): ITEM (ii) CLOSED both branches. Doc 79 already machine-checked the strong
+branch (live #130 spine = Spur-free import island ⟹ no consumer routes charges anywhere); the
+residual was the conditional island's own range. Built LegMidpointPush.lean (axiom-clean):
+equilibrium_gt_midpoint + paired_train_sum_ge + midpoint_push_of_deficit — general-gap midpoint
+push, deficit < 2M+2E+2 budget ⟹ s* < δ/2, lattice = zero-deficit case. Closes #170 (general-gap
+join). Measured: hypothesis-shape gates to outer half, budget holds from i/d≈0.503 (near-saturated
+at boundary 198.7/202, prediction 0.1–0.3 MISSED — the shape constraint E≥0 does the gating), so
+theorem range ≡ (S-mono) quantification range; strip doubly outside. Doc 30 §13. Residuals named:
+budget-ratio invariant symbolic form, margin variant for island assembly (e), the θ*>1/2
+inverted-response regime as a new object. Goal items (i)/(ii)/(iii) all delivered.
