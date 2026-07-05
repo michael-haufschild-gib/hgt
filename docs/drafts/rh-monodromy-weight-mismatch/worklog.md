@@ -3572,3 +3572,61 @@ cites as its floor. Doc 87 (L3) ledger updated: all four caustic-ladder
 rungs formal. Goal total **91 axiom-clean endpoints across 14 modules**,
 build 8483 green, lint green. Queue: (L3) induction-step interface typing
 (next), (A1) write-out, (SCALAR-MIX) derivation, PNT pole.
+
+## Cycle 55 (cont. 13) — the hierarchy interface typed
+
+`RouteBHierarchy.lean` (3 endpoints, axioms clean, lint green, build 8485):
+`BlockSmallBall a s bound` — the block-conditional anti-concentration
+predicate on the Steinhaus model (uniform in the conditioning value w),
+plus `.mono` (rate monotonicity) and `.of_le` (radius transfer). This is
+the exact shape of the (L3) induction hypothesis; its three-phase floor is
+three_phase_sublevel_r2log. The (L3) STEP = proving BlockSmallBall for a
+block from BlockSmallBall of its three largest sub-blocks via the banked
+cover/arm pattern (conditional Fubini on steinhausMeasure = infinitePi —
+cylinder independence already formal in SteinhausModel).
+
+Goal total 94 axiom-clean endpoints, 15 modules. Queue: (L3) step
+execution, (A1) write-out, (SCALAR-MIX) derivation, PNT pole.
+
+## Cycle 55 (cont. 14) — (L3) STEP EXECUTION PLAN (pinned pre-compaction)
+
+Target: BlockSmallBall a s bound for a block s, from three sub-sums, via
+the banked cover/arm pattern. Brick list, in order:
+1. `block_split_fubini` — steinhausMeasure small-ball of w + Σ_s as an
+   iterated integral over the top three frequencies n₁,n₂,n₃ ∈ s (largest
+   |a n|): condition on the rest; slice measure = 3-phase sublevel with
+   A := a n₁, B := a n₂, C := a n₃, c := w + (rest). Mechanism:
+   Measure.infinitePi restrict/marginal on three coordinates — use
+   SteinhausModel's Measure.infinitePi_map_restrict cylinder chain
+   (already banked for the orthonormality proofs); the phase 2π·ω(n)
+   rescales Icc 0 1 → Icc 0 2π with a Jacobian 2π per coordinate.
+2. `block_smallball_of_three` — feed three_phase_sublevel_r2log into the
+   slice; hypotheses: |a n₂| < |a n₁| strict (generic position), r-window,
+   σ0/J admissibility. Output: BlockSmallBall with bound(t) =
+   (2π t/|a n₁|)·(J·CS + 2CC + CM)/(2π)³-normalized.
+3. The graded ladder: apply 2 at each dyadic block level; the t-graded
+   log = per-level J. Assemble (K-bdd-n-log) shape of doc 84/86.
+Watchpoints: coordinate-rescale bookkeeping (2π factors), the strictness
+hypothesis |a n₂| < |a n₁| fails for equal coefficients — perturb by
+splitting ties across levels (doc 87 §4 note).
+(A1)/(SCALAR-MIX)/PNT pole unchanged behind this.
+
+### cont. 14 amendment — block_split_fubini mechanism LOCATED (API verified)
+
+Mathlib has NO infinitePi product-split; the correct route (names verified
+in .lake source, Mathlib/Probability/ProductMeasure.lean):
+1. The small-ball set depends on finitely many coordinates (block s finite)
+   → reduce steinhausMeasure to the FINITE pi over s via
+   `infinitePi_map_restrict` (line 374; same lemma SteinhausModel already
+   uses for orthonormality — pattern banked).
+2. Split the finite pi over s into (three distinguished primes) × (rest):
+   `MeasurableEquiv.piEquivPiSubtypeProd` + the finite-pi
+   `measurePreserving_piEquivPiSubtypeProd` (exists for Measure.pi ✓).
+3. `Measure.prod_apply` → the (θ₁,θ₂,θ₃)-slice is the 3-phase sublevel
+   after one rescale lemma: Measure.map (2π·) (volume.restrict Icc01)
+   = (2π)⁻¹ • volume.restrict (Icc 0 2π) — then three_phase_sublevel_r2log
+   applies with A,B,C := the three coefficients, c := w + conditioned rest
+   (each prime term IS a single phase: X p ω = e^{2πiω(p)} for p prime —
+   needs the small lemma X_prime from factorization_self).
+Blocks in doc-86 architecture are prime-supported (rough support = {1} ∪
+primes) so no cross-coordinate leakage: slices are exactly independent.

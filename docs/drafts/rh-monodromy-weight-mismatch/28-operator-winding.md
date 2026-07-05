@@ -265,3 +265,26 @@ small-δ region `δ≤1`. All machine-checked, axiom-clean.
 (ii) the JOIN with a proven θ-drift lower bound, so the physical `θ_i` provably lands in `(0,1/8]`
 — that is the (F)-field/θ-drift research, still open. The constant-δ lattice piece of (S-mono) is
 now rigorous on the physical band.
+
+## 5i. The window settled BOTH ways: paired-sum closures + machine-checked disproof [PROVED HERE, 2026-07-05]
+
+LegWindow.lean (axiom-clean, lint green) settles the two gaps §5h left open, via the paired
+`k ≥ 1` sum (MVT on `φ' = −(2csch² + 3csch⁴)`, proved as `rphi_hasDerivAt`):
+
+- **Disproof of the unconstrained window.** `l1_fails_near_crossing`: at `δ = 1, M = 1, N = 2`
+  there EXISTS `θ ∈ (0, 1/2)` with dW/dθ > 0 — at `θ = 1/2` the pair cancels exactly while the
+  unpaired `φ(3/4) > 0` survives; continuity extends the reversal below `1/2`. (L1) on the raw
+  window `θ ∈ (1/8, 1/2)` is FALSE; every closure must couple `1 − 2θ` to the configuration.
+  (Numerically the true failure sliver is only `θ ≳ 0.495` at `M = 1`.)
+- **Seam closure** `dW_dtheta_neg_seam`: `(1 − 2θ)·M·δ² > 1 ⟹ dW/dθ < 0` (any `N ≥ M`).
+  Mechanism: all `M` pair gains ≥ `(1−2θ)(δ/2)·2csch²(b_{M−1})`; tail telescopes against
+  `csch²/2` (`rphi_tail_le`). Covers the δ ∈ (1, 3/2) seam for `M ≥ 1/((1−2θ)δ²)`.
+- **Window closure** `dW_dtheta_neg_window`: `3(1 − 2θ)·δ·[coth((1−θ)δ/2) − coth((1−θ+M)δ/2)]
+  > 1 ⟹ dW/dθ < 0`. The csch⁴ part of each gain carries `csch²(b_{M−1})` times the csch² sum,
+  which telescopes against coth (`csch_sq_sum_ge`). Survives `δ → 0`, where the condition tends
+  to `6(1−2θ)M/((1−θ)(1−θ+M)) > 1` — the window up to `θ < 5/11` for large `M`.
+
+Pre-certified (scratchpad precert_legwindow.py): bricks 0 failures (5500 random trials); A/B
+zero violations on a 5850-point grid; the D ≥ 0 points are exactly the near-crossing sliver.
+The M = 1 seam instances δ ∈ (1, 1.155) that B misses are caught by A (e.g. A = 3.03 at δ = 1,
+θ = 1/8). Next: the JOIN — at lattice equilibria the constraint itself bounds 1 − 2θ (§5j).

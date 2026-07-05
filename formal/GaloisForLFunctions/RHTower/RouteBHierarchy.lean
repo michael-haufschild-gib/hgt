@@ -10,6 +10,7 @@ import GaloisForLFunctions.RHTower.SteinhausModel
 import GaloisForLFunctions.RHTower.RouteBThreePhaseLog
 
 namespace RHTower
+namespace SteinhausModel
 
 open MeasureTheory
 
@@ -34,6 +35,7 @@ theorem BlockSmallBall.of_le {a : ℕ → ℝ} {s : Finset ℕ}
     {w : ℂ} {t t' : ℝ} (ht : 0 < t) (htt : t' ≤ t) :
     steinhausMeasure {ω : Omega | ‖w + ∑ n ∈ s, (a n : ℂ) * X n ω‖ ≤ t'}
       ≤ ENNReal.ofReal (bound t) :=
-  le_trans (measure_mono (fun ω hω => le_trans hω htt)) (h w t ht)
+  le_trans (measure_mono (fun _ hω => le_trans hω htt)) (h w t ht)
 
+end SteinhausModel
 end RHTower
