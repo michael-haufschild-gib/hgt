@@ -180,3 +180,26 @@ applied to block sums conditioned on coarser blocks; and (L1)/(L2) supply
 (PNT pole). Next generative move: type the induction step's interface
 (conditional small-ball predicate on the Steinhaus model of
 SteinhausModel.lean, consuming three_phase_sublevel_r2log as the floor).
+
+### (L3) LEDGER UPDATE [same session]: the block STEP is a THEOREM
+
+`block_smallball_condition` (RouteBBlockStep.lean, axiom-clean): for a
+prime-supported block `s` with four distinguished dominant primes, the
+Steinhaus small-ball probability of `w + Σ_{n∈s} aₙXₙ` is
+
+    steinhausMeasure{ |w + Σ_{n∈s} aₙXₙ| ≤ t } ≤ (2π)⁻⁴ · M
+
+UNIFORMLY in the conditioning value `w`, whenever the four coordinates satisfy
+the uniform four-phase bound `M` at every center (supplied by
+`four_phase_nested_uniform` ⟹ M = the explicit four-phase constant at rate
+r²·J). The whole measure-theoretic reduction is now formal: block marginal
+(Steinhaus event → finite product) → lmarginal peel of the four dominant
+coordinates → angle rescale (Jacobian (2π)⁻⁴) → the caustic four-phase engine,
+with the remaining coordinates passing their constant through a probability
+measure (the exact conditional decoupling of §3, at the model level).
+
+Ledger: (L4) FORMAL; two-phase r^{3/2}/r² FORMAL; three-phase r²·log base case
+FORMAL; **(L3) block STEP FORMAL (model level)**. Open above: the graded ladder
+(assemble the STEP across dyadic levels; per-level J = the t-graded log), then
+(L1)/(L2) (PNT pole). Next generative move: type the graded-ladder interface
+consuming `block_smallball_condition` as its per-level engine.

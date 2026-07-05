@@ -140,4 +140,6 @@ import GaloisForLFunctions.RHTower.RouteBFourPhase
 import GaloisForLFunctions.RHTower.RouteBFourPhaseUniform
 import GaloisForLFunctions.RHTower.LegLatticeStep
 import GaloisForLFunctions.RHTower.LegAdiabatic
+import GaloisForLFunctions.RHTower.LegBulkCarrier
 import GaloisForLFunctions.RHTower.RouteBProdFubini
+import GaloisForLFunctions.RHTower.RouteBBlockStep

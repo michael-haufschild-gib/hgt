@@ -3872,3 +3872,53 @@ pre-certified on δ_j = c/j, c ∈ [1,3], θ ∈ [0.15, 0.5], worst margin +0.33
 θ* ∈ [0.29, 0.38]. Doc 30 §9 records it and corrects §8's closing sentence. Open next: Lean
 instantiation of (htail) on the c/j class; the inner-half "march horizon" (predicted breakdown
 at log((d−i)/i) ~ 32/9) as a new object.
+
+## cont.43 — (htail) Lean-instantiated; march horizon refuted, gap-scale boundary found
+
+Deliverable 1: `LegBulkCarrier.lean` banked (axiom-clean, umbrella + lint green) — rational
+csch² envelopes (`sinh_mul_one_sub_le`, `rcsch_sq_ge_rat`) quarantine the transcendence;
+`harm_bulk_march` certifies the 24-pole harmonic bulk carrier by pure `norm_num` rational
+arithmetic; `harm_dist_fails` machine-checks non-vacuity (DIST fails at 8/10 paired ranks —
+out of `section_march_pos`'s reach). Deliverable 2: runpod equilibrium scan (c ∈ {1,2,3},
+d ≤ 5000, all positions) REFUTES the §9 march-horizon conjecture — ΔG(s_i) > 0 everywhere;
+the inner-half θ*(i) rises (to 0.78) instead of collapsing (push direction was inverted in
+the prediction). Discovered instead: gap-scale boundary c* ≈ 10–12 where ΔG_min crosses 2
+(box certificate dies, march survives on the cushion; minimum migrates mid-carrier → sparse
+edge at c ≈ 3.5); push horizon θ* = 1/2 at i/d ≈ 0.5 (c=1) / 0.04 (c=2) / absent (c=3);
+htail certified on the full equilibrium window θ ∈ [0.15, 0.8]. Doc 30 §10 records all.
+Open next: rank-vs-pole certificate crossover in c; W-response past the push horizon;
+symbolic c/j class theorem.
+
+## Cycle 55 (cont. 24) — the (L3) BLOCK STEP is a THEOREM (model level, axiom-clean)
+
+`block_smallball_condition` (RouteBBlockStep.lean, axioms [propext,
+Classical.choice, Quot.sound], tree lint GREEN): for a prime-supported block
+s with four distinguished dominant primes p1..p4, the Steinhaus small-ball
+probability of w + Σ_{n∈s} aₙXₙ is ≤ (2π)⁻⁴·M UNIFORMLY in the conditioning
+value w, whenever the four coordinates satisfy the uniform four-phase bound M
+at every center. Feeding M := four_phase_RHS via four_phase_nested_uniform
+gives the concrete caustic-rate anti-concentration. THIS IS THE (L3)
+INDUCTION STEP at model level — the whole measure-theoretic plumbing from the
+Steinhaus field down to the caustic four-phase engine is now formal.
+
+The full chain, all banked axiom-clean this cont.:
+- four_phase_nested_uniform: four_phase bound in nested-integral form
+  (= four_phase_prod_eq_nested.symm ∘ four_phase_sublevel_uniform).
+- unitPhase / sum_phase_update4: the block-center split (4 fresh phases +
+  frozen remainder = conditioned center V), via phase-transform-commutes-with-
+  update + Finset.sum_update_of_mem ×4.
+- rescale4: the 4-coordinate Jacobian (2π)⁻⁴ (lintegral_two_pi_rescale ×4 with
+  explicit g + lintegral_const_mul' pulls, fun_prop measurability).
+- peel4: lmarginal_insert ×4 → four iterated single integrals.
+- inner_block_le: peel4 + sum_phase_update4 + rescale4 + four_phase_nested_uniform
+  ⟹ the 4-coord marginal ≤ (2π)⁻⁴M uniform in conditioning.
+- block_pi_le: OUTER wrap — lmarginal_union split univ=(univ\F)∪F, lmarginal_mono,
+  lmarginal of const over probability pi = const (the extras pass through).
+- block_smallball_condition: block_marginal + block_pi_le.
+
+Umbrella + index updated; MainTheorems tree green.
+REMAINING above the STEP: the graded ladder (assemble block_smallball_condition
+across dyadic levels; per-level J = t-graded log of CR-density; strictness
+|a₂|<|a₁| generic-position), then (A1) Lindeberg-swap write-out, (SCALAR-MIX),
+PNT pole. Next generative move: type the graded-ladder interface consuming
+block_smallball_condition as the per-level engine.

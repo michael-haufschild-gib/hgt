@@ -260,3 +260,52 @@ sparse edge [CONJECTURE — leading order]. A predicted monotonicity BREAKDOWN w
 boundary is a new named object (the march horizon): locate it exactly in the c/j model, ask
 what the equilibrium cascade does PAST it (does the march reverse, or do equilibria pair-merge
 there?), and whether (LEG)'s consumers ever route a charge through it.
+
+## 10. The march horizon refuted; the boundary lives in the gap scale, not the position [MEASURED + Lean instance]
+
+§9 predicted an inner-half monotonicity breakdown at log((d−i)/i) ~ 32/9. Direct equilibrium
+scan (δ_j = c/j, equilibria G_i(s_i) = −d solved per gap, ΔG(s_i) evaluated exactly; c ∈
+{1,2,3}, d ∈ {200, 1000, 5000}, every interior position): **no horizon exists**. ΔG(s_i) > 0
+everywhere, both halves, zero violations. The prediction's error: the inner-half equilibrium
+θ*(i) = s_i/δ_{i+1} RISES toward the sparse edge (0.78 at i = 1, c = 2) — the ahead crowd
+pushes the charge away from itself, the opposite of the assumed θ* ≈ 2i/(cd) — and large θ
+strengthens the near-rank box surplus faster than the extra ahead ranks add losses.
+
+What the scan found instead, three structures:
+
+* **U-shaped margin with a gap-scale boundary.** ΔG_min is d-stable and decays in c:
+  13.9 (c=1), 4.95 (c=2), 2.93 (c=3), 2.63 (c=3.5), 2.42 (c=4), 2.19 (c=5), 2.09 (c=6),
+  2.011 (c=8), 1.993 (c=12; d = 500). The margin over the bare swap value 2 dies at
+  **c\* ≈ 10–12**: there the net drift is genuinely negative at the sparse-edge gaps and no
+  box certificate can hold — yet the march STILL clears (ΔG = 1.99 > 0) on the cushion. The
+  minimum migrates from mid-carrier (c ≤ 3) to the sparse edge (c ≥ 3.5). The boundary
+  object conjectured in the position direction lives in the gap-scale direction.
+* **The push horizon.** θ*(i) crosses 1/2 — breaking doc 29(c)'s W-response hypothesis
+  s < δ/2, NOT the march — at i/d ≈ 0.5 (c=1), ≈ 0.04 (c=2), never (c=3, θ_max = 0.496).
+  For c = 1 the extreme sparse-edge equilibria even overflow the next gap (s_i > δ_{i+1}).
+* **Equilibrium window certified.** The (htail) box inequality holds over the FULL measured
+  equilibrium range: θ ∈ [0.15, 0.8], c ∈ [1, 3], d ≤ 400, worst margin +0.33 (at θ = 0.15;
+  small θ remains the only failure direction, threshold θ_min ≈ 0.05).
+
+**The Lean instance** (`LegBulkCarrier.lean`, axiom-clean): the transcendence is quarantined
+in two rational envelopes —
+
+* `rcsch_sq_le_inv_sq` (pre-existing): csch²(v) ≤ 1/v², and
+* `rcsch_sq_ge_rat` [NEW]: ((1 − v²/6)/v)² ≤ csch²(v) for v² ≤ 6, from the cubic bound
+  `sinh_mul_one_sub_le`: sinh v·(1 − v²/6) ≤ v (two derivative passes from sinh v ≤ v·cosh v)
+
+— after which (htail) at rational distances is exact rational arithmetic. `harm_bulk_march`
+certifies the 24-pole harmonic carrier (gaps 2/j, charge one third into the twelfth gap):
+ΔG > 2, entirely by `norm_num`. `harm_dist_fails` machine-checks that the interval condition
+`oldB ≤ newA` fails at rank 5 — eight of ten paired ranks violate it, so this instance is
+provably out of `section_march_pos`'s reach: the box comparison is doing real work.
+
+**What this opens.** (i) The gap-scale boundary c\*: at c > c\* the box route dies while the
+march survives — a THIRD decomposition must exist that is exact there (the pole pairing's
+near cushion ~ 4/δ is the natural candidate: at large c the gaps are wide and its crude form
+stops being tight — quantify the crossover between rank-form and pole-form certificates in
+c). (ii) The push horizon bounds where (S-mono)'s W-response applies; the inner-half strip
+i ≲ 0.04d (c = 2) needs either a W-response argument valid at s > δ/2 or a proof that
+(SPUR-R) never routes a charge there. (iii) The symbolic c/j class theorem: the concrete
+instance's envelope arithmetic is uniform enough to parameterize (harmonic-sum log bounds
+are the only new ingredient).

@@ -225,6 +225,143 @@ noncomputable def seedGapCoeff (lam : ℕ → ℝ) (N y : ℕ) : ℕ → ℝ := 
     (∑ e ∈ n.divisors.filter (fun e => e ≤ y ∧ n ≤ N * e), lam e) -
       if (∀ q, q.Prime → q ∣ n → y < q) then (1 : ℝ) else 0
 
+/-- On a singleton-window boundary element `p*d`, the actual seed-gap coefficient
+is exactly the boundary weight `lam d`. -/
+theorem seedGapCoeff_eq_lam_of_singleton_boundary (lam : ℕ → ℝ) {N y p d : ℕ}
+    (hp : p.Prime) (hpy : y < p) (hd2 : 2 ≤ d) (hdy : d ≤ y) (hpN : p ≤ N)
+    (hbig : N < p * d.minFac) :
+    seedGapCoeff lam N y (p * d) = lam d := by
+  classical
+  have hd : 0 < d := by omega
+  have hcar :=
+    singleton_window_coeff_eq_lam lam hp hpy hd hdy hpN hbig
+  have hnotrough : ¬ (∀ q, q.Prime → q ∣ p * d → y < q) :=
+    not_rough_of_smooth_divisor hd2 hdy (dvd_mul_left d p)
+  simp [seedGapCoeff, hcar, hnotrough]
+
+/-- Rough primes have zero actual seed-gap coefficient when the rough seed is
+normalized by `lam 1 = 1`. -/
+theorem seedGapCoeff_prime_eq_zero_of_lam_one (lam : ℕ → ℝ) (hlam1 : lam 1 = 1)
+    {N y p : ℕ} (hp : p.Prime) (hpy : y < p) (hpN : p ≤ N) (hy : 1 ≤ y) :
+    seedGapCoeff lam N y p = 0 := by
+  classical
+  have hcar := prime_window_coeff_eq_lam_one lam hp hpy hpN hy
+  have hrough : ∀ q, q.Prime → q ∣ p → y < q := by
+    intro q hq hqp
+    have hqp_eq : q = p := (Nat.prime_dvd_prime_iff_eq hq hp).mp hqp
+    rwa [hqp_eq]
+  have hif : (if (∀ q, q.Prime → q ∣ p → y < q) then (1 : ℝ) else 0) = 1 :=
+    if_pos hrough
+  simp [seedGapCoeff, hcar, hif, hlam1]
+
+/-- The actual boundary seed-gap Dirichlet packet equals the constant boundary
+packet on singleton-window support. -/
+theorem seedGap_boundary_component_dpoly_eq (lam : ℕ → ℝ)
+    {N y d : ℕ} (hd2 : 2 ≤ d) (hdy : d ≤ y)
+    {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
+    (hPy : ∀ p ∈ P, y < p) (hPN : ∀ p ∈ P, p ≤ N)
+    (hbig : ∀ p ∈ P, N < p * d.minFac) (x : ℝ) :
+    dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x =
+      dpoly (fun _ => lam d) (P.image (fun p => p * d)) x := by
+  classical
+  unfold dpoly
+  apply Finset.sum_congr rfl
+  intro n hn
+  rcases Finset.mem_image.mp hn with ⟨p, hpP, rfl⟩
+  simp [cterm, seedGapCoeff_eq_lam_of_singleton_boundary lam (hP p hpP)
+    (hPy p hpP) hd2 hdy (hPN p hpP) (hbig p hpP)]
+
+/-- The actual boundary seed-gap interval mass equals the prime-packet interval
+mass after removing the common unimodular `d^{-it}` phase. -/
+theorem seedGap_boundary_component_secondMoment_eq_prime_packet (lam : ℕ → ℝ)
+    {N y d : ℕ} (hd2 : 2 ≤ d) (hdy : d ≤ y)
+    {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
+    (hPy : ∀ p ∈ P, y < p) (hPN : ∀ p ∈ P, p ≤ N)
+    (hbig : ∀ p ∈ P, N < p * d.minFac)
+    {A B : ℝ} :
+    (∫ x in A..B,
+        ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ 2)
+      = ∫ x in A..B, ‖dpoly (fun _ => lam d) P x‖ ^ 2 := by
+  have hd : 0 < d := by omega
+  apply intervalIntegral.integral_congr
+  intro x _
+  change ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ 2 =
+    ‖dpoly (fun _ => lam d) P x‖ ^ 2
+  rw [seedGap_boundary_component_dpoly_eq lam hd2 hdy hP hPy hPN hbig x]
+  exact congrArg (fun r : ℝ => r ^ 2)
+    (dpoly_shift_norm (fun _ => lam d) (fun p hpP => (hP p hpP).pos) hd x)
+
+/-- A finite set of primes is disjoint from its singleton-boundary image
+`p ↦ p*d` when `d ≥ 2`. -/
+theorem disjoint_primes_image_mul_of_two_le {P : Finset ℕ} {d : ℕ}
+    (hP : ∀ p ∈ P, p.Prime) (hd2 : 2 ≤ d) :
+    Disjoint P (P.image (fun p => p * d)) := by
+  classical
+  rw [Finset.disjoint_left]
+  intro n hnP hnImg
+  rcases Finset.mem_image.mp hnImg with ⟨p, hpP, hnpd⟩
+  have hnprime : n.Prime := hP n hnP
+  have hdvdn : d ∣ n := by
+    rw [← hnpd]
+    exact dvd_mul_left d p
+  rcases (Nat.dvd_prime hnprime).mp hdvdn with hd1 | hdn
+  · omega
+  · rw [← hdn] at hnpd
+    have hp1 : p = 1 := Nat.eq_of_mul_eq_mul_right (by omega : 0 < d) (by
+      simpa [one_mul] using hnpd)
+    exact (hP p hpP).ne_one hp1
+
+/-- On the mixed support consisting of matched rough primes and singleton-boundary
+terms, the actual seed-gap packet is exactly the boundary packet.  The rough
+component disappears under `lam 1 = 1`. -/
+theorem seedGap_rough_boundary_component_dpoly_eq_boundary (lam : ℕ → ℝ)
+    (hlam1 : lam 1 = 1) {N y d : ℕ} (hy : 1 ≤ y) (hd2 : 2 ≤ d) (hdy : d ≤ y)
+    {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
+    (hPy : ∀ p ∈ P, y < p) (hPN : ∀ p ∈ P, p ≤ N)
+    (hbig : ∀ p ∈ P, N < p * d.minFac) (x : ℝ) :
+    dpoly (seedGapCoeff lam N y) (P ∪ P.image (fun p => p * d)) x =
+      dpoly (fun _ => lam d) (P.image (fun p => p * d)) x := by
+  classical
+  have hdisj : Disjoint P (P.image (fun p => p * d)) :=
+    disjoint_primes_image_mul_of_two_le hP hd2
+  unfold dpoly
+  rw [Finset.sum_union hdisj]
+  have hroughZero : ∑ n ∈ P, cterm (seedGapCoeff lam N y) x n = 0 := by
+    apply Finset.sum_eq_zero
+    intro p hpP
+    unfold cterm
+    rw [seedGapCoeff_prime_eq_zero_of_lam_one lam hlam1 (hP p hpP) (hPy p hpP)
+      (hPN p hpP) hy]
+    simp
+  rw [hroughZero, zero_add]
+  apply Finset.sum_congr rfl
+  intro n hn
+  rcases Finset.mem_image.mp hn with ⟨p, hpP, rfl⟩
+  unfold cterm
+  rw [seedGapCoeff_eq_lam_of_singleton_boundary lam (hP p hpP) (hPy p hpP)
+    hd2 hdy (hPN p hpP) (hbig p hpP)]
+
+/-- On the mixed rough-plus-boundary support, the actual seed-gap interval mass is
+exactly the boundary prime-packet mass.  The matched rough component contributes
+zero under `lam 1 = 1`. -/
+theorem seedGap_rough_boundary_component_secondMoment_eq_prime_packet (lam : ℕ → ℝ)
+    (hlam1 : lam 1 = 1) {N y d : ℕ} (hy : 1 ≤ y) (hd2 : 2 ≤ d) (hdy : d ≤ y)
+    {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
+    (hPy : ∀ p ∈ P, y < p) (hPN : ∀ p ∈ P, p ≤ N)
+    (hbig : ∀ p ∈ P, N < p * d.minFac) {A B : ℝ} :
+    (∫ x in A..B,
+        ‖dpoly (seedGapCoeff lam N y) (P ∪ P.image (fun p => p * d)) x‖ ^ 2)
+      = ∫ x in A..B, ‖dpoly (fun _ => lam d) P x‖ ^ 2 := by
+  have hd : 0 < d := by omega
+  apply intervalIntegral.integral_congr
+  intro x _
+  change ‖dpoly (seedGapCoeff lam N y) (P ∪ P.image (fun p => p * d)) x‖ ^ 2 =
+    ‖dpoly (fun _ => lam d) P x‖ ^ 2
+  rw [seedGap_rough_boundary_component_dpoly_eq_boundary lam hlam1 hy hd2 hdy hP hPy hPN
+    hbig x]
+  exact congrArg (fun r : ℝ => r ^ 2)
+    (dpoly_shift_norm (fun _ => lam d) (fun p hpP => (hP p hpP).pos) hd x)
+
 /-- **The actual boundary seed-gap packet is cancellation-free.**  On a finite
 singleton-window packet `{p*d : p ∈ P}`, the real windowed-divisor carrier minus
 the rough seed has positive interval `L²` mass on every nonempty vertical interval
@@ -239,31 +376,48 @@ theorem seedGap_boundary_component_secondMoment_pos_iff (lam : ℕ → ℝ)
     (0 < ∫ x in A..B,
         ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ 2) ↔
       lam d ≠ 0 := by
-  classical
+  rw [seedGap_boundary_component_secondMoment_eq_prime_packet lam hd2 hdy hP hPy hPN hbig,
+    dpoly_prime_finset_secondMoment_pos_iff_exists_coeff_ne_zero_on_vertical_interval P hP hAB]
+  constructor
+  · rintro ⟨_p, _hpP, hne⟩
+    exact hne
+  · intro hne
+    exact ⟨hPne.choose, hPne.choose_spec, hne⟩
+
+/-- The actual boundary seed-gap packet vanishes on a nonempty vertical interval
+exactly when the boundary weight `lam d` is zero.  This is the pointwise
+constraint form of `seedGap_boundary_component_secondMoment_pos_iff`. -/
+theorem seedGap_boundary_component_eq_zero_on_vertical_interval_iff (lam : ℕ → ℝ)
+    {N y d : ℕ} (hd2 : 2 ≤ d) (hdy : d ≤ y)
+    {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) (hPne : P.Nonempty)
+    (hPy : ∀ p ∈ P, y < p) (hPN : ∀ p ∈ P, p ≤ N)
+    (hbig : ∀ p ∈ P, N < p * d.minFac)
+    {A B : ℝ} (hAB : A < B) :
+    (∀ t ∈ Set.Ioo A B,
+        dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) t = 0) ↔
+      lam d = 0 := by
   have hd : 0 < d := by omega
-  have hcoeff : ∀ n ∈ P.image (fun p => p * d), seedGapCoeff lam N y n = lam d := by
-    intro n hn
-    rcases Finset.mem_image.mp hn with ⟨p, hpP, rfl⟩
-    have hcar :=
-      singleton_window_coeff_eq_lam lam (hP p hpP) (hPy p hpP) hd hdy (hPN p hpP)
-        (hbig p hpP)
-    have hnotrough : ¬ (∀ q, q.Prime → q ∣ p * d → y < q) :=
-      not_rough_of_smooth_divisor hd2 hdy (dvd_mul_left d p)
-    simp [seedGapCoeff, hcar, hnotrough]
-  have hpoly : ∀ x : ℝ,
-      dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x =
-        dpoly (fun _ => lam d) (P.image (fun p => p * d)) x := by
-    intro x
+  constructor
+  · intro hzero
+    have hprime_zero : ∀ t ∈ Set.Ioo A B, dpoly (fun _ => lam d) P t = 0 := by
+      intro t ht
+      have hactual := hzero t ht
+      rw [seedGap_boundary_component_dpoly_eq lam hd2 hdy hP hPy hPN hbig t] at hactual
+      have hnormP : ‖dpoly (fun _ => lam d) P t‖ = 0 := by
+        rw [← dpoly_shift_norm (fun _ => lam d) (fun p hpP => (hP p hpP).pos) hd t]
+        rw [hactual, norm_zero]
+      exact norm_eq_zero.mp hnormP
+    have hcoeff :=
+      (dpoly_prime_finset_eq_zero_on_vertical_interval_iff_coeff_eq_zero P hP hAB).mp
+        hprime_zero
+    exact hcoeff hPne.choose hPne.choose_spec
+  · intro hlam t _ht
+    rw [seedGap_boundary_component_dpoly_eq lam hd2 hdy hP hPy hPN hbig t]
     unfold dpoly
-    apply Finset.sum_congr rfl
-    intro n hn
-    simp [cterm, hcoeff n hn]
-  have hint :
-      (∫ x in A..B, ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ 2)
-        = ∫ x in A..B, ‖dpoly (fun _ => lam d) (P.image (fun p => p * d)) x‖ ^ 2 := by
-    apply intervalIntegral.integral_congr
-    intro x _
-    simp [hpoly x]
-  rw [hint, boundary_gap_packet_secondMoment_pos_iff lam hd hP hPne hAB]
+    apply Finset.sum_eq_zero
+    intro n _hn
+    unfold cterm
+    rw [hlam]
+    simp
 
 end RHTower
