@@ -134,3 +134,8 @@ import GaloisForLFunctions.RHTower.RouteBCausticCapstone
 import GaloisForLFunctions.RHTower.LegWindow
 import GaloisForLFunctions.RHTower.RouteBThreePhaseLog
 import GaloisForLFunctions.RHTower.RouteBHierarchy
+import GaloisForLFunctions.RHTower.RouteBBlockSplit
+import GaloisForLFunctions.RHTower.LegEquilibrium
+import GaloisForLFunctions.RHTower.RouteBFourPhase
+import GaloisForLFunctions.RHTower.RouteBFourPhaseUniform
+import GaloisForLFunctions.RHTower.LegLatticeStep

@@ -3630,3 +3630,150 @@ in .lake source, Mathlib/Probability/ProductMeasure.lean):
    needs the small lemma X_prime from factorization_self).
 Blocks in doc-86 architecture are prime-supported (rough support = {1} ∪
 primes) so no cross-coordinate leakage: slices are exactly independent.
+
+## Cycle 55 (cont. 15) — X_prime banked; rescale lemma next
+
+`RouteBBlockSplit.lean` started: `X_prime` PROVEN (prime-index character
+is one bare phase, via Prime.primeFactors + factorization_self). The
+rescale lemma map_two_pi_smul (map (2π·) (volume.restrict Icc01) =
+(2π)⁻¹ • volume.restrict (Icc 0 2π)) was drafted and REMOVED (no direct
+mathlib name found in-context; do NOT re-derive the statement — proof
+route: Measure.map_mul_left_volume (a•-scaling of Lebesgue) composed with
+image-restrict for the embedding x ↦ 2πx, image of Icc01 = Icc 0 2π;
+probe Real.volume_image_mul_left / MeasurableEmbedding.map_restrict
+first). Then block_split_fubini per the cont. 14 amendment. Build 8486
+green, lint green, 95 endpoints/16 modules.
+
+## cont.38 (2026-07-05) — goal items 1+2: window settled both ways + the equilibrium join
+
+Goal: (1) δ∈(1,3/2) seam + θ∈(1/8,1/2) window via the paired k≥1 sum; (2) the join
+(proven θ-drift bound ⟹ no window hypothesis). Both now machine-checked (lattice register).
+
+- Pre-certified everything first (scratchpad precert_legwindow.py, mpmath 40 dps): bricks 0
+  failures / 5500 random trials; assemblies A,B zero violations / 5850 grid points; the D≥0
+  set = exactly the near-crossing sliver; equilibrium scan: D<0 at EVERY equilibrium, A>1 at
+  all but one near-balanced point.
+- **LegWindow.lean** (11 decls, axiom-clean): rphi_hasDerivAt (φ′ = −(2csch²+3csch⁴)),
+  rphi_pair_gain (MVT pair gain), rcoth_pair_le, rphi_pair_tail, csch_sq_sum_ge (coth
+  telescope), rphi_tail_le (csch²/2 telescope), dW_dtheta_neg_seam ((1−2θ)Mδ²>1),
+  dW_dtheta_neg_window (3(1−2θ)δ·Δcoth>1, survives δ→0), l1_fails_near_crossing (the
+  DISPROOF: continuity at θ=1/2 exhibits dW/dθ>0 below 1/2 at δ=1,M=1,N=2). Doc 28 §5i.
+- **LegEquilibrium.lean** (3 decls, axiom-clean): lattice_constraint_hasDerivAt (g′=2δW),
+  equilibrium_theta_gap (equilibrium + θ≥1/8 ⟹ Nδ/78 ≤ 1/2−θ), and the capstone
+  dW_dtheta_neg_at_equilibrium (δ≤1, Nδ>30, equilibrium ⟹ dW/dθ<0, NO θ hypothesis —
+  the constraint forces θ<1/8). Doc 28 §5j. This is the join, item 2, lattice form.
+- Name dedup: rcsch/rcoth/rcsch_sq derivative bricks already in SpurLattice — reused.
+- NEW STANDING ORDER (Michael): Lean comments are mathematics, not diary — no doc/task/date/
+  process references; a Lean project stands for itself. Written into formal/CLAUDE.md +
+  formal/AGENTS.md; LegWindow/LegEquilibrium written clean; sweep of earlier session modules
+  next.
+- Next object (opened, not closed): field_theta_gap on nondecreasing-gap configurations —
+  quantitative midpoint-push (doc 27 §3 pairing) + varying-step csch² telescopes = the
+  general-gap join; then the §5b adiabatic comparison for general-gap (L1).
+
+## Cycle 55 (cont. 16) — rescale lemma PROVEN
+
+`map_two_pi_smul` banked first-compile (Measure.restrict_map +
+Real.map_volume_mul_left + restrict_smul; preimage of Icc by 2π· via
+nlinarith). RouteBBlockSplit.lean now holds both split inputs (X_prime +
+rescale). 96 endpoints/16 modules, build+lint green. NEXT:
+block_split_fubini itself — reduce the BlockSmallBall event to the finite
+pi over the block s (infinitePi_map_restrict), split three distinguished
+primes off via piEquivPiSubtypeProd (finite-pi measurePreserving version),
+Measure.prod_apply, rescale each of the three coordinates by
+map_two_pi_smul, land on three_phase_sublevel_r2log. Then
+block_smallball_of_three, then the graded ladder. Behind: (A1),
+(SCALAR-MIX), PNT pole.
+
+## Cycle 55 (cont. 17) — the center-UNIFORM one-phase law
+
+`one_phase_smallball_uniform` PROVEN (RouteBBlockSplit.lean): for
+2s ≤ ‖D‖, vol{η : ‖c' + De^{iη}‖ ≤ s} ≤ 8πs/‖D‖ for EVERY center c' —
+empty below reach (triangle), radial √-law above (‖c'‖ ≥ ‖D‖/2 kills the
+1/√‖c'‖ singularity). DESIGN FINDING recorded: three_phase_sublevel_r2log's
+constants carry 1/√‖c‖ in the conditioned value, so block_smallball needs
+FOUR distinguished primes — the fourth phase averages the singularity, and
+one_phase_smallball_uniform is exactly its distribution input (min-split
+∫min(M, K/√dist) with a free split parameter, same style as J). Next
+bricks: G2 = the min-split averaging lemma; G3 = block_split_fubini (the
+infinitePi reduction). 97 endpoints, build+lint green.
+
+## Cycle 55 (cont. 18) — G2 PROVEN: the fourth-phase averaging lemma
+
+`inv_sqrt_average` banked (RouteBBlockSplit.lean, axiom-clean, lint green):
+any integrand dominated by min(M, K/√‖c'+De^{iη}‖) integrates over the
+circle to ≤ M·(8πs*/‖D‖) + (K/√s*)·2π, free split height s* (2s* ≤ ‖D‖) —
+the singular region pays M against one_phase_smallball_uniform, the bulk
+pays the capped singularity. Consumer picks s* ~ (K‖D‖/M)^{2/3}-optimal or
+anything sufficient. The 1/√‖c‖ singularity of the three-phase constants
+is now integrable BY BANKED LEMMA. 98 endpoints.
+REMAINING for the (L3) step: G3 block_split_fubini (the infinitePi
+4-coordinate reduction: infinitePi_map_restrict + piEquivPiSubtypeProd +
+prod_apply + map_two_pi_smul ×4 — all names verified) + the assembly
+block_smallball_of_four (three_phase_sublevel_r2log's c-dependent bound
+fed through inv_sqrt_average with M := (2π)³ trivial cap). Then the graded
+ladder; then (A1), (SCALAR-MIX), PNT pole.
+
+## Cycle 55 (cont. 19) — H1: the four-phase Fubini identity PROVEN
+
+`four_phase_fubini` banked FIRST-COMPILE (RouteBFourPhase.lean): the 4D
+sublevel measure of a four-phase circle sum EQUALS the circle integral of
+3D sublevel measures at the moving center w + De^{iη}. G3 was re-factored:
+the mathematically-real content lives on the 4-torus (this brick + H2);
+the infinitePi plumbing reduces the Steinhaus block event to it separately.
+NEXT = H2 `four_phase_sublevel_uniform`: pointwise
+μ³(slice η) ≤ min(ofReal (2π)³, 3-phase-bound(w+De^{iη})) where the
+3-phase bound decomposes as ofReal(K/√‖c‖ + K') (K collects the CS/CC
+c-singular parts, K' the c-free parts incl. J•-term folded via nsmul→real);
+then min(a, x+y) ≤ min(a,x)+y, lintegral_add_right, and inv_sqrt_average.
+CARE: the J•-term is ENNReal-nsmul — convert J • ofReal X = ofReal (J·X)
+(nsmul_eq_mul + ofReal_natCast-mul) before the real decomposition.
+99 endpoints, build+lint green. Behind: infinitePi plumbing, graded
+ladder, (A1), (SCALAR-MIX), PNT pole.
+
+## Cycle 55 (cont. 20) — H2 PROVEN: the center-UNIFORM four-phase law
+
+**`four_phase_sublevel_uniform`** banked (RouteBFourPhaseUniform.lean,
+axioms clean, build 8488): the 4D sublevel measure of a four-phase circle
+sum at ANY center w is ≤ (2π)³·(8πs*/‖D‖) + (arc·K/√s*)·2π + (arc·K')·2π,
+all constants explicit — the 1/√‖c‖ singularity of the three-phase
+constants is AVERAGED OUT by the fourth phase (inv_sqrt_average' — the
+conditional variant dodging the c=0 junk value — + ENNReal truncated-sub
+decomposition + the √-split identities e₁/e₂). With it the analytic
+engine of the (L3) induction step is COMPLETE: uniform-in-conditioning
+anti-concentration at r²·J for any four dominant phases. 101 endpoints,
+18 modules.
+NOTE: tree lint currently red at LegLatticeStep.lean:455 (active sorry) —
+the parallel codex session's NEW file, not in my import tree; their fix
+to land. My modules all gate green.
+REMAINING: the infinitePi plumbing (Steinhaus block event → 4-torus, per
+cont. 14 amendment), the graded ladder, (A1), (SCALAR-MIX), PNT pole.
+
+## Cycle 55 (cont. 21) — the block marginal PROVEN
+
+`block_marginal` banked (near-first-compile; one deprecation rename): the
+Steinhaus small-ball event of a prime-supported block sum EQUALS the
+finite product of uniform phases over the block (X_prime + sum_attach +
+infinitePi_map_restrict + map_apply). 102 endpoints. The plumbing chain
+now: finite-pi 4-vs-rest split (piEquivPiSubtypeProd + prod_apply) +
+4-fold rescale (map_two_pi_smul) → four_phase_sublevel_uniform →
+BlockSmallBall. Then the graded ladder, (A1), (SCALAR-MIX), PNT pole.
+(Tree lint still red at codex's LegLatticeStep.lean:455 sorry — theirs.)
+
+## Cycle 55 (cont. 22) — lmarginal route pinned + lintegral rescale banked
+
+ROUTE REVISION (better than cont. 14's equiv plan): the finite-pi
+4-vs-rest split runs on mathlib's lmarginal machinery (VERIFIED API:
+lintegral_eq_lmarginal_univ, lmarginal_union disjoint-split,
+lmarginal_insert single-coordinate peel) — NO subtype-prod equivs, NO
+Fin-4 enumeration. Chain: (pi ↥s)(E') = lmarginal_univ 1_E' =
+lmarginal_{univ\F}(lmarginal_F 1_E'); unfold lmarginal_F by 4×
+lmarginal_insert into iterated single integrals over uniform01; rescale
+each by `lintegral_two_pi_rescale` (BANKED this cont., 103 endpoints);
+convert the iterated Icc(0,2π)⁴ integral to the 4D product measure
+(iterated Measure.prod_apply adapter, to bank next) and cite
+four_phase_sublevel_uniform; the outer lmarginal is over a probability
+measure so the uniform bound passes through (lmarginal_const-mono).
+Then BlockSmallBall for prime blocks = the (L3) STEP. Behind: graded
+ladder, (A1), (SCALAR-MIX), PNT pole. (Codex's LegLatticeStep sorry
+still red on tree lint — theirs.)

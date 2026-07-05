@@ -5,7 +5,12 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
+| Kind | Location | Context | Text |
+|---|---|---|---|
+| proof-debt | `formal/GaloisForLFunctions/RHTower/LegLatticeStep.lean:452` | `theorem lattice_step_energy_increase` | `sorry` |
+| proof-debt | `formal/GaloisForLFunctions/RHTower/LegLatticeStep.lean:453` | `theorem lattice_step_energy_increase` | `sorry` |
+| proof-debt | `formal/GaloisForLFunctions/RHTower/LegLatticeStep.lean:454` | `theorem lattice_step_energy_increase` | `sorry` |
+| proof-debt | `formal/GaloisForLFunctions/RHTower/LegLatticeStep.lean:455` | `theorem lattice_step_energy_increase` | `sorry` |
 
 ## Large Files
 

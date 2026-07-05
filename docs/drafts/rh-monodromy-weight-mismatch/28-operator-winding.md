@@ -288,3 +288,34 @@ Pre-certified (scratchpad precert_legwindow.py): bricks 0 failures (5500 random 
 zero violations on a 5850-point grid; the D ≥ 0 points are exactly the near-crossing sliver.
 The M = 1 seam instances δ ∈ (1, 1.155) that B misses are caught by A (e.g. A = 3.03 at δ = 1,
 θ = 1/8). Next: the JOIN — at lattice equilibria the constraint itself bounds 1 − 2θ (§5j).
+
+## 5j. THE JOIN, lattice form: the constraint discharges the window [PROVED HERE, 2026-07-05]
+
+LegEquilibrium.lean (axiom-clean, lint green). The missing piece of (L1)⟹(S-mono) on the
+constant-δ lattice was the JOIN: a proven lower bound on 1−2θ at the physical equilibria, so
+that no θ-window hypothesis survives. It is now a theorem — and the mechanism is the §5c
+credo made literal: the localization is FORCED BY THE CONSTRAINT, not assumed.
+
+- `lattice_constraint_hasDerivAt`: g(ϑ) = Σ_{k<N}coth(b_k) − Σ_{k<M}coth(a_k) has
+  g′ = (δ/2)[Σcsch²(b) + Σcsch²(a)] > 0 (= 2δW, the doc 28 §5 identity ∂θ(LHS) = 2δW).
+- `equilibrium_theta_gap`: at an equilibrium (g(θ) = −(N+M)) with θ ≥ 1/8:
+  **Nδ/78 ≤ 1/2 − θ**. MVT between θ and the midpoint: g(1/2) = Σ_{Ico M N}coth ≥ N−M
+  (swap-surplus, coth > 1), so g(1/2) − g(θ) ≥ 2N, while g′ ≤ 156/δ on (θ, 1/2)
+  (csch² ≤ 1/s² + the banked p=2 telescopes: behind ≤ 6, ahead ≤ 72 in lattice units).
+- `dW_dtheta_neg_at_equilibrium` — **the capstone**: δ ≤ 1, **Nδ > 30**, equilibrium ⟹
+  dW/dθ < 0, NO window hypothesis. Since θ ≥ 1/8 would force Nδ ≤ 78·(3/8) < 30, every
+  long-trained equilibrium sits in θ < 1/8, where §5h fires.
+
+Empirically (precert scan, equilibria solved to 40 dps): the true threshold is Nδ ≈ 6–8 and
+D < 0 held at EVERY equilibrium tested including Nδ = 0.15; the constant 30 is 4–5× lossy but
+unconditional. Short-train equilibria (Nδ ≤ 30) in the window are covered by §5i's
+`dW_dtheta_neg_window` (A > 1 at all scanned equilibria except one near-balanced point where
+the k=0 power-law head wins by ×220 — a condition-C sharpening would absorb it).
+
+**What this opens.** The (F)-field version is now a *shaped* problem, not a vague one: the
+same MVT architecture on a general nondecreasing-gap configuration {t_k} needs exactly two
+inputs — (i) the quantitative midpoint-push h(m) ≥ surplus (doc 27 §3's pairing, made
+quantitative: unpaired-left-charge count replaces the exact coincidence at ϑ = 1/2), and
+(ii) a sup bound on h′ over the half-gap (the same csch²-telescope calculus with δ_k-varying
+steps). Next object: `field_theta_gap` on nondecreasing-gap configurations — the general-gap
+join. After that, general-gap (L1) legs = the §5b adiabatic comparison.
