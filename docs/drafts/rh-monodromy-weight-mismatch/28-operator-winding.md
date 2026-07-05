@@ -155,3 +155,27 @@ inequality between the identity stack and (SPUR-R).
   leg holds once |D| > 2√W̃ + W̃^{−1/2}. The remaining work: control the first-leg deficit
   by the second-leg gain using θ < 1/2 + gap growth — now a two-leg comparison for an
   explicit ODE-with-jumps system, no free parameters.
+
+## 5d. (L1) reduction made RIGOROUS + the missing brick [PROVED HERE, 2026-07-05]
+
+§5b left (L1) as "[PROVED HERE, outline]". The outline is now machine-checked at its core
+(`formal/.../RHTower/LegComparison.lean`, axiom-clean):
+
+- **Exact reduction (no termwise approximation).** Writing `D = Σ_{k<N}φ(b_k) − Σ_{k<M}φ(a_k)`,
+  `a_k=(θ+k)δ/2 < b_k=(1−θ+k)δ/2`, splitting the behind sum at `M` gives EXACTLY
+  `D = tail − headGain`, `tail = Σ_{M≤k<N}φ(b_k) ≥ 0`, `headGain = Σ_{k<M}[φ(a_k)−φ(b_k)] ≥ 0`
+  (`l1_reduction`). Hence **`dW/dθ < 0 ⟺ headGain > tail`** (`l1_neg_of_head_gt_tail`) — the
+  whole of (L1) reduced to one head-vs-tail inequality, with no hidden hand-waving.
+- **The missing analytic brick.** §5b's tail control needs a cubic UPPER bound on the Calogero
+  kernel `φ=csch²·coth=cosh/sinh³`; only the LOWER bound `rphi_ge_cubic` was banked. Proved here:
+  `φ(s) ≤ cosh 1/s³` for `0<s≤1` (`rphi_le_cubic`, from `cosh s ≤ cosh 1` and `sinh s ≥ s`), so
+  `1/(4s³) ≤ φ(s) ≤ (cosh 1)/s³` on `(0,1]`.
+- **Head-gain with explicit constants.** `headGain ≥ φ(θδ/2) − φ((1−θ)δ/2) ≥ 1/(4x³) − cosh1/y³`
+  (`headGain_lower`, `x=θδ/2`, `y=(1−θ)δ/2`); for `θ≤1/8`, `θδ≤1` this is `≥ 896/δ³`, dwarfing
+  the tail `≤ 32/δ³` — so `dW/dθ < 0` for every `M ≥ 1` in the small-δ, `θ ≤ 1/8` regime.
+
+**Honest remaining gap of (L1):** (i) the tail upper bound as a Lean lemma (geometric sum of the
+cubic/exp kernel bounds — `rphi_geom_tail_le` is banked, needs assembling against `headGain_lower`);
+(ii) the near-crossing window `θ ∈ (1/8, 1/2)` where the head gain shrinks and the paired `k≥1`
+terms (not just `k=0`) must be summed. The reduction + bricks turn (L1) from an outline into a
+one-inequality problem with the analytic pieces in hand.

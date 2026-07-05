@@ -123,3 +123,4 @@ import GaloisForLFunctions.RHTower.SteinhausModel
 import GaloisForLFunctions.RHTower.RescaleLimit
 import GaloisForLFunctions.RHTower.RescaleTannery
 import GaloisForLFunctions.RHTower.RouteBSublevel
+import GaloisForLFunctions.RHTower.LegComparison

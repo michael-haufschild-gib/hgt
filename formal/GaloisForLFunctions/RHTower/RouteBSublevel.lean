@@ -477,3 +477,364 @@ theorem cos_band_measure {u₁ u₂ : ℝ} (h1 : -1 ≤ u₁) (h12 : u₁ ≤ u�
 
 end Sublevel
 end RHTower
+
+namespace RHTower
+namespace Sublevel
+
+open MeasureTheory
+
+/-- Linear form of the arccos gap: `2·(arccos u₁ − arccos u₂) ≤ π√(2(u₂−u₁))`. -/
+theorem arccos_gap_le {u₁ u₂ : ℝ} (h1 : -1 ≤ u₁) (h12 : u₁ ≤ u₂) (h2 : u₂ ≤ 1) :
+    2 * (Real.arccos u₁ - Real.arccos u₂)
+      ≤ Real.pi * Real.sqrt (2 * (u₂ - u₁)) := by
+  have hgap := arccos_gap_sq h1 h12 h2
+  have hL0 : 0 ≤ Real.arccos u₁ - Real.arccos u₂ := by
+    by_contra hlt
+    push Not at hlt
+    have := Real.strictAntiOn_cos
+      ⟨Real.arccos_nonneg u₁, Real.arccos_le_pi u₁⟩
+      ⟨Real.arccos_nonneg u₂, Real.arccos_le_pi u₂⟩
+      (by linarith : Real.arccos u₁ < Real.arccos u₂)
+    rw [Real.cos_arccos h1 (by linarith), Real.cos_arccos (by linarith) h2] at this
+    linarith
+  have hLs : Real.arccos u₁ - Real.arccos u₂
+      ≤ Real.sqrt (Real.pi ^ 2 / 2 * (u₂ - u₁)) := by
+    rw [Real.le_sqrt hL0 (by nlinarith [Real.pi_pos])]
+    exact hgap
+  have hfact : Real.pi ^ 2 / 2 * (u₂ - u₁)
+      = (Real.pi / 2) ^ 2 * (2 * (u₂ - u₁)) := by ring
+  rw [hfact, Real.sqrt_mul (by positivity) _,
+    Real.sqrt_sq (by positivity)] at hLs
+  linarith
+
+/-- The unshifted cosine-band covering (extracted from `cos_band_measure`). -/
+theorem cos_band_subset {u₁ u₂ : ℝ} (h1 : -1 ≤ u₁) (h12 : u₁ ≤ u₂) (h2 : u₂ ≤ 1) :
+    {θ : ℝ | θ ∈ Set.Icc 0 (2 * Real.pi) ∧ Real.cos θ ∈ Set.Icc u₁ u₂}
+      ⊆ Set.Icc (Real.arccos u₂) (Real.arccos u₁)
+        ∪ Set.Icc (2 * Real.pi - Real.arccos u₁)
+            (2 * Real.pi - Real.arccos u₂) := by
+  set θ₁ := Real.arccos u₂ with hθ₁
+  set θ₂ := Real.arccos u₁ with hθ₂
+  have hθ₁0 : 0 ≤ θ₁ := Real.arccos_nonneg _
+  have hθ₂0 : 0 ≤ θ₂ := Real.arccos_nonneg _
+  have hθ₁π : θ₁ ≤ Real.pi := Real.arccos_le_pi _
+  have hθ₂π : θ₂ ≤ Real.pi := Real.arccos_le_pi _
+  have hcosθ₁ : Real.cos θ₁ = u₂ := Real.cos_arccos (by linarith) h2
+  have hcosθ₂ : Real.cos θ₂ = u₁ := Real.cos_arccos h1 (by linarith)
+  rintro φ ⟨⟨hφ0, hφ2π⟩, hc1, hc2⟩
+  rcases le_or_gt φ Real.pi with hle | hgt
+  · left
+    constructor
+    · by_contra hlt
+      push Not at hlt
+      have := Real.strictAntiOn_cos ⟨hφ0, hle⟩ ⟨hθ₁0, hθ₁π⟩ hlt
+      rw [hcosθ₁] at this
+      linarith
+    · by_contra hlt
+      push Not at hlt
+      have := Real.strictAntiOn_cos ⟨hθ₂0, hθ₂π⟩ ⟨hφ0, hle⟩ hlt
+      rw [hcosθ₂] at this
+      linarith
+  · right
+    have hψ0 : 0 ≤ 2 * Real.pi - φ := by linarith
+    have hψπ : 2 * Real.pi - φ ≤ Real.pi := by linarith
+    have hψcos : Real.cos (2 * Real.pi - φ) = Real.cos φ :=
+      Real.cos_two_pi_sub φ
+    have hlow : θ₁ ≤ 2 * Real.pi - φ := by
+      by_contra hlt
+      push Not at hlt
+      have := Real.strictAntiOn_cos ⟨hψ0, hψπ⟩ ⟨hθ₁0, hθ₁π⟩ hlt
+      rw [hcosθ₁, hψcos] at this
+      linarith
+    have hhigh : 2 * Real.pi - φ ≤ θ₂ := by
+      by_contra hlt
+      push Not at hlt
+      have := Real.strictAntiOn_cos ⟨hθ₂0, hθ₂π⟩ ⟨hψ0, hψπ⟩ hlt
+      rw [hcosθ₂, hψcos] at this
+      linarith
+    exact ⟨by linarith, by linarith⟩
+
+/-- **The shifted cosine-band measure bound.**  For a phase shift
+`ψ ∈ [0, 2π)`, the band set is covered by FOUR arccos intervals (the two
+arcs, each possibly wrapped once by the window), giving the √-law with
+constant `2π`. -/
+theorem cos_band_measure_shifted {u₁ u₂ ψ : ℝ} (h1 : -1 ≤ u₁)
+    (h12 : u₁ ≤ u₂) (h2 : u₂ ≤ 1) (hψ0 : 0 ≤ ψ) (hψ2 : ψ < 2 * Real.pi) :
+    volume {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
+        Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂}
+      ≤ ENNReal.ofReal (2 * Real.pi * Real.sqrt (2 * (u₂ - u₁))) := by
+  set θ₁ := Real.arccos u₂ with hθ₁
+  set θ₂ := Real.arccos u₁ with hθ₂
+  set L := θ₂ - θ₁ with hLdef
+  have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
+  have hcover : {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
+        Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂}
+      ⊆ Set.Icc (θ₁ + ψ) (θ₂ + ψ)
+        ∪ Set.Icc (2 * Real.pi - θ₂ + ψ) (2 * Real.pi - θ₁ + ψ)
+        ∪ Set.Icc (θ₁ + ψ - 2 * Real.pi) (θ₂ + ψ - 2 * Real.pi)
+        ∪ Set.Icc (-θ₂ + ψ) (-θ₁ + ψ) := by
+    rintro φ ⟨⟨hφ0, hφ2π⟩, hband⟩
+    rcases le_or_gt ψ φ with hle | hgt
+    · have hmem : φ - ψ ∈ {θ : ℝ | θ ∈ Set.Icc 0 (2 * Real.pi) ∧
+          Real.cos θ ∈ Set.Icc u₁ u₂} := ⟨⟨by linarith, by linarith⟩, hband⟩
+      rcases cos_band_subset h1 h12 h2 hmem with hI | hI
+      · exact Or.inl (Or.inl (Or.inl ⟨by linarith [hI.1], by linarith [hI.2]⟩))
+      · exact Or.inl (Or.inl (Or.inr ⟨by linarith [hI.1], by linarith [hI.2]⟩))
+    · have hshift : Real.cos (φ - ψ + 2 * Real.pi) = Real.cos (φ - ψ) :=
+        Real.cos_add_two_pi _
+      have hmem : φ - ψ + 2 * Real.pi ∈ {θ : ℝ | θ ∈ Set.Icc 0 (2 * Real.pi) ∧
+          Real.cos θ ∈ Set.Icc u₁ u₂} := by
+        refine ⟨⟨by linarith, by linarith⟩, ?_⟩
+        rw [hshift]
+        exact hband
+      rcases cos_band_subset h1 h12 h2 hmem with hI | hI
+      · exact Or.inl (Or.inr ⟨by linarith [hI.1], by linarith [hI.2]⟩)
+      · exact Or.inr ⟨by linarith [hI.1], by linarith [hI.2]⟩
+  have hgapL := arccos_gap_le h1 h12 h2
+  have hL0 : 0 ≤ L := by
+    by_contra hlt
+    push Not at hlt
+    have hlt' : Real.arccos u₁ < Real.arccos u₂ := by
+      have := hLdef
+      linarith
+    have := Real.strictAntiOn_cos
+      ⟨Real.arccos_nonneg u₁, Real.arccos_le_pi u₁⟩
+      ⟨Real.arccos_nonneg u₂, Real.arccos_le_pi u₂⟩ hlt'
+    rw [Real.cos_arccos h1 (by linarith), Real.cos_arccos (by linarith) h2] at this
+    linarith
+  calc volume {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
+        Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂}
+      ≤ volume (Set.Icc (θ₁ + ψ) (θ₂ + ψ)
+        ∪ Set.Icc (2 * Real.pi - θ₂ + ψ) (2 * Real.pi - θ₁ + ψ)
+        ∪ Set.Icc (θ₁ + ψ - 2 * Real.pi) (θ₂ + ψ - 2 * Real.pi)
+        ∪ Set.Icc (-θ₂ + ψ) (-θ₁ + ψ)) := measure_mono hcover
+    _ ≤ volume (Set.Icc (θ₁ + ψ) (θ₂ + ψ)
+        ∪ Set.Icc (2 * Real.pi - θ₂ + ψ) (2 * Real.pi - θ₁ + ψ)
+        ∪ Set.Icc (θ₁ + ψ - 2 * Real.pi) (θ₂ + ψ - 2 * Real.pi))
+        + volume (Set.Icc (-θ₂ + ψ) (-θ₁ + ψ)) := measure_union_le _ _
+    _ ≤ (volume (Set.Icc (θ₁ + ψ) (θ₂ + ψ)
+        ∪ Set.Icc (2 * Real.pi - θ₂ + ψ) (2 * Real.pi - θ₁ + ψ))
+        + volume (Set.Icc (θ₁ + ψ - 2 * Real.pi) (θ₂ + ψ - 2 * Real.pi)))
+        + volume (Set.Icc (-θ₂ + ψ) (-θ₁ + ψ)) := by
+        gcongr
+        exact measure_union_le _ _
+    _ ≤ ((volume (Set.Icc (θ₁ + ψ) (θ₂ + ψ))
+        + volume (Set.Icc (2 * Real.pi - θ₂ + ψ) (2 * Real.pi - θ₁ + ψ)))
+        + volume (Set.Icc (θ₁ + ψ - 2 * Real.pi) (θ₂ + ψ - 2 * Real.pi)))
+        + volume (Set.Icc (-θ₂ + ψ) (-θ₁ + ψ)) := by
+        gcongr
+        exact measure_union_le _ _
+    _ = ((ENNReal.ofReal L + ENNReal.ofReal L) + ENNReal.ofReal L)
+        + ENNReal.ofReal L := by
+        have e1 : θ₂ + ψ - (θ₁ + ψ) = θ₂ - θ₁ := by ring
+        have e2 : 2 * Real.pi - θ₁ + ψ - (2 * Real.pi - θ₂ + ψ) = θ₂ - θ₁ := by
+          ring
+        have e3 : θ₂ + ψ - 2 * Real.pi - (θ₁ + ψ - 2 * Real.pi) = θ₂ - θ₁ := by
+          ring
+        have e4 : -θ₁ + ψ - (-θ₂ + ψ) = θ₂ - θ₁ := by ring
+        rw [Real.volume_Icc, Real.volume_Icc, Real.volume_Icc, Real.volume_Icc,
+          e1, e2, e3, e4]
+    _ ≤ ENNReal.ofReal (2 * Real.pi * Real.sqrt (2 * (u₂ - u₁))) := by
+        rw [← ENNReal.ofReal_add hL0 hL0, ← ENNReal.ofReal_add (by linarith) hL0,
+          ← ENNReal.ofReal_add (by linarith) hL0]
+        apply ENNReal.ofReal_le_ofReal
+        have : L + L + L + L = 2 * (2 * L) := by ring
+        rw [this]
+        have h2L : 2 * L ≤ Real.pi * Real.sqrt (2 * (u₂ - u₁)) := hgapL
+        nlinarith [Real.sqrt_nonneg (2 * (u₂ - u₁)), hπ, h2L]
+
+end Sublevel
+end RHTower
+
+namespace RHTower
+namespace Sublevel
+
+open Complex MeasureTheory
+
+/-- Real expansion of the norm square of a sum in ℂ. -/
+theorem norm_add_sq_complex (u v : ℂ) :
+    ‖u + v‖ ^ 2 = ‖u‖ ^ 2 + ‖v‖ ^ 2 + 2 * ((starRingEnd ℂ) u * v).re := by
+  have h : ∀ z : ℂ, ‖z‖ ^ 2 = (z * (starRingEnd ℂ) z).re := by
+    intro z
+    rw [Complex.mul_conj']
+    rw [show ((‖z‖ : ℂ)) ^ 2 = ((‖z‖ ^ 2 : ℝ) : ℂ) by push_cast; ring]
+    rw [Complex.ofReal_re]
+  rw [h, h, h]
+  have hexpand : (u + v) * (starRingEnd ℂ) (u + v)
+      = u * (starRingEnd ℂ) u + v * (starRingEnd ℂ) v
+        + ((starRingEnd ℂ) u * v
+          + (starRingEnd ℂ) ((starRingEnd ℂ) u * v)) := by
+    rw [map_add, map_mul, Complex.conj_conj]
+    ring
+  rw [hexpand]
+  simp only [Complex.add_re, Complex.conj_re]
+  ring
+
+/-- The circle-sum norm square in polar-cosine form. -/
+theorem norm_add_circle_sq (c B : ℂ) (φ : ℝ) :
+    ‖c + B * Complex.exp ((φ : ℂ) * Complex.I)‖ ^ 2
+      = ‖c‖ ^ 2 + ‖B‖ ^ 2
+        + 2 * (((starRingEnd ℂ) c * B)
+            * Complex.exp ((φ : ℂ) * Complex.I)).re := by
+  rw [norm_add_sq_complex c (B * Complex.exp ((φ : ℂ) * Complex.I))]
+  rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, ← mul_assoc]
+
+/-- Real part of `w·e^{iφ}` in polar form. -/
+theorem re_w_exp (w : ℂ) (φ : ℝ) :
+    (w * Complex.exp ((φ : ℂ) * Complex.I)).re
+      = ‖w‖ * Real.cos (φ + w.arg) := by
+  conv_lhs => rw [← Complex.norm_mul_exp_arg_mul_I w]
+  rw [mul_assoc, ← Complex.exp_add]
+  rw [show (↑w.arg * Complex.I + (φ : ℂ) * Complex.I)
+      = ((↑(φ + w.arg) : ℂ) * Complex.I) by push_cast; ring]
+  rw [Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re]
+
+/-- **The radial caustic band bound.**  The set of angles where the circle
+sum lands within `r` of radius `ρ` has measure ≤ `2π·√(2·r(2ρ+r)/(‖c‖‖B‖))`:
+the radial band is a cosine band of width `r(2ρ+r)/(‖c‖‖B‖)`, and the
+shifted √-law applies. -/
+theorem radial_band_measure {B c : ℂ} {ρ r : ℝ} (hc : c ≠ 0) (hB : B ≠ 0)
+    (hρ : 0 ≤ ρ) (hr : 0 ≤ r) :
+    volume {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
+        |‖c + B * Complex.exp ((φ : ℂ) * Complex.I)‖ - ρ| ≤ r}
+      ≤ ENNReal.ofReal (2 * Real.pi
+          * Real.sqrt (2 * (r * (2 * ρ + r) / (‖c‖ * ‖B‖)))) := by
+  classical
+  set w : ℂ := (starRingEnd ℂ) c * B with hwdef
+  have hw : w ≠ 0 := mul_ne_zero (star_ne_zero.mpr hc) hB
+  have hnw : ‖w‖ = ‖c‖ * ‖B‖ := by
+    rw [hwdef, norm_mul, RCLike.norm_conj]
+  have hnw0 : (0 : ℝ) < ‖w‖ := norm_pos_iff.mpr hw
+  set U₀ : ℝ := (ρ ^ 2 - ‖c‖ ^ 2 - ‖B‖ ^ 2) / (2 * ‖w‖) with hU₀
+  set H : ℝ := r * (2 * ρ + r) / (2 * ‖w‖) with hH
+  have hH0 : 0 ≤ H := by
+    rw [hH]
+    positivity
+  set ψ₀ : ℝ := -w.arg with hψ₀
+  set ψ : ℝ := if 0 ≤ ψ₀ then ψ₀ else ψ₀ + 2 * Real.pi with hψdef
+  have harg := Complex.arg_mem_Ioc w
+  have hπ : (0 : ℝ) < Real.pi := Real.pi_pos
+  have hψ0 : 0 ≤ ψ := by
+    rw [hψdef]
+    split
+    · assumption
+    · rw [hψ₀]
+      have := harg.2
+      linarith
+  have hψ2 : ψ < 2 * Real.pi := by
+    rw [hψdef]
+    split
+    · rw [hψ₀]
+      have := harg.1
+      linarith
+    · rename_i h0
+      rw [hψ₀] at h0 ⊢
+      linarith [harg.2, hπ]
+  have hcosψ : ∀ φ : ℝ, Real.cos (φ - ψ) = Real.cos (φ + w.arg) := by
+    intro φ
+    rw [hψdef]
+    split
+    · rw [hψ₀, show φ - -w.arg = φ + w.arg by ring]
+    · rw [hψ₀, show φ - (-w.arg + 2 * Real.pi)
+          = φ + w.arg - 2 * Real.pi by ring, Real.cos_sub_two_pi]
+  set u₁ : ℝ := max (U₀ - H) (-1) with hu₁
+  set u₂ : ℝ := min (U₀ + H) 1 with hu₂
+  have hmem : ∀ φ : ℝ, φ ∈ Set.Icc (0 : ℝ) (2 * Real.pi) →
+      |‖c + B * Complex.exp ((φ : ℂ) * Complex.I)‖ - ρ| ≤ r →
+      Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂ := by
+    intro φ _ hband
+    set g : ℝ := ‖c + B * Complex.exp ((φ : ℂ) * Complex.I)‖ with hg
+    have hg0 : 0 ≤ g := norm_nonneg _
+    have hgρ : g ≤ ρ + r := by
+      have := abs_le.mp hband
+      linarith [this.2]
+    have hsq2 : |g ^ 2 - ρ ^ 2| ≤ r * (2 * ρ + r) := by
+      have hfac : g ^ 2 - ρ ^ 2 = (g - ρ) * (g + ρ) := by ring
+      rw [hfac, abs_mul, abs_of_nonneg (by linarith : (0:ℝ) ≤ g + ρ)]
+      have h1 : |g - ρ| ≤ r := hband
+      nlinarith [abs_nonneg (g - ρ), h1]
+    have hcosval : 2 * ‖w‖ * Real.cos (φ + w.arg)
+        = g ^ 2 - ‖c‖ ^ 2 - ‖B‖ ^ 2 := by
+      have hexp := norm_add_circle_sq c B φ
+      have hre := re_w_exp w φ
+      rw [hwdef] at hre
+      rw [hre] at hexp
+      rw [← hwdef] at hexp
+      rw [hg]
+      linarith [hexp]
+    have hclose : |Real.cos (φ + w.arg) - U₀| ≤ H := by
+      have hval : Real.cos (φ + w.arg) - U₀ = (g ^ 2 - ρ ^ 2) / (2 * ‖w‖) := by
+        rw [hU₀]
+        field_simp
+        linarith [hcosval]
+      rw [hval, abs_div, abs_of_pos (by linarith : (0:ℝ) < 2 * ‖w‖), hH]
+      gcongr
+    rw [hcosψ φ]
+    have habs := abs_le.mp hclose
+    constructor
+    · rw [hu₁]
+      apply max_le
+      · linarith [habs.1]
+      · exact Real.neg_one_le_cos _
+    · rw [hu₂]
+      apply le_min
+      · linarith [habs.2]
+      · exact Real.cos_le_one _
+  rcases le_or_gt u₁ u₂ with hle | hgt
+  · have hcover : {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
+          |‖c + B * Complex.exp ((φ : ℂ) * Complex.I)‖ - ρ| ≤ r}
+        ⊆ {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
+            Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂} := by
+      rintro φ ⟨hφI, hband⟩
+      exact ⟨hφI, hmem φ hφI hband⟩
+    have h1' : (-1 : ℝ) ≤ u₁ := le_max_right _ _
+    have h2' : u₂ ≤ 1 := min_le_right _ _
+    calc volume {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
+          |‖c + B * Complex.exp ((φ : ℂ) * Complex.I)‖ - ρ| ≤ r}
+        ≤ volume {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
+            Real.cos (φ - ψ) ∈ Set.Icc u₁ u₂} := measure_mono hcover
+      _ ≤ ENNReal.ofReal (2 * Real.pi * Real.sqrt (2 * (u₂ - u₁))) :=
+          cos_band_measure_shifted h1' hle h2' hψ0 hψ2
+      _ ≤ ENNReal.ofReal (2 * Real.pi
+            * Real.sqrt (2 * (r * (2 * ρ + r) / (‖c‖ * ‖B‖)))) := by
+          apply ENNReal.ofReal_le_ofReal
+          apply mul_le_mul_of_nonneg_left _ (by positivity)
+          apply Real.sqrt_le_sqrt
+          have hband2 : u₂ - u₁ ≤ 2 * H := by
+            have hA1 : U₀ - H ≤ u₁ := le_max_left _ _
+            have hA2 : u₂ ≤ U₀ + H := min_le_left _ _
+            linarith
+          have h2H : 2 * H = r * (2 * ρ + r) / (‖c‖ * ‖B‖) := by
+            rw [hH, hnw]
+            field_simp
+          linarith [hband2, h2H.symm.le, h2H.le]
+  · have hempty : {φ : ℝ | φ ∈ Set.Icc 0 (2 * Real.pi) ∧
+          |‖c + B * Complex.exp ((φ : ℂ) * Complex.I)‖ - ρ| ≤ r} = ∅ := by
+      ext φ
+      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+      rintro ⟨hφI, hband⟩
+      have := hmem φ hφI hband
+      have h1 := this.1
+      have h2 := this.2
+      linarith
+    rw [hempty, measure_empty]
+    simp
+
+/-- **The unconditional two-phase r^{3/2} law.**  Composing the two-phase
+Fubini factorization with the radial caustic band bound: the classical
+two-arm caustic exponent, fully formal. -/
+theorem two_phase_sublevel_r32 {A B c : ℂ} {r : ℝ} (hA : A ≠ 0) (hB : B ≠ 0)
+    (hc : c ≠ 0) (hr : 0 ≤ r) :
+    (volume.prod volume)
+      ((Set.Icc (0 : ℝ) (2 * Real.pi) ×ˢ Set.Icc (0 : ℝ) (2 * Real.pi)) ∩
+        {p : ℝ × ℝ | ‖c + B * Complex.exp ((p.1 : ℂ) * Complex.I)
+            + A * Complex.exp ((p.2 : ℂ) * Complex.I)‖ ≤ r})
+      ≤ ENNReal.ofReal (2 * (Real.pi * r / ‖A‖))
+        * ENNReal.ofReal (2 * Real.pi
+            * Real.sqrt (2 * (r * (2 * ‖A‖ + r) / (‖c‖ * ‖B‖)))) :=
+  le_trans (two_phase_sublevel hA hr) (by
+    gcongr
+    exact radial_band_measure hc hB (norm_nonneg A) hr)
+
+end Sublevel
+end RHTower

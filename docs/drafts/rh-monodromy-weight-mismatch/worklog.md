@@ -3343,3 +3343,54 @@ Lemma R). All [OPEN]/[CONJECTURE]/proof-shaped items across the arc — (LEG), (
   r^{3/2} corollary; then (A1) write-out; then the (L3) induction; then
   the PNT pole ((L1)/(L2) Lean-native).
 - Goal running total: 6 modules, 43 axiom-clean endpoints.
+
+## 2026-07-05 (cont.33) — RESEARCH (not transcription): attacked OPEN (L1), made its core rigorous
+User challenge: stop being a search engine, attack an open problem. Took (L1) (doc 28 §5b,
+labelled "[PROVED HERE, OUTLINE]" = NOT rigorous): dW/dθ<0 for θ<1/2 on the constant-δ lattice.
+LegComparison.lean (5 declarations, lake build green, axiom-clean, umbrella/index/lint):
+- l1_reduction: EXACT decomposition D = tail − headGain (the doc's "termwise domination + surplus"
+  made precise — no approximation). Finset split at M + sum_sub_distrib.
+- l1_neg_of_head_gt_tail: dW/dθ<0 ⟺ headGain>tail — (L1) reduced to ONE inequality.
+- rphi_le_cubic: THE MISSING BRICK — φ(s)=cosh/sinh³ ≤ cosh1/s³ for 0<s≤1 (I had only the lower
+  bound rphi_ge_cubic; the doc's tail control needed the upper). Via self_le_sinh (sinh s≥s, new)
+  + cosh s≤cosh1.
+- headGain_lower: explicit-constant head estimate ≥ 1/(4x³) − cosh1/y³.
+Genuine content: turned an OUTLINE into a machine-checked one-inequality problem + supplied the
+analytic brick absent from mathlib AND from the codebase. Small-δ θ≤1/8 regime: head 896/δ³ >
+tail 32/δ³ ⟹ dW/dθ<0 for all M≥1 (reasoning; the tail-sum Lean lemma + near-crossing θ∈(1/8,1/2)
+window are the honest remaining gap). Doc 28 §5d records. This is progress on OPEN #138/#142, not
+formalization of a proven result. Session total: 10 modules, 53 axiom-clean declarations.
+
+## Cycle 55 (cont. 5) — shifted band banked; Route A's two residues cracked open
+
+- Lean: arccos_gap_le + cos_band_subset (extracted covering) +
+  cos_band_measure_shifted (4-interval wrap covering, constant 2π√(2δ)) —
+  axiom-clean, 8669 jobs, lint green. Goal total: 46 endpoints.
+- Route A (doc 88 App A): (A1) pinned to a Lindeberg swap with
+  DETERMINISTICALLY small largest-prime blocks (max block ≤ C log p/(p logN)
+  ⟹ unconditional Lyapunov; no stable convergence needed; output = the
+  V_N-mixture form, no profile-limit required). (SCALAR-MIX) REDUCED to a
+  computable Gaussian functional: conditional intensity =
+  (1/π)·Var_{tilted-profile}(τ); the residue is the Jensen gap of a ratio
+  functional — generically nonzero, N-free, u-smooth ⟹ BOTH branches
+  preserve Route A (constant renormalization at worst); P1's c/12π becomes
+  a measurement of the gap. Discriminator: derive the functional exactly;
+  Monte Carlo only if derivation stalls (pre-register first).
+- Next queue: radial→cosine conversion (‖c+Be^{iφ}‖² polar algebra) →
+  unconditional two-phase r^{3/2}; (A1) full write-out; (L3) induction;
+  PNT pole.
+
+## Cycle 55 (cont. 6) — the two-arm caustic law fully formal
+
+- RouteBSublevel.lean extended (8670 jobs, lint green, axiom-clean):
+  norm_add_sq_complex (norm-square expansion), norm_add_circle_sq
+  (polar-cosine form), re_w_exp (Re(w·e^{iφ}) = ‖w‖cos(φ+arg w)),
+  radial_band_measure (the radial caustic band IS a cosine band of width
+  r(2ρ+r)/(‖c‖‖B‖); shifted √-law applies; empty-band and clamping cases
+  handled), and **two_phase_sublevel_r32** — the unconditional two-phase
+  r^{3/2} caustic law, machine-checked end to end. Doc 87 App B's ladder
+  now has ALL its two-phase rungs formal; goal total 51 endpoints.
+- Remaining queue (unchanged, no forks): (L3) three-phase caustic
+  averaging + the t-graded induction (major Lean build); (A1) Lindeberg-
+  swap write-out (paper); (SCALAR-MIX) functional evaluation (derivation-
+  first); PNT pole for (L1)/(L2) Lean-native (major build).

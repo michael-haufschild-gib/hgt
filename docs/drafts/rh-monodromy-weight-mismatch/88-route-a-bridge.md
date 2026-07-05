@@ -72,3 +72,47 @@ MIX) resolved (proof or refutation with located shape-noise term). A
 REFUTATION of (SCALAR-MIX) would still be a doc-82-grade terminal for Route
 A as typed — and would simultaneously bound what (L3) can give in doc 87,
 since it would exhibit intensity-visible shape noise in the same mixture.
+
+## Appendix A — (A1) proof route pinned; (SCALAR-MIX) reduced to a computable functional [same session]
+
+**(A1) via the Lindeberg swap — no stable-convergence machinery.** The
+largest-prime blocks are DETERMINISTICALLY small: block-p carries at most
+C·(log p)/(p·log N) of the total variance (the p-block is Σ_a X_p^a ×
+(p-smooth partial sums), and its unconditional second moment is the p-smooth
+density times p^{-1}/log N). Hence Σ_p E|D_p|⁴ ≤ 3·max_p(E|D_p|²)·Σ_p E|D_p|²
+= O(1/log N) → 0 (the single-phase fourth moment is ≤ 3(second)² by the
+a+b=c+d index count — elementary). The swap: replace each block by a
+conditionally Gaussian block with matched conditional covariance,
+telescoping over the upward prime filtration; third-order errors are
+controlled by the same Lyapunov sum. OUTPUT (the honest form): for smooth
+tests f, E[f(G_N)] − E[f_Gauss(V_N)] → 0 — the field is asymptotically the
+V_N-mixture Gaussian, with NO need for V_N to converge to a fixed random
+limit. [Write-out grade plan; every constant elementary or Mertens.]
+
+**(SCALAR-MIX) is not a mystery — it is a number.** The limit conditional
+covariance has the form C_ω(w, w̄') = ∫₀¹ e^{-(w+w̄')τ} dM(τ) for an explicit
+squared-Gaussian-path profile measure M (the Bohr martingale's mass process;
+exact normalization pinned in the write-out). The conditional intensity is
+(1/4π)(log C_ω)″ = (1/π)·Var_{M̂_u}(τ) — the VARIANCE of τ under the
+e^{-2uτ}-tilted normalized profile. So:
+
+>  (SCALAR-MIX) ⟺ E[Var_{M̂_u}(τ)] = Var under the tilted MEAN profile + o(1),
+>  a concrete Gaussian-functional identity. Scalar mixtures drop out exactly
+>  (Δlog kills them); the residue is the Jensen gap of a ratio functional in
+>  a measure with O(1) relative fluctuations — generically NONZERO.
+
+Consequence either way: if the gap vanishes, the Langevin constant is exact;
+if not, the Steinhaus intensity is the GAF intensity times an N-free
+COMPUTABLE constant factor (the gap is u-smooth, so the SHAPE ε(c) ∝ Langevin
+is preserved at leading order in the window) — and the (CR-density) consumer
+accepts any linear-in-c rate, so **Route A survives in both branches; what
+changes is only the constant, and P1's measured c/12π becomes a test of the
+gap's size**. Discriminator plan (pre-register before running): evaluate
+E[Var_{M̂_u}] on the exact limit functional — first by Wiener-chaos/It̂o
+derivation; only if derivation stalls, a tiny Monte Carlo (theatre test
+honestly fails: the Jensen gap's numerical size is not promptable).
+
+**Ledger update:** (A1) = write-out execution (no open ideas); (SCALAR-MIX)
+= one computable functional + a two-branch consequence map, BOTH branches
+route-preserving. Route A's terminal is now bookkeeping-distance from the
+mixture-CLT write-out plus one functional evaluation.
