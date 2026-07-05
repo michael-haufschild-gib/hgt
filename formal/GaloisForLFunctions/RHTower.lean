@@ -168,3 +168,6 @@ import GaloisForLFunctions.RHTower.RouteBFullSupport
 import GaloisForLFunctions.RHTower.RouteBFullSupportMeasure
 import GaloisForLFunctions.RHTower.RouteBFullSupportDensity
 import GaloisForLFunctions.RHTower.CarrierSlope
+import GaloisForLFunctions.RHTower.MinimumModulus
+import GaloisForLFunctions.RHTower.JensenCount
+import GaloisForLFunctions.RHTower.ScalarCertificate

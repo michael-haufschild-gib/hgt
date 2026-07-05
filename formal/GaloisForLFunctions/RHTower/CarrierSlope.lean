@@ -16,6 +16,7 @@ sup on one circle.
 import GaloisForLFunctions.RHTower.AnnealWindowRelation
 import GaloisForLFunctions.RHTower.SeamSignTransport
 import GaloisForLFunctions.RHTower.PinnedWindow
+import GaloisForLFunctions.RHTower.MinimumModulus
 
 open Complex Metric
 
@@ -267,5 +268,147 @@ theorem riemannHypothesis_of_slope_circle_windows
   exact ⟨ρ₀, R, hρball,
     (xi_window_pinned_of_slope_circles hM hεδ h0 hrR hRP hκ hηC hρ₀re hball
       hzeroG hderiv hΔ hE hclose hFcirc).1⟩
+
+end RHTower
+
+namespace RHTower
+
+/-- At the zero of a one-zero factorization the derivative of the completed carrier is the
+archimedean factor times the cofactor value: `completedGN′(ρ') = archFactor(ρ')·h(ρ')`.  The
+`gN`-derivative at the zero is the cofactor value (product rule, vanishing factor), and the
+archimedean product contributes only its own value there since `gN(ρ') = 0`. -/
+theorem deriv_completedGN_of_factor {N : ℕ} {ρ' c : ℂ} {h : ℂ → ℂ} {R : ℝ}
+    (hρ' : ρ' ∈ ball c R) (h0re : 0 < ρ'.re)
+    (hh : AnalyticOnNhd ℂ h (ball c R))
+    (hfact : ∀ z ∈ ball c R, gN N z = (z - ρ') * h z) :
+    deriv (completedGN N) ρ' = archFactor ρ' * h ρ' := by
+  have hg0 : gN N ρ' = 0 := by
+    rw [hfact ρ' hρ']
+    simp
+  have hev : gN N =ᶠ[nhds ρ'] fun z => (z - ρ') * h z := by
+    filter_upwards [isOpen_ball.mem_nhds hρ'] with z hz using hfact z hz
+  have hhd : DifferentiableAt ℂ h ρ' := (hh ρ' hρ').differentiableAt
+  have hprod : HasDerivAt (fun z => (z - ρ') * h z)
+      (1 * h ρ' + (ρ' - ρ') * deriv h ρ') ρ' :=
+    HasDerivAt.mul ((hasDerivAt_id ρ').sub_const ρ') hhd.hasDerivAt
+  have hd1 : deriv (fun z => (z - ρ') * h z) ρ' = h ρ' := by
+    simpa using hprod.deriv
+  have hgderiv : deriv (gN N) ρ' = h ρ' := by
+    rw [hev.deriv_eq, hd1]
+  have hgdiff : DifferentiableAt ℂ (gN N) ρ' := by
+    rw [hev.differentiableAt_iff]
+    exact (differentiableAt_id.sub_const ρ').mul hhd
+  have hGne : Gammaℝ ρ' ≠ 0 := Gammaℝ_ne_zero_of_re_pos h0re
+  have harch : AnalyticAt ℂ archFactor ρ' := by
+    have hpoly : AnalyticAt ℂ (fun s : ℂ => s * (s - 1) / 2) ρ' := by fun_prop
+    exact hpoly.mul (Gammaℝ_analyticAt hGne)
+  calc deriv (completedGN N) ρ'
+      = deriv (archFactor * gN N) ρ' := rfl
+    _ = deriv archFactor ρ' * gN N ρ' + archFactor ρ' * deriv (gN N) ρ' :=
+        deriv_mul harch.differentiableAt hgdiff
+    _ = archFactor ρ' * h ρ' := by
+        rw [hg0, hgderiv]
+        ring
+
+/-- **Derivative floor at the window zero from anchor and sup.**  For a one-zero window with
+zero-free cofactor, the minimum-modulus engine floors the cofactor at the zero, and the
+archimedean value converts this into the derivative floor `κ` consumed by the slope-data
+pinning gates: `κ = a₀·m·exp(−2·log(M/m)·r/(R−r))` from one anchor `m`, one sup `M`, and one
+archimedean scalar `a₀`. -/
+theorem deriv_completedGN_floor_of_anchor {N : ℕ} {ρ' c : ℂ} {h : ℂ → ℂ}
+    {R r M m a₀ : ℝ}
+    (hr : 0 ≤ r) (hrR : r < R)
+    (hρ' : ρ' ∈ closedBall c r) (h0re : 0 < ρ'.re)
+    (hh : AnalyticOnNhd ℂ h (ball c R))
+    (hh0 : ∀ z ∈ ball c R, h z ≠ 0)
+    (hfact : ∀ z ∈ ball c R, gN N z = (z - ρ') * h z)
+    (hsup : ∀ z ∈ ball c R, ‖h z‖ ≤ M)
+    (hm : 0 < m) (hmM : m < M) (hanc : m ≤ ‖h c‖)
+    (ha₀ : a₀ ≤ ‖archFactor ρ'‖) :
+    a₀ * (m * Real.exp (-(2 * Real.log (M / m) * r / (R - r))))
+      ≤ ‖deriv (completedGN N) ρ'‖ := by
+  have hρball : ρ' ∈ ball c R :=
+    mem_ball.mpr (lt_of_le_of_lt (mem_closedBall.mp hρ') hrR)
+  rw [deriv_completedGN_of_factor hρball h0re hh hfact, norm_mul]
+  exact mul_le_mul ha₀
+    (norm_lower_bound_of_anchor hr hrR hh hh0 hsup hm hmM hanc ρ' hρ')
+    (by positivity) (norm_nonneg _)
+
+end RHTower
+
+namespace RHTower
+
+/-- **Difference-quotient sup from a boundary carrier sup.**  If `G` is analytic on
+`closedBall a P` and vanishes at `ρ'` (at distance at most `dρ < P` from the center), a sup
+bound `M` for `G` on the boundary circle bounds the difference quotient by `M/(P − dρ)` on the
+whole closed ball: on the circle the quotient is `‖G z‖/‖z − ρ'‖` with denominator at least
+`P − dρ`, and the maximum principle spreads the bound inward through the removable point. -/
+theorem dslope_norm_le_of_boundary_sup {G : ℂ → ℂ} {a ρ' : ℂ} {P M dρ : ℝ}
+    (hdρ0 : 0 ≤ dρ) (hdρ : ‖ρ' - a‖ ≤ dρ) (hdP : dρ < P)
+    (hG : ∀ z ∈ closedBall a P, AnalyticAt ℂ G z)
+    (hzero : G ρ' = 0)
+    (hsup : ∀ z ∈ sphere a P, ‖G z‖ ≤ M) :
+    ∀ z ∈ closedBall a P, ‖dslope G ρ' z‖ ≤ M / (P - dρ) := by
+  have hP : 0 < P := lt_of_le_of_lt hdρ0 hdP
+  have hρ'mem : ρ' ∈ closedBall a P := by
+    rw [mem_closedBall, dist_eq_norm]
+    linarith
+  have hhan : ∀ z ∈ closedBall a P, AnalyticAt ℂ (dslope G ρ') z := fun z hz =>
+    analyticAt_dslope_of_analyticAt (hG ρ' hρ'mem) (hG z hz)
+  have hfr : ∀ z ∈ sphere a P, ‖dslope G ρ' z‖ ≤ M / (P - dρ) := by
+    intro z hz
+    have hzdist : P - dρ ≤ ‖z - ρ'‖ := by
+      have h1 : ‖z - a‖ = P := by
+        rw [← dist_eq_norm]
+        exact mem_sphere.mp hz
+      have h2 : ‖z - a‖ - ‖ρ' - a‖ ≤ ‖z - ρ'‖ := by
+        have := norm_sub_norm_le (z - a) (ρ' - a)
+        simpa [sub_sub_sub_cancel_right] using this
+      linarith
+    have hzne : z ≠ ρ' := by
+      intro hzeq
+      rw [hzeq, sub_self, norm_zero] at hzdist
+      linarith
+    rw [dslope_of_ne _ hzne, slope_def_field, hzero, sub_zero, norm_div]
+    have hM0 : 0 ≤ M := le_trans (norm_nonneg _) (hsup z hz)
+    apply div_le_div₀ hM0 (hsup z hz) (by linarith)
+    exact hzdist
+  intro z hz
+  have hdiffcl : DiffContOnCl ℂ (dslope G ρ') (ball a P) := by
+    constructor
+    · intro w hw
+      exact (hhan w (ball_subset_closedBall hw)).differentiableAt.differentiableWithinAt
+    · intro w hw
+      rw [closure_ball a hP.ne'] at hw
+      exact (hhan w hw).continuousAt.continuousWithinAt
+  refine Complex.norm_le_of_forall_mem_frontier_norm_le Metric.isBounded_ball hdiffcl ?_ ?_
+  · intro w hw
+    rw [frontier_ball a hP.ne'] at hw
+    exact hfr w hw
+  · rw [closure_ball a hP.ne']
+    exact hz
+
+/-- **Slope-deviation sup from a boundary carrier sup.**  At a zero of `G`, the deviation of
+the difference quotient from the derivative on the circle of radius `P` is at most `2M/P`,
+where `M` bounds `G` on that circle: both the quotient and the derivative (the quotient's
+center value) are bounded by `M/P`. -/
+theorem slope_deviation_of_boundary_sup {G : ℂ → ℂ} {ρ' : ℂ} {P M : ℝ}
+    (hP : 0 < P)
+    (hG : ∀ z ∈ closedBall ρ' P, AnalyticAt ℂ G z)
+    (hzero : G ρ' = 0)
+    (hsup : ∀ z ∈ sphere ρ' P, ‖G z‖ ≤ M) :
+    ∀ z ∈ sphere ρ' P, ‖dslope G ρ' z - deriv G ρ'‖ ≤ 2 * (M / P) := by
+  have hball := dslope_norm_le_of_boundary_sup (le_refl 0)
+    (by simp) hP hG hzero hsup
+  simp only [sub_zero] at hball
+  intro z hz
+  have hzmem : z ∈ closedBall ρ' P := sphere_subset_closedBall hz
+  have hcen : ‖deriv G ρ'‖ ≤ M / P := by
+    rw [← dslope_same G ρ']
+    exact hball ρ' (mem_closedBall_self hP.le)
+  calc ‖dslope G ρ' z - deriv G ρ'‖
+      ≤ ‖dslope G ρ' z‖ + ‖deriv G ρ'‖ := norm_sub_le _ _
+    _ ≤ M / P + M / P := add_le_add (hball z hzmem) hcen
+    _ = 2 * (M / P) := by ring
 
 end RHTower
