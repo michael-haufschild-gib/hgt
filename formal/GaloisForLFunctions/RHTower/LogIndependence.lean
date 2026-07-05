@@ -19,6 +19,7 @@ the fundamental theorem of arithmetic; generic shifts are free. The wall is arit
 -/
 import Mathlib
 import GaloisForLFunctions.Hurwitz.ExpIndependence
+import GaloisForLFunctions.RHTower.SecondMoment
 
 namespace RHTower
 
@@ -359,5 +360,391 @@ theorem prime_shift_exp_packet_eq_zero_of_frequently {n q : ℕ} (hq : q.Prime)
     simpa [g, Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using hg0 z
   funext k
   exact hLI c hsum k
+
+end RHTower
+
+namespace RHTower
+
+open Polynomial Finset
+open Complex Filter Topology
+
+/-- A finite prime-ratio Dirichlet-frequency packet cannot vanish on a nonempty
+vertical interval unless every coefficient is zero.  This is the vertical-window
+form of `prime_shift_exp_packet_eq_zero_of_frequently`: the interval supplies a
+punctured accumulating set at its midpoint. -/
+theorem prime_shift_exp_packet_eq_zero_on_vertical_interval {n q : ℕ} (hq : q.Prime)
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime ∧ p k ≠ q) (hpinj : Function.Injective p)
+    {c : Fin n → ℂ} {A B : ℝ} (hAB : A < B)
+    (hzero : ∀ t ∈ Set.Ioo A B,
+      ∑ k, c k * Complex.exp (-((Real.log (((p k : ℝ) / (q : ℝ))) : ℂ)) *
+        ((t : ℂ) * Complex.I)) = 0) :
+    c = 0 := by
+  let τ : ℝ := (A + B) / 2
+  let δ : ℝ := (B - A) / 4
+  have hδpos : 0 < δ := by
+    dsimp [δ]
+    linarith
+  have hτ_mem : τ ∈ Set.Ioo A B := by
+    dsimp [τ]
+    constructor <;> linarith
+  let z₀ : ℂ := (τ : ℂ) * Complex.I
+  let φ : ℕ → ℂ := fun j => (((τ + δ / ((j + 1 : ℕ) : ℝ) : ℝ) : ℂ) * Complex.I)
+  have hφzero : ∀ j,
+      ∑ k, c k * Complex.exp (-((Real.log (((p k : ℝ) / (q : ℝ))) : ℂ)) * φ j) = 0 := by
+    intro j
+    have hjpos : (0 : ℝ) < ((j + 1 : ℕ) : ℝ) := by
+      exact_mod_cast Nat.succ_pos j
+    have hsmall : δ / ((j + 1 : ℕ) : ℝ) < B - τ := by
+      have hden : (1 : ℝ) ≤ ((j + 1 : ℕ) : ℝ) := by
+        exact_mod_cast Nat.succ_le_succ (Nat.zero_le j)
+      have hdiv_le : δ / ((j + 1 : ℕ) : ℝ) ≤ δ := by
+        nlinarith [div_le_self hδpos.le hden]
+      have hδlt : δ < B - τ := by
+        dsimp [τ, δ]
+        linarith
+      exact lt_of_le_of_lt hdiv_le hδlt
+    have htmem : τ + δ / ((j + 1 : ℕ) : ℝ) ∈ Set.Ioo A B := by
+      constructor
+      · have : 0 < δ / ((j + 1 : ℕ) : ℝ) := div_pos hδpos hjpos
+        linarith [hτ_mem.1]
+      · linarith
+    simpa [φ] using hzero (τ + δ / ((j + 1 : ℕ) : ℝ)) htmem
+  have hφ_ne : ∀ j, φ j ∈ ({z₀} : Set ℂ)ᶜ := by
+    intro j hz
+    simp only [Set.mem_singleton_iff] at hz
+    have hmul := congrArg (fun z : ℂ => z * (-Complex.I)) hz
+    simp [φ, z₀, mul_assoc] at hmul
+    rcases hmul with hδ0 | hden0
+    · exact hδpos.ne' hδ0
+    · have hden0R : (j : ℝ) + 1 = 0 := by
+        have hre := congrArg Complex.re hden0
+        norm_num at hre
+        exact hre
+      have hjpos : (0 : ℝ) < (j : ℝ) + 1 := by positivity
+      exact (ne_of_gt hjpos) hden0R
+  have hseq_real : Tendsto (fun j : ℕ => τ + δ / ((j + 1 : ℕ) : ℝ)) atTop (nhds τ) := by
+    have hden : Tendsto (fun j : ℕ => ((j + 1 : ℕ) : ℝ)) atTop atTop := by
+      simpa [Function.comp_def, Nat.cast_add, Nat.cast_one] using
+        (tendsto_natCast_atTop_atTop (R := ℝ)).comp (tendsto_add_atTop_nat 1)
+    have hinv : Tendsto (fun j : ℕ => (((j + 1 : ℕ) : ℝ))⁻¹) atTop (nhds 0) :=
+      hden.inv_tendsto_atTop
+    have hmul : Tendsto (fun j : ℕ => δ * (((j + 1 : ℕ) : ℝ))⁻¹) atTop (nhds 0) := by
+      simpa using hinv.const_mul δ
+    simpa [div_eq_mul_inv] using (tendsto_const_nhds.add hmul :
+      Tendsto (fun j : ℕ => τ + δ * (((j + 1 : ℕ) : ℝ))⁻¹) atTop (nhds (τ + 0)))
+  have hseq_nhds : Tendsto φ atTop (nhds z₀) := by
+    have hofReal : Tendsto
+        (fun j : ℕ => ((τ + δ / ((j + 1 : ℕ) : ℝ) : ℝ) : ℂ)) atTop (nhds (τ : ℂ)) :=
+      (Complex.continuous_ofReal.tendsto τ).comp hseq_real
+    simpa [φ, z₀] using hofReal.mul tendsto_const_nhds
+  have hseq : Tendsto φ atTop (nhdsWithin z₀ ({z₀} : Set ℂ)ᶜ) := by
+    rw [tendsto_nhdsWithin_iff]
+    exact ⟨hseq_nhds, Filter.Eventually.of_forall hφ_ne⟩
+  have hfreq : ∃ᶠ z in nhdsWithin z₀ ({z₀} : Set ℂ)ᶜ,
+      ∑ k, c k * Complex.exp (-((Real.log (((p k : ℝ) / (q : ℝ))) : ℂ)) * z) = 0 :=
+    hseq.frequently ((Filter.Eventually.of_forall hφzero).frequently)
+  exact prime_shift_exp_packet_eq_zero_of_frequently hq hp hpinj hfreq
+
+end RHTower
+
+namespace RHTower
+
+open Polynomial Finset
+open Complex Filter Topology
+
+/-- Absolute prime vertical characters are independent on any nonempty interval, once an
+auxiliary prime `q` outside the packet is fixed.  Multiplication by the common mode
+`q^{it}` converts the packet to the prime-ratio form handled by
+`prime_shift_exp_packet_eq_zero_on_vertical_interval`. -/
+theorem prime_exp_packet_eq_zero_on_vertical_interval {n q : ℕ} (hq : q.Prime)
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime ∧ p k ≠ q) (hpinj : Function.Injective p)
+    {c : Fin n → ℂ} {A B : ℝ} (hAB : A < B)
+    (hzero : ∀ t ∈ Set.Ioo A B,
+      ∑ k, c k * Complex.exp (-(t : ℂ) * Complex.I * (Real.log (p k : ℝ) : ℂ)) = 0) :
+    c = 0 := by
+  refine prime_shift_exp_packet_eq_zero_on_vertical_interval hq hp hpinj hAB ?_
+  intro t ht
+  set E : ℂ := Complex.exp ((t : ℂ) * Complex.I * (Real.log (q : ℝ) : ℂ)) with hE
+  have hrewrite : ∀ k : Fin n,
+      Complex.exp (-((Real.log (((p k : ℝ) / (q : ℝ))) : ℂ)) * ((t : ℂ) * Complex.I)) =
+        E * Complex.exp (-(t : ℂ) * Complex.I * (Real.log (p k : ℝ) : ℂ)) := by
+    intro k
+    have hp_pos : (0 : ℝ) < p k := by exact_mod_cast (hp k).1.pos
+    have hq_pos : (0 : ℝ) < q := by exact_mod_cast hq.pos
+    have hlogratio : Real.log (((p k : ℝ) / (q : ℝ))) =
+        Real.log (p k : ℝ) - Real.log (q : ℝ) := by
+      rw [Real.log_div hp_pos.ne' hq_pos.ne']
+    calc
+      Complex.exp (-((Real.log (((p k : ℝ) / (q : ℝ))) : ℂ)) * ((t : ℂ) * Complex.I))
+          = Complex.exp (((t : ℂ) * Complex.I * (Real.log (q : ℝ) : ℂ)) +
+              (-(t : ℂ) * Complex.I * (Real.log (p k : ℝ) : ℂ))) := by
+            congr 1
+            rw [hlogratio]
+            norm_num
+            ring
+      _ = E * Complex.exp (-(t : ℂ) * Complex.I * (Real.log (p k : ℝ) : ℂ)) := by
+            rw [Complex.exp_add, hE]
+  calc
+    ∑ k, c k * Complex.exp (-((Real.log (((p k : ℝ) / (q : ℝ))) : ℂ)) * ((t : ℂ) * Complex.I))
+        = ∑ k, c k * (E * Complex.exp (-(t : ℂ) * Complex.I * (Real.log (p k : ℝ) : ℂ))) := by
+          refine Finset.sum_congr rfl ?_
+          intro k _
+          rw [hrewrite k]
+    _ = E * ∑ k, c k * Complex.exp (-(t : ℂ) * Complex.I * (Real.log (p k : ℝ) : ℂ)) := by
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl ?_
+          intro k _
+          ring
+    _ = E * 0 := by rw [hzero t ht]
+    _ = 0 := by simp
+
+end RHTower
+
+namespace RHTower
+
+open Polynomial Finset
+open Complex Filter Topology
+
+/-- Absolute prime vertical characters are independent on an interval without naming an
+auxiliary prime.  Euclid's theorem supplies a prime outside the finite packet, which
+then reduces the statement to `prime_exp_packet_eq_zero_on_vertical_interval`. -/
+theorem prime_exp_packet_eq_zero_on_vertical_interval_no_aux {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {c : Fin n → ℂ} {A B : ℝ} (hAB : A < B)
+    (hzero : ∀ t ∈ Set.Ioo A B,
+      ∑ k, c k * Complex.exp (-(t : ℂ) * Complex.I * (Real.log (p k : ℝ) : ℂ)) = 0) :
+    c = 0 := by
+  classical
+  obtain ⟨q, hqge, hqprime⟩ := Nat.exists_infinite_primes (1 + Finset.sup Finset.univ p)
+  have hq_avoid : ∀ k, p k ≠ q := by
+    intro k hpk
+    have hle : p k ≤ Finset.sup Finset.univ p := Finset.le_sup (Finset.mem_univ k)
+    have hlt : p k < q := by omega
+    exact (ne_of_lt hlt) hpk
+  exact prime_exp_packet_eq_zero_on_vertical_interval hqprime
+    (fun k => ⟨hp k, hq_avoid k⟩) hpinj hAB hzero
+
+/-- Coefficient recovery for a prime-supported vertical Dirichlet polynomial.  If the
+`dpoly` supported on a finite injective prime packet vanishes throughout a nonempty
+interval, then every coefficient on that packet is zero. -/
+theorem dpoly_prime_packet_coeff_eq_zero_on_vertical_interval {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B)
+    (hzero : ∀ t ∈ Set.Ioo A B, dpoly a (Finset.univ.image p) t = 0) :
+    ∀ k, a (p k) = 0 := by
+  have hc : (fun k : Fin n => (a (p k) : ℂ)) = 0 := by
+    refine prime_exp_packet_eq_zero_on_vertical_interval_no_aux hp hpinj hAB ?_
+    intro t ht
+    have hsum :
+        (∑ k, (a (p k) : ℂ) *
+          Complex.exp (-(t : ℂ) * Complex.I * (Real.log (p k : ℝ) : ℂ))) =
+          dpoly a (Finset.univ.image p) t := by
+      rw [dpoly]
+      rw [Finset.sum_image]
+      · simp [cterm]
+      · intro x _ y _ hxy
+        exact hpinj hxy
+    rw [hsum, hzero t ht]
+  intro k
+  exact Complex.ofReal_injective (congrFun hc k)
+
+/-- Nonzero prime-packet data has to show up somewhere in every nonempty vertical
+interval.  This is the certificate form of
+`dpoly_prime_packet_coeff_eq_zero_on_vertical_interval`: the Hurwitz independence
+obstruction gives a point where the finite Dirichlet packet is visibly nonzero. -/
+theorem dpoly_prime_packet_exists_ne_zero_on_vertical_interval {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B)
+    (hnonzero : ∃ k, a (p k) ≠ 0) :
+    ∃ t ∈ Set.Ioo A B, dpoly a (Finset.univ.image p) t ≠ 0 := by
+  by_contra hnone
+  push Not at hnone
+  have hcoeff : ∀ k, a (p k) = 0 :=
+    dpoly_prime_packet_coeff_eq_zero_on_vertical_interval hp hpinj hAB hnone
+  obtain ⟨k, hk⟩ := hnonzero
+  exact hk (hcoeff k)
+
+/-- Positive second-moment sample forced by nonzero prime-packet data.  The same
+Hurwitz obstruction that prevents interval vanishing of the packet also gives a
+point where the real cosine covariance kernel is strictly positive. -/
+theorem dpoly_prime_packet_cosine_sum_pos_on_vertical_interval {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B)
+    (hnonzero : ∃ k, a (p k) ≠ 0) :
+    ∃ t ∈ Set.Ioo A B,
+      0 < ∑ m ∈ Finset.univ.image p, ∑ n ∈ Finset.univ.image p,
+        a m * a n * Real.cos ((Real.log n - Real.log m) * t) := by
+  obtain ⟨t, ht, hne⟩ :=
+    dpoly_prime_packet_exists_ne_zero_on_vertical_interval hp hpinj hAB hnonzero
+  refine ⟨t, ht, ?_⟩
+  rw [← normSq_dpoly a (Finset.univ.image p) t]
+  exact sq_pos_of_pos (norm_pos_iff.mpr hne)
+
+/-- Positive covariance mass forced by nonzero prime-packet data. A packet with a
+nonzero coefficient cannot hide on a vertical interval: its real covariance kernel
+has strictly positive integral over the whole interval. -/
+theorem dpoly_prime_packet_cosine_sum_integral_pos_on_vertical_interval {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B)
+    (hnonzero : ∃ k, a (p k) ≠ 0) :
+    0 < ∫ t in A..B,
+      ∑ m ∈ Finset.univ.image p, ∑ n ∈ Finset.univ.image p,
+        a m * a n * Real.cos ((Real.log n - Real.log m) * t) := by
+  refine intervalIntegral_pos_of_continuous_nonneg_of_exists_pos ?_ ?_
+    (dpoly_prime_packet_cosine_sum_pos_on_vertical_interval hp hpinj hAB hnonzero)
+  · apply continuous_finsetSum
+    intro m _
+    apply continuous_finsetSum
+    intro n _
+    fun_prop
+  · intro t _
+    rw [← normSq_dpoly a (Finset.univ.image p) t]
+    exact sq_nonneg _
+
+/-- Strict positivity of the finite interval Gram form for prime vertical
+characters. The exact second-moment identity turns the positive covariance mass
+into a positive `cosInt` matrix sum over the packet. -/
+theorem dpoly_prime_packet_cosInt_sum_pos_on_vertical_interval {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B)
+    (hnonzero : ∃ k, a (p k) ≠ 0) :
+    0 < ∑ m ∈ Finset.univ.image p, ∑ n ∈ Finset.univ.image p,
+      a m * a n * cosInt (Real.log n - Real.log m) A (B - A) := by
+  have hpos :=
+    dpoly_prime_packet_cosine_sum_integral_pos_on_vertical_interval hp hpinj hAB hnonzero
+  have hpos_norm : 0 < ∫ t in A..B, ‖dpoly a (Finset.univ.image p) t‖ ^ 2 := by
+    rwa [← intervalIntegral.integral_congr
+      (fun t _ => normSq_dpoly a (Finset.univ.image p) t)] at hpos
+  have hmoment := secondMoment_eq a (Finset.univ.image p) A (B - A)
+  have hendpoint : A + (B - A) = B := by ring
+  rw [hendpoint] at hmoment
+  rwa [hmoment] at hpos_norm
+
+end RHTower
+
+namespace RHTower
+
+open Finset
+
+/-- The finite prime-log `cosInt` Gram form is positive definite on every nonempty
+vertical interval: it vanishes exactly when all packet coefficients vanish. -/
+theorem dpoly_prime_packet_cosInt_sum_eq_zero_iff_coeff_eq_zero_on_vertical_interval {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    (∑ m ∈ Finset.univ.image p, ∑ n ∈ Finset.univ.image p,
+      a m * a n * cosInt (Real.log n - Real.log m) A (B - A)) = 0 ↔
+      ∀ k, a (p k) = 0 := by
+  constructor
+  · intro hsum
+    by_contra hnot
+    push Not at hnot
+    have hpos := dpoly_prime_packet_cosInt_sum_pos_on_vertical_interval hp hpinj hAB hnot
+    linarith
+  · intro hzero
+    apply Finset.sum_eq_zero
+    intro m hm
+    rw [Finset.mem_image] at hm
+    rcases hm with ⟨k, -, rfl⟩
+    apply Finset.sum_eq_zero
+    intro q _
+    rw [hzero k]
+    ring
+
+end RHTower
+
+namespace RHTower
+
+/-- The prime-packet interval `L²` mass is positive exactly when the packet has a
+nonzero coefficient.  This is the analytic-observable form of the Hurwitz-backed
+positive definite Gram criterion. -/
+theorem dpoly_prime_packet_secondMoment_pos_iff_exists_coeff_ne_zero_on_vertical_interval {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    0 < ∫ t in A..B, ‖dpoly a (Finset.univ.image p) t‖ ^ 2 ↔
+      ∃ k, a (p k) ≠ 0 := by
+  have hmoment := secondMoment_eq a (Finset.univ.image p) A (B - A)
+  have hendpoint : A + (B - A) = B := by ring
+  rw [hendpoint] at hmoment
+  constructor
+  · intro hpos
+    by_contra hnone
+    push Not at hnone
+    have hgramzero :=
+      (dpoly_prime_packet_cosInt_sum_eq_zero_iff_coeff_eq_zero_on_vertical_interval hp hpinj hAB).mpr
+        hnone
+    rw [hmoment, hgramzero] at hpos
+    exact lt_irrefl _ hpos
+  · intro hnonzero
+    have hgrampos := dpoly_prime_packet_cosInt_sum_pos_on_vertical_interval hp hpinj hAB hnonzero
+    rwa [hmoment]
+
+end RHTower
+
+namespace RHTower
+
+/-- Exact interval-zero criterion for finite prime packets.  A prime-supported
+vertical Dirichlet polynomial vanishes throughout a nonempty interval exactly when
+all coefficients on the packet vanish. -/
+theorem dpoly_prime_packet_eq_zero_on_vertical_interval_iff_coeff_eq_zero {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    (∀ t ∈ Set.Ioo A B, dpoly a (Finset.univ.image p) t = 0) ↔
+      ∀ k, a (p k) = 0 := by
+  constructor
+  · exact dpoly_prime_packet_coeff_eq_zero_on_vertical_interval hp hpinj hAB
+  · intro hcoeff t _ht
+    rw [dpoly]
+    apply Finset.sum_eq_zero
+    intro m hm
+    rw [Finset.mem_image] at hm
+    rcases hm with ⟨k, _, rfl⟩
+    unfold cterm
+    rw [hcoeff k]
+    simp
+
+end RHTower
+
+namespace RHTower
+
+/-- Exact interval `L²` zero criterion for finite injective prime packets.  The
+second-moment observable vanishes on a nonempty vertical interval exactly when every
+coefficient in the prime packet is zero. -/
+theorem dpoly_prime_packet_secondMoment_eq_zero_iff_coeff_eq_zero_on_vertical_interval {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    (∫ t in A..B, ‖dpoly a (Finset.univ.image p) t‖ ^ 2) = 0 ↔
+      ∀ k, a (p k) = 0 := by
+  have hmoment := secondMoment_eq a (Finset.univ.image p) A (B - A)
+  have hendpoint : A + (B - A) = B := by ring
+  rw [hendpoint] at hmoment
+  constructor
+  · intro hzero
+    by_contra hcoeff
+    push Not at hcoeff
+    have hpos :=
+      (dpoly_prime_packet_secondMoment_pos_iff_exists_coeff_ne_zero_on_vertical_interval
+        hp hpinj hAB).mpr hcoeff
+    rw [hzero] at hpos
+    exact lt_irrefl _ hpos
+  · intro hcoeff
+    have hgramzero :=
+      (dpoly_prime_packet_cosInt_sum_eq_zero_iff_coeff_eq_zero_on_vertical_interval hp hpinj hAB).mpr
+        hcoeff
+    rw [hmoment, hgramzero]
+
+end RHTower
+
+namespace RHTower
+
+/-- Zero second-moment mass and pointwise interval vanishing are the same finite
+prime-packet constraint.  The coefficient criterion is internal: callers can pass
+between the observable `L²` certificate and the vertical-window identity directly. -/
+theorem dpoly_prime_packet_secondMoment_eq_zero_iff_eq_zero_on_vertical_interval {n : ℕ}
+    {p : Fin n → ℕ} (hp : ∀ k, (p k).Prime) (hpinj : Function.Injective p)
+    {a : ℕ → ℝ} {A B : ℝ} (hAB : A < B) :
+    (∫ t in A..B, ‖dpoly a (Finset.univ.image p) t‖ ^ 2) = 0 ↔
+      ∀ t ∈ Set.Ioo A B, dpoly a (Finset.univ.image p) t = 0 := by
+  rw [dpoly_prime_packet_secondMoment_eq_zero_iff_coeff_eq_zero_on_vertical_interval hp hpinj hAB,
+    dpoly_prime_packet_eq_zero_on_vertical_interval_iff_coeff_eq_zero hp hpinj hAB]
 
 end RHTower

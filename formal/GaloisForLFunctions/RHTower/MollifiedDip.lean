@@ -190,4 +190,28 @@ theorem sliverCount_le_of_average_kernel
     rwa [hset] at hmeasure
   exact sliverCount_le_of_kernel hE hh hCU S hsep hdip hker
 
+/-- **Integer creation-budget form.** The mollified dip estimate gives the
+natural-number count used by `MidCentral` once the real measure budget lies
+strictly below the next integer multiple of the per-dip width. -/
+theorem sliverCount_card_le_of_average_kernel
+    {h B2 L2 C r U : ℝ} (hh : 0 < h) (hpos : 0 < B2 + 2 * h * L2)
+    (hCU : 0 ≤ C * r ^ 2 * U)
+    {f : ℝ → ℝ} (hf : Continuous f) (hnn : ∀ t, 0 ≤ f t) (S : Finset ℝ)
+    (hsep : (↑S : Set ℝ).Pairwise fun x y => 3 * h ≤ |x - y|)
+    (havg : ∀ γ ∈ S,
+      ∫ t in Icc (γ - h) (γ + h), f t ≤ 2 * h * B2 + 4 * h ^ 2 * L2)
+    (hker : volume {t | f t ≤ 2 * (B2 + 2 * h * L2)}
+      ≤ ENNReal.ofReal (C * r ^ 2 * U))
+    {K : ℕ} (hK : C * r ^ 2 * U < (K + 1 : ℝ) * h) :
+    S.card ≤ K := by
+  have hcount :=
+    sliverCount_le_of_average_kernel hh hpos hCU hf hnn S hsep havg hker
+  have hcard_lt_real : (S.card : ℝ) < (K + 1 : ℝ) := by
+    have hlt : (S.card : ℝ) * h < (K + 1 : ℝ) * h :=
+      lt_of_le_of_lt hcount hK
+    nlinarith
+  have hcard_lt_nat : S.card < K + 1 := by
+    exact_mod_cast hcard_lt_real
+  exact Nat.lt_succ_iff.mp hcard_lt_nat
+
 end RHTower

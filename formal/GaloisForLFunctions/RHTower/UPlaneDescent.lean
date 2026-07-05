@@ -300,3 +300,119 @@ theorem rh_iff_xiDescent_ne_zero_slitPlane :
     exact hF _ (sq_mem_slitPlane_of_re_pos hv)
 
 end RHTower
+
+namespace RHTower
+
+open Complex
+
+/-- Right-half zeros of ξ are exactly slit-plane zeros of the u-plane descent.  This is
+zero-set transport under the constraint map `w = (s - 1/2)^2`, not a new flow. -/
+theorem exists_xi_zero_rightHalf_iff_exists_xiDescent_zero_slitPlane :
+    (∃ s ∈ rightHalf, xi s = 0) ↔ ∃ w ∈ slitPlane, xiDescent w = 0 := by
+  constructor
+  · rintro ⟨s, hs, hs0⟩
+    refine ⟨(s - 1 / 2) ^ 2, ?_, ?_⟩
+    · refine sq_mem_slitPlane_of_re_pos ?_
+      have hcast : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by norm_num
+      rw [Complex.sub_re, hcast, Complex.ofReal_re]
+      have h := mem_rightHalf.mp hs
+      linarith
+    · rw [← xi_eq_xiDescent s]
+      exact hs0
+  · rintro ⟨w, hw, hw0⟩
+    refine ⟨(1 / 2 : ℂ) + uSqrt w, ?_, ?_⟩
+    · have hcast : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by norm_num
+      rw [mem_rightHalf, Complex.add_re, hcast, Complex.ofReal_re]
+      have hpos := uSqrt_re_pos hw
+      linarith
+    · rw [← xiDescent_of_ne_zero (slitPlane_ne_zero hw)]
+      exact hw0
+
+end RHTower
+
+namespace RHTower
+
+open Complex Filter
+
+/-- The u-plane square descent preserves local zero order away from the critical line.  On
+`rightHalf`, the constraint map `s ↦ (s - 1/2)^2` has nonzero derivative, so the descended
+zero at the slit-plane image has exactly the original ξ multiplicity. -/
+theorem analyticOrderAt_xiDescent_center_sq {s : ℂ} (hs : s ∈ rightHalf) :
+    analyticOrderAt xiDescent ((s - (1 / 2 : ℂ)) ^ 2) = analyticOrderAt xi s := by
+  let φ : ℂ → ℂ := fun z => (z - (1 / 2 : ℂ)) ^ 2
+  have hφ : AnalyticAt ℂ φ s := (analyticAt_id.sub analyticAt_const).pow 2
+  have hsne : s - (1 / 2 : ℂ) ≠ 0 := by
+    intro h
+    have hs_eq : s = (1 / 2 : ℂ) := sub_eq_zero.mp h
+    have hright := mem_rightHalf.mp hs
+    rw [hs_eq] at hright
+    norm_num at hright
+  have hbase : HasDerivAt (fun z : ℂ => z - (1 / 2 : ℂ)) 1 s := by
+    convert ((hasDerivAt_id s).sub (hasDerivAt_const s (1 / 2 : ℂ))) using 1
+    ring
+  have hderiv_at : HasDerivAt φ (2 * (s - (1 / 2 : ℂ))) s := by
+    dsimp [φ]
+    convert hbase.mul hbase using 1
+    · funext z
+      simp only [Pi.mul_apply]
+      ring_nf
+    · ring
+  have hφ' : deriv φ s ≠ 0 := by
+    rw [hderiv_at.deriv]
+    exact mul_ne_zero two_ne_zero hsne
+  have hcomp := analyticOrderAt_comp_of_deriv_ne_zero (f := xiDescent) hφ hφ'
+  have hxi_ev : xi =ᶠ[nhds s] xiDescent ∘ φ := by
+    filter_upwards with z
+    exact xi_eq_xiDescent z
+  rw [analyticOrderAt_congr hxi_ev]
+  simpa [φ, Function.comp] using hcomp.symm
+
+end RHTower
+
+namespace RHTower
+
+open Complex Filter
+
+/-- Level `k` of the RH ladder is exactly divisibility of the descended divisor on the
+slit plane.  The u-plane constraint transports both zeros and multiplicities, so the
+right-half ladder can be read directly as a slit-plane divisor condition for `xiDescent`. -/
+theorem rhLadder_iff_xiDescent_order_dvd_slitPlane (k : ℕ) :
+    RHLadder k ↔
+      ∀ w ∈ slitPlane, xiDescent w = 0 →
+        ((2 ^ k : ℕ) : ℕ∞) ∣ analyticOrderAt xiDescent w := by
+  constructor
+  · intro hlad w hw hw0
+    let s : ℂ := (1 / 2 : ℂ) + uSqrt w
+    have hs : s ∈ rightHalf := by
+      rw [mem_rightHalf, Complex.add_re]
+      have hcast : (1 / 2 : ℂ).re = (1 / 2 : ℝ) := by norm_num
+      rw [hcast]
+      have hpos := uSqrt_re_pos hw
+      linarith
+    have hxi0 : xi s = 0 := by
+      rw [← xiDescent_of_ne_zero (slitPlane_ne_zero hw)]
+      exact hw0
+    have hord : analyticOrderAt xiDescent w = analyticOrderAt xi s := by
+      have hsquare : (s - (1 / 2 : ℂ)) ^ 2 = w := by
+        dsimp [s]
+        rw [add_sub_cancel_left]
+        exact uSqrt_sq (slitPlane_ne_zero hw)
+      rw [← hsquare]
+      exact analyticOrderAt_xiDescent_center_sq hs
+    rw [hord]
+    exact hlad s hs hxi0
+  · intro hdiv ρ hρ hρ0
+    have hw : (ρ - (1 / 2 : ℂ)) ^ 2 ∈ slitPlane := by
+      refine sq_mem_slitPlane_of_re_pos ?_
+      rw [Complex.sub_re]
+      have hcast : (1 / 2 : ℂ).re = (1 / 2 : ℝ) := by norm_num
+      rw [hcast]
+      linarith [mem_rightHalf.mp hρ]
+    have hw0 : xiDescent ((ρ - (1 / 2 : ℂ)) ^ 2) = 0 := by
+      rw [← xi_eq_xiDescent ρ]
+      exact hρ0
+    have hord := analyticOrderAt_xiDescent_center_sq hρ
+    rw [← hord]
+    exact hdiv _ hw hw0
+
+end RHTower

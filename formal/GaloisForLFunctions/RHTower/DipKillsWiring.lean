@@ -19,9 +19,14 @@ non-resonant births PLUS the creation-rate bound (the (T3) open core) — no
 digamma anchor in between.
 -/
 import GaloisForLFunctions.RHTower.MidCentral
+import GaloisForLFunctions.RHTower.MollifiedDip
+import GaloisForLFunctions.RHTower.ParityCounting
 import GaloisForLFunctions.RHTower.PerturbedDip
+import GaloisForLFunctions.RHTower.ThickDips
 
 namespace RHTower
+
+open MeasureTheory
 
 /-- Concrete per-birth carrier data sufficient to kill a non-resonant birth.
 The polar identity and nonresonance are now discharged from `0 < θ ≤ π/3` by
@@ -116,5 +121,90 @@ theorem midCentral_survivors_le_of_carrierData {pushes : List ℝ}
     (survivingBirths pushes births).length ≤ K :=
   midCentral_survivors_le
     (midCentralInput_of_carrierData hdepth hdata hcreation)
+
+/-- End-to-end MID-central bound from carrier kills and a mollified-dip
+integer budget.  The extra map `hres` is the census link from resonant births
+to the separated sliver centers priced by the kernel estimate. -/
+theorem midCentral_survivors_le_of_carrierData_average_kernel {pushes : List ℝ}
+    {births : List CascadeBirth} {κ : ℝ} {slip : CascadeBirth → ℝ} {K : ℕ}
+    (hdepth : ∀ b ∈ births, 0 < b.depthSq)
+    (hdata : ∀ b ∈ births, ¬ SlipWindow κ slip b → CarrierBirthData pushes b)
+    {h B2 L2 C r U : ℝ} (hh : 0 < h) (hpos : 0 < B2 + 2 * h * L2)
+    (hCU : 0 ≤ C * r ^ 2 * U)
+    {f : ℝ → ℝ} (hf : Continuous f) (hnn : ∀ t, 0 ≤ f t) (S : Finset ℝ)
+    (hres : (resonantBirths (SlipWindow κ slip) births).length ≤ S.card)
+    (hsep : (↑S : Set ℝ).Pairwise fun x y => 3 * h ≤ |x - y|)
+    (havg : ∀ γ ∈ S,
+      ∫ t in Set.Icc (γ - h) (γ + h), f t ≤ 2 * h * B2 + 4 * h ^ 2 * L2)
+    (hker : volume {t | f t ≤ 2 * (B2 + 2 * h * L2)}
+      ≤ ENNReal.ofReal (C * r ^ 2 * U))
+    (hK : C * r ^ 2 * U < (K + 1 : ℝ) * h) :
+    (survivingBirths pushes births).length ≤ K := by
+  have hsliver : S.card ≤ K :=
+    sliverCount_card_le_of_average_kernel hh hpos hCU hf hnn S hsep havg hker hK
+  exact midCentral_survivors_le_of_carrierData hdepth hdata
+    (Nat.le_trans hres hsliver)
+
+end RHTower
+
+namespace RHTower
+
+open MeasureTheory Set
+
+/-- MID-central survivor bound from carrier kills and the parity-selected
+floor-free census.  The link `hres` identifies resonant births with selected
+windows; the analytic content remains the dip mass, floor-disjointness, and
+floor-free kernel budget. -/
+theorem midCentral_survivors_le_of_carrierData_selected_kernel {pushes : List ℝ}
+    {births : List CascadeBirth} {κ : ℝ} {slip : CascadeBirth → ℝ} {K : ℕ}
+    (hdepth : ∀ b ∈ births, 0 < b.depthSq)
+    (hdata : ∀ b ∈ births, ¬ SlipWindow κ slip b → CarrierBirthData pushes b)
+    {E F : Set ℝ} (hE : MeasurableSet E) (hF : MeasurableSet F)
+    {h M : ℝ} (hh : 0 < h) (hM : 0 ≤ M) (S : Finset ℝ)
+    (sel : ℝ → Prop) [DecidablePred sel]
+    (hres : (resonantBirths (SlipWindow κ slip) births).length ≤ (S.filter sel).card)
+    (hsep : (↑S : Set ℝ).Pairwise fun x y => 3 * h ≤ |x - y|)
+    (hdip : ∀ γ ∈ S, sel γ →
+      ENNReal.ofReal h ≤ volume (E ∩ Icc (γ - h) (γ + h)))
+    (hdisj : ∀ γ ∈ S, sel γ → F ∩ Icc (γ - h) (γ + h) = ∅)
+    (hker : volume (E \ F) ≤ ENNReal.ofReal M)
+    (hK : M < (K + 1 : ℝ) * h) :
+    (survivingBirths pushes births).length ≤ K := by
+  have hselected : (S.filter sel).card ≤ K :=
+    selected_sliver_card_le_of_disjoint_kernel hE hF hh hM S sel hsep hdip hdisj hker hK
+  exact midCentral_survivors_le_of_carrierData hdepth hdata (Nat.le_trans hres hselected)
+
+end RHTower
+
+namespace RHTower
+
+open MeasureTheory Set
+
+/-- MID-central survivor bound from carrier kills and the width-refined thick-dip
+census.  The link `hres` identifies resonant births with the separated thick
+centers; the analytic content remains the average-dip, floor-width, and tail
+kernel constraints. -/
+theorem midCentral_survivors_le_of_carrierData_thick_kernel {pushes : List ℝ}
+    {births : List CascadeBirth} {κ : ℝ} {slip : CascadeBirth → ℝ} {K : ℕ}
+    (hdepth : ∀ b ∈ births, 0 < b.depthSq)
+    (hdata : ∀ b ∈ births, ¬ SlipWindow κ slip b → CarrierBirthData pushes b)
+    {h B2 L2 β C r U : ℝ} (hh : 0 < h) (hpos : 0 < B2 + 2 * h * L2)
+    (hβ0 : 0 ≤ β) (hβ1 : β < 1) (hCU : 0 ≤ C * r ^ 2 * U)
+    {f : ℝ → ℝ} (hf : Continuous f) (hnn : ∀ t, 0 ≤ f t) (S : Finset ℝ)
+    (hres : (resonantBirths (SlipWindow κ slip) births).length ≤ S.card)
+    (hsep : (↑S : Set ℝ).Pairwise fun x y => 3 * h ≤ |x - y|)
+    (havg : ∀ γ ∈ S,
+      ∫ t in Icc (γ - h) (γ + h), f t ≤ 2 * h * B2 + 4 * h ^ 2 * L2)
+    {A B : Set ℝ} (hA : MeasurableSet A)
+    (hsub : {t | f t ≤ 2 * (B2 + 2 * h * L2)} ⊆ A ∪ B)
+    (hB : ∀ t : ℝ, volume (B ∩ Icc (t - 2 * h) (t + 2 * h))
+      ≤ ENNReal.ofReal (β * h))
+    (hker : volume A ≤ ENNReal.ofReal (C * r ^ 2 * U))
+    (hK : (4 / (1 - β)) * (C * r ^ 2 * U) < (K + 1 : ℝ) * h) :
+    (survivingBirths pushes births).length ≤ K := by
+  have hthick : S.card ≤ K :=
+    thickSliverCount_card_le_of_average_floor_kernel hh hpos hβ0 hβ1 hCU
+      hf hnn S hsep havg hA hsub hB hker hK
+  exact midCentral_survivors_le_of_carrierData hdepth hdata (Nat.le_trans hres hthick)
 
 end RHTower

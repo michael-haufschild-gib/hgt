@@ -99,3 +99,52 @@ theorem rhLadder_iff_germ_extends (k : ℕ) :
     exact (rhLadder_iff_root k).mpr ⟨g, hg, hgn⟩
 
 end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **RH iff every dyadic Euler-side germ can be continued.** The far-half
+`2^k` roots exist unconditionally from the zero-free Euler side. RH is exactly the
+statement that, at every finite dyadic level, these arithmetically given germs
+continue to analytic roots on `Re s > 1/2`; no coherence of the continued roots is
+assumed. -/
+theorem rh_iff_all_farHalf_germs_extend_all_levels :
+    RiemannHypothesis ↔
+      ∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
+        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+        ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+          Set.EqOn g g₁ farHalf := by
+  constructor
+  · intro hRH k
+    exact (rhLadder_iff_germ_extends k).mp ((rh_iff_forall_ladder.mp hRH) k)
+  · intro hext
+    rw [rh_iff_exists_roots_all_two_powers]
+    intro k
+    obtain ⟨g₁, hg₁, hg₁n⟩ := exists_farHalf_root k
+    obtain ⟨g, hg, hgn, -⟩ := hext k g₁ hg₁ hg₁n
+    exact ⟨g, hg, hgn⟩
+
+/-- **RH iff one dyadic Euler-side germ continues at each level.** Since the
+far-half germ exists unconditionally, the universal germ-extension criterion has a
+certificate form: for every `k`, it is enough to exhibit one far-half `2^k` root and
+one analytic continuation of it to the right half-plane. -/
+theorem rh_iff_exists_farHalf_germ_extension_all_levels :
+    RiemannHypothesis ↔
+      ∀ k : ℕ, ∃ g₁ g,
+        AnalyticOnNhd ℂ g₁ farHalf ∧ (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) ∧
+        AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+          Set.EqOn g g₁ farHalf := by
+  constructor
+  · intro hRH k
+    obtain ⟨g₁, hg₁, hg₁n⟩ := exists_farHalf_root k
+    obtain ⟨g, hg, hgn, heq⟩ :=
+      (rh_iff_all_farHalf_germs_extend_all_levels.mp hRH) k g₁ hg₁ hg₁n
+    exact ⟨g₁, g, hg₁, hg₁n, hg, hgn, heq⟩
+  · intro hext
+    rw [rh_iff_exists_roots_all_two_powers]
+    intro k
+    obtain ⟨g₁, g, hg₁, hg₁n, hg, hgn, heq⟩ := hext k
+    exact ⟨g, hg, hgn⟩
+
+end RHTower

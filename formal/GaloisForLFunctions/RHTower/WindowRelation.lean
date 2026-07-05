@@ -21,6 +21,7 @@ relation between the two boundary invariants (whose dictionary readings — deck
 at level 2^{k+1} and seam ledger at level k+1 — are banked separately).
 -/
 import GaloisForLFunctions.RHTower.Reflection
+import GaloisForLFunctions.RHTower.XiDeck
 
 namespace RHTower
 
@@ -157,5 +158,102 @@ theorem pair_window_relation_iff {k mult : ℕ} {ρ₀ : ℂ} (hoff : 1 / 2 < ρ
   rw [hD, hfilter, Finset.sum_empty, Nat.modEq_zero_iff_dvd,
     show mult + mult = 2 * mult from by ring, pow_succ, mul_comm (2 ^ k) 2,
     mul_dvd_mul_iff_left (two_ne_zero)]
+
+end RHTower
+
+namespace RHTower
+
+open Complex Finset
+
+/-- **RH from all two-point window relations.**  It is enough to know that every
+right-half ξ-zero, paired with its critical-line reflection, satisfies the two-point
+window relation at every dyadic level.  The relation reads `2^k ∣ mult` by
+`pair_window_relation_iff`; all levels force the positive finite local order to vanish,
+which is impossible for an actual zero. -/
+theorem rh_iff_pair_window_relation_all_levels :
+    RiemannHypothesis ↔
+      ∀ k : ℕ, ∀ ρ ∈ rightHalf, xi ρ = 0 →
+        (∑ z ∈ ({ρ, lineReflect ρ} : Finset ℂ),
+            (fun _ => (analyticOrderAt xi ρ).toNat) z ≡
+          ∑ z ∈ ({ρ, lineReflect ρ} : Finset ℂ).filter (fun z => z.re = 1 / 2),
+            (fun _ => (analyticOrderAt xi ρ).toNat) z [MOD 2 ^ (k + 1)]) := by
+  constructor
+  · intro hRH k ρ hρ hzero
+    exact False.elim ((rh_iff_xi_ne_zero_right.mp hRH) ρ hρ hzero)
+  · intro hrel
+    rw [rh_iff_xi_ne_zero_right]
+    intro ρ hρ hzero
+    let m : ℕ := (analyticOrderAt xi ρ).toNat
+    have hdvd : ∀ k : ℕ, 2 ^ k ∣ m := by
+      intro k
+      exact (pair_window_relation_iff (k := k) (mult := m) (ρ₀ := ρ) (mem_rightHalf.mp hρ)).mp
+        (hrel k ρ hρ hzero)
+    have hm0 : m = 0 := by
+      by_contra hm0
+      have h2 : 2 ^ m ≤ m := Nat.le_of_dvd (Nat.pos_of_ne_zero hm0) (hdvd m)
+      have h3 : m < 2 ^ m := Nat.lt_pow_self (by norm_num)
+      omega
+    have hm : (m : ℕ∞) = analyticOrderAt xi ρ := ENat.coe_toNat (xi_orderAt_ne_top ρ)
+    have hne : analyticOrderAt xi ρ ≠ 0 :=
+      analyticOrderAt_ne_zero.mpr ⟨xi_analyticOnNhd_univ ρ (Set.mem_univ ρ), hzero⟩
+    rw [← hm, hm0] at hne
+    exact hne rfl
+
+end RHTower
+
+namespace RHTower
+
+open Complex Finset
+
+/-- **RH from all finite reflection-closed window relations.**  The finite-window
+congruence surface is complete: if every finite reflection-closed ξ-zero
+configuration satisfies the window relation at every dyadic level, then there are no
+right-half ξ-zeros.  The reverse direction is `xi_window_relation_of_ladder` applied
+to the RH ladder. -/
+theorem rh_iff_all_finite_window_relations_all_levels :
+    RiemannHypothesis ↔
+      ∀ k : ℕ, ∀ (t : Finset ℂ) (m : ℂ → ℕ),
+        (∀ z ∈ t, xi z = 0) →
+        (∀ z ∈ t, (m z : ℕ∞) = analyticOrderAt xi z) →
+        (∀ z ∈ t, lineReflect z ∈ t) →
+        (∑ z ∈ t, m z ≡
+          ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z [MOD 2 ^ (k + 1)]) := by
+  constructor
+  · intro hRH k t m hzero hm hclosed
+    exact xi_window_relation_of_ladder ((rh_iff_forall_ladder.mp hRH) k) hzero hm hclosed
+  · intro hwin
+    refine rh_iff_pair_window_relation_all_levels.mpr ?_
+    intro k ρ hρ hzero
+    let m : ℕ := (analyticOrderAt xi ρ).toNat
+    have hmρ : (m : ℕ∞) = analyticOrderAt xi ρ := ENat.coe_toNat (xi_orderAt_ne_top ρ)
+    have horder_reflect : analyticOrderAt xi (lineReflect ρ) = analyticOrderAt xi ρ := by
+      simp only [lineReflect]
+      rw [xi_orderAt_one_sub, xi_orderAt_conj]
+    have hzero_reflect : xi (lineReflect ρ) = 0 := by
+      simp only [lineReflect]
+      rw [xi_one_sub, xi_conj, hzero, map_zero]
+    have hzero_pair : ∀ z ∈ ({ρ, lineReflect ρ} : Finset ℂ), xi z = 0 := by
+      intro z hz
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hz
+      rcases hz with rfl | rfl
+      · exact hzero
+      · exact hzero_reflect
+    have hm_pair : ∀ z ∈ ({ρ, lineReflect ρ} : Finset ℂ),
+        ((fun _ => m) z : ℕ∞) = analyticOrderAt xi z := by
+      intro z hz
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hz
+      rcases hz with rfl | rfl
+      · exact hmρ
+      · rw [horder_reflect]
+        exact hmρ
+    have hclosed_pair : ∀ z ∈ ({ρ, lineReflect ρ} : Finset ℂ),
+        lineReflect z ∈ ({ρ, lineReflect ρ} : Finset ℂ) := by
+      intro z hz
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hz ⊢
+      rcases hz with rfl | rfl
+      · exact Or.inr rfl
+      · rw [lineReflect_involutive]
+        exact Or.inl rfl
+    exact hwin k ({ρ, lineReflect ρ} : Finset ℂ) (fun _ => m) hzero_pair hm_pair hclosed_pair
 
 end RHTower

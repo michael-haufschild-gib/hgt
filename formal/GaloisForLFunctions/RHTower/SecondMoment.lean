@@ -36,7 +36,7 @@ import Mathlib
 
 namespace RHTower
 
-open Complex
+open Complex Filter MeasureTheory Topology
 
 /-- A single term of the Dirichlet polynomial: `a n · n^{-it} = a n · exp(-it·log n)`. -/
 noncomputable def cterm (a : ℕ → ℝ) (t : ℝ) (n : ℕ) : ℂ :=
@@ -88,6 +88,29 @@ theorem normSq_dpoly (a : ℕ → ℝ) (s : Finset ℕ) (t : ℝ) :
   apply Finset.sum_congr rfl
   intro n _
   exact cterm_mul_conj_re a t m n
+
+/-- Positive interior sample plus continuity and nonnegativity gives positive interval
+mass. This is the local bridge from visible covariance to an `L²`-mass statement. -/
+theorem intervalIntegral_pos_of_continuous_nonneg_of_exists_pos {f : ℝ → ℝ} {A B : ℝ}
+    (hf : Continuous f) (hnonneg : ∀ t ∈ Set.Icc A B, 0 ≤ f t)
+    (hpos : ∃ t ∈ Set.Ioo A B, 0 < f t) :
+    0 < ∫ t in A..B, f t := by
+  obtain ⟨t₀, ht₀, htpos⟩ := hpos
+  have hAB : A < B := lt_trans ht₀.1 ht₀.2
+  have hfi : IntervalIntegrable f MeasureTheory.volume A B := hf.intervalIntegrable A B
+  have hnonneg_ae : 0 ≤ᶠ[ae (MeasureTheory.volume.restrict (Set.uIoc A B))] f := by
+    rw [EventuallyLE, Set.uIoc_of_le hAB.le, MeasureTheory.ae_restrict_iff' measurableSet_Ioc]
+    filter_upwards with x hx
+    exact hnonneg x ⟨le_of_lt hx.1, hx.2⟩
+  have hsupp_pos : 0 < MeasureTheory.volume (Function.support f ∩ Set.Ioc A B) := by
+    have hne_ev : ∀ᶠ x in 𝓝 t₀, f x ≠ 0 := hf.continuousAt.eventually_ne htpos.ne'
+    have hIoo_ev : Set.Ioo A B ∈ 𝓝 t₀ := Ioo_mem_nhds ht₀.1 ht₀.2
+    have hnhds : Function.support f ∩ Set.Ioc A B ∈ 𝓝 t₀ := by
+      filter_upwards [hne_ev, hIoo_ev] with x hxne hxIoo
+      exact ⟨Function.mem_support.mpr hxne, Set.Ioo_subset_Ioc_self hxIoo⟩
+    exact MeasureTheory.Measure.measure_pos_of_mem_nhds MeasureTheory.volume hnhds
+  rw [intervalIntegral.integral_pos_iff_support_of_nonneg_ae' hnonneg_ae hfi]
+  exact ⟨hAB, hsupp_pos⟩
 
 /-- The single-frequency cosine integral over the window `[T, T+U]`:
 `U` on the diagonal `L = 0`, else the bounded oscillatory `(sin − sin)/L`. -/
@@ -208,6 +231,32 @@ theorem offDiagonal_abs_le (a : ℕ → ℝ) (s : Finset ℕ) (T U : ℝ)
         rw [hre]
         exact mul_le_mul_of_nonneg_left hcos (abs_nonneg _)
 
+/-- **Second-moment lower bound.** The exact diagonal main term minus the explicit
+off-diagonal absolute bound is a certified lower bound for the interval mass. -/
+theorem secondMoment_lower_bound (a : ℕ → ℝ) (s : Finset ℕ) (T U : ℝ)
+    (hs : ∀ n ∈ s, 1 ≤ n) :
+    U * (∑ m ∈ s, (a m) ^ 2)
+        - ∑ m ∈ s, ∑ n ∈ s.erase m, 2 * |a m * a n| / |Real.log n - Real.log m|
+      ≤ ∫ t in T..(T + U), ‖dpoly a s t‖ ^ 2 := by
+  let R := ∑ m ∈ s, ∑ n ∈ s.erase m,
+    a m * a n * cosInt (Real.log n - Real.log m) T U
+  let B := ∑ m ∈ s, ∑ n ∈ s.erase m, 2 * |a m * a n| / |Real.log n - Real.log m|
+  have hR : -B ≤ R := (abs_le.mp (offDiagonal_abs_le a s T U hs)).1
+  rw [secondMoment_meanValue]
+  dsimp only [R, B] at hR ⊢
+  linarith
+
+/-- If the diagonal main term strictly dominates the explicit off-diagonal bound,
+then the second moment on the interval is strictly positive. -/
+theorem secondMoment_pos_of_offDiagonal_bound_lt_diagonal
+    (a : ℕ → ℝ) (s : Finset ℕ) (T U : ℝ) (hs : ∀ n ∈ s, 1 ≤ n)
+    (hdom :
+      (∑ m ∈ s, ∑ n ∈ s.erase m, 2 * |a m * a n| / |Real.log n - Real.log m|)
+        < U * (∑ m ∈ s, (a m) ^ 2)) :
+    0 < ∫ t in T..(T + U), ‖dpoly a s t‖ ^ 2 := by
+  have hlow := secondMoment_lower_bound a s T U hs
+  linarith
+
 /-- Harmonic lower bound `log(N+1) ≤ ∑_{m=1}^N 1/m` (by telescoping `log`). -/
 theorem harmonic_Icc_ge_log (N : ℕ) :
     Real.log ((N : ℝ) + 1) ≤ ∑ m ∈ Finset.Icc 1 N, (1 : ℝ) / (m : ℝ) := by
@@ -252,6 +301,43 @@ the `√(log N)` RMS amplitude of `F_N(½+it)`. -/
 theorem secondMoment_mainTerm_ge_log (N : ℕ) (U : ℝ) (hU : 0 ≤ U) :
     U * Real.log ((N : ℝ) + 1) ≤ U * (∑ m ∈ Finset.Icc 1 N, (1 : ℝ) / (m : ℝ)) :=
   mul_le_mul_of_nonneg_left (harmonic_Icc_ge_log N) hU
+
+/-- The matched `1/√n` carrier has interval mass at least its logarithmic diagonal
+scale minus the explicit off-diagonal bound. -/
+theorem secondMoment_lower_bound_sqrt_log (N : ℕ) (T U : ℝ) (hU : 0 ≤ U) :
+    U * Real.log ((N : ℝ) + 1)
+        - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+            2 * |(1 / Real.sqrt m) * (1 / Real.sqrt n)| / |Real.log n - Real.log m|
+      ≤ ∫ t in T..(T + U),
+          ‖dpoly (fun n => 1 / Real.sqrt n) (Finset.Icc 1 N) t‖ ^ 2 := by
+  have hs : ∀ n ∈ Finset.Icc 1 N, 1 ≤ n := by
+    intro n hn
+    exact (Finset.mem_Icc.mp hn).1
+  have hsq : ∑ m ∈ Finset.Icc 1 N, (1 / Real.sqrt m) ^ 2
+      = ∑ m ∈ Finset.Icc 1 N, (1 : ℝ) / (m : ℝ) := by
+    apply Finset.sum_congr rfl
+    intro m hm
+    exact sq_sqrt_inv m (Finset.mem_Icc.mp hm).1
+  have hmain : U * Real.log ((N : ℝ) + 1)
+      ≤ U * (∑ m ∈ Finset.Icc 1 N, (1 / Real.sqrt m) ^ 2) := by
+    rw [hsq]
+    exact secondMoment_mainTerm_ge_log N U hU
+  have hlow := secondMoment_lower_bound (fun n => 1 / Real.sqrt n) (Finset.Icc 1 N) T U hs
+  linarith
+
+/-- Positivity criterion for the matched `1/√n` carrier from the logarithmic
+diagonal scale: if the explicit off-diagonal budget is below `U log(N+1)`, the
+interval second moment is strictly positive. -/
+theorem secondMoment_pos_sqrt_of_offDiagonal_bound_lt_log (N : ℕ) (T U : ℝ)
+    (hU : 0 ≤ U)
+    (hdom :
+      (∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+        2 * |(1 / Real.sqrt m) * (1 / Real.sqrt n)| / |Real.log n - Real.log m|)
+        < U * Real.log ((N : ℝ) + 1)) :
+    0 < ∫ t in T..(T + U),
+      ‖dpoly (fun n => 1 / Real.sqrt n) (Finset.Icc 1 N) t‖ ^ 2 := by
+  have hlow := secondMoment_lower_bound_sqrt_log N T U hU
+  linarith
 
 /-- **The σ-profile.** For general `σ`, the carrier `a n = n^{-σ}` (so `F = F_N(σ+it)`)
 has diagonal main term the covariance profile `K(σ) = ∑_{n≤N} n^{-2σ}`. This profile —

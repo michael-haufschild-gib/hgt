@@ -67,3 +67,47 @@ every ahead-distance at the new equilibrium exceeds its lattice counterpart and 
 decreasing.] If that termwise variant survives scrutiny, (b) and (c) generalize verbatim
 and (LEG) closes for nondecreasing-gap one-sided fields — which is P-J's measured regime
 and doc 25's proved tracking complement.
+
+---
+**LEAN PROGRESS 2026-07-05 (tasks #138/#142):** the coth/csch infrastructure and the
+field-monotonicity engine of step (b) are now machine-checked (axiom-clean):
+
+- `formal/GaloisForLFunctions/RHTower/CothInfra.lean` — `rcoth`/`rcsch`/`rphi` (not in
+  mathlib), built from `sinh`; `one_lt_rcoth_of_pos` (the swap-term `coth>1` bound),
+  `rcoth_strictAntiOn_pos`, `rcsch_strictAntiOn_pos`, `rphi_strictAntiOn_pos` (all via the
+  `sinh` subtraction formula + `sinh` monotonicity, no derivatives).
+- `formal/GaloisForLFunctions/RHTower/SpurLattice.lean` — `cothField` = `Σ coth((x−t_k)/2)`;
+  `cothField_strictAntiOn` (field strictly decreasing on any pole-free gap ⟹
+  `cothField_eq_unique`, the gap equilibrium is UNIQUE); `swap_terms_gt_one` (both the added
+  behind-term and the removed ahead-term exceed `1`, the doc-29 `ΔH < −2` swap engine).
+
+Remaining to close the lattice theorem in Lean: equilibrium existence (IVT on the field),
+the `s`-march assembly (monotone constraint + swap step), and `dW/ds<0` (the
+disjoint-interval `rphi` domination, §29(c)) — `rphi_strictAntiOn_pos` is its per-term
+input, banked.
+
+**LEAN PROGRESS 2026-07-05 (cont.):** the equilibrium layer and the exact energy–field
+identity are now machine-checked in `SpurLattice.lean` (axiom-clean):
+- `rcoth_continuousAt`, `cothField_continuousOn` — field continuity on pole-free gaps;
+- `cothField_exists_equilibrium` (IVT) + `cothField_eq_unique` — the gap equilibrium EXISTS
+  and is UNIQUE;
+- `rcoth_hasDerivAt` (`coth' = −csch²`), `spurEnergy` (`W = ¼Σcsch²`), and
+  `cothField_hasDerivAt` — **the exact identity `field′ = −2·W`** (doc 28 §5c `σ̇₁ = −2W̃`),
+  reducing (S-mono) `W(t*_{i+1}) > W(t*_i)` to a slope statement `field′(t*_{i+1}) <
+  field′(t*_i)`;
+- `equilibrium_lt_of_field_lt` — the s-march (field depressed ⟹ equilibrium moves left).
+Remaining for the full constant-δ lattice (S-mono): W-monotonicity along the equilibria
+(the doc-29(c) disjoint-interval `rphi` domination; `rphi_strictAntiOn_pos` is its per-term
+input, banked) + assembly.
+
+**LEAN MILESTONE 2026-07-05: constant-δ lattice (S-mono) PROVEN (no-overhang range).**
+`SpurLattice.lean` (axiom-clean): `latticeEnergyS` (the s-parametrized reduced energy),
+`latticeEnergyS_hasDerivAt` (exact `dW/ds = ¼[Σφ_behind − Σφ_ahead]`),
+`latticeEnergyS_deriv_neg` (`dW/ds < 0` for `1≤N≤M`, via `rphi_paired_sum_gt` + the extra
+ahead charges), and **`latticeEnergyS_strictAntiOn`** — `W(s)` STRICTLY DECREASING in the
+near-ahead distance `s∈(0,δ/2)`. With the s-march (`equilibrium_gt_of_field_gt`: the
+equilibrium tightens toward the ahead pole, so `s` shrinks) this is the reader-exactness
+monotonicity `S_{i+1} > S_i` — UNCONDITIONAL wherever ahead charges ≥ behind (`M≥N`, the
+inner/mid range). The OUTER range (`N>M`) remains: it adds the far-behind overhang
+`Σ_{m=M}^{N-1}φ((δ-s+mδ)/2)`, dominated by its exponential tail against the cubic near term
+`φ(s/2)` — the remaining Lean piece (φ small-arg lower + large-arg exponential bounds).

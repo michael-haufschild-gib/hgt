@@ -24,6 +24,7 @@ excludes the floor at an O(1) cost:
 -/
 import Mathlib
 import GaloisForLFunctions.RHTower.MollifiedDip
+import GaloisForLFunctions.RHTower.RelayLedger
 
 namespace RHTower
 
@@ -395,5 +396,72 @@ theorem thickSliverCount_le_of_average_floor_kernel
     exact hbound
   have hreal := ENNReal.toReal_le_of_le_ofReal (mul_nonneg hcost_nonneg hCU) hofReal
   rwa [ENNReal.toReal_ofReal (by positivity)] at hreal
+
+end RHTower
+
+namespace RHTower
+
+open MeasureTheory Set
+
+/-- **Integer width-refined census.** The thick-dip estimate gives the
+natural-number count once its real tail budget lies strictly below the next
+integer multiple of the per-dip width. -/
+theorem thickSliverCount_card_le_of_average_floor_kernel
+    {h B2 L2 β C r U : ℝ} (hh : 0 < h) (hpos : 0 < B2 + 2 * h * L2)
+    (hβ0 : 0 ≤ β) (hβ1 : β < 1) (hCU : 0 ≤ C * r ^ 2 * U)
+    {f : ℝ → ℝ} (hf : Continuous f) (hnn : ∀ t, 0 ≤ f t) (S : Finset ℝ)
+    (hsep : (↑S : Set ℝ).Pairwise fun x y => 3 * h ≤ |x - y|)
+    (havg : ∀ γ ∈ S,
+      ∫ t in Icc (γ - h) (γ + h), f t ≤ 2 * h * B2 + 4 * h ^ 2 * L2)
+    {A B : Set ℝ} (hA : MeasurableSet A)
+    (hsub : {t | f t ≤ 2 * (B2 + 2 * h * L2)} ⊆ A ∪ B)
+    (hB : ∀ t : ℝ, volume (B ∩ Icc (t - 2 * h) (t + 2 * h))
+      ≤ ENNReal.ofReal (β * h))
+    (hker : volume A ≤ ENNReal.ofReal (C * r ^ 2 * U))
+    {K : ℕ} (hK : (4 / (1 - β)) * (C * r ^ 2 * U) < (K + 1 : ℝ) * h) :
+    S.card ≤ K := by
+  have hcount := thickSliverCount_le_of_average_floor_kernel hh hpos hβ0 hβ1 hCU
+    hf hnn S hsep havg hA hsub hB hker
+  have hcard_lt_real : (S.card : ℝ) < (K + 1 : ℝ) := by
+    have hlt : (S.card : ℝ) * h < (K + 1 : ℝ) * h := lt_of_le_of_lt hcount hK
+    nlinarith
+  have hcard_lt_nat : S.card < K + 1 := by
+    exact_mod_cast hcard_lt_real
+  exact Nat.lt_succ_iff.mp hcard_lt_nat
+
+end RHTower
+
+namespace RHTower
+
+open MeasureTheory Set
+
+/-- Relay spread obstruction from the width-refined thick-dip census.  The map
+`hup` is the explicit bridge from upcrossings below `M` to the separated thick
+centers; the thick floor/tail budget then supplies the upcross bound consumed
+by `spread_lt_of_upcross_budget`. -/
+theorem spread_lt_of_upcross_thick_kernel {D₀ : ℝ} {pushes : List ℝ} {ℓ k M K : ℕ}
+    {levels : ℕ → ℕ} [DecidablePred (UpcrossAt D₀ pushes)]
+    (hD₀ : D₀ ≤ 0) (hexc : ExcursionBound D₀ pushes ℓ)
+    (hgap : ∀ i, i < k → levels i + ℓ ≤ levels (i + 1))
+    (hpres : ∀ i, i ≤ k → 0 < signedDepth D₀ pushes (levels i))
+    (hM : levels k ≤ M)
+    {h B2 L2 β C r U : ℝ} (hh : 0 < h) (hpos : 0 < B2 + 2 * h * L2)
+    (hβ0 : 0 ≤ β) (hβ1 : β < 1) (hCU : 0 ≤ C * r ^ 2 * U)
+    {f : ℝ → ℝ} (hf : Continuous f) (hnn : ∀ t, 0 ≤ f t) (S : Finset ℝ)
+    (hup : ((Finset.range M).filter (UpcrossAt D₀ pushes)).card ≤ S.card)
+    (hsep : (↑S : Set ℝ).Pairwise fun x y => 3 * h ≤ |x - y|)
+    (havg : ∀ γ ∈ S,
+      ∫ t in Icc (γ - h) (γ + h), f t ≤ 2 * h * B2 + 4 * h ^ 2 * L2)
+    {A B : Set ℝ} (hA : MeasurableSet A)
+    (hsub : {t | f t ≤ 2 * (B2 + 2 * h * L2)} ⊆ A ∪ B)
+    (hB : ∀ t : ℝ, volume (B ∩ Icc (t - 2 * h) (t + 2 * h))
+      ≤ ENNReal.ofReal (β * h))
+    (hker : volume A ≤ ENNReal.ofReal (C * r ^ 2 * U))
+    (hK : (4 / (1 - β)) * (C * r ^ 2 * U) < (K + 1 : ℝ) * h) :
+    k < K := by
+  have hthick : S.card ≤ K :=
+    thickSliverCount_card_le_of_average_floor_kernel hh hpos hβ0 hβ1 hCU
+      hf hnn S hsep havg hA hsub hB hker hK
+  exact spread_lt_of_upcross_budget hD₀ hexc hgap hpres hM (Nat.le_trans hup hthick)
 
 end RHTower

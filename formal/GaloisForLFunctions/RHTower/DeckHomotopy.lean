@@ -312,3 +312,107 @@ theorem deckClass_deformation_invariant_of_pos_chain
     hclose hFNP hFNM
 
 end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **Relative-error charge conservation.** For a positive finite deformation chain,
+relative `r < 1` closeness at every step implies deck-class conservation and gives
+the U0 principal-log bound for each correction ratio. -/
+theorem deckClass_deformation_invariant_of_relative_pos_chain
+    {F : ℕ → ℂ → ℂ} {G₁ G₂ K₁ K₂ : ℂ → ℂ}
+    {a : ℂ} {R r : ℝ} {n N : ℕ} (hR : 0 < R) (hn : 0 < n) (hN : 0 < N)
+    (hr : r < 1)
+    (hFan : ∀ i, 0 < i → i ≤ N → AnalyticOnNhd ℂ (F i) (chartR a R ∪ chartL a R))
+    (hG₁ : AnalyticOnNhd ℂ G₁ (chartR a R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartL a R))
+    (hK₁ : AnalyticOnNhd ℂ K₁ (chartR a R)) (hK₂ : AnalyticOnNhd ℂ K₂ (chartL a R))
+    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ n = F 0 z)
+    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ n = F 0 z)
+    (hpK₁ : ∀ z ∈ chartR a R, K₁ z ^ n = F N z)
+    (hpK₂ : ∀ z ∈ chartL a R, K₂ z ^ n = F N z)
+    (hbase : ∀ i, i < N → ∀ z ∈ chartR a R ∪ chartL a R, F i z ≠ 0)
+    (hrel : ∀ i, i < N →
+      ∀ z ∈ chartR a R ∪ chartL a R, ‖(F (i + 1) z - F i z) / F i z‖ ≤ r) :
+    deckClass K₁ K₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) =
+        deckClass G₁ G₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) ∧
+      ∀ i, i < N → ∀ z ∈ chartR a R ∪ chartL a R,
+        ‖Complex.log (F (i + 1) z / F i z)‖ ≤
+          (1 - r)⁻¹ * ‖(F (i + 1) z - F i z) / F i z‖ := by
+  have hclose : ∀ i, i < N →
+      ∀ z ∈ chartR a R ∪ chartL a R, ‖F (i + 1) z - F i z‖ < ‖F i z‖ := by
+    intro i hi z hz
+    have hFi0 : F i z ≠ 0 := hbase i hi z hz
+    have hnormFi : 0 < ‖F i z‖ := norm_pos_iff.mpr hFi0
+    have hdiv : ‖F (i + 1) z - F i z‖ / ‖F i z‖ ≤ r := by
+      simpa [norm_div] using hrel i hi z hz
+    have hmul : ‖F (i + 1) z - F i z‖ ≤ r * ‖F i z‖ :=
+      (div_le_iff₀ hnormFi).mp hdiv
+    exact lt_of_le_of_lt hmul (by simpa using mul_lt_mul_of_pos_right hr hnormFi)
+  constructor
+  · exact deckClass_deformation_invariant_of_pos_chain hR hn hN hFan hG₁ hG₂ hK₁ hK₂
+      hpG₁ hpG₂ hpK₁ hpK₂ hclose
+  · intro i hi z hz
+    exact ratio_log_norm_le_of_relative_close (f := F (i + 1)) (g := F i) hr
+      (hbase i hi z hz) (hrel i hi z hz)
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Relative `r < 1` control propagates nonvanishing through a finite chain.  Once
+level `0` is nonzero on a set, every later level up to `N` is nonzero there, because
+each step stays strictly inside the previous value's norm. -/
+theorem relative_chain_nonzero_of_base {F : ℕ → ℂ → ℂ} {S : Set ℂ} {r : ℝ} {N : ℕ}
+    (hr : r < 1) (hF0 : ∀ z ∈ S, F 0 z ≠ 0)
+    (hrel : ∀ i, i < N → ∀ z ∈ S, ‖(F (i + 1) z - F i z) / F i z‖ ≤ r) :
+    ∀ i, i ≤ N → ∀ z ∈ S, F i z ≠ 0 := by
+  intro i hi
+  induction i with
+  | zero =>
+      exact hF0
+  | succ i ih =>
+      intro z hz
+      have hiN : i < N := Nat.lt_of_succ_le hi
+      have hprev : F i z ≠ 0 := ih (Nat.le_of_succ_le hi) z hz
+      have hnormFi : 0 < ‖F i z‖ := norm_pos_iff.mpr hprev
+      have hdiv : ‖F (i + 1) z - F i z‖ / ‖F i z‖ ≤ r := by
+        simpa [norm_div] using hrel i hiN z hz
+      have hmul : ‖F (i + 1) z - F i z‖ ≤ r * ‖F i z‖ :=
+        (div_le_iff₀ hnormFi).mp hdiv
+      exact left_ne_zero_of_close (f := F (i + 1)) (g := F i) (z := z)
+        (lt_of_le_of_lt hmul (by simpa using mul_lt_mul_of_pos_right hr hnormFi))
+
+/-- **Relative-error charge conservation with chain nonvanishing discharged from
+level 0.** The caller supplies only a level-0 nonvanishing certificate; relative
+`r < 1` control propagates the nonvanishing needed by the existing U0 log-bound
+transport, which then gives deck-class conservation and the same principal-log bounds. -/
+theorem deckClass_deformation_invariant_of_relative_base_chain
+    {F : ℕ → ℂ → ℂ} {G₁ G₂ K₁ K₂ : ℂ → ℂ}
+    {a : ℂ} {R r : ℝ} {n N : ℕ} (hR : 0 < R) (hn : 0 < n) (hN : 0 < N)
+    (hr : r < 1)
+    (hFan : ∀ i, 0 < i → i ≤ N → AnalyticOnNhd ℂ (F i) (chartR a R ∪ chartL a R))
+    (hG₁ : AnalyticOnNhd ℂ G₁ (chartR a R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartL a R))
+    (hK₁ : AnalyticOnNhd ℂ K₁ (chartR a R)) (hK₂ : AnalyticOnNhd ℂ K₂ (chartL a R))
+    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ n = F 0 z)
+    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ n = F 0 z)
+    (hpK₁ : ∀ z ∈ chartR a R, K₁ z ^ n = F N z)
+    (hpK₂ : ∀ z ∈ chartL a R, K₂ z ^ n = F N z)
+    (hF0 : ∀ z ∈ chartR a R ∪ chartL a R, F 0 z ≠ 0)
+    (hrel : ∀ i, i < N →
+      ∀ z ∈ chartR a R ∪ chartL a R, ‖(F (i + 1) z - F i z) / F i z‖ ≤ r) :
+    deckClass K₁ K₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) =
+        deckClass G₁ G₂ (a + ((R / 2 : ℝ) : ℂ) * I) (a - ((R / 2 : ℝ) : ℂ) * I) ∧
+      ∀ i, i < N → ∀ z ∈ chartR a R ∪ chartL a R,
+        ‖Complex.log (F (i + 1) z / F i z)‖ ≤
+          (1 - r)⁻¹ * ‖(F (i + 1) z - F i z) / F i z‖ := by
+  have hbase : ∀ i, i < N → ∀ z ∈ chartR a R ∪ chartL a R, F i z ≠ 0 := by
+    intro i hi
+    exact relative_chain_nonzero_of_base (F := F) (S := chartR a R ∪ chartL a R)
+      hr hF0 hrel i (Nat.le_of_lt hi)
+  exact deckClass_deformation_invariant_of_relative_pos_chain hR hn hN hr hFan hG₁ hG₂
+    hK₁ hK₂ hpG₁ hpG₂ hpK₁ hpK₂ hbase hrel
+
+end RHTower

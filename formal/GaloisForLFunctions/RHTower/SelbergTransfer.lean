@@ -99,6 +99,23 @@ theorem sublevel_transfer_subset {α : Type*} (g zeta : α → ℂ) (B : Set α)
   have h3 := hprox t htB
   linarith
 
+/-- **The composed per-block transfer.** Carrier-small on a block is covered by
+the global ζ-sublevel set together with the taper exceptional set. This is the
+local Selberg-transfer coverage produced by `sublevel_split_subset` followed by
+`sublevel_transfer_subset`. -/
+theorem sublevel_split_transfer_subset {α : Type*} (Z g τ zeta : α → ℂ) (B : Set α)
+    (A0 lam eps : ℝ) (hA0 : 0 < A0)
+    (hid : ∀ t, Z t = (A0 : ℂ) * g t + τ t)
+    (hprox : ∀ t ∈ B, ‖g t - zeta t‖ ≤ eps) :
+    {t | ‖Z t‖ ≤ A0 * lam} ∩ B
+      ⊆ {t | ‖zeta t‖ ≤ 2 * lam + eps} ∪
+        ({t | A0 * lam ≤ ‖τ t‖} ∩ B) := by
+  intro t ht
+  have hsplit := sublevel_split_subset Z g τ A0 lam hA0 hid ht.1
+  rcases hsplit with hg | hτ
+  · exact Or.inl (sublevel_transfer_subset g zeta B lam eps hprox ⟨hg, ht.2⟩)
+  · exact Or.inr ⟨hτ, ht.2⟩
+
 /-- **The blockwise aggregation (doc 70 §2).** If on each block `B j` the
 small-set `E j` is covered by ONE global set `F` (the ζ-sublevel set fed to
 Selberg) together with a per-block exceptional set `G j` (taper Chebyshev),
@@ -116,5 +133,25 @@ theorem blockwise_transfer_measure_le {α : Type*} [MeasurableSpace α]
     _ ≤ μ F + μ (⋃ j, (G j ∩ B j)) := measure_union_le _ _
     _ ≤ μ F + ∑' j, μ (G j ∩ B j) :=
         add_le_add le_rfl (measure_iUnion_le _)
+
+/-- **The full blockwise Selberg-transfer bound.** The algebraic split, the
+per-block ζ-approximation, and the global aggregation are composed into one
+measure endpoint: all carrier-small blocks are bounded by one ζ-sublevel set
+plus the sum of taper exceptional measures. -/
+theorem blockwise_sublevel_transfer_measure_le {α : Type*} [MeasurableSpace α]
+    {ι : Type*} [Countable ι] (μ : Measure α)
+    (Z g τ : ι → α → ℂ) (zeta : α → ℂ) (B : ι → Set α)
+    (A0 lam eps : ℝ) (hA0 : 0 < A0)
+    (hid : ∀ j t, Z j t = (A0 : ℂ) * g j t + τ j t)
+    (hprox : ∀ j, ∀ t ∈ B j, ‖g j t - zeta t‖ ≤ eps) :
+    μ (⋃ j, {t | ‖Z j t‖ ≤ A0 * lam} ∩ B j)
+      ≤ μ {t | ‖zeta t‖ ≤ 2 * lam + eps}
+        + ∑' j, μ ({t | A0 * lam ≤ ‖τ j t‖} ∩ B j) :=
+  blockwise_transfer_measure_le μ
+    (fun j => {t | ‖Z j t‖ ≤ A0 * lam})
+    (fun j => {t | A0 * lam ≤ ‖τ j t‖})
+    B {t | ‖zeta t‖ ≤ 2 * lam + eps}
+    fun j => sublevel_split_transfer_subset (Z j) (g j) (τ j) zeta (B j)
+      A0 lam eps hA0 (hid j) (hprox j)
 
 end RHTower

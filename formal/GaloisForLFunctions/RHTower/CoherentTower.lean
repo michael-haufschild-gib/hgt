@@ -92,3 +92,70 @@ theorem coherentTower_iff_nonvanishing {f : ℂ → ℂ} {U : Set ℂ}
       ring
 
 end RHTower
+
+namespace RHTower
+
+open Complex Filter Set
+
+/-- Levelwise dyadic roots already force nonvanishing.  Coherence is not needed for
+this obstruction direction: if analytic `2^k`-th roots exist for every finite level,
+then any zero order would be a positive finite natural divisible by every `2^k`, which
+is impossible. -/
+theorem nonvanishing_of_exists_roots_all_two_powers {f : ℂ → ℂ} {Ω : Set ℂ} {z₀ : ℂ}
+    (hΩo : IsOpen Ω) (hΩc : Convex ℝ Ω) (hz₀ : z₀ ∈ Ω) (hf : AnalyticOnNhd ℂ f Ω)
+    (hf0 : f z₀ ≠ 0)
+    (hroots : ∀ k : ℕ, ∃ g, AnalyticOnNhd ℂ g Ω ∧ ∀ s ∈ Ω, g s ^ (2 ^ k) = f s) :
+    ∀ s ∈ Ω, f s ≠ 0 := by
+  intro ρ hρ hρ0
+  have hord : analyticOrderAt f ρ ≠ ⊤ := by
+    intro htop
+    have hev0 : f =ᶠ[nhds ρ] (0 : ℂ → ℂ) := by
+      filter_upwards [analyticOrderAt_eq_top.mp htop] with z hz
+      simpa using hz
+    have := hf.eqOn_zero_of_preconnected_of_eventuallyEq_zero hΩc.isPreconnected hρ hev0
+    exact hf0 (this hz₀)
+  set m : ℕ := (analyticOrderAt f ρ).toNat with hmdef
+  have hm : (m : ℕ∞) = analyticOrderAt f ρ := ENat.coe_toNat hord
+  have hdvd : ∀ k : ℕ, 2 ^ k ∣ m := by
+    intro k
+    obtain ⟨g, hgan, hgpow⟩ := hroots k
+    have hdvd' : ((2 ^ k : ℕ) : ℕ∞) ∣ analyticOrderAt f ρ :=
+      root_orders_dvd hΩo hgan hgpow hρ
+    rw [← hm] at hdvd'
+    exact natCast_dvd_natCast_of_enat (pow_ne_zero k two_ne_zero) hdvd'
+  have hm0 : m = 0 := by
+    by_contra hm0
+    have h2 : 2 ^ m ≤ m := Nat.le_of_dvd (Nat.pos_of_ne_zero hm0) (hdvd m)
+    have h3 : m < 2 ^ m := Nat.lt_pow_self (by norm_num)
+    omega
+  have hne : analyticOrderAt f ρ ≠ 0 := analyticOrderAt_ne_zero.mpr ⟨hf ρ hρ, hρ0⟩
+  rw [← hm, hm0] at hne
+  exact hne rfl
+
+/-- Independent dyadic roots at every finite level assemble to a coherent Kummer tower.
+The proof first uses order divisibility to remove the divisor obstruction, then invokes
+the logarithmic coherent-tower construction. -/
+theorem coherentTower_of_exists_roots_all_two_powers {f : ℂ → ℂ} {Ω : Set ℂ} {z₀ : ℂ}
+    (hΩo : IsOpen Ω) (hΩc : Convex ℝ Ω) (hz₀ : z₀ ∈ Ω) (hf : AnalyticOnNhd ℂ f Ω)
+    (hf0 : f z₀ ≠ 0)
+    (hroots : ∀ k : ℕ, ∃ g, AnalyticOnNhd ℂ g Ω ∧ ∀ s ∈ Ω, g s ^ (2 ^ k) = f s) :
+    Nonempty (CoherentTower f Ω) := by
+  have hnz : ∀ s ∈ Ω, f s ≠ 0 :=
+    nonvanishing_of_exists_roots_all_two_powers hΩo hΩc hz₀ hf hf0 hroots
+  exact (coherentTower_iff_nonvanishing hΩo (isSimplyConnected_of_convex hΩc ⟨z₀, hz₀⟩)
+    hΩc.isPreconnected hf hz₀ hf0).2 hnz
+
+/-- Coherence is equivalent to having independent analytic dyadic roots at every
+finite level.  The reverse direction is the divisor obstruction; the forward
+direction reads the roots directly from the coherent tower levels. -/
+theorem coherentTower_iff_exists_roots_all_two_powers {f : ℂ → ℂ} {Ω : Set ℂ} {z₀ : ℂ}
+    (hΩo : IsOpen Ω) (hΩc : Convex ℝ Ω) (hz₀ : z₀ ∈ Ω) (hf : AnalyticOnNhd ℂ f Ω)
+    (hf0 : f z₀ ≠ 0) :
+    Nonempty (CoherentTower f Ω) ↔
+      ∀ k : ℕ, ∃ g, AnalyticOnNhd ℂ g Ω ∧ ∀ s ∈ Ω, g s ^ (2 ^ k) = f s := by
+  constructor
+  · rintro ⟨T⟩ k
+    exact ⟨T.level k, T.analytic k, T.pow_eq k⟩
+  · exact coherentTower_of_exists_roots_all_two_powers hΩo hΩc hz₀ hf hf0
+
+end RHTower

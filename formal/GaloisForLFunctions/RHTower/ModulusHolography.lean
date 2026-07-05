@@ -25,6 +25,7 @@ import GaloisForLFunctions.RHTower.ReflectionParity
 import GaloisForLFunctions.RHTower.GermExtension
 import GaloisForLFunctions.RHTower.SquareLadder
 import GaloisForLFunctions.RHTower.PerturbationZero
+import GaloisForLFunctions.RHTower.WindowRelation
 import Mathlib.Analysis.Complex.JensenFormula
 
 namespace RHTower
@@ -389,5 +390,356 @@ theorem exists_ladder_order_obstruction_of_sphere_domination_center_margin {g h 
   obtain ⟨R₀, hR₀pos, hiff⟩ := xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd ρ k
   exact hnotSlope ⟨R₀, hR₀pos, fun {R r₁ r₂} hr₁ hr₁₂ hr₂R hRle =>
     (hiff hr₁ hr₁₂ hr₂R hRle).mpr hdiv⟩
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Zero planting in a right-half ball forces a concrete failed two-circle
+modulus-slope sample.  The radii are selected to be ξ-zero-free, so the output
+is a directly checkable boundary obstruction rather than an all-radius schema. -/
+theorem exists_clean_circleAverage_slope_obstruction_of_sphere_domination_center_margin
+    {g h : ℂ → ℂ} {s₀ : ℂ} {r : ℝ}
+    (hr : 0 < r)
+    (hmargin : 1 / 2 + r < s₀.re)
+    (hg : DiffContOnCl ℂ g (Metric.ball s₀ r))
+    (hh : DiffContOnCl ℂ h (Metric.ball s₀ r))
+    (hcenter : h s₀ = 0) (hg0 : g s₀ ≠ 0)
+    (hdom : ∀ z ∈ Metric.sphere s₀ r, 3 * ‖g z‖ ≤ ‖h z‖)
+    (hxi : ∀ z ∈ Metric.closedBall s₀ r, xi z = g z + h z) :
+    ∃ k, ∃ ρ ∈ rightHalf, xi ρ = 0 ∧
+      ∃ R r₁ r₂ : ℝ, 0 < R ∧ 0 < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
+        (∀ z : ℂ, ‖z - ρ‖ = r₁ → xi z ≠ 0) ∧
+        (∀ z : ℂ, ‖z - ρ‖ = r₂ → xi z ≠ 0) ∧
+        exp (2 * (Real.pi : ℂ) * I *
+            (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+              (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) ≠ 1 := by
+  obtain ⟨k, ρ, hρ, hzero, hnotdiv⟩ :=
+    exists_ladder_order_obstruction_of_sphere_domination_center_margin hr hmargin hg hh
+      hcenter hg0 hdom hxi
+  obtain ⟨R₀, hR₀pos, hiff⟩ := xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd ρ k
+  set R : ℝ := R₀ / 2 with hRdef
+  have hRpos : 0 < R := by
+    rw [hRdef]
+    linarith
+  have hRle : R ≤ R₀ := by
+    rw [hRdef]
+    linarith
+  obtain ⟨r₁, r₂, hr₁pos, hr₁₂, hr₂R, havoid₁, havoid₂⟩ :=
+    exists_two_radii_avoiding_xi_zeros ρ (r := 0) (R := R) hRpos
+  have hexp_ne : exp (2 * (Real.pi : ℂ) * I *
+          (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+              Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+            (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) ≠ 1 := by
+    intro hexp
+    exact hnotdiv ((hiff hr₁pos hr₁₂ hr₂R hRle).mp hexp)
+  exact ⟨k, ρ, hρ, hzero, R, r₁, r₂, hRpos, hr₁pos, hr₁₂, hr₂R,
+    havoid₁, havoid₂, hexp_ne⟩
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Zero planting in a right-half ball obstructs far-half germ continuation at the
+same dyadic level witnessed by a clean two-circle modulus sample. -/
+theorem exists_germ_extension_obstruction_with_clean_modulus_witness_of_sphere_domination_center_margin
+    {g h : ℂ → ℂ} {s₀ : ℂ} {r : ℝ}
+    (hr : 0 < r)
+    (hmargin : 1 / 2 + r < s₀.re)
+    (hg : DiffContOnCl ℂ g (Metric.ball s₀ r))
+    (hh : DiffContOnCl ℂ h (Metric.ball s₀ r))
+    (hcenter : h s₀ = 0) (hg0 : g s₀ ≠ 0)
+    (hdom : ∀ z ∈ Metric.sphere s₀ r, 3 * ‖g z‖ ≤ ‖h z‖)
+    (hxi : ∀ z ∈ Metric.closedBall s₀ r, xi z = g z + h z) :
+    ∃ k,
+      (¬ (∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
+        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+        ∃ G, AnalyticOnNhd ℂ G rightHalf ∧ (∀ s ∈ rightHalf, G s ^ 2 ^ k = xi s) ∧
+          Set.EqOn G g₁ farHalf)) ∧
+      ∃ ρ ∈ rightHalf, xi ρ = 0 ∧
+        ∃ R r₁ r₂ : ℝ, 0 < R ∧ 0 < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
+          (∀ z : ℂ, ‖z - ρ‖ = r₁ → xi z ≠ 0) ∧
+          (∀ z : ℂ, ‖z - ρ‖ = r₂ → xi z ≠ 0) ∧
+          exp (2 * (Real.pi : ℂ) * I *
+              (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                  Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) ≠ 1 := by
+  obtain ⟨k, ρ, hρ, hzero, hnotdiv⟩ :=
+    exists_ladder_order_obstruction_of_sphere_domination_center_margin hr hmargin hg hh
+      hcenter hg0 hdom hxi
+  have hnotGerm : ¬ (∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
+        (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+        ∃ G, AnalyticOnNhd ℂ G rightHalf ∧ (∀ s ∈ rightHalf, G s ^ 2 ^ k = xi s) ∧
+          Set.EqOn G g₁ farHalf) := by
+    intro hgerm
+    have hlad : RHLadder k := (rhLadder_iff_germ_extends k).mpr hgerm
+    exact hnotdiv (hlad ρ hρ hzero)
+  obtain ⟨R₀, hR₀pos, hiff⟩ := xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd ρ k
+  set R : ℝ := R₀ / 2 with hRdef
+  have hRpos : 0 < R := by
+    rw [hRdef]
+    linarith
+  have hRle : R ≤ R₀ := by
+    rw [hRdef]
+    linarith
+  obtain ⟨r₁, r₂, hr₁pos, hr₁₂, hr₂R, havoid₁, havoid₂⟩ :=
+    exists_two_radii_avoiding_xi_zeros ρ (r := 0) (R := R) hRpos
+  have hexp_ne : exp (2 * (Real.pi : ℂ) * I *
+          (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+              Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+            (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) ≠ 1 := by
+    intro hexp
+    exact hnotdiv ((hiff hr₁pos hr₁₂ hr₂R hRle).mp hexp)
+  exact ⟨k, hnotGerm, ρ, hρ, hzero, R, r₁, r₂, hRpos, hr₁pos, hr₁₂, hr₂R,
+    havoid₁, havoid₂, hexp_ne⟩
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **Clean two-circle modulus criterion.** In every sufficiently small nondegenerate
+radius interval around `ρ₀`, Bottcher zero-avoidance selects two ξ-zero-free circles
+whose modulus slope detects the same local dyadic ladder obstruction. -/
+theorem exists_clean_radii_circleAverage_slope_exp_eq_one_iff_ladder_dvd
+    (ρ₀ : ℂ) (k : ℕ) :
+    ∃ R₀ > 0, ∀ {r R : ℝ}, 0 < r → r < R → R ≤ R₀ →
+      ∃ r₁ r₂ : ℝ, r < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
+        (∀ z : ℂ, ‖z - ρ₀‖ = r₁ → xi z ≠ 0) ∧
+        (∀ z : ℂ, ‖z - ρ₀‖ = r₂ → xi z ≠ 0) ∧
+        (exp (2 * (Real.pi : ℂ) * I *
+            (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ₀ r₂ -
+                Real.circleAverage (fun z => Real.log ‖xi z‖) ρ₀ r₁) /
+              (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 ↔
+          ((2 ^ k : ℕ) : ℕ∞) ∣ analyticOrderAt xi ρ₀) := by
+  obtain ⟨R₀, hR₀pos, hiff⟩ := xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd ρ₀ k
+  refine ⟨R₀, hR₀pos, ?_⟩
+  intro r R hr hrR hRle
+  obtain ⟨r₁, r₂, hr₁, hr₁₂, hr₂R, havoid₁, havoid₂⟩ :=
+    exists_two_radii_avoiding_xi_zeros ρ₀ hrR
+  exact ⟨r₁, r₂, hr₁, hr₁₂, hr₂R, havoid₁, havoid₂,
+    hiff (lt_trans hr hr₁) hr₁₂ hr₂R hRle⟩
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- A ladder rung is equivalent to having arbitrarily small clean two-circle
+modulus samples at every right-half ξ-zero.  The circles are chosen ξ-zero-free,
+so the criterion is a boundary constraint rather than a local root-choice datum. -/
+theorem rhLadder_iff_clean_circleAverage_slope_exp_eq_one (k : ℕ) :
+    RHLadder k ↔
+      ∀ ρ ∈ rightHalf, xi ρ = 0 →
+        ∃ R₀ > 0, ∀ {r R : ℝ}, 0 < r → r < R → R ≤ R₀ →
+          ∃ r₁ r₂ : ℝ, r < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
+            (∀ z : ℂ, ‖z - ρ‖ = r₁ → xi z ≠ 0) ∧
+            (∀ z : ℂ, ‖z - ρ‖ = r₂ → xi z ≠ 0) ∧
+            exp (2 * (Real.pi : ℂ) * I *
+                (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                    Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                  (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+  constructor
+  · intro hlad ρ hρ hzero
+    obtain ⟨R₀, hR₀pos, hclean⟩ :=
+      exists_clean_radii_circleAverage_slope_exp_eq_one_iff_ladder_dvd ρ k
+    refine ⟨R₀, hR₀pos, ?_⟩
+    intro r R hr hrR hRle
+    obtain ⟨r₁, r₂, hr₁, hr₁₂, hr₂R, havoid₁, havoid₂, hiff⟩ :=
+      hclean hr hrR hRle
+    exact ⟨r₁, r₂, hr₁, hr₁₂, hr₂R, havoid₁, havoid₂,
+      hiff.mpr (hlad ρ hρ hzero)⟩
+  · intro hclean ρ hρ hzero
+    obtain ⟨R₁, hR₁pos, hiff⟩ := xi_circleAverage_slope_exp_eq_one_iff_ladder_dvd ρ k
+    obtain ⟨R₂, hR₂pos, hcleanρ⟩ := hclean ρ hρ hzero
+    set Rm : ℝ := min R₁ R₂ with hRm_def
+    have hRm_pos : 0 < Rm := by
+      rw [hRm_def]
+      exact lt_min hR₁pos hR₂pos
+    have hr : 0 < Rm / 4 := by linarith
+    have hrR : Rm / 4 < Rm / 2 := by linarith
+    have hRle₁ : Rm / 2 ≤ R₁ := by
+      have hRmle : Rm ≤ R₁ := by
+        rw [hRm_def]
+        exact min_le_left _ _
+      linarith
+    have hRle₂ : Rm / 2 ≤ R₂ := by
+      have hRmle : Rm ≤ R₂ := by
+        rw [hRm_def]
+        exact min_le_right _ _
+      linarith
+    obtain ⟨r₁, r₂, hr₁, hr₁₂, hr₂R, _havoid₁, _havoid₂, hexp⟩ :=
+      hcleanρ (r := Rm / 4) (R := Rm / 2) hr hrR hRle₂
+    exact (hiff (R := Rm / 2) (r₁ := r₁) (r₂ := r₂)
+      (lt_trans hr hr₁) hr₁₂ hr₂R hRle₁).mp hexp
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Clean two-circle modulus samples force the finite reflection-window relation.
+This connects the boundary-modulus reader to the window-parity node without passing
+through local root choices: the clean samples give the ladder rung, and the rung gives
+the finite congruence for any reflection-closed ξ-zero configuration. -/
+theorem xi_window_relation_of_clean_circleAverage_slope_exp_eq_one {k : ℕ}
+    (hclean : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ R₀ > 0, ∀ {r R : ℝ}, 0 < r → r < R → R ≤ R₀ →
+        ∃ r₁ r₂ : ℝ, r < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
+          (∀ z : ℂ, ‖z - ρ‖ = r₁ → xi z ≠ 0) ∧
+          (∀ z : ℂ, ‖z - ρ‖ = r₂ → xi z ≠ 0) ∧
+          exp (2 * (Real.pi : ℂ) * I *
+              (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                  Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1)
+    {t : Finset ℂ} {m : ℂ → ℕ}
+    (hzero : ∀ z ∈ t, xi z = 0)
+    (hm : ∀ z ∈ t, (m z : ℕ∞) = analyticOrderAt xi z)
+    (hclosed : ∀ z ∈ t, lineReflect z ∈ t) :
+    ∑ z ∈ t, m z ≡
+      ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z [MOD 2 ^ (k + 1)] := by
+  have hlad : RHLadder k := (rhLadder_iff_clean_circleAverage_slope_exp_eq_one k).mpr hclean
+  exact xi_window_relation_of_ladder hlad hzero hm hclosed
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric Finset
+
+/-- **Clean boundary modulus equals the complete finite-window surface.**  All-level
+clean two-circle modulus samples around right-half ξ-zeros are equivalent to the
+all-level congruence for every finite reflection-closed ξ-zero window.  The bridge is
+constraint-only: clean boundary data gives each ladder rung, and the window surface
+is the complete all-rung finite obstruction. -/
+theorem all_clean_circleAverage_slope_exp_eq_one_iff_all_finite_window_relations_all_levels :
+    (∀ k : ℕ, ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ R₀ > 0, ∀ {r R : ℝ}, 0 < r → r < R → R ≤ R₀ →
+        ∃ r₁ r₂ : ℝ, r < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
+          (∀ z : ℂ, ‖z - ρ‖ = r₁ → xi z ≠ 0) ∧
+          (∀ z : ℂ, ‖z - ρ‖ = r₂ → xi z ≠ 0) ∧
+          exp (2 * (Real.pi : ℂ) * I *
+              (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                  Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1) ↔
+      ∀ k : ℕ, ∀ (t : Finset ℂ) (m : ℂ → ℕ),
+        (∀ z ∈ t, xi z = 0) →
+        (∀ z ∈ t, (m z : ℕ∞) = analyticOrderAt xi z) →
+        (∀ z ∈ t, lineReflect z ∈ t) →
+        (∑ z ∈ t, m z ≡
+          ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z [MOD 2 ^ (k + 1)]) := by
+  constructor
+  · intro hclean k t m hzero hm hclosed
+    exact xi_window_relation_of_clean_circleAverage_slope_exp_eq_one (hclean k)
+      hzero hm hclosed
+  · intro hwin k
+    have hRH : RiemannHypothesis :=
+      (rh_iff_all_finite_window_relations_all_levels).mpr hwin
+    exact (rhLadder_iff_clean_circleAverage_slope_exp_eq_one k).mp
+      ((rh_iff_forall_ladder.mp hRH) k)
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **Far-field relative deformation gives endpoint boundary zero-charge.**  If the
+relative chain starts from ξ on a far-right ball and the endpoint admits a local peel
+at the chart centre, then the endpoint's two-circle boundary-modulus slope has
+trivial level-`n` exponential; the U0 log bounds for the chain are preserved. -/
+theorem endpoint_circleAverage_slope_exp_eq_one_of_far_field_relative_base_deformation
+    {F : ℕ → ℂ → ℂ} {G₁ G₂ K₁ K₂ H : ℂ → ℂ}
+    {a : ℂ} {R r r₁ r₂ : ℝ} {n N m : ℕ}
+    (hr₁ : 0 < r₁) (hr₁₂ : r₁ < r₂) (hr₂R : r₂ < R)
+    (hn : 0 < n) (hN : 0 < N) (hr : r < 1) (hfar : 1 + R < a.re)
+    (hFan : ∀ i, 0 < i → i ≤ N → AnalyticOnNhd ℂ (F i) (chartR a R ∪ chartL a R))
+    (hG₁ : AnalyticOnNhd ℂ G₁ (chartR a R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartL a R))
+    (hK₁ : AnalyticOnNhd ℂ K₁ (chartR a R)) (hK₂ : AnalyticOnNhd ℂ K₂ (chartL a R))
+    (hpG₁ : ∀ z ∈ chartR a R, G₁ z ^ n = F 0 z)
+    (hpG₂ : ∀ z ∈ chartL a R, G₂ z ^ n = F 0 z)
+    (hF0R : ∀ z ∈ chartR a R, F 0 z = xi z)
+    (hF0L : ∀ z ∈ chartL a R, F 0 z = xi z)
+    (hpK₁ : ∀ z ∈ chartR a R, K₁ z ^ n = F N z)
+    (hpK₂ : ∀ z ∈ chartL a R, K₂ z ^ n = F N z)
+    (hrel : ∀ i, i < N →
+      ∀ z ∈ chartR a R ∪ chartL a R, ‖(F (i + 1) z - F i z) / F i z‖ ≤ r)
+    (hH : AnalyticOnNhd ℂ H (ball a R)) (hH0 : ∀ z ∈ ball a R, H z ≠ 0)
+    (hfactN : ∀ z ∈ ball a R, F N z = (z - a) ^ m * H z) :
+    exp (2 * (Real.pi : ℂ) * I *
+        (((Real.circleAverage (fun z => Real.log ‖F N z‖) a r₂ -
+            Real.circleAverage (fun z => Real.log ‖F N z‖) a r₁) /
+          (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / n) = 1 ∧
+      ∀ i, i < N → ∀ z ∈ chartR a R ∪ chartL a R,
+        ‖Complex.log (F (i + 1) z / F i z)‖ ≤
+          (1 - r)⁻¹ * ‖(F (i + 1) z - F i z) / F i z‖ := by
+  have hR : 0 < R := lt_trans hr₁ (lt_trans hr₁₂ hr₂R)
+  have hfarDeck :=
+    xi_deckClass_eq_one_of_far_field_relative_base_deformation hR hn hN hr hfar hFan hG₁ hG₂
+      hK₁ hK₂ hpG₁ hpG₂ hF0R hF0L hpK₁ hpK₂ hrel
+  have hmod :=
+    deckClass_eq_exp_circleAverage_slope (f := F N) (h := H) (G₁ := K₁) (G₂ := K₂)
+      (a := a) (R := R) (r₁ := r₁) (r₂ := r₂) (m := m) (n := n)
+      hr₁ hr₁₂ hr₂R hn hH hH0 hfactN hK₁ hK₂ hpK₁ hpK₂
+  constructor
+  · rw [← hmod]
+    exact hfarDeck.1
+  · exact hfarDeck.2
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric Finset
+
+/-- **Clean modulus is the u-plane coherent tower surface.**  The coherent dyadic
+Kummer tower for `xiDescent` on the slit plane is equivalent to all-level clean
+two-circle modulus certificates around right-half ξ zeros. -/
+theorem xiDescent_coherentTower_slitPlane_iff_all_clean_circleAverage_slope_exp_eq_one :
+    Nonempty (CoherentTower xiDescent slitPlane) ↔
+      ∀ k : ℕ, ∀ ρ ∈ rightHalf, xi ρ = 0 →
+        ∃ R₀ > 0, ∀ {r R : ℝ}, 0 < r → r < R → R ≤ R₀ →
+          ∃ r₁ r₂ : ℝ, r < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
+            (∀ z : ℂ, ‖z - ρ‖ = r₁ → xi z ≠ 0) ∧
+            (∀ z : ℂ, ‖z - ρ‖ = r₂ → xi z ≠ 0) ∧
+            exp (2 * (Real.pi : ℂ) * I *
+                (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                    Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                  (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+  have hclean : RiemannHypothesis ↔
+      ∀ k : ℕ, ∀ ρ ∈ rightHalf, xi ρ = 0 →
+        ∃ R₀ > 0, ∀ {r R : ℝ}, 0 < r → r < R → R ≤ R₀ →
+          ∃ r₁ r₂ : ℝ, r < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
+            (∀ z : ℂ, ‖z - ρ‖ = r₁ → xi z ≠ 0) ∧
+            (∀ z : ℂ, ‖z - ρ‖ = r₂ → xi z ≠ 0) ∧
+            exp (2 * (Real.pi : ℂ) * I *
+                (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                    Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                  (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+    rw [rh_iff_forall_ladder]
+    exact forall_congr' fun k => rhLadder_iff_clean_circleAverage_slope_exp_eq_one k
+  exact (rh_iff_xiDescent_coherentTower_slitPlane).symm.trans hclean
+
+/-- **Finite window relations are the u-plane coherent tower surface.**  The coherent
+dyadic Kummer tower for `xiDescent` on the slit plane is equivalent to the complete
+all-level finite reflection-window congruence surface. -/
+theorem xiDescent_coherentTower_slitPlane_iff_all_finite_window_relations_all_levels :
+    Nonempty (CoherentTower xiDescent slitPlane) ↔
+      ∀ k : ℕ, ∀ (t : Finset ℂ) (m : ℂ → ℕ),
+        (∀ z ∈ t, xi z = 0) →
+        (∀ z ∈ t, (m z : ℕ∞) = analyticOrderAt xi z) →
+        (∀ z ∈ t, lineReflect z ∈ t) →
+        (∑ z ∈ t, m z ≡
+          ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z [MOD 2 ^ (k + 1)]) := by
+  exact (rh_iff_xiDescent_coherentTower_slitPlane).symm.trans
+    rh_iff_all_finite_window_relations_all_levels
 
 end RHTower

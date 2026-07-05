@@ -348,3 +348,94 @@ theorem xi_rung_of_finite_side_of_domination {N : ℕ} (k : ℕ)
   exact Nat.modEq_zero_iff_dvd.mp (hparity.trans (Nat.modEq_zero_iff_dvd.mpr hfin))
 
 end RHTower
+
+namespace RHTower
+
+open Metric
+
+/-- **Finite-side rung under relative control.** Relative `η < 1` closeness between ξ
+and the completed finite carrier on the annulus charts proves the count transport
+used by ANNEAL, so the finite-side rung still transfers to ξ; the same certificate
+also gives U0 principal-log control of the correction ratio on the charts. -/
+theorem xi_rung_of_finite_side_of_relative_close {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R η : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hη : η < 1)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hG0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, completedGN N z ≠ 0)
+    (hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])
+    (hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z) :
+    (2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z) ∧
+      ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  obtain ⟨hDeq, hlog⟩ :=
+    enclosed_count_eq_of_relative_close t₂ t₁ id m₂ id m₁ h0 hrR hη hρ₂ hρ₁
+      hh' hh0' hh hh0 hfact₂ hfact₁ hG0 hrel
+  have hparity := anneal_window_parity_transport k hm₁ hcl₁ hstrip hm₂ hcl₂
+    (hDeq ▸ Nat.ModEq.refl _) hL
+  exact ⟨Nat.modEq_zero_iff_dvd.mp (hparity.trans (Nat.modEq_zero_iff_dvd.mpr hfin)), hlog⟩
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Nonvanishing of the completed finite carrier from the raw finite carrier.
+On the positive strip away from `1`, the archimedean factor is nonzero, so
+`completedGN` vanishes exactly when `gN` does. -/
+theorem completedGN_ne_zero_of_gN_ne_zero {N : ℕ} {z : ℂ}
+    (hσ : 0 < z.re) (hz1 : z ≠ 1) (hgN0 : gN N z ≠ 0) :
+    completedGN N z ≠ 0 := by
+  have hz0 : z ≠ 0 := fun hzero => by simp [hzero] at hσ
+  unfold completedGN
+  exact mul_ne_zero (archFactor_ne_zero hz0 hz1 (Gammaℝ_ne_zero_of_re_pos hσ)) hgN0
+
+/-- **Finite-side rung under relative control with completed-carrier nonvanishing
+supplied by the raw finite carrier.**  On charts contained in the positive strip and
+away from `1`, nonvanishing of `gN` gives nonvanishing of `completedGN`; the relative
+ANNEAL rung transfer can therefore consume raw finite-carrier nonvanishing data. -/
+theorem xi_rung_of_finite_side_of_relative_close_gN_nonzero {N : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R η : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hη : η < 1)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hgN0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, gN N z ≠ 0)
+    (hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])
+    (hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z) :
+    (2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z) ∧
+      ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hG0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, completedGN N z ≠ 0 := by
+    intro z hz
+    obtain ⟨hσ, hz1⟩ := hchartStrip z hz
+    exact completedGN_ne_zero_of_gN_ne_zero hσ hz1 (hgN0 z hz)
+  exact xi_rung_of_finite_side_of_relative_close k h0 hrR hη hm₁ hcl₁ hstrip hm₂ hcl₂
+    hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hG0 hrel hL hfin
+
+end RHTower

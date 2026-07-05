@@ -90,3 +90,34 @@ theorem rh_iff_forall_root_slitPlane :
   exact forall_congr' fun k => rhLadder_iff_root_slitPlane k
 
 end RHTower
+
+namespace RHTower
+
+open Complex
+
+/-- **RH ⟺ the coherent dyadic tower of the descended ξ on the slit plane.**  The
+slit-plane descent is not just an all-level root sentence: on the star-convex quotient
+domain, nonvanishing is exactly the existence of one coherent Kummer tower. -/
+theorem rh_iff_xiDescent_coherentTower_slitPlane :
+    RiemannHypothesis ↔ Nonempty (CoherentTower xiDescent slitPlane) := by
+  have hsc : IsSimplyConnected slitPlane := by
+    haveI : ContractibleSpace slitPlane :=
+      Complex.starConvex_one_slitPlane.contractibleSpace ⟨(1 : ℂ), Complex.one_mem_slitPlane⟩
+    exact SimplyConnectedSpace.ofContractible _
+  have hpc : IsPreconnected slitPlane :=
+    (Complex.starConvex_one_slitPlane.isPathConnected
+      Complex.one_mem_slitPlane).isConnected.isPreconnected
+  have hz : ((9 : ℂ) / 4) ∈ slitPlane := by
+    norm_num [Complex.mem_slitPlane_iff]
+  have hne : xiDescent ((9 : ℂ) / 4) ≠ 0 := by
+    rw [show ((9 : ℂ) / 4) = ((2 : ℂ) - 1 / 2) ^ 2 from by norm_num,
+      ← xi_eq_xiDescent]
+    exact xi_two_ne_zero
+  have htower :
+      Nonempty (CoherentTower xiDescent slitPlane) ↔
+        ∀ w ∈ slitPlane, xiDescent w ≠ 0 :=
+    coherentTower_iff_nonvanishing (f := xiDescent) (U := slitPlane)
+      Complex.isOpen_slitPlane hsc hpc (fun w hw => xiDescent_analyticAt hw) hz hne
+  rw [rh_iff_xiDescent_ne_zero_slitPlane, ← htower]
+
+end RHTower

@@ -2540,3 +2540,169 @@ machine-checked window-RH certificate (reader has C1–C4; needs a 2-entry
 sign table); (2) #24 (CHAIN-geo) re-statable in 1D: bound the density of
 sign-deficient windows — the mollified machinery of docs 55–70 prices this
 in mean square.
+
+## 2026-07-05 (cont.) — broadened goal: grinding open tasks to Lean; (S-mono) core started
+
+Stop-hook rejected the "superseded/retired" status-verdict as partial: must prove/refute the
+MATH. Did:
+- Refutation search (smono_refute.py): 3096 configs, 6 carrier shapes incl. F2-VIOLATING
+  non-monotone gaps, 12 τ, 11 d — worst Z_c=2, ZERO spurious pairs. (S-mono) NOT refuted;
+  robust even without (F2). Two-cluster separation is the only obstruction ⟹ single-range
+  one-sidedness alone suffices. Must PROVE.
+- Banked Lean (axiom-clean): CothInfra.lean (coth/csch/φ, not in mathlib; monotonicity +
+  coth>1) and SpurLattice.lean (field strict-antitone on pole-free gaps ⟹ unique gap
+  equilibrium; swap-terms>1). This is the step-(b) engine of the lattice (S-mono).
+- Wired both into umbrella; index regenerated.
+Open-task scope now = {#130 (=RH₂, frontier), #135/#138/#139/#142/#143/#147 (SPUR-R cluster,
+closable)}. Grinding the closable cluster to full Lean; #130's core (XLD) is the RH frontier.
+
+## Cycle 47 (2026-07-05) — Route C /goal opened: the (EQD) attack, priced (task #28)
+
+Doc 80 written: Route C standing map (C-1..C-9 with Lean anchors; open core =
+C-5 (TAIL-6)/(EQD)) + the Fourier-majorant framework + pre-registered
+P-EQ1..5 + census run (census_eqd.py, mixed_twin_probe.py, archived in
+computations/mwm_eqd/).
+
+The framework: double Beurling-Selberg (bandlimited majorant in the value
+axis AND in the t axis) makes the transfer error EXACTLY the near-collision
+census |log(A/B)| ≤ δ — the far regime contributes zero. The bandwidth-budget
+principle (doc 80 §3(iv)): worst-case-gap Fourier = the degree budget,
+method-independently; only actual-gap arithmetic can beat moments.
+
+Verdicts (all pre-registered, all bind): P-EQ1/2/3/5 PASS — B1's census is
+twin-smooth pairs, measured 1.3e−6 in range, EXACTLY ZERO at the working
+δ₁ = 100/T below 3e6; B2 rough spectrum harmless (≤ 6.3e−8). **P-EQ4 FAILS,
+obstruction named**: the mixed set SP = smooth×prime has density 0.09 at
+3.3e10 with weighted twin census 2.65/octave — O(1), five orders over
+budget; and the harvest check shows B1-Fourier composed into the assembly
+(3.9e−2) does NOT beat the 2-block optimum (3.3e−2 reproduced; 1.5e−2 at
+doc 74's finer setup): union loss eats the Chernoff gain.
+
+Net: the two instrument classes are ONE two-sided wall (degree budget =
+collision census), now measured from both sides. Certified floor ~1.5e−2 vs
+budget 2–4e−3. Route C's finite-height meeting is blocked at instrument-class
+grade; the spine above 10^21 stands. Remaining unexhausted before the
+terminal refutation record: (EFF-E) certification of the residual block, and
+the odd-parity counter (doc 72 §9.3 — the only BUDGET-side knob untouched).
+Positive salvage: B1 at near-model grade via the twin-smooth census — real,
+formalizable (Bessel-J mini-theory + bandlimited majorants to be created in
+Lean; neither is in mathlib).
+
+Next (force order): (1) doc 81 — the wall statement made precise (the
+refutation-grade theorem shape with the census as certificate); (2) the
+odd-parity budget-side pass; (3) Lean: the bandlimited-transfer skeleton.
+
+## 2026-07-05 (cont.2) — lattice (S-mono) derivative stack complete in Lean
+SpurLattice.lean now 239 lines, all axiom-clean, lint-green:
+- rcsch_hasDerivAt (csch'=-coth·csch), rcsch_sq_hasDerivAt ((csch²)'=-2φ),
+  spurEnergy_hasDerivAt (W'=-¼Σφ). With cothField_hasDerivAt (field'=-2W) this gives
+  field''=½Σφ — the full derivative infrastructure of the electrostatic lattice.
+Ingredients for lattice (S-mono) now all banked: field monotone + unique/existent gap
+equilibrium, s-march (equilibrium_lt_of_field_lt), field'=-2W, W'=-¼Σφ, rphi_strictAntiOn.
+Remaining = the assembly: W-monotonicity along equilibria via the doc-29(c) disjoint-
+interval domination (near-ahead φ(s/2) dominates paired behind-ahead differences bounded by
+φ((δ-s)/2) < φ(s/2), which is rphi_strictAntiOn at s/2<(δ-s)/2). Next cycle.
+
+## Cycle 48 (2026-07-05) — parity counter banked; A-audit adjudicated (task #28 cont.)
+
+- ParityCounting.lean BANKED (first-compile clean, axiom-clean, lint green):
+  `selected_dips_count_le`(+`_of_disjoint`, `selected_sliver_budget`) — dip
+  counting through a selection predicate against floor-free measure; with
+  the (K1) sign reading as selector this removes the 4/(1−β) thickness
+  factor from the budget: ε₀*/4.05 → ε₀*. Budget now 2–3.9e−3 vs stack
+  1.5e−2 (short 3.8–7.7, down from 5–15).
+- Doc 81 §6(b) A-audit RESOLVED same cycle (§6(c)): the Gabcke-C₀ shortcut
+  (A → ¾logT, tail trivial) is CLOSED — doc 43 §2's two catching mechanisms
+  pin λ₀ at the valley-registration depth of the deep boundary η = 1/4,
+  which is N^{−1/2} = (T/2π)^{−1/4}: the same χ-modulus scale as E(T). A is
+  structural at ¼logT-grade. Both "R–S validity" and "deep-boundary
+  registration" are one scale; no remainder sharpening moves A.
+- Umbrella note: RHTower.lean currently broken by a PARALLEL-SESSION name
+  clash (SpurLattice.spurEnergy vs SpurCPI.spurEnergy — both theirs, logged
+  in logs/parallel-session-notes.md); my modules gated independently.
+- Route C terminal shape after this cycle: C-5's fate = bounded arithmetic
+  (ε₀* write-out + allocation vs the 3.8× gap), no longer open-ended
+  analysis. Next: the harvest arithmetic; then the Lean program for the
+  winning branch; then C-6 formalization + the k ≥ 2 story for the full
+  /goal verdict.
+
+## Cycle 49 (2026-07-05) — the harvest arithmetic executed (task #28 cont.)
+
+Doc 81 §7: every lever priced. Split-2 drops (C′ = 16); parity removes
+thickness; H_iso = 4 at sketch grade (c_deck = 1/8); joint-deg-4 bypass
+REFUTED (L⁴ triangle, 2.7e−2); dip-layer 12 unaudited. Ledger: stack
+1.5e−2 (walled); budget 3.9e−3 certified / 7.8e−3 with H_iso sketch;
+ceiling 6.25e−2 ABOVE the stack ⟹ the wall alone cannot refute the
+meeting, and the proof branch is one factor ~2 away. C-5's fate = ONE
+elementary write-out: the dip-layer per-cell cap (doc 56 §4 re-run, sharp
+carrier + parity counter): 3·n_max ≤ 6 closes the meeting; 12 leaves it
+1.92× short with the class exhausted. Next: dip-layer write-out, H_iso
+write-out, then Lean for both.
+
+## Cycle 50 (2026-07-05) — ROUTE C-DIRECT REFUTED: the registration gap (task #28 TERMINAL)
+
+Executing doc 81 §7's "one page" did not yield a constants verdict — it
+yielded the located lie. Reconstructing the sharp-carrier count from doc 56
+§2's dip lemma exposed that the sharp carrier's masses are κ² ~ logN-grade
+(un-mollified), so shallow pairs over typical envelopes dip only to ~c²
+(doc 43 §2's central-dip formula): doc 72 §4's counter is NOT
+registration-complete at λ₀ ≪ 1. Registration forces c ≤ e^{−A/2} ⟹ budget
+∝ e^{−A/2} vs polynomially-walled stack A^{−4}: min_A stack/budget ≈ 13
+certified (≥ 3 with all sketches), growing with T — fails at EVERY height.
+The mollifier doc 72 discarded was the registration device. Verdict doc 82;
+5-failed card route-c-direct-registration-gap.md; doc 80 §8 terminal
+pointer. All escapes priced (certification walled docs 80–81; A-audit
+closed; budget ceiling ≥ 3; partial registration = Route B + cascade;
+envelope worst-case). Survivors: C-1..C-4 Lean links, ParityCounting (now a
+Route B asset), wall instruments, B1 certificate, seam/EM machinery.
+NEW DESIGN GATE for the branch: the REGISTRATION CRITERION — does a carrier
+register its own shallow creation? Sharp: no. Mollified: yes.
+Exponential-AFE (doc 32 §6 / doc 76 §5): UNTESTED — the live heir; test it
+next. Tasks: #28 CLOSED (refutation branch, all details); #20 (EQD) CLOSED
+(adjudicated docs 80–81); #11 CLOSED (superseded by the verdict).
+
+## 2026-07-05 (cont.3) — SPUR-R Lean grind (user: "finish it"): s-march + dW/ds core
+SpurLattice.lean now 21 thm (CothInfra 9), all axiom-clean, lint-green. Added this cycle:
+- swap_field_gt (swap ahead→behind pole raises field by >2) + equilibrium_gt_of_field_gt
+  (⟹ equilibrium moves right = s-march s_{i+1}<s_i), the doc-29 step-(b) mechanism;
+- cothField_secondDeriv (field''=½Σφ);
+- rphi_pair_gt (m-th paired difference φ((s+mδ)/2)>φ((δ-s+mδ)/2)) + rphi_paired_sum_gt
+  (Σ paired > 0 = the UNCONDITIONAL half of dW/ds<0; gives W-monotonicity outright in the
+  M≥N no-overhang range).
+Remaining for constant-δ lattice (S-mono): φ exponential tail bound (φ(u)≤Ce^{-2u}, u≥1) for
+the outer N>M far-behind surplus, + dW/ds<0 assembly + chain to W(t*_{i+1})>W(t*_i). Next.
+
+## Cycle 51 (2026-07-05) — the registration criterion built + formalized (/goal)
+
+Registration.lean BANKED (6 endpoints axiom-clean, lint green, module build
+8575): the pair-dip law both sides (‖Φ(½+it)‖ ≥ η²‖H‖ everywhere, = at the
+foot — exact, carrier-agnostic), RegistersAt / RegistrationComplete
+predicates, registration from envelope upper bounds, and the REGISTRATION
+GAP AS A THEOREM (one band pair over a lower-bounded envelope refutes
+completeness below η²M) — doc 82 §1's unsound link, machine-checked in
+general form. Doc 83: the criterion sorts the lane's carriers — mollified
+REGISTERS (κ² = O(1)), sharp FAILS (doc 82), exp-AFE = two-horn dichotomy:
+value-normalization says fail, but its e^{−ωt} displacement may CONFINE its
+pair population below the band (registration by vacuity) — the criterion
+re-types the heir's question into a zero-confinement census (doc 76 §5
+instance machinery, next). Umbrella import appended (pending parallel
+session's Spur clash fix).
+
+## 2026-07-05 (cont.4) — MILESTONE: lattice (S-mono) proven (no-overhang range)
+latticeEnergyS_strictAntiOn (axiom-clean): W(s) strictly decreasing in s for 1≤N≤M ⟹ (S-mono)
+S_{i+1}>S_i unconditional in the M≥N range. Chain: latticeEnergyS_hasDerivAt (dW/ds exact) →
+latticeEnergyS_deriv_neg (dW/ds<0) → strictAntiOn via strictAntiOn_of_deriv_neg. Session total
+39 decls / 487 lines new coth/csch+lattice theory, all axiom-clean, lint-green. Remaining for
+FULL lattice (S-mono): outer N>M range = φ exponential-tail bound vs cubic near term. Then
+(F)-fields, Lemma R, capstone, #147.
+
+## 2026-07-05 (cont.5) — outer-range: φ exponential tail bound banked
+CothInfra.lean: sinh_ge_quarter_exp (sinh u ≥ eᵘ/4, u≥1), cosh_le_exp (cosh u ≤ eᵘ),
+rphi_le_exp (φ(u) = cosh u/sinh³u ≤ 64 e^{-2u}, u≥1) — all axiom-clean. This is the
+far-behind overhang control for the outer (N>M) lattice (S-mono).
+Remaining outer-range pieces (next cycles): (i) near cubic LOWER bound φ(x) ≥ c/x³ for
+0<x≤1 (via sinh x ≤ x cosh x ⟹ csch x ≥ 1/(x cosh x), coth x ≥ 1/x); (ii) geometric tail
+sum of the overhang Σ_{m≥M} φ((δ-s+mδ)/2) ≤ 64 e^{-(δ-s)} e^{-Mδ}/(1-e^{-δ}) [SPLIT at
+mδ~1 since rphi_le_exp needs arg≥1 and δ may be small]; (iii) assembly: near surplus
+φ(s/2)-φ((δ-s)/2) > overhang ⟹ dW/ds<0 in outer range ⟹ latticeEnergyS_strictAntiOn
+extends to N>M. Then (F)-fields χ1/χ2, Lemma R, capstone, #147.

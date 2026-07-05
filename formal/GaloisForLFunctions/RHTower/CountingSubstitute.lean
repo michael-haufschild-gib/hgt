@@ -319,3 +319,79 @@ theorem pinned_zero_re_eq_half {κ : Type*} (t : Finset κ) (ρ' : κ → ℂ) (
   linarith
 
 end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **Relative Rouché substitute.** Relative `η < 1` closeness on the annulus charts
+preserves the enclosed multiplicity count and gives the U0 principal-log bound for
+the correction ratio on the same charts. -/
+theorem enclosed_count_eq_of_relative_close {ι κ : Type*} (s : Finset ι) (t : Finset κ)
+    (ρ : ι → ℂ) (m : ι → ℕ) (ρ' : κ → ℂ) (m' : κ → ℕ)
+    {f g h h' : ℂ → ℂ} {a : ℂ} {r₀ R η : ℝ} (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hη : η < 1)
+    (hρ : ∀ i ∈ s, ‖ρ i - a‖ ≤ r₀) (hρ' : ∀ j ∈ t, ‖ρ' j - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfactg : ∀ z ∈ ball a R, g z = (∏ i ∈ s, (z - ρ i) ^ m i) * h z)
+    (hfactf : ∀ z ∈ ball a R, f z = (∏ j ∈ t, (z - ρ' j) ^ m' j) * h' z)
+    (hg0 : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, g z ≠ 0)
+    (hrel : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, ‖(f z - g z) / g z‖ ≤ η) :
+    (∑ j ∈ t, m' j = ∑ i ∈ s, m i) ∧
+      ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+        ‖Complex.log (f z / g z)‖ ≤ (1 - η)⁻¹ * ‖(f z - g z) / g z‖ := by
+  have hclose : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, ‖f z - g z‖ < ‖g z‖ := by
+    intro z hz
+    have hz0 : g z ≠ 0 := hg0 z hz
+    have hnorm : 0 < ‖g z‖ := norm_pos_iff.mpr hz0
+    have hdiv : ‖f z - g z‖ / ‖g z‖ ≤ η := by
+      simpa [norm_div] using hrel z hz
+    have hmul : ‖f z - g z‖ ≤ η * ‖g z‖ := (div_le_iff₀ hnorm).mp hdiv
+    exact lt_of_le_of_lt hmul (by simpa using mul_lt_mul_of_pos_right hη hnorm)
+  constructor
+  · exact enclosed_count_eq_of_close s t ρ m ρ' m' h0 hrR hρ hρ' hh hh0 hh' hh0'
+      hfactg hfactf hclose
+  · intro z hz
+    exact ratio_log_norm_le_of_relative_close hη (hg0 z hz) (hrel z hz)
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **Relative pinning lemma.** If the reference has one simple critical-line zero and
+the perturbation is FE-real plus relatively `η < 1` close on the annulus charts,
+then every counted perturbation zero lies on the critical line; the same certificate
+also controls the principal-log correction ratio by the U0 bound. -/
+theorem pinned_zero_re_eq_half_of_relative_close {κ : Type*} (t : Finset κ)
+    (ρ' : κ → ℂ) (m' : κ → ℕ)
+    {f g h h' : ℂ → ℂ} {ρ₀ : ℂ} {r₀ R η : ℝ} (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hη : η < 1) (hρ₀re : ρ₀.re = 1 / 2)
+    (hsym : ∀ z ∈ ball ρ₀ R, f (1 - (starRingEnd ℂ) z) = (starRingEnd ℂ) (f z))
+    (hh : AnalyticOnNhd ℂ h (ball ρ₀ R)) (hh0 : ∀ z ∈ ball ρ₀ R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball ρ₀ R)) (hh0' : ∀ z ∈ ball ρ₀ R, h' z ≠ 0)
+    (hfactg : ∀ z ∈ ball ρ₀ R, g z = (z - ρ₀) * h z)
+    (hρ' : ∀ j ∈ t, ‖ρ' j - ρ₀‖ ≤ r₀)
+    (hfactf : ∀ z ∈ ball ρ₀ R, f z = (∏ j ∈ t, (z - ρ' j) ^ m' j) * h' z)
+    (hg0 : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R, g z ≠ 0)
+    (hrel : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R, ‖(f z - g z) / g z‖ ≤ η) :
+    (∀ j ∈ t, m' j ≠ 0 → (ρ' j).re = 1 / 2) ∧
+      ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+        ‖Complex.log (f z / g z)‖ ≤ (1 - η)⁻¹ * ‖(f z - g z) / g z‖ := by
+  have hclose : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R, ‖f z - g z‖ < ‖g z‖ := by
+    intro z hz
+    have hz0 : g z ≠ 0 := hg0 z hz
+    have hnorm : 0 < ‖g z‖ := norm_pos_iff.mpr hz0
+    have hdiv : ‖f z - g z‖ / ‖g z‖ ≤ η := by
+      simpa [norm_div] using hrel z hz
+    have hmul : ‖f z - g z‖ ≤ η * ‖g z‖ := (div_le_iff₀ hnorm).mp hdiv
+    exact lt_of_le_of_lt hmul (by simpa using mul_lt_mul_of_pos_right hη hnorm)
+  constructor
+  · exact pinned_zero_re_eq_half t ρ' m' h0 hrR hρ₀re hsym hh hh0 hh' hh0' hfactg hρ'
+      hfactf hclose
+  · intro z hz
+    exact ratio_log_norm_le_of_relative_close hη (hg0 z hz) (hrel z hz)
+
+end RHTower

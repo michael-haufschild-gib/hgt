@@ -265,4 +265,42 @@ theorem exists_radius_avoiding_xi_zeros (a : ℂ) {r R : ℝ} (hrR : r < R) :
     simpa [sub_eq_add_neg, add_assoc, add_comm, add_left_comm] using hzero
   exact havoid (z - a) (Set.mem_univ _) hnorm hwzero
 
+/-- Any nondegenerate radius interval contains two ordered ξ-zero-free circles.
+This is the two-circle form needed by modulus-slope windows. -/
+theorem exists_two_radii_avoiding_xi_zeros (a : ℂ) {r R : ℝ} (hrR : r < R) :
+    ∃ r₁ r₂ : ℝ, r < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
+      (∀ z : ℂ, ‖z - a‖ = r₁ → xi z ≠ 0) ∧
+      (∀ z : ℂ, ‖z - a‖ = r₂ → xi z ≠ 0) := by
+  set M : ℝ := (r + R) / 2 with hM
+  have hrM : r < M := by
+    rw [hM]
+    linarith
+  have hMR : M < R := by
+    rw [hM]
+    linarith
+  obtain ⟨r₁, hr₁, havoid₁⟩ := exists_radius_avoiding_xi_zeros a hrM
+  obtain ⟨r₂, hr₂, havoid₂⟩ := exists_radius_avoiding_xi_zeros a hMR
+  exact ⟨r₁, r₂, hr₁.1, lt_trans hr₁.2 hr₂.1, hr₂.2, havoid₁, havoid₂⟩
+
+end RHTower
+
+namespace RHTower
+
+open Complex Filter Set Metric
+
+/-- **RH iff finite dyadic roots exist at every level, without assuming coherence.**
+The forward direction is the usual ladder/root equivalence.  The reverse direction
+uses the levelwise-root obstruction: roots at all dyadic levels force `ξ` to be
+zero-free on the right half-plane, hence RH. -/
+theorem rh_iff_exists_roots_all_two_powers :
+    RiemannHypothesis ↔
+      ∀ k : ℕ, ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ ∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s := by
+  constructor
+  · intro hRH k
+    exact (rhLadder_iff_root k).mp ((rh_iff_forall_ladder.mp hRH) k)
+  · intro hroots
+    rw [rh_iff_xi_ne_zero_right]
+    exact nonvanishing_of_exists_roots_all_two_powers isOpen_rightHalf convex_rightHalf
+      two_mem_rightHalf (xi_analyticOnNhd _) xi_two_ne_zero hroots
+
 end RHTower
