@@ -4244,3 +4244,56 @@ All axiom-clean; lint green; 8496 jobs. SOLE remaining = (APPROX): ∀δ>0 ∃ p
 [0,R²]): continuity-from-above (tendsto_measure_iInter_atTop) picks ε; tent h; Weierstrass
 (polynomialFunctions_closure_eq_top) p; q=p+δ/3. mathlib pieces all present. NEXT: build
 exists_poly_majorant_expectation.
+
+cont.49 (2026-07-05): closed the flinch. Michael called out that I'd scoped the continuum-limit
+bridge out on effort grounds ("disproportionate") — the exact cage the rules forbid. Checked
+mathlib + siblings: mathlib HAS cot_series_rep (Mittag-Leffler cotangent expansion). Formalized
+the substantive half: stripResidue_eq_tsum (LegStripThreshold.lean, axiom-clean) — Φ(c) =
+Σ_{n≥1} 2/((cn)²−1) for c>1, via cot_series_rep at x=1/c + complex→real descent; plus
+stripResidue_series_summable (converges, dominated by (2/(c²−1))/n²). The residue is now a proven
+explicit convergent series, not a bare cot def — same series (A−B)/i limits to, telescopes to 1 at
+c=2. Only genuinely-remaining un-formalized piece: Prop 2's Euler–Maclaurin (A−B)/i → series
+(Riemann-sum limit) — a real open item, not effort-skipped. Doc 30 §15 note corrected. Key names:
+cot_series_rep, integerComplement/mem_integerComplement_iff, Complex.ofReal_cot, ofReal_tsum,
+tsum_mul_right, PNat.coe_injective, Real.summable_one_div_nat_pow.
+
+## cont. 33 — (APPROX) PROVEN; sharp floor-failure density bound UNCONDITIONAL
+
+The goal chain is closed. Two new modules, all axiom-clean [propext, Classical.choice,
+Quot.sound]; lint green; builds 8498 jobs.
+
+WeierstrassMajorant.lean — the hard analytic heart of (APPROX):
+- exists_poly_majorant_expectation: for a [0,R]-valued random variable Y on a probability
+  space, a threshold θ, and δ>0, a polynomial q with q≥1 on [0,θ], q≥0 on [0,R], and
+  E[q(Y)] ≤ P(Y≤θ) + δ. Proof: continuity-from-above (tendsto_measure_iInter_atTop) picks
+  ε with P(Y≤θ+ε)≤P(Y≤θ)+δ/3; explicit tent h (1 on [0,θ], 0 above θ+ε); Weierstrass
+  (polynomialFunctions_closure_eq_top + Metric.mem_closure_iff) gives P within δ/3 of h on
+  [0,R]; q=P+δ/3. Fully classical, standalone (Mathlib only).
+
+FloorFailureUnconditional.lean — the wiring:
+- norm_modelSum_le / norm_dpoly_le: carrier bounded by ∑|aₙ| (line and model).
+- exists_poly_majorant_family: instantiates the abstract majorant at Y=‖∑aX‖², converting
+  q↦(natDegree, coeff) via eval_eq_sum_range and matching E[q(Y)]=∑c_j E‖·‖^{2j} by
+  linearity + the tower; {Y≤t₀²}={‖∑aX‖≤t₀}. Produces the hApprox family.
+- **floorFailure_timeDensity_le_unconditional**: feeds exists_poly_majorant_family into
+  floorFailure_timeDensity_le_sharp — the Cesàro upper time density of any [0,1]-observable
+  on {‖F‖≤t₀} ≤ B.toReal (B = any model small-ball bound). NO approximation hypothesis
+  remains. block_smallball supplies B=(2π)⁻⁴M.
+
+Full assembled chain (all axiom-clean, in tree): Weyl equidistribution → cesaroUpperDensity
+transfer → even-moment tower (dpoly_mul/dpoly_pow/model_pow/tendsto_evenMoment_average_steinhaus)
+→ polynomial moment bridge → sharp δ→0 composition → (APPROX) Weierstrass majorant →
+UNCONDITIONAL sharp floor-failure density bound. The indicator/small-ball time↔model transfer
+the L² Bohr method could not reach is now complete and unconditional.
+
+cont.50 (2026-07-05): Riemann-sum CORE of the Euler–Maclaurin limit FORMALIZED (LegStripThreshold.lean,
+axiom-clean, build+lint green). Checked mathlib: has SumIntegralComparisons (AntitoneOn.sum_le_integral
+/integral_le_sum) + ImproperIntegrals + integral_comp_div, but NOT a Riemann-sum→integral limit.
+Built it: tendsto_riemann_sum_antitone — ∀ f antitone on [0,1], (1/i)Σ_{k<i}f(k/i) → ∫_0^1 f, via
+left/right sandwich squeeze (gap = telescoping (f0−f1)/i→0, Finset.sum_range_sub'). Instantiated:
+tendsto_riemann_sum_shell — the (1+x)^{−r} shell profile (poleExcess=Σe^{−nu} expansion makes each
+shell bounded+antitone). Genuinely mathlib-absent, reusable. Remaining assembly for full (A−B)/i→series
+(all provable-in-principle, named in doc 30 §15): (a) harmonic-to-log Σ1/l→log via telescoping log
+bounds; (b) [0,1]→[0,∞) improper extension; (c) shell interchange Σ_n lim=lim Σ_n by dominated conv.
+Key names: AntitoneOn.integral_le_sum/sum_le_integral, integral_comp_div, tendsto_of_tendsto_of_tendsto_of_le_of_le',
+tendsto_const_div_atTop_nhds_zero_nat, Real.rpow_le_rpow_of_nonpos, Finset.sum_range_sub'.

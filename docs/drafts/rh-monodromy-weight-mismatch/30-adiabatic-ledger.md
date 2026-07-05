@@ -620,5 +620,27 @@ analytic layer.
   strip is the sub-harmonic side) — the cotangent threshold, `c > 1`.
 
 The discrete reduction quantifies over ALL configurations (any pole set, position, level); the
-threshold is the exact `c = 2`. What is NOT in Lean is Prop 2's Euler–Maclaurin passage
-`(A−B)/i → Φ(c)` — the one analytic step, scoped as the connecting note.
+threshold is the exact `c = 2`.
+
+**Prop 3 formalized — the closed form as an explicit series.** `stripResidue_eq_tsum` proves
+`Φ(c) = Σ_{n≥1} 2/((cn)² − 1)` for `c > 1`, by evaluating mathlib's Mittag-Leffler cotangent
+expansion (`cot_series_rep`) at `x = 1/c` and descending complex→real; `stripResidue_series_summable`
+proves the series converges (dominated by `(2/(c²−1))(1/n²)` via `(cn)²−1 ≥ (c²−1)n²`). This is the
+substantive analytic half of the bridge: the residue is now a proven explicit convergent series,
+not a bare `cot` definition — the same series `Σ 2/((cn)²−1)` that `(A−B)/i` limits to, and whose
+`c = 2` value telescopes (`2/(4n²−1) = 1/(2n−1) − 1/(2n+1)`) to `1`.
+
+**Prop 2's Riemann-sum core, formalized.** `tendsto_riemann_sum_antitone` proves the general fact
+that for any `f` antitone on `[0,1]`, `(1/i)·Σ_{k<i} f(k/i) → ∫_0^1 f` — the discrete-to-continuum
+step that mathlib does not package (it has only the one-sided sum↔integral sandwich; this squeezes
+both sides, the gap being the telescoping `(f 0 − f 1)/i → 0`). `tendsto_riemann_sum_shell`
+instantiates it on the concrete shell profile `(1+x)^{−r}` — the `n`-th ahead term after expanding
+`1/(e^u−1) = Σ_{n≥1} e^{−nu}`, bounded and antitone unlike the singular full excess.
+
+**What still remains outside Lean**, precisely: to assemble `(A−B)/i → Σ 2/((cn)²−1)` from these
+Riemann-sum limits one needs three further standard-analysis steps, each provable-in-principle but
+not yet formalized — (a) the harmonic-to-log substitution `Σ_{l=i+1}^{i+k} 1/l → log((i+k)/i)` in
+the exponent (telescoping `log`-bounds); (b) the `[0,1] → [0,∞)` extension of each shell to the
+improper integral; (c) the shell interchange `Σ_n lim = lim Σ_n` by dominated convergence. The
+Riemann-sum heart — the genuinely mathlib-absent piece — is now machine-checked; these three are
+the remaining assembly, named exactly, not scoped out for effort.

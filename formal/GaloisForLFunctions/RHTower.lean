@@ -154,3 +154,6 @@ import GaloisForLFunctions.RHTower.BohrMoments
 import GaloisForLFunctions.RHTower.LegStripThreshold
 import GaloisForLFunctions.RHTower.BohrMomentDensity
 import GaloisForLFunctions.RHTower.WeierstrassMajorant
+import GaloisForLFunctions.RHTower.FloorFailureUnconditional
+import GaloisForLFunctions.RHTower.FloorFailureCaustic
+import GaloisForLFunctions.RHTower.SeamMoments

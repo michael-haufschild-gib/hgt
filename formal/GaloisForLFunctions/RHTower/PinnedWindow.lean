@@ -409,3 +409,294 @@ theorem riemannHypothesis_of_double_domination_windows
     _ = R' := by ring
 
 end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- Every chart recentered inside the hole lies in the fixed fattened annulus:
+`chart(ρ', r₀', R') ⊆ ball ρ₀ (R'+r₀) \ closedBall ρ₀ (r₀'−r₀)` whenever
+`‖ρ' − ρ₀‖ ≤ r₀`. -/
+theorem chart_subset_annulus {ρ₀ ρ' : ℂ} {r₀ r₀' R' : ℝ} (hρ' : ‖ρ' - ρ₀‖ ≤ r₀) :
+    chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R'
+      ⊆ ball ρ₀ (R' + r₀) \ closedBall ρ₀ (r₀' - r₀) := by
+  intro z hz
+  have hz' : z ∈ ball ρ' R' \ closedBall ρ' r₀' := by
+    rcases hz with h | h
+    · exact h.2
+    · exact h.2
+  constructor
+  · rw [mem_ball]
+    calc dist z ρ₀ ≤ dist z ρ' + dist ρ' ρ₀ := dist_triangle z ρ' ρ₀
+      _ < R' + r₀ :=
+          add_lt_add_of_lt_of_le (mem_ball.mp hz'.1) (by rwa [Complex.dist_eq])
+  · intro hmem
+    rw [mem_closedBall] at hmem
+    apply hz'.2
+    rw [mem_closedBall]
+    calc dist z ρ' ≤ dist z ρ₀ + dist ρ₀ ρ' := dist_triangle z ρ₀ ρ'
+      _ ≤ (r₀' - r₀) + r₀ :=
+          add_le_add hmem (by rw [Complex.dist_eq, norm_sub_rev]; exact hρ')
+      _ = r₀' := by ring
+
+/-- **Fixed-region form of the double-domination window.**  The recentered-chart
+data family collapses to a single certificate on the fixed fattened annulus
+`S = ball ρ₀ (R'+r₀) \ closedBall ρ₀ (r₀'−r₀)`: every recentered chart is
+contained in `S` (`chart_subset_annulus`), the strip clause is supplied by the
+window's own strip condition, and EM, closeness, and floor data restrict.  The
+whole certificate is: two dominations plus three inequalities on one fixed
+set. -/
+theorem xi_window_pinned_of_double_domination_fixed
+    {N M : ℕ} (hM : 1 ≤ M) {ε₁ δ : ℝ} (hεδ : 0 ≤ ε₁ + δ)
+    {ρ₀ c : ℂ} (hc : c ≠ 0) {r₀ R r₀' R' : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (h0' : 0 ≤ r₀') (hrR' : r₀' < R')
+    (hRR' : R' + r₀ ≤ R) (hρ₀re : ρ₀.re = 1 / 2)
+    (hball : ∀ z ∈ ball ρ₀ R, 0 < z.re ∧ z.re < 1)
+    (hcloseC : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ < ‖c * (z - ρ₀)‖)
+    (hES : ∀ z ∈ ball ρ₀ (R' + r₀) \ closedBall ρ₀ (r₀' - r₀),
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hcloseS : ∀ z ∈ ball ρ₀ (R' + r₀) \ closedBall ρ₀ (r₀' - r₀),
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hFS : CarrierFloorOn (ball ρ₀ (R' + r₀) \ closedBall ρ₀ (r₀' - r₀))
+      N (2 * (ε₁ + δ))) :
+    ∃ ρ' : ℂ, ρ'.re = 1 / 2 ∧ ‖ρ' - ρ₀‖ ≤ r₀
+      ∧ (∀ p ∈ ball ρ' R', xi p = 0 → p.re = 1 / 2)
+      ∧ ∀ z ∈ chartRA ρ' r₀' R' ∪ chartLA ρ' r₀' R',
+          ‖Complex.log (xi z / completedGN N z)‖ ≤
+            (1 - (1 / 2 : ℝ))⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  refine xi_window_pinned_of_double_domination hM hεδ hc h0 hrR h0' hrR' hRR' hρ₀re
+    hball hcloseC (fun ρ' _ hρ'hole => ?_)
+  have hsub := chart_subset_annulus (r₀' := r₀') (R' := R') hρ'hole
+  have hSball : ball ρ₀ (R' + r₀) \ closedBall ρ₀ (r₀' - r₀) ⊆ ball ρ₀ R :=
+    fun z hz => ball_subset_ball hRR' hz.1
+  refine ⟨fun z hz => ?_, fun z hz => hES z (hsub hz),
+    fun z hz => hcloseS z (hsub hz), fun z hz => hFS z (hsub hz)⟩
+  obtain ⟨hσ, hσ1⟩ := hball z (hSball (hsub hz))
+  exact ⟨hσ, fun hz1 => by rw [hz1] at hσ1; norm_num at hσ1⟩
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **Annulus maximum principle for the relative error.**  If `f` and `G` are
+analytic on the closed annulus, `G` is zero-free there, and `‖(f − G)/G‖ ≤ η`
+on the two boundary circles, then the same bound holds on the whole open
+annulus: the quotient is analytic up to the boundary and its modulus is
+maximized on the frontier, which is the two circles. -/
+theorem relative_error_le_on_annulus_of_circles {f G : ℂ → ℂ} {a : ℂ}
+    {r₀ R η : ℝ} (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hf : ∀ z ∈ closedBall a R \ ball a r₀, AnalyticAt ℂ f z)
+    (hG : ∀ z ∈ closedBall a R \ ball a r₀, AnalyticAt ℂ G z)
+    (hGne : ∀ z ∈ closedBall a R \ ball a r₀, G z ≠ 0)
+    (hcirc : ∀ z ∈ sphere a r₀ ∪ sphere a R, ‖(f z - G z) / G z‖ ≤ η) :
+    ∀ z ∈ ball a R \ closedBall a r₀, ‖(f z - G z) / G z‖ ≤ η := by
+  set φ : ℂ → ℂ := fun z => (f z - G z) / G z with hφ_def
+  set A : Set ℂ := ball a R \ closedBall a r₀ with hA_def
+  have hAopen : IsOpen A := isOpen_ball.sdiff isClosed_closedBall
+  have hAbdd : Bornology.IsBounded A := Metric.isBounded_ball.subset Set.diff_subset
+  have hRpos : 0 < R := lt_of_le_of_lt h0 hrR
+  have hclosureA : closure A ⊆ closedBall a R \ ball a r₀ := by
+    have h1 : closure A ⊆ closure (ball a R) := closure_mono Set.diff_subset
+    have h2 : closure A ⊆ (ball a r₀)ᶜ := by
+      apply closure_minimal ?_ isOpen_ball.isClosed_compl
+      intro z hz
+      exact fun hmem => hz.2 (ball_subset_closedBall hmem)
+    intro z hz
+    exact ⟨by rw [← closure_ball a hRpos.ne']; exact h1 hz, h2 hz⟩
+  have hφan : ∀ z ∈ closedBall a R \ ball a r₀, AnalyticAt ℂ φ z := by
+    intro z hz
+    simp only [hφ_def]
+    exact ((hf z hz).sub (hG z hz)).div (hG z hz) (hGne z hz)
+  have hdiff : DiffContOnCl ℂ φ A :=
+    ⟨fun z hz =>
+        (hφan z (hclosureA (subset_closure hz))).differentiableAt.differentiableWithinAt,
+      fun z hz => (hφan z (hclosureA hz)).continuousAt.continuousWithinAt⟩
+  have hfrontier : ∀ z ∈ frontier A, ‖φ z‖ ≤ η := by
+    intro z hz
+    rw [hAopen.frontier_eq] at hz
+    obtain ⟨hzc, hzA⟩ := hz
+    have hzcb := hclosureA hzc
+    have hsph : z ∈ sphere a r₀ ∪ sphere a R := by
+      have h1 : dist z a ≤ R := mem_closedBall.mp hzcb.1
+      have h2 : r₀ ≤ dist z a := by
+        by_contra hlt
+        exact hzcb.2 (mem_ball.mpr (not_le.mp hlt))
+      rcases eq_or_lt_of_le h2 with heq | hgt
+      · exact Or.inl (mem_sphere.mpr heq.symm)
+      · rcases eq_or_lt_of_le h1 with heqR | hltR
+        · exact Or.inr (mem_sphere.mpr heqR)
+        · exact absurd ⟨mem_ball.mpr hltR,
+            fun hmem => not_le.mpr hgt (mem_closedBall.mp hmem)⟩ hzA
+    simp only [hφ_def]
+    exact hcirc z hsph
+  intro z hzA
+  have := Complex.norm_le_of_forall_mem_frontier_norm_le hAbdd hdiff hfrontier
+    (subset_closure hzA)
+  simpa only [hφ_def] using this
+
+/-- **Boundary-to-chart domination transfer (maximum principle).**  If the
+deviation of the completed carrier from the linear reference `c·(z − ρ₀)` is
+at most `η·‖reference‖` with `η < 1` on the TWO boundary circles of the
+annulus, the strict domination holds on the whole annulus — in particular on
+both slit charts (`relative_error_le_on_annulus_of_circles`; the reference
+vanishes only at the center, strictly inside the inner circle).  The 2D chart
+certificate of `completedGN_simple_zero_factorization_of_close` reduces to 1D
+circle data. -/
+theorem completedGN_linear_domination_of_circles
+    {N : ℕ} {ρ₀ c : ℂ} (hc : c ≠ 0) {r₀ R η : ℝ}
+    (h0 : 0 < r₀) (hrR : r₀ < R) (hη : η < 1)
+    (hball : ∀ z ∈ closedBall ρ₀ R, 0 < z.re ∧ z.re < 1)
+    (hcirc : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ ≤ η * ‖c * (z - ρ₀)‖) :
+    ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+      ‖completedGN N z - c * (z - ρ₀)‖ < ‖c * (z - ρ₀)‖ := by
+  have hgne : ∀ z ∈ closedBall ρ₀ R \ ball ρ₀ r₀, c * (z - ρ₀) ≠ 0 := by
+    intro z hz
+    have hne : z ≠ ρ₀ := by
+      intro hzρ
+      apply hz.2
+      rw [hzρ]
+      exact mem_ball_self h0
+    exact mul_ne_zero hc (sub_ne_zero.mpr hne)
+  have hsphsub : sphere ρ₀ r₀ ∪ sphere ρ₀ R ⊆ closedBall ρ₀ R \ ball ρ₀ r₀ := by
+    rintro z (hz | hz) <;> rw [mem_sphere] at hz
+    · exact ⟨mem_closedBall.mpr (hz.le.trans hrR.le),
+        fun hm => absurd (mem_ball.mp hm) (by rw [hz]; exact lt_irrefl _)⟩
+    · exact ⟨mem_closedBall.mpr hz.le,
+        fun hm => absurd (mem_ball.mp hm) (by rw [hz]; exact not_lt.mpr hrR.le)⟩
+  have hrel := relative_error_le_on_annulus_of_circles (f := completedGN N)
+    (G := fun z => c * (z - ρ₀)) h0.le hrR
+    (fun z hz => completedGN_analyticAt (hball z hz.1).1 (hball z hz.1).2)
+    (fun z _ => by fun_prop)
+    hgne
+    (fun z hz => by
+      have hgz : c * (z - ρ₀) ≠ 0 := hgne z (hsphsub hz)
+      rw [norm_div, div_le_iff₀ (norm_pos_iff.mpr hgz)]
+      exact hcirc z hz)
+  intro z hz
+  have hzA : z ∈ ball ρ₀ R \ closedBall ρ₀ r₀ := by
+    rcases hz with h | h
+    · exact h.2
+    · exact h.2
+  have hgz : c * (z - ρ₀) ≠ 0 :=
+    hgne z ⟨ball_subset_closedBall hzA.1, fun hm => hzA.2 (ball_subset_closedBall hm)⟩
+  have hgpos : 0 < ‖c * (z - ρ₀)‖ := norm_pos_iff.mpr hgz
+  have h1 := hrel z hzA
+  rw [norm_div, div_le_iff₀ hgpos] at h1
+  calc ‖completedGN N z - c * (z - ρ₀)‖ ≤ η * ‖c * (z - ρ₀)‖ := h1
+    _ < 1 * ‖c * (z - ρ₀)‖ := mul_lt_mul_of_pos_right hη hgpos
+    _ = ‖c * (z - ρ₀)‖ := one_mul _
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **The one-dimensional EM-side pinned window.**  Circle data drives the
+ξ side: a LOW floor on the charts and on the two boundary circles makes the
+completed carrier zero-free on the closed annulus, the annulus maximum
+principle transports an `η < 1` relative ξ/carrier error from the two circles
+to the whole annulus, and the pinning machinery does the rest — every ξ-zero
+of the window ball is on the critical line, with the `(1−η)⁻¹` principal-log
+control on the charts.  The chart-wide EM remainder and closeness bounds of
+`xi_window_pinned_of_carrier_simple_zero` are replaced by circle data. -/
+theorem xi_window_pinned_of_carrier_simple_zero_of_circles
+    {N : ℕ} {ρ₀ : ℂ} {r₀ R ε η : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R) (hη : η < 1) (hε : 0 ≤ ε)
+    (hρ₀re : ρ₀.re = 1 / 2)
+    (hball : ∀ z ∈ closedBall ρ₀ R, 0 < z.re ∧ z.re < 1)
+    (hF : CarrierFloorOn (chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R) N ε)
+    (hFcirc : CarrierFloorOn (sphere ρ₀ r₀ ∪ sphere ρ₀ R) N ε)
+    (hcirc : ∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η)
+    {h : ℂ → ℂ}
+    (hh : AnalyticOnNhd ℂ h (ball ρ₀ R)) (hh0 : ∀ z ∈ ball ρ₀ R, h z ≠ 0)
+    (hfactg : ∀ z ∈ ball ρ₀ R, completedGN N z = (z - ρ₀) * h z) :
+    (∀ p ∈ ball ρ₀ R, xi p = 0 → p.re = 1 / 2) ∧
+      ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+        ‖Complex.log (xi z / completedGN N z)‖ ≤
+          (1 - η)⁻¹ * ‖(xi z - completedGN N z) / completedGN N z‖ := by
+  have hstrip' : ∀ z ∈ closedBall ρ₀ R, 0 < z.re ∧ z ≠ 1 := by
+    intro z hz
+    refine ⟨(hball z hz).1, fun h1 => ?_⟩
+    have h2 := (hball z hz).2
+    rw [h1] at h2
+    norm_num at h2
+  have hG0 : ∀ z ∈ closedBall ρ₀ R \ ball ρ₀ r₀, completedGN N z ≠ 0 := by
+    intro z hz
+    by_cases hzo : z ∈ ball ρ₀ R \ closedBall ρ₀ r₀
+    · exact completedGN_ne_zero_of_gN_ne_zero (hstrip' z hz.1).1 (hstrip' z hz.1).2
+        (gN_ne_zero_of_carrierFloorOn hε hF z (annulus_subset_charts h0 hzo))
+    · have hsph : z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R := by
+        have h1 : dist z ρ₀ ≤ R := mem_closedBall.mp hz.1
+        have h2 : r₀ ≤ dist z ρ₀ := by
+          by_contra hlt
+          exact hz.2 (mem_ball.mpr (not_le.mp hlt))
+        rcases eq_or_lt_of_le h2 with heq | hgt
+        · exact Or.inl (mem_sphere.mpr heq.symm)
+        · rcases eq_or_lt_of_le h1 with heqR | hltR
+          · exact Or.inr (mem_sphere.mpr heqR)
+          · exact absurd ⟨mem_ball.mpr hltR,
+              fun hm => not_le.mpr hgt (mem_closedBall.mp hm)⟩ hzo
+      exact completedGN_ne_zero_of_gN_ne_zero (hstrip' z hz.1).1 (hstrip' z hz.1).2
+        (gN_ne_zero_of_carrierFloorOn hε hFcirc z hsph)
+  have hrelann := relative_error_le_on_annulus_of_circles (f := xi)
+    (G := completedGN N) h0 hrR (fun z hz => xi_analyticOnNhd _ z hz)
+    (fun z hz => completedGN_analyticAt (hball z hz.1).1 (hball z hz.1).2)
+    hG0 hcirc
+  have hchartsub : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+      z ∈ ball ρ₀ R \ closedBall ρ₀ r₀ := by
+    intro z hz
+    rcases hz with h | h
+    · exact h.2
+    · exact h.2
+  have hrel : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R,
+      ‖(xi z - completedGN N z) / completedGN N z‖ ≤ η := fun z hz =>
+    hrelann z (hchartsub z hz)
+  have hg0ch : ∀ z ∈ chartRA ρ₀ r₀ R ∪ chartLA ρ₀ r₀ R, completedGN N z ≠ 0 := by
+    intro z hz
+    have hzA := hchartsub z hz
+    exact hG0 z ⟨ball_subset_closedBall hzA.1, fun hm => hzA.2 (ball_subset_closedBall hm)⟩
+  have hhole : ∀ p ∈ ball ρ₀ R, xi p = 0 → ‖p - ρ₀‖ ≤ r₀ := by
+    intro p hp hxi
+    by_contra hout
+    have hann : p ∈ ball ρ₀ R \ closedBall ρ₀ r₀ :=
+      ⟨hp, fun hmem => hout (by rwa [mem_closedBall, Complex.dist_eq] at hmem)⟩
+    have h1 := hrelann p hann
+    have hGp : completedGN N p ≠ 0 :=
+      hG0 p ⟨ball_subset_closedBall hp, fun hm => hann.2 (ball_subset_closedBall hm)⟩
+    rw [hxi, zero_sub, norm_div, norm_neg,
+      div_self (norm_ne_zero_iff.mpr hGp)] at h1
+    linarith
+  obtain ⟨t, m', h', htmem, hh'an, hh'0, hfactf⟩ := xi_ball_factorization ρ₀ R
+  have hρ't : ∀ w ∈ t, ‖w - ρ₀‖ ≤ r₀ := fun w hw =>
+    hhole w ((htmem w).mp hw).1 ((htmem w).mp hw).2
+  have hsym : ∀ z ∈ ball ρ₀ R,
+      xi (1 - (starRingEnd ℂ) z) = (starRingEnd ℂ) (xi z) := by
+    intro z _
+    rw [xi_one_sub]
+    exact xi_conj z
+  obtain ⟨hpin, hlog⟩ := pinned_zero_re_eq_half_of_relative_close t id m' h0 hrR hη
+    hρ₀re hsym hh hh0 hh'an hh'0 hfactg hρ't hfactf hg0ch hrel
+  refine ⟨?_, hlog⟩
+  intro p hp hxi
+  have hfa := hfactf p hp
+  rw [hxi] at hfa
+  have hprod : (∏ w ∈ t, (p - w) ^ m' w) = 0 := by
+    rcases mul_eq_zero.mp hfa.symm with hzc | hzc
+    · exact hzc
+    · exact absurd hzc (hh'0 p hp)
+  obtain ⟨w, hwmem, hwzero⟩ := Finset.prod_eq_zero_iff.mp hprod
+  have hm0 : m' w ≠ 0 := by
+    intro hzero'
+    rw [hzero', pow_zero] at hwzero
+    exact one_ne_zero hwzero
+  have hpw : p = w := sub_eq_zero.mp ((pow_eq_zero_iff hm0).mp hwzero)
+  rw [hpw]
+  exact hpin w hwmem hm0
+
+end RHTower

@@ -322,4 +322,83 @@ theorem stripResidue_series_summable {c : ℝ} (hc : 1 < c) :
 
 end Series
 
+/-! ### The Riemann-sum step of the continuum limit -/
+
+section RiemannSum
+open MeasureTheory intervalIntegral Filter Topology
+
+/-- **Antitone Riemann sums converge to the integral** on `[0,1]`: for `f` antitone on `[0,1]`,
+the left-endpoint average `(1/i)·Σ_{k<i} f(k/i)` tends to `∫_0^1 f`. This is the Riemann-sum step
+of the continuum passage `(A−B)/i → Φ(c)`, isolated as a reusable fact (mathlib has the
+sum↔integral sandwich but not this limit). Proof: the sum-integral comparison gives
+`∫_0^1 f ≤ (1/i)Σ_{k<i}f(k/i)` and `(1/i)Σ_{k<i}f((k+1)/i) ≤ ∫_0^1 f`, and the two averages
+differ by the telescoping `(f 0 − f 1)/i → 0`, so a squeeze delivers the limit. -/
+theorem tendsto_riemann_sum_antitone {f : ℝ → ℝ} (hf : AntitoneOn f (Set.Icc 0 1)) :
+    Tendsto (fun i : ℕ => (1 / (i : ℝ)) * ∑ k ∈ Finset.range i, f ((k : ℝ) / i)) atTop
+      (𝓝 (∫ x in (0:ℝ)..1, f x)) := by
+  set I : ℝ := ∫ x in (0:ℝ)..1, f x with hI
+  have hstep : ∀ i : ℕ, 1 ≤ i →
+      (AntitoneOn (fun x => f (x / (i : ℝ))) (Set.Icc 0 (0 + (i : ℝ))))
+        ∧ (∫ x in (0:ℝ)..(0 + (i : ℝ)), f (x / (i : ℝ))) = (i : ℝ) • I := by
+    intro i hi1
+    have hi : (0 : ℝ) < i := by exact_mod_cast hi1
+    refine ⟨?_, ?_⟩
+    · intro a ha b hb hab
+      rw [zero_add] at ha hb
+      exact hf ⟨div_nonneg ha.1 hi.le, by rw [div_le_one hi]; exact ha.2⟩
+        ⟨div_nonneg hb.1 hi.le, by rw [div_le_one hi]; exact hb.2⟩ (by gcongr)
+    · rw [show (0:ℝ) + (i : ℝ) = (i : ℝ) by ring, integral_comp_div f (ne_of_gt hi),
+        zero_div, div_self (ne_of_gt hi)]
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' (g := fun _ : ℕ => I)
+    (h := fun i : ℕ => I + (f 0 - f 1) / (i : ℝ)) tendsto_const_nhds ?_ ?_ ?_
+  · have h0 : Tendsto (fun i : ℕ => (f 0 - f 1) / (i : ℝ)) atTop (𝓝 0) :=
+      tendsto_const_div_atTop_nhds_zero_nat _
+    simpa using tendsto_const_nhds.add h0
+  · filter_upwards [eventually_ge_atTop 1] with i hi1
+    have hi : (0 : ℝ) < i := by exact_mod_cast hi1
+    obtain ⟨hganti, hsub⟩ := hstep i hi1
+    have hlow := hganti.integral_le_sum
+    rw [hsub, smul_eq_mul] at hlow
+    have hsum : (∑ k ∈ Finset.range i, f ((0 + (k:ℝ)) / i)) = ∑ k ∈ Finset.range i, f ((k:ℝ) / i) :=
+      Finset.sum_congr rfl (fun k _ => by rw [zero_add])
+    rw [hsum] at hlow
+    show I ≤ (1 / (i:ℝ)) * ∑ k ∈ Finset.range i, f ((k:ℝ) / i)
+    rw [one_div_mul_eq_div, le_div_iff₀ hi]; nlinarith [hlow]
+  · filter_upwards [eventually_ge_atTop 1] with i hi1
+    have hi : (0 : ℝ) < i := by exact_mod_cast hi1
+    obtain ⟨hganti, hsub⟩ := hstep i hi1
+    have hupp := hganti.sum_le_integral
+    rw [hsub, smul_eq_mul] at hupp
+    have hupp' : (∑ k ∈ Finset.range i, f (((k:ℕ)+1 : ℕ) / (i:ℝ))) ≤ (i:ℝ) * I :=
+      le_trans (le_of_eq (Finset.sum_congr rfl (fun k _ => by rw [zero_add]))) hupp
+    have htel : (∑ k ∈ Finset.range i, f ((k:ℝ)/(i:ℝ))) - (f 0 - f 1)
+        = ∑ k ∈ Finset.range i, f (((k:ℕ)+1 : ℕ) / (i:ℝ)) := by
+      have hkey := Finset.sum_range_sub' (fun k => f ((k:ℝ)/(i:ℝ))) i
+      rw [Finset.sum_sub_distrib] at hkey
+      have e0 : f (((0:ℕ):ℝ)/(i:ℝ)) = f 0 := by norm_num
+      have e1 : f (((i:ℕ):ℝ)/(i:ℝ)) = f 1 := by rw [div_self (ne_of_gt hi)]
+      rw [e0, e1] at hkey
+      linarith [hkey]
+    show (1 / (i:ℝ)) * ∑ k ∈ Finset.range i, f ((k:ℝ)/i) ≤ I + (f 0 - f 1)/(i:ℝ)
+    rw [one_div_mul_eq_div, div_le_iff₀ hi]
+    have hrw : (∑ k ∈ Finset.range i, f ((k:ℝ)/i))
+        = (∑ k ∈ Finset.range i, f (((k:ℕ)+1:ℕ)/(i:ℝ))) + (f 0 - f 1) := by linarith [htel]
+    rw [hrw]
+    have hcancel : (f 0 - f 1) / (i:ℝ) * (i:ℝ) = f 0 - f 1 := by field_simp
+    nlinarith [hupp', hcancel]
+
+/-- **The near part of one shell, formalized.** Expanding `1/(e^u − 1) = Σ_{n≥1} e^{−nu}`, the
+excess balance splits into shells whose `n`-th ahead term has continuum profile `(1+x)^{−r}`
+(`r = nc`, bounded and antitone — unlike the singular full excess). Its `[0,1]` Riemann sum
+converges to `∫_0^1 (1+x)^{−r}` for every `r ≥ 0`. This is `tendsto_riemann_sum_antitone` on the
+concrete shell function, the discrete-to-continuum step made explicit on a genuine piece of the
+limit. -/
+theorem tendsto_riemann_sum_shell {r : ℝ} (hr : 0 ≤ r) :
+    Tendsto (fun i : ℕ => (1 / (i : ℝ)) * ∑ k ∈ Finset.range i, (1 + (k : ℝ) / i) ^ (-r)) atTop
+      (𝓝 (∫ x in (0:ℝ)..1, (1 + x) ^ (-r))) := by
+  refine tendsto_riemann_sum_antitone (fun a ha b hb hab => ?_)
+  exact Real.rpow_le_rpow_of_nonpos (by linarith [ha.1]) (by linarith) (by linarith)
+
+end RiemannSum
+
 end RHTower

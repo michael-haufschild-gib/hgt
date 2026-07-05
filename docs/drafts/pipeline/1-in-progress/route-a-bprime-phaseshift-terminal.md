@@ -194,3 +194,17 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
   **floorFailure_timeDensity_le_sharp** — density ≤ B.toReal from a polynomial-majorant family + model bound B.
   δ→0 drive DONE; sharp bound reduced to EXACTLY (APPROX).
 - Axiom-clean; lint green; 8496 jobs. SOLE remaining = (APPROX) Weierstrass step-majorant (on Ω; mathlib pieces present).
+
+## UPDATE (cycle 55, cont. 33) — (APPROX) PROVEN; sharp density bound UNCONDITIONAL
+
+- **WeierstrassMajorant.lean** (axiom-clean): exists_poly_majorant_expectation — the abstract
+  Weierstrass step-majorant on a probability space (continuity-from-above + tent + Weierstrass).
+  The hard analytic heart of (APPROX), standalone (Mathlib only).
+- **FloorFailureUnconditional.lean** (axiom-clean): norm_modelSum_le/norm_dpoly_le,
+  exists_poly_majorant_family (instantiates the majorant at Y=‖∑aX‖², produces the hApprox
+  family), and **floorFailure_timeDensity_le_unconditional** — the sharp Cesàro upper
+  time-density bound ≤ B.toReal with NO approximation hypothesis; block_smallball supplies
+  B=(2π)⁻⁴M.
+- The entire chain (Weyl equidistribution → tower → poly bridge → sharp δ→0 → APPROX) is now
+  complete, unconditional, axiom-clean; 8498 jobs, lint green. The indicator/small-ball
+  time↔model transfer is done.
