@@ -1085,6 +1085,41 @@ theorem xi_window_simple_online_of_em_sign_certificate {N M : ℕ} (hM : 1 ≤ M
   exact xi_window_simple_online_of_domination_sign_certificate h0 hrR hm₁ hcl₁ hρ₁
     hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hdom hmono hsign hseg hcount₂
 
+/-- **LOW-floor finite-data sign-certificate with simplicity.** The set-level
+Euler-Maclaurin remainder bound, finite `emCarrier`/`gN` closeness, and LOW floor
+replace the pointwise domination table in the one-sign EM simplicity certificate. -/
+theorem xi_window_simple_online_of_emCarrier_close_floor_sign_certificate
+    {N M : ℕ} (hM : 1 ≤ M)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ}
+    {r₀ R ε₁ δ : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hstripC : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1)
+    (hE : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hF : CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N (ε₁ + δ))
+    {s : ℕ} {ts : ℕ → ℝ}
+    (hmono : ∀ i, i < s → ts i < ts (i + 1))
+    (hsign : ∀ i, i < s →
+      (xi (linePoint (ts i))).re * (xi (linePoint (ts (i + 1)))).re < 0)
+    (hseg : ∀ u : ℝ, ts 0 ≤ u → u ≤ ts s → linePoint u ∈ ball a R)
+    (hcount₂ : ∑ z ∈ t₂, m₂ z ≤ s) :
+    ∀ p ∈ ball a R, xi p = 0 → p.re = 1 / 2 ∧ analyticOrderAt xi p = 1 := by
+  have hEM : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖ < ‖gN N z‖ := by
+    intro z hz
+    exact lt_of_le_of_lt (add_le_add (hE z hz) (hclose z hz)) (hF z hz)
+  exact xi_window_simple_online_of_em_sign_certificate hM h0 hrR hm₁ hcl₁ hρ₁ hρ₂
+    hh hh0 hh' hh0' hfact₁ hfact₂ hstripC hEM hmono hsign hseg hcount₂
+
 end RHTower
 
 namespace RHTower
@@ -1641,6 +1676,53 @@ theorem xi_simple_window_and_rung_of_em_two_sign_data {N M : ℕ} (k : ℕ) (hM 
       hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hstripC hEM hmono₁ hsign₁ hseg₁ hcount₂₁
       hmono₂ hsign₂ hseg₂ hcount₂₂
   exact ⟨hsimple, hrung⟩
+
+/-- Strict finite-data LOW-floor two-sign joint certificate.  The set-level
+Euler-Maclaurin remainder bound, finite `emCarrier`/`gN` closeness, and LOW floor
+replace the pointwise domination table in the strict EM joint certificate. -/
+theorem xi_simple_window_and_rung_of_emCarrier_close_floor_two_sign_data
+    {N M : ℕ} (k : ℕ) (hM : 1 ≤ M)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ}
+    {r₀ R ε₁ δ : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1)
+    (hE : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hF : CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N (ε₁ + δ))
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip₂ : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    {s₁ : ℕ} {ts₁ : ℕ → ℝ}
+    (hmono₁ : ∀ i, i < s₁ → ts₁ i < ts₁ (i + 1))
+    (hsign₁ : ∀ i, i < s₁ →
+      (xi (linePoint (ts₁ i))).re * (xi (linePoint (ts₁ (i + 1)))).re < 0)
+    (hseg₁ : ∀ u : ℝ, ts₁ 0 ≤ u → u ≤ ts₁ s₁ → linePoint u ∈ ball a R)
+    (hcount₂₁ : ∑ z ∈ t₂, m₂ z ≤ s₁)
+    {s₂ : ℕ} {ts₂ : ℕ → ℝ}
+    (hmono₂ : ∀ i, i < s₂ → ts₂ i < ts₂ (i + 1))
+    (hsign₂ : ∀ i, i < s₂ →
+      (completedGN N (linePoint (ts₂ i))).re *
+        (completedGN N (linePoint (ts₂ (i + 1)))).re < 0)
+    (hseg₂ : ∀ u : ℝ, ts₂ 0 ≤ u → u ≤ ts₂ s₂ → linePoint u ∈ ball a R)
+    (hcount₂₂ : ∑ z ∈ t₂, m₂ z ≤ s₂) :
+    (∀ p ∈ ball a R, xi p = 0 → p.re = 1 / 2 ∧ analyticOrderAt xi p = 1) ∧
+      2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z := by
+  have hEM : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖ < ‖gN N z‖ := by
+    intro z hz
+    exact lt_of_le_of_lt (add_le_add (hE z hz) (hclose z hz)) (hF z hz)
+  exact xi_simple_window_and_rung_of_em_two_sign_data k hM h0 hrR hm₁ hcl₁ hstrip₂
+    hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hchartStrip hEM
+    hmono₁ hsign₁ hseg₁ hcount₂₁ hmono₂ hsign₂ hseg₂ hcount₂₂
 
 end RHTower
 

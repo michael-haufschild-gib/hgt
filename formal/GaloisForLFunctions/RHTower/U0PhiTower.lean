@@ -83,6 +83,13 @@ theorem phiB_coherentTower_with_noRelation_large_norm {b : ℂ}
   · intro k
     simpa [T, phiBRootAn] using u0_phiBRoot_independence (b := b) hb k
 
+/-- The simple norm-four interface lies above the sharp U0/Böttcher threshold. -/
+theorem norm_ge_four_gt_two_add_sqrt_two {b : ℂ} (hb : 4 ≤ ‖b‖) :
+    2 + Real.sqrt 2 < ‖b‖ := by
+  have hsqrt_lt_two : Real.sqrt 2 < 2 := by
+    nlinarith [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
+  linarith
+
 /-- At the sharp U0/Böttcher threshold, the concrete U0 `psiN` Kummer tower is
 available as an RHTower coherent tower with levelwise `NoRelation` certificates.
 The U0 curve-sector theorem discharges the former filled-Julia viability input. -/
@@ -126,5 +133,46 @@ theorem u0_coherentTower_with_noRelation_of_norm_ge_four {b : ℂ} (hb : 4 ≤ �
   intro z hz hfilled
   have hgt : 1 < ‖z‖ := filledJulia_exterior hb hfilled
   linarith
+
+/-- A single norm-four constraint supplies both explicit tower packets: the Böttcher
+window root tower over `phiB b`, with levelwise `u₀` independence, and the concrete
+U0 `psiN` tower with matching levelwise `NoRelation` certificates. -/
+theorem phiB_and_u0_coherentTowers_with_noRelation_of_norm_ge_four {b : ℂ}
+    (hb : 4 ≤ ‖b‖) :
+    (∃ T : CoherentTower (phiB b) (ball (0 : ℂ) (rB b)),
+      (∀ k z, T.level k z = phiBRoot k b z) ∧
+      (∀ k z, T.level k z ≠ 0) ∧
+      (∀ k,
+        letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b)
+          (isPreconnected_annWB (norm_ge_four_gt_two_add_sqrt_two hb))
+          (annWB_nonempty (norm_ge_four_gt_two_add_sqrt_two hb))
+        letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+          (ratfuncToMero (annWB b) (isOpen_annWB b)
+            (isPreconnected_annWB (norm_ge_four_gt_two_add_sqrt_two hb))
+            (annWB_nonempty (norm_ge_four_gt_two_add_sqrt_two hb))
+            (annWB_infinite (norm_ge_four_gt_two_add_sqrt_two hb))).toAlgebra
+        NoRelation (RatFunc ℂ)
+          (algebraMap (analyticSubring (annWB b)) (meroField (annWB b))
+            ⟨Germ.coeRingHom (𝓟 (annWB b)) (T.level k),
+              ⟨T.level k, (T.analytic k).mono annWB_subset_ball, rfl⟩⟩)
+          (algebraMap (analyticSubring (annWB b)) (meroField (annWB b))
+            (u0AnSub annWB_subset_Ext)))) ∧
+    (∃ (r : ℝ) (N : ℕ) (hr : 1 < r) (T : CoherentTower (psiN b N) (ball (0 : ℂ) r)),
+      (∀ k z, T.level k z ≠ 0) ∧
+      (∀ k,
+        letI := isDomain_analyticSubring (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr)
+          (annMB_nonempty hr)
+        letI : Algebra (RatFunc ℂ) (meroField (annMB r)) :=
+          (ratfuncToMero (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr) (annMB_nonempty hr)
+            (annMB_infinite hr)).toAlgebra
+        NoRelation (RatFunc ℂ)
+          (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+            ⟨Germ.coeRingHom (𝓟 (annMB r)) (T.level k),
+              ⟨T.level k, (T.analytic k).mono inter_subset_left, rfl⟩⟩)
+          (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+            (u0AnSub annMB_subset_Ext)))) := by
+  exact ⟨phiB_coherentTower_with_noRelation_large_norm
+      (norm_ge_four_gt_two_add_sqrt_two hb),
+    u0_coherentTower_with_noRelation_of_norm_ge_four hb⟩
 
 end RHTower

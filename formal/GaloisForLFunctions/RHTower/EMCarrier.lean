@@ -754,6 +754,39 @@ theorem anneal_seam_L_transport_of_emCarrier_close {N M : ℕ} {g₁ g₂ G₁ G
   exact anneal_seam_L_transport hU hUc hUstrip hg₁ hg₂ hG₁ hG₂ hp₁ hp₂ hP₁ hP₂ hpP
     hpM hPline hMline hdomP hdomM
 
+/-- EM-supplied seam L-transport from the set-level finite-data interfaces.
+The Euler-Maclaurin bound and finite `emCarrier`/`gN` closeness give `(AFE)`;
+the LOW floor then supplies the strict domination at the two seam basepoints. -/
+theorem anneal_seam_L_transport_of_emCarrier_close_floor {N M : ℕ}
+    {g₁ g₂ G₁ G₂ : ℂ → ℂ} {U : Set ℂ} {ε₁ δ : ℝ}
+    (hMpos : 1 ≤ M)
+    (hU : IsOpen U) (hUc : IsPreconnected U)
+    (hUstrip : ∀ z ∈ U, 0 < z.re ∧ z.re < 1)
+    (hE : ∀ z ∈ U, ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ U, ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hF : CarrierFloorOn U N (ε₁ + δ))
+    (hg₁ : AnalyticOnNhd ℂ g₁ U) (hg₂ : AnalyticOnNhd ℂ g₂ (lineReflect ⁻¹' U))
+    (hG₁ : AnalyticOnNhd ℂ G₁ U) (hG₂ : AnalyticOnNhd ℂ G₂ (lineReflect ⁻¹' U))
+    (hp₁ : ∀ s ∈ U, g₁ s ^ 2 = xi s) (hp₂ : ∀ s ∈ lineReflect ⁻¹' U, g₂ s ^ 2 = xi s)
+    (hP₁ : ∀ s ∈ U, G₁ s ^ 2 = completedGN N s)
+    (hP₂ : ∀ s ∈ lineReflect ⁻¹' U, G₂ s ^ 2 = completedGN N s)
+    {pP pM : ℂ} (hpP : pP ∈ U) (hpM : pM ∈ U)
+    (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2) :
+    deckClass g₁ g₂ pP pM = deckClass G₁ G₂ pP pM := by
+  have hstripAFE : ∀ z ∈ U, 0 < z.re ∧ z ≠ 1 := by
+    intro z hz
+    refine ⟨(hUstrip z hz).1, ?_⟩
+    intro hz1
+    have hzlt : z.re < 1 := (hUstrip z hz).2
+    rw [hz1] at hzlt
+    norm_num at hzlt
+  have hA : AFEAccurateOn U N (ε₁ + δ) :=
+    afeAccurateOn_of_emCarrier_close hMpos hstripAFE hE hclose
+  have hdom : ∀ z ∈ U, ‖xi z - completedGN N z‖ < ‖completedGN N z‖ :=
+    completed_domination_of_interfaces hUstrip hA hF
+  exact anneal_seam_L_transport hU hUc hUstrip hg₁ hg₂ hG₁ hG₂ hp₁ hp₂ hP₁ hP₂ hpP
+    hpM hPline hMline (hdom pP hpP) (hdom pM hpM)
+
 end RHTower
 
 namespace RHTower
@@ -795,5 +828,39 @@ theorem xi_rung_of_finite_side_of_emCarrier_close {N M : ℕ} (k : ℕ)
       (hEMdom z hz)
   exact xi_rung_of_finite_side_of_domination k h0 hrR hm₁ hcl₁ hstrip hm₂ hcl₂ hρ₁ hρ₂
     hh hh0 hh' hh0' hfact₁ hfact₂ hdom hL hfin
+
+/-- EM-supplied finite-side rung theorem from the set-level LOW floor.
+The EM remainder bound and finite `emCarrier`/`gN` closeness are compared against
+`CarrierFloorOn` to supply the pointwise domination table required by the rung
+transport. -/
+theorem xi_rung_of_finite_side_of_emCarrier_close_floor {N M : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ} {r₀ R ε₁ δ : ℝ}
+    (hMpos : 1 ≤ M) (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z.re < 1)
+    (hE : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hF : CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N (ε₁ + δ))
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])
+    (hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z) :
+    2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z := by
+  have hEMdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖ < ‖gN N z‖ := by
+    intro z hz
+    exact lt_of_le_of_lt (add_le_add (hE z hz) (hclose z hz)) (hF z hz)
+  exact xi_rung_of_finite_side_of_emCarrier_close k hMpos h0 hrR hchartStrip hm₁ hcl₁
+    hstrip hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hEMdom hL hfin
 
 end RHTower

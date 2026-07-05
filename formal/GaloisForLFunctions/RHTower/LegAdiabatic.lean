@@ -376,4 +376,78 @@ theorem section_march_pos {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ} {s fA 
       (lt_of_lt_of_le (Finset.mem_range.mp hk) hRL))
     exact rank_pair_domination hnB hBle hnA hAle hdist hwidth
 
+/-!
+### The bulk regime: a single summed `csch²` box comparison
+
+Deep ranks violate the interval-position condition `oldB ≤ newA` of `rank_pair_domination`:
+the cumulated behind window overtakes the ahead window, placing the behind increment at larger
+distances with lighter `csch²` weight, and the per-rank comparison can genuinely fail there.
+What survives is the comparison of TOTALS. Boxing every gain below by
+`(width/2)·csch²(far endpoint)` and every loss above by `(width/2)·csch²(near endpoint)` turns
+the net drift into a difference of two `csch²`-weighted width sums, and the net drift is
+nonnegative as soon as the ahead box sum does not exceed the behind box sum. A charge pushed
+toward the midpoint of its gap shortens the nearest behind distances to `δ − s` while
+lengthening the nearest ahead ones to `δ + s`; since the weight is inverse-quadratic in the
+distance, the nearest behind boxes outweigh the nearest ahead boxes severalfold, and this
+near-rank surplus is what absorbs every deep-rank deficit.
+-/
+
+/-- **The summed `csch²` box comparison discharges (ADB)**: bound each behind gain below by its
+mean value box `((oldB−newB)/2)·csch²(oldB/2)` (the `csch²` slope at the FAR endpoint) and each
+ahead loss above by `((oldA−newA)/2)·csch²(newA/2)` (the slope at the NEAR endpoint). If the
+ahead box sum is at most the behind box sum over the paired ranks, the net drift is
+nonnegative. No per-rank comparison is required: individual ranks may lose, only the totals
+compare. -/
+theorem net_drift_nonneg_csch {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ} (hRL : R ≤ L)
+    (hsignB : ∀ k ∈ range L, 0 < newB k ∧ newB k ≤ oldB k)
+    (hsignA : ∀ k ∈ range R, 0 < newA k ∧ newA k ≤ oldA k)
+    (hbox : ∑ k ∈ range R, ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ 2
+        ≤ ∑ k ∈ range R, ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ 2) :
+    0 ≤ (∑ k ∈ range L, (rcoth (newB k / 2) - rcoth (oldB k / 2)))
+        + (∑ k ∈ range R, (rcoth (oldA k / 2) - rcoth (newA k / 2))) := by
+  have hahead : (∑ k ∈ range R, (rcoth (oldA k / 2) - rcoth (newA k / 2)))
+      = -(∑ k ∈ range R, (rcoth (newA k / 2) - rcoth (oldA k / 2))) := by
+    rw [← Finset.sum_neg_distrib]
+    exact Finset.sum_congr rfl (fun k _ => by ring)
+  rw [hahead]
+  have hloss : (∑ k ∈ range R, (rcoth (newA k / 2) - rcoth (oldA k / 2)))
+      ≤ ∑ k ∈ range R, ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ 2 := by
+    refine Finset.sum_le_sum (fun k hk => ?_)
+    obtain ⟨hnA, hAle⟩ := hsignA k hk
+    calc rcoth (newA k / 2) - rcoth (oldA k / 2)
+        ≤ (oldA k / 2 - newA k / 2) * (rcsch (newA k / 2)) ^ 2 :=
+          rcoth_pair_le' (by linarith) (by linarith)
+      _ = ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ 2 := by ring
+  have hgainR : (∑ k ∈ range R, ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ 2)
+      ≤ ∑ k ∈ range R, (rcoth (newB k / 2) - rcoth (oldB k / 2)) := by
+    refine Finset.sum_le_sum (fun k hk => ?_)
+    obtain ⟨hnB, hBle⟩ := hsignB k (Finset.mem_range.mpr
+      (lt_of_lt_of_le (Finset.mem_range.mp hk) hRL))
+    calc ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ 2
+        = (oldB k / 2 - newB k / 2) * (rcsch (oldB k / 2)) ^ 2 := by ring
+      _ ≤ rcoth (newB k / 2) - rcoth (oldB k / 2) :=
+          rcoth_pair_ge' (by linarith) (by linarith)
+  have hmono : (∑ k ∈ range R, (rcoth (newB k / 2) - rcoth (oldB k / 2)))
+      ≤ ∑ k ∈ range L, (rcoth (newB k / 2) - rcoth (oldB k / 2)) :=
+    Finset.sum_le_sum_of_subset_of_nonneg
+      (fun x hx => Finset.mem_range.mpr (lt_of_lt_of_le (Finset.mem_range.mp hx) hRL))
+      (fun k hk _ => by
+        obtain ⟨hnB, hBle⟩ := hsignB k hk
+        exact behind_gain_nonneg hnB hBle)
+  linarith [hloss, hgainR, hmono, hbox]
+
+/-- **The bulk march clears from the box comparison alone**: `ΔG > 2` for the outer half
+(`R ≤ L`) given the inward-drift signs on both sides and the single summed `csch²` box
+inequality. This extends `section_march_pos` past the ranks where the interval-position
+condition `oldB ≤ newA` fails: the totals still compare because a midpoint-pushed charge
+concentrates inverse-quadratic `csch²` weight on its shortened nearest behind boxes. -/
+theorem bulk_march_pos {L R : ℕ} {oldB oldA newB newA : ℕ → ℝ} {s fA fB : ℝ}
+    (hA : 0 < fA) (hB : 0 < fB) (hRL : R ≤ L)
+    (hsignB : ∀ k ∈ range L, 0 < newB k ∧ newB k ≤ oldB k)
+    (hsignA : ∀ k ∈ range R, 0 < newA k ∧ newA k ≤ oldA k)
+    (hbox : ∑ k ∈ range R, ((oldA k - newA k) / 2) * (rcsch (newA k / 2)) ^ 2
+        ≤ ∑ k ∈ range R, ((oldB k - newB k) / 2) * (rcsch (oldB k / 2)) ^ 2) :
+    2 < legRankNew L R newB newA s fB - legRankOld L R oldB oldA s fA :=
+  rank_march_pos hA hB (net_drift_nonneg_csch hRL hsignB hsignA hbox)
+
 end RHTower

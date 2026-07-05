@@ -3805,3 +3805,70 @@ constant lattice), far_cushion_gt_two (>2 unconditional), behind_gain_nonneg/ahe
 rank_march_pos (net drift ≥ 0 ⟹ ΔG > 2). Constant lattice immediate. Real (ADB) = SIGNED
 Σgains ≥ Σlosses, not no-signs TV bound. Recorded doc 30 §7. Residual #170 = net-drift
 nonnegativity for concrete section gaps (k-wise gain/loss pairing under δ-convexity).
+
+## cont.41 — (ADB) net drift discharged: coth-free, closed on one-sided-far
+
+Reduced rank_march_pos's hADB to elementary coth-free per-rank distance inequalities
+(LegAdiabatic.lean, axiom-clean): rcoth_pair_ge (MVT far-endpoint lower bound),
+rank_pair_domination (gain ≥ loss from signs + midpoint-push oldB≤newA + convexity width),
+net_drift_nonneg (sum: R≤L outer half), section_march_pos capstone (per-rank conds ⟹ ΔG>2).
+The transcendental (ADB) is GONE — only distance inequalities remain.
+
+Verified (mpmath, δ=1/j, s=δ_{i+1}/2): all per-rank conditions hold for i=d−3,d−5,d−8 (R=1,3,6)
+→ section_march_pos fires; bulk (R≳10) DIST fails ~rank 5 (behind cumulative overtakes 2s). So
+(ADB)/s-march CLOSED on one-sided-far carriers (the SPUR-R target, doc 25/30§3); bulk residual =
+coth-free csch²-tail smallness of the far paired ranks vs near behind gains. Recorded doc 30 §8.
+
+## Cycle 55 (cont. 23) — the iterated prod_apply adapter BANKED; peel mechanics all verified
+
+ROUTE re-cut cleaner than cont. 22: the four-phase product bound feeds the
+Steinhaus block via a fubini CHAIN, not raw prod_apply juggling. Banked this
+cont. (all axiom-clean [propext, Classical.choice, Quot.sound], tree lint green
+— codex LegLatticeStep sorry resolved):
+
+- RouteBProdFubini.lean (4 endpoints): three_phase_fubini, two_phase_fubini,
+  one_phase_fubini (mirror four_phase_fubini at arities 3/2/1, peel one circle
+  coord at fixed center), and four_phase_prod_eq_nested — the "iterated
+  prod_apply adapter" cont. 22 flagged: prod4(Icc^4 cap sublevel) EQUALS the
+  4-fold nested setLIntegral over Icc(0,2pi) of the sublevel indicator. Proof:
+  rw four_phase_fubini; simp_rw [three/two/one_phase_fubini] (telescopes clean).
+- RouteBBlockStep.lean (1 endpoint so far): four_phase_nested_uniform — the
+  center-uniform four-phase bound in the exact nested-integral form the peel
+  produces. One line: le_trans (four_phase_prod_eq_nested).symm
+  (four_phase_sublevel_uniform).
+
+Umbrella updated (RouteBProdFubini imported); index regenerated.
+
+VERIFIED (scratchpad, not yet in-tree) peel mechanics — ALL compile:
+- sum_phase_update4: the block-center split. Sum over s.attach of a(p)e(update^4)
+  = 4 fresh phases + rest-sum(y) = conditioned center V. Via a `peel` helper
+  (phase-transform commutes with Function.update + Finset.sum_update_of_mem, ×4).
+- single-coordinate rescale (lintegral_two_pi_rescale + exp cast).
+- indicator conversion (simp only [Set.indicator_apply, Set.mem_setOf_eq]).
+
+GOTCHA: chained Finset sdiff a \ {x} \ {y} MUST be ((a \ {x}) \ {y}) — bare
+chaining is a PARSE error. Nested membership via nested Finset.mem_sdiff.mpr.
+
+REMAINING for the (L3) STEP (block_smallball_of_four_dominant):
+1. bank sum_phase_update4 into RouteBBlockStep.
+2. INNER peel: lmarginal {q1..q4} 1_{E'} y = (lmarginal_insert ×4) →
+   sum_phase_update4 rewrite → rescale ×4 → indicator conv →
+   four_phase_nested_uniform ⟹ ≤ ofReal(2π)⁻¹^4·four_phase_RHS uniform in y.
+3. OUTER wrap: lmarginal_union split univ=(univ\F)∪F; lmarginal_mono + lmarginal
+   of const over probability pi = const.
+4. block_marginal closes steinhausMeasure. bound(t) window-restricted, not ∀t.
+Then graded ladder; (A1); (SCALAR-MIX); PNT pole.
+
+## cont.42 — bulk (ADB) closed by the summed csch²-box inequality
+
+Reasoned first (anti-theatre): far-rank per-rank domination FAILS for the physical c = 2 gaps
+(exact scaling criterion φ(1+α) ≥ φ(1−α), φ(x) = x^{c+1}+x^{1−c}−2x; c = 1 neutral, c = 2
+deficit −2α⁵/(1−α²)); the pre-registered "net < 0 at mid-carrier" prediction was then REFUTED
+(+4.65 measured) — the miss located the true mechanism: midpoint-push near-rank asymmetry
+(surplus 64/(9c) on O(1) ranks) absorbs the O(1) paired deficit (0.235 at c = 2). Banked
+`net_drift_nonneg_csch` + `bulk_march_pos` (LegAdiabatic.lean, axiom-clean; umbrella + lint
+green): (ADB) from ONE summed box inequality (htail), no per-rank condition. (htail)
+pre-certified on δ_j = c/j, c ∈ [1,3], θ ∈ [0.15, 0.5], worst margin +0.33; equilibrium
+θ* ∈ [0.29, 0.38]. Doc 30 §9 records it and corrects §8's closing sentence. Open next: Lean
+instantiation of (htail) on the c/j class; the inner-half "march horizon" (predicted breakdown
+at log((d−i)/i) ~ 32/9) as a new object.

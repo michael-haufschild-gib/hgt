@@ -169,3 +169,94 @@ no-signs total-variation bound (§5). The residual (#170) is exactly this: prove
 nonnegativity for the concrete section gap sequences — the `k`-wise pairing of the `k`-th
 outward behind gain against the `k`-th ahead loss under `δ` convexity (`|Δδ| = O(δ²)`,
 decreasing outward), so the outer half has gains dominating and `rank_march_pos` fires.
+
+## 8. (ADB) discharged: the net drift is coth-free, closed on one-sided-far carriers [PROVED HERE — Lean]
+
+The `hADB` net-drift hypothesis of `rank_march_pos` is reduced in `LegAdiabatic.lean` to
+elementary per-rank inequalities on the distances — no `coth` remains in the criterion.
+
+* `rcoth_pair_ge` — the `coth` mean value LOWER bound `(b−a)csch²(b) ≤ coth(a)−coth(b)` (far
+  endpoint), companion to `rcoth_pair_le` (near endpoint).
+* `rank_pair_domination` — at one rank the behind gain dominates the ahead loss:
+  `coth(newA/2)−coth(oldA/2) ≤ coth(newB/2)−coth(oldB/2)`, from three coth-free facts —
+  inward drift on both sides (`newB≤oldB`, `newA≤oldA`), the behind interval to the left
+  (`oldB≤newA`), and the behind increment wider (`oldA−newA ≤ oldB−newB`). Proof: bound the
+  gain below by `(widthB/2)csch²(oldB/2)`, the loss above by `(widthA/2)csch²(newA/2)`, and the
+  wider `csch²`-heavier behind box wins.
+* `net_drift_nonneg` — sums it: with `R ≤ L` (outer half) the paired ranks are dominated and
+  the surplus behind ranks are nonnegative gains, so net drift `≥ 0` — exactly `hADB`.
+* `section_march_pos` — the capstone: `fA,fB>0`, `R≤L`, the per-rank inward-drift signs, the
+  midpoint-push `oldB≤newA`, and the convexity width bound `oldA−newA ≤ oldB−newB` give
+  `ΔG > 2`. The transcendental (ADB) inequality is gone; only these distance inequalities remain.
+
+Translating the per-rank conditions to a gap field `δ_j` decreasing outward, with the charge
+under midpoint-push (`s < δ_{i+1}`, ahead-distance short), the behind distance at rank `k` is
+`(δ_{i−k}+…+δ_i) − s`, the paired ahead distance `(δ_{i+2}+…+δ_{i+2+k}) + s`:
+
+* the signs are gap monotonicity (`δ` decreasing);
+* the width bound `oldA−newA ≤ oldB−newB` is gap convexity termwise (the earlier gap-drops
+  `δ_{i−k}−δ_{i+1}` exceed the later `δ_{i+1}−δ_{i+2+k}`);
+* the midpoint-push `oldB ≤ newA` holds when `2s` covers the behind-minus-ahead cumulative gap
+  deficit — TRUE for the near ranks, and for EVERY paired rank exactly when the ahead ranks are
+  few and near, i.e. on the ONE-SIDED-FAR carriers (`R` small, the charge near the far edge).
+
+Direct check, `δ_j = 1/j`, midpoint-push `s = δ_{i+1}/2`: all per-rank conditions hold for
+`i = d−3, d−5, d−8` (`R = 1,3,6`) and `section_march_pos` fires; in the bulk (`R ≳ 10`) the
+midpoint-push condition `oldB ≤ newA` first fails near rank `k ≈ 5`, where the behind cumulative
+gap overtakes `2s`. So (ADB), hence the `s`-march monotonicity, is CLOSED on the one-sided-far
+carriers — the exact regime `(SPUR-R)` consumes (doc 25, doc 30 §3). The bulk residual is now a
+coth-free statement: the `csch²`-tail of the far paired ranks (where `oldB > newA`) is
+negligible against the near behind gains — the §3 log-sum estimate, isolated and elementary.
+
+## 9. The bulk closed: one summed csch²-box inequality [PROVED HERE — Lean; class check model-level]
+
+Correction to §8's closing sentence. The bulk residual is NOT "far tail negligible against near
+gains" in the form suggested there — the far paired ranks carry log-scale weight while the
+DIST-surplus of the near ranks is only O(i^{−1/2}). Two findings replace it.
+
+**(a) Per-rank domination genuinely fails in the deep bulk — exact scaling.** For δ_j = c/j at
+rank k = αi (leading order, s-terms dropped), gain_k ≥ loss_k reduces to φ(1+α) ≥ φ(1−α) for
+
+> φ(x) = x^{c+1} + x^{1−c} − 2x.
+
+At c = 1: φ(x) = (x−1)², difference ≡ 0 — the harmonic field is the NEUTRAL case (measured
+per-rank passes were borderline, not generic). At c = 2 (the physical section gaps δ_j ≈ 2/j,
+§2): φ(1+α) − φ(1−α) = −2α⁵/(1−α²) < 0 — per-rank domination fails at EVERY bulk rank, with
+per-rank deficit (8/i)·α²/(4−α²)² and paired total ≈ 8∫₀¹ α²/(4−α²)² dα = 4/3 − log 3 ≈ 0.235
+at mid-carrier. Any bulk closure must absorb an O(1) paired deficit; no per-rank criterion can.
+
+**(b) What absorbs it: the midpoint-push near-rank asymmetry.** The march compares behind
+distances shortened by s against ahead distances lengthened by s. At the nearest ranks the
+csch² weight is inverse-quadratic in distance, so at s = δ/2 the rank-0 behind box carries
+weight ≈ 16/δ² against the ahead box's ≈ 16/(9δ²): surplus ≈ (8/c)(1 − 1/9) = 64/(9c) — an
+O(1) surplus concentrated on O(1) ranks (measured: +3.52 at rank 0, +0.57 at rank 1, c = 2,
+i = d/2 = 100; total net +4.65 against the 0.235 deficit). At s = 0 the rank-0 boxes invert
+(0.99 vs 1.01): the midpoint-push window is a genuine hypothesis, not bookkeeping.
+
+**The Lean.** `LegAdiabatic.lean`, axiom-clean:
+
+* `net_drift_nonneg_csch` — (ADB) from ONE summed inequality: box every gain below by
+  `((oldB−newB)/2)·csch²(oldB/2)` (far endpoint), every loss above by
+  `((oldA−newA)/2)·csch²(newA/2)` (near endpoint); if the ahead box sum ≤ the behind box sum
+  over the paired ranks, net drift ≥ 0. Individual ranks may lose; only totals compare.
+* `bulk_march_pos` — the capstone: signs + `R ≤ L` + the box inequality give `ΔG > 2`.
+
+**(htail) — the box inequality on the physical class [pre-certified, model-level]:**
+
+> Σ_{k<R} ((oldA_k−newA_k)/2)·csch²(newA_k/2) ≤ Σ_{k<R} ((oldB_k−newB_k)/2)·csch²(oldB_k/2)
+
+holds over δ_j = c/j, c ∈ [1,3], d ≤ 400, all outer-half positions, θ = s/δ ∈ [0.15, 0.5];
+worst margin +0.33 (c = 3). Threshold θ_min ≈ 0.05 at c = 2, and the bulk equilibrium sits at
+θ* solving 2 − 4θ = qθ(1−θ), q = dδ_{i+1} — θ* ∈ [0.29, 0.38] across the outer half, deep
+inside the certified window. So (ADB), hence the s-march monotonicity, is closed on ALL
+outer-half carriers of the section class: the one-sided-far closure of §8 plus the bulk via
+`bulk_march_pos`. The Lean instantiation of (htail) for the concrete c/j class (finite coth
+arithmetic, forgiving margins) is the remaining execution step.
+
+**What this opens.** The inner half (R > L) is now the live object: the unpaired far LOSSES
+contribute ≈ (2/c)·log(R/L) against the fixed 64/(9c) near surplus, so the march should stay
+monotone down to log((d−i)/i) ~ 32/9 and FAIL for the charge within distance ~ d/30 of the
+sparse edge [CONJECTURE — leading order]. A predicted monotonicity BREAKDOWN with a computable
+boundary is a new named object (the march horizon): locate it exactly in the c/j model, ask
+what the equilibrium cascade does PAST it (does the march reverse, or do equilibria pair-merge
+there?), and whether (LEG)'s consumers ever route a charge through it.

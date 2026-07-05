@@ -743,6 +743,21 @@ theorem xiDescent_coherentTower_slitPlane_iff_all_finite_window_relations_all_le
   exact (rh_iff_xiDescent_coherentTower_slitPlane).symm.trans
     rh_iff_all_finite_window_relations_all_levels
 
+/-- Finite window relations are exactly the zero-free u-plane coherent tower surface.
+This strengthens the bare coherent-tower equivalence by exposing the levelwise
+nonvanishing data carried by the tower. -/
+theorem exists_xiDescent_coherentTower_levels_nonzero_slitPlane_iff_all_finite_window_relations_all_levels :
+    (∃ T : CoherentTower xiDescent slitPlane,
+      ∀ k : ℕ, ∀ w ∈ slitPlane, T.level k w ≠ 0) ↔
+      ∀ k : ℕ, ∀ (t : Finset ℂ) (m : ℂ → ℕ),
+        (∀ z ∈ t, xi z = 0) →
+        (∀ z ∈ t, (m z : ℕ∞) = analyticOrderAt xi z) →
+        (∀ z ∈ t, lineReflect z ∈ t) →
+        (∑ z ∈ t, m z ≡
+          ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z [MOD 2 ^ (k + 1)]) := by
+  exact rh_iff_exists_xiDescent_coherentTower_levels_nonzero_slitPlane.symm.trans
+    rh_iff_all_finite_window_relations_all_levels
+
 end RHTower
 
 namespace RHTower
@@ -760,6 +775,56 @@ theorem all_farHalf_germs_extend_all_levels_iff_xiDescent_coherentTower_slitPlan
       Nonempty (CoherentTower xiDescent slitPlane) := by
   exact (rh_iff_all_farHalf_germs_extend_all_levels).symm.trans
     rh_iff_xiDescent_coherentTower_slitPlane
+
+/-- Euler-side germ continuation is exactly the zero-free u-plane coherent tower
+surface.  Independent far-half continuations at all dyadic levels are equivalent
+to one coherent `xiDescent` tower whose every level is nonzero on the slit plane. -/
+theorem all_farHalf_germs_extend_all_levels_iff_exists_xiDescent_coherentTower_levels_nonzero_slitPlane :
+    (∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
+      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+        Set.EqOn g g₁ farHalf) ↔
+      ∃ T : CoherentTower xiDescent slitPlane,
+        ∀ k : ℕ, ∀ w ∈ slitPlane, T.level k w ≠ 0 := by
+  exact rh_iff_all_farHalf_germs_extend_all_levels.symm.trans
+    rh_iff_exists_xiDescent_coherentTower_levels_nonzero_slitPlane
+
+/-- Euler-side germ continuation is exactly the complete finite-window congruence
+surface.  This connects the arithmetic dyadic-root continuation language directly
+to the finite reflection-window obstruction language. -/
+theorem all_farHalf_germs_extend_all_levels_iff_all_finite_window_relations_all_levels :
+    (∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
+      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+        Set.EqOn g g₁ farHalf) ↔
+      ∀ k : ℕ, ∀ (t : Finset ℂ) (m : ℂ → ℕ),
+        (∀ z ∈ t, xi z = 0) →
+        (∀ z ∈ t, (m z : ℕ∞) = analyticOrderAt xi z) →
+        (∀ z ∈ t, lineReflect z ∈ t) →
+        (∑ z ∈ t, m z ≡
+          ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z [MOD 2 ^ (k + 1)]) := by
+  exact rh_iff_all_farHalf_germs_extend_all_levels.symm.trans
+    rh_iff_all_finite_window_relations_all_levels
+
+/-- Euler-side germ continuation is exactly the clean boundary-modulus surface.
+This connects arithmetic dyadic-root continuation directly to the two-circle
+zero-free modulus certificates around right-half ξ zeros. -/
+theorem all_farHalf_germs_extend_all_levels_iff_all_clean_circleAverage_slope_exp_eq_one :
+    (∀ k : ℕ, ∀ g₁ : ℂ → ℂ, AnalyticOnNhd ℂ g₁ farHalf →
+      (∀ s ∈ farHalf, g₁ s ^ 2 ^ k = xi s) →
+      ∃ g, AnalyticOnNhd ℂ g rightHalf ∧ (∀ s ∈ rightHalf, g s ^ 2 ^ k = xi s) ∧
+        Set.EqOn g g₁ farHalf) ↔
+      ∀ k : ℕ, ∀ ρ ∈ rightHalf, xi ρ = 0 →
+        ∃ R₀ > 0, ∀ {r R : ℝ}, 0 < r → r < R → R ≤ R₀ →
+          ∃ r₁ r₂ : ℝ, r < r₁ ∧ r₁ < r₂ ∧ r₂ < R ∧
+            (∀ z : ℂ, ‖z - ρ‖ = r₁ → xi z ≠ 0) ∧
+            (∀ z : ℂ, ‖z - ρ‖ = r₂ → xi z ≠ 0) ∧
+            exp (2 * (Real.pi : ℂ) * I *
+                (((Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₂ -
+                    Real.circleAverage (fun z => Real.log ‖xi z‖) ρ r₁) /
+                  (Real.log r₂ - Real.log r₁) : ℝ) : ℂ) / (2 ^ k : ℕ)) = 1 := by
+  exact all_farHalf_germs_extend_all_levels_iff_all_finite_window_relations_all_levels.trans
+    all_clean_circleAverage_slope_exp_eq_one_iff_all_finite_window_relations_all_levels.symm
 
 end RHTower
 
