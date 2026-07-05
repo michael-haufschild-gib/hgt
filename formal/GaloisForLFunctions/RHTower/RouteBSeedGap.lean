@@ -217,4 +217,53 @@ theorem boundary_gap_packet_secondMoment_pos_iff (lam : ℕ → ℝ) {d : ℕ}
   · intro hne
     exact ⟨hPne.choose, hPne.choose_spec, hne⟩
 
+/-- The seed-gap coefficient: windowed-divisor carrier coefficient minus the
+rough seed coefficient. -/
+noncomputable def seedGapCoeff (lam : ℕ → ℝ) (N y : ℕ) : ℕ → ℝ := by
+  classical
+  exact fun n =>
+    (∑ e ∈ n.divisors.filter (fun e => e ≤ y ∧ n ≤ N * e), lam e) -
+      if (∀ q, q.Prime → q ∣ n → y < q) then (1 : ℝ) else 0
+
+/-- **The actual boundary seed-gap packet is cancellation-free.**  On a finite
+singleton-window packet `{p*d : p ∈ P}`, the real windowed-divisor carrier minus
+the rough seed has positive interval `L²` mass on every nonempty vertical interval
+iff the boundary coefficient `lam d` is nonzero.  This connects the arithmetic
+singleton-window coefficient to the Hurwitz-backed prime-packet observable. -/
+theorem seedGap_boundary_component_secondMoment_pos_iff (lam : ℕ → ℝ)
+    {N y d : ℕ} (hd2 : 2 ≤ d) (hdy : d ≤ y)
+    {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime) (hPne : P.Nonempty)
+    (hPy : ∀ p ∈ P, y < p) (hPN : ∀ p ∈ P, p ≤ N)
+    (hbig : ∀ p ∈ P, N < p * d.minFac)
+    {A B : ℝ} (hAB : A < B) :
+    (0 < ∫ x in A..B,
+        ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ 2) ↔
+      lam d ≠ 0 := by
+  classical
+  have hd : 0 < d := by omega
+  have hcoeff : ∀ n ∈ P.image (fun p => p * d), seedGapCoeff lam N y n = lam d := by
+    intro n hn
+    rcases Finset.mem_image.mp hn with ⟨p, hpP, rfl⟩
+    have hcar :=
+      singleton_window_coeff_eq_lam lam (hP p hpP) (hPy p hpP) hd hdy (hPN p hpP)
+        (hbig p hpP)
+    have hnotrough : ¬ (∀ q, q.Prime → q ∣ p * d → y < q) :=
+      not_rough_of_smooth_divisor hd2 hdy (dvd_mul_left d p)
+    simp [seedGapCoeff, hcar, hnotrough]
+  have hpoly : ∀ x : ℝ,
+      dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x =
+        dpoly (fun _ => lam d) (P.image (fun p => p * d)) x := by
+    intro x
+    unfold dpoly
+    apply Finset.sum_congr rfl
+    intro n hn
+    simp [cterm, hcoeff n hn]
+  have hint :
+      (∫ x in A..B, ‖dpoly (seedGapCoeff lam N y) (P.image (fun p => p * d)) x‖ ^ 2)
+        = ∫ x in A..B, ‖dpoly (fun _ => lam d) (P.image (fun p => p * d)) x‖ ^ 2 := by
+    apply intervalIntegral.integral_congr
+    intro x _
+    simp [hpoly x]
+  rw [hint, boundary_gap_packet_secondMoment_pos_iff lam hd hP hPne hAB]
+
 end RHTower
