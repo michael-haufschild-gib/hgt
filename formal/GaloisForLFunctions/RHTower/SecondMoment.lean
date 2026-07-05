@@ -385,3 +385,79 @@ theorem secondMoment_pos_of_large_window
   linarith [hU]
 
 end RHTower
+
+namespace RHTower
+
+/-- **Every-window floor.**  If the squared threshold budget `t₀²·U` plus the
+basepoint-independent off-diagonal constant stays below the diagonal main term
+`U·∑(a n)²`, then EVERY window `[T, T+U]` contains a height where the carrier
+modulus exceeds `t₀`: were the modulus at most `t₀` throughout, the window
+second moment would be at most `t₀²·U`, contradicting the mean-value lower
+bound.  The floor height is placed in an arbitrary prescribed interval, with no
+probabilistic model and no cofinality argument. -/
+theorem exists_dpoly_floor_in_window
+    (a : ℕ → ℝ) (s : Finset ℕ) (hs : ∀ n ∈ s, 1 ≤ n)
+    {T U t₀ : ℝ} (hU : 0 < U)
+    (hdom : t₀ ^ 2 * U
+        + ∑ m ∈ s, ∑ n ∈ s.erase m, 2 * |a m * a n| / |Real.log n - Real.log m|
+      < U * (∑ n ∈ s, (a n) ^ 2)) :
+    ∃ τ ∈ Set.Icc T (T + U), t₀ < ‖dpoly a s τ‖ := by
+  by_contra hcon
+  have hle : ∀ τ ∈ Set.Icc T (T + U), ‖dpoly a s τ‖ ≤ t₀ := fun τ hτ =>
+    le_of_not_gt fun hlt => hcon ⟨τ, hτ, hlt⟩
+  have hcont : Continuous fun t => ‖dpoly a s t‖ ^ 2 := by
+    have hfun : (fun t => ‖dpoly a s t‖ ^ 2)
+        = fun t => ∑ m ∈ s, ∑ n ∈ s,
+            a m * a n * Real.cos ((Real.log n - Real.log m) * t) :=
+      funext (normSq_dpoly a s)
+    rw [hfun]
+    apply continuous_finsetSum
+    intro m _
+    apply continuous_finsetSum
+    intro n _
+    fun_prop
+  have hup : (∫ t in T..(T + U), ‖dpoly a s t‖ ^ 2) ≤ t₀ ^ 2 * U := by
+    have hmono := intervalIntegral.integral_mono_on
+      (g := fun _ => t₀ ^ 2) (μ := MeasureTheory.volume) (by linarith : T ≤ T + U)
+      (hcont.intervalIntegrable T (T + U)) intervalIntegrable_const
+      (fun τ hτ => by nlinarith [norm_nonneg (dpoly a s τ), hle τ hτ])
+    calc (∫ t in T..(T + U), ‖dpoly a s t‖ ^ 2)
+        ≤ ∫ _ in T..(T + U), t₀ ^ 2 := hmono
+      _ = t₀ ^ 2 * U := by
+          rw [intervalIntegral.integral_const, smul_eq_mul]; ring
+  have hlow := secondMoment_lower_bound a s T U hs
+  linarith
+
+/-- **Every-window floor for the native `n^{-1/2}` carrier.**  Every interval of
+length `U` on the critical line contains a height where `‖∑_{n≤N} n^{-1/2-iτ}‖`
+exceeds `t₀`, as soon as `t₀²·U` plus the explicit off-diagonal constant is
+below `U·log(N+1)`.  This is the floor language of the certificate window
+gates, available inside every prescribed interval rather than merely
+cofinally. -/
+theorem exists_native_dpoly_floor_in_window
+    (N : ℕ) {T U t₀ : ℝ} (hU : 0 < U)
+    (hdom : t₀ ^ 2 * U
+        + ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+            2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+              / |Real.log n - Real.log m|
+      < U * Real.log ((N : ℝ) + 1)) :
+    ∃ τ ∈ Set.Icc T (T + U),
+      t₀ < ‖dpoly (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) τ‖ := by
+  apply exists_dpoly_floor_in_window _ _
+    (fun n hn => (Finset.mem_Icc.mp hn).1) hU
+  have hsq : ∑ n ∈ Finset.Icc 1 N, ((n : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2
+      = ∑ n ∈ Finset.Icc 1 N, (1 : ℝ) / (n : ℝ) := by
+    apply Finset.sum_congr rfl
+    intro n hn
+    have hpos : (0 : ℝ) < (n : ℝ) :=
+      Nat.cast_pos.mpr (Finset.mem_Icc.mp hn).1
+    rw [sq, ← Real.rpow_add hpos]
+    have harg : (-(1 / 2 : ℝ)) + (-(1 / 2 : ℝ)) = -1 := by norm_num
+    rw [harg, Real.rpow_neg_one, one_div]
+  have hmain : U * Real.log ((N : ℝ) + 1)
+      ≤ U * ∑ n ∈ Finset.Icc 1 N, ((n : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 := by
+    rw [hsq]
+    exact mul_le_mul_of_nonneg_left (harmonic_Icc_ge_log N) hU.le
+  linarith
+
+end RHTower

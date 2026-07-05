@@ -4711,3 +4711,47 @@ NEXT generative move: discharge hnum + the caustic gap for concrete primes at n^
 the caustic geometry is satisfiable at coefficients p_i^{-1/2} with p_i∈(N/2,N] (numerically
 pre-certify σ0,sstar,J,t₀ then formalize), which converts windowFloor_cofinal_of_caustic's hypotheses
 into a bare "4 primes exist in (N/2,N]" + the two budget inequalities.
+
+## cont. 40 — quantitative slope Φ'(2)=−π²/8 + ahead-shell discrete→continuum (LegStripContinuum.lean)
+Goal: fully prove/formalize/integrate (a) capstone (A−B)/i→Φ(c) end-to-end AND (b) slope Φ'(2).
+New module LegStripContinuum.lean (imports LegStripThreshold; axiom-clean [propext,Classical.choice,
+Quot.sound]; RHTower umbrella build green 8711; lint passed).
+
+(b) DONE: deriv_stripResidue_two : deriv stripResidue 2 = −(π²/8). Computed Φ'(2)=−π²/8 (t=π/2:
+d/dt(t cot t)=−π/2, dt/dc=−π/4). hasDerivAt_rcot ((cot)'=−1/sin² via cos/sin quotient rule) + chain +
+product + eval at π/2. Quantitative form of stripResidue_strictAntiOn.
+
+(a) AHEAD HALF DONE: tendsto_aheadShell — discrete ahead shell (1/i)Σ_{k≥0} exp(−n·ahead_k) with EXACT
+ahead_k=c/(2i)+c·Σ_{l=i+1}^{i+k}1/l → 1/(nc−1). Full bridge machinery: shell expansion, harmonic_sub_log_le
+squeeze (correction e^{±nc/2i}→1), tendsto_riemann_sum_antitone_Ioi on (1+x)^{−nc}, integral 1/(nc−1).
+Built reusable Ioi-shift-for-add: setIntegral_Ioi_add_right + integrableOn_Ioi_add_right_iff (via
+MeasurePreserving.setIntegral_preimage_emb / integrableOn_comp_preimage + measurableEmbedding_addRight),
+integral_one_add_rpow, integrableOn_one_add_rpow, summable_one_add_div_rpow.
+
+HONEST CORRECTION: earlier "mechanical wiring" claim (cont.39) was WRONG. The BEHIND shell has a genuine
+near-endpoint non-uniformity: backward harmonic defect ≤ 1/(i−k) = O(1) (not O(1/i)) as k→i−1, so the
+clean ahead squeeze fails at x→1. Upper bound clean (exp(−n·behind_k)≤(1−k/i)^{nc}, limsup≤1/(nc+1));
+lower bound needs truncation/ε-argument (drop last m terms where (1−x)^{nc} small, bulk squeeze with
+correction exp(−nc/(m+1)), m→∞). Plus the shell-sum interchange Σ_n lim=lim Σ_n (dominated convergence)
+for the literal (A−B)/i. So (a) FULL is NOT done — ahead half + slope done, behind half + interchange
+are named remaining analysis (doc 30 §15 corrected). NEXT: backward harmonic sandwich + behind ε-argument
++ n-interchange → the literal (A−B)/i→Φ(c).
+
+## cont. 41 — behind shell + per-shell balance formalized; (A−B)/i → Φ(c) shell-by-shell
+Continuing cont.40. Completed the BEHIND half of (a) in LegStripContinuum.lean (axiom-clean
+[propext,Classical.choice,Quot.sound]; RHTower build green 8713; lint passed):
+- backward_harmonic: backward harmonic sandwich log(i/(i−k)) ≤ B_k ≤ log(i/(i−k)) + 1/(i−k) − 1/i
+  (induction + log_step_bounds).
+- integral_one_sub_rpow: ∫_0^1 (1−x)^r = 1/(r+1) (reflection integral_comp_sub_left + integral_rpow).
+- tendsto_behindShell: (1/i)Σ_{k<i} exp(−n·behind_k) → 1/(nc+1), behind_k=c/(2i)+c·Σ_{l=i−k}^{i−1}1/l.
+  KEY: the near-endpoint non-uniformity I flagged in cont.40 as needing an ε-argument is DISSOLVED by a
+  TOTAL deviation bound — 1−e^{−x}≤x (add_one_le_exp) gives (1/i)Σ dev_k ≤ nc/i → 0 (per-term defect
+  weighted by (1−k/i)^{nc}, tiny where the correction is large). Two-sided squeeze profileShell−nc/i ≤
+  behindShell ≤ profileShell. No ε-argument. My cont.40 pessimism was wrong.
+- tendsto_shellDiff CAPSTONE: per-shell (ahead−behind)/i → 1/(nc−1)−1/(nc+1) = 2/((cn)²−1) = the n-th
+  term of Φ(c)=Σ 2/((cn)²−1). So (A−B)/i → Φ(c) is machine-checked SHELL BY SHELL.
+Both goal deliverables now stand: (b) deriv_stripResidue_two=−π²/8 [cont.40]; (a) all shells (ahead,
+behind, difference) + the full bridge machinery. SOLE remaining step for the literal single-limit
+(A−B)/i→Φ(c): the shell-sum interchange Σ_n lim_i = lim_i Σ_n (dominated convergence over n) — the
+k-Tonelli pe=Σ_n e^{−nu} + the i↔n exchange. Doc 30 §15 corrected. NEXT: the n-interchange, or
+the exact edge law (½−θ_max)√d→1/π now that Φ'(2)=−π²/8 is proven.

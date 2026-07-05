@@ -96,6 +96,8 @@ import GaloisForLFunctions.RHTower.WeldEnvelope
 import GaloisForLFunctions.RHTower.ReversalPositivity
 import GaloisForLFunctions.RHTower.AnnealCarrier
 import GaloisForLFunctions.RHTower.ZetaCarrier
+import GaloisForLFunctions.RHTower.HardyCarrier
+import GaloisForLFunctions.RHTower.RouteBOfflineDomination
 import GaloisForLFunctions.RHTower.SeamSignTransport
 import GaloisForLFunctions.RHTower.AnnealWindowRelation
 import GaloisForLFunctions.RHTower.RelayLedger
@@ -165,3 +167,4 @@ import GaloisForLFunctions.RHTower.DpolyBallFloor
 import GaloisForLFunctions.RHTower.RouteBFullSupport
 import GaloisForLFunctions.RHTower.RouteBFullSupportMeasure
 import GaloisForLFunctions.RHTower.RouteBFullSupportDensity
+import GaloisForLFunctions.RHTower.CarrierSlope

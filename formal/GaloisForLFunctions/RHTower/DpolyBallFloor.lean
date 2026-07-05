@@ -13,6 +13,7 @@ triangle inequality. The certificate charts `chartRA ∪ chartLA` and the two bo
 `CarrierFloorOn` data the circle-data pinning gate consumes at once.
 -/
 import GaloisForLFunctions.RHTower.GNCarrierBridge
+import GaloisForLFunctions.RHTower.SecondMoment
 import GaloisForLFunctions.RHTower.DeckMultiZero
 import GaloisForLFunctions.RHTower.PinnedWindow
 
@@ -308,5 +309,132 @@ theorem riemannHypothesis_of_emCarrier_single_circle_pair_center_floor_windows
     carrierFloorOn_charts_spheres_of_line_center N hρ₀re hR hrR.le hcenter hbudget hrefl
   exact ⟨N, M, ε₁, δ, ηC, ρ₀, c, r₀, R, hM, hεδ, hc, h0, hrR, hηC, hρball,
     hρ₀re, hstripCirc, hcarrier, hE, hclose, hFcirc⟩
+
+end RHTower
+
+namespace RHTower
+
+/-- **Window floors inside every prescribed interval.**  Every interval
+`[T, T+U]` on the critical line contains a center whose chart and
+boundary-circle carrier floors hold: the second-moment every-window floor
+places the center height, and the ball variation and reflected-χ budgets
+spread it to the charts and circles.  Certificate windows can therefore be
+anchored within `U` of ANY height — the placement the per-zero gates require —
+rather than merely cofinally. -/
+theorem window_floor_in_every_interval (N : ℕ) {r₀ R t₀ t₁ ε U : ℝ}
+    (hR : 0 ≤ R) (hr₀R : r₀ ≤ R) (hU : 0 < U)
+    (hdom : t₀ ^ 2 * U
+        + ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+            2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+              / |Real.log n - Real.log m|
+      < U * Real.log ((N : ℝ) + 1))
+    (hbudget : (∑ n ∈ Finset.Icc 1 N, Real.log n * (n : ℝ) ^ (-(1/2 - R))) * R
+      ≤ t₀ - t₁)
+    (hrefl : ∀ τ : ℝ, ∀ z ∈ closedBall (((1/2 : ℝ) : ℂ) + (τ : ℂ) * I) R,
+      ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ t₁ - ε) :
+    ∀ T : ℝ, ∃ τ ∈ Set.Icc T (T + U),
+      CarrierFloorOn (chartRA (((1/2 : ℝ) : ℂ) + (τ : ℂ) * I) r₀ R
+        ∪ chartLA (((1/2 : ℝ) : ℂ) + (τ : ℂ) * I) r₀ R) N ε ∧
+      CarrierFloorOn (Metric.sphere (((1/2 : ℝ) : ℂ) + (τ : ℂ) * I) r₀
+        ∪ Metric.sphere (((1/2 : ℝ) : ℂ) + (τ : ℂ) * I) R) N ε := by
+  intro T
+  obtain ⟨τ, hτmem, hτfloor⟩ :=
+    exists_native_dpoly_floor_in_window N (T := T) hU hdom
+  have hre : ((((1/2 : ℝ) : ℂ) + (τ : ℂ) * I)).re = 1/2 := by simp
+  refine ⟨τ, hτmem, ?_⟩
+  refine carrierFloorOn_charts_spheres_of_line_center N (t₀ := t₀)
+    hre hR hr₀R ?_ ?_ (hrefl τ)
+  · simpa using hτfloor
+  · rw [hre]
+    exact hbudget
+
+end RHTower
+
+namespace RHTower
+
+/-- **Reflected-χ ball budget from its boundary circle.**  The reflected term
+`χ(z)·D_N(1−z)` is analytic on any closed ball inside the half-plane `Re z < 1`
+(the Γ-factor of the reflection stays away from its poles), so the maximum
+principle transports its sup bound from the boundary circle to the whole ball. -/
+theorem reflected_chi_budget_of_circle {N : ℕ} {ρ₀ : ℂ} {R b : ℝ} (hR : 0 < R)
+    (hlt1 : ∀ z ∈ closedBall ρ₀ R, z.re < 1)
+    (hcirc : ∀ z ∈ sphere ρ₀ R, ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ b) :
+    ∀ z ∈ closedBall ρ₀ R, ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ b := by
+  have hdan : ∀ z : ℂ, AnalyticAt ℂ (fun w : ℂ => dirichletPoly N (1 - w)) z := by
+    intro z
+    have hdiff : Differentiable ℂ (dirichletPoly N ∘ fun w : ℂ => 1 - w) :=
+      (dirichletPoly_differentiable N).comp
+        ((differentiable_const (1 : ℂ)).sub differentiable_id)
+    exact (hdiff.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z)
+  have hfan : ∀ z ∈ closedBall ρ₀ R,
+      AnalyticAt ℂ (fun w => zetaChi w * dirichletPoly N (1 - w)) z := by
+    intro z hz
+    have hGne : Gammaℝ (1 - z) ≠ 0 := by
+      apply Gammaℝ_ne_zero_of_re_pos
+      rw [Complex.sub_re, Complex.one_re]
+      linarith [hlt1 z hz]
+    exact (zetaChi_analyticAt hGne).mul (hdan z)
+  have hdiffcl : DiffContOnCl ℂ (fun w => zetaChi w * dirichletPoly N (1 - w))
+      (ball ρ₀ R) := by
+    constructor
+    · intro z hz
+      exact (hfan z (ball_subset_closedBall hz)).differentiableAt.differentiableWithinAt
+    · intro z hz
+      rw [closure_ball ρ₀ hR.ne'] at hz
+      exact (hfan z hz).continuousAt.continuousWithinAt
+  intro z hz
+  refine Complex.norm_le_of_forall_mem_frontier_norm_le Metric.isBounded_ball
+    hdiffcl ?_ ?_
+  · intro w hw
+    rw [frontier_ball ρ₀ hR.ne'] at hw
+    exact hcirc w hw
+  · rw [closure_ball ρ₀ hR.ne']
+    exact hz
+
+/-- Points of a closed ball around an on-line center of radius `R < 1/2` stay in
+the half-plane `Re z < 1`. -/
+theorem re_lt_one_of_mem_closedBall_line {ρ₀ z : ℂ} {R : ℝ}
+    (hρ₀re : ρ₀.re = 1 / 2) (hR12 : R < 1 / 2) (hz : z ∈ closedBall ρ₀ R) :
+    z.re < 1 := by
+  have h1 : |(z - ρ₀).re| ≤ ‖z - ρ₀‖ := Complex.abs_re_le_norm _
+  have h2 : ‖z - ρ₀‖ ≤ R := by rwa [mem_closedBall, dist_eq] at hz
+  have h3 := (abs_le.mp (le_trans h1 h2)).2
+  rw [Complex.sub_re] at h3
+  rw [hρ₀re] at h3
+  linarith
+
+/-- **Fully one-dimensional same-circle RH gate.**  The exact-budget same-circle
+EM route with every per-zero datum one-dimensional: circle data for the
+carrier-vs-linear, EM and closeness bounds, one `dpoly` center floor on the
+line, the scalar variation budget, and the reflected-χ budget on the boundary
+circle only — the maximum principle supplies the ball budget internally. -/
+theorem riemannHypothesis_of_emCarrier_single_circle_pair_center_floor_circle_windows
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (ε₁ δ ηC t₀ t₁ : ℝ) (ρ₀ c : ℂ) (r₀ R : ℝ),
+        1 ≤ M ∧ 0 ≤ ε₁ + δ ∧ c ≠ 0 ∧ 0 < r₀ ∧ r₀ < R ∧ R < 1 / 2 ∧
+        ηC + (1 + ηC) / 2 < 1 ∧ ρ ∈ ball ρ₀ R ∧ ρ₀.re = 1 / 2 ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R, 0 < z.re ∧ z ≠ 1) ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+          ‖completedGN N z - c * (z - ρ₀)‖ ≤ ηC * ‖c * (z - ρ₀)‖) ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+          ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁) ∧
+        (∀ z ∈ sphere ρ₀ r₀ ∪ sphere ρ₀ R,
+          ‖emCarrier M z - gN N z‖ ≤ δ) ∧
+        t₀ < ‖dpoly (fun n => (n : ℝ) ^ (-(1 / 2 : ℝ))) (Finset.Icc 1 N) ρ₀.im‖ ∧
+        (∑ n ∈ Finset.Icc 1 N, Real.log n * (n : ℝ) ^ (-(ρ₀.re - R))) * R ≤
+          t₀ - t₁ ∧
+        (∀ z ∈ Metric.sphere ρ₀ R,
+          ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ t₁ - 2 * (ε₁ + δ))) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_emCarrier_single_circle_pair_center_floor_windows
+  intro ρ hρ hzero
+  obtain ⟨N, M, ε₁, δ, ηC, t₀, t₁, ρ₀, c, r₀, R, hM, hεδ, hc, h0, hrR, hR12,
+    hηC, hρball, hρ₀re, hstripCirc, hcarrier, hE, hclose, hcenter, hbudget,
+    hreflcirc⟩ := hwin ρ hρ hzero
+  have hR : 0 < R := lt_trans h0 hrR
+  have hrefl := reflected_chi_budget_of_circle hR
+    (fun z hz => re_lt_one_of_mem_closedBall_line hρ₀re hR12 hz) hreflcirc
+  exact ⟨N, M, ε₁, δ, ηC, t₀, t₁, ρ₀, c, r₀, R, hM, hεδ, hc, h0, hrR, hηC,
+    hρball, hρ₀re, hstripCirc, hcarrier, hE, hclose, hcenter, hbudget, hrefl⟩
 
 end RHTower

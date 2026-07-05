@@ -379,3 +379,25 @@ theorem anneal_deck_transport {N : ℕ} {F₁ F₂ G₁ G₂ : ℂ → ℂ} {a :
     (completed_domination_of_interfaces hstrip hA hF)
 
 end RHTower
+
+namespace RHTower
+
+open Complex
+
+/-- **Unimodularity of χ on the critical line.**  On `Re s = 1/2` the reflection
+`1 − s` is the conjugate of `s`, so `Γ_ℝ(1−s)` is the conjugate of `Γ_ℝ(s)` and
+the χ-factor is a quotient of conjugates: `‖χ(s)‖ = 1` exactly.  On the line the
+reflected term of the carrier has exactly the modulus of its Dirichlet part. -/
+theorem zetaChi_norm_on_line {s : ℂ} (hs : s.re = 1 / 2) : ‖zetaChi s‖ = 1 := by
+  have hconj : (1 : ℂ) - s = (starRingEnd ℂ) s := by
+    apply Complex.ext
+    · rw [Complex.sub_re, Complex.one_re, Complex.conj_re, hs]
+      norm_num
+    · rw [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      ring
+  have hGne : Gammaℝ s ≠ 0 := Gammaℝ_ne_zero_of_re_pos (by rw [hs]; norm_num)
+  unfold zetaChi
+  rw [hconj, Gammaℝ_conj, norm_div, Complex.norm_conj,
+    div_self (norm_ne_zero_iff.mpr hGne)]
+
+end RHTower

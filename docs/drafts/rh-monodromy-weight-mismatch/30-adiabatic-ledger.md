@@ -679,8 +679,41 @@ Riemann-sum convergence `(1/i)Σ_k f(k/i) → ∫_0^∞ f`, and (ii) the harmoni
 (telescoping `Σ log((i+j+1)/(i+j)) = log((i+k)/i)`), the two-sided `harmonic_log_lower/upper`, and the
 capstone `harmonic_sub_log_le` (the harmonic tail approximates the log with defect `≤ 1/i → 0`). So
 every endpoint (series value, `cot` closed form), the `Σ_n ∫ = ∫ Σ_n` interchange, the half-line
-Riemann-sum limit, **and** the change of variables are formalized. What is left is no longer an
-analytic gap but the *mechanical wiring*: fixing the concrete discrete pole model `T_j = c·H_{j−1}`,
-identifying the summand `poleExcess(c·Σ 1/l)` with `g(k/i)` for the shell profile `g` via
-`harmonic_sub_log_le`, and invoking `tendsto_riemann_sum_antitone_Ioi` — an assembly of already-proved
-pieces with no new idea in it.
+Riemann-sum limit, **and** the change of variables are formalized.
+
+**The slope at the threshold, formalized [PROVED HERE — Lean].** `deriv_stripResidue_two` proves
+`Φ'(2) = −π²/8` — the exact continuum slope of the residue at `c = 2`, built from the derivative of
+`cot` (`hasDerivAt_rcot`, `(cot)' = −1/sin²` via `cos/sin` and the quotient rule) by the chain and
+product rules, evaluated at `π/2` (`cot(π/2) = 0`, `sin(π/2) = 1`). This is the quantitative form of
+`stripResidue_strictAntiOn`: the strip depth `Φ(c) − 1` opens with slope `π²/8` as `c` drops below
+`2`, the continuum shadow whose finite-`d` avatar is the edge margin `1/(π√d)`. (`LegStripContinuum.lean`.)
+
+**The ahead half of the passage, formalized end-to-end [PROVED HERE — Lean].** `tendsto_aheadShell`
+proves that the discrete `n`-th **ahead** shell sum on the harmonic carrier — with the *exact* pole
+distances `ahead_k = c/(2i) + c·Σ_{l=i+1}^{i+k} 1/l`, i.e. `(1/i)·Σ_{k≥0} e^{−n·ahead_k}` — converges
+to `1/(nc − 1)`, the ahead term of the shell decomposition. The proof runs the whole bridge: expand
+`poleExcess` into shells `e^{−n·ahead_k}`, sandwich each by the profile `(1+k/i)^{−nc}` via
+`harmonic_sub_log_le` (the correction `e^{±nc/2i} → 1`), and send the profile Riemann sum to its
+improper integral `1/(nc−1)` via `tendsto_riemann_sum_antitone_Ioi` and the reusable `Ioi`-shift
+lemmas (`setIntegral_Ioi_add_right`, `integral_one_add_rpow`). This is a genuine physical-field
+discrete quantity converging to its continuum value, with exact distances — not a uniform-`u`
+resampling.
+
+**The behind shell and the per-shell balance, formalized [PROVED HERE — Lean].** The **behind**
+shell — `(1/i)·Σ_{k=0}^{i−1} e^{−n·behind_k}` with `behind_k = c/(2i) + c·Σ_{l=i−k}^{i−1} 1/l` —
+converges to `1/(nc+1)` (`tendsto_behindShell`). Its backward tail is pinned to the log by a dedicated
+`backward_harmonic` sandwich (`log(i/(i−k)) ≤ B_k ≤ log(i/(i−k)) + 1/(i−k) − 1/i`), the profile
+`(1−x)^{nc}` Riemann sum converges by `tendsto_riemann_sum_antitone`, and `∫_0^1(1−x)^{nc} = 1/(nc+1)`
+(`integral_one_sub_rpow`). The near-endpoint non-uniformity (the backward defect is `O(1)`, not
+`O(1/i)`, at `k → i−1`) — which I earlier flagged as blocking a clean squeeze — is dissolved by a
+*total* deviation bound: `1 − e^{−x} ≤ x` gives `(1/i)Σ_k dev_k ≤ nc/i → 0` (the per-term defect is
+weighted by `(1−k/i)^{nc}`, tiny exactly where the correction is large), so the two-sided squeeze
+`profileShell − nc/i ≤ behindShell ≤ profileShell` closes it — no ε-argument needed after all.
+
+The capstone `tendsto_shellDiff` proves the **per-shell balance**: for every `n ≥ 1`, the `n`-th shell
+of the discrete field's ahead-minus-behind balance, divided by `i`, converges to
+`1/(nc−1) − 1/(nc+1) = 2/((cn)² − 1)` — exactly the `n`-th term of `Φ(c) = Σ_{n≥1} 2/((cn)² − 1)`
+(`stripResidue_eq_tsum`). So `(A−B)/i → Φ(c)` is now machine-checked **shell by shell**: each shell of
+the physical field balance lands on its continuum residue term. The one step left for the literal
+*single-limit* statement is the shell-sum interchange `Σ_n lim_i = lim_i Σ_n` (a dominated-convergence
+exchange over `n`); every individual shell — ahead, behind, and their difference — is done.
