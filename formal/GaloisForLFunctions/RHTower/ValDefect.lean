@@ -76,7 +76,7 @@ theorem defect_nonneg (T : ℝ) : 0 ≤ defect T := by
     have hcard : ((boxFinset T).image Complex.im).card = 0 := Finset.card_eq_zero.mpr hne
     have hmean : meanVal T = 0 := by rw [meanVal, hcard, Nat.cast_zero, div_zero]
     have hdepth : windowDepthNat T = 0 := by
-      rw [windowDepthNat, windowDepth_eq_top_iff.mpr ((image_im_eq_empty_iff T).mp hne),
+      rw [windowDepthNat, (windowDepth_eq_top_iff T).mpr ((image_im_eq_empty_iff T).mp hne),
         ENat.toNat_top]
     rw [hmean, hdepth, Nat.cast_zero]
 

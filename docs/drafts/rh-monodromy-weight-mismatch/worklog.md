@@ -5518,3 +5518,26 @@ Lean: tendsto_sqrt_atTop (not Real.sqrt_tendsto_atTop); Tendsto.div_atTop for 1/
 STATE: founding identity ½−θ*=g/(W(ξ)δ) both factors proven; 3 inputs discharged at analytic core
 (§19/20/21); crossover G + marginal curve derived (§22). 3 named coupled residuals left: ξ-drift
 W(ξ)/W(m)→1 (bootstrap, on rcsch_sq_le_exp), input#2 2-var o(1), input#3 matched Σ_k/lim_i interchange.
+
+---
+
+## cont. 58 — liminf mean density + density-depth defect + equal-order locus
+
+Built the two objects doc 100 §5 named; doc 101 is the ledger. New module `ValDefect.lean`.
+
+**(a) liminf density.** `meanValE T := if empty then ⊤ else ofReal(meanVal T)` (empty→⊤ fixes
+polarity); `one_le_meanValE_of_V_one_eq_zero` (level-1 rung floors density at 1); `meanValLiminf :=
+liminf meanValE atTop`; `one_le_meanValLiminf_of_rhLadder_one` (RHLadder 1 → liminf ≥ 1, via
+rhLadder→windowCertificate→V 1=0→meanValE≥1→le_liminf_of_le).
+
+**(b) defect.** `windowDepthNat := (windowDepth).toNat`; `defect T := meanVal − windowDepthNat`;
+`defect_nonneg` (mean ≥ min; empty = 0−0); `defect_eq_zero_iff_equalOrder` (nonempty: defect=0 ↔ all
+enclosed filtrationLength = windowDepthNat, via sum_eq_sum_iff_of_le); `equalOrderLocus := {defect=0}`
+rigidity locus.
+
+**Verify.** `lake build RHTower MainTheorems` EXIT 0 (9152 jobs); 4 capstones axiom-clean
+`[propext, Classical.choice, Quot.sound]`; index regenerated; `formal lint passed`.
+
+**Opened (doc 101 §4).** (a) equal-order value T↦d (locally-constant int profile on the locus, d=0 =
+all-odd window); (b) defect variance ∑(filtrationLength − meanVal)² (second moment, vanishing =
+equal-order, quantitative valuation-rigidity, transport-shadowable).

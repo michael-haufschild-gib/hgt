@@ -118,6 +118,7 @@ import GaloisForLFunctions.RHTower.Variation
 import GaloisForLFunctions.RHTower.ValuationProfile
 import GaloisForLFunctions.RHTower.ValMeasure
 import GaloisForLFunctions.RHTower.ValLimit
+import GaloisForLFunctions.RHTower.ValDefect
 import GaloisForLFunctions.RHTower.RelayLedger
 import GaloisForLFunctions.RHTower.EMCarrier
 import GaloisForLFunctions.RHTower.SeamCongruence
