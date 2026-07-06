@@ -188,3 +188,81 @@ theorem seam_critical_iff_port {Λ₁ Λ₂ : ℂ → ℂ} {d₁ d₂ : ℂ} {τ
     member_order_ge_two_iff_incidence_deriv_zero ha1 ha2 hd₁ hd₂ h0]
 
 end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **The simple-port criterion.**  The on-line member whose ratio is the incidence value has
+a zero of order exactly two — a simple, nondegenerate multiple zero — precisely when the
+incidence derivative vanishes while the member's second derivative does not.  Order exactly two
+is the generic port: two event branches merge transversally, the two-coloring degenerating with
+a nonvanishing Hessian. -/
+theorem member_order_eq_two_iff_incidence_deriv_zero {Λ₁ Λ₂ : ℂ → ℂ} {d₁ d₂ : ℂ} {τ₀ : ℝ}
+    (ha1 : AnalyticAt ℂ Λ₁ (linePt τ₀)) (ha2 : AnalyticAt ℂ Λ₂ (linePt τ₀))
+    (hd₁ : HasDerivAt Λ₁ d₁ (linePt τ₀)) (hd₂ : HasDerivAt Λ₂ d₂ (linePt τ₀))
+    (h0 : Λ₁ (linePt τ₀) ≠ 0) :
+    analyticOrderAt (pencil Λ₁ Λ₂ (incidence Λ₁ Λ₂ (linePt τ₀)) 1) (linePt τ₀) = 2 ↔
+      iotaDeriv Λ₁ Λ₂ d₁ d₂ (linePt τ₀) = 0 ∧
+        iteratedDeriv 2 (pencil Λ₁ Λ₂ (incidence Λ₁ Λ₂ (linePt τ₀)) 1) (linePt τ₀) ≠ 0 := by
+  set z₀ := linePt τ₀ with hz₀
+  set r := incidence Λ₁ Λ₂ z₀ with hr
+  have hratio : Λ₂ z₀ = -r * Λ₁ z₀ := (incidence_eq_iff_ratio h0).mp rfl
+  have hpan : AnalyticAt ℂ (pencil Λ₁ Λ₂ r 1) z₀ := by
+    unfold pencil
+    exact (analyticAt_const.mul ha1).add (analyticAt_const.mul ha2)
+  have hval : pencil Λ₁ Λ₂ r 1 z₀ = 0 := by
+    unfold pencil; rw [hratio]; ring
+  have hpder : HasDerivAt (pencil Λ₁ Λ₂ r 1) (r * d₁ + 1 * d₂) z₀ :=
+    hasDerivAt_pencil r hd₁ hd₂
+  have hderiv_eq : deriv (pencil Λ₁ Λ₂ r 1) z₀ = r * d₁ + 1 * d₂ := hpder.deriv
+  have hpdeq : r * d₁ + 1 * d₂ = -Λ₁ z₀ * iotaDeriv Λ₁ Λ₂ d₁ d₂ z₀ :=
+    pencil_deriv_eq_neg_anchor_mul_iotaDeriv h0 hratio
+  have hge2 : (2 : ℕ∞) ≤ analyticOrderAt (pencil Λ₁ Λ₂ r 1) z₀ ↔
+      iotaDeriv Λ₁ Λ₂ d₁ d₂ z₀ = 0 :=
+    member_order_ge_two_iff_incidence_deriv_zero ha1 ha2 hd₁ hd₂ h0
+  have hge3 : (3 : ℕ∞) ≤ analyticOrderAt (pencil Λ₁ Λ₂ r 1) z₀ ↔
+      iotaDeriv Λ₁ Λ₂ d₁ d₂ z₀ = 0 ∧
+        iteratedDeriv 2 (pencil Λ₁ Λ₂ r 1) z₀ = 0 := by
+    rw [show (3 : ℕ∞) = ((3 : ℕ) : ℕ∞) from rfl,
+      natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero hpan]
+    constructor
+    · intro h
+      refine ⟨?_, by simpa using h 2 (by norm_num)⟩
+      have hd := h 1 (by norm_num)
+      rw [iteratedDeriv_one, hderiv_eq, hpdeq] at hd
+      exact (mul_eq_zero.mp hd).resolve_left (by simpa using h0)
+    · rintro ⟨hι, hd2⟩ i hi
+      interval_cases i
+      · simpa [iteratedDeriv_zero] using hval
+      · rw [iteratedDeriv_one, hderiv_eq, hpdeq, hι, mul_zero]
+      · simpa using hd2
+  have hsplit : analyticOrderAt (pencil Λ₁ Λ₂ r 1) z₀ = 2 ↔
+      2 ≤ analyticOrderAt (pencil Λ₁ Λ₂ r 1) z₀ ∧
+        ¬ 3 ≤ analyticOrderAt (pencil Λ₁ Λ₂ r 1) z₀ := by
+    constructor
+    · rintro h; rw [h]; exact ⟨le_refl 2, by decide⟩
+    · rintro ⟨h1, h2⟩
+      exact le_antisymm (Order.le_of_lt_succ (not_le.mp h2)) h1
+  rw [hsplit, hge2, hge3]
+  constructor
+  · rintro ⟨hι, hn3⟩
+    exact ⟨hι, fun hd2 => hn3 ⟨hι, hd2⟩⟩
+  · rintro ⟨hι, hd2⟩
+    exact ⟨hι, fun h => hd2 h.2⟩
+
+/-- **Simple ports are the simple seam critical points.**  A height is a critical point of the
+real seam restriction with the member's on-line Hessian nonvanishing exactly when the on-line
+member through it has a zero of order exactly two: the generic, nondegenerate emission port. -/
+theorem seam_simple_port_iff {Λ₁ Λ₂ : ℂ → ℂ} {d₁ d₂ : ℂ} {τ₀ : ℝ}
+    (ha1 : AnalyticAt ℂ Λ₁ (linePt τ₀)) (ha2 : AnalyticAt ℂ Λ₂ (linePt τ₀))
+    (hd₁ : HasDerivAt Λ₁ d₁ (linePt τ₀)) (hd₂ : HasDerivAt Λ₂ d₂ (linePt τ₀))
+    (h0 : Λ₁ (linePt τ₀) ≠ 0)
+    (hr1 : ∀ τ, (Λ₁ (linePt τ)).im = 0) (hr2 : ∀ τ, (Λ₂ (linePt τ)).im = 0) :
+    (deriv (seamIncidence Λ₁ Λ₂) τ₀ = 0 ∧
+        iteratedDeriv 2 (pencil Λ₁ Λ₂ (incidence Λ₁ Λ₂ (linePt τ₀)) 1) (linePt τ₀) ≠ 0) ↔
+      analyticOrderAt (pencil Λ₁ Λ₂ (incidence Λ₁ Λ₂ (linePt τ₀)) 1) (linePt τ₀) = 2 := by
+  rw [seam_deriv_eq_zero_iff_incidence_deriv_zero hd₁ hd₂ h0 hr1 hr2,
+    member_order_eq_two_iff_incidence_deriv_zero ha1 ha2 hd₁ hd₂ h0]
+
+end RHTower

@@ -214,3 +214,27 @@ theorem ledgerChainE_trans {a : ℂ} {r₀ R : ℝ} {f g h : ℂ → ℂ} {L₁ 
       exact LedgerChainE.jump_out hρ' hfact (ih h₂)
 
 end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-- **The event-list parity mirror.**  For an event-typed window chain `f → g` and its
+event-typed back-sweep `g → f`, with `f` carrying level-two chart roots, the summed window
+events and the summed back-sweep events agree modulo two: the parity of the window's
+transversal events equals the parity of the complement's, so the two event classes of the
+band-edge pairing collapse to one. -/
+theorem ledgerChainE_window_back_two_dvd {a : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    {f g : ℂ → ℂ} {Lwin Lback : List ℤ}
+    (hwin : LedgerChainE a r₀ R f g Lwin) (hback : LedgerChainE a r₀ R g f Lback)
+    {G₁ G₂ : ℂ → ℂ}
+    (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z)
+    (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hfP : f (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0)
+    (hfM : f (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I) ≠ 0) :
+    (2 : ℤ) ∣ (Lwin.sum - Lback.sum) :=
+  ledgerChain_window_back_two_dvd h0 hrR (ledgerChainE_toChain hwin)
+    (ledgerChainE_toChain hback) hG₁ hG₂ hpG₁ hpG₂ hfP hfM
+
+end RHTower

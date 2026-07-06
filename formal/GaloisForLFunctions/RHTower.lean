@@ -247,3 +247,4 @@ import GaloisForLFunctions.RHTower.SeamParity
 import GaloisForLFunctions.RHTower.IncidenceCarrier
 import GaloisForLFunctions.RHTower.IncidenceRamification
 import GaloisForLFunctions.RHTower.LedgerTelescope
+import GaloisForLFunctions.RHTower.EulerTailWinding
