@@ -5083,3 +5083,197 @@ the sum body; MUST parenthesize `(∑ x ∈ s, BODY) ≤ RHS` (the recurring par
 REMAINING for input #1: finite-sum reconciliation (behind/ahead finite vs Tannery-over-ℕ) + ahead side (needs d−i→∞)
 + W(m) reindex + δ-rescale. Then inputs #2 (A_trunc/i→i/d digamma) #3 (ε→−π²/16 2nd-EM) + ξ-drift (W(ξ)/W(m)→1
 from θ*→½) + max-over-i. Multi-session surface; mechanism is the hard analytic core, now banked.
+
+## cont.49 — crossover G constructed (LINEAR) + carrier family + finite-sum Tannery (axiom-clean, RHTower green 8741, lint pass)
+
+Hook flagged incomplete discharge → pushed targets #2 (crossover G) and #3 (carrier family) + input-#1 reconciliation.
+(#2) CROSSOVER G CONSTRUCTED as THEOREM (was CONJECTURE): crossoverG ξ=1/π−ξ/4 — LINEAR at leading order because the
+off-marginal imbalance (π²/8)(c−2) is i-INDEPENDENT (doesn't move AM-GM minimizer, only shifts min additively).
+crossover_reduction (along c=2−ξ/√d: margin√d→G(ξ); imbalance term→−ξ/4 exactly √d-cancel, gap-margin→1/π edge law via
+edge_law_reduction_general+rhoFamily_harmonic), crossoverG_zero (G(0)=1/π), crossoverG_slope (G+ξ/4=1/π = Φ'(2) response).
+Unifies the 2 proven boundary constants in one line. Doc §17.4 upgraded CONJECTURE→PROVED.
+(#3) CARRIER FAMILY concrete: rhoOfCarrier c a=(2c/π²)√a (rhoOfCarrier_eq), rhoOfCarrier_two=1/π, edge_law_along_curve
+(margin√d→ρ(c,a) via κ(c)=c/π² section). ρ(κ(c),a(c)) is now a CURVE on the ρ-surface, not point+skeleton. Deformed-Φ_α
+(power carrier δ_j=c·j^{−α}, marginal curve Φ_α=1) remains for a(c) to vary = new object.
+(#1 reconcile) tendsto_rescaled_csch_sq_finsum (growing-finite-sum Tannery via indicator-truncation + dominated_conv) +
+relaxed tendsto_rescaled_csch_sq_term to ∀ᶠ-positive dist (usable for harmonic phantom-k range). Connects mechanism to
+literal finite W(m) behind/ahead sums.
+All axiom-clean. REMAINING: W(m) range-d reindex + δ-rescale (mechanical, machinery built); inputs #2 (A_trunc digamma
+tail) #3 (ε 2nd-EM); ξ-drift (θ*→½); max-over-i; Φ_α. Multi-week analytic surface; crossover+family DONE, #1 mechanism+
+reconciliation DONE.
+
+## cont.50 — behind-side steepness LANDED on literal harmonic distances (behind_csch_sum_tendsto, axiom-clean, RHTower green 8742, lint pass)
+
+behind_csch_sum_tendsto: Σ_{k<n} csch²(bdist_n(k)/2)/n² → 2π²/c² on the EXACT harmonic behind distances
+bdist_n(k)=c/(2n)+c·Σ_{j<k}1/(n−1−j). Direct application of tendsto_rescaled_csch_sq_finsum (finite-sum Tannery) +
+tendsto_behind_dist (hlim) + behind_dist_lb (hlb) + eventual positivity. This is input #1's behind-side steepness on the
+literal field, not just the abstract mechanism. REMAINING for full W(m): per-term identity bdist=harmMid−harmPole
+(harmPole_sub via Finset.sum_Ico_eq_sub + sum_range_reflect, cast bookkeeping) + ahead side (d−i→∞) + δ-rescale.
+Doc §18 updated. Input #1: mechanism DONE, reconciliation DONE, behind-side LANDED; ahead+glue+rescale mechanical.
+
+## cont. 50 — the height-window certificate theory built (doc 93)
+
+Goal: grind rung 1 on the box via height windows to exhaustion. Done at the unconditional level;
+three new modules, all axiom-clean, RHTower 8745 + MainTheorems 9135 green, lint passed, index
+regenerated.
+
+- `WindowLadder.lean` (~35 decls): stripWindow/boxWindow/stripZeros/boxZeros + finiteness
+  (`stripZeros_finite` — the compact-exhaustion handle); `WindowCertificate k T` with full
+  structure (mono in T, antitone in k, finite check, ladderHeight form, k=1 = no odd-order zero);
+  exhaustion `rhLadder_iff_forall_windowCertificate`, ℕ-heights, cofinal, and
+  **`rh_iff_diagonal_windowCertificate`** (RH ⟺ the diagonal sequence of finite certificates);
+  sharp per-window collapse; the per-window Kummer correspondence
+  **`windowCertificate_iff_bandRoot`** on `halfBand T` + nesting/restriction/rigidity +
+  `rhLadder_iff_forall_bandRoot`; windowed coherent tower
+  (`coherentTower_halfBand_iff_boxZeros_empty`, `rh_iff_forall_coherentTower_halfBand`);
+  the boundary face on the ACTUAL divisor: `stripWindow_order_identity` (D=L+2N),
+  `stripWindow_parity` (loop mod-2 data blind to off-line zeros, unconditional),
+  `stripWindow_modEq_of_windowCertificate`, and
+  **`windowCertificate_iff_subWindow_congruences`** (certificate ⟺ all reflection-closed
+  sub-window congruences at 2^{k+1}; backward via the two-point pair windows);
+  consumers `windowCertificate_of_ball_online_cover`, `rhLadder_of_ball_online_covers`.
+- `DeckWindow.lean`: chart simply-connectedness (star-convex ∩ ball), `xi_ne_zero_on_charts`,
+  **`xi_exists_chart_roots`** (chart roots of ξ exist unconditionally — discharges the
+  conditionality of the deck dictionary), **`windowCertificate_iff_deck_trivial`** (true iff),
+  `rhLadder_iff_forall_deck_trivial`, `rh_iff_forall_deck_trivial`, and
+  **`xi_deckClass_line_holography`** (under the certificate every level-2^{k+1} boundary loop
+  reads pure line data exp(2πi·L/2^{k+1})).
+- `WindowSeam.lean`: **`windowCertificate_of_emCarrier_sign_certificates`** — the doc-92 §5
+  object typed and proven: finite line data (EM bound + closeness + LOW floor + sign table) per
+  covering ball forces the height-T certificate at every level (k=1: ladderHeight ≥ 1 from line
+  data); `boxZeros_empty_of_emCarrier_sign_certificates` (RH below T from finite checks).
+
+Fix rounds: unification of window_identity's multiplicity function (annotate `(m := ...)`),
+unused-binder warnings, `le_or_lt` → `le_or_gt`. `StarConvex.contractibleSpace` needs
+`s.Nonempty`. All names probed in scratch before use.
+
+Open core after the grind (doc 93 §7): rung 1 is now the diagonal of finite parity statements;
+the missing piece is a PRODUCER of the WindowSeam finite inputs on a cofinal window family, or
+the second boundary functional separating pair congruences from full-window congruences (the
+DISC bit at window level). Next generative move recorded in doc 93 §7.
+
+## cont.51 — BOTH near-pole steepness halves landed on literal harmonic field (axiom-clean, RHTower green 8745, lint pass)
+
+AHEAD side built + landed, mirroring behind. tendsto_rescaled_csch_sq_finsum_gen (finsum Tannery with SEPARATE
+domination constant b: ahead distances satisfy adist≥(c/2)(k+½)/n not (c/n)(k+½), so bound uses b=c/2 but limit+sum
+use c → 2π²/c²). tendsto_forward_harmonic_sum (i·Σ1/(i+1+j)→k, squeeze ik/(i+k)≤·≤ik/(i+1)), tendsto_ahead_dist,
+ahead_dist_lb (each term 1/(i+1+j)≥1/(2i) ⟹ Σ≥k/(2i) ⟹ adist≥(c/2/n)(k+½)), ahead_csch_sum_tendsto.
+LITERAL landing (LegStripSteepnessHarmonic): adist_sum_eq (forward reindex, no reflection), harmPole_sub_harmMid
+(harmPole c(i+1+k)−harmMid c i = adist_{i+1}(k) EXACT), ahead_energy_harmonic (Σ_{k<i+1} csch²((T_{i+1+k}−m)/2)/(i+1)²
+→ 2π²/c²). Now behind_energy_harmonic + ahead_energy_harmonic BOTH on the actual pole positions. Input #1 near-pole
+steepness: BOTH TRAINS DONE on literal field. REMAINING for full W(m)=¼Σ_{range d}csch²: combine behind∪ahead (Finset
+split of range d) + far-ahead tail(k>i+1)→0 (input#2 boundary) + δ-rescale to 2W(m)δ/i→2π²/c. Doc §18.
+
+## cont.52 — INPUT #1 STEEPNESS FULLY DISCHARGED on literal field energy, balanced model (axiom-clean, RHTower green 8745, lint pass)
+
+harmonic_midpoint_energy_steepness: spurLatticeEnergy(range(2i+2))(harmPole c)(harmMid c i)/(i+1)² → π²/c². This is
+input asymptotic #1 (near-pole steepness, local factor κ(c)=c/π²) CLOSED on the ACTUAL field energy — not mechanism,
+not abstract distances, the literal ¼Σ_{k∈range(2i+2)}csch²((m−T_k)/2). Combines behind_energy_harmonic +
+ahead_energy_harmonic via Finset.sum_range_add split of range(2i+2) into behind(k≤i, sum_range_reflect) + ahead
+(k≥i+1, shifted, rcsch even via rcsch_neg). d=2i+2 balanced = exactly i+1 behind + i+1 ahead, no far tail. So
+2W(m)δ/i→2π²/c and κ=c/π² are THEOREMS on the literal field (balanced model). General d adds only far-ahead tail
+Σ_far csch²/(i+1)²→0 (= input#2 boundary). Doc §18. Input #1 mechanism+reconciliation+both-halves-literal+combine DONE.
+REMAINING: general-d far tail; inputs #2 (A_trunc/i→i/d) #3 (ε→−π²/16); ξ-drift(θ*→½); max-over-i.
+
+## cont.53 — INPUT #2 truncation UPPER bound discharged on exact field (LegStripTruncation.lean, axiom-clean, RHTower green 8746, lint pass)
+
+Checked prior work FIRST (per Michael): tree already had the digamma/harmonic primitives — sum_log_step, log_step_bounds,
+harmonic_log_lower/upper/sub_log_le (LegStripThreshold), sum_inv_sq_shift_le + digamma_natCast_add_one_sub_log_tendsto
+(DigammaAsymptotic), harmT/harmT_slice_ge_log/exp_edgeNewA_ge/edge_loss_le/edge_env_tail (LegHarmonicEdge). Would have
+reinvented sum_inv_sq_shift_le + the telescope. Built input #2 ON these: aheadHarm_ge_log (Σ1/(i+j+1)≥log((i+k+1)/(i+1)),
+reverse of harmonic_log_lower via same sum_log_step telescope), poleExcess_ahead_le_rational (poleExcess(1/i+2Σ) ≤
+(i+1)²/(k(k+2i+2)) via exp(ahead)≥((i+k+1)/(i+1))²), trunc_rational_tail_le (Σ_{Ico M N}(i+1)²/(k(k+2i+2))≤(i+1)²/(M−1)
+via 1/k² comparison + sum_inv_sq_shift_le), trunc_ahead_le (A_trunc=Σ_{k≥d−i}poleExcess(ahead_k)≤(i+1)²/(d−i−1)). So
+A_trunc/i≲i/d RIGOROUS on the EXACT field poleExcess. Doc §19. REMAINING input #2: matching LOWER bound (ahead≤2log+O(1/i)
+from harmonic_sub_log_le, + harmonic-diff asymptotic Σ_{d−i}^{d+i}1/k→2i/d from digamma) to pinch exact constant. Input #3
+(ε→−π²/16 2nd-EM). LEAN: ring fails on div equality (denom in ⁻¹) — use congr 1<;>ring or field_simp; div_le_div_iff→₀.
+
+## cont.54 — INPUT #2 per-term TWO-SIDED envelope closed on exact field (LegStripTruncation.lean, axiom-clean, RHTower green 8748, lint pass)
+
+poleExcess_ahead_ge_rational (lower): from harmonic_log_lower (Σ1/(i+j+1)≤log((i+k)/i)) + exp_inv_le (e^{1/i}≤i/(i−1)
+from 1−x≤e^{−x} via inv_anti₀), poleExcess(ahead_k)≥i(i−1)/(k(k+2i)+i). Paired with poleExcess_ahead_le_rational (upper
+(i+1)²/(k(k+2i+2))): the exact field poleExcess is SANDWICHED between two rationals, both→i²/(k(k+2i)). The per-term
+two-sided envelope — analytic crux of input #2 — DONE on exact field. Doc §19. REMAINING input#2: joint-limit summation
+(pinch A_trunc between the two rational SUMS via digamma telescope + harmonic-diff Σ_{d−i}^{d+i}1/k→2i/d). Input#3 (2nd-EM).
+LEAN: div_le_div_iff→₀; inv_anti₀ for reciprocal-reversal; field_simp;ring for div identities (ring alone fails on ⁻¹).
+
+## cont. 51 — DISC bit typed & decided + producer interface (doc 94)
+
+Goal (both doc-93 §7 objects): DONE at the provable core; four new modules, all axiom-clean,
+RHTower + MainTheorems green (9139), lint passed, index regenerated.
+
+Object 2 (the DISC bit / second boundary functional):
+- `DiscWindow.lean`: chartRA/LA = translated slit annuli (arg-case geometry vs
+  Bottcher.slitAnnulus at θ₀ = −π and 0) ⟹ `isSimplyConnected_chartRA/LA`;
+  `exists_annular_roots_of_enclosed` (annular chart roots never vacuous);
+  `exists_multi_peel_orders` (factorization with TRUE orders — pinned multi-peel);
+  **`deckClass_eq_line_iff_right_dvd`** + ξ-instance: loop class = line-predicted class
+  exp(2πi·L/2^{k+1}) ⟺ 2^k ∣ N. The DISC discrepancy IS the rung datum; with
+  deckClass_blind_to_split this exhibits the line order sum as the second boundary functional.
+- `DiscExtraction.lean`: `exists_good_line_center` (bad heights per zero solve a linear
+  equation; finite; mirror pair degenerate-harmless); `LineHolography k`;
+  `lineHolography_of_rhLadder`; **`rhLadder_of_lineHolography`** — the extraction: generic
+  center + two nested shell presentations subtract to the single zero's order;
+  **`rhLadder_iff_lineHolography`**, **`rh_iff_forall_lineHolography`**.
+  Fix rounds: rintro rfl eliminated ρ (name-free rewrite fixed it); motive-unsafe rw on
+  min'/max' memberships → property-of-members helper lemmas (hS₂prop/hle_rmax pattern).
+
+Object 1 (the producer):
+- `WindowProducer.lean`: `altChain` + `altChain_alternates`/`altChain_strictMono` +
+  **`exists_alternation_chain_of_strict_brackets`** (s disjoint strict brackets → one chain with
+  s strict alternations; sign-forcing step via ab>0 ∧ bc<0 ⟹ ac<0);
+  `WindowLinePackage T` (named); `windowCertificate_of_windowLinePackage`,
+  `boxZeros_empty_of_windowLinePackage`, **`rhLadder_of_cofinal_windowLinePackages`**,
+  **`rh_of_cofinal_windowLinePackages`** — RH from line-data packages on cofinal heights.
+  Bracket supply from moment budgets is banked (HardySignChange); the strict-table/floor/count
+  supplies remain the labelled open core (doc 94 §4).
+
+Forward moves recorded (doc 94 §5): finite-side DISC census on completedGN; the DISC jump
+divisor on center space (locally-constant root-of-unity functional, jumps exactly at zero
+heights).
+
+## cont.55 — INPUT #2 SUMMATION discharged: A_trunc two-sided sandwich on exact field (LegStripTruncation.lean, axiom-clean, RHTower green 8749, lint pass)
+
+sum_shift_telescope (general Σ_{Ico M N}(f k−f(k+m))=Σ_{Ico M(M+m)}f−Σ_{Ico N(N+m)}f via sum_Ico_consecutive),
+trunc_upper_sum_eq (EXACT: Σ(i+1)²/(k(k+2i+2))=((i+1)/2)(B_M−B_N) partial fraction+telescope), poleExcess_ahead_ge_
+rational_tel (lower in telescoping form ≥i(i−1)/((k+1)(k+2i+1)) via k(k+2i)+i≤(k+1)(k+2i+1)), trunc_lower_sum_eq (EXACT
+lower sum), harmonic_block_le/ge (2i/(M+2i)≤B_M≤2i/M, m terms each in [1/(M+m),1/M]). CAPSTONE trunc_ahead_two_sided:
+((i−1)/2)(B_M−B_N) ≤ A_trunc ≤ (i+1)²/(M−1) — the removed truncation mass TRAPPED between explicit digamma partial-
+fraction rationals, both ~i²/d at M=d−i. Input #2 summation DONE on exact field (per-term envelope + exact telescopes
++ block quantification). Doc §19. REMAINING input#2 = only the 2-var o(1) tightening ((i±1)/2→i/2, B_M→2i/d). Input#3
+(ε→−π²/16 2nd-EM) untouched. LEAN: div_le_div_of_nonneg_left for a/b≤a/c antitone; sum_Ico_consecutive telescope.
+
+---
+
+## cont. 52 — DISC census (finite carrier) + DISC jump divisor (line)
+
+Built both forward objects doc 94 §5 named; doc 95 is their ledger.
+
+**Object 1 — finite-side DISC census (`DiscCensus.lean`).** The DISC bit as a value in the
+decidable ring `ZMod (2^k)`: `windowRightSum`, `windowDiscBit`, `windowDiscBit_eq_zero_iff`.
+`windowDiscBit_transport` lifts `anneal_window_parity_transport` from a congruence of counts to an
+identity of window values (ξ census = completedGN census in `ZMod (2^k)` under the boundary
+congruences). `completedGN_deckClass_eq_line_iff_right_dvd`/`…_iff_discBit` — the finite carrier's
+own loop class reads its census (no entire factorization needed; presentation is the hypothesis;
+reflection-invariance from `completedGN_orderAt_lineReflect`). Payoff:
+`xi_rung_of_completedGN_discBit_zero` — finite carrier's loop-vs-line agreement + boundary
+congruences force ξ's rung, read off a decidable finite-carrier deck class.
+
+**Object 2 — DISC jump divisor (`DiscJump.lean`).** `boxOrderSum T` step function: monotone,
+jump formula (`boxOrderSum_add_sdiff` + `mem_boxFinset_sdiff`), local constancy
+(`boxOrderSum_const_of_no_zeros`). The divisor `discJump t` (order sum at exact height t, finite);
+`discJump_eq_zero_iff` (support = zero heights); `boxOrderSum_eq_sum_discJump` (partial sums recover
+the census, fiberwise over `Complex.im` via `sum_image'`). Census-as-height-function `discCensusH`,
+locally constant off zero heights. `dvd_discJump_of_windowCertificate` (certificate ⟹ every jump
+`2^k`-divisible), `discCensusH_eq_zero_of_windowCertificate` (census flat). Capstone:
+`rh_iff_forall_discJump_eq_zero : RiemannHypothesis ↔ ∀ t, discJump t = 0` (via
+`forall_boxHeightZeros_empty_iff` — conjugation carries lower to upper half-plane).
+
+**Verify.** `lake build RHTower MainTheorems` EXIT 0 (9141 jobs incl. MainTheorems); all 12 new
+capstone declarations axiom-clean `[propext, Classical.choice, Quot.sound]`; index regenerated;
+`formal lint passed`. Umbrella imports added after `AnnealWindowRelation`.
+
+**Opened (doc 95 §4).** The census profile `T ↦ discCensusH k T` as a right-continuous step
+function; (a) a finite-carrier census profile — height-indexed decidable checks; (b) the divisor
+difference `discJump_ξ − discJump_g` as a signed divisor on ℝ supported where the two carriers'
+zero heights disagree, a discrete measure on the line carrying the transported rung data.

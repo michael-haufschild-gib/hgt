@@ -111,6 +111,24 @@ theorem completedGNLineSupBudget_nonneg (N : ℕ) (B : ℝ) :
         (Real.Gamma_pos_of_pos (by norm_num)).le))
     (by positivity)
 
+/-- On nonnegative heights, the closed-form completed-carrier line-sup budget is monotone. -/
+theorem completedGNLineSupBudget_mono_nonneg (N : ℕ) {B₁ B₂ : ℝ}
+    (hB₁0 : 0 ≤ B₁) (hB₁B₂ : B₁ ≤ B₂) :
+    completedGNLineSupBudget N B₁ ≤ completedGNLineSupBudget N B₂ := by
+  have hB₂0 : 0 ≤ B₂ := le_trans hB₁0 hB₁B₂
+  have hsqu : B₁ ^ 2 ≤ B₂ ^ 2 := by
+    have hmul := mul_le_mul hB₁B₂ hB₁B₂ hB₁0 hB₂0
+    simpa [pow_two] using hmul
+  have hfactor : (1 / 4 + B₁ ^ 2) / 2 ≤ (1 / 4 + B₂ ^ 2) / 2 := by
+    nlinarith
+  have hC0 : 0 ≤ Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4) :=
+    mul_nonneg (Real.rpow_nonneg Real.pi_pos.le _)
+      (Real.Gamma_pos_of_pos (by norm_num)).le
+  have hN0 : 0 ≤ 4 * Real.sqrt N := by positivity
+  dsimp [completedGNLineSupBudget]
+  exact mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_right hfactor hC0) hN0
+
 /-- The pointwise line-sup theorem in named-budget form. -/
 theorem abs_re_completedGN_line_le_budget (N : ℕ) (u : ℝ) :
     |(completedGN N (linePt u)).re| ≤ completedGNLineSupBudget N u := by
@@ -121,26 +139,8 @@ line-sup budget. -/
 theorem abs_re_completedGN_line_le_segment_budget
     (N : ℕ) {α β u : ℝ} (hα0 : 0 ≤ α) (hu : u ∈ Set.Icc α β) :
     |(completedGN N (linePt u)).re| ≤ completedGNLineSupBudget N β := by
-  have hbase := abs_re_completedGN_line_le N u
   have hu0 : 0 ≤ u := le_trans hα0 hu.1
-  have hβ0 : 0 ≤ β := le_trans hu0 hu.2
-  have hsqu : u ^ 2 ≤ β ^ 2 := by
-    have hmul := mul_le_mul hu.2 hu.2 hu0 hβ0
-    simpa [pow_two] using hmul
-  have hfactor : (1 / 4 + u ^ 2) / 2 ≤ (1 / 4 + β ^ 2) / 2 := by
-    nlinarith
-  have hC0 : 0 ≤ Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4) :=
-    mul_nonneg (Real.rpow_nonneg Real.pi_pos.le _)
-      (Real.Gamma_pos_of_pos (by norm_num)).le
-  have hN0 : 0 ≤ 4 * Real.sqrt N := by positivity
-  have hscale :
-      (1 / 4 + u ^ 2) / 2 *
-          (Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4)) *
-          (4 * Real.sqrt N) ≤
-        completedGNLineSupBudget N β := by
-    dsimp [completedGNLineSupBudget]
-    exact mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_right hfactor hC0) hN0
-  exact le_trans hbase hscale
+  exact le_trans (abs_re_completedGN_line_le_budget N u)
+    (completedGNLineSupBudget_mono_nonneg N hu0 hu.2)
 
 end RHTower

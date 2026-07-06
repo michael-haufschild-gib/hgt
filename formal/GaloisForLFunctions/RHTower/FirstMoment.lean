@@ -323,6 +323,47 @@ noncomputable def completedGNFirstMomentBudget (N : ℕ) (L M₀ M₁ Cmain : �
   Cmain + ∑ n ∈ Finset.Ioc 1 N, (n : ℝ) ^ (-(1/2 : ℝ)) *
     (2 * (2 * M₀ + L * M₁) / Real.log n)
 
+/-- The named first-moment budget is nonnegative whenever its scalar inputs are nonnegative. -/
+theorem completedGNFirstMomentBudget_nonneg
+    (N : ℕ) {L M₀ M₁ Cmain : ℝ}
+    (hL : 0 ≤ L) (hM₀ : 0 ≤ M₀) (hM₁ : 0 ≤ M₁) (hCmain : 0 ≤ Cmain) :
+    0 ≤ completedGNFirstMomentBudget N L M₀ M₁ Cmain := by
+  dsimp [completedGNFirstMomentBudget]
+  refine add_nonneg hCmain (Finset.sum_nonneg ?_)
+  intro n hn
+  have hn1 : 1 < n := (Finset.mem_Ioc.mp hn).1
+  have hlogpos : 0 < Real.log (n : ℝ) := Real.log_pos (by exact_mod_cast hn1)
+  have hcoeff : 0 ≤ (n : ℝ) ^ (-(1 / 2 : ℝ)) :=
+    Real.rpow_nonneg (Nat.cast_nonneg n) _
+  have hnum : 0 ≤ 2 * (2 * M₀ + L * M₁) := by nlinarith
+  exact mul_nonneg hcoeff (div_nonneg hnum hlogpos.le)
+
+/-- The named first-moment budget is monotone in the scalar length, envelope, derivative, and
+resonance inputs. -/
+theorem completedGNFirstMomentBudget_mono
+    (N : ℕ) {L₁ L₂ M₀₁ M₀₂ M₁₁ M₁₂ Cmain₁ Cmain₂ : ℝ}
+    (hL₁0 : 0 ≤ L₁) (hL : L₁ ≤ L₂)
+    (hM₀ : M₀₁ ≤ M₀₂)
+    (hM₁₁0 : 0 ≤ M₁₁) (hM₁ : M₁₁ ≤ M₁₂)
+    (hCmain : Cmain₁ ≤ Cmain₂) :
+    completedGNFirstMomentBudget N L₁ M₀₁ M₁₁ Cmain₁ ≤
+      completedGNFirstMomentBudget N L₂ M₀₂ M₁₂ Cmain₂ := by
+  dsimp [completedGNFirstMomentBudget]
+  refine add_le_add hCmain ?_
+  refine Finset.sum_le_sum ?_
+  intro n hn
+  have hn1 : 1 < n := (Finset.mem_Ioc.mp hn).1
+  have hlogpos : 0 < Real.log (n : ℝ) := Real.log_pos (by exact_mod_cast hn1)
+  have hcoeff : 0 ≤ (n : ℝ) ^ (-(1 / 2 : ℝ)) :=
+    Real.rpow_nonneg (Nat.cast_nonneg n) _
+  have hL₂0 : 0 ≤ L₂ := le_trans hL₁0 hL
+  have hLM : L₁ * M₁₁ ≤ L₂ * M₁₂ :=
+    mul_le_mul hL hM₁ hM₁₁0 hL₂0
+  have hnum : 2 * (2 * M₀₁ + L₁ * M₁₁) ≤
+      2 * (2 * M₀₂ + L₂ * M₁₂) := by nlinarith
+  exact mul_le_mul_of_nonneg_left
+    (div_le_div_of_nonneg_right hnum hlogpos.le) hcoeff
+
 end RHTower
 
 namespace RHTower

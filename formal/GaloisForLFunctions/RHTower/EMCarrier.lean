@@ -677,6 +677,39 @@ theorem afeAccurateOn_of_emCarrier_close {S : Set ℂ} {N M : ℕ} (hM : 1 ≤ M
         add_le_add (le_trans (zeta_sub_emCarrier_norm_le hM h1 h2) (hE z hz))
           (hclose z hz)
 
+/-- Raw finite-carrier domination from EM remainder, finite-carrier closeness, and a LOW floor.
+This is the pointwise finite-data inequality consumed before passing to completed-carrier
+domination or finite-side transport. -/
+theorem raw_domination_of_emCarrier_close_floor {S : Set ℂ} {N M : ℕ} {ε₁ δ : ℝ}
+    (hE : ∀ z ∈ S, ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ S, ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hF : CarrierFloorOn S N (ε₁ + δ)) :
+    ∀ z ∈ S,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖ <
+        ‖gN N z‖ := by
+  intro z hz
+  exact lt_of_le_of_lt (add_le_add (hE z hz) (hclose z hz)) (hF z hz)
+
+/-- Completed-carrier domination from EM remainder, finite-carrier closeness, and a LOW floor.
+This is the set-level EM finite-data version of `completed_domination_of_interfaces`. -/
+theorem completed_domination_of_emCarrier_close_floor {S : Set ℂ} {N M : ℕ} (hM : 1 ≤ M)
+    {ε₁ δ : ℝ}
+    (hstrip : ∀ z ∈ S, 0 < z.re ∧ z.re < 1)
+    (hE : ∀ z ∈ S, ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ S, ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hF : CarrierFloorOn S N (ε₁ + δ)) :
+    ∀ z ∈ S, ‖xi z - completedGN N z‖ < ‖completedGN N z‖ := by
+  have hstripAFE : ∀ z ∈ S, 0 < z.re ∧ z ≠ 1 := by
+    intro z hz
+    refine ⟨(hstrip z hz).1, ?_⟩
+    intro hz1
+    have hzlt : z.re < 1 := (hstrip z hz).2
+    rw [hz1] at hzlt
+    norm_num at hzlt
+  have hA : AFEAccurateOn S N (ε₁ + δ) :=
+    afeAccurateOn_of_emCarrier_close hM hstripAFE hE hclose
+  exact completed_domination_of_interfaces hstrip hA hF
+
 /-- **The pointwise `hdom` premise of the seam/deck transports, supplied**:
 EM remainder plus finite-vs-finite closeness under the `gN` floor gives
 completed-level domination `‖ξ − Φ̃_N‖ < ‖Φ̃_N‖` — the exact hypothesis shape
@@ -790,17 +823,8 @@ theorem anneal_seam_L_transport_of_emCarrier_close_floor {N M : ℕ}
     {pP pM : ℂ} (hpP : pP ∈ U) (hpM : pM ∈ U)
     (hPline : pP.re = 1 / 2) (hMline : pM.re = 1 / 2) :
     deckClass g₁ g₂ pP pM = deckClass G₁ G₂ pP pM := by
-  have hstripAFE : ∀ z ∈ U, 0 < z.re ∧ z ≠ 1 := by
-    intro z hz
-    refine ⟨(hUstrip z hz).1, ?_⟩
-    intro hz1
-    have hzlt : z.re < 1 := (hUstrip z hz).2
-    rw [hz1] at hzlt
-    norm_num at hzlt
-  have hA : AFEAccurateOn U N (ε₁ + δ) :=
-    afeAccurateOn_of_emCarrier_close hMpos hstripAFE hE hclose
   have hdom : ∀ z ∈ U, ‖xi z - completedGN N z‖ < ‖completedGN N z‖ :=
-    completed_domination_of_interfaces hUstrip hA hF
+    completed_domination_of_emCarrier_close_floor hMpos hUstrip hE hclose hF
   exact anneal_seam_L_transport hU hUc hUstrip hg₁ hg₂ hG₁ hG₂ hp₁ hp₂ hP₁ hP₂ hpP
     hpM hPline hMline (hdom pP hpP) (hdom pM hpM)
 
@@ -874,9 +898,8 @@ theorem xi_rung_of_finite_side_of_emCarrier_close_floor {N M : ℕ} (k : ℕ)
     (hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z) :
     2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z := by
   have hEMdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
-      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖ < ‖gN N z‖ := by
-    intro z hz
-    exact lt_of_le_of_lt (add_le_add (hE z hz) (hclose z hz)) (hF z hz)
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖ < ‖gN N z‖ :=
+    raw_domination_of_emCarrier_close_floor hE hclose hF
   exact xi_rung_of_finite_side_of_emCarrier_close k hMpos h0 hrR hchartStrip hm₁ hcl₁
     hstrip hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hEMdom hL hfin
 

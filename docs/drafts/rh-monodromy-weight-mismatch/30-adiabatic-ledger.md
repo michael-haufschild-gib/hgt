@@ -871,27 +871,40 @@ edge. The "energy gain `≳ 1/√d`" of §14(c) is exactly this: the room's `√
 its sign is the strip-emptiness — both now exact, the first proven-to-a-skeleton, the second a proven
 equivalence.
 
-### 17.4 The marginal crossover [CONJECTURE]
+### 17.4 The marginal crossover `G`, constructed — and it is linear [PROVED HERE — Lean]
 
-Varying `c` in the harmonic family does not give a `√d` law off `c = 2` — for `c ≠ 2` the leading
-balance `1 − Φ(c) ≠ 0` makes `½ − θ_max` an `O(1)` constant `→ c(1−Φ(c))/π²`. The genuine
-one-parameter object is the **finite-size-scaling crossover at the marginal point**: with scaling
-variable `ξ = (2 − c)√d`,
+Varying `c` in the harmonic family gives no `√d` law off `c = 2` (`1 − Φ(c) ≠ 0` makes `½ − θ_max` an
+`O(1)` constant `→ c(1−Φ(c))/π²`). The genuine one-parameter object is the **finite-size-scaling
+crossover at the marginal point**, with scaling variable `ξ = (2 − c)√d`. It is now **constructed as a
+theorem** (`crossoverG`, `crossover_reduction`, `LegStripEdgeFamily.lean`), and the construction reveals
+it is **linear**:
 
-> `(½ − θ_max)·√d → G(ξ)`,  `G(0) = 1/π`,  `G(ξ) → −ξ/4` as `|ξ| → ∞`,
+> `crossoverG ξ = 1/π − ξ/4`,   and along the scaling curve `c = 2 − ξ/√d`,
+> `(½ − θ_max)·√d → G(ξ)`  (`crossover_reduction`).
 
-unifying the two proven constants — `G(0) = 1/π` is the edge law, and the asymptotic slope `1/4`
-is `Φ'(2) = −π²/8` read through `κ = 2/π²` (`1 − Φ(c) ≈ (π²/8)(c − 2)` gives `½ − θ_max ≈ (c−2)/4`,
-i.e. `G(ξ) ≈ −ξ/4`). The collapse of `margin·√d` onto a single `G` across `d`, and the shape of `G`
-between its two limits, are open. `edge_margin_const_general` already gives the whole `ρ(κ,a)` family
-as the abstract skeleton this crossover is a section of.
+The reason it is linear: near `c = 2`, `Φ(c) ≈ 1 − (π²/8)(c − 2)`, so the imbalance term `(π²/8)(c − 2)`
+in `g(i)/i = (π²/8)(c−2) + i/d + (π²/16)/i` is **`i`-independent** — it does not move the AM–GM
+minimizer, only shifts the min value additively. Hence `margin·√d = κ·[(π²/8)(c−2) + 2√(a/d)]·√d`
+splits exactly into `κ·(π²/8)(c−2)·√d = −ξ/4` (the `√d` cancels for every `d`) plus `κ·2√(a/d)·√d = 1/π`
+(the edge law). The two boundary constants are unified in one line: `G(0) = 1/π` (`crossoverG_zero`, the
+edge law) and `G(ξ) + ξ/4 = 1/π` (`crossoverG_slope`, the `Φ'(2) = −π²/8` linear response). The
+`crossover_reduction` consumes the physical decomposition `margin = κ·((π²/8)(c−2) + m)`; the collapse
+of `margin·√d` onto this single linear `G` across `d` is the remaining input (the same status as the
+edge law's own decomposition).
 
-**Forward.** (i) Discharge the two decomposition limits (`ε → −π²/16`, `A_trunc/i → i/d`) from the
-exact `poleExcess` field, closing `harmonic_theta_deviation`'s factors into the edge law with no input.
-(ii) Construct the crossover `G` — the finite-size-scaling function joining `1/π` to `−ξ/4` — as a new
-object; its existence is the collapse conjecture. (iii) A deformed carrier whose marginal locus is a
-curve, turning `ρ(κ(c), a(c))` into a genuine one-parameter family of marginal carriers rather than a
-single point plus its abstract skeleton.
+The **carrier family** is likewise made concrete (`rhoOfCarrier c a = (2c/π²)√a`, `edge_law_along_curve`):
+sectioning the abstract `ρ`-surface `2κ√a` along the local-factor curve `κ(c) = c/π²` gives the
+one-parameter family `ρ(c, a)`, with `ρ(2, π²/16) = 1/π` (`rhoOfCarrier_two`) as one point — no longer a
+point-plus-skeleton but a curve on the surface. The remaining constructive step is a **deformed carrier**
+whose marginal *locus* is a curve (a power carrier `δ_j = c·j^{−α}` with residue `Φ_α(c)` and marginal
+curve `Φ_α = 1`), so that `a(c)` too varies — this needs the generalized `Φ_α`, a new object.
+
+**Forward.** (i) Land input #1's steepness on the literal `W(m)` via the finite-sum Tannery variant
+(`tendsto_rescaled_csch_sq_finsum`) + the `range d` behind/ahead reindex + `δ`-rescale. (ii) Discharge
+inputs #2 (`A_trunc/i → i/d`, the digamma/tail-integral of the far-ahead cut) and #3 (`ε → −π²/16`, the
+second-order Euler–Maclaurin remainder of the shell balance). (iii) The `ξ`-drift control
+`W(ξ)/W(m) → 1` (from `θ*(i) → ½` pinning `ξ` within `o(δ)` of `m`) and the max-over-`i` assembly.
+(iv) The generalized `Φ_α` for the deformed-carrier marginal curve.
 
 ## 18. Discharging the steepness input: the near-pole `csch²` Tannery limit [PROVED HERE — Lean]
 
@@ -916,10 +929,80 @@ for any distance family with the near-pole pointwise limit `n·dist n k → c(k+
 `behind_dist_lb`.
 
 So the steepness **mechanism** — the near-pole `csch² → 1/z²` collapse of the field's curvature onto the
-odd-Basel constant `π²/c²` — is a theorem, and the harmonic carrier meets its hypotheses. What remains
-to land `2W(m)δ/i → 2π²/c` on the literal `W(m) = ¼Σ_{k∈range d} csch²((m − T_k)/2)` is the
-finite-sum reconciliation (the behind/ahead sums are finite, the Tannery limit is over `ℕ`), the ahead
-side (identical, needing `d − i → ∞`), and the `δ = c/(i+1)` rescaling — mechanical given the mechanism.
+odd-Basel constant `π²/c²` — is a theorem, and the harmonic carrier meets its hypotheses. The
+finite-sum reconciliation is also done (`tendsto_rescaled_csch_sq_finsum`, the growing-finite-sum Tannery
+via indicator truncation), and the **behind side is now landed on the literal harmonic distances**:
+
+> `behind_csch_sum_tendsto`: `Σ_{k<n} csch²(bdist_n(k)/2)/n² → 2π²/c²`,
+
+the behind train's near-pole steepness on the exact distances `bdist_n(k) = c/(2n) + c·Σ_{j<k}1/(n−1−j)`,
+a direct application of the finite-sum Tannery limit + `tendsto_behind_dist` + `behind_dist_lb`.
+
+**Both trains are now landed on the literal harmonic pole positions** (`LegStripSteepnessHarmonic.lean`):
+the per-term identities `bdist_{i+1}(k) = harmMid c i − harmPole c (i−k)` (`harmMid_sub_harmPole`, a
+`harmPole`-difference + reflection) and `adist_{i+1}(k) = harmPole c (i+1+k) − harmMid c i`
+(`harmPole_sub_harmMid`, forward, no reflection) identify the abstract distances with the exact
+midpoint-to-pole distances, giving
+
+> `behind_energy_harmonic`, `ahead_energy_harmonic`: `Σ_{k<i+1} csch²(dist_k/2)/(i+1)² → 2π²/c²`,
+
+the behind and ahead near-pole steepness on the actual pole positions `T_j = c·H_j`. The ahead side uses
+the generalized finite-sum Tannery `tendsto_rescaled_csch_sq_finsum_gen` (domination constant `c/2`,
+since the ahead distances satisfy only `adist ≥ (c/2)(k+½)/n`) and the forward harmonic sum
+`tendsto_forward_harmonic_sum`.
+
+**Input #1's steepness is fully discharged on the literal field energy** for the balanced model
+(`d = 2i + 2`, exactly `i+1` behind and `i+1` ahead poles — every pole near, no far-ahead tail):
+
+> `harmonic_midpoint_energy_steepness`: `W(m)/(i+1)² → π²/c²`  (i.e. `2W(m)·δ_i/i → 2π²/c`, `κ(c) = c/π²`),
+
+where `W(m) = spurLatticeEnergy (range (2i+2)) (harmPole c) (harmMid c i) = ¼Σ csch²((m − T_k)/2)` is the
+actual reduced energy of the harmonic pole configuration. It combines `behind_energy_harmonic` and
+`ahead_energy_harmonic` via the `range (2i+2)` split (behind `k ≤ i` reflected, ahead `k ≥ i+1` shifted,
+`csch²` even). So the local factor `κ` is no longer an assumed asymptotic — it is the `π²/c²` limit of the
+literal field curvature at the midpoint. For general `d` the only addition is the far-ahead tail
+(`k > i+1`) vanishing under the `(i+1)²` rescaling (`Σ_far csch²/(i+1)² → 0`, the boundary with input #2)
+— the balanced model exhibits the steepness with that tail absent.
 The other two inputs (`A_trunc/i → i/d` digamma, `ε → −π²/16` second-order Euler–Maclaurin) and the
 `ξ`-drift control (`W(ξ)/W(m) → 1`, from `θ*(i) → ½` pinning `ξ` to `m`) are the onward surface toward
 the assumption-free edge law.
+
+## 19. Input #2, the truncation bound — the digamma rational envelope [PROVED HERE — Lean]
+
+The margin term `A_trunc/i → i/d` is the finite-`d` cut of the ahead train: the pole count `d` removes
+the far-ahead excess `A_trunc = Σ_{k ≥ d−i} poleExcess(ahead_k)`. Its **upper bound** is now a theorem
+on the exact field `poleExcess` (`LegStripTruncation.lean`, axiom-clean), reusing the tree's harmonic-log
+and digamma primitives (`sum_log_step`, `log_step_bounds`, `sum_inv_sq_shift_le`):
+
+> `trunc_ahead_le`: `Σ_{d−i ≤ k < N} poleExcess(ahead_k) ≤ (i+1)²/(d−i−1)`.
+
+The mechanism is the exact **exp ≥ rational** sandwich: the harmonic ahead distance dominates a logarithm,
+`Σ_{j<k} 1/(i+j+1) ≥ log((i+k+1)/(i+1))` (`aheadHarm_ge_log`, the reverse of `harmonic_log_lower` via the
+same `sum_log_step` telescope), so `exp(ahead_k) ≥ ((i+k+1)/(i+1))²` and the `coth`-excess is below the
+rational envelope `(i+1)²/(k(k+2i+2))` (`poleExcess_ahead_le_rational`); its tail telescopes
+(`trunc_rational_tail_le`, via the `1/k²` comparison and `sum_inv_sq_shift_le`) to `(i+1)²/(d−i−1)`. So
+`A_trunc/i ≤ (i+1)²/(i(d−i−1)) ~ i/d` — the truncation scale, rigorously, on the exact `poleExcess`.
+
+The **matching lower bound is now also a theorem** (`poleExcess_ahead_ge_rational`): from
+`Σ 1/(i+j+1) ≤ log((i+k)/i)` (`harmonic_log_lower`) and `exp(1/i) ≤ i/(i−1)` (`exp_inv_le`, from
+`1−x ≤ e^{−x}` reciprocated), `poleExcess(ahead_k) ≥ i(i−1)/(k(k+2i)+i)`. So the exact field `poleExcess`
+is **sandwiched between two rationals**,
+
+> `i(i−1)/(k(k+2i)+i) ≤ poleExcess(ahead_k) ≤ (i+1)²/(k(k+2i+2))`,
+
+both `→ i²/(k(k+2i))` as `i → ∞` — the per-term two-sided envelope, the analytic crux of input #2.
+
+**The summation is now also done** — the truncation mass is two-sidedly trapped by explicit digamma
+partial-fraction rationals (`trunc_ahead_two_sided`):
+
+> `((i−1)/2)·(B_M − B_N) ≤ A_trunc = Σ_{M≤k<N} poleExcess(ahead_k) ≤ (i+1)²/(M−1)`,
+
+where `B_M = Σ_{M≤k<M+2i} 1/(k+1)` is a harmonic block of `2i` terms. Both rational sums are the exact
+partial-fraction telescopes (`trunc_upper_sum_eq`, `trunc_lower_sum_eq`, via the general
+`sum_shift_telescope`), and the blocks satisfy `2i/(M+2i) ≤ B_M ≤ 2i/M` (`harmonic_block_ge`,
+`harmonic_block_le`). At `M = d−i` this pins `A_trunc = (i²/d)(1 + o(1))`: the removed truncation mass is
+`~ i²/d` on the exact field, both bounds proved. The only remaining slack is the two-variable `o(1)` (the
+`(i±1)/2 → i/2`, `B_M → 2i/d` as `i,d → ∞`), an arithmetic tightening of the now-explicit sandwich.
+
+Input #3 (`ε → −π²/16`) is the second-order Euler–Maclaurin remainder of `poleModelDiff`, on the
+Tannery/`RescaleTannery` machinery.

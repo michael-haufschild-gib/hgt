@@ -244,6 +244,13 @@ theorem norm_archFactorDeriv_line_le_segmentBudget {α β u : ℝ}
     dsimp [archDerivSegmentBudget]
     exact mul_le_mul_of_nonneg_left hinside hCγ)
 
+/-- The closed segment derivative-envelope budget is nonnegative on positive segments. -/
+theorem archDerivSegmentBudget_nonneg {α β : ℝ} (hα : 0 < α) (hαβ : α ≤ β) :
+    0 ≤ archDerivSegmentBudget α β := by
+  exact le_trans (norm_nonneg (archFactorDeriv (linePt α)))
+    (norm_archFactorDeriv_line_le_segmentBudget (α := α) (β := β) (u := α)
+      hα ⟨le_rfl, hαβ⟩)
+
 /-- The reflected critical-line derivative has the same norm as the direct derivative. -/
 theorem norm_archFactorDeriv_reflected_line_eq (u : ℝ) :
     ‖archFactorDeriv (1 - linePt u)‖ = ‖archFactorDeriv (linePt u)‖ := by

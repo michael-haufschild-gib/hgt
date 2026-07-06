@@ -62,7 +62,8 @@ theorem tendsto_self_div_sinh : Tendsto (fun w : ℝ => w / Real.sinh w) (𝓝[�
 near-pole value `(2/L)²`: writing it as `(rcsch(dist/2)·(dist/2))² · (4/(n·dist)²)`, the first factor
 `→ 1` (`w/sinh w → 1`) and the second `→ 4/L²`. -/
 theorem tendsto_rescaled_csch_sq_term {dist : ℕ → ℝ} {L : ℝ} (hL : 0 < L)
-    (hpos : ∀ n, 0 < dist n) (hlim : Tendsto (fun n : ℕ => (n : ℝ) * dist n) atTop (𝓝 L)) :
+    (hpos : ∀ᶠ n in atTop, 0 < dist n)
+    (hlim : Tendsto (fun n : ℕ => (n : ℝ) * dist n) atTop (𝓝 L)) :
     Tendsto (fun n : ℕ => (1/(n : ℝ)^2) * (rcsch (dist n / 2))^2) atTop (𝓝 ((2/L)^2)) := by
   -- dist n → 0
   have hdist0 : Tendsto (fun n => dist n) atTop (𝓝 0) := by
@@ -76,9 +77,9 @@ theorem tendsto_rescaled_csch_sq_term {dist : ℕ → ℝ} {L : ℝ} (hL : 0 < L
   have hhalf : Tendsto (fun n => dist n / 2) atTop (𝓝[≠] 0) := by
     apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
     · simpa using hdist0.div_const 2
-    · filter_upwards with n
+    · filter_upwards [hpos] with n hn
       simp only [mem_compl_iff, mem_singleton_iff]
-      exact (half_pos (hpos n)).ne'
+      exact (half_pos hn).ne'
   have hfac1 : Tendsto (fun n => (dist n / 2) / Real.sinh (dist n / 2)) atTop (𝓝 1) :=
     tendsto_self_div_sinh.comp hhalf
   -- 4/(n·dist n)² → 4/L²
@@ -89,10 +90,10 @@ theorem tendsto_rescaled_csch_sq_term {dist : ℕ → ℝ} {L : ℝ} (hL : 0 < L
   simp only [one_pow, one_mul] at hprod
   rw [show ((2:ℝ)/L)^2 = 4/L^2 by rw [div_pow]; norm_num]
   refine hprod.congr' ?_
-  filter_upwards [eventually_gt_atTop 0] with n hn
+  filter_upwards [eventually_gt_atTop 0, hpos] with n hn hdn
   have hn0 : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-  have hd0 : dist n ≠ 0 := ne_of_gt (hpos n)
-  have hs0 : Real.sinh (dist n / 2) ≠ 0 := ne_of_gt (sinh_pos_of_pos (half_pos (hpos n)))
+  have hd0 : dist n ≠ 0 := ne_of_gt hdn
+  have hs0 : Real.sinh (dist n / 2) ≠ 0 := ne_of_gt (sinh_pos_of_pos (half_pos hdn))
   simp only [Pi.div_apply, rcsch]
   field_simp
   ring
@@ -159,7 +160,7 @@ theorem tendsto_rescaled_csch_sq_sum {c : ℝ} (hc : 0 < c) {dist : ℕ → ℕ 
   apply tendsto_tsum_of_dominated_convergence (summable_near_pole_bound hc)
   · intro k
     exact tendsto_rescaled_csch_sq_term (show (0:ℝ) < c*((k:ℝ)+1/2) by positivity)
-      (fun n => hpos n k) (hlim k)
+      (Filter.Eventually.of_forall (fun n => hpos n k)) (hlim k)
   · filter_upwards [eventually_gt_atTop 0] with n hn k
     rw [Real.norm_of_nonneg (by positivity)]
     exact rescaled_csch_sq_le hc k hn (hpos n k) (hlb n k hn)
@@ -261,6 +262,197 @@ theorem behind_dist_lb {c : ℝ} (hc : 0 < c) {i k : ℕ} (hik : k < i) :
   have heq : (c/(i:ℝ)) * ((k:ℝ) + 1/2) = c/(2*(i:ℝ)) + c * ((k:ℝ)/(i:ℝ)) := by
     field_simp; ring
   rw [heq]; linarith
+
+/-- **The rescaled `csch²` sum limit for growing finite sums.** When the sum ranges over the actual
+pole count `count n → ∞` (not all of `ℕ`), the rescaled `csch²` sum still converges to `2π²/c²`: the
+finite sum is the `tsum` of the indicator-truncated terms, which converge pointwise and are dominated by
+the same summable near-pole bound. This is the form needed for the literal field energy, whose behind
+and ahead sums are finite. -/
+theorem tendsto_rescaled_csch_sq_finsum {c : ℝ} (hc : 0 < c) {dist : ℕ → ℕ → ℝ}
+    (count : ℕ → ℕ) (hcount : Tendsto count atTop atTop)
+    (hpos : ∀ k : ℕ, ∀ᶠ n in atTop, 0 < dist n k)
+    (hlb : ∀ n k : ℕ, 0 < n → k < count n → (c/(n:ℝ))*((k:ℝ)+1/2) ≤ dist n k)
+    (hlim : ∀ k : ℕ, Tendsto (fun n : ℕ => (n:ℝ)*dist n k) atTop (𝓝 (c*((k:ℝ)+1/2)))) :
+    Tendsto (fun n : ℕ => ∑ k ∈ Finset.range (count n), (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2) atTop
+      (𝓝 (2*π^2/c^2)) := by
+  classical
+  rw [← tsum_near_pole_bound hc]
+  have hsumeq : ∀ n : ℕ, (∑ k ∈ Finset.range (count n), (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2)
+      = ∑' k : ℕ, (if k < count n then (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2 else 0) := by
+    intro n
+    rw [tsum_eq_sum (s := Finset.range (count n))
+      (fun k hk => by rw [Finset.mem_range] at hk; simp [hk])]
+    exact Finset.sum_congr rfl (fun k hk => by rw [Finset.mem_range] at hk; simp [hk])
+  simp_rw [hsumeq]
+  apply tendsto_tsum_of_dominated_convergence (summable_near_pole_bound hc)
+  · intro k
+    have hev : (fun n : ℕ => (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2)
+        =ᶠ[atTop] (fun n => if k < count n then (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2 else 0) := by
+      filter_upwards [hcount.eventually_gt_atTop k] with n hn; simp [hn]
+    exact (tendsto_rescaled_csch_sq_term (show (0:ℝ) < c*((k:ℝ)+1/2) by positivity)
+      (hpos k) (hlim k)).congr' hev
+  · filter_upwards [eventually_gt_atTop 0] with n hn k
+    by_cases hkc : k < count n
+    · rw [if_pos hkc, Real.norm_of_nonneg (by positivity)]
+      have hdpos : 0 < dist n k := lt_of_lt_of_le (by positivity) (hlb n k hn hkc)
+      exact rescaled_csch_sq_le hc k hn hdpos (hlb n k hn hkc)
+    · rw [if_neg hkc, norm_zero]; positivity
+
+/-- **Growing-finite-sum Tannery with a separate domination constant.** The domination lower bound uses
+`b` (the ahead distances satisfy only `adist ≥ (c/2)(k+½)/n`, not the exact `(c/n)(k+½)`), while the
+pointwise limit and the target sum use `c`; the sum still converges to `2π²/c²` — the near-pole value
+of the *limit*, dominated by the summable `b`-bound `(2/(b(k+½)))²`. -/
+theorem tendsto_rescaled_csch_sq_finsum_gen {c b : ℝ} (hc : 0 < c) (hb : 0 < b) {dist : ℕ → ℕ → ℝ}
+    (count : ℕ → ℕ) (hcount : Tendsto count atTop atTop)
+    (hpos : ∀ k : ℕ, ∀ᶠ n in atTop, 0 < dist n k)
+    (hlb : ∀ n k : ℕ, 0 < n → k < count n → (b/(n:ℝ))*((k:ℝ)+1/2) ≤ dist n k)
+    (hlim : ∀ k : ℕ, Tendsto (fun n : ℕ => (n:ℝ)*dist n k) atTop (𝓝 (c*((k:ℝ)+1/2)))) :
+    Tendsto (fun n : ℕ => ∑ k ∈ Finset.range (count n), (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2) atTop
+      (𝓝 (2*π^2/c^2)) := by
+  classical
+  rw [← tsum_near_pole_bound hc]
+  have hsumeq : ∀ n : ℕ, (∑ k ∈ Finset.range (count n), (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2)
+      = ∑' k : ℕ, (if k < count n then (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2 else 0) := by
+    intro n
+    rw [tsum_eq_sum (s := Finset.range (count n))
+      (fun k hk => by rw [Finset.mem_range] at hk; simp [hk])]
+    exact Finset.sum_congr rfl (fun k hk => by rw [Finset.mem_range] at hk; simp [hk])
+  simp_rw [hsumeq]
+  apply tendsto_tsum_of_dominated_convergence (summable_near_pole_bound hb)
+  · intro k
+    have hev : (fun n : ℕ => (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2)
+        =ᶠ[atTop] (fun n => if k < count n then (1/(n:ℝ)^2)*(rcsch (dist n k /2))^2 else 0) := by
+      filter_upwards [hcount.eventually_gt_atTop k] with n hn; simp [hn]
+    exact (tendsto_rescaled_csch_sq_term (show (0:ℝ) < c*((k:ℝ)+1/2) by positivity)
+      (hpos k) (hlim k)).congr' hev
+  · filter_upwards [eventually_gt_atTop 0] with n hn k
+    by_cases hkc : k < count n
+    · rw [if_pos hkc, Real.norm_of_nonneg (by positivity)]
+      have hdpos : 0 < dist n k := lt_of_lt_of_le (by positivity) (hlb n k hn hkc)
+      exact rescaled_csch_sq_le hb k hn hdpos (hlb n k hn hkc)
+    · rw [if_neg hkc, norm_zero]; positivity
+
+/-- **The behind-side steepness on the harmonic distances.** The rescaled behind `csch²` sum on the
+exact harmonic pole distances `bdist_n(k) = c/(2n) + c·Σ_{j<k}1/(n−1−j)` converges to `2π²/c²` — the
+literal near-pole steepness of the behind train (one side of `2W(m)δ/i → 2π²/c`), assembled from the
+finite-sum Tannery limit, the near-pole distance limit `tendsto_behind_dist`, and the lower bound
+`behind_dist_lb`. -/
+theorem behind_csch_sum_tendsto {c : ℝ} (hc : 0 < c) :
+    Tendsto (fun n : ℕ => ∑ k ∈ Finset.range n,
+        (1/(n:ℝ)^2) * (rcsch ((c/(2*(n:ℝ)) + c*∑ j ∈ Finset.range k, 1/((n:ℝ)-1-(j:ℝ)))/2))^2)
+      atTop (𝓝 (2*π^2/c^2)) := by
+  exact tendsto_rescaled_csch_sq_finsum hc (fun n => n) tendsto_id
+    (fun k => by
+      filter_upwards [eventually_ge_atTop (k+1)] with n hn
+      have hn0 : (0:ℝ) < (n:ℝ) := Nat.cast_pos.mpr (by omega)
+      have hsum : (0:ℝ) ≤ ∑ j ∈ Finset.range k, 1/((n:ℝ)-1-(j:ℝ)) := by
+        apply Finset.sum_nonneg
+        intro j hj
+        rw [Finset.mem_range] at hj
+        have : (j:ℝ) + 1 ≤ (n:ℝ) := by exact_mod_cast (show j + 1 ≤ n by omega)
+        have hpos : (0:ℝ) < (n:ℝ)-1-(j:ℝ) := by
+          have : (j:ℝ) + 2 ≤ (n:ℝ) := by exact_mod_cast (show j + 2 ≤ n by omega)
+          linarith
+        exact one_div_nonneg.mpr hpos.le
+      have hcn : (0:ℝ) < c/(2*(n:ℝ)) := div_pos hc (by positivity)
+      nlinarith [mul_nonneg hc.le hsum])
+    (fun n k _ hkn => behind_dist_lb hc hkn)
+    (fun k => tendsto_behind_dist c k)
+
+/-- **The forward harmonic sum limit** `i·Σ_{j<k} 1/(i+1+j) → k`: the ahead analogue of
+`tendsto_backward_harmonic_sum`, squeezed between `ik/(i+k)` and `ik/(i+1)`, both `→ k`. -/
+theorem tendsto_forward_harmonic_sum (k : ℕ) :
+    Tendsto (fun i : ℕ => (i:ℝ) * ∑ j ∈ Finset.range k, 1/((i:ℝ)+1+(j:ℝ))) atTop (𝓝 (k:ℝ)) := by
+  apply tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    (tendsto_mul_div_sub k (-(k:ℝ))) (tendsto_mul_div_sub k (-1))
+  · filter_upwards [eventually_gt_atTop 0] with i hi
+    have hi0 : (0:ℝ) < (i:ℝ) := by exact_mod_cast (by omega : 0 < i)
+    have hlb : (k:ℝ) * (1/((i:ℝ)+(k:ℝ))) ≤ ∑ j ∈ Finset.range k, 1/((i:ℝ)+1+(j:ℝ)) := by
+      have hconst : ((k:ℝ)) * (1/((i:ℝ)+(k:ℝ))) = ∑ _x ∈ Finset.range k, (1:ℝ)/((i:ℝ)+(k:ℝ)) := by
+        rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+      rw [hconst]
+      apply Finset.sum_le_sum
+      intro j hj
+      rw [Finset.mem_range] at hj
+      have hj' : (j:ℝ) + 1 ≤ (k:ℝ) := by exact_mod_cast (show j+1 ≤ k by omega)
+      exact one_div_le_one_div_of_le (by positivity) (by linarith)
+    calc (i:ℝ)*(k:ℝ)/((i:ℝ)-(-(k:ℝ))) = (i:ℝ) * ((k:ℝ) * (1/((i:ℝ)+(k:ℝ)))) := by
+          rw [sub_neg_eq_add]; field_simp
+      _ ≤ (i:ℝ) * ∑ j ∈ Finset.range k, 1/((i:ℝ)+1+(j:ℝ)) := mul_le_mul_of_nonneg_left hlb hi0.le
+  · filter_upwards [eventually_gt_atTop 0] with i hi
+    have hi0 : (0:ℝ) < (i:ℝ) := by exact_mod_cast (by omega : 0 < i)
+    have hub : (∑ j ∈ Finset.range k, 1/((i:ℝ)+1+(j:ℝ))) ≤ (k:ℝ) * (1/((i:ℝ)+1)) := by
+      have hconst : ((k:ℝ)) * (1/((i:ℝ)+1)) = ∑ _x ∈ Finset.range k, (1:ℝ)/((i:ℝ)+1) := by
+        rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+      rw [hconst]
+      apply Finset.sum_le_sum
+      intro j hj
+      have hjnn : (0:ℝ) ≤ (j:ℝ) := by positivity
+      exact one_div_le_one_div_of_le (by positivity) (by linarith)
+    calc (i:ℝ) * ∑ j ∈ Finset.range k, 1/((i:ℝ)+1+(j:ℝ))
+        ≤ (i:ℝ) * ((k:ℝ) * (1/((i:ℝ)+1))) := mul_le_mul_of_nonneg_left hub hi0.le
+      _ = (i:ℝ)*(k:ℝ)/((i:ℝ)-(-1)) := by rw [sub_neg_eq_add]; field_simp
+
+/-- The ahead distance limit `i·adist_i(k) → c(k+½)`, `adist_i(k) = c/(2i) + c·Σ_{j<k}1/(i+1+j)`. -/
+theorem tendsto_ahead_dist (c : ℝ) (k : ℕ) :
+    Tendsto (fun i : ℕ => (i:ℝ) * (c/(2*(i:ℝ)) + c*∑ j ∈ Finset.range k, 1/((i:ℝ)+1+(j:ℝ))))
+      atTop (𝓝 (c*((k:ℝ)+1/2))) := by
+  have hbase := (tendsto_forward_harmonic_sum k).const_mul c
+  have hsum : Tendsto (fun i : ℕ => c/2 + c*((i:ℝ)*∑ j ∈ Finset.range k, 1/((i:ℝ)+1+(j:ℝ))))
+      atTop (𝓝 (c/2 + c*(k:ℝ))) := tendsto_const_nhds.add hbase
+  rw [show c*((k:ℝ)+1/2) = c/2 + c*(k:ℝ) by ring]
+  refine hsum.congr' ?_
+  filter_upwards [eventually_gt_atTop 0] with i hi
+  have hi0 : (i:ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  field_simp
+
+/-- The ahead distance lower bound `adist_i(k) ≥ (c/2)(k+½)/i` (`k < i`): each term `1/(i+1+j) ≥ 1/(2i)`
+(denominator `≤ 2i`), so the sum is `≥ k/(2i)`. The constant is `c/2`, not `c`: ahead distances are
+slightly smaller than `(c/i)(k+½)`. -/
+theorem ahead_dist_lb {c : ℝ} (hc : 0 < c) {i k : ℕ} (hik : k < i) :
+    ((c/2)/(i:ℝ)) * ((k:ℝ) + 1/2)
+      ≤ c/(2*(i:ℝ)) + c * ∑ j ∈ Finset.range k, 1/((i:ℝ)+1+(j:ℝ)) := by
+  have hi0 : (0:ℝ) < (i:ℝ) := Nat.cast_pos.mpr (by omega)
+  have hsum : (∑ j ∈ Finset.range k, (1:ℝ)/(2*(i:ℝ)))
+      ≤ (∑ j ∈ Finset.range k, 1/((i:ℝ)+1+(j:ℝ))) := by
+    apply Finset.sum_le_sum
+    intro j hj
+    rw [Finset.mem_range] at hj
+    have hjk : (j:ℝ) + 1 ≤ (i:ℝ) := by exact_mod_cast (show j+1 ≤ i by omega)
+    exact one_div_le_one_div_of_le (by positivity) (by linarith)
+  rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one_div] at hsum
+  have hstep : c * ((k:ℝ)/(2*(i:ℝ))) ≤ c * ∑ j ∈ Finset.range k, 1/((i:ℝ)+1+(j:ℝ)) :=
+    mul_le_mul_of_nonneg_left hsum hc.le
+  have h1 : ((c/2)/(i:ℝ)) * ((k:ℝ)+1/2) = (c*(2*(k:ℝ)+1))/(4*(i:ℝ)) := by field_simp; ring
+  have h2 : c/(2*(i:ℝ)) + c * ((k:ℝ)/(2*(i:ℝ))) = (c*(2*(k:ℝ)+2))/(4*(i:ℝ)) := by field_simp; ring
+  have hgoal : ((c/2)/(i:ℝ)) * ((k:ℝ)+1/2) ≤ c/(2*(i:ℝ)) + c * ((k:ℝ)/(2*(i:ℝ))) := by
+    rw [h1, h2]; gcongr; nlinarith [hc]
+  linarith [hgoal, hstep]
+
+/-- **The ahead-side steepness on the harmonic distances.** The rescaled near-ahead `csch²` sum on the
+exact distances `adist_n(k) = c/(2n) + c·Σ_{j<k}1/(n+1+j)` (the `n` nearest ahead poles) converges to
+`2π²/c²` — the ahead train's near-pole steepness, via the generalized finite-sum Tannery limit (bound
+constant `c/2`) + `tendsto_ahead_dist` + `ahead_dist_lb`. -/
+theorem ahead_csch_sum_tendsto {c : ℝ} (hc : 0 < c) :
+    Tendsto (fun n : ℕ => ∑ k ∈ Finset.range n,
+        (1/(n:ℝ)^2) * (rcsch ((c/(2*(n:ℝ)) + c*∑ j ∈ Finset.range k, 1/((n:ℝ)+1+(j:ℝ)))/2))^2)
+      atTop (𝓝 (2*π^2/c^2)) := by
+  exact tendsto_rescaled_csch_sq_finsum_gen hc (by positivity : (0:ℝ) < c/2) (fun n => n) tendsto_id
+    (fun k => by
+      filter_upwards [eventually_ge_atTop (k+1)] with n hn
+      have hn0 : (0:ℝ) < (n:ℝ) := Nat.cast_pos.mpr (by omega)
+      have hcn : (0:ℝ) < c/(2*(n:ℝ)) := div_pos hc (by linarith)
+      have hsum : (0:ℝ) ≤ ∑ j ∈ Finset.range k, 1/((n:ℝ)+1+(j:ℝ)) := by
+        apply Finset.sum_nonneg
+        intro j _
+        have h : (0:ℝ) < (n:ℝ)+1+(j:ℝ) := by
+          have h1 : (0:ℝ) ≤ (n:ℝ) := Nat.cast_nonneg n
+          have h2 : (0:ℝ) ≤ (j:ℝ) := Nat.cast_nonneg j
+          linarith
+        exact le_of_lt (one_div_pos.mpr h)
+      nlinarith [mul_nonneg hc.le hsum])
+    (fun n k _ hkn => ahead_dist_lb hc hkn)
+    (fun k => tendsto_ahead_dist c k)
 
 end RHTower
 end

@@ -250,6 +250,30 @@ theorem abs_integral_re_completedGN_line_le_firstMomentBudget_of_sups
   simpa [completedGNFirstMomentBudget] using
     abs_integral_re_completedGN_line_le_of_sups hN hαβ hM₀ hM₀r hM₁ hM₁r hCmain
 
+/-- Monotone named-budget form of `abs_integral_re_completedGN_line_le_of_sups`: after proving
+the analytic estimate with sharp scalar inputs, the target first-moment budget may use any larger
+length, envelope, derivative, and resonance scalars. -/
+theorem abs_integral_re_completedGN_line_le_firstMomentBudget_of_sups_mono
+    {N : ℕ} (hN : 1 ≤ N) {α β L M₀ M₀' M₁ M₁' Cmain Cmain' : ℝ}
+    (hαβ : α ≤ β)
+    (hM₀ : ∀ u ∈ Set.Icc α β, ‖archFactor (linePt u)‖ ≤ M₀)
+    (hM₀r : ∀ u ∈ Set.Icc α β, ‖archFactor (1 - linePt u)‖ ≤ M₀)
+    (hM₁ : ∀ u ∈ Set.Icc α β, ‖archFactorDeriv (linePt u)‖ ≤ M₁)
+    (hM₁r : ∀ u ∈ Set.Icc α β, ‖archFactorDeriv (1 - linePt u)‖ ≤ M₁)
+    (hCmain : ‖(∫ u in α..β, archFactor (linePt u)) +
+        ∫ u in α..β, archFactor (1 - linePt u)‖ ≤ Cmain)
+    (hL : β - α ≤ L) (hM₀le : M₀ ≤ M₀') (hM₁le : M₁ ≤ M₁')
+    (hCmainle : Cmain ≤ Cmain') :
+    |∫ u in α..β, (completedGN N (linePt u)).re| ≤
+      completedGNFirstMomentBudget N L M₀' M₁' Cmain' := by
+  have hbase :=
+    abs_integral_re_completedGN_line_le_firstMomentBudget_of_sups
+      hN hαβ hM₀ hM₀r hM₁ hM₁r hCmain
+  have hM₁0 : 0 ≤ M₁ := by
+    exact le_trans (norm_nonneg _) (hM₁ α ⟨le_rfl, hαβ⟩)
+  exact le_trans hbase
+    (completedGNFirstMomentBudget_mono N (by linarith) hL hM₀le hM₁0 hM₁le hCmainle)
+
 end RHTower
 
 namespace RHTower

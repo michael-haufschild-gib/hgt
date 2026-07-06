@@ -103,8 +103,16 @@ import GaloisForLFunctions.RHTower.RouteBChiDecay
 import GaloisForLFunctions.RHTower.RouteBProportion
 import GaloisForLFunctions.RHTower.WeightMismatchRefutation
 import GaloisForLFunctions.RHTower.RHLadderTheory
+import GaloisForLFunctions.RHTower.WindowLadder
+import GaloisForLFunctions.RHTower.DeckWindow
+import GaloisForLFunctions.RHTower.WindowSeam
+import GaloisForLFunctions.RHTower.DiscWindow
+import GaloisForLFunctions.RHTower.DiscExtraction
+import GaloisForLFunctions.RHTower.WindowProducer
 import GaloisForLFunctions.RHTower.SeamSignTransport
 import GaloisForLFunctions.RHTower.AnnealWindowRelation
+import GaloisForLFunctions.RHTower.DiscCensus
+import GaloisForLFunctions.RHTower.DiscJump
 import GaloisForLFunctions.RHTower.RelayLedger
 import GaloisForLFunctions.RHTower.EMCarrier
 import GaloisForLFunctions.RHTower.SeamCongruence
@@ -168,6 +176,8 @@ import GaloisForLFunctions.RHTower.LegStripField
 import GaloisForLFunctions.RHTower.LegStripHarmonic
 import GaloisForLFunctions.RHTower.LegStripEquilibrium
 import GaloisForLFunctions.RHTower.LegStripSteepness
+import GaloisForLFunctions.RHTower.LegStripSteepnessHarmonic
+import GaloisForLFunctions.RHTower.LegStripTruncation
 import GaloisForLFunctions.RHTower.BohrMomentDensity
 import GaloisForLFunctions.RHTower.WeierstrassMajorant
 import GaloisForLFunctions.RHTower.FloorFailureUnconditional

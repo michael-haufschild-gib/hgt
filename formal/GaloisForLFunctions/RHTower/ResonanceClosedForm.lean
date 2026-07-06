@@ -74,6 +74,30 @@ theorem norm_archFactor_line_le (u : ℝ) :
 noncomputable def archEnvelopeLineBudget (B : ℝ) : ℝ :=
   (1 / 4 + B ^ 2) / 2 * (Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4))
 
+/-- The closed-form envelope line budget is nonnegative. -/
+theorem archEnvelopeLineBudget_nonneg (B : ℝ) :
+    0 ≤ archEnvelopeLineBudget B := by
+  dsimp [archEnvelopeLineBudget]
+  exact mul_nonneg (by positivity)
+    (mul_nonneg (Real.rpow_nonneg Real.pi_pos.le _)
+      (Real.Gamma_pos_of_pos (by norm_num)).le)
+
+/-- On nonnegative heights, the closed-form envelope line budget is monotone. -/
+theorem archEnvelopeLineBudget_mono_nonneg {B₁ B₂ : ℝ}
+    (hB₁0 : 0 ≤ B₁) (hB₁B₂ : B₁ ≤ B₂) :
+    archEnvelopeLineBudget B₁ ≤ archEnvelopeLineBudget B₂ := by
+  have hB₂0 : 0 ≤ B₂ := le_trans hB₁0 hB₁B₂
+  have hsqu : B₁ ^ 2 ≤ B₂ ^ 2 := by
+    have hmul := mul_le_mul hB₁B₂ hB₁B₂ hB₁0 hB₂0
+    simpa [pow_two] using hmul
+  have hfactor : (1 / 4 + B₁ ^ 2) / 2 ≤ (1 / 4 + B₂ ^ 2) / 2 := by
+    nlinarith
+  have hC0 : 0 ≤ Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4) :=
+    mul_nonneg (Real.rpow_nonneg Real.pi_pos.le _)
+      (Real.Gamma_pos_of_pos (by norm_num)).le
+  dsimp [archEnvelopeLineBudget]
+  exact mul_le_mul_of_nonneg_right hfactor hC0
+
 /-- Named-budget form of the critical-line envelope sup. -/
 theorem norm_archFactor_line_le_budget (u : ℝ) :
     ‖archFactor (linePt u)‖ ≤ archEnvelopeLineBudget u := by
@@ -83,24 +107,9 @@ theorem norm_archFactor_line_le_budget (u : ℝ) :
 theorem norm_archFactor_line_le_segment_budget {α β u : ℝ}
     (hα0 : 0 ≤ α) (hu : u ∈ Set.Icc α β) :
     ‖archFactor (linePt u)‖ ≤ archEnvelopeLineBudget β := by
-  have hbase := norm_archFactor_line_le u
   have hu0 : 0 ≤ u := le_trans hα0 hu.1
-  have hβ0 : 0 ≤ β := le_trans hu0 hu.2
-  have hsqu : u ^ 2 ≤ β ^ 2 := by
-    have hmul := mul_le_mul hu.2 hu.2 hu0 hβ0
-    simpa [pow_two] using hmul
-  have hfactor : (1 / 4 + u ^ 2) / 2 ≤ (1 / 4 + β ^ 2) / 2 := by
-    nlinarith
-  have hC0 : 0 ≤ Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4) :=
-    mul_nonneg (Real.rpow_nonneg Real.pi_pos.le _)
-      (Real.Gamma_pos_of_pos (by norm_num)).le
-  have hscale :
-      (1 / 4 + u ^ 2) / 2 *
-          (Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4)) ≤
-        archEnvelopeLineBudget β := by
-    dsimp [archEnvelopeLineBudget]
-    exact mul_le_mul_of_nonneg_right hfactor hC0
-  exact le_trans hbase hscale
+  exact le_trans (norm_archFactor_line_le_budget u)
+    (archEnvelopeLineBudget_mono_nonneg hu0 hu.2)
 
 /-- The envelope is conjugation-equivariant. -/
 theorem archFactor_conj (s : ℂ) :
@@ -192,5 +201,15 @@ theorem resonance_moment_le_closedFormBudget {α β : ℝ} (hα : 0 < α) (hαβ
       resonanceMomentClosedFormBudget α β := by
   simpa [resonanceMomentClosedFormBudget, archEnvelopeLineBudget] using
     resonance_moment_le_closed_form hα hαβ hm
+
+/-- The closed-form resonance moment budget is nonnegative whenever the closed resonance estimate
+is available. -/
+theorem resonanceMomentClosedFormBudget_nonneg {α β : ℝ} (hα : 0 < α) (hαβ : α ≤ β)
+    (hm : 0 < (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2) :
+    0 ≤ resonanceMomentClosedFormBudget α β := by
+  exact le_trans
+    (norm_nonneg ((∫ u in α..β, archFactor (linePt u)) +
+      ∫ u in α..β, archFactor (1 - linePt u)))
+    (resonance_moment_le_closedFormBudget hα hαβ hm)
 
 end RHTower

@@ -233,6 +233,74 @@ theorem abs_integral_re_completedGN_line_le_closedFirstMomentBudget
       exact norm_archFactorDeriv_line_le_segmentBudget hα hu)
     (resonance_moment_le_closedFormBudget hα hαβ hwind)
 
+/-- Relaxed closed first-moment bound: once the closed scalar inputs are available, any larger
+length, envelope, derivative, and resonance scalars also bound the completed carrier's first
+moment. -/
+theorem abs_integral_re_completedGN_line_le_closedFirstMomentBudget_mono
+    (N : ℕ) (hN : 1 ≤ N) {α β L M₀ M₁ Cmain : ℝ}
+    (hα : 0 < α) (hαβ : α ≤ β)
+    (hwind : 0 < (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2)
+    (hL : β - α ≤ L)
+    (hM₀ : archEnvelopeLineBudget β ≤ M₀)
+    (hM₁ : archDerivSegmentBudget α β ≤ M₁)
+    (hCmain : resonanceMomentClosedFormBudget α β ≤ Cmain) :
+    |∫ u in α..β, (completedGN N (linePt u)).re| ≤
+      completedGNFirstMomentBudget N L M₀ M₁ Cmain := by
+  exact abs_integral_re_completedGN_line_le_firstMomentBudget_of_sups_mono
+    hN hαβ
+    (fun u hu => norm_archFactor_line_le_segment_budget hα.le hu)
+    (fun u hu => norm_archFactor_reflected_line_le_segment_budget hα.le hu)
+    (fun u hu => norm_archFactorDeriv_line_le_segmentBudget hα hu)
+    (fun u hu => by
+      rw [norm_archFactorDeriv_reflected_line_eq u]
+      exact norm_archFactorDeriv_line_le_segmentBudget hα hu)
+    (resonance_moment_le_closedFormBudget hα hαβ hwind)
+    hL hM₀ hM₁ hCmain
+
+/-- Closed first-moment budgets are nonnegative on every segment where the closed bound is valid.
+This records the scalar-budget invariant needed when comparing line-sup prefactors. -/
+theorem completedGNFirstMomentBudget_closed_nonneg
+    (N : ℕ) {α β : ℝ}
+    (hα : 0 < α) (hαβ : α ≤ β)
+    (hwind : 0 < (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2) :
+    0 ≤ completedGNFirstMomentBudget N (β - α) (archEnvelopeLineBudget β)
+      (archDerivSegmentBudget α β) (resonanceMomentClosedFormBudget α β) := by
+  exact completedGNFirstMomentBudget_nonneg N (by linarith)
+    (archEnvelopeLineBudget_nonneg β)
+    (archDerivSegmentBudget_nonneg hα hαβ)
+    (resonanceMomentClosedFormBudget_nonneg hα hαβ hwind)
+
+/-- Local sign bracket from relaxed closed first-moment budgets.  The closed analytic estimates
+prove the sharp scalar inputs, and monotonicity allows the sign face to consume any coarser scalar
+budget supplied by the certificate. -/
+theorem exists_completedGN_sign_bracket_of_closedFirstMomentBudget_mono
+    (N : ℕ) (hN : 1 ≤ N) {α β S L M₀ M₁ Cmain : ℝ}
+    (hα : 0 < α) (hαβ : α ≤ β)
+    (hwind : 0 < (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2)
+    (hS : 0 < S)
+    (hsupply : S ≤ ∫ u in α..β, ((completedGN N (linePt u)).re) ^ 2)
+    (hL : β - α ≤ L)
+    (hM₀ : archEnvelopeLineBudget β ≤ M₀)
+    (hM₁ : archDerivSegmentBudget α β ≤ M₁)
+    (hCmain : resonanceMomentClosedFormBudget α β ≤ Cmain)
+    (hbudget : completedGNLineSupBudget N β *
+        completedGNFirstMomentBudget N L M₀ M₁ Cmain < S) :
+    ∃ t₁ t₂ : ℝ, t₁ ∈ Set.Icc α β ∧ t₂ ∈ Set.Icc α β ∧ t₁ ≤ t₂ ∧
+      (completedGN N (linePt t₁)).re * (completedGN N (linePt t₂)).re ≤ 0 := by
+  have hsup : ∀ u ∈ Set.Icc α β,
+      |(completedGN N (linePt u)).re| ≤ completedGNLineSupBudget N β := by
+    intro u hu
+    exact abs_re_completedGN_line_le_segment_budget N hα.le hu
+  have hfirst :=
+    abs_integral_re_completedGN_line_le_closedFirstMomentBudget_mono
+      N hN hα hαβ hwind hL hM₀ hM₁ hCmain
+  have hline0 : 0 ≤ completedGNLineSupBudget N β :=
+    completedGNLineSupBudget_nonneg N β
+  have hfm : completedGNLineSupBudget N β *
+        |∫ u in α..β, (completedGN N (linePt u)).re| < S :=
+    lt_of_le_of_lt (mul_le_mul_of_nonneg_left hfirst hline0) hbudget
+  exact exists_completedGN_sign_bracket_of_moments N hαβ hS hsupply hsup hfm
+
 /-- **Local sign bracket from fully closed first-moment budgets.**  The first-moment side is now
 entirely scalar: closed line sup, closed envelope sup, closed derivative-segment budget, and closed
 resonance budget.  The only remaining analytic input on the segment is the completed-carrier
@@ -248,9 +316,8 @@ theorem exists_completedGN_sign_bracket_of_closedFirstMomentBudget
           (archDerivSegmentBudget α β) (resonanceMomentClosedFormBudget α β) < S) :
     ∃ t₁ t₂ : ℝ, t₁ ∈ Set.Icc α β ∧ t₂ ∈ Set.Icc α β ∧ t₁ ≤ t₂ ∧
       (completedGN N (linePt t₁)).re * (completedGN N (linePt t₂)).re ≤ 0 := by
-  exact exists_completedGN_sign_bracket_of_resonanceBudget_oneDerivSup
-    N hN hα hαβ hwind hS hsupply
-    (fun u hu => norm_archFactorDeriv_line_le_segmentBudget hα hu) hbudget
+  exact exists_completedGN_sign_bracket_of_closedFirstMomentBudget_mono
+    N hN hα hαβ hwind hS hsupply le_rfl le_rfl le_rfl le_rfl hbudget
 
 end RHTower
 
@@ -328,18 +395,14 @@ end RHTower
 
 namespace RHTower
 
-/-- **Riemann Hypothesis from a decoupled integral ledger.**  The anchor window `[T, T+U]` and the
-sign-bracket scale `rz` are independent: the second-moment/orthogonal-energy budget selects an
-anchor height `τ` anywhere in the window, and the sign bracket of the real-valued completed
-carrier is produced *locally* in `[τ − rz, τ + rz]` from the per-height moment triple
-(second-moment floor `S_b`, expanded-segment sup `M_line`, first-moment cancellation).  This
-removes the window-length coupling `U ≤ 2·rz` of the fixed-bracket endpoint: the mean-value
-supply of a length-`N` carrier needs windows of length comparable to `N`, while sign brackets and
-pinning disks live at bounded scale, and here both demands coexist in one certificate. -/
-theorem riemannHypothesis_of_decoupled_integral_ledger_endpoint_target
+/-- **Decoupled integral ledger with center-dependent short moment and line-sup data.**  The
+long-window anchor chooses one height `τ`; the sign bracket uses only the local second-moment
+floor and local line sup at that selected height.  Thus neither short sign-face scalar needs to be
+uniform across the whole anchor window. -/
+theorem riemannHypothesis_of_decoupled_integral_ledger_variable_local_moment_endpoint_target
     (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
       ∃ (N M : ℕ) (δ : ℝ)
-        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ S_b M_line : ℝ),
+        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ : ℝ) (S_b M_line : ℝ → ℝ),
         1 ≤ M ∧
         0 < U ∧
         0 < rz ∧
@@ -349,13 +412,14 @@ theorem riemannHypothesis_of_decoupled_integral_ledger_endpoint_target
         (ρ.re - 1 / 2) ^ 2 +
             (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
         0 < T - rz ∧
-        0 < S_b ∧
+        (∀ τ ∈ Set.Icc T (T + U), 0 < S_b τ) ∧
         (∀ τ ∈ Set.Icc T (T + U),
-          S_b ≤ ∫ u in (τ - rz)..(τ + rz), ((completedGN N (linePt u)).re) ^ 2) ∧
-        (∀ u ∈ Set.Icc (T - rz) (T + U + rz),
-          |(completedGN N (linePt u)).re| ≤ M_line) ∧
+          S_b τ ≤ ∫ u in (τ - rz)..(τ + rz), ((completedGN N (linePt u)).re) ^ 2) ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ u ∈ Set.Icc (τ - rz) (τ + rz),
+          |(completedGN N (linePt u)).re| ≤ M_line τ) ∧
         (∀ τ ∈ Set.Icc T (T + U),
-          M_line * |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| < S_b) ∧
+          M_line τ * |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| <
+            S_b τ) ∧
         0 < m_J ∧
         m_J ^ 2 * U +
           (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
@@ -431,8 +495,8 @@ theorem riemannHypothesis_of_decoupled_integral_ledger_endpoint_target
     exists_gN_line_anchor_in_window_of_secondMoment_orthogonal_energy N hU hmJ0.le henergy
   have hαβ : τ - rz ≤ τ + rz := by linarith
   obtain ⟨t₁, t₂, ht₁, ht₂, h12, hsign⟩ :=
-    exists_completedGN_sign_bracket_of_moments N hαβ hSb (hsupply τ hτ)
-      (fun u hu => hMline u ⟨by linarith [hτ.1, hu.1], by linarith [hτ.2, hu.2]⟩)
+    exists_completedGN_sign_bracket_of_moments N hαβ (hSb τ hτ) (hsupply τ hτ)
+      (hMline τ hτ)
       (hfm τ hτ)
   have ht₁0 : 0 < t₁ := by linarith [ht₁.1, hτ.1]
   have hMG_ball := completedGN_norm_le_line_closedBall_of_sphere hRJ0 hRJ12 (hMG τ hτ)
@@ -473,6 +537,444 @@ theorem riemannHypothesis_of_decoupled_integral_ledger_endpoint_target
     (fun z hz => hbound τ hτ z hz),
     hjensen_floor, hengine, ha₀_ball, ha₀0, hMG_ball, hcross,
     hE_ball, hclose_ball, hfl⟩
+
+/-- **Decoupled integral ledger with center-dependent short moment floors.**  The line sup remains
+uniform on the expanded anchor window, but the short second-moment floor is local to the selected
+height.  This is the constant-line-sup specialization of the local-moment ledger. -/
+theorem riemannHypothesis_of_decoupled_integral_ledger_variable_moment_endpoint_target
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (δ : ℝ)
+        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ : ℝ) (S_b : ℝ → ℝ) (M_line : ℝ),
+        1 ≤ M ∧
+        0 < U ∧
+        0 < rz ∧
+        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+        rz < R ∧
+        (ρ.re - 1 / 2) ^ 2 +
+            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+        0 < T - rz ∧
+        (∀ τ ∈ Set.Icc T (T + U), 0 < S_b τ) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          S_b τ ≤ ∫ u in (τ - rz)..(τ + rz), ((completedGN N (linePt u)).re) ^ 2) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz),
+          |(completedGN N (linePt u)).re| ≤ M_line) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          M_line * |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| < S_b τ) ∧
+        0 < m_J ∧
+        m_J ^ 2 * U +
+          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                  / |Real.log n - Real.log m|) ∧
+        1 ≤ M_J ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+        m_J / rz < M_J / (rJ - rz) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+        0 < a₀ ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖completedGN N z‖ ≤ M_G) ∧
+        max ((6 * R * M_G) / (P ^ 2 * a₀))
+            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+          (m_J / rz) *
+            ((m_J / rz) / (M_J / (rJ - rz))) ^
+              (2 * (R + rz) / (rJ - (R + rz))) ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖emCarrier M z - gN N z‖ ≤ δ)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_decoupled_integral_ledger_variable_local_moment_endpoint_target
+  intro ρ hρ hzero
+  obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b, M_line,
+    hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hTrz, hSb, hsupply, hMline, hfm,
+    hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine, ha₀, ha₀0, hMG,
+    hbudget_outer, hclose⟩ := hwin ρ hρ hzero
+  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    (fun _ : ℝ => M_line), hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR,
+    hRJ12, hrzR, hρquad, hTrz, hSb, hsupply,
+    (fun τ hτ u hu => hMline u ⟨by linarith [hτ.1, hu.1], by linarith [hτ.2, hu.2]⟩),
+    hfm, hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine, ha₀, ha₀0, hMG,
+    hbudget_outer, hclose⟩
+
+/-- **Variable-floor decoupled ledger with local closed-form line sup.**  The completed-carrier
+line sup is evaluated at the right endpoint of the selected short segment, not at the far endpoint
+of the expanded anchor window. -/
+theorem riemannHypothesis_of_decoupled_integral_ledger_variable_local_line_sup_endpoint_target
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (δ : ℝ)
+        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ : ℝ) (S_b : ℝ → ℝ),
+        1 ≤ M ∧
+        0 < U ∧
+        0 < rz ∧
+        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+        rz < R ∧
+        (ρ.re - 1 / 2) ^ 2 +
+            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+        0 < T - rz ∧
+        (∀ τ ∈ Set.Icc T (T + U), 0 < S_b τ) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          S_b τ ≤ ∫ u in (τ - rz)..(τ + rz), ((completedGN N (linePt u)).re) ^ 2) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          completedGNLineSupBudget N (τ + rz) *
+              |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| < S_b τ) ∧
+        0 < m_J ∧
+        m_J ^ 2 * U +
+          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                  / |Real.log n - Real.log m|) ∧
+        1 ≤ M_J ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+        m_J / rz < M_J / (rJ - rz) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+        0 < a₀ ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖completedGN N z‖ ≤ M_G) ∧
+        max ((6 * R * M_G) / (P ^ 2 * a₀))
+            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+          (m_J / rz) *
+            ((m_J / rz) / (M_J / (rJ - rz))) ^
+              (2 * (R + rz) / (rJ - (R + rz))) ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖emCarrier M z - gN N z‖ ≤ δ)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_decoupled_integral_ledger_variable_local_moment_endpoint_target
+  intro ρ hρ hzero
+  obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hTrz, hSb, hsupply, hfm, hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine,
+    ha₀, ha₀0, hMG, hbudget_outer, hclose⟩ := hwin ρ hρ hzero
+  have hMline : ∀ τ ∈ Set.Icc T (T + U), ∀ u ∈ Set.Icc (τ - rz) (τ + rz),
+      |(completedGN N (linePt u)).re| ≤ completedGNLineSupBudget N (τ + rz) := by
+    intro τ hτ u hu
+    have hα0 : 0 ≤ τ - rz := by linarith [hTrz, hτ.1]
+    exact abs_re_completedGN_line_le_segment_budget N hα0 hu
+  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    (fun τ => completedGNLineSupBudget N (τ + rz)), hM, hU, hrz0, h0, hrR, hRP,
+    hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad, hTrz, hSb, hsupply, hMline, hfm,
+    hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine, ha₀, ha₀0, hMG,
+    hbudget_outer, hclose⟩
+
+/-- **Variable-floor decoupled ledger with local closed first-moment budget.**  Both scalar
+budgets in the sign face are attached to the selected short segment `[τ-rz, τ+rz]`. -/
+theorem riemannHypothesis_of_decoupled_integral_ledger_variable_local_closedFirstMoment_endpoint_target
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (δ : ℝ)
+        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ : ℝ) (S_b : ℝ → ℝ),
+        1 ≤ N ∧
+        1 ≤ M ∧
+        0 < U ∧
+        0 < rz ∧
+        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+        rz < R ∧
+        (ρ.re - 1 / 2) ^ 2 +
+            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+        0 < T - rz ∧
+        (∀ τ ∈ Set.Icc T (T + U), 0 < S_b τ) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          S_b τ ≤ ∫ u in (τ - rz)..(τ + rz), ((completedGN N (linePt u)).re) ^ 2) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          0 < (Real.log ((τ - rz) / (2 * Real.pi)) -
+            (4 / (τ - rz) ^ 2 + Real.pi / (τ - rz))) / 2) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          completedGNLineSupBudget N (τ + rz) *
+              completedGNFirstMomentBudget N (2 * rz)
+                (archEnvelopeLineBudget (τ + rz))
+                (archDerivSegmentBudget (τ - rz) (τ + rz))
+                (resonanceMomentClosedFormBudget (τ - rz) (τ + rz)) < S_b τ) ∧
+        0 < m_J ∧
+        m_J ^ 2 * U +
+          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                  / |Real.log n - Real.log m|) ∧
+        1 ≤ M_J ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+        m_J / rz < M_J / (rJ - rz) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+        0 < a₀ ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖completedGN N z‖ ≤ M_G) ∧
+        max ((6 * R * M_G) / (P ^ 2 * a₀))
+            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+          (m_J / rz) *
+            ((m_J / rz) / (M_J / (rJ - rz))) ^
+              (2 * (R + rz) / (rJ - (R + rz))) ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖emCarrier M z - gN N z‖ ≤ δ)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_decoupled_integral_ledger_variable_local_line_sup_endpoint_target
+  intro ρ hρ hzero
+  obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    hN, hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hTrz, hSb, hsupply, hwind, hfirstBudget, hmJ0, henergy, hMJ, hbound,
+    hjensen_floor, hengine, ha₀, ha₀0, hMG, hbudget_outer, hclose⟩ := hwin ρ hρ hzero
+  have hfm : ∀ τ ∈ Set.Icc T (T + U),
+      completedGNLineSupBudget N (τ + rz) *
+        |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| < S_b τ := by
+    intro τ hτ
+    have hα : 0 < τ - rz := by linarith [hTrz, hτ.1]
+    have hαβ : τ - rz ≤ τ + rz := by linarith [hrz0]
+    have hlen : (τ + rz) - (τ - rz) = 2 * rz := by ring
+    have hfirst' : |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| ≤
+        completedGNFirstMomentBudget N (2 * rz)
+          (archEnvelopeLineBudget (τ + rz))
+          (archDerivSegmentBudget (τ - rz) (τ + rz))
+          (resonanceMomentClosedFormBudget (τ - rz) (τ + rz)) := by
+      simpa [hlen] using
+        abs_integral_re_completedGN_line_le_closedFirstMomentBudget
+          N hN hα hαβ (hwind τ hτ)
+    have hline0 : 0 ≤ completedGNLineSupBudget N (τ + rz) :=
+      completedGNLineSupBudget_nonneg N (τ + rz)
+    exact lt_of_le_of_lt (mul_le_mul_of_nonneg_left hfirst' hline0) (hfirstBudget τ hτ)
+  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hTrz, hSb, hsupply, hfm, hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine,
+    ha₀, ha₀0, hMG, hbudget_outer, hclose⟩
+
+/-- **Riemann Hypothesis from a decoupled integral ledger.**  The anchor window `[T, T+U]` and the
+sign-bracket scale `rz` are independent: the second-moment/orthogonal-energy budget selects an
+anchor height `τ` anywhere in the window, and the sign bracket of the real-valued completed
+carrier is produced *locally* in `[τ − rz, τ + rz]` from the per-height moment triple
+(second-moment floor `S_b`, expanded-segment sup `M_line`, first-moment cancellation).  This
+constant-floor endpoint is the uniform specialization of the center-dependent ledger. -/
+theorem riemannHypothesis_of_decoupled_integral_ledger_endpoint_target
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (δ : ℝ)
+        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ S_b M_line : ℝ),
+        1 ≤ M ∧
+        0 < U ∧
+        0 < rz ∧
+        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+        rz < R ∧
+        (ρ.re - 1 / 2) ^ 2 +
+            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+        0 < T - rz ∧
+        0 < S_b ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          S_b ≤ ∫ u in (τ - rz)..(τ + rz), ((completedGN N (linePt u)).re) ^ 2) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz),
+          |(completedGN N (linePt u)).re| ≤ M_line) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          M_line * |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| < S_b) ∧
+        0 < m_J ∧
+        m_J ^ 2 * U +
+          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                  / |Real.log n - Real.log m|) ∧
+        1 ≤ M_J ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+        m_J / rz < M_J / (rJ - rz) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+        0 < a₀ ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖completedGN N z‖ ≤ M_G) ∧
+        max ((6 * R * M_G) / (P ^ 2 * a₀))
+            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+          (m_J / rz) *
+            ((m_J / rz) / (M_J / (rJ - rz))) ^
+              (2 * (R + rz) / (rJ - (R + rz))) ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖emCarrier M z - gN N z‖ ≤ δ)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_decoupled_integral_ledger_variable_moment_endpoint_target
+  intro ρ hρ hzero
+  obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b, M_line,
+    hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hTrz, hSb, hsupply, hMline, hfm, hmJ0, henergy, hMJ, hbound, hjensen_floor,
+    hengine, ha₀, ha₀0, hMG, hbudget_outer, hclose⟩ := hwin ρ hρ hzero
+  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀,
+    (fun _ : ℝ => S_b), M_line, hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ,
+    hrJR, hRJ12, hrzR, hρquad, hTrz, (fun _ _ => hSb), hsupply, hMline,
+    hfm, hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine, ha₀, ha₀0, hMG,
+    hbudget_outer, hclose⟩
+
+/-- **Variable-floor decoupled ledger with closed-form line sup.**  This variant removes the
+`M_line` witness while keeping the short second-moment floor local to the selected center. -/
+theorem riemannHypothesis_of_decoupled_integral_ledger_variable_explicit_line_sup_endpoint_target
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (δ : ℝ)
+        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ : ℝ) (S_b : ℝ → ℝ),
+        1 ≤ M ∧
+        0 < U ∧
+        0 < rz ∧
+        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+        rz < R ∧
+        (ρ.re - 1 / 2) ^ 2 +
+            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+        0 < T - rz ∧
+        (∀ τ ∈ Set.Icc T (T + U), 0 < S_b τ) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          S_b τ ≤ ∫ u in (τ - rz)..(τ + rz), ((completedGN N (linePt u)).re) ^ 2) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          completedGNLineSupBudget N (T + U + rz) *
+              |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| < S_b τ) ∧
+        0 < m_J ∧
+        m_J ^ 2 * U +
+          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                  / |Real.log n - Real.log m|) ∧
+        1 ≤ M_J ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+        m_J / rz < M_J / (rJ - rz) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+        0 < a₀ ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖completedGN N z‖ ≤ M_G) ∧
+        max ((6 * R * M_G) / (P ^ 2 * a₀))
+            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+          (m_J / rz) *
+            ((m_J / rz) / (M_J / (rJ - rz))) ^
+              (2 * (R + rz) / (rJ - (R + rz))) ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖emCarrier M z - gN N z‖ ≤ δ)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_decoupled_integral_ledger_variable_local_line_sup_endpoint_target
+  intro ρ hρ hzero
+  obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hTrz, hSb, hsupply, hfm, hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine,
+    ha₀, ha₀0, hMG, hbudget_outer, hclose⟩ := hwin ρ hρ hzero
+  have hfm_local : ∀ τ ∈ Set.Icc T (T + U),
+      completedGNLineSupBudget N (τ + rz) *
+        |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| < S_b τ := by
+    intro τ hτ
+    have hbudget_le :
+        completedGNLineSupBudget N (τ + rz) ≤ completedGNLineSupBudget N (T + U + rz) := by
+      exact completedGNLineSupBudget_mono_nonneg N (by linarith [hTrz, hτ.1, hrz0])
+        (by linarith [hτ.2])
+    exact lt_of_le_of_lt
+      (mul_le_mul_of_nonneg_right hbudget_le (abs_nonneg _)) (hfm τ hτ)
+  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hTrz, hSb, hsupply, hfm_local, hmJ0, henergy, hMJ, hbound, hjensen_floor,
+    hengine, ha₀, ha₀0, hMG, hbudget_outer, hclose⟩
+
+/-- **Variable-floor decoupled ledger with closed first-moment budget.**  The sign face is local
+second-moment supply plus a scalar first-moment inequality at each possible center. -/
+theorem riemannHypothesis_of_decoupled_integral_ledger_variable_closedFirstMoment_endpoint_target
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (δ : ℝ)
+        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ : ℝ) (S_b : ℝ → ℝ),
+        1 ≤ N ∧
+        1 ≤ M ∧
+        0 < U ∧
+        0 < rz ∧
+        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+        rz < R ∧
+        (ρ.re - 1 / 2) ^ 2 +
+            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+        0 < T - rz ∧
+        (∀ τ ∈ Set.Icc T (T + U), 0 < S_b τ) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          S_b τ ≤ ∫ u in (τ - rz)..(τ + rz), ((completedGN N (linePt u)).re) ^ 2) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          0 < (Real.log ((τ - rz) / (2 * Real.pi)) -
+            (4 / (τ - rz) ^ 2 + Real.pi / (τ - rz))) / 2) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          completedGNLineSupBudget N (T + U + rz) *
+              completedGNFirstMomentBudget N (2 * rz)
+                (archEnvelopeLineBudget (τ + rz))
+                (archDerivSegmentBudget (τ - rz) (τ + rz))
+                (resonanceMomentClosedFormBudget (τ - rz) (τ + rz)) < S_b τ) ∧
+        0 < m_J ∧
+        m_J ^ 2 * U +
+          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                  / |Real.log n - Real.log m|) ∧
+        1 ≤ M_J ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+        m_J / rz < M_J / (rJ - rz) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+        0 < a₀ ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖completedGN N z‖ ≤ M_G) ∧
+        max ((6 * R * M_G) / (P ^ 2 * a₀))
+            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+          (m_J / rz) *
+            ((m_J / rz) / (M_J / (rJ - rz))) ^
+              (2 * (R + rz) / (rJ - (R + rz))) ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖emCarrier M z - gN N z‖ ≤ δ)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_decoupled_integral_ledger_variable_local_closedFirstMoment_endpoint_target
+  intro ρ hρ hzero
+  obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    hN, hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hTrz, hSb, hsupply, hwind, hfirstBudget, hmJ0, henergy, hMJ, hbound,
+    hjensen_floor, hengine, ha₀, ha₀0, hMG, hbudget_outer, hclose⟩ := hwin ρ hρ hzero
+  have hfirstBudget_local : ∀ τ ∈ Set.Icc T (T + U),
+      completedGNLineSupBudget N (τ + rz) *
+          completedGNFirstMomentBudget N (2 * rz)
+            (archEnvelopeLineBudget (τ + rz))
+            (archDerivSegmentBudget (τ - rz) (τ + rz))
+            (resonanceMomentClosedFormBudget (τ - rz) (τ + rz)) < S_b τ := by
+    intro τ hτ
+    have hα : 0 < τ - rz := by linarith [hTrz, hτ.1]
+    have hαβ : τ - rz ≤ τ + rz := by linarith [hrz0]
+    have hlen : (τ + rz) - (τ - rz) = 2 * rz := by ring
+    have hfirst_nonneg :
+        0 ≤ completedGNFirstMomentBudget N (2 * rz)
+          (archEnvelopeLineBudget (τ + rz))
+          (archDerivSegmentBudget (τ - rz) (τ + rz))
+          (resonanceMomentClosedFormBudget (τ - rz) (τ + rz)) :=
+      by
+        simpa [hlen] using
+          completedGNFirstMomentBudget_closed_nonneg N hα hαβ (hwind τ hτ)
+    have hbudget_le :
+        completedGNLineSupBudget N (τ + rz) ≤ completedGNLineSupBudget N (T + U + rz) := by
+      exact completedGNLineSupBudget_mono_nonneg N (by linarith [hTrz, hτ.1, hrz0])
+        (by linarith [hτ.2])
+    exact lt_of_le_of_lt
+      (mul_le_mul_of_nonneg_right hbudget_le hfirst_nonneg) (hfirstBudget τ hτ)
+  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    hN, hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hTrz, hSb, hsupply, hwind, hfirstBudget_local, hmJ0, henergy, hMJ, hbound,
+    hjensen_floor, hengine, ha₀, ha₀0, hMG, hbudget_outer, hclose⟩
 
 /-- **Decoupled integral ledger with closed-form line sup.**  This is the decoupled endpoint with
 the `M_line` witness removed: on the expanded positive segment `[T − rz, T + U + rz]`,
@@ -525,21 +1027,16 @@ theorem riemannHypothesis_of_decoupled_integral_ledger_explicit_line_sup_endpoin
           sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
           ‖emCarrier M z - gN N z‖ ≤ δ)) :
     RiemannHypothesis := by
-  apply riemannHypothesis_of_decoupled_integral_ledger_endpoint_target
+  apply riemannHypothesis_of_decoupled_integral_ledger_variable_explicit_line_sup_endpoint_target
   intro ρ hρ hzero
   obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
     hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
     hTrz, hSb, hsupply, hfm, hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine,
     ha₀, ha₀0, hMG, hbudget_outer, hclose⟩ := hwin ρ hρ hzero
-  have hMline : ∀ u ∈ Set.Icc (T - rz) (T + U + rz),
-      |(completedGN N (linePt u)).re| ≤ completedGNLineSupBudget N (T + U + rz) := by
-    intro u hu
-    exact abs_re_completedGN_line_le_segment_budget N hTrz.le hu
-  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
-    completedGNLineSupBudget N (T + U + rz), hM, hU, hrz0, h0, hrR, hRP, hPrz,
-    hRrzJ, hrJR, hRJ12, hrzR, hρquad, hTrz, hSb, hsupply, hMline, hfm, hmJ0,
-    henergy, hMJ, hbound, hjensen_floor, hengine, ha₀, ha₀0, hMG, hbudget_outer,
-    hclose⟩
+  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀,
+    (fun _ : ℝ => S_b), hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR,
+    hRJ12, hrzR, hρquad, hTrz, (fun _ _ => hSb), hsupply, hfm, hmJ0, henergy,
+    hMJ, hbound, hjensen_floor, hengine, ha₀, ha₀0, hMG, hbudget_outer, hclose⟩
 
 /-- **Decoupled integral ledger with closed first-moment budget.**  The sign face is now local
 second-moment supply plus a fully scalar first-moment inequality.  The endpoint derives the old
@@ -566,8 +1063,8 @@ theorem riemannHypothesis_of_decoupled_integral_ledger_closedFirstMoment_endpoin
           0 < (Real.log ((τ - rz) / (2 * Real.pi)) -
             (4 / (τ - rz) ^ 2 + Real.pi / (τ - rz))) / 2) ∧
         (∀ τ ∈ Set.Icc T (T + U),
-          completedGNLineSupBudget N (T + U + rz) *
-              completedGNFirstMomentBudget N ((τ + rz) - (τ - rz))
+          completedGNLineSupBudget N (τ + rz) *
+              completedGNFirstMomentBudget N (2 * rz)
                 (archEnvelopeLineBudget (τ + rz))
                 (archDerivSegmentBudget (τ - rz) (τ + rz))
                 (resonanceMomentClosedFormBudget (τ - rz) (τ + rz)) < S_b) ∧
@@ -598,27 +1095,16 @@ theorem riemannHypothesis_of_decoupled_integral_ledger_closedFirstMoment_endpoin
           sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
           ‖emCarrier M z - gN N z‖ ≤ δ)) :
     RiemannHypothesis := by
-  apply riemannHypothesis_of_decoupled_integral_ledger_explicit_line_sup_endpoint_target
+  apply riemannHypothesis_of_decoupled_integral_ledger_variable_local_closedFirstMoment_endpoint_target
   intro ρ hρ hzero
   obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
     hN, hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
     hTrz, hSb, hsupply, hwind, hfirstBudget, hmJ0, henergy, hMJ, hbound,
     hjensen_floor, hengine, ha₀, ha₀0, hMG, hbudget_outer, hclose⟩ := hwin ρ hρ hzero
-  have hfm : ∀ τ ∈ Set.Icc T (T + U),
-      completedGNLineSupBudget N (T + U + rz) *
-        |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| < S_b := by
-    intro τ hτ
-    have hα : 0 < τ - rz := by linarith [hTrz, hτ.1]
-    have hαβ : τ - rz ≤ τ + rz := by linarith [hrz0]
-    have hfirst :=
-      abs_integral_re_completedGN_line_le_closedFirstMomentBudget
-        N hN hα hαβ (hwind τ hτ)
-    have hline0 : 0 ≤ completedGNLineSupBudget N (T + U + rz) :=
-      completedGNLineSupBudget_nonneg N (T + U + rz)
-    exact lt_of_le_of_lt (mul_le_mul_of_nonneg_left hfirst hline0) (hfirstBudget τ hτ)
-  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
-    hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
-    hTrz, hSb, hsupply, hfm, hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine,
-    ha₀, ha₀0, hMG, hbudget_outer, hclose⟩
+  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀,
+    (fun _ : ℝ => S_b), hN, hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR,
+    hRJ12, hrzR, hρquad, hTrz, (fun _ _ => hSb), hsupply, hwind, hfirstBudget,
+    hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine, ha₀, ha₀0, hMG,
+    hbudget_outer, hclose⟩
 
 end RHTower
