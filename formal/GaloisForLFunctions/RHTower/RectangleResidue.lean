@@ -372,8 +372,9 @@ theorem rectIntegral_finsetSum {κ : Type*} (t : Finset κ) (g : κ → ℂ → 
     (hl : ∀ i ∈ t, IntervalIntegrable (fun y : ℝ => g i ((z₁.re : ℂ) + y * I)) MeasureTheory.volume z₁.im z₂.im) :
     rectIntegral (fun z => ∑ i ∈ t, g i z) z₁ z₂ = ∑ i ∈ t, rectIntegral (g i) z₁ z₂ := by
   unfold rectIntegral
-  rw [integral_finsetSum t hb, integral_finsetSum t ht, integral_finsetSum t hr,
-    integral_finsetSum t hl, Finset.smul_sum, Finset.smul_sum,
+  rw [integral_finsetSum (h := hb), integral_finsetSum (h := ht),
+    integral_finsetSum (h := hr), integral_finsetSum (h := hl),
+    Finset.smul_sum, Finset.smul_sum,
     ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
 
 /-- **The rectangle residue theorem (argument principle).**  If `h` is analytic and nonvanishing on
@@ -392,19 +393,35 @@ theorem rectIntegral_logDeriv_multi_zero {κ : Type*} (t : Finset κ) (ρ : κ �
   have hlogh : AnalyticOnNhd ℂ (logDeriv h) U := by
     have : logDeriv h = fun z => deriv h z / h z := rfl
     rw [this]; exact fun z hz => (hh.deriv z hz).div (hh z hz) (hh0 z hz)
-  -- edge membership in `U` and avoidance of every `ρ i`
-  have hedgeU : ∀ z, z.re ∈ uIcc z₁.re z₂.re → z.im ∈ uIcc z₁.im z₂.im → z ∈ U :=
-    fun z h1 h2 => hsub (Complex.mem_reProdIm.mpr ⟨h1, h2⟩)
-  have hne : ∀ z, (z.re ∈ uIcc z₁.re z₂.re) → (z.im ∈ uIcc z₁.im z₂.im) →
-      z.re = z₁.re ∨ z.re = z₂.re ∨ z.im = z₁.im ∨ z.im = z₂.im → ∀ i ∈ t, z ≠ ρ i := by
-    intro z _ _ hbd i hi he
-    obtain ⟨hr1, hr2, hi1, hi2⟩ := hin i hi
-    rcases hbd with h | h | h | h <;>
-      · rw [he] at h; simp only at h; linarith
-  -- the logarithmic derivative decomposes on the edges
-  have hid : ∀ z ∈ {z : ℂ | (z ∈ U) ∧ (∀ i ∈ t, z ≠ ρ i)},
-      logDeriv (fun z => (∏ i ∈ t, (z - ρ i) ^ m i) * h z) z =
-        (∑ i ∈ t, (m i : ℂ) * (z - ρ i)⁻¹) + logDeriv h z := by
+  set S : Set ℂ := {z : ℂ | z ∈ U ∧ ∀ i ∈ t, z ≠ ρ i} with hS
+  -- the four edges lie in `S`
+  have hbot : ∀ x ∈ uIcc z₁.re z₂.re, ((x : ℂ) + z₁.im * I) ∈ S := by
+    intro x hx
+    refine ⟨hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact hx, by rw [edgePt_im]; exact left_mem_uIcc⟩), fun i hi he => ?_⟩
+    obtain ⟨_, _, hi1, _⟩ := hin i hi
+    have := congrArg Complex.im he; rw [edgePt_im] at this; linarith
+  have htop : ∀ x ∈ uIcc z₁.re z₂.re, ((x : ℂ) + z₂.im * I) ∈ S := by
+    intro x hx
+    refine ⟨hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact hx, by rw [edgePt_im]; exact right_mem_uIcc⟩), fun i hi he => ?_⟩
+    obtain ⟨_, _, _, hi2⟩ := hin i hi
+    have := congrArg Complex.im he; rw [edgePt_im] at this; linarith
+  have hrig : ∀ y ∈ uIcc z₁.im z₂.im, ((z₂.re : ℂ) + y * I) ∈ S := by
+    intro y hy
+    refine ⟨hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact right_mem_uIcc, by rw [edgePt_im]; exact hy⟩), fun i hi he => ?_⟩
+    obtain ⟨_, hi2, _, _⟩ := hin i hi
+    have := congrArg Complex.re he; rw [edgePt_re] at this; linarith
+  have hlef : ∀ y ∈ uIcc z₁.im z₂.im, ((z₁.re : ℂ) + y * I) ∈ S := by
+    intro y hy
+    refine ⟨hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact left_mem_uIcc, by rw [edgePt_im]; exact hy⟩), fun i hi he => ?_⟩
+    obtain ⟨hi1, _, _, _⟩ := hin i hi
+    have := congrArg Complex.re he; rw [edgePt_re] at this; linarith
+  -- the logarithmic derivative decomposes on `S`
+  have hid : ∀ z ∈ S, logDeriv (fun z => (∏ i ∈ t, (z - ρ i) ^ m i) * h z) z =
+      (∑ i ∈ t, (m i : ℂ) * (z - ρ i)⁻¹) + logDeriv h z := by
     rintro z ⟨hzU, hzρ⟩
     have hpne : ∀ i ∈ t, (fun w => (w - ρ i) ^ m i) z ≠ 0 :=
       fun i hi => pow_ne_zero _ (sub_ne_zero.mpr (hzρ i hi))
@@ -417,14 +434,44 @@ theorem rectIntegral_logDeriv_multi_zero {κ : Type*} (t : Finset κ) (ρ : κ �
       show logDeriv (fun w => w - ρ i) z = (z - ρ i)⁻¹ from by
         rw [logDeriv_apply, show deriv (fun w => w - ρ i) z = 1 from
           ((hasDerivAt_id z).sub_const (ρ i)).deriv, one_div]]
-  -- integrability of the kernels and the cofactor's logarithmic derivative on each edge
-  have contA : ∀ {c d : ℝ} (pt : ℝ → ℂ) (hpt : Continuous pt),
-      (∀ tt ∈ uIcc c d, ∀ i ∈ t, pt tt ≠ ρ i) → ∀ i ∈ t,
-      IntervalIntegrable (fun tt : ℝ => (m i : ℂ) * (pt tt - ρ i)⁻¹) MeasureTheory.volume c d := by
-    intro c d pt hpt hne' i _
-    refine (ContinuousOn.mul continuousOn_const ?_).intervalIntegrable
-    exact (hpt.continuousOn.sub continuousOn_const).inv₀
-      (fun tt htt => sub_ne_zero.mpr (hne' tt htt i (by assumption)))
-  sorry
+  -- integrability building blocks
+  have IIk : ∀ {c d : ℝ} (pt : ℝ → ℂ), Continuous pt → (∀ tt ∈ uIcc c d, ∀ i ∈ t, pt tt ≠ ρ i) →
+      ∀ i ∈ t, IntervalIntegrable (fun tt : ℝ => (m i : ℂ) * (pt tt - ρ i)⁻¹)
+        MeasureTheory.volume c d := by
+    intro c d pt hpt hnz i _
+    refine (ContinuousOn.mul continuousOn_const ((hpt.continuousOn.sub continuousOn_const).inv₀
+      (fun tt htt => sub_ne_zero.mpr (hnz tt htt i ‹_›)))).intervalIntegrable
+  have IIsum : ∀ {c d : ℝ} (pt : ℝ → ℂ), Continuous pt → (∀ tt ∈ uIcc c d, ∀ i ∈ t, pt tt ≠ ρ i) →
+      IntervalIntegrable (fun tt : ℝ => ∑ i ∈ t, (m i : ℂ) * (pt tt - ρ i)⁻¹)
+        MeasureTheory.volume c d :=
+    fun pt hpt hnz => by
+      refine IntervalIntegrable.congr ?_
+        (IntervalIntegrable.sum t (fun i hi => IIk pt hpt hnz i hi))
+      intro tt _
+      simp [Finset.sum_apply]
+  have IIh : ∀ {c d : ℝ} (pt : ℝ → ℂ), Continuous pt → (∀ tt ∈ uIcc c d, pt tt ∈ U) →
+      IntervalIntegrable (fun tt : ℝ => logDeriv h (pt tt)) MeasureTheory.volume c d :=
+    fun pt hpt hmem => (hlogh.continuousOn.comp hpt.continuousOn hmem).intervalIntegrable
+  -- assemble
+  rw [rectIntegral_congr hid hbot htop hrig hlef,
+    rectIntegral_add
+      (IIsum _ (by fun_prop) (fun x hx => (hbot x hx).2))
+      (IIh _ (by fun_prop) (fun x hx => (hbot x hx).1))
+      (IIsum _ (by fun_prop) (fun x hx => (htop x hx).2))
+      (IIh _ (by fun_prop) (fun x hx => (htop x hx).1))
+      (IIsum _ (by fun_prop) (fun y hy => (hrig y hy).2))
+      (IIh _ (by fun_prop) (fun y hy => (hrig y hy).1))
+      (IIsum _ (by fun_prop) (fun y hy => (hlef y hy).2))
+      (IIh _ (by fun_prop) (fun y hy => (hlef y hy).1)),
+    rectIntegral_finsetSum t (fun i z => (m i : ℂ) * (z - ρ i)⁻¹) z₁ z₂
+      (fun i hi => IIk _ (by fun_prop) (fun x hx => (hbot x hx).2) i hi)
+      (fun i hi => IIk _ (by fun_prop) (fun x hx => (htop x hx).2) i hi)
+      (fun i hi => IIk _ (by fun_prop) (fun y hy => (hrig y hy).2) i hi)
+      (fun i hi => IIk _ (by fun_prop) (fun y hy => (hlef y hy).2) i hi),
+    rectIntegral_eq_zero_of_analyticOnNhd hsub hlogh, add_zero]
+  rw [Finset.sum_congr rfl (fun i hi => by
+    rw [rectIntegral_const_mul, rectIntegral_cauchyKernel (hin i hi).1 (hin i hi).2.1
+      (hin i hi).2.2.1 (hin i hi).2.2.2]), Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun i _ => by ring)
 
 end RHTower
