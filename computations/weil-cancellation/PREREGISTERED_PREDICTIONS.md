@@ -30,3 +30,26 @@ Hodge/Weil) reachable at finite N ⟺ off-line zeros suppressed by finite arithm
 - If product ≫ sum in pinning: signature cancellation IS a finite-N construction target → build #1.
 - If product ≈ sum: cancellation is infinitary → #1 needs the limit object; finite carriers only
   ever speak the count/parity register.
+
+## OUTCOME (resolved by the multiplicative principle, not by scaling up numerics)
+v1 census (recorded, then STOPPED as theatre): additive SUM truncation scatters off-line zeros
+(count grows with N, onset ~T=20 regardless of N); multiplicative PRODUCT truncation shows ~0
+off-line zeros even at one prime. This is KNOWN (Euler product is the arithmetic; partial products
+are zero-free, partial sums scatter). No v2.
+
+The sharp resolution (user's steer "always multiplicative, never additive"):
+- A FINITE Euler product ∏_{p≤P}(1-p^{-s})^{-1} is ZERO-FREE (finite product of nonvanishing
+  factors). So there is NO off-line mass at any finite multiplicative truncation — nothing to cancel.
+- Off-line zeros (hence RH, hence any signature defect) are created ONLY in the analytic
+  continuation of the DIVERGENT product past Re=1. Signature cancellation is therefore INFINITARY.
+- P-B verdict: NOT the "weak finite cancellation" I guessed — stronger: there is nothing to cancel
+  until the product diverges and is continued. Prediction (infinitary) CONFIRMED, via the correct frame.
+
+Decision for #1: the naive "finite-N signature-with-cancellation" is a mirage — and MORE so than I
+guessed. The Weil form W = P∞ + Arch − Prime splits, but the ARCH/SEAM half is NOT positive
+(windingRate(0) ≈ −2.7 < 0; the arch density is indefinite, negative core + log-growing tail). So the
+positivity — the actual RH content — is the WHOLE-form balance, and it is infinitary through and
+through; no finite piece carries it. Finite N supplies only the explicit ingredients (Arch = the banked
+winding form; Prime_X = truncated von Mangoldt), never the positivity. Payoff: Arch = (1/π)∫ĥ·windingRate
+exactly, so the winding-floor machinery IS the explicit archimedean term of the Weil/Hodge form. See
+construction note.

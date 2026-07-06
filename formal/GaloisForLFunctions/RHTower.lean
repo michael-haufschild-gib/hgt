@@ -136,6 +136,10 @@ import GaloisForLFunctions.RHTower.SawtoothSum
 import GaloisForLFunctions.RHTower.BernoulliFourierBridge
 import GaloisForLFunctions.RHTower.VanDerCorputWeightedSecond
 import GaloisForLFunctions.RHTower.VanDerCorputWeightedAnti
+import GaloisForLFunctions.RHTower.VanDerCorputWeightedSecondGeneral
+import GaloisForLFunctions.RHTower.ReflectedModeBound
+import GaloisForLFunctions.RHTower.ReflectedModeSum
+import GaloisForLFunctions.RHTower.ReflectedB2Integral
 import GaloisForLFunctions.RHTower.SeamCongruence
 import GaloisForLFunctions.RHTower.CothInfra
 import GaloisForLFunctions.RHTower.SpurLattice
@@ -253,3 +257,8 @@ import GaloisForLFunctions.RHTower.IncidenceRamification
 import GaloisForLFunctions.RHTower.LedgerTelescope
 import GaloisForLFunctions.RHTower.EulerTailWinding
 import GaloisForLFunctions.RHTower.LateralWindingFloor
+import GaloisForLFunctions.RHTower.AnchorHead
+import GaloisForLFunctions.RHTower.IncidenceEdgeCount
+import GaloisForLFunctions.RHTower.EdgeEventSynthesis
+import GaloisForLFunctions.RHTower.EdgeEventLedger
+import GaloisForLFunctions.RHTower.SignatureParity

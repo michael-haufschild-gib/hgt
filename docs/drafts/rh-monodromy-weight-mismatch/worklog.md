@@ -5821,3 +5821,36 @@ Verify: `lake build MainTheorems` EXIT 0 (9176 jobs); all 10 named decls axiom-c
   (π+C₁+C_D)/stripFloor σ a ⟹ a real-ratio pencil member of (anchor, completedGN) vanishes on the edge.
   Archimedean side unconditional+explicit; residue = two named Dirichlet phase budgets (C₁ anchor head, C_D = gN).
 - Docs: 107 Addendum 2 (open core closed; next object = Dirichlet edge-family with subcritical C₁+C_D). Index + lint pass.
+
+## 2026-07-06 — SignatureParity: the signature→parity reduction, formalized to exhaustion (Lean, axiom-clean)
+
+Goal: formalize "the signature-to-parity reduction map, which measures precisely how much the
+parity front discards." New module `RHTower/SignatureParity.lean` (252 lines), building on the
+banked `deckClass_multi_zero` (box charge = exp(2πi·(Σmᵢ)/n)) and `analyticOrderAt_even_of_reflection`.
+
+The map: the box charge is `deckRed n (Σ mᵢ)`, where `deckRed n k = exp(2πi·k/n)` is a group
+homomorphism `(ℤ,+)→(ℂ,×)`. The integer total order Σmᵢ is the *signature* (the Weil off-line
+index); the deck class is its image under `deckRed n`; at n=2^k this is the parity ladder's datum.
+
+The exact measure of the discard:
+- kernel = nℤ (`deckRed_eq_one_iff`), fibers = cosets k+nℤ (`deckRed_eq_iff`), factors through
+  ZMod n (`deckRed_eq_iff_zmod`);
+- `deckRed_emod`: the deck class depends on the index ONLY through k % n — the exact retained datum;
+- `parity_discards_full_line`: each deck class value has an injective ℤ-family of preimages — the
+  discard is a free ℤ (the pair/cycle count);
+- `parity_one_bit_retained`: at n=2, k = 2(k/2)+(k%2) — one retained bit, discarded pair count.
+
+Reflection ⟹ discarded (built the mathlib-gap lemma `even_sum_of_fpf_involution`: fixed-point-free
+involution matching multiplicities ⟹ even total order):
+- `reflection_paired_deckRed_two_eq_one`: reflection-paired off-line zeros have even index ⟹ trivial
+  parity — invisible;
+- `reflection_fixed_deckRed_two_eq_one`: the ramified fixed point's even order is also in the kernel.
+
+Verdict: the parity retains a finite ZMod n (one bit at n=2) and discards a full ℤ; and the ENTIRE
+reflection-symmetric part of the index — precisely the off-line mass the Weil signature counts, plus
+the fixed-point ramification — is discarded. The parity's only nonzero signal is the genuinely
+unpaired, unramified order. This is the exact loss of the index→parity coarsening; the residual
+(unpaired odd part) is where the RH content sits — the natural boundary of the reduction map.
+
+Verify: `lake build MainTheorems` EXIT 0 (9194 jobs); all named decls axiom-clean
+[propext, Classical.choice, Quot.sound]; lint + index pass. No git commit.

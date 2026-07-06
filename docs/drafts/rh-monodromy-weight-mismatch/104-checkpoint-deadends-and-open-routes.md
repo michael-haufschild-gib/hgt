@@ -518,3 +518,57 @@ first-derivative test with `g'' ≤ 0`) — mechanical sign-mirrors of banked le
 sawtooth files now carry every core estimate of the Riemann–Siegel reflected-block bound; the residual
 is the sign-mirror analytic variants plus the mode-expansion glue (hasSum→`∑'`, interchange, per-mode
 instantiation, mode-sum).
+
+---
+
+## Addendum 13: the general weighted second-derivative test banked — every analytic brick complete
+
+**[PROVED HERE, Lean]** (axiom-clean, umbrella green):
+- `RHTower/VanDerCorputWeightedAnti.lean : norm_integral_weight_cexp_le_anti` — weighted first-derivative
+  test with `g'' ≤ 0` (sign-mirror of the `g'' ≥ 0` case; `|g''| = −g''`, `∫ −g''/g'² = 1/g'(b) − 1/g'(a)`).
+- `RHTower/VanDerCorputWeightedSecondGeneral.lean`:
+  - `norm_integral_weight_cexp_conj_neg` — weighted conjugation `‖∫ w·e^{ig}‖ = ‖∫ w·e^{−ig}‖`.
+  - `norm_integral_weight_cexp_secondDeriv_oneside_concave` — concave one-sided (`g' ≥ 0`, `g'' ≤ −λ`),
+    the convex mirror using weighted-first-anti on the outer piece.
+  - `norm_integral_weight_cexp_secondDeriv` — **general** (both `g'` signs, `g'' ≥ λ > 0`):
+    `‖∫_a^b w·e^{ig}‖ ≤ 10·w(a)/√λ`, split at the stationary point `g' = 0` (convex side + conjugated
+    concave side).
+  - `norm_integral_weight_cexp_secondDeriv_neg` — concave general (`g'' ≤ −λ`) by conjugation; the form
+    the saddle modes take (phase `2πn·x + τ log x`, `φ'' = −τ/x² < 0`).
+
+**Every analytic input of the reflected-block bound is now banked and axiom-clean** (13 files): the full
+van der Corput toolset — first (both signs), second unweighted (both signs), weighted-first (both signs),
+weighted-second (general, both `g'` signs, both convex and concave), conjugation, discrete/Abel — plus
+the exact reduction, the interchange, the mode-sum, the per-interval IBP, the `m`-summation, and the `B₂`
+Fourier bridge. The sole residual is the mode-expansion assembly: rearrange the bridge `hasSum` to `∑'`
+form, apply `intervalIntegral_tsum` (`∑ ∫⁻‖·‖ ≠ ⊤` from `1/n²`), rewrite `fourier n ↑x = exp(2πinx)`,
+instantiate the per-mode bound (weighted-first off the saddle band, weighted-second on it), and sum. Every
+lemma that assembly calls now exists.
+
+---
+
+## Addendum 14: the full end-to-end reflected-block bound — CLOSED, axiom-clean
+
+**[PROVED HERE, Lean]** `RHTower/ReflectedB2Integral.lean : reflected_B2_integral_bound` (axiom-clean,
+umbrella green): for `N ≥ 1`, `s.re ≥ −2`, `s.im < 0`,
+`‖∫_1^N (({x}²−{x})/2 + 1/12)·x^{−s−2}‖ ≤ (∑_{n} 1/(4π²n²))·(10N/√(−s.im))`.
+
+This realizes the whole chain in one theorem:
+- `fourier_exp_hasSum` — the `B₂` kernel as its Fourier series `∑ (1/4π²n²)·e(nx)`, from the banked
+  circle expansion `fourier_hasSum_bernoulli2` scaled and `fourier n ↑x = e(nx)` (`fourier_eq_exp`).
+- `intervalIntegral_tsum` — sum/integral interchange, discharged by an explicit `L¹` certificate
+  (`∫⁻ ‖f_n‖ ≤ (1/4π²n²)(N−1)`, `∑ < ⊤` from summability of `1/n²`).
+- `reflected_per_mode_bound` — each mode's oscillatory integral bounded **uniformly in `n`** by
+  `10N/√(−s.im)` (second-derivative van der Corput; `g_n'' = s.im/x²` carries no `n`).
+- `reflected_mode_sum_bound` — the mode sum bounded by the uniform per-mode bound times the finite
+  coefficient sum.
+
+Every link — `finite_em_identity`, the per-interval IBP and its `m`-summation (`sawtooth_ibp_sum`),
+the `B₂` Fourier bridge, the interchange, the per-mode van der Corput, the mode sum — is banked and
+axiom-clean. The reflected block's oscillatory integral obeys the square-root-cancellation bound the
+approximate functional equation asserts. Sixteen van der Corput / sawtooth / assembly modules;
+`[propext, Classical.choice, Quot.sound]` throughout.
+
+The one remaining wire to the *literal* `∫_1^N ({x}−½)x^{−s−1}` of `sawtooth_ibp_sum` is elementary
+constant arithmetic (the `+1/12` mean term `× ∫x^{−s−2}`, bounded by `N−1`, and the `(s+1)` factor) —
+no oscillatory content, no new estimate.
