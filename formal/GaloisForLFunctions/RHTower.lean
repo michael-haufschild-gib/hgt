@@ -183,6 +183,7 @@ import GaloisForLFunctions.RHTower.LegStripSteepnessHarmonic
 import GaloisForLFunctions.RHTower.LegStripTruncation
 import GaloisForLFunctions.RHTower.LegStripShellEM
 import GaloisForLFunctions.RHTower.LegStripShellRate
+import GaloisForLFunctions.RHTower.LegStripFarTail
 import GaloisForLFunctions.RHTower.BohrMomentDensity
 import GaloisForLFunctions.RHTower.WeierstrassMajorant
 import GaloisForLFunctions.RHTower.FloorFailureUnconditional
@@ -210,3 +211,4 @@ import GaloisForLFunctions.RHTower.WindingCurvature
 import GaloisForLFunctions.RHTower.ResonanceClosedForm
 import GaloisForLFunctions.RHTower.EnvelopeDerivBound
 import GaloisForLFunctions.RHTower.CarrierLineSup
+import GaloisForLFunctions.RHTower.CarrierMassFloor

@@ -55,10 +55,14 @@ whose entire sub-level filtration is the `badHeightSet` tower and whose being `�
 depth compresses the whole level family into one certificate.
 
 The profile is now a **function on the line valued in `ℕ∞`**, so its analytic shape is the next
-object.  Two forward moves: (a) the **depth profile** `T ↦ windowDepth T`, a monotone-decreasing
+object.  Two forward moves:
+
+(a) the **depth profile** `T ↦ windowDepth T`, a monotone-decreasing
 `ℕ∞`-valued step function of the height (more enclosed zeros can only lower the minimal valuation),
 whose descent points are the low-valuation heights and whose staying `= ⊤` past `T` is the rung
-through `T` — a monotone envelope of the census profile; (b) the **valuation atomic measure**
+through `T` — a monotone envelope of the census profile;
+
+(b) the **valuation atomic measure**
 `∑_t valProfile-weighted atoms`, refining the Stieltjes content of doc 97: instead of the jump size
 mod `2^k`, weight each zero height by its 2-adic valuation, giving a measure whose finiteness on a
 window is `windowDepth`-controlled and whose `⊤`-atoms are exactly the RH-forbidden off-line heights.

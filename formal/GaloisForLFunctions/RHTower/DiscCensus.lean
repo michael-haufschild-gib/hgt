@@ -204,4 +204,45 @@ theorem windowCertificate_of_subWindow_finiteDiscBits_zero {k : ℕ} {T : ℝ}
   exact xi_rung_of_completedGN_discBit_zero (N := N) (k := k)
     (fun z _ => ENat.coe_toNat (xi_order_ne_top z)) hclosed hstrip hm₂ hcl₂ hD hL hfin
 
+/-- Window certificates from finite deck-line equality on every reflection-closed subwindow.
+This discharges the finite-side `windowDiscBit = 0` premise through the completed finite carrier's
+own deck class, so the subwindow bridge consumes deck data rather than a precomputed DISC bit. -/
+theorem windowCertificate_of_subWindow_finiteDeckLine {k : ℕ} {T : ℝ}
+    (hbits : ∀ t : Finset ℂ, ↑t ⊆ stripZeros T →
+      (∀ z ∈ t, lineReflect z ∈ t) →
+      ∃ N : ℕ, ∃ t₂ : Finset ℂ, ∃ m₂ : ℂ → ℕ,
+      ∃ h G₁ G₂ : ℂ → ℂ, ∃ a : ℂ, ∃ r₀ R : ℝ,
+        0 ≤ r₀ ∧ r₀ < R ∧
+        (∀ z ∈ t₂, 0 < z.re ∧ z.re < 1) ∧
+        (∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z) ∧
+        (∀ z ∈ t₂, lineReflect z ∈ t₂) ∧
+        (∀ z ∈ t₂, ‖z - a‖ ≤ r₀) ∧
+        AnalyticOnNhd ℂ h (ball a R) ∧
+        (∀ z ∈ ball a R, h z ≠ 0) ∧
+        (∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h z) ∧
+        AnalyticOnNhd ℂ G₁ (chartRA a r₀ R) ∧
+        AnalyticOnNhd ℂ G₂ (chartLA a r₀ R) ∧
+        (∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 ^ (k + 1) = completedGN N z) ∧
+        (∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 ^ (k + 1) = completedGN N z) ∧
+        (deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
+            (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)
+          = Complex.exp (2 * (Real.pi : ℂ) * I *
+              ((∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z : ℕ) : ℂ)
+              / ((2 ^ (k + 1) : ℕ) : ℂ))) ∧
+        (∑ z ∈ t, (analyticOrderAt xi z).toNat ≡ ∑ z ∈ t₂, m₂ z
+          [MOD 2 ^ (k + 1)]) ∧
+        (∑ z ∈ t.filter (fun z => z.re = 1 / 2), (analyticOrderAt xi z).toNat
+          ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])) :
+    WindowCertificate k T := by
+  refine windowCertificate_of_subWindow_finiteDiscBits_zero ?_
+  intro t hsub hclosed
+  rcases hbits t hsub hclosed with
+    ⟨N, t₂, m₂, h, G₁, G₂, a, r₀, R, h0, hrR, hstrip, hm₂, hcl₂, hρ₂,
+      hhan, hh0, hfact, hG₁, hG₂, hpG₁, hpG₂, hdeck, hD, hL⟩
+  refine ⟨N, t₂, m₂, hstrip, hm₂, hcl₂, hD, hL, ?_⟩
+  exact (completedGN_deckClass_eq_line_iff_discBit (N := N) (k := k)
+    (t := t₂) (m := m₂) (h := h) (G₁ := G₁) (G₂ := G₂) (a := a)
+    (r₀ := r₀) (R := R) h0 hrR hstrip hm₂ hcl₂ hρ₂ hhan hh0 hfact
+    hG₁ hG₂ hpG₁ hpG₂).mp hdeck
+
 end RHTower

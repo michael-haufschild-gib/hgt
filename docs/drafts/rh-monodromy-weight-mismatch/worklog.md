@@ -5376,3 +5376,34 @@ via `convert h using 1; ring` (defeq usually lets `ring` close both) or `funext 
 `simp only [Pi.div_apply]` before the eventual-eq identity. (4) `squeeze_zero'` is positional (three
 args), don't `apply ... (g:=)`. (5) `div_le_div_iff` → `div_le_div_iff₀`; `field_simp` on `a/b=c/d`
 often closes without a trailing `ring` (drop it or get "No goals").
+
+---
+
+## cont. 55 — 2-adic valuation profile + filtration length + window depth
+
+Built the two objects doc 97 §5 named; doc 98 is the ledger. New module `ValuationProfile.lean`.
+Corrected doc 97 §5 orientation: badHeightSet is INCREASING in k (badHeightSet 0 = ∅), so the
+invariant is the last passing level v₂, not "first level stops failing."
+
+**Valuation profile.** `valProfile t := emultiplicity 2 (discJump t) ∈ ℕ∞`.
+`pow_dvd_discJump_iff_le_valProfile`; `badHeightSet_eq_valProfile_lt` (badHeightSet k = {valProfile <
+k}, graded rung); `badHeightSet_subset_succ` (increasing); `valProfile_eq_top_iff` (⊤ ↔ discJump=0);
+`rh_iff_forall_valProfile_eq_top` (RH ↔ profile ≡ ⊤).
+
+**Filtration length.** `filtrationLength t := (discJump t).factorization 2`;
+`pow_dvd_discJump_iff_le_filtrationLength`; `valProfile_eq_filtrationLength` (= on zero heights);
+`mem_badHeightSet_iff_filtrationLength_lt`.
+
+**Window depth.** `windowDepth T := inf over box-zero heights of (filtrationLength : ℕ∞)`;
+`V_eq_zero_iff_le_windowDepth` (V k T=0 ↔ k≤depth, the finite certificate); `windowDepth_lt_top_iff`
+(finite ↔ window has a zero).
+
+**Transport shadow.** `finiteFiltrationLength` + `filtrationLength_eq_finite` (= under all-level
+divisibility agreement, the dvd_discJump_iff_finiteDiscJump family).
+
+**Verify.** `lake build RHTower MainTheorems` EXIT 0 (9146 jobs); 9 capstones axiom-clean
+`[propext, Classical.choice, Quot.sound]`; index regenerated; `formal lint passed`.
+
+**Opened (doc 98 §5).** (a) the depth profile T ↦ windowDepth T (monotone-decreasing ℕ∞ step
+function, ≡⊤ past T = rung through T); (b) the valuation atomic measure (weight each zero height by
+v₂, refining the Stieltjes content), ⊤-atoms = RH-forbidden off-line heights.

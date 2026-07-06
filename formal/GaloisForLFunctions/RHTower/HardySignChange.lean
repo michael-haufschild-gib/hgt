@@ -410,6 +410,77 @@ theorem windowCertificate_of_emCarrier_hardy_zero_brackets {k : ℕ} {T : ℝ}
     (N := N) (M := M) hM h0 hrR hm₁ hcl₁ hρ₁ hρ₂ hHan hH0 hHpan hHp0
     hfact₁ hfact₂ hstripC hE hclose hF hord' hsep' hsign' hseg' hcount₂
 
+/-- Window-level integral ledger for the strongest Dpoly/Hardy outer-power endpoint.
+The short completed-carrier sign face is recorded as moment data rather than as an explicit
+point-pair bracket; the producer below derives the bracket before handing off to the Dpoly
+window package. -/
+def IntegralLedgerOuterPowerWindowData (T0 : ℝ) : Prop :=
+  ∀ ρ ∈ boxZeros T0,
+    ∃ (N M : ℕ) (δ : ℝ)
+      (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ S_b M_line : ℝ),
+      1 ≤ M ∧
+      0 < U ∧
+      0 < rz ∧
+      0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+      P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+      rz < R ∧
+      (ρ.re - 1 / 2) ^ 2 +
+          (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+      0 < T + U - rz ∧ U ≤ 2 * rz ∧
+      0 < S_b ∧
+      S_b ≤ (∫ u in (T + U - rz)..(T + rz), ((completedGN N (linePt u)).re) ^ 2) ∧
+      (∀ u ∈ Set.Icc (T + U - rz) (T + rz),
+        |(completedGN N (linePt u)).re| ≤ M_line) ∧
+      M_line * |∫ u in (T + U - rz)..(T + rz), (completedGN N (linePt u)).re| < S_b ∧
+      0 < m_J ∧
+      m_J ^ 2 * U +
+        (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+        4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+          - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+              2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                / |Real.log n - Real.log m|) ∧
+      1 ≤ M_J ∧
+      (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+        sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+      Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+      m_J / rz < M_J / (rJ - rz) ∧
+      (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+      0 < a₀ ∧
+      (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+        sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+        ‖completedGN N z‖ ≤ M_G) ∧
+      max ((6 * R * M_G) / (P ^ 2 * a₀))
+          ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+            (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+        (m_J / rz) *
+          ((m_J / rz) / (M_J / (rJ - rz))) ^
+            (2 * (R + rz) / (rJ - (R + rz))) ∧
+      (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+        sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+        ‖emCarrier M z - gN N z‖ ≤ δ)
+
+/-- Window-level integral ledgers produce the `WindowLinePackage` interface.  The moment ledger
+discharges the explicit completed-carrier sign bracket consumed by the strongest Dpoly/Hardy
+outer-power package. -/
+theorem windowLinePackage_of_integral_ledger_outer_power_windowData {T0 : ℝ}
+    (hwin : IntegralLedgerOuterPowerWindowData T0) :
+    WindowLinePackage T0 := by
+  refine windowLinePackage_of_secondMoment_orthogonal_saving_outer_power_endpoint_target ?_
+  intro ρ hρ
+  obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b, M_line,
+    hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hbrpos, hUrz, hSb, hsupply, hMline, hfm,
+    hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine, ha₀, ha₀0, hMG,
+    hbudget_outer, hclose⟩ := hwin ρ hρ
+  have hαβ : T + U - rz ≤ T + rz := by linarith
+  obtain ⟨t₁, t₂, ht₁, ht₂, h12, hsign⟩ :=
+    exists_completedGN_sign_bracket_of_moments N hαβ hSb hsupply hMline hfm
+  exact ⟨N, M, δ, T, U, t₁, t₂, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀,
+    hM, hU, lt_of_lt_of_le hbrpos ht₁.1, h12, hrz0, h0, hrR, hRP, hPrz, hRrzJ,
+    hrJR, hRJ12, hrzR, hρquad, ht₁.1, ht₂.2, hmJ0, henergy,
+    (by simpa [linePt] using hsign), hMJ, hbound, hjensen_floor, hengine,
+    ha₀, ha₀0, hMG, hbudget_outer, hclose⟩
+
 end RHTower
 
 namespace RHTower
