@@ -5428,3 +5428,31 @@ via p_series_tail_le (c>1), (i+2)^c≤2^c(i+1)^c ⟹ ≤ 2^{1+c}/(c−1)·(i+1),
 
 Lean gotchas: div_le_div_iff→div_le_div_iff₀; Real.exp_neg needs its arg to target one term; div_le_div_of_nonneg_left
 for a/b≤a/c; Real.rpow_def_of_pos to turn x^c into exp(c log x); Finset.sum_range_add_sum_Ico for range-diff=Ico.
+
+---
+
+## cont. 56 — depth profile + valuation atomic measure + off-line locus
+
+Built the two objects doc 98 §5 named; doc 99 is the ledger. New module `ValMeasure.lean`.
+
+**(a) depth profile.** `windowDepth_antitone` (monotone-decreasing ℕ∞ step function);
+`windowDepth_lt_iff` (descent below n ↔ ∃ enclosed low-valuation height — descent points = low-val
+heights); `windowDepth_eq_top_iff` (=⊤ ↔ boxZeros empty) + `..._forall_windowCertificate` (=⊤ ↔ full
+rung tower through T); `discCensusH_eq_zero_of_le_windowDepth` (k≤depth → census 0 — census envelope;
+windowDepth_le_filtrationLength bounds each atom).
+
+**(b) valuation atomic measure.** `valMass T := ∑ filtrationLength over enclosed heights` (content,
+refining Stieltjes by valuation weights); `valMeasure T := ∑ v₂(discJump t)•δ_t` genuine Measure ℝ;
+`valMeasure_univ` (mass = valMass), `isFiniteMeasure_valMeasure` (finite Dirac comb, windowDepth-
+controlled).
+
+**off-line locus.** `offLineHeights := {discJump ≠ 0}` = `{valProfile ≠ ⊤}`; atoms ⊆ offLine
+(`image_im_subset_offLineHeights`); `rh_iff_offLineHeights_empty` (RH ↔ offLineHeights = ∅).
+
+**Verify.** `lake build RHTower MainTheorems` EXIT 0 (9149 jobs); 10 capstones axiom-clean
+`[propext, Classical.choice, Quot.sound]`; index regenerated; `formal lint passed`.
+
+**Opened (doc 99 §5).** weak-limit measure valMeasure∞ = ∑ over all off-line heights v₂•δ_t (σ-finite
+atomic, zero-measure ⟺ RH); (a) restricted Stieltjes measure with distribution valMass; (b)
+normalized mean-valuation density valMass/#heights, a rational line profile whose bounded-away-from-0
+is a graded rung, finite-carrier-shadowable.
