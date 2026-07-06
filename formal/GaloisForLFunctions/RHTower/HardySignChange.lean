@@ -10,6 +10,9 @@ critical line — this replaces the pointwise two-height sign face of the pinnin
 data on a known segment, so every face of the resulting Riemann-hypothesis endpoint is an
 integral, sup, or scalar inequality over explicitly named segments and circles.
 -/
+import GaloisForLFunctions.RHTower.CarrierLineSup
+import GaloisForLFunctions.RHTower.ArchEnvelope
+import GaloisForLFunctions.RHTower.EnvelopeDerivBound
 import GaloisForLFunctions.RHTower.DpolyBallFloor
 
 open Complex Metric
@@ -139,6 +142,76 @@ theorem exists_completedGN_sign_bracket_of_moments (N : ℕ) {α β S M_line : �
   have hc : Continuous fun u : ℝ => (completedGN N (linePt u)).re :=
     Complex.continuous_re.comp (continuous_completedGN_line N)
   exact exists_sign_bracket_of_moment_gap hαβ hc.continuousOn hS hsupply hsup hfm
+
+/-- **Sign bracket from scalar first-moment budget.**  On a positive segment, the closed-form
+line sup `completedGNLineSupBudget N β` and the named first-moment budget together replace the
+raw cancellation hypothesis `M_line * |∫ Re Φ̃_N| < S`. -/
+theorem exists_completedGN_sign_bracket_of_firstMomentBudget (N : ℕ) (hN : 1 ≤ N)
+    {α β S M₀ M₁ Cmain : ℝ} (hα0 : 0 ≤ α) (hαβ : α ≤ β) (hS : 0 < S)
+    (hsupply : S ≤ ∫ u in α..β, ((completedGN N (linePt u)).re) ^ 2)
+    (hM₀ : ∀ u ∈ Set.Icc α β, ‖archFactor (linePt u)‖ ≤ M₀)
+    (hM₀r : ∀ u ∈ Set.Icc α β, ‖archFactor (1 - linePt u)‖ ≤ M₀)
+    (hM₁ : ∀ u ∈ Set.Icc α β, ‖archFactorDeriv (linePt u)‖ ≤ M₁)
+    (hM₁r : ∀ u ∈ Set.Icc α β, ‖archFactorDeriv (1 - linePt u)‖ ≤ M₁)
+    (hCmain : ‖(∫ u in α..β, archFactor (linePt u)) +
+        ∫ u in α..β, archFactor (1 - linePt u)‖ ≤ Cmain)
+    (hbudget : completedGNLineSupBudget N β *
+        completedGNFirstMomentBudget N (β - α) M₀ M₁ Cmain < S) :
+    ∃ t₁ t₂ : ℝ, t₁ ∈ Set.Icc α β ∧ t₂ ∈ Set.Icc α β ∧ t₁ ≤ t₂ ∧
+      (completedGN N (linePt t₁)).re * (completedGN N (linePt t₂)).re ≤ 0 := by
+  have hsup : ∀ u ∈ Set.Icc α β,
+      |(completedGN N (linePt u)).re| ≤ completedGNLineSupBudget N β := by
+    intro u hu
+    exact abs_re_completedGN_line_le_segment_budget N hα0 hu
+  have hfirst :=
+    abs_integral_re_completedGN_line_le_firstMomentBudget_of_sups
+      hN hαβ hM₀ hM₀r hM₁ hM₁r hCmain
+  have hline0 : 0 ≤ completedGNLineSupBudget N β :=
+    completedGNLineSupBudget_nonneg N β
+  have hfm : completedGNLineSupBudget N β *
+        |∫ u in α..β, (completedGN N (linePt u)).re| < S :=
+    lt_of_le_of_lt (mul_le_mul_of_nonneg_left hfirst hline0) hbudget
+  exact exists_completedGN_sign_bracket_of_moments N hαβ hS hsupply hsup hfm
+
+/-- **Sign bracket with closed resonance and envelope budgets.**  The only remaining local
+first-moment data is the derivative-envelope sup `M₁`; the envelope sup and resonance moment are
+the closed-form scalar budgets from `ResonanceClosedForm`. -/
+theorem exists_completedGN_sign_bracket_of_resonanceBudget (N : ℕ) (hN : 1 ≤ N)
+    {α β S M₁ : ℝ}
+    (hα : 0 < α) (hαβ : α ≤ β)
+    (hwind : 0 < (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2)
+    (hS : 0 < S)
+    (hsupply : S ≤ ∫ u in α..β, ((completedGN N (linePt u)).re) ^ 2)
+    (hM₁ : ∀ u ∈ Set.Icc α β, ‖archFactorDeriv (linePt u)‖ ≤ M₁)
+    (hM₁r : ∀ u ∈ Set.Icc α β, ‖archFactorDeriv (1 - linePt u)‖ ≤ M₁)
+    (hbudget : completedGNLineSupBudget N β *
+        completedGNFirstMomentBudget N (β - α) (archEnvelopeLineBudget β) M₁
+          (resonanceMomentClosedFormBudget α β) < S) :
+    ∃ t₁ t₂ : ℝ, t₁ ∈ Set.Icc α β ∧ t₂ ∈ Set.Icc α β ∧ t₁ ≤ t₂ ∧
+      (completedGN N (linePt t₁)).re * (completedGN N (linePt t₂)).re ≤ 0 := by
+  exact exists_completedGN_sign_bracket_of_firstMomentBudget N hN hα.le hαβ hS hsupply
+    (fun u hu => norm_archFactor_line_le_segment_budget hα.le hu)
+    (fun u hu => norm_archFactor_reflected_line_le_segment_budget hα.le hu)
+    hM₁ hM₁r (resonance_moment_le_closedFormBudget hα hαβ hwind) hbudget
+
+/-- Closed resonance sign bracket with only one derivative-envelope sup: the reflected derivative
+sup is identical by conjugation. -/
+theorem exists_completedGN_sign_bracket_of_resonanceBudget_oneDerivSup
+    (N : ℕ) (hN : 1 ≤ N) {α β S M₁ : ℝ}
+    (hα : 0 < α) (hαβ : α ≤ β)
+    (hwind : 0 < (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2)
+    (hS : 0 < S)
+    (hsupply : S ≤ ∫ u in α..β, ((completedGN N (linePt u)).re) ^ 2)
+    (hM₁ : ∀ u ∈ Set.Icc α β, ‖archFactorDeriv (linePt u)‖ ≤ M₁)
+    (hbudget : completedGNLineSupBudget N β *
+        completedGNFirstMomentBudget N (β - α) (archEnvelopeLineBudget β) M₁
+          (resonanceMomentClosedFormBudget α β) < S) :
+    ∃ t₁ t₂ : ℝ, t₁ ∈ Set.Icc α β ∧ t₂ ∈ Set.Icc α β ∧ t₁ ≤ t₂ ∧
+      (completedGN N (linePt t₁)).re * (completedGN N (linePt t₂)).re ≤ 0 := by
+  exact exists_completedGN_sign_bracket_of_resonanceBudget N hN hα hαβ hwind hS hsupply
+    hM₁ (fun u hu => by
+      rw [norm_archFactorDeriv_reflected_line_eq u]
+      exact hM₁ u hu) hbudget
 
 end RHTower
 
@@ -361,5 +434,72 @@ theorem riemannHypothesis_of_decoupled_integral_ledger_endpoint_target
     (fun z hz => hbound τ hτ z hz),
     hjensen_floor, hengine, ha₀_ball, ha₀0, hMG_ball, hcross,
     hE_ball, hclose_ball, hfl⟩
+
+/-- **Decoupled integral ledger with closed-form line sup.**  This is the decoupled endpoint with
+the `M_line` witness removed: on the expanded positive segment `[T − rz, T + U + rz]`,
+`completedGNLineSupBudget N (T + U + rz)` bounds the real completed carrier by the closed-form
+line-sup theorem, so the sign face now asks only for the local second moment and the first-moment
+cancellation against that explicit scalar. -/
+theorem riemannHypothesis_of_decoupled_integral_ledger_explicit_line_sup_endpoint_target
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (δ : ℝ)
+        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ S_b : ℝ),
+        1 ≤ M ∧
+        0 < U ∧
+        0 < rz ∧
+        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+        rz < R ∧
+        (ρ.re - 1 / 2) ^ 2 +
+            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+        0 < T - rz ∧
+        0 < S_b ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          S_b ≤ ∫ u in (τ - rz)..(τ + rz), ((completedGN N (linePt u)).re) ^ 2) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          completedGNLineSupBudget N (T + U + rz) *
+              |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| < S_b) ∧
+        0 < m_J ∧
+        m_J ^ 2 * U +
+          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                  / |Real.log n - Real.log m|) ∧
+        1 ≤ M_J ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+        m_J / rz < M_J / (rJ - rz) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+        0 < a₀ ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖completedGN N z‖ ≤ M_G) ∧
+        max ((6 * R * M_G) / (P ^ 2 * a₀))
+            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+          (m_J / rz) *
+            ((m_J / rz) / (M_J / (rJ - rz))) ^
+              (2 * (R + rz) / (rJ - (R + rz))) ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖emCarrier M z - gN N z‖ ≤ δ)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_of_decoupled_integral_ledger_endpoint_target
+  intro ρ hρ hzero
+  obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
+    hTrz, hSb, hsupply, hfm, hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine,
+    ha₀, ha₀0, hMG, hbudget_outer, hclose⟩ := hwin ρ hρ hzero
+  have hMline : ∀ u ∈ Set.Icc (T - rz) (T + U + rz),
+      |(completedGN N (linePt u)).re| ≤ completedGNLineSupBudget N (T + U + rz) := by
+    intro u hu
+    exact abs_re_completedGN_line_le_segment_budget N hTrz.le hu
+  exact ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, S_b,
+    completedGNLineSupBudget N (T + U + rz), hM, hU, hrz0, h0, hrR, hRP, hPrz,
+    hRrzJ, hrJR, hRJ12, hrzR, hρquad, hTrz, hSb, hsupply, hMline, hfm, hmJ0,
+    henergy, hMJ, hbound, hjensen_floor, hengine, ha₀, ha₀0, hMG, hbudget_outer,
+    hclose⟩
 
 end RHTower

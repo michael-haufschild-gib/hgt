@@ -236,6 +236,20 @@ theorem abs_integral_re_completedGN_line_le_of_sups {N : ℕ} (hN : 1 ≤ N) {α
     rw [norm_mul, norm_neg, Complex.norm_I, mul_one]
     exact hM₁r u hu
 
+/-- Named-budget form of `abs_integral_re_completedGN_line_le_of_sups`. -/
+theorem abs_integral_re_completedGN_line_le_firstMomentBudget_of_sups
+    {N : ℕ} (hN : 1 ≤ N) {α β : ℝ} (hαβ : α ≤ β) {M₀ M₁ Cmain : ℝ}
+    (hM₀ : ∀ u ∈ Set.Icc α β, ‖archFactor (linePt u)‖ ≤ M₀)
+    (hM₀r : ∀ u ∈ Set.Icc α β, ‖archFactor (1 - linePt u)‖ ≤ M₀)
+    (hM₁ : ∀ u ∈ Set.Icc α β, ‖archFactorDeriv (linePt u)‖ ≤ M₁)
+    (hM₁r : ∀ u ∈ Set.Icc α β, ‖archFactorDeriv (1 - linePt u)‖ ≤ M₁)
+    (hCmain : ‖(∫ u in α..β, archFactor (linePt u)) +
+        ∫ u in α..β, archFactor (1 - linePt u)‖ ≤ Cmain) :
+    |∫ u in α..β, (completedGN N (linePt u)).re| ≤
+      completedGNFirstMomentBudget N (β - α) M₀ M₁ Cmain := by
+  simpa [completedGNFirstMomentBudget] using
+    abs_integral_re_completedGN_line_le_of_sups hN hαβ hM₀ hM₀r hM₁ hM₁r hCmain
+
 end RHTower
 
 namespace RHTower

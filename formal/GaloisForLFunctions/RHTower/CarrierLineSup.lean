@@ -96,4 +96,51 @@ theorem abs_re_completedGN_line_le (N : ℕ) (u : ℝ) :
         mul_le_mul (norm_archFactor_line_le u) (norm_gN_line_le N u)
           (norm_nonneg _) hM₀
 
+/-- Closed-form scalar budget for `|(completedGN N (linePt u)).re|` up to height `B`. -/
+noncomputable def completedGNLineSupBudget (N : ℕ) (B : ℝ) : ℝ :=
+  (1 / 4 + B ^ 2) / 2 * (Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4)) *
+    (4 * Real.sqrt N)
+
+/-- The closed-form completed-carrier line-sup budget is nonnegative. -/
+theorem completedGNLineSupBudget_nonneg (N : ℕ) (B : ℝ) :
+    0 ≤ completedGNLineSupBudget N B := by
+  dsimp [completedGNLineSupBudget]
+  exact mul_nonneg
+    (mul_nonneg (by positivity)
+      (mul_nonneg (Real.rpow_nonneg Real.pi_pos.le _)
+        (Real.Gamma_pos_of_pos (by norm_num)).le))
+    (by positivity)
+
+/-- The pointwise line-sup theorem in named-budget form. -/
+theorem abs_re_completedGN_line_le_budget (N : ℕ) (u : ℝ) :
+    |(completedGN N (linePt u)).re| ≤ completedGNLineSupBudget N u := by
+  simpa [completedGNLineSupBudget] using abs_re_completedGN_line_le N u
+
+/-- On a nonnegative segment `[α, β]`, the right endpoint controls the completed-carrier
+line-sup budget. -/
+theorem abs_re_completedGN_line_le_segment_budget
+    (N : ℕ) {α β u : ℝ} (hα0 : 0 ≤ α) (hu : u ∈ Set.Icc α β) :
+    |(completedGN N (linePt u)).re| ≤ completedGNLineSupBudget N β := by
+  have hbase := abs_re_completedGN_line_le N u
+  have hu0 : 0 ≤ u := le_trans hα0 hu.1
+  have hβ0 : 0 ≤ β := le_trans hu0 hu.2
+  have hsqu : u ^ 2 ≤ β ^ 2 := by
+    have hmul := mul_le_mul hu.2 hu.2 hu0 hβ0
+    simpa [pow_two] using hmul
+  have hfactor : (1 / 4 + u ^ 2) / 2 ≤ (1 / 4 + β ^ 2) / 2 := by
+    nlinarith
+  have hC0 : 0 ≤ Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4) :=
+    mul_nonneg (Real.rpow_nonneg Real.pi_pos.le _)
+      (Real.Gamma_pos_of_pos (by norm_num)).le
+  have hN0 : 0 ≤ 4 * Real.sqrt N := by positivity
+  have hscale :
+      (1 / 4 + u ^ 2) / 2 *
+          (Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4)) *
+          (4 * Real.sqrt N) ≤
+        completedGNLineSupBudget N β := by
+    dsimp [completedGNLineSupBudget]
+    exact mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right hfactor hC0) hN0
+  exact le_trans hbase hscale
+
 end RHTower

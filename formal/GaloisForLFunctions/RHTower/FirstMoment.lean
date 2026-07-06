@@ -317,6 +317,12 @@ theorem abs_integral_re_completedGN_line_le {N : ℕ} (hN : 1 ≤ N) {α β : �
           (2 * (2 * M₀ + (β - α) * M₁) / Real.log n) :=
         add_le_add hhead (le_trans (norm_sum_le _ _) (Finset.sum_le_sum htail))
 
+/-- Named scalar budget for the first moment of the completed carrier on a segment of length `L`,
+given a resonance bound `Cmain`, envelope sup `M₀`, and derivative sup `M₁`. -/
+noncomputable def completedGNFirstMomentBudget (N : ℕ) (L M₀ M₁ Cmain : ℝ) : ℝ :=
+  Cmain + ∑ n ∈ Finset.Ioc 1 N, (n : ℝ) ^ (-(1/2 : ℝ)) *
+    (2 * (2 * M₀ + L * M₁) / Real.log n)
+
 end RHTower
 
 namespace RHTower

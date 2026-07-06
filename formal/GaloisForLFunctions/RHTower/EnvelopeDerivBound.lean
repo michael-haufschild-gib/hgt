@@ -150,4 +150,121 @@ theorem norm_archFactorDeriv_line_le {u : ℝ} (hu : 0 < u) :
           ((|Real.log (1 / 16 + u ^ 2 / 4)| / 2 + 4 / u ^ 2 + Real.pi / u +
             (2 / u + Real.pi / 2)) / 2 + Real.log Real.pi / 2)) := by ring
 
+/-- Pointwise closed-form derivative-envelope budget on the critical line. -/
+noncomputable def archDerivLineBudget (u : ℝ) : ℝ :=
+  Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4) *
+    (u + (1 / 4 + u ^ 2) / 2 *
+      ((|Real.log (1 / 16 + u ^ 2 / 4)| / 2 + 4 / u ^ 2 + Real.pi / u +
+        (2 / u + Real.pi / 2)) / 2 + Real.log Real.pi / 2))
+
+/-- Segment-level closed derivative-envelope budget.  The right endpoint controls polynomial
+growth, the left endpoint controls reciprocal decay, and the logarithm is bounded by the larger
+endpoint log modulus. -/
+noncomputable def archDerivSegmentBudget (α β : ℝ) : ℝ :=
+  Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4) *
+    (β + (1 / 4 + β ^ 2) / 2 *
+      ((max |Real.log (1 / 16 + α ^ 2 / 4)| |Real.log (1 / 16 + β ^ 2 / 4)| / 2 +
+        4 / α ^ 2 + Real.pi / α + (2 / α + Real.pi / 2)) / 2 +
+        Real.log Real.pi / 2))
+
+/-- Real absolute value is bounded by the larger endpoint absolute value on an interval. -/
+theorem abs_le_max_abs_of_bounds {a x b : ℝ} (hax : a ≤ x) (hxb : x ≤ b) :
+    |x| ≤ max |a| |b| := by
+  refine abs_le.mpr ⟨?_, ?_⟩
+  · have hma : |a| ≤ max |a| |b| := le_max_left _ _
+    exact le_trans (neg_le_neg hma) (le_trans (neg_abs_le a) hax)
+  · exact le_trans hxb (le_trans (le_abs_self b) (le_max_right _ _))
+
+/-- Named-budget form of the pointwise derivative-envelope bound. -/
+theorem norm_archFactorDeriv_line_le_budget {u : ℝ} (hu : 0 < u) :
+    ‖archFactorDeriv (linePt u)‖ ≤ archDerivLineBudget u := by
+  simpa [archDerivLineBudget] using norm_archFactorDeriv_line_le hu
+
+/-- The segment derivative budget controls `‖archFactorDeriv(linePt u)‖` throughout a positive
+segment `[α, β]`. -/
+theorem norm_archFactorDeriv_line_le_segmentBudget {α β u : ℝ}
+    (hα : 0 < α) (hu : u ∈ Set.Icc α β) :
+    ‖archFactorDeriv (linePt u)‖ ≤ archDerivSegmentBudget α β := by
+  have hu0 : 0 < u := lt_of_lt_of_le hα hu.1
+  have hβ0 : 0 < β := lt_of_lt_of_le hu0 hu.2
+  have hCγ : (0 : ℝ) ≤ Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4) :=
+    mul_nonneg (Real.rpow_nonneg Real.pi_pos.le _)
+      (Real.Gamma_pos_of_pos (by norm_num)).le
+  have hu2lo : α ^ 2 ≤ u ^ 2 := by nlinarith [hu.1, hα, hu0]
+  have hu2hi : u ^ 2 ≤ β ^ 2 := by nlinarith [hu.2, hu0, hβ0]
+  have hlogarg_lo_pos : 0 < 1 / 16 + α ^ 2 / 4 := by positivity
+  have hlogarg_u_pos : 0 < 1 / 16 + u ^ 2 / 4 := by positivity
+  have hloglo : Real.log (1 / 16 + α ^ 2 / 4) ≤ Real.log (1 / 16 + u ^ 2 / 4) :=
+    Real.log_le_log hlogarg_lo_pos (by nlinarith)
+  have hloghi : Real.log (1 / 16 + u ^ 2 / 4) ≤ Real.log (1 / 16 + β ^ 2 / 4) :=
+    Real.log_le_log hlogarg_u_pos (by nlinarith)
+  have hlogabs : |Real.log (1 / 16 + u ^ 2 / 4)| ≤
+      max |Real.log (1 / 16 + α ^ 2 / 4)| |Real.log (1 / 16 + β ^ 2 / 4)| :=
+    abs_le_max_abs_of_bounds hloglo hloghi
+  have hinv : 1 / u ≤ 1 / α := one_div_le_one_div_of_le hα hu.1
+  have hinv2 : 1 / u ^ 2 ≤ 1 / α ^ 2 :=
+    one_div_le_one_div_of_le (sq_pos_of_pos hα) hu2lo
+  have h4 : 4 / u ^ 2 ≤ 4 / α ^ 2 := by
+    simpa [div_eq_mul_inv] using mul_le_mul_of_nonneg_left hinv2 (by norm_num : (0 : ℝ) ≤ 4)
+  have hpi : Real.pi / u ≤ Real.pi / α := by
+    simpa [div_eq_mul_inv] using mul_le_mul_of_nonneg_left hinv Real.pi_pos.le
+  have h2 : 2 / u ≤ 2 / α := by
+    simpa [div_eq_mul_inv] using mul_le_mul_of_nonneg_left hinv (by norm_num : (0 : ℝ) ≤ 2)
+  have hpoint_piece_nonneg :
+      0 ≤ (|Real.log (1 / 16 + u ^ 2 / 4)| / 2 + 4 / u ^ 2 + Real.pi / u +
+        (2 / u + Real.pi / 2)) / 2 + Real.log Real.pi / 2 := by
+    have hlogπ : 0 ≤ Real.log Real.pi :=
+      Real.log_nonneg (by linarith [Real.pi_gt_three])
+    positivity
+  have hpiece : (|Real.log (1 / 16 + u ^ 2 / 4)| / 2 + 4 / u ^ 2 + Real.pi / u +
+        (2 / u + Real.pi / 2)) / 2 + Real.log Real.pi / 2 ≤
+      (max |Real.log (1 / 16 + α ^ 2 / 4)| |Real.log (1 / 16 + β ^ 2 / 4)| / 2 +
+        4 / α ^ 2 + Real.pi / α + (2 / α + Real.pi / 2)) / 2 +
+        Real.log Real.pi / 2 := by
+    nlinarith [hlogabs, h4, hpi, h2]
+  have hquad : (1 / 4 + u ^ 2) / 2 ≤ (1 / 4 + β ^ 2) / 2 := by nlinarith
+  have hquad_nonneg : 0 ≤ (1 / 4 + β ^ 2) / 2 := by positivity
+  have hprod : (1 / 4 + u ^ 2) / 2 *
+        ((|Real.log (1 / 16 + u ^ 2 / 4)| / 2 + 4 / u ^ 2 + Real.pi / u +
+          (2 / u + Real.pi / 2)) / 2 + Real.log Real.pi / 2) ≤
+      (1 / 4 + β ^ 2) / 2 *
+        ((max |Real.log (1 / 16 + α ^ 2 / 4)| |Real.log (1 / 16 + β ^ 2 / 4)| / 2 +
+          4 / α ^ 2 + Real.pi / α + (2 / α + Real.pi / 2)) / 2 +
+          Real.log Real.pi / 2) :=
+    mul_le_mul hquad hpiece hpoint_piece_nonneg hquad_nonneg
+  have hinside : u + (1 / 4 + u ^ 2) / 2 *
+        ((|Real.log (1 / 16 + u ^ 2 / 4)| / 2 + 4 / u ^ 2 + Real.pi / u +
+          (2 / u + Real.pi / 2)) / 2 + Real.log Real.pi / 2) ≤
+      β + (1 / 4 + β ^ 2) / 2 *
+        ((max |Real.log (1 / 16 + α ^ 2 / 4)| |Real.log (1 / 16 + β ^ 2 / 4)| / 2 +
+          4 / α ^ 2 + Real.pi / α + (2 / α + Real.pi / 2)) / 2 +
+          Real.log Real.pi / 2) :=
+    add_le_add hu.2 hprod
+  exact le_trans (norm_archFactorDeriv_line_le hu0) (by
+    dsimp [archDerivSegmentBudget]
+    exact mul_le_mul_of_nonneg_left hinside hCγ)
+
+/-- The reflected critical-line derivative has the same norm as the direct derivative. -/
+theorem norm_archFactorDeriv_reflected_line_eq (u : ℝ) :
+    ‖archFactorDeriv (1 - linePt u)‖ = ‖archFactorDeriv (linePt u)‖ := by
+  have heqfun : (fun v : ℝ => archFactor (1 - linePt v)) =
+      fun v : ℝ => (starRingEnd ℂ) (archFactor (linePt v)) := by
+    funext v
+    rw [← conj_linePt v]
+    exact archFactor_conj (linePt v)
+  have hleft := hasDerivAt_archFactor_line_reflected u
+  have hright0 := hasDerivAt_archFactor_line u
+  have hconj : HasDerivAt (fun v : ℝ => (starRingEnd ℂ) (archFactor (linePt v)))
+      ((starRingEnd ℂ) (archFactorDeriv (linePt u) * Complex.I)) u := by
+    simpa using
+      ((Complex.conjCLE : ℂ ≃L[ℝ] ℂ).toContinuousLinearMap.hasFDerivAt.comp_hasDerivAt
+        u hright0)
+  have hright : HasDerivAt (fun v : ℝ => archFactor (1 - linePt v))
+      ((starRingEnd ℂ) (archFactorDeriv (linePt u) * Complex.I)) u := by
+    simpa [heqfun] using hconj
+  have huniq := HasDerivAt.unique hleft hright
+  have hnorm := congrArg norm huniq
+  simp [map_mul] at hnorm
+  exact hnorm
+
 end RHTower

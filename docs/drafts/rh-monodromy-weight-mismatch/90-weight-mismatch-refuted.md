@@ -59,3 +59,23 @@ The refutation kills the *parity* framing and sharpens what a real mechanism mus
 counting-force or (3) a genuine equivariant index — both of which drop the mod-2 framing entirely. The
 next construction is (2): make the defect-recurrence bound the off-line quadruple count, and collide it
 with the step-4 density lane.
+
+## Postscript — the refutation's shadow IS the real open core (RHLadder)
+
+Chasing where the parity idea came from led to the actual frontier. The tree already reduces RH to a
+**mod-`2^{k+1}` tower** — `RHLadder k`: *every right-half ξ-zero has vanishing order divisible by `2^k`*
+(`RiemannTower.RHLadder`, `rh_iff_forall_ladder : RH ↔ ∀ k, RHLadder k`). My mod-2 "parity" was exactly
+its trivial `k ≤ 1` shadow — the level where `2m` is automatically divisible. The non-trivial content is
+the whole tower.
+
+Now formalized (`WeightMismatchRefutation.lean`, axiom-clean):
+- `not_rhLadder_of_rightHalf_zero` — a right-half ξ-zero of order `m ≥ 1` **breaks** `RHLadder k` for
+  every `k` with `2^k > m` (the ladder demands `2^k ∣ m`, impossible for `0 < m < 2^k`).
+- `not_forall_rhLadder_of_rightHalf_zero` — hence a single off-line zero collapses the whole tower
+  `∀ k, RHLadder k`.
+
+So the honest "weight" is not a parity but the **2-adic valuation `v₂(ord ρ)`** of the zero order: RH ⟺
+`v₂` is forced to `∞` (order `0`) at every right-half point ⟺ `RHLadder k` for all `k`. The parity
+refutation is not a dead end — it correctly located the open core: **prove `RHLadder k`** (equivalently:
+ξ admits an analytic `2^k`-th root on `Re s > ½`, `rhLadder_iff_root`). That is the exact target of the
+whole Spur/ladder apparatus, and it is where the real research sits — not in any mod-2 invariant.

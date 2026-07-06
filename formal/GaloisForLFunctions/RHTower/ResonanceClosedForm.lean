@@ -70,11 +70,50 @@ theorem norm_archFactor_line_le (u : ℝ) :
         rw [hpoly]
         exact mul_le_mul_of_nonneg_left hGRnorm (by positivity)
 
+/-- Closed-form envelope sup at line height `B`. -/
+noncomputable def archEnvelopeLineBudget (B : ℝ) : ℝ :=
+  (1 / 4 + B ^ 2) / 2 * (Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4))
+
+/-- Named-budget form of the critical-line envelope sup. -/
+theorem norm_archFactor_line_le_budget (u : ℝ) :
+    ‖archFactor (linePt u)‖ ≤ archEnvelopeLineBudget u := by
+  simpa [archEnvelopeLineBudget] using norm_archFactor_line_le u
+
+/-- On a nonnegative segment, the right endpoint controls the envelope budget. -/
+theorem norm_archFactor_line_le_segment_budget {α β u : ℝ}
+    (hα0 : 0 ≤ α) (hu : u ∈ Set.Icc α β) :
+    ‖archFactor (linePt u)‖ ≤ archEnvelopeLineBudget β := by
+  have hbase := norm_archFactor_line_le u
+  have hu0 : 0 ≤ u := le_trans hα0 hu.1
+  have hβ0 : 0 ≤ β := le_trans hu0 hu.2
+  have hsqu : u ^ 2 ≤ β ^ 2 := by
+    have hmul := mul_le_mul hu.2 hu.2 hu0 hβ0
+    simpa [pow_two] using hmul
+  have hfactor : (1 / 4 + u ^ 2) / 2 ≤ (1 / 4 + β ^ 2) / 2 := by
+    nlinarith
+  have hC0 : 0 ≤ Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4) :=
+    mul_nonneg (Real.rpow_nonneg Real.pi_pos.le _)
+      (Real.Gamma_pos_of_pos (by norm_num)).le
+  have hscale :
+      (1 / 4 + u ^ 2) / 2 *
+          (Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4)) ≤
+        archEnvelopeLineBudget β := by
+    dsimp [archEnvelopeLineBudget]
+    exact mul_le_mul_of_nonneg_right hfactor hC0
+  exact le_trans hbase hscale
+
 /-- The envelope is conjugation-equivariant. -/
 theorem archFactor_conj (s : ℂ) :
     archFactor ((starRingEnd ℂ) s) = (starRingEnd ℂ) (archFactor s) := by
   unfold archFactor
   rw [Gammaℝ_conj, map_mul, map_div₀, map_mul, map_sub, map_one, map_ofNat]
+
+/-- The reflected envelope obeys the same positive-segment budget. -/
+theorem norm_archFactor_reflected_line_le_segment_budget {α β u : ℝ}
+    (hα0 : 0 ≤ α) (hu : u ∈ Set.Icc α β) :
+    ‖archFactor (1 - linePt u)‖ ≤ archEnvelopeLineBudget β := by
+  rw [← conj_linePt u, archFactor_conj, Complex.norm_conj]
+  exact norm_archFactor_line_le_segment_budget hα0 hu
 
 /-- **The reflected resonance integral is the conjugate of the direct one.** -/
 theorem integral_archFactor_reflected_eq_conj (α β : ℝ) :
@@ -137,5 +176,21 @@ theorem resonance_moment_le_closed_form {α β : ℝ} (hα : 0 < α) (hαβ : α
     _ ≤ _ := by
         have h2 : (0 : ℝ) ≤ 2 := by norm_num
         exact mul_le_mul_of_nonneg_left hmain h2
+
+/-- Closed-form scalar budget for the resonance moment on `[α, β]`. -/
+noncomputable def resonanceMomentClosedFormBudget (α β : ℝ) : ℝ :=
+  let W : ℝ := (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2
+  2 * (2 * (archEnvelopeLineBudget β / W) +
+    (β - α) * (archEnvelopeLineBudget β * (3 / α + Real.pi / 4) / W +
+      archEnvelopeLineBudget β * (3 / α ^ 2 + Real.pi / (4 * α)) / W ^ 2))
+
+/-- Named-budget form of the closed resonance-moment estimate. -/
+theorem resonance_moment_le_closedFormBudget {α β : ℝ} (hα : 0 < α) (hαβ : α ≤ β)
+    (hm : 0 < (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2) :
+    ‖(∫ u in α..β, archFactor (linePt u)) +
+        ∫ u in α..β, archFactor (1 - linePt u)‖ ≤
+      resonanceMomentClosedFormBudget α β := by
+  simpa [resonanceMomentClosedFormBudget, archEnvelopeLineBudget] using
+    resonance_moment_le_closed_form hα hαβ hm
 
 end RHTower

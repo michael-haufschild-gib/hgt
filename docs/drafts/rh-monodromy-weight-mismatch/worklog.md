@@ -4966,3 +4966,35 @@ edge_amgm_eq, edge_isLeast, edge_margin_const, edge_peak_loc, edge_law, edge_law
 edge_law_tendsto, hasSum_odd_basel, local_factor_series, kappa_eq_inv_series (all axiom-clean). Residual
 = the decomposition's 2 asymptotic inputs (ε→−π²/16, A_trunc→i/d) from the exact poleExcess field +
 the discrete coth-θ*(i) equilibrium model.
+
+## cont. 47 — refutation redirects to the REAL open core: RHLadder (the 2^{k+1} tower)
+
+Chasing the parity idea to its source found the actual frontier. The tree ALREADY reduces RH to the
+mod-2^{k+1} tower: RHLadder k = "every right-half ξ-zero has order divisible by 2^k"
+(rh_iff_forall_ladder : RH ↔ ∀ k, RHLadder k). My mod-2 refutation was exactly the trivial k≤1 shadow.
+Formalized (WeightMismatchRefutation.lean, axiom-clean; RHTower 8735 jobs):
+- not_rhLadder_of_rightHalf_zero: a right-half zero of order m≥1 BREAKS RHLadder k for 2^k > m.
+- not_forall_rhLadder_of_rightHalf_zero: one off-line zero collapses ∀k RHLadder k.
+The honest "weight" = the 2-adic valuation v₂(ord ρ): RH ⟺ v₂ forced to ∞ (order 0) everywhere right of
+the line ⟺ RHLadder k ∀k ⟺ (rhLadder_iff_root) ξ has an analytic 2^k-th root on Re s>½. THAT is the open
+core — the target of the whole Spur/ladder apparatus. The parity refutation correctly located it; no
+mod-2 invariant does the job. Doc 90 postscript records this.
+
+## cont. 48 — RHLadder 1 attacked: OPEN, wall located at the reflection fixed point (doc 91)
+
+Task "prove RHLadder 1 (even order for right-half zeros)". Attacked directly; it does not fall.
+- PROVEN reformulation (WeightMismatchRefutation.rhLadder_one_iff_even_order, axiom-clean):
+  RHLadder 1 ↔ ∀ρ∈rightHalf, xi ρ=0 → Even(ord ρ). = √ξ on Re>½ = ξ mod-2 deck-cocycle trivial there.
+- The wall, structural: the tree's ONLY even-order lever (analyticOrderAt_even_of_reflection) needs ξ
+  symmetric ABOUT the zero (ξ(2c−s)=ξ(s)). ξ has that at exactly c=½ (⟹ xi_central_ladder_two,
+  2∣ord_{½}). ½∉rightHalf. At ρ≠½ neither symmetry fixes ρ: conj keeps ρ̄∈rightHalf with ord ρ=ord ρ̄
+  (two points, not doubling); FE sends ρ to the LEFT half (out of rightHalf). No even-order forcing at
+  a non-central zero. Not a difficulty estimate — a fact about the available symmetries.
+- Attack-as-false: cannot refute either (no known off-line zero; RH ⟹ vacuous). TRUE-if-RH, strictly
+  weaker than RH, genuine intermediate.
+Forward (doc 91): (1) global-monodromy route — force the ξ deck-2-cocycle to be a coboundary on convex
+Re>½ from a BOUNDARY constraint on {Re=½} (the H_N carrier of doc 89): bulk-even-orders fixed by
+boundary line-data = constraint-not-flow. (2) deform the fixed point ½ toward off-line ρ; the
+obstruction to extending xi_central_ladder_two is a function of Re ρ−½ — a native 𝓜⁺ object (∂_s moving
+the reflection axis). Next: build the H_N boundary functional whose vanishing trivialises the cocycle,
+test vs xi_central_ladder_two as the Re=½ boundary case.
