@@ -5787,3 +5787,16 @@ disjoint-boxes count reaches the non-vacuous tally without it.
 
 Verify: `lake build MainTheorems` EXIT 0 (9176 jobs); all 10 named decls axiom-clean
 [propext, Classical.choice, Quot.sound]; formal lint + index regeneration pass. No git commit.
+
+## 2026-07-06 (later) — constraint front W3 + W1 delivered
+- LedgerReduction.lean: LedgerChain + ledgerChain_transport (identity (L) in transport form) + AnchoredLedger + rhLadder_of_anchoredLedgers — (P-flux) is now ONE named clause (2^k ∣ flux). Axiom-clean ×5, lint green.
+- SeamParity.lean: seamSign + seamSign_one_zero_iff_even + seam_jump_sign_readoff — OC2's local half discharged: mod-2 seam ledger = two endpoint signs. Axiom-clean ×3, lint green.
+- 105 status addendum appended (interface correction: AnchoredLedger's divisibility clause IS the formal P-flux; W1/W4 are its suppliers).
+
+## 2026-07-06 (evening) — all five packages landed; event-typed integration banked
+- Helper agents delivered W2 (SeamCrossingRigidity: forced crossings + 1/log T oscillation scale + SeamNoQuietStretch), W5 (UPlaneLadder: coherent dyadic xiDescent tower ⟺ zero-freeness on slit-plane regions, global far anchor), W4 (doc 106 + BandEdgePairing.lean + WindowSymmetryNoGo.lean: event-typed pairing interface, box-84 attack survived by retyping, geometric-involution route CLOSED — pairing must be arithmetic; frontier = WR_1 / finite census / germ continuation).
+- Executed doc 106 §9's W3 handoff: LedgerChainE + LedgerFluxPaired (consumes FixedPointFreePairing) + rhLadder_one_of_anchoredEventLedgers. RHLadder 1 now follows formally from: per-zero event-typed anchored chains with (seam events even) ∧ (odd band events paired). Axiom-clean, lint green.
+
+## 2026-07-06 (night) — the Euler incidence carrier built (doc 106 prediction 3 → doc 107)
+- IncidenceCarrier.lean banked (6 theorems axiom-clean): Möbius mirror action on incidence values; seam ⊆ real locus (degeneration); quiet-edge + forced-event from bandSign endpoint data (band analogue of seamSign). Family events = level sets of ONE constraint-built object — no clock, no path.
+- Doc 107: construction + conjecture layer (closed-sweep telescope, ports = ι|seam critical points, Euler-tail winding as the arithmetic frontier; rng collision: phyllotaxis/three-gap interleaving + sourdough/self-restoring-ratio alternation, predictions pre-registered against banked measurements).

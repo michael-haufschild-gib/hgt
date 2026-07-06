@@ -20,6 +20,7 @@ and anchor are all discharged; the burden is the flux parity alone.
 import GaloisForLFunctions.RHTower.DeckMultiZero
 import GaloisForLFunctions.RHTower.DeckHomotopy
 import GaloisForLFunctions.RHTower.XiDeck
+import GaloisForLFunctions.RHTower.BandEdgePairing
 
 namespace RHTower
 
@@ -511,5 +512,124 @@ theorem rhLadder_of_anchoredLedgers (k : ℕ)
   obtain ⟨c, hc⟩ := hdvd2
   rw [← hm, hc]
   exact ⟨(c : ℕ∞), by push_cast; ring⟩
+
+end RHTower
+
+namespace RHTower
+
+open Complex Metric
+
+/-! ### The event-typed ledger -/
+
+/-- A ledger chain recording its transversal events: the list index collects the signed
+multiplicities of the jumps in order, an entering zero contributing `+m` and a leaving
+zero `−m`.  Dominated moves record nothing. -/
+inductive LedgerChainE (a : ℂ) (r₀ R : ℝ) : (ℂ → ℂ) → (ℂ → ℂ) → List ℤ → Prop
+  | refl (f : ℂ → ℂ) : LedgerChainE a r₀ R f f []
+  | dominated {f g h : ℂ → ℂ} {L : List ℤ}
+      (hg : AnalyticOnNhd ℂ g (chartRA a r₀ R ∪ chartLA a r₀ R))
+      (hclose : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, ‖g z - f z‖ < ‖f z‖)
+      (rest : LedgerChainE a r₀ R g h L) : LedgerChainE a r₀ R f h L
+  | jump_in {f g h : ℂ → ℂ} {ρ' : ℂ} {m : ℕ} {L : List ℤ}
+      (hρ' : ‖ρ' - a‖ ≤ r₀)
+      (hfact : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, g z = (z - ρ') ^ m * f z)
+      (rest : LedgerChainE a r₀ R g h L) : LedgerChainE a r₀ R f h ((m : ℤ) :: L)
+  | jump_out {f g h : ℂ → ℂ} {ρ' : ℂ} {m : ℕ} {L : List ℤ}
+      (hρ' : ‖ρ' - a‖ ≤ r₀)
+      (hfact : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, f z = (z - ρ') ^ m * g z)
+      (rest : LedgerChainE a r₀ R g h L) : LedgerChainE a r₀ R f h ((-(m : ℤ)) :: L)
+
+/-- An event-typed ledger chain is a ledger chain whose flux is the sum of its recorded
+events. -/
+theorem ledgerChainE_toChain {a : ℂ} {r₀ R : ℝ} {f g : ℂ → ℂ} {L : List ℤ}
+    (h : LedgerChainE a r₀ R f g L) : LedgerChain a r₀ R f g L.sum := by
+  induction h with
+  | refl f => simpa using LedgerChain.refl f
+  | dominated hg hclose rest ih => exact LedgerChain.dominated hg hclose ih
+  | @jump_in f' g' h' ρ' m L' hρ' hfact rest ih =>
+      have hsum : ((m : ℤ) :: L').sum = L'.sum + m := by
+        rw [List.sum_cons]
+        ring
+      rw [hsum]
+      exact LedgerChain.jump_in hρ' hfact ih
+  | @jump_out f' g' h' ρ' m L' hρ' hfact rest ih =>
+      have hsum : ((-(m : ℤ)) :: L').sum = L'.sum - m := by
+        rw [List.sum_cons]
+        ring
+      rw [hsum]
+      exact LedgerChain.jump_out hρ' hfact ih
+
+/-- A list of odd integers has sum congruent to its length modulo two. -/
+private theorem two_dvd_sum_sub_length {l : List ℤ}
+    (hodd : ∀ x ∈ l, ¬ (2 : ℤ) ∣ x) : (2 : ℤ) ∣ (l.sum - l.length) := by
+  induction l with
+  | nil => simp
+  | cons x t ih =>
+      have hx : (2 : ℤ) ∣ (x - 1) := by
+        have := hodd x List.mem_cons_self
+        omega
+      have ht := ih (fun y hy => hodd y (List.mem_cons_of_mem x hy))
+      rw [List.sum_cons, List.length_cons]
+      push_cast
+      omega
+
+/-- **The paired-flux interface.**  An event list has paired flux when, up to
+permutation, it splits into a part of even events and a part of odd events whose
+positions carry a fixed-point-free involutive pairing: every odd transversal event
+belongs to a two-element orbit.  The involution's payload is the finite pairing
+structure of the band-edge algebra. -/
+def LedgerFluxPaired (L : List ℤ) : Prop :=
+  ∃ evens odds : List ℤ,
+    L.Perm (odds ++ evens) ∧ (∀ x ∈ evens, (2 : ℤ) ∣ x) ∧
+    (∀ x ∈ odds, ¬ (2 : ℤ) ∣ x) ∧
+    Nonempty (BandEdgePairing (Fin odds.length))
+
+/-- **Paired flux is even.**  The even events contribute nothing modulo two, and the
+fixed-point-free pairing forces an even count of odd events, whose sum is congruent to
+that count. -/
+theorem ledgerFluxPaired_two_dvd_sum {L : List ℤ} (h : LedgerFluxPaired L) :
+    (2 : ℤ) ∣ L.sum := by
+  obtain ⟨evens, odds, hperm, hev, hodd, ⟨P⟩⟩ := h
+  have hlen : 2 ∣ odds.length := by
+    have hcard := fixedPointFreePairing_two_dvd_card (Event := Fin odds.length) P
+    simpa using hcard
+  have hodds : (2 : ℤ) ∣ odds.sum := by
+    have h1 := two_dvd_sum_sub_length hodd
+    have h2 : (2 : ℤ) ∣ (odds.length : ℤ) := by exact_mod_cast hlen
+    omega
+  have hevens : (2 : ℤ) ∣ evens.sum := List.dvd_sum hev
+  rw [hperm.sum_eq, List.sum_append]
+  exact dvd_add hodds hevens
+
+/-- **The event-certified anchored ledger**: an event-typed chain from a nonvanishing
+member whose event list has paired flux. -/
+def AnchoredEventLedger (a : ℂ) (r₀ R : ℝ) (f : ℂ → ℂ) : Prop :=
+  ∃ (f₀ : ℂ → ℂ) (L : List ℤ),
+    AnalyticOnNhd ℂ f₀ (ball a R) ∧ (∀ z ∈ ball a R, f₀ z ≠ 0) ∧
+    LedgerChainE a r₀ R f₀ f L ∧ LedgerFluxPaired L
+
+/-- An event-certified anchored ledger is an anchored even-flux ledger at level two. -/
+theorem anchoredLedger_two_of_eventLedger {a : ℂ} {r₀ R : ℝ} {f : ℂ → ℂ}
+    (h : AnchoredEventLedger a r₀ R f) : AnchoredLedger 2 a r₀ R f := by
+  obtain ⟨f₀, L, han, hne, hchain, hpar⟩ := h
+  exact ⟨f₀, L.sum, han, hne, ledgerChainE_toChain hchain,
+    by exact_mod_cast ledgerFluxPaired_two_dvd_sum hpar⟩
+
+/-- **The base rung from event-certified ledgers.**  If every hypothetical off-line
+ξ-zero admits, at arbitrarily small radii, an anchored event-typed ledger chain whose
+odd transversal events carry a fixed-point-free pairing and whose remaining events are
+even, then every off-line vanishing order is even.  The parity burden splits along the
+event classes: even events are the seam-certified class, and the pairing of the odd
+class is the band-edge interface. -/
+theorem rhLadder_one_of_anchoredEventLedgers
+    (hled : ∀ ρ ∈ rightHalf, xi ρ = 0 → ∀ ε > 0, ∃ r₀ R : ℝ,
+      0 ≤ r₀ ∧ r₀ < R ∧ R ≤ ε ∧ AnchoredEventLedger ρ r₀ R xi) :
+    RHLadder 1 := by
+  refine rhLadder_of_anchoredLedgers 1 ?_
+  intro ρ hρ h0 ε hε
+  obtain ⟨r₀, R, h1, h2, h3, hAE⟩ := hled ρ hρ h0 ε hε
+  refine ⟨r₀, R, h1, h2, h3, ?_⟩
+  rw [pow_one]
+  exact anchoredLedger_two_of_eventLedger hAE
 
 end RHTower

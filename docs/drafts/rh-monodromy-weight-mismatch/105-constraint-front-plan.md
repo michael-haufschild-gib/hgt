@@ -127,3 +127,30 @@ From there the generative moves are: iterate the ledger up the rungs (k ≥ 2, w
 symmetry discount changes the books), test `BandEdgePairing` against the Beurling coherence
 dial (#96), and collide the pairing structure with the parity front's quadrant-ramified cover
 (#116) — the two fronts' single shared object.
+
+---
+
+## Status addendum (2026-07-06, same day)
+
+- **W3 DELIVERED** (`LedgerReduction.lean`, axiom-clean): `LedgerChain` (dominated steps +
+  signed jumps on annulus charts), `ledgerChain_transport` (class multiplies by exactly
+  `exp(2πi·flux/n)` — identity (L) in transport form, jumps freed from `deckClass_jump`'s
+  factored-form requirement), `AnchoredLedger` interface,
+  `anchoredLedger_deckClass_eq_one`, `xi_deckClass_annulus`, and the capstone
+  **`rhLadder_of_anchoredLedgers`**: anchored even-flux ledgers at every off-line zero at
+  arbitrarily small radii ⟹ `RHLadder k`. The formal (P-flux) burden is now one named
+  clause: `(2^k : ℤ) ∣ flux` inside `AnchoredLedger`.
+- **W1 DELIVERED** (`SeamParity.lean`, axiom-clean): `seamSign` + zero-free positivity +
+  **`seamSign_one_zero_iff_even`** (0 < seamSign ↔ Even m at a single on-line zero) +
+  **`seam_jump_sign_readoff`** (the level-2 seam-jump multiplier (−1)^m read off from the
+  endpoint sign product, for any bank roots). (OC2)'s local half is discharged: the mod-2
+  seam contribution is boundary data.
+- Interface correction vs the original W3 sketch: the honest formal (P-flux) shape today is
+  the `AnchoredLedger` divisibility clause, not three separate Props — `BandEdgePairing`
+  and `SeamParity` are its suppliers. W1's readoff is the seam-side supplier; W4 must
+  produce the band-edge-side pairing that, combined per box path, certifies the flux
+  divisibility. W2/W5 unchanged.
+- Next objects: (i) a ledger-chain constructor that consumes `seam_jump_sign_readoff` to
+  certify a `jump_in`/`jump_out` pair's cancellation from two seamSign evaluations;
+  (ii) W4's pairing statement on the pencil (doc 106); (iii) W2's forced-oscillation
+  theorem giving the seamSign functional its `1/log T` sampling scale.

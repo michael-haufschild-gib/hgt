@@ -129,6 +129,9 @@ import GaloisForLFunctions.RHTower.EMRemainderReduction
 import GaloisForLFunctions.RHTower.VanDerCorput
 import GaloisForLFunctions.RHTower.DiscreteVanDerCorput
 import GaloisForLFunctions.RHTower.VanDerCorputSecond
+import GaloisForLFunctions.RHTower.VanDerCorputWeighted
+import GaloisForLFunctions.RHTower.SawtoothModeSum
+import GaloisForLFunctions.RHTower.SawtoothIBP
 import GaloisForLFunctions.RHTower.SeamCongruence
 import GaloisForLFunctions.RHTower.CothInfra
 import GaloisForLFunctions.RHTower.SpurLattice
@@ -241,3 +244,6 @@ import GaloisForLFunctions.RHTower.RadiusScaleForcing
 import GaloisForLFunctions.RHTower.LedgerReduction
 import GaloisForLFunctions.RHTower.SeamCrossingRigidity
 import GaloisForLFunctions.RHTower.SeamParity
+import GaloisForLFunctions.RHTower.IncidenceCarrier
+import GaloisForLFunctions.RHTower.IncidenceRamification
+import GaloisForLFunctions.RHTower.LedgerTelescope

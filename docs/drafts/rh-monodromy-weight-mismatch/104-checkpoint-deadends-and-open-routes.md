@@ -376,3 +376,83 @@ first-derivative test (`VanDerCorput`, non-saddle modes) and the **second-deriva
 (`VanDerCorputSecond`, saddle modes). Every analytic foundation the approximate functional equation
 needs for this route is now formalized and axiom-clean; what remains is the Poisson bookkeeping that
 assembles them.
+
+---
+
+## Addendum 7: conjugation corollary banked; the sawtooth assembly mapped
+
+**[PROVED HERE, Lean]** `RHTower/VanDerCorputSecond.lean`, two more axiom-clean theorems:
+- `norm_integral_cexp_neg_phase`: `‖∫ exp(i·(−g))‖ = ‖∫ exp(i·g)‖` (conjugation commutes with the
+  interval integral — `Complex.conjCLE.intervalIntegral_comp_comm` — and preserves modulus). This is
+  the conjLIE/conjCLE plumbing.
+- `norm_integral_cexp_secondDeriv_neg`: the **concave** second-derivative test, `g'' ≤ −λ < 0 ⟹
+  ‖∫ exp(i·g)‖ ≤ 6/√λ`, by applying the general test to `−g` through the conjugation identity. This is
+  the sign the `−` Fourier mode `τ·log x − 2πm·x` carries (`g'' = −τ/x²`), so both mode families are
+  now covered.
+
+**The remaining sawtooth assembly (the Riemann–Siegel B-process), mapped exactly.** mathlib supplies
+the periodized-Bernoulli Fourier machinery (`ZetaValues.periodizedBernoulli`, `bernoulliFourierCoeff`)
+— the right tool for expanding the sawtooth `ψ = {·}−½` (raw Poisson on a sharp `[1,k]` cutoff is
+worse). The chain: (i) the tree's `finite_em_identity` already writes `Σ_{n≤k} n^(−s) = main + Σ emTerm`
+with `emTerm m = ∫_m^{m+1}(x−m)x^{−s−1}` — the sawtooth integral; (ii) Fourier-expand `ψ` and interchange
+(dominated convergence — the `B_1` series converges only pointwise/`L²`, so this step needs care);
+(iii) bound each mode `∫ (1/x)·exp(i(τ log x ± 2πm x))` by the **weighted** van der Corput; (iv) sum the
+mode bounds over `m` (`Σ 1/m²` convergence). The one missing per-mode input is the **weighted** van der
+Corput (the `1/x` factor): its core is verified (IBP with `U = w·(g'·i)⁻¹`, `U' = w'(g'i)⁻¹ − w·g''i/(g'i)²`,
+norms `‖U‖ = w/g'`, pointwise `U·V' = w·V`), bound `‖∫ w·exp(i·g)‖ ≤ 4·w(a)/λ` for `w` antitone
+nonnegative. Every unweighted per-mode bound (first- and second-derivative, both signs) is banked; the
+assembly is the interchange + weighted-mode + summation bookkeeping, resting entirely on these.
+
+**Update (same session): weighted van der Corput banked.**
+`RHTower/VanDerCorputWeighted.lean : norm_integral_weight_cexp_le` (axiom-clean, umbrella green) — the
+last missing per-mode ingredient: for an antitone nonnegative weight `w` and `g' ≥ λ > 0` increasing,
+`‖∫_a^b w·exp(i·g)‖ ≤ 4·w(a)/λ` (one IBP with `u = w·(i·g')⁻¹`; boundary `w/g'`, remainder
+`∫|w'|/g' + ∫ w·g''/g'²`). This covers the `1/x` amplitude of the sawtooth Fourier modes. Every
+analytic estimate the reflected-block assembly needs — first-/second-derivative (both signs),
+weighted, Abel/Dirichlet, and the exact reduction — is now formalized and axiom-clean. The residual is
+purely the combinatorial/convergence bookkeeping: the sawtooth Fourier interchange (dominated
+convergence for the `B_1` series) and the `Σ_m 1/m²` sum of per-mode bounds.
+
+---
+
+## Addendum 8: the two item-1 assembly tools banked (mode-sum + interchange)
+
+**[PROVED HERE, Lean]** `RHTower/SawtoothModeSum.lean` (axiom-clean, umbrella green):
+- `summable_and_norm_tsum_le_of_mode_bound` / `_of_inv_sq_bound`: the **sum over m** step —
+  a family `T m` with `‖T m‖ ≤ K/(m+1)²` (the per-mode weighted-vdC rate) is absolutely summable and
+  `‖∑' m, T m‖ ≤ K·∑' 1/(m+1)²` (finite, `= K·π²/6`).
+- `intervalIntegral_tsum`: the **expand-and-interchange** step — `∫_a^b (∑' n, f n) = ∑' n, ∫_a^b f n`
+  under absolute summability (`∑' n, ∫⁻ ‖f n‖ ≠ ⊤`). This is the interval-integral form of
+  `MeasureTheory.integral_tsum`, absent from mathlib.
+
+Route confirmed by mathlib's `ZetaValues`: the sawtooth `B₁` Fourier series is only conditionally
+convergent, but IBP lifts it to the **continuous `B₂`**, whose Fourier series is absolutely convergent
+(`summable_bernoulli_fourier` for `k ≥ 2`, coefficients `~1/m²`) with the pointwise expansion
+`hasSum_one_div_pow_mul_fourier_mul_bernoulliFun` — exactly the `∑' n, f n` that `intervalIntegral_tsum`
+consumes, with the `1/m²` coefficients feeding the mode-sum.
+
+**Toolset now complete.** Every analytic estimate (first-/second-derivative van der Corput both signs,
+weighted, Abel/Dirichlet), the conjugation, the exact `(R7)→Rχ` reduction, the interchange, and the
+mode-sum are all formalized and axiom-clean. The residual is the connective wiring: `finite_em_identity`
+→ sawtooth → IBP-to-`B₂` → `intervalIntegral_tsum` with the `B₂` `hasSum` → per-mode weighted vdC →
+mode-sum. No new analytic input remains — only the bookkeeping that chains banked lemmas.
+
+---
+
+## Addendum 9: the sawtooth IBP-lifting step banked (B₁ → B₂)
+
+**[PROVED HERE, Lean]** `RHTower/SawtoothIBP.lean` (axiom-clean, umbrella green):
+- `hasDerivAt_ofReal_cpow_const`: the derivative of `x ↦ (↑x)^c` (`x > 0`).
+- `sawtooth_ibp_unit`: the per-interval Euler–Maclaurin IBP. On `[m,m+1]` the local `B₂` half
+  `Q(x) = ((x−m)²−(x−m))/2` **vanishes at both integer endpoints**, so
+  `∫_m^{m+1} (x−m−½)·x^(−s−1) = −∫_m^{m+1} Q(x)·(−s−1)x^(−s−2)` with no boundary term. Summed over `m`,
+  this lifts the conditionally-convergent sawtooth (`B₁`) to the continuous, absolutely Fourier-summable
+  `B₂` — the maneuver that legitimises the mode expansion (the `B₁` series is not absolutely convergent,
+  `B₂`'s is, `~1/m²`).
+
+**End-to-end progress map.** `finite_em_identity` (tree ✓) → per-interval IBP `B₁→B₂`
+(`sawtooth_ibp_unit` ✓) → [sum over `m`, identify `B₂`-periodic kernel] → [`B₂` Fourier expansion on the
+interval] → `intervalIntegral_tsum` (✓) → per-mode weighted vdC (✓) → mode-sum (✓). The two remaining
+connective links are the `m`-summation of the per-interval IBPs and the periodic-`B₂` Fourier expansion
+(mathlib supplies it on the circle `𝕌`; the circle→interval bridge is the last piece). Every analytic
+estimate and both the interchange and mode-sum are banked; the residual is these two connective steps.

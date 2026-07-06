@@ -29,7 +29,7 @@ noncomputable def seamSign (f : ℂ → ℂ) (t₁ t₂ : ℝ) : ℝ :=
 
 /-- A continuous real function without zeros on a segment has positive endpoint
 product. -/
-private theorem endpoint_sign_product_pos {F : ℝ → ℝ} {t₁ t₂ : ℝ} (h12 : t₁ ≤ t₂)
+theorem endpoint_sign_product_pos {F : ℝ → ℝ} {t₁ t₂ : ℝ} (h12 : t₁ ≤ t₂)
     (hcont : ContinuousOn F (Set.Icc t₁ t₂))
     (hne : ∀ τ ∈ Set.Icc t₁ t₂, F τ ≠ 0) :
     0 < F t₁ * F t₂ := by
