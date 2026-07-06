@@ -692,3 +692,32 @@ The theorem `reflectedGridCompletedCharge_even_of_center_swap` proves: if the ce
 The completed carrier supplies both analytic ingredients: `completedGN_orderAt_one_sub` gives off-diagonal order-swap invariance, and `completedGN_eventually_reflection_half` gives the local symmetry at the diagonal fixed point.
 
 The remaining R7 bridge is now purely geometric/accounting: construct the actual center map from the AFE saddle/grid carrier to the completed-carrier zero germs, prove the finite-order side condition for those centers, and prove that any off-grid event class is paired or absent. The parity algebra and completed-carrier local-order transfer are closed.
+
+---
+
+## Addendum 21: canonical ratio center closes the completed-carrier geometry
+
+**[PROVED HERE, Lean]** `RHTower/ReflectedGridCenter.lean`: for a reflected grid collision `(n,m)`, define the canonical real center
+
+`reflectedGridRatioCenterR(n,m) = n/(n+m)`,
+
+and view it in `ℂ` as `reflectedGridRatioCenter(n,m)`. The formal geometry is now banked:
+
+- `reflectedGridRatioCenter_swap`: factor-swap reflection sends the center to `1-center`.
+- `reflectedGridRatioCenter_strip`: every collision center lies in the open critical strip.
+- `reflectedGridRatioCenter_diag`: every diagonal fixed collision lands at the FE fixed point `1/2`.
+- `completedGN_orderAt_ofReal_ne_top`: for `N ≥ 1`, `completedGN N` has finite local order at every
+  real point of the open strip; in fact the order is zero there.
+- `reflectedGridCompletedCharge_finite_of_ratio_center`: the finite-order side condition is automatic
+  at the canonical ratio centers when `N ≥ 1`.
+
+Consequently, `reflectedGridCompletedCharge_even_of_ratio_center_of_one_le` proves the completed
+reflected-grid charge is even for the canonical center assignment as soon as `N ≥ 1`. The deck form is
+`reflectedGridCompletedCharge_deckRed_two_eq_one_of_ratio_center_of_one_le`.
+
+This closes the geometric center map and the finite-local-order condition required by the
+completed-carrier reflected-grid bridge. The parity algebra, the completed-carrier local-order
+transfer, the center geometry, and the ratio-center regularity are all formalized. The remaining R7
+bridge is now exactly typed: reduce the physical AFE/reflection charge carrier to this completed
+collision carrier, and account for off-grid/noncollision events by proving that they are absent or
+paired separately.

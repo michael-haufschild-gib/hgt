@@ -178,3 +178,44 @@ Next generative move: work items 4 and 5 jointly — the anchor's phase tilt
 the question whether it can certify the boundary orientation on the isolating annulus of
 the zero (rather than on a distant long edge) is exactly where the Euler product meets
 the locality scale, and it is a new, concrete object no prior doc has named.
+
+---
+
+## Addendum — the forward object is built [PROVED HERE, Lean: `AnchorTilt.lean`]
+
+The anchor's mirror-odd phase tilt is now a formal object with its exact laws:
+
+- `primeTilt p s = arg(1−p^{−s})`, `anchorTilt P s = ∑_{p∈P} primeTilt p s` — well-defined
+  smooth angles: every Euler factor lies in the open right half plane on `Re s > 0`
+  (`re_eulerFactor_pos`), where `arg = arctan(Im/Re)` (`arg_eq_arctan_of_re_pos`).
+- **Height-uniform budget**: `|anchorTilt P s| ≤ ∑_{p∈P} p^{−σ₀}/(1−p^{−σ₀})` on
+  `Re s ≥ σ₀` (`abs_anchorTilt_le`) — the anchor's C₁ budget with `log p ↦ 1`.
+- **Schwarz oddness**: `anchorTilt P s̄ = −anchorTilt P s` (`anchorTilt_conj`).
+- **Exact polar identity**: `A(s) = ‖A(s)‖·e^{i·tilt}` (`eulerHeadAnchor_polar`) — the
+  tilt is the canonical phase branch, no mod-2π ambiguity.
+- **The mirror defect** `defect(s) = tilt(1−s̄) + tilt(s)` with the product identity
+  `A(1−s̄)·A(s) = ‖·‖·‖·‖·e^{i·defect}` (`eulerHeadAnchor_mul_mirror`): equivariance
+  would quantize it in `2πℤ` (`anchorMirrorDefect_int_of_lineReflection`).
+- **THE ANGLE LAW** (`incidence_anchored_mirror`, `im_incidence_anchored_mirror`): for
+  the anchored pencil `(eulerHeadAnchor P, completedGN N)` on the strip,
+  `ι(1−s̄) = (‖A(s)‖/‖A(1−s̄)‖)·e^{−i·defect}·conj(ι(s))` — the mirror orientation of the
+  anchored carrier is the blind reversal rotated by exactly minus the defect, up to a
+  positive factor. The entire escape from the F3 blindness theorems is ONE real angle.
+- **Evaluated on the isolating annulus**: `abs_anchorMirrorDefect_le_of_mem_ball` — on
+  any ball inside the strip (in particular the isolating annulus of a hypothetical
+  off-line zero), `|defect| ≤ 2·tiltBudget P σ₀`, uniformly in the centre's height.
+- **The symmetry is broken at almost every height**: on the critical line
+  `Im A_{p}(½+iτ) = p^{−1/2}·sin(τ·log p)` (`eulerHeadAnchor_line_im`), so the anchor
+  fails line-reflection equivariance at every `τ` with `sin(τ·log p) ≠ 0`
+  (`eulerHeadAnchor_not_lineReflection_on_line`) — all heights off a discrete set.
+
+What this opens: the boundary-orientation datum on the mirror pair of annulus edges is
+now `sign(sin(φ))` vs `sign(sin(−φ−defect))` with `defect` a finite prime sum that (i) is
+computable, (ii) is height-uniformly bounded, and (iii) can be steered by the CHOICE of
+`P` — the prime set is a free parameter of the route. The next question is the steering
+question: given the annulus of a hypothetical off-line zero, can `P` be chosen so the
+defect certifies disagreement of the two boundary orientations (an odd local event count)
+— that is, `{τ·log p}` equidistribution entering as a controllable rotation rather than
+an error term. That is a new, concrete object: the defect-steering map
+`P ↦ defect(P, s)` on the annulus, whose range mod 2π is governed by Weyl sums over the
+anchor primes.

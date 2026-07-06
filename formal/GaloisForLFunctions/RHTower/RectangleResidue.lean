@@ -141,11 +141,6 @@ private theorem log_sub_log_neg_of_im_neg {ζ : ℂ} (him : ζ.im < 0) :
 
 /-! ### §4 The rectangle winding number of the Cauchy kernel -/
 
-private theorem horizontal_pt_im (x h pim : ℝ) (pre : ℝ) :
-    ((x : ℂ) + (h : ℂ) * I - (⟨pre, pim⟩ : ℂ)).im = h - pim := by
-  simp [Complex.add_im, Complex.sub_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
-    Complex.I_re, Complex.I_im]
-
 /-- **The rectangle winds once.**  For `p` strictly inside the axis-aligned rectangle with
 lower-left corner `z₁` and upper-right corner `z₂`, the boundary contour integral of the Cauchy
 kernel is `2πi`. -/
@@ -167,8 +162,8 @@ theorem rectangle_winding {p z₁ z₂ : ℂ}
     simp [Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
       Complex.I_re, Complex.I_im]
   have hre_left : ∀ y : ℝ, (-((z₁.re : ℂ) + (y : ℂ) * I - p)).re = p.re - z₁.re := fun y => by
-    simp [Complex.neg_re, Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.ofReal_re,
-      Complex.ofReal_im, Complex.I_re, Complex.I_im]; ring
+    simp [Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.ofReal_re,
+      Complex.ofReal_im, Complex.I_re, Complex.I_im]
   -- slit-plane data on the four edges
   have hbot : ∀ x ∈ uIcc z₁.re z₂.re, ((x : ℂ) + (z₁.im : ℂ) * I) - p ∈ slitPlane := fun x _ =>
     Complex.mem_slitPlane_iff.mpr (Or.inr (by rw [him_bot]; linarith))
@@ -187,5 +182,249 @@ theorem rectangle_winding {p z₁ z₂ : ℂ}
       Complex.log (-((z₁.re : ℂ) + z₁.im * I - p)) = -(Real.pi * I) :=
     log_sub_log_neg_of_im_neg (by rw [him_bot]; linarith)
   linear_combination hTL - hBL
+
+end RHTower
+
+namespace RHTower
+
+open Complex intervalIntegral Set
+
+/-! ### §5 The boundary contour integral and the residue theorem -/
+
+/-- The positively-oriented boundary contour integral of `g` around the axis-aligned rectangle
+with corners `z₁` (lower-left) and `z₂` (upper-right). -/
+noncomputable def rectIntegral (g : ℂ → ℂ) (z₁ z₂ : ℂ) : ℂ :=
+  (((∫ x in z₁.re..z₂.re, g ((x : ℂ) + z₁.im * I)) - ∫ x in z₁.re..z₂.re, g ((x : ℂ) + z₂.im * I)) +
+      I • ∫ y in z₁.im..z₂.im, g ((z₂.re : ℂ) + y * I)) -
+    I • ∫ y in z₁.im..z₂.im, g ((z₁.re : ℂ) + y * I)
+
+/-- The boundary integral of the Cauchy kernel around a rectangle enclosing `p` is `2πi`. -/
+theorem rectIntegral_cauchyKernel {p z₁ z₂ : ℂ}
+    (hre1 : z₁.re < p.re) (hre2 : p.re < z₂.re)
+    (him1 : z₁.im < p.im) (him2 : p.im < z₂.im) :
+    rectIntegral (fun z => (z - p)⁻¹) z₁ z₂ = 2 * Real.pi * I := by
+  unfold rectIntegral
+  simpa using rectangle_winding hre1 hre2 him1 him2
+
+/-- **Rectangle Cauchy theorem.** A function holomorphic on a neighbourhood of the closed
+rectangle has vanishing boundary integral. -/
+theorem rectIntegral_eq_zero_of_analyticOnNhd {g : ℂ → ℂ} {z₁ z₂ : ℂ} {U : Set ℂ}
+    (hsub : (uIcc z₁.re z₂.re ×ℂ uIcc z₁.im z₂.im) ⊆ U)
+    (hg : AnalyticOnNhd ℂ g U) :
+    rectIntegral g z₁ z₂ = 0 := by
+  refine integral_boundary_rect_eq_zero_of_differentiable_on_off_countable g z₁ z₂ ∅
+    countable_empty ?_ ?_
+  · exact (hg.mono hsub).continuousOn
+  · intro x hx
+    have hxU : x ∈ U := hsub (by
+      rcases hx.1 with ⟨h1, h2⟩
+      exact ⟨Ioo_subset_Icc_self h1, Ioo_subset_Icc_self h2⟩)
+    exact (hg x hxU).differentiableAt
+
+/-- Boundary integrals are additive, given edgewise integrability. -/
+theorem rectIntegral_add {g₁ g₂ : ℂ → ℂ} {z₁ z₂ : ℂ}
+    (hb1 : IntervalIntegrable (fun x : ℝ => g₁ ((x : ℂ) + z₁.im * I)) MeasureTheory.volume z₁.re z₂.re)
+    (hb2 : IntervalIntegrable (fun x : ℝ => g₂ ((x : ℂ) + z₁.im * I)) MeasureTheory.volume z₁.re z₂.re)
+    (ht1 : IntervalIntegrable (fun x : ℝ => g₁ ((x : ℂ) + z₂.im * I)) MeasureTheory.volume z₁.re z₂.re)
+    (ht2 : IntervalIntegrable (fun x : ℝ => g₂ ((x : ℂ) + z₂.im * I)) MeasureTheory.volume z₁.re z₂.re)
+    (hr1 : IntervalIntegrable (fun y : ℝ => g₁ ((z₂.re : ℂ) + y * I)) MeasureTheory.volume z₁.im z₂.im)
+    (hr2 : IntervalIntegrable (fun y : ℝ => g₂ ((z₂.re : ℂ) + y * I)) MeasureTheory.volume z₁.im z₂.im)
+    (hl1 : IntervalIntegrable (fun y : ℝ => g₁ ((z₁.re : ℂ) + y * I)) MeasureTheory.volume z₁.im z₂.im)
+    (hl2 : IntervalIntegrable (fun y : ℝ => g₂ ((z₁.re : ℂ) + y * I)) MeasureTheory.volume z₁.im z₂.im) :
+    rectIntegral (fun z => g₁ z + g₂ z) z₁ z₂ = rectIntegral g₁ z₁ z₂ + rectIntegral g₂ z₁ z₂ := by
+  have eb : (∫ x in z₁.re..z₂.re, g₁ ((x : ℂ) + z₁.im * I) + g₂ ((x : ℂ) + z₁.im * I)) =
+      (∫ x in z₁.re..z₂.re, g₁ ((x : ℂ) + z₁.im * I)) +
+        ∫ x in z₁.re..z₂.re, g₂ ((x : ℂ) + z₁.im * I) := integral_add hb1 hb2
+  have et : (∫ x in z₁.re..z₂.re, g₁ ((x : ℂ) + z₂.im * I) + g₂ ((x : ℂ) + z₂.im * I)) =
+      (∫ x in z₁.re..z₂.re, g₁ ((x : ℂ) + z₂.im * I)) +
+        ∫ x in z₁.re..z₂.re, g₂ ((x : ℂ) + z₂.im * I) := integral_add ht1 ht2
+  have er : (∫ y in z₁.im..z₂.im, g₁ ((z₂.re : ℂ) + y * I) + g₂ ((z₂.re : ℂ) + y * I)) =
+      (∫ y in z₁.im..z₂.im, g₁ ((z₂.re : ℂ) + y * I)) +
+        ∫ y in z₁.im..z₂.im, g₂ ((z₂.re : ℂ) + y * I) := integral_add hr1 hr2
+  have el : (∫ y in z₁.im..z₂.im, g₁ ((z₁.re : ℂ) + y * I) + g₂ ((z₁.re : ℂ) + y * I)) =
+      (∫ y in z₁.im..z₂.im, g₁ ((z₁.re : ℂ) + y * I)) +
+        ∫ y in z₁.im..z₂.im, g₂ ((z₁.re : ℂ) + y * I) := integral_add hl1 hl2
+  unfold rectIntegral
+  dsimp only
+  rw [eb, et, er, el, smul_add, smul_add]
+  ring
+
+/-- Boundary integrals commute with scalar multiplication. -/
+theorem rectIntegral_const_mul (c : ℂ) (g : ℂ → ℂ) (z₁ z₂ : ℂ) :
+    rectIntegral (fun z => c * g z) z₁ z₂ = c * rectIntegral g z₁ z₂ := by
+  unfold rectIntegral
+  rw [integral_const_mul, integral_const_mul, integral_const_mul, integral_const_mul]
+  simp only [smul_eq_mul]; ring
+
+/-- Boundary integrals depend only on the values on the four edges. -/
+theorem rectIntegral_congr {g₁ g₂ : ℂ → ℂ} {z₁ z₂ : ℂ} {S : Set ℂ}
+    (hg : ∀ z ∈ S, g₁ z = g₂ z)
+    (hb : ∀ x ∈ uIcc z₁.re z₂.re, ((x : ℂ) + z₁.im * I) ∈ S)
+    (ht : ∀ x ∈ uIcc z₁.re z₂.re, ((x : ℂ) + z₂.im * I) ∈ S)
+    (hr : ∀ y ∈ uIcc z₁.im z₂.im, ((z₂.re : ℂ) + y * I) ∈ S)
+    (hl : ∀ y ∈ uIcc z₁.im z₂.im, ((z₁.re : ℂ) + y * I) ∈ S) :
+    rectIntegral g₁ z₁ z₂ = rectIntegral g₂ z₁ z₂ := by
+  unfold rectIntegral
+  rw [integral_congr (fun x hx => hg _ (hb x hx)), integral_congr (fun x hx => hg _ (ht x hx)),
+    integral_congr (fun y hy => hg _ (hr y hy)), integral_congr (fun y hy => hg _ (hl y hy))]
+
+end RHTower
+
+namespace RHTower
+
+open Complex intervalIntegral Set
+
+/-! ### §6 The rectangle residue theorem (argument principle) -/
+
+private theorem edgePt_re (x c : ℝ) : ((x : ℂ) + (c : ℂ) * I).re = x := by
+  simp [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re,
+    Complex.I_im]
+
+private theorem edgePt_im (x c : ℝ) : ((x : ℂ) + (c : ℂ) * I).im = c := by
+  simp [Complex.add_im, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re,
+    Complex.I_im]
+
+/-- **The rectangle residue theorem.**  If `h` is analytic and nonvanishing on a neighbourhood of
+the closed rectangle with corners `z₁ z₂`, and `ρ` is strictly inside, then the boundary contour
+integral of the logarithmic derivative of `(·−ρ)^m · h` is `2πi · m`: the winding of `f'/f`
+counts the enclosed zero with its multiplicity. -/
+theorem rectIntegral_logDeriv_single_zero {h : ℂ → ℂ} {ρ z₁ z₂ : ℂ} {m : ℕ} {U : Set ℂ}
+    (hre1 : z₁.re < ρ.re) (hre2 : ρ.re < z₂.re) (him1 : z₁.im < ρ.im) (him2 : ρ.im < z₂.im)
+    (hsub : (uIcc z₁.re z₂.re ×ℂ uIcc z₁.im z₂.im) ⊆ U)
+    (hh : AnalyticOnNhd ℂ h U) (hh0 : ∀ z ∈ U, h z ≠ 0) :
+    rectIntegral (logDeriv (fun z => (z - ρ) ^ m * h z)) z₁ z₂ = 2 * Real.pi * I * m := by
+  have hz12re : z₁.re ≤ z₂.re := le_of_lt (lt_trans hre1 hre2)
+  have hz12im : z₁.im ≤ z₂.im := le_of_lt (lt_trans him1 him2)
+  -- analyticity and continuity of the logarithmic derivative of the cofactor
+  have hlogh : AnalyticOnNhd ℂ (logDeriv h) U := by
+    have : logDeriv h = fun z => deriv h z / h z := rfl
+    rw [this]; exact fun z hz => (hh.deriv z hz).div (hh z hz) (hh0 z hz)
+  -- the four edges lie in `U` and avoid `ρ`
+  have hbot : ∀ x ∈ uIcc z₁.re z₂.re, ((x : ℂ) + z₁.im * I) ∈ U ∧ ((x : ℂ) + z₁.im * I) ≠ ρ :=
+    fun x hx => ⟨hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact hx, by rw [edgePt_im]; exact left_mem_uIcc⟩),
+      fun he => by have := congrArg Complex.im he; rw [edgePt_im] at this; linarith⟩
+  have htop : ∀ x ∈ uIcc z₁.re z₂.re, ((x : ℂ) + z₂.im * I) ∈ U ∧ ((x : ℂ) + z₂.im * I) ≠ ρ :=
+    fun x hx => ⟨hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact hx, by rw [edgePt_im]; exact right_mem_uIcc⟩),
+      fun he => by have := congrArg Complex.im he; rw [edgePt_im] at this; linarith⟩
+  have hrig : ∀ y ∈ uIcc z₁.im z₂.im, ((z₂.re : ℂ) + y * I) ∈ U ∧ ((z₂.re : ℂ) + y * I) ≠ ρ :=
+    fun y hy => ⟨hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact right_mem_uIcc, by rw [edgePt_im]; exact hy⟩),
+      fun he => by have := congrArg Complex.re he; rw [edgePt_re] at this; linarith⟩
+  have hlef : ∀ y ∈ uIcc z₁.im z₂.im, ((z₁.re : ℂ) + y * I) ∈ U ∧ ((z₁.re : ℂ) + y * I) ≠ ρ :=
+    fun y hy => ⟨hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact left_mem_uIcc, by rw [edgePt_im]; exact hy⟩),
+      fun he => by have := congrArg Complex.re he; rw [edgePt_re] at this; linarith⟩
+  -- the logarithmic derivative splits off the enclosed zero on `U ∖ {ρ}`
+  have hid : ∀ z ∈ {z ∈ U | z ≠ ρ}, logDeriv (fun z => (z - ρ) ^ m * h z) z =
+      (m : ℂ) * (z - ρ)⁻¹ + logDeriv h z := by
+    rintro z ⟨hzU, hzρ⟩
+    have hzρ0 : z - ρ ≠ 0 := sub_ne_zero.mpr hzρ
+    rw [logDeriv_mul (f := fun w => (w - ρ) ^ m) (g := h) z (pow_ne_zero m hzρ0) (hh0 z hzU)
+      (by fun_prop) (hh z hzU).differentiableAt]
+    congr 1
+    rw [logDeriv_fun_pow (f := fun w => w - ρ) (by fun_prop) m,
+      show logDeriv (fun w => w - ρ) z = (z - ρ)⁻¹ from by
+        rw [logDeriv_apply, show deriv (fun w => w - ρ) z = 1 from
+          ((hasDerivAt_id z).sub_const ρ).deriv, one_div]]
+  -- integrability of the two summands on each edge
+  have contA : ∀ {c d : ℝ} (pt : ℝ → ℂ) (hpt : Continuous pt),
+      (∀ t ∈ uIcc c d, pt t ≠ ρ) →
+      IntervalIntegrable (fun t : ℝ => (m : ℂ) * (pt t - ρ)⁻¹) MeasureTheory.volume c d := by
+    intro c d pt hpt hne
+    refine (ContinuousOn.mul continuousOn_const ?_).intervalIntegrable
+    exact (hpt.continuousOn).sub continuousOn_const |>.inv₀ (fun t ht => sub_ne_zero.mpr (hne t ht))
+  have contB : ∀ {c d : ℝ} (pt : ℝ → ℂ) (hpt : Continuous pt),
+      (∀ t ∈ uIcc c d, pt t ∈ U) →
+      IntervalIntegrable (fun t : ℝ => logDeriv h (pt t)) MeasureTheory.volume c d := by
+    intro c d pt hpt hmem
+    exact (hlogh.continuousOn.comp hpt.continuousOn (fun t ht => hmem t ht)).intervalIntegrable
+  rw [rectIntegral_congr hid (fun x hx => ⟨(hbot x hx).1, (hbot x hx).2⟩)
+      (fun x hx => ⟨(htop x hx).1, (htop x hx).2⟩) (fun y hy => ⟨(hrig y hy).1, (hrig y hy).2⟩)
+      (fun y hy => ⟨(hlef y hy).1, (hlef y hy).2⟩),
+    rectIntegral_add
+      (contA _ (by fun_prop) (fun x hx => (hbot x hx).2))
+      (contB _ (by fun_prop) (fun x hx => (hbot x hx).1))
+      (contA _ (by fun_prop) (fun x hx => (htop x hx).2))
+      (contB _ (by fun_prop) (fun x hx => (htop x hx).1))
+      (contA _ (by fun_prop) (fun y hy => (hrig y hy).2))
+      (contB _ (by fun_prop) (fun y hy => (hrig y hy).1))
+      (contA _ (by fun_prop) (fun y hy => (hlef y hy).2))
+      (contB _ (by fun_prop) (fun y hy => (hlef y hy).1)),
+    rectIntegral_const_mul, rectIntegral_cauchyKernel hre1 hre2 him1 him2,
+    rectIntegral_eq_zero_of_analyticOnNhd hsub hlogh]
+  ring
+
+end RHTower
+
+namespace RHTower
+
+open Complex intervalIntegral Set
+
+/-! ### §7 The multi-zero residue theorem -/
+
+/-- Boundary integrals are additive over a finite family, given edgewise integrability. -/
+theorem rectIntegral_finsetSum {κ : Type*} (t : Finset κ) (g : κ → ℂ → ℂ) (z₁ z₂ : ℂ)
+    (hb : ∀ i ∈ t, IntervalIntegrable (fun x : ℝ => g i ((x : ℂ) + z₁.im * I)) MeasureTheory.volume z₁.re z₂.re)
+    (ht : ∀ i ∈ t, IntervalIntegrable (fun x : ℝ => g i ((x : ℂ) + z₂.im * I)) MeasureTheory.volume z₁.re z₂.re)
+    (hr : ∀ i ∈ t, IntervalIntegrable (fun y : ℝ => g i ((z₂.re : ℂ) + y * I)) MeasureTheory.volume z₁.im z₂.im)
+    (hl : ∀ i ∈ t, IntervalIntegrable (fun y : ℝ => g i ((z₁.re : ℂ) + y * I)) MeasureTheory.volume z₁.im z₂.im) :
+    rectIntegral (fun z => ∑ i ∈ t, g i z) z₁ z₂ = ∑ i ∈ t, rectIntegral (g i) z₁ z₂ := by
+  unfold rectIntegral
+  rw [integral_finsetSum t hb, integral_finsetSum t ht, integral_finsetSum t hr,
+    integral_finsetSum t hl, Finset.smul_sum, Finset.smul_sum,
+    ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+
+/-- **The rectangle residue theorem (argument principle).**  If `h` is analytic and nonvanishing on
+a neighbourhood of the closed rectangle with corners `z₁ z₂`, and every `ρ i` (`i ∈ t`) is strictly
+inside, then the boundary contour integral of the logarithmic derivative of
+`(∏ᵢ (·−ρ i)^{m i}) · h` is `2πi · Σᵢ m i`: the boundary winding of `f'/f` counts the enclosed zeros
+with multiplicity. -/
+theorem rectIntegral_logDeriv_multi_zero {κ : Type*} (t : Finset κ) (ρ : κ → ℂ) (m : κ → ℕ)
+    {h : ℂ → ℂ} {z₁ z₂ : ℂ} {U : Set ℂ}
+    (hin : ∀ i ∈ t, z₁.re < (ρ i).re ∧ (ρ i).re < z₂.re ∧ z₁.im < (ρ i).im ∧ (ρ i).im < z₂.im)
+    (hsub : (uIcc z₁.re z₂.re ×ℂ uIcc z₁.im z₂.im) ⊆ U)
+    (hh : AnalyticOnNhd ℂ h U) (hh0 : ∀ z ∈ U, h z ≠ 0) :
+    rectIntegral (logDeriv (fun z => (∏ i ∈ t, (z - ρ i) ^ m i) * h z)) z₁ z₂ =
+      2 * Real.pi * I * (∑ i ∈ t, (m i : ℂ)) := by
+  classical
+  have hlogh : AnalyticOnNhd ℂ (logDeriv h) U := by
+    have : logDeriv h = fun z => deriv h z / h z := rfl
+    rw [this]; exact fun z hz => (hh.deriv z hz).div (hh z hz) (hh0 z hz)
+  -- edge membership in `U` and avoidance of every `ρ i`
+  have hedgeU : ∀ z, z.re ∈ uIcc z₁.re z₂.re → z.im ∈ uIcc z₁.im z₂.im → z ∈ U :=
+    fun z h1 h2 => hsub (Complex.mem_reProdIm.mpr ⟨h1, h2⟩)
+  have hne : ∀ z, (z.re ∈ uIcc z₁.re z₂.re) → (z.im ∈ uIcc z₁.im z₂.im) →
+      z.re = z₁.re ∨ z.re = z₂.re ∨ z.im = z₁.im ∨ z.im = z₂.im → ∀ i ∈ t, z ≠ ρ i := by
+    intro z _ _ hbd i hi he
+    obtain ⟨hr1, hr2, hi1, hi2⟩ := hin i hi
+    rcases hbd with h | h | h | h <;>
+      · rw [he] at h; simp only at h; linarith
+  -- the logarithmic derivative decomposes on the edges
+  have hid : ∀ z ∈ {z : ℂ | (z ∈ U) ∧ (∀ i ∈ t, z ≠ ρ i)},
+      logDeriv (fun z => (∏ i ∈ t, (z - ρ i) ^ m i) * h z) z =
+        (∑ i ∈ t, (m i : ℂ) * (z - ρ i)⁻¹) + logDeriv h z := by
+    rintro z ⟨hzU, hzρ⟩
+    have hpne : ∀ i ∈ t, (fun w => (w - ρ i) ^ m i) z ≠ 0 :=
+      fun i hi => pow_ne_zero _ (sub_ne_zero.mpr (hzρ i hi))
+    rw [logDeriv_mul (f := fun w => ∏ i ∈ t, (w - ρ i) ^ m i) (g := h) z
+        (Finset.prod_ne_zero_iff.mpr hpne) (hh0 z hzU) (by fun_prop) (hh z hzU).differentiableAt,
+      logDeriv_prod hpne (fun i _ => by fun_prop)]
+    congr 1
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [logDeriv_fun_pow (f := fun w => w - ρ i) (by fun_prop) (m i),
+      show logDeriv (fun w => w - ρ i) z = (z - ρ i)⁻¹ from by
+        rw [logDeriv_apply, show deriv (fun w => w - ρ i) z = 1 from
+          ((hasDerivAt_id z).sub_const (ρ i)).deriv, one_div]]
+  -- integrability of the kernels and the cofactor's logarithmic derivative on each edge
+  have contA : ∀ {c d : ℝ} (pt : ℝ → ℂ) (hpt : Continuous pt),
+      (∀ tt ∈ uIcc c d, ∀ i ∈ t, pt tt ≠ ρ i) → ∀ i ∈ t,
+      IntervalIntegrable (fun tt : ℝ => (m i : ℂ) * (pt tt - ρ i)⁻¹) MeasureTheory.volume c d := by
+    intro c d pt hpt hne' i _
+    refine (ContinuousOn.mul continuousOn_const ?_).intervalIntegrable
+    exact (hpt.continuousOn.sub continuousOn_const).inv₀
+      (fun tt htt => sub_ne_zero.mpr (hne' tt htt i (by assumption)))
+  sorry
 
 end RHTower

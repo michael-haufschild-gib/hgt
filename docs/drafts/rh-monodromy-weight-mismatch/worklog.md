@@ -5930,3 +5930,13 @@ Outcomes: all three confirmed, machine-checked where formalizable.
 Kill criterion did not fire (F1b repaired the scale mismatch). Forward object: the
 anchor's mirror-odd phase tilt on the isolating annulus of a hypothetical off-line zero —
 where the Euler product meets the locality scale.
+
+## AnchorTilt built (doc 108 addendum)
+
+The audit's forward object formalized end to end: tilt (smooth angle, right half plane),
+uniform budget, polar identity, mirror defect + quantization, THE angle law
+(mirror orientation = blind reversal rotated by −defect, positive factor), annulus bound,
+critical-line sin formula + non-equivariance off a discrete height set. Gate green
+(9212 jobs), all endpoints [propext, Classical.choice, Quot.sound]. Opened: the
+defect-steering question (choice of P as a free rotation on the annulus boundary data;
+Weyl sums over anchor primes govern the reachable defects mod 2π).

@@ -109,10 +109,10 @@ theorem abs_arctan_le_abs (x : ℝ) : |Real.arctan x| ≤ |x| := by
     · rcases eq_or_lt_of_le hx with h | h
       · rw [← h, Real.arctan_zero]
       · exact (Real.arctan_pos.mpr h).le
-  · push_neg at hx
+  · have hx' : x < 0 := lt_of_not_ge hx
     have hkey := key (-x) (by linarith)
     rw [Real.arctan_neg] at hkey
-    rw [abs_of_neg hx, abs_of_neg]
+    rw [abs_of_neg hx', abs_of_neg]
     · linarith
     · have : 0 < Real.arctan (-x) := Real.arctan_pos.mpr (by linarith)
       rw [Real.arctan_neg] at this
@@ -249,8 +249,9 @@ theorem anchorMirrorDefect_int_of_lineReflection {P : Finset ℕ} (hP : ∀ p �
   rw [hconj] at hkey
   have hexp1 : Complex.exp (((anchorMirrorDefect P s : ℝ) : ℂ) * I) = 1 := by
     field_simp at hkey
-    rw [mul_comm] at hkey ⊢
-    exact hkey.symm
+    have hne : ((‖eulerHeadAnchor P s‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
+      exact_mod_cast pow_ne_zero 2 hAn.ne'
+    exact mul_left_cancel₀ hne (by rw [mul_one]; exact hkey.symm)
   obtain ⟨n, hn⟩ := Complex.exp_eq_one_iff.mp hexp1
   refine ⟨n, ?_⟩
   have hI : ((anchorMirrorDefect P s : ℝ) : ℂ) = (n : ℂ) * (2 * Real.pi) := by
@@ -288,30 +289,41 @@ theorem incidence_anchored_mirror {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) {
     rw [Complex.mul_conj']
     push_cast
     ring
-  have hexp : Complex.exp (((anchorMirrorDefect P s : ℝ) : ℂ) * I) *
-      Complex.exp (-((anchorMirrorDefect P s : ℝ) : ℂ) * I) = 1 := by
+  have hexp' : Complex.exp (-((anchorMirrorDefect P s : ℝ) : ℂ) * I) *
+      Complex.exp (((anchorMirrorDefect P s : ℝ) : ℂ) * I) = 1 := by
     rw [← Complex.exp_add]
-    rw [show ((anchorMirrorDefect P s : ℝ) : ℂ) * I +
-        -((anchorMirrorDefect P s : ℝ) : ℂ) * I = 0 by ring]
+    rw [show -((anchorMirrorDefect P s : ℝ) : ℂ) * I +
+        ((anchorMirrorDefect P s : ℝ) : ℂ) * I = 0 by ring]
     exact Complex.exp_zero
+  set Rm := ‖eulerHeadAnchor P (1 - (starRingEnd ℂ) s)‖ with hRm_def
+  set Rs := ‖eulerHeadAnchor P s‖ with hRs_def
+  have hcoef : ((Rs / Rm : ℝ) : ℂ) * ((Rm * Rs : ℝ) : ℂ) = ((Rs * Rs : ℝ) : ℂ) := by
+    rw [← Complex.ofReal_mul]
+    congr 1
+    field_simp [hAmn.ne']
   have hAms_eq : eulerHeadAnchor P (1 - (starRingEnd ℂ) s) =
-      ((‖eulerHeadAnchor P (1 - (starRingEnd ℂ) s)‖ * ‖eulerHeadAnchor P s‖ : ℝ) : ℂ) *
+      ((Rm * Rs : ℝ) : ℂ) *
         Complex.exp (((anchorMirrorDefect P s : ℝ) : ℂ) * I) / eulerHeadAnchor P s := by
     rw [eq_div_iff hA]
     exact hkey
-  have hAnc : ((‖eulerHeadAnchor P s‖ : ℝ) : ℂ) ≠ 0 := by
-    exact_mod_cast hAn.ne'
-  have hAmnc : ((‖eulerHeadAnchor P (1 - (starRingEnd ℂ) s)‖ : ℝ) : ℂ) ≠ 0 := by
-    exact_mod_cast hAmn.ne'
   unfold incidence
-  rw [hG, map_div₀, map_neg, hAms_eq, Complex.ofReal_div]
-  field_simp
-  linear_combination (-(starRingEnd ℂ) (completedGN N s)) *
-      ((‖eulerHeadAnchor P (1 - (starRingEnd ℂ) s)‖ : ℝ) : ℂ) *
-      ((‖eulerHeadAnchor P s‖ : ℝ) : ℂ) * hexp +
-    (-(starRingEnd ℂ) (completedGN N s)) *
-      Complex.exp (-((anchorMirrorDefect P s : ℝ) : ℂ) * I) *
-      Complex.exp (((anchorMirrorDefect P s : ℝ) : ℂ) * I) * hmc
+  rw [hG, map_div₀, map_neg]
+  rw [show ((Rs / Rm : ℝ) : ℂ) * Complex.exp (-((anchorMirrorDefect P s : ℝ) : ℂ) * I) *
+      (-(starRingEnd ℂ) (completedGN N s) / (starRingEnd ℂ) (eulerHeadAnchor P s)) =
+      ((Rs / Rm : ℝ) : ℂ) * Complex.exp (-((anchorMirrorDefect P s : ℝ) : ℂ) * I) *
+        (-(starRingEnd ℂ) (completedGN N s)) / (starRingEnd ℂ) (eulerHeadAnchor P s)
+    from by ring]
+  rw [div_eq_div_iff hAm hAc, hAms_eq]
+  rw [show ((Rs / Rm : ℝ) : ℂ) * Complex.exp (-((anchorMirrorDefect P s : ℝ) : ℂ) * I) *
+      (-(starRingEnd ℂ) (completedGN N s)) *
+      (((Rm * Rs : ℝ) : ℂ) * Complex.exp (((anchorMirrorDefect P s : ℝ) : ℂ) * I) /
+        eulerHeadAnchor P s) =
+      (((Rs / Rm : ℝ) : ℂ) * ((Rm * Rs : ℝ) : ℂ)) *
+        (Complex.exp (-((anchorMirrorDefect P s : ℝ) : ℂ) * I) *
+          Complex.exp (((anchorMirrorDefect P s : ℝ) : ℂ) * I)) *
+        (-(starRingEnd ℂ) (completedGN N s)) / eulerHeadAnchor P s from by ring]
+  rw [hcoef, hexp', mul_one, eq_div_iff hA]
+  linear_combination (-(starRingEnd ℂ) (completedGN N s)) * hmc
 
 /-- The orientation transfer in imaginary parts: the mirror orientation of the anchored
 carrier is the defect-rotated blind reversal scaled by a positive factor. -/
@@ -348,7 +360,7 @@ theorem abs_anchorMirrorDefect_le_of_mem_ball {P : Finset ℕ} (hP : ∀ p ∈ P
     linarith
   unfold anchorMirrorDefect
   calc |anchorTilt P (1 - (starRingEnd ℂ) s) + anchorTilt P s|
-      ≤ |anchorTilt P (1 - (starRingEnd ℂ) s)| + |anchorTilt P s| := abs_add _ _
+      ≤ |anchorTilt P (1 - (starRingEnd ℂ) s)| + |anchorTilt P s| := abs_add_le _ _
     _ ≤ tiltBudget P σ₀ + tiltBudget P σ₀ :=
         add_le_add (abs_anchorTilt_le hP h0 hre2) (abs_anchorTilt_le hP h0 hre1)
     _ = 2 * tiltBudget P σ₀ := by ring

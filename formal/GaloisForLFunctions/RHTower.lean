@@ -267,6 +267,7 @@ import GaloisForLFunctions.RHTower.EdgeEventParity
 import GaloisForLFunctions.RHTower.EdgeScaleNoGo
 import GaloisForLFunctions.RHTower.IsolatingAnnulusRung
 import GaloisForLFunctions.RHTower.MirrorEdgeSymmetry
+import GaloisForLFunctions.RHTower.AnchorTilt
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity
@@ -274,4 +275,6 @@ import GaloisForLFunctions.RHTower.ReflectedGridCharge
 import GaloisForLFunctions.RHTower.ReflectedGridAnalyticCharge
 import GaloisForLFunctions.RHTower.ReflectedGridCompletedCharge
 import GaloisForLFunctions.RHTower.ReflectedGridCenter
+import GaloisForLFunctions.RHTower.ReflectedGridOffgridBridge
 import GaloisForLFunctions.RHTower.FoldonFrustration
+import GaloisForLFunctions.RHTower.RectangleResidue

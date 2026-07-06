@@ -632,4 +632,34 @@ Verdicts and the D–H stress table: doc 108.
 - `reflectedGridCompletedCharge_even_of_center_swap`: if factor swap sends centers to `1-center`, centers lie in the open strip, diagonal centers are `1/2`, and local orders are finite, then the completed-carrier reflected charge is even.
 - `reflectedGridCompletedCharge_deckRed_two_eq_one_of_center_swap`: deck form, `deckRed 2 (completed charge)=1`.
 - Verification: `lake env lean GaloisForLFunctions/RHTower/ReflectionParity.lean`; `lake env lean GaloisForLFunctions/RHTower/ReflectedGridCompletedCharge.lean`; `lake env lean GaloisForLFunctions/RHTower.lean`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
-- Boundary left open: construct the actual AFE saddle/grid center map, prove the finite-order condition at those centers, and account for off-grid/noncollision events.
+- Boundary left open at this stage: construct the actual AFE saddle/grid center map, prove finite-order at those centers, and account for off-grid/noncollision events. The canonical ratio-center case and its finite-order side condition are discharged in the next entry.
+
+## ReflectedGridCenter.lean — canonical ratio center geometry
+
+- `reflectedGridRatioCenterR x = x.1/(x.1+x.2)` and `reflectedGridRatioCenter x`: the canonical center attached to a reflected grid collision, placed on the real axis of the complex plane.
+- `reflectedGridCollision_fst_pos` and `reflectedGridCollision_snd_pos`: both divisor-antidiagonal factors of a collision are positive.
+- `reflectedGridRatioCenterR_swap` and `reflectedGridRatioCenter_swap`: factor-swap sends the ratio center to `1-center`.
+- `reflectedGridRatioCenter_strip`: every ratio center lies in the open critical strip.
+- `reflectedGridRatioCenterR_diag` and `reflectedGridRatioCenter_diag`: diagonal fixed collisions land at `1/2`.
+- `dirichletPoly_ofReal_eq`, `dirichletPoly_ofReal_re_pos`, `zetaChi_ofReal_eq`, `zetaChi_ofReal_re_pos`, `gN_ofReal_re_pos`, and `completedGN_orderAt_ofReal_ne_top`: on real strip points, `completedGN N` has finite local order for `N ≥ 1` because it is nonzero there.
+- `reflectedGridCompletedCharge_finite_of_ratio_center`: the finite-order side condition is automatic at ratio centers for `N ≥ 1`.
+- `reflectedGridCompletedCharge_even_of_ratio_center_of_one_le`: for the canonical ratio center, `N ≥ 1` implies even completed reflected-grid charge.
+- `reflectedGridCompletedCharge_deckRed_two_eq_one_of_ratio_center_of_one_le`: deck form, `deckRed 2 (completed charge)=1`.
+- Verification: `lake env lean GaloisForLFunctions/RHTower/ReflectedGridCenter.lean`; `lake env lean GaloisForLFunctions/RHTower.lean`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
+- Boundary left open: reduce the physical AFE/reflection charge carrier to this completed collision carrier and account for off-grid/noncollision event classes.
+
+## AnchorTilt.lean (the F3 forward object built)
+
+`RHTower/AnchorTilt.lean` — axiom-clean, umbrella-imported. The anchor's phase tilt
+`anchorTilt P s = ∑_{p∈P} arg(1−p^{−s})` (well-defined: factors in the right half plane,
+`arg_eq_arctan_of_re_pos`), height-uniform budget `abs_anchorTilt_le`, Schwarz oddness
+`anchorTilt_conj`, exact polar identity `eulerHeadAnchor_polar` (A = ‖A‖e^{i·tilt}),
+mirror defect `anchorMirrorDefect` with product identity `eulerHeadAnchor_mul_mirror`
+and quantization-under-equivariance `anchorMirrorDefect_int_of_lineReflection`; THE
+angle law `incidence_anchored_mirror` / `im_incidence_anchored_mirror`
+(ι(1−s̄) = (‖As‖/‖Ams‖)·e^{−i·defect}·conj ι(s) for the anchored pencil on the strip);
+annulus bound `abs_anchorMirrorDefect_le_of_mem_ball` (|defect| ≤ 2·tiltBudget σ₀ on any
+ball in the strip); critical-line formula `eulerHeadAnchor_line_im`
+(Im = p^{−1/2}sin(τ log p)) and `eulerHeadAnchor_not_lineReflection_on_line` (the anchor
+breaks the mirror symmetry at all heights off a discrete set). Doc 108 addendum has the
+route reading and the next object (defect steering by choice of P).
