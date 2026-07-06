@@ -17,7 +17,8 @@ to vanish under the `(i+1)²` rescaling. The obstruction is that the near-pole b
   the rational per-term envelope that controls the truncation train.
 -/
 import GaloisForLFunctions.RHTower.LegStripSteepnessHarmonic
-open Real Set
+import GaloisForLFunctions.RHTower.LegStripCapstone
+open Real Set Filter Topology
 noncomputable section
 namespace RHTower
 
@@ -141,6 +142,106 @@ theorem farEnergy_term_le {c : ℝ} (hc : 0 < c) {i j : ℕ} (hj : 2*i+2 ≤ j) 
       ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 * Real.exp (-(harmPole c j - harmMid c i)) := hbound
   _ ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 * (((i:ℝ)+2)/((j:ℝ)+1))^c :=
         mul_le_mul_of_nonneg_left hexptail hCpos.le
+
+/-- Summability of the shifted `p`-series `((2i+3)+m)^{−c}` for `c > 1`. -/
+theorem envelope_summable {c : ℝ} (hc : 1 < c) (i : ℕ) :
+    Summable (fun m : ℕ => (((2*i+3 : ℕ):ℝ)+(m:ℝ))^(-c)) := by
+  have hbase : Summable (fun n:ℕ => 1/(n:ℝ)^c) := summable_one_div_nat_rpow.mpr hc
+  have hshift := (summable_nat_add_iff (f := fun n:ℕ => 1/(n:ℝ)^c) (2*i+3)).mpr hbase
+  refine hshift.congr (fun m => ?_)
+  rw [Real.rpow_neg (by positivity), one_div]
+  congr 2
+  push_cast; ring
+
+/-- Tsum of the far-energy envelope, via the tree's `p`-series tail bound. -/
+theorem envelope_tsum_le {c : ℝ} (hc : 1 < c) (i : ℕ) :
+    (∑' m : ℕ, (((i:ℝ)+2)/(((2*i+3:ℕ):ℝ)+(m:ℝ)))^c)
+      ≤ ((i:ℝ)+2)^c * ((((2*i+3:ℕ):ℝ)-1)^(1-c)/(c-1)) := by
+  have hib : (fun m : ℕ => (((i:ℝ)+2)/(((2*i+3:ℕ):ℝ)+(m:ℝ)))^c)
+      = (fun m : ℕ => ((i:ℝ)+2)^c * (((2*i+3:ℕ):ℝ)+(m:ℝ))^(-c)) := by
+    funext m
+    rw [Real.div_rpow (by positivity) (by positivity), Real.rpow_neg (by positivity),
+      div_eq_mul_inv]
+  rw [hib, tsum_mul_left]
+  exact mul_le_mul_of_nonneg_left (p_series_tail_le hc (show 2 ≤ 2*i+3 by omega)) (by positivity)
+
+/-- Real-power arithmetic `(i+2)^c·(2i+2)^{1−c} ≤ 2(i+1)`, collapsing the `p`-series prefactor. -/
+theorem rpow_prod_le {c : ℝ} (hc : 1 < c) (i : ℕ) :
+    ((i:ℝ)+2)^c * ((((2*i+3:ℕ):ℝ)-1))^(1-c) ≤ 2*((i:ℝ)+1) := by
+  have hc0 : 0 < c := by linarith
+  have hi1 : (0:ℝ) < (i:ℝ)+1 := by positivity
+  have hcast : (((2*i+3:ℕ):ℝ)-1) = 2*((i:ℝ)+1) := by push_cast; ring
+  rw [hcast]
+  have h1 : ((i:ℝ)+2)^c ≤ (2*((i:ℝ)+1))^c :=
+    Real.rpow_le_rpow (by positivity) (by linarith) hc0.le
+  calc ((i:ℝ)+2)^c * (2*((i:ℝ)+1))^(1-c)
+      ≤ (2*((i:ℝ)+1))^c * (2*((i:ℝ)+1))^(1-c) :=
+        mul_le_mul_of_nonneg_right h1 (by positivity)
+    _ = (2*((i:ℝ)+1))^(c+(1-c)) := (Real.rpow_add (by positivity) _ _).symm
+    _ = 2*((i:ℝ)+1) := by rw [show c+(1-c) = 1 from by ring, Real.rpow_one]
+
+/-- **Far-ahead energy tail is `O(i+1)`.** The total energy of the poles `j ≥ 2i+2` at the midpoint is
+`≤ 4/(1−(2/3)^c)²·(2/(c−1))·(i+1)`, from `farEnergy_term_le` summed against the `p`-series bound. -/
+theorem farEnergyTail_le {c : ℝ} (hc : 1 < c) (i : ℕ) :
+    (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2)
+      ≤ 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 * (2/(c-1)) * ((i:ℝ)+1) := by
+  set C := 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 with hC
+  have hc0 : 0 < c := by linarith
+  have hCpos : 0 ≤ C := by
+    rw [hC]
+    have hlt : Real.exp (-(c * Real.log (3/2))) < 1 := by
+      rw [Real.exp_lt_one_iff]; nlinarith [Real.log_pos (show (1:ℝ) < 3/2 by norm_num)]
+    have : 0 < 1 - Real.exp (-(c * Real.log (3/2))) := by linarith
+    positivity
+  set env : ℕ → ℝ := fun m => C * (((i:ℝ)+2)/(((2*i+3:ℕ):ℝ)+(m:ℝ)))^c with henv
+  have hterm : ∀ m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2 ≤ env m := by
+    intro m
+    have h := farEnergy_term_le hc0 (show 2*i+2 ≤ 2*i+2+m by omega)
+    have hdenom : (((2*i+2+m:ℕ):ℝ)+1) = (((2*i+3:ℕ):ℝ)+(m:ℝ)) := by push_cast; ring
+    rw [henv]; rw [hdenom] at h; exact h
+  have hsummE : Summable env := by
+    have hform : env = fun m : ℕ => (C * ((i:ℝ)+2)^c) * (((2*i+3:ℕ):ℝ)+(m:ℝ))^(-c) := by
+      funext m
+      rw [show env m = C * (((i:ℝ)+2)/(((2*i+3:ℕ):ℝ)+(m:ℝ)))^c from rfl,
+        Real.div_rpow (by positivity) (by positivity), Real.rpow_neg (by positivity),
+        div_eq_mul_inv]
+      ring
+    rw [hform]; exact (envelope_summable hc i).mul_left _
+  have hsummT : Summable (fun m : ℕ => (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2) :=
+    Summable.of_nonneg_of_le (fun m => sq_nonneg _) hterm hsummE
+  calc (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2)
+      ≤ ∑' m, env m := hsummT.tsum_le_tsum hterm hsummE
+    _ = C * ∑' m : ℕ, (((i:ℝ)+2)/(((2*i+3:ℕ):ℝ)+(m:ℝ)))^c := by rw [henv, tsum_mul_left]
+    _ ≤ C * (((i:ℝ)+2)^c * ((((2*i+3:ℕ):ℝ)-1)^(1-c)/(c-1))) :=
+        mul_le_mul_of_nonneg_left (envelope_tsum_le hc i) hCpos
+    _ = C * (1/(c-1)) * (((i:ℝ)+2)^c * ((((2*i+3:ℕ):ℝ)-1))^(1-c)) := by ring
+    _ ≤ C * (1/(c-1)) * (2*((i:ℝ)+1)) := by
+        apply mul_le_mul_of_nonneg_left (rpow_prod_le hc i)
+        have : 0 < c - 1 := by linarith
+        positivity
+    _ = C * (2/(c-1)) * ((i:ℝ)+1) := by ring
+
+/-- **The far-ahead poles vanish under the `(i+1)²` rescaling.** The far energy divided by `(i+1)²`
+tends to `0`, so the general-`d` midpoint steepness agrees with the balanced model `d = 2i+2` and
+`W(m)·δ/i → π²/c` holds for every pole count. -/
+theorem farEnergyTail_div_tendsto {c : ℝ} (hc : 1 < c) :
+    Tendsto (fun i : ℕ =>
+        (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2) / ((i:ℝ)+1)^2)
+      atTop (𝓝 0) := by
+  set K := 4/(1 - Real.exp (-(c * Real.log (3/2))))^2 * (2/(c-1)) with hK
+  have hupper : Tendsto (fun i : ℕ => K / ((i:ℝ)+1)) atTop (𝓝 0) :=
+    Tendsto.div_atTop tendsto_const_nhds
+      (tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop)
+  refine squeeze_zero' ?_ ?_ hupper
+  · filter_upwards with i; positivity
+  · filter_upwards [eventually_gt_atTop 0] with i _
+    have hnum := farEnergyTail_le hc i
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    calc (∑' m : ℕ, (rcsch ((harmPole c (2*i+2+m) - harmMid c i)/2))^2) * ((i:ℝ)+1)
+        ≤ (K * ((i:ℝ)+1)) * ((i:ℝ)+1) := by
+          apply mul_le_mul_of_nonneg_right _ (by positivity)
+          rw [hK]; exact hnum
+      _ = K * ((i:ℝ)+1)^2 := by ring
 
 end RHTower
 end

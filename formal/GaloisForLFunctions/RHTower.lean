@@ -117,6 +117,7 @@ import GaloisForLFunctions.RHTower.CensusProfile
 import GaloisForLFunctions.RHTower.Variation
 import GaloisForLFunctions.RHTower.ValuationProfile
 import GaloisForLFunctions.RHTower.ValMeasure
+import GaloisForLFunctions.RHTower.ValLimit
 import GaloisForLFunctions.RHTower.RelayLedger
 import GaloisForLFunctions.RHTower.EMCarrier
 import GaloisForLFunctions.RHTower.SeamCongruence
@@ -185,6 +186,7 @@ import GaloisForLFunctions.RHTower.LegStripTruncation
 import GaloisForLFunctions.RHTower.LegStripShellEM
 import GaloisForLFunctions.RHTower.LegStripShellRate
 import GaloisForLFunctions.RHTower.LegStripFarTail
+import GaloisForLFunctions.RHTower.LegStripCrossover
 import GaloisForLFunctions.RHTower.BohrMomentDensity
 import GaloisForLFunctions.RHTower.WeierstrassMajorant
 import GaloisForLFunctions.RHTower.FloorFailureUnconditional

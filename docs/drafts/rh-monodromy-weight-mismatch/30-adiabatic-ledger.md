@@ -1080,9 +1080,55 @@ tail needs that decay. Three theorems now supply the envelope (`LegStripFarTail.
   in `j` — the exact analog, for the energy, of the rational per-term envelope that controls the
   truncation train (§19).
 
-**What this opens.** The far tail sums against the envelope: `Σ_{j≥2i+2}((i+2)/(j+1))^c ≤
-(i+2)^c·(2i+2)^{1−c}/(c−1)` by the tree's `p_series_tail_le` (needs `c > 1`), and `(i+2)^c ≤ 2^c(i+1)^c`
-gives `≤ 2^{1+c}/(c−1)·(i+1)`. Divided by `(i+1)²` this is `O(1/i) → 0` — the far poles vanish under the
-rescaling, promoting the steepness to general `d`. The next brick is that `p`-series summation
-(`farEnergy_term_le` + `p_series_tail_le` + the `rpow` arithmetic `(i+2)^c ≤ 2^c(i+1)^c`), after which
-`W(m)δ/i → π²/c` holds for every pole count, not only the balanced model.
+**The `p`-series summation is now also done [PROVED HERE — Lean].** The envelope sums against the
+tree's `p_series_tail_le`:
+* `envelope_summable` : the shifted `p`-series `((2i+3)+m)^{−c}` is summable for `c > 1`.
+* `envelope_tsum_le` : `Σ'_m ((i+2)/(2i+3+m))^c ≤ (i+2)^c·(2i+2)^{1−c}/(c−1)` (`div_rpow` + `tsum_mul_left`
+  + `p_series_tail_le`).
+* `rpow_prod_le` : `(i+2)^c·(2i+2)^{1−c} ≤ 2(i+1)` (real-power arithmetic `(i+2)^c ≤ (2(i+1))^c` and
+  `x^c·x^{1−c} = x`).
+* `farEnergyTail_le` : `Σ'_m rcsch²((harmPole c (2i+2+m) − harmMid c i)/2) ≤ 4/(1−(2/3)^c)²·(2/(c−1))·(i+1)`
+  — the total far energy is `O(i+1)`, by comparison (termwise `farEnergy_term_le`, summable by
+  domination) then the envelope bound.
+* `farEnergyTail_div_tendsto` : **`(far energy)/(i+1)² → 0`** (squeeze by `K/(i+1)`).
+
+So the far-ahead poles provably vanish under the `(i+1)²` rescaling: the general-`d` midpoint steepness
+agrees with the balanced model `d = 2i+2`, and `W(m)·δ/i → π²/c` holds for **every** pole count `c > 1`,
+not only the balanced one — input #1's general-`d` residual is closed. Forward: the sole remaining piece
+of input #1 is the ξ-drift `W(ξ)/W(m) → 1` as the mean-value point drifts in the shrinking sub-gap
+`|x* − m| = |½ − θ*|·δ`; it sits on the same `rcsch_sq_le_exp` kernel control now in hand.
+
+## 22. The crossover `G` derived, and the marginal locus as a curve [PROVED HERE — Lean]
+
+Bullets 2–3 of the collapse program — the crossover `G` as a genuine one-parameter object, and a
+deformed carrier whose marginal locus is a curve — are now theorems (`LegStripCrossover.lean`,
+axiom-clean).
+
+**The crossover slope is derived, not posited (`crossover_derivation`).** `crossoverG ξ = 1/π − ξ/4`
+was a linear ansatz joining the two boundary constants. Its slope is now derived from the local factor
+`κ(c) = c/π²` and the curvature `Φ'(2) = −π²/8`: along the finite-size curve `c(d) = 2 − ξ/√d` (so
+`ξ = (2−c)√d` is held fixed), the off-marginal edge margin — `κ(c)` times the AM–GM minimum
+`(π²/8)(c−2) + (π/2)/√d` (the `Φ'(2)` shift plus the marginal `2√(a/d)`, `a = π²/16`) — scaled by `√d`
+converges to `1/π − ξ/4`:
+
+> `κ(c)·[(π²/8)(c−2)]·√d = (c/π²)(π²/8)(c−2)√d = (c/8)(c−2)√d → (2/8)(−ξ) = −ξ/4`, and
+> `κ(c)·(π/2) = (c/π²)(π/2) → (2/π²)(π/2) = 1/π`.
+
+So the two ends `G(0) = 1/π` (marginal, `c = 2`) and `G'(ξ) = −1/4` (off-marginal, through `κ·Φ'(2)`)
+are one object, and `−1/4` is the odd-Basel `κ` read against the cotangent curvature.
+
+**The marginal locus is a curve (`rhoOfCarrier_marginal_curve`, `rhoFamily_marginal_locus`).** The
+`ρ`-skeleton `ρ(κ,a) = 2κ√a` has marginal locus `ρ = 1/π` at `a = 1/(4π²κ²)` — a curve, not a point.
+In carrier terms the deformed shell coefficient `a(c) = π²/(4c²)` keeps `ρ(κ(c), a(c)) = 1/π` for
+**every** `c > 0` (`marginalShell`), and the physical value `a(2) = π²/16` (`marginalShell_two`) is one
+point of that one-parameter family of marginal carriers. The single physical carrier is a section of a
+curve of marginal carriers — the skeleton `ρ(κ,a) = 2κ√a` is exactly what it sections.
+
+**Where the program now stands.** The founding identity `½ − θ*(i) = g(i)/(W(ξ)δ)` has both factors
+proven; its three input limits are discharged at the analytic core (input #1 midpoint steepness + the
+now-closed general-`d` far tail §21; input #2 two-sided digamma sandwich §19; input #3 boundary-layer
+odd-Basel rate §20); and the crossover `G` and marginal-carrier curve are derived (§22). The residuals
+are three named coupled limits: the ξ-drift `W(ξ)/W(m) → 1` (bootstrap through the shrinking sub-gap,
+on the `rcsch_sq_le_exp` kernel now in hand), input #2's two-variable `o(1)`, and input #3's matched
+`Σ_k`/`lim_i` interchange. Each is one dominated-convergence or bootstrap step on an already-built
+envelope — the analytic scaffolding for all three is now formalized.

@@ -5456,3 +5456,65 @@ controlled).
 atomic, zero-measure ⟺ RH); (a) restricted Stieltjes measure with distribution valMass; (b)
 normalized mean-valuation density valMass/#heights, a rational line profile whose bounded-away-from-0
 is a graded rung, finite-carrier-shadowable.
+
+## cont.58 — input #1 general-d far tail CLOSED: far energy /(i+1)² → 0 [Lean, axiom-clean]
+
+Completed the p-series summation on the cont.57 envelope. LegStripFarTail.lean now has 8 theorems,
+axiom-clean, lint clean, umbrella green:
+- envelope_summable (shifted p-series ((2i+3)+m)^{−c} summable, c>1, via summable_one_div_nat_rpow +
+  summable_nat_add_iff),
+- envelope_tsum_le (Σ' ((i+2)/(2i+3+m))^c ≤ (i+2)^c(2i+2)^{1−c}/(c−1), via div_rpow+tsum_mul_left+p_series_tail_le),
+- rpow_prod_le ((i+2)^c(2i+2)^{1−c} ≤ 2(i+1), via rpow_le_rpow + x^c·x^{1−c}=x),
+- farEnergyTail_le (Σ' rcsch²((harmPole c(2i+2+m)−harmMid c i)/2) ≤ C·(2/(c−1))·(i+1); termwise
+  farEnergy_term_le + domination summability + envelope),
+- farEnergyTail_div_tendsto (**(far energy)/(i+1)² → 0**, squeeze by K/(i+1)).
+⟹ far-ahead poles vanish under (i+1)² rescaling; general-d midpoint steepness = balanced-model;
+W(m)δ/i→π²/c for EVERY pole count c>1. Input#1 general-d residual CLOSED. Ledger §21.
+Sole remaining input#1 piece = ξ-drift W(ξ)/W(m)→1 (mean-value pt drifts in sub-gap |x*−m|=|½−θ*|δ),
+sits on rcsch_sq_le_exp now in hand.
+Lean: div_le_div_iff→div_le_div_iff₀; set-var `env m` is a beta-redex → `rw [show env m = ... from rfl]`;
+annotate `∑' m : ℕ`/`fun m : ℕ` or Lean infers m:ℝ from `(m:ℝ)` usage.
+
+---
+
+## cont. 57 — limit valuation measure + Stieltjes measure + mean-valuation density
+
+Built the two objects doc 99 §5 named; doc 100 is the ledger. New module `ValLimit.lean`.
+
+**Limit measure.** `valMeasure_mono` (monotone family of measures); `valMeasureInf := ⨆ n, valMeasure
+n`; `valMeasure_le_valMeasureInf`; `valMeasureInf_eq_zero_of_rh` (RH → zero; note v₂ weights miss odd
+jumps so the sharp detector stays offLineHeights).
+
+**(a) Stieltjes.** `valMass_mono_real`; `valDistribution := valMass_mono_real.stieltjesFunction`
+(Monotone.stieltjesFunction handles right-continuity automatically); `valStieltjesMeasure`;
+`valStieltjesMeasure_Ioc` ((a,b] mass = ofReal(valDistribution b − a)).
+
+**(b) mean density.** `meanVal T := valMass/#heights : ℚ`; `le_meanVal_of_le_windowDepth` (mean ≥
+depth); `V_one_eq_zero_iff_one_le_windowDepth` + `one_le_windowDepth_iff_forall_pos` (level-1 graded
+rung = every enclosed jump positive valuation ⟹ meanVal ≥ 1); `meanVal_eq_of_filtrationLength_eq`
+(shadow via filtrationLength_eq_finite).
+
+**Verify.** `lake build RHTower MainTheorems` EXIT 0 (9150 jobs); 8 capstones axiom-clean
+`[propext, Classical.choice, Quot.sound]`; index regenerated; `formal lint passed`.
+
+**Opened (doc 100 §5).** (a) liminf mean density (ℚ∪{∞} invariant, positivity = cofinal level-1
+rung, decidable finite-carrier liminf); (b) density–depth defect meanVal − windowDepth ≥ 0 (vanishes
+on equal-order windows — a new rigidity locus collapsing the atomic measure to single-weight
+counting).
+
+## cont.59 — bullets 2+3: crossover G slope DERIVED + marginal locus is a CURVE [Lean, axiom-clean]
+
+LegStripCrossover.lean, 5 theorems, axiom-clean, lint clean, umbrella green:
+- crossover_derivation (BULLET 2): along c(d)=2−ξ/√d, off-marginal margin κ(c)·[(π²/8)(c−2)+(π/2)/√d]·√d
+  → crossoverG ξ = 1/π−ξ/4. DERIVES the −ξ/4 slope from κ(c)=c/π² and Φ'(2)=−π²/8 (was posited).
+  Proof: margin·√d = crossoverG ξ + (ξ²/8−ξ/(2π))/√d, and 1/√d→0. The two boundary constants G(0)=1/π
+  (marginal) and G'=−1/4 (off-marginal via κ·Φ') unified.
+- marginalShell c := π²/(4c²) + rhoOfCarrier_marginal_curve (BULLET 3): rhoOfCarrier c (π²/(4c²))=1/π for
+  ALL c>0 — deformed carrier's marginal locus is a curve (not a point); physical a(2)=π²/16
+  (marginalShell_two) is one point of the 1-param family. rhoFamily_marginal_locus: abstract locus
+  a=1/(4π²κ²) in (κ,a) skeleton gives ρ=1/π.
+Lean: tendsto_sqrt_atTop (not Real.sqrt_tendsto_atTop); Tendsto.div_atTop for 1/√d→0.
+
+STATE: founding identity ½−θ*=g/(W(ξ)δ) both factors proven; 3 inputs discharged at analytic core
+(§19/20/21); crossover G + marginal curve derived (§22). 3 named coupled residuals left: ξ-drift
+W(ξ)/W(m)→1 (bootstrap, on rcsch_sq_le_exp), input#2 2-var o(1), input#3 matched Σ_k/lim_i interchange.

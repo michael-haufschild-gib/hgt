@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DiscWindow
+import GaloisForLFunctions.RHTower.SeamCongruence
 
 /-!
 # The finite-side DISC census
@@ -204,35 +205,41 @@ theorem windowCertificate_of_subWindow_finiteDiscBits_zero {k : ℕ} {T : ℝ}
   exact xi_rung_of_completedGN_discBit_zero (N := N) (k := k)
     (fun z _ => ENat.coe_toNat (xi_order_ne_top z)) hclosed hstrip hm₂ hcl₂ hD hL hfin
 
+/-- Finite deck-line data for every reflection-closed subwindow of a height window.  Each
+subwindow may choose its own completed finite carrier, zero presentation, root charts, and
+transport congruences; the finite carrier's deck class is required to match its line prediction. -/
+def SubWindowFiniteDeckLineData (k : ℕ) (T : ℝ) : Prop :=
+  ∀ t : Finset ℂ, ↑t ⊆ stripZeros T →
+    (∀ z ∈ t, lineReflect z ∈ t) →
+    ∃ N : ℕ, ∃ t₂ : Finset ℂ, ∃ m₂ : ℂ → ℕ,
+    ∃ h G₁ G₂ : ℂ → ℂ, ∃ a : ℂ, ∃ r₀ R : ℝ,
+      0 ≤ r₀ ∧ r₀ < R ∧
+      (∀ z ∈ t₂, 0 < z.re ∧ z.re < 1) ∧
+      (∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z) ∧
+      (∀ z ∈ t₂, lineReflect z ∈ t₂) ∧
+      (∀ z ∈ t₂, ‖z - a‖ ≤ r₀) ∧
+      AnalyticOnNhd ℂ h (ball a R) ∧
+      (∀ z ∈ ball a R, h z ≠ 0) ∧
+      (∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h z) ∧
+      AnalyticOnNhd ℂ G₁ (chartRA a r₀ R) ∧
+      AnalyticOnNhd ℂ G₂ (chartLA a r₀ R) ∧
+      (∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 ^ (k + 1) = completedGN N z) ∧
+      (∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 ^ (k + 1) = completedGN N z) ∧
+      (deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
+          (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)
+        = Complex.exp (2 * (Real.pi : ℂ) * I *
+            ((∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z : ℕ) : ℂ)
+            / ((2 ^ (k + 1) : ℕ) : ℂ))) ∧
+      (∑ z ∈ t, (analyticOrderAt xi z).toNat ≡ ∑ z ∈ t₂, m₂ z
+        [MOD 2 ^ (k + 1)]) ∧
+      (∑ z ∈ t.filter (fun z => z.re = 1 / 2), (analyticOrderAt xi z).toNat
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])
+
 /-- Window certificates from finite deck-line equality on every reflection-closed subwindow.
 This discharges the finite-side `windowDiscBit = 0` premise through the completed finite carrier's
 own deck class, so the subwindow bridge consumes deck data rather than a precomputed DISC bit. -/
 theorem windowCertificate_of_subWindow_finiteDeckLine {k : ℕ} {T : ℝ}
-    (hbits : ∀ t : Finset ℂ, ↑t ⊆ stripZeros T →
-      (∀ z ∈ t, lineReflect z ∈ t) →
-      ∃ N : ℕ, ∃ t₂ : Finset ℂ, ∃ m₂ : ℂ → ℕ,
-      ∃ h G₁ G₂ : ℂ → ℂ, ∃ a : ℂ, ∃ r₀ R : ℝ,
-        0 ≤ r₀ ∧ r₀ < R ∧
-        (∀ z ∈ t₂, 0 < z.re ∧ z.re < 1) ∧
-        (∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z) ∧
-        (∀ z ∈ t₂, lineReflect z ∈ t₂) ∧
-        (∀ z ∈ t₂, ‖z - a‖ ≤ r₀) ∧
-        AnalyticOnNhd ℂ h (ball a R) ∧
-        (∀ z ∈ ball a R, h z ≠ 0) ∧
-        (∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h z) ∧
-        AnalyticOnNhd ℂ G₁ (chartRA a r₀ R) ∧
-        AnalyticOnNhd ℂ G₂ (chartLA a r₀ R) ∧
-        (∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 ^ (k + 1) = completedGN N z) ∧
-        (∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 ^ (k + 1) = completedGN N z) ∧
-        (deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
-            (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)
-          = Complex.exp (2 * (Real.pi : ℂ) * I *
-              ((∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z : ℕ) : ℂ)
-              / ((2 ^ (k + 1) : ℕ) : ℂ))) ∧
-        (∑ z ∈ t, (analyticOrderAt xi z).toNat ≡ ∑ z ∈ t₂, m₂ z
-          [MOD 2 ^ (k + 1)]) ∧
-        (∑ z ∈ t.filter (fun z => z.re = 1 / 2), (analyticOrderAt xi z).toNat
-          ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])) :
+    (hbits : SubWindowFiniteDeckLineData k T) :
     WindowCertificate k T := by
   refine windowCertificate_of_subWindow_finiteDiscBits_zero ?_
   intro t hsub hclosed
@@ -244,5 +251,141 @@ theorem windowCertificate_of_subWindow_finiteDeckLine {k : ℕ} {T : ℝ}
     (t := t₂) (m := m₂) (h := h) (G₁ := G₁) (G₂ := G₂) (a := a)
     (r₀ := r₀) (R := R) h0 hrR hstrip hm₂ hcl₂ hρ₂ hhan hh0 hfact
     hG₁ hG₂ hpG₁ hpG₂).mp hdeck
+
+/-- Cofinal supply of subwindow finite deck-line data at a fixed rung. -/
+def CofinalSubWindowFiniteDeckLineData (k : ℕ) : Prop :=
+  ∀ B : ℝ, ∃ T, B ≤ T ∧ SubWindowFiniteDeckLineData k T
+
+/-- Cofinal subwindow finite deck-line data forces the fixed RH ladder rung. -/
+theorem rhLadder_of_cofinal_subWindow_finiteDeckLineData {k : ℕ}
+    (hbits : CofinalSubWindowFiniteDeckLineData k) :
+    RHLadder k := by
+  refine rhLadder_of_cofinal_windowCertificates ?_
+  intro B
+  obtain ⟨T, hBT, hT⟩ := hbits B
+  exact ⟨T, hBT, windowCertificate_of_subWindow_finiteDeckLine hT⟩
+
+/-- Cofinal subwindow finite deck-line data at every rung gives RH. -/
+theorem rh_of_cofinal_subWindow_finiteDeckLineData
+    (hbits : ∀ k : ℕ, CofinalSubWindowFiniteDeckLineData k) :
+    RiemannHypothesis := by
+  rw [rh_iff_forall_ladder]
+  intro k
+  exact rhLadder_of_cofinal_subWindow_finiteDeckLineData (hbits k)
+
+/-- Subwindow finite deck-line data with the transport congruences discharged by the seam.
+Instead of assuming the total-count congruence `hD` and the line-count congruence `hL`, this
+interface supplies peeled ξ/completed-carrier presentations, EM/LOW domination data on the
+annular charts, and two sign tables.  `anneal_D_transport` then gives total equality, while
+`hL_exact_of_two_sign_data` gives line equality. -/
+def SubWindowFiniteDeckLineTwoSignData (k : ℕ) (T : ℝ) : Prop :=
+  ∀ t : Finset ℂ, ↑t ⊆ stripZeros T →
+    (∀ z ∈ t, lineReflect z ∈ t) →
+    ∃ N M : ℕ, ∃ t₂ : Finset ℂ, ∃ m₂ : ℂ → ℕ,
+    ∃ h h' G₁ G₂ : ℂ → ℂ, ∃ a : ℂ, ∃ r₀ R ε₁ δ : ℝ,
+    ∃ s₁ : ℕ, ∃ ts₁ : ℕ → ℝ, ∃ s₂ : ℕ, ∃ ts₂ : ℕ → ℝ,
+      1 ≤ M ∧
+      0 ≤ r₀ ∧ r₀ < R ∧
+      (∀ z ∈ t₂, 0 < z.re ∧ z.re < 1) ∧
+      (∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z) ∧
+      (∀ z ∈ t₂, lineReflect z ∈ t₂) ∧
+      (∀ z ∈ t, ‖z - a‖ ≤ r₀) ∧
+      (∀ z ∈ t₂, ‖z - a‖ ≤ r₀) ∧
+      AnalyticOnNhd ℂ h (ball a R) ∧
+      (∀ z ∈ ball a R, h z ≠ 0) ∧
+      AnalyticOnNhd ℂ h' (ball a R) ∧
+      (∀ z ∈ ball a R, h' z ≠ 0) ∧
+      (∀ z ∈ ball a R,
+        xi z = (∏ w ∈ t, (z - w) ^ (analyticOrderAt xi w).toNat) * h z) ∧
+      (∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z) ∧
+      (∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z.re < 1) ∧
+      (∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+        ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁) ∧
+      (∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+        ‖emCarrier M z - gN N z‖ ≤ δ) ∧
+      CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N (ε₁ + δ) ∧
+      AnalyticOnNhd ℂ G₁ (chartRA a r₀ R) ∧
+      AnalyticOnNhd ℂ G₂ (chartLA a r₀ R) ∧
+      (∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 ^ (k + 1) = completedGN N z) ∧
+      (∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 ^ (k + 1) = completedGN N z) ∧
+      (deckClass G₁ G₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)
+          (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)
+        = Complex.exp (2 * (Real.pi : ℂ) * I *
+            ((∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z : ℕ) : ℂ)
+            / ((2 ^ (k + 1) : ℕ) : ℂ))) ∧
+      (∀ i, i < s₁ → ts₁ i < ts₁ (i + 1)) ∧
+      (∀ i, i < s₁ →
+        (xi (linePoint (ts₁ i))).re * (xi (linePoint (ts₁ (i + 1)))).re < 0) ∧
+      (∀ u : ℝ, ts₁ 0 ≤ u → u ≤ ts₁ s₁ → linePoint u ∈ ball a R) ∧
+      (∑ z ∈ t₂, m₂ z ≤ s₁) ∧
+      (∀ i, i < s₂ → ts₂ i < ts₂ (i + 1)) ∧
+      (∀ i, i < s₂ →
+        (completedGN N (linePoint (ts₂ i))).re *
+          (completedGN N (linePoint (ts₂ (i + 1)))).re < 0) ∧
+      (∀ u : ℝ, ts₂ 0 ≤ u → u ≤ ts₂ s₂ → linePoint u ∈ ball a R) ∧
+      (∑ z ∈ t₂, m₂ z ≤ s₂)
+
+/-- Two-sign subwindow data discharges the raw transport congruences of
+`SubWindowFiniteDeckLineData`. -/
+theorem subWindowFiniteDeckLineData_of_twoSignData {k : ℕ} {T : ℝ}
+    (hbits : SubWindowFiniteDeckLineTwoSignData k T) :
+    SubWindowFiniteDeckLineData k T := by
+  intro t hsub hclosed
+  rcases hbits t hsub hclosed with
+    ⟨N, M, t₂, m₂, h, h', G₁, G₂, a, r₀, R, ε₁, δ, s₁, ts₁, s₂, ts₂,
+      hM, h0, hrR, hstrip₂, hm₂, hcl₂, hρ₁, hρ₂, hhan, hh0, hhan', hh0',
+      hfact₁, hfact₂, hchartStrip, hE, hclose, hF, hG₁, hG₂, hpG₁, hpG₂,
+      hdeck, hmono₁, hsign₁, hseg₁, hcount₂₁, hmono₂, hsign₂, hseg₂, hcount₂₂⟩
+  have hm₁ : ∀ z ∈ t,
+      ((fun ρ => (analyticOrderAt xi ρ).toNat) z : ℕ∞) = analyticOrderAt xi z := by
+    intro z _
+    exact ENat.coe_toNat (xi_order_ne_top z)
+  have hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖xi z - completedGN N z‖ < ‖completedGN N z‖ :=
+    completed_domination_of_emCarrier_close_floor hM hchartStrip hE hclose hF
+  have hDeq : ∑ z ∈ t, (analyticOrderAt xi z).toNat = ∑ z ∈ t₂, m₂ z :=
+    anneal_D_transport h0 hrR hρ₁ hρ₂ hhan hh0 hhan' hh0' hfact₁ hfact₂ hdom
+  have hD : ∑ z ∈ t, (analyticOrderAt xi z).toNat ≡ ∑ z ∈ t₂, m₂ z
+      [MOD 2 ^ (k + 1)] := by
+    rw [hDeq]
+  have hLeq : ∑ z ∈ t.filter (fun z => z.re = 1 / 2), (analyticOrderAt xi z).toNat =
+      ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z :=
+    hL_exact_of_two_sign_data h0 hrR hm₁ hclosed hstrip₂ hm₂ hcl₂ hρ₁ hρ₂
+      hhan hh0 hhan' hh0' hfact₁ hfact₂ hdom hmono₁ hsign₁ hseg₁ hcount₂₁
+      hmono₂ hsign₂ hseg₂ hcount₂₂
+  have hL : ∑ z ∈ t.filter (fun z => z.re = 1 / 2), (analyticOrderAt xi z).toNat
+      ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)] := by
+    rw [hLeq]
+  exact ⟨N, t₂, m₂, h', G₁, G₂, a, r₀, R, h0, hrR, hstrip₂, hm₂, hcl₂, hρ₂,
+    hhan', hh0', hfact₂, hG₁, hG₂, hpG₁, hpG₂, hdeck, hD, hL⟩
+
+/-- Window certificate from subwindow finite deck-line data whose transport congruences are
+derived from EM/LOW domination and two sign tables. -/
+theorem windowCertificate_of_subWindow_finiteDeckLine_twoSignData {k : ℕ} {T : ℝ}
+    (hbits : SubWindowFiniteDeckLineTwoSignData k T) :
+    WindowCertificate k T :=
+  windowCertificate_of_subWindow_finiteDeckLine
+    (subWindowFiniteDeckLineData_of_twoSignData hbits)
+
+/-- Cofinal supply of two-sign subwindow finite deck-line data at a fixed rung. -/
+def CofinalSubWindowFiniteDeckLineTwoSignData (k : ℕ) : Prop :=
+  ∀ B : ℝ, ∃ T, B ≤ T ∧ SubWindowFiniteDeckLineTwoSignData k T
+
+/-- Cofinal two-sign subwindow finite deck-line data forces the fixed RH ladder rung. -/
+theorem rhLadder_of_cofinal_subWindow_finiteDeckLineTwoSignData {k : ℕ}
+    (hbits : CofinalSubWindowFiniteDeckLineTwoSignData k) :
+    RHLadder k := by
+  refine rhLadder_of_cofinal_windowCertificates ?_
+  intro B
+  obtain ⟨T, hBT, hT⟩ := hbits B
+  exact ⟨T, hBT, windowCertificate_of_subWindow_finiteDeckLine_twoSignData hT⟩
+
+/-- Cofinal two-sign subwindow finite deck-line data at every rung gives RH. -/
+theorem rh_of_cofinal_subWindow_finiteDeckLineTwoSignData
+    (hbits : ∀ k : ℕ, CofinalSubWindowFiniteDeckLineTwoSignData k) :
+    RiemannHypothesis := by
+  rw [rh_iff_forall_ladder]
+  intro k
+  exact rhLadder_of_cofinal_subWindow_finiteDeckLineTwoSignData (hbits k)
 
 end RHTower

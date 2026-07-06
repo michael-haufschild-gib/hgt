@@ -481,6 +481,23 @@ theorem windowLinePackage_of_integral_ledger_outer_power_windowData {T0 : ℝ}
     (by simpa [linePt] using hsign), hMJ, hbound, hjensen_floor, hengine,
     ha₀, ha₀0, hMG, hbudget_outer, hclose⟩
 
+/-- Cofinal supply of the window-level integral ledger.  This is the analytic producer target
+after the sign bracket has been replaced by moment, line-sup, and first-moment data: above every
+height bound, one height window carries the full integral ledger for each box zero. -/
+def CofinalIntegralLedgerOuterPowerWindowData : Prop :=
+  ∀ B : ℝ, ∃ T, B ≤ T ∧ IntegralLedgerOuterPowerWindowData T
+
+/-- Cofinal integral ledgers close the window-producer RH route.  The only remaining input is
+the cofinal analytic supply of `IntegralLedgerOuterPowerWindowData`; the conversion to line
+packages and then to RH is already formalized. -/
+theorem rh_of_cofinal_integral_ledger_outer_power_windowData
+    (hwin : CofinalIntegralLedgerOuterPowerWindowData) :
+    RiemannHypothesis := by
+  refine rh_of_cofinal_windowLinePackages ?_
+  intro B
+  obtain ⟨T, hBT, hT⟩ := hwin B
+  exact ⟨T, hBT, windowLinePackage_of_integral_ledger_outer_power_windowData hT⟩
+
 end RHTower
 
 namespace RHTower

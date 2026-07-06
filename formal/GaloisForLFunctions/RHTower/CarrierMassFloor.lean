@@ -327,71 +327,74 @@ end RHTower
 
 namespace RHTower
 
-/-- **Anchor-mass integral ledger endpoint.**  The per-zero window certificate carries no
-independent short-interval second-moment face: the long-window energy budget selects an
-anchor height `τ` with `m_J ≤ ‖g_N‖`, the archimedean floor upgrades it to the pointwise
-anchor `a₀·m_J ≤ |Re Φ̃_N|`, and the point-to-mass converter manufactures the local mass
-floor `(a₀m_J/2)²·2·min rz (a₀m_J/(2·slopeBudget))` from the envelope calculus.  The sign
-face is the single strict comparison of the local first moment against that floor; all
-other sign-face data are envelope sups on the expanded window. -/
-theorem riemannHypothesis_of_decoupled_integral_ledger_anchor_mass_endpoint_target
-    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
-      ∃ (N M : ℕ) (δ : ℝ)
-        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ M₀ M₁ M_line : ℝ),
-        1 ≤ M ∧
-        0 < U ∧
-        0 < rz ∧
-        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
-        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
-        rz < R ∧
-        (ρ.re - 1 / 2) ^ 2 +
-            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
-        0 < T - rz ∧
-        0 < carrierSlopeLineBudget N M₀ M₁ ∧
-        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactor (linePt u)‖ ≤ M₀) ∧
-        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactor (1 - linePt u)‖ ≤ M₀) ∧
-        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactorDeriv (linePt u)‖ ≤ M₁) ∧
-        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactorDeriv (1 - linePt u)‖ ≤ M₁) ∧
-        (∀ u ∈ Set.Icc (T - rz) (T + U + rz),
-          |(completedGN N (linePt u)).re| ≤ M_line) ∧
-        (∀ τ ∈ Set.Icc T (T + U),
-          M_line * |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| <
-            (a₀ * m_J / 2) ^ 2 *
-              (2 * min rz (a₀ * m_J / (2 * carrierSlopeLineBudget N M₀ M₁)))) ∧
-        0 < m_J ∧
-        m_J ^ 2 * U +
-          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
-          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
-            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
-                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
-                  / |Real.log n - Real.log m|) ∧
-        1 ≤ M_J ∧
-        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
-          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
-        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
-        m_J / rz < M_J / (rJ - rz) ∧
-        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
-        0 < a₀ ∧
-        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
-          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
-          ‖completedGN N z‖ ≤ M_G) ∧
-        max ((6 * R * M_G) / (P ^ 2 * a₀))
-            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
-              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
-          (m_J / rz) *
-            ((m_J / rz) / (M_J / (rJ - rz))) ^
-              (2 * (R + rz) / (rJ - (R + rz))) ∧
-        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
-          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
-          ‖emCarrier M z - gN N z‖ ≤ δ)) :
-    RiemannHypothesis := by
-  apply riemannHypothesis_of_center_floor_cross_slope_windows
-  intro ρ hρ hzero
+/-- Window-level anchor-mass data for the outer-power endpoint.  Compared with
+`IntegralLedgerOuterPowerWindowData`, the short completed-carrier second-moment floor is no longer
+primitive: it is manufactured from the selected Hardy anchor, archimedean lower floor, and
+closed-form line-slope envelope. -/
+def AnchorMassOuterPowerWindowData (T0 : ℝ) : Prop :=
+  ∀ ρ ∈ boxZeros T0,
+    ∃ (N M : ℕ) (δ : ℝ)
+      (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ M₀ M₁ M_line : ℝ),
+      1 ≤ M ∧
+      0 < U ∧
+      0 < rz ∧
+      0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+      P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+      rz < R ∧
+      (ρ.re - 1 / 2) ^ 2 +
+          (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+      0 < T - rz ∧
+      0 < carrierSlopeLineBudget N M₀ M₁ ∧
+      (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactor (linePt u)‖ ≤ M₀) ∧
+      (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactor (1 - linePt u)‖ ≤ M₀) ∧
+      (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactorDeriv (linePt u)‖ ≤ M₁) ∧
+      (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactorDeriv (1 - linePt u)‖ ≤ M₁) ∧
+      (∀ u ∈ Set.Icc (T - rz) (T + U + rz),
+        |(completedGN N (linePt u)).re| ≤ M_line) ∧
+      (∀ τ ∈ Set.Icc T (T + U),
+        M_line * |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| <
+          (a₀ * m_J / 2) ^ 2 *
+            (2 * min rz (a₀ * m_J / (2 * carrierSlopeLineBudget N M₀ M₁)))) ∧
+      0 < m_J ∧
+      m_J ^ 2 * U +
+        (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+        4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+          - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+              2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                / |Real.log n - Real.log m|) ∧
+      1 ≤ M_J ∧
+      (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+        sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+      Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+      m_J / rz < M_J / (rJ - rz) ∧
+      (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+      0 < a₀ ∧
+      (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+        sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+        ‖completedGN N z‖ ≤ M_G) ∧
+      max ((6 * R * M_G) / (P ^ 2 * a₀))
+          ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+            (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+        (m_J / rz) *
+          ((m_J / rz) / (M_J / (rJ - rz))) ^
+            (2 * (R + rz) / (rJ - (R + rz))) ∧
+      (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+        sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+        ‖emCarrier M z - gN N z‖ ≤ δ)
+
+/-- Anchor-mass window data produces the `WindowLinePackage` interface.  The selected Hardy
+anchor supplies the pointwise completed-carrier anchor, the slope envelope manufactures the local
+mass floor, and the scalar pinning gate gives an on-line ball cover for every box zero. -/
+theorem windowLinePackage_of_anchor_mass_outer_power_windowData {T0 : ℝ}
+    (hwin : AnchorMassOuterPowerWindowData T0) :
+    WindowLinePackage T0 := by
+  refine windowLinePackage_of_ball_online_cover ?_
+  intro ρ hρ
   obtain ⟨N, M, δ, T, U, rz, r₀, R, P, rJ, RJ, m_J, M_J, M_G, a₀, M₀, M₁, M_line,
     hM, hU, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad,
     hTrz, hDbud, hM₀, hM₀r, hM₁, hM₁r, hMline, hfm,
     hmJ0, henergy, hMJ, hbound, hjensen_floor, hengine, ha₀, ha₀0, hMG,
-    hbudget_outer, hclose⟩ := hwin ρ hρ hzero
+    hbudget_outer, hclose⟩ := hwin ρ hρ
   let ε₁ : ℝ := (max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
     (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)
   let Rprime : ℝ := R - rz
@@ -473,18 +476,106 @@ theorem riemannHypothesis_of_decoupled_integral_ledger_anchor_mass_endpoint_targ
       hmJ0 hrz0 hMJ0 hrzJ hengine hP0 ha₀0 h0 hR0 hRrzJ (by
         dsimp [ε₁]
         exact hbudget_outer)
-  refine ⟨N, M, ε₁, δ, ((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I,
-    t₁, t₂, rz, r₀, R, Rprime, P, rJ, RJ, m_J, M_J, M_G, a₀, ?_⟩
-  exact ⟨hM, hεδ, ht₁0, h12, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR,
+  have hρRprime : ρ ∈ ball (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) Rprime :=
     point_mem_line_center_ball_of_quadratic hR'0
-      ((quadratic_target_of_endpoint_abs_im_bounds hρT hρTU hρquad') τ hτ),
-    hR'rz, line_center_closedBall_strip hRJ12,
-    (fun u hu => line_interval_mem_closedBall_line_center_of_endpoint_bounds
-      (T := τ) (U := 0) (by linarith [ht₁.1]) (by linarith [ht₂.2])
-      ⟨le_rfl, by linarith⟩ hu),
-    (by simpa [linePt] using hsign), hmJ0, hAnchor, hMJ,
-    (fun z hz => hbound τ hτ z hz),
-    hjensen_floor, hengine, ha₀_ball, ha₀0, hMG_ball, hcross,
-    hE_ball, hclose_ball, hfl⟩
+      ((quadratic_target_of_endpoint_abs_im_bounds hρT hρTU hρquad') τ hτ)
+  obtain ⟨ρ', -, hρ'rz, hpin⟩ :=
+    xi_window_pinned_of_center_floor_cross_slope (N := N) (M := M) hM hεδ
+      ht₁0 h12 hrz0 h0 hrR hRP hPrz hRrzJ hrJR
+      (line_center_closedBall_strip hRJ12)
+      (fun u hu => line_interval_mem_closedBall_line_center_of_endpoint_bounds
+        (T := τ) (U := 0) (by linarith [ht₁.1]) (by linarith [ht₂.2])
+        ⟨le_rfl, by linarith⟩ hu)
+      (by simpa [linePt] using hsign) hmJ0 hAnchor hMJ
+      (fun z hz => hbound τ hτ z hz)
+      hjensen_floor hengine ha₀_ball ha₀0 hMG_ball hcross hE_ball hclose_ball hfl
+  refine ⟨ρ', R, ?_, hpin⟩
+  rw [mem_ball]
+  calc dist ρ ρ' ≤ dist ρ (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) +
+      dist (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) ρ' := dist_triangle ρ _ ρ'
+    _ < Rprime + rz := by
+        apply add_lt_add_of_lt_of_le (mem_ball.mp hρRprime)
+        rw [dist_comm]
+        exact mem_closedBall.mp hρ'rz
+    _ ≤ R := hR'rz
+
+/-- Cofinal supply of anchor-mass window data. -/
+def CofinalAnchorMassOuterPowerWindowData : Prop :=
+  ∀ B : ℝ, ∃ T, B ≤ T ∧ AnchorMassOuterPowerWindowData T
+
+/-- Cofinal anchor-mass window data gives RH through the shared `WindowLinePackage` producer. -/
+theorem rh_of_cofinal_anchor_mass_outer_power_windowData
+    (hwin : CofinalAnchorMassOuterPowerWindowData) :
+    RiemannHypothesis := by
+  refine rh_of_cofinal_windowLinePackages ?_
+  intro B
+  obtain ⟨T, hBT, hT⟩ := hwin B
+  exact ⟨T, hBT, windowLinePackage_of_anchor_mass_outer_power_windowData hT⟩
+
+/-- **Anchor-mass integral ledger endpoint.**  The per-zero window certificate carries no
+independent short-interval second-moment face: the long-window energy budget selects an
+anchor height `τ` with `m_J ≤ ‖g_N‖`, the archimedean floor upgrades it to the pointwise
+anchor `a₀·m_J ≤ |Re Φ̃_N|`, and the point-to-mass converter manufactures the local mass
+floor `(a₀m_J/2)²·2·min rz (a₀m_J/(2·slopeBudget))` from the envelope calculus.  The sign
+face is the single strict comparison of the local first moment against that floor; all
+other sign-face data are envelope sups on the expanded window. -/
+theorem riemannHypothesis_of_decoupled_integral_ledger_anchor_mass_endpoint_target
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (δ : ℝ)
+        (T U rz r₀ R P rJ RJ m_J M_J M_G a₀ M₀ M₁ M_line : ℝ),
+        1 ≤ M ∧
+        0 < U ∧
+        0 < rz ∧
+        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+        rz < R ∧
+        (ρ.re - 1 / 2) ^ 2 +
+            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+        0 < T - rz ∧
+        0 < carrierSlopeLineBudget N M₀ M₁ ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactor (linePt u)‖ ≤ M₀) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactor (1 - linePt u)‖ ≤ M₀) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactorDeriv (linePt u)‖ ≤ M₁) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), ‖archFactorDeriv (1 - linePt u)‖ ≤ M₁) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz),
+          |(completedGN N (linePt u)).re| ≤ M_line) ∧
+        (∀ τ ∈ Set.Icc T (T + U),
+          M_line * |∫ u in (τ - rz)..(τ + rz), (completedGN N (linePt u)).re| <
+            (a₀ * m_J / 2) ^ 2 *
+              (2 * min rz (a₀ * m_J / (2 * carrierSlopeLineBudget N M₀ M₁)))) ∧
+        0 < m_J ∧
+        m_J ^ 2 * U +
+          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                  / |Real.log n - Real.log m|) ∧
+        1 ≤ M_J ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+        m_J / rz < M_J / (rJ - rz) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+        0 < a₀ ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖completedGN N z‖ ≤ M_G) ∧
+        max ((6 * R * M_G) / (P ^ 2 * a₀))
+            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+          (m_J / rz) *
+            ((m_J / rz) / (M_J / (rJ - rz))) ^
+              (2 * (R + rz) / (rJ - (R + rz))) ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖emCarrier M z - gN N z‖ ≤ δ)) :
+    RiemannHypothesis := by
+  refine rh_of_cofinal_anchor_mass_outer_power_windowData ?_
+  intro X
+  refine ⟨max X 0 + 1, ?_, ?_⟩
+  · have hle : X ≤ max X 0 := le_max_left _ _
+    linarith
+  · intro ρ hρ
+    exact hwin ρ hρ.1.1 hρ.2
 
 end RHTower
