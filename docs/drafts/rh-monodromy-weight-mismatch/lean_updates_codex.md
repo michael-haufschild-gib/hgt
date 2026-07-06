@@ -761,3 +761,31 @@ umbrella updated; 11 new endpoints axioms = [propext, Classical.choice, Quot.sou
   compacts), `splitData_count_rigid` (EM and SEM splits carry the same count),
   `sem_hole_zeros_localize` (∀ ε > 0, all hole zeros within ε of the centre for N
   large: count pinned, support collapsing).
+
+## 2026-07-07 — defect steering quantified + steering supply (doc 112)
+
+`DefectSteering.lean` (new; umbrella updated); 19 endpoints, all axioms =
+[propext, Classical.choice, Quot.sound].
+
+- `im_eulerFactor` (Im factor = q^{−Re s}·sin(Im s·log q) at every real part);
+  `primeTilt_pos_iff`/`primeTilt_neg_iff` (tilt sign = sine sign).
+- Defect walk algebra: `anchorMirrorDefect_empty`/`_singleton`/`_insert` with
+  `mirrorTiltIncrement q s = primeTilt q (1−s̄) + primeTilt q s`.
+- Steering laws: `mirrorTiltIncrement_pos`/`_neg` (sign = sign sin(τ log q)),
+  `mirrorTiltIncrement_ge` (arctan floor), `abs_mirrorTiltIncrement_le` (budget ceiling).
+- Root-level turning: `canonicalAnchorRoot` (= √‖A‖·e^{i·tilt/2}), `_sq`, `_ne_zero`,
+  `canonicalAnchorRoot_mul_mirror` — mirror pairing rotates by EXACTLY defect/2.
+- Rigidity: `anchoredSEM_roots_of_sem_roots` via banked `deckClass_mul_global`:
+  anchoring preserves the deck class — phases turn, parity class fixed.
+- Steering supply (§6): `exists_prime_log_mem_Ioo` (Bertrand in log windows),
+  `exists_prime_tau_log_window`, `exists_prime_sin_pos`/`_neg`,
+  `exists_prime_mirrorTiltIncrement_pos`/`_neg` — both step signs at every prime scale
+  for heights 0 < Im s < π/log 2; PNT-grade gaps / Chebyshev counting named as the open
+  supplies for all heights / full reachability.
+
+## 2026-07-07 (later) — §7 meeting functional domain
+
+- `deckClass_one_iff_signs_agree` (class = two-point sign agreement, generic);
+- `sem_even_iff_anchored_signs_agree` (Even hole count ⟺ basepoint signs of the
+  anchored member's roots agree — the weld as ONE equation, rigid LHS vs steered RHS).
+Gate 9222 jobs exit 0; both endpoints axiom-clean.

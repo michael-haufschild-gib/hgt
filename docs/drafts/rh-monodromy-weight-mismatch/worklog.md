@@ -6040,3 +6040,15 @@ All first-shot compiles except one IsMaxOn coercion; 11 endpoints axiom-clean; f
 gate rerun pending in background. The weld is now fully instrumented; next generative
 move recorded in doc 111: quantify how the defect angle turns the two-point boundary
 phases of √anchoredSEM as P grows.
+
+## 2026-07-07 — doc 112: the steering laws
+
+Built DefectSteering.lean in two passes: the turning laws (walk algebra, sign law via
+im_eulerFactor, arctan floor/budget bounds, canonical root with exact defect/2 mirror
+rotation, deck-class anchor-rigidity via banked DeckMonomial lemma) and the steering
+supply (Bertrand-in-log-windows chain up to exists_prime_mirrorTiltIncrement_pos/_neg).
+Instrument panel now separates rigid data (count, class) from steerable data (positions
+via N, phases via P with per-prime sign control below height π/log 2). Open supplies
+named: PNT-grade gaps for all heights, Chebyshev window-counting for full reachability.
+Next: the meeting functional — the two-point orientation reading on the
+canonically-anchored root as an explicit function of the defect.
