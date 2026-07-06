@@ -301,6 +301,125 @@ theorem window_online_of_line_real_sign_data {F : ℂ → ℂ} {t : Finset ℂ}
   have hID := window_identity hclosed hmrefl
   exact ⟨hLeq, by omega⟩
 
+/-- Non-strict disjoint sign brackets still produce distinct zeros.  This is the bracket shape
+emitted by moment/first-moment Hardy certificates: the product may be zero at an endpoint, but
+disjointness of the closed brackets keeps the selected zeros distinct. -/
+theorem exists_zeros_of_nonpos_brackets {F : ℝ → ℝ} (hF : Continuous F) {s : ℕ}
+    {u v : ℕ → ℝ}
+    (hord : ∀ i, i < s → u i ≤ v i)
+    (hsign : ∀ i, i < s → F (u i) * F (v i) ≤ 0) :
+    ∃ z : ℕ → ℝ, ∀ i, i < s → u i ≤ z i ∧ z i ≤ v i ∧ F (z i) = 0 := by
+  classical
+  have hex : ∀ i, ∃ x, i < s → u i ≤ x ∧ x ≤ v i ∧ F x = 0 := by
+    intro i
+    by_cases hi : i < s
+    · by_cases hu0 : F (u i) = 0
+      · exact ⟨u i, fun _ => ⟨le_rfl, hord i hi, hu0⟩⟩
+      · by_cases hv0 : F (v i) = 0
+        · exact ⟨v i, fun _ => ⟨hord i hi, le_rfl, hv0⟩⟩
+        · have hprod_ne : F (u i) * F (v i) ≠ 0 := mul_ne_zero hu0 hv0
+          have hprod_neg : F (u i) * F (v i) < 0 :=
+            lt_of_le_of_ne (hsign i hi) hprod_ne
+          have hle : u i ≤ v i := hord i hi
+          have hcont : ContinuousOn F (Set.Icc (u i) (v i)) := hF.continuousOn
+          rcases mul_neg_iff.mp hprod_neg with ⟨hpos, hneg⟩ | ⟨hneg, hpos⟩
+          · have h0 : (0 : ℝ) ∈ Set.Ioo (F (v i)) (F (u i)) := ⟨hneg, hpos⟩
+            obtain ⟨x, hx, hFx⟩ := intermediate_value_Ioo' hle hcont h0
+            exact ⟨x, fun _ => ⟨hx.1.le, hx.2.le, hFx⟩⟩
+          · have h0 : (0 : ℝ) ∈ Set.Ioo (F (u i)) (F (v i)) := ⟨hneg, hpos⟩
+            obtain ⟨x, hx, hFx⟩ := intermediate_value_Ioo hle hcont h0
+            exact ⟨x, fun _ => ⟨hx.1.le, hx.2.le, hFx⟩⟩
+    · exact ⟨0, fun h => absurd h hi⟩
+  choose z hz using hex
+  exact ⟨z, fun i hi => hz i hi⟩
+
+/-- Generic line-real zero squeeze from disjoint non-strict brackets.  The bracket separation
+replaces strict interleaving: each bracket contributes one zero, and different brackets cannot
+select the same line point. -/
+theorem window_online_of_line_real_zero_brackets {F : ℂ → ℂ} {t : Finset ℂ}
+    {m : ℂ → ℕ} {h : ℂ → ℂ} {a : ℂ} {R : ℝ}
+    (hFcont : Continuous fun u : ℝ => (F (linePoint u)).re)
+    (hline_zero : ∀ u : ℝ, (F (linePoint u)).re = 0 → F (linePoint u) = 0)
+    (hclosed : ∀ z ∈ t, lineReflect z ∈ t)
+    (hmrefl : ∀ z ∈ t, m (lineReflect z) = m z)
+    (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hfact : ∀ z ∈ ball a R, F z = (∏ w ∈ t, (z - w) ^ m w) * h z)
+    {s : ℕ} {u v : ℕ → ℝ}
+    (hord : ∀ i, i < s → u i ≤ v i)
+    (hsep : ∀ i j, i < j → j < s → v i < u j)
+    (hsign : ∀ i, i < s →
+      (F (linePoint (u i))).re * (F (linePoint (v i))).re ≤ 0)
+    (hseg : ∀ i, i < s → ∀ x : ℝ, u i ≤ x → x ≤ v i → linePoint x ∈ ball a R)
+    (hcount : ∑ z ∈ t, m z ≤ s) :
+    ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z = ∑ z ∈ t, m z ∧
+      ∑ z ∈ t.filter (fun z => 1 / 2 < z.re), m z = 0 := by
+  classical
+  obtain ⟨z, hz⟩ := exists_zeros_of_nonpos_brackets hFcont hord hsign
+  have hzball : ∀ i, i < s → linePoint (z i) ∈ ball a R := by
+    intro i hi
+    exact hseg i hi (z i) (hz i hi).1 (hz i hi).2.1
+  have hzmem : ∀ i, i < s → linePoint (z i) ∈ t ∧ m (linePoint (z i)) ≠ 0 := by
+    intro i hi
+    have hF0 : F (linePoint (z i)) = 0 :=
+      hline_zero (z i) (hz i hi).2.2
+    have hfz := hfact _ (hzball i hi)
+    rw [hF0] at hfz
+    rcases mul_eq_zero.mp hfz.symm with hp | hcontra
+    · obtain ⟨w, hw, hwzero⟩ := Finset.prod_eq_zero_iff.mp hp
+      rcases Nat.eq_zero_or_pos (m w) with hm0 | hmpos
+      · rw [hm0, pow_zero] at hwzero
+        exact absurd hwzero one_ne_zero
+      · have hbase : linePoint (z i) - w = 0 :=
+          (pow_eq_zero_iff hmpos.ne').mp hwzero
+        have hwp : w = linePoint (z i) := by
+          have := sub_eq_zero.mp hbase
+          exact this.symm
+        rw [← hwp]
+        exact ⟨hw, hmpos.ne'⟩
+    · exact absurd hcontra (hh0 _ (hzball i hi))
+  have hzlt : ∀ i j, i < j → j < s → z i < z j := by
+    intro i j hij hjs
+    have hi : i < s := lt_trans hij hjs
+    have hzi : z i ≤ v i := (hz i hi).2.1
+    have hzj : u j ≤ z j := (hz j hjs).1
+    have hgap := hsep i j hij hjs
+    linarith
+  set P : Finset ℂ := (Finset.range s).image (fun i => linePoint (z i)) with hP_def
+  have hPsub : P ⊆ t.filter (fun z => z.re = 1 / 2) := by
+    intro x hx
+    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
+    have his : i < s := Finset.mem_range.mp hi
+    exact Finset.mem_filter.mpr ⟨(hzmem i his).1, linePoint_re (z i)⟩
+  have hPcard : P.card = s := by
+    rw [hP_def, Finset.card_image_of_injOn, Finset.card_range]
+    intro i hi j hj hij
+    have his : i < s := Finset.mem_range.mp (Finset.mem_coe.mp hi)
+    have hjs : j < s := Finset.mem_range.mp (Finset.mem_coe.mp hj)
+    by_contra hne
+    rcases lt_or_gt_of_ne hne with hlt | hgt
+    · have := hzlt i j hlt hjs
+      have hzeq : z i = z j := linePoint_injective hij
+      linarith
+    · have := hzlt j i hgt his
+      have hzeq : z i = z j := linePoint_injective hij
+      linarith
+  have hone : ∀ x ∈ P, 1 ≤ m x := by
+    intro x hx
+    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
+    have his : i < s := Finset.mem_range.mp hi
+    exact Nat.one_le_iff_ne_zero.mpr (hzmem i his).2
+  have hsP : s ≤ ∑ x ∈ P, m x := by
+    have := Finset.card_nsmul_le_sum P m 1 hone
+    rwa [hPcard, smul_eq_mul, mul_one] at this
+  have hPL : ∑ x ∈ P, m x ≤ ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z :=
+    Finset.sum_le_sum_of_subset hPsub
+  have hLD : ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z ≤ ∑ z ∈ t, m z :=
+    Finset.sum_le_sum_of_subset (Finset.filter_subset _ _)
+  have hLeq : ∑ z ∈ t.filter (fun z => z.re = 1 / 2), m z = ∑ z ∈ t, m z := by
+    omega
+  have hID := window_identity hclosed hmrefl
+  exact ⟨hLeq, by omega⟩
+
 /-- If the completed finite carrier has zero real part at a critical-line point, it
 vanishes there. -/
 theorem completedGN_linePoint_eq_zero_of_re_eq_zero {N : ℕ} {u : ℝ}
@@ -534,6 +653,70 @@ theorem xi_online_of_sign_data {t₁ : Finset ℂ} {m₁ : ℂ → ℕ} {h : ℂ
     exact hpmem.2 (hmr ▸ hright _ hqmem hqre)
   · exact hpmem.2 (hright p hpmem.1 hgt)
 
+/-- Window-RH reader from disjoint non-strict ξ brackets.  This is the closed-bracket analogue
+of `xi_online_of_sign_data`, intended for Hardy moment certificates whose sign conclusion is
+`≤ 0` rather than a strict alternation. -/
+theorem xi_online_of_zero_brackets {t₁ : Finset ℂ} {m₁ : ℂ → ℕ} {h : ℂ → ℂ}
+    {a : ℂ} {R : ℝ}
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    {s : ℕ} {u v : ℕ → ℝ}
+    (hord : ∀ i, i < s → u i ≤ v i)
+    (hsep : ∀ i j, i < j → j < s → v i < u j)
+    (hsign : ∀ i, i < s →
+      (xi (linePoint (u i))).re * (xi (linePoint (v i))).re ≤ 0)
+    (hseg : ∀ i, i < s → ∀ x : ℝ, u i ≤ x → x ≤ v i → linePoint x ∈ ball a R)
+    (hcount : ∑ z ∈ t₁, m₁ z ≤ s) :
+    ∀ p ∈ ball a R, xi p = 0 → p.re = 1 / 2 := by
+  classical
+  have hFcont : Continuous fun u : ℝ => (xi (linePoint u)).re := by
+    have hline : Continuous linePoint := by
+      unfold linePoint
+      exact continuous_const.add (Complex.continuous_ofReal.mul continuous_const)
+    exact Complex.continuous_re.comp (xi_differentiable.continuous.comp hline)
+  obtain ⟨-, hN0⟩ := window_online_of_line_real_zero_brackets hFcont
+    (fun u h => xi_linePoint_eq_zero_of_re_eq_zero h)
+    hcl₁ (fun z hz => by
+      have h1 := xi_orderAt_lineReflect z
+      have h2 := hm₁ _ (hcl₁ z hz)
+      rw [h1, ← hm₁ z hz] at h2
+      exact Nat.cast_inj.mp h2)
+    hh0 hfact₁ hord hsep hsign hseg hcount
+  have hright : ∀ w ∈ t₁, 1 / 2 < w.re → m₁ w = 0 := by
+    intro w hw hwre
+    exact Finset.sum_eq_zero_iff.mp hN0 w (Finset.mem_filter.mpr ⟨hw, hwre⟩)
+  intro p hp hxi0
+  have hfz := hfact₁ p hp
+  rw [hxi0] at hfz
+  have hpmem : p ∈ t₁ ∧ m₁ p ≠ 0 := by
+    rcases mul_eq_zero.mp hfz.symm with hprod | hcontra
+    · obtain ⟨w, hw, hwzero⟩ := Finset.prod_eq_zero_iff.mp hprod
+      rcases Nat.eq_zero_or_pos (m₁ w) with hm0 | hmpos
+      · rw [hm0, pow_zero] at hwzero
+        exact absurd hwzero one_ne_zero
+      · have hbase : p - w = 0 := (pow_eq_zero_iff hmpos.ne').mp hwzero
+        have hwp : w = p := (sub_eq_zero.mp hbase).symm
+        rw [← hwp]
+        exact ⟨hw, hmpos.ne'⟩
+    · exact absurd hcontra (hh0 p hp)
+  by_contra hne
+  rcases lt_or_gt_of_ne hne with hlt | hgt
+  · have hqmem : lineReflect p ∈ t₁ := hcl₁ p hpmem.1
+    have hqre : 1 / 2 < (lineReflect p).re := by
+      have : (lineReflect p).re = 1 - p.re := by
+        simp [lineReflect, Complex.sub_re, Complex.conj_re]
+      rw [this]
+      linarith
+    have hmr : m₁ (lineReflect p) = m₁ p := by
+      have h1 := xi_orderAt_lineReflect p
+      have h2 := hm₁ _ hqmem
+      rw [h1, ← hm₁ p hpmem.1] at h2
+      exact Nat.cast_inj.mp h2
+    exact hpmem.2 (hmr ▸ hright _ hqmem hqre)
+  · exact hpmem.2 (hright p hpmem.1 hgt)
+
 /-- **Exact hL from sign data and a certified on-line finite side**: both
 carriers put ALL their window multiplicity on the line, and the totals agree
 by domination — so the two on-line sums are EQUAL, discharging the seam
@@ -635,6 +818,49 @@ theorem xi_window_online_of_domination_sign_certificate {N : ℕ}
   have hDeq : ∑ w ∈ t₁, m₁ w = ∑ w ∈ t₂, m₂ w :=
     anneal_D_transport h0 hrR hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hdom
   exact xi_online_of_sign_data hm₁ hcl₁ hh0 hfact₁ hmono hsign hseg
+    (hDeq ▸ hcount₂)
+
+/-- The EM/LOW closed-bracket endpoint: Euler-Maclaurin remainder control, finite
+`emCarrier`/`gN` closeness, and a LOW floor transfer the finite count bound, while disjoint
+non-strict ξ brackets supply the line zeros. -/
+theorem xi_window_online_of_emCarrier_close_floor_zero_brackets
+    {N M : ℕ} (hM : 1 ≤ M)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ} {a : ℂ}
+    {r₀ R ε₁ δ : ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (ball a R)) (hh0 : ∀ z ∈ ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (ball a R)) (hh0' : ∀ z ∈ ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hstripC : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1)
+    (hE : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hF : CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N (ε₁ + δ))
+    {s : ℕ} {u v : ℕ → ℝ}
+    (hord : ∀ i, i < s → u i ≤ v i)
+    (hsep : ∀ i j, i < j → j < s → v i < u j)
+    (hsign : ∀ i, i < s →
+      (xi (linePoint (u i))).re * (xi (linePoint (v i))).re ≤ 0)
+    (hseg : ∀ i, i < s → ∀ x : ℝ, u i ≤ x → x ≤ v i → linePoint x ∈ ball a R)
+    (hcount₂ : ∑ z ∈ t₂, m₂ z ≤ s) :
+    ∀ p ∈ ball a R, xi p = 0 → p.re = 1 / 2 := by
+  have hEM : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖ < ‖gN N z‖ :=
+    raw_domination_of_emCarrier_close_floor hE hclose hF
+  have hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖xi z - completedGN N z‖ < ‖completedGN N z‖ := by
+    intro z hz
+    obtain ⟨hσ, hz1⟩ := hstripC z hz
+    exact completed_domination_of_em hM hσ hz1
+      (Gammaℝ_ne_zero_of_re_pos hσ) (hEM z hz)
+  have hDeq : ∑ w ∈ t₁, m₁ w = ∑ w ∈ t₂, m₂ w :=
+    anneal_D_transport h0 hrR hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hdom
+  exact xi_online_of_zero_brackets hm₁ hcl₁ hh0 hfact₁ hord hsep hsign hseg
     (hDeq ▸ hcount₂)
 
 end RHTower

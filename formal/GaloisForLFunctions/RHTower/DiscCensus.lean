@@ -153,4 +153,55 @@ theorem xi_rightSum_dvd_of_completedGN_discBit_zero {N k : ℕ}
   (windowDiscBit_eq_zero_iff k t₁ m₁).mp
     (xi_rung_of_completedGN_discBit_zero (N := N) hm₁ hcl₁ hstrip hm₂ hcl₂ hD hL hfin)
 
+/-- A vanishing ξ DISC bit on a reflection-closed subwindow is exactly the subwindow congruence.
+This is the local, per-subconfiguration form that avoids the full-window total-sum blindness. -/
+theorem subWindow_congruence_of_windowDiscBit_zero {k : ℕ} {T : ℝ} {t : Finset ℂ}
+    (_hsub : ↑t ⊆ stripZeros T)
+    (hclosed : ∀ z ∈ t, lineReflect z ∈ t)
+    (hbit : windowDiscBit k t (fun z => (analyticOrderAt xi z).toNat) = 0) :
+    ∑ ρ ∈ t, (analyticOrderAt xi ρ).toNat ≡
+      ∑ ρ ∈ t.filter (fun ρ => ρ.re = 1 / 2),
+        (analyticOrderAt xi ρ).toNat [MOD 2 ^ (k + 1)] := by
+  have hmr : ∀ z ∈ t,
+      (fun ρ => (analyticOrderAt xi ρ).toNat) (lineReflect z) =
+        (fun ρ => (analyticOrderAt xi ρ).toNat) z := by
+    intro z _
+    exact congrArg ENat.toNat (xi_orderAt_lineReflect z)
+  have hID := window_identity (m := fun ρ => (analyticOrderAt xi ρ).toNat) hclosed hmr
+  rw [window_modEq_iff hID]
+  exact (windowDiscBit_eq_zero_iff k t (fun z => (analyticOrderAt xi z).toNat)).mp hbit
+
+/-- Window certificates from vanishing ξ DISC bits on every reflection-closed subwindow. -/
+theorem windowCertificate_of_subWindow_discBits_zero {k : ℕ} {T : ℝ}
+    (hbits : ∀ t : Finset ℂ, ↑t ⊆ stripZeros T →
+      (∀ z ∈ t, lineReflect z ∈ t) →
+      windowDiscBit k t (fun z => (analyticOrderAt xi z).toNat) = 0) :
+    WindowCertificate k T := by
+  rw [windowCertificate_iff_subWindow_congruences]
+  intro t hsub hclosed
+  exact subWindow_congruence_of_windowDiscBit_zero hsub hclosed (hbits t hsub hclosed)
+
+/-- Window certificates from transported finite DISC bits on every reflection-closed subwindow.
+Each subconfiguration may use its own finite completed-carrier presentation; what matters is that
+the transport congruences identify its DISC bit with a finite bit that vanishes. -/
+theorem windowCertificate_of_subWindow_finiteDiscBits_zero {k : ℕ} {T : ℝ}
+    (hbits : ∀ t : Finset ℂ, ↑t ⊆ stripZeros T →
+      (∀ z ∈ t, lineReflect z ∈ t) →
+      ∃ N : ℕ, ∃ t₂ : Finset ℂ, ∃ m₂ : ℂ → ℕ,
+        (∀ z ∈ t₂, 0 < z.re ∧ z.re < 1) ∧
+        (∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z) ∧
+        (∀ z ∈ t₂, lineReflect z ∈ t₂) ∧
+        (∑ z ∈ t, (analyticOrderAt xi z).toNat ≡ ∑ z ∈ t₂, m₂ z
+          [MOD 2 ^ (k + 1)]) ∧
+        (∑ z ∈ t.filter (fun z => z.re = 1 / 2), (analyticOrderAt xi z).toNat
+          ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)]) ∧
+        windowDiscBit k t₂ m₂ = 0) :
+    WindowCertificate k T := by
+  refine windowCertificate_of_subWindow_discBits_zero ?_
+  intro t hsub hclosed
+  rcases hbits t hsub hclosed with
+    ⟨N, t₂, m₂, hstrip, hm₂, hcl₂, hD, hL, hfin⟩
+  exact xi_rung_of_completedGN_discBit_zero (N := N) (k := k)
+    (fun z _ => ENat.coe_toNat (xi_order_ne_top z)) hclosed hstrip hm₂ hcl₂ hD hL hfin
+
 end RHTower

@@ -1004,8 +1004,9 @@ partial-fraction telescopes (`trunc_upper_sum_eq`, `trunc_lower_sum_eq`, via the
 `~ i²/d` on the exact field, both bounds proved. The only remaining slack is the two-variable `o(1)` (the
 `(i±1)/2 → i/2`, `B_M → 2i/d` as `i,d → ∞`), an arithmetic tightening of the now-explicit sandwich.
 
-Input #3 (`ε → −π²/16`) is the second-order Euler–Maclaurin remainder of `poleModelDiff`, on the
-Tannery/`RescaleTannery` machinery.
+Input #3 (`ε → −π²/16`) is the second-order Euler–Maclaurin remainder of `poleModelDiff` — now
+discharged at the boundary-layer term level in §20 (the odd-Basel constant `−½·Σ1/(2k+1)²`), with the
+matched interchange named as the residual.
 
 ## 20. Input #3, the shell correction — the boundary-layer rate is the odd-Basel constant `−π²/16` [PROVED HERE — Lean]
 

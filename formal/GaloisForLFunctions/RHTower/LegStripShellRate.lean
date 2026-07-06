@@ -282,5 +282,28 @@ theorem oddBasel_correction_hasSum :
   rw [hfun, hval]
   exact hasSum_odd_basel.mul_left (-(1:ℝ)/2)
 
+/-- **The finite boundary block converges to the sum of its per-term limits.** For any cutoff `K`, the
+first `K` ahead-minus-behind imbalances sum to `Σ_{k<K}(½ − 1/(2(2k+1)²))` as `i → ∞` — the finite-`K`
+layer of the matched interchange whose full form (uniform-in-`i` domination + the ahead tail) closes
+`i·ε(i) → −π²/16`. -/
+theorem tendsto_boundary_partial (K : ℕ) :
+    Tendsto (fun i : ℕ => ∑ k ∈ Finset.range K,
+        (poleExcess (aheadDist i k) - poleExcess (behindDist i k))) atTop
+      (𝓝 (∑ k ∈ Finset.range K, (1/2 - 1/(2*(2*(k:ℝ)+1)^2)))) :=
+  tendsto_finsetSum _ (fun k _ => poleModelTerm_rate k)
+
+/-- The partial sums of the boundary-layer corrections approach `π²/16`: `Σ_{k<K}1/(2(2k+1)²) → π²/16`.
+With `tendsto_boundary_partial` this is the boundary-layer half of the rate constant. -/
+theorem oddBasel_correction_partial_tendsto :
+    Tendsto (fun K : ℕ => ∑ k ∈ Finset.range K, 1/(2*(2*(k:ℝ)+1)^2)) atTop (𝓝 (π^2/16)) := by
+  have h := (hasSum_odd_basel.mul_left ((1:ℝ)/2)).tendsto_sum_nat
+  have hval : (1:ℝ)/2 * (π^2/8) = π^2/16 := by ring
+  rw [hval] at h
+  refine h.congr' ?_
+  filter_upwards with K
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  have hk : (2*(k:ℝ)+1)^2 ≠ 0 := by positivity
+  field_simp
+
 end RHTower
 end

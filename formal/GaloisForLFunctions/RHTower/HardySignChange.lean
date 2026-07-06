@@ -319,6 +319,97 @@ theorem exists_completedGN_sign_bracket_of_closedFirstMomentBudget
   exact exists_completedGN_sign_bracket_of_closedFirstMomentBudget_mono
     N hN hα hαβ hwind hS hsupply le_rfl le_rfl le_rfl le_rfl hbudget
 
+/-- **Window certificate from Hardy zero brackets and the EM seam.**  For every candidate
+right-half zero in the height window, disjoint Hardy moment packets produce closed xi sign
+brackets; the EM remainder, finite `emCarrier`/`gN` closeness, and LOW floor transfer the finite
+count budget through the seam.  The resulting on-line ball cover is consumed by the window
+certificate layer. -/
+theorem windowCertificate_of_emCarrier_hardy_zero_brackets {k : ℕ} {T : ℝ}
+    (hcert : ∀ ρ ∈ boxZeros T,
+      ∃ N M : ℕ, ∃ t₁ t₂ : Finset ℂ, ∃ m₁ m₂ : ℂ → ℕ,
+      ∃ H H' : ℂ → ℂ, ∃ a : ℂ, ∃ r₀ R ε₁ δ : ℝ, ∃ s : ℕ,
+      ∃ lo hi : ℕ → ℝ,
+        ρ ∈ ball a R ∧
+        1 ≤ M ∧
+        0 ≤ r₀ ∧ r₀ < R ∧
+        (∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z) ∧
+        (∀ z ∈ t₁, lineReflect z ∈ t₁) ∧
+        (∀ w ∈ t₁, ‖w - a‖ ≤ r₀) ∧
+        (∀ w ∈ t₂, ‖w - a‖ ≤ r₀) ∧
+        AnalyticOnNhd ℂ H (ball a R) ∧
+        (∀ z ∈ ball a R, H z ≠ 0) ∧
+        AnalyticOnNhd ℂ H' (ball a R) ∧
+        (∀ z ∈ ball a R, H' z ≠ 0) ∧
+        (∀ z ∈ ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * H z) ∧
+        (∀ z ∈ ball a R, completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * H' z) ∧
+        (∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R, 0 < z.re ∧ z ≠ 1) ∧
+        (∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+          ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁) ∧
+        (∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+          ‖emCarrier M z - gN N z‖ ≤ δ) ∧
+        CarrierFloorOn (chartRA a r₀ R ∪ chartLA a r₀ R) N (ε₁ + δ) ∧
+        (∀ i, i < s → lo i ≤ hi i) ∧
+        (∀ i j, i < j → j < s → hi i < lo j) ∧
+        (∀ i, i < s →
+          ∃ S M_line : ℝ,
+            0 < S ∧
+            S ≤ ∫ u in lo i..hi i, ((xi (linePt u)).re) ^ 2 ∧
+            (∀ u ∈ Set.Icc (lo i) (hi i), |(xi (linePt u)).re| ≤ M_line) ∧
+            M_line * |∫ u in lo i..hi i, (xi (linePt u)).re| < S) ∧
+        (∀ i, i < s → ∀ u : ℝ, lo i ≤ u → u ≤ hi i → linePoint u ∈ ball a R) ∧
+        (∑ z ∈ t₂, m₂ z ≤ s)) :
+    WindowCertificate k T := by
+  refine windowCertificate_of_ball_online_cover ?_
+  intro ρ hρ
+  rcases hcert ρ hρ with
+    ⟨N, M, t₁, t₂, m₁, m₂, H, H', a, r₀, R, ε₁, δ, s, lo, hi,
+      hρball, hM, h0, hrR, hm₁, hcl₁, hρ₁, hρ₂, hHan, hH0, hHpan, hHp0,
+      hfact₁, hfact₂, hstripC, hE, hclose, hF, hord, hsep, hhardy, hseg,
+      hcount₂⟩
+  have hlineCont : Continuous fun u : ℝ => (xi (linePt u)).re := by
+    have hline : Continuous linePoint := by
+      unfold linePoint
+      exact continuous_const.add (Complex.continuous_ofReal.mul continuous_const)
+    exact Complex.continuous_re.comp (xi_differentiable.continuous.comp hline)
+  have hbrackets : ∀ i, ∃ u v : ℝ, i < s →
+      u ∈ Set.Icc (lo i) (hi i) ∧ v ∈ Set.Icc (lo i) (hi i) ∧ u ≤ v ∧
+        (xi (linePt u)).re * (xi (linePt v)).re ≤ 0 := by
+    intro i
+    by_cases hi_lt : i < s
+    · rcases hhardy i hi_lt with ⟨S, M_line, hS, hsupply, hsup, hfm⟩
+      have hcont : ContinuousOn (fun u : ℝ => (xi (linePt u)).re)
+          (Set.Icc (lo i) (hi i)) :=
+        hlineCont.continuousOn
+      obtain ⟨u, v, hu, hv, huv, hprod⟩ :=
+        exists_sign_bracket_of_moment_gap (F := fun u : ℝ => (xi (linePt u)).re)
+          (hord i hi_lt) hcont hS hsupply hsup hfm
+      exact ⟨u, v, fun _ => ⟨hu, hv, huv, hprod⟩⟩
+    · exact ⟨lo i, hi i, fun h => absurd h hi_lt⟩
+  choose u v huv using hbrackets
+  have hord' : ∀ i, i < s → u i ≤ v i := by
+    intro i hi_lt
+    exact (huv i hi_lt).2.2.1
+  have hsep' : ∀ i j, i < j → j < s → v i < u j := by
+    intro i j hij hjs
+    have hi_lt : i < s := lt_trans hij hjs
+    have hvi : v i ≤ hi i := (huv i hi_lt).2.1.2
+    have huj : lo j ≤ u j := (huv j hjs).1.1
+    have hgap := hsep i j hij hjs
+    linarith
+  have hsign' : ∀ i, i < s →
+      (xi (linePoint (u i))).re * (xi (linePoint (v i))).re ≤ 0 := by
+    intro i hi_lt
+    exact (huv i hi_lt).2.2.2
+  have hseg' : ∀ i, i < s → ∀ x : ℝ, u i ≤ x → x ≤ v i → linePoint x ∈ ball a R := by
+    intro i hi_lt x hux hxv
+    have hui : lo i ≤ u i := (huv i hi_lt).1.1
+    have hvi : v i ≤ hi i := (huv i hi_lt).2.1.2
+    exact hseg i hi_lt x (le_trans hui hux) (le_trans hxv hvi)
+  refine ⟨a, R, hρball, ?_⟩
+  exact xi_window_online_of_emCarrier_close_floor_zero_brackets
+    (N := N) (M := M) hM h0 hrR hm₁ hcl₁ hρ₁ hρ₂ hHan hH0 hHpan hHp0
+    hfact₁ hfact₂ hstripC hE hclose hF hord' hsep' hsign' hseg' hcount₂
+
 end RHTower
 
 namespace RHTower

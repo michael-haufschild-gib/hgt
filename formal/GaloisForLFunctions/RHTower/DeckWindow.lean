@@ -129,6 +129,22 @@ theorem windowCertificate_iff_deck_trivial (k : ℕ) (T : ℝ) :
       hdata (min R₀ R₂) hRmin (min_le_left R₀ R₂)
     exact (hclass hRmin (min_le_right R₀ R₂) hG₁an hG₂an hG₁pow hG₂pow).mp hone
 
+/-- Deck triviality across the window is equivalent to the full family of reflection-closed
+subwindow congruences.  This ties the deck reading to the per-subconfiguration refinement that
+the total window DISC sum cannot see. -/
+theorem windowDeckTrivial_iff_subWindow_congruences (k : ℕ) (T : ℝ) :
+    (∀ ρ ∈ boxZeros T, ∃ R₀ > 0, ∀ R : ℝ, 0 < R → R ≤ R₀ →
+        ∃ G₁ G₂, AnalyticOnNhd ℂ G₁ (chartR ρ R) ∧ AnalyticOnNhd ℂ G₂ (chartL ρ R) ∧
+          (∀ z ∈ chartR ρ R, G₁ z ^ 2 ^ k = xi z) ∧
+          (∀ z ∈ chartL ρ R, G₂ z ^ 2 ^ k = xi z) ∧
+          deckClass G₁ G₂ (ρ + ((R / 2 : ℝ) : ℂ) * I)
+            (ρ - ((R / 2 : ℝ) : ℂ) * I) = 1) ↔
+      ∀ t : Finset ℂ, ↑t ⊆ stripZeros T → (∀ z ∈ t, lineReflect z ∈ t) →
+        (∑ ρ ∈ t, (analyticOrderAt xi ρ).toNat ≡
+          ∑ ρ ∈ t.filter (fun ρ => ρ.re = 1 / 2),
+            (analyticOrderAt xi ρ).toNat [MOD 2 ^ (k + 1)]) := by
+  rw [← windowCertificate_iff_deck_trivial, windowCertificate_iff_subWindow_congruences]
+
 /-- Rung `k` as windowed deck triviality at every height. -/
 theorem rhLadder_iff_forall_deck_trivial (k : ℕ) :
     RHLadder k ↔
