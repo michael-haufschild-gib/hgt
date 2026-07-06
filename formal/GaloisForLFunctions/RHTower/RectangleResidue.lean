@@ -475,3 +475,44 @@ theorem rectIntegral_logDeriv_multi_zero {κ : Type*} (t : Finset κ) (ρ : κ �
   refine Finset.sum_congr rfl (fun i _ => by ring)
 
 end RHTower
+
+namespace RHTower
+
+open Complex intervalIntegral Set
+
+/-! ### §8 The rectangle zero-count of an analytic function -/
+
+/-- The logarithmic derivative depends only on the germ. -/
+private theorem logDeriv_of_eventuallyEq {f g : ℂ → ℂ} {z : ℂ} (heq : f =ᶠ[nhds z] g) :
+    logDeriv f z = logDeriv g z := by
+  rw [logDeriv_apply, logDeriv_apply, heq.deriv_eq, heq.eq_of_nhds]
+
+/-- **The rectangle zero-count.**  If `f` factors on a neighbourhood `U` of the closed rectangle as
+`(∏ᵢ (·−ρ i)^{m i}) · h` with `h` analytic and nonvanishing on `U`, and every `ρ i` (`i ∈ t`) is
+strictly inside the rectangle, then `∮_{∂R} f'/f = 2πi · Σᵢ m i`: the boundary winding recovers the
+exact integer total order of the enclosed zeros — the full signed count, not merely its residue. -/
+theorem rectIntegral_logDeriv_boxCount {κ : Type*} (t : Finset κ) (ρ : κ → ℂ) (m : κ → ℕ)
+    {f h : ℂ → ℂ} {z₁ z₂ : ℂ} {U : Set ℂ}
+    (hUopen : IsOpen U)
+    (hin : ∀ i ∈ t, z₁.re < (ρ i).re ∧ (ρ i).re < z₂.re ∧ z₁.im < (ρ i).im ∧ (ρ i).im < z₂.im)
+    (hsub : (uIcc z₁.re z₂.re ×ℂ uIcc z₁.im z₂.im) ⊆ U)
+    (hh : AnalyticOnNhd ℂ h U) (hh0 : ∀ z ∈ U, h z ≠ 0)
+    (hfact : ∀ z ∈ U, f z = (∏ i ∈ t, (z - ρ i) ^ m i) * h z) :
+    rectIntegral (logDeriv f) z₁ z₂ = 2 * Real.pi * I * (∑ i ∈ t, (m i : ℂ)) := by
+  have hcongr : ∀ z ∈ U, logDeriv f z =
+      logDeriv (fun z => (∏ i ∈ t, (z - ρ i) ^ m i) * h z) z := by
+    intro z hz
+    refine logDeriv_of_eventuallyEq ?_
+    filter_upwards [hUopen.mem_nhds hz] with w hw using hfact w hw
+  rw [rectIntegral_congr hcongr
+      (fun x hx => hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact hx, by rw [edgePt_im]; exact left_mem_uIcc⟩))
+      (fun x hx => hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact hx, by rw [edgePt_im]; exact right_mem_uIcc⟩))
+      (fun y hy => hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact right_mem_uIcc, by rw [edgePt_im]; exact hy⟩))
+      (fun y hy => hsub (Complex.mem_reProdIm.mpr
+        ⟨by rw [edgePt_re]; exact left_mem_uIcc, by rw [edgePt_im]; exact hy⟩))]
+  exact rectIntegral_logDeriv_multi_zero t ρ m hin hsub hh hh0
+
+end RHTower
