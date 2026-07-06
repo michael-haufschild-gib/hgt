@@ -663,3 +663,36 @@ ball in the strip); critical-line formula `eulerHeadAnchor_line_im`
 (Im = p^{−1/2}sin(τ log p)) and `eulerHeadAnchor_not_lineReflection_on_line` (the anchor
 breaks the mirror symmetry at all heights off a discrete set). Doc 108 addendum has the
 route reading and the next object (defect steering by choice of P).
+- `RHTower/RectangleResidue.lean` (new, in umbrella): the argument principle on a rectangle — a mathlib gap, built from scratch. `rectangle_winding`: the boundary contour integral of the Cauchy kernel `(z−p)⁻¹` around an axis-aligned rectangle enclosing `p` is `2πi`. Mechanism: the three edges where `z−p` avoids `ℝ≤0` use the antiderivative `log(z−p)`; the left edge (where `Re(z−p)<0`) uses the rotated branch `log(−(z−p))`, whose argument lies in the right half-plane — both have derivative `(z−p)⁻¹`, so each edge integral is a branch-value difference (FTC), and the two branches disagree by `πi` at each left corner (arg of a negation), telescoping to `2πi`. Packaged as `rectIntegral` with linearity (`rectIntegral_add`, `rectIntegral_const_mul`, `rectIntegral_finsetSum`), the boundary Cauchy theorem (`rectIntegral_eq_zero_of_analyticOnNhd`, from mathlib's rectangle Cauchy), and congruence.
+- `RHTower/RectangleResidue.lean`: the residue theorem. `rectIntegral_logDeriv_single_zero`: for `h` analytic and nonvanishing near the closed rectangle and `ρ` strictly inside, `∮_{∂R} logDeriv((·−ρ)^m·h) = 2πi·m`. `rectIntegral_logDeriv_multi_zero`: for finitely many interior zeros `ρ i` of orders `m i`, `∮_{∂R} f'/f = 2πi·Σ m i`. Proof: peel the zeros (`logDeriv_mul`/`logDeriv_prod`/`logDeriv_fun_pow`) into a finite sum of Cauchy kernels plus `logDeriv h`; the kernels each integrate to `2πi` and the boundary-holomorphic cofactor term vanishes by the rectangle Cauchy theorem. Big picture: a route-independent complex-analysis backbone — the winding of `f'/f` around a box counts the enclosed zeros with multiplicity, the tool a closed-box zero-count/Gate-4 assembly and the `hagree` argument-principle escape both consume. All axiom-clean `[propext, Classical.choice, Quot.sound]`; `lake build MainTheorems` green (9214 jobs); lint + index pass.
+
+## CarrierWeld.lean (milestone M — the weld built, grammar gate answered)
+
+`RHTower/CarrierWeld.lean` — axiom-clean, umbrella-imported (doc 109):
+* `ledgerChainE_prod_jumps` — jump extraction: every listed hole-centred zero enters by
+  an EXACT monomial jump between consecutive partial products (the structural-pivot gate
+  did not fire; reuses the banked `ledgerChainE_trans`).
+* `ledgerChainE_to_xi_of_split_domination` — the canonical chain cofactor → ξ: jumps for
+  the factors, one dominated move for the gap; event list = ones.
+* `enclosed_count_eq_of_split_domination` — Rouché-type counting WITHOUT the argument
+  principle: root transport along the chain vs the isolating deck-class identity at level
+  m + count + 1 forces count = ord_ρ(ξ).
+* `anchoredEventLedger_of_carrier_domination` — the weld: (S)+(D)+Even count ⟹
+  AnchoredEventLedger (pairing constructed).
+* `rhLadder_one_of_carrier_domination` — milestone M: even split dominating members on
+  isolating annuli at all off-line zeros ⟹ RHLadder 1.
+* `exists_split_domination_of_isolating` — tightness: the peel is always a split
+  dominating member with count = m, so the interface is lossless and its sole content is
+  the parity of an independently supplied count.
+Open problems now exactly: (D-supply) chart domination for the mollified anchored member,
+(S-supply) carrier Hurwitz split, (parity certificate) from carrier boundary data via the
+anchored tilt instruments.
+
+## ReflectedGridOffgridBridge.lean — paired off-grid accounting bridge
+
+- `reflectedGridOffgridCharge C N L`: the canonical completed reflected-grid charge at `reflectedGridRatioCenter`, cast to `ℤ`, plus the sum of an off-grid/noncollision integer event list `L`.
+- `reflectedGridOffgridCharge_even_of_paired`: `N ≥ 1` and `LedgerFluxPaired L` imply the accounted grid-plus-offgrid charge is even.
+- `reflectedGridOffgridCharge_deckRed_two_eq_one_of_paired`: deck form, `deckRed 2 (accounted charge)=1`.
+- `reflectedGridOffgridCharge_deckRed_two_eq_one_of_accounted`: if a future physical charge `Q` is proved equal to this accounted expression, then `deckRed 2 Q = 1`.
+- Verification: `lake env lean GaloisForLFunctions/RHTower/ReflectedGridOffgridBridge.lean`; `lake build GaloisForLFunctions.RHTower.ReflectedGridOffgridBridge`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
+- Boundary left open: this is an accounting bridge, not the physical AFE reduction. The remaining task is to construct the physical carrier charge `Q`, prove `Q = reflectedGridOffgridCharge C N L`, and prove `LedgerFluxPaired L` for its off-grid/noncollision events.

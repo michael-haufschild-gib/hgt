@@ -5940,3 +5940,42 @@ critical-line sin formula + non-equivariance off a discrete height set. Gate gre
 (9212 jobs), all endpoints [propext, Classical.choice, Quot.sound]. Opened: the
 defect-steering question (choice of P as a free rotation on the annulus boundary data;
 Weyl sums over anchor primes govern the reachable defects mod 2π).
+
+## 2026-07-06 — Rectangle residue theorem / argument principle built (mathlib gap, Lean, axiom-clean)
+
+Goal: build the rectangle residue theorem (Gate-4 machinery, route-independent). New module
+`RHTower/RectangleResidue.lean` (~470 lines). mathlib had only the disk argument principle
+(Bottcher lane, circle contours) and the rectangle CAUCHY theorem (holomorphic ⟹ boundary = 0);
+the rectangle RESIDUE/winding theorem was absent — built from scratch.
+
+Core (`rectangle_winding`): ∮_{∂R} (z−p)⁻¹ = 2πi for p inside a rectangle. Clean branch trick
+(no limits): three edges use log(z−p); the left edge uses the rotated branch log(−(z−p)) (−(z−p)
+in the right half-plane); both have derivative (z−p)⁻¹, each edge is a branch-value difference by
+FTC, and the two branches disagree by πi at each left corner (arg of a negation) — telescoping to 2πi.
+
+Operator + algebra: `rectIntegral`, `rectIntegral_add`, `rectIntegral_const_mul`,
+`rectIntegral_finsetSum`, `rectIntegral_congr`, `rectIntegral_eq_zero_of_analyticOnNhd`
+(rectangle Cauchy), `rectIntegral_cauchyKernel` (=2πi).
+
+Residue theorem: `rectIntegral_logDeriv_single_zero` (one zero of order m ⟹ 2πi·m) and
+`rectIntegral_logDeriv_multi_zero` (finitely many interior zeros ⟹ 2πi·Σ orders). Proof peels the
+zeros (logDeriv_mul/prod/fun_pow) into Cauchy kernels + logDeriv(nonvanishing cofactor); kernels →
+2πi each, cofactor term → 0 by rectangle Cauchy.
+
+Why it survives route death (Gate 3/4): this is foundational complex analysis — winding of f'/f
+around a box = enclosed zero count with multiplicity — a permanent ζ-library contribution
+independent of the ledger route. It is exactly the closed-box zero-count the Gate-4 assembly and
+the Gate-3 `hagree` argument-principle escape both consume.
+
+Verify: `lake build MainTheorems` EXIT 0 (9214 jobs); all named decls axiom-clean
+[propext, Classical.choice, Quot.sound]; lint + index pass; docstrings self-contained. No git commit.
+
+## Carrier weld built (doc 109)
+
+All three bricks machine-checked; the grammar gate answered positively (exact jumps via
+partial products — no structural pivot). Brick 1 = argument-principle-free Rouché
+(transport vs isolating deck class). Brick 3 = milestone M: RHLadder 1 from
+(D)+(S)+Even supply on isolating annuli. Tightness theorem: supply always exists (peel),
+any supply's count = order — lossless re-coordinatization, D–H filter passed at the
+interface automatically. Gate green 9215 jobs. Next: (D-supply) — chart domination for
+the mollified anchored member from the banked second-moment/line-sup budgets.

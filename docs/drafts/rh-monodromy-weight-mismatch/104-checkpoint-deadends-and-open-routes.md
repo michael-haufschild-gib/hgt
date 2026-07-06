@@ -721,3 +721,19 @@ transfer, the center geometry, and the ratio-center regularity are all formalize
 bridge is now exactly typed: reduce the physical AFE/reflection charge carrier to this completed
 collision carrier, and account for off-grid/noncollision events by proving that they are absent or
 paired separately.
+
+---
+
+## Addendum 22: paired off-grid accounting bridge
+
+**[PROVED HERE, Lean]** `RHTower/ReflectedGridOffgridBridge.lean`: the completed collision parity now composes with the existing paired-event ledger interface. Define
+
+`reflectedGridOffgridCharge C N L = (reflectedGridCompletedCharge C N reflectedGridRatioCenter : ℤ) + L.sum`,
+
+where `L : List ℤ` is the off-grid/noncollision event ledger. The formal bridge is:
+
+- `reflectedGridOffgridCharge_even_of_paired`: if `N ≥ 1` and `LedgerFluxPaired L`, then the accounted grid-plus-offgrid charge is even.
+- `reflectedGridOffgridCharge_deckRed_two_eq_one_of_paired`: the same statement in level-two deck form.
+- `reflectedGridOffgridCharge_deckRed_two_eq_one_of_accounted`: any future charge `Q` identified with this accounted expression is deck-trivial at level two.
+
+This does not prove the physical AFE/reflection carrier reduction. It makes the remaining R7 burden exact: construct the physical charge `Q`, prove the accounting equality `Q = reflectedGridOffgridCharge C N L`, and prove that the resulting off-grid event list satisfies `LedgerFluxPaired L`. Once those inputs are supplied, the parity/deck conclusion is already formalized.

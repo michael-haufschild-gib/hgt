@@ -268,6 +268,7 @@ import GaloisForLFunctions.RHTower.EdgeScaleNoGo
 import GaloisForLFunctions.RHTower.IsolatingAnnulusRung
 import GaloisForLFunctions.RHTower.MirrorEdgeSymmetry
 import GaloisForLFunctions.RHTower.AnchorTilt
+import GaloisForLFunctions.RHTower.CarrierWeld
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity

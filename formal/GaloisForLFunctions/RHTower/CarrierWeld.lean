@@ -191,4 +191,45 @@ theorem rhLadder_one_of_carrier_domination
   exact ⟨r₀, R, h1, h2, hiso,
     anchoredEventLedger_of_carrier_domination hu_an hu_ne hzs hF hdom heven⟩
 
+/-- **The supply is never vacuous and the interface is exactly the parity.**  On any
+isolating annulus the peel itself is a split dominating member: ξ equals the product of
+`m` central linear factors times its nonvanishing cofactor and dominates itself on the
+charts, where it has no zero.  Every clause of the weld except the evenness of the count
+is therefore always satisfiable — and since any split dominating member has count equal
+to the vanishing order, the weld re-expresses the rung with no loss: its entire content
+is the parity of the count of an INDEPENDENTLY supplied split member. -/
+theorem exists_split_domination_of_isolating {ρ : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀)
+    (hiso : ∀ z ∈ ball ρ R, z ≠ ρ → xi z ≠ 0) :
+    ∃ (zs : List ℂ) (u F : ℂ → ℂ),
+      AnalyticOnNhd ℂ u (ball ρ R) ∧ (∀ z ∈ ball ρ R, u z ≠ 0) ∧
+      (∀ ρ' ∈ zs, ‖ρ' - ρ‖ ≤ r₀) ∧
+      (∀ z ∈ chartRA ρ r₀ R ∪ chartLA ρ r₀ R,
+        F z = (zs.map (fun w => z - w)).prod * u z) ∧
+      (∀ z ∈ chartRA ρ r₀ R ∪ chartLA ρ r₀ R, ‖xi z - F z‖ < ‖F z‖) ∧
+      zs.length = (analyticOrderAt xi ρ).toNat := by
+  obtain ⟨h, hhan, hh0, hfact⟩ := xi_peel_isolating_ball ρ hiso
+  refine ⟨List.replicate (analyticOrderAt xi ρ).toNat ρ, h, xi, hhan, hh0, ?_, ?_, ?_,
+    by simp⟩
+  · intro ρ' hρ'
+    rw [List.eq_of_mem_replicate hρ']
+    simpa using h0
+  · intro z hz
+    have hzball : z ∈ ball ρ R := by
+      rcases hz with hz | hz
+      · exact hz.2.1
+      · exact hz.2.1
+    rw [List.map_replicate, List.prod_replicate]
+    exact hfact z hzball
+  · intro z hz
+    have hzball : z ∈ ball ρ R := by
+      rcases hz with hz | hz
+      · exact hz.2.1
+      · exact hz.2.1
+    have hzne : z ≠ ρ := by
+      rcases hz with hz | hz
+      · exact fun he => hz.2.2 (by rw [he]; exact Metric.mem_closedBall_self h0)
+      · exact fun he => hz.2.2 (by rw [he]; exact Metric.mem_closedBall_self h0)
+    have hxne : xi z ≠ 0 := hiso z hzball hzne
+    simpa using norm_pos_iff.mpr hxne
+
 end RHTower
