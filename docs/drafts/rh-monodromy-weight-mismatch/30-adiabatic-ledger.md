@@ -1058,3 +1058,31 @@ exchange of `Σ_k` and `lim_i` against the bulk subtraction of the `½`-per-term
 domination of `poleExcess(aheadₖ) − poleExcess(behindₖ) − (½ − 1/(2(2k+1)²))` — the boundary-layer
 analog of `shellBound` — after which the `ε`-limit closes by `tendsto_tsum_of_dominated_convergence`,
 exactly as `tendsto_shellSum_stripResidue` closed the leading term.
+
+## 21. Input #1, general `d` — the far-ahead energy envelope [PROVED HERE — Lean]
+
+Input #1's midpoint steepness `W(m)·δ/i → π²/c` is `harmonic_midpoint_energy_steepness`
+(`spurLatticeEnergy(range(2i+2))/(i+1)² → π²/c²`) times the trivial factor `c(i+1)/i → c` — proven for
+the balanced model `d = 2i+2`. Promoting it to a general pole count `d` needs the far-ahead poles
+`j ≥ 2i+2` to contribute `o((i+1)²)` to the energy. The obstruction is that the near-pole bound
+`rcsch²(z) < 1/z²` (`rcsch_sq_lt_inv_sq`) loses the exponential decay of the `csch²` kernel; the far
+tail needs that decay. Three theorems now supply the envelope (`LegStripFarTail.lean`, axiom-clean):
+
+* `rcsch_sq_le_exp` : `rcsch(z)² ≤ 4/(1−e^{−2z₀})²·e^{−2z}` for `0 < z₀ ≤ z` — the missing exponential
+  decay of `1/sinh²`, from `e^z − e^{−z} = e^z(1 − e^{−2z}) ≥ e^z(1 − e^{−2z₀})`. (Reusable; the
+  ξ-drift crux `W(ξ)/W(m) → 1` needs the same kernel control.)
+* `harmMid_far_dist_lower` : `harmPole c j − harmMid c i ≥ c·log((j+1)/(i+2))` for `j ≥ i+2` — the far
+  pole's distance to the midpoint, from the tree's harmonic-log tail (`harmonic_log_upper`) plus the
+  half-gap `c/(2(i+1))`.
+* `farEnergy_term_le` : for `j ≥ 2i+2`, `rcsch²((harmPole c j − harmMid c i)/2) ≤ 4/(1−(2/3)^c)²·((i+2)/(j+1))^c`.
+  The **uniform floor** `(j+1)/(i+2) ≥ 3/2` (from `j ≥ 2i+2`) fixes `z₀ = c·log(3/2)/2` independent of
+  `i`, so the constant is fixed and the exponential kernel becomes a **polynomial `p`-series envelope**
+  in `j` — the exact analog, for the energy, of the rational per-term envelope that controls the
+  truncation train (§19).
+
+**What this opens.** The far tail sums against the envelope: `Σ_{j≥2i+2}((i+2)/(j+1))^c ≤
+(i+2)^c·(2i+2)^{1−c}/(c−1)` by the tree's `p_series_tail_le` (needs `c > 1`), and `(i+2)^c ≤ 2^c(i+1)^c`
+gives `≤ 2^{1+c}/(c−1)·(i+1)`. Divided by `(i+1)²` this is `O(1/i) → 0` — the far poles vanish under the
+rescaling, promoting the steepness to general `d`. The next brick is that `p`-series summation
+(`farEnergy_term_le` + `p_series_tail_le` + the `rpow` arithmetic `(i+2)^c ≤ 2^c(i+1)^c`), after which
+`W(m)δ/i → π²/c` holds for every pole count, not only the balanced model.

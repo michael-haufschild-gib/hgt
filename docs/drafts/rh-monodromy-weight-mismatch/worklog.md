@@ -5407,3 +5407,24 @@ divisibility agreement, the dvd_discJump_iff_finiteDiscJump family).
 **Opened (doc 98 §5).** (a) the depth profile T ↦ windowDepth T (monotone-decreasing ℕ∞ step
 function, ≡⊤ past T = rung through T); (b) the valuation atomic measure (weight each zero height by
 v₂, refining the Stieltjes content), ⊤-atoms = RH-forbidden off-line heights.
+
+## cont.57 — input #1 general-d: far-ahead energy envelope (exponential kernel → polynomial p-series) [Lean, axiom-clean]
+
+`LegStripFarTail.lean`, 3 theorems, axiom-clean, lint clean, in RHTower umbrella:
+- `rcsch_sq_le_exp`: rcsch(z)² ≤ 4/(1−e^{−2z₀})²·e^{−2z} for 0<z₀≤z. The MISSING exponential decay of
+  1/sinh² (the tree only had the near-pole rcsch²<1/z²). From e^z−e^{−z}=e^z(1−e^{−2z})≥e^z(1−e^{−2z₀}).
+  Reusable — the ξ-drift crux W(ξ)/W(m)→1 needs the same kernel bound.
+- `harmMid_far_dist_lower`: harmPole c j − harmMid c i ≥ c·log((j+1)/(i+2)) for j≥i+2. Via
+  harmonic_log_upper(i+2, j−i−1) [Ico→range reindex + sum_range_add_sum_Ico] + half-gap c/(2(i+1)).
+- `farEnergy_term_le`: for j≥2i+2, rcsch²((harmPole c j − harmMid c i)/2) ≤ 4/(1−(2/3)^c)²·((i+2)/(j+1))^c.
+  KEY: uniform floor (j+1)/(i+2)≥3/2 (from j≥2i+2) ⟹ z₀=c·log(3/2)/2 i-independent ⟹ fixed constant;
+  exponential kernel → polynomial p-series envelope in j (energy analog of input#2's rational envelope).
+
+Purpose: input#1 midpoint steepness W(m)δ/i→π²/c is harmonic_midpoint_energy_steepness (balanced d=2i+2)
+×(c(i+1)/i→c), proven. General d needs far poles j≥2i+2 to be o((i+1)²). This envelope is the tool.
+
+Residual (named, ledger §21): the p-series summation — Σ_{j≥2i+2}((i+2)/(j+1))^c ≤ (i+2)^c(2i+2)^{1−c}/(c−1)
+via p_series_tail_le (c>1), (i+2)^c≤2^c(i+1)^c ⟹ ≤ 2^{1+c}/(c−1)·(i+1), /(i+1)²→0. rpow-heavy, next brick.
+
+Lean gotchas: div_le_div_iff→div_le_div_iff₀; Real.exp_neg needs its arg to target one term; div_le_div_of_nonneg_left
+for a/b≤a/c; Real.rpow_def_of_pos to turn x^c into exp(c log x); Finset.sum_range_add_sum_Ico for range-diff=Ico.

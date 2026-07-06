@@ -141,3 +141,37 @@
 - `RHTower/WindowProducer.lean` and `RHTower/DpolyBallFloor.lean`: added `windowLinePackage_of_ball_online_cover`, the per-window Prop interface `SecondMomentOrthogonalSavingOuterPowerWindowData`, and `windowLinePackage_of_secondMoment_orthogonal_saving_outer_power_endpoint_target`; refactored the strongest Dpoly/Hardy RH endpoint to route through cofinal `WindowLinePackage`s. Big picture: the outer-power Hardy/Dpoly gate now emits a reusable window-producer node before RH, so downstream ladder/deck/window consumers can use the same certified empty-window intermediate instead of only a terminal RH theorem.
 - `RHTower/SeamCongruence.lean`, `RHTower/HardySignChange.lean`, `RHTower/DiscCensus.lean`, and `RHTower/DeckWindow.lean`: added a closed-bracket seam reader for non-strict Hardy sign brackets, a Hardy-moment/EM-floor window-certificate theorem, subwindow DISC-bit-to-certificate bridges, and a deck-triviality equivalence through subwindow congruences. Big picture: Hardy moment data, EM finite-data domination, DISC finite-carrier bits, and deck monodromy now meet at the `WindowCertificate`/subwindow-congruence layer instead of terminating in separate total-window or RH-only endpoints.
 - `RHTower/HardySignChange.lean` and `RHTower/DiscCensus.lean`: added `IntegralLedgerOuterPowerWindowData -> WindowLinePackage` and a subwindow finite-deck bridge that derives finite DISC-bit vanishing from completedGN deck-line equality. Big picture: the strongest Dpoly/Hardy window route no longer has to assume an explicit point-pair sign bracket when moment ledger data is available, and DISC/deck transport can now consume per-subwindow deck certificates rather than precomputed finite census zeros.
+
+## formal/GaloisForLFunctions/RHTower/CarrierMassFloor.lean (new)
+
+Point-to-mass conversion: `sq_integral_floor_of_anchor_slope` (an anchor `c ≤ |f τ|` plus a
+derivative sup `D` on `[τ−rz, τ+rz]` force the square-integral floor
+`(c/2)²·2·min rz (c/(2D))`), instantiated for the completed carrier via
+`hasDerivAt_re_completedGN_line` (the carrier's critical-line slope, computed termwise from
+the envelope calculus) and `norm_carrierLineSlope_le` (closed-form slope budget
+`4√N·(M₁ + M₀·log N)`).  `anchor_re_completedGN_line_of_floors` converts the certificate's
+existing arch-floor × carrier-anchor product into the pointwise anchor (reality of `Φ̃_N` on
+the line), and `exists_completedGN_sign_bracket_of_anchor_slope` closes the loop: a sign
+bracket in `[τ−rz, τ+rz]` from anchor, envelope sups, line sup, and a first moment below the
+anchor-generated mass floor.
+
+Big picture: the short-interval second-moment face `S_b` — previously the sole open analytic
+face of the sign-bracket route — is no longer an independent input.  It is manufactured from
+the anchor face the window certificates already carry, so anchor and mass have collapsed into
+one quantity; the sign face now rests on anchor + first-moment cancellation alone, with every
+envelope constant a closed-form theorem.
+
+## formal/GaloisForLFunctions/RHTower/CarrierMassFloor.lean (endpoint added)
+
+`riemannHypothesis_of_decoupled_integral_ledger_anchor_mass_endpoint_target`: an RH gate whose
+per-zero window certificate carries NO independent short-interval second-moment face.  The
+long-window energy budget selects the anchor height, the archimedean floor upgrades
+`m_J ≤ ‖g_N‖` to the pointwise anchor `a₀·m_J ≤ |Re Φ̃_N|`, and the point-to-mass converter
+manufactures the local mass floor `(a₀m_J/2)²·2·min rz (a₀m_J/(2·4√N(M₁+M₀log N)))` from the
+envelope calculus.
+
+Big picture: compared to the earlier decoupled ledger endpoints, the `S_b` supply and
+positivity faces are gone.  The sign face of the per-zero certificate is now a single strict
+scalar comparison — local first moment below the anchor-generated mass floor — with every
+other sign-face input an envelope sup already bounded by a closed-form theorem
+(`norm_archFactor_line_le`, `norm_archFactorDeriv_line_le`, `abs_re_completedGN_line_le`).

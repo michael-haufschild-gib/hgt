@@ -116,6 +116,7 @@ import GaloisForLFunctions.RHTower.DiscJump
 import GaloisForLFunctions.RHTower.CensusProfile
 import GaloisForLFunctions.RHTower.Variation
 import GaloisForLFunctions.RHTower.ValuationProfile
+import GaloisForLFunctions.RHTower.ValMeasure
 import GaloisForLFunctions.RHTower.RelayLedger
 import GaloisForLFunctions.RHTower.EMCarrier
 import GaloisForLFunctions.RHTower.SeamCongruence
