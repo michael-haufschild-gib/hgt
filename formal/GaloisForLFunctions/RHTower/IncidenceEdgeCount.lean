@@ -130,7 +130,31 @@ theorem rate_floor_of_phase_advance {θ g : ℝ → ℝ} {a b ρ₀ : ℝ}
   rw [hθdiff]
   linarith [hmono]
 
+/-- **A pointwise positive rate floor makes the phase strictly monotone.**  When the phase is
+the primitive of a rate bounded below by `ρ₀ > 0`, it is strictly increasing on the edge. -/
+theorem strictMonoOn_of_phase_advance {θ g : ℝ → ℝ} {a b ρ₀ : ℝ} (hρ : 0 < ρ₀)
+    (hg : ContinuousOn g (Set.Icc a b))
+    (hadv : ∀ τ ∈ Set.Icc a b, θ τ - θ a = ∫ t in a..τ, g t)
+    (hgfloor : ∀ τ ∈ Set.Icc a b, ρ₀ ≤ g τ) :
+    StrictMonoOn θ (Set.Icc a b) := by
+  have hrate := rate_floor_of_phase_advance hg hadv hgfloor
+  intro x hx y hy hxy
+  have := hrate x hx y hy hxy.le
+  nlinarith [this, hρ, sub_pos.mpr hxy]
+
 /-! ### The incidence carrier along the edge -/
+
+/-- **The phase-rate budget from a modulus floor and a derivative bound.**  Where a carrier is
+bounded below by `m > 0` and its derivative is bounded above by `M₁`, the real part of its
+logarithmic derivative — its phase rate — is bounded by `M₁/m`.  This turns a sup bound on the
+derivative and a nonvanishing floor into the phase-advance budget, with no separate log-derivative
+estimate. -/
+theorem abs_re_logDeriv_le_of_bounds {f : ℂ → ℂ} {z : ℂ} {m M₁ : ℝ}
+    (hm0 : 0 < m) (hm : m ≤ ‖f z‖) (hM : ‖deriv f z‖ ≤ M₁) :
+    |(logDeriv f z).re| ≤ M₁ / m := by
+  calc |(logDeriv f z).re| ≤ ‖logDeriv f z‖ := Complex.abs_re_le_norm _
+    _ = ‖deriv f z‖ / ‖f z‖ := by rw [logDeriv_apply, norm_div]
+    _ ≤ M₁ / m := div_le_div₀ (le_trans (norm_nonneg _) hM) hM hm0 hm
 
 /-- The logarithmic derivative of the incidence carrier is `logDeriv Λ₂ − logDeriv Λ₁`. -/
 theorem logDeriv_incidence {Λ₁ Λ₂ : ℂ → ℂ} {z : ℂ}
@@ -145,23 +169,23 @@ theorem logDeriv_incidence {Λ₁ Λ₂ : ℂ → ℂ} {z : ℂ}
         rw [show (fun w => -Λ₂ w) = fun w => (-1 : ℂ) * Λ₂ w from by funext w; ring,
           logDeriv_const_mul z (-1) (by norm_num)]
 
-/-- **The forced-event count on a lateral edge.**  Suppose the anchor `Λ₁` and target `Λ₂` are
-analytic and nonvanishing on an open set covering a vertical edge, and the incidence phase rate
-`Re(logDeriv Λ₂ − logDeriv Λ₁)` is bounded below by `ρ₀ > 0` along the edge.  Then on an edge
-long enough to advance the phase by `n·π` there are `n` strictly ordered points where a
-real-ratio pencil member vanishes: `n` transversal band-edge events, supplied by the rate
-floor. -/
-theorem exists_edge_events_of_incidence_rate_floor {Λ₁ Λ₂ : ℂ → ℂ} {U : Set ℂ}
-    {σ a b ρ₀ : ℝ} {n : ℕ}
-    (hab : a ≤ b) (hρ : 0 < ρ₀) (hU : IsOpen U)
+/-- **The incidence carrier's polar data along a lateral edge.**  Where the anchor `Λ₁` and
+target `Λ₂` are analytic and nonvanishing on an open set covering the edge, and the incidence
+phase rate `Re(logDeriv Λ₂ − logDeriv Λ₁)` is bounded below by `ρ₀ > 0`, the incidence carrier is
+a positive modulus times a phase that advances at least at rate `ρ₀` across every subinterval —
+the polar presentation the crossing count and its parity both consume. -/
+theorem incidence_edge_polar_data {Λ₁ Λ₂ : ℂ → ℂ} {U : Set ℂ} {σ a b ρ₀ : ℝ}
+    (hab : a ≤ b) (hU : IsOpen U)
     (hmapU : ∀ τ ∈ Set.Icc a b, stripPt σ τ ∈ U)
     (hΛ1 : AnalyticOnNhd ℂ Λ₁ U) (hΛ1ne : ∀ z ∈ U, Λ₁ z ≠ 0)
     (hΛ2 : AnalyticOnNhd ℂ Λ₂ U) (hΛ2ne : ∀ z ∈ U, Λ₂ z ≠ 0)
     (hfloor : ∀ τ ∈ Set.Icc a b,
-      ρ₀ ≤ (logDeriv Λ₂ (stripPt σ τ) - logDeriv Λ₁ (stripPt σ τ)).re)
-    (hn : (n : ℝ) * Real.pi ≤ (b - a) * ρ₀) :
-    ∃ e : Fin n → ℝ, StrictMono e ∧ ∀ i, e i ∈ Set.Icc a b ∧
-      pencil Λ₁ Λ₂ ((incidence Λ₁ Λ₂ (stripPt σ (e i))).re : ℂ) 1 (stripPt σ (e i)) = 0 := by
+      ρ₀ ≤ (logDeriv Λ₂ (stripPt σ τ) - logDeriv Λ₁ (stripPt σ τ)).re) :
+    ∃ R θ : ℝ → ℝ, (∀ τ ∈ Set.Icc a b, 0 < R τ) ∧
+      (∀ τ ∈ Set.Icc a b,
+        incidence Λ₁ Λ₂ (stripPt σ τ) = (R τ : ℂ) * Complex.exp ((θ τ : ℝ) * I)) ∧
+      ContinuousOn θ (Set.Icc a b) ∧
+      (∀ x ∈ Set.Icc a b, ∀ y ∈ Set.Icc a b, x ≤ y → ρ₀ * (y - x) ≤ θ y - θ x) := by
   -- the incidence carrier is analytic and nonvanishing on `U`
   have hιan : AnalyticOnNhd ℂ (incidence Λ₁ Λ₂) U := by
     have : incidence Λ₁ Λ₂ = fun s => (-Λ₂ s) / Λ₁ s := by funext s; rw [incidence]
@@ -224,7 +248,7 @@ theorem exists_edge_events_of_incidence_rate_floor {Λ₁ Λ₂ : ℂ → ℂ} {
     exact hcomp
   have hGa : incidence Λ₁ Λ₂ (stripPt σ a) ≠ 0 :=
     hιne (stripPt σ a) (hmapU a ⟨le_refl a, hab⟩)
-  obtain ⟨R, θ, hRne, hpolar, hθc, hθadv⟩ :=
+  obtain ⟨R, θ, hRpos, hpolar, hθc, hθadv⟩ :=
     polar_data_of_logDeriv hVopen hIccV hG hωc hGa
   -- the pointwise rate floor
   have hImω : ∀ τ ∈ Set.Icc a b,
@@ -235,8 +259,24 @@ theorem exists_edge_events_of_incidence_rate_floor {Λ₁ Λ₂ : ℂ → ℂ} {
     (Complex.continuous_im.comp_continuousOn (hωc.mono hIccV))
   have hgfloor : ∀ τ ∈ Set.Icc a b, ρ₀ ≤ (ω τ).im := by
     intro τ hτ; rw [hImω τ hτ]; exact hfloor τ hτ
-  have hratefloor := rate_floor_of_phase_advance hgc hθadv hgfloor
-  -- apply the multi-crossing engine to the incidence carrier
+  exact ⟨R, θ, hRpos, hpolar, hθc, rate_floor_of_phase_advance hgc hθadv hgfloor⟩
+
+/-- **The forced-event count on a lateral edge.**  On an edge long enough to advance the
+incidence phase by `n·π` there are `n` strictly ordered points where a real-ratio pencil member
+vanishes: `n` transversal band-edge events, supplied by the rate floor. -/
+theorem exists_edge_events_of_incidence_rate_floor {Λ₁ Λ₂ : ℂ → ℂ} {U : Set ℂ}
+    {σ a b ρ₀ : ℝ} {n : ℕ}
+    (hab : a ≤ b) (hρ : 0 < ρ₀) (hU : IsOpen U)
+    (hmapU : ∀ τ ∈ Set.Icc a b, stripPt σ τ ∈ U)
+    (hΛ1 : AnalyticOnNhd ℂ Λ₁ U) (hΛ1ne : ∀ z ∈ U, Λ₁ z ≠ 0)
+    (hΛ2 : AnalyticOnNhd ℂ Λ₂ U) (hΛ2ne : ∀ z ∈ U, Λ₂ z ≠ 0)
+    (hfloor : ∀ τ ∈ Set.Icc a b,
+      ρ₀ ≤ (logDeriv Λ₂ (stripPt σ τ) - logDeriv Λ₁ (stripPt σ τ)).re)
+    (hn : (n : ℝ) * Real.pi ≤ (b - a) * ρ₀) :
+    ∃ e : Fin n → ℝ, StrictMono e ∧ ∀ i, e i ∈ Set.Icc a b ∧
+      pencil Λ₁ Λ₂ ((incidence Λ₁ Λ₂ (stripPt σ (e i))).re : ℂ) 1 (stripPt σ (e i)) = 0 := by
+  obtain ⟨R, θ, _, hpolar, hθc, hratefloor⟩ :=
+    incidence_edge_polar_data hab hU hmapU hΛ1 hΛ1ne hΛ2 hΛ2ne hfloor
   obtain ⟨e, hemono, hev⟩ :=
     exists_strictMono_events_of_rate_floor (F := fun τ => incidence Λ₁ Λ₂ (stripPt σ τ))
       hab hρ hpolar hθc hratefloor hn

@@ -510,14 +510,14 @@ theorem polar_data_of_logDeriv {G ω : ℝ → ℂ} {U : Set ℝ} {a b : ℝ}
     (hG : ∀ τ ∈ Set.Icc a b, HasDerivAt G (G τ * ω τ) τ)
     (hωc : ContinuousOn ω U) (ha0 : G a ≠ 0) :
     ∃ R θ : ℝ → ℝ,
-      (∀ τ ∈ Set.Icc a b, R τ ≠ 0) ∧
+      (∀ τ ∈ Set.Icc a b, 0 < R τ) ∧
       (∀ τ ∈ Set.Icc a b, G τ = (R τ : ℂ) * Complex.exp ((θ τ : ℝ) * Complex.I)) ∧
       ContinuousOn θ (Set.Icc a b) ∧
       (∀ τ ∈ Set.Icc a b, θ τ - θ a = ∫ t in a..τ, (ω t).im) := by
   refine ⟨fun τ => ‖G a‖ * Real.exp (∫ t in a..τ, (ω t).re),
     fun τ => (G a).arg + ∫ t in a..τ, (ω t).im, ?_, ?_, ?_, ?_⟩
   · intro τ _
-    exact mul_ne_zero (norm_ne_zero_iff.mpr ha0) (Real.exp_ne_zero _)
+    exact mul_pos (norm_pos_iff.mpr ha0) (Real.exp_pos _)
   · exact polar_presentation_of_logDeriv hU hsub hG hωc
   · exact continuousOn_const.add (continuousOn_primitive_of_open hU hsub
       (Complex.continuous_im.comp_continuousOn hωc))

@@ -525,3 +525,63 @@ loss of generality.
 - **`exists_edge_events_supply_fluxPaired`** (capstone): on a high edge with a subcritical Dirichlet budget, the winding forces n strictly ordered band-edge events AND, given the pairing on the n events, their event list carries paired flux. The analytic content — existence of the events — is discharged unconditionally; the pairing is the only remaining band-edge arithmetic input. The paired-flux interface handed its odd event class with events SUPPLIED, not hypothesized.
 - `exists_forcing_height`: the explicit height above which every edge forces events.
 - All four modules axiom-clean [propext, Classical.choice, Quot.sound]; umbrella import added; MainTheorems 9198 jobs green; lint + index pass.
+
+## (completion) C_D discharged from carrier data — no abstract budget hypothesis
+- `IncidenceEdgeCount.abs_re_logDeriv_le_of_bounds`: a modulus floor `m ≤ ‖f z‖` and a derivative sup `‖deriv f z‖ ≤ M₁` give `|Re(logDeriv f z)| ≤ M₁/m` (‖·‖-dominates Re, `logDeriv = deriv/f`, `div_le_div₀`). Turns sup/floor carrier data directly into the phase-rate budget.
+- `EdgeEventLedger.exists_edge_events_supply_fluxPaired_of_carrier_bounds`: the capstone with `B_D` REPLACED by `M₁/m` supplied by a `gN` modulus floor `m>0` and derivative sup `M₁` on the edge. Every budget on the route (C₁ = eulerHeadBound, C_D = M₁/m) is now computed from carrier data; the pairing is the sole remaining input. Axiom-clean; MainTheorems 9198 jobs; lint + index pass.
+- `RHTower/FoldonFrustration.lean` (new, in umbrella): the formalizable core of the foldon-frustration route. Built the mathlib-gap tool `card_group_dvd_weighted_sum` — a free finite-group action divides the invariant weighted sum (`|G| ∣ Σ mᵢ`), via orbit decomposition (each orbit has `|G|` points with `m` constant). Ladder-depth arithmetic: `deckRed_eq_one_of_two_pow_dvd` (`2^k ∣ index ⟹ deckRed(2^k)=1`, invisible at rung k), `deckRed_two_pow_next_visible` (`deckRed(2^{k+1})(2^k)=−1`, a pure `2^k`-orbit first visible at rung k+1), `deckRed_eq_one_below_depth`. Big picture: the frustration (= the integer off-line zero index, `foldonFrustration`) is discarded by the parity ladder up to its 2-adic symmetry depth.
+- `RHTower/FoldonFrustration.lean`: the crown, `frustration_invisible_below_reflection_depth` — a configuration invariant under a FREE reflection group of order `2^k` (matching multiplicities) has frustration divisible by `2^k`, hence trivial deck class at every rung `j ≤ k`: the deeper the reflection symmetry of the off-line buckling, the higher the ladder must climb to detect it. Base case `frustration_invisible_rung_one` (reflection pair, from `even_sum_of_fpf_involution`); `frustration_orbit_visibility` pairs the below-depth blindness with the rung-`k+1` visibility. Verdict: the folding route's frustration functional IS the off-line index (reduces to the signature/deck work); the genuinely new formalizable content is this symmetry-depth blindness; the recursion contractivity / locality fork is RH-adjacent open analytic mathematics (needs the AFE), the named boundary. All axiom-clean `[propext, Classical.choice, Quot.sound]`; `lake build MainTheorems` green (9200 jobs); lint + index pass.
+
+## BandEdgePairingConstruction.lean — the pairing IS the evenness
+- `consecutivePairing m : BandEdgePairing (Fin (2m))` — the consecutive-crossing involution (swap within each adjacent pair, via `Fin (2m) ≃ Fin 2 × Fin m` and `Equiv.swap 0 1` on the first factor; `Involutive.toPerm`). Fixed-point-free, squares to one.
+- **`nonempty_bandEdgePairing_iff_even`**: `Nonempty (BandEdgePairing (Fin n)) ↔ 2 ∣ n`. The forward direction is `fixedPointFreePairing_two_dvd_card`; the reverse is `consecutivePairing`. The paired-flux interface's odd class is closed EXACTLY when the crossing count is even — the entire remaining route content is a single parity fact.
+
+## EdgeEventLedger.lean (extension) — the pairing discharged for an even count
+- **`exists_edge_events_fluxPaired_even`**: for an even count `2m`, the forced band-edge events exist AND their event list carries paired flux, with the consecutive-crossing pairing CONSTRUCTED (no `BandEdgePairing` hypothesis). The abstract pairing hypothesis is removed; only the parity of the count remains.
+
+## EdgeEventParity.lean — the parity criterion: the pairing's boundary condition
+- **`sin_pos_iff_even_floor`**: `sin x ≠ 0 → (0 < sin x ↔ Even ⌊x/π⌋)` — the sign of `sin` on `(mπ,(m+1)π)` is `(−1)^m` (via `sin_add_int_mul_pi` + `sin_pos_of_pos_of_lt_pi`).
+- **`exists_crossing_enum_parity`**: for a positive-modulus, strictly-monotone-phase, continuous carrier with non-crossing endpoints, the points where `Im = 0` are a strictly ordered family `e : Fin n → [a,b]` that EXHAUSTS all crossings, and `Even n ↔ (0 < Im F a ↔ 0 < Im F b)`. The crossings biject to the multiples of π in `[θa,θb]`; the count `⌊θb/π⌋ − ⌊θa/π⌋` is even iff the endpoints agree in orientation. This is doc 106 §5's "consecutive crossings pair by IVT when boundary data agrees" made exact.
+- **`crossings_fluxPaired_of_endpoints_agree`**: agreeing endpoints ⟹ even count ⟹ pairing ⟹ `LedgerFluxPaired (replicate n 1)`, with the pairing constructed.
+- **`exists_incidence_edge_events_fluxPaired`** (the route terminus): on a lateral edge of the incidence pencil (analytic nonvanishing, rate floor ρ₀>0), IF the two endpoint orientations of the incidence carrier agree, the forced band-edge events come in an even number and their event list carries paired flux. The entire paired-flux burden is discharged into a SINGLE boundary datum — the agreement of the endpoint orientations. Uses the refactored `incidence_edge_polar_data` (shared polar-data setup) + `strictMonoOn_of_phase_advance`.
+- Companion refactor: `IncidenceEdgeCount.incidence_edge_polar_data` extracts the incidence polar-data setup (0<R, polar form, θ continuous, difference rate floor) shared by the count and parity theorems; `polar_data_of_logDeriv` strengthened to `0 < R τ`.
+- All axiom-clean [propext, Classical.choice, Quot.sound]; MainTheorems 9201 jobs; lint + index pass.
+
+## IncidenceMirrorOrientation.lean — positive-real FE mirror reverses orientation
+
+- `im_real_div_eq_neg_normSq`: the reciprocal mirror algebra, `Im((lam : ℂ)/z) = -lam * Im z / normSq z`.
+- `im_real_div_pos_iff_neg`, `im_real_div_neg_iff_pos`, and `im_real_div_mul_im_neg`: for `lam > 0`, the reciprocal map sends lower to upper, upper to lower, and nonreal values to opposite imaginary orientation.
+- `incidence_mirror_im_pos_iff_neg_of_real_pos`, `incidence_mirror_im_neg_iff_pos_of_real_pos`, and `incidence_mirror_im_product_neg_of_real_pos`: composing the algebra with `incidence_mirror`, a positive-real FE mirror constant gives opposite orientation between `s` and `1-s`. This records the boundary obstruction precisely: FE mirror orientation is an opposite-edge rule, not the same-edge endpoint agreement required by `EdgeEventParity`.
+- Verification: `lake env lean GaloisForLFunctions/RHTower/IncidenceMirrorOrientation.lean`; `lake env lean GaloisForLFunctions/RHTower.lean`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
+
+## ReflectedSaddleLattice.lean — saddle lattice to parity interface
+
+- `reflectedSaddle T k = T/(2π(k+1))`, `reflectedPhase T k x = -2π(k+1)x + T log x`, with named first and second derivative expressions.
+- `reflectedPhase_hasDerivAt`, `reflectedPhaseDeriv_hasDerivAt`: the reflected phase differentiates to `-2π(k+1)+T/x`, then to `-T/x²` away from zero.
+- `reflectedPhaseSecond_independent`: the curvature is independent of the Fourier mode. This is the formal version of the R7 observation that the second-derivative estimate is uniform in `n`.
+- `reflected_saddle_pos`, `reflectedPhaseDeriv_saddle_eq_zero`, `reflectedPhaseDeriv_eq_zero_iff`: for `T>0` and `x>0`, the unique stationary point of the negative reflected mode is exactly `T/(2π(k+1))`.
+- `reflectedSaddleModes`, `reflectedSaddleFluxList`, `reflectedSaddleFluxList_sum`: finite carrier and unit event list for saddle modes in a bounded interval.
+- `reflectedSaddleFluxPaired_of_even`, `reflectedSaddleFluxList_two_dvd_sum_of_even`: even saddle-mode count feeds the existing consecutive-pairing/event-ledger interface and yields even total unit flux.
+- Verification: `lake env lean GaloisForLFunctions/RHTower/ReflectedSaddleLattice.lean`; `lake env lean GaloisForLFunctions/RHTower.lean`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
+- Boundary left open: the theorem does not assert the physical reflected saddle carrier has even cardinality. It isolates that exact parity/charge-bridge obligation.
+
+## ReflectedGridParity.lean — integer-grid saddle collisions have square-only parity
+
+- `reflectedGridCollisions C = C.divisorsAntidiagonal`: the finite carrier of saddle/grid collisions at normalized height `T=2πC`.
+- `reflectedGridSwap`: the factor-swap reflection `(n,m) ↦ (m,n)`, with `reflectedGridSwap_mem` and `reflectedGridSwap_involutive`.
+- `reflectedSaddle_two_pi_nat_eq_nat_iff`: `reflectedSaddle (2πC) k = m ↔ (k+1)m=C`, tying the analytic stationary point exactly to the integer divisor equation.
+- `reflectedGridCollision_iff_saddle_grid`: membership in the collision carrier is equivalent to the saddle hitting the integer grid, plus the nonzero condition from `Nat.divisorsAntidiagonal`.
+- `reflectedGridCollisions_even_of_no_pos_square`, `reflectedGridCollisions_nonfixed_even`, `reflectedGridCollisions_fixed_eq_singleton`, `reflectedGridCollisions_odd_of_pos_square`, `reflectedGridCollisions_odd_iff_pos_square`: all nonfixed collisions pair; the ordered collision count is odd exactly at a positive-square fixed point.
+- `reflectedGridCollisionFluxList`, `reflectedGridCollisionFluxPaired_of_no_pos_square`, `reflectedGridCollisionFlux_two_dvd_sum_of_no_pos_square`: no positive square fixed point means the unit collision list supplies `LedgerFluxPaired` and has even total flux.
+- Verification: `lake env lean GaloisForLFunctions/RHTower/ReflectedGridParity.lean`; `lake env lean GaloisForLFunctions/RHTower.lean`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
+- Boundary left open: the physical AFE/reflection charge carrier still has to be reduced to this grid-collision carrier, or its off-grid/noncollision events must be shown to cancel in pairs.
+
+## ReflectedGridCharge.lean — weighted reflected charge is even under swap symmetry and even fixed weight
+
+- `reflectedGridWeightedCharge C q = ∑_{x∈reflectedGridCollisions C} q x`: the weighted charge of the reflected saddle/grid collision carrier.
+- `reflectedGridWeightedCharge_even_of_swap_invariant_even_fixed`: if `q(reflectedGridSwap x)=q x` on the carrier and diagonal fixed collisions have even weight, then the total weighted charge is even.
+- `reflectedGridWeightedCharge_deckRed_two_eq_one_of_swap_invariant_even_fixed`: the same theorem in deck language, `deckRed 2 (charge)=1`.
+- `reflectedGridWeightedCharge_even_of_swap_invariant_no_fixed` and deck form: with no positive square fixed point, swap-invariance alone forces even weighted charge.
+- `reflectedGridWeightedCharge_even_of_swap_invariant_square_fixed_even` and deck form: when `C=r²`, it suffices that the singleton fixed weight `q(r,r)` is even.
+- Verification: `lake env lean GaloisForLFunctions/RHTower/ReflectedGridCharge.lean`; `lake env lean GaloisForLFunctions/RHTower.lean`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
+- Boundary left open: define the physical AFE/reflection charge weight on this carrier and prove its swap-invariance plus even fixed weight; any off-grid/noncollision event class must be separately paired.

@@ -5854,3 +5854,54 @@ unpaired, unramified order. This is the exact loss of the index→parity coarsen
 
 Verify: `lake build MainTheorems` EXIT 0 (9194 jobs); all named decls axiom-clean
 [propext, Classical.choice, Quot.sound]; lint + index pass. No git commit.
+
+## 2026-07-06 (dawn) — the Dirichlet side discharged: forced events SUPPLIED to LedgerFluxPaired
+- Four new modules (AnchorHead, IncidenceEdgeCount, EdgeEventSynthesis, EdgeEventLedger; 42 decls, axiom-clean [propext, Classical.choice, Quot.sound], lint green, MainTheorems 9198 jobs).
+- C₁: eulerHeadAnchor P = ∏(1−p^{−s}), nonvanishing on Re>0; logDeriv = finite prime sum bounded UNIFORMLY IN HEIGHT by eulerHeadBound P σ. Height-independent.
+- C_D: gN phase rate |Re(logDeriv gN)| ≤ B_D on a zero-free edge (same polar engine).
+- KEY reframe: pointwise incidence-rate floor (not endpoint budgets). logDeriv incidence = logDeriv Λ₂ − logDeriv Λ₁; three-part split for completedGN = archFactor·gN gives Re ≥ stripFloor σ a − eulerHeadBound P σ − B_D =: ρ₀. ρ₀>0 ⟹ phase strictly increasing ⟹ one forced event per π/ρ₀ edge length. Count ≥ (b−a)ρ₀/π GROWS.
+- Multi-crossing engine (exists_strictMono_events_of_rate_floor): monotone phase → n strictly ordered Im-zeros via the multiples (⌈θa/π⌉+i)π, IVT preimages, sin_int_mul_pi.
+- Subcriticality PROVEN (exists_height_net_rate_ge): stripFloor→∞ vs fixed budgets ⟹ explicit height A above which ρ₀ ≤ net rate. "C₁+C_D grows slower than (b−a)log a" formalized.
+- Capstone (exists_edge_events_supply_fluxPaired): on a high edge with subcritical Dirichlet budget, n forced band events EXIST + (given BandEdgePairing on Fin n) their List.replicate n 1 has paired flux. Events supplied, not hypothesized; pairing = sole remaining band-edge input.
+- W4 pairing is now the ONLY undischarged input on the route. Next object = the fixed-point-free involution on the n forced crossings (where the Euler-tail {τ log p} equidistribution enters as the pairing rule).
+
+## 2026-07-06 — foldon-frustration route followed to its formalizable core (Lean, axiom-clean)
+
+Goal: follow the foldon-frustration alternative route to exhaustion. New module
+`RHTower/FoldonFrustration.lean` (129 lines).
+
+The decisive resolution: the route's frustration functional, made precise, IS the integer off-line
+zero index — the same index whose mod-2^k reduction is the deck class (SignatureParity). So the route
+meets our signature work. The genuinely NEW, formalizable content is how the parity ladder relates to
+that frustration:
+- Built the mathlib gap `card_group_dvd_weighted_sum`: a free finite-group action ⟹ |G| ∣ Σmᵢ
+  (orbit decomposition). This gives all 2^k at once.
+- Ladder-depth arithmetic: 2^k ∣ frustration ⟹ deck class trivial at rungs ≤ k; a pure 2^k-orbit is
+  first visible at rung k+1 (deck class −1 there).
+- Crown `frustration_invisible_below_reflection_depth`: a free reflection symmetry of order 2^k hides
+  the frustration from the first k rungs of the parity ladder. The deeper the reflection symmetry of
+  the off-line buckling, the higher the ladder climbs to see it.
+
+This closes the frustration route's PROVABLE content. Together with W2 SeamCrossingRigidity (forced
+on-line nucleations = clean folds via the winding floor) and SignatureParity (the index→parity
+discard), the three modules formalize the route's entire provable half:
+  forced on-line nucleations (W2) + off-line frustration is the deck index whose parity-ladder
+  blindness is quantified by symmetry depth (SignatureParity + FoldonFrustration).
+
+The route's OPEN half — the frustration recursion's contractivity / the locality fork (short-range
+folding vs long-range log-gas) — is RH-adjacent open analytic mathematics requiring the approximate
+functional equation (a deep mathlib gap AND an open problem at the contractivity step). No theorem to
+prove there; it is the named frontier, not an effort gap. Exhaustion reached: everything formalizable
+is formalized, the reduction to the off-line index is explicit, and the open core is named precisely.
+
+Verify: `lake build MainTheorems` EXIT 0 (9200 jobs); all decls axiom-clean; lint + index pass. No git commit.
+
+## 2026-07-06 (morning) — route followed to exhaustion: pairing built, reduced to one boundary datum
+- 3 new modules (BandEdgePairingConstruction, EdgeEventLedger ext, EdgeEventParity; axiom-clean, lint green, MainTheorems 9201 jobs).
+- nonempty_bandEdgePairing_iff_even: the pairing on Fin n exists IFF 2∣n. Reverse = consecutivePairing (adjacent-pair swap via Fin 2m ≃ Fin 2 × Fin m, Involutive.toPerm). The abstract pairing hypothesis = the parity of the count, nothing more.
+- exists_edge_events_fluxPaired_even: for an even count 2m the pairing is CONSTRUCTED — LedgerFluxPaired unconditional (hpair discharged).
+- sin_pos_iff_even_floor: sign of sin on (mπ,(m+1)π) is (−1)^m.
+- exists_crossing_enum_parity: monotone-phase crossings exhaustively enumerated; Even count ⟺ endpoints agree in Im-sign. Doc 106 §5's IVT-consecutive-pairing made exact.
+- exists_incidence_edge_events_fluxPaired (TERMINUS): incidence pencil lateral edge, rate floor ρ₀>0, endpoints agree ⟹ even forced events + paired flux, pairing built. Whole paired-flux burden = ONE boundary datum: 0<Im ι(σ+iT) ↔ 0<Im ι(σ+iT′).
+- Refactor: incidence_edge_polar_data (shared setup); polar_data_of_logDeriv strengthened to 0<R.
+- ROUTE STATUS: every structural gate machine-checked. Reduces to hagree (endpoint-orientation agreement on a lateral edge), the FE-governed boundary sign — the sole residual, the classical content the geometry isolates. Next object = hagree from box FE/reflection symmetry + Euler-tail {τ log p} equidistribution.

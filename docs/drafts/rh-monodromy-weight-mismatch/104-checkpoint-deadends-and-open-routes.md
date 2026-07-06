@@ -572,3 +572,88 @@ approximate functional equation asserts. Sixteen van der Corput / sawtooth / ass
 The one remaining wire to the *literal* `∫_1^N ({x}−½)x^{−s−1}` of `sawtooth_ibp_sum` is elementary
 constant arithmetic (the `+1/12` mean term `× ∫x^{−s−2}`, bounded by `N−1`, and the `(s+1)` factor) —
 no oscillatory content, no new estimate.
+
+---
+
+## Addendum 15: the literal reflected-block remainder — composed, axiom-clean
+
+**[PROVED HERE, Lean]** `RHTower/ReflectedB2Integral.lean : sawtooth_reflected_bound` (axiom-clean,
+umbrella green): for `N ≥ 1`, `s.re ≥ −2`, `s.im < 0`,
+`‖∫_1^N ({x}−½)·x^{−s−1}‖ ≤ ‖s+1‖·((∑_n 1/(4π²n²))·10N/√(−s.im) + (N−1)/12)`.
+
+This composes `sawtooth_ibp_sum` (the Euler–Maclaurin integration-by-parts, sawtooth → `B₂`) with
+`reflected_B2_integral_bound` (the mode-sum bound): peel the `(s+1)` factor, subtract the kernel's mean
+`1/12` (an elementary `∫ x^{−s−2}` term, `‖·‖ ≤ N−1` by `x^{−σ−2} ≤ 1`), and apply the van der Corput
+bound to the mean-zero part. The `B₂`-kernel integrability is the bounded-measurable fact
+(`HasFiniteIntegral.of_bounded`, `measurable_fract`).
+
+**The chain is now literal and complete**, from the centred fractional sawtooth `∫({x}−½)x^{−s−1}`
+(what `finite_em_identity` ties to the reflected Dirichlet block) all the way to the square-root
+cancellation bound, with every intermediate link banked and depending only on
+`[propext, Classical.choice, Quot.sound]`. The reflected block obeys the bound the approximate
+functional equation asserts — no residual, no elementary gap left.
+
+---
+
+## Addendum 16: reflected saddle lattice and the parity interface banked
+
+**[PROVED HERE, Lean]** `RHTower/ReflectedSaddleLattice.lean`: for the negative Fourier reflected phase
+`g_k(x) = -2π(k+1)x + T log x`, the stationary point is exactly
+`x*_k = T/(2π(k+1))`, and the second derivative is `g_k''(x) = -T/x²`, independent of the mode `k`.
+The formal public endpoints are `reflectedPhaseDeriv_eq_zero_iff`,
+`reflectedPhaseSecond_independent`, and `reflectedPhaseDeriv_hasDerivAt`.
+
+The same file names the finite saddle-mode carrier
+`reflectedSaddleModes K T a b = {k < K | a ≤ T/(2π(k+1)) ≤ b}` and attaches the unit event list
+`List.replicate card 1`. If that finite carrier has even cardinality, `reflectedSaddleFluxPaired_of_even`
+constructs the ledger interface `LedgerFluxPaired`; `reflectedSaddleFluxList_two_dvd_sum_of_even` records
+the resulting even total unit flux. The pairing itself is not an extra hypothesis: it is the consecutive
+pairing already banked in `BandEdgePairingConstruction.lean`.
+
+This is the exact saddle-lattice-to-parity interface promised by R7. It does **not** prove that the physical
+AFE/reflection carrier has even saddle count, nor that endpoint orientation agreement holds; those are the
+remaining charge-bridge burden. What is now formal is the precise handoff: reflected saddle geometry supplies
+a finite mode lattice with mode-independent curvature, and any proof of its evenness immediately supplies the
+paired-flux ledger required by the incidence/event route.
+
+---
+
+## Addendum 17: integer-grid collision parity of the reflected saddle lattice
+
+**[PROVED HERE, Lean]** `RHTower/ReflectedGridParity.lean`: after normalizing the height as
+`T = 2πC`, the analytic saddle equation and the arithmetic grid-collision equation are identical:
+
+`reflectedSaddle (2πC) k = m  ↔  (k+1)m = C`.
+
+Thus the integer-grid collisions of the reflected saddle lattice are the divisor antidiagonal
+`C.divisorsAntidiagonal`. Reflection swaps the two factors `(n,m) ↦ (m,n)`. The nonfixed collisions
+pair off by this involution, and the fixed locus is exactly the positive-square singleton `(r,r)` when
+`r² = C`. The sharp parity theorem is
+
+`reflectedGridCollisions_odd_iff_pos_square : Odd card ↔ ∃ r>0, r*r = C`.
+
+Consequently, away from the positive-square fixed point, the collision unit event list has paired flux:
+`reflectedGridCollisionFluxPaired_of_no_pos_square` and
+`reflectedGridCollisionFlux_two_dvd_sum_of_no_pos_square`.
+
+This is the first exact saddle-lattice-to-`ℤ/2` charge law on the R7 route: the reflected saddle/grid
+carrier has no mysterious parity; its mod-2 obstruction is precisely the square fixed point of the
+reflection hyperbola. What remains is no longer the lattice arithmetic. The remaining bridge is to prove
+that the physical AFE/reflection charge carrier reduces to this collision carrier, or to state the extra
+noncollision events and prove their parity cancellation.
+
+---
+
+## Addendum 18: weighted reflected-grid charge parity — square obstruction removed by even fixed weight
+
+**[PROVED HERE, Lean]** `RHTower/ReflectedGridCharge.lean`: the unit collision count of Addendum 17 is not the final physical object; a charge carrier is weighted. The weighted theorem is:
+
+`reflectedGridWeightedCharge_even_of_swap_invariant_even_fixed` — if a weight `q` on the reflected grid-collision carrier is invariant under the factor-swap reflection `(n,m) ↦ (m,n)`, and every fixed diagonal collision has even weight, then the total charge `∑ q` over `reflectedGridCollisions C` is even.
+
+The deck form is also banked:
+
+`reflectedGridWeightedCharge_deckRed_two_eq_one_of_swap_invariant_even_fixed`.
+
+Two corollaries isolate the cases from Addendum 17. If there is no positive square fixed point, swap-invariance alone gives even weighted charge (`reflectedGridWeightedCharge_even_of_swap_invariant_no_fixed`). If `C=r²`, it is enough to prove the single fixed weight `q(r,r)` is even (`reflectedGridWeightedCharge_even_of_swap_invariant_square_fixed_even`).
+
+This removes the apparent square obstruction for the physical charge route: the only unpaired lattice point is harmless once its fixed-locus charge is even — exactly the kind of input supplied by reflection parity at a genuine fixed/ramified locus. The remaining bridge is now sharply typed: identify the AFE/reflection charge weight `q`, prove its swap-invariance on the divisor-antidiagonal carrier, and prove the fixed square weight is the even reflected/ramified local order. Off-grid events, if present, must be supplied as a separate paired class.
