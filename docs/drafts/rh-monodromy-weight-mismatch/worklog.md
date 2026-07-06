@@ -5800,3 +5800,24 @@ Verify: `lake build MainTheorems` EXIT 0 (9176 jobs); all 10 named decls axiom-c
 ## 2026-07-06 (night) — the Euler incidence carrier built (doc 106 prediction 3 → doc 107)
 - IncidenceCarrier.lean banked (6 theorems axiom-clean): Möbius mirror action on incidence values; seam ⊆ real locus (degeneration); quiet-edge + forced-event from bandSign endpoint data (band analogue of seamSign). Family events = level sets of ONE constraint-built object — no clock, no path.
 - Doc 107: construction + conjecture layer (closed-sweep telescope, ports = ι|seam critical points, Euler-tail winding as the arithmetic frontier; rng collision: phyllotaxis/three-gap interleaving + sourdough/self-restoring-ratio alternation, predictions pre-registered against banked measurements).
+
+## 2026-07-06 (deep night) — doc 107 §6 three next-objects all formalized
+- IncidenceRamification.lean (6 thms): seamIncidence real-analytic; seam_critical_iff_port; simple-port = simple critical point. Full ramification classification.
+- LedgerTelescope.lean (9 thms): ledgerChain_trans; closed-flux-dvd; flux=0 (conditional + unconditional-enclosed); window↔back parity mod 2 (event classes collapse to one).
+- EulerTailWinding.lean (9 thms): phase-advance→Im-zero core; incidence phase = Euler tail; winding→band event; banked archimedean floor fed. Residual open core = off-line archimedean winding floor (a growth estimate, not structural).
+- All axiom-clean [propext, Classical.choice, Quot.sound], lint passed, MainTheorems 9184 jobs green.
+
+## 2026-07-06 (late night) — the off-line archimedean winding floor built (doc 107 Addendum's open core)
+- LateralWindingFloor.lean (18 endpoints, axiom-clean [propext, Classical.choice, Quot.sound], lint green, MainTheorems 9189 jobs):
+  the growth-estimate instrument the Euler-tail winding lemma was waiting on, fully explicit.
+- Floor: Re(archFactor′/archFactor)(σ+iτ) ≥ (log(τ/2π) − 4/τ² − π/τ)/2 − (1−σ)/τ² for 0<σ≤1 (stripWindingRate_ge);
+  σ ≥ 1 pays nothing (strip_rational_re_nonneg / stripWindingRate_ge_of_one_le); explicit ceiling too (two-sided
+  arg-control off the line). Positive from absolute height 12 at every abscissa; monotone both variables; welds to
+  the line instruments at σ = 1/2 (stripWindingPhase_one_half). The finding: the digamma bound was never a line
+  phenomenon — only the rational term 1/s + 1/(s−1) pays for leaving the line, price (1−σ)/τ².
+- Polar transport engine (generic; a mathlib gap): G′=G·ω ⟹ G(τ)=G(a)·exp(∫ω) ⟹ real-modulus × unimodular-phase
+  presentation with phase advance ∫ Im ω — produces (not assumes) the exact hypothesis shape EulerTailWinding consumes.
+- End-to-end: exists_bandEvent_of_long_lateral_edge — lateral edge at 0<σ≤1, height ≥ 12, length ≥
+  (π+C₁+C_D)/stripFloor σ a ⟹ a real-ratio pencil member of (anchor, completedGN) vanishes on the edge.
+  Archimedean side unconditional+explicit; residue = two named Dirichlet phase budgets (C₁ anchor head, C_D = gN).
+- Docs: 107 Addendum 2 (open core closed; next object = Dirichlet edge-family with subcritical C₁+C_D). Index + lint pass.

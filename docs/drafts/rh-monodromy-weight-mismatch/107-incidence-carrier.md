@@ -117,3 +117,90 @@ instruments (winding floors, BC budgets) apply verbatim to a DIFFERENT carrier.
    decomposition of the closed sweep into the `[0,1]` window and its complement).
 3. The Euler-tail winding question of §4 as a stated analytic lemma, fed to the
    frozen-lane instruments.
+
+---
+
+## Addendum (2026-07-06, night): the three next-object targets delivered in Lean
+
+All three §6 "next objects" are now machine-checked (axiom-clean, lint green, MainTheorems builds).
+
+**Target 1 — ramification (`IncidenceRamification.lean`).** `seamIncidence` (the real seam
+restriction of ι) is real-analytic where the anchor is nonvanishing. The full ramification
+classification: `seam_critical_iff_port` — a critical point of ι|seam is exactly a PORT (the
+on-line member has a multiple zero); `seam_simple_port_iff` — a nondegenerate critical point
+(member Hessian ≠ 0) is exactly a SIMPLE port (order exactly two). §3's "ports = critical
+points" and "simple ports ⟺ simple critical points" are both theorems. The transversal event
+structure degenerates precisely on the ramification locus of ι.
+
+**Target 2 — closed-sweep telescope (`LedgerTelescope.lean`).** The §3 telescope conjecture
+is discharged: `ledgerChain_closed_flux_eq_zero_of_enclosed` proves a deformation loop crosses
+zero net multiplicity (unconditionally for factored members, via the banked simply-connected
+annular charts), and `ledgerChain_window_back_two_dvd` / `ledgerChainE_window_back_two_dvd`
+prove the window flux ≡ back-sweep flux mod 2 — the positive-fiber event class and its complement
+are ONE. The two band-edge event classes collapse to a single class; the (0,∞)-fiber refinement
+gap of §3 is closed.
+
+**Target 3 — Euler-tail winding (`EulerTailWinding.lean`).** The §4 frontier is realized as a
+winding lemma: `incidence_phase_of_factor_phases` proves the incidence phase IS the Euler tail
+(θ_ξ − θ_P̂), and `exists_bandEvent_of_euler_tail` proves that when the tail winds by ≥ π across
+an edge a transversal band event is forced. `windingPhase_ge_pi_of_long` feeds the banked
+archimedean winding floor in the exact form consumed. The one remaining analytic input — an
+off-line winding floor for the archimedean factor (bounding arg ξ'/ξ away from the line) — is now
+the isolated open core for firing the lemma on a concrete lateral edge; it is a growth-estimate
+project, not a structural gap.
+
+**What this opens.** The band-edge pairing (W4) now has: its orientation datum located
+(ramification of ι, Target 1), its two classes reduced to one (Target 2), and its forcing
+mechanism built (Target 3). The next object is the off-line archimedean winding floor — the
+single analytic estimate that turns the winding lemma into concrete forced events, feeding the
+mirror-reduced single event class into `LedgerFluxPaired`.
+
+---
+
+## Addendum 2 (2026-07-06, late night): the off-line archimedean winding floor delivered
+
+The Addendum's one remaining analytic input — the off-line winding floor for the archimedean
+factor — is now machine-checked (`LateralWindingFloor.lean`, 18 endpoints, axiom-clean, lint
+green, MainTheorems builds). It is NOT a structural module but the growth-estimate instrument,
+and it came out fully explicit:
+
+**The floor.** `stripWindingRate_ge`: at every abscissa `0 < σ ≤ 1` and height `τ > 0`,
+
+> Re(archFactor′/archFactor)(σ+iτ) ≥ stripFloor σ τ = (log(τ/2π) − 4/τ² − π/τ)/2 − (1−σ)/τ².
+
+The digamma vertical bound was never a line phenomenon (`re_digamma_ge` holds at every
+abscissa); the only thing that pays for leaving the line is the rational term
+`1/s + 1/(s−1)`, and its price is the explicit `(1−σ)/τ²`. The abscissa dichotomy:
+for σ ≥ 1 the price is ZERO (`stripWindingRate_ge_of_one_le`) — the full line floor holds
+verbatim to the right of the strip. A matching ceiling (`stripWindingRate_le`) makes the
+off-line control of arg ξ_arch′/ξ_arch two-sided. The floor is positive from the absolute
+height 12 on, at every abscissa (`stripFloor_pos`), monotone in both variables, and welds to
+the banked line instrument at σ = 1/2 (`stripWindingPhase_one_half`).
+
+**The polar engine.** The presentation the Euler-tail lemma consumes is produced, not
+assumed: a nonvanishing path with `G′ = G·ω` transports as `G(a)·exp(∫ω)`
+(`path_transport_exp_logDeriv` — no zero appears, no phase slips), hence IS a real modulus
+times a unimodular phase with phase advance `∫ Im ω` (`polar_presentation_of_logDeriv`).
+Applied to the envelope on a vertical edge: `archFactor_lateral_polar`, with phase advance
+exactly the lateral winding phase `stripWindingPhase σ a τ ≥ (b−a)·stripFloor σ a`.
+
+**The firing.** `exists_bandEvent_of_long_lateral_edge`: on a lateral edge at abscissa
+`0 < σ ≤ 1`, height `a ≥ 12`, of length at least `(π + C₁ + C_D)/stripFloor σ a`, a
+real-ratio member of the anchored pencil `(P̂, completedGN)` is forced to vanish — the
+transversal band-edge event of §4, produced by winding. Every archimedean quantity is
+explicit and unconditional. The Euler-tail winding question of §4 is now conditioned on
+exactly two named finite objects, both Dirichlet-side:
+
+1. **C₁** — the anchor's phase advance along the edge (a nonvanishing finite Euler head:
+   its log-derivative is a finite prime sum; its phase budget is a finite estimate);
+2. **C_D** — the Dirichlet part `gN`'s phase budget on the edge (equivalently a polar
+   presentation of `gN` there — supplied by the same banked polar engine wherever `gN` is
+   edge-nonvanishing, e.g. from the quiet-edge certificate `Im ι ≠ 0` or a mollified
+   nonvanishing window).
+
+**What this opens.** The forcing mechanism (Target 3) is no longer waiting on any
+archimedean estimate. The next object is Dirichlet: a concrete edge-family where `C₁ + C_D`
+grows slower than `(b−a)·log a` — e.g. mollified anchors on windows where the banked
+second-moment/BC budgets already control `log gN` — which would make forced band events
+unconditional on those edges and feed the mirror-reduced single event class of Target 2
+into `LedgerFluxPaired` with events supplied, not hypothesized.

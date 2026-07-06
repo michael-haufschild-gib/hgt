@@ -456,3 +456,65 @@ interval] → `intervalIntegral_tsum` (✓) → per-mode weighted vdC (✓) → 
 connective links are the `m`-summation of the per-interval IBPs and the periodic-`B₂` Fourier expansion
 (mathlib supplies it on the circle `𝕌`; the circle→interval bridge is the last piece). Every analytic
 estimate and both the interchange and mode-sum are banked; the residual is these two connective steps.
+
+---
+
+## Addendum 10: the m-summation link banked — one connective link left
+
+**[PROVED HERE, Lean]** `RHTower/SawtoothSum.lean : sawtooth_ibp_sum` (axiom-clean, umbrella green):
+chaining `sawtooth_ibp_unit` across `[m,m+1]` for `m = 1…N−1` (via `sum_integral_adjacent_intervals`
+and the a.e. identity `Int.fract x = x − m` on each unit interval — `fract_ae_sub`) gives, over `[1,N]`:
+`∫_1^N ({x}−½)·x^(−s−1) = −∫_1^N (({x}²−{x})/2)·(−s−1)x^(−s−2)`.
+The right side carries the continuous, absolutely Fourier-summable periodic `B₂` kernel `({x}²−{x})/2`.
+
+**End-to-end chain — one link remaining.** `finite_em_identity` (✓) → per-interval IBP `B₁→B₂`
+(`sawtooth_ibp_unit` ✓) → **m-summation** (`sawtooth_ibp_sum` ✓, this addendum) → [`B₂` Fourier
+expansion on the interval — the circle→interval bridge] → `intervalIntegral_tsum` (✓) → per-mode
+weighted vdC (✓) → mode-sum (✓). The sole remaining link is the periodic-`B₂` Fourier expansion:
+expressing `({x}²−{x})/2 = Σ_m c_m e(mx)` (`c_m ~ 1/m²`) as a `∑'` over the real interval, from
+mathlib's circle version `hasSum_one_div_pow_mul_fourier_mul_bernoulliFun` (on `𝕌`, `k=2`). Every other
+link — all analytic estimates, the interchange, the mode-sum, and now both the per-interval IBP and its
+m-summation — is banked and axiom-clean.
+
+---
+
+## Addendum 11: the B₂ Fourier circle→interval bridge banked — core of every link now formalized
+
+**[PROVED HERE, Lean]** `RHTower/BernoulliFourierBridge.lean : fourier_hasSum_bernoulli2` (axiom-clean,
+umbrella green): for every real `x`,
+`∑_n (1/n²)·e(nx) = 2π²·({x}² − {x} + 1/6)`,
+lifting mathlib's circle expansion `hasSum_one_div_pow_mul_fourier_mul_bernoulliFun` (`𝕌`, `k=2`) to
+the real line by the periodicity `↑x = ↑(Int.fract x)` (`AddCircle.coe_fract`) and `bernoulliFun_two`.
+The `1/n²` coefficients are absolutely summable — exactly what `intervalIntegral_tsum` consumes.
+
+**Every named link now has its core banked** (9 files this session):
+`finite_em_identity` (tree) · per-interval IBP `B₁→B₂` (`sawtooth_ibp_unit`) · `m`-summation
+(`sawtooth_ibp_sum`) · **`B₂` Fourier bridge** (`fourier_hasSum_bernoulli2`) · interchange
+(`intervalIntegral_tsum`) · per-mode van der Corput (first/second/weighted) · mode-sum
+(`summable_and_norm_tsum_le_of_inv_sq_bound`). The residual is mechanical gluing — rearranging the
+bridge `hasSum` to the `∑'` form `({x}²−{x})/2 = −1/12 + ∑_n c_n e(nx)`, applying the interchange with
+the `∑ ∫⁻‖·‖ ≠ ⊤` check (immediate from the `1/n²` decay), rewriting `fourier n ↑x = exp(2πinx)`
+(`fourier_coe_apply`) for the per-mode integrals, and one further analytic brick: the **weighted
+second-derivative** van der Corput for the `O(1/n)`-fraction of saddle modes (phase `2πnx + τ log x`
+has a stationary point when `n ≈ −τ/(2πx)`; the weighted-first covers the rest). With that brick and
+the gluing, the reflected-block bound closes; all its analytic inputs but the weighted-second are
+banked and axiom-clean.
+
+---
+
+## Addendum 12: the weighted second-derivative test (convex one-sided) banked
+
+**[PROVED HERE, Lean]** `RHTower/VanDerCorputWeightedSecond.lean :
+norm_integral_weight_cexp_secondDeriv_oneside` (axiom-clean, umbrella green): for `w` antitone
+nonnegative and a phase with `g'' ≥ λ > 0`, `g' ≥ 0`, `‖∫_a^b w·exp(i·g)‖ ≤ 5·w(a)/√λ`, length-uniform
+across the stationary point. Proof: the stationary-point split carried through the weight — the trivial
+bound `∫ w ≤ w(a)·length` in the short window where `g'` is small, the banked weighted first-derivative
+test `norm_integral_weight_cexp_le` where `g' ≥ √λ`, balanced at `w(a)/√λ`.
+
+This is the convex, one-sided core of the last analytic brick. Remaining to the fully general
+weighted-second (both `g'` signs, needed as the saddle-mode phase `2πnx + τ log x` crosses zero): the
+concave companion (`g'' ≤ −λ`, via conjugation) and the negative-derivative outer piece (a weighted
+first-derivative test with `g'' ≤ 0`) — mechanical sign-mirrors of banked lemmas. Ten van der Corput /
+sawtooth files now carry every core estimate of the Riemann–Siegel reflected-block bound; the residual
+is the sign-mirror analytic variants plus the mode-expansion glue (hasSum→`∑'`, interchange, per-mode
+instantiation, mode-sum).
