@@ -274,6 +274,7 @@ import GaloisForLFunctions.RHTower.ZetaDominationTransfer
 import GaloisForLFunctions.RHTower.EMAnnulusSupply
 import GaloisForLFunctions.RHTower.SymmetrizedEMCarrier
 import GaloisForLFunctions.RHTower.FiniteMemberSteering
+import GaloisForLFunctions.RHTower.DefectSteering
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity
