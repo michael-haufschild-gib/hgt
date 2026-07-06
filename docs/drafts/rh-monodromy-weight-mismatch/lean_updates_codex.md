@@ -301,3 +301,49 @@ remaining half of the spacing law is an argument-variation bound for the carrier
 (Borel–Carathéodory grade, using the Jensen-face zero budget): together they will force
 `sign-change spacing ≲ 2π/windingRate-floor` inside any face-satisfying disc — the explicit
 `rz(T) ≲ 1/log T` scale at which any (R1) anchor supplier must certify its floor.
+
+## formal/GaloisForLFunctions/RHTower/ArgumentVariation.lean (new)
+
+The Borel–Carathéodory argument-variation brick — the second half of the anchor-disc
+coupling law.  `borel_caratheodory`: for analytic `g` on `ball c R` with `Re g ≤ A`,
+`‖g z − g c‖ ≤ 2‖z−c‖/(R−‖z−c‖)·(A − Re g(c))` (Schwarz–Pick applied to the Möbius
+transport of the half-plane into the unit disc).  `exists_analyticOnNhd_exp_eq_ball`:
+analytic logarithm of a zero-free analytic function on a disc (continuous branch on the
+simply connected disc + the tree's analytic upgrade).  Integrality gluing:
+`im_eq_int_mul_two_pi_of_exp_pos` (exp = positive real ⟹ Im ∈ 2πℤ) and
+`continuousOn_int_mul_two_pi_const` (continuous 2πℤ-valued on an interval is constant).
+Capstone `abs_windingPhase_le_of_sign_constant_zero_free`: on a sign-constant line segment
+inside a zero-free disc with modulus data `(M, ‖g_N(center)‖)`,
+`|Θ(b) − Θ(a)| ≤ (BC(a) + BC(b))·log(M/‖g_N(center)‖)` — the winding-phase advance is
+capped by the carrier's Borel–Carathéodory budget.
+
+Big picture: the two halves of the quantitative coupling law now exist as theorems.  The
+phase lock (WindingRigidity) forces the winding phase to advance at rate ≥ the banked floor
+`≈ ½log(T/2π)` on every sign-constant stretch; this module caps that same advance by the
+carrier's modulus-ratio budget, a height-free constant once the Jensen-type faces fix
+`M/m`.  Chaining them: sign-constant length × ½log(T/2π) ≤ BC budget — the explicit
+`rz(T) ≲ 1/log T` law.  The one wiring step left is the substitution of `windingRate_ge`
+into `windingPhase a b ≥ (b−a)·floor` (integral monotonicity), which turns the capstone
+into the closed-form segment-length bound consumed directly by the residual gate's
+geometry faces.
+
+## formal/GaloisForLFunctions/RHTower/ArgumentVariation.lean (completed) + WindingFloor.lean (lemma moved in)
+
+The coupling law closed in explicit form.  `windingPhase_ge_of_floor`: the winding phase
+advances at least `(b−a)·floor(a)` (integral monotonicity over the banked pointwise floor;
+`winding_floor_expr_mono` relocated from ResidualFaces to WindingFloor, its proper layer).
+Capstone `sign_constant_segment_length_le`: on a zero-free carrier disc with modulus data
+`(M, ‖g_N(center)‖)`, every sign-constant line segment satisfies
+
+  b − a ≤ (BC(a) + BC(b)) · log(M/‖g_N(center)‖) / windingFloor(a),
+
+with every quantity a closed formula.  At height `T` the floor is `≈ ½log(T/2π)` and the
+BC prefactors and modulus ratio are fixed by the certificate's radii and Jensen-type faces:
+sign-constant stretches — hence the admissible anchor radii of the residual gate — shrink
+like `1/log T`.
+
+Big picture: the anchor-disc coupling law announced qualitatively by AnchorZeroBudget is
+now a quantitative theorem chain: phase lock (WindingRigidity) + argument-variation cap
+(Borel–Carathéodory) + winding floor = the explicit `rz(T) ≲ 1/log T` scale carried by the
+gate itself.  Any (R1) anchor supplier now has its working scale as a formula, and the
+residual gate's geometry faces can be pre-screened against it at any proposed height.

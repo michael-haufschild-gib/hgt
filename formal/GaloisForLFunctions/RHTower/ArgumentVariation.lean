@@ -227,3 +227,172 @@ theorem continuousOn_int_mul_two_pi_const {F : ℝ → ℝ} {a b : ℝ} (hab : a
     omega
 
 end RHTower
+
+namespace RHTower
+
+theorem norm_linePt_sub (s t : ℝ) : ‖linePt s - linePt t‖ = |s - t| := by
+  have h : linePt s - linePt t = ((s - t : ℝ) : ℂ) * Complex.I := by
+    unfold linePt
+    push_cast
+    ring
+  rw [h, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+
+/-- **The winding-phase advance is capped by the carrier's Borel–Carathéodory budget.**
+On a line segment where the completed carrier keeps positive sign, inside a disc where the
+finite carrier is zero-free with modulus at most `M` and center modulus strictly below `M`,
+the winding-phase advance satisfies
+`|Θ(b) − Θ(a)| ≤ (BC(a) + BC(b))·log(M/‖g_N(center)‖)` with the explicit
+Borel–Carathéodory prefactors: the phase the archimedean winding spends on the segment is
+paid for by the carrier's modulus ratio.  Since the winding rate has an explicit positive
+floor at large heights, sign-constant stretches cannot outlive this budget. -/
+theorem abs_windingPhase_le_of_sign_constant_zero_free (N : ℕ)
+    {τc a b R M : ℝ} (hR0 : 0 < R)
+    (hball : ∀ z ∈ ball (linePt τc) R, z.re < 1)
+    (hzf : ∀ z ∈ ball (linePt τc) R, gN N z ≠ 0)
+    (hM : ∀ z ∈ ball (linePt τc) R, ‖gN N z‖ ≤ M)
+    (hlt : ‖gN N (linePt τc)‖ < M)
+    (hab : a ≤ b)
+    (hseg : ∀ τ ∈ Set.Icc a b, linePt τ ∈ ball (linePt τc) R)
+    (hpos : ∀ τ ∈ Set.Icc a b, 0 < (completedGN N (linePt τ)).re) :
+    |windingPhase a b| ≤
+      (2 * |a - τc| / (R - |a - τc|) + 2 * |b - τc| / (R - |b - τc|)) *
+        (Real.log M - Real.log ‖gN N (linePt τc)‖) := by
+  set c : ℂ := linePt τc with hc_def
+  have hGan : AnalyticOnNhd ℂ (gN N) (ball c R) := by
+    intro z hz
+    exact gN_analyticAt (Gammaℝ_ne_zero_of_re_pos (by
+      rw [Complex.sub_re, Complex.one_re]
+      linarith [hball z hz]))
+  obtain ⟨f, hfan, hfeq⟩ := exists_analyticOnNhd_exp_eq_ball hR0 hGan hzf
+  have hfre : ∀ z ∈ ball c R, (f z).re = Real.log ‖gN N z‖ := by
+    intro z hz
+    rw [← hfeq z hz, Complex.norm_exp, Real.log_exp]
+  have hcmem : c ∈ ball c R := mem_ball_self hR0
+  have hfdiff : DifferentiableOn ℂ f (ball c R) :=
+    fun z hz => (hfan z hz).differentiableAt.differentiableWithinAt
+  have hRe : ∀ z ∈ ball c R, (f z).re ≤ Real.log M := by
+    intro z hz
+    rw [hfre z hz]
+    exact Real.log_le_log (norm_pos_iff.mpr (hzf z hz)) (hM z hz)
+  have hAc : (f c).re < Real.log M := by
+    rw [hfre c hcmem]
+    exact Real.log_lt_log (norm_pos_iff.mpr (hzf c hcmem)) hlt
+  -- the integrality gluing
+  set w₀ : ℂ := Complex.log (archFactor (linePt a)) with hw₀_def
+  have hw₀ : Complex.exp w₀ = archFactor (linePt a) :=
+    Complex.exp_log (archFactor_linePt_ne_zero a)
+  set F : ℝ → ℝ := fun τ => w₀.im + windingPhase a τ + (f (linePt τ)).im with hF_def
+  have hray := carrier_ray_of_sign_constant N (γ := a) hpos
+  have hFint : ∀ τ ∈ Set.Icc a b, ∃ n : ℤ, F τ = n * (2 * Real.pi) := by
+    intro τ hτ
+    obtain ⟨r, hr0, hr⟩ := hray τ hτ
+    have hGexp : gN N (linePt τ) = Complex.exp (f (linePt τ)) :=
+      (hfeq (linePt τ) (hseg τ hτ)).symm
+    have hexp : Complex.exp (w₀ + Complex.I * ((windingPhase a τ : ℝ) : ℂ) +
+        f (linePt τ)) = (r : ℂ) := by
+      rw [Complex.exp_add, Complex.exp_add, hw₀, ← hGexp]
+      linear_combination hr
+    obtain ⟨n, hn⟩ := im_eq_int_mul_two_pi_of_exp_pos hr0 hexp
+    refine ⟨n, ?_⟩
+    have him : (w₀ + Complex.I * ((windingPhase a τ : ℝ) : ℂ) + f (linePt τ)).im =
+        F τ := by
+      simp [F, Complex.add_im, Complex.mul_im]
+    rw [← him, hn]
+  have hlinecont : Continuous fun τ : ℝ => linePt τ := by
+    rw [continuous_iff_continuousAt]
+    intro u
+    exact (hasDerivAt_linePt u).continuousAt
+  have hΘcont : Continuous (windingPhase a) := by
+    rw [continuous_iff_continuousAt]
+    intro u
+    exact (hasDerivAt_windingPhase a u).continuousAt
+  have hFcont : ContinuousOn F (Set.Icc a b) := by
+    apply ContinuousOn.add
+    · exact (continuousOn_const.add hΘcont.continuousOn)
+    · exact Complex.continuous_im.comp_continuousOn
+        (hfan.continuousOn.comp hlinecont.continuousOn (fun τ hτ => hseg τ hτ))
+  have hFconst := continuousOn_int_mul_two_pi_const hab hFcont hFint
+  have hFb := hFconst b (Set.right_mem_Icc.mpr hab)
+  have hΘa : windingPhase a a = 0 := intervalIntegral.integral_same
+  have hkey : windingPhase a b = (f (linePt a)).im - (f (linePt b)).im := by
+    simp only [F] at hFb
+    rw [hΘa] at hFb
+    linarith
+  -- Borel–Carathéodory at the two endpoints
+  have hamem : linePt a ∈ ball c R := hseg a (Set.left_mem_Icc.mpr hab)
+  have hbmem : linePt b ∈ ball c R := hseg b (Set.right_mem_Icc.mpr hab)
+  have hbca := borel_caratheodory hfdiff hRe hAc hamem
+  have hbcb := borel_caratheodory hfdiff hRe hAc hbmem
+  rw [norm_linePt_sub] at hbca hbcb
+  have hfcre : (f c).re = Real.log ‖gN N (linePt τc)‖ := by
+    rw [hfre c hcmem, hc_def]
+  rw [hfcre] at hbca hbcb
+  have htri : |windingPhase a b| ≤ ‖f (linePt a) - f c‖ + ‖f (linePt b) - f c‖ := by
+    rw [hkey]
+    have h1 : (f (linePt a)).im - (f (linePt b)).im =
+        ((f (linePt a) - f c) - (f (linePt b) - f c)).im := by
+      simp [Complex.sub_im]
+    rw [h1]
+    calc |((f (linePt a) - f c) - (f (linePt b) - f c)).im|
+        ≤ ‖(f (linePt a) - f c) - (f (linePt b) - f c)‖ :=
+          Complex.abs_im_le_norm _
+      _ ≤ ‖f (linePt a) - f c‖ + ‖f (linePt b) - f c‖ := norm_sub_le _ _
+  calc |windingPhase a b|
+      ≤ ‖f (linePt a) - f c‖ + ‖f (linePt b) - f c‖ := htri
+    _ ≤ 2 * |a - τc| / (R - |a - τc|) * (Real.log M - Real.log ‖gN N (linePt τc)‖) +
+        2 * |b - τc| / (R - |b - τc|) * (Real.log M - Real.log ‖gN N (linePt τc)‖) :=
+        add_le_add hbca hbcb
+    _ = (2 * |a - τc| / (R - |a - τc|) + 2 * |b - τc| / (R - |b - τc|)) *
+        (Real.log M - Real.log ‖gN N (linePt τc)‖) := by ring
+
+end RHTower
+
+namespace RHTower
+
+/-- The winding phase advances at least at the winding floor of the left endpoint. -/
+theorem windingPhase_ge_of_floor {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) ≤
+      windingPhase a b := by
+  have hlow : ∀ u ∈ Set.Icc a b,
+      (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2 ≤ windingRate u := by
+    intro u hu
+    have hu0 : 0 < u := lt_of_lt_of_le ha hu.1
+    exact le_trans (winding_floor_expr_mono ha hu.1) (windingRate_ge hu0)
+  calc (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+      = ∫ _ in a..b, (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2 := by
+        rw [intervalIntegral.integral_const, smul_eq_mul]
+    _ ≤ ∫ u in a..b, windingRate u :=
+        intervalIntegral.integral_mono_on hab intervalIntegrable_const
+          (continuous_windingRate.intervalIntegrable a b) hlow
+    _ = windingPhase a b := rfl
+
+/-- **The explicit segment-length law.**  A sign-constant line segment of a zero-free
+carrier disc has length at most the Borel–Carathéodory budget divided by the winding floor
+of its left endpoint: at height `T` the floor is `≈ ½·log(T/2π)`, so sign-constant
+stretches — and with them the admissible anchor radii of the window certificates — shrink
+like `1/log T`. -/
+theorem sign_constant_segment_length_le (N : ℕ)
+    {τc a b R M : ℝ} (hR0 : 0 < R) (ha : 0 < a)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hball : ∀ z ∈ ball (linePt τc) R, z.re < 1)
+    (hzf : ∀ z ∈ ball (linePt τc) R, gN N z ≠ 0)
+    (hM : ∀ z ∈ ball (linePt τc) R, ‖gN N z‖ ≤ M)
+    (hlt : ‖gN N (linePt τc)‖ < M)
+    (hab : a ≤ b)
+    (hseg : ∀ τ ∈ Set.Icc a b, linePt τ ∈ ball (linePt τc) R)
+    (hpos : ∀ τ ∈ Set.Icc a b, 0 < (completedGN N (linePt τ)).re) :
+    b - a ≤
+      (2 * |a - τc| / (R - |a - τc|) + 2 * |b - τc| / (R - |b - τc|)) *
+          (Real.log M - Real.log ‖gN N (linePt τc)‖) /
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2) := by
+  have h1 := windingPhase_ge_of_floor ha hab
+  have h2 := abs_windingPhase_le_of_sign_constant_zero_free N hR0 hball hzf hM hlt
+    hab hseg hpos
+  have h3 : windingPhase a b ≤ |windingPhase a b| := le_abs_self _
+  rw [le_div_iff₀ hflr]
+  calc (b - a) * ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+      ≤ windingPhase a b := h1
+    _ ≤ |windingPhase a b| := h3
+    _ ≤ _ := h2
+
+end RHTower

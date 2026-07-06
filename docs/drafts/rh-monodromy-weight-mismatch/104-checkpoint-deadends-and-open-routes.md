@@ -180,3 +180,57 @@ are hereby struck; the remaining ranked targets are (SMOOTH-LOW) composition, th
 identity, and the designed-carrier anchor — now sharpened by the anchor-disc coupling laws
 (`AnchorZeroBudget.lean`, `WindingRigidity.lean`): any (R1) supplier must certify at radii
 below the carrier's sign-change spacing, whose rate floor is the banked winding floor.
+
+---
+
+## Addendum 3: (R7) located — the AFE reflected block is the sole irreducible core
+
+**[REDUCTION, Lean]** `RHTower/EMRemainderReduction.lean` (axiom-clean, in the umbrella).
+The face **(R7)** — carrier-closeness `‖emCarrier M z − gN N z‖ ≤ δ` on window spheres — is now
+pinned to a single classical object, not left as opaque "R–S debt".
+
+- **Exact remainder identity** (`zeta_sub_gN_eq`, needs only the Euler–Maclaurin representation of
+  ζ at depth `N`, *no* functional equation):
+  `ζ z − gN N z = emPole N z − z·emTail N z − zetaChi z · dirichletPoly N (1 − z)`.
+- **Tight reduction** (`norm_emCarrier_sub_gN_le_afe`):
+  `‖emCarrier M z − gN N z‖ ≤ ‖z‖·M^(−re z)/re z + ‖ζ z − gN N z‖`.
+  So the whole of (R7) beyond the elementary EM remainder `ε₁` is the **approximate
+  functional-equation remainder** `‖ζ − gN N‖`. Equivalence is two-sided: this is the converse of
+  `EMCarrier.afeAccurateOn_of_emCarrier_close` (closeness ⟺ AFE accuracy up to `ε₁`), packaged as
+  `emCarrier_gN_close_on_of_afe` (an AFE budget supplies the (R7) face directly).
+
+- **Where the smallness lives, exactly.** Of the three exact terms, `emPole N z = N^(1−z)/(z−1)` and
+  the EM tail `z·emTail N z` are elementarily `o(1)` at the matched depth. The **reflected Dirichlet
+  block** `zetaChi z · dirichletPoly N(1−z) = χ(z)·Σ_{n≤N} n^(z−1)` is the only oscillatory term. For
+  `z = ½+it` and `N ≈ √(t/2π)` its phase `t·log n` has derivative `t/n ∈ [√t, t] ≫ 1` across the whole
+  block, so its `O(t^{−1/4})` size is exactly **van der Corput first-derivative cancellation** — i.e.
+  the Hardy–Littlewood approximate functional equation / Riemann–Siegel formula. `‖χ‖ = 1` on the line
+  (`zetaChi_norm_on_line`) contributes nothing; the cancellation is entirely in the sum.
+
+- **Why no elementary bound closes it** (and why the existing tree bound is not enough). The banked
+  `EMCarrier.emCarrier_gN_norm_le_of_components` splits `emCarrier M − gN N` into its three visible
+  pieces and bounds each **termwise**: `δD ~ Σ_{N<n≤M} n^(−(½−RJ))`, `δP ~ M^(½+RJ)`,
+  `δχ ~ Σ_{n≤N} n^(−(½−RJ))` — each polynomial in the height, so `δ` is polynomially large, never the
+  `o(1)` the certificate's outer budget (R6) demands. The identity above shows *why*: the summand
+  `n^(z−1)` itself oscillates at frequency `t`, so termwise, Abel-summation, and first-order
+  Euler–Maclaurin bounds all reproduce the polynomial size — the gain is only from `n^(it)`
+  cancellation, which those methods discard. This is a structural fact about the object, not a missing
+  trick.
+
+- **Classification.** (R7) with a certificate-closing `δ` is **not dead** — it is a true classical
+  theorem (the AFE, `O(t^{−1/4})`). It is **not dischargeable by the tree's elementary machinery** —
+  its core is the reflected-block exponential-sum cancellation, whose foundations (van der Corput
+  first-derivative test / stationary-phase integral bound) are absent from mathlib.
+
+- **The lane this opens.** The one missing mathlib-grade foundation, now named and isolated: the
+  first-derivative exponential-integral bound `|∫_a^b e^{i g}| ≤ 2/λ` for `|g'| ≥ λ` with `1/g'`
+  monotone, then summation-by-parts to `Σ_{n≤N} n^{z−1}`, then disc-uniformisation to the window
+  spheres against the (R6) budget. Every other (R7) input is now an elementary consequence of the
+  banked reduction. This is the entry point for the reflected-block program — the sole analytic
+  input the whole window-certificate route still asks of the world at Rung level, made precise.
+
+**Lean anchor for the isolation.** `EMRemainderReduction.emCarrier_gN_close_on_of_reflected_budget`:
+on any set, `‖emCarrier M z − gN N z‖ ≤ ε₁ + (δP + δT + Rχ)` where `ε₁` is the depth-`M` EM remainder,
+`δP`/`δT` the depth-`N` pole/tail budgets (all elementary), and `Rχ` any bound on
+`‖zetaChi z · dirichletPoly N (1 − z)‖`. So the (R7) face is a proven consequence of one reflected-block
+budget `Rχ`; supplying `Rχ = O(t^{−1/4})` (the van der Corput input above) discharges it outright.

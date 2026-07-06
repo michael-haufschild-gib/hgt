@@ -117,3 +117,21 @@ theorem norm_integral_archFactor_line_le_explicit
     (windingRate_uIcc_floor hα hαβ) hM₀ hMim hMp
 
 end RHTower
+
+namespace RHTower
+
+/-- The winding-floor expression is monotone in the height. -/
+theorem winding_floor_expr_mono {α α' : ℝ} (h0 : 0 < α) (hαα' : α ≤ α') :
+    (Real.log (α / (2 * Real.pi)) - (4 / α ^ 2 + Real.pi / α)) / 2 ≤
+      (Real.log (α' / (2 * Real.pi)) - (4 / α' ^ 2 + Real.pi / α')) / 2 := by
+  have h0' : 0 < α' := lt_of_lt_of_le h0 hαα'
+  have hlog : Real.log (α / (2 * Real.pi)) ≤ Real.log (α' / (2 * Real.pi)) :=
+    Real.log_le_log (by positivity)
+      (div_le_div₀ h0'.le hαα' (by positivity) le_rfl)
+  have h4 : 4 / α' ^ 2 ≤ 4 / α ^ 2 :=
+    div_le_div₀ (by norm_num) le_rfl (by positivity) (by nlinarith)
+  have hπ : Real.pi / α' ≤ Real.pi / α :=
+    div_le_div₀ Real.pi_pos.le le_rfl h0 hαα'
+  linarith
+
+end RHTower
