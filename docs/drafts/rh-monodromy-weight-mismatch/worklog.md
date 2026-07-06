@@ -5541,3 +5541,180 @@ rigidity locus.
 **Opened (doc 101 §4).** (a) equal-order value T↦d (locally-constant int profile on the locus, d=0 =
 all-odd window); (b) defect variance ∑(filtrationLength − meanVal)² (second moment, vanishing =
 equal-order, quantitative valuation-rigidity, transport-shadowable).
+
+## cont.60 — ξ-drift foundation: energy W is CONVEX on the gap [Lean, axiom-clean]
+
+LegStripConvex.lean, 4 theorems axiom-clean, lint clean, umbrella green:
+- rcsch_sq_convexOn (rcsch² convex on [a,∞), a>0, via deriv −2rphi monotone from rphi antitone),
+- rphi_neg (rphi odd), rphi_antitoneOn_Iio (rphi antitone on Iio 0 by oddness),
+- spurLatticeEnergy_convexOn: W=¼Σrcsch²((x−t_k)/2) CONVEX on pole-free gap (a,b). W′=−¼Σrphi((x−t_k)/2)
+  monotone: behind poles arg∈Ioi 0, ahead arg∈Iio 0, rphi antitone on each. Uses spurLatticeEnergy_hasDerivAt.
+Structural foundation for ξ-drift W(ξ)/W(m)→1: W convex ⟹ slowly varying near its min where x* and m both sit.
+Ledger §23 has the NO-CIRCULARITY 5-step closure plan: (1) uniform lower bound W(ξ)≥½rcsch²(δ/4)~i² from
+two nearest poles (convexity min at midpoint); (2) centering |½−θ*|=g/(W(ξ)δ)≤g/(c₀i²δ)→0 [only lower
+bound, no circularity]; (3) |ξ−m|≤|x*−m|=|½−θ*|δ=o(δ); (4) upper |W′|≲i³ on central sub-gap ⟹
+W(ξ)−W(m)≲i³·o(δ)=o(i²)=o(W(m)); (5) W(ξ)/W(m)→1. Steps 1,4 = quantitative csch²/rphi bounds on
+rphi_le_exp/rphi_ge_cubic/rcsch_sq_le_exp (all built). Next brick.
+This arc (6 files): LegStripShellEM/ShellRate/FarTail/Crossover/Convex + rcsch_sq_le_exp. 19 thms axiom-clean.
+
+## cont. — (SMOOTH-LOW) single-phase harmonic engine [Lean, axiom-clean; doc 103]
+
+Located the honest open edge of the (SMOOTH-LOW) substrate: the tree only had the ISOLATED
+bare phase (arc_sublevel, one prime p>N/2) and the LINEAR four-phase caustic
+(RouteBFullSupport) — both need isolation. But the packet's mass is on SMALL primes (doc 86
+§6, M_q≈e^{−γ}/2q), where X_p is non-isolated and the conditioned packet is a POLYNOMIAL in
+the single phase (harmonics e^{ikθ}, K=⌊log_p N⌋). No brick existed for it. Built it.
+
+New module `RouteBSinglePhase.lean` (6 endpoints, [propext, Classical.choice, Quot.sound]):
+- `root_arc_measure`: {θ∈[0,2π]:‖e^{iθ}−z‖≤s} ≤ 2π√(2s), UNIFORM in z (case s>½: total 2π;
+  case s≤½: reverse-triangle forces ‖z‖≥1−s≥½, then radial_band_measure).
+- `exists_factor_le`: ∏ of n nonnegs ≤ M ⟹ some factor ≤ M^{1/n} (strict-product contra).
+- `prod_circle_sublevel` (root form) + `poly_circle_sublevel` (coefficient form): degree-n
+  single-phase sublevel ≤ n·2π·√(2·(r/‖leadC‖)^{1/n}) — doc 86 §5's degeneration object as a
+  THEOREM (single phase ⟹ genuine power law r^{1/n}, never a delta, never r²). Factorization
+  via C_leadingCoeff_mul_prod_multiset_X_sub_C + Multiset.toEnumFinset.
+- `poly_circle_sublevel_shift`: ‖w+p(e^{iθ})‖≤r has the SAME bound (p+C w keeps deg &
+  leadingCoeff via natDegree_add_C + coeff_C) — shift-uniformity = the conditioning input.
+- `two_single_phase_sublevel`: (vol×vol){‖c+Q(e^{iφ})+P(e^{iθ})‖≤r} ≤ 2π·[P's bound] (Fubini
+  + shift-uniform absorb of the outer phase). The conditioning spine for non-isolated primes.
+
+Verify: `lake build RHTower MainTheorems` EXIT 0 (9157 jobs); 6 capstones axiom-clean; index
+regenerated; `formal lint passed`.
+
+Frontier (doc 103 §4, sharpened): exponent 1/n DEGRADES with harmonic depth (n=log_p N for
+the real carrier), so a single non-isolated prime gives only r^{1/log N} — this is doc 86 §5's
+1D-degeneration falsifier made quantitative. (CHAOS-DENS) is now exactly the GAP between the
+single-phase floor r^{1/n} and the target r²; closing it = spreading mass over the M_q≈c/q
+independent directions (Esseen/Lindeberg over the block X_q). The shift-uniform bound is the
+per-phase input that assembly sums. Two-phase composition gives NO exponent improvement with a
+shift-uniform bound (verified: the outer integral of a constant is 2π×const) — the r² rate
+genuinely needs the 2D transversal-intersection Jacobian (the caustic averaging), not the
+conditioning min. Lean gotchas banked: IsAlgClosed.card_roots_eq_natDegree takes p implicit
+(use (p:=p)); Multiset.map_toEnumFinset_fst recovers m from the enumerated first projections;
+Real.rpow_natCast+rpow_mul+inv_mul_cancel₀ for (M^{1/n})^n=M.
+
+## cont.61 — PIVOT off retired (S-mono) leg-strip → (XLD) / value-independence (Michael-directed 2026-07-06)
+
+Michael flagged the leg-strip/edge-law/adiabatic-ledger grind as a rabbit hole. Diagnosis
+CONFIRMED both axes: (a) dead — `spurLatticeEnergy W=¼Σrcsch²` IS the (S-mono) object, and doc 79
+(Jul 5) retired SPUR-R/(S-mono) as a dominated non-load-bearing instrument (counting side of #130
+now Rouché+EM; true core = (XLD)); (b) flow not constraint — crossover-G/adiabatic = FSS/RG flow.
+STOP extending leg-strip; proved edge law stands as a self-contained lattice note. Namesake also
+refuted (doc 90); real core = RHLadder k.
+
+Pivot to **(XLD)** (Michael pick). Deep recon: (XLD)'s value-independence recast REDUCES to the
+tree's known principal wall (LogIndependence.lean, docs 09/10); universality is provably blind on
+the ζ-line (doc 10 Thm B). Genuine frontier is PAST the wall — doc 10 §7.1 (jet-direction control)
++ §7.3 (rank–codimension law, `one relation = one lost steering dimension`, proved only as a
+2-frequency miniature; general law OPEN). rng seed 1626633662448013555, move=change-representation.
+
+BANKED this cycle:
+- **doc 102** — the rank–codimension law, finite case PROVED: dim(closure of value-orbit of
+  S⊂ℤ≥2) = rank of the prime-exponent matrix = |S|−rank(mult. relation module). General finite
+  form of doc 10 §7.3's miniature; Pontryagin annihilator + FTA (R=ker E). Attack-as-false passed;
+  connection to (XLD) [static constraint-skeleton; ζ prime-basis R=0 ⟹ full orbit = sub-criticality
+  constraint form; off-line zero = imposed relation = super-critical pin]. Honest boundary: infinite
+  case + jet-direction refinement stay open; finite static half does NOT alone discriminate ζ/D–H.
+- **ValueOrbit.lean** (NEW, axiom-clean [propext, Classical.choice, Quot.sound], umbrella green,
+  lint pass): `log_relation_of_mul_relation` (∏n^k=1 ⟹ Σk·log n=0) + `orbit_on_relation_subtorus`
+  (single-relation orbit containment: ∏(n^{−it})^{k}=1, generalising the {2,4}→(z,z²) witness to
+  any finite integer set and any relation — doc 102 §5 item 2). Uses Complex.exp_int_mul + exp_sum
+  + Real.log_zpow/log_prod.
+
+Next (doc 102 §5): full finite Kronecker closure (dim = rank E) via n-torus annihilator (missing
+mathlib → build); then the OPEN heads — infinite-frequency law + jet-direction (§7.1) = the crux
+universality cannot see. Do NOT resume ξ-drift/input-#1/#2 (retired). Never touch codex RouteB*.
+
+---
+
+2026-07-06 — Checkpoint written: doc 104 (`104-checkpoint-deadends-and-open-routes.md`) — one-page
+orientation map: machine-checked dead ends (weight-mismatch parity, doc 90; sharp MV-anchored
+pinning certificates beyond N=3, ShortWindowNoGo.lean), paper-grade verdicts (Route C-direct doc 82,
+Route B-as-typed doc 85), open routes with named cores (Route A mixture identity, Route B′
+SMOOTH-LOW, window-lane designed-carrier anchor, rung-1 forcing, valuation lane), the route-free
+three-layer formal spine, and five ranked research targets. Formal session ledger for the new
+modules (HardySignChange … CarrierMassFloor, MollifiedCarrier, AnchorSupply, ShortWindowNoGo) is in
+lean_updates_codex.md; indexes regenerated (LEAN_OVERVIEW.md, LEAN_GAPS.md).
+
+## cont. — (SMOOTH-LOW) single-phase engine LANDED on the product model [Lean, axiom-clean; doc 103 §2′]
+
+Carried the single-phase harmonic engine onto the Steinhaus product measure. New module
+`RouteBSinglePhasePi.lean` (2 endpoints + 2 helpers, [propext, Classical.choice, Quot.sound]):
+- `unitPhase_eq`: unitPhase(x)=exp((2πx:ℝ:ℂ)·I) — connects the model phase to the circle exp.
+- `single_phase_interval_le`: ∫_{[0,1]} indicator{‖V+P(unitPhase·)‖≤t} ≤ (2π)⁻¹·singlePhaseConst P t.
+  Angle rescale θ=2πx (map_two_pi_smul) → [0,2π] sublevel measure → poly_circle_sublevel_shift.
+- `pi_single_phase_le`: (Measure.pi){‖g(x)+P(unitPhase(x_q))‖≤t} ≤ (2π)⁻¹·singlePhaseConst P t, for
+  g invariant under coord q, deg P≥1. lmarginal_union(univ\{q},{q}) + lmarginal_insert peels the q
+  coordinate; conditioning freezes g→g(z) (absorbed by shift-uniformity); other coords integrate
+  against probability measures (measure_univ=1). THE model-level reduction: the full multiplicative
+  packet is at least as anti-concentrated as ANY single non-isolated prime's harmonic block,
+  uniform in every other phase.
+
+Verify: `lake build RHTower MainTheorems` EXIT 0 (9160 jobs); both capstones axiom-clean; index
+regenerated; `formal lint passed`.
+
+Ledger (doc 103 §4 table) now: bare-phase r¹ | linear four-phase caustic r²·J | single-non-linear
+r^{1/n} (poly_circle_sublevel) | two-phase conditioning inherits P's | product-model conditioning
+inherits P's (pi_single_phase_le). Frontier unchanged: exponent 1/n degrades with harmonic depth
+(log_p N); the r² target needs SPREAD (many M_q≈c/q independent directions summed by Esseen) — the
+genuine (CHAOS-DENS) core. pi_single_phase_le is the honest per-phase input that Esseen assembly
+consumes. Lean gotchas: lmarginal notation is ∫⋯∫⁻_{q} (bare ident, not ∫⋯∫⁻_{ {q} }); state the
+peeled bound WITHOUT a `fun z =>` wrapper so `intro z` beta-reduces for rw; Function.update_same →
+Function.update_self; lintegral_smul_measure gives c•∫ (add smul_eq_mul).
+
+## cont. — (SMOOTH-LOW) transversal t² engine + frontier de-risked [Lean, axiom-clean; doc 103 §3′/§4]
+
+Built the improvement mechanism that beats the single-phase floor. New module
+`RouteBTransversal.lean` (1 endpoint, [propext, Classical.choice, Quot.sound]):
+- `transversal_smallball`: Φ:ℂ→ℂ injective on measurable region, HasFDerivWithinAt, |det Φ'|≥λ>0 ⟹
+  volume{z∈region : ‖Φ z‖≤t} ≤ π t²/λ. THE genuine t² rate, via mathlib's area formula
+  (lintegral_image_eq_lintegral_abs_det_fderiv_mul): image ⊆ disc(t) (area πt²), Jacobian expands
+  by ≥λ, so preimage ≤ πt²/λ. Constraint (Jacobian floor), not flow.
+Derivation banked (doc 103 §3′): two-phase Φ(θ,φ)=c+Ae^{iθ}+Be^{iφ} has |det Φ'|=|A||B||sin(φ−θ)| —
+transversal off the diagonal. So a transversal pair gives t²; the single phase gives only the floor.
+
+Frontier DE-RISKED (doc 103 §4): recorded that the single-prime composition is VACUOUS (exponent
+1/⌊log_q N⌋ ⟹ bound →∞ not <1, even though the top harmonic coeff is the constant a_{q^k} since q^k is
+the unique max-q-valuation term) — so "compose via best prime" is theatre, DON'T re-attempt. The
+genuine core = the k-phase Esseen/Fourier assembly: small-ball ≤ ∫_{ℝ²}|φ_Z|, φ_Z=∏_q φ_{Z_q}, product
+decay over M_q≈c/q directions ⟹ t²log(2/t). transversal_smallball is the pairwise realization; the
+tree's Bohr moment tower (FloorFailureUnconditional) already reduces density→model small-ball = exactly
+this. Concrete next bricks: (a) two-phase Jacobian |det|=|AB sin(φ−θ)| + injective patch (fire the
+engine on a named pair); (b) Fourier-inversion density ≤ ∫|φ_Z|; (c) per-direction char-function decay.
+
+Verify: `lake build RHTower MainTheorems` EXIT 0 (9162 jobs); axiom-clean; index+lint pass. Three
+route-free (SMOOTH-LOW) engines now banked (doc 104 §4 layer 1): floor r^{1/n}, model landing, transversal
+t². Lean gotchas: Complex.volume_closedBall = (ofReal r)²·↑NNReal.pi (↑NNReal.pi=ofReal π by rfl after
+ofReal_coe_nnreal); ENNReal.mul_le_mul_iff_right (not _left) for cancellation; area formula g=1 needs
+mul_one+setLIntegral_one.
+
+## cont. — (SMOOTH-LOW) transversal engine FIRED on a concrete pair [Lean, axiom-clean; doc 103 §3′]
+
+Made transversal_smallball non-vacuous: it now fires on a named two-phase map. New module
+`RouteBTwoPhaseJacobian.lean` (5 endpoints, [propext, Classical.choice, Quot.sound]):
+- `smulRight_add_det`: det(reCLM.smulRight u + imCLM.smulRight v) = u.re·v.im − u.im·v.re (2×2 det in
+  basisOneI frame via LinearMap.det_toMatrix + Matrix.det_fin_two).
+- `hasFDerivAt_phase_re`/`_im`: Fréchet deriv of A·exp((w.re:ℂ)·I) = reCLM.smulRight(A·I·exp((w.re)·I))
+  (chain rule: (z.re:ℂ)*I = reCLM.smulRight I, then HasFDerivAt.cexp, then const_mul).
+- `hasFDerivAt_twoPhaseMap`: deriv of Φ(w)=c+A e^{i·w.re}+B e^{i·w.im} = twoPhaseDeriv.
+- `twoPhaseDeriv_det`: **det Φ'(w) = A·B·sin(w.im − w.re)** (real A,B) — transversal off the diagonal.
+- `twoPhase_transversal_smallball`: on an injective region with |sin(w.im−w.re)|≥δ,
+  volume{‖Φ‖≤t} ≤ π t²/(|A||B|δ). The t² rate on a named pair.
+
+Verify: `lake build RHTower MainTheorems` EXIT 0 (9164 jobs); axiom-clean; index+lint pass.
+
+FRONTIER after four engines (single-phase floor / model landing / transversal engine / concrete pair):
+the gate closure = the MANY-phase multiplicative-chaos spread (t²·log), and BOTH routes need major
+mathlib-gap builds, now named:
+- Fourier route: small-ball ≤ πt²·(2π)⁻²·∫|φ_F| (φ_F=charFun). mathlib HAS charFun (charFun_apply,
+  CLT, Gaussian) but NOT the Lévy-inversion/bounded-density theorem (integrable charFun ⟹ bounded
+  density) — that is the gap to build; then the per-direction decay |φ_{Z_q}(ξ)|=|J_0(|ξ||a_q|)| needs
+  Bessel J_0 asymptotics (√-decay, stationary phase) — a second gap.
+- Geometric route: twoPhase_transversal_smallball's InjOn discharge on an explicit O(1) fundamental
+  patch (IFT at the ≥δ Jacobian floor, or two-circle-intersection orientation) + the many-phase
+  caustic-covering (small-prime harmonic curves have caustics where P'=0, and x-dependent coeffs).
+Both are genuine frontier research (multiplicative-chaos small-ball, Harper regime). The four engines
+are the route-free composable layer (doc 104 §4 layer 1) they assemble.
+Lean gotchas: ContinuousLinearMap.det via LinearMap.det_toMatrix basisOneI + Matrix.det_fin_two;
+(z.re:ℂ)*I = z.re•I = reCLM.smulRight I (Complex.real_smul); Complex.{cos,sin}_ofReal_{re,im} to
+expand exp_mul_I; HasFDerivAt.congr_fderiv to align the derived CLM with the named twoPhaseDeriv.

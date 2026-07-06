@@ -23,6 +23,7 @@ import GaloisForLFunctions.RHTower.Reflection
 import GaloisForLFunctions.RHTower.DirichletRigidity
 import GaloisForLFunctions.RHTower.LogIndependence
 import GaloisForLFunctions.RHTower.LogIndependenceCompare
+import GaloisForLFunctions.RHTower.ValueOrbit
 import GaloisForLFunctions.RHTower.PerturbationZero
 import GaloisForLFunctions.RHTower.DeckCocycle
 import GaloisForLFunctions.RHTower.DeckMonomial
@@ -144,6 +145,7 @@ import GaloisForLFunctions.RHTower.SteinhausModel
 import GaloisForLFunctions.RHTower.RescaleLimit
 import GaloisForLFunctions.RHTower.RescaleTannery
 import GaloisForLFunctions.RHTower.RouteBSublevel
+import GaloisForLFunctions.RHTower.RouteBSinglePhase
 import GaloisForLFunctions.RHTower.LegComparison
 import GaloisForLFunctions.RHTower.RouteBThreePhase
 import GaloisForLFunctions.RHTower.RouteBCausticShell
@@ -188,6 +190,7 @@ import GaloisForLFunctions.RHTower.LegStripShellEM
 import GaloisForLFunctions.RHTower.LegStripShellRate
 import GaloisForLFunctions.RHTower.LegStripFarTail
 import GaloisForLFunctions.RHTower.LegStripCrossover
+import GaloisForLFunctions.RHTower.LegStripConvex
 import GaloisForLFunctions.RHTower.BohrMomentDensity
 import GaloisForLFunctions.RHTower.WeierstrassMajorant
 import GaloisForLFunctions.RHTower.FloorFailureUnconditional
@@ -200,6 +203,9 @@ import GaloisForLFunctions.RHTower.DpolyBallFloor
 import GaloisForLFunctions.RHTower.RouteBFullSupport
 import GaloisForLFunctions.RHTower.RouteBFullSupportMeasure
 import GaloisForLFunctions.RHTower.RouteBFullSupportDensity
+import GaloisForLFunctions.RHTower.RouteBSinglePhasePi
+import GaloisForLFunctions.RHTower.RouteBTransversal
+import GaloisForLFunctions.RHTower.RouteBTwoPhaseJacobian
 import GaloisForLFunctions.RHTower.CarrierSlope
 import GaloisForLFunctions.RHTower.MinimumModulus
 import GaloisForLFunctions.RHTower.JensenCount
@@ -216,3 +222,10 @@ import GaloisForLFunctions.RHTower.ResonanceClosedForm
 import GaloisForLFunctions.RHTower.EnvelopeDerivBound
 import GaloisForLFunctions.RHTower.CarrierLineSup
 import GaloisForLFunctions.RHTower.CarrierMassFloor
+import GaloisForLFunctions.RHTower.MollifiedCarrier
+import GaloisForLFunctions.RHTower.AnchorSupply
+import GaloisForLFunctions.RHTower.ShortWindowNoGo
+import GaloisForLFunctions.RHTower.ResidualFaces
+import GaloisForLFunctions.RHTower.AnchorZeroBudget
+import GaloisForLFunctions.RHTower.WindingRigidity
+import GaloisForLFunctions.RHTower.ArgumentVariation

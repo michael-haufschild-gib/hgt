@@ -178,3 +178,126 @@ other sign-face input an envelope sup already bounded by a closed-form theorem
 - `RHTower/HardySignChange.lean` and `RHTower/DiscCensus.lean`: cofinalized the window-level integral-ledger route into a direct RH producer, and named/cofinalized the subwindow finite deck-line provider into ladder/RH consumers. Big picture: the two main remaining producer gaps are now exposed as cofinal data interfaces: analytic integral ledgers for `WindowLinePackage` supply, and per-rung subwindow finite completedGN deck-line data for DISC transport through congruences.
 - `RHTower/CarrierMassFloor.lean`: lifted the anchor-mass endpoint to `AnchorMassOuterPowerWindowData -> WindowLinePackage`, added a cofinal anchor-mass RH producer, and refactored the older terminal RH theorem through that window interface. Big picture: the strongest Hardy/Dpoly window route can now target anchor plus closed slope-envelope data instead of an independent short completed-carrier second-moment floor `S_b`, so the remaining analytic producer is a sharper cofinal anchor-mass ledger.
 - `RHTower/DiscCensus.lean`: added `SubWindowFiniteDeckLineTwoSignData`, which derives the finite-deck transport congruences from EM/LOW domination and two sign tables before feeding the existing subwindow deck-line provider, plus cofinal ladder/RH consumers. Big picture: the DISC/deck route no longer has to assume the raw total and line congruences `hD/hL` when the local seam supplies peeled factorizations, domination, and xi/completedGN sign tables; those congruences are now formal outputs of the seam transport layer.
+
+## formal/GaloisForLFunctions/RHTower/MollifiedCarrier.lean (new)
+
+Carrier abstraction for the whole critical-line sign-face arc: `mollPoly b N =
+Σ_{n≤N} b_n·n^{−s}` with arbitrary real coefficients, χ-symmetrized (`mollG`) and
+completed (`completedMollG`).  Re-instantiated for general `b`: Schwarz reality, the
+exact even FE on the strip, reality on the line, the termwise line decomposition and
+line slope (reusing the sharp termwise objects with coefficient multipliers), slope
+budget `mollWeight·2(M₁+M₀·log N)` with `mollWeight = Σ|b_n|n^{−1/2}`, line sup
+`2M₀·mollWeight`, anchor bridge, point-to-mass floor, and the anchor-driven sign
+bracket.  `completedMollG_one`/`mollWeight_one_le` identify the sharp carrier as the
+instance `b ≡ 1`.
+
+Big picture: the sign-face machinery is no longer married to the sharp truncation,
+whose short-window anchor faces inherit the refuted Route C-direct premise
+(unbounded local variance).  The same gate now serves any designed-coefficient
+carrier — in particular a mollified one with bounded local variance, where the
+anchor and energy faces can be drawn from mean-value theory whose premises hold.
+The sharp arc survives unchanged as the `b ≡ 1` instance.
+
+## formal/GaloisForLFunctions/RHTower/AnchorSupply.lean (new)
+
+Carrier-free anchor instruments plus the general-coefficient anchor supply.
+`norm_add_chi_mul_conj_eq`/`_sq_split`: for ANY `w : ℂ`, the χ-symmetrized shape
+`w + χ·conj w` on the line collapses to `|2Re(ω̄w)|` with energy split
+`4‖w‖² − 4Im(ω̄w)²` (ω = Hardy phase) — pure phase identities, no carrier.
+`exists_norm_floor_in_window_of_secondMoment`: any continuous detector whose window
+second moment exceeds `m²U` clears the floor `m` in that window — generic MV floor.
+Instances: `mollPoly_line_eq_dpoly` identifies the general carrier on the line with
+the mean-value theory's `dpoly` at coefficients `b_n·n^{−1/2}`, and
+`exists_re_completedMollG_anchor_in_window_of_orthogonal_energy` chains energy face →
+carrier floor → archimedean upgrade → pointwise anchor `a₀·m ≤ |Re Φ̃ᵇ|` in every
+window, for arbitrary designed coefficients.
+
+Big picture: the instruments (phase collapse, energy split, MV floor) are now stated
+route-free — they serve the sharp carrier, the mollified carrier, and any future
+detector with the χ-symmetrized shape, so pivoting between routes replaces only the
+thin endpoint layer.  For the mollified lane specifically, the anchor face is now
+producible wherever the coefficient design makes the diagonal dominate its
+off-diagonal — the exact regime (κ² = O(1)) in which the living Route B′ operates.
+
+## formal/GaloisForLFunctions/RHTower/ShortWindowNoGo.lean (new)
+
+Global no-go for the sharp MV-anchored certificate family.
+`pinning_geometry_short_window`: the quadratic containment face plus the radii chain
+force every anchor window to length `U < 1` — a property of the constraint system, not
+of any instance.  `sharp_offDiagonal_ge`: the sharp coefficients' mean-value
+off-diagonal is `≥ N−1` (adjacent pairs alone).  `harmonic_Icc_le_one_add_log` caps the
+diagonal at `U(1+log N)`.  Capstone `sharp_pinning_certificate_depth_lt_four`: ANY
+certificate carrying both the pinning geometry and the sharp energy face has `N ≤ 3`.
+
+Big picture: this is a machine-checked verdict about the certificate system as a whole
+— for every zero, every height, every parameter choice, the sharp-carrier mean-value
+anchor is incompatible with the pinning geometry beyond depth 3.  The entire decoupled
+ledger endpoint family is formally vacuous in its sharp MV instantiation; a live
+instantiation must supply anchors from designed coefficients whose off-diagonal is
+controlled at short windows (the general-coefficient interface banked in
+MollifiedCarrier/AnchorSupply) or from non-mean-value sources (ball floors).  The
+informal Route-C-grade scaling objection is now a theorem, not a note.
+
+## formal/GaloisForLFunctions/RHTower/ResidualFaces.lean (new)
+
+The residual enumeration: `riemannHypothesis_of_residual_faces` — an RH gate in which EVERY
+analytic estimate of the sign face is supplied internally by closed-form theorems (envelope
+sup + reflection, derivative segment budget, resonance moment, line sup, line slope,
+anchor-generated mass floor, sign bracket).  No `S_b`, no `M_line`, no `M₀/M₁/Cmain`
+witnesses, no MV energy face.  The per-zero certificate retains exactly seven faces beyond
+window geometry: (R1) an anchor height where `m_J ≤ ‖g_N‖` on the line; (R2) ONE scalar
+inequality between explicit formulas (closed line sup × closed first moment < anchor mass
+floor); (R3) Jensen data (sphere sup `M_J`, quotient < 2, engine); (R4) archimedean floor
+`a₀`; (R5) completed-carrier sphere sup `M_G`; (R6) the outer cross/EM scalar budget;
+(R7) EM closeness `δ` on window spheres.  Helpers: winding-floor monotonicity in height,
+positivity of the envelope and slope budgets.
+
+Big picture: this is the formal answer to "what exactly does this constraint still ask of
+the world?"  RH now follows from a per-zero certificate whose only non-formula content is
+carrier data — one line floor (R1), two sphere sups (R3a/R5), one closeness (R7) — plus
+four scalar comparisons among named quantities.  Combined with ShortWindowNoGo (the anchor
+cannot come from the sharp MV budget at any admissible window), the open content of the
+whole pinning route is now enumerated and machine-checked: whoever supplies (R1)–(R7), from
+any source — designed coefficients, ball floors, or a future route — gets RH; and any
+global obstruction to them is a formal dead-end verdict.
+
+## formal/GaloisForLFunctions/RHTower/AnchorZeroBudget.lean (new)
+
+The zero budget of the anchored disc — what any (R1) anchor supplier owes the Jensen tier.
+`gN_line_zero_of_sign_bracket`: every sign bracket of `Re Φ̃_N` on the line yields a zero of
+the finite carrier `g_N` itself (IVT + nonvanishing archimedean envelope).
+`anchor_jensen_faces_false_of_second_zero`: a second carrier zero in the anchored inner disc
+refutes the face triple (center floor `m_J`, sphere sup `M_J`, Jensen quotient `< 2`).
+Capstone `anchor_jensen_faces_false_of_two_sign_brackets`: two sign brackets in disjoint
+line subintervals of the anchored disc refute the faces — the anchored disc admits AT MOST
+ONE sign change of the completed carrier.
+
+Big picture: this quantifies the residual face (R1) as part of the whole system rather than
+in isolation.  An anchor floor at height `T` is certifiable only at disc radii below the
+local sign-change spacing of the completed carrier (heuristically `~2π/log T`, the scale the
+banked winding floor measures); at larger radii the faces (R1)+(R3) are jointly false no
+matter how the anchor is produced.  So "supply (R1)" now has an exact meaning: a carrier
+floor at the carrier's own oscillation scale, with the window geometry `rz` shrinking like
+the zero spacing — the residual gate's parameters are height-coupled, and any proposed
+anchor mechanism can be pre-screened against this coupling before any window engineering.
+
+## formal/GaloisForLFunctions/RHTower/WindingRigidity.lean (new)
+
+The quantitative half of the anchor-disc coupling law, part 1 of 2.
+`archFactor_line_polar`: exact polar factorization of the archimedean envelope along the
+line — basepoint value × exp(windingModulus) × exp(i·windingPhase), where `windingModulus`
+(new primitive, FTC'd) integrates the winding datum's imaginary part and `windingPhase`
+integrates the banked winding rate.  `gN_line_winding_rigidity` (UNCONDITIONAL): the finite
+carrier times the envelope's polar data equals the real value of the completed carrier —
+reality of `Φ̃` on the line in exact closed form.  `carrier_ray_of_sign_constant`: on any
+segment where `Re Φ̃ > 0`, the winding-rotated carrier `arch(γ)·e^{iΘ(τ)}·g_N(linePt τ)` is a
+positive real — the carrier's phase anti-rotates the winding phase EXACTLY.
+
+Big picture: the phase velocity of the finite carrier on every sign-constant segment is
+locked to `−windingRate`, whose explicit floor `(log(u/2π) − 4/u² − π/u)/2` is a banked
+theorem — so between consecutive sign changes the carrier's phase must fall at least at rate
+`≈ ½·log(T/2π)`.  A sign change is the only mechanism that can interrupt the lock.  The
+remaining half of the spacing law is an argument-variation bound for the carrier factor
+(Borel–Carathéodory grade, using the Jensen-face zero budget): together they will force
+`sign-change spacing ≲ 2π/windingRate-floor` inside any face-satisfying disc — the explicit
+`rz(T) ≲ 1/log T` scale at which any (R1) anchor supplier must certify its floor.

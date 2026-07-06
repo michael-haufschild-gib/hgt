@@ -573,8 +573,7 @@ FE-symmetric pencil member: the family-wide fixed-point anchor). Program doc:
 
 **FRONT B — parity (the static front).** `xi_central_order_even` /
 `xi_deckClass_central_sq_trivial`: w₁ is trivial at the FE fixed point, from FE alone —
-the first constraint-forces-parity theorem; mechanism = the RAMIFIED/FIXED locus of a
-constraint symmetry. `14-parity-stratum.md` imposes three filters (D–H
+the first constraint-forces-parity theorem; mechanism = the RAMIFIED/FIXED locus of a2fgh j
 multiplicativity; the symmetry discount — quadruples make symmetric-region charge ≡ 0
 mod 4, so symmetric aggregates are blind at k ≤ 2 and detectors must be QUADRANT-LOCAL;
 the regularity wall) and audits the classical families: affine/Adams transport is

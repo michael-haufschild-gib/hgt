@@ -1132,3 +1132,32 @@ are three named coupled limits: the ξ-drift `W(ξ)/W(m) → 1` (bootstrap throu
 on the `rcsch_sq_le_exp` kernel now in hand), input #2's two-variable `o(1)`, and input #3's matched
 `Σ_k`/`lim_i` interchange. Each is one dominated-convergence or bootstrap step on an already-built
 envelope — the analytic scaffolding for all three is now formalized.
+
+## 23. The ξ-drift foundation — the energy `W` is convex on the gap [PROVED HERE — Lean]
+
+The last residual of input #1 is the ξ-drift `W(ξ)/W(m) → 1`, where `ξ` is the mean-value point of
+`cothField_theta_deviation`, strictly between the equilibrium `x*` and the midpoint `m`. Its structural
+foundation is now a theorem (`LegStripConvex.lean`, axiom-clean):
+
+* `spurLatticeEnergy_convexOn` : `W = ¼Σ_k rcsch²((x−t_k)/2)` is **convex** on the pole-free gap
+  `(a,b)`. Proof: `W′ = −¼Σ_k rphi((x−t_k)/2)` (`spurLatticeEnergy_hasDerivAt`) is monotone, because each
+  `rphi((x−t_k)/2)` is antitone on the gap — behind poles (`t_k ≤ a`) keep the argument in `Ioi 0` where
+  `rphi` is antitone (`rphi_strictAntiOn_pos`), ahead poles (`t_k ≥ b`) keep it in `Iio 0` where `rphi`
+  is antitone because it is odd (`rphi_neg`, `rphi_antitoneOn_Iio`).
+* `rcsch_sq_convexOn` : the per-term atom `rcsch²` convex on `[a,∞)` (`a > 0`).
+
+**The closure plan the convexity unlocks (no circularity).** With `W` convex:
+1. *Uniform lower bound.* The two nearest poles give `W(ξ) ≥ ½·rcsch²(δ/4)` at every `ξ` in the gap
+   (the two-pole sum is minimised at the midpoint by symmetry + convexity), i.e. `W(ξ) ≳ i²`
+   uniformly — no dependence on `θ*`.
+2. *Centering.* Then `|½ − θ*| = g(i)/(W(ξ)δ) ≤ g(i)/(c₀i²δ) ~ i/d + O(1/i) → 0` at `i ~ √d`, using
+   only the lower bound — the equilibrium provably approaches the midpoint.
+3. *Sub-gap.* Hence `|ξ − m| ≤ |x* − m| = |½ − θ*|·δ = o(δ)` — `ξ` sits in a sub-gap of width `o(δ)`.
+4. *Upper refinement.* On that central sub-gap `|W′| ≲ i³` (far from the poles at distance `~δ/2`), so
+   `W(ξ) − W(m) ≤ |W′|·|ξ − m| ≲ i³·o(δ) = o(i²) = o(W(m))`.
+5. `W(ξ)/W(m) = 1 + o(1) → 1`, and `W(ξ)δ/i → π²/c` transfers from the proven `W(m)` limit.
+
+The convexity (step 1's minimiser structure) and the energy derivative are now formalized; the four
+remaining steps are the uniform two-pole lower bound, the centering inequality, and the central-sub-gap
+`W′` bound — each a quantitative `csch²`/`rphi` estimate on the machinery already built
+(`rphi_le_exp`, `rphi_ge_cubic`, `rcsch_sq_le_exp`).
