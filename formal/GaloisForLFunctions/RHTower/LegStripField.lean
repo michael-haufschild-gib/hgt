@@ -174,5 +174,37 @@ theorem cothField_theta_deviation {ι : Type*} (s : Finset ι) (t : ι → ℝ) 
   have hba : b - a ≠ 0 := by linarith
   field_simp
 
+/-- **The W-response room, exactly.** For the equilibrium `x*` at level `L`, the distance of the
+equilibrium below the gap midpoint — the room `δ/2 − s* = (b − a)/2 − (b − x*)` in which the
+`(S-mono)` W-response `dW/ds < 0` operates — equals the midpoint field excess over the level divided
+by twice the energy: `(F(m) − L)/(2W(ξ))`. This upgrades the wanted *bound* on `δ/2 − s` to an exact
+identity: the room is the midpoint excess measured in energy units. -/
+theorem cothField_room_eq {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b : ℝ}
+    (hne : s.Nonempty) (hab : a < b) (hpoles : ∀ k ∈ s, t k ≤ a ∨ b ≤ t k)
+    {x L : ℝ} (hx : x ∈ Ioo a b) (hroot : cothField s t x = L) :
+    ∃ ξ ∈ Ioo a b, 0 < spurLatticeEnergy s t ξ
+      ∧ (b - a)/2 - (b - x)
+        = (cothField s t ((a + b)/2) - L) / (2 * spurLatticeEnergy s t ξ) := by
+  obtain ⟨ξ, hξ, hW, hdev⟩ := cothField_midpoint_deviation s t hne hab hpoles hx hroot
+  refine ⟨ξ, hξ, hW, ?_⟩
+  have hba : b - a ≠ 0 := by linarith
+  have hWne : (2 : ℝ) * spurLatticeEnergy s t ξ ≠ 0 := by positivity
+  rw [show (b - a)/2 - (b - x) = (b - a) * (1/2 - (b - x)/(b - a)) by field_simp, hdev]
+  field_simp
+
+/-- **The race is the sign of the midpoint excess.** The W-response room `δ/2 − s*` is strictly
+positive — the `(S-mono)` mechanism applies at this gap (`θ* < ½`, outer half) — exactly when the
+midpoint field exceeds the level (`L < F(m)`). At the marginal carrier the excess is the `√d`-edge
+residue `g(i)`, so the room is positive at every finite `d` with the edge rate; for `c ≥ 2` the strip
+is empty and the room is positive at every gap. -/
+theorem cothField_room_pos_iff {ι : Type*} (s : Finset ι) (t : ι → ℝ) {a b : ℝ}
+    (hne : s.Nonempty) (hab : a < b) (hpoles : ∀ k ∈ s, t k ≤ a ∨ b ≤ t k)
+    {x L : ℝ} (hx : x ∈ Ioo a b) (hroot : cothField s t x = L) :
+    ∃ ξ ∈ Ioo a b, 0 < spurLatticeEnergy s t ξ
+      ∧ ((0 < (b - a)/2 - (b - x)) ↔ L < cothField s t ((a + b)/2)) := by
+  obtain ⟨ξ, hξ, hW, hroom⟩ := cothField_room_eq s t hne hab hpoles hx hroot
+  refine ⟨ξ, hξ, hW, ?_⟩
+  rw [hroom, lt_div_iff₀ (by positivity), zero_mul, sub_pos]
+
 end RHTower
 end

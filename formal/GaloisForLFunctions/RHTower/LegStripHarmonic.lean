@@ -113,5 +113,32 @@ theorem harmonic_theta_deviation {c : ℝ} (hc : 0 < c) {d i : ℕ} (hid : i + 1
   push_cast
   ring
 
+/-- **The W-response room on the harmonic model.** The room `δ_i/2 − s* = δ_i/2 − (T_{i+1} − x*)` in
+which the `(S-mono)` mechanism operates is exactly `g(i)/W(ξ)`, with `g(i) = (i+1) + BehindEx − AheadEx`
+the §15 residue and `W(ξ)` the reduced energy at a mean-value point. The room is positive iff `g(i) > 0`
+(the strip is empty at gap `i`); at `c = 2` its `√d`-rate is the edge law. -/
+theorem harmonic_room_eq {c : ℝ} (hc : 0 < c) {d i : ℕ} (hid : i + 1 < d)
+    {x : ℝ} (hx : x ∈ Ioo (harmPole c i) (harmPole c (i+1)))
+    (hroot : cothField (Finset.range d) (harmPole c) x = -(d : ℝ)) :
+    ∃ ξ ∈ Ioo (harmPole c i) (harmPole c (i+1)),
+      0 < spurLatticeEnergy (Finset.range d) (harmPole c) ξ
+      ∧ (c/((i:ℝ)+1))/2 - (harmPole c (i+1) - x)
+        = ((i + 1 : ℝ)
+            + (∑ j ∈ (Finset.range d).filter
+                (fun j => harmPole c j < (harmPole c i + harmPole c (i+1))/2),
+                poleExcess ((harmPole c i + harmPole c (i+1))/2 - harmPole c j))
+            - ∑ j ∈ (Finset.range d).filter
+                (fun j => (harmPole c i + harmPole c (i+1))/2 < harmPole c j),
+                poleExcess (harmPole c j - (harmPole c i + harmPole c (i+1))/2))
+          / spurLatticeEnergy (Finset.range d) (harmPole c) ξ := by
+  obtain ⟨ξ, hξ, hW, hdev⟩ := harmonic_theta_deviation hc hid hx hroot
+  refine ⟨ξ, hξ, hW, ?_⟩
+  have hδ : (0:ℝ) < c/((i:ℝ)+1) := by positivity
+  set δ := c/((i:ℝ)+1) with hδdef
+  have hδ' : δ ≠ 0 := ne_of_gt hδ
+  set W := spurLatticeEnergy (Finset.range d) (harmPole c) ξ with hWdef
+  rw [show δ/2 - (harmPole c (i+1) - x) = δ * (1/2 - (harmPole c (i+1) - x)/δ) by field_simp,
+    hdev, mul_comm W δ, ← mul_div_assoc, mul_div_mul_left _ _ hδ']
+
 end RHTower
 end

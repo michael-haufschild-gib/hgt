@@ -4998,3 +4998,88 @@ boundary line-data = constraint-not-flow. (2) deform the fixed point ½ toward o
 obstruction to extending xi_central_ladder_two is a function of Re ρ−½ — a native 𝓜⁺ object (∂_s moving
 the reflection axis). Next: build the H_N boundary functional whose vanishing trivialises the cocycle,
 test vs xi_central_ladder_two as the Re=½ boundary case.
+
+## cont.46 — edge-law family + discrete θ*(i) field built + §14c race exact (3 new Lean modules, axiom-clean, RHTower green 8738, lint pass)
+
+Goal: family margin(c)√d→ρ(c); build discrete θ*(i) field to DISCHARGE edge_law_reduction's hypothesis; §14c race with explicit constants. Delivered as theorems, doc §17.
+
+(1) LegStripEdgeFamily.lean — the abstract family. edge_margin_const_general (√d·κ·2√(a/d)=2κ√a, any κ,a≥0), edge_law_reduction_general (margin=κ·m ⟹ margin·√d→ρ(κ,a)=2κ√a via edge_isLeast + cancellation), rhoFamily κ a=2κ√a, rhoFamily_harmonic (ρ(2/π²,π²/16)=1/π). GENERAL LOCAL FACTOR κ(c)=c/π² (localFactor): |F'|δ/i→2π²/c from near-gap dist≈(c/i)(k+½) ⟹ Σcsch²→(16i²/c²)Σ1/(2k+1)²=2π²i²/c². localFactor_two (κ(2)=2/π²), localFactor_odd_basel (κ(c)=c/(8·Σ1/(2k+1)²), grounded via hasSum_odd_basel), rho_at_two. The c=2 edge law is one POINT of a 2-param family.
+
+(2) LegStripField.lean — THE DISCRETE FIELD (exact deviation identity via MVT). Reused tree infra cothField_hasDerivAt (F'=−2W, W=spurLatticeEnergy=¼Σcsch²). cothField_slope_mvt (exists_hasDerivAt_eq_slope: F(q)−F(p)=−2W(ξ)(q−p)), cothField_energy_pos_of_nonempty (W>0 in pole-free gap, nonempty), cothField_deviation (x*−m=(F(m)−L)/(2W(ξ)), trichotomy on x* vs m), cothField_midpoint_deviation (½−θ*=(F(m)−L)/(2W(ξ)(b−a)), θ* from ahead pole), midpoint_excess_eq (F(m)+card=2(behind+BehindEx−AheadEx)=2g via cothField_midpoint_split), cothField_theta_deviation (½−θ*=(behind+BehindEx−AheadEx)/(W(ξ)δ) EXACT). This is the KEY: the κ·m decomposition is now the ASYMPTOTICS OF A PROVEN IDENTITY, not a hypothesis — "discharged rather than assumed."
+
+(3) LegStripHarmonic.lean — the LITERAL harmonic model T_j=c·H_{j−1} as a Finset field. harmPole c j=c·Σ_{l<j}1/(l+1), harmPole_strictMono (spacing c/(j+1)>0), harmPole_gap_width (δ_i=c/(i+1)), harmonic_behind_card (#{poles<m}=i+1=range(i+1)), harmonic_theta_deviation (½−θ*(i)=((i+1)+BehindEx−AheadEx)/(W(ξ)δ_i) on the concrete model). Instantiates cothField_theta_deviation on the built pole config (monotone⟹pole-free gap + no pole at midpoint + level −d).
+
+(4) §14c RACE, made EXACT (in LegStripField). cothField_room_eq: the W-response room δ/2−s*=(b−a)/2−(b−x*)=(F(m)−L)/(2W(ξ)) — UPGRADES doc §13(b)'s wanted BOUND on δ/2−s to an exact IDENTITY (room=midpoint excess in energy units; harmonic form g(i)/W(ξ)). cothField_room_pos_iff: 0<room ⟺ L<F(m) — the race "energy gain beats margin" is EXACTLY the midpoint-excess sign ⟺ g(i)>0 ⟺ strip-empty. At c=2 room-rate=1/(π√d)>0 at every finite d (never closes); c≥2 room>0 at every gap.
+
+(5) §17.4 CONJECTURE: marginal crossover margin·√d→G(ξ), ξ=(2−c)√d, G(0)=1/π (edge law), G→−ξ/4 (Φ'(2)=−π²/8 via κ). Off c=2 there's no √d law (½−θ_max→c(1−Φ(c))/π², O(1)); the genuine 1-param family is the FSS crossover G. Collapse + shape of G open. NOTE: killed a numerical FSS scan mid-run (Michael: "no fucking computations, this is theatre") — G's two limits are theory-predictable (both are theorems), so the compute predicts nothing.
+
+9 new theorems all [propext,Classical.choice,Quot.sound]. Residual = the 3 asymptotic input limits (ε→−π²/16 2nd-order EM, A_trunc/i→i/d digamma, W(ξ)δ/i→π²/2) from the exact poleExcess field; and G's construction. NEXT: discharge the input limits to close harmonic_theta_deviation's factors into the edge law with no assumption; construct G; deformed-carrier marginal family.
+
+## cont.47 — the θ*(i) field COMPLETED with genuine existence (LegStripEquilibrium.lean, axiom-clean, RHTower green 8740, lint pass)
+
+The deviation identity (cont.46) was stated for a hypothesized root. Now the root EXISTS: field built as a total object.
+rcoth_shift_atTop (rcoth((x−a)/2)→+∞ as x→a⁺, via 2/(x−a)→atTop + inv_le_rcoth comparison, tendsto_inv_nhdsGT_zero),
+rcoth_shift_atBot (→−∞ as x→b⁻, tendsto_inv_nhdsLT_zero + rcoth(y)≤1/y for y<0). cothField_atTop_leftPole /
+cothField_atBot_rightPole (field →±∞ at simple endpoint pole: split off endpoint term via Finset.add_sum_erase, head→±∞,
+rest continuous via tendsto_finsetSum + ContinuousAt.div(cosh,sinh,sinh≠0), then Tendsto.atTop_add/atBot_add).
+cothField_root_exists (IVT: witnesses near a (F≥L) and near b (F≤L) in disjoint half-gaps via eventually_ge_atTop/
+eventually_le_atBot + Iio/Ioi_mem_nhds; then cothField_exists_equilibrium). harmonic_equilibrium_exists (strictMono⟹
+simple poles ⟹ endpoints simple; root at level −d). harmonic_theta_deviation_exists (UNCONDITIONAL: ∃x* AND the exact
+deviation ½−θ*(i)=(g(i))/(W(ξ)δ) holds for it). The discrete θ*(i) field is now a genuine object: existence (IVT/blow-up)
++ uniqueness (cothField_eq_unique) + exact deviation (MVT). 5 new theorems axiom-clean. Doc §17.2 updated.
+
+TOTAL this /goal (cont.46+47): 4 new Lean modules (LegStripEdgeFamily, LegStripField, LegStripHarmonic, LegStripEquilibrium),
+14 new theorems, all [propext,Classical.choice,Quot.sound], RHTower 8740 green, lint pass. Deliverables: (1) edge-law
+FAMILY ρ(κ,a)=2κ√a + κ(c)=c/π²; (2) discrete θ*(i) field BUILT (existence+uniqueness+exact deviation) — "discharge rather
+than assume" achieved: κ·m is the asymptotics of harmonic_theta_deviation, a proven identity; (3) §14c race EXACT (room=
+excess/2W identity + sign reduction). Residual = 3 input asymptotic limits + FSS crossover G construction.
+
+## cont. 49 — RHLadder structural theory GROUND OUT (RHLadderTheory.lean, 21 decls, doc 92)
+
+Grind-to-exhaustion of the ladder's unconditionally-provable structure. New module
+RHTower/RHLadderTheory.lean (axiom-clean, RHTower + MainTheorems green EXIT 0, lint + index pass):
+
+ORDER STRUCTURE: rhLadder_zero (rung 0 trivial); rhLadder_of_le (monotone nesting m≤k), rhLadder_of_succ,
+rhLadder_imp_one; rh_of_rhLadder_cofinal (cofinal rungs ⟹ RH); forall_rhLadder_iff_no_rightHalf_zero
+(intersection = RH as ξ-nonvanishing).
+
+VALUATION INVARIANT: ladderHeight ρ := v₂(ord ρ) = (analyticOrderAt xi ρ).toNat.factorization 2 —
+the correctly-typed successor to the REFUTED mod-2 parity (docs 89-90: not a parity, the full 2-adic
+valuation). rhLadder_iff_toNat_dvd, rhLadder_iff_ladderHeight_ge; sharp collapse
+not_rhLadder_of_gt_ladderHeight / not_rhLadder_ladderHeight_succ (a zero of height h survives rungs 0..h,
+breaks h+1 — exact first-fail level). Symmetry: ladderHeight_conj, ladderHeight_one_sub,
+ladderHeight_quadruple_eq (constant across {ρ,1−ρ,ρ̄,1−ρ̄} — the V₄-invariant the parity should have been).
+
+LOCALIZATION: xi_ne_zero_of_one_le_re (from mathlib riemannZeta_ne_zero_of_one_le_re + xi 1=1/2);
+rhLadder_iff_strip (quantifier collapses to ½<Re<1); rhLadder_iff_upperHalf (conj ⟹ Im≥0);
+rhLadder_iff_openStrip_upper — WHOLE ladder (hence RH) decided by ξ-zeros in the box {½<Re<1, Im≥0}.
+
+ROOT FACE: exists_root_of_exists_root_succ (2^{k+1} root ⟹ 2^k root by squaring — analytic face of
+nesting); rhLadder_one_iff_sqrt_rightHalf (rung 1 = √ξ on rightHalf; renamed to avoid clash with
+SquareLadder's slitPlane variant).
+
+No mathlib gap hit — riemannZeta_ne_zero_of_one_le_re / factorization / analyticOrderAt all present.
+EXHAUSTED at structural level: order + arithmetic + symmetry + localization + root face. Open core =
+rung 1 on the box {½<Re<1, Im≥0} = no odd-order ξ-zero there = √ξ existence; every rung ≥1 implies it.
+Forward (doc 92 §5): build the {Re=½} boundary functional (H_N carrier) trivializing the ξ mod-2 deck
+cocycle across the BOUNDED box — localization to a strip box (not half-plane) makes compact-exhaustion
+(xi_zeros_finite_ball) + boundary/holography viable; next object = per-height-window certificate forcing
+ladderHeight≥1 from line data.
+
+## cont.48 — steepness input #1 mechanism DISCHARGED (LegStripSteepness.lean, axiom-clean, RHTower green 8741, lint pass)
+
+Target: discharge the 3 input asymptotics of harmonic_theta_deviation into the edge law. Input #1 = near-pole
+steepness W(m)δ/i→π²/c (local factor κ=c/π²) — the cleanest, self-contained (no ξ, no truncation).
+MECHANISM proved as a TANNERY LIMIT: (1) self_lt_sinh (x<sinh x via cosh-1>0 strictMonoOn), rcsch_sq_lt_inv_sq
+(csch²(z)<1/z²), tendsto_self_div_sinh (w/sinh w→1 from sinh'(0)=1). (2) tendsto_rescaled_csch_sq_term (single
+pole: csch²(dist/2)/n²→(2/L)² given n·dist→L, via (rcsch·(dist/2))²·(4/(n·dist)²)→1·4/L²). (3) rescaled_csch_sq_le
+(domination by (2/(c(k+½)))²), summable_near_pole_bound + tsum_near_pole_bound=2π²/c² (=(16/c²)Σ1/(2k+1)² odd-Basel).
+(4) tendsto_rescaled_csch_sq_sum (CAPSTONE: Σ_k csch²(dist n k/2)/n²→2π²/c² via tendsto_tsum_of_dominated_convergence).
+HARMONIC INPUTS: tendsto_backward_harmonic_sum (i·Σ_{j<k}1/(i−1−j)→k, squeeze ik/(i−1)≤·≤ik/(i−k) via
+card_nsmul_le_sum/sum_le_card_nsmul + tendsto_mul_div_sub), tendsto_behind_dist (i·bdist→c(k+½)), behind_dist_lb
+(bdist≥(c/i)(k+½)). All axiom-clean. LEAN-MECHANICS banked: `∑ x ∈ s, BODY ≤/= RHS` — the ≤/= gets ABSORBED into
+the sum body; MUST parenthesize `(∑ x ∈ s, BODY) ≤ RHS` (the recurring parse-desync ⊢?m + "unexpected Σ"). Also
+`(n:ℝ)` in a `fun n =>` lambda forces n:ℝ before dist n seen → use `fun n : ℕ =>`. Doc 30 §18.
+REMAINING for input #1: finite-sum reconciliation (behind/ahead finite vs Tannery-over-ℕ) + ahead side (needs d−i→∞)
++ W(m) reindex + δ-rescale. Then inputs #2 (A_trunc/i→i/d digamma) #3 (ε→−π²/16 2nd-EM) + ξ-drift (W(ξ)/W(m)→1
+from θ*→½) + max-over-i. Multi-session surface; mechanism is the hard analytic core, now banked.

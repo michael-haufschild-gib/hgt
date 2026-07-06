@@ -86,5 +86,76 @@ theorem edge_law_family {c a : ℝ} (ha : 0 < a) {mgn m : ℝ → ℝ}
 theorem rho_at_two : rhoFamily (localFactor 2) (π^2/16) = 1/π := by
   rw [localFactor_two]; exact rhoFamily_harmonic
 
+/-- **The finite-size-scaling crossover function.** Along the scaling curve `c = 2 − ξ/√d`
+(`ξ = (2−c)√d`), the `√d`-scaled margin tends to `G(ξ) = 1/π − ξ/4`: the edge law `G(0) = 1/π` and the
+off-marginal linear response `G(ξ) → −ξ/4` (from `Φ'(2) = −π²/8` read through `κ = 2/π²`), joined in a
+single **linear** crossover — because the leading imbalance `(π²/8)(c−2)` is `i`-independent, the AM–GM
+minimizer is unchanged and the imbalance shifts the margin additively. -/
+def crossoverG (ξ : ℝ) : ℝ := 1/π - ξ/4
+
+/-- **The crossover reduction.** Given the near-marginal decomposition
+`margin(d) = (2/π²)·((π²/8)·(−ξ/√d) + m(d))` — the local factor `κ = 2/π²` times the off-marginal
+imbalance `(π²/8)(c−2) = −(π²/8)ξ/√d` plus the least gap margin `m(d)` (coefficient `a = π²/16`) — the
+`√d`-scaled margin tends to `G(ξ) = 1/π − ξ/4`. The imbalance term contributes exactly `−ξ/4` (the `√d`
+cancels for every `d`); the gap-margin term contributes `1/π` (the edge law, `edge_law_reduction_general`
+via `rhoFamily_harmonic`). This constructs the crossover as a theorem, its two boundary constants unified. -/
+theorem crossover_reduction {margin m : ℝ → ℝ} (ξ : ℝ)
+    (hm : ∀ d, 0 < d → IsLeast ((fun x => x/d + (π^2/16)/x) '' Set.Ioi 0) (m d))
+    (hmargin : ∀ d, 0 < d → margin d = (2/π^2)*((π^2/8)*(-(ξ/Real.sqrt d)) + m d)) :
+    Tendsto (fun d => margin d * Real.sqrt d) atTop (𝓝 (crossoverG ξ)) := by
+  -- second term: (2/π²)·m(d)·√d → 1/π
+  have hsecond : Tendsto (fun d => (2/π^2) * m d * Real.sqrt d) atTop (𝓝 (1/π)) := by
+    have := edge_law_reduction_general (κ := 2/π^2) (a := π^2/16)
+      (by positivity [Real.pi_pos]) hm (fun d _ => rfl)
+    rwa [rhoFamily_harmonic] at this
+  -- first term: (2/π²)·(π²/8)·(−ξ/√d)·√d = −ξ/4 for every d>0 (√d cancels)
+  have hfirst : Tendsto (fun d => (2/π^2)*((π^2/8)*(-(ξ/Real.sqrt d)))*Real.sqrt d) atTop
+      (𝓝 (-ξ/4)) := by
+    apply tendsto_const_nhds.congr'
+    filter_upwards [eventually_gt_atTop 0] with d hd
+    have hsd : Real.sqrt d ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hd)
+    have hpi : (π:ℝ) ≠ 0 := ne_of_gt Real.pi_pos
+    field_simp
+    ring
+  have hsum := hfirst.add hsecond
+  have hgoal : Tendsto (fun d => margin d * Real.sqrt d) atTop (𝓝 (-ξ/4 + 1/π)) := by
+    refine hsum.congr' ?_
+    filter_upwards [eventually_gt_atTop 0] with d hd
+    rw [hmargin d hd]
+    ring
+  have : crossoverG ξ = -ξ/4 + 1/π := by unfold crossoverG; ring
+  rwa [this]
+
+/-- The crossover recovers the edge law at the marginal point: `G(0) = 1/π`. -/
+theorem crossoverG_zero : crossoverG 0 = 1/π := by unfold crossoverG; ring
+
+/-- The crossover's off-marginal asymptote is the `Φ'(2) = −π²/8` linear response: `G(ξ) + ξ/4 = 1/π`
+(exact, since the crossover is linear at leading order). -/
+theorem crossoverG_slope (ξ : ℝ) : crossoverG ξ + ξ/4 = 1/π := by unfold crossoverG; ring
+
+/-- **The marginal-carrier family `ρ(c, a)`.** Sectioning the abstract `ρ`-surface `2κ√a` along the
+carrier curve `c ↦ (κ(c), a(c))` with local factor `κ(c) = c/π²` gives the one-parameter family
+`ρ(c, a) = (2c/π²)·√a`, whose value at the physical marginal carrier `(c, a) = (2, π²/16)` is `1/π`. -/
+def rhoOfCarrier (c a : ℝ) : ℝ := rhoFamily (localFactor c) a
+
+/-- The family in closed form: `ρ(c, a) = (2c/π²)·√a`. -/
+theorem rhoOfCarrier_eq (c a : ℝ) :
+    rhoOfCarrier c a = (2*c/π^2) * Real.sqrt a := by
+  unfold rhoOfCarrier rhoFamily localFactor; ring
+
+/-- The physical marginal carrier sits at `ρ(2, π²/16) = 1/π`. -/
+theorem rhoOfCarrier_two : rhoOfCarrier 2 (π^2/16) = 1/π := rho_at_two
+
+/-- **The edge law along the carrier curve.** For a carrier with local factor `κ(c) = c/π²` and shell
+coefficient `a > 0`, given the decomposition `margin(d) = κ(c)·m(d)` (least gap margin), the `√d`-scaled
+margin tends to the family value `ρ(c, a) = (2c/π²)√a`. This realizes `ρ(κ(c), a(c))` as a genuine
+one-parameter family, not a single point: `ρ(2, π²/16) = 1/π`, and every `(c, a)` is a marginal-carrier
+value the abstract skeleton `2κ√a` sections. -/
+theorem edge_law_along_curve {c a : ℝ} (ha : 0 < a) {mgn m : ℝ → ℝ}
+    (hm : ∀ d, 0 < d → IsLeast ((fun x => x/d + a/x) '' Set.Ioi 0) (m d))
+    (hθ : ∀ d, 0 < d → mgn d = localFactor c * m d) :
+    Tendsto (fun d => mgn d * Real.sqrt d) atTop (𝓝 (rhoOfCarrier c a)) :=
+  edge_law_reduction_general ha hm hθ
+
 end RHTower
 end

@@ -779,12 +779,147 @@ with `m` the least gap margin, the AM–GM minimum `edge_isLeast` and the `√d`
 `κ = 2/π² = (Σ 1/(k+½)²)⁻¹` (`kappa_eq_inv_series`) are all theorems, so the `1/π` is provably the
 odd-Basel constant read through the boundary layer.
 The three inputs (`κ = 2/π²`, `A_trunc/i → i/d`, `ε(i) → −(π²/16)/i`) are matched Euler–Maclaurin/digamma
-asymptotics of the `poleExcess` field, numerically dead-on to 5 digits; each is a finite-order
-correction to an already-formalized limit (`Φ(2) = 1`, `tendsto_poleModel`). Their rigorous Lean
-proofs, and the formalization of the discrete `coth`-equilibrium `θ*(i)` itself, are the remaining
-formalization surface — the analytic content is now closed and validated.
+asymptotics of the `poleExcess` field; each is a finite-order correction to an already-formalized limit
+(`Φ(2) = 1`, `tendsto_poleModel`). The discrete `θ*(i)` field is now **built** (§17.2): the decomposition
+`½ − θ*(i) = g(i)/(W(ξ)δ_i)` is an exact theorem read off the field by the mean value theorem
+(`harmonic_theta_deviation`), so `κ` and `m` are factors of a proven identity, not hypotheses. The three
+input limits are the sole remaining formalization surface.
 
-Forward: the same AM–GM shape (`local factor × √(shell·truncation)`) is the generic finite-`d`
-correction to any marginal `Φ(c₀) = 1` carrier; for `c ≠ 2` the local factor is `2/(|F'|δ)` at that
-`c`, and the edge law becomes a one-parameter family `margin(c)·√d → ρ(c)` whose `ρ(2) = 1/π` — a new
-object to construct.
+Forward (carried into §17): the AM–GM shape `local factor × √(shell·truncation)` is a **family**
+`margin·√d → ρ(κ,a) = 2κ√a` (`edge_law_reduction_general`), with `κ(c) = c/π²` at the harmonic carrier
+(§17.1) and `ρ(2) = 1/π`; the genuine one-parameter object is the marginal crossover `G(ξ)`,
+`ξ = (2−c)√d` (§17.4).
+
+## 17. The edge-law family, the discrete field, and the §14c race — made exact [PROVED HERE — Lean core]
+
+§16 identified the edge law's shape `κ·√(shell·truncation)` and grounded `κ` in odd Basel. Three
+things now stand on that shape as theorems: the edge law becomes a **family** in the local factor; the
+`θ*(i)` field is **built** with its deviation identity, so the decomposition is read off the field
+rather than assumed; and the §14c race — whether the (S-mono) energy gain beats the `1/(π√d)` margin —
+is reduced to an **exact** sign condition. (`LegStripEdgeFamily.lean`, `LegStripField.lean`,
+`LegStripHarmonic.lean`, axiom-clean.)
+
+### 17.1 The edge-law family `margin·√d → ρ(κ,a) = 2κ√a` [PROVED HERE — Lean]
+
+The `√d`-cancellation is not special to `κ = 2/π²`, `a = π²/16`. For any local factor `κ` and shell
+coefficient `a ≥ 0`, `√d·(κ·2√(a/d)) = 2κ√a` exactly (`edge_margin_const_general`), and the reduction
+`margin(d) = κ·m(d)` (`m` the least gap margin) delivers `margin·√d → ρ(κ,a) := 2κ√a`
+(`edge_law_reduction_general`, via AM–GM uniqueness `edge_isLeast` and the cancellation). The harmonic
+carrier is one point: `ρ(2/π², π²/16) = 1/π` (`rhoFamily_harmonic`).
+
+The **local factor at a general harmonic carrier `δ_j = c/j` is `κ(c) = c/π²`** (`localFactor`): the
+near-gap pole distances are `≈ (c/i)(k+½)`, so `|F'(m)| = ½Σ csch²(dist/2) → (16i²/c²)Σ_{k≥0}1/(2k+1)²
+= 2π²i²/c²` and `|F'(m)|δ_i/i → 2π²/c`, whence `κ(c) = 2/(|F'|δ/i) = c/π²`, `κ(2) = 2/π²`
+(`localFactor_two`). It is grounded in odd Basel: `κ(c) = c/(8·Σ 1/(2k+1)²)` (`localFactor_odd_basel`),
+so the whole family's constant is the odd-Basel value read through the boundary layer.
+
+### 17.2 The discrete `θ*(i)` field, built — the deviation identity is a theorem [PROVED HERE — Lean]
+
+The `κ·m` decomposition is no longer an assumed input: it is the leading asymptotics of an **exact**
+identity read off the field by the mean value theorem. On a pole-free gap `(a,b)` the field
+`F = cothField s t` has `F' = −2W` (`W = ¼Σ csch²`, `cothField_hasDerivAt`), so for the equilibrium
+`x*` at level `L` and any reference `m`, `x* − m = (F(m) − L)/(2W(ξ))` at an interior mean-value point
+`ξ` with `W(ξ) > 0` (`cothField_deviation`). Taking `m` the midpoint and `θ* = (b − x*)/(b − a)` from
+the ahead pole,
+
+> `½ − θ*(i) = (F(m) − L)/(2·W(ξ)·(b − a))`  (`cothField_midpoint_deviation`),
+
+and the midpoint excess is the exact §15 residue: at `L = −(pole count)`,
+`F(m) + card = 2·(behind + BehindEx − AheadEx) = 2g(i)` (`midpoint_excess_eq`,
+`cothField_theta_deviation`). Instantiated on the **literal harmonic pole model** `T_j = c·H_{j−1}`
+(built as an actual `Finset`-indexed field: `harmPole`, strictly increasing, gap width `δ_i = c/(i+1)`,
+`i+1` poles behind the midpoint — `harmPole_strictMono`, `harmPole_gap_width`, `harmonic_behind_card`),
+
+> `½ − θ*(i) = ((i+1) + BehindEx − AheadEx) / (W(ξ)·δ_i)`  (`harmonic_theta_deviation`),
+
+the exact discrete deviation. Its two asymptotic factors — the steepness `W(ξ)δ_i/i → π²/2` (local
+factor `κ = 2/π²`) and the numerator `g(i)/i → i/d + (π²/16)/i` (truncation against shell correction)
+— are exactly the edge-law inputs (§16), now **factors of a proven identity, not hypotheses**. Their
+limits (the second-order Euler–Maclaurin `ε → −π²/16`, the digamma truncation `A_trunc/i → i/d`, and
+the near-pole steepness limit) are the residual formalization surface; the identity they sit inside is
+closed.
+
+The equilibrium is **not** hypothetical: it exists. On any pole-free gap with simple poles at both
+endpoints the field blows up `+∞/−∞` at the ends (`cothField_atTop_leftPole`,
+`cothField_atBot_rightPole` — the endpoint term `rcoth((x−a)/2) ≥ 2/(x−a) → ∞`, the rest continuous),
+so the intermediate value theorem attains every level (`cothField_root_exists`). On the harmonic model
+the strictly-increasing poles are simple, so the gap-`i` equilibrium exists at level `−d`
+(`harmonic_equilibrium_exists`) and the exact deviation identity holds for it unconditionally
+(`harmonic_theta_deviation_exists`): the discrete `θ*(i)` field is a genuine object, existence +
+uniqueness (`cothField_eq_unique`) + exact deviation.
+
+### 17.3 The §14c race, made exact: room = excess/(2W), the race is a sign [PROVED HERE — Lean]
+
+Doc 13(b) wanted a *bound* on the W-response room `δ/2 − s` (the margin by which the equilibrium sits
+in the outer half, where `dW/ds < 0` and (S-mono) operates). The deviation identity gives it as an
+**exact identity**:
+
+> `δ/2 − s* = (b − a)/2 − (b − x*) = (F(m) − L)/(2·W(ξ))`  (`cothField_room_eq`),
+
+i.e. the room is the midpoint field excess over the level, measured in energy units; on the harmonic
+model `δ/2 − s* = g(i)/W(ξ)`. The race "does the (S-mono) energy gain beat the `1/(π√d)` margin" is
+therefore an exact **sign condition**:
+
+> `0 < δ/2 − s*  ⟺  L < F(m)`  (`cothField_room_pos_iff`),
+
+the W-response applies at a gap iff the midpoint field exceeds the level, iff `g(i) > 0`. At the
+marginal carrier `c = 2` the excess is the `√d`-edge residue: `½ − θ_max = 1/(π√d) > 0` at every
+finite `d` (§16 edge law, positive), so the room **never closes at finite `d`** — it shrinks like
+`1/(π√d)` but stays strictly positive, and the assembly step (e) has positive room at every level. For
+`c ≥ 2` the strip is empty (§15), so `g(i) > 0` and the room is positive at **every** gap, not only the
+edge. The "energy gain `≳ 1/√d`" of §14(c) is exactly this: the room's `√d`-rate is the edge law, and
+its sign is the strip-emptiness — both now exact, the first proven-to-a-skeleton, the second a proven
+equivalence.
+
+### 17.4 The marginal crossover [CONJECTURE]
+
+Varying `c` in the harmonic family does not give a `√d` law off `c = 2` — for `c ≠ 2` the leading
+balance `1 − Φ(c) ≠ 0` makes `½ − θ_max` an `O(1)` constant `→ c(1−Φ(c))/π²`. The genuine
+one-parameter object is the **finite-size-scaling crossover at the marginal point**: with scaling
+variable `ξ = (2 − c)√d`,
+
+> `(½ − θ_max)·√d → G(ξ)`,  `G(0) = 1/π`,  `G(ξ) → −ξ/4` as `|ξ| → ∞`,
+
+unifying the two proven constants — `G(0) = 1/π` is the edge law, and the asymptotic slope `1/4`
+is `Φ'(2) = −π²/8` read through `κ = 2/π²` (`1 − Φ(c) ≈ (π²/8)(c − 2)` gives `½ − θ_max ≈ (c−2)/4`,
+i.e. `G(ξ) ≈ −ξ/4`). The collapse of `margin·√d` onto a single `G` across `d`, and the shape of `G`
+between its two limits, are open. `edge_margin_const_general` already gives the whole `ρ(κ,a)` family
+as the abstract skeleton this crossover is a section of.
+
+**Forward.** (i) Discharge the two decomposition limits (`ε → −π²/16`, `A_trunc/i → i/d`) from the
+exact `poleExcess` field, closing `harmonic_theta_deviation`'s factors into the edge law with no input.
+(ii) Construct the crossover `G` — the finite-size-scaling function joining `1/π` to `−ξ/4` — as a new
+object; its existence is the collapse conjecture. (iii) A deformed carrier whose marginal locus is a
+curve, turning `ρ(κ(c), a(c))` into a genuine one-parameter family of marginal carriers rather than a
+single point plus its abstract skeleton.
+
+## 18. Discharging the steepness input: the near-pole `csch²` Tannery limit [PROVED HERE — Lean]
+
+§17.2's exact identity `½ − θ*(i) = g(i)/(W(ξ)·δ_i)` reduces the edge law to three input asymptotics
+(§16). The first — the near-pole **steepness** `2W(m)·δ_i/i → 2π²/c` (local factor `κ(c) = c/π²`) — is
+now proved as a mechanism, rigorously (`LegStripSteepness.lean`, axiom-clean).
+
+The steepness is `W(m)/n² → π²/c²` (`n = i+1`, both sides), a **Tannery limit**: each pole contributes
+`csch²(dist/2)/n²`, whose `n → ∞` limit is the near-pole value `(2/(c(k+½)))²` — proved from
+`csch²(z) < 1/z²` (`rcsch_sq_lt_inv_sq`, via `x < sinh x`) and `w/sinh w → 1` (`tendsto_self_div_sinh`,
+the derivative of `sinh` at `0`), giving `tendsto_rescaled_csch_sq_term`. The contributions are dominated
+uniformly by the summable `(2/(c(k+½)))²` (`rescaled_csch_sq_le`), which sums to `2π²/c²` by odd Basel
+(`tsum_near_pole_bound = (16/c²)·Σ 1/(2k+1)² = (16/c²)(π²/8)`). Dominated convergence then delivers
+
+> `tendsto_rescaled_csch_sq_sum`: `Σ_k csch²(dist n k /2)/n² → 2π²/c²`
+
+for any distance family with the near-pole pointwise limit `n·dist n k → c(k+½)` and lower bound
+`dist n k ≥ (c/n)(k+½)`. Both hypotheses are met by the harmonic behind distances
+`bdist_i(k) = c/(2i) + c·Σ_{j<k}1/(i−1−j)`: the pointwise limit `i·bdist_i(k) → c(k+½)`
+(`tendsto_behind_dist`) rests on the **backward harmonic sum limit** `i·Σ_{j<k}1/(i−1−j) → k`
+(`tendsto_backward_harmonic_sum`, a squeeze between `ik/(i−1)` and `ik/(i−k)`), and the lower bound is
+`behind_dist_lb`.
+
+So the steepness **mechanism** — the near-pole `csch² → 1/z²` collapse of the field's curvature onto the
+odd-Basel constant `π²/c²` — is a theorem, and the harmonic carrier meets its hypotheses. What remains
+to land `2W(m)δ/i → 2π²/c` on the literal `W(m) = ¼Σ_{k∈range d} csch²((m − T_k)/2)` is the
+finite-sum reconciliation (the behind/ahead sums are finite, the Tannery limit is over `ℕ`), the ahead
+side (identical, needing `d − i → ∞`), and the `δ = c/(i+1)` rescaling — mechanical given the mechanism.
+The other two inputs (`A_trunc/i → i/d` digamma, `ε → −π²/16` second-order Euler–Maclaurin) and the
+`ξ`-drift control (`W(ξ)/W(m) → 1`, from `θ*(i) → ½` pinning `ξ` to `m`) are the onward surface toward
+the assumption-free edge law.
