@@ -657,3 +657,38 @@ The deck form is also banked:
 Two corollaries isolate the cases from Addendum 17. If there is no positive square fixed point, swap-invariance alone gives even weighted charge (`reflectedGridWeightedCharge_even_of_swap_invariant_no_fixed`). If `C=r²`, it is enough to prove the single fixed weight `q(r,r)` is even (`reflectedGridWeightedCharge_even_of_swap_invariant_square_fixed_even`).
 
 This removes the apparent square obstruction for the physical charge route: the only unpaired lattice point is harmless once its fixed-locus charge is even — exactly the kind of input supplied by reflection parity at a genuine fixed/ramified locus. The remaining bridge is now sharply typed: identify the AFE/reflection charge weight `q`, prove its swap-invariance on the divisor-antidiagonal carrier, and prove the fixed square weight is the even reflected/ramified local order. Off-grid events, if present, must be supplied as a separate paired class.
+
+---
+
+## Addendum 19: analytic local-order charge closes the square fixed-weight input
+
+**[PROVED HERE, Lean]** `RHTower/ReflectedGridAnalyticCharge.lean`: the remaining fixed-square input from Addendum 18 is automatic when the reflected-grid charge weight is an analytic vanishing order. Define
+
+`reflectedGridAnalyticCharge C F center = ∑_{x∈reflectedGridCollisions C} (analyticOrderAt (F x) (center x)).toNat`.
+
+The theorem `reflectedGridAnalyticCharge_even_of_swap_order_even_fixed` proves: if the local orders are invariant under the factor-swap reflection `(n,m) ↦ (m,n)`, and every diagonal fixed germ is analytic, reflection-symmetric about its center, and finite-order, then the total analytic charge is even. The deck form
+`reflectedGridAnalyticCharge_deckRed_two_eq_one_of_swap_order_even_fixed` gives the same result as `deckRed 2 (charge)=1`.
+
+The square-specialized theorem `reflectedGridAnalyticCharge_even_of_swap_order_square_reflection` states the exact fixed-point case: when `C=r²`, the single diagonal weight `(r,r)` is even by `analyticOrderAt_even_of_reflection`; no independent square-weight parity assumption remains.
+
+The R7 saddle-parity bridge is now reduced to a concrete construction problem, not a parity problem: construct the actual AFE/reflection germ family `F` and centers, prove that its local orders are invariant under the divisor-antidiagonal swap, and prove that the physical charge carrier has no additional off-grid events except separately paired classes. The fixed square itself is already handled by reflection parity.
+
+---
+
+## Addendum 20: completed-carrier reflected-grid charge parity
+
+**[PROVED HERE, Lean]** `RHTower/ReflectionParity.lean` now has the local germ form
+
+`analyticOrderAt_even_of_reflection_eventually`:
+
+if `f` is analytic at `c`, has finite order at `c`, and satisfies `f(2c-s)=f(s)` eventually near `c`, then `(analyticOrderAt f c).toNat` is even. This removes the global-entire hypothesis from the fixed-point parity input and is the form needed for carriers analytic only on a strip.
+
+**[PROVED HERE, Lean]** `RHTower/ReflectedGridCompletedCharge.lean` instantiates the analytic charge package with the concrete completed finite carrier `completedGN N`. It defines
+
+`reflectedGridCompletedCharge C N center = reflectedGridAnalyticCharge C (fun _ => completedGN N) center`.
+
+The theorem `reflectedGridCompletedCharge_even_of_center_swap` proves: if the center assignment on `reflectedGridCollisions C` is swapped by `center(swap x)=1-center(x)`, all centers lie in the open strip, diagonal fixed collisions have center `1/2`, and all involved local orders are finite, then the completed-carrier reflected charge is even. The deck form `reflectedGridCompletedCharge_deckRed_two_eq_one_of_center_swap` gives `deckRed 2 (charge)=1`.
+
+The completed carrier supplies both analytic ingredients: `completedGN_orderAt_one_sub` gives off-diagonal order-swap invariance, and `completedGN_eventually_reflection_half` gives the local symmetry at the diagonal fixed point.
+
+The remaining R7 bridge is now purely geometric/accounting: construct the actual center map from the AFE saddle/grid carrier to the completed-carrier zero germs, prove the finite-order side condition for those centers, and prove that any off-grid event class is paired or absent. The parity algebra and completed-carrier local-order transfer are closed.

@@ -72,6 +72,61 @@ theorem analyticOrderAt_even_of_reflection {f : ℂ → ℂ} {c : ℂ}
     rw [ho.neg_one_pow] at hpm
     norm_num at hpm
 
+/-- **Local reflection forces even order at the fixed point.**  The global theorem
+`analyticOrderAt_even_of_reflection` only needs the germ: if `f` is analytic at `c`,
+locally symmetric under `s ↦ 2c-s` near `c`, and has finite order at `c`, then that
+order is even.  This is the form consumed by completed finite carriers that are analytic
+only on a strip neighbourhood. -/
+theorem analyticOrderAt_even_of_reflection_eventually {f : ℂ → ℂ} {c : ℂ}
+    (hf : AnalyticAt ℂ f c)
+    (hsym : ∀ᶠ s in 𝓝 c, f (2 * c - s) = f s)
+    (hne : analyticOrderAt f c ≠ ⊤) :
+    Even (analyticOrderAt f c).toNat := by
+  set m : ℕ := (analyticOrderAt f c).toNat with hm_def
+  have hcoe : (m : ℕ∞) = analyticOrderAt f c := ENat.coe_toNat hne
+  obtain ⟨p, hp, hp0, hfact⟩ := (hf.analyticOrderAt_eq_natCast).mp hcoe.symm
+  have h2cc : (2 * c - c : ℂ) = c := by ring
+  have hrefl_nhds : Tendsto (fun s : ℂ => 2 * c - s) (𝓝 c) (𝓝 c) := by
+    have h := (continuousAt_const (x := c) (y := 2 * c)).sub continuousAt_id
+    simpa [h2cc] using h.tendsto
+  have hrefl_within : Tendsto (fun s : ℂ => 2 * c - s) (𝓝[≠] c) (𝓝 c) :=
+    hrefl_nhds.mono_left nhdsWithin_le_nhds
+  have hfact_ref : ∀ᶠ s in 𝓝[≠] c,
+      f (2 * c - s) = (2 * c - s - c) ^ m * p (2 * c - s) := by
+    simpa [smul_eq_mul] using hrefl_within.eventually hfact
+  have hfact_self : ∀ᶠ s in 𝓝[≠] c, f s = (s - c) ^ m * p s := by
+    simpa [smul_eq_mul] using hfact.filter_mono nhdsWithin_le_nhds
+  have hsym_within : ∀ᶠ s in 𝓝[≠] c, f (2 * c - s) = f s :=
+    hsym.filter_mono nhdsWithin_le_nhds
+  have key : ∀ᶠ s in 𝓝[≠] c, p s = (-1 : ℂ) ^ m * p (2 * c - s) := by
+    filter_upwards [self_mem_nhdsWithin, hfact_self, hfact_ref, hsym_within] with
+      s hs hs1 hs2 hsyms
+    have hs' : s ≠ c := hs
+    have e3 : (2 * c - s - c : ℂ) = -(s - c) := by ring
+    have hpow : (s - c) ^ m ≠ 0 := pow_ne_zero m (sub_ne_zero.mpr hs')
+    have e5 : (s - c) ^ m * p s =
+        (s - c) ^ m * ((-1 : ℂ) ^ m * p (2 * c - s)) := by
+      rw [← hs1, ← hsyms, hs2, e3, neg_pow]
+      ring
+    exact mul_left_cancel₀ hpow e5
+  have hcont1 : Tendsto p (𝓝[≠] c) (𝓝 (p c)) :=
+    hp.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  have hcont2 : Tendsto (fun s : ℂ => (-1 : ℂ) ^ m * p (2 * c - s)) (𝓝[≠] c)
+      (𝓝 ((-1 : ℂ) ^ m * p c)) := by
+    have hcomp : Tendsto (fun s : ℂ => p (2 * c - s)) (𝓝 c) (𝓝 (p c)) :=
+      hp.continuousAt.tendsto.comp hrefl_nhds
+    exact (hcomp.const_mul _).mono_left nhdsWithin_le_nhds
+  have heq : p c = (-1 : ℂ) ^ m * p c :=
+    tendsto_nhds_unique (hcont1.congr' key) hcont2
+  have hpm : (-1 : ℂ) ^ m = 1 := by
+    have h1 : (-1 : ℂ) ^ m * p c = 1 * p c := by rw [one_mul, ← heq]
+    exact mul_right_cancel₀ hp0 h1
+  rcases Nat.even_or_odd m with he | ho
+  · exact he
+  · exfalso
+    rw [ho.neg_one_pow] at hpm
+    norm_num at hpm
+
 /-- **The central multiplicity of ξ is even** — the functional equation sees parity at
 its fixed point. -/
 theorem xi_central_order_even : Even ((analyticOrderAt xi (1 / 2 : ℂ)).toNat) := by

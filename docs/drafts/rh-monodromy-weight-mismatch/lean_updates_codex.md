@@ -585,3 +585,51 @@ loss of generality.
 - `reflectedGridWeightedCharge_even_of_swap_invariant_square_fixed_even` and deck form: when `C=r²`, it suffices that the singleton fixed weight `q(r,r)` is even.
 - Verification: `lake env lean GaloisForLFunctions/RHTower/ReflectedGridCharge.lean`; `lake env lean GaloisForLFunctions/RHTower.lean`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
 - Boundary left open: define the physical AFE/reflection charge weight on this carrier and prove its swap-invariance plus even fixed weight; any off-grid/noncollision event class must be separately paired.
+
+## Fail-fast audit modules (F1/F3)
+
+Three new modules, all axiom-clean `[propext, Classical.choice, Quot.sound]`, umbrella-imported:
+
+* `RHTower/EdgeScaleNoGo.lean` — `short_window_engine_no_events`: for `ρ₀(b−a) < π` a
+  carrier pair satisfies EVERY forcing-engine hypothesis (rate floor attained, endpoint
+  orientations agreeing) while NO real-ratio pencil member vanishes on the segment; with
+  the positive direction the forcing threshold is bracketed at the phase-π quantum
+  `π/ρ₀` exactly. Helper `pencil_real_member_ne_zero_of_im_ne_zero`.
+* `RHTower/IsolatingAnnulusRung.lean` — the `∀ε` clause of the ladder rung eliminated:
+  `xi_peel_isolating_ball` (global peel cofactor nonvanishing on any isolating ball),
+  `xi_deckClass_annulus_isolating` (deck class counts central multiplicity on any
+  isolating annulus), `rhLadder_of_isolating_anchoredLedgers` and
+  `rhLadder_one_of_isolating_anchoredEventLedgers` (the rung from ONE isolating annulus
+  per off-line zero), `xi_exists_isolating_radius` (isolating radii exist).
+* `RHTower/MirrorEdgeSymmetry.lean` — line reflection `s ↦ 1−s̄` on the incidence pencil:
+  `incidence_lineReflection`, `im_incidence_mirror_edge` (Im odd across the line),
+  `bandEvent_mirror_iff`, `mirror_orientation_reversal`, `mirror_pool_fluxPaired`
+  (mirror-pooled event families are doubled with a FREE flux pairing — mirror-symmetric
+  parity certificates assert nothing), `completedGN_lineReflection` +
+  `completedGN_im_mirror_edge` (the concrete carrier is equivariant; its trivial pencil
+  is mirror-blind), `cosh_add_mul_I_im`, and `hagree_not_determined_by_symmetry`
+  (two carriers in the same FE+reality class realise agreement AND disagreement of the
+  endpoint orientations on the same edge — the boundary datum is strictly finer than the
+  symmetry class).
+
+Verdicts and the D–H stress table: doc 108.
+
+## ReflectedGridAnalyticCharge.lean — analytic local order supplies the fixed-square parity
+
+- `reflectedGridAnalyticCharge C F center`: weighted reflected-grid charge with weight `(analyticOrderAt (F x) (center x)).toNat`.
+- `reflectedGridAnalyticCharge_even_of_swap_order_even_fixed`: if analytic local orders are invariant under factor swap and diagonal fixed germs are analytic, reflection-symmetric, and finite-order, then total analytic charge is even.
+- `reflectedGridAnalyticCharge_deckRed_two_eq_one_of_swap_order_even_fixed`: deck form, `deckRed 2 (analytic charge)=1`.
+- `reflectedGridAnalyticCharge_even_of_swap_order_square_reflection`: in the square case `C=r²`, the singleton fixed weight is even by `analyticOrderAt_even_of_reflection`; only swap-invariance of off-diagonal local orders remains.
+- `reflectedGridAnalyticCharge_deckRed_two_eq_one_of_swap_order_square_reflection`: square-specialized deck form.
+- Verification: `lake env lean GaloisForLFunctions/RHTower/ReflectedGridAnalyticCharge.lean`; `lake env lean GaloisForLFunctions/RHTower.lean`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
+- Boundary left open: instantiate `F` with the actual AFE/reflection charge germs, prove local-order swap-invariance, and show any off-grid event class is paired.
+
+## ReflectionParity.lean + ReflectedGridCompletedCharge.lean — completed carrier supplies reflected-grid analytic charge parity
+
+- `analyticOrderAt_even_of_reflection_eventually`: local reflection parity for analytic germs. Eventual symmetry `f(2c-s)=f(s)` near `c`, analytic-at-`c`, and finite order imply the local order is even. This localizes the earlier global `analyticOrderAt_even_of_reflection` theorem.
+- `reflectedGridCompletedCharge C N center`: the reflected-grid analytic charge instantiated with the concrete completed finite carrier `completedGN N`.
+- `completedGN_eventually_reflection_half`: `completedGN N` is locally reflection-symmetric at the FE fixed point `1/2`.
+- `reflectedGridCompletedCharge_even_of_center_swap`: if factor swap sends centers to `1-center`, centers lie in the open strip, diagonal centers are `1/2`, and local orders are finite, then the completed-carrier reflected charge is even.
+- `reflectedGridCompletedCharge_deckRed_two_eq_one_of_center_swap`: deck form, `deckRed 2 (completed charge)=1`.
+- Verification: `lake env lean GaloisForLFunctions/RHTower/ReflectionParity.lean`; `lake env lean GaloisForLFunctions/RHTower/ReflectedGridCompletedCharge.lean`; `lake env lean GaloisForLFunctions/RHTower.lean`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
+- Boundary left open: construct the actual AFE saddle/grid center map, prove the finite-order condition at those centers, and account for off-grid/noncollision events.

@@ -271,4 +271,7 @@ import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity
 import GaloisForLFunctions.RHTower.ReflectedGridCharge
+import GaloisForLFunctions.RHTower.ReflectedGridAnalyticCharge
+import GaloisForLFunctions.RHTower.ReflectedGridCompletedCharge
+import GaloisForLFunctions.RHTower.ReflectedGridCenter
 import GaloisForLFunctions.RHTower.FoldonFrustration

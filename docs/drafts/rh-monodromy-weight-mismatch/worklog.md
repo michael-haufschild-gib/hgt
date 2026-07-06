@@ -5905,3 +5905,28 @@ Verify: `lake build MainTheorems` EXIT 0 (9200 jobs); all decls axiom-clean; lin
 - exists_incidence_edge_events_fluxPaired (TERMINUS): incidence pencil lateral edge, rate floor ρ₀>0, endpoints agree ⟹ even forced events + paired flux, pairing built. Whole paired-flux burden = ONE boundary datum: 0<Im ι(σ+iT) ↔ 0<Im ι(σ+iT′).
 - Refactor: incidence_edge_polar_data (shared setup); polar_data_of_logDeriv strengthened to 0<R.
 - ROUTE STATUS: every structural gate machine-checked. Reduces to hagree (endpoint-orientation agreement on a lateral edge), the FE-governed boundary sign — the sole residual, the classical content the geometry isolates. Next object = hagree from box FE/reflection symmetry + Euler-tail {τ log p} equidistribution.
+
+## Fail-fast audit (F1 scale, F2 Davenport–Heilbronn, F3 hagree) — doc 108
+
+Pre-registered predictions: (F1) the engine forces nothing below π/ρ₀; the rung might be
+re-provable from one isolating annulus. (F2) all producer hypotheses hold for D–H (no
+Euler product used). (F3) hagree not derivable from FE+reality; mirror-pooled parity free.
+
+Outcomes: all three confirmed, machine-checked where formalizable.
+- F1a `EdgeScaleNoGo.lean`: quantum π/ρ₀ sharp (witness with every engine hypothesis +
+  hagree and an empty event set). At the ζ-floor the quantum is the mean zero gap.
+- F1b `IsolatingAnnulusRung.lean`: ∀ε eliminated — the rung needs ONE isolating annulus
+  per off-line zero (`rhLadder_one_of_isolating_anchoredEventLedgers`). Route survives
+  with the weakened consumer; open comparison = repulsion clause δ_iso(ρ) > 2π/log γ.
+- F2 (paper, doc 108 table): producer is arithmetic-blind — valid for the whole FE class
+  including D–H; all discrimination localized at the weld. D–H filter: any FE-generic,
+  rung-uniform weld is refuted by Davenport–Heilbronn 1936.
+- F3 `MirrorEdgeSymmetry.lean`: blindness horn (mirror-pooled certificates free;
+  completedGN's own pencil mirror-blind) + non-derivability horn (cosh witness pair,
+  same class, opposite hagree on the same edge). Parity front closed as target, retained
+  as interface. Sharpening: the anchor is the unique mirror-non-blind component — parity
+  content must flow through the anchor's asymmetry.
+
+Kill criterion did not fire (F1b repaired the scale mismatch). Forward object: the
+anchor's mirror-odd phase tilt on the isolating annulus of a hypothetical off-line zero —
+where the Euler product meets the locality scale.
