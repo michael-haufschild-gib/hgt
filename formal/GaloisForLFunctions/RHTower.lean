@@ -113,6 +113,8 @@ import GaloisForLFunctions.RHTower.SeamSignTransport
 import GaloisForLFunctions.RHTower.AnnealWindowRelation
 import GaloisForLFunctions.RHTower.DiscCensus
 import GaloisForLFunctions.RHTower.DiscJump
+import GaloisForLFunctions.RHTower.CensusProfile
+import GaloisForLFunctions.RHTower.Variation
 import GaloisForLFunctions.RHTower.RelayLedger
 import GaloisForLFunctions.RHTower.EMCarrier
 import GaloisForLFunctions.RHTower.SeamCongruence
@@ -178,6 +180,8 @@ import GaloisForLFunctions.RHTower.LegStripEquilibrium
 import GaloisForLFunctions.RHTower.LegStripSteepness
 import GaloisForLFunctions.RHTower.LegStripSteepnessHarmonic
 import GaloisForLFunctions.RHTower.LegStripTruncation
+import GaloisForLFunctions.RHTower.LegStripShellEM
+import GaloisForLFunctions.RHTower.LegStripShellRate
 import GaloisForLFunctions.RHTower.BohrMomentDensity
 import GaloisForLFunctions.RHTower.WeierstrassMajorant
 import GaloisForLFunctions.RHTower.FloorFailureUnconditional

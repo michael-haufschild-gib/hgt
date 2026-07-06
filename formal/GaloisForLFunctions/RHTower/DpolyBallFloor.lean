@@ -21,6 +21,7 @@ import GaloisForLFunctions.RHTower.HardyCarrier
 import GaloisForLFunctions.RHTower.RouteBOfflineDomination
 import GaloisForLFunctions.RHTower.RouteBChiDecay
 import GaloisForLFunctions.RHTower.EMCarrier
+import GaloisForLFunctions.RHTower.WindowProducer
 
 open Complex Finset Metric
 
@@ -2377,59 +2378,66 @@ end RHTower
 
 namespace RHTower
 
-/-- Full RH endpoint gate from the banked second moment, the exact averaged quadrature-energy
-budget, and one outer-radius power floor.  The Hardy anchor face is the additive scalar inequality
-`m_J^2 U + orthogonalEnergy < 4 * (U * diagonal - offdiag)`. -/
-theorem riemannHypothesis_of_secondMoment_orthogonal_saving_outer_power_endpoint_target
-    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
-      ∃ (N M : ℕ) (δ : ℝ)
-        (T U t₁ t₂ rz r₀ R P rJ RJ m_J M_J M_G a₀ : ℝ),
-        1 ≤ M ∧
-        0 < U ∧
-        0 < t₁ ∧ t₁ ≤ t₂ ∧ 0 < rz ∧
-        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
-        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
-        rz < R ∧
-        (ρ.re - 1 / 2) ^ 2 +
-            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
-        T + U - rz ≤ t₁ ∧ t₂ ≤ T + rz ∧
-        0 < m_J ∧
-        m_J ^ 2 * U +
-          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
-          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
-            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
-                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
-                  / |Real.log n - Real.log m|) ∧
-        (completedGN N (((1 / 2 : ℝ) : ℂ) + (t₁ : ℂ) * I)).re
-          * (completedGN N (((1 / 2 : ℝ) : ℂ) + (t₂ : ℂ) * I)).re ≤ 0 ∧
-        1 ≤ M_J ∧
-        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
-          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
-        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
-        m_J / rz < M_J / (rJ - rz) ∧
-        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
-        0 < a₀ ∧
-        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
-          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
-          ‖completedGN N z‖ ≤ M_G) ∧
-        max ((6 * R * M_G) / (P ^ 2 * a₀))
-            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
-              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
-          (m_J / rz) *
-            ((m_J / rz) / (M_J / (rJ - rz))) ^
-              (2 * (R + rz) / (rJ - (R + rz))) ∧
-        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
-          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
-          ‖emCarrier M z - gN N z‖ ≤ δ)) :
-    RiemannHypothesis := by
-  apply riemannHypothesis_of_center_floor_cross_slope_windows
-  intro ρ hρ hzero
+/-- Per-window data for the strongest Dpoly/Hardy outer-power endpoint.  This is the
+height-window version of the old per-right-half-zero RH gate: every zero in `boxZeros T0` carries
+the banked second-moment, orthogonal-energy, scalar, sign, and EM-close data needed to produce an
+on-line ball cover. -/
+def SecondMomentOrthogonalSavingOuterPowerWindowData (T0 : ℝ) : Prop :=
+  ∀ ρ ∈ boxZeros T0,
+    ∃ (N M : ℕ) (δ : ℝ)
+      (T U t₁ t₂ rz r₀ R P rJ RJ m_J M_J M_G a₀ : ℝ),
+      1 ≤ M ∧
+      0 < U ∧
+      0 < t₁ ∧ t₁ ≤ t₂ ∧ 0 < rz ∧
+      0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+      P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+      rz < R ∧
+      (ρ.re - 1 / 2) ^ 2 +
+          (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+      T + U - rz ≤ t₁ ∧ t₂ ≤ T + rz ∧
+      0 < m_J ∧
+      m_J ^ 2 * U +
+        (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+        4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+          - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+              2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                / |Real.log n - Real.log m|) ∧
+      (completedGN N (((1 / 2 : ℝ) : ℂ) + (t₁ : ℂ) * I)).re
+        * (completedGN N (((1 / 2 : ℝ) : ℂ) + (t₂ : ℂ) * I)).re ≤ 0 ∧
+      1 ≤ M_J ∧
+      (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+        sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+      Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+      m_J / rz < M_J / (rJ - rz) ∧
+      (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+      0 < a₀ ∧
+      (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+        sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+        ‖completedGN N z‖ ≤ M_G) ∧
+      max ((6 * R * M_G) / (P ^ 2 * a₀))
+          ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+            (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+        (m_J / rz) *
+          ((m_J / rz) / (M_J / (rJ - rz))) ^
+            (2 * (R + rz) / (rJ - (R + rz))) ∧
+      (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+        sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+        ‖emCarrier M z - gN N z‖ ≤ δ)
+
+/-- The strongest Dpoly/Hardy outer-power window data produces a `WindowLinePackage`.
+The produced package is vacuous: the scalar/Hardy data gives an on-line ball cover for every
+candidate box zero, hence the box has no right-half zeros. -/
+theorem windowLinePackage_of_secondMoment_orthogonal_saving_outer_power_endpoint_target {T0 : ℝ}
+    (hwin : SecondMomentOrthogonalSavingOuterPowerWindowData T0) :
+    WindowLinePackage T0 := by
+  refine windowLinePackage_of_ball_online_cover ?_
+  intro ρ hρ
   obtain ⟨N, M, δ, T, U, t₁, t₂, rz, r₀, R, P, rJ, RJ,
     m_J, M_J, M_G, a₀, hM, hU, ht₁, h12, hrz0, h0, hrR, hRP,
     hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad, hbrlo, hbrhi,
     hmJ0, henergy, hsign, hMJ, hbound, hjensen_floor, hengine, ha₀,
     ha₀0, hMG, hbudget_outer, hclose⟩ :=
-    hwin ρ hρ hzero
+    hwin ρ hρ
   let ε₁ : ℝ := (max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
     (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)
   let Rprime : ℝ := R - rz
@@ -2505,16 +2513,80 @@ theorem riemannHypothesis_of_secondMoment_orthogonal_saving_outer_power_endpoint
       hmJ0 hrz0 hMJ0 hrzJ hengine hP0 ha₀0 h0 hR0 hRrzJ (by
         dsimp [ε₁]
         exact hbudget_outer)
-  refine ⟨N, M, ε₁, δ, ((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I,
-    t₁, t₂, rz, r₀, R, Rprime, P, rJ, RJ, m_J, M_J, M_G, a₀, ?_⟩
-  exact ⟨hM, hεδ, ht₁, h12, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR,
+  have hρRprime : ρ ∈ ball (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) Rprime :=
     point_mem_line_center_ball_of_quadratic hR'0
-      ((quadratic_target_of_endpoint_abs_im_bounds hρT hρTU hρquad') τ hτ),
-    hR'rz, line_center_closedBall_strip hRJ12,
-    (fun u hu => line_interval_mem_closedBall_line_center_of_endpoint_bounds hbrlo hbrhi hτ hu),
-    hsign, hmJ0, hAnchor, hMJ, (fun z hz => hbound τ hτ z hz),
-    hjensen_floor, hengine, (fun z hzre hz => ha₀_line_ball τ hτ z hzre hz),
-    ha₀0, (fun z hz => hMG_ball τ hτ z hz), hcross,
-    (fun z hz => hE_ball τ hτ z hz), (fun z hz => hclose_ball τ hτ z hz), hfl⟩
+      ((quadratic_target_of_endpoint_abs_im_bounds hρT hρTU hρquad') τ hτ)
+  obtain ⟨ρ', -, hρ'rz, hpin⟩ :=
+    xi_window_pinned_of_center_floor_cross_slope (N := N) (M := M) hM hεδ
+      ht₁ h12 hrz0 h0 hrR hRP hPrz hRrzJ hrJR
+      (line_center_closedBall_strip hRJ12)
+      (fun u hu => line_interval_mem_closedBall_line_center_of_endpoint_bounds hbrlo hbrhi hτ hu)
+      hsign hmJ0 hAnchor hMJ (fun z hz => hbound τ hτ z hz)
+      hjensen_floor hengine (fun z hzre hz => ha₀_line_ball τ hτ z hzre hz)
+      ha₀0 (fun z hz => hMG_ball τ hτ z hz) hcross
+      (fun z hz => hE_ball τ hτ z hz) (fun z hz => hclose_ball τ hτ z hz) hfl
+  refine ⟨ρ', R, ?_, hpin⟩
+  rw [mem_ball]
+  calc dist ρ ρ' ≤ dist ρ (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) +
+      dist (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) ρ' := dist_triangle ρ _ ρ'
+    _ < Rprime + rz := by
+        apply add_lt_add_of_lt_of_le (mem_ball.mp hρRprime)
+        rw [dist_comm]
+        exact mem_closedBall.mp hρ'rz
+    _ ≤ R := hR'rz
+
+/-- Full RH endpoint gate from the banked second moment, the exact averaged quadrature-energy
+budget, and one outer-radius power floor.  The Hardy anchor face is the additive scalar inequality
+`m_J^2 U + orthogonalEnergy < 4 * (U * diagonal - offdiag)`. -/
+theorem riemannHypothesis_of_secondMoment_orthogonal_saving_outer_power_endpoint_target
+    (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∃ (N M : ℕ) (δ : ℝ)
+        (T U t₁ t₂ rz r₀ R P rJ RJ m_J M_J M_G a₀ : ℝ),
+        1 ≤ M ∧
+        0 < U ∧
+        0 < t₁ ∧ t₁ ≤ t₂ ∧ 0 < rz ∧
+        0 < r₀ ∧ r₀ < R ∧ R ≤ P ∧
+        P + rz ≤ RJ ∧ R + rz < rJ ∧ rJ < RJ ∧ RJ < 1 / 2 ∧
+        rz < R ∧
+        (ρ.re - 1 / 2) ^ 2 +
+            (max |ρ.im - T| |ρ.im - (T + U)|) ^ 2 < (R - rz) ^ 2 ∧
+        T + U - rz ≤ t₁ ∧ t₂ ≤ T + rz ∧
+        0 < m_J ∧
+        m_J ^ 2 * U +
+          (∫ τ in T..(T + U), 4 * (hardyOrthogonalCarrier N τ) ^ 2) <
+          4 * (U * (∑ m ∈ Finset.Icc 1 N, ((m : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2)
+            - ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ (Finset.Icc 1 N).erase m,
+                2 * |(m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ))|
+                  / |Real.log n - Real.log m|) ∧
+        (completedGN N (((1 / 2 : ℝ) : ℂ) + (t₁ : ℂ) * I)).re
+          * (completedGN N (((1 / 2 : ℝ) : ℂ) + (t₂ : ℂ) * I)).re ≤ 0 ∧
+        1 ≤ M_J ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ, ‖gN N z‖ ≤ M_J) ∧
+        Real.log (M_J / m_J) / Real.log (RJ / rJ) < 2 ∧
+        m_J / rz < M_J / (rJ - rz) ∧
+        (∀ u ∈ Set.Icc (T - rz) (T + U + rz), a₀ ≤ ‖archFactor (linePt u)‖) ∧
+        0 < a₀ ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖completedGN N z‖ ≤ M_G) ∧
+        max ((6 * R * M_G) / (P ^ 2 * a₀))
+            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
+          (m_J / rz) *
+            ((m_J / rz) / (M_J / (rJ - rz))) ^
+              (2 * (R + rz) / (rJ - (R + rz))) ∧
+        (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
+          sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+          ‖emCarrier M z - gN N z‖ ≤ δ)) :
+    RiemannHypothesis := by
+  apply rh_of_cofinal_windowLinePackages
+  intro X
+  refine ⟨max X 0 + 1, ?_, ?_⟩
+  · have hle : X ≤ max X 0 := le_max_left _ _
+    linarith
+  · refine windowLinePackage_of_secondMoment_orthogonal_saving_outer_power_endpoint_target ?_
+    intro ρ hρ
+    exact hwin ρ hρ.1.1 hρ.2
 
 end RHTower

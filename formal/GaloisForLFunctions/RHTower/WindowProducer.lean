@@ -198,6 +198,17 @@ def WindowLinePackage (T : ℝ) : Prop :=
       (∀ u : ℝ, ts 0 ≤ u → u ≤ ts s → linePoint u ∈ ball a R) ∧
       (∑ z ∈ t₂, m₂ z ≤ s)
 
+/-- An on-line ball cover produces the line-package interface vacuously.  Each candidate
+right-half zero in the box is covered by a ball whose ξ-zeros are on the critical line, so no such
+candidate exists; the per-zero package has an empty domain. -/
+theorem windowLinePackage_of_ball_online_cover {T : ℝ}
+    (h : ∀ ρ ∈ boxZeros T, ∃ a R, ρ ∈ ball a R ∧
+      ∀ p ∈ ball a R, xi p = 0 → p.re = 1 / 2) :
+    WindowLinePackage T := by
+  intro ρ hρ
+  obtain ⟨a, R, hball, honline⟩ := h ρ hρ
+  exact False.elim ((ne_of_gt hρ.1.1) (honline ρ hball hρ.2))
+
 /-- The package forces the height-`T` certificate at every level. -/
 theorem windowCertificate_of_windowLinePackage {k : ℕ} {T : ℝ}
     (h : WindowLinePackage T) : WindowCertificate k T :=

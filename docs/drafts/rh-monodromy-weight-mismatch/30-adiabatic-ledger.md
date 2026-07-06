@@ -1006,3 +1006,54 @@ partial-fraction telescopes (`trunc_upper_sum_eq`, `trunc_lower_sum_eq`, via the
 
 Input #3 (`ε → −π²/16`) is the second-order Euler–Maclaurin remainder of `poleModelDiff`, on the
 Tannery/`RescaleTannery` machinery.
+
+## 20. Input #3, the shell correction — the boundary-layer rate is the odd-Basel constant `−π²/16` [PROVED HERE — Lean]
+
+Input #3 is the `1/i`-rate of `poleModelDiff(2,i) → Φ(2) = 1`: `ε(i) := poleModelDiff(2,i) − 1 →
+−(π²/16)/i`. Two facts now stand as theorems.
+
+**(a) The pole-excess field's second-order Euler–Maclaurin sandwich [PROVED HERE — Lean].** The field
+`poleExcess u = 1/(eᵘ−1)` carries the exact expansion `1/u − 1/2 + u/12 − …` with Bernoulli
+coefficients `B₁ = −1/2`, `B₂ = 1/6`. Both leading corrections are pinned Padé-tight
+(`LegStripShellEM.lean`, axiom-clean):
+
+> `poleExcess_em_lower`/`poleExcess_em_upper` : `1/u − 1/2 ≤ poleExcess u ≤ 1/u − 1/2 + u/12`  (`u > 0`).
+
+The lower bound is the `[1/1]` Padé inequality `(2−u)eᵘ ≤ 2+u` (equivalently `coth(u/2) ≥ 2/u`); the
+upper is the `[2/2]` Padé inequality `(u²+6u+12) ≤ (u²−6u+12)eᵘ`. Each is iterated monotonicity from
+`0`: the defining function and its first one/two derivatives vanish at `0`, and the last derivative —
+`ueᵘ` for the lower, `u²eᵘ` for the upper — is manifestly `≥ 0` on `[0,∞)` (`nonneg_of_deriv`,
+`hasDerivAt_quad_exp`). This is the literal EM object input #3 is built from.
+
+**(b) The per-term boundary-layer rate is `½ − 1/(2(2k+1)²)` [PROVED HERE — Lean].** At `c = 2` the
+`k`-th ahead/behind distances `aheadₖ = 1/i + 2Σ_{j<k}1/(i+j+1)`, `behindₖ = 1/i + 2Σ_{j<k}1/(i-1-j)`
+(the exact per-`k` arguments of `poleModelDiff 2 i`) both tend to `0` like `(2k+1)/i`, and their field
+imbalance converges (`LegStripShellRate.lean`, axiom-clean):
+
+> `poleModelTerm_rate` : `poleExcess(aheadₖ) − poleExcess(behindₖ) → 2k(k+1)/(2k+1)² = ½ − 1/(2(2k+1)²)`.
+
+The proof splits the imbalance into (i) the reciprocal part `1/aheadₖ − 1/behindₖ`, whose limit
+`2k(k+1)/(2k+1)²` is read off the three scaling limits `i·aheadₖ → 2k+1`, `i·behindₖ → 2k+1`,
+`i²(behindₖ − aheadₖ) → 2k(k+1)` (`tendsto_i_ahead`, `tendsto_i_behind`, `tendsto_i2_diff`, this last
+via the product ratio `i²/((i-1-j)(i+j+1)) = i²/(i²-(j+1)²) → 1`); and (ii) the Euler–Maclaurin
+remainder `r(u) = poleExcess u − (1/u − 1/2)`, which vanishes along the shrinking distances by the
+sandwich squeeze `0 ≤ r(u) ≤ u/12` of part (a).
+
+**The constant is the odd-Basel value.** The algebraic split `2k(k+1)/(2k+1)² = ½ − 1/(2(2k+1)²)` is
+exact: the `½` per term is the bulk linear growth (it feeds the leading `i` in `A − B`), and the
+convergent correction `−1/(2(2k+1)²)` sums to
+
+> `oddBasel_correction_hasSum` : `Σ_k −1/(2(2k+1)²) = −½·Σ_k 1/(2k+1)² = −½·(π²/8) = −π²/16`,
+
+via `hasSum_odd_basel`. So the `−π²/16` rate constant is `−½·(odd Basel)` read off the boundary layer
+term by term — the same `Σ 1/(2k+1)² = π²/8` that fixes the near-pole steepness `π²/c²` (input #1) and
+the `1/π` edge law. The three inputs are one constant seen through three windows of the boundary layer.
+
+**What this opens.** The per-term rate + the odd-Basel sum give the constant `−π²/16` at term level with
+zero assumptions. The remaining assembly is the **matched interchange**: promoting the per-`k` limits to
+`i·ε(i) = i·(poleModelDiff(2,i) − 1) → Σ_k(½ − rate_k) − (bulk i) → −π²/16`, i.e. a dominated-convergence
+exchange of `Σ_k` and `lim_i` against the bulk subtraction of the `½`-per-term growth (the ahead-tail
+`Σ_{k≥i}poleExcess(aheadₖ)` supplying the complementary half). The next brick is the uniform-in-`i`
+domination of `poleExcess(aheadₖ) − poleExcess(behindₖ) − (½ − 1/(2(2k+1)²))` — the boundary-layer
+analog of `shellBound` — after which the `ε`-limit closes by `tendsto_tsum_of_dominated_convergence`,
+exactly as `tendsto_shellSum_stripResidue` closed the leading term.

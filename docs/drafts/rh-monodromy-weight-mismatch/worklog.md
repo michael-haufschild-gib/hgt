@@ -5277,3 +5277,102 @@ capstone declarations axiom-clean `[propext, Classical.choice, Quot.sound]`; ind
 function; (a) a finite-carrier census profile — height-indexed decidable checks; (b) the divisor
 difference `discJump_ξ − discJump_g` as a signed divisor on ℝ supported where the two carriers'
 zero heights disagree, a discrete measure on the line carrying the transported rung data.
+
+---
+
+## cont. 53 — the census profile (right-continuous step function) + finite agreement + divisor difference
+
+Built the forward object doc 95 §4 named; doc 96 is the ledger. New module `CensusProfile.lean`.
+
+**Profile.** Closed-cutoff `boxOrderSumLe T` (im≤T). `censusProfile k T := (boxOrderSumLe T : ZMod
+(2^k))`. Right-continuity: `boxOrderSumLe_eventuallyConst_right` (gap above every height from
+bounded-band finiteness) ⟹ `censusProfile_continuousWithinAt` (ContinuousWithinAt (Ici T) T into
+discrete ZMod). Step: `censusProfile_const_of_no_zeros`. Jump identity
+`censusProfile_eq_left_add_discJump`: censusProfile = discCensusH + (discJump : ZMod) at T≥0 — the
+profile's steps are the jump divisor of doc 95.
+
+**(a) finite agreement.** `stripFinsetLe T` reflection-closed strip config, right-half = box
+(`stripFinsetLe_filter_right`); `censusProfile_eq_windowDiscBit`. `TransportedProfile N k G mg`
+bundles the per-height reflection-closed completedGN configs + boundary congruences;
+`censusProfile_eq_finiteCensusProfile` — censusProfile = fun T => windowDiscBit k (G T) mg (function
+equality), the decidable finite-carrier profile.
+
+**(b) divisor difference.** `stripHeightFinset t` reflection-closed height slice (reflection
+preserves height), right-sum = discJump (`windowRightSum_stripHeightFinset`). `finiteDiscJump`,
+`jumpDiff := (discJump t : ℤ) − (finiteDiscJump : ℤ)`; support in the union of zero-height sets
+(`jumpDiff_eq_zero_of_no_zeros`); `two_pow_dvd_jumpDiff` — (2^k:ℤ) ∣ jumpDiff via height-slice
+transport, the signed divisor valued in 2^k·ℤ.
+
+**Verify.** `lake build RHTower MainTheorems` EXIT 0 (9143 jobs); 8 capstones axiom-clean
+`[propext, Classical.choice, Quot.sound]`; index regenerated; `formal lint passed`. Finite carrier
+represented by its actual zero Finsets → no unproven completedGN finiteness lemma needed.
+
+**Opened (doc 96 §5).** The variation functional V k T (count of rung-failing heights below T,
+monotone, =0 iff rung holds); (a) the variation zero-set as a closed discrete subset of ℝ; (b) the
+Stieltjes measure d(censusProfile) as a ZMod-weighted atomic measure on the zero heights, its
+finite-carrier counterpart differing by the divisor-difference measure.
+
+---
+
+## cont. 54 — variation functional + closed discrete zero-set + Stieltjes content
+
+Built the three objects doc 96 §5 named; doc 97 is the ledger. New module `Variation.lean`.
+
+**V functional.** `badHeights k T` (rung-failing heights below T), `V k T := card`. `V_mono`;
+`V_eq_zero_iff` (=0 ↔ ∀ box zero, 2^k ∣ discJump z.im); `V_eq_zero_of_windowCertificate` (rung
+forces 0); `dvd_discJump_iff_finiteDiscJump` (decidable finite-carrier shadow via height-t
+transport).
+
+**(a) zero-set.** `badHeightSet k := {t | ¬2^k∣discJump t}`. `badHeightSet_inter_ball_finite`
+(locally finite — each bad height carries a box zero in a ball); `isClosed_badHeightSet` (via
+LocallyFinite.isClosed_iUnion on singletons); `badHeightSet_isolated` (discrete);
+`rh_iff_forall_badHeightSet_empty` (RH ↔ ∀k badHeightSet k = ∅, full tower via "only 0 divisible by
+all 2^k"). First fully line-native RH target.
+
+**(b) Stieltjes content.** `censusIncrement k a b := censusProfile b − censusProfile a`;
+`censusIncrement_add` (additive); `censusIncrement_eq_sum_sdiff` (= enclosed order over slice mod
+2^k); `censusAtom k t := (discJump t : ZMod)` + `censusIncrement_eq_atom_of_slice` (atomic on zero
+heights); `censusIncrement_eq_finite` (ξ content = finite content under transport);
+`censusAtom_sub_finite`/`censusAtom_eq_finite` (atom gap = jumpDiff mod 2^k = 0 since 2^k∣jumpDiff —
+divisor-difference measure vanishes mod 2^k).
+
+**Verify.** `lake build RHTower MainTheorems` EXIT 0 (9144 jobs); 13 capstones axiom-clean
+`[propext, Classical.choice, Quot.sound]`; index regenerated; `formal lint passed`.
+
+**Opened (doc 97 §5).** The level filtration badHeightSet 0 ⊇ badHeightSet 1 ⊇ … (decreasing closed
+discrete tower), ⋂_k = infinite-2-adic-valuation heights; (a) the 2-adic valuation profile t ↦
+v₂(discJump t) whose sub-k level sets are the badHeightSets; (b) the filtration length t ↦ min{k : t
+∉ badHeightSet k}, a discrete profile whose window-boundedness is a transport-shadowable certificate.
+
+## cont.56 — input #3 (ε → −π²/16): EM sandwich + per-term boundary-layer rate + odd-Basel constant [Lean, axiom-clean]
+
+Discharged the two structural cores of input #3 (`ε(i) = poleModelDiff(2,i) − 1 → −(π²/16)/i`), both
+axiom-clean [propext, Classical.choice, Quot.sound], lint clean, integrated into RHTower umbrella.
+
+**`LegStripShellEM.lean`** — the pole-excess field's second-order Euler–Maclaurin sandwich:
+`1/u − 1/2 ≤ poleExcess u ≤ 1/u − 1/2 + u/12` (`poleExcess_em_lower`/`_upper`/`_remainder`).
+Lower = `[1/1]` Padé `(2−u)eᵘ ≤ 2+u`; upper = `[2/2]` Padé `(u²+6u+12) ≤ (u²−6u+12)eᵘ`. Both by
+iterated monotonicity from 0 down to the manifestly-nonneg `ueᵘ`/`u²eᵘ` (reusable `nonneg_of_deriv`,
+`hasDerivAt_quad_exp`). Method notes banked below.
+
+**`LegStripShellRate.lean`** — the per-term boundary-layer rate:
+`poleModelTerm_rate`: `poleExcess(aheadₖ) − poleExcess(behindₖ) → 2k(k+1)/(2k+1)² = ½ − 1/(2(2k+1)²)`,
+on the exact `c=2` distances `aheadₖ = 1/i+2Σ_{j<k}1/(i+j+1)`, `behindₖ = 1/i+2Σ_{j<k}1/(i-1-j)` (= the
+per-k args of `poleModelDiff 2 i`). Split into reciprocal part (three scaling limits `i·aheadₖ→2k+1`,
+`i·behindₖ→2k+1`, `i²(behindₖ−aheadₖ)→2k(k+1)` via `i²/(i²−(j+1)²)→1`) + EM remainder vanishing by the
+sandwich squeeze `0≤r(u)≤u/12`. Then `oddBasel_correction_hasSum`: `Σ_k −1/(2(2k+1)²) = −π²/16` via
+`hasSum_odd_basel`. So `−π²/16 = −½·(odd Basel)` read off the boundary layer term by term — SAME
+`Σ1/(2k+1)²=π²/8` as input #1 steepness and the 1/π edge law (three windows, one constant).
+
+**Open residual (named):** the matched interchange — `i·ε(i) → −π²/16` needs a uniform-in-i
+domination of `[poleExcess(aheadₖ)−poleExcess(behindₖ)] − (½ − 1/(2(2k+1)²))` (boundary-layer analog of
+`shellBound`), then `tendsto_tsum_of_dominated_convergence`, with the ahead-tail `Σ_{k≥i}` supplying the
+complementary half of the `½`-per-term bulk growth. Ledger §20.
+
+**Lean method notes (reusable):** (1) `HasDerivAt.sub` yields a pointfree `(fun..)-(fun..)`; reconcile
+via `convert h using 1; ring` (defeq usually lets `ring` close both) or `funext v; simp only
+[Pi.sub_apply]; ring`. (2) `tendsto_one_div_atTop_nhds_zero_nat` needs `(𝕜 := ℝ)` explicit else
+`simpa` hits a stuck `ContinuousSMul ℚ≥0 ?m`. (3) `Tendsto.div` gives a pointfree quotient function →
+`simp only [Pi.div_apply]` before the eventual-eq identity. (4) `squeeze_zero'` is positional (three
+args), don't `apply ... (g:=)`. (5) `div_le_div_iff` → `div_le_div_iff₀`; `field_simp` on `a/b=c/d`
+often closes without a trailing `ring` (drop it or get "No goals").
