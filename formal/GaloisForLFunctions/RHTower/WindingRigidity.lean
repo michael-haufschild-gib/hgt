@@ -117,3 +117,28 @@ theorem carrier_ray_of_sign_constant (N : ℕ) {γ a b : ℝ}
   linear_combination hid
 
 end RHTower
+
+namespace RHTower
+
+/-- **Ray lock on sign-nonvanishing segments.**  Where the real value of the completed
+carrier does not vanish on the line, the winding-rotated carrier `arch(γ)·e^{iΘ}·g_N` is a
+nonzero real: the carrier's phase anti-rotates the winding phase exactly, up to the sign's
+half-turn ambiguity. -/
+theorem carrier_ray_of_sign_ne_zero (N : ℕ) {γ a b : ℝ}
+    (hsgn : ∀ τ ∈ Set.Icc a b, (completedGN N (linePt τ)).re ≠ 0) :
+    ∀ τ ∈ Set.Icc a b, ∃ r : ℝ, r ≠ 0 ∧
+      archFactor (linePt γ) *
+        (Complex.exp (Complex.I * ((windingPhase γ τ : ℝ) : ℂ)) * gN N (linePt τ)) =
+        (r : ℂ) := by
+  intro τ hτ
+  refine ⟨(completedGN N (linePt τ)).re * Real.exp (-(windingModulus γ τ)),
+    mul_ne_zero (hsgn τ hτ) (Real.exp_pos _).ne', ?_⟩
+  have hid := gN_line_winding_rigidity N γ τ
+  rw [Complex.exp_add] at hid
+  rw [Complex.ofReal_mul, Complex.ofReal_exp, Complex.ofReal_neg]
+  have hMne : Complex.exp (((windingModulus γ τ : ℝ) : ℂ)) ≠ 0 := Complex.exp_ne_zero _
+  rw [Complex.exp_neg]
+  field_simp
+  linear_combination hid
+
+end RHTower

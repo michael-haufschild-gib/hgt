@@ -347,3 +347,94 @@ now a quantitative theorem chain: phase lock (WindingRigidity) + argument-variat
 (Borel–Carathéodory) + winding floor = the explicit `rz(T) ≲ 1/log T` scale carried by the
 gate itself.  Any (R1) anchor supplier now has its working scale as a formula, and the
 residual gate's geometry faces can be pre-screened against it at any proposed height.
+
+## formal/GaloisForLFunctions/RHTower/ArgumentVariation.lean (one-zero law added)
+
+The segment-length law extended to the discs the residual gate actually permits — one
+carrier zero.  `exists_unit_re_pos_linear_factor`: a line segment avoiding `ρ'` admits a
+unit rotation `u ∈ {±1, ±i}` placing `u·(linePt τ − ρ')` in the open right half-plane, so
+`Complex.log` is a continuous branch and the linear factor's argument variation is `< π`.
+`abs_windingPhase_le_of_sign_constant_one_zero`: on a sign-constant segment of a disc where
+`g_N = (z−ρ')·dslope` with nowhere-zero difference quotient (exactly the package the banked
+Jensen structure lemma `gN_one_zero_window_of_jensen` produces), the winding-phase advance
+is `≤ π + BC-budget(dslope)`.  `sign_constant_segment_length_le_one_zero`: hence
+`b − a ≤ (π + BC·log(Md/‖dslope(center)‖))/windingFloor(a)`.
+
+Big picture: the `1/log T` radius law now covers the exact zero-budget the gate's Jensen
+face allows (≤ 1 carrier zero per disc), not just the zero-free case.  The threading chain
+is now: Jensen faces ⟹ one-zero factorization (banked) ⟹ segment law (this) ⟹ radius
+scale.  What remains before the scaled endpoint is honest (i.e., its scale face provably
+redundant rather than an added assumption): the "≤ 1 sign change ⟹ a sign-constant
+subinterval of length ≥ half the window" pigeonhole, and dslope modulus data from the
+banked boundary-sup lemmas — then the gate's own faces force `rz·windingFloor(T) ≤ π + BC`
+as a theorem, and the scaled endpoint rejects mis-scaled certificates at typecheck without
+loss of generality.
+
+## RadiusScaleForcing.lean — the gate's faces force the 1/log T radius scale (threading capstone; lane closes here)
+- Sign-generalized the argument-variation chain in place: `im_eq_int_mul_pi_of_exp_real` + `continuousOn_int_mul_pi_const` (πℤ-integrality/constancy, ArgumentVariation §3) and `carrier_ray_of_sign_ne_zero` (WindingRigidity) let both winding-phase capstones and both segment-length laws run on `Re Φ̃ ≠ 0` instead of `0 < Re Φ̃` — negative-sign segments now come free, no duplicated proofs.
+- `exists_offzero_subinterval`: an interval with at most one zero of f contains, for every margin ε, an off-zero closed subinterval of length ≥ half − ε (pure pigeonhole; the unique zero leaves one flank with half the length).
+- `anchor_window_margin_scale`: at one anchor height, the faces {anchor m_J, sphere sup M_J at RJ, Jensen quotient < 2, winding threshold} force (rz − ε)·windingFloor(T−rz) ≤ π + (4rz/(rJ−rz))·(log(M_J/(RJ−rJ)+1) − log m_J). All modulus data discharged from the faces themselves: dslope sup = M_J/(RJ−rJ) by the maximum principle from the sphere sup (`dslope_norm_le_of_boundary_sup`); dslope center value ≥ m_J/rJ from the anchor through the linear factorization; carrier ball sup by the maximum principle. Case split zero-free/one-zero consumes `gN_one_zero_window_of_jensen`; the ≤1-zero input is `anchor_jensen_faces_false_of_two_sign_brackets`.
+- `residual_faces_force_radius_scale`: margin elimination — the residual gate's face subset {geometry, winding threshold, (R1) anchor, (R3) Jensen tier} forces rz·windingFloor(T−rz) ≤ π + (4rz/(rJ−rz))·(log(M_J/(RJ−rJ)+1) − log m_J), unconditionally. A certificate whose anchor radius is out of scale with 1/log T refutes its own face list: the height coupling is a THEOREM about the gate, not an extra face — no scaled endpoint needed, none added.
+- Verified: build green, axioms [propext, Classical.choice, Quot.sound] for all new + regeneralized theorems (incl. re-check of `riemannHypothesis_of_residual_faces`), lint passed.
+- `RHTower/BandEdgePairing.lean` (new, in umbrella): added `FixedPointFreePairing`, `BandEdgePairing`, `fixedPointFreePairing_two_dvd_card`, `fixedPointFreePairing_card_zmod_two_eq_zero`, and `bandEdgeUnitFlux_zmod_two_eq_zero`. Big picture: W4's band-edge contribution is now a formal finite-parity consumer: once regular lateral crossing events carry a fixed-point-free involutive pairing, their unit flux is zero in `ZMod 2`. The analytic/research burden is cleanly isolated to constructing the event pairing; the parity algebra is discharged.
+
+## UPlaneLadder.lean — simply connected u-plane ladder and far-anchor surface
+- Added `RHTower/UPlaneLadder.lean` and registered it in the `RHTower` umbrella.
+- Generalized the all-level dyadic-root obstruction from convex domains to open preconnected domains:
+  `nonvanishing_of_exists_roots_all_two_powers_preconnected`,
+  `coherentTower_of_exists_roots_all_two_powers_preconnected`, and
+  `coherentTower_iff_exists_roots_all_two_powers_preconnected`.
+- Specialized the simply connected root/tower machinery to `xiDescent` on arbitrary regions contained in
+  `slitPlane`: `xiDescent_root_of_nonvanishing_on`,
+  `xiDescent_twoPower_root_of_nonvanishing_on`,
+  `xiDescent_coherentTower_iff_nonvanishing_on`, and the roots-to-coherent-tower equivalence.
+- Added the reusable far-field u-plane anchor facts `xiDescent_far_anchor_mem_slitPlane` and
+  `xiDescent_far_anchor_ne_zero`, plus
+  `xiDescent_coherentTower_iff_nonvanishing_on_far_anchor` and
+  `xiDescent_coherentTower_of_RH_on_far_anchor`.  This turns OC3(c) into a global slit-plane-region
+  interface: any open simply connected preconnected `U ⊆ slitPlane` containing `(9:ℂ)/4` carries the
+  coherent dyadic `xiDescent` tower exactly when `xiDescent` is zero-free on `U`.
+- Verified: `lake env lean GaloisForLFunctions/RHTower/UPlaneLadder.lean`,
+  `lake env lean GaloisForLFunctions/RHTower.lean`, `lake build GaloisForLFunctions.RHTower`, and
+  `/tmp` `#print axioms` for the new capstone declarations, all with axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+## UPlaneLadder.lean — roots/zero-free equivalence capstones
+- Added direct equivalences so W5 consumers do not have to compose the lower-level tower API by hand:
+  `xiDescent_roots_all_two_powers_iff_nonvanishing_on`,
+  `xiDescent_coherentTower_iff_roots_all_two_powers_on_far_anchor`, and
+  `xiDescent_roots_all_two_powers_iff_nonvanishing_on_far_anchor`.
+- Added the RH-to-root-region consumer `xiDescent_roots_all_two_powers_of_RH_on_far_anchor`, parallel to
+  `xiDescent_coherentTower_of_RH_on_far_anchor`.
+- Verified: `lake env lean GaloisForLFunctions/RHTower/UPlaneLadder.lean`,
+  `lake env lean GaloisForLFunctions/RHTower.lean`, `lake build GaloisForLFunctions.RHTower`, and `/tmp`
+  `#print axioms`; the new capstones use only `[propext, Classical.choice, Quot.sound]`.
+
+## RHTower/BandEdgePairing.lean — W4 contrapositive diagnostics
+- Extended the finite event-pairing algebra with `bandEdgeUnitFlux_eq_card`,
+  `not_fixedPointFreePairing_of_card_zmod_two_ne_zero`, and
+  `not_bandEdgePairing_of_unitFlux_ne_zero`.
+- Big picture: W4 now has both the forward consumer (a fixed-point-free pairing kills unit flux in
+  `ZMod 2`) and the failure diagnostic (nonzero unit flux rules out the pairing interface). This keeps
+  the analytic burden exactly where it belongs: constructing or statically certifying the regular
+  lateral event parity.
+
+## RHTower/WindowSymmetryNoGo.lean — FE/reality height-line no-go
+- Added the finite `FESymmetry` action (`id`, FE, conjugation, and `lineReflect`) and proved
+  `FESymmetry.preserves_height_line_iff`: on any nonzero height line, the only FE/reality symmetries
+  preserving that line are `id` and `lineReflect`.
+- Big picture: doc 106's W4 exhaustion claim now has a Lean anchor. The visible geometric symmetry budget
+  inside a positive-height window is exhausted by the reflection already consumed by `(ID)`; any remaining
+  band-edge parity must come from arithmetic/static window data.
+
+## LedgerReduction.lean — W3: anchored even-flux ledgers force the rungs (constraint front)
+- `LedgerChain` (inductive): piecewise-generic deformation on the slit annulus charts — dominated steps (`‖next−cur‖ < ‖cur‖` on charts) and transversal jumps in/out (enclosed configuration gains/loses one zero of multiplicity m inside the hole); index = net signed flux ∈ ℤ.
+- `deckClass_step_annulus`: the conservation step ported to annulus charts (any basepoints; ratioRoot transport).
+- `ledgerChain_transport`: roots transport along any chain and the deck class multiplies by exactly exp(2πi·flux/n) — identity (L) in transport form, jumps handled by monomial×correction root multiplication/division (`deckClass_mul_mono_corr` / `deckClass_div_mono_corr`, no factored-form knowledge of the member needed, unlike `deckClass_jump`).
+- `AnchoredLedger` (Prop interface): chain from a nonvanishing member (charge computably zero via its global root) to f with n ∣ flux.
+- `anchoredLedger_deckClass_eq_one`: under an anchored even-flux ledger ANY roots of f have trivial class (root-independence transfer).
+- `xi_deckClass_annulus`: ξ's annulus-chart class = exp(2πi·m/n) below the peel radius (singleton instance of `deckClass_multi_zero`).
+- **Capstone `rhLadder_of_anchoredLedgers`**: if every off-line ξ-zero admits anchored even-flux ledgers at arbitrarily small radii at level 2^k, then `RHLadder k`. Conservation, additivity, jump, anchor all discharged; the open burden is exactly the flux-parity clause — the formal (P-flux) interface the seam-parity (W1) and band-edge-pairing (W4) packages must supply.
+- Verified: build green, axioms [propext, Classical.choice, Quot.sound] × 5, lint passed.
+- `RHTower/SeamCrossingRigidity.lean` (new, in umbrella; W2 of 105-constraint-front-plan, OC2 quantitative): the forced-oscillation layer for the seam, consuming ArgumentVariation + WindingRigidity + RadiusScaleForcing read-only. Reality bridges `gN_line_eq_zero_of_completedGN_re_eq_zero` / `completedGN_re_eq_zero_of_gN_line_eq_zero` / `completedGN_line_eq_zero_of_re_eq_zero` identify, on the critical line, a real-part zero of `completedGN` with a genuine carrier zero (archFactor never vanishes on the line). `seam_edge_forced_online_zero_one_zero` / `_crossing_` / `_completedGN_zero_` are the **contrapositive of the one-zero segment-length law**: a seam segment longer than `(π + BC-budget)/windingFloor` cannot be crossing-free, so it carries an on-line carrier zero (the on-seam zero the ledger charges). `zerofree_seam_edge_length_le` is the dual rigidity — a zero-free carrier disc forces its seam segment short (its crossing-free hypothesis is automatic, `online_re_ne_zero_of_zero_free`). Big picture: the segment-length cap becomes an existence-of-crossing statement — OC2's seam charge is not a magnitude estimate but a forced discrete event on any long enough edge.
+- `RHTower/SeamCrossingRigidity.lean`: the oscillation scale and crossing count. `seam_no_long_sign_constant_stretch_one_zero` upgrades the per-segment cap to a **uniform** one — no crossing-free sub-stretch of a window exceeds `Λ = (π + (4ρmax/(R−ρmax))·(log Md − log‖dslope center‖))/windingFloor(a)` — via BC-prefactor monotonicity in the endpoint distance (`prefactor_mono`) and winding-floor monotonicity in height. Packaged as the interface `SeamNoQuietStretch` (produced per one-zero disc by `seamNoQuietStretch_of_disc_one_zero`). Two combinatorial counters turn crossings into a tally of strictly ordered on-line carrier zeros: `exists_strictMono_zeros_of_no_long_gap` (uniform-gap form: a segment longer than `n·Λ` carries ≥ n ordered zeros — cut into n slots each longer than Λ with small gaps) and `exists_strictMono_zeros_of_slot_zeros` / `seam_crossing_count_of_slots` (the non-degenerate multi-box form: n pairwise strictly separated boxes each forcing a crossing give n distinct ordered zeros — distinct boxes, distinct single carrier zeros). Since `Λ ≍ 1/windingFloor ≍ 1/log T`, a fixed-length seam segment tiled by forced boxes carries `≳ (B−A)·log T` crossings: the seam oscillates at the `1/log T` scale. All axiom-clean `[propext, Classical.choice, Quot.sound]`; `lake build MainTheorems` green (9176 jobs); lint + index pass.

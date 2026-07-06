@@ -5718,3 +5718,72 @@ are the route-free composable layer (doc 104 §4 layer 1) they assemble.
 Lean gotchas: ContinuousLinearMap.det via LinearMap.det_toMatrix basisOneI + Matrix.det_fin_two;
 (z.re:ℂ)*I = z.re•I = reCLM.smulRight I (Complex.real_smul); Complex.{cos,sin}_ofReal_{re,im} to
 expand exp_mul_I; HasFDerivAt.congr_fderiv to align the derived CLM with the named twoPhaseDeriv.
+
+## cont. — ESSEEN's concentration inequality BUILT (mathlib gap) [Lean, axiom-clean]
+
+User-directed: build Esseen (Fejér majorant + measure-Parseval + Fubini). Done. New module
+`MeasureParseval.lean` (2 endpoints, [propext, Classical.choice, Quot.sound]):
+- `integral_measure_eq_integral_fourier_charFun`: MEASURE-PARSEVAL `∫ g dμ = ∫ w, 𝓕g w · charFun μ
+  (2π•w)` for finite μ, continuous g with 𝓕g integrable. Proof = Fourier inversion of g
+  (Integrable.fourierInv_fourier_eq + Real.fourierInv_eq) written inside ∫dμ, then Fubini
+  (integral_integral_swap) with the inner x-integral of the character = charFun at scaled frequency
+  (charFun_apply + real_inner_smul_right). This IS the mathlib gap (measure-Parseval was absent).
+- `esseen_concentration`: ESSEEN `(μ A).toReal ≤ ∫ w, ‖𝓕g w‖` for prob μ and real majorant g≥1_A (g≥0).
+  Chain: μ(A) ≤ ∫(g x).re dμ (majorant, integral_mono_ae) = (∫g dμ).re [reCLM.integral_comp_comm] =
+  (∫𝓕g·charFun).re [parseval] ≤ ‖∫‖ ≤ ∫‖𝓕g·charFun‖ ≤ ∫‖𝓕g‖ [norm_charFun_le_one].
+
+The Fejér-majorant step is the GENERAL majorant argument (esseen_concentration takes ANY g≥1_A; Fejér
+or Gaussian is a specific choice the caller plugs). So Esseen is built in reusable form: the
+smooth-packet small-ball reduces to a Fourier-L¹ bound on charFun. Verify: `lake build RHTower
+MainTheorems` EXIT 0 (9168 jobs); both axiom-clean; index+lint pass.
+
+Remaining Fourier-route gap (doc 103 §4): per-direction decay — charFun(model carrier) = ∏_q
+charFun(a_q X_q), each J₀(|ξ||a_q|), √-decay; product over M_q≈c/q makes ∫‖𝓕g‖ small. The Bessel J₀
+stationary-phase asymptotic is the one remaining mathlib gap; the reduction consuming it (Esseen) is
+now banked. Lean gotchas: 𝓕⁻ convention `∫ v, 𝐞⟪v,w⟫•f v` (Real.fourierInv_eq); Circle•ℂ = smul_eq_mul
+(↑c); VectorFourier.fourierIntegral_continuous for 𝓕(L¹) continuous; Integrable.comp_snd μ for
+dominating over μ.prod; ∫x∫w f ∂μ binds ∂μ to INNER (write ∂volume/∂μ explicitly); measureReal_def
+for (μ A).toReal ↔ μ.real A.
+
+## 2026-07-06 — pivot executed: threading banked, lane frozen, constraint front planned
+- RadiusScaleForcing.lean banked (pigeonhole + margin lemma + `residual_faces_force_radius_scale`); argument-variation chain sign-generalized to Re ≠ 0 (πℤ integrality/constancy + `carrier_ray_of_sign_ne_zero`). Build green, axiom-clean, lint passed.
+- 104 Addendum 6: no-flow-in-disguise verdict; pinning/carrier lane FROZEN with the forcing theorem as closing artifact; instrument salvage map to OC2.
+- 105-constraint-front-plan.md: work packages W1–W5 with owners and protocol; W3 (ledger reduction, Prop interfaces BandEdgePairing/SeamParity/AnchoredEnd) runs first, owned here.
+
+## 2026-07-06 — W2 SeamCrossingRigidity built to exhaustion (Lean, axiom-clean)
+
+Package W2 of 105-constraint-front-plan (OC2 quantitative crossing rigidity) delivered as new
+module `RHTower/SeamCrossingRigidity.lean` (385 lines), consuming ArgumentVariation +
+WindingRigidity + RadiusScaleForcing read-only. Disjoint from W1 (SeamParity.lean, unbuilt),
+W3 (LedgerReduction.lean, helper), W5 (UPlaneLadder.lean, helper).
+
+The core move: the banked segment-length laws (`sign_constant_segment_length_le`,
+`_one_zero`) say *crossing-free ⟹ short*; W2 is the **contrapositive** — *long ⟹ forced
+crossing* — plus the count. Contents:
+
+1. Reality bridges: on the line, `(completedGN).re = 0 ⟺ gN = 0 ⟺ completedGN = 0`
+   (archFactor ≠ 0 on the line; completedGN real there). Lets a real-part zero of the
+   segment-length law upgrade to the on-seam carrier zero the ledger charges.
+2. Forced crossing (one-zero disc), in three forms (re / gN / completedGN): a seam segment
+   longer than `(π + BC-budget)/windingFloor` carries an on-line carrier zero.
+3. Zero-free rigidity: a zero-free carrier disc forces its seam segment short (its
+   crossing-free hypothesis is automatic).
+4. Uniform oscillation scale: no crossing-free sub-stretch of a one-zero window exceeds
+   `Λ = (π + 4ρmax/(R−ρmax)·L)/windingFloor(a)` — BC-prefactor + winding-floor monotonicity.
+   Packaged as the `SeamNoQuietStretch` interface + single-disc producer.
+5. Crossing count: two combinatorial theorems giving n strictly ordered on-line zeros —
+   the uniform-gap form (segment > n·Λ) and the non-degenerate disjoint-boxes form
+   (`seam_crossing_count_of_slots`: n separated forced boxes ⟹ n distinct zeros). With
+   Λ ≍ 1/log T this is `≳ (B−A)·log T` crossings on a fixed edge — the seam oscillates at
+   the 1/log T scale.
+
+Honesty note: the `SeamNoQuietStretch`→count path is vacuous on a *single* one-zero disc
+(≤ 1 on-line zero there, so `b−a > 2Λ` makes its hypotheses inconsistent); the non-vacuous
+tally is the disjoint-boxes form, each box its own single carrier zero. The genuine
+multi-crossing global producer needs uniform certificate data along a long edge — the
+RadiusScaleForcing/second-moment certificate lane, a separate package — not the frozen-lane
+instruments W2 owns. That is the natural boundary of W2 with its designated inputs; the
+disjoint-boxes count reaches the non-vacuous tally without it.
+
+Verify: `lake build MainTheorems` EXIT 0 (9176 jobs); all 10 named decls axiom-clean
+[propext, Classical.choice, Quot.sound]; formal lint + index regeneration pass. No git commit.

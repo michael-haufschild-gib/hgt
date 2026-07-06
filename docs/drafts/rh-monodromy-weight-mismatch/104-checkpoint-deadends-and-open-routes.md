@@ -234,3 +234,145 @@ on any set, `‖emCarrier M z − gN N z‖ ≤ ε₁ + (δP + δT + Rχ)` where
 `δP`/`δT` the depth-`N` pole/tail budgets (all elementary), and `Rχ` any bound on
 `‖zetaChi z · dirichletPoly N (1 − z)‖`. So the (R7) face is a proven consequence of one reflected-block
 budget `Rχ`; supplying `Rχ = O(t^{−1/4})` (the van der Corput input above) discharges it outright.
+
+---
+
+## Addendum 4: the van der Corput foundation is built (the missing mathlib piece)
+
+**[PROVED HERE, Lean]** `RHTower/VanDerCorput.lean` (axiom-clean, in the umbrella). The first-derivative
+test that Addendum 3 named as the sole missing foundation is now formalized:
+
+- `norm_integral_cexp_ofReal_mul_I_le_mono` / `_anti`: for a real phase `g` with derivative `g'`
+  bounded below by `lam > 0` and monotone (either direction) on `[a,b]`,
+  `‖∫_a^b exp(i·g)‖ ≤ 2/lam`. Proof: one integration by parts — `exp(i·g)=(i·g')⁻¹ d/dx exp(i·g)` —
+  the boundary term has modulus `1/g'`, the remainder is `∫ |g''|/g'²`, and monotonicity telescopes
+  it to `|1/g'(a) − 1/g'(b)|`; the two combine to `2/g'` at the endpoint where `g'` is smallest.
+- `norm_integral_cexp_logPhase_le`: the corollary at the reflected-block phase — for `0 < a ≤ b`,
+  `c > 0`, `‖∫_a^b exp(i·c·log x) dx‖ ≤ 2b/c`. (Phase derivative `c/x`, decreasing, minimum `c/b`.)
+
+This is the exponential-integral heart of the approximate functional equation: `x^(z−1)` has phase
+`τ·log x` (`z = σ + iτ`), and the corollary gives `O(b/τ)` cancellation for its integral — the first
+genuine cancellation gain over any termwise/Abel bound, which the identity of Addendum 3 proved were
+all polynomially large.
+
+**What remains to discharge `Rχ` (hence (R7)).** Two bricks, both now resting on an existing
+foundation: (i) **Abel summation** — reduce the reflected block `Σ_{n≤N} n^(z−1) = Σ n^(σ−1)·e^(iτ log n)`
+to its pure phase partial sums `B_k = Σ_{n≤k} e^(iτ log n)` (the decreasing real amplitude
+`n^(σ−1)` telescopes, giving `‖Σ n^(z−1)‖ ≤ max_{k≤N} ‖B_k‖`); (ii) **discrete → continuous** —
+bound `‖B_k‖` by the integral bound of `norm_integral_cexp_logPhase_le` plus the sum-to-integral
+comparison (van der Corput's lemma / Euler–Maclaurin against the banked `emTerm` sawtooth). These are
+well-posed engineering bricks now, not a foundational gap.
+
+---
+
+## Addendum 5: discrete van der Corput — the Dirichlet-test bridge built, core located at stationary phase
+
+**[PROVED HERE, Lean]** `RHTower/DiscreteVanDerCorput.lean` (axiom-clean, in the umbrella).
+`norm_sum_amplitude_phase_le`: the finite Dirichlet-test bound
+`‖Σ_{m<K} a(m)·b(m)‖ ≤ a(0)·M` for an antitone nonnegative amplitude `a` and a complex `b` with
+partial sums `≤ M` — the discrete companion of the integral van der Corput bound. It generalises the
+tree's own `CascadeGeometric.abel_geom_bound` off the geometric special case. Applied with
+`a(n)=n^(σ−1)`, `b(n)=n^(iτ)`, it reduces the reflected block `Σ_{n≤N} n^(z−1)` to the pure-phase
+partial sums `max_k ‖Σ_{n≤k} exp(iτ·log n)‖`.
+
+**The phase-sum core, located exactly.** Every route to bound `Σ_{n≤k} exp(iτ·log n)` reduces to the
+same object. Via the tree's exact Euler–Maclaurin identity (`EMCarrier.finite_em_identity` at
+`s = −iτ`, valid since `s ≠ 0, 1`):
+`Σ_{n≤k} n^(−s) = 1 + (k^(1−s) − 1)/(1−s) − s·Σ_j emTerm(1+j)(s)`.
+The main term `(k^(1+iτ)−1)/(1+iτ)` has modulus `≤ (k+1)/τ` (the integral, small — `norm_integral_cexp_logPhase_le`);
+the remainder `s·Σ emTerm` is the mean-zero sawtooth integral `iτ·∫_1^k (ψ(x)/x)·exp(iτ log x) dx`
+(`ψ = {x}−½`). Its Fourier expansion has phases `τ log x ± 2πm x` with derivative `τ/x ± 2πm`, which
+**vanishes at the saddles `x = τ/(2πm)`** (present for `m ≥ √(τ/2π)`). Those saddles are the
+stationary-phase / **Riemann–Siegel heart**: each contributes `~ √τ/(2π²m²)`, summing to `O(1)` bounded
+but not `o(1)`. The termwise / first-derivative bounds all reproduce the polynomial size `~τ·log k`;
+only the second-derivative (stationary-phase) analysis extracts the `O(t^{−1/4})` cancellation.
+
+**State of (R7), fully mapped.** The chain is now Lean-real end to end down to one object:
+(R7) `⟸` reflected-block budget `Rχ` (`EMRemainderReduction`) `⟸` phase partial sums (`DiscreteVanDerCorput`
++ the integral bound `VanDerCorput`) `⟸` the stationary-phase bound on the oscillatory `emTerm` remainder
+(the sole remaining piece). mathlib has Poisson summation (`Real.tsum_eq_tsum_fourierIntegral`) and
+interval IBP but no stationary-phase / second-derivative van der Corput — that is the one genuinely
+missing foundation, now isolated to a single named integral with explicit saddles.
+
+---
+
+## Addendum 6 (2026-07-06): the no-flow-in-disguise pivot — pinning/carrier lane frozen
+
+**Verdict.** The pinning/carrier lane (window certificates, mollifier hunt, residual gate) is a
+flow in disguise, measured against the charter's own criterion (00-approach: "the object is fixed
+by a constraint, not propagated by a flow"). Three flow signatures, all present:
+
+1. **A clock.** Certificates are indexed by height; windows `[T, T+U]` march up the line; the
+   lane's sharpest theorem is a clock rate (`rz ≲ 1/log T`). The charter's Wheeler–DeWitt
+   orientation forbids exactly this: `T` is a reintroduced time variable.
+2. **A generative handle.** "Which `b` makes all faces satisfiable" searches for a finite
+   surrogate whose propagated sign changes certify the infinite object. 00-approach §4.1 states
+   the counter-principle verbatim: strip zeros are *emergent* — present at no finite level. The
+   open face (R7)/AFE is precisely the finite→emergent transfer that §4.1 prices as never cheap.
+3. **Quantifier shape.** The gate is `∀ zero ∃ (T, U, rz, …)` with height-coupled budgets —
+   positions along the flow. The charter's mechanism is `∀ weight-bound ∃ symmetry` — the
+   constraint's symmetry data, height-free.
+
+**The decisive internal evidence.** The residual face ledger sorted itself: every face that
+closed (geometry, Jensen, zero budget, winding rigidity, phase lock, Borel–Carathéodory, the
+segment-length laws, the radius-scale forcing) is a consequence of FE + analyticity — constraint
+content. The two faces that stayed open — (R1) anchor recurrence and (R7) AFE/exponential sums —
+are exactly the propagation statements, and both sit in the value-distribution register that the
+wall's four independent derivations (00-approach §12) already price. The lane's residue IS its
+flow content. `ShortWindowNoGo` replicated the message internally: the sharp handle fails at
+`N ≥ 4`; widening the handle family (mollified `b`) is the flow program's characteristic
+surrogate-escalation move and can iterate forever without touching the constraint.
+
+**Lane status: FROZEN.** Closing artifact banked: `residual_faces_force_radius_scale`
+(RadiusScaleForcing.lean) — the gate's own faces force `rz·windingFloor(T−rz) ≤ π + BC-budget`,
+so the `1/log T` scale is a theorem *about* the certificate scheme, not an extra face. No scaled
+endpoint was added (the forcing theorem makes one redundant). The endpoints stay as layer-3 thin
+targets per the pivot architecture (§4); nothing is deleted; no further face-grinding.
+
+**Salvage map — the flow lane built constraint instruments.** The load-bearing lemma of the
+argument-variation chain is "Im ∈ πℤ, continuous, hence constant" — a discrete monodromy datum,
+the same move as the deck cocycle. The toolkit {analytic log on zero-free discs,
+Borel–Carathéodory, πℤ/2πℤ integrality gluing, winding rigidity/phase lock, anchored-disc zero
+budget, segment-length laws} is local deck-class calculus on the seam, route-free by
+construction.
+
+**What this opens (the redirect).** The conservation program's located residual core is boundary
+flux (15-conservation-program: at k = 1 the entire burden of (L) is boundary flux; open cells
+OC1 band-edge crossings, OC2 seam crossings). `[CONJECTURE]` The frozen lane's instruments are
+the OC2 toolkit: seam-crossing control is on-line behavior, and winding rigidity + the segment
+laws govern exactly the on-line sign-change spacing and phase advance a charge crossing the seam
+must respect — consumed per box annulus, homotopy-invariantly, with the per-height certificate
+quantifier deleted. The next object to construct is the seam-crossing parity functional as a
+formal object, checked against `WindingRigidity` + `ArgumentVariation` + `AnchorZeroBudget` for
+its local half. Plan: doc 105.
+
+---
+
+## Addendum 6: the stationary-phase (second-derivative) van der Corput test is built
+
+**[PROVED HERE, Lean]** `RHTower/VanDerCorputSecond.lean` (axiom-clean, in the umbrella). The deepest
+missing foundation — the test that survives a stationary point, where the first-derivative bound
+`2/|g'|` blows up — is now formalized:
+
+- `norm_integral_cexp_secondDeriv`: for any real phase with `g'' ≥ λ > 0` on `[a,b]`,
+  `‖∫_a^b exp(i·g)‖ ≤ 6/√λ`, uniform in the length. Mechanism: split at the zero of `g'` (unique by
+  monotonicity of `g'`); within a window of length `≤ 2μ/λ` around it the trivial length bound
+  applies, outside it `|g'| ≥ μ = √λ` and the first-derivative test (`VanDerCorput`) applies; the two
+  balance at `3/√λ` per side.
+- `norm_integral_cexp_secondDeriv_oneside` / `_oneside_neg`: the one-sided cores (`g' ≥ 0` at the
+  near-stationary endpoint, and its reflection `x ↦ a+b−x` for `g' ≤ 0`), each `≤ 3/√λ`.
+
+This is exactly the estimate the reflected-block Fourier modes need: `Σ_{n≤k} exp(iτ·log n)`'s
+sawtooth remainder expands (Poisson) into phases `τ·log x ± 2πm·x` with second derivative `∓τ/x²`, so
+each mode's oscillatory integral is now bounded by `norm_integral_cexp_secondDeriv` (after the trivial
+conjugation `g ↦ −g` for the `−` modes) with `λ ≍ τ/x²`, giving `√x²/τ = x/√τ` per mode — the
+`O(t^{−1/4})` cancellation the AFE requires. The one remaining assembly step (task #186) is the Poisson
+expansion of the sawtooth and the sum over `m` against these per-mode second-derivative bounds — now
+resting entirely on banked estimates (mathlib supplies Poisson summation).
+
+**The (R7) chain, foundations complete.** (R7) `⟸` reflected budget `Rχ` (`EMRemainderReduction`)
+`⟸` phase sums (`DiscreteVanDerCorput` Dirichlet test) `⟸` per-mode integrals, bounded by the
+first-derivative test (`VanDerCorput`, non-saddle modes) and the **second-derivative test**
+(`VanDerCorputSecond`, saddle modes). Every analytic foundation the approximate functional equation
+needs for this route is now formalized and axiom-clean; what remains is the Poisson bookkeeping that
+assembles them.

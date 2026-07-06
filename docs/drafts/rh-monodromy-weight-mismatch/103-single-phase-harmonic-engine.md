@@ -163,12 +163,18 @@ assembly** that composes them across the packet — and it is genuine research, 
 
 - **The genuine core** is the `k`-phase Esseen/Fourier assembly: `Z = Σ_q Z_q` is a sum of independent
   2-D increments; its small-ball is `≤ ∫_{ℝ²} |φ_Z(ξ)| dξ` with `φ_Z = ∏_q φ_{Z_q}`, and the product
-  decay over the `M_q ≈ c/q` directions is what yields `t²·log(2/t)`.  `transversal_smallball` is the
-  pairwise realisation (two directions already give `t²`); the assembly is proving the product decay
-  and the Fourier-inversion density bound `N`-uniformly.  This is the multiplicative-chaos small-ball —
-  the honest open frontier — approached in the tree via the Bohr moment tower (`BohrMoments`,
-  `FloorFailureUnconditional`), which already reduces the density to the model small-ball, i.e. exactly
-  this quantity.
+  decay over the `M_q ≈ c/q` directions is what yields `t²·log(2/t)`.  **The Fourier-side reduction is
+  now built** — new module `MeasureParseval.lean`, axiom-clean:
+  - `integral_measure_eq_integral_fourier_charFun` — the **measure-Parseval identity**
+    `∫ g dμ = ∫ w, 𝓕 g w · charFun μ (2π·w)` (Fourier inversion of `g`, then Fubini);
+  - `esseen_concentration` — **Esseen's concentration inequality** `μ(A) ≤ ∫ ‖𝓕 g‖` for any real
+    majorant `g ≥ 1_A` (via `‖charFun‖ ≤ 1`).  This is the mathlib gap that reduces the smooth-packet
+    small-ball to a Fourier-`L¹` bound on `charFun`: plug a bump `g` of width `t` over a ball to get
+    `μ(ball) ≤ ∫ ‖𝓕 g‖`, whose value is governed by the `charFun` decay.
+  What remains of this route is the **per-direction decay** — `charFun` of the model carrier factorises
+  as `∏_q charFun(a_q X_q)`, each a Bessel-type integral `J₀(|ξ||a_q|)` with `√`-decay, whose product
+  over the `M_q ≈ c/q` directions makes `∫‖𝓕g‖` small.  That Bessel `√`-asymptotic (stationary phase)
+  is the one remaining mathlib gap; the reduction that consumes it is banked.
 
 The concrete next bricks: (a) the two-phase Jacobian `|det| = |A||B||sin(φ−θ)|` + an injective patch,
 making `transversal_smallball` fire on a named pair; (b) the Fourier-inversion 2-D density bound
