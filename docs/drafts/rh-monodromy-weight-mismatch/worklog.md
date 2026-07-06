@@ -5979,3 +5979,53 @@ partial products — no structural pivot). Brick 1 = argument-principle-free Rou
 any supply's count = order — lossless re-coordinatization, D–H filter passed at the
 interface automatically. Gate green 9215 jobs. Next: (D-supply) — chart domination for
 the mollified anchored member from the banked second-moment/line-sup budgets.
+
+## Supply discharge (doc 110)
+
+One pass over the three doc-109 problems. (S) fully discharged as a theorem (cover +
+finiteness + complete peeling + domination-splits). (D) reduced to the tree's own named
+anneal interfaces: rung capstone rhLadder_one_of_interfaces_parity = (AFE)+(LOW) on one
+isolating annulus's charts per off-line zero + mod-2 deck cocycle of the member
+(split_deckClass_one_iff_even = the parity in boundary form). Gate green 9218 jobs (a
+concurrent module briefly broke the tree mid-run; re-ran after it went green). Next:
+segment→chart carry for (LOW) over AnchorSupply's second-moment window floors.
+
+## 2026-07-06 — Carrier box-count: enclosed off-line order as a contour integral (Lean, axiom-clean)
+
+Specialized the rectangle residue theorem to the completed carrier `completedGN = archFactor·gN`.
+
+New §8 in `RectangleResidue.lean`: `rectIntegral_logDeriv_boxCount` — the zero-count in the
+factorization form `f = (∏(·−ρ i)^{m i})·h`, giving `∮_{∂R} f'/f = 2πi·Σ mᵢ`. Deliberately the SAME
+hypotheses as `SignatureParity.box_charge_eq_deckRed`, so contour and deck are directly comparable.
+
+New module `CarrierBoxCount.lean`:
+- `completedGN_offline_factor`: on a strip box avoiding the Γ_ℝ poles (of s and 1−s) and {0,1}, the
+  Euler head `archFactor = s(s−1)/2·Γ_ℝ(s)` is analytic and zero-free, so completedGN's box zeros are
+  exactly gN's. Peel gN (`exists_multi_peel`), fold archFactor into the nonvanishing cofactor:
+  completedGN = (∏(·−w)^{m w})·(archFactor·h_gN). Each mᵢ pinned to analyticOrderAt(completedGN) via
+  the new `analyticOrderAt_of_boxFactorization` (built on `analyticOrderAt_finset_prod`, a mathlib gap).
+- `completedGN_rectIntegral_logDeriv`: ∮_{∂R} (completedGN)'/(completedGN) = 2πi·Σ_w order_w — the
+  EXACT integer enclosed off-line order, read off the boundary. The deck cocycle recovers only Σ mod n;
+  the contour recovers the full signed count.
+
+Why this opens forward: the conservation ledger reaches the box zero-count only through the deck
+cocycle (the mod-2^k reduction of Σ mᵢ). This gives a second, contour-based route to the SAME integer —
+now exact, not mod-n — usable to cross-check the parity front and to derive the Gate-3 `hagree`
+endpoint-orientation datum from a closed-box argument principle rather than assuming it.
+
+Verify: `lake build MainTheorems` EXIT 0 (9218 jobs); all decls axiom-clean
+[propext, Classical.choice, Quot.sound]; lint + index pass; docstrings self-contained. No git commit.
+
+## 2026-07-06 (later) — doc 111: the analytic residues fall
+
+Directive: follow the parity route to exhaustion. Survey found `EMCarrier.lean` already
+held the unconditional EM representation + remainder bound; on a FIXED isolating annulus
+(compact) that bound decays to zero while isolation gives ζ a floor — so (AFE) and (LOW)
+were never hard THERE. Built the two supply modules (EM lane + χ-symmetrized lane with
+exact even FE, Schwarz, line reflection), transported every ladder rung and RH itself
+onto divisibility of finite-member hole counts, with dominating splits existing
+unconditionally. Gate green (9220 jobs), 22 endpoints axiom-clean. Open weld, sharpest
+form: parity of ONE hole count of `completedSEM N` — mirror structure provably blind to
+it (order pairing free), anchor tilt/defect the designated symmetry-breakers, D–H filter
+forces any proof through the Euler product. Next: finite-member tilt coupling; antiholo
+order pairing; N-steering of split geometry (new degree of freedom).

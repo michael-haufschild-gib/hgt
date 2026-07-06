@@ -47,4 +47,24 @@ theorem reflectedGridOffgridCharge_deckRed_two_eq_one_of_accounted {C N : ℕ}
   rw [hQ]
   exact reflectedGridOffgridCharge_deckRed_two_eq_one_of_paired hN hL
 
+/-- Saddle-flux specialization: an even reflected saddle-mode count supplies the paired
+off-grid ledger needed by the accounted completed charge. -/
+theorem reflectedGridOffgridCharge_deckRed_two_eq_one_of_even_saddle_modes
+    {C N K : ℕ} {T a b : ℝ} (hN : 1 ≤ N)
+    (hEven : Even (reflectedSaddleModes K T a b).card) :
+    deckRed 2 (reflectedGridOffgridCharge C N (reflectedSaddleFluxList K T a b)) = 1 := by
+  exact reflectedGridOffgridCharge_deckRed_two_eq_one_of_paired hN
+    (reflectedSaddleFluxPaired_of_even hEven)
+
+/-- Accounted saddle-flux form: once a future physical charge is identified with the
+completed charge plus the finite reflected saddle-mode ledger, an even saddle-mode count
+makes its level-two deck class trivial. -/
+theorem reflectedGridOffgridCharge_deckRed_two_eq_one_of_accounted_even_saddle_modes
+    {C N K : ℕ} {T a b : ℝ} {Q : ℤ} (hN : 1 ≤ N)
+    (hEven : Even (reflectedSaddleModes K T a b).card)
+    (hQ : Q = reflectedGridOffgridCharge C N (reflectedSaddleFluxList K T a b)) :
+    deckRed 2 Q = 1 := by
+  rw [hQ]
+  exact reflectedGridOffgridCharge_deckRed_two_eq_one_of_even_saddle_modes hN hEven
+
 end RHTower

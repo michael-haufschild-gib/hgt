@@ -696,3 +696,47 @@ anchored tilt instruments.
 - `reflectedGridOffgridCharge_deckRed_two_eq_one_of_accounted`: if a future physical charge `Q` is proved equal to this accounted expression, then `deckRed 2 Q = 1`.
 - Verification: `lake env lean GaloisForLFunctions/RHTower/ReflectedGridOffgridBridge.lean`; `lake build GaloisForLFunctions.RHTower.ReflectedGridOffgridBridge`; `lake build GaloisForLFunctions.RHTower`; `/tmp` axiom checks at `[propext, Classical.choice, Quot.sound]`; `scripts/formal_tools.py index`; `scripts/formal_tools.py lint --check-generated`.
 - Boundary left open: this is an accounting bridge, not the physical AFE reduction. The remaining task is to construct the physical carrier charge `Q`, prove `Q = reflectedGridOffgridCharge C N L`, and prove `LedgerFluxPaired L` for its off-grid/noncollision events.
+
+## CarrierSplit.lean + ZetaDominationTransfer.lean (the three supply problems, doc 110)
+
+Axiom-clean, umbrella-imported. Survey reused: ZetaCarrier §7 (completed_domination_iff,
+AFEAccurateOn/CarrierFloorOn + assembly), ledgerChainE_trans, exists_peel's
+order-preservation clause.
+* (S-supply) DISCHARGED: `charts_union_eq_annulus` (slit charts cover the annulus),
+  `finite_closedBall_zeros` (compact-accumulation + isolated-zeros alternative),
+  `exists_split_of_finite_zeros` (complete peeling, descent on zero-set cardinality),
+  `exists_split_of_domination` (domination ⟹ split, unconditional).
+* Weld upgraded: `anchoredEventLedger_of_domination`, `rhLadder_one_of_domination_parity`
+  — the (S) clause is gone; rung ⟸ domination + parity.
+* (parity certificate): `split_deckClass_one_iff_even` — square roots of a split member
+  on the charts have deck class exp(2πi·count/2); trivial ⟺ even. The parity IS the
+  member's own mod-2 deck cocycle: a carrier-side boundary datum.
+* (D-supply) reduced: `rhLadder_one_of_zeta_carrier_close` (raw ‖ζ−gN‖<‖gN‖ on charts)
+  and the capstone `rhLadder_one_of_interfaces_parity` — the base rung from
+  (AFE) + (LOW) on the charts of one isolating annulus per off-line zero + (PAR).
+Residual analytic content of the base rung: exactly (AFE), (LOW on charts — segment→chart
+carry over banked second-moment floors), (PAR).
+- `RHTower/RectangleResidue.lean` (§8, new): `rectIntegral_logDeriv_boxCount` — the rectangle zero-count in factorization form. For `f = (∏_{i∈t}(·−ρ i)^{m i})·h` on a neighbourhood of the closed box with `h` analytic nonvanishing and each `ρ i` strictly inside, `∮_{∂R} f'/f = 2πi·Σᵢ m i`. Same factorization hypotheses as the deck route `box_charge_eq_deckRed`, so the two are drop-in comparable: the contour recovers the raw integer total order, the deck cocycle only its residue mod n. Proof swaps `logDeriv f` for `logDeriv(product)` on the edges (germ congruence, `f = product` on the open `U`) then applies `rectIntegral_logDeriv_multi_zero`.
+- `RHTower/CarrierBoxCount.lean` (new, in umbrella): specialization to the completed carrier. `completedGN_offline_factor` — on a strip region `U` avoiding the Γ_ℝ poles of `s` and `1−s` and the trivial points `{0,1}`, `completedGN N = archFactor·gN` factors as `(∏_{w∈t}(·−w)^{m w})·(archFactor·h_gN)` with the Euler head `archFactor` folded into a nonvanishing analytic cofactor (`archFactor` is zero-free there), peeling `gN`'s box zeros (`exists_multi_peel`); each `m w` is pinned to the intrinsic order `analyticOrderAt (completedGN N) w`. `completedGN_rectIntegral_logDeriv` — the payoff: `∮_{∂R} (completedGN N)'/(completedGN N) = 2πi·Σ_{w∈t}(analyticOrderAt (completedGN N) w).toNat`, the exact integer total order of the enclosed off-line zeros read straight off the contour, a route to the box zero-count independent of the deck cocycle (which gives only its mod-n reduction). Supporting general lemmas: `analyticOrderAt_finset_prod` (order of a finite product = Σ orders, a mathlib gap) and `analyticOrderAt_of_boxFactorization` (order of a boxed factorization at a centre = its multiplicity). All axiom-clean [propext, Classical.choice, Quot.sound]; `lake build MainTheorems` green (9218 jobs); lint + index pass.
+
+## 2026-07-06 — (AFE)+(LOW) discharged unconditionally; ladder transported to finite members (doc 111)
+
+New modules `EMAnnulusSupply.lean`, `SymmetrizedEMCarrier.lean` (umbrella updated; full
+gate 9220 jobs exit 0; all 22 endpoints axioms = [propext, Classical.choice, Quot.sound]).
+
+- `xi_zero_re_lt_one`; `completedEM = archFactor·emCarrier`; `completedEM_domination_iff`.
+- `zeta_annulus_floor` (compactness+isolation) + EM tail decay ⟹
+  `exists_isolating_em_domination`: at EVERY strip point an isolating annulus + N with
+  completed-member domination on the slit charts — NO hypothesis.
+- `EMSplitData`/`emSplitData_exists`/`emSplitData_count_eq` (count = central order);
+  `rhLadder_of_em_split_multiplicity` (all rungs k), `rhLadder_one_of_em_split_parity`,
+  `riemannHypothesis_of_em_split_multiplicity`.
+- Symmetric lane: `semCarrier = chiSymmetrize zetaChi (emCarrier N)` targets 2ζ
+  (`two_zeta_sub_semCarrier_norm_le`); `completedSEM` has exact EVEN FE
+  (`completedSEM_one_sub`), Schwarz reality (`completedSEM_conj`), line reflection
+  (`completedSEM_lineReflection`), free mirror order pairing
+  (`completedSEM_orderAt_one_sub`); generic `exists_domination_of_uniform_decay`;
+  `exists_isolating_sem_domination`; `SEMSplitData` + all rungs + RH endpoint.
+
+Rung interface now: RHLadder k ⟸ 2^k ∣ hole count of the finite member's dominating
+splits (which exist unconditionally); (AFE)/(LOW) deleted from the interface.
