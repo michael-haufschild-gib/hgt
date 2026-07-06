@@ -699,6 +699,43 @@ theorem line_center_closedBall_strip {τ RJ : ℝ} (hRJ : RJ < 1 / 2) :
   have hge : -RJ ≤ z.re - 1 / 2 := (abs_le.mp hre_abs).1
   exact ⟨by linarith, by linarith⟩
 
+/-- A boundary-circle `completedGN` bound controls the whole critical-line disk. -/
+theorem completedGN_norm_le_line_closedBall_of_sphere {N : ℕ} {τ RJ M_G : ℝ}
+    (hRJ0 : 0 < RJ) (hRJ12 : RJ < 1 / 2)
+    (hcircle : ∀ z ∈ sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      ‖completedGN N z‖ ≤ M_G) :
+    ∀ z ∈ closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      ‖completedGN N z‖ ≤ M_G := by
+  have hcan : ∀ z ∈ closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      AnalyticAt ℂ (completedGN N) z := by
+    intro z hz
+    exact completedGN_analyticAt
+      ((line_center_closedBall_strip (τ := τ) hRJ12 z hz).1)
+      ((line_center_closedBall_strip (τ := τ) hRJ12 z hz).2)
+  exact norm_le_on_closedBall_of_sphere hRJ0 hcan hcircle
+
+/-- A boundary-circle `emCarrier`/`gN` comparison controls the whole critical-line disk. -/
+theorem emCarrier_gN_norm_le_line_closedBall_of_sphere {M N : ℕ} {τ RJ δ : ℝ}
+    (hM : 1 ≤ M) (hRJ0 : 0 < RJ) (hRJ12 : RJ < 1 / 2)
+    (hcircle : ∀ z ∈ sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      ‖emCarrier M z - gN N z‖ ≤ δ) :
+    ∀ z ∈ closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      ‖emCarrier M z - gN N z‖ ≤ δ := by
+  have hcan : ∀ z ∈ closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      AnalyticAt ℂ (fun z => emCarrier M z - gN N z) z := by
+    intro z hz
+    have hstripz := line_center_closedBall_strip (τ := τ) hRJ12 z hz
+    have hz1 : z ≠ 1 := by
+      intro hz_eq
+      have hlt : (1 : ℂ).re < 1 := by simpa [hz_eq] using hstripz.2
+      norm_num at hlt
+    have hG1 : Gammaℝ (1 - z) ≠ 0 := by
+      exact Gammaℝ_ne_zero_of_re_pos (by
+        rw [Complex.sub_re, Complex.one_re]
+        linarith [hstripz.2])
+    exact (emCarrier_analyticAt_of_ne_one hM hz1).sub (gN_analyticAt hG1)
+  exact norm_le_on_closedBall_of_sphere hRJ0 hcan hcircle
+
 /-- Exact norm-square formula on the critical-line parametrization. -/
 theorem linePt_norm_sq (τ : ℝ) : ‖linePt τ‖ ^ 2 = (1 / 2 : ℝ) ^ 2 + τ ^ 2 := by
   rw [← Complex.normSq_eq_norm_sq]
@@ -2345,7 +2382,7 @@ budget, and one outer-radius power floor.  The Hardy anchor face is the additive
 `m_J^2 U + orthogonalEnergy < 4 * (U * diagonal - offdiag)`. -/
 theorem riemannHypothesis_of_secondMoment_orthogonal_saving_outer_power_endpoint_target
     (hwin : ∀ ρ ∈ rightHalf, xi ρ = 0 →
-      ∃ (N M : ℕ) (ε₁ δ : ℝ)
+      ∃ (N M : ℕ) (δ : ℝ)
         (T U t₁ t₂ rz r₀ R P rJ RJ m_J M_J M_G a₀ : ℝ),
         1 ≤ M ∧
         0 < U ∧
@@ -2376,24 +2413,25 @@ theorem riemannHypothesis_of_secondMoment_orthogonal_saving_outer_power_endpoint
           sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
           ‖completedGN N z‖ ≤ M_G) ∧
         max ((6 * R * M_G) / (P ^ 2 * a₀))
-            ((2 * (ε₁ + δ)) / r₀) <
+            ((2 * (((max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+              (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)) + δ)) / r₀) <
           (m_J / rz) *
             ((m_J / rz) / (M_J / (rJ - rz))) ^
               (2 * (R + rz) / (rJ - (R + rz))) ∧
-        (max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
-          (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ) ≤ ε₁ ∧
         (∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
           sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
           ‖emCarrier M z - gN N z‖ ≤ δ)) :
     RiemannHypothesis := by
   apply riemannHypothesis_of_center_floor_cross_slope_windows
   intro ρ hρ hzero
-  obtain ⟨N, M, ε₁, δ, T, U, t₁, t₂, rz, r₀, R, P, rJ, RJ,
+  obtain ⟨N, M, δ, T, U, t₁, t₂, rz, r₀, R, P, rJ, RJ,
     m_J, M_J, M_G, a₀, hM, hU, ht₁, h12, hrz0, h0, hrR, hRP,
     hPrz, hRrzJ, hrJR, hRJ12, hrzR, hρquad, hbrlo, hbrhi,
     hmJ0, henergy, hsign, hMJ, hbound, hjensen_floor, hengine, ha₀,
-    ha₀0, hMG, hbudget_outer, hE, hclose⟩ :=
+    ha₀0, hMG, hbudget_outer, hclose⟩ :=
     hwin ρ hρ hzero
+  let ε₁ : ℝ := (max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
+    (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ)
   let Rprime : ℝ := R - rz
   let Rτ : ℝ := max |ρ.im - T| |ρ.im - (T + U)|
   have hR'0 : 0 < Rprime := by
@@ -2422,7 +2460,7 @@ theorem riemannHypothesis_of_secondMoment_orthogonal_saving_outer_power_endpoint
     have hlhs_nonneg : 0 ≤ (max ‖linePt T‖ ‖linePt (T + U)‖ + RJ) *
         (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ) := by
       exact div_nonneg (mul_nonneg (add_nonneg hmax_nonneg hRJ0.le) hpow_nonneg) hden0.le
-    exact le_trans hlhs_nonneg hE
+    simpa [ε₁] using hlhs_nonneg
   have hδ0 : 0 ≤ δ := by
     have hτT : T ∈ Set.Icc T (T + U) := ⟨le_rfl, by linarith [hU]⟩
     have hsample : linePt T + (RJ : ℂ) ∈
@@ -2437,38 +2475,20 @@ theorem riemannHypothesis_of_secondMoment_orthogonal_saving_outer_power_endpoint
       closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
       ‖completedGN N z‖ ≤ M_G := by
     intro τ hτ
-    have hcan : ∀ z ∈ closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
-        AnalyticAt ℂ (completedGN N) z := by
-      intro z hz
-      exact completedGN_analyticAt
-        ((line_center_closedBall_strip (τ := τ) hRJ12 z hz).1)
-        ((line_center_closedBall_strip (τ := τ) hRJ12 z hz).2)
-    exact norm_le_on_closedBall_of_sphere hRJ0 hcan (hMG τ hτ)
+    exact completedGN_norm_le_line_closedBall_of_sphere hRJ0 hRJ12 (hMG τ hτ)
   have hE_ball : ∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
       closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
       ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁ := by
     intro τ hτ z hz
     exact em_remainder_norm_le_window_closedBall_of_endpoint_bound
-      (M := M) (T := T) (U := U) (RJ := RJ) (ε₁ := ε₁) hM hRJ12 hE
+      (M := M) (T := T) (U := U) (RJ := RJ) (ε₁ := ε₁) hM hRJ12
+      (by dsimp [ε₁]; exact le_rfl)
       τ hτ z (by simpa [linePt] using hz)
   have hclose_ball : ∀ τ ∈ Set.Icc T (T + U), ∀ z ∈
       closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
       ‖emCarrier M z - gN N z‖ ≤ δ := by
     intro τ hτ
-    have hcan : ∀ z ∈ closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
-        AnalyticAt ℂ (fun z => emCarrier M z - gN N z) z := by
-      intro z hz
-      have hstripz := line_center_closedBall_strip (τ := τ) hRJ12 z hz
-      have hz1 : z ≠ 1 := by
-        intro hz_eq
-        have hlt : (1 : ℂ).re < 1 := by simpa [hz_eq] using hstripz.2
-        norm_num at hlt
-      have hG1 : Gammaℝ (1 - z) ≠ 0 := by
-        exact Gammaℝ_ne_zero_of_re_pos (by
-          rw [Complex.sub_re, Complex.one_re]
-          linarith [hstripz.2])
-      exact (emCarrier_analyticAt_of_ne_one hM hz1).sub (gN_analyticAt hG1)
-    exact norm_le_on_closedBall_of_sphere hRJ0 hcan (hclose τ hτ)
+    exact emCarrier_gN_norm_le_line_closedBall_of_sphere hM hRJ0 hRJ12 (hclose τ hτ)
   have ha₀_line_ball : ∀ τ ∈ Set.Icc T (T + U), ∀ z : ℂ, z.re = 1 / 2 →
       z ∈ closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) rz →
       a₀ ≤ ‖archFactor z‖ := by
@@ -2482,7 +2502,9 @@ theorem riemannHypothesis_of_secondMoment_orthogonal_saving_outer_power_endpoint
     canonical_cross_em_budgets_of_outer_power_floor_max
       (m_J := m_J) (M_J := M_J) (rz := rz) (rJ := rJ) (R := R)
       (P := P) (M_G := M_G) (a₀ := a₀) (r₀ := r₀) (ε₁ := ε₁) (δ := δ)
-      hmJ0 hrz0 hMJ0 hrzJ hengine hP0 ha₀0 h0 hR0 hRrzJ hbudget_outer
+      hmJ0 hrz0 hMJ0 hrzJ hengine hP0 ha₀0 h0 hR0 hRrzJ (by
+        dsimp [ε₁]
+        exact hbudget_outer)
   refine ⟨N, M, ε₁, δ, ((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I,
     t₁, t₂, rz, r₀, R, Rprime, P, rJ, RJ, m_J, M_J, M_G, a₀, ?_⟩
   exact ⟨hM, hεδ, ht₁, h12, hrz0, h0, hrR, hRP, hPrz, hRrzJ, hrJR,
