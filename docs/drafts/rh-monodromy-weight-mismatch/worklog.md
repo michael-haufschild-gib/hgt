@@ -6052,3 +6052,16 @@ via N, phases via P with per-prime sign control below height π/log 2). Open sup
 named: PNT-grade gaps for all heights, Chebyshev window-counting for full reachability.
 Next: the meeting functional — the two-point orientation reading on the
 canonically-anchored root as an explicit function of the defect.
+
+## 2026-07-07 (later still) — doc 113: reachability proven
+
+Hook + user directive drove both quantitative supplies. Found mathlib's Chebyshev.lean
+(theta_ge'/theta_le_log4 upstreamed from PrimeNumberTheoremAnd) — the window-count
+threshold works out to exactly L > log 2, preserving the Bertrand height range with
+divergent counts. Built WindowBudget.lean in five compiled stages (window mass/count →
+gap interface + all-heights conditional steering → arctan floor + greedy → the full
+explicit reachability assembly; two real fixes: div_le_div_iff₀ rename + one shape
+mismatch; maxHeartbeats 3.2M for the big theorem). No PNT in mathlib — gap supply
+interfaced per tree discipline. Defect now provably sweeps [0, ∞) to any precision at
+Chebyshev heights. Next: mirrored negative reachability; counting-supply interface for
+all heights; the meeting argument against the 2π-quantized equivariance benchmark.

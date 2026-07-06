@@ -789,3 +789,20 @@ umbrella updated; 11 new endpoints axioms = [propext, Classical.choice, Quot.sou
 - `sem_even_iff_anchored_signs_agree` (Even hole count ⟺ basepoint signs of the
   anchored member's roots agree — the weld as ONE equation, rigid LHS vs steered RHS).
 Gate 9222 jobs exit 0; both endpoints axiom-clean.
+
+## 2026-07-07 (later) — WindowBudget.lean: Chebyshev counts, gap interface, REACHABILITY (doc 113)
+
+14 endpoints, all axioms = [propext, Classical.choice, Quot.sound]; gate 9223 jobs exit 0.
+
+- `windowPrimes` + `sum_log_windowPrimes` (window mass = θ-increment) +
+  `windowPrimes_card_ge` (Chebyshev count; threshold L > log 2, counts divergent).
+- `PrimeWindowSupply L` interface (PNT-grade gaps as named input);
+  `primeWindowSupply_of_log_two_lt` (unconditional region);
+  `exists_prime_sin_pos/neg_of_supply` (uniform √2/2 sine floor, quarter-offset
+  windows); `exists_prime_mirrorTiltIncrement_pos/neg_of_supply` (steering wheel at
+  EVERY height, conditional).
+- `anchorMirrorDefect_eq_sum`, `arctan_ge_half_self`, `exists_subset_sum_between`
+  (greedy), `rpow_neg_anti`, `log_le_mul_rpow` (filter-free asymptotics).
+- **`anchorMirrorDefect_reachable_nonneg`**: for 0 < Im s < π/(2 log 2), every T ≥ 0,
+  every ε > 0: ∃ finite prime set P with T ≤ defect(P) ≤ T + ε. Fully explicit
+  constants; one Chebyshev window + greedy accumulation.
