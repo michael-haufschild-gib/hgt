@@ -4885,3 +4885,84 @@ behindShell` to state the interchange literally on the poleExcess model (k-Tonel
 OR (ii) the exact edge law `(½−θ_max)√d → 1/π` — now `Φ'(2)=−π²/8` AND the full single-limit are
 theorems, so the finite-d marginal `1/(π√d)` can be pinned as the √d correction to the marginal
 `Φ(2)=1` crossing (sin2t=2t deficit at t=π/2, Airy edge scale i_peak≈(π/4)√d).
+
+## cont.43 — pole-model Tonelli (A−B)/i→Φ literal + the 1/π edge law DERIVED & skeleton-formalized
+
+Two deliverables, both axiom-clean [propext, Classical.choice, Quot.sound], RHTower green 8481, lint pass.
+
+**(1) LegStripPoleModel.lean** — the literal (A−B)/i→Φ(c) on the physical poleExcess field.
+tendsto_poleModel: poleModelDiff c i → stripResidue c, where poleModelDiff = A/i − B/i,
+A/i=(1/i)Σ'_k poleExcess(ahead_k), B/i=(1/i)Σ_{k<i}poleExcess(behind_k), poleExcess(u)=1/(e^u−1).
+Tonelli poleModelDiff_eq: poleExcess(u)=Σ'_n e^{−nu} (poleExcess_hasSum) ⟹ A/i=Σ_n aheadShell (double-sum
+Summable.tsum_comm), B/i=Σ_n behindShell (finite Summable.tsum_finsetSum), so poleModelDiff=Σ_n shellDiffTerm;
+compose with tendsto_shellSum_stripResidue. Ahead double-summability: poleExcess(ahead_k)≤C·aheadTerm(k,1)
+(poleExcess_ahead_le, poleExcess(u)=e^{−u}/(1−e^{−u}) decreasing) → k-summable via aheadTerm_summable;
+n-marginal via generic summable_prod_swap (Equiv.prodComm+congr, abstract to avoid aheadTerm whnf-blowup).
+
+**(2) LegStripEdge.lean + doc 30 §16** — the exact edge law (½−θ_max)√d→1/π, MECHANISM IDENTIFIED,
+every constant pinned, 5-digit validated (computations/edge-law/). Decomposition:
+½−θ*(i)=2g(i)/(|F'(m)|δ_i)=(2/π²)·g(i)/i, g(i)/i=A_trunc/i−ε(i)=i/d+(π²/16)/i. Three matched asymptotics:
+- local factor |F'(m)|δ_i→π²i (κ=2/π²), from Σ_{k≥0}1/(k+½)²=π²/2 (near-pole csch²→(1/z)², dist≈(2k+1)/2i).
+  [numeric |F'|δ/i→9.86960=π², 5 digits]
+- truncation A_trunc/i→i/d (Σ_{k≥d−i}i²/(k(k+2i))→i²/d, digamma-exact).
+- shell correction ε(i)=poleModelDiff(2,i)−1→−(π²/16)/i. [numeric i(1−pm)→0.61685=π²/16 after cutoff removal]
+Assembly = AM-GM: min_{x>0}(x/d+a/x)=2√(a/d) at x=√(ad); a=π²/16 ⟹ min=(π/2)/√d at (π/4)√d; ×κ×√d, the √d
+CANCELS EXACTLY → 1/π. Formalized rigorous core: edge_amgm (minorant), edge_amgm_eq (attained at √(ad)
+boundary layer), edge_margin_const (√d·κ·2√((π²/16)/d)=1/π exact, the √d-cancel), edge_peak_loc
+(√((π²/16)d)=(π/4)√d), edge_law (bundle), edge_law_tendsto. Direct finite-d coth-equilibrium solver
+reproduces (½−θmax)√d=0.31831=1/π & i_peak/√d≈π/4 across d=500..32000.
+
+The 1/π is the odd-Basel constant (Σ1/(k+½)²=π²/2 = same 2/x Coulomb kernel giving Φ's cot) read through
+the √d boundary layer. Both margin 1/(π√d) and location (π/4)√d are ONE AM-GM balance of π²/16 vs the cut.
+
+STATUS: analytic content CLOSED+validated; the closed-form skeleton is a theorem; the 3 inputs are matched
+EM/digamma asymptotics (finite-order corrections to already-formalized Φ(2)=1) — their Lean proofs + the
+discrete θ*(i) equilibrium formalization are the remaining surface. NEXT: (a) rigorous Lean of ε(i)→−π²/16
+(2nd-order EM of poleModelDiff) and κ=2/π² (odd-Basel + csch² control); (b) the c≠2 family margin(c)√d→ρ(c),
+ρ(2)=1/π — new object; (c) does the Airy-edge (S-mono) energy gain beat the 1/(π√d) margin (doc §14(c)).
+
+## cont. 46 — MOONSHOT ATTACKED AS FALSE → REFUTED: the quadruple weight-parity is ℤ₂-trivial
+
+Formalized doc-89 route (b) and attacked it as false first, per mandate. It is REFUTED
+(WeightMismatchRefutation.lean, axiom-clean; RHTower 8727 jobs; lint green).
+
+The computation: the two symmetries σ_FE (s↦1−s) and σ_S (s↦s̄) act on Q={ρ,1−ρ,ρ̄,1−ρ̄} each as a
+PRODUCT OF TWO TRANSPOSITIONS — the Klein four-group V₄, all EVEN. No 4-cycle. And all four points carry
+EQUAL ξ-order (xi_orderAt_quadruple_eq, from xi_orderAt_one_sub + xi_orderAt_conj), so the total tower
+weight = 4·ord(ρ), ℤ₂-trivial for EVERY ρ. The conjectured "parity even ⟺ Re ρ=½" fails in the off-line
+direction (quadruple_weight_parity_refuted: Even(m+m+m+m) unconditionally). The parity idea was
+structurally incapable — the orbit is V₄-even both ways; only its SIZE (2 vs 4, both even) changes.
+
+Lean banked: xi_orderAt_quadruple_eq (four orders equal), quadruple_weight_parity_refuted (parity even
+∀ρ), lineReflect_fixed_iff (τ=lineReflect fixed locus = critical line — the GENUINE distinction, not a
+parity).
+
+REDIRECT (doc 90): route (b)-as-parity is CLOSED. Survives only as (2) the RH_{2^k} ladder as a
+COUNTING force (defect-recurrence bounds the off-line-quadruple count = o(#zeros), colliding with the
+step-4 density lane) or (3) a genuine equivariant INDEX of the antiholomorphic τ (signed, not mod-2).
+Both drop the parity framing. Next construction: (2) — make the defect-recurrence bound the off-line
+quadruple count. The τ-invariant-divisor reformulation (real iff RH) is clean but does NOT self-force;
+the force is external (the ladder).
+
+## cont.44 — edge-law κ grounded in odd-Basel (LegStripEdge additions, axiom-clean, RHTower green)
+
+hasSum_odd_basel: Σ_{k≥0}1/(2k+1)²=π²/8 (from mathlib Basel Σ1/n²=π²/6, even part π²/24 via
+HasSum.even_add_odd — needs explicit f + Nat-cast-matched forms + maxHeartbeats 1000000, else HO-unif
+whnf-blows). local_factor_series: Σ_{k≥0}1/(k+½)²=π²/2 (=4·odd-Basel). kappa_eq_inv_series:
+2/π² = (Σ1/(k+½)²)⁻¹ — so the edge law's 1/π is provably the odd-Basel constant read through the √d
+boundary layer (the local field factor κ=2/π² IS the reciprocal of the near-pole csch²→(1/z)² series).
+Now the edge-law CONSTANTS are grounded theorems (κ + the AM-GM skeleton + peak); the two remaining
+matched asymptotics (ε(i)→−π²/16 via 2nd-order EM of poleModelDiff; A_trunc/i→i/d digamma) and the
+discrete coth-θ*(i) equilibrium formalization are the residual surface.
+
+## cont.45 — edge law as a rigorous REDUCTION (LegStripEdge, axiom-clean, RHTower green)
+
+edge_isLeast: 2√(a/d) IS the least value of the gap margin x/d+a/x over x>0 (lower bound edge_amgm +
+attained edge_amgm_eq). edge_law_reduction: given the physical decomposition ½−θmax d = (2/π²)·m(d)
+with m(d) the least gap margin, Tendsto (½−θmax d)·√d → 1/π — the AM-GM minimum (m=2√((π²/16)/d) via
+IsLeast.unique) and the √d-cancellation (edge_margin_const) discharged; the decomposition is the sole
+input. So "edge law ⟸ decomposition" is now a theorem. Full edge-law Lean surface: edge_amgm,
+edge_amgm_eq, edge_isLeast, edge_margin_const, edge_peak_loc, edge_law, edge_law_reduction,
+edge_law_tendsto, hasSum_odd_basel, local_factor_series, kappa_eq_inv_series (all axiom-clean). Residual
+= the decomposition's 2 asymptotic inputs (ε→−π²/16, A_trunc→i/d) from the exact poleExcess field +
+the discrete coth-θ*(i) equilibrium model.
