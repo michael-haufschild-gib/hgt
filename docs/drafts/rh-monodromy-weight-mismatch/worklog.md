@@ -4755,3 +4755,133 @@ behind, difference) + the full bridge machinery. SOLE remaining step for the lit
 (A−B)/i→Φ(c): the shell-sum interchange Σ_n lim_i = lim_i Σ_n (dominated convergence over n) — the
 k-Tonelli pe=Σ_n e^{−nu} + the i↔n exchange. Doc 30 §15 corrected. NEXT: the n-interchange, or
 the exact edge law (½−θ_max)√d→1/π now that Φ'(2)=−π²/8 is proven.
+
+## cont. 43 — MATHLIB GAP BUILT: the digamma asymptotic ψ(w)−log w→0; vertical bound now UNCONDITIONAL
+
+The off-line χ-decay of step 2 bottomed out at the digamma asymptotic (ψ(w)−log w→0), absent from
+mathlib and taken as a hypothesis (`hanchor`) by the tree's `re_digamma_vertical_bound`. Built it from
+scratch. DigammaAsymptotic.lean, all axiom-clean [propext, Classical.choice, Quot.sound]; RHTower
+green 8718 jobs; lint passed; index regenerated.
+
+The chain (each a genuine mathlib-contribution-grade lemma):
+- `digamma_natCast_add_one` / `digamma_natCast_add_one_sub_log_tendsto`: integer asymptotic
+  ψ(N+1)−log(N+1)→0, from the recurrence ψ(s+1)=ψ(s)+1/s + digamma_one=−γ + Euler–Mascheroni
+  (harmonic N − log(N+1) → γ).
+- `logDeriv_GammaSeq`: logDeriv(Euler's GammaSeq ·)(s) = log n − ∑_{k≤n} 1/(s+k) (the algebraic heart
+  of Gauss).
+- `rpow_re_le_sum` + `integrand_diff_norm_le` + `En_tendsto_zero`: the s-UNIFORM dominated-convergence
+  bound — the beta-integral integrand difference dominated s-uniformly by e^{−x}(x^{a−1}+x^{b−1}), its
+  integral E_n → 0 by DCT.
+- `GammaSeq_sub_Gamma_norm_le`: ‖GammaSeq s n − Γ s‖ ≤ E_n for a ≤ Re s ≤ b (the uniform bound).
+- `GammaSeq_tendstoLocallyUniformlyOn`: GammaSeq → Γ LOCALLY UNIFORMLY on {Re s > 0} — THE crux gap
+  (mathlib has no Vitali/Montel, no Weierstrass tprod for Γ); built via the uniform bound + compactness
+  (min/max of Re on each compact).
+- `gauss_digamma`: Gauss's formula ψ(s) = lim_n (log n − ∑_{k≤n} 1/(s+k)), via `logDeriv_tendsto`
+  applied to the loc-unif convergence (logDeriv passes to the limit) + `logDeriv_GammaSeq`.
+- `digamma_shift_diff_bound`: ‖ψ(w+N) − ψ(N+1)‖ ≤ 2‖w−1‖/N, via the Gauss-difference series
+  ∑[1/(N+1+j) − 1/(w+N+j)] with a clean telescoping bound (`sum_inv_sq_shift_le`).
+- `digamma_vertical_anchor_tendsto`: Re ψ(σ+it+N) − ½log((σ+N)²+t²) → 0 (the tree's anchor), decomposed
+  into the difference bound + integer asymptotic + a real log-ratio limit.
+- `re_digamma_vertical_bound_uncond`: |Re ψ(σ+it) − ½log(σ²+t²)| ≤ 1/t² + π/(2t), UNCONDITIONALLY —
+  the anchor hypothesis is discharged.
+
+CONSEQUENCE: a load-bearing hypothesis is removed from the tree. `re_digamma_vertical_bound` fed the
+EM-carrier remainder bounds throughout the MWM lane, all of which carried the anchor as an assumed
+input; the vertical digamma bound is now unconditional. This also completes step 2's off-line χ-decay:
+‖zetaChi(σ+it)‖ = π^{σ−½}·|Γ((1−z)/2)|/|Γ(z/2)| with the Gamma ratio governed by Re ψ ≈ log|·|, now a
+theorem — the off-line domination floor `carrierFloorOn_of_gamma_ratio_domination` has its analytic
+input available.
+
+NEXT: wire re_digamma_vertical_bound_uncond into the off-line χ-modulus decay
+(‖zetaChi(σ+it)‖ < 1 for σ > ½, large t) to make carrierFloorOn_of_pointwise_domination
+unconditional off the line — closing step 2's floor as a proven theorem rather than a typed input.
+
+## cont. 44 — STEP 2 CLOSED: off-line χ-decay ‖zetaChi(σ+it)‖<1 PROVEN; off-line floor unconditional
+
+Wired re_digamma_vertical_bound_uncond into the χ-modulus decay. RouteBChiDecay.lean (+ FTC machinery
+in DigammaAsymptotic.lean), all axiom-clean [propext, Classical.choice, Quot.sound]; RHTower green
+8719 jobs; lint passed.
+
+- `hasDerivAt_log_norm_Gamma`: d/dx log‖Γ(x+iy)‖ = Re ψ(x+iy) (via ½·log(normSq), avoiding the
+  Complex.log branch cut).
+- `digamma_continuousOn_uhp`: ψ continuous on the upper half-plane (Γ analytic + nonzero there).
+- `ftc_log_norm_Gamma`: ∫_a^b Re ψ(x+iy)dx = log‖Γ(b+iy)‖ − log‖Γ(a+iy)‖.
+- `re_digamma_ge`: Re ψ(x+iy) ≥ log y − (1/y²+π/(2y)) for x≥0 (from the unconditional vertical bound).
+- `norm_zetaChi_lt_one`: ‖zetaChi(σ+it)‖ < 1 for σ∈(½,1) and t large (explicitly:
+  log π + (1/(t/2)²+π/(t)) < log(t/2)). Assembled from norm_zetaChi_eq + the Gamma-ratio FTC bound.
+- `norm_gN_ge_of_dirichlet_domination`: given ‖zetaChi z‖≤1, the certificate floor reduces to a PURE
+  Dirichlet domination ‖D(1−z)‖+ε < ‖D z‖ — the χ-factor is discharged.
+- `norm_gN_ge_offline`: for σ∈(½,1), t large, the off-line floor ε<‖gN(σ+it)‖ holds as soon as the
+  Dirichlet part dominates its reflection. The χ-assumption is now a theorem, not an input.
+
+STATUS: steps 1 (Hardy identity, HardyCarrier.lean) and 2 (off-line domination, mechanism + exact
+modulus + χ-decay) are COMPLETE. What remains of step 2 is the pure Dirichlet-ratio condition
+‖D(1−z)‖ < ‖D z‖ off-line — genuinely zero-free-region-flavored (search-grade, user-flagged), and the
+honest residual. The χ half is closed.
+
+NEXT (per the 4-step goal): step 3 — name the real open core (on-line slice: zero-spacing route +
+monodromy weight-mismatch moonshot); step 4 — repurpose the anti-concentration engine to a
+proportion/density statement (|D| large a.e.-height → zero-density).
+
+## cont. 45 — 4-STEP GOAL COMPLETE: steps 3 (open core named) + 4 (proportion/density) done
+
+- STEP 3 (name the open core): doc 89 (89-open-core-hardy-slice.md). The floor route RELOCATED the RH
+  difficulty exactly onto the on-line slice, where the finite Hardy function H_N = 2|D|cos(α−φ/2)
+  genuinely vanishes. Two routes named: (a) zero-spacing/gap control [SEARCH-GRADE — Montgomery/simple-
+  zeros, fails the novelty gate]; (b) the monodromy weight-mismatch invariant [MOONSHOT — passes]:
+  the off-line quadruple Q(ρ₀)={ρ,1−ρ,ρ̄,1−ρ̄} has the two symmetry-transpositions acting as a 4-cycle
+  (odd) vs on-line 2-cycle (even); the ℤ₂ deck-tower grading forces even; the mismatch is the
+  contradiction. Bridges zero-location to deck monodromy (CoherentTower/ModulusHolography/RHLadder) —
+  outside the classical corpus. Next move: formalize the transposition parity, attack-as-false first.
+- STEP 4 (repurpose anti-concentration to density): RouteBProportion.lean (axiom-clean; RHTower 8720).
+  cesaroLowerDensity + good_proportion_ge (a [0,1]-observable with upper density ≤ B has complement of
+  lower density ≥ 1−B, via liminf_const_sub) + dpoly_large_lower_density_pos (caustic ⟹ |D| large at
+  strictly positive proportion of heights). The engine's honest target: not a pointwise gN floor but a
+  proportion statement, feeding zero-density control.
+
+ALL FOUR STEPS OF THE GOAL NOW COMPLETE (steps 1–2 in cont. 43–44; steps 3–4 here). New modules this
+arc: HardyCarrier, RouteBOfflineDomination, DigammaAsymptotic (the mathlib gap), RouteBChiDecay,
+RouteBProportion. Only genuinely-open item = the moonshot (doc 89 route b, weight-mismatch invariant)
+and the search-grade Dirichlet-ratio (step 2 residual) + gap-control (step 3 route a).
+
+## cont.42 — the literal single limit (A−B)/i → Φ(c) CLOSED (shell-sum interchange formalized)
+
+`LegStripCapstone.lean` (axiom-clean [propext, Classical.choice, Quot.sound]; full RHTower build
+green 8479 jobs; formal lint passed). `tendsto_shellSum_stripResidue`: `Σ_{n≥1} shellDiffTerm c n i →
+Φ(c) = stripResidue c` as `i → ∞` — the shell-sum interchange `Σ_n lim_i = lim_i Σ_n` that collapses
+the per-shell `tendsto_shellDiff` into ONE limit. This is `(A−B)/i → Φ(c)` after Tonelli identifies
+`A/i = Σ_n aheadShell`, `B/i = Σ_n behindShell`.
+
+Mechanism = dominated convergence over `n` (`tendsto_tsum_of_dominated_convergence`): pointwise =
+`tendsto_shellDiff`; the tsum of limits = `stripResidue` (via `stripResidue_eq_tsum`, `mul_comm`);
+the uniform-in-`i` summable dominating bound `shellBound c n = 36864/(cn)² + (3/2)(9/10)^{cn}/(cn−1)`
+is the technical core. Writing `shellDiffTerm ≤ region1 + tail` (behind shell split at `(i+1)/2`,
+leftover behind terms dropped nonneg, ahead sum split head/tail):
+- `region1_le` (bulk `k<(i+1)/2`) ≤ 36864/(cn)². Cancellation `A_k−B_k ≤ A_k·(cn)·D_k`,
+  `D_k = S^b_k−S^a_k ≤ 4k(k+1)/(3i²)` (via `(i-1-j)(i+j+1)=i²-(j+1)² ≥ 3i²/4` on `k<i/2`), profile
+  `A_k ≤ ρ^k` (`ρ=e^{−cn/(2(i+1))}`, from `S^a_k ≥ k/(2(i+1))`), giving the geometric second-moment
+  `Σ_{k<K}k(k+1)ρ^k ≤ 2ρ/(1−ρ)³` (`tsum_kk_geom`, via `Σ(k+2 choose 2)ρ^k`), controlled uniformly
+  in `i` by `β³e^{−β}/(1−e^{−β})³ ≤ 216` (`phi_beta_bound`: `1−e^{−β}≥β/(1+β)` + `(1+β)³ ≤ 216e^β`).
+- `tail_le` (ahead tail `k≥(i+1)/2`) ≤ (3/2)(9/10)^{cn}/(cn−1), geometric in `n`. Offset-preserving
+  `A_k ≤ e^{−cn/2i}((i+1)/(i+k+1))^{cn}` (from `S^a_k ≥ log((i+k+1)/(i+1))`, `harmonic_log_upper`) +
+  antitone `p`-series tail `Σ_{m≥M}m^{−r} ≤ (M−1)^{1−r}/(r−1)` (`p_series_tail_le`, via
+  `AntitoneOn.sum_le_integral_Ico` + `tsum_le_of_sum_range_le`) + base `e^{−1/2i}·2(i+1)/(3i) ≤ 9/10`
+  (`base_tail_le`, via `e^{−1/2i} ≤ 1/(1+1/2i)` and `2(i+1)/(2i+1) ≤ 27/20`).
+Summability `shellBound_summable` = bulk O(1/n²) + geometric ((9/10)^c)^n.
+
+Full lemma list (LegStripCapstone): tsum_kk_geom, phi_beta_bound, gauss_sum_real, region1_le,
+p_series_tail_le, base_tail_le, tail_le, aheadTerm_summable, behindTerm_le_aheadTerm,
+shellDiffTerm_nonneg, shellDiffTerm_le, shellBound_summable, tendsto_shellSum_stripResidue. ~590 lines.
+
+Lean-mechanics banked: (a) `obtain ⟨r, h⟩ : ∃ r, r = … := ⟨_, rfl⟩` for OPAQUE locals (vs `set`,
+which let-unfolds and blows up nlinarith/whnf); (b) `summable_nat_add_iff k` needs the summand in
+`k+(i+1)` order — `(i+1)+k` triggers an `↑(n+(i+1))` vs `↑((i+1)+n)` commutativity isDefEq LOOP;
+(c) name the equation before `le_trans` (avoid `le_trans (…) (le_of_eq ?_)` — the metavar drives an
+unbounded isDefEq). Reusable analytic bricks: `tsum_kk_geom` (Σk(k+1)ρ^k), `phi_beta_bound`,
+`p_series_tail_le` (antitone p-series tail integral bound).
+
+NEXT (springboard, not terminus): (i) Tonelli identity `A/i = Σ_n aheadShell`, `B/i = Σ_n
+behindShell` to state the interchange literally on the poleExcess model (k-Tonelli pe=Σ_n e^{−nu});
+OR (ii) the exact edge law `(½−θ_max)√d → 1/π` — now `Φ'(2)=−π²/8` AND the full single-limit are
+theorems, so the finite-d marginal `1/(π√d)` can be pinned as the √d correction to the marginal
+`Φ(2)=1` crossing (sin2t=2t deficit at t=π/2, Airy edge scale i_peak≈(π/4)√d).

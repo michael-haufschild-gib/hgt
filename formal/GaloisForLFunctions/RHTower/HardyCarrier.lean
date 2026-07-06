@@ -119,3 +119,281 @@ theorem gN_line_eq_zero_iff (N : ℕ) (τ : ℝ) :
 
 end RHTower
 
+
+namespace RHTower
+
+/-- Squaring removes the harmless Hardy-phase sign ambiguity: the square of the real Hardy
+amplitude is the squared norm of the critical-line finite carrier. -/
+theorem hardyCarrier_sq_eq_norm_gN_line_sq (N : ℕ) (τ : ℝ) :
+    (hardyCarrier N τ) ^ 2 = ‖gN N (linePt τ)‖ ^ 2 := by
+  calc
+    (hardyCarrier N τ) ^ 2 = |hardyCarrier N τ| ^ 2 := by rw [sq_abs]
+    _ = ‖gN N (linePt τ)‖ ^ 2 := by rw [← norm_gN_line_eq_abs_hardyCarrier]
+
+/-- The concrete finite carrier is continuous along the critical line. -/
+theorem continuous_gN_line (N : ℕ) :
+    Continuous fun τ : ℝ => gN N (linePt τ) := by
+  rw [continuous_iff_continuousAt]
+  intro τ
+  have h1 : ContinuousAt (gN N) (linePt τ) := by
+    apply (gN_analyticAt (N := N) ?_).continuousAt
+    have hre : (1 - linePt τ).re = 1 / 2 := by
+      unfold linePt
+      simp
+      norm_num
+    exact Gammaℝ_ne_zero_of_re_pos (by rw [hre]; norm_num)
+  have hlin : ContinuousAt linePt τ := by
+    unfold linePt
+    fun_prop
+  show ContinuousAt (gN N ∘ linePt) τ
+  exact ContinuousAt.comp h1 hlin
+
+/-- The squared Hardy amplitude is continuous, even though the chosen square-root phase itself may
+jump by sign. -/
+theorem continuous_hardyCarrier_sq (N : ℕ) :
+    Continuous fun τ : ℝ => (hardyCarrier N τ) ^ 2 := by
+  have hcont : Continuous fun τ : ℝ => ‖gN N (linePt τ)‖ ^ 2 :=
+    (continuous_gN_line N).norm.pow 2
+  have heq : (fun τ : ℝ => (hardyCarrier N τ) ^ 2)
+      = fun τ : ℝ => ‖gN N (linePt τ)‖ ^ 2 := by
+    funext τ
+    exact hardyCarrier_sq_eq_norm_gN_line_sq N τ
+  rw [heq]
+  exact hcont
+
+/-- The squared Hardy amplitude is interval-integrable on every finite window. -/
+theorem intervalIntegrable_hardyCarrier_sq (N : ℕ) (T U : ℝ) :
+    IntervalIntegrable (fun τ : ℝ => (hardyCarrier N τ) ^ 2)
+      MeasureTheory.volume T (T + U) := by
+  exact (continuous_hardyCarrier_sq N).intervalIntegrable T (T + U)
+
+end RHTower
+
+namespace RHTower
+
+/-- Real expansion of the norm square of a sum in `Complex`. -/
+theorem norm_add_sq_complex (u v : ℂ) :
+    ‖u + v‖ ^ 2 = ‖u‖ ^ 2 + ‖v‖ ^ 2 + 2 * ((starRingEnd ℂ) u * v).re := by
+  have h : ∀ z : ℂ, ‖z‖ ^ 2 = (z * (starRingEnd ℂ) z).re := by
+    intro z
+    rw [Complex.mul_conj']
+    rw [show ((‖z‖ : ℂ)) ^ 2 = ((‖z‖ ^ 2 : ℝ) : ℂ) by push_cast; ring]
+    rw [Complex.ofReal_re]
+  rw [h, h, h]
+  have hexpand : (u + v) * (starRingEnd ℂ) (u + v)
+      = u * (starRingEnd ℂ) u + v * (starRingEnd ℂ) v
+        + ((starRingEnd ℂ) u * v
+          + (starRingEnd ℂ) ((starRingEnd ℂ) u * v)) := by
+    rw [map_add, map_mul, Complex.conj_conj]
+    ring
+  rw [hexpand]
+  simp only [Complex.add_re, Complex.conj_re]
+  ring
+
+/-- Exact finite functional-equation interference expansion of the line carrier norm. -/
+theorem norm_gN_line_sq_eq_dirichlet_cross (N : ℕ) (τ : ℝ) :
+    ‖gN N (linePt τ)‖ ^ 2 =
+      2 * ‖dirichletPoly N (linePt τ)‖ ^ 2
+        + 2 * (zetaChi (linePt τ)
+          * ((starRingEnd ℂ) (dirichletPoly N (linePt τ))) ^ 2).re := by
+  set D := dirichletPoly N (linePt τ)
+  set χ := zetaChi (linePt τ)
+  have hχnorm : ‖χ‖ = 1 := by
+    simpa [χ] using norm_zetaChi_line τ
+  rw [gN_line_conjForm]
+  change ‖D + χ * (starRingEnd ℂ) D‖ ^ 2 =
+    2 * ‖D‖ ^ 2 + 2 * (χ * ((starRingEnd ℂ) D) ^ 2).re
+  rw [norm_add_sq_complex]
+  have hvnorm : ‖χ * (starRingEnd ℂ) D‖ ^ 2 = ‖D‖ ^ 2 := by
+    rw [norm_mul, Complex.norm_conj, hχnorm, one_mul]
+  rw [hvnorm]
+  have hcross : ((starRingEnd ℂ) D * (χ * (starRingEnd ℂ) D)).re =
+      (χ * ((starRingEnd ℂ) D) ^ 2).re := by
+    ring_nf
+  rw [hcross]
+  ring
+
+end RHTower
+
+namespace RHTower
+
+/-- The functional-equation interference density in the split line norm is continuous. -/
+theorem continuous_gN_line_crossTerm (N : ℕ) :
+    Continuous fun τ : ℝ =>
+      2 * (zetaChi (linePt τ)
+        * ((starRingEnd ℂ) (dirichletPoly N (linePt τ))) ^ 2).re := by
+  have hline : Continuous linePt := by
+    unfold linePt
+    fun_prop
+  have hDline : Continuous fun τ : ℝ => dirichletPoly N (linePt τ) := by
+    exact (dirichletPoly_differentiable N).continuous.comp hline
+  have hmainCont : Continuous fun τ : ℝ => 2 * ‖dirichletPoly N (linePt τ)‖ ^ 2 := by
+    exact ((hDline.norm.pow 2).const_mul 2)
+  have hgnCont : Continuous fun τ : ℝ => ‖gN N (linePt τ)‖ ^ 2 :=
+    (continuous_gN_line N).norm.pow 2
+  have heq : (fun τ : ℝ =>
+      2 * (zetaChi (linePt τ)
+        * ((starRingEnd ℂ) (dirichletPoly N (linePt τ))) ^ 2).re)
+      = fun τ : ℝ => ‖gN N (linePt τ)‖ ^ 2
+        - 2 * ‖dirichletPoly N (linePt τ)‖ ^ 2 := by
+    funext τ
+    rw [norm_gN_line_sq_eq_dirichlet_cross N τ]
+    ring
+  rw [heq]
+  exact hgnCont.sub hmainCont
+
+end RHTower
+
+namespace RHTower
+
+/-- Pointwise lower bound for the split FE-interference term from a norm-square bound on `D_N`. -/
+theorem gN_line_crossTerm_lower_bound_of_dirichlet_norm_sq_le
+    (N : ℕ) (τ : ℝ) {Dsup : ℝ}
+    (hDsup : ‖dirichletPoly N (linePt τ)‖ ^ 2 ≤ Dsup) :
+    -(2 * Dsup) ≤ 2 * (zetaChi (linePt τ)
+      * ((starRingEnd ℂ) (dirichletPoly N (linePt τ))) ^ 2).re := by
+  set D := dirichletPoly N (linePt τ)
+  set χ := zetaChi (linePt τ)
+  let z : ℂ := χ * ((starRingEnd ℂ) D) ^ 2
+  have hz_norm : ‖z‖ = ‖D‖ ^ 2 := by
+    dsimp [z]
+    rw [norm_mul, norm_zetaChi_line, norm_pow, Complex.norm_conj, one_mul]
+  have hz_re : -‖D‖ ^ 2 ≤ z.re := by
+    have hre_abs : |z.re| ≤ ‖z‖ := Complex.abs_re_le_norm z
+    have hlo : -‖z‖ ≤ z.re := (abs_le.mp hre_abs).1
+    rwa [hz_norm] at hlo
+  change -(2 * Dsup) ≤ 2 * z.re
+  nlinarith
+
+end RHTower
+
+namespace RHTower
+
+/-- Pointwise FE-interference loss from a scalar norm bound on `D_N(1/2+iτ)`. -/
+theorem gN_line_crossTerm_lower_bound_of_dirichlet_norm_le
+    (N : ℕ) (τ : ℝ) {Dnorm : ℝ}
+    (hDnorm : ‖dirichletPoly N (linePt τ)‖ ≤ Dnorm) :
+    -(2 * Dnorm ^ 2) ≤ 2 * (zetaChi (linePt τ)
+      * ((starRingEnd ℂ) (dirichletPoly N (linePt τ))) ^ 2).re := by
+  apply gN_line_crossTerm_lower_bound_of_dirichlet_norm_sq_le (N := N) (τ := τ)
+    (Dsup := Dnorm ^ 2)
+  exact pow_le_pow_left₀ (norm_nonneg _) hDnorm 2
+
+end RHTower
+
+namespace RHTower
+
+/-- The Hardy-phase quadrature component of the one-sided Dirichlet carrier.  The Hardy carrier is
+`2 * Re(conj(w) * D_N)`, while this scalar is `Im(conj(w) * D_N)`; it is the line component not seen
+by the symmetrized carrier amplitude. -/
+noncomputable def hardyOrthogonalCarrier (N : ℕ) (τ : ℝ) : ℝ :=
+  ((starRingEnd ℂ) (hardyPhase τ) * dirichletPoly N (linePt τ)).im
+
+/-- Exact FE-interference decomposition in Hardy phase coordinates.  The negative part of the split
+cross term is governed by the quadrature component of `conj(w) * D_N`, not by the full Dirichlet norm. -/
+theorem gN_line_crossTerm_eq_hardy_components (N : ℕ) (τ : ℝ) :
+    2 * (zetaChi (linePt τ)
+      * ((starRingEnd ℂ) (dirichletPoly N (linePt τ))) ^ 2).re
+      = (hardyCarrier N τ) ^ 2 / 2 - 2 * (hardyOrthogonalCarrier N τ) ^ 2 := by
+  set w := hardyPhase τ with hw
+  set D := dirichletPoly N (linePt τ) with hD
+  set A : ℂ := (starRingEnd ℂ) w * D with hA
+  have hcw : (starRingEnd ℂ) w * w = 1 := by
+    simpa [hw] using conj_hardyPhase_mul_self τ
+  have hwc : w * (starRingEnd ℂ) w = 1 := by
+    rw [mul_comm]
+    exact hcw
+  have hD_eq : D = w * A := by
+    rw [hA, ← mul_assoc, hwc, one_mul]
+  have hconjD : (starRingEnd ℂ) D = (starRingEnd ℂ) w * (starRingEnd ℂ) A := by
+    rw [hD_eq, map_mul]
+  have hχA : zetaChi (linePt τ) * ((starRingEnd ℂ) D) ^ 2 = ((starRingEnd ℂ) A) ^ 2 := by
+    calc
+      zetaChi (linePt τ) * ((starRingEnd ℂ) D) ^ 2
+          = (w * w) * (((starRingEnd ℂ) w * (starRingEnd ℂ) A) ^ 2) := by
+              rw [← hardyPhase_sq τ]
+              rw [← hw, hconjD]
+      _ = (w * (starRingEnd ℂ) w) ^ 2 * ((starRingEnd ℂ) A) ^ 2 := by ring
+      _ = ((starRingEnd ℂ) A) ^ 2 := by rw [hwc]; ring
+  have hAeq : (starRingEnd ℂ) (hardyPhase τ) * dirichletPoly N (linePt τ) = A := by
+    rw [← hw, ← hD, hA]
+  have hHC : hardyCarrier N τ = 2 * A.re := by
+    rw [hardyCarrier]
+    rw [conj_hardyPhase_mul_gN_eq N τ]
+    rw [hAeq]
+    simp
+  have hO : hardyOrthogonalCarrier N τ = A.im := by
+    simp [hardyOrthogonalCarrier, hAeq]
+  have hre : (((starRingEnd ℂ) A) ^ 2).re = A.re ^ 2 - A.im ^ 2 := by
+    simp [sq, Complex.mul_re]
+  rw [hD, hχA, hre, hHC, hO]
+  ring
+
+/-- Pointwise FE-interference loss from a scalar envelope on the Hardy-phase quadrature component. -/
+theorem gN_line_crossTerm_lower_bound_of_hardyOrthogonal_le
+    (N : ℕ) (τ : ℝ) {Ysup : ℝ}
+    (hY : |hardyOrthogonalCarrier N τ| ≤ Ysup) :
+    -(2 * Ysup ^ 2) ≤ 2 * (zetaChi (linePt τ)
+      * ((starRingEnd ℂ) (dirichletPoly N (linePt τ))) ^ 2).re := by
+  have hsq_abs : |hardyOrthogonalCarrier N τ| ^ 2 ≤ Ysup ^ 2 := by
+    exact pow_le_pow_left₀ (abs_nonneg _) hY 2
+  have hsq : (hardyOrthogonalCarrier N τ) ^ 2 ≤ Ysup ^ 2 := by
+    rwa [sq_abs] at hsq_abs
+  have hmain0 : 0 ≤ (hardyCarrier N τ) ^ 2 / 2 := by positivity
+  rw [gN_line_crossTerm_eq_hardy_components]
+  nlinarith
+
+end RHTower
+
+namespace RHTower
+
+/-- The one-sided critical-line Dirichlet carrier splits into the in-phase Hardy amplitude and the
+quadrature component after rotating by the Hardy phase. -/
+theorem dirichlet_norm_sq_eq_hardy_components (N : ℕ) (τ : ℝ) :
+    ‖dirichletPoly N (linePt τ)‖ ^ 2 =
+      (hardyCarrier N τ) ^ 2 / 4 + (hardyOrthogonalCarrier N τ) ^ 2 := by
+  set w := hardyPhase τ with hw
+  set D := dirichletPoly N (linePt τ) with hD
+  set A : ℂ := (starRingEnd ℂ) w * D with hA
+  have hAeq : (starRingEnd ℂ) (hardyPhase τ) * dirichletPoly N (linePt τ) = A := by
+    rw [← hw, ← hD, hA]
+  have hHC : hardyCarrier N τ = 2 * A.re := by
+    rw [hardyCarrier]
+    rw [conj_hardyPhase_mul_gN_eq N τ]
+    rw [hAeq]
+    simp
+  have hO : hardyOrthogonalCarrier N τ = A.im := by
+    simp [hardyOrthogonalCarrier, hAeq]
+  have hnorm : ‖D‖ = ‖A‖ := by
+    rw [hA, norm_mul, Complex.norm_conj, norm_hardyPhase, one_mul]
+  have hA_norm : ‖A‖ ^ 2 = A.re ^ 2 + A.im ^ 2 := by
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+    ring
+  calc
+    ‖dirichletPoly N (linePt τ)‖ ^ 2 = ‖D‖ ^ 2 := by rw [hD]
+    _ = ‖A‖ ^ 2 := by rw [hnorm]
+    _ = A.re ^ 2 + A.im ^ 2 := hA_norm
+    _ = (hardyCarrier N τ) ^ 2 / 4 + (hardyOrthogonalCarrier N τ) ^ 2 := by
+        rw [hHC, hO]
+        ring
+
+/-- The banked Dirichlet second-moment density in Hardy phase coordinates. -/
+theorem dirichlet_main_eq_hardy_components (N : ℕ) (τ : ℝ) :
+    2 * ‖dirichletPoly N (linePt τ)‖ ^ 2 =
+      (hardyCarrier N τ) ^ 2 / 2 + 2 * (hardyOrthogonalCarrier N τ) ^ 2 := by
+  rw [dirichlet_norm_sq_eq_hardy_components]
+  ring
+
+end RHTower
+
+namespace RHTower
+
+/-- The Hardy-phase quadrature component is pointwise bounded by the one-sided critical-line carrier
+norm. -/
+theorem hardyOrthogonalCarrier_sq_le_dirichlet_norm_sq (N : ℕ) (τ : ℝ) :
+    (hardyOrthogonalCarrier N τ) ^ 2 ≤ ‖dirichletPoly N (linePt τ)‖ ^ 2 := by
+  rw [dirichlet_norm_sq_eq_hardy_components]
+  have hnonneg : 0 ≤ (hardyCarrier N τ) ^ 2 / 4 := by positivity
+  nlinarith
+
+end RHTower

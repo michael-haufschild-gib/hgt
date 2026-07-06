@@ -461,3 +461,22 @@ theorem exists_native_dpoly_floor_in_window
   linarith
 
 end RHTower
+
+namespace RHTower
+
+/-- **Second-moment upper bound.**  The exact diagonal main term plus the explicit off-diagonal
+absolute bound is a certified upper bound for the interval mass. -/
+theorem secondMoment_upper_bound (a : ℕ → ℝ) (s : Finset ℕ) (T U : ℝ)
+    (hs : ∀ n ∈ s, 1 ≤ n) :
+    (∫ t in T..(T + U), ‖dpoly a s t‖ ^ 2)
+      ≤ U * (∑ m ∈ s, (a m) ^ 2)
+        + ∑ m ∈ s, ∑ n ∈ s.erase m, 2 * |a m * a n| / |Real.log n - Real.log m| := by
+  let R := ∑ m ∈ s, ∑ n ∈ s.erase m,
+    a m * a n * cosInt (Real.log n - Real.log m) T U
+  let B := ∑ m ∈ s, ∑ n ∈ s.erase m, 2 * |a m * a n| / |Real.log n - Real.log m|
+  have hR : R ≤ B := (abs_le.mp (offDiagonal_abs_le a s T U hs)).2
+  rw [secondMoment_meanValue]
+  dsimp only [R, B] at hR ⊢
+  linarith
+
+end RHTower

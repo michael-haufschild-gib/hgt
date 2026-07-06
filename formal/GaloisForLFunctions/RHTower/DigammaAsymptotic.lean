@@ -9,6 +9,7 @@ right half-plane (uniform dominated convergence on the beta integral, dominated 
 of the vertical digamma bound.
 -/
 import Mathlib
+import GaloisForLFunctions.RHTower.DigammaBounds
 open Complex Filter MeasureTheory Set Real
 
 namespace RHTower
@@ -444,5 +445,202 @@ theorem digamma_shift_diff_bound {w : ℂ} {N : ℕ} (hN : 1 ≤ N) (hwN : 0 < (
     apply Filter.Tendsto.norm
     exact hdiff.congr hSm
   exact le_of_tendsto hlim (Filter.Eventually.of_forall hbound)
+
+
+theorem digamma_vertical_anchor_tendsto (σ t : ℝ) :
+    Tendsto (fun N : ℕ => (Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I + (N:ℂ))).re
+        - (1 / 2) * Real.log ((σ + (N:ℝ)) ^ 2 + t ^ 2)) atTop (nhds 0) := by
+  set w : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I with hw
+  have hwre : w.re = σ := by rw [hw]; simp
+  have hwadd : ∀ N : ℕ, (σ : ℂ) + (t : ℂ) * Complex.I + (N:ℂ) = w + (N:ℂ) := by
+    intro N; rw [hw]
+  have hnormsq : ∀ N : ℕ, ‖w + (N:ℂ)‖ = Real.sqrt ((σ + (N:ℝ)) ^ 2 + t ^ 2) := by
+    intro N
+    rw [hw, show (σ : ℂ) + (t : ℂ) * Complex.I + (N:ℂ) = (((σ + (N:ℝ)):ℝ):ℂ) + ((t:ℝ):ℂ) * Complex.I by push_cast; ring]
+    rw [Complex.norm_add_mul_I]
+  -- P1 : Re(ψ(w+N) - ψ(N+1)) → 0
+  have hP1 : Tendsto (fun N : ℕ => (Complex.digamma (w + (N:ℂ))).re
+      - (Complex.digamma ((N:ℂ) + 1)).re) atTop (nhds 0) := by
+    refine squeeze_zero_norm' ?_ (tendsto_const_div_atTop_nhds_zero_nat (2 * ‖w - 1‖))
+    · filter_upwards [eventually_ge_atTop 1,
+        (tendsto_natCast_atTop_atTop (R := ℝ)).eventually_gt_atTop (-σ + 1),
+        (tendsto_natCast_atTop_atTop (R := ℝ)).eventually_ge_atTop (2 * ‖w - 1‖)]
+        with N hN1 hσN hthr
+      have hwN : 0 < (w + (N:ℂ)).re := by rw [Complex.add_re, hwre, Complex.natCast_re]; linarith
+      have hb := digamma_shift_diff_bound hN1 hwN hthr
+      rw [← Complex.sub_re]
+      calc ‖(Complex.digamma (w + (N:ℂ)) - Complex.digamma ((N:ℂ) + 1)).re‖
+          ≤ ‖Complex.digamma (w + (N:ℂ)) - Complex.digamma ((N:ℂ) + 1)‖ := by
+            rw [Real.norm_eq_abs]; exact Complex.abs_re_le_norm _
+        _ ≤ 2 * ‖w - 1‖ / (N:ℝ) := hb
+  -- P2 : Re ψ(N+1) - log(N+1) → 0
+  have hP2 : Tendsto (fun N : ℕ => (Complex.digamma ((N:ℂ) + 1)).re - Real.log ((N:ℝ) + 1))
+      atTop (nhds 0) := by
+    have hcomplex := digamma_natCast_add_one_sub_log_tendsto
+    have hre : Tendsto (fun N : ℕ => (Complex.digamma ((N:ℂ) + 1) - Complex.log ((N:ℂ) + 1)).re)
+        atTop (nhds 0) := by
+      have := (Complex.continuous_re.tendsto _).comp hcomplex
+      simpa [Function.comp_apply] using this
+    apply hre.congr
+    intro N
+    rw [Complex.sub_re]
+    congr 1
+    rw [Complex.log_re, show ((N:ℂ) + 1) = (((N:ℝ)+1:ℝ):ℂ) by push_cast; ring, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos (by positivity)]
+  -- P3 : log(N+1) - ½ log((σ+N)²+t²) → 0
+  have hP3 : Tendsto (fun N : ℕ => Real.log ((N:ℝ) + 1) - (1/2) * Real.log ((σ + (N:ℝ))^2 + t^2))
+      atTop (nhds 0) := by
+    have hcdiv : ∀ c : ℝ, Tendsto (fun N : ℕ => c/((N:ℝ)+1)) atTop (nhds 0) := by
+      intro c
+      have hden : Tendsto (fun N : ℕ => (N:ℝ)+1) atTop atTop :=
+        tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
+      simpa using hden.const_div_atTop c
+    have hratio : Tendsto (fun N : ℕ => ((σ + (N:ℝ))^2 + t^2) / ((N:ℝ)+1)^2) atTop (nhds 1) := by
+      have h1 : Tendsto (fun N : ℕ => (σ + (N:ℝ))/((N:ℝ)+1)) atTop (nhds 1) := by
+        have heq : (fun N : ℕ => (σ + (N:ℝ))/((N:ℝ)+1)) = fun N : ℕ => 1 + (σ - 1)/((N:ℝ)+1) := by
+          funext N; have : (N:ℝ)+1 ≠ 0 := by positivity
+          field_simp; ring
+        rw [heq]; simpa using tendsto_const_nhds.add (hcdiv (σ - 1))
+      have h2 : Tendsto (fun N : ℕ => t/((N:ℝ)+1)) atTop (nhds 0) := hcdiv t
+      have hcomb : Tendsto (fun N : ℕ => ((σ + (N:ℝ))/((N:ℝ)+1))^2 + (t/((N:ℝ)+1))^2)
+          atTop (nhds 1) := by simpa using (h1.pow 2).add (h2.pow 2)
+      apply hcomb.congr'
+      filter_upwards [eventually_ge_atTop 1] with N _
+      have hne : (N:ℝ)+1 ≠ 0 := by positivity
+      field_simp
+    have hlog : Tendsto (fun N : ℕ => Real.log (((σ + (N:ℝ))^2 + t^2) / ((N:ℝ)+1)^2))
+        atTop (nhds 0) := by
+      have := (Real.continuousAt_log (by norm_num : (1:ℝ) ≠ 0)).tendsto.comp hratio
+      simpa [Function.comp_apply, Real.log_one] using this
+    have hP3fin : Tendsto (fun N : ℕ =>
+        (-1/2 : ℝ) * Real.log (((σ + (N:ℝ))^2 + t^2) / ((N:ℝ)+1)^2)) atTop (nhds 0) := by
+      simpa using hlog.const_mul (-1/2 : ℝ)
+    apply hP3fin.congr'
+    filter_upwards [(tendsto_natCast_atTop_atTop (R := ℝ)).eventually_gt_atTop (-σ)] with N hσN
+    have hden : (0:ℝ) < ((N:ℝ)+1)^2 := by positivity
+    have hpos : (0:ℝ) < (σ + (N:ℝ))^2 + t^2 := by
+      have : (0:ℝ) < σ + (N:ℝ) := by linarith
+      positivity
+    rw [Real.log_div (ne_of_gt hpos) (ne_of_gt hden),
+      show Real.log (((N:ℝ)+1)^2) = 2 * Real.log ((N:ℝ)+1) by rw [Real.log_pow]; push_cast; ring]
+    ring
+  -- assemble
+  have hsum := (hP1.add hP2).add hP3
+  simp only [add_zero] at hsum
+  apply hsum.congr
+  intro N
+  rw [hwadd N]
+  ring
+
+/-- **The vertical digamma bound, unconditionally.** `|Re ψ(σ+it) − ½·log(σ²+t²)| ≤ 1/t² + π/(2t)`,
+with the far-field anchor now discharged by the digamma asymptotic. -/
+theorem re_digamma_vertical_bound_uncond {σ t : ℝ} (hσ : 0 ≤ σ) (ht : 0 < t) :
+    |(Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)).re - (1 / 2) * Real.log (σ ^ 2 + t ^ 2)|
+      ≤ 1 / t ^ 2 + Real.pi / (2 * t) :=
+  re_digamma_vertical_bound hσ ht (digamma_vertical_anchor_tendsto σ t)
+
+
+theorem hasDerivAt_log_norm_Gamma (y x : ℝ)
+    (hz : ∀ m : ℕ, (x:ℂ) + (y:ℂ) * I ≠ -(m:ℂ))
+    (hΓ : Complex.Gamma ((x:ℂ) + (y:ℂ) * I) ≠ 0) :
+    HasDerivAt (fun x : ℝ => Real.log ‖Complex.Gamma ((x:ℂ) + (y:ℂ) * I)‖)
+      (Complex.digamma ((x:ℂ) + (y:ℂ) * I)).re x := by
+  set z : ℂ := (x:ℂ) + (y:ℂ) * I with hzdef
+  have hg : HasDerivAt (fun x : ℝ => (x:ℂ) + (y:ℂ) * I) 1 x := by
+    have h1 : HasDerivAt (fun x : ℝ => (x:ℂ)) 1 x := by
+      simpa using Complex.ofRealCLM.hasDerivAt (x := x)
+    simpa using h1.add_const ((y:ℂ) * I)
+  have hΓd : HasDerivAt Complex.Gamma (deriv Complex.Gamma z) z :=
+    (Complex.differentiableAt_Gamma z hz).hasDerivAt
+  have hu : HasDerivAt (fun x : ℝ => Complex.Gamma ((x:ℂ) + (y:ℂ) * I)) (deriv Complex.Gamma z) x := by
+    simpa using hΓd.comp x hg
+  have hure : HasDerivAt (fun x : ℝ => (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)).re)
+      (deriv Complex.Gamma z).re x := Complex.reCLM.hasFDerivAt.comp_hasDerivAt x hu
+  have huim : HasDerivAt (fun x : ℝ => (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)).im)
+      (deriv Complex.Gamma z).im x := Complex.imCLM.hasFDerivAt.comp_hasDerivAt x hu
+  set B : ℝ := 2 * ((Complex.Gamma z).re * (deriv Complex.Gamma z).re
+        + (Complex.Gamma z).im * (deriv Complex.Gamma z).im) with hBdef
+  have hnsq : HasDerivAt (fun x : ℝ => Complex.normSq (Complex.Gamma ((x:ℂ) + (y:ℂ) * I))) B x := by
+    have h := hure.mul hure |>.add (huim.mul huim)
+    have hfn : (fun x : ℝ => Complex.normSq (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)))
+        = fun x : ℝ => (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)).re * (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)).re
+          + (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)).im * (Complex.Gamma ((x:ℂ) + (y:ℂ) * I)).im := by
+      funext x; rw [Complex.normSq_apply]
+    rw [hfn]
+    convert h using 1
+    rw [hBdef]; ring
+  have hn0 : Complex.normSq (Complex.Gamma z) ≠ 0 := fun h => hΓ (Complex.normSq_eq_zero.mp h)
+  have hlog := (Real.hasDerivAt_log hn0).comp x hnsq
+  have hF := hlog.const_mul (1/2 : ℝ)
+  simp only [Function.comp] at hF
+  have hfunF : (fun x : ℝ => (1/2 : ℝ) * Real.log (Complex.normSq (Complex.Gamma ((x:ℂ) + (y:ℂ) * I))))
+      = fun x : ℝ => Real.log ‖Complex.Gamma ((x:ℂ) + (y:ℂ) * I)‖ := by
+    funext x
+    rw [Complex.normSq_eq_norm_sq, Real.log_pow]
+    push_cast; ring
+  rw [hfunF] at hF
+  convert hF using 1
+  -- Re ψ z = ½ · (1/normSq)·B
+  rw [Complex.digamma_def, logDeriv_apply, Complex.div_re, hBdef]
+  field_simp
+
+
+theorem digamma_continuousOn_uhp :
+    ContinuousOn Complex.digamma {z : ℂ | 0 < z.im} := by
+  have hUopen : IsOpen {z : ℂ | 0 < z.im} := isOpen_lt continuous_const Complex.continuous_im
+  have hne : ∀ z ∈ {z : ℂ | 0 < z.im}, ∀ m : ℕ, z ≠ -(m:ℂ) := by
+    intro z hz m hc
+    rw [hc] at hz
+    simp only [Set.mem_setOf_eq, Complex.neg_im, Complex.natCast_im, neg_zero] at hz
+    exact lt_irrefl 0 hz
+  have hΓdiff : DifferentiableOn ℂ Complex.Gamma {z : ℂ | 0 < z.im} :=
+    fun z hz => (Complex.differentiableAt_Gamma z (hne z hz)).differentiableWithinAt
+  have hΓanalytic : AnalyticOnNhd ℂ Complex.Gamma {z : ℂ | 0 < z.im} :=
+    hΓdiff.analyticOnNhd hUopen
+  have hderivcont : ContinuousOn (deriv Complex.Gamma) {z : ℂ | 0 < z.im} :=
+    hΓanalytic.deriv.continuousOn
+  have hΓcont : ContinuousOn Complex.Gamma {z : ℂ | 0 < z.im} := hΓdiff.continuousOn
+  have hΓne : ∀ z ∈ {z : ℂ | 0 < z.im}, Complex.Gamma z ≠ 0 :=
+    fun z hz => Complex.Gamma_ne_zero (hne z hz)
+  have : Complex.digamma = fun z => deriv Complex.Gamma z / Complex.Gamma z := by
+    funext z; rw [Complex.digamma_def, logDeriv_apply]
+  rw [this]
+  exact hderivcont.div hΓcont hΓne
+
+
+theorem ftc_log_norm_Gamma {a b y : ℝ} (hy : 0 < y) :
+    ∫ x in a..b, (Complex.digamma ((x:ℂ) + (y:ℂ) * I)).re
+      = Real.log ‖Complex.Gamma ((b:ℂ) + (y:ℂ) * I)‖
+        - Real.log ‖Complex.Gamma ((a:ℂ) + (y:ℂ) * I)‖ := by
+  have hne : ∀ x : ℝ, ∀ m : ℕ, (x:ℂ) + (y:ℂ) * I ≠ -(m:ℂ) := by
+    intro x m hc
+    have him := congrArg Complex.im hc
+    simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_im, Complex.ofReal_re,
+      Complex.I_re, mul_zero, mul_one, zero_add, Complex.neg_im, Complex.natCast_im, neg_zero] at him
+    linarith
+  apply intervalIntegral.integral_eq_sub_of_hasDerivAt
+  · intro x _
+    exact hasDerivAt_log_norm_Gamma y x (hne x) (Complex.Gamma_ne_zero (hne x))
+  · apply ContinuousOn.intervalIntegrable
+    have hφ : ContinuousOn (fun x : ℝ => (x:ℂ) + (y:ℂ) * I) (Set.uIcc a b) := by fun_prop
+    have hmaps : Set.MapsTo (fun x : ℝ => (x:ℂ) + (y:ℂ) * I) (Set.uIcc a b) {z : ℂ | 0 < z.im} := by
+      intro x _
+      simp only [Set.mem_setOf_eq, Complex.add_im, Complex.ofReal_im, Complex.mul_im,
+        Complex.I_im, Complex.ofReal_re, Complex.I_re, mul_zero, mul_one, zero_add, add_zero]
+      exact hy
+    exact Complex.continuous_re.comp_continuousOn (digamma_continuousOn_uhp.comp hφ hmaps)
+
+/-- Lower bound on `Re ψ` on the vertical line, from the vertical digamma bound: for `x ≥ 0`,
+`Re ψ(x+iy) ≥ log y − (1/y² + π/(2y))`. -/
+theorem re_digamma_ge {x y : ℝ} (hx : 0 ≤ x) (hy : 0 < y) :
+    Real.log y - (1 / y ^ 2 + Real.pi / (2 * y)) ≤ (Complex.digamma ((x:ℂ) + (y:ℂ) * I)).re := by
+  have hb := re_digamma_vertical_bound_uncond hx hy
+  have habs := abs_le.mp hb
+  have hlogle : Real.log y ≤ (1/2) * Real.log (x ^ 2 + y ^ 2) := by
+    rw [show Real.log y = (1/2) * Real.log (y^2) by rw [Real.log_pow]; push_cast; ring]
+    apply mul_le_mul_of_nonneg_left _ (by norm_num)
+    apply Real.log_le_log (by positivity)
+    nlinarith [sq_nonneg x]
+  linarith [habs.1]
 
 end RHTower

@@ -713,7 +713,21 @@ weighted by `(1−k/i)^{nc}`, tiny exactly where the correction is large), so th
 The capstone `tendsto_shellDiff` proves the **per-shell balance**: for every `n ≥ 1`, the `n`-th shell
 of the discrete field's ahead-minus-behind balance, divided by `i`, converges to
 `1/(nc−1) − 1/(nc+1) = 2/((cn)² − 1)` — exactly the `n`-th term of `Φ(c) = Σ_{n≥1} 2/((cn)² − 1)`
-(`stripResidue_eq_tsum`). So `(A−B)/i → Φ(c)` is now machine-checked **shell by shell**: each shell of
-the physical field balance lands on its continuum residue term. The one step left for the literal
-*single-limit* statement is the shell-sum interchange `Σ_n lim_i = lim_i Σ_n` (a dominated-convergence
-exchange over `n`); every individual shell — ahead, behind, and their difference — is done.
+(`stripResidue_eq_tsum`). So `(A−B)/i → Φ(c)` is machine-checked **shell by shell**: each shell of
+the physical field balance lands on its continuum residue term.
+
+The literal *single-limit* statement `Σ_{n≥1} shellDiffTerm c n i → Φ(c)` is now **also closed**
+(`tendsto_shellSum_stripResidue`, `LegStripCapstone.lean`, axiom-clean). It is the shell-sum
+interchange `Σ_n lim_i = lim_i Σ_n`, a dominated-convergence exchange over `n`
+(`tendsto_tsum_of_dominated_convergence`): each shell converges (`tendsto_shellDiff`), and the shell
+differences are dominated uniformly in `i` by a summable bound `shellBound c n`. The uniform bound is
+the technical core — writing the difference as `region1 + tail`:
+* `region1_le` bounds the bulk `k < (i+1)/2` by `36864/(cn)²`. The cancellation
+  `A_k − B_k ≤ A_k·(cn)·(S^b_k − S^a_k)` with `S^b_k − S^a_k ≤ 4k(k+1)/(3i²)` turns the difference
+  into the geometric second-moment sum `Σ k(k+1)ρ^k = 2ρ/(1−ρ)³`, controlled uniformly in `i` by
+  `β³e^{−β}/(1−e^{−β})³ ≤ 216`. This is a genuine second-order (midpoint-rule) Euler–Maclaurin remainder.
+* `tail_le` bounds the ahead tail `k ≥ (i+1)/2` by `(3/2)(9/10)^{cn}/(cn−1)`, geometric in `n`: the
+  offset-preserving profile `A_k ≤ e^{−cn/2i}((i+1)/(i+k+1))^{cn}` plus an antitone `p`-series tail
+  give a base `e^{−1/2i}·2(i+1)/(3i) ≤ 9/10`.
+Both are summable in `n` (`shellBound_summable`), so the exchange holds. The whole `(A−B)/i → Φ(c)`
+arc — endpoints, per-shell limits, and the `n`-interchange — is machine-checked end-to-end.

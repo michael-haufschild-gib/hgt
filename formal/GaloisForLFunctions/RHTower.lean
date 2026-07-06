@@ -85,6 +85,7 @@ import GaloisForLFunctions.RHTower.PerturbedDip
 import GaloisForLFunctions.RHTower.DepthUpdate
 import GaloisForLFunctions.RHTower.PairPeel
 import GaloisForLFunctions.RHTower.DigammaBounds
+import GaloisForLFunctions.RHTower.DigammaAsymptotic
 import GaloisForLFunctions.RHTower.DipKillsWiring
 import GaloisForLFunctions.RHTower.SecondMoment
 import GaloisForLFunctions.RHTower.MollifiedDip
@@ -98,6 +99,8 @@ import GaloisForLFunctions.RHTower.AnnealCarrier
 import GaloisForLFunctions.RHTower.ZetaCarrier
 import GaloisForLFunctions.RHTower.HardyCarrier
 import GaloisForLFunctions.RHTower.RouteBOfflineDomination
+import GaloisForLFunctions.RHTower.RouteBChiDecay
+import GaloisForLFunctions.RHTower.RouteBProportion
 import GaloisForLFunctions.RHTower.SeamSignTransport
 import GaloisForLFunctions.RHTower.AnnealWindowRelation
 import GaloisForLFunctions.RHTower.RelayLedger
@@ -155,6 +158,7 @@ import GaloisForLFunctions.RHTower.PinnedWindow
 import GaloisForLFunctions.RHTower.BohrMoments
 import GaloisForLFunctions.RHTower.LegStripThreshold
 import GaloisForLFunctions.RHTower.LegStripContinuum
+import GaloisForLFunctions.RHTower.LegStripCapstone
 import GaloisForLFunctions.RHTower.BohrMomentDensity
 import GaloisForLFunctions.RHTower.WeierstrassMajorant
 import GaloisForLFunctions.RHTower.FloorFailureUnconditional

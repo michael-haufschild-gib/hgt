@@ -64,6 +64,23 @@ theorem natCast_succ_ne_zero (m : ℕ) : ((m + 1 : ℕ) : ℂ) ≠ 0 :=
 theorem natCast_ne_zero_of_one_le {m : ℕ} (hm : 1 ≤ m) : ((m : ℕ) : ℂ) ≠ 0 :=
   Nat.cast_ne_zero.mpr (by omega)
 
+/-- The EM carrier is analytic away from its explicit pole at `1`. -/
+theorem emCarrier_analyticAt_of_ne_one {N : ℕ} (hN : 1 ≤ N) {z : ℂ} (hz1 : z ≠ 1) :
+    AnalyticAt ℂ (emCarrier N) z := by
+  have hU : IsOpen ({w : ℂ | w ≠ 1}) := isOpen_ne
+  have hzU : z ∈ ({w : ℂ | w ≠ 1}) := hz1
+  apply (DifferentiableOn.analyticOnNhd ?_ hU) z hzU
+  intro w hw
+  apply DifferentiableAt.differentiableWithinAt
+  have hpole : DifferentiableAt ℂ (emPole N) w := by
+    have hwm1 : w - 1 ≠ 0 := sub_ne_zero.mpr hw
+    exact (((differentiable_const (1 : ℂ)).differentiableAt.sub
+      differentiableAt_id).const_cpow
+        (Or.inl (natCast_ne_zero_of_one_le hN))).div
+      (differentiableAt_id.sub (differentiable_const 1).differentiableAt)
+      hwm1
+  exact ((dirichletPoly_differentiable N) w).add hpole
+
 /-- The per-interval identity: one tail term of the zeta series, exactly. -/
 theorem emTerm_key {m : ℕ} (hm : 1 ≤ m) {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
     ((m + 1 : ℕ) : ℂ) ^ (-s)
@@ -862,5 +879,279 @@ theorem xi_rung_of_finite_side_of_emCarrier_close_floor {N M : ℕ} (k : ℕ)
     exact lt_of_le_of_lt (add_le_add (hE z hz) (hclose z hz)) (hF z hz)
   exact xi_rung_of_finite_side_of_emCarrier_close k hMpos h0 hrR hchartStrip hm₁ hcl₁
     hstrip hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hEMdom hL hfin
+
+end RHTower
+
+namespace RHTower
+
+/-- Pointwise finite comparison of the EM carrier and `gN` from its three visible pieces. -/
+theorem emCarrier_gN_norm_le_of_components {M N : ℕ} {z : ℂ}
+    {δD δP δχ δ : ℝ}
+    (hD : ‖dirichletPoly M z - dirichletPoly N z‖ ≤ δD)
+    (hP : ‖emPole M z‖ ≤ δP)
+    (hχ : ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ δχ)
+    (hδ : δD + δP + δχ ≤ δ) :
+    ‖emCarrier M z - gN N z‖ ≤ δ := by
+  have hshape : emCarrier M z - gN N z =
+      (dirichletPoly M z - dirichletPoly N z) + emPole M z -
+        zetaChi z * dirichletPoly N (1 - z) := by
+    simp [emCarrier, emPole, gN, chiSymmetrize]
+    ring
+  rw [hshape]
+  have htri1 : ‖(dirichletPoly M z - dirichletPoly N z) + emPole M z -
+        zetaChi z * dirichletPoly N (1 - z)‖
+      ≤ ‖(dirichletPoly M z - dirichletPoly N z) + emPole M z‖ +
+          ‖zetaChi z * dirichletPoly N (1 - z)‖ := by
+    simpa [sub_eq_add_neg, norm_neg] using
+      norm_add_le ((dirichletPoly M z - dirichletPoly N z) + emPole M z)
+        (-(zetaChi z * dirichletPoly N (1 - z)))
+  have htri2 : ‖(dirichletPoly M z - dirichletPoly N z) + emPole M z‖
+      ≤ ‖dirichletPoly M z - dirichletPoly N z‖ + ‖emPole M z‖ :=
+    norm_add_le (dirichletPoly M z - dirichletPoly N z) (emPole M z)
+  linarith
+
+/-- Set-level finite comparison of the EM carrier and `gN` from three finite budgets. -/
+theorem emCarrier_gN_close_on_of_components {S : Set ℂ} {M N : ℕ}
+    {δD δP δχ δ : ℝ}
+    (hD : ∀ z ∈ S, ‖dirichletPoly M z - dirichletPoly N z‖ ≤ δD)
+    (hP : ∀ z ∈ S, ‖emPole M z‖ ≤ δP)
+    (hχ : ∀ z ∈ S, ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ δχ)
+    (hδ : δD + δP + δχ ≤ δ) :
+    ∀ z ∈ S, ‖emCarrier M z - gN N z‖ ≤ δ := by
+  intro z hz
+  exact emCarrier_gN_norm_le_of_components
+    (hD z hz) (hP z hz) (hχ z hz) hδ
+
+end RHTower
+
+namespace RHTower
+
+open Complex Filter Topology
+
+/-- Uniform scalar bound for the Euler-Maclaurin pole term on a critical-line disk.
+If `z` lies in the radius-`RJ` disk about `1/2 + iτ` and `RJ < 1/2`, then the pole
+is bounded by the explicit numerator budget over the distance gap to `1`. -/
+theorem emPole_norm_le_line_closedBall {M : ℕ} {τ RJ : ℝ}
+    (hM : 1 ≤ M) (hRJ : RJ < 1 / 2) :
+    ∀ z ∈ Metric.closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      ‖emPole M z‖ ≤ (M : ℝ) ^ (1 / 2 + RJ) / (1 / 2 - RJ) := by
+  intro z hz
+  have hdist : ‖z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)‖ ≤ RJ := by
+    rw [← dist_eq_norm]
+    exact Metric.mem_closedBall.mp hz
+  have hre_abs : |z.re - 1 / 2| ≤ RJ := by
+    calc |z.re - 1 / 2|
+        = |(z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)).re| := by simp [sub_re]
+      _ ≤ ‖z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)‖ := Complex.abs_re_le_norm _
+      _ ≤ RJ := hdist
+  have hre_ge : 1 / 2 - RJ ≤ z.re := by
+    have := (abs_le.mp hre_abs).1
+    linarith
+  have hre_le : z.re ≤ 1 / 2 + RJ := by
+    have := (abs_le.mp hre_abs).2
+    linarith
+  have hden0 : 0 < 1 / 2 - RJ := by linarith
+  have hzre_lt1 : z.re < 1 := by linarith
+  have hdist_one_re : 1 - z.re ≤ ‖z - 1‖ := by
+    calc 1 - z.re
+        = |(z - 1).re| := by
+          have hnonpos : (z - 1).re ≤ 0 := by simp [sub_re]; linarith
+          rw [abs_of_nonpos hnonpos]
+          simp [sub_re]
+      _ ≤ ‖z - 1‖ := Complex.abs_re_le_norm _
+  have hdenle : 1 / 2 - RJ ≤ ‖z - 1‖ := by linarith
+  have hMpos : (0 : ℝ) < (M : ℝ) := by
+    exact_mod_cast lt_of_lt_of_le zero_lt_one hM
+  have hMone : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hpow_eq : ‖(M : ℂ) ^ (1 - z)‖ = (M : ℝ) ^ (1 - z).re := by
+    simpa using Complex.norm_cpow_eq_rpow_re_of_pos hMpos (1 - z)
+  have hexp_le : (1 - z).re ≤ 1 / 2 + RJ := by
+    simp [sub_re]
+    linarith
+  have hpow_le : ‖(M : ℂ) ^ (1 - z)‖ ≤ (M : ℝ) ^ (1 / 2 + RJ) := by
+    rw [hpow_eq]
+    exact Real.rpow_le_rpow_of_exponent_le hMone hexp_le
+  have hnum_nonneg : 0 ≤ (M : ℝ) ^ (1 / 2 + RJ) := Real.rpow_nonneg hMpos.le _
+  calc ‖emPole M z‖
+      = ‖(M : ℂ) ^ (1 - z) / (z - 1)‖ := by rfl
+    _ = ‖(M : ℂ) ^ (1 - z)‖ / ‖z - 1‖ := norm_div _ _
+    _ ≤ (M : ℝ) ^ (1 / 2 + RJ) / ‖z - 1‖ := by
+      exact div_le_div_of_nonneg_right hpow_le (norm_nonneg _)
+    _ ≤ (M : ℝ) ^ (1 / 2 + RJ) / (1 / 2 - RJ) := by
+      exact div_le_div_of_nonneg_left hnum_nonneg hden0 hdenle
+
+/-- A scalar center-height budget controls the Euler-Maclaurin remainder majorant on the whole
+critical-line disk. -/
+theorem em_remainder_norm_le_line_closedBall_of_center_bound {M : ℕ} {τ RJ ε₁ : ℝ}
+    (hM : 1 ≤ M) (hRJ12 : RJ < 1 / 2)
+    (hbudget : (‖(((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)‖ + RJ) *
+      (M : ℝ) ^ (-(1 / 2 - RJ)) / (1 / 2 - RJ) ≤ ε₁) :
+    ∀ z ∈ Metric.closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁ := by
+  intro z hz
+  set c : ℂ := ((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I with hc
+  have hdist : ‖z - c‖ ≤ RJ := by
+    rw [← dist_eq_norm]
+    simpa [c] using Metric.mem_closedBall.mp hz
+  have hRJnonneg : 0 ≤ RJ := le_trans (norm_nonneg (z - c)) hdist
+  have hre_abs : |z.re - 1 / 2| ≤ RJ := by
+    calc |z.re - 1 / 2|
+        = |(z - c).re| := by simp [c, sub_re]
+      _ ≤ ‖z - c‖ := Complex.abs_re_le_norm _
+      _ ≤ RJ := hdist
+  have hre_ge : 1 / 2 - RJ ≤ z.re := by
+    have := (abs_le.mp hre_abs).1
+    linarith
+  have hre_pos : 0 < z.re := by linarith
+  have hden0 : 0 < 1 / 2 - RJ := by linarith
+  have hMone : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM
+  have hpow_le : (M : ℝ) ^ (-z.re) ≤ (M : ℝ) ^ (-(1 / 2 - RJ)) := by
+    apply Real.rpow_le_rpow_of_exponent_le hMone
+    linarith
+  have hpow_nonneg : 0 ≤ (M : ℝ) ^ (-z.re) := Real.rpow_nonneg (Nat.cast_nonneg M) _
+  have hpowB_nonneg : 0 ≤ (M : ℝ) ^ (-(1 / 2 - RJ)) :=
+    Real.rpow_nonneg (Nat.cast_nonneg M) _
+  have hnorm_le : ‖z‖ ≤ ‖c‖ + RJ := by
+    calc ‖z‖ = ‖(z - c) + c‖ := by ring_nf
+      _ ≤ ‖z - c‖ + ‖c‖ := norm_add_le _ _
+      _ ≤ RJ + ‖c‖ := add_le_add hdist le_rfl
+      _ = ‖c‖ + RJ := by ring
+  have hcenter_nonneg : 0 ≤ ‖c‖ + RJ := add_nonneg (norm_nonneg c) hRJnonneg
+  have hnum_le : ‖z‖ * (M : ℝ) ^ (-z.re) ≤
+      (‖c‖ + RJ) * (M : ℝ) ^ (-(1 / 2 - RJ)) := by
+    exact mul_le_mul hnorm_le hpow_le hpow_nonneg hcenter_nonneg
+  have hbig_nonneg : 0 ≤ (‖c‖ + RJ) * (M : ℝ) ^ (-(1 / 2 - RJ)) := by
+    exact mul_nonneg hcenter_nonneg hpowB_nonneg
+  have hstep1 : ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤
+      ((‖c‖ + RJ) * (M : ℝ) ^ (-(1 / 2 - RJ))) / z.re := by
+    exact div_le_div_of_nonneg_right hnum_le hre_pos.le
+  have hstep2 : ((‖c‖ + RJ) * (M : ℝ) ^ (-(1 / 2 - RJ))) / z.re ≤
+      ((‖c‖ + RJ) * (M : ℝ) ^ (-(1 / 2 - RJ))) / (1 / 2 - RJ) := by
+    exact div_le_div_of_nonneg_left hbig_nonneg hden0 hre_ge
+  calc ‖z‖ * (M : ℝ) ^ (-z.re) / z.re
+      ≤ ((‖c‖ + RJ) * (M : ℝ) ^ (-(1 / 2 - RJ))) / z.re := hstep1
+    _ ≤ ((‖c‖ + RJ) * (M : ℝ) ^ (-(1 / 2 - RJ))) / (1 / 2 - RJ) := hstep2
+    _ ≤ ε₁ := by simpa [c, mul_div_assoc] using hbudget
+
+end RHTower
+
+namespace RHTower
+
+open Complex Filter Topology
+
+/-- Dirichlet-polynomial drift is bounded by the finite tail on any half-plane `σ ≤ Re z`. -/
+theorem dirichletPoly_sub_norm_le_tail_of_re_ge {N M : ℕ} (hNM : N ≤ M)
+    {σ : ℝ} {z : ℂ} (hzre : σ ≤ z.re) :
+    ‖dirichletPoly M z - dirichletPoly N z‖ ≤
+      ∑ i ∈ Finset.Ico N M, (((i + 1 : ℕ) : ℝ) ^ (-σ)) := by
+  let f : ℕ → ℂ := fun i => ((i + 1 : ℕ) : ℂ) ^ (-z)
+  have hsplit := Finset.sum_range_add_sum_Ico f hNM
+  have hdiff : dirichletPoly M z - dirichletPoly N z = ∑ i ∈ Finset.Ico N M, f i := by
+    rw [dirichletPoly_eq_sum_range M z, dirichletPoly_eq_sum_range N z]
+    change (∑ i ∈ Finset.range M, f i) - (∑ i ∈ Finset.range N, f i) =
+      ∑ i ∈ Finset.Ico N M, f i
+    rw [← hsplit]
+    abel
+  rw [hdiff]
+  calc ‖∑ i ∈ Finset.Ico N M, f i‖
+      ≤ ∑ i ∈ Finset.Ico N M, ‖f i‖ := norm_sum_le _ _
+    _ ≤ ∑ i ∈ Finset.Ico N M, (((i + 1 : ℕ) : ℝ) ^ (-σ)) := by
+      apply Finset.sum_le_sum
+      intro i _
+      have hi1 : (1 : ℝ) ≤ ((i + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_pos i
+      have hipos : (0 : ℝ) < ((i + 1 : ℕ) : ℝ) := lt_of_lt_of_le zero_lt_one hi1
+      have hnorm : ‖f i‖ = ((i + 1 : ℕ) : ℝ) ^ (-z).re := by
+        dsimp [f]
+        simpa using Complex.norm_cpow_eq_rpow_re_of_pos hipos (-z)
+      rw [hnorm]
+      have hexp : (-z).re ≤ -σ := by
+        simp
+        linarith
+      exact Real.rpow_le_rpow_of_exponent_le hi1 hexp
+
+/-- Uniform finite-tail drift bound for Dirichlet polynomials on a critical-line disk. -/
+theorem dirichletPoly_sub_norm_le_tail_line_closedBall {N M : ℕ} {τ RJ : ℝ}
+    (hNM : N ≤ M) :
+    ∀ z ∈ Metric.closedBall (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      ‖dirichletPoly M z - dirichletPoly N z‖ ≤
+        ∑ i ∈ Finset.Ico N M, (((i + 1 : ℕ) : ℝ) ^ (-(1 / 2 - RJ))) := by
+  intro z hz
+  have hdist : ‖z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)‖ ≤ RJ := by
+    rw [← dist_eq_norm]
+    exact Metric.mem_closedBall.mp hz
+  have hre_abs : |z.re - 1 / 2| ≤ RJ := by
+    calc |z.re - 1 / 2|
+        = |(z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)).re| := by simp [sub_re]
+      _ ≤ ‖z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)‖ := Complex.abs_re_le_norm _
+      _ ≤ RJ := hdist
+  have hzre : 1 / 2 - RJ ≤ z.re := by
+    have := (abs_le.mp hre_abs).1
+    linarith
+  exact dirichletPoly_sub_norm_le_tail_of_re_ge (N := N) (M := M) hNM hzre
+
+end RHTower
+
+namespace RHTower
+
+open Complex Filter Topology
+
+/-- Reflected Dirichlet polynomial bound from an upper bound on `Re z`. -/
+theorem dirichletPoly_one_sub_norm_le_sum_of_re_le {N : ℕ} {σ : ℝ} {z : ℂ}
+    (hzre : z.re ≤ σ) :
+    ‖dirichletPoly N (1 - z)‖ ≤ ∑ n ∈ Finset.Icc 1 N, (n : ℝ) ^ (σ - 1) := by
+  rw [dirichletPoly]
+  calc ‖∑ n ∈ Finset.Icc 1 N, (n : ℂ) ^ (-(1 - z))‖
+      ≤ ∑ n ∈ Finset.Icc 1 N, ‖(n : ℂ) ^ (-(1 - z))‖ := norm_sum_le _ _
+    _ ≤ ∑ n ∈ Finset.Icc 1 N, (n : ℝ) ^ (σ - 1) := by
+      apply Finset.sum_le_sum
+      intro n hn
+      have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (Finset.mem_Icc.mp hn).1
+      have hnpos : (0 : ℝ) < (n : ℝ) := lt_of_lt_of_le zero_lt_one hn1
+      have hnorm : ‖(n : ℂ) ^ (-(1 - z))‖ = (n : ℝ) ^ (-(1 - z)).re := by
+        simpa using Complex.norm_cpow_eq_rpow_re_of_pos hnpos (-(1 - z))
+      rw [hnorm]
+      have hexp : (-(1 - z)).re ≤ σ - 1 := by
+        simp [sub_re]
+        linarith
+      exact Real.rpow_le_rpow_of_exponent_le hn1 hexp
+
+/-- Reflected Dirichlet polynomial bound on a critical-line boundary circle. -/
+theorem dirichletPoly_one_sub_norm_le_sum_line_sphere {N : ℕ} {τ RJ : ℝ} :
+    ∀ z ∈ Metric.sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ,
+      ‖dirichletPoly N (1 - z)‖ ≤
+        ∑ n ∈ Finset.Icc 1 N, (n : ℝ) ^ (-(1 / 2 - RJ)) := by
+  intro z hz
+  have hdist : ‖z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)‖ = RJ := by
+    rw [← dist_eq_norm]
+    exact Metric.mem_sphere.mp hz
+  have hre_abs : |z.re - 1 / 2| ≤ RJ := by
+    calc |z.re - 1 / 2|
+        = |(z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)).re| := by simp [sub_re]
+      _ ≤ ‖z - (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I)‖ := Complex.abs_re_le_norm _
+      _ = RJ := hdist
+  have hzre : z.re ≤ 1 / 2 + RJ := by
+    have := (abs_le.mp hre_abs).2
+    linarith
+  have h := dirichletPoly_one_sub_norm_le_sum_of_re_le (N := N)
+    (σ := 1 / 2 + RJ) (z := z) hzre
+  convert h using 1
+  apply Finset.sum_congr rfl
+  intro n _
+  congr 1
+  ring
+
+/-- Reflected χ-product circle budget from a χ envelope and the explicit reflected finite sum. -/
+theorem reflected_chi_norm_le_chi_bound_line_sphere {N : ℕ} {τ RJ χB δχ : ℝ} {z : ℂ}
+    (hχ : ‖zetaChi z‖ ≤ χB)
+    (hz : z ∈ Metric.sphere (((1 / 2 : ℝ) : ℂ) + (τ : ℂ) * I) RJ)
+    (hbudget : χB * (∑ n ∈ Finset.Icc 1 N, (n : ℝ) ^ (-(1 / 2 - RJ))) ≤ δχ) :
+    ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ δχ := by
+  have hD := dirichletPoly_one_sub_norm_le_sum_line_sphere (N := N) (τ := τ) (RJ := RJ) z hz
+  have hχB0 : 0 ≤ χB := le_trans (norm_nonneg _) hχ
+  calc ‖zetaChi z * dirichletPoly N (1 - z)‖
+      = ‖zetaChi z‖ * ‖dirichletPoly N (1 - z)‖ := norm_mul _ _
+    _ ≤ χB * (∑ n ∈ Finset.Icc 1 N, (n : ℝ) ^ (-(1 / 2 - RJ))) := by
+      exact mul_le_mul hχ hD (norm_nonneg _) hχB0
+    _ ≤ δχ := hbudget
 
 end RHTower
