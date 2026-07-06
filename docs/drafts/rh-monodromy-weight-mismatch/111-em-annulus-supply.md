@@ -93,3 +93,37 @@ finite member.
 3. **Truncation-length steering**: the count is N-independent (all = order), but the
    SPLIT GEOMETRY (positions of the zs inside the hole) moves with N — a new degree of
    freedom the anchored instruments can steer that did not exist for ξ itself.
+
+## Addendum — the three named objects, built (`FiniteMemberSteering.lean` + SEM §8+)
+
+All three forward objects of the first pass are now machine-checked (axioms clean):
+
+1. **Tilt coupling** (`anchoredSEM = eulerHeadAnchor · completedSEM`):
+   - `anchoredSEM_lineReflection_mismatch` — the anchored member's ENTIRE mirror
+     mismatch is the anchor's: the symmetric member cancels from the line-reflection
+     comparison. F3 in finite, exact form.
+   - `anchoredSEM_mirror_polar` — the mirror polar law on the member: the reflected
+     anchored value times the anchor value equals the conjugated member value rotated by
+     EXACTLY `anchorMirrorDefect` and scaled by the two anchor moduli.
+   - `anchoredSEM_splitData` + `anchoredSEM_deckClass_one_iff_even` — the anchor is a
+     unit on the strip ball, so splits transport with the SAME centres, and the parity
+     certificate (mod-2 deck cocycle of √anchoredSEM) reads on the anchored object —
+     the object whose boundary phase the defect twists.
+2. **Same-height mirror order pairing**: `completedSEM_orderAt_conj` +
+   `completedSEM_orderAt_lineReflect` (via the banked
+   `analyticOrderAt_conj_of_conjEquivariant`; the survey found
+   `AnnealWindowRelation.lean` already held the generic antiholomorphic order transfer
+   and the completedGN versions — reused, not rebuilt).
+3. **N-steering** (`sem_uniform_decay_on_compact`,
+   `xi_sub_completedSEM_uniform_decay_on_compact`, `splitData_count_rigid`,
+   `sem_hole_zeros_localize`): the member converges to ξ uniformly on compact strip
+   subsets; the hole count is rigid (= central order, across BOTH members, all annuli,
+   all lengths); the hole zeros LOCALIZE — for every ε > 0 all of them lie within ε of
+   the centre once N is large. Count pinned, support collapsing: the truncation length
+   is a steering parameter that moves the split geometry without ever moving the count.
+
+The weld question is now fully instrumented: parity of one hole count of an explicit
+finite member, readable as a deck cocycle on the anchored object whose only mirror
+asymmetry is the computable defect angle, with N as a free steering knob. The next
+generative move: quantify HOW the defect angle turns the two-point boundary phases of
+√anchoredSEM as P grows — the first place a genuinely arithmetic inequality can enter.

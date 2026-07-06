@@ -502,4 +502,27 @@ theorem completedSEM_lineReflection {N : ℕ} {s : ℂ} (h0 : 0 < s.re) (h1 : s.
   have hconj1 : ((starRingEnd ℂ) s).re < 1 := by rwa [Complex.conj_re]
   rw [completedSEM_one_sub hconj0 hconj1, completedSEM_conj]
 
+/-- Reality pairing of orders for the symmetric member on the strip. -/
+theorem completedSEM_orderAt_conj {N : ℕ} (hN : 1 ≤ N) {z : ℂ}
+    (h0 : 0 < z.re) (h1 : z.re < 1) :
+    analyticOrderAt (completedSEM N) ((starRingEnd ℂ) z)
+      = analyticOrderAt (completedSEM N) z :=
+  analyticOrderAt_conj_of_conjEquivariant (completedSEM_conj N)
+    (completedSEM_analyticOnNhd_strip hN z ⟨h0, h1⟩)
+    (completedSEM_analyticOnNhd_strip hN _
+      ⟨by rwa [Complex.conj_re], by rwa [Complex.conj_re]⟩)
+
+/-- **The same-height mirror order pairing of the symmetric member**: at the
+line-reflected point `1 − conj z` the completed symmetrized EM member vanishes to
+exactly the order it has at `z`.  The pooled two-hole count of any mirror argument is
+even for free; only a single hole's parity can carry arithmetic. -/
+theorem completedSEM_orderAt_lineReflect {N : ℕ} (hN : 1 ≤ N) {z : ℂ}
+    (h0 : 0 < z.re) (h1 : z.re < 1) :
+    analyticOrderAt (completedSEM N) (lineReflect z)
+      = analyticOrderAt (completedSEM N) z := by
+  have hc0 : 0 < ((starRingEnd ℂ) z).re := by rwa [Complex.conj_re]
+  have hc1 : ((starRingEnd ℂ) z).re < 1 := by rwa [Complex.conj_re]
+  rw [show lineReflect z = 1 - (starRingEnd ℂ) z from rfl,
+    completedSEM_orderAt_one_sub hc0 hc1, completedSEM_orderAt_conj hN h0 h1]
+
 end RHTower

@@ -740,3 +740,24 @@ gate 9220 jobs exit 0; all 22 endpoints axioms = [propext, Classical.choice, Quo
 
 Rung interface now: RHLadder k ⟸ 2^k ∣ hole count of the finite member's dominating
 splits (which exist unconditionally); (AFE)/(LOW) deleted from the interface.
+
+## 2026-07-06 (later) — the three named objects of doc 111, built
+
+`FiniteMemberSteering.lean` (new) + `SymmetrizedEMCarrier.lean` §8/order additions;
+umbrella updated; 11 new endpoints axioms = [propext, Classical.choice, Quot.sound].
+
+- Tilt coupling: `anchoredSEM = eulerHeadAnchor · completedSEM`;
+  `anchoredSEM_lineReflection_mismatch` (member's mirror mismatch = anchor's, exactly);
+  `anchoredSEM_mirror_polar` (reflected value = conj member value rotated by
+  anchorMirrorDefect, scaled by anchor moduli); `anchoredSEM_splitData` +
+  `anchoredSEM_deckClass_one_iff_even` (anchor is a strip unit — same centres, parity
+  reads on the anchored object); `eulerHeadAnchor_analyticAt` + generic
+  `analyticAt_finset_prod`.
+- Order pairing: `completedSEM_orderAt_conj`, `completedSEM_orderAt_lineReflect`
+  (reused banked `analyticOrderAt_conj_of_conjEquivariant` from AnnealWindowRelation —
+  survey first, no rebuild).
+- N-steering: `sem_uniform_decay_on_compact`,
+  `xi_sub_completedSEM_uniform_decay_on_compact` (member → ξ uniformly on strip
+  compacts), `splitData_count_rigid` (EM and SEM splits carry the same count),
+  `sem_hole_zeros_localize` (∀ ε > 0, all hole zeros within ε of the centre for N
+  large: count pinned, support collapsing).
