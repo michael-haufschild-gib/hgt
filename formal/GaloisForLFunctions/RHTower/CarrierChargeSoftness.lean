@@ -20,12 +20,106 @@ the class of FE-symmetric carriers is too soft to force `carrierCharge = 1` off 
 
 The witness is an explicit polynomial exhibited to refute a would-be implication; no carrier
 is grown by any flow.
+
+The positive side of the boundary is `carrierCharge_one_eq_one_of_reflection`: a carrier with
+a *holomorphic reflection about ρ* (`f(2ρ − s) = f(s)`) has even order at ρ, so its charge
+there is `1`.  The only entire involution fixing ρ is that reflection, so this is the operative
+forcing.  For ξ the functional equation is the reflection about `½`, so `carrierCharge ξ 1 ½ = 1`
+(`carrierCharge_xi_central`) — but ξ has no reflection about an off-line point, which is exactly
+why the first rung is open there.  Positive (reflection forces) and negative (symmetry-without-a-
+fixed-point does not) bracket the Goldilocks middle: the forcing input is a symmetry that *fixes*
+the point, and ξ has it only on the seam.
 -/
 import GaloisForLFunctions.RHTower.CarrierDeckCharge
+import GaloisForLFunctions.RHTower.ReflectionParity
 
 namespace RHTower
 
-open Complex
+open Complex Filter Topology
+
+/-! ## The positive lever: a reflection about ρ forces the charge -/
+
+/-- **Reflection forces triviality.**  A carrier with a holomorphic reflection about `ρ`
+(`f(2ρ − s) = f(s)`) has even vanishing order at `ρ`, so its level-`2` deck charge there is
+`1`.  This is the positive Goldilocks input: a symmetry that *fixes* the point trivializes the
+charge (the degenerate `f ≡ 0` case gives order `0`, charge `1`, as well). -/
+theorem carrierCharge_one_eq_one_of_reflection {f : ℂ → ℂ} {ρ : ℂ}
+    (hf : AnalyticOnNhd ℂ f Set.univ) (hsym : ∀ s, f (2 * ρ - s) = f s) :
+    carrierCharge f 1 ρ = 1 := by
+  rw [carrierCharge_one_eq_neg_one_pow]
+  by_cases hne : analyticOrderAt f ρ = ⊤
+  · rw [hne]; simp
+  · exact (analyticOrderAt_even_of_reflection hf hsym hne).neg_one_pow
+
+/-- **ξ's charge is forced at the centre.**  The functional equation is the reflection about
+`½`, so ξ has even order there and `carrierCharge ξ 1 ½ = 1`: the one point ξ's own symmetry
+forces.  Off the critical line ξ has no reflection about the point, and the charge is unforced
+by symmetry — the open content of the first rung. -/
+theorem carrierCharge_xi_central : carrierCharge xi 1 (1 / 2 : ℂ) = 1 := by
+  refine carrierCharge_one_eq_one_of_reflection xi_analyticOnNhd_univ (fun s => ?_)
+  have h : (2 * (1 / 2 : ℂ) - s) = 1 - s := by ring
+  rw [h, xi_one_sub]
+
+/-- **Rotational symmetry forces divisibility.**  If a carrier `f` is invariant under the
+order-`n` rotation `s ↦ ρ + ζ(s − ρ)` about `ρ`, with `ζ` a primitive `n`-th root of unity,
+then `n` divides the vanishing order of `f` at `ρ`.  The reflection lever is the case `n = 2`,
+`ζ = −1`; a primitive `2^k`-rotation forces the full `2^k`-divisibility, i.e. the `k`-th rung
+at that point.  The proof is the peel-and-continuity argument at the fixed point: the peel
+cofactor `h` satisfies `h(s) = ζ^{ord}·h(ρ + ζ(s − ρ))`, and at `s → ρ` this forces `ζ^{ord} = 1`,
+so `n ∣ ord`. -/
+theorem analyticOrderAt_dvd_of_rotation {f : ℂ → ℂ} {ρ ζ : ℂ} {n : ℕ}
+    (hf : AnalyticOnNhd ℂ f Set.univ) (hζ : IsPrimitiveRoot ζ n)
+    (hsym : ∀ s, f (ρ + ζ * (s - ρ)) = f s)
+    (hne : analyticOrderAt f ρ ≠ ⊤) :
+    (n : ℕ∞) ∣ analyticOrderAt f ρ := by
+  set m : ℕ := (analyticOrderAt f ρ).toNat with hm_def
+  have hcoe : analyticOrderAt f ρ = (m : ℕ∞) := (ENat.coe_toNat hne).symm
+  obtain ⟨h, hhan, hh0, hfact, -⟩ := exists_peel isOpen_univ hf (Set.mem_univ ρ) hcoe
+  have key : ∀ᶠ s in 𝓝[≠] ρ, h s = ζ ^ m * h (ρ + ζ * (s - ρ)) := by
+    filter_upwards [self_mem_nhdsWithin] with s hs
+    have hs' : s ≠ ρ := hs
+    have e1 : f s = (s - ρ) ^ m * h s := hfact s (Set.mem_univ s)
+    have e2 : f (ρ + ζ * (s - ρ)) = (ρ + ζ * (s - ρ) - ρ) ^ m * h (ρ + ζ * (s - ρ)) :=
+      hfact _ (Set.mem_univ _)
+    have e3 : (ρ + ζ * (s - ρ) - ρ : ℂ) = ζ * (s - ρ) := by ring
+    have e4 : f (ρ + ζ * (s - ρ)) = f s := hsym s
+    have hpow : ((s - ρ : ℂ)) ^ m ≠ 0 := pow_ne_zero m (sub_ne_zero.mpr hs')
+    have e5 : (s - ρ) ^ m * h s = (s - ρ) ^ m * (ζ ^ m * h (ρ + ζ * (s - ρ))) := by
+      rw [← e1, ← e4, e2, e3, mul_pow]; ring
+    exact mul_left_cancel₀ hpow e5
+  have hcont1 : Tendsto h (𝓝[≠] ρ) (𝓝 (h ρ)) :=
+    ((hhan ρ (Set.mem_univ ρ)).continuousAt.tendsto).mono_left nhdsWithin_le_nhds
+  have hrot : Tendsto (fun s : ℂ => ρ + ζ * (s - ρ)) (𝓝 ρ) (𝓝 ρ) := by
+    have hc : Continuous (fun s : ℂ => ρ + ζ * (s - ρ)) := by fun_prop
+    have := hc.tendsto ρ
+    simpa using this
+  have hcont2 : Tendsto (fun s : ℂ => ζ ^ m * h (ρ + ζ * (s - ρ))) (𝓝[≠] ρ)
+      (𝓝 (ζ ^ m * h ρ)) := by
+    have hcomp : Tendsto (fun s : ℂ => h (ρ + ζ * (s - ρ))) (𝓝 ρ) (𝓝 (h ρ)) :=
+      ((hhan ρ (Set.mem_univ ρ)).continuousAt.tendsto).comp hrot
+    exact (hcomp.const_mul _).mono_left nhdsWithin_le_nhds
+  have heq : h ρ = ζ ^ m * h ρ := tendsto_nhds_unique (hcont1.congr' key) hcont2
+  have hζm : ζ ^ m = 1 := by
+    have h1 : ζ ^ m * h ρ = 1 * h ρ := by rw [one_mul, ← heq]
+    exact mul_right_cancel₀ hh0 h1
+  rw [hcoe]
+  exact_mod_cast Nat.cast_dvd_cast ((hζ.pow_eq_one_iff_dvd m).mp hζm)
+
+/-- **Rotational symmetry forces the charge.**  A carrier invariant under a primitive
+`2^k`-rotation about `ρ` has `2^k ∣ ord_ρ(f)`, so `carrierCharge f k ρ = 1`: the general
+positive Goldilocks lever, forcing the whole `k`-th rung at the fixed point of the rotation. -/
+theorem carrierCharge_eq_one_of_rotation {f : ℂ → ℂ} {ρ ζ : ℂ} {k : ℕ}
+    (hf : AnalyticOnNhd ℂ f Set.univ) (hζ : IsPrimitiveRoot ζ (2 ^ k))
+    (hsym : ∀ s, f (ρ + ζ * (s - ρ)) = f s) :
+    carrierCharge f k ρ = 1 := by
+  rw [carrierCharge_eq_one_iff_dvd]
+  by_cases hne : analyticOrderAt f ρ = ⊤
+  · rw [ENat.toNat_eq_zero.mpr (Or.inr hne)]; exact dvd_zero _
+  · have hd := analyticOrderAt_dvd_of_rotation hf hζ hsym hne
+    have hcoe : analyticOrderAt f ρ = (((analyticOrderAt f ρ).toNat : ℕ) : ℕ∞) :=
+      (ENat.coe_toNat hne).symm
+    rw [hcoe] at hd
+    exact natCast_dvd_natCast_of_enat (pow_ne_zero k two_ne_zero) hd
 
 /-- The `V₄`-orbit quartic of a point `ρ₀`: an entire carrier with zeros exactly at
 `{ρ₀, 1−ρ₀, ρ̄₀, 1−ρ̄₀}`. -/

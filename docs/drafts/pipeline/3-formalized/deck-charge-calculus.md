@@ -49,6 +49,34 @@
   topological winding realisation and the algebraic `wCharge` are the **same** observable on the
   local model; `loopCharge_center_zero_eq_zero_iff` (`= 0 ↔ 2^k ∣ m`).
 
+**`WindingDivisor.lean`** — the argument principle for a divisor (winding = total enclosed order).
+- `windingNumber_linear_enclosing`: a zero *anywhere strictly inside* the circle winds it once (its
+  linear factor factors as `(r e^{iθ})·u`, `u` a loop in the unit ball about `1`, winding `0` —
+  `windingNumber_eq_zero_of_ball1` via `Complex.log` on the slit plane); `windingNumber_prod`
+  (winding of a finite product of loops = Σ windings).
+- `windingNumber_divisor`: `windingNumber(θ ↦ ∏ᵢ (c + r e^{iθ} − ρᵢ)^{mᵢ}) = Σᵢ mᵢ` — the
+  argument principle for a divisor; `loopCharge_divisor`: the boundary-circle deck charge is
+  `wCharge (2^k) (Σᵢ mᵢ)` — the topological twin of the algebraic `box_charge_eq_deckRed`.
+
+**`WindingFull.lean`** — the argument principle for a general analytic `f`.
+- `windingNumber_nonvanishing_disc`: a factor `g` continuous and nowhere zero on `ball c R` winds `0`
+  on any interior circle (branch log on the simply connected disc, `isSimplyConnected_ball`).
+- `windingNumber_argument_principle`: for `f = (∏ᵢ (z − ρᵢ)^{mᵢ})·g` on `ball c R` (all `ρᵢ` inside a
+  circle of radius `r < R`, `g` nowhere zero), `windingNumber(f∘circle) = Σᵢ mᵢ` — the full argument
+  principle in exactly the factored form of `box_charge_eq_deckRed`; `loopCharge_argument_principle`
+  = `wCharge (2^k) (Σᵢ mᵢ)`.
+
+**`WindingXi.lean`** — the winding number of ξ is its ladder charge.
+- `windingNumber_xi_zero`: instantiating the argument principle on the completed ζ-function `xi` via
+  its peeling factorisation `xi = (·−ρ₀)^m·h` (`xi_peel_ball`), the winding number of `xi` around a
+  small circle about a zero `ρ₀` is `ord_{ρ₀} xi`. `loopCharge_xi_zero`: the loop deck charge of that
+  circle is `ladderCharge k ρ₀` — the winding-number realisation of the `RH_{2^k}` ladder invariant
+  (the contour twin of the residue `m_ρ = Res_ρ(xi'/xi)`).
+- `windingNumber_xi_disc`/`loopCharge_xi_disc`: the several-zero case, via the tree's multi-zero peel
+  `exists_multi_peel_orders` — the winding number of `xi` around a disc collecting a finite zero-set
+  `t` is `Σ_{w∈t} ord_w xi`, and the loop deck charge is `wCharge (2^k) (Σ orders)`: the winding
+  realisation of the box census charge.
+
 **`RegionCharge.lean`** — the quadrant-local charge (new geometry).
 - `regionCharge n S ord R` (charge of the zeros of `S` in a region `R`); `regionCharge_add_compl`
   (region + complement partition the total); `regionCharge_transport` (an order-preserving involution
@@ -89,9 +117,12 @@ with a conservation law, a topological winding realisation, and a quadrant-local
 
 ## Springboards
 
-- **Global argument principle**: `windingNumber_center_zero` is the local case; the winding of `f`
-  around a box boundary `= Σ` enclosed orders is the next brick (needs a homotopy/degree argument to
-  reduce a general boundary to circles around each zero).
+- **Argument principle — DONE, through ξ, single- and multi-zero**: `windingNumber_argument_principle`
+  handles a general analytic `f = (divisor)·g`; `windingNumber_xi_zero`/`_xi_disc` instantiate it on
+  the actual `xi` (winding around a zero = its order/ladder charge; winding around a disc = the census
+  Σ of enclosed orders). Remaining: discharging the `hzeros` hypothesis of `_xi_disc` (finiteness of
+  ξ-zeros in a disc, a compactness+isolation fact), and a general non-circular boundary via homotopy
+  invariance of the winding number (covering-map homotopy lifting).
 - **Phase E (charge motion)**: `interior_charge_conservation` + `wCharge_boundary_crossing` +
   `regionCharge_transport` are the seeds of the pair-annihilation rule and interior conservation for
   admissible FE-symmetric deformations.
@@ -99,10 +130,16 @@ with a conservation law, a topological winding realisation, and a quadrant-local
   charge `q` as the mod-4-invisible signal — the target a quadrant-ramified cover must detect.
 
 ## Log
-- 2026-07-07 — built to exhaustion in 3-formalized (5 files, all axiom-clean, lint green, umbrella):
+- 2026-07-07 — argument principle carried through to ξ: `WindingFull` (general analytic `f =
+  (divisor)·g`, `windingNumber(f∘circle) = Σ mᵢ`, matching `box_charge_eq_deckRed`'s factorisation)
+  and `WindingXi` (`windingNumber_xi_zero`/`loopCharge_xi_zero`: the winding number of the actual
+  `xi` around a zero is its order / `ladderCharge`). 8 files total, all axiom-clean, lint green.
+- 2026-07-07 — built to exhaustion in 3-formalized (6 files, all axiom-clean, lint green, umbrella):
   `DeckChargeCalculus` (additive charge + `ℤ/n ≃* μ_n` + conservation + tower), `DeckChargeLadder`
   (RH ladder in charge form + symmetry-blindness), `WindingNumber` (the integer winding number — a
-  mathlib gap — with its full calculus), `WindingArgumentPrinciple` (winding = enclosed order; the
-  topological and algebraic charge coincide), `RegionCharge` (quadrant-local charge + FE/conjugation
-  transport + Klein-four blindness). The coordinating GPT agent's `DeckChargeBridge` builds on
-  `DeckChargeLadder`, confirming both agents' rung conditions are one object.
+  mathlib gap — with its full calculus), `WindingArgumentPrinciple` (winding = enclosed order at the
+  centre; the topological and algebraic charge coincide), `WindingDivisor` (the argument principle for
+  a divisor: winding of `∏ (z−ρᵢ)^{mᵢ}` around a circle = Σ mᵢ, welded to the deck charge),
+  `RegionCharge` (quadrant-local charge + FE/conjugation transport + Klein-four blindness). The
+  coordinating GPT agent's `DeckChargeBridge` builds on `DeckChargeLadder`, confirming both agents'
+  rung conditions are one object.

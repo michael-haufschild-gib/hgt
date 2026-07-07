@@ -211,6 +211,10 @@ observable, and the identifications of RH itself with each. -/
 #assert_integration_free orbitQuartic_conj
 #assert_integration_free orbitQuartic_order_one
 #assert_integration_free exists_feSchwarz_carrier_odd_charge
+#assert_integration_free carrierCharge_one_eq_one_of_reflection
+#assert_integration_free carrierCharge_xi_central
+#assert_integration_free analyticOrderAt_dvd_of_rotation
+#assert_integration_free carrierCharge_eq_one_of_rotation
 
 /-! ## Positive controls
 

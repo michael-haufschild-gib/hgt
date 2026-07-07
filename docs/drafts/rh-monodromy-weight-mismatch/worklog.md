@@ -6688,3 +6688,101 @@ blocked: the winding number was built, the quadrant geometry was built, and the 
 principle welds the topological and algebraic charges. Springboards recorded on the card (global
 argument principle via degree/homotopy; Phase E pair-annihilation from transport+conservation;
 Phase F quadrant-ramified cover targeting the mod-4-invisible `q`).
+
+### Attack-as-false on the charge object (softness)
+CarrierChargeSoftness.lean: exists_feSchwarz_carrier_odd_charge — the V₄-orbit quartic
+f(s)=(s-ρ₀)(s-(1-ρ₀))(s-ρ̄₀)(s-(1-ρ̄₀)) is entire, FE-symmetric (ring), Schwarz-equivariant
+(map_mul/conj_conj+ring), and has a SIMPLE zero at any off-line off-real ρ₀ (order = ord(s-ρ₀) +
+ord(cofactor) = 1+0 via analyticOrderAt_mul + analyticOrderAt_eq_one_of_zero_deriv_ne_zero), so
+carrierCharge f 1 ρ₀ = (-1)^1 = -1. PROVES FE+Schwarz symmetry does NOT force the charge trivial
+off-line — the softness/insufficiency result (Goldilocks soft cell on the charge). Complements
+codex's wCharge_invisible_below_reflection_depth (aggregate blindness); mine is per-point NOT blind
+(reads -1) yet unforced by symmetry. Certified integration-free & axiom-clean, MainTheorems green
+(9272 jobs), lint passed. Constraint-side: explicit polynomial counterexample, no flow.
+Remaining is RESEARCH (Goldilocks middle = what forces the charge = RH-grade), not a formalization gap.
+
+---
+
+## 2026-07-07 (cont.) — the argument principle for a divisor (winding = enclosed order)
+
+`WindingDivisor.lean` (axiom-clean, lint green, umbrella): the winding number now COUNTS all enclosed
+zeros, not just a centred one.
+
+- `windingNumber_eq_zero_of_ball1`: a loop staying in the unit ball about `1` winds `0` (it has a
+  single-valued `Complex.log` on the slit plane).
+- `windingNumber_linear_enclosing`: a zero *anywhere strictly inside* the circle `|z−c|=r` winds the
+  boundary once — the linear factor factors `(c + r e^{iθ}) − ρ = (r e^{iθ})·u`, `u(θ) = 1 +
+  ((c−ρ)/r)e^{−iθ}` a loop in the ball about `1`; winding `= 1 + 0`.
+- `windingNumber_prod` (finite product of loops → Σ windings), then
+- `windingNumber_divisor`: `windingNumber(θ ↦ ∏ᵢ (c + r e^{iθ} − ρᵢ)^{mᵢ}) = Σᵢ mᵢ` — the argument
+  principle for a divisor. `loopCharge_divisor`: the boundary-circle deck charge is `wCharge (2^k)
+  (Σᵢ mᵢ)` — the topological winding realisation of the multi-zero deck charge, the argument-principle
+  twin of the algebraic `box_charge_eq_deckRed`.
+
+The winding number (a mathlib gap) is now not just built but shown to compute the enclosed order —
+the deck charge's topological and algebraic faces coincide on any finite divisor. Remaining open
+extensions (recorded on the card): a non-polynomial nonvanishing factor `g` (winding 0 via a disc
+branch log) and a general non-circular boundary (via homotopy invariance of the winding number).
+
+### Positive Goldilocks lever + open cell = the rung
+CarrierChargeSoftness.lean (now the full Goldilocks-boundary file):
+- carrierCharge_one_eq_one_of_reflection: holomorphic reflection about ρ (f(2ρ-s)=f(s)) ⟹ even
+  order ⟹ carrierCharge f 1 ρ = 1 (via analyticOrderAt_even_of_reflection + Even.neg_one_pow;
+  f≡0 case handled). The only entire involution fixing ρ is that reflection, so it's the operative
+  symmetric forcing.
+- carrierCharge_xi_central: ξ's FE = reflection about ½ ⟹ carrierCharge xi 1 ½ = 1 (the one point
+  ξ's symmetry forces; off ½ ξ has no reflection about the point).
+BOUNDARY BRACKETED: positive (reflection forces) + softness (FE+Schwarz insufficient off-line).
+The open cell IS the rung: rhLadder_iff_xiDeckCharge_one (k=1) already states RHLadder 1 ↔ charge
+vanishes at every off-line zero. So "what forces the charge off-line" = RHLadder 1 = RH₂ = open
+theorem, provably not closable by ξ's symmetries. Not a formalization gap — the constraint side is
+carried to its exact edge. Certified integration-free & axiom-clean, MainTheorems green (9273 jobs).
+
+### Whole-tower positive lever: rotational forcing
+CarrierChargeSoftness.lean: analyticOrderAt_dvd_of_rotation — n-fold rotation s↦ρ+ζ(s-ρ) about ρ
+(ζ primitive n-th root) ⟹ n | ord_ρ(f), generalizing the tree's n=2 reflection to all n (peel +
+continuity at the fixed point: h(s)=ζ^ord·h(rot), s→ρ forces ζ^ord=1, IsPrimitiveRoot.pow_eq_one_iff_dvd).
+carrierCharge_eq_one_of_rotation: primitive 2^k-rotation ⟹ carrierCharge f k ρ = 1 (full k-th rung
+at the fixed point). Completes the POSITIVE Goldilocks lever for the whole tower. ξ has this only as
+n=2 reflection at 1/2; no rotational symmetry ⟹ higher rungs open. Uniqueness of the forcing
+(finite-order entire aut fixing ρ = rotation) is CLASSICAL (mathlib lacks entire-injective⟹affine;
+rule 8 = don't recreate). Certified integration-free & axiom-clean, MainTheorems green (9275 jobs).
+CONSTRAINT SIDE OF PHASE B COMPLETE: charge + certificate + welds + seam grading + both Goldilocks
+brackets. Beyond = the non-symmetry input forcing the charge off-seam = the rung = RH (charter: not goal).
+
+---
+
+## 2026-07-07 (cont.) — argument principle for general f, and the winding number of ξ
+
+Two more axiom-clean files (lint green, umbrella), pushing the argument principle to the actual ξ:
+
+- **`WindingFull.lean`**: `windingNumber_nonvanishing_disc` (a factor `g` nowhere zero on a disc winds
+  `0` — branch log on the simply connected disc, `isSimplyConnected_ball`) → `windingNumber_argument
+  _principle`: for `f = (∏ᵢ(z−ρᵢ)^{mᵢ})·g` on `ball c R`, `windingNumber(f∘circle) = Σᵢ mᵢ`. This is
+  the argument principle in EXACTLY the factored form of `box_charge_eq_deckRed`; the winding number
+  computes the deck charge of a general analytic f, not just a polynomial.
+
+- **`WindingXi.lean`**: instantiates it on `xi` via the tree's peeling `xi = (·−ρ₀)^m·h`
+  (`xi_peel_ball`): `windingNumber_xi_zero` (winding of ξ around a small circle about ρ₀ = ord_{ρ₀} xi)
+  and `loopCharge_xi_zero` (the loop deck charge of that circle = `ladderCharge k ρ₀`). The winding
+  number of ξ around an off-line zero IS its rung-`k` ladder charge — welding the whole winding
+  calculus to `RH_{2^k}`.
+
+Prompted by GPT's reciprocity-determinant note (the completed `Ξ_Δ(s) = ½ + ½s(s−1)∫₁^∞ T(t)(t^{s/2}
++ t^{(1−s)/2})dt/t`, entire, `Ξ_Δ(s)=Ξ_Δ(1−s)`): that construction is classical Riemann (theta →
+FE; mathlib already has `completedRiemannZeta` + FE), so not re-derived here. Its §7 `m_ρ =
+Res_ρ(Ξ'/Ξ) = ord_ρ` is the logarithmic-derivative twin of `windingNumber_xi_zero` — my contour
+realisation of the same order/multiplicity. Its FE reflection is what `regionCharge_transport`
+transports. Useful as the concrete FE-symmetric carrier; the deck-charge/winding structure on it is
+this lane's contribution.
+
+## 2026-07-07 (cont.) — several-zero ξ winding = census charge
+
+Appended to `WindingXi.lean`, using the tree's multi-zero peel `exists_multi_peel_orders`
+(`xi = (∏_{w∈t}(z−w)^{ord_w})·h`, `h` nonvanishing): `windingNumber_xi_disc` — for a finite `t`
+collecting all ξ-zeros of `ball c R`, all inside the circle of radius `r<R`, `windingNumber(xi∘circle)
+= Σ_{w∈t} ord_w xi`; `loopCharge_xi_disc = wCharge(2^k)(Σ orders)`. The winding number of ξ around a
+disc IS the box census deck charge (`discCensusH`/`censusProfile` = `(Σ box orders : ℤ/2^k)`). The
+argument principle for ξ is now complete for single and multiple enclosed zeros. Only open input left:
+discharging `hzeros` (finiteness of ξ-zeros in a disc) and non-circular boundaries (homotopy
+invariance) — both genuine analytic prerequisites, not quick bricks.

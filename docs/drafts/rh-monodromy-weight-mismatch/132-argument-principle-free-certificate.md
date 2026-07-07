@@ -163,3 +163,82 @@ So charge → circle-path holonomy → spectral functional is a graded ascent fr
 flow, with the charge pinned at the constraint end. The order-linked reading of the invariant
 never integrates; only the spectral reading does. This is the constraint/flow boundary of the
 lane made into a build-checked fact rather than a slogan.
+
+## 8. Attack-as-false: symmetry does not force the charge (`RHTower/CarrierChargeSoftness.lean`)
+
+The charge object's implicit conjecture is that its natural constraint — the functional
+equation and Schwarz reflection, which pin it to a `V₄`-invariant — trivializes it off the
+seam. It does not. `exists_feSchwarz_carrier_odd_charge`: for every `ρ₀` off the critical line
+and off the real axis, the `V₄`-orbit quartic
+
+    f(s) = (s − ρ₀)(s − (1−ρ₀))(s − ρ̄₀)(s − (1−ρ̄₀))
+
+is entire, satisfies `f(1−s) = f(s)` and `f(s̄) = f(s)‾`, and has a *simple* zero at ρ₀, so
+`carrierCharge f 1 ρ₀ = (−1)¹ = −1 ≠ 1`.
+
+So FE-symmetry is a genuine constraint on the charge but not the one that forces it to vanish
+off the line: a second, non-symmetry input is required. This is the softness end of the
+Goldilocks trichotomy realized on the charge itself — the class of FE-symmetric carriers is
+too soft. It complements the aggregate blindness on the other side
+(`wCharge_invisible_below_reflection_depth`): the *aggregate* charge is blind below the
+reflection depth, while the *per-point* charge here is not blind (it reads `−1`) yet is still
+unforced by symmetry alone. The per-point charge is exactly the quadrant-local detector the
+lane calls for; softness says even it needs more than the functional equation.
+
+What this opens is not a formalization gap but a research cell: the Goldilocks middle — a
+carrier class rigid enough to force `carrierCharge f 1 = 1` off the seam yet not so rigid it is
+ξ by fiat. Forcing the charge is RH-grade; the softness result marks precisely where symmetry
+stops and that second input must begin.
+
+## 9. The positive Goldilocks side, and the open cell identified as the rung itself
+
+The softness result (§8) is one bracket; the positive lever is the other.
+`carrierCharge_one_eq_one_of_reflection`: a carrier with a holomorphic reflection about ρ
+(`f(2ρ − s) = f(s)`) has even order at ρ, so `carrierCharge f 1 ρ = 1`. Since the only entire
+involution fixing ρ is that reflection, this is the operative forcing among symmetries.
+`carrierCharge_xi_central`: ξ's functional equation is the reflection about `½`, so
+`carrierCharge ξ 1 ½ = 1` — the single point ξ's own symmetry forces.
+
+The two brackets locate the Goldilocks middle exactly:
+
+- a symmetry that **fixes** the point forces the charge (reflection about ρ);
+- the FE+Schwarz class, whose symmetries fix no off-line point, does **not**;
+- ξ carries the fixing symmetry only on the seam (`½`), and no reflection about an off-line ρ.
+
+What "forcing the charge off-line at every zero" *is* was already formalized:
+`rhLadder_iff_xiDeckCharge_one` (k = 1) reads
+
+    RHLadder 1  ↔  ∀ ρ ∈ rightHalf, xi ρ = 0 → xiDeckCharge 1 ρ = 1.
+
+So the positive Goldilocks statement — a structural input forcing the charge to vanish at every
+off-line ξ-zero — **is** `RHLadder 1`, the first rung. The reflection lever forces it exactly at
+the fixed point of ξ's symmetry, and the softness result proves ξ's symmetries cannot force it
+off that point. Closing the cell is therefore not a missing lemma or a matter of formalization:
+it is proving the rung, i.e. RH₂, which requires a genuinely non-symmetry input the symmetries
+provably do not supply. The formalization has carried the constraint side to its exact edge — the
+edge is the open theorem, with the charge as the object on which the next (non-symmetry) input
+must act.
+
+## 10. The positive lever, whole-tower: rotational symmetry forces the rung
+
+The reflection lever (§9) is the `n = 2` case of the full forcing:
+`analyticOrderAt_dvd_of_rotation` — if a carrier is invariant under the order-`n` rotation
+`s ↦ ρ + ζ(s − ρ)` about `ρ` (`ζ` a primitive `n`-th root of unity), then `n ∣ ord_ρ(f)`.
+So `carrierCharge_eq_one_of_rotation`: a primitive `2^k`-rotation about `ρ` forces
+`carrierCharge f k ρ = 1` — the entire `k`-th rung at that point, not just `k = 1`.
+
+This completes the positive Goldilocks characterization for the whole tower: what forces rung
+`k` at `ρ` is a `2^k`-fold rotational symmetry fixing `ρ`. The reflection (`k = 1`) is the only
+case ξ realizes, at `½`. ξ carries no rotational symmetry about any point, so above the seam and
+above the first rung the charge is unforced by symmetry — the tower of open rungs, each identified
+with the corresponding `carrierCharge = 1` condition by `rhLadder_iff_xiDeckCharge_one` applied at
+level `k`.
+
+The *uniqueness* of this forcing — that the only finite-order entire symmetry fixing `ρ` is the
+rotation — is classical (entire injective ⟹ affine; finite order ⟹ root-of-unity multiplier) and
+is deliberately not re-derived here. What is novel and now formalized is the forcing itself as a
+statement about the deck charge, its whole-tower generality, and the sharp softness bracket showing
+it is the *only* symmetric forcing. The constraint side of Phase B is complete: the charge, its
+certification, its welds, its seam grading, and both Goldilocks brackets. The single thing beyond
+is the non-symmetry input that would force the charge off ξ's seam — which is the rung itself, i.e.
+RH, and by this project's charter not its goal.
