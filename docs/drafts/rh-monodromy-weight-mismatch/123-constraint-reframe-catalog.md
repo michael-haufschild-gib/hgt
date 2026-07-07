@@ -332,3 +332,41 @@ integer F₁-Hodge index or discrete-spectrum Hilbert–Pólya — which is exac
 **HP-index (§4)**. T3 and T1 both relocate their open content onto T2: T1 onto the second-harmonic
 *sign*, T3 onto the *faithful* (flow-breaking) index — two faces of the same polarization the weld
 supplies.
+
+---
+
+## Status addendum — §4 HP-index reframe built and graded (index prong)
+
+Forward-move #2 delivered. `formal/GaloisForLFunctions/RHTower/SeamSpectralFlow.lean` (8 theorems,
+axiom-clean `[propext, Classical.choice, Quot.sound]`, lint green, in the `RHTower` umbrella) is the
+index-prong analogue of `riemannHypothesis_of_residual_faces`:
+
+- `κ₋ = 0` is formalized as `KreinNonneg H := ∀x, 0 ≤ (xᴴ H x).re` and **identified with the vanishing
+  of the negative index** (`kreinNonneg_iff_no_negDef`: definiteness ⟺ no negative square).
+- It is a **congruence invariant** (`kreinNonneg_congr`, Sylvester rigidity) — the deformation-invariant,
+  *structurally pinned* computation (b) of §5 / `121 §5`, computed basis-freely, not a re-count of the
+  order data (a). This is what earns "spectral-flow index" rather than "ad-hoc predicate."
+- The reduction `riemannHypothesis_of_seam_polarization` and the equivalence
+  `riemannHypothesis_iff_seam_polarization` wire it to mathlib's `RiemannHypothesis` via
+  `rh_iff_xi_ne_zero_right`: modulo the argument principle (off-line zero ⟹ negative Krein direction —
+  a *tree theorem* in spirit, `conj_pair_pick_neg_inertia`), **RH ⟺ every seam Gram is definite**, with
+  the **polarization existence isolated as the single open clause**.
+
+This welds `OmegaComplexStructure` (the polarization `J`, T2), `KreinLangerInertia` (`κ₋`), and
+`RiemannTower` (RH) into one checked chain. The rule-7 audit passes: no operator or carrier is
+constructed — definiteness is a constraint on a *given* form, and congruence-invariance is the
+anti-flow (the invariant surviving all deformations). The polarization `J` is left as an existence
+clause, never built.
+
+**Dual gate:** DELIVERED × branch **infrastructure** (the linear-algebra bricks reduce to known;
+HP-as-index is semi-known; the *operational assembly* is the reusable handle, like ResidualFaces —
+not a novel peak). It supplies the pinned second computation §4 asked for, replacing the fork-dead
+ad-hoc forcing hunt with index theory. Significance real: RH relocated onto the **polarization / weld
+`J`** (T2), attackable by index / Hodge / period-domain tools the spectral-reality frame could not
+reach — same difficulty (`_iff_` is an equivalence), different tools.
+
+**Opens (not a terminus):** (1) upgrade `hAP` from interface to lemma (off-line zero ⟺ negative Krein
+direction, from `boundaryField_im_pos` + `conj_pair_pick_neg_inertia`), making `hpol` the sole
+residual; (2) attack `hpol` as Rosati-positivity on the period domain `D_∞ = Sp_∞(ℝ)/U(∞)` — the T2
+lane; (3) collide with T1 — is the second-harmonic sign the negative Krein direction? (§5 move 4).
+Card: `docs/drafts/pipeline/3-formalized/seam-spectral-flow-index.md`.

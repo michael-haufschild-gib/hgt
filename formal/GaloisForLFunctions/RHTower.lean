@@ -111,6 +111,7 @@ import GaloisForLFunctions.RHTower.WindowLadder
 import GaloisForLFunctions.RHTower.DeckWindow
 import GaloisForLFunctions.RHTower.WindowSeam
 import GaloisForLFunctions.RHTower.OmegaComplexStructure
+import GaloisForLFunctions.RHTower.OmegaObstruction
 import GaloisForLFunctions.RHTower.DiscWindow
 import GaloisForLFunctions.RHTower.DiscExtraction
 import GaloisForLFunctions.RHTower.WindowProducer
@@ -309,3 +310,4 @@ import GaloisForLFunctions.RHTower.WholeLoopParity
 import GaloisForLFunctions.RHTower.WindingBoxCount
 import GaloisForLFunctions.RHTower.WholeLoopClosure
 import GaloisForLFunctions.RHTower.ThirdMomentResonance
+import GaloisForLFunctions.RHTower.SeamSpectralFlow

@@ -6374,3 +6374,33 @@ positivity past the wall (continuation, dlVP t→∞ region, Bohr lift) is a flo
 axis, one carrier — the q62_mixed shape) as the native weld frontier.
 Gate note: MainTheorems passed with my modules (9245 jobs); a concurrent edit to the unrelated
 OmegaComplexStructure.lean (other agent, mid-edit) is the only current failure — not mine.
+
+## 2026-07-07 — HP-index reframe (doc 123 §4) formalized: the seam Krein index reduction
+
+Took §4 "Hilbert–Pólya as a polarization / index constraint" to formalization exhaustion
+(forward-move #2). Built `formal/GaloisForLFunctions/RHTower/SeamSpectralFlow.lean` (8 theorems,
+axiom-clean, lint green, in RHTower umbrella):
+
+- `KreinNonneg` = the definiteness face `κ₋ = 0`; `kreinNonneg_iff_no_negDef` identifies it with the
+  vanishing negative index (definiteness ⟺ no negative square).
+- `kreinNonneg_congr` = Sylvester rigidity: `κ₋` is a congruence invariant of the form — the
+  deformation-invariant "structurally pinned" computation, not a re-count.
+- `riemannHypothesis_of_seam_polarization` (gate) + `riemannHypothesis_iff_seam_polarization`
+  (equivalence): modulo the argument principle (off-line zero ⟹ negative Krein direction), RH ⟺ every
+  seam Gram definite, with the polarization existence as the single open clause. Welds
+  OmegaComplexStructure(J) ↔ KreinLangerInertia(κ₋) ↔ RiemannTower(RH).
+
+Rule-7 clean: no operator/carrier constructed; definiteness is a constraint on a given form,
+congruence-invariance is the anti-flow. Dual gate: DELIVERED × branch infrastructure (bricks
+reduce-to-known; the operational assembly is the reusable handle). RH relocated onto the polarization
+`J` = T2's weld. Opens: upgrade `hAP` to a lemma; attack `hpol` as Rosati-positivity on `D_∞` (T2);
+collide with T1 (second-harmonic sign = negative Krein direction?). Card:
+`docs/drafts/pipeline/3-formalized/seam-spectral-flow-index.md`.
+
+Update (same day): argument principle discharged for the conjugate-pair Pick model —
+`conjPair_offLine_not_kreinNonneg` (off-line pair ⟹ negative Krein direction, from the tree's
+`conj_pair_not_herglotz`/`pickDiag_re`) + `online_of_conjPair_pick_kreinNonneg` (every Pick Gram
+definite ⟹ Im t = 0). At the finite Pick shadow the polarization clause *is* the critical-line
+location — `hAP` is now a theorem, not an interface, so the sole open input is the polarization
+existence. Module now 10 theorems, all axiom-clean, lint green. Residual lift: from the 1×1 Pick
+shadow to the full analytic seam (winding/box argument principle).

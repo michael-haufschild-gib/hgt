@@ -120,6 +120,14 @@ theorem linearIndependent_pair {V : Type*} [AddCommGroup V] [Module ℝ V]
   intro a b h
   exact C.smul_add_smul_apply_eq_zero hx h
 
+/-- Any nonzero vector in a finite-dimensional weld forces at least two real dimensions. -/
+theorem two_le_finrank_of_ne_zero {V : Type*} [AddCommGroup V] [Module ℝ V]
+    [FiniteDimensional ℝ V] (C : OmegaComplexStructure V) {x : V} (hx : x ≠ 0) :
+    2 ≤ Module.finrank ℝ V := by
+  have hli : LinearIndependent ℝ ![x, C.J x] := C.linearIndependent_pair hx
+  have hcard : Fintype.card (Fin 2) ≤ Module.finrank ℝ V := hli.fintype_card_le_finrank
+  simpa using hcard
+
 /-- In finite dimension, `J² = -1` forces the determinant constraint
 `det(J) * det(J) = (-1)^finrank`. -/
 theorem det_mul_det_eq_neg_one_pow_finrank {V : Type*} [AddCommGroup V] [Module ℝ V]
@@ -224,6 +232,66 @@ def planePolarizedOmegaComplexStructure :
   preserves := planeJ_preserves_planeQ
 
 namespace PolarizedOmegaComplexStructure
+
+/-- A nonzero `Q`-self pairing forces at least two real dimensions in finite dimension. -/
+theorem two_le_finrank_of_Q_self_ne_zero {V : Type*} [AddCommGroup V] [Module ℝ V]
+    [FiniteDimensional ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (P : PolarizedOmegaComplexStructure V Q) {x : V} (hxQ : Q x x ≠ 0) :
+    2 ≤ Module.finrank ℝ V := by
+  have hx : x ≠ 0 := by
+    intro hx
+    subst hx
+    simp at hxQ
+  exact P.complex.two_le_finrank_of_ne_zero hx
+
+/-- A finite-dimensional rank-`≤ 1` polarized weld has no nonzero `Q`-self pairings. -/
+theorem Q_self_eq_zero_of_finrank_le_one {V : Type*} [AddCommGroup V] [Module ℝ V]
+    [FiniteDimensional ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (P : PolarizedOmegaComplexStructure V Q) (hfin : Module.finrank ℝ V ≤ 1) (x : V) :
+    Q x x = 0 := by
+  by_contra hxQ
+  have htwo : 2 ≤ Module.finrank ℝ V := P.two_le_finrank_of_Q_self_ne_zero hxQ
+  omega
+
+/-- No finite-dimensional rank-`≤ 1` anisotropic polarized carrier can realize the weld. -/
+theorem no_polarizedOmegaComplexStructure_of_finrank_le_one_of_exists_Q_self_ne_zero
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (hfin : Module.finrank ℝ V ≤ 1)
+    (hQ : ∃ x : V, Q x x ≠ 0) :
+    IsEmpty (PolarizedOmegaComplexStructure V Q) := by
+  refine ⟨?_⟩
+  intro P
+  rcases hQ with ⟨x, hxQ⟩
+  exact hxQ (P.Q_self_eq_zero_of_finrank_le_one hfin x)
+
+/-- Rank-one form of the anisotropic polarized-carrier obstruction. -/
+theorem no_polarizedOmegaComplexStructure_of_finrank_eq_one_of_exists_Q_self_ne_zero
+    {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (hfin : Module.finrank ℝ V = 1)
+    (hQ : ∃ x : V, Q x x ≠ 0) :
+    IsEmpty (PolarizedOmegaComplexStructure V Q) :=
+  no_polarizedOmegaComplexStructure_of_finrank_le_one_of_exists_Q_self_ne_zero
+    (Q := Q) hfin.le hQ
+
+/-- No finite-dimensional odd real carrier can support a polarized weld. -/
+theorem no_polarizedOmegaComplexStructure_of_odd_finrank {V : Type*}
+    [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (hodd : Odd (Module.finrank ℝ V)) :
+    IsEmpty (PolarizedOmegaComplexStructure V Q) := by
+  refine ⟨?_⟩
+  intro P
+  have hEmpty : IsEmpty (OmegaComplexStructure V) := no_omegaComplexStructure_of_odd_finrank hodd
+  exact isEmptyElim P.complex
+
+/-- No finite-dimensional rank-one real carrier can support a polarized weld, for any `Q`. -/
+theorem no_polarizedOmegaComplexStructure_of_finrank_eq_one {V : Type*}
+    [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (hfin : Module.finrank ℝ V = 1) :
+    IsEmpty (PolarizedOmegaComplexStructure V Q) := by
+  have hodd : Odd (Module.finrank ℝ V) := by
+    rw [hfin]
+    exact odd_one
+  exact no_polarizedOmegaComplexStructure_of_odd_finrank (Q := Q) hodd
 
 /-- Preservation of `Q` by `J` turns a `J` in the right slot into `-J` in the left slot. -/
 theorem neg_Q_right_J_eq_Q_J_left {V : Type*} [AddCommGroup V] [Module ℝ V]
@@ -429,6 +497,42 @@ theorem Q_apply_span_self_ne_zero_of_isSymm {V : Type*} [AddCommGroup V] [Module
     exact ne_of_gt hpos
   rw [P.Q_apply_span_self_of_isSymm hQ]
   exact mul_ne_zero hcoef hxQ
+
+/-- On a nonisotropic forced `J`-plane, `Q`-self isotropy is exactly coefficient zero. -/
+theorem Q_apply_span_self_eq_zero_iff_of_isSymm {V : Type*}
+    [AddCommGroup V] [Module ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (P : PolarizedOmegaComplexStructure V Q) (hQ : Q.IsSymm) {x : V} {a b : ℝ}
+    (hxQ : Q x x ≠ 0) :
+    Q (a • x + b • P.complex.J x) (a • x + b • P.complex.J x) = 0 ↔
+      a = 0 ∧ b = 0 := by
+  rw [P.Q_apply_span_self_of_isSymm hQ]
+  constructor
+  · intro h
+    have hcoef : a * a + b * b = 0 := (mul_eq_zero.mp h).resolve_right hxQ
+    have ha : a = 0 := by nlinarith [sq_nonneg a, sq_nonneg b]
+    have hb : b = 0 := by nlinarith [sq_nonneg a, sq_nonneg b]
+    exact ⟨ha, hb⟩
+  · rintro ⟨rfl, rfl⟩
+    simp
+
+/-- Nonvanishing form of the local `Q`-self-pairing criterion. -/
+theorem Q_apply_span_self_ne_zero_iff_of_isSymm {V : Type*}
+    [AddCommGroup V] [Module ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (P : PolarizedOmegaComplexStructure V Q) (hQ : Q.IsSymm) {x : V} {a b : ℝ}
+    (hxQ : Q x x ≠ 0) :
+    Q (a • x + b • P.complex.J x) (a • x + b • P.complex.J x) ≠ 0 ↔
+      a ≠ 0 ∨ b ≠ 0 := by
+  constructor
+  · intro h
+    by_cases ha : a = 0
+    · right
+      intro hb
+      apply h
+      rw [ha, hb]
+      simp
+    · exact Or.inl ha
+  · intro hab
+    exact P.Q_apply_span_self_ne_zero_of_isSymm hQ hxQ hab
 
 /-- With symmetric `Q`, the right-slot `J`-twist of `Q` is an alternating bilinear form. -/
 theorem Q_compl2_J_isAlt_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
