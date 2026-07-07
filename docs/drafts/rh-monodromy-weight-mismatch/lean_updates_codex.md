@@ -1477,3 +1477,22 @@ exact "two defects can cancel only if their charges match". Module now 9 decls /
 no warnings. The Phase E "seam boundary contributes a compensating charge" clause is NOT one of the
 three named deliverables; it is the banked seam machinery (SeamParity/SeamCocycle) + the parity bridge
 (`defect_not_removable`), not a separate conservation term — the circle-boundary conservation is exact.
+
+## QuadrantRamifiedCover.lean — Phase F: construct-or-rule-out the quadrant-ramified cover, axiom-clean
+Verdict: NO-GO (the doc's "as valuable as the construction"). All three deliverables:
+- Local model (Deliverable 1): local cyclic cover `w ↦ ρ + wⁿ` (ramified index n over ρ);
+  `analyticOrderAt_id_pow` (ord of wʲ at 0 = j) + `analyticOrderAt_ram_pullback`: pulling f back through
+  it multiplies the vanishing order by n (`ord₀(f∘(ρ+·ⁿ)) = n·ord_ρ f`; peel + analyticOrderAt_mul).
+- Pullback formula for deck charge (Deliverable 2): `ramCharge_pullback` — `w_k(pullback) = n • w_k(f)`
+  (via the order pullback + `wCharge_nsmul`).
+- No-go (Deliverable 3): `ram_constant_on_orbit` (abstract: equivariant ram is orbit-constant, any G);
+  `no_singleton_ramification_fe`/`_conj` (FE/conj-invariant ram at off-line/off-real ρ ⟹ ram(1−ρ)=ram ρ
+  resp ram(ρ̄)=ram ρ, with 1−ρ≠ρ / ρ̄≠ρ — can't single out ρ); `quadrant_ram_forced_equal` (all four
+  V₄-quadrant values {ρ,1−ρ,ρ̄,1−ρ̄} locked equal); `quadrant_ram_charge_blind` — THE no-go with teeth:
+  the V₄-functorial cover's aggregate charge over an orbit is 4·(ram ρ), invisible at every rung j≤2, so
+  the cover reproduces the exact mod-4 blindness it was built to defeat. ⟹ quadrant-local parity cannot
+  come from an FE/conjugation-functorial cover; forces the program toward torsion seam arithmetic (Phase G).
+All 8 theorems `[propext, Classical.choice, Quot.sound]` (137 lines), no warnings, umbrella-registered
+after RegionCharge. Reuses the free-action/blindness machinery (FoldonFrustration, wCharge calculus) —
+"almost all ingredients already present" confirmed; the genuine new content is the ramification pullback
+and the orbit-constancy no-go tying it to the mod-4 blindness.

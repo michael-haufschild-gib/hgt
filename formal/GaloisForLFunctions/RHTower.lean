@@ -319,6 +319,7 @@ import GaloisForLFunctions.RHTower.SeamFluxCompletion
 import GaloisForLFunctions.RHTower.SeamSuspensionTrace
 import GaloisForLFunctions.RHTower.SeamSectorTrace
 import GaloisForLFunctions.RHTower.SeamHodgeCompression
+import GaloisForLFunctions.RHTower.SeamFiniteHodge
 import GaloisForLFunctions.RHTower.SeamArchimedeanNoGo
 import GaloisForLFunctions.RHTower.MPlusTorsionSeam
 import GaloisForLFunctions.RHTower.CutoffTorsionSeam
@@ -342,6 +343,7 @@ import GaloisForLFunctions.RHTower.WindingXiCircle
 import GaloisForLFunctions.RHTower.WindingHomotopy
 import GaloisForLFunctions.RHTower.ChargeMotion
 import GaloisForLFunctions.RHTower.RegionCharge
+import GaloisForLFunctions.RHTower.QuadrantRamifiedCover
 import GaloisForLFunctions.RHTower.DeckChargeBridge
 import GaloisForLFunctions.RHTower.RectangleResidue
 import GaloisForLFunctions.RHTower.CarrierBoxCount
@@ -356,3 +358,4 @@ import GaloisForLFunctions.RHTower.ChargeTomography
 import GaloisForLFunctions.RHTower.WeldChargeConnecting
 import GaloisForLFunctions.RHTower.DeciderBarrier
 import GaloisForLFunctions.RHTower.SeamCollisionMechanism
+import GaloisForLFunctions.RHTower.WeldTowerFree
