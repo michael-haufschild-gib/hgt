@@ -303,3 +303,32 @@ formal anchor for "the Euler product supplies the codim-2 non-crossing," not as 
 untouched RH-bearing datum is the *sign/polarization* of the second harmonic across the tower — i.e.
 the weld `ω` (T2) and the HP-index (§4). The Euler-vs-FE question, pushed to exhaustion, relocates
 the open content onto the sign, not the magnitude.
+
+---
+
+## Status addendum — T3 built and graded (operator-spectral face)
+
+T3 (the transverse index `κ₋` / type-II₁) was taken to exhaustion. Rule-6 check found the finite
+faithful count already done: `formal/GaloisForLFunctions/KreinLangerInertia.lean` proves the exact
+`κ₋ = #off-line pairs` (`exact_neg_inertia` + Cauchy non-degeneracy), the finite Krein–Langer inertia.
+The corpus's faithful-vs-measured dichotomy (`opus_faithful_vs_measured_trace_dichotomy`) shows the
+object T3 names — the type-II₁ *measured* index `τ(P₋)` — is the wrong one.
+
+**Built (axiom-clean):** `formal/GaloisForLFunctions/MeasuredIndexBlindness.lean` (lint green) — the
+measured/type-II₁/III₁ index is **RH-blind**, two ways: (i) density normalization sends any bounded or
+density-zero off-line count to `0` (`faithful_measured_dichotomy`: configs with `κ₋ = 0,1,∞` share
+measured index `0`); (ii) the **type-III scaling obstruction** `typeIII_scaling_forces_zero` — a
+covariant (`τ∘θ_s = e^{-s}τ`) + flow-invariant functional is forced to `0`. Card:
+`../pipeline/3-formalized/measured-index-blindness.md`.
+
+**Verdict: DELIVERED × KILLED-as-independent-route.** The measured index cannot express RH (proven);
+the finite faithful `κ₋` is done (tree); the faithful *infinite* index `κ₋(m_ξ)=0 ⟺ RH` is
+RH-equivalent AND requires constructing `m_ξ = -Ξ'/Ξ` from the zeros — a **flow in disguise** (rule 7),
+circular. So T3 has no non-flow, non-RH-equivalent content of its own beyond the finite (done) and the
+no-go (built).
+
+**Hands off to T2.** The residue is the **faithful integer referee** a measured trace cannot be —
+integer F₁-Hodge index or discrete-spectrum Hilbert–Pólya — which is exactly **T2 (`ω`/`J`)** and the
+**HP-index (§4)**. T3 and T1 both relocate their open content onto T2: T1 onto the second-harmonic
+*sign*, T3 onto the *faithful* (flow-breaking) index — two faces of the same polarization the weld
+supplies.

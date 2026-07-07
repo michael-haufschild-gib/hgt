@@ -1114,3 +1114,23 @@ incompatible — outward-ray limit vs the isolation floor),
 CHARACTERIZATION: compatible ⟺ count = m; positions free). Umbrella import after
 CertificateActivation. All 14 endpoints `[propext, Classical.choice,
 Quot.sound]`. Gate: 9241 jobs, exit 0.
+
+## EulerTruncationRigidity.lean — the σ_p-side truncation input (doc 104)
+
+New module `formal/GaloisForLFunctions/RHTower/EulerTruncationRigidity.lean` (9 axiom-clean
+endpoints; imports EMAnnulusSupply + AnchorHead; added to RHTower umbrella after
+CarrierCountConstraint). The multiplicative truncation `eulerPartial P s = ∏_{p∈P}(1−p^{−s})⁻¹`:
+
+- `eulerPartial_ne_zero` — zero-free on ALL of Re s > 0 (past the wall, across the strip);
+  strip zeros are emergent, present at no finite multiplicative level.
+- `exists_global_pow_root_eulerPartial` — free single-valued analytic 2^k-root on Re s > 0
+  for every k (explicit `eulerRootFactor = exp(−log(1−p^{−s})·2^{−k})`; slit-plane log).
+- `euler_tower_free_but_xi_tower_costs` — the dichotomy: σ_p tower unconditional vs ξ tower
+  = RHLadder k (`2^k ∣ zs.length`).
+- `neg_log_euler_base_hasSum` / `_re_nonneg` / `eulerRootFactor_real_ge_one` — Landau
+  positivity: the tower's log-exponent is a nonneg-coefficient Dirichlet series (Mercator),
+  real-nonneg on the axis, tower factor real ≥ 1. Positivity is oriented, unlike parity.
+- `euler_additive_weight_mismatch` / `emSplit_length_pos_at_xi_zero` — at a strip zero of ξ
+  the multiplicative truncation is nonvanishing (trivial weight) while the additive completed
+  member vanishes to order m ≥ 1 (deck weight exp(2πi·m/N)); the base-rung parity 2∣m is a
+  two-weight compatibility condition, not a re-expression of the FE.

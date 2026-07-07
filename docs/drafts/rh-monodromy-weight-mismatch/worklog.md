@@ -6332,3 +6332,31 @@ not RH (RH-blind; separates ζ/Λχ from DH, not on-line from off-line). RH ente
 of the second-harmonic amplitude across the tower = Weil positivity (RH-equivalent, correctly outside
 T1). Banked as a formal anchor for "Euler product = the codim-2 non-crossing"; relocates the open
 content onto the sign/polarization (T2 weld ω / HP-index), not the magnitude.
+
+## T3 (transverse index κ₋ / type-II₁) — built, formalized, graded (operator-spectral face)
+
+Rule 6: found finite faithful κ₋=#off-line-pairs already done (KreinLangerInertia.exact_neg_inertia +
+Cauchy). Roadmap `docs/denied/formalization-roadmap-finite-to-apex.md`: Stage 1 (finite) done, Stage 2
+(infinite m_ξ) = "construct m_ξ = -Ξ'/Ξ" = FLOW IN DISGUISE (rule 7) + RH-equivalent. Corpus
+faithful-vs-measured dichotomy: the type-II₁ MEASURED index (what T3 named, τ(P₋)) is RH-blind.
+
+Built axiom-clean: `formal/GaloisForLFunctions/MeasuredIndexBlindness.lean` — measured index RH-blind
+two ways: (i) density normalization (faithful_measured_dichotomy: κ₋=0,1,∞ all → measured 0);
+(ii) type-III scaling obstruction (typeIII_scaling_forces_zero: covariant+invariant ⟹ 0). lint green.
+Card: `pipeline/3-formalized/measured-index-blindness.md`.
+
+Verdict: DELIVERED (measured index can't express RH, proven) × KILLED as independent route (finite
+faithful done; infinite faithful κ₋(m_ξ)=0⟺RH is RH-equivalent + carrier-construction flow). Residue =
+the faithful integer referee (F₁-Hodge / discrete HP) = T2/HP. T3 hands off to T2, same as T1's sign
+residue — both are the polarization the weld supplies.
+
+## Euler-truncation rigidity pass (doc 104) — σ_p input built
+
+Directive: build the input that is neither steerable nor a re-expression — the arithmetic of
+the specific truncations. Delivered the multiplicative-truncation pillar: finite Euler
+partials are unconditionally zero-free and freely 2^k-towered on Re s > 0, grounded in Landau
+positivity (nonneg-coefficient log-exponent — oriented, unlike the dead parity route), and
+mismatched against the additive carrier's order-m deck weight at a pinned strip zero.
+Obstruction relocated exactly to the strip 1/2<Re<1 and named: does the finite Landau
+positivity have a mod-2^k shadow surviving pole subtraction past the wall Re s=1 (Arc B2).
+Everything pinned; no flow in truncation length. 9 endpoints axiom-clean.

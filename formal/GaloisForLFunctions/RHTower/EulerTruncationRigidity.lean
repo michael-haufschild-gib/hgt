@@ -228,4 +228,62 @@ theorem euler_tower_free_but_xi_tower_costs (k : ℕ) {P : Finset ℕ} (hP : ∀
           EMSplitData ρ r₀ R N zs u → 2 ^ k ∣ zs.length) → RHLadder k) :=
   ⟨exists_global_pow_root_eulerPartial k hP, rhLadder_of_em_split_multiplicity k⟩
 
+/-! ### §6 Landau positivity: the arithmetic source of the free tower -/
+
+/-- **The Mercator expansion of the principal-log summand.**  On `Re s > 0`,
+`−log(1 − p^(−s)) = Σ_{n≥1} (p^(−s))^n / n`.  Each `(p^(−s))^n = p^(−ns)` is a Dirichlet monomial
+supported at the prime power `p^n`, with coefficient `1/n`; so the exponent generating the σ_p
+tower is a Dirichlet series with nonnegative coefficients — Landau positivity in finite form. -/
+theorem neg_log_euler_base_hasSum {p : ℕ} (hp : 2 ≤ p) {s : ℂ} (hs : 0 < s.re) :
+    HasSum (fun n : ℕ => ((p : ℂ) ^ (-s)) ^ n / (n : ℂ)) (-Complex.log (1 - (p : ℂ) ^ (-s))) :=
+  Complex.hasSum_taylorSeries_neg_log (norm_natCast_cpow_neg_lt_one hp hs)
+
+/-- **Real-axis positivity of the log summand.**  At real `σ > 0`, `−log(1 − p^(−σ)) ≥ 0`: the
+nonnegative-coefficient Dirichlet series above is being evaluated at a point where every monomial
+is a nonnegative real, so it sums to a nonnegative real. -/
+theorem neg_log_euler_base_re_nonneg {p : ℕ} (hp : 2 ≤ p) {σ : ℝ} (hσ : 0 < σ) :
+    0 ≤ (-Complex.log (1 - (p : ℂ) ^ (-(σ : ℂ)))).re := by
+  have hbase : ((p : ℂ) ^ (-(σ : ℂ))) = ((p : ℝ) ^ (-σ) : ℝ) := by
+    rw [show (-(σ : ℂ)) = ((-σ : ℝ) : ℂ) by push_cast; ring, Complex.ofReal_cpow (by positivity)]
+    push_cast; ring
+  have hlt : (p : ℝ) ^ (-σ) < 1 := by
+    have h2 : (1 : ℝ) < p := by exact_mod_cast hp
+    calc (p : ℝ) ^ (-σ) < (p : ℝ) ^ (0 : ℝ) :=
+          Real.rpow_lt_rpow_of_exponent_lt h2 (by linarith)
+      _ = 1 := Real.rpow_zero _
+  have hpos : 0 < (p : ℝ) ^ (-σ) := Real.rpow_pos_of_pos (by positivity) _
+  rw [hbase, show (1 : ℂ) - ((p : ℝ) ^ (-σ) : ℝ) = (((1 - (p : ℝ) ^ (-σ)) : ℝ) : ℂ) by
+      push_cast; ring, ← Complex.ofReal_log (by linarith), ← Complex.ofReal_neg,
+    Complex.ofReal_re]
+  have : Real.log (1 - (p : ℝ) ^ (-σ)) ≤ 0 := Real.log_nonpos (by linarith) (by linarith)
+  linarith
+
+/-- **The σ_p tower factor is real and `≥ 1` on the real axis.**  Since its exponent
+`(1/2^k)·(−log(1 − p^(−σ)))` is a nonnegative real (Landau positivity), the root factor is
+`exp` of a nonnegative real: real, and at least `1`.  The free tower inherits the dominance of the
+truncation from the coefficient positivity, not from any symmetry. -/
+theorem eulerRootFactor_real_ge_one {k p : ℕ} (hp : 2 ≤ p) {σ : ℝ} (hσ : 0 < σ) :
+    1 ≤ (eulerRootFactor k p (σ : ℂ)).re := by
+  have hnn : 0 ≤ (-Complex.log (1 - (p : ℂ) ^ (-(σ : ℂ)))).re := neg_log_euler_base_re_nonneg hp hσ
+  have hbase : ((p : ℂ) ^ (-(σ : ℂ))) = ((p : ℝ) ^ (-σ) : ℝ) := by
+    rw [show (-(σ : ℂ)) = ((-σ : ℝ) : ℂ) by push_cast; ring, Complex.ofReal_cpow (by positivity)]
+    push_cast; ring
+  have hlt : (p : ℝ) ^ (-σ) < 1 := by
+    have h2 : (1 : ℝ) < p := by exact_mod_cast hp
+    calc (p : ℝ) ^ (-σ) < (p : ℝ) ^ (0 : ℝ) :=
+          Real.rpow_lt_rpow_of_exponent_lt h2 (by linarith)
+      _ = 1 := Real.rpow_zero _
+  have hpos : 0 < (p : ℝ) ^ (-σ) := Real.rpow_pos_of_pos (by positivity) _
+  have hreal : (-(Complex.log (1 - (p : ℂ) ^ (-(σ : ℂ)))) * ((1 : ℂ) / 2 ^ k))
+      = ((((-Real.log (1 - (p : ℝ) ^ (-σ))) * (1 / 2 ^ k)) : ℝ) : ℂ) := by
+    rw [hbase, show (1 : ℂ) - ((p : ℝ) ^ (-σ) : ℝ) = (((1 - (p : ℝ) ^ (-σ)) : ℝ) : ℂ) by
+        push_cast; ring, ← Complex.ofReal_log (by linarith)]
+    push_cast; ring
+  rw [eulerRootFactor, hreal, ← Complex.ofReal_exp, Complex.ofReal_re]
+  have hlog : Real.log (1 - (p : ℝ) ^ (-σ)) ≤ 0 := Real.log_nonpos (by linarith) (by linarith)
+  have hEnn : (0 : ℝ) ≤ (-Real.log (1 - (p : ℝ) ^ (-σ))) * (1 / 2 ^ k) :=
+    mul_nonneg (by linarith) (by positivity)
+  calc (1 : ℝ) = Real.exp 0 := (Real.exp_zero).symm
+    _ ≤ Real.exp ((-Real.log (1 - (p : ℝ) ^ (-σ))) * (1 / 2 ^ k)) := Real.exp_le_exp.mpr hEnn
+
 end RHTower

@@ -53,6 +53,73 @@ theorem injective {V : Type*} [AddCommGroup V] [Module ℝ V]
     simpa [C.apply_sq x, C.apply_sq y] using hJ
   exact neg_injective hneg
 
+/-- A realized weld complex structure has no nonzero real eigendirections. -/
+theorem eq_zero_of_apply_eq_smul {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (C : OmegaComplexStructure V) {a : ℝ} {x : V} (h : C.J x = a • x) : x = 0 := by
+  have hJJ_smul : C.J (C.J x) = (a * a) • x := by
+    calc
+      C.J (C.J x) = C.J (a • x) := by rw [h]
+      _ = a • C.J x := by rw [map_smul]
+      _ = a • (a • x) := by rw [h]
+      _ = (a * a) • x := by rw [smul_smul]
+  have hquad : (a * a) • x = -x := by
+    rw [← hJJ_smul, C.apply_sq x]
+  have hzero : (a * a + 1) • x = 0 := by
+    calc
+      (a * a + 1) • x = (a * a) • x + x := by rw [add_smul, one_smul]
+      _ = -x + x := by rw [hquad]
+      _ = 0 := by simp
+  have hcoef : a * a + 1 ≠ 0 := by
+    nlinarith [sq_nonneg a]
+  exact (smul_eq_zero.mp hzero).resolve_left hcoef
+
+/-- Equivalently, no nonzero vector is carried by `J` onto a real scalar multiple of itself. -/
+theorem apply_ne_smul_of_ne_zero {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (C : OmegaComplexStructure V) {a : ℝ} {x : V} (hx : x ≠ 0) : C.J x ≠ a • x := by
+  intro h
+  exact hx (C.eq_zero_of_apply_eq_smul h)
+
+/-- A nonzero vector and its `J`-partner satisfy no nontrivial real linear relation. -/
+theorem smul_add_smul_apply_eq_zero {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (C : OmegaComplexStructure V) {a b : ℝ} {x : V} (hx : x ≠ 0)
+    (h : a • x + b • C.J x = 0) : a = 0 ∧ b = 0 := by
+  by_cases hb : b = 0
+  · have ha_smul : a • x = 0 := by simpa [hb] using h
+    have ha : a = 0 := by
+      exact (smul_eq_zero.mp ha_smul).resolve_right hx
+    exact ⟨ha, hb⟩
+  · exfalso
+    have hb_smul : b • C.J x = (-a) • x := by
+      calc
+        b • C.J x = -(a • x) := by
+          have hcomm : b • C.J x + a • x = 0 := by simpa [add_comm] using h
+          exact eq_neg_of_add_eq_zero_left hcomm
+        _ = (-a) • x := by rw [neg_smul]
+    have hJ : C.J x = ((b⁻¹ * -a) : ℝ) • x := by
+      calc
+        C.J x = b⁻¹ • (b • C.J x) := by
+          rw [smul_smul, inv_mul_cancel₀ hb, one_smul]
+        _ = b⁻¹ • ((-a) • x) := by rw [hb_smul]
+        _ = (b⁻¹ * -a) • x := by rw [smul_smul]
+    exact hx (C.eq_zero_of_apply_eq_smul hJ)
+
+/-- The real span relation between a nonzero vector and its `J`-partner is trivial. -/
+theorem smul_add_smul_apply_eq_zero_iff {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (C : OmegaComplexStructure V) {a b : ℝ} {x : V} (hx : x ≠ 0) :
+    a • x + b • C.J x = 0 ↔ a = 0 ∧ b = 0 := by
+  constructor
+  · exact C.smul_add_smul_apply_eq_zero hx
+  · rintro ⟨rfl, rfl⟩
+    simp
+
+/-- Every nonzero vector gives a linearly independent real pair with its `J`-partner. -/
+theorem linearIndependent_pair {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (C : OmegaComplexStructure V) {x : V} (hx : x ≠ 0) :
+    LinearIndependent ℝ ![x, C.J x] := by
+  rw [LinearIndependent.pair_iff]
+  intro a b h
+  exact C.smul_add_smul_apply_eq_zero hx h
+
 /-- In finite dimension, `J² = -1` forces the determinant constraint
 `det(J) * det(J) = (-1)^finrank`. -/
 theorem det_mul_det_eq_neg_one_pow_finrank {V : Type*} [AddCommGroup V] [Module ℝ V]
@@ -155,6 +222,40 @@ def planePolarizedOmegaComplexStructure :
     PolarizedOmegaComplexStructure (ℝ × ℝ) planeQ where
   complex := planeOmegaComplexStructure
   preserves := planeJ_preserves_planeQ
+
+namespace PolarizedOmegaComplexStructure
+
+/-- Preservation of `Q` by `J` turns a `J` in the right slot into `-J` in the left slot. -/
+theorem neg_Q_right_J_eq_Q_J_left {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) (x y : V) :
+    -Q x (P.complex.J y) = Q (P.complex.J x) y := by
+  have hpres := P.preserves (P.complex.J x) y
+  simpa [P.complex.apply_sq] using hpres
+
+/-- Preservation of `Q` by `J` makes the mixed `J`-slot form anti-invariant. -/
+theorem Q_right_J_eq_neg_Q_J_left {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) (x y : V) :
+    Q x (P.complex.J y) = -Q (P.complex.J x) y := by
+  have hneg := P.neg_Q_right_J_eq_Q_J_left x y
+  linarith
+
+/-- Preservation of `Q` by `J` turns `Q x (J x)` into its negative after rotating both slots. -/
+theorem neg_Q_self_J_eq_Q_J_self {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) (x : V) :
+    -Q x (P.complex.J x) = Q (P.complex.J x) x := by
+  exact P.neg_Q_right_J_eq_Q_J_left x x
+
+/-- For a symmetric preserved form, every vector is `Q`-orthogonal to its `J`-partner. -/
+theorem Q_self_J_eq_zero_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) (x : V) :
+    Q x (P.complex.J x) = 0 := by
+  have hneg := P.neg_Q_self_J_eq_Q_J_self x
+  have hsymm : Q (P.complex.J x) x = Q x (P.complex.J x) := hQ.eq (P.complex.J x) x
+  rw [hsymm] at hneg
+  linarith
+
+end PolarizedOmegaComplexStructure
 
 end RHTower
 end GaloisForLFunctions
