@@ -908,3 +908,15 @@ consumption replaced by `cases … with | false/| true` + defeq `show`; explicit
 Open formal target named in doc 117 §6: branch tracking of the glued chart logarithm
 under a continuous tilt sweep — the map from the steered endpoint tilt pair to
 `(k_P, k_M)` on a concrete annulus datum.
+
+### Addendum to the pass: two dictionary corollaries + tree-wide warning cleanup
+
+- `deckClass_neg_one_zpow_arg_variation`, `anchoredSEM_deckClass_neg_one_zpow_arg_variation`
+  (ArcWindingDictionary.lean): deck class from two-arc argument variations; anchor
+  cancels from the winding mismatch (endpoint-pure, shared basepoints) — the
+  dictionary-side rigidity proof.  Axiom-clean.
+- Tree-wide: the authoritative gate now runs fully warning-free (exit 0, 9229 jobs) —
+  cleaned deprecated `push_neg`→`push Not` (8 files), `Polynomial.eval_finset_sum`/
+  `finset_sum_coeff` renames, two `simpa`→`simp` reductions and one `simp at` closure
+  in `RelativeRigidityCountableAvoidance.lean`, unused binder in
+  `BottcherTowerData.lean`, and the TorusWalk.lean lint set.

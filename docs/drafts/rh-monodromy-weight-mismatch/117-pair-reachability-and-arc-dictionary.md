@@ -104,3 +104,24 @@ to expose the count-pinned winding, and an FE-only mirror analogue (Davenport–
 Heilbronn), having no prime-indexed walk, cannot.  Next formal object: the branch
 tracking of the glued chart logarithm under a continuous tilt sweep — the map from
 the steered pair to `(k_P, k_M)` on a concrete annulus datum.
+
+## Addendum — the dictionary closes the circle: rigidity IS monodromy-freeness
+
+Two further theorems banked (`ArcWindingDictionary.lean`, axiom-clean, gate green):
+
+- `deckClass_neg_one_zpow_arg_variation` — the two-arc form: the deck class is
+  `(−1)^k` with `2πk` the DIFFERENCE of the member's argument variations along the
+  two charts between the basepoints.
+- `anchoredSEM_deckClass_neg_one_zpow_arg_variation` — **rigidity from
+  monodromy-freeness**: adding the canonical anchor logarithm to both chart
+  logarithms produces chart logarithms of the ANCHORED member with the same
+  pointwise mismatches — the anchor's arc contribution is endpoint-pure and
+  identical on the two charts (they share basepoints), so it CANCELS from the
+  winding mismatch.  The anchored deck class is `(−1)^k` with the member's own `k`.
+  This reproves `anchoredSEM_roots_of_sem_roots` from the dictionary side and
+  sharpens it: the prime set cannot move the parity through the winding integers of
+  any FIXED chart logarithms.  Its only handle is which branch the gluing selects
+  under continuation — and the branch selector is driven by the endpoint tilt pair,
+  which is dense (pair-reachability).  The weld's D–H discriminator is now pinned to
+  a single object: the branch-tracking map `(φ₊, φ₋) ↦ (k_P, k_M)` of the glued
+  chart logarithm under a continuous tilt sweep on a concrete annulus datum.
