@@ -1134,3 +1134,24 @@ CarrierCountConstraint). The multiplicative truncation `eulerPartial P s = ∏_{
   the multiplicative truncation is nonvanishing (trivial weight) while the additive completed
   member vanishes to order m ≥ 1 (deck weight exp(2πi·m/N)); the base-rung parity 2∣m is a
   two-weight compatibility condition, not a re-expression of the FE.
+
+## LandauShadowNoGo.lean — Arc B2 killed (doc 105)
+
+New module `formal/GaloisForLFunctions/RHTower/LandauShadowNoGo.lean` (6 axiom-clean endpoints;
+imports MirrorTransport; umbrella after EulerTruncationRigidity). Answers doc 104 §6 / approach
+§4.1 Arc B2 — does Landau positivity carry a mod-2^k shadow past the wall — NO:
+- `conj_equivariant_parity` — conjugation version of the equivariant parity: mod-2 total order of a
+  conjugation-symmetric config = its REAL-AXIS count (off-axis pairs ρ↔ρ̄ cancel).
+- `conj_shadow_trivial_of_offaxis` — off-real-axis conj-symmetric config ⟹ even total ⟹ shadow=1.
+- `xi_conj_shadow_blind` / `xi_conj_order_sum_even` — on the actual ξ divisor (via xi_orderAt_conj):
+  any conjugation-closed off-axis ξ-zero set has 2∣Σ ord; the conjugation shadow (Landau's natural
+  mod-2 invariant, real coefficients) detects NO nontrivial zero.
+- `landau_conj_shadow_vs_fe_line_shadow` / `fe_line_count_even_of_offaxis_conj_symmetric` — the
+  contrast: same config, conjugation reading (Landau axis = real axis) trivial vs line reading
+  (FE axis = critical line) = the Hardy on-line count. Positivity's axis is orthogonal to where
+  the zeros live; the useful axis is the FE's, and that shadow is a line phenomenon.
+
+NOTE: MainTheorems gate passed WITH these two modules (9245 jobs, lint passed) before a concurrent
+edit to OmegaComplexStructure.lean (unrelated file, other agent) left it mid-edit
+(P.Q_self_J_eq_zero_of_isSymm projected as a field but defined as a standalone theorem). My modules
+build green (8628 jobs) and have no dependency on it; not touched.

@@ -293,6 +293,7 @@ import GaloisForLFunctions.RHTower.MirrorTransport
 import GaloisForLFunctions.RHTower.CertificateActivation
 import GaloisForLFunctions.RHTower.CarrierCountConstraint
 import GaloisForLFunctions.RHTower.EulerTruncationRigidity
+import GaloisForLFunctions.RHTower.LandauShadowNoGo
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity

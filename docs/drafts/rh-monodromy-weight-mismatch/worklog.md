@@ -6360,3 +6360,17 @@ mismatched against the additive carrier's order-m deck weight at a pinned strip 
 Obstruction relocated exactly to the strip 1/2<Re<1 and named: does the finite Landau
 positivity have a mod-2^k shadow surviving pole subtraction past the wall Re s=1 (Arc B2).
 Everything pinned; no flow in truncation length. 9 endpoints axiom-clean.
+
+## Landau-shadow no-go pass (doc 105) — Arc B2 killed
+
+Directive: does finite Landau positivity carry a mod-2^k shadow surviving pole subtraction past
+Re s=1? KILLED, structurally. Landau positivity is a real-coefficient (conjugation-symmetric)
+structure; its natural mod-2 invariant is the count across the REAL axis, which is blind to every
+nontrivial zero (all off-axis, pairing ρ↔ρ̄). The FE supplies the useful axis (critical line =
+Hardy), but that's a line phenomenon silent off the line. Positivity yields inequalities (zero-free,
+bounded at the wall), never congruences (parity = sign change = FE side). Every mechanism carrying
+positivity past the wall (continuation, dlVP t→∞ region, Bohr lift) is a flow the lane refuses.
+6 endpoints axiom-clean. Opens: the JOINT reading (positivity on σ_p axis × divisor parity on FE
+axis, one carrier — the q62_mixed shape) as the native weld frontier.
+Gate note: MainTheorems passed with my modules (9245 jobs); a concurrent edit to the unrelated
+OmegaComplexStructure.lean (other agent, mid-edit) is the only current failure — not mine.

@@ -239,6 +239,75 @@ theorem Q_right_J_eq_neg_Q_J_left {V : Type*} [AddCommGroup V] [Module ℝ V]
   have hneg := P.neg_Q_right_J_eq_Q_J_left x y
   linarith
 
+/-- Map-level form: left-slot twisting by `J` is the negative of right-slot twisting by `J`. -/
+theorem Q_compl₁₂_J_id_eq_neg_compl₂_J {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) :
+    Q.compl₁₂ P.complex.J LinearMap.id = -(Q.compl₂ P.complex.J) := by
+  ext x y
+  have h := P.neg_Q_right_J_eq_Q_J_left x y
+  simpa [LinearMap.compl₁₂_apply, LinearMap.compl₂_apply] using h.symm
+
+/-- Map-level form: right-slot twisting by `J` is the negative of left-slot twisting by `J`. -/
+theorem Q_compl₂_J_eq_neg_compl₁₂_J_id {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) :
+    Q.compl₂ P.complex.J = -(Q.compl₁₂ P.complex.J LinearMap.id) := by
+  ext x y
+  have h := P.Q_right_J_eq_neg_Q_J_left x y
+  simpa [LinearMap.compl₁₂_apply, LinearMap.compl₂_apply] using h
+
+/-- On the forced `J`-pair, the mixed form pairs `x` with `J x` as `-Q x x`. -/
+theorem Q_compl2_J_apply_self_apply_J {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) (x : V) :
+    (Q.compl₂ P.complex.J) x (P.complex.J x) = -Q x x := by
+  simp [LinearMap.compl₂_apply, P.complex.apply_sq]
+
+/-- Reversing the forced `J`-pair recovers the original `Q`-self pairing. -/
+theorem Q_compl2_J_apply_J_apply_self {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) (x : V) :
+    (Q.compl₂ P.complex.J) (P.complex.J x) x = Q x x := by
+  simpa [LinearMap.compl₂_apply] using P.preserves x x
+
+/-- If `Q` sees `x` nontrivially, the mixed obstruction form sees the forced `J`-pair. -/
+theorem Q_compl2_J_apply_self_apply_J_ne_zero {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) {x : V}
+    (hxQ : Q x x ≠ 0) :
+    (Q.compl₂ P.complex.J) x (P.complex.J x) ≠ 0 := by
+  rw [P.Q_compl2_J_apply_self_apply_J]
+  exact neg_ne_zero.mpr hxQ
+
+/-- Preservation of `Q` forces the weld operator to be skew-adjoint for `Q`. -/
+theorem J_isSkewAdjoint {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) :
+    Q.IsSkewAdjoint P.complex.J := by
+  intro x y
+  have hneg := P.neg_Q_right_J_eq_Q_J_left x y
+  simpa using hneg.symm
+
+/-- Submodule form of the skew-adjointness constraint for the weld operator. -/
+theorem J_mem_skewAdjointSubmodule {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) :
+    P.complex.J ∈ Q.skewAdjointSubmodule := by
+  rw [LinearMap.mem_skewAdjointSubmodule]
+  exact P.J_isSkewAdjoint
+
+/-- If the preserved form is symmetric, the mixed `J`-slot form is skew-symmetric. -/
+theorem Q_right_J_skew_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) (x y : V) :
+    Q x (P.complex.J y) = -Q y (P.complex.J x) := by
+  have hmixed := P.Q_right_J_eq_neg_Q_J_left y x
+  have hsymm : Q (P.complex.J y) x = Q x (P.complex.J y) := hQ.eq (P.complex.J y) x
+  rw [hsymm] at hmixed
+  linarith
+
+/-- Zero-sum form of the skew constraint for the mixed `J`-slot bilinear expression. -/
+theorem Q_right_J_add_swap_eq_zero_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) (x y : V) :
+    Q x (P.complex.J y) + Q y (P.complex.J x) = 0 := by
+  have hskew := P.Q_right_J_skew_of_isSymm hQ x y
+  linarith
+
 /-- Preservation of `Q` by `J` turns `Q x (J x)` into its negative after rotating both slots. -/
 theorem neg_Q_self_J_eq_Q_J_self {V : Type*} [AddCommGroup V] [Module ℝ V]
     {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) (x : V) :
@@ -254,6 +323,42 @@ theorem Q_self_J_eq_zero_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
   have hsymm : Q (P.complex.J x) x = Q x (P.complex.J x) := hQ.eq (P.complex.J x) x
   rw [hsymm] at hneg
   linarith
+
+/-- With symmetric `Q`, the mixed form also vanishes on the `J x` diagonal. -/
+theorem Q_compl2_J_apply_J_apply_J_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) (x : V) :
+    (Q.compl₂ P.complex.J) (P.complex.J x) (P.complex.J x) = 0 := by
+  simpa [LinearMap.compl₂_apply] using P.Q_self_J_eq_zero_of_isSymm hQ (P.complex.J x)
+
+/-- Full mixed-form matrix on the forced pair `x, J x` under symmetric polarization. -/
+theorem Q_compl2_J_forced_pair_entries_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) (x : V) :
+    (Q.compl₂ P.complex.J) x x = 0 ∧
+      (Q.compl₂ P.complex.J) x (P.complex.J x) = -Q x x ∧
+        (Q.compl₂ P.complex.J) (P.complex.J x) x = Q x x ∧
+          (Q.compl₂ P.complex.J) (P.complex.J x) (P.complex.J x) = 0 := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · simpa [LinearMap.compl₂_apply] using P.Q_self_J_eq_zero_of_isSymm hQ x
+  · exact P.Q_compl2_J_apply_self_apply_J x
+  · exact P.Q_compl2_J_apply_J_apply_self x
+  · exact P.Q_compl2_J_apply_J_apply_J_of_isSymm hQ x
+
+/-- With symmetric `Q`, the right-slot `J`-twist of `Q` is an alternating bilinear form. -/
+theorem Q_compl2_J_isAlt_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) :
+    (Q.compl₂ P.complex.J).IsAlt := by
+  intro x
+  simpa [LinearMap.compl₂_apply] using P.Q_self_J_eq_zero_of_isSymm hQ x
+
+/-- Skew-flip form of the alternating constraint on the right-slot `J`-twist of `Q`. -/
+theorem Q_compl2_J_eq_neg_flip_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) :
+    Q.compl₂ P.complex.J = -(Q.compl₂ P.complex.J).flip := by
+  exact LinearMap.isAlt_iff_eq_neg_flip.mp (P.Q_compl2_J_isAlt_of_isSymm hQ)
 
 end PolarizedOmegaComplexStructure
 
