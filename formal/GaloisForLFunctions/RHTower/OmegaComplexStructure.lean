@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 import Mathlib.LinearAlgebra.BilinearMap
+import Mathlib.LinearAlgebra.Determinant
 
 /-!
 # The D4 weld interface: `ω` as a complex-structure obstruction
@@ -52,7 +53,37 @@ theorem injective {V : Type*} [AddCommGroup V] [Module ℝ V]
     simpa [C.apply_sq x, C.apply_sq y] using hJ
   exact neg_injective hneg
 
+/-- In finite dimension, `J² = -1` forces the determinant constraint
+`det(J) * det(J) = (-1)^finrank`. -/
+theorem det_mul_det_eq_neg_one_pow_finrank {V : Type*} [AddCommGroup V] [Module ℝ V]
+    [FiniteDimensional ℝ V] (C : OmegaComplexStructure V) :
+    LinearMap.det C.J * LinearMap.det C.J = (-1 : ℝ) ^ Module.finrank ℝ V := by
+  have hnegid : LinearMap.det (-LinearMap.id : V →ₗ[ℝ] V) =
+      (-1 : ℝ) ^ Module.finrank ℝ V := by
+    simpa [LinearMap.det_id] using
+      (LinearMap.det_smul (M := V) (-1 : ℝ) (LinearMap.id : V →ₗ[ℝ] V))
+  have h := congrArg (fun f : V →ₗ[ℝ] V => LinearMap.det f) C.sq
+  simpa [LinearMap.det_comp, hnegid] using h
+
+/-- A finite-dimensional real carrier admitting `J² = -1` has even dimension. -/
+theorem finrank_even {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    (C : OmegaComplexStructure V) : Even (Module.finrank ℝ V) := by
+  by_contra hnot
+  have hodd : Odd (Module.finrank ℝ V) := Nat.not_even_iff_odd.mp hnot
+  have hpow : (-1 : ℝ) ^ Module.finrank ℝ V = -1 := hodd.neg_one_pow
+  have hsq_nonneg : 0 ≤ LinearMap.det C.J * LinearMap.det C.J := mul_self_nonneg _
+  rw [C.det_mul_det_eq_neg_one_pow_finrank, hpow] at hsq_nonneg
+  norm_num at hsq_nonneg
+
 end OmegaComplexStructure
+
+/-- No finite-dimensional odd real carrier can support a weld complex structure. -/
+theorem no_omegaComplexStructure_of_odd_finrank {V : Type*} [AddCommGroup V] [Module ℝ V]
+    [FiniteDimensional ℝ V] (hodd : Odd (Module.finrank ℝ V)) :
+    IsEmpty (OmegaComplexStructure V) := by
+  refine ⟨?_⟩
+  intro C
+  exact (Nat.not_even_iff_odd.mpr hodd) C.finrank_even
 
 /--
 The real line cannot carry a weld complex structure.
