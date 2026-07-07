@@ -205,6 +205,14 @@ noncomputable def deckIso (n : ℕ) [NeZero n] :
     Multiplicative (ZMod n) ≃* (deckUnitHom n).range :=
   MonoidHom.ofInjective (deckUnitHom_injective n)
 
+/-- **Boundary-crossing formula.**  The change in deck charge across a deformation equals the charge
+of the net zero-order that crossed the boundary: `w(after) − w(before) = w(after − before)`.  In
+particular a deformation across which no net order crosses (`after = before`) leaves the charge
+invariant — the homotopy invariance of the charge, in additive form. -/
+theorem wCharge_boundary_crossing (n : ℕ) (before after : ℤ) :
+    wCharge n after - wCharge n before = wCharge n (after - before) := by
+  simp [wCharge, Int.cast_sub]
+
 /-- **Additive conservation.**  If the total (outer-boundary) charge vanishes, the interior box
 charges sum to zero in `ℤ/n`: charge cannot be created or destroyed in the interior. -/
 theorem interior_charge_conservation (n : ℕ) {ι : Type*} (s : Finset ι) (idx : ι → ℤ)

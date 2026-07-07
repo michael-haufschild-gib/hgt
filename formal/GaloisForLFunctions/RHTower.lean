@@ -289,6 +289,8 @@ import GaloisForLFunctions.RHTower.AnnulusRootGluing
 import GaloisForLFunctions.RHTower.SweepSelection
 import GaloisForLFunctions.RHTower.CanonicalBranch
 import GaloisForLFunctions.RHTower.RootTraceHolonomy
+import GaloisForLFunctions.RHTower.XiDeckCharge
+import GaloisForLFunctions.RHTower.ArgumentPrincipleFree
 import GaloisForLFunctions.RHTower.CarrierPeriodicMass
 import GaloisForLFunctions.RHTower.MirrorTransport
 import GaloisForLFunctions.RHTower.CertificateActivation

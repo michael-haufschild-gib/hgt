@@ -103,7 +103,6 @@ theorem xiDeckCharge_pow (k : ℕ) (ρ : ℂ) : xiDeckCharge k ρ ^ (2 ^ k) = 1 
       (2 * (Real.pi : ℂ) * I * ((analyticOrderAt xi ρ).toNat : ℕ) / ((2 ^ k : ℕ) : ℂ))
       = ((analyticOrderAt xi ρ).toNat : ℕ) * (2 * (Real.pi : ℂ) * I) := by
     field_simp
-    ring
   rw [harg, exp_nat_mul, exp_two_pi_mul_I, one_pow]
 
 /-- **Dyadic coherence.**  Squaring the level-`k+1` charge gives the level-`k` charge:
@@ -113,8 +112,10 @@ theorem xiDeckCharge_succ_sq (k : ℕ) (ρ : ℂ) :
   unfold xiDeckCharge
   rw [← exp_nat_mul]
   congr 1
+  have h2 : ((2 : ℕ) : ℂ) ≠ 0 := by norm_num
   have h2k : ((2 ^ k : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (pow_pos (by norm_num) k).ne'
-  push_cast
+  have e : ((2 ^ (k + 1) : ℕ) : ℂ) = ((2 : ℕ) : ℂ) * ((2 ^ k : ℕ) : ℂ) := by push_cast; ring
+  rw [e]
   field_simp
 
 /-- **Rung 0 is invisible.**  The level-`1` (i.e. `2^0`) charge is always `1`. -/
@@ -159,5 +160,17 @@ theorem xiDeckCharge_eq_one_iff_le_ladderHeight (k : ℕ) {ρ : ℂ} (h : xi ρ 
     xiDeckCharge k ρ = 1 ↔ k ≤ ladderHeight ρ := by
   rw [xiDeckCharge_eq_one_iff_toNat_dvd]
   exact Nat.Prime.pow_dvd_iff_le_factorization (by norm_num) (xi_order_toNat_ne_zero h)
+
+/-- **The base level is the parity sign.**  The level-`2` (`k = 1`) charge is exactly
+`(−1)^{ord}`: the first rung's monodromy is the classical sign of ξ around the zero, and
+it is `1` iff the order is even.  This is the μ₂ face of the μ_{2^k} tower. -/
+theorem xiDeckCharge_one_eq_neg_one_pow (ρ : ℂ) :
+    xiDeckCharge 1 ρ = (-1) ^ (analyticOrderAt xi ρ).toNat := by
+  unfold xiDeckCharge
+  have harg : 2 * (Real.pi : ℂ) * I * (((analyticOrderAt xi ρ).toNat : ℕ) : ℂ) / ((2 ^ 1 : ℕ) : ℂ)
+      = (((analyticOrderAt xi ρ).toNat : ℕ) : ℂ) * ((Real.pi : ℂ) * I) := by
+    push_cast
+    ring
+  rw [harg, exp_nat_mul, exp_pi_mul_I]
 
 end RHTower

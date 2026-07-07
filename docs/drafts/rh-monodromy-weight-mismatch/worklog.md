@@ -6523,3 +6523,53 @@ formally. crossBoundary vanishes in ANY commutative ring (crossBoundary_eq_zero_
 (crossBoundary_trace_zero). The deck class is commutative/abelian; the cochain is non-commutative/
 traceless; they're orthogonal, not log/exp faces. Any coupling = Connes cyclic-cohomology trace pairing
 = literature/apex. Last non-barred move collapses into the §5 boundary. Gate green, axiom-clean.
+
+---
+
+## 2026-07-07 — Phase A: the additive deck-charge calculus, formalized
+
+Built `formal/GaloisForLFunctions/RHTower/DeckChargeCalculus.lean` (32 decls, axiom-clean
+`[propext, Classical.choice, Quot.sound]`, lint green, in the RHTower umbrella). This completes
+Phase A ("Build the deck-charge calculus") of `00-apporach-reorientation.md` in the additive
+`ℤ/2^k` register.
+
+State of play before: the **multiplicative** geometric deck apparatus was already complete —
+`deckClass ∈ μ_n` with mul/prod/monomial/root-existence (`DeckCocycle`, `DeckMultiZero`,
+`DeckMonomial`, `AnnulusRootGluing`), deformation invariance (`DeckHomotopy`), and the ℤ→μ_n
+reduction homomorphism `deckRed` with kernel/fibers/`ZMod`-factoring (`SignatureParity`). The
+**additive** face `w_k ∈ ℤ/2^k` that Phase A names was carried only ξ-specifically
+(`censusProfile`, `discCensusH`), never as an abstract reusable object.
+
+Built the missing additive face and welded it to the multiplicative side:
+- `wCharge n idx = (idx : ℤ/n)` — the object; `wCharge_add` (additivity), `wCharge_intMul`/`_nsmul`
+  (power law), `wCharge_eq_zero_iff` (`w=0 ↔ n∣idx`) — the three Phase-A deliverables, additive.
+- The spine: `deckChar : ℤ/n → ℂ` (`= deckRed ∘ ZMod.val`), `deckChar_wCharge` (the two avatars
+  agree), `deckChar_mul`/`_nsmul`/`_injective`/`_pow_eq_one`, packaged as
+  `deckUnitHom : Multiplicative(ℤ/n) →* ℂˣ` and the **group iso** `deckIso : Multiplicative(ℤ/n) ≃*
+  ⟨deckUnitHom⟩ ≤ ℂˣ`. This is the exact statement that the deck class IS a cyclic-group element:
+  `ℤ/n ≅ μ_n`.
+- Geometric closure of deliverable 3: `box_deckClass_eq_deckChar_wCharge` (annulus deck class =
+  deckChar of the enclosed-index charge) + `exists_root_iff_wCharge_zero` (`w=0 ⟺ global n-th root
+  exists across the cover`).
+- Dynamic front (feeds Phase E): `wCharge_boundary_crossing` (`Δw = w(net crossing)`),
+  `wCharge_sum`/`deckChar_sum`, `interior_charge_conservation` (boundary charge 0 ⟹ interior charges
+  sum to 0). Dyadic-tower coherence: `wCharge_tower` (`ℤ/2^k ↠ ℤ/2^j`), `wCharge_eq_zero_of_le`
+  (triviality descends the ladder). Homotopy transfer: `wCharge_eq_of_deckRed_eq`.
+
+Scope boundary confirmed, not dodged: mathlib has **no** argument principle / winding number
+(`grep` of mathlib returns nothing), so the loop/contour realization of `w_k(γ;f)` is a separate
+complex-analysis prerequisite. The tree deliberately routes around it via the two-chart cover, which
+realizes the loop obstruction fully — `exists_root_iff_wCharge_zero` is precisely "the obstruction to
+lifting `f` through `z↦z^n` vanishes ⟺ a root exists." So the contour definition is not an in-scope
+Phase-A brick.
+
+Grade: branch infrastructure (the `ℤ/n ≅ μ_n` iso and charge laws are reduce-to-known group theory;
+the value is the reusable calculus + the weld of the additive face to the pre-existing multiplicative
+geometry, exactly what Phase A asks for — "a reusable formal calculus, not an RH proof attempt").
+Card: `docs/drafts/pipeline/3-formalized/deck-charge-calculus.md`.
+
+Opens: Phase E (charge motion — the conservation law + boundary-crossing are the additive seeds; next
+is the pair-annihilation rule and interior conservation for admissible FE-symmetric deformations);
+Phase C (quadrant-local charge — `wCharge_tower` makes "symmetric-aggregate vanishes mod 4" a
+reduction statement); expressing the whole `RH_{2^k}` ladder additively by feeding
+`wCharge_eq_zero_of_le` back to `RHLadderTheory`/`DeckWindow`.

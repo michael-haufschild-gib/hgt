@@ -38,6 +38,7 @@ where it is present.
 import GaloisForLFunctions.RHTower.DeckWindow
 import GaloisForLFunctions.RHTower.SquareLadder
 import GaloisForLFunctions.RHTower.XiDeck
+import GaloisForLFunctions.RHTower.XiDeckCharge
 import GaloisForLFunctions.RHTower.RHLadderTheory
 import GaloisForLFunctions.RHTower.DictionarySign
 import GaloisForLFunctions.RHTower.DeckMonomial
@@ -117,12 +118,27 @@ elab "#assert_uses_integration" id:ident : command => do
   else
     logInfo m!"control: {n} does use contour integration {hs}"
 
+/-! ## The engine
+
+The base complex-analytic layer under every equivalence: divisibility is forced from a
+root by local order arithmetic (`root_orders_dvd`), roots are unique and are assembled by
+peeling and gluing (`pow_root_unique`, `exists_root_iff_orders_dvd`), the coherent tower
+obstruction is the divisor (`coherentTower_iff_nonvanishing`), and the deck class glues iff
+a global root exists (`deckClass_eq_one_iff_exists_root`).  None integrates. -/
+
+#assert_integration_free root_orders_dvd
+#assert_integration_free pow_root_unique
+#assert_integration_free exists_root_iff_orders_dvd
+#assert_integration_free coherentTower_iff_nonvanishing
+#assert_integration_free nonvanishing_of_exists_roots_all_two_powers
+#assert_integration_free deckClass_eq_one_iff_exists_root
+
 /-! ## The certified surface
 
 Every equivalence Phase B rests on, certified free of contour integration and clean of
 axioms.  The list spans the half-plane root ladder, its `u`-plane (slit) form, the
-coherent Kummer tower, the deck-cocycle realization (local and windowed), and the
-identifications of RH itself with each. -/
+coherent Kummer tower, the deck-cocycle realization (local and windowed), the deck-charge
+observable, and the identifications of RH itself with each. -/
 
 #assert_integration_free rh_iff_xi_ne_zero_right
 #assert_integration_free rhLadder_iff_root
@@ -139,6 +155,12 @@ identifications of RH itself with each. -/
 #assert_integration_free xi_deckClass_eq_sign_product
 #assert_integration_free rhLadder_iff_forall_deck_trivial
 #assert_integration_free rh_iff_forall_deck_trivial
+#assert_integration_free xiDeckCharge_eq_chart_deckClass
+#assert_integration_free xiDeckCharge_pow
+#assert_integration_free xiDeckCharge_succ_sq
+#assert_integration_free rhLadder_iff_xiDeckCharge_one
+#assert_integration_free rh_iff_xiDeckCharge
+#assert_integration_free xiDeckCharge_one_eq_neg_one_pow
 
 /-! ## Positive controls
 
