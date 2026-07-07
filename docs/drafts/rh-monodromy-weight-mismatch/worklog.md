@@ -6890,3 +6890,11 @@ All axiom-clean [propext,Classical.choice,Quot.sound]. MainTheorems green (9297 
 sorries. Wired into RHTower umbrella (UPlaneReflection/UPlaneTorsor/UPlaneWinding). Constraint-not-flow
 rule lifted per instruction; winding used freely, but the charge (constraint) face is kept as the primary
 statement and the winding is its twin — the two faces of loopCharge = wCharge∘windingNumber.
+
+### Deliverable-1 completion — root-existence face on slit domains
+Added to UPlaneWinding.lean: xiDescent_ne_zero_codiscrete + xiDescent_zeros_finite_ball (entire, not
+≡0 via 9/4-witness; mirror of xi_zeros_finite_ball); xiDescent_root_on_slit_iff_charge (root of
+xiDescent on a convex open slit region ⟺ carrierCharge trivial at every enclosed zero — the complete
+allowed-torsor classification: one nonzero local charge = the whole obstruction; hZloc discharged by
+the finiteness lemma). Doc 134-phase-d-uplane-deliverables.md records all three deliverables + Lean
+names. MainTheorems green (9298 jobs), lint passed (index regenerated), all axiom-clean.

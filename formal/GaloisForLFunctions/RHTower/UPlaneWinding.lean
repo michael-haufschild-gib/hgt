@@ -195,6 +195,31 @@ theorem loopCharge_xiDescent_disc (c : ℂ) {r R : ℝ} (hrR : r < R) (hr : 0 < 
       = wCharge (2 ^ k) (∑ w ∈ t, ((analyticOrderAt xiDescent w).toNat : ℤ)) := by
   rw [loopCharge, windingNumber_xiDescent_disc c hrR hr t htU hzeros hin]
 
+/-- **Controlled boundary winding.**  If `xiDescent` admits an analytic `2^k`-th root on the slit
+disc `ball c R`, then the boundary rung-`k` winding charge vanishes: root existence forces the
+enclosed order divisible, so the aggregate winding is `≡ 0`.  This is the winding-necessary condition
+tying the root-torsor classification (Deliverable 1) to the seam-index formula (Deliverable 2). -/
+theorem xiDescent_root_imp_loopCharge_disc_zero {c : ℂ} {r R : ℝ} {k : ℕ}
+    (hrR : r < R) (hr : 0 < r) (hRsub : Metric.ball c R ⊆ slitPlane)
+    {z₀ : ℂ} (hz₀ : z₀ ∈ Metric.ball c R) (hz₀0 : xiDescent z₀ ≠ 0)
+    (t : Finset ℂ) (htU : ∀ w ∈ t, w ∈ Metric.ball c R)
+    (hzeros : ∀ z ∈ Metric.ball c R, xiDescent z = 0 → z ∈ t)
+    (hin : ∀ w ∈ t, ‖w - c‖ < r)
+    (hroot : ∃ g, AnalyticOnNhd ℂ g (Metric.ball c R) ∧
+      ∀ s ∈ Metric.ball c R, g s ^ (2 ^ k) = xiDescent s) :
+    loopCharge k (fun θ => xiDescent (c + ↑r * exp (I * ↑θ))) 0 (2 * Real.pi) = 0 := by
+  haveI : NeZero (2 ^ k) := ⟨pow_ne_zero k (by norm_num)⟩
+  have hchg := (xiDescent_root_on_slit_iff_charge isOpen_ball (convex_ball c R) hRsub hz₀ hz₀0).mp
+    hroot
+  have hdvd : ∀ w ∈ t, ((2 ^ k : ℕ) : ℤ) ∣ ((analyticOrderAt xiDescent w).toNat : ℤ) := by
+    intro w hw
+    by_cases hz : xiDescent w = 0
+    · exact Int.natCast_dvd_natCast.mpr
+        ((carrierCharge_eq_one_iff_dvd xiDescent k w).mp (hchg w (htU w hw) hz))
+    · rw [analyticOrderAt_eq_zero.mpr (Or.inr hz)]; simp
+  rw [loopCharge_xiDescent_disc c hrR hr t htU hzeros hin k, wCharge_eq_zero_iff]
+  exact Finset.dvd_sum hdvd
+
 /-- **Seam blindness at rung `1`.**  A circle centred on the real axis whose enclosed
 `xiDescent`-zeros are all genuinely off-real encloses a conjugation-symmetric island, so the rung-`1`
 winding charge is `0`: reality forces the total order even.  The seam cannot detect a single odd

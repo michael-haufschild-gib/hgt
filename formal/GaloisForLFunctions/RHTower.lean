@@ -355,3 +355,4 @@ import GaloisForLFunctions.RHTower.SeamInertiaCharge
 import GaloisForLFunctions.RHTower.ChargeTomography
 import GaloisForLFunctions.RHTower.WeldChargeConnecting
 import GaloisForLFunctions.RHTower.DeciderBarrier
+import GaloisForLFunctions.RHTower.SeamCollisionMechanism
