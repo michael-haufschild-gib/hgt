@@ -32,6 +32,7 @@ the point, and ξ has it only on the seam.
 -/
 import GaloisForLFunctions.RHTower.CarrierDeckCharge
 import GaloisForLFunctions.RHTower.ReflectionParity
+import GaloisForLFunctions.RHTower.EntireAutomorphism
 
 namespace RHTower
 
@@ -200,5 +201,20 @@ theorem exists_feSchwarz_carrier_odd_charge {ρ₀ : ℂ} (hre : ρ₀.re ≠ 1 
     orbitQuartic_conj ρ₀, ?_⟩
   rw [carrierCharge_one_eq_neg_one_pow, orbitQuartic_order_one hre him]
   simp
+
+/-- **Uniqueness of the symmetric forcing, applied to the charge.**  If a carrier `f` is
+invariant under an entire finite-order symmetry `φ` fixing `ρ` (`φ^[2^k] = id`) whose rotation
+multiplier is a primitive `2^k`-th root of unity, then `carrierCharge f k ρ = 1`.  The
+classification `finiteOrder_entire_fixing_is_rotation` supplies that `φ` is a rotation, and the
+rotation lever forces the rung: the rotation is the *only* symmetric forcing there can be. -/
+theorem carrierCharge_eq_one_of_finiteOrder_symmetry {f φ : ℂ → ℂ} {ρ : ℂ} {k : ℕ}
+    (hf : AnalyticOnNhd ℂ f Set.univ) (hφ : Differentiable ℂ φ)
+    (hord : φ^[2 ^ k] = id) (hfix : φ ρ = ρ) (hinv : ∀ s, f (φ s) = f s)
+    (hprim : ∀ a : ℂ, a ^ (2 ^ k) = 1 → (∀ z, φ z = ρ + a * (z - ρ)) → IsPrimitiveRoot a (2 ^ k)) :
+    carrierCharge f k ρ = 1 := by
+  obtain ⟨a, han, hrot⟩ :=
+    finiteOrder_entire_fixing_is_rotation hφ (pow_pos (by norm_num) k) hord hfix
+  refine carrierCharge_eq_one_of_rotation hf (hprim a han hrot) (fun s => ?_)
+  rw [← hrot s]; exact hinv s
 
 end RHTower

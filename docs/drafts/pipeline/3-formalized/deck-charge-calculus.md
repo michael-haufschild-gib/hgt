@@ -117,12 +117,16 @@ with a conservation law, a topological winding realisation, and a quadrant-local
 
 ## Springboards
 
-- **Argument principle — DONE, through ξ, single- and multi-zero**: `windingNumber_argument_principle`
+- **Argument principle — DONE, through ξ, fully discharged**: `windingNumber_argument_principle`
   handles a general analytic `f = (divisor)·g`; `windingNumber_xi_zero`/`_xi_disc` instantiate it on
-  the actual `xi` (winding around a zero = its order/ladder charge; winding around a disc = the census
-  Σ of enclosed orders). Remaining: discharging the `hzeros` hypothesis of `_xi_disc` (finiteness of
-  ξ-zeros in a disc, a compactness+isolation fact), and a general non-circular boundary via homotopy
-  invariance of the winding number (covering-map homotopy lifting).
+  the actual `xi`; `xi_zeros_closedBall_finite` + `windingNumber_xi_circle` discharge `hzeros`
+  entirely (finiteness of ξ-zeros in a disc via codiscreteness + compactness, then the peeling radius
+  slid into the gap to the next zero-radius): for any zero-avoiding circle, the winding of ξ is the Σ
+  of orders of the finitely many zeros strictly inside. `windingNumber_homotopy_invariant` /
+  `windingNumber_of_homotopic` give deformation invariance (joint log lift over the contractible
+  `ℝ×ℝ`), so a general boundary reduces to a circle.
+- Remaining (larger arcs, not this lane's Phase A): the multi-zero peel radius bookkeeping for
+  arbitrary enclosing curves, and Phase E/F below.
 - **Phase E (charge motion)**: `interior_charge_conservation` + `wCharge_boundary_crossing` +
   `regionCharge_transport` are the seeds of the pair-annihilation rule and interior conservation for
   admissible FE-symmetric deformations.
@@ -130,6 +134,12 @@ with a conservation law, a topological winding realisation, and a quadrant-local
   charge `q` as the mod-4-invisible signal — the target a quadrant-ramified cover must detect.
 
 ## Log
+- 2026-07-07 — the two hard analytic prerequisites discharged: `WindingXiCircle`
+  (`xi_zeros_closedBall_finite` — ξ-zeros finite in a compact disc via codiscreteness + compactness;
+  `windingNumber_xi_circle` — the fully-discharged winding of ξ around a zero-avoiding circle = Σ
+  enclosed orders, no `hzeros` hypothesis) and `WindingHomotopy`
+  (`windingNumber_homotopy_invariant`/`windingNumber_of_homotopic` — deformation invariance via the
+  joint log lift over the contractible `ℝ×ℝ`). 10 files, all axiom-clean, sorry-free.
 - 2026-07-07 — argument principle carried through to ξ: `WindingFull` (general analytic `f =
   (divisor)·g`, `windingNumber(f∘circle) = Σ mᵢ`, matching `box_charge_eq_deckRed`'s factorisation)
   and `WindingXi` (`windingNumber_xi_zero`/`loopCharge_xi_zero`: the winding number of the actual

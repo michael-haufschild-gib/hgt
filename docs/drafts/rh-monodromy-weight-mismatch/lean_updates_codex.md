@@ -1362,3 +1362,89 @@ APEX (formalized as exactly what it is):
 axiom-check confirmed rh_of_seam_spectral has NO hidden axiom (standard trio only) — the conditional is
 honest, not a smuggled sorry. FRONTIER: unconditional finite-prime Euler-as-crossing-energy PROVED;
 open apex = non-circular reciprocity-completed positive H¹_Δ with W_Δ(h)=‖B_h^rec‖²_Δ.
+
+## SignedReflectionParity.lean — the signed central-parity law (Phase C completion), axiom-clean
+Completes central parity from the even-only banked case to the full signed law. Given
+`f(2c−s)=ε·f(s)` with `ε=±1` and finite order at the fixed point `c`, the sign-reflected peel
+`(−1)^m·h(2c−s)=ε·h(s)` evaluated at `c` (h(c)≠0) forces:
+- `neg_one_pow_orderAt_of_signed_reflection`: `(−1)^{ord_c f} = ε` — the reflection sign IS the parity
+  of the central order. Subsumes `analyticOrderAt_even_of_reflection` (ε=+1 ⟹ even).
+- `analyticOrderAt_odd_of_antireflection`: `f(2c−s)=−f(s)` ⟹ ODD central order (forced simple/odd
+  central zero — the root-number half the even theorem does not cover).
+- germ forms `neg_one_pow_orderAt_of_signed_reflection_eventually` /
+  `analyticOrderAt_odd_of_antireflection_eventually` (AnalyticAt + eventually-symmetric), matching the
+  banked `analyticOrderAt_even_of_reflection_eventually`'s coverage for strip-analytic carriers.
+Derivative tower (central parity propagated through d/ds):
+- `deriv_signed_reflection`: `f(2c−s)=ε·f(s)` ⟹ `f′(2c−s)=−ε·f′(s)` — differentiation flips the sign.
+- `iteratedDeriv_signed_reflection`: `(deriv^n f)(2c−s)=(−1)^n·ε·(deriv^n f)(s)` (+ helper
+  `iteratedDeriv_analyticOnNhd_univ`).
+- `neg_one_pow_orderAt_iteratedDeriv_of_signed_reflection`: `(−1)^{ord_c(deriv^n f)}=(−1)^n·ε` — the
+  whole tower's central parity is fixed by the base sign, alternating each step.
+- `analyticOrderAt_deriv_odd_of_symmetric`: symmetric f ⟹ f′ odd central order.
+Taylor-coefficient evenness (the doc's literal "local coords force even transverse Taylor expansion"):
+- `iteratedDeriv_odd_eq_zero_of_symmetric`: symmetric ⟹ all ODD Taylor coeffs at c vanish.
+- `iteratedDeriv_even_eq_zero_of_antisymmetric`: antisym ⟹ all EVEN coeffs vanish (incl f(c)=0).
+  Both by evaluating the tower symmetry at s=c; no order-finiteness needed.
+Exact reach of the forcing (the isolation as a PROVEN IFF, not an assertion) — both signs:
+- `reflection_forces_even_iff_fixedPoint`: [∀ entire symmetric f, Even(ord_ρ f)] ↔ ρ = c. Off the
+  fixed point the symmetric witness `reflPair c ρ = (s−ρ)(s−(2c−ρ))` has a simple (odd) zero at ρ.
+- `antireflection_forces_odd_iff_fixedPoint`: [∀ entire antisym f, Odd(ord_ρ f)] ↔ ρ = c. Off-fixed
+  witness `antiPair c ρ = (s−c)·reflPair²` is antisymmetric with an even (order-2) zero at ρ.
+  ⟹ the forcing locus is EXACTLY the singleton fixed point {c} — for ξ, {1/2}. This is the precise
+  formal content of "central parity does not reach off-line": proven, quantified over ALL carriers.
+All 20 theorems `[propext, Classical.choice, Quot.sound]` (355 lines), no warnings, umbrella-registered.
+The even descent (doc's verbatim Phase C mechanism, "local coords force even transverse Taylor
+expansion", packaged — built at Michael's instruction to set aside rule #7):
+- `even_descent`: entire even Y ⟹ ∃ entire X, Y(z)=X(z²). General construction (NOT ξ-specific):
+  X(u):=Y(√u) for a chosen root (well-defined by evenness), analytic off 0 via
+  `analyticAt_comp_iff_of_deriv_ne_zero` (X∘(·²)=Y, deriv of z² ≠0), analytic at 0 by removable
+  singularity (`analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt`; ‖√u‖=√‖u‖→0).
+- `symmetric_descent`: entire f with f(2c−s)=f(s) ⟹ ∃ entire X, f(s)=X((s−c)²). The GENERAL descent
+  for any FE-symmetric pencil member (ξ's own instance is the banked `xi_eq_xiDescent` in
+  UPlaneDescent.lean, built there by a ξ-specific slit engine; this is the generic theorem behind it).
+- `descent_unique`: the X is unique (s↦(s−c)² surjective).
+All 23 theorems `[propext, Classical.choice, Quot.sound]` (445 lines), no warnings, umbrella-registered. Isolation reading: the sign is a datum of the FIXED
+POINT; off-fixed a reflection moves the point, so no sign to read and no order constraint — matches
+the softness witness `exists_feSchwarz_carrier_odd_charge` (FE-symmetric carrier, odd off-fixed charge).
+Prereq audit (rule #6/#8): the rest of Phase C's isolation is already banked and was NOT re-built —
+collision family (`DepthUpdate.quadratic_pair_zeros_pos/nonpos`, `depth_update_exact`), deck-level
+double-vs-pair indistinguishability (`DictionarySign.deckClass_blind_to_split`), aggregate blindness
+(`DeckChargeLadder.wCharge_invisible_below_reflection_depth`, `RegionCharge.regionCharge_klein_equal`),
+sign law (`DeckChargeCalculus.wCharge_neg`), non-drainage (contrapositive of banked
+`WindingHomotopy.windingNumber_of_homotopic`). Building wrappers over these = theatre, skipped.
+
+## SeamSectorTrace.lean — the flat seam-resolvent trace identity (§1–§4 of the seam construction)
+
+Formalizes the completed logarithmic current `−ξ'/ξ` as the sum of three seam sectors, closing the
+"flat seam trace = ξ'/ξ" block of the seam-suspension construction. Gate green (9292 jobs, `formal
+lint passed`); every declaration `[propext, Classical.choice, Quot.sound]`, umbrella-registered after
+`SeamSuspensionTrace`.
+
+The new brick is the **archimedean sector identity** `logDeriv Gammaℝ = gammaRealLogConnection`
+(`logDeriv_Gammaℝ`): mathlib carries the Gaussian-seam factor's derivative only at the single point
+`s = 1` (`hasDerivAt_Gammaℝ_one`), and `gammaRealLogConnection` existed only as a bare definition
+(never tied to `logDeriv Gammaℝ`). Proved generally at every `s` with `Gammaℝ s ≠ 0`, by splitting
+`Gammaℝ s = π^{−s/2} Γ(s/2)`: `logDeriv(π^{−s/2}) = −½log π` (`hasStrictDerivAt_const_cpow`) and
+`logDeriv(Γ ∘ (·/2)) = ½ψ(s/2)` (`logDeriv_comp` + `digamma = logDeriv Γ`). This is the same
+archimedean term the project already carried unnamed in `LateralWindingFloor.stripWinding_eq`
+(`digamma(s/2)/2 − log π/2`), now identified as the log-derivative of the Gaussian seam factor.
+
+Chain:
+- `logDeriv_Gammaℝ` — archimedean sector = `Γ_ℝ'/Γ_ℝ`.
+- `logDeriv_boundary` — boundary sector `logDeriv(s(s−1)/2) = 1/s + 1/(s−1)`.
+- `logDeriv_archFactor_eq` — `logDeriv archFactor = (1/s+1/(s−1)) + gammaRealLogConnection` (archFactor
+  = `s(s−1)/2 · Gammaℝ`); support: `differentiableAt_Gammaℝ`, `differentiableAt_archFactor`.
+- `logDeriv_completed_sector_sum` — product carrier: `logDeriv(archFactor·ζ) = boundary + archimedean
+  + logDeriv ζ` off the ζ-divisor.
+- `logDeriv_xi_eq_completed` — `logDeriv ξ = logDeriv(archFactor·ζ)` on the open strip (eventual
+  equality via `xi_eq_archFactor_mul_zeta` on the open set `{0<re<1}`).
+- `logDeriv_xi_sector_sum` — **the §4 identity**: on the strip off the ζ-divisor,
+  `logDeriv ξ s = (1/s + 1/(s−1)) + gammaRealLogConnection s + logDeriv ζ s = ξ'/ξ`.
+- `seamFluxCochain_sector_sum` — in project vocabulary `Ω_Δ = −ξ'/ξ = −(boundary + archimedean +
+  finite)`.
+
+Register note: the sectors are stated as the *continued* objects `logDeriv ζ`, `logDeriv Gammaℝ`, not
+the divergent Dirichlet/pole series (which only converge for `Re s > 1`); the identity is proved on the
+whole open strip off the ζ-divisor — the divisor is exactly where the flux has its poles. What stays
+open is unchanged: the compression of this flat scalar identity onto the positive middle cohomology
+`H_Δ^1` (`SeamSuspensionTrace` mechanism + the `K_Δ ≥ 0` / `G_Δ` bridge).

@@ -6786,3 +6786,64 @@ disc IS the box census deck charge (`discCensusH`/`censusProfile` = `(Σ box ord
 argument principle for ξ is now complete for single and multiple enclosed zeros. Only open input left:
 discharging `hzeros` (finiteness of ξ-zeros in a disc) and non-circular boundaries (homotopy
 invariance) — both genuine analytic prerequisites, not quick bricks.
+
+## 2026-07-07 (cont.) — the two hard analytic prerequisites, built
+
+Both items previously flagged as "genuine analytic prerequisites" are now formalized (axiom-clean,
+sorry-free):
+
+- **`WindingXiCircle.lean`** — discharges `hzeros` in `windingNumber_xi_disc`.
+  `xi_zeros_closedBall_finite`: the ξ-zeros in a compact disc are finite — `xi` is analytic and not
+  identically zero (nonzero on Re≥1), so `{xi≠0}` is codiscrete (mathlib
+  `preimage_zero_mem_codiscreteWithin`), and a codiscrete set meets a compact set finitely
+  (`IsCompact.finite_diff_of_mem_codiscreteWithin`). Then `windingNumber_xi_circle`: for any circle of
+  radius r carrying no ξ-zero, `windingNumber(xi∘circle) = Σ_{w inside} ord_w xi` — the peeling radius
+  R is slid into the gap `(r, next-zero-radius)`, which exists by finiteness in `closedBall c (r+1)`
+  and an `inf'` over the finite set of zeros beyond r. No external hypothesis; only the necessary
+  "circle avoids zeros".
+
+- **`WindingHomotopy.lean`** — homotopy invariance of the winding number.
+  `windingNumber_homotopy_invariant`: a continuous family of nonvanishing loops `H : ℝ→ℝ→ℂ` has
+  winding number constant in the parameter — the joint map `ℝ×ℝ→ℂ∖{0}` lifts through exp to a
+  continuous log G on the contractible (simply connected) plane `ℝ×ℝ`, so `G(σ,b)−G(σ,a) =
+  2πi·windingNumber(H σ)`; the RHS integer is continuous in σ (Int closed embedding), hence locally
+  constant, hence constant. `windingNumber_of_homotopic`: two loops joined by such a homotopy have
+  equal winding number — the deformation invariance that replaces a general boundary by a circle.
+
+Note: the global lint gate is currently red on `EntireAutomorphism.lean:179` (theorem
+`entire_affine_of_injective_polyGrowth`), a `sorry` in the coordinating GPT agent's in-progress file
+(created this session, not imported by any deck-charge/winding file). All 10 deck-charge/winding files
+are sorry-free and the `RHTower` umbrella builds; the lint debt is the other agent's to discharge.
+
+### Built the entire-automorphism classification (mathlib gap)
+User: "mathlib lacks the entire-automorphism classification -> build it." Built the missing piece:
+- EntireGrowth.lean: GENERALIZED LIOUVILLE. iteratedDeriv_eq_zero_of_polyGrowth (‖f‖≤M(‖z‖+1)^d ⟹
+  iteratedDeriv n f 0 = 0 for n>d, via iterated Cauchy estimate norm_iteratedDeriv_le_of_forall_mem_
+  sphere_norm_le + R→∞ squeeze); eq_zero_of_iteratedDeriv_eq_zero (all derivs 0 ⟹ f≡0, via
+  analyticOrderAt=⊤ + identity thm). mathlib had only d=0 (Liouville).
+- EntireAutomorphism.lean: exists_polynomial_of_polyGrowth (entire+poly-growth ⟹ = Polynomial.eval,
+  via Taylor coeffs vanish + kill remainder); polyIterate/natDegree_eq_one_of_iterate_id ((deg P)^n=1
+  via natDegree_comp + Polynomial.funext); iterate_affine_sub; finiteOrder_polynomial_fixing_is_rotation
+  (finite-order polynomial aut fixing ρ = rotation z↦ρ+a(z-ρ), a^n=1).
+MainTheorems green (9283 jobs), lint passed. Wired into RHTower umbrella. NOT in the integration-free
+certificate: generalized Liouville uses the Cauchy integral (circleIntegral) — correctly, since the
+FORCING (analyticOrderAt_dvd_of_rotation) is constraint-side/integration-free while UNIQUENESS of the
+forcing is a classical analytic fact; opposite sides of the graded seam. Remaining: drop the polynomial
+hypothesis (general entire injective ⟹ polynomial) = standard collision (open mapping + removable
+singularity + Liouville, all already in mathlib) — assembly of what mathlib HAS, not what it lacked.
+
+### The collision built — classification now unconditional
+exists_polynomial_of_entire_injective (EntireAutomorphism.lean): injective entire f ⟹ polynomial.
+Open mapping (is_constant_or_isOpenMap) ⟹ ‖f z-f0‖≥r for ‖z‖≥1; germ g(w)=(f(w⁻¹)-f0)⁻¹ bounded
+holomorphic on punctured disc ⟹ removable (tendsto_limUnder + analyticAt_of_differentiable_on_
+punctured_nhds_of_continuousAt) ⟹ G analytic at 0. G(0)≠0 ⟹ f bounded ⟹ Liouville ⟹ const ⟹
+¬inj. G(0)=0 ⟹ peel G=w^m U (analyticOrderAt_eq_natCast), ‖f z-f0‖≤(2/‖U0‖)‖z‖^m at ∞ ⟹
+exists_polynomial_of_polyGrowth_eventually (needed the eventual generalized-Liouville variant).
+finiteOrder_entire_fixing_is_rotation: FULL classification, any entire finite-order aut fixing ρ =
+rotation (finite order⟹inj⟹collision⟹polynomial⟹composition-degree⟹rotation).
+carrierCharge_eq_one_of_finiteOrder_symmetry (CarrierChargeSoftness): the classification made
+load-bearing — invariance under ANY entire finite-order symmetry (primitive 2^k mult) forces the rung.
+All axiom-clean [propext,Classical.choice,Quot.sound], MainTheorems green (9286 jobs), lint passed.
+No sorries. The user's "mathlib lacks the entire-automorphism classification -> build it" is DONE,
+unconditionally. Key fragile-fix log: inv_le_inv_of_le→inv_anti₀; inv_lt_comm₀ for ‖z‖⁻¹<δ;
+Metric.eventually_nhds_iff∘eventually_nhdsWithin_iff for the ε-extraction; push_neg→rw[not_le].

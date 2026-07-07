@@ -94,4 +94,36 @@ theorem eq_zero_of_iteratedDeriv_eq_zero {g : ℂ → ℂ} (hg : Differentiable 
   exact hga.eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_univ
     (Set.mem_univ 0) hev (Set.mem_univ z)
 
+/-- **Eventual polynomial growth kills high Taylor coefficients.**  Only the large-`‖z‖`
+behaviour matters: if `‖f z‖ ≤ M‖z‖^d` for `‖z‖ ≥ R₀`, then `iteratedDeriv n f 0 = 0` for
+`n > d` (the Cauchy estimate is taken on spheres of radius `R → ∞`). -/
+theorem iteratedDeriv_eq_zero_of_polyGrowth_eventually {f : ℂ → ℂ} (hf : Differentiable ℂ f)
+    {M R₀ : ℝ} {d : ℕ} (hR₀ : 0 < R₀)
+    (hgrow : ∀ z : ℂ, R₀ ≤ ‖z‖ → ‖f z‖ ≤ M * ‖z‖ ^ d)
+    {n : ℕ} (hn : d < n) :
+    iteratedDeriv n f 0 = 0 := by
+  have hbound : ∀ R : ℝ, R₀ ≤ R →
+      ‖iteratedDeriv n f 0‖ ≤ (n.factorial : ℝ) * (M * R ^ d) / R ^ n := by
+    intro R hR
+    have hRpos : 0 < R := lt_of_lt_of_le hR₀ hR
+    refine norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le n hRpos (hf.diffContOnCl) ?_
+    intro z hz
+    have hznorm : ‖z‖ = R := by rw [mem_sphere_iff_norm, sub_zero] at hz; exact hz
+    calc ‖f z‖ ≤ M * ‖z‖ ^ d := hgrow z (by rw [hznorm]; exact hR)
+      _ = M * R ^ d := by rw [hznorm]
+  have htend : Tendsto (fun R : ℝ => (n.factorial : ℝ) * (M * R ^ d) / R ^ n) atTop (𝓝 0) := by
+    have hz : Tendsto (fun R : ℝ => R ^ (d - n : ℤ)) atTop (𝓝 0) :=
+      tendsto_zpow_atTop_zero (by omega)
+    have hc : Tendsto (fun R : ℝ => ((n.factorial : ℝ) * M) * R ^ (d - n : ℤ)) atTop (𝓝 0) := by
+      simpa using hz.const_mul ((n.factorial : ℝ) * M)
+    refine hc.congr' ?_
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with R hR
+    rw [zpow_sub₀ hR.ne', zpow_natCast, zpow_natCast]
+    field_simp
+  have hle : ‖iteratedDeriv n f 0‖ ≤ 0 := by
+    refine le_of_tendsto_of_tendsto tendsto_const_nhds htend ?_
+    filter_upwards [eventually_ge_atTop R₀] with R hR
+    exact hbound R hR
+  exact norm_le_zero_iff.mp hle
+
 end RHTower

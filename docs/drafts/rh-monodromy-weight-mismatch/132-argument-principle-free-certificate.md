@@ -242,3 +242,66 @@ it is the *only* symmetric forcing. The constraint side of Phase B is complete: 
 certification, its welds, its seam grading, and both Goldilocks brackets. The single thing beyond
 is the non-symmetry input that would force the charge off ξ's seam — which is the rung itself, i.e.
 RH, and by this project's charter not its goal.
+
+## 11. Uniqueness of the forcing symmetry: the entire-automorphism classification
+
+The positive lever forces the charge via a rotation about `ρ`; the softness result shows
+symmetry-without-a-fixed-point does not. To pin that the rotation is the *only* symmetric
+forcing, we needed the classification of finite-order entire self-maps of `ℂ` — which mathlib
+lacked. The missing analytic ingredient, now built:
+
+* `EntireGrowth.lean` — the **generalized Liouville theorem**: an entire function with
+  `‖f z‖ ≤ M(‖z‖+1)^d` has all Taylor coefficients past degree `d` vanishing
+  (`iteratedDeriv_eq_zero_of_polyGrowth`, via the iterated Cauchy estimate at radius `R→∞`)
+  and hence equals its degree-`d` Taylor polynomial (`eq_zero_of_iteratedDeriv_eq_zero` kills
+  the remainder). mathlib had Liouville (`d = 0`) but not this.
+* `EntireAutomorphism.lean` — `exists_polynomial_of_polyGrowth`: entire + polynomial growth ⟹
+  a genuine `Polynomial ℂ`. Then `natDegree_eq_one_of_iterate_id`: a polynomial whose
+  evaluation iterates to the identity has degree `1` (`(deg P)ⁿ = deg X = 1`, via
+  `natDegree_comp` and `Polynomial.funext`). Hence
+  `finiteOrder_polynomial_fixing_is_rotation`: a finite-order polynomial automorphism fixing
+  `ρ` is exactly `z ↦ ρ + a(z − ρ)` with `aⁿ = 1`.
+
+So a finite-order polynomial symmetry fixing `ρ` is a rotation, and
+`carrierCharge_eq_one_of_rotation` then forces the rung: the rotation lever captures every such
+symmetric forcing. This uses the Cauchy integral (in the generalized Liouville), so unlike the
+ladder itself it is *not* contour-integration-free — and correctly so: the *forcing*
+(`analyticOrderAt_dvd_of_rotation`) is constraint-side and integration-free, while the
+*uniqueness of the forcing* is a classical analytic fact. The two live on opposite sides of the
+seam the certificate grades, exactly as they should.
+
+Dropping the polynomial hypothesis (a general *entire* injective map is a polynomial) is the
+standard collision argument — open mapping gives a punctured target ball avoided at infinity,
+the removable-singularity theorem extends `1/(f−f₀)` across `∞`, and the two cases give either
+boundedness (Liouville ⟹ constant ⟹ not injective) or polynomial growth (feeding the
+generalized Liouville). It assembles only theorems mathlib already has; the ingredient mathlib
+lacked — the polynomial-growth Liouville — is what is built here.
+
+## 12. The collision built: the classification is now unconditional
+
+Section 11's remaining step — dropping the polynomial hypothesis — is now built, so the
+entire-automorphism classification holds for every entire injection, with no growth assumption.
+
+`EntireAutomorphism.lean`:
+* `exists_polynomial_of_polyGrowth_eventually` — the generalized Liouville needs the growth bound
+  only at infinity (the Cauchy estimate is taken on spheres of radius `R → ∞`);
+  `iteratedDeriv_eq_zero_of_polyGrowth_eventually` supplies it.
+* `exists_polynomial_of_entire_injective` — **the collision**: an injective entire `f` is a
+  polynomial.  Open mapping gives `r` with `‖f z − f₀‖ ≥ r` for `‖z‖ ≥ 1`; the germ
+  `g(w) = (f(w⁻¹) − f₀)⁻¹` is bounded and holomorphic on a punctured disc, so the
+  removable-singularity theorem extends it to `G` analytic at `0`.  If `G(0) ≠ 0` then `f` is
+  bounded near `∞`, hence bounded, hence constant by Liouville — contradicting injectivity.  If
+  `G(0) = 0`, peeling `G = w^m · U` (with `U(0) ≠ 0`) gives `‖f z − f₀‖ ≤ (2/‖U(0)‖)‖z‖^m` at
+  infinity, so `f` has polynomial growth and the eventual generalized Liouville makes it a
+  polynomial.
+* `finiteOrder_entire_fixing_is_rotation` — **the full classification**: an entire `f` with
+  `f^[n] = id` fixing `ρ` is `z ↦ ρ + a(z − ρ)` with `a^n = 1`.  Finite order ⟹ injective (inverse
+  `f^[n−1]`) ⟹ (collision) polynomial ⟹ (composition-degree) rotation.
+
+`CarrierChargeSoftness.carrierCharge_eq_one_of_finiteOrder_symmetry` then closes the loop: a
+carrier invariant under *any* entire finite-order symmetry fixing `ρ` (primitive `2^k` multiplier)
+has `carrierCharge f k ρ = 1`.  The uniqueness is now unconditional — the rotation is the only
+finite-order entire symmetry fixing a point, so the rotation lever captures every symmetric forcing
+of a rung, with no residual hypothesis.  The whole classification is axiom-clean; it uses the Cauchy
+integral (in Liouville and the estimate) and so sits, correctly, on the flow side of the certificate's
+grade, opposite the constraint-side forcing it justifies.
