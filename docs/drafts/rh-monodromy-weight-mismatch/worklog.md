@@ -6087,3 +6087,18 @@ variation = endpoint tilt difference), so the anchor enters the parity ONLY thro
 branch selection under gluing, and its steering handle is exactly the reachable
 pair.  Doc 117 banked.  Gate green, all endpoints axiom-clean.  Next object (117 §6):
 the tilt-sweep branch-tracking map `(φ₊, φ₋) ↦ (k_P, k_M)` on a concrete annulus.
+
+## Pass: the D–H discriminator built (doc 118)
+
+The discriminator exists as theorems: the anchor sweep `A^t` (constraint-side
+homotopy, zeros pinned), the explicit root transport with the HALF-ANGLE law (the
+square-root sheet turns at half the tilt rate — tilt 2π returns the member and
+flips the root), deck-class sweep-invariance, the πℤ root-level winding dictionary,
+and the trichotomy: empty anchor frozen (D–H), equivariant anchors discrete
+(banked), Euler anchors dense (pair-reachability at half-angles; relative holonomy
+steerable to a near-half-turn).  Capstone: the annulus gluing criterion (deck class
+= the mod-2 obstruction to a global root, both directions) and the sweep-stable
+obstruction — the steering family can never open the two-sheeted cover.  Docs 118
+banked; gate green; every endpoint [propext, Classical.choice, Quot.sound].  Open
+core: the selection principle (doc 118 §residual) — the only remaining gap between
+the discriminator and the odd-order contradiction.

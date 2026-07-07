@@ -282,6 +282,8 @@ import GaloisForLFunctions.RHTower.StaircaseDescent
 import GaloisForLFunctions.RHTower.PairStaircase
 import GaloisForLFunctions.RHTower.EndpointNoGo
 import GaloisForLFunctions.RHTower.ArcWindingDictionary
+import GaloisForLFunctions.RHTower.TiltSweepDiscriminator
+import GaloisForLFunctions.RHTower.AnnulusRootGluing
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity

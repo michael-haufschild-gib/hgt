@@ -920,3 +920,30 @@ under a continuous tilt sweep — the map from the steered endpoint tilt pair to
   `finset_sum_coeff` renames, two `simpa`→`simp` reductions and one `simp at` closure
   in `RelativeRigidityCountableAvoidance.lean`, unused binder in
   `BottcherTowerData.lean`, and the TorusWalk.lean lint set.
+
+## Pass: the D–H discriminator (docs 118)
+
+New modules (axiom-clean, umbrella + index updated, gate green):
+
+- `formal/GaloisForLFunctions/RHTower/TiltSweepDiscriminator.lean` — anchorSweep
+  `A^t = exp(t·anchorLog)` (endpoints/nonvanishing/multiplicative/analytic/polar;
+  `analyticOrderAt_anchorSweep_mul`: zero data sweep-invariant); sweepRoot explicit
+  root transport (`sweepRoot_sq`, `sweepRoot_polar` = the half-angle law,
+  `sweepRoot_sign_flip_of_tilt_two_pi` + `anchorSweep_pos_real_of_tilt_two_pi` =
+  the mod-2 coupling); `deckClass_sweepRoot` (sweep-invariance);
+  `deckClass_neg_one_zpow_root_log_mismatch` (πℤ root-level dictionary);
+  `anchorLog_empty/anchorSweep_empty/sweepRoot_empty` (D–H side frozen);
+  `sweep_holonomy_pair_reachable` + `exists_near_half_turn_relative_holonomy`
+  (Euler side dense; cross-ratio near sign flip); `sweepRoot_cross_ratio`
+  (the observable, unconditional); `sweepRoot_one_sq_anchoredSEM` (lands on the
+  anchored member).
+- `formal/GaloisForLFunctions/RHTower/AnnulusRootGluing.lean` — overlapTop/Bot
+  (polar-rectangle preconnectedness), chart cover/overlap structure, the gluing
+  criterion both ways (`exists_global_sqrt_of_deckClass_one`,
+  `deckClass_eq_one_of_global_sqrt`), and the capstone
+  `no_global_sqrt_along_sweep_of_deckClass_ne_one` — the parity obstruction
+  survives the entire steering family.
+
+Named residual (doc 118): the selection principle — a sweep-coupled rule tying the
+steered boundary readings to the branch the geometry selects; its D–H test is that
+the rule must USE the sweep.
