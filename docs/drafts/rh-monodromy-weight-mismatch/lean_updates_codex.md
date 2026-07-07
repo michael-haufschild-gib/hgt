@@ -1092,3 +1092,25 @@ mass is zero. `xi_orderAt_lineReflection` (FE ∘ reality pairing) and
 `carrier_mass_zero_mirror_pair_at_odd_xi_order`: the event fires at ρ AND at
 1 − conj ρ, each with its own certificate. Umbrella import after
 MirrorTransport. All 3 endpoints `[propext, Classical.choice, Quot.sound]`.
+
+## CarrierCountConstraint.lean (new module)
+
+`formal/GaloisForLFunctions/RHTower/CarrierCountConstraint.lean` — both halves of
+the doc-125 goal (doc 126). §1 configList bridge (indexed configurations = list
+splits). §2 `enclosed_configuration_count_of_domination` (count identity in
+configuration form, from the banked ledger engine). §3
+`emSplit_odd_count_at_odd_xi_order` (the negation surface: at odd ξ-order,
+dominating EM splits exist and every one has odd count). §4
+`configuration_parity_of_circle_domination` (parity from ONE circle via holonomy
+transfer — strictly weaker input than chart domination) + `neg_one_pow_pm`,
+`odd_iff_of_neg_one_pow_eq`. §5 product estimates: `list_prod_norm_ge/le`,
+`list_prod_sub_prod_norm_le` (telescoping). §6 realizability:
+`exists_dominating_split_of_configuration` (any r₁-confined count-m placement
+with margin m·r₁·(R+r₁)^{m−1} < (r₀−r₁)^m is realized via the ξ-peel cofactor),
+`exists_dominating_split_central` (m copies of the centre always realize),
+`dominating_split_zeros_lt_hole` (open-hole confinement: boundary placements are
+incompatible — outward-ray limit vs the isolation floor),
+`continuous_placement_prod`. §7 `xi_dominating_configuration_iff` (THE
+CHARACTERIZATION: compatible ⟺ count = m; positions free). Umbrella import after
+CertificateActivation. All 14 endpoints `[propext, Classical.choice,
+Quot.sound]`. Gate: 9241 jobs, exit 0.

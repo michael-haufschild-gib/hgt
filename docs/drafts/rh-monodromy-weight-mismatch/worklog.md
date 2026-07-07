@@ -6297,3 +6297,38 @@ all-or-nothing value 2∮‖carrier‖ > 0. Contrapositive form of RH₂: every 
 circle carries full mass. Forward (doc 125 §4): the finite carrier's zero
 geometry as a constraint system (which hole configurations are compatible with
 domination onto ξ), and the count-level transfer onto the finite carrier.
+
+## Carrier count constraint pass (doc 126) — goal exhausted
+
+Both goal clauses discharged. Count identity carried to configurations (full
+EQUALITY, all dyadic levels subsumed) + the one-circle parity route (holonomy
+transfer; boundary data on one circle pins the bit RH₂ cares about) + the
+negation surface (odd ξ-order ⟹ every dominating EM split has odd count,
+splits exist). Constraint system SETTLED: necessary = {count = m, strict
+interior (attack-as-false found the boundary no-go: outward-ray limit vs
+isolation floor)}; sufficient = {count = m, margin} with the central placement
+always realizing; characterization iff banked. Residual typed and
+non-load-bearing: the exact interior-radius threshold (multiplicative
+approximation on one annulus) — both directions of the negation surface are
+complete without it. Lane state: the base rung = the parity of ONE pinned
+integer per hypothetical zero; every other degree of freedom (positions,
+cofactor, trace, probe) proven irrelevant or free. Gate exit 0 (9241 jobs), 14
+endpoints axiom-clean.
+
+## T1 (Euler-vs-FE Q_3 discriminator) — built, formalized, graded (dual gate)
+
+Took T1 of doc 123 to exhaustion at the mechanism level. Isolated Q_3's structural cause
+(third cumulant of the log-field = bispectrum = additive-resonance sum; minimal resonance 1+1=2 =
+fundamental+second-harmonic; Euler factor forces b=a²/2 via -log(1-w)=∑wᵏ/k). Formalized axiom-clean:
+`formal/GaloisForLFunctions/RHTower/ThirdMomentResonance.lean` (10 theorems; character orthogonality →
+resonance formula → pure-tone=0 → two-harmonic=(3/4)a²b → multiplicative=(3/8)a⁴>0 → general tower
+strict positivity, no truncation). `lake build` green, `#print axioms`=[propext,Classical.choice,
+Quot.sound], lint pass.
+
+Verdict (card: `pipeline/3-formalized/euler-third-cumulant-discriminator.md`): DELIVERED (the theorem
+"multiplicativity forces the signature" is proven) × KILLED as new knowledge — the mechanism is the
+bispectrum + Selberg cumulant structure (reduce-to-known), and the invariant tracks multiplicativity
+not RH (RH-blind; separates ζ/Λχ from DH, not on-line from off-line). RH enters only through the SIGN
+of the second-harmonic amplitude across the tower = Weil positivity (RH-equivalent, correctly outside
+T1). Banked as a formal anchor for "Euler product = the codim-2 non-crossing"; relocates the open
+content onto the sign/polarization (T2 weld ω / HP-index), not the magnitude.

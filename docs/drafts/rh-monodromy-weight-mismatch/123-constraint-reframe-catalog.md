@@ -276,3 +276,30 @@ through index/Hodge tools, which is where the un-exhausted mathematics is.
 The reframe method is the standing instrument: before building any route, run §2 on it. If it is
 theatre, it relabels a dead flow; if it is real, it names the tool the flow could not use and points
 into T1/T2/T3.
+
+---
+
+## Status addendum — T1 built and graded (dual gate)
+
+T1 (the Euler-vs-FE / `Q_3` discriminator) was taken to the mechanism level and **formalized
+axiom-clean**: `formal/GaloisForLFunctions/RHTower/ThirdMomentResonance.lean` (10 theorems,
+`[propext, Classical.choice, Quot.sound]`, lint green). Card:
+`../pipeline/3-formalized/euler-third-cumulant-discriminator.md`.
+
+**Result.** The third moment is the **bispectrum** `∑_{k+l+m=0} c_k c_l c_m`; the minimal resonance
+`1+1=2` is the fundamental–second-harmonic, and the Euler factor forces the second harmonic
+(`b=a²/2`, from `-log(1-w)=∑wᵏ/k`), giving strictly positive third moment `(3/8)a⁴` for the ζ tower,
+zero for a tower-free field — "multiplicativity forces the signature," proven.
+
+**Verdict: DELIVERED × KILLED-as-new-knowledge.** The theorem is real and machine-checked, but the
+mechanism is the bispectrum + Selberg cumulant structure (reduce-to-known), and the invariant tracks
+**multiplicativity, not RH** (RH-blind by design — it separates ζ/Λχ from DH, not on-line from
+off-line). RH enters only through the **sign** of the tower's second-harmonic amplitude, which is
+Weil positivity (RH-equivalent), correctly outside this invariant. So T1 clears its own
+"multiplicativity forces the signature" bar but fails the NOVEL×SIGNIFICANT gate; it is banked as a
+formal anchor for "the Euler product supplies the codim-2 non-crossing," not as a peak.
+
+**What it hands to T2/HP-index.** The third-cumulant *magnitude* is now a proven-free backdrop; the
+untouched RH-bearing datum is the *sign/polarization* of the second harmonic across the tower — i.e.
+the weld `ω` (T2) and the HP-index (§4). The Euler-vs-FE question, pushed to exhaustion, relocates
+the open content onto the sign, not the magnitude.
