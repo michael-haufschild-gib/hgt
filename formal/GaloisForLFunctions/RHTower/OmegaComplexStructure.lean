@@ -345,6 +345,91 @@ theorem Q_compl2_J_forced_pair_entries_of_isSymm {V : Type*} [AddCommGroup V] [M
   · exact P.Q_compl2_J_apply_J_apply_self x
   · exact P.Q_compl2_J_apply_J_apply_J_of_isSymm hQ x
 
+/-- On the forced `J`-plane, the mixed form is the determinant times `Q x x`. -/
+theorem Q_compl2_J_apply_span_pair_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) (x : V) (a b c d : ℝ) :
+    (Q.compl₂ P.complex.J) (a • x + b • P.complex.J x)
+        (c • x + d • P.complex.J x) = (b * c - a * d) * Q x x := by
+  simp [map_add, map_smul, P.Q_self_J_eq_zero_of_isSymm hQ x,
+    P.Q_compl2_J_apply_self_apply_J x, P.Q_compl2_J_apply_J_apply_self x,
+    P.Q_compl2_J_apply_J_apply_J_of_isSymm hQ x]
+  ring
+
+/-- Nonzero determinant coefficients are detected by the mixed form when `Q x x` is nonzero. -/
+theorem Q_compl2_J_apply_span_pair_ne_zero_of_isSymm {V : Type*}
+    [AddCommGroup V] [Module ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (P : PolarizedOmegaComplexStructure V Q) (hQ : Q.IsSymm) {x : V} {a b c d : ℝ}
+    (hxQ : Q x x ≠ 0) (hdet : b * c - a * d ≠ 0) :
+    (Q.compl₂ P.complex.J) (a • x + b • P.complex.J x)
+        (c • x + d • P.complex.J x) ≠ 0 := by
+  rw [P.Q_compl2_J_apply_span_pair_of_isSymm hQ]
+  exact mul_ne_zero hdet hxQ
+
+/-- When `Q x x` is nonzero, the mixed form vanishes exactly on determinant-zero pairs. -/
+theorem Q_compl2_J_apply_span_pair_eq_zero_iff_of_isSymm {V : Type*}
+    [AddCommGroup V] [Module ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (P : PolarizedOmegaComplexStructure V Q) (hQ : Q.IsSymm) {x : V} {a b c d : ℝ}
+    (hxQ : Q x x ≠ 0) :
+    (Q.compl₂ P.complex.J) (a • x + b • P.complex.J x)
+        (c • x + d • P.complex.J x) = 0 ↔ b * c - a * d = 0 := by
+  rw [P.Q_compl2_J_apply_span_pair_of_isSymm hQ]
+  constructor
+  · intro h
+    exact (mul_eq_zero.mp h).resolve_right hxQ
+  · intro hdet
+    rw [hdet, zero_mul]
+
+/-- Nonvanishing form of the determinant criterion on the forced `J`-plane. -/
+theorem Q_compl2_J_apply_span_pair_ne_zero_iff_of_isSymm {V : Type*}
+    [AddCommGroup V] [Module ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (P : PolarizedOmegaComplexStructure V Q) (hQ : Q.IsSymm) {x : V} {a b c d : ℝ}
+    (hxQ : Q x x ≠ 0) :
+    (Q.compl₂ P.complex.J) (a • x + b • P.complex.J x)
+        (c • x + d • P.complex.J x) ≠ 0 ↔ b * c - a * d ≠ 0 := by
+  constructor
+  · intro hform hdet
+    apply hform
+    rw [P.Q_compl2_J_apply_span_pair_of_isSymm hQ, hdet, zero_mul]
+  · intro hdet
+    exact P.Q_compl2_J_apply_span_pair_ne_zero_of_isSymm hQ hxQ hdet
+
+/-- On the forced `J`-plane, symmetric `Q` is the dot product times `Q x x`. -/
+theorem Q_apply_span_pair_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) (x : V) (a b c d : ℝ) :
+    Q (a • x + b • P.complex.J x) (c • x + d • P.complex.J x) =
+      (a * c + b * d) * Q x x := by
+  have hJx_x : Q (P.complex.J x) x = 0 := by
+    simpa [hQ.eq (P.complex.J x) x] using P.Q_self_J_eq_zero_of_isSymm hQ x
+  simp [map_add, map_smul, P.Q_self_J_eq_zero_of_isSymm hQ x, hJx_x, P.preserves x x]
+  ring
+
+/-- Self-pairing form of the symmetric `Q` block on the forced `J`-plane. -/
+theorem Q_apply_span_self_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) (x : V) (a b : ℝ) :
+    Q (a • x + b • P.complex.J x) (a • x + b • P.complex.J x) =
+      (a * a + b * b) * Q x x := by
+  simpa using P.Q_apply_span_pair_of_isSymm hQ x a b a b
+
+/-- Nonzero coefficient pairs have nonzero `Q`-self pairing when `Q x x` is nonzero. -/
+theorem Q_apply_span_self_ne_zero_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) {x : V} {a b : ℝ} (hxQ : Q x x ≠ 0)
+    (hab : a ≠ 0 ∨ b ≠ 0) :
+    Q (a • x + b • P.complex.J x) (a • x + b • P.complex.J x) ≠ 0 := by
+  have hcoef : a * a + b * b ≠ 0 := by
+    have hpos : 0 < a * a + b * b := by
+      rcases hab with ha | hb
+      · have ha2 : 0 < a * a := mul_self_pos.mpr ha
+        nlinarith [sq_nonneg b]
+      · have hb2 : 0 < b * b := mul_self_pos.mpr hb
+        nlinarith [sq_nonneg a]
+    exact ne_of_gt hpos
+  rw [P.Q_apply_span_self_of_isSymm hQ]
+  exact mul_ne_zero hcoef hxQ
+
 /-- With symmetric `Q`, the right-slot `J`-twist of `Q` is an alternating bilinear form. -/
 theorem Q_compl2_J_isAlt_of_isSymm {V : Type*} [AddCommGroup V] [Module ℝ V]
     {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
