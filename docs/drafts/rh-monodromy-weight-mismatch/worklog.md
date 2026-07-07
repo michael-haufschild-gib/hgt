@@ -6404,3 +6404,35 @@ definite ⟹ Im t = 0). At the finite Pick shadow the polarization clause *is* t
 location — `hAP` is now a theorem, not an interface, so the sole open input is the polarization
 existence. Module now 10 theorems, all axiom-clean, lint green. Residual lift: from the 1×1 Pick
 shadow to the full analytic seam (winding/box argument principle).
+
+Update 2 (same day): the discharge lifted from the 1×1 toy to the full finite carrier, unconditionally.
+- `conjPairPick_not_kreinNonneg_of_witness`: on ANY node set, a single off-line-witnessing node breaks
+  definiteness (diagonal Pick entry Im m/Im z < 0). `conjPairPick_star`: t↦t̄ carrier symmetry.
+- `online_of_conjPairPick_kreinNonneg`: definite on all node configs ⟹ Im t = 0.
+- EXACT count via the tree's `exact_neg_inertia`: `factoredKreinForm` + `factoredKrein_kreinNonneg_iff`
+  = the factored FE Krein form is definite ⟺ k = 0 (zero off-line pairs), under Cauchy non-degeneracy.
+  This is the sharpest "definiteness ⟺ index-zero" — the exact κ₋ = k, not just κ₋ ≥ 1.
+Module now 17 declarations, all axiom-clean, lint green. The argument principle is a THEOREM on the
+finite carrier; the sole residual is the polarization existence — the carrier-from-ξ cross being the
+rule-7 flow (m_ξ = -Ξ'/Ξ). Non-flow candidate to test next: the local-window bridge
+(`riemannHypothesis_of_local_online_windows` + a local finite Pick Gram from finitely many ξ-values).
+
+Update 3 (same day): the concrete-carrier RH gate. `riemannHypothesis_of_conjPairCarrier_polarization`:
+with t = (ρ-1/2)·(-i) (Im t = 1/2 - Re ρ), if the EXPLICIT FE carrier conjPairPick t is definite on
+every ℂ⁺ node config at every right-half ξ-zero ρ, then RH — online_of_conjPairPick_kreinNonneg forces
+Im t = 0 ⟺ Re ρ = 1/2, contra Re ρ > 1/2. Rule-7 clean: NO carrier built from ξ; the carrier is a
+fixed explicit function, the ξ-zero only marks where definiteness is assumed. This wires the whole
+index prong directly to mathlib's RiemannHypothesis with the polarization as the sole open clause.
+Module now 18 declarations, axiom-clean, lint green. hpol is individually consistent (for on-line
+zeros t is real, carrier Herglotz-definite) and, modulo the discharge, equivalent to RH — an
+equivalent reframe with index/Hodge tools, not a weakening.
+
+Update 4 (same day): the concrete-carrier gate upgraded to an EQUIVALENCE.
+`riemannHypothesis_iff_conjPairCarrier_polarization`: RH ⟺ the explicit FE carrier conjPairPick
+((ρ-1/2)·(-i)) is definite at every right-half ξ-zero. Forward = the substantive gate; reverse vacuous
+(under RH no right-half zeros ⟹ condition has no instances). The full HP-as-polarization equivalence on
+the concrete carrier. Module now 19 declarations, all axiom-clean, lint green, umbrella builds.
+Docs corrected: the module welds KreinLangerInertia(κ₋)+RiemannTower(RH); OmegaComplexStructure(J) is
+the surface the open clause maps onto, the concrete J⟹definite Hodge link the one weld still to build
+(T2-adjacent). Live fronts: J-weld (Hodge/T2), T1 collision (2nd-harmonic sign = negative Krein
+direction, via explicit formula), local-window non-flow probe.

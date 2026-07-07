@@ -352,10 +352,11 @@ index-prong analogue of `riemannHypothesis_of_residual_faces`:
   a *tree theorem* in spirit, `conj_pair_pick_neg_inertia`), **RH ⟺ every seam Gram is definite**, with
   the **polarization existence isolated as the single open clause**.
 
-This welds `OmegaComplexStructure` (the polarization `J`, T2), `KreinLangerInertia` (`κ₋`), and
-`RiemannTower` (RH) into one checked chain. The rule-7 audit passes: no operator or carrier is
-constructed — definiteness is a constraint on a *given* form, and congruence-invariance is the
-anti-flow (the invariant surviving all deformations). The polarization `J` is left as an existence
+This welds `KreinLangerInertia` (`κ₋`) and `RiemannTower` (RH) into one checked chain;
+`OmegaComplexStructure` (the polarization `J`, T2) is the surface the open clause maps onto, its
+concrete `J ⟹ definite` link the one weld still to build. The rule-7 audit passes: no operator or
+carrier is constructed — definiteness is a constraint on a *given* form, and congruence-invariance is
+the anti-flow (the invariant surviving all deformations). The polarization `J` is left as an existence
 clause, never built.
 
 **Dual gate:** DELIVERED × branch **infrastructure** (the linear-algebra bricks reduce to known;
@@ -370,3 +371,27 @@ direction, from `boundaryField_im_pos` + `conj_pair_pick_neg_inertia`), making `
 residual; (2) attack `hpol` as Rosati-positivity on the period domain `D_∞ = Sp_∞(ℝ)/U(∞)` — the T2
 lane; (3) collide with T1 — is the second-harmonic sign the negative Krein direction? (§5 move 4).
 Card: `docs/drafts/pipeline/3-formalized/seam-spectral-flow-index.md`.
+
+### §4 follow-up — the discharge lifted and wired to RH (18 declarations)
+
+The reframe was pushed past the reduction to the finite carrier's exhaustion, all axiom-clean:
+
+- **Argument principle discharged, unconditionally, on the full finite carrier** (not a `1×1` toy):
+  `conjPairPick_not_kreinNonneg_of_witness` (any node set; one off-line-witnessing node breaks
+  definiteness via its diagonal Pick entry `Im m/Im z < 0`); `conjPairPick_star` (the `t↦t̄` carrier
+  symmetry); `online_of_conjPairPick_kreinNonneg` (definite on all node configs ⟹ `Im t = 0`).
+- **Exact `κ₋ = k`** via the tree's `exact_neg_inertia`: `factoredKrein_kreinNonneg_iff` — the factored
+  FE Krein form is definite **iff `k = 0`** (zero off-line pairs), under Cauchy non-degeneracy. The
+  sharpest "definiteness ⟺ index-zero," the exact count, not merely `κ₋ ≥ 1`.
+- **RH gate with the concrete carrier** wired to mathlib's `RiemannHypothesis`:
+  `riemannHypothesis_of_conjPairCarrier_polarization` — with `t = (ρ-½)·(-i)` (`Im t = ½ - Re ρ`), if
+  the *explicit* FE carrier `conjPairPick t` is definite at every right-half `ξ`-zero, then RH. **No
+  carrier is built from `ξ`** (rule 7): the carrier is a fixed function; the zero only marks where
+  definiteness is *assumed*. The polarization is the single open clause, now directly against RH.
+
+So for the finite FE carrier the argument principle is a **theorem**, not an interface, and the sole
+residual is the polarization existence. What this opens: (1) the `ξ`-zero cross — the one missing step
+is the carrier-from-`ξ` correspondence, exactly the rule-7 flow `m_ξ = -Ξ'/Ξ`; the *local-window*
+form (a finite Pick Gram from finitely many `ξ`-values, not the global carrier) is the non-flow
+candidate to probe; (2) `hpol` as Rosati-positivity on `D_∞` — the T2 lane; (3) the T1 collision — is
+the second-harmonic sign the negative Krein direction the discharge produces? These are the live fronts.

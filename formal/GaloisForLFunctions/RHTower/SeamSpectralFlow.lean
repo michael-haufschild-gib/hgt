@@ -255,4 +255,45 @@ theorem factoredKrein_kreinNonneg_iff {N k : ℕ} (w u : Fin k → (Fin N → �
     exact factoredKrein_not_kreinNonneg_of_pos (Nat.pos_of_ne_zero hk) w u Φ Ψ hΦ hΨ hT hK
   · exact factoredKrein_kreinNonneg_of_zero w u
 
+/-- **The index-prong RH gate, with the concrete FE carrier.**  For a right-half `ξ`-zero `ρ`, put
+`t = (ρ - ½)·(-i)`, the coordinate whose imaginary part is `½ - Re ρ` (so `Im t = 0 ⟺ Re ρ = ½`, and
+`ρ` in the open right half forces `Im t < 0`).  If the FE-symmetric conjugate-pair carrier `conjPairPick t`
+— an *explicit function of `t`*, not built from `ξ` — is definite (`KreinNonneg`) on every `ℂ⁺` node
+configuration at every right-half `ξ`-zero, then the Riemann Hypothesis holds:
+`online_of_conjPairPick_kreinNonneg` forces `Im t = 0`, i.e. `Re ρ = ½`, contradicting `Re ρ > ½`.
+No carrier is constructed from `ξ` (rule 7): the carrier is the fixed explicit object, the `ξ`-zero
+enters only as the point at which definiteness is *assumed*, and that polarization assumption is the
+single open geometric clause standing between the index reframe and RH. -/
+theorem riemannHypothesis_of_conjPairCarrier_polarization
+    (hpol : ∀ ρ ∈ rightHalf, xi ρ = 0 →
+        ∀ {N : ℕ} (z : Fin N → ℂ), (∀ j, 0 < (z j).im) →
+          KreinNonneg (conjPairPick ((ρ - 1 / 2) * (-I)) z)) :
+    RiemannHypothesis := by
+  rw [rh_iff_xi_ne_zero_right]
+  intro ρ hρ hzero
+  have hon := online_of_conjPairPick_kreinNonneg ((ρ - 1 / 2) * (-I))
+    (fun {N} z hz => hpol ρ hρ hzero z hz)
+  have himt : ((ρ - 1 / 2) * (-I)).im = 1 / 2 - ρ.re := by
+    simp [Complex.mul_im, Complex.sub_im, Complex.sub_re]
+  rw [himt] at hon
+  have hgt := mem_rightHalf.mp hρ
+  linarith
+
+/-- **RH is the polarizability of the concrete FE carrier.**  The Riemann Hypothesis is *equivalent*
+to: at every right-half `ξ`-zero `ρ`, the explicit conjugate-pair carrier `conjPairPick ((ρ-½)·(-i))`
+is definite on every `ℂ⁺` node configuration.  Forward is the substantive gate
+(`riemannHypothesis_of_conjPairCarrier_polarization`); the reverse is vacuous — under RH there are no
+right-half `ξ`-zeros, so the polarization condition has no instances to satisfy.  HP-as-polarization
+with the concrete carrier: RH holds iff the FE Krein form the zeros would build is definite. -/
+theorem riemannHypothesis_iff_conjPairCarrier_polarization :
+    RiemannHypothesis ↔
+      (∀ ρ ∈ rightHalf, xi ρ = 0 →
+        ∀ {N : ℕ} (z : Fin N → ℂ), (∀ j, 0 < (z j).im) →
+          KreinNonneg (conjPairPick ((ρ - 1 / 2) * (-I)) z)) := by
+  constructor
+  · intro hRH ρ hρ hzero
+    rw [rh_iff_xi_ne_zero_right] at hRH
+    exact absurd hzero (hRH ρ hρ)
+  · exact riemannHypothesis_of_conjPairCarrier_polarization
+
 end RHTower

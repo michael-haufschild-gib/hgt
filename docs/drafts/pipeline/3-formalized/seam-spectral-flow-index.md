@@ -26,9 +26,11 @@
 w.r.t. the indefinite Krein form, so nothing is hunted; RH is the Pontryagin index `κ₋ = 0`, a
 deformation-invariant integer. Forward-move #2's deliverable is the index-prong analogue of
 `riemannHypothesis_of_residual_faces`: a Lean reduction with `κ₋ = (order count) = (winding index)`
-exposing the non-vacuity as the single open clause. This card delivers it, and welds three previously
-disjoint tree surfaces — `OmegaComplexStructure` (the polarization `J`, T2), `KreinLangerInertia`
-(`κ₋`), and `RiemannTower` (RH) — into one axiom-clean chain.
+exposing the non-vacuity as the single open clause. This card delivers it, welding two tree surfaces —
+`KreinLangerInertia` (`κ₋`, incl. the exact `exact_neg_inertia`) and `RiemannTower` (RH) — into one
+axiom-clean chain. `OmegaComplexStructure` (the polarization `J`, T2) is the surface the open clause
+*maps onto*; the concrete `J ⟹ definite` link (the Hodge bridge from a positive compatible complex
+structure to `KreinNonneg`) is the forward build, not yet in the chain.
 
 ## The Lean certificate (axiom-clean)
 
@@ -51,13 +53,33 @@ disjoint tree surfaces — `OmegaComplexStructure` (the polarization `J`, T2), `
 - `riemannHypothesis_iff_seam_polarization` — **the equivalence**: with the argument principle as a
   biconditional, RH ⟺ every seam Gram is definite. HP-as-polarization is not a weakening of RH but a
   change of the deciding invariant, from a spectrum's reality to a form's negative index.
-- `conjPair_offLine_not_kreinNonneg` — **the argument principle, discharged** (conjugate-pair Pick
-  model): an off-line pair `{t, t̄}` forces a negative Krein direction at a `ℂ⁺` node (`κ₋ ≥ 1`, via the
-  tree's `conj_pair_not_herglotz`/`pickDiag_re`). Computation (a) as a *theorem*, not an interface.
-- `online_of_conjPair_pick_kreinNonneg` — **the capstone**: if every conjugate-pair Pick Gram is
-  definite (`KreinNonneg`), then `t` is on the critical line (`Im t = 0`). At the finite Pick shadow,
-  the polarization clause **is** the critical-line location — the sole open input is thus the
-  polarization existence, nothing else.
+- `conjPairPick_not_kreinNonneg_of_witness` — **the argument principle, discharged on any node set**:
+  a single off-line-witnessing node `z_{j₀}` (`Im m(z_{j₀}) < 0`) breaks definiteness of the whole
+  Pick Gram `conjPairPick t z` — its diagonal Pick entry `Im m/Im z < 0` is a negative Krein direction
+  (`κ₋ ≥ 1`, via the tree's `conj_pair_not_herglotz`/`pickDiag_re`). Computation (a) as a *theorem*,
+  not an interface, on arbitrary node configurations (not a `1×1` toy).
+- `conjPairCarrier_star`, `conjPairPick_star` — the carrier's `t ↦ t̄` symmetry (the pair is
+  unordered), used to feed the polarization hypothesis into both `±Im t` witness branches.
+- `online_of_conjPairPick_kreinNonneg` — **the capstone**: if the conjugate-pair Pick Gram is definite
+  (`KreinNonneg`) on *every* `ℂ⁺` node configuration, then `t` is on the critical line (`Im t = 0`).
+  The polarization clause **is** the critical-line location — the sole open input is the polarization
+  existence, nothing else.
+- `factoredKreinForm`, `factoredKrein_kreinNonneg_iff` — **the exact count `κ₋ = k`**: via the tree's
+  `exact_neg_inertia` (both bounds, with a negative-definite subspace of dimension exactly `k`), the
+  factored FE Krein form `H = ∑wᵢwᵢ* − ∑uᵢuᵢ*` is definite **iff `k = 0`** (no off-line pairs), under
+  Cauchy non-degeneracy (`cauchy_linearIndependent`). The sharpest "definiteness ⟺ index-zero" on the
+  actual multi-pair carrier — not `κ₋ ≥ 1` but the exact equality.
+- `riemannHypothesis_of_conjPairCarrier_polarization` — **the RH gate with the concrete carrier**: with
+  `t = (ρ - ½)·(-i)` (so `Im t = ½ - Re ρ`), if the explicit FE carrier `conjPairPick t` is definite on
+  every `ℂ⁺` node config at every right-half `ξ`-zero `ρ`, then RH. `online_of_conjPairPick_kreinNonneg`
+  forces `Im t = 0 ⟺ Re ρ = ½`, contradicting `Re ρ > ½`. **No carrier is built from `ξ`** (rule 7): the
+  carrier is a fixed explicit function of `t`; the `ξ`-zero enters only as the point where definiteness
+  is *assumed* — the polarization being the single open clause, now wired directly to
+  `RiemannHypothesis` (mathlib's).
+- `riemannHypothesis_iff_conjPairCarrier_polarization` — **the equivalence with the concrete carrier**:
+  RH ⟺ the FE carrier is polarizable at every right-half `ξ`-zero. Forward is the substantive gate;
+  reverse is vacuous (under RH there are no right-half zeros, so the condition has no instances). The
+  full HP-as-polarization equivalence, on the concrete carrier — not a weakening of RH, a tool change.
 
 ## Approach
 
@@ -88,28 +110,34 @@ one-way gate and as an equivalence. Forward-move #2's deliverable is met; three 
   knowledge; it clears it as *reusable infrastructure* that gives the "structurally pinned"
   computation `121 §5` demanded a principled source (index theory) in place of the fork-dead ad-hoc
   hunt for forcing invariants.
-- *Significance:* real — it makes "HP = the weld = `κ₋` = RH" a single checked chain and relocates RH
-  onto the **polarization existence** (T2 / `OmegaComplexStructure`'s `J`), attackable by index /
-  Hodge / period-domain tools that the spectral-reality frame could not use. Same difficulty as RH
-  (`riemannHypothesis_iff_seam_polarization` is an equivalence), different tools — exactly §4's
+- *Significance:* real — it makes "`κ₋` = definiteness = RH" a single checked chain (`KreinNonneg` ⟺
+  index-zero ⟺ `k = 0` ⟺ no off-line `ξ`-zeros ⟹ RH) and relocates RH onto the **polarization
+  existence**, attackable by index / Hodge / period-domain tools the spectral-reality frame could not
+  use. The last link to the `J` itself (T2 / `OmegaComplexStructure`) — that a positive compatible
+  complex structure yields this definiteness — is the one weld still to be checked. Same difficulty as
+  RH (`riemannHypothesis_iff_seam_polarization` is an equivalence), different tools — exactly §4's
   verdict "HP does not bypass the keystone; it relocates RH onto it."
 
 **Where it points (not a terminus):** the single open clause is the polarization `J`-existence = T2's
-weld `ω`. Move (1) is now **realized at the conjugate-pair Pick shadow**: `conjPair_offLine_not_kreinNonneg`
-+ `online_of_conjPair_pick_kreinNonneg` prove the argument principle and hence "definite ⟹ on-line"
-there, so `hpol` is provably the sole residual for that model. The remaining moves: (1′) **lift the
-discharge from the `1×1` Pick shadow to the full analytic seam** — the winding/box argument principle
-(`boundaryField_im_pos`, contour count) upgrading `online_of_conjPair_pick_kreinNonneg` to all zeros;
-(2) **attack `hpol`** as period-domain Rosati-positivity on `D_∞ = Sp_∞(ℝ)/U(∞)` (the T2 lane), the
-polarization as a Hodge point fixed by the arithmetic constraint; (3) **collide with T1** — test
-whether the second-harmonic sign (`euler-third-cumulant-discriminator`) is exactly the negative Krein
-direction the argument principle produces (one object, two fronts, per §5 move 4).
+weld `ω`. The argument principle is now a **theorem on the full finite carrier**, not an interface:
+`conjPairPick_not_kreinNonneg_of_witness` (any node set) + `online_of_conjPairPick_kreinNonneg`
+(definite ⟹ on-line) + the exact `factoredKrein_kreinNonneg_iff` (definite ⟺ `k = 0`, via
+`exact_neg_inertia`). So for the finite FE carrier the *only* residual is the polarization existence.
+The remaining moves: (1′) **cross from the finite carrier to `ξ`'s actual zeros** — the sole missing
+step is the carrier-from-`ξ` correspondence, which is precisely the rule-7 flow (`m_ξ = -Ξ'/Ξ`); the
+local-window form (`riemannHypothesis_of_local_online_windows` + a *local* finite Pick Gram from
+finitely many `ξ`-values, not the global carrier) is the non-flow candidate to test; (2) **attack
+`hpol`** as period-domain Rosati-positivity on `D_∞ = Sp_∞(ℝ)/U(∞)` (the T2 lane), the polarization as
+a Hodge point fixed by the arithmetic constraint; (3) **collide with T1** — test whether the
+second-harmonic sign (`euler-third-cumulant-discriminator`) is exactly the negative Krein direction the
+argument principle produces (one object, two fronts, per §5 move 4).
 
 ## Log
 - 2026-07-07 — created directly in 3-formalized: index-prong reduction proven + formalized axiom-clean
-  (`SeamSpectralFlow.lean`, 10 theorems, lint green); `κ₋ = 0` identified with definiteness and shown a
-  congruence invariant; RH reduced to seam-form definiteness (gate + equivalence). Argument principle
-  discharged for the conjugate-pair Pick model (`conjPair_offLine_not_kreinNonneg`,
-  `online_of_conjPair_pick_kreinNonneg`: definite ⟹ on-line), leaving the polarization existence as
-  the sole open input. Dual-gate verdict: delivered × branch infrastructure, RH content relocated to
-  the polarization clause (T2).
+  (`SeamSpectralFlow.lean`, 19 declarations, lint green); `κ₋ = 0` identified with definiteness and
+  shown a congruence invariant; RH reduced to seam-form definiteness (gate + equivalence). Argument
+  principle discharged on the full finite carrier: `conjPairPick_not_kreinNonneg_of_witness` (any node
+  set), `online_of_conjPairPick_kreinNonneg` (definite ⟹ on-line), and the exact
+  `factoredKrein_kreinNonneg_iff` (definite ⟺ `k = 0`, via `exact_neg_inertia`). Sole residual: the
+  polarization existence (the carrier-from-`ξ` cross being the rule-7 flow). Dual-gate verdict:
+  delivered × branch infrastructure, RH content relocated to the polarization clause (T2).
