@@ -6573,3 +6573,118 @@ is the pair-annihilation rule and interior conservation for admissible FE-symmet
 Phase C (quadrant-local charge — `wCharge_tower` makes "symmetric-aggregate vanishes mod 4" a
 reduction statement); expressing the whole `RH_{2^k}` ladder additively by feeding
 `wCharge_eq_zero_of_le` back to `RHLadderTheory`/`DeckWindow`.
+
+### Reviewer sharpened the bridge refutation → formalized §6 (doc 131) — 2026-07-07
+A reviewer's comment improved my deck↔cross-boundary refutation: exp of a square-zero cochain is
+UNIPOTENT (1+Δ), a nontrivial deck class is TORSION-SEMISIMPLE — different factors. (1+Δ)^(2^k)=1+2^k•Δ
+⟹ Δ=0 (torsion-free). Cleaner + more general than my commutative/trace argument (uses only my banked
+square-zero lemma). Formalized: pow_one_add_of_sq_zero, sq_zero_unipotent_root_trivial,
+crossBoundary_unipotent_root_trivial, one_add_mul_one_add_of_mul_zero. Corrected bridge = lifted cocycle
+g_k=w_k(1+Δ_k) in μ×(1+I), two INDEPENDENT projections; the real content is a coupling map Θ:H¹(μ)→H¹(I)
+realized by the prime action = the arithmetic apex. Correction PINS THE SHAPE (torsion→unipotent coupling,
+not exp). Gate green 9264, axiom-clean. Credited the review.
+
+## Phase B closed — argument-principle-free CERTIFIED + deck charge observable (doc 132)
+
+Phase B ("formalize the RH ladder without argument-principle dependence") had its
+equivalences already in Lean (docs 91, 92); the missing thing was the *adverb* — "without
+the argument principle" lived only in docstrings. Closed it two ways, full MainTheorems
+green (9265 jobs), lint passed, both files in the RHTower umbrella.
+
+- `RHTower/ArgumentPrincipleFree.lean` — self-validating machine-checked certificate. Walks
+  the transitive constant-dependency closure of a proof term and gates on: (a) no contour
+  marker (`circleIntegral`/`circleMap`/`intervalIntegral`) — the argument principle's only
+  mechanism in mathlib; (b) no axiom beyond propext/Classical.choice/Quot.sound. Certified
+  the engine (root_orders_dvd, pow_root_unique, exists_root_iff_orders_dvd,
+  coherentTower_iff_nonvanishing, deckClass_eq_one_iff_exists_root, …) + 22 capstones,
+  ~4800 constants each, all clean. Two positive controls (doubledTrace_pairing,
+  trace_parity_spectral_dichotomy) assert the traversal DOES see the spectral side's
+  circle integrals, so the clean verdict isn't vacuous. Scope is contour-specific by
+  design: ξ's Mellin definition pulls in MeasureTheory.integral (a defining real integral,
+  not a zero-counting loop) — that's allowed; the loop integral is what's absent.
+  KEY DESIGN NOTE: the transitive-closure scan of the capstones is already COMPLETE for the
+  property — it includes every auxiliary lemma they use — so no module-level scan is needed.
+
+- `RHTower/XiDeckCharge.lean` — the rung as a named observable: xiDeckCharge k ρ =
+  exp(2πi·ord/2^k) ∈ μ_{2^k}, root-choice-independent but = the deck class of actual chart
+  roots (xiDeckCharge_eq_chart_deckClass). rhLadder_iff_xiDeckCharge_one states the rung as
+  charge vanishing over rightHalf (no box exhaustion); rh_iff_xiDeckCharge for RH. Torsor
+  laws: root-of-unity (pow), dyadic coherence w_{k+1}²=w_k (succ_sq), V₄-invariance
+  (conj/one_sub/quadruple), parity face w_1=(-1)^ord (one_eq_neg_one_pow), height
+  stratification (w_k=1 ↔ k≤ladderHeight), and forall_xiDeckCharge_eq_one_iff_ne_zero (the
+  whole tower vanishes at ρ ⟺ ξ(ρ)≠0 — pointwise RH).
+
+Constraint-not-flow throughout: certified that the ladder is proved from the branch
+constraint (algebraic monodromy exp(2πi m/n) = log I − log(−I)), never a contour flow. The
+spectral holonomy (doc 122) is the flow reading of the SAME invariant — the two controls
+mark that exact seam. Forward (other phases): abstract xiDeckCharge to a general
+FE-symmetric carrier (Goldilocks/Phase H on the charge, not the zeros); push the order-vs-
+spectral seam (Phase C/E).
+
+### Weld with codex's additive charge
+Codex independently built DeckChargeLadder/DeckChargeCalculus: ladderCharge k ρ = ord mod 2^k
+∈ ZMod(2^k) (additive), with wCharge/deckRed abstract calculus (deckRed n k = exp(2πi k/n) in
+SignatureParity). That is my xiDeckCharge in the additive avatar. Rather than leave two parallel
+charges, welded them in DeckChargeBridge.lean: xiDeckCharge k ρ = deckRed(2^k)(ord) =
+deckChar(2^k)(ladderCharge k ρ), and xiDeckCharge=1 ↔ ladderCharge=0. My distinct content is the
+GEOMETRIC realization (xiDeckCharge_eq_chart_deckClass: the exp value is the actual monodromy of
+ξ chart roots) + the certificate; codex's is the additive calculus + reflection-depth invisibility.
+Bridge certified integration-free & axiom-clean, MainTheorems green (9266 jobs), lint passed.
+
+### Forward moves executed (carrier abstraction + order-spectral seam)
+Hook flagged that naming forward moves ⟹ not exhausted. Executed them:
+- CarrierDeckCharge.lean: carrierCharge f k ρ = deckRed(2^k)(ord f ρ) for ANY carrier f.
+  Root-of-unity/coherence/parity unconditional; exists_root_iff_carrierCharge_trivial (Kummer
+  obstruction as one observable, any carrier); V₄-invariance CONDITIONAL on the two symmetries
+  (carrierCharge_conj via analyticOrderAt_conj_conj, carrierCharge_one_sub via
+  analyticOrderAt_comp_one_sub — both generic, already in tree). xiDeckCharge = carrierCharge xi
+  (DeckChargeBridge). Charge scans only ~2493 constants (no ζ dependency) — genuinely foundational.
+- HolonomyChargeBridge.lean: trace_holonomy_eq_carrierCharge_one — the circle-trace holonomy of
+  any carrier at an isolated zero = carrierCharge f 1 ρ. Welds constraint charge to the spectral
+  holonomy's order side.
+- Certificate 3-level grading (machine-checked, probed empirically): charge (circleMap=F,intInt=F)
+  → holonomy weld (circleMap=T,intInt=F, #assert_no_loop_integral) → spectral pairing
+  (intInt=T, #assert_uses_loop_integral). Constraint→path→flow ascent, charge pinned at constraint.
+MainTheorems green (9271 jobs), lint passed. Rule 7 respected: reads GIVEN carriers' orders,
+constructs no carrier; welds to the deck-class (order) side of the holonomy, not the flow.
+
+---
+
+## 2026-07-07 (cont.) — Phase A to exhaustion: winding number, argument principle, quadrant charge
+
+Directive: mathlib gaps → build them; new geometry → build it. So the deferred follow-ons are now
+built, not handed off. Four more axiom-clean files (all lint green, in the RHTower umbrella):
+
+- **`DeckChargeLadder.lean`** — integrates the abstract charge with the concrete ξ objects:
+  `rhLadder_iff_ladderCharge_zero` (`RH_{2^k}` = every off-line ξ-zero has trivial rung-`k` charge),
+  `wCharge_invisible_below_reflection_depth` (additive reflection-symmetry blindness),
+  `wCharge_orbit_first_visible`. The coordinating GPT agent then built `DeckChargeBridge.lean` ON this
+  (welding `ladderCharge` to its geometric `xiDeckCharge`) — the two agents' rung conditions are one.
+
+- **`WindingNumber.lean`** — the genuine mathlib gap. mathlib has the branch of logarithm (via the
+  `exp` covering map) but NOT the integer winding number. Built it: `exists_contLog` (log on the line,
+  using `ContractibleSpace ℝ`), `contLog_increment_indep` (branch-independence — the crux: a
+  continuous `2πiℤ`-valued function on connected `ℝ` is constant, via `isClosedEmbedding_intCast` +
+  `IsLocallyConstant`), `windingNumber : ℤ`, and the full calculus `windingNumber_mul` (additivity),
+  `windingNumber_pow` (power), `windingNumber_eq_zero_iff` (⟺ log closes ⟺ root exists), plus
+  `loopCharge = windingNumber mod 2^k`. This is the doc's actual Phase-A object `w_k(γ;f)` — attached
+  to a loop, the obstruction to lifting through `z↦z^{2^k}`.
+
+- **`WindingArgumentPrinciple.lean`** — the winding = order bridge: `windingNumber_center_zero`
+  (a zero of order `m` winds the loop `m` times), `windingNumber_circle` (the unit circle winds once —
+  non-vacuity), `loopCharge_center_zero` (the loop deck charge around an order-`m` zero is
+  `wCharge (2^k) m`). The topological winding realisation and the algebraic `wCharge` are proven the
+  same observable on the local model — the crown connecting `WindingNumber` to `DeckChargeCalculus`.
+
+- **`RegionCharge.lean`** — the quadrant-local charge (new geometry): `regionCharge`,
+  `regionCharge_add_compl` (region+complement partition the total), `regionCharge_transport` (an
+  order-preserving involution swapping regions equalises their charges), `regionCharge_klein_equal`
+  (the FE Klein four-group `{s,1−s,s̄,1−s̄}` makes the four quadrant charges equal ⟹ total `= 4·q`,
+  blind mod 4, while `q` is the signal). This formalizes exactly why globally symmetric detectors are
+  too coarse and the detector must be quadrant-local.
+
+Confirmed mathlib has no argument principle / winding number before this (grep). Nothing framed as
+blocked: the winding number was built, the quadrant geometry was built, and the local argument
+principle welds the topological and algebraic charges. Springboards recorded on the card (global
+argument principle via degree/homotopy; Phase E pair-annihilation from transport+conservation;
+Phase F quadrant-ramified cover targeting the mod-4-invisible `q`).

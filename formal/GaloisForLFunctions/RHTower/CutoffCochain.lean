@@ -294,4 +294,105 @@ theorem crossBoundary_two_cutoff_asymmetry :
     have := congrFun (congrFun h 1) 0
     norm_num at this
 
+/-! ### §6 The unipotent obstruction: a boundary cochain cannot exponentiate to a deck root of unity -/
+
+/-- **The unipotent expansion.**  For a square-zero element `Δ` (`Δ² = 0`), `(1 + Δ)ⁿ = 1 + n·Δ`:
+the binomial collapses past the linear term, so `exp Δ = 1 + Δ` is unipotent. -/
+theorem pow_one_add_of_sq_zero {Δ : E} (h : Δ * Δ = 0) (n : ℕ) :
+    (1 + Δ) ^ n = 1 + n • Δ := by
+  induction n with
+  | zero => simp
+  | succ k ih =>
+    rw [pow_succ, ih, add_mul, mul_add, mul_add, one_mul, mul_one, one_mul, succ_nsmul]
+    have hkΔ : (k • Δ) * Δ = k • (Δ * Δ) := by rw [smul_mul_assoc]
+    rw [hkΔ, h, smul_zero, add_zero]; abel
+
+/-- **A unipotent boundary cochain is never a nontrivial deck root of unity.**  If `1 + Δ` has finite
+multiplicative order dividing `2^k` — the order type of a deck class `w_k ∈ μ_{2^k}` — then in a
+torsion-free ring `Δ = 0`.  Because `(1 + Δ)^{2^k} = 1 + 2^k·Δ` (unipotent), being a `2^k`-th root of
+unity forces `2^k·Δ = 0`, hence `Δ = 0`.  A nonzero square-zero cochain cannot exponentiate to a
+nontrivial root of unity: **unipotent and torsion-semisimple live in different factors.** -/
+theorem sq_zero_unipotent_root_trivial [NoZeroSMulDivisors ℕ E]
+    {Δ : E} (h : Δ * Δ = 0) {k : ℕ} (hroot : (1 + Δ) ^ (2 ^ k) = 1) : Δ = 0 := by
+  have hp := pow_one_add_of_sq_zero h (2 ^ k)
+  rw [hroot] at hp
+  have h0 : (2 ^ k) • Δ = 0 := left_eq_add.mp hp
+  rcases (smul_eq_zero).mp h0 with hc | hc
+  · exact absurd hc (pow_ne_zero k (by norm_num))
+  · exact hc
+
+/-- **The cross-boundary cochain cannot exponentiate to a nontrivial deck class.**  Applied to
+`Δ = crossBoundary e a` (square-zero by `crossBoundary_mul_crossBoundary`): if `1 + (1−e)·a·e` is a
+`2^k`-th root of unity in a torsion-free ring, the cochain vanishes.  So the deck ladder `w_k` (a
+torsion element of `μ_{2^k}`) is **not** `exp` of the cross-boundary cochain — the labelled bridge
+`w_k = exp(Δ)` is false for every nontrivial `w_k`.  The correct coupling is the lifted datum
+`g_k = w_k·(1 + Δ)` (torsion × unipotent), whose two independent projections are the deck class and
+the seam cochain — not an exponential identification of one with the other. -/
+theorem crossBoundary_unipotent_root_trivial [NoZeroSMulDivisors ℕ E]
+    {e a : E} (he : IsIdempotentElem e) {k : ℕ}
+    (hroot : (1 + crossBoundary e a) ^ (2 ^ k) = 1) : crossBoundary e a = 0 :=
+  sq_zero_unipotent_root_trivial (crossBoundary_mul_crossBoundary e a a he) hroot
+
+/-- **The unipotent group of a square-zero ideal is additive.**  When `Δ·Δ' = 0`,
+`(1 + Δ)·(1 + Δ') = 1 + (Δ + Δ')`: multiplication of unipotents is addition of cochains.  This is the
+group law of the seam side of the lifted gluing datum `g_k = w_k·(1 + Δ_k)` — the additive `[Δ]`-face,
+distinct from the multiplicative torsion `[w_k]`-face. -/
+theorem one_add_mul_one_add_of_mul_zero {Δ Δ' : E} (h : Δ * Δ' = 0) :
+    (1 + Δ) * (1 + Δ') = 1 + (Δ + Δ') := by
+  rw [add_mul, mul_add, mul_add, one_mul, mul_one, one_mul, h, add_zero]; abel
+
+/-! ### §7 Closing the open seam: the traceless corner becomes a zero-free Euler factor -/
+
+/-- The surviving cutoff-crossing corner, as a concrete matrix — the open seam `Δ = (1−e)·σ·e`. -/
+def crossWitness : Matrix (Fin 2) (Fin 2) ℚ := !![0, 0; 1, 0]
+
+/-- The open corner is a genuine cross-boundary cochain of a cutoff. -/
+theorem crossWitness_eq_crossBoundary :
+    crossWitness = crossBoundary (!![1, 0; 0, 0] : Matrix (Fin 2) (Fin 2) ℚ) !![0, 0; 1, 0] := by
+  have hsub : (!![(1:ℚ),0;0,1] - !![(1:ℚ),0;0,0]) = !![(0:ℚ),0;0,1] := by
+    ext i j; fin_cases i <;> fin_cases j <;> simp
+  rw [crossWitness, crossBoundary, Matrix.one_fin_two, hsub, Matrix.mul_fin_two, Matrix.mul_fin_two]
+  norm_num
+
+/-- **The open seam is traceless** (`crossBoundary_trace_zero` instance): an open crossing carries no
+trace, so it has no characteristic determinant of its own. -/
+theorem crossWitness_trace_zero : crossWitness.trace = 0 := by
+  rw [crossWitness, Matrix.trace_fin_two]; norm_num
+
+/-- The **closed seam** `Δᵀ·Δ`: the canonical closure of the open crossing. -/
+def closedSeam : Matrix (Fin 2) (Fin 2) ℚ := crossWitnessᵀ * crossWitness
+
+theorem closedSeam_eq : closedSeam = !![1, 0; 0, 0] := by
+  rw [closedSeam, crossWitness,
+    show (!![(0:ℚ),0;1,0])ᵀ = !![(0:ℚ),1;0,0] by ext i j; fin_cases i <;> fin_cases j <;> simp,
+    Matrix.mul_fin_two]
+  norm_num
+
+/-- **The closed seam is a rank-one idempotent.**  Closing the open crossing produces a projection —
+the object with a trace and a determinant that the open corner lacked. -/
+theorem closedSeam_idempotent : IsIdempotentElem closedSeam := by
+  rw [closedSeam_eq]; show _ * _ = _; rw [Matrix.mul_fin_two]; norm_num
+
+/-- **The closed seam has trace one** — where the open seam was traceless.  This is the correction
+that gives the crossing a determinant: `Δ` is traceless, but `Δᵀ·Δ` is a rank-one projection. -/
+theorem closedSeam_trace_one : closedSeam.trace = 1 := by
+  rw [closedSeam_eq, Matrix.trace_fin_two]; norm_num
+
+/-- **The closed seam's characteristic determinant is the local Euler-factor shape.**
+`det(1 − λ·(Δᵀ·Δ)) = 1 − λ`; with `λ = p^(−s)` this is the local Euler factor `1 − p^(−s)`, so
+`det(1 − λ·closedSeam)⁻¹ = (1 − p^(−s))⁻¹`.  The closed seam recovers the Euler factor — **but that
+determinant is zero only at `λ = 1`**, so it is the **zero-free** Euler factor.  The divisor (the
+strip zeros) is *not* in the closed seam or its finite Euler product; it lives across the wall of
+convergence `Re s = 1`, reachable only by an analytic continuation the determinant does not supply.
+Closing the seam produces the prime side, not the divisor. -/
+theorem det_one_sub_smul_closedSeam (lam : ℚ) :
+    (1 - lam • closedSeam).det = 1 - lam := by
+  rw [closedSeam_eq, Matrix.one_fin_two,
+    show lam • (!![(1:ℚ),0;0,0] : Matrix (Fin 2) (Fin 2) ℚ) = !![lam,0;0,0] by
+      ext i j; fin_cases i <;> fin_cases j <;> simp,
+    show (!![(1:ℚ),0;0,1] - !![lam,0;0,0]) = !![1-lam,0;0,1] by
+      ext i j; fin_cases i <;> fin_cases j <;> simp,
+    Matrix.det_fin_two]
+  simp
+
 end RHTower

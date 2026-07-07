@@ -112,13 +112,31 @@ its additive `log`-face — the two readings of one obstruction. **That is false
   `log`/`exp`-related.
 
 So the deck ladder (commutative, abelian, circular — doc 128) and the cross-boundary cochain
-(non-commutative, traceless, non-circular) are **not** the two faces of one gluing datum. The
-cross-boundary cochain carries content **only** in a genuinely non-commutative operator algebra — it
-needs the action not to commute with the cutoff, which is the non-local Fourier structure. A real
-coupling of the two would have to pair the non-commutative traceless cochain with the abelian deck
-class through a nontrivial pairing — and a pairing of a traceless operator cochain with an abelian
-class over a non-commutative algebra **is** Connes' cyclic cohomology / the trace-formula pairing:
-literature (rule 8) or the missing-Weil apex. The last non-barred forward move collapses into the §5
-boundary: there is no elementary deck ↔ cochain bridge, and the only coupling is the cited
-trace-level construction. The abelian ladder and the non-commutative cochain meet only where Connes
-already put them — at the trace, not at a germ.
+(non-commutative, traceless, non-circular) are **not** the two faces of one gluing datum.
+
+**Sharper refutation (from review, formalized).** There is a cleaner obstruction that needs *only*
+the square-zero property (`crossBoundary_mul_crossBoundary`), not commutativity or a trace:
+`exp Δ = 1 + Δ` for a square-zero `Δ` is **unipotent**, while a nontrivial deck class `w_k ∈ μ_{2^k}`
+is **torsion-semisimple** — they live in different factors. Concretely `(1 + Δ)^{2^k} = 1 + 2^k·Δ`
+(`pow_one_add_of_sq_zero`), so if `1 + Δ` is a `2^k`-th root of unity then `2^k·Δ = 0`, hence `Δ = 0`
+in a torsion-free ring (`sq_zero_unipotent_root_trivial`, `crossBoundary_unipotent_root_trivial`).
+A nonzero cross-boundary cochain can never exponentiate to a nontrivial `w_k`. This subsumes the
+commutative/trace refutation and holds in any characteristic-zero operator algebra.
+
+**The corrected bridge (from review, `[CONJECTURE]` for the coupling).** The right object is not
+`w_k = exp(Δ)` but the **lifted gluing datum** `g_k = w_k·(1 + Δ_k)` in the coefficient group
+`μ_{2^k}·(1 + I)` (torsion × unipotent), `I` the square-zero cochain ideal. Since `I² = 0`, the
+unipotent factor is additive — `(1 + Δ)(1 + Δ') = 1 + (Δ + Δ')` (`one_add_mul_one_add_of_mul_zero`) —
+so `1 + I ≅ I`, and a lifted cocycle is a pair `(w_{ij}, Δ_{ij})` whose Čech condition splits into the
+multiplicative `w_{ij}w_{jk}w_{ki} = 1` and the additive `Δ_{ij} + Δ_{jk} + Δ_{ki} = 0`. Its two
+**independent** projections are the deck class `[w] ∈ H¹(X, μ_{2^k})` and the seam class
+`[Δ] ∈ H¹(X, I)`. The point the correction makes precise: in the direct product the two classes do
+**not** determine each other — so the lift is the correct *ambient group*, not a coupling. The real
+content is a **coupling map** `Θ : H¹(X, μ_{2^k}) → H¹(X, I)` with `Δ_k = Θ(w_k)` **produced by the
+actual prime action** `(1 − Q_λ)·U_p·Q_λ` after localization. That map is exactly the arithmetic
+realization (§5) — Connes' cyclic-cohomology / trace-formula pairing of the traceless cochain with the
+abelian class: literature (rule 8) or the missing-Weil apex. The last non-barred forward move
+collapses into the §5 boundary — but now with the *shape of what to build* pinned exactly: not an
+exponential identity, but a torsion→unipotent coupling map realized by the prime scaling action. The
+abelian ladder and the non-commutative cochain meet only where Connes already put them — at the trace,
+not at a germ — and the object that would put them there is the coupling `Θ`, not `exp`.

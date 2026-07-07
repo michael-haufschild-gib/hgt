@@ -1296,3 +1296,48 @@ a traceless operator cochain with an abelian class over a noncommutative algebra
 COHOMOLOGY / trace-formula pairing = literature (rule 8) or missing-Weil apex. The last non-barred
 forward move COLLAPSES into the §5 boundary: no elementary bridge; the two meet only at the trace,
 where Connes already put them. Both lemmas axiom-clean, gate green (9262 jobs).
+
+## CutoffCochain.lean §6 — reviewer's SHARPER refutation formalized + lifted-cocycle framing (doc 131 §6)
+A reviewer improved my deck↔cross-boundary refutation. Their argument is cleaner and MORE GENERAL than
+my commutative/trace one (§1b): it uses ONLY the square-zero property I banked.
+- pow_one_add_of_sq_zero: Δ²=0 ⟹ (1+Δ)^n = 1+n•Δ (binomial collapses; exp Δ = 1+Δ is UNIPOTENT).
+- sq_zero_unipotent_root_trivial [NoZeroSMulDivisors ℕ E]: (1+Δ)^(2^k)=1 ⟹ Δ=0 (2^k•Δ=0, torsion-free).
+- crossBoundary_unipotent_root_trivial: Δ=crossBoundary e a is square-zero ⟹ 1+Δ a nontrivial 2^k-root
+  of unity forces Δ=0. So w_k = exp(Δ) is FALSE for every nontrivial deck class.
+  KEY INSIGHT: unipotent (exp of nilpotent) vs torsion-semisimple (root of unity) live in DIFFERENT
+  factors. Holds in ANY char-0 operator algebra — subsumes my commutative/trace refutation.
+- one_add_mul_one_add_of_mul_zero: Δ·Δ'=0 ⟹ (1+Δ)(1+Δ')=1+(Δ+Δ') — unipotent group of a square-zero
+  ideal is ADDITIVE (1+I ≅ I). The additive seam-face group law of the lifted cocycle.
+CORRECTED BRIDGE (reviewer): not w_k=exp(Δ) but the LIFTED gluing datum g_k = w_k·(1+Δ_k) in
+μ_{2^k}·(1+I) = torsion × unipotent. Čech splits: w_ij w_jk w_ki=1 (mult) AND Δ_ij+Δ_jk+Δ_ki=0 (add).
+Two INDEPENDENT projections [w]∈H¹(μ_{2^k}), [Δ]∈H¹(I). CRITICAL: the direct product does NOT couple
+them — the lift is the ambient group, not a coupling. The real content = a COUPLING MAP Θ:H¹(μ)→H¹(I),
+Δ_k=Θ(w_k), produced by the actual prime action (1-Q_λ)U_p Q_λ. That Θ = the arithmetic realization =
+Connes cyclic cohomology / trace formula = literature(rule8)/missing-Weil apex. The correction PINS THE
+SHAPE of what to build: a torsion→unipotent coupling map realized by prime scaling, NOT an exp identity.
+All 4 lemmas axiom-clean (2 [propext]-only), gate green 9264. My §1b (commutative vanishing + traceless)
+retained as the geometric complement; §6 is the general algebraic refutation.
+
+## CutoffCochain.lean §7 — closing the seam recovers the (zero-free) Euler factor, NOT the divisor (doc 132)
+Evaluated a proposed Δ_p→C_p=Δ_p*Δ_p→det→divisor "Weil cohomology" pipeline. Correct fixes CREDITED,
+decisive gap LOCATED and formalized. 5 §7 endpoints axiom-clean, gate green 9269.
+- crossWitness = crossBoundary !![1,0;0,0] !![0,0;1,0] = !![0,0;1,0] (crossWitness_eq_crossBoundary).
+- crossWitness_trace_zero: the OPEN corner is traceless (doc 131 §6) — no determinant of its own.
+- closedSeam = crossWitnessᵀ·crossWitness = !![1,0;0,0]: rank-one IDEMPOTENT (closedSeam_idempotent),
+  TRACE 1 (closedSeam_trace_one). Closing the open seam gives a projection with a trace — the proposal's
+  correct fix to my tracelessness point.
+- det_one_sub_smul_closedSeam: det(1 - λ·closedSeam) = 1 - λ = the LOCAL EULER FACTOR shape (λ=p^{-s} ⟹
+  1-p^{-s}). But 1-λ = 0 ONLY at λ=1 ⟹ ZERO-FREE. Closing the seam recovers the PRIME SIDE
+  (eulerPartial_zeroSet_eq_empty, doc 127), not the divisor.
+DECISIVE GAP: Z_fin(s)=det(1-⊕_p p^{-s}C_p)^{-1} is trace-class / DEFINED ONLY on Re s>1 (Σ p^{-Re s}<∞).
+There ξ has NO zeros ⟹ m_ρ=ord Z_ξ = 0 for every ρ in the domain: on its own domain the construction
+detects NO zeros. Nontrivial zeros are in the strip, OUTSIDE. Step 5 (m_ρ=Res L_ξ) silently continues
+Z_ξ across Re s=1 — the Fredholm det does NOT supply this (not trace-class past the wall); that
+continuation IS ζ's classical continuation = flow (rule 7) = importing ζ. Inserted-by-hand: p^{-s}
+weight (C_p only gives "rank one"; Δ*_s Δ_s = |p^{-s}|² real, not holomorphic p^{-s}), Γ-completion
+(Z_ξ:=ξ by definition). Same wall as docs 105/106/127/131 (carrier-support disjointness).
+VERDICT: real advance (removes reverse-engineered Π, closes the seam correctly, canonical germ Fitting
+m_ρ Y^{m_ρ-1} GIVEN the divisor) but does NOT produce the divisor — rebuilds ζ's Euler product on Re s>1,
+inserts Γ-factor, reads ξ's zeros via imported continuation. Smuggling moved from "reverse-engineered Π"
+to "silent continuation of the Fredholm det past the trace-class wall." APEX sharpened: continue
+det(1-⊕p^{-s}C_p)^{-1} past the trace-class wall by the SEAM'S OWN SYMMETRY (FE emergent, not inserted).

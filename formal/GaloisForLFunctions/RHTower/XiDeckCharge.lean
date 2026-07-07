@@ -173,4 +173,22 @@ theorem xiDeckCharge_one_eq_neg_one_pow (ρ : ℂ) :
     ring
   rw [harg, exp_nat_mul, exp_pi_mul_I]
 
+/-- **The whole charge tower vanishes exactly off the divisor.**  The level-`k` charge is
+`1` for every `k` iff ξ does not vanish at `ρ`: a positive finite order cannot be divisible
+by every `2^k`.  This is the pointwise form of RH — RH is this at every right-half point. -/
+theorem forall_xiDeckCharge_eq_one_iff_ne_zero (ρ : ℂ) :
+    (∀ k, xiDeckCharge k ρ = 1) ↔ xi ρ ≠ 0 := by
+  constructor
+  · intro h hz
+    have hdvd : ∀ k, 2 ^ k ∣ (analyticOrderAt xi ρ).toNat := fun k =>
+      (xiDeckCharge_eq_one_iff_toNat_dvd k ρ).mp (h k)
+    have hne : (analyticOrderAt xi ρ).toNat ≠ 0 := xi_order_toNat_ne_zero hz
+    have h2 : 2 ^ (analyticOrderAt xi ρ).toNat ≤ (analyticOrderAt xi ρ).toNat :=
+      Nat.le_of_dvd (Nat.pos_of_ne_zero hne) (hdvd _)
+    have h3 : (analyticOrderAt xi ρ).toNat < 2 ^ (analyticOrderAt xi ρ).toNat :=
+      Nat.lt_pow_self (by norm_num)
+    omega
+  · intro h k
+    exact xiDeckCharge_eq_one_of_ne_zero k h
+
 end RHTower

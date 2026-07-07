@@ -380,202 +380,481 @@ Everything else should be treated as either literature, a killed route, or an ad
 
 # Conditional theorem: quadrant deck charge dies if the seam and infinity cannot absorb it
 
-Let
+I can reduce it, but not to zero. The honest state is:
+
+[
+\textbf{far-field zero charge and ordinary deck conservation are theorems;}
+]
+
+[
+\textbf{the seam/terminal dichotomy is the real open core, and the naive seam-parity version is too weak.}
+]
+
+I will keep the proof strictly at level (w_1), so the target is only
+
+[
+RH_2:\quad \text{every off-line zero has even multiplicity,}
+]
+
+not full RH. RH itself remains listed by Clay as unsolved. ([Clay Mathematics Institute][1]) Your note is also explicit that the document is a search register, not promoted proof text.
+
+## 1. What can be made unconditional
+
+Put
+
+[
+Y(z):=\xi!\left(\frac12+z\right).
+]
+
+The functional equation gives
+
+[
+Y(-z)=Y(z),
+]
+
+so (Y) is even. Therefore there is a unique entire function (X) such that
+
+[
+Y(z)=X(z^2),
+]
+
+namely
 
 [
 X(u)=\xi!\left(\frac12+\sqrt u\right).
 ]
 
-Use the principal square root on the slit plane
+This is exactly the `xiDescent` object in your note: the functional equation is quotiented away, the descent is entire and branch-free, and RH becomes nonvanishing of this descended function on the slit plane.
+
+Now let (u_0=z_0^2\neq 0), with (u_0) off the seam. Suppose (Y) has a zero of order (m) at (z_0). Since (Y) is even, it also has a zero of order (m) at (-z_0). Hence locally
 
 [
-D:=\mathbb C\setminus (-\infty,0].
+Y(z)=(z-z_0)^m(z+z_0)^m H(z)
+=(z^2-z_0^2)^m H(z).
 ]
 
-The negative real axis is the image of the critical line, since
+Because the quotient is still even, (H(z)=K(z^2)) for some holomorphic (K). Therefore
 
 [
-s=\frac12+it
+X(u)=(u-u_0)^m K(u).
+]
+
+So the (u)-plane descent preserves the relevant multiplicity:
+
+[
+\operatorname{ord}_{u_0}X=m.
+]
+
+Thus, for a small loop (\gamma_{u_0}) around (u_0),
+
+[
+w_1(\gamma_{u_0};X)
+===================
+
+\frac{1}{2\pi i}\int_{\gamma_{u_0}}\frac{X'(u)}{X(u)},du
+\pmod 2
+=======
+
+\operatorname{ord}_{u_0}X\pmod 2.
+]
+
+So
+
+[
+w_1(\gamma_{u_0};X)=1
+]
+
+is exactly the statement that the corresponding off-line zero of (\xi) has odd multiplicity.
+
+That part is clean.
+
+## 2. The far-field condition is not conditional
+
+Define the principal slit-plane region
+
+[
+D=\mathbb C\setminus (-\infty,0].
+]
+
+In the part of (D) satisfying
+
+[
+\Re\sqrt u>\frac12,
+]
+
+we have
+
+[
+s=\frac12+\sqrt u
 \quad\Longrightarrow\quad
-u=(it)^2=-t^2.
+\Re s>1.
 ]
 
-The uploaded note records the intended (u)-plane result: `xiDescent(w)=ξ(1/2+√w)` is entire, the descent is branch-free, and RH becomes nonvanishing of this descended function on the slit plane.
-
-For a small off-seam region (Q\Subset D) with (X\neq 0) on (\partial Q), define the level-1 deck charge
+But (\xi(s)) is zero-free for (\Re s>1). Therefore (X(u)\neq 0) there. Hence every loop (\gamma) contained in that far-field drain has
 
 [
-w_1(Q;X)
-:=
-\frac{1}{2\pi i}\int_{\partial Q}\frac{X'(u)}{X(u)},du
-\pmod 2.
+w_1(\gamma;X)=0.
 ]
 
-Equivalently,
+So the statement
 
 [
-w_1(Q;X)
-========
-
-\sum_{u_0\in Q,\ X(u_0)=0}\operatorname{ord}_{u_0}(X)
-\pmod 2.
+w_1(\infty;X)=0
 ]
 
-So (w_1(Q;X)=1) exactly means that (Q) contains an odd total multiplicity of off-seam zeros.
+can be promoted, provided “infinity” means the right-hand Euler-product drain, not an arbitrary large circle in the (u)-plane. Your note already records this as the far-field anchor: boxes right of (\Re s=1) carry zero deck charge at every rung.
 
-Now assume the following three lemmas.
+So Lemma B is not the problem.
 
-### Lemma A: charge-transport dichotomy
+## 3. Ordinary conservation is also not conditional
 
-Every nonzero quadrant-local deck charge has only two possible terminal behaviors:
+If (\gamma_t) is a homotopy of loops avoiding (X^{-1}(0)), then
 
 [
-w_1(Q;X)=1
-\quad\Longrightarrow\quad
-\text{the charge either reaches the seam or reaches the far field.}
+w_1(\gamma_t;X)
 ]
 
-More explicitly, there is a charge-transport chain (\Gamma_Q) beginning at (Q) and ending either on the slit seam (\Sigma=(-\infty,0]) or at the far-field boundary (\infty), and deck charge is conserved along (\Gamma_Q).
+is constant in (t). Similarly, if (X_t) is a deformation and (X_t\neq 0) on a fixed contour, then the deck charge on that contour is constant. This is just homotopy invariance of the winding number.
 
-This is the main missing lemma. It is stronger than ordinary homotopy invariance. Ordinary deck-charge conservation says charge cannot change while a contour avoids zeros; the dichotomy says an interior quadrant defect cannot simply sit as an isolated permanent obstruction. Your note identifies this as the live coupling of the two fronts: conservation forbids interior creation/destruction, but annihilation needs a parity input.
+Your note already has this in machine-checked form as `deckClass_step`, `deckClass_chain`, and `deckClass_deformation_invariant`.
 
-### Lemma B: far-field anchor
+So the real issue is not conservation. The issue is **where a nonzero local class is forced to go**.
 
-No level-1 deck charge can persist to the far field:
+## 4. The terminal dichotomy is not a topological theorem
+
+The previous conditional proof assumed:
 
 [
-w_1(\infty;X)=0.
+\text{every nonzero quadrant-local charge terminates at the seam or far field.}
 ]
 
-This corresponds to the already banked “far-field drain”: boxes to the right of (\Re s=1) carry zero deck charge at every rung.
+That is not true from topology alone.
 
-### Lemma C: seam odd-charge exclusion
+A small loop around an off-seam zero is a generator of the punctured-plane homology. It is not homotopic to a far-field loop unless one crosses the zero or supplies a deformation moving the zero. Conservation only says the charge cannot change while the contour avoids zeros; it does **not** say the charge must travel to the boundary.
 
-No transported quadrant-local odd charge can be absorbed by the seam:
+A simple countermodel shows the danger:
 
 [
-w_1(\Sigma\text{-endpoint};X)=0.
+P(u)=u^2+1.
 ]
 
-This must be interpreted carefully. It cannot merely mean “the total seam charge is even,” because two odd quadrant defects could then cancel against an even seam packet. For the individual conclusion
+Then (P) is real entire, (P(x)>0) for (x>0), and it has one upper-half-plane zero at (i) and one lower-half-plane zero at (-i). Around (i),
 
 [
-w_1(Q;X)=0\quad\text{for every quadrant-local }Q,
+w_1=1.
 ]
 
-the required seam rule is stronger:
+The symmetric aggregate charge is
 
 [
-\text{every individual admissible seam endpoint has level-1 charge }0.
+1+1=0\pmod 2,
 ]
 
-The note has a proven fixed-locus parity anchor for the FE fixed point and records that (w_1) is trivial at the FE fixed point from the functional equation alone.  But extending that to the whole slit seam is not automatic; zeros on the critical line may have odd multiplicity. So Lemma C is not currently supplied by ordinary FE symmetry alone. It is exactly the seam-parity lemma that would have to be proved by the quadrant/seam machinery.
+but the upper quadrant-local charge is nonzero. It does not terminate at the negative real seam or at the positive far-field drain. It sits in a compact conjugate-pair island.
 
-## Proof
+This is exactly the blindness your note warns about: FE/reality-symmetric aggregates can vanish modulo (4), so symmetric detectors miss the quadrant-local defect.
 
-Assume, toward contradiction, that there is an off-seam quadrant-local region (Q\Subset D) with
+Therefore Lemma A cannot be replaced by ordinary homology or ordinary conservation. It needs an additional forcing principle.
 
-[
-w_1(Q;X)=1.
-]
-
-By Lemma A, this nonzero charge has a conserved transport chain whose terminal endpoint is either the far field or the seam.
-
-First suppose the terminal endpoint is the far field. Since charge is conserved along the transport chain,
-
-[
-w_1(Q;X)=w_1(\infty;X).
-]
-
-But Lemma B gives
-
-[
-w_1(\infty;X)=0.
-]
-
-Hence
-
-[
-w_1(Q;X)=0,
-]
-
-contradicting (w_1(Q;X)=1).
-
-Now suppose the terminal endpoint is the seam. Again, conservation along the chain gives
-
-[
-w_1(Q;X)=w_1(\Sigma\text{-endpoint};X).
-]
-
-By Lemma C,
-
-[
-w_1(\Sigma\text{-endpoint};X)=0.
-]
-
-Therefore
-
-[
-w_1(Q;X)=0,
-]
-
-again contradicting (w_1(Q;X)=1).
-
-Both possible terminal behaviors contradict nonzero charge. Therefore no such (Q) exists. Hence
+The reduced obstruction is:
 
 [
 \boxed{
-w_1(Q;X)=0
-\quad\text{for every quadrant-local off-seam region }Q\Subset D.
+\text{rule out compact odd conjugate-pair islands.}
 }
 ]
 
-In particular, if (Q) is chosen small enough to contain exactly one off-seam zero (u_0) of (X), then
+That is the real content.
+
+## 5. The naive seam-parity rule is too weak
+
+The statement
 
 [
-w_1(Q;X)
-========
-
-\operatorname{ord}_{u_0}(X)\pmod 2.
+\text{“seam parity forbids unmatched odd charge”}
 ]
 
-Thus
+needs refinement, because at level (w_1) there is no distinction between equal and opposite:
 
 [
-\operatorname{ord}_{u_0}(X)\equiv 0\pmod 2.
+-1=1\quad\text{in }\mathbb Z/2.
 ]
 
-So every off-seam zero of (X) has even multiplicity.
+So “equal-and-opposite seam charge” cannot be expressed using ordinary (w_1) alone. One needs a lifted or relative invariant: a signed charge, a (\mathbb Z/4)-charge, or a half-seam boundary class.
 
-Since off-seam zeros of (X(u)=\xi(1/2+\sqrt u)) correspond to off-critical-line zeros of (\xi) in the right half-plane, this proves the first ladder rung:
+There is also a local model showing why ordinary seam parity is insufficient. Consider the real-symmetric family
 
 [
-RH_2:
+P_t(u)=(u-a)^2+t^2.
+]
+
+For (t>0), it has zeros
+
+[
+a+it,\qquad a-it.
+]
+
+The upper zero has quadrant-local charge
+
+[
+w_1=1.
+]
+
+At (t=0), the pair collides on the real seam and becomes
+
+[
+P_0(u)=(u-a)^2,
+]
+
+a double seam zero. The ordinary seam multiplicity is even, so ordinary seam (w_1) is zero. But the upper quadrant-local charge before collision was nonzero.
+
+So an even seam zero does **not** forbid an odd upper charge. It can be exactly the endpoint of an upper/lower odd pair.
+
+This means the seam statement must be upgraded from
+
+[
+\operatorname{ord}_{\Sigma}X\equiv 0\pmod 2
+]
+
+to something like
+
+[
+\frac12\operatorname{ord}_{\Sigma}^{\mathrm{collision}}X\equiv 0\pmod 2,
+]
+
+or, better, to a relative boundary class in a quadrant-ramified cover.
+
+The central fixed-point parity theorem is real, but it only anchors the fixed locus. Your note records that (w_1) is trivial at the FE fixed point from FE alone, while also warning that off-line detectors must be quadrant-local.
+
+So Lemma C reduces to a sharper missing theorem:
+
+[
+\boxed{
+\text{the relevant half-seam / relative seam boundary class vanishes.}
+}
+]
+
+Ordinary seam parity is not enough.
+
+## 6. A cleaner reduction: replace seam transport by defect recurrence
+
+The least conditional version I can honestly prove is this:
+
+> **Reduced theorem.**
+> Fix (\sigma_0>1/2), a height (H>0), and level (w_1). Suppose the following defect-recurrence property holds:
+>
+> If one box
+>
+> [
+> B(T_0)=(\sigma_0,2)\times(T_0,T_0+H)
+> ]
+>
+> has
+>
+> [
+> w_1(B(T_0))=1,
+> ]
+>
+> then boxes with (w_1=1) occur for a relatively dense set of heights (T).
+>
+> Then (w_1\equiv 0) for all such boxes. Consequently every zero of (\xi) with (\Re s>\sigma_0) has even multiplicity.
+
+Here is the proof.
+
+Assume some box has
+
+[
+w_1(B(T_0))=1.
+]
+
+Then that box contains at least one zero of (\xi) with (\Re s>\sigma_0).
+
+By defect recurrence, there is (L>0) such that every interval of heights of length (L) contains some (T) with
+
+[
+w_1(B(T))=1.
+]
+
+Choose a separated subcollection of such boxes so that they are disjoint. Up to height (T), this gives
+
+[
+\gg T
+]
+
+disjoint boxes, each containing at least one zero with (\Re s>\sigma_0). Therefore
+
+[
+N(\sigma_0,T)\gg T.
+]
+
+But Ingham’s zero-density theorem gives, for every fixed (\sigma_0>1/2),
+
+[
+N(\sigma_0,T)
+\ll
+T^{3(1-\sigma_0)/(2-\sigma_0)}\log^C T.
+]
+
+Since
+
+[
+\frac{3(1-\sigma_0)}{2-\sigma_0}<1
 \quad
-\text{every off-line zero of }\xi\text{ has even multiplicity.}
+\text{for }\sigma_0>1/2,
 ]
 
-The note records this ladder as the surviving Kummer/deck formulation: (RH_{2^k}) says every off-line multiplicity is divisible by (2^k), and the all-level ladder is equivalent to RH.  It also records that the exact deck-class ladder survives the later kill of the bare ({\sigma_p})-graded divisor route.
+this is
 
-## The exact open gap
+[
+o(T).
+]
 
-The proof above is valid only after Lemmas A, B, and C are established. Lemma B is the most secure part. The real missing core is:
+Contradiction.
+
+Therefore no box has (w_1=1). Shrinking boxes around an isolated zero gives
+
+[
+\operatorname{ord}_\rho \xi\equiv 0\pmod 2
+]
+
+for every zero (\rho) with (\Re\rho>\sigma_0). Since (\sigma_0>1/2) was arbitrary, this proves (RH_2).
+
+This is exactly the reduction your note states in §5: defect recurrence plus zero-density kills the cocycle.  The note also correctly says this is a rerouting of the burden, not a weakening, because all-level recurrence would be equivalent to RH; its value is that it grades the burden by (k) and starts with a coarse (\mathbb Z/2)-invariant.
+
+## 7. What conditionality remains after the reduction
+
+The old three conditions were:
+
+[
+A=\text{terminal dichotomy},
+]
+
+[
+B=\text{far-field zero charge},
+]
+
+[
+C=\text{seam odd-charge exclusion}.
+]
+
+After reduction:
+
+[
+B
+]
+
+is a theorem.
+
+The conservation part of
+
+[
+A
+]
+
+is a theorem.
+
+But the terminal part of
+
+[
+A
+]
+
+is not topological; it is equivalent to forbidding compact odd conjugate-pair islands.
+
+And
+
+[
+C
+]
+
+must be replaced by a relative half-seam statement, because ordinary seam parity is blind to an upper/lower odd pair.
+
+So the reduced open core is not three vague assumptions. It is one sharp missing mechanism:
 
 [
 \boxed{
-\text{quadrant-local charge-transport dichotomy + seam odd-endpoint exclusion.}
+\text{an odd quadrant-local deck defect must replicate, or else it must create a nonzero relative seam boundary class.}
 }
 ]
 
-Without those, the argument is not a proof; it is a conditional reduction.
+Then one needs to prove that the relative seam boundary class is impossible for (\xi).
 
-The most dangerous logical gap is Lemma C. Ordinary symmetry gives cancellation in symmetric aggregates, but the note itself warns that quadruples make symmetric-region charge vanish modulo (4), so symmetric detectors are blind and the detector must be quadrant-local.  Therefore the seam rule must be a **local endpoint rule**, not merely a global parity statement.
+## 8. Why the free ({\sigma_p})-route cannot supply the missing mechanism
 
-So the correct promoted statement is:
+One tempting move would be:
 
-> **Proposition.**
-> Let (X(u)=\xi(1/2+\sqrt u)). Assume the quadrant-local charge-transport dichotomy, the far-field zero-charge anchor, and the local seam odd-endpoint exclusion. Then (w_1(Q;X)=0) for every quadrant-local off-seam region (Q). Consequently every off-line zero of (\xi) has even multiplicity.
+[
+\text{odd deck defect}
+\quad\Rightarrow\quad
+{\sigma_p}\text{-graded divisor defect}
+\quad\Rightarrow\quad
+\text{recurrence or mismatch}.
+]
 
-That is the proofable theorem. The unproved theorem you still need is the seam/transport lemma.
+But your wave-6 amendment kills that inside bare (\mathcal M^+). The finite Euler layers and the archimedean factor are local units at strip points, the source map is zero, and the free reference is deck-invisible.
+
+So the surviving path cannot be “dress (\xi) by the free Euler tower and compare deck classes.” Your note says the exact deck ladder survives, but the ({\sigma_p})-graded divisor refinement does not.
+
+That means the only honest seam-based continuation is the torsion seam object:
+
+[
+R^n\xrightarrow{A}R^n\to Q,\qquad \det A=X^m,
+]
+
+with boundary
+
+[
+\operatorname{tr}(\operatorname{adj}(A)\Delta_p)\bmod X^m.
+]
+
+The first real theorem there is not RH and not recurrence. It is the non-fakeness theorem
+
+[
+\Delta_p\notin A\cdot \operatorname{End}+(X^m).
+]
+
+Your note identifies exactly this as the required next definition layer.
+
+## Bottom line
+
+The conditional proof can be reduced to this:
+
+[
+\boxed{
+\text{Proved: descent, multiplicity preservation, local deck charge, conservation, far-field drain.}
+}
+]
+
+[
+\boxed{
+\text{False/too weak: ordinary topology forcing every defect to the seam or infinity.}
+}
+]
+
+[
+\boxed{
+\text{False/too weak: ordinary seam parity forbidding quadrant-local odd charge.}
+}
+]
+
+[
+\boxed{
+\text{Remaining core: prove defect recurrence, or construct a relative half-seam invariant that an odd compact island cannot hide from.}
+}
+]
+
+The cleanest reduced theorem is:
+
+[
+\boxed{
+\text{defect recurrence of }w_1
+\quad+\quad
+\text{Ingham zero-density}
+\quad\Longrightarrow\quad
+RH_2.
+}
+]
+
+That is a genuine reduction. It removes the vague seam/far-field story and leaves one precise target: **force recurrence or force a nonzero torsion seam boundary from a single odd quadrant-local deck defect.**
 
 [1]: https://www.claymath.org/millennium/riemann-hypothesis/ "Riemann Hypothesis - Clay Mathematics Institute"

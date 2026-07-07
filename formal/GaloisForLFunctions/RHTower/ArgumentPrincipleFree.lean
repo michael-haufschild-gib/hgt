@@ -24,7 +24,11 @@ verifies:
 * the closure contains **no** contour-integration constant — nothing whose name carries
   `circleIntegral`, `circleMap`, or `intervalIntegral`; a contour integral in mathlib is
   always one of these, so their joint absence certifies that no argument-principle
-  mechanism enters;
+  mechanism enters.  The target is contour integration specifically, not integration in
+  general: ξ is built from `completedRiemannZeta₀`, whose definition is a Mellin integral
+  over `(0, ∞)`, so the closure does contain `MeasureTheory.integral` — a real integral
+  that defines the object, not a loop integral that counts its zeros.  The argument
+  principle is exactly the loop integral, and that is what is absent;
 * the closure introduces **no** axiom beyond the three mathlib always allows
   (`propext`, `Classical.choice`, `Quot.sound`) — in particular no `sorryAx`.
 
@@ -42,6 +46,10 @@ import GaloisForLFunctions.RHTower.XiDeckCharge
 import GaloisForLFunctions.RHTower.RHLadderTheory
 import GaloisForLFunctions.RHTower.DictionarySign
 import GaloisForLFunctions.RHTower.DeckMonomial
+import GaloisForLFunctions.RHTower.DeckChargeBridge
+import GaloisForLFunctions.RHTower.CarrierDeckCharge
+import GaloisForLFunctions.RHTower.CarrierChargeSoftness
+import GaloisForLFunctions.RHTower.HolonomyChargeBridge
 import GaloisForLFunctions.RHTower.RootTraceHolonomy
 
 open Lean Elab Command Meta
@@ -118,6 +126,36 @@ elab "#assert_uses_integration" id:ident : command => do
   else
     logInfo m!"control: {n} does use contour integration {hs}"
 
+/-- The markers of an actual loop integral, as opposed to a circle used only as a path
+(`circleMap`).  A loop integral is `circleIntegral` or `intervalIntegral`. -/
+def loopIntegralMarkers : List String := ["circleIntegral", "intervalIntegral"]
+
+/-- The loop-integral constants in a dependency closure. -/
+def loopIntegralHits (deps : Std.HashSet Name) : List Name :=
+  deps.toList.filter fun nm =>
+    loopIntegralMarkers.any fun s => (nm.toString.splitOn s).length > 1
+
+/-- `#assert_no_loop_integral foo` builds only if `foo` evaluates no loop integral, even if
+it uses the circle as a path (`circleMap` is permitted here). -/
+elab "#assert_no_loop_integral" id:ident : command => do
+  let n ← liftCoreM <| realizeGlobalConstNoOverload id
+  let env ← getEnv
+  let deps := transitiveDeps env n
+  let hs := loopIntegralHits deps
+  unless hs.isEmpty do
+    throwError m!"{n} depends on a loop integral: {hs}"
+  logInfo m!"{n}: reads without a loop integral ({deps.size} constants scanned)"
+
+/-- `#assert_uses_loop_integral foo` builds only if `foo` does evaluate a loop integral. -/
+elab "#assert_uses_loop_integral" id:ident : command => do
+  let n ← liftCoreM <| realizeGlobalConstNoOverload id
+  let env ← getEnv
+  let deps := transitiveDeps env n
+  if (loopIntegralHits deps).isEmpty then
+    throwError m!"control failed: {n} evaluates no loop integral"
+  else
+    logInfo m!"control: {n} evaluates a loop integral"
+
 /-! ## The engine
 
 The base complex-analytic layer under every equivalence: divisibility is forced from a
@@ -161,6 +199,18 @@ observable, and the identifications of RH itself with each. -/
 #assert_integration_free rhLadder_iff_xiDeckCharge_one
 #assert_integration_free rh_iff_xiDeckCharge
 #assert_integration_free xiDeckCharge_one_eq_neg_one_pow
+#assert_integration_free forall_xiDeckCharge_eq_one_iff_ne_zero
+#assert_integration_free xiDeckCharge_eq_one_iff_ladderCharge_zero
+#assert_integration_free carrierCharge_pow
+#assert_integration_free carrierCharge_succ_sq
+#assert_integration_free carrierCharge_quadruple
+#assert_integration_free carrierCharge_one_eq_neg_one_pow
+#assert_integration_free exists_root_iff_carrierCharge_trivial
+#assert_integration_free xiDeckCharge_eq_carrierCharge
+#assert_integration_free orbitQuartic_fe
+#assert_integration_free orbitQuartic_conj
+#assert_integration_free orbitQuartic_order_one
+#assert_integration_free exists_feSchwarz_carrier_odd_charge
 
 /-! ## Positive controls
 
@@ -170,5 +220,23 @@ integration, or the traversal above would be certifying vacuously. -/
 
 #assert_uses_integration doubledTrace_pairing
 #assert_uses_integration trace_parity_spectral_dichotomy
+
+/-! ## The constraint → path → flow grading of the seam
+
+The base charge, the circle-trace holonomy that reads it, and the spectral functional that
+reads the same holonomy form a graded ascent, each rung machine-separated from the next:
+
+* `carrierCharge_one_eq_neg_one_pow` — the pure-order charge: no circle path, no integral
+  (certified above, contour-integration-free).
+* `trace_holonomy_eq_carrierCharge_one` — the holonomy reads the charge using the circle only
+  as a *path*: it is not integration-free in the strict sense (it carries `circleMap`), but it
+  evaluates no loop integral.
+* `doubledTrace_pairing` — the spectral reading of the same holonomy adds the loop integral.
+
+So the charge sits at the constraint end, the loop integral at the flow end, and the holonomy
+is the exact hinge between them. -/
+
+#assert_no_loop_integral trace_holonomy_eq_carrierCharge_one
+#assert_uses_loop_integral doubledTrace_pairing
 
 end RHTower.ArgumentPrincipleFree
