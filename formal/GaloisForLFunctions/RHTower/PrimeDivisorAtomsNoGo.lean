@@ -21,6 +21,12 @@ nonzero value and carries its prime content (`Re s ≥ 1`) ξ has no zeros, and 
 (the strip) every finite prime atlas is a unit. The prime content and the divisor never share a
 point in ℂ; the only object linking them is the `P → ∞` limit — analytic continuation across the
 wall — which is a flow, not a pinned constraint.
+
+The weld cross-term is closed too. The archimedean factor `π^(−s/2)·Γ(s/2)` — the `∂_s` side — is
+also a unit at every strip point (`archimedeanFactor_orderAt_zero`), so the completed finite local
+factor `archimedeanFactor · eulerPartial P`, the `∂_s × {σ_p}` weld in finite form, has order `0`
+there (`completed_local_factor_orderAt_zero`). No finite piece of the completed Euler–Γ product —
+prime side, archimedean side, or their weld — sources a divisor atom at a pinned strip point.
 -/
 import GaloisForLFunctions.RHTower.EulerTruncationRigidity
 
@@ -131,5 +137,68 @@ theorem prime_content_and_divisor_disjoint {P : Finset ℕ} (hP : ∀ p ∈ P, 2
     (∀ ρ : ℂ, 1 ≤ ρ.re → xi ρ ≠ 0) ∧
       (∀ ρ : ℂ, 0 < ρ.re → analyticOrderAt (eulerPartial P) ρ = 0) :=
   ⟨fun _ h1 => xi_ne_zero_of_one_le_re h1, fun _ hs => eulerPartial_orderAt_zero hP hs⟩
+
+/-! ### §5 The weld cross-term: the archimedean factor is a unit too -/
+
+/-- The archimedean factor `π^(−s/2) · Γ(s/2)` of the completed ζ — the `∂_s` side of the weld. -/
+def archimedeanFactor : ℂ → ℂ := fun s => (Real.pi : ℂ) ^ (-s / 2) * Complex.Gamma (s / 2)
+
+private theorem re_half_eq {z : ℂ} : (z / 2).re = z.re / 2 := by
+  rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.div_ofReal_re]
+
+/-- The archimedean factor is nonvanishing on the right half-plane: `π^(−s/2)` never vanishes and
+`Γ(s/2)` has its poles only at `s/2 ∈ {0, −1, −2, …}`, all with nonpositive real part. -/
+theorem archimedeanFactor_ne_zero {ρ : ℂ} (hs : 0 < ρ.re) : archimedeanFactor ρ ≠ 0 := by
+  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  have h1 : (Real.pi : ℂ) ^ (-ρ / 2) ≠ 0 := by
+    intro h; rw [Complex.cpow_eq_zero_iff] at h; exact hpi h.1
+  have h2 : Complex.Gamma (ρ / 2) ≠ 0 := by
+    apply Complex.Gamma_ne_zero
+    intro m h
+    have hre : (ρ / 2).re = (-(m : ℂ)).re := by rw [h]
+    rw [re_half_eq] at hre; simp at hre
+    nlinarith [hre, hs, Nat.cast_nonneg (α := ℝ) m]
+  exact mul_ne_zero h1 h2
+
+/-- The archimedean factor is analytic on the right half-plane (`Γ` has no poles for `Re s > 0`). -/
+theorem archimedeanFactor_analyticAt {ρ : ℂ} (hs : 0 < ρ.re) :
+    AnalyticAt ℂ archimedeanFactor ρ := by
+  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  have hcpow : AnalyticAt ℂ (fun z : ℂ => (Real.pi : ℂ) ^ (-z / 2)) ρ := by
+    have hd : DifferentiableOn ℂ (fun z : ℂ => (Real.pi : ℂ) ^ (-z / 2)) Set.univ := fun z _ =>
+      ((differentiableAt_id.neg.div_const 2).const_cpow (Or.inl hpi)).differentiableWithinAt
+    exact (hd.analyticOnNhd isOpen_univ) ρ (Set.mem_univ ρ)
+  have hopen : IsOpen {z : ℂ | 0 < z.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hgamma : AnalyticAt ℂ (fun z : ℂ => Complex.Gamma (z / 2)) ρ := by
+    have hd : DifferentiableOn ℂ (fun z : ℂ => Complex.Gamma (z / 2)) {z : ℂ | 0 < z.re} := by
+      intro z hz
+      have hz' : 0 < z.re := hz
+      have hzre : 0 < (z / 2).re := by rw [re_half_eq]; linarith
+      have hne : ∀ m : ℕ, (z / 2) ≠ -m := by
+        intro m h
+        have hh : (z / 2).re = (-(m : ℂ)).re := by rw [h]
+        rw [re_half_eq] at hh; simp at hh
+        nlinarith [hh, hz', Nat.cast_nonneg (α := ℝ) m]
+      exact ((Complex.differentiableAt_Gamma _ hne).comp z
+        (differentiableAt_id.div_const 2)).differentiableWithinAt
+    exact (hd.analyticOnNhd hopen) ρ hs
+  exact hcpow.mul hgamma
+
+/-- The archimedean factor has vanishing order at every strip point: it too is a unit there. -/
+theorem archimedeanFactor_orderAt_zero {ρ : ℂ} (hs : 0 < ρ.re) :
+    analyticOrderAt archimedeanFactor ρ = 0 :=
+  (AnalyticAt.analyticOrderAt_eq_zero (archimedeanFactor_analyticAt hs)).mpr
+    (archimedeanFactor_ne_zero hs)
+
+/-- **The weld cross-term sources no atom either.**  The completed finite local factor —
+archimedean factor times a finite prime atlas, the `∂_s × {σ_p}` weld in finite form — has order `0`
+at every strip point: a product of units.  No finite piece of the completed Euler–Γ product, of
+either side or their weld, sources a divisor atom at a pinned strip point; the zero is emergent only
+in the infinite-product limit. -/
+theorem completed_local_factor_orderAt_zero {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p)
+    {ρ : ℂ} (hs : 0 < ρ.re) :
+    analyticOrderAt (archimedeanFactor * eulerPartial P) ρ = 0 := by
+  rw [analyticOrderAt_mul (archimedeanFactor_analyticAt hs) (eulerPartial_analyticAt hP hs),
+    archimedeanFactor_orderAt_zero hs, eulerPartial_orderAt_zero hP hs, add_zero]
 
 end RHTower

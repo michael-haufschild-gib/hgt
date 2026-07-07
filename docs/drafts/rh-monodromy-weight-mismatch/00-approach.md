@@ -603,3 +603,62 @@ measured pencil**. Neither front alone is a route; the program is their composit
 S²∖B² gap / trichotomy / LD rate separation), all confined to value-distribution and
 measure registers. The deck charge factors through none of them — that separation is
 the reason both live fronts are built exclusively from exact monodromy data.
+
+---
+
+## 13. Wave-6 amendment (2026-07-07) — the {σ_p}-graded divisor route is killed in bare 𝓜⁺
+
+The opening thesis (§1, §2.2) asked an off-line-zero defect to give a **cocycle component the
+`{σ_p}` constraint side fails to match by unbounded weight** — which requires a **`{σ_p}`-graded
+divisor defect**. Four machine-checked modules now show bare 𝓜⁺ contains no such object:
+
+- `PrimeDivisorAtomsNoGo.lean` (doc 127): every finite Euler layer — and the archimedean factor,
+  and their weld product — is a **unit** at every strip point (order 0, zero-free); the pinned
+  local-order source map `SigmaSourceMap` is the **zero map** (`sigma_source_map_trivial`); prime
+  content and the ξ-divisor have disjoint carriers.
+- `SigmaDivisorJet.lean` + `SigmaDivisorExhaustion.lean` (codex): a multiplicative local direction
+  `Xᵐ·u·h_p` has zero class in the divisor-jet algebra `R[X]/(Xᵐ)`; packaged with the above into
+  `pinnedSigmaDivisorSources_killed`.
+- `RelativeTorsor.lean` (doc 128): measured in the coarse-monodromy register, ξ dressed by the free
+  `{σ_p}` tower collapses — `relative_deckClass_eq` shows the free reference is a **coboundary**
+  (deck-invisible), so the relative torsor **is** `RHLadder k`, not an independent constraint.
+  Freeness = deck-invisibility.
+- `FittingSeamBoundary.lean` (codex): the **only** surviving algebraic shape is a torsion seam
+  presentation `Rⁿ --A--> Rⁿ → Q`, `det A = Xᵐ`, boundary `tr(adj(A)·Δ_p) mod Xᵐ`; fake defects
+  `Δ_p = A·H_p + Xᵐ·K_p` vanish, so a live boundary forces `Δ_p ∉ A·End + (Xᵐ)`.
+
+**Verdict.** 𝓜⁺ as currently defined (`completed-connection-category.md §1`) is **finite-free**
+R⁺-modules with commuting σ_p-semilinear automorphisms and a compatible ∂_s connection: no
+`Q = coker A`, no morphism law preserving `A`, no supported torsion slot
+(`sigma-divisor-jet-multiplicative-kill.md:112`). So the `{σ_p}` weight-mismatch program is **killed
+inside bare 𝓜⁺**.
+
+**What survives, precisely:**
+- **§3 (RH as Kummer-tower / branching) survives.** The deck-class ladder `w_k` is still the right
+  divisor object; `rh_iff_forall_ladder` and `xi_deckClass_eq_one_iff_ladder_dvd` are untouched.
+- **§5 (defect recurrence) survives only as a topological / deck-charge reduction.** It cannot be
+  justified by soft Bohr / σ_p recurrence — the LD-rate / value-distribution derivations of the wall
+  (§11–§12) do not reach the deck charge, and no `{σ_p}`-graded divisor defect exists to recur.
+- **§6 (explicit formula as index formula) survives only as a global exact-identity route.** The
+  local pinned-annulus `{σ_p}` refinement version is killed unless 𝓜⁺ is extended.
+- **§2.2 transposition dictionary — the row "σ fixes background, scales defect by unbounded weight"
+  is unsupported for ζ-divisors in bare 𝓜⁺.** The analogy is valid for **Kummer/deck** monodromy
+  (the ladder), not for a `{σ_p}`-graded divisor weight: there is no such defect object.
+- **The Wave-5 fronts remain the live part** — conservation + parity on **exact deck charge**,
+  especially the quadrant-local charge / `xiDescent`. They do **not** depend on extracting a
+  `{σ_p}`-graded divisor refinement, and are unaffected by this kill.
+
+**The forward object.** It cannot be the free `{σ_p}` tower, nor ξ dressed by it, nor a relative
+deck difference against it — a free reference is deck-invisible (doc 128). A live comparison object
+must **carry its own arithmetic monodromy**, disjoint from ξ's off-line multiplicities. In the
+language reached above that is exactly a **torsion seam presentation with a non-fake defect**
+(`FittingSeamBoundary`), and it is **not** a second L-function (families = a walked route, §11).
+
+**Required backtrack — exactly one definition layer.** Redefine the objects/morphisms of 𝓜⁺ to carry
+a p-labelled torsion seam presentation `Rⁿ --A--> Rⁿ → Q` (`det A = Xᵐ`). This is a change to the
+**definition of 𝓜⁺ objects/morphisms**, not a proof tactic and not a missing §6 lemma. If that
+extension is accepted, the next first theorem is not recurrence — it is
+
+> **`Δ_p ∉ A·End + (Xᵐ)`** for a p-labelled torsion seam presentation with `det A = Xᵐ`.
+
+If 𝓜⁺ remains as currently defined, there is no `{σ_p}`-divisor route left.

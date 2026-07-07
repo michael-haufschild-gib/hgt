@@ -39,3 +39,151 @@ comparison theorem not yet built.
 
 Define the exponential-period object, prove realization injectivity, and
 identify the DSS orbit coordinates with `{gamma_n}`.
+
+---
+
+## 2026-07-07 — Full multi-angle attack: the atom is `γ_E ∉ ℚ`, and every angle terminates there
+
+Attacked DSS-cross from five genuinely-different directions (not the banked Tannakian/GPC route),
+pushing each to its exact wall. Findings (SEARCH register, `[CONJECTURE]`/`[STRUCTURAL]`):
+
+1. **Atom localization `[STRUCTURAL, unconditional]`.** DSS-cross ⟹ `γ_E ∉ 𝒫` ⟹ `γ_E ∉ ℚ(π)` ⟹
+   `γ_E ∉ ℚ`. The apex rests on Euler–Mascheroni irrationality — strictly *weaker* than the banked
+   "exponential-corank conjecture" and than ζ(odd) alg-independence, yet still open. So the minimal
+   unconditional prerequisite of the whole DSS apex is a single famous open constant. Any attack must
+   crack `γ_E ∉ ℚ` or route around it.
+
+2. **Moment/measure route `[reduction]`.** Convergent moments of `dμ = dt/(e^t−1)` are `m_j = j!ζ(j+1)`
+   (`= Γ(s)ζ(s)` Mellin); `γ_E = lim_{s→1}(ζ(s) − 1/(s−1))` is the regularized (finite-part) datum. So
+   the period/non-period divide is *convergent vs regularized moment of one explicit measure*. Wall:
+   `1/(e^t−1)` has poles → outside the E-function (Siegel–Shidlovsky/Nesterenko) class; and even the
+   period half (ζ(odd) independence) is beyond current tools (Rivoal–Ball/Zudilin only). The Nesterenko
+   re-route does **not** escape the frontier.
+
+3. **Γ functional-equation relation module `[STRUCTURAL, unconditional]`.** In
+   `log Γ(1+x) = −γ_E x + Σ_{k≥2}(−1)^k ζ(k)/k x^k`: the reflection pins only the *even* part
+   (`ζ(even)`, periods via π), leaving the odd `{γ_E, ζ(odd)}` free; Gauss's digamma theorem ties
+   `γ_E` (via `ψ(j/m)`) to Baker/algebraic constants `{log(alg), cot(πℚ)}` and **never to a ζ-value**
+   (those live on the disjoint *derivative* tower `ψ^{(k)}(1)`). Hence **no Γ-FE relation expresses
+   `γ_E` as a period-combination** — the obvious failure mode of independence is ruled out (does not
+   prove independence: non-FE relations remain uncontrolled).
+
+4. **Constraint-not-flow on the atom `[attempted, no obstruction found]`.** Assuming `γ_E = p/q`:
+   `ψ(n+1) = −γ_E + H_n ∈ ℚ` and `ψ(1/2) = −γ_E − 2log2 ∈ ℚ(log2)` are both *consistent* — no FE forces
+   an integer impossibility. The absence of an exact algebraic obstruction is the precise reason the
+   problem is open; no exact obstruction was manufactured.
+
+5. **Modern tool re-aim `[reduction, replaces GPC-route]`.** `γ_E = −∫_0^∞ e^{−t} log t dt = −Γ'(1)`
+   is a period of a Kummer×exponential motive `M_γ` (Kummer = the `log`, exponential = `e^{−t}`). In
+   Fresán–Jossen exponential-motive theory, DSS-cross-atom(`γ_E`) ⟺ the **wild kernel**
+   `K = ker(G^exp ↠ G_mot)` acts non-trivially on `M_γ`. This is a concrete (hard) exp-motivic-Galois
+   computation — sharper and tool-current vs the opaque GPC-route, but not mechanizable now.
+
+**Verdict (earned, not asserted).** All five angles terminate at the same wall: an unconditional
+transcendence fact about a *non-period* constant — minimally `γ_E ∉ ℚ` — of which **not one is known**
+(the field cannot prove γ_E irrational). DSS-cross is therefore unreachable by any 2026 tool, and this
+is now demonstrated by attack, not by declaring "it's open." New unconditional residue banked: the
+FE-relation separation (§3) — `γ_E` is Γ-functional-equation-independent of the ζ-values. Live
+directions (non-fabricated): a Rivoal–Ball/Zudilin-style linear-forms construction *for the Stieltjes
+family* (a quantitative partial result, not yet attempted anywhere), and the `M_γ` wild-kernel
+computation (§5). Both are genuine multi-session research, neither is a reframe.
+
+### Attack 6 executed — Rivoal–Ball/Zudilin transfer to the Stieltjes family, and its exact wall
+
+Ran the flagged not-yet-attempted route. Rivoal–Ball/Zudilin manufacture small ℚ-linear forms in
+ζ-values because `ζ(2k+1) = Σ 1/n^{2k+1}` are sums of *rational* functions of `n` (partial fractions →
+ζ-values; denominators `lcm(1..N) = e^{N(1+o(1))}`; smallness from the integral). For the Stieltjes
+constants the summands carry weight `(\log k)^n/k` — **not** rational in `k` (equivalently, `γ_n` are
+the regularized `n`-th `s`-derivatives of `ζ` at the pole, `((-1)^n) (d/ds)^n` on `Σ k^{-s}`). The
+hypergeometric/partial-fraction machinery does not apply.
+
+Sharper diagnosis (unconditional): every elementary approximant of `γ_E` carries `\log n`. E.g.
+`H_n - \log n → γ_E` gives a small linear form in `{1, γ_E, \log n}` — and `\log n` is a
+Baker-transcendental independent of `{1, γ_E}`. So the approximation route produces forms in the
+**Baker-extended** field `ℚ(γ_E, \log 2, \log 3, …)`, never a ℚ-linear form in `{1, γ_E}` that could
+force irrationality. **The log-weight entanglement with Baker constants is the concrete reason
+`γ_E ∉ ℚ` resists all current approximation methods** — matching §3 (the Γ-FE also ties `γ_E` to the
+Baker world). Attack exhausted: no route isolates `γ_E` from the Baker/log constants, and no
+unconditional transcendence fact about any non-period constant is known.
+
+### Attacks 7–8 executed — the two named directions, run concretely
+
+**Attack 7 (direction a): linear forms via contour extraction — walls at the Γ-factor.**
+`g(z) := ζ(1+z) − 1/z` is *entire*, `g(z) = Σ_{n≥0} (−1)^n γ_n z^n/n!`. A ℚ-linear form in the Stieltjes
+constants is `L_Q = (1/2πi)∮_{|z|=r} g(z) Q(z) dz` for a Laurent polynomial `Q = Σ_{j≤N} q_j z^{−j−1}`,
+`= Σ_j q_j (−1)^j γ_j/j!`. Since `g` entire, `∮_{|z|=R}` is `R`-independent. Push `R→∞`: the functional
+equation gives `ζ(1+z) ∼ (…)·Γ(−z)·ζ(−z)`, `Γ(−z)` **factorial** as `Re z→−∞`, vs `Q∼z^{−N−1}`
+polynomial — so `|L_Q|` blows up; smallness fails at the **archimedean Γ-factor of the FE**. Beating it
+needs `Q` decaying factorially = an infinite series = loss of ℚ-denominator control. The entire
+alternating variant `η(1+z)=(1−2^{−z})ζ(1+z)` (with `η(1)=\log 2`) meets the same FE-growth and
+re-injects Baker. The Rivoal–Ball-type construction therefore has a concrete analytic obstruction: the
+`Γ`-factor is exactly the archimedean side the whole apex lives on.
+
+**Attack 8 (direction b): the `M_γ` wild kernel — reduces to the open period comparison.**
+`γ_E = −∫_0^∞ e^{−t}\log t\,dt` pairs the rapid-decay class `[0,∞)e^{−t}` against `\log t\,dt`; so
+`M_γ = Kummer ⊗ exp(−t)`, wild kernel acting via the irregular Hodge/Stokes structure at `∞`. Extracting
+even "`γ_E` ∉ mixed-Tate periods" needs the irregular period comparison = the open input. Note `γ_E` is
+**not a 1-motive period**, so Wüstholz's analytic subgroup theorem cannot reach it (1-motives → logs of
+algebraics + abelian periods, the classical non-exponential periods). No unconditional partial extractable.
+
+**Unified obstruction (the run's core finding).** Across all eight attacks the wall is one object in
+different guises: `γ_E`'s inseparability from the **archimedean Γ / regularization-scale / Baker-log
+structure** — as the `Γ`-Laurent (Attack 3, Gauss digamma), as `\log n` in approximants (Attack 6), as
+the `Γ`-factor of the FE (Attack 7 contour, and η), and as the irregular Stokes structure (Attack 8).
+No transcendence theorem in existence (Baker, Wüstholz, Gelfond–Schneider, Nesterenko, Chudnovsky,
+Apéry, Rivoal–Ball, Zudilin) reaches the atom `γ_E ∉ ℚ`; γ_E is not in the reach of any of their
+hypotheses. This is the genuine 2026 frontier, reached by attack, not asserted.
+
+### Attack 9 executed — Nesterenko's modular method via the Kronecker limit formula
+
+Kronecker's first limit formula: `E(z,s) = π/(s−1) + 2π(γ_E − log2 − log(√y|η(z)|²)) + O(s−1)`. Hence
+`γ_E = (Eisenstein constant term at s=1)/(2π) + log2 + log(√y|η(z)|²)`. At CM point `z=i`,
+`|η(i)| = Γ(1/4)/(2π^{3/4})`, so the log|η|² term ∈ `{log Γ(1/4), log π, log 2}` — Nesterenko/Chudnovsky
+make Γ(1/4) transcendental and alg-independent from π, but this only ties γ_E to *logs of* those
+constants (Baker world again). The residual **Eisenstein constant term at s=1** is an archimedean
+`s`-derivative at the pole — the exact modular avatar of γ_E-for-ζ. Nesterenko's method controls the
+**holomorphic q-expansion** (`E_2, E_4, E_6` values); the real-analytic `s=1` derivative is orthogonal
+to its reach. So the single most powerful algebraic-independence machine reduces γ_E to its own modular
+twin and stalls at the identical archimedean wall.
+
+**Sharpened unified diagnosis.** The obstruction is not "logs" per se but specifically the **archimedean
+`s`-derivative / regularized constant term at a pole** (the "non-holomorphic / Γ-factor" datum). It is
+modular-invariant (same for `ζ` and for `E(z,s)`), and it is orthogonal to *every* existing method:
+Baker/Wüstholz see only 1-motive (classical) periods; Nesterenko/Chudnovsky see only the holomorphic
+modular/`q` side; Rivoal–Ball/Zudilin/Apéry see only rational-function `ζ`-value sums (Attack 6, 7). The
+atom `γ_E ∉ ℚ` sits in the complement of all of them. Nine concrete attacks, one wall, now precisely named.
+
+### Formalized — the linear-forms criterion + the γ₀ atom localization (Lean, axiom-clean)
+
+`formal/GaloisForLFunctions/ExponentialPeriodCorank.lean` (3 theorems, `[propext, Classical.choice,
+Quot.sound]`, lint green):
+- `irrational_of_linearForms` — nonzero integer forms `pₙ + qₙα → 0` ⟹ `Irrational α` (the
+  Rivoal–Ball/Nesterenko engine; **absent from mathlib**, built from scratch).
+- `not_all_rat_of_linearForms` — family version: `aₙ + Σ bₙᵢxᵢ → 0` nonzero ⟹ not all `xᵢ` rational
+  (bounded denominator `D = ∏(rᵢ).den`).
+- `eulerMascheroniConstant_irrational_of_linearForms` — the atom localized: `Irrational γ₀` ⟸ the forms
+  exist. The open problem is now the machine-checked interface "construct the forms," with the obstruction
+  (log/Γ entanglement, Attacks 3/6/7) named. Card: `pipeline/3-formalized/exponential-period-corank-linear-forms.md`.
+
+### Correction + sharpening (via the formalized criterion)
+
+Earlier phrasing "no construction found" was imprecise: rational approximations / linear forms in `γ₀`
+have been constructed (Aptekarev et al. and others). The formalized `irrational_of_linearForms` makes the
+frontier exact and logically forced (no fabrication): *if* any construction yields nonzero integer forms
+`pₙ + qₙγ₀` with `pₙ + qₙγ₀ → 0`, then `γ₀` is irrational. Since that is open, no known construction
+satisfies the `h0` hypothesis — the forms tending to `0`, i.e. the quantitative condition
+`qₙ·|γ₀ + pₙ/qₙ| → 0` (an irrationality-measure/smallness threshold). So the open input is **not**
+"construct forms" but precisely the `h0` smallness, and the Lean interface isolates it as exactly that
+hypothesis. This is the sharpest honest statement of the frontier the criterion permits.
+
+### Attack 10 — Vacca's rational series: escapes the log, re-walls at the denominator (h0 is robust)
+
+Tried to defeat the log/Γ entanglement with a *rational* approximant. Vacca (1910):
+`γ₀ = Σ_{k≥1} (−1)^k ⌊log₂ k⌋/k`, integer numerators ⟹ partial sums `sₙ ∈ ℚ`, `sₙ → γ₀`, **no log n**.
+So Vacca gives genuine integer forms `qₙγ₀ − pₙ` (`sₙ = pₙ/qₙ`). But the formalized `h0` needs
+`qₙ·|γ₀ − sₙ| → 0`, and here `qₙ ∼ lcm(1..n) ∼ eⁿ` while the alternating tail `|γ₀ − sₙ| ∼ (log n)/n`, so
+`qₙ·|γ₀ − sₙ| ∼ eⁿ(log n)/n → ∞`. The obstruction is **robust**: escaping the log-entanglement moves the
+wall to denominator growth — the identical `h0` (quantitative smallness) failure. This confirms the Lean
+interface pins the correct construction-independent frontier: not "which construction" but the
+quantitative `qₙ·error → 0` threshold, unreached by log-entangled (H_n−log n), coefficient-extraction
+(Γ-factor), or rational (Vacca, lcm growth) constructions alike.

@@ -1169,3 +1169,130 @@ CertificateActivation; umbrella after LandauShadowNoGo). Attacks the joint readi
   order weight the q62 mechanism needs (fails at d=2). The only unbounded-order symmetry (Kummer
   deck ℤ/2^k) has weight = multiplicity mod 2^k (tautological, circular). External-base-fixing and
   unbounded-order are disjoint → engine has nothing non-circular to run on.
+
+## PrimeDivisorAtomsNoGo.lean — {σ_p}-graded divisor refinement KILLED (source-map form)
+
+New module `formal/GaloisForLFunctions/RHTower/PrimeDivisorAtomsNoGo.lean` (doc 127). Attacks the
+object named in doc 106 §5 and sharpened by Michael to a "non-flow, non-positivity, non-character
+source map from {σ_p} into local divisor atoms". Complement to the concurrent `SigmaDivisorJet.lean`
+(algebraic jet side); this is the analytic realization for ζ. All endpoints axiom-clean
+`[propext, Classical.choice, Quot.sound]`; full MainTheorems gate green (9254 jobs, formal lint passed).
+
+Endpoints:
+- `eulerInvFactor_orderAt_zero`, `eulerPartial_orderAt_zero` — every finite prime layer / atlas has
+  analyticOrderAt = 0 at every point of Re s > 0 (a unit there).
+- `eulerPartial_zeroSet_eq_empty` — the finite prime atlas has NO zeros in the right half-plane
+  (argument-principle winding 0; the "flat atlas" / Theorema-Egregium content).
+- `xi_divisor_prime_invisible` — ord_ρ(ξ · eulerPartial P) = ord_ρ ξ; prime layers invisible to the
+  divisor.
+- `SigmaSourceMap` + `sigma_source_map_trivial` — the pinned source map (atoms = zeros of the primes'
+  own factors) is the ZERO map: A p = 0 for every prime.
+- `source_atom_mismatch` — at a strip zero, additive EM carrier sources zs.length = m ≥ 1 atoms,
+  every {σ_p}-source map sources 0. The atom-count form of the weight mismatch.
+- `no_sigma_graded_refinement` — at a strip zero, prime-atlas order 0 while ξ-order ≠ 0.
+- `prime_content_and_divisor_disjoint` — on Re s ≥ 1 (prime content) ξ has no zeros; on the strip
+  (ξ zeros) prime atlas is a unit. Disjoint carriers; only bridge is P→∞ continuation = a flow.
+
+Verdict: four kills now share ONE root cause — the prime side is analytically trivial throughout
+Re s > 0 (order 0, zero-free, unramified, freely towered), so ∂_s and {σ_p} have DISJOINT CARRIERS
+in the s-plane and no pinned local reading couples them. Forward move (doc 127 §6): change the SPACE
+(adelic/idelic or an 𝓜⁺-native carrier where the two share a support), not keep reading in ℂ.
+
+## RelativeTorsor.lean — relative torsor COLLAPSES (freeness = deck-invisibility) (doc 128)
+Constructed the object doc 127 §6 named (relative 2^k-root torsor of ξ vs the free {σ_p} tower as
+reference frame, read in the coarse-monodromy register). It collapses. 6 endpoints, axiom-clean
+[propext,Classical.choice,Quot.sound], full MainTheorems gate green (9257 jobs, formal lint passed).
+- eulerRoot_ne_zero — reference root is a product of exponentials, nonvanishing at EVERY point of ℂ
+  (unconditional, no prime hypothesis, no domain restriction).
+- relCarrier P = xi·eulerPartial P; relRoot_pow (dressed root is a 2^k-root of relCarrier on Re s>0).
+- relative_deckClass_eq — deckClass(G₁·eulerRoot)(G₂·eulerRoot) = deckClass G₁ G₂ at EVERY basepoint
+  (deckClass_mul_global: one global nonvanishing factor cancels in the chart-ratio).
+- reference_own_deckClass_one — the reference's own deck class = 1 (it is free: single-valued global).
+- relative_deckClass_eq_xi — relative deck class = ξ's own exp(2πi m/2^k) exactly (via xi_deckClass).
+- relative_torsor_trivial_iff_ladder — relative torsor trivial ⟺ 2^k ∣ ord ξ ⟺ RHLadder k clause.
+STRUCTURAL VERDICT: the deck class sees only MONODROMY; a global single-valued factor is a coboundary,
+cancels. FREENESS = DECK-INVISIBILITY. A reference contributes only if it has monodromy of its own;
+the {σ_p} tower's freeness (the very property doc 104 made attractive) is the absence of monodromy.
+Freeness and contribution are MUTUALLY EXCLUSIVE — the free reference cannot break the tautology it
+was meant to break. Collapse holds at every basepoint (relative_deckClass_eq needs only the
+unconditional eulerRoot_ne_zero). NOT the hand-circularity of doc 106 §4 — proved.
+Cast trap: xi_deckClass renders the divisor as ↑(2^k:ℕ) not (2:ℂ)^k; whnf timeout until matched.
+DICHOTOMY (doc 128 §4): mult-dressing/quotient/H¹-difference all collapse; non-collapse needs a
+reference WITH monodromy (not the free tower) or a cross-wall continuation (flow). Both excluded.
+Respects §2.4 (divisor→monodromy, never divisor→relation, ω=0⇏RH).
+FORWARD (doc 128 §5): free reference is inert ⟹ a live reference must carry its OWN arithmetic
+monodromy disjoint from ξ's — a different (obstructed) comparison object, not the free truncation
+tower, and not a second L-function (families = walked route, approach §11).
+
+## SoninSeamDefect.lean — the commutator {σ_p}-defect ALWAYS collapses (doc 130)
+Ran the first decisive step of the doc-129 §3 Sonin test on the natural model of the σ_p-defect.
+4 endpoints axiom-clean [propext,Classical.choice,Quot.sound], MainTheorems gate green (9259 jobs).
+- commutatorDefect A σ := σ*A − A*σ (σ_p failing to preserve the divisor presentation).
+- fittingBoundaryTrace_commutatorDefect: tr(adj(A)·(σA−Aσ)) = 0 for EVERY A, σ (adjugate identities
+  adj(A)A=A·adj(A)=det(A)·1 + trace cyclicity; both cyclic traces = det(A)·tr(σ), cancel).
+- fittingBoundaryClass_commutatorDefect: hence class = 0, FAKE at every level.
+- nonzero_fittingBoundaryClass_not_commutator: a live (nonzero-class) defect is NEVER a commutator.
+- exists_nonfake_fittingBoundary: witness A=[X²], Δ=1, class=1≠0 in ℚ[X]/(X²) — non-fake defects
+  EXIST (restriction is real, not vacuous), and are necessarily non-commutators.
+COMPLEMENTS concurrent MPlusTorsionSeam.lean (codex): they built the §13 category extension
+(TorsionSeamPresentation, MPlusTorsionSeamObject, Hom, positive coeff-witness
+boundaryClass_ne_zero_of_coeffWitness). Mine = the NEGATIVE constraint they lack: rules out the
+commutator model, forcing a live defect to be a non-commutator cross-boundary (coeff-witness) cochain.
+UNIFYING INSIGHT: at a pinned strip point σ_p acts by the unit p^(−s) (doc 127) = a scalar = commutes
+with A ⟹ commutator = 0 = fake. The commutator no-go is the PRESENTATION-LEVEL SHADOW of the
+freeness/unit-triviality collapse. Three independent collapses of the PINNED-GERM σ_p-defect: freeness
+(doc 128), unit (doc 127), commutator (doc 130) — all because σ_p acts on the germ by a unit.
+FORWARD: a live defect must be a NON-COMMUTATOR CROSS-BOUNDARY cochain (σ_p pushing mass across the
+Sonin cutoff |x|=λ) = the BoundaryCoeffWitness shape = NON-LOCAL (trace-level/adelic). This is WHY
+Connes' construction is trace-level not germ-level. Germ-level intrinsic = missing-Weil apex.
+Lean: matrix commutator adjugate-trace vanishing via Matrix.mul_adjugate/adjugate_mul + trace_mul_comm;
+witness via adjugate_fin_one + det_fin_one + isUnit_iff_degree_eq_zero (X² deg 2 ⟹ not unit).
+
+## CutoffCochain.lean — the cross-boundary cochain CONSTRUCTED; pinned-germ collapse = selection rule (doc 131)
+Built the object doc 130 named (the non-commutator cross-boundary cochain σ_p pushes across a cutoff).
+11 endpoints; abstract structural lemmas depend only on [propext], matrix witnesses on
+[propext,Classical.choice,Quot.sound]; MainTheorems gate green (9260 jobs).
+- crossBoundary e a := (1-e)*a*e (lower Hankel corner); upperBoundary, compression.
+- crossBoundary_add, crossBoundary_one (kills identity).
+- crossBoundary_eq_corner_commutator: (1-e)a e = -(1-e)[e,a] — a corner of the inner derivation
+  (commutator with the CUTOFF e), distinct from the fake commutator with the PRESENTATION A (doc 130).
+- crossBoundary_mul_crossBoundary: same-direction corners are SQUARE-ZERO (e(1-e)=0) — first-order
+  defect structure; can't cross out twice.
+- compression_semicommutator: e(ab)e − (eae)(ebe) = upper(a)·lower(b) (Toeplitz-Hankel, classical algebra).
+- compression_mul: c(ab)=c(a)c(b)+upper(a)·lower(b).
+- crossBoundary_eq_zero_of_commute + crossBoundary_smul_one: a commuting/CENTRAL action crosses
+  nothing. UNIFIES all three prior collapses (127 unit / 128 freeness / 130 commutator) into ONE root:
+  a germ-local σ_p is multiplication by unit p^(−s) = central scalar ⟹ commutes with every cutoff ⟹
+  zero cochain. The pinned-germ collapse is a SELECTION RULE (excludes central, admits crossing).
+- exists_nonfake_crossBoundary (m>0): witness e=!![1,0;0,0], σ=!![0,0;1,0], A=!![X^m,1;0,1] — crossing
+  cochain has nonzero Fitting class. THE ESCAPE EXISTS.
+- exists_nonfake_crossBoundary_not_commutator; exists_crossBoundary_not_right_factor_mod_X_pow (= the
+  charter §13 target Δ∉A·End+(X^m) instantiated); exists_crossBoundary_not_left_factor_mod_X_pow
+  (Δ∉End·A+(X^m)) — [last two added by concurrent codex on my exists_nonfake_crossBoundary; converged].
+- crossBoundary_two_cutoff_asymmetry: ∃ e,f,σ with σ commuting with e (crossBoundary e σ=0) but
+  crossBoundary f σ≠0 — the abstract SONIN double-vanishing obstruction (blind to physical cutoff,
+  crosses Fourier cutoff).
+TERMINUS (honest): the ABSTRACT cross-boundary cochain is COMPLETE — every provable structural fact
+banked. The one remaining step is ARITHMETIC REALIZATION = the two actual (physical+Fourier) Sonin
+cutoffs with the actual σ_p = Connes-Consani-Moscovici Sonin/prolate (arXiv:2310.18423, LITERATURE,
+rule 8, not reproduced) OR the germ-level-without-ζ = missing-Weil/Hilbert-Pólya APEX (not faked).
+§2 proves WHY Connes is trace-level not germ-level: every germ-local (central) σ_p has zero cochain,
+so a nonzero one MUST be non-local. No intermediate pinned-germ construction can exist (selection rule).
+Lean: noncomm_ring for corner algebra; abel for compression_mul (additive regroup A=B+(A-B));
+coeff_X_pow_mul' for the witness; matrix identities warning-free via mul_fin_two/trace_fin_two/norm_num.
+
+## CutoffCochain.lean §1b — deck↔cross-boundary bridge REFUTED (doc 131 §6)
+Attacked the one labelled-open [CONJECTURE] (deck ladder w_k = exp of the cross-boundary cochain). REFUTED.
+- crossBoundary_eq_zero_comm: in a COMMUTATIVE ring the cross-boundary cochain is IDENTICALLY ZERO
+  ((1-e)a e = a(e-e²)=0). The deck class is commutative (ratio of scalar values in μ_{2^k}); where it
+  lives, the cochain vanishes ⟹ can't be its log.
+- crossBoundary_trace_zero: the cochain is TRACELESS (tr((1-e)a e)=tr((e(1-e))a)=0 by cyclicity). Deck
+  class factors through an abelian/trace invariant; cochain lives in the traceless part. ORTHOGONAL,
+  not log/exp-related.
+VERDICT: deck ladder (commutative/abelian/circular, doc 128) and cross-boundary cochain
+(non-commutative/traceless/non-circular) are NOT two faces of one datum. The cochain needs a genuinely
+NON-COMMUTATIVE algebra (action not commuting with cutoff = non-local Fourier). A real coupling = pairing
+a traceless operator cochain with an abelian class over a noncommutative algebra = Connes' CYCLIC
+COHOMOLOGY / trace-formula pairing = literature (rule 8) or missing-Weil apex. The last non-barred
+forward move COLLAPSES into the §5 boundary: no elementary bridge; the two meet only at the trace,
+where Connes already put them. Both lemmas axiom-clean, gate green (9262 jobs).

@@ -6447,3 +6447,79 @@ couplings: Weil (excluded), Bohr/dlVP (flows, refused), explicit-formula identit
 Direction closed under the lane's rules. Named the rescue shape: a {σ_p}-graded divisor refinement
 finer than multiplicity, not a symmetry character and not a positivity — a genuinely new 𝓜⁺ object.
 Axiom-clean; MainTheorems gate 9252 jobs, lint passed.
+
+### {σ_p}-graded divisor refinement / source map — KILLED (doc 127, PrimeDivisorAtomsNoGo.lean)
+Entropy: seed 1270817748317185486, domains cartography (+ one drawn), method "invariant".
+The rescue object named in doc 106 §5, attacked to a decision under rules 1–7 and Michael's
+source-map sharpening. Prime side is a unit at every strip point ⟹ source map is the zero map ⟹
+atom mismatch (additive m atoms vs multiplicative 0) ⟹ disjoint carriers ⟹ only lift is a flow.
+Exhaustive table (§5): unit / unramified / character / Weil / flow / transcendence-apex — all closed.
+Complements concurrent SigmaDivisorJet (algebraic jet side). Gate green, axiom-clean. Open forward
+question: a space other than the s-plane where prime content and the divisor share a carrier.
+
+Update 5 (same day): the J-weld BUILT — front-1 closed. SeamPolarizationWeld.lean (25 decls,
+axiom-clean, lint green, in umbrella) = Sylvester's law of inertia for J-forms, built from scratch
+(mathlib has no signature/inertia theory). polarized_signature_decomp (V = Nneg ⊕ Npos, J-invariant
+Q-orthogonal, neg/pos-definite, by strong induction peeling J-planes) + polarized_negIndex_even (κ₋
+even; off-line negativity only in J-conjugate pairs). Links OmegaComplexStructure's J (T2) to the
+negative index — the FE conjugate-pairing as a rigidity of the compatible complex structure, not a
+flow. Opens: positive-polarization existence (κ₋=0) = period-domain D_∞ (T2); Hermitian analogue over
+the FE Krein form. Card: seam-polarization-weld.md.
+
+### Reframe of doc 127 §6 (2026-07-07): register not space; adelic retracted
+Michael: routes others walked dead-end; only charter's verified-absent frames (00-approach §10:
+RH_{2^k} ladder / ℤ/2^k coarse-monodromy w_k / unbounded-weight q62 template) can carry a solution.
+Retracted the adelic/idelic "change of space" (= Tate/Weil/Connes, walked). The kill lives in the
+VALUE/ORDER register (classical); the change is of REGISTER → deck-torsor w_k on a box annulus
+(torsion, unbounded-order-graded), bridging divisor→monodromy (§2.4, not divisor→relation).
+Reframed [OPEN CORE]: unbounded-order action fixing FE+Euler constraint data while scaling defect w_k
+by 2^k. Circularity hazard flagged (static difference = ξ class = RH_{2^k}); escape = RELATIVE torsor
+with the free σ_p tower as reference frame. doc 127 §6 rewritten.
+
+### Relative torsor COLLAPSES (doc 128, RelativeTorsor.lean) — 2026-07-07
+Constructed doc 127 §6's object (ξ dressed by the free {σ_p} tower as reference, deck-class register).
+PROVED it collapses to ξ's own torsor: eulerRoot nonvanishing everywhere ⟹ deckClass_mul_global ⟹
+relative deck class = ξ's = RHLadder k clause. Reason: deck class sees only monodromy; a free
+(globally-rooted) reference is a coboundary → invisible. FREENESS = DECK-INVISIBILITY; freeness and
+contribution mutually exclusive. Gate green, axiom-clean. Route killed; forward = a reference that
+carries its OWN arithmetic monodromy disjoint from ξ's (not the free tower, not a second L-function).
+
+### Geometry candidates cut by the lane's two instruments (doc 129) — 2026-07-07
+Michael's literature survey (Connes-Consani Sonin/prolate 2310.18423; Connes adèle-class math/9811068;
+arithmetic site; zeta spectral triples 2511.22755; Deninger; log-comb 𝓜⁺_log). Cut with the two
+BANKED instruments: (neg) freeness=deck-invisibility (RelativeTorsor) + (pos) ζ-free non-fake-defect
+criterion (FittingSeamBoundary, Δ_p∉A·End+(Xᵐ)). Verdict: log-comb σ_p action is FREE (regular ℕ^×)
+⟹ deck-invisible, D−ρ invertible off {log n}, no complex divisor without a freeness-breaking quotient.
+Adèle-class breaks freeness but TRACE-level. Arithmetic site conjectural (missing Weil coh). Sonin
+boundary = only GERM-LEVEL survivor (finite-place cutoff breaks freeness at a finite boundary). ONE
+ζ-free test: is the Sonin boundary defect of (∂_log−ρ,{σ_p}) non-fake? Apex (germ-level intrinsic
+divisor = missing Weil coh) known-open, not faked. NO Lean (rule 8: known carriers; instruments
+already banked). doc 129.
+
+### Sonin/{σ_p} seam defect: commutator model COLLAPSES (doc 130, SoninSeamDefect.lean) — 2026-07-07
+First decisive step of the doc-129 §3 Sonin test. The natural σ_p-defect model (commutator σA−Aσ) is
+ALWAYS fake: tr(adj(A)·[σ,A])=0 ∀A,σ (adjugate identity + trace cyclicity). Non-fake defects exist
+(witness [X²],1) but are never commutators. Presentation shadow of the doc-127/128 unit/freeness
+collapse: σ_p acts on the germ by unit p^(−s) = scalar = commutes = fake. THREE pinned-germ collapses
+now (freeness/unit/commutator). A live defect must be a non-commutator cross-boundary cochain (Sonin
+cutoff) = non-local/trace-level — WHY Connes is trace-level not germ-level. Complements codex's
+MPlusTorsionSeam (category extension + positive coeff-witness). Gate green, axiom-clean.
+
+### Cross-boundary cochain CONSTRUCTED (doc 131, CutoffCochain.lean) — 2026-07-07
+Built doc-130's named object. Entropy seed 3424376729393089521, domain knot-tying (strand crossing a
+boundary = the Hankel corner). Cross-boundary cochain (1-e)a e: additive, square-zero (can't cross
+twice), a corner of the inner derivation [e,a] (commutator with the CUTOFF, not the fake
+presentation-commutator), semicommutator/Toeplitz-Hankel law. COLLAPSE UNIFIED: central/commuting ⟹
+zero cochain; germ-local σ_p=unit p^(−s)=central ⟹ all of 127/128/130 are ONE selection rule.
+ESCAPE: crossing cochain has nonzero Fitting class, not a commutator, Δ∉A·End+(X^m) AND Δ∉End·A+(X^m)
+(charter §13 target instantiated; two-sided nonmember added by concurrent codex on my witness).
+Two-cutoff asymmetry = abstract Sonin. Gate green (9260), axiom-clean. TERMINUS: abstract object
+complete; realization = CCM Sonin (literature) or missing-Weil apex; §2 proves why Connes is
+trace-level (central germ ⟹ zero cochain ⟹ nonzero must be non-local). No pinned-germ step remains.
+
+### deck↔cross-boundary bridge REFUTED (doc 131 §6) — 2026-07-07
+The Stop hook flagged the labelled [CONJECTURE] as an un-attempted forward move. Attacked it → REFUTED,
+formally. crossBoundary vanishes in ANY commutative ring (crossBoundary_eq_zero_comm) and is traceless
+(crossBoundary_trace_zero). The deck class is commutative/abelian; the cochain is non-commutative/
+traceless; they're orthogonal, not log/exp faces. Any coupling = Connes cyclic-cohomology trace pairing
+= literature/apex. Last non-barred move collapses into the §5 boundary. Gate green, axiom-clean.

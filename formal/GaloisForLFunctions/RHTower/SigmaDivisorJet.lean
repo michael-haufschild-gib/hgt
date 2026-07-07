@@ -51,6 +51,40 @@ theorem jetClass_mul_X_pow_eq_zero (R : Type*) [CommRing R] (m : ℕ) (Q : Polyn
     jetClass R m (((Polynomial.X : Polynomial R) ^ m) * Q) = 0 :=
   jetClass_eq_zero_of_X_pow_dvd R m ⟨Q, rfl⟩
 
+/-- A local divisor-jet class is zero exactly when all coefficients below the
+multiplicity cutoff vanish. -/
+theorem jetClass_eq_zero_iff_coeff_lt_eq_zero (R : Type*) [CommRing R] (m : ℕ)
+    {P : Polynomial R} :
+    jetClass R m P = 0 ↔ ∀ j < m, P.coeff j = 0 := by
+  rw [jetClass]
+  rw [Ideal.Quotient.eq_zero_iff_mem]
+  constructor
+  · intro hmem
+    have hdiv : (Polynomial.X : Polynomial R) ^ m ∣ P := by
+      simpa [jetIdeal] using (Ideal.mem_span_singleton.mp hmem)
+    exact Polynomial.X_pow_dvd_iff.mp hdiv
+  · intro hcoeff
+    have hdiv : (Polynomial.X : Polynomial R) ^ m ∣ P :=
+      Polynomial.X_pow_dvd_iff.mpr hcoeff
+    rcases hdiv with ⟨Q, rfl⟩
+    have hmem : Q * ((Polynomial.X : Polynomial R) ^ m) ∈ jetIdeal R m :=
+      Ideal.mul_mem_left _ Q (X_pow_mem_jetIdeal R m)
+    simpa [mul_comm] using hmem
+
+/-- Equivalently, a local divisor-jet class is nonzero exactly when some coefficient
+below the multiplicity cutoff survives. -/
+theorem jetClass_ne_zero_iff_exists_coeff_lt_ne_zero (R : Type*) [CommRing R] (m : ℕ)
+    {P : Polynomial R} :
+    jetClass R m P ≠ 0 ↔ ∃ j, j < m ∧ P.coeff j ≠ 0 := by
+  constructor
+  · intro hnonzero
+    by_contra hnone
+    push Not at hnone
+    exact hnonzero ((jetClass_eq_zero_iff_coeff_lt_eq_zero R m).mpr hnone)
+  · rintro ⟨j, hj, hcoeff⟩ hzero
+    have hall := (jetClass_eq_zero_iff_coeff_lt_eq_zero R m).mp hzero
+    exact hcoeff (hall j hj)
+
 /-- A sigma-family has a nontrivial local divisor jet if some sigma direction has nonzero
 class in `R[X]/(X^m)`. -/
 def HasNontrivialSigmaJet {R Sigma : Type*} [CommRing R] (m : ℕ)

@@ -113,10 +113,11 @@ one-way gate and as an equivalence. Forward-move #2's deliverable is met; three 
 - *Significance:* real — it makes "`κ₋` = definiteness = RH" a single checked chain (`KreinNonneg` ⟺
   index-zero ⟺ `k = 0` ⟺ no off-line `ξ`-zeros ⟹ RH) and relocates RH onto the **polarization
   existence**, attackable by index / Hodge / period-domain tools the spectral-reality frame could not
-  use. The last link to the `J` itself (T2 / `OmegaComplexStructure`) — that a positive compatible
-  complex structure yields this definiteness — is the one weld still to be checked. Same difficulty as
-  RH (`riemannHypothesis_iff_seam_polarization` is an equivalence), different tools — exactly §4's
-  verdict "HP does not bypass the keystone; it relocates RH onto it."
+  use. The link to the `J` itself (T2 / `OmegaComplexStructure`) is now **built** — see
+  `seam-polarization-weld` (`SeamPolarizationWeld.lean`): a compatible complex structure forces the
+  negative index even (`polarized_negIndex_even`), the FE conjugate-pairing as `J`-rigidity. Same
+  difficulty as RH (`riemannHypothesis_iff_seam_polarization` is an equivalence), different tools —
+  exactly §4's verdict "HP does not bypass the keystone; it relocates RH onto it."
 
 **Where it points (not a terminus):** the single open clause is the polarization `J`-existence = T2's
 weld `ω`. The argument principle is now a **theorem on the full finite carrier**, not an interface:

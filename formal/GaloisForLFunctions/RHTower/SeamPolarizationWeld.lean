@@ -207,4 +207,264 @@ def polarizedRestrict {V : Type*} [AddCommGroup V] [Module ℝ V]
   complex := omegaRestrict P.complex hW
   preserves := polarizedRestrict_preserves P hW
 
+/-! ### The signature decomposition and the even negative index -/
+
+/-- The positive twin of `polarized_negDef_plane`: a positive direction's `J`-plane is
+positive-definite. -/
+theorem polarized_posDef_plane {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hQ : Q.IsSymm) {x : V} (hx : 0 < Q x x) :
+    ∀ y ∈ Submodule.span ℝ ({x, P.complex.J x} : Set V), y ≠ 0 → 0 < Q y y := by
+  intro y hy hy0
+  rw [Submodule.mem_span_pair] at hy
+  obtain ⟨a, b, rfl⟩ := hy
+  rw [P.Q_apply_span_self_of_isSymm hQ]
+  have hab : a ≠ 0 ∨ b ≠ 0 := by
+    by_contra h; rw [not_or, not_ne_iff, not_ne_iff] at h; exact hy0 (by rw [h.1, h.2]; simp)
+  have hpos : 0 < a * a + b * b := by
+    rcases hab with ha | hb
+    · nlinarith [mul_self_pos.mpr ha, mul_self_nonneg b]
+    · nlinarith [mul_self_pos.mpr hb, mul_self_nonneg a]
+  exact mul_pos hpos hx
+
+/-- A sup of two `J`-invariant subspaces is `J`-invariant. -/
+theorem sup_Jinvariant {V : Type*} [AddCommGroup V] [Module ℝ V] (C : OmegaComplexStructure V)
+    {A B : Submodule ℝ V} (hA : ∀ w ∈ A, C.J w ∈ A) (hB : ∀ w ∈ B, C.J w ∈ B) :
+    ∀ w ∈ A ⊔ B, C.J w ∈ A ⊔ B := by
+  intro w hw
+  obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.mp hw
+  rw [map_add]
+  exact Submodule.add_mem_sup (hA a ha) (hB b hb)
+
+/-- `J`-invariance transfers to a subspace lifted from a `J`-invariant subspace. -/
+theorem map_Jinvariant {V : Type*} [AddCommGroup V] [Module ℝ V] (C : OmegaComplexStructure V)
+    {W : Submodule ℝ V} (hWJ : ∀ w ∈ W, C.J w ∈ W) {NW : Submodule ℝ W}
+    (hNWJ : ∀ w ∈ NW, (omegaRestrict C hWJ).J w ∈ NW) :
+    ∀ y ∈ Submodule.map W.subtype NW, C.J y ∈ Submodule.map W.subtype NW := by
+  intro y hy
+  obtain ⟨w, hwNW, rfl⟩ := Submodule.mem_map.mp hy
+  exact Submodule.mem_map.mpr ⟨(omegaRestrict C hWJ).J w, hNWJ w hwNW, by
+    simp [omegaRestrict, LinearMap.coe_restrict_apply]⟩
+
+/-- Negative-definiteness transfers from a subspace of `W` (under `Q.restrict W`) to its lift. -/
+theorem restrict_map_negDef {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} {W : Submodule ℝ V} {NW : Submodule ℝ W}
+    (hNW : ∀ y ∈ NW, y ≠ 0 → (Q.restrict W) y y < 0) :
+    ∀ y ∈ Submodule.map W.subtype NW, y ≠ 0 → Q y y < 0 := by
+  intro y hy hy0
+  obtain ⟨w, hwNW, rfl⟩ := Submodule.mem_map.mp hy
+  have hw0 : w ≠ 0 := fun h => hy0 (by rw [h]; simp)
+  have := hNW w hwNW hw0
+  rwa [LinearMap.BilinForm.restrict_apply] at this
+
+/-- Positive-definiteness transfers from a subspace of `W` (under `Q.restrict W`) to its lift. -/
+theorem restrict_map_posDef {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} {W : Submodule ℝ V} {NW : Submodule ℝ W}
+    (hNW : ∀ y ∈ NW, y ≠ 0 → 0 < (Q.restrict W) y y) :
+    ∀ y ∈ Submodule.map W.subtype NW, y ≠ 0 → 0 < Q y y := by
+  intro y hy hy0
+  obtain ⟨w, hwNW, rfl⟩ := Submodule.mem_map.mp hy
+  have hw0 : w ≠ 0 := fun h => hy0 (by rw [h]; simp)
+  have := hNW w hwNW hw0
+  rwa [LinearMap.BilinForm.restrict_apply] at this
+
+/-- Negative-definiteness on an orthogonal sum: needs only symmetry and cross-orthogonality
+(`Q a b = 0`), not disjointness — the two decompositions add. -/
+theorem negDef_sup {V : Type*} [AddCommGroup V] [Module ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (hsymm : Q.IsSymm) {A B : Submodule ℝ V}
+    (hA : ∀ y ∈ A, y ≠ 0 → Q y y < 0) (hB : ∀ y ∈ B, y ≠ 0 → Q y y < 0)
+    (hAB : ∀ a ∈ A, ∀ b ∈ B, Q a b = 0) :
+    ∀ y ∈ A ⊔ B, y ≠ 0 → Q y y < 0 := by
+  intro y hy hy0
+  obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.mp hy
+  have hc : Q a b = 0 := hAB a ha b hb
+  have hc' : Q b a = 0 := by rw [hsymm.eq b a]; exact hc
+  have hexp : Q (a + b) (a + b) = Q a a + Q b b := by
+    simp only [map_add, LinearMap.add_apply]; rw [hc, hc']; ring
+  rw [hexp]
+  rcases eq_or_ne a 0 with h | h
+  · have hb0 : b ≠ 0 := by rintro rfl; simp [h] at hy0
+    have : Q a a = 0 := by rw [h]; simp
+    nlinarith [hB b hb hb0]
+  · rcases eq_or_ne b 0 with h2 | h2
+    · have : Q b b = 0 := by rw [h2]; simp
+      nlinarith [hA a ha h]
+    · nlinarith [hA a ha h, hB b hb h2]
+
+/-- Positive-definiteness on an orthogonal sum (positive twin of `negDef_sup`). -/
+theorem posDef_sup {V : Type*} [AddCommGroup V] [Module ℝ V] {Q : LinearMap.BilinForm ℝ V}
+    (hsymm : Q.IsSymm) {A B : Submodule ℝ V}
+    (hA : ∀ y ∈ A, y ≠ 0 → 0 < Q y y) (hB : ∀ y ∈ B, y ≠ 0 → 0 < Q y y)
+    (hAB : ∀ a ∈ A, ∀ b ∈ B, Q a b = 0) :
+    ∀ y ∈ A ⊔ B, y ≠ 0 → 0 < Q y y := by
+  intro y hy hy0
+  obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.mp hy
+  have hc : Q a b = 0 := hAB a ha b hb
+  have hc' : Q b a = 0 := by rw [hsymm.eq b a]; exact hc
+  have hexp : Q (a + b) (a + b) = Q a a + Q b b := by
+    simp only [map_add, LinearMap.add_apply]; rw [hc, hc']; ring
+  rw [hexp]
+  rcases eq_or_ne a 0 with h | h
+  · have hb0 : b ≠ 0 := by rintro rfl; simp [h] at hy0
+    have : Q a a = 0 := by rw [h]; simp
+    nlinarith [hB b hb hb0]
+  · rcases eq_or_ne b 0 with h2 | h2
+    · have : Q b b = 0 := by rw [h2]; simp
+      nlinarith [hA a ha h]
+    · nlinarith [hA a ha h, hB b hb h2]
+
+/-- Complementarity assembly: if `plane ⊕ W` and `W = Nl ⊕ Pl`, then `(plane ⊔ Nl) ⊕ Pl`. -/
+theorem isCompl_planeExtend {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {plane W Nl Pl : Submodule ℝ V}
+    (hpw : IsCompl plane W) (hNsup : Nl ⊔ Pl = W) (hNinf : Nl ⊓ Pl = ⊥)
+    (hNl : Nl ≤ W) (hPl : Pl ≤ W) : IsCompl (plane ⊔ Nl) Pl := by
+  have h1 : (plane ⊔ Nl) ⊓ W = Nl := by
+    rw [sup_comm plane Nl, sup_inf_assoc_of_le plane hNl,
+        disjoint_iff.mp hpw.disjoint, sup_bot_eq]
+  constructor
+  · rw [disjoint_iff]
+    calc (plane ⊔ Nl) ⊓ Pl = (plane ⊔ Nl) ⊓ (W ⊓ Pl) := by rw [inf_eq_right.mpr hPl]
+      _ = ((plane ⊔ Nl) ⊓ W) ⊓ Pl := by rw [inf_assoc]
+      _ = Nl ⊓ Pl := by rw [h1]
+      _ = ⊥ := hNinf
+  · rw [codisjoint_iff, sup_assoc, hNsup]
+    exact codisjoint_iff.mp hpw.codisjoint
+
+/-- Complementary subspaces of `W` lift to a sup equal to `W`. -/
+theorem lift_sup {V : Type*} [AddCommGroup V] [Module ℝ V] {W : Submodule ℝ V}
+    {NW PW : Submodule ℝ W} (h : IsCompl NW PW) :
+    Submodule.map W.subtype NW ⊔ Submodule.map W.subtype PW = W := by
+  rw [← Submodule.map_sup, h.codisjoint.eq_top, Submodule.map_subtype_top]
+
+/-- Disjoint subspaces of `W` lift to disjoint subspaces (`W.subtype` injective). -/
+theorem lift_inf {V : Type*} [AddCommGroup V] [Module ℝ V] {W : Submodule ℝ V}
+    {NW PW : Submodule ℝ W} (h : IsCompl NW PW) :
+    Submodule.map W.subtype NW ⊓ Submodule.map W.subtype PW = ⊥ := by
+  rw [eq_bot_iff]
+  rintro z ⟨hzN, hzP⟩
+  obtain ⟨n, hn, rfl⟩ := Submodule.mem_map.mp hzN
+  obtain ⟨p, hp, hpn⟩ := Submodule.mem_map.mp hzP
+  have hnp : n = p := W.subtype_injective hpn.symm
+  have : n ∈ NW ⊓ PW := ⟨hn, hnp ▸ hp⟩
+  rw [h.disjoint.eq_bot] at this
+  simp only [Submodule.mem_bot] at this
+  simp [this]
+
+/-- Every vector of the plane is `Q`-orthogonal to every vector of `Q.orthogonal plane`. -/
+theorem plane_orthogonal_zero {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} {plane : Submodule ℝ V} {m : V}
+    (hm : m ∈ Q.orthogonal plane) : ∀ p ∈ plane, Q p m = 0 := by
+  intro p hp
+  rw [LinearMap.BilinForm.mem_orthogonal_iff] at hm
+  have := hm p hp
+  rwa [LinearMap.BilinForm.isOrtho_def] at this
+
+/-- **The signature decomposition — Sylvester's law of inertia for a `J`-form.**  A nondegenerate
+symmetric form with a compatible polarization `J` splits into two `J`-invariant, `Q`-orthogonally
+complementary subspaces: `Nneg` (negative-definite) and `Npos` (positive-definite).  Proof by
+strong induction on `finrank`: peel a non-isotropic `J`-plane (`polarized_{neg,pos}Def_plane`),
+land in its `J`-invariant orthogonal complement (`orthogonal_Jinvariant`, again nondegenerate),
+recurse, and reassemble along the sign of the plane. -/
+theorem polarized_signature_decomp : ∀ (n : ℕ) {V : Type} [AddCommGroup V] [Module ℝ V]
+    [FiniteDimensional ℝ V] {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q),
+    Q.IsSymm → Q.Nondegenerate → Module.finrank ℝ V = n →
+    ∃ Nneg Npos : Submodule ℝ V,
+      (∀ w ∈ Nneg, P.complex.J w ∈ Nneg) ∧ (∀ w ∈ Npos, P.complex.J w ∈ Npos) ∧
+      (∀ y ∈ Nneg, y ≠ 0 → Q y y < 0) ∧ (∀ y ∈ Npos, y ≠ 0 → 0 < Q y y) ∧
+      IsCompl Nneg Npos := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n IH =>
+    intro V _ _ _ Q P hsymm hnd hn
+    by_cases hV : ∃ x : V, x ≠ 0
+    · obtain ⟨v0, hv0⟩ := hV
+      obtain ⟨x, hxQ⟩ := exists_self_ne_zero hsymm hnd hv0
+      have hx0 : x ≠ 0 := by rintro rfl; simp at hxQ
+      set plane := Submodule.span ℝ ({x, P.complex.J x} : Set V) with hplane
+      have hpJ : ∀ w ∈ plane, P.complex.J w ∈ plane := polarized_plane_Jinvariant P.complex x
+      have hpnd : (Q.restrict plane).Nondegenerate := plane_restrict_nondegenerate P hsymm hxQ
+      have hrefl : Q.IsRefl := hsymm.isRefl
+      have hcompl : IsCompl plane (Q.orthogonal plane) :=
+        LinearMap.BilinForm.isCompl_orthogonal_of_restrict_nondegenerate hrefl hpnd
+      set W := Q.orthogonal plane with hWdef
+      have hWJ : ∀ w ∈ W, P.complex.J w ∈ W := orthogonal_Jinvariant P hpJ
+      have hpf : Module.finrank ℝ plane = 2 := polarized_negDef_plane_finrank P hx0
+      have hfr : Module.finrank ℝ plane + Module.finrank ℝ W = Module.finrank ℝ V :=
+        Submodule.finrank_add_eq_of_isCompl hcompl
+      have hWlt : Module.finrank ℝ W < n := by rw [← hn]; omega
+      have hWnd : (Q.restrict W).Nondegenerate := by
+        rw [LinearMap.BilinForm.restrict_nondegenerate_iff_isCompl_orthogonal hrefl,
+            LinearMap.BilinForm.orthogonal_orthogonal hnd hrefl]
+        exact hcompl.symm
+      have hsymmW : (Q.restrict W).IsSymm := ⟨fun v w => by
+        simp only [LinearMap.BilinForm.restrict_apply]; exact hsymm.eq (v : V) (w : V)⟩
+      obtain ⟨NnegW, NposW, hNnegWJ, hNposWJ, hNnegWneg, hNposWpos, hNWcompl⟩ :=
+        IH _ hWlt (polarizedRestrict P hWJ) hsymmW hWnd rfl
+      set Nl := Submodule.map W.subtype NnegW with hNldef
+      set Pl := Submodule.map W.subtype NposW with hPldef
+      have hNlW : Nl ≤ W := Submodule.map_subtype_le W NnegW
+      have hPlW : Pl ≤ W := Submodule.map_subtype_le W NposW
+      have hNlsup : Nl ⊔ Pl = W := lift_sup hNWcompl
+      have hNlinf : Nl ⊓ Pl = ⊥ := lift_inf hNWcompl
+      have hNlJ : ∀ y ∈ Nl, P.complex.J y ∈ Nl := map_Jinvariant P.complex hWJ hNnegWJ
+      have hPlJ : ∀ y ∈ Pl, P.complex.J y ∈ Pl := map_Jinvariant P.complex hWJ hNposWJ
+      have hNlneg : ∀ y ∈ Nl, y ≠ 0 → Q y y < 0 := restrict_map_negDef hNnegWneg
+      have hPlpos : ∀ y ∈ Pl, y ≠ 0 → 0 < Q y y := restrict_map_posDef hNposWpos
+      have horth : ∀ p ∈ plane, ∀ m ∈ W, Q p m = 0 := fun p hp m hm =>
+        plane_orthogonal_zero hm p hp
+      rcases lt_or_gt_of_ne hxQ with hneg | hpos
+      · refine ⟨plane ⊔ Nl, Pl, sup_Jinvariant P.complex hpJ hNlJ, hPlJ, ?_, hPlpos, ?_⟩
+        · exact negDef_sup hsymm (polarized_negDef_plane P hsymm hneg) hNlneg
+            (fun p hp m hm => horth p hp m (hNlW hm))
+        · exact isCompl_planeExtend hcompl hNlsup hNlinf hNlW hPlW
+      · refine ⟨Nl, plane ⊔ Pl, hNlJ, sup_Jinvariant P.complex hpJ hPlJ, hNlneg, ?_, ?_⟩
+        · exact posDef_sup hsymm (polarized_posDef_plane P hsymm hpos) hPlpos
+            (fun p hp m hm => horth p hp m (hPlW hm))
+        · have hsup : Pl ⊔ Nl = W := by rw [sup_comm]; exact hNlsup
+          have hinf : Pl ⊓ Nl = ⊥ := by rw [inf_comm]; exact hNlinf
+          exact (isCompl_planeExtend hcompl hsup hinf hPlW hNlW).symm
+    · simp only [not_exists, not_ne_iff] at hV
+      have htop : (⊤ : Submodule ℝ V) = ⊥ := by
+        ext v; simp only [Submodule.mem_top, Submodule.mem_bot, true_iff]; exact hV v
+      refine ⟨⊥, ⊥, fun w _ => by rw [Submodule.mem_bot]; exact hV _,
+        fun w _ => by rw [Submodule.mem_bot]; exact hV _, ?_, ?_, ?_⟩
+      · intro y hy hy0; rw [Submodule.mem_bot] at hy; exact absurd hy hy0
+      · intro y hy hy0; rw [Submodule.mem_bot] at hy; exact absurd hy hy0
+      · refine ⟨by simp, ?_⟩
+        rw [codisjoint_iff, sup_idem]; exact htop.symm
+
+/-- **The negative index of a `J`-polarized nondegenerate symmetric form is even.**  From the
+signature decomposition, the negative part `Nneg` is `J`-invariant (hence even-dimensional,
+`Jinvariant_subspace_finrank_even`), it is negative-definite, and it dominates every
+negative-definite subspace (any such is disjoint from the positive-definite `Npos`, so its dimension
+is at most `finrank Nneg`).  Thus the negative index — the off-line zero count `κ₋` of the seam
+Krein form — is forced **even**: under a polarization, off-line negativity occurs only in
+`J`-conjugate pairs.  This is the functional equation's conjugate-pairing of zeros, obtained as a
+rigidity of the compatible complex structure, not propagated by any flow. -/
+theorem polarized_negIndex_even {V : Type} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    (hsymm : Q.IsSymm) (hnd : Q.Nondegenerate) :
+    ∃ Nneg : Submodule ℝ V, Even (Module.finrank ℝ Nneg) ∧
+      (∀ y ∈ Nneg, y ≠ 0 → Q y y < 0) ∧
+      (∀ U : Submodule ℝ V, (∀ y ∈ U, y ≠ 0 → Q y y < 0) →
+        Module.finrank ℝ U ≤ Module.finrank ℝ Nneg) := by
+  obtain ⟨Nneg, Npos, hNnegJ, _, hNnegneg, hNpospos, hcompl⟩ :=
+    polarized_signature_decomp (Module.finrank ℝ V) P hsymm hnd rfl
+  refine ⟨Nneg, Jinvariant_subspace_finrank_even P.complex hNnegJ, hNnegneg, ?_⟩
+  intro U hU
+  have hdisj : U ⊓ Npos = ⊥ := by
+    rw [eq_bot_iff]
+    intro z hz
+    rcases eq_or_ne z 0 with h | h
+    · rw [h]; exact Submodule.zero_mem _
+    · exact absurd (hNpospos z hz.2 h) (not_lt.mpr (le_of_lt (hU z hz.1 h)))
+  have hkey := Submodule.finrank_sup_add_finrank_inf_eq U Npos
+  rw [hdisj] at hkey
+  simp only [finrank_bot, add_zero] at hkey
+  have hle : Module.finrank ℝ ((U ⊔ Npos : Submodule ℝ V)) ≤ Module.finrank ℝ V :=
+    Submodule.finrank_le _
+  have hV : Module.finrank ℝ Nneg + Module.finrank ℝ Npos = Module.finrank ℝ V :=
+    Submodule.finrank_add_eq_of_isCompl hcompl
+  omega
+
 end RHTower

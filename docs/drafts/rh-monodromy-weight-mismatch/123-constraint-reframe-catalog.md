@@ -395,3 +395,27 @@ is the carrier-from-`ξ` correspondence, exactly the rule-7 flow `m_ξ = -Ξ'/Ξ
 form (a finite Pick Gram from finitely many `ξ`-values, not the global carrier) is the non-flow
 candidate to probe; (2) `hpol` as Rosati-positivity on `D_∞` — the T2 lane; (3) the T1 collision — is
 the second-harmonic sign the negative Krein direction the discharge produces? These are the live fronts.
+
+### §4 follow-up 2 — the J-weld built (Sylvester inertia for J-forms)
+
+Front-1 (link `OmegaComplexStructure`'s polarization `J` to the negative index) is now **closed by
+construction**, not left open. `formal/GaloisForLFunctions/RHTower/SeamPolarizationWeld.lean` (25 decls,
+axiom-clean, lint green, in the RHTower umbrella) formalizes **Sylvester's law of inertia for a
+`J`-form** — absent from mathlib, built from scratch:
+
+- The lever: on the forced `J`-plane `span{x, Jx}`, `Q = (a²+b²)·Q(x,x)` — one non-isotropic direction
+  drags its `J`-partner into a definite `2`-plane; `J`-invariant subspaces are even-dimensional (`J`
+  restricts to a complex structure).
+- `polarized_signature_decomp`: `V = Nneg ⊕ Npos`, `J`-invariant + `Q`-orthogonal, neg/pos-definite —
+  by strong induction (peel a `J`-plane, recurse into its `J`-invariant nondegenerate orthogonal
+  complement, reassemble by sign).
+- `polarized_negIndex_even`: **the negative index `κ₋` is even** — off-line negativity occurs only in
+  `J`-conjugate pairs. The FE's conjugate-pairing of zeros obtained as a *rigidity of the compatible
+  complex structure*, not propagated by a flow (rule 7 clean: the decomposition is a property of the
+  given form).
+
+So the §4 chain is now: `SeamSpectralFlow` (RH ⟺ definiteness `κ₋ = 0`) + `SeamPolarizationWeld` (a
+compatible `J` forces `κ₋` even; `OmegaComplexStructure`'s `J` linked to the index). Opens: the RH datum
+is the *existence* of a positive polarization (`Npos = ⊤`, `κ₋ = 0`) — the period-domain `D_∞` question
+(T2); and the complex/Hermitian analogue over the actual FE Krein form (this is the real-form model).
+Card: `docs/drafts/pipeline/3-formalized/seam-polarization-weld.md`.
