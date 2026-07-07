@@ -6102,3 +6102,63 @@ obstruction — the steering family can never open the two-sheeted cover.  Docs 
 banked; gate green; every endpoint [propext, Classical.choice, Quot.sound].  Open
 core: the selection principle (doc 118 §residual) — the only remaining gap between
 the discriminator and the odd-order contradiction.
+
+## Selection principle pass (doc 119)
+
+Built `SweepSelection.lean`: the doc-118 residual selection principle as an interface
+with theorems on every side. Key design turn: the vacuity trap (an interface trivially
+satisfied by sweepRoot) is dissolved by RIGIDITY as a theorem — continuity + root
+tracking forces every rule to BE the half-angle transport of its initial reading (IVT
+on the ±1 ratio), so sweepRoot does not merely satisfy the interface, it exhausts it;
+the rule's whole freedom is four signs. Then: displacement path explicit
+(`exp(t·Δλ/2)`), reading reversal under near-half-turn holonomy, steerable defeat of
+all rules by one prime set, the neutral IVT stage (purely imaginary tie), the frozen
+D–H pair (rules exist, all motionless), calibration iff against the deck class, and
+the weld (reversal + no global realization from one anchor). Gate exit 0 (9233 jobs);
+all endpoints axiom-clean. Residual banked in doc 119 §7: canonical selection (which
+sign pair does the FULL member pick) and the pro-selection over the directed system of
+finite anchors — cofinal reversal vs compatibility is the new sharp question.
+
+### Self-attack round: naive pro-selection decided
+
+Attacked doc 119 §7's pro-selection conjecture before leaving it open:
+`exists_sweepSelection_with_endpoint` proves cross-anchor compatibility is FREE (every
+anchor can be retro-fitted to any chosen endpoint roots), so the naive consistency
+question carries no content. Combined with `deckClass_sweepRoot` + the calibration
+iff: a geometrically realized pro-selection exists iff the full member's class is 1 —
+at every anchor level the principle is exactly the parity. Open core re-aimed in the
+doc 119 addendum: the canonical branch datum (which sign pair the completed member
+itself supplies, from Hadamard/FE structure, transported along the doc-117 arcs).
+
+## 2026-07-07 — Wire box-count to winding integer k; re-architect pairing onto whole loop (Lean, axiom-clean)
+
+Following the Gate-3 verdict (endpoint-sign discrete traction FALSIFIED by endpoint_orientation_no_go;
+route pivots to the boundary-arc winding integer, which ArcWindingDictionary proved rigid), executed
+the two directed moves.
+
+WIRE (WindingBoxCount.lean): `arcWinding_parity_eq_enclosedOrder` — the two-arc winding mismatch
+integer k satisfies (−1)^k = (−1)^(Σmᵢ), i.e. Even(k − Σmᵢ). Proof equates the deck class read two
+ways: box_charge_eq_deckRed (deck = deckRed 2 (Σmᵢ)) and deckClass_neg_one_zpow_arg_variation
+(deck = (−1)^k), using deckRed_two_eq_neg_one_zpow (deckRed 2 j = (−1)^j). So the winding integer's
+parity IS the enclosed-order parity — the box-count read through the argument variation.
+
+RE-ARCHITECTURE (WholeLoopParity.lean): `crossings_fluxPaired_of_phase_winds` — if the carrier phase
+advances a whole number of turns (θb − θa = k·2π), the band-edge count is even and paired with NO
+endpoint hypothesis. Mechanism: sin(θb) = sin(θa + 2πk) = sin(θa), so hagree is automatic — the
+steerable endpoint pair the no-go exploits is gone. `exists_incidence_edge_events_fluxPaired_of_wind`
+is the incidence-carrier form (crossings → pencil zeros).
+
+CLOSURE (WholeLoopClosure.lean): `incidence_wholeLoop_closure` composes both — tying the carrier
+edge-winding and the member arc-winding to a common k (the anchor is monodromy-free), the discharge is
+endpoint-free AND k has the enclosed order's parity.
+
+Effect on Gate 3: the steering obstruction is dissolved for the whole-turn-winding regime — the parity
+source moved from endpoint signs (steerable, per no-go) to the winding integer (rigid, = box-count mod 2).
+
+Open next: the whole-turn-winding hypothesis (θb − θa ∈ 2πℤ) is the closed-loop condition; deriving it
+for the actual rectangle boundary requires the phase-advance = arc-winding identification (anchor
+monodromy-free) formalized against the loop geometry, and the per-edge enumeration extended around the
+corners. That is the residual bridge from the composed pillars to an unconditional whole-loop discharge.
+
+Verify: lake build MainTheorems EXIT 0 (9235 jobs); all decls axiom-clean [propext, Classical.choice,
+Quot.sound]; lint + index pass; docstrings self-contained. No git commit.

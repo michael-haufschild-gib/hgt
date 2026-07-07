@@ -284,6 +284,7 @@ import GaloisForLFunctions.RHTower.EndpointNoGo
 import GaloisForLFunctions.RHTower.ArcWindingDictionary
 import GaloisForLFunctions.RHTower.TiltSweepDiscriminator
 import GaloisForLFunctions.RHTower.AnnulusRootGluing
+import GaloisForLFunctions.RHTower.SweepSelection
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity
@@ -295,3 +296,6 @@ import GaloisForLFunctions.RHTower.ReflectedGridOffgridBridge
 import GaloisForLFunctions.RHTower.FoldonFrustration
 import GaloisForLFunctions.RHTower.RectangleResidue
 import GaloisForLFunctions.RHTower.CarrierBoxCount
+import GaloisForLFunctions.RHTower.WholeLoopParity
+import GaloisForLFunctions.RHTower.WindingBoxCount
+import GaloisForLFunctions.RHTower.WholeLoopClosure

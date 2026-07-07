@@ -947,3 +947,39 @@ New modules (axiom-clean, umbrella + index updated, gate green):
 Named residual (doc 118): the selection principle — a sweep-coupled rule tying the
 steered boundary readings to the branch the geometry selects; its D–H test is that
 the rule must USE the sweep.
+
+## SweepSelection.lean (new module)
+
+`formal/GaloisForLFunctions/RHTower/SweepSelection.lean` — the selection principle of
+doc 118 §residual as a complete theorem set (doc 119). Interface `SweepSelection`
+(continuous stage-indexed boundary readings squaring to the swept member; no charts in
+the datum). Contents: `continuous_root_family_eq_transport` (rigidity: every rule is
+the half-angle transport of its initial reading; IVT on the continuous ±1 ratio),
+`SweepSelection.transport/initial_sq/ne_zero/eq_of_initial` (freedom = four sign
+pairs), `SweepSelection.displacement_at/displacement_re_at` (the displacement path is
+the explicit curve `exp(t·Δλ/2)`; cosine law), `SweepSelection.reading_reversal`
+(near-half-turn holonomy ⟹ strict reversal at full sweep),
+`selection_reversal_steerable` (∃ prime set beyond any bound defeating ALL rules),
+`SweepSelection.exists_neutral_stage` (IVT tie: a stage with purely-imaginary nonzero
+relative reading), `SweepSelection.frozen_of_empty` + `exists_sweepSelection_empty`
+(D–H side: rules exist, all frozen, displacement ≡ 1),
+`SweepSelection.endpoint_sq_anchoredSEM` (readings land on anchoredSEM at t = 1),
+`exists_extending_sweepSelection_iff_deckClass_one` (calibration: globally-realized
+selections exist iff deck class = 1),
+`no_extending_sweepSelection_of_deckClass_ne_one` (interface + odd parity ⟹ False),
+`selection_principle_weld` (one prime set: every rule reverses AND no stage admits a
+global root). Umbrella import added after AnnulusRootGluing. All endpoints
+`[propext, Classical.choice, Quot.sound]`. Gate: 9233 jobs, exit 0.
+
+### SweepSelection.lean addition: exists_sweepSelection_with_endpoint
+
+`exists_sweepSelection_with_endpoint` — cross-anchor endpoint compatibility is free:
+for any square roots `w₁, w₂` of two port values, every finite anchor admits a sweep
+selection (member values with that anchor's head divided out) whose full-sweep
+readings are exactly `(w₁, w₂)`. Construction `exp((t−1)·λ/2)·w`; root property via
+`exp_anchorLog`. Closes the naive pro-selection consistency question (doc 119
+addendum). Axiom-clean.
+
+- `RHTower/WholeLoopParity.lean` (new, in umbrella): re-architecture of the band-edge pairing off the steerable endpoint datum. `crossings_fluxPaired_of_phase_winds` — for a polar carrier with positive modulus and strictly monotone continuous phase, IF the phase advance over the segment is an integer multiple of `2π` (`θ b − θ a = k·2π`) and the basepoint is not a crossing, then the forced crossings are even in number and their event list carries paired flux — with NO endpoint-orientation hypothesis. Mechanism: a whole-turn advance forces `sin(θ b) = sin(θ a + 2πk) = sin(θ a)`, so both endpoints carry the sign of `sin(θ a)` — the `hagree` the per-edge form assumes is here a theorem, and the steerable endpoint pair (`endpoint_orientation_no_go`) never enters. `exists_incidence_edge_events_fluxPaired_of_wind` — the incidence-carrier version, converting the `.im = 0` crossings to pencil zeros. The parity source is the winding integer `k`, not the endpoint signs.
+- `RHTower/WindingBoxCount.lean` (new, in umbrella): the wire from the box-count to the winding integer. `arcWinding_parity_eq_enclosedOrder` — for an enclosed factorization `f = (∏(·−ρᵢ)^{mᵢ})·h` with square roots `G₁ G₂` and logarithms `ℓ₁ ℓ₂` on the two annulus charts, the two-arc winding mismatch integer `k` (`2πk` = the difference of the argument variations of `ℓ₁,ℓ₂` between the annulus basepoints) satisfies `(−1)^k = (−1)^(Σmᵢ)`, i.e. `Even (k − Σmᵢ)`: the winding integer and the enclosed total order have the same parity. Proof equates the two deck-class readings — `box_charge_eq_deckRed` (deck = `deckRed 2 (Σmᵢ)`) and `deckClass_neg_one_zpow_arg_variation` (deck = `(−1)^k`) — via `deckRed_two_eq_neg_one_zpow` (`deckRed 2 j = (−1)^j`). The winding integer is not free: mod 2 it is the box-count.
+- `RHTower/WholeLoopClosure.lean` (new, in umbrella): the composition. `incidence_wholeLoop_closure` — with the carrier's edge phase-advance and the member's arc-winding mismatch tied to a common integer `k·2π` (the identification the anchor's monodromy-freeness supplies), the band-edge events are even and paired with no endpoint datum AND `k` has the enclosed order's parity. The paired-flux discharge is endpoint-free and its parity is pinned to the enclosed zero count. All three axiom-clean [propext, Classical.choice, Quot.sound]; `lake build MainTheorems` green (9235 jobs); lint + index pass.
