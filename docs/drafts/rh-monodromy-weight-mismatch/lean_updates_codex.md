@@ -1341,3 +1341,24 @@ m_ρ Y^{m_ρ-1} GIVEN the divisor) but does NOT produce the divisor — rebuilds
 inserts Γ-factor, reads ξ's zeros via imported continuation. Smuggling moved from "reverse-engineered Π"
 to "silent continuation of the Fredholm det past the trace-class wall." APEX sharpened: continue
 det(1-⊕p^{-s}C_p)^{-1} past the trace-class wall by the SEAM'S OWN SYMMETRY (FE emergent, not inserted).
+
+## SeamCrossingTower.lean — unconditional crossing tower + apex=RH (doc 133); CONVERGENCE with reviewer
+Reviewer converged: the seam construction gives an UNCONDITIONAL finite-prime theorem (Thms 1-5), NOT
+the critical-line conclusion; apex = reciprocity-completed Weil positivity = still conjectural. Matches.
+5 endpoints axiom-clean, gate green 9277.
+UNCONDITIONAL (reviewer's Thms 1/3/5):
+- crossSupport r = {(n-r,n):1≤n≤r} (the r unit HS-entries of B_{p,r}=(1-Q_p)S_p^r Q_p);
+  crossSupport_card: ‖B_{p,r}‖²_HS = r; crossSupport_orthogonal + crossHS_inner: ⟨B_r,B_s⟩_HS=r δ_rs.
+- expKernel_eq_eulerFactor: exp(Σ_r (p^{-s})^r/r) = (1-p^{-s})⁻¹ — Euler factor = exp of seam kernel;
+  the 1/r weight = reciprocal r-crossing energy (not formal algebra). Uses banked neg_log_euler_base_hasSum.
+- finite_weil_energy_nonneg: Σ_{(p,r)} r‖h‖² ≥ 0 (finite-prime Weil energy as manifest HS norm).
+  All on Re s>1 (the prime/Euler side).
+APEX (formalized as exactly what it is):
+- rh_of_seam_spectral: the Hilbert-Pólya seam endpoint (every strip zero = 1/2+iλ, λ real) ⟹ RH.
+- seam_spectral_iff_rh: that endpoint ⟺ RiemannHypothesis. THE PUNCHLINE — the remaining ingredient
+  (self-adjoint spectral id of zeros = Weil positivity of completed seam norm) is NOT a fillable bridge
+  lemma from the crossing tower; discharging it IS proving RH. Crossing tower = Euler side on Re s>1;
+  spectral side = zeros in strip; connecting across the wall = carrier-support disjointness (doc 127).
+axiom-check confirmed rh_of_seam_spectral has NO hidden axiom (standard trio only) — the conditional is
+honest, not a smuggled sorry. FRONTIER: unconditional finite-prime Euler-as-crossing-energy PROVED;
+open apex = non-circular reciprocity-completed positive H¹_Δ with W_Δ(h)=‖B_h^rec‖²_Δ.

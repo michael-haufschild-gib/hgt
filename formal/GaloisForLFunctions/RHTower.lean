@@ -306,6 +306,7 @@ import GaloisForLFunctions.RHTower.FittingSeamBoundary
 import GaloisForLFunctions.RHTower.SoninSeamDefect
 import GaloisForLFunctions.RHTower.CutoffCochain
 import GaloisForLFunctions.RHTower.SeamReciprocity
+import GaloisForLFunctions.RHTower.SeamCrossingTower
 import GaloisForLFunctions.RHTower.MPlusTorsionSeam
 import GaloisForLFunctions.RHTower.CutoffTorsionSeam
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
@@ -324,6 +325,8 @@ import GaloisForLFunctions.RHTower.WindingArgumentPrinciple
 import GaloisForLFunctions.RHTower.WindingDivisor
 import GaloisForLFunctions.RHTower.WindingFull
 import GaloisForLFunctions.RHTower.WindingXi
+import GaloisForLFunctions.RHTower.WindingXiCircle
+import GaloisForLFunctions.RHTower.WindingHomotopy
 import GaloisForLFunctions.RHTower.RegionCharge
 import GaloisForLFunctions.RHTower.DeckChargeBridge
 import GaloisForLFunctions.RHTower.RectangleResidue

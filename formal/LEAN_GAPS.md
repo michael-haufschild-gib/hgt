@@ -5,7 +5,10 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
+| Kind | Location | Context | Text |
+|---|---|---|---|
+| proof-debt | `formal/GaloisForLFunctions/RHTower/EntireAutomorphism.lean:174` | `theorem entire_affine_of_injective_polyGrowth` | `sorry` |
+| proof-debt | `formal/GaloisForLFunctions/RHTower/EntireAutomorphism.lean:179` | `theorem entire_affine_of_injective_polyGrowth` | `sorry` |
 
 ## Large Files
 
