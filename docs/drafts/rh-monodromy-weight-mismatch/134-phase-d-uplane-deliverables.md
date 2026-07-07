@@ -131,3 +131,25 @@ boundary winding, so an admissible deformation (no zero crosses `∂B`) conserve
 is `0`) or deposit an even seam order. So `RH_2` is now: can the true descended `ξ` realize a nonzero
 `xiDescentHalfCharge` — is the relative half-seam deposit possible for this one function, or forbidden?
 The whole burden is a single seam-boundary question about `xiDescent`.
+
+## Deposit vs ξ's germ: the central-parity verdict (`HalfChargeSeamCompat.lean`)
+
+The `u`-plane seam `{Im u = 0}` = far field (`u>0`, ξ≠0) ∪ center (`u=0`, `s=1/2`) ∪ **critical line**
+(`u<0`, `s=1/2+i√|u|`). An off-line pair colliding onto the seam lands at `u<0` (as `β→1/2`,
+`u₀=(β−1/2+iγ)²→−γ²<0`) — on the critical line, *not* the center.
+
+* `analyticOrderAt_xiDescent_sq_of_ne_center`: off-center (`s≠1/2`) the descent is a local iso, so the
+  seam multiplicity is exactly `ord_s ξ` — **no parity constraint**.
+* `xiDescent_online_seam_order`: on-line ξ-zeros map to the negative-real seam (`Im=0, Re≤0`) with
+  order `ord_ρ ξ`, which can be odd (all known on-line zeros are simple).
+* `xi_central_order_eq_two_mul`: `ord_{1/2} ξ = 2·ord_0(xiDescent)` — central parity (Phase C) is the
+  descent's halving, automatic for any descended order (`xi_central_order_even_via_descent`). A center
+  deposit of order `n` is a central ξ-zero of order `2n`, Phase-C-consistent.
+* `deposit_respects_central_parity`: under any admissible deformation the mod-2 seam parity is
+  conserved — the deposit can never violate central parity.
+
+**Verdict.** Central parity constrains only `u=0`, and there it is automatic; the deposit lands on the
+critical line `u<0` where the seam carries arbitrary (even odd) order; the deposit is even and preserves
+the seam parity. **Central parity does not obstruct the deposit — it survives; the `{i,−i}` deposit is
+compatible with ξ's germ.** The obstruction, if any, is finer than parity: it must distinguish a genuine
+on-line zero from a deposited pair-collision residue.

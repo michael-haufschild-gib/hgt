@@ -50,6 +50,7 @@ import GaloisForLFunctions.RHTower.UPlaneTorsor
 import GaloisForLFunctions.RHTower.UPlaneWinding
 import GaloisForLFunctions.RHTower.HalfPlaneCharge
 import GaloisForLFunctions.RHTower.HalfChargeConservation
+import GaloisForLFunctions.RHTower.HalfChargeSeamCompat
 import GaloisForLFunctions.RHTower.GermExtension
 import GaloisForLFunctions.RHTower.SpurHermite
 import GaloisForLFunctions.RHTower.SpurRescale
@@ -324,6 +325,10 @@ import GaloisForLFunctions.RHTower.SeamHodgeCompression
 import GaloisForLFunctions.RHTower.SeamFiniteHodge
 import GaloisForLFunctions.RHTower.SeamResolventDeterminant
 import GaloisForLFunctions.RHTower.SeamReciprocalCap
+import GaloisForLFunctions.RHTower.SeamDeterminantRH
+import GaloisForLFunctions.RHTower.SeamCrossingMatrix
+import GaloisForLFunctions.RHTower.SeamReductionCapstone
+import GaloisForLFunctions.RHTower.SeamCrossingCompression
 import GaloisForLFunctions.RHTower.SeamArchimedeanNoGo
 import GaloisForLFunctions.RHTower.MPlusTorsionSeam
 import GaloisForLFunctions.RHTower.CutoffTorsionSeam
@@ -366,3 +371,4 @@ import GaloisForLFunctions.RHTower.DeciderBarrier
 import GaloisForLFunctions.RHTower.SeamCollisionMechanism
 import GaloisForLFunctions.RHTower.WeldTowerFree
 import GaloisForLFunctions.RHTower.WeldTowerLimit
+import GaloisForLFunctions.RHTower.SecularOddMoments

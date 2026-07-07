@@ -3,6 +3,7 @@ import GaloisForLFunctions.OrbitFreeness
 import GaloisForLFunctions.KroneckerFlow
 import GaloisForLFunctions.BohrGenerators
 import GaloisForLFunctions.EulerProduct
+import GaloisForLFunctions.EulerFirewall
 import GaloisForLFunctions.MultiQDifference
 import GaloisForLFunctions.ArchimedeanLane
 import GaloisForLFunctions.ArchimedeanGamma

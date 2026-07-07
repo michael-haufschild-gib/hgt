@@ -6965,3 +6965,33 @@ exact local model P_t(u)=(u−a)²+t² of the reorientation note §5, now a Lean
 Open core (unchanged, now sharply located): whether ξ can actually realize a nonzero xiDescentHalfCharge
 — i.e. whether the relative half-seam deposit is possible for the true descended ξ, or forbidden. That
 is the RH_2 crux, reduced to a single seam-boundary question about one function.
+
+## Deposit vs ξ's germ: the central-parity verdict (HalfChargeSeamCompat.lean)
+
+The evaluation the user asked for — deform the {i,-i} witness toward ξ's real divisor and read whether
+the deposit is obstructed by Phase C central parity. Axiom-clean, MainTheorems green 9314 jobs, lint
+passed. Building blocks: AnalyticAt.analyticOrderAt_comp + analyticOrderAt_pow (mathlib, ramified order),
+analyticOrderAt_comp_of_deriv_ne_zero (off-center), xi_eq_xiDescent, seamOrder_parity_conserved.
+
+GEOMETRY (the key read): the u-plane seam {Im u=0} = far field (u>0, ξ≠0) ∪ center (u=0, s=1/2) ∪
+CRITICAL LINE (u<0, s=1/2+i√|u|). An off-line pair {u₀,ū₀} colliding onto the seam lands at u<0
+(β→1/2 sends u₀=(β-1/2+iγ)²→-γ²<0), i.e. ON THE CRITICAL LINE, NOT the center.
+
+§1 analyticOrderAt_xiDescent_sq_of_ne_center: generalized center_sq to ANY s≠1/2 (rightHalf was only
+used for s-1/2≠0). Off-center the descent is a local iso ⟹ seam multiplicity = ord_s(ξ), NO parity
+constraint.
+§2 xiDescent_online_seam_order: for on-line ρ (Re=1/2, ρ≠1/2), (ρ-1/2)² is on the negative-real seam
+(Im=0, Re≤0) with ord = ord_ρ(ξ) — can be ODD (all known on-line zeros simple). The seam has room.
+§3 xi_central_order_eq_two_mul: ord_{1/2}(ξ) = 2·ord_0(xiDescent) (ramified descent). Phase C central
+evenness = the descent's halving, AUTOMATIC for any descended order (xi_central_order_even_via_descent
+re-derives it). A center deposit of xiDescent-order n = central ξ-zero of order 2n, Phase-C-consistent.
+§4 deposit_respects_central_parity: under any admissible deformation seamOrder mod 2 is conserved — the
+deposit can NEVER violate central parity.
+
+VERDICT (NO-GO for the obstruction hope): central parity constrains ONLY u=0, and there it is automatic;
+the deposit lands on the critical line u<0 where the seam carries arbitrary (even odd) order; the
+deposit is even and preserves the seam parity. So CENTRAL PARITY DOES NOT OBSTRUCT THE DEPOSIT — it
+survives. The {i,-i} deposit is compatible with ξ's germ. The obstruction, if any, must be FINER than
+parity: it must distinguish a genuine on-line zero from a deposited pair-collision residue (the signed/
+relative class, not the mod-2 seam parity — consistent with the whole Phase D/E arc). Open core sharpened,
+not closed.

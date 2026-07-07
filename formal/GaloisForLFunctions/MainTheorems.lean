@@ -20,3 +20,4 @@ import GaloisForLFunctions.Q62RootTower
 import GaloisForLFunctions.Q62CofinalRootTower
 import GaloisForLFunctions.Q62BrolinRootTower
 import GaloisForLFunctions.RHTower
+import GaloisForLFunctions.RHTower.RHCharacterizations

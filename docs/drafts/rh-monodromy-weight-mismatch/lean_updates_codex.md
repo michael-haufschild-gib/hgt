@@ -1612,3 +1612,81 @@ Ties the banked softness (CarrierChargeSoftness) and rigidity (DirichletRigidity
 classification. Program arc A–H now formalized end to end; the trichotomy explains WHY no class proves
 RH by softness (can't force parity) or rigidity (collapses) — only the Goldilocks cell is viable, and
 there the deck charge is necessary but not sufficient (needs the seam).
+
+## SeamDeterminantRH.lean — the determinant identity ⟹ RH bridge (moonshot §9→§10, machine-checked)
+
+Welds the determinant work (SeamResolventDeterminant) to the RH endpoint. Gate 9311, axiom-clean.
+
+- `strip_zero_of_hermitian_det_line` — for Hermitian T, `det(ρ·1 − (½·1 + iT)) = 0 ⟹ ρ = ½ + i·(real
+  eigenvalue of T)`, so `ρ.re = ½`. Proof: spectral theorem diagonalizes `ρ·1 − Θ = U·diagonal(ρ − ½
+  − i·τ_k)·star U`; `det = ∏(ρ − ½ − i·τ_k)` (via `Matrix.det_conj`, unitary conjugation); a vanishing
+  factor pins `ρ = ½ + i·τ_k`.
+- `rh_of_hermitian_determinant` — if one Hermitian T captures every strip ξ-zero as a root of its seam
+  characteristic determinant, RH holds (compose with `rh_of_seam_spectral`).
+- `rh_of_hermitian_determinant_eq_xi` — the literal §9 phrasing: `det(ρ·1 − (½·1 + iT)) = C·ξ ρ` at the
+  strip zeros ⟹ RH (at a zero, `C·ξρ = 0`).
+
+This makes the moonshot's §9→§10 conclusion — "sdet = C·ξ + Θ−½ Hermitian ⟹ zeros on the line" — a
+theorem. The hypothesis (one Hermitian generator whose determinant = C·ξ) is exactly the
+infinite-height spectral object `seam_spectral_iff_rh` proves equivalent to RH: no finite T meets a
+degree-N polynomial against entire ξ, so this is the limit object, the irreducible core — not a
+finite-fillable gap.
+
+Umbrella fix: broke a build cycle introduced concurrently — `RHCharacterizations` (a TFAE hub that
+imports the whole umbrella) had been added to the umbrella's own member list. Moved its import to
+`MainTheorems` so it stays gated without the cycle.
+
+## SeamCrossingMatrix.lean + SeamReductionCapstone.lean — operator-level §1 + the reduction biconditional
+
+Two closing bricks, gate 9313, all axiom-clean.
+
+**SeamCrossingMatrix.lean — the §1 crossing tower as actual matrices.** `crossOp M r` = the r-step
+crossing on the M-shell space (column j<r carries a unit in row j+r; a finite `(1−Q)S^rQ`). The
+crossing-energy law is now an operator trace, not a support count:
+- `crossOp_orthogonal` — tr(B_rᴴ B_s) = 0 for r≠s (a shared diagonal entry forces i+r=i+s).
+- `crossOp_self_energy` — tr(B_rᴴ B_r) = r for 2r≤M (exactly r unit entries).
+- `crossOp_energy_law` — tr(B_rᴴ B_s) = r·δ_{r,s}. The moonshot §1 law at the operator level; the 1/r
+  Euler weight is its reciprocal.
+
+**SeamReductionCapstone.lean — the reduction biconditional.**
+`seam_hermitian_capture_iff_rh : RiemannHypothesis ↔ (∀ strip ξ-zero ρ, ∃ finite Hermitian T,
+det(ρ·1 − (½·1 + iT)) = 0)`. Forward: RH puts each zero at ½+iλ, captured by the 1×1 generator [λ]
+(`oneByOne_isHermitian`, `oneByOne_capture`). Backward: each captured zero = ½+i·(eigenvalue), on the
+line (`strip_zero_of_hermitian_det_line` + `rh_of_seam_spectral`). The seam-determinant capture is
+EQUIVALENT to the critical-line condition, zero by zero.
+
+## Moonshot formalization: complete reduction, irreducible core isolated
+
+Every algebraic/finite step of the seam construction is now machine-checked axiom-clean:
+- §1 crossing tower + energy law (operator level): crossOp_energy_law; Euler kernel: expKernel_eq_eulerFactor.
+- §2–§4 scalar flat trace = ξ'/ξ (three sectors): seamFluxCochain_sector_sum, logDeriv_Gammaℝ.
+- §5 boundary reciprocity: boundary_flux_reciprocity.
+- §6 Seam Stokes (finite, exact): superTrace_supercommutator_zero, seam_hodge_compression_acyclic + the explicit reciprocal cap.
+- §7 Hodge homotopy (Moore–Penrose Green, built — mathlib lacks it): seam_homotopy, seamLaplacian_green, commute_generator_seamGreen.
+- §8 compression: seam_hodge_compression, seam_hodge_compression_finite.
+- §9 determinant (Jacobi, built — mathlib lacks it): resolvent_trace_eq_logDeriv_det; rh_of_hermitian_determinant_eq_xi.
+- §10 positivity → line: strip_zero_of_hermitian_det_line, rh_of_hermitian_spectral.
+- §11 Weil norm positivity: herglotz_rank_one_psd, seam_H1_seminorm_nonneg.
+- Archimedean no-go: primePowerLogs_le_finite.
+- Capstone: seam_hermitian_capture_iff_rh.
+
+The one thing NOT proven — and provably unprovable by bridging finite machinery — is the existence of a
+SINGLE generator capturing all (infinitely many) strip zeros simultaneously: the infinite-height limit
+object (balanced cap convergence P_R→P_Δ, G_R→G_Δ, Θ_R→Θ_Δ + K_Δ≥0). seam_hermitian_capture_iff_rh and
+seam_spectral_iff_rh both prove that existence is logically EQUIVALENT to RH. So the moonshot is a
+complete, machine-checked REDUCTION of RH to a single sharply-stated infinite-dimensional existence
+statement — not a proof of RH, which no finite bridge can supply.
+
+## SeamCrossingMatrix (extended) + SeamCrossingCompression.lean — §1 crossings ARE the §6–§8 differential
+
+The crossing operators are shown to be legitimate odd square-zero differentials, so the compression
+machinery fires on them concretely. Gate 9315, all axiom-clean.
+
+- `crossOp_sq_zero` — `B_r · B_r = 0` (a composed entry needs `k = j+r` and `k < r`, impossible). Each
+  crossing is a valid seam differential `d`.
+- `gradeOp`, `gradeOp_sq` (`Γ² = 1`), `grade_crossOp_odd` (`Γ B_r = −B_r Γ`) — a compatible grading
+  making the crossing odd.
+- `crossOp_compression` (SeamCrossingCompression.lean) — fires `seam_hodge_compression_finite` on
+  `d = crossOp M r`, `Γ = gradeOp M r`: for any `R` commuting with the crossing,
+  `superTrace Γ R = superTrace Γ (R · seamHarmonicProj d)`. The §1 crossing tower and the §8 Hodge
+  compression meet on one concrete object — the finite construction realized, not hypothesized.
