@@ -6847,3 +6847,46 @@ All axiom-clean [propext,Classical.choice,Quot.sound], MainTheorems green (9286 
 No sorries. The user's "mathlib lacks the entire-automorphism classification -> build it" is DONE,
 unconditionally. Key fragile-fix log: inv_le_inv_of_le→inv_anti₀; inv_lt_comm₀ for ‖z‖⁻¹<δ;
 Metric.eventually_nhds_iff∘eventually_nhdsWithin_iff for the ε-extraction; push_neg→rw[not_le].
+
+## Phase D — Move to the (u)-plane: three deliverables built (flow enabled)
+
+Prior u-plane infra (UPlaneDescent/UPlaneLadder/SquareLadder/SeamCocycle): xiDescent entire, descent
+identity, RH ⟺ slit-plane nonvanishing, multiplicity preservation (analyticOrderAt_xiDescent_center_sq),
+ladder ⟺ slit divisor, coherent tower on simply-connected slit regions, seam ledger (xiDescent_seam_jump).
+Three new modules complete the phase; assembled from existing ingredients (windingNumber_argument_principle,
+deckClass_multi_zero, xiDescent_peel_ball, exists_multi_peel_orders, carrierCharge), not re-derived.
+
+### UPlaneReflection.lean — the descent HALVES the symmetry group
+The s-plane Klein four V₄={s,1−s,s̄,1−s̄} collapses to Z/2={w,w̄} in the u-plane: the FE reflection
+s↦1−s (z↦−z) is absorbed by z↦z². Built: xiDescent_conj (xiDescent(w̄)=conj xiDescent w — u-plane
+reality, from ξ(s̄)=conj ξ(s) + √(w̄)=conj√w off the slit, extended by continuity across dense_slitPlane
+via Continuous.ext_on); xiDescent_orderAt_conj; uSqrt_im_nonneg (0≤Im w ⟹ 0≤Im√w, sin(arg/2)≥0).
+CAPSTONE rhLadder_iff_xiDescent_upperHalf: RHLadder k ⟺ divisibility only on {w∈slitPlane, 0≤Im w} —
+the conjugation constraint cuts the verification domain in HALF (z↦z² : right-upper s-quadrant ≅
+upper-half slit plane, order-preserving). dense_slitPlane, conj_mem_slitPlane, uSqrt_conj supporting.
+
+### UPlaneTorsor.lean — deck-charge classification + seam blindness (Deliverables 1,3 charge face)
+xiDescent_carrierCharge_center_sq: carrierCharge xiDescent k ((ρ−1/2)²)=carrierCharge xi k ρ (COMPARISON,
+charge face — same μ_{2^k} element). xiDescent_carrierCharge_conj (=carrierCharge_conj xiDescent_diff
+xiDescent_conj, one line). rhLadder_iff_xiDescent_carrierCharge_upperHalf / _slitPlane: the ladder IS
+triviality of the deck charge (single observable) on half / all of the slit plane. SEAM BLINDNESS:
+seam_order_two_mul (conj-symmetric fixed-point-free S ⟹ Σord = 2·Σ_{upper}ord, via Finset.sum_nbij'
+conj-pairing), seam_charge_two_eq_zero (rung-1 aggregate = 0), xiDescent_seam_order_even — the P(u)=u²+1
+conjugate-pair island reason a symmetric seam detector is blind. Reuses xiDescent_orderAt_ne_top (SeamCocycle).
+
+### UPlaneWinding.lean — the winding (flow) realisation (Deliverables 1 annulus, 2, 3 winding face)
+DELIVERABLE 1 (annulus torsor): xiDescent_peel_isolating_ball; xiDescent_deckClass_annulus_isolating
+(deck class of the two slit-annulus chart roots = exp(2πi·ord/n), via deckClass_multi_zero — mirror of
+xi_deckClass_annulus_isolating); xiDescent_deckClass_annulus_one_iff_dvd (trivial ⟺ n|ord — complete
+rank-one classification: annulus torsor ≅ Z/n by enclosed order). DELIVERABLE 2 (seam-index formula):
+windingNumber_xiDescent_zero/_disc = enclosed order Σ; loopCharge_xiDescent_zero/_disc = wCharge(2^k)(Σord)
+(boundary winding = sum of enclosed deck charges, via windingNumber_argument_principle + exists_multi_
+peel_orders); loopCharge_xiDescent_disc_two_eq_zero (real-centred contour around off-real island ⟹ rung-1
+winding = 0 — seam blindness, flow face). DELIVERABLE 3 (comparison, winding face):
+windingNumber_xiDescent_center_sq (u-winding around (ρ−1/2)² = ord_ρ ξ); windingNumber_xiDescent_eq_xi_of_
+center_sq (s-plane quadrant winding = u-plane slit winding, same integer).
+
+All axiom-clean [propext,Classical.choice,Quot.sound]. MainTheorems green (9297 jobs), lint passed, no
+sorries. Wired into RHTower umbrella (UPlaneReflection/UPlaneTorsor/UPlaneWinding). Constraint-not-flow
+rule lifted per instruction; winding used freely, but the charge (constraint) face is kept as the primary
+statement and the winding is its twin — the two faces of loopCharge = wCharge∘windingNumber.

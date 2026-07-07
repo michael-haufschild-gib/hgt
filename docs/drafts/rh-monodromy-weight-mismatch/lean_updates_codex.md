@@ -1448,3 +1448,32 @@ the divergent Dirichlet/pole series (which only converge for `Re s > 1`); the id
 whole open strip off the ζ-divisor — the divisor is exactly where the flux has its poles. What stays
 open is unchanged: the compression of this flat scalar identity onto the positive middle cohomology
 `H_Δ^1` (`SeamSuspensionTrace` mechanism + the `K_Δ ≥ 0` / `G_Δ` bridge).
+
+## ChargeMotion.lean — Phase E conservation law for charge motion, axiom-clean
+The `w_k(∂B;f)` = loopCharge assembly of Phase E (the deck-class forms were banked in
+DeckHomotopy/LedgerJump; this is the winding/box-charge assembly, which was NOT present). Def
+`boxCharge k f c r := loopCharge k (fun θ => f(c+r·e^{iθ})) 0 (2π)` (winding of f around ∂B mod 2^k).
+Three deliverables + punchline:
+- `boxCharge_conserved` (Deliverable 1, interior conservation): continuous deformation f_σ nonzero on
+  ∂B ⟹ boxCharge k (f 0) = boxCharge k (f 1). Direct from `windingNumber_of_homotopic`.
+- `boxCharge_gain_zero` (Deliverable 2, boundary crossing): f'=(·−ρ')^{m'}·f on ∂B, ρ' inside ⟹
+  w_k(f') = w_k(f) + w_k(m'). Charge changes only through the boundary, by the crossing order. Via
+  windingNumber_mul + windingNumber_pow + windingNumber_linear_enclosing.
+- `boxCharge_single`/`boxCharge_pair` (argument principle, 1/2 enclosed defects) →
+  `pair_annihilation_iff` (Deliverable 3): boxCharge k f = 0 ↔ 2^k ∣ (m₁+m₂) — two defects cancel
+  iff charges opposite; `pair_annihilation_level_one`: at k=1 ↔ Even(m₁+m₂) (same parity = "charges
+  match").
+- `defect_not_removable` (punchline / the phase's point): nontrivial boxCharge(f 0) ⟹ boxCharge(f 1)
+  nontrivial for any boundary-nonvanishing deformation — conservation ALONE does not kill a defect;
+  the parity/seam forcing (SignedReflectionParity reach IFF) is what decides legal cancellation.
+All axiom-clean [propext, Classical.choice, Quot.sound] (144 lines, 8 decls), no warnings,
+umbrella-registered after WindingHomotopy. Reuses my Phase A winding calculus (WindingFull argument
+principle + WindingHomotopy invariance) — "almost all ingredients already present" confirmed.
+
+## ChargeMotion.lean addendum — dynamic pair-annihilation + count/seam note
+Added `pair_cancellation_needs_matching_charge` (dynamic Deliverable 3): a boundary-nonvanishing
+deformation that clears both defects (boxCharge(f 1)=0) forces 2^k ∣ (m₁+m₂) via conservation — the
+exact "two defects can cancel only if their charges match". Module now 9 decls / 164 lines, axiom-clean,
+no warnings. The Phase E "seam boundary contributes a compensating charge" clause is NOT one of the
+three named deliverables; it is the banked seam machinery (SeamParity/SeamCocycle) + the parity bridge
+(`defect_not_removable`), not a separate conservation term — the circle-boundary conservation is exact.
