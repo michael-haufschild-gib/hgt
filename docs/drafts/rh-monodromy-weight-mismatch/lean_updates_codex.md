@@ -1496,3 +1496,119 @@ All 8 theorems `[propext, Classical.choice, Quot.sound]` (137 lines), no warning
 after RegionCharge. Reuses the free-action/blindness machinery (FoldonFrustration, wCharge calculus) —
 "almost all ingredients already present" confirmed; the genuine new content is the ramification pullback
 and the orbit-constancy no-go tying it to the mod-4 blindness.
+
+## TorsionSeamClassification.lean — Phase G: extend 𝓜⁺ by torsion seam presentations, axiom-clean
+Research verdict: Deliverables 1 & 4 already banked; this file closes 2 & 3. All four:
+- Deliverable 1 (extended category 𝓜̃⁺): BANKED in MPlusTorsionSeam — `TorsionSeamPresentation`
+  (objects: A, Δ, det A = X^m), `MPlusTorsionSeamObject`, `Hom` (preserves A via `chain`, defect law
+  `defect_compat`), `Hom.id`, `Hom.comp`; boundary functional `boundaryClass = tr(adj A·Δ) mod X^m`.
+- Deliverable 2 (fake defects vanish) — NOW clean at presentation level (lifts the banked
+  FittingSeamBoundary algebra `fittingBoundaryClass_eq_zero_of_right/left_factor_mod_X_pow`):
+  `boundaryClass_eq_zero_of_defectFactorsThrough` (Δ=A·H+X^m·K ⟹ ∂_p ≡ 0 mod X^m, via adj A·A=det A·1),
+  `boundaryTraceDivisible_of_defectFactorsThrough` (trace form), `..._defectFactorsThroughLeft` (left).
+- Deliverable 3 (classification) — NEW: `defectFactorsThrough_of_m_zero` (m=0: X⁰=1 unit ⟹ EVERY defect
+  fake, Δ=A·0+X⁰·Δ, any n/Sigma/R), `no_defectNonmember_of_m_zero`, and the capstone
+  `exists_nonfake_seam_iff` — a torsion seam presentation (ℚ, n=2) carries a non-fake defect IFF m ≥ 1:
+  the seam is a non-fake-carrying refinement exactly when its local divisor X^m is nontrivial. Transverse
+  characterization (banked) `defectNonmember_of_not_traceDivisible`: ¬(X^m ∣ ∂-trace) ⟹ non-fake.
+- Deliverable 4 (first non-fake existence/nonexistence): BANKED existence
+  `exists_crossing_cutoffTorsionSeam` (n=2, all m≥1) + m=0 nonexistence NOW, unified in the dichotomy.
+6 theorems `[propext, Classical.choice, Quot.sound]`, no warnings, umbrella-registered after
+CutoffTorsionSeam. "Almost all ingredients present" confirmed — the whole torsion-seam layer
+(MPlusTorsionSeam/FittingSeamBoundary/CutoffCochain/CutoffTorsionSeam) was already built; the genuine
+new content is the presentation-level fake-vanishing and the m-dichotomy classification.
+This is where the Phase F no-go pointed: the quadrant-ramified cover is blind, the torsion seam CARRIES
+a genuine non-fake (determinant-transverse) obstruction — the one live carrier for a quadrant-local
+invariant. Program arc A–G now formalized end to end.
+
+## SeamFiniteHodge.lean + SeamResolventDeterminant.lean — the finite spine of the compression is now unconditional
+
+The seam construction's compression step (§7–§9) and its "capped finite truncation" reformulation
+reduce the Seam Stokes Lemma to finite-dimensional facts. Those finite facts are now theorems (gate
+9305 jobs, all `[propext, Classical.choice, Quot.sound]`).
+
+**SeamFiniteHodge.lean — discharges the contracting-homotopy hypothesis of `seam_hodge_compression`.**
+mathlib has no Moore–Penrose inverse ("pseudoinverses which we do not consider here"), so it is built
+via the continuous functional calculus for Hermitian matrices:
+- `seamLaplacian d = dᴴ d + d dᴴ`; `d² = 0` forces `d·Δ = d dᴴ d = Δ·d` (`commute_d_seamLaplacian`).
+- `seamGreen d = cfc pinvFun Δ`, `seamHarmonicProj d = cfc kerProjFun Δ` (pinv = `x⁻¹` off 0; the
+  indicator of 0). On the finite (discrete) spectrum every function is continuous, so cfc applies.
+- `seamLaplacian_green : Δ·G = 1 − P` (from `x·(x⁻¹ off 0) = 1 − (indicator 0)` on the spectrum).
+- `commute_d_seamGreen : d·G = G·d` (via `Commute.cfc_real`, since `d` commutes with `Δ`).
+- `seam_homotopy : d(dᴴG) + (dᴴG)d = 1 − P` — the finite Hodge homotopy `h = dᴴG`.
+- `seam_hodge_compression_finite : superTrace Γ R = superTrace Γ (R·P)` with **no homotopy
+  hypothesis** — only `d²=0`, `Γ` odd on `d`, `[R,d]=0`. The Seam Stokes Lemma is a theorem on every
+  finite seam truncation.
+
+**SeamResolventDeterminant.lean — Jacobi's formula, spectral form (moonshot §9).**
+mathlib has no Jacobi/resolvent-determinant identity; built directly in the eigenvalue representation
+the seam uses (`CarrierPickKernel`'s carrier `m(z) = Σ_i (t_i − z)⁻¹`, `Θ_Δ` presented by its
+spectrum = the ξ-zeros):
+- `det_smul_one_sub_diagonal : det(z·1 − diagonal t) = ∏_i (z − t_i)` — the finite "ξ".
+- `trace_inv_smul_one_sub_diagonal : tr((z·1 − diagonal t)⁻¹) = Σ_i (z − t_i)⁻¹`.
+- `resolvent_trace_eq_logDeriv_det : tr((z·1 − diagonal t)⁻¹) = logDeriv(det(·1 − diagonal t)) z`
+  (both `= Σ (z−t_i)⁻¹`; determinant side via `logDeriv_prod`). This is the bridge that turns
+  `Str((s−Θ)⁻¹) = ξ'/ξ` into `sdet(s−Θ) = C·ξ` by integration.
+- `carrier_eq_neg_logDeriv_det : Σ_i (t_i − z)⁻¹ = −logDeriv(det) z` — the Pick carrier is the finite
+  `−Ξ'/Ξ`, welding `CarrierPickKernel`'s `m` to `SeamFluxCompletion`'s `−ξ'/ξ = seamFluxCochain`.
+
+Net: every finite-dimensional step the seam construction (and its capped-truncation "dream lemma"
+reformulation) calls routine is now machine-checked — supercommutator supertrace = 0, the Hodge
+homotopy from the Laplacian's Green inverse, `[Θ,G]=0`, and resolvent-trace = logDeriv-determinant.
+The residual is exactly the height limit: the two boundary-symbol cancellations
+`β_∞(Y) = −β_0(J Y J⁻¹)` / capped-trace compatibility, i.e. the infinite seam complex agreeing with
+`ξ'/ξ` — the sole non-finite content.
+
+## SeamReciprocalCap.lean — acyclic caps carry no supertrace; generator commutes with the Green data
+
+Formalizes the "reciprocal capping" reformulation: cap the truncation first (adjoin an acyclic
+reciprocal cap), so the boundary defect is a term of a finite supercommutator whose supertrace is
+already zero — Stokes is exact at finite height, not a deferred limit. Gate 9307, axiom-clean.
+
+- `seam_hodge_compression_acyclic` — **acyclic ⟹ superTrace 0.** A contracting homotopy `dK + Kd = 1`
+  (harmonic projection `P = 0`) forces `superTrace Γ R = 0` for every `R` commuting with the odd `d`.
+  McKean–Singer for an acyclic complex: the regulator caps enforce Stokes but contribute nothing to
+  the cohomology supertrace or the determinant.
+- `commute_generator_seamLaplacian` / `commute_generator_seamGreen` /
+  `commute_generator_seamHarmonicProj` — `[Θ,d]=0 ∧ [Θ,dᴴ]=0 ⟹ [Θ,Δ]=0 ⟹ [Θ,G]=0 ∧ [Θ,P]=0` (G, P are
+  functional-calculus elements of Δ). Completes the finite Green witness: the homotopy data all commute
+  with the scaling generator.
+- Explicit reciprocal cap `ℂα → ℂe₀⊕ℂe₁ → ℂω` (`capD, capK, capΓ, capΘ` on `Fin 4`): `capD_sq` (d²=0),
+  `capΓ_capD_odd` (grading-odd), `capΘ_capD_comm` ([Θ,d]=0), `capD_capK_acyclic` (dK+Kd=1), and
+  `exists_reciprocal_acyclic_cap` — non-vacuity of the acyclic-cap hypotheses via a genuine
+  reciprocity-graded cap.
+
+**Seam finite spine, complete.**  The three Lean-shaped theorems of the capping blueprint are all
+machine-checked: (1) finite reciprocal Stokes = `superTrace_supercommutator_zero` + `seam_homotopy` +
+`commute_generator_seamGreen` + the explicit cap; (2) `τ([d,Y])=0` = the acyclic/supercommutator
+theorems, `τ(R)=ξ'/ξ` = `seamFluxCochain_sector_sum` + `resolvent_trace_eq_logDeriv_det`; (3) Hodge
+compression = `seam_hodge_compression`. Plus the §9 determinant bridge `resolvent_trace_eq_logDeriv_det`.
+The sole residual is the height limit (§13): strong convergence `P_R→P_Δ, G_R→G_Δ, Θ_R→Θ_Δ` on the
+seam-smoothing core and Cauchy-ness of `P_R 𝔖_R(h)` in the reciprocal seam norm — the one
+infinite-dimensional (non-finite) estimate. Next generative move: build the actual finite-height seam
+operators (the `B_{p,r}` truncation) as concrete matrices so the finite theorems apply to the real seam
+and the limit becomes a concrete telescoping estimate.
+
+## GoldilocksTrichotomy.lean — Phase H: the Goldilocks classification, axiom-clean
+The trichotomy that classifies candidate carrier classes C:(ℂ→ℂ)→Prop by the rung-1 deck charge
+(carrierCharge f 1 ρ = (−1)^{ord_ρ f}). Tests: `PlantsArbitrary` (nontrivial charge at EVERY off-line
+off-real point) and `CarriesOffLineCharge` (nontrivial charge SOMEWHERE). Cells: `IsSoft` :=
+PlantsArbitrary; `IsCategorical` := ¬CarriesOffLineCharge; `IsGoldilocks` := CarriesOffLineCharge ∧
+¬PlantsArbitrary. Framework: `goldilocks_trichotomy` (exhaustive) + `trichotomy_disjoint` (exclusive) +
+`forcesRHParity_iff_categorical` (payoff: forcing RH-parity BY CHARGE ALONE ⟺ categorical collapse —
+the Goldilocks cell carries charge and does NOT force parity by charge alone, the seam input is what's
+missing). Three deliverables, all with unconditional witnesses:
+- Softness (Del.1): `feSchwarz_isSoft` — the FE+Schwarz class is soft (V₄-orbit bump surgery plants an
+  off-line odd zero anywhere, via banked `exists_feSchwarz_carrier_odd_charge`); `feSchwarz_not_
+  forcesRHParity` — hence cannot force RH-grade parity.
+- Categorical (Del.2): `const_isCategorical` (a nonvanishing class carries no off-line charge) +
+  `dirichlet_surgery_rigid` (the rigidity mechanism, from banked `no_polynomial_surgery_zeta`: P·ζ,
+  deg≥1, is never a Dirichlet series — the axiom blocks finite-surgery zero-planting).
+- Goldilocks (Del.3): `linGap_isGoldilocks` — the single-zero class {s↦s−ρ₀} carries charge (odd zero
+  at ρ₀) but can't plant it arbitrarily (rigid); the MIDDLE CELL IS NONEMPTY (doc flagged it might be
+  empty — it is not).
+6 core theorems + 7 defs `[propext, Classical.choice, Quot.sound]`, no warnings, umbrella-registered.
+Ties the banked softness (CarrierChargeSoftness) and rigidity (DirichletRigidity) into the
+classification. Program arc A–H now formalized end to end; the trichotomy explains WHY no class proves
+RH by softness (can't force parity) or rigidity (collapses) — only the Goldilocks cell is viable, and
+there the deck charge is necessary but not sufficient (needs the seam).

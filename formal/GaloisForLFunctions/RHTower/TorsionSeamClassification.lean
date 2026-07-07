@@ -15,7 +15,7 @@ det A · 1`.  The same holds for left-fake defects.
 **Classification.**  A non-fake defect is a genuine seam obstruction.  Its existence is governed by the
 divisor: at `m = 0` the divisor `X⁰ = 1` is a unit and *every* defect is fake
 (`defectFactorsThrough_of_m_zero`), while for `m ≥ 1` the cutoff-crossing witness is non-fake.  Hence a
-torsion seam presentation admits a non-fake defect iff `m ≥ 1` (`exists_nonfake_seam_iff`): the seam is
+torsion seam presentation carries a non-fake defect iff `m ≥ 1` (`exists_nonfake_seam_iff`): the seam is
 a non-fake-carrying refinement exactly when its local divisor is nontrivial.  In the transverse
 direction the boundary functional is a complete detector — `¬ (Xᵐ ∣ tr(adj A · Δ_p))` already forces
 non-fakeness (`TorsionSeamPresentation.defectNonmember_of_not_traceDivisible`).
@@ -68,7 +68,7 @@ theorem no_defectNonmember_of_m_zero
 
 end TorsionSeamPresentation
 
-/-- **Classification (Deliverable 3).**  A torsion seam presentation over `ℚ` at rank `n = 2` admits a
+/-- **Classification (Deliverable 3).**  A torsion seam presentation over `ℚ` at rank `n = 2` carries a
 non-fake defect *iff* `m ≥ 1`: the seam is a non-fake-carrying refinement exactly when the local
 divisor `Xᵐ` is nontrivial.  Forward — at `m = 0` every defect is fake; backward — for `m ≥ 1` the
 cutoff-crossing witness (`exists_crossing_cutoffTorsionSeam`) is non-fake. -/

@@ -181,7 +181,7 @@ theorem rhLadder_imp_xiDescentHalfCharge_zero {k : ℕ} {S : Finset ℂ}
     have hcoe : analyticOrderAt xiDescent w = ((analyticOrderAt xiDescent w).toNat : ℕ∞) :=
       (ENat.coe_toNat (xiDescent_orderAt_ne_top w)).symm
     rw [hcoe] at hdvd
-    exact_mod_cast hdvd
+    exact natCast_dvd_natCast_of_enat (pow_ne_zero k two_ne_zero) hdvd
   · rw [analyticOrderAt_eq_zero.mpr (Or.inr hz)]; simp
 
 end RHTower

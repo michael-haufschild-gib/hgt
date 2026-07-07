@@ -77,3 +77,57 @@ and therefore cannot alone force a single odd upper defect off the plane. The fo
 `ℤ/4`-refined charge on one half of the slit plane, whose vanishing is not automatic from reality.
 The domain-halving (`rhLadder_iff_xiDescent_upperHalf`) already restricts the target to the upper
 half; the next object is a half-plane charge finer than the mod-`2` aggregate.
+
+## The half-plane charge: the finer invariant, constructed (`HalfPlaneCharge.lean`)
+
+The forward object named above is built. Reality forces `Σ_S ord = 2·(Σ_upper ord)`
+(`aggregate_eq_two_upperOrder`), so the aggregate index lies wholly in the mod-2 **discard**
+(`SignatureParity.parity_blind_to_pairs`: the pair count `q` in `deckRed 2 (k+2q)` is invisible).
+Keeping the discarded quotient gives the quadrant-local invariant:
+
+  `upperOrder S ord = Σ_{w∈S, Im w>0} ord w`,  `halfCharge n S ord = wCharge n (upperOrder) ∈ ℤ/n`.
+
+* **Refinement** `aggregate_charge_succ_eq_zero_iff_halfCharge`:
+  `wCharge (2^{k+1}) (Σ_S ord) = 0 ↔ halfCharge (2^k) S ord = 0`. The aggregate at rung `k+1`
+  recovers the half charge at rung `k`; the mod-2 aggregate (`k=0`) recovers only the trivial
+  rung — the blindness — and the **mod-4 aggregate** (`k=1`) recovers the upper parity
+  (`mod4_aggregate_eq_zero_iff_upper_even`).
+* **Detection** `halfCharge_two_ne_zero_of_odd_upperOrder`: an odd upper-half order sum (a lone
+  off-line odd defect) gives `halfCharge 2 ≠ 0`, while the aggregate reads `0`.
+* **Not automatic from reality** `exists_conjSym_halfCharge_ne_zero`: the witness `S={i,−i}`,
+  orders `1,1`, is conjugation-symmetric, fixed-point-free, with mod-2 aggregate `0`, half charge
+  `1`, mod-4 aggregate `2 ≠ 0`. Reality forces the aggregate even but leaves the upper parity free.
+* **RH forces it trivial** `rhLadder_imp_xiDescentHalfCharge_zero`: `RHLadder k` ⟹ the descended
+  half charge vanishes on every slit configuration. So a nonzero `xiDescentHalfCharge` is a genuine
+  off-line odd defect — the finer detector on which the quadrant-seam conservation programme is posed.
+
+Next: a **conservation law** for `halfCharge` under admissible deformations (Phase E in the
+`u`-plane), and the seam boundary term that a nonzero half charge must produce — the relative
+half-seam class the naive mod-2 seam parity could not express.
+
+## Phase E: half-charge conservation and the seam-deposit law (`HalfChargeConservation.lean`)
+
+Allowing seam zeros (`Im w = 0`), reality partitions a conjugation-symmetric configuration as
+`Σ_S ord = 2·upperOrder + seamOrder` (`aggregate_eq_two_upperOrder_add_seamOrder`) — conjugation
+bijects the off-seam upper/lower halves and fixes the seam. The aggregate is the homotopy-invariant
+boundary winding, so an admissible deformation (no zero crosses `∂B`) conserves it:
+
+* **Deposit law** `halfCharge_seam_deposit` / `halfCharge_deposit_eq`:
+  `2·upperOrder + seamOrder` is conserved, i.e. `Δ(seamOrder) = −2·Δ(upperOrder)`. The half charge
+  changes only by depositing order on the seam.
+* **Conserved when the seam is inert** `upperOrder_conserved_of_seam_inert`.
+* **Relative half-seam class** `seamOrder_parity_conserved`: the deposit `2·Δq` is even, so the
+  *mod-2 seam parity is conserved — blind to the transfer*. The emitted datum is the integer deposit
+  `2·Δ(upperOrder)`, which the mod-2 parity cannot express (mod-4 sees it, matching the half-charge
+  refinement).
+* **Far-field drain** `xiDescent_ne_zero_of_uSqrt_re_gt` (`Re √u > 1/2 ⟹ Re s > 1 ⟹ ξ ≠ 0`),
+  `xiDescentUpperOrder_eq_zero_of_no_upper_zero`: the half charge is `0` in the far field, so it cannot
+  be pushed there.
+* **The `{i,−i}` collision** `exists_halfCharge_seam_deposit_witness`: `{i,−i}` (half charge `1`, seam
+  `0`) → `{0}` (half charge `0`, seam `2`), equal aggregate `2`. The half charge is carried onto the
+  seam as order `2` — the local model `P_t(u)=(u−a)²+t²` made a theorem.
+
+**The reduced open core.** A nonzero half charge must persist to the far field (impossible: there it
+is `0`) or deposit an even seam order. So `RH_2` is now: can the true descended `ξ` realize a nonzero
+`xiDescentHalfCharge` — is the relative half-seam deposit possible for this one function, or forbidden?
+The whole burden is a single seam-boundary question about `xiDescent`.

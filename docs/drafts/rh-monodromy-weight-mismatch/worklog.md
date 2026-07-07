@@ -6898,3 +6898,70 @@ xiDescent on a convex open slit region ⟺ carrierCharge trivial at every enclos
 allowed-torsor classification: one nonzero local charge = the whole obstruction; hZloc discharged by
 the finiteness lemma). Doc 134-phase-d-uplane-deliverables.md records all three deliverables + Lean
 names. MainTheorems green (9298 jobs), lint passed (index regenerated), all axiom-clean.
+
+## Half-plane charge — the ℤ/4 refinement that survives the conjugate-pair collapse
+
+The next object named at the close of Phase D, built in HalfPlaneCharge.lean (axiom-clean,
+MainTheorems green 9304 jobs, lint passed). Building blocks reused: seam_order_two_mul (reality
+Σ_S=2·upper), seam_charge_two_eq_zero (mod-2 aggregate blind), SignatureParity.parity_blind_to_pairs
+(the pair count is the discarded quotient), rhLadder_iff_xiDescent_upperHalf, xiDescent_orderAt_ne_top.
+
+DEFS: upperOrder S ord = Σ_{w∈S, Im w>0} ord w; halfCharge n S ord = wCharge n (↑upperOrder) ∈ ℤ/n
+(the quadrant-local charge — a ONE-SIDED order sum, not a closed-loop charge).
+
+CORE RESULTS:
+- aggregate_eq_two_upperOrder: Σ_S ord = 2·upperOrder (reality) ⟹ aggregate index sits wholly in the
+  mod-2 discard.
+- aggregate_wCharge_two_eq_zero: mod-2 aggregate ALWAYS 0 (blindness restated as a fact about the
+  invariant).
+- THE REFINEMENT aggregate_charge_succ_eq_zero_iff_halfCharge: wCharge(2^{k+1})(Σ_S)=0 ⟺ halfCharge(2^k)=0
+  (proof = seam relation + pow_succ' + mul_dvd_mul_iff_left). The aggregate at rung k+1 recovers the
+  half charge at rung k; mod-2 aggregate (k=0) recovers only the trivial rung (blind), mod-4 (k=1)
+  recovers the UPPER PARITY. mod4_aggregate_eq_zero_iff_upper_even: wCharge 4 (Σ_S)=0 ⟺ Even(upperOrder).
+- halfCharge_two_eq_zero_iff_even + halfCharge_two_ne_zero_of_odd_upperOrder: the half charge detects a
+  single odd upper defect (upperOrder odd ⟹ halfCharge 2 ≠ 0) — exactly what the aggregate misses.
+- NON-AUTOMATICITY exists_conjSym_halfCharge_ne_zero: witness S={i,-i}, ord≡1 — conj-sym fixed-point-free
+  conj-invariant, mod-2 aggregate 0, halfCharge 2 = 1 ≠ 0, mod-4 aggregate = 2 ≠ 0. Reality forces the
+  aggregate even but leaves the upper parity FREE: the invariant is not vacuous.
+- xiDescentHalfCharge k S := halfCharge(2^k) S (ord xiDescent); rhLadder_imp_xiDescentHalfCharge_zero:
+  RHLadder k + S⊆slitPlane ⟹ half charge = 0 (each upper zero divisible ⟹ upperOrder divisible). So a
+  nonzero half charge is a genuine off-line odd defect — the finer detector on which the quadrant-seam
+  conservation program is now posed. Wired into RHTower umbrella.
+
+## Phase E (u-plane): half-charge conservation and the seam-deposit law
+
+HalfChargeConservation.lean (axiom-clean, MainTheorems green 9308 jobs, lint passed). The conservation
+law for the FINER invariant. Building blocks reused: seam_order_two_mul (applied to the off-seam part),
+windingNumber_xiDescent_disc / windingNumber_of_homotopic (aggregate = homotopy-invariant winding),
+xi_ne_zero_of_one_le_re (far field).
+
+DEF seamOrder S ord = Σ_{w∈S, Im w=0} ord w (order on the real axis = fixed set of conjugation).
+
+PARTITION aggregate_eq_two_upperOrder_add_seamOrder: for conj-symmetric conj-invariant S,
+Σ_S ord = 2·upperOrder + seamOrder (NO fixed-point-free needed now — seam zeros allowed; conjugation
+bijects off-seam upper↔lower, fixes the seam; proved by splitting off filter(im=0) and applying
+seam_order_two_mul to the fpf off-seam remainder S'=filter(im≠0), with upperOrder S' = upperOrder S).
+
+CONSERVATION halfCharge_seam_deposit: aggregate conserved (admissible deformation, no zero crosses ∂B —
+the homotopy-invariant winding) ⟹ 2·upperOrder+seamOrder conserved. halfCharge_deposit_eq:
+Δ(seamOrder) = −2·Δ(upperOrder) (the seam absorbs exactly twice the half-charge lost).
+upperOrder_conserved_of_seam_inert: seam inert ⟹ half charge exactly conserved (omega on 2q₀+s=2q₁+s).
+
+RELATIVE HALF-SEAM CLASS seamOrder_parity_conserved: the deposit 2·Δq is EVEN ⟹ seamOrder mod 2 is
+conserved — the mod-2 seam parity is BLIND to the transfer (exactly why the naive seam parity cannot
+express it). The genuine emitted datum is the integer deposit 2·ΔupperOrder (relative class), detected
+by mod 4 (consistent with the HalfPlaneCharge mod-4 refinement).
+
+FAR-FIELD DRAIN xiDescent_ne_zero_of_uSqrt_re_gt: Re√u>1/2 ⟹ Re s>1 ⟹ ξ(s)≠0 (xi_ne_zero_of_one_le_re);
+xiDescentUpperOrder_eq_zero_of_no_upper_zero: no upper zeros ⟹ half charge 0. So a nonzero half charge
+CANNOT be pushed to the far field (where it is provably 0).
+
+WITNESS exists_halfCharge_seam_deposit_witness: {i,-i} (ord 1,1; upperOrder 1, seamOrder 0, aggregate 2)
+→ {0} (ord 2; upperOrder 0, seamOrder 2, aggregate 2). Equal aggregate; half charge 1 carried onto the
+seam as order 2. The conjugate-pair collision made concrete: an odd half charge must either persist to
+the far field (=0, contradiction) or deposit an even seam order — it cannot simply vanish. This is the
+exact local model P_t(u)=(u−a)²+t² of the reorientation note §5, now a Lean theorem. Wired into umbrella.
+
+Open core (unchanged, now sharply located): whether ξ can actually realize a nonzero xiDescentHalfCharge
+— i.e. whether the relative half-seam deposit is possible for the true descended ξ, or forbidden. That
+is the RH_2 crux, reduced to a single seam-boundary question about one function.

@@ -15,3 +15,9 @@ EulerTruncationRigidity had the Euler side's free tower; PrimeDivisorAtomsNoGo h
 
 ## Log
 - 2026-07-07 — created directly in 3-formalized (bottom-up harvest → composition → Lean).
+
+## Update: coherent infinite towers (second composition)
+Discharged `coherentTower_of_exists_roots_all_two_powers_preconnected` (CoherentTower/UPlaneLadder) with the per-k roots above to strengthen "free 2^k-th roots at each k" into a genuine **coherent infinite Kummer tower** (roots cohere: each level's square is the previous):
+- `archimedeanFactor_coherentTower : Nonempty (CoherentTower archimedeanFactor rightHalfPlane)`.
+- `completedLocalFactor_coherentTower : Nonempty (CoherentTower (archimedeanFactor · eulerPartial P) rightHalfPlane)`.
+Axiom-clean. So the ∂_s side and the finite ∂_s×σ_p weld each carry an unconditional infinite 2-adic root tower on Re s>0; ξ's coherent tower on Re s>1/2 is equivalent to RH (`rh_iff_xiDescent_coherentTower_slitPlane` family). The RH obstruction is exactly the emergent gap between the free finite/archimedean towers and ξ's conditional one.
