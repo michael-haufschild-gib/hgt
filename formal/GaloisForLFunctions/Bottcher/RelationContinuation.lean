@@ -68,7 +68,7 @@ theorem cmem_of_arc_relation {h : ℂ → ℂ} {c : ℂ} {ζ₀ : ℂ} {r : ℝ}
         (∀ᶠ z in 𝓝[ball 0 1] ζ, f (z, h z) = 0) ∧ Tendsto h (𝓝[ball 0 1] ζ) (𝓝 w₀)) :
     c = 0 ∨ c = -2 := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   refine natural_boundary_of_even_fe hcon.1 hcon.2 hζ₀ hr hhd hhe hfe hh0 ?_
   intro ζ hζ1 hζr
   obtain ⟨f, w₀, hf, hroot, hsimple, hrel, hlim⟩ := hrelarc ζ hζ1 hζr

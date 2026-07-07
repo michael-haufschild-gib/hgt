@@ -6065,3 +6065,25 @@ mismatch; maxHeartbeats 3.2M for the big theorem). No PNT in mathlib — gap sup
 interfaced per tree discipline. Defect now provably sweeps [0, ∞) to any precision at
 Chebyshev heights. Next: mirrored negative reachability; counting-supply interface for
 all heights; the meeting argument against the 2π-quantized equivariance benchmark.
+
+## 2026-07-07 (torus) — doc 115
+
+Hook drove the torus object. Two-frequency window construction: slow difference-phase
+window (long, ~1/annulus-size) + Int.ceil-aligned full fast tile inside it + Bertrand
+prime in the tile; case-first structure for the four Bool quadrants (if-branch simp
+fragility avoided). Three compile rounds (ceil arithmetic needed explicit cancellation
+lemma; div_add_div_same renamed to ← add_div). Next: 2-D greedy pair-reachability;
+even/odd deck positions in two-angle coordinates; supply-conditional all-heights forms.
+
+## Pass: docs 116→117 discharged in Lean
+
+The three named objects are built and green: (1) pool-form quadrant supply +
+two-phase staircase ⟹ `anchorTilt_pair_reachable_nonneg` — the two basepoint tilts
+are jointly dense (nonneg cone + 2π-periodicity = the whole torus); (2) the endpoint
+no-go is a theorem — `endpoint_orientation_no_go` exhibits equal deck classes with
+different endpoint sign pairs; (3) the arc-winding dictionary — the deck cocycle is
+`(−1)^{k_P−k_M}` in chart-log coordinates, the anchor is monodromy-free (arc
+variation = endpoint tilt difference), so the anchor enters the parity ONLY through
+branch selection under gluing, and its steering handle is exactly the reachable
+pair.  Doc 117 banked.  Gate green, all endpoints axiom-clean.  Next object (117 §6):
+the tilt-sweep branch-tracking map `(φ₊, φ₋) ↦ (k_P, k_M)` on a concrete annulus.

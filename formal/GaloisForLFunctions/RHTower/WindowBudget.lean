@@ -691,7 +691,7 @@ theorem anchorMirrorDefect_reachable_nonneg {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
         have := (Real.rpow_pos_of_pos hC0 (-s.re)).le
         positivity
       calc A₀ / (2 * D) * (C ^ (-s.re) * (Real.sqrt 2 / 8)) * x ^ μ
-          = A₀ * C ^ (-s.re) * Real.sqrt 2 / 16 * (x ^ μ / D) := by ring
+          = A₀ * C ^ (-s.re) * Real.sqrt 2 / 16 * (x ^ μ / D) := by ring_nf
         _ ≤ A₀ * C ^ (-s.re) * Real.sqrt 2 / 16 * (x * x ^ (-s.re) / Real.log y) :=
             mul_le_mul_of_nonneg_left hfrac hE0
         _ = A₀ / 2 * x / Real.log y * (C ^ (-s.re) * x ^ (-s.re) * Real.sqrt 2 / 8) := by
@@ -723,5 +723,395 @@ theorem anchorMirrorDefect_reachable_nonneg {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
     exact hlo
   · rw [anchorMirrorDefect_eq_sum]
     exact hhi
+
+set_option maxHeartbeats 3200000 in
+/-- **Full nonpositive reachability of the defect walk, magnitude form.**  Under the same
+Chebyshev window condition as `anchorMirrorDefect_reachable_nonneg`, every nonnegative
+magnitude `T` can be reached on the negative side within tolerance: a late `5π/4`-offset
+window carries enough uniformly-small negative increments, and the greedy accumulation
+for `-mirrorTiltIncrement` lands in `[T, T + ε]`. -/
+theorem anchorMirrorDefect_reachable_nonpos_magnitude {s : ℂ} (h0 : 0 < s.re)
+    (h1 : s.re < 1) (hτ : 0 < s.im) (hτ2 : s.im * (2 * Real.log 2) < Real.pi)
+    {T ε : ℝ} (hT : 0 ≤ T) (hε : 0 < ε) :
+    ∃ P : Finset ℕ, (∀ p ∈ P, Nat.Prime p) ∧
+      -T - ε ≤ anchorMirrorDefect P s ∧ anchorMirrorDefect P s ≤ -T := by
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+  have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
+  -- the window length, its exponential, and the leading constant
+  set Lw : ℝ := Real.pi / (2 * s.im) with hLwdef
+  have hLwpos : 0 < Lw := by positivity
+  have hLwgt : Real.log 2 < Lw := by
+    rw [hLwdef, lt_div_iff₀ (by positivity)]
+    nlinarith
+  set C : ℝ := Real.exp Lw with hCdef
+  have hC2 : 2 < C := by
+    calc (2 : ℝ) = Real.exp (Real.log 2) := (Real.exp_log (by norm_num)).symm
+      _ < Real.exp Lw := Real.exp_lt_exp.mpr hLwgt
+  have hC0 : (0 : ℝ) < C := by linarith
+  set A₀ : ℝ := C * Real.log 2 - Real.log 4 with hA₀def
+  have hlog4 : Real.log 4 = 2 * Real.log 2 := by
+    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+    push_cast
+    ring
+  have hA₀pos : 0 < A₀ := by
+    rw [hA₀def, hlog4]
+    nlinarith
+  -- exponents
+  set σ₀ : ℝ := min s.re (1 - s.re) with hσ₀def
+  have hσ₀pos : 0 < σ₀ := lt_min h0 (by linarith)
+  have hσ₀le : σ₀ ≤ s.re := min_le_left _ _
+  have hσ₀le' : σ₀ ≤ 1 - s.re := min_le_right _ _
+  set μ : ℝ := (1 - s.re) / 2 with hμdef
+  have hμpos : 0 < μ := by
+    rw [hμdef]
+    linarith
+  set m : ℝ := 2 / (1 - s.re) with hmdef
+  have hm1 : 1 ≤ m := by
+    rw [hmdef, le_div_iff₀ (by linarith)]
+    linarith
+  have hminv : 1 / m = μ := by
+    rw [hmdef, hμdef, one_div_div]
+  -- the constants of the divergence bound
+  set K : ℝ := Real.log 2 + 4 * Real.sqrt C + 8 * C ^ ((3 : ℝ) / 4) with hKdef
+  have hKpos : 0 < K := by
+    have h1' : 0 < Real.sqrt C := Real.sqrt_pos.mpr hC0
+    have h2' : (0 : ℝ) < C ^ ((3 : ℝ) / 4) := Real.rpow_pos_of_pos hC0 _
+    rw [hKdef]
+    positivity
+  set D : ℝ := Real.log C + m with hDdef
+  have hDpos : 0 < D := by
+    have := Real.log_pos (by linarith : 1 < C)
+    rw [hDdef]
+    linarith
+  set c₉ : ℝ := A₀ / (2 * D) * (C ^ (-s.re) * (Real.sqrt 2 / 8)) with hc₉def
+  have hc₉pos : 0 < c₉ := by
+    have h1' : (0 : ℝ) < C ^ (-s.re) := Real.rpow_pos_of_pos hC0 _
+    have h2' : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+    rw [hc₉def]
+    positivity
+  -- the size thresholds
+  set δ₁ : ℝ := min (1 / 2) (ε / 4) with hδ₁def
+  have hδ₁pos : 0 < δ₁ := lt_min (by norm_num) (by positivity)
+  set X₁ : ℝ := δ₁ ^ (-(1 / σ₀)) with hX₁def
+  set X₂ : ℝ := (2 * K / A₀ + 1) ^ ((4 : ℝ)) with hX₂def
+  set X₃ : ℝ := (T / c₉ + 1) ^ (1 / μ) with hX₃def
+  set Xm : ℝ := max 2 (max X₁ (max X₂ X₃)) with hXmdef
+  have hXmpos : (0 : ℝ) < Xm := lt_of_lt_of_le (by norm_num) (le_max_left _ _)
+  -- choose the window index
+  obtain ⟨k, hk⟩ := exists_nat_gt (s.im * Real.log Xm / (2 * Real.pi))
+  set b : ℝ := (2 * Real.pi * (k : ℝ) + 5 * Real.pi / 4) / s.im with hbdef
+  set x : ℝ := Real.exp b with hxdef
+  set y : ℝ := C * x with hydef
+  have h2pi : (0 : ℝ) < 2 * Real.pi := by linarith
+  have hxXm : Xm ≤ x := by
+    have hblog : Real.log Xm ≤ b := by
+      rw [div_lt_iff₀ h2pi] at hk
+      rw [hbdef, le_div_iff₀ hτ]
+      nlinarith
+    calc Xm = Real.exp (Real.log Xm) := (Real.exp_log hXmpos).symm
+      _ ≤ Real.exp b := Real.exp_le_exp.mpr hblog
+  have hx2 : (2 : ℝ) ≤ x := le_trans (le_max_left _ _) hxXm
+  have hx1 : (1 : ℝ) ≤ x := by linarith
+  have hx0 : (0 : ℝ) < x := by linarith
+  have hxy : x ≤ y := by
+    rw [hydef]
+    nlinarith
+  have hy1 : (1 : ℝ) ≤ y := le_trans hx1 hxy
+  have hy0 : (0 : ℝ) < y := by linarith
+  have hyexp : y = Real.exp (b + Lw) := by
+    rw [hydef, hxdef, hCdef, ← Real.exp_add, add_comm]
+  -- the step bounds on the negative sine window
+  have hτb : s.im * b = 2 * Real.pi * (k : ℝ) + 5 * Real.pi / 4 := by
+    rw [hbdef, mul_comm, div_mul_cancel₀ _ hτ.ne']
+  have hhalf : s.im * Lw = Real.pi / 2 := by
+    rw [hLwdef, mul_comm (2 : ℝ) s.im, ← div_div, ← mul_div_assoc,
+      mul_comm s.im (Real.pi / s.im), div_mul_cancel₀ _ hτ.ne']
+  have hwindow : ∀ p ∈ windowPrimes x y, Nat.Prime p ∧
+      Real.sin (s.im * Real.log p) ≤ -(Real.sqrt 2 / 2) ∧ x < (p : ℝ) ∧
+        (p : ℝ) ≤ y := by
+    intro p hp
+    obtain ⟨hprime, hlt, hle⟩ := (mem_windowPrimes hx0.le hy0.le).mp hp
+    refine ⟨hprime, ?_, hlt, hle⟩
+    have hppos : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hprime.pos
+    have hlogp1 : b < Real.log p := by
+      rw [hxdef] at hlt
+      have := Real.exp_log hppos
+      calc b = Real.log (Real.exp b) := (Real.log_exp b).symm
+        _ < Real.log p := Real.log_lt_log (Real.exp_pos b) hlt
+    have hlogp2 : Real.log p ≤ b + Lw := by
+      rw [hyexp] at hle
+      calc Real.log p ≤ Real.log (Real.exp (b + Lw)) :=
+            Real.log_le_log hppos hle
+        _ = b + Lw := Real.log_exp _
+    have h1' : 2 * Real.pi * (k : ℝ) + 5 * Real.pi / 4 < s.im * Real.log p := by
+      have := mul_lt_mul_of_pos_left hlogp1 hτ
+      linarith
+    have h2' : s.im * Real.log p ≤ 2 * Real.pi * (k : ℝ) + 7 * Real.pi / 4 := by
+      have h := mul_le_mul_of_nonneg_left hlogp2 hτ.le
+      rw [mul_add, hτb, hhalf] at h
+      linarith
+    have hper : Real.sin (s.im * Real.log p)
+        = Real.sin (s.im * Real.log p - (k : ℤ) * (2 * Real.pi)) :=
+      (Real.sin_sub_int_mul_two_pi _ _).symm
+    have hshift : Real.sin (s.im * Real.log p - (k : ℤ) * (2 * Real.pi))
+        = -Real.sin (s.im * Real.log p - (k : ℤ) * (2 * Real.pi) - Real.pi) := by
+      have h := Real.sin_add_pi (s.im * Real.log p - (k : ℤ) * (2 * Real.pi) - Real.pi)
+      rw [sub_add_cancel] at h
+      exact h
+    rw [hper, hshift, neg_le_neg_iff]
+    apply sin_ge_sqrt_two_div_two
+    · push_cast
+      linarith
+    · push_cast
+      linarith
+  -- nonnegativity and ceiling of the negated steps
+  have hsqrt2pos : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hstep0 : ∀ p ∈ windowPrimes x y, 0 ≤ -mirrorTiltIncrement p s := by
+    intro p hp
+    obtain ⟨hprime, hsin, -, -⟩ := hwindow p hp
+    have hneg : mirrorTiltIncrement p s < 0 := mirrorTiltIncrement_neg hprime.two_le h0 h1
+      (lt_of_le_of_lt hsin (neg_lt_zero.mpr (by positivity)))
+    linarith
+  have hX₁pos : (0 : ℝ) < X₁ := Real.rpow_pos_of_pos hδ₁pos _
+  have hu_x : x ^ (-σ₀) ≤ δ₁ := by
+    have hX₁x : X₁ ≤ x := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hxXm
+    have h := rpow_neg_anti hX₁pos hX₁x hσ₀pos.le
+    have hXpow : X₁ ^ (-σ₀) = δ₁ := by
+      rw [hX₁def, ← Real.rpow_mul hδ₁pos.le,
+        show -(1 / σ₀) * -σ₀ = σ₀ / σ₀ from by ring, div_self hσ₀pos.ne',
+        Real.rpow_one]
+    linarith [hXpow ▸ h]
+  have hstepε : ∀ p ∈ windowPrimes x y, -mirrorTiltIncrement p s ≤ ε := by
+    intro p hp
+    obtain ⟨hprime, -, hlt, -⟩ := hwindow p hp
+    have hppos : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hprime.pos
+    have habs := abs_mirrorTiltIncrement_le hprime.two_le hσ₀pos hσ₀le hσ₀le'
+    have hup : (p : ℝ) ^ (-σ₀) ≤ x ^ (-σ₀) := rpow_neg_anti hx0 hlt.le hσ₀pos.le
+    have hupos : (0 : ℝ) < (p : ℝ) ^ (-σ₀) := Real.rpow_pos_of_pos hppos _
+    have hux12 : x ^ (-σ₀) ≤ 1 / 2 := le_trans hu_x (min_le_left _ _)
+    have huxε4 : x ^ (-σ₀) ≤ ε / 4 := le_trans hu_x (min_le_right _ _)
+    have hmono2 : 2 * ((p : ℝ) ^ (-σ₀) / (1 - (p : ℝ) ^ (-σ₀)))
+        ≤ 2 * x ^ (-σ₀) / (1 - x ^ (-σ₀)) := by
+      have hden1 : (0 : ℝ) < 1 - x ^ (-σ₀) := by linarith
+      have hden2 : (0 : ℝ) < 1 - (p : ℝ) ^ (-σ₀) := by linarith
+      rw [← mul_div_assoc, div_le_div_iff₀ hden2 hden1]
+      nlinarith
+    have hfinal : 2 * x ^ (-σ₀) / (1 - x ^ (-σ₀)) ≤ 4 * x ^ (-σ₀) := by
+      have hden1 : (0 : ℝ) < 1 - x ^ (-σ₀) := by linarith
+      rw [div_le_iff₀ hden1]
+      have hux0 : (0 : ℝ) ≤ x ^ (-σ₀) := (Real.rpow_pos_of_pos hx0 _).le
+      nlinarith
+    have hchain := le_trans (le_trans (neg_le_abs _) habs) (le_trans hmono2 hfinal)
+    linarith
+  -- the per-prime step floor on the window
+  have hstepfloor : ∀ p ∈ windowPrimes x y,
+      y ^ (-s.re) * Real.sqrt 2 / 8 ≤ -mirrorTiltIncrement p s := by
+    intro p hp
+    obtain ⟨hprime, hsin, hlt, hle⟩ := hwindow p hp
+    have hppos : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hprime.pos
+    have hsinlt : Real.sin (s.im * Real.log p) < 0 :=
+      lt_of_le_of_lt hsin (neg_lt_zero.mpr (by positivity))
+    have hsinmag : Real.sqrt 2 / 2 ≤ -Real.sin (s.im * Real.log p) := by
+      linarith
+    have hge := neg_mirrorTiltIncrement_ge hprime.two_le h0 h1 hsinlt
+    have hpy : y ^ (-s.re) ≤ (p : ℝ) ^ (-s.re) := rpow_neg_anti hppos hle h0.le
+    have hy0' : (0 : ℝ) ≤ y ^ (-s.re) := (Real.rpow_pos_of_pos hy0 _).le
+    have hz : y ^ (-s.re) * (Real.sqrt 2 / 2) / 2
+        ≤ (p : ℝ) ^ (-s.re) * (-Real.sin (s.im * Real.log p)) / 2 := by
+      have hmul := mul_le_mul hpy hsinmag (by positivity)
+        (Real.rpow_pos_of_pos hppos _).le
+      linarith
+    have hz1 : y ^ (-s.re) * (Real.sqrt 2 / 2) / 2 ≤ 1 := by
+      have hy1' : y ^ (-s.re) ≤ 1 := by
+        have h := rpow_neg_anti one_pos hy1 h0.le
+        rwa [Real.one_rpow] at h
+      have hs2 : Real.sqrt 2 ≤ 2 := by
+        rw [show (2 : ℝ) = Real.sqrt 4 from by
+          rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+        exact Real.sqrt_le_sqrt (by norm_num)
+      nlinarith [Real.sqrt_nonneg 2]
+    have hz0 : (0 : ℝ) ≤ y ^ (-s.re) * (Real.sqrt 2 / 2) / 2 := by positivity
+    have hhalf' := arctan_ge_half_self hz0 hz1
+    have harctan := Real.arctan_mono hz
+    calc y ^ (-s.re) * Real.sqrt 2 / 8
+        = y ^ (-s.re) * (Real.sqrt 2 / 2) / 2 / 2 := by ring
+      _ ≤ Real.arctan (y ^ (-s.re) * (Real.sqrt 2 / 2) / 2) := hhalf'
+      _ ≤ Real.arctan ((p : ℝ) ^ (-s.re) * (-Real.sin (s.im * Real.log p)) / 2) := harctan
+      _ ≤ -mirrorTiltIncrement p s := hge
+  -- the window mass beats (A₀/2)·x
+  have hcard := windowPrimes_card_ge hx1 hxy
+  have hy4 : (4 : ℝ) < y := by
+    rw [hydef]
+    nlinarith
+  have hmass2 : A₀ / 2 * x
+      ≤ (y - 1) * Real.log 2 - Real.log (y + 2) - 2 * Real.sqrt y * Real.log y
+        - Real.log 4 * x := by
+    have hlog_y2 : Real.log (y + 2) ≤ 4 * Real.sqrt y := by
+      have hb1 : Real.log (y + 2) ≤ 2 * (y + 2) ^ ((1 : ℝ) / 2) :=
+        log_le_mul_rpow (by linarith) (by norm_num)
+      have hb2 : (y + 2 : ℝ) ^ ((1 : ℝ) / 2) = Real.sqrt (y + 2) :=
+        (Real.sqrt_eq_rpow _).symm
+      have hb3 : Real.sqrt (y + 2) ≤ Real.sqrt (4 * y) :=
+        Real.sqrt_le_sqrt (by linarith)
+      have hb4 : Real.sqrt (4 * y) = 2 * Real.sqrt y := by
+        rw [show (4 : ℝ) * y = 2 ^ 2 * y by ring, Real.sqrt_mul (by positivity),
+          Real.sqrt_sq (by norm_num)]
+      calc Real.log (y + 2) ≤ 2 * (y + 2) ^ ((1 : ℝ) / 2) := hb1
+        _ = 2 * Real.sqrt (y + 2) := by rw [hb2]
+        _ ≤ 2 * (2 * Real.sqrt y) := by
+            rw [← hb4]
+            linarith [hb3]
+        _ = 4 * Real.sqrt y := by ring
+    have hsqy : 2 * Real.sqrt y * Real.log y ≤ 8 * y ^ ((3 : ℝ) / 4) := by
+      have hb1 : Real.log y ≤ 4 * y ^ ((1 : ℝ) / 4) := log_le_mul_rpow hy1 (by norm_num)
+      have hb2 : y ^ ((1 : ℝ) / 2) * y ^ ((1 : ℝ) / 4) = y ^ ((3 : ℝ) / 4) := by
+        rw [← Real.rpow_add hy0]
+        norm_num
+      have hb3 : Real.sqrt y = y ^ ((1 : ℝ) / 2) := Real.sqrt_eq_rpow y
+      calc 2 * Real.sqrt y * Real.log y
+          ≤ 2 * Real.sqrt y * (4 * y ^ ((1 : ℝ) / 4)) := by
+            apply mul_le_mul_of_nonneg_left hb1 (by positivity)
+        _ = 8 * (y ^ ((1 : ℝ) / 2) * y ^ ((1 : ℝ) / 4)) := by rw [hb3]; ring
+        _ = 8 * y ^ ((3 : ℝ) / 4) := by rw [hb2]
+    have hsqrtCx : Real.sqrt y = Real.sqrt C * Real.sqrt x := by
+      rw [hydef, Real.sqrt_mul hC0.le]
+    have hCx34 : y ^ ((3 : ℝ) / 4) = C ^ ((3 : ℝ) / 4) * x ^ ((3 : ℝ) / 4) := by
+      rw [hydef, Real.mul_rpow hC0.le hx0.le]
+    have hx12 : Real.sqrt x ≤ x ^ ((3 : ℝ) / 4) := by
+      rw [Real.sqrt_eq_rpow]
+      exact Real.rpow_le_rpow_of_exponent_le hx1 (by norm_num)
+    have hone : (1 : ℝ) ≤ x ^ ((3 : ℝ) / 4) := by
+      calc (1 : ℝ) = 1 ^ ((3 : ℝ) / 4) := (Real.one_rpow _).symm
+        _ ≤ x ^ ((3 : ℝ) / 4) := Real.rpow_le_rpow (by norm_num) hx1 (by norm_num)
+    have hKbound : Real.log 2 + 4 * Real.sqrt y + 8 * y ^ ((3 : ℝ) / 4)
+        ≤ K * x ^ ((3 : ℝ) / 4) := by
+      rw [hsqrtCx, hCx34, hKdef]
+      have hsC : (0 : ℝ) ≤ Real.sqrt C := Real.sqrt_nonneg C
+      have hC34 : (0 : ℝ) ≤ C ^ ((3 : ℝ) / 4) := (Real.rpow_pos_of_pos hC0 _).le
+      nlinarith [hx12, hone, (Real.rpow_pos_of_pos hx0 ((3 : ℝ) / 4)).le,
+        Real.sqrt_nonneg x]
+    have hX₂x : X₂ ≤ x :=
+      le_trans (le_trans (le_trans (le_max_left _ _) (le_max_right _ _))
+        (le_max_right _ _)) hxXm
+    have hx14 : 2 * K / A₀ ≤ x ^ ((1 : ℝ) / 4) := by
+      have hbase : (0 : ℝ) ≤ 2 * K / A₀ + 1 := by positivity
+      have hb1 : X₂ ^ ((1 : ℝ) / 4) ≤ x ^ ((1 : ℝ) / 4) :=
+        Real.rpow_le_rpow (by rw [hX₂def]; positivity) hX₂x (by norm_num)
+      have hb2 : X₂ ^ ((1 : ℝ) / 4) = 2 * K / A₀ + 1 := by
+        rw [hX₂def, ← Real.rpow_mul hbase]
+        norm_num
+      linarith [hb2 ▸ hb1]
+    have hKx : K * x ^ ((3 : ℝ) / 4) ≤ A₀ / 2 * x := by
+      have hb1 : K ≤ A₀ / 2 * x ^ ((1 : ℝ) / 4) := by
+        rw [div_le_iff₀ hA₀pos] at hx14
+        nlinarith
+      have hb2 : x ^ ((1 : ℝ) / 4) * x ^ ((3 : ℝ) / 4) = x := by
+        rw [← Real.rpow_add hx0]
+        norm_num
+      calc K * x ^ ((3 : ℝ) / 4)
+          ≤ A₀ / 2 * x ^ ((1 : ℝ) / 4) * x ^ ((3 : ℝ) / 4) :=
+            mul_le_mul_of_nonneg_right hb1 (Real.rpow_pos_of_pos hx0 _).le
+        _ = A₀ / 2 * x := by rw [mul_assoc, hb2]
+    have hexpand : (y - 1) * Real.log 2 - Real.log 4 * x = A₀ * x - Real.log 2 := by
+      rw [hydef, hA₀def]
+      ring
+    linarith
+  -- count and total budget
+  have hlogy_pos : 0 < Real.log y := Real.log_pos (by linarith)
+  have hcount : A₀ / 2 * x / Real.log y ≤ ((windowPrimes x y).card : ℝ) := by
+    rw [div_le_iff₀ hlogy_pos]
+    exact le_trans hmass2 hcard
+  have hsum_ge : ((windowPrimes x y).card : ℝ) * (y ^ (-s.re) * Real.sqrt 2 / 8)
+      ≤ ∑ p ∈ windowPrimes x y, -mirrorTiltIncrement p s := by
+    have h := Finset.card_nsmul_le_sum (windowPrimes x y)
+      (fun p => -mirrorTiltIncrement p s) (y ^ (-s.re) * Real.sqrt 2 / 8) hstepfloor
+    rwa [nsmul_eq_mul] at h
+  have hxμ1 : (1 : ℝ) ≤ x ^ μ := by
+    calc (1 : ℝ) = 1 ^ μ := (Real.one_rpow _).symm
+      _ ≤ x ^ μ := Real.rpow_le_rpow (by norm_num) hx1 hμpos.le
+  have hlogy_le : Real.log y ≤ D * x ^ μ := by
+    have hb1 : Real.log y = Real.log C + Real.log x := by
+      rw [hydef, Real.log_mul hC0.ne' hx0.ne']
+    have hb2 : Real.log x ≤ m * x ^ μ := by
+      have h := log_le_mul_rpow hx1 hm1
+      rwa [hminv] at h
+    have hb3 : Real.log C ≤ Real.log C * x ^ μ :=
+      le_mul_of_one_le_right (Real.log_pos (by linarith)).le hxμ1
+    have hb4 : D * x ^ μ = Real.log C * x ^ μ + m * x ^ μ := by
+      rw [hDdef]
+      ring
+    linarith
+  have htotal : T ≤ ∑ p ∈ windowPrimes x y, -mirrorTiltIncrement p s := by
+    have hxμpos : (0 : ℝ) < x ^ μ := Real.rpow_pos_of_pos hx0 _
+    have hy_rpow : y ^ (-s.re) = C ^ (-s.re) * x ^ (-s.re) := by
+      rw [hydef, Real.mul_rpow hC0.le hx0.le]
+    have hxx : x * x ^ (-s.re) = x ^ μ * x ^ μ := by
+      rw [show x * x ^ (-s.re) = x ^ (1 : ℝ) * x ^ (-s.re) from by rw [Real.rpow_one],
+        ← Real.rpow_add hx0, ← Real.rpow_add hx0,
+        show (1 : ℝ) + -s.re = μ + μ from by rw [hμdef]; ring]
+    have hkey : x ^ μ * Real.log y ≤ x * x ^ (-s.re) * D := by
+      rw [hxx]
+      have h := mul_le_mul_of_nonneg_left hlogy_le hxμpos.le
+      nlinarith
+    have hfrac : x ^ μ / D ≤ x * x ^ (-s.re) / Real.log y := by
+      rw [div_le_div_iff₀ hDpos hlogy_pos]
+      linarith
+    have hstep1 : c₉ * x ^ μ
+        ≤ A₀ / 2 * x / Real.log y * (y ^ (-s.re) * Real.sqrt 2 / 8) := by
+      rw [hy_rpow, hc₉def]
+      have hE0 : (0 : ℝ) ≤ A₀ * C ^ (-s.re) * Real.sqrt 2 / 16 := by
+        have := (Real.rpow_pos_of_pos hC0 (-s.re)).le
+        positivity
+      calc A₀ / (2 * D) * (C ^ (-s.re) * (Real.sqrt 2 / 8)) * x ^ μ
+          = A₀ * C ^ (-s.re) * Real.sqrt 2 / 16 * (x ^ μ / D) := by ring_nf
+        _ ≤ A₀ * C ^ (-s.re) * Real.sqrt 2 / 16 * (x * x ^ (-s.re) / Real.log y) :=
+            mul_le_mul_of_nonneg_left hfrac hE0
+        _ = A₀ / 2 * x / Real.log y * (C ^ (-s.re) * x ^ (-s.re) * Real.sqrt 2 / 8) := by
+            ring
+    have hX₃x : X₃ ≤ x :=
+      le_trans (le_trans (le_trans (le_max_right _ _) (le_max_right _ _))
+        (le_max_right _ _)) hxXm
+    have hTc : T / c₉ ≤ x ^ μ := by
+      have hbase : (0 : ℝ) ≤ T / c₉ + 1 := by positivity
+      have hb1 : X₃ ^ μ ≤ x ^ μ :=
+        Real.rpow_le_rpow (by rw [hX₃def]; positivity) hX₃x hμpos.le
+      have hb2 : X₃ ^ μ = T / c₉ + 1 := by
+        rw [hX₃def, ← Real.rpow_mul hbase, one_div, inv_mul_cancel₀ hμpos.ne',
+          Real.rpow_one]
+      linarith [hb2 ▸ hb1]
+    have hxμT : T ≤ c₉ * x ^ μ := by
+      have h := (div_le_iff₀ hc₉pos).mp hTc
+      linarith
+    have hcount' := mul_le_mul_of_nonneg_right hcount
+      (show (0 : ℝ) ≤ y ^ (-s.re) * Real.sqrt 2 / 8 by positivity)
+    linarith
+  -- greedy accumulation inside the window
+  obtain ⟨P, hPsub, hlo, hhi⟩ := exists_subset_sum_between hε.le (windowPrimes x y) T hT
+    hstep0 hstepε htotal
+  have hsumneg : ∑ p ∈ P, -mirrorTiltIncrement p s =
+      -(∑ p ∈ P, mirrorTiltIncrement p s) := by
+    rw [Finset.sum_neg_distrib]
+  refine ⟨P, ?_, ?_, ?_⟩
+  · intro p hp
+    exact ((mem_windowPrimes hx0.le hy0.le).mp (hPsub hp)).1
+  · rw [anchorMirrorDefect_eq_sum]
+    have hneg : -(∑ p ∈ P, mirrorTiltIncrement p s) ≤ T + ε := by
+      rwa [hsumneg] at hhi
+    linarith
+  · rw [anchorMirrorDefect_eq_sum]
+    have hneg : T ≤ -(∑ p ∈ P, mirrorTiltIncrement p s) := by
+      rwa [hsumneg] at hlo
+    linarith
+
+/-- **Full nonpositive target reachability of the defect walk.**  Every target `T ≤ 0`
+is reached from below within tolerance: the defect lies in `[T - ε, T]`. -/
+theorem anchorMirrorDefect_reachable_nonpos {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1)
+    (hτ : 0 < s.im) (hτ2 : s.im * (2 * Real.log 2) < Real.pi)
+    {T ε : ℝ} (hT : T ≤ 0) (hε : 0 < ε) :
+    ∃ P : Finset ℕ, (∀ p ∈ P, Nat.Prime p) ∧
+      T - ε ≤ anchorMirrorDefect P s ∧ anchorMirrorDefect P s ≤ T := by
+  obtain ⟨P, hP, hlo, hhi⟩ := anchorMirrorDefect_reachable_nonpos_magnitude h0 h1 hτ
+    hτ2 (T := -T) (ε := ε) (by linarith) hε
+  refine ⟨P, hP, ?_, ?_⟩ <;> linarith
 
 end RHTower

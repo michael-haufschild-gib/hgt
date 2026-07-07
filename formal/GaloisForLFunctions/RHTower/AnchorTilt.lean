@@ -337,6 +337,40 @@ theorem im_incidence_anchored_mirror {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p
     Complex.ofReal_re, Complex.ofReal_im]
   ring
 
+/-- **Defect angle alone does not determine mirror orientation.**  For any proposed
+defect angle `d`, the rotated-conjugate imaginary coordinate can be assigned arbitrarily
+by changing the source complex value.  Thus the meeting argument cannot use defect
+reachability alone; it must also control the source incidence value that co-moves with
+the same prime set. -/
+theorem rotatedConj_im_can_be_assigned (d y : ℝ) :
+    ∃ z : ℂ, z ≠ 0 ∧
+      (Complex.exp (-((d : ℝ) : ℂ) * I) * (starRingEnd ℂ) z).im = y := by
+  let w : ℂ := 1 + (y : ℂ) * I
+  let z : ℂ := (starRingEnd ℂ) (Complex.exp (((d : ℝ) : ℂ) * I) * w)
+  refine ⟨z, ?_, ?_⟩
+  · have hw : w ≠ 0 := by
+      intro hw0
+      have hre : w.re = 0 := by
+        rw [hw0]
+        simp
+      simp [w] at hre
+    exact star_ne_zero.mpr (mul_ne_zero (Complex.exp_ne_zero (((d : ℝ) : ℂ) * I)) hw)
+  · have hcancel : Complex.exp (-((d : ℝ) : ℂ) * I) *
+        Complex.exp (((d : ℝ) : ℂ) * I) = 1 := by
+      rw [← Complex.exp_add]
+      rw [show -((d : ℝ) : ℂ) * I + ((d : ℝ) : ℂ) * I = 0 by ring]
+      exact Complex.exp_zero
+    calc
+      (Complex.exp (-((d : ℝ) : ℂ) * I) * (starRingEnd ℂ) z).im
+          = (Complex.exp (-((d : ℝ) : ℂ) * I) *
+              (Complex.exp (((d : ℝ) : ℂ) * I) * w)).im := by
+              simp [z]
+      _ = ((Complex.exp (-((d : ℝ) : ℂ) * I) *
+              Complex.exp (((d : ℝ) : ℂ) * I)) * w).im := by ring_nf
+      _ = y := by
+              rw [hcancel]
+              simp [w]
+
 /-! ### The defect bound on a ball in the strip -/
 
 /-- **The defect budget on any ball inside the strip** — in particular on the isolating

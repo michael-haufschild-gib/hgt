@@ -806,3 +806,105 @@ Gate 9222 jobs exit 0; both endpoints axiom-clean.
 - **`anchorMirrorDefect_reachable_nonneg`**: for 0 < Im s < π/(2 log 2), every T ≥ 0,
   every ε > 0: ∃ finite prime set P with T ≤ defect(P) ≤ T + ε. Fully explicit
   constants; one Chebyshev window + greedy accumulation.
+
+## 2026-07-07 (later) — negative defect reachability + meeting-phase pivot
+
+- `DefectSteering.lean`: added `mirrorTiltIncrement_conj` and
+  `neg_mirrorTiltIncrement_ge`, the Schwarz-odd increment law and the quantitative
+  arctangent floor for negative sine windows.
+- `WindowBudget.lean`: added `anchorMirrorDefect_reachable_nonpos_magnitude` and
+  `anchorMirrorDefect_reachable_nonpos`; for 0 < Im s < π/(2 log 2), every negative
+  target is reachable within every ε by the `5π/4` Chebyshev window and greedy
+  accumulation applied to `-mirrorTiltIncrement`.
+- `AnchorTilt.lean`: added `rotatedConj_im_can_be_assigned`.  The meeting law depends
+  on both the defect angle and the co-moving source value `ι_P(s)`; without source
+  phase control, the defect angle alone can realize any mirror imaginary coordinate.
+  Doc 114 records the pivot from prime-budget reachability to controlled source phase.
+
+## 2026-07-07 (final) — co-movement pivot + cancellation (docs 113 add., 114)
+
+Verified external additions: `mirrorTiltIncrement_conj`, `neg_mirrorTiltIncrement_ge`
+(DefectSteering), `anchorMirrorDefect_reachable_nonpos(_magnitude)` (WindowBudget —
+mirrored reachability closed), `rotatedConj_im_can_be_assigned` (AnchorTilt — the
+co-movement no-go). All axiom-clean.
+
+New `RelativePhase.lean` (umbrella updated; gate 9224 jobs exit 0):
+- `div_polar_eq`; **`im_incidence_anchored_mirror_tilt_only`** + SEM version — the
+  s-side tilt cancels between defect and source phase; mirror orientation =
+  ‖A(1−s̄)‖⁻¹·Im(e^{−i·tilt_P(1−s̄)}·conj(−G s)) — ONE steerable angle × P-free member
+  phase.
+- `anchorTilt_mirror_eq_sum`, `primeTilt_mirror_pos_iff`/`_neg_iff` — the orientation
+  angle inherits the full steering engine (sign law, floors, windows, greedy).
+Next: the two-basepoint joint sweep on the torus vs the even/odd deck positions.
+
+## 2026-07-07 (torus) — TorusWalk.lean: four-quadrant supply (doc 115)
+
+5 endpoints axiom-clean; gate 9225 exit 0. `exists_prime_two_phase_window` (difference-
+phase window of length (π/4)/(a−b) contains a full fast quarter-tile > log 2; Int.ceil
+tile alignment), `sin_pos/neg_of_shifted_window` (ℤ-shift sign readers),
+`exists_prime_sin_sign_pair` (all four sine-sign quadrants at two nearby frequencies),
+`exists_prime_tilt_sign_pair` (the two basepoint steering tilts of a narrow annulus
+realize every sign pair at every prime scale). Hypotheses: 9(a−b) ≤ a, a·4log2 < π.
+
+## 2026-07-07 (torus floors) — TorusWalk §floors
+
+6 endpoints axiom-clean, gate 9225 exit 0: `primeTilt_ge`, `abs_primeTilt_floor`
+(floor at the SAME exponent 1−Re ρ as the ceiling — bounded step eccentricity),
+`abs_sin_floor_pos/neg_window`, `exists_prime_sin_sign_pair_floors`,
+`exists_prime_tilt_sign_pair_floors` (quadrant supply with per-coordinate arctan
+floors). All 2-D greedy ingredients now banked; residual = the staircase induction +
+the meeting-position set in two-angle coordinates.
+
+## 2026-07-07 (meeting coords) — doc 116 + basepoint variant
+
+- `exists_prime_tilt_sign_pair_floors_base` (TorusWalk): the quadrant+floors supply for
+  tilts AT the basepoints ρ±ci (floor exponent Re ρ) — the angles that steer the
+  ρ-annulus's own orientations by the mirror-of-mirror identity 1−conj(P'±) = P±.
+  Axiom-clean; gate 9225 exit 0.
+- Doc 116: (i) meeting coordinates corrected (our orientations ⟵ tilts at OUR
+  basepoints vs P-free mirror member phases); (ii) the endpoint no-go [formal target]:
+  P-rigid deck class × steerable endpoint sign pair ⟹ the parity datum is NOT the raw
+  endpoint Im-sign pair — the dictionary must route through arc-winding
+  (ArgumentVariation is the designated instrument); (iii) staircase corrected: naive
+  alternation DIVERGES (cascade ratio δ/f > 1); two-phase descent (both pools of a
+  half-plane advance the driven coordinate) terminates with monotone measures; budgets
+  from Chebyshev counts.
+
+## Pass: pair-reachability + endpoint no-go + arc-winding dictionary (doc 117)
+
+New modules (all axiom-clean `[propext, Classical.choice, Quot.sound]`, umbrella updated):
+
+- `formal/GaloisForLFunctions/RHTower/StaircaseDescent.lean` — `staircase_drive`
+  (single-phase descent, induction on step fuel; band never leaves `(−δ, max D δ]`),
+  `staircase_reach_nonneg` (two-phase assembly; three quadrant pools; the doubly
+  positive pool split between phases via the `card ≤ n` clause).
+- `formal/GaloisForLFunctions/RHTower/PairStaircase.lean` — `two_phase_window_pool`
+  (window kept as a set, scale pinned to `[X, X+5π/(a−b)+2π/a]`, `Nat.ceil`-indexed),
+  `sin_sign_pair_pool`, `tilt_sign_pair_pool_base`, `windowPrimes_card_of_scale`
+  (one Chebyshev budget inequality serves every window of a batch), and the capstone
+  `anchorTilt_pair_reachable_nonneg` (+ `_mirror`): the tilt pair at `ρ ± ci` reaches
+  every nonnegative target box within every tolerance over primes beyond any bound.
+  Absorption at `λ = (3+σ)/4`; `set_option maxHeartbeats 16000000` (single big proof;
+  ~4 min elaboration).
+- `formal/GaloisForLFunctions/RHTower/EndpointNoGo.lean` — `im_rotated` (polar Im),
+  `exists_anchor_rotated_sign_pair` (quarter-turn targets, `π/4` tolerance),
+  `incidence_endpoint_sign_steerable` (cancellation theorem at the mirror points,
+  `1 − conj(1 − conj w) = w`, `completedSEM_lineReflection` folds the member phase to
+  `−completedSEM N (ρ±ci)`), `endpoint_orientation_no_go` (same deck class via
+  `anchoredSEM_roots_of_sem_roots` for both prime sets, sign pairs `(+,+)` vs `(+,−)`).
+- `formal/GaloisForLFunctions/RHTower/ArcWindingDictionary.lean` — `anchorLog`
+  (canonical global logarithm on `Re > 0`; `Im = anchorTilt`), `anchor_arc_variation`
+  (the anchor carries no monodromy: any log's Im-increment along any path = endpoint
+  tilt difference; uses `im_eq_int_mul_two_pi_of_exp_pos` +
+  `continuousOn_int_mul_two_pi_const`), `anchoredSEM_arc_variation` (arc winding =
+  member increment + tilt difference), `deckClass_eq_exp_log_mismatch` +
+  `deckClass_neg_one_zpow_log_mismatch` (deck cocycle = `(−1)^{k_P−k_M}`, the parity
+  of the chart-log winding mismatch; root choices cancel in the double ratio).
+
+Also cleaned `TorusWalk.lean` to warning-free form (the `simp only [if_pos rfl]`
+consumption replaced by `cases … with | false/| true` + defeq `show`; explicit
+`sub_pos.mpr`/`lt_trans` where `linarith` hid hypothesis usage; dead `push_cast`).
+
+Open formal target named in doc 117 §6: branch tracking of the glued chart logarithm
+under a continuous tilt sweep — the map from the steered endpoint tilt pair to
+`(k_P, k_M)` on a concrete annulus datum.

@@ -239,7 +239,7 @@ tower (its Green level `> G_c(0) + 1/8`) is norm-bounded below by `2` this way. 
 theorem two_lt_norm_of_greenFunctionDyn_gt {c z : ℂ} (hc : (100:ℝ) ≤ ‖c‖)
     (hg : greenFunctionDyn c 0 + 1/8 < greenFunctionDyn c z) : 2 < ‖z‖ := by
   by_contra h
-  push_neg at h
+  push Not at h
   have hpin := abs_greenFunctionDyn_sub_crit_le hc h
   rw [abs_le] at hpin
   linarith [hpin.2]
@@ -250,7 +250,7 @@ value is below `G_c(0) − 1/8` lies outside `closedBall 0 2` — the deep-lobe 
 theorem two_lt_norm_of_greenFunctionDyn_lt {c z : ℂ} (hc : (100:ℝ) ≤ ‖c‖)
     (hg : greenFunctionDyn c z < greenFunctionDyn c 0 - 1/8) : 2 < ‖z‖ := by
   by_contra h
-  push_neg at h
+  push Not at h
   have hpin := abs_greenFunctionDyn_sub_crit_le hc h
   rw [abs_le] at hpin
   linarith [hpin.1]

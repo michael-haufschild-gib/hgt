@@ -741,7 +741,7 @@ open Classical in
 family `F_j = (S.inv ∘ f^[j])^(2^(k−j))` glues to a single analytic nonvanishing `F` that equals
 `(S.inv)^(2^k)` on the tower image and collapses along depth-`k` sections. -/
 theorem exists_tower_radicand {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R₀)
-    (hrlo : 1 < rlo) (k : ℕ) {Ext : Set ℂ} (hExto : IsOpen Ext)
+    (hrlo : 1 < rlo) (k : ℕ) {Ext : Set ℂ} (_hExto : IsOpen Ext)
     (hreach : ∀ z ∈ Ext, ∃ j : ℕ, j ≤ k ∧ (quadratic c)^[j] z ∈ S.T '' annulusSet rlo R₀) :
     ∃ F : ℂ → ℂ,
       AnalyticOnNhd ℂ F Ext ∧ (∀ z ∈ Ext, F z ≠ 0) ∧
@@ -851,7 +851,7 @@ theorem exists_tower_loop {c : ℂ} {rlo R₀ : ℝ} (S : TowerSection c rlo R�
   have hbadRc : badR.Countable := hT.image _
   obtain ⟨r, hrIoo, hrbad⟩ : ∃ r ∈ Set.Ioo ra rb, r ∉ badR := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     have h2 : (Set.Ioo ra rb).Countable := hbadRc.mono hcon
     have h3 := Cardinal.mk_le_aleph0_iff.mpr h2
     rw [Cardinal.mk_Ioo_real hrb] at h3

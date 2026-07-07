@@ -24,3 +24,5 @@ Do not use the positive-real reciprocal FE mirror as the proof: `RHTower.inciden
 ## Log
 
 - 2026-07-06 — opened after `RHTower.EdgeEventParity` reduced pairing to endpoint agreement and `RHTower.IncidenceMirrorOrientation` proved the positive-real mirror gives opposite-edge sign reversal instead.
+
+- 2026-07-07 — Codex: doc 113's negative reachability follow-up is formalized (`anchorMirrorDefect_reachable_nonpos_magnitude`, `anchorMirrorDefect_reachable_nonpos`).  The meeting obstruction is sharpened by `rotatedConj_im_can_be_assigned`: defect angle alone cannot force endpoint orientation because the source incidence value co-moves with the same prime set.  This card should now attack source phase control, coupled variation, or a normalized meeting functional where the source phase cancels.

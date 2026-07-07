@@ -219,7 +219,7 @@ theorem harmonic_le_zero_of_sphere_zero {v : ℂ → ℝ} {c : ℂ} {R : ℝ} (h
   obtain ⟨z₀, hz₀mem, hz₀max⟩ := (isCompact_closedBall c R).exists_isMaxOn
     ⟨c, Metric.mem_closedBall_self hR.le⟩ hvc
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   have hz₀pos : 0 < v z₀ := lt_of_lt_of_le hcon (hz₀max (Metric.ball_subset_closedBall hy))
   have hz₀ball : z₀ ∈ Metric.ball c R := by
     rcases (Metric.mem_closedBall.mp hz₀mem).lt_or_eq with hlt | heq

@@ -192,6 +192,40 @@ theorem mirrorTiltIncrement_ge {q : ℕ} (hq : 2 ≤ q) {s : ℂ}
   unfold mirrorTiltIncrement
   linarith
 
+/-- The mirror increment is Schwarz-odd. -/
+theorem mirrorTiltIncrement_conj {q : ℕ} (hq : 2 ≤ q) {s : ℂ}
+    (h0 : 0 < s.re) (h1 : s.re < 1) :
+    mirrorTiltIncrement q ((starRingEnd ℂ) s) = -mirrorTiltIncrement q s := by
+  have href : 0 < (1 - (starRingEnd ℂ) s).re := by
+    simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
+    linarith
+  unfold mirrorTiltIncrement
+  have hA : primeTilt q (1 - (starRingEnd ℂ) ((starRingEnd ℂ) s)) =
+      -primeTilt q (1 - (starRingEnd ℂ) s) := by
+    have h := primeTilt_conj hq (s := 1 - (starRingEnd ℂ) s) href
+    simpa using h
+  have hB : primeTilt q ((starRingEnd ℂ) s) = -primeTilt q s :=
+    primeTilt_conj hq h0
+  rw [hA, hB]
+  ring
+
+/-- The quantified turn, from below, for a negative sine window. -/
+theorem neg_mirrorTiltIncrement_ge {q : ℕ} (hq : 2 ≤ q) {s : ℂ}
+    (h0 : 0 < s.re) (h1 : s.re < 1)
+    (hsin : Real.sin (s.im * Real.log q) < 0) :
+    Real.arctan ((q : ℝ) ^ (-s.re) * (-Real.sin (s.im * Real.log q)) / 2)
+      ≤ -mirrorTiltIncrement q s := by
+  have h0c : 0 < ((starRingEnd ℂ) s).re := by
+    simpa using h0
+  have h1c : ((starRingEnd ℂ) s).re < 1 := by
+    simpa using h1
+  have hsin' : 0 < Real.sin (((starRingEnd ℂ) s).im * Real.log q) := by
+    rw [Complex.conj_im, neg_mul, Real.sin_neg]
+    exact neg_pos.mpr hsin
+  have hge := mirrorTiltIncrement_ge hq h0c h1c hsin'
+  rw [mirrorTiltIncrement_conj hq h0 h1] at hge
+  simpa [Complex.conj_re, Complex.conj_im, Real.sin_neg, neg_mul] using hge
+
 /-- **The quantified turn, from above**: on a symmetric strip band the increment is
 bounded by twice the single-prime budget. -/
 theorem abs_mirrorTiltIncrement_le {q : ℕ} (hq : 2 ≤ q) {s : ℂ} {σ₀ : ℝ}

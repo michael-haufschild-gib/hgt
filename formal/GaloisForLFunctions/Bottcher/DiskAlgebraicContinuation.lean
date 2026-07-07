@@ -223,12 +223,12 @@ theorem finite_roots_of_fibre {a : ℕ → ℂ} {N : ℕ} (hlead : a N ≠ 0) :
   set P : Polynomial ℂ := ∑ i ∈ Finset.range (N + 1), Polynomial.C (a i) * Polynomial.X ^ i with hP
   have heval : ∀ w : ℂ, P.eval w = ∑ i ∈ Finset.range (N + 1), a i * w ^ i := by
     intro w
-    rw [hP, Polynomial.eval_finset_sum]
+    rw [hP, Polynomial.eval_finsetSum]
     simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
   have hPne : P ≠ 0 := by
     intro h0
     have hc : P.coeff N = a N := by
-      rw [hP, Polynomial.finset_sum_coeff,
+      rw [hP, Polynomial.finsetSum_coeff,
         Finset.sum_eq_single_of_mem N (Finset.self_mem_range_succ N)]
       · simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
       · intro b _ hbN
@@ -256,7 +256,7 @@ theorem norm_le_of_fibre_root {a : ℕ → ℂ} {N : ℕ} (hlead : a N ≠ 0) {w
     div_nonneg (Finset.sum_nonneg fun i _ => norm_nonneg _) haN.le
   by_cases hle : ‖w‖ ≤ 1
   · linarith
-  push_neg at hle
+  push Not at hle
   rcases Nat.eq_zero_or_pos N with hN0 | hNpos
   · subst hN0
     simp only [Finset.sum_range_succ, Finset.sum_range_zero, pow_zero, mul_one, zero_add] at hw

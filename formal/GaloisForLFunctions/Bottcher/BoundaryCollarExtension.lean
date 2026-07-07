@@ -142,7 +142,7 @@ theorem holo_extend_of_continuesAcross_all {h : ℂ → ℂ}
         hhd.differentiableAt (isOpen_ball.mem_nhds (mem_ball_zero_iff.mpr hz1))
       exact hdh.congr_of_eventuallyEq hev
     · -- collar: 1 ≤ ‖z‖ < ρ
-      push_neg at hz1
+      push Not at hz1
       have hz0 : z ≠ 0 := by rintro rfl; rw [norm_zero] at hz1; linarith
       have hx₀S : z / (‖z‖ : ℂ) ∈ S := hproj z hz0
       -- z lies in its own δ-chart
@@ -165,7 +165,7 @@ theorem holo_extend_of_continuesAcross_all {h : ℂ → ℂ}
               rw [norm_sub_rev]; simpa [dist_eq_norm] using (mem_ball.mp hw)
             linarith
           have hwx₀' : w ∈ ball (w / (‖w‖ : ℂ)) δ := by
-            push_neg at hw1
+            push Not at hw1
             rw [mem_ball, dist_eq_norm, hcollar_norm w hw0,
               abs_of_nonneg (by linarith : (0:ℝ) ≤ ‖w‖ - 1)]
             linarith

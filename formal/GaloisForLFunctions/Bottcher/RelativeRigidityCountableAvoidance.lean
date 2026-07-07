@@ -11112,7 +11112,7 @@ lemma exists_straightSegmentAccessible_frontier_point_near
   obtain ⟨x, hxV, hxp⟩ := Metric.mem_closure_iff.mp hpcl η hη
   have hVne : V ≠ univ := by
     intro h
-    exact hpnot (by simpa [h] using mem_univ p)
+    exact hpnot (by simp [h])
   have hcomplne : Vᶜ.Nonempty := ⟨p, by simpa using hpnot⟩
   have hdistpos : 0 < Metric.infDist x Vᶜ :=
     ((isClosed_compl_iff.mpr hVopen).notMem_iff_infDist_pos hcomplne).mp (by simpa using hxV)
@@ -11215,7 +11215,7 @@ lemma exists_straightSegmentAccessible_frontier_point_near_complement_point
     ∃ q : ℂ, q ∈ frontier W ∧ dist q y < ε ∧ StraightSegmentAccessibleFrom W q := by
   have hWne : W ≠ univ := by
     intro h
-    exact hyWc (by simpa [h] using mem_univ y)
+    exact hyWc (by simp [h])
   have hcomplne : Wᶜ.Nonempty := ⟨y, hyWc⟩
   have hdistpos : 0 < Metric.infDist v Wᶜ :=
     ((isClosed_compl_iff.mpr hWopen).notMem_iff_infDist_pos hcomplne).mp (by simpa using hvW)
@@ -11778,7 +11778,7 @@ theorem commonExterior_boundarySlice_no_isolated_of_perfect_emptyInterior
         simpa [V] using connectedComponentIn_eq_empty (F := C) (x := u) huC
       have hzcl : z ∈ closure V := hz.1
       rw [hVempty] at hzcl
-      simpa using hzcl
+      simp at hzcl
   have hJacc : ∀ p ∈ filledJulia c₁, ∀ r : ℝ, 0 < r →
       ∃ q ∈ filledJulia c₁, q ≠ p ∧ q ∈ Metric.ball p r := by
     intro p hp r hr

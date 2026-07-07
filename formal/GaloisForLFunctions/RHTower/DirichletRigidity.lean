@@ -167,7 +167,7 @@ theorem no_polynomial_surgery
       exact hx.symm
     exact hane (tendsto_nhds_unique hB h0)
   · -- f' has a first nonzero coefficient.
-    push_neg at hfz
+    push Not at hfz
     obtain ⟨b, hb0, hbne⟩ := exists_first_index (by simp [hf'def]) hfz
     have hA := LSeries.tendsto_cpow_mul_atTop (f := f') (n := b) hb0 hf'a
     have hAnorm := hA.norm

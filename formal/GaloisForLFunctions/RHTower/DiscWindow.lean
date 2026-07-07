@@ -153,11 +153,11 @@ theorem chartLA_eq_image_slitAnnulus (a : ℂ) {r₀ R : ℝ} (h0 : 0 < r₀) (h
           have hlt : (n : ℝ) * Real.pi < 2 * Real.pi := hn ▸ hyub
           have hnpos : (0 : ℝ) < (n : ℝ) := by
             by_contra hle
-            push_neg at hle
+            push Not at hle
             nlinarith [Real.pi_pos]
           have hnlt : (n : ℝ) < 2 := by
             by_contra hge
-            push_neg at hge
+            push Not at hge
             nlinarith [Real.pi_pos]
           have h1 : (0 : ℤ) < n := by exact_mod_cast hnpos
           have h2 : (n : ℤ) < 2 := by exact_mod_cast hnlt

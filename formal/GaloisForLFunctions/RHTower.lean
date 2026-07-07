@@ -276,6 +276,12 @@ import GaloisForLFunctions.RHTower.SymmetrizedEMCarrier
 import GaloisForLFunctions.RHTower.FiniteMemberSteering
 import GaloisForLFunctions.RHTower.DefectSteering
 import GaloisForLFunctions.RHTower.WindowBudget
+import GaloisForLFunctions.RHTower.RelativePhase
+import GaloisForLFunctions.RHTower.TorusWalk
+import GaloisForLFunctions.RHTower.StaircaseDescent
+import GaloisForLFunctions.RHTower.PairStaircase
+import GaloisForLFunctions.RHTower.EndpointNoGo
+import GaloisForLFunctions.RHTower.ArcWindingDictionary
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity

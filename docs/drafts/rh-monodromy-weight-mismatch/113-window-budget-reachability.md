@@ -73,3 +73,18 @@ meeting argument itself — with the defect now provably steerable onto any nonn
 angle at Chebyshev heights, the incompatibility question is fully quantitative: what
 boundary-orientation positions can an odd class occupy as the defect sweeps `[0, ∞)`
 mod the `2π`-quantization of `anchorMirrorDefect_int_of_lineReflection`?
+
+## Addendum — negative reachability and the meeting pivot
+
+Doc 113's mirrored follow-up is now closed in Lean.
+`anchorMirrorDefect_reachable_nonpos_magnitude` reaches every negative magnitude, and
+`anchorMirrorDefect_reachable_nonpos` reaches every target `T <= 0` from below.  The
+proof is the `5π/4` sine-window mirror of `anchorMirrorDefect_reachable_nonneg`, using
+`mirrorTiltIncrement_conj` and `neg_mirrorTiltIncrement_ge`.
+
+This closes the reachable-budget side in both directions for
+`0 < Im s < π/(2 log 2)`.  The next obstruction is recorded separately in
+`114-meeting-phase-freedom-pivot.md`: the anchored mirror law contains the co-moving
+source value `ι_P(s)`, so defect-angle reachability alone cannot force endpoint
+orientation.  The remaining theorem must control that source phase, prove coupled
+variation, or pass to a normalized meeting functional where it cancels.
