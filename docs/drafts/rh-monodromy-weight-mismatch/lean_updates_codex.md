@@ -983,3 +983,32 @@ addendum). Axiom-clean.
 - `RHTower/WholeLoopParity.lean` (new, in umbrella): re-architecture of the band-edge pairing off the steerable endpoint datum. `crossings_fluxPaired_of_phase_winds` — for a polar carrier with positive modulus and strictly monotone continuous phase, IF the phase advance over the segment is an integer multiple of `2π` (`θ b − θ a = k·2π`) and the basepoint is not a crossing, then the forced crossings are even in number and their event list carries paired flux — with NO endpoint-orientation hypothesis. Mechanism: a whole-turn advance forces `sin(θ b) = sin(θ a + 2πk) = sin(θ a)`, so both endpoints carry the sign of `sin(θ a)` — the `hagree` the per-edge form assumes is here a theorem, and the steerable endpoint pair (`endpoint_orientation_no_go`) never enters. `exists_incidence_edge_events_fluxPaired_of_wind` — the incidence-carrier version, converting the `.im = 0` crossings to pencil zeros. The parity source is the winding integer `k`, not the endpoint signs.
 - `RHTower/WindingBoxCount.lean` (new, in umbrella): the wire from the box-count to the winding integer. `arcWinding_parity_eq_enclosedOrder` — for an enclosed factorization `f = (∏(·−ρᵢ)^{mᵢ})·h` with square roots `G₁ G₂` and logarithms `ℓ₁ ℓ₂` on the two annulus charts, the two-arc winding mismatch integer `k` (`2πk` = the difference of the argument variations of `ℓ₁,ℓ₂` between the annulus basepoints) satisfies `(−1)^k = (−1)^(Σmᵢ)`, i.e. `Even (k − Σmᵢ)`: the winding integer and the enclosed total order have the same parity. Proof equates the two deck-class readings — `box_charge_eq_deckRed` (deck = `deckRed 2 (Σmᵢ)`) and `deckClass_neg_one_zpow_arg_variation` (deck = `(−1)^k`) — via `deckRed_two_eq_neg_one_zpow` (`deckRed 2 j = (−1)^j`). The winding integer is not free: mod 2 it is the box-count.
 - `RHTower/WholeLoopClosure.lean` (new, in umbrella): the composition. `incidence_wholeLoop_closure` — with the carrier's edge phase-advance and the member's arc-winding mismatch tied to a common integer `k·2π` (the identification the anchor's monodromy-freeness supplies), the band-edge events are even and paired with no endpoint datum AND `k` has the enclosed order's parity. The paired-flux discharge is endpoint-free and its parity is pinned to the enclosed zero count. All three axiom-clean [propext, Classical.choice, Quot.sound]; `lake build MainTheorems` green (9235 jobs); lint + index pass.
+
+- `RHTower/WholeLoopParity.lean` (§1 extended, §4 new): the whole-turn winding hypothesis discharged from loop closure. `phase_winds_of_loop_closed` — for a polar carrier with positive modulus, if the contour returns to its start value (`(r a)·exp(θa·i) = (r b)·exp(θb·i)`) then `θ b − θ a = k·(2π)` for an integer `k`: the moduli agree as the common absolute value, the unit factors agree, so `exp((θb−θa)i)=1`. This turns the assumed whole-turn advance into a consequence of closure. `crossings_fluxPaired_of_loop_closed` — closure `F a = F b` (plus monotone continuous phase, basepoint not a crossing) gives an even paired band-edge count with NO winding hypothesis and NO endpoint datum: the endpoint agreement `exists_crossing_enum_parity` needs is vacuous (both endpoints the same value). `exists_incidence_loop_events_fluxPaired` — the incidence-carrier form over a general closed contour `γ` (`γ lo = γ hi`), converting `.im = 0` to pencil zeros.
+- `RHTower/WholeLoopClosure.lean` (new theorem): `incidence_wholeLoop_closure_of_closed` — the whole-loop closure with the whole-turn hypothesis DISCHARGED. Takes a closed contour `γ` (`γ lo = γ hi`) instead of the bare `θ hi − θ lo = k·2π`; `phase_winds_of_loop_closed` recovers the winding integer, `exists_incidence_loop_events_fluxPaired` gives the even paired count from closure, and `arcWinding_parity_eq_enclosedOrder` (via the anchor-monodromy-free identification `hlink`) pins the winding integer's parity to the enclosed order. Net: on a closed contour the band-edge pairing is discharged with no endpoint datum and no assumed winding integer, its parity the enclosed order's. All axiom-clean [propext, Classical.choice, Quot.sound]; `lake build MainTheorems` green (9235 jobs); lint + index pass.
+
+## CanonicalBranch.lean (new module)
+
+`formal/GaloisForLFunctions/RHTower/CanonicalBranch.lean` — the canonical branch
+datum (doc 120), discharging doc 119's re-aimed open core. §1 geometry:
+`lineReflection μ z = 2μ − conj z` (involution; fixes the line, a line-centered
+annulus, and both vertical basepoints; swaps chartRA ↔ chartLA via
+`conj_mem_slitPlane` + `lineReflection_sub_center`). §2 canonical pair:
+`analyticAt_conj_comp_conj` (Schwarz reflection preserves analyticity — eventual
+differentiability pulled back along conjugation, via
+`analyticAt_iff_eventually_differentiableAt`); `reflectedRoot μ G = conj ∘ G ∘
+lineReflection` analytic on chartLA + squares to f under line symmetry. §3 sign
+dichotomy: roots of positive reals are conj-fixed, of negative reals conj-negated
+(`conj_eq_self_of_sq_pos`/`conj_eq_neg_of_sq_neg`). §4 THE OBSERVABLE:
+`deckClass_reflectedRoot` (class = double conjugation ratio at fixed ports);
+`deckClass_reflectedRoot_one_of_sign_pos` / `_neg_one_of_sign_change` /
+`_ne_one_iff` — nontrivial class ⟺ the real member changes sign between the two
+ports. §5 `exists_canonical_sweepSelection` (the datum supplies initial readings
+for every anchor's selection). §6 member: `annulus_strip_of_center_half`,
+`completedSEM_lineSymmetric_on_annulus`,
+`completedSEM_selection_weld_of_sign_change` (weld with hdeck replaced by the sign
+change; 0 < Re < 1 free at Re = 1/2). §7 unconditional root: `exists_chartRA_sqrt`
+(simply connected slit chart) and capstone
+`completedSEM_selection_weld_of_sign_change_nonvanishing` — the full weld from
+nonvanishing + port sign change only. Umbrella import after SweepSelection. All 15
+endpoints `[propext, Classical.choice, Quot.sound]`. Gate: 9236 jobs, exit 0.

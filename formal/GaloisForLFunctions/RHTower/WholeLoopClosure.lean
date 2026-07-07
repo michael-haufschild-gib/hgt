@@ -72,4 +72,57 @@ theorem incidence_wholeLoop_closure {ι : Type*} (s : Finset ι) (ρ : ι → �
     exact_mod_cast (mul_right_cancel₀ (ne_of_gt h2π) this)
   rwa [hkk] at hevenA
 
+/-- **The whole-loop closure, with the whole-turn hypothesis discharged.**  Same conclusion as
+`incidence_wholeLoop_closure`, but the assumed winding integer of the contour is removed: it is
+supplied by the contour `γ` closing on itself (`γ lo = γ hi`), from which `phase_winds_of_loop_closed`
+recovers the whole-turn advance.  The only geometric input tying the two windings is `hlink`, the
+equality of the member's two-arc winding mismatch and the carrier's contour phase advance — the
+identification the anchor's monodromy-freeness supplies.  Then the band-edge events are even and
+paired with no endpoint datum and no assumed winding integer, and the winding integer's parity is the
+enclosed order's. -/
+theorem incidence_wholeLoop_closure_of_closed {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) (m : ι → ℕ)
+    {f h G₁ G₂ ℓ₁ ℓ₂ Λ₁ Λ₂ : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ} {lo hi : ℝ} {γ : ℝ → ℂ} {Rmod θ : ℝ → ℝ}
+    (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hρ : ∀ i ∈ s, ‖ρ i - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (Metric.ball a R)) (hh0 : ∀ z ∈ Metric.ball a R, h z ≠ 0)
+    (hfact : ∀ z ∈ Metric.ball a R, f z = (∏ i ∈ s, (z - ρ i) ^ m i) * h z)
+    (hG₁ : AnalyticOnNhd ℂ G₁ (chartRA a r₀ R)) (hG₂ : AnalyticOnNhd ℂ G₂ (chartLA a r₀ R))
+    (hpG₁ : ∀ z ∈ chartRA a r₀ R, G₁ z ^ 2 = f z) (hpG₂ : ∀ z ∈ chartLA a r₀ R, G₂ z ^ 2 = f z)
+    (hℓ₁ : AnalyticOnNhd ℂ ℓ₁ (chartRA a r₀ R)) (hℓ₂ : AnalyticOnNhd ℂ ℓ₂ (chartLA a r₀ R))
+    (hexp₁ : ∀ z ∈ chartRA a r₀ R, Complex.exp (ℓ₁ z) = f z)
+    (hexp₂ : ∀ z ∈ chartLA a r₀ R, Complex.exp (ℓ₂ z) = f z)
+    (hab : lo < hi) (hΛ1ne : ∀ τ ∈ Set.Icc lo hi, Λ₁ (γ τ) ≠ 0)
+    (hpolar : ∀ τ ∈ Set.Icc lo hi,
+      incidence Λ₁ Λ₂ (γ τ) = (Rmod τ : ℂ) * Complex.exp ((θ τ : ℝ) * I))
+    (hRmod : ∀ τ ∈ Set.Icc lo hi, 0 < Rmod τ)
+    (hmono : StrictMonoOn θ (Set.Icc lo hi)) (hθc : ContinuousOn θ (Set.Icc lo hi))
+    (hsin : Real.sin (θ lo) ≠ 0)
+    (hγ : γ lo = γ hi)
+    (hlink :
+      ((ℓ₁ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)).im - (ℓ₁ (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)).im)
+          - ((ℓ₂ (a + (((r₀ + R) / 2 : ℝ) : ℂ) * I)).im
+              - (ℓ₂ (a - (((r₀ + R) / 2 : ℝ) : ℂ) * I)).im) = θ hi - θ lo) :
+    (∃ (n : ℕ) (e : Fin n → ℝ), StrictMono e ∧
+        (∀ i, e i ∈ Set.Icc lo hi ∧
+          pencil Λ₁ Λ₂ ((incidence Λ₁ Λ₂ (γ (e i))).re : ℂ) 1 (γ (e i)) = 0) ∧
+        Even n ∧ LedgerFluxPaired (List.replicate n 1))
+      ∧ ∃ k : ℤ, θ hi - θ lo = (k : ℝ) * (2 * Real.pi) ∧ Even (k - ((∑ i ∈ s, m i : ℕ) : ℤ)) := by
+  have haa : lo ∈ Set.Icc lo hi := ⟨le_refl lo, hab.le⟩
+  have hbb : hi ∈ Set.Icc lo hi := ⟨hab.le, le_refl hi⟩
+  -- closure supplies the whole-turn advance of the contour phase
+  obtain ⟨k, hwindEdge⟩ := phase_winds_of_loop_closed (r := Rmod) (θ := θ)
+    (hRmod lo haa) (hRmod hi hbb)
+    (by rw [← hpolar lo haa, ← hpolar hi hbb, hγ])
+  -- the events are even and paired, from loop closure
+  have hevents := exists_incidence_loop_events_fluxPaired hab hΛ1ne hpolar hRmod hmono hθc hsin hγ
+  -- the arc winding integer has the enclosed order's parity
+  obtain ⟨kA, hwindA, _, hevenA⟩ := arcWinding_parity_eq_enclosedOrder s ρ m h0 hrR hρ hh hh0
+    hfact hG₁ hG₂ hpG₁ hpG₂ hℓ₁ hℓ₂ hexp₁ hexp₂
+  have hkk : kA = k := by
+    have h2π : (0 : ℝ) < 2 * Real.pi := by positivity
+    have hchain : (kA : ℝ) * (2 * Real.pi) = (k : ℝ) * (2 * Real.pi) :=
+      hwindA.symm.trans (hlink.trans hwindEdge)
+    exact_mod_cast (mul_right_cancel₀ (ne_of_gt h2π) hchain)
+  exact ⟨hevents, k, hwindEdge, hkk ▸ hevenA⟩
+
 end RHTower

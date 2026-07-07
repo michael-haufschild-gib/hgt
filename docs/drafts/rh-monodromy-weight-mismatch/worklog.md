@@ -6162,3 +6162,53 @@ corners. That is the residual bridge from the composed pillars to an uncondition
 
 Verify: lake build MainTheorems EXIT 0 (9235 jobs); all decls axiom-clean [propext, Classical.choice,
 Quot.sound]; lint + index pass; docstrings self-contained. No git commit.
+
+## 2026-07-07 (cont.) — Discharged the whole-turn winding hypothesis via loop closure (Lean, axiom-clean)
+
+The one open hypothesis in incidence_wholeLoop_closure — θ hi − θ lo ∈ 2πℤ (the phase winds a whole
+number of turns) — is now derived from loop closure rather than assumed.
+
+phase_winds_of_loop_closed (WholeLoopParity.lean): for a polar carrier r·exp(θi) with r>0, closure
+(r a)exp(θa i) = (r b)exp(θb i) ⟹ ∃k:ℤ, θb − θa = k·2π. Proof: norms give r a = r b, cancel to
+exp((θb−θa)i)=1, then Complex.exp_eq_one_iff. This is the discharge — the whole-turn advance is a
+theorem about any closed contour, not a free assumption.
+
+crossings_fluxPaired_of_loop_closed: on a closed contour (F a = F b) with monotone continuous phase
+and basepoint not a crossing, the band-edge count is even and paired — no winding hypothesis, no
+endpoint datum. The endpoint agreement is vacuous because both endpoints are the same value.
+
+exists_incidence_loop_events_fluxPaired: the incidence-carrier form over a general closed contour γ
+(γ lo = γ hi) — the honest whole-loop object (e.g. a circle around the enclosed zero), NOT a lateral
+edge (which never closes). Converts crossings to pencil zeros.
+
+incidence_wholeLoop_closure_of_closed (WholeLoopClosure.lean): the full closure with the winding
+hypothesis discharged. Takes γ closed (γ lo = γ hi); derives the winding integer from closure; the
+band-edge events are even and paired (no endpoint datum, no assumed winding integer); and the winding
+integer's parity is the enclosed order's (via arcWinding + the anchor-monodromy-free identification
+hlink). Geometric correction over the first draft: uses a genuine closed contour γ, not stripPt (a
+vertical line never returns to its start).
+
+Residual now: the ONLY remaining geometric inputs are (i) hlink — the carrier contour phase advance
+equals the member two-arc winding mismatch (the anchor being monodromy-free, proven pointwise in
+ArcWindingDictionary), and (ii) exhibiting the closed contour γ with monotone carrier phase around the
+enclosed zero. Both topological/geometric, neither an RH-grade analytic estimate.
+
+Verify: lake build MainTheorems EXIT 0 (9235 jobs); all decls axiom-clean [propext, Classical.choice,
+Quot.sound]; lint + index pass; docstrings self-contained. No git commit.
+
+## Canonical branch datum pass (doc 120)
+
+Built `CanonicalBranch.lean`: the doc-119 open core as theorems. Design turn: the
+critical-line reflection does all three jobs at once — fixes the line-centered
+annulus, swaps the slit charts, fixes the steered basepoints — so ONE chart root
+generates the entire gluing datum via Schwarz reflection, and the deck class of
+the canonical pair collapses to the double conjugation ratio at the two ports.
+With the member real at fixed ports, the root dichotomy (real vs purely imaginary
+by sign) makes the parity an OBSERVABLE: class ≠ 1 ⟺ sign change of the member
+between the ports (iff banked). The root itself exists (slit chart simply
+connected), so the final weld runs from two observable hypotheses: nonvanishing on
+the annulus + port sign change. Canonicity is automatic — the sign theorems show
+the class is determined by f alone, independent of the generating root. Gate exit
+0 (9236 jobs); 15 endpoints axiom-clean. Forward (doc 120 §6): sign-change
+abundance of the finite member on the line (Hardy-Z analogue, quantitative); the
+four-port quadruple transposition for off-line candidates.
