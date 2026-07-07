@@ -1012,3 +1012,83 @@ change; 0 < Re < 1 free at Re = 1/2). §7 unconditional root: `exists_chartRA_sq
 `completedSEM_selection_weld_of_sign_change_nonvanishing` — the full weld from
 nonvanishing + port sign change only. Umbrella import after SweepSelection. All 15
 endpoints `[propext, Classical.choice, Quot.sound]`. Gate: 9236 jobs, exit 0.
+
+## RootTraceHolonomy.lean (new module)
+
+`formal/GaloisForLFunctions/RHTower/RootTraceHolonomy.lean` — the doc-121 forcing
+spec realized as far as the corpus reaches (doc 122). THE INVARIANT: the endpoint
+ratio (holonomy) of any continuous square-root trace along one interior circle.
+§1 circle-chart geometry (arcs in slit charts, port memberships). §2 `rootTrace`
+(two-chart construction, no path lifting/covering theory; `rootTrace_holonomy`:
+holonomy = deckClass definitionally). §3 rigidity: `apply_eq_of_continuousOn_pm_one`
+(reusable ±1 constancy) + `continuous_trace_holonomy` (EVERY continuous trace has
+holonomy = the deck class). §4 order computation:
+`continuous_trace_holonomy_neg_one_pow` (holonomy = (−1)^{Σ enclosed orders}; via
+`deckClass_vertical_port_indep` + `deckClass_multi_zero`). §5 spectral computation:
+`doubledTrace_pairing` (double-period pairing = (1+σ)·single);
+`doubledTrace_pairing_eq_zero` (odd ⟹ orthogonal to every finitely-periodic
+probe); `exists_periodic_probe_pairing_ne_zero` (even ⟹ conjugated doubled trace
+is a probe with pairing 2·L²-mass > 0). §6 capstone
+`trace_parity_spectral_dichotomy`: even ⟺ closes up ⟺ positive periodic mass;
+odd ⟺ sign-flip ⟺ zero periodic mass — two computations with disjoint input
+types. §7 `trace_holonomy_isolated_zero` (single-zero instantiation via
+exists_peel) + `holonomy_eq_of_circle_domination` (one-circle domination forces
+equal holonomies — cone-splitting argument, no counting). Umbrella import after
+CanonicalBranch. All 10 endpoints `[propext, Classical.choice, Quot.sound]`.
+
+## CarrierPeriodicMass.lean (new module)
+
+`formal/GaloisForLFunctions/RHTower/CarrierPeriodicMass.lean` — the periodic mass
+of the finite carrier's root trace as a complete theory (doc 123). §1 mass is
+modulus-determined and QUANTIZED: `trace_normSq_eq_norm` (pointwise L² density =
+‖f‖, trace-independent), `doubledTrace_self_pairing_value` (self-pairing = 2∮‖f‖
+at even holonomy), `circle_modulus_mass_pos` — with the banked vanishing theorem
+the mass takes exactly the two values {0, 2∮‖f‖}. §2 existence:
+`exists_chartLA_sqrt` + `exists_circle_trace` (continuous trace on every interior
+circle of a nonvanishing annulus). §3 `trace_holonomy_of_sign`: line-symmetric
+members — every trace closes/flips by the sign of Re f(a+ri)·Re f(a−ri)
+(canonical pair + rigidity). §4 `exists_online_zero_of_port_sign_change`: sign
+change ⟹ f vanishes ON the line at |t| ≤ r₀ (IVT through the hole). §5 carrier:
+`exists_carrier_trace`, `carrier_periodic_mass_of_sign_pos` (mass = 2∮‖carrier‖ >
+0), `carrier_periodic_mass_of_sign_neg` (zero mass + on-line carrier zero in the
+hole). §6 seam: `carrier_mass_zero_of_odd_isolated_zero` (odd isolated zero +
+one-circle domination ⟹ carrier's mass = 0 there) and
+`carrier_mass_zero_of_odd_xi_zero` (ξ-instantiation). Umbrella import after
+RootTraceHolonomy. All 11 endpoints `[propext, Classical.choice, Quot.sound]`.
+
+## MirrorTransport.lean (new module)
+
+`formal/GaloisForLFunctions/RHTower/MirrorTransport.lean` — the mirror-annulus
+transport (doc 124). §1 geometry: `norm_lineReflection_sub` (isometry),
+`lineReflection_mem_mirror_annulus`, `lineReflection_circleMap` (circle at ρ ↦
+circle at mirror center, parameter reversed through π). §2 `mirrorTrace U = θ ↦
+conj (U (π − θ))`: continuous root trace at the mirror circle
+(`mirrorTrace_sq`) with the SAME ±1 holonomy (`mirrorTrace_holonomy` — the two
+antiholomorphic reversals cancel). §3 zero-mass events come in mirror pairs:
+`carrier_mass_zero_mirror_of_odd_isolated_zero` +
+`carrier_mass_zero_mirror_of_odd_xi_zero` (one domination certificate ⟹ two
+zero-mass circles, symmetric across the line, with explicit flipping traces).
+§4 the on-line count identity: `neg_one_pow_sum_reflection_equivariant` (ZMod 2
+involution — free orbits pair off), `trace_holonomy_online_count` (every trace's
+holonomy = (−1)^{on-line count}; center need not be on the line),
+`trace_closes_of_offline_mirror_pairs` (blindness stated positively: purely
+off-line mirror-paired configurations give the FULL mass 2∮‖f‖). Umbrella import
+after CarrierPeriodicMass. All 9 endpoints `[propext, Classical.choice,
+Quot.sound]`.
+
+## CertificateActivation.lean (new module)
+
+`formal/GaloisForLFunctions/RHTower/CertificateActivation.lean` — doc 124 §5's
+open core discharged (doc 125). Supply-line find: `EMAnnulusSupply.lean` already
+proves the unconditional certificate for the PLAIN completed EM carrier
+(`exists_isolating_em_domination`: isolating annulus + truncation length with
+‖ξ − completedEM N‖ < ‖completedEM N‖ on the charts, via N^{−σ₀} remainder decay
+against a compactness floor). The 122–124 capstones were generic in the carrier,
+so the weld is direct: `carrier_mass_zero_at_odd_xi_order` — at any strip point
+of odd ξ-order there exist, UNCONDITIONALLY, annulus (r₀,R), circle r=(r₀+R)/2,
+N ≥ 1 with: carrier nonvanishing on the annulus (forced by domination), trace
+existence, universal flip, universal probe annihilation — the carrier's periodic
+mass is zero. `xi_orderAt_lineReflection` (FE ∘ reality pairing) and
+`carrier_mass_zero_mirror_pair_at_odd_xi_order`: the event fires at ρ AND at
+1 − conj ρ, each with its own certificate. Umbrella import after
+MirrorTransport. All 3 endpoints `[propext, Classical.choice, Quot.sound]`.

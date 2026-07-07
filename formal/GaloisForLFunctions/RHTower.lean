@@ -286,6 +286,10 @@ import GaloisForLFunctions.RHTower.TiltSweepDiscriminator
 import GaloisForLFunctions.RHTower.AnnulusRootGluing
 import GaloisForLFunctions.RHTower.SweepSelection
 import GaloisForLFunctions.RHTower.CanonicalBranch
+import GaloisForLFunctions.RHTower.RootTraceHolonomy
+import GaloisForLFunctions.RHTower.CarrierPeriodicMass
+import GaloisForLFunctions.RHTower.MirrorTransport
+import GaloisForLFunctions.RHTower.CertificateActivation
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity

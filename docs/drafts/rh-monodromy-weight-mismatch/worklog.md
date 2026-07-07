@@ -6212,3 +6212,88 @@ the class is determined by f alone, independent of the generating root. Gate exi
 0 (9236 jobs); 15 endpoints axiom-clean. Forward (doc 120 §6): sign-change
 abundance of the finite member on the line (Hardy-Z analogue, quantitative); the
 four-port quadruple transposition for off-line candidates.
+
+## Gate 4 verdict: NO-GO (verified) + fork extension to docs 117-120
+
+Verified the reviewer's reading at theorem level: rhLadder_one_of_carrier_domination
+reduces RH₂ to Even zs.length; exists_split_domination_of_isolating proves count =
+order — the weld re-expresses the rung (its own docstring says so). The forcing fork:
+per-edge involutions are order-linked but steerable (endpoint_orientation_no_go);
+whole-loop counts are pinned but order-decoupled (crossings_fluxPaired_of_loop_closed
+= 2·winding). Extended the knife to my own arc: sign observable/calibration are
+equivalences; the selection weld reproduces the fork (reversal parity-decoupled — no
+class hypothesis; global-root clause gluing-equivalent to class = 1); rigidity proves
+no member can supply a non-reversing selection, so the weld constrains rules, never
+ξ's parity. Doc-120 roadmap revised: count identity + dyadic ascent = more
+re-expressions, demoted to machinery. Banked doc 121: route obituary + the FORCING
+CRITERION (one invariant, two computations — one order-linked, one pinned) as the
+recut open core. Step-1 module CanonicalCount was probe-stage only; not built —
+superseded by the verdict before any tree edit.
+
+## Root-trace holonomy pass (doc 122)
+
+Goal: the doc-121 forcing spec — one invariant, two computations. Ran the entropy
+protocol (seed 1525503077559735756, move reverse, percolation × counterpoint).
+Survey first: WeightMismatchRefutation already kills the quadruple parity (doc
+120 §6 four-port move retracted); ModulusHolography has the modulus-side
+computation. The collision produced the architecture: an odd-class root trace is
+ANTI-PERIODIC — orthogonal to every periodic voice. Honest L²-fork analysis up
+front: probe-parity matching means the pairing cannot force parity either — but
+the residue changes TYPE: parity becomes positivity of periodic boundary mass.
+Built RootTraceHolonomy.lean: trace via the two charts directly (holonomy =
+deckClass definitionally — no lifting machinery), rigidity, order computation
+((−1)^Σm), spectral computation (pairing identity, orthogonality at −1, positive
+mass at +1), the dichotomy capstone, the isolated-zero instantiation, and the
+one-circle domination transfer (cone-splitting; no counting; dominating side
+needs NO interior data). Gate exit 0; 10 endpoints axiom-clean. Re-typed open
+core (doc 122 §5 + addendum): positive periodic mass of the FINITE EM carrier's
+root trace on one pinned circle — an analytic positivity target on a finite
+object, not a parity conjuration. Constraint, not flow: everything lives on one
+pinned circle.
+
+## Carrier periodic mass pass (doc 123)
+
+Built the object doc 122 §5 named. Key structural findings while building: the
+mass is QUANTIZED — pointwise L² density of any root trace is ‖f‖, so the
+periodic mass is exactly 0 or 2∮‖f‖ with nothing in between and no dependence on
+the trace, branch, or probe normalization; on line-centered annuli the whole
+dichotomy is decided by TWO REAL NUMBERS (the port values of the real carrier);
+zero mass is never abstract — it forces an on-line zero of the member inside the
+closed hole (IVT along the reflection-fixed segment). The seam capstones convert
+a hypothetical odd off-line ξ-zero + one-circle domination into a zero-mass
+circle for the explicit finite carrier. Module compiled first-shot, gate exit 0,
+11 endpoints axiom-clean. Forward (doc 123 §7): weld the banked domination
+certificates to the seam capstone (unconditional zero-mass events at certificate
+windows); transport the on-line zero conclusion to off-line centers via the
+mirror annulus (one reflection, two annuli, one shared segment).
+
+## Mirror transport pass (doc 124)
+
+Built doc 123 §7's construction with the self-attack recorded first: (z−ρ)(z−ρ′)
+is line-symmetric, odd mirror pair, NO on-line zero — so the transport cannot
+manufacture on-line zeros from off-line data; what it CAN do, it now does as
+theorems: holonomy travels intact across the line (mirrorTrace — the two
+antiholomorphic reversals cancel), zero-mass events come in mirror pairs (one
+domination certificate ⟹ two zero-mass circles), and the equivariant parity
+lemma (ZMod 2 involution) yields the on-line count identity — every trace
+holonomy reads the on-line count mod 2, at ANY center. Gate exit 0, 9 endpoints
+axiom-clean. The residue is now maximally located (doc 124 §5): ONE
+machine-checked domination certificate on ONE circle activates the entire
+122–124 stack; certificate supply = the seam between arithmetic carrier and
+archimedean member.
+
+## Certificate activation pass (doc 125)
+
+Prior-work search decided the pass: the certificate doc 124 asked for already
+existed — EMAnnulusSupply (parallel arc) proves unconditional domination for the
+plain completed EM carrier at every strip point. Because the 122–124 seam
+capstones were deliberately carrier-generic, activation was a weld, not an
+estimate: carrier_mass_zero_at_odd_xi_order + the mirror pair via ξ's own order
+pairings (xi_orderAt_lineReflection = FE ∘ reality; no symmetrized carrier
+needed). END-TO-END: RH₂'s negation now produces, with zero open hypotheses, an
+explicit finite object (a truncation of the EM carrier) with a mirror pair of
+circles on which its root trace has periodic mass exactly 0 instead of the
+all-or-nothing value 2∮‖carrier‖ > 0. Contrapositive form of RH₂: every such
+circle carries full mass. Forward (doc 125 §4): the finite carrier's zero
+geometry as a constraint system (which hole configurations are compatible with
+domination onto ξ), and the count-level transfer onto the finite carrier.
