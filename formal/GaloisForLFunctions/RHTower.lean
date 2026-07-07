@@ -296,6 +296,8 @@ import GaloisForLFunctions.RHTower.CarrierCountConstraint
 import GaloisForLFunctions.RHTower.EulerTruncationRigidity
 import GaloisForLFunctions.RHTower.LandauShadowNoGo
 import GaloisForLFunctions.RHTower.JointReadingNoGo
+import GaloisForLFunctions.RHTower.SigmaDivisorJet
+import GaloisForLFunctions.RHTower.PrimeDivisorAtomsNoGo
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity

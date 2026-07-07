@@ -1155,3 +1155,17 @@ NOTE: MainTheorems gate passed WITH these two modules (9245 jobs, lint passed) b
 edit to OmegaComplexStructure.lean (unrelated file, other agent) left it mid-edit
 (P.Q_self_J_eq_zero_of_isSymm projected as a field but defined as a standalone theorem). My modules
 build green (8628 jobs) and have no dependency on it; not touched.
+
+## JointReadingNoGo.lean — the joint {σ_p}×∂_s direction killed (doc 106)
+
+New module `formal/GaloisForLFunctions/RHTower/JointReadingNoGo.lean` (axiom-clean; imports
+CertificateActivation; umbrella after LandauShadowNoGo). Attacks the joint reading via q62-transpose:
+- feEquiv (s↦1-s, ∂_s FE) and cjEquiv (s↦s̄, σ_p reality) are commuting involutions; jointSym =
+  ⟨feEquiv,cjEquiv⟩ = Klein four, exponent 2 (jointSym_sq, jointSym_orderOf_le_two via
+  closure_induction₂ for commutativity + closure_induction for squares).
+- jointSym_{feEquiv,cjEquiv,feEquiv·cjEquiv}_order_invariant: the group genuinely fixes ξ's divisor
+  (xi_orderAt_one_sub / _conj / _lineReflection).
+- no_q62_unbounded_weight: jointSym has NO element of order >2, so it cannot supply the unbounded-
+  order weight the q62 mechanism needs (fails at d=2). The only unbounded-order symmetry (Kummer
+  deck ℤ/2^k) has weight = multiplicity mod 2^k (tautological, circular). External-base-fixing and
+  unbounded-order are disjoint → engine has nothing non-circular to run on.

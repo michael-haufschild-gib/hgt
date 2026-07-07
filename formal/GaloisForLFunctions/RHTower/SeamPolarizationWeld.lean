@@ -109,4 +109,102 @@ theorem polarized_plane_Jinvariant {V : Type*} [AddCommGroup V] [Module ℝ V]
   rw [map_add, map_smul, map_smul, C.apply_sq]
   module
 
+/-! ### Structural lemmas toward the signature decomposition (Sylvester for `J`-forms) -/
+
+/-- A nondegenerate symmetric form on a nonzero space has a non-isotropic vector: were `Q(x,x) = 0`
+for all `x`, symmetry (`char ≠ 2`) forces `Q = 0`, contradicting nondegeneracy. -/
+theorem exists_self_ne_zero {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (hQ : Q.IsSymm) (hnd : Q.Nondegenerate)
+    {v0 : V} (hv0 : v0 ≠ 0) :
+    ∃ x, Q x x ≠ 0 := by
+  by_contra h
+  simp only [not_exists, not_not] at h
+  have hzero : ∀ x y, Q x y = 0 := by
+    intro x y
+    have hxy := h (x + y)
+    have hexp : Q (x + y) (x + y) = Q x x + Q x y + Q y x + Q y y := by
+      simp only [map_add, LinearMap.add_apply]; ring
+    rw [hexp, h x, h y] at hxy
+    have hsymm : Q y x = Q x y := hQ.eq y x
+    rw [hsymm] at hxy
+    linarith
+  exact hv0 (hnd.1 v0 (fun w => hzero v0 w))
+
+/-- **The orthogonal complement of a `J`-invariant subspace is `J`-invariant.**  `J` is
+`Q`-skew-adjoint (`Q x (J y) = -Q (J x) y`), so if `v ⊥ U` and `U` is `J`-invariant then
+`Q u (J v) = -Q (J u) v = 0` for every `u ∈ U` (as `J u ∈ U`), i.e. `J v ⊥ U`. -/
+theorem orthogonal_Jinvariant {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    {U : Submodule ℝ V} (hU : ∀ u ∈ U, P.complex.J u ∈ U) :
+    ∀ v ∈ Q.orthogonal U, P.complex.J v ∈ Q.orthogonal U := by
+  intro v hv
+  rw [LinearMap.BilinForm.mem_orthogonal_iff] at hv ⊢
+  intro u hu
+  rw [LinearMap.BilinForm.isOrtho_def] at *
+  have key : Q u (P.complex.J v) = -Q (P.complex.J u) v := P.Q_right_J_eq_neg_Q_J_left u v
+  rw [key, hv (P.complex.J u) (hU u hu), neg_zero]
+
+/-- **The forced `J`-plane is nondegenerate when `Q(x,x) ≠ 0`.**  On `span{x, J x}`, `Q` is the
+dot product times `Q(x,x)` (`Q_apply_span_pair_of_isSymm`), so its Gram is `Q(x,x)·I₂` —
+nondegenerate exactly when `Q(x,x) ≠ 0`. -/
+theorem plane_restrict_nondegenerate {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q) (hQ : Q.IsSymm)
+    {x : V} (hxQ : Q x x ≠ 0) :
+    (Q.restrict (Submodule.span ℝ ({x, P.complex.J x} : Set V))).Nondegenerate := by
+  set W := Submodule.span ℝ ({x, P.complex.J x} : Set V) with hW
+  have hxW : x ∈ W := Submodule.subset_span (by simp)
+  have hJxW : P.complex.J x ∈ W := Submodule.subset_span (by simp)
+  have key : ∀ v : ↥W, (∀ w : ↥W, Q (v : V) (w : V) = 0) → (v : V) = 0 := by
+    intro v hv
+    obtain ⟨a, b, hab⟩ := Submodule.mem_span_pair.mp v.2
+    have hvx : Q (v : V) x = a * Q x x := by
+      rw [← hab]; simpa using P.Q_apply_span_pair_of_isSymm hQ x a b 1 0
+    have hvJx : Q (v : V) (P.complex.J x) = b * Q x x := by
+      rw [← hab]; simpa using P.Q_apply_span_pair_of_isSymm hQ x a b 0 1
+    have h1 : a * Q x x = 0 := by rw [← hvx]; exact hv ⟨x, hxW⟩
+    have h2 : b * Q x x = 0 := by rw [← hvJx]; exact hv ⟨P.complex.J x, hJxW⟩
+    have ha : a = 0 := (mul_eq_zero.mp h1).resolve_right hxQ
+    have hb : b = 0 := (mul_eq_zero.mp h2).resolve_right hxQ
+    rw [← hab, ha, hb]; simp
+  refine ⟨fun v hv => ?_, fun v hv => ?_⟩
+  · exact Subtype.ext (key v (fun w => by
+      have := hv w; simpa [LinearMap.BilinForm.restrict_apply] using this))
+  · refine Subtype.ext (key v (fun w => ?_))
+    have := hv w
+    rw [LinearMap.BilinForm.restrict_apply] at this
+    rw [hQ.eq (v : V) (w : V)]
+    exact this
+
+/-- `J` restricted to a `J`-invariant subspace is again a complex structure (`J'² = -1`). -/
+def omegaRestrict {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (C : OmegaComplexStructure V) {W : Submodule ℝ V} (hW : ∀ w ∈ W, C.J w ∈ W) :
+    OmegaComplexStructure W where
+  J := LinearMap.restrict C.J hW
+  sq := by
+    ext w
+    have h : C.J (C.J (w : V)) = -(w : V) := C.apply_sq w
+    simp only [LinearMap.comp_apply, LinearMap.neg_apply, LinearMap.id_coe, id_eq,
+      Submodule.coe_neg, LinearMap.coe_restrict_apply]
+    exact h
+
+/-- The restricted `J` preserves the restricted form: `polarizedRestrict` transports the whole
+polarization to a `J`-invariant subspace, so the decomposition recursion stays inside the class. -/
+theorem polarizedRestrict_preserves {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    {W : Submodule ℝ V} (hW : ∀ w ∈ W, P.complex.J w ∈ W) :
+    PreservesBilin (Q.restrict W) (omegaRestrict P.complex hW).J := by
+  intro x y
+  simp only [omegaRestrict, LinearMap.BilinForm.restrict_apply, LinearMap.coe_restrict_apply]
+  exact P.preserves (x : V) (y : V)
+
+/-- **The polarization restricts to any `J`-invariant subspace.**  The inductive object for the
+signature decomposition: peel a `J`-plane, land in its orthogonal complement (again `J`-invariant),
+carry the whole polarized structure along. -/
+def polarizedRestrict {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {Q : LinearMap.BilinForm ℝ V} (P : PolarizedOmegaComplexStructure V Q)
+    {W : Submodule ℝ V} (hW : ∀ w ∈ W, P.complex.J w ∈ W) :
+    PolarizedOmegaComplexStructure W (Q.restrict W) where
+  complex := omegaRestrict P.complex hW
+  preserves := polarizedRestrict_preserves P hW
+
 end RHTower

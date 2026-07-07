@@ -258,6 +258,54 @@ theorem obstructionClassOf_ne_zero_of_eval_ne_zero
 
 end TwoCoboundaryAnnihilator
 
+/-- The finite antisymmetry test chain on a pair of group elements. -/
+def commutingPairChain (g h : G) : G × G →₀ ℤ :=
+  Finsupp.single (g, h) (1 : ℤ) - Finsupp.single (h, g) (1 : ℤ)
+
+omit [Group G] [DistribMulAction G A] in
+/-- The antisymmetry test evaluates to `omega g h - omega h g`. -/
+theorem twoChainEval_commutingPairChain (g h : G) (omega : G -> G -> A) :
+    twoChainEval (commutingPairChain g h) omega = omega g h - omega h g := by
+  rw [commutingPairChain, twoChainEval, Finsupp.sum_sub_index]
+  · simp
+  · intro gh a b
+    simpa [sub_eq_add_neg] using sub_zsmul (omega gh.1 gh.2) a b
+
+/--
+For trivial coefficient action, a commuting pair gives a concrete coboundary
+annihilator: every 2-coboundary is symmetric on that pair.
+-/
+def commutingPairAnnihilator (htriv : forall g : G, forall a : A, g • a = a)
+    {g h : G} (hcomm : g * h = h * g) : TwoCoboundaryAnnihilator G A where
+  chain := commutingPairChain g h
+  kills_coboundaries := by
+    intro b
+    rw [twoChainEval_commutingPairChain]
+    simp [twoCoboundary, htriv, hcomm]
+    abel
+
+/-- On a commuting pair with trivial coefficient action, every 2-coboundary has zero antisymmetry. -/
+theorem twoCoboundary_commutingPair_asymm_eq_zero
+    (htriv : forall g : G, forall a : A, g • a = a) {g h : G}
+    (hcomm : g * h = h * g) (b : G -> A) :
+    twoCoboundary b g h - twoCoboundary b h g = 0 := by
+  have hkill := (commutingPairAnnihilator (G := G) (A := A) htriv hcomm).kills_coboundaries b
+  change twoChainEval (commutingPairChain g h) (twoCoboundary b) = 0 at hkill
+  simpa [twoChainEval_commutingPairChain] using hkill
+
+/--
+Concrete Gate 4 pass condition: under trivial coefficient action, a closed cochain with
+nonzero antisymmetry on a commuting pair is not a 2-coboundary.
+-/
+theorem obstructionClassOf_ne_zero_of_commutingPair_asymm
+    (htriv : forall g : G, forall a : A, g • a = a) {g h : G}
+    (hcomm : g * h = h * g) {omega : G -> G -> A} (homega : IsTwoCocycle omega)
+    (hasymm : omega g h - omega h g ≠ 0) :
+    obstructionClassOf omega homega ≠ 0 := by
+  apply (commutingPairAnnihilator htriv hcomm).obstructionClassOf_ne_zero_of_eval_ne_zero homega
+  simpa [TwoCoboundaryAnnihilator.eval, commutingPairAnnihilator,
+    twoChainEval_commutingPairChain] using hasymm
+
 section PolarizationGate
 
 variable {V : Type*} [AddCommGroup V] [Module ℝ V]
@@ -500,6 +548,26 @@ theorem gaugeUpdateCocycle_same_class (omega : twoCocycles (G := G) (A := A))
   abel
 
 /--
+The commuting-pair antisymmetry detector is gauge-invariant under resection by any
+1-cochain, provided the coefficient action is trivial on a commuting pair.
+-/
+theorem gaugeUpdate_commutingPair_asymm_eq
+    (htriv : forall g : G, forall a : A, g • a = a) {g h : G}
+    (hcomm : g * h = h * g) (omega : G -> G -> A) (b : G -> A) :
+    gaugeUpdate omega b g h - gaugeUpdate omega b h g = omega g h - omega h g := by
+  have hzero : twoCoboundary b g h - twoCoboundary b h g = 0 :=
+    twoCoboundary_commutingPair_asymm_eq_zero htriv hcomm b
+  rw [gaugeUpdate]
+  simp only [Pi.add_apply]
+  calc
+    omega g h + twoCoboundary b g h - (omega h g + twoCoboundary b h g)
+        = (twoCoboundary b g h - twoCoboundary b h g) + (omega g h - omega h g) := by
+          abel
+    _ = omega g h - omega h g := by
+          rw [hzero]
+          simp
+
+/--
 Carrier-free section-defect data: a formula for the defect and the associativity law saying
 that this formula is a 2-cocycle.
 -/
@@ -579,6 +647,27 @@ theorem obstruction_ne_zero_of_annihilator_eval_ne_zero (D : SectionDefect G A)
   apply hne
   rw [hb]
   simpa [TwoCoboundaryAnnihilator.eval] using T.kills_coboundaries b
+
+/--
+Concrete Gate 4 pass condition for section defects: with trivial coefficient action,
+nonzero antisymmetry on a commuting pair proves that the defect is not gauge.
+-/
+theorem obstruction_ne_zero_of_commutingPair_asymm (D : SectionDefect G A)
+    (htriv : forall g : G, forall a : A, g • a = a) {g h : G}
+    (hcomm : g * h = h * g) (hasymm : D.defect g h - D.defect h g ≠ 0) :
+    D.obstruction ≠ 0 := by
+  exact obstructionClassOf_ne_zero_of_commutingPair_asymm htriv hcomm D.associative hasymm
+
+/--
+The commuting-pair antisymmetry detector is invariant under changing local section data.
+Thus this Gate-4 test is attached to the obstruction class, not to the chosen section.
+-/
+theorem resection_commutingPair_asymm_eq (D : SectionDefect G A)
+    (htriv : forall g : G, forall a : A, g • a = a) {g h : G}
+    (hcomm : g * h = h * g) (b : G -> A) :
+    (D.resection b).defect g h - (D.resection b).defect h g =
+      D.defect g h - D.defect h g := by
+  simpa [resection] using gaugeUpdate_commutingPair_asymm_eq htriv hcomm D.defect b
 
 section Polarization
 

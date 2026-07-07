@@ -6436,3 +6436,14 @@ Docs corrected: the module welds KreinLangerInertia(κ₋)+RiemannTower(RH); Ome
 the surface the open clause maps onto, the concrete J⟹definite Hodge link the one weld still to build
 (T2-adjacent). Live fronts: J-weld (Hodge/T2), T1 collision (2nd-harmonic sign = negative Krein
 direction, via explicit formula), local-window non-flow probe.
+
+## Joint {σ_p}×∂_s direction attacked (doc 106) — KILLED
+
+Attacked the direction I named in doc 105. q62-transpose (entropy-picked) angle: the mechanism needs
+an automorphism of unbounded order fixing the base. The pinned joint symmetry (feEquiv=∂_s FE,
+cjEquiv=σ_p reality) is Klein-four, exponent 2 — no unbounded weight (no_q62_unbounded_weight). The
+one unbounded-order symmetry (Kummer deck ℤ/2^k) is tautological (weight = multiplicity). All other
+couplings: Weil (excluded), Bohr/dlVP (flows, refused), explicit-formula identity (no localization).
+Direction closed under the lane's rules. Named the rescue shape: a {σ_p}-graded divisor refinement
+finer than multiplicity, not a symmetry character and not a positivity — a genuinely new 𝓜⁺ object.
+Axiom-clean; MainTheorems gate 9252 jobs, lint passed.
