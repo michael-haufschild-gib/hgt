@@ -4,6 +4,7 @@ import GaloisForLFunctions.KroneckerFlow
 import GaloisForLFunctions.BohrGenerators
 import GaloisForLFunctions.EulerProduct
 import GaloisForLFunctions.EulerFirewall
+import GaloisForLFunctions.NamedTranscendental
 import GaloisForLFunctions.MultiQDifference
 import GaloisForLFunctions.ArchimedeanLane
 import GaloisForLFunctions.ArchimedeanGamma

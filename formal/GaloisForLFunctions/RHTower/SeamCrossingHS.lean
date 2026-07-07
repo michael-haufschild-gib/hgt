@@ -1,9 +1,10 @@
 /-
 The seam crossing tower as genuine Hilbert–Schmidt operators on `ℓ²(ℤ)`.
 
-`SeamCrossingMatrix` realizes the crossing operators on a finite `Fin M` shell space; this file lifts
-them to their true infinite home — Hilbert–Schmidt kernels on the full shell space `ℤ` — using the
-`HilbertSchmidt` theory.  The crossing kernel `crossKernel r` is the indicator of the `r`-step crossing
+`SeamCrossingTower` gives the crossing-energy law combinatorially (the count of shared support
+positions).  This file realizes the crossing operators in their true infinite home — Hilbert–Schmidt
+kernels on the full shell space `ℤ` — using the `HilbertSchmidt` theory.  The crossing kernel
+`crossKernel r` is the indicator of the `r`-step crossing
 support `crossSupport r ⊆ ℤ × ℤ` (the `r` positions `{(m − r, m) : 1 ≤ m ≤ r}`).  Being finitely
 supported it is Hilbert–Schmidt, and its Hilbert–Schmidt inner products realize the moonshot §1 energy
 law on the genuine infinite index:

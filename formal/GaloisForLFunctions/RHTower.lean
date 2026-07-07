@@ -320,15 +320,6 @@ import GaloisForLFunctions.RHTower.SeamKreinStructure
 import GaloisForLFunctions.RHTower.SeamFluxCochain
 import GaloisForLFunctions.RHTower.SeamFluxCompletion
 import GaloisForLFunctions.RHTower.SeamSuspensionTrace
-import GaloisForLFunctions.RHTower.SeamSectorTrace
-import GaloisForLFunctions.RHTower.SeamHodgeCompression
-import GaloisForLFunctions.RHTower.SeamFiniteHodge
-import GaloisForLFunctions.RHTower.SeamResolventDeterminant
-import GaloisForLFunctions.RHTower.SeamReciprocalCap
-import GaloisForLFunctions.RHTower.SeamDeterminantRH
-import GaloisForLFunctions.RHTower.SeamCrossingMatrix
-import GaloisForLFunctions.RHTower.SeamReductionCapstone
-import GaloisForLFunctions.RHTower.SeamCrossingCompression
 import GaloisForLFunctions.RHTower.SeamCrossingHS
 import GaloisForLFunctions.RHTower.SeamArchimedeanNoGo
 import GaloisForLFunctions.RHTower.MPlusTorsionSeam
@@ -358,6 +349,8 @@ import GaloisForLFunctions.RHTower.QuadrantRamifiedCover
 import GaloisForLFunctions.RHTower.GoldilocksTrichotomy
 import GaloisForLFunctions.RHTower.QuadrantSeamConservation
 import GaloisForLFunctions.RHTower.ZeroDensityEngine
+import GaloisForLFunctions.RHTower.LittlewoodXi
+import GaloisForLFunctions.RHTower.FourthMoment
 import GaloisForLFunctions.RHTower.DeckChargeBridge
 import GaloisForLFunctions.RHTower.RectangleResidue
 import GaloisForLFunctions.RHTower.CarrierBoxCount

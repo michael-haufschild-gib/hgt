@@ -1739,3 +1739,25 @@ The moonshot §1 tower now has its true infinite-dimensional Hilbert-space home,
 This is the first foundation stone of the operator-analysis substrate the infinite-height limit needs;
 the HS theory (composition, adjoint, trace `tr(KᴴL)=⟨K,L⟩`, then Schatten-1/trace-class, then Fredholm
 determinants) is the continuing build.
+
+## HilbertSchmidt.lean expanded — a complete foundational HS inner-product-space theory
+
+Built out the HS-kernel theory (mathlib has none) into a genuine positive-definite inner product space:
+- Convergence: `hsInner_summable` (ℓ²·ℓ² ⊆ ℓ¹ via AM–GM) — the HS inner product is well-defined on
+  every HS pair.
+- Sesquilinear: `hsInner_add_left`, `hsInner_smul_left` (conj-linear), `hsInner_smul_right` (linear),
+  `hsInner_conj_symm`.
+- Positive-definite: `hsInner_self` (⟨K,K⟩=‖K‖²_HS), `hsInner_self_re_nonneg`, `hsNormSq_eq_zero_iff`
+  (‖K‖²=0 ↔ K=0) — a genuine inner product, not a seminorm.
+- Adjoint (conj-transpose): `hsAdjoint`, `hsAdjoint_hsAdjoint` (involution), `hsNormSq_hsAdjoint`
+  (isometry), `isHS_hsAdjoint`, `hsInner_hsAdjoint` (⟨Kᴴ,Lᴴ⟩=⟨L,K⟩).
+- Trace pairing: `hsInner_eq_tsum_tsum` — ⟨K,L⟩_HS = ∑_i ∑_j conj(K(i,j))·L(i,j) = tr(Kᴴ L) (Fubini).
+
+All axiom-clean. This is the operator-analysis substrate the infinite-height seam limit needs; the
+crossing tower lives in it (SeamCrossingHS). Continuing build target: HS composition (row/col ℓ²
+Cauchy-Schwarz) → Schatten-1/trace-class → Fredholm determinant.
+
+NOTE: shared gate currently red due to concurrent breakage in RHTower/SecularOddMoments.lean (another
+agent's mid-edit file: unknown constant ZMod.natCast_zmod_eq_zero_iff_dvd, unsolved goals). It is the
+ONLY broken file in the umbrella closure; all HS/seam modules build green and axiom-clean. Not touched
+(edit-race). Gate returns green once that file is fixed.

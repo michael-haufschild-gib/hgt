@@ -11,6 +11,7 @@ proper relation subtorus.
 import GaloisForLFunctions.RHTower.LogIndependence
 import GaloisForLFunctions.RHTower.ValueOrbit
 import GaloisForLFunctions.RHTower.WeylEquidistribution
+import GaloisForLFunctions.NamedTranscendental
 
 open Real Complex Filter Topology
 open scoped BigOperators
@@ -57,5 +58,47 @@ theorem shifted_character_time_average_vanishes {α : ℝ} (h0 : 0 < α) (hα : 
   intro hzero
   obtain ⟨n, hns, hkn⟩ := hk
   exact hkn (log_shifts_independent h0 hα s k hzero n hns)
+
+/-- **Unconditional concrete instance (Liouville shift).**  The shifted values `{n + λ}` at the
+concrete Liouville constant `λ = ∑ 10^{−k!}` are multiplicatively independent: `∏ (n+λ)^{k_n} = 1 ⟹
+k_n = 0`, with **no hypotheses** — the transcendence and positivity of `λ` are supplied by
+`NamedTranscendental`. -/
+theorem shifted_values_mult_independent_liouville (s : Finset ℕ) (k : ℕ → ℤ)
+    (hrel : ∏ n ∈ s, ((n : ℝ) + GaloisForLFunctions.liouvilleConst) ^ (k n) = 1) :
+    ∀ n ∈ s, k n = 0 :=
+  shifted_values_mult_independent GaloisForLFunctions.liouvilleConst_pos
+    GaloisForLFunctions.liouvilleConst_transcendental s k hrel
+
+/-- **Mean value of a shifted Dirichlet polynomial (Hurwitz Parseval).**  For `α > 0`, the Cesàro time
+average of `|∑_{n∈s} c_n (n+α)^{−it}|²` — written out as the double sum over `s × s` with frequencies
+`log(m+α) − log(n+α)` — converges to `∑_{n∈s} |c_n|²`.  Only the diagonal `n = m` survives (the shifted
+frequencies `log(n+α)` are distinct in `n`), giving Parseval for the shifted (Hurwitz) monomials. -/
+theorem shifted_dirichlet_meanValue {α : ℝ} (h0 : 0 < α) (s : Finset ℕ) (c : ℕ → ℂ) :
+    Tendsto (fun T : ℝ => (↑T)⁻¹ * ∫ t in (0 : ℝ)..T,
+        ∑ p ∈ s ×ˢ s, (c p.1 * (starRingEnd ℂ) (c p.2)) *
+          Complex.exp ((Real.log ((p.2 : ℝ) + α) - Real.log ((p.1 : ℝ) + α)) * Complex.I * ↑t))
+      atTop (𝓝 (∑ n ∈ s, ((Complex.normSq (c n) : ℝ) : ℂ))) := by
+  have h := Weyl.trig_time_average (s ×ˢ s)
+    (fun p => Real.log ((p.2 : ℝ) + α) - Real.log ((p.1 : ℝ) + α))
+    (fun p => c p.1 * (starRingEnd ℂ) (c p.2))
+  have hfilter : (s ×ˢ s).filter
+      (fun p => Real.log ((p.2 : ℝ) + α) - Real.log ((p.1 : ℝ) + α) = 0) = s.diag := by
+    ext ⟨n, m⟩
+    simp only [Finset.mem_filter, Finset.mem_product, Finset.mem_diag, sub_eq_zero]
+    constructor
+    · rintro ⟨⟨hn, _⟩, hlog⟩
+      refine ⟨hn, ?_⟩
+      have : (m : ℝ) + α = (n : ℝ) + α :=
+        Real.log_injOn_pos (by simp; positivity) (by simp; positivity) hlog
+      have : (n : ℝ) = m := by linarith
+      exact_mod_cast this
+    · rintro ⟨hn, hnm⟩
+      exact ⟨⟨hn, hnm ▸ hn⟩, by rw [hnm]⟩
+  rw [hfilter, Finset.sum_diag] at h
+  have hval : (∑ i ∈ s, c (i, i).1 * (starRingEnd ℂ) (c (i, i).2))
+      = ∑ n ∈ s, ((Complex.normSq (c n) : ℝ) : ℂ) :=
+    Finset.sum_congr rfl (fun n _ => by dsimp only; rw [Complex.mul_conj])
+  rw [hval] at h
+  convert h using 2
 
 end RHTower

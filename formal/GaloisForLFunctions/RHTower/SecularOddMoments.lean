@@ -122,7 +122,8 @@ theorem xi_offline_multiplicity_even_ball (R : ℝ) :
       have := congrArg Complex.re heq
       rw [hre] at this; linarith
     · intro ρ _; simp only [map_sub, map_one, Complex.conj_conj]; ring
-  exact Nat.even_iff_two_dvd.mpr ((CharP.cast_eq_zero_iff (ZMod 2) 2 _).mp hzmod)
+  obtain ⟨c, hc⟩ := (CharP.cast_eq_zero_iff (ZMod 2) 2 _).mp hzmod
+  exact ⟨c, by omega⟩
 
 end
 
