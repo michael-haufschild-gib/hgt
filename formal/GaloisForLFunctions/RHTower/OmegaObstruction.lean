@@ -1,4 +1,5 @@
 import Mathlib.Tactic
+import GaloisForLFunctions.Resonance
 import GaloisForLFunctions.RHTower.OmegaComplexStructure
 
 /-!
@@ -217,6 +218,45 @@ theorem obstructionClassOf_ne_zero_iff_not_exists_cochain {omega : G -> G -> A}
     exact hne ((obstructionClassOf_eq_zero_iff_exists_cochain homega).mpr hprimitive)
   · intro hnot hzero
     exact hnot ((obstructionClassOf_eq_zero_iff_exists_cochain homega).mp hzero)
+
+/--
+A finite integer 2-chain tests a 2-cochain by summing its values over finitely many
+group-pair slots.
+-/
+def twoChainEval (chain : G × G →₀ ℤ) (omega : G -> G -> A) : A :=
+  chain.sum fun gh n => n • omega gh.1 gh.2
+
+/--
+A finite 2-chain is a nontriviality detector when it annihilates every 2-coboundary.
+This is the carrier-free dual witness for Gate 4.
+-/
+structure TwoCoboundaryAnnihilator (G A : Type*) [Group G] [AddCommGroup A]
+    [DistribMulAction G A] where
+  chain : G × G →₀ ℤ
+  kills_coboundaries :
+    forall b : G -> A, twoChainEval chain (twoCoboundary (G := G) (A := A) b) = 0
+
+namespace TwoCoboundaryAnnihilator
+
+/-- Evaluate the annihilator on a raw 2-cochain. -/
+def eval (T : TwoCoboundaryAnnihilator G A) (omega : G -> G -> A) : A :=
+  twoChainEval T.chain omega
+
+/--
+Fail-fast nontriviality gate: if a coboundary-annihilating finite test chain evaluates
+nontrivially on a closed cochain, then the obstruction class is nonzero.
+-/
+theorem obstructionClassOf_ne_zero_of_eval_ne_zero
+    (T : TwoCoboundaryAnnihilator G A) {omega : G -> G -> A}
+    (homega : IsTwoCocycle omega) (hne : T.eval omega ≠ 0) :
+    obstructionClassOf omega homega ≠ 0 := by
+  rw [obstructionClassOf_ne_zero_iff_not_exists_cochain homega]
+  rintro ⟨b, hb⟩
+  apply hne
+  rw [hb]
+  simpa [eval] using T.kills_coboundaries b
+
+end TwoCoboundaryAnnihilator
 
 section PolarizationGate
 
@@ -512,6 +552,12 @@ theorem globalChoiceDefect_obstruction_eq_zero (b : G -> A) :
   exact (obstructionClass_eq_zero_iff_exists_cochain
     (globalChoiceDefect (G := G) (A := A) b).cocycle).mpr ⟨b, rfl⟩
 
+/-- A section-defect obstruction is zero exactly when its formula is one global coboundary. -/
+theorem obstruction_eq_zero_iff_exists_global_choice (D : SectionDefect G A) :
+    D.obstruction = 0 <-> exists b : G -> A, D.defect = twoCoboundary b := by
+  simpa [obstruction, obstructionClassOf, cocycle] using
+    (obstructionClassOf_eq_zero_iff_exists_cochain D.associative)
+
 /--
 Nontriviality of section-defect data is exactly failure to be a global 1-cochain
 coboundary.
@@ -519,6 +565,34 @@ coboundary.
 theorem obstruction_ne_zero_iff_not_exists_global_choice (D : SectionDefect G A) :
     D.obstruction ≠ 0 <-> ¬ exists b : G -> A, D.defect = twoCoboundary b := by
   exact obstructionClassOf_ne_zero_iff_not_exists_cochain D.associative
+
+/--
+Fail-fast nontriviality gate for section-defect data: a finite test chain that kills all
+2-coboundaries but evaluates nontrivially on the defect proves that the obstruction is
+not gauge.
+-/
+theorem obstruction_ne_zero_of_annihilator_eval_ne_zero (D : SectionDefect G A)
+    (T : TwoCoboundaryAnnihilator G A) (hne : T.eval D.defect ≠ 0) :
+    D.obstruction ≠ 0 := by
+  rw [D.obstruction_ne_zero_iff_not_exists_global_choice]
+  rintro ⟨b, hb⟩
+  apply hne
+  rw [hb]
+  simpa [TwoCoboundaryAnnihilator.eval] using T.kills_coboundaries b
+
+section Polarization
+
+variable {V : Type*} [AddCommGroup V] [Module ℝ V]
+
+/-- A global-choice section defect cannot pass the nontrivial polarization gate. -/
+theorem no_nontrivialPolarizedObstructionRealization_of_global_choice
+    {InducesJ : ClassInducesJ G A V} {Q : LinearMap.BilinForm ℝ V}
+    (D : SectionDefect G A) (hglobal : exists b : G -> A, D.defect = twoCoboundary b) :
+    IsEmpty (NontrivialPolarizedObstructionRealization InducesJ D.obstruction Q) := by
+  have hzero : D.obstruction = 0 := (D.obstruction_eq_zero_iff_exists_global_choice).mpr hglobal
+  exact no_nontrivialPolarizedObstructionRealization_of_eq_zero hzero
+
+end Polarization
 
 end SectionDefect
 
@@ -650,6 +724,13 @@ variable {Greal : Type*}
 def IsPrimeLogIntegral (omega : Greal -> Greal -> ℝ) : Prop :=
   IsLatticeValued primeLogLattice omega
 
+/-- Fail-fast rejection for the log-integrality gate. -/
+theorem not_isPrimeLogIntegral_of_value_not_mem {omega : Greal -> Greal -> ℝ}
+    {g h : Greal} (hnot : omega g h ∉ primeLogLattice) :
+    ¬ IsPrimeLogIntegral omega := by
+  intro homega
+  exact hnot (homega g h)
+
 /-- A concrete finite prime-log formula for every value of a 2-cochain. -/
 structure PrimeLogCochainFormula (omega : Greal -> Greal -> ℝ) where
   coeff : Greal -> Greal -> ℕ →₀ ℤ
@@ -663,6 +744,14 @@ theorem PrimeLogCochainFormula.isPrimeLogIntegral {omega : Greal -> Greal -> ℝ
   exact PrimeLogExpansion.mem_primeLogLattice
     ⟨formula.coeff g h, formula.prime_support g h, formula.eval_eq g h⟩
 
+/-- A value outside the prime-log lattice rules out any finite prime-log formula. -/
+theorem no_primeLogCochainFormula_of_value_not_mem {omega : Greal -> Greal -> ℝ}
+    {g h : Greal} (hnot : omega g h ∉ primeLogLattice) :
+    IsEmpty (PrimeLogCochainFormula omega) := by
+  refine ⟨?_⟩
+  intro formula
+  exact (not_isPrimeLogIntegral_of_value_not_mem hnot) formula.isPrimeLogIntegral
+
 variable [Group Greal] [DistribMulAction Greal ℝ]
 
 /-- Gauge invariance of the prime-log integrality gate. -/
@@ -672,7 +761,102 @@ theorem gaugeUpdate_isPrimeLogIntegral_iff
     IsPrimeLogIntegral (gaugeUpdate omega b) <-> IsPrimeLogIntegral omega := by
   exact gaugeUpdate_isLatticeValued_iff hstable omega hb
 
+/-- A real number has a finite integer expansion indexed directly by prime numbers. -/
+def PrimeIndexedLogExpansion (x : ℝ) : Prop :=
+  exists coeff : Nat.Primes →₀ ℤ,
+    x = coeff.sum (fun p n => n • Real.log (p : ℕ))
+
+/-- A finite prime-indexed expansion lands in the prime-log lattice. -/
+theorem PrimeIndexedLogExpansion.mem_primeLogLattice {x : ℝ}
+    (hx : PrimeIndexedLogExpansion x) : x ∈ primeLogLattice := by
+  rcases hx with ⟨coeff, rfl⟩
+  rw [Finsupp.sum]
+  exact AddSubgroup.sum_mem primeLogLattice fun p _hp =>
+    primeLogLattice.zsmul_mem (primeLog_mem_primeLogLattice p.prop) (coeff p)
+
+/-- Unique factorization kills every zero prime-log expansion. -/
+theorem primeIndexedLogExpansion_coeff_eq_zero_of_sum_eq_zero {coeff : Nat.Primes →₀ ℤ}
+    (hzero : coeff.sum (fun p n => n • Real.log (p : ℕ)) = 0) : coeff = 0 := by
+  exact logPrime_diagonalResonant_eq_zero (by simpa [diagonalResonant] using hzero)
+
+/-- Prime-indexed coefficient packets are uniquely determined by their real prime-log sum. -/
+theorem primeIndexedLogExpansion_coeff_eq_of_sum_eq {coeff eta : Nat.Primes →₀ ℤ}
+    (h : coeff.sum (fun p n => n • Real.log (p : ℕ)) =
+      eta.sum (fun p n => n • Real.log (p : ℕ))) : coeff = eta := by
+  apply sub_eq_zero.mp
+  apply primeIndexedLogExpansion_coeff_eq_zero_of_sum_eq_zero
+  rw [Finsupp.sum_sub_index]
+  · rw [h, sub_self]
+  · intro p a b
+    rw [zsmul_eq_mul, zsmul_eq_mul, zsmul_eq_mul]
+    norm_num
+    ring
+
+/-- A concrete finite prime-indexed formula for every value of a 2-cochain. -/
+structure PrimeIndexedLogCochainFormula {G : Type*} (omega : G -> G -> ℝ) where
+  coeff : G -> G -> Nat.Primes →₀ ℤ
+  eval_eq : forall g h, omega g h = (coeff g h).sum (fun p n => n • Real.log (p : ℕ))
+
+namespace PrimeIndexedLogCochainFormula
+
+/-- Prime-indexed formulas imply prime-log integrality. -/
+theorem isPrimeLogIntegral {G : Type*} {omega : G -> G -> ℝ}
+    (formula : PrimeIndexedLogCochainFormula omega) : IsPrimeLogIntegral omega := by
+  intro g h
+  exact PrimeIndexedLogExpansion.mem_primeLogLattice ⟨formula.coeff g h, formula.eval_eq g h⟩
+
+/-- If a formula value vanishes, all its prime-log coefficients vanish. -/
+theorem coeff_eq_zero_of_eval_eq_zero {G : Type*} {omega : G -> G -> ℝ}
+    (formula : PrimeIndexedLogCochainFormula omega) {g h : G} (hzero : omega g h = 0) :
+    formula.coeff g h = 0 := by
+  apply primeIndexedLogExpansion_coeff_eq_zero_of_sum_eq_zero
+  rw [← formula.eval_eq g h, hzero]
+
+/-- Nonzero prime-log coefficients force a nonzero value. -/
+theorem eval_ne_zero_of_coeff_ne_zero {G : Type*} {omega : G -> G -> ℝ}
+    (formula : PrimeIndexedLogCochainFormula omega) {g h : G}
+    (hcoeff : formula.coeff g h ≠ 0) : omega g h ≠ 0 := by
+  intro hzero
+  exact hcoeff (formula.coeff_eq_zero_of_eval_eq_zero hzero)
+
+/-- Equal cochain values have equal prime-indexed coefficient packets. -/
+theorem coeff_eq_of_eval_eq {G : Type*} {omega eta : G -> G -> ℝ}
+    (formula : PrimeIndexedLogCochainFormula omega)
+    (formula' : PrimeIndexedLogCochainFormula eta) {g h : G}
+    (heq : omega g h = eta g h) : formula.coeff g h = formula'.coeff g h := by
+  apply primeIndexedLogExpansion_coeff_eq_of_sum_eq
+  rw [← formula.eval_eq g h, ← formula'.eval_eq g h]
+  exact heq
+
+/-- Two prime-indexed formulas for the same cochain have equal coefficient packets. -/
+theorem coeff_eq {G : Type*} {omega : G -> G -> ℝ}
+    (formula formula' : PrimeIndexedLogCochainFormula omega) (g h : G) :
+    formula.coeff g h = formula'.coeff g h :=
+  formula.coeff_eq_of_eval_eq formula' rfl
+
+end PrimeIndexedLogCochainFormula
+
+/-- A value outside the prime-log lattice rules out any prime-indexed log formula. -/
+theorem no_primeIndexedLogCochainFormula_of_value_not_mem {G : Type*}
+    {omega : G -> G -> ℝ} {g h : G} (hnot : omega g h ∉ primeLogLattice) :
+    IsEmpty (PrimeIndexedLogCochainFormula omega) := by
+  refine ⟨?_⟩
+  intro formula
+  exact (not_isPrimeLogIntegral_of_value_not_mem hnot) formula.isPrimeLogIntegral
+
 namespace SectionDefect
+
+/-- A single defect value outside the prime-log lattice kills the finite prime-log gate. -/
+theorem no_primeLogFormula_of_value_not_mem (D : SectionDefect Greal ℝ) {g h : Greal}
+    (hnot : D.defect g h ∉ primeLogLattice) :
+    IsEmpty (PrimeLogCochainFormula D.defect) :=
+  no_primeLogCochainFormula_of_value_not_mem hnot
+
+/-- A single defect value outside the prime-log lattice kills the prime-indexed log gate. -/
+theorem no_primeIndexedFormula_of_value_not_mem (D : SectionDefect Greal ℝ) {g h : Greal}
+    (hnot : D.defect g h ∉ primeLogLattice) :
+    IsEmpty (PrimeIndexedLogCochainFormula D.defect) :=
+  no_primeIndexedLogCochainFormula_of_value_not_mem hnot
 
 /-- A section defect with a finite prime-log formula is prime-log integral. -/
 theorem isPrimeLogIntegral_of_formula (D : SectionDefect Greal ℝ)
@@ -712,7 +896,129 @@ theorem resection_isLatticeClass_of_primeLogFormula (D : SectionDefect Greal ℝ
   simpa [obstruction, obstructionClass] using
     isLatticeClass_mk (omega := (D.resection b).cocycle) hval
 
+/-- A section defect with a prime-indexed formula is prime-log integral. -/
+theorem isPrimeLogIntegral_of_primeIndexedFormula (D : SectionDefect Greal ℝ)
+    (formula : PrimeIndexedLogCochainFormula D.defect) : IsPrimeLogIntegral D.defect :=
+  formula.isPrimeLogIntegral
+
+/-- A section defect with a prime-indexed formula has a prime-log lattice-valued class. -/
+theorem isLatticeClass_of_primeIndexedFormula (D : SectionDefect Greal ℝ)
+    (formula : PrimeIndexedLogCochainFormula D.defect) :
+    IsLatticeClass primeLogLattice D.obstruction := by
+  have hval : IsLatticeValued primeLogLattice (D.cocycle : Greal -> Greal -> ℝ) := by
+    simpa [cocycle, IsPrimeLogIntegral] using formula.isPrimeLogIntegral
+  simpa [obstruction, obstructionClass] using isLatticeClass_mk (omega := D.cocycle) hval
+
+/-- Zero defect values have zero prime-indexed coefficients. -/
+theorem primeIndexedCoeff_eq_zero_of_defect_eq_zero (D : SectionDefect Greal ℝ)
+    (formula : PrimeIndexedLogCochainFormula D.defect) {g h : Greal}
+    (hzero : D.defect g h = 0) : formula.coeff g h = 0 :=
+  formula.coeff_eq_zero_of_eval_eq_zero hzero
+
+/-- Nonzero prime-indexed coefficients force nonzero defect values. -/
+theorem defect_ne_zero_of_primeIndexedCoeff_ne_zero (D : SectionDefect Greal ℝ)
+    (formula : PrimeIndexedLogCochainFormula D.defect) {g h : Greal}
+    (hcoeff : formula.coeff g h ≠ 0) : D.defect g h ≠ 0 :=
+  formula.eval_ne_zero_of_coeff_ne_zero hcoeff
+
+/-- Prime-indexed formulas for the same section defect have equal coefficient packets. -/
+theorem primeIndexedCoeff_eq (D : SectionDefect Greal ℝ)
+    (formula formula' : PrimeIndexedLogCochainFormula D.defect) (g h : Greal) :
+    formula.coeff g h = formula'.coeff g h :=
+  formula.coeff_eq formula' g h
+
 end SectionDefect
+
+variable {Vreal : Type*} [AddCommGroup Vreal] [Module ℝ Vreal]
+
+/--
+Current carrier-free certificate for the T2 route: a section-defect formula that is
+prime-log integral, nonzero modulo coboundaries, and polarized by an externally supplied
+class-to-`J` relation.
+-/
+structure PrimeLogNontrivialPolarizedSectionDefect
+    (D : SectionDefect Greal ℝ) (InducesJ : ClassInducesJ Greal ℝ Vreal)
+    (Q : LinearMap.BilinForm ℝ Vreal) where
+  formula : PrimeLogCochainFormula D.defect
+  obstruction_ne_zero : D.obstruction ≠ 0
+  realization : PolarizedObstructionRealization InducesJ D.obstruction Q
+
+namespace PrimeLogNontrivialPolarizedSectionDefect
+
+/-- Forget down to the nontrivial polarized obstruction realization. -/
+def toNontrivialPolarizedObstructionRealization {D : SectionDefect Greal ℝ}
+    {InducesJ : ClassInducesJ Greal ℝ Vreal} {Q : LinearMap.BilinForm ℝ Vreal}
+    (C : PrimeLogNontrivialPolarizedSectionDefect D InducesJ Q) :
+    NontrivialPolarizedObstructionRealization InducesJ D.obstruction Q where
+  class_ne_zero := C.obstruction_ne_zero
+  realization := C.realization
+
+/-- The certificate passes the prime-log lattice-class gate. -/
+theorem isLatticeClass {D : SectionDefect Greal ℝ}
+    {InducesJ : ClassInducesJ Greal ℝ Vreal} {Q : LinearMap.BilinForm ℝ Vreal}
+    (C : PrimeLogNontrivialPolarizedSectionDefect D InducesJ Q) :
+    IsLatticeClass primeLogLattice D.obstruction :=
+  D.isLatticeClass_of_primeLogFormula C.formula
+
+/-- The certificate cannot come from one global choice. -/
+theorem not_exists_global_choice {D : SectionDefect Greal ℝ}
+    {InducesJ : ClassInducesJ Greal ℝ Vreal} {Q : LinearMap.BilinForm ℝ Vreal}
+    (C : PrimeLogNontrivialPolarizedSectionDefect D InducesJ Q) :
+    ¬ exists b : Greal -> ℝ, D.defect = twoCoboundary b :=
+  (D.obstruction_ne_zero_iff_not_exists_global_choice).mp C.obstruction_ne_zero
+
+/-- The certificate inherits the D4 forced-pair constraint. -/
+theorem forced_pair_linearIndependent {D : SectionDefect Greal ℝ}
+    {InducesJ : ClassInducesJ Greal ℝ Vreal} {Q : LinearMap.BilinForm ℝ Vreal}
+    (C : PrimeLogNontrivialPolarizedSectionDefect D InducesJ Q) {x : Vreal} (hx : x ≠ 0) :
+    LinearIndependent ℝ ![x, C.realization.J x] := by
+  exact C.toNontrivialPolarizedObstructionRealization.forced_pair_linearIndependent hx
+
+/-- The certificate inherits the D4 mixed-form area block. -/
+theorem Q_compl2_J_apply_span_pair_of_isSymm {D : SectionDefect Greal ℝ}
+    {InducesJ : ClassInducesJ Greal ℝ Vreal} {Q : LinearMap.BilinForm ℝ Vreal}
+    (C : PrimeLogNontrivialPolarizedSectionDefect D InducesJ Q)
+    (hQ : Q.IsSymm) (x : Vreal) (a b c d : ℝ) :
+    (Q.compl₂ C.realization.J) (a • x + b • C.realization.J x)
+        (c • x + d • C.realization.J x) = (b * c - a * d) * Q x x := by
+  exact C.toNontrivialPolarizedObstructionRealization.Q_compl2_J_apply_span_pair_of_isSymm
+    hQ x a b c d
+
+/--
+Transport a complete certificate across a resection, provided the resectioned defect has its
+own finite prime-log formula.
+-/
+def resectionTransport {D : SectionDefect Greal ℝ}
+    {InducesJ : ClassInducesJ Greal ℝ Vreal} {Q : LinearMap.BilinForm ℝ Vreal}
+    (C : PrimeLogNontrivialPolarizedSectionDefect D InducesJ Q) (b : Greal -> ℝ)
+    (formula' : PrimeLogCochainFormula (D.resection b).defect) :
+    PrimeLogNontrivialPolarizedSectionDefect (D.resection b) InducesJ Q where
+  formula := formula'
+  obstruction_ne_zero := by
+    simpa [D.resection_obstruction_eq b] using C.obstruction_ne_zero
+  realization := by
+    rw [D.resection_obstruction_eq b]
+    exact C.realization
+
+/-- Resection transport preserves the no-global-choice gate. -/
+theorem resectionTransport_not_exists_global_choice {D : SectionDefect Greal ℝ}
+    {InducesJ : ClassInducesJ Greal ℝ Vreal} {Q : LinearMap.BilinForm ℝ Vreal}
+    (C : PrimeLogNontrivialPolarizedSectionDefect D InducesJ Q) (b : Greal -> ℝ)
+    (formula' : PrimeLogCochainFormula (D.resection b).defect) :
+    ¬ exists c : Greal -> ℝ, (D.resection b).defect = twoCoboundary c := by
+  exact (C.resectionTransport b formula').not_exists_global_choice
+
+end PrimeLogNontrivialPolarizedSectionDefect
+
+/-- A global-choice section defect cannot satisfy the current T2 certificate. -/
+theorem no_primeLogNontrivialPolarizedSectionDefect_of_global_choice
+    {D : SectionDefect Greal ℝ} {InducesJ : ClassInducesJ Greal ℝ Vreal}
+    {Q : LinearMap.BilinForm ℝ Vreal}
+    (hglobal : exists b : Greal -> ℝ, D.defect = twoCoboundary b) :
+    IsEmpty (PrimeLogNontrivialPolarizedSectionDefect D InducesJ Q) := by
+  refine ⟨?_⟩
+  intro C
+  exact C.not_exists_global_choice hglobal
 
 end RHTower
 end GaloisForLFunctions

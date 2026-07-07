@@ -295,6 +295,7 @@ import GaloisForLFunctions.RHTower.CertificateActivation
 import GaloisForLFunctions.RHTower.CarrierCountConstraint
 import GaloisForLFunctions.RHTower.EulerTruncationRigidity
 import GaloisForLFunctions.RHTower.LandauShadowNoGo
+import GaloisForLFunctions.RHTower.JointReadingNoGo
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity
@@ -311,3 +312,4 @@ import GaloisForLFunctions.RHTower.WindingBoxCount
 import GaloisForLFunctions.RHTower.WholeLoopClosure
 import GaloisForLFunctions.RHTower.ThirdMomentResonance
 import GaloisForLFunctions.RHTower.SeamSpectralFlow
+import GaloisForLFunctions.RHTower.SeamPolarizationWeld
