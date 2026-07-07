@@ -1761,3 +1761,222 @@ NOTE: shared gate currently red due to concurrent breakage in RHTower/SecularOdd
 agent's mid-edit file: unknown constant ZMod.natCast_zmod_eq_zero_iff_dvd, unsolved goals). It is the
 ONLY broken file in the umbrella closure; all HS/seam modules build green and axiom-clean. Not touched
 (edit-race). Gate returns green once that file is fixed.
+
+## LittlewoodXi + FourthMoment + MeanValueBridge (zero-density analytic engines)
+
+`formal/GaloisForLFunctions/RHTower/LittlewoodXi.lean` (axiom-clean): Littlewood's lemma for ξ, disc
+form, via mathlib Nevanlinna Jensen (`AnalyticOnNhd.circleAverage_log_norm`, `sum_divisor_le`):
+- `xi_circleAverage_log_norm`: Jensen identity — circleAverage(log‖ξ‖) c R = Σ_ρ ord_ρ·log(R/‖c−ρ‖)
+  + log‖ξ(c)‖ (the "(1/2π)∫log|ξ| = weighted count" form).
+- `xi_zeroCount_disc_le`: counting inequality (# zeros in B(c,r)) ≤ log(M/‖ξ c‖)/log(R/r).
+- `xi_zeroCount_disc_le_logModulus`: density-facing K·log(R/r) ≤ log M − log‖ξ c‖.
+- `xi_anchor_two_add_I_mul`: anchor ξ(2+iτ)≠0.
+
+`formal/GaloisForLFunctions/RHTower/FourthMoment.lean` (axiom-clean): the fourth moment = second moment
+of ζ² (divisor coefficients d(n)=#divisors), via `SecondMoment.secondMoment_upper_bound`:
+- `divisorCoeff σ n = d(n)·n^{-σ}`; `divisorCoeff_sq`.
+- `fourthMoment_dpoly_le`: ∫_T^{T+U}‖Σ_{n≤N} d(n)n^{-σ-it}‖² ≤ U·Σd(n)²n^{-2σ} + off-diagonal.
+- `fourthMoment_meanValue`: exact diagonal-plus-remainder Montgomery–Vaughan mean value.
+- `fourthMoment_diagonal_crude_le`: Σd(n)²n^{-2σ} ≤ Σn^{2-2σ} (via d(n)≤n; bounded for σ>3/2).
+
+`formal/GaloisForLFunctions/RHTower/MeanValueBridge.lean` (axiom-clean): the concavity glue between the
+two, via mathlib `ConcaveOn.le_map_average`:
+- `jensen_avg_log`: ⨍ log g ≤ log(⨍ g) for g∈[a,b], a>0.
+- `jensen_avg_log_sq`: ⨍ log g ≤ ½ log(⨍ g²) — turns a Littlewood circle-average of log‖ξ‖ into a
+  mean square (second moment).
+
+Remaining to unconditional o(T) density for ξ (each an independent classical build absent from
+mathlib): the divisor bound d(n) ≪_ε n^ε (sharp fourth-moment diagonal for σ>1/2; mathlib has only the
+crude d(n)≤n = `Nat.card_divisors_le_self`), the approximate functional equation ζ ≈ Dirichlet
+polynomial, the circleAverage↔⨍ identification, and the disc-covering assembly of `N(σ,T)`.
+
+## CORRECTION — removed duplication of the existing Krein route; kept only the missing-in-mathlib HS theory
+
+Audit found the seam program ALREADY had the §10–§11 endpoint, more complete than my parallel build:
+- `SeamSpectralFlow.riemannHypothesis_iff_conjPairCarrier_polarization` — RH ⟺ Krein-definiteness of the
+  explicit conjugate-pair Pick carrier at the zeros, with the ARGUMENT PRINCIPLE DISCHARGED as a theorem
+  (`conjPairPick_not_kreinNonneg_of_witness`). `SeamKreinStructure`/`SeamPolarizationWeld` = the
+  J-reciprocity; `CutoffCochain` = the capping; `SeamSuspensionTrace` = the compression
+  (`flat_eq_cohomology_trace`, `supertrace_supercommutator_zero`) + `logDeriv_completed_split`.
+
+REMOVED as duplication (parallel determinant/Hodge tower to the above):
+SeamDeterminantRH, SeamReductionCapstone, SeamReciprocalCap, SeamHodgeCompression, SeamFiniteHodge,
+SeamResolventDeterminant, SeamSectorTrace, SeamCrossingMatrix, SeamCrossingCompression. Umbrella cleaned.
+
+KEPT (genuinely absent from mathlib — no Hilbert–Schmidt/Schatten/trace-class anywhere):
+- `HilbertSchmidt.lean` — HS kernels as a positive-definite inner product space: IsHS, hsInner,
+  hsNormSq; convergence (ℓ²·ℓ²⊆ℓ¹); sesquilinearity; definiteness (‖K‖²=0↔K=0); adjoint isometry;
+  trace pairing ⟨K,L⟩=tr(KᴴL). 21 decls, axiom-clean.
+- `SeamCrossingHS.lean` — the bridge: crossing tower on genuine ℓ²(ℤ) (⟨B_r,B_s⟩_HS=r·δ, ‖B_r‖²_HS=r).
+
+Gate green (9316). Next missing-mathlib extensions (named, not built): Cauchy–Schwarz (via lp-2 bridge
+`IsHS↔Memℓp 2` + `lp.inner_eq_tsum`, or direct finite-limit), then HS composition → Schatten-1 → Fredholm
+determinant — the operator-analysis substrate the Krein route's open core (KreinNonneg) would consume.
+
+## HS Cauchy–Schwarz built (the fundamental inequality)
+
+Made good on the named bridge. HilbertSchmidt.lean now identifies HS kernels with ℓ²(ι×ι):
+- `IsHS.memℓp` (IsHS K ↔ Memℓp K 2 via memℓp_gen_iff + rpow_natCast), `hsInner_eq_lp_inner`
+  (hsInner = the lp-2 inner product via lp.inner_eq_tsum + RCLike.inner_apply), `lp_norm_sq`
+  (‖⟨K,·⟩‖² = hsNormSq K via lp.norm_rpow_eq_tsum).
+- `hsInner_norm_le` — **Cauchy–Schwarz**: ‖⟨K,L⟩_HS‖ ≤ ‖K‖_HS·‖L‖_HS, inherited from ℓ² via
+  norm_inner_le_norm. Axiom-clean, gate 9316.
+
+HS core now: inner product, norm, positive-definiteness, convergence, sesquilinearity, adjoint isometry,
+trace pairing tr(KᴴL), AND Cauchy–Schwarz — a genuine, usable HS inner-product-space theory. Next
+missing-mathlib layers: HS composition (K∘L is trace-class) → Schatten-1 → Fredholm determinant.
+
+## Weil form = HS norm (the connecting brick)
+
+SeamCrossingHS.lean: `hsNormSq_smul_crossKernel` (‖c·B_r‖²_HS = ‖c‖²·r) + `weil_crossing_energy_nonneg`
+(≥0). The moonshot §1 single-crossing Weil energy realized as a genuine Hilbert–Schmidt norm on ℓ²(ℤ),
+positive by hsNormSq_nonneg. This makes the HS theory non-orphaned: it demonstrates the seam's Weil-form
+positivity. Gate 9316, axiom-clean.
+
+## HS composition (the algebra layer)
+
+HilbertSchmidt.lean extended toward trace-class:
+- `isHS_row`, `isHS_col` — rows/columns of an HS kernel are ℓ² (sections of the summable family via
+  `comp_injective`).
+- `hsComp_summable` — the inner sum ∑ₖ K(i,k)L(k,j) converges (ℓ²·ℓ²⊆ℓ¹) → the matrix product is
+  well-defined.
+- `hsComp` — the HS composition (K∘L)(i,j) = ∑ₖ K(i,k)L(k,j); `hsAdjoint_hsComp` — (K∘L)ᴴ = Lᴴ∘Kᴴ.
+
+HS theory now: inner-product space (+ Cauchy–Schwarz) + composition/adjoint algebra. Remaining
+missing-mathlib layers toward the seam's infinite generator: K∘L is HS/trace-class → Schatten-1 →
+Fredholm determinant. Gate 9316, axiom-clean.
+
+## DivisorBound + FourthMomentDiagonal (Carlson's bounded fourth moment, sharp range σ>1/2)
+
+`formal/GaloisForLFunctions/RHTower/DivisorBound.lean` (axiom-clean): the classical divisor bound,
+absent from mathlib (which has only `Nat.card_divisors_le_self`, `d(n)≤n`):
+- `card_divisors_le_const_mul_rpow`: ∀ ε>0, ∃ C>0, ∀ n≥1, d(n) ≤ C·n^ε.
+- Proof: d(n)=∏(a_p+1); per-prime Bernoulli bound `succ_le_const_mul_pow` (a+1 ≤ max(1,2/(q−1))·q^a
+  from `1+a(q−1)≤q^a`); constant `C=∏_{p<3^{1/ε}} C_p` over the fixed finite small-prime set (C_p=1
+  once p^ε≥3).
+
+`formal/GaloisForLFunctions/RHTower/FourthMomentDiagonal.lean` (axiom-clean): the divisor bound +
+p-series convergence give the fourth-moment diagonal bounded in Carlson's actual range:
+- `fourthMoment_diagonal_bounded` (σ>1/2): ∃ C, ∀ N, Σ_{n≤N} d(n)²n^{-2σ} ≤ C. Take ε=(2σ−1)/4:
+  d(n)²n^{-2σ} ≤ C₀²n^{−(2σ+1)/2}, a convergent p-series since (2σ+1)/2>1 ⟺ σ>1/2.
+- `fourthMoment_bounded` (σ>1/2): ∫_T^{T+U}‖Σ_{n≤N} d(n)n^{-σ-it}‖² ≤ C·U + off-diagonal, uniformly
+  in N — the fourth moment of ζ as a BOUNDED mean value on every line right of the critical line.
+
+Status of the two /goal targets: **Littlewood's lemma for ξ — BUILT** (LittlewoodXi). **Carlson's
+fourth moment — BUILT as a bounded mean value for σ>1/2** (FourthMoment + DivisorBound +
+FourthMomentDiagonal). Remaining connective to unconditional o(T) density for ξ: the approximate
+functional equation ζ ≈ Dirichlet polynomial (the last deep kernel), plus the circleAverage↔⨍ and
+disc-covering plumbing.
+
+## HS trace-class entry: tr(K∘L) = ⟨Kᴴ,L⟩_HS
+
+HilbertSchmidt.lean: `isHS_swap`, `hsComp_diag_summable` (the diagonal ∑ᵢ(K∘L)(i,i) converges), and
+`hsTrace_hsComp` — the trace of a composition equals the HS pairing of the adjoint: tr(K∘L) = ⟨Kᴴ,L⟩_HS
+(Fubini via tsum_prod + swap reindex). This is the foundational trace-class identity and the exact shape
+of the seam's resolvent trace tr((s−Θ)⁻¹). Gate 9318, axiom-clean.
+
+HS theory arc now complete through: inner-product space → Cauchy–Schwarz → composition algebra →
+trace-class identity. Genuine mathlib-gap library (mathlib has none of this).
+
+## HS ideal bound (crux of K∘L is HS)
+
+HilbertSchmidt.lean: `memℓp_of_sq` (1D square-summable → Memℓp 2), `hsComp_entry_bound` (ℓ² product-sum
+Cauchy–Schwarz: ‖∑ aₖbₖ‖² ≤ (∑‖aₖ‖²)(∑‖bₖ‖²) via bundling conj a, b into lp 2), `hsComp_entry_normSq_le`
+(‖(K∘L)(i,j)‖² ≤ rowK²(i)·colL²(j) — the entrywise operator bound). This is the crux of the HS ideal
+property ‖K∘L‖²_HS ≤ ‖K‖²_HS·‖L‖²_HS; the remaining step is summing over (i,j) via the row/column
+marginal summability (multi-lemma; deferred, not rabbit-holed). All axiom-clean; my modules build green
+(gate showed transient concurrent-agent breakage in unrelated files — SecularOddMoments/ArgumentPrincipleFree
+compile standalone; not mine).
+
+## ZetaAFETransfer + the AFE-is-already-built finding
+
+Key finding: the approximate functional equation is ALREADY built in the project —
+`EMCarrier.zeta_eq_emCarrier_sub` (ζ(s)=Σ_{n≤N}n^{-s}+N^{1-s}/(s-1)−s·emTail N s, unconditional on
+0<Re s, s≠1) and `EMCarrier.zeta_sub_emCarrier_norm_le` (‖ζ(s)−emCarrier N s‖ ≤ ‖s‖·N^{-Re s}/Re s).
+No need to build the AFE.
+
+`formal/GaloisForLFunctions/RHTower/ZetaAFETransfer.lean` (axiom-clean):
+- `zeta_norm_le_afe`: ‖ζ(s)‖ ≤ ‖dirichletPoly N s‖ + ‖emPole N s‖ + ‖s‖·N^{-Re s}/Re s — the transfer
+  carrying Dirichlet-polynomial mean-value bounds up to ζ, from the built AFE + triangle.
+
+Precise frontier for the unconditional o(T): the fourth moment (bounded, σ>1/2) fed through
+Littlewood's lemma yields only N(σ,T)=O(T) (Bohr–Landau) — NOT o(T): for a bounded 2k-th moment,
+∫log|ζ(σ₁+it)|dt ≤ (T/2k)·log(mean) = Θ(T), so Littlewood gives O(T) for every k. The genuine o(T)
+(Carlson N(σ,T)≪T^{4σ(1−σ)+ε}) needs the MOLLIFIER zero-detection mechanism (ζ·M≈1 ⟹ zeros are large
+values of a Dirichlet polynomial ⟹ bounded by its second moment via a Halász/Gallagher large-values
+estimate) — a separate major theorem absent from mathlib, not reachable from moments+Littlewood alone.
+And RH₂ additionally needs the defect-recurrence lower bound (the open replication core). So:
+RH₂ ⟸ (defect recurrence, open) ∧ (Carlson o(T) density = mollifier large-values mechanism, hard).
+
+## LargeValues (Gallagher–Halász mechanism — Sobolev foundation, brick 1)
+
+Building toward Carlson's o(T) via the large-values inequality (the mechanism that, unlike
+moments+Littlewood, genuinely yields sublinear counts). `formal/GaloisForLFunctions/RHTower/
+LargeValues.lean` (axiom-clean):
+- `sqNorm_hasDerivAt`: d/dt‖f t‖² = 2⟪f,f'⟫ (via `HasDerivAt.inner` on ℝ⊗ℂ); `abs_sqNorm_deriv_le`:
+  |·| ≤ 2‖f‖‖f'‖.
+- `two_mul_le_div_add_mul`: AM–GM 2ab ≤ a²/η + ηb² (absorbs the cross term without integral C–S).
+- `sobolev_pointwise`: ‖f t‖² ≤ δ^{-1}∫_c^{c+δ}‖f‖² + ∫_c^{c+δ}2‖f‖‖f'‖ for t∈[c,c+δ] (FTC on ‖f‖²
+  + integrate the pointwise bound over the base point).
+
+Remaining bricks to the large-values inequality and o(T): (2) the grid/separated-points SUM of
+sobolev_pointwise (via `sum_integral_adjacent_intervals`) → Σ_r‖f(t_r)‖² ≤ δ^{-1}‖f‖₂² + cross; (3)
+the ‖D'‖² second moment for Dirichlet polynomials (SecondMoment variant, coeffs (log n)²aₙ²); (4)
+combine → large-values inequality; (5) mollifier ζM≈1 (Möbius convolution + tail); (6) zeros→large
+values; (7) mollifier-length optimization → N(σ,T)≪T^{4σ(1−σ)} = o(T). Bricks 2–4 are self-contained
+"on top of SecondMoment"; 5–7 connect to ζ.
+
+## LargeValues — the large-values inequality COMPLETE (bricks 2+3)
+
+`LargeValues.lean` extended (axiom-clean):
+- `gallagher_grid`: ∑_{k<R}‖f(A+kδ)‖² ≤ δ^{-1}∫_A^{A+Rδ}‖f‖² + ∫2‖f‖‖f'‖ (Sobolev per cell + adjacent-
+  interval telescoping).
+- `large_values_count`: if R grid points A+rδ all have ‖f‖≥V≥0, then R·V² ≤ (δ^{-1}+η^{-1})∫‖f‖² +
+  η∫‖f'‖² for every η>0 — the Gallagher–Halász large-values inequality: a second-moment bound on the
+  NUMBER of large values. This is the mechanism (unlike moments+Littlewood, which cap at O(T)) that
+  produces sublinear counts.
+
+Remaining to Carlson o(T): apply large_values_count to a Dirichlet polynomial D (f=D,f'=D'), bounding
+∫‖D‖² and ∫‖D'‖² by SecondMoment (diagonal, coeffs aₙ² and (log n)²aₙ²); then the mollifier ζM≈1 +
+zeros→large-values + mollifier-length optimization.
+
+## LargeValuesDpoly — large-values inequality for Dirichlet polynomials (brick, on SecondMoment)
+
+`formal/GaloisForLFunctions/RHTower/LargeValuesDpoly.lean` (axiom-clean):
+- `cterm_hasDerivAt` / `dpoly_hasDerivAt`: D=dpoly a s is differentiable, D'(t) = −i·dpoly(a·log) s t
+  (each character n^{-it} contributes −i log n).
+- `dpoly_continuous`, `norm_dpoly_deriv` (‖D'‖=‖dpoly(a·log)‖ since ‖−i·z‖=‖z‖).
+- `large_values_dpoly`: R grid points with ‖D‖≥V≥0 ⟹ R·V² ≤ (δ^{-1}+η^{-1})∫‖D‖² + η∫‖dpoly(a·log)‖²
+  — large_values_count applied to D, with both moments being Montgomery–Vaughan second moments
+  (SecondMoment: coeffs aₙ and aₙlog n). The self-contained "large values from the second moment" step.
+
+Remaining to Carlson o(T): mollifier ζM≈1 (Möbius+tail on the built AFE) ⟹ zeros are large values of
+the Dirichlet polynomial ζM−1 ⟹ large_values_dpoly bounds their count ⟹ optimize mollifier length →
+N(σ,T) = o(T).
+
+## Mollifier — algebraic core (Möbius cancellation + mollifier dpoly + second moment)
+
+`formal/GaloisForLFunctions/RHTower/Mollifier.lean` (axiom-clean):
+- `sum_moebius_divisors`: ∑_{d|n}μ(d) = [n=1] (from mathlib ζ*μ=1) — the cancellation that collapses
+  the mollified Dirichlet convolution to its constant term.
+- `moebiusCoeff`, `abs_moebiusCoeff_le_one` (|μ(m)|≤1); `mollifier y t = dpoly μ (Icc 1 y) t`.
+- `mollifier_secondMoment`: ∫_T^{T+U}‖M_y‖² = U·∑_{m≤y}μ(m)² + off-diagonal (SecondMoment instance).
+
+Remaining to o(T): the product ζ·M via convolution (Möbius cancellation kills coeffs 1<n≤min(N,y)) +
+the built AFE ⟹ detection polynomial 1−(∑_{n≤N})·M small in L²; then large_values_dpoly bounds the
+zero count; then optimize y → N(σ,T)=o(T).
+
+## CarlsonDensity — the large-values mechanism connected to o(T) density and RH₂
+
+`formal/GaloisForLFunctions/RHTower/CarlsonDensity.lean` (axiom-clean):
+- `sublinearDensity_of_largeValues`: if N(T)·V² ≤ Φ(T) (the large-values bound shape) with Φ sublinear
+  (Φ(T) ≤ εV²T eventually), then SubLinearDensity N. The density conclusion from the large-values
+  inequality once the mollifier makes the moments o(T·V²).
+- `rhLadder_one_of_recurrence_of_largeValues`: recurrence + the mollified large-values bound ⟹
+  RHLadder 1 (RH₂), via the density engine.
+
+Machine-checked chain now COMPLETE from the large-values mechanism to RH₂: large_values_dpoly (R·V² ≤
+moments) → sublinearDensity_of_largeValues → SubLinearDensity → rhLadder_one_of_recurrence_of_density →
+RH₂. Sole remaining classical input: the DETECTION BOUND (mollified moments o(T·V²) at fixed V>0),
+packaging the ζ·M Dirichlet convolution + built AFE + mollifier-length optimization. The irreducible
+large-values kernel — which moments+Littlewood provably cannot reach (O(T) barrier) — is fully built.

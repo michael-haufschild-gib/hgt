@@ -15,3 +15,8 @@ The transcendence backbone of the Hurwitz value-independence pillar (HT mission 
 
 ## Update: Weyl equidistribution
 `shifted_character_time_average_vanishes`: composes the shifted independence with Weyl (char_time_average_tendsto) — for transcendental α and any nontrivial exponent vector, the character frequency ∑k_n log(n+α) ≠ 0, so its Cesàro time average vanishes. The shifted Dirichlet monomials (n+α)^{−it} equidistribute (no nontrivial character has nonzero mean). The almost-periodicity backbone of ζ(s,α), unconditional for transcendental shift. Axiom-clean.
+
+## Update: Hurwitz Parseval (mean value) + concrete Liouville instance
+- `shifted_dirichlet_meanValue`: the Cesàro time average of |∑_{n∈s} c_n(n+α)^{−it}|² converges to ∑_{n∈s}|c_n|² (only the diagonal survives — shifted frequencies log(n+α) are distinct). Parseval for the shifted/Hurwitz monomials, needs only α>0.
+- `shifted_values_mult_independent_liouville`: fully unconditional instance at the concrete Liouville constant (via NamedTranscendental).
+Axiom-clean.

@@ -76,7 +76,8 @@ frequencies `log(n+α)` are distinct in `n`), giving Parseval for the shifted (H
 theorem shifted_dirichlet_meanValue {α : ℝ} (h0 : 0 < α) (s : Finset ℕ) (c : ℕ → ℂ) :
     Tendsto (fun T : ℝ => (↑T)⁻¹ * ∫ t in (0 : ℝ)..T,
         ∑ p ∈ s ×ˢ s, (c p.1 * (starRingEnd ℂ) (c p.2)) *
-          Complex.exp ((Real.log ((p.2 : ℝ) + α) - Real.log ((p.1 : ℝ) + α)) * Complex.I * ↑t))
+          Complex.exp (((Real.log ((p.2 : ℝ) + α) - Real.log ((p.1 : ℝ) + α) : ℝ) : ℂ)
+            * Complex.I * ↑t))
       atTop (𝓝 (∑ n ∈ s, ((Complex.normSq (c n) : ℝ) : ℂ))) := by
   have h := Weyl.trig_time_average (s ×ˢ s)
     (fun p => Real.log ((p.2 : ℝ) + α) - Real.log ((p.1 : ℝ) + α))
@@ -98,7 +99,19 @@ theorem shifted_dirichlet_meanValue {α : ℝ} (h0 : 0 < α) (s : Finset ℕ) (c
   have hval : (∑ i ∈ s, c (i, i).1 * (starRingEnd ℂ) (c (i, i).2))
       = ∑ n ∈ s, ((Complex.normSq (c n) : ℝ) : ℂ) :=
     Finset.sum_congr rfl (fun n _ => by dsimp only; rw [Complex.mul_conj])
-  rw [hval] at h
-  convert h using 2
+  rwa [hval] at h
+
+/-- **Unconditional concrete equidistribution (Liouville shift).**  At the named Liouville constant
+`λ`, every nontrivial character of the shifted Dirichlet frequencies has vanishing Cesàro time average
+— with no hypotheses.  The shifted monomials `(n+λ)^{−it}` equidistribute for the concrete `λ`. -/
+theorem shifted_character_time_average_vanishes_liouville
+    (s : Finset ℕ) (k : ℕ → ℤ) (hk : ∃ n ∈ s, k n ≠ 0) :
+    Tendsto (fun T : ℝ => (↑T)⁻¹ *
+        ∫ t in (0 : ℝ)..T,
+          Complex.exp ((∑ n ∈ s, (k n : ℝ) * Real.log ((n : ℝ) + GaloisForLFunctions.liouvilleConst))
+            * Complex.I * ↑t))
+      atTop (𝓝 0) :=
+  shifted_character_time_average_vanishes GaloisForLFunctions.liouvilleConst_pos
+    GaloisForLFunctions.liouvilleConst_transcendental s k hk
 
 end RHTower

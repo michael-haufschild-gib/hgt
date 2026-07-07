@@ -21,6 +21,7 @@ import GaloisForLFunctions.RHTower.DiscExtraction
 import GaloisForLFunctions.RHTower.RHLadderTheory
 import GaloisForLFunctions.RHTower.DeckChargeLadder
 import GaloisForLFunctions.RHTower.WeightMismatchRefutation
+import GaloisForLFunctions.RHTower.ChargeTomography
 
 open Complex
 
@@ -54,7 +55,9 @@ theorem rh_tfae : List.TFAE
       Nonempty (CoherentTower xiDescent slitPlane),
       ∀ k, ∀ ρ ∈ rightHalf, xi ρ = 0 → xiDeckCharge k ρ = 1,
       ∀ k, LineHolography k,
-      ∀ (k : ℕ) (T : ℝ), WindowCertificate k T ] := by
+      ∀ (k : ℕ) (T : ℝ), WindowCertificate k T,
+      ∀ ρ ∈ rightHalf, ∃ R₀ > 0, ∀ {R r₁ r₂ : ℝ}, 0 < r₁ → r₁ < r₂ → r₂ < R → R ≤ R₀ →
+        modulusSlope ρ r₁ r₂ = 0 ] := by
   tfae_have 1 ↔ 2 := rh_iff_xi_ne_zero_right
   tfae_have 1 ↔ 3 := rh_iff_tower
   tfae_have 1 ↔ 4 := rh_iff_forall_ladder
@@ -68,6 +71,7 @@ theorem rh_tfae : List.TFAE
   tfae_have 1 ↔ 12 := rh_iff_xiDeckCharge
   tfae_have 1 ↔ 13 := rh_iff_forall_lineHolography
   tfae_have 1 ↔ 14 := rh_iff_forall_windowCertificate
+  tfae_have 1 ↔ 15 := rh_iff_forall_modulusSlope_eq_zero
   tfae_finish
 
 /-- **The `RH_{2^k}` rung characterization hub.**  For each level `k`, the following are equivalent —

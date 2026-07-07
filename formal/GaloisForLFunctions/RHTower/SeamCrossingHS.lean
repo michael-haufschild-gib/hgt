@@ -65,4 +65,23 @@ theorem hsNormSq_crossKernel (r : ℕ) : hsNormSq (crossKernel r) = (r : ℝ) :=
   rw [hsInner_self, if_pos rfl] at h
   exact_mod_cast h
 
+/-- **The weighted crossing energy is a Hilbert–Schmidt norm.**  `‖c·B_r‖²_HS = ‖c‖²·r`: weighting the
+`r`-crossing by `c` scales its self-energy `r` by `‖c‖²`.  This realizes the moonshot §1 Weil energy of
+a single weighted crossing as a genuine Hilbert–Schmidt norm on `ℓ²(ℤ)`. -/
+theorem hsNormSq_smul_crossKernel (c : ℂ) (r : ℕ) :
+    hsNormSq (c • crossKernel r) = ‖c‖ ^ 2 * (r : ℝ) := by
+  have hself : hsInner (c • crossKernel r) (c • crossKernel r) = ((‖c‖ ^ 2 * (r : ℝ) : ℝ) : ℂ) := by
+    rw [hsInner_smul_left, hsInner_smul_right, hsInner_crossKernel, if_pos rfl,
+      ← mul_assoc, mul_comm ((starRingEnd ℂ) c) c, Complex.mul_conj]
+    push_cast [Complex.normSq_eq_norm_sq]; ring
+  have hs := hsInner_self (c • crossKernel r)
+  rw [hself] at hs
+  exact_mod_cast hs.symm
+
+/-- **Single-crossing Weil positivity.**  `‖c·B_r‖²_HS ≥ 0`: the weighted crossing energy is
+nonnegative, being a Hilbert–Schmidt norm — the moonshot's Weil-form positivity for one crossing,
+realized as `hsNormSq_nonneg`. -/
+theorem weil_crossing_energy_nonneg (c : ℂ) (r : ℕ) : 0 ≤ hsNormSq (c • crossKernel r) :=
+  hsNormSq_nonneg _
+
 end RHTower

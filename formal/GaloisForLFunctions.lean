@@ -5,6 +5,8 @@ import GaloisForLFunctions.BohrGenerators
 import GaloisForLFunctions.EulerProduct
 import GaloisForLFunctions.EulerFirewall
 import GaloisForLFunctions.NamedTranscendental
+import GaloisForLFunctions.Hypertranscendence
+import GaloisForLFunctions.GammaTranscendental
 import GaloisForLFunctions.MultiQDifference
 import GaloisForLFunctions.ArchimedeanLane
 import GaloisForLFunctions.ArchimedeanGamma

@@ -38,7 +38,7 @@ theorem jensen_avg_log [IsProbabilityMeasure μ] {g : α → ℝ} {a b : ℝ} (h
     (⨍ x, Real.log (g x) ∂μ) ≤ Real.log (⨍ x, g x ∂μ) := by
   have hsub : Set.Icc a b ⊆ Set.Ioi 0 := fun x hx => lt_of_lt_of_le ha hx.1
   have hconc : ConcaveOn ℝ (Set.Icc a b) Real.log :=
-    (StrictConcaveOn.concaveOn Real.strictConcaveOn_log_Ioi).subset hsub (convex_Icc a b)
+    (StrictConcaveOn.concaveOn strictConcaveOn_log_Ioi).subset hsub (convex_Icc a b)
   have hcont : ContinuousOn Real.log (Set.Icc a b) :=
     Real.continuousOn_log.mono (fun x hx => ne_of_gt (lt_of_lt_of_le ha hx.1))
   exact hconc.le_map_average hcont isClosed_Icc hmem hgi hlogi
@@ -49,7 +49,7 @@ second moment `⨍ g²`.  Applied on a zero-avoiding circle to `g = ‖ξ‖`, t
 circle average of `log‖ξ‖` into a mean square. -/
 theorem jensen_avg_log_sq [IsProbabilityMeasure μ] {g : α → ℝ} {a b : ℝ} (ha : 0 < a)
     (hmem : ∀ᵐ x ∂μ, g x ∈ Set.Icc a b)
-    (hgi : Integrable g μ) (hsqi : Integrable (fun x => g x ^ 2) μ)
+    (hsqi : Integrable (fun x => g x ^ 2) μ)
     (hlogi : Integrable (fun x => Real.log (g x)) μ) :
     (⨍ x, Real.log (g x) ∂μ) ≤ (1 / 2) * Real.log (⨍ x, (g x) ^ 2 ∂μ) := by
   -- `log g = ½ log (g²)` pointwise a.e. (g > 0), then Jensen on `g²`.
@@ -64,11 +64,11 @@ theorem jensen_avg_log_sq [IsProbabilityMeasure μ] {g : α → ℝ} {a b : ℝ}
     (by positivity) hmemsq hsqi hlogsqi
   -- rewrite `⨍ log (g²) = 2 ⨍ log g`
   have hrw : (⨍ x, Real.log (g x ^ 2) ∂μ) = 2 * ⨍ x, Real.log (g x) ∂μ := by
-    rw [← integral_average, ← integral_average]
-    rw [← integral_mul_left]
-    apply integral_congr_ae
-    filter_upwards with x
-    rw [Real.log_pow]; push_cast; ring
+    have h2 : ∫ x, Real.log (g x ^ 2) ∂μ = ∫ x, 2 * Real.log (g x) ∂μ := by
+      apply integral_congr_ae
+      filter_upwards with x
+      rw [Real.log_pow]; push_cast; ring
+    rw [average_eq_integral, average_eq_integral, h2, integral_const_mul]
   rw [hrw] at hjensen
   linarith
 end RHTower
