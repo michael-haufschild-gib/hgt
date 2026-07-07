@@ -1690,3 +1690,52 @@ machinery fires on them concretely. Gate 9315, all axiom-clean.
   `d = crossOp M r`, `Γ = gradeOp M r`: for any `R` commuting with the crossing,
   `superTrace Γ R = superTrace Γ (R · seamHarmonicProj d)`. The §1 crossing tower and the §8 Hodge
   compression meet on one concrete object — the finite construction realized, not hypothesized.
+
+## QuadrantSeamConservation + ZeroDensityEngine (quadrant–seam conjecture: refutation + RH₂ reduction)
+
+`formal/GaloisForLFunctions/RHTower/QuadrantSeamConservation.lean` (axiom-clean):
+- Unconditional core wired to `xiDescent`: `carrierCharge_xiDescent_center_sq` (descent preserves
+  rung-1 charge), `xiDescent_ne_zero_farField`/`carrierCharge_xiDescent_farField` (charge-free drain
+  where Re√u>½ ⟹ Re s>1).
+- REFUTATION of the literal conjecture as topology: `naive_terminal_dichotomy_false` (P(u)=u²+1 is
+  entire, nonvanishing on the whole real axis = seam ∪ drain, yet odd rung-1 charge at I — a compact
+  odd conjugate-pair island); `island_aggregate_blind` (±I orders sum even: symmetric detector blind);
+  `naive_seam_parity_insufficient` (collision family (u+1)²+t²: even seam order 2 coexists with odd
+  upper charge at −1+I); `wCharge_two_neg_self` (in ZMod 2 "equal and opposite" is vacuous).
+- REDUCTION: `XiDefect`, `xiDefect_charge_iff_odd`, `not_linearLowerBound_of_subLinear` (density
+  contradiction), `rhLadder_one_of_recurrence_of_density`: defect-recurrence (LinearLowerBound) +
+  Ingham (SubLinearDensity) ⟹ RHLadder 1 (RH₂). Interfaces `LinearLowerBound`, `SubLinearDensity`.
+
+`formal/GaloisForLFunctions/RHTower/ZeroDensityEngine.lean` (axiom-clean):
+- `GapCounting` (Littlewood gap-counting interface: δ·N T ≤ Λ T); `subLinearDensity_of_gapCounting`
+  (Carlson step: o(T) log-integral ⟹ o(T) count); `boundedDensity_of_gapCounting` (Bohr–Landau O(T)
+  from a linear log-integral); `bohrLandau_insufficient_for_recurrence` (O(T) cannot close the
+  recurrence contradiction — o(T) is required); composite `rhLadder_one_of_recurrence_gapCounting`
+  (recurrence + Littlewood + Carlson ⟹ RH₂).
+- Residual analytic kernels (classical, absent from mathlib): Littlewood's lemma for ξ (GapCounting,
+  connectable to `completedGN_rectIntegral_logDeriv`) and Carlson's fourth-moment o(T) mean value
+  (SubLinearDensity Λ, via the approximate functional equation + SecondMoment/MeasureParseval).
+
+## HilbertSchmidt.lean + SeamCrossingHS.lean — building the missing HS operator theory (mathlib has none)
+
+mathlib has NO Hilbert–Schmidt / Schatten / trace-class theory (confirmed: no such files; only `lp`/ℓ²).
+Started building it. Gate 9320, axiom-clean.
+
+**HilbertSchmidt.lean — foundational HS-kernel layer.** HS operators on ℓ²(ι) as square-summable
+kernels `K : ι×ι → ℂ`:
+- `IsHS K := Summable (‖K ·‖²)`; `hsInner K L := ∑' conj(K)·L`; `hsNormSq K := ∑' ‖K‖²`.
+- `isHS_of_support_subset` (finite support ⟹ HS), `hsNormSq_nonneg`, `hsInner_self` (⟨K,K⟩=‖K‖²_HS),
+  `hsInner_self_re_nonneg` (positivity), `hsInner_conj_symm`, `hsInner_add_left`, `hsInner_smul_left`
+  (the sesquilinear structure).
+
+**SeamCrossingHS.lean — the §1 crossing tower on genuine ℓ²(ℤ).** Lifts crossOp off Fin M to the
+infinite shell space ℤ:
+- `crossKernel r` = indicator of crossSupport r ⊆ ℤ×ℤ; `isHS_crossKernel` (each crossing is HS).
+- `hsInner_crossKernel` — ⟨B_r,B_s⟩_HS = r·δ_{r,s} as an actual HS inner product (∑ over ℤ×ℤ), lifting
+  the combinatorial crossHS_inner to the infinite HS pairing.
+- `hsNormSq_crossKernel` — ‖B_r‖²_HS = r on ℓ²(ℤ).
+
+The moonshot §1 tower now has its true infinite-dimensional Hilbert-space home, not a finite truncation.
+This is the first foundation stone of the operator-analysis substrate the infinite-height limit needs;
+the HS theory (composition, adjoint, trace `tr(KᴴL)=⟨K,L⟩`, then Schatten-1/trace-class, then Fredholm
+determinants) is the continuing build.

@@ -12,3 +12,6 @@ The HT-field foundations (§22) prove the abstract σ-parity (odd moments of a n
 
 ## Log
 - 2026-07-07 — created directly in 3-formalized.
+
+## Update: conjugate parity (critical-line reflection)
+`xi_secular_moment_conj_parity (R n)`: the reflection ρ↦1−conj ρ (fixed set = critical line) preserves the ½-ball ξ-divisor, giving `conj(M_n) = (−1)^n M_n` — even centered moments real, odd ones purely imaginary. The FE reality constraint on the ξ-divisor, RH-relevant (this is the reflection whose fixed locus is the critical line). Axiom-clean.
