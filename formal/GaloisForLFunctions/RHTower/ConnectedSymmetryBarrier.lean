@@ -267,17 +267,87 @@ theorem boxCharge_eq_zero_of_vacuum (k : ℕ) {f : ℂ → ℂ} {c : ℂ} {r : �
   rw [boxCharge, loopCharge, ← hH, windingNumber_const hc0]
   simp [wCharge]
 
-/-! ### §5 The Riemann Hypothesis as absence of protected defects -/
+/-! ### §5 The defect invariant is complete: π₀ of the loop space is the winding number -/
 
-/-- **RH ⟺ no right-half ξ-defect is topologically protected.**  For every level `k` and every
-hypothetical right-half zero, some isolating window pair around it deforms — member and window
-moving together, boundary never vanishing — to a vacuum pair.  Backward: the charge is conserved
-along the deformation and vanishes on vacuum, while on the isolating window it reads the vanishing
-order mod `2^k`; all levels force the order to be `0`, contradicting the zero.  Forward: under RH
-the right half carries no zeros, so the clause is vacuous. -/
+/-- **Equal winding numbers produce a homotopy.**  Two nonvanishing loops with the same winding
+number are joined by a homotopy through nonvanishing loops: interpolate their canonical
+logarithms linearly; the equal increment `2πi·w` at both ends makes every intermediate curve a
+loop, and the exponential never vanishes. -/
+theorem joined_of_windingNumber_eq {γ₀ γ₁ : ℝ → ℂ} {a b : ℝ}
+    (h₀ : IsLoop γ₀ a b) (h₁ : IsLoop γ₁ a b)
+    (hw : windingNumber γ₀ a b = windingNumber γ₁ a b) :
+    ∃ H : ℝ → ℝ → ℂ,
+      Continuous (fun p : ℝ × ℝ => H p.1 p.2) ∧
+      (∀ σ t, H σ t ≠ 0) ∧ (∀ σ, H σ a = H σ b) ∧
+      (∀ t, H 0 t = γ₀ t) ∧ (∀ t, H 1 t = γ₁ t) := by
+  obtain ⟨hL₀c, hL₀e⟩ := contLog_spec h₀.continuous h₀.nonzero
+  obtain ⟨hL₁c, hL₁e⟩ := contLog_spec h₁.continuous h₁.nonzero
+  have hinc₀ := contLog_increment h₀ hL₀c hL₀e
+  have hinc₁ := contLog_increment h₁ hL₁c hL₁e
+  refine ⟨fun σ t => exp ((1 - (σ : ℂ)) * contLog γ₀ t + (σ : ℂ) * contLog γ₁ t),
+    ?_, ?_, ?_, ?_, ?_⟩
+  · exact Complex.continuous_exp.comp
+      (((continuous_const.sub (Complex.continuous_ofReal.comp continuous_fst)).mul
+        (hL₀c.comp continuous_snd)).add
+        ((Complex.continuous_ofReal.comp continuous_fst).mul (hL₁c.comp continuous_snd)))
+  · intro σ t
+    exact Complex.exp_ne_zero _
+  · intro σ
+    show exp ((1 - (σ : ℂ)) * contLog γ₀ a + (σ : ℂ) * contLog γ₁ a) =
+      exp ((1 - (σ : ℂ)) * contLog γ₀ b + (σ : ℂ) * contLog γ₁ b)
+    have hb₀ : contLog γ₀ b =
+        contLog γ₀ a + ↑(windingNumber γ₀ a b) * (2 * (Real.pi : ℂ) * I) := by
+      linear_combination hinc₀
+    have hb₁ : contLog γ₁ b =
+        contLog γ₁ a + ↑(windingNumber γ₀ a b) * (2 * (Real.pi : ℂ) * I) := by
+      rw [hw]
+      linear_combination hinc₁
+    rw [hb₀, hb₁,
+      show (1 - (σ : ℂ)) * (contLog γ₀ a +
+            ↑(windingNumber γ₀ a b) * (2 * (Real.pi : ℂ) * I)) +
+          (σ : ℂ) * (contLog γ₁ a + ↑(windingNumber γ₀ a b) * (2 * (Real.pi : ℂ) * I)) =
+          ((1 - (σ : ℂ)) * contLog γ₀ a + (σ : ℂ) * contLog γ₁ a) +
+            ↑(windingNumber γ₀ a b) * (2 * (Real.pi : ℂ) * I) from by ring]
+    conv_rhs => rw [Complex.exp_add]
+    rw [Complex.exp_int_mul_two_pi_mul_I, mul_one]
+  · intro t
+    show exp ((1 - ((0 : ℝ) : ℂ)) * contLog γ₀ t + ((0 : ℝ) : ℂ) * contLog γ₁ t) = γ₀ t
+    rw [Complex.ofReal_zero, sub_zero, one_mul, zero_mul, add_zero]
+    exact hL₀e t
+  · intro t
+    show exp ((1 - ((1 : ℝ) : ℂ)) * contLog γ₀ t + ((1 : ℝ) : ℂ) * contLog γ₁ t) = γ₁ t
+    rw [Complex.ofReal_one, sub_self, zero_mul, one_mul, zero_add]
+    exact hL₁e t
+
+/-- **The classification of defects: π₀ of the nonvanishing loop space is exactly the winding
+number.**  Two nonvanishing loops are joined by a homotopy through nonvanishing loops IFF their
+winding numbers agree — the deck charge is a complete deformation invariant, not merely a
+conserved one.  A window defect is therefore protected exactly when its total winding is nonzero;
+nothing finer than the charge obstructs deformation. -/
+theorem windingNumber_eq_iff_joined {γ₀ γ₁ : ℝ → ℂ} {a b : ℝ}
+    (h₀ : IsLoop γ₀ a b) (h₁ : IsLoop γ₁ a b) :
+    windingNumber γ₀ a b = windingNumber γ₁ a b ↔
+      ∃ H : ℝ → ℝ → ℂ,
+        Continuous (fun p : ℝ × ℝ => H p.1 p.2) ∧
+        (∀ σ t, H σ t ≠ 0) ∧ (∀ σ, H σ a = H σ b) ∧
+        (∀ t, H 0 t = γ₀ t) ∧ (∀ t, H 1 t = γ₁ t) := by
+  constructor
+  · exact joined_of_windingNumber_eq h₀ h₁
+  · rintro ⟨H, hc, hnv, hloop, hH0, hH1⟩
+    exact windingNumber_of_homotopic H hc hnv hloop hH0 hH1
+
+/-! ### §6 The Riemann Hypothesis as absence of protected defects -/
+
+/-- **RH ⟺ no right-half ξ-defect is topologically protected.**  Around every hypothetical
+right-half zero, some isolating window pair deforms — member and window moving together, boundary
+never vanishing — to a vacuum pair.  The certificate is level-free: ONE deformation kills every
+dyadic level at once.  Backward: the charge is conserved along the deformation and vanishes on
+vacuum, while on the isolating window it reads the vanishing order mod `2^k`; all levels force the
+order to be `0`, contradicting the zero.  Forward: under RH the right half carries no zeros, so
+the clause is vacuous. -/
 theorem rh_iff_no_protected_defect :
     RiemannHypothesis ↔
-      ∀ k : ℕ, ∀ ρ ∈ rightHalf, xi ρ = 0 →
+      ∀ ρ ∈ rightHalf, xi ρ = 0 →
         ∃ (F : ℝ → ℂ → ℂ) (c : ℝ → ℂ) (r : ℝ → ℝ) (R : ℝ),
           F 0 = xi ∧ c 0 = ρ ∧ 0 < r 0 ∧ r 0 < R ∧
           (∀ z ∈ ball ρ R, z ≠ ρ → xi z ≠ 0) ∧
@@ -287,22 +357,79 @@ theorem rh_iff_no_protected_defect :
           ContinuousOn (F 1) (closedBall (c 1) (r 1)) ∧
           (∀ z ∈ closedBall (c 1) (r 1), F 1 z ≠ 0) := by
   constructor
-  · intro hRH k ρ hρ hzero
+  · intro hRH ρ hρ hzero
     exact absurd hzero (rh_iff_xi_ne_zero_right.mp hRH ρ hρ)
   · intro hdef
     rw [rh_iff_xi_ne_zero_right]
     intro ρ hρ hzero
+    obtain ⟨F, c, r, R, hF0, hc0, hr0, hrR, hiso, hcont, hnv, hr1, hF1c, hF1nv⟩ :=
+      hdef ρ hρ hzero
+    obtain ⟨h, hhan, hh0, hfact⟩ := xi_peel_isolating_ball ρ hiso
     have hdvd : ∀ k : ℕ, 2 ^ k ∣ (analyticOrderAt xi ρ).toNat := by
       intro k
-      obtain ⟨F, c, r, R, hF0, hc0, hr0, hrR, hiso, hcont, hnv, hr1, hF1c, hF1nv⟩ :=
-        hdef k ρ hρ hzero
-      obtain ⟨h, hhan, hh0, hfact⟩ := xi_peel_isolating_ball ρ hiso
       have hread : boxCharge k xi ρ (r 0) =
           wCharge (2 ^ k) (((analyticOrderAt xi ρ).toNat : ℤ)) :=
         boxCharge_single k hrR hr0 (by simpa using hr0) hhan.continuousOn hh0 hfact
       have hzero' : wCharge (2 ^ k) (((analyticOrderAt xi ρ).toNat : ℤ)) = 0 := by
         rw [← hread, ← hF0, ← hc0, boxCharge_conserved_moving k hcont hnv,
           boxCharge_eq_zero_of_vacuum k hr1 hF1c hF1nv]
+      haveI : NeZero (2 ^ k) := ⟨pow_ne_zero k two_ne_zero⟩
+      have hdd := (wCharge_eq_zero_iff (((analyticOrderAt xi ρ).toNat : ℤ))).mp hzero'
+      exact_mod_cast hdd
+    have hm0 : (analyticOrderAt xi ρ).toNat = 0 := by
+      by_contra hm0
+      have h2 : 2 ^ (analyticOrderAt xi ρ).toNat ≤ (analyticOrderAt xi ρ).toNat :=
+        Nat.le_of_dvd (Nat.pos_of_ne_zero hm0) (hdvd _)
+      have h3 : (analyticOrderAt xi ρ).toNat < 2 ^ (analyticOrderAt xi ρ).toNat :=
+        Nat.lt_pow_self (by norm_num)
+      omega
+    have hmcoe : (((analyticOrderAt xi ρ).toNat : ℕ) : ℕ∞) = analyticOrderAt xi ρ :=
+      ENat.coe_toNat (xi_orderAt_ne_top ρ)
+    have hne : analyticOrderAt xi ρ ≠ 0 :=
+      analyticOrderAt_ne_zero.mpr ⟨xi_analyticOnNhd_univ ρ (Set.mem_univ ρ), hzero⟩
+    rw [← hmcoe, hm0] at hne
+    exact hne rfl
+
+/-! ### §7 The seam-blind re-cut -/
+
+/-- **RH ⟺ seam-blind windows are chargeless.**  For the FE-symmetric ξ every line-symmetric
+window has its charge determined by line data, so the whole content of the Riemann Hypothesis
+lives in the windows the seam cannot see: closed windows inside the open right half-plane, never
+touching the critical line.  RH holds iff every such window carries zero deck charge at every
+level — charge exists only where the seam can read it.  Backward: an off-line zero admits an
+isolating seam-blind window whose charge reads its order mod `2^k`; all levels force order zero.
+Forward: under RH seam-blind windows are vacuum. -/
+theorem rh_iff_seam_blind_windows_chargeless :
+    RiemannHypothesis ↔
+      ∀ (k : ℕ) (c : ℂ) (r : ℝ), 0 ≤ r →
+        (∀ z ∈ closedBall c r, 1 / 2 < z.re) → boxCharge k xi c r = 0 := by
+  rw [rh_iff_xi_ne_zero_right]
+  constructor
+  · intro hRH k c r hr hhalf
+    exact boxCharge_eq_zero_of_vacuum k hr xi_differentiable.continuous.continuousOn
+      fun z hz => hRH z (mem_rightHalf.mpr (hhalf z hz))
+  · intro hch ρ hρ hzero
+    have hρhalf : 1 / 2 < ρ.re := mem_rightHalf.mp hρ
+    obtain ⟨R, hR0, hiso⟩ := xi_exists_isolating_radius ρ
+    set r' : ℝ := min (R / 2) ((ρ.re - 1 / 2) / 2) with hr'def
+    have hr'0 : 0 < r' := lt_min (by linarith) (by linarith)
+    have hr'R : r' < R := lt_of_le_of_lt (min_le_left _ _) (by linarith)
+    have hhalf : ∀ z ∈ closedBall ρ r', 1 / 2 < z.re := by
+      intro z hz
+      have hd : ‖z - ρ‖ ≤ r' := by rwa [mem_closedBall, dist_eq_norm] at hz
+      have hre : |z.re - ρ.re| ≤ r' := le_trans (Complex.abs_re_le_norm (z - ρ)) hd
+      have hr'le : r' ≤ (ρ.re - 1 / 2) / 2 := min_le_right _ _
+      have := abs_le.mp hre
+      linarith [this.1]
+    obtain ⟨h, hhan, hh0, hfact⟩ := xi_peel_isolating_ball ρ hiso
+    have hdvd : ∀ k : ℕ, 2 ^ k ∣ (analyticOrderAt xi ρ).toNat := by
+      intro k
+      have hread : boxCharge k xi ρ r' =
+          wCharge (2 ^ k) (((analyticOrderAt xi ρ).toNat : ℤ)) :=
+        boxCharge_single k hr'R hr'0 (by simpa using hr'0) hhan.continuousOn hh0 hfact
+      have hzero' : wCharge (2 ^ k) (((analyticOrderAt xi ρ).toNat : ℤ)) = 0 := by
+        rw [← hread]
+        exact hch k ρ r' hr'0.le hhalf
       haveI : NeZero (2 ^ k) := ⟨pow_ne_zero k two_ne_zero⟩
       have hdd := (wCharge_eq_zero_iff (((analyticOrderAt xi ρ).toNat : ℤ))).mp hzero'
       exact_mod_cast hdd

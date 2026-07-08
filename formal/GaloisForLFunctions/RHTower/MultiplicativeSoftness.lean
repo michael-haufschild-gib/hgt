@@ -22,6 +22,8 @@ quartic multiple does.  Consequences:
 -/
 import GaloisForLFunctions.RHTower.GoldilocksTrichotomy
 import GaloisForLFunctions.RHTower.RHLadderTheory
+import GaloisForLFunctions.RHTower.WeightMismatchRefutation
+import GaloisForLFunctions.RHTower.Reflection
 
 noncomputable section
 
@@ -35,7 +37,7 @@ open Complex
 theorem analyticOrderAt_orbitQuartic_mul {ρ₀ : ℂ} (hre : ρ₀.re ≠ 1 / 2) (him : ρ₀.im ≠ 0)
     {f : ℂ → ℂ} (hf : AnalyticAt ℂ f ρ₀) :
     analyticOrderAt (fun s => orbitQuartic ρ₀ s * f s) ρ₀ = 1 + analyticOrderAt f ρ₀ := by
-  have h := analyticOrderAt_mul ((orbitQuartic_differentiable ρ₀).analyticAt) hf
+  have h := analyticOrderAt_mul ((orbitQuartic_differentiable ρ₀).analyticAt ρ₀) hf
   rw [show (orbitQuartic ρ₀ * f) = (fun s => orbitQuartic ρ₀ s * f s) from rfl] at h
   rw [h, orbitQuartic_order_one hre him]
 
@@ -93,12 +95,13 @@ theorem not_forcesRHParity_of_orbitQuartic_stable {C : (ℂ → ℂ) → Prop}
 
 /-! ### §3 The cut: classes containing ξ -/
 
-/-- **The rigidity cut lies above multiplication stability.**  A constraint class containing ξ
-that also contains ONE orbit-quartic multiple of ξ — at a single point beyond the wall, where ξ is
-nonvanishing — cannot force RH-grade parity: the multiple carries charge `−1` there.  A constraint
-able to decide the parity must therefore break stability under multiplication by FE-symmetric
-polynomials, i.e. must read the coefficient/arithmetic structure of its members. -/
-theorem not_forcesRHParity_of_xi_orbitQuartic_stable {C : (ℂ → ℂ) → Prop} (hxi : C xi)
+/-- **The rigidity cut lies above multiplication stability.**  A constraint class containing ONE
+orbit-quartic multiple of ξ — at a single point beyond the wall, where ξ is nonvanishing — cannot
+force RH-grade parity: the multiple carries charge `−1` there.  In particular no
+multiplication-stable class containing ξ forces parity.  A constraint able to decide the parity
+must therefore break stability under multiplication by FE-symmetric polynomials, i.e. must read
+the coefficient/arithmetic structure of its members. -/
+theorem not_forcesRHParity_of_xi_orbitQuartic_stable {C : (ℂ → ℂ) → Prop}
     (hstab : C (fun s => orbitQuartic (2 + I) s * xi s)) :
     ¬ ForcesRHParity C := by
   intro hforce
@@ -112,7 +115,7 @@ theorem not_forcesRHParity_of_xi_orbitQuartic_stable {C : (ℂ → ℂ) → Prop
       (xi_analyticOnNhd_univ _ (Set.mem_univ _)) (xi_orderAt_ne_top _),
     carrierCharge_one_eq_neg_one_pow,
     show analyticOrderAt xi (2 + I) = 0 from analyticOrderAt_eq_zero.mpr (Or.inr hxine)] at hval
-  simp at hval
+  norm_num at hval
 
 /-! ### §4 The monotone constraint lattice -/
 
@@ -127,5 +130,127 @@ parity-forcing. -/
 theorem forcesRHParity_anti {C C' : (ℂ → ℂ) → Prop} (h : ∀ f, C' f → C f)
     (hforce : ForcesRHParity C) : ForcesRHParity C' :=
   fun f hf ρ hρ => hforce f (h f hf) ρ hρ
+
+/-! ### §5 The rigidity endpoint: parity-forcing of the ξ-scalar class is the base rung -/
+
+/-- The real-scalar class of ξ — the constraint lattice's rigid endpoint, where the class has
+collapsed to the object itself. -/
+def XiScalarClass (f : ℂ → ℂ) : Prop := ∃ c : ℝ, f = fun s => (c : ℂ) * xi s
+
+/-- **The two ends of the constraint lattice meet at the base rung.**  Parity-forcing of the
+ξ-scalar class is EXACTLY the first RH-ladder rung: every real multiple of ξ has trivial charge at
+every off-line point iff every right-half ξ-order is even.  Left-half points transport across the
+critical line by the FE and reality pairings of orders; scalars do not move the order.  Together
+with the softness metatheorem this squeezes class-level parity laws to nothing: below this class,
+stability under one quartic multiplication already destroys forcing; at this class, forcing IS the
+rung. -/
+theorem forcesRHParity_xiScalarClass_iff_rhLadder_one :
+    ForcesRHParity XiScalarClass ↔ RHLadder 1 := by
+  rw [rhLadder_one_iff_even_order]
+  constructor
+  · intro hforce ρ hρ hzero
+    have hre : ρ.re ≠ 1 / 2 := by
+      have := mem_rightHalf.mp hρ
+      linarith
+    have hch := hforce xi ⟨1, by funext s; rw [Complex.ofReal_one, one_mul]⟩ ρ hre
+    rw [even_iff_two_dvd]
+    have hdvd := (carrierCharge_eq_one_iff_dvd xi 1 ρ).mp hch
+    rwa [pow_one] at hdvd
+  · intro heven f hf ρ hre
+    obtain ⟨c, rfl⟩ := hf
+    by_cases hc : c = 0
+    · subst hc
+      rw [carrierCharge_one_eq_neg_one_pow,
+        show analyticOrderAt (fun s => (((0 : ℝ) : ℂ)) * xi s) ρ = ⊤ from
+          analyticOrderAt_eq_top.mpr (Filter.Eventually.of_forall fun _ => by simp),
+        ENat.toNat_top, pow_zero]
+    · have hcC : ((c : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hc
+      have hord : analyticOrderAt (fun s => ((c : ℝ) : ℂ) * xi s) ρ = analyticOrderAt xi ρ := by
+        have h := analyticOrderAt_mul (analyticAt_const (v := ((c : ℝ) : ℂ)) (x := ρ))
+          (xi_analyticOnNhd_univ ρ (Set.mem_univ ρ))
+        rw [show ((fun _ => ((c : ℝ) : ℂ)) * xi) = (fun s => ((c : ℝ) : ℂ) * xi s) from rfl] at h
+        rw [h, show analyticOrderAt (fun _ : ℂ => ((c : ℝ) : ℂ)) ρ = 0 from
+          analyticOrderAt_eq_zero.mpr (Or.inr hcC), zero_add]
+      rw [carrierCharge_one_eq_neg_one_pow, hord]
+      have heven' : Even (analyticOrderAt xi ρ).toNat := by
+        by_cases hzero : xi ρ = 0
+        · by_cases hhalf : 1 / 2 < ρ.re
+          · exact heven ρ (mem_rightHalf.mpr hhalf) hzero
+          · have hordrefl : analyticOrderAt xi (1 - (starRingEnd ℂ) ρ) =
+                analyticOrderAt xi ρ := by
+              rw [xi_orderAt_one_sub, xi_orderAt_conj]
+            have hlt : ρ.re < 1 / 2 := lt_of_le_of_ne (not_lt.mp hhalf) hre
+            have hmem : 1 - (starRingEnd ℂ) ρ ∈ rightHalf := by
+              rw [mem_rightHalf]
+              simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
+              linarith
+            have hzrefl : xi (1 - (starRingEnd ℂ) ρ) = 0 := by
+              have hne : analyticOrderAt xi (1 - (starRingEnd ℂ) ρ) ≠ 0 := by
+                rw [hordrefl]
+                exact analyticOrderAt_ne_zero.mpr
+                  ⟨xi_analyticOnNhd_univ ρ (Set.mem_univ ρ), hzero⟩
+              exact (analyticOrderAt_ne_zero.mp hne).2
+            have hev := heven _ hmem hzrefl
+            rwa [hordrefl] at hev
+        · rw [analyticOrderAt_eq_zero.mpr (Or.inr hzero)]
+          simp
+      exact heven'.neg_one_pow
+
+/-- **No class-level shortcut to the rung.**  Any parity-forcing constraint class containing ξ
+already certifies the base rung, because forcing instantiates at ξ itself.  Locating a
+parity-forcing class around ξ is therefore never easier than the rung — combined with the
+softness metatheorem, class-level parity laws are squeezed to nothing: below multiplication
+stability they are impossible, and wherever they hold they were the rung all along. -/
+theorem rhLadder_one_of_forcesRHParity {C : (ℂ → ℂ) → Prop} (hxi : C xi)
+    (hforce : ForcesRHParity C) : RHLadder 1 := by
+  rw [rhLadder_one_iff_even_order]
+  intro ρ hρ hzero
+  have hre : ρ.re ≠ 1 / 2 := by
+    have := mem_rightHalf.mp hρ
+    linarith
+  have hch := hforce xi hxi ρ hre
+  rw [even_iff_two_dvd]
+  have hdvd := (carrierCharge_eq_one_iff_dvd xi 1 ρ).mp hch
+  rwa [pow_one] at hdvd
+
+/-! ### §6 The full ladder: level-`k` charge laws collapse the same way -/
+
+/-- **No class-level shortcut at any level.**  A constraint class containing ξ whose members all
+have trivial level-`k` charge off the line certifies the level-`k` ladder rung directly: forcing
+instantiates at ξ.  The class-level collapse is ladder-uniform, not a parity accident. -/
+theorem rhLadder_of_forces_charge_level {C : (ℂ → ℂ) → Prop} (hxi : C xi) {k : ℕ}
+    (hforce : ∀ f, C f → ∀ ρ : ℂ, ρ.re ≠ 1 / 2 → carrierCharge f k ρ = 1) :
+    RHLadder k := by
+  intro ρ hρ _
+  have hre : ρ.re ≠ 1 / 2 := by
+    have := mem_rightHalf.mp hρ
+    linarith
+  exact (carrierCharge_eq_one_iff_enat_dvd (xi_orderAt_ne_top ρ)).mp (hforce xi hxi ρ hre)
+
+/-- **The toggle defeats every level at once.**  In a class stable under one orbit-quartic
+multiplication, the member and its multiple have consecutive vanishing orders at the quartic's
+zero, and consecutive integers are never both `2^k`-divisible at a positive level: one of the two
+carries nontrivial level-`k` charge.  Class-level divisibility laws fail below multiplication
+stability at EVERY rung simultaneously. -/
+theorem exists_nontrivial_charge_level_of_orbitQuartic_stable {C : (ℂ → ℂ) → Prop} {ρ₀ : ℂ}
+    (hre : ρ₀.re ≠ 1 / 2) (him : ρ₀.im ≠ 0) {f : ℂ → ℂ} (hfC : C f)
+    (hstab : C (fun s => orbitQuartic ρ₀ s * f s))
+    (hfa : AnalyticAt ℂ f ρ₀) (hford : analyticOrderAt f ρ₀ ≠ ⊤)
+    {k : ℕ} (hk : k ≠ 0) :
+    ∃ g, C g ∧ carrierCharge g k ρ₀ ≠ 1 := by
+  by_cases hdvd : 2 ^ k ∣ (analyticOrderAt f ρ₀).toNat
+  · refine ⟨fun s => orbitQuartic ρ₀ s * f s, hstab, ?_⟩
+    simp only [ne_eq, carrierCharge_eq_one_iff_dvd]
+    rw [analyticOrderAt_orbitQuartic_mul hre him hfa, ENat.toNat_add (by simp) hford]
+    intro hdvd'
+    have h1 : 2 ^ k ∣ 1 := (Nat.dvd_add_right hdvd).mp (by rwa [Nat.add_comm] at hdvd')
+    have h2 : 2 ^ k = 1 := Nat.eq_one_of_dvd_one h1
+    exact hk (by
+      by_contra hk0
+      have := Nat.one_lt_two_pow_iff.mpr hk0
+      omega)
+  · refine ⟨f, hfC, ?_⟩
+    simp only [ne_eq, carrierCharge_eq_one_iff_dvd]
+    exact hdvd
 
 end RHTower

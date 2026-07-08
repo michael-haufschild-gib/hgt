@@ -140,6 +140,18 @@ theorem order_ge_two_of_zero_symmetry_neg_one {f τ : ℂ → ℂ} {c : ℂ}
   rcases heven with ⟨k, hk⟩
   omega
 
+/-- **At a simple zero, every analytic symmetry has trivial multiplier.**  If `f(c) = 0` is a
+*simple* zero (`ord = 1`) and `f ∘ τ = f` near a fixed point `c` of `τ`, then `τ'(c) = 1`.  From the
+multiplier law `(τ'(c))^{ord} = 1` with `ord = 1`. -/
+theorem simple_zero_symmetry_multiplier_eq_one {f τ : ℂ → ℂ} {c : ℂ}
+    (hf : AnalyticOnNhd ℂ f Set.univ) (hτ : AnalyticAt ℂ τ c) (hfix : τ c = c)
+    (hsym : ∀ᶠ s in 𝓝 c, f (τ s) = f s) (h1 : analyticOrderAt f c = 1) :
+    deriv τ c = 1 := by
+  have hne : analyticOrderAt f c ≠ ⊤ := by rw [h1]; decide
+  have hp := multiplier_pow_analyticOrderAt_eq_one hf hτ hfix hsym hne
+  rw [h1] at hp
+  simpa using hp
+
 /-! ### §2 The ξ engine and the recovered base case -/
 
 /-- **The general ξ parity engine.**  Any analytic symmetry `τ` of the completed zeta fixing `ρ`
@@ -195,5 +207,53 @@ theorem xi_entire_reflection_center_eq_half {b : ℂ}
     fun s => two_center_symmetry_periodic hb xi_one_sub s
   have hω : (1 - b : ℂ) ≠ 0 := fun h => hb1 (by rw [sub_eq_zero] at h; exact h.symm)
   exact hap (1 - b) hω hper
+
+/-! ### §4 The circularity of the off-line correspondence at a simple zero -/
+
+/-- **A simple ξ-zero admits no even-forcing symmetry.**  If `ξ` has a *simple* zero at `ρ`
+(`ord = 1`) and `τ` is an analytic symmetry fixing `ρ` with `ξ ∘ τ = ξ` near `ρ`, then its
+multiplier is not `−1`: `τ'(ρ) = 1`.  So the only way a reflection-type correspondence forces even
+order at `ρ` (multiplier `−1`, via `even_analyticOrderAt_of_symmetry_neg_one`) is if `ρ` is *already*
+non-simple.  The construction that would prove an off-line zero even cannot run at a zero that is
+still simple — it needs, at its ramification point, exactly the even order it is meant to produce.
+This is the local face of the obstruction the global pincer states: the detector must consume
+structure (the Euler data) that the local holomorphic symmetry alone cannot supply. -/
+theorem xi_simple_zero_no_even_forcing_symmetry {τ : ℂ → ℂ} {ρ : ℂ}
+    (hτ : AnalyticAt ℂ τ ρ) (hfix : τ ρ = ρ)
+    (hsym : ∀ᶠ s in 𝓝 ρ, xi (τ s) = xi s) (h1 : analyticOrderAt xi ρ = 1) :
+    deriv τ ρ ≠ -1 := by
+  rw [simple_zero_symmetry_multiplier_eq_one xi_analyticOnNhd_univ hτ hfix hsym h1]
+  norm_num
+
+/-- **Off-line ramification forces a multiple zero — the general-multiplier obstruction.**  If
+`ξ ∘ τ = ξ` near a fixed point `ρ` that is a *zero* of `ξ`, and `τ` is ramified there in the sense
+that its multiplier is nontrivial (`τ'(ρ) ≠ 1`), then the vanishing order at `ρ` is at least `2`:
+the zero is not simple.  This is the full-strength form of `order_ge_two_of_zero_symmetry_neg_one`,
+which is only the `τ'(ρ) = −1` case; here *any* nontrivial multiplier — every root of unity, and
+every non-unit — carries the same conclusion, because `(τ'(ρ))^{ord} = 1` cannot hold at `ord = 1`
+unless `τ'(ρ) = 1`.  So a correspondence whose ramified locus lands on a zero of `ξ` forces that
+zero to be multiple.  Contrapositive: a simple zero admits no ramified analytic self-symmetry of any
+kind — the exact obstruction a would-be off-line detector meets at the conjecturally-simple off-line
+zeros, now independent of the reflection model. -/
+theorem xi_zero_ramified_imp_not_simple {τ : ℂ → ℂ} {ρ : ℂ}
+    (hτ : AnalyticAt ℂ τ ρ) (hfix : τ ρ = ρ)
+    (hsym : ∀ᶠ s in 𝓝 ρ, xi (τ s) = xi s) (hzero : xi ρ = 0)
+    (hram : deriv τ ρ ≠ 1) :
+    2 ≤ (analyticOrderAt xi ρ).toNat := by
+  have hne : analyticOrderAt xi ρ ≠ ⊤ := xi_orderAt_ne_top ρ
+  have hp : (deriv τ ρ) ^ (analyticOrderAt xi ρ).toNat = 1 :=
+    multiplier_pow_analyticOrderAt_eq_one xi_analyticOnNhd_univ hτ hfix hsym hne
+  have hord_ne : analyticOrderAt xi ρ ≠ 0 :=
+    analyticOrderAt_ne_zero.mpr ⟨xi_analyticOnNhd_univ ρ (Set.mem_univ ρ), hzero⟩
+  have hpos : (analyticOrderAt xi ρ).toNat ≠ 0 := by
+    intro h0
+    apply hord_ne
+    have hc := ENat.coe_toNat hne
+    rw [h0] at hc; simpa using hc.symm
+  have hne1 : (analyticOrderAt xi ρ).toNat ≠ 1 := by
+    intro h1
+    rw [h1, pow_one] at hp
+    exact hram hp
+  omega
 
 end RHTower
