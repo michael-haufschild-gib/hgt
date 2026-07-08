@@ -79,6 +79,21 @@ theorem u0_mstep_independence_viable {b : ℂ}
     (hviab : ∀ z : ℂ, ‖z‖ ≤ 1 → z ∉ filledJulia b) : MStepIndependence b :=
   u0_mstep_independence hviab
 
+/-- **Sharp-threshold m-step branch existence.**  In the large-parameter regime
+`‖b‖ > 2+√2`, the explicit curve-sector escape theorem discharges the viable-region input of the
+m-step branch construction. -/
+theorem u0_mstep_branch_exists_of_gt_sharp {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
+    ∃ (r : ℝ) (N : ℕ), 1 < r ∧
+      AnalyticOnNhd ℂ (psiN b N) (ball (0 : ℂ) r) ∧ (∀ z : ℂ, psiN b N z ≠ 0) :=
+  exists_mstep_branch (U0CurveSectors.viable_of_gt_sharp hb)
+
+/-- **Sharp-threshold m-step independence.**  For every `‖b‖ > 2+√2`, the sharp
+large-parameter hypothesis itself supplies the only regime constraint needed by the viable-region
+m-step theorem. -/
+theorem u0_mstep_independence_of_gt_sharp {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
+    MStepIndependence b :=
+  u0_mstep_independence_viable (U0CurveSectors.viable_of_gt_sharp hb)
+
 /-- **The u₀ topic — the full unconditional capstone (pillars 2–4).**  In one axiom-clean statement:
 the closed viability boundary with a certified critical-curve point (pillar 2); the analytic m-step
 branch for every viable parameter (pillar 3); and — the newly closed gap — UNCONDITIONAL `u₀ ⟂ ψ`
@@ -126,6 +141,26 @@ theorem u0_kummer_tower_independence {b : ℂ}
         (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
           (u0AnSub annMB_subset_Ext)) :=
   U0KummerBranch.u0_mstep_kummer_branch_independence hviab k
+
+/-- **Sharp-threshold finite Kummer tower.**  For every `‖b‖ > 2+√2` and every finite Kummer
+level, the sharp large-parameter hypothesis discharges the viable-region input. -/
+theorem u0_kummer_tower_independence_of_gt_sharp {b : ℂ}
+    (hb : 2 + Real.sqrt 2 < ‖b‖) (k : ℕ) :
+    ∃ (r : ℝ) (N : ℕ) (hr : 1 < r) (χ : ℂ → ℂ)
+      (hχ : AnalyticOnNhd ℂ χ (ball (0 : ℂ) r)),
+      (∀ z, χ z ≠ 0) ∧
+      (∀ z ∈ ball (0 : ℂ) r, χ z ^ (2 ^ k) = psiN b N z) ∧
+      letI := isDomain_analyticSubring (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr)
+        (annMB_nonempty hr)
+      letI : Algebra (RatFunc ℂ) (meroField (annMB r)) :=
+        (ratfuncToMero (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr) (annMB_nonempty hr)
+          (annMB_infinite hr)).toAlgebra
+      NoRelation (RatFunc ℂ)
+        (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+          ⟨Germ.coeRingHom (𝓟 (annMB r)) χ, ⟨χ, hχ.mono inter_subset_left, rfl⟩⟩)
+        (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+          (u0AnSub annMB_subset_Ext)) :=
+  u0_kummer_tower_independence (U0CurveSectors.viable_of_gt_sharp hb) k
 
 /-- **The full u₀ Böttcher-tower capstone (pillars 1–5).**  This packages the whole
 current U0 proof surface in one theorem: the sharp `2+√2` window theorem with its exact

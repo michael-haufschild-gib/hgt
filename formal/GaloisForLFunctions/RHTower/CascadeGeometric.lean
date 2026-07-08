@@ -21,6 +21,7 @@ The analytic pushes here are what discharge the `hkill`-side hypotheses of
 the finite cascade bookkeeping in `SweepCascade`.
 -/
 import GaloisForLFunctions.RHTower.GaussLattice
+import GaloisForLFunctions.RHTower.CothInfra
 
 noncomputable section
 
@@ -213,5 +214,22 @@ theorem survival_floor {η : ℝ} {S : ℕ → ℝ} {K : ℕ}
   intro M hM
   have := h M hM
   linarith
+
+/-- **Collective push of the physical spectator-weight tail.**  For an increasing sequence `f`
+of positive pole positions, the resonance-lattice tail weighted by the spectator amplitude
+`rphi = csch² · coth` at those positions has net push at most `rphi (f 0) / |cos 2πp|`, for every
+truncation `K`.  The weight sequence `n ↦ rphi (f n)` is antitone because `rphi` is strictly
+decreasing on `(0, ∞)` and `f` is increasing, and nonnegative because `rphi > 0` there; the abstract
+`collective_push_le` bound then applies. -/
+theorem collective_push_rphi_le (p : ℝ) (hp : Real.cos (2 * Real.pi * p) ≠ 0)
+    {f : ℕ → ℝ} (hpos : ∀ n, 0 < f n) (hmono : Monotone f) (K : ℕ) :
+    ‖∑ m ∈ Finset.range K, (rphi (f m) : ℂ) *
+        Complex.exp (((-(Real.pi * (4 * p * m + (m : ℝ) ^ 2)) : ℝ) : ℂ) * Complex.I)‖
+      ≤ rphi (f 0) / |Real.cos (2 * Real.pi * p)| := by
+  refine collective_push_le p hp ?_ ?_ K
+  · intro m n hmn
+    exact rphi_strictAntiOn_pos.antitoneOn (Set.mem_Ioi.mpr (hpos m)) (Set.mem_Ioi.mpr (hpos n))
+      (hmono hmn)
+  · intro n; exact (rphi_pos_of_pos (hpos n)).le
 
 end RHTower

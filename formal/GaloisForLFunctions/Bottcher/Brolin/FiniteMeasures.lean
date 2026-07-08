@@ -95,21 +95,9 @@ theorem quadratic_sub_quadratic (c z w : ℂ) :
   rw [quadratic_apply, quadratic_apply]
   ring
 
-/-- The two preimages of a quadratic value are antipodal. -/
+/-- The two preimages of a quadratic value are antipodal (`Dynamics.quadratic_fiber`). -/
 theorem quadratic_eq_quadratic_iff (c z w : ℂ) :
-    quadratic c z = quadratic c w ↔ z = w ∨ z = -w := by
-  constructor
-  · intro h
-    have hmul : (z - w) * (z - -w) = 0 := by
-      rw [← quadratic_sub_quadratic c z w, h, sub_self]
-    rcases mul_eq_zero.mp hmul with hzw | hznw
-    · exact Or.inl (sub_eq_zero.mp hzw)
-    · exact Or.inr (sub_eq_zero.mp hznw)
-  · intro h
-    rcases h with rfl | hneg
-    · rfl
-    · rw [hneg]
-      simp [quadratic]
+    quadratic c z = quadratic c w ↔ z = w ∨ z = -w := quadratic_fiber
 
 /-- Away from the two antipodal singular fibers, the logarithmic kernel pulled
 back by the quadratic map splits into the two antipodal kernels. -/

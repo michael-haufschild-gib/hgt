@@ -43,6 +43,13 @@ theorem norm_dpoly_le (a : ℕ → ℝ) (s : Finset ℕ) (τ : ℝ) :
     rw [Complex.norm_exp, hre, Real.exp_zero]
   rw [hnexp, mul_one]
 
+/-- Evaluating a real polynomial at `x^2` expands over the degree range as the even-power sum
+`∑_{j≤deg} c_j · x^(2j)`. -/
+theorem sum_coeff_pow_two_mul_eq_eval_sq (q : Polynomial ℝ) (x : ℝ) :
+    ∑ j ∈ Finset.range (q.natDegree + 1), q.coeff j * x ^ (2 * j) = q.eval (x ^ 2) := by
+  rw [Polynomial.eval_eq_sum_range]
+  exact Finset.sum_congr rfl (fun j _ => by rw [pow_mul])
+
 /-- **The polynomial-majorant family for the carrier small-ball.** For every `δ > 0` there is
 a polynomial in `‖F‖²` majorizing the line failure indicator whose model expectation is within
 `δ` of the model small-ball measure. Instantiates the abstract Weierstrass majorant at the
@@ -77,24 +84,14 @@ theorem exists_poly_majorant_family
   refine ⟨q.natDegree, q.coeff, ?_, ?_, ?_⟩
   · -- ≥ 1 on the failure set
     intro τ hτ
-    have hexp : ∑ j ∈ range (q.natDegree + 1), q.coeff j * ‖dpoly a s τ‖ ^ (2 * j)
-        = q.eval (‖dpoly a s τ‖ ^ 2) := by
-      rw [Polynomial.eval_eq_sum_range]
-      apply Finset.sum_congr rfl
-      intro j _
-      rw [pow_mul]
+    have hexp := sum_coeff_pow_two_mul_eq_eval_sq q ‖dpoly a s τ‖
     rw [hexp]
     apply hq1
     refine ⟨by positivity, ?_⟩
     nlinarith [norm_nonneg (dpoly a s τ)]
   · -- ≥ 0 everywhere
     intro τ
-    have hexp : ∑ j ∈ range (q.natDegree + 1), q.coeff j * ‖dpoly a s τ‖ ^ (2 * j)
-        = q.eval (‖dpoly a s τ‖ ^ 2) := by
-      rw [Polynomial.eval_eq_sum_range]
-      apply Finset.sum_congr rfl
-      intro j _
-      rw [pow_mul]
+    have hexp := sum_coeff_pow_two_mul_eq_eval_sq q ‖dpoly a s τ‖
     rw [hexp]
     apply hq0
     refine ⟨by positivity, ?_⟩
@@ -124,10 +121,8 @@ theorem exists_poly_majorant_family
       rw [← integral_finsetSum _ (fun j _ => hint j)]
       apply MeasureTheory.integral_congr_ae
       filter_upwards with ω
-      rw [hYdef, Polynomial.eval_eq_sum_range]
-      apply Finset.sum_congr rfl
-      intro j _
-      rw [pow_mul]
+      rw [hYdef]
+      exact sum_coeff_pow_two_mul_eq_eval_sq q ‖∑ n ∈ s, (a n : ℂ) * X n ω‖
     rw [hlin]
     have hset : {ω : Omega | Y ω ≤ t₀ ^ 2}
         = {ω : Omega | ‖∑ n ∈ s, (a n : ℂ) * X n ω‖ ≤ t₀} := by

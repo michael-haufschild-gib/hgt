@@ -27,37 +27,10 @@ open Complex Metric
 /-- The union of the two slit annulus charts is the whole annulus: away from the centre
 every point avoids one of the two slits. -/
 theorem charts_union_eq_annulus (a : ℂ) {r₀ R : ℝ} (h0 : 0 ≤ r₀) :
-    chartRA a r₀ R ∪ chartLA a r₀ R = ball a R \ closedBall a r₀ := by
-  ext z
-  constructor
-  · rintro (hz | hz)
-    · exact hz.2
-    · exact hz.2
-  · intro hz
-    have hza : z ≠ a := by
-      intro h
-      exact hz.2 (by rw [h]; exact Metric.mem_closedBall_self h0)
-    have hzsub : z - a ≠ 0 := sub_ne_zero.mpr hza
-    by_cases him : (z - a).im ≠ 0
-    · left
-      exact ⟨Complex.mem_slitPlane_iff.mpr (Or.inr him), hz⟩
-    · have him' : (z - a).im = 0 := not_not.mp him
-      have hre : (z - a).re ≠ 0 := by
-        intro h
-        apply hzsub
-        apply Complex.ext
-        · rw [h, Complex.zero_re]
-        · rw [him', Complex.zero_im]
-      rcases lt_or_gt_of_ne hre with hlt | hgt
-      · right
-        refine ⟨Complex.mem_slitPlane_iff.mpr (Or.inl ?_), hz⟩
-        have h1 : (a - z).re = -((z - a).re) := by
-          rw [Complex.sub_re, Complex.sub_re]
-          ring
-        rw [h1]
-        linarith
-      · left
-        exact ⟨Complex.mem_slitPlane_iff.mpr (Or.inl hgt), hz⟩
+    chartRA a r₀ R ∪ chartLA a r₀ R = ball a R \ closedBall a r₀ :=
+  Set.Subset.antisymm
+    (Set.union_subset (fun _ hz => hz.2) (fun _ hz => hz.2))
+    (annulus_subset_charts h0)
 
 /-! ### Finiteness of the hole zeros -/
 

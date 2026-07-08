@@ -4926,6 +4926,17 @@ def MStepBranchExistsTarget : Prop :=
 theorem mstep_branch_exists_card : MStepBranchExistsTarget :=
   fun _ hv => U0PhiMStep.exists_mstep_branch hv
 
+/-- **Sharp-threshold m-step branch existence.**  The sharp large-parameter hypothesis
+`‖b‖ > 2+√2` discharges the viable-region input by `U0CurveSectors.viable_of_gt_sharp`. -/
+def MStepBranchExistsSharpTarget : Prop :=
+  ∀ b : ℂ, 2 + Real.sqrt 2 < ‖b‖ →
+    ∃ (r : ℝ) (N : ℕ), 1 < r ∧
+      AnalyticOnNhd ℂ (U0PhiMStep.psiN b N) (Metric.ball (0 : ℂ) r) ∧
+      (∀ z : ℂ, U0PhiMStep.psiN b N z ≠ 0)
+
+theorem mstep_branch_exists_sharp_card : MStepBranchExistsSharpTarget :=
+  fun _ hb => U0PhiMStep.exists_mstep_branch (U0CurveSectors.viable_of_gt_sharp hb)
+
 end FullyProvenNewTargets
 
 namespace FullyProvenNewTargets
@@ -4943,6 +4954,14 @@ def MStepIndependenceViableTarget : Prop :=
 
 theorem mstep_independence_viable_card : MStepIndependenceViableTarget :=
   fun _ hv => U0PhiMStepFar.u0_mstep_independence hv
+
+/-- **Sharp-threshold m-step independence.**  For every `‖b‖ > 2+√2`, the sharp
+large-parameter condition supplies the viable-region hypothesis needed by the m-step theorem. -/
+def MStepIndependenceSharpTarget : Prop :=
+  ∀ b : ℂ, 2 + Real.sqrt 2 < ‖b‖ → U0PhiMStepFar.MStepIndependence b
+
+theorem mstep_independence_sharp_card : MStepIndependenceSharpTarget :=
+  fun _ hb => U0PhiMStepFar.u0_mstep_independence (U0CurveSectors.viable_of_gt_sharp hb)
 
 /-- **First sub-threshold independence instance**: `u₀ ⟂ ψ` at `b = 3` — modulus `3 < 2+√2`, in a
 direction where the sharp window pass does not reach.  Witnesses that the unconditional m-step
@@ -4980,5 +4999,36 @@ def KummerBranchIndependenceTarget : Prop :=
 
 theorem kummer_branch_independence_card : KummerBranchIndependenceTarget :=
   fun _ hv k => U0KummerBranch.exists_analytic_root_psiN hv k
+
+/-- **Sharp-threshold finite Kummer tower with `u₀`-independence.**  For every
+`‖b‖ > 2+√2` and every finite Kummer level, the sharp large-parameter condition discharges the
+viable-region input and supplies a concrete analytic root branch with a `NoRelation` certificate
+against `u₀`. -/
+def KummerTowerIndependenceSharpTarget : Prop :=
+  ∀ (b : ℂ), 2 + Real.sqrt 2 < ‖b‖ → ∀ (k : ℕ),
+    ∃ (r : ℝ) (N : ℕ) (hr : 1 < r) (χ : ℂ → ℂ)
+      (hχ : AnalyticOnNhd ℂ χ (Metric.ball (0 : ℂ) r)),
+      (∀ z, χ z ≠ 0) ∧
+      (∀ z ∈ Metric.ball (0 : ℂ) r, χ z ^ (2 ^ k) = U0PhiMStep.psiN b N z) ∧
+      letI := isDomain_analyticSubring (U0MStepBranch.annMB r)
+        (U0MStepBranch.isOpen_annMB r) (U0MStepBranch.isPreconnected_annMB hr)
+        (U0MStepBranch.annMB_nonempty hr)
+      letI : Algebra (RatFunc ℂ) (meroField (U0MStepBranch.annMB r)) :=
+        (ratfuncToMero (U0MStepBranch.annMB r) (U0MStepBranch.isOpen_annMB r)
+          (U0MStepBranch.isPreconnected_annMB hr) (U0MStepBranch.annMB_nonempty hr)
+          (U0MStepBranch.annMB_infinite hr)).toAlgebra
+      NoRelation (RatFunc ℂ)
+        (algebraMap (analyticSubring (U0MStepBranch.annMB r))
+          (meroField (U0MStepBranch.annMB r))
+          ⟨Germ.coeRingHom (𝓟 (U0MStepBranch.annMB r)) χ,
+            ⟨χ, hχ.mono Set.inter_subset_left, rfl⟩⟩)
+        (algebraMap (analyticSubring (U0MStepBranch.annMB r))
+          (meroField (U0MStepBranch.annMB r))
+          (u0AnSub U0MStepBranch.annMB_subset_Ext))
+
+theorem kummer_tower_independence_sharp_card : KummerTowerIndependenceSharpTarget :=
+  fun _ hb k =>
+    U0KummerBranch.u0_mstep_kummer_branch_independence
+      (U0CurveSectors.viable_of_gt_sharp hb) k
 
 end FullyProvenNewTargets

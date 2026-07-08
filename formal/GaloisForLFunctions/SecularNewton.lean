@@ -1,5 +1,6 @@
 import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
 import Mathlib.Tactic
+import GaloisForLFunctions.MultisetNewton
 
 /-!
 # Secular Newton-duality: the power-sum face and the elementary-symmetric face are one object (Tier A)
@@ -62,11 +63,12 @@ theorem secular_newton (f : Fin n → ℂ) (k : ℕ) (hk : 0 < k) :
       (-1) ^ (k + 1) * (k : ℂ) * secularESymm f k -
         ∑ a ∈ (antidiagonal k).filter (fun a => a.1 ∈ Set.Ioo 0 k),
           (-1) ^ a.1 * secularESymm f a.1 * secularPowerSum f a.2 := by
-  have key := congrArg (MvPolynomial.aeval f)
-    (MvPolynomial.psum_eq_mul_esymm_sub_sum (Fin n) ℂ k hk)
-  rw [secularPowerSum_eq_aeval, key]
-  simp only [map_sub, map_mul, map_pow, map_neg, map_one, map_natCast, map_sum,
-    secularESymm, ← secularPowerSum_eq_aeval]
+  have hps : ∀ j : ℕ, secularPowerSum f j = (Finset.univ.val.map (fun i => f i ^ j)).sum :=
+    fun _ => rfl
+  have hes : ∀ j : ℕ, secularESymm f j = (Finset.univ.val.map f).esymm j :=
+    fun _ => by rw [secularESymm, MvPolynomial.aeval_esymm_eq_multiset_esymm]
+  simp only [hps, hes]
+  exact multiset_newton f k hk
 
 end
 

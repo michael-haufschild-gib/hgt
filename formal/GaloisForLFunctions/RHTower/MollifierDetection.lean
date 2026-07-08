@@ -2,7 +2,7 @@
 The mollified convolution collapses: `ζ·M` has vanishing coefficients below the cutoff.
 
 For the unit-coefficient Dirichlet polynomial `D_N = ∑_{n≤N} n^{-it}` (the ζ approximation) and the
-Möbius mollifier `M_y = ∑_{m≤y} μ(m) m^{-it}`, the product `D_N·M_y = dpoly(convCoeff)` has convolution
+Möbius mollifier `M_y = ∑_{m≤y} μ(m) m^{-it}`, the product `D_N·M_y = dpoly(dpolyConv)` has convolution
 coefficient at `k`:
 
   cₖ = ∑_{ab=k, a≤N, b≤y} 1·μ(b).
@@ -16,7 +16,8 @@ by the Möbius cancellation (`Mollifier.sum_moebius_divisors`).  Thus `D_N·M_y 
 coefficients for all `k ≤ min(N,y)`: the mollified product is `1` up to terms of index `> min(N,y)`,
 whose second moment (`SecondMoment`) is small — the input to Carlson's density bound.
 -/
-import GaloisForLFunctions.RHTower.DpolyConvolution
+import GaloisForLFunctions.RHTower.BohrMoments
+import GaloisForLFunctions.RHTower.DpolyHelpers
 import GaloisForLFunctions.RHTower.Mollifier
 import GaloisForLFunctions.RHTower.FourthMomentDiagonal
 
@@ -26,8 +27,8 @@ namespace RHTower
 
 /-- **The mollified convolution coefficient below the cutoff.**  For `1 ≤ k ≤ min(N, y)`, the
 Dirichlet-convolution coefficient of `1` against `μ` is the Möbius divisor sum, hence `[k = 1]`. -/
-theorem convCoeff_ones_moebius_eq {N y k : ℕ} (hk1 : 1 ≤ k) (hkN : k ≤ N) (hky : k ≤ y) :
-    convCoeff (fun _ => (1 : ℝ)) moebiusCoeff (Finset.Icc 1 N) (Finset.Icc 1 y) k
+theorem dpolyConv_ones_moebius_eq {N y k : ℕ} (hk1 : 1 ≤ k) (hkN : k ≤ N) (hky : k ≤ y) :
+    dpolyConv (fun _ => (1 : ℝ)) moebiusCoeff (Finset.Icc 1 N) (Finset.Icc 1 y) k
       = if k = 1 then 1 else 0 := by
   have hk0 : k ≠ 0 := by omega
   -- the fibre {(a,b) : ab=k, a≤N, b≤y} is exactly `k.divisorsAntidiagonal`
@@ -51,7 +52,7 @@ theorem convCoeff_ones_moebius_eq {N y k : ℕ} (hk1 : 1 ≤ k) (hkN : k ≤ N) 
       have hp1k : p.1 ≤ k := by rw [← hprod]; exact Nat.le_mul_of_pos_right _ hp2pos
       have hp2k : p.2 ≤ k := by rw [← hprod]; exact Nat.le_mul_of_pos_left _ hp1pos
       exact ⟨⟨⟨hp1pos, le_trans hp1k hkN⟩, ⟨hp2pos, le_trans hp2k hky⟩⟩, hprod⟩
-  rw [convCoeff, hfiber]
+  rw [dpolyConv, hfiber]
   simp only [one_mul, moebiusCoeff]
   rw [← Int.cast_sum,
     Nat.sum_divisorsAntidiagonal' (fun _ b => (ArithmeticFunction.moebius b : ℤ)),
@@ -85,13 +86,13 @@ theorem fiber_eq_divisorsAntidiagonal {N y k : ℕ} (hk1 : 1 ≤ k) (hkN : k ≤
 `k^{-σ}·[k = 1]`: the characters `n^{-σ}m^{-σ} = k^{-σ}` factor out of the fibre and the Möbius sum
 collapses.  This is the coefficient of `D_N(σ+·)·M_y(σ+·)`, whose high-index tail
 `∑_{k>min} k^{-2σ} d(k)²` is summable for `σ > 1/2` (via `DivisorBound`). -/
-theorem convCoeff_weighted_moebius_eq {N y k : ℕ} (σ : ℝ)
+theorem dpolyConv_weighted_moebius_eq {N y k : ℕ} (σ : ℝ)
     (hk1 : 1 ≤ k) (hkN : k ≤ N) (hky : k ≤ y) :
-    convCoeff (fun n => (n : ℝ) ^ (-σ))
+    dpolyConv (fun n => (n : ℝ) ^ (-σ))
         (fun m => (ArithmeticFunction.moebius m : ℝ) * (m : ℝ) ^ (-σ))
         (Finset.Icc 1 N) (Finset.Icc 1 y) k
       = (k : ℝ) ^ (-σ) * (if k = 1 then 1 else 0) := by
-  rw [convCoeff, fiber_eq_divisorsAntidiagonal hk1 hkN hky]
+  rw [dpolyConv, fiber_eq_divisorsAntidiagonal hk1 hkN hky]
   have hterm : ∀ p ∈ k.divisorsAntidiagonal,
       (p.1 : ℝ) ^ (-σ) * ((ArithmeticFunction.moebius p.2 : ℝ) * (p.2 : ℝ) ^ (-σ))
         = (k : ℝ) ^ (-σ) * (ArithmeticFunction.moebius p.2 : ℝ) := by
@@ -114,8 +115,8 @@ theorem convCoeff_weighted_moebius_eq {N y k : ℕ} (σ : ℝ)
 the `≤ d(k)` factorisations `ab=k` contributes `|a^{-σ}μ(b)b^{-σ}| ≤ (ab)^{-σ} = k^{-σ}` (as
 `|μ| ≤ 1`).  This feeds the tail bound `∑_{k>min}|cₖ|² ≤ ∑_{k>min} k^{-2σ}d(k)²`, summable for `σ > 1/2`
 via `DivisorBound`. -/
-theorem abs_convCoeff_weighted_le {N y : ℕ} (σ : ℝ) {k : ℕ} (hk1 : 1 ≤ k) :
-    |convCoeff (fun n => (n : ℝ) ^ (-σ))
+theorem abs_dpolyConv_weighted_le {N y : ℕ} (σ : ℝ) {k : ℕ} (hk1 : 1 ≤ k) :
+    |dpolyConv (fun n => (n : ℝ) ^ (-σ))
         (fun m => (ArithmeticFunction.moebius m : ℝ) * (m : ℝ) ^ (-σ))
         (Finset.Icc 1 N) (Finset.Icc 1 y) k|
       ≤ (k : ℝ) ^ (-σ) * (k.divisors.card : ℝ) := by
@@ -129,7 +130,7 @@ theorem abs_convCoeff_weighted_le {N y : ℕ} (σ : ℝ) {k : ℕ} (hk1 : 1 ≤ 
   have hcard : k.divisorsAntidiagonal.card = k.divisors.card := by
     rw [Finset.card_eq_sum_ones, Finset.card_eq_sum_ones,
       ← Nat.sum_divisorsAntidiagonal (fun _ _ => (1 : ℕ))]
-  rw [convCoeff]
+  rw [dpolyConv]
   calc |∑ p ∈ fib, (p.1 : ℝ) ^ (-σ)
           * ((ArithmeticFunction.moebius p.2 : ℝ) * (p.2 : ℝ) ^ (-σ))|
       ≤ ∑ p ∈ fib, |(p.1 : ℝ) ^ (-σ)
@@ -157,7 +158,7 @@ theorem abs_convCoeff_weighted_le {N y : ℕ} (σ : ℝ) {k : ℕ} (hk1 : 1 ≤ 
 
 /-- The **σ-weighted detection coefficient** `eₖ(σ) = cₖ(σ) − [k = 1]` of `D_N(σ+·)·M_y(σ+·) − 1`. -/
 noncomputable def detCoeffW (N y : ℕ) (σ : ℝ) (k : ℕ) : ℝ :=
-  convCoeff (fun n => (n : ℝ) ^ (-σ))
+  dpolyConv (fun n => (n : ℝ) ^ (-σ))
       (fun m => (ArithmeticFunction.moebius m : ℝ) * (m : ℝ) ^ (-σ))
       (Finset.Icc 1 N) (Finset.Icc 1 y) k
     - (if k = 1 then 1 else 0)
@@ -167,7 +168,7 @@ noncomputable def detCoeffW (N y : ℕ) (σ : ℝ) (k : ℕ) : ℝ :=
 fires), the detection polynomial `D_N(σ+·)·M_y(σ+·) − 1` is supported on `k > min(N, y)`. -/
 theorem detCoeffW_eq_zero_of_le {N y k : ℕ} (σ : ℝ)
     (hk1 : 1 ≤ k) (hkN : k ≤ N) (hky : k ≤ y) : detCoeffW N y σ k = 0 := by
-  rw [detCoeffW, convCoeff_weighted_moebius_eq σ hk1 hkN hky]
+  rw [detCoeffW, dpolyConv_weighted_moebius_eq σ hk1 hkN hky]
   rcases eq_or_ne k 1 with hk | hk
   · subst hk; simp
   · simp [hk]
@@ -176,7 +177,7 @@ theorem detCoeffW_eq_zero_of_le {N y k : ℕ} (σ : ℝ)
 theorem abs_detCoeffW_le {N y k : ℕ} (σ : ℝ) (hk1 : 1 ≤ k) (hk : k ≠ 1) :
     |detCoeffW N y σ k| ≤ (k : ℝ) ^ (-σ) * (k.divisors.card : ℝ) := by
   rw [detCoeffW, if_neg hk, sub_zero]
-  exact abs_convCoeff_weighted_le σ hk1
+  exact abs_dpolyConv_weighted_le σ hk1
 
 /-- `(detCoeffW k)² ≤ d(k)² k^{-2σ}` above the cutoff. -/
 theorem sq_detCoeffW_le {N y k : ℕ} (σ : ℝ) (hk1 : 1 ≤ k) (hk : k ≠ 1) :
@@ -191,11 +192,11 @@ theorem sq_detCoeffW_le {N y k : ℕ} (σ : ℝ) (hk1 : 1 ≤ k) (hk : k ≠ 1) 
     _ = (k.divisors.card : ℝ) ^ 2 * (k : ℝ) ^ (-2 * σ) := by rw [mul_pow, hrpow]; ring
 
 /-- **The detection diagonal is bounded by the summable tail.**  For `σ > 1/2` and cutoff `min ≥ 1`,
-the detection diagonal `∑_{k∈convSupp, k>min} eₖ(σ)²` is at most the tail
+the detection diagonal `∑_{k∈prodSupport, k>min} eₖ(σ)²` is at most the tail
 `∑'_{k} 𝟙_{k>min} d(k)² k^{-2σ}` of the convergent divisor-square series.  With
 `tendsto_divisor_sq_rpow_tail_zero`, this diagonal `→ 0` as `min → ∞`. -/
 theorem detection_diagonal_le_tsum {N y : ℕ} (σ : ℝ) (hσ : 1 / 2 < σ) (hmin : 1 ≤ min N y) :
-    ∑ k ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
+    ∑ k ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
         (detCoeffW N y σ k) ^ 2
       ≤ ∑' k : ℕ, Set.indicator {j | min N y < j}
           (fun k => (k.divisors.card : ℝ) ^ 2 * (k : ℝ) ^ (-2 * σ)) k := by
@@ -203,9 +204,9 @@ theorem detection_diagonal_le_tsum {N y : ℕ} (σ : ℝ) (hσ : 1 / 2 < σ) (hm
   have hgnn : ∀ k, 0 ≤ g k := fun k => by rw [hg_def]; positivity
   have hind_summable : Summable (Set.indicator {j | min N y < j} g) :=
     (summable_divisor_sq_rpow hσ).indicator _
-  calc ∑ k ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
+  calc ∑ k ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
           (detCoeffW N y σ k) ^ 2
-      ≤ ∑ k ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
+      ≤ ∑ k ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
           Set.indicator {j | min N y < j} g k := by
         apply Finset.sum_le_sum
         intro k hk
@@ -220,7 +221,7 @@ theorem detection_diagonal_le_tsum {N y : ℕ} (σ : ℝ) (hσ : 1 / 2 < σ) (hm
 
 /-- The **detection coefficient** `eₖ = cₖ − [k = 1]` of `D_N·M_y − 1`. -/
 noncomputable def detCoeff (N y : ℕ) (k : ℕ) : ℝ :=
-  convCoeff (fun _ => (1 : ℝ)) moebiusCoeff (Finset.Icc 1 N) (Finset.Icc 1 y) k
+  dpolyConv (fun _ => (1 : ℝ)) moebiusCoeff (Finset.Icc 1 N) (Finset.Icc 1 y) k
     - (if k = 1 then 1 else 0)
 
 /-- **The detection polynomial vanishes below the cutoff.**  For `1 ≤ k ≤ min(N, y)`, the coefficient
@@ -228,12 +229,12 @@ of `D_N·M_y − 1` at `k` is zero: the mollified product agrees with `1` on all
 so `D_N·M_y − 1` is supported on `k > min(N, y)` — the regime where its second moment is small. -/
 theorem detCoeff_eq_zero_of_le {N y k : ℕ} (hk1 : 1 ≤ k) (hkN : k ≤ N) (hky : k ≤ y) :
     detCoeff N y k = 0 := by
-  rw [detCoeff, convCoeff_ones_moebius_eq hk1 hkN hky, sub_self]
+  rw [detCoeff, dpolyConv_ones_moebius_eq hk1 hkN hky, sub_self]
 
 /-- Every index in the convolution support is `≥ 1` (it is a product of numbers `≥ 1`). -/
-theorem one_le_of_mem_convSupp {N y k : ℕ}
-    (hk : k ∈ convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)) : 1 ≤ k := by
-  rw [convSupp, Finset.mem_image] at hk
+theorem one_le_of_mem_prodSupport_Icc {N y k : ℕ}
+    (hk : k ∈ prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)) : 1 ≤ k := by
+  rw [prodSupport, Finset.mem_image] at hk
   obtain ⟨p, hp, hpk⟩ := hk
   rw [Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc] at hp
   rw [← hpk]
@@ -244,14 +245,14 @@ theorem one_le_of_mem_convSupp {N y k : ℕ}
 `k ≤ min(N, y)`, the diagonal `∑_k eₖ²` of the detection polynomial `D_N·M_y − 1` runs only over
 indices `k > min(N, y)`: its `L²` mass lives entirely above the cutoff. -/
 theorem detection_diagonal_tail (N y : ℕ) :
-    ∑ k ∈ convSupp (Finset.Icc 1 N) (Finset.Icc 1 y), (detCoeff N y k) ^ 2
-      = ∑ k ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
+    ∑ k ∈ prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y), (detCoeff N y k) ^ 2
+      = ∑ k ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
           (detCoeff N y k) ^ 2 := by
   refine (Finset.sum_filter_of_ne ?_).symm
   intro k hk hne
   by_contra hle
   rw [not_lt] at hle
-  have hk1 : 1 ≤ k := one_le_of_mem_convSupp hk
+  have hk1 : 1 ≤ k := one_le_of_mem_prodSupport_Icc hk
   have hz : detCoeff N y k = 0 :=
     detCoeff_eq_zero_of_le hk1 (le_trans hle (min_le_left _ _)) (le_trans hle (min_le_right _ _))
   rw [hz] at hne
@@ -262,28 +263,29 @@ coefficients equals the mollified unit polynomial minus one: `dpoly(detCoeff) = 
 `D_N = ∑_{n≤N} n^{-it}`.  Combined with `detection_diagonal_tail`, its `L²` mass lives above the cutoff;
 combined with the AFE (`ζ ≈ D_N`), it is `≈ −1` at each ζ-zero. -/
 theorem detection_poly_eq {N y : ℕ} (hN : 1 ≤ N) (hy : 1 ≤ y) (t : ℝ) :
-    dpoly (detCoeff N y) (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)) t
+    dpoly (detCoeff N y) (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)) t
       = dpoly (fun _ => (1 : ℝ)) (Finset.Icc 1 N) t * mollifier y t - 1 := by
-  have h1mem : (1 : ℕ) ∈ convSupp (Finset.Icc 1 N) (Finset.Icc 1 y) := by
-    rw [convSupp, Finset.mem_image]
+  have h1mem : (1 : ℕ) ∈ prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y) := by
+    rw [prodSupport, Finset.mem_image]
     exact ⟨(1, 1), by rw [Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc]; omega, by norm_num⟩
-  have hdc : detCoeff N y = fun k => convCoeff (fun _ => (1 : ℝ)) moebiusCoeff
+  have hdc : detCoeff N y = fun k => dpolyConv (fun _ => (1 : ℝ)) moebiusCoeff
       (Finset.Icc 1 N) (Finset.Icc 1 y) k - (if k = 1 then (1 : ℝ) else 0) := rfl
   rw [hdc, dpoly_sub, dpoly_onehot _ _ h1mem]
   congr 1
-  rw [mollifier, ← dpoly_mul_eq_dpoly (fun _ => (1 : ℝ)) moebiusCoeff (Finset.Icc 1 N)
-    (Finset.Icc 1 y) t (fun m hm => (Finset.mem_Icc.mp hm).1) (fun n hn => (Finset.mem_Icc.mp hn).1)]
+  rw [mollifier, ← dpoly_mul (fun _ => (1 : ℝ)) moebiusCoeff (Finset.Icc 1 N)
+    (Finset.Icc 1 y) (fun m hm => Nat.one_le_iff_ne_zero.mp (Finset.mem_Icc.mp hm).1)
+    (fun n hn => Nat.one_le_iff_ne_zero.mp (Finset.mem_Icc.mp hn).1) t]
 
 /-- **The detection second moment lives above the cutoff.**  The window `L²` mass of the detection
 polynomial `D_N·M_y − 1` is its Montgomery–Vaughan mean value whose diagonal main term
 `U·∑ₖ eₖ²` runs only over `k > min(N, y)` (by `detection_diagonal_tail`), plus the off-diagonal
 remainder.  So the detection `L²` mass is carried entirely by the high-index tail. -/
 theorem detection_secondMoment (N y : ℕ) (T U : ℝ) :
-    (∫ t in T..T + U, ‖dpoly (detCoeff N y) (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)) t‖ ^ 2)
-      = U * (∑ k ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
+    (∫ t in T..T + U, ‖dpoly (detCoeff N y) (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)) t‖ ^ 2)
+      = U * (∑ k ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
               (detCoeff N y k) ^ 2)
-        + ∑ m ∈ convSupp (Finset.Icc 1 N) (Finset.Icc 1 y),
-            ∑ n ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).erase m,
+        + ∑ m ∈ prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y),
+            ∑ n ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).erase m,
               detCoeff N y m * detCoeff N y n * cosInt (Real.log n - Real.log m) T U := by
   rw [secondMoment_meanValue, detection_diagonal_tail]
 
@@ -303,7 +305,7 @@ derivative detection polynomial `E' = −i·dpoly(eₖ·log k)` is
 `∑_{k>min}(eₖ log k)² ≤ ∑'𝟙_{k>min} d(k)²k^{-2σ}(log k)² → 0`, via `sq_detCoeffW_log_le` and
 `summable_divisor_sq_log_rpow`.  This bounds `∫‖E'‖²`, the second term in the large-values inequality. -/
 theorem detection_deriv_diagonal_le_tsum {N y : ℕ} (σ : ℝ) (hσ : 1 / 2 < σ) (hmin : 1 ≤ min N y) :
-    ∑ k ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
+    ∑ k ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
         (detCoeffW N y σ k * Real.log k) ^ 2
       ≤ ∑' k : ℕ, Set.indicator {j | min N y < j}
           (fun k => (k.divisors.card : ℝ) ^ 2 * ((k : ℝ) ^ (-2 * σ) * (Real.log k) ^ 2)) k := by
@@ -312,9 +314,9 @@ theorem detection_deriv_diagonal_le_tsum {N y : ℕ} (σ : ℝ) (hσ : 1 / 2 < �
   have hgnn : ∀ k, 0 ≤ g k := fun k => by rw [hg_def]; positivity
   have hind_summable : Summable (Set.indicator {j | min N y < j} g) :=
     (summable_divisor_sq_log_rpow hσ).indicator _
-  calc ∑ k ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
+  calc ∑ k ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
           (detCoeffW N y σ k * Real.log k) ^ 2
-      ≤ ∑ k ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
+      ≤ ∑ k ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
           Set.indicator {j | min N y < j} g k := by
         apply Finset.sum_le_sum
         intro k hk
@@ -328,10 +330,10 @@ theorem detection_deriv_diagonal_le_tsum {N y : ℕ} (σ : ℝ) (hσ : 1 / 2 < �
         hind_summable.sum_le_tsum _ (fun k _ => Set.indicator_nonneg (fun j _ => hgnn j) k)
 
 /-- The convolution support lies in `[1, N·y]` (products of factors `≤ N`, `≤ y`). -/
-theorem convSupp_subset_Icc (N y : ℕ) :
-    convSupp (Finset.Icc 1 N) (Finset.Icc 1 y) ⊆ Finset.Icc 1 (N * y) := by
+theorem prodSupport_subset_Icc (N y : ℕ) :
+    prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y) ⊆ Finset.Icc 1 (N * y) := by
   intro k hk
-  rw [convSupp, Finset.mem_image] at hk
+  rw [prodSupport, Finset.mem_image] at hk
   obtain ⟨p, hp, hpk⟩ := hk
   rw [Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc] at hp
   rw [Finset.mem_Icc, ← hpk]
@@ -339,16 +341,16 @@ theorem convSupp_subset_Icc (N y : ℕ) :
   calc 1 ≤ p.1 := hp.1.1
     _ ≤ p.1 * p.2 := Nat.le_mul_of_pos_right _ (by omega)
 
-/-- The σ-weighted detection diagonal `∑_{k∈convSupp} eₖ(σ)²` runs only over `k > min(N,y)`. -/
+/-- The σ-weighted detection diagonal `∑_{k∈prodSupport} eₖ(σ)²` runs only over `k > min(N,y)`. -/
 theorem detectionW_diagonal_tail (N y : ℕ) (σ : ℝ) :
-    ∑ k ∈ convSupp (Finset.Icc 1 N) (Finset.Icc 1 y), (detCoeffW N y σ k) ^ 2
-      = ∑ k ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
+    ∑ k ∈ prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y), (detCoeffW N y σ k) ^ 2
+      = ∑ k ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).filter (fun k => min N y < k),
           (detCoeffW N y σ k) ^ 2 := by
   refine (Finset.sum_filter_of_ne ?_).symm
   intro k hk hne
   by_contra hle
   rw [not_lt] at hle
-  have hk1 : 1 ≤ k := one_le_of_mem_convSupp hk
+  have hk1 : 1 ≤ k := one_le_of_mem_prodSupport_Icc hk
   have hz : detCoeffW N y σ k = 0 :=
     detCoeffW_eq_zero_of_le σ hk1 (le_trans hle (min_le_left _ _)) (le_trans hle (min_le_right _ _))
   rw [hz] at hne; simp at hne

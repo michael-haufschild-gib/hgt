@@ -1,6 +1,5 @@
 /-
-The quadrant–seam conservation conjecture: its refutation as a topological statement, and the
-reduction of its ξ-content to `RH₂` via a zero-density contradiction.
+The quadrant–seam conservation conjecture: its refutation as a topological statement.
 
 For the descended carrier `X(u) = ξ(½ + √u)` (`xiDescent`) the conjecture reads: every nonzero
 quadrant-local rung-1 deck charge off the seam must pair with an equal-and-opposite seam charge or
@@ -26,16 +25,12 @@ needs beyond conservation and the drain:
   pair, so seam evenness does not forbid odd quadrant charge.  At rung 1 "equal and opposite" is
   vacuous (`wCharge_two_neg_self`): in `ZMod 2` a charge equals its own negation.
 
-**The reduction (`rhLadder_one_of_recurrence_of_density`).**  What survives is a zero-density
-contradiction.  A right-half ξ-zero of odd order is a defect (`XiDefect`).  If a single defect forces
-a linear lower bound on the right-half zero count (`DefectRecurrence` — the open replication core) and
-the count is sublinear (`SubLinearDensity` — Ingham's zero-density), the two are incompatible
-(`not_linearLowerBound_of_subLinear`).  Hence no defect exists: every right-half ξ-zero has even
-multiplicity, i.e. `RHLadder 1`.  The two named inputs are exactly the doc's reduced open core.
+What survives conservation and the drain is only a topological negative: the naive premises do not
+force `w₁ = 0` off the seam.  A right-half ξ-zero of odd order is a *defect* (`XiDefect`); whether
+defects can exist is not settled by the seam-parity or drain arguments refuted here.
 -/
 import GaloisForLFunctions.RHTower.ChargeMotion
 import GaloisForLFunctions.RHTower.UPlaneDescent
-import GaloisForLFunctions.RHTower.RHLadderTheory
 import GaloisForLFunctions.RHTower.FarFieldAnchor
 import GaloisForLFunctions.RHTower.CarrierDeckCharge
 
@@ -177,7 +172,7 @@ theorem naive_seam_parity_insufficient :
   · rw [coll_seam_order]; decide
   · rw [carrierCharge_one_eq_neg_one_pow, coll_upper_order]; norm_num
 
-/-! ### The reduction: a zero-density contradiction gives `RH₂` -/
+/-! ### The defect object: an off-line odd-order ξ-zero -/
 
 /-- A **right-half ξ-defect**: a zero right of the critical line carrying nontrivial rung-1 deck
 charge, i.e. of odd multiplicity.  This is the `w₁ = 1` box datum localized to a point (a small box
@@ -190,45 +185,8 @@ theorem xiDefect_charge_iff_odd (ρ : ℂ) :
   rw [ne_eq, carrierCharge_eq_one_iff_dvd, pow_one, Nat.two_dvd_ne_zero]
   exact Nat.odd_iff.symm
 
-/-- **Linear lower bound** on a height-count `N`: a positive density `c` from some point on. -/
-def LinearLowerBound (N : ℝ → ℝ) (c : ℝ) : Prop := ∃ T₀, ∀ T ≥ T₀, c * T ≤ N T
+-- (The zero-density → RH₂ reduction that once lived here is removed: it framed progress as a
+-- `T → ∞` flow toward RH₂, not as a constraint, and its density inputs were textbook.)
 
-/-- **Sublinear (Ingham) density**: the count is `o(T)`. -/
-def SubLinearDensity (N : ℝ → ℝ) : Prop := ∀ ε > 0, ∃ T₀, ∀ T ≥ T₀, N T ≤ ε * T
-
-/-- **Density incompatibility.**  A positive linear lower bound and a sublinear upper bound on the
-same count are contradictory: choosing `ε = c/2` beats the linear floor at any large height. -/
-theorem not_linearLowerBound_of_subLinear {N : ℝ → ℝ} {c : ℝ} (hc : 0 < c)
-    (hlow : LinearLowerBound N c) (hsub : SubLinearDensity N) : False := by
-  obtain ⟨T₁, hT₁⟩ := hlow
-  obtain ⟨T₂, hT₂⟩ := hsub (c / 2) (by positivity)
-  set T := max (max T₁ T₂) 1 with hTdef
-  have hTpos : (0 : ℝ) < T := lt_of_lt_of_le one_pos (le_max_right _ _)
-  have h1 : c * T ≤ N T := hT₁ T (le_trans (le_max_left _ _) (le_max_left _ _))
-  have h2 : N T ≤ (c / 2) * T := hT₂ T (le_trans (le_max_right _ _) (le_max_left _ _))
-  nlinarith [h1, h2, mul_pos hc hTpos]
-
-/-- **Reduced `RH₂` theorem** (the surviving ξ-content of the quadrant–seam conjecture).  Let `N`
-count right-half ξ-zeros up to height `T`.  Suppose:
-
-* **Defect recurrence** — a single odd right-half zero forces a positive linear lower bound on `N`
-  (one defect replicates to a relatively dense family, each box contributing a zero); and
-* **Sublinear density** — `N T = o(T)` (Ingham's zero-density estimate).
-
-Then no right-half ξ-zero has odd order: every zero right of the critical line has even multiplicity,
-i.e. `RHLadder 1`.  The proof is the density contradiction: a defect would make `N` both linearly
-bounded below and sublinearly bounded above.  The two hypotheses are precisely the reduced open core —
-replication (open) and zero-density (classical, absent from mathlib; built in `ZeroDensityEngine`). -/
-theorem rhLadder_one_of_recurrence_of_density {N : ℝ → ℝ} {c : ℝ} (hc : 0 < c)
-    (hrec : (∃ ρ, XiDefect ρ) → LinearLowerBound N c)
-    (hden : SubLinearDensity N) : RHLadder 1 := by
-  rw [rhLadder_iff_toNat_dvd]
-  intro ρ hρ hz
-  rw [pow_one]
-  by_contra hodd
-  have hdef : XiDefect ρ :=
-    ⟨hρ, hz, (xiDefect_charge_iff_odd ρ).mpr
-      (Nat.odd_iff.mpr (Nat.two_dvd_ne_zero.mp hodd))⟩
-  exact not_linearLowerBound_of_subLinear hc (hrec ⟨ρ, hdef⟩) hden
 
 end RHTower

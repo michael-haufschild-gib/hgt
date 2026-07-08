@@ -298,11 +298,6 @@ theorem mixedDiffA_zero_of_gt {N : ℕ} (h : Fin (N + 1) → Polynomial ℂ) (T 
   rw [if_neg (by omega), if_neg (by omega), dif_pos (by omega), if_neg (by omega)]
   ring
 
-/-- Finite sums distribute over polynomial composition. -/
-theorem finsetSum_comp {ι : Type*} (s : Finset ι) (f : ι → Polynomial ℂ) (q : Polynomial ℂ) :
-    (∑ i ∈ s, f i).comp q = ∑ i ∈ s, (f i).comp q := by
-  simp [Polynomial.comp, Polynomial.eval₂_finsetSum]
-
 /-- **The constants endgame.**  A mixed multi-ray relation whose harmonic coefficients are
 constants forces those constants to vanish: one difference produces a harmonic-free relation,
 compression and `multiRay_nat_relation_poly_kill` kill every compressed ray, and the compressed
@@ -445,7 +440,7 @@ theorem constants_harmonic_kill {N : ℕ} {s : ℂ} (hs : ∀ k : ℤ, s ≠ (k 
     have h0 := congrArg (fun p : Polynomial ℂ =>
       p.comp (Polynomial.X + Polynomial.C ((t : ℕ) : ℂ))) (hSPt0 t ht)
     simp only [Polynomial.zero_comp] at h0
-    rw [hSPtdef, finsetSum_comp] at h0
+    rw [hSPtdef, Polynomial.sum_comp] at h0
     have hper : ∀ i ∈ (Finset.univ : Finset (Fin (N + 1))),
         (mixedDiffA h T A t i
           * (Polynomial.X - Polynomial.C ((t : ℕ) : ℂ)) ^ (N - (i : ℕ))).comp

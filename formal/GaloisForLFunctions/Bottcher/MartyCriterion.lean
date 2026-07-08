@@ -22,16 +22,12 @@ open Complex Metric Set Filter Topology BoundedContinuousFunction
 namespace Bottcher
 
 theorem norm_stereo_eq_one (z : ℂ) : ‖stereo z‖ = 1 := by
+  rw [stereo, norm_euclidean3, Real.sqrt_eq_one]
   have hzn : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by rw [Complex.sq_norm, Complex.normSq_apply]; ring
-  have hsq : ‖stereo z‖ ^ 2 = 1 := by
-    rw [EuclideanSpace.norm_eq, Real.sq_sqrt (by positivity), Fin.sum_univ_three]
-    simp only [stereo, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val,
-      Fin.isValue, Real.norm_eq_abs, sq_abs]
-    rw [hzn]
-    have hd : (1:ℝ) + (z.re^2 + z.im^2) ≠ 0 :=
-      (show (0:ℝ) < 1 + (z.re^2+z.im^2) by nlinarith [mul_self_nonneg z.re, mul_self_nonneg z.im]).ne'
-    field_simp; ring
-  nlinarith [norm_nonneg (stereo z), hsq]
+  rw [hzn]
+  have hd : (1:ℝ) + (z.re^2 + z.im^2) ≠ 0 :=
+    (show (0:ℝ) < 1 + (z.re^2+z.im^2) by nlinarith [mul_self_nonneg z.re, mul_self_nonneg z.im]).ne'
+  field_simp; ring
 
 theorem continuous_stereo : Continuous stereo := by
   have hden : ∀ z : ℂ, (1 : ℝ) + ‖z‖ ^ 2 ≠ 0 := fun z => (by positivity : (0:ℝ) < 1 + ‖z‖^2).ne'

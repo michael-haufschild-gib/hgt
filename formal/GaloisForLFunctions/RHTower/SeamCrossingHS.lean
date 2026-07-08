@@ -84,4 +84,55 @@ realized as `hsNormSq_nonneg`. -/
 theorem weil_crossing_energy_nonneg (c : ℂ) (r : ℕ) : 0 ≤ hsNormSq (c • crossKernel r) :=
   hsNormSq_nonneg _
 
+/-- **The crossing operators are nonzero.**  For `r ≥ 1`, `crossKernel r ≠ 0`, since its
+Hilbert-Schmidt norm square is `r` (`hsNormSq_crossKernel`) and the form is positive-definite
+(`hsNormSq_eq_zero_iff`). -/
+theorem crossKernel_ne_zero {r : ℕ} (hr : 1 ≤ r) : crossKernel r ≠ 0 := by
+  have hz := hsNormSq_eq_zero_iff (isHS_crossKernel r)
+  rw [hsNormSq_crossKernel] at hz
+  intro h
+  exact absurd (hz.mpr h) (by exact_mod_cast Nat.one_le_iff_ne_zero.mp hr)
+
+/-- **The crossing tower is linearly independent.**  The operators `{crossKernel (r+1) : r ∈ ℕ}` are
+`ℂ`-linearly independent: their Hilbert-Schmidt Gram matrix `⟨B_r, B_s⟩ = r·δ_{r,s}`
+(`hsInner_crossKernel`) is diagonal with nonzero diagonal, so pairing any finite vanishing combination
+`∑ᵣ gᵣ • B_{r+1} = 0` with `B_{t+1}` isolates `conj(g_t)·(t+1) = 0`, forcing `g_t = 0`.  The seam carries
+infinitely many independent crossing modes -- an infinite-rank orthogonal family in the
+Hilbert-Schmidt ideal. -/
+theorem linearIndependent_crossKernel :
+    LinearIndependent ℂ (fun r : ℕ => crossKernel (r + 1)) := by
+  rw [linearIndependent_iff']
+  intro s g hsum t ht
+  have hIsHS : ∀ r ∈ s, IsHS (g r • crossKernel (r + 1)) :=
+    fun r _ => (isHS_crossKernel (r + 1)).smul (g r)
+  have hpair := hsInner_sum_left s (fun r => g r • crossKernel (r + 1))
+    (crossKernel (t + 1)) hIsHS (isHS_crossKernel (t + 1))
+  rw [hsum, hsInner_zero_left] at hpair
+  simp only [hsInner_smul_left, hsInner_crossKernel] at hpair
+  rw [Finset.sum_eq_single t
+    (fun b _ hbt => by rw [if_neg (by omega : b + 1 ≠ t + 1), mul_zero])
+    (fun h => absurd ht h), if_pos rfl] at hpair
+  have hconj : (starRingEnd ℂ) (g t) = 0 := by
+    rcases mul_eq_zero.mp hpair.symm with h | h
+    · exact h
+    · exact absurd h (by exact_mod_cast (Nat.succ_ne_zero t))
+  simpa using congrArg (starRingEnd ℂ) hconj
+
+/-- **Strict Weil positivity of the crossing tower.**  Any nonzero finite superposition of crossing
+operators has strictly positive Hilbert-Schmidt energy: if `c r₀ ≠ 0` for some `r₀ ∈ s`, then
+`0 < ‖∑_{r∈s} c_r · B_{r+1}‖²_HS`.  By linear independence (`linearIndependent_crossKernel`) the
+combination is nonzero, and positive-definiteness (`hsNormSq_eq_zero_iff`) turns nonvanishing into
+strict positivity.  This is the moonshot's Weil-form positivity in its sharp form -- not merely `≥ 0`
+per single crossing, but `> 0` on every nonzero vector of the infinite-rank crossing subspace. -/
+theorem weil_energy_pos {s : Finset ℕ} {c : ℕ → ℂ} (r₀ : ℕ) (hr₀ : r₀ ∈ s) (hc : c r₀ ≠ 0) :
+    0 < hsNormSq (∑ r ∈ s, c r • crossKernel (r + 1)) := by
+  have hIsHS : IsHS (∑ r ∈ s, c r • crossKernel (r + 1)) :=
+    isHS_sum s _ (fun r _ => (isHS_crossKernel (r + 1)).smul (c r))
+  have hne : (∑ r ∈ s, c r • crossKernel (r + 1)) ≠ 0 := by
+    intro h
+    exact hc ((linearIndependent_iff'.mp linearIndependent_crossKernel) s c h r₀ hr₀)
+  rcases (hsNormSq_nonneg _).lt_or_eq with hlt | heq
+  · exact hlt
+  · exact absurd ((hsNormSq_eq_zero_iff hIsHS).mp heq.symm) hne
+
 end RHTower

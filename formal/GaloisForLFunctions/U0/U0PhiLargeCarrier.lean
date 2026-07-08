@@ -103,11 +103,42 @@ theorem pMapB_mem_farB {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) {z :
     (hz : z ∈ annWB b) : pMapB b m z ∈ farB b :=
   farB_iterate (norm_gt_two hb) m (quadB_mem_farB hb (annWB_subset_ball hz))
 
-/-- The dyadic pullback chain lands on `pMapB`. -/
-theorem phiB_pow_pMapB {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) {z : ℂ}
-    (hz : z ∈ annWB b) :
+/-- The dyadic pullback chain lands on `pMapB` on the whole sharp disk. -/
+theorem phiB_pow_pMapB_of_mem_ball {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) {z : ℂ}
+    (hz : z ∈ ball (0 : ℂ) (rB b)) :
     phiB b z ^ (2 ^ (m + 1)) = bottcherCoord b (pMapB b m z) :=
-  phiB_pow_iterate hb (annWB_subset_ball hz) m
+  phiB_pow_iterate hb hz m
+
+/-- The dyadic pullback identity with disk membership carried by the point subtype. -/
+theorem phiB_pow_pMapB_on_ball {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ)
+    (z : ball (0 : ℂ) (rB b)) :
+    phiB b z ^ (2 ^ (m + 1)) = bottcherCoord b (pMapB b m z) :=
+  phiB_pow_pMapB_of_mem_ball hb m z.property
+
+/-- The dyadic pullback identity with both sharpness and disk membership carried by subtypes. -/
+theorem phiB_pow_pMapB_on_sharpBall (b : {b : ℂ // 2 + Real.sqrt 2 < ‖b‖}) (m : ℕ)
+    (z : ball (0 : ℂ) (rB (b : ℂ))) :
+    phiB (b : ℂ) z ^ (2 ^ (m + 1)) = bottcherCoord (b : ℂ) (pMapB (b : ℂ) m z) :=
+  phiB_pow_pMapB_of_mem_ball b.property m z.property
+
+/-- The dyadic pullback chain lands on `pMapB`, with the sharp parameter regime and annulus
+membership carried by the parameter types. -/
+theorem phiB_pow_pMapB (b : {b : ℂ // 2 + Real.sqrt 2 < ‖b‖}) (m : ℕ)
+    (z : annWB (b : ℂ)) :
+    phiB (b : ℂ) z ^ (2 ^ (m + 1)) = bottcherCoord (b : ℂ) (pMapB (b : ℂ) m z) :=
+  phiB_pow_pMapB_of_mem_ball b.property m (annWB_subset_ball z.property)
+
+/-- The dyadic pullback identity with annulus membership carried by the point subtype. -/
+theorem phiB_pow_pMapB_on_annWB {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ)
+    (z : annWB b) :
+    phiB b z ^ (2 ^ (m + 1)) = bottcherCoord b (pMapB b m z) :=
+  phiB_pow_pMapB ⟨b, hb⟩ m z
+
+/-- The dyadic pullback identity from explicit sharpness and annulus-membership facts. -/
+theorem phiB_pow_pMapB_of_mem_annWB {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ)
+    {z : ℂ} (hz : z ∈ annWB b) :
+    phiB b z ^ (2 ^ (m + 1)) = bottcherCoord b (pMapB b m z) :=
+  phiB_pow_pMapB ⟨b, hb⟩ m ⟨z, hz⟩
 
 theorem quadratic_analyticOnNhd_univ_B (b : ℂ) : AnalyticOnNhd ℂ (quadratic b) univ := by
   have h : AnalyticOnNhd ℂ (fun z : ℂ => z ^ 2 + b) univ :=

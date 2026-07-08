@@ -513,4 +513,56 @@ poles are the eigenvalues of `Θ`. -/
 noncomputable def resolventTrace (K : ι × ι → ℂ) (z : ℂ) : ℂ :=
   ∑' n : ℕ, z ^ (n + 1) * (∑' i, hsPow K (n + 1) (i, i))
 
+/-- The zero kernel is Hilbert-Schmidt. -/
+theorem isHS_zero {ι : Type*} : IsHS (0 : ι × ι → ℂ) := by
+  simp [IsHS]
+
+/-- Hilbert-Schmidt kernels are closed under scalar multiplication:
+`‖(c • K) p‖² = ‖c‖²·‖K p‖²` is summable. -/
+theorem IsHS.smul {ι : Type*} {K : ι × ι → ℂ} (hK : IsHS K) (c : ℂ) : IsHS (c • K) := by
+  have h : (fun p => ‖(c • K) p‖ ^ 2) = fun p => ‖c‖ ^ 2 * ‖K p‖ ^ 2 := by
+    funext p; simp only [Pi.smul_apply, norm_smul]; ring
+  rw [IsHS, h]; exact hK.mul_left _
+
+/-- Hilbert-Schmidt kernels are closed under addition, via
+`‖(K + L) p‖² ≤ 2‖K p‖² + 2‖L p‖²`. -/
+theorem IsHS.add {ι : Type*} {K L : ι × ι → ℂ} (hK : IsHS K) (hL : IsHS L) : IsHS (K + L) := by
+  have hb : Summable (fun p => 2 * ‖K p‖ ^ 2 + 2 * ‖L p‖ ^ 2) :=
+    (hK.mul_left 2).add (hL.mul_left 2)
+  have hle : ∀ p, ‖(K + L) p‖ ^ 2 ≤ 2 * ‖K p‖ ^ 2 + 2 * ‖L p‖ ^ 2 := by
+    intro p
+    have htri : ‖(K + L) p‖ ≤ ‖K p‖ + ‖L p‖ := by
+      simpa [Pi.add_apply] using norm_add_le (K p) (L p)
+    have h2 : ‖(K + L) p‖ ^ 2 ≤ (‖K p‖ + ‖L p‖) ^ 2 := by
+      rw [sq, sq]; exact mul_self_le_mul_self (norm_nonneg _) htri
+    nlinarith [sq_nonneg (‖K p‖ - ‖L p‖), h2]
+  exact Summable.of_nonneg_of_le (fun p => by positivity) hle hb
+
+/-- A finite sum of Hilbert-Schmidt kernels is Hilbert-Schmidt. -/
+theorem isHS_sum {ι κ : Type*} [DecidableEq κ] (s : Finset κ) (K : κ → ι × ι → ℂ)
+    (hK : ∀ r ∈ s, IsHS (K r)) : IsHS (∑ r ∈ s, K r) := by
+  induction s using Finset.induction with
+  | empty => simpa using isHS_zero
+  | insert a s ha ih =>
+    rw [Finset.sum_insert ha]
+    exact (hK a (Finset.mem_insert_self a s)).add
+      (ih (fun r hr => hK r (Finset.mem_insert_of_mem hr)))
+
+/-- The Hilbert-Schmidt inner product vanishes on the zero kernel in the left slot. -/
+theorem hsInner_zero_left {ι : Type*} (L : ι × ι → ℂ) : hsInner 0 L = 0 := by
+  simp [hsInner]
+
+/-- Left additivity over a finite sum: `⟨∑ᵣ Kᵣ, L⟩_HS = ∑ᵣ ⟨Kᵣ, L⟩_HS`, by induction from the
+binary `hsInner_add_left` and `isHS_sum`. -/
+theorem hsInner_sum_left {ι κ : Type*} [DecidableEq κ] (s : Finset κ) (K : κ → ι × ι → ℂ)
+    (L : ι × ι → ℂ) (hK : ∀ r ∈ s, IsHS (K r)) (hL : IsHS L) :
+    hsInner (∑ r ∈ s, K r) L = ∑ r ∈ s, hsInner (K r) L := by
+  induction s using Finset.induction with
+  | empty => simp [hsInner_zero_left]
+  | insert a s ha ih =>
+    rw [Finset.sum_insert ha, Finset.sum_insert ha,
+      hsInner_add_left (hK a (Finset.mem_insert_self a s))
+        (isHS_sum s K (fun r hr => hK r (Finset.mem_insert_of_mem hr))) hL,
+      ih (fun r hr => hK r (Finset.mem_insert_of_mem hr))]
+
 end HilbertSchmidt

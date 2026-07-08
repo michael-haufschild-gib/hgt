@@ -38,19 +38,8 @@ theorem norm_integral_weight_cexp_le_anti
   have hg'c : ContinuousOn g' (Set.uIcc a b) := fun x hx => (hg' x hx).continuousAt.continuousWithinAt
   have haU : a ∈ Set.uIcc a b := Set.left_mem_uIcc
   have hbU : b ∈ Set.uIcc a b := Set.right_mem_uIcc
-  have hwmono : ∀ x ∈ Set.uIcc a b, w x ≤ w a := by
-    intro x hx
-    have hxIcc : x ∈ Set.Icc a b := by rwa [Set.uIcc_of_le hab] at hx
-    have hsub : Set.uIcc a x ⊆ Set.uIcc a b := Set.uIcc_subset_uIcc haU hx
-    have hint : IntervalIntegrable w' volume a x := (hw'c.mono hsub).intervalIntegrable
-    have hftc : ∫ t in a..x, w' t = w x - w a :=
-      intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht => hw t (hsub ht)) hint
-    have hnp : ∫ t in a..x, w' t ≤ 0 := by
-      have hm := intervalIntegral.integral_mono_on hxIcc.1 hint
-        (intervalIntegral.intervalIntegrable_const (c := (0:ℝ)))
-        (fun t ht => hwanti t (hsub (by rw [Set.uIcc_of_le hxIcc.1]; exact ht)))
-      simpa using hm
-    linarith [hftc, hnp]
+  have hwmono : ∀ x ∈ Set.uIcc a b, w x ≤ w a :=
+    weight_le_left_of_deriv_nonpos hab hw hw'c hwanti
   set V : ℝ → ℂ := fun t => Complex.exp ((g t : ℂ) * I) with hVdef
   set V' : ℝ → ℂ := fun t => Complex.exp ((g t : ℂ) * I) * ((g' t : ℂ) * I) with hV'def
   set U : ℝ → ℂ := fun t => (w t : ℂ) * ((g' t : ℂ) * I)⁻¹ with hUdef

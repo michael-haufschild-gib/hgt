@@ -88,26 +88,51 @@ bound `offDiagonal_le`. -/
 theorem detectionW_secondMoment_bound {N y : ℕ} (σ : ℝ) (hσ : 1 / 2 < σ)
     (hmin : 1 ≤ min N y) (T U : ℝ) (hU : 0 ≤ U) :
     (∫ t in T..(T + U),
-        ‖dpoly (detCoeffW N y σ) (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)) t‖ ^ 2)
+        ‖dpoly (detCoeffW N y σ) (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)) t‖ ^ 2)
       ≤ U * (∑' k : ℕ, Set.indicator {j | min N y < j}
                 (fun k => (k.divisors.card : ℝ) ^ 2 * (k : ℝ) ^ (-2 * σ)) k)
         + 4 * ((N * y : ℕ) : ℝ) * (∑ j ∈ Finset.Icc 1 (N * y), 1 / (j : ℝ))
-            * ∑ k ∈ convSupp (Finset.Icc 1 N) (Finset.Icc 1 y), (detCoeffW N y σ k) ^ 2 := by
+            * ∑ k ∈ prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y), (detCoeffW N y σ k) ^ 2 := by
   rw [secondMoment_meanValue]
-  have hdiag : U * (∑ m ∈ convSupp (Finset.Icc 1 N) (Finset.Icc 1 y), (detCoeffW N y σ m) ^ 2)
+  have hdiag : U * (∑ m ∈ prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y), (detCoeffW N y σ m) ^ 2)
       ≤ U * (∑' k : ℕ, Set.indicator {j | min N y < j}
                 (fun k => (k.divisors.card : ℝ) ^ 2 * (k : ℝ) ^ (-2 * σ)) k) := by
     apply mul_le_mul_of_nonneg_left _ hU
     rw [detectionW_diagonal_tail]
     exact detection_diagonal_le_tsum σ hσ hmin
-  have hoff : (∑ m ∈ convSupp (Finset.Icc 1 N) (Finset.Icc 1 y),
-                ∑ n ∈ (convSupp (Finset.Icc 1 N) (Finset.Icc 1 y)).erase m,
+  have hoff : (∑ m ∈ prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y),
+                ∑ n ∈ (prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y)).erase m,
                   detCoeffW N y σ m * detCoeffW N y σ n * cosInt (Real.log n - Real.log m) T U)
       ≤ 4 * ((N * y : ℕ) : ℝ) * (∑ j ∈ Finset.Icc 1 (N * y), 1 / (j : ℝ))
-          * ∑ k ∈ convSupp (Finset.Icc 1 N) (Finset.Icc 1 y), (detCoeffW N y σ k) ^ 2 := by
+          * ∑ k ∈ prodSupport (Finset.Icc 1 N) (Finset.Icc 1 y), (detCoeffW N y σ k) ^ 2 := by
     refine le_trans (le_abs_self _) ?_
-    refine le_trans (offDiagonal_abs_le _ _ _ _ (fun n hn => one_le_of_mem_convSupp hn)) ?_
-    exact offDiagonal_le _ (convSupp_subset_Icc N y)
+    refine le_trans (offDiagonal_abs_le _ _ _ _ (fun n hn => one_le_of_mem_prodSupport_Icc hn)) ?_
+    exact offDiagonal_le _ (prodSupport_subset_Icc N y)
   linarith [hdiag, hoff]
+
+/-- **Sublinearity from a vanishing diagonal and a sublinear off-diagonal.**  If a diagonal `D`
+tends to `0` (`D T ≤ ε` eventually) and an off-diagonal `O` is `o(T)` (`O T ≤ ε·T` eventually), then
+the mean-square shape `T·D(T) + O(T)` is bounded by `ε·V²·T` eventually.  Pure real analysis: split
+the target `ε·V²` between the two parts.  This is the constraint the detection second moment places on
+`T⁻¹∫‖E‖²` — it is `o(1)` once the mollifier cutoff grows and the off-diagonal is subdominant. -/
+theorem sublinear_of_tail_and_offdiag {D O : ℝ → ℝ} {V : ℝ} (hV : 0 < V)
+    (hD : ∀ ε > 0, ∃ T₀, ∀ T ≥ T₀, D T ≤ ε)
+    (hO : ∀ ε > 0, ∃ T₀, ∀ T ≥ T₀, O T ≤ ε * T) :
+    ∀ ε > 0, ∃ T₀, ∀ T ≥ T₀, T * D T + O T ≤ ε * V ^ 2 * T := by
+  intro ε hε
+  have hV2 : 0 < V ^ 2 := by positivity
+  set δ : ℝ := ε * V ^ 2 / 2 with hδ
+  have hδpos : 0 < δ := by rw [hδ]; positivity
+  obtain ⟨T₁, hT₁⟩ := hD δ hδpos
+  obtain ⟨T₂, hT₂⟩ := hO δ hδpos
+  refine ⟨max T₁ (max T₂ 0), fun T hT => ?_⟩
+  have hTge : T ≥ 0 := le_trans (le_max_right _ _ |>.trans (le_max_right _ _)) hT
+  have hT1 : T ≥ T₁ := le_trans (le_max_left _ _) hT
+  have hT2 : T ≥ T₂ := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hT
+  have hDb : D T ≤ δ := hT₁ T hT1
+  have hOb : O T ≤ δ * T := hT₂ T hT2
+  have hTD : T * D T ≤ T * δ := mul_le_mul_of_nonneg_left hDb hTge
+  calc T * D T + O T ≤ T * δ + δ * T := by linarith [hTD, hOb]
+    _ = ε * V ^ 2 * T := by rw [hδ]; ring
 
 end RHTower

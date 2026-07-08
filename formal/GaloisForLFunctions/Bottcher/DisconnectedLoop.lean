@@ -32,20 +32,6 @@ theorem quadratic_preimage_norm_lower_bound {c z : ℂ} {R : ℝ}
   calc Real.sqrt (‖c‖ - R) ≤ Real.sqrt (‖z‖ ^ 2) := Real.sqrt_le_sqrt hge
     _ = ‖z‖ := Real.sqrt_sq (norm_nonneg z)
 
-/-- **The two `f`-preimages of a point are antipodal:** `f_c z = f_c z'` iff `z' = z` or `z' = -z`.
-The fibre of `f_c(z) = z²+c` is `{z, -z}` (the deck of the squaring 2-cover), the algebraic backbone of
-the two-component split. -/
-theorem quadratic_fiber {c z z' : ℂ} : quadratic c z' = quadratic c z ↔ z' = z ∨ z' = -z := by
-  simp only [quadratic_apply]
-  constructor
-  · intro h
-    have hsq : z' ^ 2 = z ^ 2 := by linear_combination h
-    have hfac : (z' - z) * (z' + z) = 0 := by linear_combination hsq
-    rcases mul_eq_zero.mp hfac with h1 | h1
-    · left; exact sub_eq_zero.mp h1
-    · right; exact eq_neg_of_add_eq_zero_left h1
-  · rintro (rfl | rfl) <;> ring
-
 /-- **`f_c` is injective on any open half-plane through `0`.**  The fibre `{z, -z}` is antipodal, and `z`
 and `-z` lie on opposite sides of any half-plane `{w | 0 < Re(v̄·w)}` (since `Re(v̄·(-z)) = −Re(v̄·z)`).
 So `f_c` is one-to-one on each such half-plane — the local sheet on which the inverse branch (one

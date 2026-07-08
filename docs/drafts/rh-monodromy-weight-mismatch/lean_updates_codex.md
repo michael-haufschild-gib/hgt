@@ -2181,3 +2181,178 @@ Full HS operator algebra now runs: kernel → inner-product space → Cauchy–S
 (K∘L is HS, submult norm) → cyclic trace → powers Kⁿ → geometric trace decay → RESOLVENT TRACE series.
 Next consumed-but-missing endpoint: Fredholm determinant det(1−zK)=exp(−∑ zⁿ/n·tr(Kⁿ)) and the Plemelj
 identity logDeriv det(1−zK) = −resolventTrace (the shape logDeriv ξ = tr((s−Θ)⁻¹) the seam welds to).
+
+## Fredholm determinant + Plemelj identity BUILT (gate green 9316)
+
+New module formal/GaloisForLFunctions/FredholmDeterminant.lean (all axiom-clean, full gate green):
+- fredholmExp K z := ∑_{n≥2} zⁿ/n·tr(Kⁿ) = ∑ₙ z^(n+2)/(n+2)·tr(K^(n+2)); fredholmExp_summable for |z|·‖K‖_HS<1.
+- hasDerivAt_fredholmExp — TERMWISE DIFFERENTIATION on |z|<r (r·‖K‖_HS<1): (fredholmExp K)′(z)=resolventTrace K z,
+  via hasDerivAt_tsum_of_isPreconnected (uniform geometric bound on term derivatives over the ball).
+- fredholmDet K z := exp(−fredholmExp K z) = the regularized (Hilbert–Carleman) det₂(1−zK).
+- logDeriv_fredholmDet — THE PLEMELJ IDENTITY: logDeriv(fredholmDet K ·) z = −resolventTrace K z on |z|<r.
+  (logDeriv(exp∘g)=g' via HasDerivAt.cexp + logDeriv_apply + exp≠0.)
+
+Correct object note: for a merely-HS (not trace-class) operator tr(K) diverges, so the un-regularized det₁
+does not exist; det₂ (n≥2) is the right determinant and its exponent's derivative is exactly the already-built
+resolventTrace = ∑_{n≥1} zⁿ tr(K^(n+1)). This is the exact shape logDeriv Λ(s) = tr((s−Θ)⁻¹) the seam welds to:
+det₂'s zeros = poles of the resolvent trace = eigenvalues of the seam generator Θ. Trace-class det₁ (adding the
+tr(K) term under a trace-class hypothesis) is the next optional refinement.
+
+## CLEANUP — removed the density→RH₂ flow glue; deduped the convolution
+
+The earlier "Carlson o(T) → RH₂" build above was the wrong target: textbook zero-density (Ingham/
+Carlson), a known dead end for RH, and it duplicated the parallel Bohr second-moment stack. Corrected:
+
+DELETED (duplicate + pure `→ RHLadder` flow glue, nothing reusable):
+- `DpolyConvolution` (duplicated `BohrMoments.dpolyConv`/`prodSupport`/`dpoly_mul`)
+- `CarlsonDensity`, `CarlsonAssembly`, `ZeroDensityEngine` (density predicates → `RHLadder 1`)
+
+TRIMMED:
+- `QuadrantSeamConservation` — removed `LinearLowerBound`/`SubLinearDensity`/
+  `not_linearLowerBound_of_subLinear`/`rhLadder_one_of_recurrence_of_density` (the `T→∞` flow toward
+  RH₂). KEPT the genuine content: the refutations `naive_terminal_dichotomy_false`,
+  `naive_seam_parity_insufficient` (the literal conjecture is FALSE), charge transport, and the
+  `XiDefect` object with `xiDefect_charge_iff_odd`.
+- `LittlewoodXi` — docstrings recast from "zero-density engine consumes" to the holography constraint
+  (boundary log-modulus pins the interior zero count). Math unchanged.
+
+KEPT as reusable helpers/constraint-objects (deduped onto `BohrMoments`; `convCoeff`→`dpolyConv`,
+`convSupp`→`prodSupport`, `dpoly_mul_eq_dpoly`→`dpoly_mul`): `DpolyHelpers` (cterm_mul_cterm/
+dpoly_sub/dpoly_onehot), `Mollifier`, `MollifierDetection`, `DetectionSecondMoment` (+ the relocated
+real-analysis lemma `sublinear_of_tail_and_offdiag`), `FourthMoment(Diagonal)`, `DivisorBound`,
+`OffDiagonalBound`, `LargeValues(Dpoly)`, `MeanValueBridge`, `ZetaAFETransfer`, `SecondMoment`.
+Umbrella + lint clean; all axiom-clean [propext, Classical.choice, Quot.sound].
+
+## Weld: det₂ ↔ L-function (gate green 9329)
+
+Deep/wide audit found the codebase L-function corpus: logDeriv_eulerFactor, differentiable_eulerFactor,
+eulerFactor_ne_zero (AnchorHead), eulerHeadAnchor, RiemannTower (rh_iff_xi_ne_zero_right). crossKernel is
+a partial shift ⟹ NILPOTENT (K²=0), so a single crossing gives det₂=1 (the seam needs the summed
+non-nilpotent operator, not one crossing). Mathlib has hasDerivAt_tsum_of_isPreconnected, IsOpen.exists_is_const_of_deriv_eq_zero, logDeriv_div. Built (all axiom-clean, FredholmDeterminant.lean + FredholmDeterminantExamples.lean):
+
+- fredholmDet_weld — THE ABSTRACT WELD: if L is holomorphic, nonvanishing on |z|<r (r‖K‖_HS<1) with
+  logDeriv L = −resolventTrace K, then ∃c, det₂(1−zK) = c·L. (det₂=exp ⟹ auto-nonvanishing, no hyp needed
+  on det side; proof = logDeriv(det₂/L)=0 ⟹ det₂/L const on the disk.) This IS "logDeriv Λ = tr((s−Θ)⁻¹)
+  ⟹ det₂ = c·Λ" as a theorem.
+- diagKernel algebra: rank-one d·e_{i₀i₀}, hsPow=d^(n+1)·e, resolventTrace_diagKernel = zd²/(1−zd) (geometric).
+- fredholmDet_diagKernel — WELD FIRES: det₂(1−z·diag d) = (1−zd)·exp(zd) on |z|‖d‖<1 (c=1 via z=0).
+- fredholmDet_eulerFactor — MECHANICAL L-FUNCTION COMBINATION: at z=1, d=p^{−s} (Re s>0, p≥2),
+  det₂(1−diag(p^{−s})) = (1−p^{−s})·exp(p^{−s}). The leading factor (1−p^{−s}) is EXACTLY the codebase
+  eulerFactor: each local inverse Euler factor is realized as the regularized Fredholm determinant of an
+  explicit finite-rank operator, exp(p^{−s}) = Hilbert–Carleman correction.
+
+Status: LOCAL weld (per Euler factor) is now an unconditional theorem. GLOBAL weld to completed ξ = the
+Hilbert–Pólya construction (a single operator with the ξ-zeros as reciprocal eigenvalues) — the matching
+hypothesis logDeriv ξ = −resolventTrace K is the genuine open input; the abstract fredholmDet_weld reduces
+it to constructing that operator. Next frontier: the summed crossKernel tower ∑_r c_r·crossKernel (non-nilpotent)
+and matching its resolventTrace to logDeriv of the finite eulerHeadAnchor ∏(1−p^{−s}).
+
+## Finite Euler PRODUCT weld (gate green 9329)
+
+Extended the weld from local (one prime) to the finite Euler product (FredholmDeterminantExamples.lean,
+all axiom-clean): the mechanical block that upgrades it is MULTIPLICATIVITY over orthogonal diagonal entries.
+- diagMul g (general diagonal kernel), hsComp_diagMul (pointwise product), hsPow_diagMul (pointwise power),
+  isHS_diagMul, hsNormSq_diagMul = ∑_{i∈S}‖g i‖², norm_le_hsNorm_diagMul (‖g i‖≤‖K‖_HS), geom helpers.
+- resolventTrace_diagMul = ∑_{i∈S} z·g(i)²/(1−z·g(i)) (orthogonal traces ADD; sum/tsum swap via tsum_finsetSum).
+- fredholmDet_diagMul — det₂(1−z·diagMul g) = ∏_{i∈S}(1−z·g i)·exp(z·g i), the finite Euler product as a
+  regularized determinant (weld with L=∏, logDeriv_prod = ∑ logDeriv_diagL, c=1 via z=0). With g i=pᵢ^{−s}
+  the product ∏(1−z·pᵢ^{−s}) is the z-deformed inverse Euler product; its z=1 value = RHTower.eulerHeadAnchor.
+
+Progression now: local Euler factor (fredholmDet_eulerFactor, z=1, unconditional) → finite Euler product
+(fredholmDet_diagMul, z-deformed, unconditional on the disk). Global weld to completed ξ still open =
+infinite product / Hilbert–Pólya (the ξ-zeros as reciprocal eigenvalues), reduced by fredholmDet_weld to
+constructing that operator + logDeriv ξ = −resolventTrace K. Next: the archimedean Γ_ℝ factor (ξ = Γ-factor ×
+Euler product) as a determinant, and z=1 convergence for the full product (needs ‖K‖_HS<1 / analytic continuation past the disk).
+
+## det₁ + eulerHeadAnchor weld (gate green 9330)
+
+Mechanical block: the trace-class det₁ = det₂·exp(−z·tr K) drops the Carleman exp, giving the BARE Euler
+product. Built (axiom-clean):
+- hsTraceDiag K = ∑' i K(i,i); fredholmDet1 K z = fredholmDet K z · exp(−z·tr K) (FredholmDeterminantExamples.lean).
+- fredholmDet1_diagMul — det₁(1−z·diagMul g) = ∏_{i∈S}(1−z·g i) (exp corrections cancel against the trace).
+- eulerHeadAnchor_eq_fredholmDet1 (FredholmDeterminantEuler.lean, imports RHTower.AnchorHead) —
+  RHTower.eulerHeadAnchor P s = ∏_{p∈P}(1−p^{−s}) = fredholmDet1(diagMul(p^{−s} on P)) 1 EXACTLY (z=1, on
+  the disk ‖K‖_HS<1). The CODEBASE's finite Euler product IS a Fredholm determinant of an explicit
+  finite-rank operator on ℓ²(ℕ); by logDeriv_fredholmDet its logDeriv is that operator's resolvent trace.
+
+Weld ladder now: abstract (fredholmDet_weld) → local factor (fredholmDet_eulerFactor) → finite product
+(fredholmDet_diagMul) → codebase eulerHeadAnchor (eulerHeadAnchor_eq_fredholmDet1). Global weld to full ξ
+= Γ_ℝ-factor × infinite Euler product past the disk = Hilbert–Pólya (RH-hard, not finite-mechanical). Next
+mechanical blocks: (a) Γ_ℝ archimedean factor as a determinant; (b) z=1 for the infinite product (analytic
+continuation of det₂ past ‖K‖_HS<1).
+
+## det₁ Plemelj — the FULL resolvent trace (gate green 9330)
+
+logDeriv_fredholmDet1 (FredholmDeterminantExamples.lean, axiom-clean): logDeriv det₁(1−zK) = −(tr K +
+resolventTrace K z) = −tr(K(1−zK)⁻¹) — the FULL (unregularized) resolvent trace, the exact classical
+logDeriv Λ = tr((s−Θ)⁻¹) shape (the det₂ Plemelj logDeriv_fredholmDet = −resolventTrace, plus the tr K
+term restored by the exp(−z·tr K) correction). Mechanical: logDeriv(det₂·exp(−z trK)) = logDeriv det₂ + (−trK).
+Search verdict: mathlib has GammaSeq/GammaSeq_tendsto_Gamma but NO Weierstrass product 1/Γ=∏(1+s/n)e^{−s/n},
+so the archimedean Γ_ℝ-factor-as-det₂ route (eigenvalues −1/n, infinite HS diagonal, ‖K‖_HS=π/√6) needs that
+product built from scratch AND connected to Complex.Gamma — substantial, small-disk only. Full ξ weld
+(HS operator with ξ-zeros as real spectrum) = Hilbert–Pólya = RH, not finite-mechanically buildable.
+
+## Infinite (countable-rank) HS diagonal determinant (gate green 9331)
+
+Past finite rank — the first infinite HS operator in the tree with a closed-form resolvent trace
+(FredholmDeterminantInfinite.lean, all axiom-clean). Mechanical block: the double series over (power index n,
+diagonal index i) is dominated by ‖z‖^{n+1}·M^n·‖g i‖² (geometric-in-n × summable-in-i, M=‖K‖_HS), so
+absolute convergence + Tonelli (Summable.tsum_comm) exchange the sums.
+- isHS_diagMul_infinite: ∑ᵢ‖g i‖²<∞ ⟹ IsHS(diagMul g) (diagonal support collapses via Function.Injective).
+- hsNormSq_diagMul_infinite = ∑'ᵢ‖g i‖²; norm_le_hsNorm_diagMul_infinite: ‖g i‖≤‖K‖_HS (Summable.le_tsum).
+- resolventTrace_diagMul_infinite = ∑'ᵢ z·g_i²/(1−z·g_i) on |z|·‖K‖_HS<1 (the double-sum swap).
+- logDeriv_fredholmDet_diagMul_infinite = −∑'ᵢ z·g_i²/(1−z·g_i): the Plemelj for an operator with
+  INFINITELY many eigenvalues (compose logDeriv_fredholmDet + the countable resolvent trace).
+
+This is the substrate the archimedean 1/Γ Weierstrass product ∏(1+z/n)e^{−z/n} (eigenvalues −1/n, ∑1/n²=π²/6)
+and the infinite Euler product both consume — both are countable diagonal HS operators of exactly this shape.
+Remaining to reach the Γ_ℝ factor: build the Weierstrass product det₂=∏(1+z/n)e^{−z/n} (mathlib has GammaSeq
+but not this product) and connect to Complex.Gamma; small disk only. Full ξ = Hilbert–Pólya, RH-hard.
+
+## THE WELD TO mathlib's riemannZeta (gate green 9332)
+
+FredholmDeterminantZeta.lean (all axiom-clean) — welds the Fredholm determinant to mathlib's ACTUAL
+riemannZeta, not an analogy. Mechanical engine: det₂ = exp(−∑ᵢ(z·gᵢ+log(1−z·gᵢ))); each summand =
+−∑ₙ(z·gᵢ)^{n+2}/(n+2) (Complex.hasSum_taylorSeries_neg_log), double series summed by Tonelli, product via
+HasSum.cexp (∏exp=exp∑).
+- hasSum_exponent_diagMul: ∑ᵢ(z·gᵢ+log(1−z·gᵢ)) = −fredholmExp (the exponent as an eigenvalue sum).
+- fredholmDet_tprod_diagMul: det₂(1−z·diagMul g) = ∏'ᵢ(1−z·gᵢ)·exp(z·gᵢ) — the infinite WEIERSTRASS PRODUCT
+  over eigenvalues (HS-general). This is "determinant = product over eigenvalues" as a theorem.
+- hasProd_fredholmDet1_diagMul / fredholmDet1_tprod_diagMul: det₁(1−z·diagMul g)=∏'ᵢ(1−z·gᵢ) (trace-class).
+- fredholmDet1_eq_inv_riemannZeta: for Re s>1, det₁(1−diagMul(p^{−s}))⁻¹ = riemannZeta s (mathlib).
+  Proof: det₁ = ∏ₚ(1−p^{−s}); riemannZeta_eulerProduct_hasProd gives ∏ₚ(1−p^{−s})⁻¹=ζ; tprod_mul ⟹ det₁·ζ=1;
+  ζ≠0 ⟹ det₁=ζ⁻¹. Prime summability via Nat.Primes.summable_rpow. Needs ‖K‖_HS<1 (Re s large) as hyp.
+
+ζ(s) = (Fredholm det of an explicit HS operator with eigenvalues {p^{−s}})⁻¹. Weld ladder now bottoms out
+on mathlib's real ζ. Open past this: the completed Λ=Γ·ζ needs the archimedean Γ_ℝ Weierstrass product
+∏(1+s/n)e^{−s/n} (mathlib gap) via the SAME infinite-diagonal substrate (eigenvalues −1/n); z=1 past the
+disk (‖K‖_HS<1 numeric); the full ξ operator = Hilbert–Pólya = RH.
+
+## THE GAMMA WEIERSTRASS PRODUCT + ARCHIMEDEAN DETERMINANT WELD (gate green)
+
+GammaWeierstrass.lean (all axiom-clean) — fills the mathlib gap flagged above. mathlib has the Gauss/Euler
+limit (Complex.GammaSeq_tendsto_Gamma, GammaSeq s n = n^s·n!/∏_{j=0}^n(s+j)) and harmonic−log (Real.tendsto_
+harmonic_sub_log), but NOT the Weierstrass product. Built here from scratch:
+- gammaSeq_inv_weierstrass (FINITE identity, all s, n≥1): (GammaSeq s n)⁻¹ = s·e^{s(Hₙ−log n)}·
+  ∏_{k<n}(1+s/(k+1))e^{−s/(k+1)}. Proof: ∏_{j=0}^n(s+j)=s·∏_{k<n}(s+k+1) (prod_range_succ'),
+  ∏_{k<n}(k+1)=n! (prod_range_add_one_eq_factorial), n^{−s}=e^{−s log n} (cpow_def_of_ne_zero+ofReal_log),
+  the e^{s·Hₙ} regulator cancels ∏e^{−s/(k+1)} (harmonic_cast_complex + exp_sum). Junk-value-safe via inv_div.
+- multipliable_weierstrassFactor (all s): ∏'(1+s/(k+1))e^{−s/(k+1)} converges. Quadratic bound
+  ‖(1+w)e^{−w}−1‖ ≤ 3‖w‖² (decompose (e^x−1−x)−x(e^x−1), x=−w; norm_exp_sub_one_sub_id_le + norm_exp_sub_one_le)
+  + ∑1/(k+1)²<∞ (summable_one_div_nat_pow) ⟹ multipliable_one_add_of_summable.
+- Gamma_inv_weierstrass (s off ℤ≤0): (Γ s)⁻¹ = s·e^{γs}·∏'ₖ(1+s/(k+1))e^{−s/(k+1)}, γ=eulerMascheroniConstant.
+  n→∞ limit of the finite identity: GammaSeq→Γ + Γ≠0 (Tendsto.inv₀, Gamma_ne_zero), Hₙ−log n→γ (continuity),
+  partial products → tprod (HasProd.tendsto_prod_nat), tendsto_nhds_unique.
+- fredholmDet_diagMul_eq_inv_gammaFactor (small disk ‖diagMul(n↦−s/(n+1))‖_HS<1, s off ℤ≤0):
+  det₂(1−diagMul g) at z=1 = (s·e^{γs}·Γ(s))⁻¹. The Hilbert–Carleman factor (1−z·gₙ)e^{z·gₙ}|_{z=1} with
+  gₙ=−s/(n+1) IS the Weierstrass factor (1+s/(n+1))e^{−s/(n+1)}; fredholmDet_tprod_diagMul gives det₂=that
+  product, Gamma_inv_weierstrass evaluates it. ARCHIMEDEAN 1/Γ FACTOR = Fredholm det of the explicit HS op
+  with eigenvalues −1/k — the archimedean analogue of ζ⁻¹=det₁(1−diagMul(p^{−s})). Both halves of Λ=Γ·ζ are
+  now determinants of explicit diagonal HS operators.
+
+Weld ladder now: abstract → local factor → finite Euler product → eulerHeadAnchor → det₁ Plemelj (full
+resolvent trace, logDeriv_fredholmDet1) → INFINITE-diagonal Plemelj → ζ⁻¹=det₁ (real riemannZeta) → 1/Γ
+Weierstrass = det₂ (archimedean). OPEN past this: (i) digamma from the product (−ψ(s)=1/s+γ+∑(1/(s+k)−1/k)
+by termwise d/ds of log of Gamma_inv_weierstrass); (ii) the full Λ-shape det(Γ(s/2))·det(ζ(s)) — the two
+determinant identities exist but live on disjoint domains (small disk vs Re s>1), so the honest next object
+is analytic continuation of det₂/det₁ past ‖K‖_HS<1, not a forced product; (iii) the ξ operator (Hilbert–Pólya).

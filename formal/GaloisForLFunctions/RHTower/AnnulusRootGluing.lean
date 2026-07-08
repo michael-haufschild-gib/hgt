@@ -198,29 +198,8 @@ theorem chart_inter_subset_overlaps (a : ℂ) (r₀ R : ℝ) :
 
 /-- The two slit charts cover the annulus. -/
 theorem annulus_subset_charts_union {a : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀) :
-    ball a R \ closedBall a r₀ ⊆ chartRA a r₀ R ∪ chartLA a r₀ R := by
-  intro z hz
-  have hz0 : z - a ≠ 0 := by
-    intro h
-    have : z ∈ closedBall a r₀ := by
-      rw [mem_closedBall, Complex.dist_eq, h, norm_zero]
-      exact h0
-    exact hz.2 this
-  by_cases hslit : z - a ∈ Complex.slitPlane
-  · exact Or.inl ⟨hslit, hz⟩
-  · refine Or.inr ⟨Complex.mem_slitPlane_iff.mpr (Or.inl ?_), hz⟩
-    obtain ⟨hre, him⟩ := not_or.mp (Complex.mem_slitPlane_iff.not.mp hslit)
-    have hre0 : (z - a).re ≤ 0 := le_of_not_gt hre
-    have him0 : (z - a).im = 0 := not_not.mp him
-    have hre' : (z - a).re < 0 := by
-      rcases lt_or_eq_of_le hre0 with h | h
-      · exact h
-      · exfalso
-        exact hz0 (Complex.ext h him0)
-    have h : (a - z).re = -((z - a).re) := by
-      simp [Complex.sub_re]
-    rw [h]
-    linarith
+    ball a R \ closedBall a r₀ ⊆ chartRA a r₀ R ∪ chartLA a r₀ R :=
+  annulus_subset_charts h0
 
 /-- The basepoints sit in the two overlap components. -/
 theorem basepoints_mem_overlaps {a : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀) (hrR : r₀ < R) :

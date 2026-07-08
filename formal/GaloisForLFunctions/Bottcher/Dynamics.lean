@@ -26,6 +26,19 @@ noncomputable def quadratic (c : ℂ) : ℂ → ℂ := fun z => z ^ 2 + c
 
 @[simp] theorem quadratic_apply (c z : ℂ) : quadratic c z = z ^ 2 + c := rfl
 
+/-- **The two `f_c`-preimages of a point are antipodal:** `f_c z = f_c w` iff `z = w` or `z = -w`.
+The fibre of `f_c(z) = z² + c` is `{z, -z}`, the deck of the squaring 2-cover. -/
+theorem quadratic_fiber {c z w : ℂ} : quadratic c z = quadratic c w ↔ z = w ∨ z = -w := by
+  simp only [quadratic_apply]
+  constructor
+  · intro h
+    have hsq : z ^ 2 = w ^ 2 := by linear_combination h
+    have hfac : (z - w) * (z + w) = 0 := by linear_combination hsq
+    rcases mul_eq_zero.mp hfac with h1 | h1
+    · left; exact sub_eq_zero.mp h1
+    · right; exact eq_neg_of_add_eq_zero_left h1
+  · rintro (rfl | rfl) <;> ring
+
 /-- The filled Julia set `K_c = { z : the forward orbit of z under `f_c` is bounded }`. -/
 def filledJulia (c : ℂ) : Set ℂ :=
   {z | IsBounded (Set.range fun n : ℕ => (quadratic c)^[n] z)}

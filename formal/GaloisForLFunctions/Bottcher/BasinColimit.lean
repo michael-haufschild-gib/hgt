@@ -551,21 +551,6 @@ theorem escapeOpen_subset_sectors (c : ℂ) :
       exact Or.inr ⟨hznorm, by rw [Complex.mem_slitPlane_iff]; left; simp; linarith⟩
   · exact Or.inl ⟨hznorm, by rw [Complex.mem_slitPlane_iff]; right; exact him⟩
 
-/-- **The deck symmetry of `f = z²+c`:** `f z = f w ↔ z = w ∨ z = -w`. The two preimages of any value
-are related by the deck involution `z ↦ -z` (the branched 2-to-1 structure, unbranched off the critical
-point `0`). The foundation of the covering lift `escapeLevel c(n+1) → escapeLevel c n`. -/
-theorem quadratic_eq_iff (c z w : ℂ) :
-    quadratic c z = quadratic c w ↔ z = w ∨ z = -w := by
-  unfold quadratic
-  constructor
-  · intro h
-    have hz2 : z ^ 2 = w ^ 2 := by linear_combination h
-    have hfac : (z - w) * (z + w) = 0 := by ring_nf; linear_combination hz2
-    rcases mul_eq_zero.mp hfac with h1 | h1
-    · left; linear_combination h1
-    · right; linear_combination h1
-  · rintro (rfl | rfl) <;> ring
-
 /-- **An inverse branch of `f = z²+c` over a simply-connected region.** On a simply-connected open `U`
 not containing the critical value `c`, there is an analytic `g` with `f(g w) = w` for all `w ∈ U` —
 a single-valued branch of `√(w-c)` (existing because `w ↦ w-c` is nonvanishing on `U` and `U` is simply

@@ -134,6 +134,46 @@ theorem u0_coherentTower_with_noRelation_of_norm_ge_four {b : ℂ} (hb : 4 ≤ �
   have hgt : 1 < ‖z‖ := filledJulia_exterior hb hfilled
   linarith
 
+/-- At the sharp U0/Böttcher threshold, both coherent tower packets are available at once:
+the explicit window `phiB` root tower, and the concrete U0 `psiN` tower, each with levelwise
+`u₀` `NoRelation` certificates. -/
+theorem phiB_and_u0_coherentTowers_with_noRelation_of_gt_sharp {b : ℂ}
+    (hb : 2 + Real.sqrt 2 < ‖b‖) :
+    (∃ T : CoherentTower (phiB b) (ball (0 : ℂ) (rB b)),
+      (∀ k z, T.level k z = phiBRoot k b z) ∧
+      (∀ k z, T.level k z ≠ 0) ∧
+      (∀ k,
+        letI := isDomain_analyticSubring (annWB b) (isOpen_annWB b)
+          (isPreconnected_annWB hb)
+          (annWB_nonempty hb)
+        letI : Algebra (RatFunc ℂ) (meroField (annWB b)) :=
+          (ratfuncToMero (annWB b) (isOpen_annWB b)
+            (isPreconnected_annWB hb)
+            (annWB_nonempty hb)
+            (annWB_infinite hb)).toAlgebra
+        NoRelation (RatFunc ℂ)
+          (algebraMap (analyticSubring (annWB b)) (meroField (annWB b))
+            ⟨Germ.coeRingHom (𝓟 (annWB b)) (T.level k),
+              ⟨T.level k, (T.analytic k).mono annWB_subset_ball, rfl⟩⟩)
+          (algebraMap (analyticSubring (annWB b)) (meroField (annWB b))
+            (u0AnSub annWB_subset_Ext)))) ∧
+    (∃ (r : ℝ) (N : ℕ) (hr : 1 < r) (T : CoherentTower (psiN b N) (ball (0 : ℂ) r)),
+      (∀ k z, T.level k z ≠ 0) ∧
+      (∀ k,
+        letI := isDomain_analyticSubring (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr)
+          (annMB_nonempty hr)
+        letI : Algebra (RatFunc ℂ) (meroField (annMB r)) :=
+          (ratfuncToMero (annMB r) (isOpen_annMB r) (isPreconnected_annMB hr) (annMB_nonempty hr)
+            (annMB_infinite hr)).toAlgebra
+        NoRelation (RatFunc ℂ)
+          (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+            ⟨Germ.coeRingHom (𝓟 (annMB r)) (T.level k),
+              ⟨T.level k, (T.analytic k).mono inter_subset_left, rfl⟩⟩)
+          (algebraMap (analyticSubring (annMB r)) (meroField (annMB r))
+            (u0AnSub annMB_subset_Ext)))) := by
+  exact ⟨phiB_coherentTower_with_noRelation_large_norm hb,
+    u0_coherentTower_with_noRelation_of_gt_sharp hb⟩
+
 /-- A single norm-four constraint supplies both explicit tower packets: the Böttcher
 window root tower over `phiB b`, with levelwise `u₀` independence, and the concrete
 U0 `psiN` tower with matching levelwise `NoRelation` certificates. -/
@@ -173,6 +213,6 @@ theorem phiB_and_u0_coherentTowers_with_noRelation_of_norm_ge_four {b : ℂ}
             (u0AnSub annMB_subset_Ext)))) := by
   exact ⟨phiB_coherentTower_with_noRelation_large_norm
       (norm_ge_four_gt_two_add_sqrt_two hb),
-    u0_coherentTower_with_noRelation_of_norm_ge_four hb⟩
+    u0_coherentTower_with_noRelation_of_gt_sharp (norm_ge_four_gt_two_add_sqrt_two hb)⟩
 
 end RHTower

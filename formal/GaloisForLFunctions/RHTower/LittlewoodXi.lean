@@ -1,10 +1,10 @@
 /-
-Littlewood's lemma for ξ: the weighted zero count on a disc equals a log-modulus circle average, and
-the induced counting inequality.
+Littlewood's lemma for ξ: the weighted zero count on a disc is fixed by a log-modulus circle average.
 
-This is the disc form of Littlewood's lemma — the counting half of every zero-density theorem — for
-the completed Riemann ξ.  Jensen's formula (mathlib `AnalyticOnNhd.circleAverage_log_norm`) reads the
-weighted zero count off the boundary integral of `log‖ξ‖`:
+This is the disc form of Littlewood's lemma for the completed Riemann ξ — a holography-type
+constraint: the weighted interior zero count is pinned by boundary data.  Jensen's formula (mathlib
+`AnalyticOnNhd.circleAverage_log_norm`) reads the weighted zero count off the boundary integral of
+`log‖ξ‖`:
 
   circleAverage (log‖ξ‖) c R = ∑ᶠ ρ  ord_ρ(ξ) · log (R / ‖c − ρ‖)  +  log‖ξ(c)‖,
 
@@ -16,10 +16,10 @@ ball is bounded by the boundary data:
   (#zeros in B(c,r)) · log(R/r) ≤ log(M / ‖ξ(c)‖),     ‖ξ‖ ≤ M on the sphere of radius R.
 
 `xi_circleAverage_log_norm` is the identity, `xi_zeroCount_disc_le` the counting inequality
-(mathlib's `sum_divisor_le` specialised to ξ), and `xi_circleAverage_log_ge_of_zeroCount` the
-contrapositive used by the zero-density engine: many inner zeros force a large circle average of
-`log‖ξ‖`, which the mean-value (moment) bound then controls.  The anchor `ξ(c) ≠ 0` is available for
-any `c` with `Re c > 1` (`xi_ne_zero_of_one_lt_re`), e.g. `c = 2 + iτ`.
+(mathlib's `sum_divisor_le` specialised to ξ), and `xi_zeroCount_disc_le_logModulus` the constraint in
+strip-shaped form: the boundary log-modulus caps the interior zero count, with the radial gap
+`log(R/r) > 0` in the role of `σ₀ − σ₁`.  The anchor `ξ(c) ≠ 0` is available for any `c` with
+`Re c > 1` (`xi_ne_zero_of_one_lt_re`), e.g. `c = 2 + iτ`.
 -/
 import GaloisForLFunctions.RHTower.FarFieldAnchor
 import Mathlib.Analysis.Complex.JensenFormula
@@ -56,12 +56,11 @@ theorem xi_anchor_two_add_I_mul (τ : ℝ) : xi (2 + I * (τ : ℂ)) ≠ 0 := by
   apply xi_ne_zero_of_one_lt_re
   simp [Complex.add_re, Complex.mul_re, Complex.I_re, Complex.I_im]
 
-/-- **Density-facing counting bound** (positive radii).  If the inner ball `B(c, r)` contains at
-least `K` ξ-zeros (counted with multiplicity) and `‖ξ‖ ≤ M` on the outer sphere of radius `R > r`,
-then `K · log(R/r) ≤ log M − log‖ξ(c)‖`: the zero count is capped by the boundary log-modulus, with
-the gap `log(R/r) > 0` playing the role of `σ₀ − σ₁` in the strip form.  This is the form the
-zero-density engine consumes — a positive count forces the log-modulus up, and the mean-value bound
-then caps it. -/
+/-- **Boundary log-modulus caps the interior zero count** (positive radii).  If the inner ball
+`B(c, r)` contains at least `K` ξ-zeros (counted with multiplicity) and `‖ξ‖ ≤ M` on the outer sphere
+of radius `R > r`, then `K · log(R/r) ≤ log M − log‖ξ(c)‖`: the zero count is fixed from above by the
+boundary log-modulus, with the gap `log(R/r) > 0` playing the role of `σ₀ − σ₁` in the strip form.  A
+holography-type constraint — the interior count cannot exceed what the boundary data allows. -/
 theorem xi_zeroCount_disc_le_logModulus {c : ℂ} {r R M K : ℝ}
     (hr : 0 < r) (hrR : r < R) (hM : 1 ≤ M) (hc : xi c ≠ 0)
     (hbound : ∀ z ∈ sphere c |R|, ‖xi z‖ ≤ M)

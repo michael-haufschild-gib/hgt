@@ -263,4 +263,26 @@ theorem norm_integral_cexp_logPhase_le
   calc ‖∫ x in a..b, Complex.exp (((c * Real.log x : ℝ)) * I)‖ ≤ 2 / (c / b) := this
     _ = 2 * b / c := by field_simp
 
+/-- An antitone nonnegative weight is bounded by its left value: for `w` with derivative `w' ≤ 0`
+on `[a,b]`, `w x ≤ w a` for every `x` in the interval.  Proven by integrating `w' ≤ 0` from `a`
+to `x`. -/
+theorem weight_le_left_of_deriv_nonpos {a b : ℝ} (hab : a ≤ b) {w w' : ℝ → ℝ}
+    (hw : ∀ x ∈ Set.uIcc a b, HasDerivAt w (w' x) x)
+    (hw'c : ContinuousOn w' (Set.uIcc a b))
+    (hwanti : ∀ x ∈ Set.uIcc a b, w' x ≤ 0) :
+    ∀ x ∈ Set.uIcc a b, w x ≤ w a := by
+  intro x hx
+  have haU : a ∈ Set.uIcc a b := Set.left_mem_uIcc
+  have hxIcc : x ∈ Set.Icc a b := by rwa [Set.uIcc_of_le hab] at hx
+  have hsub : Set.uIcc a x ⊆ Set.uIcc a b := Set.uIcc_subset_uIcc haU hx
+  have hint : IntervalIntegrable w' volume a x := (hw'c.mono hsub).intervalIntegrable
+  have hftc : ∫ t in a..x, w' t = w x - w a :=
+    intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht => hw t (hsub ht)) hint
+  have hnp : ∫ t in a..x, w' t ≤ 0 := by
+    have hm := intervalIntegral.integral_mono_on hxIcc.1 hint
+      (intervalIntegral.intervalIntegrable_const (c := (0:ℝ)))
+      (fun t ht => hwanti t (hsub (by rw [Set.uIcc_of_le hxIcc.1]; exact ht)))
+    simpa using hm
+  linarith [hftc, hnp]
+
 end RHTower

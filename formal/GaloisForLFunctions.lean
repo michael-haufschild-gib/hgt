@@ -9,6 +9,7 @@ import GaloisForLFunctions.Hypertranscendence
 import GaloisForLFunctions.GammaTranscendental
 import GaloisForLFunctions.GammaDifferentialFE
 import GaloisForLFunctions.ExponentialSumDA
+import GaloisForLFunctions.CarrierDichotomy
 import GaloisForLFunctions.MultiQDifference
 import GaloisForLFunctions.ArchimedeanLane
 import GaloisForLFunctions.ArchimedeanGamma

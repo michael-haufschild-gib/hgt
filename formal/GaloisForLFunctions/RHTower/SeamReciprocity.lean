@@ -43,9 +43,9 @@ open Complex Matrix
 /-- The bosonic Fock trace over the prime seams, `D_fin(s) = Tr(N^(−s)) = Σ' n, n^(−s)`. -/
 def seamDirichlet (s : ℂ) : ℂ := ∑' n : ℕ, 1 / (n : ℂ) ^ s
 
-/-- The archimedean seam factor `G_∞(s) = π^(−s/2)Γ(s/2)` — the Mellin transform of the self-dual
-Gaussian heat seam. -/
-def archSeam (s : ℂ) : ℂ := (Real.pi : ℂ) ^ (-s / 2) * Complex.Gamma (s / 2)
+/-- The archimedean seam factor `G_∞(s) = π^(−s/2)Γ(s/2) = Γ_ℝ(s)` — the Mellin transform of the
+self-dual Gaussian heat seam, i.e. the standard real archimedean Gamma factor. -/
+def archSeam (s : ℂ) : ℂ := Complex.Gammaℝ s
 
 /-- **The completed seam determinant equals the archimedean seam times the Fock trace.**  For
 `Re s > 1` (the trace-class half-plane), `completedRiemannZeta s = G_∞(s)·D_fin(s)` — the construction's

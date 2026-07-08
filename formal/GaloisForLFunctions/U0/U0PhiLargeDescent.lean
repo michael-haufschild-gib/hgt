@@ -322,7 +322,7 @@ theorem phiB_transcendental {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
     apply eventually_principal.mpr
     intro z hz
     show bottcherCoord b (pMapB b m z) = (phiB b ^ (2 ^ (m + 1))) z
-    have := phiB_pow_pMapB hb m hz
+    have := phiB_pow_pMapB_of_mem_annWB hb m hz
     rw [← this]
     rfl
   have h0 : S.eval₂ (ratfuncToMero (pMapB b m '' annWB b) hWo hWc hWne hWinf)
