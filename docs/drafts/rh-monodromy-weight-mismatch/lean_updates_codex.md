@@ -2126,3 +2126,58 @@ Added (axiom-clean): `sq_detCoeffW_log_le` ((eₖ log k)²≤d(k)²k^{-2σ}(log 
 detection second moments (E via detection_diagonal_le_tsum, E' via this) have vanishing diagonals.
 Optimization state: ‖M‖ bound + both diagonal vanishings + both summabilities + off-diagonal all built.
 Remaining: zeros-to-grid mapping + AFE-accuracy parameter choice + assemble N(σ,T)·V²≤o(T) → CarlsonDensity.
+
+## DetectionSecondMoment + CarlsonAssembly — the o(T) endpoint assembled
+
+New modules (axiom-clean, in umbrella):
+- `MollifierDetection`: `convSupp_subset_Icc` (support ⊆ [1,N·y]); `detectionW_diagonal_tail`
+  (σ-weighted diagonal runs only over k>min).
+- `DetectionSecondMoment.detectionW_secondMoment_bound`: ∫_T^{T+U}‖E‖² ≤ U·(divisor tail)
+  + 4·(N·y)·H(N·y)·∑eₖ². Combines secondMoment_meanValue + detection_diagonal_le_tsum
+  (diagonal→0) + offDiagonal_le (elementary harmonic off-diagonal, no Hilbert inequality).
+- `CarlsonAssembly.sublinear_of_tail_and_offdiag`: pure real-analysis bridge — D(T)→0 and
+  O(T)=o(T) ⟹ T·D(T)+O(T) sublinear (the hsub input of sublinearDensity_of_largeValues).
+- `CarlsonAssembly.carlson_rhLadder_of_schedule`: CAPSTONE. Given (recurrence) +
+  (zeros-to-mean-square count N(σ,T)·V²≤T·D(T)+O(T), the detectionW_secondMoment_bound shape) +
+  (schedule D→0, O=o(T)) ⟹ RHLadder 1. Composes the bridge with
+  rhLadder_one_of_recurrence_of_largeValues.
+
+The "mollifier makes the moments sublinear" half of Carlson's optimization is now machine-checked.
+Two inputs left EXPLICIT as classical hypotheses (mathlib has neither): (1) zeros-to-mean-square
+counting (Gallagher well-spaced points + afe_detection); (2) the parameter schedule N(T),y(T).
+Note: renamed my DpolyConvolution `dpoly_mul`→`dpoly_mul_pairSum` (name clash with parallel
+BohrMoments.dpoly_mul); umbrella + lint clean.
+
+## HS operator algebra closed: ideal + submult norm + cyclic trace + powers
+
+Deep/wide audit first: mathlib has compact-operator spectral theory (SingularValues, Rayleigh,
+InnerProductSpace.Spectrum), adjoints, FredholmAlternative — but NO trace-class, NO Schatten, NO Fredholm
+determinant, NO Hilbert–Schmidt operators. hgt is the only project here; HilbertSchmidt.lean is the sole
+operator substrate. Built the genuinely-missing pieces the infinite seam generator consumes (all axiom-clean,
+my side builds 8940 jobs green; gate red is concurrent agent's DendriteTip.lean, not mine):
+
+- summable_row / summable_col — the row/column energies ∑ₖ‖K(i,k)‖² are summable (marginal of the HS
+  family, proved through ℝ≥0∞ to dodge the ℝ tsum-mono circularity); tsum_row_normSq / tsum_col_normSq
+  sum them to ‖K‖²_HS.
+- isHS_hsComp — THE HS IDEAL: K∘L is again HS (entrywise CS bound × product-summable). Closes the algebra.
+- hsNormSq_hsComp_le — submultiplicative norm ‖K∘L‖²_HS ≤ ‖K‖²_HS·‖L‖²_HS (normed algebra).
+- hsInner_adjoint_comm + hsTrace_hsComp_comm — CYCLICITY tr(K∘L)=tr(L∘K), the trace primitive.
+- hsPow / isHS_hsPow / hsNormSq_hsPow_le — powers K^(n+1) are HS with ‖K^(n+1)‖²_HS ≤ (‖K‖²_HS)^(n+1)
+  (⟹ resolvent ∑zⁿKⁿ converges in HS norm for |z|<‖K‖⁻¹_HS).
+- hsTrace_hsPow_succ — trace of powers in closed form tr(K^(n+1)) = ⟨Kᴴ,Kⁿ⟩_HS: the coefficient
+  sequence tr(Kⁿ) that the Fredholm determinant det(1−zK)=exp(−∑ zⁿ/n·tr(Kⁿ)) consumes.
+
+Next consumed-but-missing brick: the Fredholm determinant / resolvent-trace identity (endpoint det(s−Θ)=ξ).
+
+## Resolvent-trace substrate landed (gate green 9315)
+
+Extended the HS algebra to the resolvent trace (all axiom-clean, full gate green):
+- hsNorm := √(hsNormSq) with hsNorm_hsAdjoint, hsNorm_hsPow_le (‖K^(n+1)‖_HS ≤ ‖K‖_HS^(n+1)).
+- hsTrace_hsPow_norm_le — GEOMETRIC decay ‖tr(K^(n+1))‖ ≤ ‖K‖_HS^(n+2) (via CS on tr=⟨Kᴴ,Kⁿ⟩ + power norm).
+- resolventTrace K z := ∑ₙ z^(n+1)·tr(K^(n+1)); resolventTrace_summable for |z|·‖K‖_HS<1 (geometric domination).
+  = the infinite analogue of tr((s−Θ)⁻¹), the object the seam's resolvent supplies.
+
+Full HS operator algebra now runs: kernel → inner-product space → Cauchy–Schwarz → composition → IDEAL
+(K∘L is HS, submult norm) → cyclic trace → powers Kⁿ → geometric trace decay → RESOLVENT TRACE series.
+Next consumed-but-missing endpoint: Fredholm determinant det(1−zK)=exp(−∑ zⁿ/n·tr(Kⁿ)) and the Plemelj
+identity logDeriv det(1−zK) = −resolventTrace (the shape logDeriv ξ = tr((s−Θ)⁻¹) the seam welds to).

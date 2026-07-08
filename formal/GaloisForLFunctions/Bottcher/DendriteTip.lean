@@ -7,6 +7,7 @@ of the dendrite-tip supply for the both-connected pair lane: the tip candidate `
 the extreme sphere, so the basin fills a full outer lune at every scale.  Axiom-clean.
 -/
 import GaloisForLFunctions.Bottcher.GreenFunction
+import GaloisForLFunctions.Bottcher.MontelIterates
 import Mathlib.Analysis.SpecificLimits.Basic
 
 open Complex Set Metric Bornology
@@ -146,5 +147,17 @@ theorem betaFixed_mem_frontier {c : ℝ} (hc0 : c ≤ 0) :
       have h7 : Filter.Tendsto (fun x : ℝ => (x : ℂ)) (nhds (betaFixed c))
           (nhds ((betaFixed c : ℝ) : ℂ)) := Complex.continuous_ofReal.continuousAt
       exact h7.comp h4
+
+/-- **The iterates are spherically non-normal at the real β-fixed point.**  For `c ≤ 0` real, the
+β-fixed point `betaFixed c` lies on the Julia frontier (`betaFixed_mem_frontier`), so by the
+frontier non-normality theorem (`no_spherical_normal_limit_of_frontier`) the stereographic iterates
+`z ↦ stereo ((z²+c)^[φ k] z)` admit no uniform subsequential limit on any closed ball around it:
+the family `{(z²+c)^[n]}` is nowhere normal at the dendrite tip. -/
+theorem no_spherical_normal_limit_at_betaFixed {c : ℝ} (hc0 : c ≤ 0) {ρ : ℝ} (hρ : 0 < ρ) :
+    ¬ ∃ (φ : ℕ → ℕ) (G : ℂ → EuclideanSpace ℝ (Fin 3)), StrictMono φ ∧
+        ContinuousOn G (closedBall ((betaFixed c : ℝ) : ℂ) ρ) ∧
+        TendstoUniformlyOn (fun k z => stereo ((quadratic (c : ℂ))^[φ k] z)) G Filter.atTop
+          (closedBall ((betaFixed c : ℝ) : ℂ) ρ) :=
+  no_spherical_normal_limit_of_frontier (betaFixed_mem_frontier hc0) hρ
 
 end Bottcher

@@ -23,9 +23,62 @@ argument (`CarlsonDensity`) consumes to bound `N(σ,T)`.
 import GaloisForLFunctions.RHTower.MollifierDetection
 import GaloisForLFunctions.RHTower.OffDiagonalBound
 
-open Complex
+open Complex Filter
 
 namespace RHTower
+
+/-- **The detection diagonal tail vanishes with the cutoff.**  The divisor tail
+`∑' 𝟙_{m<k} d(k)² k^{-2σ}` `→ 0` as `m → ∞`.  Reindexing the indicator sum onto `{k ≥ m+1}`
+(`Function.Injective.tsum_eq`) identifies it with the shifted tail `∑'_j g(j+(m+1))`, which vanishes
+by `tendsto_divisor_sq_rpow_tail_zero`.  This turns the diagonal hypothesis `D(T) → 0` of the density
+capstone into the elementary requirement that the mollifier cutoff `min(N,y) → ∞`. -/
+theorem detection_diagonal_tail_tendsto (σ : ℝ) :
+    Tendsto
+      (fun m : ℕ => ∑' k : ℕ, Set.indicator {j | m < j}
+          (fun k => (k.divisors.card : ℝ) ^ 2 * (k : ℝ) ^ (-2 * σ)) k)
+      atTop (nhds 0) := by
+  set g : ℕ → ℝ := fun k => (k.divisors.card : ℝ) ^ 2 * (k : ℝ) ^ (-2 * σ) with hg
+  have hpt : ∀ m : ℕ,
+      (∑' k : ℕ, Set.indicator {j | m < j} g k) = ∑' j : ℕ, g (j + (m + 1)) := by
+    intro m
+    have hinj : Function.Injective (fun j : ℕ => j + (m + 1)) := add_left_injective _
+    have hsupp : Function.support (Set.indicator {j | m < j} g)
+        ⊆ Set.range (fun j : ℕ => j + (m + 1)) := by
+      intro k hk
+      have hval : Set.indicator {j | m < j} g k ≠ 0 := hk
+      have hkset : m < k := by
+        by_contra hc
+        have hnot : k ∉ {j | m < j} := by simp only [Set.mem_setOf_eq]; omega
+        rw [Set.indicator_of_notMem hnot] at hval
+        exact hval rfl
+      exact ⟨k - (m + 1), by show k - (m + 1) + (m + 1) = k; omega⟩
+    have hre := Function.Injective.tsum_eq hinj hsupp
+    rw [← hre]
+    exact tsum_congr (fun j => Set.indicator_of_mem
+      (show j + (m + 1) ∈ {j | m < j} by simp only [Set.mem_setOf_eq]; omega) g)
+  have htail := tendsto_divisor_sq_rpow_tail_zero σ
+  have hcomp : Tendsto (fun m : ℕ => ∑' j : ℕ, g (j + (m + 1))) atTop (nhds 0) :=
+    htail.comp (tendsto_add_atTop_nat 1)
+  exact (tendsto_congr hpt).mpr hcomp
+
+/-- **The diagonal input of the density capstone holds for any cutoff schedule tending to `∞`.**  If
+`cut : ℝ → ℕ` (e.g. the mollifier cutoff `min(N(T), y(T))`) tends to `∞` with `T`, then the diagonal
+tail `D(T) = ∑' 𝟙_{cut T < k} d(k)² k^{-2σ}` eventually falls below any `ε > 0`.  Immediate from
+`detection_diagonal_tail_tendsto` composed with `cut`.  This discharges the `hD` hypothesis of
+`carlson_rhLadder_of_schedule`: the diagonal contributes nothing but the elementary requirement that
+the cutoff grow. -/
+theorem detection_diagonal_hD_of_cutoff {cut : ℝ → ℕ} (σ : ℝ)
+    (hcut : Tendsto cut atTop atTop) :
+    ∀ ε > 0, ∃ T₀, ∀ T ≥ T₀, (∑' k : ℕ, Set.indicator {j | cut T < j}
+        (fun k => (k.divisors.card : ℝ) ^ 2 * (k : ℝ) ^ (-2 * σ)) k) ≤ ε := by
+  intro ε hε
+  have hcomp : Tendsto (fun T => ∑' k : ℕ, Set.indicator {j | cut T < j}
+      (fun k => (k.divisors.card : ℝ) ^ 2 * (k : ℝ) ^ (-2 * σ)) k) atTop (nhds 0) :=
+    (detection_diagonal_tail_tendsto σ).comp hcut
+  have hev := hcomp.eventually (Iic_mem_nhds hε)
+  rw [eventually_atTop] at hev
+  obtain ⟨T₀, hT₀⟩ := hev
+  exact ⟨T₀, fun T hT => hT₀ T hT⟩
 
 /-- **σ-weighted detection second moment.**  The mean square of the detection polynomial
 `E = D_N·M − 1` over `[T, T+U]` is bounded by `U` times the divisor tail (the diagonal) plus the

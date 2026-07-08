@@ -115,4 +115,51 @@ theorem differentiallyAlgebraic_hurwitzTruncation (a : ℝ) (s : Finset ℕ) :
   rw [heq]
   exact differentiallyAlgebraic_finset_expSum s (fun _ => 1) (fun n => -(Real.log ((n : ℝ) + a) : ℂ))
 
+/-- **Every finite Dirichlet polynomial is differentially algebraic.**  For arbitrary complex
+coefficients `a : ℕ → ℂ` and a finite index set `S` of positive integers,
+`x ↦ ∑_{n∈S} a n · n^{-x}` is differentially algebraic.  Each `n^{-x} = exp(-(log n)·x)` is an
+exponential monomial with frequency `-log n`, so the sum is a finite exponential sum, annihilated by
+`∏_{n∈S}(D + log n)`; apply `differentiallyAlgebraic_finset_expSum`.  This generalizes the unit-coefficient
+Hurwitz truncation to arbitrary coefficients: it covers every truncated Dirichlet series, hence every
+partial sum of a Dirichlet L-function `L(χ, ·) = ∑ χ(n) n^{-s}`. -/
+theorem differentiallyAlgebraic_dirichletPolynomial (a : ℕ → ℂ) (S : Finset ℕ)
+    (hS : ∀ n ∈ S, 1 ≤ n) :
+    DifferentiallyAlgebraic (fun x => ∑ n ∈ S, a n * (n : ℂ) ^ (-x)) := by
+  have heq : (fun x => ∑ n ∈ S, a n * (n : ℂ) ^ (-x))
+      = (fun x => ∑ n ∈ S, a n * Complex.exp ((-(Real.log (n : ℝ) : ℂ)) * x)) := by
+    funext x
+    refine Finset.sum_congr rfl (fun n hn => ?_)
+    have hn1 : 1 ≤ n := hS n hn
+    have hpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn1
+    have hne : (n : ℂ) ≠ 0 := by
+      rw [show ((n : ℂ)) = (((n : ℝ) : ℂ)) by push_cast; ring]
+      exact_mod_cast ne_of_gt hpos
+    congr 1
+    rw [Complex.cpow_def_of_ne_zero hne]
+    congr 1
+    rw [show ((n : ℂ)) = (((n : ℝ) : ℂ)) by push_cast; ring, ← Complex.ofReal_log hpos.le]
+    ring
+  rw [heq]
+  exact differentiallyAlgebraic_finset_expSum S a (fun n => -(Real.log (n : ℝ) : ℂ))
+
+/-- **Every partial sum of a mathlib `LSeries` is differentially algebraic.**  For any coefficient
+function `f` and finite index set `S`, the partial sum `x ↦ ∑_{n∈S} LSeries.term f x n` of the L-series
+`∑ f(n) n^{-s}` is differentially algebraic.  The `n = 0` term vanishes and each remaining
+`LSeries.term f x n = f n / n^x = f n · n^{-x}`, reducing to `differentiallyAlgebraic_dirichletPolynomial`.
+Instantiated at `f = χ` (a Dirichlet character) this is the truncated Dirichlet L-function; at `f = 1`
+the truncated Riemann zeta.  So every L-function's Dirichlet truncation lies in the differentially
+algebraic class -- whether the *limit* leaves that class is the hypertranscendence frontier. -/
+theorem differentiallyAlgebraic_LSeries_partialSum (f : ℕ → ℂ) (S : Finset ℕ) :
+    DifferentiallyAlgebraic (fun x => ∑ n ∈ S, LSeries.term f x n) := by
+  have heq : (fun x => ∑ n ∈ S, LSeries.term f x n)
+      = (fun x => ∑ n ∈ S.erase 0, f n * (n : ℂ) ^ (-x)) := by
+    funext x
+    rw [← Finset.sum_erase S (a := 0) (by simp [LSeries.term_zero])]
+    refine Finset.sum_congr rfl (fun n hn => ?_)
+    have hn0 : n ≠ 0 := Finset.ne_of_mem_erase hn
+    rw [LSeries.term_of_ne_zero hn0, div_eq_mul_inv, ← Complex.cpow_neg]
+  rw [heq]
+  exact differentiallyAlgebraic_dirichletPolynomial f (S.erase 0)
+    (fun n hn => Nat.one_le_iff_ne_zero.mpr (Finset.ne_of_mem_erase hn))
+
 end GaloisForLFunctions
