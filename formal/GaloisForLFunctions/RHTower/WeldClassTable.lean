@@ -334,5 +334,20 @@ theorem two_prime_weld_class_indep {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hp
     zsmul_eq_mul] at hab
   exact hab
 
+/-- **The founding prime–archimedean weld has unbounded rank.**  The entire family of prime weld
+classes `{weldClass (log p) : p prime}` is `ℤ`-linearly independent in `H²`: any finitely-supported
+integer combination that vanishes has all coefficients zero.  So the founding `(∂_s, {σ_p})` weld is
+not merely nonzero but *countably infinite-dimensional* — the maximal weld, of which every single
+generator pair is a rank-one slice.  The independence is transported from the unique-factorization
+independence of `{log p}` already in the tree through the injective weld-class homomorphism. -/
+theorem primes_weld_class_indep (coeff : Nat.Primes →₀ ℤ)
+    (h : coeff.sum (fun p n => n • weldClassHom (Real.log (p : ℕ))) = 0) : coeff = 0 := by
+  apply primeIndexedLogExpansion_coeff_eq_zero_of_sum_eq_zero
+  have hmap : weldClassHom (coeff.sum (fun p n => n • Real.log (p : ℕ))) = 0 := by
+    rw [map_finsuppSum]
+    simp_rw [map_zsmul]
+    exact h
+  exact (weldClassHom_eq_zero_iff _).mp hmap
+
 end RHTower
 end GaloisForLFunctions
