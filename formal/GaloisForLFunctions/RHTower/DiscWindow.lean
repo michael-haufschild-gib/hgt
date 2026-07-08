@@ -7,7 +7,7 @@ import GaloisForLFunctions.Bottcher.SlitAnnulus
 
 The annular slit charts are translated slit annuli, hence simply connected; ξ-roots therefore
 exist on them whenever the enclosed configuration accounts for all ball zeros.  On any
-reflection-closed enclosed configuration the deck class at level `2^{k+1}` equals the
+reflection-closed enclosed configuration the deck class value at level `2^{k+1}` equals the
 line-predicted class `exp(2πi·L/2^{k+1})` (computed from on-line data alone) IF AND ONLY IF the
 right-half order sum `N` is divisible by `2^k`: the discrepancy between the loop class and its
 on-line prediction — the DISC bit — is exactly the window's rung datum.  The loop class alone is

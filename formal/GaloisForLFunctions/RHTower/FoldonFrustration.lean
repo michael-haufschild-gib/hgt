@@ -93,7 +93,7 @@ def foldonFrustration {ι : Type*} (s : Finset ι) (m : ι → ℕ) : ℤ := ((�
 
 /-- **The parity rung is blind to a reflection pair.**  A configuration invariant under a
 fixed-point-free reflection involution matching multiplicities has even frustration, so its deck
-class at rung `1` is trivial: the mod-2 flux is blind to reflection-paired off-line zeros. -/
+class value at rung `1` is trivial: the mod-2 flux is blind to reflection-paired off-line zeros. -/
 theorem frustration_invisible_rung_one {ι : Type*} [DecidableEq ι] (s : Finset ι)
     (σ : ι → ι) (m : ι → ℕ)
     (hσs : ∀ i ∈ s, σ i ∈ s) (hσσ : ∀ i ∈ s, σ (σ i) = i)

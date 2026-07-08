@@ -29,6 +29,7 @@ strip; that continuation is the pinned constraint the whole ladder is about.
 -/
 import GaloisForLFunctions.RHTower.WeldTowerFree
 import GaloisForLFunctions.RHTower.SeamReciprocity
+import GaloisForLFunctions.RHTower.GermExtension
 
 open Complex
 open scoped BigOperators
@@ -36,20 +37,6 @@ open scoped BigOperators
 namespace RHTower
 
 noncomputable section
-
-/-- The open half-plane beyond the wall, `Re s > 1`. -/
-def beyondWall : Set ℂ := {s : ℂ | 1 < s.re}
-
-theorem isOpen_beyondWall : IsOpen beyondWall :=
-  isOpen_lt continuous_const Complex.continuous_re
-
-theorem convex_beyondWall : Convex ℝ beyondWall := convex_halfSpace_re_gt 1
-
-theorem two_mem_beyondWall : (2 : ℂ) ∈ beyondWall := by
-  show (1 : ℝ) < (2 : ℂ).re; norm_num
-
-theorem isSimplyConnected_beyondWall : IsSimplyConnected beyondWall :=
-  isSimplyConnected_of_convex convex_beyondWall ⟨2, two_mem_beyondWall⟩
 
 /-! ### Free `2^k`-th root tower for a zero-free analytic unit on any open convex region -/
 
@@ -82,7 +69,7 @@ theorem coherentTower_of_analyticOn_nonvanishing_convex {U : Set ℂ} (hUo : IsO
 
 /-- The completed limit is nonvanishing beyond the wall: `completedRiemannZeta = archSeam · seamDirichlet`
 with `archSeam ≠ 0` (`Re s > 0`) and `seamDirichlet = ζ ≠ 0` (`Re s > 1`). -/
-theorem completedZeta_ne_zero_beyondWall {s : ℂ} (hs : s ∈ beyondWall) :
+theorem completedZeta_ne_zero_beyondWall {s : ℂ} (hs : s ∈ farHalf) :
     completedRiemannZeta s ≠ 0 := by
   have hs1 : 1 < s.re := hs
   rw [completedSeam_eq hs1]
@@ -93,32 +80,32 @@ theorem completedZeta_ne_zero_beyondWall {s : ℂ} (hs : s ∈ beyondWall) :
 
 /-- The completed limit is analytic beyond the wall (its poles at `s = 0, 1` are on or left of the
 wall). -/
-theorem completedZeta_analyticAt_beyondWall {s : ℂ} (hs : s ∈ beyondWall) :
+theorem completedZeta_analyticAt_beyondWall {s : ℂ} (hs : s ∈ farHalf) :
     AnalyticAt ℂ completedRiemannZeta s := by
-  have hdiff : DifferentiableOn ℂ completedRiemannZeta beyondWall := by
+  have hdiff : DifferentiableOn ℂ completedRiemannZeta farHalf := by
     intro z hz
     have hz1 : 1 < z.re := hz
     refine (differentiableAt_completedZeta ?_ ?_).differentiableWithinAt
     · rintro rfl; simp only [Complex.zero_re] at hz1; linarith
     · rintro rfl; simp only [Complex.one_re] at hz1; linarith
-  exact (hdiff.analyticOnNhd isOpen_beyondWall) s hs
+  exact (hdiff.analyticOnNhd isOpen_farHalf) s hs
 
 /-- **The completed limit survives the `P → ∞` boundary.**  `completedRiemannZeta` — the completed limit
 `archSeam · seamDirichlet` of the finite welds — has an unconditional coherent infinite Kummer tower on
 `Re s > 1`.  The product tower survives the limit, but only past the wall. -/
 theorem completedZeta_coherentTower_beyondWall :
-    Nonempty (CoherentTower completedRiemannZeta beyondWall) :=
-  coherentTower_of_analyticOn_nonvanishing_convex isOpen_beyondWall convex_beyondWall
-    two_mem_beyondWall (fun _ hz => completedZeta_analyticAt_beyondWall hz)
+    Nonempty (CoherentTower completedRiemannZeta farHalf) :=
+  coherentTower_of_analyticOn_nonvanishing_convex isOpen_farHalf convex_farHalf
+    two_mem_farHalf (fun _ hz => completedZeta_analyticAt_beyondWall hz)
     (fun _ hz => completedZeta_ne_zero_beyondWall hz)
 
 /-! ### ξ survives past the wall unconditionally; extending across the strip is RH -/
 
 /-- **ξ survives past the wall.**  `ξ` (entire, zero-free on `Re s ≥ 1`) carries an unconditional
 coherent infinite Kummer tower on `Re s > 1`. -/
-theorem xi_coherentTower_beyondWall : Nonempty (CoherentTower xi beyondWall) :=
-  coherentTower_of_analyticOn_nonvanishing_convex isOpen_beyondWall convex_beyondWall
-    two_mem_beyondWall (fun z _ => xi_analyticOnNhd_univ z (Set.mem_univ z))
+theorem xi_coherentTower_beyondWall : Nonempty (CoherentTower xi farHalf) :=
+  coherentTower_of_analyticOn_nonvanishing_convex isOpen_farHalf convex_farHalf
+    two_mem_farHalf (fun z _ => xi_analyticOnNhd_univ z (Set.mem_univ z))
     (fun _ hz => xi_ne_zero_of_one_le_re (le_of_lt hz))
 
 /-- **Reclaiming the strip is RH.**  The Riemann Hypothesis holds **iff** `ξ` admits a coherent infinite
@@ -127,10 +114,7 @@ wall extends across the critical strip.  Forward and back through
 `rh_iff_exists_roots_all_two_powers` and the coherent-tower/roots equivalence. -/
 theorem rh_iff_xi_coherentTower_rightHalf :
     RiemannHypothesis ↔ Nonempty (CoherentTower xi rightHalf) := by
-  rw [rh_iff_exists_roots_all_two_powers,
-    coherentTower_iff_exists_roots_all_two_powers_preconnected isOpen_rightHalf
-      (isSimplyConnected_of_convex convex_rightHalf ⟨2, two_mem_rightHalf⟩)
-      convex_rightHalf.isPreconnected two_mem_rightHalf (xi_analyticOnNhd _) xi_two_ne_zero]
+  exact rh_iff_tower
 
 /-- **The survival dichotomy, packaged.**  For every `k` and every finite prime atlas `P`:
 
@@ -145,8 +129,8 @@ strip is the Riemann Hypothesis. -/
 theorem weld_tower_survives_to_wall_extends_iff_rh (k : ℕ) {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) :
     (∃ g : ℂ → ℂ, DifferentiableOn ℂ g rightHalfPlane ∧
         ∀ z ∈ rightHalfPlane, g z ^ (2 ^ k) = (archimedeanFactor * eulerPartial P) z)
-    ∧ Nonempty (CoherentTower completedRiemannZeta beyondWall)
-    ∧ Nonempty (CoherentTower xi beyondWall)
+    ∧ Nonempty (CoherentTower completedRiemannZeta farHalf)
+    ∧ Nonempty (CoherentTower xi farHalf)
     ∧ (RiemannHypothesis ↔ Nonempty (CoherentTower xi rightHalf)) :=
   ⟨completedLocalFactor_pow_root k hP, completedZeta_coherentTower_beyondWall,
     xi_coherentTower_beyondWall, rh_iff_xi_coherentTower_rightHalf⟩
@@ -193,8 +177,7 @@ theorem xi_coherentTower_gt_one : Nonempty (CoherentTower xi {s : ℂ | (1 : ℝ
 /-- RH corollary (`σ = 1/2`): RH ⟺ `ξ` carries a coherent tower on `Re s > 1/2`. -/
 theorem rh_iff_xi_coherentTower_gt_half :
     RiemannHypothesis ↔ Nonempty (CoherentTower xi {s : ℂ | (1 / 2 : ℝ) < s.re}) := by
-  rw [rh_iff_xi_ne_zero_right, xi_coherentTower_iff_zeroFree_halfPlane (1 / 2)]
-  rfl
+  exact rh_iff_xi_coherentTower_rightHalf
 
 end
 

@@ -20,6 +20,47 @@ namespace Sublevel
 
 open MeasureTheory
 
+private theorem coreSetM_volume_le {B C c : ℂ} {ρ r σ0 : ℝ}
+    (hB : B ≠ 0) (hC : C ≠ 0) (hc : c ≠ 0) (hr0 : 0 < r) :
+    volume (coreSetM c C B ρ r σ0)
+      ≤ ENNReal.ofReal (2 * Real.pi
+          * Real.sqrt (2 * ((σ0 + r * (2 * (ρ + ‖B‖) + r))
+            / (2 * (‖c‖ * ‖C‖))))) := by
+  have hb0 : (0 : ℝ) < ‖B‖ := norm_pos_iff.mpr hB
+  have hsub : coreSetM c C B ρ r σ0
+      ⊆ {η : ℝ | η ∈ Set.Icc 0 (2 * Real.pi) ∧
+          ‖c + C * Complex.exp ((η : ℂ) * Complex.I)‖ ^ 2
+            ∈ Set.Icc ((ρ - ‖B‖ - r) ^ 2) ((ρ - ‖B‖) ^ 2 + σ0)} :=
+    fun η h => ⟨h.1, h.2.1, h.2.2⟩
+  refine le_trans (measure_mono hsub)
+    (le_trans (center_shell_measure hc hC)
+      (ENNReal.ofReal_le_ofReal ?_))
+  have hw : (ρ - ‖B‖) ^ 2 + σ0 - (ρ - ‖B‖ - r) ^ 2
+      ≤ σ0 + r * (2 * (ρ + ‖B‖) + r) := by nlinarith [hb0, hr0]
+  have hcc : (0 : ℝ) < ‖c‖ * ‖C‖ :=
+    mul_pos (norm_pos_iff.mpr hc) (norm_pos_iff.mpr hC)
+  gcongr
+
+private theorem coreSetP_volume_le {B C c : ℂ} {ρ r σ0 : ℝ}
+    (hC : C ≠ 0) (hc : c ≠ 0) :
+    volume (coreSetP c C B ρ r σ0)
+      ≤ ENNReal.ofReal (2 * Real.pi
+          * Real.sqrt (2 * ((σ0 + r * (2 * (ρ + ‖B‖) + r))
+            / (2 * (‖c‖ * ‖C‖))))) := by
+  have hsub : coreSetP c C B ρ r σ0
+      ⊆ {η : ℝ | η ∈ Set.Icc 0 (2 * Real.pi) ∧
+          ‖c + C * Complex.exp ((η : ℂ) * Complex.I)‖ ^ 2
+            ∈ Set.Icc ((ρ + ‖B‖) ^ 2 - σ0) ((ρ + ‖B‖ + r) ^ 2)} :=
+    fun η h => ⟨h.1, h.2.1, h.2.2⟩
+  refine le_trans (measure_mono hsub)
+    (le_trans (center_shell_measure hc hC)
+      (ENNReal.ofReal_le_ofReal ?_))
+  have hw : (ρ + ‖B‖ + r) ^ 2 - ((ρ + ‖B‖) ^ 2 - σ0)
+      ≤ σ0 + r * (2 * (ρ + ‖B‖) + r) := by nlinarith
+  have hcc : (0 : ℝ) < ‖c‖ * ‖C‖ :=
+    mul_pos (norm_pos_iff.mpr hc) (norm_pos_iff.mpr hC)
+  gcongr
+
 theorem annulus_lintegral_le {B C c : ℂ} {ρ r σ0 : ℝ} {J : ℕ}
     (hB : B ≠ 0) (hC : C ≠ 0) (hc : c ≠ 0) (hρB : ‖B‖ < ρ) (hr0 : 0 < r)
     (hr2 : 2 * r ≤ ρ - ‖B‖) (hσ0 : 0 < σ0)
@@ -330,20 +371,8 @@ theorem annulus_lintegral_le {B C c : ℂ} {ρ r σ0 : ℝ} {J : ℕ}
     have hvol : volume (coreSetM c C B ρ r σ0)
         ≤ ENNReal.ofReal (2 * Real.pi
             * Real.sqrt (2 * ((σ0 + r * (2 * (ρ + ‖B‖) + r))
-              / (2 * (‖c‖ * ‖C‖))))) := by
-      have hsub : coreSetM c C B ρ r σ0
-          ⊆ {η : ℝ | η ∈ Set.Icc 0 (2 * Real.pi) ∧
-              ‖c + C * Complex.exp ((η : ℂ) * Complex.I)‖ ^ 2
-                ∈ Set.Icc ((ρ - ‖B‖ - r) ^ 2) ((ρ - ‖B‖) ^ 2 + σ0)} :=
-        fun η h => ⟨h.1, h.2.1, h.2.2⟩
-      refine le_trans (measure_mono hsub)
-        (le_trans (center_shell_measure hc hC)
-          (ENNReal.ofReal_le_ofReal ?_))
-      have hw : (ρ - ‖B‖) ^ 2 + σ0 - (ρ - ‖B‖ - r) ^ 2
-          ≤ σ0 + r * (2 * (ρ + ‖B‖) + r) := by nlinarith [hb0, hr0]
-      have hcc : (0 : ℝ) < ‖c‖ * ‖C‖ :=
-        mul_pos (norm_pos_iff.mpr hc) (norm_pos_iff.mpr hC)
-      gcongr
+              / (2 * (‖c‖ * ‖C‖))))) :=
+      coreSetM_volume_le hB hC hc hr0
     refine le_trans (mul_le_mul_right hvol _) (le_of_eq ?_)
     rw [← ENNReal.ofReal_mul (by positivity)]
   · -- outer core
@@ -352,20 +381,8 @@ theorem annulus_lintegral_le {B C c : ℂ} {ρ r σ0 : ℝ} {J : ℕ}
     have hvol : volume (coreSetP c C B ρ r σ0)
         ≤ ENNReal.ofReal (2 * Real.pi
             * Real.sqrt (2 * ((σ0 + r * (2 * (ρ + ‖B‖) + r))
-              / (2 * (‖c‖ * ‖C‖))))) := by
-      have hsub : coreSetP c C B ρ r σ0
-          ⊆ {η : ℝ | η ∈ Set.Icc 0 (2 * Real.pi) ∧
-              ‖c + C * Complex.exp ((η : ℂ) * Complex.I)‖ ^ 2
-                ∈ Set.Icc ((ρ + ‖B‖) ^ 2 - σ0) ((ρ + ‖B‖ + r) ^ 2)} :=
-        fun η h => ⟨h.1, h.2.1, h.2.2⟩
-      refine le_trans (measure_mono hsub)
-        (le_trans (center_shell_measure hc hC)
-          (ENNReal.ofReal_le_ofReal ?_))
-      have hw : (ρ + ‖B‖ + r) ^ 2 - ((ρ + ‖B‖) ^ 2 - σ0)
-          ≤ σ0 + r * (2 * (ρ + ‖B‖) + r) := by nlinarith
-      have hcc : (0 : ℝ) < ‖c‖ * ‖C‖ :=
-        mul_pos (norm_pos_iff.mpr hc) (norm_pos_iff.mpr hC)
-      gcongr
+              / (2 * (‖c‖ * ‖C‖))))) :=
+      coreSetP_volume_le hC hc
     refine le_trans (mul_le_mul_right hvol _) (le_of_eq ?_)
     rw [← ENNReal.ofReal_mul (by positivity)]
   · -- mid annulus

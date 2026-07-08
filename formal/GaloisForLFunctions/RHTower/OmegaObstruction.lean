@@ -952,13 +952,18 @@ theorem isPrimeLogIntegral_of_formula (D : SectionDefect Greal ℝ)
     (formula : PrimeLogCochainFormula D.defect) : IsPrimeLogIntegral D.defect :=
   formula.isPrimeLogIntegral
 
+private theorem isLatticeClass_of_isPrimeLogIntegral (D : SectionDefect Greal ℝ)
+    (hD : IsPrimeLogIntegral D.defect) :
+    IsLatticeClass primeLogLattice D.obstruction := by
+  have hval : IsLatticeValued primeLogLattice (D.cocycle : Greal -> Greal -> ℝ) := by
+    simpa [cocycle, IsPrimeLogIntegral] using hD
+  simpa [obstruction, obstructionClass] using isLatticeClass_mk (omega := D.cocycle) hval
+
 /-- A section defect with a finite prime-log formula has a prime-log lattice-valued class. -/
 theorem isLatticeClass_of_primeLogFormula (D : SectionDefect Greal ℝ)
     (formula : PrimeLogCochainFormula D.defect) :
-    IsLatticeClass primeLogLattice D.obstruction := by
-  have hval : IsLatticeValued primeLogLattice (D.cocycle : Greal -> Greal -> ℝ) := by
-    simpa [cocycle, IsPrimeLogIntegral] using formula.isPrimeLogIntegral
-  simpa [obstruction, obstructionClass] using isLatticeClass_mk (omega := D.cocycle) hval
+    IsLatticeClass primeLogLattice D.obstruction :=
+  isLatticeClass_of_isPrimeLogIntegral D formula.isPrimeLogIntegral
 
 /-- Prime-log integrality of a section defect is invariant under prime-log-valued resection. -/
 theorem resection_isPrimeLogIntegral_iff (D : SectionDefect Greal ℝ)
@@ -993,10 +998,8 @@ theorem isPrimeLogIntegral_of_primeIndexedFormula (D : SectionDefect Greal ℝ)
 /-- A section defect with a prime-indexed formula has a prime-log lattice-valued class. -/
 theorem isLatticeClass_of_primeIndexedFormula (D : SectionDefect Greal ℝ)
     (formula : PrimeIndexedLogCochainFormula D.defect) :
-    IsLatticeClass primeLogLattice D.obstruction := by
-  have hval : IsLatticeValued primeLogLattice (D.cocycle : Greal -> Greal -> ℝ) := by
-    simpa [cocycle, IsPrimeLogIntegral] using formula.isPrimeLogIntegral
-  simpa [obstruction, obstructionClass] using isLatticeClass_mk (omega := D.cocycle) hval
+    IsLatticeClass primeLogLattice D.obstruction :=
+  isLatticeClass_of_isPrimeLogIntegral D formula.isPrimeLogIntegral
 
 /-- Zero defect values have zero prime-indexed coefficients. -/
 theorem primeIndexedCoeff_eq_zero_of_defect_eq_zero (D : SectionDefect Greal ℝ)

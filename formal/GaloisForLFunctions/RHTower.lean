@@ -124,6 +124,7 @@ import GaloisForLFunctions.RHTower.WeldClassTable
 import GaloisForLFunctions.RHTower.WeldRateLattice
 import GaloisForLFunctions.RHTower.ExpNatIrrational
 import GaloisForLFunctions.RHTower.WeldChargeFaithfulness
+import GaloisForLFunctions.RHTower.ApexIndependence
 import GaloisForLFunctions.RHTower.WeldCircleFaithfulness
 import GaloisForLFunctions.RHTower.SeamClockSelection
 import GaloisForLFunctions.RHTower.TranscendentalRateObject
@@ -261,6 +262,7 @@ import GaloisForLFunctions.RHTower.CarrierMassFloor
 import GaloisForLFunctions.RHTower.MollifiedCarrier
 import GaloisForLFunctions.RHTower.AnchorSupply
 import GaloisForLFunctions.RHTower.ShortWindowNoGo
+import GaloisForLFunctions.RHTower.ShortWindowNoGoGeneral
 import GaloisForLFunctions.RHTower.ResidualFaces
 import GaloisForLFunctions.RHTower.AnchorZeroBudget
 import GaloisForLFunctions.RHTower.WindingRigidity
@@ -396,3 +398,4 @@ import GaloisForLFunctions.RHTower.WeldTowerLimit
 import GaloisForLFunctions.RHTower.SecularOddMoments
 import GaloisForLFunctions.RHTower.ShiftedMultIndependence
 import GaloisForLFunctions.RHTower.HurwitzShiftedBridge
+import GaloisForLFunctions.RHTower.SeamArfCollapse

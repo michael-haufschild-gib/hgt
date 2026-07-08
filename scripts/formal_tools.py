@@ -87,6 +87,33 @@ def read_lines(path: Path) -> list[str]:
     return path.read_text(encoding="utf-8").splitlines()
 
 
+def strip_lean_comments(lines: list[str]) -> list[str]:
+    """Strip Lean line and block comments while preserving line numbers."""
+    out: list[str] = []
+    depth = 0
+    for line in lines:
+        i = 0
+        kept: list[str] = []
+        while i < len(line):
+            if depth == 0 and line.startswith("--", i):
+                break
+            if line.startswith("/-", i):
+                depth += 1
+                i += 2
+                continue
+            if depth > 0:
+                if line.startswith("-/", i):
+                    depth -= 1
+                    i += 2
+                else:
+                    i += 1
+                continue
+            kept.append(line[i])
+            i += 1
+        out.append("".join(kept))
+    return out
+
+
 def doc_before(lines: list[str], index: int) -> str:
     """Return the first useful line of the docstring immediately above index."""
     j = index - 1
@@ -118,8 +145,9 @@ def declarations() -> list[Declaration]:
     out: list[Declaration] = []
     for path in lean_files():
         lines = read_lines(path)
+        code_lines = strip_lean_comments(lines)
         mod = module_name(path)
-        for i, line in enumerate(lines):
+        for i, line in enumerate(code_lines):
             match = DECL_RE.match(line)
             if not match:
                 continue
@@ -137,8 +165,9 @@ def declarations() -> list[Declaration]:
 
 
 def declaration_context(lines: list[str], index: int) -> str:
+    code_lines = strip_lean_comments(lines[: index + 1])
     for j in range(index, -1, -1):
-        match = DECL_RE.match(lines[j])
+        match = DECL_RE.match(code_lines[j])
         if match:
             return f"{match.group(1)} {match.group(2)}"
     return ""
@@ -148,9 +177,10 @@ def proof_debt() -> list[Finding]:
     out: list[Finding] = []
     for path in lean_files():
         lines = read_lines(path)
-        for i, line in enumerate(lines):
+        code_lines = strip_lean_comments(lines)
+        for i, line in enumerate(code_lines):
             if DEBT_RE.search(line):
-                out.append(Finding("proof-debt", rel(path), i + 1, line.strip(), declaration_context(lines, i)))
+                out.append(Finding("proof-debt", rel(path), i + 1, lines[i].strip(), declaration_context(lines, i)))
     return out
 
 

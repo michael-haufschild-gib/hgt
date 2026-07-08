@@ -131,7 +131,7 @@ theorem seam_jump {f h GU GD G₁ G₂ : ℂ → ℂ} {a : ℂ} {R : ℝ} (hR : 
     hf_ne _ hballP (by rw [himP]; exact hR2.ne')
   have hfbM : f (a - ((R / 2 : ℝ) : ℂ) * I) ≠ 0 :=
     hf_ne _ hballM (by rw [himM]; simpa using hR2.ne')
-  -- the deck class at the given basepoints
+  -- the deck class value at the given basepoints
   have hdeck : deckClass G₁ G₂ qP qM =
       exp (2 * (Real.pi : ℂ) * I * (m : ℂ) / n) := by
     rw [deckClass_basepoint_indep hn hG₁ hG₂ hpG₁ hpG₂ hqP hbP hqM hbM

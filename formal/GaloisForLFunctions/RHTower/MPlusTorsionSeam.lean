@@ -216,7 +216,7 @@ theorem boundaryCoeffWitness_iff_not_traceDivisible {p : Sigma} :
   rw [← S.boundaryClass_ne_zero_iff_coeffWitness]
   exact fittingBoundaryClass_ne_zero_iff_not_trace_X_pow_dvd m S.A (S.Delta p)
 
-/-- A coefficient witness at `p` gives nonzero boundary class at `p`. -/
+/-- A coefficient witness at `p` gives nonzero boundary class value at `p`. -/
 theorem boundaryClass_ne_zero_of_coeffWitness {p : Sigma}
     (h : S.BoundaryCoeffWitness p) :
     S.boundaryClass p ≠ 0 := by

@@ -111,11 +111,7 @@ theorem xi_central_order_eq_two_mul :
 
 /-- Re-derivation of Phase C from the descent: the central ξ-order is even. -/
 theorem xi_central_order_even_via_descent : Even (analyticOrderAt xi (1 / 2 : ℂ)).toNat := by
-  obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.mp (xiDescent_orderAt_ne_top 0)
-  rw [xi_central_order_eq_two_mul, ← hm,
-    show (2 : ℕ∞) * (m : ℕ∞) = ((2 * m : ℕ) : ℕ∞) from by push_cast; ring]
-  simp only [ENat.toNat_coe]
-  exact even_two_mul m
+  exact xi_central_order_even
 
 /-! ### §4 The verdict -/
 

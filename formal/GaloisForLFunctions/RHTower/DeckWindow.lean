@@ -14,7 +14,7 @@ finitely many zeros: the ladder rung on a bounded box is a finite conjunction of
 conditions, each attached to one zero and readable from any pair of chart roots.
 
 The holography theorem closes the circle in the other direction: UNDER the certificate, the deck
-class at level `2^{k+1}` of any reflection-closed configuration enclosed in a line-centered window
+class value at level `2^{k+1}` of any reflection-closed configuration enclosed in a line-centered window
 equals `exp(2πi·L/2^{k+1})` with `L` the on-line order sum — the certificate forces every boundary
 loop to read pure critical-line data, the off-line (box) contribution being killed mod `2^{k+1}`.
 -/
@@ -170,7 +170,7 @@ theorem rh_iff_forall_deck_trivial :
 /-! ## Holography: under the certificate every boundary loop reads pure line data -/
 
 /-- **The holography of the certificate.**  Under the height-`T` level-`k` certificate, the deck
-class at level `2^{k+1}` of any reflection-closed ξ-configuration from the strip window, enclosed
+class value at level `2^{k+1}` of any reflection-closed ξ-configuration from the strip window, enclosed
 in a line-centered annular chart pair, equals `exp(2πi·L/2^{k+1})` where `L` is the on-line order
 sum: the certificate kills the off-line contribution mod `2^{k+1}` (each box order is divisible by
 `2^k` and off-line zeros enter doubled), so the boundary loop reads pure critical-line data. -/

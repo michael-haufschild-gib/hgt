@@ -12,7 +12,7 @@ tilts — and every logarithm of the anchored member splits its arc winding as
 member increment plus endpoint tilt difference.
 
 The deck cocycle reads off in the same coordinates: for any chart logarithms
-`ℓ₁, ℓ₂` of the member on the two overlap charts, the square-root deck class at
+`ℓ₁, ℓ₂` of the member on the two overlap charts, the square-root deck class value at
 the two basepoints is `exp` of half the log mismatch `(ℓ₁ − ℓ₂)(pP) − (ℓ₁ − ℓ₂)(pM)`,
 and since each pointwise mismatch is `2πi`-quantized the class is `(−1)^{k_P − k_M}`:
 the parity of the winding mismatch between the two basepoints.  Local root choices
@@ -158,7 +158,7 @@ theorem anchoredSEM_arc_variation {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) {
 
 /-- **The deck cocycle from chart logarithms**: for any chart logarithms
 `ℓ₁, ℓ₂` of the same function on the two overlap charts and any analytic square
-roots `G₁, G₂` there, the deck class at the two basepoints is `exp` of half the
+roots `G₁, G₂` there, the deck class value at the two basepoints is `exp` of half the
 log mismatch between the basepoints — the local root choices cancel in the double
 ratio. -/
 theorem deckClass_eq_exp_log_mismatch {f G₁ G₂ ℓ₁ ℓ₂ : ℂ → ℂ} {U₁ U₂ : Set ℂ}
@@ -219,7 +219,7 @@ theorem deckClass_eq_exp_log_mismatch {f G₁ G₂ ℓ₁ ℓ₂ : ℂ → ℂ} 
 
 /-- **The deck cocycle is the parity of the winding mismatch**: the pointwise
 mismatch of two chart logarithms is `2πi`-quantized, and the square-root deck
-class at the two basepoints is `(−1)` to the difference of the two quantization
+value at the two basepoints is `(−1)` to the difference of the two quantization
 integers.  The parity datum is a difference of arc-winding integers — not the
 endpoint orientation signs. -/
 theorem deckClass_neg_one_zpow_log_mismatch {f G₁ G₂ ℓ₁ ℓ₂ : ℂ → ℂ} {U₁ U₂ : Set ℂ}

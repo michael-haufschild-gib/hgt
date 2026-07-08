@@ -164,7 +164,7 @@ private theorem deckClass_div_mono_corr {a ρ' : ℂ} {m n : ℕ} {ε : ℝ} (h�
 
 /-- **Conservation step on the annulus.**  A dominated perturbation of the powered
 function transports any local roots to roots of the perturbed function — multiply by the
-global correction root of the ratio — with the same deck class at every basepoint pair. -/
+global correction root of the ratio — with the same deck class value at every basepoint pair. -/
 theorem deckClass_step_annulus {f g G₁ G₂ : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ} {n : ℕ}
     (hn : 0 < n)
     (hf : AnalyticOnNhd ℂ f (chartRA a r₀ R ∪ chartLA a r₀ R))

@@ -21,10 +21,11 @@ riemannZeta s`.  The archimedean nonvanishing (`archFactor_ne_zero_strip`) and t
 differentiability (`differentiableAt_riemannZeta`, `s ≠ 1` on the strip) are discharged, leaving
 `riemannZeta s ≠ 0` as the sole hypothesis. -/
 theorem logDeriv_completed_split_strip {s : ℂ} (hstrip : 0 < s.re ∧ s.re < 1)
-    (hz : riemannZeta s ≠ 0) (hda : DifferentiableAt ℂ archFactor s) :
+    (hz : riemannZeta s ≠ 0) :
     logDeriv (fun z => archFactor z * riemannZeta z) s
       = logDeriv archFactor s + logDeriv riemannZeta s :=
-  logDeriv_completed_split (archFactor_ne_zero_strip hstrip) hz hda
+  logDeriv_completed_split (archFactor_ne_zero_strip hstrip) hz
+    (hasDerivAt_archFactor_of_re_pos hstrip.1).differentiableAt
     (differentiableAt_riemannZeta (fun h => by rw [h] at hstrip; norm_num at hstrip))
 
 end RHTower

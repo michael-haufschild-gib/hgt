@@ -98,19 +98,30 @@ theorem measurableSet_shellSetM : MeasurableSet (shellSetM c C B ρ σ) := by
       ((isClosed_le (hy.sub continuous_const) continuous_const).inter
         (isClosed_le continuous_const (continuous_const.sub hy))))
 
-theorem measurableSet_coreSetP : MeasurableSet (coreSetP c C B ρ r σ) := by
+private theorem measurableSet_ysq_band (lo hi : ℝ) :
+    MeasurableSet
+      {η : ℝ | η ∈ Set.Icc 0 (2 * Real.pi) ∧
+        lo ≤ ‖c + C * Complex.exp ((η : ℂ) * Complex.I)‖ ^ 2 ∧
+        ‖c + C * Complex.exp ((η : ℂ) * Complex.I)‖ ^ 2 ≤ hi} := by
   apply IsClosed.measurableSet
   have hy := continuous_ysq c C
   exact isClosed_Icc.inter
     ((isClosed_le continuous_const hy).inter
       (isClosed_le hy continuous_const))
 
+theorem measurableSet_coreSetP : MeasurableSet (coreSetP c C B ρ r σ) := by
+  change MeasurableSet
+    {η : ℝ | η ∈ Set.Icc 0 (2 * Real.pi) ∧
+      (ρ + ‖B‖) ^ 2 - σ ≤ ‖c + C * Complex.exp ((η : ℂ) * Complex.I)‖ ^ 2 ∧
+      ‖c + C * Complex.exp ((η : ℂ) * Complex.I)‖ ^ 2 ≤ (ρ + ‖B‖ + r) ^ 2}
+  exact measurableSet_ysq_band (c := c) (C := C) ((ρ + ‖B‖) ^ 2 - σ) ((ρ + ‖B‖ + r) ^ 2)
+
 theorem measurableSet_coreSetM : MeasurableSet (coreSetM c C B ρ r σ) := by
-  apply IsClosed.measurableSet
-  have hy := continuous_ysq c C
-  exact isClosed_Icc.inter
-    ((isClosed_le continuous_const hy).inter
-      (isClosed_le hy continuous_const))
+  change MeasurableSet
+    {η : ℝ | η ∈ Set.Icc 0 (2 * Real.pi) ∧
+      (ρ - ‖B‖ - r) ^ 2 ≤ ‖c + C * Complex.exp ((η : ℂ) * Complex.I)‖ ^ 2 ∧
+      ‖c + C * Complex.exp ((η : ℂ) * Complex.I)‖ ^ 2 ≤ (ρ - ‖B‖) ^ 2 + σ}
+  exact measurableSet_ysq_band (c := c) (C := C) ((ρ - ‖B‖ - r) ^ 2) ((ρ - ‖B‖) ^ 2 + σ)
 
 theorem measurableSet_midSet : MeasurableSet (midSet c C B ρ) := by
   apply IsClosed.measurableSet

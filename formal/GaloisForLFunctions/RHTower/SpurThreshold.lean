@@ -25,21 +25,9 @@ theorem thresholdStates_eq_replicate_of_forall_eq (t : ℝ) :
     ∀ (xs : List ℝ) (b : Bool),
       (∀ x ∈ xs, decide (t < x) = b) →
         thresholdStates t xs = List.replicate xs.length b := by
-  intro xs
-  induction xs with
-  | nil =>
-      intro b h
-      rfl
-  | cons x xs ih =>
-      intro b h
-      have hx : decide (t < x) = b := h x (by simp)
-      have hxs : ∀ y ∈ xs, decide (t < y) = b := by
-        intro y hy
-        exact h y (by simp [hy])
-      have htail := ih b hxs
-      unfold thresholdStates at htail
-      rw [thresholdStates, List.map_cons, hx, htail]
-      simp [List.replicate_succ]
+  intro xs b h
+  rw [thresholdStates]
+  exact (List.map_eq_replicate_iff).mpr h
 
 /-- A threshold split gives one constant block on each side of the threshold. -/
 theorem thresholdStates_append_eq_replicate_append_replicate {t : ℝ}

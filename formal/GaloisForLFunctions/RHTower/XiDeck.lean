@@ -23,13 +23,7 @@ open Complex Metric
 
 /-- ξ has finite vanishing order everywhere (it is not identically zero). -/
 theorem xi_orderAt_ne_top (ρ : ℂ) : analyticOrderAt xi ρ ≠ ⊤ := by
-  intro htop
-  have hev0 : xi =ᶠ[nhds ρ] (0 : ℂ → ℂ) := by
-    filter_upwards [analyticOrderAt_eq_top.mp htop] with z hz
-    simpa using hz
-  exact xi_two_ne_zero
-    (xi_analyticOnNhd_univ.eqOn_zero_of_preconnected_of_eventuallyEq_zero
-      isPreconnected_univ (Set.mem_univ ρ) hev0 (Set.mem_univ 2))
+  exact xi_order_ne_top ρ
 
 /-- Around any point, ξ peels on a small ball with a nonvanishing analytic cofactor. -/
 theorem xi_peel_ball (ρ₀ : ℂ) :

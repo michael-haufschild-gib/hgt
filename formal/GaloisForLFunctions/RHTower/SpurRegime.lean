@@ -18,10 +18,7 @@ namespace RHTower
 def SMonoStepCert (S₀ S₁ : ℝ) : Prop := 0 < S₁ - S₀
 
 /-- Adjacent S-step certificates for a complete list of S-readings. -/
-def SMonoStepCerts : List ℝ → Prop
-  | [] => True
-  | [_] => True
-  | x :: y :: xs => SMonoStepCert x y ∧ SMonoStepCerts (y :: xs)
+def SMonoStepCerts (S : List ℝ) : Prop := AdjacentStepPos S
 
 /-- Any explicit positive S-increment is a one-step S-mono certificate. -/
 theorem smonoStepCert_of_pos {S₀ S₁ : ℝ} (h : 0 < S₁ - S₀) :
@@ -130,19 +127,8 @@ theorem stepPos_of_smonoStepCert {S₀ S₁ : ℝ} (h : SMonoStepCert S₀ S₁)
 /-- A chain of regime step certificates is exactly the adjacent positivity consumed by `SpurSMono`. -/
 theorem adjacentStepPos_of_smonoStepCerts :
     ∀ S : List ℝ, SMonoStepCerts S → AdjacentStepPos S := by
-  intro S
-  induction S with
-  | nil =>
-      intro _h
-      exact trivial
-  | cons x xs ih =>
-      intro h
-      cases xs with
-      | nil =>
-          exact trivial
-      | cons y ys =>
-          rcases h with ⟨hxy, htail⟩
-          exact ⟨stepPos_of_smonoStepCert hxy, ih htail⟩
+  intro S h
+  simpa [SMonoStepCerts] using h
 
 /-- AMP reader input from ledger-certified regime steps and a monotone S-to-margin dressing. -/
 theorem ampReaderInput_of_regime_dressing_le {S : List ℝ} {Z : ℕ} {dress : ℝ → ℝ}

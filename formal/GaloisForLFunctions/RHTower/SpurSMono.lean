@@ -46,10 +46,10 @@ theorem isChain_le_of_adjacentStepPos {xs : List ℝ} (h : AdjacentStepPos xs) :
     List.IsChain (fun x y => x ≤ y) xs :=
   (isChain_lt_of_adjacentStepPos xs h).imp (by intro _a _b hab; exact le_of_lt hab)
 
-/-- A monotone dressing of S-readings gives nondecreasing AMP margins. -/
-theorem isChain_map_le_of_adjacentStepPos {S : List ℝ} {dress : ℝ → ℝ}
-    (hS : AdjacentStepPos S) (hdress : Monotone dress) :
-    List.IsChain (fun x y => x ≤ y) (S.map dress) := by
+private theorem isChain_map_of_adjacentStepPos {S : List ℝ} {dress : ℝ → ℝ}
+    {R : ℝ → ℝ → Prop} (hS : AdjacentStepPos S)
+    (hrel : ∀ {x y : ℝ}, x < y → R (dress x) (dress y)) :
+    List.IsChain R (S.map dress) := by
   induction S with
   | nil =>
       simp
@@ -64,27 +64,19 @@ theorem isChain_map_le_of_adjacentStepPos {S : List ℝ} {dress : ℝ → ℝ}
           intro z hz
           simp at hz
           subst z
-          exact hdress (le_of_lt (by linarith : x < y))
+          exact hrel (by linarith : x < y)
+
+/-- A monotone dressing of S-readings gives nondecreasing AMP margins. -/
+theorem isChain_map_le_of_adjacentStepPos {S : List ℝ} {dress : ℝ → ℝ}
+    (hS : AdjacentStepPos S) (hdress : Monotone dress) :
+    List.IsChain (fun x y => x ≤ y) (S.map dress) :=
+  isChain_map_of_adjacentStepPos hS (fun hxy => hdress (le_of_lt hxy))
 
 /-- An antitone dressing of S-readings gives nonincreasing AMP margins. -/
 theorem isChain_map_ge_of_adjacentStepPos {S : List ℝ} {dress : ℝ → ℝ}
     (hS : AdjacentStepPos S) (hdress : Antitone dress) :
-    List.IsChain (fun x y => y ≤ x) (S.map dress) := by
-  induction S with
-  | nil =>
-      simp
-  | cons x xs ih =>
-      cases xs with
-      | nil =>
-          simp
-      | cons y ys =>
-          rcases hS with ⟨hxy, htail⟩
-          have htailChain := ih htail
-          apply List.IsChain.cons htailChain
-          intro z hz
-          simp at hz
-          subst z
-          exact hdress (le_of_lt (by linarith : x < y))
+    List.IsChain (fun x y => y ≤ x) (S.map dress) :=
+  isChain_map_of_adjacentStepPos hS (fun hxy => hdress (le_of_lt hxy))
 
 /-- S-mono provider package from positive adjacent S-increments and monotone dressing. -/
 theorem ampReaderInput_of_smono_dressing_le {S : List ℝ} {Z : ℕ} {dress : ℝ → ℝ}

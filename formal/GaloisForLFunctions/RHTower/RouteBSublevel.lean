@@ -652,7 +652,7 @@ namespace Sublevel
 open Complex MeasureTheory
 
 /-- Real expansion of the norm square of a sum in ℂ. -/
-theorem norm_add_sq_complex (u v : ℂ) :
+private theorem norm_add_sq_complex (u v : ℂ) :
     ‖u + v‖ ^ 2 = ‖u‖ ^ 2 + ‖v‖ ^ 2 + 2 * ((starRingEnd ℂ) u * v).re := by
   have h : ∀ z : ℂ, ‖z‖ ^ 2 = (z * (starRingEnd ℂ) z).re := by
     intro z

@@ -3,7 +3,7 @@ The deck-cocycle assembly (MWM lane, A3 chunk 3; task #113).
 
 Capstone: `deckClass_single_zero` — for ANY local `n`-th roots of a peeled function
 `f = (z−a)^m · h` (h analytic nonvanishing on a ball) on the two standard slit charts,
-the deck class at the basepoints `a ± (R/2)i` equals `exp(2πi·m/n)`: the coarse box
+the deck class value at the basepoints `a ± (R/2)i` equals `exp(2πi·m/n)`: the coarse box
 invariant `w_n` COUNTS THE ENCLOSED ORDER mod n, machine-checked with no argument
 principle. Route: chart geometry (star-convex slit charts, translated half-plane
 overlaps), the generalized monomial dictionary at `a ± εi`, an analytic root of `h` on

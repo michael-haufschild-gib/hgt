@@ -30,8 +30,8 @@ continuation across the wall), never a pinned finite constraint.
 -/
 import GaloisForLFunctions.RHTower.PrimeDivisorAtomsNoGo
 import GaloisForLFunctions.RHTower.KummerObstruction
+import GaloisForLFunctions.RHTower.CoherentTower
 import GaloisForLFunctions.Bottcher.HolomorphicBranch
-import GaloisForLFunctions.RHTower.UPlaneLadder
 
 open Complex
 open scoped BigOperators

@@ -55,14 +55,6 @@ theorem dense_slitPlane : Dense (slitPlane : Set ℂ) := by
         Complex.ofReal_im, Complex.I_re, mul_one, mul_zero, add_zero, zero_add]
       linarith
 
-/-- Conjugation preserves the slit plane (it fixes the real part and negates the imaginary part). -/
-theorem conj_mem_slitPlane {w : ℂ} (hw : w ∈ slitPlane) : (starRingEnd ℂ) w ∈ slitPlane := by
-  rw [Complex.mem_slitPlane_iff] at hw ⊢
-  rw [Complex.conj_re, Complex.conj_im]
-  rcases hw with h | h
-  · exact Or.inl h
-  · exact Or.inr (neg_ne_zero.mpr h)
-
 /-! ### The principal square root and the descent commute with conjugation -/
 
 /-- The principal square root commutes with conjugation off the slit: `√(w̄) = conj(√w)`.

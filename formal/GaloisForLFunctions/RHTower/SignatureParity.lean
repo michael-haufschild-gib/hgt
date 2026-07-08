@@ -93,7 +93,7 @@ theorem exp_natCast_index_eq_deckRed (n idx : ℕ) :
 /-- **The coarse box charge is the mod-`n` reduction of the integer zero-index.**  With the
 `deckClass_multi_zero` geometry, any local `n`-th roots on the two slit-annulus charts have deck
 class `deckRed n (Σ mᵢ)` — the reduction homomorphism applied to the total order of the enclosed
-zeros.  This exhibits the deck class at `n = 2^k` as the image of the integer index (the full
+zeros.  This exhibits the deck class value at `n = 2^k` as the image of the integer index (the full
 signed count) under `deckRed n`. -/
 theorem box_charge_eq_deckRed {ι : Type*} (s : Finset ι) (ρ : ι → ℂ) (m : ι → ℕ)
     {f h G₁ G₂ : ℂ → ℂ} {a : ℂ} {r₀ R : ℝ} (h0 : 0 ≤ r₀) (hrR : r₀ < R)
