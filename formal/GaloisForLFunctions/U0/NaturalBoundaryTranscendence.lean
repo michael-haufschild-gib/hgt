@@ -115,25 +115,21 @@ theorem continues_of_analytic_relation_gen {d : ℕ} (hd : 1 ≤ d)
   intro w hw
   exact (hj w ⟨hw.2, hw.1⟩).symm
 
-/-- **Natural boundary ⟹ no separable analytic relation (general engine).** If `f` is continuous on the
-open set `D`, has a **natural boundary** at the frontier point `z₀` (`¬ ContinuesAcross f D z₀`) with a
-local preconnected lens, and `∑ᵢ aᵢ(z)·f(z)ⁱ = 0` on `D` with analytic `aᵢ`, nonzero leading coefficient
-at `z₀`, and **squarefree** specialization `∑ᵢ aᵢ(z₀)·Yⁱ` there, then `False`. The squarefreeness yields
-`d` distinct simple roots (`nodup_roots` + `card_roots_eq_natDegree`), and
-`continues_of_analytic_relation_gen` would continue `f` across `z₀`, contradicting the natural boundary.
-This is `U0PhiCard.no_separable_analytic_relation` with the domain/boundary abstracted — the engine of
-Becker–Bergweiler-style transcendence. -/
+/-- **Separable analytic-coefficient relation ⟹ continuation (general engine).** If the local
+preconnected lens exists and the specialized polynomial `∑ᵢ aᵢ(z₀)·Yⁱ` is squarefree of positive
+degree, the algebraic-IFT branch construction continues `f` across `z₀`. This packages the root
+extraction from separability and feeds it to `continues_of_analytic_relation_gen`. -/
 @[aesop safe]
-theorem no_separable_analytic_relation_gen {d : ℕ} (hd : 1 ≤ d)
+theorem continues_of_separable_analytic_relation_gen {d : ℕ} (hd : 1 ≤ d)
     {D : Set ℂ} {f : ℂ → ℂ} (hfD : ContinuousOn f D) (z₀ : ℂ)
-    (hnb : ¬ ContinuesAcross f D z₀)
     {ρ₁ : ℝ} (hρ₁ : 0 < ρ₁)
     (hlens : ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ →
       IsPreconnected (D ∩ ball z₀ ρ) ∧ (D ∩ ball z₀ ρ).Nonempty)
     (a : Fin (d+1) → ℂ → ℂ) (ha : ∀ i, AnalyticAt ℂ (a i) z₀)
     (hlead : a (Fin.last d) z₀ ≠ 0)
     (hsep : (∑ i : Fin (d+1), C (a i z₀) * X ^ (i:ℕ) : ℂ[X]).Separable)
-    (hrel : ∀ z ∈ D, ∑ i : Fin (d+1), a i z * (f z) ^ (i:ℕ) = 0) : False := by
+    (hrel : ∀ z ∈ D, ∑ i : Fin (d+1), a i z * (f z) ^ (i:ℕ) = 0) :
+    ContinuesAcross f D z₀ := by
   classical
   set Q₀ : ℂ[X] := ∑ i : Fin (d+1), C (a i z₀) * X ^ (i:ℕ) with hQ₀
   have hQdeg : Q₀.natDegree = d := Qpoly_natDegree a z₀ hlead
@@ -155,8 +151,30 @@ theorem no_separable_analytic_relation_gen {d : ℕ} (hd : 1 ≤ d)
     have key := congrArg (Polynomial.eval (rt j)) huv
     rw [eval_add, eval_mul, eval_mul, hr0, hdx, mul_zero, mul_zero, add_zero, eval_one] at key
     exact one_ne_zero key.symm
+  exact continues_of_analytic_relation_gen hd hfD z₀ hρ₁ hlens a ha hlead
+    rt hinj hroot hsimple hrel
+
+/-- **Natural boundary ⟹ no separable analytic relation (general engine).** If `f` is continuous on the
+open set `D`, has a **natural boundary** at the frontier point `z₀` (`¬ ContinuesAcross f D z₀`) with a
+local preconnected lens, and `∑ᵢ aᵢ(z)·f(z)ⁱ = 0` on `D` with analytic `aᵢ`, nonzero leading coefficient
+at `z₀`, and **squarefree** specialization `∑ᵢ aᵢ(z₀)·Yⁱ` there, then `False`. The squarefreeness yields
+`d` distinct simple roots (`nodup_roots` + `card_roots_eq_natDegree`), and
+`continues_of_analytic_relation_gen` would continue `f` across `z₀`, contradicting the natural boundary.
+This is `U0PhiCard.no_separable_analytic_relation` with the domain/boundary abstracted — the engine of
+Becker–Bergweiler-style transcendence. -/
+@[aesop safe]
+theorem no_separable_analytic_relation_gen {d : ℕ} (hd : 1 ≤ d)
+    {D : Set ℂ} {f : ℂ → ℂ} (hfD : ContinuousOn f D) (z₀ : ℂ)
+    (hnb : ¬ ContinuesAcross f D z₀)
+    {ρ₁ : ℝ} (hρ₁ : 0 < ρ₁)
+    (hlens : ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ →
+      IsPreconnected (D ∩ ball z₀ ρ) ∧ (D ∩ ball z₀ ρ).Nonempty)
+    (a : Fin (d+1) → ℂ → ℂ) (ha : ∀ i, AnalyticAt ℂ (a i) z₀)
+    (hlead : a (Fin.last d) z₀ ≠ 0)
+    (hsep : (∑ i : Fin (d+1), C (a i z₀) * X ^ (i:ℕ) : ℂ[X]).Separable)
+    (hrel : ∀ z ∈ D, ∑ i : Fin (d+1), a i z * (f z) ^ (i:ℕ) = 0) : False := by
   exact hnb
-    (continues_of_analytic_relation_gen hd hfD z₀ hρ₁ hlens a ha hlead rt hinj hroot hsimple hrel)
+    (continues_of_separable_analytic_relation_gen hd hfD z₀ hρ₁ hlens a ha hlead hsep hrel)
 
 /-- **No polynomial relation against a natural-boundary arc (the transcendence reduction).** Let `f` be
 continuous on an open `D` and satisfy `∑ᵢ aᵢ(z)·f(z)ⁱ = 0` on `D`, with coefficients `aᵢ` analytic on a

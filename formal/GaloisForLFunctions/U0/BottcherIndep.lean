@@ -122,85 +122,10 @@ theorem continues_of_analytic_coeff_relation
     (hrel : ∀ z ∈ D, ∑ i : Fin (d + 1), a i z * (f z) ^ (i : ℕ) = 0)
     (hlens : ∀ ρ : ℝ, 0 < ρ → IsPreconnected (D ∩ ball z₀ ρ) ∧ (D ∩ ball z₀ ρ).Nonempty) :
     ContinuesAcross f D z₀ := by
-  classical
-  have hQ₀deg : (specPoly a z₀).natDegree = d := specPoly_natDegree a z₀ hlead
-  have hsimple : ∀ x : ℂ, (specPoly a z₀).eval x = 0 → (derivative (specPoly a z₀)).eval x ≠ 0 := by
-    intro x hx hdx
-    obtain ⟨u, v, huv⟩ := hsep
-    have key := congrArg (Polynomial.eval x) huv
-    simp only [eval_add, eval_mul, hx, hdx, mul_zero, eval_one, add_zero] at key
-    exact one_ne_zero key.symm
-  have hnodup : (specPoly a z₀).roots.Nodup := nodup_roots hsep
-  have hcard : (specPoly a z₀).roots.toFinset.card = d := by
-    rw [Multiset.toFinset_card_of_nodup hnodup, IsAlgClosed.card_roots_eq_natDegree, hQ₀deg]
-  set s := (specPoly a z₀).roots.toFinset with hsdef
-  set rv : Fin d → ℂ := fun i => (s.equivFin.symm (finCongr hcard.symm i) : ℂ) with hrv
-  have hrinj : Function.Injective rv := by
-    intro i j hij
-    apply (finCongr hcard.symm).injective; apply s.equivFin.symm.injective; exact Subtype.ext hij
-  have hroot : ∀ i, (specPoly a z₀).eval (rv i) = 0 := fun i =>
-    isRoot_of_mem_roots (Multiset.mem_toFinset.mp (s.equivFin.symm (finCongr hcard.symm i)).2)
-  have hbranch : ∀ i, ∃ r : ℂ → ℂ, AnalyticAt ℂ r z₀ ∧ r z₀ = rv i ∧
-      ∀ᶠ z in 𝓝 z₀, (∑ k : Fin (d + 1), a k z * (r z) ^ (k : ℕ)) = 0 := by
-    intro i
-    have hf_an : AnalyticAt ℂ (fun q : ℂ × ℂ => ∑ k : Fin (d + 1), a k q.1 * q.2 ^ (k : ℕ))
-        (z₀, rv i) := analytic_coeffSum a ha (rv i)
-    have h0 : (∑ k : Fin (d + 1), a k z₀ * (rv i) ^ (k : ℕ)) = 0 := by
-      rw [← specPoly_eval a z₀ (rv i)]; exact hroot i
-    have hfw : (fderiv ℂ (fun q : ℂ × ℂ => ∑ k : Fin (d + 1), a k q.1 * q.2 ^ (k : ℕ))
-        (z₀, rv i)) (0, 1) ≠ 0 := by
-      rw [partial_w_deriv_coeffSum a ha (rv i) (specPoly a z₀) (specPoly_eval a z₀)]
-      exact hsimple (rv i) (hroot i)
-    obtain ⟨r, hr1, hr2, hr3⟩ := holo_implicit hf_an h0 hfw
-    exact ⟨r, hr1, hr2, hr3⟩
-  choose r hr_an hr0 hr_rel using hbranch
-  have E1 : ∀ᶠ z in 𝓝 z₀, ∀ i, (∑ k : Fin (d + 1), a k z * (r i z) ^ (k : ℕ)) = 0 :=
-    eventually_all.mpr hr_rel
-  have E2 : ∀ᶠ z in 𝓝 z₀, ∀ i j, i ≠ j → r i z ≠ r j z := by
-    rw [eventually_all]; intro i; rw [eventually_all]; intro j
-    by_cases hij : i = j
-    · exact Eventually.of_forall (fun z h => (h hij).elim)
-    · have hne : r i z₀ ≠ r j z₀ := by rw [hr0, hr0]; exact fun h => hij (hrinj h)
-      have hcij : ContinuousAt (fun z => r i z - r j z) z₀ :=
-        ((hr_an i).continuousAt).sub ((hr_an j).continuousAt)
-      filter_upwards [hcij.eventually_ne (sub_ne_zero.mpr hne)] with z hz
-      exact fun _ => sub_ne_zero.mp hz
-  have E3 : ∀ᶠ z in 𝓝 z₀, a (Fin.last d) z ≠ 0 :=
-    ((ha (Fin.last d)).continuousAt).eventually_ne hlead
-  have E4 : ∀ᶠ z in 𝓝 z₀, ∀ i, ContinuousAt (r i) z := by
-    rw [eventually_all]; intro i
-    exact (hr_an i).eventually_analyticAt.mono (fun z hz => hz.continuousAt)
-  have hcombo := E1.and (E2.and (E3.and E4))
-  rw [Metric.eventually_nhds_iff] at hcombo
-  obtain ⟨ρ, hρ, hball⟩ := hcombo
-  set U : Set ℂ := D ∩ ball z₀ ρ with hUdef
-  have hUsub : ∀ z ∈ U, dist z z₀ < ρ := fun z hz => mem_ball.mp hz.2
-  obtain ⟨hUpre, hUne⟩ := hlens ρ hρ
-  have hh : ContinuousOn f U := fun z hz => (hf z hz.1).continuousAt.continuousWithinAt
-  have hr_cont : ∀ i, ContinuousOn (r i) U :=
-    fun i z hz => ((hball (hUsub z hz)).2.2.2 i).continuousWithinAt
-  have hsep_branch : ∀ z ∈ U, ∀ i j, i ≠ j → r i z ≠ r j z :=
-    fun z hz => (hball (hUsub z hz)).2.1
-  have hmem : ∀ z ∈ U, ∃ i, f z = r i z := by
-    intro z hz
-    have hlz : a (Fin.last d) z ≠ 0 := (hball (hUsub z hz)).2.2.1
-    have hQzdeg : (specPoly a z).natDegree = d := specPoly_natDegree a z hlz
-    have hQzne : (specPoly a z) ≠ 0 := fun h => by rw [h, natDegree_zero] at hQzdeg; omega
-    have hrz : Function.Injective (fun i => r i z) :=
-      fun i j hij => by_contra fun hne => (hsep_branch z hz i j hne) hij
-    have hrzroot : ∀ i, (specPoly a z).IsRoot (r i z) := by
-      intro i
-      rw [Polynomial.IsRoot, specPoly_eval a z (r i z)]
-      exact (hball (hUsub z hz)).1 i
-    have hfzroot : (specPoly a z).IsRoot (f z) := by
-      rw [Polynomial.IsRoot, specPoly_eval a z (f z)]; exact hrel z hz.1
-    exact root_complete hQzne hQzdeg hrz hrzroot hfzroot
-  obtain ⟨j, hj⟩ := branch_selection hUpre hUne hh hr_cont hsep_branch hmem
-  refine ⟨r j, hr_an j, ?_⟩
-  rw [eventually_iff]
-  refine mem_nhdsWithin.mpr ⟨ball z₀ ρ, isOpen_ball, mem_ball_self hρ, ?_⟩
-  intro w hw
-  exact (hj w ⟨hw.2, hw.1⟩).symm
+  have hfD : ContinuousOn f D := fun z hz => (hf z hz).continuousAt.continuousWithinAt
+  exact NaturalBoundaryTranscendence.continues_of_separable_analytic_relation_gen
+    hd hfD z₀ (by norm_num : (0 : ℝ) < 1)
+    (fun ρ hρ _ => hlens ρ hρ) a ha hlead (by simpa [specPoly] using hsep) hrel
 
 /-- **No separable analytic-coefficient relation at a natural-boundary point.** If `z₀` is a genuine
 natural boundary of `f` (`f` does not continue across it from `D`), then `f` satisfies no separable,

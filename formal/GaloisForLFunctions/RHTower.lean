@@ -120,6 +120,10 @@ import GaloisForLFunctions.RHTower.WindowSeam
 import GaloisForLFunctions.RHTower.OmegaComplexStructure
 import GaloisForLFunctions.RHTower.OmegaObstruction
 import GaloisForLFunctions.RHTower.WeldClassTable
+import GaloisForLFunctions.RHTower.WeldRateLattice
+import GaloisForLFunctions.RHTower.SeamClockSelection
+import GaloisForLFunctions.RHTower.TranscendentalRateObject
+import GaloisForLFunctions.RHTower.SeamSupermetricSignature
 import GaloisForLFunctions.RHTower.DiscWindow
 import GaloisForLFunctions.RHTower.DiscExtraction
 import GaloisForLFunctions.RHTower.WindowProducer

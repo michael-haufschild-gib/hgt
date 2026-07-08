@@ -10,6 +10,7 @@ not the connectedness). Assembling gives `isPreconnected_filledJulia`, the `hcon
 -/
 import GaloisForLFunctions.Bottcher.SublevelConnected
 import GaloisForLFunctions.Bottcher.BasinColimit
+import GaloisForLFunctions.Bottcher.ConnectedCompactIntersection
 
 open Topology Metric
 
@@ -24,57 +25,14 @@ theorem isPreconnected_iInter_of_antitone {X : Type*} [TopologicalSpace X] [T2Sp
     {S : ℕ → Set X} (hanti : ∀ i, S (i + 1) ⊆ S i) (hcl : ∀ n, IsClosed (S n))
     (hcomp : IsCompact (S 0)) (hpre : ∀ n, IsPreconnected (S n)) :
     IsPreconnected (⋂ n, S n) := by
-  set K : Set X := ⋂ n, S n with hK
-  have hKcl : IsClosed K := isClosed_iInter hcl
-  have hKcomp : IsCompact K := hcomp.of_isClosed_subset hKcl (Set.iInter_subset _ 0)
-  have hKsubS : ∀ N, K ⊆ S N := fun N _ hz => Set.mem_iInter.mp hz N
-  rw [isPreconnected_closed_iff]
-  intro t₁ t₂ ht₁ ht₂ hcov hne1 hne2
-  by_contra hcon
-  rw [Set.not_nonempty_iff_eq_empty] at hcon
-  have hE1comp : IsCompact (K ∩ t₁) := hKcomp.inter_right ht₁
-  have hE2comp : IsCompact (K ∩ t₂) := hKcomp.inter_right ht₂
-  have hdisj : Disjoint (K ∩ t₁) (K ∩ t₂) := by
-    rw [Set.disjoint_iff_inter_eq_empty, Set.inter_inter_inter_comm, Set.inter_self]
-    exact hcon
-  obtain ⟨U, V, hU, hV, hE1U, hE2V, hUV⟩ :=
-    SeparatedNhds.of_isCompact_isCompact hE1comp hE2comp hdisj
-  have hKUV : K ⊆ U ∪ V := by
-    intro z hzK
-    rcases hcov hzK with hz1 | hz2
-    · exact Or.inl (hE1U ⟨hzK, hz1⟩)
-    · exact Or.inr (hE2V ⟨hzK, hz2⟩)
-  set W : ℕ → Set X := fun n => S n \ (U ∪ V) with hWdef
-  have hWsub : ∀ i, W (i + 1) ⊆ W i := fun i => Set.diff_subset_diff_left (hanti i)
-  have hWcl : ∀ n, IsClosed (W n) := fun n => (hcl n).sdiff (hU.union hV)
-  have hWcomp0 : IsCompact (W 0) := hcomp.of_isClosed_subset (hWcl 0) Set.diff_subset
-  have hWempty : (⋂ n, W n) = ∅ := by
-    rw [Set.eq_empty_iff_forall_notMem]
-    intro z hz
-    rw [Set.mem_iInter] at hz
-    have hzK : z ∈ K := Set.mem_iInter.mpr (fun n => (hz n).1)
-    exact (hz 0).2 (hKUV hzK)
-  have hexN : ∃ N, W N = ∅ := by
-    by_contra hall
-    have hallne : ∀ i, (W i).Nonempty := by
-      intro i
-      rw [Set.nonempty_iff_ne_empty]
-      exact fun he => hall ⟨i, he⟩
-    have hnonempty := IsCompact.nonempty_iInter_of_sequence_nonempty_isCompact_isClosed
-      W hWsub hallne hWcomp0 hWcl
-    rw [hWempty] at hnonempty
-    exact Set.not_nonempty_empty hnonempty
-  obtain ⟨N, hN⟩ := hexN
-  have hSNUV : S N ⊆ U ∪ V := by
-    intro z hz
-    by_contra hznot
-    exact Set.notMem_empty z (hN ▸ (⟨hz, hznot⟩ : z ∈ W N))
-  have hSNU : (S N ∩ U).Nonempty := by
-    obtain ⟨z, hz⟩ := hne1; exact ⟨z, hKsubS N hz.1, hE1U hz⟩
-  have hSNV : (S N ∩ V).Nonempty := by
-    obtain ⟨z, hz⟩ := hne2; exact ⟨z, hKsubS N hz.1, hE2V hz⟩
-  obtain ⟨z, _, hzU, hzV⟩ := hpre N U V hU hV hSNUV hSNU hSNV
-  exact Set.disjoint_left.mp hUV hzU hzV
+  have hanti' : Antitone S := by
+    intro i j hij
+    induction j, hij using Nat.le_induction with
+    | base => intro x hx; exact hx
+    | succ n _ hsub => intro x hx; exact hsub (hanti n hx)
+  refine Bottcher.isPreconnected_iInter_antitone hanti' ?_ hpre
+  intro n
+  exact hcomp.of_isClosed_subset (hcl n) (hanti' (Nat.zero_le n))
 
 namespace Bottcher
 

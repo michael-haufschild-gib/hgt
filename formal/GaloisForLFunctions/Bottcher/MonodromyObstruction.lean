@@ -530,6 +530,20 @@ theorem complex_units_torsion_powerDivisible :
   refine ⟨n * m, Nat.mul_pos hn hmpos, ?_⟩
   rw [pow_mul, hed, hdm]
 
+/-- Any finite quotient of the complex-unit torsion group by a normal subgroup is trivial.
+This specializes the finite-quotient obstruction by discharging power-divisibility through
+the existence of roots inside the torsion subgroup. -/
+theorem complex_units_torsion_subgroup_eq_top_of_finite_quotient
+    (H : Subgroup (CommGroup.torsion ℂˣ)) [H.Normal]
+    [Finite ((CommGroup.torsion ℂˣ) ⧸ H)] : H = ⊤ := by
+  refine subgroup_eq_top_of_powerDivisible_finite_quotient H ?_
+  intro n hn d
+  obtain ⟨e, heTor, heq⟩ :=
+    complex_units_torsion_powerDivisible n hn (d : ℂˣ) d.property
+  refine ⟨⟨e, heTor⟩, ?_⟩
+  ext
+  exact congrArg (fun u : ℂˣ => (u : ℂ)) heq
+
 /-- The torsion subgroup of complex units is nontrivial: `-1` is a finite-order unit and is not `1`. -/
 theorem complex_units_torsion_nontrivial :
     ∃ d : ℂˣ, d ∈ CommGroup.torsion ℂˣ ∧ d ≠ 1 := by
