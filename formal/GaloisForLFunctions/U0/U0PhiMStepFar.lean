@@ -110,7 +110,7 @@ theorem exists_clearance_farBound {b : ℂ}
 
 /-- **The far image `pMapB b m '' annMB r` is open** — via the open mapping theorem for the
 positive-degree polynomial `pPolyB b m` (`pMapB b m = (pPolyB b m).eval`), with NO derivative
-hypothesis.  This is the deriv-free replacement for `isOpen_pMapB_image`. -/
+hypothesis.  This is the `annMB` analogue of the carrier theorem `isOpen_pMapB_image`. -/
 theorem isOpen_pMapB_image_annMB (b : ℂ) (m : ℕ) (r : ℝ) :
     IsOpen (pMapB b m '' annMB r) := by
   have hfun : pMapB b m = fun z => Polynomial.eval z (pPolyB b m) := by

@@ -99,6 +99,47 @@ theorem annWB_infinite {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) : (annWB b).In
 /-- The escape map at parameter `b`: one step into the far field, then `m` more. -/
 noncomputable def pMapB (b : ℂ) (m : ℕ) : ℂ → ℂ := fun z => (quadratic b)^[m] (quadratic b z)
 
+/-! ### The polynomial witness for `pMapB` -/
+
+noncomputable def pPolyB (b : ℂ) (m : ℕ) : Polynomial ℂ :=
+  (quadraticPolyIterate b m).comp (quadraticPoly b)
+
+theorem pPolyB_eval (b : ℂ) (m : ℕ) (z : ℂ) : (pPolyB b m).eval z = pMapB b m z := by
+  rw [pPolyB, eval_comp, quadraticPolyIterate_eval]
+  show (quadratic b)^[m] ((quadraticPoly b).eval z) = pMapB b m z
+  have h : (quadraticPoly b).eval z = quadratic b z := by
+    rw [quadraticPoly]
+    simp [quadratic_apply]
+  rw [h]
+  rfl
+
+theorem quadraticPoly_monic_B (b : ℂ) : (quadraticPoly b).Monic := by
+  rw [quadraticPoly]
+  monicity!
+
+theorem quadraticPolyIterate_monic_B (b : ℂ) (m : ℕ) : (quadraticPolyIterate b m).Monic := by
+  induction m with
+  | zero =>
+    show (X : Polynomial ℂ).Monic
+    exact monic_X
+  | succ m ih =>
+    show ((quadraticPoly b).comp (quadraticPolyIterate b m)).Monic
+    refine Monic.comp (quadraticPoly_monic_B b) ih ?_
+    rw [quadraticPolyIterate_natDegree]
+    exact pow_ne_zero m two_ne_zero
+
+theorem pPolyB_monic (b : ℂ) (m : ℕ) : (pPolyB b m).Monic := by
+  refine Monic.comp (quadraticPolyIterate_monic_B b m) (quadraticPoly_monic_B b) ?_
+  rw [quadraticPoly_natDegree]
+  norm_num
+
+theorem pPolyB_natDegree (b : ℂ) (m : ℕ) : (pPolyB b m).natDegree = 2 ^ (m + 1) := by
+  rw [pPolyB, natDegree_comp, quadraticPolyIterate_natDegree, quadraticPoly_natDegree, pow_succ]
+
+theorem pPolyB_natDegree_ne_zero (b : ℂ) (m : ℕ) : (pPolyB b m).natDegree ≠ 0 := by
+  rw [pPolyB_natDegree]
+  exact pow_ne_zero _ two_ne_zero
+
 theorem pMapB_mem_farB {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) {z : ℂ}
     (hz : z ∈ annWB b) : pMapB b m z ∈ farB b :=
   farB_iterate (norm_gt_two hb) m (quadB_mem_farB hb (annWB_subset_ball hz))
@@ -227,11 +268,17 @@ theorem pMapB_deriv_ne_zero {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ)
   rw [hd.deriv]
   exact hdne
 
-theorem isOpen_pMapB_image {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) :
-    IsOpen (pMapB b m '' annWB b) :=
-  isOpen_image_of_analytic_dne (isOpen_annWB b)
-    ((pMapB_analyticOnNhd b m).mono (subset_univ _))
-    (fun _ hz => pMapB_deriv_ne_zero hb m hz)
+/-- **The far image of the sharp carrier is open, with no sharpness hypothesis.**
+This is purely polynomial: `pMapB b m` is evaluation of the positive-degree polynomial `pPolyB b m`,
+so the open mapping theorem applies on every `annWB b`.  Sharpness is still needed elsewhere for
+nonemptiness and far-entry facts, but not for openness. -/
+theorem isOpen_pMapB_image {b : ℂ} (m : ℕ) : IsOpen (pMapB b m '' annWB b) := by
+  have hfun : pMapB b m = fun z => Polynomial.eval z (pPolyB b m) := by
+    funext z
+    exact (pPolyB_eval b m z).symm
+  rw [hfun]
+  exact (Polynomial.isOpenQuotientMap_eval (pPolyB b m) (pPolyB_natDegree_ne_zero b m)).isOpenMap
+    _ (isOpen_annWB b)
 
 theorem isPreconnected_pMapB_image {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) :
     IsPreconnected (pMapB b m '' annWB b) :=
@@ -244,7 +291,7 @@ theorem pMapB_image_nonempty {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ
 
 theorem pMapB_image_infinite {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) (m : ℕ) :
     (pMapB b m '' annWB b).Infinite :=
-  infinite_of_isOpen_nonempty (isOpen_pMapB_image hb m) (pMapB_image_nonempty hb m)
+  infinite_of_isOpen_nonempty (isOpen_pMapB_image m) (pMapB_image_nonempty hb m)
 
 /-! ## The far-field entry by monotone escape -/
 

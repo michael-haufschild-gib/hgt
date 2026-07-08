@@ -18,7 +18,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
-| 3518 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
+| 3477 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2592 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
@@ -263,11 +263,11 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:386` | its remaining residues: Brolin Julia-ball positivity, critical-orbit avoidance, |
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:424` | /-- Standard support-theorem form of the remaining arbitrary-target Brolin gap: |
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:493` | residue, plus the remaining base, visibility, and smooth-piece inputs. -/ |
-| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:734` | raw connected-puncture seed.  This exposes the true remaining local-topology |
-| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2767` | visibility is now proven separately, and this predicate names only the remaining one-sided access |
-| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2787` | off-other frontier point is produced, the only remaining local-access input is that visible off-other |
-| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2823` | supplied by `SmoothArcSelection` in both orientations.  The remaining real-pair access input is exactly |
-| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:3155` | `M` is discharged internally from `-2 ≤ c ≤ 1/4`; the remaining connected-case inputs are exactly |
+| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:781` | raw connected-puncture seed.  This exposes the true remaining local-topology |
+| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2726` | visibility is now proven separately, and this predicate names only the remaining one-sided access |
+| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2746` | off-other frontier point is produced, the only remaining local-access input is that visible off-other |
+| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2782` | supplied by `SmoothArcSelection` in both orientations.  The remaining real-pair access input is exactly |
+| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:3114` | `M` is discharged internally from `-2 ≤ c ≤ 1/4`; the remaining connected-case inputs are exactly |
 | `formal/GaloisForLFunctions/Bottcher/Q62BothConnectedExposed.lean:8` | point of one set off the other filled set (after a swap).  The *only* remaining gap to |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:20` | Half A is proved here modulo `BrolinScalingAt`; the two remaining inputs — the doubling law |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:132` | The remaining nontrivial GAP-A task is to prove the two measure invariances for |

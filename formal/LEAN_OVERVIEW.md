@@ -14,7 +14,7 @@ Use this as the quick map before opening large proof files.
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
-- Shared and bridge declarations outside the three theorem areas: **5519**.
+- Shared and bridge declarations outside the three theorem areas: **5524**.
 - Active proof-debt findings: **0**.
 
 ## Local Commands
@@ -38,7 +38,7 @@ Use this as the quick map before opening large proof files.
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
-| 3518 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
+| 3477 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2592 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |

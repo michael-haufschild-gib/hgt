@@ -18,47 +18,6 @@ open U0PhiFourFarCarrier U0PhiFourDescent U0PhiLargeWindow U0PhiLargeCarrier
 
 namespace U0PhiLargeDescent
 
-/-! ## The escape polynomial at parameter `b` -/
-
-noncomputable def pPolyB (b : ℂ) (m : ℕ) : Polynomial ℂ :=
-  (quadraticPolyIterate b m).comp (quadraticPoly b)
-
-theorem pPolyB_eval (b : ℂ) (m : ℕ) (z : ℂ) : (pPolyB b m).eval z = pMapB b m z := by
-  rw [pPolyB, eval_comp, quadraticPolyIterate_eval]
-  show (quadratic b)^[m] ((quadraticPoly b).eval z) = pMapB b m z
-  have h : (quadraticPoly b).eval z = quadratic b z := by
-    rw [quadraticPoly]
-    simp [quadratic_apply]
-  rw [h]
-  rfl
-
-theorem quadraticPoly_monic (b : ℂ) : (quadraticPoly b).Monic := by
-  rw [quadraticPoly]
-  monicity!
-
-theorem quadraticPolyIterate_monic_B (b : ℂ) (m : ℕ) : (quadraticPolyIterate b m).Monic := by
-  induction m with
-  | zero =>
-    show (X : Polynomial ℂ).Monic
-    exact monic_X
-  | succ m ih =>
-    show ((quadraticPoly b).comp (quadraticPolyIterate b m)).Monic
-    refine Monic.comp (quadraticPoly_monic b) ih ?_
-    rw [quadraticPolyIterate_natDegree]
-    exact pow_ne_zero m two_ne_zero
-
-theorem pPolyB_monic (b : ℂ) (m : ℕ) : (pPolyB b m).Monic := by
-  refine Monic.comp (quadraticPolyIterate_monic_B b m) (quadraticPoly_monic b) ?_
-  rw [quadraticPoly_natDegree]
-  norm_num
-
-theorem pPolyB_natDegree (b : ℂ) (m : ℕ) : (pPolyB b m).natDegree = 2 ^ (m + 1) := by
-  rw [pPolyB, natDegree_comp, quadraticPolyIterate_natDegree, quadraticPoly_natDegree, pow_succ]
-
-theorem pPolyB_natDegree_ne_zero (b : ℂ) (m : ℕ) : (pPolyB b m).natDegree ≠ 0 := by
-  rw [pPolyB_natDegree]
-  exact pow_ne_zero _ two_ne_zero
-
 /-! ## The compose-with-`p` embedding, for an arbitrary carrier and monic nonconstant `p` -/
 
 theorem comp_eq_zero_iff_of_monic {p : Polynomial ℂ} (hp : p.Monic) (h0 : p.natDegree ≠ 0)
@@ -232,7 +191,7 @@ theorem phiB_transcendental {b : ℂ} (hb : 2 + Real.sqrt 2 < ‖b‖) :
   intro halg
   have hc : (0 : ℂ) ∉ filledJulia b := zero_not_mem_filledJulia_large (norm_gt_two hb)
   obtain ⟨m, hfar⟩ := exists_far_carrier_B hb
-  have hWo : IsOpen (pMapB b m '' annWB b) := isOpen_pMapB_image hb m
+  have hWo : IsOpen (pMapB b m '' annWB b) := isOpen_pMapB_image m
   have hWc : IsPreconnected (pMapB b m '' annWB b) := isPreconnected_pMapB_image hb m
   have hWne : (pMapB b m '' annWB b).Nonempty := pMapB_image_nonempty hb m
   have hWinf : (pMapB b m '' annWB b).Infinite := pMapB_image_infinite hb m

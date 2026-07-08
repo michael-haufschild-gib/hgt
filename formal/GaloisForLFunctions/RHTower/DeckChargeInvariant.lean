@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiDeckCharge
 import GaloisForLFunctions.RHTower.Reflection
 import GaloisForLFunctions.ExponentialSumDA
+import Mathlib.Analysis.Meromorphic.Order
 
 /-!
 # The deck charge is a divisor invariant — and is blind to the differential-algebraic class
@@ -376,5 +377,83 @@ theorem deckCharge_orbit_const {f M : ℂ → ℂ} (ρ : ℂ) (k : ℕ)
   intro n
   unfold deckCharge
   rw [analyticOrderAt_orbit_const ρ hFE hMan hMne hfan n]
+
+/-! ### §6 The meromorphic charge: the difference-recurrence through poles
+
+The analytic charge reads `analyticOrderAt` (a nonnegative multiplicity), so it cannot see poles.  The
+meromorphic charge reads the ℤ-valued `meromorphicOrderAt`, and its difference-recurrence reaches
+functions with poles — `Γ` at its poles, where the multiplier `s` in `Γ(s+1)=s·Γ(s)` has an orbit
+zero.  Once the finitely many orbit zeros/poles of the multiplier are passed, the order — and the
+charge — are again constant: eventual periodicity, now including the meromorphic locus. -/
+
+/-- **Translation invariance of the meromorphic order.**  `ord_ρ(f(·+c)) = ord_{ρ+c}(f)` for the
+ℤ-valued meromorphic order, via the derivative-nonvanishing composition law for the shift. -/
+theorem meromorphicOrderAt_comp_add (f : ℂ → ℂ) (c ρ : ℂ) :
+    meromorphicOrderAt (fun z => f (z + c)) ρ = meromorphicOrderAt f (ρ + c) := by
+  have hg : AnalyticAt ℂ (fun z : ℂ => z + c) ρ := by fun_prop
+  have hg' : deriv (fun z : ℂ => z + c) ρ ≠ 0 := by rw [deriv_add_const, deriv_id'']; norm_num
+  simpa [Function.comp] using meromorphicOrderAt_comp_of_deriv_ne_zero (f := f) hg hg'
+
+/-- **Meromorphic difference-recurrence.**  For meromorphic `f`, `M` with `f(s+1) = M(s)·f(s)`, once the
+multiplier is a unit (order `0`) at every orbit point beyond `N`, the meromorphic order is constant
+along the orbit from `N` on: `ord_{ρ+n}(f) = ord_{ρ+N}(f)` for `n ≥ N`.  The per-step law
+`ord_{ρ+n+1}(f) = ord_{ρ+n}(M) + ord_{ρ+n}(f)` telescopes.  Applies to `Γ` (`M(s)=s`): past the single
+orbit zero of `s`, `Γ`'s order — a pole `-1` then `0` — settles. -/
+theorem meromorphicOrderAt_orbit_eventually_const {f M : ℂ → ℂ} (ρ : ℂ) (N : ℕ)
+    (hFE : (fun z => f (z + 1)) = M * f)
+    (hMmero : ∀ n : ℕ, MeromorphicAt M (ρ + n)) (hfmero : ∀ n : ℕ, MeromorphicAt f (ρ + n))
+    (hMunit : ∀ n : ℕ, N ≤ n → meromorphicOrderAt M (ρ + n) = 0) :
+    ∀ n : ℕ, N ≤ n → meromorphicOrderAt f (ρ + n) = meromorphicOrderAt f (ρ + N) := by
+  have step : ∀ n : ℕ, meromorphicOrderAt f (ρ + ((n : ℂ) + 1))
+      = meromorphicOrderAt M (ρ + (n : ℂ)) + meromorphicOrderAt f (ρ + (n : ℂ)) := by
+    intro n
+    have ht := meromorphicOrderAt_comp_add f 1 (ρ + (n : ℂ))
+    rw [hFE, meromorphicOrderAt_mul (hMmero n) (hfmero n)] at ht
+    rw [show ρ + ((n : ℂ) + 1) = (ρ + (n : ℂ)) + 1 by ring]
+    exact ht.symm
+  intro n hn
+  induction n with
+  | zero => simp_all
+  | succ m ih =>
+    rcases Nat.lt_or_ge N (m + 1) with hlt | hge
+    · have hNm : N ≤ m := Nat.lt_succ_iff.mp hlt
+      have hc : (↑(m + 1) : ℂ) = (m : ℂ) + 1 := by push_cast; ring
+      rw [hc, step m, hMunit m hNm, zero_add, ih hNm]
+    · rw [Nat.le_antisymm hge hn]
+
+/-- The meromorphic root-tower charge: `exp(2πi·ord_ρ(f)/2^k)` with the ℤ-valued meromorphic order, so
+poles contribute negative torsion.  Reduces to the analytic charge where `f` is analytic and nonzero. -/
+noncomputable def deckChargeMero (f : ℂ → ℂ) (k : ℕ) (ρ : ℂ) : ℂ :=
+  exp (2 * (Real.pi : ℂ) * I * (((meromorphicOrderAt f ρ).untopD 0 : ℤ)) / ((2 ^ k : ℕ) : ℂ))
+
+/-- The meromorphic charge is fixed by the meromorphic order (a meromorphic-divisor invariant). -/
+theorem deckChargeMero_of_orderEq {f g : ℂ → ℂ} {ρ σ : ℂ} (k : ℕ)
+    (h : meromorphicOrderAt f ρ = meromorphicOrderAt g σ) :
+    deckChargeMero f k ρ = deckChargeMero g k σ := by
+  unfold deckChargeMero; rw [h]
+
+/-- **Coherence.**  Where `f` is analytic, the meromorphic charge agrees with the analytic charge: the
+ℤ-valued order restricts to the ℕ-valued multiplicity, so `deckChargeMero` genuinely *extends*
+`deckCharge` to the meromorphic locus rather than being a separate object. -/
+theorem deckChargeMero_eq_deckCharge {f : ℂ → ℂ} {ρ : ℂ} (k : ℕ) (hf : AnalyticAt ℂ f ρ) :
+    deckChargeMero f k ρ = deckCharge f k ρ := by
+  have hnum : (((meromorphicOrderAt f ρ).untopD (0 : ℤ) : ℤ) : ℂ)
+      = (((analyticOrderAt f ρ).toNat : ℕ) : ℂ) := by
+    rw [hf.meromorphicOrderAt_eq]
+    cases h : analyticOrderAt f ρ with
+    | top => simp
+    | coe n => rw [ENat.map_coe]; rfl
+  unfold deckChargeMero deckCharge
+  rw [hnum]
+
+/-- **The meromorphic charge is eventually constant along the orbit** under the difference equation with
+an eventually-unit multiplier — eventual periodicity extended through the pole locus. -/
+theorem deckChargeMero_orbit_eventually_const {f M : ℂ → ℂ} (ρ : ℂ) (k N : ℕ)
+    (hFE : (fun z => f (z + 1)) = M * f)
+    (hMmero : ∀ n : ℕ, MeromorphicAt M (ρ + n)) (hfmero : ∀ n : ℕ, MeromorphicAt f (ρ + n))
+    (hMunit : ∀ n : ℕ, N ≤ n → meromorphicOrderAt M (ρ + n) = 0) :
+    ∀ n : ℕ, N ≤ n → deckChargeMero f k (ρ + n) = deckChargeMero f k (ρ + N) := fun n hn =>
+  deckChargeMero_of_orderEq k
+    (meromorphicOrderAt_orbit_eventually_const ρ N hFE hMmero hfmero hMunit n hn)
 
 end RHTower

@@ -563,6 +563,53 @@ theorem exists_fixed_point_criticalOrbitAvoidingTarget
     · exact False.elim (hαβ (fixed_points_eq_of_not_criticalOrbitAvoidingTarget
         hαfix hβfix hαcrit hβcrit))
 
+/-- At the parabolic parameter `c = 1 / 4`, the critical orbit is real and
+strictly below the fixed point `1 / 2` at every finite level. -/
+theorem quarter_critical_orbit_real_lt_half (m : ℕ) :
+    ∃ x : ℝ, (quadratic (1 / 4 : ℂ))^[m] (0 : ℂ) = (x : ℂ) ∧
+      0 ≤ x ∧ x < 1 / 2 := by
+  induction m with
+  | zero =>
+      refine ⟨0, ?_, by norm_num, by norm_num⟩
+      simp
+  | succ m ih =>
+      obtain ⟨x, hxeq, hx0, hxlt⟩ := ih
+      refine ⟨x ^ 2 + 1 / 4, ?_, ?_, ?_⟩
+      · rw [Function.iterate_succ_apply']
+        rw [hxeq]
+        norm_num [quadratic]
+      · nlinarith [sq_nonneg x]
+      · nlinarith [sq_nonneg (x - 1 / 2)]
+
+/-- The parabolic fixed point at `c = 1 / 4` avoids the positive critical
+orbit. -/
+theorem criticalOrbitAvoidingTarget_quarter_half :
+    CriticalOrbitAvoidingTarget (1 / 4 : ℂ) (1 / 2 : ℂ) := by
+  intro m _hm hhit
+  obtain ⟨x, hxeq, _hx0, hxlt⟩ := quarter_critical_orbit_real_lt_half m
+  have hxhalfC : (x : ℂ) = (1 / 2 : ℂ) := by
+    rw [← hxeq]
+    exact hhit
+  have hxhalfC' : (x : ℂ) = ((1 / 2 : ℝ) : ℂ) := by
+    simpa using hxhalfC
+  have hxhalf : x = 1 / 2 := Complex.ofReal_injective hxhalfC'
+  nlinarith
+
+/-- The parabolic fixed point at `c = 1 / 4`. -/
+theorem fixed_quarter_half : quadratic (1 / 4 : ℂ) (1 / 2 : ℂ) = (1 / 2 : ℂ) := by
+  norm_num [quadratic]
+
+/-- Every quadratic parameter has a fixed point avoiding the positive critical
+orbit, in the q62-local target-avoidance form.  The non-parabolic case uses the
+two-distinct-fixed-points selector; `c = 1 / 4` is supplied by the explicit
+parabolic fixed point `1 / 2`. -/
+theorem exists_fixed_point_criticalOrbitAvoidingTarget_all (c : ℂ) :
+    ∃ α : ℂ, quadratic c α = α ∧ CriticalOrbitAvoidingTarget c α := by
+  by_cases hc : c = 1 / 4
+  · subst c
+    exact ⟨1 / 2, fixed_quarter_half, criticalOrbitAvoidingTarget_quarter_half⟩
+  · exact exists_fixed_point_criticalOrbitAvoidingTarget c hc
+
 /-- Choosing a fixed target removes the separate critical-orbit-avoidance
 residue from the support-form Brolin route to `BackwardOrbitDense`. -/
 theorem exists_fixedPoint_backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia
@@ -1006,9 +1053,9 @@ theorem not_mem_positiveCriticalOrbit_of_criticalOrbitAvoidingTarget
 
 /-- Fixed-point selector in the positive-critical-orbit vocabulary. -/
 theorem exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62
-    (c : ℂ) (hc : c ≠ 1 / 4) :
+    (c : ℂ) :
     ∃ a : ℂ, quadratic c a = a ∧ a ∉ positiveCriticalOrbit c := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget c hc
+  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget_all c
   exact ⟨a, hfix, not_mem_positiveCriticalOrbit_of_criticalOrbitAvoidingTarget hcrit⟩
 
 /-- Support-form Brolin pullback using the standard not-postcritical target
@@ -1083,23 +1130,23 @@ theorem locOneSidedDense_of_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJuli
 /-- Fixed-point support-form pullback where the base one-sided input is stated
 in the standard positive-critical-orbit vocabulary. -/
 theorem locOneSidedDense_of_fixedPoint_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical
-    {c : ℂ} (hc : c ≠ 1 / 4)
+    {c : ℂ}
     (hbase : ∀ a : ℂ, quadratic c a = a → a ∉ positiveCriticalOrbit c → LocOneSided c a)
     (hsupp : ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a) :
     LocOneSidedDense c := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c hc
+  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c
   exact locOneSidedDense_of_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical
     (hbase a hfix hcrit) (hsupp a hfix) hcrit
 
 /-- Fixed-point neighbourhood-cofinal support-form pullback where the base
 one-sided input is stated in the standard positive-critical-orbit vocabulary. -/
 theorem locOneSidedDense_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical
-    {c : ℂ} (hc : c ≠ 1 / 4)
+    {c : ℂ}
     (hbase : ∀ a : ℂ, quadratic c a = a →
       a ∉ positiveCriticalOrbit c → OneSidedAtCofinalNbhd c a)
     (hsupp : ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a) :
     LocOneSidedDense c := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c hc
+  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c
   exact locOneSidedDense_of_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical
     (hbase a hfix hcrit) (hsupp a hfix) hcrit
 
@@ -1109,7 +1156,6 @@ theorem q62_phiMero_bothconnected_of_fixedPoint_base_limitingBrolinMeasureAtSupp
     {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite)
     {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
-    (hc₁quarter : c₁ ≠ 1 / 4) (hc₂quarter : c₂ ≠ 1 / 4)
     (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
     (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
     (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
@@ -1126,9 +1172,9 @@ theorem q62_phiMero_bothconnected_of_fixedPoint_base_limitingBrolinMeasureAtSupp
     letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
     NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
   obtain ⟨z₁, hz₁fix, hz₁crit⟩ :=
-    exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c₁ hc₁quarter
+    exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c₁
   obtain ⟨z₂, hz₂fix, hz₂crit⟩ :=
-    exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c₂ hc₂quarter
+    exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c₂
   exact q62_phiMero_bothconnected_of_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical_visibility
     hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
     (hbase₁ z₁ hz₁fix hz₁crit) (hsupp₁ z₁ hz₁fix) hz₁crit
@@ -1142,7 +1188,6 @@ theorem q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinM
     {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite)
     {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
-    (hc₁quarter : c₁ ≠ 1 / 4) (hc₂quarter : c₂ ≠ 1 / 4)
     (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
     (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
     (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
@@ -1161,9 +1206,9 @@ theorem q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinM
     letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
     NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
   obtain ⟨z₁, hz₁fix, hz₁crit⟩ :=
-    exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c₁ hc₁quarter
+    exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c₁
   obtain ⟨z₂, hz₂fix, hz₂crit⟩ :=
-    exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c₂ hc₂quarter
+    exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c₂
   exact q62_phiMero_bothconnected_of_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical_visibility
     hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
     (locOneSided_of_oneSidedAtCofinalNbhd (hbase₁ z₁ hz₁fix hz₁crit))
@@ -1178,7 +1223,6 @@ theorem q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinM
     {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite)
     {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
-    (hc₁quarter : c₁ ≠ 1 / 4) (hc₂quarter : c₂ ≠ 1 / 4)
     (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
     (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
     (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
@@ -1197,7 +1241,7 @@ theorem q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinM
     letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
     NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
   exact q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical_visibility
-    hUo hUc hUne hUinf hne hc₁quarter hc₂quarter hc₁M hc₂M
+    hUo hUc hUne hUinf hne hc₁M hc₂M
     hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hbase₁ hsupp₁ hbase₂ hsupp₂
     (offOtherCofinalNbhdVisible_of_jointFrontierVisible hvis₁₂)
     (offOtherCofinalNbhdVisible_of_jointFrontierVisible hvis₂₁)
@@ -1220,7 +1264,6 @@ theorem q62_phiMero_independence_of_monodromy_fixedPoint_cofinalNbhd_brolin_notP
     {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite)
     {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
-    (hc₁quarter : c₁ ≠ 1 / 4) (hc₂quarter : c₂ ≠ 1 / 4)
     (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
     (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
     (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
@@ -1261,8 +1304,7 @@ theorem q62_phiMero_independence_of_monodromy_fixedPoint_cofinalNbhd_brolin_notP
       (not_not.mp h₂M) hc₂0 hc₂m2 hU₂
   · intro h₁M h₂M
     exact q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical_jointFrontierVisibility
-      hUo hUc hUne hUinf hne hc₁quarter hc₂quarter
-      (not_not.mp h₁M) (not_not.mp h₂M)
+      hUo hUc hUne hUinf hne (not_not.mp h₁M) (not_not.mp h₂M)
       hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
       hbase₁ hsupp₁ hbase₂ hsupp₂ hvis₁₂ hvis₂₁ hrig₁₂ hrig₂₁
 
@@ -1274,63 +1316,15 @@ namespace Bottcher
 
 noncomputable section
 
-/-- At the parabolic parameter `c = 1 / 4`, the critical orbit is real and
-strictly below the fixed point `1 / 2` at every finite level. -/
-theorem quarter_critical_orbit_real_lt_half (m : ℕ) :
-    ∃ x : ℝ, (quadratic (1 / 4 : ℂ))^[m] (0 : ℂ) = (x : ℂ) ∧
-      0 ≤ x ∧ x < 1 / 2 := by
-  induction m with
-  | zero =>
-      refine ⟨0, ?_, by norm_num, by norm_num⟩
-      simp
-  | succ m ih =>
-      obtain ⟨x, hxeq, hx0, hxlt⟩ := ih
-      refine ⟨x ^ 2 + 1 / 4, ?_, ?_, ?_⟩
-      · rw [Function.iterate_succ_apply']
-        rw [hxeq]
-        norm_num [quadratic]
-      · nlinarith [sq_nonneg x]
-      · nlinarith [sq_nonneg (x - 1 / 2)]
-
-/-- The parabolic fixed point at `c = 1 / 4` avoids the positive critical
-orbit. -/
-theorem criticalOrbitAvoidingTarget_quarter_half :
-    CriticalOrbitAvoidingTarget (1 / 4 : ℂ) (1 / 2 : ℂ) := by
-  intro m _hm hhit
-  obtain ⟨x, hxeq, _hx0, hxlt⟩ := quarter_critical_orbit_real_lt_half m
-  have hxhalfC : (x : ℂ) = (1 / 2 : ℂ) := by
-    rw [← hxeq]
-    exact hhit
-  have hxhalfC' : (x : ℂ) = ((1 / 2 : ℝ) : ℂ) := by
-    simpa using hxhalfC
-  have hxhalf : x = 1 / 2 := Complex.ofReal_injective hxhalfC'
-  nlinarith
-
-/-- The parabolic fixed point at `c = 1 / 4`. -/
-theorem fixed_quarter_half : quadratic (1 / 4 : ℂ) (1 / 2 : ℂ) = (1 / 2 : ℂ) := by
-  norm_num [quadratic]
-
-/-- Every quadratic parameter has a fixed point avoiding the positive critical
-orbit, in the q62-local target-avoidance form.  The non-parabolic case uses the
-two-distinct-fixed-points selector; `c = 1 / 4` is supplied by the explicit
-parabolic fixed point `1 / 2`. -/
-theorem exists_fixed_point_criticalOrbitAvoidingTarget_all (c : ℂ) :
-    ∃ α : ℂ, quadratic c α = α ∧ CriticalOrbitAvoidingTarget c α := by
-  by_cases hc : c = 1 / 4
-  · subst c
-    exact ⟨1 / 2, fixed_quarter_half, criticalOrbitAvoidingTarget_quarter_half⟩
-  · exact exists_fixed_point_criticalOrbitAvoidingTarget c hc
-
 /-- Every quadratic parameter has a fixed point outside the positive critical
-orbit, in the standard selector vocabulary. -/
+orbit, in the standard selector vocabulary.  Compatibility alias for the
+no-exception selector. -/
 theorem exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62_all (c : ℂ) :
-    ∃ a : ℂ, quadratic c a = a ∧ a ∉ positiveCriticalOrbit c := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget_all c
-  exact ⟨a, hfix, not_mem_positiveCriticalOrbit_of_criticalOrbitAvoidingTarget hcrit⟩
+    ∃ a : ℂ, quadratic c a = a ∧ a ∉ positiveCriticalOrbit c :=
+  exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62 c
 
 /-- Both-connected q62 with fixed targets selected internally, without excluding
-`c = 1 / 4`.  The parabolic parameter uses the explicit fixed target `1 / 2`;
-all other parameters use the two-fixed-point selector. -/
+`c = 1 / 4`.  Compatibility alias for the strengthened joint-frontier theorem. -/
 theorem q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_all_notPostcritical_jointFrontierVisibility
     {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite)
@@ -1351,21 +1345,14 @@ theorem q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinM
     (hrig₂₁ : SmoothPieceRigidity c₂ c₁) :
     haveI := isDomain_analyticSubring U hUo hUc hUne
     letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
-    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
-  obtain ⟨z₁, hz₁fix, hz₁crit⟩ := exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62_all c₁
-  obtain ⟨z₂, hz₂fix, hz₂crit⟩ := exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62_all c₂
-  exact q62_phiMero_bothconnected_of_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical_visibility
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical_jointFrontierVisibility
     hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
-    (locOneSided_of_oneSidedAtCofinalNbhd (hbase₁ z₁ hz₁fix hz₁crit))
-    (hsupp₁ z₁ hz₁fix) hz₁crit
-    (locOneSided_of_oneSidedAtCofinalNbhd (hbase₂ z₂ hz₂fix hz₂crit))
-    (hsupp₂ z₂ hz₂fix) hz₂crit
-    (offOtherCofinalNbhdVisible_of_jointFrontierVisible hvis₁₂)
-    (offOtherCofinalNbhdVisible_of_jointFrontierVisible hvis₂₁)
-    hrig₁₂ hrig₂₁
+    hbase₁ hsupp₁ hbase₂ hsupp₂ hvis₁₂ hvis₂₁ hrig₁₂ hrig₂₁
 
 /-- Full q62 case split with the Brolin/not-postcritical bridge as the
-both-connected branch, with no parabolic fixed-point exclusion. -/
+both-connected branch, with no parabolic fixed-point exclusion.  Compatibility
+alias for the strengthened base name. -/
 theorem q62_phiMero_independence_of_monodromy_fixedPoint_cofinalNbhd_brolin_notPostcritical_jointFrontierVisibility_all
     {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite)
@@ -1397,22 +1384,10 @@ theorem q62_phiMero_independence_of_monodromy_fixedPoint_cofinalNbhd_brolin_notP
     (hrig₂₁ : SmoothPieceRigidity c₂ c₁) :
     haveI := isDomain_analyticSubring U hUo hUc hUne
     letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
-    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
-  haveI := isDomain_analyticSubring U hUo hUc hUne
-  letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
-  refine q62_phiMero_independence_conditional hUo hUc hUne hUinf c₁ c₂ hU₁ hU₂
-    (fun c => c ∉ mandelbrot) hmono₁ hmono₂ ?_ ?_ ?_
-  · intro h₁M
-    exact phiMero_transcendental_of_mem_mandelbrot hUo hUc hUne hUinf
-      (not_not.mp h₁M) hc₁0 hc₁m2 hU₁
-  · intro h₂M
-    exact phiMero_transcendental_of_mem_mandelbrot hUo hUc hUne hUinf
-      (not_not.mp h₂M) hc₂0 hc₂m2 hU₂
-  · intro h₁M h₂M
-    exact q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_all_notPostcritical_jointFrontierVisibility
-      hUo hUc hUne hUinf hne (not_not.mp h₁M) (not_not.mp h₂M)
-      hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
-      hbase₁ hsupp₁ hbase₂ hsupp₂ hvis₁₂ hvis₂₁ hrig₁₂ hrig₂₁
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  q62_phiMero_independence_of_monodromy_fixedPoint_cofinalNbhd_brolin_notPostcritical_jointFrontierVisibility
+    hUo hUc hUne hUinf hne hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
+    hmono₁ hmono₂ hbase₁ hsupp₁ hbase₂ hsupp₂ hvis₁₂ hvis₂₁ hrig₁₂ hrig₂₁
 
 end
 
@@ -1487,10 +1462,9 @@ theorem locOneSidedDense_of_fixedPoint_base_limitingBrolinMeasureAtSupportsJulia
     {c : ℂ}
     (hbase : ∀ a : ℂ, quadratic c a = a → a ∉ positiveCriticalOrbit c → LocOneSided c a)
     (hsupp : ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a) :
-    LocOneSidedDense c := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62_all c
-  exact locOneSidedDense_of_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical
-    (hbase a hfix hcrit) (hsupp a hfix) hcrit
+    LocOneSidedDense c :=
+  locOneSidedDense_of_fixedPoint_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical
+    hbase hsupp
 
 /-- Fixed-point neighbourhood-cofinal local one-sided density from Brolin
 support in the standard positive-critical-orbit vocabulary, with no parabolic
@@ -1500,14 +1474,13 @@ theorem locOneSidedDense_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtS
     (hbase : ∀ a : ℂ, quadratic c a = a →
       a ∉ positiveCriticalOrbit c → OneSidedAtCofinalNbhd c a)
     (hsupp : ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a) :
-    LocOneSidedDense c := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62_all c
-  exact locOneSidedDense_of_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical
-    (hbase a hfix hcrit) (hsupp a hfix) hcrit
+    LocOneSidedDense c :=
+  locOneSidedDense_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical
+    hbase hsupp
 
 /-- Both-connected q62 with fixed targets selected internally, no parabolic
 exception, and base one-sidedness supplied in the standard not-postcritical
-vocabulary. -/
+vocabulary.  Compatibility alias for the strengthened base name. -/
 theorem q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_all_notPostcritical_visibility
     {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
     (hUne : U.Nonempty) (hUinf : U.Infinite)
@@ -1528,16 +1501,10 @@ theorem q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinM
     (hrig₂₁ : SmoothPieceRigidity c₂ c₁) :
     haveI := isDomain_analyticSubring U hUo hUc hUne
     letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
-    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) := by
-  obtain ⟨z₁, hz₁fix, hz₁crit⟩ := exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62_all c₁
-  obtain ⟨z₂, hz₂fix, hz₂crit⟩ := exists_fixed_point_not_mem_positiveCriticalOrbit_for_q62_all c₂
-  exact q62_phiMero_bothconnected_of_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical_visibility
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical_visibility
     hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
-    (locOneSided_of_oneSidedAtCofinalNbhd (hbase₁ z₁ hz₁fix hz₁crit))
-    (hsupp₁ z₁ hz₁fix) hz₁crit
-    (locOneSided_of_oneSidedAtCofinalNbhd (hbase₂ z₂ hz₂fix hz₂crit))
-    (hsupp₂ z₂ hz₂fix) hz₂crit
-    hvis₁₂ hvis₂₁ hrig₁₂ hrig₂₁
+    hbase₁ hsupp₁ hbase₂ hsupp₂ hvis₁₂ hvis₂₁ hrig₁₂ hrig₂₁
 
 end
 
