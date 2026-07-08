@@ -55,14 +55,13 @@ theorem backwardOrbitDense_of_filledJulia_null_of_weyl
     (limitingBrolinMeasureAtSupportsJulia_of_filledJulia_null_of_weyl c a hnull hWeyl) hcrit
 
 /-- **Fixed-point backward-orbit density from GAP-A**, targets chosen internally.
-Given `c ≠ 1/4`, produces a fixed point with dense non-critical backward orbit,
-conditional only on Julia-null + Weyl — collapsing the support-form route to those
-two inputs. -/
+Produces a fixed point with dense non-critical backward orbit, conditional only
+on Julia-null + Weyl — collapsing the support-form route to those two inputs. -/
 theorem exists_fixedPoint_backwardOrbitDense_of_filledJulia_null_of_weyl
-    {c : ℂ} (hc : c ≠ 1 / 4) (hnull : volume (filledJulia c) = 0)
+    {c : ℂ} (hnull : volume (filledJulia c) = 0)
     (hWeyl : WeylOnBall (greenFunctionDyn c)) :
     ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a :=
-  exists_fixedPoint_backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia hc
+  exists_fixedPoint_backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia_all
     (forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_filledJulia_null_of_weyl
       c hnull hWeyl)
 

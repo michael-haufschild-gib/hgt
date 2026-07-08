@@ -2318,30 +2318,6 @@ theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_full_target_te
 selected internally, so critical-orbit avoidance is not an external hypothesis:
 it comes from the existing fixed-point selector. -/
 theorem exists_fixedPoint_backwardOrbitDense_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
-    {c : ℂ} (hc : c ≠ 1 / 4)
-    (hfull :
-      ∀ a : ℂ, quadratic c a = a →
-        Tendsto
-          (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n)
-          atTop
-          (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)))
-    (hlogEps :
-      ∀ a : ℂ, quadratic c a = a →
-        ∀ z : ℂ, z ∈ filledJulia c →
-          ∀ ε : ℝ, 0 < ε →
-            ∀ᶠ k in atTop,
-              logPotential
-                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε) :
-    ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget c hc
-  exact ⟨a, hfix,
-    backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia
-      (limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
-        (hfull a hfix) (hlogEps a hfix) hcrit)
-      hcrit⟩
-
-/-- No-parabolic-exception version of the full GAP-A backward-orbit capstone. -/
-theorem exists_fixedPoint_backwardOrbitDense_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps_all
     {c : ℂ}
     (hfull :
       ∀ a : ℂ, quadratic c a = a →
@@ -2363,6 +2339,26 @@ theorem exists_fixedPoint_backwardOrbitDense_of_full_target_tendsto_and_subseq_l
       (limitingBrolinMeasureAtSupportsJulia_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
         (hfull a hfix) (hlogEps a hfix) hcrit)
       hcrit⟩
+
+/-- Compatibility alias for the no-exception full GAP-A backward-orbit capstone. -/
+theorem exists_fixedPoint_backwardOrbitDense_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps_all
+    {c : ℂ}
+    (hfull :
+      ∀ a : ℂ, quadratic c a = a →
+        Tendsto
+          (fun n => preBrolinProbabilityAtOnTargetEscapeDisk c a n)
+          atTop
+          (𝓝 (brolinLimitAtOnTargetEscapeDisk c a)))
+    (hlogEps :
+      ∀ a : ℂ, quadratic c a = a →
+        ∀ z : ℂ, z ∈ filledJulia c →
+          ∀ ε : ℝ, 0 < ε →
+            ∀ᶠ k in atTop,
+              logPotential
+                (preBrolinMeasureAt c a (brolinLimitAtSubsequence c a k)) z ≤ ε) :
+    ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a :=
+  exists_fixedPoint_backwardOrbitDense_of_full_target_tendsto_and_subseq_logPotential_eventually_le_eps
+    hfull hlogEps
 
 /-- No-exception backward-orbit capstone from full compact-target convergence
 and finite-level pressure nonpositivity. -/

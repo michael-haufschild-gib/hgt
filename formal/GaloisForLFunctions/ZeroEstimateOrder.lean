@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ZeroEstimate
 import GaloisForLFunctions.FriableAuxiliary
+import GaloisForLFunctions.ExponentialSumDA
 
 open scoped BigOperators
 
@@ -23,40 +24,17 @@ def exponentialSum {n : ℕ} (μ c : Fin n → ℂ) (s : ℂ) : ℂ :=
   ∑ j : Fin n, c j * Complex.exp (s * μ j)
 
 @[aesop safe]
-private lemma iteratedDeriv_exp_mul (T : ℕ) (μ s : ℂ) :
-    iteratedDeriv T (fun z : ℂ => Complex.exp (z * μ)) s =
-      μ ^ T * Complex.exp (s * μ) := by
-  have h := iteratedDeriv_exp_neg_mul_log T (-μ) s
-  simpa using h
-
-@[aesop safe]
-private lemma contDiff_exp_mul (T : ℕ) (μ s : ℂ) :
-    ContDiffAt ℂ (T : WithTop ℕ∞) (fun z : ℂ => Complex.exp (z * μ)) s := by
-  have h := contDiff_exp_neg_mul_log T (-μ) s
-  simpa using h
-
-@[aesop safe]
 private lemma iteratedDeriv_exponentialSum {n : ℕ}
     (T : ℕ) (μ c : Fin n → ℂ) (s : ℂ) :
     iteratedDeriv T (fun z : ℂ => exponentialSum μ c z) s =
       ∑ j : Fin n, c j * (μ j) ^ T * Complex.exp (s * μ j) := by
-  unfold exponentialSum
-  have hfun :
-      (fun z : ℂ => ∑ j : Fin n, c j * Complex.exp (z * μ j)) =
-        (∑ j : Fin n, fun z : ℂ => c j * Complex.exp (z * μ j)) := by
+  have hcomm : (fun z : ℂ => exponentialSum μ c z)
+      = (fun z : ℂ => ∑ j : Fin n, c j * Complex.exp (μ j * z)) := by
     funext z
-    simp [Finset.sum_apply]
-  rw [hfun]
-  rw [iteratedDeriv_sum]
-  · refine Finset.sum_congr rfl ?_
-    intro j _
-    rw [iteratedDeriv_const_mul]
-    · rw [iteratedDeriv_exp_mul]
-      ring
-    · exact contDiff_exp_mul T (μ j) s
-  · intro j _
-    have hc : ContDiffAt ℂ (T : WithTop ℕ∞) (fun _z : ℂ => c j) s := contDiffAt_const
-    exact hc.mul (contDiff_exp_mul T (μ j) s)
+    unfold exponentialSum
+    exact Finset.sum_congr rfl fun j _ => by rw [mul_comm z (μ j)]
+  rw [hcomm, iteratedDeriv_finset_expSum Finset.univ c μ T s]
+  exact Finset.sum_congr rfl fun j _ => by rw [mul_comm (μ j) s]
 
 /-- **Exponential-sum order bound.** At `n` distinct frequencies, a nonzero
 coefficient vector has a nonzero derivative among orders `0, ..., n-1` at any

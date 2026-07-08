@@ -349,6 +349,7 @@ import GaloisForLFunctions.Bottcher.Q62FrostmanDomination
 import GaloisForLFunctions.Bottcher.Q62MeasureUniqueness
 import GaloisForLFunctions.Bottcher.Q62BrolinFInvariance
 import GaloisForLFunctions.Bottcher.Q62BrolinThread
+import GaloisForLFunctions.Bottcher.Brolin.LargeNormBrolin
 import GaloisForLFunctions.Bottcher.Q62BrolinEquidistribution
 import GaloisForLFunctions.Bottcher.Q62BrolinL2
 import GaloisForLFunctions.Bottcher.Q62BrolinDominated

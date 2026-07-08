@@ -1,0 +1,37 @@
+# The deck charge is a divisor invariant, blind to the differential-algebraic class
+
+- **ID:** deck-charge-invariant
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) — `[PROVED HERE]`, axiom-clean. Settles conjecture H2 of the RHTower status report (`docs/reports/rhtower_status_0707.md` §3).
+- **Statement:** The deck/root-tower charge, generalized from ξ to an arbitrary function as `deckCharge f k ρ = exp(2πi·ord_ρ(f)/2^k)`, is a genuine general invariant with full dyadic-tower and calculus structure — but it is read entirely off the vanishing **order** and is therefore **blind to the differential-algebraic / hypertranscendental split**. The conjectured "DA ⟺ eventually-periodic charge, HT ⟺ aperiodic charge" dichotomy is **false**.
+
+## What is proved (`formal/GaloisForLFunctions/RHTower/DeckChargeInvariant.lean`)
+
+**§1 The charge as a general tool** (generalizing `xiDeckCharge`, which is now `deckCharge xi`, `xiDeckCharge_eq_deckCharge`): `deckCharge_pow` (values in `μ_{2^k}`), `deckCharge_succ_sq` (`w_{k+1}²=w_k`, dyadic coherence), `deckCharge_eq_one_iff_toNat_dvd`, `deckCharge_eq_one_of_ne_zero`, `forall_deckCharge_eq_one_iff` (whole tower trivial ⟺ nonvanishing).
+
+**The full calculus** (matching all of `deckClass_mul/prod/pow/conj` + deformation invariance, now general): `deckCharge_mul` and `deckCharge_prod` (multiplicativity — a homomorphism from the local divisor monoid to `μ_{2^k}`, with `analyticOrderAt_prod_ne_top` for the finite-order bookkeeping), `deckCharge_pow`/`deckCharge_succ_sq` (the `μ_{2^k}` tower), `deckCharge_congr` (germ / deformation invariance), `deckCharge_conj` (Schwarz conjugation for real-on-real functions, via `analyticOrderAt_conj_conj`).
+
+**§2 Divisor invariance** (the crux): `deckCharge_of_orderEq` (equal orders ⟹ equal charge), `deckCharge_mul_unit` (invariant under any locally nonvanishing analytic factor). The charge sees **only the divisor**.
+
+**§3 Blindness to the class** (the falsification): `deckCharge_exp`/`deckCharge_one` (nowhere-zero ⟹ trivial charge; `exp`, `1` are DA with trivial charge); `deckCharge_blind_to_class` — a nowhere-zero *hypertranscendental* function and the constant `1` (differentially algebraic) carry **identical** charge towers, so the charge cannot witness the split. Register-correctly conditional on a nowhere-zero HT witness (classically `exp∘(HT)`).
+
+**§4 What it does compute**: `deckCharge_eq_one_iff_le_val` (the charge tower is exactly the `2`-adic expansion of the multiplicity — the `2`-adic valuation `k ≤ v₂(ord)`), `deckCharge_determined_by_order` (the entire tower is determined by one integer), `deckCharge_ne_one_of_gt_val` (trivial iff `k ≤ v₂`, so the triviality pattern is a threshold — eventually-constant, hence eventually-periodic, at **every** function).
+
+**§5 Translation covariance and the difference-recurrence** (a *second, independent* proof of the blindness). `analyticOrderAt_comp_add` — **translation invariance of the vanishing order** `ord_ρ(f(·+c)) = ord_{ρ+c}(f)`, a general lemma mathlib lacks (built here by transporting the Weierstrass factorization along the shift, with `analyticAt_comp_add_iff`, `eventually_comp_add_iff`, `analyticOrderAt_eq_top_comp_add_iff` as the shift-transport helpers). `deckCharge_comp_add` — the charge follows the divisor under the shift. `analyticOrderAt_orbit_const` / `deckCharge_orbit_const` — **the difference-recurrence**: if `f(s+1)=M(s)·f(s)` with `M` a nonvanishing analytic unit at every orbit point `ρ+n`, the order and hence the charge are *constant* along the shift orbit. So a hypertranscendental function carrying a functional equation (`Γ`, `1/Γ`) has an eventually-periodic charge sequence along its orbit — the charge cannot tell it apart from a differentially algebraic one, by a mechanism entirely different from §2's divisor-invariance.
+
+## Why the dichotomy fails
+The per-point root-tower charge is `exp(2πi·N/2^k)` for the ordinary integer `N = ord_ρ(f)`; as a `2`-adic object it is the finite integer `N`, whose expansion is eventually periodic for **every** function, DA or HT. So "eventually-periodic charge" is universal — it cannot single out the DA class — and genuinely aperiodic per-point charge never occurs (orders are integers), making the "aperiodic ⟹ HT realizability" premise vacuous. The obstruction is located exactly: the charge is a **discrete, order-theoretic** datum (a divisor invariant), and hypertranscendence is a **differential** property it structurally cannot reach — the same shape as the parity-blindness no-gos.
+
+## Novelty / significance
+Novel: promotes the ξ-specific deck charge to a general class invariant with full calculus, then proves it is orthogonal to the very DA/HT distinction it was conjectured to detect — a precisely-located blindness theorem (a "genre" analytic number theory lacks: proving what an invariant *cannot* see). "Constraint, not flow": the charge is read off the given divisor, never constructed; no carrier or function is built. Not a difference-Galois result (that studies solutions of equations; this is an invariant of arbitrary functions, and its verdict is a *blindness*).
+
+## Lean
+`RHTower.{deckCharge, xiDeckCharge_eq_deckCharge, deckCharge_eq_one_iff_toNat_dvd, deckCharge_pow, deckCharge_succ_sq, deckCharge_eq_one_of_ne_zero, forall_deckCharge_eq_one_iff, deckCharge_mul, analyticOrderAt_prod_ne_top, deckCharge_prod, deckCharge_congr, deckCharge_conj, deckCharge_of_orderEq, deckCharge_mul_unit, deckCharge_one, deckCharge_exp, differentiallyAlgebraic_one, deckCharge_blind_to_class, deckCharge_eq_one_iff_le_val, deckCharge_determined_by_order, deckCharge_ne_one_of_gt_val, analyticAt_comp_add_iff, eventually_comp_add_iff, analyticOrderAt_eq_top_comp_add_iff, analyticOrderAt_comp_add, deckCharge_comp_add, analyticOrderAt_orbit_const, deckCharge_orbit_const}` (28 declarations) in `formal/GaloisForLFunctions/RHTower/DeckChargeInvariant.lean`, imported in the `RHTower` umbrella. `lake build GaloisForLFunctions.RHTower` green (full umbrella), axiom-clean (`propext, Classical.choice, Quot.sound` only), lint pass.
+
+## Open continuations
+- The only regime where a genuinely aperiodic (irrational `2`-adic) charge could live is the **infinite/limit** one — a regularized `2`-adic zero-count over an unbounded region with infinitely many zeros (a natural-boundary phenomenon). Defining that limit charge and asking whether HT functions realize irrational values is a separate construction problem (the analogue of H1's unconditional HT witness).
+- Discharge `deckCharge_blind_to_class` unconditionally with a nowhere-zero HT witness in Lean (the field's core HT-construction problem).
+- **Translation covariance** `deckCharge (f(·+c)) k ρ = deckCharge f k (ρ+c)` and the **difference-recurrence** (for `f(s+1)=R(s)f(s)`, the order/charge sequence along the shift orbit is eventually constant — a second, orthogonal witness of HT-blindness, since HT `Γ` satisfies it) both require translation-invariance of the vanishing order, which mathlib lacks; the interesting (meromorphic) cases further need `meromorphicOrderAt` (ℤ-valued, poles) rather than the ℕ∞-valued `analyticOrderAt`. A standalone mathlib-gap build.
+
+## Log
+- 2026-07-08 — created in 3-formalized; H2 settled (charge is a divisor invariant, provably blind to DA/HT), Lean axiom-clean.

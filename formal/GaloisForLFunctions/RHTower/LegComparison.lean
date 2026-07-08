@@ -301,7 +301,7 @@ theorem rcoth_lt_inv_add_one {s : ℝ} (hs : 0 < s) : rcoth s < 1 / s + 1 := by
     rw [interior_Ici, Set.mem_Ioi] at ht
     rw [(hderiv t).deriv]
     have hsp : 0 < Real.sinh t := sinh_pos_of_pos ht
-    have hsc : Real.sinh t < Real.cosh t := sinh_lt_cosh t
+    have hsc : Real.sinh t < Real.cosh t := Real.sinh_lt_cosh t
     nlinarith [mul_pos ht (by linarith [hsc] : (0 : ℝ) < Real.cosh t - Real.sinh t), hsp]
   have hg0 : g 0 = 0 := by simp [hg_def]
   have hgs : 0 < g s := by

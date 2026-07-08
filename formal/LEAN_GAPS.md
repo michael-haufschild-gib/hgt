@@ -12,7 +12,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | Lines | File |
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 5034 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 5186 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3982 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3802 | `formal/GaloisForLFunctions/GammaDifferentialFE.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
@@ -20,7 +20,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
 | 3518 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
-| 2675 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
+| 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2592 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
 | 2482 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |
@@ -279,7 +279,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:807` | /-- GAP-A bridge for Half A.  The remaining shifted-measure input is exactly the |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1488` | remaining boundary value and vanishing-atom-mass gates needed to pass it through the |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:1713` | remaining limit input is that the selected subsequence at `f_c z` and the |
-| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:2589` | /-- Disconnected GAP-A support from the precise remaining shifted-potential identification. |
+| `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:2585` | /-- Disconnected GAP-A support from the precise remaining shifted-potential identification. |
 | `formal/GaloisForLFunctions/Bottcher/Q62Field.lean:269` | by `mvEval_deepBall_eq_zero_iff` (faithfulness); the single remaining input `hFunIndep` is precisely |
 | `formal/GaloisForLFunctions/Bottcher/Q62FrostmanScaling.lean:18` | from the exact `Uᵘ ≤ 0` to mere upper-boundedness `Uᵘ ≤ C` — the genuine remaining potential-theoretic |
 | `formal/GaloisForLFunctions/Bottcher/Q62FrostmanScaling.lean:192` | sole remaining input is the hyperbolic-basin convergence of the interior dynamics. -/ |

@@ -677,6 +677,41 @@ theorem cauchy_linearIndependent {ι : Type*} [Fintype ι] [DecidableEq ι] (p z
     exact sub_ne_zero.mpr (fun heq => (Finset.mem_erase.mp hl).1 (hp heq))
   exact (mul_eq_zero.mp hevpm.symm).resolve_right hprodne
 
+/-- **Pairing transfer.**  If a family `C` indexed by `Fin k ⊕ Fin k` is linearly independent, so is
+the family `w_i = C(inr i)+C(inl i)`, `u_i = C(inr i)−C(inl i)` (the invertible `[[1,1],[1,−1]]`
+pairing on each `{inl i, inr i}` block). -/
+theorem linearIndependent_pm_of {N k : ℕ} (C : (Fin k ⊕ Fin k) → (Fin N → ℂ))
+    (hC : LinearIndependent ℂ C) :
+    LinearIndependent ℂ (fun j : Fin k ⊕ Fin k =>
+      match j with
+      | Sum.inl i => C (Sum.inr i) + C (Sum.inl i)
+      | Sum.inr i => C (Sum.inr i) - C (Sum.inl i)) := by
+  rw [Fintype.linearIndependent_iff]
+  intro d hd
+  have hCindep := (Fintype.linearIndependent_iff).mp hC
+  set coef : (Fin k ⊕ Fin k) → ℂ := fun j =>
+    match j with
+    | Sum.inl i => d (Sum.inl i) - d (Sum.inr i)
+    | Sum.inr i => d (Sum.inl i) + d (Sum.inr i) with hcoef
+  have key : ∑ j, coef j • C j = ∑ j, d j •
+      (match j with
+        | Sum.inl i => C (Sum.inr i) + C (Sum.inl i)
+        | Sum.inr i => C (Sum.inr i) - C (Sum.inl i)) := by
+    rw [Fintype.sum_sum_type, Fintype.sum_sum_type]
+    simp only [hcoef, smul_add, smul_sub, sub_smul, add_smul]
+    rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl (fun i _ => by module)
+  rw [hd] at key
+  have hz := hCindep coef key
+  intro j
+  cases j with
+  | inl i =>
+    have h1 := hz (Sum.inl i); have h2 := hz (Sum.inr i)
+    simp only [hcoef] at h1 h2; linear_combination (h1 + h2) / 2
+  | inr i =>
+    have h1 := hz (Sum.inl i); have h2 := hz (Sum.inr i)
+    simp only [hcoef] at h1 h2; linear_combination (h2 - h1) / 2
+
 /-- **Independence ⟹ evaluation surjective (the connecting layer).** For a linearly independent
 family `v : m → (m → ℂ)` (square index `m`), the evaluation map `x ↦ (⟨v_i, x⟩)_i` is surjective.
 Proof: the matrix `M` with columns `v_i` is a unit (`linearIndependent_cols_iff_isUnit`), so `Mᴴ` is a

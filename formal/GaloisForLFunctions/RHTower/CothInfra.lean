@@ -46,17 +46,10 @@ theorem rcoth_pos_of_pos {x : ℝ} (hx : 0 < x) : 0 < rcoth x := by
   rw [rcoth]
   exact div_pos (Real.cosh_pos x) (sinh_pos_of_pos hx)
 
-/-- `cosh x - sinh x = exp (-x) > 0`, so `sinh x < cosh x`. -/
-theorem sinh_lt_cosh (x : ℝ) : Real.sinh x < Real.cosh x := by
-  have h : Real.cosh x - Real.sinh x = Real.exp (-x) := by
-    rw [Real.cosh_eq, Real.sinh_eq]; ring
-  have := Real.exp_pos (-x)
-  linarith [h ▸ this]
-
 /-- The swap-step bound: `1 < coth x` for `x > 0` (each swap term exceeds `1`). -/
 theorem one_lt_rcoth_of_pos {x : ℝ} (hx : 0 < x) : 1 < rcoth x := by
   rw [rcoth, lt_div_iff₀ (sinh_pos_of_pos hx), one_mul]
-  exact sinh_lt_cosh x
+  exact Real.sinh_lt_cosh x
 
 /-- `coth` is strictly decreasing on `(0,∞)` — via `sinh (y−x) > 0`. -/
 theorem rcoth_strictAntiOn_pos : StrictAntiOn rcoth (Ioi 0) := by

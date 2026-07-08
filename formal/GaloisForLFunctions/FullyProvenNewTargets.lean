@@ -53,6 +53,10 @@ import GaloisForLFunctions.Bottcher.RelativeRigidityReturnOrder
 import GaloisForLFunctions.Bottcher.RelativeRigidityMultiplierOnePeriod
 import GaloisForLFunctions.Bottcher.CrossRatioNormalBridge
 import GaloisForLFunctions.Bottcher.HDiscLoopDeck
+import GaloisForLFunctions.Bottcher.Brolin.LargeNormBrolin
+import GaloisForLFunctions.Bottcher.Q62EquilibriumVanishing
+import GaloisForLFunctions.Bottcher.Q62WeylDischarge
+import GaloisForLFunctions.Q62RootTower
 import GaloisForLFunctions.Hurwitz.MixedClose
 import GaloisForLFunctions.Hurwitz.AllNComplete
 import GaloisForLFunctions.U0.U0TowerBridge
@@ -5030,5 +5034,153 @@ theorem kummer_tower_independence_sharp_card : KummerTowerIndependenceSharpTarge
   fun _ hb k =>
     U0KummerBranch.u0_mstep_kummer_branch_independence
       (U0CurveSectors.viable_of_gt_sharp hb) k
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Large-norm Brolin/GAP-A target: for every `‖c‖ ≥ 4`, the local Brolin packet is fully
+identified with the GAP-A measure package and the frontier support conclusion follows. -/
+def LargeNormBrolinGapATarget : Prop :=
+  ∀ c a : ℂ, (4 : ℝ) ≤ ‖c‖ →
+    interior (Bottcher.filledJulia c) = ∅ ∧
+    Bottcher.limitingBrolinMeasureAt c a = Bottcher.gapAMu c ∧
+    Measure.map (Bottcher.quadratic c) (Bottcher.gapAMu c) = Bottcher.gapAMu c ∧
+    Bottcher.IsRieszMeasureOfSmooth (Bottcher.limitingBrolinMeasureAt c a)
+      (Bottcher.greenFunctionDyn c) ∧
+    Bottcher.BrolinScalingAt c a ∧
+    Bottcher.PotentialDominatedOnFilledJulia c a ∧
+    Bottcher.EquilibriumPotentialVanishesAe c a ∧
+    frontier (Bottcher.filledJulia c) ⊆ (Bottcher.limitingBrolinMeasureAt c a).support
+
+/-- Formal wrapper for the large-norm Brolin/GAP-A capstone. -/
+theorem large_norm_brolin_gapA_card : LargeNormBrolinGapATarget := by
+  intro c a hc
+  exact Bottcher.largeNorm_brolin_gapA_capstone (c := c) (a := a) hc
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Combined large-disconnected Q62 root-tower target: in either orientation, a far disconnected
+parameter and a nonexceptional companion whose side is either connected or quadratically norm-separated
+support full finite-root independence for the concrete Böttcher coordinates. -/
+def Q62LargeDisconnectedMixedOrNormGapRootTowerTarget : Prop :=
+  ∀ c₁ c₂ : ℂ,
+    (((0 : ℂ) ∉ Bottcher.filledJulia c₁ ∧ (1000 : ℝ) ≤ ‖c₁‖ ∧
+        c₂ ≠ 0 ∧ c₂ ≠ -2 ∧
+        (c₂ ∈ Bottcher.mandelbrot ∨ 300 * (max 2 ‖c₂‖) ^ 2 ≤ ‖c₁‖)) ∨
+      ((0 : ℂ) ∉ Bottcher.filledJulia c₂ ∧ (1000 : ℝ) ≤ ‖c₂‖ ∧
+        c₁ ≠ 0 ∧ c₁ ≠ -2 ∧
+        (c₁ ∈ Bottcher.mandelbrot ∨ 300 * (max 2 ‖c₁‖) ^ 2 ≤ ‖c₂‖))) →
+    ∃ (U : Set ℂ) (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
+      (hUinf : U.Infinite) (hU₁ : U ⊆ Bottcher.escapeOpen c₁)
+      (hU₂ : U ⊆ Bottcher.escapeOpen c₂),
+      haveI := Bottcher.isDomain_analyticSubring U hUo hUc hUne
+      letI := (Bottcher.ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ {χ η : Bottcher.meroField U} {p q : ℕ},
+        χ ^ p = Bottcher.phiMero c₁ hU₁ → η ^ q = Bottcher.phiMero c₂ hU₂ →
+        NoRelation (RatFunc ℂ) χ η
+
+/-- Formal wrapper for the combined large-disconnected Q62 root-tower discharge. -/
+theorem q62_large_disconnected_mixed_or_norm_gap_root_tower_card :
+    Q62LargeDisconnectedMixedOrNormGapRootTowerTarget := by
+  intro c₁ c₂ hor
+  exact Bottcher.q62_phiMero_large_disconnected_mixed_or_norm_gap_roots_either hor
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Brolin support target with Weyl discharged: Julia-nullity alone supplies the q62 support datum. -/
+def BrolinSupportFromJuliaNullTarget : Prop :=
+  ∀ c a : ℂ, (volume : Measure ℂ) (Bottcher.filledJulia c) = 0 →
+    Bottcher.LimitingBrolinMeasureAtSupportsJulia c a
+
+/-- Formal wrapper for Brolin support from Julia-nullity alone. -/
+theorem brolin_support_from_julia_null_card : BrolinSupportFromJuliaNullTarget := by
+  intro c a hnull
+  exact Bottcher.limitingBrolinMeasureAtSupportsJulia_of_filledJulia_null c a hnull
+
+/-- Backward-orbit density target with Weyl discharged: Julia-nullity selects a fixed target with
+dense backward orbit, with no parabolic exception. -/
+def BrolinBackwardOrbitFromJuliaNullTarget : Prop :=
+  ∀ c : ℂ, (volume : Measure ℂ) (Bottcher.filledJulia c) = 0 →
+    ∃ a : ℂ, Bottcher.quadratic c a = a ∧ Bottcher.BackwardOrbitDense c a
+
+/-- Formal wrapper for fixed-point backward-orbit density from Julia-nullity alone. -/
+theorem brolin_backwardOrbit_from_julia_null_card : BrolinBackwardOrbitFromJuliaNullTarget := by
+  intro c hnull
+  exact Bottcher.exists_fixedPoint_backwardOrbitDense_of_filledJulia_null hnull
+
+/-- Brolin support target with Weyl discharged in the all-regime Frostman form: the only remaining
+input is `EquilibriumPotentialVanishesAe c a`. -/
+def BrolinSupportFromEquilibriumVanishesTarget : Prop :=
+  ∀ c a : ℂ, Bottcher.EquilibriumPotentialVanishesAe c a →
+    Bottcher.LimitingBrolinMeasureAtSupportsJulia c a
+
+/-- Formal wrapper for the Frostman-form Brolin support target. -/
+theorem brolin_support_from_equilibriumVanishes_card :
+    BrolinSupportFromEquilibriumVanishesTarget := by
+  intro c a hfrost
+  exact Bottcher.limitingBrolinMeasureAtSupportsJulia_of_equilibriumVanishes c a hfrost
+
+/-- Backward-orbit density target with Weyl discharged in the all-regime Frostman form.
+The fixed target is selected internally, so there is no parabolic exception. -/
+def BrolinBackwardOrbitFromEquilibriumVanishesTarget : Prop :=
+  ∀ c : ℂ,
+    (∀ a : ℂ, Bottcher.quadratic c a = a → Bottcher.EquilibriumPotentialVanishesAe c a) →
+    ∃ a : ℂ, Bottcher.quadratic c a = a ∧ Bottcher.BackwardOrbitDense c a
+
+/-- Formal wrapper for fixed-point backward-orbit density from the Frostman-form support route. -/
+theorem brolin_backwardOrbit_from_equilibriumVanishes_card :
+    BrolinBackwardOrbitFromEquilibriumVanishesTarget := by
+  intro c hfrost
+  exact Bottcher.exists_fixedPoint_backwardOrbitDense_of_equilibriumVanishes hfrost
+
+end FullyProvenNewTargets
+
+namespace FullyProvenNewTargets
+
+/-- Brolin support target from the two sharp GAP-A potential-theory halves: Half A is
+`BrolinScalingAt`, Half B is `PotentialDominatedOnFilledJulia`. -/
+def BrolinSupportFromScalingAndDominationTarget : Prop :=
+  ∀ c a : ℂ, Bottcher.BrolinScalingAt c a →
+    Bottcher.PotentialDominatedOnFilledJulia c a →
+    Bottcher.LimitingBrolinMeasureAtSupportsJulia c a
+
+/-- Formal wrapper for the two-half GAP-A support target. -/
+theorem brolin_support_from_scaling_and_domination_card :
+    BrolinSupportFromScalingAndDominationTarget := by
+  intro c a hscale hdom
+  exact Bottcher.limitingBrolinMeasureAtSupportsJulia_of_scaling_of_dominated c a hscale hdom
+
+/-- Backward-orbit density target from the two sharp GAP-A halves at fixed targets.  The fixed
+target is selected internally, so there is no parabolic exception. -/
+def BrolinBackwardOrbitFromScalingAndDominationTarget : Prop :=
+  ∀ c : ℂ,
+    (∀ a : ℂ, Bottcher.quadratic c a = a → Bottcher.BrolinScalingAt c a) →
+    (∀ a : ℂ, Bottcher.quadratic c a = a → Bottcher.PotentialDominatedOnFilledJulia c a) →
+    ∃ a : ℂ, Bottcher.quadratic c a = a ∧ Bottcher.BackwardOrbitDense c a
+
+/-- Formal wrapper for fixed-point backward-orbit density from the two-half GAP-A core. -/
+theorem brolin_backwardOrbit_from_scaling_and_domination_card :
+    BrolinBackwardOrbitFromScalingAndDominationTarget := by
+  intro c hscale hdom
+  exact Bottcher.exists_fixedPoint_backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia_all
+    (Bottcher.forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_scaling_of_dominated
+      c hscale hdom)
+
+/-- Backward-orbit density target from the named fixed-point GAP-A analytic contract.  This is the
+current sharp abstract core: full target convergence plus finite-pressure limsup at fixed targets. -/
+def GapAFixedPointAnalyticContractBackwardOrbitTarget : Prop :=
+  ∀ c : ℂ, Bottcher.GapAFixedPointAnalyticContract c →
+    ∃ a : ℂ, Bottcher.quadratic c a = a ∧ Bottcher.BackwardOrbitDense c a
+
+/-- Formal wrapper for backward-orbit density from `GapAFixedPointAnalyticContract`. -/
+theorem gapA_fixedPointAnalyticContract_backwardOrbit_card :
+    GapAFixedPointAnalyticContractBackwardOrbitTarget := by
+  intro c hgap
+  exact Bottcher.exists_fixedPoint_backwardOrbitDense_of_gapAFixedPointAnalyticContract hgap
 
 end FullyProvenNewTargets

@@ -47,61 +47,38 @@ theorem multiPair_carrier_linearIndependent {k : ℕ} (t : Fin k → ℂ) (z : F
       (Sum.elim (fun (i : Fin k) (j : Fin (k + k)) => (star (t i) - z j)⁻¹ + (t i - z j)⁻¹)
                 (fun (i : Fin k) (j : Fin (k + k)) => (star (t i) - z j)⁻¹ - (t i - z j)⁻¹)) := by
   classical
-  -- the `2k` poles `{t̄ᵢ, tᵢ}` reindexed along `Fin k ⊕ Fin k ≃ Fin (k+k)`
+  -- the `2k` poles `{tᵢ, t̄ᵢ}` reindexed along `Fin k ⊕ Fin k ≃ Fin (k+k)`
   set σ : Fin k ⊕ Fin k ≃ Fin (k + k) := finSumFinEquiv with hσ
-  set P : Fin (k + k) → ℂ := fun e => Sum.elim (fun i => star (t i)) t (σ.symm e) with hP_def
-  have Pinl : ∀ i, P (σ (Sum.inl i)) = star (t i) := by
-    intro i; rw [hP_def]; simp only [Equiv.symm_apply_apply, Sum.elim_inl]
-  have Pinr : ∀ i, P (σ (Sum.inr i)) = t i := by
-    intro i; rw [hP_def]; simp only [Equiv.symm_apply_apply, Sum.elim_inr]
+  set P : Fin (k + k) → ℂ := fun e => Sum.elim t (fun i => star (t i)) (σ.symm e) with hP
+  have Pinl : ∀ i, P (σ (Sum.inl i)) = t i := by
+    intro i; rw [hP]; simp only [Equiv.symm_apply_apply, Sum.elim_inl]
+  have Pinr : ∀ i, P (σ (Sum.inr i)) = star (t i) := by
+    intro i; rw [hP]; simp only [Equiv.symm_apply_apply, Sum.elim_inr]
   -- the poles are distinct (the conjugates sit in the lower half-plane)
   have hPinj : Function.Injective P := by
-    have hels : Function.Injective (Sum.elim (fun i => star (t i)) t) := by
+    have hels : Function.Injective (Sum.elim t (fun i => star (t i))) := by
       rw [Sum.elim_injective]
-      refine ⟨star_injective.comp htinj, htinj, ?_⟩
+      refine ⟨htinj, star_injective.comp htinj, ?_⟩
       intro a b hcontra
       have him := congrArg Complex.im hcontra
       simp only [Complex.star_def, Complex.conj_im] at him
       have := ht a; have := ht b; linarith
-    rw [hP_def]; exact hels.comp σ.symm.injective
+    rw [hP]; exact hels.comp σ.symm.injective
   have hPz : ∀ e j, P e ≠ z j := by
-    have key : ∀ (s : Fin k ⊕ Fin k) j, Sum.elim (fun i => star (t i)) t s ≠ z j := by
-      intro s j
-      cases s with
-      | inl i => exact hstz i j
-      | inr i => exact htz i j
-    intro e j; rw [hP_def]; exact key (σ.symm e) j
-  -- the reindexed Cauchy family `{eᵢ, aᵢ}` is linearly independent
-  have hGeaLI := (cauchy_linearIndependent P z hPinj hz hPz).comp ⇑σ σ.injective
-  rw [Fintype.linearIndependent_iff] at hGeaLI
-  -- transfer independence across the `[[1,1],[1,−1]]` change of basis
-  rw [Fintype.linearIndependent_iff]
-  intro c hsum
-  have hdzero : ∀ s, (Sum.elim (fun i => c (Sum.inl i) + c (Sum.inr i))
-      (fun i => c (Sum.inl i) - c (Sum.inr i))) s = 0 := by
-    apply hGeaLI
-    rw [← hsum, Fintype.sum_sum_type, Fintype.sum_sum_type,
-        ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl (fun i _ => ?_)
-    funext j
-    simp only [Sum.elim_inl, Sum.elim_inr, Function.comp_apply, Pi.add_apply, Pi.smul_apply,
-               smul_eq_mul]
-    rw [Pinl i, Pinr i]
-    ring
-  intro s
+    have key : ∀ (s : Fin k ⊕ Fin k) j, Sum.elim t (fun i => star (t i)) s ≠ z j := by
+      intro s j; cases s with
+      | inl i => exact htz i j
+      | inr i => exact hstz i j
+    intro e j; rw [hP]; exact key (σ.symm e) j
+  -- the reindexed Cauchy family `{aᵢ, eᵢ}` is linearly independent
+  have hC : LinearIndependent ℂ (fun s : Fin k ⊕ Fin k => fun j => (P (σ s) - z j)⁻¹) :=
+    (cauchy_linearIndependent P z hPinj hz hPz).comp σ σ.injective
+  -- transfer independence across the `[[1,1],[1,−1]]` change of basis `{aᵢ, eᵢ} → {eᵢ±aᵢ}`
+  have hpm := linearIndependent_pm_of _ hC
+  convert hpm using 2 with s
   cases s with
-  | inl i =>
-      have h1 : c (Sum.inl i) + c (Sum.inr i) = 0 := hdzero (Sum.inl i)
-      have h2 : c (Sum.inl i) - c (Sum.inr i) = 0 := hdzero (Sum.inr i)
-      have hsplit : c (Sum.inl i)
-          = ((c (Sum.inl i) + c (Sum.inr i)) + (c (Sum.inl i) - c (Sum.inr i))) / 2 := by ring
-      rw [hsplit, h1, h2]; ring
-  | inr i =>
-      have h1 : c (Sum.inl i) + c (Sum.inr i) = 0 := hdzero (Sum.inl i)
-      have h2 : c (Sum.inl i) - c (Sum.inr i) = 0 := hdzero (Sum.inr i)
-      have hsplit : c (Sum.inr i)
-          = ((c (Sum.inl i) + c (Sum.inr i)) - (c (Sum.inl i) - c (Sum.inr i))) / 2 := by ring
-      rw [hsplit, h1, h2]; ring
+  | inl i => funext j; simp only [Sum.elim_inl, Pi.add_apply, Pinl, Pinr]
+  | inr i => funext j; simp only [Sum.elim_inr, Pi.sub_apply, Pinl, Pinr]
 
 /-- **Unconditional exact Krein–Langer inertia `κ₋ = k` for the conjugate-pair carrier.** For `k`
 distinct off-line poles `t` (`Im tᵢ > 0`) and `2k` distinct nodes `z` avoiding the poles and their

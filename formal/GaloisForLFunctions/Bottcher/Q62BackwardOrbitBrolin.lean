@@ -566,22 +566,22 @@ theorem exists_fixed_point_criticalOrbitAvoidingTarget
 /-- Choosing a fixed target removes the separate critical-orbit-avoidance
 residue from the support-form Brolin route to `BackwardOrbitDense`. -/
 theorem exists_fixedPoint_backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia
-    {c : ℂ} (hc : c ≠ 1 / 4)
+    {c : ℂ}
     (hsupp : ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a) :
     ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget c hc
+  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget_all c
   exact ⟨a, hfix,
     backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia (hsupp a hfix) hcrit⟩
 
 /-- Fixed-point version of the local one-sided density bridge: the target is
 chosen so critical-orbit avoidance is automatic. -/
 theorem locOneSidedDense_of_fixedPoint_base_limitingBrolinMeasureAtSupportsJulia
-    {c : ℂ} (hc : c ≠ 1 / 4)
+    {c : ℂ}
     (hbase : ∀ a : ℂ, quadratic c a = a →
       CriticalOrbitAvoidingTarget c a → LocOneSided c a)
     (hsupp : ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a) :
     LocOneSidedDense c := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget c hc
+  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget_all c
   exact locOneSidedDense_of_base_limitingBrolinMeasureAtSupportsJulia
     (hbase a hfix hcrit) (hsupp a hfix) hcrit
 
@@ -656,12 +656,12 @@ theorem locOneSidedDense_of_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJuli
 /-- Fixed-point version of the support-form Brolin pullback when the available
 base one-sidedness is the neighbourhood-cofinal q62 form. -/
 theorem locOneSidedDense_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia
-    {c : ℂ} (hc : c ≠ 1 / 4)
+    {c : ℂ}
     (hbase : ∀ a : ℂ, quadratic c a = a →
       CriticalOrbitAvoidingTarget c a → OneSidedAtCofinalNbhd c a)
     (hsupp : ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a) :
     LocOneSidedDense c := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget c hc
+  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget_all c
   exact locOneSidedDense_of_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia
     (hbase a hfix hcrit) (hsupp a hfix) hcrit
 
@@ -1422,39 +1422,31 @@ namespace Bottcher
 
 noncomputable section
 
-/-- Fixed-point version of the Brolin backward-orbit bridge with no parabolic
-exception: the target fixed point is selected internally. -/
+/-- Compatibility alias for the no-exception Brolin backward-orbit bridge. -/
 theorem exists_fixedPoint_backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia_all
     {c : ℂ}
     (hsupp : ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a) :
-    ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget_all c
-  exact ⟨a, hfix,
-    backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia (hsupp a hfix) hcrit⟩
+    ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a :=
+  exists_fixedPoint_backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia hsupp
 
-/-- Fixed-point local one-sided density from Brolin support, with no parabolic
-exception. -/
+/-- Compatibility alias for no-exception fixed-point local one-sided density from Brolin support. -/
 theorem locOneSidedDense_of_fixedPoint_base_limitingBrolinMeasureAtSupportsJulia_all
     {c : ℂ}
     (hbase : ∀ a : ℂ, quadratic c a = a →
       CriticalOrbitAvoidingTarget c a → LocOneSided c a)
     (hsupp : ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a) :
-    LocOneSidedDense c := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget_all c
-  exact locOneSidedDense_of_base_limitingBrolinMeasureAtSupportsJulia
-    (hbase a hfix hcrit) (hsupp a hfix) hcrit
+    LocOneSidedDense c :=
+  locOneSidedDense_of_fixedPoint_base_limitingBrolinMeasureAtSupportsJulia hbase hsupp
 
-/-- Fixed-point neighbourhood-cofinal local one-sided density from Brolin
-support, with no parabolic exception. -/
+/-- Compatibility alias for no-exception fixed-point neighbourhood-cofinal local one-sided density
+from Brolin support. -/
 theorem locOneSidedDense_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_all
     {c : ℂ}
     (hbase : ∀ a : ℂ, quadratic c a = a →
       CriticalOrbitAvoidingTarget c a → OneSidedAtCofinalNbhd c a)
     (hsupp : ∀ a : ℂ, quadratic c a = a → LimitingBrolinMeasureAtSupportsJulia c a) :
-    LocOneSidedDense c := by
-  obtain ⟨a, hfix, hcrit⟩ := exists_fixed_point_criticalOrbitAvoidingTarget_all c
-  exact locOneSidedDense_of_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia
-    (hbase a hfix hcrit) (hsupp a hfix) hcrit
+    LocOneSidedDense c :=
+  locOneSidedDense_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia hbase hsupp
 
 /-- Both-connected q62 with fixed targets selected internally, no parabolic
 exception, and base one-sidedness supplied in q62-local critical-orbit form. -/

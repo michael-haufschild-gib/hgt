@@ -73,6 +73,21 @@ theorem constraint_ratio_invariant (σ m f g : ℂ → ℂ)
   intro s
   rw [hf s, hg s, mul_div_mul_left _ _ (hmne s)]
 
+/-- **The solution set is exactly a `σ`-invariant multiple of one solution.**  Given a nowhere-zero
+solution `f₀` (and nowhere-zero symbol), `g` solves the same constraint iff `g/f₀` is `σ`-invariant.
+This is the torsor structure made precise: the kernel of the carrier is the `σ`-invariant module times
+`f₀`, so its "size" is the corank — the dimension of the `σ`-invariant ambiguity — which is the datum
+that governs differential algebraicity, not `‖m‖`. -/
+theorem constraint_solutions_periodic_iff (σ m f₀ g : ℂ → ℂ)
+    (hf₀ : MultiplicativeConstraint σ m f₀) (hf₀ne : ∀ s, f₀ s ≠ 0) (hmne : ∀ s, m s ≠ 0) :
+    MultiplicativeConstraint σ m g ↔ ∀ s, g (σ s) / f₀ (σ s) = g s / f₀ s := by
+  constructor
+  · intro hg s
+    exact constraint_ratio_invariant σ m g f₀ hg hf₀ hmne s
+  · intro hper s
+    have hg : g (σ s) = (g s / f₀ s) * f₀ (σ s) := (div_eq_iff (hf₀ne (σ s))).mp (hper s)
+    rw [hg, hf₀ s]; field_simp [hf₀ne s]
+
 /-- **The bounded-carrier criterion is false.**  Given any `σ`-invariant `P` that is
 hypertranscendental, the constraint `f(σ s) = 1·f(s)` — carried by the maximally bounded symbol
 `m ≡ 1` — is solved by `P`, which is not differentially algebraic.  So a bounded symbol does not force
@@ -114,6 +129,22 @@ theorem rigid_solution_constraint (γ A : ℂ) :
   intro s
   simp only
   rw [show γ * (s + 1) = γ * s + γ by ring, Complex.exp_add]; ring
+
+/-- **A bounded entire symbol is constant.**  By Liouville, a differentiable symbol with a global norm
+bound is constant.  So among *analytic* carriers, "bounded" collapses to "constant" — the rigid,
+exponential regime of `rigid_constant_carrier_DA` where the implication to differential algebraicity
+does hold.  Any escape into hypertranscendence under a bounded carrier must therefore use a
+non-analytic symbol or the kernel ambiguity (`constraint_solutions_periodic_iff`), never a bounded
+analytic multiplier. -/
+theorem bounded_entire_symbol_const (m : ℂ → ℂ) (hm : Differentiable ℂ m)
+    (hb : BoundedSymbol m) : ∀ s t, m s = m t := by
+  obtain ⟨B, hB⟩ := hb
+  have hrange : Bornology.IsBounded (Set.range m) := by
+    apply Bornology.IsBounded.subset (Metric.isBounded_closedBall (x := (0 : ℂ)) (r := B))
+    rintro _ ⟨z, rfl⟩
+    simp only [Metric.mem_closedBall, dist_zero_right]
+    exact hB z
+  exact hm.apply_eq_apply_of_bounded hrange
 
 /-! ### §4 The intrinsic obstruction: a symbol value is a ratio of residues -/
 
@@ -338,12 +369,82 @@ theorem completedZeta_reflection_bounded :
   refine ⟨?_, ⟨1, fun _ => by simp⟩⟩
   intro s; rw [one_mul]; exact completedRiemannZeta_one_sub s
 
+/-- **The uncompleted reflection carrier is unbounded.**  The uncompleted functional equation
+`ζ(1−s) = χ(s)·ζ(s)` (`riemannZeta_one_sub`) has symbol `χ(s) = 2·(2π)^(−s)·Γ(s)·cos(πs/2)`, which is
+*unbounded*: at the `Γ`-pole `s = −2` — where the power factor `(2π)^2` and `cos(−π) = −1` are nonzero
+— `χ` blows up, so no global bound survives.  Proof reads the blow-up off `gamma_residue` (the residue
+of `Γ` at `−2` is `1/2 ≠ 0`): `(s+2)·χ(s)` tends to a nonzero limit, incompatible with any bound
+`‖χ‖ ≤ B`.  This is the uncompleted counterpart of `completedZeta_reflection_bounded`: the completion
+divides out the unbounded `Γ` factor, turning an unbounded reflection carrier into the bounded symbol
+`≡ 1`. -/
+theorem zeta_reflection_symbol_unbounded :
+    ¬ BoundedSymbol (fun s => 2 * (2 * (Real.pi : ℂ)) ^ (-s) * Complex.Gamma s
+        * Complex.cos (Real.pi * s / 2)) := by
+  rintro ⟨B, hB⟩
+  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  have hb : (2 * (Real.pi : ℂ)) ≠ 0 := by simp [hpi]
+  have hre : 0 < (2 * (Real.pi : ℂ)).re := by rw [Complex.mul_re]; simp; positivity
+  set brk : ℂ → ℂ := fun s => 2 * (2 * (Real.pi : ℂ)) ^ (-s) * Complex.cos (Real.pi * s / 2)
+    with hbrkdef
+  have hbrk_cont : ContinuousAt brk (-(2 : ℂ)) := by
+    apply ContinuousAt.mul
+    · exact continuousAt_const.mul
+        ((continuous_const.cpow continuous_neg (fun x => Or.inl hre)).continuousAt)
+    · exact (Complex.continuous_cos.comp (by fun_prop)).continuousAt
+  have hbrk_ne : brk (-(2 : ℂ)) ≠ 0 := by
+    rw [hbrkdef]
+    have h2 : (2 * (Real.pi : ℂ)) ^ (-(-(2 : ℂ))) ≠ 0 := by
+      rw [Complex.cpow_def_of_ne_zero hb]; exact Complex.exp_ne_zero _
+    have h3 : Complex.cos (Real.pi * (-(2 : ℂ)) / 2) ≠ 0 := by
+      rw [show (Real.pi : ℂ) * (-(2 : ℂ)) / 2 = -((Real.pi : ℝ) : ℂ) by ring, Complex.cos_neg,
+        ← Complex.ofReal_cos, Real.cos_pi]
+      norm_num
+    exact mul_ne_zero (mul_ne_zero (by norm_num) h2) h3
+  have hg2 : Tendsto (fun s : ℂ => (s + (2 : ℂ)) * Complex.Gamma s) (𝓝[≠] (-(2 : ℂ)))
+      (𝓝 (1 / 2)) := by
+    have h := GaloisForLFunctions.gamma_residue 2
+    have hval : ((-1 : ℂ)) ^ 2 / ((2 : ℕ).factorial : ℂ) = 1 / 2 := by norm_num [Nat.factorial]
+    rw [hval] at h
+    convert h using 2
+  set L : ℂ := brk (-(2 : ℂ)) * (1 / 2) with hLdef
+  have hLne : L ≠ 0 := mul_ne_zero hbrk_ne (by norm_num)
+  have hbrk_t : Tendsto brk (𝓝[≠] (-(2 : ℂ))) (𝓝 (brk (-(2 : ℂ)))) :=
+    hbrk_cont.continuousWithinAt
+  have hL_tend : Tendsto (fun s : ℂ => (s + (2 : ℂ)) *
+      (2 * (2 * (Real.pi : ℂ)) ^ (-s) * Complex.Gamma s * Complex.cos (Real.pi * s / 2)))
+      (𝓝[≠] (-(2 : ℂ))) (𝓝 L) := by
+    have hprod := hbrk_t.mul hg2
+    refine hprod.congr' ?_
+    filter_upwards with s
+    simp only [hbrkdef]; ring
+  have hnorm_tend : Tendsto (fun s : ℂ => ‖(s + (2 : ℂ)) *
+      (2 * (2 * (Real.pi : ℂ)) ^ (-s) * Complex.Gamma s * Complex.cos (Real.pi * s / 2))‖)
+      (𝓝[≠] (-(2 : ℂ))) (𝓝 ‖L‖) := (continuous_norm.continuousAt.tendsto).comp hL_tend
+  have hb0 : Tendsto (fun s : ℂ => ‖s + (2 : ℂ)‖ * B) (𝓝[≠] (-(2 : ℂ))) (𝓝 0) := by
+    have hc : Tendsto (fun s : ℂ => s + (2 : ℂ)) (𝓝[≠] (-(2 : ℂ))) (𝓝 0) := by
+      have h0 : Tendsto (fun s : ℂ => s + (2 : ℂ)) (𝓝 (-(2 : ℂ))) (𝓝 ((-(2 : ℂ)) + 2)) :=
+        (continuous_id.add continuous_const).continuousAt
+      rw [neg_add_cancel] at h0; exact h0.mono_left nhdsWithin_le_nhds
+    have hn : Tendsto (fun s : ℂ => ‖s + (2 : ℂ)‖) (𝓝[≠] (-(2 : ℂ))) (𝓝 0) := by
+      simpa using (continuous_norm.continuousAt.tendsto).comp hc
+    simpa using hn.mul_const B
+  have hle : ∀ᶠ s in 𝓝[≠] (-(2 : ℂ)), ‖(s + (2 : ℂ)) *
+      (2 * (2 * (Real.pi : ℂ)) ^ (-s) * Complex.Gamma s * Complex.cos (Real.pi * s / 2))‖
+      ≤ ‖s + (2 : ℂ)‖ * B := by
+    filter_upwards with s
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg_left (hB s) (norm_nonneg _)
+  have hLle : ‖L‖ ≤ 0 := le_of_tendsto_of_tendsto hnorm_tend hb0 hle
+  exact hLne (norm_eq_zero.mp (le_antisymm hLle (norm_nonneg _)))
+
 /-- **The completed `ζ`'s hypertranscendence obstruction lives in the seam, not the reflection.**  For
 real `s > 1`, the reflection carrier symbol is bounded (`≡ 1`) while the prime-seam carrier data
 `p^{s−1}` is unbounded (`RHTower.seam_no_bounded_reciprocity_carrier`).  Boundedness of the reflection
 symbol makes the reflection functional equation insufficient by the falsification, so the operator-side
-marker of hypertranscendence has moved entirely to the unbounded prime seam.  This is why the
-completion is required: it renders the reflection bounded and isolates the obstruction at the weld. -/
+marker of hypertranscendence has moved entirely to the unbounded prime seam.  The uncompleted
+reflection carrier is by contrast unbounded (`zeta_reflection_symbol_unbounded`): this is exactly why
+the completion is required — it divides out the unbounded `Γ` factor, rendering the reflection bounded
+and isolating the obstruction at the weld. -/
 theorem completedZeta_obstruction_is_seam {s : ℝ} (hs : 1 < s) :
     BoundedSymbol (fun _ : ℂ => (1 : ℂ))
       ∧ UnboundedOn (fun p => (p : ℝ) ^ (s - 1)) (fun p => Nat.Prime p) :=

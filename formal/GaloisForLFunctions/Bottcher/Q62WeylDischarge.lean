@@ -47,9 +47,9 @@ theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_filledJulia_nu
 
 /-- **Backward-orbit density from Julia-nullity alone**, targets chosen internally. -/
 theorem exists_fixedPoint_backwardOrbitDense_of_filledJulia_null
-    {c : ℂ} (hc : c ≠ 1 / 4) (hnull : volume (filledJulia c) = 0) :
+    {c : ℂ} (hnull : volume (filledJulia c) = 0) :
     ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a :=
-  exists_fixedPoint_backwardOrbitDense_of_filledJulia_null_of_weyl hc hnull
+  exists_fixedPoint_backwardOrbitDense_of_filledJulia_null_of_weyl hnull
     (weylOnBall_greenFunctionDyn c)
 
 /-! ## Frostman-equilibrium form (all regimes)
@@ -113,10 +113,10 @@ theorem forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_equilibriumVan
 
 /-- **Backward-orbit density, Frostman form**, targets chosen internally. -/
 theorem exists_fixedPoint_backwardOrbitDense_of_equilibriumVanishes
-    {c : ℂ} (hc : c ≠ 1 / 4)
+    {c : ℂ}
     (hfrost : ∀ a : ℂ, quadratic c a = a → EquilibriumPotentialVanishesAe c a) :
     ∃ a : ℂ, quadratic c a = a ∧ BackwardOrbitDense c a :=
-  exists_fixedPoint_backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia hc
+  exists_fixedPoint_backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia_all
     (forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_equilibriumVanishes c hfrost)
 
 end

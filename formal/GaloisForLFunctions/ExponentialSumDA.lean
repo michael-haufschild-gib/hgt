@@ -32,7 +32,8 @@ theorem iteratedDeriv_exp_linear (c : ℂ) (j : ℕ) (x : ℂ) :
     have hd : HasDerivAt (fun x : ℂ => Complex.exp (c * x)) (Complex.exp (c * x) * c) x := h1.cexp
     rw [(hd.const_mul (c ^ n)).deriv]; ring
 
-theorem iteratedDeriv_finset_expSum (s : Finset ℕ) (a c : ℕ → ℂ) (j : ℕ) (x : ℂ) :
+theorem iteratedDeriv_finset_expSum {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (a c : ι → ℂ) (j : ℕ) (x : ℂ) :
     iteratedDeriv j (fun x => ∑ i ∈ s, a i * Complex.exp (c i * x)) x
       = ∑ i ∈ s, a i * c i ^ j * Complex.exp (c i * x) := by
   induction s using Finset.induction with

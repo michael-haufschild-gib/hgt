@@ -75,4 +75,27 @@ theorem frontier_filledJulia_subset_support_limitingBrolinMeasureAt_of_four_le_n
   frontier_filledJulia_subset_support_limitingBrolinMeasureAt_of_equilibriumVanishes c a
     (equilibriumPotentialVanishesAe_of_four_le_norm c a hc)
 
+/-- **Large-norm Brolin/GAP-A capstone.**  For `‖c‖ ≥ 4`, the Julia-nullity input discharges the
+full local Brolin packet used by the GAP-A support route: target Brolin equals `gapAMu`,
+`gapAMu` is dynamically invariant, the target measure is the Riesz measure of `G_c`, the Half-A
+scaling and Half-B domination gates hold, and the Julia frontier lies in the target measure's
+support. -/
+theorem largeNorm_brolin_gapA_capstone {c a : ℂ} (hc : (4 : ℝ) ≤ ‖c‖) :
+    interior (filledJulia c) = ∅ ∧
+    limitingBrolinMeasureAt c a = gapAMu c ∧
+    Measure.map (quadratic c) (gapAMu c) = gapAMu c ∧
+    IsRieszMeasureOfSmooth (limitingBrolinMeasureAt c a) (greenFunctionDyn c) ∧
+    BrolinScalingAt c a ∧
+    PotentialDominatedOnFilledJulia c a ∧
+    EquilibriumPotentialVanishesAe c a ∧
+    frontier (filledJulia c) ⊆ (limitingBrolinMeasureAt c a).support :=
+  ⟨interior_filledJulia_eq_empty_of_four_le_norm hc,
+    limitingBrolinMeasureAt_eq_gapAMu_of_four_le_norm hc,
+    map_quadratic_gapAMu_eq_of_four_le_norm hc,
+    isRieszMeasureOfSmooth_limitingBrolinMeasureAt_of_four_le_norm c a hc,
+    brolinScalingAt_of_four_le_norm hc,
+    potentialDominatedOnFilledJulia_of_four_le_norm hc,
+    equilibriumPotentialVanishesAe_of_four_le_norm c a hc,
+    frontier_filledJulia_subset_support_limitingBrolinMeasureAt_of_four_le_norm c a hc⟩
+
 end Bottcher

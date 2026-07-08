@@ -297,6 +297,7 @@ import GaloisForLFunctions.RHTower.SweepSelection
 import GaloisForLFunctions.RHTower.CanonicalBranch
 import GaloisForLFunctions.RHTower.RootTraceHolonomy
 import GaloisForLFunctions.RHTower.XiDeckCharge
+import GaloisForLFunctions.RHTower.DeckChargeInvariant
 import GaloisForLFunctions.RHTower.EntireGrowth
 import GaloisForLFunctions.RHTower.EntireAutomorphism
 import GaloisForLFunctions.RHTower.ArgumentPrincipleFree

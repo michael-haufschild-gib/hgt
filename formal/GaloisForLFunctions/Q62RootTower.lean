@@ -272,6 +272,10 @@ end Bottcher
 
 namespace Bottcher
 
+/-- **Large-disconnected mixed-or-gap q62 — full finite root tower.**  If `c₁` is far disconnected
+(`‖c₁‖ ≥ 1000`) and `c₂` is nonexceptional, then either connectedness of `c₂` or the quadratic
+norm-gap condition gives a common far carrier on which every finite root of `φ_{c₁}` is
+algebraically independent of every finite root of `φ_{c₂}` over `ℂ(z)`. -/
 theorem q62_phiMero_large_disconnected_mixed_or_norm_gap_roots {c₁ c₂ : ℂ}
     (hc₁ : (0:ℂ) ∉ filledJulia c₁) (hc1000 : (1000:ℝ) ≤ ‖c₁‖)
     (hc₂0 : c₂ ≠ 0) (hc₂2 : c₂ ≠ -2)
@@ -287,6 +291,10 @@ theorem q62_phiMero_large_disconnected_mixed_or_norm_gap_roots {c₁ c₂ : ℂ}
   · exact q62_phiMero_mixed_far_roots hc₁ hc1000 hc₂M hc₂0 hc₂2
   · exact q62_phiMero_norm_gap_roots hc₁ hc1000 hc₂0 hc₂2 hgap
 
+/-- **Swapped large-disconnected mixed-or-gap q62 — full finite root tower.**  The symmetric
+orientation of `q62_phiMero_large_disconnected_mixed_or_norm_gap_roots`: `c₂` is the far
+disconnected parameter, while the nonexceptional `c₁` is handled by either connectedness or the
+quadratic norm-gap condition. -/
 theorem q62_phiMero_large_disconnected_mixed_or_norm_gap_roots_swapped {c₁ c₂ : ℂ}
     (hc₂ : (0:ℂ) ∉ filledJulia c₂) (hc1000 : (1000:ℝ) ≤ ‖c₂‖)
     (hc₁0 : c₁ ≠ 0) (hc₁2 : c₁ ≠ -2)
@@ -302,6 +310,10 @@ theorem q62_phiMero_large_disconnected_mixed_or_norm_gap_roots_swapped {c₁ c�
   · exact q62_phiMero_mixed_far_roots_swapped hc₁M hc₁0 hc₁2 hc₂ hc1000
   · exact q62_phiMero_norm_gap_roots_swapped hc₂ hc1000 hc₁0 hc₁2 hgap
 
+/-- **Either-orientation large-disconnected mixed-or-gap q62 — full finite root tower.**  A single
+placement-free API for the strongest shipped large-disconnected root-tower discharge: one parameter
+is far disconnected, the other is nonexceptional and is either connected or quadratically
+norm-separated. -/
 theorem q62_phiMero_large_disconnected_mixed_or_norm_gap_roots_either {c₁ c₂ : ℂ}
     (hor :
       ((0:ℂ) ∉ filledJulia c₁ ∧ (1000:ℝ) ≤ ‖c₁‖ ∧
