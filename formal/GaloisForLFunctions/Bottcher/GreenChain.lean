@@ -12,6 +12,7 @@ The overlap-connectedness rides as an explicit geometric hypothesis (the input t
 geometry supplies). New file (hRigid connected lane); consumes `CoverConstruction`.
 -/
 import GaloisForLFunctions.Bottcher.CoverConstruction
+import GaloisForLFunctions.Bottcher.ChainGlue
 
 open Set
 
@@ -27,24 +28,11 @@ theorem exists_greenConjugate_glue_chain {c : ℂ} (U : ℕ → Set ℂ) (F : �
     (hconn : ∀ i, IsConnected ((⋃ j ∈ Finset.range (i + 1), U j) ∩ U (i + 1)))
     (k : ℕ) :
     ∃ G : ℂ → ℂ, AnalyticOnNhd ℂ G (⋃ j ∈ Finset.range (k + 1), U j) ∧
-      EqOn (fun w => (G w).re) (greenLimit c) (⋃ j ∈ Finset.range (k + 1), U j) := by
-  induction k with
-  | zero =>
-    refine ⟨F 0, ?_, ?_⟩
-    · simpa [Finset.range_one] using hF 0
-    · simpa [Finset.range_one] using hFre 0
-  | succ n ih =>
-    obtain ⟨G, hGan, hGre⟩ := ih
-    have hVopen : IsOpen (⋃ j ∈ Finset.range (n + 1), U j) := isOpen_biUnion (fun j _ => hUo j)
-    obtain ⟨H, hHan, hHre⟩ :=
-      exists_greenConjugate_glue hVopen (hUo (n + 1)) (hconn n) hGan (hF (n + 1)) hGre (hFre (n + 1))
-    have hunion : (⋃ j ∈ Finset.range (n + 1 + 1), U j)
-        = (⋃ j ∈ Finset.range (n + 1), U j) ∪ U (n + 1) := by
-      rw [Finset.range_add_one, Finset.set_biUnion_insert]
-      exact Set.union_comm _ _
-    refine ⟨H, ?_, ?_⟩
-    · rw [hunion]; exact hHan
-    · rw [hunion]; exact hHre
+      EqOn (fun w => (G w).re) (greenLimit c) (⋃ j ∈ Finset.range (k + 1), U j) :=
+  exists_glue_chain
+    (P := fun G V => AnalyticOnNhd ℂ G V ∧ EqOn (fun w => (G w).re) (greenLimit c) V)
+    U F hUo (fun i => ⟨hF i, hFre i⟩)
+    (fun hV hW hc pf ph => exists_greenConjugate_glue hV hW hc pf.1 ph.1 pf.2 ph.2) hconn k
 
 /-- **The single-valued Böttcher coordinate on a glued chain.** `exp F` for the chain conjugate `F`
 is analytic, nowhere zero, with `|exp F| = exp(G_c)`, on `⋃_{j ≤ k} Uⱼ`. -/

@@ -375,8 +375,7 @@ theorem carrier_periodic_mass_of_sign_neg {N : ℕ} (hN : 1 ≤ N) {a : ℂ}
       = (starRingEnd ℂ) (completedSEM N z) := by
     intro z hz
     obtain ⟨h1, h2⟩ := hstrip z hz
-    rw [show lineReflection (1 / 2) z = 1 - (starRingEnd ℂ) z by
-      rw [lineReflection]; norm_num]
+    rw [lineReflection_half]
     exact completedSEM_lineReflection h1 h2
   have hcball : ContinuousOn (completedSEM N) (ball a R) := fun z hz =>
     ((completedSEM_analyticOnNhd_strip hN z (hstrip z hz)).continuousAt).continuousWithinAt

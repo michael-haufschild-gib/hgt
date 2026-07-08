@@ -24,6 +24,7 @@ import Mathlib.Analysis.Complex.Harmonic.Analytic
 import Mathlib.Analysis.Complex.HasPrimitives
 import Mathlib.Analysis.InnerProductSpace.Harmonic.Constructions
 import Mathlib.MeasureTheory.Integral.CurveIntegral.Poincare
+import GaloisForLFunctions.Bottcher.ChainGlue
 
 open Complex Set Topology Filter
 
@@ -331,17 +332,9 @@ theorem exists_primitive_glue_chain {f : ℂ → ℂ} (U : ℕ → Set ℂ) (g :
     (hg : ∀ i, ∀ z ∈ U i, HasDerivAt (g i) (f z) z)
     (hconn : ∀ i, IsConnected ((⋃ j ∈ Finset.range (i + 1), U j) ∩ U (i + 1)))
     (k : ℕ) :
-    ∃ G : ℂ → ℂ, ∀ z ∈ (⋃ j ∈ Finset.range (k + 1), U j), HasDerivAt G (f z) z := by
-  induction k with
-  | zero => refine ⟨g 0, ?_⟩; simpa [Finset.range_one] using hg 0
-  | succ n ih =>
-    obtain ⟨G, hG⟩ := ih
-    have hVopen : IsOpen (⋃ j ∈ Finset.range (n + 1), U j) := isOpen_biUnion (fun j _ => hUo j)
-    obtain ⟨H, hH⟩ := exists_primitive_glue hVopen (hUo (n + 1)) (hconn n) hG (hg (n + 1))
-    have hunion : (⋃ j ∈ Finset.range (n + 1 + 1), U j)
-        = (⋃ j ∈ Finset.range (n + 1), U j) ∪ U (n + 1) := by
-      rw [Finset.range_add_one, Finset.set_biUnion_insert]; exact Set.union_comm _ _
-    refine ⟨H, ?_⟩; rw [hunion]; exact hH
+    ∃ G : ℂ → ℂ, ∀ z ∈ (⋃ j ∈ Finset.range (k + 1), U j), HasDerivAt G (f z) z :=
+  exists_glue_chain (P := fun G V => ∀ z ∈ V, HasDerivAt G (f z) z)
+    U g hUo hg (fun hV hW hc pf ph => exists_primitive_glue hV hW hc pf ph) hconn k
 
 /-- **Modulus spread via the harmonic identity theorem.** If `g` is analytic and nonvanishing on a
 preconnected basin region `U`, and `‖g‖ = exp(G_c)` on a nonempty open subset `C ⊆ U`, then

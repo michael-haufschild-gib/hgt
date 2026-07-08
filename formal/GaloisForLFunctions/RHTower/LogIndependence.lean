@@ -20,6 +20,7 @@ the fundamental theorem of arithmetic; generic shifts are free. The wall is arit
 import Mathlib
 import GaloisForLFunctions.Hurwitz.ExpIndependence
 import GaloisForLFunctions.RHTower.SecondMoment
+import GaloisForLFunctions.Core
 
 namespace RHTower
 
@@ -200,64 +201,37 @@ theorem log_prime_shifts_independent {q : ℕ} (hq : q.Prime) (s : Finset ℕ)
         = ∑ p ∈ s, (ε p : ℝ) * (Real.log p - Real.log q) :=
           Finset.sum_congr rfl fun p _ => by ring
       _ = 0 := hrw
-  -- Exponentiate: ∏ p^(ε p) = q^(Σ ε p) in ℝ, all bases positive.
-  have hppos : ∀ p ∈ s, (0:ℝ) < (p:ℝ) := fun p hp => by
-    exact_mod_cast (hs p hp).1.pos
-  have hprod : (∏ p ∈ s, (p : ℝ) ^ (ε p)) = (q : ℝ) ^ (∑ p ∈ s, ε p) := by
-    have hlhs : Real.log (∏ p ∈ s, (p : ℝ) ^ (ε p)) = ∑ p ∈ s, (ε p : ℝ) * Real.log p := by
-      rw [Real.log_prod (fun p hp => zpow_ne_zero _ (hppos p hp).ne')]
-      exact Finset.sum_congr rfl fun p _ => Real.log_zpow _ _
-    have hrhs : Real.log ((q : ℝ) ^ (∑ p ∈ s, ε p))
-        = (∑ p ∈ s, (ε p : ℝ)) * Real.log q := by
-      rw [Real.log_zpow]; push_cast; ring
-    have hL : (0:ℝ) < ∏ p ∈ s, (p : ℝ) ^ (ε p) :=
-      Finset.prod_pos fun p hp => zpow_pos (hppos p hp) _
-    have hR : (0:ℝ) < (q : ℝ) ^ (∑ p ∈ s, ε p) := zpow_pos hq0 _
-    have : Real.log (∏ p ∈ s, (p : ℝ) ^ (ε p)) = Real.log ((q : ℝ) ^ (∑ p ∈ s, ε p)) := by
-      rw [hlhs, hrhs]; linarith [hsum]
-    calc (∏ p ∈ s, (p : ℝ) ^ (ε p)) = Real.exp (Real.log (∏ p ∈ s, (p : ℝ) ^ (ε p))) :=
-          (Real.exp_log hL).symm
-      _ = Real.exp (Real.log ((q : ℝ) ^ (∑ p ∈ s, ε p))) := by rw [this]
-      _ = (q : ℝ) ^ (∑ p ∈ s, ε p) := Real.exp_log hR
-  -- Fix p₀ ∈ s with ε p₀ ≠ 0; the p₀-adic valuation of the product identity gives the
-  -- contradiction with unique factorization.
-  intro p₀ hp₀
-  by_contra hne0
-  -- move to ℚ: the same product identity holds in ℚ (all terms rational).
-  have hprodQ : (∏ p ∈ s, (p : ℚ) ^ (ε p)) = (q : ℚ) ^ (∑ p ∈ s, ε p) := by
-    have : ((∏ p ∈ s, (p : ℚ) ^ (ε p) : ℚ) : ℝ) = (((q : ℚ) ^ (∑ p ∈ s, ε p) : ℚ) : ℝ) := by
-      push_cast
-      exact hprod
-    exact_mod_cast this
-  -- p₀-adic valuation: LHS has valuation ε p₀ (all other bases coprime to p₀),
-  -- RHS has valuation (Σ ε)·v_{p₀}(q) = 0 since q ≠ p₀ prime.
-  have hp₀p : p₀.Prime := (hs p₀ hp₀).1
-  haveI : Fact p₀.Prime := ⟨hp₀p⟩
-  have hval := congrArg (padicValRat p₀) hprodQ
-  rw [padicValRat_prod (fun p hp => zpow_ne_zero _ (by exact_mod_cast (hs p hp).1.pos.ne'))]
-    at hval
-  rw [padicValRat_zpow (by exact_mod_cast hq.pos.ne')] at hval
-  have hvq : padicValRat p₀ (q : ℚ) = 0 := by
-    rw [padicValRat.of_nat]
-    exact_mod_cast padicValNat.eq_zero_of_not_dvd
-      (fun hdvd => (hs p₀ hp₀).2 ((Nat.prime_dvd_prime_iff_eq hp₀p hq).mp hdvd))
-  rw [hvq, mul_zero] at hval
-  have hterm : ∀ p ∈ s, padicValRat p₀ ((p : ℚ) ^ (ε p)) = if p = p₀ then ε p else 0 := by
-    intro p hp
-    rw [padicValRat_zpow (by exact_mod_cast (hs p hp).1.pos.ne')]
-    by_cases hpp : p = p₀
-    · subst hpp
-      rw [padicValRat.self (by exact_mod_cast hp₀p.one_lt), mul_one]
-      simp
-    · rw [padicValRat.of_nat]
-      have : padicValNat p₀ p = 0 :=
-        padicValNat.eq_zero_of_not_dvd
-          (fun hdvd => hpp ((Nat.prime_dvd_prime_iff_eq hp₀p (hs p hp).1).mp hdvd).symm)
-      rw [this]
-      simp [hpp]
-  rw [Finset.sum_congr rfl hterm, Finset.sum_ite_eq' s p₀ ε] at hval
-  simp [hp₀] at hval
-  exact hne0 hval
+  -- `ℤ`-linear independence of `{log p : p prime}` (`logPrime_linearIndependent_int`, unique
+  -- factorization): pull the relation into a `Nat.Primes →₀ ℤ` character `l` carrying coefficient
+  -- `ε p` on each `p ∈ s` and `−∑ ε` on `q`.  Its `log`-combination is `hsum = 0`, so `l = 0`,
+  -- forcing every `ε p = 0`.
+  set toP : ℕ → Nat.Primes := fun n => if h : n.Prime then ⟨n, h⟩ else ⟨2, Nat.prime_two⟩ with htoP
+  have htoP_val : ∀ n, n.Prime → ((toP n : Nat.Primes) : ℕ) = n := by
+    intro n hn; rw [htoP]; simp only [hn, dif_pos]
+  have htoP_inj : ∀ a, a.Prime → ∀ b, b.Prime → toP a = toP b → a = b := by
+    intro a ha b hb h; rw [← htoP_val a ha, ← htoP_val b hb, h]
+  set l : Nat.Primes →₀ ℤ :=
+    (∑ p ∈ s, Finsupp.single (toP p) (ε p)) + Finsupp.single (toP q) (-∑ p ∈ s, ε p) with hl_def
+  have hlc : Finsupp.linearCombination ℤ (fun P : Nat.Primes => Real.log (P : ℕ)) l = 0 := by
+    rw [hl_def, map_add, map_sum]
+    have e1 : ∀ p ∈ s, (Finsupp.linearCombination ℤ (fun P : Nat.Primes => Real.log (P : ℕ)))
+        (Finsupp.single (toP p) (ε p)) = (ε p : ℝ) * Real.log p := by
+      intro p hp; rw [Finsupp.linearCombination_single, zsmul_eq_mul, htoP_val p (hs p hp).1]
+    rw [Finset.sum_congr rfl e1, Finsupp.linearCombination_single, zsmul_eq_mul, htoP_val q hq]
+    push_cast; linarith [hsum]
+  have hzero := (linearIndependent_iff.mp GaloisForLFunctions.logPrime_linearIndependent_int) l hlc
+  intro p hp
+  have hpq : toP p ≠ toP q := fun h => (hs p hp).2 (htoP_inj p (hs p hp).1 q hq h)
+  have hB : (Finsupp.single (toP q) (-∑ x ∈ s, ε x)) (toP p) = 0 := by
+    rw [Finsupp.single_apply, if_neg]; exact fun h => hpq h.symm
+  have hA : (∑ x ∈ s, Finsupp.single (toP x) (ε x)) (toP p) = ε p := by
+    rw [Finsupp.finsetSum_apply, Finset.sum_eq_single_of_mem p hp]
+    · rw [Finsupp.single_eq_same]
+    · intro b hb hbne
+      rw [Finsupp.single_apply, if_neg]
+      exact fun h => hbne (htoP_inj b (hs b hb).1 p (hs p hp).1 h)
+  have key : l (toP p) = ε p := by rw [hl_def, Finsupp.add_apply, hA, hB, add_zero]
+  rw [hzero] at key; simpa using key.symm
 
 end RHTower
 

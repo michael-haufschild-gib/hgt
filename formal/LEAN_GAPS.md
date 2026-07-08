@@ -18,7 +18,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
-| 3477 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
+| 3468 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean` |
 | 2721 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean` |
 | 2671 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2592 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
@@ -182,12 +182,12 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/GlobalBasinBranch.lean:361` | `interior K_c = ∅` gives `ball z₀ 1 ∩ interior K_c = ∅`.  The remaining caller input is only the punctured |
 | `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:12` | The single missing analytic step to single-valued `φ_c` on a *simply-connected* basin region `V` is then the |
 | `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:16` | the genuine remaining frontier brick. With it, `β := exp F` on a simply-connected basin neighbourhood of a |
-| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:128` | `‖β‖ = exp(Re F − k) = exp G_c`. The ONLY remaining input to the whole connected/disconnected analytic core |
-| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:239` | `exists_relationBranch_of_modulusBranch`). The SINGLE remaining input to close the connected case is therefore |
-| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:241` | an open WIP in mathlib (`CurveIntegral`, issue #24019; the full Riemann mapping theorem is likewise a `TODO` |
-| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:259` | of the green-conjugate cocycle, and the gluing heart of the Poincaré lemma (the remaining frontier input). -/ |
-| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:327` | `ω` on any chain-coverable basin region — which feeds `exists_fullBottcherBranch_of_primitive`. The remaining |
-| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:379` | `exists_fullBottcherBranch_of_primitive`; the only remaining input is a *geometric* ball-chain from |
+| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:129` | `‖β‖ = exp(Re F − k) = exp G_c`. The ONLY remaining input to the whole connected/disconnected analytic core |
+| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:240` | `exists_relationBranch_of_modulusBranch`). The SINGLE remaining input to close the connected case is therefore |
+| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:242` | an open WIP in mathlib (`CurveIntegral`, issue #24019; the full Riemann mapping theorem is likewise a `TODO` |
+| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:260` | of the green-conjugate cocycle, and the gluing heart of the Poincaré lemma (the remaining frontier input). -/ |
+| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:328` | `ω` on any chain-coverable basin region — which feeds `exists_fullBottcherBranch_of_primitive`. The remaining |
+| `formal/GaloisForLFunctions/Bottcher/GreenLogDeriv.lean:372` | `exists_fullBottcherBranch_of_primitive`; the only remaining input is a *geometric* ball-chain from |
 | `formal/GaloisForLFunctions/Bottcher/GreenSuperlevel.lean:10` | component missing the far field would be bounded; the maximum of `G_c` over its closure is |
 | `formal/GaloisForLFunctions/Bottcher/GreenUnique.lean:12` | basin is preconnected (`K_c` full), the one remaining topological input. |
 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean:3397` | preceding radius and real-ray lemmas.  The only remaining topological input is preconnectedness. -/ |
@@ -263,11 +263,11 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:386` | its remaining residues: Brolin Julia-ball positivity, critical-orbit avoidance, |
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:424` | /-- Standard support-theorem form of the remaining arbitrary-target Brolin gap: |
 | `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:493` | residue, plus the remaining base, visibility, and smooth-piece inputs. -/ |
-| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:781` | raw connected-puncture seed.  This exposes the true remaining local-topology |
-| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2726` | visibility is now proven separately, and this predicate names only the remaining one-sided access |
-| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2746` | off-other frontier point is produced, the only remaining local-access input is that visible off-other |
-| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2782` | supplied by `SmoothArcSelection` in both orientations.  The remaining real-pair access input is exactly |
-| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:3114` | `M` is discharged internally from `-2 ≤ c ≤ 1/4`; the remaining connected-case inputs are exactly |
+| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:777` | raw connected-puncture seed.  This exposes the true remaining local-topology |
+| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2717` | visibility is now proven separately, and this predicate names only the remaining one-sided access |
+| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2737` | off-other frontier point is produced, the only remaining local-access input is that visible off-other |
+| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:2773` | supplied by `SmoothArcSelection` in both orientations.  The remaining real-pair access input is exactly |
+| `formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean:3105` | `M` is discharged internally from `-2 ≤ c ≤ 1/4`; the remaining connected-case inputs are exactly |
 | `formal/GaloisForLFunctions/Bottcher/Q62BothConnectedExposed.lean:8` | point of one set off the other filled set (after a swap).  The *only* remaining gap to |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:20` | Half A is proved here modulo `BrolinScalingAt`; the two remaining inputs — the doubling law |
 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean:132` | The remaining nontrivial GAP-A task is to prove the two measure invariances for |

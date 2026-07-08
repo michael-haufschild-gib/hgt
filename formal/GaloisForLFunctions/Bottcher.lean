@@ -68,6 +68,7 @@ import GaloisForLFunctions.Bottcher.GreenContinuity
 import GaloisForLFunctions.Bottcher.DendriteBoundary
 import GaloisForLFunctions.Bottcher.DendriteContinuesAcross
 import GaloisForLFunctions.Bottcher.PhiLevel
+import GaloisForLFunctions.Bottcher.ChainGlue
 import GaloisForLFunctions.Bottcher.GreenChain
 import GaloisForLFunctions.Bottcher.GreenUnique
 import GaloisForLFunctions.Bottcher.BottcherAsymptotic

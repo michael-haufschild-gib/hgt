@@ -84,8 +84,7 @@ theorem carrier_mass_zero_at_odd_xi_order {ρ : ℂ}
 order at the point: the functional-equation and reality pairings compose. -/
 theorem xi_orderAt_lineReflection (ρ : ℂ) :
     analyticOrderAt xi (lineReflection (1 / 2) ρ) = analyticOrderAt xi ρ := by
-  rw [show lineReflection (1 / 2) ρ = 1 - (starRingEnd ℂ) ρ by
-    rw [lineReflection]; norm_num, xi_orderAt_one_sub, xi_orderAt_conj]
+  rw [lineReflection_half, xi_orderAt_one_sub, xi_orderAt_conj]
 
 /-- **The mirror pair, both activated**: at any strip point of odd ξ-order, the
 zero-mass event fires at the point AND at its reflection across the critical

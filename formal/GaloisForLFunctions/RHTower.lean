@@ -119,6 +119,7 @@ import GaloisForLFunctions.RHTower.DeckWindow
 import GaloisForLFunctions.RHTower.WindowSeam
 import GaloisForLFunctions.RHTower.OmegaComplexStructure
 import GaloisForLFunctions.RHTower.OmegaObstruction
+import GaloisForLFunctions.RHTower.WeldClassTable
 import GaloisForLFunctions.RHTower.DiscWindow
 import GaloisForLFunctions.RHTower.DiscExtraction
 import GaloisForLFunctions.RHTower.WindowProducer

@@ -119,6 +119,79 @@ theorem exists_fixedPoint_backwardOrbitDense_of_equilibriumVanishes
   exists_fixedPoint_backwardOrbitDense_of_limitingBrolinMeasureAtSupportsJulia_all
     (forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_equilibriumVanishes c hfrost)
 
+/-! ## q62 capstones with the support input sharpened to Frostman equilibrium -/
+
+/-- Both-connected q62 with the Brolin support hypotheses discharged to the
+all-regime Frostman core.  The remaining support-side input is exactly
+`EquilibriumPotentialVanishesAe` at fixed targets. -/
+theorem q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_equilibriumVanishes_notPostcritical_jointFrontierVisibility
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁M : c₁ ∈ mandelbrot) (hc₂M : c₂ ∈ mandelbrot)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAtCofinalNbhd c₁ a)
+    (hfrost₁ : ∀ a : ℂ, quadratic c₁ a = a → EquilibriumPotentialVanishesAe c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a →
+      a ∉ positiveCriticalOrbit c₂ → OneSidedAtCofinalNbhd c₂ a)
+    (hfrost₂ : ∀ a : ℂ, quadratic c₂ a = a → EquilibriumPotentialVanishesAe c₂ a)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁)
+    (hrig₁₂ : SmoothPieceRigidity c₁ c₂)
+    (hrig₂₁ : SmoothPieceRigidity c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  q62_phiMero_bothconnected_of_fixedPoint_cofinalNbhd_base_limitingBrolinMeasureAtSupportsJulia_notPostcritical_jointFrontierVisibility
+    hUo hUc hUne hUinf hne hc₁M hc₂M hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂
+    hbase₁ (forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_equilibriumVanishes c₁ hfrost₁)
+    hbase₂ (forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_equilibriumVanishes c₂ hfrost₂)
+    hvis₁₂ hvis₂₁ hrig₁₂ hrig₂₁
+
+/-- All-placement q62 from the fixed-point Brolin bridge, with the support
+datum sharpened from raw `LimitingBrolinMeasureAtSupportsJulia` hypotheses to
+the Frostman equilibrium core at fixed targets. -/
+theorem q62_phiMero_independence_of_monodromy_fixedPoint_cofinalNbhd_brolin_equilibriumVanishes_notPostcritical_jointFrontierVisibility_all
+    {U : Set ℂ} (hUo : IsOpen U) (hUc : IsPreconnected U)
+    (hUne : U.Nonempty) (hUinf : U.Infinite)
+    {c₁ c₂ : ℂ} (hne : c₁ ≠ c₂)
+    (hc₁0 : c₁ ≠ 0) (hc₁m2 : c₁ ≠ -2)
+    (hc₂0 : c₂ ≠ 0) (hc₂m2 : c₂ ≠ -2)
+    (hU₁ : U ⊆ escapeOpen c₁) (hU₂ : U ⊆ escapeOpen c₂)
+    (hmono₁ : c₁ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₂ hU₂) = phiMero c₂ hU₂ ∧ σ ζ = ζ ∧
+        σ (phiMero c₁ hU₁) = ζ * phiMero c₁ hU₁)
+    (hmono₂ : c₂ ∉ mandelbrot →
+      haveI := isDomain_analyticSubring U hUo hUc hUne
+      letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+      ∀ d : ℕ, ∃ (σ : meroField U ≃ₐ[RatFunc ℂ] meroField U) (ζ : meroField U) (m : ℕ),
+        d < m ∧ orderOf ζ = m ∧ σ (phiMero c₁ hU₁) = phiMero c₁ hU₁ ∧ σ ζ = ζ ∧
+        σ (phiMero c₂ hU₂) = ζ * phiMero c₂ hU₂)
+    (hbase₁ : ∀ a : ℂ, quadratic c₁ a = a →
+      a ∉ positiveCriticalOrbit c₁ → OneSidedAtCofinalNbhd c₁ a)
+    (hfrost₁ : ∀ a : ℂ, quadratic c₁ a = a → EquilibriumPotentialVanishesAe c₁ a)
+    (hbase₂ : ∀ a : ℂ, quadratic c₂ a = a →
+      a ∉ positiveCriticalOrbit c₂ → OneSidedAtCofinalNbhd c₂ a)
+    (hfrost₂ : ∀ a : ℂ, quadratic c₂ a = a → EquilibriumPotentialVanishesAe c₂ a)
+    (hvis₁₂ : OffOtherCofinalNbhdJointFrontierVisible c₁ c₂)
+    (hvis₂₁ : OffOtherCofinalNbhdJointFrontierVisible c₂ c₁)
+    (hrig₁₂ : SmoothPieceRigidity c₁ c₂)
+    (hrig₂₁ : SmoothPieceRigidity c₂ c₁) :
+    haveI := isDomain_analyticSubring U hUo hUc hUne
+    letI := (ratfuncToMero U hUo hUc hUne hUinf).toAlgebra
+    NoRelation (RatFunc ℂ) (phiMero c₁ hU₁) (phiMero c₂ hU₂) :=
+  q62_phiMero_independence_of_monodromy_fixedPoint_cofinalNbhd_brolin_notPostcritical_jointFrontierVisibility_all
+    hUo hUc hUne hUinf hne hc₁0 hc₁m2 hc₂0 hc₂m2 hU₁ hU₂ hmono₁ hmono₂
+    hbase₁ (forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_equilibriumVanishes c₁ hfrost₁)
+    hbase₂ (forall_fixedPoint_limitingBrolinMeasureAtSupportsJulia_of_equilibriumVanishes c₂ hfrost₂)
+    hvis₁₂ hvis₂₁ hrig₁₂ hrig₂₁
+
 end
 
 end Bottcher

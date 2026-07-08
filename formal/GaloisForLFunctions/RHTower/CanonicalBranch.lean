@@ -32,6 +32,11 @@ open Complex Metric Set
 /-- Reflection across the vertical line `Re = μ`. -/
 def lineReflection (μ : ℝ) (z : ℂ) : ℂ := ((2 * μ : ℝ) : ℂ) - (starRingEnd ℂ) z
 
+/-- Reflection across the critical line `Re = 1/2` in closed form: `2·(1/2) = 1`. -/
+theorem lineReflection_half (z : ℂ) :
+    lineReflection (1 / 2) z = 1 - (starRingEnd ℂ) z := by
+  rw [lineReflection]; norm_num
+
 theorem lineReflection_re (μ : ℝ) (z : ℂ) :
     (lineReflection μ z).re = 2 * μ - z.re := by
   rw [lineReflection]
@@ -386,8 +391,7 @@ theorem completedSEM_lineSymmetric_on_annulus {N : ℕ} {a : ℂ} {r₀ R : ℝ}
         = (starRingEnd ℂ) (completedSEM N z) := by
   intro z hz
   obtain ⟨h0, h1⟩ := annulus_strip_of_center_half ha hR hz
-  rw [show lineReflection (1 / 2) z = 1 - (starRingEnd ℂ) z by
-    rw [lineReflection]; norm_num]
+  rw [lineReflection_half]
   exact completedSEM_lineReflection h0 h1
 
 /-- **The weld with the parity as an observable**: on a critical-line-centered

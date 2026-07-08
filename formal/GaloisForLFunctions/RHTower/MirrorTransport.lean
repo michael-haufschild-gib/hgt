@@ -198,8 +198,7 @@ theorem carrier_mass_zero_mirror_of_odd_xi_zero {N : ℕ} (hN : 1 ≤ N) {ρ : �
         = (starRingEnd ℂ) (completedSEM N z) := by
     intro z hz
     obtain ⟨h1, h2⟩ := hstrip z hz
-    rw [show lineReflection (1 / 2) z = 1 - (starRingEnd ℂ) z by
-      rw [lineReflection]; norm_num]
+    rw [lineReflection_half]
     exact completedSEM_lineReflection h1 h2
   exact carrier_mass_zero_mirror_of_odd_isolated_zero h0 hr₀ hrR
     (xi_analyticOnNhd _) hiso hm hodd
