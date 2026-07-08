@@ -14,7 +14,7 @@ Use this as the quick map before opening large proof files.
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
-- Shared and bridge declarations outside the three theorem areas: **5231**.
+- Shared and bridge declarations outside the three theorem areas: **5371**.
 - Active proof-debt findings: **0**.
 
 ## Local Commands
@@ -34,6 +34,7 @@ Use this as the quick map before opening large proof files.
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 4984 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3982 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
+| 3802 | `formal/GaloisForLFunctions/GammaDifferentialFE.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
@@ -42,4 +43,3 @@ Use this as the quick map before opening large proof files.
 | 2675 | `formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean` |
 | 2592 | `formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean` |
 | 2546 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean` |
-| 2482 | `formal/GaloisForLFunctions/RHTower/SeamCongruence.lean` |

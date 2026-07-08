@@ -66,6 +66,79 @@ theorem fourthMoment_diagonal_bounded {σ : ℝ} (hσ : 1 / 2 < σ) :
         ≤ ∑ n ∈ Finset.Icc 1 N, g n := Finset.sum_le_sum hfg
       _ ≤ ∑' n : ℕ, g n := hgsum.sum_le_tsum _ (fun n _ => hgnn n)
 
+/-- **Summability of the fourth-moment diagonal series.**  For `σ > 1/2`, `∑ₙ d(n)² n^{-2σ}` converges
+(each term dominated by `C₀² n^{-(2σ+1)/2}`, a convergent `p`-series via `DivisorBound`).  Hence its
+tail `∑_{k>K}` tends to `0` — the vanishing the detection second moment needs above the cutoff. -/
+theorem summable_divisor_sq_rpow {σ : ℝ} (hσ : 1 / 2 < σ) :
+    Summable (fun n : ℕ => (n.divisors.card : ℝ) ^ 2 * (n : ℝ) ^ (-2 * σ)) := by
+  set ε : ℝ := (2 * σ - 1) / 4 with hε_def
+  have hε : 0 < ε := by rw [hε_def]; linarith
+  obtain ⟨C₀, hC₀pos, hC₀⟩ := card_divisors_le_const_mul_rpow hε
+  set s : ℝ := (2 * σ + 1) / 2 with hs_def
+  have hs1 : 1 < s := by rw [hs_def]; linarith
+  have hns : Summable (fun n : ℕ => (n : ℝ) ^ (-s)) := by
+    refine ((Real.summable_one_div_nat_rpow (p := s)).mpr hs1).congr (fun n => ?_)
+    rw [one_div, ← Real.rpow_neg (Nat.cast_nonneg n)]
+  refine Summable.of_nonneg_of_le (fun n => by positivity) ?_ (hns.mul_left (C₀ ^ 2))
+  intro n
+  rcases Nat.eq_zero_or_pos n with h | h
+  · subst h
+    have hL : ((0 : ℕ).divisors.card : ℝ) ^ 2 * ((0 : ℕ) : ℝ) ^ (-2 * σ) = 0 := by simp
+    rw [hL]
+    positivity
+  · have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast h
+    have hd : (n.divisors.card : ℝ) ≤ C₀ * (n : ℝ) ^ ε := hC₀ n h
+    have hdsq : (n.divisors.card : ℝ) ^ 2 ≤ (C₀ * (n : ℝ) ^ ε) ^ 2 :=
+      pow_le_pow_left₀ (by positivity) hd 2
+    calc (n.divisors.card : ℝ) ^ 2 * (n : ℝ) ^ (-2 * σ)
+        ≤ (C₀ * (n : ℝ) ^ ε) ^ 2 * (n : ℝ) ^ (-2 * σ) :=
+          mul_le_mul_of_nonneg_right hdsq (Real.rpow_nonneg hnpos.le _)
+      _ = C₀ ^ 2 * (n : ℝ) ^ (-s) := by
+          rw [mul_pow, ← Real.rpow_natCast ((n : ℝ) ^ ε) 2, ← Real.rpow_mul hnpos.le,
+            mul_assoc, ← Real.rpow_add hnpos]
+          congr 2
+          rw [hs_def, hε_def]; push_cast; ring
+
+/-- **Log-weighted divisor-square summability.**  For `σ > 1/2`, `∑ₙ d(n)² n^{-2σ} (log n)²` converges:
+`(log n)² ≤ (n^ε/ε)²` (via `log x ≤ x^ε/ε`) absorbs the log into a slightly smaller exponent, reducing
+to `summable_divisor_sq_rpow` at `σ − ε > 1/2`.  This is the derivative-second-moment analogue needed
+for `∫‖E'‖²` in the large-values inequality. -/
+theorem summable_divisor_sq_log_rpow {σ : ℝ} (hσ : 1 / 2 < σ) :
+    Summable (fun n : ℕ => (n.divisors.card : ℝ) ^ 2 * ((n : ℝ) ^ (-2 * σ) * (Real.log n) ^ 2)) := by
+  set ε : ℝ := (σ - 1 / 2) / 2 with hε_def
+  have hε : 0 < ε := by rw [hε_def]; linarith
+  have hσ' : 1 / 2 < σ - ε := by rw [hε_def]; linarith
+  refine Summable.of_nonneg_of_le (fun n => by positivity) ?_
+    ((summable_divisor_sq_rpow hσ').mul_left (1 / ε ^ 2))
+  intro n
+  rcases Nat.eq_zero_or_pos n with h | h
+  · subst h; simp
+  · have hnpos : (0 : ℝ) < n := by exact_mod_cast h
+    have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast h
+    have hlogsq : (Real.log n) ^ 2 ≤ ((n : ℝ) ^ ε / ε) ^ 2 :=
+      pow_le_pow_left₀ (Real.log_nonneg hn1) (Real.log_le_rpow_div hnpos.le hε) 2
+    calc (n.divisors.card : ℝ) ^ 2 * ((n : ℝ) ^ (-2 * σ) * (Real.log n) ^ 2)
+        ≤ (n.divisors.card : ℝ) ^ 2 * ((n : ℝ) ^ (-2 * σ) * ((n : ℝ) ^ ε / ε) ^ 2) := by
+          apply mul_le_mul_of_nonneg_left _ (by positivity)
+          exact mul_le_mul_of_nonneg_left hlogsq (by positivity)
+      _ = 1 / ε ^ 2 * ((n.divisors.card : ℝ) ^ 2 * (n : ℝ) ^ (-2 * (σ - ε))) := by
+          have hcombine : (n : ℝ) ^ (-2 * σ) * ((n : ℝ) ^ ε) ^ 2 = (n : ℝ) ^ (-2 * (σ - ε)) := by
+            rw [← Real.rpow_natCast ((n : ℝ) ^ ε) 2, ← Real.rpow_mul hnpos.le, ← Real.rpow_add hnpos]
+            congr 1; push_cast; ring
+          rw [div_pow,
+            show (n.divisors.card : ℝ) ^ 2 * ((n : ℝ) ^ (-2 * σ) * (((n : ℝ) ^ ε) ^ 2 / ε ^ 2))
+              = 1 / ε ^ 2 * ((n.divisors.card : ℝ) ^ 2
+                  * ((n : ℝ) ^ (-2 * σ) * ((n : ℝ) ^ ε) ^ 2)) from by ring, hcombine]
+
+/-- **The divisor-square tail vanishes.**  The tail `∑_{k ≥ K} d(k)² k^{-2σ}` of the convergent series
+tends to `0` as `K → ∞`.  This is the vanishing the detection second moment inherits above a growing
+cutoff — the quantitative heart of Carlson's `o(T)`. -/
+theorem tendsto_divisor_sq_rpow_tail_zero (σ : ℝ) :
+    Filter.Tendsto
+      (fun K => ∑' k : ℕ, (((k + K).divisors.card : ℝ) ^ 2 * ((k + K : ℕ) : ℝ) ^ (-2 * σ)))
+      Filter.atTop (nhds 0) :=
+  tendsto_sum_nat_add (fun n => (n.divisors.card : ℝ) ^ 2 * (n : ℝ) ^ (-2 * σ))
+
 /-- **Carlson's bounded fourth moment.**  For `σ > 1/2` there is a finite `C` such that, for every
 Dirichlet-polynomial length `N` and every window `[T, T+U]` with `U ≥ 0`,
 

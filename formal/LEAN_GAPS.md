@@ -14,6 +14,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
 | 4984 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3982 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
+| 3802 | `formal/GaloisForLFunctions/GammaDifferentialFE.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |
 | 3593 | `formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean` |
@@ -35,7 +36,6 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1372 | `formal/GaloisForLFunctions/Bottcher/W4LinPack.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
 | 1307 | `formal/GaloisForLFunctions/Bottcher/W4LinWinding.lean` |
-| 1303 | `formal/GaloisForLFunctions/Bottcher/Brolin/SingularTail.lean` |
 
 ## Gap Markers
 

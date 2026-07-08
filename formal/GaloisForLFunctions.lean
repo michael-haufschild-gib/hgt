@@ -7,6 +7,8 @@ import GaloisForLFunctions.EulerFirewall
 import GaloisForLFunctions.NamedTranscendental
 import GaloisForLFunctions.Hypertranscendence
 import GaloisForLFunctions.GammaTranscendental
+import GaloisForLFunctions.GammaDifferentialFE
+import GaloisForLFunctions.ExponentialSumDA
 import GaloisForLFunctions.MultiQDifference
 import GaloisForLFunctions.ArchimedeanLane
 import GaloisForLFunctions.ArchimedeanGamma

@@ -1980,3 +1980,149 @@ moments) → sublinearDensity_of_largeValues → SubLinearDensity → rhLadder_o
 RH₂. Sole remaining classical input: the DETECTION BOUND (mollified moments o(T·V²) at fixed V>0),
 packaging the ζ·M Dirichlet convolution + built AFE + mollifier-length optimization. The irreducible
 large-values kernel — which moments+Littlewood provably cannot reach (O(T) barrier) — is fully built.
+
+## DpolyConvolution — product of Dirichlet polynomials is a Dirichlet polynomial
+
+`formal/GaloisForLFunctions/RHTower/DpolyConvolution.lean` (axiom-clean):
+- `cterm_mul_cterm`: m^{-it}·n^{-it} = (mn)^{-it} (character multiplicativity, log m+log n=log mn).
+- `dpoly_mul`: (dpoly a s)(dpoly b s') = ∑_{m,n} aₘbₙ (mn)^{-it} (convolution pair form).
+- `convCoeff`/`convSupp`; `dpoly_mul_eq_dpoly`: the product = dpoly (convCoeff) (convSupp) — a SINGLE
+  Dirichlet polynomial with Dirichlet-convolution coefficients cₖ=∑_{mn=k}aₘbₙ (fiberwise reindex by
+  the product map). This makes ζ·M (via AFE, D_N·M) a dpoly whose SecondMoment is governed by ∑cₖ².
+
+Remaining to detection bound: 1−D_N·M as a dpoly (subtract constant); its coeffs vanish for
+1<k≤min(N,y) by the Möbius cancellation (convCoeff of ones·μ = ∑_{d|k}μ(d)=0); so its second moment
+= U·∑_{k>min}cₖ² is small; then zeros are large values (large_values_dpoly) and optimize y.
+
+## MollifierDetection — the mollified convolution collapses below the cutoff
+
+`formal/GaloisForLFunctions/RHTower/MollifierDetection.lean` (axiom-clean):
+- `convCoeff_ones_moebius_eq`: for 1≤k≤min(N,y), the convolution coefficient of (ones ∗ μ) is
+  ∑_{b|k}μ(b) = [k=1]. Proof: the fibre {(a,b):ab=k, a≤N, b≤y} = k.divisorsAntidiagonal (a,b≤k≤min are
+  automatic), and Nat.sum_divisorsAntidiagonal' + sum_moebius_divisors give the cancellation.
+
+So D_N·M_y (= dpoly convCoeff via dpoly_mul_eq_dpoly) has coefficient [k=1] for all k≤min(N,y): the
+mollified product IS 1 up to index >min(N,y). Remaining: bound ∑_{k>min}cₖ² (detection second moment
+small) + AFE detection at zeros + optimize y → the detection bound feeding CarlsonDensity → o(T).
+
+## MollifierDetection (cont.) — detection polynomial skeleton complete
+
+Added (axiom-clean): `dpoly_sub`, `dpoly_onehot` (DpolyConvolution); `one_le_of_mem_convSupp`,
+`detCoeff`, `detCoeff_eq_zero_of_le` (coeffs vanish below cutoff), `detection_diagonal_tail` (diagonal
+supported on k>min(N,y)), `detection_poly_eq` (dpoly(detCoeff) = D_N·M_y − 1), `detection_secondMoment`
+(∫|D_N·M−1|² = U·∑_{k>min}eₖ² + offdiag).
+
+So the detection polynomial E=D_N·M−1 is a dpoly whose L² mass lives entirely above the cutoff.
+Remaining quantitative bricks: (a) tail bound ∑_{k>min}eₖ² ≪ small + offdiag bound (coefficient
+estimates); (b) AFE detection ‖E(ρ)‖≥½ at zeros (built AFE + error·M); (c) optimize y → the detection
+bound feeding CarlsonDensity.sublinearDensity_of_largeValues → o(T).
+
+## MollifierDetection (cont.) — σ-weighted cancellation (correct density normalization)
+
+Added (axiom-clean): `fiber_eq_divisorsAntidiagonal` (refactor); `convCoeff_weighted_moebius_eq`: for
+1≤k≤min(N,y) and any σ, the convolution coefficient of (n^{-σ}) against (μ(m)m^{-σ}) is k^{-σ}·[k=1].
+This is the coefficient of D_N(σ+·)·M_y(σ+·): the characters n^{-σ}m^{-σ}=k^{-σ} factor out of the
+fibre and the Möbius sum collapses. The correct density normalization — its high-index tail
+∑_{k>min}k^{-2σ}d(k)² is summable for σ>1/2 (DivisorBound), so the detection L² mass → 0.
+
+Remaining: weighted detCoeff vanishing (immediate from this) + tail bound ∑_{k>min}k^{-2σ}d(k)² small
+(DivisorBound + p-series) + offdiag + AFE detection ‖E(ρ)‖≥½ + optimize y.
+
+## MollifierDetection (cont.) — the convolution coefficient bound
+
+Added (axiom-clean): `abs_convCoeff_weighted_le`: |cₖ| ≤ k^{-σ}·d(k), from |a^{-σ}μ(b)b^{-σ}| ≤
+(ab)^{-σ}=k^{-σ} (|μ|≤1) summed over the ≤d(k) factorisations (fibre ⊆ divisorsAntidiagonal, card=d(k)
+via sum-of-ones). This is the coefficient estimate feeding the tail: ∑_{k>min}cₖ² ≤ ∑_{k>min}k^{-2σ}d(k)²,
+summable/→0 for σ>1/2 by DivisorBound (d(k)≤C_ε k^ε ⟹ k^{-2σ}d(k)² ≤ C k^{-(2σ-2ε)}) + p-series.
+Remaining: tail summability lemma + offdiag + AFE detection + optimize y.
+
+## FourthMomentDiagonal (cont.) — summability of the divisor-square series
+
+Added (axiom-clean): `summable_divisor_sq_rpow` (σ>1/2): Summable (fun n => d(n)²n^{-2σ}), each term
+dominated by C₀²n^{-(2σ+1)/2} (DivisorBound + convergent p-series). Hence its tail ∑_{k>K}→0 — the
+vanishing the detection second moment needs above the cutoff. Combined with abs_convCoeff_weighted_le
+(|cₖ|≤k^{-σ}d(k)): ∑_{k>min}cₖ² ≤ ∑_{k>min}k^{-2σ}d(k)² → 0 as min→∞. Remaining: wire this tail bound
++ offdiag + AFE detection ‖E(ρ)‖≥½ + optimize y → o(T).
+
+## MollifierDetection (cont.) — σ-weighted detection coefficients aligned
+
+Added (axiom-clean): `detCoeffW` (σ-weighted detection coeff eₖ(σ)=cₖ(σ)−[k=1]);
+`detCoeffW_eq_zero_of_le` (vanishes for 1≤k≤min(N,y), since cₖ(σ)=k^{-σ}[k=1]=[k=1] there);
+`abs_detCoeffW_le` (|eₖ(σ)|≤k^{-σ}d(k) for k>1). Now the detection coefficients, their vanishing below
+the cutoff, and their k^{-σ}d(k) bound are all σ-weighted and mutually consistent, feeding
+summable_divisor_sq_rpow. Remaining: tail sum→0 wiring + offdiag + AFE detection + optimize y.
+
+## FourthMomentDiagonal (cont.) — the divisor-square tail vanishes
+
+Added (axiom-clean): `tendsto_divisor_sq_rpow_tail_zero`: ∑_{k≥K}d(k)²k^{-2σ} → 0 as K→∞
+(tendsto_sum_nat_add on the convergent series). This is the quantitative vanishing driving o(T): the
+detection second-moment diagonal ∑_{k>min}eₖ² ≤ this tail → 0 as the cutoff min(N,y)→∞. Remaining:
+finite-diagonal ≤ tail wiring + offdiag bound + AFE detection + optimize N,y(T).
+
+## MollifierDetection (cont.) — finite-diagonal ≤ vanishing tail (brick 1 of final assembly)
+
+Added (axiom-clean): `sq_detCoeffW_le` ((detCoeffW k)²≤d(k)²k^{-2σ} above cutoff); `detection_diagonal_le_tsum`
+(σ>1/2, min≥1): the detection diagonal ∑_{k∈convSupp,k>min}eₖ(σ)² ≤ ∑'_k 𝟙_{k>min}·d(k)²k^{-2σ}, via
+sq_detCoeffW_le + Summable.sum_le_tsum. With tendsto_divisor_sq_rpow_tail_zero this diagonal → 0 as
+min(N,y)→∞. Final-assembly brick 1 done. Remaining: off-diagonal bound + AFE detection ‖E(ρ)‖≥½ +
+optimize N,y(T) → feed CarlsonDensity.
+
+## ZetaAFETransfer (cont.) — AFE detection at zeros (brick 2 of final assembly)
+
+Added (axiom-clean): `afe_detection`: at a ζ-zero s (0<Re s, s≠1), the Euler–Maclaurin identity forces
+∑_{n≤N}n^{-s} = −(N^{1-s}/(s-1) − s·emTail), so ‖D_N(s)·M − 1‖ ≥ 1 − ‖N^{1-s}/(s-1)−s·emTail‖·‖M‖ ≥ ½
+whenever the EM correction × mollifier ≤ ½. Every ζ-zero is a LARGE VALUE (≥½) of the detection
+polynomial D_N·M−1 — the input large_values_dpoly counts. Final-assembly bricks 1 (diagonal→0) and 2
+(detection) done; remaining: off-diagonal bound + optimize N,y(T).
+
+## OffDiagonalBound — elementary off-diagonal core (avoids Hilbert inequality)
+
+`formal/GaloisForLFunctions/RHTower/OffDiagonalBound.lean` (axiom-clean): the arithmetic core of the
+off-diagonal bound, elementary (no Hilbert inequality):
+- `sub_div_le_log_sub`: (n−m)/n ≤ log n − log m (from log y ≤ y−1).
+- `abs_log_ratio_ge`: |log n − log m| ≥ |n−m|/K for distinct m,n∈[1,K] (log-ratio spacing).
+- `inv_abs_log_le`: 1/|log(n/m)| ≤ K/|n−m|.
+These give offdiag ∑_{m≠n}2|aₘaₙ|/|log(n/m)| ≤ 2K·∑ₘaₘ²·∑_{n≠m}1/|n−m| ≤ K·log K·∑aₖ² (via AM–GM
+symmetrisation + harmonic sum) — the K·log K off-diagonal (vs Hilbert's K), sufficient for Carlson's
+optimization. Remaining: the harmonic-sum assembly + optimize N,y(T).
+
+## OffDiagonalBound (cont.) — harmonic reciprocal-distance sum
+
+Added (axiom-clean): `sum_inv_dist_lt_le`, `sum_inv_dist_gt_le`, `sum_inv_dist_le`: for s⊆[1,K], m≤K,
+∑_{n∈s.erase m}1/|n−m| ≤ 2·∑_{j≤K}1/j (split n<m / n>m, each reindexed injectively via n↦|n−m| into
+[1,K]). With inv_abs_log_le (1/|log(n/m)|≤K/|n−m|) + AM–GM |eₘeₙ|≤(eₘ²+eₙ²)/2, this gives the off-
+diagonal ∑_{m≠n}2|eₘeₙ|/|log(n/m)| ≤ 4K·H(K)·∑eₖ². Remaining: AM–GM assembly (mechanical) + optimize.
+
+## OffDiagonalBound (cont.) — the off-diagonal bound COMPLETE
+
+Added (axiom-clean): `offDiagonal_le`: ∑_{m∈s}∑_{n∈s.erase m}2|eₘeₙ|/|log(n/m)| ≤ 4K·H(K)·∑_{k∈s}eₖ²
+(s⊆[1,K], H(K)=∑_{j≤K}1/j). Combines inv_abs_log_le (1/|log(n/m)|≤K/|n−m|) + AM–GM
+(2|eₘeₙ|≤eₘ²+eₙ²) + sum_inv_dist_le (harmonic) + a Finset.sum_comm' symmetry swap on the double sum.
+The K·log K off-diagonal — the LAST major analytic estimate of Carlson's o(T), built ELEMENTARILY
+(no Hilbert/large-sieve). All analytic estimates now built: both pillars (AFE detection + diagonal
+vanishing) + off-diagonal. Sole remaining piece: the parameter optimization (choose N,y,window in T,
+assemble the density contradiction → CarlsonDensity).
+
+## ZetaAFETransfer (cont.) — mollifier norm bound (optimization brick 1)
+
+Added (axiom-clean): `mollifierCx y s = ∑_{m≤y}μ(m)m^{-s}` (complex mollifier); `norm_mollifierCx_le`:
+‖M_y(s)‖ ≤ ∑_{m≤y}m^{-Re s} (|μ|≤1, ‖m^{-s}‖=m^{-Re s} via norm_natCast_cpow_of_pos). This bounds the
+mollifier value at a ζ-zero — the input afe_detection needs for ‖E(ρ)‖≥½. Optimization brick 1 done;
+remaining: E' second moment + AFE-accuracy parameter choice + assemble ∫|E|²=o(T) → CarlsonDensity.
+
+## FourthMomentDiagonal (cont.) — log-weighted summability (for ∫|E'|²)
+
+Added (axiom-clean): `summable_divisor_sq_log_rpow` (σ>1/2): Summable d(n)²n^{-2σ}(log n)². Via
+log n ≤ n^ε/ε (log_le_rpow_div), (log n)² ≤ (n^ε/ε)² absorbs the log into a smaller exponent, reducing
+to summable_divisor_sq_rpow at σ−ε>1/2. This is the derivative-second-moment analogue: ∫‖E'‖² has
+diagonal ∑(eₖ log k)², whose tail →0 by this. Optimization bricks: ‖M‖ bound + log-weighted summable
+done; remaining: assemble E' moment, grid mapping, AFE accuracy, parameter balance → CarlsonDensity.
+
+## MollifierDetection (cont.) — E' diagonal vanishing (optimization brick)
+
+Added (axiom-clean): `sq_detCoeffW_log_le` ((eₖ log k)²≤d(k)²k^{-2σ}(log k)² above cutoff);
+`detection_deriv_diagonal_le_tsum`: the E'=−i·dpoly(eₖ·log k) diagonal ∑_{k>min}(eₖ log k)² ≤
+∑'𝟙_{k>min}d(k)²k^{-2σ}(log k)² → 0 (via sq_detCoeffW_log_le + summable_divisor_sq_log_rpow). So BOTH
+detection second moments (E via detection_diagonal_le_tsum, E' via this) have vanishing diagonals.
+Optimization state: ‖M‖ bound + both diagonal vanishings + both summabilities + off-diagonal all built.
+Remaining: zeros-to-grid mapping + AFE-accuracy parameter choice + assemble N(σ,T)·V²≤o(T) → CarlsonDensity.

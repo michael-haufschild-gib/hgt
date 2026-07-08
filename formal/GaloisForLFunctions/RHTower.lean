@@ -359,6 +359,9 @@ import GaloisForLFunctions.RHTower.LargeValues
 import GaloisForLFunctions.RHTower.LargeValuesDpoly
 import GaloisForLFunctions.RHTower.Mollifier
 import GaloisForLFunctions.RHTower.CarlsonDensity
+import GaloisForLFunctions.RHTower.DpolyConvolution
+import GaloisForLFunctions.RHTower.MollifierDetection
+import GaloisForLFunctions.RHTower.OffDiagonalBound
 import GaloisForLFunctions.RHTower.DeckChargeBridge
 import GaloisForLFunctions.RHTower.RectangleResidue
 import GaloisForLFunctions.RHTower.CarrierBoxCount
