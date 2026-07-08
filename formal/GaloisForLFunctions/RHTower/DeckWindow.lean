@@ -1,5 +1,4 @@
 import GaloisForLFunctions.RHTower.WindowLadder
-import GaloisForLFunctions.RHTower.AnnealWindowRelation
 import GaloisForLFunctions.U0.U0KummerBranch
 
 /-!

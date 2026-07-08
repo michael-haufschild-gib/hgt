@@ -20,7 +20,7 @@ private theorem ofReal_mul_im' (r : ℝ) (w : ℂ) : ((r : ℂ) * w).im = r * w.
 
 /-- Division-free Hermite–Biehler positivity: for a monic real-rooted product
 `P = ∏_{r ∈ s}(X − r)` and `Im z ≤ 0`, the pairing `Im(P′(z)·conj(P(z)))` is ≥ 0. -/
-theorem im_derivative_mul_conj_nonneg (s : Multiset ℝ) (z : ℂ) (hz : z.im ≤ 0) :
+private theorem im_derivative_mul_conj_nonneg (s : Multiset ℝ) (z : ℂ) (hz : z.im ≤ 0) :
     0 ≤ ((eval z (derivative ((s.map fun r : ℝ => X - C (r : ℂ))).prod))
         * (starRingEnd ℂ) (eval z ((s.map fun r : ℝ => X - C (r : ℂ))).prod)).im := by
   induction s using Multiset.induction_on with

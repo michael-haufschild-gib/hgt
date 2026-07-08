@@ -45,7 +45,7 @@ theorem sum_rpow_neg_half_le (N : ℕ) :
     linarith
 
 /-- Termwise line bound for the Dirichlet part: `‖h_N(linePt u)‖ ≤ 2√N`. -/
-theorem norm_dirichletPoly_line_le (N : ℕ) (u : ℝ) :
+private theorem norm_dirichletPoly_line_le (N : ℕ) (u : ℝ) :
     ‖dirichletPoly N (linePt u)‖ ≤ 2 * Real.sqrt N := by
   have hterm : ∀ n ∈ Finset.Icc 1 N,
       ‖(n : ℂ) ^ (-(linePt u))‖ = ((n : ℝ)) ^ (-(1 / 2 : ℝ)) := by
@@ -63,7 +63,7 @@ theorem norm_dirichletPoly_line_le (N : ℕ) (u : ℝ) :
 
 /-- Line sup for the symmetrized carrier: `‖g_N(linePt u)‖ ≤ 4√N` — the reflected part is a
 conjugate and χ is unimodular on the line. -/
-theorem norm_gN_line_le (N : ℕ) (u : ℝ) :
+private theorem norm_gN_line_le (N : ℕ) (u : ℝ) :
     ‖gN N (linePt u)‖ ≤ 4 * Real.sqrt N := by
   have hrefl : ‖dirichletPoly N (1 - linePt u)‖ = ‖dirichletPoly N (linePt u)‖ := by
     rw [← conj_linePt, dirichletPoly_conj, Complex.norm_conj]
@@ -79,7 +79,7 @@ theorem norm_gN_line_le (N : ℕ) (u : ℝ) :
 
 /-- **Closed-form line sup for the completed carrier**: the `M_line` face of the
 sign-bracket certificates is `(¼+u²)/2 · π^{−1/4}Γ(¼) · 4√N`. -/
-theorem abs_re_completedGN_line_le (N : ℕ) (u : ℝ) :
+private theorem abs_re_completedGN_line_le (N : ℕ) (u : ℝ) :
     |(completedGN N (linePt u)).re| ≤
       (1 / 4 + u ^ 2) / 2 * (Real.pi ^ (-(1 / 4 : ℝ)) * Real.Gamma (1 / 4)) *
         (4 * Real.sqrt N) := by
@@ -130,7 +130,7 @@ theorem completedGNLineSupBudget_mono_nonneg (N : ℕ) {B₁ B₂ : ℝ}
     (mul_le_mul_of_nonneg_right hfactor hC0) hN0
 
 /-- The pointwise line-sup theorem in named-budget form. -/
-theorem abs_re_completedGN_line_le_budget (N : ℕ) (u : ℝ) :
+private theorem abs_re_completedGN_line_le_budget (N : ℕ) (u : ℝ) :
     |(completedGN N (linePt u)).re| ≤ completedGNLineSupBudget N u := by
   simpa [completedGNLineSupBudget] using abs_re_completedGN_line_le N u
 

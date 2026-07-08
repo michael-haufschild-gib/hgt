@@ -11,7 +11,7 @@ the short-interval second-moment face of the sign-bracket certificate is thereby
 into faces the certificates already carry.
 -/
 import GaloisForLFunctions.RHTower.HardySignChange
-import GaloisForLFunctions.RHTower.SeamSignTransport
+import GaloisForLFunctions.RHTower.ZetaCarrier
 
 open Complex Metric MeasureTheory
 
@@ -102,7 +102,7 @@ noncomputable def carrierLineSlopeTerm (n : ℕ) (u : ℝ) : ℂ :=
           -(Complex.I * ((-Real.log n : ℝ) : ℂ)))))
 
 /-- Line slope of the completed carrier: the sum of the termwise slopes. -/
-noncomputable def carrierLineSlope (N : ℕ) (u : ℝ) : ℂ :=
+private noncomputable def carrierLineSlope (N : ℕ) (u : ℝ) : ℂ :=
   ∑ n ∈ Finset.Icc 1 N, carrierLineSlopeTerm n u
 
 /-- Each critical-line term of the completed carrier is differentiable in the height, with
@@ -132,7 +132,7 @@ theorem hasDerivAt_carrierLineTerm (n : ℕ) (u : ℝ) :
 
 /-- **The completed carrier is differentiable along the critical line**, with derivative the
 line slope. -/
-theorem hasDerivAt_completedGN_line (N : ℕ) (u : ℝ) :
+private theorem hasDerivAt_completedGN_line (N : ℕ) (u : ℝ) :
     HasDerivAt (fun v : ℝ => completedGN N (linePt v)) (carrierLineSlope N u) u := by
   have hfun : (fun v : ℝ => completedGN N (linePt v)) =
       fun v : ℝ => ∑ n ∈ Finset.Icc 1 N, carrierLineTerm n v :=
@@ -146,7 +146,7 @@ theorem hasDerivAt_completedGN_line (N : ℕ) (u : ℝ) :
 
 /-- The real part of the completed carrier is differentiable along the critical line, with
 derivative the real part of the line slope. -/
-theorem hasDerivAt_re_completedGN_line (N : ℕ) (u : ℝ) :
+private theorem hasDerivAt_re_completedGN_line (N : ℕ) (u : ℝ) :
     HasDerivAt (fun v : ℝ => (completedGN N (linePt v)).re)
       ((carrierLineSlope N u).re) u := by
   have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt u (hasDerivAt_completedGN_line N u)
@@ -155,7 +155,7 @@ theorem hasDerivAt_re_completedGN_line (N : ℕ) (u : ℝ) :
 /-! ### §3 The closed-form slope bound -/
 
 /-- Unimodularity of the line oscillations: the exponent is purely imaginary. -/
-theorem norm_exp_neg_I_mul_real (r u : ℝ) :
+private theorem norm_exp_neg_I_mul_real (r u : ℝ) :
     ‖Complex.exp (-(Complex.I * (r : ℂ)) * (u : ℝ))‖ = 1 := by
   rw [Complex.norm_exp]
   have hre : ((-(Complex.I * (r : ℂ)) * (u : ℝ)).re) = 0 := by
@@ -222,7 +222,7 @@ noncomputable def carrierSlopeLineBudget (N : ℕ) (M₀ M₁ : ℝ) : ℝ :=
 envelope-derivative sups `M₁` on both sides of the reflection, the slope of the completed
 carrier along the line is at most `4√N·(M₁ + M₀·log N)` — the square-root telescope carries
 the coefficient sum and `log N` carries the frequencies. -/
-theorem norm_carrierLineSlope_le (N : ℕ) {u M₀ M₁ : ℝ}
+private theorem norm_carrierLineSlope_le (N : ℕ) {u M₀ M₁ : ℝ}
     (hM₀ : ‖archFactor (linePt u)‖ ≤ M₀)
     (hM₀r : ‖archFactor (1 - linePt u)‖ ≤ M₀)
     (hM₁ : ‖archFactorDeriv (linePt u)‖ ≤ M₁)
@@ -254,7 +254,7 @@ theorem norm_carrierLineSlope_le (N : ℕ) {u M₀ M₁ : ℝ}
 
 /-- On the critical line the completed carrier is real, so its real part carries the full
 modulus. -/
-theorem abs_re_completedGN_line_eq_norm (N : ℕ) (u : ℝ) :
+private theorem abs_re_completedGN_line_eq_norm (N : ℕ) (u : ℝ) :
     |(completedGN N (linePt u)).re| = ‖completedGN N (linePt u)‖ := by
   have him : (completedGN N (linePt u)).im = 0 :=
     completedGN_im_eq_zero_on_line (by rw [linePt_re])
@@ -280,7 +280,7 @@ theorem anchor_re_completedGN_line_of_floors (N : ℕ) {τ a₀ m : ℝ}
 center and envelope/derivative sups on the window produce the explicit second-moment floor
 `(c/2)²·2·min rz (c/(2·slopeBudget))` — the `S_b` face of the sign-bracket certificates is
 a consequence of the anchor face and the envelope calculus. -/
-theorem sq_integral_re_completedGN_line_floor_of_anchor (N : ℕ)
+private theorem sq_integral_re_completedGN_line_floor_of_anchor (N : ℕ)
     {τ rz c M₀ M₁ : ℝ} (hrz : 0 < rz) (hc : 0 < c)
     (hD : 0 < carrierSlopeLineBudget N M₀ M₁)
     (hM₀ : ∀ u ∈ Set.Icc (τ - rz) (τ + rz), ‖archFactor (linePt u)‖ ≤ M₀)

@@ -30,6 +30,12 @@ open Complex Finset
 /-- Reflection across the critical line, `z ↦ 1 − z̄`. -/
 noncomputable def lineReflect (z : ℂ) : ℂ := 1 - (starRingEnd ℂ) z
 
+/-- ξ-order is invariant under critical-line reflection. -/
+theorem xi_orderAt_lineReflect (z : ℂ) :
+    analyticOrderAt xi (lineReflect z) = analyticOrderAt xi z := by
+  simp only [lineReflect]
+  rw [xi_orderAt_one_sub, xi_orderAt_conj]
+
 theorem lineReflect_re (z : ℂ) : (lineReflect z).re = 1 - z.re := by
   simp [lineReflect]
 

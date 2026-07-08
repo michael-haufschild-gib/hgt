@@ -14,7 +14,7 @@ and dominating splits exist unconditionally at every strip point.
 -/
 import GaloisForLFunctions.RHTower.EMCarrier
 import GaloisForLFunctions.RHTower.CarrierSplit
-import GaloisForLFunctions.RHTower.EdgeEventSynthesis
+import GaloisForLFunctions.RHTower.ArchEnvelope
 
 noncomputable section
 

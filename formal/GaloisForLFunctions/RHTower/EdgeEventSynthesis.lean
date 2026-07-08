@@ -44,40 +44,6 @@ theorem re_logDeriv_archFactor_stripPt {σ τ : ℝ} (hσ : 0 < σ) :
     (logDeriv archFactor (stripPt σ τ)).re = stripWindingRate σ τ := by
   rw [logDeriv_archFactor_stripPt hσ, stripWindingRate]
 
-/-! ### Analyticity and nonvanishing of the anchor and target -/
-
-/-- The completed archimedean envelope is analytic on the open right half plane. -/
-theorem archFactor_analyticOnNhd_re_pos :
-    AnalyticOnNhd ℂ archFactor {z : ℂ | 0 < z.re} := by
-  have hopen : IsOpen {z : ℂ | 0 < z.re} := isOpen_lt continuous_const Complex.continuous_re
-  refine DifferentiableOn.analyticOnNhd (fun z hz => ?_) hopen
-  exact (hasDerivAt_archFactor_of_re_pos hz).differentiableAt.differentiableWithinAt
-
-/-- The concrete carrier is analytic on the open left half of the plane where `Re z < 1`. -/
-theorem gN_analyticOnNhd_re_lt_one (N : ℕ) :
-    AnalyticOnNhd ℂ (gN N) {z : ℂ | z.re < 1} := by
-  intro z hz
-  apply gN_analyticAt
-  apply Gammaℝ_ne_zero_of_re_pos
-  simp only [Complex.sub_re, Complex.one_re]
-  have : z.re < 1 := hz
-  linarith
-
-/-- On the open critical strip the completed carrier is analytic. -/
-theorem completedGN_analyticOnNhd_strip (N : ℕ) :
-    AnalyticOnNhd ℂ (completedGN N) {z : ℂ | 0 < z.re ∧ z.re < 1} := by
-  have hsub1 : {z : ℂ | 0 < z.re ∧ z.re < 1} ⊆ {z : ℂ | 0 < z.re} := fun z hz => hz.1
-  have hsub2 : {z : ℂ | 0 < z.re ∧ z.re < 1} ⊆ {z : ℂ | z.re < 1} := fun z hz => hz.2
-  have ha := archFactor_analyticOnNhd_re_pos.mono hsub1
-  have hg := (gN_analyticOnNhd_re_lt_one N).mono hsub2
-  exact ha.mul hg
-
-/-- The completed archimedean factor is nonvanishing on the open critical strip. -/
-theorem archFactor_ne_zero_strip {z : ℂ} (hz : 0 < z.re ∧ z.re < 1) : archFactor z ≠ 0 := by
-  refine archFactor_ne_zero ?_ ?_ (Gammaℝ_ne_zero_of_re_pos hz.1)
-  · intro h; rw [h, Complex.zero_re] at hz; exact absurd hz.1 (lt_irrefl 0)
-  · intro h; rw [h, Complex.one_re] at hz; exact absurd hz.2 (lt_irrefl 1)
-
 /-! ### The incidence phase-rate floor for the completed pencil -/
 
 /-- **The three-part phase-rate floor.**  Along a vertical edge in the strip, the incidence

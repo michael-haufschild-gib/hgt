@@ -32,7 +32,6 @@ pieces, and the identity theorem.
 -/
 import Mathlib
 import GaloisForLFunctions.RHTower.ZetaCarrier
-import GaloisForLFunctions.RHTower.SeamSignTransport
 import GaloisForLFunctions.RHTower.AnnealWindowRelation
 
 noncomputable section

@@ -110,7 +110,7 @@ theorem aheadTerm_prod_summable {c : ℝ} (hc : 1 < c) {i : ℕ} (hi : 2 ≤ i) 
       (fun k => poleExcess_ahead_le hc (by omega) k) hC
   exact hkey.congr (fun k => poleExcess_ahead hc (by omega) k)
 
-theorem summable_prod_swap {α β : Type*} (g : α → β → ℝ)
+private theorem summable_prod_swap {α β : Type*} (g : α → β → ℝ)
     (hf : Summable (Function.uncurry g)) : Summable (fun p : β × α => g p.2 p.1) := by
   apply (hf.comp_injective (Equiv.prodComm β α).injective).congr
   rintro ⟨n, k⟩; rfl

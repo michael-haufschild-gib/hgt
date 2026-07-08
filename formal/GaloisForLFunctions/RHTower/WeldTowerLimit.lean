@@ -52,18 +52,14 @@ theorem exists_pow_root_of_analyticOn_nonvanishing_convex (k : ℕ) {U : Set ℂ
   exact Bottcher.exists_differentiableOn_pow_eq (isSimplyConnected_of_convex hUconv hUne)
     hUo hdiff h0 (pow_ne_zero k two_ne_zero)
 
-/-- Package free roots at every level into the coherent-tower input, on an open convex region. -/
+/-- A zero-free analytic unit on an open convex region carries a coherent tower. -/
 theorem coherentTower_of_analyticOn_nonvanishing_convex {U : Set ℂ} (hUo : IsOpen U)
     (hUconv : Convex ℝ U) {z₀ : ℂ} (hz₀ : z₀ ∈ U) {f : ℂ → ℂ}
     (hf : ∀ z ∈ U, AnalyticAt ℂ f z) (hne : ∀ z ∈ U, f z ≠ 0) :
     Nonempty (CoherentTower f U) :=
-  coherentTower_of_exists_roots_all_two_powers_preconnected hUo
-    (isSimplyConnected_of_convex hUconv ⟨z₀, hz₀⟩) hUconv.isPreconnected hz₀
-    (fun z hz => hf z hz) (hne z₀ hz₀)
-    (fun k => by
-      obtain ⟨g, hg, hgpow⟩ :=
-        exists_pow_root_of_analyticOn_nonvanishing_convex k hUo hUconv ⟨z₀, hz₀⟩ hf hne
-      exact ⟨g, hg.analyticOnNhd hUo, hgpow⟩)
+  (coherentTower_iff_nonvanishing hUo
+    (isSimplyConnected_of_convex hUconv ⟨z₀, hz₀⟩) hUconv.isPreconnected
+    (fun z hz => hf z hz) hz₀ (hne z₀ hz₀)).2 hne
 
 /-! ### The completed limit survives past the wall -/
 

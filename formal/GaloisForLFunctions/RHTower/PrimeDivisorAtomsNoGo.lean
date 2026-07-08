@@ -141,48 +141,17 @@ theorem prime_content_and_divisor_disjoint {P : Finset ℕ} (hP : ∀ p ∈ P, 2
 /-! ### §5 The weld cross-term: the archimedean factor is a unit too -/
 
 /-- The archimedean factor `π^(−s/2) · Γ(s/2)` of the completed ζ — the `∂_s` side of the weld. -/
-def archimedeanFactor : ℂ → ℂ := fun s => (Real.pi : ℂ) ^ (-s / 2) * Complex.Gamma (s / 2)
-
-private theorem re_half_eq {z : ℂ} : (z / 2).re = z.re / 2 := by
-  rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.div_ofReal_re]
+def archimedeanFactor : ℂ → ℂ := Complex.Gammaℝ
 
 /-- The archimedean factor is nonvanishing on the right half-plane: `π^(−s/2)` never vanishes and
 `Γ(s/2)` has its poles only at `s/2 ∈ {0, −1, −2, …}`, all with nonpositive real part. -/
 theorem archimedeanFactor_ne_zero {ρ : ℂ} (hs : 0 < ρ.re) : archimedeanFactor ρ ≠ 0 := by
-  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-  have h1 : (Real.pi : ℂ) ^ (-ρ / 2) ≠ 0 := by
-    intro h; rw [Complex.cpow_eq_zero_iff] at h; exact hpi h.1
-  have h2 : Complex.Gamma (ρ / 2) ≠ 0 := by
-    apply Complex.Gamma_ne_zero
-    intro m h
-    have hre : (ρ / 2).re = (-(m : ℂ)).re := by rw [h]
-    rw [re_half_eq] at hre; simp at hre
-    nlinarith [hre, hs, Nat.cast_nonneg (α := ℝ) m]
-  exact mul_ne_zero h1 h2
+  simpa [archimedeanFactor] using Gammaℝ_ne_zero_of_re_pos hs
 
 /-- The archimedean factor is analytic on the right half-plane (`Γ` has no poles for `Re s > 0`). -/
 theorem archimedeanFactor_analyticAt {ρ : ℂ} (hs : 0 < ρ.re) :
     AnalyticAt ℂ archimedeanFactor ρ := by
-  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-  have hcpow : AnalyticAt ℂ (fun z : ℂ => (Real.pi : ℂ) ^ (-z / 2)) ρ := by
-    have hd : DifferentiableOn ℂ (fun z : ℂ => (Real.pi : ℂ) ^ (-z / 2)) Set.univ := fun z _ =>
-      ((differentiableAt_id.neg.div_const 2).const_cpow (Or.inl hpi)).differentiableWithinAt
-    exact (hd.analyticOnNhd isOpen_univ) ρ (Set.mem_univ ρ)
-  have hopen : IsOpen {z : ℂ | 0 < z.re} := isOpen_lt continuous_const Complex.continuous_re
-  have hgamma : AnalyticAt ℂ (fun z : ℂ => Complex.Gamma (z / 2)) ρ := by
-    have hd : DifferentiableOn ℂ (fun z : ℂ => Complex.Gamma (z / 2)) {z : ℂ | 0 < z.re} := by
-      intro z hz
-      have hz' : 0 < z.re := hz
-      have hzre : 0 < (z / 2).re := by rw [re_half_eq]; linarith
-      have hne : ∀ m : ℕ, (z / 2) ≠ -m := by
-        intro m h
-        have hh : (z / 2).re = (-(m : ℂ)).re := by rw [h]
-        rw [re_half_eq] at hh; simp at hh
-        nlinarith [hh, hz', Nat.cast_nonneg (α := ℝ) m]
-      exact ((Complex.differentiableAt_Gamma _ hne).comp z
-        (differentiableAt_id.div_const 2)).differentiableWithinAt
-    exact (hd.analyticOnNhd hopen) ρ hs
-  exact hcpow.mul hgamma
+  simpa [archimedeanFactor] using Gammaℝ_analyticAt (Gammaℝ_ne_zero_of_re_pos hs)
 
 /-- The archimedean factor has vanishing order at every strip point: it too is a unit there. -/
 theorem archimedeanFactor_orderAt_zero {ρ : ℂ} (hs : 0 < ρ.re) :

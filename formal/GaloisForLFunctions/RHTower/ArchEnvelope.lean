@@ -130,6 +130,13 @@ theorem hasDerivAt_archFactor_of_re_pos {s : ℂ} (hs : 0 < s.re) :
   unfold archFactor
   convert hmul using 1
 
+/-- The completed archimedean envelope is analytic on the open right half plane. -/
+theorem archFactor_analyticOnNhd_re_pos :
+    AnalyticOnNhd ℂ archFactor {z : ℂ | 0 < z.re} := by
+  have hopen : IsOpen {z : ℂ | 0 < z.re} := isOpen_lt continuous_const Complex.continuous_re
+  refine DifferentiableOn.analyticOnNhd (fun z hz => ?_) hopen
+  exact (hasDerivAt_archFactor_of_re_pos hz).differentiableAt.differentiableWithinAt
+
 /-- Continuity of the canonical envelope derivative on the right half plane. -/
 theorem continuousOn_archFactorDeriv :
     ContinuousOn archFactorDeriv {z : ℂ | 0 < z.re} := by

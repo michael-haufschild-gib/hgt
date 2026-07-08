@@ -110,11 +110,6 @@ theorem boxZeros_eq_empty_of_nonpos {T : ℝ} (hT : T ≤ 0) : boxZeros T = ∅ 
   rintro ρ ⟨⟨-, -, him0, himT⟩, -⟩
   linarith
 
-private theorem xi_orderAt_lineReflect_eq (z : ℂ) :
-    analyticOrderAt xi (lineReflect z) = analyticOrderAt xi z := by
-  simp only [lineReflect]
-  rw [xi_orderAt_one_sub, xi_orderAt_conj]
-
 /-- The strip-window zero set is closed under the critical-line reflection: ξ's two symmetries
 compose to `s ↦ 1 − s̄`, which preserves the strip, the height, and the zero set. -/
 theorem lineReflect_mem_stripZeros {T : ℝ} {ρ : ℂ} (h : ρ ∈ stripZeros T) :
@@ -405,7 +400,7 @@ theorem stripWindow_order_identity (T : ℝ) :
     rw [Set.Finite.mem_toFinset] at hz ⊢
     exact lineReflect_mem_stripZeros hz
   · intro z _
-    exact congrArg ENat.toNat (xi_orderAt_lineReflect_eq z)
+    exact congrArg ENat.toNat (xi_orderAt_lineReflect z)
 
 /-- **The line carries the loop parity.**  The total ξ-order of a strip window is congruent mod 2
 to its on-line part: off-line zeros pair under the critical-line reflection with equal orders, so
@@ -465,7 +460,7 @@ theorem windowCertificate_iff_subWindow_congruences (k : ℕ) (T : ℝ) :
   constructor
   · intro hc t hsub hclosed
     have hID := window_identity (m := fun ρ => (analyticOrderAt xi ρ).toNat) hclosed
-      (fun z _ => congrArg ENat.toNat (xi_orderAt_lineReflect_eq z))
+      (fun z _ => congrArg ENat.toNat (xi_orderAt_lineReflect z))
     rw [window_modEq_iff hID]
     refine Finset.dvd_sum ?_
     intro ρ hρ
@@ -510,7 +505,7 @@ theorem windowCertificate_iff_subWindow_congruences (k : ℕ) (T : ℝ) :
         intro hz
         linarith
     have hrel := h ({ρ, lineReflect ρ} : Finset ℂ) hsub hclosed
-    rw [Finset.sum_pair hne, xi_orderAt_lineReflect_eq, hfilter, Finset.sum_empty, ← two_mul,
+    rw [Finset.sum_pair hne, xi_orderAt_lineReflect, hfilter, Finset.sum_empty, ← two_mul,
       Nat.modEq_zero_iff_dvd, pow_succ, mul_comm (2 ^ k) 2,
       mul_dvd_mul_iff_left two_ne_zero] at hrel
     have hcoe : analyticOrderAt xi ρ = (((analyticOrderAt xi ρ).toNat : ℕ) : ℕ∞) :=

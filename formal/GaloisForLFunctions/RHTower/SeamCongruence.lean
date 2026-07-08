@@ -422,7 +422,7 @@ theorem window_online_of_line_real_zero_brackets {F : ℂ → ℂ} {t : Finset �
 
 /-- If the completed finite carrier has zero real part at a critical-line point, it
 vanishes there. -/
-theorem completedGN_linePoint_eq_zero_of_re_eq_zero {N : ℕ} {u : ℝ}
+private theorem completedGN_linePoint_eq_zero_of_re_eq_zero {N : ℕ} {u : ℝ}
     (h : (completedGN N (linePoint u)).re = 0) :
     completedGN N (linePoint u) = 0 := by
   have him : (completedGN N (linePoint u)).im = 0 :=

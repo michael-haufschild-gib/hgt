@@ -36,84 +36,16 @@ are computable), which is what the instance runs discharge.
 -/
 import GaloisForLFunctions.RHTower.SeamSignTransport
 import GaloisForLFunctions.RHTower.CountingSubstitute
+import GaloisForLFunctions.RHTower.WindowRelation
 
 namespace RHTower
 
 open Complex
 
-/-! ### §1 Localized Schwarz-reflection order equivariance -/
-
-/-- Vanishing orders are equivariant under Schwarz reflection, LOCALIZED: only
-analyticity at the two mirror points is needed (drops the entirety hypothesis of
-`analyticOrderAt_conj_conj` — required for the meromorphic completed carrier). -/
-theorem analyticOrderAt_conj_conj_of_analyticAt {f : ℂ → ℂ} {z : ℂ}
-    (hfa : AnalyticAt ℂ f z)
-    (hFa : AnalyticAt ℂ (fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w)))
-      ((starRingEnd ℂ) z)) :
-    analyticOrderAt (fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w))) ((starRingEnd ℂ) z)
-      = analyticOrderAt f z := by
-  set F : ℂ → ℂ := fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w)) with hFdef
-  have hten : Filter.Tendsto (⇑(starRingEnd ℂ)) (nhds ((starRingEnd ℂ) z)) (nhds z) := by
-    have h := Complex.continuous_conj.tendsto ((starRingEnd ℂ) z)
-    rwa [Complex.conj_conj] at h
-  rcases eq_or_ne (analyticOrderAt f z) ⊤ with htop | hne
-  · rw [htop, analyticOrderAt_eq_top]
-    rw [analyticOrderAt_eq_top] at htop
-    filter_upwards [hten.eventually htop] with w hw
-    simp only [hFdef, hw, map_zero]
-  · set n := (analyticOrderAt f z).toNat with hndef
-    have hcoe : (n : ℕ∞) = analyticOrderAt f z := ENat.coe_toNat hne
-    obtain ⟨p, hp, hpz, hev⟩ := (hfa.analyticOrderAt_eq_natCast).mp hcoe.symm
-    set P : ℂ → ℂ := fun w => (starRingEnd ℂ) (p ((starRingEnd ℂ) w)) with hPdef
-    have hPa : AnalyticAt ℂ P ((starRingEnd ℂ) z) := by
-      have hpd : ∀ᶠ w in nhds z, DifferentiableAt ℂ p w :=
-        hp.eventually_analyticAt.mono fun w hw => hw.differentiableAt
-      have hPd : ∀ᶠ w in nhds ((starRingEnd ℂ) z), DifferentiableAt ℂ P w := by
-        filter_upwards [hten.eventually hpd] with w hw
-        have h := hw.conj_conj
-        rw [Complex.conj_conj] at h
-        exact h
-      exact Complex.analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt
-        (hPd.filter_mono nhdsWithin_le_nhds) hPd.self_of_nhds.continuousAt
-    have hPz : P ((starRingEnd ℂ) z) ≠ 0 := by
-      simp only [hPdef, Complex.conj_conj]
-      exact fun h => hpz (by rwa [map_eq_zero] at h)
-    have hevF : ∀ᶠ w in nhds ((starRingEnd ℂ) z),
-        F w = (w - (starRingEnd ℂ) z) ^ n • P w := by
-      filter_upwards [hten.eventually hev] with w hw
-      simp only [hFdef, hPdef, smul_eq_mul]
-      rw [hw]
-      simp only [smul_eq_mul, map_mul, map_pow, map_sub, Complex.conj_conj]
-    exact ((hFa.analyticOrderAt_eq_natCast).mpr ⟨P, hPa, hPz, hevF⟩).trans hcoe
-
-/-- Order equivariance under conjugation for conj-equivariant carriers, from
-analyticity at the two mirror points only. -/
-theorem analyticOrderAt_conj_of_conjEquivariant {f : ℂ → ℂ} {z : ℂ}
-    (hconj : ∀ s, f ((starRingEnd ℂ) s) = (starRingEnd ℂ) (f s))
-    (hfa : AnalyticAt ℂ f z) (hfa' : AnalyticAt ℂ f ((starRingEnd ℂ) z)) :
-    analyticOrderAt f ((starRingEnd ℂ) z) = analyticOrderAt f z := by
-  have hfun : (fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w))) = f := by
-    funext w
-    rw [hconj, Complex.conj_conj]
-  have h := analyticOrderAt_conj_conj_of_analyticAt hfa (by rw [hfun]; exact hfa')
-  rwa [hfun] at h
-
-/-! ### §2 The completed carrier: analyticity and full line-reflection equivariance -/
-
-/-- The completed carrier is analytic on the open strip. -/
-theorem completedGN_analyticAt {N : ℕ} {z : ℂ} (h0 : 0 < z.re) (h1 : z.re < 1) :
-    AnalyticAt ℂ (completedGN N) z := by
-  have hG : Gammaℝ z ≠ 0 := Gammaℝ_ne_zero_of_re_pos h0
-  have hG1 : Gammaℝ (1 - z) ≠ 0 :=
-    Gammaℝ_ne_zero_of_re_pos (by simp only [Complex.sub_re, Complex.one_re]; linarith)
-  have hpoly : AnalyticAt ℂ (fun s : ℂ => s * (s - 1) / 2) z := by fun_prop
-  have harch : AnalyticAt ℂ archFactor z := by
-    have h := hpoly.mul (Gammaℝ_analyticAt hG)
-    exact h
-  exact harch.mul (gN_analyticAt hG1)
+/-! ### §1 The completed carrier: analyticity and full line-reflection equivariance -/
 
 /-- Reality pairing of orders for the completed carrier on the strip. -/
-theorem completedGN_orderAt_conj {N : ℕ} {z : ℂ} (h0 : 0 < z.re) (h1 : z.re < 1) :
+private theorem completedGN_orderAt_conj {N : ℕ} {z : ℂ} (h0 : 0 < z.re) (h1 : z.re < 1) :
     analyticOrderAt (completedGN N) ((starRingEnd ℂ) z)
       = analyticOrderAt (completedGN N) z :=
   analyticOrderAt_conj_of_conjEquivariant (completedGN_conj N)
@@ -129,13 +61,6 @@ theorem completedGN_orderAt_lineReflect {N : ℕ} {z : ℂ} (h0 : 0 < z.re) (h1 
   have hc1 : ((starRingEnd ℂ) z).re < 1 := by rwa [Complex.conj_re]
   rw [show lineReflect z = 1 - (starRingEnd ℂ) z from rfl,
     completedGN_orderAt_one_sub hc0 hc1, completedGN_orderAt_conj h0 h1]
-
-/-- Line-reflection order equivariance for ξ (named; the inline chain of
-`xi_window_relation_of_ladder`). -/
-theorem xi_orderAt_lineReflect (z : ℂ) :
-    analyticOrderAt xi (lineReflect z) = analyticOrderAt xi z := by
-  simp only [lineReflect]
-  rw [xi_orderAt_one_sub, xi_orderAt_conj]
 
 /-! ### §3 The arithmetic core of the reduction -/
 
@@ -424,25 +349,6 @@ end RHTower
 namespace RHTower
 
 open Complex Metric
-
-/-- Nonvanishing of the completed finite carrier from the raw finite carrier.
-On the positive strip away from `1`, the archimedean factor is nonzero, so
-`completedGN` vanishes exactly when `gN` does. -/
-theorem completedGN_ne_zero_of_gN_ne_zero {N : ℕ} {z : ℂ}
-    (hσ : 0 < z.re) (hz1 : z ≠ 1) (hgN0 : gN N z ≠ 0) :
-    completedGN N z ≠ 0 := by
-  have hz0 : z ≠ 0 := fun hzero => by simp [hzero] at hσ
-  unfold completedGN
-  exact mul_ne_zero (archFactor_ne_zero hz0 hz1 (Gammaℝ_ne_zero_of_re_pos hσ)) hgN0
-
-/-- A nonnegative LOW floor certificate supplies completed-carrier nonvanishing
-on the positive strip away from `1`. -/
-theorem completedGN_ne_zero_of_carrierFloorOn {S : Set ℂ} {N : ℕ} {ε : ℝ}
-    (hε : 0 ≤ ε) (hF : CarrierFloorOn S N ε) {z : ℂ}
-    (hz : z ∈ S) (hσ : 0 < z.re) (hz1 : z ≠ 1) :
-    completedGN N z ≠ 0 :=
-  completedGN_ne_zero_of_gN_ne_zero hσ hz1
-    (gN_ne_zero_of_carrierFloorOn hε hF z hz)
 
 /-- **Window-parity transport under relative control with raw finite-carrier
 nonvanishing.** On charts contained in the positive strip and away from `1`,

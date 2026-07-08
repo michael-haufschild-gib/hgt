@@ -25,7 +25,7 @@ namespace RHTower
 
 /-- **Phase collapse on the line.**  For any `w`, the χ-symmetrized combination
 `w + χ·conj w` is a unimodular phase times the real amplitude `2·Re(ω̄w)`. -/
-theorem norm_add_chi_mul_conj_eq (τ : ℝ) (w : ℂ) :
+private theorem norm_add_chi_mul_conj_eq (τ : ℝ) (w : ℂ) :
     ‖w + zetaChi (linePt τ) * (starRingEnd ℂ) w‖ =
       |2 * (((starRingEnd ℂ) (hardyPhase τ)) * w).re| := by
   set ω := hardyPhase τ with hω
@@ -42,7 +42,7 @@ theorem norm_add_chi_mul_conj_eq (τ : ℝ) (w : ℂ) :
 
 /-- **Energy split on the line.**  The squared modulus of the χ-symmetrized combination
 is four times the raw energy minus four times the orthogonal (imaginary) component. -/
-theorem norm_add_chi_mul_conj_sq_split (τ : ℝ) (w : ℂ) :
+private theorem norm_add_chi_mul_conj_sq_split (τ : ℝ) (w : ℂ) :
     ‖w + zetaChi (linePt τ) * (starRingEnd ℂ) w‖ ^ 2 =
       4 * ‖w‖ ^ 2 - 4 * (((starRingEnd ℂ) (hardyPhase τ)) * w).im ^ 2 := by
   rw [norm_add_chi_mul_conj_eq, sq_abs]
@@ -59,7 +59,7 @@ theorem norm_add_chi_mul_conj_sq_split (τ : ℝ) (w : ℂ) :
 
 /-- **Generic window floor.**  Any detector whose window second moment strictly exceeds
 `m²·U` clears the floor `m` somewhere in the window. -/
-theorem exists_norm_floor_in_window_of_secondMoment {G : ℝ → ℂ} {T U m : ℝ}
+private theorem exists_norm_floor_in_window_of_secondMoment {G : ℝ → ℂ} {T U m : ℝ}
     (hU : 0 < U) (hGc : Continuous fun τ => ‖G τ‖ ^ 2)
     (hmoment : m ^ 2 * U < ∫ τ in T..(T + U), ‖G τ‖ ^ 2) :
     ∃ τ ∈ Set.Icc T (T + U), m < ‖G τ‖ := by
@@ -78,7 +78,7 @@ theorem exists_norm_floor_in_window_of_secondMoment {G : ℝ → ℂ} {T U m : �
 
 /-! ### §3 Continuity of the general carrier along the line -/
 
-theorem continuous_mollPoly_line (b : ℕ → ℝ) (N : ℕ) :
+private theorem continuous_mollPoly_line (b : ℕ → ℝ) (N : ℕ) :
     Continuous fun τ : ℝ => mollPoly b N (linePt τ) := by
   have heq : (fun τ : ℝ => mollPoly b N (linePt τ)) =
       fun τ : ℝ => ∑ n ∈ Finset.Icc 1 N, ((b n : ℝ) : ℂ) *
@@ -93,7 +93,7 @@ theorem continuous_mollPoly_line (b : ℕ → ℝ) (N : ℕ) :
   intro n _
   fun_prop
 
-theorem continuous_zetaChi_line : Continuous fun τ : ℝ => zetaChi (linePt τ) := by
+private theorem continuous_zetaChi_line : Continuous fun τ : ℝ => zetaChi (linePt τ) := by
   rw [continuous_iff_continuousAt]
   intro τ
   have h1 : ContinuousAt zetaChi (linePt τ) := by
@@ -110,13 +110,13 @@ theorem continuous_zetaChi_line : Continuous fun τ : ℝ => zetaChi (linePt τ)
   exact ContinuousAt.comp h1 hlin
 
 /-- The conjugated-reflection form of the general carrier on the line. -/
-theorem mollG_line_conjForm (b : ℕ → ℝ) (N : ℕ) (τ : ℝ) :
+private theorem mollG_line_conjForm (b : ℕ → ℝ) (N : ℕ) (τ : ℝ) :
     mollG b N (linePt τ) = mollPoly b N (linePt τ) +
       zetaChi (linePt τ) * (starRingEnd ℂ) (mollPoly b N (linePt τ)) := by
   unfold mollG chiSymmetrize
   rw [← conj_linePt, mollPoly_conj]
 
-theorem continuous_mollG_line (b : ℕ → ℝ) (N : ℕ) :
+private theorem continuous_mollG_line (b : ℕ → ℝ) (N : ℕ) :
     Continuous fun τ : ℝ => mollG b N (linePt τ) := by
   have heq : (fun τ : ℝ => mollG b N (linePt τ)) = fun τ : ℝ =>
       mollPoly b N (linePt τ) +
@@ -131,7 +131,7 @@ theorem continuous_mollG_line (b : ℕ → ℝ) (N : ℕ) :
 
 /-- On the critical line the general carrier is the mean-value theory's Dirichlet
 polynomial in the coefficients `b_n·n^{−1/2}`. -/
-theorem mollPoly_line_eq_dpoly (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
+private theorem mollPoly_line_eq_dpoly (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
     mollPoly b N (linePt u) =
       dpoly (fun n => b n * ((n : ℝ) ^ (-(1/2 : ℝ)))) (Finset.Icc 1 N) u := by
   unfold mollPoly dpoly cterm
@@ -149,7 +149,7 @@ theorem mollPoly_line_eq_dpoly (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
 budget clears the diagonal-vs-off-diagonal mean-value threshold of the coefficients
 `b_n·n^{−1/2}`, then every window of length `U` contains a height where the
 χ-symmetrized general carrier clears the floor `m`. -/
-theorem exists_mollG_line_anchor_in_window_of_orthogonal_energy
+private theorem exists_mollG_line_anchor_in_window_of_orthogonal_energy
     (b : ℕ → ℝ) (N : ℕ) {T U m : ℝ} (hU : 0 < U)
     (henergy : m ^ 2 * U +
         (∫ τ in T..(T + U),

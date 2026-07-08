@@ -142,11 +142,11 @@ theorem completedMollG_line_term_decomp (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
 
 /-- Line slope of the completed general carrier: coefficients multiply the sharp
 termwise slopes. -/
-noncomputable def mollLineSlope (b : ℕ → ℝ) (N : ℕ) (u : ℝ) : ℂ :=
+private noncomputable def mollLineSlope (b : ℕ → ℝ) (N : ℕ) (u : ℝ) : ℂ :=
   ∑ n ∈ Finset.Icc 1 N, ((b n : ℝ) : ℂ) * carrierLineSlopeTerm n u
 
 /-- The completed general carrier is differentiable along the critical line. -/
-theorem hasDerivAt_completedMollG_line (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
+private theorem hasDerivAt_completedMollG_line (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
     HasDerivAt (fun v : ℝ => completedMollG b N (linePt v)) (mollLineSlope b N u) u := by
   have hfun : (fun v : ℝ => completedMollG b N (linePt v)) =
       fun v : ℝ => ∑ n ∈ Finset.Icc 1 N, ((b n : ℝ) : ℂ) * carrierLineTerm n v :=
@@ -161,7 +161,7 @@ theorem hasDerivAt_completedMollG_line (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
 
 /-- The real part of the completed general carrier is differentiable along the critical
 line. -/
-theorem hasDerivAt_re_completedMollG_line (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
+private theorem hasDerivAt_re_completedMollG_line (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
     HasDerivAt (fun v : ℝ => (completedMollG b N (linePt v)).re)
       ((mollLineSlope b N u).re) u := by
   have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt u
@@ -190,7 +190,7 @@ noncomputable def mollSlopeLineBudget (b : ℕ → ℝ) (N : ℕ) (M₀ M₁ : �
 
 /-- **Closed-form slope bound for the general carrier**: envelope sups `M₀`, `M₁` on
 both sides of the reflection bound the critical-line slope by the slope budget. -/
-theorem norm_mollLineSlope_le (b : ℕ → ℝ) (N : ℕ) {u M₀ M₁ : ℝ}
+private theorem norm_mollLineSlope_le (b : ℕ → ℝ) (N : ℕ) {u M₀ M₁ : ℝ}
     (hM₀ : ‖archFactor (linePt u)‖ ≤ M₀)
     (hM₀r : ‖archFactor (1 - linePt u)‖ ≤ M₀)
     (hM₁ : ‖archFactorDeriv (linePt u)‖ ≤ M₁)
@@ -215,7 +215,7 @@ theorem norm_mollLineSlope_le (b : ℕ → ℝ) (N : ℕ) {u M₀ M₁ : ℝ}
 
 /-- Termwise line sup: the general Dirichlet polynomial is bounded by its weight on the
 critical line. -/
-theorem norm_mollPoly_line_le (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
+private theorem norm_mollPoly_line_le (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
     ‖mollPoly b N (linePt u)‖ ≤ mollWeight b N := by
   have hterm : ∀ n ∈ Finset.Icc 1 N,
       ‖((b n : ℝ) : ℂ) * (n : ℂ) ^ (-(linePt u))‖ =
@@ -235,7 +235,7 @@ theorem norm_mollPoly_line_le (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
 
 /-- Line sup for the χ-symmetrized general carrier: `‖mollG‖ ≤ 2·mollWeight` — the
 reflected part is a conjugate and χ is unimodular on the line. -/
-theorem norm_mollG_line_le (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
+private theorem norm_mollG_line_le (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
     ‖mollG b N (linePt u)‖ ≤ 2 * mollWeight b N := by
   have hrefl : ‖mollPoly b N (1 - linePt u)‖ = ‖mollPoly b N (linePt u)‖ := by
     rw [← conj_linePt, mollPoly_conj, Complex.norm_conj]
@@ -250,7 +250,7 @@ theorem norm_mollG_line_le (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
     _ ≤ 2 * mollWeight b N := by linarith
 
 /-- Line sup for the completed general carrier from an envelope sup. -/
-theorem abs_re_completedMollG_line_le (b : ℕ → ℝ) (N : ℕ) {u M₀ : ℝ}
+private theorem abs_re_completedMollG_line_le (b : ℕ → ℝ) (N : ℕ) {u M₀ : ℝ}
     (hM₀ : ‖archFactor (linePt u)‖ ≤ M₀) :
     |(completedMollG b N (linePt u)).re| ≤ M₀ * (2 * mollWeight b N) := by
   refine le_trans (Complex.abs_re_le_norm _) ?_
@@ -264,7 +264,7 @@ theorem abs_re_completedMollG_line_le (b : ℕ → ℝ) (N : ℕ) {u M₀ : ℝ}
 
 /-- On the critical line the completed general carrier is real, so its real part
 carries the full modulus. -/
-theorem abs_re_completedMollG_line_eq_norm (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
+private theorem abs_re_completedMollG_line_eq_norm (b : ℕ → ℝ) (N : ℕ) (u : ℝ) :
     |(completedMollG b N (linePt u)).re| = ‖completedMollG b N (linePt u)‖ := by
   have him : (completedMollG b N (linePt u)).im = 0 :=
     completedMollG_im_eq_zero_on_line b N (by rw [linePt_re])
@@ -289,7 +289,7 @@ theorem anchor_re_completedMollG_line_of_floors (b : ℕ → ℝ) (N : ℕ) {τ 
 /-- **Short-interval mass floor for the general carrier**: an anchor at the window
 center and envelope sups produce the second-moment floor through the point-to-mass
 converter. -/
-theorem sq_integral_re_completedMollG_line_floor_of_anchor (b : ℕ → ℝ) (N : ℕ)
+private theorem sq_integral_re_completedMollG_line_floor_of_anchor (b : ℕ → ℝ) (N : ℕ)
     {τ rz c M₀ M₁ : ℝ} (hrz : 0 < rz) (hc : 0 < c)
     (hD : 0 < mollSlopeLineBudget b N M₀ M₁)
     (hM₀ : ∀ u ∈ Set.Icc (τ - rz) (τ + rz), ‖archFactor (linePt u)‖ ≤ M₀)

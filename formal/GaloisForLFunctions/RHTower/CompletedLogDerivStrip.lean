@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SeamSuspensionTrace
-import GaloisForLFunctions.RHTower.EdgeEventSynthesis
+import GaloisForLFunctions.RHTower.ArchEnvelope
 
 /-!
 # The completed-zeta logarithmic derivative splits on the critical strip

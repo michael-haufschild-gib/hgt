@@ -25,7 +25,7 @@ namespace RHTower
 /-- On the critical line, a point where the real part of the completed truncation vanishes is
 a zero of the finite carrier: the completed truncation is real there and its archimedean
 factor never vanishes on the line. -/
-theorem gN_line_eq_zero_of_completedGN_re_eq_zero {N : ℕ} {τ : ℝ}
+private theorem gN_line_eq_zero_of_completedGN_re_eq_zero {N : ℕ} {τ : ℝ}
     (h : (completedGN N (linePt τ)).re = 0) : gN N (linePt τ) = 0 := by
   have him : (completedGN N (linePt τ)).im = 0 :=
     completedGN_im_eq_zero_on_line (linePt_re τ)
@@ -35,7 +35,7 @@ theorem gN_line_eq_zero_of_completedGN_re_eq_zero {N : ℕ} {τ : ℝ}
   exact (mul_eq_zero.mp hz').resolve_left (archFactor_linePt_ne_zero τ)
 
 /-- Conversely, a carrier zero on the line is a real-part zero of the completed truncation. -/
-theorem completedGN_re_eq_zero_of_gN_line_eq_zero {N : ℕ} {τ : ℝ}
+private theorem completedGN_re_eq_zero_of_gN_line_eq_zero {N : ℕ} {τ : ℝ}
     (h : gN N (linePt τ) = 0) : (completedGN N (linePt τ)).re = 0 := by
   have hz : completedGN N (linePt τ) = 0 := by
     show archFactor (linePt τ) * gN N (linePt τ) = 0
@@ -44,7 +44,7 @@ theorem completedGN_re_eq_zero_of_gN_line_eq_zero {N : ℕ} {τ : ℝ}
 
 /-- On the line, a real-part zero of the completed truncation is a genuine zero of it: the
 completed truncation is real there. -/
-theorem completedGN_line_eq_zero_of_re_eq_zero {N : ℕ} {τ : ℝ}
+private theorem completedGN_line_eq_zero_of_re_eq_zero {N : ℕ} {τ : ℝ}
     (h : (completedGN N (linePt τ)).re = 0) : completedGN N (linePt τ) = 0 :=
   Complex.ext (by simpa using h) (by simpa using completedGN_im_eq_zero_on_line (linePt_re τ))
 

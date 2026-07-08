@@ -245,6 +245,12 @@ theorem archFactor_ne_zero {s : ℂ} (h0 : s ≠ 0) (h1 : s ≠ 1) (hG : Gamma�
     archFactor s ≠ 0 :=
   mul_ne_zero (div_ne_zero (mul_ne_zero h0 (sub_ne_zero.mpr h1)) two_ne_zero) hG
 
+/-- The completed archimedean factor is nonvanishing on the open critical strip. -/
+theorem archFactor_ne_zero_strip {z : ℂ} (hz : 0 < z.re ∧ z.re < 1) : archFactor z ≠ 0 := by
+  refine archFactor_ne_zero ?_ ?_ (Gammaℝ_ne_zero_of_re_pos hz.1)
+  · intro h; rw [h, Complex.zero_re] at hz; exact absurd hz.1 (lt_irrefl 0)
+  · intro h; rw [h, Complex.one_re] at hz; exact absurd hz.2 (lt_irrefl 1)
+
 /-- ξ in raw-times-dressing form: `ξ = archFactor · ζ` off the poles. -/
 theorem xi_eq_archFactor_mul_zeta {s : ℂ} (h0 : s ≠ 0) (h1 : s ≠ 1)
     (hG : Gammaℝ s ≠ 0) :
@@ -256,6 +262,24 @@ theorem xi_eq_archFactor_mul_zeta {s : ℂ} (h0 : s ≠ 0) (h1 : s ≠ 1)
 /-- The completed concrete carrier `Φ̃_N = archFactor · g_N` — the finite object on
 ξ's own layer. -/
 noncomputable def completedGN (N : ℕ) : ℂ → ℂ := fun s => archFactor s * gN N s
+
+/-- The completed carrier is analytic on the open strip. -/
+theorem completedGN_analyticAt {N : ℕ} {z : ℂ} (h0 : 0 < z.re) (h1 : z.re < 1) :
+    AnalyticAt ℂ (completedGN N) z := by
+  have hG : Gammaℝ z ≠ 0 := Gammaℝ_ne_zero_of_re_pos h0
+  have hG1 : Gammaℝ (1 - z) ≠ 0 :=
+    Gammaℝ_ne_zero_of_re_pos (by simp only [Complex.sub_re, Complex.one_re]; linarith)
+  have hpoly : AnalyticAt ℂ (fun s : ℂ => s * (s - 1) / 2) z := by fun_prop
+  have harch : AnalyticAt ℂ archFactor z := by
+    have h := hpoly.mul (Gammaℝ_analyticAt hG)
+    exact h
+  exact harch.mul (gN_analyticAt hG1)
+
+/-- On the open critical strip the completed carrier is analytic. -/
+theorem completedGN_analyticOnNhd_strip (N : ℕ) :
+    AnalyticOnNhd ℂ (completedGN N) {z : ℂ | 0 < z.re ∧ z.re < 1} := by
+  intro _ hz
+  exact completedGN_analyticAt (N := N) hz.1 hz.2
 
 /-- The completed carrier satisfies the exact EVEN functional equation on the strip
 — unconditionally: the full ξ-shape at finite Euler depth. -/
@@ -276,6 +300,23 @@ theorem completedGN_conj (N : ℕ) (s : ℂ) :
   unfold completedGN archFactor
   rw [Gammaℝ_conj, gN_conj, map_mul, map_mul, map_div₀, map_mul, map_sub, map_one,
     map_ofNat]
+
+/-- Reality of the completed truncation on the critical line. -/
+theorem completedGN_im_eq_zero_on_line {N : ℕ} {p : ℂ} (hp : p.re = 1 / 2) :
+    (completedGN N p).im = 0 := by
+  have hc0 : 0 < ((starRingEnd ℂ) p).re := by rw [Complex.conj_re, hp]; norm_num
+  have hc1 : ((starRingEnd ℂ) p).re < 1 := by rw [Complex.conj_re, hp]; norm_num
+  have hfix : 1 - (starRingEnd ℂ) p = p := by
+    apply Complex.ext
+    · rw [Complex.sub_re, Complex.one_re, Complex.conj_re, hp]
+      norm_num
+    · rw [Complex.sub_im, Complex.one_im, Complex.conj_im]
+      simp
+  have hreal := completedGN_one_sub (N := N) hc0 hc1
+  rw [hfix, completedGN_conj] at hreal
+  have him := congrArg Complex.im hreal
+  rw [Complex.conj_im] at him
+  linarith
 
 /-- FE pairing of vanishing orders for the completed carrier, on the strip —
 the exact input the window identity (ID) consumes on the finite side. -/
@@ -334,6 +375,25 @@ theorem gN_ne_zero_of_carrierFloorOn {S : Set ℂ} {N : ℕ} {ε : ℝ} (hε : 0
     ∀ z ∈ S, gN N z ≠ 0 := by
   intro z hz
   exact norm_pos_iff.mp (lt_of_le_of_lt hε (hF z hz))
+
+/-- Nonvanishing of the completed finite carrier from the raw finite carrier.
+On the positive strip away from `1`, the archimedean factor is nonzero, so
+`completedGN` vanishes exactly when `gN` does. -/
+theorem completedGN_ne_zero_of_gN_ne_zero {N : ℕ} {z : ℂ}
+    (hσ : 0 < z.re) (hz1 : z ≠ 1) (hgN0 : gN N z ≠ 0) :
+    completedGN N z ≠ 0 := by
+  have hz0 : z ≠ 0 := fun hzero => by simp [hzero] at hσ
+  unfold completedGN
+  exact mul_ne_zero (archFactor_ne_zero hz0 hz1 (Gammaℝ_ne_zero_of_re_pos hσ)) hgN0
+
+/-- A nonnegative LOW floor certificate supplies completed-carrier nonvanishing
+on the positive strip away from `1`. -/
+theorem completedGN_ne_zero_of_carrierFloorOn {S : Set ℂ} {N : ℕ} {ε : ℝ}
+    (hε : 0 ≤ ε) (hF : CarrierFloorOn S N ε) {z : ℂ}
+    (hz : z ∈ S) (hσ : 0 < z.re) (hz1 : z ≠ 1) :
+    completedGN N z ≠ 0 :=
+  completedGN_ne_zero_of_gN_ne_zero hσ hz1
+    (gN_ne_zero_of_carrierFloorOn hε hF z hz)
 
 /-- Raw domination from the two interfaces. -/
 theorem raw_domination_of_interfaces {S : Set ℂ} {N : ℕ} {ε : ℝ}

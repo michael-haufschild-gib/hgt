@@ -110,35 +110,30 @@ noncomputable section
 /-! ### Coherent infinite Kummer towers (the roots cohere across levels) -/
 
 /-- **The archimedean generator admits a coherent infinite Kummer tower on `Re s > 0`.**  The free
-`2^k`-th roots of every level cohere into a single `CoherentTower`: an unconditional infinite 2-adic
-root tower for `π^(−s/2)Γ(s/2)`, discharging `coherentTower_of_exists_roots_all_two_powers_preconnected`
-with the roots of `archimedeanFactor_pow_root`. -/
+zero-free archimedean unit carries an unconditional infinite 2-adic root tower for
+`π^(−s/2)Γ(s/2)`. -/
 theorem archimedeanFactor_coherentTower :
     Nonempty (CoherentTower archimedeanFactor rightHalfPlane) :=
-  coherentTower_of_exists_roots_all_two_powers_preconnected
+  (coherentTower_iff_nonvanishing
     isOpen_rightHalfPlane isSimplyConnected_rightHalfPlane convex_rightHalfPlane.isPreconnected
-    (show (1 : ℂ) ∈ rightHalfPlane from by show (0 : ℝ) < (1 : ℂ).re; norm_num)
     (fun z hz => archimedeanFactor_analyticAt hz)
-    (archimedeanFactor_ne_zero (ρ := 1) (by norm_num))
-    (fun k => by
-      obtain ⟨g, hg, hgpow⟩ := archimedeanFactor_pow_root k
-      exact ⟨g, hg.analyticOnNhd isOpen_rightHalfPlane, hgpow⟩)
+    (show (1 : ℂ) ∈ rightHalfPlane from by show (0 : ℝ) < (1 : ℂ).re; norm_num)
+    (archimedeanFactor_ne_zero (ρ := 1) (by norm_num))).2
+    (fun z hz => archimedeanFactor_ne_zero (ρ := z) hz)
 
 /-- **The finite completed weld admits a coherent infinite Kummer tower on `Re s > 0`.**  The free
-`2^k`-th roots of the completed local factor `archimedeanFactor · eulerPartial P` cohere into a single
-`CoherentTower`: the `∂_s × {σ_p}` weld carries an unconditional infinite 2-adic root tower, while
-ξ's coherent tower on `Re s > 1/2` is equivalent to RH.  The obstruction is the emergent difference. -/
+zero-free completed local factor `archimedeanFactor · eulerPartial P` carries an unconditional
+infinite 2-adic root tower, while ξ's coherent tower on `Re s > 1/2` is equivalent to RH.  The
+obstruction is the emergent difference. -/
 theorem completedLocalFactor_coherentTower {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) :
     Nonempty (CoherentTower (archimedeanFactor * eulerPartial P) rightHalfPlane) :=
-  coherentTower_of_exists_roots_all_two_powers_preconnected
+  (coherentTower_iff_nonvanishing
     isOpen_rightHalfPlane isSimplyConnected_rightHalfPlane convex_rightHalfPlane.isPreconnected
-    (show (1 : ℂ) ∈ rightHalfPlane from by show (0 : ℝ) < (1 : ℂ).re; norm_num)
     (fun z hz => (archimedeanFactor_analyticAt hz).mul (eulerPartial_analyticAt hP hz))
+    (show (1 : ℂ) ∈ rightHalfPlane from by show (0 : ℝ) < (1 : ℂ).re; norm_num)
     (mul_ne_zero (archimedeanFactor_ne_zero (ρ := 1) (by norm_num))
-      (eulerPartial_ne_zero hP (show (0 : ℝ) < (1 : ℂ).re by norm_num)))
-    (fun k => by
-      obtain ⟨g, hg, hgpow⟩ := completedLocalFactor_pow_root k hP
-      exact ⟨g, hg.analyticOnNhd isOpen_rightHalfPlane, hgpow⟩)
+      (eulerPartial_ne_zero hP (show (0 : ℝ) < (1 : ℂ).re by norm_num)))).2
+    (fun z hz => mul_ne_zero (archimedeanFactor_ne_zero (ρ := z) hz) (eulerPartial_ne_zero hP hz))
 
 end
 

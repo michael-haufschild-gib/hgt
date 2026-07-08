@@ -14,7 +14,7 @@ raw form, to the pointwise relative closeness of ζ to the carrier on those char
 the same parity.
 -/
 import GaloisForLFunctions.RHTower.CarrierSplit
-import GaloisForLFunctions.RHTower.EdgeEventSynthesis
+import GaloisForLFunctions.RHTower.ZetaCarrier
 
 namespace RHTower
 

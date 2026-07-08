@@ -19,7 +19,7 @@ noncomputable section
 
 namespace RHTower
 
-theorem hasDerivAt_ofReal_cpow_const {c : ℂ} {x : ℝ} (hx : 0 < x) :
+private theorem hasDerivAt_ofReal_cpow_const {c : ℂ} {x : ℝ} (hx : 0 < x) :
     HasDerivAt (fun y : ℝ => (y : ℂ) ^ c) (c * (x : ℂ) ^ (c - 1)) x := by
   have hb : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 x := (hasDerivAt_id x).ofReal_comp
   have hmem : (x : ℂ) ∈ Complex.slitPlane := Or.inl (by simpa using hx)

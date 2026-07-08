@@ -6,6 +6,7 @@ base value, supports the whole coherent dyadic Kummer tower exactly when
 `xiDescent` has no zero there.
 -/
 import GaloisForLFunctions.RHTower.SquareLadder
+import GaloisForLFunctions.RHTower.CoherentTower
 
 namespace RHTower
 

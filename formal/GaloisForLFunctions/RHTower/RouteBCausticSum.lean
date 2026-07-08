@@ -85,13 +85,16 @@ section Pieces
 
 variable {B C c : ℂ} {ρ r σ0 : ℝ}
 
-/-- Upper-shell product, j-free. -/
-theorem shellP_prod_le (hB : B ≠ 0) (hC : C ≠ 0) (hc : c ≠ 0)
-    (hρB : ‖B‖ < ρ) (hr0 : 0 < r) (hσ0 : 0 < σ0) (j : ℕ) :
+private theorem shell_prod_le_of_measure_bounds (hB : B ≠ 0) (hC : C ≠ 0) (hc : c ≠ 0)
+    (hρB : ‖B‖ < ρ) (hr0 : 0 < r) (hσ0 : 0 < σ0) (j : ℕ) {S : Set ℝ}
+    (hV : volume S
+      ≤ ENNReal.ofReal (2 * Real.pi
+          * Real.sqrt (2 * (2 ^ j * σ0 / (2 * (‖c‖ * ‖C‖))))))
+    (hV2 : volume S ≤ ENNReal.ofReal (2 * Real.pi)) :
     ENNReal.ofReal (2 * Real.pi
         * ((r * (2 * ρ + r)) / ((ρ - ‖B‖) / 2 * ‖B‖))
         / Real.sqrt (min (2 ^ j * σ0 * causticKappa ρ ‖B‖ / 2) (1 / 2)))
-      * volume (shellSetP c C B ρ (2 ^ j * σ0))
+      * volume S
       ≤ ENNReal.ofReal (4 * Real.pi ^ 2
           * ((r * (2 * ρ + r)) / ((ρ - ‖B‖) / 2 * ‖B‖))
           * (Real.sqrt (2 / (causticKappa ρ ‖B‖ * (‖c‖ * ‖C‖)))
@@ -109,6 +112,19 @@ theorem shellP_prod_le (hB : B ≠ 0) (hC : C ≠ 0) (hc : c ≠ 0)
   have hY : (0 : ℝ) ≤ (r * (2 * ρ + r)) / ((ρ - ‖B‖) / 2 * ‖B‖) :=
     div_nonneg (by positivity)
       (mul_pos (by linarith : (0 : ℝ) < (ρ - ‖B‖) / 2) hb0).le
+  exact shell_term_le hY hσj hκ hcc hV hV2
+
+/-- Upper-shell product, j-free. -/
+theorem shellP_prod_le (hB : B ≠ 0) (hC : C ≠ 0) (hc : c ≠ 0)
+    (hρB : ‖B‖ < ρ) (hr0 : 0 < r) (hσ0 : 0 < σ0) (j : ℕ) :
+    ENNReal.ofReal (2 * Real.pi
+        * ((r * (2 * ρ + r)) / ((ρ - ‖B‖) / 2 * ‖B‖))
+        / Real.sqrt (min (2 ^ j * σ0 * causticKappa ρ ‖B‖ / 2) (1 / 2)))
+      * volume (shellSetP c C B ρ (2 ^ j * σ0))
+      ≤ ENNReal.ofReal (4 * Real.pi ^ 2
+          * ((r * (2 * ρ + r)) / ((ρ - ‖B‖) / 2 * ‖B‖))
+          * (Real.sqrt (2 / (causticKappa ρ ‖B‖ * (‖c‖ * ‖C‖)))
+            + Real.sqrt 2)) := by
   have hV : volume (shellSetP c C B ρ (2 ^ j * σ0))
       ≤ ENNReal.ofReal (2 * Real.pi
           * Real.sqrt (2 * (2 ^ j * σ0 / (2 * (‖c‖ * ‖C‖))))) := by
@@ -131,7 +147,7 @@ theorem shellP_prod_le (hB : B ≠ 0) (hC : C ≠ 0) (hc : c ≠ 0)
     rw [Real.volume_Icc]
     apply ENNReal.ofReal_le_ofReal
     linarith [Real.pi_pos]
-  exact shell_term_le hY hσj hκ hcc hV hV2
+  exact shell_prod_le_of_measure_bounds hB hC hc hρB hr0 hσ0 j hV hV2
 
 /-- Lower-shell product, j-free. -/
 theorem shellM_prod_le (hB : B ≠ 0) (hC : C ≠ 0) (hc : c ≠ 0)
@@ -144,19 +160,6 @@ theorem shellM_prod_le (hB : B ≠ 0) (hC : C ≠ 0) (hc : c ≠ 0)
           * ((r * (2 * ρ + r)) / ((ρ - ‖B‖) / 2 * ‖B‖))
           * (Real.sqrt (2 / (causticKappa ρ ‖B‖ * (‖c‖ * ‖C‖)))
             + Real.sqrt 2)) := by
-  have hb0 : (0 : ℝ) < ‖B‖ := norm_pos_iff.mpr hB
-  have hcc : (0 : ℝ) < ‖c‖ * ‖C‖ :=
-    mul_pos (norm_pos_iff.mpr hc) (norm_pos_iff.mpr hC)
-  have hσj : (0 : ℝ) < 2 ^ j * σ0 := by positivity
-  have hκ : (0 : ℝ) < causticKappa ρ ‖B‖ := by
-    rw [causticKappa]
-    have hGpos : (0 : ℝ) < (ρ + ‖B‖) ^ 2 - (ρ - ‖B‖) ^ 2 := by nlinarith
-    have hpb : (0 : ℝ) < ρ + ‖B‖ := by linarith
-    positivity
-  have hρ0 : (0 : ℝ) < ρ := lt_of_le_of_lt (norm_nonneg B) hρB
-  have hY : (0 : ℝ) ≤ (r * (2 * ρ + r)) / ((ρ - ‖B‖) / 2 * ‖B‖) :=
-    div_nonneg (by positivity)
-      (mul_pos (by linarith : (0 : ℝ) < (ρ - ‖B‖) / 2) hb0).le
   have hV : volume (shellSetM c C B ρ (2 ^ j * σ0))
       ≤ ENNReal.ofReal (2 * Real.pi
           * Real.sqrt (2 * (2 ^ j * σ0 / (2 * (‖c‖ * ‖C‖))))) := by
@@ -179,7 +182,7 @@ theorem shellM_prod_le (hB : B ≠ 0) (hC : C ≠ 0) (hc : c ≠ 0)
     rw [Real.volume_Icc]
     apply ENNReal.ofReal_le_ofReal
     linarith [Real.pi_pos]
-  exact shell_term_le hY hσj hκ hcc hV hV2
+  exact shell_prod_le_of_measure_bounds hB hC hc hρB hr0 hσ0 j hV hV2
 
 end Pieces
 

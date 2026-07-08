@@ -141,16 +141,15 @@ theorem xi_conj (s : ℂ) : xi ((starRingEnd ℂ) s) = (starRingEnd ℂ) (xi s) 
     simp only [hgdef, Complex.conj_conj]
   rw [h3, h4]
 
-/-- Vanishing orders are equivariant under Schwarz reflection (generic, entire case). -/
-theorem analyticOrderAt_conj_conj {f : ℂ → ℂ} (hf : Differentiable ℂ f) (z : ℂ) :
+/-- Vanishing orders are equivariant under Schwarz reflection, LOCALIZED: only
+analyticity at the two mirror points is needed. -/
+theorem analyticOrderAt_conj_conj_of_analyticAt {f : ℂ → ℂ} {z : ℂ}
+    (hfa : AnalyticAt ℂ f z)
+    (hFa : AnalyticAt ℂ (fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w)))
+      ((starRingEnd ℂ) z)) :
     analyticOrderAt (fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w))) ((starRingEnd ℂ) z)
       = analyticOrderAt f z := by
   set F : ℂ → ℂ := fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w)) with hFdef
-  have hFd : Differentiable ℂ F := differentiable_conj_reflect hf
-  have hfa : AnalyticAt ℂ f z :=
-    (hf.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z)
-  have hFa : AnalyticAt ℂ F ((starRingEnd ℂ) z) :=
-    (hFd.differentiableOn.analyticOnNhd isOpen_univ) _ (Set.mem_univ _)
   have hten : Filter.Tendsto (⇑(starRingEnd ℂ)) (nhds ((starRingEnd ℂ) z)) (nhds z) := by
     have h := Complex.continuous_conj.tendsto ((starRingEnd ℂ) z)
     rwa [Complex.conj_conj] at h
@@ -183,6 +182,28 @@ theorem analyticOrderAt_conj_conj {f : ℂ → ℂ} (hf : Differentiable ℂ f) 
       rw [hw]
       simp only [smul_eq_mul, map_mul, map_pow, map_sub, Complex.conj_conj]
     exact ((hFa.analyticOrderAt_eq_natCast).mpr ⟨P, hPa, hPz, hevF⟩).trans hcoe
+
+/-- Vanishing orders are equivariant under Schwarz reflection (generic, entire case). -/
+theorem analyticOrderAt_conj_conj {f : ℂ → ℂ} (hf : Differentiable ℂ f) (z : ℂ) :
+    analyticOrderAt (fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w))) ((starRingEnd ℂ) z)
+      = analyticOrderAt f z := by
+  set F : ℂ → ℂ := fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w)) with hFdef
+  exact analyticOrderAt_conj_conj_of_analyticAt
+    ((hf.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ z))
+    ((differentiable_conj_reflect hf).differentiableOn.analyticOnNhd isOpen_univ _
+      (Set.mem_univ _))
+
+/-- Order equivariance under conjugation for conj-equivariant carriers, from
+analyticity at the two mirror points only. -/
+theorem analyticOrderAt_conj_of_conjEquivariant {f : ℂ → ℂ} {z : ℂ}
+    (hconj : ∀ s, f ((starRingEnd ℂ) s) = (starRingEnd ℂ) (f s))
+    (hfa : AnalyticAt ℂ f z) (hfa' : AnalyticAt ℂ f ((starRingEnd ℂ) z)) :
+    analyticOrderAt f ((starRingEnd ℂ) z) = analyticOrderAt f z := by
+  have hfun : (fun w => (starRingEnd ℂ) (f ((starRingEnd ℂ) w))) = f := by
+    funext w
+    rw [hconj, Complex.conj_conj]
+  have h := analyticOrderAt_conj_conj_of_analyticAt hfa (by rw [hfun]; exact hfa')
+  rwa [hfun] at h
 
 /-- **Reality pairing of orders**: ord_{conj ρ}(ξ) = ord_ρ(ξ). -/
 theorem xi_orderAt_conj (z : ℂ) :

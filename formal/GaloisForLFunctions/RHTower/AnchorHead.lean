@@ -45,7 +45,7 @@ theorem eulerFactor_ne_zero {p : ℕ} (hp : 2 ≤ p) {s : ℂ} (hs : 0 < s.re) :
   exact lt_irrefl _ hlt
 
 /-- Line derivative of a Euler factor. -/
-theorem hasDerivAt_eulerFactor {p : ℕ} (hp : (p : ℂ) ≠ 0) (s : ℂ) :
+private theorem hasDerivAt_eulerFactor {p : ℕ} (hp : (p : ℂ) ≠ 0) (s : ℂ) :
     HasDerivAt (fun s => 1 - (p : ℂ) ^ (-s)) ((Complex.log p) * (p : ℂ) ^ (-s)) s := by
   have hns : HasDerivAt (fun s : ℂ => -s) (-1) s := (hasDerivAt_id s).neg
   have hcpow : HasDerivAt (fun s : ℂ => (p : ℂ) ^ (-s))
@@ -55,19 +55,19 @@ theorem hasDerivAt_eulerFactor {p : ℕ} (hp : (p : ℂ) ≠ 0) (s : ℂ) :
   ring
 
 /-- Each Euler factor is entire. -/
-theorem differentiable_eulerFactor {p : ℕ} (hp : (p : ℂ) ≠ 0) :
+private theorem differentiable_eulerFactor {p : ℕ} (hp : (p : ℂ) ≠ 0) :
     Differentiable ℂ (fun s : ℂ => 1 - (p : ℂ) ^ (-s)) :=
   fun s => (hasDerivAt_eulerFactor hp s).differentiableAt
 
 /-- The logarithmic derivative of a Euler factor is the prime term `(log p) p^{−s}/(1−p^{−s})`. -/
-theorem logDeriv_eulerFactor {p : ℕ} (hp : (p : ℂ) ≠ 0) (s : ℂ) :
+private theorem logDeriv_eulerFactor {p : ℕ} (hp : (p : ℂ) ≠ 0) (s : ℂ) :
     logDeriv (fun s => 1 - (p : ℂ) ^ (-s)) s
       = (Complex.log p) * (p : ℂ) ^ (-s) / (1 - (p : ℂ) ^ (-s)) := by
   rw [logDeriv_apply, (hasDerivAt_eulerFactor hp s).deriv]
 
 /-- The prime term's modulus is bounded, uniformly in the height, by
 `(log p) p^{−σ}/(1 − p^{−σ})`. -/
-theorem norm_logDeriv_eulerFactor_le {p : ℕ} (hp : 2 ≤ p) {s : ℂ} (hs : 0 < s.re) :
+private theorem norm_logDeriv_eulerFactor_le {p : ℕ} (hp : 2 ≤ p) {s : ℂ} (hs : 0 < s.re) :
     ‖(Complex.log p) * (p : ℂ) ^ (-s) / (1 - (p : ℂ) ^ (-s))‖
       ≤ Real.log p * (p : ℝ) ^ (-s.re) / (1 - (p : ℝ) ^ (-s.re)) := by
   have hpr : (0 : ℝ) < (p : ℝ) := by positivity
@@ -107,7 +107,7 @@ theorem differentiable_eulerHeadAnchor {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤
     differentiable_eulerFactor (Nat.cast_ne_zero.mpr (by have := hP p hp; omega))
 
 /-- The logarithmic derivative of the finite Euler head is the finite prime sum. -/
-theorem logDeriv_eulerHeadAnchor {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) {s : ℂ} (hs : 0 < s.re) :
+private theorem logDeriv_eulerHeadAnchor {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) {s : ℂ} (hs : 0 < s.re) :
     logDeriv (eulerHeadAnchor P) s
       = ∑ p ∈ P, (Complex.log p) * (p : ℂ) ^ (-s) / (1 - (p : ℂ) ^ (-s)) := by
   have hne : ∀ p ∈ P, (fun s => 1 - (p : ℂ) ^ (-s)) s ≠ 0 :=
@@ -125,7 +125,7 @@ theorem logDeriv_eulerHeadAnchor {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) {s
 /-- **The anchor phase budget.**  The finite Euler head's logarithmic derivative has modulus
 bounded, uniformly in the height, by the prime sum `eulerHeadBound P σ` — hence so does its
 real part, the anchor's phase-advance rate along a vertical edge. -/
-theorem norm_logDeriv_eulerHeadAnchor_le {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p)
+private theorem norm_logDeriv_eulerHeadAnchor_le {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p)
     {s : ℂ} (hs : 0 < s.re) :
     ‖logDeriv (eulerHeadAnchor P) s‖ ≤ eulerHeadBound P s.re := by
   rw [logDeriv_eulerHeadAnchor hP hs]

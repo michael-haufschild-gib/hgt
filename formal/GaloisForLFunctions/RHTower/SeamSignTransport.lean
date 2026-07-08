@@ -163,12 +163,6 @@ theorem completedGN_lineReflect {N : ℕ} {s : ℂ} (h0 : 0 < s.re) (h1 : s.re <
   rw [show lineReflect s = 1 - (starRingEnd ℂ) s from rfl,
     completedGN_one_sub hc0 hc1, completedGN_conj]
 
-/-- Reality of the completed truncation on the critical line. -/
-theorem completedGN_im_eq_zero_on_line {N : ℕ} {p : ℂ} (hp : p.re = 1 / 2) :
-    (completedGN N p).im = 0 :=
-  im_eq_zero_on_line_of_realFE hp
-    (completedGN_lineReflect (by rw [hp]; norm_num) (by rw [hp]; norm_num))
-
 /-! ### §6 The L-transport capstones -/
 
 /-- The (K1) seam datum of ξ equals that of the completed truncation under

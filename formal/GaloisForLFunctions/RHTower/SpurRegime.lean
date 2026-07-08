@@ -124,20 +124,13 @@ theorem smonoStepCert_of_sdouble_endpoint {S₀ S₁ : ℝ}
 theorem stepPos_of_smonoStepCert {S₀ S₁ : ℝ} (h : SMonoStepCert S₀ S₁) :
     0 < S₁ - S₀ := h
 
-/-- A chain of regime step certificates is exactly the adjacent positivity consumed by `SpurSMono`. -/
-theorem adjacentStepPos_of_smonoStepCerts :
-    ∀ S : List ℝ, SMonoStepCerts S → AdjacentStepPos S := by
-  intro S h
-  simpa [SMonoStepCerts] using h
-
 /-- AMP reader input from ledger-certified regime steps and a monotone S-to-margin dressing. -/
 theorem ampReaderInput_of_regime_dressing_le {S : List ℝ} {Z : ℕ} {dress : ℝ → ℝ}
     (hS : SMonoStepCerts S) (hdress : Monotone dress)
     (hvisible : 0 < Z) (heven : Even Z)
     (hbound : Z ≤ 2 + copyFlipTransitions (ampMarginStates (S.map dress))) :
     AMPReaderInput (S.map dress) Z :=
-  ampReaderInput_of_smono_dressing_le (adjacentStepPos_of_smonoStepCerts S hS) hdress
-    hvisible heven hbound
+  ampReaderInput_of_smono_dressing_le hS hdress hvisible heven hbound
 
 /-- AMP reader input from ledger-certified regime steps and an antitone S-to-margin dressing. -/
 theorem ampReaderInput_of_regime_dressing_ge {S : List ℝ} {Z : ℕ} {dress : ℝ → ℝ}
@@ -145,8 +138,7 @@ theorem ampReaderInput_of_regime_dressing_ge {S : List ℝ} {Z : ℕ} {dress : �
     (hvisible : 0 < Z) (heven : Even Z)
     (hbound : Z ≤ 2 + copyFlipTransitions (ampMarginStates (S.map dress))) :
     AMPReaderInput (S.map dress) Z :=
-  ampReaderInput_of_smono_dressing_ge (adjacentStepPos_of_smonoStepCerts S hS) hdress
-    hvisible heven hbound
+  ampReaderInput_of_smono_dressing_ge hS hdress hvisible heven hbound
 
 /-- Exact reader pair from ledger-certified regime steps and a monotone S-to-margin dressing. -/
 theorem amp_reader_exact_pair_of_regime_dressing_le {S : List ℝ} {Z : ℕ} {dress : ℝ → ℝ}
@@ -154,8 +146,7 @@ theorem amp_reader_exact_pair_of_regime_dressing_le {S : List ℝ} {Z : ℕ} {dr
     (hvisible : 0 < Z) (heven : Even Z)
     (hbound : Z ≤ 2 + copyFlipTransitions (ampMarginStates (S.map dress))) :
     Z = 2 :=
-  amp_reader_exact_pair_of_smono_dressing_le (adjacentStepPos_of_smonoStepCerts S hS) hdress
-    hvisible heven hbound
+  amp_reader_exact_pair_of_smono_dressing_le hS hdress hvisible heven hbound
 
 /-- Exact reader pair from ledger-certified regime steps and an antitone S-to-margin dressing. -/
 theorem amp_reader_exact_pair_of_regime_dressing_ge {S : List ℝ} {Z : ℕ} {dress : ℝ → ℝ}
@@ -163,7 +154,6 @@ theorem amp_reader_exact_pair_of_regime_dressing_ge {S : List ℝ} {Z : ℕ} {dr
     (hvisible : 0 < Z) (heven : Even Z)
     (hbound : Z ≤ 2 + copyFlipTransitions (ampMarginStates (S.map dress))) :
     Z = 2 :=
-  amp_reader_exact_pair_of_smono_dressing_ge (adjacentStepPos_of_smonoStepCerts S hS) hdress
-    hvisible heven hbound
+  amp_reader_exact_pair_of_smono_dressing_ge hS hdress hvisible heven hbound
 
 end RHTower

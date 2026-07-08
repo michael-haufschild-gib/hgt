@@ -13,8 +13,7 @@ whole ball, hence into the two-circle relative domination
 certificate thereby reduces to: two signs on the line, one derivative floor at one point, and one
 sup on one circle.
 -/
-import GaloisForLFunctions.RHTower.AnnealWindowRelation
-import GaloisForLFunctions.RHTower.SeamSignTransport
+import GaloisForLFunctions.RHTower.ZetaCarrier
 import GaloisForLFunctions.RHTower.PinnedWindow
 import GaloisForLFunctions.RHTower.MinimumModulus
 

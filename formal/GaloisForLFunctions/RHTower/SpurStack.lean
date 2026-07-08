@@ -27,7 +27,7 @@ structure SpurRAMPInput (S : List ℝ) (Z : ℕ) (dress : ℝ → ℝ) : Prop wh
 theorem copyFlipTransitions_le_one_of_spurRAMPInput {S : List ℝ} {Z : ℕ} {dress : ℝ → ℝ}
     (h : SpurRAMPInput S Z dress) :
     copyFlipTransitions (ampMarginStates (S.map dress)) ≤ 1 := by
-  have hS : AdjacentStepPos S := adjacentStepPos_of_smonoStepCerts S h.steps
+  have hS : AdjacentStepPos S := h.steps
   rcases h.dressing with hdress | hdress
   · exact copyFlipTransitions_ampMarginStates_pairwise_le_le_one
       (List.IsChain.pairwise (isChain_map_le_of_adjacentStepPos hS hdress))
@@ -39,13 +39,6 @@ theorem zeroCount_le_two_of_spurRAMPInput {S : List ℝ} {Z : ℕ} {dress : ℝ 
     (h : SpurRAMPInput S Z dress) : Z ≤ 2 :=
   corrected_counting_bound_at_most_one_crossing h.counting_bound
     (copyFlipTransitions_le_one_of_spurRAMPInput h) h.even
-
-/-- Compatibility adapter from the full SPUR-R / AMP provider to the legacy reader input. -/
-theorem ampReaderInput_of_spurRAMPInput {S : List ℝ} {Z : ℕ} {dress : ℝ → ℝ}
-    (h : SpurRAMPInput S Z dress) : AMPReaderInput (S.map dress) Z := by
-  rcases h.dressing with hdress | hdress
-  · exact ampReaderInput_of_regime_dressing_le h.steps hdress h.visible h.even h.counting_bound
-  · exact ampReaderInput_of_regime_dressing_ge h.steps hdress h.visible h.even h.counting_bound
 
 /-- Terminal exact-pair theorem for the proved SPUR-R / AMP stack. -/
 theorem amp_reader_exact_pair_of_spurRAMPInput {S : List ℝ} {Z : ℕ} {dress : ℝ → ℝ}

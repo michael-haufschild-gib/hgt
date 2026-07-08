@@ -60,7 +60,7 @@ theorem norm_prime_cpow_neg {p : ℕ} (hp : 2 ≤ p) (s : ℂ) :
     Complex.norm_cpow_eq_rpow_re_of_pos hpr, Complex.neg_re]
 
 /-- The real part of an Euler factor sits above `1 − p^{−Re s}`. -/
-theorem re_eulerFactor_ge {p : ℕ} (hp : 2 ≤ p) (s : ℂ) :
+private theorem re_eulerFactor_ge {p : ℕ} (hp : 2 ≤ p) (s : ℂ) :
     1 - (p : ℝ) ^ (-s.re) ≤ ((1 : ℂ) - (p : ℂ) ^ (-s)).re := by
   have h1 : ((1 : ℂ) - (p : ℂ) ^ (-s)).re = 1 - ((p : ℂ) ^ (-s)).re := by
     rw [Complex.sub_re, Complex.one_re]
@@ -77,7 +77,7 @@ theorem re_eulerFactor_pos {p : ℕ} (hp : 2 ≤ p) {s : ℂ} (hs : 0 < s.re) :
   linarith [re_eulerFactor_ge hp s]
 
 /-- The imaginary part of an Euler factor is dominated by `p^{−Re s}`. -/
-theorem abs_im_eulerFactor_le {p : ℕ} (hp : 2 ≤ p) (s : ℂ) :
+private theorem abs_im_eulerFactor_le {p : ℕ} (hp : 2 ≤ p) (s : ℂ) :
     |((1 : ℂ) - (p : ℂ) ^ (-s)).im| ≤ (p : ℝ) ^ (-s.re) := by
   have h1 : ((1 : ℂ) - (p : ℂ) ^ (-s)).im = -((p : ℂ) ^ (-s)).im := by
     rw [Complex.sub_im, Complex.one_im]
@@ -95,7 +95,7 @@ theorem arg_eq_arctan_of_re_pos {z : ℂ} (hz : 0 < z.re) :
   exact (Real.arctan_tan h1 h2).symm
 
 /-- The arctangent is dominated by its argument in absolute value. -/
-theorem abs_arctan_le_abs (x : ℝ) : |Real.arctan x| ≤ |x| := by
+private theorem abs_arctan_le_abs (x : ℝ) : |Real.arctan x| ≤ |x| := by
   have key : ∀ y : ℝ, 0 ≤ y → Real.arctan y ≤ y := by
     intro y hy
     rcases eq_or_lt_of_le hy with h | h
@@ -154,7 +154,7 @@ theorem abs_anchorTilt_le {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) {s : ℂ}
 /-! ### Schwarz oddness of the tilt -/
 
 /-- The Euler variable conjugates with the point. -/
-theorem prime_cpow_neg_conj {p : ℕ} (hp : 2 ≤ p) (s : ℂ) :
+private theorem prime_cpow_neg_conj {p : ℕ} (hp : 2 ≤ p) (s : ℂ) :
     (p : ℂ) ^ (-(starRingEnd ℂ) s) = (starRingEnd ℂ) ((p : ℂ) ^ (-s)) := by
   have hpne : (p : ℂ) ≠ 0 := by
     exact_mod_cast Nat.cast_ne_zero.mpr (by omega)
@@ -187,7 +187,7 @@ theorem anchorTilt_conj {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p) {s : ℂ} (
 /-! ### The exact polar identity -/
 
 /-- A finite product recomposes from its factor moduli and summed factor angles. -/
-theorem prod_polar (P : Finset ℕ) (f : ℕ → ℂ) :
+private theorem prod_polar (P : Finset ℕ) (f : ℕ → ℂ) :
     ∏ p ∈ P, f p =
       ((∏ p ∈ P, ‖f p‖ : ℝ) : ℂ) * Complex.exp (((∑ p ∈ P, (f p).arg : ℝ) : ℂ) * I) := by
   classical
@@ -402,13 +402,13 @@ theorem abs_anchorMirrorDefect_le_of_mem_ball {P : Finset ℕ} (hP : ∀ p ∈ P
 /-! ### The critical line: the anchor breaks the symmetry at almost every height -/
 
 /-- The single-prime anchor. -/
-theorem eulerHeadAnchor_singleton (p : ℕ) (s : ℂ) :
+private theorem eulerHeadAnchor_singleton (p : ℕ) (s : ℂ) :
     eulerHeadAnchor {p} s = 1 - (p : ℂ) ^ (-s) :=
   Finset.prod_singleton _ _
 
 /-- **The single-prime anchor's imaginary part on the critical line** is the pure prime
 oscillation `p^{−1/2}·sin(τ·log p)`. -/
-theorem eulerHeadAnchor_line_im {p : ℕ} (hp : 2 ≤ p) (τ : ℝ) :
+private theorem eulerHeadAnchor_line_im {p : ℕ} (hp : 2 ≤ p) (τ : ℝ) :
     (eulerHeadAnchor {p} (stripPt (1/2) τ)).im =
       (p : ℝ) ^ (-(1/2 : ℝ)) * Real.sin (τ * Real.log p) := by
   have hppos : (0 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 0 < p)

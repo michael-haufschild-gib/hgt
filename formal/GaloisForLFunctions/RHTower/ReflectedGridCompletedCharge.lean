@@ -13,7 +13,7 @@ Under those hypotheses, the completed-carrier reflected charge is even and hence
 to the level-two deck reduction.
 -/
 import GaloisForLFunctions.RHTower.ReflectedGridAnalyticCharge
-import GaloisForLFunctions.RHTower.AnnealWindowRelation
+import GaloisForLFunctions.RHTower.ZetaCarrier
 
 open Complex Real Filter Topology
 open scoped BigOperators

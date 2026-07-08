@@ -109,10 +109,6 @@ theorem xi_central_order_eq_two_mul :
     rfl
   rw [analyticOrderAt_congr hev, hcomp, hgord2, hg0, mul_comm]
 
-/-- Re-derivation of Phase C from the descent: the central ξ-order is even. -/
-theorem xi_central_order_even_via_descent : Even (analyticOrderAt xi (1 / 2 : ℂ)).toNat := by
-  exact xi_central_order_even
-
 /-! ### §4 The verdict -/
 
 /-- **Central parity cannot violate the deposit.**  Under any admissible deformation the seam order
