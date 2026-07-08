@@ -1,6 +1,7 @@
 import GaloisForLFunctions.CompleteHomogeneous
 import GaloisForLFunctions.ExteriorSatake
 import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.RingTheory.PowerSeries.Inverse
 
 /-!
 # The `e–h` (∧•/Sym•) Koszul duality — welding B30 to B5 (Tier A)
@@ -56,6 +57,16 @@ theorem geometric_localFactor_inv (r : ℂ) :
   · simp [coeff_mk, coeff_zero_X_mul, coeff_one]
   · rw [coeff_mk, coeff_succ_X_mul, coeff_mk, coeff_one]
     simp only [Nat.succ_ne_zero, if_false, pow_succ]; ring
+
+/-- **Geometric series as the inverse local factor.** The power series
+`Σ_m rᵐXᵐ` is the inverse of the one-factor Euler polynomial `1 - rX`. This is
+the inverse-form corollary of `geometric_localFactor_inv`. -/
+@[aesop safe]
+theorem geometric_localFactor_eq_inv (r : ℂ) :
+    (mk fun m => r ^ m) = (1 - PowerSeries.C r * X)⁻¹ := by
+  have hc : PowerSeries.constantCoeff (1 - PowerSeries.C r * X) ≠ 0 := by simp
+  rw [eq_comm, PowerSeries.inv_eq_iff_mul_eq_one hc, mul_comm]
+  exact geometric_localFactor_inv r
 
 /-- **The `∧•` generating series (local `L`-factor).** The coefficient of `Xᵏ` in
 `E(X) = ∏ᵢ (1 − fᵢX)` is the signed elementary symmetric function

@@ -455,11 +455,8 @@ theorem Lroot_flip_of_period (m : ℕ)
       rw [div_pow, Lroot_pow m (exp_add_im_mem ht (hPsim (s : ℝ))), Lroot_pow m ht,
         Lroot_zero, Lroot_zero]
     have hq0mdeg : degZ ⟦q0m⟧ = 1 := by
-      have hd := degZ_powLoop (2 ^ m) q0m
-      rw [hpow, hq0deg] at hd
-      have h2m : ((2 ^ m : ℕ) : ℤ) ≠ 0 := by positivity
-      have heq : ((2 ^ m : ℕ) : ℤ) * 1 = ((2 ^ m : ℕ) : ℤ) * degZ ⟦q0m⟧ := by rw [mul_one]; exact hd
-      exact (mul_left_cancel₀ h2m heq).symm
+      refine degZ_eq_one_of_powLoop_eq_natCast (2 ^ m) q0m (by positivity) ?_
+      rw [hpow, hq0deg]
     -- normalized `L_{m+1}`-loop (a loop thanks to `h`); its square is the `L_m`-loop
     have hL1ne : ∀ s : I,
         Lroot c (m + 1) (t + ((2 ^ m : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) * (s : ℝ)) ≠ 0 :=

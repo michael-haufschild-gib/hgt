@@ -67,6 +67,18 @@ def FundamentalSolutionProp : Prop :=
   ∀ (ρ : ℂ) (φ : ℂ → ℝ), ContDiff ℝ 2 φ → HasCompactSupport φ →
     ∫ z, Real.log ‖z - ρ‖ * (Δ φ) z = 2 * Real.pi * φ ρ
 
+/-- Smoothness is preserved by right translation. -/
+theorem contDiff_comp_add_right (φ : ℂ → ℝ) (ρ : ℂ) {n : ℕ∞}
+    (hφ : ContDiff ℝ n φ) : ContDiff ℝ n (fun x => φ (x + ρ)) :=
+  hφ.comp (contDiff_id.add contDiff_const)
+
+/-- Compact support is preserved by right translation. -/
+theorem hasCompactSupport_comp_add_right (φ : ℂ → ℝ) (ρ : ℂ)
+    (hφc : HasCompactSupport φ) : HasCompactSupport (fun x => φ (x + ρ)) := by
+  have : HasCompactSupport (φ ∘ (fun x => x + ρ)) :=
+    hφc.comp_homeomorph (Homeomorph.addRight ρ)
+  simpa [Function.comp] using this
+
 /-- **Polar reduction of the log-weighted integral** (the first analytic step
 toward `FundamentalSolutionProp`, banked and verified).  The planar integral of
 `log‖z‖ · g(z)` becomes the `(r,θ)` integral of `r · log r · g` over
@@ -104,11 +116,8 @@ theorem fundamentalSolutionProp_of_center
       ∫ z, Real.log ‖z‖ * (Δ φ) z = 2 * Real.pi * φ 0) :
     FundamentalSolutionProp := by
   intro ρ φ hφ hφc
-  have hψ : ContDiff ℝ 2 (fun x => φ (x + ρ)) := hφ.comp (contDiff_id.add contDiff_const)
-  have hψc : HasCompactSupport (fun x => φ (x + ρ)) := by
-    have : HasCompactSupport (φ ∘ (fun x => x + ρ)) :=
-      hφc.comp_homeomorph (Homeomorph.addRight ρ)
-    simpa [Function.comp] using this
+  have hψ : ContDiff ℝ 2 (fun x => φ (x + ρ)) := contDiff_comp_add_right φ ρ hφ
+  have hψc : HasCompactSupport (fun x => φ (x + ρ)) := hasCompactSupport_comp_add_right φ ρ hφc
   have key := h0 (fun x => φ (x + ρ)) hψ hψc
   rw [laplacian_comp_add_right] at key
   simp only [zero_add] at key

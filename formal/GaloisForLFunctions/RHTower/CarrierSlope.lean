@@ -47,24 +47,9 @@ theorem slope_deviation_ball_bound {h : ℂ → ℂ} {a : ℂ} {P Δ : ℝ}
     (hh : ∀ z ∈ closedBall a P, AnalyticAt ℂ h z)
     (hΔ : ∀ z ∈ sphere a P, ‖h z - h a‖ ≤ Δ) :
     ∀ z ∈ closedBall a P, ‖h z - h a‖ ≤ Δ / P * ‖z - a‖ := by
-  have hdiffcl : DiffContOnCl ℂ (fun z => h z - h a) (ball a P) := by
-    constructor
-    · intro z hz
-      exact ((hh z (ball_subset_closedBall hz)).sub
-        analyticAt_const).differentiableAt.differentiableWithinAt
-    · intro z hz
-      rw [closure_ball a hP.ne'] at hz
-      exact ((hh z hz).sub analyticAt_const).continuousAt.continuousWithinAt
   have hmax : ∀ z ∈ closedBall a P, ‖h z - h a‖ ≤ Δ := by
-    intro z hz
-    have hfr : ∀ w ∈ frontier (ball a P), ‖h w - h a‖ ≤ Δ := by
-      intro w hw
-      rw [frontier_ball a hP.ne'] at hw
-      exact hΔ w hw
-    refine Complex.norm_le_of_forall_mem_frontier_norm_le
-      Metric.isBounded_ball hdiffcl hfr ?_
-    rw [closure_ball a hP.ne']
-    exact hz
+    exact norm_le_on_closedBall_of_sphere (f := fun z => h z - h a) hP
+      (fun z hz => (hh z hz).sub analyticAt_const) hΔ
   intro z hz
   rcases eq_or_lt_of_le (mem_closedBall.mp hz) with heq | hlt
   · have hnorm : ‖z - a‖ = P := by rw [← dist_eq_norm]; exact heq
@@ -374,19 +359,7 @@ theorem dslope_norm_le_of_boundary_sup {G : ℂ → ℂ} {a ρ' : ℂ} {P M dρ 
     apply div_le_div₀ hM0 (hsup z hz) (by linarith)
     exact hzdist
   intro z hz
-  have hdiffcl : DiffContOnCl ℂ (dslope G ρ') (ball a P) := by
-    constructor
-    · intro w hw
-      exact (hhan w (ball_subset_closedBall hw)).differentiableAt.differentiableWithinAt
-    · intro w hw
-      rw [closure_ball a hP.ne'] at hw
-      exact (hhan w hw).continuousAt.continuousWithinAt
-  refine Complex.norm_le_of_forall_mem_frontier_norm_le Metric.isBounded_ball hdiffcl ?_ ?_
-  · intro w hw
-    rw [frontier_ball a hP.ne'] at hw
-    exact hfr w hw
-  · rw [closure_ball a hP.ne']
-    exact hz
+  exact norm_le_on_closedBall_of_sphere hP hhan hfr z hz
 
 /-- **Slope-deviation sup from a boundary carrier sup.**  At a zero of `G`, the deviation of
 the difference quotient from the derivative on the circle of radius `P` is at most `2M/P`,

@@ -241,10 +241,10 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | `formal/GaloisForLFunctions/Bottcher/OmittingNormal.lean:12` | the family `f_n` is normal. The only remaining input to three-value Montel is then the **covering μ |
 | `formal/GaloisForLFunctions/Bottcher/OneSidedCofinal.lean:191` | /-- **Neighbourhood-cofinal one-sidedness**: arbitrarily small OPEN neighbourhoods of `x` |
 | `formal/GaloisForLFunctions/Bottcher/OneSidedCofinal.lean:580` | is a repelling fixed point on the frontier, so the entire remaining content of the real-pair |
-| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:655` | remaining topological-degree assertion exposed as the `hodd` hypothesis. -/ |
-| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:722` | `rho_n - c` half-period loops. This packages the remaining connected topological-degree |
-| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:806` | behind the remaining connected `π₁` theorem. -/ |
-| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:917` | is the genuine remaining content, governed by the connectedness of the filled Julia set. -/ |
+| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:652` | remaining topological-degree assertion exposed as the `hodd` hypothesis. -/ |
+| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:719` | `rho_n - c` half-period loops. This packages the remaining connected topological-degree |
+| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:803` | behind the remaining connected `π₁` theorem. -/ |
+| `formal/GaloisForLFunctions/Bottcher/PeriodDoubling.lean:914` | is the genuine remaining content, governed by the connectedness of the filled Julia set. -/ |
 | `formal/GaloisForLFunctions/Bottcher/PeriodicPoints.lean:64` | remaining Fatou-density content.) -/ |
 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:235` | far field — with the only remaining input a geometric one: the connected far-field region `V` reaching the |
 | `formal/GaloisForLFunctions/Bottcher/PolyAsymptotic.lean:933` | where the remaining error is multiplied by the small defect `Z(t)-W(t)^2-d`. -/ |

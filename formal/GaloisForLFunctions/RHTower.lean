@@ -109,6 +109,7 @@ import GaloisForLFunctions.RHTower.ReversalPositivity
 import GaloisForLFunctions.RHTower.AnnealCarrier
 import GaloisForLFunctions.RHTower.ZetaCarrier
 import GaloisForLFunctions.RHTower.HardyCarrier
+import GaloisForLFunctions.RHTower.DigammaLine
 import GaloisForLFunctions.RHTower.RouteBOfflineDomination
 import GaloisForLFunctions.RHTower.RouteBChiDecay
 import GaloisForLFunctions.RHTower.RouteBProportion
@@ -121,9 +122,11 @@ import GaloisForLFunctions.RHTower.OmegaComplexStructure
 import GaloisForLFunctions.RHTower.OmegaObstruction
 import GaloisForLFunctions.RHTower.WeldClassTable
 import GaloisForLFunctions.RHTower.WeldRateLattice
+import GaloisForLFunctions.RHTower.ExpNatIrrational
+import GaloisForLFunctions.RHTower.WeldChargeFaithfulness
+import GaloisForLFunctions.RHTower.WeldCircleFaithfulness
 import GaloisForLFunctions.RHTower.SeamClockSelection
 import GaloisForLFunctions.RHTower.TranscendentalRateObject
-import GaloisForLFunctions.RHTower.SeamSupermetricSignature
 import GaloisForLFunctions.RHTower.DiscWindow
 import GaloisForLFunctions.RHTower.DiscExtraction
 import GaloisForLFunctions.RHTower.WindowProducer
@@ -382,6 +385,7 @@ import GaloisForLFunctions.RHTower.WholeLoopClosure
 import GaloisForLFunctions.RHTower.ThirdMomentResonance
 import GaloisForLFunctions.RHTower.SeamSpectralFlow
 import GaloisForLFunctions.RHTower.SeamPolarizationWeld
+import GaloisForLFunctions.RHTower.SeamNullConeSignature
 import GaloisForLFunctions.RHTower.SeamInertiaCharge
 import GaloisForLFunctions.RHTower.ChargeTomography
 import GaloisForLFunctions.RHTower.WeldChargeConnecting

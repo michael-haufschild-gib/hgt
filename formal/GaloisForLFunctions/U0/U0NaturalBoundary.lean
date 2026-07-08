@@ -580,6 +580,18 @@ theorem uniform_continuation_cover (hcont : ∀ w₀ : ℂ, ‖w₀‖ = 1 → C
   obtain ⟨g, hgan, hgeq⟩ := (continuesDisk_ball (hcont s.1 s.2)).choose_spec.2
   exact ⟨g, hgan.mono hs, fun w hw => hgeq w ⟨hs hw.1, hw.2⟩⟩
 
+/-- Uniform-radius disk continuations obtained directly from exterior continuations of `u₀`. -/
+@[aesop safe]
+theorem uniform_continuation_cover_of_continuesExt
+    (hcont : ∀ z₀ : ℂ, ‖z₀‖ = 1 → ContinuesAcross u0 Ext z₀) :
+    ∃ δ > 0, ∀ x : ℂ, ‖x‖ = 1 → ∃ g : ℂ → ℂ, AnalyticOnNhd ℂ g (Metric.ball x δ) ∧
+      ∀ w ∈ Metric.ball x δ ∩ Metric.ball 0 1, g w = U0sum w := by
+  refine uniform_continuation_cover ?_
+  intro w₀ hw₀
+  have hinv : ‖w₀⁻¹‖ = 1 := by rw [norm_inv, hw₀, inv_one]
+  have := continuesDisk_of_continuesExt hinv (hcont w₀⁻¹ hinv)
+  rwa [inv_inv] at this
+
 /-- **Overlap consistency (PROVEN).** Two equal-radius continuations centered at unit-circle points
 `x, y` agree at any common point `w`: their chord-midpoint `(x+y)/2` lies strictly inside the disk
 (strict convexity) and inside both balls, where both equal `U0sum`; the identity theorem on the convex
@@ -670,12 +682,7 @@ Mahler-equation propagation, the doubly-exponential divergence, and this gluing.
 theorem seed_singularity : ∃ z₁ : ℂ, ‖z₁‖ = 1 ∧ ¬ ContinuesAcross u0 Ext z₁ := by
   by_contra hcon
   push Not at hcon
-  have hdisk : ∀ w₀ : ℂ, ‖w₀‖ = 1 → ContinuesAcrossDisk w₀ := by
-    intro w₀ hw₀
-    have hinv : ‖w₀⁻¹‖ = 1 := by rw [norm_inv, hw₀, inv_one]
-    have := continuesDisk_of_continuesExt hinv (hcon w₀⁻¹ hinv)
-    rwa [inv_inv] at this
-  obtain ⟨δ, hδ, hcov⟩ := uniform_continuation_cover hdisk
+  obtain ⟨δ, hδ, hcov⟩ := uniform_continuation_cover_of_continuesExt hcon
   classical
   set gext : ℂ → (ℂ → ℂ) := fun x => if h : ‖x‖ = 1 then (hcov x h).choose else 0 with hgext
   have hgext_an : ∀ x, ‖x‖ = 1 → AnalyticOnNhd ℂ (gext x) (Metric.ball x δ) := by

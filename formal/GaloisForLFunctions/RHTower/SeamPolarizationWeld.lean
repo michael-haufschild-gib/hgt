@@ -18,7 +18,7 @@ No carrier is built; the polarization is a *given* compatible structure and the 
 forces on the negative cone.
 -/
 import GaloisForLFunctions.RHTower.OmegaComplexStructure
-import GaloisForLFunctions.RHTower.SeamSpectralFlow
+import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
 
 open GaloisForLFunctions GaloisForLFunctions.RHTower
 

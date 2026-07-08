@@ -13,19 +13,6 @@ import Mathlib.GroupTheory.GroupAction.Basic
 
 namespace Bottcher
 
-/-- **Proper discontinuity restricts to subgroups.** If `G` acts properly discontinuously on `T`, any
-subgroup `H ≤ G` does too. -/
-theorem properlyDiscontinuousSMul_subgroup {G T : Type*} [Group G] [TopologicalSpace T]
-    [MulAction G T] [ProperlyDiscontinuousSMul G T] (H : Subgroup G) :
-    ProperlyDiscontinuousSMul H T := by
-  constructor
-  intro K L hK hL
-  have hfin := ProperlyDiscontinuousSMul.finite_disjoint_inter_image (Γ := G) (T := T) hK hL
-  apply Set.Finite.of_finite_image (f := (Subtype.val : H → G)) _ Subtype.val_injective.injOn
-  apply hfin.subset
-  rintro g ⟨h, hh, rfl⟩
-  exact hh
-
 /-- **Proper discontinuity transports along an injective equivariant map.** If `H` acts properly
 discontinuously on `T`, `f : G → H` is injective, and the `G`-action factors through `f`
 (`g • x = f g • x`), then `G` acts properly discontinuously. Generalises the subgroup case — the tool to
@@ -42,6 +29,15 @@ theorem properlyDiscontinuousSMul_of_injective {G H T : Type*} [TopologicalSpace
   rintro h ⟨g, hg, rfl⟩
   obtain ⟨w, ⟨v, hv, hvw⟩, hwL⟩ := hg
   exact ⟨w, ⟨v, hv, (hcompat g v).symm.trans hvw⟩, hwL⟩
+
+/-- **Proper discontinuity restricts to subgroups.** If `G` acts properly discontinuously on `T`, any
+subgroup `H ≤ G` does too. -/
+theorem properlyDiscontinuousSMul_subgroup {G T : Type*} [Group G] [TopologicalSpace T]
+    [MulAction G T] [ProperlyDiscontinuousSMul G T] (H : Subgroup G) :
+    ProperlyDiscontinuousSMul H T := by
+  exact properlyDiscontinuousSMul_of_injective (Subtype.val : H → G) Subtype.val_injective (by
+    intro h x
+    rfl)
 
 /-- **Proper discontinuity transports along a surjective equivariant map.** If `G` acts properly
 discontinuously on `T`, `f : G → H` is surjective, and the `H`-action is the pushforward of the

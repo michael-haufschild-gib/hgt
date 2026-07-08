@@ -174,9 +174,9 @@ def hermiteFℝ : ℝ[X] := (hermiteF A m).map (Int.castRingHom ℝ)
 
 theorem hermitePℝ_eval (x : ℝ) : (hermitePℝ A m).eval x = x ^ m * ((A : ℝ) - x) ^ m := by
   unfold hermitePℝ hermiteP
-  rw [Polynomial.map_mul, Polynomial.map_pow, Polynomial.map_pow, Polynomial.map_sub,
-    Polynomial.map_C, Polynomial.map_X]
-  simp
+  simp only [Polynomial.map_mul, Polynomial.map_pow, Polynomial.map_sub, Polynomial.map_C,
+    Polynomial.map_X, eval_mul, eval_pow, eval_sub, eval_C, eval_X, Int.coe_castRingHom,
+    Int.cast_natCast]
 
 /-- The real Hermite identity `Fℝ + Fℝ' = fℝ`, the image of `hermiteF_add_derivative`. -/
 theorem hermiteFℝ_add_derivative :
@@ -186,11 +186,17 @@ theorem hermiteFℝ_add_derivative :
 
 /-- The endpoint values of `Fℝ` are the real images of the integer endpoint values of `F`. -/
 theorem hermiteFℝ_eval_intCast (a : ℤ) :
-    (hermiteFℝ A m).eval (a : ℝ) = ((hermiteF A m).eval a : ℝ) := by
+    (hermiteFℝ A m).eval (a : ℝ) = (((hermiteF A m).eval a : ℤ) : ℝ) := by
   unfold hermiteFℝ
   have hpt : (a : ℝ) = (Int.castRingHom ℝ) a := rfl
   rw [hpt, eval_map, eval₂_at_apply]
   rfl
+
+/-- The endpoint value of `Fℝ` at a natural point, as the real image of the integer value. -/
+theorem hermiteFℝ_eval_natCast (a : ℕ) :
+    (hermiteFℝ A m).eval (a : ℝ) = (((hermiteF A m).eval (a : ℤ) : ℤ) : ℝ) := by
+  have hc : ((a : ℤ) : ℝ) = (a : ℝ) := by push_cast; ring
+  rw [← hc, hermiteFℝ_eval_intCast]
 
 /-- `d/dx (eˣ · Fℝ(x)) = eˣ · fℝ(x)`: the product rule plus the Hermite identity. -/
 theorem hasDerivAt_hermite (x : ℝ) :
@@ -207,7 +213,7 @@ theorem hasDerivAt_hermite (x : ℝ) :
 def hermiteIntegrand (x : ℝ) : ℝ := Real.exp x * (hermitePℝ A m).eval x
 
 theorem continuous_hermiteIntegrand : Continuous (hermiteIntegrand A m) :=
-  Real.continuous_exp.mul (hermitePℝ A m).continuous_aeval
+  Real.continuous_exp.mul (hermitePℝ A m).continuous
 
 /-- The Hermite integral `∫₀^A eˣ f(x) dx` (without the `m!` normalization). -/
 def hermiteBigI : ℝ := ∫ x in (0 : ℝ)..(A : ℝ), hermiteIntegrand A m x
@@ -215,19 +221,19 @@ def hermiteBigI : ℝ := ∫ x in (0 : ℝ)..(A : ℝ), hermiteIntegrand A m x
 /-- **Fundamental theorem of calculus for the Hermite integral.** -/
 theorem hermiteBigI_eq :
     hermiteBigI A m
-      = Real.exp A * (hermiteFℝ A m).eval A - (hermiteFℝ A m).eval 0 := by
+      = Real.exp A * (hermiteFℝ A m).eval (A : ℝ) - (hermiteFℝ A m).eval 0 := by
   unfold hermiteBigI hermiteIntegrand
   rw [integral_eq_sub_of_hasDerivAt (fun x _ => hasDerivAt_hermite A m x)
     ((continuous_hermiteIntegrand A m).intervalIntegrable _ _)]
   simp
 
 /-- The integrand is strictly positive on `(0, A)`, so the integral is positive. -/
-theorem hermiteBigI_pos (hA : 1 ≤ A) (hm : 1 ≤ m) : 0 < hermiteBigI A m := by
+theorem hermiteBigI_pos (hA : 1 ≤ A) : 0 < hermiteBigI A m := by
   apply intervalIntegral_pos_of_pos_on
     ((continuous_hermiteIntegrand A m).intervalIntegrable _ _)
   · intro x hx
     obtain ⟨hx0, hxA⟩ := hx
-    rw [hermiteIntegrand, hermitePℝ_eval]
+    simp only [hermiteIntegrand, hermitePℝ_eval]
     apply mul_pos (Real.exp_pos x)
     exact mul_pos (pow_pos hx0 m) (pow_pos (by linarith) m)
   · exact_mod_cast hA
@@ -242,11 +248,12 @@ theorem hermiteBigI_le (hA : 1 ≤ A) :
     intro x hx
     rw [Set.uIoc_of_le (by positivity)] at hx
     obtain ⟨hx0, hxA⟩ := hx
-    rw [Real.norm_eq_abs, hermiteIntegrand, hermitePℝ_eval, abs_of_nonneg]
+    simp only [hermiteIntegrand, hermitePℝ_eval]
+    rw [Real.norm_eq_abs, abs_of_nonneg]
     · have hexp : Real.exp x ≤ Real.exp A := Real.exp_le_exp.mpr hxA
-      have hp1 : x ^ m ≤ (A : ℝ) ^ m := pow_le_pow_left hx0.le hxA m
+      have hp1 : x ^ m ≤ (A : ℝ) ^ m := pow_le_pow_left₀ hx0.le hxA m
       have hp2 : ((A : ℝ) - x) ^ m ≤ (A : ℝ) ^ m :=
-        pow_le_pow_left (by linarith) (by linarith) m
+        pow_le_pow_left₀ (by linarith) (by linarith) m
       calc Real.exp x * (x ^ m * ((A : ℝ) - x) ^ m)
           ≤ Real.exp A * ((A : ℝ) ^ m * (A : ℝ) ^ m) := by
             apply mul_le_mul hexp _ (by positivity) (Real.exp_pos A).le
@@ -254,15 +261,15 @@ theorem hermiteBigI_le (hA : 1 ≤ A) :
         _ = Real.exp A * (A : ℝ) ^ (2 * m) := by rw [← pow_add]; ring_nf
     · apply mul_nonneg (Real.exp_pos x).le
       exact mul_nonneg (pow_nonneg hx0.le m) (pow_nonneg (by linarith) m)
-  have hnorm := norm_integral_le_of_norm_le_const (f := hermiteIntegrand A m) hbound
-  rw [← hermiteBigI] at hnorm
+  have hnorm : ‖hermiteBigI A m‖ ≤ Real.exp A * (A : ℝ) ^ (2 * m) * |(A : ℝ) - 0| :=
+    norm_integral_le_of_norm_le_const hbound
   have hpos : (0 : ℝ) ≤ hermiteBigI A m := by
     unfold hermiteBigI
     apply intervalIntegral.integral_nonneg (by positivity)
     intro x hx
-    rw [hermiteIntegrand, hermitePℝ_eval]
+    simp only [hermiteIntegrand, hermitePℝ_eval]
     apply mul_nonneg (Real.exp_pos x).le
-    exact mul_nonneg (pow_nonneg hx.1 m) (pow_nonneg (by simp at hx; linarith [hx.2]) m)
+    exact mul_nonneg (pow_nonneg hx.1 m) (pow_nonneg (by linarith [hx.2]) m)
   rw [Real.norm_eq_abs, abs_of_nonneg hpos] at hnorm
   calc hermiteBigI A m ≤ Real.exp A * (A : ℝ) ^ (2 * m) * |(A : ℝ) - 0| := hnorm
     _ = Real.exp A * (A : ℝ) ^ (2 * m + 1) := by
@@ -276,55 +283,52 @@ end HermiteAnalysis
 theorem exp_nat_irrational {A : ℕ} (hA : 1 ≤ A) : Irrational (Real.exp A) := by
   intro hmem
   obtain ⟨r, hr⟩ := hmem
-  -- clear denominators:  r.den · e^A = r.num
   have hden : (0 : ℝ) < r.den := by exact_mod_cast r.pos
-  have hqexp : (r.den : ℝ) * Real.exp A = r.num := by
-    have := hr
-    rw [Rat.cast_def] at this
-    field_simp at this ⊢
-    linarith [this]
+  have hqexp : (r.den : ℝ) * Real.exp A = (r.num : ℝ) := by
+    rw [← hr, Rat.cast_def]
+    field_simp
   -- the ratio bound sequence tends to 0
   have htend : Filter.Tendsto
       (fun m : ℕ => (r.den : ℝ) * Real.exp A * (A : ℝ) ^ (2 * m + 1) / (m.factorial : ℝ))
       Filter.atTop (nhds 0) := by
     have hs : Filter.Tendsto (fun m : ℕ => ((A : ℝ) ^ 2) ^ m / (m.factorial : ℝ))
         Filter.atTop (nhds 0) := (Real.summable_pow_div_factorial _).tendsto_atTop_zero
-    have := hs.const_mul ((r.den : ℝ) * Real.exp A * (A : ℝ))
-    rw [mul_zero] at this
-    refine this.congr (fun m => ?_)
-    rw [pow_succ, pow_mul]
+    have hcm := hs.const_mul ((r.den : ℝ) * Real.exp A * (A : ℝ))
+    rw [mul_zero] at hcm
+    refine hcm.congr (fun m => ?_)
+    rw [← pow_mul (A : ℝ) 2 m, pow_succ (A : ℝ) (2 * m)]
     ring
-  -- for m ≥ 1, `1 ≤ ratio m`; but eventually ratio < 1
   have hev : ∀ᶠ m : ℕ in Filter.atTop,
       (r.den : ℝ) * Real.exp A * (A : ℝ) ^ (2 * m + 1) / (m.factorial : ℝ) < 1 :=
     htend.eventually (eventually_lt_nhds (by norm_num))
-  obtain ⟨m, hm1, hmlt⟩ := ((Filter.eventually_ge_atTop 1).and hev).exists
+  obtain ⟨m, hmlt⟩ := hev.exists
   -- integer endpoint values
   obtain ⟨gA, hgA⟩ := factorial_dvd_hermiteF_eval_A A m
   obtain ⟨g0, hg0⟩ := factorial_dvd_hermiteF_eval_zero A m
   have hfact : (0 : ℝ) < m.factorial := by exact_mod_cast m.factorial_pos
+  have heA : (hermiteFℝ A m).eval (A : ℝ) = (((hermiteF A m).eval (A : ℤ) : ℤ) : ℝ) :=
+    hermiteFℝ_eval_natCast A m A
+  have he0 : (hermiteFℝ A m).eval 0 = (((hermiteF A m).eval 0 : ℤ) : ℝ) := by
+    simpa using hermiteFℝ_eval_intCast A m 0
   -- q · bigI = m! · Z with Z = p·gA - q·g0
   set Z : ℤ := r.num * gA - r.den * g0 with hZ
   have hqbig : (r.den : ℝ) * hermiteBigI A m = (m.factorial : ℝ) * (Z : ℝ) := by
-    rw [hermiteBigI_eq, hermiteFℝ_eval_intCast, hermiteFℝ_eval_intCast]
-    rw [show ((A : ℤ) : ℝ) = (A : ℝ) by push_cast; ring] at *
-    rw [hgA, hg0]
-    push_cast [hZ]
-    ring_nf
-    rw [mul_comm (r.den : ℝ) (Real.exp _)]
-    nlinarith [hqexp]
+    rw [hermiteBigI_eq, heA, he0, hgA, hg0, hZ]
+    push_cast
+    linear_combination ((m.factorial : ℝ) * (gA : ℝ)) * hqexp
   -- positivity forces Z ≥ 1
-  have hbigpos : 0 < hermiteBigI A m := hermiteBigI_pos A m hA hm1
+  have hbigpos : 0 < hermiteBigI A m := hermiteBigI_pos A m hA
+  have hmulpos : (0 : ℝ) < (m.factorial : ℝ) * (Z : ℝ) := by rw [← hqbig]; exact mul_pos hden hbigpos
   have hZpos : 0 < Z := by
-    have : (0 : ℝ) < (m.factorial : ℝ) * (Z : ℝ) := by
-      rw [← hqbig]; positivity
-    have hZR : (0 : ℝ) < (Z : ℝ) := by positivity_fail_safe hfact this
-    exact_mod_cast hZR
+    by_contra hcon
+    rw [not_lt] at hcon
+    have hZle : (Z : ℝ) ≤ 0 := by exact_mod_cast hcon
+    nlinarith [hmulpos, mul_nonpos_of_nonneg_of_nonpos hfact.le hZle]
   -- combine: m! ≤ q bigI ≤ q e^A A^{2m+1}
   have hlow : (m.factorial : ℝ) ≤ (r.den : ℝ) * hermiteBigI A m := by
     rw [hqbig]
-    have : (1 : ℝ) ≤ (Z : ℝ) := by exact_mod_cast hZpos
-    nlinarith [hfact]
+    have h1 : (1 : ℝ) ≤ (Z : ℝ) := by exact_mod_cast hZpos
+    nlinarith [hfact, h1]
   have hhigh : (r.den : ℝ) * hermiteBigI A m
       ≤ (r.den : ℝ) * (Real.exp A * (A : ℝ) ^ (2 * m + 1)) :=
     mul_le_mul_of_nonneg_left (hermiteBigI_le A m hA) hden.le
@@ -339,21 +343,19 @@ theorem exp_nat_irrational {A : ℕ} (hA : 1 ≤ A) : Irrational (Real.exp A) :=
 `exp_nat_irrational`; for `k ≤ -1`, `e^k = 1/e^{-k}` is irrational because `e^{-k}` is. -/
 theorem exp_int_irrational {k : ℤ} (hk : k ≠ 0) : Irrational (Real.exp k) := by
   rcases lt_or_gt_of_ne hk with hneg | hpos
-  · have hpos' : 0 < (-k).toNat := by omega
-    have hnat : Irrational (Real.exp ((-k).toNat)) := exp_nat_irrational hpos'
-    have hcast : ((-k).toNat : ℝ) = (-k : ℝ) := by
-      rw [Int.toNat_of_nonneg (by omega)]; push_cast; ring
+  · have hnat : Irrational (Real.exp ((-k).toNat : ℝ)) := exp_nat_irrational (by omega)
+    have hcast : ((-k).toNat : ℝ) = -(k : ℝ) := by
+      have hz : ((-k).toNat : ℤ) = -k := Int.toNat_of_nonneg (by omega)
+      have : ((-k).toNat : ℝ) = ((-k : ℤ) : ℝ) := by exact_mod_cast hz
+      rw [this]; push_cast; ring
     rw [hcast] at hnat
-    have hne : Real.exp (k : ℝ) ≠ 0 := Real.exp_ne_zero _
-    have : Real.exp (-k : ℝ) = (Real.exp k)⁻¹ := by
-      rw [← Real.exp_neg]; push_cast; ring_nf
-    rw [this] at hnat
-    exact (hnat.inv_iff).mp hnat |>.elim (fun h => h) |> fun _ => (Irrational.inv (by
-      simpa using hnat)) |>.elim
-  · have hpos' : 0 < k.toNat := by omega
-    have hnat : Irrational (Real.exp (k.toNat)) := exp_nat_irrational hpos'
+    have hflip : Real.exp (k : ℝ) = (Real.exp (-(k : ℝ)))⁻¹ := by rw [Real.exp_neg, inv_inv]
+    rw [hflip]
+    exact hnat.inv
+  · have hnat : Irrational (Real.exp (k.toNat : ℝ)) := exp_nat_irrational (by omega)
     have hcast : (k.toNat : ℝ) = (k : ℝ) := by
-      rw [Int.toNat_of_nonneg (by omega)]
+      have hz : (k.toNat : ℤ) = k := Int.toNat_of_nonneg (by omega)
+      exact_mod_cast hz
     rwa [hcast] at hnat
 
 end RHTower

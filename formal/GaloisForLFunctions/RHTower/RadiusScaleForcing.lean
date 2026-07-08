@@ -98,20 +98,7 @@ theorem anchor_window_margin_scale {N : ℕ} {T τ₀ rz rJ RJ m_J M_J ε : ℝ}
       linarith [hball z hz]))
   -- maximum principle: the sphere sup bounds the carrier on the closed disc
   have hMball : ∀ z ∈ closedBall (linePt τ₀) RJ, ‖gN N z‖ ≤ M_J := by
-    intro z hz
-    have hdiffcl : DiffContOnCl ℂ (gN N) (ball (linePt τ₀) RJ) := by
-      constructor
-      · intro w hw
-        exact (hgan w (ball_subset_closedBall hw)).differentiableAt.differentiableWithinAt
-      · intro w hw
-        rw [closure_ball (linePt τ₀) hRJ0.ne'] at hw
-        exact (hgan w hw).continuousAt.continuousWithinAt
-    refine Complex.norm_le_of_forall_mem_frontier_norm_le Metric.isBounded_ball hdiffcl ?_ ?_
-    · intro w hw
-      rw [frontier_ball (linePt τ₀) hRJ0.ne'] at hw
-      exact hbnd w hw
-    · rw [closure_ball (linePt τ₀) hRJ0.ne']
-      exact hz
+    exact norm_le_on_closedBall_of_sphere hRJ0 hgan hbnd
   have hgcM : ‖gN N (linePt τ₀)‖ ≤ M_J :=
     hMball (linePt τ₀) (mem_closedBall_self hRJ0.le)
   -- the Jensen quotient transfers from the floor to the center value

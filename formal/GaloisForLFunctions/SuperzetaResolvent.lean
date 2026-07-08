@@ -46,9 +46,7 @@ zero `r`. (The local factor `1 − rX` has constant coefficient `1 ≠ 0`, so it
 unit; `geometric_localFactor_inv` exhibits the inverse.) -/
 @[aesop safe]
 theorem geom_eq_inv (r : ℂ) : (mk fun m => r ^ m) = (1 - PowerSeries.C r * X)⁻¹ := by
-  have hc : PowerSeries.constantCoeff (1 - PowerSeries.C r * X) ≠ 0 := by simp
-  rw [eq_comm, PowerSeries.inv_eq_iff_mul_eq_one hc, mul_comm]
-  exact geometric_localFactor_inv r
+  exact geometric_localFactor_eq_inv r
 
 /-- **The superzeta generating function is an additive resolvent trace.** For a
 finite family of (reciprocal-)zeros `r`, the secular/superzeta generating function

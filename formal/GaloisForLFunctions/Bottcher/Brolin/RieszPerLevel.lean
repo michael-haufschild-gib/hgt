@@ -117,11 +117,8 @@ for `C²` compact-support `φ` and any center `ρ`.  Reduces to the centered cas
 theorem integrable_log_norm_sub_mul_laplacian (ρ : ℂ) (φ : ℂ → ℝ)
     (hφ : ContDiff ℝ 2 φ) (hφc : HasCompactSupport φ) :
     Integrable (fun z => Real.log ‖z - ρ‖ * Δ φ z) := by
-  have hψ : ContDiff ℝ 2 (fun x => φ (x + ρ)) := hφ.comp (contDiff_id.add contDiff_const)
-  have hψc : HasCompactSupport (fun x => φ (x + ρ)) := by
-    have : HasCompactSupport (φ ∘ (fun x => x + ρ)) :=
-      hφc.comp_homeomorph (Homeomorph.addRight ρ)
-    simpa [Function.comp] using this
+  have hψ : ContDiff ℝ 2 (fun x => φ (x + ρ)) := contDiff_comp_add_right φ ρ hφ
+  have hψc : HasCompactSupport (fun x => φ (x + ρ)) := hasCompactSupport_comp_add_right φ ρ hφc
   have hcent := integrable_log_norm_mul_laplacian_centered (fun x => φ (x + ρ)) hψ hψc
   rw [laplacian_comp_add_right] at hcent
   have hmp : MeasurePreserving (fun z : ℂ => z - ρ) volume volume :=

@@ -415,6 +415,20 @@ theorem degZ_powLoop (k : ℕ) (p : Path one_cs one_cs) :
     show degZ ⟦mulLoop p (powLoop k p)⟧ = (k + 1) * degZ ⟦p⟧
     rw [degZ_mulLoop, ih]; ring
 
+/-- Cancel a nonzero power from the winding identity `deg(p^k) = k·deg(p)`. -/
+theorem degZ_eq_of_powLoop_eq_mul (k : ℕ) (p : Path one_cs one_cs) (m : ℤ)
+    (hk : (k : ℤ) ≠ 0) (h : degZ ⟦powLoop k p⟧ = (k : ℤ) * m) :
+    degZ ⟦p⟧ = m := by
+  have hd := degZ_powLoop k p
+  rw [h] at hd
+  exact (mul_left_cancel₀ hk hd).symm
+
+/-- If a nonzero `k`-th power loop has winding `k`, then the root loop has winding `1`. -/
+theorem degZ_eq_one_of_powLoop_eq_natCast (k : ℕ) (p : Path one_cs one_cs)
+    (hk : (k : ℤ) ≠ 0) (h : degZ ⟦powLoop k p⟧ = (k : ℤ)) :
+    degZ ⟦p⟧ = 1 := by
+  exact degZ_eq_of_powLoop_eq_mul k p 1 hk (by simpa using h)
+
 /-- If `L` lifts the loop `p` (i.e. `exp ∘ L = p`) and starts at `0`, then the monodromy class of `p`
 is read off as the endpoint `L 1`. The reusable form of the lift-endpoint computation. -/
 theorem degClass_eq_of_lift (p : Path one_cs one_cs) (L : C(I, ℂ))
