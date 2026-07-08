@@ -26,7 +26,7 @@ open Complex Set Metric
 
 /-- The right slit chart is simply connected: star-convex about the half-radius point on the slit
 axis, intersected with the convex ball. -/
-theorem isSimplyConnected_chartR (a : ℂ) {R : ℝ} (hR : 0 < R) :
+private theorem isSimplyConnected_chartR (a : ℂ) {R : ℝ} (hR : 0 < R) :
     IsSimplyConnected (chartR a R) := by
   have hmem := center_mem_chartR a hR
   have hstar : StarConvex ℝ (a + ((R / 2 : ℝ) : ℂ)) (chartR a R) :=
@@ -36,7 +36,7 @@ theorem isSimplyConnected_chartR (a : ℂ) {R : ℝ} (hR : 0 < R) :
   exact SimplyConnectedSpace.ofContractible _
 
 /-- The left slit chart is simply connected. -/
-theorem isSimplyConnected_chartL (a : ℂ) {R : ℝ} (hR : 0 < R) :
+private theorem isSimplyConnected_chartL (a : ℂ) {R : ℝ} (hR : 0 < R) :
     IsSimplyConnected (chartL a R) := by
   have hmem := center_mem_chartL a hR
   have hstar : StarConvex ℝ (a - ((R / 2 : ℝ) : ℂ)) (chartL a R) :=
@@ -49,7 +49,7 @@ theorem isSimplyConnected_chartL (a : ℂ) {R : ℝ} (hR : 0 < R) :
 
 /-- On a small enough ball the center is the only possible ξ-zero; the slit charts exclude the
 center, so ξ is nonvanishing on both charts at every radius below the peel radius. -/
-theorem xi_ne_zero_on_charts (ρ₀ : ℂ) :
+private theorem xi_ne_zero_on_charts (ρ₀ : ℂ) :
     ∃ R₀ > 0, ∀ R : ℝ, 0 < R → R ≤ R₀ →
       (∀ z ∈ chartR ρ₀ R, xi z ≠ 0) ∧ (∀ z ∈ chartL ρ₀ R, xi z ≠ 0) := by
   obtain ⟨R₀, hR₀, h, hhan, hh0, hfact⟩ := xi_peel_ball ρ₀

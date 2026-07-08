@@ -21,7 +21,7 @@ open Complex Metric MeasureTheory
 namespace RHTower
 
 /-- The closed-form envelope line budget is positive. -/
-theorem archEnvelopeLineBudget_pos (B : ℝ) : 0 < archEnvelopeLineBudget B := by
+private theorem archEnvelopeLineBudget_pos (B : ℝ) : 0 < archEnvelopeLineBudget B := by
   dsimp [archEnvelopeLineBudget]
   exact mul_pos (by positivity)
     (mul_pos (Real.rpow_pos_of_pos Real.pi_pos _)
@@ -29,7 +29,7 @@ theorem archEnvelopeLineBudget_pos (B : ℝ) : 0 < archEnvelopeLineBudget B := b
 
 /-- The carrier line-slope budget is positive as soon as the depth is at least two and the
 envelope budget is positive. -/
-theorem carrierSlopeLineBudget_pos {N : ℕ} (hN : 2 ≤ N) {M₀ M₁ : ℝ}
+private theorem carrierSlopeLineBudget_pos {N : ℕ} (hN : 2 ≤ N) {M₀ M₁ : ℝ}
     (hM₀ : 0 < M₀) (hM₁ : 0 ≤ M₁) :
     0 < carrierSlopeLineBudget N M₀ M₁ := by
   have hN0 : (0 : ℝ) < N := by positivity

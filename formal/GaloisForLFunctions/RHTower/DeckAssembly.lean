@@ -45,7 +45,7 @@ theorem isOpen_overlapD (a : ℂ) (R : ℝ) : IsOpen (overlapD a R) :=
   (isOpen_lt (Complex.continuous_im.comp
     (continuous_id.sub continuous_const)) continuous_const).inter isOpen_ball
 
-theorem convex_upperShift (a : ℂ) : Convex ℝ {z : ℂ | 0 < (z - a).im} := by
+private theorem convex_upperShift (a : ℂ) : Convex ℝ {z : ℂ | 0 < (z - a).im} := by
   have himg : {z : ℂ | 0 < (z - a).im} = (fun w => a + w) '' {w : ℂ | 0 < w.im} := by
     ext z
     constructor
@@ -56,7 +56,7 @@ theorem convex_upperShift (a : ℂ) : Convex ℝ {z : ℂ | 0 < (z - a).im} := b
   rw [himg]
   exact (convex_halfSpace_im_gt 0).translate a
 
-theorem convex_lowerShift (a : ℂ) : Convex ℝ {z : ℂ | (z - a).im < 0} := by
+private theorem convex_lowerShift (a : ℂ) : Convex ℝ {z : ℂ | (z - a).im < 0} := by
   have himg : {z : ℂ | (z - a).im < 0} = (fun w => a + w) '' {w : ℂ | w.im < 0} := by
     ext z
     constructor

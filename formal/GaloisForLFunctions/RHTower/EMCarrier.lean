@@ -714,12 +714,12 @@ EM remainder plus finite-vs-finite closeness under the `gN` floor gives
 completed-level domination `‖ξ − Φ̃_N‖ < ‖Φ̃_N‖` — the exact hypothesis shape
 of `anneal_seam_L_transport` and `anneal_deck_transport`. -/
 theorem completed_domination_of_em {N M : ℕ} (hM : 1 ≤ M) {s : ℂ}
-    (hσ : 0 < s.re) (h1 : s ≠ 1) (hG : Gammaℝ s ≠ 0)
+    (hσ : 0 < s.re) (h1 : s ≠ 1)
     (h : ‖s‖ * (M : ℝ) ^ (-s.re) / s.re + ‖emCarrier M s - gN N s‖
       < ‖gN N s‖) :
     ‖xi s - completedGN N s‖ < ‖completedGN N s‖ := by
   have h0 : s ≠ 0 := fun hh => by simp [hh] at hσ
-  refine (completed_domination_iff h0 h1 hG).mpr ?_
+  refine (completed_domination_iff h0 h1 (Gammaℝ_ne_zero_of_re_pos hσ)).mpr ?_
   calc ‖riemannZeta s - gN N s‖
       ≤ ‖riemannZeta s - emCarrier M s‖ + ‖emCarrier M s - gN N s‖ := by
         have := dist_triangle (riemannZeta s) (emCarrier M s) (gN N s)
@@ -796,10 +796,8 @@ theorem anneal_seam_L_transport_of_emCarrier_close {N M : ℕ} {g₁ g₂ G₁ G
     intro hp
     rw [hp] at hMline
     norm_num at hMline
-  have hdomP := completed_domination_of_em hMpos hPσ hPne1
-    (Gammaℝ_ne_zero_of_re_pos hPσ) hEMP
-  have hdomM := completed_domination_of_em hMpos hMσ hMne1
-    (Gammaℝ_ne_zero_of_re_pos hMσ) hEMM
+  have hdomP := completed_domination_of_em hMpos hPσ hPne1 hEMP
+  have hdomM := completed_domination_of_em hMpos hMσ hMne1 hEMM
   exact anneal_seam_L_transport hU hUc hUstrip hg₁ hg₂ hG₁ hG₂ hp₁ hp₂ hP₁ hP₂ hpP
     hpM hPline hMline hdomP hdomM
 
@@ -864,8 +862,7 @@ theorem xi_rung_of_finite_side_of_emCarrier_close {N M : ℕ} (k : ℕ)
       have hzlt : z.re < 1 := (hchartStrip z hz).2
       rw [hz1] at hzlt
       norm_num at hzlt
-    exact completed_domination_of_em hMpos hσ hz_ne_one (Gammaℝ_ne_zero_of_re_pos hσ)
-      (hEMdom z hz)
+    exact completed_domination_of_em hMpos hσ hz_ne_one (hEMdom z hz)
   exact xi_rung_of_finite_side_of_domination k h0 hrR hm₁ hcl₁ hstrip hm₂ hcl₂ hρ₁ hρ₂
     hh hh0 hh' hh0' hfact₁ hfact₂ hdom hL hfin
 

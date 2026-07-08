@@ -78,7 +78,7 @@ theorem deckRed_pow_self {n : ℕ} (hn : 0 < n) (k : ℤ) : (deckRed n k) ^ n = 
 transported along the canonical section `ZMod.val`. -/
 noncomputable def deckChar (n : ℕ) (x : ZMod n) : ℂ := deckRed n (ZMod.val x : ℤ)
 
-theorem deckChar_ne_zero (n : ℕ) (x : ZMod n) : deckChar n x ≠ 0 := deckRed_ne_zero _ _
+private theorem deckChar_ne_zero (n : ℕ) (x : ZMod n) : deckChar n x ≠ 0 := deckRed_ne_zero _ _
 
 private theorem val_natCast {n : ℕ} [NeZero n] (x : ZMod n) :
     ((ZMod.val x : ℕ) : ZMod n) = x := ZMod.natCast_rightInverse x

@@ -52,10 +52,11 @@ theorem completedEM_analyticOnNhd_strip {N : ℕ} (hN : 1 ≤ N) :
 
 /-- The archimedean factor divides out: completed-level domination for the EM member is
 equivalent to the raw inequality `‖ζ − emCarrier N‖ < ‖emCarrier N‖`. -/
-theorem completedEM_domination_iff {N : ℕ} {s : ℂ} (h0 : s ≠ 0) (h1 : s ≠ 1)
-    (hG : Gammaℝ s ≠ 0) :
+private theorem completedEM_domination_iff {N : ℕ} {s : ℂ} (hσ : 0 < s.re) (h1 : s ≠ 1) :
     (‖xi s - completedEM N s‖ < ‖completedEM N s‖)
       ↔ (‖riemannZeta s - emCarrier N s‖ < ‖emCarrier N s‖) := by
+  have h0 : s ≠ 0 := fun h => by simp [h] at hσ
+  have hG : Gammaℝ s ≠ 0 := Gammaℝ_ne_zero_of_re_pos hσ
   unfold completedEM
   rw [xi_eq_archFactor_mul_zeta h0 h1 hG]
   exact norm_mul_sub_lt_iff (archFactor_ne_zero h0 h1 hG)
@@ -208,16 +209,11 @@ theorem exists_isolating_em_domination (ρ : ℂ) (h0 : 0 < ρ.re) (h1 : ρ.re <
     rw [charts_union_eq_annulus ρ (by linarith : (0 : ℝ) ≤ R / 2)] at hz
     exact ⟨ball_subset_closedBall hz.1, fun hb => hz.2 (ball_subset_closedBall hb)⟩
   have hstripz := hstripcb z hzK.1
-  have hz0 : z ≠ 0 := by
-    intro h
-    rw [h] at hstripz
-    simp at hstripz
   have hz1 : z ≠ 1 := by
     intro h
     rw [h] at hstripz
     simp at hstripz
-  exact (completedEM_domination_iff hz0 hz1
-    (Gammaℝ_ne_zero_of_re_pos hstripz.1)).mpr (hdomK z hzK)
+  exact (completedEM_domination_iff hstripz.1 hz1).mpr (hdomK z hzK)
 
 /-! ### §6 Dominating splits as a datum, their unconditional existence, and the rungs -/
 

@@ -856,8 +856,7 @@ theorem xi_window_online_of_emCarrier_close_floor_zero_brackets
       ‖xi z - completedGN N z‖ < ‖completedGN N z‖ := by
     intro z hz
     obtain ⟨hσ, hz1⟩ := hstripC z hz
-    exact completed_domination_of_em hM hσ hz1
-      (Gammaℝ_ne_zero_of_re_pos hσ) (hEM z hz)
+    exact completed_domination_of_em hM hσ hz1 (hEM z hz)
   have hDeq : ∑ w ∈ t₁, m₁ w = ∑ w ∈ t₂, m₂ w :=
     anneal_D_transport h0 hrR hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hdom
   exact xi_online_of_zero_brackets hm₁ hcl₁ hh0 hfact₁ hord hsep hsign hseg
@@ -902,8 +901,7 @@ theorem xi_window_online_of_em_sign_certificate {N M : ℕ} (hM : 1 ≤ M)
       ‖xi z - completedGN N z‖ < ‖completedGN N z‖ := by
     intro z hz
     obtain ⟨hσ, hne1⟩ := hstripC z hz
-    exact completed_domination_of_em hM hσ hne1
-      (Gammaℝ_ne_zero_of_re_pos hσ) (hEM z hz)
+    exact completed_domination_of_em hM hσ hne1 (hEM z hz)
   exact xi_window_online_of_domination_sign_certificate h0 hrR hm₁ hcl₁ hρ₁
     hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hdom hmono hsign hseg hcount₂
 
@@ -946,8 +944,7 @@ theorem xi_rung_of_finite_side_of_em_two_sign_data {N M : ℕ} (k : ℕ) (hM : 1
       ‖xi z - completedGN N z‖ < ‖completedGN N z‖ := by
     intro z hz
     obtain ⟨hσ, hne1⟩ := hstripC z hz
-    exact completed_domination_of_em hM hσ hne1
-      (Gammaℝ_ne_zero_of_re_pos hσ) (hEM z hz)
+    exact completed_domination_of_em hM hσ hne1 (hEM z hz)
   have hLeq : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
       = ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z :=
     hL_exact_of_two_sign_data h0 hrR hm₁ hcl₁ hstrip₂ hm₂ hcl₂ hρ₁ hρ₂
@@ -1306,8 +1303,7 @@ theorem xi_window_simple_online_of_em_sign_certificate {N M : ℕ} (hM : 1 ≤ M
       ‖xi z - completedGN N z‖ < ‖completedGN N z‖ := by
     intro z hz
     obtain ⟨hσ, hne1⟩ := hstripC z hz
-    exact completed_domination_of_em hM hσ hne1
-      (Gammaℝ_ne_zero_of_re_pos hσ) (hEM z hz)
+    exact completed_domination_of_em hM hσ hne1 (hEM z hz)
   exact xi_window_simple_online_of_domination_sign_certificate h0 hrR hm₁ hcl₁ hρ₁
     hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hdom hmono hsign hseg hcount₂
 
