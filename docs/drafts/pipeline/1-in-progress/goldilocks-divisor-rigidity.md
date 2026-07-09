@@ -348,3 +348,258 @@ reading of — Ostrowski's own hypertranscendence of ζ.)
 Gate note: NOVEL (the divisor-level statement and the periodicity invariant are posed nowhere;
 Q3 search documented ABSENT) × SIGNIFICANT (it is the DA half of the four-way conjecture — the
 proof shape's first fully discharged fiber). The open core is now exactly the HT fiber.
+
+---
+
+## The four-way conjecture refuted at both ends; the repair is a dichotomy (2026-07-09)
+
+### Refutation, degree-zero end [PROVED HERE — Lean]
+
+`IntegralFEPolynomial.lean`. Structure theorem for the exact degree-zero class
+(`IntegralMultiplicativeFEClass`: integral multiplicative coefficients, L-series representation
+at every point, exact FE `f s = Q^{1−2s} f(1−s)`):
+
+> **Theorem.** Every member is either identically zero or the L-series of a **finite-support**
+> stream — a Dirichlet polynomial in finitely many prime columns
+> (`integralMultiplicativeFEClass_finite_or_zero`, `finiteSupport_multiplicative_columnForm`).
+> Consequently every zero of a member is vertically periodic
+> (`integralMultiplicativeFEClass_zero_periodic`).
+
+Mechanism: integrality forces nonzero coefficients to have norm ≥ 1, so an infinite-support
+series is non-summable on `Re s ≤ 0`, where mathlib's junk-value convention forces `f = 0`; the
+FE transports the vanishing to `Re s ≥ 1`; the eventually-zero dichotomy for L-series then
+collapses the member. Integrality here **replaces the finite-order axiom** of the classical
+degree-zero classification (Kaczorowski–Perelli, Acta Math. 182 (1999): degree-0 members of S♯
+are Dirichlet polynomials supported on divisors of the conductor — [VERIFIED-KNOWN], see
+checks-ostrowski-da-dirichlet.md). **The HT fiber of the degree-zero cell is empty**: the
+four-way conjecture is vacuous there.
+
+### Refutation, gamma-widened end [PROVED HERE — Lean + one paper step]
+
+`GammaCellMobility.lean`, `ZetaRealStrip.lean`, `DichotomyInstances.lean`. The widened cell
+`GammaFECell`: integral multiplicative coefficients, L-series representation on `Re s > 1`, and
+a strip-nonvanishing completion factor γ with `γ(1−s)f(1−s) = γ(s)f(s)` on the open strip.
+
+- `zeta_mem_gammaFECell` — ζ is a member (γ = Γ_ℝ, FE = `completedRiemannZeta_one_sub`).
+- `gammaFECell_mul_dzo` — **convolution mobility**: the cell absorbs multiplication by the
+  degree-zero counterexample `dzo`.
+- `zetaMulDzo_order_one` / `gammaFECell_carriesChargeAt_ρdzo` — ζ·dzo has a **simple zero at
+  Re = 1/3** (odd, charge −1), interior to the strip. The input ζ(1/3) ≠ 0 is now a tree
+  theorem: `riemannZeta_real_strip_neg` (ζ < 0 on the real strip segment, via the paired
+  Dirichlet eta series — a mathlib gap closed in `ZetaRealStrip.lean`).
+- Paper step (register: [PROVED HERE, paper]): ζ·dzo is **hypertranscendental** — DA functions
+  form a differential field, dzo is a nonzero Dirichlet polynomial (DA), so ζ·dzo DA would force
+  ζ = (ζ·dzo)/dzo DA, contradicting Ostrowski [VERIFIED, arXiv:2211.02088 translation].
+
+**The four-way headline is dead**: FE ∧ multiplicativity ∧ integrality ∧ hypertranscendence does
+NOT confine the divisor to the line. The HT fiber carries off-line charge.
+
+### The mobility principle [PROVED HERE — Lean, the mechanism of the refutation]
+
+The cell is a monoid under Dirichlet convolution, and its off-line-charged DA members act on it.
+Any rigidity predicate closed under the class operations is invariant under this action, so
+**"divisor ⊆ line" is unprovable for every convolution-stable class** — the only rigidity shape
+that survives the action is a statement about the action-invariant part of the divisor. The
+constructed charge is exactly the mobile kind: `zetaDzo_witness_zero_periodic` — the off-line
+zero of ζ·dzo rides the full base-8 vertical progression.
+
+### The repair: the periodicity dichotomy [CONJECTURE C-PD]
+
+> **C-PD.** Every strip zero of a `GammaFECell` member lies on the critical line or on a full
+> vertical arithmetic progression of zeros. Equivalently: **off the critical line, the divisor
+> is vertically periodic** — the aperiodic part of the divisor lives on the line.
+
+Formal predicate: `PeriodicityDichotomy` (`PeriodicityDichotomy.lean`). Status matrix, all Lean:
+
+| region / operation | status | anchor |
+|---|---|---|
+| DA fiber (column forms) | **theorem** | `columnForm_periodicityDichotomy` |
+| degree-zero class | **theorem** | `integralMultiplicativeFEClass_periodicityDichotomy` |
+| stability under DA action | **theorem** | `periodicityDichotomy_mul_columnForm` |
+| aperiodic-core subadditivity | **theorem** | `aperiodicZeroAt_mul` |
+| constructed witnesses | consistent | `zetaDzo_witness_zero_periodic` |
+| ζ-instance ⟺ RH (mod no-AP) | **theorem** | `periodicityDichotomy_zeta_iff_riemannHypothesis` |
+| C-PD ⟹ RH (mod no-AP) | **theorem** | `gammaFECell_dichotomy_implies_rh` |
+
+The no-AP hypothesis is [VERIFIED-KNOWN]: Putnam 1954, van Frankenhuijsen (quantitative), LSSS
+arXiv:1710.11367 (all σ ≠ 1/2); for Dirichlet L-functions Martin–Ng arXiv:1109.1788 (nonzero
+values in every vertical AP, precluding full zero-progressions). So **C-PD implies RH by a
+machine-checked composition**, with a single literature-discharged hypothesis.
+
+Boundary table — each clause certified load-bearing:
+
+| drop | witness | certificate |
+|---|---|---|
+| multiplicativity | Epstein ζ of x²+5y² (h=2): proven off-line zeros | non-multiplicativity machine-checked: `repCount_not_multiplicative` (r(2)=0, r(3)=0, r(6)=4); off-line zeros [VERIFIED-KNOWN] Davenport–Heilbronn/Voronin/Lee |
+| FE | Σ 2^{ω(n)} n^{−s} = ζ(s)²/ζ(2s) [VERIFIED identity] | off-line **aperiodic** poles at ρ/2 (aperiodicity from ζ's no-AP; ρ₁/2 at height ≈7.07 is no ζ-zero) |
+| integrality | — | truth-side irrelevant (C-DA′ holds without ℤ); its role is proof-register (discreteness engine) |
+| nothing | — | no witness constructible; the corpus contains **no** multiplicative self-dual series with a proven off-line zero at all [Q2, VERIFIED-KNOWN] |
+
+Novelty: [ABSENT] — no prior periodicity dichotomy, no "aperiodic part on the line," no
+GRH-relative-to-temperedness statement (Q3, seven searches, checks file). Corpus relation: C-PD
+**extends Grand-RH-for-the-Selberg-class beyond temperedness** — inside S the dichotomy plus
+no-AP collapses to GRH; outside S, where GRH is false (dzo violates θ < 1/2 and has off-line
+zeros), C-PD predicts the exact failure mode: periodic. Strength marker: C-PD for L(s,χ), real χ,
+forbids Landau–Siegel zeros (a lone real off-line zero would have to ride a vertical progression,
+excluded by Martin–Ng) — apex-grade, as expected for the card's headline.
+
+Branch reading (constraint, not flow): a vertical progression of period 2π/log b is the orbit of
+the b-column clock — **flow-generated divisor**; DA = finitely many clocks (Ostrowski); an
+aperiodic divisor has no generating clock — **constraint-only divisor**. C-PD says: clockwork
+divisor may sit anywhere in the strip (dzo does); constraint-only divisor is pinned to the fixed
+locus of the involution s ↦ 1−s. The founding metaphor, at the divisor level, with the DA/HT
+axis as the separating hypothesis.
+
+### The completion-parity dichotomy [PROVED HERE — Lean]
+
+`CompletionParity.lean`. Interrogating the γ-clause itself produced a theorem: in central normal
+form F = (s−1/2)^m·G (G a symmetric nonvanishing unit on the strip),
+
+> a **bare** completion factor always exists (`completion_raw_exists` — a locally constant sign
+> pattern over the half-strips realizes the sign cocycle; the unrestricted γ-clause carries no
+> information beyond divisor symmetry), while a **continuous** completion exists **iff the
+> central order m is even** (`completion_continuousOn_iff_even_center` — odd m forces
+> γ(1−s) = −γ(s) off the center, and continuity at the reflection's fixed point gives
+> γ(1/2) = 0).
+
+The obstruction is the reflection's fixed-point μ₂-charge — **the same seam-sign bit as the
+equivariant root program** (crease ledger anchored at ξ(1/2) > 0, `EquivariantRootDissolution`/
+`CreaseHolonomy`). Completing a functional equation and taking equivariant square roots are
+obstructed by one and the same fixed-point invariant: the Goldilocks lane and the seam-sign lane
+weld here. For ξ: m = 0, completable — consistent.
+
+### The proven region of C-PD, completed this round [PROVED HERE — Lean]
+
+**Finite-prime sector** (`FinitePrimeSectorDichotomy.lean`): a multiplicative stream supported
+on numbers composed of finitely many primes, absolutely summable on the open right half-plane,
+has every half-plane zero of its L-series on a full vertical arithmetic progression
+(`finitePrime_zero_periodic`), hence satisfies the dichotomy (`finitePrime_periodicityDichotomy`).
+**No differential-algebraicity is assumed — the columns may be hypertranscendental.** The first
+HT cases of C-PD are theorems: finitely many column clocks produce only clockwork zeros,
+whatever the transcendence of the columns. Carried by mathlib's
+`EulerProduct.prod_filter_prime_tsum_eq_tsum_factoredNumbers` + termwise column shift invariance.
+
+**Unbounded gear count** (`UnboundedGearCount.lean`): the parametric gear family
+`gear m = (1 − 2·(2^m)^{−s})(1 − 2^{m−1}·(2^m)^{−s})` (exact FE, conductor 2^m, single-2-column
+integral multiplicative stream) and its finite products certify that the degree-zero class
+carries members with arbitrarily many distinct off-line zero lines σ = 1/m
+(`integralMultiplicativeFEClass_gear_count_unbounded`) — each member's clockwork is finite, but
+the class's gear count is unbounded. C-PD's periodic clause must and does accommodate this.
+
+### Where C-PD's content now lives — the open frontier, exactly bounded
+
+The dichotomy is proven on: the DA fiber, the degree-zero class, the finite-prime sector (HT
+included), and it is stable under the DA action. Every proven region is **finite clockwork**;
+every escape from periodicity therefore requires **infinite prime support** — the exact infinite
+Euler product, consumed whole. This matches the card's register constraint from the start, and
+it names the mechanism: an aperiodic strip zero of an infinite product is a **collision of
+incommensurable column clocks** — the periods 2π/log p over all p generate a dense (gapless)
+rate spectrum, which is precisely the weld spectrum density invariant of the branch. Finitely
+many clocks: zeros locked to progressions. All clocks at once: the divisor can leave every
+progression — and C-PD says that where it does, it sits on the constraint's fixed line.
+
+Next generative moves (the round opens, not closes):
+1. **Clock-collision analysis** — the smallest infinite-support attack: quantify how zeros of
+   finite-prime truncations (all periodic, periods 2π/log p) move as columns are added; an
+   aperiodic limit zero is a joint resonance of the dense rate lattice. The rate-lattice/weld
+   instruments (`weld spectrum density`, rate-lattice interface) now have a divisor-level
+   consumer.
+2. **Completion parity up the tower** — the central-order bit obstructing continuous completions
+   is the τ = 0 germ of the crease ledger; transport it along the 2^k-rungs: does rung-k
+   equivariant completability read the ledger parity at depth k? The two welded lanes now share
+   one invariant to push jointly.
+3. **C-PD on sparse infinite supports** — between finite-prime (proven) and full Euler products
+   (ζ): streams on infinitely many primes with lacunary column data; the first place a genuinely
+   new periodicity/aperiodicity mechanism can be isolated.
+
+### The three named moves, executed [PROVED HERE — Lean] (2026-07-09, continuation)
+
+**Move 1 — clock collision, re-cut as constraint (`ClockEscape.lean`).** Not a dynamical study
+of moving zeros but a closure theorem: vertical progressions with periods from a FIXED finite
+inventory are closed under locally uniform limits of their carriers
+(`periodic_zero_limit` — pigeonhole on the finite period set + limit exchange through
+`TendstoLocallyUniformlyOn.tendsto_comp`). Contrapositive, machine-checked
+(`aperiodic_zero_clock_escape`): **an aperiodic zero of a limit function admits no approximation
+by clockwork zeros of bounded period inventory — the responsible clock escapes every finite
+set.** For Euler products: an aperiodic strip zero is a tail-of-the-prime-spectrum phenomenon;
+no finite sub-clockwork produces it. This is germ-blindness at the divisor level, now with a
+certificate: "consume the exact infinite object whole" is a theorem about the divisor, not a
+slogan. (The Hurwitz zero-approximation input is carried as an explicit hypothesis.)
+
+**Move 2 — completion parity up the tower (`CompletionParityTower.lean`).** The rung-k central
+normal form `(s−1/2)^{m/2^k}·G` admits a continuous completion **iff `2^{k+1} ∣ m`**
+(`rung_completion_iff_next_dyadic`): each completed rung certifies one more dyadic divisibility
+— **the completability bits of the root ladder are the 2-adic digits of the central order.**
+Total completability of the ladder ⟺ m = 0 ⟺ the carrier does not vanish at the reflection's
+fixed point (`completion_tower_iff_center_order_zero`). The crease anchor (ξ(1/2) > 0) is
+equivalent to total completability — the two welded lanes now share a joint tower invariant, and
+the 2^k-rung hierarchy of the program is readable at ONE point as a 2-adic digit string.
+
+**Move 3 — the columnar/interferential split (`ColumnarInterferential.lean`).** A zero of a
+factored carrier is *columnar* (some factor vanishes — rides that column's progression,
+`columnar_zero_periodic`) or *interferential* (every factor nonvanishes). Location theorem: an
+absolutely convergent product with all factors nonvanishing is nonvanishing
+(`tprod_one_add_ne_zero`, via summable complex logs), so **interferential zeros exist only where
+the product representation has broken down — in the analytic continuation**
+(`no_interferential_zero_in_product_region`). For ζ every Euler factor is strip-nonvanishing:
+ζ's strip divisor is 100% interferential — flow-invisible, constraint-only. Final form of the
+conjecture:
+
+> **C-PD, sharpest register:** the flow-visible (columnar) divisor is clockwork [THEOREM]; the
+> constraint-only (interferential) divisor lies on the fixed line of the involution
+> [CONJECTURE]. Sparse infinite products of single columns stay columnar — consistent; genuine
+> interference requires the continuation of a divergent product, and there the dichotomy asserts
+> the constraint pins what no clock generates.
+
+**Statement hygiene** (μ-member): 1/ζ is a cell member (μ(n): integral, multiplicative,
+completed FE) whose strip POLES are ζ's zeros — C-PD for meromorphic members is a divisor
+statement (zeros and poles), exchanged under inversion; the zero-form and pole-form carry the
+same content.
+
+### The theory of the interferential divisor [PROVED HERE — Lean, + one labeled mechanism conjecture]
+
+The named native object now has a theory. Its proven sides:
+
+**Location** (`ColumnarInterferential.lean`): interferential zeros exist only in the analytic
+continuation — never in the absolute-convergence region of the product.
+
+**Approximation** (`ClockEscape.lean`): no approximation by clockwork zeros of bounded period
+inventory; the responsible clock escapes every finite set.
+
+**Finite-support impossibility, both mechanisms.** Summable regime:
+`FinitePrimeSectorDichotomy.lean` — finitely many columns with strip-summable data have only
+columnar (periodic) zeros. Boundary regime (`NoCrossColumnHealing.lean`): **cross-column healing
+is impossible** — an analytic element of the product at a boundary point where the partner is
+regular and nonvanishing yields an analytic element of the obstructed column
+(`no_healing`, `no_healing_finset` via the healing-transfer quotient). A natural boundary of one
+column is inherited by every finite column product except along the partners' discrete divisors.
+So continuation beyond the columns — the interferential habitat — is unreachable with finitely
+many factors through either mechanism: **interference is irreducibly an infinite-product
+phenomenon.**
+
+**Depletion invariance** [already in tree]: dividing out finitely many strip-nonvanishing Euler
+factors does not change the strip divisor (`FiniteEulerInert` machinery) — the interferential
+divisor is a fixed point of the depletion action, common to the whole family of P-depleted
+streams; no finite coefficient modification along depletion can see it.
+
+**The global-clock trichotomy** (`DivisorStabilizer.lean`): the vertical stabilizer of a zero
+set is an additive subgroup of ℝ, closed for closed carriers; for a nonzero analytic carrier it
+is cyclic — one primitive global clock or none (`vStab_cyclic_of_analytic`, dense case killed by
+the identity principle). Separation: the two-prime member `(1 − 2·2^{−s})(1 − 9·3^{−s})` is
+pointwise clockwork at every zero yet has trivial global stabilizer
+(`twoClock_vStab_trivial` — a common period would force `2^a = 3^b`): **the rate lattice's
+incommensurability shatters global vertical symmetry into per-column clocks.** The pointwise
+period, not the global stabilizer, is the invariant C-PD correctly uses; and single columns keep
+a genuine global clock (`dzo_vStab_nontrivial`).
+
+**Mechanism reading [CONJECTURE — mechanism register].** An interferential zero is an exact
+resonance of the incommensurable column-clock phases — an event no finite sub-community of the
+Euler product produces (now a theorem, both regimes). The classical folklore that on-line
+vanishing is codimension-one (the completed FE makes the carrier effectively real on the fixed
+line — the Hardy Z shape) is [KNOWN]; the C-PD complement is the new statement-shape: **off the
+line, vanishing is codimension-two and has no alignment resource except a column clock** — so
+off-line divisor is clockwork, and exact resonance without a clock happens only where the
+involution supplies the reality constraint. The round's theorems are precisely this conjecture's
+finite shadows: clock escape (no bounded inventory aligns), no-healing (no finite regrouping
+reaches the habitat), finite-prime dichotomy (finite communities are clockwork), stabilizer
+separation (incommensurability forbids a global surrogate clock).

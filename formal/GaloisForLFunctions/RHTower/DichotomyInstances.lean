@@ -81,3 +81,18 @@ theorem gammaFECell_dichotomy_implies_rh
     (hCPD riemannZeta zeta_mem_gammaFECell)
 
 end RHTower
+
+namespace RHTower
+
+/-- **The periodicity dichotomy drives the whole rung tower.**  A cell-wide dichotomy, with the
+no-off-line-progression input for zeta, forces every rung of the divisibility ladder: all
+strip-zero orders of `ξ` are divisible by every power of two, through the equivalence of the
+Riemann Hypothesis with the full ladder. -/
+theorem gammaFECell_dichotomy_implies_ladder
+    (hCPD : ∀ f, GammaFECell f → PeriodicityDichotomy f)
+    (hAP : ∀ ρ : ℂ, 0 < ρ.re → ρ.re < 1 → ρ.re ≠ 1/2 →
+      ¬ ∃ T : ℝ, 0 < T ∧ ∀ k : ℤ, riemannZeta (ρ + (k * T) * Complex.I) = 0) :
+    ∀ k, RHLadder k :=
+  rh_iff_forall_ladder.mp (gammaFECell_dichotomy_implies_rh hCPD hAP)
+
+end RHTower
