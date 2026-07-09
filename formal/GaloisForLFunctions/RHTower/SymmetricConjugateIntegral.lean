@@ -20,6 +20,7 @@ relation is producted into a symmetric one are the general case handled here.
 import Mathlib
 
 open Polynomial MvPolynomial
+open scoped Classical
 
 namespace GaloisForLFunctions
 namespace RHTower
@@ -72,6 +73,54 @@ theorem symmetric_aeval_conj_isInt {d : ℕ} (μ : ℤ[X]) (β : Fin d → ℂ)
   rw [show (fun i : Fin d => ((E i : ℤ) : ℂ)) = fun i : Fin d => (Algebra.ofId ℤ ℂ) (E i) from rfl,
       ← comp_aeval, AlgHom.comp_apply]
   rfl
+
+/-- **The subset-sum polynomial has integer coefficients.**  If `β : Fin d → ℂ` is the complete root
+set of a monic `μ ∈ ℤ[X]`, then the polynomial whose roots are all the subset sums
+`σ_T = ∑_{j ∈ T} β j` (`T` ranging over subsets of the index set) lifts to `ℤ[X]`.  Each coefficient is
+a symmetric integer polynomial in the `β j` — the product `∏_T (X − ∑_{j∈T} X_j)` over `ℤ`-variables
+is invariant under permuting the variables — hence lands in `ℤ` by `symmetric_aeval_conj_isInt`.  This
+is the "composed sum stays integral" fact underlying the symmetrisation of a single-conjugate
+exponential relation into a Galois-stable one. -/
+theorem subsetSum_poly_lifts {d : ℕ} (μ : ℤ[X]) (β : Fin d → ℂ)
+    (hβ : (Multiset.map (fun j => Polynomial.X - Polynomial.C (β j)) Finset.univ.val).prod
+        = μ.map (Int.castRingHom ℂ)) :
+    (∏ T ∈ (Finset.univ : Finset (Fin d)).powerset,
+        (Polynomial.X - Polynomial.C (∑ j ∈ T, β j)))
+      ∈ Polynomial.lifts (Int.castRingHom ℂ) := by
+  set R : Polynomial (MvPolynomial (Fin d) ℤ) :=
+    ∏ T ∈ (Finset.univ : Finset (Fin d)).powerset,
+      (Polynomial.X - Polynomial.C (∑ j ∈ T, MvPolynomial.X (R := ℤ) j)) with hR
+  have hsym : ∀ n, (R.coeff n).IsSymmetric := by
+    intro n σ
+    have hmap : R.map (MvPolynomial.rename σ).toRingHom = R := by
+      rw [hR, Polynomial.map_prod]
+      refine Finset.prod_nbij' (fun T => T.image σ) (fun T => T.image σ.symm) ?_ ?_ ?_ ?_ ?_
+      · intro T _; simp
+      · intro T _; simp
+      · intro T _; simp [Finset.image_image]
+      · intro T _; simp [Finset.image_image]
+      · intro T _
+        rw [Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C, map_sum]
+        congr 2
+        rw [Finset.sum_image (fun a _ b _ h => σ.injective h)]
+        exact Finset.sum_congr rfl (fun j _ => by simp [MvPolynomial.rename_X])
+    calc MvPolynomial.rename σ (R.coeff n)
+        = (R.map (MvPolynomial.rename σ).toRingHom).coeff n := by rw [Polynomial.coeff_map]; rfl
+      _ = R.coeff n := by rw [hmap]
+  have hmapβ : R.map (MvPolynomial.aeval β).toRingHom
+      = ∏ T ∈ (Finset.univ : Finset (Fin d)).powerset, (Polynomial.X - Polynomial.C (∑ j ∈ T, β j)) := by
+    rw [hR, Polynomial.map_prod]
+    refine Finset.prod_congr rfl (fun T _ => ?_)
+    rw [Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C, map_sum]
+    congr 2
+    exact Finset.sum_congr rfl (fun j _ => by simp)
+  rw [← hmapβ, Polynomial.lifts_iff_coeff_lifts]
+  intro n
+  rw [Polynomial.coeff_map]
+  obtain ⟨m, hm⟩ := symmetric_aeval_conj_isInt μ β hβ (R.coeff n) (hsym n)
+  refine ⟨m, ?_⟩
+  show (Int.castRingHom ℂ) m = MvPolynomial.aeval β (R.coeff n)
+  rw [hm]; simp
 
 end RHTower
 end GaloisForLFunctions

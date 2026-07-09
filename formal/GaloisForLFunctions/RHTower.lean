@@ -424,3 +424,6 @@ import GaloisForLFunctions.RHTower.RealRootTower
 import GaloisForLFunctions.RHTower.XiRealAnchorPositive
 import GaloisForLFunctions.RHTower.SymmetricDivisorRealization
 import GaloisForLFunctions.RHTower.TailBlindness
+import GaloisForLFunctions.RHTower.EquivariantRootDissolution
+import GaloisForLFunctions.RHTower.CreaseHolonomy
+import GaloisForLFunctions.RHTower.FiniteEulerInert

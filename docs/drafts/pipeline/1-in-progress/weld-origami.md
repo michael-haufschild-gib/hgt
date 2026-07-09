@@ -205,3 +205,53 @@ theorem.** The remaining reach questions are exactly the two faces of the minima
 crease zero the sign law is the banked parity reading (odd flips, even survives — per-level
 divisibility takes over), and into the strip is the exact infinite-prime germ. Nothing below that
 engine remains open in this thread.
+
+## §Ledger evaluation: windings and signs beyond zero-free stretches [PROVED, Lean, axiom-clean]
+
+`CreaseHolonomy.lean` — the complete theory-level evaluation of the per-window obstruction pair:
+
+* `xi_line_zeros_finite` — crease zeros of ξ in a compact parameter interval are finite.
+* `xi_line_multi_peel` — global multi-zero peel of ξ along a crease segment (interior on-line
+  zeros peeled, cofactor analytic on ℂ and nonvanishing on the segment).
+* `xi_line_sign_iff_even_cumulative_order` — **crease holonomy**: for `τ > 0` with
+  `ξ(linePt τ) ≠ 0`, the crease sign at `τ` is `+` ⟺ the cumulative crease order in `(0,τ)` is
+  even, transported from the arithmetically pinned `ξ(½) > 0`.
+* `xi_window_tower_iff_ledger` — **the full evaluation**: the equivariant `2^k`-root of the
+  boundary loop of the window `(linePt τ₀, r)` exists ⟺ `2^k ∣ D(W)` (total enclosed order) ∧
+  the cumulative crease order in `(0, τ₀+r)` is even. Both coordinates of the `π₀ ≅ ℤ × ℤ/2`
+  classification are now exact ledger reads — no analytic data beyond the divisor enters.
+
+The directive "the actual windings and signs of ξ beyond zero-free crease stretches" is closed at
+theory level: winding = `D(W)` (argument principle, banked), sign = crease-ledger parity (holonomy,
+new). What remains about actual VALUES is the divisor itself — the exact infinite-prime germ,
+proven the minimal engine (TailBlindness). See the dissolution section of `seam-sign-pinning.md`
+for where each ledger coordinate can and cannot obstruct (region/boundary/off-line stratification).
+
+## §Germ blindness, completed: the carrier is exact-infinite-non-tail [PROVED, Lean, axiom-clean]
+
+`FiniteEulerInert.lean` — the second germ no-go, closing the pants/FN question from below:
+
+* `fePants p = (1 − p^{−s})(1 − p^{−(1−s)})` — the FE-completed local factor: entire, FESchwarz,
+  and **nonvanishing on the open strip** (its zeros are the clock lattices `(2πi/log p)ℤ` on the
+  walls `Re ∈ {0,1}` — finite pants data lives on the walls, never in the strip).
+* `feBundle_divisor_inert` — multiplying any member by the finite bundle changes NO vanishing
+  order at any strip point.
+* `finiteEulerClass_isSoft`, `finiteEulerClass_not_forcesRHParity` — the class of members carrying
+  the exact P-pants remains fully soft (plants arbitrary off-line charge; parity toggle absorbs
+  wall-lattice orders): **finite exact Euler data imposes no divisor constraint whatsoever.**
+
+Synthesis of the two no-gos: TailBlindness kills all ASYMPTOTIC germ data; FiniteEulerInert kills
+all FINITE EXACT germ data (FE-completed, any prime set). The divisor-constraining content of the
+Euler germ is therefore carried only by the **exact infinite product as a whole** — consistent
+with, and sharpening, `GermExtension.rhLadder_iff_germ_extends`: the rung is a continuation
+statement about one infinite arithmetic object, and no finite or asymptotic shadow of it retains
+any of the constraint.
+
+Firewalls recorded (attack-as-false on the successor lane): (i) the FE-completion of the FULL germ
+is ξ(s)ξ(1−s) = ξ² — the function-level weld defect is zero BY the FE, so the mirror divisor N is
+NOT a weld defect of that object; (ii) stratifying weldability over infinite sub-products
+Q ⊆ primes (which ζ_Q continue) is Langlands/Beurling corpus — banned as search. (iii) rng draw
+queueing-at-borders × auction-theory collided with the residue: lands on extremal/marginal
+statistics of the prime stream = resonance/large-values corpus [KNOWN] and the banned height
+frame; the tropical/max-plus reading is the already-firewalled degenerate limit. No new object
+survived the gate — the negative results are recorded to prevent re-derivation.

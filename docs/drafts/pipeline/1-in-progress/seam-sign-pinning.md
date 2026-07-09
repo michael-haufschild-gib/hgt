@@ -168,3 +168,44 @@ region-level echo of `rh_iff_seam_blind_windows_chargeless`.
 `XiRealAnchorPositive.lean` (delegated): the coefficient side pins the anchor: paired alternating
 series positive for σ > 0, eta factor negative on (0,1) ⟹ ζ < 0 there; archFactor negative ⟹
 ξ > 0 on the real segment — the base point of seam-sign bookkeeping is +, forced by arithmetic.
+
+## §Dissolution: the sign bit is a hole invariant [PROVED HERE, Lean, axiom-clean]
+
+The §Deeper/§Real-tower claim "the equivariant refinement is strictly stronger per window than
+the plain tower" is now CORRECTED and located exactly (attack-as-false on our own program).
+`EquivariantRootDissolution.lean`:
+
+* `mirrorRoot_ratio` — on a line-symmetric preconnected open set, a plain `n`-root `g` and its
+  Schwarz mirror differ by the constant `ζ = conj(g a)/g a ∈ μ_n`, read at any line anchor.
+* `exists_equivariant_root_of_anchor_pos` / `anchor_pos_of_equivariant_root` /
+  `exists_equivariant_root_iff_anchor_pos` — equivariant root (`n` even, plain root given) ⟺
+  `f(a) > 0`: the obstruction is the square class of `ζ` in `μ_n/μ_n² ≅ ℤ/2`, and the anchor
+  sign computes it (the explicit scale is `c = conj(g a)/‖g a‖`, an `n`-th root of unity because
+  `‖g a‖ⁿ = f(a)`).
+* `exists_equivariant_root_of_odd` — odd `n`: no sign condition; the bit is 2-adic.
+* `exists_equivariant_root_iff_orders_dvd` — regional dichotomy on symmetric convex windows:
+  equivariant root ⟺ per-zero divisibility ∧ anchor positivity.
+* `xi_equivariant_root_iff_orders_dvd`, `xi_equivariant_root_iff_root` — for ξ at the central
+  anchor (`ξ(½) > 0`, banked) the sign clause is a THEOREM: **regionally the Real tower of ξ IS
+  the plain tower**. The extra bit is a hole-detecting (boundary/annulus) invariant — a region
+  sees the divisor, which already forces the line-sign bookkeeping a boundary loop can only sample.
+* `rhLadder_xi_equivariant_window_root` — germ coupling, forward: `RH_{2^k}` propagates the far
+  germ equivariantly into every admissible symmetric convex window; the only surcharge over the
+  plain rung is the UNCONDITIONAL line ledger. The converse is `root_orders_dvd` (window-local
+  only): the line ledger is exactly what blocks regional equivariant data from returning the rung.
+* `rhLadder_iff_equivariant_offline_root` — **the rung is an off-line equivariant statement**:
+  `RH_{2^k}` ⟺ ξ has a Schwarz-equivariant `2^k`-root on `{Re s ≠ ½}` (mirror gluing is free off
+  the line; right-half restriction returns the rung).
+* Pro level: `exists_equivariant_coherentTower_of_anchor_pos` — the canonical scales satisfy
+  `c_{k+1}² = c_k` (forced by the tower's squaring law at the anchor) and `c_0 = 1` at a positive
+  anchor, so the sign obstruction does NOT accumulate in the inverse limit on regions;
+  `rh_iff_xi_equivariant_coherentTower_offline` — **RH ⟺ ξ carries a Schwarz-equivariant coherent
+  ℤ₂-tower off the critical line** (mirror gluing intertwines squaring, `mirrorGlue_sq`).
+
+Complete obstruction map of the Real tower: OFF-LINE = exactly the rung (and, pro-level, exactly
+RH); SYMMETRIC REGIONS = plain divisibility + the unconditional line ledger; SYMMETRIC BOUNDARIES
+= one extra sign bit, evaluated by the crease ledger (CreaseHolonomy). Consequence: the region
+form of "RH ⟺ the Real tower extends across the strip" is dead (on-line zeros obstruct
+unconditionally), and its off-line form is the plain ladder verbatim — the Real tower's genuinely
+new content relative to the plain ladder lives ONLY in boundary/annular data, where it equals the
+unconditional on-line parity ledger.
