@@ -53,6 +53,15 @@ theorem norm_soninAlternatingBlock_le_one
     _ ≤ ‖x‖ := B.norm_starProjection_apply_le _
     _ = 1 * ‖x‖ := by ring
 
+/-- Compactness of the two-factor block `P_B P_A` propagates to the alternating block
+`P_B P_A P_B`. -/
+theorem isCompactOperator_soninAlternatingBlock_of_compact_left
+    (A B : Submodule ℂ H) [A.HasOrthogonalProjection] [B.HasOrthogonalProjection]
+    (hBA : IsCompactOperator (B.starProjection * A.starProjection)) :
+    IsCompactOperator (soninAlternatingBlock A B) := by
+  simpa [soninAlternatingBlock, Function.comp_def] using
+    hBA.comp_clm B.starProjection
+
 /-- If the two forbidden subspaces have trivial intersection, the alternating block has no
 eigenvalue one. -/
 theorem not_hasEigenvalue_one_soninAlternatingBlock_of_inf_eq_bot

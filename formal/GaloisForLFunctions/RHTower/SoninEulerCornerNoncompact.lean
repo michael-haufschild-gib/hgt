@@ -140,6 +140,19 @@ theorem IsCompactOperator.norm_apply_tendsto_zero_of_orthonormal
       (Orthonormal.weakly_tendsto_zero hgφ) hb hφlower
     exact hnot hT
 
+/-- If two vector sequences become norm-close and the comparison sequence has constant norm, then
+the first sequence has the same limiting norm. -/
+theorem tendsto_norm_of_norm_sub_tendsto_zero_of_norm_eq
+    {G : Type*} [NormedAddCommGroup G] {x y : ℕ → G} {c : ℝ}
+    (hxy : Tendsto (fun n => ‖x n - y n‖) atTop (𝓝 0))
+    (hy : ∀ n, ‖y n‖ = c) :
+    Tendsto (fun n => ‖x n‖) atTop (𝓝 c) := by
+  rw [tendsto_iff_dist_tendsto_zero]
+  apply squeeze_zero (fun n => dist_nonneg) _ hxy
+  intro n
+  rw [← hy n]
+  exact dist_norm_norm_le (x n) (y n)
+
 end WeakNull
 
 /-! ### Lower-corner shell certificate -/

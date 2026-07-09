@@ -206,3 +206,41 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
   8582 jobs green; #print axioms = [propext, Classical.choice, Quot.sound] for all five; formal
   lint passed; index regenerated; module wired into RHTower umbrella. §1 of Structure is now
   machine-checked.
+
+## Wave 6 — stolz-bc jaw executed: interface theorem, pure-class no-go, superposition closure
+
+18. **The sharp conditional interface.** `[LEMMA — Levin-standard proof; the precise residue]`
+    entire + bounded on a right half-plane + finite proximate order ⟹ vertical type 0 at every
+    abscissa (indicator ≤ 0 on the open right directions, continuity pins h(±π/2) ≤ 0, and the
+    vertical directions ARE ±π/2). T2 is exactly "remove the order hypothesis using the disk."
+19. **Pure-class no-go for T2 (transfer of the goldilocks wave-3 verdict).** `[PROVED-modulo-
+    Arakelyan details]` E = {Re s ≥ σ₀} ∪ {Re s = −1} has the same two-channel Arakelyan geometry
+    as the wave-3 set (sphere complement: two strips joined at ∞, connected, locally connected),
+    so tangential approximation produces an entire F, bounded on the right half-plane, with
+    `Re log F ≥ |t|` on the line Re s = −1: **two-region growth data alone cannot prove T2**; any
+    proof must consume disk-analyticity / one-sided spectrum, not just entirety + boundedness.
+20. **Boundary-rotation tautology.** Rotating the Mellin ray to arg x = ±π/2 lands on the
+    boundary Fourier series of f and reproduces `F·Γ` identically (the `e^{iπs/2}` from the ray
+    cancels against `(im)^{−s}`); the negative-frequency side is empty. One-sidedness is the
+    binding clause — rotation alone extracts nothing new past the boundary.
+21. **Superposition closure — the type-0-closed class.** `[THEOREM-candidate, sketched]`
+    Coefficient profiles `aₙ = Ĝ-superpositions ∫ n^{iξ} G(ξ)dξ` with `G` analytic and decaying
+    in every horizontal strip give `F(s) = ∫ G(ξ) ζ(s−iξ) dξ`: entire (pole line contour-shifts
+    away) with polynomial verticals — each shifted ζ has μ linear (χ-factor), and superposition
+    preserves it. The Knill almost-periodic class is an instance. So every "coefficient recipe"
+    built from analytic character superpositions stays at type 0; a T2 counterexample needs
+    coefficients OUTSIDE every such superposition while keeping entirety — the same exclusion the
+    disk formulation states as: no Korenblum-bounded f does fast boundary resonance.
+22. Lean brick landed for the program: `ThetaHalfPlaneBound.lean` — summability + the envelope
+    `‖θ(x)‖ ≤ 3·A!·2^A·C/(Re x)^{A+1}` (uniform in arg x), the growth input for every future
+    Mellin-rotation formalization. (Verification evidence in Log.)
+
+## Log (cont. 6)
+- 2026-07-09 — wave 6 (rng: stolz-bc): interface theorem isolated; pure-class no-go transferred
+  (Arakelyan two-channel); boundary rotation shown tautological (one-sidedness binding);
+  superposition-closure instances unified. Lean: ThetaHalfPlaneBound.lean written by hand.
+
+## Log (cont. 7)
+- 2026-07-09 — ThetaHalfPlaneBound.lean VERIFIED: standalone compile clean (zero warnings),
+  umbrella build 9094 jobs green, all 8 declarations axiom-clean [propext, Classical.choice,
+  Quot.sound], formal lint passed, index regenerated, in RHTower umbrella.

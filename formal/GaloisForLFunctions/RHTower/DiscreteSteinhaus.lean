@@ -138,6 +138,49 @@ def pred (t : Dart) : Dart :=
 
 end Board
 
+/-! Concrete-direction reduction lemmas: every dart-cell accessor evaluated on an explicit
+heading, as `rfl`-simp-lemmas, so that arithmetic tactics see plain integer pairs. -/
+
+@[simp] lemma vec_E : Dir.vec Dir.E = (1, 0) := rfl
+@[simp] lemma vec_N : Dir.vec Dir.N = (0, 1) := rfl
+@[simp] lemma vec_W : Dir.vec Dir.W = (-1, 0) := rfl
+@[simp] lemma vec_S : Dir.vec Dir.S = (0, -1) := rfl
+@[simp] lemma ccw_E : Dir.ccw Dir.E = Dir.N := rfl
+@[simp] lemma ccw_N : Dir.ccw Dir.N = Dir.W := rfl
+@[simp] lemma ccw_W : Dir.ccw Dir.W = Dir.S := rfl
+@[simp] lemma ccw_S : Dir.ccw Dir.S = Dir.E := rfl
+@[simp] lemma cw_E : Dir.cw Dir.E = Dir.S := rfl
+@[simp] lemma cw_N : Dir.cw Dir.N = Dir.E := rfl
+@[simp] lemma cw_W : Dir.cw Dir.W = Dir.N := rfl
+@[simp] lemma cw_S : Dir.cw Dir.S = Dir.W := rfl
+
+@[simp] lemma leftCell_E (x y : ℤ) : Dart.leftCell ⟨x, y, Dir.E⟩ = (x, y) := rfl
+@[simp] lemma leftCell_N (x y : ℤ) : Dart.leftCell ⟨x, y, Dir.N⟩ = (x - 1, y) := rfl
+@[simp] lemma leftCell_W (x y : ℤ) : Dart.leftCell ⟨x, y, Dir.W⟩ = (x - 1, y - 1) := rfl
+@[simp] lemma leftCell_S (x y : ℤ) : Dart.leftCell ⟨x, y, Dir.S⟩ = (x, y - 1) := rfl
+@[simp] lemma rightCell_E (x y : ℤ) : Dart.rightCell ⟨x, y, Dir.E⟩ = (x, y - 1) := rfl
+@[simp] lemma rightCell_N (x y : ℤ) : Dart.rightCell ⟨x, y, Dir.N⟩ = (x, y) := rfl
+@[simp] lemma rightCell_W (x y : ℤ) : Dart.rightCell ⟨x, y, Dir.W⟩ = (x - 1, y) := rfl
+@[simp] lemma rightCell_S (x y : ℤ) : Dart.rightCell ⟨x, y, Dir.S⟩ = (x - 1, y - 1) := rfl
+@[simp] lemma aheadLeft_E (x y : ℤ) : Dart.aheadLeft ⟨x, y, Dir.E⟩ = (x + 1, y) := rfl
+@[simp] lemma aheadLeft_N (x y : ℤ) : Dart.aheadLeft ⟨x, y, Dir.N⟩ = (x - 1, y + 1) := rfl
+@[simp] lemma aheadLeft_W (x y : ℤ) : Dart.aheadLeft ⟨x, y, Dir.W⟩ = (x - 2, y - 1) := rfl
+@[simp] lemma aheadLeft_S (x y : ℤ) : Dart.aheadLeft ⟨x, y, Dir.S⟩ = (x, y - 2) := rfl
+@[simp] lemma aheadRight_E (x y : ℤ) : Dart.aheadRight ⟨x, y, Dir.E⟩ = (x + 1, y - 1) := rfl
+@[simp] lemma aheadRight_N (x y : ℤ) : Dart.aheadRight ⟨x, y, Dir.N⟩ = (x, y + 1) := rfl
+@[simp] lemma aheadRight_W (x y : ℤ) : Dart.aheadRight ⟨x, y, Dir.W⟩ = (x - 2, y) := rfl
+@[simp] lemma aheadRight_S (x y : ℤ) : Dart.aheadRight ⟨x, y, Dir.S⟩ = (x - 1, y - 2) := rfl
+@[simp] lemma behindLeft_E (x y : ℤ) : Dart.behindLeft ⟨x, y, Dir.E⟩ = (x - 1, y) := rfl
+@[simp] lemma behindLeft_N (x y : ℤ) : Dart.behindLeft ⟨x, y, Dir.N⟩ = (x - 1, y - 1) := rfl
+@[simp] lemma behindLeft_W (x y : ℤ) : Dart.behindLeft ⟨x, y, Dir.W⟩ = (x, y - 1) := rfl
+@[simp] lemma behindLeft_S (x y : ℤ) : Dart.behindLeft ⟨x, y, Dir.S⟩ = (x, y) := rfl
+@[simp] lemma behindRight_E (x y : ℤ) : Dart.behindRight ⟨x, y, Dir.E⟩ = (x - 1, y - 1) := rfl
+@[simp] lemma behindRight_N (x y : ℤ) : Dart.behindRight ⟨x, y, Dir.N⟩ = (x, y - 1) := rfl
+@[simp] lemma behindRight_W (x y : ℤ) : Dart.behindRight ⟨x, y, Dir.W⟩ = (x, y) := rfl
+@[simp] lemma behindRight_S (x y : ℤ) : Dart.behindRight ⟨x, y, Dir.S⟩ = (x - 1, y) := rfl
+
+
+
 end SteinhausWalk
 
 end RHTower
@@ -190,11 +233,7 @@ theorem free_cases {c : ℤ × ℤ} (h : clr Mk c = Color.free) :
   split_ifs at h with a1 a2 a3 a4 a5 a6
   · exact Or.inl ⟨a1.1, a1.2.1, a1.2.2⟩
   · exact Or.inr (Or.inl ⟨a2.1, a2.2.1, a2.2.2⟩)
-  · simp at h
-  · simp at h
-  · simp at h
   · exact Or.inr (Or.inr a5)
-  · simp at h
 
 /-- A marked cell is a bottom sentinel, a top sentinel, or an interior cell with the original
 marking true. -/
@@ -203,13 +242,9 @@ theorem marked_cases {c : ℤ × ℤ} (h : clr Mk c = Color.marked) :
       ((0 ≤ c.1 ∧ c.1 ≤ (m : ℤ)) ∧ (0 ≤ c.2 ∧ c.2 ≤ (n : ℤ))) := by
   simp only [clr] at h
   split_ifs at h with a1 a2 a3 a4 a5 a6
-  · simp at h
-  · simp at h
   · exact Or.inl a3
   · exact Or.inr (Or.inl a4)
   · exact Or.inr (Or.inr a5)
-  · simp at h
-  · simp at h
 
 /-- The interior reading of a marked interior cell. -/
 theorem marked_interior {c : ℤ × ℤ} (h : clr Mk c = Color.marked)
@@ -217,49 +252,41 @@ theorem marked_interior {c : ℤ × ℤ} (h : clr Mk c = Color.marked)
     Mk (⟨c.1.toNat, by omega⟩, ⟨c.2.toNat, by omega⟩) := by
   simp only [clr] at h
   split_ifs at h with a1 a2 a3 a4 a5 a6
-  · simp at h
-  · simp at h
   · exact absurd a3.2 (by omega)
   · exact absurd a4.2 (by omega)
   · exact a6
-  · simp at h
-  · exact absurd ⟨⟨hi, hi'⟩, hj, hj'⟩ a5
 
 /-- The interior reading of a free interior cell. -/
 theorem free_interior {c : ℤ × ℤ} (h : clr Mk c = Color.free)
-    (hi : 0 ≤ c.1) (hi' : c.1 ≤ (m : ℤ)) (hj : 0 ≤ c.2) (hj' : c.2 ≤ (n : ℤ)) :
+    (hi : 0 ≤ c.1) (hi' : c.1 ≤ (m : ℤ)) (_hj : 0 ≤ c.2) (hj' : c.2 ≤ (n : ℤ)) :
     ¬ Mk (⟨c.1.toNat, by omega⟩, ⟨c.2.toNat, by omega⟩) := by
   simp only [clr] at h
   split_ifs at h with a1 a2 a3 a4 a5 a6
   · exact absurd a1.1 (by omega)
   · exact absurd a2.1 (by omega)
-  · exact absurd a3.2 (by omega)
-  · simp at h
-  · simp at h
   · exact a6
-  · exact absurd ⟨⟨hi, hi'⟩, hj, hj'⟩ a5
 
 /-- The bottom sentinel row is marked. -/
-theorem clr_bottom {i : ℤ} (hi : 0 ≤ i) (hi' : i ≤ (m : ℤ)) :
-    clr Mk (i, -1) = Color.marked := by
+theorem clr_bottom {c : ℤ × ℤ} (hi : 0 ≤ c.1) (hi' : c.1 ≤ (m : ℤ)) (hj : c.2 = -1) :
+    clr Mk c = Color.marked := by
   simp only [clr]
   split_ifs with a1 a2 a3 a4 a5 a6 <;> first | rfl | (exfalso; omega)
 
 /-- The top sentinel row is marked. -/
-theorem clr_top {i : ℤ} (hi : 0 ≤ i) (hi' : i ≤ (m : ℤ)) :
-    clr Mk (i, (n : ℤ) + 1) = Color.marked := by
+theorem clr_top {c : ℤ × ℤ} (hi : 0 ≤ c.1) (hi' : c.1 ≤ (m : ℤ)) (hj : c.2 = (n : ℤ) + 1) :
+    clr Mk c = Color.marked := by
   simp only [clr]
   split_ifs with a1 a2 a3 a4 a5 a6 <;> first | rfl | (exfalso; omega)
 
 /-- The left sentinel column is free. -/
-theorem clr_left {j : ℤ} (hj : -1 ≤ j) (hj' : j ≤ (n : ℤ)) :
-    clr Mk (-1, j) = Color.free := by
+theorem clr_left {c : ℤ × ℤ} (hi : c.1 = -1) (hj : -1 ≤ c.2) (hj' : c.2 ≤ (n : ℤ)) :
+    clr Mk c = Color.free := by
   simp only [clr]
   split_ifs with a1 a2 a3 a4 a5 a6 <;> first | rfl | (exfalso; omega)
 
 /-- The right sentinel column is free. -/
-theorem clr_right {j : ℤ} (hj : 0 ≤ j) (hj' : j ≤ (n : ℤ)) :
-    clr Mk ((m : ℤ) + 1, j) = Color.free := by
+theorem clr_right {c : ℤ × ℤ} (hi : c.1 = (m : ℤ) + 1) (hj : 0 ≤ c.2) (hj' : c.2 ≤ (n : ℤ)) :
+    clr Mk c = Color.free := by
   simp only [clr]
   split_ifs with a1 a2 a3 a4 a5 a6 <;> first | rfl | (exfalso; omega)
 
@@ -300,7 +327,7 @@ theorem clr_ne_neutral {c : ℤ × ℤ}
     (hc3 : ¬(c.1 = -1 ∧ c.2 = (n : ℤ) + 1)) :
     clr Mk c ≠ Color.neutral := by
   simp only [clr]
-  split_ifs with a1 a2 a3 a4 a5 a6 <;> first | simp | (exfalso; omega)
+  split_ifs with a1 a2 a3 a4 a5 a6 <;> first | (simp; done) | (exfalso; omega)
 
 /-- A cell that is not marked, within the box and off the neutral corners, is free. -/
 theorem free_of_not_marked {c : ℤ × ℤ} (hm : clr Mk c ≠ Color.marked)
@@ -311,7 +338,7 @@ theorem free_of_not_marked {c : ℤ × ℤ} (hm : clr Mk c ≠ Color.marked)
   have hn := clr_ne_neutral Mk h1 h2 h3 h4 hc1 hc2 hc3
   cases h : clr Mk c
   · exact absurd h hm
-  · exact h
+  · rfl
   · exact absurd h hn
 
 /-- **Successor specification.**  The three branches of the walk rule, with the cells of the
@@ -330,20 +357,20 @@ theorem succ_spec (t : Dart) :
       rw [if_pos h1]
       cases d <;>
         simp [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dir.vec, Dir.ccw,
-          Prod.ext_iff] <;> omega
+          Prod.mk.injEq] <;> omega
   · by_cases h2 : clr Mk (Dart.aheadRight ⟨x, y, d⟩) = Color.marked
     · refine Or.inr (Or.inl ⟨h1, h2, ?_, ?_⟩) <;>
       · unfold succ
         rw [if_neg h1, if_pos h2]
         cases d <;>
           simp [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight, Dir.vec,
-            Prod.ext_iff] <;> omega
+            Prod.mk.injEq] <;> omega
     · refine Or.inr (Or.inr ⟨h1, h2, ?_, ?_⟩) <;>
       · unfold succ
         rw [if_neg h1, if_neg h2]
         cases d <;>
           simp [Dart.leftCell, Dart.rightCell, Dart.aheadRight, Dir.vec, Dir.cw,
-            Prod.ext_iff] <;> omega
+            Prod.mk.injEq] <;> omega
 
 /-- **Predecessor inversion.**  On a `Good` dart the walk is injective: `pred` undoes `succ`. -/
 theorem pred_succ (t : Dart) (hG : Good Mk t) : pred Mk (succ Mk t) = t := by
@@ -354,10 +381,12 @@ theorem pred_succ (t : Dart) (hG : Good Mk t) : pred Mk (succ Mk t) = t := by
     rw [if_pos h1]
     unfold pred
     cases d <;>
-      · simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight,
+      · simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft,
           Dart.behindLeft, Dart.behindRight, Dir.vec, Dir.ccw, Dir.cw] at *
-        norm_num at *
-        simp [hL, hR, h1, Dart.mk.injEq]
+        try simp at *
+        try ring_nf at *
+        try simp [hR]
+        try omega
   · by_cases h2 : clr Mk (Dart.aheadRight ⟨x, y, d⟩) = Color.marked
     · unfold succ
       rw [if_neg h1, if_pos h2]
@@ -365,16 +394,20 @@ theorem pred_succ (t : Dart) (hG : Good Mk t) : pred Mk (succ Mk t) = t := by
       cases d <;>
         · simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight,
             Dart.behindLeft, Dart.behindRight, Dir.vec, Dir.ccw, Dir.cw] at *
-          norm_num at *
-          simp [hL, hR, h1, h2, Dart.mk.injEq]
+          try simp at *
+          try ring_nf at *
+          try simp [hL, hR]
+          try omega
     · unfold succ
       rw [if_neg h1, if_neg h2]
       unfold pred
       cases d <;>
         · simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight,
             Dart.behindLeft, Dart.behindRight, Dir.vec, Dir.ccw, Dir.cw] at *
-          norm_num at *
-          simp [hL, hR, h1, h2, Dart.mk.injEq]
+          try simp at *
+          try ring_nf at *
+          try simp [hL, h1]
+          try omega
 
 end Steps
 
@@ -412,15 +445,15 @@ theorem shore_marked_step {t : Dart} (hG : Good Mk t) (hG' : Good Mk (succ Mk t)
     rw [hr]
     obtain ⟨x, y, d⟩ := t
     cases d <;>
-      · simp only [Dart.rightCell, Dart.aheadLeft, kingAdjZ, ne_eq, Prod.ext_iff]
-        refine ⟨by intro hcon; omega, by omega, by omega, by omega, by omega⟩
+      · simp [kingAdjZ, Dart.rightCell, Dart.aheadLeft, ne_eq, Prod.mk.injEq]
+        try omega
   · -- straight: right cell advances one rook (hence king) step.
     refine Relation.ReflTransGen.single ⟨?_, hG.2, hr ▸ hG'.2⟩
     rw [hr]
     obtain ⟨x, y, d⟩ := t
     cases d <;>
-      · simp only [Dart.rightCell, Dart.aheadRight, kingAdjZ, ne_eq, Prod.ext_iff]
-        refine ⟨by intro hcon; omega, by omega, by omega, by omega, by omega⟩
+      · simp [kingAdjZ, Dart.rightCell, Dart.aheadRight, ne_eq, Prod.mk.injEq]
+        try omega
   · rw [hr]
 
 /-- In the third walk branch of a `Good`-to-`Good` step, the diagonal ahead-left cell is free (it
@@ -437,8 +470,7 @@ theorem case3_aheadLeft_free {t : Dart} (hG : Good Mk t)
   obtain ⟨x, y, d⟩ := t
   refine free_of_not_marked Mk h1 ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;>
     cases d <;>
-      simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight] at * <;>
-        omega
+      · (try simp at hLb hRb haRb ⊢); omega
 
 /-- **Free-shore step.**  Along a `Good`-to-`Good` walk step the free left cell stays put or makes
 one or two rook steps (the two-step case passes through the free diagonal cell of the right turn).
@@ -452,21 +484,21 @@ theorem shore_free_step {t : Dart} (hG : Good Mk t) (hG' : Good Mk (succ Mk t)) 
     rw [hl]
     obtain ⟨x, y, d⟩ := t
     cases d <;>
-      · simp only [Dart.leftCell, Dart.aheadLeft, rookAdjZ, Prod.ext_iff]
-        omega
+      · simp [rookAdjZ, Dart.leftCell, Dart.aheadLeft]
+        try omega
   · -- turn right: left → aheadLeft → aheadRight, both rook steps through free cells.
     have haR : clr Mk t.aheadRight = Color.free := hl ▸ hG'.1
     have haL : clr Mk t.aheadLeft = Color.free := case3_aheadLeft_free Mk hG h1 h2 haR
     refine Relation.ReflTransGen.head ⟨?_, hG.1, haL⟩ (Relation.ReflTransGen.single ⟨?_, haL, hl ▸ haR⟩)
     · obtain ⟨x, y, d⟩ := t
       cases d <;>
-        · simp only [Dart.leftCell, Dart.aheadLeft, rookAdjZ, Prod.ext_iff]
-          omega
+        · simp [rookAdjZ]
+          try omega
     · rw [hl]
       obtain ⟨x, y, d⟩ := t
       cases d <;>
-        · simp only [Dart.aheadLeft, Dart.aheadRight, rookAdjZ, Prod.ext_iff]
-          omega
+        · simp [rookAdjZ]
+          try omega
 
 end Shores
 
@@ -491,9 +523,9 @@ def startDart : Dart := ⟨0, -1, Dir.N⟩
 theorem good_startDart : Good Mk startDart := by
   constructor
   · show clr Mk (-1, -1) = Color.free
-    exact clr_left Mk (by omega) (by omega)
+    exact clr_left Mk (by norm_num) (by norm_num) (by norm_num)
   · show clr Mk (0, -1) = Color.marked
-    exact clr_bottom Mk (by omega) (by omega)
+    exact clr_bottom Mk (by norm_num) (by norm_num) (by norm_num)
 
 /-- The start dart has no `Good` predecessor: the backward walk formula lands on a dart whose left
 cell lies outside the padded box. -/
@@ -530,8 +562,8 @@ theorem good_mem_dartBox {t : Dart} (h : Good Mk t) :
   unfold dartBox
   rw [Finset.mem_product, Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc]
   refine ⟨⟨?_, ?_⟩, ?_⟩
-  · cases d <;> simp only [Dart.leftCell] at hb <;> omega
-  · cases d <;> simp only [Dart.leftCell] at hb <;> omega
+  · cases d <;> ((try simp at hb ⊢); omega)
+  · cases d <;> ((try simp at hb ⊢); omega)
   · cases d <;> simp
 
 /-- The walk: iterate the successor from the start dart. -/
@@ -541,12 +573,12 @@ def walk (k : ℕ) : Dart := (succ Mk)^[k] startDart
 `Good` predecessor of the start dart — impossible.  So some iterate fails `Good`. -/
 theorem exists_bad : ∃ k, ¬ Good Mk (walk Mk k) := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   -- backstepping along all-Good iterates
   have hback : ∀ i k, walk Mk (i + k) = walk Mk i → walk Mk k = walk Mk 0 := by
     intro i
     induction i with
-    | zero => intro k h; simpa using h.symm
+    | zero => intro k h; simpa using h
     | succ i ih =>
       intro k h
       have h1 : walk Mk (i + k + 1) = walk Mk (i + 1) := by
@@ -718,14 +750,13 @@ theorem exit_classification :
     -- either the ahead-right marked cell is a top sentinel, or the left cell is a right sentinel
     have hkey : t.aheadRight.2 = (n : ℤ) + 1 ∨ t.leftCell.1 = (m : ℤ) + 1 := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       obtain ⟨hc1, hc2⟩ := hcon
       apply haL
       refine free_of_not_marked Mk h1 ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;>
         · obtain ⟨x, y, d⟩ := t
           cases d <;>
-            simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight] at * <;>
-              omega
+            · (try simp at hLb hRb haRb hc1 hc2 ⊢); omega
     rcases hkey with htop | hright
     · -- marked crossing: append the king step to the ahead-right top cell.
       refine Or.inl ⟨t.aheadRight, hMreach.tail ⟨?_, hG.2, h2⟩, htop⟩
@@ -741,27 +772,23 @@ theorem exit_classification :
     have hkey : t.rightCell.2 = (n : ℤ) + 1 ∨
         (t.aheadLeft.1 = (m : ℤ) + 1 ∧ 0 ≤ t.aheadLeft.2 ∧ t.aheadLeft.2 ≤ (n : ℤ)) := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       obtain ⟨hc1, hc2⟩ := hcon
       apply haR
       refine free_of_not_marked Mk h2 ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;>
         · obtain ⟨x, y, d⟩ := t
           cases d <;>
-            simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight] at * <;>
-              omega
+            · (try simp at hLb hRb hc1 hc2 ⊢); omega
     rcases hkey with htop | ⟨hright, hj0, hj1⟩
     · exact Or.inl ⟨t.rightCell, hMreach, htop⟩
     · -- free crossing: append the rook step to the ahead-left right-sentinel cell.
-      have haLfree : clr Mk t.aheadLeft = Color.free := by
-        have : t.aheadLeft = ((m : ℤ) + 1, t.aheadLeft.2) := by
-          rw [← hright]
-        rw [this]
-        exact clr_right Mk hj0 hj1
+      have haLfree : clr Mk t.aheadLeft = Color.free :=
+        clr_right Mk hright hj0 hj1
       refine Or.inr ⟨t.aheadLeft, hFreach.tail ⟨?_, hG.1, haLfree⟩, hright⟩
       obtain ⟨x, y, d⟩ := t
       cases d <;>
-        · simp only [Dart.leftCell, Dart.aheadLeft, rookAdjZ, Prod.ext_iff]
-          omega
+        · simp [rookAdjZ]
+          try omega
 
 end Exit
 
@@ -849,7 +876,7 @@ theorem king_chain_toFin :
     refine (ih ha hqint).tail ⟨?_, ?_, ?_⟩
     · -- king adjacency descends
       obtain ⟨hne, k1, k2, k3, k4⟩ := hks.1
-      refine ⟨⟨by omega, by omega⟩, ⟨by omega, by omega⟩, ?_⟩
+      refine ⟨⟨by simp; omega, by simp; omega⟩, ⟨by simp; omega, by simp; omega⟩, ?_⟩
       intro hcon
       apply hne
       rw [Prod.mk.injEq] at hcon
@@ -889,15 +916,15 @@ theorem rook_chain_toFin :
     · -- rook adjacency descends
       rcases hrs.1 with ⟨hcol, hstep⟩ | ⟨hrow, hstep⟩
       · refine Or.inl ⟨?_, ?_⟩
-        · exact Fin.ext (by omega)
+        · exact Fin.ext (by simp; omega)
         · rcases hstep with h | h
-          · exact Or.inr (by omega)
-          · exact Or.inl (by omega)
+          · exact Or.inr (by simp; omega)
+          · exact Or.inl (by simp; omega)
       · refine Or.inr ⟨?_, ?_⟩
-        · exact Fin.ext (by omega)
+        · exact Fin.ext (by simp; omega)
         · rcases hstep with h | h
-          · exact Or.inr (by omega)
-          · exact Or.inl (by omega)
+          · exact Or.inr (by simp; omega)
+          · exact Or.inl (by simp; omega)
     · exact free_interior Mk hqfr hqint.1 hqint.2.1 hqint.2.2.1 hqint.2.2.2
     · exact free_interior Mk hrs.2.2 hb.1 hb.2.1 hb.2.2.1 hb.2.2.2
 
@@ -924,7 +951,7 @@ theorem marked_pipeline
       rcases marked_cases Mk hwmk with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
     -- peel the last step: departs from the top interior row
     rcases ch3.cases_tail with heq | ⟨p, ch4, stp⟩
-    · exfalso; rw [heq] at hw0; omega
+    · exfalso; rw [heq] at hv; omega
     · obtain ⟨⟨hkp, _⟩, hptop⟩ := stp
       have hpmk : clr Mk p = Color.marked := hkp.2.1
       have hpn : p.2 = (n : ℤ) := by
@@ -961,7 +988,7 @@ theorem free_pipeline
     have hwint : 0 ≤ w.1 ∧ w.1 ≤ (m : ℤ) ∧ 0 ≤ w.2 ∧ w.2 ≤ (n : ℤ) := by
       rcases free_cases Mk hwfr with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
     rcases ch3.cases_tail with heq | ⟨p, ch4, stp⟩
-    · exfalso; rw [heq] at hw0; omega
+    · exfalso; rw [heq] at hv; omega
     · obtain ⟨⟨hrp, _⟩, hpright⟩ := stp
       have hpfr : clr Mk p = Color.free := hrp.2.1
       have hpm : p.1 = (m : ℤ) := by

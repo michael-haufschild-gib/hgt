@@ -297,8 +297,9 @@ def lpExtendByZeroCLM (s : Set X) (hs : MeasurableSet s) :
 theorem lpExtendByZeroCLM_coeFn (s : Set X) (hs : MeasurableSet s)
     (f : Lp F q (ν.restrict s)) :
     lpExtendByZeroCLM (F := F) (𝕜 := 𝕜) ν q s hs f =ᵐ[ν]
-      s.indicator f :=
-  MemLp.coeFn_toLp ((memLp_indicator_iff_restrict hs).2 (Lp.memLp f))
+      s.indicator f := by
+  change lpExtendByZero ν q s hs f =ᵐ[ν] s.indicator f
+  exact AEEqFun.coeFn_mk _ _
 
 /-- Multiplication by the indicator of a measurable set on a full `Lᵖ` space. -/
 def lpSetCutoffCLM (s : Set X) (hs : MeasurableSet s) :

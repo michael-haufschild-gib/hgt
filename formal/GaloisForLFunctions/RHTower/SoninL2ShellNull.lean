@@ -67,13 +67,13 @@ theorem fourierForbidden_starProjection_evenShellVector_tendsto_zero
   apply hnull.congr'
   exact Filter.Eventually.of_forall fun n => by
     rw [← fourierCutoff_eq_fourierForbidden_starProjection]
-    change ‖fourierUnitary.symm
-        (indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
-          (fourierUnitary (evenShellVector a b ha hab n)))‖ =
-      ‖indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
+    change ‖indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
         (fourierUnitary
           (indicatorCutoff (closedEvenShell a b) (measurableSet_closedEvenShell a b)
-            (evenShellVector a b ha hab n)))‖
+            (evenShellVector a b ha hab n)))‖ =
+      ‖fourierUnitary.symm
+        (indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
+          (fourierUnitary (evenShellVector a b ha hab n)))‖
     rw [fourierUnitary.symm.norm_map, shellCutoff_evenShellVector]
 
 end RHTower

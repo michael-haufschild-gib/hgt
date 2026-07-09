@@ -1,23 +1,25 @@
 /-
 Concrete fixed-cutoff Sonin infrastructure on complex L²(ℝ).
 
-This file contains no analytic hypotheses. It constructs the physical indicator cutoff and proves
-that it is an orthogonal projection, its Fourier conjugate, the even carrier, normalized dilation
-unitaries and their adjoints, and an explicit orthonormal sequence of symmetric shell indicators.
-The shell vectors obey the exact inward/outward support identities for U_p + U_p*. The final section
-identifies restricted-measure L² with the subtype-interval L² used by the finite-rectangle Fourier
-compactness theorem, including explicit restriction and zero-extension maps.
+This file contains no analytic hypotheses. It constructs the physical indicator cutoff and its
+Fourier conjugate as orthogonal projections, normalized dilation unitaries and their adjoints, and
+an explicit orthonormal sequence of symmetric shell indicators. The shell vectors obey the exact
+inward/outward support identities for U_p + U_p*. Finite time-band compactness is transferred to
+the corresponding full-space cutoff operators.
 -/
 import GaloisForLFunctions.RHTower.FiniteTimeBandFourierCompact
-import GaloisForLFunctions.RHTower.L2FourierReflection
 import Mathlib.Analysis.Fourier.LpSpace
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.InnerProductSpace.Projection.Basic
+import Mathlib.Analysis.InnerProductSpace.Projection.Submodule
+import Mathlib.Analysis.Normed.Operator.Compact.Basic
+import Mathlib.MeasureTheory.Function.LpSpace.Indicator
+import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 
 noncomputable section
 
 open MeasureTheory Set
-open scoped ENNReal InnerProductSpace
+open scoped ENNReal InnerProduct
 
 set_option maxHeartbeats 1000000
 
@@ -27,7 +29,7 @@ abbrev SoninL2 := Lp (α := ℝ) ℂ 2
 
 /-! ### Physical and Fourier cutoffs -/
 
-def indicatorCutoff (s : Set ℝ) (hs : MeasurableSet s) : SoninL2 →L[ℂ] SoninL2 :=
+abbrev indicatorCutoff (s : Set ℝ) (hs : MeasurableSet s) : SoninL2 →L[ℂ] SoninL2 :=
   lpSetCutoffCLM (F := ℂ) (𝕜 := ℂ) (volume : Measure ℝ) 2 s hs
 
 theorem indicatorCutoff_ae (s : Set ℝ) (hs : MeasurableSet s) (f : SoninL2) :
@@ -38,11 +40,14 @@ theorem indicatorCutoff_idempotent (s : Set ℝ) (hs : MeasurableSet s) :
     IsIdempotentElem (indicatorCutoff s hs) := by
   rw [isIdempotentElem_iff]
   ext f
-  ext1
+  simp only [ContinuousLinearMap.mul_apply]
   filter_upwards [indicatorCutoff_ae s hs (indicatorCutoff s hs f),
     indicatorCutoff_ae s hs f] with x h1 h2
-  rw [h1, h2]
-  simp
+  rw [h1]
+  by_cases hx : x ∈ s
+  · rw [Set.indicator_of_mem hx]
+  · rw [Set.indicator_of_notMem hx]
+    simpa [hx] using h2.symm
 
 theorem indicatorCutoff_symmetric (s : Set ℝ) (hs : MeasurableSet s) :
     (indicatorCutoff s hs).toLinearMap.IsSymmetric := by
@@ -50,13 +55,16 @@ theorem indicatorCutoff_symmetric (s : Set ℝ) (hs : MeasurableSet s) :
   rw [MeasureTheory.L2.inner_def, MeasureTheory.L2.inner_def]
   apply integral_congr_ae
   filter_upwards [indicatorCutoff_ae s hs f, indicatorCutoff_ae s hs g] with x hf hg
+  change inner ℂ (indicatorCutoff s hs f x) (g x) =
+    inner ℂ (f x) (indicatorCutoff s hs g x)
   rw [hf, hg]
   by_cases hx : x ∈ s <;> simp [hx]
 
 theorem indicatorCutoff_isStarProjection (s : Set ℝ) (hs : MeasurableSet s) :
     IsStarProjection (indicatorCutoff s hs) := by
   rw [ContinuousLinearMap.isStarProjection_iff_isSymmetricProjection]
-  exact ⟨(indicatorCutoff_idempotent s hs).toLinearMap,
+  exact ⟨ContinuousLinearMap.IsIdempotentElem.toLinearMap
+      (indicatorCutoff_idempotent s hs),
     indicatorCutoff_symmetric s hs⟩
 
 def physicalForbidden (s : Set ℝ) (hs : MeasurableSet s) : Submodule ℂ SoninL2 :=
@@ -64,12 +72,13 @@ def physicalForbidden (s : Set ℝ) (hs : MeasurableSet s) : Submodule ℂ Sonin
 
 instance physicalForbidden_hasOrthogonalProjection (s : Set ℝ) (hs : MeasurableSet s) :
     (physicalForbidden s hs).HasOrthogonalProjection :=
-  (indicatorCutoff_isStarProjection s hs).isSymmetricProjection.hasOrthogonalProjection_range
+  (ContinuousLinearMap.IsStarProjection.isSymmetricProjection
+    (indicatorCutoff_isStarProjection s hs)).hasOrthogonalProjection_range
 
 theorem indicatorCutoff_eq_physicalForbidden_starProjection
     (s : Set ℝ) (hs : MeasurableSet s) :
     indicatorCutoff s hs = (physicalForbidden s hs).starProjection :=
-  (ContinuousLinearMap.isStarProjection_iff_eq_starProjection_range.mp
+  (isStarProjection_iff_eq_starProjection_range.mp
     (indicatorCutoff_isStarProjection s hs)).2
 
 
@@ -87,27 +96,37 @@ def fourierCutoff (s : Set ℝ) (hs : MeasurableSet s) : SoninL2 →L[ℂ] Sonin
 theorem fourierCutoff_idempotent (s : Set ℝ) (hs : MeasurableSet s) :
     IsIdempotentElem (fourierCutoff s hs) := by
   rw [isIdempotentElem_iff]
-  ext f
+  apply ContinuousLinearMap.ext
+  intro f
   simp only [ContinuousLinearMap.mul_apply, fourierCutoff_apply,
     LinearIsometryEquiv.apply_symm_apply]
   have hP := indicatorCutoff_idempotent s hs
   rw [isIdempotentElem_iff] at hP
-  exact congrArg fourierUnitary.symm (DFunLike.congr_fun (congrArg DFunLike.coe hP)
-    (fourierUnitary f))
+  have hPx := congrArg
+    (fun T : SoninL2 →L[ℂ] SoninL2 => T (fourierUnitary f)) hP
+  exact congrArg fourierUnitary.symm (by
+    simpa only [ContinuousLinearMap.mul_apply] using hPx)
 
 theorem fourierCutoff_symmetric (s : Set ℝ) (hs : MeasurableSet s) :
     (fourierCutoff s hs).toLinearMap.IsSymmetric := by
   intro f g
-  rw [← fourierUnitary.inner_map_map]
-  simp only [fourierCutoff_apply, LinearIsometryEquiv.apply_symm_apply]
-  rw [← fourierUnitary.inner_map_map]
-  simp only [fourierCutoff_apply, LinearIsometryEquiv.apply_symm_apply]
-  exact indicatorCutoff_symmetric s hs (fourierUnitary f) (fourierUnitary g)
+  calc
+    inner ℂ (fourierCutoff s hs f) g =
+        inner ℂ (fourierUnitary (fourierCutoff s hs f)) (fourierUnitary g) :=
+      (fourierUnitary.inner_map_map (fourierCutoff s hs f) g).symm
+    _ = inner ℂ (indicatorCutoff s hs (fourierUnitary f)) (fourierUnitary g) := by
+      simp only [fourierCutoff_apply, LinearIsometryEquiv.apply_symm_apply]
+    _ = inner ℂ (fourierUnitary f) (indicatorCutoff s hs (fourierUnitary g)) :=
+      indicatorCutoff_symmetric s hs (fourierUnitary f) (fourierUnitary g)
+    _ = inner ℂ f (fourierCutoff s hs g) := by
+      simpa only [fourierCutoff_apply, LinearIsometryEquiv.apply_symm_apply] using
+        fourierUnitary.inner_map_map f (fourierCutoff s hs g)
 
 theorem fourierCutoff_isStarProjection (s : Set ℝ) (hs : MeasurableSet s) :
     IsStarProjection (fourierCutoff s hs) := by
   rw [ContinuousLinearMap.isStarProjection_iff_isSymmetricProjection]
-  exact ⟨(fourierCutoff_idempotent s hs).toLinearMap,
+  exact ⟨ContinuousLinearMap.IsIdempotentElem.toLinearMap
+      (fourierCutoff_idempotent s hs),
     fourierCutoff_symmetric s hs⟩
 
 def fourierForbidden (s : Set ℝ) (hs : MeasurableSet s) : Submodule ℂ SoninL2 :=
@@ -115,12 +134,13 @@ def fourierForbidden (s : Set ℝ) (hs : MeasurableSet s) : Submodule ℂ SoninL
 
 instance fourierForbidden_hasOrthogonalProjection (s : Set ℝ) (hs : MeasurableSet s) :
     (fourierForbidden s hs).HasOrthogonalProjection :=
-  (fourierCutoff_isStarProjection s hs).isSymmetricProjection.hasOrthogonalProjection_range
+  (ContinuousLinearMap.IsStarProjection.isSymmetricProjection
+    (fourierCutoff_isStarProjection s hs)).hasOrthogonalProjection_range
 
 theorem fourierCutoff_eq_fourierForbidden_starProjection
     (s : Set ℝ) (hs : MeasurableSet s) :
     fourierCutoff s hs = (fourierForbidden s hs).starProjection :=
-  (ContinuousLinearMap.isStarProjection_iff_eq_starProjection_range.mp
+  (isStarProjection_iff_eq_starProjection_range.mp
     (fourierCutoff_isStarProjection s hs)).2
 
 /-! ### Full-space finite time-band compactness -/
@@ -139,7 +159,7 @@ theorem fullToRestrictedTimeBandFourier_coeFn_sonin
       (μ := (volume : Measure ℝ).restrict (Set.Icc a b))
       (fullFourierFunctionalBCF a b c d hab),
     Lp.coeFn_const (p := ∞) ((volume : Measure ℝ).restrict (Set.Icc a b)) f,
-    ae_restrict_mem measurableSet_mem
+    ae_restrict_mem measurableSet_Icc
   ] with x hholder hfield hconst hx
   rw [fullToRestrictedTimeBandFourier, kernelOperator, kernelOperatorMap_apply,
     hholder, fullFourierFunctionalField, hfield, hconst]
@@ -173,23 +193,30 @@ theorem integrable_indicatorCutoff_Icc (c d : ℝ) (f : SoninL2) :
     Integrable (indicatorCutoff (Set.Icc c d) measurableSet_Icc f : ℝ → ℂ) := by
   have hindicator : Integrable ((Set.Icc c d).indicator fun x : ℝ => f x) :=
     (integrableOn_Lp_of_measure_ne_top f fact_one_le_two_ennreal.elim
-      (by finiteness)).integrable_indicator measurableSet_Icc
+      (measure_Icc_lt_top.ne)).integrable_indicator measurableSet_Icc
   exact hindicator.congr (indicatorCutoff_ae (Set.Icc c d) measurableSet_Icc f).symm
 
 theorem l1Fourier_indicatorCutoff_Icc_eq_setIntegral
     (c d : ℝ) (f : SoninL2) (x : ℝ) :
     let g := indicatorCutoff (Set.Icc c d) measurableSet_Icc f
-    Lp.fourierTransform
+    Real.Lp.fourierTransform
         ((memLp_one_iff_integrable.mpr (integrable_indicatorCutoff_Icc c d f)).toLp g) x =
       ∫ y : ℝ in Set.Icc c d,
         Complex.exp ((-(2 * Real.pi * x * y) : ℝ) * Complex.I) * f y := by
   dsimp only
-  rw [Lp.fourierTransform_apply, Real.fourier_eq', ← integral_indicator measurableSet_Icc]
+  rw [Real.Lp.fourierTransform_apply, Real.fourier_eq',
+    ← integral_indicator measurableSet_Icc]
   apply integral_congr_ae
-  filter_upwards [indicatorCutoff_ae (Set.Icc c d) measurableSet_Icc f] with y hy
-  rw [hy]
+  filter_upwards [
+    MemLp.coeFn_toLp (memLp_one_iff_integrable.mpr
+      (integrable_indicatorCutoff_Icc c d f)),
+    indicatorCutoff_ae (Set.Icc c d) measurableSet_Icc f
+  ] with y htoLp hy
+  rw [htoLp, hy]
   by_cases hys : y ∈ Set.Icc c d
-  · simp [hys, smul_eq_mul, Real.inner_apply, mul_comm]
+  · simp only [hys, Set.indicator_of_mem, smul_eq_mul, Real.inner_apply]
+    congr 1
+    ring_nf
   · simp [hys]
 
 def cutoffFourierCutoff (a b c d : ℝ) : SoninL2 →L[ℂ] SoninL2 :=
@@ -200,11 +227,12 @@ def cutoffFourierCutoff (a b c d : ℝ) : SoninL2 →L[ℂ] SoninL2 :=
 theorem fullTimeBandFourier_eq_cutoffFourierCutoff
     (a b c d : ℝ) (hab : a ≤ b) :
     fullTimeBandFourier a b c d hab = cutoffFourierCutoff a b c d := by
-  ext f
+  apply ContinuousLinearMap.ext
+  intro f
   let g : SoninL2 := indicatorCutoff (Set.Icc c d) measurableSet_Icc f
   have hgInt : Integrable (g : ℝ → ℂ) := integrable_indicatorCutoff_Icc c d f
   have hfourier : (fourierUnitary g : ℝ → ℂ) =ᵐ[volume]
-      (Lp.fourierTransform ((memLp_one_iff_integrable.mpr hgInt).toLp g) : ℝ → ℂ) := by
+      (Real.Lp.fourierTransform ((memLp_one_iff_integrable.mpr hgInt).toLp g) : ℝ → ℂ) := by
     simpa [fourierUnitary] using l2_fourier_coeFn_eq_l1_fourier_of_integrable g hgInt
   ext1
   filter_upwards [fullTimeBandFourier_coeFn_sonin a b c d hab f,
@@ -233,10 +261,11 @@ theorem measurableSet_closedEvenShell (a b : ℝ) : MeasurableSet (closedEvenShe
 theorem indicatorCutoff_closedEvenShell_eq_add
     (a b : ℝ) (ha : 0 < a) :
     indicatorCutoff (closedEvenShell a b) (measurableSet_closedEvenShell a b) =
-      indicatorCutoff (Set.Icc (-b) (-a)) measurableSet_Icc +
+        indicatorCutoff (Set.Icc (-b) (-a)) measurableSet_Icc +
         indicatorCutoff (Set.Icc a b) measurableSet_Icc := by
-  ext f
-  ext1
+  apply ContinuousLinearMap.ext
+  intro f
+  apply Lp.ext
   filter_upwards [
     indicatorCutoff_ae (closedEvenShell a b) (measurableSet_closedEvenShell a b) f,
     indicatorCutoff_ae (Set.Icc (-b) (-a)) measurableSet_Icc f,
@@ -245,7 +274,13 @@ theorem indicatorCutoff_closedEvenShell_eq_add
       (indicatorCutoff (Set.Icc (-b) (-a)) measurableSet_Icc f)
       (indicatorCutoff (Set.Icc a b) measurableSet_Icc f)
   ] with x hshell hneg hpos hadd
-  rw [hshell, hadd, hneg, hpos]
+  rw [hshell, ContinuousLinearMap.add_apply]
+  change (closedEvenShell a b).indicator (fun x => f x) x =
+    (indicatorCutoff (Set.Icc (-b) (-a)) measurableSet_Icc f +
+      indicatorCutoff (Set.Icc a b) measurableSet_Icc f : SoninL2) x
+  rw [hadd]
+  simp only [Pi.add_apply]
+  rw [hneg, hpos]
   by_cases hn : x ∈ Set.Icc (-b) (-a)
   · have hp : x ∉ Set.Icc a b := by
       intro hp
@@ -272,75 +307,10 @@ theorem isCompactOperator_shellCutoffFourierCutoff
   exact (isCompactOperator_cutoffFourierCutoff (-a) a (-b) (-a) (by nlinarith)).add
     (isCompactOperator_cutoffFourierCutoff (-a) a a b (by nlinarith))
 
-def reflectionIsometry : SoninL2 →ₗᵢ[ℂ] SoninL2 :=
-  MeasureTheory.Lp.compMeasurePreservingₗᵢ ℂ (fun x : ℝ => -x)
-    (Measure.measurePreserving_neg (volume : Measure ℝ))
-
-def reflection : SoninL2 →L[ℂ] SoninL2 :=
-  reflectionIsometry.toContinuousLinearMap
-
-theorem fourierUnitary_reflection (f : SoninL2) :
-    fourierUnitary (reflection f) = reflection (fourierUnitary f) := by
-  simpa [fourierUnitary, reflection, reflectionIsometry, l2Reflection,
-    l2ReflectionIsometry] using l2_fourier_reflection f
-
-theorem reflection_ae (f : SoninL2) :
-    reflection f =ᵐ[volume] fun x : ℝ => f (-x) :=
-  MeasureTheory.Lp.coeFn_compMeasurePreserving f
-    (Measure.measurePreserving_neg (volume : Measure ℝ))
-
-@[simp] theorem reflection_reflection (f : SoninL2) : reflection (reflection f) = f := by
-  ext1
-  filter_upwards [reflection_ae (reflection f), reflection_ae f] with x hRf hf
-  rw [hRf, hf]
-  simp
-
-theorem reflection_symmetric : reflection.toLinearMap.IsSymmetric := by
-  intro f g
-  rw [← reflectionIsometry.inner_map_map]
-  simp only [reflection, reflectionIsometry, LinearIsometry.coe_toContinuousLinearMap,
-    reflection_reflection]
-
-def evenProjection : SoninL2 →L[ℂ] SoninL2 :=
-  (2 : ℂ)⁻¹ • ((1 : SoninL2 →L[ℂ] SoninL2) + reflection)
-
-@[simp] theorem evenProjection_apply (f : SoninL2) :
-    evenProjection f = (2 : ℂ)⁻¹ • (f + reflection f) := rfl
-
-@[simp] theorem reflection_evenProjection (f : SoninL2) :
-    reflection (evenProjection f) = evenProjection f := by
-  simp [evenProjection_apply, map_add, map_smul]
-
-theorem evenProjection_idempotent : IsIdempotentElem evenProjection := by
-  rw [isIdempotentElem_iff]
-  ext f
-  simp
-
-theorem evenProjection_symmetric : evenProjection.toLinearMap.IsSymmetric := by
-  exact (LinearMap.isSymmetric_id ℂ SoninL2).add reflection_symmetric |>.smul (by norm_num)
-
-theorem evenProjection_isStarProjection : IsStarProjection evenProjection := by
-  rw [ContinuousLinearMap.isStarProjection_iff_isSymmetricProjection]
-  exact ⟨evenProjection_idempotent.toLinearMap, evenProjection_symmetric⟩
-
-def evenSubspace : Submodule ℂ SoninL2 := LinearMap.range evenProjection.toLinearMap
-
-instance : evenSubspace.HasOrthogonalProjection :=
-  evenProjection_isStarProjection.isSymmetricProjection.hasOrthogonalProjection_range
-
-theorem evenProjection_eq_starProjection :
-    evenProjection = evenSubspace.starProjection :=
-  (ContinuousLinearMap.isStarProjection_iff_eq_starProjection_range.mp
-    evenProjection_isStarProjection).2
-
-theorem mem_evenSubspace_iff (f : SoninL2) :
-    f ∈ evenSubspace ↔ reflection f = f := by
-  constructor
-  · rintro ⟨g, rfl⟩
-    exact reflection_evenProjection g
-  · intro hf
-    refine ⟨f, ?_⟩
-    simp [evenProjection_apply, hf]
+theorem realMul_quasiMeasurePreserving (a : ℝ) (ha : a ≠ 0) :
+    Measure.QuasiMeasurePreserving (fun x : ℝ => a * x) volume volume := by
+  simpa only [smul_eq_mul] using
+    (volume : Measure ℝ).quasiMeasurePreserving_smul ha
 
 theorem memLp_comp_mul (a : ℝ) (ha : a ≠ 0) (f : SoninL2) :
     MemLp (fun x : ℝ => f (a * x)) 2 (volume : Measure ℝ) := by
@@ -365,17 +335,26 @@ def rawDilationLinear (a : ℝ) (ha : a ≠ 0) : SoninL2 →ₗ[ℂ] SoninL2 whe
   toFun := rawDilationAux a ha
   map_add' f g := by
     ext1
+    have hadd_scaled : ∀ᵐ x ∂volume,
+        (f + g : SoninL2) (a * x) = f (a * x) + g (a * x) := by
+      simpa only [Function.comp_apply, Pi.add_apply] using
+        (Lp.coeFn_add f g).comp_tendsto (realMul_quasiMeasurePreserving a ha).tendsto_ae
     filter_upwards [rawDilationAux_ae a ha (f + g), rawDilationAux_ae a ha f,
-      rawDilationAux_ae a ha g, Lp.coeFn_add f g,
+      rawDilationAux_ae a ha g, hadd_scaled,
       Lp.coeFn_add (rawDilationAux a ha f) (rawDilationAux a ha g)] with x hfg hf hg hadd hadd'
     rw [hfg, hadd']
-    simp only [Pi.add_apply, hf, hg, hadd]
+    simpa only [Pi.add_apply, hf, hg] using hadd
   map_smul' c f := by
+    change rawDilationAux a ha (c • f) = c • rawDilationAux a ha f
     ext1
+    have hsmul_scaled : ∀ᵐ x ∂volume,
+        (c • f : SoninL2) (a * x) = c • f (a * x) := by
+      simpa only [Function.comp_apply, Pi.smul_apply] using
+        (Lp.coeFn_smul c f).comp_tendsto (realMul_quasiMeasurePreserving a ha).tendsto_ae
     filter_upwards [rawDilationAux_ae a ha (c • f), rawDilationAux_ae a ha f,
-      Lp.coeFn_smul c f, Lp.coeFn_smul c (rawDilationAux a ha f)] with x hcf hf hsmul hsmul'
+      hsmul_scaled, Lp.coeFn_smul c (rawDilationAux a ha f)] with x hcf hf hsmul hsmul'
     rw [hcf, hsmul']
-    simp only [Pi.smul_apply, hf, hsmul]
+    simpa only [Pi.smul_apply, hf] using hsmul
 
 theorem eLpNorm_rawDilation (a : ℝ) (ha : a ≠ 0) (f : SoninL2) :
     eLpNorm (fun x : ℝ => f (a * x)) 2 volume =
@@ -391,7 +370,8 @@ theorem eLpNorm_rawDilation (a : ℝ) (ha : a ≠ 0) (f : SoninL2) :
       rw [Real.map_volume_mul_left ha]
     _ = _ := by
       rw [eLpNorm_smul_measure_of_ne_zero]
-      · simp only [smul_eq_mul]
+      · congr 2
+        norm_num
       · simp [ha]
 
 theorem norm_rawDilationAux (a : ℝ) (ha : 0 < a) (f : SoninL2) :
@@ -399,51 +379,62 @@ theorem norm_rawDilationAux (a : ℝ) (ha : 0 < a) (f : SoninL2) :
   rw [Lp.norm_def, Lp.norm_def, eLpNorm_congr_ae (rawDilationAux_ae a ha.ne' f),
     eLpNorm_rawDilation a ha.ne' f, ENNReal.toReal_mul]
   congr 1
-  rw [ENNReal.toReal_rpow]
+  rw [← ENNReal.toReal_rpow]
   norm_num
-  rw [abs_of_pos ha, inv_eq_one_div, ENNReal.toReal_ofReal (by positivity)]
-  rw [show (1 / a) ^ (1 / 2 : ℝ) = (Real.sqrt a)⁻¹ by
-    rw [one_div, Real.inv_rpow (le_of_lt ha)]
+  rw [abs_of_pos ha]
+  rw [show a⁻¹ ^ (1 / 2 : ℝ) = (Real.sqrt a)⁻¹ by
+    rw [Real.inv_rpow (le_of_lt ha)]
     congr
     rw [← Real.sqrt_eq_rpow]]
 
 def dilation (a : ℝ) (ha : 0 < a) : SoninL2 →ₗᵢ[ℂ] SoninL2 where
   toLinearMap := (Real.sqrt a : ℂ) • rawDilationLinear a ha.ne'
   norm_map' f := by
-    simp only [LinearMap.smul_apply, norm_smul, Complex.norm_real, Real.norm_eq_abs,
-      abs_sqrt (le_of_lt ha), norm_rawDilationAux a ha f]
-    rw [mul_assoc, Real.mul_inv_cancel₀ (Real.sqrt_ne_zero'.mpr ha.ne')]
+    change ‖(Real.sqrt a : ℂ) • rawDilationAux a ha.ne' f‖ = ‖f‖
+    rw [norm_smul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (Real.sqrt_nonneg a), norm_rawDilationAux a ha f]
+    rw [← mul_assoc]
+    rw [mul_inv_cancel₀ (Real.sqrt_ne_zero'.mpr ha)]
     simp
 
 theorem dilation_ae (a : ℝ) (ha : 0 < a) (f : SoninL2) :
     dilation a ha f =ᵐ[volume] fun x : ℝ => (Real.sqrt a : ℂ) * f (a * x) := by
+  change ((Real.sqrt a : ℂ) • rawDilationAux a ha.ne' f : SoninL2) =ᵐ[volume]
+    fun x : ℝ => (Real.sqrt a : ℂ) * f (a * x)
   filter_upwards [Lp.coeFn_smul (Real.sqrt a : ℂ) (rawDilationAux a ha.ne' f),
     rawDilationAux_ae a ha.ne' f] with x hsmul hraw
-  rw [hsmul, hraw]
-  rfl
+  rw [hsmul]
+  change (Real.sqrt a : ℂ) * rawDilationAux a ha.ne' f x =
+    (Real.sqrt a : ℂ) * f (a * x)
+  rw [hraw]
 
 theorem sqrt_mul_sqrt_inv (a : ℝ) (ha : 0 < a) :
     Real.sqrt a * Real.sqrt a⁻¹ = 1 := by
-  rw [Real.sqrt_inv (le_of_lt ha), mul_inv_cancel₀]
-  exact Real.sqrt_ne_zero'.mpr ha.ne'
+  rw [Real.sqrt_inv, mul_inv_cancel₀]
+  exact Real.sqrt_ne_zero'.mpr ha
 
 @[simp] theorem dilation_dilation_inv (a : ℝ) (ha : 0 < a) (f : SoninL2) :
     dilation a ha (dilation a⁻¹ (inv_pos.mpr ha) f) = f := by
   ext1
   have hcomp := (dilation_ae a⁻¹ (inv_pos.mpr ha) f).comp_tendsto
-    (Real.quasiMeasurePreserving_smul (volume : Measure ℝ) ha.ne').tendsto_ae
+    (realMul_quasiMeasurePreserving a ha.ne').tendsto_ae
   filter_upwards [dilation_ae a ha (dilation a⁻¹ (inv_pos.mpr ha) f), hcomp] with x hout hin
-  rw [hout, hin]
-  simp only [smul_eq_mul]
-  push_cast
-  rw [← mul_assoc, Complex.ofReal_mul, sqrt_mul_sqrt_inv a ha]
+  rw [hout]
+  have hin' : dilation a⁻¹ (inv_pos.mpr ha) f (a * x) =
+      (Real.sqrt a⁻¹ : ℂ) * f (a⁻¹ * (a * x)) := by
+    simpa only [Function.comp_apply] using hin
+  rw [hin']
+  have hsqrtC : (Real.sqrt a : ℂ) * (Real.sqrt a⁻¹ : ℂ) = 1 := by
+    norm_cast
+    exact sqrt_mul_sqrt_inv a ha
+  rw [← mul_assoc, hsqrtC, one_mul]
   simp [ha.ne']
 
 @[simp] theorem dilation_inv_dilation (a : ℝ) (ha : 0 < a) (f : SoninL2) :
     dilation a⁻¹ (inv_pos.mpr ha) (dilation a ha f) = f := by
   have hi : 0 < a⁻¹ := inv_pos.mpr ha
   convert dilation_dilation_inv a⁻¹ hi f using 1
-  simp [ha.ne']
+  simp
 
 def dilationUnitary (a : ℝ) (ha : 0 < a) : SoninL2 ≃ₗᵢ[ℂ] SoninL2 :=
   LinearIsometryEquiv.ofSurjective (dilation a ha) fun f =>
@@ -477,23 +468,28 @@ theorem normalizedIndicator_ae (s : Set ℝ) (hs : MeasurableSet s)
     (hfin : volume s ≠ ∞) :
     normalizedIndicator s hs hfin =ᵐ[volume]
       fun x : ℝ => ((Real.sqrt (volume.real s))⁻¹ : ℂ) * s.indicator (fun _ => (1 : ℂ)) x := by
+  change (((Real.sqrt (volume.real s))⁻¹ : ℂ) •
+      indicatorConstLp 2 hs hfin (1 : ℂ) : SoninL2) =ᵐ[volume] _
   filter_upwards [Lp.coeFn_smul ((Real.sqrt (volume.real s))⁻¹ : ℂ)
       (indicatorConstLp 2 hs hfin (1 : ℂ)),
-    indicatorConstLp_coeFn (p := 2) (μ := volume) (c := (1 : ℂ))] with x hsmul hind
-  rw [hsmul, hind]
-  rfl
+    indicatorConstLp_coeFn (p := 2) (μ := volume) (s := s) (hs := hs)
+      (hμs := hfin) (c := (1 : ℂ))] with x hsmul hind
+  rw [hsmul]
+  change ((Real.sqrt (volume.real s))⁻¹ : ℂ) *
+    indicatorConstLp 2 hs hfin (1 : ℂ) x = _
+  rw [hind]
 
 theorem norm_normalizedIndicator (s : Set ℝ) (hs : MeasurableSet s)
     (hfin : volume s ≠ ∞) (hpos : 0 < volume.real s) :
     ‖normalizedIndicator s hs hfin‖ = 1 := by
   simp only [normalizedIndicator, norm_smul, norm_inv, Complex.norm_real,
-    Real.norm_eq_abs, abs_sqrt (le_of_lt hpos)]
+    Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _)]
   rw [norm_indicatorConstLp (p := 2) (μ := volume) (by norm_num) (by norm_num)]
   norm_num
   rw [show (volume.real s) ^ (1 / (2 : ℝ)) = Real.sqrt (volume.real s) by
     rw [Real.sqrt_eq_rpow]]
   rw [inv_mul_cancel₀]
-  exact Real.sqrt_ne_zero'.mpr hpos.ne'
+  exact Real.sqrt_ne_zero'.mpr hpos
 
 theorem inner_normalizedIndicator_eq_zero {s t : Set ℝ}
     (hs : MeasurableSet s) (ht : MeasurableSet t)
@@ -551,7 +547,9 @@ theorem lt_shellLeft {a b : ℝ} (hab : a < b) (n : ℕ) :
 theorem shellRight_lt {a b : ℝ} (hab : a < b) (n : ℕ) :
     shellRight a b n < b := by
   have hd : 0 < b - a := sub_pos.mpr hab
-  have hden : 2 ≤ (n : ℝ) + 2 := by positivity
+  have hden : 2 ≤ (n : ℝ) + 2 := by
+    have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
+    linarith
   have hfrac : (b - a) / ((n : ℝ) + 2) ≤ (b - a) / 2 := by
     exact div_le_div_of_nonneg_left hd.le (by norm_num) hden
   have hhalf : (b - a) / 2 < b - a := by linarith
@@ -592,27 +590,28 @@ theorem shellCell_subset_evenShellCell {a b : ℝ} (ha : 0 < a) (hab : a < b) (n
     shellCell a b n ⊆ evenShellCell a b n := by
   intro x hx
   change |x| ∈ shellCell a b n
-  have hxpos : 0 < x := (shellLeft_pos ha hab n).trans_le hx.1
+  have hxpos : 0 < x := (shellLeft_pos ha hab n).trans hx.1
   simpa [abs_of_pos hxpos] using hx
 
 theorem evenShellCell_subset_Icc {a b : ℝ} (ha : 0 < a) (hab : a < b) (n : ℕ) :
     evenShellCell a b n ⊆ Set.Icc (-b) b := by
   intro x hx
   have habs : |x| < b := hx.2.trans_lt (shellRight_lt hab n)
-  exact (abs_lt.mp habs).le
+  exact ⟨(abs_lt.mp habs).1.le, (abs_lt.mp habs).2.le⟩
 
 theorem evenShellCell_measure_ne_top {a b : ℝ} (ha : 0 < a) (hab : a < b) (n : ℕ) :
     volume (evenShellCell a b n) ≠ ∞ :=
-  measure_ne_top_of_subset (evenShellCell_subset_Icc ha hab n) (by finiteness)
+  measure_ne_top_of_subset (evenShellCell_subset_Icc ha hab n) measure_Icc_lt_top.ne
 
 theorem evenShellCell_measureReal_pos {a b : ℝ} (ha : 0 < a) (hab : a < b) (n : ℕ) :
     0 < volume.real (evenShellCell a b n) := by
   have hcellpos : volume (shellCell a b n) ≠ 0 := by
     rw [shellCell, Real.volume_Ioc]
-    exact ENNReal.ofReal_ne_zero.mpr (sub_pos.mpr (shellLeft_lt_shellRight hab n)).ne'
+    exact ENNReal.ofReal_ne_zero_iff.mpr (sub_pos.mpr (shellLeft_lt_shellRight hab n))
   have hevenpos : volume (evenShellCell a b n) ≠ 0 := by
     intro hzero
-    have hle := measure_mono (shellCell_subset_evenShellCell ha hab n)
+    have hle : volume (shellCell a b n) ≤ volume (evenShellCell a b n) :=
+      measure_mono (shellCell_subset_evenShellCell ha hab n)
     rw [hzero] at hle
     exact hcellpos (bot_unique hle)
   exact lt_of_le_of_ne measureReal_nonneg
@@ -628,40 +627,27 @@ theorem evenShellVector_orthonormal (a b : ℝ) (ha : 0 < a) (hab : a < b) :
     (evenShellCell_measure_ne_top ha hab) (evenShellCell_measureReal_pos ha hab)
     (evenShellCell_pairwiseDisjoint hab)
 
-theorem reflection_evenShellVector (a b : ℝ) (ha : 0 < a) (hab : a < b) (n : ℕ) :
-    reflection (evenShellVector a b ha hab n) = evenShellVector a b ha hab n := by
-  ext1
-  let s := evenShellCell a b n
-  let hs := measurableSet_evenShellCell a b n
-  let hfin := evenShellCell_measure_ne_top ha hab n
-  have hneg := (normalizedIndicator_ae s hs hfin).comp_tendsto
-    (Measure.measurePreserving_neg (volume : Measure ℝ)).quasiMeasurePreserving.tendsto_ae
-  filter_upwards [reflection_ae (evenShellVector a b ha hab n), hneg,
-    normalizedIndicator_ae s hs hfin] with x href hnegx hx
-  rw [href]
-  change normalizedIndicator s hs hfin (-x) = normalizedIndicator s hs hfin x
-  rw [hnegx, hx]
-  simp only [s, evenShellCell, shellCell, abs_neg]
-
-theorem evenShellVector_mem_evenSubspace (a b : ℝ) (ha : 0 < a) (hab : a < b) (n : ℕ) :
-    evenShellVector a b ha hab n ∈ evenSubspace :=
-  (mem_evenSubspace_iff _).mpr (reflection_evenShellVector a b ha hab n)
-
 theorem indicatorCutoff_dilation_normalizedIndicator_eq_self
     (c s : Set ℝ) (hc : MeasurableSet c) (hs : MeasurableSet s)
     (hfin : volume s ≠ ∞) (p : ℝ) (hp : 0 < p)
     (hsub : (fun x : ℝ => p * x) ⁻¹' s ⊆ c) :
     indicatorCutoff c hc (dilation p hp (normalizedIndicator s hs hfin)) =
       dilation p hp (normalizedIndicator s hs hfin) := by
-  ext1
-  have hnormcomp := (normalizedIndicator_ae s hs hfin).comp_tendsto
-    (Real.quasiMeasurePreserving_smul (volume : Measure ℝ) hp.ne').tendsto_ae
+  apply Lp.ext
+  have hnormcomp :
+      (fun x : ℝ => normalizedIndicator s hs hfin (p * x)) =ᵐ[volume]
+        fun x => ((Real.sqrt (volume.real s))⁻¹ : ℂ) *
+          s.indicator (fun _ => (1 : ℂ)) (p * x) := by
+    simpa [Function.comp_def] using
+      (normalizedIndicator_ae s hs hfin).comp_tendsto
+        (realMul_quasiMeasurePreserving p hp.ne').tendsto_ae
   filter_upwards [indicatorCutoff_ae c hc (dilation p hp (normalizedIndicator s hs hfin)),
     dilation_ae p hp (normalizedIndicator s hs hfin), hnormcomp] with x hcut hdil hnorm
-  rw [hcut, hdil]
-  by_cases hxs : p * x ∈ s
-  · rw [Set.indicator_of_mem (hsub hxs)]
-  · rw [hnorm, Set.indicator_of_notMem hxs]
+  rw [hcut]
+  by_cases hxc : x ∈ c
+  · rw [Set.indicator_of_mem hxc]
+  · have hxs : p * x ∉ s := fun hmem => hxc (hsub hmem)
+    rw [Set.indicator_of_notMem hxc, hdil, hnorm, Set.indicator_of_notMem hxs]
     simp
 
 theorem indicatorCutoff_dilation_normalizedIndicator_eq_zero
@@ -669,17 +655,24 @@ theorem indicatorCutoff_dilation_normalizedIndicator_eq_zero
     (hfin : volume s ≠ ∞) (p : ℝ) (hp : 0 < p)
     (hdisj : Disjoint c ((fun x : ℝ => p * x) ⁻¹' s)) :
     indicatorCutoff c hc (dilation p hp (normalizedIndicator s hs hfin)) = 0 := by
-  ext1
-  have hnormcomp := (normalizedIndicator_ae s hs hfin).comp_tendsto
-    (Real.quasiMeasurePreserving_smul (volume : Measure ℝ) hp.ne').tendsto_ae
+  apply Lp.ext
+  have hnormcomp :
+      (fun x : ℝ => normalizedIndicator s hs hfin (p * x)) =ᵐ[volume]
+        fun x => ((Real.sqrt (volume.real s))⁻¹ : ℂ) *
+          s.indicator (fun _ => (1 : ℂ)) (p * x) := by
+    simpa [Function.comp_def] using
+      (normalizedIndicator_ae s hs hfin).comp_tendsto
+        (realMul_quasiMeasurePreserving p hp.ne').tendsto_ae
   filter_upwards [indicatorCutoff_ae c hc (dilation p hp (normalizedIndicator s hs hfin)),
-    dilation_ae p hp (normalizedIndicator s hs hfin), hnormcomp] with x hcut hdil hnorm
+    dilation_ae p hp (normalizedIndicator s hs hfin), hnormcomp,
+    Lp.coeFn_zero ℂ 2 volume] with x hcut hdil hnorm hzero
   rw [hcut]
   by_cases hxc : x ∈ c
   · have hxnot : p * x ∉ s := fun hxs => Set.disjoint_left.1 hdisj hxc hxs
     rw [Set.indicator_of_mem hxc, hdil, hnorm, Set.indicator_of_notMem hxnot]
     simp
-  · rw [Set.indicator_of_notMem hxc]
+  · rw [Set.indicator_of_notMem hxc, hzero]
+    simp only [Pi.zero_apply]
 
 theorem inward_shell_preimage_subset (a p : ℝ) (ha : 0 < a) (hp : 1 < p) (n : ℕ) :
     (fun x : ℝ => p * x) ⁻¹' evenShellCell a (p * a) n ⊆ Set.Icc (-a) a := by
@@ -688,9 +681,9 @@ theorem inward_shell_preimage_subset (a p : ℝ) (ha : 0 < a) (hp : 1 < p) (n : 
   have habs_scaled : |p * x| < p * a := hx.2.trans_lt (shellRight_lt hpa n)
   have hp0 : 0 < p := zero_lt_one.trans hp
   have habs : |x| < a := by
-    apply (mul_lt_mul_left hp0).mp
-    simpa [abs_mul, abs_of_pos hp0] using habs_scaled
-  exact (abs_lt.mp habs).le
+    rw [abs_mul, abs_of_pos hp0] at habs_scaled
+    nlinarith
+  exact ⟨(abs_lt.mp habs).1.le, (abs_lt.mp habs).2.le⟩
 
 theorem outward_shell_preimage_disjoint (a p : ℝ) (ha : 0 < a) (hp : 1 < p) (n : ℕ) :
     Disjoint (Set.Icc (-a) a)
@@ -701,7 +694,7 @@ theorem outward_shell_preimage_disjoint (a p : ℝ) (ha : 0 < a) (hp : 1 < p) (n
   have hxabs : |x| ≤ a := abs_le.mpr hxc
   have hp0 : 0 < p := zero_lt_one.trans hp
   have hinv0 : 0 < p⁻¹ := inv_pos.mpr hp0
-  have hinv_le : p⁻¹ ≤ 1 := inv_le_one₀ hp0.le hp.le
+  have hinv_le : p⁻¹ ≤ 1 := (inv_le_one₀ hp0).2 hp.le
   have hscaled_le : |p⁻¹ * x| ≤ a := by
     rw [abs_mul, abs_of_pos hinv0]
     calc
@@ -728,12 +721,16 @@ theorem evenShellCell_subset_closedEvenShell
   have hupper : |x| < b := hx.2.trans_lt (shellRight_lt hab n)
   by_cases hxnonneg : 0 ≤ x
   · right
-    simpa [abs_of_nonneg hxnonneg] using ⟨hlower.le, hupper.le⟩
+    constructor
+    · simpa only [abs_of_nonneg hxnonneg] using hlower.le
+    · simpa only [abs_of_nonneg hxnonneg] using hupper.le
   · left
     have hxneg : x < 0 := lt_of_not_ge hxnonneg
-    have hbounds : a ≤ -x ∧ -x ≤ b := by
-      simpa [abs_of_neg hxneg] using ⟨hlower.le, hupper.le⟩
-    constructor <;> linarith
+    constructor
+    · have : -x ≤ b := by simpa only [abs_of_neg hxneg] using hupper.le
+      linarith
+    · have : a ≤ -x := by simpa only [abs_of_neg hxneg] using hlower.le
+      linarith
 
 theorem shellCutoff_evenShellVector (a b : ℝ) (ha : 0 < a) (hab : a < b)
     (n : ℕ) :
@@ -747,12 +744,18 @@ theorem shellCutoff_evenShellVector (a b : ℝ) (ha : 0 < a) (hab : a < b)
       (measurableSet_evenShellCell a b n)
       (evenShellCell_measure_ne_top ha hab n)
   ] with x hcut hshell
-  rw [hcut, hshell]
+  rw [hcut]
   by_cases hx : x ∈ evenShellCell a b n
-  · rw [Set.indicator_of_mem hx,
-      Set.indicator_of_mem (evenShellCell_subset_closedEvenShell ha hab n hx)]
-  · rw [Set.indicator_of_notMem hx]
-    simp
+  · rw [Set.indicator_of_mem (evenShellCell_subset_closedEvenShell ha hab n hx)]
+  · have hvzero : (evenShellVector a b ha hab n : ℝ → ℂ) x = 0 := by
+      change normalizedIndicator (evenShellCell a b n)
+        (measurableSet_evenShellCell a b n) (evenShellCell_measure_ne_top ha hab n) x = 0
+      rw [hshell, Set.indicator_of_notMem hx]
+      simp
+    by_cases hclosed : x ∈ closedEvenShell a b
+    · rw [Set.indicator_of_mem hclosed]
+    · rw [Set.indicator_of_notMem hclosed]
+      exact hvzero.symm
 
 theorem physicalCutoff_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
     (n : ℕ) :
@@ -763,20 +766,27 @@ theorem physicalCutoff_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
       (evenShellVector a (p * a) ha (by nlinarith) n),
     normalizedIndicator_ae (evenShellCell a (p * a) n)
       (measurableSet_evenShellCell a (p * a) n)
-      (evenShellCell_measure_ne_top ha (by nlinarith) n)] with x hcut hshell
+      (evenShellCell_measure_ne_top ha (by nlinarith) n),
+    Lp.coeFn_zero ℂ 2 volume] with x hcut hshell hzero
   rw [hcut]
   by_cases hxc : x ∈ Set.Icc (-a) a
   · have hxnot : x ∉ evenShellCell a (p * a) n := fun hxs =>
       Set.disjoint_left.1 (physicalCutoff_evenShellCell_disjoint a p ha hp n) hxc hxs
-    rw [Set.indicator_of_mem hxc, hshell, Set.indicator_of_notMem hxnot]
+    rw [Set.indicator_of_mem hxc]
+    change normalizedIndicator (evenShellCell a (p * a) n)
+      (measurableSet_evenShellCell a (p * a) n)
+      (evenShellCell_measure_ne_top ha (by nlinarith) n) x = (0 : SoninL2) x
+    rw [hshell, Set.indicator_of_notMem hxnot, hzero]
     simp
   · rw [Set.indicator_of_notMem hxc]
+    exact hzero.symm
 
 theorem evenShellVector_mem_physicalForbidden_orthogonal
     (a p : ℝ) (ha : 0 < a) (hp : 1 < p) (n : ℕ) :
     evenShellVector a (p * a) ha (by nlinarith) n ∈
       (physicalForbidden (Set.Icc (-a) a) measurableSet_Icc)ᗮ := by
-  apply (Submodule.starProjection_apply_eq_zero_iff).mp
+  apply (Submodule.starProjection_apply_eq_zero_iff
+    (K := physicalForbidden (Set.Icc (-a) a) measurableSet_Icc)).mp
   rw [← indicatorCutoff_eq_physicalForbidden_starProjection]
   exact physicalCutoff_evenShellVector a p ha hp n
 
@@ -810,208 +820,19 @@ theorem physicalCutoff_dilationSum_evenShellVector (a p : ℝ) (ha : 0 < a) (hp 
     indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
         (dilationSum p hp (evenShellVector a (p * a) ha (by nlinarith) n)) =
       dilation p (zero_lt_one.trans hp) (evenShellVector a (p * a) ha (by nlinarith) n) := by
-  rw [dilationSum_apply, map_add, physicalCutoff_inward_evenShellVector,
-    physicalCutoff_outward_evenShellVector, add_zero]
+  rw [dilationSum_apply, map_add, physicalCutoff_inward_evenShellVector a p ha hp n,
+    physicalCutoff_outward_evenShellVector a p ha hp n, add_zero]
 
 theorem norm_physicalCutoff_dilationSum_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
     (n : ℕ) :
     ‖indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
         (dilationSum p hp (evenShellVector a (p * a) ha (by nlinarith) n))‖ = 1 := by
   rw [physicalCutoff_dilationSum_evenShellVector]
-  exact (dilation p (zero_lt_one.trans hp)).norm_map.trans
-    ((evenShellVector_orthonormal a (p * a) ha (by nlinarith)).norm_eq_one n)
-
-/-! ### Restricted-measure L² and zero extension -/
-
-abbrev RestrictedL2 (s : Set ℝ) := Lp ℂ 2 ((volume : Measure ℝ).restrict s)
-
-def restrictL2 (s : Set ℝ) : SoninL2 →L[ℂ] RestrictedL2 s :=
-  LpToLpRestrictCLM ℝ ℂ ℂ (volume : Measure ℝ) 2 s
-
-theorem restrictL2_ae (s : Set ℝ) (f : SoninL2) :
-    restrictL2 s f =ᵐ[(volume : Measure ℝ).restrict s] fun x : ℝ => f x :=
-  LpToLpRestrictCLM_coeFn (μ := (volume : Measure ℝ)) (p := (2 : ENNReal)) ℂ s f
-
-def extendL2 (s : Set ℝ) (hs : MeasurableSet s) : RestrictedL2 s →ₗᵢ[ℂ] SoninL2 where
-  toLinearMap := (lpExtendByZeroCLM (F := ℂ) (𝕜 := ℂ)
-    (volume : Measure ℝ) 2 s hs).toLinearMap
-  norm_map' := norm_lpExtendByZero (F := ℂ) (𝕜 := ℂ)
-    (volume : Measure ℝ) 2 s hs
-
-theorem extendL2_ae (s : Set ℝ) (hs : MeasurableSet s) (f : RestrictedL2 s) :
-    extendL2 s hs f =ᵐ[volume] s.indicator fun x : ℝ => f x :=
-  lpExtendByZeroCLM_coeFn (F := ℂ) (𝕜 := ℂ) (volume : Measure ℝ) 2 s hs f
-
-@[simp] theorem restrictL2_extendL2 (s : Set ℝ) (hs : MeasurableSet s)
-    (f : RestrictedL2 s) : restrictL2 s (extendL2 s hs f) = f := by
-  ext1
-  have hext_restrict : extendL2 s hs f =ᵐ[(volume : Measure ℝ).restrict s]
-      s.indicator fun x : ℝ => f x :=
-    (extendL2_ae s hs f).filter_mono (ae_mono Measure.restrict_le_self)
-  filter_upwards [restrictL2_ae s (extendL2 s hs f), hext_restrict,
-    ae_restrict_mem measurableSet_mem] with x hres hext hxs
-  rw [hres, hext, Set.indicator_of_mem hxs]
-
-theorem extendL2_restrictL2 (s : Set ℝ) (hs : MeasurableSet s) (f : SoninL2) :
-    extendL2 s hs (restrictL2 s f) = indicatorCutoff s hs f := by
-  ext1
-  have hres_on_s : ∀ᵐ x ∂volume, x ∈ s → restrictL2 s f x = f x :=
-    (ae_restrict_iff' hs).mp (restrictL2_ae s f)
-  filter_upwards [extendL2_ae s hs (restrictL2 s f), indicatorCutoff_ae s hs f,
-    hres_on_s] with x hext hcut hres
-  rw [hext, hcut]
-  by_cases hxs : x ∈ s
-  · simp [hxs, hres hxs]
-  · simp [hxs]
-
-
-attribute [local instance] Measure.Subtype.measureSpace
-
-abbrev SubtypeL2 (s : Set ℝ) := Lp ℂ 2 (volume : Measure s)
-
-def subtypeCoeMeasurePreserving (s : Set ℝ) (hs : MeasurableSet s) :
-    MeasurePreserving ((↑) : s → ℝ) (volume : Measure s)
-      ((volume : Measure ℝ).restrict s) := by
-  refine ⟨measurable_subtype_coe, ?_⟩
-  exact MeasurableSet.map_coe_volume hs
-
-def restrictedToSubtype (s : Set ℝ) (hs : MeasurableSet s) :
-    RestrictedL2 s →ₗᵢ[ℂ] SubtypeL2 s :=
-  Lp.compMeasurePreservingₗᵢ ℂ ((↑) : s → ℝ) (subtypeCoeMeasurePreserving s hs)
-
-def subtypeExtendFunction (s : Set ℝ) (f : SubtypeL2 s) : ℝ → ℂ :=
-  Function.extend ((↑) : s → ℝ) (fun x => f x) 0
-
-theorem memLp_subtypeExtendFunction_restrict (s : Set ℝ) (hs : MeasurableSet s)
-    (f : SubtypeL2 s) :
-    MemLp (subtypeExtendFunction s f) 2 ((volume : Measure ℝ).restrict s) := by
-  rw [← MeasurableSet.map_coe_volume hs]
-  apply (MeasurableEmbedding.subtype_coe hs).memLp_map_measure_iff.mpr
-  simpa [subtypeExtendFunction, Function.comp_def,
-    Subtype.val_injective.extend_apply] using Lp.memLp f
-
-def subtypeToRestrictedAux (s : Set ℝ) (hs : MeasurableSet s) (f : SubtypeL2 s) :
-    RestrictedL2 s :=
-  MemLp.toLp (subtypeExtendFunction s f) (memLp_subtypeExtendFunction_restrict s hs f)
-
-theorem subtypeToRestrictedAux_ae (s : Set ℝ) (hs : MeasurableSet s) (f : SubtypeL2 s) :
-    subtypeToRestrictedAux s hs f =ᵐ[(volume : Measure ℝ).restrict s]
-      subtypeExtendFunction s f :=
-  MemLp.coeFn_toLp (memLp_subtypeExtendFunction_restrict s hs f)
-
-def subtypeToRestrictedLinear (s : Set ℝ) (hs : MeasurableSet s) :
-    SubtypeL2 s →ₗ[ℂ] RestrictedL2 s where
-  toFun := subtypeToRestrictedAux s hs
-  map_add' f g := by
-    ext1
-    have hext_add : subtypeExtendFunction s (f + g) =ᵐ[(volume : Measure ℝ).restrict s]
-        fun x => subtypeExtendFunction s f x + subtypeExtendFunction s g x := by
-      apply (ae_restrict_iff_subtype hs).mpr
-      filter_upwards [Lp.coeFn_add f g] with x hx
-      simpa [subtypeExtendFunction, Subtype.val_injective.extend_apply] using hx
-    filter_upwards [subtypeToRestrictedAux_ae s hs (f + g),
-      subtypeToRestrictedAux_ae s hs f, subtypeToRestrictedAux_ae s hs g,
-      hext_add, Lp.coeFn_add (subtypeToRestrictedAux s hs f)
-        (subtypeToRestrictedAux s hs g)] with x hfg hf hg hext hadd
-    rw [hfg, hadd, hext, hf, hg]
-  map_smul' c f := by
-    ext1
-    have hext_smul : subtypeExtendFunction s (c • f) =ᵐ[(volume : Measure ℝ).restrict s]
-        fun x => c • subtypeExtendFunction s f x := by
-      apply (ae_restrict_iff_subtype hs).mpr
-      filter_upwards [Lp.coeFn_smul c f] with x hx
-      simpa [subtypeExtendFunction, Subtype.val_injective.extend_apply] using hx
-    filter_upwards [subtypeToRestrictedAux_ae s hs (c • f),
-      subtypeToRestrictedAux_ae s hs f, hext_smul,
-      Lp.coeFn_smul c (subtypeToRestrictedAux s hs f)] with x hcf hf hext hsmul
-    rw [hcf, hsmul, hext, hf]
-
-theorem norm_subtypeToRestrictedAux (s : Set ℝ) (hs : MeasurableSet s) (f : SubtypeL2 s) :
-    ‖subtypeToRestrictedAux s hs f‖ = ‖f‖ := by
-  rw [Lp.norm_def, Lp.norm_def,
-    eLpNorm_congr_ae (subtypeToRestrictedAux_ae s hs f)]
-  have hmap := (MeasurableEmbedding.subtype_coe hs).eLpNorm_map_measure
-    (μ := (volume : Measure s)) (g := subtypeExtendFunction s f) (p := (2 : ENNReal))
-  rw [MeasurableSet.map_coe_volume hs] at hmap
-  rw [← hmap]
-  congr 2
-  funext x
-  exact Subtype.val_injective.extend_apply (fun y : s => f y) 0 x
-
-def subtypeToRestricted (s : Set ℝ) (hs : MeasurableSet s) :
-    SubtypeL2 s →ₗᵢ[ℂ] RestrictedL2 s where
-  toLinearMap := subtypeToRestrictedLinear s hs
-  norm_map' := norm_subtypeToRestrictedAux s hs
-
-@[simp] theorem restrictedToSubtype_subtypeToRestricted
-    (s : Set ℝ) (hs : MeasurableSet s) (f : SubtypeL2 s) :
-    restrictedToSubtype s hs (subtypeToRestricted s hs f) = f := by
-  ext1
-  filter_upwards [Lp.coeFn_compMeasurePreserving (subtypeToRestricted s hs f)
-      (subtypeCoeMeasurePreserving s hs),
-    (subtypeToRestrictedAux_ae s hs f).comp_tendsto
-      (subtypeCoeMeasurePreserving s hs).tendsto_ae] with x hcomp hext
-  rw [hcomp, hext]
-  exact Subtype.val_injective.extend_apply (fun y : s => f y) 0 x
-
-@[simp] theorem subtypeToRestricted_restrictedToSubtype
-    (s : Set ℝ) (hs : MeasurableSet s) (f : RestrictedL2 s) :
-    subtypeToRestricted s hs (restrictedToSubtype s hs f) = f := by
-  ext1
-  have hcomp_on_s : ∀ᵐ x ∂(volume : Measure ℝ).restrict s,
-      subtypeExtendFunction s (restrictedToSubtype s hs f) x = f x := by
-    apply (ae_restrict_iff_subtype hs).mpr
-    filter_upwards [Lp.coeFn_compMeasurePreserving f
-      (subtypeCoeMeasurePreserving s hs)] with x hx
-    rw [subtypeExtendFunction, Subtype.val_injective.extend_apply]
-    exact hx
-  filter_upwards [subtypeToRestrictedAux_ae s hs (restrictedToSubtype s hs f),
-    hcomp_on_s] with x hext hcomp
-  rw [hext, hcomp]
-
-def restrictedSubtypeEquiv (s : Set ℝ) (hs : MeasurableSet s) :
-    RestrictedL2 s ≃ₗᵢ[ℂ] SubtypeL2 s where
-  toLinearIsometry := restrictedToSubtype s hs
-  invFun := subtypeToRestricted s hs
-  left_inv := subtypeToRestricted_restrictedToSubtype s hs
-  right_inv := restrictedToSubtype_subtypeToRestricted s hs
-
-def toSubtypeL2 (s : Set ℝ) (hs : MeasurableSet s) :
-    SoninL2 →L[ℂ] SubtypeL2 s :=
-  (restrictedToSubtype s hs).toContinuousLinearMap ∘L restrictL2 s
-
-theorem toSubtypeL2_ae (s : Set ℝ) (hs : MeasurableSet s) (f : SoninL2) :
-    toSubtypeL2 s hs f =ᵐ[volume] fun x : s => f x := by
-  have hres := (restrictL2_ae s f).comp_tendsto
-    (subtypeCoeMeasurePreserving s hs).tendsto_ae
-  filter_upwards [Lp.coeFn_compMeasurePreserving (restrictL2 s f)
-      (subtypeCoeMeasurePreserving s hs), hres] with x hcomp hresx
-  rw [toSubtypeL2, ContinuousLinearMap.comp_apply, hcomp, hresx]
-  rfl
-
-def fromSubtypeL2 (s : Set ℝ) (hs : MeasurableSet s) :
-    SubtypeL2 s →L[ℂ] SoninL2 :=
-  (extendL2 s hs).toContinuousLinearMap ∘L
-    (subtypeToRestricted s hs).toContinuousLinearMap
-
-theorem fromSubtypeL2_ae (s : Set ℝ) (hs : MeasurableSet s) (f : SubtypeL2 s) :
-    fromSubtypeL2 s hs f =ᵐ[volume] s.indicator (subtypeExtendFunction s f) := by
-  exact extendL2_ae s hs (subtypeToRestricted s hs f)
-
-@[simp] theorem toSubtypeL2_fromSubtypeL2
-    (s : Set ℝ) (hs : MeasurableSet s) (f : SubtypeL2 s) :
-    toSubtypeL2 s hs (fromSubtypeL2 s hs f) = f := by
-  rw [toSubtypeL2, fromSubtypeL2]
-  simp only [ContinuousLinearMap.comp_apply]
-  rw [restrictL2_extendL2, restrictedToSubtype_subtypeToRestricted]
-
-def localizedSubtypeOperator (s t : Set ℝ) (hs : MeasurableSet s) (ht : MeasurableSet t)
-    (K : SubtypeL2 s →L[ℂ] SubtypeL2 t) : SoninL2 →L[ℂ] SoninL2 :=
-  fromSubtypeL2 t ht ∘L K ∘L toSubtypeL2 s hs
-
-theorem isCompactOperator_localizedSubtypeOperator (s t : Set ℝ) (hs : MeasurableSet s)
-    (ht : MeasurableSet t) (K : SubtypeL2 s →L[ℂ] SubtypeL2 t)
-    (hK : IsCompactOperator K) : IsCompactOperator (localizedSubtypeOperator s t hs ht K) :=
-  (hK.comp_clm (toSubtypeL2 s hs)).clm_comp (fromSubtypeL2 t ht)
+  calc
+    ‖dilation p (zero_lt_one.trans hp)
+        (evenShellVector a (p * a) ha (by nlinarith) n)‖ =
+        ‖evenShellVector a (p * a) ha (by nlinarith) n‖ :=
+      (dilation p (zero_lt_one.trans hp)).norm_map _
+    _ = 1 := (evenShellVector_orthonormal a (p * a) ha (by nlinarith)).norm_eq_one n
 
 end RHTower

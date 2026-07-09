@@ -1474,3 +1474,22 @@ interface-walk architecture (directed marked-left interface edges; total success
 king-convention diagonal resolution — the rook/king asymmetry enters exactly there; lollipop
 termination; shore invariants; sentinel augmentation with interior extraction). Stage C (mesh
 assembly + `rectangle_crossing_duality`) follows once the discrete core lands.
+
+## Lean status — discrete Steinhaus duality and periodic-spectrum rigidity LANDED
+
+`DiscreteSteinhaus.lean` (verified: zero errors/warnings; umbrella build 9093 jobs;
+`discrete_crossing_duality`, `SteinhausWalk.exit_classification` axiom-clean;
+`SteinhausWalk.pred_succ` on [propext, Quot.sound] only): the GENERAL discrete Steinhaus/Hex
+crossing duality — arbitrary decidable marking on a rectangular board admits a marked king-chain
+crossing bottom-to-top or a free rook-chain crossing left-to-right. Mechanism: interface walk on
+a sentinel-padded three-color board with the right-hand rule; the rook/king asymmetry enters at
+the single diagonal resolution; termination by predecessor-uniqueness pigeonhole from a pinned
+corner start; shore invariants deliver the crossing at the exit. This was the piece mathlib
+lacks toward Brouwer-adjacent planar topology.
+`PeriodicSpectrumRigidity.lean` (verified: axiom-clean, umbrella, lint green):
+`periodic_spectrum_rigidity` — the wave-7 loud-regime closure (even entire + one-sided
+arithmetic-progression flank spectrum ⟹ constant), no flank bound, growth, or quietness
+hypothesis. Remaining Lean target for the duality stack: Stage C (`rectangle_crossing_duality`)
+— mesh discretization + the Stage-A clopen split + the monochromatic-chain argument, consuming
+`discrete_crossing_duality`; on its landing the wave-5 seam-curtain duality is machine-checked
+end to end.
