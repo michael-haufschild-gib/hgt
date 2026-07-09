@@ -1276,3 +1276,70 @@ members; the theorems are not vacuously scoped. Relation to the in-tree everywhe
 the integrality growth dichotomy; the new modules close the half-plane σ₀ < 1/2 cells via Bohr
 orthogonality with NO integrality or multiplicativity — the two mechanisms cover disjoint strata
 of the C-COC cell map and neither subsumes the other.
+
+## Lean status — quiet-crossing rigidity LANDED in full (h = 1 form + constancy)
+
+`QuietCrossingRigidity.lean` (1032 lines) now contains deliverable C, verified independently
+(standalone compile clean; umbrella build; `perronKink_second_difference`,
+`perronSecondDiff_integral`, `perronE_differentiable`, `quiet_crossing_rigidity`,
+`quiet_crossing_rigidity_constant` all [propext, Classical.choice, Quot.sound]; lint green; index
+regenerated). `quiet_crossing_rigidity`: entire `F`, equal to an absolutely convergent Dirichlet
+series on `Re s ≥ c ≥ ½`, exactly symmetric, with ONE height sequence `T_k → ∞` where
+`sup_strip ‖F‖ ≤ q_k`, `q_k/T_k² → 0` ⟹ `aₙ = 0` for all `n ≥ 2`;
+`quiet_crossing_rigidity_constant` upgrades to `F ≡ a₁` on all of ℂ. Proof as in the wave-1
+refinement: residue-free (the second-difference numerator has roots at both kernel poles, so the
+integrand is entire and the rectangle shift needs no residue calculus). Remaining paper-only
+forms: conductor-datum quiet-crossing (support for x > Q²) and kernel escalation to finite-order
+quiet rates.
+
+## Wave 2 addendum — quiet-crossing rigidity is frequency-blind (general Dirichlet form)
+
+**[PROVED HERE — paper].** The quiet-crossing theorem holds verbatim for GENERAL Dirichlet series
+`F(s) = Σ aₖ e^{−λₖ s}` with any discrete frequency sequence `0 ≤ λ₁ < λ₂ < ⋯ → ∞` and finite
+abscissa of absolute convergence: entire + `F(s) = F(1−s)` + one quiet height sequence ⟹ `F`
+constant. Every ingredient is frequency-blind: the smoothed count becomes
+`Σ aₖ·max(x − e^{λₖ}, 0)` (kernel identity applied at `y = x·e^{−λₖ}`), the flank bounds come
+from absolute convergence alone, the rectangle shift and edge estimates never see the
+frequencies, and the kink extraction reads the second difference at the knot `e^{λₖ}` with any
+`δ` smaller than the (positive, by discreteness) gap to the neighboring knots. Consequence for
+the discriminating-invariant conjecture (wave 4): rigidity-under-quietness is already a theorem
+of the WELD for every discrete one-sided spectrum — the open cell, for every such Λ, is exactly
+the loud regime, and the pure-point/continuous divide is the full residual content. The ordinary
+lattice `log ℕ` plays no role until arithmetic (integrality, INT-QUIET) is invoked against the
+loud cell.
+
+## Lean status — conductor-datum quiet-crossing LANDED
+
+`QuietCrossingConductor.lean` verified and integrated (both theorems
+[propext, Classical.choice, Quot.sound]; umbrella build; lint green; index regenerated):
+`quiet_crossing_conductor_support` — under the conductor functional equation
+`F(s) = (Σ_{j∈J} c_j Q_j^{1−2s})·F(1−s)` with `1 ≤ Q_j ≤ Q₀`, a quiet carrier has `aₙ = 0` for
+every `n > Q₀²` — and `quiet_crossing_conductor_polynomial` (support ⊆ {0} ∪ [1, Q₀²]). The
+left-flank transport carries the polynomially amplified constant `CJ·Q₀^{1+2M}·B`, and the
+endgame closes by the ratio test `(Q₀²/(n−½))^M → 0` exactly when `n > Q₀²`. The quiet-crossing
+K–P support theorem on the `σ_a ≥ 1/2` stratum is machine-checked. In flight: Gaussian kernel
+escalation (`QuietCrossingEscalation.lean`) and path-quiet rigidity (`QuietPathRigidity.lean`,
+two-stage primitive-telescoping design; the min-cut duality reading remains paper-only — planar
+unicoherence is not in mathlib).
+
+## Wave 2 precision note + Lean status — kernel escalation LANDED (corrected quantifier)
+
+**Quantifier correction (caught during formalization).** Wave 2's per-(m, λ) phrasing overstated:
+a quiet sequence at `o(e^{T²/λ})` for ONE fixed λ does NOT suffice by this route. At fixed λ the
+left-edge weight cost `e^{M²/λ}` beats `(n−½)^{1−M}` as `M → ∞` (the parabola wins); optimizing
+`M(λ) = λ·log(n−½)/2` yields only the nonzero bound `4πB(n−½)·e^{−λ log²(n−½)/4}`, and the
+`λ → ∞` recovery of the sharp kink requires the shift's validity at arbitrarily LARGE λ. The
+correct hypothesis is the ∀λ budget: `q_k · e^{−T_k²/λ} → 0` for every `λ > 0`, i.e.
+`log q_k = o(T_k²)` (with the `s^{2m}` kernel: `log q_k = o(T_k^{2m})`). The wave-2 HEADLINE is
+unaffected: a quiet sequence at any finite-order rate `q_k = O(e^{T_k^A})` satisfies the ∀λ
+budget once `2m > A`, so "one finite-order-quiet height sequence ⟹ constant/polynomial" stands —
+with the corrected route through the ∀λ form.
+
+**LANDED — Lean.** `QuietCrossingEscalation.lean` verified and integrated (standalone clean;
+umbrella build; `gaussian_weighted_contour_bound` and `quiet_crossing_rigidity_gaussian` both
+[propext, Classical.choice, Quot.sound]; lint green; index regenerated). The Gaussian case
+(m = 1): entire symmetric carrier with one height sequence satisfying the ∀λ budget
+(`log q_k = o(T_k²)` — e.g. loudness up to `e^{T^{1.9}}`) has `aₙ = 0` for all `n ≥ 2`. Mechanism:
+per-λ rectangle shift of the still-entire `F·E·e^{s²/λ}` (weight has no poles; edges die under
+the λ-budget), then dominated convergence `W_λ → 1` on the fixed lines at fixed depth M, then
+`M → ∞`. General `m` (rates `e^{T^A}`, `A ≥ 2`) remains paper-only with the corrected quantifier.

@@ -735,12 +735,6 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
   have hHfp : ∀ p : ℂ, Hf p = F p * perronE n p := fun p => by rw [hHf]
   have hHfdiff : Differentiable ℂ Hf := by rw [hHf]; exact hF.mul hEdiff
   have hHfcont : Continuous Hf := hHfdiff.continuous
-  -- Product form of the `E` bound from a numerator bound and a kernel bound.
-  have hEbound : ∀ (p : ℂ) (D E' : ℝ), p ≠ 0 → p ≠ -1 →
-      ‖perronKink n p‖ ≤ E' → ‖(p * (p + 1))⁻¹‖ ≤ D → ‖perronE n p‖ ≤ E' * D := by
-    intro p D E' h0 h1 hK hker
-    rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
-    exact mul_le_mul hK hker (norm_nonneg _) (le_trans (norm_nonneg _) hK)
   -- Numerator bound on the line `Re s ≤ c` (positive exponent regime).
   have hKink_c : ∀ p : ℂ, p.re ≤ c → ‖perronKink n p‖ ≤ 4 * ((n : ℝ) + 1 / 2) ^ (c + 1) := by
     intro p hpc
@@ -776,10 +770,14 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
       have hre : (↑c + ↑t * I : ℂ).re = c := by simp
       rw [hHfp, norm_mul]
       have hF' : ‖F (↑c + ↑t * I)‖ ≤ B := hFB _ (le_of_eq hre.symm)
+      have h0 : (↑c + ↑t * I : ℂ) ≠ 0 := by
+        intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
+      have h1 : (↑c + ↑t * I : ℂ) ≠ -1 := by
+        intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
       have hE' : ‖perronE n (↑c + ↑t * I)‖ ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹ := by
-        refine hEbound (↑c + ↑t * I) _ _ ?_ ?_ (hKink_c _ (le_of_eq hre)) (kernel_norm_le hc0 t)
-        · intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
-        · intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
+        rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
+        exact mul_le_mul (hKink_c _ (le_of_eq hre)) (kernel_norm_le hc0 t) (norm_nonneg _)
+          (by positivity)
       calc ‖F (↑c + ↑t * I)‖ * ‖perronE n (↑c + ↑t * I)‖
           ≤ B * ((4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹) :=
             mul_le_mul hF' hE' (norm_nonneg _) hB0
@@ -802,12 +800,16 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
       have hre : (↑(-(M : ℝ)) + ↑y * I : ℂ).re = -(M : ℝ) := by simp
       rw [hHfp, norm_mul]
       have hF' : ‖F (↑(-(M : ℝ)) + ↑y * I)‖ ≤ B := hFleft _ (by rw [hre]; exact hMle)
+      have h0 : (↑(-(M : ℝ)) + ↑y * I : ℂ) ≠ 0 := by
+        intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
+      have h1 : (↑(-(M : ℝ)) + ↑y * I : ℂ) ≠ -1 := by
+        intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
       have hE' : ‖perronE n (↑(-(M : ℝ)) + ↑y * I)‖
           ≤ (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ := by
-        refine hEbound (↑(-(M : ℝ)) + ↑y * I) _ _ ?_ ?_ (hKink_M (M : ℝ) _ hM1.le hre)
-          (kernel_left_bound (M := (M : ℝ)) (y := y) hM1)
-        · intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
-        · intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
+        rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
+        exact mul_le_mul (hKink_M (M : ℝ) _ hM1.le hre)
+          (kernel_left_bound (M := (M : ℝ)) (y := y) hM1) (norm_nonneg _)
+          (mul_nonneg (by norm_num) (Real.rpow_nonneg hxmpos.le _))
       calc ‖F (↑(-(M : ℝ)) + ↑y * I)‖ * ‖perronE n (↑(-(M : ℝ)) + ↑y * I)‖
           ≤ B * ((4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹) :=
             mul_le_mul hF' hE' (norm_nonneg _) hB0
@@ -871,16 +873,18 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
       intro k t hTk habs x hx1 hx2 hFbd
       have hre : (↑x + ↑t * I : ℂ).re = x := by simp
       rw [hHfp, norm_mul]
+      have h0 : (↑x + ↑t * I : ℂ) ≠ 0 := by
+        intro hh; have := congrArg Complex.im hh; simp at this; rw [this] at habs
+        simp at habs; linarith
+      have h1 : (↑x + ↑t * I : ℂ) ≠ -1 := by
+        intro hh; have := congrArg Complex.im hh; simp at this; rw [this] at habs
+        simp at habs; linarith
       have hE' : ‖perronE n (↑x + ↑t * I)‖ ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * ((T k) ^ 2)⁻¹ := by
-        refine hEbound (↑x + ↑t * I) _ _ ?_ ?_ (hKink_c _ (le_of_eq hre))
-          (kernel_line_bound (t := t) (T := T k) hTk (le_of_eq habs.symm) x)
-        · intro hh; have := congrArg Complex.im hh; simp at this; rw [this] at habs
-          simp at habs; linarith
-        · intro hh; have := congrArg Complex.im hh; simp at this; rw [this] at habs
-          simp at habs; linarith
-      calc ‖F (↑x + ↑t * I)‖ * ‖perronE n (↑x + ↑t * I)‖
-          ≤ (B + q k) * ((4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * ((T k) ^ 2)⁻¹) :=
-            mul_le_mul hFbd hE' (norm_nonneg _) (by linarith [hB0, hqk0 k])
+        rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
+        exact mul_le_mul (hKink_c _ ((le_of_eq hre).trans hx2))
+          (kernel_line_bound (t := t) (T := T k) hTk (le_of_eq habs.symm) x) (norm_nonneg _)
+          (by positivity)
+      exact mul_le_mul hFbd hE' (norm_nonneg _) (by linarith [hB0, hqk0 k])
     have htop : ∀ k, ‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I)‖ ≤ d k := by
       intro k
       have hconst : ∀ x ∈ Set.uIoc (-(M : ℝ)) c,
@@ -889,7 +893,7 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
         rw [Set.uIoc_of_le hMcle] at hx
         obtain ⟨hx1, hx2⟩ := hx
         refine hedge k (T k) (hTpos k) (abs_of_pos (hTpos k)) x hx1 hx2 ?_
-        rcases le_or_lt x (1 - c) with h | h
+        rcases le_or_gt x (1 - c) with h | h
         · exact le_trans (hFleft _ (by simp; exact h)) (by linarith [hqk0 k])
         · exact le_trans (hquietbd k x (le_of_lt h) hx2).1 (by linarith [hB0])
       calc ‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I)‖
@@ -905,7 +909,7 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
         obtain ⟨hx1, hx2⟩ := hx
         have hpt : (↑x + ↑(-(T k)) * I : ℂ) = ↑x - ↑(T k) * I := by push_cast; ring
         refine hedge k (-(T k)) (hTpos k) (by rw [abs_neg, abs_of_pos (hTpos k)]) x hx1 hx2 ?_
-        rcases le_or_lt x (1 - c) with h | h
+        rcases le_or_gt x (1 - c) with h | h
         · exact le_trans (hFleft _ (by simp; exact h)) (by linarith [hqk0 k])
         · rw [hpt]; exact le_trans (hquietbd k x (le_of_lt h) hx2).2 (by linarith [hB0])
       calc ‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I)‖
@@ -931,30 +935,22 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
       have hwim : w.im = T k := rfl
       rw [hzre, hzim, hwre, hwim] at hrect
       simp only [smul_eq_mul] at hrect
-      have heqI : I * (∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I))
-          = (∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I))
-            - (∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I))
-            + I * (∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I)) := by
+      set Itop := ∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I) with hItop
+      set Ibot := ∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I) with hIbot
+      set Ilft := ∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I) with hIlft
+      have heqI : I * (∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I)) = Itop - Ibot + I * Ilft := by
         linear_combination hrect
-      have hInorm : ‖∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I)‖
-          = ‖I * (∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I))‖ := by
-        rw [norm_mul, Complex.norm_I, one_mul]
-      rw [hInorm, heqI]
-      calc ‖(∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I))
-              - (∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I))
-              + I * (∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I))‖
-          ≤ ‖(∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I))
-              - (∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I))‖
-            + ‖I * (∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I))‖ := norm_add_le _ _
-        _ ≤ (‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I)‖
-              + ‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I)‖)
-            + ‖∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I)‖ := by
-            have e2 : ‖I * (∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I))‖
-                = ‖∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I)‖ := by
-              rw [norm_mul, Complex.norm_I, one_mul]
-            rw [e2]; exact add_le_add_right (norm_sub_le _ _) _
-        _ ≤ (d k + d k) + 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) :=
-            add_le_add (add_le_add (htop k) (hbot k)) (hleftk k)
+      have hInorm : ‖∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I)‖ = ‖Itop - Ibot + I * Ilft‖ := by
+        rw [← heqI, norm_mul, Complex.norm_I, one_mul]
+      rw [hInorm]
+      have hb1 : ‖Itop - Ibot + I * Ilft‖ ≤ ‖Itop - Ibot‖ + ‖I * Ilft‖ := norm_add_le _ _
+      have hb2 : ‖Itop - Ibot‖ ≤ ‖Itop‖ + ‖Ibot‖ := norm_sub_le _ _
+      have hb3 : ‖I * Ilft‖ = ‖Ilft‖ := by rw [norm_mul, Complex.norm_I, one_mul]
+      rw [hb3] at hb1
+      have h3 : ‖Itop‖ ≤ d k := htop k
+      have h4 : ‖Ibot‖ ≤ d k := hbot k
+      have h5 : ‖Ilft‖ ≤ 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) := hleftk k
+      linarith [hb1, hb2, h3, h4, h5]
     have hdb : Tendsto (fun k => (d k + d k) + 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))
         atTop (nhds (4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))) := by
       simpa using (hd0.add hd0).add_const (4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))
@@ -991,3 +987,4 @@ theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
   exact (mul_eq_zero.mp han2).resolve_right (by norm_num)
 
 end RHTower
+

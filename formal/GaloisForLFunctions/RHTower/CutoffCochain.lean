@@ -566,4 +566,88 @@ theorem det_one_sub_smul_closedSeam (lam : ℚ) :
     Matrix.det_fin_two]
   simp
 
+/-! ### §8 Place transitions: a naturally transported cutoff has no crossing defect -/
+
+section TransitionBoundary
+
+variable {R H K B : Type*} [CommRing R]
+variable [AddCommGroup H] [Module R H]
+variable [AddCommGroup K] [Module R K]
+variable [AddCommGroup B] [Module R B]
+
+/-- The part of a linear transition which carries the source cutoff into the complement of the
+target cutoff.  Unlike `crossBoundary`, the source and target may be different realizations of one
+carrier. -/
+def transitionBoundary (qH : H →ₗ[R] H) (qK : K →ₗ[R] K) (J : H →ₗ[R] K) : H →ₗ[R] K :=
+  (LinearMap.id - qK).comp (J.comp qH)
+
+/-- An intertwiner of idempotent cutoffs has zero transition boundary.  This is the two-space
+version of `crossBoundary_eq_zero_of_commute`: a natural change of realization cannot manufacture a
+cutoff-crossing defect. -/
+theorem transitionBoundary_eq_zero_of_intertwines
+    {qH : H →ₗ[R] H} {qK : K →ₗ[R] K} {J : H →ₗ[R] K}
+    (hqK : ∀ y, qK (qK y) = qK y)
+    (hJ : ∀ x, J (qH x) = qK (J x)) :
+    transitionBoundary qH qK J = 0 := by
+  ext x
+  simp only [transitionBoundary, LinearMap.comp_apply, LinearMap.sub_apply,
+    LinearMap.id_apply, LinearMap.zero_apply]
+  rw [hJ, hqK]
+  simp
+
+/-- The failure of an operator family to be natural across a transition `J`.  For the semilocal
+prolate candidate this is `W_T J - J W_S`; the definition itself is independent of that realization. -/
+def operatorNaturalityDefect (WH : H →ₗ[R] H) (WK : K →ₗ[R] K)
+    (J : H →ₗ[R] K) : H →ₗ[R] K :=
+  WK.comp J - J.comp WH
+
+/-- For a cutoff-compatible transition, the boundary of the operator naturality defect is exactly
+the difference between the target crossing transported from the right and the source crossing
+transported from the left.  Thus a place-naturality defect produces new cutoff content only through
+the failure of the operator family to preserve the transported cutoff sectors. -/
+theorem transitionBoundary_operatorNaturalityDefect
+    (qH : H →ₗ[R] H) (qK : K →ₗ[R] K)
+    (WH : H →ₗ[R] H) (WK : K →ₗ[R] K) (J : H →ₗ[R] K)
+    (hJ : ∀ x, J (qH x) = qK (J x)) :
+    transitionBoundary qH qK (operatorNaturalityDefect WH WK J) =
+      (crossBoundary qK WK).comp J - J.comp (crossBoundary qH WH) := by
+  ext x
+  simp [transitionBoundary, operatorNaturalityDefect, crossBoundary, hJ]
+  abel
+
+/-- Transport a cutoff from a common carrier through a linear equivalence. -/
+def transportedCutoff (e : B ≃ₗ[R] H) (q : B →ₗ[R] B) : H →ₗ[R] H :=
+  e.toLinearMap.comp (q.comp e.symm.toLinearMap)
+
+/-- The canonical transition between two realizations of one fixed carrier. -/
+def canonicalTransition (eH : B ≃ₗ[R] H) (eK : B ≃ₗ[R] K) : H →ₗ[R] K :=
+  eK.toLinearMap.comp eH.symm.toLinearMap
+
+/-- Canonical transitions intertwine every cutoff transported from the common carrier. -/
+theorem canonicalTransition_intertwines_transportedCutoff
+    (eH : B ≃ₗ[R] H) (eK : B ≃ₗ[R] K) (q : B →ₗ[R] B) (x : H) :
+    canonicalTransition eH eK (transportedCutoff eH q x) =
+      transportedCutoff eK q (canonicalTransition eH eK x) := by
+  simp [canonicalTransition, transportedCutoff]
+
+/-- Transport through an equivalence preserves idempotence of a cutoff. -/
+theorem transportedCutoff_idempotent
+    (e : B ≃ₗ[R] H) {q : B →ₗ[R] B} (hq : ∀ x, q (q x) = q x) (y : H) :
+    transportedCutoff e q (transportedCutoff e q y) = transportedCutoff e q y := by
+  simp [transportedCutoff, hq]
+
+/-- A place-change or realization-change map induced from a common carrier has zero cutoff defect
+for every naturally transported idempotent.  A nonzero place defect therefore needs extra structure
+which is not part of the canonical identification. -/
+theorem canonicalTransition_boundary_eq_zero
+    (eH : B ≃ₗ[R] H) (eK : B ≃ₗ[R] K) {q : B →ₗ[R] B}
+    (hq : ∀ x, q (q x) = q x) :
+    transitionBoundary (transportedCutoff eH q) (transportedCutoff eK q)
+      (canonicalTransition eH eK) = 0 := by
+  apply transitionBoundary_eq_zero_of_intertwines
+  · exact transportedCutoff_idempotent eK hq
+  · exact canonicalTransition_intertwines_transportedCutoff eH eK q
+
+end TransitionBoundary
+
 end RHTower

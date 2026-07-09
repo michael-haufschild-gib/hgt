@@ -4450,7 +4450,7 @@ namespace FullyProvenNewTargets
 an eventual factored degree-≤2 relation among the genuine shifted Hurwitz values
 `{ζ(s+k, −n+e^z)}_{k≤N}` kills every quadratic, linear, and constant coefficient polynomial. -/
 def HurwitzAllNIndependenceTarget : Prop :=
-  ∀ (N : ℕ) {s : ℂ}, 1 < s.re → (∀ k : ℤ, (k : ℂ) ≠ s) → (∀ k : ℤ, (k : ℂ) ≠ 2 * s) →
+  ∀ (N : ℕ) {s : ℂ}, 1 < s.re → (∀ k : ℤ, (k : ℂ) ≠ s) →
     ∀ (q : Fin (N + 1) → Fin (N + 1) → Polynomial ℂ) (l : Fin (N + 1) → Polynomial ℂ)
       (cc : Polynomial ℂ), (∀ i j, q i j = q j i) → ∀ {M : ℕ},
       (∀ n, M ≤ n → ∀ z : ℂ, z.re < -Real.log 2 → -Real.pi < z.im → z.im < Real.pi →
@@ -4468,8 +4468,9 @@ def HurwitzAllNIndependenceTarget : Prop :=
 
 /-- Formal wrapper for the all-`N` Hurwitz capstone. -/
 theorem hurwitz_allN_independence_card : HurwitzAllNIndependenceTarget := by
-  intro N s hs1 hsZ h2sZ q l cc hSymm M hrel
-  exact HurwitzAllNComplete.hurwitz_allN_independence hs1 hsZ h2sZ q l cc hSymm hrel
+  intro N s hs1 hsZ q l cc hSymm M hrel
+  exact HurwitzAllNComplete.hurwitz_allN_independence_all_noninteger
+    hs1 hsZ q l cc hSymm hrel
 
 end FullyProvenNewTargets
 

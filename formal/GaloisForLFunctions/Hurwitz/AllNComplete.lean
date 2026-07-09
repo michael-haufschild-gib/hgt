@@ -1,15 +1,15 @@
 /-
-# The all-`N` Hurwitz independence capstone — one theorem, no analytic inputs
+# The all-`N` Hurwitz independence capstones
 
-The single named endpoint of the Hurwitz program: an eventual degree-≤2 relation among the
-genuine shifted Hurwitz values `{ζ(s+k, −n+e^z)}_{k ≤ N}` (in factored-tail form) forces every
-coefficient polynomial to vanish.  Composition: `allN_blocks_vanish` separates the three
-monodromy blocks (analyticity discharged by `allN_blockSum_analytic`); the linear+cross block
-feeds `all_columns_close_of_poleRootInput`, whose pole-root input is the **proven**
-`HurwitzMixedClose.harmonicPoleRootInput_proved`; the regular block then strands the constant
-polynomial on infinitely many points.  Hypotheses: `1 < Re s`, `s ∉ ℤ`, `2s ∉ ℤ`, `q` symmetric.
+An eventual degree-≤2 relation among the genuine shifted Hurwitz values
+`{ζ(s+k, −n+e^z)}_{k ≤ N}` (in factored-tail form) forces every coefficient polynomial to vanish.
+The original `hurwitz_allN_independence` uses the generic three-eigenspace split and assumes
+`2s ∉ ℤ`.  The stronger `hurwitz_allN_independence_all_noninteger` composes the unconditional
+relation-level close with the proven harmonic pole-root input; it includes the order-two branch
+and assumes only `1 < Re s`, `s ∉ ℤ`, and symmetry of `q`.
 -/
 import GaloisForLFunctions.Hurwitz.AllNRowExtraction
+import GaloisForLFunctions.Hurwitz.AllNRelationClose
 import GaloisForLFunctions.Hurwitz.MixedClose
 
 open Complex HurwitzN2Tail HurwitzAllNQuadFilt
@@ -120,5 +120,26 @@ theorem hurwitz_allN_independence {s : ℂ} (hs1 : 1 < s.re)
     exact_mod_cast (by linarith : (a : ℝ) = (b : ℝ))
   · intro j
     exact hroots j
+
+/-- **The all-`N` Hurwitz independence for every nonintegral parameter.**  The order-two
+half-integer branch is included: no side condition on `2 * s` is needed.  The unconditional
+relation-level close combines the generic and order-two monodromy branches, while the proven
+harmonic pole-root input discharges the remaining tail-independence interface. -/
+theorem hurwitz_allN_independence_all_noninteger {s : ℂ} (hs1 : 1 < s.re)
+    (hsZ : ∀ k : ℤ, (k : ℂ) ≠ s)
+    (q : Fin (N + 1) → Fin (N + 1) → Polynomial ℂ) (l : Fin (N + 1) → Polynomial ℂ)
+    (cc : Polynomial ℂ) (hSymm : ∀ i j, q i j = q j i) {M : ℕ}
+    (hrel : ∀ n, M ≤ n → ∀ z : ℂ, z.re < -Real.log 2 → -Real.pi < z.im → z.im < Real.pi →
+      (∑ i : Fin (N + 1), ∑ j : Fin (N + 1), (q i j).eval (-(n : ℂ) + Complex.exp z)
+          * ((Complex.exp (-(s + (i : ℂ)) * z) + tailFactored s (i : ℕ) n (Complex.exp z))
+            * (Complex.exp (-(s + (j : ℂ)) * z) + tailFactored s (j : ℕ) n (Complex.exp z))))
+        + (∑ k : Fin (N + 1), (l k).eval (-(n : ℂ) + Complex.exp z)
+            * (Complex.exp (-(s + (k : ℂ)) * z) + tailFactored s (k : ℕ) n (Complex.exp z)))
+        + cc.eval (-(n : ℂ) + Complex.exp z) = 0) :
+    (∀ i j, q i j = 0) ∧ (∀ j, l j = 0) ∧ cc = 0 := by
+  have hsZ' : ∀ k : ℤ, s ≠ (k : ℂ) := fun k h => hsZ k h.symm
+  exact HurwitzAllNRelationClose.all_coefficients_close_of_genuine_relation_poleRootInput
+    (N := N) (s := s) (M := M) hs1 hsZ'
+    (HurwitzMixedClose.harmonicPoleRootInput_proved hsZ') q l cc hSymm hrel
 
 end HurwitzAllNComplete
