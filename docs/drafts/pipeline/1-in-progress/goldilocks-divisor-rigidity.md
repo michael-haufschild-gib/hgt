@@ -1343,3 +1343,37 @@ umbrella build; `gaussian_weighted_contour_bound` and `quiet_crossing_rigidity_g
 per-λ rectangle shift of the still-entire `F·E·e^{s²/λ}` (weight has no poles; edges die under
 the λ-budget), then dominated convergence `W_λ → 1` on the fixed lines at fixed depth M, then
 `M → ∞`. General `m` (rates `e^{T^A}`, `A ≥ 2`) remains paper-only with the corrected quantifier.
+
+## Wave 6 — the Nevanlinna ceiling: loud = beyond bounded type; uniqueness without stability
+
+**Identification [PROVED modulo classical strip-Herglotz].** A positive harmonic function on a
+width-w vertical strip is `O(e^{π|t|/w})` (Herglotz/Poisson representation of the strip). Hence a
+member of the Nevanlinna class N(strip) (bounded type: log-modulus admits a harmonic majorant)
+has loudness at most `exp(C·e^{π|t|/w})` — the SAME ceiling as the Phragmén–Lindelöf admissible
+growth of `gammaless_strip_rigidity`. Consequently the surviving loud cell is EXACTLY the
+non-Nevanlinna cell of the seam: no harmonic majorant, no Poisson/inner-outer boundary
+representation, no boundary-to-interior dictionary.
+
+**Methodological consequence (sharpens wave 3/4).** On the flanks the Bohr trace determines the
+coefficients, and the coefficients determine F on all of ℂ (identity theorem): the interior IS
+uniquely determined by the flank trace. Beyond the Nevanlinna ceiling this determination has NO
+quantitative form — arbitrarily small flank perturbations within the pure class are compatible
+with arbitrarily large interior values (wave-3 Arakelyan members). The wall is therefore a
+uniqueness-without-stability phenomenon: unique continuation across the seam holds abstractly and
+fails quantitatively, and every mechanism deployed so far (P–L, straight/path Perron crossings,
+kernel escalation) consumes only boundary/crossing data — which is exactly the data that
+underdetermines in this regime. All four proven reductions die at the same ceiling because they
+are the same dictionary.
+
+**[CONJECTURE — the Carleman lane, new].** The upper-bound mechanism the open core demands is a
+Carleman-type weighted estimate for the seam: an inequality of the shape
+`‖F·e^{−φ}‖_{strip} ≤ C·‖F‖_{flanks}` with a double-exponential-scale weight `φ` BUILT FROM the
+carrier data (the rate lattice / pure-point spectrum), not from the geometry alone — wave 3
+refutes every trace-only weight. Carleman weights are the classical instrument for exactly this
+shape (unique continuation with unbounded loss); the branch-native question is which weight the
+discrete spectrum `{log n}` (or any discrete Λ) selects. Degenerate anchor: at w = 0 the
+estimate is trivial (H^∞ ∩ H^∞, no loss); the weight must blow up as the ceiling is approached
+from below — its blow-up rate against `π/(2σ_a−1)` is the first computable target. Forward Lean
+target (after the in-flight modules): frequency-general quiet-crossing (any discrete Λ — paper
+addendum already on this card), moving the machine-checked complex onto the exact ground where
+the discreteness invariant lives.

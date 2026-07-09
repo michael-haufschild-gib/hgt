@@ -129,6 +129,7 @@ private theorem path_ftc {Hf P : ℂ → ℂ} (hP : ∀ z, HasDerivAt P (Hf z) z
     simpa [Function.comp, smul_eq_mul, mul_comm] using (hP (δ t)).scomp t (hδ t ht)
   simpa using intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
 
+set_option maxHeartbeats 800000 in
 /-- **Path-quiet rigidity.**  A reflection-symmetric Dirichlet carrier `F` that is quiet along a
 sequence of arbitrary C¹ paths crossing the closed critical strip `1−c ≤ σ ≤ c` at heights `≈ ±T_k`
 (with `‖F ∘ γ‖ ≤ q_k`, arc length `≤ L_k`, and budget `(q_k·L_k + 1)/T_k² → 0`) has all
@@ -195,6 +196,9 @@ theorem quiet_path_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
   have hEdiff : Differentiable ℂ (perronE n) := perronE_differentiable hn1
   have hHfdiff : Differentiable ℂ Hf := hF.mul hEdiff
   have hHfcont : Continuous Hf := hHfdiff.continuous
+  -- Freeze `Hf` opaque: prevents its definition from being unfolded during the (large)
+  -- definitional-equality checks in the limit-uniqueness step below.
+  clear_value Hf
   -- Real facts about the three knots.
   have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
   have hn2R : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn2
@@ -296,7 +300,256 @@ theorem quiet_path_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
       exact ((inv_quad_int (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul _).mono'
         hcont.aestronglyMeasurable (Eventually.of_forall hbd)
     -- The contour shift Jc = JM (hexagonal loop).
-    have hshift : Jc = JM := by sorry
+    have hshift : Jc = JM := by
+      -- Global primitive of the entire integrand.
+      obtain ⟨P, hP⟩ := hHfdiff.isExactOn_univ
+      have hPz : ∀ z, HasDerivAt P (Hf z) z := fun z => hP z (mem_univ z)
+      -- Decaying dominators.
+      have hinvsq : Tendsto (fun k => ((T k) ^ 2)⁻¹) atTop (nhds 0) := by
+        have hTsq : Tendsto (fun k => (T k) ^ 2) atTop atTop := by
+          simpa [pow_two] using hTtop.atTop_mul_atTop₀ hTtop
+        exact hTsq.inv_tendsto_atTop
+      have hgpath : Tendsto (fun k => Cn * (q k * L k + 1) * ((T k) ^ 2)⁻¹) atTop (nhds 0) := by
+        have heq : (fun k => Cn * (q k * L k + 1) * ((T k) ^ 2)⁻¹)
+            = fun k => Cn * ((q k * L k + 1) / (T k) ^ 2) := by
+          funext k; rw [div_eq_mul_inv]; ring
+        rw [heq]; simpa using hbudget.const_mul Cn
+      have hgflank : Tendsto (fun k => B * Cn * ((M : ℝ) + 1 - c) * ((T k) ^ 2)⁻¹) atTop (nhds 0) := by
+        simpa using hinvsq.const_mul (B * Cn * ((M : ℝ) + 1 - c))
+      -- Height divergence of the path endpoints.
+      have hbA : Tendsto (fun k => (γt k 0).im) atTop atTop :=
+        tendsto_atTop_mono (fun k => (hγtc k 0 h0mem).2.2.1) hTtop
+      have haBp : Tendsto (fun k => (γb k 1).im) atTop atBot :=
+        tendsto_atBot_mono (fun k => (hγbc k 1 h1mem).2.2.2.1) (tendsto_neg_atBot_iff.mpr hTtop)
+      have hbC : Tendsto (fun k => (γt k 1).im) atTop atTop :=
+        tendsto_atTop_mono (fun k => (hγtc k 1 h1mem).2.2.1) hTtop
+      have haG : Tendsto (fun k => (γb k 0).im) atTop atBot :=
+        tendsto_atBot_mono (fun k => (hγbc k 0 h0mem).2.2.2.1) (tendsto_neg_atBot_iff.mpr hTtop)
+      -- Right vertical (Re = c) converges to Jc·I.
+      have hRc : Tendsto (fun k => ∫ y in (γb k 1).im..(γt k 0).im, Hf (↑c + ↑y * I)) atTop
+          (nhds Jc) := intervalIntegral_tendsto_integral hRint haBp hbA
+      have tP1 : Tendsto (fun k => ∫ y in (γb k 1).im..(γt k 0).im, Hf (↑c + ↑y * I) * I) atTop
+          (nhds (Jc * I)) := by
+        simpa only [intervalIntegral.integral_mul_const] using hRc.mul_const I
+      -- Left vertical (Re = −M) converges to −(JM·I).
+      have hInner4 : Tendsto (fun k => ∫ y in (γb k 0).im..(γt k 1).im, Hf (↑(-(M : ℝ)) + ↑y * I))
+          atTop (nhds JM) := intervalIntegral_tendsto_integral hleftint haG hbC
+      have heq4 : ∀ k, (∫ y in (γt k 1).im..(γb k 0).im, Hf (↑(-(M : ℝ)) + ↑y * I) * I)
+          = -((∫ y in (γb k 0).im..(γt k 1).im, Hf (↑(-(M : ℝ)) + ↑y * I)) * I) := by
+        intro k
+        rw [intervalIntegral.integral_mul_const,
+          intervalIntegral.integral_symm (γb k 0).im (γt k 1).im]
+        ring
+      have tP4 : Tendsto (fun k => ∫ y in (γt k 1).im..(γb k 0).im, Hf (↑(-(M : ℝ)) + ↑y * I) * I)
+          atTop (nhds (-(JM * I))) := ((hInner4.mul_const I).neg).congr (fun k => (heq4 k).symm)
+      -- Top path vanishes.
+      have tP2 : Tendsto (fun k => ∫ t in (0 : ℝ)..1, Hf (γt k t) * deriv (γt k) t) atTop
+          (nhds 0) := by
+        refine squeeze_zero_norm (fun k => ?_) hgpath
+        have hbound_pt : ∀ t ∈ Set.Icc (0 : ℝ) 1,
+            ‖Hf (γt k t) * deriv (γt k) t‖ ≤ (Cn * q k * ((T k) ^ 2)⁻¹) * ‖deriv (γt k) t‖ := by
+          intro t ht
+          rw [norm_mul]
+          have hcl := hγtc k t ht
+          have hFb : ‖F (γt k t)‖ ≤ q k := hcl.2.2.2.2
+          have hRe : (γt k t).re ≤ c := hcl.2.1
+          have hImabs : T k ≤ |(γt k t).im| := le_trans hcl.2.2.1 (le_abs_self _)
+          have hE : ‖perronE n (γt k t)‖ ≤ Cn * ((T k) ^ 2)⁻¹ :=
+            hEim (γt k t) (T k) (hTpos k) hImabs hRe
+          have hHb : ‖Hf (γt k t)‖ ≤ Cn * q k * ((T k) ^ 2)⁻¹ := by
+            rw [hHfp, norm_mul]
+            calc ‖F (γt k t)‖ * ‖perronE n (γt k t)‖
+                ≤ q k * (Cn * ((T k) ^ 2)⁻¹) :=
+                  mul_le_mul hFb hE (norm_nonneg _) (le_trans (norm_nonneg _) hFb)
+              _ = Cn * q k * ((T k) ^ 2)⁻¹ := by ring
+          exact mul_le_mul_of_nonneg_right hHb (norm_nonneg _)
+        have hnn : (0 : ℝ) ≤ Cn * q k * ((T k) ^ 2)⁻¹ :=
+          mul_nonneg (mul_nonneg hCn0 (hq0 k)) (by positivity)
+        have hcont_int : Continuous (fun t => Hf (γt k t) * deriv (γt k) t) :=
+          (hHfcont.comp (hγtCont k)).mul (hγtdC k)
+        calc ‖∫ t in (0 : ℝ)..1, Hf (γt k t) * deriv (γt k) t‖
+            ≤ ∫ t in (0 : ℝ)..1, ‖Hf (γt k t) * deriv (γt k) t‖ :=
+              intervalIntegral.norm_integral_le_integral_norm (by norm_num)
+          _ ≤ ∫ t in (0 : ℝ)..1, (Cn * q k * ((T k) ^ 2)⁻¹) * ‖deriv (γt k) t‖ :=
+              intervalIntegral.integral_mono_on (by norm_num)
+                (hcont_int.norm.intervalIntegrable 0 1)
+                ((continuous_const.mul (hγtdC k).norm).intervalIntegrable 0 1) hbound_pt
+          _ = (Cn * q k * ((T k) ^ 2)⁻¹) * ∫ t in (0 : ℝ)..1, ‖deriv (γt k) t‖ :=
+              intervalIntegral.integral_const_mul _ _
+          _ ≤ (Cn * q k * ((T k) ^ 2)⁻¹) * L k := mul_le_mul_of_nonneg_left (hγtL k) hnn
+          _ ≤ Cn * (q k * L k + 1) * ((T k) ^ 2)⁻¹ := by
+              have e : Cn * (q k * L k + 1) * ((T k) ^ 2)⁻¹
+                  = (Cn * q k * ((T k) ^ 2)⁻¹) * L k + Cn * ((T k) ^ 2)⁻¹ := by ring
+              rw [e]; linarith [mul_nonneg hCn0 (show (0 : ℝ) ≤ ((T k) ^ 2)⁻¹ by positivity)]
+      -- Bottom path vanishes.
+      have tP6 : Tendsto (fun k => ∫ t in (0 : ℝ)..1, Hf (γb k t) * deriv (γb k) t) atTop
+          (nhds 0) := by
+        refine squeeze_zero_norm (fun k => ?_) hgpath
+        have hbound_pt : ∀ t ∈ Set.Icc (0 : ℝ) 1,
+            ‖Hf (γb k t) * deriv (γb k) t‖ ≤ (Cn * q k * ((T k) ^ 2)⁻¹) * ‖deriv (γb k) t‖ := by
+          intro t ht
+          rw [norm_mul]
+          have hcl := hγbc k t ht
+          have hFb : ‖F (γb k t)‖ ≤ q k := hcl.2.2.2.2
+          have hRe : (γb k t).re ≤ c := hcl.2.1
+          have hImle : (γb k t).im ≤ -(T k) := hcl.2.2.2.1
+          have hImabs : T k ≤ |(γb k t).im| := by
+            rw [abs_of_nonpos (by linarith [hTpos k] : (γb k t).im ≤ 0)]; linarith
+          have hE : ‖perronE n (γb k t)‖ ≤ Cn * ((T k) ^ 2)⁻¹ :=
+            hEim (γb k t) (T k) (hTpos k) hImabs hRe
+          have hHb : ‖Hf (γb k t)‖ ≤ Cn * q k * ((T k) ^ 2)⁻¹ := by
+            rw [hHfp, norm_mul]
+            calc ‖F (γb k t)‖ * ‖perronE n (γb k t)‖
+                ≤ q k * (Cn * ((T k) ^ 2)⁻¹) :=
+                  mul_le_mul hFb hE (norm_nonneg _) (le_trans (norm_nonneg _) hFb)
+              _ = Cn * q k * ((T k) ^ 2)⁻¹ := by ring
+          exact mul_le_mul_of_nonneg_right hHb (norm_nonneg _)
+        have hnn : (0 : ℝ) ≤ Cn * q k * ((T k) ^ 2)⁻¹ :=
+          mul_nonneg (mul_nonneg hCn0 (hq0 k)) (by positivity)
+        have hcont_int : Continuous (fun t => Hf (γb k t) * deriv (γb k) t) :=
+          (hHfcont.comp (hγbCont k)).mul (hγbdC k)
+        calc ‖∫ t in (0 : ℝ)..1, Hf (γb k t) * deriv (γb k) t‖
+            ≤ ∫ t in (0 : ℝ)..1, ‖Hf (γb k t) * deriv (γb k) t‖ :=
+              intervalIntegral.norm_integral_le_integral_norm (by norm_num)
+          _ ≤ ∫ t in (0 : ℝ)..1, (Cn * q k * ((T k) ^ 2)⁻¹) * ‖deriv (γb k) t‖ :=
+              intervalIntegral.integral_mono_on (by norm_num)
+                (hcont_int.norm.intervalIntegrable 0 1)
+                ((continuous_const.mul (hγbdC k).norm).intervalIntegrable 0 1) hbound_pt
+          _ = (Cn * q k * ((T k) ^ 2)⁻¹) * ∫ t in (0 : ℝ)..1, ‖deriv (γb k) t‖ :=
+              intervalIntegral.integral_const_mul _ _
+          _ ≤ (Cn * q k * ((T k) ^ 2)⁻¹) * L k := mul_le_mul_of_nonneg_left (hγbL k) hnn
+          _ ≤ Cn * (q k * L k + 1) * ((T k) ^ 2)⁻¹ := by
+              have e : Cn * (q k * L k + 1) * ((T k) ^ 2)⁻¹
+                  = (Cn * q k * ((T k) ^ 2)⁻¹) * L k + Cn * ((T k) ^ 2)⁻¹ := by ring
+              rw [e]; linarith [mul_nonneg hCn0 (show (0 : ℝ) ≤ ((T k) ^ 2)⁻¹ by positivity)]
+      -- Top flank vanishes.
+      have tP3 : Tendsto (fun k => ∫ x in (1 - c)..(-(M : ℝ)), Hf (↑x + ↑((γt k 1).im) * I) * 1)
+          atTop (nhds 0) := by
+        refine squeeze_zero_norm (fun k => ?_) hgflank
+        have hbnd : ∀ x ∈ Set.uIoc (1 - c) (-(M : ℝ)),
+            ‖Hf (↑x + ↑((γt k 1).im) * I) * 1‖ ≤ B * Cn * ((T k) ^ 2)⁻¹ := by
+          intro x hx
+          have hxle : x ≤ 1 - c := by
+            rcases Set.mem_uIoc.mp hx with ⟨_, h2⟩ | ⟨_, h2⟩
+            · linarith [hMle1c]
+            · exact h2
+          rw [mul_one, hHfp (↑x + ↑((γt k 1).im) * I), norm_mul]
+          have hsre : (↑x + ↑((γt k 1).im) * I : ℂ).re = x := by simp
+          have hsim : (↑x + ↑((γt k 1).im) * I : ℂ).im = (γt k 1).im := by simp
+          have hFb : ‖F (↑x + ↑((γt k 1).im) * I)‖ ≤ B := hFleft _ (by rw [hsre]; exact hxle)
+          have hImabs : T k ≤ |(↑x + ↑((γt k 1).im) * I : ℂ).im| := by
+            rw [hsim]; exact le_trans (hγtc k 1 h1mem).2.2.1 (le_abs_self _)
+          have hRec : (↑x + ↑((γt k 1).im) * I : ℂ).re ≤ c := by rw [hsre]; linarith
+          have hE : ‖perronE n (↑x + ↑((γt k 1).im) * I)‖ ≤ Cn * ((T k) ^ 2)⁻¹ :=
+            hEim _ (T k) (hTpos k) hImabs hRec
+          calc ‖F (↑x + ↑((γt k 1).im) * I)‖ * ‖perronE n (↑x + ↑((γt k 1).im) * I)‖
+              ≤ B * (Cn * ((T k) ^ 2)⁻¹) := mul_le_mul hFb hE (norm_nonneg _) hB0
+            _ = B * Cn * ((T k) ^ 2)⁻¹ := by ring
+        calc ‖∫ x in (1 - c)..(-(M : ℝ)), Hf (↑x + ↑((γt k 1).im) * I) * 1‖
+            ≤ (B * Cn * ((T k) ^ 2)⁻¹) * |(-(M : ℝ)) - (1 - c)| :=
+              intervalIntegral.norm_integral_le_of_norm_le_const hbnd
+          _ = B * Cn * ((M : ℝ) + 1 - c) * ((T k) ^ 2)⁻¹ := by
+              rw [abs_of_nonpos (show (-(M : ℝ)) - (1 - c) ≤ 0 by linarith)]; ring
+      -- Bottom flank vanishes.
+      have tP5 : Tendsto (fun k => ∫ x in (-(M : ℝ))..(1 - c), Hf (↑x + ↑((γb k 0).im) * I) * 1)
+          atTop (nhds 0) := by
+        refine squeeze_zero_norm (fun k => ?_) hgflank
+        have hbnd : ∀ x ∈ Set.uIoc (-(M : ℝ)) (1 - c),
+            ‖Hf (↑x + ↑((γb k 0).im) * I) * 1‖ ≤ B * Cn * ((T k) ^ 2)⁻¹ := by
+          intro x hx
+          have hxle : x ≤ 1 - c := by
+            rcases Set.mem_uIoc.mp hx with ⟨_, h2⟩ | ⟨_, h2⟩
+            · exact h2
+            · linarith [hMle1c]
+          rw [mul_one, hHfp (↑x + ↑((γb k 0).im) * I), norm_mul]
+          have hsre : (↑x + ↑((γb k 0).im) * I : ℂ).re = x := by simp
+          have hsim : (↑x + ↑((γb k 0).im) * I : ℂ).im = (γb k 0).im := by simp
+          have hFb : ‖F (↑x + ↑((γb k 0).im) * I)‖ ≤ B := hFleft _ (by rw [hsre]; exact hxle)
+          have hImle : (γb k 0).im ≤ -(T k) := (hγbc k 0 h0mem).2.2.2.1
+          have hImabs : T k ≤ |(↑x + ↑((γb k 0).im) * I : ℂ).im| := by
+            rw [hsim, abs_of_nonpos (by linarith [hTpos k] : (γb k 0).im ≤ 0)]; linarith
+          have hRec : (↑x + ↑((γb k 0).im) * I : ℂ).re ≤ c := by rw [hsre]; linarith
+          have hE : ‖perronE n (↑x + ↑((γb k 0).im) * I)‖ ≤ Cn * ((T k) ^ 2)⁻¹ :=
+            hEim _ (T k) (hTpos k) hImabs hRec
+          calc ‖F (↑x + ↑((γb k 0).im) * I)‖ * ‖perronE n (↑x + ↑((γb k 0).im) * I)‖
+              ≤ B * (Cn * ((T k) ^ 2)⁻¹) := mul_le_mul hFb hE (norm_nonneg _) hB0
+            _ = B * Cn * ((T k) ^ 2)⁻¹ := by ring
+        calc ‖∫ x in (-(M : ℝ))..(1 - c), Hf (↑x + ↑((γb k 0).im) * I) * 1‖
+            ≤ (B * Cn * ((T k) ^ 2)⁻¹) * |(1 - c) - (-(M : ℝ))| :=
+              intervalIntegral.norm_integral_le_of_norm_le_const hbnd
+          _ = B * Cn * ((M : ℝ) + 1 - c) * ((T k) ^ 2)⁻¹ := by
+              rw [abs_of_nonneg (show (0 : ℝ) ≤ (1 - c) - (-(M : ℝ)) by linarith)]; ring
+      -- Hexagonal loop telescopes to 0 for each k.
+      have hsum6 : ∀ k,
+          (∫ y in (γb k 1).im..(γt k 0).im, Hf (↑c + ↑y * I) * I)
+            + (∫ t in (0 : ℝ)..1, Hf (γt k t) * deriv (γt k) t)
+            + (∫ x in (1 - c)..(-(M : ℝ)), Hf (↑x + ↑((γt k 1).im) * I) * 1)
+            + (∫ y in (γt k 1).im..(γb k 0).im, Hf (↑(-(M : ℝ)) + ↑y * I) * I)
+            + (∫ x in (-(M : ℝ))..(1 - c), Hf (↑x + ↑((γb k 0).im) * I) * 1)
+            + (∫ t in (0 : ℝ)..1, Hf (γb k t) * deriv (γb k) t) = 0 := by
+        intro k
+        have eA : (↑c : ℂ) + ↑((γt k 0).im) * I = γt k 0 := by
+          rw [← hγt0re k, Complex.re_add_im]
+        have eBp : (↑c : ℂ) + ↑((γb k 1).im) * I = γb k 1 := by
+          rw [← hγb1re k, Complex.re_add_im]
+        have eC : (↑(1 - c) : ℂ) + ↑((γt k 1).im) * I = γt k 1 := by
+          rw [← hγt1re k, Complex.re_add_im]
+        have eG : (↑(1 - c) : ℂ) + ↑((γb k 0).im) * I = γb k 0 := by
+          rw [← hγb0re k, Complex.re_add_im]
+        have hP1 : (∫ y in (γb k 1).im..(γt k 0).im, Hf (↑c + ↑y * I) * I)
+            = P (↑c + ↑((γt k 0).im) * I) - P (↑c + ↑((γb k 1).im) * I) := by
+          refine path_ftc hPz (δ := fun y => (↑c : ℂ) + ↑y * I) (δ' := fun _ => I)
+            (fun y _ => hasDerivAt_vert c y) ?_
+          exact ((hHfcont.comp (by fun_prop)).mul continuous_const).intervalIntegrable _ _
+        have hP2 : (∫ t in (0 : ℝ)..1, Hf (γt k t) * deriv (γt k) t)
+            = P (γt k 1) - P (γt k 0) := by
+          refine path_ftc hPz (δ := γt k) (δ' := deriv (γt k)) (fun t _ => hγtHD k t) ?_
+          exact ((hHfcont.comp (hγtCont k)).mul (hγtdC k)).intervalIntegrable _ _
+        have hP3 : (∫ x in (1 - c)..(-(M : ℝ)), Hf (↑x + ↑((γt k 1).im) * I) * 1)
+            = P (↑(-(M : ℝ)) + ↑((γt k 1).im) * I) - P (↑(1 - c) + ↑((γt k 1).im) * I) := by
+          refine path_ftc hPz (δ := fun x => (↑x : ℂ) + ↑((γt k 1).im) * I) (δ' := fun _ => 1)
+            (fun x _ => hasDerivAt_horiz ((γt k 1).im) x) ?_
+          exact ((hHfcont.comp (by fun_prop)).mul continuous_const).intervalIntegrable _ _
+        have hP4 : (∫ y in (γt k 1).im..(γb k 0).im, Hf (↑(-(M : ℝ)) + ↑y * I) * I)
+            = P (↑(-(M : ℝ)) + ↑((γb k 0).im) * I) - P (↑(-(M : ℝ)) + ↑((γt k 1).im) * I) := by
+          refine path_ftc hPz (δ := fun y => (↑(-(M : ℝ)) : ℂ) + ↑y * I) (δ' := fun _ => I)
+            (fun y _ => hasDerivAt_vert (-(M : ℝ)) y) ?_
+          exact ((hHfcont.comp (by fun_prop)).mul continuous_const).intervalIntegrable _ _
+        have hP5 : (∫ x in (-(M : ℝ))..(1 - c), Hf (↑x + ↑((γb k 0).im) * I) * 1)
+            = P (↑(1 - c) + ↑((γb k 0).im) * I) - P (↑(-(M : ℝ)) + ↑((γb k 0).im) * I) := by
+          refine path_ftc hPz (δ := fun x => (↑x : ℂ) + ↑((γb k 0).im) * I) (δ' := fun _ => 1)
+            (fun x _ => hasDerivAt_horiz ((γb k 0).im) x) ?_
+          exact ((hHfcont.comp (by fun_prop)).mul continuous_const).intervalIntegrable _ _
+        have hP6 : (∫ t in (0 : ℝ)..1, Hf (γb k t) * deriv (γb k) t)
+            = P (γb k 1) - P (γb k 0) := by
+          refine path_ftc hPz (δ := γb k) (δ' := deriv (γb k)) (fun t _ => hγbHD k t) ?_
+          exact ((hHfcont.comp (hγbCont k)).mul (hγbdC k)).intervalIntegrable _ _
+        rw [hP1, hP2, hP3, hP4, hP5, hP6, eA, eBp, eC, eG]
+        ring
+      -- Uniqueness of the limit forces (Jc − JM)·I = 0.
+      have key0 : (Jc - JM) * I = 0 := by
+        have h := ((((tP1.add tP2).add tP3).add tP4).add tP5).add tP6
+        rw [show (Jc * I + 0 + 0 + -(JM * I) + 0 + 0) = (Jc - JM) * I by ring] at h
+        have h0 : Tendsto (fun k =>
+            (∫ y in (γb k 1).im..(γt k 0).im, Hf (↑c + ↑y * I) * I)
+              + (∫ t in (0 : ℝ)..1, Hf (γt k t) * deriv (γt k) t)
+              + (∫ x in (1 - c)..(-(M : ℝ)), Hf (↑x + ↑((γt k 1).im) * I) * 1)
+              + (∫ y in (γt k 1).im..(γb k 0).im, Hf (↑(-(M : ℝ)) + ↑y * I) * I)
+              + (∫ x in (-(M : ℝ))..(1 - c), Hf (↑x + ↑((γb k 0).im) * I) * 1)
+              + (∫ t in (0 : ℝ)..1, Hf (γb k t) * deriv (γb k) t)) atTop (nhds 0) := by
+          have he : (fun k =>
+              (∫ y in (γb k 1).im..(γt k 0).im, Hf (↑c + ↑y * I) * I)
+                + (∫ t in (0 : ℝ)..1, Hf (γt k t) * deriv (γt k) t)
+                + (∫ x in (1 - c)..(-(M : ℝ)), Hf (↑x + ↑((γt k 1).im) * I) * 1)
+                + (∫ y in (γt k 1).im..(γb k 0).im, Hf (↑(-(M : ℝ)) + ↑y * I) * I)
+                + (∫ x in (-(M : ℝ))..(1 - c), Hf (↑x + ↑((γb k 0).im) * I) * 1)
+                + (∫ t in (0 : ℝ)..1, Hf (γb k t) * deriv (γb k) t)) = fun _ => (0 : ℂ) :=
+            funext hsum6
+          rw [he]; exact tendsto_const_nhds
+        exact (tendsto_nhds_unique h0 h).symm
+      rcases mul_eq_zero.mp key0 with h | h
+      · exact sub_eq_zero.mp h
+      · exact absurd h Complex.I_ne_zero
     -- Left-flank modulus bound on the full line Re = −M.
     have hJMbd : ‖JM‖ ≤ 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) := by
       have hleftbd : ∀ y : ℝ, ‖Hf (↑(-(M : ℝ)) + ↑y * I)‖
