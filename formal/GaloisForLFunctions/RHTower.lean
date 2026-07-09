@@ -128,6 +128,7 @@ import GaloisForLFunctions.RHTower.ExpNatIrrational
 import GaloisForLFunctions.RHTower.ExpTranscendental
 import GaloisForLFunctions.RHTower.ConjugateTraceIntegral
 import GaloisForLFunctions.RHTower.SymmetricConjugateIntegral
+import GaloisForLFunctions.RHTower.SeamSpectrumTranscendence
 import GaloisForLFunctions.RHTower.WeldChargeFaithfulness
 import GaloisForLFunctions.RHTower.ApexIndependence
 import GaloisForLFunctions.RHTower.WeldCircleFaithfulness
@@ -427,3 +428,10 @@ import GaloisForLFunctions.RHTower.TailBlindness
 import GaloisForLFunctions.RHTower.EquivariantRootDissolution
 import GaloisForLFunctions.RHTower.CreaseHolonomy
 import GaloisForLFunctions.RHTower.FiniteEulerInert
+import GaloisForLFunctions.RHTower.PrimeBraid
+import GaloisForLFunctions.RHTower.CombinedShadowBlindness
+import GaloisForLFunctions.RHTower.IntegralJetCharge
+import GaloisForLFunctions.RHTower.IntegralMultiplicativeSoft
+import GaloisForLFunctions.RHTower.ColumnRigidity
+import GaloisForLFunctions.RHTower.DAColumnDivisor
+import GaloisForLFunctions.RHTower.DegreeZeroOffline

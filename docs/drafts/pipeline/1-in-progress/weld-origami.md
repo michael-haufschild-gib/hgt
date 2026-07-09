@@ -255,3 +255,40 @@ queueing-at-borders × auction-theory collided with the residue: lands on extrem
 statistics of the prime stream = resonance/large-values corpus [KNOWN] and the banned height
 frame; the tropical/max-plus reading is the already-firewalled degenerate limit. No new object
 survived the gate — the negative results are recorded to prevent re-derivation.
+
+## §The open core, bounded on every side [synthesis; certificates named]
+
+The standing open core — the continuation of the exact infinite product as a single object — is
+now bounded on every side the program possesses, each side with its certificate:
+
+1. **Germ-shadow side — CLOSED BY PRINCIPLE.** Shadows of the germ act on the strip through
+   nonvanishing objects (tail: TailBlindness; finite exact: FiniteEulerInert, wall-supported;
+   thin-infinite exact: VACUOUS — on its convergence sub-strip `σ_Q < Re < 1−σ_Q` a thin bundle
+   `B_Q` is nonvanishing, so EVERY entire FESchwarz member factors through it and the decoration
+   constrains nothing). General principle: a decoration nonvanishing at a point is divisor-inert
+   there (the `feBundle_divisor_inert` mechanism, generic). Constraint requires vanishing; the
+   only germ object whose strip continuation vanishes is the full product, and its vanishing IS
+   the divisor. No further sub-germ no-go exists to prove — they are all instances. [Do NOT build
+   the thin-infinite tprod module; it formalizes a vacuity.]
+2. **Class-level side — CLOSED AT SATURATION.** FESchwarz soft; + Dirichlet shape soft; + finite
+   exact Euler soft; + full multiplicativity = two-sided-hard (forcing parity would be RH-grade;
+   refuting needs an FE+Euler off-line member, equally open). The trichotomy ladder ends at the
+   wall on both sides.
+3. **Equivariant/topological side — CLOSED BY THEOREM.** Complete obstruction map (dissolution,
+   holonomy, ledger evaluation); all RH content = the off-line equivariant coherent ℤ₂-tower,
+   obstruction = pure divisor data.
+4. **Spectral side — CLOSED AS NO-GO.** `seam_spectral_iff_rh`: the missing spectral ingredient
+   is not a bridge lemma, it IS RH (and Hilbert–Pólya is banned as route regardless).
+5. **Realization side — CLOSED.** No local packing obstruction; every finite symmetric divisor
+   realizable in the bare class.
+6. **Dead angles this round (pre-build kills, do not re-derive):** (a) deck-dyadicity =
+   coefficient-dyadicity of the root germ — numerology, the ladder base is conventional; (b) the
+   global monodromy representation `π₁(ℂ∖Z(ξ)) → ℤ₂` — unconditional but a repackaging of banked
+   deck classes, no new constraint content; (c) almost-periodic/spectral-leakage re-cut — Bohr
+   corpus; (d) extremal-prime-statistics carrier — resonance/height corpus, banned frame.
+
+Reading: the core is irreducible from below for a stated structural reason — germ data reaches
+the divisor only by already containing it (continuation values), never through a structural
+shadow. Every attack on the core must therefore engage the exact infinite object whole; partial
+handles are certified dead. The instrumented target remains the off-line coherent tower, whose
+obstruction the ledger theorems read exactly.

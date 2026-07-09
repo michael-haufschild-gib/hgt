@@ -662,3 +662,97 @@ extension is accepted, the next first theorem is not recurrence — it is
 > **`Δ_p ∉ A·End + (Xᵐ)`** for a p-labelled torsion seam presentation with `det A = Xᵐ`.
 
 If 𝓜⁺ remains as currently defined, there is no `{σ_p}`-divisor route left.
+
+---
+
+## 14. Wave-7 amendment (2026-07-09) — the motif audited: what is left of monodromy-weight mismatch
+
+Charta review against the machine-checked state of 2026-07-08/09. The question answered here:
+**is the weight-mismatch mechanism still the central motif?** Verdict first: **no — retired.**
+The mechanism is not blocked-pending-ideas; it is certified without carrier on BOTH of its sides.
+What survives is the reformulation layer (§3), which has since been completed into a full theory
+by the equivariant program, and the two Wave-5 fronts, which are now closed chapters absorbed
+into it.
+
+### 14.1 The mechanism's death certificates (complete list)
+
+The q62 template (§2.2) needs two things: a **graded defect** (the σ-side) and an
+**unbounded-weight symmetry action** on it (the group side). Every register in which either half
+was sought is now closed:
+
+1. **M2 (soft coarse continuity)** — refuted, wave 4 (11 Thm B: a.p.-category projection
+   blindness).
+2. **M3 (positivity-alone)** — refuted, audit F2 (DMV import); the surviving conjunction cell
+   FE ∧ full-Euler is the two-sided-hard wall (see 14.3).
+3. **M1 single-test exact identity** — closed, wave 4 (signal < prime diagonal, 08 §7.2);
+   **Turán hybrid** — killed with priced certificate, wave 5 (LD rate separation).
+4. **{σ_p}-graded divisor defect in bare 𝓜⁺** — killed, wave 6 (PrimeDivisorAtomsNoGo,
+   SigmaDivisorJet/Exhaustion, RelativeTorsor: freeness = deck-invisibility).
+5. **The wave-6 backtrack (torsion-seam extension of 𝓜⁺)** — EXECUTED, then closed
+   (2026-07-08): live unipotent Fitting boundary classes exist
+   (`exists_nonfake_crossBoundary`, `fittingClass_seamDef_ne_zero`), but
+   `FittingDeckChargeBarrier.lean` proves every additive `ZMod n`-valued reading of the Fitting
+   jet vanishes on them (`Hom(ℚ, ℤ/n) = 0` — a coefficient obstruction, not an estimate): the
+   Fitting face is **structurally invisible to the entire deck-charge channel**. The fake
+   dictionary was corrected en route (`FittingFakeGap.lean`: combined-fake ⟺ Fitting-vanishing;
+   the "bilateral non-fake" reading was wrong). The extension exists; it cannot feed the ladder.
+6. **The group side (new, 2026-07-08/09)** — the mismatch also fails for want of any acting
+   symmetry: (a) `ConnectedSymmetryBarrier.lean` — every CONNECTED symmetry/deformation of a
+   member conserves every deck charge (winding constant on preconnected parameter spaces,
+   solenoid strength); the conjectured connected symmetry with orbit map onto deck classes is
+   FALSE — no connected action mixes classes, at any level. (b) The monodromy of ξ's tower is
+   abelian by construction and, by abelianization, exactly the H₁-divisor pairing — no more.
+   Enrichment to a graded/non-abelian monodromy would require a finite-rank connection carrying
+   ξ's continuation data, which **hypertranscendence denies** (the Malgrange/Casale register —
+   the branch's founding axis is itself the obstruction). No weight grading exists, and no
+   unbounded-order action exists to mismatch against it.
+
+### 14.2 What survives and where it now lives
+
+- **§3 (ladder / tower / branching) — alive and completed.** The deck-class ladder is untouched
+  and has been extended into a complete local obstruction theory (EquivariantRootDissolution,
+  CreaseHolonomy, RealRootTower, 2026-07-08/09): the seam-sign bit is a hole invariant
+  (dissolves on symmetric regions at ξ's positive anchor; regional Real tower = plain tower);
+  the boundary obstruction pair is an exact ledger read (`xi_window_tower_iff_ledger`: deck
+  coordinate = enclosed order, sign coordinate = crease-ledger parity, both unconditional
+  bookkeeping); and §12's u-plane aspiration ("each rung one global root statement") is
+  delivered in equivariant form — **RH_{2^k} ⟺ ξ has a Schwarz-equivariant 2^k-root off the
+  line** (`rhLadder_iff_equivariant_offline_root`), **RH ⟺ ξ carries an equivariant coherent
+  ℤ₂-tower off the line** (`rh_iff_xi_equivariant_coherentTower_offline`).
+- **Front M (conservation) — closed as a completed chapter:** conservation is total (item 6a);
+  there is no interior creation, destruction, or mixing under any connected process. Nothing
+  remains to prove on this front; it is now substrate.
+- **Front B (parity) — absorbed and evaluated:** the parity anchor (`xi_central_order_even`
+  family) and the seam-sign detectors matured into the crease-holonomy theory; the sign datum is
+  evaluated once and for all as cumulative on-line order parity transported from ξ(½) > 0. The
+  quadrant/seam detectors' RH-content is exactly the off-line equivariant statement above.
+- **The trichotomy (11 §5.3 survivor) — sharpened:** the softness ladder now runs bare FESchwarz
+  → Dirichlet shape → finite exact Euler (FiniteEulerInert, `finiteEulerClass_isSoft`) → any
+  nonvanishing decoration (the germ-shadow principle: decorations nonvanishing on the strip are
+  divisor-inert; with TailBlindness this pins all divisor-constraining germ content to the exact
+  infinite product as a whole — the abstract form of wave-6's "every finite layer is a unit").
+  The Goldilocks problem's live cell is unchanged but sharper: every sub-Euler class
+  constructible WITHOUT continuation is soft; FE ∧ full multiplicativity is two-sided-hard.
+- **§7 family picture — orientation confirmed in the negative:** the "connected case needs a
+  rigidity input" prediction held; what is now proven is that the rigidity input cannot come
+  from any walked register (value distribution, measure, soft a.p., σ_p-graded divisors,
+  Fitting-to-deck, connected symmetry, germ shadows).
+
+### 14.3 The standing open core (unchanged by this audit, now maximally bounded)
+
+The single remaining unknown is the divisor of the exact infinite object — equivalently the
+continuation of the level-k germ (`rhLadder_iff_germ_extends`), equivalently the off-line
+equivariant coherent tower. Its boundary map (weld-origami card §"open core, bounded") certifies:
+germ-shadow side closed by principle; class side closed at saturation; topological side closed by
+theorem; spectral side closed as no-go (`seam_spectral_iff_rh`); realization side closed. Every
+partial handle is dead with a named certificate; engagement must be with the whole object.
+
+### 14.4 Doc status
+
+This document is the historical map of the MWM lane and remains SEARCH-register. The live
+program is the equivariant/origami program (pipeline cards: `weld-origami.md`,
+`seam-sign-pinning.md`, `new-object-candidates.md`, `defect-protection-connected-symmetry.md`).
+MWM's durable contributions — the RH_{2^k} ladder, the deck calculus, conservation, the parity
+anchor, and the discipline of priced death certificates — are all absorbed there. The
+weight-mismatch motif itself is retired: both of its halves (graded defect, unbounded-weight
+action) are certified absent for ξ, items 14.1.4–6.
