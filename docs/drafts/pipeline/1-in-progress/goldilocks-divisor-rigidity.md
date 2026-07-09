@@ -1038,3 +1038,198 @@ shift (`QuietCrossingRigidity.lean`) — check tree for contour/Mellin infrastru
 (iii) The finite-pole variant: allowing finitely many poles adds finitely many residue monomials
 `x^{ρ+1}` to `A₁`, so the conclusion becomes "A₁ = finite explicit combination" — a rigidity for
 pole-bearing symmetric carriers worth its own pass.
+
+## Wave 2 — kernel escalation to all finite-order rates; the dip window; the seam reading
+
+**[PROVED HERE — paper] Finite-order-quiet rigidity.** In the quiet-crossing theorem (h = 1 and
+conductor-datum forms alike), the kernel `1/(s(s+1))` may be replaced by
+`K_{m,λ}(s) = exp((−1)^{m+1} s^{2m}/λ) / (s(s+1))` for any `m ≥ 1`, `λ > 0`. On any horizontal
+segment `σ ∈ [−M, c]`, `Re((−1)^{m+1}(σ+iT)^{2m}) = −T^{2m} + O(σ²T^{2m−2})` uniformly (the odd
+binomial terms are purely imaginary), so the horizontal edges of the rectangle carry the factor
+`e^{−T^{2m}(1+o(1))/λ}` and tolerate strip loudness up to `o(e^{T^{2m}/λ})` at the crossing
+heights. The right-edge exchange (deliverable B) improves (kernel decays faster); the residues at
+`s = 0, −1` acquire the factor `K_{m,λ}·s(s+1)|_{poles} → e^{(−1)^{m+1}s^{2m}/λ}|_{0,−1} → 1` as
+`λ → ∞`; the left vertical at fixed `M` is `O(C x^{1−M} e^{M^{2m}/λ})`, harmless at fixed `M`.
+Order of limits: validity at each fixed `(m, λ)` needs one quiet sequence at `o(e^{T^{2m}/λ})`;
+then `λ → ∞` at fixed `M` recovers the SHARP kernel identity by dominated convergence on both
+verticals (no transform-injectivity needed); then `M → ∞` as before. Conclusion: if a symmetric
+entire member has ONE height sequence along which the strip cross-section maximum is
+`O(exp(T^A))` for SOME finite `A` (choose `2m > A`), it is constant (h = 1), resp. a Dirichlet
+polynomial on `⋃div(Qⱼ²)` with the K–P pairing (conductor datum). Quietness is now any
+finite-order rate. ∎
+
+**The dip window.** Ahlfors distortion forces any nonconstant member's ∞-tract (confined to the
+width-w gap strip by the free flank bounds) to satisfy `log log M(r) ≳ πr/w` — loud heights exist
+and reach the double-exponential rate. Wave 2 shows dips below every finite-order rate are fatal.
+The surviving counterexample profile is pinched into the window
+
+    exp(T^A) (∀A, excluded)  <  strip max at EVERY height  ≤  exp(e^{πT/w}) (Ahlfors-critical),
+
+with the P–L module excluding everything under `exp(B e^{cT})`, `c < π/w`, globally. Residual, final
+form: **[CONJECTURE GAPLESS-TRACT]** — a nonconstant symmetric entire member's strip loudness
+exceeds every `exp(T^A)` at every sufficiently large height; equivalently the ∞-tract admits no
+finite-order dips. INT-QUIET correspondingly weakens to: integrality forces one finite-order-quiet
+height. This subsumes the P–L reduction's conclusion for Dirichlet carriers (finite order ⟹ all
+heights finite-order-quiet); the P–L module retains independent scope (abstract entire F, no
+carrier).
+
+**[CONJECTURE — branch-native seam reading] Orientation-reversal weld.** On the right flank
+`Re s ≥ σ_a + ε` the member is Bohr almost periodic with spectrum in the rate lattice
+`{−log n : n ≥ 1}`; the symmetry `F(s) = F(1−s)` makes the left flank almost periodic with the
+REFLECTED spectrum `{+log n}`. The h = 1 cell is thus exactly: can an entire function weld a rate
+lattice to its orientation reversal across a width-w seam while bounded on both flanks? Every
+finite exponential sum fails (unbounded on one flank unless spectrum = {0}); GAPLESS-TRACT asserts
+the infinite version fails too, and quantifies the obstruction as a flux cost — loudness in the
+seam is the price of reversing the spectrum's sign. Forward object: a Beurling–Malliavin /
+de Branges–type extremal problem for the seam — the minimal loudness functional
+`L(T) = max_{strip} log |F(σ+iT)|` compatible with spectrum reversal of density `d(λ) ~ e^λ`
+(the rate lattice `log n` has exponentially growing density — far beyond the BM finite-density
+regime; the seam asks the completeness question in the regime classical theory never poses).
+
+## Wave 3 — GAPLESS-TRACT attacked as false: the pure class is nontrivial; rigidity is carrier-forced
+
+**[PROVED — modulo Arakelyan's approximation theorem (1964); condition verified here] The pure
+class is nontrivial.** Let `E = {Re s ≤ 0} ∪ {Re s ≥ 1} ∪ {Re s = 1/2}` — closed in ℂ. Its sphere
+complement is (two open substrips) ∪ {∞}: connected (each substrip adheres to ∞) and locally
+connected at ∞ (a punctured neighborhood meets it in four half-strip ends, each adhering to ∞), so
+Arakelyan's condition holds. The data `f = 0` on the half-planes (holomorphic on int E) and
+`f = h(Im s)` on the midline (`h` continuous, even, `h → ∞`) is in `A(E)`; Arakelyan gives entire
+`G` with `|G − f| < ε` on `E`. Then `F(s) := G(s) + G(1−s)` is entire, satisfies `F(s) = F(1−s)`
+exactly, is bounded by `2ε` on `{Re ≤ 0} ∪ {Re ≥ 1}` (reflection maps flank to flank), and
+`F(1/2 + it) = 2h(t) + O(ε) → ∞`. The class {entire + reflection-symmetric + flank-bounded}
+therefore contains nonconstant members with arbitrarily violent loudness profile. ∎
+
+**Methodological theorem (the point).** h = 1 rigidity is NOT a function-theoretic fact: the
+hypotheses consumed by Phragmén–Lindelöf and by the flank bounds admit nonconstant models. Any
+proof on the open cell must use the carrier structure (the Dirichlet series / a.p. flank data).
+The P–L and Perron reductions are each optimal within their data: the surviving cell — loud
+carriers — is exactly where function theory provides models and only arithmetic can discriminate.
+
+**Consistency checks (both pass).** (i) `gammaless_strip_rigidity` forces the constructed member
+to violate admissible strip growth: with slow midline data `h`, P–L applied to each SUBSTRIP
+(edges: flank ≤ ε, midline ≈ h) would bound `F` and Liouville would kill it — so `G` is forced to
+be doubly-exponentially wild in the open substrips, off the prescribed set: the Ahlfors tract
+floor materializes in the unprescribed region. (ii) Prescribing QUIET crossings (small data on
+horizontal segments `{0 ≤ σ ≤ 1, t = T_k}`) together with a loud midline destroys Arakelyan's
+condition: the complement disintegrates into bounded boxes — disconnected — so the approximation
+route cannot manufacture quiet-crossing members. This is consistent with (and structurally aligned
+to) the Perron theorem, which proves quiet-crossing CARRIERS are rigid.
+
+**GAPLESS-TRACT, corrected register.** As a statement about the pure class: FALSE (members with
+any loudness profile ≥ double-exp-in-substrips exist). As a statement about carriers: open, and
+now the exact content of h = 1 rigidity. Falsification program, localized: make an
+Arakelyan-type construction INSIDE the carrier class — "Dirichlet–Arakelyan approximation." The
+named obstruction: symmetric approximants within ordinary Dirichlet series are constants (degree-0
+rigidity), so any carrier-side construction must weld the two one-sided structures — realize the
+pair (Σ aₙ n^{−s} on the right, Σ aₙ n^{s−1} on the left) as one entire function through a width-w
+seam. Equivalently: h = 1 rigidity ⟺ the rate lattice admits no nontrivial bounded-flank weld to
+its reflection. The forward object stands: the seam-flux extremal problem at exponential spectral
+density (wave 2), now known to be the ONLY possible source of a proof.
+
+## Wave 4 — the discriminating invariant: pure-point vs continuous flank spectrum; the coboundary near-miss
+
+**One-sidedness is free.** A bounded analytic function on a right half-plane has one-sided
+distributional boundary spectrum (classical H^∞/Beurling–Paley–Wiener). Hence the wave-3
+Arakelyan member ALREADY welds two orientation-reversed one-sided spectra boundedly across the
+seam — with CONTINUOUS spectrum. What the carrier cell adds is not orientation but
+DISCRETENESS: Bohr almost-periodic flank traces with pure-point spectrum in a discrete Λ.
+**[CONJECTURE — refined invariant]** h = 1 rigidity is a Bohr-discreteness phenomenon: for EVERY
+discrete one-sided Λ (not only log ℕ), a nonconstant entire flank-bounded weld with pure-point
+flank spectrum in ±Λ fails to exist; continuous-spectrum welds exist (wave 3). The invariant
+separating the proved-nontrivial pure class from the conjecturally-rigid carrier cell is the
+spectral TYPE of the flank trace.
+
+**Supporting anchors.** (i) Width-0 case: at σ_a = 1/2 the flanks share a line; F ∈ H^∞ of both
+closed half-planes ⟹ globally bounded ⟹ constant (Liouville) — rigidity is trivial with no room
+in the seam; all content is w > 0. (ii) The two-sided model `Σ 2bₖ e^{−λₖ/2} cosh(λₖ(s − 1/2))`
+is exactly symmetric with pure-point spectrum ±Λ but violates flank boundedness identically —
+one-sidedness of the flank expansion is the load-bearing clause of the cell, and it is FREE
+analytically (H^∞) while binding algebraically (series support). (iii) Pólya-density axis:
+lacunary/zero-density spectra cannot even continue entire (gap theorems put the natural boundary
+at the convergence line); the carrier lattice log ℕ has maximal density k/λₖ → ∞ —
+continuability is unobstructed and the WELD is the sole constraint. Known theory measures
+continuability by density; the branch's new axis is weldability of Λ against −Λ.
+
+**The coboundary device and its exact near-miss.** For an ε′-almost-period τ of the flank trace
+(one τ serves BOTH flanks — the spectra ±Λ impose identical conditions `|e^{iλτ} − 1|` small),
+the difference `G_τ(s) = F(s + iτ) − F(s)` is an ordinary Dirichlet series with coefficients
+`aₙ(n^{−iτ} − 1)`, entire, and bounded by 2ε′ on BOTH flanks directly — no symmetry hypothesis.
+The quantitative Perron floor (second-difference kink extraction at x = n against the shifted
+rectangle) gives: a carrier with flank bound ε′ and one coefficient of modulus β has strip
+loudness ≥ c·(β/n^{c+1} − c₂ε′)·T² at every height. The Bohr coefficient bound on the line Re = c
+locks β ≤ ε′ n^c. The two exponents differ by EXACTLY ONE power of n: the contradiction machine
+fails at `n^c` (lock) vs `n^{c+1}` (Perron counting weight `x^{s+1}`). Self-attack verdicts on
+the two repair branches: (b) "almost-periods with a loud phase at one frequency" is DEAD — the
+lock `β ≤ ε′ n^c` is an unconditional identity for every τ, because ε′ is by definition the
+flank sup of `G_τ` and the Bohr coefficient bound binds it; no choice of τ escapes. (a) A cheaper
+extraction (sharp Perron at weight `x^s`, truncated kernel `1/s`) removes the extra power and
+puts the race at CONSTANT level — but even closed it proves only "G_τ is loud at every height,"
+which is CONSISTENT with F loud: the coboundary lane has no contradiction endpoint until some
+UPPER bound on strip loudness exists, and none is known (that absence is the wall itself). The
+coboundary device is therefore a structure probe, not a proof shape: its yield is the
+unconditional per-height floor family (for F itself, integrality gives m(T) ≥ κₙT² − C with
+explicit κₙ ~ |aₙ|/n^{c+1} for every nonzero coefficient) and the exact bookkeeping of why
+flank-recurrence alone cannot cap the seam. [OPEN CORE — restated correctly]: produce ANY
+mechanism that bounds strip loudness from carrier data (a.p. flank structure + entirety); every
+lower-bound mechanism is now in place and effective, and no upper-bound mechanism exists.
+
+## Lean status — conductor-datum support theorem LANDED
+
+`BohrCoefficientUniqueness.lean` (RHTower) verified and integrated: `char_avg_finsum` /
+`char_avg_tendsto` (exponential Kronecker–Weyl mean-value orthogonality, doubly-indexed),
+`char_series_coeff_zero` (Lemma A), and `conductor_datum_finite_support` (Theorem B: σ₀ < 1/2,
+absolute convergence at σ₀, reflection identity with finite datum Σ c_j Q_j^{1−2s} on the overlap
+strip ⟹ coefficients vanish off ⋃_j div(Q_j²)). Axioms: [propext, Classical.choice, Quot.sound];
+umbrella build 8476 jobs; lint green. The small-abscissa stratum of the order-free classification
+is machine-checked in full conductor-datum generality; `overlap_rigidity` is its Q = 1 cell. Not
+formalized: the K–P pairing refinement a_t = c·a_{Q²/t} (paper, elementary finite-sum matching) —
+queued behind the quiet-crossing module.
+
+## Wave 5 — quiet paths, min-cut duality, and the seam curtain
+
+**[PROVED HERE — paper] Path-quiet rigidity.** The rectangle shift in the quiet-crossing theorem
+tolerates DEFORMED crossings: replace each straight horizontal edge by any rectifiable
+flank-to-flank path γ (entering the strip from Re = c, leaving at Re = 1−c, heights within a
+window around ±T_k, then straight within the flanks where |F| ≤ C). The path contribution is
+bounded by `sup_γ |F| · x^{c+1} · length(γ) / min_γ |s(s+1)|`. Hence: if there exist
+flank-to-flank paths at heights T_k → ∞ (both vertical directions), of lengths Λ(T_k), on which
+|F| ≤ R_k, with `R_k · Λ(T_k) = o(T_k²)` — then F is constant (h = 1), resp. a Dirichlet
+polynomial with the K–P support/pairing (conductor datum). Kernel escalation applies verbatim:
+`o(T_k²)` relaxes to any finite-order budget. Quietness is a property of the SUBLEVEL SET's
+connectivity, not of straight segments. ∎
+
+**[PROVED HERE — paper] Curtain duality.** Fix a height window `W_T = {1−c ≤ Re s ≤ c} ×
+{T ≤ Im s ≤ 2T}` and a threshold R. Planar min-cut duality in the rectangle: either the sublevel
+set `{|F| ≤ R} ∩ W_T` contains a left-edge-to-right-edge path, or the superlevel set
+`{|F| > R} ∩ W_T` contains a connected set joining the window's top and bottom edges. Applying
+path-quiet rigidity (paths of length ≤ O(T) suffice; budget o(T²) absorbs it): a NONCONSTANT
+member's tract contains, for every A and every sufficiently large T, in both vertical directions,
+a connected set crossing the full window `W_T` vertically on which `|F| > exp(T^A)` — the **seam
+curtain**. By `F(s) = F(1−s)` the curtain configuration is point-symmetric about s = 1/2. The
+residual GAPLESS-TRACT is upgraded from a per-height loudness profile to a connected geometric
+object: an unbroken curtain of super-finite-order values climbing the seam forever, wedged
+between two flanks where |F| ≤ C. ∎
+
+**What the curtain opens (forward).** A connected curtain is exposed to potential theory in a way
+a diffuse profile is not: (i) harmonic measure — the curtain together with the two flank lines
+bounds two unbounded subregions; two-constants estimates on them relate C, R and the curtain's
+horizontal position, and the point-symmetry pins the pair of subregions to each other; (ii) the
+level curves {|F| = R} crossing each window are analytic arcs whose number counts d/ds-critical
+points — Rolle-type bookkeeping along the curtain against the carrier's Bohr structure on the
+flanks; (iii) for the falsification side, any Dirichlet–Arakelyan construction must now
+manufacture a symmetric connected curtain, not merely loud cross-sections. [OPEN CORE unchanged:
+an upper mechanism = a proof that carriers cannot sustain a curtain; the curtain is the exact
+object such a mechanism must kill.]
+
+## Lean status — pairing LANDED: the small-abscissa classification is fully machine-checked
+
+`BohrCoefficientUniqueness.lean` now also contains `conductor_datum_pairing` and
+`conductor_datum_pairing_coeff` (verified: standalone compile clean, umbrella build, axioms
+[propext, Classical.choice, Quot.sound], lint green, index regenerated): under σ₀ < 1/2, absolute
+convergence at σ₀, and the finite-datum reflection identity on the overlap strip,
+`aₘ·m^{−½} = Σ_{j∈J} (if m ∣ Qⱼ² then cⱼ·a_{Qⱼ²/m}·(Qⱼ²/m)^{−½} else 0)` for every m ≥ 1 — the
+Kaczorowski–Perelli pairing with the order axiom removed. Together with
+`conductor_datum_finite_support` (the vanishing case of the same identity), the order-free
+degree-0 classification on the small-abscissa stratum is machine-checked in BOTH halves and full
+conductor-datum generality. Remaining Lean target for this card: `QuietCrossingRigidity.lean`
+(in progress) — the σ_a ≥ 1/2 stratum under quiet crossings.

@@ -277,6 +277,20 @@ variable {R : Type*} [CommRing R]
 /-- The standard two-region cutoff used by the concrete lower-corner witness. -/
 def standardCutoff : Matrix (Fin 2) (Fin 2) (Polynomial R) := !![1, 0; 0, 0]
 
+/-- The lower-corner polynomial defect used by the non-split crossing witness. -/
+def polynomialLowerCrossing : Matrix (Fin 2) (Fin 2) (Polynomial ℚ) := !![0, 0; 1, 0]
+
+/-- The polynomial lower-corner defect is a standard cutoff-crossing cochain. -/
+theorem polynomialLowerCrossing_eq_crossBoundary :
+    polynomialLowerCrossing = crossBoundary (standardCutoff (R := ℚ)) polynomialLowerCrossing := by
+  have hsub : (!![(1 : Polynomial ℚ), 0; 0, 1] - !![(1 : Polynomial ℚ), 0; 0, 0]) =
+      !![(0 : Polynomial ℚ), 0; 0, 1] := by
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp
+  rw [polynomialLowerCrossing, crossBoundary, standardCutoff, Matrix.one_fin_two, hsub,
+    Matrix.mul_fin_two, Matrix.mul_fin_two]
+  norm_num
+
 /-- The split diagonal torsion presentation `R[X] --X^m--> R[X]` plus a free summand. -/
 def splitTorsionPresentation (m : ℕ) : Matrix (Fin 2) (Fin 2) (Polynomial R) :=
   !![(X : Polynomial R) ^ m, 0; 0, 1]
@@ -286,6 +300,108 @@ theorem splitTorsionPresentation_det (m : ℕ) :
     (splitTorsionPresentation (R := R) m).det = (X : Polynomial R) ^ m := by
   rw [splitTorsionPresentation, Matrix.det_fin_two]
   simp
+
+/-- The non-split two-lane torsion seam presentation over `ℚ[X]` used by the lower
+crossing witness. -/
+def shearTorsionPresentation (m : ℕ) : Matrix (Fin 2) (Fin 2) (Polynomial ℚ) :=
+  !![(X : Polynomial ℚ) ^ m, 1; 0, 1]
+
+/-- The sheared torsion presentation has determinant `X^m`. -/
+theorem shearTorsionPresentation_det (m : ℕ) :
+    (shearTorsionPresentation m).det = (X : Polynomial ℚ) ^ m := by
+  rw [shearTorsionPresentation, Matrix.det_fin_two]
+  simp
+
+/-- The sheared presentation sees the lower crossing with constant boundary trace `-1`. -/
+theorem fittingBoundaryTrace_shearTorsion_lowerCrossing (m : ℕ) :
+    fittingBoundaryTrace (shearTorsionPresentation m) polynomialLowerCrossing = -1 := by
+  rw [fittingBoundaryTrace, shearTorsionPresentation, polynomialLowerCrossing]
+  have hadj : (!![(X : Polynomial ℚ) ^ m, 1; 0, 1]).adjugate =
+      !![1, -1; 0, (X : Polynomial ℚ) ^ m] := by
+    rw [Matrix.adjugate_fin_two]
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp
+  rw [hadj, Matrix.mul_fin_two, Matrix.trace_fin_two]
+  norm_num
+
+/-- Coordinate formula for the sheared seam: against an arbitrary defect `Delta`, the
+boundary trace depends on the entry difference `Delta 0 0 - Delta 1 0`, up to a
+multiple of `X^m`. -/
+theorem fittingBoundaryTrace_shearTorsion_apply (m : ℕ)
+    (Delta : Matrix (Fin 2) (Fin 2) (Polynomial ℚ)) :
+    fittingBoundaryTrace (shearTorsionPresentation m) Delta =
+      Delta 0 0 - Delta 1 0 + ((X : Polynomial ℚ) ^ m) * Delta 1 1 := by
+  rw [fittingBoundaryTrace, shearTorsionPresentation]
+  have hadj : (!![(X : Polynomial ℚ) ^ m, 1; 0, 1]).adjugate =
+      !![1, -1; 0, (X : Polynomial ℚ) ^ m] := by
+    rw [Matrix.adjugate_fin_two]
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp
+  rw [hadj]
+  simp [Matrix.trace, Matrix.diag, Matrix.mul_apply, Fin.sum_univ_two]
+  ring
+
+/-- The sheared seam boundary class is exactly the divisor jet of the single entry
+difference `Delta 0 0 - Delta 1 0`. -/
+theorem fittingBoundaryClass_shearTorsion_apply (m : ℕ)
+    (Delta : Matrix (Fin 2) (Fin 2) (Polynomial ℚ)) :
+    fittingBoundaryClass m (shearTorsionPresentation m) Delta =
+      jetClass ℚ m (Delta 0 0 - Delta 1 0) := by
+  rw [fittingBoundaryClass, fittingBoundaryTrace_shearTorsion_apply]
+  exact jetClass_add_X_pow_mul ℚ m (Delta 0 0 - Delta 1 0) (Delta 1 1)
+
+/-- Determinant transversality for the sheared seam is exactly nonvanishing of the
+entry-difference divisor jet. -/
+theorem fittingBoundaryClass_shearTorsion_ne_zero_iff (m : ℕ)
+    (Delta : Matrix (Fin 2) (Fin 2) (Polynomial ℚ)) :
+    fittingBoundaryClass m (shearTorsionPresentation m) Delta ≠ 0 ↔
+      jetClass ℚ m (Delta 0 0 - Delta 1 0) ≠ 0 := by
+  rw [fittingBoundaryClass_shearTorsion_apply]
+
+/-- Equivalently, the sheared seam is boundary-blind to `Delta` exactly when the
+entry difference is divisible by the seam equation `X^m`. -/
+theorem fittingBoundaryClass_shearTorsion_eq_zero_iff (m : ℕ)
+    (Delta : Matrix (Fin 2) (Fin 2) (Polynomial ℚ)) :
+    fittingBoundaryClass m (shearTorsionPresentation m) Delta = 0 ↔
+      (X : Polynomial ℚ) ^ m ∣ Delta 0 0 - Delta 1 0 := by
+  rw [fittingBoundaryClass_shearTorsion_apply]
+  rw [jetClass]
+  rw [Ideal.Quotient.eq_zero_iff_mem]
+  constructor
+  · intro hmem
+    simpa [jetIdeal] using (Ideal.mem_span_singleton.mp hmem)
+  · intro hdiv
+    exact Ideal.mem_span_singleton.mpr hdiv
+
+/-- Hence the lower crossing is determinant-transverse to the sheared seam for every
+positive order. -/
+theorem fittingBoundaryClass_shearTorsion_lowerCrossing_ne_zero (m : ℕ) (hm : 0 < m) :
+    fittingBoundaryClass m (shearTorsionPresentation m) polynomialLowerCrossing ≠ 0 := by
+  rw [fittingBoundaryClass, fittingBoundaryTrace_shearTorsion_lowerCrossing]
+  intro hzero
+  rw [jetClass, Ideal.Quotient.eq_zero_iff_mem, jetIdeal, Ideal.mem_span_singleton] at hzero
+  obtain ⟨c, hc⟩ := hzero
+  have hco := congrArg (fun p => Polynomial.coeff p 0) hc
+  simp only [Polynomial.coeff_neg, Polynomial.coeff_one, if_true,
+    Polynomial.coeff_X_pow_mul'] at hco
+  rw [if_neg (by omega : ¬ (m ≤ 0))] at hco
+  norm_num at hco
+
+/-- The same concrete witness is outside the right fake class. -/
+theorem lowerCrossing_not_right_factor_shearTorsion_mod_X_pow (m : ℕ) (hm : 0 < m) :
+    ¬ ∃ H K : Matrix (Fin 2) (Fin 2) (Polynomial ℚ),
+      polynomialLowerCrossing = shearTorsionPresentation m * H + ((X : Polynomial ℚ) ^ m) • K := by
+  exact nonzero_fittingBoundaryClass_obstructs_right_factor_mod_X_pow m
+    (shearTorsionPresentation_det m)
+    (fittingBoundaryClass_shearTorsion_lowerCrossing_ne_zero m hm)
+
+/-- The same concrete witness is outside the left fake class. -/
+theorem lowerCrossing_not_left_factor_shearTorsion_mod_X_pow (m : ℕ) (hm : 0 < m) :
+    ¬ ∃ H K : Matrix (Fin 2) (Fin 2) (Polynomial ℚ),
+      polynomialLowerCrossing = H * shearTorsionPresentation m + ((X : Polynomial ℚ) ^ m) • K := by
+  exact nonzero_fittingBoundaryClass_obstructs_left_factor_mod_X_pow m
+    (shearTorsionPresentation_det m)
+    (fittingBoundaryClass_shearTorsion_lowerCrossing_ne_zero m hm)
 
 /-- **Split torsion seams do not detect a standard lower cross-boundary corner.**
 For the diagonal presentation `diag(X^m, 1)`, every defect of the form

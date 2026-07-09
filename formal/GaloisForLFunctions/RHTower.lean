@@ -464,4 +464,10 @@ import GaloisForLFunctions.RHTower.CompletedZetaGrowth
 import GaloisForLFunctions.RHTower.XiZeroDensity
 import GaloisForLFunctions.RHTower.OverlapRigidity
 import GaloisForLFunctions.RHTower.WeierstrassFactor
+import GaloisForLFunctions.RHTower.CanonicalProduct
+import GaloisForLFunctions.RHTower.XiEntireReal
+import GaloisForLFunctions.RHTower.EntireHasLog
+import GaloisForLFunctions.RHTower.ZeroResonanceIndependence
+import GaloisForLFunctions.RHTower.XiConvergenceExponent
 import GaloisForLFunctions.RHTower.GammalessStripRigidity
+import GaloisForLFunctions.RHTower.BohrCoefficientUniqueness

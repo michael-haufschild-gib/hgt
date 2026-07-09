@@ -51,6 +51,17 @@ theorem jetClass_mul_X_pow_eq_zero (R : Type*) [CommRing R] (m : ℕ) (Q : Polyn
     jetClass R m (((Polynomial.X : Polynomial R) ^ m) * Q) = 0 :=
   jetClass_eq_zero_of_X_pow_dvd R m ⟨Q, rfl⟩
 
+/-- Adding a multiple of `X^m` does not change a local divisor-jet class. -/
+theorem jetClass_add_X_pow_mul (R : Type*) [CommRing R] (m : ℕ) (P Q : Polynomial R) :
+    jetClass R m (P + ((Polynomial.X : Polynomial R) ^ m) * Q) = jetClass R m P := by
+  rw [jetClass, jetClass]
+  change Ideal.Quotient.mk (jetIdeal R m) (P + ((Polynomial.X : Polynomial R) ^ m) * Q) =
+    Ideal.Quotient.mk (jetIdeal R m) P
+  rw [map_add]
+  have hzero : Ideal.Quotient.mk (jetIdeal R m) (((Polynomial.X : Polynomial R) ^ m) * Q) = 0 := by
+    exact jetClass_mul_X_pow_eq_zero R m Q
+  rw [hzero, add_zero]
+
 /-- A local divisor-jet class is zero exactly when all coefficients below the
 multiplicity cutoff vanish. -/
 theorem jetClass_eq_zero_iff_coeff_lt_eq_zero (R : Type*) [CommRing R] (m : ℕ)
