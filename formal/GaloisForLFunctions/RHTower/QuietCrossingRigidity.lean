@@ -211,4 +211,144 @@ theorem perronKernel_inversion {c : ℝ} (hc : 0 < c) {y : ℝ} (hy : 0 < y) :
       = mellinInv c (mellin perronKernelG) (1/y) from rfl, key]
   simp only [perronKernelG]
 
+/-- Continuity in the height `t` of a single Dirichlet term `t ↦ aₙ·(n)^{-(c+it)}` restricted to
+the vertical line `Re s = c`. -/
+private theorem term_line_continuous (a : ℕ → ℂ) (c : ℝ) (n : ℕ) :
+    Continuous (fun t:ℝ => LSeries.term a (↑c + ↑t * I) n) := by
+  rcases eq_or_ne n 0 with h | h
+  · subst h; simp only [LSeries.term_zero]; exact continuous_const
+  · have heq : (fun t:ℝ => LSeries.term a (↑c + ↑t * I) n)
+        = fun t:ℝ => a n * (↑n:ℂ)^(-(↑c + (↑t:ℂ) * I)) := by
+      funext t; rw [LSeries.term_of_ne_zero h, Complex.cpow_neg, div_eq_mul_inv]
+    rw [heq]
+    exact continuous_const.mul
+      (Continuous.const_cpow (by fun_prop) (Or.inl (by exact_mod_cast Nat.cast_ne_zero.mpr h)))
+
+/-- **Smoothed Perron summation.**  For an absolutely convergent Dirichlet series `L(s) = Σ aₙ n^{-s}`
+at a real abscissa `c > 0` and any `x > 0`,
+
+    Σ_{n≥1} aₙ · max(x − n, 0)
+      = (1/2π) ∫_{t∈ℝ} L(c+it) · x^{(c+it)+1} / ((c+it)(c+it+1)) dt.
+
+The vertical integral is expanded as `Σₙ ∫ aₙ n^{-(c+it)} x^{(c+it)+1}/((c+it)(c+it+1)) dt`; the
+sum and integral are interchanged by dominated convergence (each term is dominated by
+`‖aₙ‖ n^{-c} x^{c+1} (c²+t²)⁻¹`, absolutely summable via `Σ ‖aₙ‖ n^{-c} < ∞`); and the smoothed
+Perron kernel identity `(1/2π)∫ (x/n)^{c+it}/((c+it)(c+it+1)) dt = max(1 − n/x, 0)` evaluates each
+term to `aₙ·x·max(1 − n/x, 0) = aₙ·max(x − n, 0)`.  The `n = 0` term is absent on both sides
+(Dirichlet coefficients are `1`-indexed). -/
+theorem smoothed_perron_sum {a : ℕ → ℂ} {c : ℝ} (hc : 0 < c) (hsum : LSeriesSummable a c)
+    {x : ℝ} (hx : 0 < x) :
+    ∑' n : ℕ, (if n = 0 then (0:ℂ) else a n * ((max (x - n) 0 : ℝ) : ℂ))
+      = (1 / (2 * Real.pi) : ℝ) • ∫ t : ℝ, LSeries a (↑c + ↑t * I) *
+          ((↑x : ℂ) ^ ((↑c + ↑t * I) + 1) / ((↑c + ↑t * I) * ((↑c + ↑t * I) + 1))) := by
+  have hxc : (↑x : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hx
+  have hx0 : x ≠ 0 := ne_of_gt hx
+  -- The per-term integrand.
+  set F : ℕ → ℝ → ℂ := fun n t =>
+    LSeries.term a (↑c + ↑t * I) n *
+      ((↑x : ℂ) ^ ((↑c + ↑t * I) + 1) * ((↑c + ↑t * I) * ((↑c + ↑t * I) + 1))⁻¹) with hF
+  have hre : ∀ t : ℝ, (↑c + ↑t * I : ℂ).re = c := by intro t; simp
+  -- The per-term modulus bound: `‖Fₙ t‖ = Cₙ·‖kernel‖ ≤ Cₙ·(c²+t²)⁻¹`.
+  set Cn : ℕ → ℝ := fun n => ‖LSeries.term a (↑c) n‖ * x ^ (c + 1) with hCn
+  have hCn_nonneg : ∀ n, 0 ≤ Cn n := fun n =>
+    mul_nonneg (norm_nonneg _) (Real.rpow_nonneg hx.le _)
+  have hFnorm : ∀ n t, ‖F n t‖ = Cn n * ‖((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹‖ := by
+    intro n t
+    have h1 : ‖LSeries.term a (↑c + ↑t * I) n‖ = ‖LSeries.term a (↑c) n‖ := by
+      rw [LSeries.norm_term_eq, LSeries.norm_term_eq, hre, Complex.ofReal_re]
+    have h2 : ‖(↑x : ℂ) ^ ((↑c + ↑t * I) + 1)‖ = x ^ (c + 1) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hx]
+      congr 1
+      rw [Complex.add_re, Complex.one_re, hre t]
+    simp only [hF, hCn, norm_mul]
+    rw [h1, h2]; ring
+  have hFbound : ∀ n t, ‖F n t‖ ≤ Cn n * (c ^ 2 + t ^ 2)⁻¹ := by
+    intro n t; rw [hFnorm n t]
+    exact mul_le_mul_of_nonneg_left (kernel_norm_le hc t) (hCn_nonneg n)
+  have hFcont : ∀ n, Continuous (F n) := by
+    intro n
+    simp only [hF]
+    refine (term_line_continuous a c n).mul (Continuous.mul ?_ (kernel_continuous hc))
+    exact Continuous.const_cpow (by fun_prop) (Or.inl hxc)
+  have hFint : ∀ n, Integrable (F n) := fun n =>
+    ((inv_quad_integrable hc).const_mul (Cn n)).mono'
+      (hFcont n).aestronglyMeasurable (Filter.Eventually.of_forall (hFbound n))
+  -- Absolute summability of the term integral norms.
+  set M : ℝ := ∫ t : ℝ, ‖((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹‖ with hM
+  have hSummable : Summable (fun n => ∫ t : ℝ, ‖F n t‖) := by
+    have hCM : Summable (fun n => Cn n * M) := by
+      have hbase : Summable (fun n => ‖LSeries.term a (↑c) n‖) := summable_norm_iff.mpr hsum
+      have := hbase.mul_right (x ^ (c + 1) * M)
+      refine this.congr (fun n => ?_)
+      simp only [hCn]; ring
+    refine hCM.congr (fun n => ?_)
+    have : (fun t : ℝ => ‖F n t‖) = fun t : ℝ => Cn n * ‖((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹‖ := by
+      funext t; exact hFnorm n t
+    rw [this, MeasureTheory.integral_const_mul, ← hM]
+  -- Expand the L-series, interchange sum and integral.
+  have hExpand : ∀ t : ℝ,
+      LSeries a (↑c + ↑t * I) *
+          ((↑x : ℂ) ^ ((↑c + ↑t * I) + 1) / ((↑c + ↑t * I) * ((↑c + ↑t * I) + 1)))
+        = ∑' n, F n t := by
+    intro t
+    rw [show LSeries a (↑c + ↑t * I) = ∑' n, LSeries.term a (↑c + ↑t * I) n from rfl,
+      div_eq_mul_inv, ← tsum_mul_right]
+  have hswap : ∫ t : ℝ, LSeries a (↑c + ↑t * I) *
+        ((↑x : ℂ) ^ ((↑c + ↑t * I) + 1) / ((↑c + ↑t * I) * ((↑c + ↑t * I) + 1)))
+      = ∑' n, ∫ t : ℝ, F n t := by
+    simp_rw [hExpand]
+    exact (integral_tsum_of_summable_integral_norm hFint hSummable).symm
+  rw [hswap]
+  have hIntSummable : Summable (fun n => ∫ t : ℝ, F n t) :=
+    Summable.of_norm_bounded hSummable (fun n => norm_integral_le_integral_norm _)
+  rw [← Summable.tsum_const_smul (1 / (2 * Real.pi) : ℝ) hIntSummable]
+  -- Evaluate termwise.
+  apply tsum_congr
+  intro n
+  rcases eq_or_ne n 0 with hn | hn
+  · subst hn
+    rw [if_pos rfl]
+    simp only [hF, LSeries.term_zero, zero_mul, MeasureTheory.integral_zero, smul_zero]
+  · rw [if_neg hn]
+    have hnpos : 0 < (n:ℝ) := by exact_mod_cast Nat.pos_of_ne_zero hn
+    -- Rewrite the term integrand as `(aₙ·x)·((x/n)^{c+it}·kernel)`.
+    have hpt : F n = fun t:ℝ =>
+        (a n * ↑x) * ((↑(x/n):ℂ) ^ (↑c + ↑t * I) * ((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹) := by
+      funext t
+      have alg : (↑n:ℂ) ^ (-(↑c + (↑t:ℂ) * I)) * (↑x:ℂ) ^ ((↑c + (↑t:ℂ) * I) + 1)
+          = ↑x * (↑(x/n):ℂ) ^ (↑c + (↑t:ℂ) * I) := by
+        have harg : (↑(n:ℝ):ℂ).arg ≠ Real.pi := by
+          rw [Complex.arg_ofReal_of_nonneg hnpos.le]; exact Real.pi_pos.ne'.symm
+        have hdiv : (↑(x/n):ℂ) ^ (↑c + (↑t:ℂ) * I)
+            = (↑x:ℂ) ^ (↑c + (↑t:ℂ) * I) * (↑n:ℂ) ^ (-(↑c + (↑t:ℂ) * I)) := by
+          rw [Complex.ofReal_div, div_eq_mul_inv, ← Complex.ofReal_inv,
+              Complex.mul_cpow_ofReal_nonneg hx.le (by positivity), Complex.ofReal_inv,
+              Complex.inv_cpow _ _ harg, ← Complex.cpow_neg, Complex.ofReal_natCast]
+        rw [hdiv]
+        have hx1 : (↑x:ℂ) ^ ((↑c + (↑t:ℂ) * I) + 1) = (↑x:ℂ) ^ (↑c + (↑t:ℂ) * I) * (↑x:ℂ) := by
+          rw [Complex.cpow_add _ _ hxc, Complex.cpow_one]
+        rw [hx1]; ring
+      simp only [hF]
+      rw [LSeries.term_of_ne_zero hn, div_eq_mul_inv, ← Complex.cpow_neg]
+      rw [show a n * (↑n:ℂ) ^ (-(↑c + ↑t * I)) *
+            ((↑x:ℂ) ^ ((↑c + ↑t * I) + 1) * ((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹)
+          = a n * ((↑n:ℂ) ^ (-(↑c + ↑t * I)) * (↑x:ℂ) ^ ((↑c + ↑t * I) + 1)) *
+            ((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹ by ring]
+      rw [alg]; ring
+    have hintFn : ∫ t : ℝ, F n t = (a n * ↑x) *
+        ∫ t : ℝ, ((↑(x/n):ℂ) ^ (↑c + ↑t * I) * ((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹) := by
+      rw [hpt, MeasureTheory.integral_const_mul]
+    -- The term integral evaluates via the smoothed Perron kernel identity at `y = x/n`.
+    have hJ : (1 / (2 * Real.pi) : ℝ) •
+          ∫ t : ℝ, (↑(x/n):ℂ) ^ (↑c + ↑t * I) * ((↑c + ↑t * I) * (↑c + ↑t * I + 1))⁻¹
+        = ((max (1 - 1 / (x / n)) 0 : ℝ) : ℂ) :=
+      perronKernel_inversion hc (show (0:ℝ) < x / n by positivity)
+    rw [hintFn, ← mul_smul_comm, hJ]
+    -- Real identity `x·max(1 − 1/(x/n), 0) = max(x − n, 0)`.
+    have hmax : x * max (1 - 1 / (x / n)) 0 = max (x - ↑n) 0 := by
+      rw [mul_max_of_nonneg _ _ hx.le, mul_zero]
+      congr 1
+      field_simp
+    rw [mul_assoc, ← Complex.ofReal_mul, hmax]
+
 end RHTower

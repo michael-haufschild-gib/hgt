@@ -114,3 +114,31 @@ RHTower.shearedTorsionSeam_hasDeterminantTransverseDefect_iff: [propext, Classic
 RHTower.shearedTorsionSeam_defectNonmember_of_entryResidue_not_dvd: [propext, Classical.choice, Quot.sound]
 RHTower.shearedTorsionSeam_defectLeftNonmember_of_entryResidue_not_dvd: [propext, Classical.choice, Quot.sound]
 ```
+
+## Standard-Cutoff Source-Action Gate
+
+Added on 2026-07-09 in `formal/GaloisForLFunctions/RHTower/CutoffTorsionSeam.lean`:
+
+- `standardCutoff_crossBoundary_lowerLeft`
+- `fittingBoundaryClass_shearTorsion_standardCutoff_crossBoundary`
+- `shearedStandardCutoffTorsionSeam_hasDeterminantTransverseDefect_iff`
+- `shearedStandardCutoffTorsionSeam_defectNonmember_of_lowerLeft_not_dvd`
+- `shearedStandardCutoffTorsionSeam_defectLeftNonmember_of_lowerLeft_not_dvd`
+
+In a chart where the cutoff idempotent is `standardCutoff`, Lean proves
+
+`crossBoundary standardCutoff sigma = [[0,0],[sigma_10,0]]`,
+
+so the sheared boundary class is `jetClass(-sigma_10)`.  Thus a source action `sigma` gives a
+nonfake sheared torsion seam defect as soon as its lower-left crossing entry survives modulo `X^m`
+(up to sign).
+
+Additional axiom check on 2026-07-09:
+
+```text
+RHTower.standardCutoff_crossBoundary_lowerLeft: [propext, Classical.choice, Quot.sound]
+RHTower.fittingBoundaryClass_shearTorsion_standardCutoff_crossBoundary: [propext, Classical.choice, Quot.sound]
+RHTower.shearedStandardCutoffTorsionSeam_hasDeterminantTransverseDefect_iff: [propext, Classical.choice, Quot.sound]
+RHTower.shearedStandardCutoffTorsionSeam_defectNonmember_of_lowerLeft_not_dvd: [propext, Classical.choice, Quot.sound]
+RHTower.shearedStandardCutoffTorsionSeam_defectLeftNonmember_of_lowerLeft_not_dvd: [propext, Classical.choice, Quot.sound]
+```

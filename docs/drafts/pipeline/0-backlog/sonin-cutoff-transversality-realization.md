@@ -101,3 +101,8 @@ the low coefficient of `tr(adj(A) Delta)`.
   gives both right and left nonfake defects.  The actual Sonin/prolate task can therefore target the
   single statement `X^m ∤ ((1-Q_lambda) U_p Q_lambda)_00 - ((1-Q_lambda) U_p Q_lambda)_10` after a
   source-built sheared chart is constructed.
+- 2026-07-09 - [BRIDGE] In a standard-cutoff chart, the target has narrowed again: Lean proves
+  `crossBoundary standardCutoff sigma = [[0,0],[sigma_10,0]]` and the sheared boundary class is
+  `jetClass(-sigma_10)`.  Therefore the source-built Sonin/prolate chart only needs to put
+  `Q_lambda` into standard idempotent form and prove that the lower-left crossing entry of `U_p`
+  survives modulo `X^m` (up to sign).
