@@ -51,3 +51,8 @@
   (`quiet_path_rigidity`) — quiet C¹ paths through the strip replace straight crossings
   (budget q·L/T²); hexagonal-loop primitive-telescoping architecture; axiom-clean, umbrella,
   lint green.
+- 2026-07-10 — planar duality stack completed in Lean (`DiscreteSteinhaus.lean`):
+  `compact_separation_of_no_joining_component` (Stage A, on the in-tree quasicomponent engine) +
+  `discrete_crossing_duality` (Stage B, interface-walk Hex theorem, written from scratch) +
+  `rectangle_crossing_duality` (Stage C, mesh + monochromatic-chain + polygonal path builder) —
+  the wave-5 curtain duality is machine-checked; all axiom-clean, zero warnings.

@@ -1493,3 +1493,20 @@ hypothesis. Remaining Lean target for the duality stack: Stage C (`rectangle_cro
 — mesh discretization + the Stage-A clopen split + the monochromatic-chain argument, consuming
 `discrete_crossing_duality`; on its landing the wave-5 seam-curtain duality is machine-checked
 end to end.
+
+## Lean status — Stage C LANDED: the curtain duality is machine-checked end to end
+
+`rectangle_crossing_duality` (in `DiscreteSteinhaus.lean`; verified: zero errors and warnings,
+umbrella build 9106 jobs, [propext, Classical.choice, Quot.sound], lint green, index
+regenerated): for closed `K` and any rectangle, EITHER a connected subset of `K ∩ Rect` joins the
+bottom edge to the top edge, OR a polygonal path with every segment inside `Rect ∖ K` joins the
+left edge to the right edge. Assembly: Stage-A compact clopen separation (three positive uniform
+separations via compact minimisation of `infDist`), a grid of mesh below an eighth of the least
+separation, the discrete Steinhaus duality on the induced marking, impossibility of the marked
+branch (king-adjacent cells are too close to change family; a family cannot span its forbidden
+edge), and the cell-centre `Fin.snoc` path builder on the free branch. The wave-5 seam-curtain
+statement is now a machine-checked instrument: per height window, with `K := {‖F‖ ≥ R}`, a
+nonconstant member yields a loud connected curtain exactly when no quiet polygonal crossing
+exists — and the polygonal branch is integration-ready for the Perron contour. The full planar
+stack (A: separation; B: discrete Hex; C: continuous duality) was absent from mathlib and is now
+in-tree, axiom-clean.

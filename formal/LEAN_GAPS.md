@@ -30,12 +30,12 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 1711 | `formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean` |
 | 1656 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranchCrossing.lean` |
 | 1604 | `formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean` |
+| 1511 | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean` |
 | 1502 | `formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean` |
 | 1494 | `formal/GaloisForLFunctions/Bottcher/ZeroCircleBranchQ62.lean` |
 | 1417 | `formal/GaloisForLFunctions/Bottcher/CrossRatioNormalBridge.lean` |
 | 1372 | `formal/GaloisForLFunctions/Bottcher/W4LinPack.lean` |
 | 1336 | `formal/GaloisForLFunctions/Bottcher/CoverConstruction.lean` |
-| 1307 | `formal/GaloisForLFunctions/Bottcher/W4LinWinding.lean` |
 
 ## Gap Markers
 

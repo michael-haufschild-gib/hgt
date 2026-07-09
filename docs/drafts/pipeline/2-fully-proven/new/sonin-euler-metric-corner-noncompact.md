@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper)
 - **Grade:** BRIDGE / GATEKEEPER (new source-specific operator consequence); not C5
 - **Source:** Connes--Consani--Moscovici, *Zeta zeros and prolate wave operators*,
-  arXiv:2310.18423v2, Definition 4.4, equations (51)--(53), and Proposition 4.8;
+  arXiv:2310.18423v2, Definition 4.3, equations (51)--(53), Propositions 4.6--4.8;
   `sonin-place-transition-cutoff-dichotomy.md`;
   `../../1-in-progress/sonin-cutoff-transversality-realization.md`
 - **Statement:** For every `lambda > 0` and every prime `p`, the corner of the positive local Euler
@@ -34,24 +34,36 @@ Then
 
 is not compact.
 
-Under the dual Hardy--Titchmarsh unitary of the cited paper, the positive Euler weight
+On the archimedean dual Hardy--Titchmarsh line, the positive Euler weight
 
 `w_p(s) = |1-p^(-1/2-is)|^2
         = 1+p^(-1)-p^(-1/2)(p^(is)+p^(-is))`
 
-acts as
+acts, after pullback by `upsilon_infinity`, as
 
 `(1+p^(-1))1-p^(-1/2)(U_p+U_p^*)`.
 
-Proposition 4.8 identifies the Sonin space with the common entire-function carrier `B_lambda`.
-Therefore, if `P_lambda` denotes the orthogonal projection onto that carrier in the archimedean
-critical-line Hilbert space and `upsilon_infinity` is the dual Hardy--Titchmarsh unitary, then
+The precise source meaning of this weight is metric, not a residual place factor. If
+`iota'_p` is the identity from the archimedean Hardy--Titchmarsh line to the `{infinity,p}` line,
+then Proposition 4.7 gives
 
-`upsilon_infinity^* (1-P_lambda) M_{w_p} P_lambda upsilon_infinity
+`upsilon_{infinity,p} theta_p = iota'_p upsilon_infinity`,
+
+because the factor `1-p^(-1/2-is)` from Proposition 4.6 cancels against the finite Euler factor in
+`beta_{infinity,p}`. The Radon--Nikodym/Gram operator is
+
+`(iota'_p)^* iota'_p = M_{w_p}`.
+
+Proposition 4.8 identifies the Sonin space with the common entire-function carrier `B_lambda`, with
+a norm depending on the set of places. Let `Pi^B_{lambda,infinity}` denote the orthogonal projection
+onto the boundary image of that carrier in the **archimedean-norm** critical-line Hilbert space.
+Then
+
+`upsilon_infinity^* (1-Pi^B_{lambda,infinity}) M_{w_p} Pi^B_{lambda,infinity} upsilon_infinity
    = (1-Q_lambda)((1+p^(-1))1-p^(-1/2)(U_p+U_p^*))Q_lambda
    = -p^(-1/2)L_{p,lambda}`.
 
-Thus `(1-P_lambda) M_{w_p} P_lambda`
+Thus `(1-Pi^B_{lambda,infinity}) M_{w_p} Pi^B_{lambda,infinity}`
 
 is unitarily equivalent to `-p^(-1/2)L_{p,lambda}` and is noncompact.
 
@@ -152,11 +164,12 @@ A compact operator sends bounded weakly null sequences to norm-null sequences. T
 
 ### 4. Consequence for the metric semicommutator
 
-The diagonal compression defect of the Euler metric is
+The diagonal compression defect of the Euler metric, with
+`Pi = Pi^B_{lambda,infinity}`, is
 
-`P_lambda M_{w_p^2}P_lambda-(P_lambda M_{w_p}P_lambda)^2 = H_p^*H_p`,
+`Pi M_{w_p^2}Pi-(Pi M_{w_p}Pi)^2 = H_p^*H_p`,
 
-where `H_p=(1-P_lambda)M_{w_p}P_lambda`. If `H_p^*H_p` were compact, then
+where `H_p=(1-Pi)M_{w_p}Pi`. If `H_p^*H_p` were compact, then
 `|H_p|=(H_p^*H_p)^(1/2)` and hence `H_p` would be compact. Thus the diagonal defect is also
 noncompact. No trace, Hilbert--Schmidt pairing, Fredholm determinant, or finite Fitting boundary is
 available for this unsmoothed source operator.
@@ -170,9 +183,13 @@ available for this unsmoothed source operator.
   the semilocal cyclic pair.
 - `[PROVED]` This is not the earlier raw-support calculation. The vectors `f_n` lie in the full
   physical-and-Fourier Sonin intersection, and `Q_lambda` is its actual orthogonal projection.
-- `[PROVED]` The source transport is for the pinned archimedean metric `S={infinity}` and the forward
-  norm change obtained by adjoining `p`, whose weight is `w_p`.
-- `[PROVED]` Every projection in the statement is the fixed-cutoff projection `P_lambda`. No
+- `[PROVED]` The source transport is for the pinned archimedean metric and the forward identity
+  `iota'_p` obtained by adjoining `p`; its Gram operator is `M_{w_p}`. The map `theta_p` is boundedly
+  invertible, not unitary.
+- `[PROVED]` The source projection is `Pi^B_{lambda,infinity}`, the archimedean-norm projection onto
+  the boundary carrier. It is not the paper's physical time-limiting projection `P_lambda` and not
+  the projection defined by the `{infinity,p}` norm.
+- `[PROVED]` Every projection in the statement is at fixed cutoff `lambda`. No
   `lambda -> infinity` limiting projection is asserted.
 - `[PROVED]` The result closes the positive Euler **metric** compression as a trace-ideal seam. It does
   not decide the formal prolate naturality defect `W_{lambda,S}eta_S-eta_SW_{lambda,infinity}` or a
@@ -201,7 +218,9 @@ available for this unsmoothed source operator.
 
 - [x] 0 -> 1: actual source operator, actual Sonin projection, and degenerate cases isolated.
 - [x] 1 -> 2: noncompactness proved by the two-projection correction formula and shell Weyl sequence.
-- [ ] 2 -> 3: requires formal `L^2`, Fourier-projection, compact-operator, and uncertainty
-  infrastructure not currently present in the Sonin formal layer. The existing generic compression and
-  Hilbert--Schmidt files were checked first; duplicating them would not formalize this theorem.
+- [ ] 2 -> 3: the complete analytic theorem on the exact even Sonin carrier is now formalized in
+  `SoninEvenCarrier.lean`, with its own stage-3 card
+  `../../3-formalized/new/even-sonin-euler-corner-noncompact.md`. This source-level card stays at
+  stage 2 until Lean encodes the Connes--Consani--Moscovici dual Hardy--Titchmarsh unitary, its
+  `B_lambda` carrier identification, and the local Euler multiplication-operator transport.
 - [ ] 3 -> 4: requires standalone analytic exposition and an independent source/literature audit.

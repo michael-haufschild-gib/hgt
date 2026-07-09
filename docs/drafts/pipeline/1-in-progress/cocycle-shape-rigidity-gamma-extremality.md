@@ -244,3 +244,135 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
 - 2026-07-09 — ThetaHalfPlaneBound.lean VERIFIED: standalone compile clean (zero warnings),
   umbrella build 9094 jobs green, all 8 declarations axiom-clean [propext, Classical.choice,
   Quot.sound], formal lint passed, index regenerated, in RHTower umbrella.
+
+## Wave 7 — zero-bridge killed; order/type decoupling; the Borel–Ritt monster; keystone re-cut
+
+23. **The zero-counting bridge FAILS at its first arrow — do not rebuild.** The chain was: F loud
+    at σ₀ < 0 ⟹ θ oscillates at the boundary ⟹ zeros violate Korenblum density. But the loudness
+    lives on the CONTINUED M[θ], which is not an integral of θ; the only unconditional link
+    F → f is Mellin inversion on a right line, where F is tame; continued values reach f only
+    through analytic-continuation uniqueness, which has no quantitative form (wave-6 Nevanlinna
+    verdict). "Loud ⟹ resonant" is the P–L gap renamed. The wave-4 apparatus constrains the
+    resonance direction only. Residue kept: the divisor stays the curvature carrier
+    (shape-rigidity side); as a T2 tool it waits on the missing arrow.
+24. **Order/type decoupling.** The σ-aspect (Hadamard order; the values F(−k) = ±k!·c_k = the
+    radial JET of θ at 0) and the t-aspect (vertical type; boundary resonance) are separate
+    channels. T2 constrains ONLY the t-aspect. Symmetric carriers (h=1 cell) have their σ-aspect
+    killed by F(s)=F(1−s) + flank boundedness, so T2 ⟹ h=1 rigidity in full — unchanged. But for
+    UNSYMMETRIC carriers the σ-aspect is genuinely free:
+25. **The Borel–Ritt monster — INT-ORDER is FALSE without integrality.** `[PROVED-modulo-writeup]`
+    Take any formal series Σc_k x^k (integer powers), e.g. c_k = e^{e^k}/k!. Borel–Ritt on the
+    sector |arg x| < π/2 + ε gives θ̃ asymptotic to it, uniformly, bounded; multiply by (1+x)^{−2}
+    for decay. Periodize: θ(x) = Σ_{j∈ℤ} θ̃(x + 2πij) — 2πi-periodic, analytic on Re x > 0,
+    BOUNDED on the half-plane (the lattice sum converges by the |x|^{−2} decay), vanishing at
+    +∞; the j ≠ 0 part is analytic AT x = 0 (each translate sits at arg ≈ π/2 < π/2 + ε) with
+    geometrically small Taylor coefficients — no cancellation against the prescribed jet. Fourier
+    coefficients: one-sided, bounded ⟹ F = Σaₙn^{−s} with finite abscissa. Full integer-power
+    radial asymptotic (sector-uniform) ⟹ M[θ] poles ⊂ ℤ≤0 simple ⟹ F ENTIRE, and the rotated
+    remainder bounds give vertical type 0 — but F(−k) ≈ e^{e^k}: INFINITE Hadamard order.
+    Consequences: (i) "finite abscissa + entire ⟹ finite order" is FALSE for bounded complex
+    coefficients — the σ-aspect jet is a free parameter; (ii) the old heuristic "entirety forces
+    coefficient regularity capping growth" is wrong for ORDER and right (conjecturally) only for
+    TYPE; (iii) T2 and Γ-extremality are untouched (the monster is type 0); (iv) the h=1 cell is
+    untouched (needs symmetry, which the monster breaks maximally).
+26. **The keystone re-cut: jet quantization.** `[CONJECTURE JET-QUANT]` For INTEGER bounded
+    coefficients the Borel–Ritt freedom dies because the coefficients are quantized — the jet
+    cannot be prescribed continuously. Via Pólya–Carlson: integer f is rational (⟹ F a Hurwitz
+    combination, finite order — the known world) or has a natural boundary; conjecture: **a
+    natural boundary is incompatible with a full integer-power radial asymptotic at q = 1** (some
+    half-power / log / log-periodic term always intrudes — as in Σq^{n²} (x^{−1/2} term) and
+    Σq^{2^n} (log-periodic oscillation)). JET-QUANT ⟹ integer INT-ORDER holds in full (entire
+    integer cases are exactly the rational-f, finite-order world). This is Pólya–Carlson in the
+    JET variable — the branch-native successor of INT-ORDER, now correctly scoped after 25.
+
+## Log (cont. 8)
+- 2026-07-09 — wave 7: zero-bridge self-attacked and killed (first arrow = P–L gap renamed);
+  order/type channels decoupled; Borel–Ritt periodization monster constructed (bounded
+  coefficients, entire, infinite order, type 0) — INT-ORDER false without integrality; keystone
+  re-cut as JET-QUANT. Lean: Borel–Ritt/sector-asymptotics absent from mathlib — formalization
+  of wave-7 queued as a named major target (AsymptoticExpansionSector + periodization), behind
+  the T2 program; no small brick this wave moves a quantifier.
+
+## Wave 8 — JET-QUANT refuted; the integer world stratified; Cobham-flavored rigidity
+
+27. **0/1 stratum closed by Landau `[SEARCH]`.** For gap sets Λ ⊆ ℕ, `M[Σe^{−λx}] = Γ·L_Λ` with
+    `L_Λ(s) = Σ_{m∈Λ} m^{−s}` — nonnegative coefficients, so Landau's theorem places a genuine
+    singularity at the real abscissa: an infinite 0/1 series is NEVER entire. Geometric gaps show
+    the intrusion explicitly: `Σq^{2^n}` gives `Γ(s)/(1−2^{−s})`, pole lattice `2πiℤ/log 2`.
+28. **JET-QUANT is REFUTED.** `f = Σ(−1)^n q^{n²}`: Fabry (gaps `n²/n → ∞`) gives a natural
+    boundary on `|q|=1`; yet `F(s) = Σ(−1)^n n^{−2s} = −η(2s)` is ENTIRE of finite order, with a
+    full integer-power radial expansion. A natural boundary does not obstruct entirety — the
+    wave-7 intrusion conjecture dies. Signs are everything: positivity (27) was the only
+    obstruction there.
+29. **PERIODIC-DICHOTOMY refuted in the same stroke.** `aₙ = (−1)^n + (alternating on squares)`
+    is bounded-integer, NOT eventually periodic, with `F = −η(s) − η(2s)` entire. The escape:
+    periodic data transported along monomial pushforwards `k ↦ k^d` (and, more generally,
+    alternating signs along polynomial images `k ↦ P(k)`, entire by Boole summation). All such
+    combinations have order ≤ 1.
+30. **Where the intrusion mechanism SURVIVES: self-similar (automatic) structure.** Thue–Morse
+    type 2-substitution relations force `(1 − 2^{·−s})`-style denominators ⟹ candidate pole
+    lattices `ρ + 2πiℤ/log 2`. Geometric-support integer series are never entire (a nontrivial
+    integer power series in `w = 2^{−s}` entire in `s` needs radius ∞ ⟹ coefficients → 0 ⟹
+    finite). `[CONJECTURE AUTOMATIC-COBHAM-RIGIDITY]`: **an automatic bounded-integer sequence
+    whose Dirichlet series continues to an entire function is eventually periodic** — entirety
+    kills the substitution poles only in the degenerate (periodic) case; a Cobham-flavored
+    rigidity: the pole lattice of the substitution plays the role of the second base.
+31. **The keystone, wave-8 form.** `[CONJECTURE INT-ORDER ≤ 1]` integer polynomial-size
+    coefficients + finite abscissa + entire ⟹ Hadamard order ≤ 1. Evidence: the entire visible
+    integer world (periodic/η/Hurwitz data, monomial pushforwards, alternating polynomial images)
+    sits at order ≤ 1; positivity blocks 0/1; substitution structure blocks automatic non-periodic
+    (conj. 30); Borel–Ritt jet freedom needs continuous tuning (wave 7). `[OPEN CORE — ARITHMETIC
+    LATTICE STRUCTURE]`: is every bounded-integer entire Dirichlet series a finite combination of
+    periodic data along polynomial pushforwards? The structure theorem would prove the
+    quantization and give integer INT-ORDER in the corrected (≤ 1) form.
+32. **Lean target pinned (absent from tree and mathlib; tree's "Landau positivity" is the
+    real-axis Euler-factor shadow, not the theorem):** `landau_summability_transfer` — for
+    `0 ≤ aₙ`, `LSeriesSummable a σ₁`, and `G` analytic on `ball(σ₁, r)` agreeing with the series
+    on the convergent overlap: summability transfers to every real `σ > σ₁ − r`. Proof core:
+    `LSeries_iteratedDeriv` (in mathlib) + Taylor-coefficient sign pattern + Tonelli
+    rearrangement of the nonnegative double series. This is the positivity engine that formally
+    closes stratum 27 and is reusable at every seam positivity argument.
+
+## Log (cont. 9)
+- 2026-07-10 — wave 8: JET-QUANT and PERIODIC-DICHOTOMY both refuted by explicit integer
+  examples (alternating quadratic partial theta; pushforward escape); 0/1 stratum = Landau;
+  automatic stratum = substitution pole lattices [CONJECTURE Cobham-rigidity]; keystone re-cut to
+  INT-ORDER ≤ 1 + arithmetic-lattice structure theorem. Lean next: landau_summability_transfer.
+
+## Wave 9 — automatic/order conjectures refuted by the Thue--Morse Mellin carrier
+
+33. **AUTOMATIC-COBHAM-RIGIDITY is false.** `[SEARCH + PROVED RECHECK]` Let
+    `epsilon_n=(-1)^{s_2(n)}`. The shifted Thue--Morse Dirichlet series
+    `T(s)=sum_{n>=0} epsilon_n/(n+1)^s` is entire, although `epsilon` is 2-automatic and not
+    eventually periodic. The continuation is classical (Allouche--Cohen, 1985). The mechanism is
+    the exact generating product
+    `sum epsilon_n q^n=prod_{k>=0}(1-q^{2^k})`: on `q=e^{-x}`, every finite initial product supplies
+    one more power of `x`, so the kernel is flat to all algebraic orders at `x=0`. Substitution does
+    not force a pole lattice when its Prouhet cancellations accumulate to infinite radial order.
+34. **INT-ORDER <= 1 is false.** `[PROVED HERE]` The same entire Dirichlet series has exact Hadamard
+    order `2` and exact type `(log 2)/2`. Writing
+    `phi(x)=e^{-x}prod_{k>=0}(1-e^{-2^k x})`, two-sided product bounds give
+    `log phi(e^{-y})=-y^2/(2 log 2)+O(y)`. Its Mellin transform therefore has
+    `log M(r)=((log 2)/2)r^2+o(r^2)` along the negative real direction; division by `Gamma(s)` changes
+    only the `O(r log r)` term. Complete proof:
+    `../2-fully-proven/new/thue-morse-entire-dirichlet-order-two.md`.
+35. **Corrected keystone.** Integrality, boundedness, and finite-state self-similarity are all too
+    soft to cap Hadamard order. The surviving source question must include multiplicativity/Euler
+    compatibility: `[OPEN CORE]` can a nonzero bounded **multiplicative** integer sequence have an
+    ordinary generating function with infinite radial Prouhet flatness at `q=1` while its Dirichlet
+    series continues entire? An order-one theorem is useful only if that flatness obstruction is
+    derived from the Euler constraint, not assumed as finite order.
+
+## Log (cont. 10)
+- 2026-07-10 — wave 9: refuted AUTOMATIC-COBHAM-RIGIDITY and INT-ORDER <= 1 by the shifted
+  Thue--Morse Dirichlet series. Entirety is classical and graded SEARCH; the exact order `2`, exact
+  type `(log 2)/2`, and the two-sided radial-flatness proof are recorded in the new stage-2 card.
+  Keystone moved to the multiplicative obstruction to infinite radial Prouhet cancellation.
+
+## Log (cont. 10)
+- 2026-07-10 — `LandauSummabilityTransfer.lean` LANDED (hand-written, 2 fix cycles): verified
+  standalone clean zero warnings, umbrella build 9108 jobs green, both public theorems
+  [propext, Classical.choice, Quot.sound], formal lint passed, index regenerated. During the
+  build the `R > 1` hypothesis turned out redundant (the case split derives it) and was removed —
+  the formalization strengthened the statement. §32's pinned target is machine-checked; the 0/1
+  stratum (§27) is now formally closed via `landau_entire_summable` + divergence at σ = 0.

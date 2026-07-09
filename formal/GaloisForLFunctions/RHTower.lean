@@ -464,6 +464,7 @@ import GaloisForLFunctions.RHTower.ReflectionCocycleCurvature
 import GaloisForLFunctions.RHTower.ReflectionCocycleArchimedean
 import GaloisForLFunctions.RHTower.CocycleExponentRigidity
 import GaloisForLFunctions.RHTower.ThetaHalfPlaneBound
+import GaloisForLFunctions.RHTower.LandauSummabilityTransfer
 import GaloisForLFunctions.RHTower.CompletedZetaGrowth
 import GaloisForLFunctions.RHTower.XiZeroDensity
 import GaloisForLFunctions.RHTower.OverlapRigidity
@@ -483,3 +484,5 @@ import GaloisForLFunctions.RHTower.QuietPathRigidity
 import GaloisForLFunctions.RHTower.RectangleCrossingDuality
 import GaloisForLFunctions.RHTower.PeriodicSpectrumRigidity
 import GaloisForLFunctions.RHTower.DiscreteSteinhaus
+import GaloisForLFunctions.RHTower.SoninEvenCarrier
+import GaloisForLFunctions.RHTower.ThueMorseMellinFlatness

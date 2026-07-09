@@ -8457,6 +8457,12 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `marked_pipeline` | `GaloisForLFunctions.RHTower.DiscreteSteinhaus` | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean:933` | Marked pipeline.** An augmented king chain from the bottom-sentinel start to a top-sentinel cell yields an interior marked king crossing of the original board. |
 | theorem | `free_pipeline` | `GaloisForLFunctions.RHTower.DiscreteSteinhaus` | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean:973` | Free pipeline.** An augmented rook chain from the left-sentinel corner to a right-sentinel cell yields an interior free rook crossing of the original board. |
 | theorem | `discrete_crossing_duality` | `GaloisForLFunctions.RHTower.DiscreteSteinhaus` | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean:1019` | Discrete Steinhaus/Hex crossing duality (general marking).** On the board `Fin (m+1) × Fin (n+1)`, for an arbitrary decidable marking: either the marked cells contain a king-connec |
+| theorem | `comb_bounds` | `GaloisForLFunctions.RHTower.DiscreteSteinhaus` | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean:1050` | Convex-combination coordinate bound. |
+| theorem | `segment_coord_bounds` | `GaloisForLFunctions.RHTower.DiscreteSteinhaus` | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean:1059` | Coordinate bounds along a real segment in `ℂ`. |
+| theorem | `segment_in_box` | `GaloisForLFunctions.RHTower.DiscreteSteinhaus` | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean:1074` | A segment whose endpoints lie in an axis-aligned box stays in the box. |
+| theorem | `exists_uniform_separation` | `GaloisForLFunctions.RHTower.DiscreteSteinhaus` | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean:1085` | Positive uniform separation between a nonempty compact set and a disjoint nonempty closed set. |
+| theorem | `dist_le_coord` | `GaloisForLFunctions.RHTower.DiscreteSteinhaus` | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean:1100` | Distance is bounded by the sum of coordinate distances. |
+| theorem | `rectangle_crossing_duality` | `GaloisForLFunctions.RHTower.DiscreteSteinhaus` | `formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean:1123` | Stage C — rectangle crossing duality.** For a closed set `K` and a closed rectangle `[x₀,x₁] × [y₀,y₁]`: either `K` meets the rectangle in a connected *curtain* joining the bottom  |
 | theorem | `norm_sum_amplitude_phase_le` | `GaloisForLFunctions.RHTower.DiscreteVanDerCorput` | `formal/GaloisForLFunctions/RHTower/DiscreteVanDerCorput.lean:29` | Finite Dirichlet-test bound.** An antitone nonnegative amplitude against a complex sequence with uniformly bounded partial sums telescopes to `a 0 · M`. This generalises the geomet |
 | theorem | `rpow_pow_comm` | `GaloisForLFunctions.RHTower.DivisorBound` | `formal/GaloisForLFunctions/RHTower/DivisorBound.lean:23` | `(p^ε)^a = (p^a)^ε` for `p ≥ 1`. |
 | theorem | `succ_le_const_mul_pow` | `GaloisForLFunctions.RHTower.DivisorBound` | `formal/GaloisForLFunctions/RHTower/DivisorBound.lean:30` | Per-prime bound.** For `q > 1`, `a + 1 ≤ max(1, 2/(q−1)) · q^a`: Bernoulli's inequality `1 + a(q−1) ≤ q^a` controls the linear factor by the geometric one, with an explicit constan |
@@ -9227,6 +9233,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `fe_line_count_even_of_offaxis_conj_symmetric` | `GaloisForLFunctions.RHTower.LandauShadowNoGo` | `formal/GaloisForLFunctions/RHTower/LandauShadowNoGo.lean:140` | Consequence — the two axes force the on-line count to be even.** Combining the two readings of §3: for a configuration off the real axis, symmetric under both involutions, the on-c |
 | theorem | `xi_conj_shadow_blind` | `GaloisForLFunctions.RHTower.LandauShadowNoGo` | `formal/GaloisForLFunctions/RHTower/LandauShadowNoGo.lean:161` | Landau's conjugation shadow is blind to ξ's nontrivial zeros.** For any finite, conjugation-closed set of off-real-axis points, the mod-`2` total vanishing order of ξ is even. The  |
 | theorem | `xi_conj_order_sum_even` | `GaloisForLFunctions.RHTower.LandauShadowNoGo` | `formal/GaloisForLFunctions/RHTower/LandauShadowNoGo.lean:175` | The aggregate total order of any off-axis conjugation-closed ξ configuration is even.** The mod-`2` form of `xi_conj_shadow_blind`: pairing `ρ ↔ ρ̄` forces `2 ∣ Σ ord`. This is agg |
+| theorem | `landau_summability_transfer` | `GaloisForLFunctions.RHTower.LandauSummabilityTransfer` | `formal/GaloisForLFunctions/RHTower/LandauSummabilityTransfer.lean:127` | Landau's summability transfer.** A Dirichlet series with nonnegative real coefficients, convergent at the real point `σ₁` and continued by a function analytic on the closed ball of |
+| theorem | `landau_entire_summable` | `GaloisForLFunctions.RHTower.LandauSummabilityTransfer` | `formal/GaloisForLFunctions/RHTower/LandauSummabilityTransfer.lean:260` | Landau for entire continuations.** A Dirichlet series with nonnegative real coefficients and an entire continuation converges at every real point: no real abscissa survives. Contra |
 | theorem | `sqNorm_hasDerivAt` | `GaloisForLFunctions.RHTower.LargeValues` | `formal/GaloisForLFunctions/RHTower/LargeValues.lean:25` | The derivative of `t ↦ ‖f t‖²` is `2⟪f x, f' x⟫_ℝ`. |
 | theorem | `abs_sqNorm_deriv_le` | `GaloisForLFunctions.RHTower.LargeValues` | `formal/GaloisForLFunctions/RHTower/LargeValues.lean:36` | The derivative of `‖f‖²` is bounded in absolute value by `2‖f‖‖f'‖`. |
 | theorem | `two_mul_le_div_add_mul` | `GaloisForLFunctions.RHTower.LargeValues` | `formal/GaloisForLFunctions/RHTower/LargeValues.lean:43` | AM–GM split.** For `η > 0` and `a, b ≥ 0`, `2ab ≤ a²/η + η b²` (equivalently `0 ≤ (a − ηb)²/η`). This absorbs the Sobolev cross term into the two `L²` masses. |
@@ -11267,6 +11275,21 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `not_hasEigenvalue_one_soninAlternatingBlock_of_inf_eq_bot` | `GaloisForLFunctions.RHTower.SoninAlternatingBlockStrict` | `formal/GaloisForLFunctions/RHTower/SoninAlternatingBlockStrict.lean:67` | If the two forbidden subspaces have trivial intersection, the alternating block has no eigenvalue one. |
 | theorem | `norm_soninAlternatingBlock_lt_one_of_compact_of_not_eigenvalue_one` | `GaloisForLFunctions.RHTower.SoninAlternatingBlockStrict` | `formal/GaloisForLFunctions/RHTower/SoninAlternatingBlockStrict.lean:94` | A compact alternating block without eigenvalue one is a strict contraction. |
 | theorem | `norm_soninAlternatingBlock_lt_one_of_compact_of_inf_eq_bot` | `GaloisForLFunctions.RHTower.SoninAlternatingBlockStrict` | `formal/GaloisForLFunctions/RHTower/SoninAlternatingBlockStrict.lean:141` | Compactness plus trivial intersection makes the alternating block a strict contraction. |
+| def | `centralPhysicalForbidden` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:15` | import GaloisForLFunctions.RHTower.SoninAlternatingBlockStrict import GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact import GaloisForLFunctions.RHTower.SoninL2ShellNull non |
+| def | `centralFourierForbidden` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:23` |  |
+| def | `centralSoninCarrier` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:31` |  |
+| theorem | `centralSoninCarrier_isClosed` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:34` |  |
+| def | `centralSoninProjection` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:58` |  |
+| theorem | `centralSoninProjection_eq_soninIntersectionProjection` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:61` |  |
+| def | `positiveEulerDilationOperator` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:66` | The positive one-prime Euler weight in the physical dilation model. |
+| theorem | `isCompactOperator_centralFourierPhysicalBlock` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:72` | The Fourier-forbidden/physical-forbidden two-factor block is compact. |
+| theorem | `norm_centralSoninAlternatingBlock_lt_one` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:87` | The central time-frequency alternating block is a strict contraction. |
+| theorem | `centralSoninProjection_evenShellVector_tendsto` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:97` | The central Sonin projection asymptotically fixes the explicit symmetric shell sequence. |
+| theorem | `centralPhysicalProjection_dilationSum_correctedShell_tendsto` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:127` | After Sonin correction, the dilation sum still crosses the physical cutoff with norm tending to one. |
+| theorem | `centralSoninDilationCorner_not_isCompactOperator` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:166` | Concrete fixed-cutoff Sonin Euler corner theorem.** For every positive cutoff and every scale `p > 1`, the lower corner of `U_p + U_p*` across the common physical/Fourier Sonin cut |
+| theorem | `centralPositiveEulerCorner_eq_smul` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:203` | The constant term of the positive Euler weight cannot cross the Sonin projection, so its corner is exactly the nonzero Euler coefficient times the dilation corner. |
+| theorem | `centralPositiveEulerCorner_not_isCompactOperator` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:217` | The concrete one-prime positive Euler metric corner is noncompact for every positive cutoff and every scale `p > 1`. |
+| theorem | `centralPrimePositiveEulerCorner_not_isCompactOperator` | `GaloisForLFunctions.RHTower.SoninEulerCornerConcrete` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerConcrete.lean:241` | Prime-indexed specialization of the concrete positive Euler corner theorem. |
 | theorem | `Orthonormal.weakly_tendsto_zero` | `GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerNoncompact.lean:41` | An orthonormal sequence in a Hilbert space is weakly null. |
 | theorem | `weakly_tendsto_zero_of_norm_sub_tendsto_zero` | `GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerNoncompact.lean:57` | A norm-null perturbation of a weakly null sequence remains weakly null. |
 | theorem | `not_isCompactOperator_of_weakly_tendsto_zero_of_image_norm_ge` | `GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerNoncompact.lean:73` | A bounded weakly null sequence whose image stays uniformly away from zero certifies that an operator is not compact. |
@@ -11282,84 +11305,131 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | def | `conjugateOperator` | `GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerNoncompact.lean:321` | Pull an operator back through a continuous linear equivalence. |
 | theorem | `isCompactOperator_conjugateOperator_iff` | `GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerNoncompact.lean:325` | Compactness is invariant under continuous-linear conjugacy. |
 | theorem | `transported_corner_not_isCompactOperator` | `GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact` | `formal/GaloisForLFunctions/RHTower/SoninEulerCornerNoncompact.lean:336` | An explicit unitary/continuous-linear pullback transfers noncompactness back to the metric corner on the Hardy--Titchmarsh carrier. |
-| abbrev | `SoninL2` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:29` |  |
-| abbrev | `indicatorCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:33` | /- Concrete fixed-cutoff Sonin infrastructure on complex L²(ℝ). This file contains no analytic hypotheses. It constructs the physical indicator cutoff and proves that it is an orth |
-| theorem | `indicatorCutoff_ae` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:36` |  |
-| theorem | `indicatorCutoff_idempotent` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:40` |  |
-| theorem | `indicatorCutoff_symmetric` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:53` |  |
-| theorem | `indicatorCutoff_isStarProjection` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:64` |  |
-| def | `physicalForbidden` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:71` |  |
-| theorem | `indicatorCutoff_eq_physicalForbidden_starProjection` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:79` |  |
-| def | `fourierUnitary` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:86` |  |
-| def | `fourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:89` |  |
-| theorem | `fourierCutoff_idempotent` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:97` |  |
-| theorem | `fourierCutoff_symmetric` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:111` |  |
-| theorem | `fourierCutoff_isStarProjection` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:126` |  |
-| def | `fourierForbidden` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:133` |  |
-| theorem | `fourierCutoff_eq_fourierForbidden_starProjection` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:141` |  |
-| theorem | `fullToRestrictedTimeBandFourier_coeFn_sonin` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:149` | /- Concrete fixed-cutoff Sonin infrastructure on complex L²(ℝ). This file contains no analytic hypotheses. It constructs the physical indicator cutoff and proves that it is an orth |
-| theorem | `fullTimeBandFourier_coeFn_sonin` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:171` |  |
-| theorem | `integrable_indicatorCutoff_Icc` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:193` |  |
-| theorem | `l1Fourier_indicatorCutoff_Icc_eq_setIntegral` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:200` |  |
-| def | `cutoffFourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:223` |  |
-| theorem | `fullTimeBandFourier_eq_cutoffFourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:228` |  |
-| theorem | `isCompactOperator_cutoffFourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:250` |  |
-| def | `closedEvenShell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:256` |  |
-| theorem | `measurableSet_closedEvenShell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:259` |  |
-| theorem | `indicatorCutoff_closedEvenShell_eq_add` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:262` |  |
-| def | `shellCutoffFourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:292` |  |
-| theorem | `shellCutoffFourierCutoff_eq_add` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:297` |  |
-| theorem | `isCompactOperator_shellCutoffFourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:304` |  |
-| theorem | `realMul_quasiMeasurePreserving` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:311` |  |
-| theorem | `memLp_comp_mul` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:316` |  |
-| def | `rawDilationAux` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:328` |  |
-| theorem | `rawDilationAux_ae` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:331` |  |
-| def | `rawDilationLinear` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:335` |  |
-| theorem | `eLpNorm_rawDilation` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:360` |  |
-| theorem | `norm_rawDilationAux` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:378` |  |
-| def | `dilation` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:391` |  |
-| theorem | `dilation_ae` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:401` |  |
-| theorem | `sqrt_mul_sqrt_inv` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:412` |  |
-| def | `dilationUnitary` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:440` |  |
-| def | `dilationCLM` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:452` |  |
-| theorem | `adjoint_dilationCLM` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:458` |  |
-| def | `normalizedIndicator` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:464` |  |
-| theorem | `normalizedIndicator_ae` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:468` |  |
-| theorem | `norm_normalizedIndicator` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:483` |  |
-| theorem | `inner_normalizedIndicator_eq_zero` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:495` |  |
-| theorem | `orthonormal_normalizedIndicator` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:504` |  |
-| def | `shellLeft` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:515` |  |
-| def | `shellRight` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:518` |  |
-| def | `shellCell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:521` |  |
-| def | `evenShellCell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:524` |  |
-| theorem | `shellLeft_lt_shellRight` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:527` |  |
-| theorem | `shellLeft_pos` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:537` |  |
-| theorem | `lt_shellLeft` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:543` |  |
-| theorem | `shellRight_lt` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:548` |  |
-| theorem | `shellCell_disjoint_of_lt` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:560` |  |
-| theorem | `shellCell_pairwiseDisjoint` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:573` |  |
-| theorem | `evenShellCell_pairwiseDisjoint` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:580` |  |
-| theorem | `measurableSet_evenShellCell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:586` |  |
-| theorem | `shellCell_subset_evenShellCell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:590` |  |
-| theorem | `evenShellCell_subset_Icc` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:597` |  |
-| theorem | `evenShellCell_measure_ne_top` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:603` |  |
-| theorem | `evenShellCell_measureReal_pos` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:607` |  |
-| def | `evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:621` |  |
-| theorem | `evenShellVector_orthonormal` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:625` |  |
-| theorem | `indicatorCutoff_dilation_normalizedIndicator_eq_self` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:631` |  |
-| theorem | `indicatorCutoff_dilation_normalizedIndicator_eq_zero` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:654` |  |
-| theorem | `inward_shell_preimage_subset` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:678` |  |
-| theorem | `outward_shell_preimage_disjoint` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:689` |  |
-| theorem | `physicalCutoff_evenShellCell_disjoint` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:707` |  |
-| theorem | `evenShellCell_subset_closedEvenShell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:717` |  |
-| theorem | `shellCutoff_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:736` |  |
-| theorem | `physicalCutoff_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:761` |  |
-| theorem | `evenShellVector_mem_physicalForbidden_orthogonal` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:785` |  |
-| theorem | `physicalCutoff_inward_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:794` |  |
-| theorem | `physicalCutoff_outward_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:802` |  |
-| def | `dilationSum` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:810` |  |
-| theorem | `physicalCutoff_dilationSum_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:819` |  |
-| theorem | `norm_physicalCutoff_dilationSum_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:827` |  |
+| def | `centralInterval` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:19` | The symmetric central interval used by the fixed Sonin cutoff. |
+| theorem | `measurableSet_centralInterval` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:21` |  |
+| theorem | `neg_mem_centralInterval_iff` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:24` |  |
+| theorem | `l2Reflection_ae` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:31` | The symmetric central interval used by the fixed Sonin cutoff. def centralInterval (a : ℝ) : Set ℝ := Set.Icc (-a) a theorem measurableSet_centralInterval (a : ℝ) : MeasurableSet ( |
+| theorem | `l2Reflection_symmetric` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:45` |  |
+| def | `evenProjection` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:53` |  |
+| theorem | `evenProjection_idempotent` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:63` |  |
+| theorem | `evenProjection_symmetric` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:71` |  |
+| theorem | `evenProjection_isStarProjection` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:76` |  |
+| def | `evenSubspace` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:81` |  |
+| theorem | `evenProjection_eq_starProjection` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:91` |  |
+| theorem | `mem_evenSubspace_iff` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:95` |  |
+| theorem | `fourierUnitary_l2Reflection` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:106` |  |
+| theorem | `l2Reflection_indicatorCutoff_central` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:111` | Reflection commutes with the symmetric physical cutoff. |
+| theorem | `l2Reflection_fourierCutoff_central` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:138` | Reflection commutes with the symmetric Fourier cutoff. |
+| theorem | `indicatorCutoff_central_mapsTo_evenSubspace` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:147` |  |
+| theorem | `fourierCutoff_central_mapsTo_evenSubspace` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:154` |  |
+| def | `evenIndicatorCutoff` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:161` |  |
+| def | `evenFourierCutoff` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:169` |  |
+| theorem | `l2Reflection_dilation` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:178` | Normalized dilation commutes with reflection. |
+| theorem | `dilation_mapsTo_evenSubspace` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:196` |  |
+| theorem | `l2Reflection_dilationSum` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:202` |  |
+| theorem | `dilationSum_mapsTo_evenSubspace` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:207` |  |
+| def | `evenDilationSum` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:213` |  |
+| theorem | `l2Reflection_mem_centralPhysicalKernel` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:222` | Normalized dilation commutes with reflection. theorem l2Reflection_dilation (a : ℝ) (ha : 0 < a) (f : SoninL2) : l2Reflection (dilation a ha f) = dilation a ha (l2Reflection f) :=  |
+| theorem | `l2Reflection_mem_centralFourierKernel` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:237` |  |
+| theorem | `l2Reflection_mem_centralSoninCarrier` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:252` |  |
+| theorem | `l2Reflection_mem_centralSoninCarrier_orthogonal` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:257` |  |
+| theorem | `l2Reflection_centralSoninProjection` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:266` | The actual common-kernel projection commutes with reflection. |
+| theorem | `centralSoninProjection_mapsTo_evenSubspace` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:276` |  |
+| def | `evenCentralSoninCarrier` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:283` | The Sonin carrier internal to `L²(ℝ)^ev`. |
+| theorem | `evenCentralSoninCarrier_isClosed` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:286` |  |
+| def | `evenCentralSoninProjection` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:298` | The common-kernel projection restricted to the even Hilbert carrier. |
+| theorem | `evenCentralSoninProjection_eq_starProjection` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:307` | The restriction of the ambient common-kernel projection is exactly the orthogonal projection onto the even Sonin carrier. |
+| theorem | `centralSoninDilationCorner_mapsTo_evenSubspace` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:324` | The restriction of the ambient common-kernel projection is exactly the orthogonal projection onto the even Sonin carrier. theorem evenCentralSoninProjection_eq_starProjection (a :  |
+| def | `evenCentralSoninDilationCorner` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:340` | The fixed-cutoff one-prime dilation corner acting on `L²(ℝ)^ev`. |
+| theorem | `l2Reflection_evenShellVector` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:358` |  |
+| theorem | `evenShellVector_mem_evenSubspace` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:382` |  |
+| def | `evenShellVectorEven` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:388` | Symmetric shell indicators, regarded as vectors in the even carrier. |
+| theorem | `evenShellVectorEven_orthonormal` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:396` |  |
+| theorem | `evenCentralSoninDilationCorner_eq_crossBoundary` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:403` | The ambiently restricted dilation corner is the intrinsic lower corner of the restricted Sonin projection and restricted dilation sum. |
+| theorem | `evenCentralSoninDilationCorner_not_isCompactOperator` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:415` | Even-carrier Sonin corner theorem.** The one-prime dilation corner is noncompact already on `L²(ℝ)^ev`; its certificate is the corrected symmetric shell sequence internal to that c |
+| theorem | `centralPositiveEulerCorner_mapsTo_evenSubspace` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:486` | Even-carrier Sonin corner theorem.** The one-prime dilation corner is noncompact already on `L²(ℝ)^ev`; its certificate is the corrected symmetric shell sequence internal to that c |
+| def | `evenCentralPositiveEulerCorner` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:498` | The fixed-cutoff positive one-prime Euler corner acting on `L²(ℝ)^ev`. |
+| theorem | `evenCentralPositiveEulerCorner_eq_smul` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:512` | The metric constant cannot cross the restricted Sonin projection: the positive Euler corner is exactly the nonzero Euler coefficient times the restricted dilation corner. |
+| theorem | `evenCentralPositiveEulerCorner_not_isCompactOperator` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:525` | The positive one-prime Euler corner is noncompact already after restriction to the actual even Sonin carrier. |
+| theorem | `evenCentralPrimePositiveEulerCorner_not_isCompactOperator` | `GaloisForLFunctions.RHTower.SoninEvenCarrier` | `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean:547` | Prime-indexed specialization of the even positive Euler corner theorem. |
+| abbrev | `SoninL2` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:28` |  |
+| abbrev | `indicatorCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:32` | /- Concrete fixed-cutoff Sonin infrastructure on complex L²(ℝ). This file contains no analytic hypotheses. It constructs the physical indicator cutoff and its Fourier conjugate as  |
+| theorem | `indicatorCutoff_ae` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:35` |  |
+| theorem | `indicatorCutoff_idempotent` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:39` |  |
+| theorem | `indicatorCutoff_symmetric` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:52` |  |
+| theorem | `indicatorCutoff_isStarProjection` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:63` |  |
+| def | `physicalForbidden` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:70` |  |
+| theorem | `indicatorCutoff_eq_physicalForbidden_starProjection` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:78` |  |
+| def | `fourierUnitary` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:85` |  |
+| def | `fourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:88` |  |
+| theorem | `fourierCutoff_idempotent` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:96` |  |
+| theorem | `fourierCutoff_symmetric` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:110` |  |
+| theorem | `fourierCutoff_isStarProjection` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:125` |  |
+| def | `fourierForbidden` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:132` |  |
+| theorem | `fourierCutoff_eq_fourierForbidden_starProjection` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:140` |  |
+| theorem | `fullToRestrictedTimeBandFourier_coeFn_sonin` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:148` | /- Concrete fixed-cutoff Sonin infrastructure on complex L²(ℝ). This file contains no analytic hypotheses. It constructs the physical indicator cutoff and its Fourier conjugate as  |
+| theorem | `fullTimeBandFourier_coeFn_sonin` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:170` |  |
+| theorem | `integrable_indicatorCutoff_Icc` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:192` |  |
+| theorem | `l1Fourier_indicatorCutoff_Icc_eq_setIntegral` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:199` |  |
+| def | `cutoffFourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:222` |  |
+| theorem | `fullTimeBandFourier_eq_cutoffFourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:227` |  |
+| theorem | `isCompactOperator_cutoffFourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:249` |  |
+| def | `closedEvenShell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:255` |  |
+| theorem | `measurableSet_closedEvenShell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:258` |  |
+| theorem | `indicatorCutoff_closedEvenShell_eq_add` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:261` |  |
+| def | `shellCutoffFourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:291` |  |
+| theorem | `shellCutoffFourierCutoff_eq_add` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:296` |  |
+| theorem | `isCompactOperator_shellCutoffFourierCutoff` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:303` |  |
+| theorem | `realMul_quasiMeasurePreserving` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:310` |  |
+| theorem | `memLp_comp_mul` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:315` |  |
+| def | `rawDilationAux` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:327` |  |
+| theorem | `rawDilationAux_ae` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:330` |  |
+| def | `rawDilationLinear` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:334` |  |
+| theorem | `eLpNorm_rawDilation` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:359` |  |
+| theorem | `norm_rawDilationAux` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:377` |  |
+| def | `dilation` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:390` |  |
+| theorem | `dilation_ae` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:400` |  |
+| theorem | `sqrt_mul_sqrt_inv` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:411` |  |
+| def | `dilationUnitary` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:439` |  |
+| def | `dilationCLM` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:451` |  |
+| theorem | `adjoint_dilationCLM` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:457` |  |
+| def | `normalizedIndicator` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:463` |  |
+| theorem | `normalizedIndicator_ae` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:467` |  |
+| theorem | `norm_normalizedIndicator` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:482` |  |
+| theorem | `inner_normalizedIndicator_eq_zero` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:494` |  |
+| theorem | `orthonormal_normalizedIndicator` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:503` |  |
+| def | `shellLeft` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:514` |  |
+| def | `shellRight` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:517` |  |
+| def | `shellCell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:520` |  |
+| def | `evenShellCell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:523` |  |
+| theorem | `shellLeft_lt_shellRight` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:526` |  |
+| theorem | `shellLeft_pos` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:536` |  |
+| theorem | `lt_shellLeft` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:542` |  |
+| theorem | `shellRight_lt` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:547` |  |
+| theorem | `shellCell_disjoint_of_lt` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:559` |  |
+| theorem | `shellCell_pairwiseDisjoint` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:572` |  |
+| theorem | `evenShellCell_pairwiseDisjoint` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:579` |  |
+| theorem | `measurableSet_evenShellCell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:585` |  |
+| theorem | `shellCell_subset_evenShellCell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:589` |  |
+| theorem | `evenShellCell_subset_Icc` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:596` |  |
+| theorem | `evenShellCell_measure_ne_top` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:602` |  |
+| theorem | `evenShellCell_measureReal_pos` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:606` |  |
+| def | `evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:620` |  |
+| theorem | `evenShellVector_orthonormal` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:624` |  |
+| theorem | `indicatorCutoff_dilation_normalizedIndicator_eq_self` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:630` |  |
+| theorem | `indicatorCutoff_dilation_normalizedIndicator_eq_zero` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:653` |  |
+| theorem | `inward_shell_preimage_subset` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:677` |  |
+| theorem | `outward_shell_preimage_disjoint` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:688` |  |
+| theorem | `physicalCutoff_evenShellCell_disjoint` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:706` |  |
+| theorem | `evenShellCell_subset_closedEvenShell` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:716` |  |
+| theorem | `shellCutoff_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:735` |  |
+| theorem | `physicalCutoff_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:760` |  |
+| theorem | `evenShellVector_mem_physicalForbidden_orthogonal` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:784` |  |
+| theorem | `physicalCutoff_inward_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:793` |  |
+| theorem | `physicalCutoff_outward_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:801` |  |
+| def | `dilationSum` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:809` |  |
+| theorem | `physicalCutoff_dilationSum_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:818` |  |
+| theorem | `norm_physicalCutoff_dilationSum_evenShellVector` | `GaloisForLFunctions.RHTower.SoninL2Model` | `formal/GaloisForLFunctions/RHTower/SoninL2Model.lean:826` |  |
 | theorem | `physicalForbidden_inf_fourierForbidden_eq_bot` | `GaloisForLFunctions.RHTower.SoninL2ShellNull` | `formal/GaloisForLFunctions/RHTower/SoninL2ShellNull.lean:21` | The physical and Fourier forbidden subspaces for a bounded symmetric interval have trivial intersection. |
 | theorem | `fourierForbidden_starProjection_evenShellVector_tendsto_zero` | `GaloisForLFunctions.RHTower.SoninL2ShellNull` | `formal/GaloisForLFunctions/RHTower/SoninL2ShellNull.lean:58` | The Fourier-forbidden projection is norm-null on the explicit orthonormal symmetric shell sequence. |
 | def | `soninAlternatingBlock` | `GaloisForLFunctions.RHTower.SoninProjectionCorrection` | `formal/GaloisForLFunctions/RHTower/SoninProjectionCorrection.lean:26` | The forbidden-forbidden compression associated to two orthogonal constraints. |
@@ -11861,6 +11931,25 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | def | `thirdMomentR` | `GaloisForLFunctions.RHTower.ThirdMomentResonance` | `formal/GaloisForLFunctions/RHTower/ThirdMomentResonance.lean:214` | The resonance sum of real coefficients — the real third moment of a real field. |
 | theorem | `thirdMoment_ofReal` | `GaloisForLFunctions.RHTower.ThirdMomentResonance` | `formal/GaloisForLFunctions/RHTower/ThirdMomentResonance.lean:218` | For real coefficients, the third moment is the real resonance sum (cast to `ℂ`). |
 | theorem | `thirdMomentR_pos_of_tower` | `GaloisForLFunctions.RHTower.ThirdMomentResonance` | `formal/GaloisForLFunctions/RHTower/ThirdMomentResonance.lean:234` | General multiplicative tower — strict positivity, no truncation assumption.** A real field with nonnegative Fourier coefficients whose spectrum contains the fundamental `1` and the |
+| def | `SuperpolynomialDecayAtZero` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:43` | Superpolynomial decay at the positive side of zero.** The kernel satisfies every real-power big-O bound needed by the Mellin strip theorem. |
+| def | `HasAllOrderZeroBound` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:48` | Concrete all-order zero bounds.** For every natural order `m`, the kernel is bounded by `C_m x^m` throughout `(0,1]`. This is the form supplied by finite Prouhet products. |
+| theorem | `HasAllOrderZeroBound.superpolynomialDecayAtZero` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:54` | Natural all-order bounds discharge every real Mellin exponent.** Given a requested real exponent `-b`, choose a natural `m >= -b`; on `(0,1]`, increasing the exponent decreases the |
+| def | `IsMellinFlatKernel` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:78` | A globally Mellin-flat kernel.** It is locally integrable on `(0,infinity)`, decays exponentially at infinity, and faster than every power at zero. |
+| theorem | `IsMellinFlatKernel.mellinConvergent` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:86` | A Mellin-flat kernel is Mellin-convergent at every complex parameter.** At `s`, take the zero exponent `b = Re(s)-1`; superpolynomial decay supplies the strict inequality required  |
+| theorem | `IsMellinFlatKernel.mellin_differentiable` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:94` | The Mellin transform of a Mellin-flat kernel is differentiable on the whole plane.** This removes the pointwise strip hypotheses from `mellin_differentiableAt_of_isBigO_rpow_exp`. |
+| theorem | `IsMellinFlatKernel.mellin_analyticOnNhd` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:103` | Analytic form of the entire Mellin conclusion.** |
+| def | `thueMorseFiniteKernel` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:112` | The finite Thue--Morse Mellin kernel `exp(-x) * prod_{k<m}(1-exp(-2^k x))`. |
+| def | `thueMorseFlatConstant` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:117` | The exact coefficient accumulated by the first `m` binary scales: `prod_{k<m} 2^k = 2^(m(m-1)/2)`. |
+| lemma | `one_sub_exp_neg_mul_nonneg` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:121` | Each finite binary factor is nonnegative on the positive real axis. |
+| lemma | `one_sub_exp_neg_mul_le` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:128` | The elementary flatness inequality `1-exp(-a*x) <= a*x` for `a,x >= 0`. |
+| theorem | `thueMorseFiniteKernel_nonneg` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:134` | The finite Thue--Morse kernel is nonnegative on the positive real axis. |
+| theorem | `prod_two_pow_mul` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:142` | The product of the binary linear bounds has the exact closed form `prod_{k<m}(2^k*x) = 2^(m(m-1)/2)*x^m`. |
+| theorem | `thueMorseFiniteKernel_flat_bound` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:149` | Exact finite binary-product flatness.** Every initial segment of length `m` contributes one power of `x`, and the accumulated scale is exactly `2^(m(m-1)/2)`. |
+| def | `IsThueMorseKernelBound` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:173` | Binary-product domination interface.** A candidate infinite kernel `K` is bounded in modulus by every finite Thue--Morse product on `(0,1]`. The actual positive infinite product ha |
+| theorem | `IsThueMorseKernelBound.hasAllOrderZeroBound` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:177` | Binary-product domination supplies natural bounds of every order.** |
+| theorem | `IsThueMorseKernelBound.superpolynomialDecayAtZero` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:185` | Binary-product domination discharges every real zero-side Mellin exponent.** |
+| theorem | `IsThueMorseKernelBound.isMellinFlatKernel` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:192` | Binary-product domination plus the two ordinary analytic side conditions constructs a Mellin-flat kernel.** The all-real-exponent hypothesis is derived, not supplied by the caller. |
+| theorem | `mellin_analyticOnNhd_of_thueMorseKernelBound` | `GaloisForLFunctions.RHTower.ThueMorseMellinFlatness` | `formal/GaloisForLFunctions/RHTower/ThueMorseMellinFlatness.lean:202` | Capstone: the binary constraint makes the Mellin transform analytic on the whole plane.** The caller supplies only local integrability and one exponential tail; the entire zero-sid |
 | theorem | `anchorSweep_zero` | `GaloisForLFunctions.RHTower.TiltSweepDiscriminator` | `formal/GaloisForLFunctions/RHTower/TiltSweepDiscriminator.lean:39` |  |
 | theorem | `anchorSweep_one` | `GaloisForLFunctions.RHTower.TiltSweepDiscriminator` | `formal/GaloisForLFunctions/RHTower/TiltSweepDiscriminator.lean:44` | At `t = 1` the sweep is the anchor itself. |
 | theorem | `anchorSweep_ne_zero` | `GaloisForLFunctions.RHTower.TiltSweepDiscriminator` | `formal/GaloisForLFunctions/RHTower/TiltSweepDiscriminator.lean:49` |  |

@@ -1027,3 +1027,485 @@ theorem discrete_crossing_duality {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) �
   · exact Or.inr (SteinhausWalk.free_pipeline Mk h)
 
 end RHTower
+
+/-!
+## Stage C — the continuous rectangle crossing duality
+
+The compact clopen separation (Stage A) splits `K ∩ Rect` into a bottom family missing the top
+edge and a top family missing the bottom edge, at three positive separation distances.  A grid of
+mesh below an eighth of the least separation marks the cells meeting the split; a marked king
+chain crossing bottom-to-top is impossible — king-adjacent cells are too close for the chain to
+change family, and a single family cannot span its forbidden edge — so the discrete Steinhaus
+duality produces a free rook chain crossing left-to-right, whose cell centres assemble into a
+polygonal path through `Rect ∖ K`.
+-/
+
+namespace RHTower
+
+namespace SteinhausWalk
+
+open Relation Metric Set
+
+/-- Convex-combination coordinate bound. -/
+theorem comb_bounds {a b t : ℝ} (h0 : 0 ≤ t) (h1 : t ≤ 1) :
+    min a b ≤ (1 - t) * a + t * b ∧ (1 - t) * a + t * b ≤ max a b := by
+  rcases le_total a b with hab | hab
+  · rw [min_eq_left hab, max_eq_right hab]
+    constructor <;> nlinarith
+  · rw [min_eq_right hab, max_eq_left hab]
+    constructor <;> nlinarith
+
+/-- Coordinate bounds along a real segment in `ℂ`. -/
+theorem segment_coord_bounds {p q z : ℂ} (hz : z ∈ segment ℝ p q) :
+    (min p.re q.re ≤ z.re ∧ z.re ≤ max p.re q.re) ∧
+      (min p.im q.im ≤ z.im ∧ z.im ≤ max p.im q.im) := by
+  rw [segment_eq_image] at hz
+  obtain ⟨t, ht, rfl⟩ := hz
+  have hre : ((1 - t) • p + t • q).re = (1 - t) * p.re + t * q.re := by
+    simp [Complex.real_smul, Complex.add_re, Complex.mul_re, Complex.ofReal_re,
+      Complex.ofReal_im]
+  have him : ((1 - t) • p + t • q).im = (1 - t) * p.im + t * q.im := by
+    simp [Complex.real_smul, Complex.add_im, Complex.mul_im, Complex.ofReal_re,
+      Complex.ofReal_im]
+  rw [hre, him]
+  exact ⟨comb_bounds ht.1 ht.2, comb_bounds ht.1 ht.2⟩
+
+/-- A segment whose endpoints lie in an axis-aligned box stays in the box. -/
+theorem segment_in_box {p q : ℂ} {rlo rhi ilo ihi : ℝ}
+    (hp : rlo ≤ p.re ∧ p.re ≤ rhi ∧ ilo ≤ p.im ∧ p.im ≤ ihi)
+    (hq : rlo ≤ q.re ∧ q.re ≤ rhi ∧ ilo ≤ q.im ∧ q.im ≤ ihi) :
+    ∀ z ∈ segment ℝ p q, rlo ≤ z.re ∧ z.re ≤ rhi ∧ ilo ≤ z.im ∧ z.im ≤ ihi := by
+  intro z hz
+  obtain ⟨⟨hr1, hr2⟩, hi1, hi2⟩ := segment_coord_bounds hz
+  refine ⟨le_trans (le_min hp.1 hq.1) hr1, le_trans hr2 (max_le hp.2.1 hq.2.1),
+    le_trans (le_min hp.2.2.1 hq.2.2.1) hi1, le_trans hi2 (max_le hp.2.2.2 hq.2.2.2)⟩
+
+/-- Positive uniform separation between a nonempty compact set and a disjoint nonempty closed
+set. -/
+theorem exists_uniform_separation {s t : Set ℂ} (hs : IsCompact s) (ht : IsClosed t)
+    (hst : Disjoint s t) (hsne : s.Nonempty) (htne : t.Nonempty) :
+    ∃ δ > 0, ∀ p ∈ s, ∀ q ∈ t, δ ≤ dist p q := by
+  obtain ⟨p₀, hp₀, hmin⟩ :=
+    hs.exists_isMinOn hsne (Metric.continuous_infDist_pt t).continuousOn
+  refine ⟨Metric.infDist p₀ t, ?_, ?_⟩
+  · rcases lt_or_eq_of_le (Metric.infDist_nonneg (x := p₀) (s := t)) with h | h
+    · exact h
+    · exfalso
+      have : p₀ ∈ t := (ht.mem_iff_infDist_zero htne).mpr h.symm
+      exact Set.disjoint_left.mp hst hp₀ this
+  · intro p hp q hq
+    exact le_trans (hmin hp) (Metric.infDist_le_dist_of_mem hq)
+
+/-- Distance is bounded by the sum of coordinate distances. -/
+theorem dist_le_coord {p q : ℂ} : dist p q ≤ |p.re - q.re| + |p.im - q.im| := by
+  rw [Complex.dist_eq]
+  calc ‖p - q‖ ≤ |(p - q).re| + |(p - q).im| := Complex.norm_le_abs_re_add_abs_im _
+    _ = |p.re - q.re| + |p.im - q.im| := by rw [Complex.sub_re, Complex.sub_im]
+
+end SteinhausWalk
+
+end RHTower
+
+namespace RHTower
+
+open SteinhausWalk Metric Set
+
+set_option maxHeartbeats 1600000 in
+/-- **Stage C — rectangle crossing duality.**  For a closed set `K` and a closed rectangle
+`[x₀,x₁] × [y₀,y₁]`: either `K` meets the rectangle in a connected *curtain* joining the bottom
+edge to the top edge, or the rectangle carries a polygonal path from its left edge to its right
+edge whose every segment avoids `K`.  Mechanism: the Stage-A compact clopen separation splits
+`K ∩ Rect` into a bottom family missing the top edge and a top family missing the bottom edge; a
+grid of mesh below an eighth of the least separation cannot support a marked king chain crossing
+bottom-to-top (king-adjacent cells are too close for the chain to change family, and one family
+cannot span its forbidden edge), so the discrete Steinhaus duality yields a free rook chain
+crossing left-to-right, and its cell centres assemble into the polygonal path. -/
+theorem rectangle_crossing_duality {x₀ x₁ y₀ y₁ : ℝ} (hx : x₀ < x₁) (hy : y₀ < y₁)
+    {K : Set ℂ} (hK : IsClosed K) :
+    (∃ C : Set ℂ,
+        (∀ z ∈ C, z ∈ K ∧ x₀ ≤ z.re ∧ z.re ≤ x₁ ∧ y₀ ≤ z.im ∧ z.im ≤ y₁) ∧
+        IsConnected C ∧ (∃ p ∈ C, p.im = y₀) ∧ (∃ p ∈ C, p.im = y₁))
+    ∨ (∃ (N : ℕ) (v : Fin (N + 1) → ℂ),
+        (∀ i : Fin N, ∀ z ∈ segment ℝ (v i.castSucc) (v i.succ),
+          (x₀ ≤ z.re ∧ z.re ≤ x₁ ∧ y₀ ≤ z.im ∧ z.im ≤ y₁) ∧ z ∉ K) ∧
+        (v 0).re = x₀ ∧ (v (Fin.last N)).re = x₁) := by
+  classical
+  by_cases hbr : ∃ C : Set ℂ,
+      (∀ z ∈ C, z ∈ K ∧ x₀ ≤ z.re ∧ z.re ≤ x₁ ∧ y₀ ≤ z.im ∧ z.im ≤ y₁) ∧
+      IsConnected C ∧ (∃ p ∈ C, p.im = y₀) ∧ (∃ p ∈ C, p.im = y₁)
+  · exact Or.inl hbr
+  refine Or.inr ?_
+  -- the rectangle and the two horizontal edge lines
+  set Rect : Set ℂ := {z : ℂ | x₀ ≤ z.re ∧ z.re ≤ x₁ ∧ y₀ ≤ z.im ∧ z.im ≤ y₁} with hRect
+  have hRectC : IsCompact Rect := by
+    have he : Rect = Complex.reProdIm (Set.Icc x₀ x₁) (Set.Icc y₀ y₁) := by
+      ext z
+      simp only [hRect, Set.mem_setOf_eq, Complex.mem_reProdIm, Set.mem_Icc]
+      tauto
+    rw [he]
+    exact isCompact_Icc.reProdIm isCompact_Icc
+  have hKC : IsCompact (K ∩ Rect) := hRectC.inter_left hK
+  set Abot : Set ℂ := {z : ℂ | z.im = y₀} with hAbot
+  set Btop : Set ℂ := {z : ℂ | z.im = y₁} with hBtop
+  have hAcl : IsClosed Abot := isClosed_eq Complex.continuous_im continuous_const
+  have hBcl : IsClosed Btop := isClosed_eq Complex.continuous_im continuous_const
+  -- Stage A input: no connected curtain
+  have hnc : ∀ C ⊆ K ∩ Rect, IsConnected C →
+      ¬((C ∩ Abot).Nonempty ∧ (C ∩ Btop).Nonempty) := by
+    rintro C hC hconn ⟨⟨p, hpC, hpA⟩, ⟨q, hqC, hqB⟩⟩
+    refine hbr ⟨C, ?_, hconn, ⟨p, hpC, hpA⟩, ⟨q, hqC, hqB⟩⟩
+    intro z hz
+    obtain ⟨hzK, hzR⟩ := hC hz
+    exact ⟨hzK, hzR.1, hzR.2.1, hzR.2.2.1, hzR.2.2.2⟩
+  obtain ⟨K₁, K₂, hunion, hK₁c, hK₂c, hdisj, hK₁B, hK₂A⟩ :=
+    compact_separation_of_no_joining_component hKC hAcl hBcl hnc
+  -- single-segment path along a K-free horizontal line
+  have mkline : ∀ yc : ℝ, y₀ ≤ yc → yc ≤ y₁ →
+      (∀ z : ℂ, x₀ ≤ z.re → z.re ≤ x₁ → z.im = yc → z ∉ K) →
+      ∃ (N : ℕ) (v : Fin (N + 1) → ℂ),
+        (∀ i : Fin N, ∀ z ∈ segment ℝ (v i.castSucc) (v i.succ),
+          (x₀ ≤ z.re ∧ z.re ≤ x₁ ∧ y₀ ≤ z.im ∧ z.im ≤ y₁) ∧ z ∉ K) ∧
+        (v 0).re = x₀ ∧ (v (Fin.last N)).re = x₁ := by
+    intro yc hyc1 hyc2 hno
+    refine ⟨1, ![⟨x₀, yc⟩, ⟨x₁, yc⟩], ?_, ?_, ?_⟩
+    · intro i z hz
+      have hi : i = 0 := Fin.ext (by omega)
+      subst hi
+      have hz' : z ∈ segment ℝ (⟨x₀, yc⟩ : ℂ) (⟨x₁, yc⟩ : ℂ) := by
+        simpa using hz
+      obtain ⟨⟨hr1, hr2⟩, hi1, hi2⟩ := segment_coord_bounds hz'
+      simp only [min_self, max_self] at hi1 hi2
+      have hzim : z.im = yc := le_antisymm hi2 hi1
+      have hre1 : x₀ ≤ z.re := le_trans (le_min le_rfl hx.le) hr1
+      have hre2 : z.re ≤ x₁ := le_trans hr2 (max_le hx.le le_rfl)
+      exact ⟨⟨hre1, hre2, hzim ▸ hyc1, hzim ▸ hyc2⟩, hno z hre1 hre2 hzim⟩
+    · simp
+    · simp [show Fin.last 1 = 1 from rfl]
+  -- degenerate families: a single horizontal segment suffices
+  by_cases hK1e : K₁ = ∅
+  · refine mkline y₀ le_rfl hy.le ?_
+    intro z hzr1 hzr2 hzim hzK
+    have hzR : z ∈ Rect := by
+      rw [hRect]
+      exact ⟨hzr1, hzr2, by rw [hzim], by rw [hzim]; exact hy.le⟩
+    have hz12 : z ∈ K₁ ∪ K₂ := by rw [← hunion]; exact ⟨hzK, hzR⟩
+    rcases hz12 with h | h
+    · rw [hK1e] at h; exact h
+    · have : z ∈ K₂ ∩ Abot := ⟨h, hzim⟩
+      rw [hK₂A] at this
+      exact this
+  by_cases hK2e : K₂ = ∅
+  · refine mkline y₁ hy.le le_rfl ?_
+    intro z hzr1 hzr2 hzim hzK
+    have hzR : z ∈ Rect := by
+      rw [hRect]
+      exact ⟨hzr1, hzr2, by rw [hzim]; exact hy.le, by rw [hzim]⟩
+    have hz12 : z ∈ K₁ ∪ K₂ := by rw [← hunion]; exact ⟨hzK, hzR⟩
+    rcases hz12 with h | h
+    · have : z ∈ K₁ ∩ Btop := ⟨h, hzim⟩
+      rw [hK₁B] at this
+      exact this
+    · rw [hK2e] at h; exact h
+  have hK1ne : K₁.Nonempty := Set.nonempty_iff_ne_empty.mpr hK1e
+  have hK2ne : K₂.Nonempty := Set.nonempty_iff_ne_empty.mpr hK2e
+  -- the three positive separations and the least of them
+  obtain ⟨δ₁, hδ₁p, hδ₁⟩ :=
+    exists_uniform_separation hK₁c hK₂c.isClosed hdisj hK1ne hK2ne
+  obtain ⟨δ₂, hδ₂p, hδ₂⟩ :=
+    exists_uniform_separation hK₁c hBcl
+      (Set.disjoint_iff_inter_eq_empty.mpr hK₁B) hK1ne ⟨⟨x₀, y₁⟩, rfl⟩
+  obtain ⟨δ₃, hδ₃p, hδ₃⟩ :=
+    exists_uniform_separation hK₂c hAcl
+      (Set.disjoint_iff_inter_eq_empty.mpr hK₂A) hK2ne ⟨⟨x₀, y₀⟩, rfl⟩
+  set δ : ℝ := min δ₁ (min δ₂ δ₃) with hδdef
+  have hδp : 0 < δ := lt_min hδ₁p (lt_min hδ₂p hδ₃p)
+  have hδ1 : δ ≤ δ₁ := min_le_left _ _
+  have hδ2 : δ ≤ δ₂ := le_trans (min_le_right _ _) (min_le_left _ _)
+  have hδ3 : δ ≤ δ₃ := le_trans (min_le_right _ _) (min_le_right _ _)
+  -- mesh
+  obtain ⟨M, hM⟩ := exists_nat_gt (max (x₁ - x₀) (y₁ - y₀) / (δ / 8))
+  have hd8 : (0 : ℝ) < δ / 8 := by positivity
+  have hmesh : ∀ w : ℝ, w ≤ max (x₁ - x₀) (y₁ - y₀) → w / (M + 1) < δ / 8 := by
+    intro w hw
+    rw [div_lt_iff₀ (by positivity)]
+    calc w ≤ max (x₁ - x₀) (y₁ - y₀) := hw
+      _ = max (x₁ - x₀) (y₁ - y₀) / (δ / 8) * (δ / 8) := by field_simp
+      _ < M * (δ / 8) := by
+          exact mul_lt_mul_of_pos_right hM hd8
+      _ ≤ δ / 8 * (M + 1) := by nlinarith [hd8.le]
+  set wx : ℝ := (x₁ - x₀) / (M + 1) with hwxdef
+  set wy : ℝ := (y₁ - y₀) / (M + 1) with hwydef
+  have hwxp : 0 < wx := div_pos (by linarith) (by positivity)
+  have hwyp : 0 < wy := div_pos (by linarith) (by positivity)
+  have hwx8 : wx < δ / 8 := hmesh _ (le_max_left _ _)
+  have hwy8 : wy < δ / 8 := hmesh _ (le_max_right _ _)
+  have hwxs : ((M : ℝ) + 1) * wx = x₁ - x₀ := by
+    rw [hwxdef]; field_simp
+  have hwys : ((M : ℝ) + 1) * wy = y₁ - y₀ := by
+    rw [hwydef]; field_simp
+  -- cells, centres, marking
+  set cell : Fin (M + 1) × Fin (M + 1) → Set ℂ := fun c =>
+    {z : ℂ | x₀ + (c.1.val : ℝ) * wx ≤ z.re ∧ z.re ≤ x₀ + ((c.1.val : ℝ) + 1) * wx ∧
+             y₀ + (c.2.val : ℝ) * wy ≤ z.im ∧ z.im ≤ y₀ + ((c.2.val : ℝ) + 1) * wy}
+    with hcelldef
+  have hcellRect : ∀ c, cell c ⊆ Rect := by
+    intro c z hz
+    obtain ⟨h1, h2, h3, h4⟩ := hz
+    have hc1 : ((c.1.val : ℝ) + 1) ≤ (M : ℝ) + 1 := by
+      have := c.1.is_le
+      exact_mod_cast Nat.succ_le_succ this
+    have hc2 : ((c.2.val : ℝ) + 1) ≤ (M : ℝ) + 1 := by
+      have := c.2.is_le
+      exact_mod_cast Nat.succ_le_succ this
+    rw [hRect]
+    have hb1 : (0 : ℝ) ≤ (c.1.val : ℝ) * wx := mul_nonneg (Nat.cast_nonneg _) hwxp.le
+    have hb2 : ((c.1.val : ℝ) + 1) * wx ≤ ((M : ℝ) + 1) * wx :=
+      mul_le_mul_of_nonneg_right hc1 hwxp.le
+    have hb3 : (0 : ℝ) ≤ (c.2.val : ℝ) * wy := mul_nonneg (Nat.cast_nonneg _) hwyp.le
+    have hb4 : ((c.2.val : ℝ) + 1) * wy ≤ ((M : ℝ) + 1) * wy :=
+      mul_le_mul_of_nonneg_right hc2 hwyp.le
+    exact ⟨by linarith, by linarith [hwxs], by linarith, by linarith [hwys]⟩
+  set Mk : Fin (M + 1) × Fin (M + 1) → Prop := fun c =>
+    ((cell c) ∩ (K₁ ∪ K₂)).Nonempty with hMkdef
+  letI : DecidablePred Mk := Classical.decPred _
+  rcases discrete_crossing_duality Mk with
+    ⟨a, b, hMa, hMb, ha2, hb2, hreach⟩ | ⟨a, b, hFa, hFb, ha1, hb1, hreach⟩
+  · -- a marked king chain bottom-to-top is impossible
+    exfalso
+    have hclose : ∀ {c c' : Fin (M + 1) × Fin (M + 1)}, kingAdj c c' →
+        ∀ p ∈ cell c, ∀ q ∈ cell c', dist p q < δ := by
+      intro c c' hadj p hp q hq
+      obtain ⟨⟨k1, k2⟩, ⟨k3, k4⟩, _⟩ := hadj
+      have hk1 : (c.1.val : ℝ) ≤ (c'.1.val : ℝ) + 1 := by exact_mod_cast k1
+      have hk2 : (c'.1.val : ℝ) ≤ (c.1.val : ℝ) + 1 := by exact_mod_cast k2
+      have hk3 : (c.2.val : ℝ) ≤ (c'.2.val : ℝ) + 1 := by exact_mod_cast k3
+      have hk4 : (c'.2.val : ℝ) ≤ (c.2.val : ℝ) + 1 := by exact_mod_cast k4
+      obtain ⟨hp1, hp2, hp3, hp4⟩ := hp
+      obtain ⟨hq1, hq2, hq3, hq4⟩ := hq
+      have hre : |p.re - q.re| ≤ 2 * wx := by
+        rw [abs_le]
+        constructor <;> nlinarith [hwxp.le]
+      have him : |p.im - q.im| ≤ 2 * wy := by
+        rw [abs_le]
+        constructor <;> nlinarith [hwyp.le]
+      calc dist p q ≤ |p.re - q.re| + |p.im - q.im| := dist_le_coord
+        _ ≤ 2 * wx + 2 * wy := add_le_add hre him
+        _ < δ := by linarith
+    have hmono : ∀ {c c' : Fin (M + 1) × Fin (M + 1)}, kingStep Mk c c' →
+        ((cell c) ∩ K₁).Nonempty → ((cell c') ∩ K₁).Nonempty := by
+      rintro c c' ⟨hadj, _, hMc'⟩ ⟨p, hp, hpK₁⟩
+      obtain ⟨q, hq, hqK⟩ := hMc'
+      rcases hqK with hqK₁ | hqK₂
+      · exact ⟨q, hq, hqK₁⟩
+      · exact absurd (hδ₁ p hpK₁ q hqK₂) (not_le.mpr (lt_of_lt_of_le (hclose hadj p hp q hq) hδ1))
+    have hchain : ∀ {c}, markReach Mk a c →
+        ((cell a) ∩ K₁).Nonempty → ((cell c) ∩ K₁).Nonempty := by
+      intro c h
+      induction h with
+      | refl => exact id
+      | tail h' step ih => intro h0; exact hmono step (ih h0)
+    obtain ⟨p, hp, hpK⟩ := hMa
+    rcases hpK with hpK₁ | hpK₂
+    · -- the bottom family would reach the top edge
+      obtain ⟨q, hq, hqK₁⟩ := hchain hreach ⟨p, hp, hpK₁⟩
+      have hb2v : ((b.2.val : ℝ)) = (M : ℝ) := by rw [hb2]; simp
+      obtain ⟨_, _, hq3, hq4⟩ := hq
+      rw [hb2v] at hq3 hq4
+      have hqB : δ₂ ≤ dist q (⟨q.re, y₁⟩ : ℂ) := hδ₂ q hqK₁ _ rfl
+      have hqd : dist q (⟨q.re, y₁⟩ : ℂ) ≤ wy := by
+        calc dist q _ ≤ |q.re - q.re| + |q.im - y₁| := dist_le_coord
+          _ = |q.im - y₁| := by simp
+          _ ≤ wy := by rw [abs_le]; constructor <;> nlinarith [hwys]
+      linarith [hδ2]
+    · -- the top family would reach the bottom edge
+      have ha2v : ((a.2.val : ℝ)) = 0 := by rw [ha2]; simp
+      obtain ⟨_, _, hp3, hp4⟩ := hp
+      rw [ha2v] at hp3 hp4
+      have hpA : δ₃ ≤ dist p (⟨p.re, y₀⟩ : ℂ) := hδ₃ p hpK₂ _ rfl
+      have hpd : dist p (⟨p.re, y₀⟩ : ℂ) ≤ wy := by
+        calc dist p _ ≤ |p.re - p.re| + |p.im - y₀| := dist_le_coord
+          _ = |p.im - y₀| := by simp
+          _ ≤ wy := by rw [abs_le]; constructor <;> nlinarith
+      linarith [hδ3]
+  · -- the free rook chain assembles into the polygonal path
+    have hfreecell : ∀ {c}, ¬ Mk c → ∀ z ∈ cell c, z ∉ K := by
+      intro c hc z hz hzK
+      exact hc ⟨z, hz, by rw [← hunion]; exact ⟨hzK, hcellRect c hz⟩⟩
+    set ctr : Fin (M + 1) × Fin (M + 1) → ℂ := fun c =>
+      ⟨x₀ + (c.1.val : ℝ) * wx + wx / 2, y₀ + (c.2.val : ℝ) * wy + wy / 2⟩ with hctrdef
+    have hctrre : ∀ c, (ctr c).re = x₀ + (c.1.val : ℝ) * wx + wx / 2 := fun c => by
+      rw [hctrdef]
+    have hctrim : ∀ c, (ctr c).im = y₀ + (c.2.val : ℝ) * wy + wy / 2 := fun c => by
+      rw [hctrdef]
+    have hctrmem : ∀ c, ctr c ∈ cell c := by
+      intro c
+      refine ⟨?_, ?_, ?_, ?_⟩
+      · rw [hctrre]; linarith [hwxp.le]
+      · rw [hctrre]; linarith [hwxp.le]
+      · rw [hctrim]; linarith [hwyp.le]
+      · rw [hctrim]; linarith [hwyp.le]
+    -- a segment between centres of vertically adjacent cells stays in their union
+    have hsegV : ∀ (i j j' : Fin (M + 1)), j.val + 1 = j'.val →
+        ∀ z ∈ segment ℝ (ctr (i, j)) (ctr (i, j')), z ∈ cell (i, j) ∪ cell (i, j') := by
+      intro i j j' hjj z hz
+      obtain ⟨⟨hr1, hr2⟩, hi1, hi2⟩ := segment_coord_bounds hz
+      have hjr : (j'.val : ℝ) = (j.val : ℝ) + 1 := by exact_mod_cast hjj.symm
+      simp only [hctrre] at hr1 hr2
+      simp only [hctrim] at hi1 hi2
+      simp only [hjr] at hi1 hi2
+      simp only [min_self, max_self] at hr1 hr2
+      have hre : z.re = x₀ + (i.val : ℝ) * wx + wx / 2 := le_antisymm hr2 hr1
+      have him1 : y₀ + (j.val : ℝ) * wy + wy / 2 ≤ z.im :=
+        le_trans (le_min le_rfl (by linarith [hwyp.le])) hi1
+      have him2 : z.im ≤ y₀ + ((j.val : ℝ) + 1) * wy + wy / 2 :=
+        le_trans hi2 (max_le (by linarith [hwyp.le]) le_rfl)
+      by_cases hsplit : z.im ≤ y₀ + ((j.val : ℝ) + 1) * wy
+      · exact Or.inl ⟨by rw [hre]; linarith [hwxp.le], by rw [hre]; linarith,
+          by linarith [hwyp.le], hsplit⟩
+      · refine Or.inr ⟨by rw [hre]; linarith [hwxp.le], by rw [hre]; linarith, ?_, ?_⟩
+        · show y₀ + (j'.val : ℝ) * wy ≤ z.im
+          rw [hjr]; linarith
+        · show z.im ≤ y₀ + ((j'.val : ℝ) + 1) * wy
+          rw [hjr]; linarith [hwyp.le]
+    -- and horizontally adjacent cells, mirrored
+    have hsegH : ∀ (i i' j : Fin (M + 1)), i.val + 1 = i'.val →
+        ∀ z ∈ segment ℝ (ctr (i, j)) (ctr (i', j)), z ∈ cell (i, j) ∪ cell (i', j) := by
+      intro i i' j hii z hz
+      obtain ⟨⟨hr1, hr2⟩, hi1, hi2⟩ := segment_coord_bounds hz
+      have hir : (i'.val : ℝ) = (i.val : ℝ) + 1 := by exact_mod_cast hii.symm
+      simp only [hctrim] at hi1 hi2
+      simp only [hctrre] at hr1 hr2
+      simp only [hir] at hr1 hr2
+      simp only [min_self, max_self] at hi1 hi2
+      have him : z.im = y₀ + (j.val : ℝ) * wy + wy / 2 := le_antisymm hi2 hi1
+      have hre1 : x₀ + (i.val : ℝ) * wx + wx / 2 ≤ z.re :=
+        le_trans (le_min le_rfl (by linarith [hwxp.le])) hr1
+      have hre2 : z.re ≤ x₀ + ((i.val : ℝ) + 1) * wx + wx / 2 :=
+        le_trans hr2 (max_le (by linarith [hwxp.le]) le_rfl)
+      by_cases hsplit : z.re ≤ x₀ + ((i.val : ℝ) + 1) * wx
+      · exact Or.inl ⟨by linarith [hwxp.le], hsplit, by rw [him]; linarith [hwyp.le],
+          by rw [him]; linarith⟩
+      · refine Or.inr ⟨?_, ?_, by rw [him]; linarith [hwyp.le], by rw [him]; linarith⟩
+        · show x₀ + (i'.val : ℝ) * wx ≤ z.re
+          rw [hir]; linarith
+        · show z.re ≤ x₀ + ((i'.val : ℝ) + 1) * wx
+          rw [hir]; linarith [hwxp.le]
+    -- segments between centres of rook-adjacent free cells are admissible
+    have hseg : ∀ {c c'}, rookStep Mk c c' →
+        ∀ z ∈ segment ℝ (ctr c) (ctr c'), z ∈ Rect ∧ z ∉ K := by
+      rintro c c' ⟨hadj, hfc, hfc'⟩ z hz
+      have hcup : z ∈ cell c ∪ cell c' := by
+        obtain ⟨ci, cj⟩ := c
+        obtain ⟨ci', cj'⟩ := c'
+        rcases hadj with ⟨hcol, hstep⟩ | ⟨hrow, hstep⟩
+        · simp only at hcol
+          subst hcol
+          rcases hstep with h | h
+          · exact hsegV ci cj cj' h z hz
+          · have := hsegV ci cj' cj h z (by rwa [segment_symm])
+            rwa [Set.union_comm] at this
+        · simp only at hrow
+          subst hrow
+          rcases hstep with h | h
+          · exact hsegH ci ci' cj h z hz
+          · have := hsegH ci' ci cj h z (by rwa [segment_symm])
+            rwa [Set.union_comm] at this
+      rcases hcup with h | h
+      · exact ⟨hcellRect c h, hfreecell hfc z h⟩
+      · exact ⟨hcellRect c' h, hfreecell hfc' z h⟩
+    -- assemble the polygonal path along the chain
+    have ha1v : ((a.1.val : ℝ)) = 0 := by rw [ha1]; simp
+    set lp : ℂ := ⟨x₀, y₀ + (a.2.val : ℝ) * wy + wy / 2⟩ with hlpdef
+    have hlpre : lp.re = x₀ := by rw [hlpdef]
+    have hlpim : lp.im = y₀ + (a.2.val : ℝ) * wy + wy / 2 := by rw [hlpdef]
+    have hlpmem : lp ∈ cell a := by
+      refine ⟨?_, ?_, ?_, ?_⟩
+      · rw [hlpre, ha1v]; norm_num
+      · rw [hlpre, ha1v]; norm_num; linarith [hwxp.le]
+      · rw [hlpim]; linarith [hwyp.le]
+      · rw [hlpim]; linarith [hwyp.le]
+    have builder : ∀ {c}, Relation.ReflTransGen (rookStep Mk) a c →
+        ∃ (N : ℕ) (v : Fin (N + 1) → ℂ),
+          (∀ i : Fin N, ∀ z ∈ segment ℝ (v i.castSucc) (v i.succ), z ∈ Rect ∧ z ∉ K) ∧
+          v 0 = lp ∧ v (Fin.last N) = ctr c := by
+      intro c h
+      induction h with
+      | refl =>
+        refine ⟨1, ![lp, ctr a], ?_, by simp, by simp [show Fin.last 1 = 1 from rfl]⟩
+        intro i z hz
+        have hi : i = 0 := Fin.ext (by omega)
+        subst hi
+        have hz' : z ∈ segment ℝ lp (ctr a) := by simpa using hz
+        have hbox := segment_in_box
+          ⟨hlpmem.1, hlpmem.2.1, hlpmem.2.2.1, hlpmem.2.2.2⟩
+          ⟨(hctrmem a).1, (hctrmem a).2.1, (hctrmem a).2.2.1, (hctrmem a).2.2.2⟩ z hz'
+        have hzc : z ∈ cell a := ⟨hbox.1, hbox.2.1, hbox.2.2.1, hbox.2.2.2⟩
+        exact ⟨hcellRect a hzc, hfreecell hFa z hzc⟩
+      | @tail q c h' step ih =>
+        obtain ⟨N, v, hvseg, hv0, hvlast⟩ := ih
+        refine ⟨N + 1, Fin.snoc v (ctr c), ?_, ?_, ?_⟩
+        · intro i z hz
+          rcases Fin.eq_castSucc_or_eq_last i with ⟨j, rfl⟩ | rfl
+          · have e1 : (Fin.snoc v (ctr c) : Fin (N + 2) → ℂ) (j.castSucc).castSucc = v j.castSucc := by
+              rw [Fin.snoc_castSucc]
+            have e2 : (Fin.snoc v (ctr c) : Fin (N + 2) → ℂ) (j.castSucc).succ = v j.succ := by
+              have hidx : (j.castSucc).succ = (j.succ).castSucc := by
+                ext
+                simp
+              rw [hidx, Fin.snoc_castSucc]
+            rw [e1, e2] at hz
+            exact hvseg j z hz
+          · have e1 : (Fin.snoc v (ctr c) : Fin (N + 2) → ℂ) (Fin.last N).castSucc = v (Fin.last N) := by
+              simp
+            have e2 : (Fin.snoc v (ctr c) : Fin (N + 2) → ℂ) (Fin.last N).succ = ctr c := by
+              rw [Fin.succ_last]
+              simp
+            rw [e1, e2, hvlast] at hz
+            exact hseg step z hz
+        · rw [show (0 : Fin (N + 2)) = Fin.castSucc 0 from (Fin.castSucc_zero).symm,
+            Fin.snoc_castSucc]
+          exact hv0
+        · exact Fin.snoc_last _ _
+    obtain ⟨N, v, hvseg, hv0, hvlast⟩ := builder hreach
+    have hb1v : ((b.1.val : ℝ)) = (M : ℝ) := by rw [hb1]; simp
+    set rp : ℂ := ⟨x₁, y₀ + (b.2.val : ℝ) * wy + wy / 2⟩ with hrpdef
+    have hrpre : rp.re = x₁ := by rw [hrpdef]
+    have hrpim : rp.im = y₀ + (b.2.val : ℝ) * wy + wy / 2 := by rw [hrpdef]
+    have hrpmem : rp ∈ cell b := by
+      refine ⟨?_, ?_, ?_, ?_⟩
+      · rw [hrpre, hb1v]; linarith [hwxs, hwxp.le]
+      · rw [hrpre, hb1v]; linarith [hwxs]
+      · rw [hrpim]; linarith [hwyp.le]
+      · rw [hrpim]; linarith [hwyp.le]
+    refine ⟨N + 1, Fin.snoc v rp, ?_, ?_, ?_⟩
+    · intro i z hz
+      rcases Fin.eq_castSucc_or_eq_last i with ⟨j, rfl⟩ | rfl
+      · have e1 : (Fin.snoc v rp : Fin (N + 2) → ℂ) (j.castSucc).castSucc = v j.castSucc := by
+          rw [Fin.snoc_castSucc]
+        have e2 : (Fin.snoc v rp : Fin (N + 2) → ℂ) (j.castSucc).succ = v j.succ := by
+          have hidx : (j.castSucc).succ = (j.succ).castSucc := by
+            ext
+            simp
+          rw [hidx, Fin.snoc_castSucc]
+        rw [e1, e2] at hz
+        obtain ⟨hzR, hzK⟩ := hvseg j z hz
+        rw [hRect] at hzR
+        exact ⟨hzR, hzK⟩
+      · have e1 : (Fin.snoc v rp : Fin (N + 2) → ℂ) (Fin.last N).castSucc = v (Fin.last N) := by
+          simp
+        have e2 : (Fin.snoc v rp : Fin (N + 2) → ℂ) (Fin.last N).succ = rp := by
+          rw [Fin.succ_last]
+          simp
+        rw [e1, e2, hvlast] at hz
+        have hbox := segment_in_box
+          ⟨(hctrmem b).1, (hctrmem b).2.1, (hctrmem b).2.2.1, (hctrmem b).2.2.2⟩
+          ⟨hrpmem.1, hrpmem.2.1, hrpmem.2.2.1, hrpmem.2.2.2⟩ z hz
+        have hzc : z ∈ cell b := ⟨hbox.1, hbox.2.1, hbox.2.2.1, hbox.2.2.2⟩
+        have hzR := hcellRect b hzc
+        rw [hRect] at hzR
+        exact ⟨hzR, hfreecell hFb z hzc⟩
+    · rw [show (0 : Fin (N + 2)) = Fin.castSucc 0 from (Fin.castSucc_zero).symm,
+        Fin.snoc_castSucc, hv0]
+    · rw [Fin.snoc_last]
+
+end RHTower
