@@ -302,4 +302,27 @@ theorem xi_not_periodic {ω : ℂ} (hω : ω ≠ 0) : ¬ (∀ s, xi (s + ω) = x
 theorem xi_entire_reflection_eq_fe {b : ℂ} (hb : ∀ s, xi (b - s) = xi s) : b = 1 :=
   xi_entire_reflection_center_eq_half (fun _ hω => xi_not_periodic hω) hb
 
+/-- **The critical line is the unique modulus-symmetry axis of ξ — the fixed-*locus* no-go.**  The
+anti-holomorphic reflection *across the vertical line* `Re s = a` is `R_a(s) = 2a − s̄`, whose fixed
+set is that entire line (`{Re s = a}`), not an isolated point.  This is the correct object for a
+"fixed locus that lands off-line": the locus is off the critical line exactly when `a ≠ 1/2`.  If
+`R_a` preserves ξ up to conjugation — `ξ(2a − s̄) = conj (ξ s)`, i.e. `|ξ ∘ R_a| = |ξ|` — then
+`a = 1/2`.  Via reality (`xi_conj`) the anti-holomorphic symmetry collapses onto the holomorphic
+reflection `s ↦ 2a − s`, which is the functional equation alone (`xi_entire_reflection_eq_fe`).  So
+no vertical modulus-symmetry axis of ξ lands off the critical line: the fixed-locus route to an
+off-line correspondence is closed, unconditionally, just as the fixed-point route is. -/
+theorem xi_antiholo_axis_eq_half {a : ℝ}
+    (hsym : ∀ s, xi (2 * (a:ℂ) - (starRingEnd ℂ) s) = (starRingEnd ℂ) (xi s)) :
+    a = 1/2 := by
+  have hrefl : ∀ s, xi (2 * (a:ℂ) - s) = xi s := by
+    intro s
+    have h := hsym ((starRingEnd ℂ) s)
+    rw [Complex.conj_conj, xi_conj, Complex.conj_conj] at h
+    exact h
+  have hb : 2 * (a:ℂ) = 1 := xi_entire_reflection_eq_fe hrefl
+  have hre : (2 * (a:ℂ)).re = 1 := by rw [hb]; simp
+  simp only [Complex.mul_re, Complex.re_ofNat, Complex.im_ofNat, Complex.ofReal_re,
+    Complex.ofReal_im] at hre
+  linarith
+
 end RHTower

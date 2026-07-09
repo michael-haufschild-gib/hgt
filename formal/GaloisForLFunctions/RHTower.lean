@@ -122,7 +122,12 @@ import GaloisForLFunctions.RHTower.OmegaComplexStructure
 import GaloisForLFunctions.RHTower.OmegaObstruction
 import GaloisForLFunctions.RHTower.WeldClassTable
 import GaloisForLFunctions.RHTower.WeldRateLattice
+import GaloisForLFunctions.RHTower.SeamSpectrumDensity
+import GaloisForLFunctions.RHTower.SeamWeldCommutator
 import GaloisForLFunctions.RHTower.ExpNatIrrational
+import GaloisForLFunctions.RHTower.ExpTranscendental
+import GaloisForLFunctions.RHTower.ConjugateTraceIntegral
+import GaloisForLFunctions.RHTower.SymmetricConjugateIntegral
 import GaloisForLFunctions.RHTower.WeldChargeFaithfulness
 import GaloisForLFunctions.RHTower.ApexIndependence
 import GaloisForLFunctions.RHTower.WeldCircleFaithfulness
@@ -415,3 +420,7 @@ import GaloisForLFunctions.RHTower.DirichletShapeCharge
 import GaloisForLFunctions.RHTower.SeamSignBit
 import GaloisForLFunctions.RHTower.SeamEquivariantTwist
 import GaloisForLFunctions.RHTower.SeamSignParity
+import GaloisForLFunctions.RHTower.RealRootTower
+import GaloisForLFunctions.RHTower.XiRealAnchorPositive
+import GaloisForLFunctions.RHTower.SymmetricDivisorRealization
+import GaloisForLFunctions.RHTower.TailBlindness

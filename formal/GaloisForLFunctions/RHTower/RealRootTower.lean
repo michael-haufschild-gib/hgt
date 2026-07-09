@@ -23,8 +23,13 @@ to the seam sign.
 -/
 import GaloisForLFunctions.RHTower.SeamEquivariantTwist
 import GaloisForLFunctions.RHTower.WindingNumber
+import GaloisForLFunctions.RHTower.ConnectedSymmetryBarrier
+import GaloisForLFunctions.RHTower.Reflection
+import GaloisForLFunctions.RHTower.HardyCarrier
+import GaloisForLFunctions.RHTower.XiRealAnchorPositive
+import GaloisForLFunctions.RHTower.SeamSignBit
 
-open Complex
+open Complex Metric
 
 namespace RHTower
 
@@ -172,5 +177,189 @@ theorem equivariant_full_tower_iff {γ : ℝ → ℂ} (hL : IsLoop γ 0 (2 * Rea
     omega
   · rintro ⟨hw, hsign⟩ k hk
     exact (equivariant_pow_root_iff hL heq k hk).mpr ⟨by rw [hw]; exact dvd_zero _, hsign⟩
+
+/-! ### §3 The ξ-instance: line-centred windows of the completed object -/
+
+/-- The boundary loop of ξ on a line-centred circle is σ-equivariant: the critical-line
+reflection carries the circle to itself with the angle involution `θ ↦ π − θ`, and ξ intertwines
+it with conjugation through the functional equation and reality. -/
+theorem xi_circleLoop_equivariant (τ₀ : ℝ) (r : ℝ) (θ : ℝ) :
+    xi (linePt τ₀ + ↑r * exp (I * ↑(Real.pi - θ))) =
+      (starRingEnd ℂ) (xi (linePt τ₀ + ↑r * exp (I * ↑θ))) := by
+  have hpt : linePt τ₀ + ↑r * exp (I * ↑(Real.pi - θ)) =
+      1 - (starRingEnd ℂ) (linePt τ₀ + ↑r * exp (I * ↑θ)) := by
+    have h1 : (starRingEnd ℂ) (linePt τ₀ + ↑r * exp (I * ↑θ)) =
+        (1 - linePt τ₀) + ↑r * exp (-(I * (θ : ℂ))) := by
+      rw [map_add, conj_linePt, map_mul, Complex.conj_ofReal, ← Complex.exp_conj,
+        map_mul, Complex.conj_I, Complex.conj_ofReal,
+        show -I * (θ : ℂ) = -(I * (θ : ℂ)) from by ring]
+    have h2 : exp (I * ↑(Real.pi - θ)) = - exp (-(I * (θ : ℂ))) := by
+      push_cast
+      rw [show I * ((Real.pi : ℂ) - (θ : ℂ)) = (Real.pi : ℂ) * I + -(I * (θ : ℂ)) by ring,
+        Complex.exp_add, Complex.exp_pi_mul_I]
+      ring
+    rw [h1, h2]
+    ring
+  rw [hpt, xi_one_sub, xi_conj]
+
+/-- **The per-window Real-tower obstruction of ξ.**  For a line-centred window with nonvanishing
+ξ-boundary, an equivariant `2^k`-th root of the boundary loop exists iff `2^k` divides the
+winding (the enclosed order sum) AND the Hardy sign of ξ at the circle's upper line-crossing is
+positive: the Real root tower of the completed object is obstructed, window by window, by exactly
+its deck charge and one seam bit. -/
+theorem xi_window_equivariant_root_iff (τ₀ : ℝ) {r : ℝ} (k : ℕ) (hk : k ≠ 0)
+    (hnv : ∀ θ : ℝ, xi (linePt τ₀ + ↑r * exp (I * ↑θ)) ≠ 0) :
+    (∃ V : ℝ → ℂ, Continuous V ∧ (∀ θ, V θ ≠ 0) ∧ V 0 = V (2 * Real.pi) ∧
+      (∀ θ, V (Real.pi - θ) = (starRingEnd ℂ) (V θ)) ∧
+      (∀ θ, (V θ) ^ (2 ^ k) = xi (linePt τ₀ + ↑r * exp (I * ↑θ))))
+    ↔ ((2 ^ k : ℤ) ∣
+        windingNumber (fun θ : ℝ => xi (linePt τ₀ + ↑r * exp (I * ↑θ))) 0 (2 * Real.pi) ∧
+        0 < (xi (linePt (τ₀ + r))).re) := by
+  have hanchor : linePt τ₀ + ↑r * exp (I * ↑(Real.pi / 2)) = linePt (τ₀ + r) := by
+    rw [show I * ((Real.pi / 2 : ℝ) : ℂ) = ((Real.pi / 2 : ℝ) : ℂ) * I by ring,
+      Complex.exp_mul_I]
+    norm_num [Complex.ofReal_cos, Complex.ofReal_sin]
+    unfold linePt
+    push_cast
+    ring
+  have hcont : Continuous fun θ : ℝ => xi (linePt τ₀ + ↑r * exp (I * ↑θ)) :=
+    xi_differentiable.continuous.comp
+      (continuous_const.add (continuous_const.mul
+        (Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal))))
+  have hclosed : xi (linePt τ₀ + ↑r * exp (I * ↑(0 : ℝ))) =
+      xi (linePt τ₀ + ↑r * exp (I * ↑(2 * Real.pi))) := by
+    have := circleLoop_periodic xi (linePt τ₀) r 0
+    rw [zero_add] at this
+    exact this.symm
+  have hloop : IsLoop (fun θ : ℝ => xi (linePt τ₀ + ↑r * exp (I * ↑θ))) 0 (2 * Real.pi) :=
+    ⟨hcont, hnv, hclosed⟩
+  have hmain := equivariant_pow_root_iff hloop
+    (fun θ => xi_circleLoop_equivariant τ₀ r θ) k hk
+  rw [hanchor] at hmain
+  exact hmain
+
+/-! ### §4 The origin of the equivariant period map: the central window carries the tower -/
+
+/-- **The Real root tower of ξ exists on the central window.**  The coefficient side pins the
+period data of the weld's central window: ξ is a positive real at the centre `½` (the alternating
+series forces `ζ < 0` and the archimedean factor is negative there), so a small line-centred
+window around `½` is vacuum with positive anchor sign — its equivariant period tuple is `(0, +)`
+— and by the per-window criterion it carries an equivariant `2^k`-th root of the ξ-boundary loop
+at EVERY positive level.  The germ of the Real root tower exists unconditionally, forced by
+arithmetic; the open question of the programme is its reach, not its existence. -/
+theorem xi_central_window_realTower :
+    ∃ r : ℝ, 0 < r ∧ ∀ k : ℕ, k ≠ 0 →
+      ∃ V : ℝ → ℂ, Continuous V ∧ (∀ θ, V θ ≠ 0) ∧ V 0 = V (2 * Real.pi) ∧
+        (∀ θ, V (Real.pi - θ) = (starRingEnd ℂ) (V θ)) ∧
+        (∀ θ, (V θ) ^ (2 ^ k) = xi (linePt 0 + ↑r * exp (I * ↑θ))) := by
+  have hl0 : linePt 0 = (((1 : ℝ) / 2 : ℝ) : ℂ) := by
+    unfold linePt
+    push_cast
+    ring
+  have hpos : 0 < (xi (linePt 0)).re := by
+    rw [hl0]
+    exact xi_pos_on_real_anchor (by norm_num) (by norm_num)
+  set ε : ℝ := (xi (linePt 0)).re with hεdef
+  obtain ⟨δ, hδ0, hδ⟩ := Metric.continuousAt_iff.mp
+    (xi_differentiable.continuous.continuousAt (x := linePt 0)) (ε / 2) (by positivity)
+  refine ⟨δ / 2, by positivity, ?_⟩
+  have hre : ∀ z ∈ closedBall (linePt 0) (δ / 2), ε / 2 < (xi z).re := by
+    intro z hz
+    have h1 : dist (xi z) (xi (linePt 0)) < ε / 2 :=
+      hδ (lt_of_le_of_lt (mem_closedBall.mp hz) (by linarith))
+    rw [dist_eq_norm] at h1
+    have h2 : |(xi z - xi (linePt 0)).re| ≤ ‖xi z - xi (linePt 0)‖ :=
+      Complex.abs_re_le_norm _
+    have h3 : (xi z - xi (linePt 0)).re = (xi z).re - ε := by
+      rw [Complex.sub_re, hεdef]
+    have h4 : |(xi z).re - ε| < ε / 2 := by
+      rw [← h3]
+      exact lt_of_le_of_lt h2 h1
+    linarith [(abs_lt.mp h4).1]
+  have hnv : ∀ z ∈ closedBall (linePt 0) (δ / 2), xi z ≠ 0 := by
+    intro z hz h0
+    have := hre z hz
+    rw [h0, Complex.zero_re] at this
+    linarith
+  have hbdy : ∀ θ : ℝ, linePt 0 + ↑(δ / 2) * exp (I * ↑θ) ∈ closedBall (linePt 0) (δ / 2) := by
+    intro θ
+    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_mul, Complex.norm_real,
+      Real.norm_eq_abs, show I * (θ : ℂ) = (θ : ℂ) * I by ring,
+      Complex.norm_exp_ofReal_mul_I, mul_one, abs_of_nonneg (by positivity)]
+  have hnvb : ∀ θ : ℝ, xi (linePt 0 + ↑(δ / 2) * exp (I * ↑θ)) ≠ 0 :=
+    fun θ => hnv _ (hbdy θ)
+  have hanchor_mem : linePt (0 + δ / 2) ∈ closedBall (linePt 0) (δ / 2) := by
+    have hdiff : linePt (0 + δ / 2) - linePt 0 = ((δ / 2 : ℝ) : ℂ) * I := by
+      unfold linePt
+      push_cast
+      ring
+    rw [mem_closedBall, dist_eq_norm, hdiff, norm_mul, Complex.norm_real, Complex.norm_I,
+      mul_one, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  intro k hk
+  refine (xi_window_equivariant_root_iff 0 k hk hnvb).mpr ⟨?_, ?_⟩
+  · rw [windingNumber_circleLoop_eq_zero_of_vacuum (by positivity)
+      xi_differentiable.continuous.continuousOn hnv]
+    exact dvd_zero _
+  · have := hre _ hanchor_mem
+    linarith
+
+/-- ξ satisfies the functional-equation and Schwarz symmetries: it is a member of the symmetric
+constraint class. -/
+theorem xi_fESchwarz : FESchwarz xi :=
+  ⟨xi_differentiable, xi_one_sub, xi_conj⟩
+
+/-- **Crease propagation of the Real tower.**  The positive sign at the weld's centre transports
+along any zero-free stretch of the crease: if ξ is nonvanishing on a closed line-centred window
+AND on the crease segment from the centre of the weld to the window's upper crossing, then the
+window carries an equivariant `2^k`-th root of the ξ-boundary loop at every positive level.  The
+reach of the Real root tower is at least every vacuum window hanging on a zero-free crease
+stretch; the first possible obstruction is the first crease zero, where the transported sign may
+flip. -/
+theorem xi_crease_reach_realTower {τ r : ℝ} (hτ : 0 ≤ τ) (hr : 0 < r)
+    (hwin : ∀ z ∈ closedBall (linePt τ) r, xi z ≠ 0)
+    (hcrease : ∀ u ∈ Set.Icc (0 : ℝ) (τ + r), xi (linePt u) ≠ 0) :
+    ∀ k : ℕ, k ≠ 0 →
+      ∃ V : ℝ → ℂ, Continuous V ∧ (∀ θ, V θ ≠ 0) ∧ V 0 = V (2 * Real.pi) ∧
+        (∀ θ, V (Real.pi - θ) = (starRingEnd ℂ) (V θ)) ∧
+        (∀ θ, (V θ) ^ (2 ^ k) = xi (linePt τ + ↑r * exp (I * ↑θ))) := by
+  have hreal : ∀ u : ℝ, (xi (linePt u)).im = 0 := fESchwarz_real_on_line xi_fESchwarz
+  have hlinePt : Continuous linePt := by
+    unfold linePt
+    exact continuous_const.add (Complex.continuous_ofReal.mul continuous_const)
+  have hg : Continuous fun u : ℝ => (xi (linePt u)).re :=
+    Complex.continuous_re.comp (xi_differentiable.continuous.comp hlinePt)
+  have hl0 : linePt 0 = (((1 : ℝ) / 2 : ℝ) : ℂ) := by
+    unfold linePt
+    push_cast
+    ring
+  have h0pos : 0 < (xi (linePt 0)).re := by
+    rw [hl0]
+    exact xi_pos_on_real_anchor (by norm_num) (by norm_num)
+  have hanchor_pos : 0 < (xi (linePt (τ + r))).re := by
+    by_contra hneg
+    push Not at hneg
+    have hne : (xi (linePt (τ + r))).re ≠ 0 := by
+      intro h0
+      exact hcrease (τ + r) ⟨by linarith, le_refl _⟩
+        (Complex.ext (by rw [Complex.zero_re]; exact h0)
+          (by rw [Complex.zero_im]; exact hreal _))
+    have hlt : (xi (linePt (τ + r))).re < 0 := lt_of_le_of_ne hneg hne
+    have hsub := intermediate_value_Icc' (by linarith : (0 : ℝ) ≤ τ + r) hg.continuousOn
+    obtain ⟨u, hu, hgu⟩ := hsub ⟨hlt.le, h0pos.le⟩
+    exact hcrease u hu
+      (Complex.ext (by rw [Complex.zero_re]; exact hgu)
+        (by rw [Complex.zero_im]; exact hreal u))
+  have hnvb : ∀ θ : ℝ, xi (linePt τ + ↑r * exp (I * ↑θ)) ≠ 0 := by
+    intro θ
+    refine hwin _ ?_
+    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_mul, Complex.norm_real,
+      Real.norm_eq_abs, show I * (θ : ℂ) = (θ : ℂ) * I by ring,
+      Complex.norm_exp_ofReal_mul_I, mul_one, abs_of_nonneg hr.le]
+  intro k hk
+  refine (xi_window_equivariant_root_iff τ k hk hnvb).mpr ⟨?_, ?_⟩
+  · rw [windingNumber_circleLoop_eq_zero_of_vacuum hr.le
+      xi_differentiable.continuous.continuousOn hwin]
+    exact dvd_zero _
+  · exact hanchor_pos
 
 end RHTower

@@ -220,13 +220,13 @@ theorem boxCharge_conserved_moving (k : ℕ) {F : ℝ → ℂ → ℂ} {c : ℝ 
 /-! ### §4 Vacuum pairs carry zero charge -/
 
 set_option maxHeartbeats 1000000 in
-/-- **Vacuum has no charge.**  A member continuous and nonvanishing on the closed window has box
-charge zero: the boundary loop contracts radially to the centre value through nonvanishing
-loops. -/
-theorem boxCharge_eq_zero_of_vacuum (k : ℕ) {f : ℂ → ℂ} {c : ℂ} {r : ℝ} (hr : 0 ≤ r)
+/-- **Vacuum windows have zero winding.**  A member continuous and nonvanishing on the closed
+window has boundary loop of winding number zero: the loop contracts radially to the centre value
+through nonvanishing loops. -/
+theorem windingNumber_circleLoop_eq_zero_of_vacuum {f : ℂ → ℂ} {c : ℂ} {r : ℝ} (hr : 0 ≤ r)
     (hfc : ContinuousOn f (closedBall c r))
     (hnv : ∀ z ∈ closedBall c r, f z ≠ 0) :
-    boxCharge k f c r = 0 := by
+    windingNumber (fun θ : ℝ => f (c + ↑r * exp (I * ↑θ))) 0 (2 * Real.pi) = 0 := by
   set clamp : ℝ → ℝ := fun σ => min 1 (max 0 σ) with hclampdef
   have hclamp_cont : Continuous clamp := continuous_const.min (continuous_const.max continuous_id)
   have hcl0 : ∀ σ, 0 ≤ clamp σ := fun σ => le_min zero_le_one (le_max_left 0 σ)
@@ -264,7 +264,15 @@ theorem boxCharge_eq_zero_of_vacuum (k : ℕ) {f : ℂ → ℂ} {c : ℂ} {r : �
       show f (c + ↑(clamp 1 * r) * exp (I * ↑t)) = f (c + ↑r * exp (I * ↑t))
       rw [hc1, one_mul])
   have hc0 : f c ≠ 0 := hnv c (mem_closedBall_self hr)
-  rw [boxCharge, loopCharge, ← hH, windingNumber_const hc0]
+  rw [← hH, windingNumber_const hc0]
+
+/-- **Vacuum has no charge.**  A member continuous and nonvanishing on the closed window has box
+charge zero at every level. -/
+theorem boxCharge_eq_zero_of_vacuum (k : ℕ) {f : ℂ → ℂ} {c : ℂ} {r : ℝ} (hr : 0 ≤ r)
+    (hfc : ContinuousOn f (closedBall c r))
+    (hnv : ∀ z ∈ closedBall c r, f z ≠ 0) :
+    boxCharge k f c r = 0 := by
+  rw [boxCharge, loopCharge, windingNumber_circleLoop_eq_zero_of_vacuum hr hfc hnv]
   simp [wCharge]
 
 /-! ### §5 The defect invariant is complete: π₀ of the loop space is the winding number -/
