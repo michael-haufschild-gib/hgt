@@ -463,3 +463,5 @@ import GaloisForLFunctions.RHTower.CocycleKernelTrivial
 import GaloisForLFunctions.RHTower.CompletedZetaGrowth
 import GaloisForLFunctions.RHTower.XiZeroDensity
 import GaloisForLFunctions.RHTower.OverlapRigidity
+import GaloisForLFunctions.RHTower.WeierstrassFactor
+import GaloisForLFunctions.RHTower.GammalessStripRigidity

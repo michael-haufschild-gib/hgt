@@ -872,3 +872,169 @@ everywhere-rep crutch, no order crutch); every remaining open cell of C-COC is n
 the single INT-ORDER wall (σ_a ≥ 1/2 ∧ infinite order). The Lean-able analytic core is the
 Bohr-uniqueness lemma already in build (OverlapRigidity's sine orthogonality, generalized from
 sine to complex exponentials).
+
+---
+
+## Gammaless strip-rigidity family — the INT-ORDER wall localized quantitatively [PROVED HERE — reduction]
+
+**Landed in Lean (axiom-clean).** `OverlapRigidity.lean` machine-checks the h=1 core of the
+order-free degree-0 classification: `overlap_rigidity` — an ordinary Dirichlet series absolutely
+convergent at a real point σ₀ < 1/2 with `L(s)=L(1−s)` on the overlap strip has aₙ=0 ∀ n≥2. The
+proof is the pure fixed-locus evaluation at `s=½+iy`, reducing symmetry to a vanishing absolutely
+convergent sine series `∑ (aₙ n^{−½}) sin(y log n)=0 ∀y` and killing all coefficients by
+Kronecker–Weyl mean-value orthogonality (`sine_series_coeffs_zero`, reusing
+`Weyl.trig_time_average`). Independently verified: compile + `#print axioms`
+[propext, Classical.choice, Quot.sound]; in umbrella; lint green; index regenerated.
+
+**The quantitative family.** Package the reflection-symmetric (`h=1`) integer-coefficient entire
+carriers by their abscissa of absolute convergence σ_a. Constancy is forced across a single
+one-parameter family:
+
+| σ_a range | verdict | input needed |
+|---|---|---|
+| σ_a < 1/2 | constant | none (overlap rigidity — the two convergence regions overlap) |
+| σ_a = 1/2 | constant | none (degenerate width-0 strip) |
+| σ_a > 1/2 | constant | admissible strip growth, threshold `c < π/(2σ_a − 1)` |
+
+The gap strip is `1 − σ_a < Re s < σ_a`, width `2σ_a − 1`. `PhragmenLindelof.vertical_strip`
+requires an O-bound `exp(B·exp(c|Im s|))` with `c < π/width`. As σ_a → 1/2⁺ the width → 0 and the
+threshold π/(2σ_a−1) → ∞ — the growth hypothesis becomes vacuous exactly where overlap rigidity
+already gives constancy unconditionally. **Overlap rigidity is the width-0 limit of the
+Phragmén–Lindelöf reduction: one continuous structure, not two theorems.**
+
+**Why this is a localization, not just the P–L paragraph.** The substantive content is that the
+two edges of the gap strip are *automatically bounded*: from `LSeriesSummable a σ_a`, the right
+edge Re s = σ_a is bounded by `∑ |aₙ| n^{−σ_a}`, and the left edge Re s = 1−σ_a by the same bound
+through the symmetry F(s)=F(1−s). So every hypothesis of the P–L closure is discharged by
+convergence + symmetry *except* the admissible growth inside the strip. That growth clause is
+exactly INT-ORDER (integer coefficients + finite abscissa + entire ⟹ finite order). The whole h=1
+open cell (σ_a ≥ 1/2, infinite order) is thereby reduced to ONE explicit analytic Prop, with all
+other inputs machine-checked.
+
+**Lean:** `GammalessStripRigidity.lean` — `gammaless_strip_rigidity` (entire + symmetric +
+right-half-plane bound + admissible strip growth ⟹ constant, growth as explicit residual) and
+`lseries_bounded_on_halfplane` (convergent Dirichlet series ⟹ uniformly bounded on its
+half-plane — the edges-are-free lemma).
+
+**Forward moves (not termini):**
+1. Prove the admissible bound `c < π/(2σ_a−1)` FROM integrality — this IS INT-ORDER; the strip is
+   narrow (width 2σ_a−1 small for σ_a near 1/2) so the threshold is generous there.
+2. Build the falsifying family: an integer-coefficient symmetric entire series with σ_a > 1/2
+   whose strip growth *saturates* threshold π/(2σ_a−1) — if it exists, INT-ORDER is false and the
+   program pivots.
+3. Extend from h=1 to conductor datum ΣcⱼQⱼ^{1−2s}: the sine-orthogonality lemma generalizes to
+   complex exponentials (the conductor is a pure phase e^{−2iy log Qⱼ} on the fixed line), which
+   would machine-check the full conductor-datum order-free classification.
+
+### Refinement of forward-move 1 — the natural-boundary reframing of INT-ORDER [CONJECTURE, strategic]
+
+INT-ORDER (integer multiplicative + finite abscissa + entire ⟹ finite order) is equivalent, on
+entire members, to its contrapositive mechanism: **infinite order ⟹ natural boundary.** The known
+integer-multiplicative Dirichlet series split empirically into (a) finite-order arithmetic
+L-functions and (b) Estermann–Kurokawa–Dahlquist Euler products with a natural boundary (local
+factor zeros/poles accumulating on a line) — with no known infinite-order-entire member between.
+So a route to INT-ORDER: show the *only* obstruction to finite order for an integer-multiplicative
+Euler product is a natural boundary, built constructively from the local data; the entire
+hypothesis removes that boundary, forcing bounded local complexity ⟹ finite order. This converts a
+growth problem into a domain (natural-boundary) problem where the criteria are constructive.
+Caveat (attacked): this is a *reframing* of INT-ORDER, equivalent to it on entire members, not an
+independent object — the honest content is the strategy, not a new theorem. The general dichotomy
+"integer multiplicative ⟹ finite-order XOR natural-boundary" is [ABSENT] as a stated theorem
+(integrality is known to control domain and to control order only *separately*); uniting them is
+the novel framing. NOT reducible to the in-tree NBT engine (that lane is dynamical/smooth-boundary,
+a different mechanism).
+
+### Residual is a MILD double-exponential ceiling, not full finite order [refinement]
+
+`PhragmenLindelof.vertical_strip` consumes an O-bound `exp(B·exp(c|Im s|))` with rate
+`c < π/(2σ_a−1)` on the gap strip — a *double-exponential* ceiling, strictly WEAKER than
+finite order (single-exponential). So `gammaless_strip_rigidity` forces constancy under a
+hypothesis milder than INT-ORDER's conclusion: it suffices that F does NOT grow as fast as
+`exp(exp(π|t|/(2σ_a−1)))` in the strip. Consequences: (i) proving INT-ORDER (finite order) more
+than triggers the reduction — the reduction's demand is far below finite order; (ii) a
+falsifying member must grow at least double-exponentially with rate ≥ π/(2σ_a−1) inside the strip
+while staying entire and integer-multiplicative — an extremely violent growth requirement, which
+makes the *existence* of a counterexample correspondingly implausible and sharpens the target for
+forward-move 2. The width-0 limit (σ_a→1/2⁺) sends the required rate →∞, consistent with overlap
+rigidity needing no growth control at all.
+
+## Quiet-crossing rigidity — the residual re-quantified (smoothed-Perron shift)
+
+**[PROVED HERE — paper] Quiet-crossing rigidity (h = 1).** Let `F(s) = Σ_{n≥1} aₙ n^{−s}` be an
+ordinary Dirichlet series with finite abscissa of absolute convergence `σ_a`, entire continuation,
+and exact symmetry `F(s) = F(1−s)`. Suppose there exists ONE sequence `T_k → ∞` with
+
+    sup { |F(σ ± iT_k)| : 1−σ_a−ε ≤ σ ≤ σ_a+ε }  =  o(T_k²).
+
+Then `F` is constant. No order hypothesis, no integrality, no growth ceiling — one quiet height
+sequence suffices.
+
+*Proof.* Fix `ε > 0` and `c = σ_a + ε`. Absolute convergence at `c` gives `|F| ≤ C := Σ|aₙ|n^{−c}`
+on `Re s ≥ c`; symmetry transports this to `|F| ≤ C` on `Re s ≤ 1−c`. Smoothed Perron: for the
+kernel `1/(s(s+1))` one has, for `y > 0`,
+
+    (1/2πi) ∫_(c) y^s ds/(s(s+1)) = (1 − 1/y)₊
+
+(close the contour left for `y ≥ 1`: residues `1` at `s=0` and `−1/y` at `s=−1`; close right for
+`y < 1`: no poles; the kernel decays like `|s|^{−2}` so both closings are legitimate). Multiplying
+by `x·aₙ` with `y = x/n` and summing (exchange justified: the line integral converges absolutely
+and `Σ|aₙ|n^{−c}` converges):
+
+    A₁(x) := Σₙ aₙ (x−n)₊ = ∫₀ˣ A(u) du = (1/2πi) ∫_(c) F(s) x^{s+1} ds/(s(s+1)).
+
+Shift the contour to `Re s = −M` (`M > 1`) across the rectangle with horizontal edges at heights
+`±T_k`. `F` is entire; the kernel contributes poles at `s = 0, −1` with residues `F(0)·x` and
+`−F(−1)`. The horizontal edges split into flank parts (`|F| ≤ C`, length `≤ M + 2σ_a`, kernel
+`≤ T_k^{−2}`) and the strip part (`≤ w · o(T_k²) · x^{σ_a+1+ε} / T_k²`); both `→ 0` as `k → ∞`
+with `M` fixed. The left vertical converges absolutely with total mass
+`≤ C x^{1−M} ∫ dt/|s(s+1)| = O(C x^{1−M})`. Hence for every `x > 1`:
+
+    A₁(x) = F(0)·x − F(−1) + O(C x^{1−M})   for all M  ⟹  A₁(x) = F(0)x − F(−1) exactly.
+
+`A₁` is piecewise linear with slope jump `aₙ` at each integer `n`; exact global linearity on
+`(1,∞)` forces `aₙ = 0` for all `n ≥ 2`. ∎
+
+**[PROVED HERE — paper] Conductor-datum quiet-crossing classification.** Same hypotheses but with
+the reflection identity `F(s) = D(s)·F(1−s)`, `D(s) = Σⱼ cⱼ Qⱼ^{1−2s}` a finite exponential
+polynomial, `Q := max Qⱼ`. The left-flank bound becomes `|F(s)| ≤ (Σ|cⱼ|) Q^{1+2M} C` on
+`Re s = −M`; the left vertical is then `O((Q²/x)^M · x)`, which `→ 0` for every `x > Q²`. The same
+shift yields `A₁(x) = F(0)x − F(−1)` exactly for `x > Q²`, i.e. `aₙ = 0` for all `n > Q²`: `F` is a
+Dirichlet polynomial supported on `[1, Q²]`. Once `F` is a finite exponential sum, the identity
+`F(s) = D(s)F(1−s)` between finite sums of exponentials `e^{−s log n}`, `e^{−s(log Qⱼ² − log m)}`
+forces, by linear independence of characters (elementary Bohr uniqueness for FINITE sums), the
+support refinement `supp a ⊆ ⋃ⱼ div(Qⱼ²)` and the K–P pairing `a_t = c_{(j)} a_{Qⱼ²/t}`. This is
+the full Kaczorowski–Perelli degree-0 classification with the finite-order standing axiom replaced
+by one quiet height sequence — valid on EVERY abscissa stratum, not only `σ_a < 1/2`. ∎
+
+**Strictness.** Finite order ⟹ (P–L, `gammaless_strip_rigidity` edge mechanism) bounded on the gap
+strip ⟹ `O(1)` crossings everywhere ⟹ quiet. So the quiet-crossing hypothesis strictly weakens the
+K–P order axiom given the (automatic) flank bounds. Conversely `e^{√|t|}`-type growth at every
+height is finite-order-admissible but never sub-polynomially quiet — the two reductions
+(P–L ceiling / Perron quiet sequence) are genuinely incomparable sufficient conditions; a
+counterexample must dodge both.
+
+**Kernel escalation.** Replacing the kernel by `1/(s(s+1)⋯(s+k))` (decay `|s|^{−(k+1)}`, poles at
+`0, −1, …, −k`, residues assembling a degree-k polynomial in `x`) weakens the quiet requirement to
+`o(T_k^{N})` for any fixed `N`: the k-fold integrated counting function `A_k` becomes an exact
+polynomial, and its k-th distributional derivative jumps by `aₙ` at `n`, so the same rigidity
+follows. Hence:
+
+**[CONJECTURE NO-QUIET-ESCAPE] — the residual, final quantifier form.** A nonconstant (resp.
+non-polynomial) symmetric entire member must be SUPERPOLYNOMIALLY LOUD AT EVERY HEIGHT: for every
+`N`, `liminf_{T→∞} T^{−N} · sup_{σ ∈ strip} |F(σ+iT)| > 0` (and in both vertical directions —
+independent top/bottom sequences each suffice for the rectangle). Combined with the P–L side it
+must ALSO exceed the admissible double-exp ceiling `exp(B e^{c|t|})`, `c < π/(2σ_a−1)`, along some
+sequence. The INT-ORDER keystone is correspondingly weakened to
+**[CONJECTURE INT-QUIET]**: integer coefficients + finite abscissa + entire ⟹ one quiet height
+sequence exists. INT-ORDER ⟹ INT-QUIET ⟹ classification; INT-QUIET is the strictly cheaper wall.
+
+**Forward moves opened.** (i) Attack INT-QUIET directly: quiet heights are a measure-theoretic
+plentiful property for every classically constructed continuation (Estermann continuables,
+polynomial-growth columns); the counterexample needs a gapless tract — collide this with the
+Denjoy–Carleman–Ahlfors tract count (an entire function bounded outside a width-w strip with a
+two-ended ∞-tract has log log M(r) ≳ πr/w — Ahlfors distortion), i.e. the escape is pinned to
+EXACTLY the P–L-critical tract geometry. (ii) Lean target: kernel identity + A₁ exchange + rectangle
+shift (`QuietCrossingRigidity.lean`) — check tree for contour/Mellin infrastructure first.
+(iii) The finite-pole variant: allowing finitely many poles adds finitely many residue monomials
+`x^{ρ+1}` to `A₁`, so the conclusion becomes "A₁ = finite explicit combination" — a rigidity for
+pole-bearing symmetric carriers worth its own pass.
