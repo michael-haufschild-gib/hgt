@@ -435,3 +435,8 @@ import GaloisForLFunctions.RHTower.IntegralMultiplicativeSoft
 import GaloisForLFunctions.RHTower.ColumnRigidity
 import GaloisForLFunctions.RHTower.DAColumnDivisor
 import GaloisForLFunctions.RHTower.DegreeZeroOffline
+import GaloisForLFunctions.RHTower.GammaCellMobility
+import GaloisForLFunctions.RHTower.PeriodicityDichotomy
+import GaloisForLFunctions.RHTower.IntegralFEPolynomial
+import GaloisForLFunctions.RHTower.ZetaRealStrip
+import GaloisForLFunctions.RHTower.DichotomyInstances
