@@ -665,3 +665,175 @@ Lapidus–Frankenhuijsen Ch. 11 (verbatim [K6] p.320). (b) ∑ 2^{ω(n)} n^{−s
 verbatim [K8] and by Euler factors. (c) ζ(2s) zeros sit at s = ρ/2 with Re ∈ (0, 1/2); ρ₁/2
 (height ≈ 7.07) is below the first ζ zero (14.13) and so is not a ζ zero — these are poles of the
 2^{ω} series, not zeros.
+
+---
+
+## Round: integrality-vs-order and gammaless-FE checks (2026-07-09)
+
+Status: verification note (SEARCH register). WebSearch/WebFetch only; no Lean, no computation.
+Marking convention as above (`[VERIFIED-KNOWN]` = quoted from a source actually read; `[ABSENT]`
+= search returned nothing; `[UNVERIFIED]` = could not locate/fetch primary). arXiv/other PDFs that
+WebFetch could not text-parse were saved locally by WebFetch and read directly with the PDF reader
+(page numbers are the documents' own); a few statements are `[VERIFIED via search-index restatement]`
+where only the search engine's verbatim excerpt of a paywalled/scan source was obtained.
+
+### Sources and fetch status (this round)
+
+- **[I1] Garrett, "The Estermann phenomenon".** P. Garrett, expository note (umn.edu,
+  notes_2013-14/02f_estermann_phenom.pdf), dated Sept 2013. PDF WebFetch failed to text-parse; saved
+  locally and **read directly (pp.1-2)**. Verbatim quotes below.
+- **[I2] Estermann 1928 (PRIMARY, bib only).** T. Estermann, "On certain functions represented by
+  Dirichlet series", *Proc. London Math. Soc.* **27** (1928), 435-448. Bib confirmed from [I1]'s
+  bibliography [read]; primary text [pointer, unfetched].
+- **[I3] Kurokawa 1985 (bib only).** N. Kurokawa, "On the meromorphy of Euler products, I, II",
+  *Proc. London Math. Soc.* **53** (1985), 1-49 and 209-236. Bib from [I1] [read]; primary
+  [pointer, unfetched].
+- **[I4] Bhowmik et al. multivariate Estermann.** G. Bhowmik, D. Essouabri, B. Lichtin / Bhowmik-
+  Schlage-Puchta line: "Extension of Estermann's theorem to Euler products associated to a
+  multivariate polynomial" (arXiv:**1001.3838**), "Essential singularities of Euler products"
+  (arXiv:**1001.1891**), and the projecteuclid MSJ-memoirs chapter "Analytic continuation of some
+  zeta functions" (Bhowmik). Abstracts/excerpts surfaced by WebSearch; the Rostock survey PDF
+  ("Natural boundaries of Dirichlet series") WebFetch could not parse and was not read. The
+  cyclotomic-dichotomy statement below is `[VERIFIED via search-index restatement]`.
+- **[I5] Polya-Carlson (power series).** Restated via the whiterose eprint "Towards a Polya-Carlson
+  dichotomy for algebraic dynamics" and the "uniformlyatrandom" note; both surfaced verbatim by
+  WebSearch. `[VERIFIED via search-index restatement]`.
+- **[I6] Perelli converse-theorems survey.** A. Perelli, "Converse theorems: from the Riemann zeta
+  function to the Selberg class", arXiv:**1605.02354** (expanded XX Congresso U.M.I. lecture, Siena
+  2015). arXiv PDF returned HTTP 403; **ar5iv mirror (ar5iv.labs.arxiv.org/abs/1605.02354) fetched**
+  and the theorem statements extracted verbatim below.
+- **[I7] Bochner modular relations (PRIMARY, bib + framework).** S. Bochner, "Some properties of
+  modular relations", *Annals of Mathematics* **53** (1951), 332-363. **NOTE: the task prompt's
+  "Bochner 1958" is off by publication year — the modular-relations paper is 1951** (Ann. of Math.
+  53). Framework (FE `Γ(s)φ(s) = Γ(δ-s)ψ(δ-s)`, general λ_n, μ_n, residual function) confirmed via
+  WebSearch bib excerpts; primary text [pointer, unfetched].
+- **[I8] Segal, "On Dirichlet series with integral coefficients".** `[UNVERIFIED]` — repeated
+  targeted searches (Segal / S.L. Segal + integral/integer coefficients + Dirichlet series) returned
+  NO paper of this title. Not located; not used. (The integer-coefficient substance of Q1 is carried
+  by [I1]-[I5] instead.)
+
+---
+
+### Q1 — does integrality of coefficients EVER force an ORDER / growth bound on the continuation?
+
+**What the integer-coefficient literature actually proves: a CONTINUATION-vs-NATURAL-BOUNDARY
+dichotomy, with NO order control.**
+
+`[VERIFIED-KNOWN]` **[I1] Garrett, p.1 (verbatim):** "The *Estermann phenomenon* is that not every
+natural Dirichlet series has a meromorphic continuation." Concrete claim (verbatim): "the Dirichlet
+series ∑_n d(n)^3/n^s = ζ(s)^4 ∏_p (1 + 4p^{-s} + p^{-2s}) has a *natural boundary* along Re(s)=0,
+in contrast to meromorphically continuable ∑_n d(n)/n^s = ζ(s)^2 and ∑_n d(n)^2/n^s = ζ(s)^4/ζ(2s)."
+
+`[VERIFIED-KNOWN]` **[I1] Garrett, p.2 — the OBSTRUCTION is accumulation of zeros/poles, not size.**
+Verbatim: "Since 1 + 4x + x^2 is not a cyclotomic polynomial, this process does not terminate. …
+On one hand, this gives a meromorphic continuation to Re(s) > 1/(ℓ_j+1). On the other hand, since the
+exponents e_i are non-zero, the infinitely-many zeros of ζ(s) in the critical strip make the zeros of
+ζ(ℓ·s) bunch up just to the right of Re(s)=0 as ℓ → ∞." (The barrier is a limit set of
+zeros/singularities on Re s = 0 — a continuation obstruction. Nothing about vertical growth/order.)
+Remark (verbatim): "[Kurokawa 1985a,b] showed that ∑ a_n^k/n^s has a natural boundary for k ≥ 3,
+where f(z) = ∑ a_n e^{2πinz} is a modular form."
+
+`[VERIFIED via search-index restatement]` **[I4] multivariate Estermann (Bhowmik et al.):** "A
+multivariate zeta function Z(h;s) can be continued to the whole complex space if and only if h is
+cyclotomic; in all other cases the point at 0 is a natural boundary." (Same shape as Estermann 1928:
+an Euler product ∏_p h(p^{-s}) with integer/integer-valued h continues to all of ℂ iff h is a product
+of cyclotomic polynomials, otherwise Re s = 0 is a natural boundary.) The conclusion is again purely
+continuation-vs-boundary; NO growth/order statement.
+
+`[VERIFIED via search-index restatement]` **[I5] Polya-Carlson (the power-series prototype):** "a
+power series with integer coefficients that converges inside the unit disk is either rational or it
+admits the unit circle as a natural boundary." Again a continuation dichotomy; the only "growth"
+in the circle is the standard finite-order-in-the-disk that holds for ALL bounded-coefficient power
+series, not something integrality sharpens.
+
+**Where "finite order" actually appears — always as a HYPOTHESIS, never a conclusion of
+integrality.** The 1922 Carlson mean-value theorem for Dirichlet series and the Selberg-class axiom
+(P2) [see [K2] earlier in this file] and Hamburger's theorem (Q2 below) all *assume* finite order /
+polynomial growth in strips; none *derives* it from integer coefficients. Searches specifically for
+an "integrality ⟹ finite order in strips" implication (queries: "arithmetical Dirichlet series
+integer coefficients finite order vertical strip growth bound"; "integer coefficients Dirichlet
+series does not force finite order ... only continuation dichotomy") returned only (i) the
+continuation dichotomies above and (ii) finite-order-as-hypothesis results.
+
+`[ABSENT]` **Q1 verdict.** No theorem of the shape "ordinary Dirichlet series with integer (or
+discrete-set) coefficients that continues past its half-plane is automatically of finite order in
+vertical strips" was located. The entire integer-coefficient circle — Estermann 1928 [I2], Kurokawa
+1985 [I3], the Bhowmik-et-al. multivariate/cyclotomic classification [I4], and the power-series
+Polya-Carlson prototype [I5] — is a CONTINUATION-vs-NATURAL-BOUNDARY dichotomy governed by the
+cyclotomic condition, with NO vertical-order control whatsoever. "Finite order" is invariably an
+*input* (Selberg (P2), Carlson mean-value, Hamburger), never an *output* of coefficient integrality.
+So integrality does NOT force an order/growth bound in the located literature. (Caveat: the named
+"Segal, On Dirichlet series with integral coefficients" [I8] could not be located; WebSearch is
+US-indexed and misses paywalled/non-English monographs — this is "no evidence found", not a proof of
+nonexistence. But the direction of ALL located results is uniform, so a hidden order-from-integrality
+theorem would be a surprise, not a near-miss.)
+
+---
+
+### Q2 — infinite-order symmetric Dirichlet series with a gammaless FE F(1-s)=F(s)?
+
+**Every located classification of Riemann-type / gammaless functional equations assumes FINITE
+ORDER, verbatim; the infinite-order case is untouched.**
+
+`[VERIFIED-KNOWN]` **[I6] Perelli survey, Hamburger's theorem (Theorem 2.1), verbatim growth
+hypothesis:** "(s−1)^m F(s) is entire of finite order for some integer m"; functional equation
+"π^{−s/2} Γ(s/2) F(s) = π^{−(1−s)/2} Γ((1−s)/2) F(1−s)"; conclusion "F(s) = c·ζ(s) for some c ∈ ℂ".
+The FE carries a gamma factor; the growth datum is *finite order*.
+
+`[VERIFIED-KNOWN]` **[I6] Perelli survey, Hecke's converse theorem (Theorem 2.2), verbatim growth
+hypothesis:** "F(s) has continuation over ℂ as an entire function of finite order"; FE
+"Λ(s,F) = i^k Λ(1−s,F), where Λ(s,F) = (1/2π)^s Γ(s+(k−1)/2) F(s)". Again gamma factor + finite order.
+
+`[VERIFIED-KNOWN]` **[I6] Perelli survey, Bochner (verbatim):** the survey mentions only "a duality
+principle, first studied by S. Bochner in the 1950's, between Dirichlet series with a general Riemann
+type functional equation and their Mellin transforms," and gives **no explicit gammaless statement**.
+`[VERIFIED-KNOWN, fetch-conclusion]` The survey "does not address degree-zero functional equations or
+infinite-order solutions." Bochner's own 1951 framework [I7] uses the FE `Γ(s)φ(s) = Γ(δ-s)ψ(δ-s)` —
+i.e. gamma factors on both sides — with strictly increasing exponents λ_n, μ_n and a residual
+function; its equivalence proof (later Chandrasekharan-Narasimhan) rests on convergence/temperedness
+of the associated exponential (theta-type) series, not on an arbitrary infinite-order F.
+
+`[VERIFIED-KNOWN, derived from [K3] earlier in this file]` **The finite-order gammaless conductor-1
+case is degenerate.** In the extended Selberg class S# (finite order via (P2)), the Kaczorowski-
+Perelli degree-0 structure theorem [K3]/[K4] gives F(s) = ∑_{n|q} a(n) n^{-s} with V₀#(q,ω) a real
+vector space of dimension d(q) = #{divisors of q}. For **conductor q = 1**: d(1) = 1, the only
+support integer is n = 1, so the ONLY finite-order degree-0 solution is F ≡ constant (F(s) = 1 with
+a₁ = 1). Hence a *nonconstant* finite-order entire F with a₁ = 1 satisfying F(1−s) = F(s), conductor
+1, no gamma factor, **does not exist**. A nonconstant gammaless self-dual member requires conductor
+q > 1 (a Dirichlet polynomial on the divisors of q).
+
+`[VERIFIED-KNOWN, example]` The one infinite-order ordinary/general Dirichlet series that repeatedly
+surfaced is `e^{e^{-s}} = ∑_{n≥0} (1/n!) e^{-ns}` — entire of infinite order — but it does **not**
+satisfy F(1−s) = F(s) (and it is the exp of a single exponential, cf. the exp(2^{-s}) example earlier
+in this file). No symmetric infinite-order example was found.
+
+`[ABSENT]` **Q2 verdict.** No example, construction, or impossibility theorem for an entire Dirichlet
+series F of INFINITE order with a₁ = 1 satisfying the exact gammaless functional equation
+F(1−s) = F(s) (conductor 1) was located. Every relevant classification — Hamburger [I6, Thm 2.1],
+Hecke [I6, Thm 2.2], Bochner's modular-relation duality [I6]/[I7], and the extended-Selberg /
+Kaczorowski-Perelli degree-0 theory [K3]/[K4] — is stated under a FINITE-ORDER (or polynomial-growth
+/ temperedness) hypothesis, quoted verbatim as Hamburger's "(s−1)^m F(s) is entire of finite order
+for some integer m" and Hecke's "an entire function of finite order." Under that finite-order
+hypothesis with conductor 1 and no gamma factor, F(1−s) = F(s) forces F ≡ 1 (K-P degree-0, q = 1,
+d(1) = 1). The infinite-order case is exactly the gap these growth hypotheses cut out and is
+**unaddressed** in the searched corpus — neither a construction nor a no-go. (Caveat: US-indexed
+search; paywalled/non-English monographs may exist. "No evidence found," not a nonexistence proof.
+Also flagged: the prompt's "Bochner 1958" is bibliographically the 1951 Annals paper.)
+
+---
+
+### Bottom line for the program (this round)
+
+- **Q1:** `[ABSENT]` — integrality of coefficients does NOT force any order/growth bound in the
+  located literature. All integer-coefficient theorems (Estermann 1928 [I2], Kurokawa 1985 [I3],
+  Bhowmik-et-al. cyclotomic classification [I4], power-series Polya-Carlson [I5]) are
+  continuation-vs-natural-boundary dichotomies keyed to the cyclotomic condition; "finite order" is
+  only ever a hypothesis, never a consequence of integrality. Strongest citation: Garrett, "The
+  Estermann phenomenon" [I1] (read directly) + the multivariate-cyclotomic dichotomy [I4]. The named
+  Segal paper [I8] is `[UNVERIFIED]` (unlocatable).
+- **Q2:** `[ABSENT]` — the infinite-order symmetric gammaless case is unaddressed. Hamburger [I6,
+  Thm 2.1] and Hecke [I6, Thm 2.2] both require "entire of finite order" (verbatim); Kaczorowski-
+  Perelli degree-0 [K3] forces F ≡ 1 at conductor 1 under finite order; no infinite-order example or
+  no-go exists in the corpus. Strongest citation: Perelli, "Converse theorems…" arXiv:1605.02354
+  [I6] (ar5iv, read) — Hamburger's exact growth hypothesis "(s−1)^m F(s) is entire of finite order
+  for some integer m."

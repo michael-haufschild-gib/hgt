@@ -55,6 +55,14 @@ artifact). The object doc 130 said must exist, exists — and only for a non-cen
 action. The pinned-germ collapse is not a wall; it is a **selection rule**: it excludes exactly the
 central (germ-local) actions and admits exactly the boundary-crossing ones.
 
+**Split-presentation no-go (2026-07-09, Codex, `[PROVED IN LEAN]`).** The escape above is sharper
+than "any crossing corner works." Lean now proves `fittingBoundaryTrace_splitTorsion_crossBoundary`
+and `fittingBoundaryClass_splitTorsion_crossBoundary`: for the split diagonal torsion presentation
+`A_split = diag(Xᵐ,1)` and the standard cutoff `e = diag(1,0)`, every action `σ` has
+`tr(adj(A_split)·(1−e)σe)=0`, hence zero class in `R[X]/(Xᵐ)`. Therefore determinant transversality
+requires a non-split/sheared presentation; the current positive witness uses `A = [[Xᵐ,1],[0,1]]`
+for a mathematical reason, not as a proof artifact. Crossing is necessary but not sufficient.
+
 ## 4. The two-cutoff asymmetry — the Sonin shape [PROVED HERE]
 
 `crossBoundary_two_cutoff_asymmetry`: there are two cutoffs `e, f` and an action `σ` that commutes

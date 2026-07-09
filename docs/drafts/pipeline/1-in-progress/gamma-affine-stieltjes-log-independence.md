@@ -79,3 +79,57 @@ This is equivalent to: the transcendence question for {γ, log 2, log 3, log 5, 
   (B_1 = Σ_p log(p)/(p-1) diverges like log P, comp83 — rate corrected from "log log P", Turing id=1905).
   γ_n does not split into finite B_n·γ + C_n.
   Apex back to Schanuel territory. Card demoted to reference status.
+
+## 2026-07-09 Codex medalist pass — residue: renormalized γ/log non-splitting
+
+Seed: `2744613319640932496`; forced method move: `extreme-cases`.
+
+### Extreme cases
+
+- `[SEARCH]` Finite-support `A_β` remains γ-affine: each lane lives in `ℚ·γ ⊕ ⊕_p ℚ·log p`.
+- `[SEARCH]` The `n=0` Stieltjes rung is pure archimedean: `γ_0=γ`; no prime assembly is present, so there is no weld obstruction yet.
+- `[BRIDGE]` Finite-prime/Euler-truncated Stieltjes data reduce to symmetric polynomials in finitely many `log p` values; this is the `f1-inversion-single-prime-stieltjes-collapse` / finite-corank theorem, not a native seam theorem.
+- `[CONJECTURE]` The first genuinely seam-visible rung is `γ_1`: finite lanes are γ-affine, but the infinite prime assembly refuses to split into a finite γ-coefficient plus a finite log-only coefficient.
+
+### Divergence floor of the failed split
+
+`[PROVED HERE — BRIDGE]` The retracted `γ_1 = B_1·γ + C_1` finite split cannot be repaired by ordinary prime cutoff limits. From the per-prime first-order lane
+
+`A_{1,p}=γ/(p-1)-p(log p)/(p-1)^2`,
+
+the two visible cutoff coefficients satisfy
+
+`B_1(P)=Σ_{p≤P} log p/(p-1) = log P + O(1)`,
+
+`C_1(P)=Σ_{p≤P} p(log p)^2/(p-1)^2 = (1/2)(log P)^2 + O(log P)`.
+
+Proof: replace `1/(p-1)` by `1/p+O(1/p^2)` and `p/(p-1)^2` by `1/p+O(1/p^2)`. The error sums converge. Partial summation plus the prime number theorem gives `Σ_{p≤P} log p/p = log P+O(1)` and `Σ_{p≤P} (log p)^2/p = (1/2)(log P)^2+O(log P)`. Thus neither coefficient has a finite ordinary limit; the finite Stieltjes value is created by the global regularization, not by separately finite γ/log pieces.
+
+Door grade of this paragraph: `[BRIDGE]`. It is PNT/Mertens-level analytic number theory plus the per-prime lane formula; it is useful cleanup, not new native content.
+
+### Candidate native residue
+
+`[CONJECTURE]` The object worth naming is not a new independence claim, but a **renormalized γ/log non-splitting class**. Informally, `γ_n` is the finite part of a two-scale expression in which the archimedean constant `γ` and the prime-log lattice counterterms cancel only after the infinite prime assembly is taken. The class should measure the failure of the map
+
+`finite γ-affine lanes  ->  infinite Stieltjes coefficient`
+
+to commute with the direct-sum splitting `(γ-line) ⊕ (prime-log algebra)`.
+
+`[OPEN CORE]` Make this class scheme-independent. A raw Hadamard finite part depends on cutoff and subtraction convention; to become mathematics in `𝓜⁺`, the class must be invariant under changing the prime exhaustion / equivalent counterterm and must vanish on the border cases above (`n=0`, finite support, finite prime base) while remaining nonzero at `γ_1`.
+
+### Attack
+
+- `[BRIDGE]` If the class is only "PNT divergence of `Σ log p/p`", Door-2 strips it to classical analytic number theory.
+- `[BRIDGE]` If the class is only "Hadamard finite part of a divergent series", it is ordinary renormalization language, not native HGT.
+- `[CONJECTURE]` It becomes substrate-load-bearing only if it is functorial for the completed `(σ_p, ∂_s)` object: finite prime restrictions kill it, Source-A alone kills it, Source-B alone kills it, and the infinite archimedean-prime weld carries it.
+
+### Next gate
+
+Prove or refute the following precise lemma before opening a new theorem card:
+
+`[CONJECTURE]` There exists a quotient of two-scale cutoff germs `Q_weld` and a canonical element `ε_1 ∈ Q_weld` attached to `γ_1` such that:
+1. `ε_1` is unchanged by cofinal prime exhaustion and by adding separable finite counterterms;
+2. `ε_1=0` after restricting to any finite prime set or to the `n=0` archimedean rung;
+3. `ε_1≠0` because the γ-coefficient pole has order `1` in `log P` while the log-only coefficient has order `2`.
+
+If (1) fails, retire this residue as a useful BRIDGE cleanup. If (1) holds, the next object is a `renormalized seam-extension` card, not another Schanuel-independence card.

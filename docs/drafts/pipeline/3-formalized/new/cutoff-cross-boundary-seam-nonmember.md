@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean), surviving candidate source
 - **Source:** `docs/drafts/rh-monodromy-weight-mismatch/129-pinned-carrier-geometry-candidates.md`; `docs/drafts/rh-monodromy-weight-mismatch/130-sonin-seam-defect-commutator-nogo.md`; `formal/GaloisForLFunctions/RHTower/CutoffCochain.lean`; `formal/GaloisForLFunctions/RHTower/FittingSeamBoundary.lean`; `formal/GaloisForLFunctions/RHTower/CutoffTorsionSeam.lean`
-- **Statement:** Pinned-germ scalar and commutator `{sigma_p}` defects are fake, but a cutoff-crossing cochain can be determinant-transverse to a torsion seam presentation. For every `m > 0`, Lean constructs an idempotent cutoff `e`, an action `sigma`, and a presentation `A` with `det A = X^m` such that `Delta = (1-e) sigma e` has nonzero Fitting boundary, is not a commutator, and satisfies `Delta ∉ A End + (X^m)` and `Delta ∉ End A + (X^m)`. The witness is packaged as a one-label `TorsionSeamPresentation`, and over any inhabited regular base it gives an `MPlusTorsionSeamObject`.
+- **Statement:** Pinned-germ scalar and commutator `{sigma_p}` defects are fake, but a cutoff-crossing cochain can be determinant-transverse to a torsion seam presentation. For every `m > 0`, Lean constructs an idempotent cutoff `e`, an action `sigma`, and a presentation `A` with `det A = X^m` such that `Delta = (1-e) sigma e` has nonzero Fitting boundary, is not a commutator, and satisfies `Delta ∉ A End + (X^m)` and `Delta ∉ End A + (X^m)`. Lean also proves the split diagonal presentation `diag(X^m,1)` is boundary-blind to the standard lower cross-boundary corner, so the determinant-transverse witness needs a non-split/sheared presentation, not only a crossing operator. The witness is packaged as a one-label `TorsionSeamPresentation`, and over any inhabited regular base it gives an `MPlusTorsionSeamObject`.
 
 ## Formal Surface
 
@@ -27,6 +27,11 @@ Lean declarations in `CutoffCochain.lean`:
 - `exists_crossing_crossBoundary_not_right_factor_mod_X_pow`
 - `exists_crossBoundary_not_left_factor_mod_X_pow`
 - `exists_crossBoundary_not_trace_X_pow_dvd`
+- `standardCutoff`
+- `splitTorsionPresentation`
+- `splitTorsionPresentation_det`
+- `fittingBoundaryTrace_splitTorsion_crossBoundary`
+- `fittingBoundaryClass_splitTorsion_crossBoundary`
 - `crossBoundary_two_cutoff_asymmetry`
 
 Supporting quotient-invariance declarations in `FittingSeamBoundary.lean`:
@@ -73,6 +78,22 @@ The same witness is also outside the left fake class:
 
 `Delta ∉ End A + (X^m)`.
 
+The positive witness is not merely a diagonal torsion summand plus a crossing corner. Lean proves that
+for the split presentation
+
+`A_split = diag(X^m, 1)`
+
+and the standard cutoff `e = diag(1,0)`, every action `sigma` satisfies
+
+`tr(adj(A_split) · (1-e) sigma e) = 0`,
+
+hence
+
+`fittingBoundaryClass m A_split ((1-e) sigma e) = 0`.
+
+Thus the live route requires a non-split/sheared seam presentation such as
+`A = [[X^m,1],[0,1]]`; cutoff crossing alone is not enough.
+
 Finally, the witness is packaged into the seam interface itself:
 
 `S.Delta () = Delta`,
@@ -94,9 +115,10 @@ with the same live seam defect.
 This is an abstract cutoff-crossing theorem, not yet the arithmetic Sonin operator. It changes the
 backtracking point: the route is not killed by the category, not killed by fake presentation
 congruence, not killed by the commutator collapse, and not blocked at the object layer of the
-extended `M+` category. It is killed only if the actual semilocal Sonin `{sigma_p}` defect is shown
-to be determinant-compatible modulo `X^m`, or if it cannot be realized as a cutoff-crossing torsion
-seam defect.
+extended `M+` category. The split-presentation no-go sharpens the remaining target: the actual
+semilocal Sonin `{sigma_p}` defect must realize a non-split torsion seam presentation and be
+determinant-transverse modulo `X^m`. If it is determinant-compatible, or if its presentation splits
+at the boundary, this route dies.
 
 ## Gates
 

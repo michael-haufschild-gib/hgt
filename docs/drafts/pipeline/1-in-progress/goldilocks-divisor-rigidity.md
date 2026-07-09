@@ -630,3 +630,215 @@ content ⟹ HT cocycle.** The constraint of the arithmetic object has no generat
 the branch's object is the welded pair (carrier, cocycle), both hypertranscendental, and the
 field's questions are about the classes of cocycles multiplicativity admits, not about orbits of
 zeros.
+
+**The completion obstruction located exactly [derivable from KNOWN + this card's cocycle
+computation — reading, one paragraph]:** if γ is ANY completion of ζ (γ(s)/γ(1−s) = h_ζ(s)) and γ
+were differentially algebraic, then h_ζ = γ(s)/γ(1−s) would be differentially algebraic (DA
+functions form a differential field closed under the affine substitution s ↦ 1−s), contradicting
+the hypertranscendence of h_ζ (dlog h_ζ exposes ψ; Hölder). Hence **every completion of ζ is
+hypertranscendental**: the reflection constraint of the arithmetic carrier cannot be trivialized
+inside any differentially algebraic algebra. The Γ-function's hypertranscendence is not an
+accident of the classical completion — it is forced by the cocycle. This is obstruction-shape (i)
+of the mission (why no rule exists), located at the completion: the constraint's own trivializers
+are constraint-only objects.
+
+## [CONJECTURE C-COC] The cocycle-transcendence dichotomy (the branch-native successor)
+
+> For an integral multiplicative carrier with meromorphic continuation: the reflection cocycle
+> `h_F = F(1−s)/F(s)` is differentially algebraic **iff** `F` is a Dirichlet polynomial.
+> Equivalently: the involution `s ↦ 1−s` never acts differentially-algebraically on a genuine
+> Euler product — the σ-antisymmetrization of `log F` (pure prime-frequency data) is never DA
+> unless the arithmetic is finite.
+
+Position. Not Ostrowski (carrier-HT does not force cocycle-HT — an exact DA functional equation
+for an HT carrier is a priori possible; the conjecture is that arithmetic forbids the
+cancellation). Not Kaczorowski–Perelli (no postulated Γ-shape, no finite-order axiom). Not a
+zero statement (no RH content, no synonym risk). The naked fact "every completion of ζ is HT" is
+[BRIDGE] to parametrized difference Galois theory (the ∂-Galois group of the order-1 ℤ/2-module
+is maximal) — refused as progress; C-COC is what the parent cannot state: which ARITHMETIC
+carriers admit DA cocycles at all. This is the Ostrowski theorem for the FE datum: carrier
+hypertranscendence was 1920; datum hypertranscendence is the branch's.
+
+Proven cases [Lean]: everywhere-valid representations (structure theorem — the cocycle is
+`Q^{2s−1}`, DA, and the carrier is a polynomial: both sides of the dichotomy verified);
+`h = 1` with everywhere-valid representation (`CocycleKernelTrivial.lean`: exact self-reflection
+forces the constant carrier — the kernel of the cocycle map is trivial).
+
+Killed en route: splitting-uniqueness of the arch/prime class decomposition (reduces to K–P
+H-invariant theory — [SEARCH]); the 2-torsion of H¹(ℤ/2, units) (its instantiation is the
+triviality that `F(s)F(1−s)` is symmetric).
+
+**[OPEN CORE]** exactly located: half-plane representation + continuation, `h` DA, no order
+axiom. Smallest cell `h = 1`: can a genuine integral Euler product satisfy `F(1−s) = F(s)`
+exactly? Hamburger's method is unavailable by design (no Γ, no theta); the two Dirichlet
+representations live on disjoint half-planes and meet only through the continuation.
+First lemma to attempt: symmetry pins the modulus on line-pairs symmetric about `Re = 1/2`
+while integrality bounds the convergence side from below — make the two bounds collide.
+
+**The h = 1 cell, finite order: EMPTY [one-paragraph proof; also VERIFIED-KNOWN via K–P degree-0
+at conductor 1].** Let F be an ordinary Dirichlet series with a₁ = 1 and finite abscissa,
+entire of finite order, with F(1−s) = F(s) exactly. Far right (re = σ₁ large) the tail bound
+gives |F − 1| ≤ 1/2 uniformly in t; symmetry copies this to re = 1 − σ₁; Phragmén–Lindelöf
+(finite order) bounds F on the strip between; F is bounded entire, hence constant, hence ≡ 1.
+Integrality is UNUSED — finite order is the load-bearing axiom, so the open core of C-COC's
+smallest cell is exactly: **infinite-order symmetric continuations of genuine Dirichlet
+series.**
+
+**Attack mechanism for the infinite-order cell [CONJECTURE — the frequency-sign obstruction]:**
+a symmetric carrier wants F = exp(E) with E symmetric; symmetrizing any right-half-plane
+frequency content (n^{−s}) necessarily creates the mirrored positive frequencies (n^{s−1}), and
+exponentiation propagates them — while an ordinary Dirichlet series admits only nonpositive
+frequencies. The conjecture: no infinite-order escape exists because the continuation cannot
+launder positive frequency content out of a symmetric exponent; integrality, if needed at all,
+enters as the discreteness that forbids frequency cancellation in the limit. First falsification
+target: construct any (non-integral) symmetric ordinary Dirichlet series of infinite order — the
+naive exp-constructions all fail on frequency signs.
+
+**Correction to the attack mechanism (self-attack, same day):** the frequency-sign obstruction as
+stated is too naive — the right-end Dirichlet expansion and its left-end mirror live on disjoint
+half-planes, and disjoint asymptotic expansions never clash for a generic entire function. The
+true crux is quantitative: by the Phragmén–Lindelöf alternative, an infinite-order escape must
+sustain `log log |F| ≳ π|t|/w` along a sequence inside the fixed transition strip while staying
+within `1/2` of `1` on both sides (and Arakelyan approximation on the two-half-plane set fails —
+the strip complement is not locally connected at infinity — so analysis forbids nothing cheaply
+in either direction). The h = 1 cell therefore splits into: (i) [CONSTRUCTION TARGET] a
+non-integral analytic escape — if built, it proves C-COC's content is genuinely arithmetic;
+(ii) a directed check whether integrality already forces finite order for continued Dirichlet
+series (a Pólya–Carlson-type circle — if the literature has it, the cell closes by the
+Phragmén–Lindelöf paragraph above); (iii) failing both, the named crux: **arithmetic versus
+harmonic measure** — an integral multiplicative Euler product cannot sustain doubly exponential
+strip growth at fixed configuration. No flow enters any branch.
+
+**Boundary of the known, quoted (checks file, integrality-vs-order round): [ABSENT]².**
+(i) No theorem derives an order/growth bound on the continuation from integer coefficients — the
+integer-coefficient corpus (Estermann 1928, Kurokawa 1985, Bhowmik et al.) is exclusively
+continuation-vs-natural-boundary dichotomies keyed to cyclotomy, with no vertical-order control;
+"finite order" occurs only as a hypothesis (Hamburger, Hecke, Selberg (P2), Carlson), never as a
+conclusion. (ii) The infinite-order gammaless symmetric case is unposed: Hamburger's hypothesis
+is verbatim "(s−1)^m F(s) is entire of finite order", Hecke's "an entire function of finite
+order"; the excised gap is exactly our cell. Consequently the [OPEN CORE] stands as stated —
+**order control from arithmetic** — and its novelty position is maximal: the question itself is
+absent from the corpus, not merely its answer. (Side note: Estermann's natural-boundary members
+are the classical stock feeding the no-healing theorem's hypotheses — the NB-column regime is
+populated by exactly the non-cyclotomic integral Euler products.)
+
+**C-COC architecture at current depth.** Conjecture posed (cocycle-transcendence dichotomy);
+machine-checked cases: everywhere-rep (structure theorem) and h = 1 everywhere-rep
+(`CocycleKernelTrivial.lean`: `symmetric_multiplicative_integral_eq_one`,
+`reflCocycle_eq_one_iff_const` — the reflection-cocycle map is faithful); paper case: h = 1
+finite order (Phragmén–Lindelöf paragraph; integrality unused, isolating the order axiom);
+boundary of the known quoted verbatim; crux named (arithmetic vs harmonic measure at fixed
+configuration); standing falsification target: a non-integral infinite-order symmetric escape
+(its difficulty is exactly the Arakelyan two-ends failure). No clause of this consumes a flow.
+
+**Overlap rigidity and the thick-support sharpening (h = 1 cell, third cut).**
+[Tool, Lean in flight — `OverlapRigidity.lean`]: a Dirichlet series absolutely convergent past
+the reflection center (`σ_a < 1/2`) and symmetric on the overlap strip is constant — evaluating
+the symmetry ON the central line turns it into an absolutely convergent sine series in the
+frequencies log n vanishing identically; mean-value orthogonality kills every coefficient. No
+order hypothesis, no Phragmén–Lindelöf, no contour. Consequences (the knowledge):
+- **Sparse integral streams cannot escape**: infinite integral support that is sparse has
+  σ_a < 1/2, and symmetry kills it — sparseness and symmetry are incompatible; the two threats
+  to rigidity cannot coexist.
+- **Thickness is forced**: an escape needs σ_a ≥ 1/2; with |aₙ| ≥ 1 on support this forces
+  support counting size ≳ x^{1/2}. The open core sharpens to: can √x-THICK multiplicative
+  integral arithmetic sustain infinite order while exactly symmetric?
+- **Termwise constructions all die**: any candidate built as Σ cₙ(n^{−s} + n^{s−1}) explodes
+  pointwise on the right flank whatever the decay of cₙ — the mirror content of an escape can
+  never be series-visible on the right; the continuation must transcend the series.
+- [CONJECTURE] The boundary case σ_a = 1/2 falls to an L²/Besicovitch boundary-value refinement
+  (both expansions carry the same boundary function on the shared line from opposite sides; the
+  ±log n frequency systems then force zero). [OPEN CORE after that]: σ_a ∈ (1/2, 1] — the thick
+  regime.
+
+**Pattern note (the program's recurring mechanism):** the kill reads the constraint AT ITS FIXED
+LOCUS — on the central line the reflection degenerates to a linear condition (a vanishing sine
+series), exactly as the completion obstruction degenerated to the fixed-point parity bit and the
+crease ledger read the on-line orders. The involution's fixed locus is where the constraint
+becomes computable; every load-bearing theorem of this card so far is a fixed-locus evaluation.
+
+**Exploration of the fixed-locus principle (h = 1 cell, fourth cut).**
+- [BRIDGE, named honestly] The program's recurring mechanism — completion parity, crease ledger,
+  sine-kill — is ℤ/2-equivariant localization (Smith-type): after inverting 2, the equivariant
+  theory of the strip is the theory of the fixed line. The principle is corpus; the instances are
+  ours; the PREDICTION is the value: every σ-symmetric carrier question admits a line-reduction.
+- [PROVED-shape, corollary of overlap rigidity] Divergence criterion: a symmetric integral escape
+  has Σ‖aₙ‖n^{−σ} = ∞ for every σ < 1/2 — sparse-and-small is dead in one line.
+- [CONJECTURE, attackable] Besicovitch stratum: at moderate thickness (Σ_{supp} 1/n < ∞, density
+  up to ~√x·polylog), the carrier is line-L²; both expansions have mean-square boundary values on
+  the shared line from opposite sides, and the ±log n frequency systems carrying one boundary
+  function kill all coefficients — the σ_a = 1/2 kill extends across the stratum.
+- [OPEN CORE, irreducible cell after the above] ζ-thick support (Σ_{supp} 1/n = ∞): line-L² fails,
+  no boundary pairing exists; the carrier is mean-square-visible only strictly right of the line.
+  The final form of the h = 1 question: can ζ-THICK integral multiplicative arithmetic sustain an
+  exactly symmetric infinite-order continuation? Everything thinner is closed or closable.
+- [SEARCH, restated in cocycle language] Phase pinning: on the fixed line FE + Schwarz determine
+  arg F (the Hardy Z fact); overlap rigidity is the degenerate collision where the series reaches
+  the line and pins the modulus too — the open core is exactly the regime where the constraint
+  holds the phase and the arithmetic withholds the modulus.
+
+**Correction (self-attack on the fourth cut, same day): the Besicovitch stratum is DEAD.**
+The proposed line-L² pairing miscalibrated the Hardy geometry of Dirichlet series: by the Bohr
+shift, an ℓ²-coefficient Dirichlet series has its L² boundary theory half a plane to the right
+of its convergence boundary (the HLS space lives at +1/2). With bₙ = aₙn^{−1/2} ∈ ℓ², the Hardy
+boundary line of F − 1 is re s = 1, not the critical line: mean-square data never reaches the
+involution's fixed line for σ_a ≥ 1/2. Both the σ_a = 1/2 Besicovitch conjecture and its stratum
+extension are withdrawn. The h = 1 open core stands as: σ_a ≥ 1/2, infinite order — with the
+sparse-kill (overlap rigidity) and the finite-order kill (Phragmén–Lindelöf) as its only proven
+reductions; ζ-thickness remains a heuristic emphasis, not a proven stratum boundary.
+
+**Residue of the failed attack [the structural reason the core is hard]:** the Hardy line
+re = σ_a + 1/2 of a Dirichlet series is symmetric under s ↦ 1−s only when σ_a = 0 — exactly the
+regime overlap rigidity already kills. Wherever a symmetric carrier survives, the involution's
+pairing (across re = 1/2) and the mean-square pairing (across the Bohr-shifted line) are
+STRICTLY misaligned: no line carries both structures. Any future attack must either build an
+L²-type theory native to the involution's line (not Bohr-shifted — i.e., not inherited from the
+ℓ²-coefficient geometry), or find a third structure that lives on the fixed line outright — the
+crease/parity data being the only currently known example.
+
+## [CONJECTURE INT-ORDER] — the keystone: integrality bounds order
+
+> An ordinary Dirichlet series with integer coefficients and finite abscissa whose continuation
+> is entire (or meromorphic with finitely many poles) is of FINITE ORDER.
+
+A Pólya–Carlson analogue in the order variable: the corpus's integrality theorems control
+DOMAIN (continuation vs natural boundary — Pólya–Carlson, Estermann, Kurokawa), never GROWTH;
+"finite order" occurs in the literature only as a hypothesis, never a conclusion ([ABSENT],
+verified this session). Position: keystone — INT-ORDER closes the h = 1 cell outright (the
+Phragmén–Lindelöf paragraph applies) and collapses every open cell of C-COC to finite order,
+where the DA-side classification finishes. Flowless: growth vs discreteness at fixed
+configuration.
+
+Consistency checks run: integral single columns cannot violate it (integral power series =
+polynomial or radius ≤ 1; Pólya–Carlson splits into rational = finite order vs natural boundary
+= no continuation); the corpus's continuable integral examples (cyclotomic/Estermann) are
+shifted-zeta products, finite order. No cheap kill in either direction: the Mellin-dual
+integer-jump floor (A(x) jumps by ≥ 1 forever on infinite support — a permanent lower bound on
+the remainder against any smooth main term) bounds left-vertical DECAY from below, while
+infinite order concerns upper growth — the two-sidedness is genuine.
+
+Native attack surface: the Mellin dual, where integrality acts pointwise (integer jumps), not
+through coefficient norms — the first purchase point for the discreteness engine that is not
+filtered through absolute convergence. Falsification target: polynomial-size integer
+coefficients with an entire infinite-order continuation; the column examples show infinite
+order demands factorial-type fine-tuning, which integrality forbids — that sentence is the
+conjecture's content, and its proof or refutation is a new rigidity axis either way.
+
+**INT-ORDER worked (both directions, same day).**
+- [CONJECTURE, mechanism form] Every known entire-continuation mechanism for ordinary Dirichlet
+  series (theta/FE, periodic-coefficient Hurwitz combinations, cyclotomic/Estermann products) is
+  finite-order by construction; the sole known infinite-order route is everywhere-convergence of
+  the series itself — and integrality provably forbids it (norm-≥-1 terms cannot vanish at
+  σ ≤ 0; the structure theorem's mechanism). INT-ORDER ⟺ "there is no third mechanism." A
+  counterexample must contain a continuation mechanism new to mathematics.
+- [PROVED-shape, execution register] The discreteness floor: A(x) = Σ_{n≤x} aₙ is integer-valued
+  and unit-interval-constant; each support point has an adjacent gap with |A| ≥ 1, so
+  μ{x ≤ X : |A(x)| ≥ 1} ≥ S(X)/2 — positive-measure integrality, unfiltered by coefficient
+  norms. (Lean tool candidate, queued.)
+- [OPEN, the exact gap] Transport: left-plane values of the continuation are unique functionals
+  of A but admit no growth-free representation; Perron-type inversion needs the growth that is
+  the conclusion. The transport gap is the misalignment residue in a third guise: every
+  data-function pairing lives right of σ_a, while the constraint acts at and left of the line.
+  INT-ORDER's remaining content = one growth-free bridge from tail data to left-plane values, OR
+  a proof that no such bridge is needed (an entire-function-theoretic argument from the floor's
+  two-sided divergence directly to an order bound).

@@ -270,6 +270,61 @@ theorem exists_crossBoundary_not_trace_X_pow_dvd (m : ℕ) (hm : 0 < m) :
   exact ⟨e, σ, A, he, hdet,
     (fittingBoundaryClass_ne_zero_iff_not_trace_X_pow_dvd m A (crossBoundary e σ)).mp hclass⟩
 
+/-! ### §4b Split torsion presentations are boundary-blind -/
+
+variable {R : Type*} [CommRing R]
+
+/-- The standard two-region cutoff used by the concrete lower-corner witness. -/
+def standardCutoff : Matrix (Fin 2) (Fin 2) (Polynomial R) := !![1, 0; 0, 0]
+
+/-- The split diagonal torsion presentation `R[X] --X^m--> R[X]` plus a free summand. -/
+def splitTorsionPresentation (m : ℕ) : Matrix (Fin 2) (Fin 2) (Polynomial R) :=
+  !![(X : Polynomial R) ^ m, 0; 0, 1]
+
+/-- The split torsion presentation has determinant `X^m`. -/
+theorem splitTorsionPresentation_det (m : ℕ) :
+    (splitTorsionPresentation (R := R) m).det = (X : Polynomial R) ^ m := by
+  rw [splitTorsionPresentation, Matrix.det_fin_two]
+  simp
+
+/-- **Split torsion seams do not detect a standard lower cross-boundary corner.**
+For the diagonal presentation `diag(X^m, 1)`, every defect of the form
+`(1 - e) sigma e` has zero adjugate trace.  The determinant-transverse witness
+therefore needs the non-split/sheared presentation used in `exists_nonfake_crossBoundary`. -/
+theorem fittingBoundaryTrace_splitTorsion_crossBoundary (m : ℕ)
+    (σ : Matrix (Fin 2) (Fin 2) (Polynomial R)) :
+    fittingBoundaryTrace (splitTorsionPresentation (R := R) m) (crossBoundary standardCutoff σ) = 0 := by
+  rw [fittingBoundaryTrace, splitTorsionPresentation, standardCutoff]
+  have hsub : (!![(1 : Polynomial R), 0; 0, 1] - !![(1 : Polynomial R), 0; 0, 0]) =
+      !![(0 : Polynomial R), 0; 0, 1] := by
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp
+  have hleft : (!![(0 : Polynomial R), 0; 0, 1] * σ) =
+      !![0, 0; σ 1 0, σ 1 1] := by
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply]
+  have hΔ : crossBoundary (!![(1 : Polynomial R), 0; 0, 0]) σ =
+      !![0, 0; σ 1 0, 0] := by
+    rw [crossBoundary, Matrix.one_fin_two, hsub, hleft]
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply]
+  have hadj : (!![(X : Polynomial R) ^ m, 0; 0, 1]).adjugate =
+      !![1, 0; 0, (X : Polynomial R) ^ m] := by
+    rw [Matrix.adjugate_fin_two]
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp
+  rw [hΔ, hadj, Matrix.mul_fin_two, Matrix.trace_fin_two]
+  simp
+
+/-- Consequently, the split diagonal torsion presentation has zero Fitting boundary
+class for every standard lower cross-boundary defect. -/
+theorem fittingBoundaryClass_splitTorsion_crossBoundary (m : ℕ)
+    (σ : Matrix (Fin 2) (Fin 2) (Polynomial R)) :
+    fittingBoundaryClass m (splitTorsionPresentation (R := R) m) (crossBoundary standardCutoff σ) = 0 := by
+  rw [fittingBoundaryClass]
+  rw [fittingBoundaryTrace_splitTorsion_crossBoundary]
+  simp [jetClass]
+
 /-! ### §5 The two-cutoff asymmetry: blind to one cutoff, crossing another -/
 
 /-- **The two-cutoff asymmetry.**  There are two cutoffs `e, f` and an action `σ` that commutes with
