@@ -472,3 +472,4 @@ import GaloisForLFunctions.RHTower.XiConvergenceExponent
 import GaloisForLFunctions.RHTower.ReBoundAffine
 import GaloisForLFunctions.RHTower.GammalessStripRigidity
 import GaloisForLFunctions.RHTower.BohrCoefficientUniqueness
+import GaloisForLFunctions.RHTower.QuietCrossingRigidity

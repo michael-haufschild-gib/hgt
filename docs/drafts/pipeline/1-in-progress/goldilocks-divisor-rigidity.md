@@ -1233,3 +1233,46 @@ Kaczorowski–Perelli pairing with the order axiom removed. Together with
 degree-0 classification on the small-abscissa stratum is machine-checked in BOTH halves and full
 conductor-datum generality. Remaining Lean target for this card: `QuietCrossingRigidity.lean`
 (in progress) — the σ_a ≥ 1/2 stratum under quiet crossings.
+
+## Lean status — smoothed-Perron engine LANDED; rigidity shift remains the open Lean target
+
+`QuietCrossingRigidity.lean` verified and integrated (all five public theorems
+[propext, Classical.choice, Quot.sound]; umbrella; lint green): `perronKernel_mellin`
+(`mellin (max(1−u,0)) s = 1/(s(s+1))` on `Re s > 0`), `perronKernel_mellinConvergent`,
+`perronKernel_verticalIntegrable`, `perronKernel_inversion` (the kernel identity
+`(1/2π)∫ y^{c+it}/((c+it)(c+it+1)) dt = max(1−1/y, 0)`, via Mellin inversion), and
+`smoothed_perron_sum` (`Σ' aₙ·max(x−n,0) = (1/2π)∫ L(c+it)·x^{(c+it)+1}/((c+it)(c+it+1)) dt` for
+any carrier absolutely convergent at `c > 0`, `x > 0`). This machine-checks deliverables A and B
+of the wave-1 proof — the full analytic engine. Deliverable C (rectangle contour shift with quiet
+crossings, residues at 0 and −1, M → ∞, and the piecewise-linear kink extraction) is proven on
+paper (wave 1) and remains the module's outstanding Lean target; it is a self-contained
+consumer of A + B.
+
+## Wave 1 refinement — the residue-free form of quiet-crossing rigidity
+
+The contour-shift proof simplifies structurally: instead of shifting the smoothed count `A₁(x)`
+(whose integrand `F(s)x^{s+1}/(s(s+1))` has poles at `s = 0, −1` contributing the affine part
+`F(0)x − F(−1)`), shift the SECOND DIFFERENCE directly. With `N(s) = (x+δ)^{s+1} + (x−δ)^{s+1}
+− 2x^{s+1}`, the numerator vanishes at both poles — `N(0) = 0` (first differences of x cancel)
+and `N(−1) = 0` (constants cancel) — so `F(s)·N(s)/(s(s+1))` is ENTIRE and the rectangle shift
+needs no residue calculus at all: the second difference of `A₁` at every `x − δ > 1` equals the
+left-line limit, which vanishes as `M → ∞`, giving `aₙ·δ = 0` directly. The observation with
+content: the kernel's two poles and the two affine degrees of freedom of the shifted count are
+the SAME two dimensions, and second-differencing quotients both out simultaneously. The residues
+`F(0), F(−1)` — hence the values of the continuation at the pair {0,−1} = the s(s+1) divisor —
+never enter the rigidity mechanism. (This is also the tractable Lean route; module target
+updated accordingly.)
+
+## Non-vacuity remark — dzo instantiates the order-free classification
+
+The in-tree witness `dzo(s) = (1 − 2·8^{−s})(1 − 4·8^{−s}) = 1 − 6·8^{−s} + 8·64^{−s}`
+(`DegreeZeroOffline.lean`) satisfies the exact conductor-8 identity `dzo(s) = 8^{1−2s}·dzo(1−s)`
+and instantiates both halves of the machine-checked classification nontrivially: support
+`{1, 8, 64} ⊆ div(8²)` (`conductor_datum_finite_support`), and in normalized coefficients
+`b_m = a_m m^{−½}`: `b_1 = 1 = c·b_64` (with `b_64 = 8·64^{−½} = 1`, `c = 1`) and `b_8 = −6·8^{−½}`
+self-paired (`conductor_datum_pairing`). The classified class contains genuine off-line-divisor
+members; the theorems are not vacuously scoped. Relation to the in-tree everywhere-rep results:
+`IntegralFEPolynomial`/`CocycleKernelTrivial` close the everywhere-valid-representation cells via
+the integrality growth dichotomy; the new modules close the half-plane σ₀ < 1/2 cells via Bohr
+orthogonality with NO integrality or multiplicativity — the two mechanisms cover disjoint strata
+of the C-COC cell map and neither subsumes the other.
