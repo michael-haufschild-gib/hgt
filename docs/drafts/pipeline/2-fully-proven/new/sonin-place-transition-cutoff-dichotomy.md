@@ -158,6 +158,10 @@ Idempotence of `q_T` then gives
   tends to zero as `p -> infinity`, but compactness does not improve at any finite `p`.
 - `[PROVED]` Finite-dimensional compression can manufacture a polynomial lower-left entry, but the entry
   depends on the chosen channels. It is a finite probe, not the source-built Sonin transition.
+- `[PROVED IN COMPANION CARD]` The bounded positive Euler norm-change operator also fails: its corner
+  across the actual archimedean Sonin projection is noncompact for every prime and `lambda>0`; see
+  `sonin-euler-metric-corner-noncompact.md`. This closes the metric fallback, not the formal prolate
+  naturality defect.
 - `[PROVED FROM SOURCE]` At `lambda = 0` or `S = {infinity}`, `Omega_{S,lambda}=0`. For one added prime
   and `lambda != 0`, its nonvanishing is already contained in Remark 4.2(i), so nonvanishing alone is
   not a new result.

@@ -47,3 +47,7 @@
   (`quiet_crossing_rigidity_gaussian`) — quiet budget weakened to `log q_k = o(T_k²)` (∀λ form;
   single-λ proven insufficient, quantifier corrected on the working card); axiom-clean, umbrella,
   lint green.
+- 2026-07-09 (later) — path-quiet form formalized: `QuietPathRigidity.lean`
+  (`quiet_path_rigidity`) — quiet C¹ paths through the strip replace straight crossings
+  (budget q·L/T²); hexagonal-loop primitive-telescoping architecture; axiom-clean, umbrella,
+  lint green.

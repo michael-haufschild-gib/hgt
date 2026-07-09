@@ -462,6 +462,7 @@ import GaloisForLFunctions.RHTower.LadderNesting
 import GaloisForLFunctions.RHTower.CocycleKernelTrivial
 import GaloisForLFunctions.RHTower.ReflectionCocycleCurvature
 import GaloisForLFunctions.RHTower.ReflectionCocycleArchimedean
+import GaloisForLFunctions.RHTower.CocycleExponentRigidity
 import GaloisForLFunctions.RHTower.CompletedZetaGrowth
 import GaloisForLFunctions.RHTower.XiZeroDensity
 import GaloisForLFunctions.RHTower.OverlapRigidity
@@ -477,3 +478,5 @@ import GaloisForLFunctions.RHTower.BohrCoefficientUniqueness
 import GaloisForLFunctions.RHTower.QuietCrossingRigidity
 import GaloisForLFunctions.RHTower.QuietCrossingConductor
 import GaloisForLFunctions.RHTower.QuietCrossingEscalation
+import GaloisForLFunctions.RHTower.QuietPathRigidity
+import GaloisForLFunctions.RHTower.RectangleCrossingDuality

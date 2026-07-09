@@ -52,8 +52,9 @@ ideal, construct its stable determinant-line presentation, and compute the mixed
 
 ## Source-realization audit
 
-`[PROVED HERE; see ../2-fully-proven/new/sonin-place-transition-cutoff-dichotomy.md]` Two immediate
-readings of the cited Sonin construction do not enter the current Fitting seam:
+`[PROVED HERE; see ../2-fully-proven/new/sonin-place-transition-cutoff-dichotomy.md and
+../2-fully-proven/new/sonin-euler-metric-corner-noncompact.md]` The source audit separates the
+transition, raw dilation, Euler metric, and formal prolate objects:
 
 1. The place-enlargement transition between semilocal Sonin spaces becomes the identity on the common
    entire-function carrier `B_lambda`. Every cutoff transported from that carrier is intertwined, hence
@@ -70,6 +71,10 @@ readings of the cited Sonin construction do not enter the current Fitting seam:
    Its cyclic grading is genuinely place-sensitive: Remark 4.2(i) states
    `N_S eta_S != eta_S N_infinity` unless `S = {infinity}`. Thus for `lambda != 0` the formal defect
    `Omega_{S,lambda}` is nonzero. This nonvanishing is source-level SEARCH, not the desired seam class.
+5. The bounded positive Euler metric on the common `B_lambda` carrier does not provide a trace-ideal
+   replacement. For the pinned archimedean norm, its corner across the **actual** Sonin projection is
+   noncompact for every `lambda>0` and every prime `p`. The proof constructs high-frequency shell modes
+   that are asymptotically Sonin while one dilation moves the full shell across the physical cutoff.
 
 For any cutoff-compatible place transition `J_{T,S}`, Lean now proves the exact structural identity
 
@@ -106,6 +111,8 @@ cross-effect. Until these steps, the low-coefficient test is not well-typed for 
   corner.
 - This cannot promote `Omega != 0`: `Omega` is an exact naturality coboundary, and arbitrary vertexwise
   gauge subtraction kills it.
+- This cannot substitute the positive Euler norm-change operator for `Omega`: its actual-Sonin corner
+  is noncompact, hence outside every Schatten class.
 - This cannot grade success by detecting an off-line zero. The witness must be invariantly defined at
   the trace-ideal/determinant-line level; a low coefficient of `tr(adj(A) Delta)` is admissible only
   after a stable finite-projective presentation has been constructed.
@@ -165,6 +172,10 @@ cross-effect. Until these steps, the low-coefficient test is not well-typed for 
   `jetClass(-sigma_10)`, but the source's `sigma_p` is a vector, while its canonical transition has
   zero transported-cutoff boundary and its raw dilation corner is noncompact. The standard-chart
   criterion becomes relevant only after the missing trace-ideal operator and invariant reduction exist.
+- 2026-07-09 - [PROVED] The bounded Euler-metric fallback is closed in the pinned archimedean
+  realization. `sonin-euler-metric-corner-noncompact.md` proves that the actual Sonin projection retains
+  asymptotically shell-localized high-frequency modes, so
+  `(1-P_lambda)M_{|1-p^(-1/2-is)|^2}P_lambda` is noncompact for every prime and `lambda>0`.
 
 ## Source-defined construction to attack
 

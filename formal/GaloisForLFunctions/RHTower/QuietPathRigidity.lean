@@ -196,8 +196,8 @@ theorem quiet_path_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
   have hEdiff : Differentiable ℂ (perronE n) := perronE_differentiable hn1
   have hHfdiff : Differentiable ℂ Hf := hF.mul hEdiff
   have hHfcont : Continuous Hf := hHfdiff.continuous
-  -- Freeze `Hf` opaque: prevents its definition from being unfolded during the (large)
-  -- definitional-equality checks in the limit-uniqueness step below.
+  -- Freeze `Hf` as an abstract local constant, so its definition is not expanded during the
+  -- large definitional-equality checks in the limit-uniqueness step below.
   clear_value Hf
   -- Real facts about the three knots.
   have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1

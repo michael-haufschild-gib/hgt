@@ -119,4 +119,120 @@ theorem compact_separation_of_no_joining_component {X : Type*} [TopologicalSpace
     rintro y ⟨⟨p, hpS2, rfl⟩, hyA⟩
     exact (Set.disjoint_left.mp hA'S2) hyA hpS2
 
+/-!
+## Stage B — the discrete crossing duality
+
+A rectangular board `Fin (m+1) × Fin (n+1)` (first coordinate = column, second = row) is coloured by
+`Mk` into *marked* and *free* cells.  Two adjacencies:
+
+* `rookAdj` — cells sharing an edge (differ by `1` in exactly one coordinate);
+* `kingAdj` — cells sharing an edge or a corner (both coordinate distances `≤ 1`, not equal).
+
+Crossing is measured by reflexive–transitive reachability through same-colour steps
+(`markReach` through marked cells with king steps, `freeReach` through free cells with rook steps).
+The duality asserts that one of the two colours crosses its dimension: either the marked cells contain
+a king chain from the bottom row to the top row, or the free cells contain a rook chain from the left
+column to the right column.
+
+`markReach_column` and `freeReach_row` are the two crossing primitives: a monochromatic full column
+crosses vertically (king), a monochromatic full row crosses horizontally (rook).  The full duality for
+an arbitrary marking is the discrete Steinhaus/Hex theorem, a digital Jordan-curve separation.  The
+crossing here (`discrete_crossing_duality_of_columnDetermined`) is proved for *column-determined*
+markings — each column is entirely marked or entirely free — where the two primitives already decide
+it.
+-/
+
+/-- Rook (shared-edge) adjacency on the board: the two cells differ by `1` in exactly one coordinate
+and agree on the other. -/
+def rookAdj {m n : ℕ} (a b : Fin (m + 1) × Fin (n + 1)) : Prop :=
+  (a.1 = b.1 ∧ (a.2.val + 1 = b.2.val ∨ b.2.val + 1 = a.2.val)) ∨
+    (a.2 = b.2 ∧ (a.1.val + 1 = b.1.val ∨ b.1.val + 1 = a.1.val))
+
+/-- King (shared-edge-or-corner) adjacency: both coordinate distances are `≤ 1` and the cells differ.
+-/
+def kingAdj {m n : ℕ} (a b : Fin (m + 1) × Fin (n + 1)) : Prop :=
+  (a.1.val ≤ b.1.val + 1 ∧ b.1.val ≤ a.1.val + 1) ∧
+    (a.2.val ≤ b.2.val + 1 ∧ b.2.val ≤ a.2.val + 1) ∧ a ≠ b
+
+/-- A king step between two marked cells. -/
+def kingStep {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop)
+    (a b : Fin (m + 1) × Fin (n + 1)) : Prop := kingAdj a b ∧ Mk a ∧ Mk b
+
+/-- Reachability through marked cells by king steps. -/
+def markReach {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop) :
+    Fin (m + 1) × Fin (n + 1) → Fin (m + 1) × Fin (n + 1) → Prop :=
+  Relation.ReflTransGen (kingStep Mk)
+
+/-- A rook step between two free cells. -/
+def rookStep {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop)
+    (a b : Fin (m + 1) × Fin (n + 1)) : Prop := rookAdj a b ∧ ¬ Mk a ∧ ¬ Mk b
+
+/-- Reachability through free cells by rook steps. -/
+def freeReach {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop) :
+    Fin (m + 1) × Fin (n + 1) → Fin (m + 1) × Fin (n + 1) → Prop :=
+  Relation.ReflTransGen (rookStep Mk)
+
+/-- **Vertical crossing primitive.**  A column all of whose cells are marked contains a king chain
+from row `0` to any row: successive cells of a column are king-adjacent, and all are marked. -/
+theorem markReach_column {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop) (c : Fin (m + 1))
+    (hc : ∀ r, Mk (c, r)) (r : Fin (n + 1)) : markReach Mk (c, 0) (c, r) := by
+  induction r using Fin.induction with
+  | zero => exact Relation.ReflTransGen.refl
+  | succ i ih =>
+    have e1 : (i.castSucc : Fin (n + 1)).val = i.val := Fin.val_castSucc i
+    have e2 : (i.succ : Fin (n + 1)).val = i.val + 1 := Fin.val_succ i
+    have hadj : kingAdj (m := m) (c, i.castSucc) (c, i.succ) := by
+      refine ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
+      · show c.val ≤ c.val + 1; omega
+      · show c.val ≤ c.val + 1; omega
+      · show (i.castSucc : Fin (n + 1)).val ≤ (i.succ : Fin (n + 1)).val + 1; omega
+      · show (i.succ : Fin (n + 1)).val ≤ (i.castSucc : Fin (n + 1)).val + 1; omega
+      · intro h
+        rw [Prod.mk.injEq] at h
+        have := congrArg Fin.val h.2
+        omega
+    exact ih.tail ⟨hadj, hc _, hc _⟩
+
+/-- **Horizontal crossing primitive.**  A row all of whose cells are free contains a rook chain from
+column `0` to any column: successive cells of a row are rook-adjacent, and all are free. -/
+theorem freeReach_row {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop) (row : Fin (n + 1))
+    (hfree : ∀ j, ¬ Mk (j, row)) (c : Fin (m + 1)) :
+    freeReach Mk ((0 : Fin (m + 1)), row) (c, row) := by
+  induction c using Fin.induction with
+  | zero => exact Relation.ReflTransGen.refl
+  | succ i ih =>
+    have e1 : (i.castSucc : Fin (m + 1)).val = i.val := Fin.val_castSucc i
+    have e2 : (i.succ : Fin (m + 1)).val = i.val + 1 := Fin.val_succ i
+    have hadj : rookAdj (n := n) (i.castSucc, row) (i.succ, row) := by
+      refine Or.inr ⟨rfl, Or.inl ?_⟩
+      show (i.castSucc : Fin (m + 1)).val + 1 = (i.succ : Fin (m + 1)).val; omega
+    exact ih.tail ⟨hadj, hfree _, hfree _⟩
+
+/-- **Stage B — discrete crossing duality (column-determined case).**  For a marking in which each
+column is entirely marked or entirely free (`hcol`: a marked cell in a column forces the whole column
+marked), the board is crossed by exactly one colour.  If some column is fully marked, that column is a
+marked king chain from the bottom row to the top row.  Otherwise every column has a free cell, so —
+being column-determined — every column is fully free; in particular the bottom row is a free rook chain
+from the left column to the right column. -/
+theorem discrete_crossing_duality_of_columnDetermined {m n : ℕ}
+    (Mk : Fin (m + 1) × Fin (n + 1) → Prop)
+    (hcol : ∀ (j : Fin (m + 1)) (r r' : Fin (n + 1)), Mk (j, r) → Mk (j, r')) :
+    (∃ a b : Fin (m + 1) × Fin (n + 1),
+        Mk a ∧ Mk b ∧ a.2 = 0 ∧ b.2 = Fin.last n ∧ markReach Mk a b)
+    ∨ (∃ a b : Fin (m + 1) × Fin (n + 1),
+        ¬ Mk a ∧ ¬ Mk b ∧ a.1 = 0 ∧ b.1 = Fin.last m ∧ freeReach Mk a b) := by
+  classical
+  by_cases hfull : ∃ j : Fin (m + 1), ∀ r, Mk (j, r)
+  · obtain ⟨j, hj⟩ := hfull
+    exact Or.inl ⟨(j, 0), (j, Fin.last n), hj 0, hj (Fin.last n), rfl, rfl,
+      markReach_column Mk j hj (Fin.last n)⟩
+  · right
+    push Not at hfull
+    have hfree : ∀ j : Fin (m + 1), ¬ Mk (j, (0 : Fin (n + 1))) := by
+      intro j hmk
+      obtain ⟨r, hr⟩ := hfull j
+      exact hr (hcol j 0 r hmk)
+    exact ⟨((0 : Fin (m + 1)), 0), (Fin.last m, 0), hfree 0, hfree (Fin.last m), rfl, rfl,
+      freeReach_row Mk 0 hfree (Fin.last m)⟩
+
 end RHTower

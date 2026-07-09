@@ -5,9 +5,7 @@ This is an agent worklist aid, not a mathematical ledger.
 
 ## Proof Debt
 
-| Kind | Location | Context | Text |
-|---|---|---|---|
-| proof-debt | `formal/GaloisForLFunctions/RHTower/QuietPathRigidity.lean:246` | `theorem quiet_path_rigidity` | `sorry` |
+No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 
 ## Large Files
 

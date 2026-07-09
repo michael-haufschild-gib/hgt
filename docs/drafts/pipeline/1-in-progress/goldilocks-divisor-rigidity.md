@@ -1377,3 +1377,100 @@ from below — its blow-up rate against `π/(2σ_a−1)` is the first computable
 target (after the in-flight modules): frequency-general quiet-crossing (any discrete Λ — paper
 addendum already on this card), moving the machine-checked complex onto the exact ground where
 the discreteness invariant lives.
+
+## Wave 7 — the falsification attack executed: periodic and monomial-model rigidity; the Carleman weight derived
+
+**[PROVED — periodic-spectrum rigidity (first loud-regime closure).]** For Λ = αℕ (single
+generator): a member G (entire, lower-flank trace Σ bₖe^{−izαk} absolutely convergent, even
+G(z) = G(−z)) is CONSTANT — no flank bound, no quiet or growth hypothesis. Proof: the trace is
+2π/α-periodic ⟹ G periodic (identity theorem) ⟹ G descends through q = e^{−iαz} to f analytic on
+ℂ∖{0}; Im z → −∞ gives G → b₀, so q = 0 is removable and f is entire; evenness reads
+f(q) = f(1/q), so f(q) → f(0) as q → ∞, and Liouville forces f constant. Symmetry + spectral
+periodicity alone close the cell, loud regime included. Every falsification spectrum inside one
+arithmetic progression is dead. ∎
+
+**[PROVED — finitely-generated monomial-model rigidity.]** For Λ ⊆ ℕα₁ + ⋯ + ℕα_d with rationally
+independent generators: no nonconstant member arises as G = f ∘ leaf with f ENTIRE on ℂ^d
+(leaf(z) = (e^{−iα₁z}, …, e^{−iα_dz}), coefficients assembled as a d-variable power series).
+Proof: the leaf's closure is the pluriharmonic level hypersurface
+H = {|q₁|^{1/α₁} = ⋯ = |q_d|^{1/α_d}} (argument-line density in the torus by rational
+independence); evenness gives f = f∘inv on the leaf, hence on H; H has real dimension 2d−1, and
+the zero set of a nonzero holomorphic function has real dimension ≤ 2d−2, so f ≡ f∘inv on (ℂ*)^d;
+then f(q) = f(1/q) bounds each variable at ∞ and iterated Liouville forces f constant. ∎
+Consequences: (i) symmetric Dirichlet polynomials ≡ constants is the polynomial-f case; (ii) the
+Dirichlet–Arakelyan falsification space is localized to LEAF-INTRINSIC welds — objects that are
+not restrictions of any function of the torus variables; (iii) minimal open falsification target
+= the two-base cell Λ ⊆ ℕα + ℕβ, α/β irrational, leaf-intrinsic regime. [OPEN CORE — two-base
+weld cell.]
+
+**[PROVED — windowed-recovery cost (the derived Carleman scale).]** For spectrum {log n}: the
+windowed Bohr mean over [0, L] recovers bₙ with neighbor error ~ |b_{n±1}|·n/L (nearest gap
+~ 1/n), so recovery costs window length L ≳ n = e^{λₙ}. The lattice's exponentially decaying gaps
+price coefficient recovery at the SAME scale e^{(1+o(1))λₙ} at which the effective curtain floors
+κₙ ~ |aₙ|/n^{c+1} degrade. **[CONJECTURE — exponent-matching principle]:** every crossing-type
+mechanism degrades at the lattice-density scale; closing the loud cell needs subexponential-in-λ
+constants. Derived candidate weight: φ_Λ(λ) = log(1/gap_Λ(λ)) — for log ℕ, φ(λ) = λ (weight n in
+coefficient space).
+
+**[PROVED — w → 0⁺ discontinuity: no geometry-only weight, even asymptotically.]** At w = 0 the
+cell is rigid (H^∞ ∩ H^∞ + Liouville); for EVERY w > 0 the wave-3 Arakelyan construction applies
+verbatim (its condition check is width-independent), so the pure class is nontrivial at every
+positive width and jumps discontinuously at w = 0. Hence no trace-only Carleman estimate can
+exist with constants continuous in w; any true seam-Carleman inequality must carry the spectral
+weight φ_Λ. Consistency check: at periodic Λ the gaps are bounded below, φ_Λ is bounded, and
+rigidity holds unconditionally (the theorem above) — the weight's blow-up is exactly the
+non-periodicity of the spectrum.
+
+**Forward (executable):** (1) Lean target: periodic-spectrum rigidity (descend along the exp
+covering + removable singularity + Liouville — small, moves a real quantifier: first loud-regime
+closure); (2) attack the two-base cell leaf-intrinsically: the leaf is conformally ℂ and the
+weld condition is f = f∘inv on a dense winding — quantify the obstruction via the winding's
+return times (continued fraction of α/β): [CONJECTURE] the two-base cell is rigid iff α/β has
+unbounded partial quotients — the Diophantine class of the frequency ratio enters as the
+discriminating parameter of the first open cell.
+
+## Lean status — path-quiet rigidity LANDED (full theorem)
+
+`QuietPathRigidity.lean` verified and integrated (`quiet_path_rigidity`
+[propext, Classical.choice, Quot.sound]; umbrella build; lint green; index regenerated): one
+sequence of C¹ flank-to-flank paths at heights ±T_k with sup ‖F∘γ‖ ≤ q_k, arc length ≤ L_k and
+budget `(q_k·L_k + 1)/T_k² → 0` suffices for `aₙ = 0` (n ≥ 2) — quietness as sublevel-set
+connectivity, machine-checked. The delegate's architecture improved on the planned two-stage
+route: a single hexagonal closed loop per depth, with a global primitive from Morera
+(`Differentiable.isExactOn_univ`) telescoping all six pieces — avoiding the pole-on-line
+integrability issue the staged plan would have met at Re = 1−c. Remaining Lean in flight:
+`RectangleCrossingDuality.lean` (curtain duality). Newly queued from wave 7: periodic-spectrum
+rigidity (loud-regime closure, small module).
+
+## Wave 7 addendum — the two-base cell sharpened
+
+**[PROVED — commensurable collapse.]** If α/β = p/q ∈ ℚ, the spectrum ℕα + ℕβ embeds in the
+single progression (α/p)ℕ, and the periodic-spectrum theorem closes the cell. The two-base cell
+is open EXACTLY for irrational ratio — the Diophantine parameter is not decoration but the
+precise boundary of the proven region.
+
+**[Sharpened description of the leaf-intrinsic regime.]** The flank trace always torus-extends
+near the origin corner: absolute convergence at Im z = −w makes f(q₁,q₂) = Σ b_{kl} q₁^k q₂^l
+analytic on the polydisc {|q₁| < e^{−αw}, |q₂| < e^{−βw}}. Entirety of G continues f along the
+LEAF {(e^{−iαz}, e^{−iβz})} through all of ℂ, while the monomial-model theorem shows the
+continuation cannot exist on all of ℂ². A counterexample to the two-base cell is therefore
+exactly: a bivariate polydisc germ whose leaf-directional continuation is entire with even
+symmetry while its torus-directional continuation develops an obstruction off the leaf — a
+two-variable natural-boundary phenomenon threaded by the dense winding. [CONJECTURE — Diophantine
+dichotomy]: whether such a germ exists is governed by the continued-fraction class of α/β (the
+winding's return times control how much leaf-analyticity forces torus-analyticity); the
+badly-approximable case is the natural first attack on the rigidity side, the Liouville-number
+case the natural first attack on the falsification side.
+
+## Lean status — planar duality: Stage A landed; discrete Steinhaus core in flight
+
+`RectangleCrossingDuality.lean` verified and integrated (umbrella 9088 jobs; axiom-clean; lint
+green): `compact_separation_of_no_joining_component` (the compact clopen separation, built on the
+in-tree quasicomponent engine from the Böttcher lane), the discrete adjacency/reachability
+framework (`rookAdj`, `kingAdj`, `markReach`, `freeReach`), the two crossing primitives, and the
+column-determined duality. The general discrete Steinhaus lemma (digital-Jordan frontier) was
+correctly not stubbed; a dedicated `DiscreteSteinhaus.lean` build is in flight on the
+interface-walk architecture (directed marked-left interface edges; total successor with the
+king-convention diagonal resolution — the rook/king asymmetry enters exactly there; lollipop
+termination; shore invariants; sentinel augmentation with interior extraction). Stage C (mesh
+assembly + `rectangle_crossing_duality`) follows once the discrete core lands.
