@@ -455,3 +455,4 @@ import GaloisForLFunctions.RHTower.LaguerreInequality
 import GaloisForLFunctions.RHTower.ExpAlgebraicTranscendental
 import GaloisForLFunctions.RHTower.NoGoPositiveFormulations
 import GaloisForLFunctions.RHTower.BakerWeldIndependence
+import GaloisForLFunctions.RHTower.SchanuelWeldApex

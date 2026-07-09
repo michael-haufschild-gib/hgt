@@ -603,3 +603,30 @@ involution supplies the reality constraint. The round's theorems are precisely t
 finite shadows: clock escape (no bounded inventory aligns), no-healing (no finite regrouping
 reaches the habitat), finite-prime dichotomy (finite communities are clockwork), stabilizer
 separation (incommensurability forbids a global surrogate clock).
+
+---
+
+## Re-cut: constraint side, no clocks (2026-07-09, after audit)
+
+**Verdict correction absorbed:** C-PD decomposes as (trivial on DA members) ∪ (RH restated on ζ)
+— synonym, dual-gate FAIL; the periodicity/orbit framing was a flow picture. The fourteen-module
+complex is retained as the FLOW-SIDE NO-GO BANK only. What survives on the constraint side:
+completion parity (fixed-point μ₂-bit) and its 2-adic tower.
+
+**The canonical constraint-side object: the reflection cocycle** `h_F(s) = F(1−s)/F(s)` —
+intrinsic (no completion chosen), multiplicative in the carrier (`h_{FG} = h_F·h_G`), satisfying
+`h(s)·h(1−s) = 1`; a completion factor is exactly a trivialization; the completion-parity bit is
+its fixed-point value. For an exact-conductor member, `h_f = Q^{2s−1}`: the FE datum is the weld
+ray `log Q`, unique for nondegenerate members, ADDITIVE under Dirichlet convolution through the
+tree's injective weld-class homomorphism. The functional equation stops being an axiom and
+becomes a computed class in 𝓜⁺. (Lean: `ReflectionCocycleClass.lean`.)
+
+**The FE datum's transcendence class stratifies the cell [derivable from KNOWN — recorded as
+reading, not claimed as new]:** dlog h_ζ(s) = ψ(s) − log 2π − (π/2)tan(πs/2) (digamma exposed by
+the reflection + duplication formulas), so ζ's reflection cocycle is HYPERTRANSCENDENTAL (one
+step from Hölder); every degree-zero member's cocycle is elementary. Paired with the structure
+theorem (degree-0 = Dirichlet polynomials): **DA cocycle ⟺ degree zero; genuine archimedean
+content ⟹ HT cocycle.** The constraint of the arithmetic object has no generative rule either —
+the branch's object is the welded pair (carrier, cocycle), both hypertranscendental, and the
+field's questions are about the classes of cocycles multiplicativity admits, not about orbits of
+zeros.
