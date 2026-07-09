@@ -689,4 +689,305 @@ theorem perronSecondDiff_integral {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ} 
   simp only [Complex.real_smul]
   ring
 
+/-- **Quiet-crossing rigidity.**  Let `F` be entire, agree with an absolutely convergent Dirichlet
+series `L(s) = Σ aₘ m^{−s}` on `Re s ≥ c` (with `½ ≤ c`), and satisfy the exact reflection symmetry
+`F(s) = F(1−s)`.  Suppose there is a sequence of heights `T_k → ∞` along which `F` is *quiet* across
+the closed critical strip `1−c ≤ σ ≤ c`: `‖F(σ ± iT_k)‖ ≤ q_k` with `q_k/T_k² → 0`.  Then `aₙ = 0`
+for every `n ≥ 2`.
+
+The Mellin representation `½·aₙ = (1/2π)∫ F(c+it)·E(c+it) dt` uses the entire regularization
+`E = N/(s(s+1))`.  Since `F·E` is entire, Cauchy's theorem on the rectangle with corners
+`(−M,−T_k)` and `(c,T_k)` moves the contour: the two horizontal edges are `≤ (B+q_k)·T_k^{-2}·const`
+and vanish as `k → ∞` (this is exactly where quietness enters), while the left edge `Re s = −M` is
+bounded uniformly in `k` by `4πB·(n−½)^{1−M}` using the right-flank bound `B` (carried left by
+reflection) and `‖N(−M+iy)‖ ≤ 4(n−½)^{1−M}`.  Passing `k → ∞` gives `‖½·aₙ‖ ≤ 2B·(n−½)^{1−M}`, and
+`(n−½) > 1` forces the right side to `0` as `M → ∞`. -/
+theorem quiet_crossing_rigidity {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ}
+    (hc : (1 : ℝ) / 2 ≤ c) (hc0 : 0 < c)
+    (hF : Differentiable ℂ F)
+    (hsum : LSeriesSummable a c)
+    (hFeq : ∀ s : ℂ, c ≤ s.re → F s = LSeries a s)
+    (hsym : ∀ s : ℂ, F s = F (1 - s))
+    (hquiet : ∃ (T : ℕ → ℝ) (q : ℕ → ℝ), Filter.Tendsto T Filter.atTop Filter.atTop ∧
+      (∀ k, 0 < T k) ∧ Filter.Tendsto (fun k => q k / (T k) ^ 2) Filter.atTop (nhds 0) ∧
+      ∀ k, ∀ σ : ℝ, 1 - c ≤ σ → σ ≤ c →
+        ‖F (σ + (T k) * Complex.I)‖ ≤ q k ∧ ‖F (σ - (T k) * Complex.I)‖ ≤ q k) :
+    ∀ n : ℕ, 2 ≤ n → a n = 0 := by
+  intro n hn2
+  have hn1 : 1 ≤ n := by omega
+  obtain ⟨T, q, hTtop, hTpos, hqlim, hquietbd⟩ := hquiet
+  obtain ⟨B, hB⟩ := lseries_bounded_on_halfplane hsum
+  have hB0 : (0 : ℝ) ≤ B := le_trans (norm_nonneg _) (hB ↑c (by rw [Complex.ofReal_re]))
+  have hFB : ∀ s : ℂ, c ≤ s.re → ‖F s‖ ≤ B := fun s hs => by rw [hFeq s hs]; exact hB s hs
+  have hFleft : ∀ s : ℂ, s.re ≤ 1 - c → ‖F s‖ ≤ B := by
+    intro s hs; rw [hsym s]; exact hFB _ (by rw [Complex.sub_re, Complex.one_re]; linarith)
+  have hEdiff : Differentiable ℂ (perronE n) := perronE_differentiable hn1
+  -- Real facts about the three knots.
+  have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
+  have hn2R : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn2
+  have hxppos : (0 : ℝ) < (n : ℝ) + 1 / 2 := by positivity
+  have hxmpos : (0 : ℝ) < (n : ℝ) - 1 / 2 := by linarith
+  have hxm1 : (1 : ℝ) ≤ (n : ℝ) - 1 / 2 := by linarith
+  have hxmgt1 : (1 : ℝ) < (n : ℝ) - 1 / 2 := by linarith
+  have hbase1p : (1 : ℝ) ≤ (n : ℝ) + 1 / 2 := by linarith
+  -- The entire integrand `Hf = F·E`.
+  set Hf : ℂ → ℂ := fun s => F s * perronE n s with hHf
+  have hHfp : ∀ p : ℂ, Hf p = F p * perronE n p := fun p => by rw [hHf]
+  have hHfdiff : Differentiable ℂ Hf := by rw [hHf]; exact hF.mul hEdiff
+  have hHfcont : Continuous Hf := hHfdiff.continuous
+  -- Product form of the `E` bound from a numerator bound and a kernel bound.
+  have hEbound : ∀ (p : ℂ) (D E' : ℝ), p ≠ 0 → p ≠ -1 →
+      ‖perronKink n p‖ ≤ E' → ‖(p * (p + 1))⁻¹‖ ≤ D → ‖perronE n p‖ ≤ E' * D := by
+    intro p D E' h0 h1 hK hker
+    rw [perronE_eq n h0 h1, div_eq_mul_inv, norm_mul]
+    exact mul_le_mul hK hker (norm_nonneg _) (le_trans (norm_nonneg _) hK)
+  -- Numerator bound on the line `Re s ≤ c` (positive exponent regime).
+  have hKink_c : ∀ p : ℂ, p.re ≤ c → ‖perronKink n p‖ ≤ 4 * ((n : ℝ) + 1 / 2) ^ (c + 1) := by
+    intro p hpc
+    have hb := perronKink_norm_le hn1 p
+    have hc1 : (0 : ℝ) ≤ c + 1 := by linarith
+    have hpc1 : p.re + 1 ≤ c + 1 := by linarith
+    have t1 : ((n : ℝ) + 1 / 2) ^ (p.re + 1) ≤ ((n : ℝ) + 1 / 2) ^ (c + 1) :=
+      Real.rpow_le_rpow_of_exponent_le hbase1p hpc1
+    have t2 : ((n : ℝ) - 1 / 2) ^ (p.re + 1) ≤ ((n : ℝ) + 1 / 2) ^ (c + 1) :=
+      le_trans (Real.rpow_le_rpow_of_exponent_le hxm1 hpc1)
+        (Real.rpow_le_rpow hxmpos.le (by linarith) hc1)
+    have t3 : ((n : ℝ)) ^ (p.re + 1) ≤ ((n : ℝ) + 1 / 2) ^ (c + 1) :=
+      le_trans (Real.rpow_le_rpow_of_exponent_le hnR hpc1)
+        (Real.rpow_le_rpow (by linarith) (by linarith) hc1)
+    linarith [hb, t1, t2, t3]
+  -- Numerator bound on the line `Re s = −M` (negative exponent regime).
+  have hKink_M : ∀ (M : ℝ) (p : ℂ), 1 ≤ M → p.re = -M →
+      ‖perronKink n p‖ ≤ 4 * ((n : ℝ) - 1 / 2) ^ (1 - M) := by
+    intro M p hM hpre
+    have hb := perronKink_norm_le hn1 p
+    rw [hpre, show (-M + 1) = 1 - M by ring] at hb
+    have hnp : (1 - M) ≤ 0 := by linarith
+    have t1 : ((n : ℝ) + 1 / 2) ^ (1 - M) ≤ ((n : ℝ) - 1 / 2) ^ (1 - M) :=
+      Real.rpow_le_rpow_of_nonpos hxmpos (by linarith) hnp
+    have t3 : ((n : ℝ)) ^ (1 - M) ≤ ((n : ℝ) - 1 / 2) ^ (1 - M) :=
+      Real.rpow_le_rpow_of_nonpos hxmpos (by linarith) hnp
+    linarith [hb, t1, t3]
+  -- The right-line integrand is integrable.
+  have hRint : Integrable (fun t : ℝ => Hf (↑c + ↑t * I)) := by
+    have hcont : Continuous (fun t : ℝ => Hf (↑c + ↑t * I)) := hHfcont.comp (by fun_prop)
+    have hbd : ∀ t : ℝ, ‖Hf (↑c + ↑t * I)‖ ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * B) * (c ^ 2 + t ^ 2)⁻¹ := by
+      intro t
+      have hre : (↑c + ↑t * I : ℂ).re = c := by simp
+      rw [hHfp, norm_mul]
+      have hF' : ‖F (↑c + ↑t * I)‖ ≤ B := hFB _ (le_of_eq hre.symm)
+      have hE' : ‖perronE n (↑c + ↑t * I)‖ ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹ := by
+        refine hEbound (↑c + ↑t * I) _ _ ?_ ?_ (hKink_c _ (le_of_eq hre)) (kernel_norm_le hc0 t)
+        · intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
+        · intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
+      calc ‖F (↑c + ↑t * I)‖ * ‖perronE n (↑c + ↑t * I)‖
+          ≤ B * ((4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹) :=
+            mul_le_mul hF' hE' (norm_nonneg _) hB0
+        _ = (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * B) * (c ^ 2 + t ^ 2)⁻¹ := by ring
+    exact ((inv_quad_integrable hc0).const_mul _).mono' hcont.aestronglyMeasurable
+      (Eventually.of_forall hbd)
+  -- The bound at a fixed contour depth `M`.
+  have keyM : ∀ M : ℕ, 2 ≤ M → (c : ℝ) ≤ (M : ℝ) →
+      ‖∫ t : ℝ, Hf (↑c + ↑t * I)‖ ≤ 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) := by
+    intro M hM2 hMc
+    have hMnn : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
+    have hM1 : (1 : ℝ) < (M : ℝ) := by exact_mod_cast (by omega : 1 < M)
+    have hM2R : (2 : ℝ) ≤ (M : ℝ) := by exact_mod_cast hM2
+    have hMle : -(M : ℝ) ≤ 1 - c := by linarith
+    have hMcle : -(M : ℝ) ≤ c := by linarith
+    -- Left-line domination.
+    have hleftbd : ∀ y : ℝ, ‖Hf (↑(-(M : ℝ)) + ↑y * I)‖
+        ≤ (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ := by
+      intro y
+      have hre : (↑(-(M : ℝ)) + ↑y * I : ℂ).re = -(M : ℝ) := by simp
+      rw [hHfp, norm_mul]
+      have hF' : ‖F (↑(-(M : ℝ)) + ↑y * I)‖ ≤ B := hFleft _ (by rw [hre]; exact hMle)
+      have hE' : ‖perronE n (↑(-(M : ℝ)) + ↑y * I)‖
+          ≤ (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ := by
+        refine hEbound (↑(-(M : ℝ)) + ↑y * I) _ _ ?_ ?_ (hKink_M (M : ℝ) _ hM1.le hre)
+          (kernel_left_bound (M := (M : ℝ)) (y := y) hM1)
+        · intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
+        · intro h; have := congrArg Complex.re h; rw [hre] at this; simp at this; linarith
+      calc ‖F (↑(-(M : ℝ)) + ↑y * I)‖ * ‖perronE n (↑(-(M : ℝ)) + ↑y * I)‖
+          ≤ B * ((4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹) :=
+            mul_le_mul hF' hE' (norm_nonneg _) hB0
+        _ = (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ := by ring
+    have hleftint : Integrable (fun y : ℝ => Hf (↑(-(M : ℝ)) + ↑y * I)) := by
+      have hcont : Continuous (fun y : ℝ => Hf (↑(-(M : ℝ)) + ↑y * I)) := hHfcont.comp (by fun_prop)
+      exact ((inv_quad_integrable (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul
+        (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B)).mono' hcont.aestronglyMeasurable
+        (Eventually.of_forall hleftbd)
+    have hqle : ∫ y : ℝ, (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ ≤ Real.pi := by
+      rw [← integral_univ_inv_one_add_sq]
+      refine integral_mono (inv_quad_integrable (show (0 : ℝ) < (M : ℝ) - 1 from by linarith))
+        integrable_inv_one_add_sq (fun y => ?_)
+      refine inv_anti₀ (by positivity) ?_
+      nlinarith [mul_nonneg (show (0 : ℝ) ≤ (M : ℝ) from hMnn) (show (0 : ℝ) ≤ (M : ℝ) - 2 from by linarith), sq_nonneg y]
+    have hleftfull : ∫ y : ℝ, ‖Hf (↑(-(M : ℝ)) + ↑y * I)‖
+        ≤ 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) := by
+      have hdomint : Integrable (fun y : ℝ =>
+          (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹) :=
+        (inv_quad_integrable (show (0 : ℝ) < (M : ℝ) - 1 from by linarith)).const_mul _
+      have hCnn : (0 : ℝ) ≤ 4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B :=
+        mul_nonneg (mul_nonneg (by norm_num) (Real.rpow_nonneg hxmpos.le _)) hB0
+      calc ∫ y : ℝ, ‖Hf (↑(-(M : ℝ)) + ↑y * I)‖
+          ≤ ∫ y : ℝ, (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B) * (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ :=
+            integral_mono hleftint.norm hdomint hleftbd
+        _ = (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B) * ∫ y : ℝ, (((M : ℝ) - 1) ^ 2 + y ^ 2)⁻¹ :=
+            integral_const_mul _ _
+        _ ≤ (4 * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) * B) * Real.pi :=
+            mul_le_mul_of_nonneg_left hqle hCnn
+        _ = 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) := by ring
+    have hleftk : ∀ k, ‖∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I)‖
+        ≤ 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) := by
+      intro k
+      calc ‖∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I)‖
+          ≤ ∫ y in (-(T k))..(T k), ‖Hf (↑(-(M : ℝ)) + ↑y * I)‖ :=
+            intervalIntegral.norm_integral_le_integral_norm (by linarith [hTpos k])
+        _ = ∫ y in Set.Ioc (-(T k)) (T k), ‖Hf (↑(-(M : ℝ)) + ↑y * I)‖ :=
+            intervalIntegral.integral_of_le (by linarith [hTpos k])
+        _ ≤ ∫ y : ℝ, ‖Hf (↑(-(M : ℝ)) + ↑y * I)‖ :=
+            setIntegral_le_integral hleftint.norm (Eventually.of_forall (fun y => norm_nonneg _))
+        _ ≤ 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) := hleftfull
+    -- Horizontal-edge domination and its decay.
+    have hinvsq : Tendsto (fun k => ((T k) ^ 2)⁻¹) atTop (nhds 0) := by
+      have hTsq : Tendsto (fun k => (T k) ^ 2) atTop atTop := by
+        simpa [pow_two] using hTtop.atTop_mul_atTop₀ hTtop
+      exact hTsq.inv_tendsto_atTop
+    have hcore : Tendsto (fun k => (B + q k) * ((T k) ^ 2)⁻¹) atTop (nhds 0) := by
+      have h1 : Tendsto (fun k => B * ((T k) ^ 2)⁻¹) atTop (nhds 0) := by simpa using hinvsq.const_mul B
+      have h2 : Tendsto (fun k => q k * ((T k) ^ 2)⁻¹) atTop (nhds 0) := by
+        have := hqlim; simp_rw [div_eq_mul_inv] at this; exact this
+      simpa [add_mul] using h1.add h2
+    set d : ℕ → ℝ := fun k => (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * (c + (M : ℝ))) * ((B + q k) * ((T k) ^ 2)⁻¹) with hd
+    have hd0 : Tendsto d atTop (nhds 0) := by
+      simp only [hd]; simpa using hcore.const_mul (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * (c + (M : ℝ)))
+    have hqk0 : ∀ k, (0 : ℝ) ≤ q k := fun k =>
+      le_trans (norm_nonneg _) (hquietbd k c (by linarith) (le_refl c)).1
+    -- Common per-edge norm-of-integrand const.
+    have hedge : ∀ (k : ℕ) (t : ℝ), 0 < T k → |t| = T k →
+        ∀ x : ℝ, -(M : ℝ) < x → x ≤ c → ‖F (↑x + ↑t * I)‖ ≤ B + q k →
+        ‖Hf (↑x + ↑t * I)‖ ≤ (B + q k) * (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * ((T k) ^ 2)⁻¹) := by
+      intro k t hTk habs x hx1 hx2 hFbd
+      have hre : (↑x + ↑t * I : ℂ).re = x := by simp
+      rw [hHfp, norm_mul]
+      have hE' : ‖perronE n (↑x + ↑t * I)‖ ≤ (4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * ((T k) ^ 2)⁻¹ := by
+        refine hEbound (↑x + ↑t * I) _ _ ?_ ?_ (hKink_c _ (le_of_eq hre))
+          (kernel_line_bound (t := t) (T := T k) hTk (le_of_eq habs.symm) x)
+        · intro hh; have := congrArg Complex.im hh; simp at this; rw [this] at habs
+          simp at habs; linarith
+        · intro hh; have := congrArg Complex.im hh; simp at this; rw [this] at habs
+          simp at habs; linarith
+      calc ‖F (↑x + ↑t * I)‖ * ‖perronE n (↑x + ↑t * I)‖
+          ≤ (B + q k) * ((4 * ((n : ℝ) + 1 / 2) ^ (c + 1)) * ((T k) ^ 2)⁻¹) :=
+            mul_le_mul hFbd hE' (norm_nonneg _) (by linarith [hB0, hqk0 k])
+    have htop : ∀ k, ‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I)‖ ≤ d k := by
+      intro k
+      have hconst : ∀ x ∈ Set.uIoc (-(M : ℝ)) c,
+          ‖Hf (↑x + ↑(T k) * I)‖ ≤ (B + q k) * (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * ((T k) ^ 2)⁻¹) := by
+        intro x hx
+        rw [Set.uIoc_of_le hMcle] at hx
+        obtain ⟨hx1, hx2⟩ := hx
+        refine hedge k (T k) (hTpos k) (abs_of_pos (hTpos k)) x hx1 hx2 ?_
+        rcases le_or_lt x (1 - c) with h | h
+        · exact le_trans (hFleft _ (by simp; exact h)) (by linarith [hqk0 k])
+        · exact le_trans (hquietbd k x (le_of_lt h) hx2).1 (by linarith [hB0])
+      calc ‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I)‖
+          ≤ ((B + q k) * (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * ((T k) ^ 2)⁻¹)) * |c - -(M : ℝ)| :=
+            intervalIntegral.norm_integral_le_of_norm_le_const hconst
+        _ = d k := by simp only [hd]; rw [abs_of_nonneg (by linarith)]; ring
+    have hbot : ∀ k, ‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I)‖ ≤ d k := by
+      intro k
+      have hconst : ∀ x ∈ Set.uIoc (-(M : ℝ)) c,
+          ‖Hf (↑x + ↑(-(T k)) * I)‖ ≤ (B + q k) * (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * ((T k) ^ 2)⁻¹) := by
+        intro x hx
+        rw [Set.uIoc_of_le hMcle] at hx
+        obtain ⟨hx1, hx2⟩ := hx
+        have hpt : (↑x + ↑(-(T k)) * I : ℂ) = ↑x - ↑(T k) * I := by push_cast; ring
+        refine hedge k (-(T k)) (hTpos k) (by rw [abs_neg, abs_of_pos (hTpos k)]) x hx1 hx2 ?_
+        rcases le_or_lt x (1 - c) with h | h
+        · exact le_trans (hFleft _ (by simp; exact h)) (by linarith [hqk0 k])
+        · rw [hpt]; exact le_trans (hquietbd k x (le_of_lt h) hx2).2 (by linarith [hB0])
+      calc ‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I)‖
+          ≤ ((B + q k) * (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * ((T k) ^ 2)⁻¹)) * |c - -(M : ℝ)| :=
+            intervalIntegral.norm_integral_le_of_norm_le_const hconst
+        _ = d k := by simp only [hd]; rw [abs_of_nonneg (by linarith)]; ring
+    -- Right vertical integral converges to the full-line integral.
+    have hrighttendsto : Tendsto (fun k => ∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I)) atTop
+        (nhds (∫ t : ℝ, Hf (↑c + ↑t * I))) :=
+      intervalIntegral_tendsto_integral hRint (tendsto_neg_atBot_iff.mpr hTtop) hTtop
+    have hnormtendsto : Tendsto (fun k => ‖∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I)‖) atTop
+        (nhds ‖∫ t : ℝ, Hf (↑c + ↑t * I)‖) := hrighttendsto.norm
+    -- Rectangle (Cauchy) bound: right edge ≤ tops + bottom + left.
+    have hrectbd : ∀ k, ‖∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I)‖
+        ≤ (d k + d k) + 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) := by
+      intro k
+      set z : ℂ := ⟨-(M : ℝ), -(T k)⟩ with hz
+      set w : ℂ := ⟨c, T k⟩ with hw
+      have hrect := integral_boundary_rect_eq_zero_of_differentiableOn Hf z w hHfdiff.differentiableOn
+      have hzre : z.re = -(M : ℝ) := rfl
+      have hzim : z.im = -(T k) := rfl
+      have hwre : w.re = c := rfl
+      have hwim : w.im = T k := rfl
+      rw [hzre, hzim, hwre, hwim] at hrect
+      simp only [smul_eq_mul] at hrect
+      have heqI : I * (∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I))
+          = (∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I))
+            - (∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I))
+            + I * (∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I)) := by
+        linear_combination hrect
+      have hInorm : ‖∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I)‖
+          = ‖I * (∫ y in (-(T k))..(T k), Hf (↑c + ↑y * I))‖ := by
+        rw [norm_mul, Complex.norm_I, one_mul]
+      rw [hInorm, heqI]
+      calc ‖(∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I))
+              - (∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I))
+              + I * (∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I))‖
+          ≤ ‖(∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I))
+              - (∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I))‖
+            + ‖I * (∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I))‖ := norm_add_le _ _
+        _ ≤ (‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(T k) * I)‖
+              + ‖∫ x in (-(M : ℝ))..c, Hf (↑x + ↑(-(T k)) * I)‖)
+            + ‖∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I)‖ := by
+            have e2 : ‖I * (∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I))‖
+                = ‖∫ y in (-(T k))..(T k), Hf (↑(-(M : ℝ)) + ↑y * I)‖ := by
+              rw [norm_mul, Complex.norm_I, one_mul]
+            rw [e2]; exact add_le_add_right (norm_sub_le _ _) _
+        _ ≤ (d k + d k) + 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)) :=
+            add_le_add (add_le_add (htop k) (hbot k)) (hleftk k)
+    have hdb : Tendsto (fun k => (d k + d k) + 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))
+        atTop (nhds (4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))) := by
+      simpa using (hd0.add hd0).add_const (4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))
+    exact le_of_tendsto_of_tendsto' hnormtendsto hdb hrectbd
+  -- Send the contour to infinity.
+  have hMtendsto : Tendsto (fun M : ℕ => 4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))
+      atTop (nhds 0) := by
+    have hbase : Tendsto (fun M : ℕ => ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) atTop (nhds 0) := by
+      have h1 : (fun M : ℕ => ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))
+          = fun M : ℕ => ((n : ℝ) - 1 / 2) * (((n : ℝ) - 1 / 2)⁻¹) ^ M := by
+        funext M
+        rw [Real.rpow_sub hxmpos, Real.rpow_one, Real.rpow_natCast, div_eq_mul_inv, inv_pow]
+      rw [h1]
+      have := tendsto_pow_atTop_nhds_zero_of_lt_one (by positivity : (0 : ℝ) ≤ ((n : ℝ) - 1 / 2)⁻¹)
+        (by rw [inv_lt_one_iff₀]; right; exact hxmgt1)
+      simpa using this.const_mul ((n : ℝ) - 1 / 2)
+    simpa using hbase.const_mul (4 * Real.pi * B)
+  have hbound_an : ‖a n * (1 / 2)‖ ≤ 0 := by
+    have hR : a n * (1 / 2) = (1 / (2 * Real.pi) : ℝ) • ∫ t : ℝ, Hf (↑c + ↑t * I) := by
+      rw [hHf]; exact perronSecondDiff_integral hc0 hsum hF hFeq hn1
+    have hev : ∀ᶠ M : ℕ in atTop, ‖a n * (1 / 2)‖
+        ≤ (1 / (2 * Real.pi)) * (4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) := by
+      filter_upwards [eventually_ge_atTop (max 2 ⌈c⌉₊)] with M hM
+      have hM2 : 2 ≤ M := le_trans (le_max_left _ _) hM
+      have hMc : (c : ℝ) ≤ (M : ℝ) :=
+        le_trans (Nat.le_ceil c) (by exact_mod_cast le_trans (le_max_right _ _) hM)
+      rw [hR, norm_smul, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+      exact mul_le_mul_of_nonneg_left (keyM M hM2 hMc) (by positivity)
+    have hlim : Tendsto (fun M : ℕ => (1 / (2 * Real.pi)) *
+        (4 * Real.pi * B * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))) atTop (nhds 0) := by
+      simpa using hMtendsto.const_mul (1 / (2 * Real.pi))
+    exact ge_of_tendsto hlim hev
+  have han2 : a n * (1 / 2) = 0 := norm_eq_zero.mp (le_antisymm hbound_an (norm_nonneg _))
+  exact (mul_eq_zero.mp han2).resolve_right (by norm_num)
+
 end RHTower
