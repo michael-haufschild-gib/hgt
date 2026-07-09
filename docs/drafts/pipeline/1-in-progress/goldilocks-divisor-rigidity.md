@@ -842,3 +842,33 @@ conjecture's content, and its proof or refutation is a new rigidity axis either 
   INT-ORDER's remaining content = one growth-free bridge from tail data to left-plane values, OR
   a proof that no such bridge is needed (an entire-function-theoretic argument from the floor's
   two-sided divergence directly to an order bound).
+
+## [PROVED HERE — paper] Order-free degree-zero classification on the small-abscissa stratum
+
+**Theorem.** Let F(s) = Σ aₙ n^{−s} converge absolutely for Re s > σ_a with σ_a < 1/2, and
+suppose on the overlap strip σ_a < Re s < 1−σ_a a reflection identity
+F(s) = (Σⱼ cⱼ Qⱼ^{1−2s})·F(1−s) holds (finitely many Qⱼ ∈ ℕ≥1, cⱼ ∈ ℂ). Then
+supp(a) ⊆ ⋃ⱼ divisors(Qⱼ²); F is a Dirichlet polynomial (hence entire of finite order), and in
+the single-conductor case aₜ = c·(t/Q)·a_{Q²/t}. **No growth or order hypothesis.**
+
+**Proof.** On s = 1/2 + iy both series converge absolutely and Qⱼ^{1−2s} = e^{−2iy log Qⱼ} —
+the conductor data is a pure phase on the reflection's fixed line. The identity is an equality
+of absolutely convergent Bohr expansions: Σ aₙn^{−1/2}e^{−iy log n} =
+Σⱼ cⱼ Σₙ aₙn^{−1/2}e^{−iy log(Qⱼ²/n)}. Mean-value orthogonality of distinct real frequencies
+(the sine-kill lemma) matches coefficients at each frequency −log t: aₜ ≠ 0 forces some j with
+Qⱼ²/t ∈ supp ∩ ℕ, i.e. t ∣ Qⱼ² — support bounded by max Qⱼ², hence finite; single-conductor
+matching gives the stated pairing. ∎
+
+**Checks.** Q = 1 recovers overlap rigidity (h = 1 cell). dzo (Q = 8): support {1,8,64} ⊆
+div(64) ✓, a₁ = (1/8)a₆₄ = 1 ✓, a₈ self-paired ✓ — the pairing reproduces the machine-checked
+witness exactly. Flow check: fixed-locus evaluation + coefficient matching; nothing evolves.
+
+**Position.** The classical degree-zero classification (K–P) hard-wires "entire of finite
+order"; the certified-absent territory ([ABSENT]², checks file) was precisely the growth-free
+case. This theorem removes the order axiom on the σ_a < 1/2 stratum, with elementary proof —
+the novelty is the position (order-axiom removal), flagged honestly. Consequence: **C-COC's
+pure-conductor cell is PROVEN on the small-abscissa stratum** (third proven case, no
+everywhere-rep crutch, no order crutch); every remaining open cell of C-COC is now literally
+the single INT-ORDER wall (σ_a ≥ 1/2 ∧ infinite order). The Lean-able analytic core is the
+Bohr-uniqueness lemma already in build (OverlapRigidity's sine orthogonality, generalized from
+sine to complex exponentials).
