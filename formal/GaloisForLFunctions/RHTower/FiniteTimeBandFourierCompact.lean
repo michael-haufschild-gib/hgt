@@ -20,10 +20,7 @@ import Mathlib.MeasureTheory.Function.LpSpace.ContinuousFunctions
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.Topology.CompactOpen
-import Mathlib.Analysis.Fourier.LpSpace
-import Mathlib.Analysis.Fourier.FourierTransform
-import Mathlib.Analysis.Fourier.Inversion
-import Mathlib.Analysis.Distribution.AEEqOfIntegralContDiff
+import GaloisForLFunctions.RHTower.L2FourierIntegralBridge
 
 noncomputable section
 
@@ -32,44 +29,6 @@ open FourierTransform
 open scoped ENNReal BoundedContinuousFunction SchwartzMap
 
 namespace RHTower
-
-/-! ### Consistency of the `L¹` and `L²` Fourier transforms -/
-
-/-- If an `L²(ℝ)` representative is integrable, then mathlib's unitary `L²` Fourier transform is
-almost everywhere equal to its classical `L¹` Fourier integral.  The proof compares their tempered
-distributions and then uses uniqueness of locally integrable functions against smooth compactly
-supported tests. -/
-theorem l2_fourier_coeFn_eq_l1_fourier_of_integrable
-    (f : Lp ℂ 2 (volume : Measure ℝ)) (hf : Integrable (f : ℝ → ℂ)) :
-    ((𝓕 f : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) =ᵐ[volume]
-      (Lp.fourierTransform ((memLp_one_iff_integrable.mpr hf).toLp f) : ℝ → ℂ) := by
-  let f1 : Lp ℂ 1 (volume : Measure ℝ) :=
-    (memLp_one_iff_integrable.mpr hf).toLp f
-  let h : Lp ℂ 2 (volume : Measure ℝ) := 𝓕 f
-  let G : ℝ →ᵇ ℂ := Lp.fourierTransform f1
-  have hh_loc : LocallyIntegrable (h : ℝ → ℂ) volume :=
-    (Lp.memLp h).locallyIntegrable (by norm_num)
-  have hG_loc : LocallyIntegrable (G : ℝ → ℂ) volume :=
-    G.continuous.locallyIntegrable
-  apply ae_eq_of_integral_contDiff_smul_eq hh_loc hG_loc
-  intro g hg hsupp
-  let gc : ℝ → ℂ := Complex.ofRealCLM ∘ g
-  have hgc_supp : HasCompactSupport gc := hsupp.comp_left rfl
-  have hgc_diff : ContDiff ℝ ∞ gc := Complex.ofRealCLM.comp_contDiff hg
-  let psi : SchwartzMap ℝ ℂ := hgc_supp.toSchwartzMap hgc_diff
-  have hdist := Lp.fourier_toTemperedDistribution_eq f
-  have hdist_apply := congrArg (fun T : 𝓢'(ℝ, ℂ) => T psi) hdist
-  have hdistribution :
-      ∫ x : ℝ, psi x * h x = ∫ x : ℝ, (𝓕 psi) x * f x := by
-    simpa [h, mul_comm] using hdist_apply.symm
-  have hclassical :
-      ∫ x : ℝ, G x * psi x = ∫ x : ℝ, f x * (𝓕 psi) x := by
-    have hf1_int : Integrable (f1 : ℝ → ℂ) := L1.integrable_coeFn f1
-    have hswap := VectorFourier.integral_fourierIntegral_smul_eq_flip
-      (L := innerₗ ℝ) Real.continuous_fourierChar continuous_inner hf1_int psi.integrable
-    simpa [G, f1, Real.fourier_eq, Lp.fourierTransform_apply,
-      smul_eq_mul, mul_comm] using hswap
-  simpa [psi, gc, h, G, mul_comm] using hdistribution.trans hclassical.symm
 
 variable {α E : Type*} [MeasurableSpace α]
 variable [NormedAddCommGroup E] [NormedSpace ℂ E]
@@ -114,7 +73,7 @@ theorem kernelOperator_indicatorConst
   ] with x hholder hK hconst hone hsmul
   rw [kernelOperator, kernelOperatorMap_apply]
   rw [hholder, hK, hconst, ContinuousLinearMap.coe_comp', Function.comp_apply,
-    ContinuousLinearMap.toSpanSingleton_apply, hsmul, hone]
+    ContinuousLinearMap.toSpanSingleton_apply, hsmul, Pi.smul_apply, hone]
   by_cases hx : x ∈ s <;> simp [hx, evalBilinear]
 
 /-- Indicator-constant functional fields induce compact operators. -/
@@ -136,32 +95,19 @@ theorem kernelOperator_add
       kernelOperator (E := E) μ K + kernelOperator (E := E) μ L := by
   exact map_add (kernelOperatorMap (E := E) μ) K L
 
-set_option maxHeartbeats 800000 in
-/-- Every simple `L²` field of functionals induces a compact operator. -/
-theorem isCompactOperator_kernelOperator_simple
-    (K : Lp.simpleFunc (E →L[ℂ] ℂ) 2 μ) :
-    IsCompactOperator (kernelOperator (E := E) μ (K : Lp (E →L[ℂ] ℂ) 2 μ)) := by
-  refine Lp.simpleFunc.induction (p := (2 : ENNReal)) (P := fun S =>
-    IsCompactOperator (kernelOperator (E := E) μ (S : Lp (E →L[ℂ] ℂ) 2 μ)))
-    (by norm_num) (by norm_num) ?_ ?_ K
+/-- **Hilbert--Schmidt kernel theorem in field form.** Every square-integrable field of continuous
+functionals induces a compact operator into scalar `L²`. -/
+theorem isCompactOperator_kernelOperator (K : Lp (E →L[ℂ] ℂ) 2 μ) :
+    IsCompactOperator (kernelOperator (E := E) μ K) := by
+  apply Lp.induction (p := (2 : ENNReal)) (by norm_num)
+    (motive := fun L => IsCompactOperator (kernelOperator (E := E) μ L))
   · intro ell s hs hμs
     simpa only [Lp.simpleFunc.coe_indicatorConst] using
       isCompactOperator_kernelOperator_indicatorConst (E := E) μ s hs hμs ell
   · intro f g hf hg hdisj ihf ihg
     rw [kernelOperator_add]
     exact ihf.add ihg
-
-/-- **Hilbert--Schmidt kernel theorem in field form.** Every square-integrable field of continuous
-functionals induces a compact operator into scalar `L²`. -/
-theorem isCompactOperator_kernelOperator (K : Lp (E →L[ℂ] ℂ) 2 μ) :
-    IsCompactOperator (kernelOperator (E := E) μ K) := by
-  let C : Set (Lp (E →L[ℂ] ℂ) 2 μ) :=
-    {K | IsCompactOperator (kernelOperator (E := E) μ K)}
-  have hclosed : IsClosed C :=
-    isClosed_setOf_isCompactOperator.preimage (kernelOperatorMap (E := E) μ).continuous
-  exact (Lp.simpleFunc.denseRange (p := (2 : ENNReal)) (E := E →L[ℂ] ℂ)
-    (μ := μ) (by norm_num)).induction_on K hclosed
-      (fun S => isCompactOperator_kernelOperator_simple (E := E) μ S)
+  · exact isClosed_setOf_isCompactOperator.preimage (kernelOperatorMap (E := E) μ).continuous
 
 open Set
 open scoped Real
@@ -238,12 +184,17 @@ theorem finiteTimeBandFourier_coeFn (a b c d : ℝ)
     Lp.coeFn_const (p := ∞) (volume : Measure (ClosedInterval a b)) f
   ] with x hholder hfield hconst
   rw [finiteTimeBandFourier, kernelOperator, kernelOperatorMap_apply,
-    hholder, hfield, hconst]
-  rw [fourierFunctionalContinuous, ContinuousLinearMap.lpPairing_eq_integral]
+    hholder, fourierFunctionalField, hfield, hconst]
+  change (complexMulBilinear.lpPairing volume 2 2
+    (fourierSectionContinuous a b c d x)) f = _
+  rw [ContinuousLinearMap.lpPairing_eq_integral]
   apply integral_congr_ae
   filter_upwards [ContinuousMap.coeFn_toLp (𝕜 := ℂ) (p := (2 : ENNReal))
     (μ := (volume : Measure (ClosedInterval c d)))
     (fourierPhaseCurried a b c d x)] with y hy
+  change complexMulBilinear
+    ((ContinuousMap.toLp 2 volume ℂ (fourierPhaseCurried a b c d x)) y)
+    (f y) = _
   rw [hy]
   simp [evalBilinear, complexMulBilinear, fourierSectionContinuous,
     fourierPhaseCurried]
@@ -259,24 +210,28 @@ abbrev IntervalL2 (a b : ℝ) :=
   Lp ℂ 2 (volume : Measure (ClosedInterval a b))
 
 /-- The `L²` space on the two components of the finite shell `λ ≤ |y| ≤ ρλ`. -/
-abbrev FourierShellL2 (ρ λ : ℝ) :=
-  IntervalL2 (-ρ * λ) (-λ) × IntervalL2 λ (ρ * λ)
+abbrev FourierShellL2 (ρ lam : ℝ) :=
+  IntervalL2 (-ρ * lam) (-lam) × IntervalL2 lam (ρ * lam)
 
 /-- The two-component Fourier block from `λ ≤ |y| ≤ ρλ` into `[-λ, λ]`. -/
-def finiteShellTimeBandFourier (ρ λ : ℝ) :
-    FourierShellL2 ρ λ →L[ℂ] IntervalL2 (-λ) λ :=
-  (finiteTimeBandFourier (-λ) λ (-ρ * λ) (-λ)) ∘L
-      ContinuousLinearMap.fst ℂ (IntervalL2 (-ρ * λ) (-λ)) (IntervalL2 λ (ρ * λ)) +
-    (finiteTimeBandFourier (-λ) λ λ (ρ * λ)) ∘L
-      ContinuousLinearMap.snd ℂ (IntervalL2 (-ρ * λ) (-λ)) (IntervalL2 λ (ρ * λ))
+def finiteShellTimeBandFourier (ρ lam : ℝ) :
+    FourierShellL2 ρ lam →L[ℂ] IntervalL2 (-lam) lam :=
+  (finiteTimeBandFourier (-lam) lam (-ρ * lam) (-lam)) ∘L
+      ContinuousLinearMap.fst ℂ (IntervalL2 (-ρ * lam) (-lam))
+        (IntervalL2 lam (ρ * lam)) +
+    (finiteTimeBandFourier (-lam) lam lam (ρ * lam)) ∘L
+      ContinuousLinearMap.snd ℂ (IntervalL2 (-ρ * lam) (-lam))
+        (IntervalL2 lam (ρ * lam))
 
 /-- **Sonin-shell time-band compactness.** The Fourier block from a finite two-sided shell into the
 central time interval is compact. -/
-theorem isCompactOperator_finiteShellTimeBandFourier (ρ λ : ℝ) :
-    IsCompactOperator (finiteShellTimeBandFourier ρ λ) := by
+theorem isCompactOperator_finiteShellTimeBandFourier (ρ lam : ℝ) :
+    IsCompactOperator (finiteShellTimeBandFourier ρ lam) := by
   apply IsCompactOperator.add
-  · exact (isCompactOperator_finiteTimeBandFourier (-λ) λ (-ρ * λ) (-λ)).comp_clm _
-  · exact (isCompactOperator_finiteTimeBandFourier (-λ) λ λ (ρ * λ)).comp_clm _
+  · exact (isCompactOperator_finiteTimeBandFourier
+      (-lam) lam (-ρ * lam) (-lam)).comp_clm _
+  · exact (isCompactOperator_finiteTimeBandFourier
+      (-lam) lam lam (ρ * lam)).comp_clm _
 
 /-! ### Restriction and extension by zero on full `L²` -/
 
@@ -296,29 +251,30 @@ theorem lpExtendByZero_add (s : Set X) (hs : MeasurableSet s)
     (f g : Lp F q (ν.restrict s)) :
     lpExtendByZero ν q s hs (f + g) =
       lpExtendByZero ν q s hs f + lpExtendByZero ν q s hs g := by
-  apply Lp.ext
-  filter_upwards [
-    MemLp.coeFn_toLp ((memLp_indicator_iff_restrict hs).2 (Lp.memLp (f + g))),
-    MemLp.coeFn_toLp ((memLp_indicator_iff_restrict hs).2 (Lp.memLp f)),
-    MemLp.coeFn_toLp ((memLp_indicator_iff_restrict hs).2 (Lp.memLp g)),
-    Lp.coeFn_add f g,
-    Lp.coeFn_add (lpExtendByZero ν q s hs f) (lpExtendByZero ν q s hs g)
-  ] with x hfg hf hg hadd haddout
-  rw [hfg, haddout, hf, hg]
-  by_cases hx : x ∈ s <;> simp [hx, hadd]
+  let hf : MemLp (s.indicator (f : X → F)) q ν :=
+    (memLp_indicator_iff_restrict hs).2 (Lp.memLp f)
+  let hg : MemLp (s.indicator (g : X → F)) q ν :=
+    (memLp_indicator_iff_restrict hs).2 (Lp.memLp g)
+  rw [lpExtendByZero, lpExtendByZero, lpExtendByZero, ← hf.toLp_add hg]
+  apply MemLp.toLp_congr
+  filter_upwards [ae_restrict_iff' hs |>.mp (Lp.coeFn_add f g)] with x hx
+  by_cases hxs : x ∈ s
+  · simp only [Set.indicator_of_mem hxs, Pi.add_apply]
+    exact hx hxs
+  · simp [hxs]
 
 theorem lpExtendByZero_smul (s : Set X) (hs : MeasurableSet s)
     (c : 𝕜) (f : Lp F q (ν.restrict s)) :
     lpExtendByZero ν q s hs (c • f) = c • lpExtendByZero ν q s hs f := by
-  apply Lp.ext
-  filter_upwards [
-    MemLp.coeFn_toLp ((memLp_indicator_iff_restrict hs).2 (Lp.memLp (c • f))),
-    MemLp.coeFn_toLp ((memLp_indicator_iff_restrict hs).2 (Lp.memLp f)),
-    Lp.coeFn_smul c f,
-    Lp.coeFn_smul c (lpExtendByZero ν q s hs f)
-  ] with x hcf hf hsmul hsmulout
-  rw [hcf, hsmulout, hf]
-  by_cases hx : x ∈ s <;> simp [hx, hsmul]
+  let hf : MemLp (s.indicator (f : X → F)) q ν :=
+    (memLp_indicator_iff_restrict hs).2 (Lp.memLp f)
+  rw [lpExtendByZero, lpExtendByZero, ← hf.toLp_const_smul c]
+  apply MemLp.toLp_congr
+  filter_upwards [ae_restrict_iff' hs |>.mp (Lp.coeFn_smul c f)] with x hx
+  by_cases hxs : x ∈ s
+  · simp only [Set.indicator_of_mem hxs, Pi.smul_apply]
+    exact hx hxs
+  · simp [hxs]
 
 theorem norm_lpExtendByZero (s : Set X) (hs : MeasurableSet s)
     (f : Lp F q (ν.restrict s)) :
@@ -334,7 +290,9 @@ def lpExtendByZeroCLM (s : Set X) (hs : MeasurableSet s) :
     { toFun := lpExtendByZero ν q s hs
       map_add' := lpExtendByZero_add ν q s hs
       map_smul' := lpExtendByZero_smul ν q s hs }
-    1 (fun f => by rw [one_mul, norm_lpExtendByZero ν q s hs f])
+    1 (fun f => by
+      change ‖lpExtendByZero ν q s hs f‖ ≤ 1 * ‖f‖
+      rw [norm_lpExtendByZero ν q s hs f, one_mul])
 
 theorem lpExtendByZeroCLM_coeFn (s : Set X) (hs : MeasurableSet s)
     (f : Lp F q (ν.restrict s)) :
@@ -395,6 +353,7 @@ theorem restrictToClosedInterval_coeFn (c d : ℝ) (f : RealL2) :
         ℂ (Icc c d) f)
   ] with y hcomp hres
   rw [restrictToClosedInterval, ContinuousLinearMap.coe_comp', Function.comp_apply]
+  change (Lp.compMeasurePreserving ((↑) : ClosedInterval c d → ℝ) hmp g) y = f (y : ℝ)
   rw [hcomp]
   exact hres
 
@@ -413,8 +372,9 @@ theorem fullFourierFunctionalContinuous_apply (a b c d : ℝ)
     fullFourierFunctionalContinuous a b c d x f =
       ∫ y : ℝ in Icc c d,
         Complex.exp ((-(2 * Real.pi * (x : ℝ) * y) : ℝ) * Complex.I) * f y := by
-  rw [fullFourierFunctionalContinuous, fourierFunctionalContinuous,
-    ContinuousLinearMap.lpPairing_eq_integral]
+  change (complexMulBilinear.lpPairing volume 2 2
+    (fourierSectionContinuous a b c d x)) (restrictToClosedInterval c d f) = _
+  rw [ContinuousLinearMap.lpPairing_eq_integral]
   let hmp : MeasurePreserving ((↑) : ClosedInterval c d → ℝ)
       (volume : Measure (ClosedInterval c d))
       ((volume : Measure ℝ).restrict (Icc c d)) :=
@@ -433,12 +393,18 @@ theorem fullFourierFunctionalContinuous_apply (a b c d : ℝ)
           (fourierPhaseCurried a b c d x),
         restrictToClosedInterval_coeFn c d f
       ] with y hphase hf
-      rw [fourierSectionContinuous, hphase, hf]
+      change complexMulBilinear
+        ((ContinuousMap.toLp 2 volume ℂ (fourierPhaseCurried a b c d x)) y)
+        (restrictToClosedInterval c d f y) = _
+      rw [hphase, hf]
       simp [complexMulBilinear, fourierPhaseCurried, fourierPhaseContinuous]
     _ = ∫ y : ℝ,
           Complex.exp ((-(2 * Real.pi * (x : ℝ) * y) : ℝ) * Complex.I) * f y
             ∂((volume : Measure ℝ).restrict (Icc c d)) := by
-      exact hmp.integral_comp (MeasurableEmbedding.subtype_coe measurableSet_Icc) _
+      simpa only [Function.comp_apply] using
+        (hmp.integral_comp (MeasurableEmbedding.subtype_coe measurableSet_Icc)
+          (fun y : ℝ =>
+            Complex.exp ((-(2 * Real.pi * (x : ℝ) * y) : ℝ) * Complex.I) * f y))
 
 /-- Extend the preceding functional family continuously and boundedly from `[a,b]` to `ℝ` by
 projection onto the interval. -/
@@ -473,8 +439,11 @@ def fullTimeBandFourier (a b c d : ℝ) (hab : a ≤ b) : RealL2 →L[ℂ] RealL
 /-- The full-space finite time-band Fourier integral is compact. -/
 theorem isCompactOperator_fullTimeBandFourier
     (a b c d : ℝ) (hab : a ≤ b) :
-    IsCompactOperator (fullTimeBandFourier a b c d hab) :=
-  (isCompactOperator_kernelOperator ((volume : Measure ℝ).restrict (Icc a b))
-    (fullFourierFunctionalField a b c d hab)).clm_comp _
+    IsCompactOperator (fullTimeBandFourier a b c d hab) := by
+  simpa only [fullTimeBandFourier, ContinuousLinearMap.coe_comp'] using
+    (isCompactOperator_kernelOperator ((volume : Measure ℝ).restrict (Icc a b))
+      (fullFourierFunctionalField a b c d hab)).clm_comp
+        (lpExtendByZeroCLM (F := ℂ) (𝕜 := ℂ) (volume : Measure ℝ) 2
+          (Icc a b) measurableSet_Icc)
 
 end RHTower

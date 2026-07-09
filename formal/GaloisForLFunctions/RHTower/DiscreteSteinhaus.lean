@@ -141,3 +141,862 @@ end Board
 end SteinhausWalk
 
 end RHTower
+
+/-!
+## The walk: region lemmas, step invariants, termination, shores, exits
+
+`Good` darts (free on the left, marked on the right) are closed under `succ` except at frame
+exits; `pred` inverts `succ` on `Good` darts; the walk from the pinned start dart (wedged between
+the free corner `(-1,-1)` and the marked bottom sentinel `(0,-1)`) cannot repeat and must exit;
+along the way the marked right shore stays king-connected to the bottom sentinel and the free left
+shore stays rook-connected to the left sentinel; the exit hands one of the shores its opposite
+sentinel, and the interior of that sentinel-to-sentinel chain is the crossing of the original
+board.
+-/
+
+namespace RHTower
+
+namespace SteinhausWalk
+
+open Relation
+
+section Walk
+
+variable {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop) [DecidablePred Mk]
+
+/-- King adjacency on the padded integer board. -/
+def kingAdjZ (a b : ℤ × ℤ) : Prop :=
+  a ≠ b ∧ a.1 ≤ b.1 + 1 ∧ b.1 ≤ a.1 + 1 ∧ a.2 ≤ b.2 + 1 ∧ b.2 ≤ a.2 + 1
+
+/-- Rook adjacency on the padded integer board. -/
+def rookAdjZ (a b : ℤ × ℤ) : Prop :=
+  (a.1 = b.1 ∧ (a.2 = b.2 + 1 ∨ b.2 = a.2 + 1)) ∨
+    (a.2 = b.2 ∧ (a.1 = b.1 + 1 ∨ b.1 = a.1 + 1))
+
+/-- A king step between marked cells of the padded board. -/
+def augKingStep (a b : ℤ × ℤ) : Prop :=
+  kingAdjZ a b ∧ clr Mk a = Color.marked ∧ clr Mk b = Color.marked
+
+/-- A rook step between free cells of the padded board. -/
+def augRookStep (a b : ℤ × ℤ) : Prop :=
+  rookAdjZ a b ∧ clr Mk a = Color.free ∧ clr Mk b = Color.free
+
+/-- A free cell is a left sentinel, a right sentinel, or an interior cell with the original
+marking false. -/
+theorem free_cases {c : ℤ × ℤ} (h : clr Mk c = Color.free) :
+    (c.1 = -1 ∧ -1 ≤ c.2 ∧ c.2 ≤ (n : ℤ)) ∨ (c.1 = (m : ℤ) + 1 ∧ 0 ≤ c.2 ∧ c.2 ≤ (n : ℤ)) ∨
+      ((0 ≤ c.1 ∧ c.1 ≤ (m : ℤ)) ∧ (0 ≤ c.2 ∧ c.2 ≤ (n : ℤ))) := by
+  simp only [clr] at h
+  split_ifs at h with a1 a2 a3 a4 a5 a6
+  · exact Or.inl ⟨a1.1, a1.2.1, a1.2.2⟩
+  · exact Or.inr (Or.inl ⟨a2.1, a2.2.1, a2.2.2⟩)
+  · simp at h
+  · simp at h
+  · simp at h
+  · exact Or.inr (Or.inr a5)
+  · simp at h
+
+/-- A marked cell is a bottom sentinel, a top sentinel, or an interior cell with the original
+marking true. -/
+theorem marked_cases {c : ℤ × ℤ} (h : clr Mk c = Color.marked) :
+    ((0 ≤ c.1 ∧ c.1 ≤ (m : ℤ)) ∧ c.2 = -1) ∨ ((0 ≤ c.1 ∧ c.1 ≤ (m : ℤ)) ∧ c.2 = (n : ℤ) + 1) ∨
+      ((0 ≤ c.1 ∧ c.1 ≤ (m : ℤ)) ∧ (0 ≤ c.2 ∧ c.2 ≤ (n : ℤ))) := by
+  simp only [clr] at h
+  split_ifs at h with a1 a2 a3 a4 a5 a6
+  · simp at h
+  · simp at h
+  · exact Or.inl a3
+  · exact Or.inr (Or.inl a4)
+  · exact Or.inr (Or.inr a5)
+  · simp at h
+  · simp at h
+
+/-- The interior reading of a marked interior cell. -/
+theorem marked_interior {c : ℤ × ℤ} (h : clr Mk c = Color.marked)
+    (hi : 0 ≤ c.1) (hi' : c.1 ≤ (m : ℤ)) (hj : 0 ≤ c.2) (hj' : c.2 ≤ (n : ℤ)) :
+    Mk (⟨c.1.toNat, by omega⟩, ⟨c.2.toNat, by omega⟩) := by
+  simp only [clr] at h
+  split_ifs at h with a1 a2 a3 a4 a5 a6
+  · simp at h
+  · simp at h
+  · exact absurd a3.2 (by omega)
+  · exact absurd a4.2 (by omega)
+  · exact a6
+  · simp at h
+  · exact absurd ⟨⟨hi, hi'⟩, hj, hj'⟩ a5
+
+/-- The interior reading of a free interior cell. -/
+theorem free_interior {c : ℤ × ℤ} (h : clr Mk c = Color.free)
+    (hi : 0 ≤ c.1) (hi' : c.1 ≤ (m : ℤ)) (hj : 0 ≤ c.2) (hj' : c.2 ≤ (n : ℤ)) :
+    ¬ Mk (⟨c.1.toNat, by omega⟩, ⟨c.2.toNat, by omega⟩) := by
+  simp only [clr] at h
+  split_ifs at h with a1 a2 a3 a4 a5 a6
+  · exact absurd a1.1 (by omega)
+  · exact absurd a2.1 (by omega)
+  · exact absurd a3.2 (by omega)
+  · simp at h
+  · simp at h
+  · exact a6
+  · exact absurd ⟨⟨hi, hi'⟩, hj, hj'⟩ a5
+
+/-- The bottom sentinel row is marked. -/
+theorem clr_bottom {i : ℤ} (hi : 0 ≤ i) (hi' : i ≤ (m : ℤ)) :
+    clr Mk (i, -1) = Color.marked := by
+  simp only [clr]
+  split_ifs with a1 a2 a3 a4 a5 a6 <;> first | rfl | (exfalso; omega)
+
+/-- The top sentinel row is marked. -/
+theorem clr_top {i : ℤ} (hi : 0 ≤ i) (hi' : i ≤ (m : ℤ)) :
+    clr Mk (i, (n : ℤ) + 1) = Color.marked := by
+  simp only [clr]
+  split_ifs with a1 a2 a3 a4 a5 a6 <;> first | rfl | (exfalso; omega)
+
+/-- The left sentinel column is free. -/
+theorem clr_left {j : ℤ} (hj : -1 ≤ j) (hj' : j ≤ (n : ℤ)) :
+    clr Mk (-1, j) = Color.free := by
+  simp only [clr]
+  split_ifs with a1 a2 a3 a4 a5 a6 <;> first | rfl | (exfalso; omega)
+
+/-- The right sentinel column is free. -/
+theorem clr_right {j : ℤ} (hj : 0 ≤ j) (hj' : j ≤ (n : ℤ)) :
+    clr Mk ((m : ℤ) + 1, j) = Color.free := by
+  simp only [clr]
+  split_ifs with a1 a2 a3 a4 a5 a6 <;> first | rfl | (exfalso; omega)
+
+/-- Cells outside the padded bounding box are neutral (not marked). -/
+theorem not_marked_outside {c : ℤ × ℤ}
+    (h : c.1 < -1 ∨ (m : ℤ) + 1 < c.1 ∨ c.2 < -1 ∨ (n : ℤ) + 1 < c.2) :
+    clr Mk c ≠ Color.marked := by
+  intro hm
+  rcases marked_cases Mk hm with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
+
+/-- Cells outside the padded bounding box are neutral (not free). -/
+theorem not_free_outside {c : ℤ × ℤ}
+    (h : c.1 < -1 ∨ (m : ℤ) + 1 < c.1 ∨ c.2 < -1 ∨ (n : ℤ) + 1 < c.2) :
+    clr Mk c ≠ Color.free := by
+  intro hm
+  rcases free_cases Mk hm with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
+
+end Walk
+
+end SteinhausWalk
+
+end RHTower
+
+namespace RHTower
+
+namespace SteinhausWalk
+
+open Relation
+
+section Steps
+
+variable {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop) [DecidablePred Mk]
+
+/-- Within the padded bounding box, every cell except the three neutral corners is coloured. -/
+theorem clr_ne_neutral {c : ℤ × ℤ}
+    (h1 : -1 ≤ c.1) (h2 : c.1 ≤ (m : ℤ) + 1) (h3 : -1 ≤ c.2) (h4 : c.2 ≤ (n : ℤ) + 1)
+    (hc1 : ¬(c.1 = (m : ℤ) + 1 ∧ c.2 = -1)) (hc2 : ¬(c.1 = (m : ℤ) + 1 ∧ c.2 = (n : ℤ) + 1))
+    (hc3 : ¬(c.1 = -1 ∧ c.2 = (n : ℤ) + 1)) :
+    clr Mk c ≠ Color.neutral := by
+  simp only [clr]
+  split_ifs with a1 a2 a3 a4 a5 a6 <;> first | simp | (exfalso; omega)
+
+/-- A cell that is not marked, within the box and off the neutral corners, is free. -/
+theorem free_of_not_marked {c : ℤ × ℤ} (hm : clr Mk c ≠ Color.marked)
+    (h1 : -1 ≤ c.1) (h2 : c.1 ≤ (m : ℤ) + 1) (h3 : -1 ≤ c.2) (h4 : c.2 ≤ (n : ℤ) + 1)
+    (hc1 : ¬(c.1 = (m : ℤ) + 1 ∧ c.2 = -1)) (hc2 : ¬(c.1 = (m : ℤ) + 1 ∧ c.2 = (n : ℤ) + 1))
+    (hc3 : ¬(c.1 = -1 ∧ c.2 = (n : ℤ) + 1)) :
+    clr Mk c = Color.free := by
+  have hn := clr_ne_neutral Mk h1 h2 h3 h4 hc1 hc2 hc3
+  cases h : clr Mk c
+  · exact absurd h hm
+  · exact h
+  · exact absurd h hn
+
+/-- **Successor specification.**  The three branches of the walk rule, with the cells of the
+successor dart identified among the cells of the current dart. -/
+theorem succ_spec (t : Dart) :
+    (clr Mk t.aheadLeft = Color.marked ∧
+      (succ Mk t).leftCell = t.leftCell ∧ (succ Mk t).rightCell = t.aheadLeft) ∨
+    (clr Mk t.aheadLeft ≠ Color.marked ∧ clr Mk t.aheadRight = Color.marked ∧
+      (succ Mk t).leftCell = t.aheadLeft ∧ (succ Mk t).rightCell = t.aheadRight) ∨
+    (clr Mk t.aheadLeft ≠ Color.marked ∧ clr Mk t.aheadRight ≠ Color.marked ∧
+      (succ Mk t).leftCell = t.aheadRight ∧ (succ Mk t).rightCell = t.rightCell) := by
+  obtain ⟨x, y, d⟩ := t
+  by_cases h1 : clr Mk (Dart.aheadLeft ⟨x, y, d⟩) = Color.marked
+  · refine Or.inl ⟨h1, ?_, ?_⟩ <;>
+    · unfold succ
+      rw [if_pos h1]
+      cases d <;>
+        simp [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dir.vec, Dir.ccw,
+          Prod.ext_iff] <;> omega
+  · by_cases h2 : clr Mk (Dart.aheadRight ⟨x, y, d⟩) = Color.marked
+    · refine Or.inr (Or.inl ⟨h1, h2, ?_, ?_⟩) <;>
+      · unfold succ
+        rw [if_neg h1, if_pos h2]
+        cases d <;>
+          simp [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight, Dir.vec,
+            Prod.ext_iff] <;> omega
+    · refine Or.inr (Or.inr ⟨h1, h2, ?_, ?_⟩) <;>
+      · unfold succ
+        rw [if_neg h1, if_neg h2]
+        cases d <;>
+          simp [Dart.leftCell, Dart.rightCell, Dart.aheadRight, Dir.vec, Dir.cw,
+            Prod.ext_iff] <;> omega
+
+/-- **Predecessor inversion.**  On a `Good` dart the walk is injective: `pred` undoes `succ`. -/
+theorem pred_succ (t : Dart) (hG : Good Mk t) : pred Mk (succ Mk t) = t := by
+  obtain ⟨hL, hR⟩ := hG
+  obtain ⟨x, y, d⟩ := t
+  by_cases h1 : clr Mk (Dart.aheadLeft ⟨x, y, d⟩) = Color.marked
+  · unfold succ
+    rw [if_pos h1]
+    unfold pred
+    cases d <;>
+      · simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight,
+          Dart.behindLeft, Dart.behindRight, Dir.vec, Dir.ccw, Dir.cw] at *
+        norm_num at *
+        simp [hL, hR, h1, Dart.mk.injEq]
+  · by_cases h2 : clr Mk (Dart.aheadRight ⟨x, y, d⟩) = Color.marked
+    · unfold succ
+      rw [if_neg h1, if_pos h2]
+      unfold pred
+      cases d <;>
+        · simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight,
+            Dart.behindLeft, Dart.behindRight, Dir.vec, Dir.ccw, Dir.cw] at *
+          norm_num at *
+          simp [hL, hR, h1, h2, Dart.mk.injEq]
+    · unfold succ
+      rw [if_neg h1, if_neg h2]
+      unfold pred
+      cases d <;>
+        · simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight,
+            Dart.behindLeft, Dart.behindRight, Dir.vec, Dir.ccw, Dir.cw] at *
+          norm_num at *
+          simp [hL, hR, h1, h2, Dart.mk.injEq]
+
+end Steps
+
+end SteinhausWalk
+
+end RHTower
+
+namespace RHTower
+
+namespace SteinhausWalk
+
+open Relation
+
+section Shores
+
+variable {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop) [DecidablePred Mk]
+
+instance (t : Dart) : Decidable (Good Mk t) := by unfold Good; infer_instance
+
+/-- The first walk branch always preserves the invariant. -/
+theorem good_succ_case1 {t : Dart} (hG : Good Mk t)
+    (h1 : clr Mk t.aheadLeft = Color.marked) : Good Mk (succ Mk t) := by
+  rcases succ_spec Mk t with ⟨_, hl, hr⟩ | ⟨hno, _, _, _⟩ | ⟨hno, _, _, _⟩
+  · exact ⟨hl ▸ hG.1, hr ▸ h1⟩
+  · exact absurd h1 hno
+  · exact absurd h1 hno
+
+/-- **Marked-shore step.**  Along a `Good`-to-`Good` walk step the marked right cell stays put or
+makes one king step. -/
+theorem shore_marked_step {t : Dart} (hG : Good Mk t) (hG' : Good Mk (succ Mk t)) :
+    Relation.ReflTransGen (augKingStep Mk) t.rightCell (succ Mk t).rightCell := by
+  rcases succ_spec Mk t with ⟨h1, hl, hr⟩ | ⟨h1, h2, hl, hr⟩ | ⟨h1, h2, hl, hr⟩
+  · -- turn left: right cell moves to the diagonal ahead-left cell.
+    refine Relation.ReflTransGen.single ⟨?_, hG.2, hr ▸ hG'.2⟩
+    rw [hr]
+    obtain ⟨x, y, d⟩ := t
+    cases d <;>
+      · simp only [Dart.rightCell, Dart.aheadLeft, kingAdjZ, ne_eq, Prod.ext_iff]
+        refine ⟨by intro hcon; omega, by omega, by omega, by omega, by omega⟩
+  · -- straight: right cell advances one rook (hence king) step.
+    refine Relation.ReflTransGen.single ⟨?_, hG.2, hr ▸ hG'.2⟩
+    rw [hr]
+    obtain ⟨x, y, d⟩ := t
+    cases d <;>
+      · simp only [Dart.rightCell, Dart.aheadRight, kingAdjZ, ne_eq, Prod.ext_iff]
+        refine ⟨by intro hcon; omega, by omega, by omega, by omega, by omega⟩
+  · rw [hr]
+
+/-- In the third walk branch of a `Good`-to-`Good` step, the diagonal ahead-left cell is free (it
+cannot be neutral: the surrounding coloured cells pin it inside the box, off the neutral corners).
+-/
+theorem case3_aheadLeft_free {t : Dart} (hG : Good Mk t)
+    (h1 : clr Mk t.aheadLeft ≠ Color.marked) (h2 : clr Mk t.aheadRight ≠ Color.marked)
+    (haR : clr Mk t.aheadRight = Color.free) :
+    clr Mk t.aheadLeft = Color.free := by
+  obtain ⟨hL, hR⟩ := hG
+  have hLb := free_cases Mk hL
+  have hRb := marked_cases Mk hR
+  have haRb := free_cases Mk haR
+  obtain ⟨x, y, d⟩ := t
+  refine free_of_not_marked Mk h1 ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;>
+    cases d <;>
+      simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight] at * <;>
+        omega
+
+/-- **Free-shore step.**  Along a `Good`-to-`Good` walk step the free left cell stays put or makes
+one or two rook steps (the two-step case passes through the free diagonal cell of the right turn).
+-/
+theorem shore_free_step {t : Dart} (hG : Good Mk t) (hG' : Good Mk (succ Mk t)) :
+    Relation.ReflTransGen (augRookStep Mk) t.leftCell (succ Mk t).leftCell := by
+  rcases succ_spec Mk t with ⟨h1, hl, hr⟩ | ⟨h1, h2, hl, hr⟩ | ⟨h1, h2, hl, hr⟩
+  · rw [hl]
+  · -- straight: left cell advances one rook step.
+    refine Relation.ReflTransGen.single ⟨?_, hG.1, hl ▸ hG'.1⟩
+    rw [hl]
+    obtain ⟨x, y, d⟩ := t
+    cases d <;>
+      · simp only [Dart.leftCell, Dart.aheadLeft, rookAdjZ, Prod.ext_iff]
+        omega
+  · -- turn right: left → aheadLeft → aheadRight, both rook steps through free cells.
+    have haR : clr Mk t.aheadRight = Color.free := hl ▸ hG'.1
+    have haL : clr Mk t.aheadLeft = Color.free := case3_aheadLeft_free Mk hG h1 h2 haR
+    refine Relation.ReflTransGen.head ⟨?_, hG.1, haL⟩ (Relation.ReflTransGen.single ⟨?_, haL, hl ▸ haR⟩)
+    · obtain ⟨x, y, d⟩ := t
+      cases d <;>
+        · simp only [Dart.leftCell, Dart.aheadLeft, rookAdjZ, Prod.ext_iff]
+          omega
+    · rw [hl]
+      obtain ⟨x, y, d⟩ := t
+      cases d <;>
+        · simp only [Dart.aheadLeft, Dart.aheadRight, rookAdjZ, Prod.ext_iff]
+          omega
+
+end Shores
+
+end SteinhausWalk
+
+end RHTower
+
+namespace RHTower
+
+namespace SteinhausWalk
+
+open Relation
+
+section TheWalk
+
+variable {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop) [DecidablePred Mk]
+
+/-- The pinned start dart: heading north along the crack between the free corner `(-1,-1)` and the
+marked bottom-sentinel cell `(0,-1)`. -/
+def startDart : Dart := ⟨0, -1, Dir.N⟩
+
+theorem good_startDart : Good Mk startDart := by
+  constructor
+  · show clr Mk (-1, -1) = Color.free
+    exact clr_left Mk (by omega) (by omega)
+  · show clr Mk (0, -1) = Color.marked
+    exact clr_bottom Mk (by omega) (by omega)
+
+/-- The start dart has no `Good` predecessor: the backward walk formula lands on a dart whose left
+cell lies outside the padded box. -/
+theorem no_pred_startDart (u : Dart) (hu : Good Mk u) : succ Mk u ≠ startDart := by
+  intro hcon
+  have hb1 : ¬ clr Mk (Dart.behindLeft (⟨0, -1, Dir.N⟩ : Dart)) = Color.marked :=
+    not_marked_outside Mk (by norm_num [Dart.behindLeft])
+  have hb2 : ¬ clr Mk (Dart.behindRight (⟨0, -1, Dir.N⟩ : Dart)) = Color.marked :=
+    not_marked_outside Mk (by norm_num [Dart.behindRight])
+  have hpredval : pred Mk startDart = ⟨1, -1, Dir.W⟩ := by
+    unfold pred startDart
+    rw [if_neg hb1, if_neg hb2]
+    norm_num [Dir.ccw, Dir.vec]
+  have hpred : u = pred Mk startDart := by
+    rw [← hcon, pred_succ Mk u hu]
+  rw [hpredval] at hpred
+  subst hpred
+  have hfree : clr Mk ((0 : ℤ), (-2 : ℤ)) = Color.free := by
+    have h0 := hu.1
+    simp only [Dart.leftCell] at h0
+    norm_num at h0
+    exact h0
+  exact not_free_outside Mk (by omega) hfree
+
+/-- The finite box containing every `Good` dart's data. -/
+noncomputable def dartBox : Finset ((ℤ × ℤ) × Dir) :=
+  ((Finset.Icc (-2 : ℤ) ((m : ℤ) + 2)) ×ˢ (Finset.Icc (-2 : ℤ) ((n : ℤ) + 2))) ×ˢ
+    ({Dir.E, Dir.N, Dir.W, Dir.S} : Finset Dir)
+
+theorem good_mem_dartBox {t : Dart} (h : Good Mk t) :
+    ((t.x, t.y), t.d) ∈ dartBox (m := m) (n := n) := by
+  have hb := free_cases Mk h.1
+  obtain ⟨x, y, d⟩ := t
+  unfold dartBox
+  rw [Finset.mem_product, Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc]
+  refine ⟨⟨?_, ?_⟩, ?_⟩
+  · cases d <;> simp only [Dart.leftCell] at hb <;> omega
+  · cases d <;> simp only [Dart.leftCell] at hb <;> omega
+  · cases d <;> simp
+
+/-- The walk: iterate the successor from the start dart. -/
+def walk (k : ℕ) : Dart := (succ Mk)^[k] startDart
+
+/-- If every prefix of the walk is `Good`, two iterates collide and the collision backs up to a
+`Good` predecessor of the start dart — impossible.  So some iterate fails `Good`. -/
+theorem exists_bad : ∃ k, ¬ Good Mk (walk Mk k) := by
+  by_contra hcon
+  push_neg at hcon
+  -- backstepping along all-Good iterates
+  have hback : ∀ i k, walk Mk (i + k) = walk Mk i → walk Mk k = walk Mk 0 := by
+    intro i
+    induction i with
+    | zero => intro k h; simpa using h.symm
+    | succ i ih =>
+      intro k h
+      have h1 : walk Mk (i + k + 1) = walk Mk (i + 1) := by
+        rw [show i + 1 + k = i + k + 1 from by omega] at h
+        exact h
+      have h2 : walk Mk (i + k) = walk Mk i := by
+        have e1 : walk Mk (i + k + 1) = succ Mk (walk Mk (i + k)) :=
+          Function.iterate_succ_apply' _ _ _
+        have e2 : walk Mk (i + 1) = succ Mk (walk Mk i) :=
+          Function.iterate_succ_apply' _ _ _
+        have := h1
+        rw [e1, e2] at this
+        have p1 := pred_succ Mk (walk Mk (i + k)) (hcon _)
+        have p2 := pred_succ Mk (walk Mk i) (hcon _)
+        rw [← p1, ← p2, this]
+      exact ih k h2
+  -- pigeonhole on the finite dart box
+  have hmap : ∀ k ∈ Finset.range ((dartBox (m := m) (n := n)).card + 1),
+      (((walk Mk k).x, (walk Mk k).y), (walk Mk k).d) ∈ dartBox (m := m) (n := n) := by
+    intro k _
+    exact good_mem_dartBox Mk (hcon k)
+  obtain ⟨i, hi, j, hj, hij, heq⟩ :=
+    Finset.exists_ne_map_eq_of_card_lt_of_maps_to
+      (by rw [Finset.card_range]; omega) hmap
+  -- recover dart equality from data equality
+  have hdart : walk Mk i = walk Mk j := by
+    have h1 : (walk Mk i).x = (walk Mk j).x := by
+      have := congrArg (fun p => p.1.1) heq; simpa using this
+    have h2 : (walk Mk i).y = (walk Mk j).y := by
+      have := congrArg (fun p => p.1.2) heq; simpa using this
+    have h3 : (walk Mk i).d = (walk Mk j).d := by
+      have := congrArg (fun p => p.2) heq; simpa using this
+    cases hw : walk Mk i
+    cases hw' : walk Mk j
+    rw [hw, hw'] at h1 h2 h3
+    simp_all
+  -- order the collision and derive the impossible predecessor
+  rcases Nat.lt_or_ge i j with hlt | hge
+  · have h0 : walk Mk (j - i) = walk Mk 0 := by
+      have := hback i (j - i) (by rw [show i + (j - i) = j from by omega]; exact hdart.symm)
+      exact this
+    have hpos : 1 ≤ j - i := by omega
+    have hstep : walk Mk (j - i) = succ Mk (walk Mk (j - i - 1)) := by
+      rw [show j - i = (j - i - 1) + 1 from by omega]
+      exact Function.iterate_succ_apply' _ _ _
+    exact no_pred_startDart Mk _ (hcon _) (by rw [← hstep, h0]; rfl)
+  · have hlt' : j < i := by omega
+    have h0 : walk Mk (i - j) = walk Mk 0 := by
+      have := hback j (i - j) (by rw [show j + (i - j) = i from by omega]; exact hdart)
+      exact this
+    have hpos : 1 ≤ i - j := by omega
+    have hstep : walk Mk (i - j) = succ Mk (walk Mk (i - j - 1)) := by
+      rw [show i - j = (i - j - 1) + 1 from by omega]
+      exact Function.iterate_succ_apply' _ _ _
+    exact no_pred_startDart Mk _ (hcon _) (by rw [← hstep, h0]; rfl)
+
+/-- The exit index: the first walk position whose successor state fails the invariant. -/
+noncomputable def exitIndex : ℕ := Nat.find (exists_bad Mk)
+
+theorem exit_pos : 1 ≤ exitIndex Mk := by
+  rcases Nat.eq_zero_or_pos (exitIndex Mk) with h | h
+  · exfalso
+    have := Nat.find_spec (exists_bad Mk)
+    rw [show Nat.find (exists_bad Mk) = exitIndex Mk from rfl, h] at this
+    exact this (good_startDart Mk)
+  · exact h
+
+theorem good_before_exit {k : ℕ} (h : k < exitIndex Mk) : Good Mk (walk Mk k) := by
+  by_contra hcon
+  have hle : exitIndex Mk ≤ k := Nat.find_le hcon
+  omega
+
+theorem bad_at_exit : ¬ Good Mk (walk Mk (exitIndex Mk)) := Nat.find_spec (exists_bad Mk)
+
+/-- The exit dart: the last `Good` state of the walk. -/
+noncomputable def exitDart : Dart := walk Mk (exitIndex Mk - 1)
+
+theorem good_exitDart : Good Mk (exitDart Mk) :=
+  good_before_exit Mk (by have := exit_pos Mk; omega)
+
+theorem bad_succ_exitDart : ¬ Good Mk (succ Mk (exitDart Mk)) := by
+  have hstep : walk Mk (exitIndex Mk) = succ Mk (exitDart Mk) := by
+    unfold exitDart
+    rw [show exitIndex Mk = (exitIndex Mk - 1) + 1 from by have := exit_pos Mk; omega]
+    exact Function.iterate_succ_apply' _ _ _
+  rw [← hstep]
+  exact bad_at_exit Mk
+
+/-- **Marked shore accumulation.**  The marked right cell of every walk state before the exit is
+king-reachable from the bottom-sentinel start `(0,-1)`. -/
+theorem shore_marked_reach : ∀ k, k < exitIndex Mk →
+    Relation.ReflTransGen (augKingStep Mk) ((0 : ℤ), (-1 : ℤ)) (walk Mk k).rightCell := by
+  intro k
+  induction k with
+  | zero =>
+    intro _
+    have : (walk Mk 0).rightCell = ((0 : ℤ), (-1 : ℤ)) := by
+      show (startDart : Dart).rightCell = _
+      norm_num [startDart, Dart.rightCell]
+    rw [this]
+  | succ k ih =>
+    intro hk
+    have hstep : walk Mk (k + 1) = succ Mk (walk Mk k) := Function.iterate_succ_apply' _ _ _
+    rw [hstep]
+    exact (ih (by omega)).trans
+      (shore_marked_step Mk (good_before_exit Mk (by omega))
+        (by rw [← hstep]; exact good_before_exit Mk hk))
+
+/-- **Free shore accumulation.**  The free left cell of every walk state before the exit is
+rook-reachable from the left-sentinel corner `(-1,-1)`. -/
+theorem shore_free_reach : ∀ k, k < exitIndex Mk →
+    Relation.ReflTransGen (augRookStep Mk) ((-1 : ℤ), (-1 : ℤ)) (walk Mk k).leftCell := by
+  intro k
+  induction k with
+  | zero =>
+    intro _
+    have : (walk Mk 0).leftCell = ((-1 : ℤ), (-1 : ℤ)) := by
+      show (startDart : Dart).leftCell = _
+      norm_num [startDart, Dart.leftCell]
+    rw [this]
+  | succ k ih =>
+    intro hk
+    have hstep : walk Mk (k + 1) = succ Mk (walk Mk k) := Function.iterate_succ_apply' _ _ _
+    rw [hstep]
+    exact (ih (by omega)).trans
+      (shore_free_step Mk (good_before_exit Mk (by omega))
+        (by rw [← hstep]; exact good_before_exit Mk hk))
+
+end TheWalk
+
+end SteinhausWalk
+
+end RHTower
+
+namespace RHTower
+
+namespace SteinhausWalk
+
+open Relation
+
+section Exit
+
+variable {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop) [DecidablePred Mk]
+
+/-- **Exit classification.**  At the exit dart one of the shores meets its opposite sentinel:
+either the marked shore extends to a top-sentinel cell, or the free shore extends to a
+right-sentinel cell. -/
+theorem exit_classification :
+    (∃ c : ℤ × ℤ, Relation.ReflTransGen (augKingStep Mk) ((0 : ℤ), (-1 : ℤ)) c ∧
+      c.2 = (n : ℤ) + 1) ∨
+    (∃ c : ℤ × ℤ, Relation.ReflTransGen (augRookStep Mk) ((-1 : ℤ), (-1 : ℤ)) c ∧
+      c.1 = (m : ℤ) + 1) := by
+  set t := exitDart Mk with ht
+  have hG : Good Mk t := good_exitDart Mk
+  have hbad : ¬ Good Mk (succ Mk t) := bad_succ_exitDart Mk
+  have hKidx : exitIndex Mk - 1 < exitIndex Mk := by have := exit_pos Mk; omega
+  have hMreach := shore_marked_reach Mk (exitIndex Mk - 1) hKidx
+  have hFreach := shore_free_reach Mk (exitIndex Mk - 1) hKidx
+  rw [show walk Mk (exitIndex Mk - 1) = t from rfl] at hMreach hFreach
+  have hLb := free_cases Mk hG.1
+  have hRb := marked_cases Mk hG.2
+  rcases succ_spec Mk t with ⟨h1, hl, hr⟩ | ⟨h1, h2, hl, hr⟩ | ⟨h1, h2, hl, hr⟩
+  · exact absurd (good_succ_case1 Mk hG h1) hbad
+  · -- straight branch exit: ahead-left is not free.
+    have haL : clr Mk t.aheadLeft ≠ Color.free := by
+      intro hfree
+      exact hbad ⟨hl ▸ hfree, hr ▸ h2⟩
+    have haRb := marked_cases Mk h2
+    -- either the ahead-right marked cell is a top sentinel, or the left cell is a right sentinel
+    have hkey : t.aheadRight.2 = (n : ℤ) + 1 ∨ t.leftCell.1 = (m : ℤ) + 1 := by
+      by_contra hcon
+      push_neg at hcon
+      obtain ⟨hc1, hc2⟩ := hcon
+      apply haL
+      refine free_of_not_marked Mk h1 ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;>
+        · obtain ⟨x, y, d⟩ := t
+          cases d <;>
+            simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight] at * <;>
+              omega
+    rcases hkey with htop | hright
+    · -- marked crossing: append the king step to the ahead-right top cell.
+      refine Or.inl ⟨t.aheadRight, hMreach.tail ⟨?_, hG.2, h2⟩, htop⟩
+      obtain ⟨x, y, d⟩ := t
+      cases d <;>
+        · simp only [Dart.rightCell, Dart.aheadRight, kingAdjZ, ne_eq, Prod.ext_iff]
+          refine ⟨by intro hcon; omega, by omega, by omega, by omega, by omega⟩
+    · exact Or.inr ⟨t.leftCell, hFreach, hright⟩
+  · -- right-turn branch exit: ahead-right is not free.
+    have haR : clr Mk t.aheadRight ≠ Color.free := by
+      intro hfree
+      exact hbad ⟨hl ▸ hfree, hr ▸ hG.2⟩
+    have hkey : t.rightCell.2 = (n : ℤ) + 1 ∨
+        (t.aheadLeft.1 = (m : ℤ) + 1 ∧ 0 ≤ t.aheadLeft.2 ∧ t.aheadLeft.2 ≤ (n : ℤ)) := by
+      by_contra hcon
+      push_neg at hcon
+      obtain ⟨hc1, hc2⟩ := hcon
+      apply haR
+      refine free_of_not_marked Mk h2 ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;>
+        · obtain ⟨x, y, d⟩ := t
+          cases d <;>
+            simp only [Dart.leftCell, Dart.rightCell, Dart.aheadLeft, Dart.aheadRight] at * <;>
+              omega
+    rcases hkey with htop | ⟨hright, hj0, hj1⟩
+    · exact Or.inl ⟨t.rightCell, hMreach, htop⟩
+    · -- free crossing: append the rook step to the ahead-left right-sentinel cell.
+      have haLfree : clr Mk t.aheadLeft = Color.free := by
+        have : t.aheadLeft = ((m : ℤ) + 1, t.aheadLeft.2) := by
+          rw [← hright]
+        rw [this]
+        exact clr_right Mk hj0 hj1
+      refine Or.inr ⟨t.aheadLeft, hFreach.tail ⟨?_, hG.1, haLfree⟩, hright⟩
+      obtain ⟨x, y, d⟩ := t
+      cases d <;>
+        · simp only [Dart.leftCell, Dart.aheadLeft, rookAdjZ, Prod.ext_iff]
+          omega
+
+end Exit
+
+section Extract
+
+/-- Last visit to `S`: any reachability from an `S`-point refines to reachability from a possibly
+later `S`-point through steps that never re-enter `S`. -/
+theorem reach_extract_last {α : Type*} {r : α → α → Prop} {S : α → Prop} :
+    ∀ {a b : α}, Relation.ReflTransGen r a b → S a →
+      ∃ u, S u ∧ Relation.ReflTransGen (fun p q => r p q ∧ ¬ S q) u b := by
+  intro a b h
+  induction h with
+  | refl => intro ha; exact ⟨a, ha, Relation.ReflTransGen.refl⟩
+  | @tail c b h' step ih =>
+    intro ha
+    by_cases hSb : S b
+    · exact ⟨b, hSb, Relation.ReflTransGen.refl⟩
+    · obtain ⟨u, hu, hchain⟩ := ih ha
+      exact ⟨u, hu, hchain.tail ⟨step, hSb⟩⟩
+
+/-- First visit to `T`: any reachability into a `T`-point refines to reachability into a possibly
+earlier `T`-point through steps that never start in `T`. -/
+theorem reach_extract_first {α : Type*} {r : α → α → Prop} {T : α → Prop} :
+    ∀ {a b : α}, Relation.ReflTransGen r a b → T b →
+      ∃ v, T v ∧ Relation.ReflTransGen (fun p q => r p q ∧ ¬ T p) a v := by
+  intro a b h
+  induction h using Relation.ReflTransGen.head_induction_on with
+  | refl => intro hb; exact ⟨b, hb, Relation.ReflTransGen.refl⟩
+  | @head x y step h' ih =>
+    intro hb
+    by_cases hTx : T x
+    · exact ⟨x, hTx, Relation.ReflTransGen.refl⟩
+    · obtain ⟨v, hv, hchain⟩ := ih hb
+      exact ⟨v, hv, hchain.head ⟨step, hTx⟩⟩
+
+end Extract
+
+end SteinhausWalk
+
+end RHTower
+
+namespace RHTower
+
+namespace SteinhausWalk
+
+open Relation
+
+section Pipelines
+
+variable {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop) [DecidablePred Mk]
+
+/-- Along a chain whose steps never re-enter `S`, the endpoint stays out of `S` unless the chain is
+trivial. -/
+theorem rtg_target_prop {α : Type*} {r : α → α → Prop} {P : α → Prop}
+    (hP : ∀ p q, r p q → P q) : ∀ {a b : α}, Relation.ReflTransGen r a b → a = b ∨ P b := by
+  intro a b h
+  induction h with
+  | refl => exact Or.inl rfl
+  | @tail c b h' step _ => exact Or.inr (hP _ _ step)
+
+/-- Interior conversion, marked side: a sentinel-free king chain between interior cells descends to
+the board. -/
+theorem king_chain_toFin :
+    ∀ {a b : ℤ × ℤ},
+      Relation.ReflTransGen
+        (fun p q => (augKingStep Mk p q ∧ q.2 ≠ -1) ∧ p.2 ≠ (n : ℤ) + 1) a b →
+      ∀ (ha : 0 ≤ a.1 ∧ a.1 ≤ (m : ℤ) ∧ 0 ≤ a.2 ∧ a.2 ≤ (n : ℤ))
+        (hb : 0 ≤ b.1 ∧ b.1 ≤ (m : ℤ) ∧ 0 ≤ b.2 ∧ b.2 ≤ (n : ℤ)),
+      markReach Mk (⟨a.1.toNat, by omega⟩, ⟨a.2.toNat, by omega⟩)
+        (⟨b.1.toNat, by omega⟩, ⟨b.2.toNat, by omega⟩) := by
+  intro a b h
+  induction h with
+  | refl => intro _ _; exact Relation.ReflTransGen.refl
+  | @tail q b h' step ih =>
+    intro ha hb
+    obtain ⟨⟨hks, hq2⟩, hqtop⟩ := step
+    -- the intermediate source cell is interior
+    have hqmk : clr Mk q = Color.marked := hks.2.1
+    have hq_ne : q.2 ≠ -1 := by
+      rcases rtg_target_prop (fun p q hpq => hpq.1.2) h' with heq | hne
+      · rw [← heq]; omega
+      · exact hne
+    have hqint : 0 ≤ q.1 ∧ q.1 ≤ (m : ℤ) ∧ 0 ≤ q.2 ∧ q.2 ≤ (n : ℤ) := by
+      rcases marked_cases Mk hqmk with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
+    refine (ih ha hqint).tail ⟨?_, ?_, ?_⟩
+    · -- king adjacency descends
+      obtain ⟨hne, k1, k2, k3, k4⟩ := hks.1
+      refine ⟨⟨by omega, by omega⟩, ⟨by omega, by omega⟩, ?_⟩
+      intro hcon
+      apply hne
+      rw [Prod.mk.injEq] at hcon
+      obtain ⟨hc1, hc2⟩ := hcon
+      have e1 : q.1.toNat = b.1.toNat := congrArg Fin.val hc1
+      have e2 : q.2.toNat = b.2.toNat := congrArg Fin.val hc2
+      have : q.1 = b.1 := by omega
+      have : q.2 = b.2 := by omega
+      exact Prod.ext (by omega) (by omega)
+    · exact marked_interior Mk hqmk hqint.1 hqint.2.1 hqint.2.2.1 hqint.2.2.2
+    · exact marked_interior Mk hks.2.2 hb.1 hb.2.1 hb.2.2.1 hb.2.2.2
+
+/-- Interior conversion, free side: a sentinel-free rook chain between interior cells descends to
+the board. -/
+theorem rook_chain_toFin :
+    ∀ {a b : ℤ × ℤ},
+      Relation.ReflTransGen
+        (fun p q => (augRookStep Mk p q ∧ q.1 ≠ -1) ∧ p.1 ≠ (m : ℤ) + 1) a b →
+      ∀ (ha : 0 ≤ a.1 ∧ a.1 ≤ (m : ℤ) ∧ 0 ≤ a.2 ∧ a.2 ≤ (n : ℤ))
+        (hb : 0 ≤ b.1 ∧ b.1 ≤ (m : ℤ) ∧ 0 ≤ b.2 ∧ b.2 ≤ (n : ℤ)),
+      freeReach Mk (⟨a.1.toNat, by omega⟩, ⟨a.2.toNat, by omega⟩)
+        (⟨b.1.toNat, by omega⟩, ⟨b.2.toNat, by omega⟩) := by
+  intro a b h
+  induction h with
+  | refl => intro _ _; exact Relation.ReflTransGen.refl
+  | @tail q b h' step ih =>
+    intro ha hb
+    obtain ⟨⟨hrs, hq1⟩, hqright⟩ := step
+    have hqfr : clr Mk q = Color.free := hrs.2.1
+    have hq_ne : q.1 ≠ -1 := by
+      rcases rtg_target_prop (fun p q hpq => hpq.1.2) h' with heq | hne
+      · rw [← heq]; omega
+      · exact hne
+    have hqint : 0 ≤ q.1 ∧ q.1 ≤ (m : ℤ) ∧ 0 ≤ q.2 ∧ q.2 ≤ (n : ℤ) := by
+      rcases free_cases Mk hqfr with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
+    refine (ih ha hqint).tail ⟨?_, ?_, ?_⟩
+    · -- rook adjacency descends
+      rcases hrs.1 with ⟨hcol, hstep⟩ | ⟨hrow, hstep⟩
+      · refine Or.inl ⟨?_, ?_⟩
+        · exact Fin.ext (by omega)
+        · rcases hstep with h | h
+          · exact Or.inr (by omega)
+          · exact Or.inl (by omega)
+      · refine Or.inr ⟨?_, ?_⟩
+        · exact Fin.ext (by omega)
+        · rcases hstep with h | h
+          · exact Or.inr (by omega)
+          · exact Or.inl (by omega)
+    · exact free_interior Mk hqfr hqint.1 hqint.2.1 hqint.2.2.1 hqint.2.2.2
+    · exact free_interior Mk hrs.2.2 hb.1 hb.2.1 hb.2.2.1 hb.2.2.2
+
+/-- **Marked pipeline.**  An augmented king chain from the bottom-sentinel start to a top-sentinel
+cell yields an interior marked king crossing of the original board. -/
+theorem marked_pipeline
+    (h : ∃ c : ℤ × ℤ, Relation.ReflTransGen (augKingStep Mk) ((0 : ℤ), (-1 : ℤ)) c ∧
+      c.2 = (n : ℤ) + 1) :
+    ∃ a b : Fin (m + 1) × Fin (n + 1),
+      Mk a ∧ Mk b ∧ a.2 = 0 ∧ b.2 = Fin.last n ∧ markReach Mk a b := by
+  obtain ⟨c, hchain, hc⟩ := h
+  obtain ⟨u, hu, ch1⟩ := reach_extract_last (S := fun p : ℤ × ℤ => p.2 = -1) hchain rfl
+  obtain ⟨v, hv, ch2⟩ := reach_extract_first (T := fun p : ℤ × ℤ => p.2 = (n : ℤ) + 1) ch1 hc
+  -- peel the first step: lands on the bottom interior row
+  rcases ch2.cases_head with heq | ⟨w, stw, ch3⟩
+  · exfalso; rw [heq] at hu; omega
+  · obtain ⟨⟨hkw, hw2⟩, _⟩ := stw
+    have hwmk : clr Mk w = Color.marked := hkw.2.2
+    have hw0 : w.2 = 0 := by
+      obtain ⟨_, _, _, k3, k4⟩ := hkw.1
+      have hb := marked_cases Mk hwmk
+      omega
+    have hwint : 0 ≤ w.1 ∧ w.1 ≤ (m : ℤ) ∧ 0 ≤ w.2 ∧ w.2 ≤ (n : ℤ) := by
+      rcases marked_cases Mk hwmk with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
+    -- peel the last step: departs from the top interior row
+    rcases ch3.cases_tail with heq | ⟨p, ch4, stp⟩
+    · exfalso; rw [heq] at hw0; omega
+    · obtain ⟨⟨hkp, _⟩, hptop⟩ := stp
+      have hpmk : clr Mk p = Color.marked := hkp.2.1
+      have hpn : p.2 = (n : ℤ) := by
+        obtain ⟨_, _, _, k3, k4⟩ := hkp.1
+        have hb := marked_cases Mk hpmk
+        omega
+      have hpint : 0 ≤ p.1 ∧ p.1 ≤ (m : ℤ) ∧ 0 ≤ p.2 ∧ p.2 ≤ (n : ℤ) := by
+        rcases marked_cases Mk hpmk with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
+      refine ⟨(⟨w.1.toNat, by omega⟩, ⟨w.2.toNat, by omega⟩),
+        (⟨p.1.toNat, by omega⟩, ⟨p.2.toNat, by omega⟩),
+        marked_interior Mk hwmk hwint.1 hwint.2.1 hwint.2.2.1 hwint.2.2.2,
+        marked_interior Mk hpmk hpint.1 hpint.2.1 hpint.2.2.1 hpint.2.2.2,
+        ?_, ?_, king_chain_toFin Mk ch4 hwint hpint⟩
+      · exact Fin.ext (by simp; omega)
+      · exact Fin.ext (by simp [Fin.last]; omega)
+
+/-- **Free pipeline.**  An augmented rook chain from the left-sentinel corner to a right-sentinel
+cell yields an interior free rook crossing of the original board. -/
+theorem free_pipeline
+    (h : ∃ c : ℤ × ℤ, Relation.ReflTransGen (augRookStep Mk) ((-1 : ℤ), (-1 : ℤ)) c ∧
+      c.1 = (m : ℤ) + 1) :
+    ∃ a b : Fin (m + 1) × Fin (n + 1),
+      ¬ Mk a ∧ ¬ Mk b ∧ a.1 = 0 ∧ b.1 = Fin.last m ∧ freeReach Mk a b := by
+  obtain ⟨c, hchain, hc⟩ := h
+  obtain ⟨u, hu, ch1⟩ := reach_extract_last (S := fun p : ℤ × ℤ => p.1 = -1) hchain rfl
+  obtain ⟨v, hv, ch2⟩ := reach_extract_first (T := fun p : ℤ × ℤ => p.1 = (m : ℤ) + 1) ch1 hc
+  rcases ch2.cases_head with heq | ⟨w, stw, ch3⟩
+  · exfalso; rw [heq] at hu; omega
+  · obtain ⟨⟨hrw, hw1⟩, _⟩ := stw
+    have hwfr : clr Mk w = Color.free := hrw.2.2
+    have hw0 : w.1 = 0 := by
+      have hb := free_cases Mk hwfr
+      rcases hrw.1 with ⟨hcol, hstep⟩ | ⟨hrow, hstep⟩ <;> omega
+    have hwint : 0 ≤ w.1 ∧ w.1 ≤ (m : ℤ) ∧ 0 ≤ w.2 ∧ w.2 ≤ (n : ℤ) := by
+      rcases free_cases Mk hwfr with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
+    rcases ch3.cases_tail with heq | ⟨p, ch4, stp⟩
+    · exfalso; rw [heq] at hw0; omega
+    · obtain ⟨⟨hrp, _⟩, hpright⟩ := stp
+      have hpfr : clr Mk p = Color.free := hrp.2.1
+      have hpm : p.1 = (m : ℤ) := by
+        have hb := free_cases Mk hpfr
+        rcases hrp.1 with ⟨hcol, hstep⟩ | ⟨hrow, hstep⟩ <;> omega
+      have hpint : 0 ≤ p.1 ∧ p.1 ≤ (m : ℤ) ∧ 0 ≤ p.2 ∧ p.2 ≤ (n : ℤ) := by
+        rcases free_cases Mk hpfr with ⟨hi, hj⟩ | ⟨hi, hj⟩ | ⟨hi, hj⟩ <;> omega
+      refine ⟨(⟨w.1.toNat, by omega⟩, ⟨w.2.toNat, by omega⟩),
+        (⟨p.1.toNat, by omega⟩, ⟨p.2.toNat, by omega⟩),
+        free_interior Mk hwfr hwint.1 hwint.2.1 hwint.2.2.1 hwint.2.2.2,
+        free_interior Mk hpfr hpint.1 hpint.2.1 hpint.2.2.1 hpint.2.2.2,
+        ?_, ?_, rook_chain_toFin Mk ch4 hwint hpint⟩
+      · exact Fin.ext (by simp; omega)
+      · exact Fin.ext (by simp [Fin.last]; omega)
+
+end Pipelines
+
+end SteinhausWalk
+
+/-- **Discrete Steinhaus/Hex crossing duality (general marking).**  On the board
+`Fin (m+1) × Fin (n+1)`, for an arbitrary decidable marking: either the marked cells contain a
+king-connected chain from the bottom row to the top row, or the free cells contain a
+rook-connected chain from the left column to the right column.  Mechanism: pad the board with
+sentinels (marked bottom/top rows, free left/right columns), walk the marked/free interface with
+the right-hand rule from the pinned start dart, terminate by pigeonhole against predecessor
+uniqueness, and read the crossing off the exit; the king/rook asymmetry enters at the diagonal
+turn, which keeps the marked shore king-connected. -/
+theorem discrete_crossing_duality {m n : ℕ} (Mk : Fin (m + 1) × Fin (n + 1) → Prop)
+    [DecidablePred Mk] :
+    (∃ a b : Fin (m + 1) × Fin (n + 1),
+        Mk a ∧ Mk b ∧ a.2 = 0 ∧ b.2 = Fin.last n ∧ markReach Mk a b)
+    ∨ (∃ a b : Fin (m + 1) × Fin (n + 1),
+        ¬ Mk a ∧ ¬ Mk b ∧ a.1 = 0 ∧ b.1 = Fin.last m ∧ freeReach Mk a b) := by
+  rcases SteinhausWalk.exit_classification Mk with h | h
+  · exact Or.inl (SteinhausWalk.marked_pipeline Mk h)
+  · exact Or.inr (SteinhausWalk.free_pipeline Mk h)
+
+end RHTower

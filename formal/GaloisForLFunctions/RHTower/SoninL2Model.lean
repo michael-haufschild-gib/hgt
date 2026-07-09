@@ -9,6 +9,7 @@ identifies restricted-measure L² with the subtype-interval L² used by the fini
 compactness theorem, including explicit restriction and zero-extension maps.
 -/
 import GaloisForLFunctions.RHTower.FiniteTimeBandFourierCompact
+import GaloisForLFunctions.RHTower.L2FourierReflection
 import Mathlib.Analysis.Fourier.LpSpace
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.InnerProductSpace.Projection.Basic
@@ -122,12 +123,166 @@ theorem fourierCutoff_eq_fourierForbidden_starProjection
   (ContinuousLinearMap.isStarProjection_iff_eq_starProjection_range.mp
     (fourierCutoff_isStarProjection s hs)).2
 
+/-! ### Full-space finite time-band compactness -/
+
+theorem fullToRestrictedTimeBandFourier_coeFn_sonin
+    (a b c d : ℝ) (hab : a ≤ b) (f : SoninL2) :
+    (fullToRestrictedTimeBandFourier a b c d hab f : ℝ → ℂ) =ᵐ[
+        (volume : Measure ℝ).restrict (Set.Icc a b)]
+      fun x => ∫ y : ℝ in Set.Icc c d,
+        Complex.exp ((-(2 * Real.pi * x * y) : ℝ) * Complex.I) * f y := by
+  filter_upwards [
+    (evalBilinear (E := SoninL2)).coeFn_holder (r := (2 : ENNReal))
+      (fullFourierFunctionalField a b c d hab)
+      (Lp.const ∞ ((volume : Measure ℝ).restrict (Set.Icc a b)) f),
+    BoundedContinuousFunction.coeFn_toLp (𝕜 := ℂ) (p := (2 : ENNReal))
+      (μ := (volume : Measure ℝ).restrict (Set.Icc a b))
+      (fullFourierFunctionalBCF a b c d hab),
+    Lp.coeFn_const (p := ∞) ((volume : Measure ℝ).restrict (Set.Icc a b)) f,
+    ae_restrict_mem measurableSet_mem
+  ] with x hholder hfield hconst hx
+  rw [fullToRestrictedTimeBandFourier, kernelOperator, kernelOperatorMap_apply,
+    hholder, fullFourierFunctionalField, hfield, hconst]
+  change fullFourierFunctionalContinuous a b c d (Set.projIcc a b hab x) f = _
+  rw [Set.projIcc_of_mem hab hx]
+  exact fullFourierFunctionalContinuous_apply a b c d ⟨x, hx⟩ f
+
+theorem fullTimeBandFourier_coeFn_sonin
+    (a b c d : ℝ) (hab : a ≤ b) (f : SoninL2) :
+    (fullTimeBandFourier a b c d hab f : ℝ → ℂ) =ᵐ[volume]
+      fun x => (Set.Icc a b).indicator (fun x => ∫ y : ℝ in Set.Icc c d,
+        Complex.exp ((-(2 * Real.pi * x * y) : ℝ) * Complex.I) * f y) x := by
+  have hinner : ∀ᵐ x ∂volume, x ∈ Set.Icc a b →
+      fullToRestrictedTimeBandFourier a b c d hab f x =
+        ∫ y : ℝ in Set.Icc c d,
+          Complex.exp ((-(2 * Real.pi * x * y) : ℝ) * Complex.I) * f y :=
+    (ae_restrict_iff' measurableSet_Icc).mp
+      (fullToRestrictedTimeBandFourier_coeFn_sonin a b c d hab f)
+  filter_upwards [
+    lpExtendByZeroCLM_coeFn (F := ℂ) (𝕜 := ℂ) (volume : Measure ℝ) 2
+      (Set.Icc a b) measurableSet_Icc
+      (fullToRestrictedTimeBandFourier a b c d hab f),
+    hinner
+  ] with x hext hinnerx
+  rw [fullTimeBandFourier, ContinuousLinearMap.comp_apply, hext]
+  by_cases hx : x ∈ Set.Icc a b
+  · simp [hx, hinnerx hx]
+  · simp [hx]
+
+theorem integrable_indicatorCutoff_Icc (c d : ℝ) (f : SoninL2) :
+    Integrable (indicatorCutoff (Set.Icc c d) measurableSet_Icc f : ℝ → ℂ) := by
+  have hindicator : Integrable ((Set.Icc c d).indicator fun x : ℝ => f x) :=
+    (integrableOn_Lp_of_measure_ne_top f fact_one_le_two_ennreal.elim
+      (by finiteness)).integrable_indicator measurableSet_Icc
+  exact hindicator.congr (indicatorCutoff_ae (Set.Icc c d) measurableSet_Icc f).symm
+
+theorem l1Fourier_indicatorCutoff_Icc_eq_setIntegral
+    (c d : ℝ) (f : SoninL2) (x : ℝ) :
+    let g := indicatorCutoff (Set.Icc c d) measurableSet_Icc f
+    Lp.fourierTransform
+        ((memLp_one_iff_integrable.mpr (integrable_indicatorCutoff_Icc c d f)).toLp g) x =
+      ∫ y : ℝ in Set.Icc c d,
+        Complex.exp ((-(2 * Real.pi * x * y) : ℝ) * Complex.I) * f y := by
+  dsimp only
+  rw [Lp.fourierTransform_apply, Real.fourier_eq', ← integral_indicator measurableSet_Icc]
+  apply integral_congr_ae
+  filter_upwards [indicatorCutoff_ae (Set.Icc c d) measurableSet_Icc f] with y hy
+  rw [hy]
+  by_cases hys : y ∈ Set.Icc c d
+  · simp [hys, smul_eq_mul, Real.inner_apply, mul_comm]
+  · simp [hys]
+
+def cutoffFourierCutoff (a b c d : ℝ) : SoninL2 →L[ℂ] SoninL2 :=
+  indicatorCutoff (Set.Icc a b) measurableSet_Icc ∘L
+    fourierUnitary.toLinearIsometry.toContinuousLinearMap ∘L
+    indicatorCutoff (Set.Icc c d) measurableSet_Icc
+
+theorem fullTimeBandFourier_eq_cutoffFourierCutoff
+    (a b c d : ℝ) (hab : a ≤ b) :
+    fullTimeBandFourier a b c d hab = cutoffFourierCutoff a b c d := by
+  ext f
+  let g : SoninL2 := indicatorCutoff (Set.Icc c d) measurableSet_Icc f
+  have hgInt : Integrable (g : ℝ → ℂ) := integrable_indicatorCutoff_Icc c d f
+  have hfourier : (fourierUnitary g : ℝ → ℂ) =ᵐ[volume]
+      (Lp.fourierTransform ((memLp_one_iff_integrable.mpr hgInt).toLp g) : ℝ → ℂ) := by
+    simpa [fourierUnitary] using l2_fourier_coeFn_eq_l1_fourier_of_integrable g hgInt
+  ext1
+  filter_upwards [fullTimeBandFourier_coeFn_sonin a b c d hab f,
+    indicatorCutoff_ae (Set.Icc a b) measurableSet_Icc (fourierUnitary g),
+    hfourier] with x hfull hcut hfourierx
+  change fullTimeBandFourier a b c d hab f x =
+    indicatorCutoff (Set.Icc a b) measurableSet_Icc (fourierUnitary g) x
+  rw [hfull, hcut]
+  by_cases hx : x ∈ Set.Icc a b
+  · rw [Set.indicator_of_mem hx, Set.indicator_of_mem hx, hfourierx,
+      l1Fourier_indicatorCutoff_Icc_eq_setIntegral c d f x]
+  · rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem hx]
+
+theorem isCompactOperator_cutoffFourierCutoff
+    (a b c d : ℝ) (hab : a ≤ b) :
+    IsCompactOperator (cutoffFourierCutoff a b c d) := by
+  rw [← fullTimeBandFourier_eq_cutoffFourierCutoff a b c d hab]
+  exact isCompactOperator_fullTimeBandFourier a b c d hab
+
+def closedEvenShell (a b : ℝ) : Set ℝ :=
+  Set.Icc (-b) (-a) ∪ Set.Icc a b
+
+theorem measurableSet_closedEvenShell (a b : ℝ) : MeasurableSet (closedEvenShell a b) :=
+  measurableSet_Icc.union measurableSet_Icc
+
+theorem indicatorCutoff_closedEvenShell_eq_add
+    (a b : ℝ) (ha : 0 < a) :
+    indicatorCutoff (closedEvenShell a b) (measurableSet_closedEvenShell a b) =
+      indicatorCutoff (Set.Icc (-b) (-a)) measurableSet_Icc +
+        indicatorCutoff (Set.Icc a b) measurableSet_Icc := by
+  ext f
+  ext1
+  filter_upwards [
+    indicatorCutoff_ae (closedEvenShell a b) (measurableSet_closedEvenShell a b) f,
+    indicatorCutoff_ae (Set.Icc (-b) (-a)) measurableSet_Icc f,
+    indicatorCutoff_ae (Set.Icc a b) measurableSet_Icc f,
+    Lp.coeFn_add
+      (indicatorCutoff (Set.Icc (-b) (-a)) measurableSet_Icc f)
+      (indicatorCutoff (Set.Icc a b) measurableSet_Icc f)
+  ] with x hshell hneg hpos hadd
+  rw [hshell, hadd, hneg, hpos]
+  by_cases hn : x ∈ Set.Icc (-b) (-a)
+  · have hp : x ∉ Set.Icc a b := by
+      intro hp
+      nlinarith [hn.2, hp.1]
+    simp [closedEvenShell, hn, hp]
+  · by_cases hp : x ∈ Set.Icc a b <;> simp [closedEvenShell, hn, hp]
+
+def shellCutoffFourierCutoff (a b : ℝ) : SoninL2 →L[ℂ] SoninL2 :=
+  indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc ∘L
+    fourierUnitary.toLinearIsometry.toContinuousLinearMap ∘L
+    indicatorCutoff (closedEvenShell a b) (measurableSet_closedEvenShell a b)
+
+theorem shellCutoffFourierCutoff_eq_add (a b : ℝ) (ha : 0 < a) :
+    shellCutoffFourierCutoff a b =
+      cutoffFourierCutoff (-a) a (-b) (-a) + cutoffFourierCutoff (-a) a a b := by
+  rw [shellCutoffFourierCutoff, indicatorCutoff_closedEvenShell_eq_add a b ha]
+  ext f
+  simp [cutoffFourierCutoff]
+
+theorem isCompactOperator_shellCutoffFourierCutoff
+    (a b : ℝ) (ha : 0 < a) :
+    IsCompactOperator (shellCutoffFourierCutoff a b) := by
+  rw [shellCutoffFourierCutoff_eq_add a b ha]
+  exact (isCompactOperator_cutoffFourierCutoff (-a) a (-b) (-a) (by nlinarith)).add
+    (isCompactOperator_cutoffFourierCutoff (-a) a a b (by nlinarith))
+
 def reflectionIsometry : SoninL2 →ₗᵢ[ℂ] SoninL2 :=
   MeasureTheory.Lp.compMeasurePreservingₗᵢ ℂ (fun x : ℝ => -x)
     (Measure.measurePreserving_neg (volume : Measure ℝ))
 
 def reflection : SoninL2 →L[ℂ] SoninL2 :=
   reflectionIsometry.toContinuousLinearMap
+
+theorem fourierUnitary_reflection (f : SoninL2) :
+    fourierUnitary (reflection f) = reflection (fourierUnitary f) := by
+  simpa [fourierUnitary, reflection, reflectionIsometry, l2Reflection,
+    l2ReflectionIsometry] using l2_fourier_reflection f
 
 theorem reflection_ae (f : SoninL2) :
     reflection f =ᵐ[volume] fun x : ℝ => f (-x) :=
@@ -554,6 +709,76 @@ theorem outward_shell_preimage_disjoint (a p : ℝ) (ha : 0 < a) (hp : 1 < p) (n
       _ ≤ a := by simpa using hxabs
   have hscaled_gt : a < |p⁻¹ * x| := (lt_shellLeft hpa n).trans hxs.1
   exact (not_lt_of_ge hscaled_le) hscaled_gt
+
+theorem physicalCutoff_evenShellCell_disjoint (a p : ℝ) (ha : 0 < a)
+    (hp : 1 < p) (n : ℕ) :
+    Disjoint (Set.Icc (-a) a) (evenShellCell a (p * a) n) := by
+  rw [Set.disjoint_left]
+  intro x hxc hxs
+  have hpa : a < p * a := by nlinarith
+  have hxabs : |x| ≤ a := abs_le.mpr hxc
+  have hshell : a < |x| := (lt_shellLeft hpa n).trans hxs.1
+  exact (not_lt_of_ge hxabs) hshell
+
+theorem evenShellCell_subset_closedEvenShell
+    {a b : ℝ} (ha : 0 < a) (hab : a < b) (n : ℕ) :
+    evenShellCell a b n ⊆ closedEvenShell a b := by
+  intro x hx
+  have hlower : a < |x| := (lt_shellLeft hab n).trans hx.1
+  have hupper : |x| < b := hx.2.trans_lt (shellRight_lt hab n)
+  by_cases hxnonneg : 0 ≤ x
+  · right
+    simpa [abs_of_nonneg hxnonneg] using ⟨hlower.le, hupper.le⟩
+  · left
+    have hxneg : x < 0 := lt_of_not_ge hxnonneg
+    have hbounds : a ≤ -x ∧ -x ≤ b := by
+      simpa [abs_of_neg hxneg] using ⟨hlower.le, hupper.le⟩
+    constructor <;> linarith
+
+theorem shellCutoff_evenShellVector (a b : ℝ) (ha : 0 < a) (hab : a < b)
+    (n : ℕ) :
+    indicatorCutoff (closedEvenShell a b) (measurableSet_closedEvenShell a b)
+      (evenShellVector a b ha hab n) = evenShellVector a b ha hab n := by
+  ext1
+  filter_upwards [
+    indicatorCutoff_ae (closedEvenShell a b) (measurableSet_closedEvenShell a b)
+      (evenShellVector a b ha hab n),
+    normalizedIndicator_ae (evenShellCell a b n)
+      (measurableSet_evenShellCell a b n)
+      (evenShellCell_measure_ne_top ha hab n)
+  ] with x hcut hshell
+  rw [hcut, hshell]
+  by_cases hx : x ∈ evenShellCell a b n
+  · rw [Set.indicator_of_mem hx,
+      Set.indicator_of_mem (evenShellCell_subset_closedEvenShell ha hab n hx)]
+  · rw [Set.indicator_of_notMem hx]
+    simp
+
+theorem physicalCutoff_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
+    (n : ℕ) :
+    indicatorCutoff (Set.Icc (-a) a) measurableSet_Icc
+      (evenShellVector a (p * a) ha (by nlinarith) n) = 0 := by
+  ext1
+  filter_upwards [indicatorCutoff_ae (Set.Icc (-a) a) measurableSet_Icc
+      (evenShellVector a (p * a) ha (by nlinarith) n),
+    normalizedIndicator_ae (evenShellCell a (p * a) n)
+      (measurableSet_evenShellCell a (p * a) n)
+      (evenShellCell_measure_ne_top ha (by nlinarith) n)] with x hcut hshell
+  rw [hcut]
+  by_cases hxc : x ∈ Set.Icc (-a) a
+  · have hxnot : x ∉ evenShellCell a (p * a) n := fun hxs =>
+      Set.disjoint_left.1 (physicalCutoff_evenShellCell_disjoint a p ha hp n) hxc hxs
+    rw [Set.indicator_of_mem hxc, hshell, Set.indicator_of_notMem hxnot]
+    simp
+  · rw [Set.indicator_of_notMem hxc]
+
+theorem evenShellVector_mem_physicalForbidden_orthogonal
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p) (n : ℕ) :
+    evenShellVector a (p * a) ha (by nlinarith) n ∈
+      (physicalForbidden (Set.Icc (-a) a) measurableSet_Icc)ᗮ := by
+  apply (Submodule.starProjection_apply_eq_zero_iff).mp
+  rw [← indicatorCutoff_eq_physicalForbidden_starProjection]
+  exact physicalCutoff_evenShellVector a p ha hp n
 
 theorem physicalCutoff_inward_evenShellVector (a p : ℝ) (ha : 0 < a) (hp : 1 < p)
     (n : ℕ) :
