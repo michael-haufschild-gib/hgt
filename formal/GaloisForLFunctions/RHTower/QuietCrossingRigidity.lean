@@ -20,8 +20,27 @@ with an absolutely convergent Dirichlet series it turns the vertical-line integr
   integral: `t ↦ 1/((c+it)(c+it+1))` is integrable, dominated by `(c²+t²)⁻¹`.
 * `perronKernel_inversion` — the smoothed Perron formula:
   `(1/2π)·∫_t y^{c+it}/((c+it)(c+it+1)) dt = max(1 − 1/y, 0)` for `c > 0`, `y > 0`.
+
+The second half of the file applies this Perron engine to prove **quiet-crossing rigidity**.
+For `x₊ = n+½`, `x₀ = n`, `x₋ = n−½` the second difference of the smoothed partial sum
+`A₁(x) = Σ aₘ·max(x−m,0)` collapses to a single kink: `A₁(x₊)+A₁(x₋)−2A₁(x₀) = ½·aₙ`.  On the
+Mellin side this equals `(1/2π)∫ F(c+it)·N(c+it)/((c+it)(c+it+1)) dt` with the numerator
+`N(s) = x₊^{s+1}+x₋^{s+1}−2x₀^{s+1}`.  Because `N(0)=N(−1)=0`, the ratio `N(s)/(s(s+1))` extends to
+an entire function `perronE`, so `F·perronE` is entire and Cauchy's theorem lets the `Re s = c`
+contour be pushed left to `Re s = −M`.  Fed a *quiet* sequence of heights `T_k` on which `F`'s
+modulus grows slower than `T_k²`, the horizontal edges vanish as `k → ∞`, leaving `½·aₙ` bounded by
+the left flank `∝ x₋^{1−M}`, which tends to `0` as `M → ∞`.  Hence `aₙ = 0` for every `n ≥ 2`.
+
+* `perronKink` — the numerator `N(s) = (n+½)^{s+1}+(n−½)^{s+1}−2n^{s+1}`; entire, with `N(0)=N(−1)=0`.
+* `perronE` — the entire regularization `N(s)/(s(s+1))` (a double `dslope` of `perronKink`).
+* `perronKink_second_difference` — the kink identity `A₁(x₊)+A₁(x₋)−2A₁(x₀) = ½·aₙ`.
+* `perronSecondDiff_integral` — the Mellin representation `½·aₙ = (1/2π)∫ F(c+it)·perronE(c+it) dt`.
+* `quiet_crossing_rigidity` — a reflection-symmetric Dirichlet carrier that is quiet along a
+  sequence of heights `T_k` (with `‖F‖ = o(T_k²)` across the closed critical strip) has all
+  coefficients `aₙ = 0` for `n ≥ 2`.
 -/
 import Mathlib
+import GaloisForLFunctions.RHTower.GammalessStripRigidity
 
 open Complex MeasureTheory Filter Topology Asymptotics intervalIntegral Set
 
@@ -350,5 +369,324 @@ theorem smoothed_perron_sum {a : ℕ → ℂ} {c : ℝ} (hc : 0 < c) (hsum : LSe
       congr 1
       field_simp
     rw [mul_assoc, ← Complex.ofReal_mul, hmax]
+
+/-- The Perron **kink numerator** `N(s) = (n+½)^{s+1} + (n−½)^{s+1} − 2·n^{s+1}`.  Each summand is
+an entire function of `s` (positive real base), and the second-difference weighting is chosen so
+that `N(0) = (n+½)+(n−½)−2n = 0` and `N(−1) = 1+1−2 = 0`, killing the two poles `s = 0, −1` of the
+smoothed Perron kernel `1/(s(s+1))`. -/
+def perronKink (n : ℕ) (s : ℂ) : ℂ :=
+    (((n : ℝ) + 1 / 2 : ℝ) : ℂ) ^ (s + 1) + (((n : ℝ) - 1 / 2 : ℝ) : ℂ) ^ (s + 1)
+      - 2 * (((n : ℝ) : ℝ) : ℂ) ^ (s + 1)
+
+/-- `N(0) = 0`: at `s = 0` the exponent is `1`, so the numerator is `(n+½)+(n−½)−2n = 0`. -/
+theorem perronKink_zero (n : ℕ) : perronKink n 0 = 0 := by
+  unfold perronKink
+  rw [show (0 : ℂ) + 1 = 1 by ring, Complex.cpow_one, Complex.cpow_one, Complex.cpow_one]
+  push_cast; ring
+
+/-- `N(−1) = 0`: at `s = −1` the exponent is `0`, so each power is `1` and `1+1−2 = 0`. -/
+theorem perronKink_negOne (n : ℕ) : perronKink n (-1) = 0 := by
+  unfold perronKink
+  rw [show (-1 : ℂ) + 1 = 0 by ring, Complex.cpow_zero, Complex.cpow_zero, Complex.cpow_zero]
+  ring
+
+/-- The kink numerator is entire: a sum of constant-base complex powers `c^{s+1}` with `c > 0`
+(requiring `n ≥ 1` so that the base `n−½ ≥ ½` is positive). -/
+theorem perronKink_differentiable {n : ℕ} (hn : 1 ≤ n) : Differentiable ℂ (perronKink n) := by
+  have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hb1 : (((n : ℝ) + 1 / 2 : ℝ) : ℂ) ≠ 0 := by
+    have : (0 : ℝ) < (n : ℝ) + 1 / 2 := by positivity
+    exact_mod_cast ne_of_gt this
+  have hb2 : (((n : ℝ) - 1 / 2 : ℝ) : ℂ) ≠ 0 := by
+    have : (0 : ℝ) < (n : ℝ) - 1 / 2 := by linarith
+    exact_mod_cast ne_of_gt this
+  have hb3 : (((n : ℝ) : ℝ) : ℂ) ≠ 0 := by
+    have : (0 : ℝ) < (n : ℝ) := by linarith
+    exact_mod_cast ne_of_gt this
+  have d1 : Differentiable ℂ (fun s : ℂ => (((n : ℝ) + 1 / 2 : ℝ) : ℂ) ^ (s + 1)) :=
+    fun s => (differentiableAt_id.add_const 1).const_cpow (Or.inl hb1)
+  have d2 : Differentiable ℂ (fun s : ℂ => (((n : ℝ) - 1 / 2 : ℝ) : ℂ) ^ (s + 1)) :=
+    fun s => (differentiableAt_id.add_const 1).const_cpow (Or.inl hb2)
+  have d3 : Differentiable ℂ (fun s : ℂ => (((n : ℝ) : ℝ) : ℂ) ^ (s + 1)) :=
+    fun s => (differentiableAt_id.add_const 1).const_cpow (Or.inl hb3)
+  exact (d1.add d2).sub (d3.const_mul 2)
+
+/-- The **entire regularization** `E(s) = N(s)/(s(s+1))`, realized as a double difference quotient
+`dslope (dslope N 0) (−1)`.  Since `N(0) = 0` the inner `dslope … 0` removes the pole at `0`
+(agreeing with `N(s)/s`), and since that quotient vanishes at `−1` the outer `dslope … (−1)`
+removes the pole at `−1`; the result is entire wherever `N` is. -/
+def perronE (n : ℕ) : ℂ → ℂ := dslope (dslope (perronKink n) 0) (-1)
+
+/-- `E` is entire: complex `dslope` of an entire function is entire (removable singularity),
+applied twice. -/
+theorem perronE_differentiable {n : ℕ} (hn : 1 ≤ n) : Differentiable ℂ (perronE n) := by
+  have g1 : Differentiable ℂ (dslope (perronKink n) 0) := by
+    rw [← differentiableOn_univ, differentiableOn_dslope Filter.univ_mem]
+    exact (perronKink_differentiable hn).differentiableOn
+  unfold perronE
+  rw [← differentiableOn_univ, differentiableOn_dslope Filter.univ_mem]
+  exact g1.differentiableOn
+
+/-- Away from the two removed poles, `E(s) = N(s)/(s(s+1))`.  Unfolding both difference quotients:
+`dslope N 0 s = N(s)/s` (using `N(0)=0`) and `dslope (·) (−1) s = (that)/(s+1)` (using the inner
+quotient's value `0` at `−1`), whose product denominator is `s(s+1)`. -/
+theorem perronE_eq (n : ℕ) {s : ℂ} (h0 : s ≠ 0) (h1 : s ≠ -1) :
+    perronE n s = perronKink n s / (s * (s + 1)) := by
+  have e0 : dslope (perronKink n) 0 s = perronKink n s / s := by
+    rw [dslope_of_ne _ h0, slope_def_field, perronKink_zero, sub_zero, sub_zero]
+  have em1 : dslope (perronKink n) 0 (-1) = 0 := by
+    rw [dslope_of_ne _ (by norm_num : (-1 : ℂ) ≠ 0), slope_def_field, perronKink_zero,
+        perronKink_negOne, sub_zero, zero_div]
+  unfold perronE
+  rw [dslope_of_ne _ h1, slope_def_field, e0, em1, sub_zero, sub_neg_eq_add, div_div]
+
+/-- Uniform triangle bound on the kink numerator: `‖N(s)‖ ≤ (n+½)^{σ+1} + (n−½)^{σ+1} + 2·n^{σ+1}`
+where `σ = Re s`, since `‖c^{s+1}‖ = c^{Re s + 1}` for a positive real base `c`. -/
+theorem perronKink_norm_le {n : ℕ} (hn : 1 ≤ n) (s : ℂ) :
+    ‖perronKink n s‖ ≤ ((n : ℝ) + 1 / 2) ^ (s.re + 1) + ((n : ℝ) - 1 / 2) ^ (s.re + 1)
+      + 2 * ((n : ℝ)) ^ (s.re + 1) := by
+  have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hb1 : (0 : ℝ) < (n : ℝ) + 1 / 2 := by positivity
+  have hb2 : (0 : ℝ) < (n : ℝ) - 1 / 2 := by linarith
+  have hb3 : (0 : ℝ) < (n : ℝ) := by linarith
+  have hre : (s + 1).re = s.re + 1 := by rw [Complex.add_re, Complex.one_re]
+  have n1 : ‖(((n : ℝ) + 1 / 2 : ℝ) : ℂ) ^ (s + 1)‖ = ((n : ℝ) + 1 / 2) ^ (s.re + 1) := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hb1, hre]
+  have n2 : ‖(((n : ℝ) - 1 / 2 : ℝ) : ℂ) ^ (s + 1)‖ = ((n : ℝ) - 1 / 2) ^ (s.re + 1) := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hb2, hre]
+  have n3 : ‖(((n : ℝ) : ℝ) : ℂ) ^ (s + 1)‖ = ((n : ℝ)) ^ (s.re + 1) := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hb3, hre]
+  unfold perronKink
+  calc ‖(((n : ℝ) + 1 / 2 : ℝ) : ℂ) ^ (s + 1) + (((n : ℝ) - 1 / 2 : ℝ) : ℂ) ^ (s + 1)
+          - 2 * (((n : ℝ) : ℝ) : ℂ) ^ (s + 1)‖
+      ≤ ‖(((n : ℝ) + 1 / 2 : ℝ) : ℂ) ^ (s + 1) + (((n : ℝ) - 1 / 2 : ℝ) : ℂ) ^ (s + 1)‖
+          + ‖2 * (((n : ℝ) : ℝ) : ℂ) ^ (s + 1)‖ := norm_sub_le _ _
+    _ ≤ (‖(((n : ℝ) + 1 / 2 : ℝ) : ℂ) ^ (s + 1)‖ + ‖(((n : ℝ) - 1 / 2 : ℝ) : ℂ) ^ (s + 1)‖)
+          + ‖2 * (((n : ℝ) : ℝ) : ℂ) ^ (s + 1)‖ := by gcongr; exact norm_add_le _ _
+    _ = ((n : ℝ) + 1 / 2) ^ (s.re + 1) + ((n : ℝ) - 1 / 2) ^ (s.re + 1)
+          + 2 * ((n : ℝ)) ^ (s.re + 1) := by
+        rw [norm_mul, n1, n2, n3]; simp only [Complex.norm_ofNat]
+
+/-- **The kink identity.**  The smoothed partial sum `A₁(x) = Σₘ aₘ·max(x−m,0)` obeys, at the three
+knots `x₊ = n+½`, `x₀ = n`, `x₋ = n−½`, the exact second difference
+`A₁(x₊) + A₁(x₋) − 2·A₁(x₀) = ½·aₙ`.  Each sum truncates to `m ≤ n`; the pointwise weight
+`max(x₊−m,0)+max(x₋−m,0)−2·max(x₀−m,0)` is affine and vanishes for `1 ≤ m ≤ n−1`, is `½` at `m = n`,
+and vanishes for `m = 0`, so only the `m = n` term survives. -/
+theorem perronKink_second_difference (a : ℕ → ℂ) {n : ℕ} (hn : 1 ≤ n) :
+    (∑' m : ℕ, (if m = 0 then (0 : ℂ) else a m * ((max (((n : ℝ) + 1 / 2) - m) 0 : ℝ) : ℂ)))
+      + (∑' m : ℕ, (if m = 0 then (0 : ℂ) else a m * ((max (((n : ℝ) - 1 / 2) - m) 0 : ℝ) : ℂ)))
+      - 2 * (∑' m : ℕ, (if m = 0 then (0 : ℂ) else a m * ((max ((n : ℝ) - m) 0 : ℝ) : ℂ)))
+      = a n * (1 / 2) := by
+  have hn0 : n ≠ 0 := Nat.one_le_iff_ne_zero.mp hn
+  have hvanish : ∀ (x : ℝ), x ≤ (n : ℝ) + 1 / 2 →
+      ∀ m ∉ Finset.range (n + 1),
+        (if m = 0 then (0 : ℂ) else a m * ((max (x - m) 0 : ℝ) : ℂ)) = 0 := by
+    intro x hx m hm
+    rw [Finset.mem_range, not_lt] at hm
+    have hmn : (n : ℝ) + 1 ≤ (m : ℝ) := by exact_mod_cast hm
+    have hle : x - (m : ℝ) ≤ 0 := by linarith
+    rw [max_eq_right hle]; simp
+  rw [tsum_eq_sum (hvanish _ (by linarith)),
+      tsum_eq_sum (hvanish _ (by linarith)),
+      tsum_eq_sum (hvanish _ (by linarith))]
+  rw [show (∑ m ∈ Finset.range (n + 1),
+            (if m = 0 then (0 : ℂ) else a m * ((max (((n : ℝ) + 1 / 2) - m) 0 : ℝ) : ℂ)))
+          + (∑ m ∈ Finset.range (n + 1),
+            (if m = 0 then (0 : ℂ) else a m * ((max (((n : ℝ) - 1 / 2) - m) 0 : ℝ) : ℂ)))
+          - 2 * (∑ m ∈ Finset.range (n + 1),
+            (if m = 0 then (0 : ℂ) else a m * ((max ((n : ℝ) - m) 0 : ℝ) : ℂ)))
+        = ∑ m ∈ Finset.range (n + 1),
+            ((if m = 0 then (0 : ℂ) else a m * ((max (((n : ℝ) + 1 / 2) - m) 0 : ℝ) : ℂ))
+              + (if m = 0 then (0 : ℂ) else a m * ((max (((n : ℝ) - 1 / 2) - m) 0 : ℝ) : ℂ))
+              - 2 * (if m = 0 then (0 : ℂ) else a m * ((max ((n : ℝ) - m) 0 : ℝ) : ℂ)))
+        from by rw [Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.mul_sum]]
+  rw [Finset.sum_eq_single n]
+  · rw [if_neg hn0, if_neg hn0, if_neg hn0]
+    have e1 : ((n : ℝ) + 1 / 2) - n = 1 / 2 := by ring
+    have e2 : ((n : ℝ) - 1 / 2) - n = -(1 / 2) := by ring
+    have e3 : (n : ℝ) - n = 0 := by ring
+    rw [e1, e2, e3, max_eq_left (by norm_num : (0 : ℝ) ≤ 1 / 2),
+        max_eq_right (by norm_num : (-(1 / 2) : ℝ) ≤ 0), max_self]
+    push_cast; ring
+  · intro m hmem hmn
+    rcases Nat.eq_zero_or_pos m with hm0 | hm0
+    · subst hm0; simp
+    · have hmlt : m < n := lt_of_le_of_ne (Nat.lt_succ_iff.mp (Finset.mem_range.mp hmem)) hmn
+      have hmr : (m : ℝ) + 1 ≤ (n : ℝ) := by exact_mod_cast hmlt
+      rw [if_neg hm0.ne', if_neg hm0.ne', if_neg hm0.ne',
+          max_eq_left (by linarith : (0 : ℝ) ≤ ((n : ℝ) + 1 / 2) - m),
+          max_eq_left (by linarith : (0 : ℝ) ≤ ((n : ℝ) - 1 / 2) - m),
+          max_eq_left (by linarith : (0 : ℝ) ≤ (n : ℝ) - m)]
+      push_cast; ring
+  · intro h
+    exact absurd (Finset.mem_range.mpr (Nat.lt_succ_self n)) h
+
+/-- Kernel decay on a horizontal segment: at any point `x + t·I` with `|t| ≥ T > 0`, the modulus of
+`1/(s(s+1))` is at most `T^{-2}`, since `‖s‖ ≥ |Im s| = |t| ≥ T` and likewise `‖s+1‖ ≥ T`. -/
+private theorem kernel_line_bound {t T : ℝ} (hT : 0 < T) (ht : T ≤ |t|) (x : ℝ) :
+    ‖((↑x + ↑t * I) * (↑x + ↑t * I + 1))⁻¹‖ ≤ (T ^ 2)⁻¹ := by
+  set s : ℂ := (↑x + ↑t * I : ℂ) with hs
+  have him : s.im = t := by rw [hs]; simp
+  have him1 : (s + 1).im = t := by rw [Complex.add_im, him, Complex.one_im, add_zero]
+  have hA : T ≤ ‖s‖ := le_trans ht (by rw [← him]; exact Complex.abs_im_le_norm s)
+  have hB : T ≤ ‖s + 1‖ := le_trans ht (by rw [← him1]; exact Complex.abs_im_le_norm (s + 1))
+  have hge : T ^ 2 ≤ ‖s * (s + 1)‖ := by
+    rw [norm_mul, sq]; exact mul_le_mul hA hB (le_of_lt hT) (le_trans hT.le hA)
+  rw [norm_inv]; exact inv_anti₀ (by positivity) hge
+
+/-- Kernel decay on the vertical line `Re s = −M` (with `M > 1`): `‖1/(s(s+1))‖ ≤ ((M−1)²+y²)⁻¹`,
+since `‖s‖ = √(M²+y²) ≥ √((M−1)²+y²)` and `‖s+1‖ = √((M−1)²+y²)`. -/
+private theorem kernel_left_bound {M y : ℝ} (hM : 1 < M) :
+    ‖((↑(-M) + ↑y * I) * (↑(-M) + ↑y * I + 1))⁻¹‖ ≤ ((M - 1) ^ 2 + y ^ 2)⁻¹ := by
+  have hAnorm : ‖(↑(-M) + ↑y * I : ℂ)‖ = Real.sqrt ((-M) ^ 2 + y ^ 2) := Complex.norm_add_mul_I _ _
+  have hBeq : (↑(-M) + ↑y * I + 1 : ℂ) = ↑(1 - M) + ↑y * I := by push_cast; ring
+  have hBnorm : ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ = Real.sqrt ((1 - M) ^ 2 + y ^ 2) := by
+    rw [hBeq, Complex.norm_add_mul_I]
+  have hden : (0 : ℝ) < (M - 1) ^ 2 + y ^ 2 := by nlinarith [sq_nonneg y, sq_nonneg (M - 1)]
+  have hAge : Real.sqrt ((M - 1) ^ 2 + y ^ 2) ≤ ‖(↑(-M) + ↑y * I : ℂ)‖ := by
+    rw [hAnorm]; apply Real.sqrt_le_sqrt; nlinarith
+  have hBge : Real.sqrt ((M - 1) ^ 2 + y ^ 2) ≤ ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ := by
+    rw [hBnorm]; apply Real.sqrt_le_sqrt; nlinarith
+  have hge : (M - 1) ^ 2 + y ^ 2 ≤ ‖(↑(-M) + ↑y * I) * (↑(-M) + ↑y * I + 1)‖ := by
+    rw [norm_mul]
+    calc (M - 1) ^ 2 + y ^ 2
+        = Real.sqrt ((M - 1) ^ 2 + y ^ 2) * Real.sqrt ((M - 1) ^ 2 + y ^ 2) := by
+          rw [Real.mul_self_sqrt hden.le]
+      _ ≤ ‖(↑(-M) + ↑y * I : ℂ)‖ * ‖(↑(-M) + ↑y * I + 1 : ℂ)‖ :=
+          mul_le_mul hAge hBge (Real.sqrt_nonneg _) (le_trans (Real.sqrt_nonneg _) hAge)
+  rw [norm_inv]; exact inv_anti₀ hden hge
+
+/-- **Mellin representation of the kink.**  For a reflection-carrier `F` agreeing with the absolutely
+convergent Dirichlet series `L(s) = Σ aₘ m^{−s}` on `Re s ≥ c > 0`,
+
+    ½·aₙ = (1/2π) ∫_{t∈ℝ} F(c+it)·E(c+it) dt,       E = N/(s(s+1)),
+
+obtained by applying smoothed Perron summation at the three knots `x₊,x₀,x₋`, combining by
+linearity of the integral, and folding `x₊^{s+1}+x₋^{s+1}−2x₀^{s+1} = N(s)` with `L = F` on the
+line.  Each single-knot integrand is dominated by `B·xᵢ^{c+1}·(c²+t²)⁻¹`, giving the integrability
+needed for the linear combination. -/
+theorem perronSecondDiff_integral {F : ℂ → ℂ} {a : ℕ → ℂ} {c : ℝ} (hc0 : 0 < c)
+    (hsum : LSeriesSummable a c) (hF : Differentiable ℂ F)
+    (hFeq : ∀ s : ℂ, c ≤ s.re → F s = LSeries a s) {n : ℕ} (hn : 1 ≤ n) :
+    a n * (1 / 2)
+      = (1 / (2 * Real.pi) : ℝ) •
+          ∫ t : ℝ, F ((c : ℂ) + ↑t * I) * perronE n ((c : ℂ) + ↑t * I) := by
+  obtain ⟨B, hB⟩ := lseries_bounded_on_halfplane hsum
+  have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hxp : (0 : ℝ) < (n : ℝ) + 1 / 2 := by positivity
+  have hx₀ : (0 : ℝ) < (n : ℝ) := by linarith
+  have hxm : (0 : ℝ) < (n : ℝ) - 1 / 2 := by linarith
+  have hrec : ∀ t : ℝ, ((c : ℂ) + ↑t * I).re = c := fun t => by simp
+  have hle : ∀ t : ℝ, c ≤ ((c : ℂ) + ↑t * I).re := fun t => le_of_eq (hrec t).symm
+  have hLF : ∀ t : ℝ, LSeries a ((c : ℂ) + ↑t * I) = F ((c : ℂ) + ↑t * I) := fun t =>
+    (hFeq _ (hle t)).symm
+  have hB0 : (0 : ℝ) ≤ B := le_trans (norm_nonneg _) (hB ↑c (by rw [Complex.ofReal_re]))
+  -- Integrability of each single-knot Perron integrand on the line `Re s = c`.
+  have hIntKnot : ∀ x : ℝ, 0 < x → Integrable (fun t : ℝ =>
+      LSeries a ((c : ℂ) + ↑t * I) *
+        ((↑x : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+          (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))) := by
+    intro x hx
+    have hxc : (↑x : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hx
+    have hcont : Continuous (fun t : ℝ =>
+        LSeries a ((c : ℂ) + ↑t * I) *
+          ((↑x : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+            (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))) := by
+      have heq : (fun t : ℝ => LSeries a ((c : ℂ) + ↑t * I) *
+          ((↑x : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+            (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1))))
+          = fun t : ℝ => F ((c : ℂ) + ↑t * I) *
+          ((↑x : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+            (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1))) := by
+        funext t; rw [hLF t]
+      rw [heq]
+      simp_rw [div_eq_mul_inv]
+      exact (hF.continuous.comp (by fun_prop)).mul
+        ((Continuous.const_cpow (by fun_prop) (Or.inl hxc)).mul (kernel_continuous hc0))
+    have hbound : ∀ t : ℝ,
+        ‖LSeries a ((c : ℂ) + ↑t * I) *
+          ((↑x : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+            (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))‖
+          ≤ (B * x ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹ := by
+      intro t
+      rw [norm_mul, norm_div]
+      have h1 : ‖LSeries a ((c : ℂ) + ↑t * I)‖ ≤ B := hB _ (hle t)
+      have h2 : ‖(↑x : ℂ) ^ (((c : ℂ) + ↑t * I) + 1)‖ = x ^ (c + 1) := by
+        rw [Complex.norm_cpow_eq_rpow_re_of_pos hx, Complex.add_re, Complex.one_re, hrec]
+      have h3 : ‖(((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1))‖⁻¹ ≤ (c ^ 2 + t ^ 2)⁻¹ := by
+        rw [← norm_inv]; exact kernel_norm_le hc0 t
+      calc ‖LSeries a ((c : ℂ) + ↑t * I)‖ *
+              (‖(↑x : ℂ) ^ (((c : ℂ) + ↑t * I) + 1)‖ /
+                ‖(((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1))‖)
+          = ‖LSeries a ((c : ℂ) + ↑t * I)‖ *
+              (x ^ (c + 1) * ‖(((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1))‖⁻¹) := by
+            rw [h2, div_eq_mul_inv]
+        _ ≤ B * (x ^ (c + 1) * (c ^ 2 + t ^ 2)⁻¹) :=
+            mul_le_mul h1 (mul_le_mul_of_nonneg_left h3 (Real.rpow_nonneg hx.le _))
+              (by positivity) hB0
+        _ = (B * x ^ (c + 1)) * (c ^ 2 + t ^ 2)⁻¹ := by ring
+    exact ((inv_quad_integrable hc0).const_mul (B * x ^ (c + 1))).mono'
+      hcont.aestronglyMeasurable (Eventually.of_forall hbound)
+  -- Pointwise: `F·E = integrand₊ + integrand₋ − 2·integrand₀` on the line.
+  have hpt : ∀ t : ℝ, F ((c : ℂ) + ↑t * I) * perronE n ((c : ℂ) + ↑t * I)
+      = LSeries a ((c : ℂ) + ↑t * I) *
+          ((↑((n : ℝ) + 1 / 2) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+            (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))
+        + LSeries a ((c : ℂ) + ↑t * I) *
+          ((↑((n : ℝ) - 1 / 2) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+            (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))
+        - 2 * (LSeries a ((c : ℂ) + ↑t * I) *
+          ((↑((n : ℝ)) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+            (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))) := by
+    intro t
+    have hs0 : ((c : ℂ) + ↑t * I) ≠ 0 := by
+      intro h; have := congrArg Complex.re h; rw [hrec] at this; simp at this; linarith
+    have hs1 : ((c : ℂ) + ↑t * I) ≠ -1 := by
+      intro h; have := congrArg Complex.re h; rw [hrec] at this; simp at this; linarith
+    rw [← hLF t, perronE_eq n hs0 hs1]
+    unfold perronKink
+    ring
+  -- Assemble.
+  rw [← perronKink_second_difference a hn]
+  rw [smoothed_perron_sum hc0 hsum hxp, smoothed_perron_sum hc0 hsum hxm,
+      smoothed_perron_sum hc0 hsum hx₀]
+  have hcomb : (∫ t : ℝ, F ((c : ℂ) + ↑t * I) * perronE n ((c : ℂ) + ↑t * I))
+      = (∫ t : ℝ, LSeries a ((c : ℂ) + ↑t * I) *
+            ((↑((n : ℝ) + 1 / 2) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+              (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1))))
+        + (∫ t : ℝ, LSeries a ((c : ℂ) + ↑t * I) *
+            ((↑((n : ℝ) - 1 / 2) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+              (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1))))
+        - 2 * (∫ t : ℝ, LSeries a ((c : ℂ) + ↑t * I) *
+            ((↑((n : ℝ)) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+              (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))) := by
+    calc (∫ t : ℝ, F ((c : ℂ) + ↑t * I) * perronE n ((c : ℂ) + ↑t * I))
+        = ∫ t : ℝ, (LSeries a ((c : ℂ) + ↑t * I) *
+              ((↑((n : ℝ) + 1 / 2) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+                (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))
+            + LSeries a ((c : ℂ) + ↑t * I) *
+              ((↑((n : ℝ) - 1 / 2) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+                (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))
+            - 2 * (LSeries a ((c : ℂ) + ↑t * I) *
+              ((↑((n : ℝ)) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+                (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1))))) :=
+          MeasureTheory.integral_congr_ae (Eventually.of_forall hpt)
+      _ = (∫ t : ℝ, (LSeries a ((c : ℂ) + ↑t * I) *
+              ((↑((n : ℝ) + 1 / 2) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+                (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))
+            + LSeries a ((c : ℂ) + ↑t * I) *
+              ((↑((n : ℝ) - 1 / 2) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+                (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))))
+          - ∫ t : ℝ, 2 * (LSeries a ((c : ℂ) + ↑t * I) *
+              ((↑((n : ℝ)) : ℂ) ^ (((c : ℂ) + ↑t * I) + 1) /
+                (((c : ℂ) + ↑t * I) * (((c : ℂ) + ↑t * I) + 1)))) :=
+          MeasureTheory.integral_sub ((hIntKnot _ hxp).add (hIntKnot _ hxm))
+            ((hIntKnot _ hx₀).const_mul 2)
+      _ = _ := by
+          rw [MeasureTheory.integral_add (hIntKnot _ hxp) (hIntKnot _ hxm),
+              MeasureTheory.integral_const_mul]
+  rw [hcomb]
+  simp only [Complex.real_smul]
+  ring
 
 end RHTower
