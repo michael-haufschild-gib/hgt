@@ -23,6 +23,10 @@ abbrev Relation.Row (R : Relation) (pivot : Fin R.n) (S T : ℕ) :=
 noncomputable def Relation.scaledCoeff (R : Relation) (c : ℤ) (i : Fin R.n) :
     R.CoefficientField := c • R.coeffLift i
 
+theorem Relation.scaledCoeff_ne_zero (R : Relation) (c : ℤ) (hc : c ≠ 0)
+    (i : Fin R.n) : R.scaledCoeff c i ≠ 0 := by
+  simp [Relation.scaledCoeff, hc, R.coeffLift_ne_zero i]
+
 /-- The integral direction coefficient obtained after eliminating the pivot logarithm and clearing
 the common coefficient denominator. -/
 noncomputable def Relation.scaledDirection (R : Relation) (c : ℤ) (pivot : Fin R.n)
@@ -107,6 +111,19 @@ theorem Relation.scaledDirection_house_prod_pow_le (R : Relation) (c : ℤ)
         (Finset.univ : Finset (R.NonPivot pivot)) ν
           (2 * L * R.scaledCoefficientHouseSum c)
 
+theorem Relation.one_le_scaledDirectionHouseBound (R : Relation) (c : ℤ) (hc : c ≠ 0)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    {L : ℕ} (hL : 0 < L) :
+    1 ≤ 2 * L * R.scaledCoefficientHouseSum c := by
+  have hp : 1 ≤ house (R.scaledCoeff c pivot) :=
+    one_le_house_of_isIntegral (hint pivot) (R.scaledCoeff_ne_zero c hc pivot)
+  have hsum : house (R.scaledCoeff c pivot) ≤ R.scaledCoefficientHouseSum c := by
+    unfold Relation.scaledCoefficientHouseSum
+    exact Finset.single_le_sum (fun j hj => house_nonneg _) (Finset.mem_univ pivot)
+  have hL' : (1 : ℝ) ≤ L := by
+    exact_mod_cast hL
+  nlinarith [hp.trans hsum]
+
 /-- The algebraic prime-power evaluation factor at an integer sample. -/
 noncomputable def Relation.sampleFactor (R : Relation) {L S : ℕ}
     (sample : Fin S) (m : R.Column L) : R.CoefficientField :=
@@ -120,6 +137,10 @@ theorem Relation.sampleFactor_isIntegral (R : Relation) {L S : ℕ}
 
 /-- The fixed product of all primes in a reduced relation. -/
 def Relation.primeProduct (R : Relation) : ℕ := ∏ i, R.p i
+
+theorem Relation.one_le_primeProduct (R : Relation) : 1 ≤ R.primeProduct := by
+  unfold Relation.primeProduct
+  exact Finset.one_le_prod (fun i hi => (R.p_prime i).one_le)
 
 /-- The house of an integer sample factor is its ordinary real value. -/
 theorem Relation.sampleFactor_house_eq (R : Relation) {L S : ℕ}
@@ -230,6 +251,136 @@ theorem Relation.auxiliaryMatrix_ne_zero (R : Relation) (c : ℤ)
     Fintype.card (R.Row pivot S T) = S * T ^ (R.n - 1) := by
   simp [Relation.Row, Relation.NonPivot]
 
+theorem Relation.sum_rowMultiIndex_le (R : Relation) (pivot : Fin R.n) {T : ℕ}
+    (ν : R.NonPivot pivot → Fin T) :
+    (∑ i, (ν i : ℕ)) ≤ (R.n - 1) * T := by
+  calc
+    (∑ i, (ν i : ℕ)) ≤ ∑ _i : R.NonPivot pivot, T := by
+      apply Finset.sum_le_sum
+      intro i hi
+      exact (ν i).isLt.le
+    _ = (R.n - 1) * T := by simp [R.card_nonPivot, mul_comm]
+
+/-- Entrywise house estimate before replacing the row and sample indices by their box cutoffs. -/
+theorem Relation.auxiliaryEntry_house_le_direction_sample
+    (R : Relation) (c : ℤ) (pivot : Fin R.n) {L S T : ℕ}
+    (row : R.Row pivot S T) (m : R.Column L) :
+    house (R.auxiliaryEntry c pivot row m) ≤
+      (∏ i : R.NonPivot pivot,
+        house (R.scaledDirection c pivot m i) ^ (row.2 i : ℕ)) *
+        house (R.sampleFactor row.1 m) := by
+  unfold Relation.auxiliaryEntry
+  apply le_trans (house_mul_le _ _)
+  apply mul_le_mul_of_nonneg_right _ (house_nonneg _)
+  have hprodHouse (s : Finset (R.NonPivot pivot)) :
+      house (∏ i ∈ s, R.scaledDirection c pivot m i ^ (row.2 i : ℕ)) ≤
+        ∏ i ∈ s, house (R.scaledDirection c pivot m i) ^ (row.2 i : ℕ) := by
+    induction s using Finset.induction_on with
+    | empty => simp [house]
+    | @insert i s hi ih =>
+        simp only [Finset.prod_insert hi]
+        calc
+          house (R.scaledDirection c pivot m i ^ (row.2 i : ℕ) *
+              ∏ j ∈ s, R.scaledDirection c pivot m j ^ (row.2 j : ℕ)) ≤
+              house (R.scaledDirection c pivot m i ^ (row.2 i : ℕ)) *
+                house (∏ j ∈ s, R.scaledDirection c pivot m j ^ (row.2 j : ℕ)) :=
+            house_mul_le _ _
+          _ ≤ house (R.scaledDirection c pivot m i) ^ (row.2 i : ℕ) *
+                ∏ j ∈ s, house (R.scaledDirection c pivot m j) ^ (row.2 j : ℕ) := by
+            apply mul_le_mul
+            · exact house_pow_le _ _
+            · exact ih
+            · exact house_nonneg _
+            · exact pow_nonneg (house_nonneg _) _
+  simpa using hprodHouse Finset.univ
+
+/-- Every matrix entry is bounded by one expression depending only on the three box dimensions. -/
+theorem Relation.auxiliaryEntry_house_le_closed
+    (R : Relation) (c : ℤ) (hc : c ≠ 0)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    {L S T : ℕ} (hL : 0 < L) (row : R.Row pivot S T) (m : R.Column L) :
+    house (R.auxiliaryEntry c pivot row m) ≤
+      (2 * L * R.scaledCoefficientHouseSum c) ^ ((R.n - 1) * T) *
+        (R.primeProduct : ℝ) ^ (L * S) := by
+  have hD : (1 : ℝ) ≤ 2 * L * R.scaledCoefficientHouseSum c :=
+    R.one_le_scaledDirectionHouseBound c hc hint pivot hL
+  have hP : (1 : ℝ) ≤ R.primeProduct := by
+    exact_mod_cast R.one_le_primeProduct
+  have hsum : (∑ i : R.NonPivot pivot, (row.2 i : ℕ)) ≤ (R.n - 1) * T :=
+    R.sum_rowMultiIndex_le pivot row.2
+  have hsample : L * (row.1 : ℕ) ≤ L * S :=
+    Nat.mul_le_mul_left L row.1.isLt.le
+  calc
+    house (R.auxiliaryEntry c pivot row m) ≤
+        (∏ i : R.NonPivot pivot,
+          house (R.scaledDirection c pivot m i) ^ (row.2 i : ℕ)) *
+          house (R.sampleFactor row.1 m) :=
+      R.auxiliaryEntry_house_le_direction_sample c pivot row m
+    _ ≤ (2 * L * R.scaledCoefficientHouseSum c) ^
+          (∑ i : R.NonPivot pivot, (row.2 i : ℕ)) *
+          house (R.sampleFactor row.1 m) := by
+      exact mul_le_mul_of_nonneg_right
+        (R.scaledDirection_house_prod_pow_le c pivot m fun i => row.2 i)
+        (house_nonneg _)
+    _ ≤ (2 * L * R.scaledCoefficientHouseSum c) ^ ((R.n - 1) * T) *
+          house (R.sampleFactor row.1 m) := by
+      exact mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hD hsum) (house_nonneg _)
+    _ ≤ (2 * L * R.scaledCoefficientHouseSum c) ^ ((R.n - 1) * T) *
+          (R.primeProduct : ℝ) ^ (L * (row.1 : ℕ)) := by
+      exact mul_le_mul_of_nonneg_left (R.sampleFactor_house_le row.1 m)
+        (pow_nonneg (le_trans (by norm_num) hD) _)
+    _ ≤ (2 * L * R.scaledCoefficientHouseSum c) ^ ((R.n - 1) * T) *
+          (R.primeProduct : ℝ) ^ (L * S) := by
+      exact mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hP hsample)
+        (pow_nonneg (le_trans (by norm_num) hD) _)
+
+noncomputable def Relation.auxiliaryHeightClosed (R : Relation) (c : ℤ)
+    (L S T : ℕ) : ℝ :=
+  (((S * T ^ (R.n - 1)) * L ^ R.n : ℕ) : ℝ) *
+    ((2 * L * R.scaledCoefficientHouseSum c) ^ ((R.n - 1) * T) *
+      (R.primeProduct : ℝ) ^ (L * S))
+
+theorem Relation.auxiliaryHeightClosed_nonneg (R : Relation) (c : ℤ) (L S T : ℕ) :
+    0 ≤ R.auxiliaryHeightClosed c L S T := by
+  unfold Relation.auxiliaryHeightClosed Relation.scaledCoefficientHouseSum
+  exact mul_nonneg (Nat.cast_nonneg _)
+    (mul_nonneg
+      (pow_nonneg (mul_nonneg (mul_nonneg (by norm_num) (Nat.cast_nonneg _))
+        (Finset.sum_nonneg fun i hi => house_nonneg _)) _)
+      (pow_nonneg (Nat.cast_nonneg _) _))
+
+/-- Closed height estimate for the entire auxiliary matrix. -/
+theorem Relation.auxiliaryHeight_le_closed
+    (R : Relation) (c : ℤ) (hc : c ≠ 0)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    (L S T : ℕ) (hL : 0 < L) :
+    R.auxiliaryHeight c hint pivot L S T ≤
+      R.auxiliaryHeightClosed c L S T := by
+  unfold Relation.auxiliaryHeight
+  calc
+    (∑ row : R.Row pivot S T, ∑ m : R.Column L,
+      house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField)
+        (R.auxiliaryMatrix c hint pivot L S T row m))) ≤
+        ∑ _row : R.Row pivot S T, ∑ _m : R.Column L,
+          ((2 * L * R.scaledCoefficientHouseSum c) ^ ((R.n - 1) * T) *
+            (R.primeProduct : ℝ) ^ (L * S)) := by
+      apply Finset.sum_le_sum
+      intro row hrow
+      apply Finset.sum_le_sum
+      intro m hm
+      simpa [Relation.auxiliaryMatrix] using
+        R.auxiliaryEntry_house_le_closed c hc hint pivot hL row m
+    _ = _ := by
+      simp [Relation.auxiliaryHeightClosed, nsmul_eq_mul]
+      ring
+
+theorem Relation.siegelConstant_nonneg (R : Relation) :
+    0 ≤ GelfondSchneiderSiegel.c₁ R.CoefficientField := by
+  unfold GelfondSchneiderSiegel.c₁ GelfondSchneiderSiegel.c₂
+  exact mul_nonneg (Nat.cast_nonneg _)
+    (mul_nonneg (le_trans (by norm_num) (le_max_left 1 _))
+      (le_trans (by norm_num) (GelfondSchneiderSiegel.one_le_supOfBasis _)))
+
 /-- The explicit Siegel-lemma house bound for every coefficient of an auxiliary kernel vector. -/
 noncomputable def Relation.auxiliaryCoefficientBound (R : Relation) (c : ℤ)
     (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
@@ -244,16 +395,53 @@ noncomputable def Relation.auxiliaryCoefficientBound (R : Relation) (c : ℤ)
 theorem Relation.auxiliaryCoefficientBound_nonneg (R : Relation) (c : ℤ)
     (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
     (L S T : ℕ) : 0 ≤ R.auxiliaryCoefficientBound c hint pivot L S T := by
-  have hc1 : 0 ≤ GelfondSchneiderSiegel.c₁ R.CoefficientField := by
-    unfold GelfondSchneiderSiegel.c₁ GelfondSchneiderSiegel.c₂
-    exact mul_nonneg (Nat.cast_nonneg _)
-      (mul_nonneg (le_trans (by norm_num) (le_max_left 1 _))
-        (le_trans (by norm_num) (GelfondSchneiderSiegel.one_le_supOfBasis _)))
+  have hc1 := R.siegelConstant_nonneg
   unfold Relation.auxiliaryCoefficientBound
   apply mul_nonneg hc1
   apply Real.rpow_nonneg
   exact mul_nonneg (mul_nonneg hc1 (Nat.cast_nonneg _))
     (R.auxiliaryHeight_nonneg c hint pivot L S T)
+
+/-- Closed coefficient-height budget obtained by inserting `auxiliaryHeightClosed` into the explicit
+Siegel estimate. -/
+noncomputable def Relation.auxiliaryCoefficientBoundClosed (R : Relation) (c : ℤ)
+    (L S T : ℕ) : ℝ :=
+  GelfondSchneiderSiegel.c₁ R.CoefficientField *
+    (GelfondSchneiderSiegel.c₁ R.CoefficientField * ((L ^ R.n : ℕ) : ℝ) *
+      R.auxiliaryHeightClosed c L S T) ^
+      (((S * T ^ (R.n - 1) : ℕ) : ℝ) /
+        ((L ^ R.n : ℕ) - (S * T ^ (R.n - 1) : ℕ)))
+
+theorem Relation.auxiliaryCoefficientBoundClosed_nonneg
+    (R : Relation) (c : ℤ) (L S T : ℕ) :
+    0 ≤ R.auxiliaryCoefficientBoundClosed c L S T := by
+  unfold Relation.auxiliaryCoefficientBoundClosed
+  apply mul_nonneg R.siegelConstant_nonneg
+  apply Real.rpow_nonneg
+  exact mul_nonneg
+    (mul_nonneg R.siegelConstant_nonneg (Nat.cast_nonneg _))
+    (R.auxiliaryHeightClosed_nonneg c L S T)
+
+theorem Relation.auxiliaryCoefficientBound_le_closed
+    (R : Relation) (c : ℤ) (hc : c ≠ 0)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    (L S T : ℕ) (hL : 0 < L)
+    (hcard : S * T ^ (R.n - 1) < L ^ R.n) :
+    R.auxiliaryCoefficientBound c hint pivot L S T ≤
+      R.auxiliaryCoefficientBoundClosed c L S T := by
+  have hc1 := R.siegelConstant_nonneg
+  have hheight := R.auxiliaryHeight_le_closed c hc hint pivot L S T hL
+  have hfactor : 0 ≤ GelfondSchneiderSiegel.c₁ R.CoefficientField *
+      ((L ^ R.n : ℕ) : ℝ) :=
+    mul_nonneg hc1 (Nat.cast_nonneg _)
+  unfold Relation.auxiliaryCoefficientBound Relation.auxiliaryCoefficientBoundClosed
+  simp only [R.card_column, R.card_row]
+  apply mul_le_mul_of_nonneg_left _ hc1
+  apply Real.rpow_le_rpow
+  · exact mul_nonneg hfactor (R.auxiliaryHeight_nonneg c hint pivot L S T)
+  · exact mul_le_mul_of_nonneg_left hheight hfactor
+  · exact div_nonneg (Nat.cast_nonneg _)
+      (sub_nonneg.mpr (by exact_mod_cast hcard.le))
 
 /-- **Baker auxiliary Siegel bridge.**  If the derivative/sample system has fewer rows than exponent
 columns, it has a nonzero algebraic-integer coefficient vector annihilating every row, with the

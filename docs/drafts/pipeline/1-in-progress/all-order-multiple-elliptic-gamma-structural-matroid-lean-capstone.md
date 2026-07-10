@@ -27,10 +27,10 @@ not satisfy this criterion.
 
 1. differential polynomial evaluation, DA extensions, differential independence, and differential
    transcendence degree;
-2. commuting difference-differential fields and several-automorphism parameterized
-   Picard--Vessiot theory;
-3. the unconditional additive simultaneous telescoping theorem with constant extension and
-   algebraically closed descent;
+2. commuting difference-differential fields, universal Kähler differentials, and
+   semilinear circuit descent;
+3. the unconditional additive simultaneous telescoping theorem and its all-jet
+   differential-independence contrapositive;
 4. meromorphic functions with periods, nondiscrete-period constancy, elliptic curves, elliptic
    function fields, and specialization from a product;
 5. theta functions, elliptic gamma, multiple elliptic gamma, and all hierarchy identities;
@@ -111,9 +111,25 @@ missing.
 automorphisms which fix the coefficient field and commute with the derivation. It proves that
 constant-coefficient differential operators commute with all difference defects, that compatible
 primitive systems satisfy the pairwise cocycle equations, and that one differential-linear
-relation yields one common primitive in every simultaneous telescoping equation. The converse
-existence theorem from differential dependence still requires the parameterized
-Picard--Vessiot/Ostrowski--Kolchin layer and constant descent.
+relation yields one common primitive in every simultaneous telescoping equation.
+
+`formal/GaloisForLFunctions/FractionRingDerivation.lean` constructs the extension of an arbitrary
+derivation through a fraction field by lifting its square-zero graph. Together with a
+transcendence-basis extension and formally étale base change,
+`formal/GaloisForLFunctions/KaehlerKernel.lean` proves in characteristic zero the exact field
+theorem
+
+```text
+KaehlerDifferential.D K L g = 0 ↔ IsAlgebraic K g.
+```
+
+`formal/GaloisForLFunctions/ElementaryOstrowski.lean` combines this kernel theorem with the
+semilinear least-support Kähler circuit descent. Algebraic dependence of additive primitives now
+unconditionally produces a nonzero joint-constant finite linear combination of the increment
+cocycles that is the coboundary of one and the same base element in every automorphism direction.
+Applying the theorem to the full jet family gives the exact contrapositive needed here: absence of
+all finite simultaneous jet telescopers implies differential algebraic independence. This closes
+the algebraic several-automorphism dependence-to-telescoping gate without a PPV construction.
 
 `formal/GaloisForLFunctions/DifferentialPolynomialOver.lean` supplies the total differential
 polynomial derivation over a nonconstant differential base: coefficients are differentiated while
@@ -135,8 +151,9 @@ Applied to an actual dependent primitive tuple, its nonzero relation ideal embed
 maximal ideal. `formal/GaloisForLFunctions/ParameterizedPrimitiveQuotient.lean` descends the total
 derivation and all affine actions to the quotient, proves that they commute, constructs the
 universal primitive tuple there, and proves the quotient is affine-differentially simple. This is
-the additive unipotent PPV quotient-ring construction. The remaining PPV core is the translation
-torsor/Galois group, preservation and descent of joint constants, and the fixed-field theorem.
+the additive unipotent PPV quotient-ring construction. Its translation torsor and Galois
+correspondence remain incomplete, but they are no longer dependencies of the present route because
+the elementary Kähler proof supplies the required simultaneous telescoping theorem directly.
 
 `formal/GaloisForLFunctions/DifferentialPolynomial.lean` now constructs the constant-coefficient
 differential polynomial ring as a polynomial ring on formal jets, proves that jet evaluation
@@ -153,10 +170,8 @@ homogeneous; first-order extraction at the additive identity sends its right par
 back into the same ideal. In characteristic zero a degree-at-least-two relation has a nonzero
 partial derivative of smaller degree, a contradiction. Thus every nonzero additive differential
 Hopf ideal contains an explicit nonzero finite constant-coefficient linear combination of jets.
-The next open core is the several-automorphism PPV maximal invariant quotient, its translation
-torsor, and the fixed-field/Galois correspondence which converts the invariant relation ideal of a
-dependent compatible primitive system into a nonzero additive differential Hopf ideal over the
-joint constants.
+This remains independent reusable PPV infrastructure; the Kähler circuit route bypasses it for the
+present primitive-independence theorem.
 
 This is the first real dependency of the strengthened theorem. It is not evidence that the
 analytic capstone is already formalized.
@@ -181,8 +196,8 @@ analytic capstone is already formalized.
 - [x] differential-polynomial relation ideals and characteristic-zero primitive classification
 - [x] characteristic-zero additive differential Hopf-ideal primitive-existence theorem
 - [ ] complete differential algebra foundation, including differential transcendence degree
-- [ ] multi-automorphism parameterized Picard--Vessiot foundation
-- [ ] unconditional simultaneous telescoping
+- [x] unconditional multi-automorphism dependence-to-telescoping foundation
+- [x] unconditional simultaneous telescoping and all-jet independence contrapositive
 - [ ] meromorphic and elliptic function-field foundation
 - [ ] theta and multiple-elliptic-gamma definitions and hierarchy
 - [ ] orbit-principal-part obstruction
@@ -239,3 +254,9 @@ analytic capstone is already formalized.
   forces the complete family outside the finite coboundary image. Combined with the nested orbit
   quotient theorem, pairwise distinct nonzero classes modulo `Λ + ℤq` now give the simultaneous
   obstruction required by the exact differential-transcendence-rank proof.
+- 2026-07-11 -- Replaced the open PPV/Galois dependence-to-telescoping step by an elementary
+  characteristic-zero Kähler proof. The fraction-field derivation, Kähler-kernel theorem,
+  simultaneous several-automorphism Ostrowski theorem, and its all-jet differential-independence
+  contrapositive all build unconditionally. The remaining capstone gap is analytic realization:
+  meromorphic function fields, theta and multiple elliptic gamma, principal-part extraction, and
+  the hierarchy/rank assembly.

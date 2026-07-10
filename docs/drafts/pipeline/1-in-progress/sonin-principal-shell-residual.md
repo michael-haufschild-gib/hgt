@@ -158,10 +158,29 @@ Under `s=1/2+zI` the same trace is exactly `-I` times the completed flux `-xi'/x
 strip it has the already proved continued-prime plus archimedean/boundary decomposition. This is a
 fixed constraint identity, not a Hilbert--Polya spectrum or a generated flow.
 
+`[PROVED IN LEAN, SOURCE IDENTITY]` On `Re(s)>1`, define the source trace without Xi-zero data by
+
+`-I (LSeries(vonMangoldt,s) - logDeriv(archFactor,s))`.
+
+The `LSeries` is an unconditional sum over the natural-number prime-power carrier, so it is
+independent of enumeration and prime exhaustion. Lean proves that this source trace equals the Xi
+relative resolvent. Its regulator-free meromorphic continuation is defined from
+`infinitePrimeFlux=-logDeriv(zeta)` and the same archimedean/boundary term; throughout `Re(s)>0`
+away from the natural poles, Lean proves that the continued source trace still equals the Xi
+relative resolvent. The absolutely convergent source and continued source agree on `Re(s)>1`.
+
+`[PROVED IN LEAN, OBSTRUCTION]` The abstract Hilbert--Schmidt interface cannot itself define the
+missing Sonin trace. The diagonal kernel `diag(1/(n+1))` is Hilbert--Schmidt, while its diagonal
+series is the divergent harmonic series. Therefore applying `opTrace` to the Sonin linear cross
+term solely from its `S2` theorem would be invalid. A Sonin realization must prove additional
+trace-class/smoothing structure or use the compact-support semilocal test-functional of the trace
+formula.
+
 ## RH interface
 
-`[OPEN CORE]` Construct a canonical scalar relative trace of the principal/residual **linear cross
-term** and prove
+`[OPEN CORE]` Realize the already constructed prime--archimedean source trace as the semilocal
+trace of the principal/residual **linear cross term** after canonical test-function smoothing, and
+prove
 
 `soninRelativeTrace(z) = xiRelativeResolventTrace(z)`.
 
@@ -170,10 +189,11 @@ existing finite moment expansion then supplies `xiCentralTraceHankel`. No zero d
 in the Sonin source construction. `T_mix=C_a^*C_a` and `I₂` remain valid quadratic invariants but
 cannot substitute for this linear principal-relative scalarization.
 
-`[ROUTE VERDICT]` The residual-only determinant route is dead. The principal-relative route is
-alive and sharply falsifiable: if the Hilbert--Schmidt linear cross term has no canonical
-completed prime--archimedean scalarization, the Sonin route stops here. If it does, the exact Xi
-resolvent and Hankel target are already formalized.
+`[ROUTE VERDICT]` The residual-only determinant route and an unsmoothed trace on the raw
+Hilbert--Schmidt cross term are dead. The semilocal principal-relative route remains alive: the
+regulator-independent arithmetic source trace and its Xi identity are now proved, but the Sonin
+operator must realize it through compact-support semilocal smoothing rather than a fictitious
+trace on all of `S2`.
 
 ## Gates
 
@@ -198,10 +218,14 @@ resolvent and Hankel target are already formalized.
   the defect and linear cross term are unconditionally Hilbert--Schmidt.
 - [x] Regulator-independent Xi relative resolvent trace constructed, paired to the exact central
   reciprocal moments, and identified with the completed prime--archimedean flux.
+- [x] Prime--archimedean source trace constructed from the absolutely convergent von-Mangoldt
+  `LSeries`, continued without a cutoff, and identified with the Xi relative resolvent.
+- [x] Hilbert--Schmidt-only trace scalarization excluded by an explicit `S2` kernel with divergent
+  diagonal series.
 - [ ] One concrete principal-subtracted cross-prime overlap proved nonzero.
-- [ ] Canonical scalarization of the Sonin Hilbert--Schmidt linear cross term constructed.
-- [ ] Sonin source scalarization identified with the Xi relative resolvent without using the Xi
-  divisor in its construction.
+- [ ] Compact-support semilocal smoothing operator on the Sonin carrier constructed and proved to
+  make the linear cross term trace class.
+- [ ] Its operator trace identified with `continuedPrimeArchSourceRelativeTrace`.
 
 ## Classification
 

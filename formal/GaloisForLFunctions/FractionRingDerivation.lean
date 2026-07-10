@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ElementaryOstrowski
+import Mathlib.RingTheory.Derivation.Basic
 import Mathlib.Algebra.TrivSqZeroExt.Basic
 import Mathlib.RingTheory.Localization.FractionRing
 
@@ -132,16 +132,19 @@ def fractionRingDerivation
           rw [IsScalarTower.algebraMap_apply K A F]
           exact fractionRingDerivationGraphLift_algebraMap D _
         rw [hbase]
-        rw [derivationGraphAlgHom_fst, derivationGraphAlgHom_snd,
-          Derivation.map_algebraMap, zero_mul, add_zero]
-        rw [← IsScalarTower.algebraMap_apply K A F] }
+        simp only [derivationGraphAlgHom_snd, Derivation.map_algebraMap,
+          smul_zero, add_zero, Algebra.smul_def]
+        simp }
     (by
       intro x y
+      change (fractionRingDerivationGraphLift D (x * y)).snd =
+        x • (fractionRingDerivationGraphLift D y).snd +
+          y • (fractionRingDerivationGraphLift D x).snd
       rw [map_mul (fractionRingDerivationGraphLift D)]
       rw [TrivSqZeroExt.snd_mul,
         fractionRingDerivationGraphLift_fst,
         fractionRingDerivationGraphLift_fst]
-      simp [smul_eq_mul])
+      simp [smul_eq_mul, mul_comm])
 
 @[simp] theorem fractionRingDerivation_apply
     {K A F : Type*} [Field K] [CommRing A] [IsDomain A] [Field F]

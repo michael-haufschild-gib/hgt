@@ -218,6 +218,8 @@ mechanism behind every selected quartet:
 - `simultaneousFlatMultiplier_localFluxCorrection_order` proves that the full finite-product
   multiplier has exactly the independently assigned local correction order at each simple disjoint
   quartet.
+- `simultaneousFlatProduct_mul_I_pos_real` proves strict positive reality of the full packet on the
+  imaginary axis, supplying the algebraic zero-free-axis core.
 
 The exact source check and exact Lake target build pass.  The listed declarations depend only on
 `propext`, `Classical.choice`, and `Quot.sound`.  The global `cosh` envelope remains to be formalized,

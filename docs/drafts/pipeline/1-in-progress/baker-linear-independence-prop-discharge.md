@@ -37,14 +37,15 @@ BakerLinearIndependence`; do not replace it with a stronger unproved interface o
 
 `[OPEN CORE]` The arbitrary finite-family step is genuine Baker theory.  Any counterexample has now
 been reduced to a nonzero minimal relation of arity at least three inside one finite number field.
-The multivariate integral auxiliary matrix, nonzero Siegel kernel, distinct-frequency theorem,
-nonzero auxiliary exponential polynomial, and its initial high-order sample vanishing are formalized.
-The shifted component family `G_ν`, its triangular derivative law, its canonical algebraic-integer
-values at natural samples, the explicit conjugate house bound, and the asymmetric norm-product
-discreteness theorem are also formalized.  Thus the arithmetic half of extrapolation is closed: a
-sufficiently small distinguished value now becomes an exact new zero without any Prop interface.
-The remaining core is the sharp analytic small-value estimate and its iteration beyond the samples
-built into the matrix, followed by the final zero estimate.
+The multivariate integral auxiliary matrix now returns both a nonzero kernel vector and its explicit
+Siegel coefficient-house bound.  The shifted component family `G_ν`, its triangular derivative law,
+algebraic-integer values, multipoint Schwarz estimate, and asymmetric norm-product discreteness
+theorem are formalized.  Closed analytic and conjugate bounds reduce one exact extrapolation step to
+a scalar inequality containing only `L`, `S`, `T`, the radius, the sample, and fixed invariants of the
+relation.  The polynomial parameter family `L=t^(8n-1)`, `S=t^(4n)`, `q=t^(8n)`, `T=2q`, and
+`R=t^(4n+1)` formally discharges the matrix dimension and positivity obligations.  The remaining
+core is to prove the scalar smallness inequality for sufficiently large `t`, iterate exact vanishing
+over the required shifted components and later samples, and close with the final zero estimate.
 
 ## Log
 

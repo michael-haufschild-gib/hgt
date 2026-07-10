@@ -3,7 +3,7 @@
 - **ID:** `exponential-tower-exact-differential-order`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
-- **Scientific status:** `[NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PROVED] [SUBSUMED]` by `../new_scientific_knowledge/asymptotically-exponential-algebraic-cascade-unit-cost.md`
 - **Lane:** general hypertranscendence; canonical DA boundary family
 - **Statement:** Every `n`-fold composition of real affine-exponential maps `f_j(w)=a_j+b_j exp(c_j w)` with `b_j,c_j>0` has minimal ADE order and positive-lower-order composition depth exactly `n`.
 
@@ -29,7 +29,7 @@ The positive-lower-order composition depth `cd_+(F)` is the largest number of tr
 
 ## Theorem
 
-`[NOVELTY UNVERIFIED] [PROVED HERE]` Let
+`[PROVED HERE] [SUBSUMED]` Let
 
 `f_j(w)=a_j+b_j exp(c_j w)`,
 
@@ -178,7 +178,7 @@ The completed xi function has finite order, whereas every nontrivial affine-expo
 - `[SEARCH]` Liao--Yang discuss growth and pseudo-primality but do not state `ord_DA(E_n)=n`.
 - `[SEARCH]` Crossref, OpenAlex, arXiv metadata, and the project corpus were queried for iterated exponentials, nested exponentials, differential-algebraic order, and minimal differential equations. No explicit all-order minimality theorem or Jacobian induction was found.
 - `[PARENT THEORY CHECKED]` Otsubo (1980) proves that a Liouvillian element satisfying an order-`r` ADE has Liouville-chain length at most `3r` (or `2r` under the ordinary convention). It neither determines the minimal ADE order of exponential cascades nor proves the output-jet observability used here; it does not subsume this theorem.
-- **Current label:** `[NOVELTY UNVERIFIED]`; do not call this new scientific knowledge yet.
+- **Current label:** `[PROVED] [SUBSUMED]`; the broader algebraic exponential-tract theorem carries the novelty claim.
 
 ## Gates
 

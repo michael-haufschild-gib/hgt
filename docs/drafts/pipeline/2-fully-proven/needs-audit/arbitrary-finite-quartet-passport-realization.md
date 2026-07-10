@@ -206,6 +206,9 @@ analytic-unit mechanism and the full finite-product flatness order.  In particul
   simple disjoint quartet;
 - `hermiteFlatPerturbedGerm_pair_same_prefix` proves common finite prefixes for independently chosen
   local units.
+- `simultaneousFlatProduct_mul_I_pos_real` proves that every nondegenerate finite quartet packet is
+  strictly positive real on the imaginary axis, formalizing the algebraic core of the global positive
+  repair.
 
 The arbitrary-location CRT interpolation, global positivity repair, order-one envelope, and
 quasi-period separation remain paper-only.
@@ -229,4 +232,3 @@ quasi-period separation remain paper-only.
 - [ ] 2 -> 3: formalize the finite CRT with involutions, imaginary-axis positivity repair, and global
   envelope.
 - [ ] complete literature and parent-theory audit before any scientific-novelty promotion.
-

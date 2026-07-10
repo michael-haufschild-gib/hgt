@@ -265,6 +265,51 @@ theorem simultaneousFlatMultiplier_localFluxCorrection_order
     (simultaneousFlatUnit_analyticAt_zero M α i)
     (simultaneousFlatUnit_zero_ne hself hother)
 
+/-! ## Positive imaginary-axis realization -/
+
+/-- On the imaginary axis, one real-even quartet atom is exactly a real norm square. -/
+theorem quartetFlatAtom_mul_I_ofReal (α : ℂ) (y : ℝ) :
+    quartetFlatAtom α ((y : ℂ) * I) =
+      ((Complex.normSq (((y : ℂ) ^ 2) + α ^ 2) : ℝ) : ℂ) := by
+  have hzsq : (((y : ℂ) * I) ^ 2) = -((y : ℂ) ^ 2) := by
+    rw [mul_pow, I_sq]
+    ring
+  have hconj : (starRingEnd ℂ) (((y : ℂ) ^ 2) + α ^ 2) =
+      ((y : ℂ) ^ 2) + ((starRingEnd ℂ) α) ^ 2 := by simp
+  rw [quartetFlatAtom, hzsq]
+  calc
+    (-((y : ℂ) ^ 2) - α ^ 2) *
+        (-((y : ℂ) ^ 2) - ((starRingEnd ℂ) α) ^ 2) =
+      (((y : ℂ) ^ 2) + α ^ 2) *
+        (starRingEnd ℂ) (((y : ℂ) ^ 2) + α ^ 2) := by rw [hconj]; ring
+    _ = ((Complex.normSq (((y : ℂ) ^ 2) + α ^ 2) : ℝ) : ℂ) :=
+      Complex.mul_conj _
+
+/-- A nondegenerate quartet atom takes a strictly positive real value on the imaginary axis. -/
+theorem quartetFlatAtom_mul_I_pos_real {α : ℂ} {y : ℝ}
+    (hne : ((y : ℂ) ^ 2) + α ^ 2 ≠ 0) :
+    ∃ r : ℝ, 0 < r ∧ quartetFlatAtom α ((y : ℂ) * I) = (r : ℂ) := by
+  refine ⟨Complex.normSq (((y : ℂ) ^ 2) + α ^ 2),
+    Complex.normSq_pos.mpr hne, ?_⟩
+  exact quartetFlatAtom_mul_I_ofReal α y
+
+/-- The entire finite packet is strictly positive real on the imaginary axis whenever none of its
+quartet atoms degenerates there.  This is the algebraic source of the zero-free-real-axis repair in
+the arbitrary finite-packet theorem. -/
+theorem simultaneousFlatProduct_mul_I_pos_real
+    {ι : Type*} [Fintype ι] (M : ι → ℕ) (α : ι → ℂ) (y : ℝ)
+    (hne : ∀ i, ((y : ℂ) ^ 2) + (α i) ^ 2 ≠ 0) :
+    ∃ r : ℝ, 0 < r ∧ simultaneousFlatProduct M α ((y : ℂ) * I) = (r : ℂ) := by
+  let v : ι → ℝ := fun i => Complex.normSq (((y : ℂ) ^ 2) + (α i) ^ 2) ^ M i
+  refine ⟨∏ i, v i, Finset.prod_pos fun i _ => pow_pos
+    (Complex.normSq_pos.mpr (hne i)) _, ?_⟩
+  rw [simultaneousFlatProduct]
+  push_cast
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [quartetFlatAtom_mul_I_ofReal]
+  simp [v]
+
 end
 
 end RHTower

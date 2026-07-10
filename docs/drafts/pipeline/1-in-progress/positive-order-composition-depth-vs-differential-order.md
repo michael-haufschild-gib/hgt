@@ -93,7 +93,7 @@ The bound is sharp: `F(z)=exp(exp z)` has `cd_+(F)>=2` and satisfies the homogen
 
 Write `E_1(z)=exp z` and `E_(k+1)(z)=exp(E_k(z))`.
 
-`[NOVELTY UNVERIFIED] [PROVED]` More generally, if `f_j(w)=a_j+b_j exp(c_j w)` with real `a_j` and `b_j,c_j>0`, then
+`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PROVED]` More generally, if `f_j(w)=a_j+b_j exp(c_j w)` with real `a_j` and `b_j,c_j>0`, then
 
 `ord_DA(f_n o ... o f_1)=cd_+(f_n o ... o f_1)=n`.
 
@@ -103,7 +103,7 @@ In particular, for every `n>=1`,
 
 Thus every affine-exponential covering layer costs exactly one unit of minimal algebraic-differential order throughout a nontrivial parameter family. In particular, the candidate inequality, if true, is sharp in every order.
 
-The full parameter-family proof is separated in `2-fully-proven/needs-audit/exponential-tower-exact-differential-order.md`. The lemmas below record the normalized tower core used there.
+The affine parameter-family proof is separated in `2-fully-proven/needs-audit/exponential-tower-exact-differential-order.md`. The stronger theorem in `2-fully-proven/new_scientific_knowledge/asymptotically-exponential-algebraic-cascade-unit-cost.md` uses the Briot--Bouquet classification and Clunie growth separation to cover every transcendental entire autonomous order-one DA function. The lemmas below record the normalized tower core.
 
 ### Algebraic-independence lemma
 
@@ -173,8 +173,9 @@ Finally, the displayed composition of `E_n` into `n` exponential factors gives `
 2. `[SEARCH]` Finite-order second-order ADE solutions are pseudo-prime; the new case above concerns the allowed infinite-order stratum and uses the sharp homogeneous growth ceiling.
 3. `[PROVED]` Dropping positive lower order invalidates the growth proof. Polya permits finite-order composites with zero-order outer factor. This does not falsify `cd_+`, because a zero-lower-order factor is excluded from the counted decompositions.
 4. `[OPEN CORE]` For a general order-`n` ADE, the needed upper bound is essentially Hayman's conjectural `exp_(n-1)(polynomial)` growth ceiling. The depth law cannot simply assume that conjecture under a new name.
-5. `[PROVED]` The all-order triangular observability lemma gives exact order for every real positive affine-exponential cascade; this family saturates the candidate bound in every order.
-6. `[ANTI-THEATRE]` The Boolean OR law is a source-known bridge and is not the scientific claim. The candidate knowledge is the quantitative order/depth obstruction and its sharp second-order case.
+5. `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PROVED]` For every transcendental entire autonomous order-one DA function `f`, `ord_DA(f^[n])=cd_+(f^[n])=n`. The entire Briot--Bouquet class is exhausted by Laurent polynomials in an exponential.
+6. `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PROVED]` For every such map with a repelling fixed point, the canonical Poincare approximants have minimal orders exactly `1,2,3,...` and converge locally uniformly to an HT Poincare function.
+7. `[ANTI-THEATRE]` The Boolean OR law is a source-known bridge and is not the scientific claim. The general inequality remains conjectural; only the stated sharp classes and recession mechanism are promoted.
 
 ### Valiron boundary: resolved non-falsifier
 
@@ -188,15 +189,15 @@ The completed xi function has finite order, so Polya already forces any nontrivi
 
 ## Novelty and significance gates
 
-- **Proof gate:** growth-depth lemma, homogeneous second-order corollary, triangular observability lemma, and exact all-order affine-exponential cascade law complete on paper.
-- **Significance gate:** the cascade law identifies an exact equality between global composition depth and minimal ADE order throughout a parameter family in every finite order. It supplies a stable sharp family for any general depth budget and turns unbounded positive-order depth into a concrete HT obstruction.
-- **Parent-theory gate:** open. The result may be judged a short Polya--Steinmetz synthesis.
-- **Literature gate:** preliminary searches found factorization/pseudo-primality results and growth estimates, but no explicit `cd_+ <= 2` theorem or general differential-order/composition-depth law. A full factorization and composite-growth audit remains required.
-- **Scientific label:** `[NOVELTY UNVERIFIED]`, not candidate new scientific knowledge yet.
+- **Proof gate:** growth-depth lemma, homogeneous second-order corollary, algebraic product-cascade observability, exact all-order unit-cost law, and Poincare order recession complete on paper.
+- **Significance gate:** the exact law holds for the complete autonomous order-one entire DA class and yields a canonical DA-to-HT limit with linearly diverging constraint order.
+- **Parent-theory gate:** Otsubo 1980, Bergweiler 1995, and the Fernandes 2021 iteration/HT survey checked. They do not contain minimal-order divergence or the exact observability law.
+- **Literature gate:** passed for the two separated class theorems after full-text parent checks and metadata/corpus searches. It remains open for the unrestricted conjecture `cd_+(F)<=ord_DA(F)`.
+- **Scientific label:** the separated class theorem and Poincare recession theorem are `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`; the unrestricted inequality remains `[NOVELTY UNVERIFIED] [CONJECTURE]`.
 
 ## Next move
 
-Complete the literature gate for the separated fully-proven cascade card. Otsubo's minimal Liouville-chain theorem has now been checked in full and does not subsume it. In parallel, attack the general inequality away from affine-exponential cascades: the remaining mathematical obstruction is the absence of a general order-`n` growth ceiling, not the sharpness family.
+Attack iteration-order divergence for nonautonomous first-order DA entire maps and autonomous higher-order maps. Oscillatory and multiple-tract autonomous order-one maps are already absorbed by the Briot--Bouquet classification and Clunie growth separation. The unrestricted depth inequality remains blocked by the absence of a general order-`n` growth ceiling.
 
 ## Gates
 
@@ -204,7 +205,8 @@ Complete the literature gate for the separated fully-proven cascade card. Otsubo
 - [x] Local-germ counterexample and source-known global OR law separated.
 - [x] Paper proof of the growth-depth lemma.
 - [x] Sharp homogeneous second-order corollary.
-- [ ] Full parent-theory and literature audit.
+- [x] Parent-theory and literature audit for the algebraic exponential-tract and Poincare recession theorems.
+- [ ] Full audit for the unrestricted depth conjecture.
 - [x] Valiron zero-order construction classified and removed as a false falsifier.
 - [x] All-order exponential-tower observability lemma proved on paper.
 - [x] Exact identity `cd_+(E_n)=ord_DA(E_n)=n` proved on paper.
@@ -216,3 +218,8 @@ Complete the literature gate for the separated fully-proven cascade card. Otsubo
 2. N. Steinmetz, *Uber die faktorisierbaren Losungen gewohnlicher Differentialgleichungen*, Math. Z. 170 (1980), 169--180.
 3. L.-W. Liao and C.-C. Yang, *On the growth and factorization of entire solutions of algebraic differential equations*, Ann. Acad. Sci. Fenn. Math. 25 (2000), 73--84.
 4. W. K. Hayman, iterated-growth conjecture as quoted and scoped in Liao--Yang (2000).
+5. S. Otsubo, *Minimal length of Liouville chain for solutions of an algebraic differential equation*, J. Math. Soc. Japan 32 (1980), 623--629.
+6. W. Bergweiler, *Solution of a Problem of Rubel Concerning Iteration and Algebraic Differential Equations*, Indiana Univ. Math. J. 44 (1995), 257--267.
+7. G. Fernandes, survey of hypertranscendence for Schroder, Bottcher, and Abel equations, arXiv:2102.12168 (2021).
+8. A. E. Eremenko, *Meromorphic solutions of algebraic differential equations*, Russian Math. Surveys 37:4 (1982), 61--95.
+9. J. Clunie, *The composition of entire and meromorphic functions* (1970), 75--92.
