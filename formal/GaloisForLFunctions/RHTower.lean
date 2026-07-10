@@ -502,4 +502,5 @@ import GaloisForLFunctions.RHTower.XiThetaHeatReparametrization
 import GaloisForLFunctions.RHTower.XiThetaHeatNodeObstruction
 import GaloisForLFunctions.RHTower.XiThetaSquareRateReader
 import GaloisForLFunctions.RHTower.XiThetaSquareRateBoundary
+import GaloisForLFunctions.RHTower.XiThetaPositiveL2Perron
 import GaloisForLFunctions.RHTower.ThetaBlaschkeProbe

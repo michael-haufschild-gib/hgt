@@ -856,3 +856,36 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
 - 2026-07-10 — wave 24: factored the selected Blaschke zero, proved uniform interior Hardy control
   and the exact H2 norm on paper, and defined the canonical source-side L2 reader by inverse
   Paley-Wiener. No umbrella build.
+
+## Wave 25 — the positive theta half is the unit-radius Perron source
+
+114. **Reflected-charge premise corrected.** `[FALSIFIED]` The reflected theta half contributes an
+     independent lower-supported Perron charge after the critical cosine reduction. It is
+     upper-supported, while its Fourier transform is already the conjugate of the real positive
+     half's transform. Reflection is fixed cosine data, not a second source variable.
+115. **Intrinsic theta envelope.** `[PROVED HERE + Lean]` With
+     `C_theta=evenKernel(0,1)-1`, the actual positive half satisfies
+     `|h_+(u)|<=C_theta*exp(-2u)` for all `u`, and hence `|h_+(u)|<=C_theta`.
+116. **Actual-source L2 interface.** `[PROVED HERE + Lean]` Mellin convergence gives `h_+ in L1`;
+     the intrinsic bound gives `|h_+|^2<=C_theta|h_+|`, hence `h_+ in L2`. Its canonical `SoninL2`
+     class agrees with the explicit source almost everywhere and discharges lower support at
+     threshold zero without a source-existence Prop.
+117. **Unit Perron radius.** `[PROVED HERE + Lean]` The negative-line source charge satisfies
+     `|Src_(M,n,delta)(h_+)|<=kappa||h_+||_2(n-delta)^(1-M)` and tends to zero whenever
+     `n-delta>1`.
+118. **Canonical theta seam.** `[PROVED HERE + Lean]` Carrier flank `L2` energy now constructs the
+     additive defect relative to `h_+` internally. Under the existing horizontal mass and raw
+     Dirichlet-edge hypotheses, its normalized Perron coordinate converges to the coefficient.
+     Both the abstract source witness and defect-existence Prop are removed. Complete proof:
+     `../2-fully-proven/new/xi-theta-unit-radius-perron-source.md`.
+119. **New open core.** `[OPEN CORE]` The source side is complete. Construct a non-diagonal completed
+     coefficient extractor retaining Gamma-driven vertical decay while exposing a fixed raw
+     arithmetic coefficient. Scalar decompletion cannot supply both properties; the Hardy heat
+     reader is valid infrastructure but does not itself repair this carrier mismatch.
+
+## Log (cont. 27)
+
+- 2026-07-10 — wave 25: attacked the reflected-charge premise, proved the actual positive theta
+  source is a canonical lower-supported `L2` object of Perron radius one, and combined it with the
+  canonical seam to remove both source-existence and defect-existence interfaces. Targeted module
+  verification only; no umbrella build.
