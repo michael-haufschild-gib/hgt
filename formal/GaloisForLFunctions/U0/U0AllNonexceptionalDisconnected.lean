@@ -57,7 +57,8 @@ theorem exists_unitDisk_green_gt_critical {c : ℂ} (hc : Disconnected c) :
   have htarget : F 0 + ((ε / 2 : ℝ) : ℂ) ∈ F '' ball (0 : ℂ) R := by
     apply hεsub
     rw [Metric.mem_ball, dist_eq_norm]
-    simp only [add_sub_cancel_left, norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+    simp only [add_sub_cancel_left, norm_real, Real.norm_eq_abs,
+      abs_of_pos (show 0 < ε / 2 by linarith)]
     linarith
   obtain ⟨z, hzR, hzF⟩ := htarget
   have hzbasin : z ∉ filledJulia c := hbasin hzR
@@ -70,7 +71,9 @@ theorem exists_unitDisk_green_gt_critical {c : ℂ} (hc : Disconnected c) :
   refine ⟨z, ?_, ?_⟩
   · have hzR' : ‖z‖ < R := by simpa [mem_ball_zero_iff] using hzR
     linarith
-  · rw [h0G, hzG, ← hFre (Metric.mem_ball_self hR), ← hFre hzR, hzF]
+  · rw [h0G, hzG, ← hFre (Metric.mem_ball_self hR), ← hFre hzR]
+    change (F 0).re < (F z).re
+    rw [hzF]
     simp only [Complex.add_re, Complex.ofReal_re]
     linarith
 
