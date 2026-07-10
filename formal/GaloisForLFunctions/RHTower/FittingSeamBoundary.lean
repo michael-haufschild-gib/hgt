@@ -305,6 +305,18 @@ nonzero `f`-torsion.  This is the algebraic target behind a boundary map into `R
 def HasSupportedTorsion (S M : Type*) [Zero S] [Zero M] [SMul S M] (f : S) : Prop :=
   ∃ x : M, x ≠ 0 ∧ f • x = 0
 
+/-- For every positive divisor order, the local divisor jet has a canonical nonzero class supported
+on `X^m`: the class of `1` survives modulo `X^m` and multiplication by `X^m` kills it. -/
+theorem localDivisorJet_hasSupportedTorsion
+    (R : Type*) [CommRing R] [Nontrivial R] {m : ℕ} (hm : 0 < m) :
+    HasSupportedTorsion (Polynomial R) (LocalDivisorJet R m)
+      ((Polynomial.X : Polynomial R) ^ m) := by
+  refine ⟨jetClass R m 1, ?_, ?_⟩
+  · exact (jetClass_ne_zero_iff_exists_coeff_lt_ne_zero R m).mpr
+      ⟨0, hm, by simp⟩
+  · change jetClass R m (((Polynomial.X : Polynomial R) ^ m) * 1) = 0
+    exact jetClass_mul_X_pow_eq_zero R m 1
+
 /-- If scalar multiplication has no zero divisors, a nonzero divisor element has no
 supported torsion.  Regular/free local lanes therefore cannot supply a boundary class
 supported on the pinned divisor. -/

@@ -318,6 +318,11 @@ theorem thueMorseMellinKernel_bound : IsThueMorseKernelBound thueMorseMellinKern
     abs_of_nonneg (thueMorseKernel_nonneg x)]
   exact thueMorseKernel_le_finite hx m
 
+/-- The concrete infinite product has a zero-side bound of every natural order. -/
+theorem thueMorseMellinKernel_hasAllOrderZeroBound :
+    HasAllOrderZeroBound thueMorseMellinKernel :=
+  thueMorseMellinKernel_bound.hasAllOrderZeroBound
+
 /-- The concrete real infinite-product kernel is measurable. -/
 theorem thueMorseKernel_measurable : Measurable thueMorseKernel := by
   have hfac : ∀ k : ℕ, Measurable (fun x : ℝ => thueMorseFactor k x) := by
@@ -366,11 +371,16 @@ theorem thueMorseMellinKernel_isBigO_exp :
     _ ≤ Real.exp (-x) := thueMorseKernel_le_exp_neg hx
     _ = ‖Real.exp (-x)‖ := by rw [Real.norm_of_nonneg (Real.exp_pos _).le]
 
+/-- The concrete infinite product itself inhabits the full Mellin-flat-kernel interface. -/
+theorem thueMorseMellinKernel_isMellinFlatKernel :
+    IsMellinFlatKernel thueMorseMellinKernel :=
+  thueMorseMellinKernel_bound.isMellinFlatKernel
+    thueMorseMellinKernel_locallyIntegrableOn one_pos thueMorseMellinKernel_isBigO_exp
+
 /-- **Concrete capstone.**  The Mellin transform of the positive Thue--Morse infinite product is
 analytic on the whole complex plane. -/
 theorem thueMorseMellinKernel_mellin_analyticOnNhd :
     AnalyticOnNhd ℂ (mellin thueMorseMellinKernel) Set.univ :=
-  mellin_analyticOnNhd_of_thueMorseKernelBound thueMorseMellinKernel_bound
-    thueMorseMellinKernel_locallyIntegrableOn one_pos thueMorseMellinKernel_isBigO_exp
+  thueMorseMellinKernel_isMellinFlatKernel.mellin_analyticOnNhd
 
 end RHTower

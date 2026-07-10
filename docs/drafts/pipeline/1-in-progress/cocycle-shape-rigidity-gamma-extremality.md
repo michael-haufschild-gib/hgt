@@ -1546,3 +1546,109 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
   blindness, formalized the universal pinned-affine vanishing and converse nonrepresentation
   theorem, and closed the natural local realization of the forced positive-order weld primitive.
   Only the new module and exact target were checked.
+
+## Wave 45 — intrinsic nonlocality becomes a universal quotient class
+
+221. **Pinned-affine subgroup.** `[PROVED HERE + Lean]` For every fixed torsion presentation, all
+     commutator-plus-two-sided-factor defects form an additive subgroup of the full matrix defect
+     group. Intrinsic non-affineness can therefore be expressed by a quotient, not by a carrier.
+222. **Universal constraint object.** `[PROVED HERE + Lean]` Define
+     `PinnedAffineDefectQuotient` by dividing defects by that subgroup. Every additive detector blind
+     to pinned affine realizations descends through the generic `pinnedAffineBlindLift`.
+223. **Fitting boundary descends automatically.** `[PROVED HERE + Lean]` The combined vanishing from
+     wave 44 proves the full subgroup lies in the kernel of the bundled Fitting boundary homomorphism;
+     no extra blindness Prop is assumed. The resulting `pinnedAffineBoundaryHom` is canonical.
+224. **Live classes survive.** `[PROVED HERE + Lean]` Every defect with nonzero Fitting boundary has
+     nonzero pinned-affine quotient class. The existing one-slot presentation `A=X^2`, `Delta=1`
+     supplies an explicit nonzero class, so the quotient is not vacuous. Complete proof:
+     `../2-fully-proven/new/pinned-affine-defect-quotient.md`.
+225. **Dual-gate verdict.** `[PROVED NATIVE OBJECT]` The quotient construction is standard algebra;
+     the new knowledge is the exact HGT subgroup, automatic descent of the seam boundary, and
+     explicit nontriviality. “Intrinsically nonlocal” now names a universal constraint class.
+226. **New open core.** `[OPEN CORE]` Construct a canonical completed prime--archimedean source map
+     into `PinnedAffineDefectQuotient` without using analytic order, fixed/free orbit shape, a cutoff,
+     or a character encoding the zero location. Its nonzero value must force new compatibility, not
+     merely restate determinant transversality.
+
+## Log (cont. 47)
+
+- 2026-07-10 — wave 45: formed the subgroup of every pinned affine realization, constructed its
+  universal quotient and generic detector lift, descended the Fitting boundary without a Prop
+  hypothesis, and proved live-class survival plus explicit nontriviality. Only the new module and
+  exact target were checked.
+
+## Wave 46 — raw prime evaluation activates the quotient everywhere
+
+227. **Canonical one-slot source model.** `[PROVED HERE + Lean]` For the order-`m` presentation
+     `A=X^m`, the constant defect `C(c)` has Fitting boundary exactly the constant divisor jet
+     `C(c) mod X^m`; the descended quotient boundary has the same value.
+228. **Generic activation.** `[PROVED HERE + Lean]` For every positive order and every nonzero
+     coefficient `c`, the constant defect has nonzero Fitting boundary and nonzero pinned-affine
+     quotient class.
+229. **Prime source is all-point nonzero.** `[PROVED HERE + Lean]` The obvious source
+     `c=p^(-rho)` is nonzero for every positive base and every complex point `rho`. Hence its
+     quotient class is nonzero with no hypothesis that `rho` is a zero or lies on either side of the
+     critical line. Complete proof:
+     `../2-fully-proven/new/pinned-affine-constant-source-blindness.md`.
+230. **RH-interface verdict.** `[FALSIFIED]` Nonzero raw prime-to-quotient incidence cannot select
+     zero location: it activates uniformly before the divisor or orbit constraints enter. The
+     quotient remains a genuine obstruction recipient, but its mere nonvanishing is position-blind.
+231. **Dual-gate verdict.** `[PROVED ACTIVATION NO-GO]` Constant-jet and complex-power facts are
+     standard; the branch-level new result is the uniform activation classification of the new
+     quotient, preventing a false RH interpretation.
+232. **Finite constant-source collapse.** `[PROVED HERE + Lean]` Every finite family of constant
+     sources enters the one-slot quotient only through its scalar total. Its quotient class is zero
+     exactly when that sum is zero; all prime/source labels are forgotten.
+233. **Pointwise cancellation is circular.** `[PROVED HERE + Lean]` At every point and for any two
+     positive bases, two nonzero coefficients chosen from that point cancel the two-prime quotient
+     class exactly. Such a cancellation law contains the target location in its coefficients and
+     has no arithmetic force.
+234. **New open core.** `[OPEN CORE]` A completed source must retain nonconstant germ information—at
+     least higher prime-log jet coefficients—or infinite-support structure before the constant
+     scalar collapse. Its cancellation must be arithmetically fixed and cannot be chosen from zero
+     location, fixed/free orbit shape, or a cutoff.
+
+## Log (cont. 48)
+
+- 2026-07-10 — wave 46: computed the exact constant-source quotient boundary, proved nonzero
+  activation for every nonzero constant, and showed prime evaluation activates at every complex
+  point. The finite-source extension then proved exact collapse to one scalar total and exhibited
+  pointwise-tuned two-prime cancellation as circular. This kills raw incidence and finite constant
+  cancellation as RH selectors while preserving the universal quotient as a legitimate constraint
+  recipient. Only the touched module and exact target were checked.
+
+## Wave 47 — prime first jets survive the scalar-collapse wall
+
+235. **First nonconstant source.** `[PROVED HERE + Lean]` The order-two truncated prime germ is
+     `J_p(rho;X)=p^(-rho)(1-log(p)X)`. Its constant and linear coefficients are computed exactly in
+     the polynomial source interface.
+236. **Polynomial boundary fidelity.** `[PROVED HERE + Lean]` For an arbitrary one-slot polynomial
+     source `P`, the Fitting boundary is exactly `P mod X^m`. Hence the descended quotient boundary
+     retains both first-jet coefficients rather than collapsing them to one scalar.
+237. **Two-prime Vandermonde rigidity.** `[PROVED HERE + Lean]` For distinct positive bases `p,q`,
+     `a[J_p]+b[J_q]=0` in the order-two pinned-affine quotient iff `a=b=0`, uniformly for every
+     complex point `rho`. Prime amplitude nonvanishing removes `rho`; `log p != log q` removes the
+     labels. Complete proof:
+     `../2-fully-proven/new/pinned-affine-prime-jet-rigidity.md`.
+238. **Arbitrary finite-support rigidity.** `[PROVED HERE + Lean]` For any `k` injectively labelled
+     positive bases, the first `k` derivative jets are independent in the order-`k` quotient at
+     every point. Quotient vanishing gives the first `k` prime-log moment equations; the verified
+     Vandermonde kernel theorem forces every source coefficient to zero. The prime specialization
+     closes the full bounded-support jet tower.
+239. **Location audit.** `[SURVIVES]` The theorem contains no xi-zero or critical-line hypothesis and
+     holds everywhere. Unlike susceptibility, its rigidity is sourced by distinct prime logs, not
+     by encoding `Re rho`.
+240. **Dual-gate verdict.** `[PROVED NATIVE SURVIVOR]` Vandermonde elimination is standard; uniform
+     finite-family survival inside the new pinned-affine quotient is the first label-sensitive
+     source theorem after the constant-source no-go.
+241. **New open core.** `[OPEN CORE]` Isolate a completed infinite-support class outside every finite
+     prime-jet span without realizing it as a limit flow, cutoff, or carrier. The finite theorem now
+     proves no bounded prime packet can supply the needed cancellation.
+
+## Log (cont. 49)
+
+- 2026-07-10 — wave 47: moved from constant incidence to first prime-log jets, proved the exact
+  polynomial boundary formula, uniform two-prime quotient independence, and the arbitrary
+  finite-prime/order-moment Vandermonde theorem. This closes every bounded-support jet cancellation
+  and leaves only a genuinely completed infinite-support class. Only the touched module and exact
+  target were checked.

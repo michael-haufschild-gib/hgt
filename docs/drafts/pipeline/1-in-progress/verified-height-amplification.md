@@ -242,3 +242,82 @@ Krein chart a smallest spectral gap, and topologically the margin preventing a
 double on-line collision from resolving into an off-line pair.  Producing an
 explicit positive source-built lower bound for that one quantity would clear
 the requested height gate.  No such bound has been proved here.
+
+## 2026-07-10 third attack: equivariant collar rather than a full top margin
+
+### Correction of the endpoint target
+
+The full-strip top-edge target in the second attack is unnecessarily strong
+and can be impossible at the published endpoint.  If `T_0` is itself the
+ordinate of one of the verified simple critical-line zeros, then
+
+```text
+min_(0<=sigma<=1) |xi(sigma+i*T_0)| = 0.
+```
+
+Simplicity gives a transverse local crossing, not a positive minimum on a
+boundary containing that zero.  The correct object is therefore an
+equivariant collar around the critical line, together with a one-sided outer
+wing.
+
+For `a>0` and `U>T_0`, split the new positive-ordinate strip divisor into
+
+```text
+C(a;T_0,U)  = {rho : T_0<Im rho<=U, |Re rho-1/2|<a},
+W+(a;T_0,U) = {rho : T_0<Im rho<=U, Re rho>=1/2+a}.
+```
+
+`[PROVED]` If
+
+```text
+#C(a;T_0,U) <= 1,
+W+(a;T_0,U)  = empty,
+```
+
+then RH is verified through `U`.  An off-line zero in the collar has a distinct
+critical-line reflection in the same collar; a zero in the left wing reflects
+into the empty right wing.  Only a critical-line zero may survive the one-point
+central budget.  This exact theorem is formalized as
+`RHTower.rhVerifiedThrough_amplify_of_equivariant_collar` in
+`VerifiedHeightAmplification.lean`.  The whole-strip special case is
+`RHTower.rhVerifiedThrough_amplify_of_increment_ncard_le_one`.
+
+`[BRIDGE]` The result is an elementary equivariant counting interface, not a
+new theorem about zeta and not yet a numerical height improvement.  Its value
+is to identify a strictly better analytic target: no margin is required at the
+allowed central endpoint zero, and only one outer wing must be certified.
+
+### Discriminant form of the central input
+
+Near a simple line zero, `|Xi|` vanishes but the first jet does not.  Thus a
+local joint quantity of the schematic form
+
+```text
+|Xi(t)|^2 + r^2 |Xi'(t)|^2
+```
+
+can remain positive on a small central boundary even when the old endpoint is
+a zero.  A quantitative lower bound for such a first-jet discriminant,
+together with an explicit second-derivative bound, can isolate at most one
+central zero by a Taylor/Rouche argument.  This supplies the shape of the
+central hypothesis but not its source-built lower bound.  Standard local
+analytic isolation is again only `[BRIDGE]`.
+
+### Falsified route and open core
+
+`[FALSIFIED]` The existing sweep-cascade route does not source-build the
+required collar.  Its inputs include zero births, future pushes, a creation
+rate, and a first-passage mechanism; these are flow/zero-fed assumptions, not
+consequences extracted from the infinite Euler product.  It cannot be used to
+claim a verified-height theorem.
+
+`[OPEN CORE]` Produce explicit `a>0` and `U>T_0` from the exact completed Euler
+constraint such that
+
+1. a Jensen, Weierstrass, or first-jet discriminant estimate proves
+   `#C(a;T_0,U)<=1`; and
+2. an Euler/archimedean boundary estimate proves `W+(a;T_0,U)=empty`.
+
+The estimates must be analytic consequences of the source, not a new zero
+enumeration.  Until those two numerical inequalities are proved, no strict
+`T_1` is promoted and the Platt--Trudgian lower limit has not been increased.

@@ -135,6 +135,15 @@ def HasVariableQuietFlankCoefficientBound (a : ℕ → ℂ) (H : ℕ → ℝ) (n
     ∀ᶠ M : ℕ in atTop,
       ‖a n * (δ : ℂ)‖ ≤ H M * perronSupportScaleAt n δ ^ (1 - (M : ℝ))
 
+/-- The variable-knot estimate contains the original half-knot quiet-flank estimate. -/
+theorem HasVariableQuietFlankCoefficientBound.hasQuietFlankCoefficientBound
+    {a : ℕ → ℂ} {H : ℕ → ℝ} {n : ℕ}
+    (hbound : HasVariableQuietFlankCoefficientBound a H n) (hn : 1 ≤ n) :
+    HasQuietFlankCoefficientBound a H n := by
+  have hnR : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have h := hbound (1 / 2) (by norm_num) (by norm_num) (by linarith)
+  simpa [HasQuietFlankCoefficientBound, perronSupportScale, perronSupportScaleAt] using h
+
 /-- A geometric flank envelope of radius `R < n` forces `a n = 0` once the quiet coefficient
 estimate is available at every Perron knot width.  Choose
 `δ ≤ min(1/2,(n-R)/2)`, so `R < n-δ`, and apply the geometric decay theorem. -/

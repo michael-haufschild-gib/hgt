@@ -219,6 +219,13 @@ theorem dirichletPoly_hasVariableQuietFlankCoefficientBound
       (dirichletPoly_differentiable N)
       (fun s _ => (LSeries_dirichletPolyCoeff N s).symm) hn
 
+/-- The original fixed half-knot coefficient interface is also unconditional for finite carriers. -/
+theorem dirichletPoly_hasQuietFlankCoefficientBound
+    (N : ℕ) {c : ℝ} {n : ℕ} (hc : 0 < c) (hn : 1 ≤ n) :
+    HasQuietFlankCoefficientBound (dirichletPolyCoeff N)
+      (fun M => 2 * dirichletPolyPerronBudget N M) n :=
+  (dirichletPoly_hasVariableQuietFlankCoefficientBound N hc hn).hasQuietFlankCoefficientBound hn
+
 /-- At each admissible contour depth, the concrete finite carrier supplies its own Perron charge. -/
 theorem dirichletPoly_hasPerronBoundaryChargeAt
     (N : ℕ) {c δ : ℝ} {n M : ℕ}

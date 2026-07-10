@@ -55,10 +55,23 @@ theorem boundaryClass_eq_zero_of_defectFactorsThroughLeft {m : ℕ}
   obtain ⟨H, K, hHK⟩ := h
   exact fittingBoundaryClass_eq_zero_of_left_factor_mod_X_pow m S.det_eq hHK
 
+/-- The trace form of left-fake-defect vanishing. -/
+theorem boundaryTraceDivisible_of_defectFactorsThroughLeft {m : ℕ}
+    (S : TorsionSeamPresentation Sigma n R m) {p : Sigma}
+    (h : S.DefectFactorsThroughLeft p) :
+    S.BoundaryTraceDivisible p :=
+  (fittingBoundaryClass_eq_zero_iff_trace_X_pow_dvd m S.A (S.Delta p)).mp
+    (boundaryClass_eq_zero_of_defectFactorsThroughLeft S h)
+
 /-- **Every defect is fake at `m = 0`.**  The trivial divisor `X⁰ = 1` makes every defect factor as
 `Δ = A·0 + X⁰·Δ`; there is no non-fake defect when the seam divisor is a unit. -/
 theorem defectFactorsThrough_of_m_zero
     (S : TorsionSeamPresentation Sigma n R 0) (p : Sigma) : S.DefectFactorsThrough p :=
+  ⟨0, S.Delta p, by simp⟩
+
+/-- At the unit divisor, every defect also factors through the presentation on the left. -/
+theorem defectFactorsThroughLeft_of_m_zero
+    (S : TorsionSeamPresentation Sigma n R 0) (p : Sigma) : S.DefectFactorsThroughLeft p :=
   ⟨0, S.Delta p, by simp⟩
 
 /-- At the unit divisor `m = 0`, every seam boundary class vanishes; the intermediate
@@ -77,6 +90,11 @@ theorem boundaryTraceDivisible_of_m_zero
 theorem no_defectNonmember_of_m_zero
     (S : TorsionSeamPresentation Sigma n R 0) (p : Sigma) : ¬ S.DefectNonmember p :=
   fun h => h (defectFactorsThrough_of_m_zero S p)
+
+/-- No defect is left-nonfake at the unit divisor. -/
+theorem no_defectLeftNonmember_of_m_zero
+    (S : TorsionSeamPresentation Sigma n R 0) (p : Sigma) : ¬ S.DefectLeftNonmember p :=
+  fun h => h (defectFactorsThroughLeft_of_m_zero S p)
 
 end TorsionSeamPresentation
 

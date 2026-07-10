@@ -116,6 +116,7 @@ import GaloisForLFunctions.RHTower.RouteBProportion
 import GaloisForLFunctions.RHTower.WeightMismatchRefutation
 import GaloisForLFunctions.RHTower.RHLadderTheory
 import GaloisForLFunctions.RHTower.WindowLadder
+import GaloisForLFunctions.RHTower.VerifiedHeightAmplification
 import GaloisForLFunctions.RHTower.DeckWindow
 import GaloisForLFunctions.RHTower.WindowSeam
 import GaloisForLFunctions.RHTower.OmegaComplexStructure
@@ -346,6 +347,8 @@ import GaloisForLFunctions.RHTower.FittingSeamBoundary
 import GaloisForLFunctions.RHTower.SoninSeamDefect
 import GaloisForLFunctions.RHTower.PinnedAffineWeldBoundaryNoGo
 import GaloisForLFunctions.RHTower.PinnedAffineDefectQuotient
+import GaloisForLFunctions.RHTower.PinnedAffineConstantSourceBlindness
+import GaloisForLFunctions.RHTower.PinnedAffinePrimeJetRigidity
 import GaloisForLFunctions.RHTower.CutoffCochain
 import GaloisForLFunctions.RHTower.ShearedSeamGaugeTrivialization
 import GaloisForLFunctions.RHTower.FESemilinearShearExhaustion
@@ -372,6 +375,7 @@ import GaloisForLFunctions.RHTower.SeamArchimedeanNoGo
 import GaloisForLFunctions.RHTower.MPlusTorsionSeam
 import GaloisForLFunctions.RHTower.CutoffTorsionSeam
 import GaloisForLFunctions.RHTower.TorsionSeamClassification
+import GaloisForLFunctions.RHTower.CanonicalCutoffTorsionSeam
 import GaloisForLFunctions.RHTower.ReflectedSaddleLattice
 import GaloisForLFunctions.RHTower.SignatureParity
 import GaloisForLFunctions.RHTower.ReflectedGridParity
@@ -515,6 +519,7 @@ import GaloisForLFunctions.RHTower.VariablePerronKink
 import GaloisForLFunctions.RHTower.PerronBoundaryCharge
 import GaloisForLFunctions.RHTower.PerronCarrierFlankMass
 import GaloisForLFunctions.RHTower.DirichletPolyPerronMass
+import GaloisForLFunctions.RHTower.PerronStripMassDischarge
 import GaloisForLFunctions.RHTower.SoninPerronSupportTransfer
 import GaloisForLFunctions.RHTower.PerronMellinSeamResidue
 import GaloisForLFunctions.RHTower.CanonicalPerronMellinSeam
