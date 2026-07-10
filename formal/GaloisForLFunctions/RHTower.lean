@@ -575,3 +575,4 @@ import GaloisForLFunctions.RHTower.XiThetaSquareRateBoundary
 import GaloisForLFunctions.RHTower.XiThetaPositiveL2Perron
 import GaloisForLFunctions.RHTower.XiThetaBoundaryCoboundary
 import GaloisForLFunctions.RHTower.ThetaBlaschkeProbe
+import GaloisForLFunctions.RHTower.HilbertSchmidtOperatorBridge

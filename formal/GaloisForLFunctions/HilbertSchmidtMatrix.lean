@@ -165,16 +165,17 @@ noncomputable def matrixOf [DecidableEq ι]
 `‖T eⱼ‖²` by Parseval, summable since `T` is Hilbert–Schmidt. -/
 theorem isHS_matrixOf [DecidableEq ι] {T : lp (fun _ : ι => ℂ) 2 →L[ℂ] lp (fun _ : ι => ℂ) 2}
     (hT : T.IsHilbertSchmidt) : IsHS (matrixOf T) := by
+  have hcols : ∀ j, Summable (fun i => ‖T (lp.single 2 j (1 : ℂ)) i‖ ^ 2) := fun j =>
+    summable_coe_sq (T (lp.single 2 j (1 : ℂ)))
+  have henergy : Summable (fun j => ∑' i, ‖T (lp.single 2 j (1 : ℂ)) i‖ ^ 2) := by
+    refine (hT.summable (lpBasis ι)).congr fun j => ?_
+    rw [lpBasis_apply, lp_norm_sq_eq]
   have hswap : Summable (fun q : ι × ι => ‖T (lp.single 2 q.1 (1 : ℂ)) q.2‖ ^ 2) := by
     rw [summable_prod_of_nonneg (fun q => by positivity)]
-    constructor
-    · intro j
-      exact summable_coe_sq _
-    · refine (hT.summable (lpBasis ι)).congr fun j => ?_
-      rw [lpBasis_apply, lp_norm_sq_eq]
+    exact ⟨fun j => (hcols j).congr fun i => rfl,
+      henergy.congr fun j => tsum_congr fun i => rfl⟩
   have h := (Equiv.prodComm ι ι).summable_iff.mpr hswap
-  refine h.congr fun p => ?_
-  simp only [Function.comp, Equiv.prodComm_apply, Prod.swap, matrixOf]
+  exact h.congr fun p => rfl
 
 /-- Round trip kernel → operator → kernel: the matrix of `toOperator hK` is `K`. -/
 theorem matrixOf_toOperator [DecidableEq ι] {K : ι × ι → ℂ} (hK : IsHS K) :
@@ -212,6 +213,7 @@ theorem hsInner_toOperator [DecidableEq ι] {K L : ι × ι → ℂ} (hK : IsHS 
     rw [lpBasis_apply, lp.inner_eq_tsum]
     refine tsum_congr fun i => ?_
     rw [RCLike.inner_apply, toOperator_single hK i j, toOperator_single hL i j]
+    exact mul_comm _ _
   rw [tsum_congr hcol]
   have hswap : Summable (fun q : ι × ι => (starRingEnd ℂ) (K (q.2, q.1)) * L (q.2, q.1)) := by
     have h := (Equiv.prodComm ι ι).summable_iff.mpr (hsInner_summable hK hL)

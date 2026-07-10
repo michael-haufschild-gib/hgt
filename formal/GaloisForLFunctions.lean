@@ -101,3 +101,5 @@ import GaloisForLFunctions.RHProofLab
 import GaloisForLFunctions.MainTheorems
 import GaloisForLFunctions.BoundaryReflection
 import GaloisForLFunctions.SeamNonSplitting
+import GaloisForLFunctions.HilbertSchmidtCompact
+import GaloisForLFunctions.HilbertSchmidtMatrix
