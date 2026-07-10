@@ -563,6 +563,7 @@ import GaloisForLFunctions.RHTower.PerronMellinSeamResidue
 import GaloisForLFunctions.RHTower.CanonicalPerronMellinSeam
 import GaloisForLFunctions.RHTower.ArchimedeanBalancedPerron
 import GaloisForLFunctions.RHTower.XiThetaSourceSeam
+import GaloisForLFunctions.RHTower.SeamArchimedeanSamplingQuotient
 import GaloisForLFunctions.RHTower.XiThetaCriticalTrace
 import GaloisForLFunctions.RHTower.XiThetaLogTranslationSeam
 import GaloisForLFunctions.RHTower.XiThetaReaderConditioning

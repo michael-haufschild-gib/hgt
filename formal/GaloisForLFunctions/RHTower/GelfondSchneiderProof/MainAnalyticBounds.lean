@@ -197,24 +197,32 @@ lemma eq6a : house (rho h7 q hq0 h2mq) ≤
     intro t ht
     trans
     · exact house_mul_le _ _
-    refine mul_le_mul_of_nonneg (le_refl _) ?_ (house_nonneg _) (by apply?)
+    refine mul_le_mul_of_nonneg (le_refl _) ?_ (house_nonneg _) (by
+      repeat' apply mul_nonneg
+      all_goals exact house_nonneg _)
 
     trans
     · exact house_mul_le _ _
-    refine mul_le_mul_of_nonneg (le_refl _) ?_ (house_nonneg _) (by positivity)
+    refine mul_le_mul_of_nonneg (le_refl _) ?_ (house_nonneg _) (by
+      repeat' apply mul_nonneg
+      all_goals exact house_nonneg _)
 
     trans
     · exact house_mul_le _ _
-    refine mul_le_mul_of_nonneg (le_refl _) ?_ (house_nonneg _) (by positivity)
+    refine mul_le_mul_of_nonneg (le_refl _) ?_ (house_nonneg _) (by
+      repeat' apply mul_nonneg
+      all_goals exact house_nonneg _)
 
     trans
     · exact house_mul_le _ _
-    refine mul_le_mul_of_nonneg ?_ ?_ (house_nonneg _) (by positivity)
+    refine mul_le_mul_of_nonneg ?_ ?_ (house_nonneg _) (by
+      repeat' apply mul_nonneg
+      all_goals exact house_nonneg _)
     · simp [nsmul_eq_mul, zsmul_eq_mul, smul_eq_mul, Int.cast_pow]
     · trans
       · exact house_mul_le _ _
       ·
-        refine mul_le_mul_of_nonneg ?_ ?_ (by positivity) (by positivity) <;>
+        refine mul_le_mul_of_nonneg ?_ ?_ (house_nonneg _) (house_nonneg _) <;>
           simp [house]
   · apply Finset.sum_le_sum
     intros t ht
@@ -544,6 +552,7 @@ theorem eq6b.extracted_1_2 :
 
 open Real
 
+omit [DecidableEq (h7.K →+* ℂ)] in
 include h2mq in
 lemma q_eq_sqrtmn : q = sqrt (2 * h7.m* h7.n q) := by
   norm_cast
@@ -587,7 +596,7 @@ lemma eq6b : (q*q) * ((((h7.c₄ ^ (h7.n q : ℝ) *
                   · rw [le_iff_lt_or_eq]
                     right
                     exact Real.sqrt_eq_rpow ↑(h7.n q)
-                  · simp only [Nat.ofNat_nonneg, Real.sqrt_nonneg]
+                  · simp only [Real.sqrt_nonneg]
                   grind
                 · refine mul_le_mul_of_nonneg_left ?_ ?_
                   · apply Real.rpow_le_rpow
@@ -595,7 +604,7 @@ lemma eq6b : (q*q) * ((((h7.c₄ ^ (h7.n q : ℝ) *
                     · simp only [Nat.cast_le]
                       exact n_le_r h7 q hq0 h2mq
                     · simp only [one_div, inv_nonneg, Nat.ofNat_nonneg]
-                  · simp only [Nat.ofNat_nonneg, Real.sqrt_nonneg]
+                  · simp only [Real.sqrt_nonneg]
               · unfold c₆ house; positivity
           · simp only [Real.rpow_natCast]
             rw [← pow_mul]

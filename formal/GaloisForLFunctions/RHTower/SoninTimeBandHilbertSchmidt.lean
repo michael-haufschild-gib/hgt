@@ -22,6 +22,10 @@ open scoped ENNReal
 
 namespace RHTower
 
+set_option maxHeartbeats 800000
+
+section Kernel
+
 variable {α E : Type*} [MeasurableSpace α]
 variable [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
 variable (μ : Measure α) [IsFiniteMeasure μ]
@@ -93,14 +97,14 @@ theorem isHilbertSchmidt_kernelOperator
       ((Lp.memLp K).continuousLinearMap_comp
         (ContinuousLinearMap.apply ℂ ℂ (b i)))
 
-omit [MeasurableSpace α] [IsFiniteMeasure μ] in
+end Kernel
+
 /-- The finite-rectangle Fourier operator between interval `L²` spaces is Hilbert--Schmidt. -/
 theorem isHilbertSchmidt_finiteTimeBandFourier (a b c d : ℝ) :
     ContinuousLinearMap.IsHilbertSchmidt (finiteTimeBandFourier a b c d) :=
   isHilbertSchmidt_kernelOperator (volume : Measure (ClosedInterval a b))
     (fourierFunctionalField a b c d)
 
-omit [MeasurableSpace α] [IsFiniteMeasure μ] in
 /-- The full-input finite time-band operator into the restricted output `L²` space is
 Hilbert--Schmidt. -/
 theorem isHilbertSchmidt_fullToRestrictedTimeBandFourier
@@ -110,7 +114,6 @@ theorem isHilbertSchmidt_fullToRestrictedTimeBandFourier
   isHilbertSchmidt_kernelOperator ((volume : Measure ℝ).restrict (Set.Icc a b))
     (fullFourierFunctionalField a b c d hab)
 
-omit [MeasurableSpace α] [IsFiniteMeasure μ] in
 /-- Extension by zero preserves the Hilbert--Schmidt finite time-band operator. -/
 theorem isHilbertSchmidt_fullTimeBandFourier
     (a b c d : ℝ) (hab : a ≤ b) :
@@ -119,7 +122,6 @@ theorem isHilbertSchmidt_fullTimeBandFourier
     (lpExtendByZeroCLM (F := ℂ) (𝕜 := ℂ) (volume : Measure ℝ) 2
       (Set.Icc a b) measurableSet_Icc)
 
-omit [MeasurableSpace α] [IsFiniteMeasure μ] in
 /-- The concrete cutoff--Fourier--cutoff operator on `L²(ℝ)` is Hilbert--Schmidt. -/
 theorem isHilbertSchmidt_cutoffFourierCutoff
     (a b c d : ℝ) (hab : a ≤ b) :
@@ -127,7 +129,6 @@ theorem isHilbertSchmidt_cutoffFourierCutoff
   rw [← fullTimeBandFourier_eq_cutoffFourierCutoff a b c d hab]
   exact isHilbertSchmidt_fullTimeBandFourier a b c d hab
 
-omit [MeasurableSpace α] [IsFiniteMeasure μ] in
 /-- The Fourier-then-physical central cutoff block is Hilbert--Schmidt. -/
 theorem isHilbertSchmidt_fourierCutoff_indicatorCutoff_central
     (s t : ℝ) (hs : 0 < s) :
@@ -138,7 +139,6 @@ theorem isHilbertSchmidt_fourierCutoff_indicatorCutoff_central
     fourierUnitary.symm.toLinearIsometry.toContinuousLinearMap
   simpa [fourierCutoff, cutoffFourierCutoff, Function.comp_def] using h
 
-omit [MeasurableSpace α] [IsFiniteMeasure μ] in
 /-- The physical-then-Fourier central cutoff block is Hilbert--Schmidt. -/
 theorem isHilbertSchmidt_indicatorCutoff_fourierCutoff_central
     (s t : ℝ) (hs : 0 < s) :
@@ -173,7 +173,6 @@ theorem isHilbertSchmidt_indicatorCutoff_fourierCutoff_central
   rw [hEq]
   exact (hK.comp_right F).comp_left J
 
-omit [MeasurableSpace α] [IsFiniteMeasure μ] in
 namespace IsSoninTimeBandIdeal
 
 /-- Every operator in the concrete Sonin time-band ideal is genuinely Hilbert--Schmidt. -/
@@ -192,21 +191,18 @@ theorem isHilbertSchmidt {T : SoninL2 →L[Complex] SoninL2}
 
 end IsSoninTimeBandIdeal
 
-omit [MeasurableSpace α] [IsFiniteMeasure μ] in
 /-- The exact Sonin projection correction is Hilbert--Schmidt with no analytic premise. -/
 theorem centralSoninProjectionCorrection_isHilbertSchmidt
     (a : ℝ) (ha : 0 < a) :
     ContinuousLinearMap.IsHilbertSchmidt (centralSoninProjectionCorrection a) :=
   (centralSoninProjectionCorrection_mem_timeBandIdeal a ha).isHilbertSchmidt
 
-omit [MeasurableSpace α] [IsFiniteMeasure μ] in
 /-- The exact principal-subtracted ambient Sonin dilation residual is Hilbert--Schmidt. -/
 theorem centralSoninDilationCornerResidual_isHilbertSchmidt
     (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
     ContinuousLinearMap.IsHilbertSchmidt (centralSoninDilationCornerResidual a p hp) :=
   (centralSoninDilationCornerResidual_mem_timeBandIdeal a p ha hp).isHilbertSchmidt
 
-omit [MeasurableSpace α] [IsFiniteMeasure μ] in
 /-- The two factors in the constructive residual trace-ideal certificate are actual
 Hilbert--Schmidt operators. -/
 theorem IsSoninTimeBandTraceIdeal.exists_hilbertSchmidt_factors
