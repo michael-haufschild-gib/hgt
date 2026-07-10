@@ -16,9 +16,10 @@ source coefficients to vanish.
 
 Unlike raw prime evaluation, this statement retains the prime labels.  Unlike susceptibility or
 pointwise-tuned cancellation, it holds uniformly for every `rho` and does not encode a target zero
-location.  It is the first nonconstant source rigidity surviving the pinned-affine quotient.  The
-general finite-prime/order-`k` Vandermonde jet and the completed infinite-support attachment remain
-the next mathematical steps.
+location.  The arbitrary finite-order theorem below exposes the exact limitation: every square
+prime packet realizes every local divisor jet uniquely, so no fixed finite-order quotient can
+distinguish prime evaluation from an archimedean differential functional.  The distinction appears
+only in the fixed compatibility across all orders, where the two sectors intersect only at zero.
 -/
 
 noncomputable section
@@ -208,5 +209,175 @@ theorem finitePrimeDerivativeJetPinnedAffineClass_prime_eq_zero_iff {k : ℕ}
     (a : Fin k → ℂ) (rho : ℂ) :
     finitePrimeDerivativeJetPinnedAffineClass p a rho = 0 ↔ a = 0 :=
   finitePrimeDerivativeJetPinnedAffineClass_eq_zero_iff p (fun i => (hp i).pos) hpinj a rho
+
+/-! ## Finite-order blindness versus all-orders separation -/
+
+/-- A square packet of distinct nonzero characters realizes every finite moment vector uniquely. -/
+theorem existsUnique_weightedFiniteMoments {k : ℕ} (f w : Fin k → ℂ)
+    (hf : Function.Injective f) (hw : ∀ i, w i ≠ 0) (c : Fin k → ℂ) :
+    ∃! a : Fin k → ℂ,
+      ∀ j : Fin k, ∑ i : Fin k, a i * w i * f i ^ (j : ℕ) = c j := by
+  have hvecInj : Function.Injective (Matrix.vandermonde f).vecMulLinear := by
+    intro v u hvu
+    apply sub_eq_zero.mp
+    apply Matrix.eq_zero_of_forall_pow_sum_mul_pow_eq_zero hf
+    intro j
+    have hj := congrFun hvu j
+    change (∑ i : Fin k, v i * f i ^ (j : ℕ)) =
+      ∑ i : Fin k, u i * f i ^ (j : ℕ) at hj
+    simpa [sub_mul, Finset.sum_sub_distrib] using sub_eq_zero.mpr hj
+  obtain ⟨v, hv⟩ := LinearMap.surjective_of_injective hvecInj c
+  refine ⟨fun i => v i / w i, ?_, ?_⟩
+  · intro j
+    have hj := congrFun hv j
+    change (∑ i : Fin k, v i * f i ^ (j : ℕ)) = c j at hj
+    simpa [div_mul_cancel₀ _ (hw _)] using hj
+  · intro a ha
+    funext i
+    let d : Fin k → ℂ := fun r => ((v r / w r) - a r) * w r
+    have hmom : ∀ j : Fin k, ∑ r : Fin k, d r * f r ^ (j : ℕ) = 0 := by
+      intro j
+      have hj := ha j
+      have hvj := congrFun hv j
+      change (∑ r : Fin k, v r * f r ^ (j : ℕ)) = c j at hvj
+      simpa [d, sub_mul, Finset.sum_sub_distrib, div_mul_cancel₀ _ (hw _),
+        mul_assoc] using sub_eq_zero.mpr (hvj.trans hj.symm)
+    have hd : d = 0 := Matrix.eq_zero_of_forall_pow_sum_mul_pow_eq_zero hf hmom
+    have hdi := congrFun hd i
+    change ((v i / w i) - a i) * w i = 0 at hdi
+    exact (sub_eq_zero.mp ((mul_eq_zero.mp hdi).resolve_right (hw i))).symm
+
+/-- Distinct positive natural labels give distinct negative logarithmic characters. -/
+theorem neg_log_nat_injective {k : ℕ} (p : Fin k → ℕ)
+    (hp : ∀ i, 0 < p i) (hpinj : Function.Injective p) :
+    Function.Injective (fun i => -(Real.log (p i) : ℂ)) := by
+  intro i j hij
+  have hlogC : (Real.log (p i) : ℂ) = (Real.log (p j) : ℂ) :=
+    neg_injective hij
+  have hlogR : Real.log (p i) = Real.log (p j) := by exact_mod_cast hlogC
+  apply hpinj
+  exact_mod_cast Real.log_injOn_pos
+    (by exact_mod_cast hp i : (0 : ℝ) < p i)
+    (by exact_mod_cast hp j : (0 : ℝ) < p j) hlogR
+
+/-- **Finite-order blindness.** Every order-`k` coefficient vector is realized by a unique packet
+of `k` distinct positive prime-exponential jets, at every base point. -/
+theorem existsUnique_finitePrimeDerivativeJet_coeff {k : ℕ}
+    (p : Fin k → ℕ) (hp : ∀ i, 0 < p i) (hpinj : Function.Injective p)
+    (rho : ℂ) (c : Fin k → ℂ) :
+    ∃! a : Fin k → ℂ,
+      ∀ j : Fin k,
+        (finitePrimeDerivativeJetPolynomial p a rho).coeff (j : ℕ) = c j := by
+  simpa [finitePrimeDerivativeJetPolynomial_coeff, mul_assoc] using
+    existsUnique_weightedFiniteMoments
+      (fun i => -(Real.log (p i) : ℂ))
+      (fun i => ((p i : ℕ) : ℂ) ^ (-rho))
+      (neg_log_nat_injective p hp hpinj)
+      (fun i => Complex.cpow_ne_zero_iff.mpr
+        (Or.inl (Nat.cast_ne_zero.mpr (hp i).ne'))) c
+
+/-- Equivalently, the local divisor-jet algebra is realized bijectively by any fixed square packet
+of distinct positive prime jets.  This discharges the target-jet existence and uniqueness Props. -/
+theorem existsUnique_finitePrimeDerivativeJet_jetClass {k : ℕ}
+    (p : Fin k → ℕ) (hp : ∀ i, 0 < p i) (hpinj : Function.Injective p)
+    (rho : ℂ) (z : LocalDivisorJet ℂ k) :
+    ∃! a : Fin k → ℂ,
+      jetClass ℂ k (finitePrimeDerivativeJetPolynomial p a rho) = z := by
+  obtain ⟨P, rfl⟩ := Ideal.Quotient.mk_surjective z
+  obtain ⟨a, ha, hua⟩ :=
+    existsUnique_finitePrimeDerivativeJet_coeff p hp hpinj rho
+      (fun j => P.coeff (j : ℕ))
+  refine ⟨a, ?_, ?_⟩
+  · apply sub_eq_zero.mp
+    rw [jetClass, ← map_sub]
+    change jetClass ℂ k (finitePrimeDerivativeJetPolynomial p a rho - P) = 0
+    apply (jetClass_eq_zero_iff_coeff_lt_eq_zero ℂ k).mpr
+    intro j hj
+    let jj : Fin k := ⟨j, hj⟩
+    rw [Polynomial.coeff_sub]
+    exact sub_eq_zero.mpr (ha jj)
+  · intro b hb
+    apply hua
+    intro j
+    have hzero : jetClass ℂ k
+        (finitePrimeDerivativeJetPolynomial p b rho - P) = 0 := by
+      rw [jetClass, map_sub, sub_eq_zero]
+      exact hb
+    have hj := (jetClass_eq_zero_iff_coeff_lt_eq_zero ℂ k).mp hzero j j.isLt
+    simpa only [Polynomial.coeff_sub] using sub_eq_zero.mp hj
+
+/-- **All-orders intersection theorem.** A finite packet of distinct positive prime characters and
+an eventually-zero differential moment sequence can agree at every order only when both vanish.
+This is the exact fixed-constraint complement to finite-order blindness. -/
+theorem finitePrimeMoments_eq_eventuallyZero_iff {k d : ℕ}
+    (p : Fin k → ℕ) (hp : ∀ i, 1 < p i) (hpinj : Function.Injective p)
+    (a : Fin k → ℂ) (mu : ℕ → ℂ) (hmu : ∀ n, d ≤ n → mu n = 0) :
+    (∀ n : ℕ, (∑ i : Fin k, a i * (-(Real.log (p i) : ℂ)) ^ n) = mu n) ↔
+      a = 0 ∧ mu = 0 := by
+  classical
+  constructor
+  · intro hrep
+    let f : Fin k → ℂ := fun i => -(Real.log (p i) : ℂ)
+    let v : Fin k → ℂ := fun i => a i * f i ^ d
+    have hf : Function.Injective f :=
+      neg_log_nat_injective p (fun i => Nat.zero_lt_one.trans (hp i)) hpinj
+    have hf0 : ∀ i, f i ≠ 0 := by
+      intro i
+      have hlog : 0 < Real.log (p i) := Real.log_pos (by exact_mod_cast hp i)
+      dsimp [f]
+      exact neg_ne_zero.mpr (by exact_mod_cast hlog.ne')
+    have hmom : ∀ r : Fin k, ∑ i : Fin k, v i * f i ^ (r : ℕ) = 0 := by
+      intro r
+      have hr := hrep (d + (r : ℕ))
+      rw [hmu _ (Nat.le_add_right d (r : ℕ))] at hr
+      simpa [v, f, pow_add, mul_assoc, add_comm] using hr
+    have hv : v = 0 := Matrix.eq_zero_of_forall_pow_sum_mul_pow_eq_zero hf hmom
+    have ha : a = 0 := by
+      funext i
+      have hvi := congrFun hv i
+      change a i * f i ^ d = 0 at hvi
+      exact (mul_eq_zero.mp hvi).resolve_right (pow_ne_zero d (hf0 i))
+    refine ⟨ha, ?_⟩
+    funext n
+    have hn := hrep n
+    simpa [ha] using hn.symm
+  · rintro ⟨rfl, rfl⟩ n
+    simp
+
+/-! ## The archimedean derivation is outside every finite prime span -/
+
+/-- Moments of coefficient extraction at derivative order one: the derivation sends `X` to `1` and
+all other monomials to zero at the origin. -/
+def archimedeanDerivationMoment (n : ℕ) : ℂ := if n = 1 then 1 else 0
+
+/-- **Finite-prime/archimedean separation.**  No finite packet of distinct positive prime
+evaluation characters can equal the archimedean derivation moment sequence.  The proof uses only
+the fixed moment constraints: degrees `2,...,k+1` kill the packet by Vandermonde, contradicting its
+required degree-one value. -/
+theorem no_finitePrimeMoments_eq_archimedeanDerivationMoment {k : ℕ}
+    (p : Fin k → ℕ) (hp : ∀ i, 1 < p i) (hpinj : Function.Injective p)
+    (a : Fin k → ℂ) :
+    ¬ ∀ n : ℕ,
+      (∑ i : Fin k, a i * (-(Real.log (p i) : ℂ)) ^ n) =
+        archimedeanDerivationMoment n := by
+  intro hrep
+  have htail : ∀ n, 2 ≤ n → archimedeanDerivationMoment n = 0 := by
+    intro n hn
+    have hne : n ≠ 1 := by omega
+    simp [archimedeanDerivationMoment, hne]
+  have hzero :=
+    (finitePrimeMoments_eq_eventuallyZero_iff p hp hpinj a
+      archimedeanDerivationMoment htail).mp hrep
+  have hdegreeOne := congrFun hzero.2 1
+  simp [archimedeanDerivationMoment] at hdegreeOne
+
+/-- Prime-labelled specialization of finite-prime/archimedean separation. -/
+theorem no_finitePrimeMoments_eq_archimedeanDerivationMoment_prime {k : ℕ}
+    (p : Fin k → ℕ) (hp : ∀ i, (p i).Prime) (hpinj : Function.Injective p)
+    (a : Fin k → ℂ) :
+    ¬ ∀ n : ℕ,
+      (∑ i : Fin k, a i * (-(Real.log (p i) : ℂ)) ^ n) =
+        archimedeanDerivationMoment n :=
+  no_finitePrimeMoments_eq_archimedeanDerivationMoment p (fun i => (hp i).one_lt) hpinj a
 
 end RHTower

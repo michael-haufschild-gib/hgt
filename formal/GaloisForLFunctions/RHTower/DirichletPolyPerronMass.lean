@@ -196,6 +196,40 @@ theorem dirichletPoly_hasPerronCarrierHorizontalMass
   refine Eventually.of_forall fun M => dirichletPoly_hasPerronCarrierHorizontalMassAt N M ?_
   exact le_trans (neg_nonpos.mpr (Nat.cast_nonneg M)) hc
 
+/-- The concrete horizontal mass supplies pointwise horizontal escape for every admissible kernel. -/
+theorem dirichletPoly_hasPerronHorizontalEscapeAt
+    (N : ℕ) {c δ : ℝ} {n M : ℕ}
+    (hc : 0 < c) (hn : 1 ≤ n) (hδ0 : 0 < δ) (hδn : δ < (n : ℝ)) :
+    HasPerronHorizontalEscapeAt (dirichletPoly N) c n δ M :=
+  (dirichletPoly_hasPerronCarrierHorizontalMassAt N M
+    (le_trans (neg_nonpos.mpr (Nat.cast_nonneg M)) hc.le)).hasPerronHorizontalEscapeAt
+      (dirichletPoly_differentiable N) hc hn hδ0 hδn
+
+/-- The finite carrier supplies pointwise three-edge boundary escape without an escape hypothesis. -/
+theorem dirichletPoly_hasPerronBoundaryEscapeAt
+    (N : ℕ) {c δ : ℝ} {n M : ℕ}
+    (hc : 0 < c) (hn : 1 ≤ n) (hδ0 : 0 < δ) (hδn : δ < (n : ℝ)) :
+    HasPerronBoundaryEscapeAt (dirichletPoly N) c n δ M :=
+  hasPerronBoundaryEscapeAt_of_horizontalEscape hc
+    (dirichletPolyCoeff_lseriesSummable N c) (dirichletPoly_differentiable N)
+    (fun s _ => (LSeries_dirichletPolyCoeff N s).symm) hn hδ0 hδn
+    (dirichletPoly_hasPerronHorizontalEscapeAt N hc hn hδ0 hδn)
+
+/-- The variable horizontal-escape interface is concrete for every finite carrier. -/
+theorem dirichletPoly_hasVariablePerronHorizontalEscape
+    (N : ℕ) {c : ℝ} {n : ℕ} (hc : 0 < c) (hn : 1 ≤ n) :
+    HasVariablePerronHorizontalEscape (dirichletPoly N) c n :=
+  (dirichletPoly_hasPerronCarrierHorizontalMass N hc.le).hasVariablePerronHorizontalEscape
+    (dirichletPoly_differentiable N) hc hn
+
+/-- The variable boundary-escape interface is concrete for every finite carrier. -/
+theorem dirichletPoly_hasVariablePerronBoundaryEscape
+    (N : ℕ) {c : ℝ} {n : ℕ} (hc : 0 < c) (hn : 1 ≤ n) :
+    HasVariablePerronBoundaryEscape (dirichletPoly N) c n :=
+  (dirichletPoly_hasVariablePerronHorizontalEscape N hc hn).hasVariablePerronBoundaryEscape
+    hc (dirichletPolyCoeff_lseriesSummable N c) (dirichletPoly_differentiable N)
+    (fun s _ => (LSeries_dirichletPolyCoeff N s).symm) hn
+
 /-- **Unconditional finite-carrier Perron boundary charge.**  All mass, escape, summability, and
 right-half-plane representation Props are constructed from `dirichletPoly N`. -/
 theorem dirichletPoly_hasVariablePerronBoundaryCharge
@@ -233,14 +267,9 @@ theorem dirichletPoly_hasPerronBoundaryChargeAt
     HasPerronBoundaryChargeAt (dirichletPoly N) c n δ M
       (4 * perronSupportScaleAt n δ ^ (1 - (M : ℝ)) *
         (dirichletPolyPerronBudget N M * Real.pi)) := by
-  have hhorizontal := dirichletPoly_hasPerronCarrierHorizontalMassAt N M
-    (le_trans (neg_nonpos.mpr (Nat.cast_nonneg M)) hc.le)
-  have hescape := hasPerronBoundaryEscapeAt_of_carrierHorizontalMassAt
-    hhorizontal hc (dirichletPolyCoeff_lseriesSummable N c)
-    (dirichletPoly_differentiable N)
-    (fun s _ => (LSeries_dirichletPolyCoeff N s).symm) hn hδ0 hδn
   exact hasPerronBoundaryChargeAt_of_escape_of_carrierFlankMassAt
-    (dirichletPoly_differentiable N) hn hM hδ0 hδn hescape
+    (dirichletPoly_differentiable N) hn hM hδ0 hδn
+    (dirichletPoly_hasPerronBoundaryEscapeAt N hc hn hδ0 hδn)
     (dirichletPoly_hasPerronCarrierFlankMassAt N M)
 
 /-- The full right-edge Perron integral bound for a finite carrier has no Prop-valued input. -/

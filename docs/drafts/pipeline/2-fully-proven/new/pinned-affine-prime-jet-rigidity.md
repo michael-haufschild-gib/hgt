@@ -48,6 +48,10 @@ logs, so both coefficients vanish.
   theorem for every injective positive base family.
 - `finitePrimeDerivativeJetPinnedAffineClass_prime_eq_zero_iff` gives the arbitrary finite-prime
   specialization.
+- `archimedeanDerivationMoment` isolates the fixed coefficient-extraction moment sequence
+  `delta_(n,1)`.
+- `no_finitePrimeMoments_eq_archimedeanDerivationMoment` proves that no finite positive-base packet
+  realizes the derivation sequence; the prime-labelled specialization states the exact weld case.
 
 The implementation is
 `formal/GaloisForLFunctions/RHTower/PinnedAffinePrimeJetRigidity.lean` and is registered in the
@@ -55,14 +59,15 @@ The implementation is
 
 ## New open core
 
-`[OPEN CORE]` The general finite-prime Vandermonde theorem is now proved: no nontrivial bounded
-prime-support packet can vanish when the quotient retains as many derivative moments as labels.
-Identify the completed infinite-support compatibility class which lies outside every finite
-prime-jet span.
+`[OPEN CORE]` The general finite-prime Vandermonde theorem and finite-prime/archimedean separation
+are now proved.  The derivation moment is an explicit fixed constraint outside every finite prime
+span—no limit construction is required.  Attach this archimedean class to the pinned-affine quotient
+through the completed prime--archimedean weld, and determine the compatibility equation imposed on
+the infinite prime source.
 
-The completed step must explain how the actual arithmetic datum crosses this formally established
-finite-support wall without becoming a carrier, cutoff, or limit flow.  A finite truncation cannot
-be the source of the cancellation.
+The completed step must explain how the actual arithmetic datum pairs this finite-prime-inaccessible
+derivation class with the infinite prime side without becoming a carrier, cutoff, or limit flow.  A
+finite truncation cannot be the source of the cancellation.
 
 ## Novelty and significance gates
 
@@ -71,7 +76,8 @@ be the source of the cancellation.
   independent inside the new universal quotient, uniformly in the germ point.  This closes the
   complete finite-support Vandermonde tower, not only the first two-prime case.
 - **SIGNIFICANT:** the live attachment moves from scalar incidence to prime-log jet rigidity, a
-  constraint unavailable to the constant-source interface.
+  constraint unavailable to the constant-source interface; the archimedean derivation is now
+  formally separated from every finite prime packet.
 - **NON-TAUTOLOGICAL:** the theorem assumes neither a xi zero nor a critical-line relation and holds
   for every complex point.
 

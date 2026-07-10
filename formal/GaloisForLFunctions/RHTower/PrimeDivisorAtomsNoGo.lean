@@ -95,6 +95,11 @@ form of the map — it reads only the primes' own analytic content at the pinned
 def SigmaSourceMap (A : ℕ → ℕ) (ρ : ℂ) : Prop :=
   ∀ p, 2 ≤ p → (A p : ℕ∞) ≤ analyticOrderAt (fun z => (1 - (p : ℂ) ^ (-z))⁻¹) ρ
 
+/-- The zero prime-source map always inhabits the pinned source interface. -/
+theorem sigmaSourceMap_zero (ρ : ℂ) : SigmaSourceMap (fun _ => 0) ρ := by
+  intro p hp
+  simp
+
 /-- **Every `{σ_p}`-source map is the zero map at a pinned strip point.**  Each local Euler factor
 is a unit (order `0`), so a count bounded by its local order is forced to `0` for every prime.  The
 primes' own analytic content sources no divisor atom anywhere on `Re s > 0`. -/
@@ -106,6 +111,16 @@ theorem sigma_source_map_trivial {A : ℕ → ℕ} {ρ : ℂ} (hs : 0 < ρ.re)
   rw [h0] at hle
   have : (A p : ℕ∞) = 0 := LE.le.eq_zero hle
   exact_mod_cast this
+
+/-- On the positive half-plane, the pinned prime-source interface is equivalent to being the zero
+map on every prime index.  Thus its existence is nonvacuous but its image is completely classified. -/
+theorem sigmaSourceMap_iff_eq_zero_on_primes {A : ℕ → ℕ} {ρ : ℂ} (hs : 0 < ρ.re) :
+    SigmaSourceMap A ρ ↔ ∀ p, 2 ≤ p → A p = 0 := by
+  constructor
+  · exact sigma_source_map_trivial hs
+  · intro hzero p hp
+    rw [hzero p hp]
+    simp
 
 /-- **The atom-source mismatch at a strip zero.**  At a point `ρ` where `ξ` vanishes:
 

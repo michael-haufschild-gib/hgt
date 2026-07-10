@@ -1641,14 +1641,21 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
 240. **Dual-gate verdict.** `[PROVED NATIVE SURVIVOR]` Vandermonde elimination is standard; uniform
      finite-family survival inside the new pinned-affine quotient is the first label-sensitive
      source theorem after the constant-source no-go.
-241. **New open core.** `[OPEN CORE]` Isolate a completed infinite-support class outside every finite
-     prime-jet span without realizing it as a limit flow, cutoff, or carrier. The finite theorem now
-     proves no bounded prime packet can supply the needed cancellation.
+241. **Archimedean derivation outside every finite prime span.** `[PROVED HERE + Lean]` The fixed
+     derivation moment sequence is `delta_(n,1)`. No finite packet of distinct positive prime-log
+     evaluation characters realizes it: the zero moments in degrees `2,...,k+1` kill every packet
+     coefficient by Vandermonde, contradicting the required degree-one value. This supplies an
+     explicit non-finite-prime constraint without a limiting construction.
+242. **New open core.** `[OPEN CORE]` Attach the archimedean derivation moment to
+     `PinnedAffineDefectQuotient` through the completed prime--archimedean weld and derive the
+     compatibility equation imposed on the infinite prime source. The attachment must remain fixed
+     constraint data, not a limit flow, cutoff, or carrier.
 
 ## Log (cont. 49)
 
 - 2026-07-10 — wave 47: moved from constant incidence to first prime-log jets, proved the exact
   polynomial boundary formula, uniform two-prime quotient independence, and the arbitrary
-  finite-prime/order-moment Vandermonde theorem. This closes every bounded-support jet cancellation
-  and leaves only a genuinely completed infinite-support class. Only the touched module and exact
-  target were checked.
+  finite-prime/order-moment Vandermonde theorem. It then proved the archimedean derivation moment is
+  outside every finite prime span. This closes every bounded-support jet cancellation and supplies
+  the first explicit fixed class on the completed side. Only the touched module and exact target
+  were checked.

@@ -83,6 +83,18 @@ theorem ledgerChainE_to_xi_of_split_domination {ρ : ℂ} {r₀ R : ℝ} {zs : L
   have := ledgerChainE_trans hchain1 hstep
   simpa using this
 
+/-- The same concrete split supplies the scalar-flux ledger directly; the event-list interface is
+constructed and summed internally. -/
+theorem ledgerChain_to_xi_of_split_domination {ρ : ℂ} {r₀ R : ℝ} {zs : List ℂ}
+    {u F : ℂ → ℂ}
+    (hzs : ∀ ρ' ∈ zs, ‖ρ' - ρ‖ ≤ r₀)
+    (hF : ∀ z ∈ chartRA ρ r₀ R ∪ chartLA ρ r₀ R,
+      F z = (zs.map (fun w => z - w)).prod * u z)
+    (hdom : ∀ z ∈ chartRA ρ r₀ R ∪ chartLA ρ r₀ R, ‖xi z - F z‖ < ‖F z‖) :
+    LedgerChain ρ r₀ R u xi (zs.length : ℤ) := by
+  have h := ledgerChainE_toChain (ledgerChainE_to_xi_of_split_domination hzs hF hdom)
+  simpa using h
+
 /-! ### Rouché-type counting on an isolating annulus, without the argument principle -/
 
 /-- **The split member carries exactly the enclosed order.**  If a member splits on the
@@ -168,6 +180,20 @@ theorem anchoredEventLedger_of_carrier_domination {ρ : ℂ} {r₀ R : ℝ} {zs 
   ⟨u, List.replicate zs.length 1, hu_an, hu_ne,
     ledgerChainE_to_xi_of_split_domination hzs hF hdom,
     ledgerFluxPaired_replicate_one (nonempty_bandEdgePairing_of_even heven.two_dvd)⟩
+
+/-- An even dominating split supplies the original level-two anchored ledger with the event-ledger
+interface discharged. -/
+theorem anchoredLedger_two_of_carrier_domination {ρ : ℂ} {r₀ R : ℝ} {zs : List ℂ}
+    {u F : ℂ → ℂ}
+    (hu_an : AnalyticOnNhd ℂ u (ball ρ R)) (hu_ne : ∀ z ∈ ball ρ R, u z ≠ 0)
+    (hzs : ∀ ρ' ∈ zs, ‖ρ' - ρ‖ ≤ r₀)
+    (hF : ∀ z ∈ chartRA ρ r₀ R ∪ chartLA ρ r₀ R,
+      F z = (zs.map (fun w => z - w)).prod * u z)
+    (hdom : ∀ z ∈ chartRA ρ r₀ R ∪ chartLA ρ r₀ R, ‖xi z - F z‖ < ‖F z‖)
+    (heven : Even zs.length) :
+    AnchoredLedger 2 ρ r₀ R xi :=
+  anchoredLedger_two_of_eventLedger
+    (anchoredEventLedger_of_carrier_domination hu_an hu_ne hzs hF hdom heven)
 
 /-- **The base rung from carrier data.**  If every hypothetical off-line ξ-zero admits an
 isolating annulus and a member that splits there into an even number of hole-centred
