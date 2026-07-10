@@ -4,10 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michail Karatarakis
 -/
 
-module
-
-public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.NumberTheory.NumberField.House
+import Mathlib.Analysis.Complex.Basic
+import Mathlib.NumberTheory.NumberField.House
 
 /-!
 # Hilbert's Seventh Problem (Gelfond–Schneider Theorem)
@@ -39,8 +37,6 @@ Loo-Keng Hua, Introduction to Number Theory, Springer, 1982. Chapter XII (§13).
 A. O. Gelfond (1934), *Sur le septième Problème de Hilbert
 T. Schneider (1935), *Transzendenzuntersuchungen periodischer Funktionen*
 -/
-
-@[expose] public section
 
 open BigOperators Module.Free Fintype NumberField Embeddings FiniteDimensional
    Matrix Set Polynomial Finset IntermediateField Complex AnalyticAt

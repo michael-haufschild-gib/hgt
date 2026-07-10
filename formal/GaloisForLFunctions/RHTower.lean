@@ -542,6 +542,7 @@ import GaloisForLFunctions.RHTower.SoninProjectionCalkin
 import GaloisForLFunctions.RHTower.SoninEulerCalkinPartialIsometry
 import GaloisForLFunctions.RHTower.SoninTimeBandIdeal
 import GaloisForLFunctions.RHTower.SoninPrincipalShellResidual
+import GaloisForLFunctions.RHTower.SoninPrimePowerRegularization
 import GaloisForLFunctions.RHTower.SoninCalkinNormBound
 import GaloisForLFunctions.RHTower.SoninEulerEssentialNorm
 import GaloisForLFunctions.RHTower.ThueMorseMellinFlatness

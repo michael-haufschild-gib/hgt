@@ -79,6 +79,14 @@ theorem of_eq {S T : SoninL2 →L[Complex] SoninL2}
     (hS : IsSoninTimeBandIdeal S) (h : S = T) : IsSoninTimeBandIdeal T := by
   rwa [← h]
 
+theorem smul (c : Complex) {T : SoninL2 →L[Complex] SoninL2}
+    (hT : IsSoninTimeBandIdeal T) : IsSoninTimeBandIdeal (c • T) := by
+  have h := hT.leftMul (c • (1 : SoninL2 →L[Complex] SoninL2))
+  apply h.of_eq
+  apply ContinuousLinearMap.ext
+  intro x
+  simp
+
 /-- Every concretely time-band-generated operator is compact. -/
 theorem isCompactOperator {T : SoninL2 →L[Complex] SoninL2}
     (hT : IsSoninTimeBandIdeal T) : IsCompactOperator T := by

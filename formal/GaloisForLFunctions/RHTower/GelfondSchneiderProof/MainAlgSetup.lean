@@ -4,10 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michail Karatarakis
 -/
 
-module
-
-public import GaloisForLFunctions.RHTower.GelfondSchneiderProof.MainAlg
-public import Mathlib.Tactic
+import GaloisForLFunctions.RHTower.GelfondSchneiderProof.MainAlg
+import GaloisForLFunctions.RHTower.GelfondSchneiderSiegel
+import Mathlib.Tactic
 
 /-!
 # Gelfond-Schneider Theorem: Matrix Coefficient Bounds and Siegel's Lemma
@@ -35,12 +34,12 @@ auxiliary integer function `R(x)`.
 * Loo-Keng Hua, Introduction to Number Theory, Springer, 1982. Chapter 17.9.
 -/
 
-@[expose] public section
-
 open BigOperators Module.Free Fintype NumberField Embeddings FiniteDimensional
    Matrix Set Polynomial Finset IntermediateField Complex AnalyticAt
 
 noncomputable section
+
+namespace GaloisForLFunctions.RHTower.GelfondSchneiderProof
 
 variable (h7 : Setup) (q : ℕ) (hq0 : 0 < q) (u : Fin (h7.m * h7.n q)) (t : Fin (q * q))
   (h2mq : 2 * h7.m ∣ q ^ 2)
@@ -299,12 +298,12 @@ lemma house_matrixA_le : house ((algebraMap (𝓞 h7.K) h7.K) ((h7.A q) u t)) �
             (Or.inl ⟨one_le_house_of_isIntegral h7.isIntegral_c₁α h7.c₁α_ne_zero, ?_⟩)
         · rw [mul_comm h7.m q]
           apply mul_le_mul (((finProdFinEquiv.symm.toFun t).1).isLt)
-           (((finProdFinEquiv.symm.toFun u).1).isLt) (zero_le _) (zero_le _)
+           (((finProdFinEquiv.symm.toFun u).1).isLt) (Nat.zero_le _) (Nat.zero_le _)
     · apply Bound.pow_le_pow_right_of_le_one_or_one_le
         (Or.inl ⟨one_le_house_of_isIntegral h7.isIntegral_c₁γ h7.c₁γ_ne_zero, ?_⟩)
       · rw [mul_comm h7.m q]
         apply (mul_le_mul (((finProdFinEquiv.symm.toFun t).2).isLt)
-          (((finProdFinEquiv.symm.toFun u).1).isLt) (zero_le _) (zero_le _))
+          (((finProdFinEquiv.symm.toFun u).1).isLt) (Nat.zero_le _) (Nat.zero_le _))
   · apply mul_le_mul ?_ ?_ (by dsimp [house];positivity) (by dsimp [house];positivity)
     · apply mul_le_mul ?_ ?_ (by dsimp [house];positivity) (by dsimp [house];positivity)
       · apply mul_le_mul ?_ ?_ (by dsimp [house];positivity)
@@ -430,8 +429,10 @@ lemma house_eta_le_c₄_pow : house (algebraMap (𝓞 h7.K) h7.K (h7.η q hq0 h2
     rw [mul_div_sub_eq_one, rpow_one, h7.mul_rpow_sub_one_div_two q hq0 h2mq, mul_eq_mul_left_iff]
     left
     rw [mul_assoc, mul_assoc, mul_assoc, mul_assoc, mul_assoc]
-    have one_le_house_c₁ : 1 ≤ GelfondSchneiderSiegel.c₁ h7.K := one_le_mul_of_one_le_of_one_le (Nat.one_le_cast.mpr
-      (Module.finrank_pos)) (one_le_mul_of_one_le_of_one_le (le_max_left _ _) (le_max_left _ _))
+    have one_le_house_c₁ : 1 ≤ GelfondSchneiderSiegel.c₁ h7.K :=
+      one_le_mul_of_one_le_of_one_le (Nat.one_le_cast.mpr Module.finrank_pos)
+        (one_le_mul_of_one_le_of_one_le (le_max_left _ _)
+          (GelfondSchneiderSiegel.one_le_supOfBasis h7.K))
     refine (mul_right_inj' (by grind)).mpr ?_
     · grind [h7.mul_rpow_sub_one_div_two q hq0 h2mq, ← mul_assoc, ← mul_assoc, ← mul_assoc]
   · rw [h7.mul_rpow_sub_one_div_two q hq0 h2mq, ← mul_assoc, ← mul_assoc, ← mul_assoc, ← mul_assoc]
@@ -448,3 +449,5 @@ lemma house_eta_le_c₄_pow : house (algebraMap (𝓞 h7.K) h7.K (h7.η q hq0 h2
     · apply rpow_nonneg; simp only [Nat.cast_nonneg]
 
 end Setup
+
+end GaloisForLFunctions.RHTower.GelfondSchneiderProof
