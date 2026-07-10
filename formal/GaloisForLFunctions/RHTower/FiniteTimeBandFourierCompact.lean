@@ -196,8 +196,7 @@ theorem finiteTimeBandFourier_coeFn (a b c d : ℝ)
     ((ContinuousMap.toLp 2 volume ℂ (fourierPhaseCurried a b c d x)) y)
     (f y) = _
   rw [hy]
-  simp [evalBilinear, complexMulBilinear, fourierSectionContinuous,
-    fourierPhaseCurried]
+  simp [complexMulBilinear, fourierPhaseCurried]
 
 /-- **Finite-rectangle time-band compactness.** The Fourier integral operator between any two
 closed finite intervals is compact. -/
@@ -247,6 +246,7 @@ def lpExtendByZero (s : Set X) (hs : MeasurableSet s)
   MemLp.toLp (s.indicator f)
     ((memLp_indicator_iff_restrict hs).2 (Lp.memLp f))
 
+omit [Fact (1 ≤ q)] in
 theorem lpExtendByZero_add (s : Set X) (hs : MeasurableSet s)
     (f g : Lp F q (ν.restrict s)) :
     lpExtendByZero ν q s hs (f + g) =
@@ -263,6 +263,7 @@ theorem lpExtendByZero_add (s : Set X) (hs : MeasurableSet s)
     exact hx hxs
   · simp [hxs]
 
+omit [Fact (1 ≤ q)] in
 theorem lpExtendByZero_smul (s : Set X) (hs : MeasurableSet s)
     (c : 𝕜) (f : Lp F q (ν.restrict s)) :
     lpExtendByZero ν q s hs (c • f) = c • lpExtendByZero ν q s hs f := by
@@ -276,6 +277,7 @@ theorem lpExtendByZero_smul (s : Set X) (hs : MeasurableSet s)
     exact hx hxs
   · simp [hxs]
 
+omit [Fact (1 ≤ q)] in
 theorem norm_lpExtendByZero (s : Set X) (hs : MeasurableSet s)
     (f : Lp F q (ν.restrict s)) :
     ‖lpExtendByZero ν q s hs f‖ = ‖f‖ := by
@@ -415,7 +417,7 @@ def fullFourierFunctionalBCF (a b c d : ℝ) (hab : a ≤ b) :
     (fun x => fullFourierFunctionalContinuous a b c d (projIcc a b hab x))
     ((fullFourierFunctionalContinuous a b c d).continuous.comp continuous_projIcc)
     ‖fullFourierFunctionalContinuous a b c d‖
-    (fun x => (fullFourierFunctionalContinuous a b c d).norm_coe_le_norm _)
+    (fun _ => (fullFourierFunctionalContinuous a b c d).norm_coe_le_norm _)
 
 /-- The full-input Fourier functional field, square-integrable for the output measure restricted
 to `[a,b]`. -/

@@ -35,13 +35,12 @@ theorem indicator_ae_zero_of_mem_physicalForbidden_orthogonal
     s.indicator (⇑f) =ᵐ[volume] 0 := by
   have h0 : indicatorCutoff s hs f = 0 := by
     rw [indicatorCutoff_eq_physicalForbidden_starProjection]
-    exact Submodule.starProjection_apply_eq_zero_iff.mpr hf
+    exact (Submodule.starProjection_apply_eq_zero_iff (K := physicalForbidden s hs)).mpr hf
   have hae := indicatorCutoff_ae s hs f
   rw [h0] at hae
   filter_upwards [hae, Lp.coeFn_zero (E := ℂ) (p := 2) (μ := (volume : Measure ℝ))]
     with t h1 h2
   rw [← h1, h2]
-  rfl
 
 theorem physical_indicator_ae_zero_of_mem_centralSoninCarrier
     {a : ℝ} {f : SoninL2} (hf : f ∈ centralSoninCarrier a) :
@@ -53,7 +52,8 @@ theorem fourier_indicator_ae_zero_of_mem_centralSoninCarrier
     (centralInterval a).indicator (⇑(fourierUnitary f)) =ᵐ[volume] 0 := by
   have h0 : fourierCutoff (centralInterval a) (measurableSet_centralInterval a) f = 0 := by
     rw [fourierCutoff_eq_fourierForbidden_starProjection]
-    exact Submodule.starProjection_apply_eq_zero_iff.mpr hf.2
+    exact (Submodule.starProjection_apply_eq_zero_iff
+      (K := fourierForbidden (centralInterval a) (measurableSet_centralInterval a))).mpr hf.2
   have hcut : indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)
       (fourierUnitary f) = 0 := by
     have h1 := congrArg fourierUnitary h0
@@ -65,7 +65,6 @@ theorem fourier_indicator_ae_zero_of_mem_centralSoninCarrier
   filter_upwards [hae, Lp.coeFn_zero (E := ℂ) (p := 2) (μ := (volume : Measure ℝ))]
     with t h1 h2
   rw [← h1, h2]
-  rfl
 
 /-! ### The square-integrable power kernels -/
 
@@ -94,6 +93,7 @@ private theorem memLp_two_rpow_Ioi {a c : ℝ} (ha : 0 < a) (hc : c < -(1 / 2)) 
     apply h2c.congr_fun ?_ measurableSet_Ioi
     intro t ht
     have ht0 : (0 : ℝ) < t := ha.trans (mem_Ioi.mp ht)
+    show t ^ (2 * c) = ‖t ^ c‖ ^ 2
     rw [Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg ht0.le c),
       ← Real.rpow_natCast (t ^ c) 2, ← Real.rpow_mul ht0.le]
     norm_num [mul_comm]
@@ -122,7 +122,7 @@ private theorem abs_log_le_inv_mul_rpow_add {t δ : ℝ} (ht : 0 < t) (hδ : 0 <
   have hδinv : (0 : ℝ) ≤ δ⁻¹ := (inv_pos.mpr hδ).le
   have hpos : (0 : ℝ) ≤ t ^ (-δ) := Real.rpow_nonneg ht.le _
   have hpos' : (0 : ℝ) ≤ t ^ δ := Real.rpow_nonneg ht.le _
-  rcases le_or_lt 1 t with h1 | h1
+  rcases le_or_gt 1 t with h1 | h1
   · rw [abs_of_nonneg (Real.log_nonneg h1)]
     have h := Real.log_le_rpow_div ht.le hδ
     rw [div_eq_inv_mul] at h
@@ -144,7 +144,7 @@ private theorem abs_log_le_inv_mul_rpow_add {t δ : ℝ} (ht : 0 < t) (hδ : 0 <
 private theorem rpow_le_pair {t c cmin cmax : ℝ} (ht : 0 < t) (h1 : cmin ≤ c)
     (h2 : c ≤ cmax) :
     t ^ c ≤ t ^ cmin + t ^ cmax := by
-  rcases le_or_lt 1 t with hone | hone
+  rcases le_or_gt 1 t with hone | hone
   · calc t ^ c ≤ t ^ cmax := Real.rpow_le_rpow_of_exponent_le hone h2
       _ ≤ t ^ cmin + t ^ cmax := le_add_of_nonneg_left (Real.rpow_nonneg ht.le _)
   · calc t ^ c ≤ t ^ cmin := Real.rpow_le_rpow_of_exponent_ge ht hone.le h1
@@ -197,9 +197,9 @@ theorem soninMellinIntegral_eq_mellin (f : SoninL2) (z : ℂ) :
   rw [soninMellinIntegral, mellin]
   apply setIntegral_congr_fun measurableSet_Ioi
   intro t _
-  rw [smul_eq_mul]
-  congr 1
-  ring_nf
+  show (t : ℂ) ^ (-z) * f t = (t : ℂ) ^ (1 - z - 1) • f t
+  have hexp : (1 : ℂ) - z - 1 = -z := by ring
+  rw [smul_eq_mul, hexp]
 
 private theorem aestronglyMeasurable_cpow_mul (f : SoninL2) (z : ℂ) :
     AEStronglyMeasurable (fun t : ℝ => (t : ℂ) ^ (-z) * f t)
@@ -289,19 +289,27 @@ theorem soninMellinIntegral_differentiableAt {a : ℝ} (ha : 0 < a) {f : SoninL2
       filter_upwards [hzero, hmem0] with t hsup ht
       intro z hzball
       have ht0 : (0 : ℝ) < t := mem_Ioi.mp ht
-      rcases le_or_lt t a with hta | hta
+      rcases le_or_gt t a with hta | hta
       · have htc : t ∈ centralInterval a := by
           simp only [centralInterval, mem_Icc]
           constructor
           · linarith
           · exact hta
         rw [hsup htc]
-        simp [hbound]
+        simp only [mul_zero, norm_zero]
+        apply mul_nonneg (norm_nonneg _)
+        rw [hG]
+        apply Set.indicator_nonneg
+        intro x hx
+        have hx0 : (0 : ℝ) < x := ha.trans (mem_Ioi.mp hx)
+        rw [powerDominant]
+        positivity
       · have hnorm : ‖(-(Real.log t : ℂ) * (t : ℂ) ^ (-z)) * f t‖ =
             (|Real.log t| * t ^ (-z.re)) * ‖f t‖ := by
           rw [norm_mul, norm_mul, norm_neg, Complex.norm_real, Real.norm_eq_abs,
             Complex.norm_cpow_eq_rpow_re_of_pos ht0, Complex.neg_re]
-        rw [hnorm, hbound]
+        rw [hnorm]
+        show (|Real.log t| * t ^ (-z.re)) * ‖f t‖ ≤ ‖f t‖ * G t
         have hGt : G t = powerDominant ε σmin σmax t := by
           rw [hG, Set.indicator_of_mem (mem_Ioi.mpr hta)]
         rw [hGt, mul_comm (‖f t‖)]
