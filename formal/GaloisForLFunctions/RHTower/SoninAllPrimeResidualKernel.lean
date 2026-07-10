@@ -73,7 +73,10 @@ private theorem block_entries_summable
     exact (tsum_sq_norm_inner_hilbertBasis (ContinuousLinearMap.hsBasis ℂ SoninL2)
       (T (ContinuousLinearMap.hsBasis ℂ SoninL2 j))).symm
 
-private theorem all_blocks_entries_summable (a : ℝ) (ha : 0 < a) :
+/-- The squared matrix entries of all weighted prime-power residuals are summable jointly over
+the prime power and both Sonin basis coordinates.  This is the convergence input for both the
+diagonal direct-sum assembly and the coupled column assembly. -/
+theorem summable_all_prime_residual_matrix_entries (a : ℝ) (ha : 0 < a) :
     Summable (fun pji : (Nat.Primes × ℕ) ×
         (SoninHilbertIndex × SoninHilbertIndex) =>
       ‖inner ℂ (ContinuousLinearMap.hsBasis ℂ SoninL2 pji.2.2)
@@ -130,7 +133,7 @@ theorem soninAllPrimeResidualKernel_isHS (a : ℝ) (ha : 0 < a) :
   have hcomp : Summable (fun pji : (Nat.Primes × ℕ) ×
       (SoninHilbertIndex × SoninHilbertIndex) =>
       energy (soninAllPrimeBlockDiagonalEquiv pji)) := by
-    refine (all_blocks_entries_summable a ha).congr (fun pji => ?_)
+    refine (summable_all_prime_residual_matrix_entries a ha).congr (fun pji => ?_)
     simp [energy, soninAllPrimeBlockDiagonalEquiv, soninAllPrimeResidualKernel]
   have hsub : Summable (energy ∘ Subtype.val :
       soninAllPrimeBlockDiagonalSupport → ℝ) :=
@@ -206,6 +209,34 @@ theorem soninAllPrimePolynomialPowerKernel_isHS
     exact HilbertSchmidt.isHS_hsComp (soninAllPrimeResidualKernel_isHS a ha)
       (HilbertSchmidt.isHS_hsPow (soninAllPrimeResidualEnergyKernel_isHS a ha) (n - 1))
 
+/-- The source Gram entry between the two factors `K_a T_a^m` and `K_a T_a^n`.
+The missing Xi weld is precisely the assertion that, at the canonical cutoff, this entry
+depends only on `m+n` and equals the corresponding centered reciprocal moment. -/
+def soninAllPrimePolynomialGramEntry (a : ℝ) (m n : ℕ) : ℂ :=
+  HilbertSchmidt.hsInner (soninAllPrimePolynomialPowerKernel a m)
+    (soninAllPrimePolynomialPowerKernel a n)
+
+theorem soninAllPrimePolynomialGramEntry_conj_symm (a : ℝ) (m n : ℕ) :
+    soninAllPrimePolynomialGramEntry a m n =
+      (starRingEnd ℂ) (soninAllPrimePolynomialGramEntry a n m) := by
+  exact HilbertSchmidt.hsInner_conj_symm _ _
+
+theorem soninAllPrimePolynomialGramEntry_self (a : ℝ) (n : ℕ) :
+    soninAllPrimePolynomialGramEntry a n n =
+      (HilbertSchmidt.hsNormSq (soninAllPrimePolynomialPowerKernel a n) : ℂ) := by
+  exact HilbertSchmidt.hsInner_self _
+
+private theorem hsInner_sum_right {ι κ : Type*} [DecidableEq κ]
+    (s : Finset κ) (K : κ → ι × ι → ℂ) (L : ι × ι → ℂ)
+    (hK : ∀ r ∈ s, HilbertSchmidt.IsHS (K r)) (hL : HilbertSchmidt.IsHS L) :
+    HilbertSchmidt.hsInner L (∑ r ∈ s, K r) =
+      ∑ r ∈ s, HilbertSchmidt.hsInner L (K r) := by
+  rw [HilbertSchmidt.hsInner_conj_symm,
+    HilbertSchmidt.hsInner_sum_left s K L hK hL, map_sum]
+  apply Finset.sum_congr rfl
+  intro r hr
+  rw [← HilbertSchmidt.hsInner_conj_symm]
+
 /-- The source-built factor `K_a p(T_a)`.  Its Hilbert--Schmidt energy is the factorized form of
 `Tr(T_a p(T_a)^2)` and is defined without an Xi zero divisor. -/
 def soninAllPrimePolynomialProbeKernel (a : ℝ) (p : Polynomial ℝ) :
@@ -221,9 +252,58 @@ theorem soninAllPrimePolynomialProbeKernel_isHS
   intro n hn
   exact (soninAllPrimePolynomialPowerKernel_isHS a ha n).smul ((p.coeff n : ℝ) : ℂ)
 
+/-- A monomial probe selects exactly one source power.  Thus the diagonal entries of the
+source trace-Hankel form are genuine Hilbert--Schmidt energies of `K_a T_a^n`, rather than
+formal moment variables. -/
+theorem soninAllPrimePolynomialProbeKernel_monomial (a : ℝ) (n : ℕ) :
+    soninAllPrimePolynomialProbeKernel a (Polynomial.X ^ n) =
+      soninAllPrimePolynomialPowerKernel a n := by
+  simp [soninAllPrimePolynomialProbeKernel]
+
 /-- The Sonin all-prime trace-Hankel quadratic functional in factorized form. -/
 def soninAllPrimeTraceHankel (a : ℝ) (p : Polynomial ℝ) : ℂ :=
   (HilbertSchmidt.hsNormSq (soninAllPrimePolynomialProbeKernel a p) : ℂ)
+
+/-- The source trace-Hankel value on `X^n` is the actual squared Hilbert--Schmidt norm of
+`K_a T_a^n`.  These are the diagonal source moments that must match the centered Xi moments. -/
+theorem soninAllPrimeTraceHankel_monomial (a : ℝ) (n : ℕ) :
+    soninAllPrimeTraceHankel a (Polynomial.X ^ n) =
+      (HilbertSchmidt.hsNormSq (soninAllPrimePolynomialPowerKernel a n) : ℂ) := by
+  rw [soninAllPrimeTraceHankel, soninAllPrimePolynomialProbeKernel_monomial]
+
+/-- Exact finite Gram expansion of the source trace-Hankel form.  This exposes every mixed
+entry that must be identified with an Xi reciprocal moment; no spectral target is built into
+the source operator. -/
+theorem soninAllPrimeTraceHankel_eq_gram_sum (a : ℝ) (ha : 0 < a)
+    (p : Polynomial ℝ) :
+    soninAllPrimeTraceHankel a p =
+      ∑ m ∈ p.support, ∑ n ∈ p.support,
+        ((p.coeff m : ℝ) : ℂ) * ((p.coeff n : ℝ) : ℂ) *
+          soninAllPrimePolynomialGramEntry a m n := by
+  let P : ℕ → SoninAllPrimeIndex × SoninAllPrimeIndex → ℂ :=
+    fun n => soninAllPrimePolynomialPowerKernel a n
+  let c : ℕ → ℂ := fun n => ((p.coeff n : ℝ) : ℂ)
+  have hP (n : ℕ) : HilbertSchmidt.IsHS (P n) :=
+    soninAllPrimePolynomialPowerKernel_isHS a ha n
+  have hcP (n : ℕ) : HilbertSchmidt.IsHS (c n • P n) := (hP n).smul (c n)
+  rw [soninAllPrimeTraceHankel, ← HilbertSchmidt.hsInner_self]
+  change HilbertSchmidt.hsInner (∑ n ∈ p.support, c n • P n)
+      (∑ n ∈ p.support, c n • P n) = _
+  rw [HilbertSchmidt.hsInner_sum_left p.support (fun n => c n • P n)
+    (∑ n ∈ p.support, c n • P n)
+    (fun n _ => hcP n)
+    (HilbertSchmidt.isHS_sum p.support (fun n => c n • P n) (fun n _ => hcP n))]
+  apply Finset.sum_congr rfl
+  intro m hm
+  rw [HilbertSchmidt.hsInner_smul_left]
+  rw [hsInner_sum_right p.support (fun n => c n • P n) (P m)
+    (fun n _ => hcP n) (hP m)]
+  simp only [HilbertSchmidt.hsInner_smul_right]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro n hn
+  simp [c, P, soninAllPrimePolynomialGramEntry]
+  ring
 
 /-- Every source-built Sonin trace-Hankel test is real. -/
 theorem soninAllPrimeTraceHankel_im_eq_zero (a : ℝ) (p : Polynomial ℝ) :

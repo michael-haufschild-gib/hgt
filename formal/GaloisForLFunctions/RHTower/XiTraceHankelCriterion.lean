@@ -63,6 +63,64 @@ theorem xi_central_traceHankel_summable (p : Polynomial ℝ) :
           simp only [moment]
           ring
 
+/-- On the monomial `X^n`, the Xi trace-Hankel form is exactly the centered reciprocal
+moment of order `2n`.  This identifies the diagonal entries of its Hankel moment matrix. -/
+theorem xiCentralTraceHankel_monomial (n : ℕ) :
+    xiCentralTraceHankel (Polynomial.X ^ n) =
+      xiCentralReciprocalMoment (2 * n) := by
+  rw [xiCentralTraceHankel, xiCentralReciprocalMoment]
+  apply tsum_congr
+  intro ρ
+  rw [xiCentralTraceHankelTerm]
+  simp [evalRealPolynomial]
+  ring
+
+/-- Exact centered-moment expansion of the Xi trace-Hankel form.  It is the finite polynomial
+square paired against the actual reciprocal-square zero-divisor moments. -/
+theorem xiCentralTraceHankel_eq_moment_sum (p : Polynomial ℝ) :
+    xiCentralTraceHankel p =
+      ∑ k ∈ Finset.range (((p.map (algebraMap ℝ ℂ)) ^ 2).natDegree + 1),
+        ((p.map (algebraMap ℝ ℂ)) ^ 2).coeff k * xiCentralReciprocalMoment k := by
+  let D := MeromorphicOn.divisor xi Set.univ
+  let lam : ↥D.support → ℂ := fun ρ => xiCentralReciprocalSquare (ρ : ℂ)
+  let q : Polynomial ℂ := (p.map (algebraMap ℝ ℂ)) ^ 2
+  let momentTerm : ℕ → ↥D.support → ℂ := fun k ρ =>
+    ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ ^ (k + 1)
+  have hmoment (k : ℕ) : Summable (momentTerm k) := by
+    simpa only [D, lam, momentTerm] using xi_central_reciprocal_moment_summable k
+  rw [xiCentralTraceHankel]
+  calc
+    (∑' ρ, xiCentralTraceHankelTerm p ρ) =
+        ∑' ρ, ∑ k ∈ Finset.range (q.natDegree + 1),
+          q.coeff k * momentTerm k ρ := by
+      apply tsum_congr
+      intro ρ
+      rw [xiCentralTraceHankelTerm]
+      change ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * evalRealPolynomial p (lam ρ) ^ 2 = _
+      calc
+        ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * evalRealPolynomial p (lam ρ) ^ 2 =
+            ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ * q.eval (lam ρ) := by
+              simp [q, evalRealPolynomial]
+        _ = ((D (ρ : ℂ) : ℝ) : ℂ) * lam ρ *
+            (∑ k ∈ Finset.range (q.natDegree + 1), q.coeff k * lam ρ ^ k) := by
+              rw [Polynomial.eval_eq_sum_range]
+        _ = ∑ k ∈ Finset.range (q.natDegree + 1),
+            q.coeff k * momentTerm k ρ := by
+              rw [Finset.mul_sum]
+              apply Finset.sum_congr rfl
+              intro k hk
+              simp only [momentTerm]
+              ring
+    _ = ∑ k ∈ Finset.range (q.natDegree + 1),
+        q.coeff k * ∑' ρ, momentTerm k ρ := by
+      rw [Summable.tsum_finsetSum (fun k _ => (hmoment k).mul_left (q.coeff k))]
+      apply Finset.sum_congr rfl
+      intro k hk
+      rw [tsum_mul_left]
+    _ = ∑ k ∈ Finset.range (((p.map (algebraMap ℝ ℂ)) ^ 2).natDegree + 1),
+        ((p.map (algebraMap ℝ ℂ)) ^ 2).coeff k * xiCentralReciprocalMoment k := by
+      simp only [q, xiCentralReciprocalMoment, D, lam, momentTerm]
+
 /-- Conjugation of the xi divisor conjugates each real-polynomial trace-Hankel summand. -/
 theorem xiCentralTraceHankelTerm_conj (p : Polynomial ℝ)
     (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) :

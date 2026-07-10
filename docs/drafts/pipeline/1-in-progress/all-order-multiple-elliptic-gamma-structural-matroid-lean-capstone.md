@@ -90,6 +90,20 @@ relation yields one common primitive in every simultaneous telescoping equation.
 existence theorem from differential dependence still requires the parameterized
 Picard--Vessiot/Ostrowski--Kolchin layer and constant descent.
 
+`formal/GaloisForLFunctions/DifferentialPolynomialOver.lean` supplies the total differential
+polynomial derivation over a nonconstant differential base: coefficients are differentiated while
+formal jets are shifted. Evaluation intertwines this derivation, so the relation ideal over the
+base field is a differential ideal. Differential independence is now proved equivalent to
+triviality of this full base-relative relation ideal.
+
+`formal/GaloisForLFunctions/ParameterizedPrimitiveAction.lean` constructs the semilinear affine
+action belonging to a compatible additive cocycle, including its inverse. The action commutes with
+the total derivation; compatible cocycles give commuting actions. For an actual primitive system in
+a difference-differential extension, evaluation intertwines the formal affine action with the
+extension automorphism. Hence differential dependence produces a nonzero proper differential
+relation ideal invariant under every affine action. No PPV or Galois conclusion is assumed in this
+theorem.
+
 `formal/GaloisForLFunctions/DifferentialPolynomial.lean` now constructs the constant-coefficient
 differential polynomial ring as a polynomial ring on formal jets, proves that jet evaluation
 commutes with derivation, and gives relation ideals their differential structure. It also defines
@@ -105,9 +119,10 @@ homogeneous; first-order extraction at the additive identity sends its right par
 back into the same ideal. In characteristic zero a degree-at-least-two relation has a nonzero
 partial derivative of smaller degree, a contradiction. Thus every nonzero additive differential
 Hopf ideal contains an explicit nonzero finite constant-coefficient linear combination of jets.
-The next open core is the several-automorphism PPV construction and Galois correspondence which
-identifies the relation ideal arising from a dependent compatible primitive system with such a
-nonzero additive Hopf ideal.
+The next open core is the several-automorphism PPV maximal invariant quotient, its translation
+torsor, and the fixed-field/Galois correspondence which converts the invariant relation ideal of a
+dependent compatible primitive system into a nonzero additive differential Hopf ideal over the
+joint constants.
 
 This is the first real dependency of the strengthened theorem. It is not evidence that the
 analytic capstone is already formalized.
@@ -122,6 +137,8 @@ analytic capstone is already formalized.
 - [x] meromorphic-normal-form small-period constancy theorem implemented and built
 - [x] rank-three nondiscreteness, small-period extraction, and meromorphic constancy implemented
 - [x] commuting difference-differential field and common-telescoper algebraic interface implemented
+- [x] total differential-polynomial derivation and base-relative relation ideal implemented
+- [x] commuting affine primitive actions and invariant nontrivial relation ideal implemented
 - [x] differential-polynomial relation ideals and characteristic-zero primitive classification
 - [x] characteristic-zero additive differential Hopf-ideal primitive-existence theorem
 - [ ] complete differential algebra foundation, including differential transcendence degree
@@ -160,3 +177,8 @@ analytic capstone is already formalized.
 - 2026-07-10 -- Exact builds of `DifferentialPolynomial`, `DifferentialHopfIdeal`, and
   `DifferentialHopfPrimitive` pass. Their capstone axiom reports contain only `propext`,
   `Classical.choice`, and `Quot.sound`; the repository formal lint also passes.
+- 2026-07-10 -- Formalized the total differential-base polynomial derivation and the complete
+  semilinear affine action of a compatible several-automorphism primitive system. Evaluation now
+  intertwines the action in an actual extension, and a dependent primitive tuple unconditionally
+  yields a nonzero proper differential relation ideal invariant under every affine action. Exact
+  builds pass and the new capstones use only `propext`, `Classical.choice`, and `Quot.sound`.

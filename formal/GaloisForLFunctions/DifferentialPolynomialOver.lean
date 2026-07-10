@@ -176,6 +176,14 @@ theorem differentialPolynomialOverDerivation_mem_relationIdeal
   rw [mem_differentialRelationIdealOver_iff] at hP
   rw [hP, map_zero]
 
+/-- Differential independence over a differential base field is exactly triviality of the full
+differential-polynomial relation ideal over that field. -/
+theorem differentialIndependent_iff_relationIdealOver_eq_bot
+    {ι K L : Type*} [CommRing K] [CommRing L] [Algebra K L] [Differential L]
+    (x : ι → L) :
+    DifferentialIndependent K x ↔ differentialRelationIdealOver (K := K) x = ⊥ := by
+  unfold DifferentialIndependent differentialRelationIdealOver differentialPolynomialEvalOver
+  exact algebraicIndependent_iff_ker_eq_bot
+
 end
 end GaloisForLFunctions
-
