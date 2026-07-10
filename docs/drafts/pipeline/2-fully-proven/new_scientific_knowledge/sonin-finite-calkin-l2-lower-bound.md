@@ -213,8 +213,13 @@ whose distance from every compact operator exceeds any prescribed bound. The wea
 `exists_finitePrime_archimedeanEulerCorner_norm_gt` follows by taking the compact operator to be
 zero.
 
-A specified increasing enumeration of all primes and the sharper `sqrt(log log X)` rate are not
-encoded.
+The sharper rate is encoded in `formal/GaloisForLFunctions/RHTower/PrimeHarmonicLogLower.lean`:
+the Mertens-type bound `log log (X+1) - 1 <= sum_(p<=X) 1/p` is proved unconditionally from the
+finite Euler product over `Nat.primesBelow (X+1)`, and the endpoints
+`sqrt_log_log_sub_one_le_norm_sum_primesBelow_eulerCorners_sub_compact` and
+`sqrt_log_log_sub_one_le_essentialNorm_sum_primesBelow_eulerCorners` give the exact
+square-root double-logarithmic growth of the canonical ordered all-prime exhaustion
+`sum_(p in primesBelow (X+1)) C_p` against every compact perturbation.
 
 ## Gates
 

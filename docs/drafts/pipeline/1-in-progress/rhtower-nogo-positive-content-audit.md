@@ -134,3 +134,18 @@ For each no-go family, record:
 
 - **Attack:** this is classical invariant theory of `SL_2`/`Sp_2`.
 - **Disposition:** useful design rule, not new scientific knowledge.
+
+## Audit pass 2 — narrative no-gos and positive escape modules
+
+The filename/declaration census was extended to modules whose headers explicitly state a no-go or whose sole role is the positive escape from one.
+
+| Family | Positive statement | Attack and disposition |
+|---|---|---|
+| `ZeroResonanceIndependence` | For every nonzero scalar `alpha`, the prime-log resonance exponents are `Q`-linearly independent; under Schanuel, the exponent/value family has transcendence degree at least the number of chosen primes. | Scaling preserves linear independence, so the line-blindness is exact but standard. The Schanuel consequence is conditional parent theory. `[SEARCH]` / `[BRIDGE]`; no line detector can be extracted from transcendence type alone. |
+| `RelativeTorsor` | Dressing local xi roots by the global finite Euler root leaves the deck class exactly unchanged; the relative torsor is deck-isomorphic to xi's torsor. | Multiplication by a common nonvanishing factor cancels in the transition ratio. `[BRIDGE]`; the positive object is the original torsor, not a new relative class. |
+| `WeldTowerFree` | Every finite completed Euler-Gamma factor has a coherent infinite Kummer tower on `Re s > 0`, whereas xi's tower costs the ladder divisibility condition. | Zero-free analytic units on a simply connected domain have roots. `[BRIDGE]`; the useful conclusion is that the obstruction is non-factorwise/emergent. |
+| `ApexIndependence` | The named ladder weld class has connecting value `idx` and, for `idx != 0`, lies outside the prime-flux image in real `H^2`. | The file itself correctly notes that this composes banked facts. The separation reduces to independence of `{1} union {log p}`. `[BRIDGE]`; a specific class-level building block, not new scientific knowledge by itself. |
+| `ArchimedeanBalancedPerron` scalar no-go | Exact scalar decompletion is unique and cancels rather than transports the Gamma factor; nevertheless the balanced third-order probe extracts each Dirichlet coefficient exactly. | Scalar uniqueness is division by a nonzero factor. The positive coefficient-extraction formula is substantial infrastructure but the no-go conversion adds no new mechanism. `[BRIDGE]`. |
+| `WholeLoopClosure` + `ArcWindingDictionary` | The correct replacement for endpoint signs already exists: full boundary-arc argument variation recovers the deck parity/zero count, and the finite Euler anchor contributes no monodromy. | This is the argument principle and logarithm transport. `[BRIDGE]`; it closes the endpoint no-go positively, but the scientific content of the new candidate must come from prime-tilt reachability, not the dictionary. |
+| `CutoffCochain` | A nonzero cross-boundary cochain exists outside the pinned commutator/affine family. | This is the correct positive escape object already banked. Its identification with a completed semilocal Sonin action remains separate. `[NOVELTY UNVERIFIED]` only for that future identification, not for the abstract escape. |
+| `GoldilocksTrichotomy` | Candidate carrier classes split into soft, Goldilocks, or categorical cells; finite surgery rigidity witnesses one boundary. | The trichotomy is definitional after the predicates are chosen. `[PROJECT ARTIFACT]` / `[BRIDGE]`, not scientific novelty. |

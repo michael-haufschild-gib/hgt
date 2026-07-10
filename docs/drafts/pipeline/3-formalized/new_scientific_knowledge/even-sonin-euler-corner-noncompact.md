@@ -146,13 +146,20 @@ Jacobian, Mellin--Plancherel normalization, `beta_infinity`, weighted critical-l
 phase multipliers, pointwise local factor, positive Euler multiplier `M_(w_p)`, source-image
 projection, exact pullback, and source noncompactness.
 
-It does not separately construct the de Branges entire-function object `B_lambda` or prove that
-the source-image carrier equals an independently defined entire-function realization. It also does
-not encode the full `{infinity,p}` space and the `theta_p`/`iota'_p` cancellation square. Those
-identifications are not used as assumptions in the formal source theorem: its carrier is the actual
-unitary image of the exact even Sonin carrier. General Schatten ideals are not represented in the
-current Lean layer, so the consequence that a noncompact operator lies in no finite Schatten class
-remains a paper-level corollary. The exact numerical essential norms are formal:
+The `{infinity,p}` semilocal line and the `theta_p`/`iota'_p` cancellation square are encoded in
+`HardyTitchmarshSemilocalSquare.lean`: the semilocal weighted measure, the finite-Euler-factor
+unitary, the set-identity forward map with Gram operator exactly `M_(w_p)`, and the commuting
+square with the boundedly invertible non-unitary `theta_p`. The de Branges entire-function
+object is realized up to the critical-line weld: `SoninDeBrangesCarrier.lean` proves that every
+carrier element has an absolutely convergent completed transform holomorphic on `Re z > 1/2`
+and a dual transform of its Fourier image holomorphic on `Re z < 1/2`
+(`soninCarrier_deBranges_bricks`); the gluing of the two half-plane bricks into one entire
+function — the full `B_lambda` identification — remains open. Schatten ideals are represented:
+`SchattenApproximation.lean` defines the classes by summability of approximation numbers,
+proves them compact, and excludes every corner from every class, so the corollary that a
+noncompact operator lies in no finite Schatten class is no longer paper-level.
+
+The exact numerical essential norms are formal:
 `SoninCalkinNormBound.lean` carries the in-tree `essentialNorm` and its quotient-free upper-bound
 machinery, and `SoninEulerEssentialNorm.lean` states the equalities `||L||_ess=1` and
 `||C_p||_ess=p^(-1/2)` through the literal archimedean source operator. The operator identity is

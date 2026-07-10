@@ -98,8 +98,20 @@ Lean formalizes (3) for every injective finite prime family and combines it with
 `Nat.Primes.not_summable_one_div`. The endpoint
 `exists_finitePrime_archimedeanEulerCorner_sub_compact_norm_gt` proves that for every `M>=0` there
 is a finite prime family whose canonical source corner sum remains at norm greater than `M` after
-subtracting any compact operator. The ordinary operator-norm endpoint follows at `K=0`. A specific
-ordered exhaustion by all primes and the sharper `sqrt(log log X)` rate remain paper-level.
+subtracting any compact operator. The ordinary operator-norm endpoint follows at `K=0`.
+
+The sharper rate is now also formal. `PrimeHarmonicLogLower.lean` proves the Mertens-type bound
+`log log (X+1) - 1 <= sum_(p<=X) 1/p` unconditionally — unique factorization dominates the
+harmonic sum by the finite Euler product over `Nat.primesBelow (X+1)`, logarithms are compared
+term by term via `log t <= t-1`, and the telescoping second-order tail is at most one — and
+combines it with (3) through the canonical enumeration `primesBelowEnum`:
+
+- `log_log_sub_one_le_sum_primesBelow_inv`;
+- `sqrt_log_log_sub_one_le_norm_sum_primesBelow_eulerCorners_sub_compact`: for every cutoff and
+  every compact `K`,
+  `sqrt(log log (X+1) - 1) <= ||sum_(p in primesBelow (X+1)) C_p - K||`;
+- `sqrt_log_log_sub_one_le_essentialNorm_sum_primesBelow_eulerCorners`: the essential norm of
+  the ordered all-prime exhaustion grows at least like `sqrt(log log X)`.
 
 For general coefficients, the endpoint
 `summable_primeEulerCoefficientEnergy_of_uniform_sub_compact_bound` converts a uniform finite-section

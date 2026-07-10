@@ -325,6 +325,40 @@ enter. The endpoints are:
 
 All endpoints are axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 
+Four further scope items are now unconditional Lean theorems:
+
+- **All scales.** `SoninEssentialNormExtensions.lean` extends the corner to every positive
+  scale via the symmetry `U_r+U_r^* = U_(1/r)+U_(1/r)^*`:
+  `essentialNorm_evenCentralSoninDilationCornerAll` gives `||L_r||_ess = 1` for every real
+  `r>0`, `r != 1`, and the corner vanishes at `r = 1` — the essential-norm discontinuity of
+  the dilation family is formal.
+- **Semicommutator value.** The literal diagonal compression defect
+  `Pi G_p^2 Pi - (Pi G_p Pi)^2` is defined as `archimedeanPrimeEulerSemicommutator` and proved
+  equal to the equal-scale quadratic corner; `essentialNorm_archimedeanPrimeEulerSemicommutator`
+  gives the exact value `p^(-1)` of equation (7).
+- **Schatten exclusion.** `SchattenApproximation.lean` defines Schatten classes by
+  `p`-summability of approximation numbers (distance to rank-`<=n` operators), proves every
+  class lies in the compact ideal, and excludes the dilation, Euler, source, quadratic, and
+  semicommutator operators from every finite Schatten class
+  (`not_memSchattenClass_archimedeanPrimeEulerCorner` and companions): the trace-ideal
+  obstruction is formal.
+- **The `theta_p`/`iota'_p` square.** `HardyTitchmarshSemilocalSquare.lean` constructs the
+  `{infinity,p}` semilocal weighted line, the finite-Euler-factor unitary, and the forward map
+  `iota'_p` (`semilocalForwardMap`, the measurable set-identity by `semilocalForwardMap_ae`),
+  and proves the Gram identity `(iota'_p)^* iota'_p = M_(w_p)`
+  (`adjoint_semilocalForwardMap_comp_self`) together with the commuting square
+  `upsilon_(infinity,p) theta_p = iota'_p upsilon_infinity`
+  (`semilocalDualHardyTitchmarshUnitary_comp_localFactor`), with `theta_p` boundedly
+  invertible and not unitary.
+
+For the entire-function carrier, `SoninDeBrangesCarrier.lean` proves the two polarized
+half-plane bricks unconditionally: the completed transform
+`2 Gamma_R(z) int f(t) t^(-z) dt` of every Sonin-carrier element is absolutely convergent and
+holomorphic on `Re z > 1/2`, and the dual transform of its Fourier image is holomorphic on
+`Re z < 1/2` (`soninCarrier_deBranges_bricks`, `evenSoninCarrier_deBranges_bricks`). The
+remaining de Branges weld — that the two halves glue across the critical line to one entire
+function and realize `B_lambda` — is the still-open identification.
+
 ## Gates
 
 - [x] 0 -> 1: actual source operator, actual Sonin projection, and degenerate cases isolated.
