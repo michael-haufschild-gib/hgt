@@ -1,9 +1,9 @@
 # Countability and Complexity Escape of DA Translation Spectra
 
 - **ID:** ht-da-translation-spectrum-countability
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper) / UNIVERSAL OBSTRUCTION
-- **Scientific status:** `[NOVELTY UNVERIFIED]`
+- **Stage:** 2-fully-proven / not new scientific knowledge
+- **Type:** THEOREM (paper) / BRIDGE
+- **Scientific status:** `[BRIDGE]` — correct, but routine from Mahler's 1971 normalization theorem plus one-variable meromorphic identity
 - **Statement:** If a meromorphic function `F` on `C` is hypertranscendental over `C(z)`, then the subgroup of shifts `h` for which `F(z+h)-F(z)` is differentially algebraic is countable. More sharply, DA defects at accumulating shifts must have unbounded differential order or unbounded total jet degree.
 
 ## Goal
@@ -20,11 +20,11 @@ The theorem would show that an HT function may carry dense DA translation constr
 
 - [x] 0 -> 1 in-progress: exact theorem, finite-complexity stratification, proof mechanism, and sharp boundary example identified.
 - [x] Autonomous reduction: coefficient degree is unnecessary because DA over `C(z)` implies DA over `C` by differential-algebraic transitivity and `z' - 1 = 0`.
-- [ ] Paper-proof gate: polish the analytic linear-dependence lemma and the meromorphic-kernel extraction.
-- [ ] Significance gate: test whether countability changes the known structural picture of HT functions rather than merely rephrasing genericity.
-- [ ] Parent-theory gate: attack with coherent-family theory, analytic-set/Noetherian arguments, differential algebraic families, and classical difference-property theory.
-- [ ] Literature and rediscovery gates: search exact cardinality, bounded-complexity, and analytic-family formulations in all parent fields.
-- [ ] Formalization: only after scientific novelty survives.
+- [x] Paper-proof gate: determinant proof below; countability also has the shorter Mahler proof recorded below.
+- [x] Significance gate: the countable-or-total law is structurally useful.
+- [x] Parent-theory gate: **FAILS scientific novelty.** Mahler's countable normalization makes countability a routine analytic-family corollary; bounded-complexity discreteness is a routine determinantal rank-locus argument.
+- [x] Literature and rediscovery gates: coherent-family theory, Mahler normalization, difference-property theory, and fixed-shift DA literature checked.
+- [ ] Formalization: not prioritized because scientific novelty failed.
 
 ## Complexity strata
 
@@ -90,7 +90,7 @@ Take the smallest value of `v_i + |alpha|` occurring in the meromorphic relation
 
 The relation forces `Q=0`. Distinct multi-indices `alpha` give distinct formal monomials, so the extracted polynomial is nonzero. A leading term involving only `alpha=0` would be a nonzero constant vanishing identically and is therefore impossible. Hence a positive-jet monomial occurs, and `Q(F',...,F^(r+1))=0` is a genuine autonomous ADE for `F`.
 
-## Countability theorem `[PROVED HERE]` pending parent/literature audit
+## Countability theorem `[BRIDGE]`
 
 If `F` is HT, each `E_(r,d)(F)` is closed-discrete and therefore countable. Since the pairs `(r,d)` form a countable set,
 
@@ -124,20 +124,40 @@ is DA. Thus `MultStab_DA(G) subset Stab_DA(L)`, which is countable.
 
 The proved Carroll--Ostrowski bridge in
 
-`../2-fully-proven/not-new/ht-exact-da-translation-stabilizer.md`
+`../2-fully-proven/not_new_scientific_knowledge/ht-exact-da-translation-stabilizer.md`
 
 realizes `Stab_DA(F)=Q` for an entire HT function. Therefore countability, if correct, is sharp even among dense nonclosed subgroups. The new content cannot be the existence of dense examples; it must be the universal exclusion of uncountable spectra and the bounded-complexity escape mechanism.
 
-## Parent attacks to run
+## Mahler parent reduction and scientific-novelty verdict
 
-1. **Coherent families.** Determine whether Boshernitzan--Rubel coherent-family theory already states that a holomorphic parameter family whose members satisfy possibly different autonomous ADEs of uniformly bounded order and degree forces the parameter derivative to be DA.
-2. **Analytic determinantal loci.** Search for an existing theorem that bounded differential-algebraic complexity pulls back to a discrete-or-total analytic subset under a holomorphic curve.
-3. **Differential algebraic families.** Compare with Ritt, Kolchin, Seidenberg, and specialization theorems for differential polynomial families.
-4. **Difference property.** Search whether the class of DA entire functions is known to have a cardinal or local difference property.
-5. **Meromorphic specialization literature.** Search whether the countable-or-total DA-parameter locus for a jointly meromorphic family is already known in differential algebraic geometry or coherent-family theory.
+Mahler proved in 1971 that every formal power series over an arbitrary characteristic-zero coefficient field which satisfies an ADE with parameter-dependent coefficients also satisfies an ADE with rational-integer coefficients. Thus all DA analytic germs are covered by the countable family of integer-coefficient ADEs.
+
+Fix a regular base point for `F`. Only countably many shifts make one of the finitely many translated terms singular there, so they can be discarded for the countability argument. For every remaining DA defect, Mahler assigns one of countably many integer-coefficient ADEs. For a fixed ADE `P`, the set of shifts satisfying
+
+`P(z, Delta_h F, (Delta_h F)', ..., (Delta_h F)^(r)) = 0`
+
+is discrete unless `F` is DA. Indeed, an accumulating sequence makes the left side vanish identically in the meromorphic parameter `h`; its first nonzero coefficient at `h=0` is a nonzero ADE for `F'`, hence for `F`. A countable union of these discrete parameter sets is countable.
+
+The same argument applies to any fixed nonzero finite translation stencil
+
+`A_h F = sum_j c_j F(z + lambda_j h)`.
+
+The first nonzero stencil moment `sum_j c_j lambda_j^k` replaces `F'` by `F^(k)` in the lowest-order extraction. Consequently the DA-parameter set of every fixed finite stencil is all of `C` when `F` is DA and countable when `F` is HT.
+
+**Audit verdict:** this theorem is correct and useful, but it is not new scientific knowledge under the routine-parent test. Mahler supplies the countable DA cover, and the remaining identity-theorem argument is standard. The bounded-complexity refinement is likewise a standard finite-rank determinantal locus. Retain the result as a bridge and as a constraint on stronger classification questions.
+
+Primary parent: K. Mahler, *A remark on algebraic differential equations*, Rend. Accad. Naz. Lincei 50 (1971), 402--412.
+
+## Parent attacks completed
+
+1. **Coherent families.** Boshernitzan--Rubel concerns one common ADE; it is adjacent rather than the shortest parent.
+2. **Mahler normalization.** This is the decisive parent: arbitrary DA germs lie in a countable union of fixed integer-coefficient ADE solution families.
+3. **Analytic determinantal loci.** These routinely imply the fixed-order/fixed-degree discreteness refinement.
+4. **Difference property.** Carroll and Montel-type theory provide the sharp dense countable boundary examples and the finite-dimensional analogues.
 
 ## Log
 
 - 2026-07-10 - Opened after the exact tail-gcd realization theorem was downgraded to a Carroll--Ostrowski bridge. The surviving universal residue is countability plus nonlinear complexity escape.
 - 2026-07-10 - Strengthened from entire to meromorphic functions. The evaluation-minor and lowest-shift-order proof survives moving poles by working over meromorphic function fields.
 - 2026-07-10 - Removed coefficient degree from the complexity measure using autonomous reduction. Also corrected the rigidity statement from an exclusive dichotomy to the precise implication `accumulation => F is DA`.
+- 2026-07-10 - Parent-killed by Mahler's 1971 integer-coefficient normalization theorem. Downgraded to `[BRIDGE]`; the finite-stencil extension is recorded only as infrastructure for the next classification problem.

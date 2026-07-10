@@ -3,7 +3,7 @@
 - **ID:** even-sonin-euler-corner-noncompact
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Paper source:** `../../2-fully-proven/new/sonin-euler-metric-corner-noncompact.md`
+- **Paper source:** `../../2-fully-proven/new_scientific_knowledge/sonin-euler-metric-corner-noncompact.md`
 - **Lean endpoint:** `formal/GaloisForLFunctions/RHTower/HardyTitchmarshEulerConcrete.lean`
 
 ## Statement
@@ -24,6 +24,22 @@ is not compact. The positive Euler corner is exactly its nonzero scalar multiple
 and is therefore noncompact. This holds for every real scale `p > 1`; the Lean theorem also
 exports the specialization to every prime natural number.
 
+The paper source now strengthens this formalized theorem to
+
+`||(1-Q_a)(U_p+U_p⁻¹)Q_a||_ess=1`
+
+and
+
+`||(1-Q_a)E_pQ_a||_ess=p^(-1/2)`.
+
+Those equalities use an explicit Calkin partial-isometry computation. They are not claimed as part
+of the current Lean endpoint. The companion module `SoninEulerQuadraticCorner.lean` does formalize
+the sharp lower half: for every compact `K`,
+
+`1 <= ||(1-Q_a)(U_p+U_p⁻¹)Q_a-K||`,
+
+and the corresponding positive Euler coefficient lower bound.
+
 ## Formal surface
 
 The endpoint module proves:
@@ -42,6 +58,11 @@ The endpoint module proves:
 - `archimedeanPrimeEulerCorner_pullback`
 - `archimedeanPrimeEulerCorner_not_isCompactOperator`
 - `archimedeanPrimeEulerCorner_natPrime_not_isCompactOperator`
+
+The companion sharp-distance module additionally proves:
+
+- `one_le_norm_evenCentralSoninDilationCorner_sub_compact`
+- `norm_eulerCoefficient_le_norm_evenCentralPositiveEulerCorner_sub_compact`
 
 The proof is internal to the even carrier. It constructs an orthonormal sequence of symmetric
 shell indicators, projects it into the two-constraint Sonin carrier, proves that the correction
@@ -96,7 +117,10 @@ not encode the full `{infinity,p}` space and the `theta_p`/`iota'_p` cancellatio
 identifications are not used as assumptions in the formal source theorem: its carrier is the actual
 unitary image of the exact even Sonin carrier. General Schatten ideals are not represented in the
 current Lean layer, so the consequence that a noncompact operator lies in no finite Schatten class
-remains a paper-level corollary.
+remains a paper-level corollary. The toolchain also has no ready Calkin quotient or essential-norm
+API, so the exact norm-one partial-isometry identity remains paper-level. The separate module
+`SoninEulerQuadraticCorner.lean` formalizes the sharp lower distance from compact operators for both
+the one-scale corner and every ordered quadratic product.
 
 ## Dual gate
 

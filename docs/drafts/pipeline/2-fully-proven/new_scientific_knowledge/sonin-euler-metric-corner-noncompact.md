@@ -1,4 +1,4 @@
-# Actual Sonin Euler-Metric Corner Is Noncompact
+# Exact Essential Norm of the Actual Sonin Euler-Metric Corner
 
 - **ID:** sonin-euler-metric-corner-noncompact
 - **Stage:** 2-fully-proven
@@ -8,10 +8,11 @@
   arXiv:2310.18423v2, Definition 4.3, equations (51)--(53), Propositions 4.6--4.8;
   `sonin-place-transition-cutoff-dichotomy.md`;
   `../../1-in-progress/sonin-cutoff-transversality-realization.md`
-- **Statement:** For every `lambda > 0` and every prime `p`, the corner of the positive local Euler
-  metric across the **actual** archimedean Sonin projection is noncompact. Consequently it is in no
-  finite Schatten class and cannot directly define the trace-ideal/determinant seam sought by the
-  current `M+` extension.
+- **Statement:** For every `lambda > 0` and every real scale `p>1`, the dilation corner across the
+  **actual** even archimedean Sonin projection has essential norm exactly `1`. The positive local
+  Euler corner therefore has essential norm exactly `p^(-1/2)`. Consequently it is in no finite
+  Schatten class and cannot directly define the trace-ideal/determinant seam sought by the current
+  `M+` extension.
 
 ## Theorem
 
@@ -32,7 +33,9 @@ Then
 
 `L_{p,lambda} := (1-Q_lambda)(U_p+U_p^*)Q_lambda`
 
-is not compact.
+satisfies
+
+`||L_{p,lambda}||_ess = 1`.                              (0)
 
 On the archimedean dual Hardy--Titchmarsh line, the positive Euler weight
 
@@ -63,9 +66,8 @@ Then
    = (1-Q_lambda)((1+p^(-1))1-p^(-1/2)(U_p+U_p^*))Q_lambda
    = -p^(-1/2)L_{p,lambda}`.
 
-Thus `(1-Pi^B_{lambda,infinity}) M_{w_p} Pi^B_{lambda,infinity}`
-
-is unitarily equivalent to `-p^(-1/2)L_{p,lambda}` and is noncompact.
+Thus `(1-Pi^B_{lambda,infinity}) M_{w_p} Pi^B_{lambda,infinity}` is unitarily
+equivalent to `-p^(-1/2)L_{p,lambda}` and has essential norm exactly `p^(-1/2)`.
 
 ## Proof
 
@@ -162,7 +164,49 @@ The Sonin space lies in `ker(A_lambda)`, so `A_lambda Q_lambda=0` and
 A compact operator sends bounded weakly null sequences to norm-null sequences. Therefore
 `L_{p,lambda}` is noncompact.
 
-### 4. Consequence for the metric semicommutator
+### 4. The Calkin image is a norm-one partial isometry
+
+Let `pi` be the Calkin quotient and write
+
+`alpha_b=pi(A_b)`, `rho_b=pi(R_b)`, `q=pi(Q_lambda)`, `u=pi(U_p)`.
+
+Every finite time--band block `A_bR_c` is compact. Hence `alpha_b rho_c=0` for all finite
+`b,c>0`. The strict prolate bound in Step 1 implies that the projection onto
+`range(A_lambda)+range(R_lambda)` differs compactly from `A_lambda+R_lambda`. Therefore
+
+`q=1-alpha_lambda-rho_lambda`.                           (3)
+
+There are two exact support vanishings:
+
+`A_lambda U_p^* Q_lambda=0`, `R_lambda U_p Q_lambda=0`.   (4)
+
+The first uses the enlarged physical gap under `U_p^*=U_(1/p)`; the second is its Fourier-dual
+counterpart. Equations (3)--(4) give
+
+`pi(L_{p,lambda})=alpha_lambda u q+rho_lambda u^*q`.      (5)
+
+The dilation conjugation identities are
+
+`u^*alpha_lambda u=alpha_(p lambda)`,
+`u rho_lambda u^*=rho_(p lambda)`.
+
+All mixed time--frequency products vanish in the Calkin algebra. Consequently
+
+`pi(L_{p,lambda})^*pi(L_{p,lambda})`
+
+`= (alpha_(p lambda)-alpha_lambda)
+   +(rho_(p lambda)-rho_lambda)`.                         (6)
+
+The two summands are orthogonal nonzero projections: they are the physical and Fourier shell
+projections for `lambda<|x|<=p lambda`. Their sum is therefore a nonzero projection. Equation (6)
+shows that `pi(L_{p,lambda})` is a partial isometry in the Calkin algebra and
+
+`||L_{p,lambda}||_ess=||pi(L_{p,lambda})||=1`.
+
+The positive Euler corner is the scalar multiple `-p^(-1/2)L_{p,lambda}`, so its essential norm is
+exactly `p^(-1/2)`.
+
+### 5. Consequence for the metric semicommutator
 
 The diagonal compression defect of the Euler metric, with
 `Pi = Pi^B_{lambda,infinity}`, is
@@ -171,14 +215,24 @@ The diagonal compression defect of the Euler metric, with
 
 where `H_p=(1-Pi)M_{w_p}Pi`. If `H_p^*H_p` were compact, then
 `|H_p|=(H_p^*H_p)^(1/2)` and hence `H_p` would be compact. Thus the diagonal defect is also
-noncompact. No trace, Hilbert--Schmidt pairing, Fredholm determinant, or finite Fitting boundary is
-available for this unsmoothed source operator.
+noncompact. In fact, the C-star identity gives the exact value
+
+`||Pi M_(w_p^2)Pi-(Pi M_(w_p)Pi)^2||_ess`
+
+`=||H_p^*H_p||_ess=||H_p||_ess^2=p^(-1)`.                (7)
+
+No trace, Hilbert--Schmidt pairing, Fredholm determinant, or finite Fitting boundary is available
+for this unsmoothed source operator.
 
 ## Attack and scope
 
 - `[PROVED]` The theorem fails at `lambda=0`: the Sonin constraint is the full space and the corner is
   zero. The positive-cutoff hypothesis is essential.
 - `[PROVED]` The shell degenerates at scale factor `1`; the theorem uses `p>1`.
+- `[PROVED]` Since `U_p+U_p^*=U_(1/p)+U_(1/p)^*`, the dilation statement extends to every
+  `p>0`, `p!=1`. Thus `L_{1,lambda}=0` while `||L_{p,lambda}||_ess=1` for every `p!=1`: the
+  strongly continuous dilation group has an essential-norm discontinuity after crossing the fixed
+  Sonin constraint.
 - `[PROVED]` The sequence is constructed in the even subspace, so it applies to the carrier used by
   the semilocal cyclic pair.
 - `[PROVED]` This is not the earlier raw-support calculation. The vectors `f_n` lie in the full
@@ -194,9 +248,11 @@ available for this unsmoothed source operator.
 - `[PROVED]` The result closes the positive Euler **metric** compression as a trace-ideal seam. It does
   not decide the formal prolate naturality defect `W_{lambda,S}eta_S-eta_SW_{lambda,infinity}` or a
   separately justified relative-resolvent smoothing.
+- `[PROVED]` The Calkin image is a partial isometry with explicit initial projection equal to the sum
+  of the physical and Fourier `p`-shell projections.
 - `[OPEN CORE]` The theorem does not yet cover the orthogonal projection for every already-semilocal
-  `S`-dependent norm, the inverse weight `w_p^(-1)`, or the two-prime product
-  `P M_{w_p}(1-P)M_{w_q}P`. A product of two noncompact corners can be compact.
+  `S`-dependent norm or the inverse weight `w_p^(-1)`. The two-prime product is settled separately by
+  `sonin-two-scale-quadratic-corner-noncompact.md`.
 - `[SEARCH]` The compactness of the time-band prolate block and the Toeplitz--Hankel algebra are
   classical ingredients. The source-specific assembly above is the result: it determines the
   previously unresolved actual-Sonin corner rather than another ambient support corner.
@@ -204,10 +260,11 @@ available for this unsmoothed source operator.
 ## Novelty and significance gates
 
 - **NOVEL:** The cited 2023 paper states the prime-dependent norms on the common carrier but does not
-  determine the compactness of their corner across the actual Sonin projection. The related 2020
+  determine the Calkin class of their corner across the actual Sonin projection. The related 2020
   quasi-inner paper studies local-factor **phase ratios** across a Hardy projection; it does not prove
-  this positive Euler-metric noncompactness theorem. A targeted corpus and primary-source search found
-  no prior statement of this result.
+  this positive Euler-metric essential-norm identity. A targeted corpus and primary-source search found
+  no prior statement of the exact norm or partial-isometry formula. The defensible publication claim is
+  "we are not aware of this stronger essential-norm statement," not an absolute priority claim.
 - **SIGNIFICANT:** The prior dichotomy deliberately left open whether the full Sonin intersection could
   regularize the raw shell crossing. It does not. The actual constraint still admits asymptotically
   shell-localized high-frequency modes, so the canonical bounded metric candidate lies outside every
@@ -216,8 +273,8 @@ available for this unsmoothed source operator.
 
 ## Lean realization
 
-The analytic theorem and the concrete archimedean source transport are formalized without an
-intertwining hypothesis. The source stack is:
+The noncompactness theorem and the concrete archimedean source transport are formalized without an
+intertwining hypothesis. The exact essential-norm strengthening is paper-level. The source stack is:
 
 - `L2MellinUnitary.lean`: multiplicative-Haar Mellin--Plancherel with exact `2π` normalization;
 - `EvenL2LogUnitary.lean`: the even-`L²(dx)` logarithmic Jacobian unitary;
@@ -235,12 +292,25 @@ orthogonal projection onto the actual unitary image of the exact even Sonin carr
 yet define a separate de Branges entire-function object `B_lambda` and identify that independent
 object with the image carrier, nor does it encode the full semilocal `theta_p`/`iota'_p` square.
 
+The companion module `SoninEulerQuadraticCorner.lean` now proves the sharp one-scale inequalities
+
+`1 <= ||L_{p,lambda}-K||`
+
+and
+
+`p^(-1/2) <= ||-p^(-1/2)L_{p,lambda}-K||`
+
+for every compact `K` (with the Euler coefficient represented by its exact complex norm). Thus the
+lower half of the new essential-norm identity is formalized without introducing a quotient API.
+
 ## Gates
 
 - [x] 0 -> 1: actual source operator, actual Sonin projection, and degenerate cases isolated.
 - [x] 1 -> 2: noncompactness proved by the two-projection correction formula and shell Weyl sequence.
 - [x] 2 -> 3: the complete analytic theorem and concrete archimedean dual Hardy--Titchmarsh
   unitary transport are formalized through `HardyTitchmarshEulerConcrete.lean`, with stage-3 card
-  `../../3-formalized/new/even-sonin-euler-corner-noncompact.md`. The source-image projection,
+  `../../3-formalized/new_scientific_knowledge/even-sonin-euler-corner-noncompact.md`. The source-image projection,
   pointwise local Euler multiplier, exact pullback, and noncompactness are all encoded.
+- [ ] Strengthened 2 -> 3: encode the norm-one Calkin partial-isometry identity and the resulting
+  exact positive Euler essential norm.
 - [ ] 3 -> 4: requires standalone analytic exposition and an independent source/literature audit.

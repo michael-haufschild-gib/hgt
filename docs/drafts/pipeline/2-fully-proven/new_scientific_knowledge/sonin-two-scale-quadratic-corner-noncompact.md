@@ -1,31 +1,36 @@
-# Every two-scale Sonin Euler quadratic corner is noncompact
+# Exact Essential Norm of Every Two-Scale Sonin Euler Quadratic Corner
 
 - **ID:** sonin-two-scale-quadratic-corner-noncompact
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
 - **Date:** 2026-07-10
-- **Status banner:** `[NOVELTY UNVERIFIED]` The proof is complete. The theorem closes the explicit
-  two-prime product gap in `sonin-euler-metric-corner-noncompact.md`; scientific novelty still
-  requires a broad operator-theory and Sonin/prolate literature audit.
+- **Status banner:** `[NOVELTY UNVERIFIED]` The proof is complete and the sharp lower bound is
+  formalized in Lean. The theorem closes the explicit two-prime product gap in
+  `sonin-euler-metric-corner-noncompact.md`; scientific priority still requires a broader
+  operator-theory and Sonin/prolate literature audit.
 - **Parent:** `sonin-euler-metric-corner-noncompact.md`
 - **Statement:** For every cutoff `a>0` and every two scales `p,q>1`, if `Q_a` is the orthogonal
   projection onto the even Sonin space and
 
   `L_r=(1-Q_a)(U_r+U_r^{-1})Q_a`,
 
-  then the quadratic cross-corner `L_p^* L_q` is noncompact. Equivalently, on the concrete
+  then the quadratic cross-corner has exact essential norm
+
+  `||L_p^*L_q||_ess=1`.
+
+  Equivalently, on the concrete
   archimedean Hardy--Titchmarsh line,
 
   `Pi_a M_(w_p) (1-Pi_a) M_(w_q) Pi_a`
 
-  is noncompact for every `p,q>1`.
+  has essential norm `(pq)^(-1/2)` for every `p,q>1`.
 
 ## Goal
 
-The one-scale theorem proves that each lower Euler corner is noncompact, but that alone says nothing
-about a product of two corners: noncompact operators can have compact, even zero, products. The
-unresolved source question is whether two distinct prime scales can cancel after crossing the same
-Sonin constraint.
+The one-scale theorem proves the stronger identity `||L_r||_ess=1`, but the norms of two factors do
+not determine the norm or compactness of their product: noncompact operators can have compact, even
+zero, products. The unresolved source question is whether two distinct prime scales can cancel after
+crossing the same Sonin constraint.
 
 They cannot. The common constraint admits paired exterior shell modes whose two crossed images
 converge to the same normalized interior mode. This produces a nonvanishing quadratic matrix
@@ -55,23 +60,27 @@ Then `U_r` is unitary, `U_r^{-1}=U_(1/r)`, and `U_rU_s=U_(rs)`. For `r>1`, put
 
 `L_r=(1-Q_a)D_rQ_a`.
 
-The parent theorem proves that every `L_r` is noncompact. The result below determines every entry of
-their Calkin Gram matrix.
+The parent theorem proves that every `L_r` has essential norm one. The result below determines the
+norm of every entry of their Calkin Gram matrix.
 
 ## Theorem `[PROVED HERE]`
 
 For all `a>0` and `p,q>1`,
 
-`L_p^*L_q = Q_a D_p(1-Q_a)D_qQ_a`
+`||L_p^*L_q||_ess = 1`, where
 
-is not compact.
+`L_p^*L_q = Q_a D_p(1-Q_a)D_qQ_a`.
 
 More precisely, there are bounded weakly-null sequences `f_n,k_n in S_a` such that
 
 `<L_p^*L_q f_n,k_n> -> 1`.                                (1)
 
-Consequently the image of `L_p^*L_q` in the Calkin algebra is nonzero for every ordered pair of
-scales, including `p != q`.
+Consequently, for every compact `K`,
+
+`1 <= ||L_p^*L_q-K||`.                                  (1')
+
+The image of `L_p^*L_q` in the Calkin algebra therefore has norm at least one for every ordered
+pair of scales, including `p != q`.
 
 ## Brick 1 `[PROVED]`: a common interior shell has two exterior preimages
 
@@ -175,6 +184,33 @@ the theorem.
 The argument is symmetric in `p,q`; it does not use an adjoint reduction from one order to the
 other. The same interior sequence supplies both exterior preimages simultaneously.
 
+The same calculation is quantitatively sharp. Let `K` be any compact operator. Then `Kf_n -> 0`
+in norm, while (13) gives
+
+`|<(L_p^*L_q-K)f_n,k_n>| -> 1`.
+
+Since `||f_n||,||k_n||<=1`, the operator norm inequality yields
+
+`1 <= ||L_p^*L_q-K||`.                                  (14)
+
+Taking the infimum over compact `K` proves
+
+`||L_p^*L_q||_ess >= 1`.                                (15)
+
+## Brick 5 `[PROVED HERE]`: the Calkin upper bound is also one
+
+The parent theorem now determines the exact one-scale Calkin norm:
+
+`||L_r||_ess=1` for every `r>1`.                         (16)
+
+Let `pi` be the Calkin quotient. Submultiplicativity and the C-star identity give
+
+`||pi(L_p^*L_q)|| <= ||pi(L_p)|| ||pi(L_q)|| = 1`.       (17)
+
+Combining (15) and (17) yields the exact identity
+
+`||L_p^*L_q||_ess=1`.                                   (18)
+
 ## Source transport `[PROVED]`
 
 On the archimedean Hardy--Titchmarsh line, let
@@ -199,18 +235,22 @@ pulls back to the nonzero scalar multiple
 
 `(pq)^(-1/2)L_p^*L_q`.
 
-Unitary conjugacy and nonzero scalar multiplication preserve noncompactness. Hence every two-scale
-quadratic Euler corner on the concrete source carrier is noncompact.
+Unitary conjugacy preserves essential norm. Hence every two-scale quadratic Euler corner on the
+concrete source carrier has the exact norm
+
+`||C_p^*C_q||_ess=(pq)^(-1/2)`.                          (19)
 
 ## Attack and exact scope
 
 - `[PROVED]` The theorem includes `p=q`; it strengthens the already-known noncompact diagonal defect
-  `L_p^*L_p`.
+  `L_p^*L_p` to exact essential norm one.
 - `[PROVED]` It also includes `p != q`, which was the open case: two distinct noncompact corners do
-  not acquire a compact product through the common Sonin constraint.
+  not acquire a small Calkin product through the common Sonin constraint; every cross entry still
+  has norm exactly one.
 - `[PROVED]` The proof is internal to the actual even physical-and-Fourier Sonin carrier. It does not
   infer the result from the raw physical cutoff.
-- `[PROVED]` The scales need not be prime or arithmetically independent. Every real `p,q>1` works.
+- `[PROVED]` The scales need not be prime or arithmetically independent. Every real `p,q>1` works,
+  and the dilation-side essential norm is independent of both scales.
 - `[PROVED]` The result is quadratic and multiplicative in the corners, not another finite additive
   Calkin-independence theorem.
 - `[OPEN CORE]` It does not determine whether a signed sum of several quadratic products can become
@@ -222,8 +262,9 @@ quadratic Euler corner on the concrete source carrier is noncompact.
 ## Significance gate
 
 The parent theorem killed the linear one-prime compact seam but explicitly left open quadratic
-two-prime cancellation. The present theorem closes that escape: the quadratic semicommutator of any
-two canonical positive Euler metrics remains outside the compact ideal on the actual source carrier.
+two-prime cancellation. The present theorem closes that escape sharply: the dilation-side quadratic
+semicommutator of any two canonical positive Euler metrics lies at distance exactly one from the
+compact ideal, and the source normalization records the exact arithmetic decay `(pq)^(-1/2)`.
 
 Thus neither a one-prime determinant nor its most immediate two-prime quadratic repair can use the
 unsmoothed Sonin boundary. A viable all-place construction must introduce a cancellation that is not
@@ -244,44 +285,48 @@ Before promotion beyond `[NOVELTY UNVERIFIED]`, the audit must check:
 3. Connes--Consani quasi-inner local-factor constructions and their semicommutators;
 4. limit-operator and localization theorems that may already imply (13) as a routine special case.
 
-## Lean target
+## Lean realization
 
-A faithful formalization should not introduce a proposition asserting the paired-shell limit. It
-should construct the common interior shell and its two exterior dilation preimages, then prove:
+`formal/GaloisForLFunctions/RHTower/SoninEulerQuadraticCorner.lean` constructs the common interior
+shell and both exterior preimages on the actual even Sonin carrier. It proves:
 
-1. both preimage sequences and their outward branches converge to the actual even Sonin carrier;
-2. the two lower-corner images converge in norm to the same interior shell vector;
-3. their inner product tends to `1`;
-4. `adjoint(L_p) comp L_q` is noncompact;
-5. the exact positive Euler and concrete Hardy--Titchmarsh transports.
+1. both preimage sequences converge in norm to their Sonin projections;
+2. both crossed images converge to the same normalized interior shell vector;
+3. a compact operator sends every bounded weakly-null sequence to a norm-null sequence;
+4. for every compact `K`,
 
-The required analytic ingredients already exist in `SoninProjectionCorrection.lean`,
-`SoninL2ShellNull.lean`, `SoninEvenCarrier.lean`, and `FiniteEulerCalkinIndependence.lean`. The missing
-Lean work is the correlated two-scale shell construction and the quadratic operator packaging.
+   `1 <= ||evenCentralSoninQuadraticCorner a p q hp hq-K||`;
+
+5. every ordered dilation quadratic corner and every ordered positive Euler quadratic corner is
+   noncompact.
+
+The formal endpoints are
+`one_le_norm_evenCentralSoninQuadraticCorner_sub_compact`,
+`evenCentralSoninQuadraticCorner_not_isCompactOperator`,
+`evenCentralPositiveEulerQuadraticCorner_eq_smul`, and
+`evenCentralPositiveEulerQuadraticCorner_not_isCompactOperator`.
+
+Mathlib in this toolchain has the closed subspace of compact operators but no ready Calkin quotient
+or essential-norm API. Thus Lean proves the sharp lower bound against **every** compact perturbation.
+The matching upper bound `<=1`, obtained on paper from the one-scale Calkin partial-isometry formula,
+and the concrete Hardy--Titchmarsh transport of the quadratic product remain to be encoded.
 
 ## Gates
 
 - [x] 0 -> 1: exact two-scale operator and common-interior-shell mechanism isolated
 - [x] 1 -> 2: complete paper proof above
-- [ ] 2 -> 3: correlated shell sequence and quadratic transport not yet formalized
+- [ ] 2 -> 3: the sharp compact-distance lower bound and positive Euler noncompactness are formalized;
+  the matching Calkin upper bound and concrete Hardy--Titchmarsh quadratic transport remain
 - [ ] 3 -> 4: primary-literature novelty audit and standalone exposition
 
 ## Next conjecture
 
-`[CONJECTURE]` For distinct scales `r_1,...,r_m>1`, the Calkin Gram matrix
-
-`([L_(r_i)^*L_(r_j)])_(i,j)`
-
-is strictly positive over the Calkin algebra: for every nonzero coefficient vector `c`,
-
-`sum_(i,j) conjugate(c_i)c_j L_(r_i)^*L_(r_j)`
-
-is noncompact.
-
-Since the displayed sum is `(sum_i c_iL_(r_i))^*(sum_j c_jL_(r_j))`, the existing finite Calkin
-independence strongly suggests this statement, but the implication requires the C*-fact that
-`T^*T` compact forces `T` compact. This conjecture may therefore collapse to a standard consequence
-and is not claimed as new knowledge.
+`[CONJECTURE]` The cross element `pi(L_p)^*pi(L_q)` is itself a partial isometry for every
+`p,q>1`, with initial and final projections determined by the overlap of the physical and Fourier
+shells at scales `p` and `q`. The exact norm theorem proves that this element reaches the maximal
+norm allowed by its two norm-one factors, but equality in submultiplicativity alone does not imply
+the partial-isometry relation. The next substantive question is the full Calkin multiplication law,
+not the formally automatic positivity of finite Gram sums.
 
 ## Log
 
