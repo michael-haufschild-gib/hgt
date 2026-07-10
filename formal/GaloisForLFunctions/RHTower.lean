@@ -124,6 +124,8 @@ import GaloisForLFunctions.RHTower.WeldClassTable
 import GaloisForLFunctions.RHTower.WeldRateLattice
 import GaloisForLFunctions.RHTower.SeamSpectrumDensity
 import GaloisForLFunctions.RHTower.SeamWeldCommutator
+import GaloisForLFunctions.RHTower.WeldAffineTrivialization
+import GaloisForLFunctions.RHTower.WeldOrderFiltration
 import GaloisForLFunctions.RHTower.ExpNatIrrational
 import GaloisForLFunctions.RHTower.ExpTranscendental
 import GaloisForLFunctions.RHTower.ConjugateTraceIntegral
@@ -250,6 +252,9 @@ import GaloisForLFunctions.RHTower.RouteBTransversal
 import GaloisForLFunctions.RHTower.RouteBTwoPhaseJacobian
 import GaloisForLFunctions.RHTower.MeasureParseval
 import GaloisForLFunctions.RHTower.CarrierSlope
+import GaloisForLFunctions.RHTower.CarrierTransverseZero
+import GaloisForLFunctions.RHTower.CarrierPhaseCrossing
+import GaloisForLFunctions.RHTower.CarrierZeroUnconditional
 import GaloisForLFunctions.RHTower.MinimumModulus
 import GaloisForLFunctions.RHTower.JensenCount
 import GaloisForLFunctions.RHTower.ScalarCertificate
@@ -465,6 +470,7 @@ import GaloisForLFunctions.RHTower.ReflectionCocycleArchimedean
 import GaloisForLFunctions.RHTower.CocycleExponentRigidity
 import GaloisForLFunctions.RHTower.ThetaHalfPlaneBound
 import GaloisForLFunctions.RHTower.LandauSummabilityTransfer
+import GaloisForLFunctions.RHTower.QuietCrossingCocycle
 import GaloisForLFunctions.RHTower.CompletedZetaGrowth
 import GaloisForLFunctions.RHTower.XiZeroDensity
 import GaloisForLFunctions.RHTower.OverlapRigidity
@@ -503,4 +509,5 @@ import GaloisForLFunctions.RHTower.XiThetaHeatNodeObstruction
 import GaloisForLFunctions.RHTower.XiThetaSquareRateReader
 import GaloisForLFunctions.RHTower.XiThetaSquareRateBoundary
 import GaloisForLFunctions.RHTower.XiThetaPositiveL2Perron
+import GaloisForLFunctions.RHTower.XiThetaBoundaryCoboundary
 import GaloisForLFunctions.RHTower.ThetaBlaschkeProbe

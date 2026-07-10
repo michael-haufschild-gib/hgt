@@ -5,7 +5,7 @@
 - **Type:** THEOREM / READER-CATEGORY OBSTRUCTION, [PROVED HERE]
 - **Date:** 2026-07-10
 - **Lean:** formal/GaloisForLFunctions/RHTower/XiThetaHeatNodeObstruction.lean
-- **Parent:** ../../1-in-progress/theta-composite-heat-reader.md
+- **Parent:** ../../5-failed/theta-composite-heat-reader.md
 
 ## Medalist lens
 

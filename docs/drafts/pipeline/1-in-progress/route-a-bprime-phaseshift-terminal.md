@@ -318,3 +318,32 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
   4 primes in (N/2,N] with the caustic gap (Bertrand-iterate), and crux (ii) center placement.
 - NEXT: pre-certify + formalize the caustic geometry at n^{-1/2} coefficients (σ0,sstar,J,t₀), reducing
   the capstone hypotheses to "4 primes in (N/2,N]" + two budget inequalities.
+
+## cont. 41 — center existence, simplicity, and factorization UNCONDITIONAL
+
+- **CarrierTransverseZero.lean:** exact line derivative, global derivative/Lipschitz budget, exact
+  derivative norm at a carrier zero, and automatic simplicity when archimedean winding dominates
+  the finite logarithmic-frequency budget.
+- **CarrierPhaseCrossing.lean:** logarithmic-derivative transport + half-turn crossing produces a
+  carrier zero from an interval floor; the same phase inequality proves the zero simple; analytic
+  order one gives the local zero-free peel required by the pinned-window gate.
+- **CarrierZeroUnconditional.lean:** the caustic route is unnecessary for center supply.  The exact
+  second-moment lower bound forces `‖dirichletPoly N(linePt τ)‖ > 1/2` cofinally for every `N ≥ 1`
+  (the `n=1` diagonal term already has mass one).  The global line Lipschitz budget spreads that
+  floor to `1/4` on a fixed positive interval, and the unconditional high-winding threshold forces
+  a half-turn there.  Capstone `completedGN_factorized_simple_zero_cofinal`: for every `N ≥ 1`,
+  cofinally many simple critical-line carrier zeros exist and carry the exact local analytic
+  factorization.  No caustic, prime, failure-observable, numerical, zero, derivative, or peel
+  premise remains.
+- Verification: focused modules, RHTower umbrella (`9137` jobs), formal lint, generated-index check,
+  and axiom audit all pass; capstone axioms are only `[propext, Classical.choice, Quot.sound]`.
+- **Effect on the terminal ledger:** delete global center existence, simplicity, derivative-floor,
+  and factorization from the remaining-input list.  `[OPEN CORE]` The RH gate still needs
+  target-local alignment: a factorized carrier center whose *same small window* contains an
+  arbitrary off-line `xi` zero and supports the EM/circle certificate.  Cofinality alone does not
+  provide that localization.
+- **Strengthening:** the second-moment contradiction is uniform in the interval basepoint.
+  `completedGN_factorized_simple_zero_syndetic` gives `A,L > 0` such that every `[T,T+L]`,
+  `T ≥ A`, contains a simple factorized carrier center.  Thus even global bounded-gap center supply
+  is unconditional; the remaining localization issue is the uncontrolled peel radius relative to
+  the off-line target's horizontal displacement, not scarcity of carrier centers.

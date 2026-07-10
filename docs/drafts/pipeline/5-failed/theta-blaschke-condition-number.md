@@ -38,7 +38,7 @@ exp(-pi m squared) exp(-pi m squared y).
 Multiplication by exp(pi m squared) removes precisely this boundary shift and returns the ordinary
 heat exponential. Therefore the Blaschke reader is viable as a **composite fixed-index reader**,
 not as a direct critical-trace pairing. The live replacement card is
-../1-in-progress/theta-composite-heat-reader.md.
+`theta-composite-heat-reader.md`.
 
 ## Medalist lens
 

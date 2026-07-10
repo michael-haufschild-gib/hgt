@@ -103,7 +103,7 @@ Theorem B supplies `g=g_theta` and `tau=0`, so the source radius is exactly the 
 `exp(-tau)=1`.  Equation (4) follows.  When `D>1`, its right-hand side is a fixed constant times a
 geometric sequence of ratio `D^(-1)<1`, proving (3).
 
-## Theorem D `[PROVED]`: canonical theta seam recovers coefficients
+## Theorem D `[PROVED BRIDGE / FLOW DIAGNOSTIC]`: canonical theta seam recovers coefficients
 
 Let `F` be an entire carrier agreeing on `Re(s)>=c>0` with the absolutely convergent Dirichlet
 series `sum a_m m^(-s)`.  Assume the existing coefficient-independent horizontal Perron mass and
@@ -129,6 +129,12 @@ gives
 Theorem C kills the source term.  Thus the residue tends to `delta a_n`; division by the fixed
 nonzero `delta` proves (5).  No abstract source witness and no cross-line-defect Prop remain.
 
+This theorem is a correct coefficient identity, but it is not the RH-bearing constraint.  The
+`M`-indexed carrier lines transport right-edge data through a contour.  The subsequent
+`xi-theta-boundary-coboundary-no-go.md` proves that the theta moving boundary feeding this picture is
+an exact flat translation coboundary.  The carrier recovery is therefore retained as a `[BRIDGE]`
+and a diagnostic, not as the route forward.
+
 ## Reflection audit
 
 The competing interpretations were:
@@ -139,48 +145,47 @@ The competing interpretations were:
 2. `[UNNECESSARY HERE]` Invert the critical trace, pass to heat coordinates, and apply the Hardy
    square-rate reader before entering the Perron seam.  That reader is valid for coefficient
    extraction, but it adds a superexponentially conditioned analytic layer without resolving the
-   completed/raw carrier mismatch.
+   completed/raw carrier mismatch, and the boundary it transports is cohomologically exact.
 3. `[SURVIVES]` Use the critical cosine identity first.  Since `h_+` is real,
 
    `Fourier(h_+ reflected)(w) = conjugate(Fourier(h_+)(w))`,
 
    and the completed critical trace is `Re Fourier(h_+)`.  Reflection is therefore the conjugate
-   half of one cosine datum, not an additional Perron charge.  Theorems B--D apply directly to the
-   one-sided source that remains.
+   half of one cosine datum, not an additional Perron charge.  Theorems B--C apply directly to the
+   one-sided source that remains; Theorem D records only its coefficient transport.
 
 ## What fails before what works
 
 - The new theorem does **not** produce an unconditional proof of RH.
-- It does **not** construct a carrier simultaneously possessing completed vertical decay and a raw
-  fixed-coefficient Dirichlet expansion.
+- Building such a carrier is a flow construction in disguise: it organizes transported vertical
+  lines rather than extracting a static non-exact constraint from the fixed completed object.
 - It does prove that the theta-source side is no longer responsible for the obstruction: the
-  positive source exists canonically in the correct Hilbert space, its source charge dies beyond
-  radius one, and its additive seam is constructed rather than assumed.
+  positive source exists canonically in the correct Hilbert space and its source charge dies beyond
+  radius one.
 
-The sole analytic mismatch exposed by this theorem is now sharper:
+The route-closing coboundary theorem sharpens the actual open core:
 
-> `[OPEN CORE]` Construct a non-diagonal completed coefficient extractor, or prove an equivalent
-> carrier theorem, that retains the Gamma-driven vertical decay while exposing a fixed arithmetic
-> coefficient on the right edge.
+> `[OPEN CORE]` Map the fixed completed-theta/prime weld to a nonzero carrier-free obstruction class
+> which survives quotienting by affine translation/scaling coboundaries, and connect that class to
+> FE polarization without an evolving carrier or contour-depth family.
 
-Scalar decompletion cannot do this: cancelling Gamma recovers the raw Dirichlet edge while losing
-the completed vertical flank.  The next object must be genuinely non-diagonal.
+Scalar decompletion, non-diagonal coefficient transport, and the moving-boundary reader all remain
+on the flow side unless they produce such a non-exact class.
 
 ## Novelty and significance gates
 
 - **NOVEL:** The boundedness and `L2` promotion alone are standard analytic bridges.  The new
-  knowledge is their exact alignment with the project-native Perron--Mellin seam: the actual
-  positive completed-theta half has intrinsic radius one, canonically constructs the seam defect,
-  and leaves no independent reflected charge.  This composition is not a literature lookup or a
-  renamed generic source theorem.
-- **SIGNIFICANT:** Two open interfaces are removed: abstract source existence and additive defect
-  existence.  The failed reflected-reader branch is retired for a mathematical reason, and the
-  remaining completed/raw obstruction is isolated to one carrier/extractor interface.
+  knowledge is their exact alignment with the project-native Perron source: the actual positive
+  completed-theta half has intrinsic radius one and leaves no independent reflected charge.  This
+  composition is not a literature lookup or a renamed generic source theorem.
+- **SIGNIFICANT:** The abstract source-existence interface is removed for the actual theta object.
+  Together with `xi-theta-boundary-coboundary-no-go.md`, the result separates valid analytic source
+  infrastructure from the exact flow defect that cannot carry the RH obstruction.
 
 ## Gates
 
 - [x] 0 -> 1: competing reflected-charge interpretations attacked; direct source route selected.
-- [x] 1 -> 2: quantitative source bound, `L2` realization, unit-radius decay, and canonical
-  coefficient recovery proved on paper.
+- [x] 1 -> 2: quantitative source bound, `L2` realization, unit-radius decay, and the carrier
+  recovery bridge proved on paper.
 - [x] 2 -> 3: theorem family formalized in Lean without `sorry`, `axiom`, or source/defect Props.
-- [ ] 3 -> 4: publication promotion requires the non-diagonal completed coefficient extractor.
+- [ ] 3 -> 4: publication promotion requires the fixed non-exact weld class and its polarization.

@@ -764,7 +764,7 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
     no change-of-measure Prop remains.
 97. **New open core.** `[OPEN CORE]` Build the infinite square-rate Paley-Wiener reader in these
     explicit Hilbert spaces without an existence Prop, and transport its reflected contribution
-    through the balanced Perron seam. Live card: `theta-composite-heat-reader.md`.
+    through the balanced Perron seam. Retired card: `../5-failed/theta-composite-heat-reader.md`.
 
 ## Log (cont. 23)
 
@@ -889,3 +889,137 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
   source is a canonical lower-supported `L2` object of Perron radius one, and combined it with the
   canonical seam to remove both source-existence and defect-existence interfaces. Targeted module
   verification only; no umbrella build.
+
+## Wave 26 — the theta moving boundary is a flat flow coboundary
+
+120. **Carrier ontology rejected.** `[FALSIFIED]` Building an `M`-indexed carrier around the theta
+     source advances the native constraint. The construction transports vertical-line data and is
+     therefore a flow in disguise.
+121. **Projection commutator.** `[PROVED HERE + Lean]` For forward logarithmic translation `T_a` and
+     strict positive projection `P_+`, the swept boundary is exactly
+     `B_a=T_a P_+-P_+ T_a` for every `a>0`.
+122. **Exact conjugation coboundary.** `[PROVED HERE + Lean]` After inverse-translation normalization,
+     `D_a=B_a T_(-a)=T_a P_+ T_(-a)-P_+`. Thus the entire moving-window family has the explicit
+     primitive `P_+`.
+123. **Flat cocycle law.** `[PROVED HERE + Lean]` The windows satisfy
+     `B_(a+b)=B_a T_b+T_a B_b`; the normalized defects satisfy
+     `D_(a+b)=T_a D_b T_(-a)+D_a`. Their translation curvature vanishes identically.
+124. **Theta specialization and route closure.** `[PROVED HERE + Lean]` At every square index `m>1`,
+     with `a_m=2log m`, the theta moving boundary is `D_(a_m)(T_(a_m)thetaLogMother)`. Hence every
+     index-dependent boundary charge is an evaluation of one exact flow coboundary and vanishes in
+     any obstruction quotient modulo affine gauge. Complete proof:
+     `../2-fully-proven/new/xi-theta-boundary-coboundary-no-go.md`.
+125. **New open core.** `[OPEN CORE]` Work only with the fixed completed datum. Map the
+     completed-theta/prime weld to a nonzero carrier-free obstruction class surviving all affine
+     translation/scaling coboundaries, and connect that class to FE polarization. No evolving
+     carrier, contour-depth family, or projection commutator qualifies.
+
+## Log (cont. 28)
+
+- 2026-07-10 — wave 26: accepted the carrier-is-flow objection, tested the moving boundary for
+  cohomological content, proved it is an exact flat conjugation coboundary, and retired the composite
+  theta reader/carrier as an RH route. Targeted module verification only; no umbrella build.
+
+## Log (cont. 12)
+- 2026-07-10 — Q-COC (§36) LANDED: `QuietCrossingCocycle.lean` (hand-written port of the
+  conductor module with the datum abstracted; 2 fix cycles). `quiet_crossing_cocycle_bound`:
+  ‖aₙ‖ ≤ 4·H(M)·B·(n−½)^{1−M} at every depth M ≥ max(2,c) with flank bound ‖h‖ ≤ H(M) on
+  −M ≤ Re s ≤ 1−c; `quiet_crossing_cocycle_support`: H(M) ≤ C·r^M (r ≥ 1) ⟹ aₙ = 0 for
+  n − ½ > r — support radius = exponential flank rate, machine-checked. During formalization
+  the C ≥ 0 hypothesis proved redundant and was dropped. Verified: standalone compile clean
+  (zero warnings), both theorems axiom-clean [propext, Classical.choice, Quot.sound], formal
+  lint passed, index regenerated, umbrella import added. Note: the full umbrella build currently
+  fails in `XiThetaBoundaryCoboundary.lean` — a module added concurrently by another agent
+  (07:21 today), unrelated to this lane; Q-COC's own target builds green.
+
+## Wave 11 — the kill theorem: minimal non-conductor divisors are quiet-unrealizable
+
+38. **Consistency instantiation `[PROVED-by-instantiation]`.** `quiet_crossing_cocycle_support`
+    with `h ≡ 1`, `H ≡ 1`, `C = r = 1` re-derives the banked `quiet_crossing_rigidity`
+    conclusion (`aₙ = 0` for all `n ≥ 2`); the new module strictly subsumes both the symmetric
+    and the conductor theorems.
+39. **`quiet_crossing_cocycle_kill` `[PROVED — Lean, axiom-clean]`.** Bounded flank data
+    (`H(M) ≤ C` uniformly — any finite Blaschke-type quotient with poles off the closed flank
+    region) gives support radius 1, so the carrier collapses to the constant `a₁`; the identity
+    principle spreads the constant to all of ℂ; and evaluating the functional equation **at a
+    zero `ρ₀` of the reflection factor** kills the constant: `a₁ = h(ρ₀)·F(1−ρ₀) = 0`. The
+    divisor itself executes the kill — no genericity hypothesis needed. Conclusion: `aₙ = 0` for
+    ALL `n ≥ 1`. The minimal non-conductor divisor (one zero/pole pair `ρ₀ ↔ 1−ρ₀`, e.g.
+    `h = (s−ρ₀)/(s−(1−ρ₀))`, which satisfies the exact cocycle law) carries no nonzero quiet
+    Dirichlet series: **realizable divisors are either empty or force unbounded flank growth.**
+40. **Paper extension (a.p.-divisor argument, [SEARCH]-adjacent tools).** With a conductor
+    factor, `H(M) ≤ C·e^{aM}` still gives finite support ⟹ Dirichlet polynomial ⟹ the cocycle is
+    a ratio of Dirichlet polynomials, whose zero/pole sets are Bohr almost-periodic with positive
+    density per height (Jessen–Tornehave); an a.p. difference divisor is empty or infinite, never
+    finite-nonempty ⟹ conductor × finite nontrivial Blaschke is also unrealizable. Combined with
+    39 and the Q-COC dichotomy (§37): **the realizable divisor ladder starts at empty (conductor
+    class) and jumps directly to infinite divisors at Γ-scale flank growth — the first two rungs
+    of the Selberg shape axiom are now derived, conditional only on one quiet height sequence.**
+
+## Log (cont. 13)
+- 2026-07-10 — wave 11: `quiet_crossing_cocycle_kill` appended to QuietCrossingCocycle.lean
+  (3 fix cycles: analyticOnNhd spelling via Complex.analyticOnNhd_univ_iff_differentiable,
+  domain annotation on the constant). Verified: standalone clean zero warnings, module build
+  8477 jobs green, all THREE public theorems [propext, Classical.choice, Quot.sound], lint
+  passed, index regenerated. h≡1 instantiation checked (subsumes quiet_crossing_rigidity).
+
+## Wave 27 — the weld is absolute-exact but FE-relatively nontrivial
+
+126. **Coefficient-category audit.** `[PROVED HERE + Lean]` The scalar weld cocycle
+     `omega_theta(g,h)=theta*m_g*n_h` is nonzero for `theta!=0` with trivial real coefficients, but
+     its equivariant lift to the minimal affine module `<D,I>` is exact.
+127. **Explicit affine primitive.** `[PROVED HERE + Lean]` Under the conjugation action
+     `g.(aD+bI)=aD+(b-a*n_g*theta)I`, the cochain
+     `b_theta(m,n)=mD-theta*m*n*I` satisfies `delta b_theta=omega_theta I`. This module is forced by
+     the fixed operator identity `M_p^(-1) D M_p=D-log(p)I`, not chosen to kill the class.
+128. **Primitive rigidity.** `[PROVED HERE + Lean]` Every affine primitive of a nonzero weld cocycle
+     has `D`-coefficient exactly one at the derivation generator. Evaluating the two ordered generator
+     pairs and subtracting forces `theta*a=theta`.
+129. **FE-relative survival.** `[PROVED HERE + Lean]` Functional-equation reflection fixes `I` and
+     reverses `D`; Lean also proves `xi'(1-s)=-xi'(s)`. Hence no FE-fixed affine cochain can
+     trivialize the weld. At each prime rate `theta=log p`, the affine class is absolutely zero but
+     FE-relatively nontrivial. Complete proof:
+     `../2-fully-proven/new/weld-affine-coefficient-collapse.md`.
+130. **New open core.** `[OPEN CORE]` Replace the external `ClassInducesJ` Prop by an FE-relative
+     second constraint cohomology quotient whose allowed primitives are FE-fixed, and construct a
+     canonical map from the prime relative class to the fixed FE Krein polarization. No carrier or
+     evolution parameter is admissible.
+
+## Log (cont. 29)
+
+- 2026-07-10 — wave 27: compared the abstract scalar weld with the natural operator coefficient
+  category, proved absolute affine collapse, proved every primitive must contain the
+  reflection-odd derivation, and isolated the surviving weld as an FE-relative obstruction.
+  Targeted module verification only; no umbrella build.
+
+## Wave 28 — FE covariance kills the relative route; differential order is the surviving constraint
+
+131. **Wave-27 FE claim corrected.** `[FALSIFIED]` Entry 129 treated FE reflection as acting
+     pointwise on coefficient values while leaving the weld-group label fixed. The genuine
+     functional equation also inverts both labels: `tau(m,n)=(-m,-n)`, since `D` reverses and
+     `R M_p R=p^(-1) M_p^(-1)` modulo the central scalar. The pointwise-fixed quotient was not an
+     FE-relative cohomology and is retired.
+132. **FE-covariant affine collapse.** `[PROVED HERE + Lean]` With
+     `R(aD+bI)=-aD+bI`, the explicit primitive satisfies
+     `R b_theta(m,n)=b_theta(-m,-n)`. Hence the natural affine trivialization is genuinely
+     FE-covariant. Completion symmetry alone does not restore the weld class.
+133. **Exact order filtration.** `[PROVED HERE + Lean]` Principal symbol gives an equivariant exact
+     coefficient sequence `0 -> R I -> R D direct-sum R I -> R sigma(D) -> 0`. The derivation-count
+     one-cocycle `ell(m,n)=m` lifts to `b_theta`, and `delta b_theta=omega_theta I`; the weld is the
+     connecting boundary of this fixed filtration.
+134. **Order-zero survival.** `[PROVED HERE + Lean]` Every affine primitive has principal symbol one
+     at the derivation generator. Therefore no pointwise order-zero gauge cochain can trivialize a
+     nonzero weld. The resulting order-zero gauge quotient carries a nonzero class at every prime
+     rate `theta=log p`, although the unrestricted and FE-covariant affine classes are zero. Complete
+     corrected proof: `../2-fully-proven/new/weld-affine-coefficient-collapse.md`.
+135. **New open core.** `[OPEN CORE]` In the fixed completed representation, prove that every bounded
+     polarization-preserving gauge has differential order zero and construct the canonical map from
+     the prime filtration boundary to the existing Krein form. This is the concrete replacement for
+     `ClassInducesJ`; no carrier or evolution parameter is admissible.
+
+## Log (cont. 30)
+
+- 2026-07-10 — wave 28: attacked the proposed FE-relative quotient with the full semilinear FE
+  action, falsified it, formalized the FE-covariant primitive, and relocated the surviving weld to
+  the connecting boundary of the differential-order filtration. Targeted verification only; no
+  umbrella build.

@@ -1,14 +1,13 @@
 # Composite critical-trace to heat coefficient reader
 
 - **ID:** theta-composite-heat-reader
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE / FIXED-INDEX COMPOSITE READER
+- **Stage:** 5-failed / retired as RH route
+- **Type:** FALSIFIED ROUTE / VALID READER INFRASTRUCTURE
 - **Date:** 2026-07-10
 - **Parents:** ../2-fully-proven/new/xi-theta-heat-reparametrization.md,
   ../2-fully-proven/new/xi-theta-reader-superexponential-conditioning.md
-- **Statement:** For every fixed square index n, inverse logarithmic Fourier, heat
-  reparametrization, exact boundary denormalization, and the square-rate Hardy reader compose to a
-  coefficient functional on the completed critical trace whose Perron seam charge can be computed.
+- **Statement:** The fixed-index composite reader is analytically valid, but its moving boundary is
+  an exact flat translation coboundary and therefore cannot supply the nontrivial RH weld class.
 
 ## Constraint
 
@@ -62,21 +61,24 @@ No new evolution parameter or free defect is allowed.
   vanishing on all but one node, to vanish at the selected node as well. An exact reader in this
   compactified moment-symbol category is necessarily singular or nonanalytic at `x = 0`.
 
-## Open core
+## Route verdict
 
-[OPEN CORE] The Hardy reader remains a valid coefficient functional, but it is not the missing
-Perron bridge.  The positive theta source and its reflected cosine datum are now fully accounted
-for by `../2-fully-proven/new/xi-theta-unit-radius-perron-source.md`.  Construct a genuinely
-non-diagonal completed coefficient extractor which retains Gamma-driven vertical decay while
-exposing fixed arithmetic coefficients on the right edge.  Scalar decompletion cannot meet both
-requirements.  Formalizing the half-plane H2/Paley-Wiener bridge is useful reader infrastructure,
-not the carrier obstruction itself.
+`[FALSIFIED AS AN RH ROUTE]` The Hardy reader remains a valid coefficient functional, but the
+moving boundary it transports is
+`T_a P_+ - P_+ T_a`.  After inverse-translation normalization it is the exact conjugation
+coboundary `T_a P_+ T_(-a)-P_+`, with an exact cocycle law and zero curvature.  Complete proof:
+`../2-fully-proven/new/xi-theta-boundary-coboundary-no-go.md`.
+
+The fixed positive source and reflected cosine datum remain valid infrastructure
+(`../2-fully-proven/new/xi-theta-unit-radius-perron-source.md`).  The RH-bearing object must instead
+be a static non-exact completed-theta/prime obstruction class surviving the quotient by all affine
+flow coboundaries.
 
 ## Gates
 
 - [x] 0 -> 1: exact atom bridge, fixed-index audit, and first functional gap identified.
-- [ ] 1 -> 2: the infinite reader, weighted Hilbert map, and direct theta Perron source are proved.
-  The reflected charge was falsified as an independent term.  The remaining requirement is the
-  non-diagonal completed/raw carrier extractor.
-- [ ] 2 -> 3: Lean formalization without a reader-existence Prop.
-- [ ] 3 -> 4: composition into an unconditional Perron contradiction.
+- [x] Reader infrastructure: infinite symbol, exact norm, weighted Hilbert map, and direct theta
+  Perron source proved.
+- [x] Route falsification: reflected charge is not independent and the moving boundary is an exact
+  flat translation coboundary.
+- [ ] Any future reuse must occur only after quotienting out this affine flow defect.
