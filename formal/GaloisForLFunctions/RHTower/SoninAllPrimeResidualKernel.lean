@@ -24,7 +24,8 @@ namespace RHTower
 
 set_option maxHeartbeats 600000
 
-private theorem tsum_sq_norm_inner_hilbertBasis
+/-- Parseval identity in the orientation used by Sonin matrix entries. -/
+theorem tsum_sq_norm_inner_hilbertBasis
     {ι H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (b : HilbertBasis ι ℂ H) (x : H) :
     ∑' i, ‖inner ℂ (b i) x‖ ^ 2 = ‖x‖ ^ 2 := by

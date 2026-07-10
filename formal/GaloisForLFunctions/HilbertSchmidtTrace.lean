@@ -56,10 +56,9 @@ theorem summable_inner_diag_comp {A : F →L[𝕜] E} {B : E →L[𝕜] F}
   refine (hA.adjoint.summable_inner hB b).congr fun i => ?_
   exact (inner_comp_apply A B (b i)).symm
 
-/-- **The trace of a Hilbert–Schmidt product is the Hilbert–Schmidt pairing.**
-`tr(A ∘L B) = ⟨A†, B⟩_HS`. -/
-theorem opTrace_comp_eq_hsInner {A : F →L[𝕜] E} {B : E →L[𝕜] F}
-    (hA : IsHilbertSchmidt A) (hB : IsHilbertSchmidt B) :
+/-- **The trace of a product is the Hilbert–Schmidt pairing.**  `tr(A ∘L B) = ⟨A†, B⟩_HS` — an
+unconditional identity of diagonal sums, meaningful when both operators are Hilbert–Schmidt. -/
+theorem opTrace_comp_eq_hsInner (A : F →L[𝕜] E) (B : E →L[𝕜] F) :
     opTrace (A ∘L B) = hsInner (ContinuousLinearMap.adjoint A) B := by
   rw [opTrace, hsInner]
   exact tsum_congr fun i => inner_comp_apply A B _
@@ -69,7 +68,7 @@ over every Hilbert basis of `E`. -/
 theorem opTrace_comp_eq_tsum_basis {A : F →L[𝕜] E} {B : E →L[𝕜] F}
     (hA : IsHilbertSchmidt A) (hB : IsHilbertSchmidt B) {ι : Type*} (b : HilbertBasis ι 𝕜 E) :
     opTrace (A ∘L B) = ∑' i, inner 𝕜 (b i) ((A ∘L B) (b i)) := by
-  rw [opTrace_comp_eq_hsInner hA hB, hsInner_eq_tsum_basis hA.adjoint hB b]
+  rw [opTrace_comp_eq_hsInner A B, hsInner_eq_tsum_basis hA.adjoint hB b]
   exact tsum_congr fun i => (inner_comp_apply A B _).symm
 
 /-- **Cyclicity of the trace on Hilbert–Schmidt pairs.**  `tr_E(A ∘L B) = tr_F(B ∘L A)`: the
@@ -78,7 +77,7 @@ adjoint-reversal law of the Hilbert–Schmidt inner product, read through
 theorem opTrace_comp_comm {A : F →L[𝕜] E} {B : E →L[𝕜] F}
     (hA : IsHilbertSchmidt A) (hB : IsHilbertSchmidt B) :
     opTrace (A ∘L B) = opTrace (B ∘L A) := by
-  rw [opTrace_comp_eq_hsInner hA hB, opTrace_comp_eq_hsInner hB hA]
+  rw [opTrace_comp_eq_hsInner A B, opTrace_comp_eq_hsInner B A]
   have h := hsInner_adjoint_adjoint hB hA.adjoint
   rw [adjoint_adjoint] at h
   exact h.symm
@@ -88,22 +87,22 @@ pairing together with the adjoint isometry. -/
 theorem norm_opTrace_comp_le {A : F →L[𝕜] E} {B : E →L[𝕜] F}
     (hA : IsHilbertSchmidt A) (hB : IsHilbertSchmidt B) :
     ‖opTrace (A ∘L B)‖ ≤ hsNorm A * hsNorm B := by
-  rw [opTrace_comp_eq_hsInner hA hB]
+  rw [opTrace_comp_eq_hsInner A B]
   have h := norm_hsInner_le hA.adjoint hB
   rwa [show hsNorm (ContinuousLinearMap.adjoint A) = hsNorm A by
     rw [hsNorm, hsNorm, hA.hsNormSq_adjoint]] at h
 
-/-- The positive energy of a Hilbert–Schmidt operator has trace the Hilbert–Schmidt self-pairing:
+/-- The positive energy of an operator has trace the Hilbert–Schmidt self-pairing:
 `tr(T† ∘L T) = ⟨T, T⟩_HS`. -/
-theorem opTrace_adjoint_comp_self {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T) :
+theorem opTrace_adjoint_comp_self (T : E →L[𝕜] F) :
     opTrace (ContinuousLinearMap.adjoint T ∘L T) = hsInner T T := by
-  rw [opTrace_comp_eq_hsInner hT.adjoint hT, adjoint_adjoint]
+  rw [opTrace_comp_eq_hsInner (ContinuousLinearMap.adjoint T) T, adjoint_adjoint]
 
 /-- `Re tr(T† ∘L T) = ‖T‖²_HS`: the trace of the positive energy is the squared Hilbert–Schmidt
 norm. -/
 theorem re_opTrace_adjoint_comp_self {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T) :
     RCLike.re (opTrace (ContinuousLinearMap.adjoint T ∘L T)) = hsNormSq T := by
-  rw [opTrace_adjoint_comp_self hT]
+  rw [opTrace_adjoint_comp_self T]
   exact hsInner_self_re hT
 
 end ContinuousLinearMap
@@ -126,10 +125,10 @@ theorem matrixOf_adjoint [DecidableEq ι]
     = (starRingEnd ℂ) (T (lp.single 2 p.1 (1 : ℂ)) p.2)
   have h1 : ContinuousLinearMap.adjoint T (lp.single 2 p.2 (1 : ℂ)) p.1
       = inner ℂ (lp.single 2 p.1 (1 : ℂ)) (ContinuousLinearMap.adjoint T (lp.single 2 p.2 1)) := by
-    rw [lp.inner_single_left, RCLike.inner_apply, map_one, one_mul]
+    rw [lp.inner_single_left, RCLike.inner_apply, map_one, mul_one]
   have h2 : T (lp.single 2 p.1 (1 : ℂ)) p.2
       = inner ℂ (lp.single 2 p.2 (1 : ℂ)) (T (lp.single 2 p.1 1)) := by
-    rw [lp.inner_single_left, RCLike.inner_apply, map_one, one_mul]
+    rw [lp.inner_single_left, RCLike.inner_apply, map_one, mul_one]
   rw [h1, h2, ContinuousLinearMap.adjoint_inner_right, ← inner_conj_symm]
 
 /-- **The bridge intertwines the adjoints**: the adjoint of the represented operator is the
@@ -149,8 +148,7 @@ determinants. -/
 theorem opTrace_toOperator_comp [DecidableEq ι] {K L : ι × ι → ℂ} (hK : IsHS K) (hL : IsHS L) :
     ContinuousLinearMap.opTrace (toOperator hK ∘L toOperator hL)
       = ∑' i, hsComp K L (i, i) := by
-  rw [ContinuousLinearMap.opTrace_comp_eq_hsInner (isHilbertSchmidt_toOperator hK)
-      (isHilbertSchmidt_toOperator hL),
+  rw [ContinuousLinearMap.opTrace_comp_eq_hsInner (toOperator hK) (toOperator hL),
     adjoint_toOperator hK, hsInner_toOperator (isHS_hsAdjoint hK) hL, ← hsTrace_hsComp hK hL]
 
 end HilbertSchmidt

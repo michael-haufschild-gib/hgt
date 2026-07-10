@@ -52,10 +52,13 @@ theorem finiteJetEscapeOrder_odd (N : ℕ) : Odd (finiteJetEscapeOrder N) := by
   exact ⟨N, by simp [finiteJetEscapeOrder, two_mul]⟩
 
 theorem lt_finiteJetEscapeOrder (N : ℕ) : N < finiteJetEscapeOrder N := by
-  simp [finiteJetEscapeOrder]
+  unfold finiteJetEscapeOrder
+  omega
 
 @[simp] theorem flatLocalFactor_zero (N : ℕ) (α : ℂ) :
-    flatLocalFactor N α 0 = 1 := by simp [flatLocalFactor]
+    flatLocalFactor N α 0 = 1 := by
+  have hM : finiteJetEscapeOrder N ≠ 0 := (finiteJetEscapeOrder_pos N).ne'
+  simp [flatLocalFactor, hM]
 
 theorem flatEvenMultiplier_neg (N : ℕ) (α z : ℂ) :
     flatEvenMultiplier N α (-z) = flatEvenMultiplier N α z := by
@@ -63,29 +66,27 @@ theorem flatEvenMultiplier_neg (N : ℕ) (α z : ℂ) :
 
 @[simp] theorem flatEvenMultiplier_at_center (N : ℕ) (α : ℂ) :
     flatEvenMultiplier N α α = 1 := by
-  simp [flatEvenMultiplier]
+  have hM : finiteJetEscapeOrder N ≠ 0 := (finiteJetEscapeOrder_pos N).ne'
+  simp [flatEvenMultiplier, hM]
 
 theorem flatEvenMultiplier_shift (N : ℕ) (α x : ℂ) :
     flatEvenMultiplier N α (α + x) = flatLocalFactor N α x := by
   unfold flatEvenMultiplier flatLocalFactor
-  congr 2
+  congr 1
   ring
 
 theorem flatLocalFactor_hasDerivAt (N : ℕ) (α x : ℂ) :
     HasDerivAt (flatLocalFactor N α)
-      (2 * (finiteJetEscapeOrder N : ℂ) * (α + x) *
-        (x * (2 * α + x)) ^ (2 * N)) x := by
+      ((finiteJetEscapeOrder N : ℂ) *
+        (x * (2 * α + x)) ^ (2 * N) * (2 * (α + x))) x := by
   have hu : HasDerivAt (fun y : ℂ => y * (2 * α + y)) (2 * (α + x)) x := by
     convert (hasDerivAt_id x).mul
       ((hasDerivAt_const (x := x) (c := 2 * α)).add (hasDerivAt_id x)) using 1
-    ring
+    all_goals simp
+    all_goals ring
   have hp := hu.pow (finiteJetEscapeOrder N)
   have hs := (hasDerivAt_const (x := x) (c := (1 : ℂ))).add hp
-  convert hs using 1
-  · simp [flatLocalFactor]
-  · rw [finiteJetEscapeOrder]
-    push_cast
-    ring
+  simpa [flatLocalFactor, finiteJetEscapeOrder] using hs
 
 /-- The correction is exactly `-x` times the logarithmic derivative of the flat factor. -/
 theorem flatLogFluxCorrection_eq_neg_mul_logDeriv (N : ℕ) (α x : ℂ) :
@@ -95,17 +96,20 @@ theorem flatLogFluxCorrection_eq_neg_mul_logDeriv (N : ℕ) (α x : ℂ) :
   unfold flatLogFluxCorrection flatLogFluxUnit
   rw [finiteJetEscapeOrder]
   push_cast
-  rw [pow_succ']
+  rw [pow_succ', mul_pow]
   ring
 
 theorem flatLogFluxUnit_analyticAt_zero (N : ℕ) (α : ℂ) :
     AnalyticAt ℂ (flatLogFluxUnit N α) 0 := by
+  have hP : AnalyticAt ℂ (flatLocalFactor N α) 0 := by
+    unfold flatLocalFactor
+    fun_prop
   rw [show flatLogFluxUnit N α = fun x : ℂ =>
     -(2 * (finiteJetEscapeOrder N : ℂ)) * (α + x) *
       (2 * α + x) ^ (2 * N) / flatLocalFactor N α x by rfl]
   apply AnalyticAt.div
   · fun_prop
-  · fun_prop
+  · exact hP
   · simp
 
 @[simp] theorem flatLogFluxUnit_zero (N : ℕ) (α : ℂ) :
@@ -116,10 +120,14 @@ theorem flatLogFluxUnit_analyticAt_zero (N : ℕ) (α : ℂ) :
 theorem flatLogFluxUnit_zero_ne {N : ℕ} {α : ℂ} (hα : α ≠ 0) :
     flatLogFluxUnit N α 0 ≠ 0 := by
   rw [flatLogFluxUnit_zero]
-  exact mul_ne_zero
-    (mul_ne_zero (neg_ne_zero.mpr (mul_ne_zero (by norm_num)
-      (Nat.cast_ne_zero.mpr (finiteJetEscapeOrder_pos N).ne')))) hα)
-    (pow_ne_zero _ (mul_ne_zero (by norm_num) hα))
+  apply mul_ne_zero
+  · apply mul_ne_zero
+    · apply neg_ne_zero.mpr
+      apply mul_ne_zero
+      · norm_num
+      · exact Nat.cast_ne_zero.mpr (finiteJetEscapeOrder_pos N).ne'
+    · exact hα
+  · exact pow_ne_zero _ (mul_ne_zero (by norm_num) hα)
 
 theorem flatLogFluxCorrection_analyticAt_zero (N : ℕ) (α : ℂ) :
     AnalyticAt ℂ (flatLogFluxCorrection N α) 0 := by
@@ -128,7 +136,10 @@ theorem flatLogFluxCorrection_analyticAt_zero (N : ℕ) (α : ℂ) :
 /-- The correction vanishes to exactly the odd order `2N+1`. -/
 theorem flatLogFluxCorrection_order {N : ℕ} {α : ℂ} (hα : α ≠ 0) :
     analyticOrderAt (flatLogFluxCorrection N α) 0 = finiteJetEscapeOrder N := by
-  rw [flatLogFluxCorrection, analyticOrderAt_mul (analyticAt_id.pow _)
+  change analyticOrderAt
+    ((id : ℂ → ℂ) ^ finiteJetEscapeOrder N * flatLogFluxUnit N α) 0 =
+      finiteJetEscapeOrder N
+  rw [analyticOrderAt_mul (analyticAt_id.pow _)
     (flatLogFluxUnit_analyticAt_zero N α), analyticOrderAt_pow analyticAt_id,
     analyticOrderAt_id]
   have hu : analyticOrderAt (flatLogFluxUnit N α) 0 = 0 :=
@@ -140,18 +151,18 @@ theorem flatLogFluxCorrection_order {N : ℕ} {α : ℂ} (hα : α ≠ 0) :
 theorem flatLogFluxCorrection_iteratedDeriv_zero {N n : ℕ} {α : ℂ}
     (hα : α ≠ 0) (hn : n < finiteJetEscapeOrder N) :
     iteratedDeriv n (flatLogFluxCorrection N α) 0 = 0 := by
-  have h := GelfondSchneiderProof.analyticOrderAt_eq_nat_imp_iteratedDeriv_eq_zero
+  have h := GaloisForLFunctions.RHTower.GelfondSchneiderProof.analyticOrderAt_eq_nat_imp_iteratedDeriv_eq_zero
     (flatLogFluxCorrection_analyticAt_zero N α) (finiteJetEscapeOrder N)
     (flatLogFluxCorrection_order hα)
-  exact h.1 n hn
+  simpa only [iteratedDeriv_eq_iterate] using h.1 n hn
 
 theorem flatLogFluxCorrection_iteratedDeriv_escape_ne_zero {N : ℕ} {α : ℂ}
     (hα : α ≠ 0) :
     iteratedDeriv (finiteJetEscapeOrder N) (flatLogFluxCorrection N α) 0 ≠ 0 := by
-  have h := GelfondSchneiderProof.analyticOrderAt_eq_nat_imp_iteratedDeriv_eq_zero
+  have h := GaloisForLFunctions.RHTower.GelfondSchneiderProof.analyticOrderAt_eq_nat_imp_iteratedDeriv_eq_zero
     (flatLogFluxCorrection_analyticAt_zero N α) (finiteJetEscapeOrder N)
     (flatLogFluxCorrection_order hα)
-  exact h.2
+  simpa only [iteratedDeriv_eq_iterate] using h.2
 
 /-- The analytic model of the residue-filled completed logarithmic flux. -/
 def finiteJetModelGerm (N : ℕ) (α x : ℂ) : ℂ :=
@@ -169,24 +180,29 @@ def flatZeroCompletedFlux (N : ℕ) (α x : ℂ) : ℂ :=
 theorem flatZeroModel_hasDerivAt (N : ℕ) (α x : ℂ) :
     HasDerivAt (flatZeroModel N α)
       (flatLocalFactor N α x + x *
-        (2 * (finiteJetEscapeOrder N : ℂ) * (α + x) *
-          (x * (2 * α + x)) ^ (2 * N))) x := by
-  simpa only [flatZeroModel] using
+        ((finiteJetEscapeOrder N : ℂ) *
+          (x * (2 * α + x)) ^ (2 * N) * (2 * (α + x)))) x := by
+  change HasDerivAt ((fun y : ℂ => y) * flatLocalFactor N α) _ x
+  simpa using
     (hasDerivAt_id x).mul (flatLocalFactor_hasDerivAt N α x)
 
 /-- The explicit residue-filled flux agrees locally with its analytic model. -/
 theorem flatZeroCompletedFlux_eventuallyEq_model (N : ℕ) (α : ℂ) :
     flatZeroCompletedFlux N α =ᶠ[𝓝 0] finiteJetModelGerm N α := by
-  have hcont : ContinuousAt (flatLocalFactor N α) 0 := by fun_prop
+  have hcont : ContinuousAt (flatLocalFactor N α) 0 := by
+    unfold flatLocalFactor
+    fun_prop
   have hne : ∀ᶠ x : ℂ in 𝓝 0, flatLocalFactor N α x ≠ 0 :=
     hcont.eventually_ne (by simp)
   filter_upwards [hne] with x hxP
   by_cases hx : x = 0
   · subst x
-    simp [flatZeroCompletedFlux, finiteJetModelGerm, flatLogFluxCorrection]
+    have hM : finiteJetEscapeOrder N ≠ 0 := (finiteJetEscapeOrder_pos N).ne'
+    simp [flatZeroCompletedFlux, finiteJetModelGerm, flatLogFluxCorrection, hM]
   · rw [flatZeroCompletedFlux, if_neg hx, finiteJetModelGerm,
       flatLogFluxCorrection_eq_neg_mul_logDeriv,
-      (flatZeroModel_hasDerivAt N α x).deriv]
+      (flatZeroModel_hasDerivAt N α x).deriv,
+      (flatLocalFactor_hasDerivAt N α x).deriv]
     unfold flatZeroModel
     field_simp [hx, hxP]
     ring
@@ -208,22 +224,21 @@ theorem finiteJetModelGerm_iteratedDeriv_eq_reflect_of_le
   have hcorr := flatLogFluxCorrection_iteratedDeriv_zero hα hnM
   have hg : iteratedDeriv n (finiteJetModelGerm N α) 0 =
       iteratedDeriv n (fun _ : ℂ => (-1 : ℂ)) 0 := by
-    rw [finiteJetModelGerm]
+    change iteratedDeriv n
+      ((fun _ : ℂ => (-1 : ℂ)) + flatLogFluxCorrection N α) 0 = _
     have hc : ContDiffAt ℂ n (fun _ : ℂ => (-1 : ℂ)) 0 := contDiffAt_const
     have hr : ContDiffAt ℂ n (flatLogFluxCorrection N α) 0 :=
       (flatLogFluxCorrection_analyticAt_zero N α).contDiffAt
-    rw [show (fun x : ℂ => -1 + flatLogFluxCorrection N α x) =
-      (fun _ : ℂ => (-1 : ℂ)) + flatLogFluxCorrection N α by rfl,
-      iteratedDeriv_add hc hr, hcorr, add_zero]
+    rw [iteratedDeriv_add hc hr, hcorr, add_zero]
   have hreflect : iteratedDeriv n (fun x : ℂ => finiteJetModelGerm N α (-x)) 0 =
       (-1 : ℂ) ^ n * iteratedDeriv n (finiteJetModelGerm N α) 0 := by
     simpa only [neg_zero, smul_eq_mul] using
-      (iteratedDeriv_comp_neg (n := n) (f := finiteJetModelGerm N α) (x := 0))
+      (iteratedDeriv_comp_neg n (finiteJetModelGerm N α) 0)
   rw [hg, hreflect, hg]
   by_cases hn0 : n = 0
   · subst n
     simp
-  · simp [iteratedDeriv_const_of_ne hn0]
+  · simp [iteratedDeriv_const, hn0]
 
 theorem finiteJetModelGerm_iteratedDeriv_ne_reflect_at_escape
     {N : ℕ} {α : ℂ} (hα : α ≠ 0) :
@@ -235,21 +250,26 @@ theorem finiteJetModelGerm_iteratedDeriv_ne_reflect_at_escape
   have hM0 : M ≠ 0 := (finiteJetEscapeOrder_pos N).ne'
   have hg : iteratedDeriv M (finiteJetModelGerm N α) 0 =
       iteratedDeriv M (flatLogFluxCorrection N α) 0 := by
-    rw [finiteJetModelGerm]
+    change iteratedDeriv M
+      ((fun _ : ℂ => (-1 : ℂ)) + flatLogFluxCorrection N α) 0 = _
     have hc : ContDiffAt ℂ M (fun _ : ℂ => (-1 : ℂ)) 0 := contDiffAt_const
     have hr : ContDiffAt ℂ M (flatLogFluxCorrection N α) 0 :=
       (flatLogFluxCorrection_analyticAt_zero N α).contDiffAt
-    rw [show (fun x : ℂ => -1 + flatLogFluxCorrection N α x) =
-      (fun _ : ℂ => (-1 : ℂ)) + flatLogFluxCorrection N α by rfl,
-      iteratedDeriv_add hc hr, iteratedDeriv_const_of_ne hM0, zero_add]
+    rw [iteratedDeriv_add hc hr, iteratedDeriv_const, if_neg hM0, zero_add]
   have hreflect : iteratedDeriv M (fun x : ℂ => finiteJetModelGerm N α (-x)) 0 =
       (-1 : ℂ) ^ M * iteratedDeriv M (finiteJetModelGerm N α) 0 := by
     simpa only [neg_zero, smul_eq_mul] using
-      (iteratedDeriv_comp_neg (n := M) (f := finiteJetModelGerm N α) (x := 0))
+      (iteratedDeriv_comp_neg M (finiteJetModelGerm N α) 0)
   rw [hreflect, (finiteJetEscapeOrder_odd N).neg_one_pow, neg_one_mul, hg]
   intro h
   have hz : iteratedDeriv M (flatLogFluxCorrection N α) 0 = 0 := by
-    linarith
+    have htwo : (2 : ℂ) * iteratedDeriv M (flatLogFluxCorrection N α) 0 = 0 := by
+      calc
+        (2 : ℂ) * iteratedDeriv M (flatLogFluxCorrection N α) 0 =
+            iteratedDeriv M (flatLogFluxCorrection N α) 0 +
+              iteratedDeriv M (flatLogFluxCorrection N α) 0 := by ring
+        _ = 0 := eq_neg_iff_add_eq_zero.mp h
+    exact (mul_eq_zero.mp htwo).resolve_left (by norm_num)
   exact hcorr hz
 
 /-- **Arbitrarily delayed defect.**  For every finite depth there is an explicit analytic
@@ -266,15 +286,24 @@ theorem exists_analytic_reflection_germs_same_finite_jet_not_same_later (N : ℕ
   · intro n hn
     have heq := (flatZeroCompletedFlux_eventuallyEq_model N 1).iteratedDeriv_eq n
     have href := (flatZeroCompletedFlux_eventuallyEq_model N 1).comp_tendsto
-      (tendsto_neg_nhds_0 (𝕜 := ℂ))
-    have hrefd := href.iteratedDeriv_eq n
+      (by simpa using (continuous_neg.tendsto (0 : ℂ)))
+    have hrefd :
+        iteratedDeriv n (fun x : ℂ => flatZeroCompletedFlux N 1 (-x)) 0 =
+          iteratedDeriv n (fun x : ℂ => finiteJetModelGerm N 1 (-x)) 0 := by
+      simpa only [Function.comp_apply] using href.iteratedDeriv_eq n
     rw [heq, hrefd]
     exact finiteJetModelGerm_iteratedDeriv_eq_reflect_of_le (by norm_num) hn
   · have heq := (flatZeroCompletedFlux_eventuallyEq_model N 1).iteratedDeriv_eq
       (finiteJetEscapeOrder N)
     have href := (flatZeroCompletedFlux_eventuallyEq_model N 1).comp_tendsto
-      (tendsto_neg_nhds_0 (𝕜 := ℂ))
-    have hrefd := href.iteratedDeriv_eq (finiteJetEscapeOrder N)
+      (by simpa using (continuous_neg.tendsto (0 : ℂ)))
+    have hrefd :
+        iteratedDeriv (finiteJetEscapeOrder N)
+            (fun x : ℂ => flatZeroCompletedFlux N 1 (-x)) 0 =
+          iteratedDeriv (finiteJetEscapeOrder N)
+            (fun x : ℂ => finiteJetModelGerm N 1 (-x)) 0 := by
+      simpa only [Function.comp_apply] using
+        href.iteratedDeriv_eq (finiteJetEscapeOrder N)
     rw [heq, hrefd]
     exact finiteJetModelGerm_iteratedDeriv_ne_reflect_at_escape (by norm_num)
 

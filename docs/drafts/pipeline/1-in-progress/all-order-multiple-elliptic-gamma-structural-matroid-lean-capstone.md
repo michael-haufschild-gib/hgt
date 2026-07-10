@@ -82,6 +82,14 @@ zero, and composes this with normal-form meromorphic rigidity. Thus the analytic
 collapse used by the paired system is now unconditional in Lean. Normal-form function-field
 packaging remains.
 
+`formal/GaloisForLFunctions/OrbitResidueVector.lean` strengthens the earlier single-orbit integer
+augmentation lemma to coefficient-valued residue vectors on every orbit of an arbitrary
+translation action. Every finite translation coboundary has zero residue on every orbit, while a
+lone nonzero coefficient or two opposite coefficients on distinct orbits cannot be a coboundary.
+This is the exact finite principal-part obstruction required after a meromorphic elliptic function
+has been mapped to its fixed-order Laurent coefficients. That meromorphic principal-part map and
+the theta realization are still missing.
+
 `formal/GaloisForLFunctions/DifferenceDifferential.lean` defines several commuting field
 automorphisms which fix the coefficient field and commute with the derivation. It proves that
 constant-coefficient differential operators commute with all difference defects, that compatible
@@ -103,6 +111,15 @@ a difference-differential extension, evaluation intertwines the formal affine ac
 extension automorphism. Hence differential dependence produces a nonzero proper differential
 relation ideal invariant under every affine action. No PPV or Galois conclusion is assumed in this
 theorem.
+
+`formal/GaloisForLFunctions/ParameterizedPrimitiveMaximalIdeal.lean` proves the Zorn existence
+step: every proper affine differential ideal lies in a maximal proper affine differential ideal.
+Applied to an actual dependent primitive tuple, its nonzero relation ideal embeds in such a
+maximal ideal. `formal/GaloisForLFunctions/ParameterizedPrimitiveQuotient.lean` descends the total
+derivation and all affine actions to the quotient, proves that they commute, constructs the
+universal primitive tuple there, and proves the quotient is affine-differentially simple. This is
+the additive unipotent PPV quotient-ring construction. The remaining PPV core is the translation
+torsor/Galois group, preservation and descent of joint constants, and the fixed-field theorem.
 
 `formal/GaloisForLFunctions/DifferentialPolynomial.lean` now constructs the constant-coefficient
 differential polynomial ring as a polynomial ring on formal jets, proves that jet evaluation
@@ -139,6 +156,8 @@ analytic capstone is already formalized.
 - [x] commuting difference-differential field and common-telescoper algebraic interface implemented
 - [x] total differential-polynomial derivation and base-relative relation ideal implemented
 - [x] commuting affine primitive actions and invariant nontrivial relation ideal implemented
+- [x] maximal proper affine differential ideal and simple universal quotient implemented
+- [x] coefficient-valued multi-orbit finite coboundary obstruction implemented
 - [x] differential-polynomial relation ideals and characteristic-zero primitive classification
 - [x] characteristic-zero additive differential Hopf-ideal primitive-existence theorem
 - [ ] complete differential algebra foundation, including differential transcendence degree
@@ -182,3 +201,12 @@ analytic capstone is already formalized.
   intertwines the action in an actual extension, and a dependent primitive tuple unconditionally
   yields a nonzero proper differential relation ideal invariant under every affine action. Exact
   builds pass and the new capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-07-10 -- Completed the maximal-invariant-ideal and quotient-ring steps for the additive
+  unipotent PPV construction. Zorn gives a maximal proper affine differential ideal above the
+  actual relation ideal; the quotient inherits commuting difference actions and the total
+  derivation, contains the universal primitive tuple, and is affine-differentially simple. The
+  torsor/Galois group, joint-constant theorem, and fixed-field descent remain open.
+- 2026-07-10 -- Formalized coefficient-valued orbit-residue vectors for arbitrary translation
+  actions. Finite coboundaries vanish orbitwise, and one nonzero principal-part coefficient or two
+  opposite coefficients on distinct orbits are formally excluded. The remaining analytic task is
+  to construct the elliptic meromorphic principal-part map and realize the theta defects in it.

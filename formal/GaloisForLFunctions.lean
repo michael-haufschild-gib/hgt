@@ -80,6 +80,7 @@ import GaloisForLFunctions.ZeroEstimateOrder
 import GaloisForLFunctions.MultiplierDichotomy
 import GaloisForLFunctions.CrossPrimeCurvature
 import GaloisForLFunctions.OrbitBalance
+import GaloisForLFunctions.OrbitResidueVector
 import GaloisForLFunctions.SimplicialConstraintTower
 import GaloisForLFunctions.C5JensenPrimeKernel
 import GaloisForLFunctions.C5JensenPerturbation
@@ -90,6 +91,8 @@ import GaloisForLFunctions.DifferenceDifferential
 import GaloisForLFunctions.DifferentialPolynomial
 import GaloisForLFunctions.DifferentialPolynomialOver
 import GaloisForLFunctions.ParameterizedPrimitiveAction
+import GaloisForLFunctions.ParameterizedPrimitiveMaximalIdeal
+import GaloisForLFunctions.ParameterizedPrimitiveQuotient
 import GaloisForLFunctions.DifferentialHopfIdeal
 import GaloisForLFunctions.DifferentialHopfPrimitive
 import GaloisForLFunctions.PTInvolution

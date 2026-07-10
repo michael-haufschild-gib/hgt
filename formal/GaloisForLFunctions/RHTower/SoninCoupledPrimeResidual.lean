@@ -6,6 +6,7 @@ prime words.  The canonical coupled assembly instead stacks every weighted resid
 same Sonin source space.  Its Gram operator is positive and retains cross-prime overlaps.
 -/
 import GaloisForLFunctions.HilbertSchmidtRectangular
+import GaloisForLFunctions.HilbertSchmidtTrace
 import GaloisForLFunctions.RHTower.SoninAllPrimeResidualKernel
 
 noncomputable section
@@ -13,6 +14,8 @@ noncomputable section
 open scoped BigOperators
 
 namespace RHTower
+
+local instance : DecidableEq SoninAllPrimeIndex := Classical.decEq _
 
 /-- Rectangular matrix of the canonical column operator.  Rows are indexed by a prime power and
 an output Sonin coordinate; columns use the single common Sonin input coordinate. -/
@@ -130,5 +133,270 @@ theorem soninPrimePowerCrossOverlap_hsNormSq_nonneg
     (a : ℝ) (α β : Nat.Primes × ℕ) :
     0 ≤ ContinuousLinearMap.hsNormSq (soninPrimePowerCrossOverlap a α β) :=
   ContinuousLinearMap.hsNormSq_nonneg _
+
+/-- The output-side energy `C_a C_a†`.  Its prime-power block `(α,β)` is exactly the cross
+overlap `A_α A_β†`. -/
+def soninAllPrimeOutputEnergyOperator (a : ℝ) (ha : 0 < a) :
+    SoninAllPrimeL2 →L[ℂ] SoninAllPrimeL2 :=
+  soninAllPrimeColumnOperator a ha ∘L
+    ContinuousLinearMap.adjoint (soninAllPrimeColumnOperator a ha)
+
+theorem soninAllPrimeOutputEnergyOperator_isHilbertSchmidt (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.IsHilbertSchmidt (soninAllPrimeOutputEnergyOperator a ha) :=
+  (soninAllPrimeColumnOperator_isHilbertSchmidt a ha).adjoint.comp_left
+    (soninAllPrimeColumnOperator a ha)
+
+/-- Pulling a coordinate vector back through the column adjoint selects the corresponding
+prime-power residual adjoint. -/
+theorem adjoint_soninAllPrimeColumnOperator_single (a : ℝ) (ha : 0 < a)
+    (pk : Nat.Primes × ℕ) (j : SoninHilbertIndex) :
+    ContinuousLinearMap.adjoint (soninAllPrimeColumnOperator a ha)
+        (lp.single 2 (pk, j) (1 : ℂ)) =
+      ContinuousLinearMap.adjoint (centralSoninWeightedPrimePowerResidual a pk)
+        (ContinuousLinearMap.hsBasis ℂ SoninL2 j) := by
+  classical
+  apply ext_inner_left ℂ
+  intro x
+  rw [ContinuousLinearMap.adjoint_inner_right,
+    ContinuousLinearMap.adjoint_inner_right, lp.inner_single_right,
+    soninAllPrimeColumnOperator_apply]
+  simp [RCLike.inner_apply]
+
+/-- The `(α,β)` block of `C_a C_a†` is the actual cross-prime overlap `A_α A_β†`. -/
+theorem matrix_soninAllPrimeOutputEnergyOperator (a : ℝ) (ha : 0 < a)
+    (α β : Nat.Primes × ℕ) (i j : SoninHilbertIndex) :
+    HilbertSchmidt.matrixOf (soninAllPrimeOutputEnergyOperator a ha)
+        ((α, i), (β, j)) =
+      inner ℂ (ContinuousLinearMap.hsBasis ℂ SoninL2 i)
+        (soninPrimePowerCrossOverlap a α β
+          (ContinuousLinearMap.hsBasis ℂ SoninL2 j)) := by
+  classical
+  change soninAllPrimeOutputEnergyOperator a ha
+      (lp.single 2 (β, j) (1 : ℂ)) (α, i) = _
+  rw [soninAllPrimeOutputEnergyOperator, ContinuousLinearMap.comp_apply,
+    soninAllPrimeColumnOperator_apply, adjoint_soninAllPrimeColumnOperator_single,
+    soninPrimePowerCrossOverlap, ContinuousLinearMap.comp_apply]
+
+private def soninAllPrimeSecondMomentEquiv :
+    ((Nat.Primes × ℕ) × (Nat.Primes × ℕ)) ×
+        (SoninHilbertIndex × SoninHilbertIndex) ≃
+      SoninAllPrimeIndex × SoninAllPrimeIndex where
+  toFun z := ((z.1.1, z.2.2), (z.1.2, z.2.1))
+  invFun z := ((z.1.1, z.2.1), (z.2.2, z.1.2))
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+/-- The complete family of cross-prime overlap energies is summable.  This is stronger than
+termwise Hilbert--Schmidt membership and gives an actual finite mixed second moment. -/
+theorem summable_soninPrimePowerCrossOverlap_hsNormSq (a : ℝ) (ha : 0 < a) :
+    Summable (fun ab : (Nat.Primes × ℕ) × (Nat.Primes × ℕ) =>
+      ContinuousLinearMap.hsNormSq (soninPrimePowerCrossOverlap a ab.1 ab.2)) := by
+  let S := soninAllPrimeOutputEnergyOperator a ha
+  let M := HilbertSchmidt.matrixOf S
+  have hS : ContinuousLinearMap.IsHilbertSchmidt S :=
+    soninAllPrimeOutputEnergyOperator_isHilbertSchmidt a ha
+  have hM : HilbertSchmidt.IsHS M := HilbertSchmidt.isHS_matrixOf hS
+  have hflat : Summable (fun z : ((Nat.Primes × ℕ) × (Nat.Primes × ℕ)) ×
+      (SoninHilbertIndex × SoninHilbertIndex) =>
+      ‖inner ℂ (ContinuousLinearMap.hsBasis ℂ SoninL2 z.2.2)
+        (soninPrimePowerCrossOverlap a z.1.1 z.1.2
+          (ContinuousLinearMap.hsBasis ℂ SoninL2 z.2.1))‖ ^ 2) := by
+    have hm : Summable (fun z : SoninAllPrimeIndex × SoninAllPrimeIndex => ‖M z‖ ^ 2) := hM
+    have he := (soninAllPrimeSecondMomentEquiv.summable_iff).mpr hm
+    refine he.congr (fun z => ?_)
+    change ‖M (soninAllPrimeSecondMomentEquiv z)‖ ^ 2 = _
+    rw [show M (soninAllPrimeSecondMomentEquiv z) =
+        inner ℂ (ContinuousLinearMap.hsBasis ℂ SoninL2 z.2.2)
+          (soninPrimePowerCrossOverlap a z.1.1 z.1.2
+            (ContinuousLinearMap.hsBasis ℂ SoninL2 z.2.1)) by
+      exact matrix_soninAllPrimeOutputEnergyOperator a ha
+        z.1.1 z.1.2 z.2.2 z.2.1]
+  have hprod := hflat
+  rw [summable_prod_of_nonneg (fun _ => sq_nonneg _)] at hprod
+  refine hprod.2.congr (fun ab => ?_)
+  rw [ContinuousLinearMap.hsNormSq_eq
+    (soninPrimePowerCrossOverlap_isHilbertSchmidt a ha ab.1 ab.2)
+    (ContinuousLinearMap.hsBasis ℂ SoninL2)]
+  rw [(hprod.1 ab).tsum_prod]
+  apply tsum_congr
+  intro j
+  exact tsum_sq_norm_inner_hilbertBasis (ContinuousLinearMap.hsBasis ℂ SoninL2)
+    (soninPrimePowerCrossOverlap a ab.1 ab.2
+      (ContinuousLinearMap.hsBasis ℂ SoninL2 j))
+
+/-- The Hilbert--Schmidt energy of `C_a C_a†` is the sum of all cross-prime overlap energies. -/
+theorem hsNormSq_soninAllPrimeOutputEnergyOperator (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.hsNormSq (soninAllPrimeOutputEnergyOperator a ha) =
+      ∑' ab : (Nat.Primes × ℕ) × (Nat.Primes × ℕ),
+        ContinuousLinearMap.hsNormSq (soninPrimePowerCrossOverlap a ab.1 ab.2) := by
+  let S := soninAllPrimeOutputEnergyOperator a ha
+  let M := HilbertSchmidt.matrixOf S
+  have hS : ContinuousLinearMap.IsHilbertSchmidt S :=
+    soninAllPrimeOutputEnergyOperator_isHilbertSchmidt a ha
+  have hM : HilbertSchmidt.IsHS M := HilbertSchmidt.isHS_matrixOf hS
+  have hround : HilbertSchmidt.toOperator hM = S := HilbertSchmidt.toOperator_matrixOf hS
+  have hnorm : ContinuousLinearMap.hsNormSq S = HilbertSchmidt.hsNormSq M := by
+    rw [← hround, HilbertSchmidt.hsNormSq_toOperator]
+  rw [show soninAllPrimeOutputEnergyOperator a ha = S from rfl, hnorm]
+  change (∑' z : SoninAllPrimeIndex × SoninAllPrimeIndex, ‖M z‖ ^ 2) = _
+  rw [← soninAllPrimeSecondMomentEquiv.tsum_eq
+    (fun z : SoninAllPrimeIndex × SoninAllPrimeIndex => ‖M z‖ ^ 2)]
+  have hflat : Summable (fun z : ((Nat.Primes × ℕ) × (Nat.Primes × ℕ)) ×
+      (SoninHilbertIndex × SoninHilbertIndex) =>
+      ‖M (soninAllPrimeSecondMomentEquiv z)‖ ^ 2) :=
+    (soninAllPrimeSecondMomentEquiv.summable_iff).mpr hM
+  rw [hflat.tsum_prod]
+  apply tsum_congr
+  intro ab
+  rw [ContinuousLinearMap.hsNormSq_eq
+    (soninPrimePowerCrossOverlap_isHilbertSchmidt a ha ab.1 ab.2)
+    (ContinuousLinearMap.hsBasis ℂ SoninL2)]
+  have hab : Summable (fun ji : SoninHilbertIndex × SoninHilbertIndex =>
+      ‖M (soninAllPrimeSecondMomentEquiv (ab, ji))‖ ^ 2) := by
+    exact hflat.comp_injective (fun ji ji' h => (Prod.ext_iff.mp h).2)
+  rw [hab.tsum_prod]
+  apply tsum_congr
+  intro j
+  rw [← tsum_sq_norm_inner_hilbertBasis (ContinuousLinearMap.hsBasis ℂ SoninL2)
+    (soninPrimePowerCrossOverlap a ab.1 ab.2
+      (ContinuousLinearMap.hsBasis ℂ SoninL2 j))]
+  apply tsum_congr
+  intro i
+  rw [show M (soninAllPrimeSecondMomentEquiv (ab, (j, i))) =
+      inner ℂ (ContinuousLinearMap.hsBasis ℂ SoninL2 i)
+        (soninPrimePowerCrossOverlap a ab.1 ab.2
+          (ContinuousLinearMap.hsBasis ℂ SoninL2 j)) by
+    dsimp [M, S]
+    exact matrix_soninAllPrimeOutputEnergyOperator a ha ab.1 ab.2 i j]
+
+theorem soninAllPrimeMixedEnergyOperator_isHilbertSchmidt (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.IsHilbertSchmidt (soninAllPrimeMixedEnergyOperator a ha) :=
+  (soninAllPrimeColumnOperator_isHilbertSchmidt a ha).comp_left
+    (ContinuousLinearMap.adjoint (soninAllPrimeColumnOperator a ha))
+
+/-- Cyclicity transfers the second trace moment from `C_a†C_a` on the Sonin space to
+`C_aC_a†` on the all-prime output space. -/
+theorem opTrace_sq_soninAllPrimeMixedEnergyOperator_cyclic (a : ℝ) (ha : 0 < a) :
+    ContinuousLinearMap.opTrace
+        (soninAllPrimeMixedEnergyOperator a ha ∘L soninAllPrimeMixedEnergyOperator a ha) =
+      ContinuousLinearMap.opTrace
+        (soninAllPrimeOutputEnergyOperator a ha ∘L
+          soninAllPrimeOutputEnergyOperator a ha) := by
+  let C := soninAllPrimeColumnOperator a ha
+  let S := soninAllPrimeOutputEnergyOperator a ha
+  let B : SoninL2 →L[ℂ] SoninAllPrimeL2 := S ∘L C
+  have hC : ContinuousLinearMap.IsHilbertSchmidt C :=
+    soninAllPrimeColumnOperator_isHilbertSchmidt a ha
+  have hS : ContinuousLinearMap.IsHilbertSchmidt S :=
+    soninAllPrimeOutputEnergyOperator_isHilbertSchmidt a ha
+  have hB : ContinuousLinearMap.IsHilbertSchmidt B := hC.comp_left S
+  have hcyc := ContinuousLinearMap.opTrace_comp_comm hC.adjoint hB
+  calc
+    ContinuousLinearMap.opTrace
+        (soninAllPrimeMixedEnergyOperator a ha ∘L soninAllPrimeMixedEnergyOperator a ha) =
+        ContinuousLinearMap.opTrace (ContinuousLinearMap.adjoint C ∘L B) := by
+      congr 1
+    _ = ContinuousLinearMap.opTrace (B ∘L ContinuousLinearMap.adjoint C) := hcyc
+    _ = ContinuousLinearMap.opTrace
+        (soninAllPrimeOutputEnergyOperator a ha ∘L
+          soninAllPrimeOutputEnergyOperator a ha) := by
+      congr 1
+
+/-- **Exact infinite mixed second moment.**  The second trace moment of the coupled Sonin Gram
+is the convergent sum of every prime-power cross-overlap energy.  The diagonal direct-sum model
+retains only the subfamily `α=β` and therefore misses the off-diagonal arithmetic interaction. -/
+theorem re_opTrace_sq_soninAllPrimeMixedEnergyOperator (a : ℝ) (ha : 0 < a) :
+    (ContinuousLinearMap.opTrace
+      (soninAllPrimeMixedEnergyOperator a ha ∘L
+        soninAllPrimeMixedEnergyOperator a ha)).re =
+      ∑' ab : (Nat.Primes × ℕ) × (Nat.Primes × ℕ),
+        ContinuousLinearMap.hsNormSq (soninPrimePowerCrossOverlap a ab.1 ab.2) := by
+  rw [opTrace_sq_soninAllPrimeMixedEnergyOperator_cyclic a ha]
+  let S := soninAllPrimeOutputEnergyOperator a ha
+  have hS : ContinuousLinearMap.IsHilbertSchmidt S :=
+    soninAllPrimeOutputEnergyOperator_isHilbertSchmidt a ha
+  have hSad : ContinuousLinearMap.adjoint S = S := by
+    dsimp [S, soninAllPrimeOutputEnergyOperator]
+    rw [ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.adjoint_adjoint]
+  rw [show soninAllPrimeOutputEnergyOperator a ha = S from rfl,
+    ContinuousLinearMap.opTrace_comp_eq_hsInner S S, hSad]
+  calc
+    (ContinuousLinearMap.hsInner S S).re = ContinuousLinearMap.hsNormSq S := by
+      simpa using ContinuousLinearMap.hsInner_self_re hS
+    _ = ∑' ab : (Nat.Primes × ℕ) × (Nat.Primes × ℕ),
+        ContinuousLinearMap.hsNormSq (soninPrimePowerCrossOverlap a ab.1 ab.2) :=
+      hsNormSq_soninAllPrimeOutputEnergyOperator a ha
+
+/-- Diagonal pairs of prime powers. -/
+def soninPrimePowerDiagonalSet :
+    Set ((Nat.Primes × ℕ) × (Nat.Primes × ℕ)) :=
+  {ab | ab.1 = ab.2}
+
+private def soninPrimePowerDiagonalEquiv :
+    (Nat.Primes × ℕ) ≃ soninPrimePowerDiagonalSet where
+  toFun α := ⟨(α, α), rfl⟩
+  invFun z := z.1.1
+  left_inv _ := rfl
+  right_inv z := by
+    rcases z with ⟨⟨α, β⟩, h⟩
+    change α = β at h
+    subst β
+    rfl
+
+/-- The diagonal contribution retained by the old block-diagonal assembly. -/
+def soninAllPrimeDiagonalSecondMoment (a : ℝ) : ℝ :=
+  ∑' α : Nat.Primes × ℕ,
+    ContinuousLinearMap.hsNormSq (soninPrimePowerCrossOverlap a α α)
+
+/-- The first coupled Sonin invariant: the total off-diagonal cross-prime-power energy. -/
+def soninAllPrimeMixedSecondInvariant (a : ℝ) : ℝ :=
+  ∑' z : ↥(soninPrimePowerDiagonalSetᶜ),
+    ContinuousLinearMap.hsNormSq
+      (soninPrimePowerCrossOverlap a z.1.1 z.1.2)
+
+theorem soninAllPrimeMixedSecondInvariant_nonneg (a : ℝ) :
+    0 ≤ soninAllPrimeMixedSecondInvariant a := by
+  exact tsum_nonneg fun _ => ContinuousLinearMap.hsNormSq_nonneg _
+
+/-- The coupled second trace moment is the diagonal moment plus the off-diagonal invariant
+`I₂`.  This is the precise infinite version of the formal block expansion. -/
+theorem re_opTrace_sq_soninAllPrimeMixedEnergyOperator_eq_diagonal_add_I2
+    (a : ℝ) (ha : 0 < a) :
+    (ContinuousLinearMap.opTrace
+      (soninAllPrimeMixedEnergyOperator a ha ∘L
+        soninAllPrimeMixedEnergyOperator a ha)).re =
+      soninAllPrimeDiagonalSecondMoment a + soninAllPrimeMixedSecondInvariant a := by
+  let g : ((Nat.Primes × ℕ) × (Nat.Primes × ℕ)) → ℝ := fun ab =>
+    ContinuousLinearMap.hsNormSq (soninPrimePowerCrossOverlap a ab.1 ab.2)
+  have hg : Summable g := summable_soninPrimePowerCrossOverlap_hsNormSq a ha
+  have hdiag : (∑' α : Nat.Primes × ℕ, g (α, α)) =
+      ∑' z : soninPrimePowerDiagonalSet, g z := by
+    exact soninPrimePowerDiagonalEquiv.tsum_eq
+      (fun z : soninPrimePowerDiagonalSet => g z)
+  rw [re_opTrace_sq_soninAllPrimeMixedEnergyOperator a ha,
+    soninAllPrimeDiagonalSecondMoment, soninAllPrimeMixedSecondInvariant]
+  change (∑' ab, g ab) = (∑' α : Nat.Primes × ℕ, g (α, α)) +
+    ∑' z : ↥(soninPrimePowerDiagonalSetᶜ), g z
+  rw [hdiag, hg.tsum_subtype_add_tsum_subtype_compl soninPrimePowerDiagonalSet]
+
+/-- To prove strict positivity of `I₂`, it is enough to exhibit one nonzero off-diagonal
+cross-prime-power overlap. -/
+theorem soninAllPrimeMixedSecondInvariant_pos_of_crossOverlap_ne_zero
+    (a : ℝ) (ha : 0 < a) (z : ↥(soninPrimePowerDiagonalSetᶜ))
+    (hz : soninPrimePowerCrossOverlap a z.1.1 z.1.2 ≠ 0) :
+    0 < soninAllPrimeMixedSecondInvariant a := by
+  let g : ((Nat.Primes × ℕ) × (Nat.Primes × ℕ)) → ℝ := fun ab =>
+    ContinuousLinearMap.hsNormSq (soninPrimePowerCrossOverlap a ab.1 ab.2)
+  have hg : Summable g := summable_soninPrimePowerCrossOverlap_hsNormSq a ha
+  have hgsub : Summable (fun w : ↥(soninPrimePowerDiagonalSetᶜ) => g w) :=
+    hg.subtype (fun ab => ab ∈ soninPrimePowerDiagonalSetᶜ)
+  have hHS := soninPrimePowerCrossOverlap_isHilbertSchmidt a ha z.1.1 z.1.2
+  have hne : g z ≠ 0 := by
+    intro hzero
+    exact hz ((ContinuousLinearMap.hsNormSq_eq_zero_iff hHS).mp hzero)
+  have hpos : 0 < g z :=
+    lt_of_le_of_ne (ContinuousLinearMap.hsNormSq_nonneg _) (Ne.symm hne)
+  exact hgsub.tsum_pos
+    (fun w => ContinuousLinearMap.hsNormSq_nonneg _) z hpos
 
 end RHTower

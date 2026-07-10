@@ -413,6 +413,8 @@ import GaloisForLFunctions.RHTower.GoldilocksTrichotomy
 import GaloisForLFunctions.RHTower.QuadrantSeamConservation
 import GaloisForLFunctions.RHTower.LittlewoodXi
 import GaloisForLFunctions.RHTower.ExponentialTypeZeroDensity
+import GaloisForLFunctions.RHTower.PrimeLogExponentialTypeUniqueness
+import GaloisForLFunctions.RHTower.HilbertSamplingDefect
 import GaloisForLFunctions.RHTower.DivisorBound
 import GaloisForLFunctions.RHTower.DpolyHelpers
 import GaloisForLFunctions.RHTower.Mollifier
@@ -548,6 +550,7 @@ import GaloisForLFunctions.RHTower.SoninPrincipalShellResidual
 import GaloisForLFunctions.RHTower.SoninPrimePowerRegularization
 import GaloisForLFunctions.RHTower.SoninTimeBandHilbertSchmidt
 import GaloisForLFunctions.RHTower.SoninAllPrimeResidualKernel
+import GaloisForLFunctions.RHTower.SoninCoupledPrimeResidual
 import GaloisForLFunctions.RHTower.SoninCalkinNormBound
 import GaloisForLFunctions.RHTower.SoninEulerEssentialNorm
 import GaloisForLFunctions.RHTower.SoninEssentialNormExtensions

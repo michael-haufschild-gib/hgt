@@ -8,12 +8,13 @@
   local corpus and survived the parent-theory attack below.  Its proof is elementary entire-function
   theory, so scientific novelty is not claimed without a broader literature audit and independent
   expert review.
-- **Statement:** For every finite jet depth `N`, there is a real even entire function of exact order
-  one, with no nonzero period and with an off-real zero, whose residue-filled negative logarithmic
-  derivative germs at the functional-equation and Schwarz partners have identical Taylor
-  coefficients through order `N` but are not equal as germs.  Consequently FE symmetry, Schwarz
-  reality, order-one growth, and aperiodicity cannot turn any fixed finite completed-flux jet into a
-  critical-axis selector.
+- **Statement:** For every finite jet depth `N` and every `0<b<1/2`, there is a real even entire
+  function of exact order one, with no nonzero period and with zeros at `±ib`, whose residue-filled
+  negative logarithmic derivative germs at the two partner zeros have identical Taylor coefficients
+  through order `N` but are not equal as germs.  After functional-equation normalization, the two
+  zeros lie at `1/2±b`, strictly inside the critical strip and off the critical axis.  Consequently
+  FE symmetry, Schwarz reality, critical-strip location, order-one growth, and aperiodicity cannot
+  turn any fixed finite completed-flux jet into a critical-axis selector.
 
 ## Why this is the correct attack
 
@@ -26,12 +27,12 @@ source itself.
 
 ## Construction
 
-Fix `N`.  Choose an odd integer `M>N`, put
+Fix `N` and `0<b<1/2`.  Choose an odd integer `M>N`, put
 
 \[
-b=\frac{\pi}{2},\qquad \alpha=ib,qquad
-P_M(z)=1+(z^2+b^2)^M,qquad
-F_M(z)=\cosh z\,P_M(z).
+\lambda=\frac{\pi}{2b},\qquad \alpha=ib,\qquad
+P_M(z)=1+(z^2+b^2)^M,\qquad
+F_M(z)=\cosh(\lambda z)\,P_M(z).
 \]
 
 Then `F_M` is even and real entire:
@@ -41,8 +42,8 @@ F_M(-z)=F_M(z),\qquad
 F_M(\bar z)=\overline{F_M(z)}.
 \]
 
-Since `cosh(±ib)=0`, `sinh(ib)=i`, and `P_M(±ib)=1`, the two points `±α` are
-simple nonreal zeros of `F_M`.
+Since `λα=iπ/2` and `P_M(±ib)=1`, the two points `±α` are simple nonreal zeros
+of `F_M`.
 
 For a simple zero `a`, define the residue-filled negative-logarithmic-derivative germ
 
@@ -69,7 +70,7 @@ Split the germ into its `cosh` and polynomial parts:
 
 \[
 G_\alpha(x)
-=-x\coth x
+=-\lambda x\coth(\lambda x)
 -x\frac{P_M'(\alpha+x)}{P_M(\alpha+x)}.                         \tag{2}
 \]
 
@@ -126,28 +127,28 @@ The zeros `±α` become
 \rho_+ =\tfrac12+b=1-\rho_-.
 \]
 
-They are real, so Schwarz fixes each, while the functional equation exchanges them.  Neither lies
-on `Re s=1/2`.  The affine coordinate change sends a Taylor coefficient of order `n` to a nonzero
-scalar multiple of the corresponding coefficient in (5); hence equality through `N` and failure at
-`M` are preserved.  Equivalently, the one-base graded-reality equations hold through order `N` at
-`ρ_-` and fail at the odd order `M`.
+They are real, so Schwarz fixes each, while the functional equation exchanges them.  Because
+`0<b<1/2`, both lie strictly inside `0<Re s<1`, and neither lies on `Re s=1/2`.  The affine coordinate
+change sends a Taylor coefficient of order `n` to a nonzero scalar multiple of the corresponding
+coefficient in (5); hence equality through `N` and failure at `M` are preserved.  Equivalently, the
+one-base graded-reality equations hold through order `N` at `ρ_-` and fail at the odd order `M`.
 
 ## Exact order and aperiodicity
 
-The polynomial factor does not change the order of `cosh`, so `F_M` and `X_M` have exact entire
-order one.
+The polynomial factor does not change the order of `cosh(λz)`, so `F_M` and `X_M` have exact
+entire order one.
 
 To prove aperiodicity, suppose `F_M(z+h)=F_M(z)` for every `z`.  Along positive real `x`,
 
 \[
-\frac{\cosh(x+h)}{\cosh x}\longrightarrow e^h,
+\frac{\cosh(\lambda(x+h))}{\cosh(\lambda x)}\longrightarrow e^{\lambda h},
 \qquad
 \frac{P_M(x+h)}{P_M(x)}\longrightarrow1.
 \]
 
-Periodicity therefore gives `e^h=1`, so `h=2πik` for some integer `k`.  Such an `h` is a period of
-`cosh`; cancelling `cosh` away from its discrete zero set and using the identity theorem gives
-`P_M(z+h)=P_M(z)`.  A nonconstant polynomial has no nonzero period: the leading term of
+Periodicity therefore gives `e^(λh)=1`, so `h=2πik/λ` for some integer `k`.  Such an `h` is a
+period of `cosh(λz)`; cancelling this factor away from its discrete zero set and using the identity
+theorem gives `P_M(z+h)=P_M(z)`.  A nonconstant polynomial has no nonzero period: the leading term of
 `P_M(z+h)-P_M(z)` below its cancelled top degree is `deg(P_M)·lc(P_M)·h·z^{deg(P_M)-1}`.
 Thus `h=0`.  The affine change of variables preserves aperiodicity, so `X_M` also has no nonzero
 period.
@@ -155,13 +156,14 @@ period.
 ## Consequence
 
 There is no universal `N` for which the first `N` completed-flux coefficients select the critical
-line in the class of aperiodic, order-one, FE-even, Schwarz-real entire functions.  Any successful
-finite-depth theorem for `xi` must therefore consume genuinely arithmetic Euler-source structure
-not present in this envelope.  A source theorem using only FE, Schwarz, growth, and aperiodicity is
+line in the class of aperiodic, order-one, FE-even, Schwarz-real entire functions even when the
+tested zero is required to lie strictly inside the critical strip.  Any successful finite-depth
+theorem for `xi` must therefore consume genuinely arithmetic Euler-source structure not present in
+this envelope.  A source theorem using only FE, Schwarz, strip location, growth, and aperiodicity is
 provably insufficient.
 
 This does not rule out a finite theorem that uses a global Euler invariant.  It rules out a finite
-local passport whose only global guards are the four conditions above.
+local passport whose only global guards are the five conditions above.
 
 ## Parent-theory and literature attack
 
@@ -176,10 +178,26 @@ local passport whose only global guards are the four conditions above.
   FE/Schwarz/order-one/aperiodic finite-jet nonselection theorem.  That negative search is not a
   completed literature gate.
 
+## Lean formalization status
+
+`RHTower/FiniteJetGradedRealityNoGo.lean` formalizes the load-bearing local analytic core.  It
+constructs the shifted even multiplier `1+(z^2-α^2)^(2N+1)`, proves the exact logarithmic-flux
+correction identity, proves that the correction has analytic order exactly `2N+1`, realizes it as
+the residue-filled negative logarithmic derivative of an explicit simple-zero factor, and proves
+that the germ and its reflection have identical iterated derivatives through order `N` but differ
+at order `2N+1`.
+
+The exact module and exact Lake target build pass.  The load-bearing declarations use only
+`propext`, `Classical.choice`, and `Quot.sound`.  The global scaled-`cosh` realization, its exact
+entire order, critical-strip coordinate conversion, and aperiodicity argument remain paper-only;
+therefore the card correctly remains at stage 2 rather than being promoted to stage 3.
+
 ## Gates
 
 - [x] 0 → 1: the finite-passport claim was stated and attacked by an explicit family
 - [x] 1 → 2: symmetry, zeros, exact jet contact, later failure, order, and aperiodicity were proved
-- [ ] independent mathematical audit of the coordinate conversion and aperiodicity argument
-- [ ] 2 → 3: formalize the polynomial-flatness and completed-germ coefficient theorem in Lean
+- [ ] independent mathematical audit of the scaled coordinate conversion and aperiodicity argument
+- [x] formalize the polynomial-flatness and completed-germ coefficient theorem in Lean
+- [ ] 2 → 3: formalize the global scaled-`cosh` realization, exact order, strip location, and
+  aperiodicity theorem
 - [ ] literature and parent-theory audit sufficient for any scientific-novelty promotion
