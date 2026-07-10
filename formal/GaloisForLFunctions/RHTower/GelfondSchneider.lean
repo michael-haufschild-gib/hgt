@@ -15,32 +15,28 @@ lies strictly beyond the one-exponential method: it is Hilbert's seventh problem
 transcendental — contradicting `p ^ ξ = q ∈ ℤ`.  Hence `ξ` is transcendental: **no two prime rates
 of the weld are algebraically commensurable.**
 
-The reduction (`log_ratio_transcendental`) is unconditional, resting only on the `ℤ`-independence of
-`log p, log q` (`two_prime_log_indep`).  The one genuinely-hard analytic input — the Gelfond–Schneider
-theorem itself, whose proof is the two-variable auxiliary-function / small-value / zero-estimate
-method — is carried as the single explicit interface `GelfondSchneider` (complex, principal-branch
-`cpow` form).  The real form used by the reduction is derived from it
-(`gelfondSchneiderReal_of_complex`).
+The two-variable auxiliary-function / small-value / zero-estimate proof is formalized in
+`GelfondSchneiderProof`.  It discharges the project interface `GelfondSchneider`; consequently the
+real form and the weld corollary `log_ratio_transcendental` are unconditional.
 -/
 
 import Mathlib
+import GaloisForLFunctions.RHTower.GelfondSchneiderProof.Statement
 import GaloisForLFunctions.RHTower.WeldClassTable
 
 open scoped Classical
 
 namespace GaloisForLFunctions.RHTower
 
-/-! ### §1 The Gelfond–Schneider interface (the analytic residual) -/
+/-! ### §1 The Gelfond–Schneider interface and its discharge -/
 
 /-- **Gelfond–Schneider (Hilbert's seventh problem), complex principal-branch form.**  For a complex
 algebraic base `α ∉ {0, 1}` and a complex algebraic exponent `β` that is not rational, the power
 `α ^ β = exp (β · Complex.log α)` (principal branch `Complex.cpow`) is transcendental over `ℚ`.
 
-This is the single hard analytic input, not proved here: its proof is Schneider's two-variable
-auxiliary-function method (Siegel's lemma to build the auxiliary polynomial, a maximum-modulus
-small-value estimate, and a zero estimate forcing an algebraic integer of norm `< 1` to vanish).
-Mathlib supplies the ingredients (`Int.Matrix.exists_ne_zero_int_vec_norm_le`, `NumberField.house`)
-but not the assembled argument. -/
+The proof is Schneider's two-variable auxiliary-function method: Siegel's lemma constructs the
+auxiliary polynomial, analytic estimates give a small value, and the algebraic norm estimate forces
+the final contradiction. -/
 def GelfondSchneider : Prop :=
   ∀ (α β : ℂ), IsAlgebraic ℤ α → α ≠ 0 → α ≠ 1 → IsAlgebraic ℤ β →
     (¬ ∃ r : ℚ, β = (r : ℂ)) → Transcendental ℚ (α ^ β)
@@ -52,12 +48,17 @@ def GelfondSchneiderReal : Prop :=
   ∀ (a β : ℝ), 0 < a → a ≠ 1 → IsAlgebraic ℤ a → IsAlgebraic ℤ β → Irrational β →
     Transcendental ℚ (a ^ β)
 
-/-- The target-shape restatement of the interface: under `GelfondSchneider`, a complex algebraic
-`α ∉ {0,1}` raised to a complex algebraic non-rational `β` is transcendental. -/
-theorem gelfond_schneider (hGS : GelfondSchneider) {α β : ℂ} (hα : IsAlgebraic ℤ α)
-    (hα0 : α ≠ 0) (hα1 : α ≠ 1) (hβ : IsAlgebraic ℤ β) (hβirr : ¬ ∃ r : ℚ, β = (r : ℂ)) :
-    Transcendental ℚ (α ^ β) :=
-  hGS α β hα hα0 hα1 hβ hβirr
+/-- **Unconditional discharge of the RHTower Gelfond–Schneider interface.** -/
+theorem gelfondSchneider_holds : GelfondSchneider := by
+  intro α β hα hα0 hα1 hβ hβirr
+  apply GelfondSchneiderProof.Setup.transcendental_cpow_of_isAlgebraic_of_irrational
+  · exact (IsFractionRing.isAlgebraic_iff ℤ ℚ ℂ).mp hα
+  · exact (IsFractionRing.isAlgebraic_iff ℤ ℚ ℂ).mp hβ
+  · exact ⟨hα0, hα1⟩
+  · intro i j hij
+    apply hβirr
+    refine ⟨(i : ℚ) / (j : ℚ), ?_⟩
+    norm_cast at hij ⊢
 
 /-! ### §2 The real ↔ complex transfer, and the real form of Gelfond–Schneider -/
 
@@ -79,10 +80,10 @@ private lemma transcendental_ofReal {x : ℝ} (h : Transcendental ℚ (x : ℂ))
     simp [Complex.coe_algebraMap]
   rwa [hx2] at h2
 
-/-- **The real Gelfond–Schneider follows from the complex one.**  For a positive real base the
+/-- **Unconditional real Gelfond–Schneider.**  For a positive real base the
 principal-branch complex power `(a : ℂ) ^ (β : ℂ)` equals the real power `↑(a ^ β)`
 (`Complex.ofReal_cpow`), so transcendence transfers between the two forms. -/
-theorem gelfondSchneiderReal_of_complex (h : GelfondSchneider) : GelfondSchneiderReal := by
+theorem gelfondSchneiderReal_holds : GelfondSchneiderReal := by
   intro a β ha ha1 haAlg hβAlg hβirr
   have hac : IsAlgebraic ℤ (a : ℂ) := isAlgebraic_ofReal haAlg
   have hbc : IsAlgebraic ℤ (β : ℂ) := isAlgebraic_ofReal hβAlg
@@ -95,7 +96,8 @@ theorem gelfondSchneiderReal_of_complex (h : GelfondSchneider) : GelfondSchneide
     refine ⟨r, ?_⟩
     have hβr : (β : ℂ) = ((r : ℝ) : ℂ) := by rw [hr]; norm_cast
     exact (Complex.ofReal_inj.mp hβr).symm
-  have hcpx : Transcendental ℚ ((a : ℂ) ^ (β : ℂ)) := h (a : ℂ) (β : ℂ) hac ha0 ha1c hbc hβnr
+  have hcpx : Transcendental ℚ ((a : ℂ) ^ (β : ℂ)) :=
+    gelfondSchneider_holds (a : ℂ) (β : ℂ) hac ha0 ha1c hbc hβnr
   have hcast : (a : ℂ) ^ (β : ℂ) = ((a ^ β : ℝ) : ℂ) := (Complex.ofReal_cpow ha.le β).symm
   rw [hcast] at hcpx
   exact transcendental_ofReal hcpx
@@ -129,10 +131,9 @@ the *commensurability* structure of its spectrum: no two prime rates `log p, log
 algebraic factor.  Reduction of Gelfond–Schneider: were the ratio algebraic it would be irrational
 (`irrational_log_ratio`), and `p ^ (log q / log p) = q` would then be a transcendental rational
 integer. -/
-theorem log_ratio_transcendental (hGS : GelfondSchneider) {p q : ℕ}
-    (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
+theorem log_ratio_transcendental {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
     Transcendental ℚ (Real.log q / Real.log p) := by
-  have hGSr : GelfondSchneiderReal := gelfondSchneiderReal_of_complex hGS
+  have hGSr : GelfondSchneiderReal := gelfondSchneiderReal_holds
   set ξ : ℝ := Real.log q / Real.log p with hξ
   have hlogp_pos : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
   -- `p ^ ξ = q`.

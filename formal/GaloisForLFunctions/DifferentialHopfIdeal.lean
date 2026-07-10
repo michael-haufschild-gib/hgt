@@ -187,6 +187,40 @@ theorem no_low_degree_support_of_minimal_scale_stable
         simpa [R, hE] using scale_two_sub_top_totalDegree_lt Q hR0'
       exact (not_le_of_gt hes) (ih R.totalDegree hRlt hRI rfl hsR)
 
+/-- Every nonzero ideal contains a nonzero element of least total degree. -/
+theorem Ideal.exists_minimal_totalDegree_ne_zero
+    {ι C : Type*} [Field C]
+    {I : Ideal (DifferentialPolynomial ι C)} (hI : I ≠ ⊥) :
+    ∃ P : DifferentialPolynomial ι C,
+      P ∈ I ∧ P ≠ 0 ∧
+        ∀ ⦃Q : DifferentialPolynomial ι C⦄, Q ∈ I → Q ≠ 0 →
+          P.totalDegree ≤ Q.totalDegree := by
+  classical
+  have hexP : ∃ P : DifferentialPolynomial ι C, P ∈ I ∧ P ≠ 0 := by
+    by_contra h
+    have hz : ∀ P : DifferentialPolynomial ι C, P ∈ I → P = 0 := by
+      intro P hPI
+      by_contra hP0
+      exact h ⟨P, hPI, hP0⟩
+    apply hI
+    ext P
+    simp only [Ideal.mem_bot]
+    constructor
+    · exact hz P
+    · intro hP
+      subst P
+      exact I.zero_mem
+  have hexD : ∃ d : ℕ, ∃ P : DifferentialPolynomial ι C,
+      P ∈ I ∧ P ≠ 0 ∧ P.totalDegree = d := by
+    obtain ⟨P, hPI, hP0⟩ := hexP
+    exact ⟨P.totalDegree, P, hPI, hP0, rfl⟩
+  let d := Nat.find hexD
+  obtain ⟨P, hPI, hP0, hPd⟩ := Nat.find_spec hexD
+  refine ⟨P, hPI, hP0, ?_⟩
+  intro Q hQI hQ0
+  rw [hPd]
+  exact Nat.find_min' hexD ⟨Q, hQI, hQ0, rfl⟩
+
 end
 
 end GaloisForLFunctions

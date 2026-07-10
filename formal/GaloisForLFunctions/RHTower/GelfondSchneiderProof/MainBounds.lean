@@ -559,13 +559,13 @@ lemma S_norm_bound : ∀ (hz : z ∈ Metric.sphere 0 (h7.m * (1 + (h7.r q hq0 h2
         ((((h7.r q hq0 h2mq : ℝ)* ( ( (3 : ℝ) - (h7.m: ℝ))/2 : ℝ)) + (3 / 2 : ℝ))) := ?_
 
   · rw [h7.S_eq_SR_on_circle q hq0 h2mq z hz]
-    unfold auxiliaryRemainderRestricted
+    unfold SR
     simp only [mul_assoc]
   · nth_rewrite 2 [mul_assoc]
     nth_rewrite 2 [← mul_assoc]
     rw [mul_comm  ↑(h7.r q hq0 h2mq).factorial  ‖h7.R q hq0 h2mq z‖]
     simp only [mul_assoc, zpow_neg, zpow_natCast,
-    Complex.norm_mul, norm_natCast, norm_inv, norm_pow,
+    Complex.norm_mul, _root_.norm_natCast, norm_inv, norm_pow,
       norm_prod, Complex.norm_div, one_div]
   · apply mul_le_mul (le_refl _) ?_ (by positivity) (by positivity)
     · rw [mul_assoc, mul_assoc]
@@ -708,15 +708,15 @@ def systemCoeffsff_foo_S : ρᵣ h7 q hq0 h2mq =
   have HAE : ∀ (z : ℂ), AnalyticAt ℂ (h7.R q hq0 h2mq) z := by
     intros z
     fun_prop
-  let R₁ : ℂ → ℂ := analyticExtensionR h7 q hq0 h2mq ((h7.l₀' q hq0 h2mq))
+  let R₁ : ℂ → ℂ := R' h7 q hq0 h2mq ((h7.l₀' q hq0 h2mq))
   have HR1 : ∀ (z : ℂ), AnalyticAt ℂ R₁ z := by
     unfold R₁
     intros z
-    apply analyticExtensionR_analyticAt h7 q hq0 h2mq (h7.l₀' q hq0 h2mq) z
+    apply R'_analyticAt h7 q hq0 h2mq (h7.l₀' q hq0 h2mq) z
   have hR₁ : ∀ (z : ℂ), (h7.R q hq0 h2mq) z =
     ((z - (h7.l₀' q hq0 h2mq + 1)) ^ (h7.r q hq0 h2mq)) * (R₁ z) := by
     intros z
-    rw [h7.R_eq_pow_mul_analyticExtensionR]
+    rw [h7.R_eq_pow_mul_R']
   have hr : h7.r q hq0 h2mq ≤ h7.r q hq0 h2mq := by rfl
   have :
    ∃ R₂ : ℂ → ℂ, (∀ z : ℂ, AnalyticAt ℂ R₂ z) ∧
@@ -739,16 +739,16 @@ def systemCoeffsff_foo_S : ρᵣ h7 q hq0 h2mq =
   dsimp [S]
   simp only [add_left_inj, Nat.cast_inj, exists_apply_eq_apply', ↓reduceDIte]
   dsimp
-  · unfold auxRemainderAtL0
+  · unfold SRl0
     simp only [add_sub_add_right_eq_sub]
     rw [mul_comm   ↑(h7.r q hq0 h2mq).factorial
-      (h7.analyticExtensionR q hq0 h2mq (h7.l₀' q hq0 h2mq) (↑↑(h7.l₀' q hq0 h2mq) + 1))]
+      (h7.R' q hq0 h2mq (h7.l₀' q hq0 h2mq) (↑↑(h7.l₀' q hq0 h2mq) + 1))]
     nth_rw 2 [← mul_one
-      (a := (h7.analyticExtensionR q hq0 h2mq (h7.l₀' q hq0 h2mq) (↑↑(h7.l₀' q hq0 h2mq) + 1)) *
+      (a := (h7.R' q hq0 h2mq (h7.l₀' q hq0 h2mq) (↑↑(h7.l₀' q hq0 h2mq) + 1)) *
       ↑(h7.r q hq0 h2mq).factorial) ]
     congr
     simp only [mul_one, sub_self, zero_mul, add_zero]
-    nth_rw 2 [← mul_one (a:= h7.analyticExtensionR q hq0 h2mq (h7.l₀' q hq0 h2mq)
+    nth_rw 2 [← mul_one (a:= h7.R' q hq0 h2mq (h7.l₀' q hq0 h2mq)
       ((h7.l₀' q hq0 h2mq : ℂ) + 1) * ↑(h7.r q hq0 h2mq).factorial)]
     congr
     have H1 :  ∏ x ∈ Finset.range h7.m \ {↑(h7.l₀' q hq0 h2mq)}, 1 = (1 : ℂ) := by

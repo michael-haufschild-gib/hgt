@@ -12,7 +12,7 @@ the exact Sonin projection correction and the principal-subtracted dilation resi
 any Hilbert--Schmidt hypothesis.
 -/
 import GaloisForLFunctions.HilbertSchmidtOperator
-import GaloisForLFunctions.RHTower.SoninTimeBandIdeal
+import GaloisForLFunctions.RHTower.SoninPrimePowerRegularization
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
 
 noncomputable section
@@ -22,7 +22,7 @@ open scoped ENNReal
 
 namespace RHTower
 
-set_option maxHeartbeats 800000
+set_option maxHeartbeats 300000
 
 section Kernel
 
@@ -99,11 +99,35 @@ theorem isHilbertSchmidt_kernelOperator
 
 end Kernel
 
-/-- The finite-rectangle Fourier operator between interval `L²` spaces is Hilbert--Schmidt. -/
-theorem isHilbertSchmidt_finiteTimeBandFourier (a b c d : ℝ) :
-    ContinuousLinearMap.IsHilbertSchmidt (finiteTimeBandFourier a b c d) :=
-  isHilbertSchmidt_kernelOperator (volume : Measure (ClosedInterval a b))
-    (fourierFunctionalField a b c d)
+end RHTower
+
+namespace ContinuousLinearMap
+
+variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+
+/-- The Hilbert-space trace class in factorization form: a bounded operator is trace class when
+it is a product of two Hilbert--Schmidt operators.  This is the standard factorization
+characterization of the Schatten `S₁` ideal; no trace functional is inserted into the
+definition. -/
+def IsTraceClass (T : H →L[ℂ] H) : Prop :=
+  ∃ S U : H →L[ℂ] H, IsHilbertSchmidt S ∧ IsHilbertSchmidt U ∧ T = S ∘L U
+
+/-- A product of two Hilbert--Schmidt operators is trace class by the factorization
+characterization. -/
+theorem IsHilbertSchmidt.comp_isTraceClass
+    {S U : H →L[ℂ] H} (hS : IsHilbertSchmidt S) (hU : IsHilbertSchmidt U) :
+    IsTraceClass (S ∘L U) :=
+  ⟨S, U, hS, hU, rfl⟩
+
+/-- The positive energy `T†T` of a Hilbert--Schmidt operator is trace class. -/
+theorem IsHilbertSchmidt.adjoint_comp_self_isTraceClass
+    {T : H →L[ℂ] H} (hT : IsHilbertSchmidt T) :
+    IsTraceClass (ContinuousLinearMap.adjoint T ∘L T) :=
+  hT.adjoint.comp_isTraceClass hT
+
+end ContinuousLinearMap
+
+namespace RHTower
 
 /-- The full-input finite time-band operator into the restricted output `L²` space is
 Hilbert--Schmidt. -/
@@ -135,9 +159,20 @@ theorem isHilbertSchmidt_fourierCutoff_indicatorCutoff_central
     ContinuousLinearMap.IsHilbertSchmidt
       (fourierCutoff (centralInterval s) (measurableSet_centralInterval s) *
         indicatorCutoff (centralInterval t) (measurableSet_centralInterval t)) := by
-  have h := (isHilbertSchmidt_cutoffFourierCutoff (-s) s (-t) t (by linarith)).comp_left
+  let U : SoninL2 →L[Complex] SoninL2 :=
     fourierUnitary.symm.toLinearIsometry.toContinuousLinearMap
-  simpa [fourierCutoff, cutoffFourierCutoff, Function.comp_def] using h
+  let K : SoninL2 →L[Complex] SoninL2 := cutoffFourierCutoff (-s) s (-t) t
+  have hK : ContinuousLinearMap.IsHilbertSchmidt K := by
+    simpa [K] using isHilbertSchmidt_cutoffFourierCutoff (-s) s (-t) t (by linarith)
+  have hEq :
+      fourierCutoff (centralInterval s) (measurableSet_centralInterval s) *
+          indicatorCutoff (centralInterval t) (measurableSet_centralInterval t) =
+        U * K := by
+    apply ContinuousLinearMap.ext
+    intro f
+    rfl
+  rw [hEq]
+  exact hK.comp_left U
 
 /-- The physical-then-Fourier central cutoff block is Hilbert--Schmidt. -/
 theorem isHilbertSchmidt_indicatorCutoff_fourierCutoff_central
@@ -203,6 +238,26 @@ theorem centralSoninDilationCornerResidual_isHilbertSchmidt
     ContinuousLinearMap.IsHilbertSchmidt (centralSoninDilationCornerResidual a p hp) :=
   (centralSoninDilationCornerResidual_mem_timeBandIdeal a p ha hp).isHilbertSchmidt
 
+/-- Every actual prime-power residual block is Hilbert--Schmidt. -/
+theorem centralSoninPrimePowerResidual_isHilbertSchmidt
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
+    ContinuousLinearMap.IsHilbertSchmidt (centralSoninPrimePowerResidual a pk) :=
+  (centralSoninPrimePowerResidual_mem_timeBandIdeal a ha pk).isHilbertSchmidt
+
+/-- Every logarithmically weighted actual prime-power residual block is Hilbert--Schmidt. -/
+theorem centralSoninWeightedPrimePowerResidual_isHilbertSchmidt
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
+    ContinuousLinearMap.IsHilbertSchmidt (centralSoninWeightedPrimePowerResidual a pk) :=
+  (centralSoninWeightedPrimePowerResidual_mem_timeBandIdeal a ha pk).isHilbertSchmidt
+
+/-- Every finite regularized prime-power section is Hilbert--Schmidt, with no operator-ideal
+hypothesis left to supply. -/
+theorem finite_centralSoninWeightedPrimePowerResidual_isHilbertSchmidt
+    (a : ℝ) (ha : 0 < a) (s : Finset (Nat.Primes × ℕ)) :
+    ContinuousLinearMap.IsHilbertSchmidt
+      (∑ pk ∈ s, centralSoninWeightedPrimePowerResidual a pk) :=
+  (finite_centralSoninWeightedPrimePowerResidual_mem_timeBandIdeal a ha s).isHilbertSchmidt
+
 /-- The two factors in the constructive residual trace-ideal certificate are actual
 Hilbert--Schmidt operators. -/
 theorem IsSoninTimeBandTraceIdeal.exists_hilbertSchmidt_factors
@@ -212,5 +267,21 @@ theorem IsSoninTimeBandTraceIdeal.exists_hilbertSchmidt_factors
       ContinuousLinearMap.IsHilbertSchmidt U ∧ T = S * U := by
   obtain ⟨S, U, hS, hU, rfl⟩ := hT
   exact ⟨S, U, hS.isHilbertSchmidt, hU.isHilbertSchmidt, rfl⟩
+
+/-- A constructive Sonin trace-ideal certificate now yields the actual Hilbert-space trace-class
+interface, because its two factors have been proved Hilbert--Schmidt. -/
+theorem IsSoninTimeBandTraceIdeal.isTraceClass
+    {T : SoninL2 →L[Complex] SoninL2} (hT : IsSoninTimeBandTraceIdeal T) :
+    ContinuousLinearMap.IsTraceClass T := by
+  obtain ⟨S, U, hS, hU, hEq⟩ := hT.exists_hilbertSchmidt_factors
+  exact ⟨S, U, hS, hU, hEq⟩
+
+/-- The positive energy of the principal-subtracted ambient Sonin dilation residual is
+unconditionally trace class. -/
+theorem centralSoninDilationCornerResidualEnergy_isTraceClass
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
+    ContinuousLinearMap.IsTraceClass
+      (centralSoninDilationCornerResidualEnergy a p hp) :=
+  (centralSoninDilationCornerResidualEnergy_mem_traceIdeal a p ha hp).isTraceClass
 
 end RHTower

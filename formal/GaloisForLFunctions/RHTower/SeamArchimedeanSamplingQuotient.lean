@@ -90,7 +90,8 @@ theorem primePowerSamples_gapTent :
 theorem archimedeanThetaDensity_eq_re_positiveFormula (u : ℝ) :
     archimedeanThetaDensity u = (xiThetaPositiveFormula u).re := by
   rw [archimedeanThetaDensity, xiThetaPositiveFormula]
-  simp
+  rw [← Complex.ofReal_mul]
+  exact (Complex.ofReal_re _).symm
 
 /-- On the positive half-line, `archimedeanThetaDensity` is exactly the real part of the
 completed-zeta logarithmic theta source, not an auxiliary positive weight. -/
