@@ -272,6 +272,30 @@ For a matrix `M` over the Euclidean domain `C[delta]`, the differential transcen
 
 Applying this lemma to the boundary matrix proves the formula. Adjoining the finitely many DA lift corrections does not change differential transcendence degree.
 
+## Complete nonlinear family matroid `[PROVED IN A SEPARATE CARD]`
+
+The separate theorem `atomic-defect-full-orbit-differential-matroid` upgrades the boundary formula
+to undifferenced functions. For arbitrary `F_1,...,F_m in Q_(tau,sigma)`,
+
+`dtrdeg_(C(z)) C(z)<F_1,...,F_m>_delta`
+
+equals
+
+`dim_(C(delta)) span{D_(F_1),...,D_(F_m)}`
+
+inside `C(delta)[G]`.
+
+The missing step is a disjoint-cluster argument. Atomicity first makes the finite defect coordinates
+independent. If their common base value satisfied a differential relation over them, translate the
+whole finite cluster to a disjoint set of cosets. The original and translated relations would make
+the defect joining the two clusters DA, while the augmentation-ideal matroid says that joining edge
+raises differential transcendence degree by one.
+
+Consequently every nonlinear differential dependence among finitely many members of the triptic
+constraint class is already explained by a constant-coefficient differential-linear dependence
+among their constraint divisors. This is a family classification, not merely a one-function DA/HT
+criterion.
+
 ## Constraint-first interpretation
 
 The theorem identifies three layers that are invisible if one treats the elliptic gamma function merely as a special function.

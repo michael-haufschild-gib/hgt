@@ -284,7 +284,11 @@ The abstract regular-module implication is a `[BRIDGE]` once an atomic defect th
 ## Boundaries
 
 1. The theorem concerns finite, not infinite, translate superpositions.
-2. It classifies additive translation differences of `f_D`; it does not by itself classify algebraic relations involving the un-differenced functions `f_D` for several different divisors.
+2. This card itself classifies additive translation differences of `f_D`. The separate theorem
+   `atomic-defect-full-orbit-differential-matroid` closes the undifferenced-family problem when `G`
+   is infinite: the differential transcendence degree of arbitrary finite superpositions is exactly
+   the linear rank of their group-algebra divisors, and differential-operator coefficients are
+   handled after localization from `C[delta]` to `C(delta)`.
 3. If the parent function has defect relations finer than a partition matroid, the correct construction uses their actual relation module instead of `I(G)`.
 4. For elliptic gamma, every finite subgroup of `C/H` is contained in `(1/N)H/H` for some `N`; the realized spectra are finite extensions of the dense rank-three group, not arbitrary additive subgroups of `C`.
 

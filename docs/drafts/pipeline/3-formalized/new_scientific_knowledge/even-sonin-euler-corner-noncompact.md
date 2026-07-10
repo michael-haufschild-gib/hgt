@@ -64,6 +64,13 @@ The companion sharp-distance module additionally proves:
 - `one_le_norm_evenCentralSoninDilationCorner_sub_compact`
 - `norm_eulerCoefficient_le_norm_evenCentralPositiveEulerCorner_sub_compact`
 
+The companion Calkin-complement module additionally proves:
+
+- `soninIntersectionProjection_eq_resolventFormula`
+- `isCompactOperator_soninIntersectionProjection_sub_complement`
+- `isCompactOperator_centralSoninProjection_sub_complement`
+- `isCompactOperator_evenCentralSoninProjection_sub_complement`
+
 The proof is internal to the even carrier. It constructs an orthonormal sequence of symmetric
 shell indicators, projects it into the two-constraint Sonin carrier, proves that the correction
 tends to zero, and obtains a uniform lower bound on the crossed image of the resulting bounded
@@ -118,7 +125,9 @@ identifications are not used as assumptions in the formal source theorem: its ca
 unitary image of the exact even Sonin carrier. General Schatten ideals are not represented in the
 current Lean layer, so the consequence that a noncompact operator lies in no finite Schatten class
 remains a paper-level corollary. The toolchain also has no ready Calkin quotient or essential-norm
-API, so the exact norm-one partial-isometry identity remains paper-level. The separate module
+API, so the exact norm-one partial-isometry identity remains paper-level. The module
+`SoninProjectionCalkin.lean` now formalizes its projection identity
+`Q_a = 1-A_a-R_a` modulo compact operators on the actual even carrier. The separate module
 `SoninEulerQuadraticCorner.lean` formalizes the sharp lower distance from compact operators for both
 the one-scale corner and every ordered quadratic product.
 
@@ -136,5 +145,7 @@ the one-scale corner and every ordered quadratic product.
 - [x] 0 -> 1: fixed-cutoff even carrier, operator normalization, and degenerate parameters isolated.
 - [x] 1 -> 2: corrected-shell proof completed on paper.
 - [x] 2 -> 3: analytic theorem and prime specialization formalized unconditionally in Lean.
+- [ ] Strengthened 2 -> 3: the exact projection-complement identity is formalized; the remaining
+  work is the cutoff/dilation compact-modulo multiplication and its essential-norm reader.
 - [ ] 3 -> 4: requires the separate `B_lambda` entire-function identification and an independent
   publication audit; the concrete source-unitary transport is complete.

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper) -- novelty audit open
 - **Source:** user question on the constraint preventing off-line zeros from entering the critical line;
   sparse-prime extension of analytic strong multiplicity one
-- **Statement:** `[PROVED HERE; CANDIDATE NEW SCIENTIFIC KNOWLEDGE; NOVELTY UNVERIFIED]` Let
+- **Statement:** `[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` Let
   `sigma_E(F,G)` be the absolute-convergence
   abscissa of the logarithmic Euler discrepancy of two order-one completed Euler products with
   standard gamma factors and functional equations centered on `Re s=1/2`. The transverse radius of
@@ -163,7 +163,7 @@ zero-free half-planes is the closed band `[1-sigma_E, sigma_E]`, giving the divi
 
 ## Paper proof
 
-`[PROVED HERE; NOVELTY UNVERIFIED]`
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 
 Write `H(s)=L_1(s)/L_2(s)`. In the ordinary Euler half-plane,
 
@@ -368,11 +368,12 @@ relative strips. The critical line is the rigidity threshold `delta=1/2`.
   qualitative thin-support result is therefore not new.
 - Kaczorowski--Perelli and Soundararajan prove stronger multiplicity-one results from closeness of
   prime coefficients.
-- The surviving candidate is the intrinsic quantitative inequality
+- The intrinsic quantitative inequality
   `r_perp <= (sigma_E-1/2)_+` and its position-sensitive support corollary
-  `delta(S) >= 1/2 + |beta-1/2| - theta`. The audit must determine whether this exact global
-  divisor-confinement formulation is explicit in the literature. Until that clears, the novelty
-  label remains only a candidate.
+  `delta(S) >= 1/2 + |beta-1/2| - theta` are useful global formulations, but their proof is a
+  direct application of normal Euler-quotient convergence and functional-equation reflection.
+  Under the strict scientific-newness criterion they are a bridge, not new scientific knowledge,
+  even if this exact notation is absent from the literature.
 
 ## Falsifiers and scope
 

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper) -- novelty audit open
 - **Source:** `euler-support-transverse-divisor-rigidity.md`; user request for a significant global
   constraint on zeros entering the critical line
-- **Statement:** `[PROVED HERE; CANDIDATE NEW SCIENTIFIC KNOWLEDGE; NOVELTY UNVERIFIED]` If two
+- **Statement:** `[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` If two
   completed Euler products differ at primes of convergence dimension `delta`, their logarithmic
   Euler discrepancy has weighted `ell^q` abscissa `sigma_q`, and their nontrivial divisor difference
   contains a point at horizontal distance `a`, then for every `1<=q<=infinity`,
@@ -118,7 +118,7 @@ sigma_q^prime+delta_1/q' >= 1/2+a.                         (P_prime)
 
 ## Paper proof
 
-`[PROVED HERE; NOVELTY UNVERIFIED]`
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 
 First take `1<q<infinity`. Fix
 
@@ -340,8 +340,11 @@ realizability would prove the uncertainty law optimal.
   objection that they are short consequences of absolute convergence plus Holder.
 - The `q=2` energy law is the most significant surviving form: it gives a necessary divergence
   scale for any Euler-side surgery of an off-line zero, even with changes at every prime.
-- The theorem remains in `needs-audit`; a standard explicit-formula or Dirichlet-series result
-  equivalent to `(P)` would force downgrade.
+- Strict verdict: the theorem is already a short consequence of the relative absolute-convergence
+  strip plus weighted Holder.  The continuum of exponents is useful packaging, but the
+  parent-theory gate fails even without locating the exact displayed inequality in print.  It is
+  therefore not new scientific knowledge.  Boundary realizability remains an open research
+  question, not a proved novelty claim.
 
 ## Log
 

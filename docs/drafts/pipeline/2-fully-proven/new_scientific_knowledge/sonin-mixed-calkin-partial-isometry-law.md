@@ -199,8 +199,10 @@ and
 
 `G(p,q)G(p,q)^* =_K Sigma(a*p/m,a*p)`.
 
-This requires a reusable exact two-projection resolvent formula for `Q_a` and the compact
-congruence `Q_a =_K 1-A_a-R_a`. No Calkin quotient or essential-norm API is required.
+The reusable exact two-projection resolvent formula and the compact congruence
+`Q_a =_K 1-A_a-R_a` are now formalized in `SoninProjectionCalkin.lean`, including restriction to
+the actual even carrier. The remaining target is the cutoff/dilation covariance and the two mixed
+Gram compact-modulo products. No Calkin quotient or essential-norm API is required.
 
 ## Gates
 

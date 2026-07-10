@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper) -- novelty audit open
 - **Source:** `euler-support-transverse-divisor-rigidity.md`; user question on the global constraint
   preventing off-line zeros from entering the critical line
-- **Statement:** `[PROVED HERE; CANDIDATE NEW SCIENTIFIC KNOWLEDGE; NOVELTY UNVERIFIED]` The
+- **Statement:** `[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` The
   absolute-convergence abscissa of the logarithmic Euler discrepancy and the outer horizontal
   exponent of the nontrivial divisor difference are extended ultrapseudometrics, and the
   Euler-to-divisor map is non-expanding. The critical Euler ball of exponent `1/2` has constant
@@ -96,7 +96,7 @@ sigma_D(F,G)=1/2+r_perp(D_nt(F,G)).
 
 ## Paper proof
 
-`[PROVED HERE; NOVELTY UNVERIFIED]`
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 
 Symmetry and the diagonal value of `sigma_E` are immediate. For the triangle law, coefficientwise
 
@@ -180,10 +180,10 @@ as a stability theorem for the infinite Euler-to-divisor map.
 - The max-triangle for convergence abscissae is elementary Dirichlet-series theory.
 - Michael Farmer's 2021 thin-prime theorem gives the qualitative `sigma_E<1/2` off-line rigidity in
   a different coefficient regime.
-- The candidate new content is the combined ultrametric filtration, the non-expansion theorem
-  `sigma_D<=sigma_E`, and the path-disconnectedness interpretation of zero entry.
-- This remains in `needs-audit`: if the construction is already standard under another name, it must
-  be downgraded to structural packaging rather than new scientific knowledge.
+- The combined ultrametric filtration, the non-expansion theorem `sigma_D<=sigma_E`, and the
+  path-disconnectedness interpretation are structural packaging of the relative-strip inequality
+  and elementary ultrametric topology.  Their parent-theory reduction is immediate, so they do not
+  count as new scientific knowledge even if the packaging is not standardly named.
 
 ## Log
 

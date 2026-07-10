@@ -516,6 +516,8 @@ import GaloisForLFunctions.RHTower.EntireHasLog
 import GaloisForLFunctions.RHTower.ZeroResonanceIndependence
 import GaloisForLFunctions.RHTower.XiConvergenceExponent
 import GaloisForLFunctions.RHTower.CentralReciprocalMoments
+import GaloisForLFunctions.RHTower.XiCanonicalProduct
+import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.RHTower.TraceHankelConverse
 import GaloisForLFunctions.RHTower.XiTraceHankelCriterion
 import GaloisForLFunctions.RHTower.ReBoundAffine
@@ -533,6 +535,7 @@ import GaloisForLFunctions.RHTower.FiniteEulerCalkinIndependence
 import GaloisForLFunctions.RHTower.SummableEulerCalkinInjectivity
 import GaloisForLFunctions.RHTower.SoninEulerFiniteL2Lower
 import GaloisForLFunctions.RHTower.SoninEulerFiniteGramLower
+import GaloisForLFunctions.RHTower.SoninProjectionCalkin
 import GaloisForLFunctions.RHTower.ThueMorseMellinFlatness
 import GaloisForLFunctions.RHTower.ThueMorseFlankEnergyDischarge
 import GaloisForLFunctions.RHTower.QuietFlankGrowth

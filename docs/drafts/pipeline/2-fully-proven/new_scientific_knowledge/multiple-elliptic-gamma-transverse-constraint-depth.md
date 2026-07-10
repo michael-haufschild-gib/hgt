@@ -262,6 +262,15 @@ the localization of the Stanley--Reisner ring of the `(r-2)`-skeleton on `r+1` v
 
 This is stronger than knowing the one-shift spectrum. The spectrum tests individual binomials; transverse depth detects how independent constraints interact.
 
+For `r=2`, the separate theorem
+`order-two-elliptic-gamma-full-structural-differential-matroid` now proves a nonlinear upgrade:
+the quotient `R_tau/I_2` is not only the annihilator module but represents the complete
+differential-algebraic matroid of every finite structural family. Thus, at order two, its linear
+rank over `C(delta)` is the exact differential transcendence degree and no hidden nonlinear
+relation survives outside the squarefree face ideal. The corresponding all-order claim remains
+open because higher skeletons contain several distinct lower-face atoms whose joint atomicity is
+not supplied by the present annihilator theorem.
+
 ## Attack and boundaries
 
 1. **Total-order false formulation.** The statement “all sufficiently high iterated differences are DA” is false. For `r>=2`, `Delta_(tau_j)^N Psi_r` is HT for every `N`.
