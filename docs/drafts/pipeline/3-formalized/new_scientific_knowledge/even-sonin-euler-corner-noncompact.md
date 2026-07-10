@@ -33,13 +33,20 @@ and
 `||(1-Q_a)E_pQ_a||_ess=p^(-1/2)`.
 
 Those equalities use an explicit Calkin partial-isometry computation. The companion module
-`SoninEulerCalkinPartialIsometry.lean` now formalizes the exact initial/final shell projections and
+`SoninEulerCalkinPartialIsometry.lean` formalizes the exact initial/final shell projections and
 the Calkin partial-isometry law, while `SoninEulerQuadraticCorner.lean` formalizes the sharp lower
 half: for every compact `K`,
 
 `1 <= ||(1-Q_a)(U_p+U_p⁻¹)Q_a-K||`,
 
 and the corresponding positive Euler coefficient lower bound.
+
+Both equalities are now unconditional Lean theorems. `SoninCalkinNormBound.lean` defines
+`essentialNorm` as the distance to the compact ideal and proves the quotient-free upper bound
+from the compact congruence; `SoninEulerEssentialNorm.lean` proves the one-scale
+initial-projection law `L^*L =_K Σ(a, pa)`, the one-scale Calkin partial isometry, and the exact
+equalities `essentialNorm L = 1`, `essentialNorm C_p = (sqrt p)⁻¹`, and
+`essentialNorm (archimedeanPrimeEulerCorner a p) = (sqrt p)⁻¹`, with prime specializations.
 
 ## Formal surface
 
@@ -78,6 +85,19 @@ The companion Calkin partial-isometry module additionally proves:
 - `evenCentralSoninQuadraticCorner_mul_adjoint_compactEq_shell`
 - `evenTwoPolarizationShell_isCalkinProjection`
 - `evenCentralSoninQuadraticCorner_isCalkinPartialIsometry`
+
+The companion essential-norm modules additionally prove:
+
+- `essentialNorm` with `essentialNorm_eq_of_bounds`, `essentialNorm_smul`,
+  `essentialNorm_unitaryPush`
+- `exists_isCompactOperator_norm_sub_le_one_add` and
+  `isCompactOperator_of_adjoint_mul_compactEq_zero` (the quotient-free cut arguments)
+- `evenCentralSoninDilationCorner_adjoint_mul_compactEq_shell`
+- `evenCentralSoninDilationCorner_isCalkinPartialIsometry`
+- `essentialNorm_evenCentralSoninDilationCorner` (`= 1`)
+- `essentialNorm_evenCentralPositiveEulerCorner` (`= (sqrt p)⁻¹`)
+- `essentialNorm_archimedeanPrimeEulerCorner` and
+  `essentialNorm_archimedeanPrimeEulerCorner_natPrime`
 
 The proof is internal to the even carrier. It constructs an orthonormal sequence of symmetric
 shell indicators, projects it into the two-constraint Sonin carrier, proves that the correction
@@ -132,11 +152,13 @@ not encode the full `{infinity,p}` space and the `theta_p`/`iota'_p` cancellatio
 identifications are not used as assumptions in the formal source theorem: its carrier is the actual
 unitary image of the exact even Sonin carrier. General Schatten ideals are not represented in the
 current Lean layer, so the consequence that a noncompact operator lies in no finite Schatten class
-remains a paper-level corollary. The toolchain has no ready essential-norm reader, so the exact
-numerical norm-one corollary remains paper-level. The operator identity itself is now formal:
-`SoninProjectionCalkin.lean` proves `Q_a = 1-A_a-R_a` modulo compact operators on the actual even
-carrier, and `SoninEulerCalkinPartialIsometry.lean` identifies both shell projections and proves
-the mixed Gram entry is a partial isometry modulo compacts. The separate module
+remains a paper-level corollary. The exact numerical essential norms are formal:
+`SoninCalkinNormBound.lean` carries the in-tree `essentialNorm` and its quotient-free upper-bound
+machinery, and `SoninEulerEssentialNorm.lean` states the equalities `||L||_ess=1` and
+`||C_p||_ess=p^(-1/2)` through the literal archimedean source operator. The operator identity is
+also formal: `SoninProjectionCalkin.lean` proves `Q_a = 1-A_a-R_a` modulo compact operators on the
+actual even carrier, and `SoninEulerCalkinPartialIsometry.lean` identifies both shell projections
+and proves the mixed Gram entry is a partial isometry modulo compacts. The separate module
 `SoninEulerQuadraticCorner.lean` formalizes the sharp lower distance from compact operators for both
 the one-scale corner and every ordered quadratic product.
 
@@ -155,7 +177,7 @@ the one-scale corner and every ordered quadratic product.
 - [x] 1 -> 2: corrected-shell proof completed on paper.
 - [x] 2 -> 3: analytic theorem and prime specialization formalized unconditionally in Lean.
 - [x] Strengthened 2 -> 3: the projection complement, cutoff/dilation multiplication, exact shell
-  projections, and Calkin partial-isometry law are formalized. Only the numerical essential-norm
-  reader remains outside the current Lean API.
+  projections, Calkin partial-isometry law, and the exact essential-norm equalities `1` and
+  `p^(-1/2)` (dilation, Euler, and concrete source forms) are formalized.
 - [ ] 3 -> 4: requires the separate `B_lambda` entire-function identification and an independent
   publication audit; the concrete source-unitary transport is complete.

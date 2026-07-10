@@ -4,11 +4,14 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Date:** 2026-07-10
-- **Status banner:** `[NOVELTY UNVERIFIED]` The unconditional sharp lower bound is formalized. The
-  matching paper-level Calkin upper bound gives exact essential norm one, but that quotient argument
-  is not yet represented in Lean.
+- **Status banner:** `[NOVELTY UNVERIFIED]` Both halves of the essential-norm identity are
+  formalized unconditionally: the sharp lower bound and a quotient-free upper bound. Lean states
+  the exact equalities `||L_p^*L_q||_ess=1` and `||C_p^*C_q||_ess=(pq)^(-1/2)`, including the
+  literal archimedean source operator. Only the external novelty audit remains.
 - **Paper source:** `../../2-fully-proven/new_scientific_knowledge/sonin-two-scale-quadratic-corner-noncompact.md`
-- **Lean endpoint:** `formal/GaloisForLFunctions/RHTower/SoninEulerQuadraticCorner.lean`
+- **Lean endpoint:** `formal/GaloisForLFunctions/RHTower/SoninEulerQuadraticCorner.lean`;
+  `formal/GaloisForLFunctions/RHTower/SoninCalkinNormBound.lean`;
+  `formal/GaloisForLFunctions/RHTower/SoninEulerEssentialNorm.lean`
 
 ## Formalized statement
 
@@ -70,23 +73,31 @@ The module proves:
 - `archimedeanPrimeEulerQuadraticCorner_eq_unitaryPush`
 - `archimedeanPrimeEulerQuadraticCorner_not_isCompactOperator`
 
+The essential-norm modules additionally prove:
+
+- `essentialNorm` (distance to the compact ideal) with the bridging lemmas
+  `essentialNorm_eq_of_bounds`, `essentialNorm_smul`, `essentialNorm_unitaryPush`
+- `exists_isCompactOperator_norm_sub_le_one_add` (the abstract quotient-free upper bound)
+- `exists_isCompactOperator_norm_evenCentralSoninQuadraticCorner_sub_le`
+- `essentialNorm_evenCentralSoninQuadraticCorner` (`= 1`)
+- `essentialNorm_evenCentralPositiveEulerQuadraticCorner` (`= (sqrt p * sqrt q)⁻¹`)
+- `essentialNorm_archimedeanPrimeEulerQuadraticCorner` and
+  `essentialNorm_archimedeanPrimeEulerQuadraticCorner_natPrime`
+
 Every shell, projection correction, weak-limit argument, and compact-perturbation bound is
 constructed in the theorem. There is no proposition-valued placeholder for the paired-shell limit.
 
 ## Exact formal boundary
 
-The paper theorem combines this Lean lower bound with the one-scale identity
-
-`||L_r||_ess=1`
-
-to obtain
-
-`||L_p^*L_q||_ess=1`
-
-by Calkin submultiplicativity. This toolchain does not currently expose a ready Calkin quotient or
-essential-norm API. The upper bound is therefore paper-level. The concrete Hardy--Titchmarsh
-quadratic operator, its exact unitary-push identity, and its noncompactness are formalized; its sharp
-essential-norm value remains paper-level.
+The paper argument obtained the upper bound through the Calkin quotient. The Lean proof replaces
+it by a quotient-free mechanism: the initial-projection congruence `G^*G =_K Sigma` from
+`SoninEulerCalkinPartialIsometry.lean` feeds the abstract cut theorem of
+`SoninCalkinNormBound.lean`, where a finite `epsilon`-net of the two compact defects spans a
+finite-dimensional subspace whose complementary orthogonal projection reduces the bound to the
+scalar inequality `t^2 <= t + epsilon`. Both halves and the exact equalities — dilation, positive
+Euler, and literal archimedean source, at all real scales and at rational primes — are therefore
+unconditional Lean theorems, axiom-clean over `propext`, `Classical.choice`, `Quot.sound`. No
+Calkin quotient, spectral theorem, or essential-spectrum theory is assumed anywhere.
 
 ## Dual gate
 
@@ -105,4 +116,6 @@ essential-norm value remains paper-level.
 - [x] 1 -> 2: paper proof of the sharp lower bound and exact essential norm completed
 - [x] 2 -> 3: compact-distance lower bound, positive Euler scaling, and concrete
   Hardy--Titchmarsh quadratic noncompactness formalized
-- [ ] 3 -> 4: encode the Calkin upper bound and complete an independent publication audit
+- [x] Strengthened 2 -> 3: the quotient-free upper bound and the exact essential-norm equalities
+  `1`, `(sqrt p * sqrt q)⁻¹` are formalized through the concrete source operator
+- [ ] 3 -> 4: independent publication audit

@@ -303,6 +303,28 @@ and
 for every compact `K` (with the Euler coefficient represented by its exact complex norm). Thus the
 lower half of the new essential-norm identity is formalized without introducing a quotient API.
 
+The modules `SoninCalkinNormBound.lean` and `SoninEulerEssentialNorm.lean` complete the identity.
+`essentialNorm` is defined in-tree as the distance to the compact ideal, and the upper half is
+proved from the one-scale compact congruence
+
+`L^*L =_K (alpha_(p lambda)-alpha_lambda)+(rho_(p lambda)-rho_lambda)`
+
+by a finite-rank orthogonal cut of the compact defects; no Calkin quotient and no spectral theory
+enter. The endpoints are:
+
+- `evenCentralSoninDilationCorner_adjoint_mul_compactEq_shell`: the one-scale initial-projection
+  law, obtained as the diagonal degeneration of the mixed shell-translation identity;
+- `evenCentralSoninDilationCorner_isCalkinPartialIsometry`: the corner is a partial isometry
+  modulo compact operators, with the final-projection congruence derived from the initial one by
+  the compactness of `L(1-Sigma)`;
+- `essentialNorm_evenCentralSoninDilationCorner`: `||L_{p,lambda}||_ess = 1` exactly;
+- `essentialNorm_evenCentralPositiveEulerCorner`: `||-p^(-1/2)L_{p,lambda}||_ess = p^(-1/2)`;
+- `essentialNorm_archimedeanPrimeEulerCorner` and its rational-prime specialization: the literal
+  archimedean Hardy--Titchmarsh source corner has essential norm exactly `p^(-1/2)`, uniformly in
+  the cutoff.
+
+All endpoints are axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
+
 ## Gates
 
 - [x] 0 -> 1: actual source operator, actual Sonin projection, and degenerate cases isolated.
@@ -311,6 +333,7 @@ lower half of the new essential-norm identity is formalized without introducing 
   unitary transport are formalized through `HardyTitchmarshEulerConcrete.lean`, with stage-3 card
   `../../3-formalized/new_scientific_knowledge/even-sonin-euler-corner-noncompact.md`. The source-image projection,
   pointwise local Euler multiplier, exact pullback, and noncompactness are all encoded.
-- [ ] Strengthened 2 -> 3: encode the norm-one Calkin partial-isometry identity and the resulting
-  exact positive Euler essential norm.
+- [x] Strengthened 2 -> 3: the norm-one Calkin partial-isometry identity and the exact positive
+  Euler essential norms `||L||_ess=1`, `||C_p||_ess=p^(-1/2)` are encoded, including the literal
+  archimedean source operator (`SoninCalkinNormBound.lean`, `SoninEulerEssentialNorm.lean`).
 - [ ] 3 -> 4: requires standalone analytic exposition and an independent source/literature audit.

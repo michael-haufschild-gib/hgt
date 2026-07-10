@@ -1,9 +1,10 @@
 # Elliptic Gamma Rank-Three DA Translation Spectrum
 
 - **ID:** elliptic-gamma-rank-three-da-spectrum
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 2-fully-proven / adversarial paper audit passed / unconditional Lean proof open
 - **Type:** THEOREM (paper) / OPEN-PROBLEM CANDIDATE
-- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — provisional pending independent expert scrutiny
+- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — paper audit passed; provisional
+  pending independent expert scrutiny and full unconditional Lean formalization
 - **Statement:** For multiplicatively independent elliptic nomes, the elliptic gamma function is hypertranscendental; its additive logarithmic-derivative defects and multiplicative shift quotients have exact DA spectrum equal to the rank-three period group; and the differential transcendence degree of any finite defect or quotient family is the number of distinct nonzero shift cosets.
 - **Abstraction audit:** `paired-quasi-elliptic-constraint-rigidity` collapses under its one-pole hypotheses to translated scalar-affine copies of `Psi`; it is retained as an anti-novelty bridge, not claimed as an independent structural parent.
 
@@ -252,11 +253,18 @@ OpenAlex title/abstract and citation-descendant searches through 2026 returned n
 
 ## Lean route
 
-The local Lean tree has no elliptic-function, elliptic summability, or multi-operator Picard--Vessiot infrastructure. Formalizing the analytic theorem now would be theatre. The finite-support orbit-principal-part core is already present in `GaloisForLFunctions.OrbitBalance`:
+The local Lean tree has no elliptic-function, elliptic summability, or multi-operator
+Picard--Vessiot infrastructure. These missing layers must be implemented; they may not be replaced
+by hypotheses restating the atomic theorem. The finite-support orbit-principal-part core is already
+present in `GaloisForLFunctions.OrbitBalance`:
 
 `orbitDegree_intShiftCoboundary` proves that a finite shift coboundary on an integer orbit has zero augmentation, and `orbitDegree_single_ne_zero_ne_of_orbitDegree_zero` separates a lone nonzero principal part from every balanced coboundary.
 
-After identifying a nontorsion translation orbit with `Z`, these are exactly the algebraic lemmas used in Step 5. No Lean edit is needed; the missing formal layers are genuinely elliptic geometry and multi-operator Picard--Vessiot theory, not finite-support algebra.
+After identifying a nontorsion translation orbit with `Z`, these are exactly the algebraic lemmas
+used in Step 5. The next formal targets are the several-automorphism simultaneous telescoper,
+meromorphic joint-period constancy, elliptic function-field product specialization, and the theta
+principal-part realization. The final proof criterion is the concrete theorem in Lean, tracked by
+`all-order-multiple-elliptic-gamma-structural-matroid-lean-capstone`.
 
 ## Gates
 
@@ -272,6 +280,7 @@ After identifying a nontorsion translation orbit with `Z`, these are exactly the
 - [x] Exact/equivalent/stronger preliminary literature gate completed across primary sources and citation descendants.
 - [x] Rediscovery gate completed across multiple elliptic gamma, elliptic summability, elliptic difference Galois theory, and older Picard--Vessiot parents.
 - [ ] Independent expert scrutiny.
+- [ ] Full unconditional Lean formalization.
 
 ## Log
 

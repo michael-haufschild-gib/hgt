@@ -14,7 +14,7 @@ Use this as the quick map before opening large proof files.
 ## Wiring
 
 - Root imports `GaloisForLFunctions.MainTheorems`: **yes**.
-- Shared and bridge declarations outside the three theorem areas: **8145**.
+- Shared and bridge declarations outside the three theorem areas: **8190**.
 - Active proof-debt findings: **0**.
 
 ## Local Commands
@@ -32,7 +32,7 @@ Use this as the quick map before opening large proof files.
 | Lines | File |
 |---:|---|
 | 12440 | `formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean` |
-| 5187 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
+| 5178 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 3982 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
 | 3802 | `formal/GaloisForLFunctions/GammaDifferentialFE.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |

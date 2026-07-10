@@ -4,8 +4,9 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
 - **Date:** 2026-07-10
-- **Status banner:** `[NOVELTY UNVERIFIED]` The proof is complete and the sharp lower bound is
-  formalized in Lean. The theorem closes the explicit two-prime product gap in
+- **Status banner:** `[NOVELTY UNVERIFIED]` The proof is complete and the exact essential-norm
+  identity is fully formalized in Lean, lower and upper halves, including the concrete source
+  value `(pq)^(-1/2)`. The theorem closes the explicit two-prime product gap in
   `sonin-euler-metric-corner-noncompact.md`; scientific priority still requires a broader
   operator-theory and Sonin/prolate literature audit.
 - **Parent:** `sonin-euler-metric-corner-noncompact.md`
@@ -309,18 +310,32 @@ The formal endpoints are
 `archimedeanPrimeEulerQuadraticCorner_not_isCompactOperator`.
 
 Mathlib in this toolchain has the closed subspace of compact operators but no ready Calkin quotient
-or essential-norm API. Thus Lean proves the sharp lower bound against **every** compact perturbation.
-The matching upper bound `<=1`, obtained on paper from the one-scale Calkin partial-isometry formula,
-remains to be encoded. The concrete Hardy--Titchmarsh quadratic operator and its noncompactness are
-formalized, while its exact essential-norm value remains paper-level.
+or essential-norm API, so the project now carries its own: `SoninCalkinNormBound.lean` defines
+`essentialNorm` as the distance to the compact ideal and proves the matching upper bound directly
+from the compact congruence `G^*G =_K Sigma` of `SoninEulerCalkinPartialIsometry.lean`. No quotient
+algebra or spectral theory is used: a finite `epsilon`-net of the images of the two compact defects
+spans a finite-dimensional subspace, cutting by its orthogonal complement leaves a vector-level
+quadratic inequality with positive root `1+epsilon`, and the cut corner `G(1-P)` differs from `G` by
+the finite-rank compact `G P`. `SoninEulerEssentialNorm.lean` assembles both halves into exact
+equalities:
+
+- `exists_isCompactOperator_norm_evenCentralSoninQuadraticCorner_sub_le` (the upper half);
+- `essentialNorm_evenCentralSoninQuadraticCorner`: `||L_p^*L_q||_ess = 1` for all real `p,q>1`;
+- `essentialNorm_evenCentralPositiveEulerQuadraticCorner`: `||C_p^*C_q||_ess = (sqrt(p)sqrt(q))^(-1)`;
+- `essentialNorm_archimedeanPrimeEulerQuadraticCorner` and its rational-prime specialization:
+  the literal concrete Hardy--Titchmarsh quadratic operator has essential norm exactly
+  `(sqrt(p)sqrt(q))^(-1)`, uniformly in the cutoff.
+
+All endpoints are axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 
 ## Gates
 
 - [x] 0 -> 1: exact two-scale operator and common-interior-shell mechanism isolated
 - [x] 1 -> 2: complete paper proof above
-- [ ] 2 -> 3: the sharp compact-distance lower bound and positive Euler noncompactness are formalized;
-  the matching Calkin upper bound remains, while concrete Hardy--Titchmarsh quadratic noncompactness
-  is encoded
+- [x] 2 -> 3: both halves of the essential-norm identity are formalized — the sharp
+  compact-distance lower bound and the finite-rank-cut upper bound — together with the exact
+  dilation, positive Euler, and concrete Hardy--Titchmarsh essential-norm equalities
+  (`SoninCalkinNormBound.lean`, `SoninEulerEssentialNorm.lean`)
 - [ ] 3 -> 4: primary-literature novelty audit and standalone exposition
 
 ## Resolved multiplication law

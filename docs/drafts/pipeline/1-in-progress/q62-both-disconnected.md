@@ -1,7 +1,7 @@
 # Q6.2 -- both-disconnected quadratic Bottcher independence
 
 - **ID:** q62-both-disconnected
-- **Stage:** 2-fully-proven
+- **Stage:** 1-in-progress
 - **Type:** THEOREM (paper) / bridge subcase
 - **Parent theorem:** `q62-bottcher-independence-n2-all-parameters.md`
 
@@ -15,7 +15,29 @@ coordinate `psi_c^-1`, normalized by
 If `c1 != c2` and both parameters lie outside the Mandelbrot set, then
 `phi_c1(z)` and `phi_c2(z)` are algebraically independent over `C(z)`.
 
-## Proof
+## Formal audit status
+
+The card is not fully proved. The repository's former card-name declaration
+`FullyProvenNewTargets.q62_both_disconnected` concluded only a pair of finite
+annulus root-deck tower packages. It did not state `NoRelation`, did not use
+disconnectedness or `c1 != c2`, and did not identify its coordinates with the
+canonical germs `phiMero c1` and `phiMero c2`.
+
+The exact algebraic reductions are formalized, including
+`q62_independence_disconnected_of_lifts`, the cover-to-canonical descent, and
+several unconditional norm-gap subregions. The unresolved general case is the
+fixed continuation-cover construction for arbitrary distinct disconnected
+parameters: on one common carrier, a localized Cantor-cylinder deck must scale
+the continued canonical `phi_c1`, fix the continued canonical `phi_c2` and the
+base `C(z)`, and descend back to the common germ near infinity. The constructed
+value-annulus rotations do not close this gap because their projection base and
+root coordinate vary with depth and they do not scale the original canonical
+coordinate.
+
+Until that fixed-cover continuation theorem is proved in Lean and connected to
+the canonical `NoRelation` conclusion, this card remains in progress.
+
+## Candidate proof
 
 Assume a nonzero relation
 

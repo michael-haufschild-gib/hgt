@@ -671,12 +671,13 @@ theorem bottcher_exact_pruefer_period_multiplier_order :
   letI : IsFiniteMeasure μ := hfinite
   exact Bottcher.multiplier_orderOf_of_mass μ n h0 hsphere hint hmass
 
-/-! ## q62 both-disconnected / hDisc branch -/
+/-! ## q62 both-disconnected / hDisc support surfaces -/
 
-/-- The non-hRigid hDisc tower target used by
-`q62-both-disconnected.md` and the disconnected branch of
-`q62-bottcher-independence-n2-all-parameters.md`. -/
-def Q62HDiscFixedInverseTowerTarget (c₁ c₂ : ℂ) : Prop :=
+/-- Finite value-annulus root-deck support in both coordinate directions.
+
+This is not the both-disconnected q62 conclusion: it does not state `NoRelation`, and the
+projection base and root coordinate vary with the dyadic depth. -/
+def Q62HDiscFixedInverseTowerSupport (c₁ c₂ : ℂ) : Prop :=
   (∃ (R B R' : ℝ) (hR'pos : 0 < R') (ψ₁ : ℂ → ℂ),
     (∀ d : ℕ, coverAnnulusRadiusIneqs c₁ c₂ (d + 1) R B R') ∧
     ∀ d : ℕ,
@@ -696,19 +697,13 @@ def Q62HDiscFixedInverseTowerTarget (c₁ c₂ : ℂ) : Prop :=
           = 2 * (Real.pi : ℂ) * Complex.I / 2 ^ n ∧
         concreteAnnulusHLiftGOutputWithFixedInverse c₁ ψ₂ n d R' hR'pos)
 
-/-- Formal wrapper for the completed hDisc loop/deck tower, excluding the hRigid branch. -/
-theorem q62_both_disconnected_hdisc_fixed_inverse_towers (c₁ c₂ : ℂ) :
-    Q62HDiscFixedInverseTowerTarget c₁ c₂ :=
+/-- Formal wrapper for the finite value-annulus root-deck support. -/
+theorem q62_hdisc_fixed_inverse_tower_support (c₁ c₂ : ℂ) :
+    Q62HDiscFixedInverseTowerSupport c₁ c₂ :=
   Bottcher.exteriorAnnulus_loop_and_uniform_hliftFG_towers_with_fixed_inverse c₁ c₂
 
-/-- Card-name theorem for `q62-both-disconnected.md`: the completed non-hRigid hDisc loop/deck
-tower used by the disconnected q62 close. -/
-theorem q62_both_disconnected (c₁ c₂ : ℂ) :
-    Q62HDiscFixedInverseTowerTarget c₁ c₂ :=
-  q62_both_disconnected_hdisc_fixed_inverse_towers c₁ c₂
-
-/-- Constructed hDisc uniform two-direction z-fixing deck towers.  This is a raw
-non-hRigid construction object below the q62 disconnected close. -/
+/-- Constructed uniform two-direction z-fixing root-deck towers. This is support below the
+unresolved fixed-continuation-cover construction, not the q62 disconnected close. -/
 def q62_hdisc_uniform_two_zfixing_deck_towers_formal_proof :=
   @Bottcher.exteriorAnnulus_loop_and_uniform_two_zfixing_deck_towers
 
@@ -716,24 +711,20 @@ def q62_hdisc_uniform_two_zfixing_deck_towers_formal_proof :=
 def q62_hdisc_full_zfixing_monoFG_steps_formal_proof :=
   @Bottcher.exteriorAnnulus_loop_and_full_zfixing_monoFG_steps
 
-/-- Existing hDisc deep-data close for q62; exposed as a Lean object so the card
-mapping has a stable name without importing the hRigid path. -/
-def q62_both_disconnected_deep_data_escape_formal_proof :=
+/-- Conditional deep-data reduction for the q62 disconnected lane. -/
+def q62_hdisc_deep_data_escape_support :=
   @Bottcher.q62_disconnected_of_deepData_escape
 
-/-- Topological image-winding hDisc close for q62; the analytic radicand-period condition is derived
-from the image-loop winding bridge before applying the existing deep-data close. -/
-def q62_both_disconnected_image_winding_deep_data_escape_formal_proof :=
+/-- Conditional image-winding deep-data reduction for the q62 disconnected lane. -/
+def q62_hdisc_image_winding_deep_data_escape_support :=
   @Bottcher.q62_disconnected_of_imageWindingDeepData_escape
 
-/-- Existing additive loop/deck close for q62 both-disconnected; exposed for the
-same card mapping. -/
-def q62_both_disconnected_additive_loop_deck_formal_proof :=
+/-- Conditional additive loop/deck reduction for the q62 disconnected lane. -/
+def q62_hdisc_additive_loop_deck_support :=
   @Bottcher.q62_independence_disconnected_of_dyadic_additive_loop_and_two_zfixing_decks
 
-/-- Existing vertical-strip loop/deck close for q62 both-disconnected; exposed for
-the same card mapping. -/
-def q62_both_disconnected_vertical_strip_loop_deck_formal_proof :=
+/-- Conditional vertical-strip loop/deck reduction for the q62 disconnected lane. -/
+def q62_hdisc_vertical_strip_loop_deck_support :=
   @Bottcher.q62_independence_disconnected_of_dyadic_verticalStrip_loop_and_two_zfixing_decks
 
 /-! ## q62 connected / hRigid branch surfaces -/

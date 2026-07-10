@@ -290,6 +290,7 @@ theorem exists_isCompactOperator_norm_sub_le_one_add
     (hTS : (T†) * T =ₖ S) (hSS : S * S =ₖ S)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ K : H →L[ℂ] H, IsCompactOperator K ∧ ‖T - K‖ ≤ 1 + ε := by
+  classical
   have hC₀ : IsCompactOperator (((T†) * T - S : H →L[ℂ] H)) := hTS
   have hC₁ : IsCompactOperator ((S * S - S : H →L[ℂ] H)) := hSS
   obtain ⟨s₀, hs₀⟩ := exists_finset_forall_norm_cut_mul_le hC₀ hε
@@ -304,7 +305,7 @@ theorem exists_isCompactOperator_norm_sub_le_one_add
     intro z
     have h1 : z - P z = Vᗮ.starProjection z := by
       rw [V.starProjection_orthogonal']
-      simp [ContinuousLinearMap.sub_apply]
+      simp [ContinuousLinearMap.sub_apply, hP]
     rw [h1]
     exact Vᗮ.norm_starProjection_apply_le z
   have h₀' : ∀ z : H, ‖((1 - P) * ((T†) * T - S)) z‖ ≤ ε * ‖z‖ := fun z =>
@@ -359,7 +360,7 @@ theorem exists_isCompactOperator_norm_sub_le_one_add
     rw [hTsq, hTsplit]
     exact add_le_add hlin' (re_inner_apply_cut_le P _ hPadj hε.le h₀' x (hcut x))
   have hfinal : ‖T y‖ ^ 2 ≤ ((1 + ε) * ‖x‖) ^ 2 := by
-    nlinarith [norm_nonneg x, sq_nonneg ‖x‖]
+    nlinarith [sq_nonneg (ε * ‖x‖)]
   exact le_of_sq_le_sq (by positivity) hfinal
 
 /-- If the adjoint square of an operator is compact, the operator is within any positive
@@ -377,7 +378,7 @@ theorem exists_isCompactOperator_norm_sub_le_of_adjoint_mul_isCompact
     intro z
     have h1 : z - P z = Vᗮ.starProjection z := by
       rw [V.starProjection_orthogonal']
-      simp [ContinuousLinearMap.sub_apply]
+      simp [ContinuousLinearMap.sub_apply, hP]
     rw [h1]
     exact Vᗮ.norm_starProjection_apply_le z
   have h₀' : ∀ z : H, ‖((1 - P) * ((T†) * T)) z‖ ≤ (δ * δ) * ‖z‖ := fun z =>

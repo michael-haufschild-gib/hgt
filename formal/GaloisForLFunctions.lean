@@ -84,6 +84,7 @@ import GaloisForLFunctions.C5JensenPrimeKernel
 import GaloisForLFunctions.C5JensenPerturbation
 import GaloisForLFunctions.FunctionFieldDegeneration
 import GaloisForLFunctions.DifferentialABP
+import GaloisForLFunctions.DifferentialIndependence
 import GaloisForLFunctions.PTInvolution
 import GaloisForLFunctions.MoritaGamma
 import GaloisForLFunctions.FamilyCrossResonance
