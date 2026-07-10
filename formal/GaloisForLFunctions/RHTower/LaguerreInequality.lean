@@ -166,7 +166,7 @@ theorem xiHalfLine_real (t : ℝ) :
 Riemann hypothesis holds — the hard analytic direction taken as hypothesis), a single real `t`
 at which the first Laguerre inequality *strictly fails* — `(Ξ'(t))² < Ξ(t)·Ξ''(t)` — refutes the
 Riemann hypothesis.  Contrapositive of `laguerre_inequality_lp` composed with `hPolya`. -/
-theorem laguerre_margin_neg_not_RH
+theorem laguerre_margin_neg_not_RH_of_polya
     (hPolya : RiemannHypothesis → LaguerrePolya Xi)
     (h : ∃ t : ℝ, (deriv Xi t) ^ 2 < Xi t * deriv (deriv Xi) t) :
     ¬ RiemannHypothesis := by

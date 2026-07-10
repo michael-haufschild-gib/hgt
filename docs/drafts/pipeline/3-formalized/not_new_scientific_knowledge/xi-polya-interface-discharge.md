@@ -1,11 +1,11 @@
 # Xi Pólya interface discharge
 
 - **ID:** xi-polya-interface-discharge
-- **Stage:** 1-in-progress
-- **Type:** CLASSICAL THEOREM — Lean formalization target
+- **Stage:** 3-formalized
+- **Type:** CLASSICAL THEOREM — formalized, not new scientific knowledge
 - **Source:** `XiEntireReal.lean`, `XiConvergenceExponent.lean`, `CanonicalProduct.lean`,
-  `XiCanonicalProduct.lean`, `XiHadamardFactorization.lean`, `EntireHasLog.lean`, and
-  `ReBoundAffine.lean`
+  `CanonicalProductGrowth.lean`, `XiCanonicalProduct.lean`, `XiHadamardFactorization.lean`,
+  `XiHadamardGrowth.lean`, and `XiLaguerrePolya.lean`
 - **Statement:** `[PROVED, classical]` Under the Riemann hypothesis, the real critical-line
   restriction `Xi` lies in the Laguerre--Pólya class.  Consequently a strict failure of the first
   Laguerre inequality refutes RH without an assumed `hPolya` interface.
@@ -16,7 +16,7 @@ Replace the argument `hPolya : RiemannHypothesis → LaguerrePolya Xi` in
 `LaguerreInequality.lean` by an axiom-clean theorem.  This is a one-way classical consequence of RH,
 not an attempted positivity proof of RH.
 
-## Existing formal inputs
+## Formal mechanism
 
 - `XiC_differentiable`, `XiC_even`, `XiC_ofReal`, and `XiC_order`.
 - Square-summability of the multiplicity-weighted xi divisor.
@@ -30,20 +30,29 @@ not an attempted positivity proof of RH.
   `xiHadamardQuotient`, with the exact identity
   `xiHadamardQuotient * xiCanonicalProduct = XiC`.
 - A zero-free entire function has an entire logarithm.
-- An entire logarithm with the order-one real-part bound is affine.
+- The canonical product has proximity `o(r^2)`.  The First Main Theorem transfers this to its
+  reciprocal, while the unconditional order-one bound transfers it to `XiC`; hence the filled
+  quotient also has proximity `o(r^2)`.
+- Poisson, Borel--Caratheodory, and Cauchy estimates force every entire logarithm of the quotient to
+  be affine.  Evenness kills the linear term, giving
+  `XiC = (fun _ => XiC 0) * xiCanonicalProduct` unconditionally.
+- Under RH, deterministic reflection-closed finite divisor products are real-split polynomials.
+  A countable finite exhaustion and locally uniform convergence with two derivatives prove
+  `xi_laguerrePolya_of_rh : RiemannHypothesis → LaguerrePolya Xi`.
+- `laguerre_margin_neg_not_RH` now takes only the strict margin deficit and has no Pólya argument.
 
-## Open formal core
+## Main declarations
 
-`[OPEN CORE]` Prove the Hadamard growth step for the now-constructed zero-free entire quotient:
-its entire logarithm has degree at most one.  This is the remaining minimum-modulus / Jensen part
-of the classical order-one factorization, not a divisor or removable-singularity gap.  Then prove
-the divisor-reflection reindexing that makes the canonical product even; evenness removes the
-linear exponential.  Under RH, symmetric finite subproducts are real-split polynomials, and local
-uniform convergence supplies the first two derivative limits required by `LaguerrePolya`.
+- `xiHadamardQuotient_proximity_isLittleO_sq`
+- `entire_log_affine_of_proximity_isLittleO_sq`
+- `xiHadamardQuotient_constant`
+- `XiC_eq_constant_mul_canonicalProduct`
+- `xi_laguerrePolya_of_rh`
+- `laguerre_margin_neg_not_RH`
 
 ## Gates
 
 - [x] 0 → 1: all structural and convergence inputs identified in Lean
-- [ ] 1 → 2: quotient growth-to-affine, even reindexing, and real-root partial-product convergence
-- [ ] 2 → 3: prove `riemannHypothesis_imp_laguerrePolya_Xi` and remove `hPolya` from the detector
+- [x] 1 → 2: quotient growth-to-affine, even reindexing, and real-root partial-product convergence
+- [x] 2 → 3: prove the RH-to-Laguerre--Pólya provider and remove `hPolya` from the detector
 - [ ] 3 → 4: axiom audit, formal lint, and documentation index

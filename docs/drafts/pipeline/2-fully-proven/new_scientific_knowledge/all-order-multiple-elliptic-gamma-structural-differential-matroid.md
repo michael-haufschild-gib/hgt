@@ -602,7 +602,12 @@ The remaining formal dependency chain is substantive:
 2. several-automorphism parameterized Picard--Vessiot rings and the additive simultaneous
    telescoping theorem, including constant extension and descent;
 3. meromorphic periodicity, nondiscrete-period constant collapse, elliptic curves, elliptic
-   function fields, tensor-product injectivity, and specialization;
+   function fields, tensor-product injectivity, and specialization; continuous constancy under a
+   dense additive period subgroup and differentiable constancy under arbitrarily small nonzero
+   periods and meromorphic-normal-form constancy under those periods are now proved in
+   `GaloisForLFunctions.PeriodRigidity`. A rank-three subgroup of `C` need only be nondiscrete; the
+   remaining steps are to construct the small periods from rank three and package the meromorphic
+   fixed field in normal form;
 4. theta logarithmic derivatives, elliptic gamma, the multiple-elliptic-gamma hierarchy, and their
    exact functional equations;
 5. elliptic principal parts and the non-torsion orbit-residue obstruction;

@@ -19,6 +19,7 @@ value under scalar multiplication, so exact essential norms transport from a dil
 to its scalar multiples and unitary images.
 -/
 import GaloisForLFunctions.RHTower.SoninEulerCalkinPartialIsometry
+import GaloisForLFunctions.RHTower.SoninEulerFiniteL2Lower
 
 noncomputable section
 
@@ -124,40 +125,12 @@ section UnitaryTransport
 variable {H K : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [NormedAddCommGroup K] [InnerProductSpace ℂ K]
 
-theorem norm_unitaryPush_le (u : H ≃ₗᵢ[ℂ] K) (T : H →L[ℂ] H) :
-    ‖unitaryPush u T‖ ≤ ‖T‖ := by
-  apply opNorm_le_bound _ (norm_nonneg T)
-  intro x
-  rw [unitaryPush_apply]
-  calc ‖u (T (u.symm x))‖ = ‖T (u.symm x)‖ := u.norm_map _
-    _ ≤ ‖T‖ * ‖u.symm x‖ := T.le_opNorm _
-    _ = ‖T‖ * ‖x‖ := by rw [u.symm.norm_map]
-
-theorem unitaryPush_symm_unitaryPush (u : H ≃ₗᵢ[ℂ] K) (T : H →L[ℂ] H) :
-    unitaryPush u.symm (unitaryPush u T) = T := by
-  apply ContinuousLinearMap.ext
-  intro x
-  simp
-
-/-- Conjugation by a unitary preserves the operator norm. -/
-theorem norm_unitaryPush (u : H ≃ₗᵢ[ℂ] K) (T : H →L[ℂ] H) :
-    ‖unitaryPush u T‖ = ‖T‖ := by
-  refine le_antisymm (norm_unitaryPush_le u T) ?_
-  conv_lhs => rw [← unitaryPush_symm_unitaryPush u T]
-  exact norm_unitaryPush_le u.symm (unitaryPush u T)
-
-/-- Conjugation by a unitary preserves compactness. -/
-theorem isCompactOperator_unitaryPush (u : H ≃ₗᵢ[ℂ] K) {T : H →L[ℂ] H}
-    (hT : IsCompactOperator T) : IsCompactOperator (unitaryPush u T) := by
-  have h := (hT.comp_clm (u.symm : K →L[ℂ] H)).clm_comp (u : H →L[ℂ] K)
-  simpa [unitaryPush, Function.comp_def] using h
-
 theorem essentialNorm_unitaryPush_le (u : H ≃ₗᵢ[ℂ] K) (T : H →L[ℂ] H) :
     essentialNorm (unitaryPush u T) ≤ essentialNorm T := by
   apply csInf_le_csInf (essentialNorm_set_bddBelow (unitaryPush u T))
     (essentialNorm_set_nonempty T)
   rintro r ⟨W, hW, rfl⟩
-  exact ⟨unitaryPush u W, isCompactOperator_unitaryPush u hW,
+  exact ⟨unitaryPush u W, IsCompactOperator.unitaryPush u W hW,
     by rw [← unitaryPush_sub, norm_unitaryPush]⟩
 
 /-- Conjugation by a unitary preserves the essential norm. -/
@@ -247,7 +220,7 @@ section UpperBound
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
-private theorem adjoint_one_sub {P : H →L[ℂ] H}
+theorem adjoint_one_sub {P : H →L[ℂ] H}
     (hPadj : ContinuousLinearMap.adjoint P = P) :
     ContinuousLinearMap.adjoint ((1 : H →L[ℂ] H) - P) = 1 - P := by
   have h : star ((1 : H →L[ℂ] H) - P) = 1 - P := by

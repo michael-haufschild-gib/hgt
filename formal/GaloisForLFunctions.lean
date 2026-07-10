@@ -86,6 +86,8 @@ import GaloisForLFunctions.FunctionFieldDegeneration
 import GaloisForLFunctions.DifferentialABP
 import GaloisForLFunctions.DifferentialIndependence
 import GaloisForLFunctions.PTInvolution
+import GaloisForLFunctions.PeriodRigidity
+import GaloisForLFunctions.RankThreePeriods
 import GaloisForLFunctions.MoritaGamma
 import GaloisForLFunctions.FamilyCrossResonance
 import GaloisForLFunctions.SingleEvenFrequency

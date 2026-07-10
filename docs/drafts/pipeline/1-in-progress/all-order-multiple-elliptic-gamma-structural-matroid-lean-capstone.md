@@ -61,10 +61,21 @@ HypertranscendentalOver
 
 It proves injective-subfamily preservation, ordinary algebraic independence of order-zero
 coordinates, stability under arbitrary per-coordinate derivative shifts, and preservation under
-ordinary algebraic scalar extension.
+ordinary algebraic scalar extension. It also constructs `differentialAdjoin` as the field generated
+by every jet, proves that this field is derivation-closed, and proves its minimality among
+derivation-closed intermediate fields.
 
 Both modules build under the repository toolchain. `#print axioms` for their principal theorems
 reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+`formal/GaloisForLFunctions/PeriodRigidity.lean` proves two constant-field cores. A continuous
+function invariant under a dense additive subgroup is constant. More importantly, a
+complex-differentiable function invariant under a sequence of nonzero periods tending to zero is
+constant; this covers nondiscrete period groups whose closure is not all of `ℂ`. The remaining
+meromorphic step is also proved for `MeromorphicNFOn`: translation invariance preserves
+meromorphic order, isolated poles cannot recur along periods tending to zero, and the resulting
+pole-free function reduces to the differentiable theorem. What remains is the rank-three
+small-period construction and normal-form field packaging.
 
 This is the first real dependency of the strengthened theorem. It is not evidence that the
 analytic capstone is already formalized.
@@ -74,6 +85,9 @@ analytic capstone is already formalized.
 - [x] exact final theorem and anti-shell completion criterion recorded
 - [x] first generalized combinatorial dependency implemented and built
 - [x] field-relative differential independence and jet-family core implemented and built
+- [x] continuous dense-period subcase implemented and built
+- [x] differentiable small-period constancy theorem implemented and built
+- [x] meromorphic-normal-form small-period constancy theorem implemented and built
 - [ ] differential algebra foundation
 - [ ] multi-automorphism parameterized Picard--Vessiot foundation
 - [ ] unconditional simultaneous telescoping
