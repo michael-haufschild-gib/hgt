@@ -40,6 +40,11 @@ the barycentric numerator weight is multiplied by
 This factor is not one: equality to one would imply `x_i=0`, contrary to `p_i>1`.  Since the
 denominator `2r_i` is unchanged, every old coefficient changes.
 
+If the appended prime is larger than an old prime, the multiplier is the positive real number
+`x_new/(x_new-x_i)>1`; consequently that old coefficient strictly increases in norm.  The child
+theorem [`prime-barycentric-coefficient-divergence.md`](prime-barycentric-coefficient-divergence.md)
+iterates this mechanism quantitatively over canonical prime exhaustion and proves divergence.
+
 ## Proof
 
 For any finite distinct nonzero node family `x`, define the origin interpolation weight
@@ -73,6 +78,8 @@ Capstones:
 - `fePairedPrimeDerivationInterpolation_eq_barycentric`
 - `fePairedOriginCoefficient_castSucc_ne`
 - `fePairedPrimeBarycentricCoefficient_castSucc_ne`
+- `fePairedOriginCoefficient_castSucc_eq`
+- `fePairedPrimeBarycentricCoefficient_castSucc_norm_lt`
 
 The module compiles directly and the exact target
 `GaloisForLFunctions.RHTower.FEPairedPrimeJetBarycentricRigidity` builds successfully.  Each

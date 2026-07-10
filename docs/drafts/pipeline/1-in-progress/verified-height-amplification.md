@@ -606,3 +606,61 @@ ideal `J` such that `[Pi_E,G_E] in J` even though every one-prime commutator is 
 that the resulting relative index ignores fixed reflection orbits but changes under one free orbit.
 The cancellation or renormalization must be proved from the prime/archimedean constraint and cannot
 be imposed from the residual divisor.
+
+## 2026-07-10 ninth attack: finite Euler Calkin independence
+
+### Exact finite-family theorem
+
+`[PROVED IN LEAN; NEW SOURCE THEOREM]` Fix a positive Sonin cutoff `a`, distinct scales
+`r_1,...,r_m>1`, and coefficients `c_j` not all zero.  Then the lower corner
+
+```text
+(1-Q_a) (sum_j c_j (U_(r_j)+U_(r_j)*)) Q_a
+```
+
+is noncompact.  The same statement holds on the actual even Sonin carrier.  After multiplying each
+coefficient by the nonzero Euler scalar `-r_j^(-1/2)` and applying the concrete dual
+Hardy--Titchmarsh unitary, it gives the literal source theorem: every nonzero finite linear
+combination of the positive Euler metric corners `M_(|1-r_j^(-1/2-is)|^2)` is noncompact.
+
+The proof chooses the least active scale, separates its inward shell from the finitely many other
+scaled shells, and observes an exact surviving coefficient on a corrected weakly-null Sonin shell
+sequence.  The declarations are in `FiniteEulerCalkinIndependence.lean`, with endpoints
+
+```text
+RHTower.finiteDilationCorners_calkinIndependent
+RHTower.finitePositiveEulerCorners_calkinIndependent
+RHTower.finiteEvenDilationCorners_calkinIndependent
+RHTower.finiteEvenPositiveEulerCorners_calkinIndependent
+RHTower.finiteArchimedeanPrimeEulerCorners_calkinIndependent
+```
+
+Direct compilation, the endpoint build, the full `RHTower` umbrella build, and the axiom audit pass.
+The theorem and dual-gate audit are recorded in
+`../3-formalized/new/finite-euler-calkin-independence.md`.
+
+### Literature correction and exact consequence
+
+`[IMPORTANT CORRECTION]` This does not prove that every finite Euler/archimedean repair is
+impossible.  Connes--Consani prove that the *product* of the archimedean phase ratio with finitely
+many non-archimedean phase ratios is quasi-inner, even though an individual non-archimedean ratio is
+not.  Their multiplicative Hardy-space construction is not the additive span of positive Gram
+metric corners considered here.
+
+`[PROVED]` What is excluded is every finite additive cancellation inside the positive Euler-metric
+span.  These prime-scale corners generate an infinite-dimensional subspace in the Calkin quotient.
+Thus an index repair cannot be a finite linear counterterm among the canonical positive local
+metrics.  It must instead use nonlinear/product archimedean compensation, a genuinely infinite
+renormalized all-place limit, a different polarization, or a different operator ideal.
+
+### Bound verdict
+
+`[BRIDGE]` This theorem is new source-side operator knowledge but does not locate a zeta zero and does
+not move the numerical Platt--Trudgian bound.  It sharpens the surviving infinite-Euler problem
+without solving it.
+
+`[OPEN CORE]` Construct from the complete Euler--Gamma product a convergent renormalized all-place
+operator or phase-ratio action on a specified polarization, prove the required compactness or ideal
+membership after the archimedean compensation, and prove that its integer index is unchanged by any
+additional fixed reflection orbit but changes under one free orbit.  Only after that index is made
+effective relative to the certified finite divisor can it yield a strict verified-range extension.

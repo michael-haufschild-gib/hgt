@@ -6,6 +6,7 @@ import GaloisForLFunctions.EulerProduct
 import GaloisForLFunctions.EulerFirewall
 import GaloisForLFunctions.NamedTranscendental
 import GaloisForLFunctions.Hypertranscendence
+import GaloisForLFunctions.ExponentialGaugeSelection
 import GaloisForLFunctions.GammaTranscendental
 import GaloisForLFunctions.GammaDifferentialFE
 import GaloisForLFunctions.ExponentialSumDA

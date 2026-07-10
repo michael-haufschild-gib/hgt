@@ -153,6 +153,18 @@ theorem fePairedOriginCoefficient_ne_zero {k : ℕ} (r : Fin k → ℂ)
       (fun j => pow_ne_zero 2 (hr0 j)) i)
     (mul_ne_zero (by norm_num) (hr0 i))
 
+/-- Exact support-extension multiplier for every old reflected-pair coefficient. -/
+theorem fePairedOriginCoefficient_castSucc_eq {k : ℕ} (r : Fin (k + 1) → ℂ)
+    (i : Fin k) :
+    fePairedOriginCoefficient r i.castSucc =
+      fePairedOriginCoefficient (fun j : Fin k => r j.castSucc) i *
+        ((-(r (Fin.last k) ^ 2)) /
+          (r i.castSucc ^ 2 - r (Fin.last k) ^ 2)) := by
+  rw [fePairedOriginCoefficient, fePairedOriginCoefficient,
+    originInterpolationWeight_castSucc]
+  simp only [div_eq_mul_inv]
+  ring
+
 /-- **Barycentric nonlocality.** Adding one nonzero squared-distinct reflected node changes every
 old explicit interpolation coefficient. -/
 theorem fePairedOriginCoefficient_castSucc_ne {k : ℕ} (r : Fin (k + 1) → ℂ)
@@ -232,7 +244,65 @@ theorem fePairedPrimeBarycentricCoefficient_castSucc_ne {k : ℕ}
     (log_sq_nat_injective p hp hpinj)
     (fun q => Complex.ofReal_ne_zero.mpr (Real.log_pos (by exact_mod_cast hp q)).ne') i
 
+/-- Appending a larger positive real node strictly increases the norm of every nonzero old
+coefficient. -/
+theorem fePairedOriginCoefficient_castSucc_norm_lt {k : ℕ} (r : Fin (k + 1) → ℝ)
+    (i : Fin k) (hri : 0 < r i.castSucc) (hir : r i.castSucc < r (Fin.last k))
+    (hold0 : fePairedOriginCoefficient
+      (fun j : Fin k => (r j.castSucc : ℂ)) i ≠ 0) :
+    ‖fePairedOriginCoefficient (fun j : Fin k => (r j.castSucc : ℂ)) i‖ <
+      ‖fePairedOriginCoefficient (fun j => (r j : ℂ)) i.castSucc‖ := by
+  let x : ℝ := r i.castSucc ^ 2
+  let y : ℝ := r (Fin.last k) ^ 2
+  let c : ℝ := (-y) / (x - y)
+  have hrn : 0 < r (Fin.last k) := lt_trans hri hir
+  have hx : 0 < x := sq_pos_of_pos hri
+  have hxy : x < y := by
+    dsimp [x, y]
+    nlinarith
+  have hyx : 0 < y - x := by linarith
+  have hc : c = y / (y - x) := by
+    dsimp [c]
+    have hne : x - y ≠ 0 := sub_ne_zero.mpr (ne_of_lt hxy)
+    field_simp [hne]
+    ring
+  have hc1 : 1 < c := by
+    rw [hc, lt_div_iff₀ hyx]
+    linarith
+  have hfactor :
+      ((-((r (Fin.last k) : ℂ) ^ 2)) /
+          ((r i.castSucc : ℂ) ^ 2 - (r (Fin.last k) : ℂ) ^ 2)) = (c : ℂ) := by
+    norm_num [c, x, y]
+  rw [fePairedOriginCoefficient_castSucc_eq]
+  rw [hfactor, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos (lt_trans zero_lt_one hc1)]
+  have holdpos : 0 < ‖fePairedOriginCoefficient
+      (fun j : Fin k => (r j.castSucc : ℂ)) i‖ := norm_pos_iff.mpr hold0
+  nlinarith
+
+/-- For an injective positive prime packet whose appended prime is larger than an old prime, the
+corresponding exact interpolation coefficient strictly grows in norm. -/
+theorem fePairedPrimeBarycentricCoefficient_castSucc_norm_lt {k : ℕ}
+    (p : Fin (k + 1) → ℕ) (hp : ∀ q, 1 < p q) (hpinj : Function.Injective p)
+    (i : Fin k) (hip : p i.castSucc < p (Fin.last k)) :
+    ‖fePairedPrimeBarycentricCoefficient (fun j : Fin k => p j.castSucc) i‖ <
+      ‖fePairedPrimeBarycentricCoefficient p i.castSucc‖ := by
+  apply fePairedOriginCoefficient_castSucc_norm_lt
+    (fun q => Real.log (p q)) i
+  · exact Real.log_pos (by exact_mod_cast hp i.castSucc)
+  · exact Real.strictMonoOn_log
+      (by change (0 : ℝ) < p i.castSucc
+          exact_mod_cast Nat.zero_lt_one.trans (hp i.castSucc))
+      (by change (0 : ℝ) < p (Fin.last k)
+          exact_mod_cast Nat.zero_lt_one.trans (hp (Fin.last k)))
+      (by exact_mod_cast hip)
+  · exact fePairedOriginCoefficient_ne_zero
+      (fun j : Fin k => (Real.log (p j.castSucc) : ℂ))
+      (log_sq_nat_injective (fun j : Fin k => p j.castSucc)
+        (fun j => hp j.castSucc) (fun _ _ h => Fin.castSucc_inj.mp (hpinj h)))
+      (fun j => Complex.ofReal_ne_zero.mpr
+        (Real.log_pos (by exact_mod_cast hp j.castSucc)).ne') i
+
 end
 
 end RHTower
-
