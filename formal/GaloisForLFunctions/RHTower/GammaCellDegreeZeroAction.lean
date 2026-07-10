@@ -46,6 +46,27 @@ theorem intCast_conv_integral (b c : ArithmeticFunction ℂ)
   exact Subring.sum_mem _ fun x _ =>
     Subring.mul_mem _ ((hmem _).mp (hb x.fst)) ((hmem _).mp (hc x.snd))
 
+/-- Every gamma-cell member is nonzero somewhere.  Its multiplicative coefficient stream has first
+coefficient `1` and converges on `Re s > 1`, so its L-series cannot vanish identically there. -/
+theorem gammaFECell_exists_ne_zero {f : ℂ → ℂ} (hf : GammaFECell f) :
+    ∃ s : ℂ, f s ≠ 0 := by
+  obtain ⟨a, ha_mul, _ha_int, ha_summ, ha_rep, _γ, _hγne, _hγfe⟩ := hf
+  by_contra hnone
+  push Not at hnone
+  have hev : (fun x : ℝ => LSeries (fun n => a n) x) =ᶠ[Filter.atTop] 0 := by
+    filter_upwards [Filter.eventually_gt_atTop (1 : ℝ)] with x hx
+    simp only [Pi.zero_apply]
+    rw [← ha_rep (x : ℂ) (by simpa using hx)]
+    exact hnone (x : ℂ)
+  rcases LSeries_eventually_eq_zero_iff'.mp hev with hall | htop
+  · have h1 := hall 1 one_ne_zero
+    rw [ha_mul.map_one] at h1
+    exact one_ne_zero h1
+  · have hsumm := ha_summ 2 (by norm_num)
+    have hle := hsumm.abscissaOfAbsConv_le
+    rw [htop] at hle
+    simpa using hle
+
 /-- The degree-zero functional equation becomes a symmetric completion after multiplication by
 `Q^(s-1/2)`. -/
 theorem integralFEClass_gamma_completion {g : ℂ → ℂ}
@@ -111,6 +132,22 @@ theorem gammaFECell_mul_integralFEClass_of_exists_ne_zero {f g : ℂ → ℂ}
             (((Q : ℕ) : ℂ) ^ (s - 1 / 2) * g s) := by
               rw [hγf_fe s hs hs1, hg_fe s]
         _ = _ := by ring
+
+/-- **Exact action boundary.** A degree-zero member acts by multiplication on every gamma-cell
+member exactly when it is not the collapsed zero member. -/
+theorem integralFEClass_acts_on_gammaFECell_iff {g : ℂ → ℂ}
+    (hg : IntegralMultiplicativeFEClass g) :
+    (∃ s : ℂ, g s ≠ 0) ↔
+      ∀ f : ℂ → ℂ, GammaFECell f → GammaFECell (fun s => f s * g s) := by
+  constructor
+  · intro hgne f hf
+    exact gammaFECell_mul_integralFEClass_of_exists_ne_zero hf hg hgne
+  · intro hact
+    have hmember := hact riemannZeta zeta_mem_gammaFECell
+    obtain ⟨s, hs⟩ := gammaFECell_exists_ne_zero hmember
+    refine ⟨s, ?_⟩
+    intro hgs
+    exact hs (by simp [hgs])
 
 end
 

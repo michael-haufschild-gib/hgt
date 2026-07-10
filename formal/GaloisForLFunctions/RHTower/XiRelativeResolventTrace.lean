@@ -31,24 +31,32 @@ theorem logDeriv_weierstrassE1_div {a z : ℂ} (ha : a ≠ 0) (hz : z ≠ a) :
   have hlin : HasDerivAt (fun w : ℂ => w / a) (1 / a) z := by
     simpa [one_div] using (hasDerivAt_id z).div_const a
   have hone : 1 - z / a ≠ 0 := by
-    rw [sub_ne_zero]
-    intro h
+    intro hzero
+    have hdiv : z / a = 1 := (sub_eq_zero.mp hzero).symm
     apply hz
-    field_simp [ha] at h ⊢
+    calc
+      z = z / a * a := (div_mul_cancel₀ z ha).symm
+      _ = 1 * a := by rw [hdiv]
+      _ = a := one_mul a
   have hfac : weierstrassE1 (z / a) ≠ 0 := by
     rw [weierstrassE1]
     exact mul_ne_zero hone (Complex.exp_ne_zero _)
   have hE : HasDerivAt weierstrassE1
       (-(z / a) * Complex.exp (z / a)) (z / a) := by
-    rw [weierstrassE1]
-    convert ((hasDerivAt_const (x := z / a) (c := (1 : ℂ))).sub
-      (hasDerivAt_id (z / a))).mul (Complex.hasDerivAt_exp (z / a)) using 1
+    have hraw := ((hasDerivAt_const (x := z / a) (c := (1 : ℂ))).sub
+      (hasDerivAt_id (z / a))).mul (Complex.hasDerivAt_exp (z / a))
+    convert hraw using 1
+    simp
     ring
-  have hcomp := hE.comp z hlin
-  rw [logDeriv_apply, hcomp.deriv]
-  rw [weierstrassE1]
-  field_simp [ha, hone, Complex.exp_ne_zero]
-  ring
+  have hderiv : deriv (fun w : ℂ => weierstrassE1 (w / a)) z =
+      (-(z / a) * Complex.exp (z / a)) * (1 / a) := by
+    simpa only [Function.comp_apply] using (hE.comp z hlin).deriv
+  rw [logDeriv_apply, hderiv, weierstrassE1]
+  have hden : (1 - z / a) * Complex.exp (z / a) ≠ 0 :=
+    mul_ne_zero hone (Complex.exp_ne_zero _)
+  have haz : a - z ≠ 0 := sub_ne_zero.mpr (Ne.symm hz)
+  rw [div_eq_iff hden]
+  field_simp [ha, haz]
 
 /-- The centered resolvent subtraction has inverse-square size and is absolutely summable over
 the actual Xi divisor with exact multiplicity. -/
@@ -109,8 +117,8 @@ theorem summable_xiRelativeResolventTerm {z : ℂ} (hz : XiC z ≠ 0) :
     intro h
     exact hz ((XiC_eq_zero_iff_exists_xiZeroCopy z).mpr ⟨q, h.symm⟩)
   have haz : xiSpectralPoint q - z ≠ 0 := sub_ne_zero.mpr (Ne.symm hzq)
-  field_simp
-  ring
+  rw [inv_eq_one_div]
+  field_simp [ha, haz]
 
 /-- Logarithmic derivative of the canonical product as the absolutely summable centered relative
 resolvent trace. -/
@@ -140,14 +148,24 @@ theorem logDeriv_xiCanonicalProduct_eq_relativeResolventTrace
     intro hzero
     exact hz ((xiCanonicalProduct_eq_zero_iff_XiC_eq_zero z).mp hzero)
   have hlog := logDeriv_tprod_eq_tsum isOpen_univ (Set.mem_univ z)
-    hfac (by intro q; fun_prop) hsum
+    hfac (by
+      intro q
+      simp only [weierstrassE1]
+      fun_prop) hsum
     xiCanonicalProduct_hasProdLocallyUniformlyOn.multipliableLocallyUniformlyOn hprod
   rw [xiRelativeResolventTrace]
   calc
     logDeriv xiCanonicalProduct z =
         ∑' q : XiZeroCopy,
-          -z / (xiSpectralPoint q * (xiSpectralPoint q - z)) := by
+          logDeriv (fun w : ℂ => weierstrassE1 (w / xiSpectralPoint q)) z := by
       simpa only [xiCanonicalProduct, canonicalProductE1Indexed] using hlog
+    _ =
+        ∑' q : XiZeroCopy,
+          -z / (xiSpectralPoint q * (xiSpectralPoint q - z)) := by
+      apply tsum_congr
+      intro q
+      exact logDeriv_weierstrassE1_div
+        (xiSpectralPoint_ne_zero q) (hza q)
     _ = ∑' q : XiZeroCopy, xiRelativeResolventTerm z q := by
       apply tsum_congr
       intro q
@@ -155,8 +173,8 @@ theorem logDeriv_xiCanonicalProduct_eq_relativeResolventTrace
       have haz : xiSpectralPoint q - z ≠ 0 := by
         exact sub_ne_zero.mpr (Ne.symm (hza q))
       rw [xiRelativeResolventTerm]
-      field_simp
-      ring
+      rw [inv_eq_one_div]
+      field_simp [ha, haz]
 
 /-- **Exact target identity.**  The centered Xi logarithmic derivative is the canonical relative
 resolvent trace.  The subtraction, convergence, and equality are unconditional and contain no

@@ -65,6 +65,69 @@ noncomputable def Relation.auxiliaryComponentHouseBound (R : Relation) (c : ℤ)
       algebraMap (𝓞 R.CoefficientField) R.CoefficientField (η m) *
       R.sampleFactor s m)
 
+/-- A uniform coefficient-house bound propagates termwise to the conjugate bound for a shifted
+component.  This is the arithmetic estimate that receives the coefficient bound from Siegel's
+lemma. -/
+theorem Relation.auxiliaryComponentHouseBound_le_of_coefficient_house_le
+    (R : Relation) (c : ℤ) (pivot : Fin R.n) (ν : R.NonPivot pivot → ℕ)
+    {L : ℕ} (η : R.Column L → 𝓞 R.CoefficientField) (sample : ℕ) (Hη : ℝ)
+    (hη : ∀ m, house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤ Hη) :
+    R.auxiliaryComponentHouseBound c pivot ν η sample ≤
+      ∑ m : R.Column L, (∏ i : R.NonPivot pivot,
+        house (R.scaledDirection c pivot m i) ^ ν i) * Hη *
+          house (R.sampleFactor
+            (⟨sample, Nat.lt_add_one sample⟩ : Fin (sample + 1)) m) := by
+  unfold Relation.auxiliaryComponentHouseBound
+  dsimp only
+  apply Finset.sum_le_sum
+  intro m hm
+  let A := ∏ i : R.NonPivot pivot, R.scaledDirection c pivot m i ^ ν i
+  let B := (algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)
+  let C := R.sampleFactor (⟨sample, Nat.lt_add_one sample⟩ : Fin (sample + 1)) m
+  have hprodHouse (s : Finset (R.NonPivot pivot)) :
+      house (∏ i ∈ s, R.scaledDirection c pivot m i ^ ν i) ≤
+        ∏ i ∈ s, house (R.scaledDirection c pivot m i) ^ ν i := by
+    induction s using Finset.induction_on with
+    | empty => simp [house]
+    | @insert i s hi ih =>
+        simp only [Finset.prod_insert hi]
+        calc
+          house (R.scaledDirection c pivot m i ^ ν i *
+              ∏ j ∈ s, R.scaledDirection c pivot m j ^ ν j) ≤
+              house (R.scaledDirection c pivot m i ^ ν i) *
+                house (∏ j ∈ s, R.scaledDirection c pivot m j ^ ν j) :=
+            house_mul_le _ _
+          _ ≤ house (R.scaledDirection c pivot m i) ^ ν i *
+                ∏ j ∈ s, house (R.scaledDirection c pivot m j) ^ ν j := by
+            apply mul_le_mul
+            · exact house_pow_le _ _
+            · exact ih
+            · exact house_nonneg _
+            · exact pow_nonneg (house_nonneg _) _
+  have hA : house A ≤ ∏ i : R.NonPivot pivot,
+      house (R.scaledDirection c pivot m i) ^ ν i := by
+    simpa [A] using hprodHouse Finset.univ
+  have hB : house B ≤ Hη := hη m
+  have hprod : 0 ≤ ∏ i : R.NonPivot pivot,
+      house (R.scaledDirection c pivot m i) ^ ν i :=
+    Finset.prod_nonneg fun i hi => pow_nonneg (house_nonneg _) _
+  calc
+    house (A * B * C) ≤ house (A * B) * house C := house_mul_le _ _
+    _ ≤ (house A * house B) * house C :=
+      mul_le_mul_of_nonneg_right (house_mul_le _ _) (house_nonneg _)
+    _ ≤ ((∏ i : R.NonPivot pivot,
+        house (R.scaledDirection c pivot m i) ^ ν i) * Hη) * house C := by
+      apply mul_le_mul_of_nonneg_right _ (house_nonneg _)
+      calc
+        house A * house B ≤
+            (∏ i : R.NonPivot pivot,
+              house (R.scaledDirection c pivot m i) ^ ν i) * house B :=
+          mul_le_mul_of_nonneg_right hA (house_nonneg _)
+        _ ≤ (∏ i : R.NonPivot pivot,
+              house (R.scaledDirection c pivot m i) ^ ν i) * Hη :=
+          mul_le_mul_of_nonneg_left hB hprod
+    _ = _ := rfl
+
 theorem Relation.auxiliaryComponentHouseBound_nonneg (R : Relation) (c : ℤ)
     (pivot : Fin R.n) (ν : R.NonPivot pivot → ℕ) {L : ℕ}
     (η : R.Column L → 𝓞 R.CoefficientField) (sample : ℕ) :

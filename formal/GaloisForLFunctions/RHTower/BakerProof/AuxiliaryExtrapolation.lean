@@ -69,6 +69,50 @@ noncomputable def Relation.auxiliaryComponentAnalyticBound (R : Relation) (c : �
     ‖R.integralCoeffEmbedding (η m)‖ *
       Real.exp (‖R.frequency m‖ * radius)
 
+/-- A uniform house bound for the Siegel-kernel coefficients controls the analytic boundary sum
+under the distinguished embedding. -/
+theorem Relation.auxiliaryComponentAnalyticBound_le_of_coefficient_house_le
+    (R : Relation) (c : ℤ) (pivot : Fin R.n) (ν : R.NonPivot pivot → ℕ)
+    {L : ℕ} (η : R.Column L → 𝓞 R.CoefficientField) (radius Hη : ℝ)
+    (hη : ∀ m, house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤ Hη) :
+    R.auxiliaryComponentAnalyticBound c pivot ν η radius ≤
+      ∑ m : R.Column L, (∏ i : R.NonPivot pivot,
+        house (R.scaledDirection c pivot m i) ^ ν i) * Hη *
+          Real.exp (‖R.frequency m‖ * radius) := by
+  unfold Relation.auxiliaryComponentAnalyticBound
+  apply Finset.sum_le_sum
+  intro m hm
+  have hdir : (∏ i : R.NonPivot pivot,
+      ‖R.coeffEmbedding (R.scaledDirection c pivot m i)‖ ^ ν i) ≤
+      ∏ i : R.NonPivot pivot,
+        house (R.scaledDirection c pivot m i) ^ ν i := by
+    apply Finset.prod_le_prod
+    · intro i hi
+      positivity
+    · intro i hi
+      exact pow_le_pow_left₀ (norm_nonneg _)
+        (norm_embedding_le_house (R.scaledDirection c pivot m i) R.coeffEmbedding) _
+  have hcoeff : ‖R.integralCoeffEmbedding (η m)‖ ≤ Hη := by
+    change ‖R.coeffEmbedding
+      ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m))‖ ≤ Hη
+    exact (norm_embedding_le_house _ R.coeffEmbedding).trans (hη m)
+  calc
+    (∏ i : R.NonPivot pivot,
+        ‖R.coeffEmbedding (R.scaledDirection c pivot m i)‖ ^ ν i) *
+          ‖R.integralCoeffEmbedding (η m)‖ * Real.exp (‖R.frequency m‖ * radius) ≤
+        (∏ i : R.NonPivot pivot,
+          house (R.scaledDirection c pivot m i) ^ ν i) *
+          ‖R.integralCoeffEmbedding (η m)‖ * Real.exp (‖R.frequency m‖ * radius) := by
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right hdir (norm_nonneg _)) (Real.exp_nonneg _)
+    _ ≤ (∏ i : R.NonPivot pivot,
+          house (R.scaledDirection c pivot m i) ^ ν i) * Hη *
+            Real.exp (‖R.frequency m‖ * radius) := by
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hcoeff
+          (Finset.prod_nonneg fun i hi => pow_nonneg (house_nonneg _) _))
+        (Real.exp_nonneg _)
+
 theorem Relation.norm_auxiliaryComponent_le_analyticBound
     (R : Relation) (c : ℤ) (pivot : Fin R.n) (ν : R.NonPivot pivot → ℕ)
     {L : ℕ} (η : R.Column L → 𝓞 R.CoefficientField)
