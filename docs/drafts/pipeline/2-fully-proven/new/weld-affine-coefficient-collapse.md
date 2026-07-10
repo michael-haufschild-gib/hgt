@@ -7,11 +7,13 @@
 - **Parents:** `../../3-formalized/weld-class-table.md`,
   `xi-theta-boundary-coboundary-no-go.md`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/WeldAffineTrivialization.lean`,
-  `formal/GaloisForLFunctions/RHTower/WeldOrderFiltration.lean`
+  `formal/GaloisForLFunctions/RHTower/WeldOrderFiltration.lean`,
+  `formal/GaloisForLFunctions/RHTower/WeldBoundedSpectralGauge.lean`
 - **Statement:** `[PROVED]` The scalar weld becomes exact in the minimal affine operator
   coefficients, and its explicit primitive remains covariant under the genuine functional-equation
   involution.  The weld therefore does not survive by FE symmetry alone.  It is instead the
-  connecting boundary of the differential-order filtration and is nonzero modulo order-zero gauge.
+  connecting boundary of the differential-order filtration and is nonzero modulo order-zero gauge;
+  bounded realization on the fixed spectral `L²` forces precisely that gauge condition.
 
 ## Constraint
 
@@ -147,6 +149,36 @@ prime rate, the scalar class is therefore:
 
 This is a fixed filtration statement.  It builds no carrier and propagates no data.
 
+## Theorem F `[PROVED]`: bounded spectral realization forces order zero
+
+Let `H=L^2(R)` be the fixed critical-line spectral space and let `X` be coordinate multiplication,
+the Fourier-side realization of the derivation direction.  For each natural `N`, set
+
+`u_N=1_[N,N+1]` and `v_N=Xu_N=x 1_[N,N+1]`.
+
+The interval has measure one, so `||u_N||_2=1`; pointwise on its support, `|x|>=N`, hence
+
+`||v_N||_2>=N`.                                                       (8)
+
+There is therefore no bounded operator `T` with `T u_N=v_N` for every `N`: boundedness would give
+`N<=||T||` for every natural `N`.
+
+More generally, suppose a bounded operator agrees with `aX+bI` on all `u_N`.  If `a!=0`, then the
+bounded operator
+
+`a^(-1)(T-bI)`
+
+agrees with `X` on every `u_N`, contradicting (8).  Thus `a=0`.
+
+This discharges the algebraic order-zero admissibility condition for bounded affine cochains on the
+fixed spectral space: every data-bearing bounded realization of a cochain `b(g)=a_gD+c_gI` forces
+`a_g=0` for every `g`.  Combining this with Theorem C gives, for every `theta!=0`,
+
+`there is no bounded spectral affine primitive of omega_theta`.       (9)
+
+In particular (9) holds at every prime rate `theta=log p`.  The escaping interval packets are only
+test vectors proving unboundedness; they transport no datum and define no carrier.
+
 ## Attack and self-judgment
 
 - `[DEGENERATE]` At `theta=0`, the cocycle and every version of the obstruction vanish.
@@ -156,35 +188,45 @@ This is a fixed filtration statement.  It builds no carrier and propagates no da
 - `[FALSIFIED FE ROUTE]` FE covariance admits the explicit primitive.  Completion symmetry alone
   contributes no surviving class here.
 - `[SURVIVES PRIMITIVE-GAUGE ATTACK]` Every affine primitive has principal symbol one at `partial`.
+- `[SURVIVES BOUNDEDNESS ATTACK]` On the fixed spectral `L^2`, every bounded realization of
+  `aD+bI` has `a=0`; hence no bounded affine weld primitive exists at a nonzero rate.
 - `[SURVIVES FLOW TEST]` The surviving statement is the connecting boundary of a fixed operator-order
   filtration, not a contour, orbit, window, depth, or carrier family.
-- `[LIMIT]` The algebraic order-zero gauge has not yet been identified with the bounded/admissible
-  morphisms of the completed Krein realization.  That analytic identification is not claimed.
+- `[LIMIT DISCHARGED NEGATIVELY]` `weld-class-determines-area-not-j.md` proves that a weld class
+  cannot naturally induce `J`, and that its positive local metric cannot produce an indefinite seam
+  form by congruence pullback.
 
 ## Open core
 
-The external `ClassInducesJ` relation is not discharged by scalar nontriviality or by FE symmetry:
-the natural affine primitive is FE-covariant.  The only surviving local obstruction is its forced
-principal symbol.
+The external `ClassInducesJ` relation is now retired as a mathematical target.  The class canonically
+determines its alternating area form, while `J` must come from independent completed structure.  The
+positive prime weld block is also too definite to generate an off-line Krein direction by pullback.
 
-> `[OPEN CORE]` In the fixed completed representation, prove that every bounded polarization-preserving
-> gauge has differential order zero, and construct the canonical connecting-class map from the
-> prime order-filtration boundary to the existing Krein form.  This must replace `ClassInducesJ`
-> without a carrier, an evolution parameter, or an arbitrary admissibility Prop.
+`weld-class-determines-area-not-j.md` also constructs the missing local indefinite operation: FE
+coefficient reflection is anti-symplectic, and twisting the weld area by it gives exactly the
+one-pair factored Krein hyperbolic block.
+
+> `[OPEN CORE]` Construct the fixed arithmetic incidence map assembling these canonical prime-rate
+> hyperbolic blocks from the completed FE divisor, and prove that its Gram is the existing global
+> `factoredKreinForm`.  No carrier, evolution parameter, arbitrary pair selection, or external
+> relation is allowed.
 
 ## Novelty and significance gates
 
 - **NOVEL:** The scalar weld class, operator commutator, and FE parity were banked separately.  The
   new comparison falsifies their expected FE-relative combination and identifies the class instead
-  as the explicit connecting boundary of the operator-order extension (7).
+  as the explicit connecting boundary of the operator-order extension (7), with bounded spectral
+  realizability proved to force the surviving gauge category.
 - **SIGNIFICANT:** The result states exactly which fixed categorical restriction can preserve the
-  weld: not completion or FE covariance, but exclusion of positive-order gauge.  It converts the
-  vague polarization interface into one concrete analytic theorem about bounded admissible gauges.
+  weld: not completion or FE covariance, but boundedness, which excludes positive-order gauge.  It
+  removes the order-zero admissibility Prop; the follow-on no-go identifies the remaining target as
+  a non-split indefinite extension rather than a class-to-`J` map.
 
 ## Gates
 
 - [x] 0 -> 1: coefficient action, genuine FE action, principal symbol, and degeneracy stated.
 - [x] 1 -> 2: affine collapse, operator identity, primitive rigidity, FE-covariant collapse, exact
-  filtration, connecting-boundary formula, and order-zero nontriviality proved.
+  filtration, connecting-boundary formula, order-zero nontriviality, and bounded spectral exclusion
+  proved.
 - [x] 2 -> 3: theorem families formalized in Lean.
-- [ ] 3 -> 4: bounded/order-zero identification and canonical Krein connecting map constructed.
+- [ ] 3 -> 4: completed prime-log/divisor incidence map and global factored-Krein identity.

@@ -126,6 +126,9 @@ import GaloisForLFunctions.RHTower.SeamSpectrumDensity
 import GaloisForLFunctions.RHTower.SeamWeldCommutator
 import GaloisForLFunctions.RHTower.WeldAffineTrivialization
 import GaloisForLFunctions.RHTower.WeldOrderFiltration
+import GaloisForLFunctions.RHTower.WeldBoundedSpectralGauge
+import GaloisForLFunctions.RHTower.WeldPolarizationDirection
+import GaloisForLFunctions.RHTower.WeldKreinRateBlindness
 import GaloisForLFunctions.RHTower.ExpNatIrrational
 import GaloisForLFunctions.RHTower.ExpTranscendental
 import GaloisForLFunctions.RHTower.ConjugateTraceIntegral
@@ -255,6 +258,8 @@ import GaloisForLFunctions.RHTower.CarrierSlope
 import GaloisForLFunctions.RHTower.CarrierTransverseZero
 import GaloisForLFunctions.RHTower.CarrierPhaseCrossing
 import GaloisForLFunctions.RHTower.CarrierZeroUnconditional
+import GaloisForLFunctions.RHTower.CarrierHorizontalRigidity
+import GaloisForLFunctions.RHTower.CarrierDepthTwoRigidity
 import GaloisForLFunctions.RHTower.MinimumModulus
 import GaloisForLFunctions.RHTower.JensenCount
 import GaloisForLFunctions.RHTower.ScalarCertificate
@@ -304,6 +309,7 @@ import GaloisForLFunctions.RHTower.ZetaDominationTransfer
 import GaloisForLFunctions.RHTower.EMAnnulusSupply
 import GaloisForLFunctions.RHTower.SymmetrizedEMCarrier
 import GaloisForLFunctions.RHTower.FiniteMemberSteering
+import GaloisForLFunctions.RHTower.SEMEventualSplit
 import GaloisForLFunctions.RHTower.DefectSteering
 import GaloisForLFunctions.RHTower.WindowBudget
 import GaloisForLFunctions.RHTower.RelativePhase
@@ -336,6 +342,10 @@ import GaloisForLFunctions.RHTower.SigmaDivisorExhaustion
 import GaloisForLFunctions.RHTower.FittingSeamBoundary
 import GaloisForLFunctions.RHTower.SoninSeamDefect
 import GaloisForLFunctions.RHTower.CutoffCochain
+import GaloisForLFunctions.RHTower.ShearedSeamGaugeTrivialization
+import GaloisForLFunctions.RHTower.FESemilinearShearExhaustion
+import GaloisForLFunctions.RHTower.FESemilinearTwoTorsionExtension
+import GaloisForLFunctions.RHTower.IntegralOrbitTateExtension
 import GaloisForLFunctions.RHTower.LiftedGluingFaces
 import GaloisForLFunctions.RHTower.FittingDeckChargeBarrier
 import GaloisForLFunctions.RHTower.FittingFakeGap
@@ -436,6 +446,7 @@ import GaloisForLFunctions.RHTower.FiniteEulerInert
 import GaloisForLFunctions.RHTower.PrimeBraid
 import GaloisForLFunctions.RHTower.CombinedShadowBlindness
 import GaloisForLFunctions.RHTower.IntegralJetCharge
+import GaloisForLFunctions.RHTower.SEMFittingCharge
 import GaloisForLFunctions.RHTower.IntegralMultiplicativeSoft
 import GaloisForLFunctions.RHTower.ColumnRigidity
 import GaloisForLFunctions.RHTower.DAColumnDivisor
@@ -471,6 +482,7 @@ import GaloisForLFunctions.RHTower.CocycleExponentRigidity
 import GaloisForLFunctions.RHTower.ThetaHalfPlaneBound
 import GaloisForLFunctions.RHTower.LandauSummabilityTransfer
 import GaloisForLFunctions.RHTower.QuietCrossingCocycle
+import GaloisForLFunctions.RHTower.QuietCrossingCocycleTPoly
 import GaloisForLFunctions.RHTower.CompletedZetaGrowth
 import GaloisForLFunctions.RHTower.XiZeroDensity
 import GaloisForLFunctions.RHTower.OverlapRigidity

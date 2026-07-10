@@ -265,6 +265,42 @@ theorem exists_prime_mirrorTiltIncrement_neg_of_supply {s : ℂ}
     lt_of_le_of_lt hsin (neg_lt_zero.mpr (by positivity))
   exact ⟨q, hq, hQq, mirrorTiltIncrement_neg hq.two_le h0 h1 hneg⟩
 
+/-! ### Bertrand discharge of the window-supply interface -/
+
+/-- Bertrand's postulate removes `PrimeWindowSupply` from positive sine steering whenever the
+quarter-period logarithmic window is wider than `log 2`. -/
+theorem exists_prime_sin_pos_of_log_two_lt_window {τ : ℝ} (hτ : 0 < τ)
+    (hwindow : Real.log 2 < Real.pi / (2 * τ)) (Q : ℕ) :
+    ∃ q : ℕ, Nat.Prime q ∧ Q < q ∧
+      Real.sqrt 2 / 2 ≤ Real.sin (τ * Real.log q) :=
+  exists_prime_sin_pos_of_supply hτ (primeWindowSupply_of_log_two_lt hwindow) Q
+
+/-- Bertrand's postulate removes `PrimeWindowSupply` from negative sine steering under the
+same explicit quarter-period window condition. -/
+theorem exists_prime_sin_neg_of_log_two_lt_window {τ : ℝ} (hτ : 0 < τ)
+    (hwindow : Real.log 2 < Real.pi / (2 * τ)) (Q : ℕ) :
+    ∃ q : ℕ, Nat.Prime q ∧ Q < q ∧
+      Real.sin (τ * Real.log q) ≤ -(Real.sqrt 2 / 2) :=
+  exists_prime_sin_neg_of_supply hτ (primeWindowSupply_of_log_two_lt hwindow) Q
+
+/-- The positive mirror-increment steering theorem with the prime-window Prop discharged by
+Bertrand's explicit logarithmic window bound. -/
+theorem exists_prime_mirrorTiltIncrement_pos_of_log_two_lt_window {s : ℂ}
+    (h0 : 0 < s.re) (h1 : s.re < 1) (hτ : 0 < s.im)
+    (hwindow : Real.log 2 < Real.pi / (2 * s.im)) (Q : ℕ) :
+    ∃ q : ℕ, Nat.Prime q ∧ Q < q ∧ 0 < mirrorTiltIncrement q s :=
+  exists_prime_mirrorTiltIncrement_pos_of_supply h0 h1 hτ
+    (primeWindowSupply_of_log_two_lt hwindow) Q
+
+/-- The negative mirror-increment steering theorem with the prime-window Prop discharged by
+Bertrand's explicit logarithmic window bound. -/
+theorem exists_prime_mirrorTiltIncrement_neg_of_log_two_lt_window {s : ℂ}
+    (h0 : 0 < s.re) (h1 : s.re < 1) (hτ : 0 < s.im)
+    (hwindow : Real.log 2 < Real.pi / (2 * s.im)) (Q : ℕ) :
+    ∃ q : ℕ, Nat.Prime q ∧ Q < q ∧ mirrorTiltIncrement q s < 0 :=
+  exists_prime_mirrorTiltIncrement_neg_of_supply h0 h1 hτ
+    (primeWindowSupply_of_log_two_lt hwindow) Q
+
 /-! ### Greedy accumulation: small nonnegative steps with large total hit every level -/
 
 /-- The defect over a prime set is the sum of the per-prime mirror increments. -/

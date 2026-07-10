@@ -333,6 +333,7 @@ theorem quiet_crossing_cocycle_bound_tpoly {F h : ℂ → ℂ} {a : ℕ → ℂ}
       simpa using ((hneg.comp hTtop).const_mul ((3 : ℝ) ^ m))
     refine squeeze_zero' ?_ ?_ h32
     · filter_upwards with k
+      have hTk := hTpos k
       positivity
     · filter_upwards [hTtop.eventually_ge_atTop 1] with k hk
       have hTpos' : (0 : ℝ) < T k := hTpos k
@@ -344,10 +345,11 @@ theorem quiet_crossing_cocycle_bound_tpoly {F h : ℂ → ℂ} {a : ℕ → ℂ}
           ≤ (3 ^ m * (T k) ^ m) * ((T k) ^ 2)⁻¹ := by
             rw [← he]; exact mul_le_mul_of_nonneg_right hb (by positivity)
         _ = 3 ^ m * (T k) ^ (m - 2) := by
-            rw [Real.rpow_sub hTpos', mul_div_assoc]
-            congr 2
-            rw [← Real.rpow_natCast (T k) 2]
-            norm_num
+            have h2 : (T k) ^ ((2 : ℝ)) = (T k) ^ (2 : ℕ) := by
+              rw [← Real.rpow_natCast (T k) 2]
+              norm_num
+            rw [Real.rpow_sub hTpos', h2, div_eq_mul_inv]
+            ring
   have hcore : Tendsto
       (fun k => (H M * (2 + T k) ^ m * B + q k) * ((T k) ^ 2)⁻¹) atTop (nhds 0) := by
     have h1 : Tendsto (fun k => H M * B * ((2 + T k) ^ m * ((T k) ^ 2)⁻¹)) atTop (nhds 0) := by
@@ -367,8 +369,9 @@ theorem quiet_crossing_cocycle_bound_tpoly {F h : ℂ → ℂ} {a : ℕ → ℂ}
     simpa using hcore.const_mul (4 * ((n : ℝ) + 1 / 2) ^ (c + 1) * (c + (M : ℝ)))
   have hqk0 : ∀ k, (0 : ℝ) ≤ q k := fun k =>
     le_trans (norm_nonneg _) (hquietbd k c (by linarith) (le_refl c)).1
-  have hHT0 : ∀ k, (0 : ℝ) ≤ H M * (2 + T k) ^ m * B := fun k =>
-    mul_nonneg (mul_nonneg hH0 (Real.rpow_nonneg (by positivity) _)) hB0
+  have hHT0 : ∀ k, (0 : ℝ) ≤ H M * (2 + T k) ^ m * B := fun k => by
+    have hTk := hTpos k
+    exact mul_nonneg (mul_nonneg hH0 (Real.rpow_nonneg (by linarith) _)) hB0
   have hedge : ∀ (k : ℕ) (t : ℝ), 0 < T k → |t| = T k →
       ∀ x : ℝ, -(M : ℝ) < x → x ≤ c →
       ‖F (↑x + ↑t * I)‖ ≤ H M * (2 + T k) ^ m * B + q k →
@@ -494,7 +497,6 @@ theorem quiet_crossing_cocycle_bound_tpoly {F h : ℂ → ℂ} {a : ℕ → ℂ}
       (12 * tpolyConst m * (H M * B) * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ)))
       = (12 / Real.pi * tpolyConst m * (H M * B) * ((n : ℝ) - 1 / 2) ^ (1 - (M : ℝ))) * (1 / 2) := by
     field_simp
-    ring
   rw [hpi] at hnorm_an
   have hhalf : (0 : ℝ) < 1 / 2 := by norm_num
   exact le_of_mul_le_mul_right (by linarith [hnorm_an]) hhalf

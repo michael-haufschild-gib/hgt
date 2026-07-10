@@ -180,6 +180,21 @@ theorem multiplierJetTailEvalBound_explicit (P : ℕ) {j d : ℕ}
   multiplierJetTailEvalBound_of_cumulant_power_tail_bound P
     (cumulantPowerTailCoeffBound_explicit P hd hj hjd)
 
+/-- **Explicit scaled multiplier-tail estimate.**  On the paper range, the exact truncation
+splits into its order-`P` jet plus a polynomial remainder whose evaluated contribution is bounded
+by the explicit cumulant-power constant.  No tail-provider Prop remains in the statement. -/
+theorem tail_term_bound_explicit (P : ℕ) {j d : ℕ}
+    (hd : 8 ≤ d) (hj : 1 ≤ j) (hjd : j ^ 3 ≤ d ^ 2) :
+    ∃ Q : ℝ[X],
+      (multiplierTruncPoly P (P - 1) j).eval ((d : ℝ)⁻¹) =
+          (multiplierJetPoly P (P - 1) j).eval ((d : ℝ)⁻¹) +
+            ((d : ℝ)⁻¹) ^ P * Q.eval ((d : ℝ)⁻¹) ∧
+        |((d : ℝ)⁻¹) ^ P * Q.eval ((d : ℝ)⁻¹)| ≤
+          cumulantPowerTailConstant P * ((j : ℝ) ^ (2 * P) / (d : ℝ) ^ P) := by
+  have hdpos : 0 < d := lt_of_lt_of_le (by norm_num : 0 < 8) hd
+  exact tail_term_bound_of_multiplierJetTailEvalBound hdpos
+    (multiplierJetTailEvalBound_explicit P hd hj hjd)
+
 /-- If the explicit high-coefficient sum is bounded without the `d` weights, it
 supplies the tail provider for every positive `d`.
 

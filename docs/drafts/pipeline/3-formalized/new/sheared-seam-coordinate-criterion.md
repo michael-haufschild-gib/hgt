@@ -14,7 +14,9 @@ Let
 
 `A_m = [[X^m, 1], [0, 1]]`
 
-be the non-split sheared torsion seam presentation over `Q[X]`. For every defect matrix `Delta`,
+be the row-sheared torsion seam chart over `Q[X]`.  It is unimodularly equivalent to the split
+presentation; see `../../2-fully-proven/new/sheared-seam-gauge-trivialization.md`.  For every defect
+matrix `Delta`,
 
 `tr(adj(A_m) Delta) = Delta_00 - Delta_10 + X^m Delta_11`.
 
@@ -50,6 +52,15 @@ local sheared chart it must compute one residue:
 
 If this residue has a nonzero coefficient below `m`, the source-side cutoff defect is determinant-
 transverse. If the residue is divisible by `X^m` for every actual Sonin chart, this handle dies.
+
+The coordinate criterion is not evidence for a nontrivial extension class in `A_m`: the chart is
+split by an explicit row gauge.  Its content depends on the relative alignment of `Delta` and the
+cutoff with that chart.  FE coefficient parity supplies an intrinsic static cutoff flag and makes
+the shear non-split relative to automorphisms of one fixed coefficient-flagged target.  The full
+semilinear audit in `sheared-seam-gauge-trivialization.md` then closes the candidate: with fixed
+source/target FE parity the sheared matrix is not equivariant under `X -> -X`; transporting target
+parity makes it equivariant but explicitly split-equivalent.  This chart remains a valid coordinate
+formula, but it is not a completed obstruction class.
 
 ## Verification
 

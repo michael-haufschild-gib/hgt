@@ -347,3 +347,87 @@ full formal Lean proof or detailed refutation (doc-82 grade, no partials):
   `T ≥ A`, contains a simple factorized carrier center.  Thus even global bounded-gap center supply
   is unconditional; the remaining localization issue is the uncontrolled peel radius relative to
   the off-line target's horizontal displacement, not scarcity of carrier centers.
+
+## cont. 42 — horizontal phase-modulus rigidity; depths one and two unconditional
+
+- **CarrierHorizontalRigidity.lean:** Cauchy-Riemann duality identifies the horizontal derivative
+  of `log ‖archFactor(σ+iτ)‖` with `stripWindingRate σ τ`.  Its explicit positive floor makes the
+  archimedean log-modulus strictly increasing across the strip for `τ ≥ 12`.  Since
+  `completedGN 1 = archFactor(s) + archFactor(1-s)`, equal reflected norms at a zero force
+  `Re s = 1/2`.  Both height signs, simplicity, high-right zero-freeness, and analytic dyadic roots
+  of every level are formalized unconditionally.
+- **CarrierDepthTwoRigidity.lean:** the first nonconstant arithmetic depth is also closed.
+  `dirichletPoly 2 = 1 + 2^{-s}` is zero-free for `Re s > 0`; for `q = 2^{-s}` the exact unit-disc
+  inequality `Re(q/(1+q)) < 1/2` bounds its horizontal counter-rate below by `-(log 2)/2`.
+  The archimedean floor eventually beats this uniformly throughout the strip.  Therefore every
+  sufficiently high depth-two strip zero is on the critical line and simple, and the high-right
+  region admits analytic `2^k`-th roots for all `k`.  At both depths the levelwise roots are now
+  assembled into an actual `CoherentTower`, so coherence is also unconditional rather than a
+  hidden compatibility premise.  All capstones are axiom-clean.
+- **Route correction:** direct depth transport `1 → N` cannot be accepted as a proof merely from
+  exact successor recurrences: a no-boundary-crossing premise would reproduce the target.  The
+  depth-one/two results instead isolate the usable invariant — a lower bound for the aggregate
+  horizontal logarithmic rate of the direct arithmetic factor.
+- **[OPEN CORE]:** establish that aggregate rate, or an equivalent all-level divisor/deck
+  constraint, at the large finite depth chosen by the unconditional symmetrized Euler-Maclaurin
+  annulus supply.  This is the exact junction between the new zero-free regional geometry and
+  `semSplitData_count_eq`; the remaining proof must force the finite member's isolated hole count
+  to be divisible by every `2^k` without assuming boundary nonvanishing.
+
+## cont. 43 — actual SEM hole count joined to the integral Fitting seam
+
+- **SEMFittingCharge.lean:** every unconditional `SEMSplitData` now has an attached integral
+  non-split algebraic defect model.  Its Fitting class is the constant jet of `zs.length`, and
+  `integralJetCharge m n` reads exactly `zs.length mod n`.  By `semSplitData_count_eq`, this is the
+  central ξ-order modulo `n`.
+- **All rungs are now concrete boundary charges:** `RHLadder k` is equivalent to vanishing of the
+  integral SEM-hole Fitting charge modulo `2^k`; RH is equivalent to vanishing at every level.
+  Conversely, failure of a rung or RH produces an actual finite symmetric-EM split with nonzero
+  integral Fitting charge.  No abstract hole-count existence premise remains between the annulus
+  supply and the seam algebra.
+- **Additive scalar-extension route TERMINAL-NEGATIVE:** after `ℤ → ℚ` base change, every additive
+  finite charge kills the constant jet (`Hom(ℚ,ZMod n)=0`).  If the integral SEM charge is nonzero,
+  it provably cannot factor through any rational additive jet charge.  Therefore the hoped-for
+  analytic additive annihilation law is structurally impossible, not merely unproved.
+- **[OPEN CORE, sharpened]:** the annihilation mechanism must be non-additive
+  (determinant/valuation/monodromy) or must preserve integral arithmetic before scalar extension.
+  It must first realize, then act on, the attached `semHoleDefectZ` model and prove its charge zero
+  without reading the same
+  multiplicity through a deck class.  Rational/complex additive Fitting functionals are removed
+  from the live route list.
+
+## cont. 44 — algebraic-model correction; Perron annihilation rejected
+
+- **Honesty correction:** `semHoleDefectZ` is an attached algebraic matrix canonically labelled by
+  the rigid SEM hole count.  It has not been realized as the defect of the analytic gluing seam.
+  The remaining bridge is realization **and** annihilation, not annihilation alone.
+- **New exact constraints:** the attached defect is independent of annulus, truncation, and split
+  representative at fixed centre, and equals the model labelled by `analyticOrderAt xi ρ`.
+  Its determinant is `X^m + C(zs.length)` after addition to `standardPresZ m`; for `m ≥ 1`,
+  preservation of `X^m`-divisibility is equivalent to an empty hole.
+- **Completed-Perron route rejected:** the canonical Perron seam recovers a raw Dirichlet
+  coefficient rather than tending to zero.  The completed carrier has the Gamma decay, but exact
+  scalar coefficient extraction uniquely cancels Gamma.  Encoding `zs.length` as a chosen
+  coefficient stream is circular and supplies no analytic identification.
+- **Next live constraint:** target-local finite-carrier centres.  The divergent archimedean phase
+  suggests shrinking high-height gaps, but the current every-window second-moment floor has a
+  fixed minimum length.  The next theorem must control finite Dirichlet phase loss on shrinking
+  windows without postulating a carrier floor or boundary nonvanishing.
+
+## cont. 45 — one fixed annulus supports every large SEM truncation
+
+- **SEMEventualSplit.lean:** uniform convergence has been upgraded from “some dominating
+  truncation” to eventual domination.  Around every strip point one fixed isolating annulus works
+  for every sufficiently large `completedSEM N`, and every such member has a complete
+  `SEMSplitData` factorization on that common annulus.
+- **Conditional removed:** no truncation-selection premise or changing annulus remains in the
+  discrete SEM family.  The endpoints `N` and `2N` can now be compared in one typed geometry.
+- **Boundary:** both endpoints have the same hole count by `semSplitData_count_eq`; their relative
+  transition therefore has zero net count.  The missing theorem must extract a non-additive
+  presentation invariant from the explicit integral block between the endpoints and prove that it
+  realizes the attached local model.  Re-reading the common count through Rouché or deck class is
+  rejected as circular.
+- **Finite-transition verdict:** stronger than equal counts, every two large truncations have an
+  explicit zero-free straight-line homotopy on both charts.  Hence ordinary `N -> 2N` winding/deck
+  flux is terminal-negative.  Any surviving integral realization must be singular at the
+  finite-to-`xi` limit or remember presentation data that zero-free boundary homotopy does not.

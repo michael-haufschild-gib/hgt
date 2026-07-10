@@ -133,11 +133,17 @@ exact in the natural affine `<D,I>` coefficients, and the killing primitive is g
 FE-covariant once reflection is allowed to act on the weld labels.  FE symmetry does not rescue the
 class.  Every primitive nevertheless has principal symbol one at the derivation generator, so the
 weld survives modulo order-zero gauge as the connecting boundary of the fixed differential-order
-filtration.
+filtration.  The fixed spectral `L²` representation now proves that every bounded affine gauge is
+order zero, hence no bounded prime-weld primitive exists.
 
-> `[OPEN CORE]` Prove that bounded polarization-preserving gauges in the fixed completed
-> representation are order zero, then map the prime filtration boundary canonically to the Krein
-> polarization.  Do not introduce a contour-depth family, evolving carrier, or translation defect.
+`weld-class-determines-area-not-j.md` then proves that no natural class-to-`J` map exists and that no
+positive pullback of the local prime weld metric can equal an off-line factored Krein form.  It also
+constructs the correct local operation: the anti-symplectic FE coefficient reflection twists the
+weld area into exactly the one-pair factored Krein hyperbolic block.
+
+> `[OPEN CORE]` Construct the fixed prime-log/divisor incidence map assembling these local FE weld
+> blocks from the completed datum, and prove its Gram equals the global factored Krein form.  Do not
+> introduce a contour-depth family, evolving carrier, arbitrary pair selection, or external relation.
 
 The separating test is now exact: if a proposed seam has an explicit projection primitive, satisfies
 a flat translation law, or is removed by affine conjugation, it is on the flow side and is rejected

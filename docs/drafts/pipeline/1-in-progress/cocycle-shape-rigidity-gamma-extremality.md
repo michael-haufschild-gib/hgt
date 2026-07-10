@@ -1023,3 +1023,396 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
   action, falsified it, formalized the FE-covariant primitive, and relocated the surviving weld to
   the connecting boundary of the differential-order filtration. Targeted verification only; no
   umbrella build.
+
+## Wave 12 — walked to conclusion: the consistency audit, the m < 1 slice, and where the machine ends
+
+41. **Mandatory consistency audit — and a scope correction to §37/§40.** Test object: `L(s,χ)`,
+    χ real primitive — entire, quiet (strip convexity gives `q_k ~ T^{3/2} = o(T²)`), unit
+    coefficients, self-FE. The support/decay reading would kill its coefficients — so a
+    hypothesis must fail, and it does: by Stirling the Γ-quotient reflection factor grows like
+    `|t|^{(1−2σ)/2}` on `Re s = σ` — polynomially in HEIGHT, with exponent growing linearly in
+    the depth `M`. The t-uniform `hgrow` of waves 10–11 correctly excludes every Γ-type factor.
+    §37/§40 hold as stated for t-uniform (and now sub-critical t-polynomial) flanks; Γ-data live
+    outside that slice by construction, not by accident.
+42. **The full convergence slice, formalized `[PROVED — Lean, axiom-clean ×3]`.**
+    `QuietCrossingCocycleTPoly.lean`: flank bounds `‖h(s)‖ ≤ H(M)·(2+|Im s|)^m` with FIXED
+    `m < 1`. `quiet_crossing_cocycle_bound_tpoly`: `‖aₙ‖ ≤ (12/π)·J(m)·H(M)·B·(n−½)^{1−M}`,
+    `J(m) = ∫(1+y²)^{(m−2)/2}dy` (finite ⟺ m < 1, via mathlib's Japanese-bracket lemma at
+    exactly `r = 2−m > 1`); `support_tpoly` (radius `r` from `H(M) ≤ C·r^M` — the height aspect
+    never enters the support radius); `kill_tpoly` (bounded depth aspect + a zero ⟹ `F ≡ 0`).
+43. **Where the machine ends — and why that is the right ending.** The threshold `m < 1` is
+    structural: the Perron kernel decays like `|y|^{−2}`, so `|y|^m·|y|^{−2}` is integrable
+    exactly for `m < 1`. A reflection factor of Selberg degree `d` has height exponent `≈ d·M`
+    at depth `M` — exceeding every fixed `m`; kernel escalation to degree `K` buys `m < K` but
+    plants kernel poles at `0, −1, …, −K`, forcing `M > K`, so the escalation ladder closes only
+    while (height exponent per unit depth) < 1 — i.e. **for degree < 1**. There the machine
+    proves the carrier is a Dirichlet polynomial with conductor cocycle: a quiet-conditional,
+    Perron-rectangle derivation of the Kaczorowski–Perelli degree gap `(0,1)` `[BRIDGE — new
+    mechanism for a known theorem]`. At degree exactly 1 the machine's convergence fails at the
+    same line where ζ and the Dirichlet L-functions exist. **The machine saturates precisely at
+    the archimedean existence line: its analytic failure mode IS the Γ-factor.** Γ-extremality
+    in mechanical form — the constraint-side derivation the card's Goal asked for, with the
+    completed L-functions appearing as the unique boundary inhabitants rather than postulated
+    shapes.
+
+## Log (cont. 14)
+- 2026-07-10 — wave 12 (walk to conclusion): L(χ) audit run (no contradiction — t-uniformity
+  excludes Γ-data correctly; §37/§40 scoped); QuietCrossingCocycleTPoly.lean LANDED (4 fix
+  cycles; verified: standalone clean zero warnings, module build 8477 jobs green, all three
+  theorems [propext, Classical.choice, Quot.sound], lint passed, index regenerated, umbrella
+  import added). Degree-gap reading recorded as [BRIDGE — new mechanism]. Beyond the slice:
+  M-dependent kernel escalation = the named major program (degree ladder above 1).
+
+## Wave 29 — bounded spectral gauge forces the order filtration
+
+136. **FE label action grounded.** `[PROVED HERE + Lean]` The fixed Euler multiplier satisfies
+     `R M_p R=p^(-1) M_p^(-1)` pointwise, while `R D R=-D`; inversion of both weld labels is now a
+     concrete operator theorem rather than a stipulated group involution.
+137. **Spectral derivation is unbounded.** `[PROVED HERE + Lean]` On the fixed critical-line space
+     `L^2(R)`, the norm-one packets `u_N=1_[N,N+1]` satisfy
+     `||X u_N||_2>=N` for coordinate multiplication `X`. No bounded operator agrees with `X` on this
+     explicit domain.
+138. **Bounded affine rigidity.** `[PROVED HERE + Lean]` If a bounded operator agrees with `aX+bI`
+     on every `u_N`, then `a=0`: otherwise `a^(-1)(T-bI)` is a bounded realization of `X`. Thus every
+     data-bearing bounded affine weld cochain is automatically order zero; the admissibility
+     condition is derived rather than postulated.
+139. **Bounded prime obstruction.** `[PROVED HERE + Lean]` Combining bounded affine rigidity with
+     primitive-symbol rigidity proves that no bounded spectral affine cochain trivializes a nonzero
+     weld cocycle. In particular no bounded primitive exists at `theta=log p` for any prime `p`.
+     Complete proof: `../2-fully-proven/new/weld-affine-coefficient-collapse.md`.
+140. **New open core.** `[OPEN CORE]` Construct a canonical map from this bounded prime filtration
+     obstruction to the fixed FE Krein form and delete the plain-linear `ClassInducesJ` interface.
+     The bounded-to-order-zero step is closed; only the class-to-form map remains.
+
+## Log (cont. 31)
+
+- 2026-07-10 — wave 29: grounded the full FE generator action, proved spectral-coordinate
+  unboundedness on fixed `L^2(R)`, derived order-zero gauge from bounded realizability, and excluded
+  every bounded affine primitive of the prime weld. Direct checks on touched modules only; no
+  project-wide lint or build.
+
+## Wave 30 — the weld class determines area, not `J`; positive pullbacks cannot reach the seam
+
+141. **Canonical class output.** `[PROVED HERE + Lean]` The scalar weld-class line is additively
+     equivalent to its conversion-rate coordinate and maps injectively to the alternating generator-
+     plane form `Omega_theta(x,y)=theta*(x_1*y_2-x_2*y_1)`. This is an explicit homomorphism, not an
+     external relation.
+142. **`ClassInducesJ` interface no-go.** `[PROVED HERE + Lean]` No complex structure can be natural
+     under all automorphisms preserving `Omega_theta`. The area-preserving upper shear fixes `e_1`;
+     a commuting `J` would send `e_1` into the shear-fixed real line, giving a forbidden real
+     eigendirection for `J^2=-1`. The weld class alone cannot canonically induce `J`.
+143. **Correct polarization direction.** `[PROVED HERE + Lean]` An independently fixed complex
+     structure and a compatible alternating form canonically give
+     `Q(x,y)=Omega(x,Jy)`, symmetric and `J`-preserved, with the mixed form recovering `-Omega`.
+     For the standard generator-plane `J`, `Q_theta=theta*I`; every prime rate is positive definite.
+144. **Positive-pullback no-go.** `[PROVED HERE + Lean]` Every congruence pullback of the local prime
+     Gram remains Krein-nonnegative. By the existing exact-inertia theorem, a nondegenerate factored
+     Krein form carrying an off-line pair is not nonnegative and therefore cannot be any such
+     pullback. Complete proof: `../2-fully-proven/new/weld-class-determines-area-not-j.md`.
+145. **New open core.** `[CONJECTURE / OPEN CORE]` The RH-bearing form must be a non-split completed
+     extension: its prime restriction is the canonical weld area, while an intrinsically indefinite
+     archimedean cross-term has the existing factored Krein form as Schur complement. Construct this
+     fixed form and identity; no carrier, flow, positive pullback, or arbitrary `ClassInducesJ`
+     relation is admissible.
+
+## Log (cont. 32)
+
+- 2026-07-10 — wave 30: proved the canonical class-to-area map, killed natural class-to-`J`, reversed
+  the polarization direction, and combined local positivity with Krein congruence/exact inertia to
+  rule out every positive-pullback realization of an off-line seam. Direct module verification only.
+
+## Wave 31 — FE anti-symplectic reflection turns the weld area into the one-pair Krein block
+
+146. **Fixed FE anti-symplectic structure.** `[PROVED HERE + Lean]` On affine coefficients,
+     `R_FE(aD+bI)=-aD+bI` is an involution and reverses the canonical weld area:
+     `Omega_theta(R_FE x,R_FE y)=-Omega_theta(x,y)`.
+147. **Intrinsic hyperbolic form.** `[PROVED HERE + Lean]` The fixed twist
+     `K_theta(x,y)=Omega_theta(x,R_FE y)` is symmetric with Gram
+     `[[0,theta],[theta,0]]`. For `theta>0`, `(1,1)` is positive and `(1,-1)` is negative. The
+     required indefiniteness comes from FE parity, not from an arbitrary extension or induced `J`.
+148. **Exact one-pair identification.** `[PROVED HERE + Lean]` With
+     `c=sqrt(theta/2)`, `w=c(1,1)`, and `u=c(1,-1)`, the existing one-pair factored form
+     `w*w^*-u*u^*` equals the FE weld Gram exactly for every `theta>=0`; in particular at every prime
+     rate `theta=log p`.
+149. **Interface discharged locally.** `[PROVED]` The correct local constraint map is now explicit:
+     `weld class -> weld area`, followed by `area + fixed FE reflection -> Krein block`.
+     `ClassInducesJ`, a positive pullback, and a conjectural Schur-complement extension are all
+     unnecessary at the local level. Complete proof:
+     `../2-fully-proven/new/weld-class-determines-area-not-j.md`.
+150. **New open core.** `[CONJECTURE / OPEN CORE]` Construct the fixed arithmetic incidence map from
+     prime-log weld classes and completed FE divisor pairs to the direct sum of these canonical
+     hyperbolic blocks, and prove its Gram is the existing global `factoredKreinForm`. The completed
+     datum must determine weights and multiplicities; no carrier, flow, or arbitrary pair selection
+     is admissible.
+
+## Log (cont. 33)
+
+- 2026-07-10 — wave 31: extracted the anti-symplectic FE involution from the failed positive route,
+  constructed its split Krein twist, and identified it exactly with the one-pair factored form at
+  every nonnegative and prime rate. Direct module verification only.
+
+## Wave 32 — FE-weld rate blindness kills finite prime-source activation
+
+151. **Positive-rate blindness.** `[PROVED HERE + Lean]` For `theta,eta>0`, the invertible scalar
+     change of basis `P=sqrt(theta/eta) I` satisfies `P^* H_eta P=H_theta` for
+     `H_theta=[[0,theta],[theta,0]]`. Hence every positive prime FE block has the same Krein
+     congruence class; the local hyperbolic shape forgets `log p`.
+152. **Exact activation gate.** `[PROVED HERE + Lean]` `H_theta` is Krein-nonnegative iff `theta=0`:
+     `(1,-1)` is negative for `theta>0`, while `(1,1)` is negative for `theta<0`. Therefore, for
+     every `p>=2`, `H_(a log p)` is nonnegative iff `a=0`.
+153. **Finite-source activation obstruction.** `[PROVED HERE + Lean]` A pinned `SigmaSourceMap`
+     forces every local count `A(p)` to zero because every finite Euler factor is a unit. Thus every
+     associated FE block `H_(A(p) log p)` is the zero matrix, even at a `xi`-zero where
+     `analyticOrderAt xi` is nonzero. Complete proof:
+     `../2-fully-proven/new/weld-krein-rate-blindness.md`.
+154. **Previous open core retired.** `[FALSIFIED]` The one-pair shape identity does not yield a
+     finite arithmetic incidence mechanism. Krein congruence cannot distinguish prime rates, and
+     pinned prime divisor content activates no block. A `P -> infinity` repair is a cutoff flow;
+     setting activation equal to `xi`-multiplicity is tautological.
+155. **All factorwise order assemblers excluded.** `[PROVED HERE + Lean]` Package the orders of every
+     individual Euler factor together with the archimedean-factor order at a fixed strip point. This
+     entire profile is zero. Hence no function of that profile satisfying only `assemble(0)=0` can
+     recover the nonzero completed order at a `xi`-zero. The missing datum is genuinely
+     non-factorwise; changing the aggregation rule cannot repair the route.
+156. **New open core.** `[OPEN CORE]` Locate a fixed completed obstruction class whose restriction to
+     every finite Euler/archimedean subalgebra is zero but whose boundary on the completed divisor
+     supplies FE-Witt activation. It must be intrinsic, non-carrier, non-limit, and not a renamed
+     `analyticOrderAt xi`.
+
+## Log (cont. 34)
+
+- 2026-07-10 — wave 32: proved invertible congruence of all positive FE weld blocks, reduced local
+  Krein nonnegativity to the zero/nonzero activation bit, and combined that gate with the finite
+  prime-source no-go to prove exact block vanishing at every completed zero. Then excluded every
+  zero-preserving assembler from the simultaneous factorwise prime-plus-archimedean order profile.
+  Only the new module and its axiom footprint were checked; no project-wide lint or build.
+
+## Wave 33 — the sheared seam is gauge-split; relative cutoff alignment is the real datum
+
+157. **Sheared presentation gauge-trivialized.** `[PROVED HERE + Lean]` With
+     `U=[[1,1],[0,1]]`, the alleged non-split presentation satisfies
+     `[[X^m,1],[0,1]]=U*diag(X^m,1)`, and `U` has the explicit polynomial inverse
+     `[[1,-1],[0,1]]`. The sheared and split matrices present the same torsion module; the shear is
+     not an extension class.
+158. **Fitting boundary transported exactly.** `[PROVED HERE + Lean]` For every defect `Delta`,
+     `Fitting(A_shear,Delta)=Fitting(A_split,U^(-1)Delta)`. The nonzero boundary survives the
+     simultaneous gauge, so its source is the pair `(presentation,defect)`, not the presentation
+     alone.
+159. **Cutoff-crossing is not gauge-natural.** `[PROVED HERE + Lean]` The standard lower crossing is
+     a cross-boundary defect before unshearing, but its transport is `[[-1,0],[1,0]]`, which cannot
+     equal `(1-e)*sigma*e` for the unchanged `e=diag(1,0)` because its `(0,0)` entry is `-1`.
+     Therefore the prior split/sheared contrast held the cutoff coordinates fixed while changing
+     target gauge.
+160. **Fitting route corrected.** `[FALSIFIED AS STATED]` A more elaborate sheared torsion
+     presentation does not supply the non-factorwise completed datum demanded by wave 32. The live
+     invariant, if one exists, is the simultaneous-gauge relative position of the divisor lattice,
+     a canonical static flag, and the arithmetic action. A carrier-built cutoff supplies that flag
+     by a flow and is inadmissible. Complete proof:
+     `../2-fully-proven/new/sheared-seam-gauge-trivialization.md`.
+161. **New open core.** `[OPEN CORE]` Derive a canonical static flag or filtration from the completed
+     Euler-FE object itself and prove that its relative-position class with the local divisor lattice
+     controls FE-Witt activation. If no such simultaneous-gauge invariant exists, close the Fitting
+     seam route entirely.
+
+## Log (cont. 35)
+
+- 2026-07-10 — wave 33: audited the proposed non-factorwise Fitting survivor under presentation
+  equivalence, split the sheared matrix by an explicit unimodular gauge, proved exact Fitting
+  transport, and isolated the untransported cutoff alignment as the hidden extra datum. Only the
+  new module was compiled and its capstones were axiom-checked.
+
+## Wave 34 — FE parity canonically supplies the flag and makes the shear relatively non-split
+
+162. **Canonical static flag.** `[PROVED HERE + Lean]` FE coefficient reflection is
+     `R_FE=diag(-1,1)` on `(D,I)`. Its odd projector `(I-R_FE)/2` is exactly
+     `standardCutoff=diag(1,0)`. The flag used by the crossing algebra is therefore fixed by the
+     functional equation, not built by a carrier.
+163. **Parity-preserving gauge rigidity.** `[PROVED HERE + Lean]` Every polynomial row gauge
+     commuting with `R_FE` has zero upper-right entry. Any row factorization
+     `A_shear=V*A_split` would force that entry to equal `1`. Hence no FE-parity-preserving row gauge
+     can split the sheared presentation, even though an unrestricted unimodular gauge does split it.
+164. **First static relative survivor.** `[PROVED AT COEFFICIENT LEVEL]` The sheared seam is trivial
+     as an ordinary torsion presentation but nontrivial in the category flagged by FE coefficient
+     parity. This is the precise non-carrier relative-position obstruction left after waves 32-33.
+165. **Scope attack.** `[OPEN]` The local divisor coordinate is not yet in the theorem. Functional
+     equation transports paired germs and acts semilinearly on their coordinates; constant matrix
+     commutation alone is not the completed FE-equivariance statement. No RH consequence is claimed.
+166. **New open core.** `[OPEN CORE]` Construct the FE semilinear action on paired divisor germs,
+     extend the parity flag and sheared presentation to that action, and test whether the resulting
+     simultaneous-gauge class maps non-tautologically to FE-Witt activation.
+
+## Log (cont. 36)
+
+- 2026-07-10 — wave 34: derived the standard cutoff as the FE-odd projector and proved that the
+  absolutely splitting gauge is forbidden by FE parity, turning the sheared chart into a genuine
+  relative obstruction at coefficient level. The same targeted module and axiom audit passed; no
+  wider build or lint was run.
+
+## Wave 35 — semilinear FE audit kills the coefficient-level sheared survivor
+
+167. **Paired local-coordinate action.** `[PROVED HERE + Lean]` FE sends the local coordinate at
+     `rho` to the negative local coordinate at `1-rho`:
+     `((1-s)-(1-rho))=-(s-rho)`. Hence the germ action is semilinear with `X -> -X`; a presentation
+     must satisfy `R_t*A(-X)=A(X)*R_s`, not merely constant-matrix commutation.
+168. **Forced source parity.** `[PROVED HERE + Lean]` The split order-`m` presentation is
+     semilinearly equivariant for target parity `diag(-1,1)` and source parity
+     `diag(-(-1)^m,1)`. Both matrices define semilinear involutions. The multiplicity parity enters
+     through the unavoidable sign of `(-X)^m`.
+169. **Fixed-parity shear failure.** `[PROVED HERE + Lean]` With the same canonical coefficient
+     parity frozen on source and target, `[[X^m,1],[0,1]]` is not an FE-semilinear presentation: its
+     upper-right equation is `-1=1`. Thus wave 34's coefficient-relative class is not an FE object
+     under the fixed action.
+170. **Transported-parity collapse.** `[PROVED HERE + Lean]` Transport target parity by the splitting
+     gauge `U`, giving `R_t^shear=U*R_FE*U^(-1)`. This is a semilinear involution, the sheared
+     presentation becomes equivariant, and `U` is exactly an FE-semilinear isomorphism from the
+     split presentation. Simultaneous transport trivializes the class.
+171. **Wave-34 survivor corrected.** `[FALSIFIED AS COMPLETED OBSTRUCTION]` The current sheared matrix
+     has only two readings: fixed FE actions make it non-equivariant; transported FE action makes it
+     split. It supplies no simultaneous-gauge-invariant completed extension. The coefficient-level
+     no-splitting theorem remains correct but is not the needed invariant.
+172. **New open core.** `[OPEN CORE]` Construct a genuinely non-split FE-semilinear divisor
+     presentation with independently fixed source/target involutions and prove non-equivalence under
+     every simultaneous equivariant gauge. Only then seek a non-tautological map from its extension
+     class to FE-Witt activation.
+
+## Log (cont. 37)
+
+- 2026-07-10 — wave 35: attacked the best coefficient-relative conjecture with the full local FE
+  action, formalized `X -> -X`, proved fixed-parity non-equivariance and transported-parity
+  split-equivalence, and retired the present sheared Fitting seam as a completed obstruction. Direct
+  compilation and axiom checks remained confined to the same touched module.
+
+## Wave 36 — every FE-compatible upper-unit shear is equivariantly split
+
+173. **Polynomial shear classification.** `[PROVED HERE + Lean]` For
+     `A_f=[[X^m,f(X)],[0,1]]`, full FE semilinearity is equivalent to `f(-X)=-f(X)`. Thus the
+     constant shear was not an isolated failure; all allowed shears are exactly the odd ones.
+174. **Splitting parity coincidence.** `[PROVED HERE + Lean]` The elementary splitting gauge
+     `U_f=[[1,f],[0,1]]` is FE-semilinear under the identical condition `f(-X)=-f(X)`, and
+     `A_f=U_f*diag(X^m,1)`.
+175. **Upper-unit family exhausted.** `[PROVED NO-GO]` Every FE-compatible member of the entire
+     upper-unit-shear family is FE-semilinearly row-equivalent to the split presentation. Replacing
+     `1` by a more elaborate polynomial cannot rescue the route. Complete proof:
+     `../2-fully-proven/new/fe-semilinear-upper-shear-exhaustion.md`.
+176. **Forced structural move.** `[OPEN CORE SHARPENED]` A genuine extension needs positive torsion
+     on both lanes; a unit second lane has no extension content left after FE gauge.
+
+## Log (cont. 38)
+
+- 2026-07-10 — wave 36: classified the full upper-unit shear family and proved FE equivariance is
+  exactly the condition making the explicit splitting gauge FE-equivariant. One new module was
+  compiled directly and axiom-checked; no broad lint or build.
+
+## Wave 37 — two torsion lanes produce a genuine FE extension and its local Witt activation
+
+177. **Two-torsion FE equation.** `[PROVED HERE + Lean]` For
+     `A_(a,b,f)=[[X^a,f],[0,X^b]]`, target parity `diag(-1,1)` forces source parity
+     `diag(-(-1)^a,(-1)^b)` and the exact off-diagonal equation
+     `-f(-X)=(-1)^b*f(X)`. In particular an order-one second lane permits precisely even `f`.
+178. **Constant-term extension classification.** `[PROVED HERE + Lean]` For `b=1`, row splitting is
+     equivalent to `X|f`, equivalently `f(0)=0`. Hence an FE-semilinear row-nonsplit extension is
+     exactly an even polynomial with nonzero constant term.
+179. **Canonical genuine extension.** `[PROVED HERE + Lean]`
+     `E_m=[[X^m,1],[0,X]]` is FE-semilinear and has determinant `X^(m+1)`. For `m>0`, it is not
+     `U*diag(X^m,X)*V` for any polynomial matrices `U,V`: the split side vanishes entrywise at
+     `X=0`, while `E_m` has unit upper-right residue.
+180. **Extension-to-Witt activation.** `[PROVED HERE + Lean]` Send the exact extension residue
+     `f(0)` to the canonical FE Gram `[[0,f(0)],[f(0),0]]`. The presentation row-splits iff this Gram
+     is Krein-nonnegative, and is row-nonsplit iff the Gram has a negative direction. The activation
+     scalar is now derived from a gauge obstruction, not inserted by a prime-source map. Complete
+     proof: `../2-fully-proven/new/fe-semilinear-two-torsion-extension.md`.
+181. **Scope attack.** `[OPEN]` The extension is local and does not yet distinguish zero location.
+     It must be attached functorially to the actual completed divisor pair, and its joint
+     FE-plus-Schwarz descent must separate the critical-line fixed locus from off-line orbits.
+182. **New open core.** `[OPEN CORE]` Compute the Schwarz descent of the constant FE extension class
+     on paired divisor germs. If it survives equally on and off the critical line, the new object is
+     position-blind; if the fixed-locus descent forces splitting only on the line, it becomes the
+     first genuine RH-bearing constraint in this route.
+
+## Log (cont. 39)
+
+- 2026-07-10 — wave 37: replaced the exhausted torsion-plus-unit shear by a two-torsion
+  FE-semilinear extension, classified its constant residue, proved genuine two-sided nonsplitting,
+  and derived the exact local extension-to-Witt activation equivalence. Verification remained
+  limited to the touched modules and their axiom footprints.
+
+## Wave 38 — joint-reflection descent preserves the genuine extension: local Ext is position-blind
+
+183. **Residue reflection invariance.** `[PROVED HERE + Lean]` Local-coordinate reflection
+     `X -> -X` preserves the constant extension residue: `(f(-X))(0)=f(0)`. Consequently row
+     splitting of `[[X^a,f],[0,X]]` is invariant under reflection.
+184. **Witt reflection invariance.** `[PROVED HERE + Lean]` The extension-induced FE Gram depends
+     only on `f(0)`, hence `H_(f(-X))=H_f`. Local Krein activation is constant on reflection orbits.
+185. **Fixed-germ survival.** `[PROVED HERE + Lean]` For every `m>0`, the unit extension is both
+     FE-semilinear and genuinely two-sided nonsplit. Over the rational local ring Schwarz fixes
+     coefficients, so at a critical-line fixed germ the joint FE-Schwarz action is the same
+     `X -> -X` semilinearity. Fixed-locus descent does not force the class to vanish.
+186. **RH-bearing hope retired.** `[FALSIFIED]` A genuine local two-torsion extension and its Witt
+     negativity do not distinguish a critical-line fixed germ from a free reflection orbit. The
+     local object is new and nontrivial but position-blind. Complete proof and scope correction:
+     `../2-fully-proven/new/fe-semilinear-two-torsion-extension.md`.
+187. **New open core.** `[OPEN CORE]` Construct a nonlocal orbit-gluing class attached to the fixed
+     completed FE-plus-Schwarz groupoid. It must distinguish fixed and free base-point orbits while
+     remaining invisible to factorwise order profiles and local extension residues, and it cannot
+     be assembled by a carrier or cutoff flow.
+
+## Log (cont. 40)
+
+- 2026-07-10 — wave 38: attacked the genuine two-torsion survivor under joint reflection, proved
+  invariance of its residue, splitting class, and Witt block, and showed the equivariant unit class
+  survives nonsplit. This rules out local Ext/Witt data as the missing location detector. Only the
+  two-torsion module was recompiled and axiom-audited.
+
+## Wave 39 — the integral extension lattice yields a fixed/free Tate orbit detector
+
+188. **Rational blindness explained.** `[BRIDGE]` Over `Q`, averaging by `1/2` kills finite
+     stabilizer descent; the reflection blindness of local Ext/Witt is forced by divisibility of the
+     coefficient line, not an accidental defect of the chosen matrix.
+189. **Canonical integral lift.** `[PROVED HERE + Lean]` The matrix
+     `E_m^Z=[[X^m,1],[0,X]]` over `Z[X]` base-changes exactly to the rational FE-semilinear unit
+     extension, and its extension residue is the integral unit `1`.
+190. **Fixed-orbit survival.** `[PROVED HERE + Lean]` On the fixed residue lattice `Z`, the
+     stabilizer norm is `n -> 2n`; reduction modulo two vanishes exactly on norms. The unit residue
+     has nonzero fixed-orbit Tate charge.
+191. **Free-orbit annihilation.** `[PROVED HERE + Lean]` On the free swap module `Z^2`, every
+     invariant pair is diagonal and every diagonal `(c,c)` is the norm of `(c,0)`. In particular the
+     unit pair `(1,1)` is invariant but Tate-trivial.
+192. **First fixed/free separator.** `[PROVED HERE + Lean]` The same integral two-torsion extension
+     gives nonzero descent charge on a fixed germ and zero descent class on a free two-point orbit.
+     The separator uses stabilizer gluing, not local position, factorwise orders, or a carrier.
+     Complete proof: `../2-fully-proven/new/integral-fixed-free-tate-extension.md`.
+193. **New open core.** `[OPEN CORE]` Construct the functorial attachment from the completed ξ
+     divisor groupoid to the integral unit extension and prove every actual zero orbit receives the
+     odd residue class. Then nonzero descended charge forces nontrivial stabilizer and therefore the
+     critical-line fixed locus.
+
+## Log (cont. 41)
+
+- 2026-07-10 — wave 39: retained the integral lattice discarded by the rational local model,
+  formalized fixed and free orbit norms, proved the unit residue survives only on fixed orbits, and
+  isolated the remaining RH-facing statement as a completed-divisor attachment theorem. One new
+  module was compiled directly and its capstones were axiom-checked in scratch.
+
+## Wave 40 — integral Tate detector reduces to existing orbit parity and is retired
+
+194. **Novelty attack.** `[DUAL-GATE FAIL]` The fixed residue `1 mod 2` versus free norm pair
+     `(1,1)` is exactly the parity of a one-point versus two-point involution orbit. The existing
+     `BandEdgePairing` theorem already states that nonzero unit mod-two flux forces a fixed point.
+195. **Attachment circularity.** `[FALSIFIED AS RH INTERFACE]` Assigning the unit residue to each
+     orbit makes the charge nonzero precisely when the orbit is fixed. Requiring nonzero charge at
+     every ξ-zero orbit therefore restates that every orbit is fixed, i.e. the target location
+     conclusion. No arithmetic content was derived.
+196. **Status correction.** `[PROVED BRIDGE, NOT NEW KNOWLEDGE]` The integral base-change and norm
+     theorems remain valid Lean infrastructure, but the research card is moved to
+     `../5-failed/integral-fixed-free-tate-extension.md` and must not be cited as an RH-bearing
+     result.
+197. **New open core.** `[OPEN CORE]` Find compatibility data in the completed FE/Schwarz gluing that
+     is invisible to orbit cardinality, local extension residue, and the exponent-two joint symmetry.
+     It must compare the two involution identifications themselves rather than test whether their
+     composite fixes the point.
+
+## Log (cont. 42)
+
+- 2026-07-10 — wave 40: attacked the integral Tate proposal against prior Lean work and the novelty
+  gate, identified it with the existing fixed-point-free pairing parity theorem, and retired the RH
+  interface as circular. The correct algebra remains formalized; the scientific claim is downgraded.

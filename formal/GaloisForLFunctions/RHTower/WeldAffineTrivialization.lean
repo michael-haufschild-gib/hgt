@@ -164,6 +164,19 @@ theorem xi_deriv_one_sub_eq_neg (s : ℂ) :
   simpa only [one_mul, neg_one_mul,
     show 2 * ((1 : ℂ) / 2) - s = 1 - s by ring] using h
 
+/-- Functional-equation reflection conjugates the prime Euler multiplier to its inverse, up to the
+central scalar `p⁻¹`: `R M_p R = p⁻¹ M_p⁻¹`.  This forces inversion of the prime weld label. -/
+theorem weld_reflection_euler_prime (p : ℕ) (hp : 0 < p) (f : ℂ → ℂ) (s : ℂ) :
+    (p : ℂ) ^ (-(1 - s)) * f (1 - (1 - s)) =
+      (p : ℂ) ^ (-1 : ℂ) * ((p : ℂ) ^ s * f s) := by
+  have hp0 : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne'
+  have hpow : (p : ℂ) ^ (s - 1) = (p : ℂ) ^ (-1 : ℂ) * (p : ℂ) ^ s := by
+    rw [← Complex.cpow_add _ _ hp0]
+    congr 1
+    ring
+  rw [show -(1 - s) = s - 1 by ring, show 1 - (1 - s) = s by ring, hpow]
+  ring
+
 /-- On weld labels, the functional equation reverses both the derivation and Euler-multiplier
 directions.  The scalar factor in `R M_p R = p⁻¹ M_p⁻¹` is central, so the label action is inversion. -/
 def weldFEGroupReflection (g : WeldGroup) : WeldGroup := g⁻¹

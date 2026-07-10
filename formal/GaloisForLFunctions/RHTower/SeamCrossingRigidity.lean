@@ -339,6 +339,39 @@ theorem seam_crossing_count_of_no_quiet_stretch {N : ℕ} {A B Λ : ℝ} {n : �
       hn hΛ h hlong
   exact ⟨z, hmono, hmem, fun i => gN_line_eq_zero_of_completedGN_re_eq_zero (hzero i)⟩
 
+/-- **One-zero-disc crossing count, with the oscillation interface discharged.**
+A critical-line window contained in a one-zero carrier disc carries at least `n` strictly
+ordered on-line carrier zeros once its length exceeds `n` times the explicit
+Borel--Carathéodory/winding scale.  The conclusion consumes only the concrete analytic disc
+data; the intermediate `SeamNoQuietStretch` predicate is constructed internally. -/
+theorem seam_crossing_count_of_disc_one_zero (N : ℕ)
+    {τc a b R Md ρmax : ℝ} {ρ' : ℂ} {n : ℕ} (hR0 : 0 < R) (ha : 0 < a)
+    (hflr : 0 < (Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)
+    (hd_an : AnalyticOnNhd ℂ (dslope (gN N) ρ') (ball (linePt τc) R))
+    (hd_ne : ∀ z ∈ ball (linePt τc) R, dslope (gN N) ρ' z ≠ 0)
+    (hfact : ∀ z ∈ ball (linePt τc) R, gN N z = (z - ρ') * dslope (gN N) ρ' z)
+    (hMd : ∀ z ∈ ball (linePt τc) R, ‖dslope (gN N) ρ' z‖ ≤ Md)
+    (hltd : ‖dslope (gN N) ρ' (linePt τc)‖ < Md)
+    (hρa : |a - τc| ≤ ρmax) (hρb : |b - τc| ≤ ρmax) (hρR : ρmax < R)
+    (hseg : ∀ τ ∈ Set.Icc a b, linePt τ ∈ ball (linePt τc) R)
+    (hΛ : 0 <
+      (Real.pi + 4 * ρmax / (R - ρmax) *
+          (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
+        ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2))
+    (hn : 0 < n)
+    (hlong :
+      (n : ℝ) *
+          ((Real.pi + 4 * ρmax / (R - ρmax) *
+              (Real.log Md - Real.log ‖dslope (gN N) ρ' (linePt τc)‖)) /
+            ((Real.log (a / (2 * Real.pi)) - (4 / a ^ 2 + Real.pi / a)) / 2)) <
+        b - a) :
+    ∃ z : Fin n → ℝ, StrictMono z ∧ (∀ i, z i ∈ Set.Icc a b) ∧
+      (∀ i, gN N (linePt (z i)) = 0) :=
+  seam_crossing_count_of_no_quiet_stretch
+    (seamNoQuietStretch_of_disc_one_zero N hR0 ha hflr hd_an hd_ne hfact hMd hltd
+      hρa hρb hρR hseg)
+    hΛ hn hlong
+
 /-- Zeros carried by pairwise strictly separated sub-intervals are strictly ordered: choosing
 one zero from each of `n` slots `[lo k, hi k]` with `hi i < lo j` for `i < j` gives an
 increasing family. -/
