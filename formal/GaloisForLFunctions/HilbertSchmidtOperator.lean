@@ -35,6 +35,17 @@ Proved here:
 * `ContinuousLinearMap.hsInner`, `IsHilbertSchmidt.summable_inner`, `hsInner_self_re` — the
   Hilbert–Schmidt inner product `⟨S, T⟩_HS = ∑ᵢ ⟨S eᵢ, T eᵢ⟩`, convergent for Hilbert–Schmidt `S, T`,
   with `Re⟨T, T⟩_HS = ‖T‖²_HS`.
+* `tsum_inner_basis_polarization`, `hsInner_eq_tsum_basis` — polarization: `∑ᵢ ⟨S (b i), T (b i)⟩` is
+  a fixed combination of the four Hilbert–Schmidt norms `‖S ± T‖²_HS`, `‖S ∓ i·T‖²_HS`, hence
+  independent of the Hilbert basis `b` and equal to `hsInner S T`.
+* `hsInner_conj_symm`, `hsInner_add_left`, `hsInner_add_right`, `hsInner_smul_left`,
+  `hsInner_smul_right`, `hsNormSq_eq_zero_iff`, `hsNorm_eq_zero_iff`, `norm_hsInner_le`,
+  `hsNorm_add_le` — the Hilbert–Schmidt operators carry a genuine inner-product structure:
+  sesquilinear conjugate-symmetric positive-definite pairing, Cauchy–Schwarz, triangle inequality.
+* `hsInner_adjoint_adjoint` — the adjoint reverses the Hilbert–Schmidt inner product:
+  `⟨S†, T†⟩_HS = ⟨T, S⟩_HS`.
+* `memℓp_two_of_sq`, `tsum_mul_le_sqrt_mul_sqrt` — Cauchy–Schwarz for real series, through the
+  `ℓ²(ι, ℝ)` pairing.
 -/
 import Mathlib.Analysis.InnerProductSpace.l2Space
 import Mathlib.Analysis.InnerProductSpace.Adjoint
@@ -309,5 +320,295 @@ theorem hsInner_self_re {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T) :
     RCLike.reCLM.map_tsum hsum
   rw [hre]
   exact tsum_congr fun i => inner_self_eq_norm_sq _
+
+end ContinuousLinearMap
+
+namespace ContinuousLinearMap
+
+variable {𝕜 E F : Type*} [RCLike 𝕜]
+  [NormedAddCommGroup E] [InnerProductSpace 𝕜 E] [CompleteSpace E]
+  [NormedAddCommGroup F] [InnerProductSpace 𝕜 F] [CompleteSpace F]
+
+/-- A real sequence with summable squares is a member of `ℓ²`. -/
+theorem memℓp_two_of_sq {ι : Type*} {a : ι → ℝ} (ha : Summable (fun i => a i ^ 2)) :
+    Memℓp a 2 := by
+  rw [memℓp_gen_iff (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal)]
+  refine ha.congr fun i => ?_
+  rw [ENNReal.toReal_ofNat, show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast,
+    Real.norm_eq_abs, sq_abs]
+
+/-- **Cauchy–Schwarz for real series.**  `∑ᵢ aᵢ·cᵢ ≤ √(∑ᵢ aᵢ²)·√(∑ᵢ cᵢ²)` for square-summable real
+sequences — the `ℓ²(ι, ℝ)` inner-product bound read through the coordinate sums. -/
+theorem tsum_mul_le_sqrt_mul_sqrt {ι : Type*} {a c : ι → ℝ}
+    (ha : Summable (fun i => a i ^ 2)) (hc : Summable (fun i => c i ^ 2)) :
+    ∑' i, a i * c i ≤ Real.sqrt (∑' i, a i ^ 2) * Real.sqrt (∑' i, c i ^ 2) := by
+  set A : lp (fun _ : ι => ℝ) 2 := ⟨a, memℓp_two_of_sq ha⟩ with hA
+  set C : lp (fun _ : ι => ℝ) 2 := ⟨c, memℓp_two_of_sq hc⟩ with hC
+  have hinner : inner ℝ A C = ∑' i, a i * c i := by
+    rw [lp.inner_eq_tsum]
+    refine tsum_congr fun i => ?_
+    simp [RCLike.inner_apply]
+    exact mul_comm _ _
+  have hnA : ‖A‖ ^ 2 = ∑' i, a i ^ 2 := by
+    have h := lp.norm_rpow_eq_tsum (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal) A
+    simp only [ENNReal.toReal_ofNat] at h
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num] at h
+    simp only [Real.rpow_natCast] at h
+    rw [h]
+    exact tsum_congr fun i => by rw [Real.norm_eq_abs, sq_abs]
+  have hnC : ‖C‖ ^ 2 = ∑' i, c i ^ 2 := by
+    have h := lp.norm_rpow_eq_tsum (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal) C
+    simp only [ENNReal.toReal_ofNat] at h
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num] at h
+    simp only [Real.rpow_natCast] at h
+    rw [h]
+    exact tsum_congr fun i => by rw [Real.norm_eq_abs, sq_abs]
+  calc ∑' i, a i * c i = inner ℝ A C := hinner.symm
+    _ ≤ ‖A‖ * ‖C‖ := real_inner_le_norm A C
+    _ = Real.sqrt (∑' i, a i ^ 2) * Real.sqrt (∑' i, c i ^ 2) := by
+        rw [← hnA, ← hnC, Real.sqrt_sq (norm_nonneg A), Real.sqrt_sq (norm_nonneg C)]
+
+/-- **Polarization for the Hilbert–Schmidt pairing.**  Over any Hilbert basis `b` of `E`, the sum
+`∑ᵢ ⟨S (b i), T (b i)⟩` of a Hilbert–Schmidt pair is the polarization combination of the four
+basis-independent Hilbert–Schmidt norms `‖S ± T‖²_HS` and `‖S ∓ i·T‖²_HS`; in particular the value
+of the sum does not depend on the basis. -/
+theorem tsum_inner_basis_polarization {S T : E →L[𝕜] F} (hS : IsHilbertSchmidt S)
+    (hT : IsHilbertSchmidt T) {ι : Type*} (b : HilbertBasis ι 𝕜 E) :
+    ∑' i, inner 𝕜 (S (b i)) (T (b i))
+      = ((hsNormSq (S + T) : 𝕜) - (hsNormSq (S - T) : 𝕜) +
+          ((hsNormSq (S - (RCLike.I : 𝕜) • T) : 𝕜) - (hsNormSq (S + (RCLike.I : 𝕜) • T) : 𝕜))
+            * RCLike.I) / 4 := by
+  have h1 : IsHilbertSchmidt (S + T) := hS.add hT
+  have h2 : IsHilbertSchmidt (S - T) := hS.sub hT
+  have h3 : IsHilbertSchmidt (S - (RCLike.I : 𝕜) • T) := hS.sub (hT.smul _)
+  have h4 : IsHilbertSchmidt (S + (RCLike.I : 𝕜) • T) := hS.add (hT.smul _)
+  set f₁ : ι → 𝕜 := fun i => ((‖(S + T) (b i)‖ ^ 2 : ℝ) : 𝕜) with hf₁
+  set f₂ : ι → 𝕜 := fun i => ((‖(S - T) (b i)‖ ^ 2 : ℝ) : 𝕜) with hf₂
+  set f₃ : ι → 𝕜 := fun i => ((‖(S - (RCLike.I : 𝕜) • T) (b i)‖ ^ 2 : ℝ) : 𝕜) with hf₃
+  set f₄ : ι → 𝕜 := fun i => ((‖(S + (RCLike.I : 𝕜) • T) (b i)‖ ^ 2 : ℝ) : 𝕜) with hf₄
+  have hs₁ : Summable f₁ := (RCLike.summable_ofReal (𝕜 := 𝕜)).mpr (h1.summable b)
+  have hs₂ : Summable f₂ := (RCLike.summable_ofReal (𝕜 := 𝕜)).mpr (h2.summable b)
+  have hs₃ : Summable f₃ := (RCLike.summable_ofReal (𝕜 := 𝕜)).mpr (h3.summable b)
+  have hs₄ : Summable f₄ := (RCLike.summable_ofReal (𝕜 := 𝕜)).mpr (h4.summable b)
+  have hpt : ∀ i, inner 𝕜 (S (b i)) (T (b i))
+      = (f₁ i - f₂ i + (f₃ i - f₄ i) * RCLike.I) / 4 := by
+    intro i
+    simp only [hf₁, hf₂, hf₃, hf₄, add_apply, sub_apply, smul_apply]
+    push_cast
+    exact inner_eq_sum_norm_sq_div_four _ _
+  have hv₁ : ∑' i, f₁ i = ((hsNormSq (S + T) : ℝ) : 𝕜) := by
+    simp only [hf₁]
+    rw [← RCLike.ofReal_tsum (𝕜 := 𝕜), ← hsNormSq_eq h1 b]
+  have hv₂ : ∑' i, f₂ i = ((hsNormSq (S - T) : ℝ) : 𝕜) := by
+    simp only [hf₂]
+    rw [← RCLike.ofReal_tsum (𝕜 := 𝕜), ← hsNormSq_eq h2 b]
+  have hv₃ : ∑' i, f₃ i = ((hsNormSq (S - (RCLike.I : 𝕜) • T) : ℝ) : 𝕜) := by
+    simp only [hf₃]
+    rw [← RCLike.ofReal_tsum (𝕜 := 𝕜), ← hsNormSq_eq h3 b]
+  have hv₄ : ∑' i, f₄ i = ((hsNormSq (S + (RCLike.I : 𝕜) • T) : ℝ) : 𝕜) := by
+    simp only [hf₄]
+    rw [← RCLike.ofReal_tsum (𝕜 := 𝕜), ← hsNormSq_eq h4 b]
+  calc ∑' i, inner 𝕜 (S (b i)) (T (b i))
+      = ∑' i, ((f₁ i - f₂ i + (f₃ i - f₄ i) * RCLike.I) / 4) := tsum_congr hpt
+    _ = (∑' i, (f₁ i - f₂ i + (f₃ i - f₄ i) * RCLike.I)) / 4 := tsum_div_const
+    _ = ((∑' i, (f₁ i - f₂ i)) + ∑' i, (f₃ i - f₄ i) * RCLike.I) / 4 := by
+        rw [(hs₁.sub hs₂).tsum_add ((hs₃.sub hs₄).mul_right _)]
+    _ = ((∑' i, f₁ i) - (∑' i, f₂ i) + ((∑' i, (f₃ i - f₄ i)) * RCLike.I)) / 4 := by
+        rw [hs₁.tsum_sub hs₂, tsum_mul_right]
+    _ = ((∑' i, f₁ i) - (∑' i, f₂ i) + ((∑' i, f₃ i) - (∑' i, f₄ i)) * RCLike.I) / 4 := by
+        rw [hs₃.tsum_sub hs₄]
+    _ = ((hsNormSq (S + T) : 𝕜) - (hsNormSq (S - T) : 𝕜) +
+          ((hsNormSq (S - (RCLike.I : 𝕜) • T) : 𝕜) - (hsNormSq (S + (RCLike.I : 𝕜) • T) : 𝕜))
+            * RCLike.I) / 4 := by
+        rw [hv₁, hv₂, hv₃, hv₄]
+
+/-- **Basis independence of the Hilbert–Schmidt inner product.**  For Hilbert–Schmidt `S, T`, the
+pairing `∑ᵢ ⟨S (b i), T (b i)⟩` has the same value over every Hilbert basis `b` of `E`, namely
+`hsInner S T`: both sides are the same polarization combination of basis-independent
+Hilbert–Schmidt norms. -/
+theorem hsInner_eq_tsum_basis {S T : E →L[𝕜] F} (hS : IsHilbertSchmidt S)
+    (hT : IsHilbertSchmidt T) {ι : Type*} (b : HilbertBasis ι 𝕜 E) :
+    hsInner S T = ∑' i, inner 𝕜 (S (b i)) (T (b i)) := by
+  show ∑' i, inner 𝕜 (S (hsBasis 𝕜 E i)) (T (hsBasis 𝕜 E i)) = _
+  exact (tsum_inner_basis_polarization hS hT (hsBasis 𝕜 E)).trans
+    (tsum_inner_basis_polarization hS hT b).symm
+
+omit [CompleteSpace F] in
+/-- Conjugate symmetry of the Hilbert–Schmidt inner product: `⟨S, T⟩_HS = conj ⟨T, S⟩_HS`. -/
+theorem hsInner_conj_symm (S T : E →L[𝕜] F) : hsInner S T = conj (hsInner T S) := by
+  rw [hsInner, hsInner, RCLike.conj_tsum]
+  exact tsum_congr fun i => (inner_conj_symm _ _).symm
+
+/-- Left additivity of the Hilbert–Schmidt inner product on Hilbert–Schmidt operators. -/
+theorem hsInner_add_left {S₁ S₂ T : E →L[𝕜] F} (h₁ : IsHilbertSchmidt S₁)
+    (h₂ : IsHilbertSchmidt S₂) (hT : IsHilbertSchmidt T) :
+    hsInner (S₁ + S₂) T = hsInner S₁ T + hsInner S₂ T := by
+  rw [hsInner, hsInner, hsInner,
+    ← (h₁.summable_inner hT (hsBasis 𝕜 E)).tsum_add (h₂.summable_inner hT (hsBasis 𝕜 E))]
+  exact tsum_congr fun i => by rw [add_apply, inner_add_left]
+
+/-- Right additivity of the Hilbert–Schmidt inner product on Hilbert–Schmidt operators. -/
+theorem hsInner_add_right {S T₁ T₂ : E →L[𝕜] F} (hS : IsHilbertSchmidt S)
+    (h₁ : IsHilbertSchmidt T₁) (h₂ : IsHilbertSchmidt T₂) :
+    hsInner S (T₁ + T₂) = hsInner S T₁ + hsInner S T₂ := by
+  rw [hsInner, hsInner, hsInner,
+    ← (hS.summable_inner h₁ (hsBasis 𝕜 E)).tsum_add (hS.summable_inner h₂ (hsBasis 𝕜 E))]
+  exact tsum_congr fun i => by rw [add_apply, inner_add_right]
+
+omit [CompleteSpace F] in
+/-- Conjugate-linear left homogeneity: `⟨c • S, T⟩_HS = conj c · ⟨S, T⟩_HS`. -/
+theorem hsInner_smul_left (c : 𝕜) (S T : E →L[𝕜] F) :
+    hsInner (c • S) T = conj c * hsInner S T := by
+  rw [hsInner, hsInner, ← tsum_mul_left]
+  exact tsum_congr fun i => by rw [smul_apply, inner_smul_left]
+
+omit [CompleteSpace F] in
+/-- Linear right homogeneity: `⟨S, c • T⟩_HS = c · ⟨S, T⟩_HS`. -/
+theorem hsInner_smul_right (c : 𝕜) (S T : E →L[𝕜] F) :
+    hsInner S (c • T) = c * hsInner S T := by
+  rw [hsInner, hsInner, ← tsum_mul_left]
+  exact tsum_congr fun i => by rw [smul_apply, inner_smul_right]
+
+omit [CompleteSpace F] in
+/-- **Positive-definiteness of the Hilbert–Schmidt norm.**  `‖T‖²_HS = 0 ↔ T = 0`: each term
+`‖T eᵢ‖²` of the vanishing nonnegative sum vanishes, so `T` kills a Hilbert basis and hence its
+dense span.  Together with `hsInner_self_re`, the sesquilinearity, and the conjugate symmetry, this
+makes `hsInner` a genuine inner product on the Hilbert–Schmidt operators. -/
+theorem hsNormSq_eq_zero_iff {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T) :
+    hsNormSq T = 0 ↔ T = 0 := by
+  constructor
+  · intro h
+    have hsummable : Summable (fun i => ‖T (hsBasis 𝕜 E i)‖ ^ 2) := hT
+    have hb : ∀ i, T (hsBasis 𝕜 E i) = 0 := by
+      intro i
+      have hle := hsummable.le_tsum i fun j _ => by positivity
+      rw [show ∑' j, ‖T (hsBasis 𝕜 E j)‖ ^ 2 = hsNormSq T from rfl, h] at hle
+      have hz : ‖T (hsBasis 𝕜 E i)‖ ^ 2 = 0 := le_antisymm hle (by positivity)
+      simpa [pow_eq_zero_iff] using hz
+    refine ContinuousLinearMap.ext_on
+      (Submodule.dense_iff_topologicalClosure_eq_top.mpr (hsBasis 𝕜 E).dense_span) ?_
+    rintro x ⟨i, rfl⟩
+    simp [hb i]
+  · rintro rfl
+    rw [hsNormSq]
+    simp
+
+omit [CompleteSpace F] in
+/-- Positive-definiteness of the Hilbert–Schmidt norm, in square-root form. -/
+theorem hsNorm_eq_zero_iff {T : E →L[𝕜] F} (hT : IsHilbertSchmidt T) :
+    hsNorm T = 0 ↔ T = 0 := by
+  rw [hsNorm, Real.sqrt_eq_zero (hsNormSq_nonneg T)]
+  exact hsNormSq_eq_zero_iff hT
+
+omit [CompleteSpace F] in
+/-- **Cauchy–Schwarz for the Hilbert–Schmidt inner product.**
+`‖⟨S, T⟩_HS‖ ≤ ‖S‖_HS · ‖T‖_HS`. -/
+theorem norm_hsInner_le {S T : E →L[𝕜] F} (hS : IsHilbertSchmidt S) (hT : IsHilbertSchmidt T) :
+    ‖hsInner S T‖ ≤ hsNorm S * hsNorm T := by
+  have hcross : Summable (fun i => ‖S (hsBasis 𝕜 E i)‖ * ‖T (hsBasis 𝕜 E i)‖) := by
+    refine Summable.of_nonneg_of_le (fun i => by positivity) (fun i => ?_)
+      ((hS.mul_left (2⁻¹)).add (hT.mul_left (2⁻¹)))
+    nlinarith [sq_nonneg (‖S (hsBasis 𝕜 E i)‖ - ‖T (hsBasis 𝕜 E i)‖),
+      norm_nonneg (S (hsBasis 𝕜 E i)), norm_nonneg (T (hsBasis 𝕜 E i))]
+  have hnorm_sum : Summable (fun i => ‖inner 𝕜 (S (hsBasis 𝕜 E i)) (T (hsBasis 𝕜 E i))‖) :=
+    Summable.of_nonneg_of_le (fun i => norm_nonneg _) (fun i => norm_inner_le_norm _ _) hcross
+  calc ‖hsInner S T‖
+      ≤ ∑' i, ‖inner 𝕜 (S (hsBasis 𝕜 E i)) (T (hsBasis 𝕜 E i))‖ := by
+        rw [hsInner]
+        exact norm_tsum_le_tsum_norm hnorm_sum
+    _ ≤ ∑' i, ‖S (hsBasis 𝕜 E i)‖ * ‖T (hsBasis 𝕜 E i)‖ :=
+        Summable.tsum_le_tsum (fun i => norm_inner_le_norm _ _) hnorm_sum hcross
+    _ ≤ Real.sqrt (∑' i, ‖S (hsBasis 𝕜 E i)‖ ^ 2) * Real.sqrt (∑' i, ‖T (hsBasis 𝕜 E i)‖ ^ 2) :=
+        tsum_mul_le_sqrt_mul_sqrt hS hT
+    _ = hsNorm S * hsNorm T := rfl
+
+omit [CompleteSpace F] in
+/-- **Triangle inequality for the Hilbert–Schmidt norm.**  `‖S + T‖_HS ≤ ‖S‖_HS + ‖T‖_HS`:
+Minkowski for the square-summable norm sequences, via the series Cauchy–Schwarz bound on the cross
+term.  With `hsNorm_eq_zero_iff` and the homogeneity from `IsHilbertSchmidt.smul`, the
+Hilbert–Schmidt operators carry a genuine norm. -/
+theorem hsNorm_add_le {S T : E →L[𝕜] F} (hS : IsHilbertSchmidt S) (hT : IsHilbertSchmidt T) :
+    hsNorm (S + T) ≤ hsNorm S + hsNorm T := by
+  have hcross : Summable (fun i => ‖S (hsBasis 𝕜 E i)‖ * ‖T (hsBasis 𝕜 E i)‖) := by
+    refine Summable.of_nonneg_of_le (fun i => by positivity) (fun i => ?_)
+      ((hS.mul_left (2⁻¹)).add (hT.mul_left (2⁻¹)))
+    nlinarith [sq_nonneg (‖S (hsBasis 𝕜 E i)‖ - ‖T (hsBasis 𝕜 E i)‖),
+      norm_nonneg (S (hsBasis 𝕜 E i)), norm_nonneg (T (hsBasis 𝕜 E i))]
+  have hcs : ∑' i, ‖S (hsBasis 𝕜 E i)‖ * ‖T (hsBasis 𝕜 E i)‖ ≤ hsNorm S * hsNorm T :=
+    tsum_mul_le_sqrt_mul_sqrt hS hT
+  have hSsum : Summable (fun i => ‖S (hsBasis 𝕜 E i)‖ ^ 2) := hS
+  have hTsum : Summable (fun i => ‖T (hsBasis 𝕜 E i)‖ ^ 2) := hT
+  have key : hsNormSq (S + T) ≤ (hsNorm S + hsNorm T) ^ 2 := by
+    have hbound : Summable (fun i =>
+        ‖S (hsBasis 𝕜 E i)‖ ^ 2 + 2 * (‖S (hsBasis 𝕜 E i)‖ * ‖T (hsBasis 𝕜 E i)‖)
+          + ‖T (hsBasis 𝕜 E i)‖ ^ 2) :=
+      (hSsum.add ((hcross.mul_left 2).add hTsum)).congr fun i => by ring
+    have hle : hsNormSq (S + T)
+        ≤ ∑' i, (‖S (hsBasis 𝕜 E i)‖ ^ 2 + 2 * (‖S (hsBasis 𝕜 E i)‖ * ‖T (hsBasis 𝕜 E i)‖)
+            + ‖T (hsBasis 𝕜 E i)‖ ^ 2) := by
+      refine Summable.tsum_le_tsum (fun i => ?_) (hS.add hT) hbound
+      have htri : ‖(S + T) (hsBasis 𝕜 E i)‖ ≤ ‖S (hsBasis 𝕜 E i)‖ + ‖T (hsBasis 𝕜 E i)‖ := by
+        simpa [add_apply] using norm_add_le (S (hsBasis 𝕜 E i)) (T (hsBasis 𝕜 E i))
+      nlinarith [norm_nonneg ((S + T) (hsBasis 𝕜 E i)), norm_nonneg (S (hsBasis 𝕜 E i)),
+        norm_nonneg (T (hsBasis 𝕜 E i))]
+    have hsplit : ∑' i, (‖S (hsBasis 𝕜 E i)‖ ^ 2
+          + 2 * (‖S (hsBasis 𝕜 E i)‖ * ‖T (hsBasis 𝕜 E i)‖) + ‖T (hsBasis 𝕜 E i)‖ ^ 2)
+        = hsNormSq S + 2 * (∑' i, ‖S (hsBasis 𝕜 E i)‖ * ‖T (hsBasis 𝕜 E i)‖) + hsNormSq T := by
+      rw [(hSsum.add (hcross.mul_left 2)).tsum_add hTsum, hSsum.tsum_add (hcross.mul_left 2),
+        tsum_mul_left]
+      rfl
+    have hsq : hsNormSq S = hsNorm S ^ 2 := by
+      rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg S)]
+    have htq : hsNormSq T = hsNorm T ^ 2 := by
+      rw [hsNorm, Real.sq_sqrt (hsNormSq_nonneg T)]
+    have hle2 : hsNormSq (S + T)
+        ≤ hsNormSq S + 2 * (∑' i, ‖S (hsBasis 𝕜 E i)‖ * ‖T (hsBasis 𝕜 E i)‖) + hsNormSq T :=
+      hle.trans_eq hsplit
+    nlinarith [hcs, hsNorm_nonneg S, hsNorm_nonneg T]
+  calc hsNorm (S + T) = Real.sqrt (hsNormSq (S + T)) := rfl
+    _ ≤ Real.sqrt ((hsNorm S + hsNorm T) ^ 2) := Real.sqrt_le_sqrt key
+    _ = hsNorm S + hsNorm T := by
+        rw [Real.sqrt_sq (add_nonneg (hsNorm_nonneg S) (hsNorm_nonneg T))]
+
+/-- **The adjoint reverses the Hilbert–Schmidt inner product.**  `⟨S†, T†⟩_HS = ⟨T, S⟩_HS`: the
+polarization combination for the adjoint pair collapses onto the conjugated combination for
+`S, T`, because the adjoint preserves each Hilbert–Schmidt norm while conjugating the scalar `i`. -/
+theorem hsInner_adjoint_adjoint {S T : E →L[𝕜] F} (hS : IsHilbertSchmidt S)
+    (hT : IsHilbertSchmidt T) :
+    hsInner (ContinuousLinearMap.adjoint S) (ContinuousLinearMap.adjoint T) = hsInner T S := by
+  have h1 : IsHilbertSchmidt (S + T) := hS.add hT
+  have h2 : IsHilbertSchmidt (S - T) := hS.sub hT
+  have h3 : IsHilbertSchmidt (S - (RCLike.I : 𝕜) • T) := hS.sub (hT.smul _)
+  have h4 : IsHilbertSchmidt (S + (RCLike.I : 𝕜) • T) := hS.add (hT.smul _)
+  have e1 : ContinuousLinearMap.adjoint S + ContinuousLinearMap.adjoint T
+      = ContinuousLinearMap.adjoint (S + T) := (map_add ContinuousLinearMap.adjoint S T).symm
+  have e2 : ContinuousLinearMap.adjoint S - ContinuousLinearMap.adjoint T
+      = ContinuousLinearMap.adjoint (S - T) := (map_sub ContinuousLinearMap.adjoint S T).symm
+  have e3 : ContinuousLinearMap.adjoint S
+        - (RCLike.I : 𝕜) • ContinuousLinearMap.adjoint T
+      = ContinuousLinearMap.adjoint (S + (RCLike.I : 𝕜) • T) := by
+    rw [map_add, ContinuousLinearMap.adjoint.map_smulₛₗ, RCLike.conj_I, neg_smul,
+      ← sub_eq_add_neg]
+  have e4 : ContinuousLinearMap.adjoint S
+        + (RCLike.I : 𝕜) • ContinuousLinearMap.adjoint T
+      = ContinuousLinearMap.adjoint (S - (RCLike.I : 𝕜) • T) := by
+    rw [map_sub, ContinuousLinearMap.adjoint.map_smulₛₗ, RCLike.conj_I, neg_smul,
+      sub_neg_eq_add]
+  have hL' : hsInner (ContinuousLinearMap.adjoint S) (ContinuousLinearMap.adjoint T)
+      = ((hsNormSq (S + T) : 𝕜) - (hsNormSq (S - T) : 𝕜) +
+          ((hsNormSq (S + (RCLike.I : 𝕜) • T) : 𝕜) - (hsNormSq (S - (RCLike.I : 𝕜) • T) : 𝕜))
+            * RCLike.I) / 4 := by
+    have hL := tsum_inner_basis_polarization hS.adjoint hT.adjoint (hsBasis 𝕜 F)
+    rw [e1, e2, e3, e4, h1.hsNormSq_adjoint, h2.hsNormSq_adjoint, h4.hsNormSq_adjoint,
+      h3.hsNormSq_adjoint] at hL
+    exact hL
+  have hR' : hsInner S T
+      = ((hsNormSq (S + T) : 𝕜) - (hsNormSq (S - T) : 𝕜) +
+          ((hsNormSq (S - (RCLike.I : 𝕜) • T) : 𝕜) - (hsNormSq (S + (RCLike.I : 𝕜) • T) : 𝕜))
+            * RCLike.I) / 4 :=
+    tsum_inner_basis_polarization hS hT (hsBasis 𝕜 E)
+  rw [hL', show hsInner T S = conj (hsInner S T) from hsInner_conj_symm T S, hR']
+  simp only [map_div₀, map_add, map_sub, map_mul, map_ofNat, RCLike.conj_ofReal, RCLike.conj_I]
+  ring
 
 end ContinuousLinearMap

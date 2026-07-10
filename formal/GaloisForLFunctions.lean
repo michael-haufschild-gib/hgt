@@ -89,6 +89,7 @@ import GaloisForLFunctions.DifferentialIndependence
 import GaloisForLFunctions.DifferenceDifferential
 import GaloisForLFunctions.DifferentialPolynomial
 import GaloisForLFunctions.DifferentialHopfIdeal
+import GaloisForLFunctions.DifferentialHopfPrimitive
 import GaloisForLFunctions.PTInvolution
 import GaloisForLFunctions.PeriodRigidity
 import GaloisForLFunctions.RankThreePeriods

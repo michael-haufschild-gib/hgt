@@ -1,7 +1,7 @@
 # Gelfond--Schneider Prop discharge in RHTower
 
 - **ID:** rhtower-gelfond-schneider-discharge
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean), `[SEARCH]` / `[BRIDGE]`
 - **Source:** arXiv:2603.24823 and the linked Apache-2.0 Mathlib branch at commit `9710b82b966813f7664819bc5d25b82d209a05e7`
 - **Statement:** Prove `GaloisForLFunctions.RHTower.GelfondSchneider` inside the pinned RHTower toolchain, then remove that Prop premise from `log_ratio_transcendental` and its real-form bridge.
@@ -17,9 +17,9 @@ first algebraic-transcendence foundation below the harder Baker and Schanuel int
 
 - [x] 0 -> 1 in-progress: exact consumer identified; published formal proof and source commit found;
   no failed in-tree attempt exists.
-- [ ] 1 -> 2 fully-proven: complete proof chain available under the repository's pinned Mathlib
+- [x] 1 -> 2 fully-proven: complete proof chain available under the repository's pinned Mathlib
   version, with the exact RHTower statement derived on paper and in Lean.
-- [ ] 2 -> 3 formalized: theorem `gelfondSchneider_holds : GelfondSchneider`; conditional premise
+- [x] 2 -> 3 formalized: theorem `gelfondSchneider_holds : GelfondSchneider`; conditional premise
   removed from the concrete log-ratio consumer; target modules build; axiom audit and formal lint pass.
 - [ ] 3 -> 4 publication-ready: not applicable as new science; retain provenance and license notice.
 
@@ -37,10 +37,9 @@ first algebraic-transcendence foundation below the harder Baker and Schanuel int
 
 ## Open core
 
-`[OPEN CORE]` Port the published auxiliary-function proof from Lean 4.29 to this project's Lean
-4.30/Mathlib 4.30 API.  The first incompatibility is the now-private explicit Siegel constant in
-`Mathlib.NumberTheory.NumberField.House`; the analytic-order helper itself is already upstream in
-Mathlib and has been scratch-verified after deleting the duplicate local declaration.
+`[CLOSED]` The published auxiliary-function proof now builds under this project's Lean 4.30/Mathlib
+4.30 API.  A proved explicit-constant Siegel bridge replaces the private Mathlib constant, and the
+analytic-order layer uses the merged Mathlib declarations directly.
 
 ## Log
 
@@ -48,3 +47,8 @@ Mathlib and has been scratch-verified after deleting the duplicate local declara
   verification: upstream `AnalyticPart.lean` compiles on Lean 4.30 after using Mathlib's merged
   `analyticOrderAt_iterated_deriv`; upstream `MainAlg.lean` compiles after one `Nat.zero_le` API
   adjustment.  No repository Lean source has yet been changed.
+- 2026-07-10 -- formalized.  Added the complete algebraic, analytic-order, norm-bound,
+  holomorphic-estimate, and contradiction chain under `GelfondSchneiderProof`; proved
+  `gelfondSchneider_holds`; made the real theorem and `log_ratio_transcendental` unconditional.
+  Targeted build and formal lint pass.  Axiom audit for all three public conclusions reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.

@@ -151,8 +151,9 @@ theorem no_low_degree_support_of_minimal_scale_stable
   | h E ih =>
       intro s hs
       have hQ0 : Q ≠ 0 := fun h => by
-        subst Q
-        simp at hs
+        have hc := MvPolynomial.mem_support_iff.mp hs
+        rw [h, MvPolynomial.coeff_zero] at hc
+        exact hc rfl
       have hDE : P.totalDegree ≤ E := by simpa [hE] using hmin hQI hQ0
       by_contra hlow
       have hes : s.sum (fun _ n => n) < P.totalDegree := Nat.lt_of_not_ge hlow
@@ -178,8 +179,9 @@ theorem no_low_degree_support_of_minimal_scale_stable
         rw [MvPolynomial.mem_support_iff, hcoeffR]
         exact mul_ne_zero (MvPolynomial.mem_support_iff.mp hs) (sub_ne_zero.mpr hpowne)
       have hR0 : R ≠ 0 := fun h => by
-        subst R
-        simp at hsR
+        have hc := MvPolynomial.mem_support_iff.mp hsR
+        rw [h, MvPolynomial.coeff_zero] at hc
+        exact hc rfl
       have hRlt : R.totalDegree < E := by
         have hR0' : differentialPolynomialScale (2 : C) Q -
             MvPolynomial.C ((2 : C) ^ Q.totalDegree) * Q ≠ 0 := by

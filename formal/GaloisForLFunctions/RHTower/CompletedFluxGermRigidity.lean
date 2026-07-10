@@ -149,6 +149,66 @@ theorem seamFlux_germ_injective {a b : ℂ} (ha : xi a ≠ 0) (hb : xi b ≠ 0)
   dsimp [h] at hh
   exact sub_eq_zero.mp hh
 
+/-- **Residue-filled germ rigidity at arbitrary points.** Equality of the analytic completed-flux
+germs forces equality of their base points, including when one or both bases are zeros of `xi`.
+The proof moves to a nearby punctured point, where the peeled factors are nonzero, and invokes the
+nonzero-point logarithmic-flux rigidity. -/
+theorem completedFluxGermAt_germ_injective {a b : ℂ}
+    (hgerm : completedFluxGermAt a =ᶠ[𝓝 0] completedFluxGermAt b) :
+    a = b := by
+  obtain ⟨Ra, hRa, ha, _haan, ha0, hafact⟩ := xi_peel_ball a
+  obtain ⟨Rb, hRb, hb, _hban, hb0, hbfact⟩ := xi_peel_ball b
+  obtain ⟨Re, hRe, hResub⟩ := Metric.mem_nhds_iff.mp hgerm
+  let r : ℝ := min Re (min Ra Rb)
+  have hr : 0 < r := by
+    dsimp [r]
+    exact lt_min hRe (lt_min hRa hRb)
+  let x0 : ℂ := ((r / 2 : ℝ) : ℂ)
+  have hx0 : x0 ≠ 0 := by
+    exact Complex.ofReal_ne_zero.mpr (div_ne_zero hr.ne' (by norm_num))
+  have hx0norm : ‖x0‖ = r / 2 := by
+    change ‖((r / 2 : ℝ) : ℂ)‖ = r / 2
+    rw [norm_real, Real.norm_eq_abs, abs_of_pos (half_pos hr)]
+  have hx0Re : x0 ∈ ball (0 : ℂ) Re := by
+    rw [mem_ball, dist_eq, sub_zero, hx0norm]
+    have hrRe : r ≤ Re := min_le_left _ _
+    linarith
+  have hxa : a + x0 ∈ ball a Ra := by
+    rw [mem_ball, dist_eq, show a + x0 - a = x0 by ring, hx0norm]
+    have hrRa : r ≤ Ra := le_trans (min_le_right _ _) (min_le_left _ _)
+    linarith
+  have hxb : b + x0 ∈ ball b Rb := by
+    rw [mem_ball, dist_eq, show b + x0 - b = x0 by ring, hx0norm]
+    have hrRb : r ≤ Rb := le_trans (min_le_right _ _) (min_le_right _ _)
+    linarith
+  have hane : xi (a + x0) ≠ 0 := by
+    rw [hafact (a + x0) hxa]
+    exact mul_ne_zero (pow_ne_zero _ (by simpa using hx0)) (ha0 (a + x0) hxa)
+  have hbne : xi (b + x0) ≠ 0 := by
+    rw [hbfact (b + x0) hxb]
+    exact mul_ne_zero (pow_ne_zero _ (by simpa using hx0)) (hb0 (b + x0) hxb)
+  have hopen : IsOpen (ball (0 : ℂ) Re ∩ ({0} : Set ℂ)ᶜ) :=
+    isOpen_ball.inter isOpen_compl_singleton
+  have hxopen : x0 ∈ ball (0 : ℂ) Re ∩ ({0} : Set ℂ)ᶜ :=
+    ⟨hx0Re, by simpa using hx0⟩
+  have hq : (fun y : ℂ => seamFluxCochain (a + y)) =ᶠ[𝓝 x0]
+      fun y : ℂ => seamFluxCochain (b + y) := by
+    filter_upwards [hopen.mem_nhds hxopen] with y hy
+    have hy0 : y ≠ 0 := by simpa using hy.2
+    have heq := hResub hy.1
+    change completedFluxGermAt a y = completedFluxGermAt b y at heq
+    simp only [completedFluxGermAt, if_neg hy0] at heq
+    exact mul_left_cancel₀ hy0 heq
+  have hto : Tendsto (fun u : ℂ => x0 + u) (𝓝 0) (𝓝 x0) := by
+    have hc : ContinuousAt (fun u : ℂ => x0 + u) 0 := continuousAt_const.add continuousAt_id
+    simpa using hc.tendsto
+  have hq0 : (fun u : ℂ => seamFluxCochain ((a + x0) + u)) =ᶠ[𝓝 0]
+      fun u : ℂ => seamFluxCochain ((b + x0) + u) := by
+    filter_upwards [hto.eventually hq] with u hu
+    simpa [add_assoc] using hu
+  have hab := seamFlux_germ_injective hane hbne hq0
+  exact add_right_cancel hab
+
 /-- Equality of the two completed-flux germs selected by FE reflection and Schwarz conjugation. -/
 def seamFluxCriticalPhaseAt (ρ : ℂ) : Prop :=
   (fun x : ℂ => seamFluxCochain ((1 - ρ) + x)) =ᶠ[𝓝 0]
@@ -175,6 +235,90 @@ theorem seamFluxCriticalPhaseAt_iff {ρ : ℂ} (hρ : xi ρ ≠ 0) :
         linarith
       · simp
     rw [seamFluxCriticalPhaseAt, heq]
+
+/-- Two analytic one-variable germs with identical iterated derivatives agree locally. -/
+private theorem analyticAt_eventuallyEq_of_iteratedDeriv_eq {f g : ℂ → ℂ} {z : ℂ}
+    (hf : AnalyticAt ℂ f z) (hg : AnalyticAt ℂ g z)
+    (hder : ∀ n : ℕ, iteratedDeriv n f z = iteratedDeriv n g z) :
+    f =ᶠ[𝓝 z] g := by
+  have hd : AnalyticAt ℂ (f - g) z := hf.sub hg
+  have hzero : ∀ n : ℕ, iteratedDeriv n (f - g) z = 0 := by
+    intro n
+    rw [iteratedDeriv_sub hf.contDiffAt hg.contDiffAt, hder n, sub_self]
+  have htop : analyticOrderAt (f - g) z = ⊤ := by
+    by_contra hfin
+    obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.mp hfin
+    have hle : ((m + 1 : ℕ) : ℕ∞) ≤ analyticOrderAt (f - g) z := by
+      rw [natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero hd]
+      intro i _hi
+      exact hzero i
+    rw [← hm] at hle
+    have : (m + 1 : ℕ) ≤ m := by exact_mod_cast hle
+    omega
+  have hev : (f - g) =ᶠ[𝓝 z] 0 := analyticOrderAt_eq_top.mp htop
+  filter_upwards [hev] with x hx
+  exact sub_eq_zero.mp hx
+
+/-- Equality of all completed-flux Taylor coefficients is exactly equality of the two analytic
+residue-filled germs. -/
+theorem completedFluxTaylorCoeff_all_eq_iff_germ_eq (a b : ℂ) :
+    (∀ n : ℕ, completedFluxTaylorCoeff a n = completedFluxTaylorCoeff b n) ↔
+      completedFluxGermAt a =ᶠ[𝓝 0] completedFluxGermAt b := by
+  constructor
+  · intro hcoeff
+    apply analyticAt_eventuallyEq_of_iteratedDeriv_eq
+      (completedFluxGermAt_analyticAt_zero a) (completedFluxGermAt_analyticAt_zero b)
+    intro n
+    have hc := hcoeff n
+    rw [completedFluxTaylorCoeff, completedFluxTaylorCoeff] at hc
+    have hfac : ((n.factorial : ℕ) : ℂ) ≠ 0 := by
+      exact_mod_cast Nat.factorial_ne_zero n
+    exact mul_right_cancel₀ hfac ((div_eq_div_iff hfac hfac).mp hc)
+  · intro hgerm n
+    rw [completedFluxTaylorCoeff, completedFluxTaylorCoeff,
+      hgerm.iteratedDeriv_eq n]
+
+/-- Equality of the residue-filled completed-flux germs at the FE and Schwarz images.  Unlike
+`seamFluxCriticalPhaseAt`, this predicate remains meaningful at zeros of `xi`. -/
+def completedFluxCriticalPhaseAt (ρ : ℂ) : Prop :=
+  completedFluxGermAt (1 - ρ) =ᶠ[𝓝 0] completedFluxGermAt ((starRingEnd ℂ) ρ)
+
+/-- **All-point critical-line reconstruction.** The residue-filled completed-flux germ belongs to
+the FE--Schwarz fixed locus exactly at points of the critical line, including zeros. -/
+theorem completedFluxCriticalPhaseAt_iff (ρ : ℂ) :
+    completedFluxCriticalPhaseAt ρ ↔ ρ.re = 1 / 2 := by
+  constructor
+  · intro hphase
+    have heq := completedFluxGermAt_germ_injective hphase
+    have hre := congrArg Complex.re heq
+    simp only [Complex.sub_re, Complex.one_re, Complex.conj_re] at hre
+    linarith
+  · intro hre
+    have heq : (1 - ρ : ℂ) = (starRingEnd ℂ) ρ := by
+      apply Complex.ext
+      · simp only [Complex.sub_re, Complex.one_re, Complex.conj_re]
+        linarith
+      · simp
+    rw [completedFluxCriticalPhaseAt, heq]
+
+/-- **All-order coefficient form.** The FE-side and Schwarz-side completed-flux Taylor sequences
+agree at every order exactly on the critical line. -/
+theorem completedFluxTaylorCoeff_line_pair_all_eq_iff (ρ : ℂ) :
+    (∀ n : ℕ, completedFluxTaylorCoeff (1 - ρ) n =
+      completedFluxTaylorCoeff ((starRingEnd ℂ) ρ) n) ↔
+      ρ.re = 1 / 2 := by
+  rw [completedFluxTaylorCoeff_all_eq_iff_germ_eq, ← completedFluxCriticalPhaseAt_iff]
+  rfl
+
+/-- **Finite transverse witness.** Every off-critical point is detected by a finite coefficient of
+the single completed-flux Taylor sequence: the FE and Schwarz images disagree at some order. -/
+theorem exists_completedFluxTaylorCoeff_line_pair_ne_of_re_ne_half {ρ : ℂ}
+    (hρ : ρ.re ≠ 1 / 2) :
+    ∃ n : ℕ, completedFluxTaylorCoeff (1 - ρ) n ≠
+      completedFluxTaylorCoeff ((starRingEnd ℂ) ρ) n := by
+  by_contra h
+  push Not at h
+  exact hρ ((completedFluxTaylorCoeff_line_pair_all_eq_iff ρ).mp h)
 
 end
 

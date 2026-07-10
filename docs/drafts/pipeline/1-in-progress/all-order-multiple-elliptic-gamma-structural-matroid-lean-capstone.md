@@ -96,8 +96,18 @@ commutes with derivation, and gives relation ideals their differential structure
 the additive Hopf comultiplication. The characteristic-zero primitive classification is complete:
 folding `P(X+Y)` along `Y=X` gives `P(2X)=2P(X)`, coefficient comparison forces every supported
 monomial to have total jet-degree one, and every primitive is reconstructed as an explicit finite
-constant-coefficient sum of jets. The remaining algebraic-group core is the existence direction:
-a nonzero proper differential Hopf relation ideal must contain a nonzero primitive.
+constant-coefficient sum of jets.
+
+`formal/GaloisForLFunctions/DifferentialHopfIdeal.lean` and
+`formal/GaloisForLFunctions/DifferentialHopfPrimitive.lean` close the existence direction. Additive
+comultiplication makes a Hopf ideal stable under doubling. A least-total-degree nonzero relation is
+homogeneous; first-order extraction at the additive identity sends its right partial derivatives
+back into the same ideal. In characteristic zero a degree-at-least-two relation has a nonzero
+partial derivative of smaller degree, a contradiction. Thus every nonzero additive differential
+Hopf ideal contains an explicit nonzero finite constant-coefficient linear combination of jets.
+The next open core is the several-automorphism PPV construction and Galois correspondence which
+identifies the relation ideal arising from a dependent compatible primitive system with such a
+nonzero additive Hopf ideal.
 
 This is the first real dependency of the strengthened theorem. It is not evidence that the
 analytic capstone is already formalized.
@@ -113,6 +123,7 @@ analytic capstone is already formalized.
 - [x] rank-three nondiscreteness, small-period extraction, and meromorphic constancy implemented
 - [x] commuting difference-differential field and common-telescoper algebraic interface implemented
 - [x] differential-polynomial relation ideals and characteristic-zero primitive classification
+- [x] characteristic-zero additive differential Hopf-ideal primitive-existence theorem
 - [ ] complete differential algebra foundation, including differential transcendence degree
 - [ ] multi-automorphism parameterized Picard--Vessiot foundation
 - [ ] unconditional simultaneous telescoping
@@ -123,7 +134,7 @@ analytic capstone is already formalized.
 - [ ] abstract all-order independence induction
 - [ ] Stanley--Reisner differential-rank theorem
 - [ ] concrete additive and multiplicative capstones
-- [ ] `scripts/formal_tools.py lint` passes
+- [x] `scripts/formal_tools.py lint` passes for the current tree
 - [ ] exact capstone `#print axioms` contains only standard Lean axioms
 
 ## Log
@@ -140,5 +151,12 @@ analytic capstone is already formalized.
   remains open.
 - 2026-07-10 -- Formalized additive differential-polynomial Hopf structure and proved without
   project axioms that every primitive polynomial in characteristic zero is a finite
-  constant-coefficient linear combination of jets. The next open core is primitive existence in a
-  nonzero proper differential Hopf ideal, followed by the PPV Galois-correspondence application.
+  constant-coefficient linear combination of jets.
+- 2026-07-10 -- Proved the converse Hopf-ideal core without project axioms: every nonzero additive
+  differential Hopf ideal in characteristic zero contains a nonzero finite
+  constant-coefficient linear jet relation. The remaining simultaneous-telescoping gap is now the
+  PPV ring, its Galois correspondence, fixed-field descent, and application to the compatible
+  primitive system, not Cassidy's additive-subgroup classification.
+- 2026-07-10 -- Exact builds of `DifferentialPolynomial`, `DifferentialHopfIdeal`, and
+  `DifferentialHopfPrimitive` pass. Their capstone axiom reports contain only `propext`,
+  `Classical.choice`, and `Quot.sound`; the repository formal lint also passes.

@@ -125,6 +125,92 @@ theorem IsHilbertSchmidt.adjoint_comp_self_isTraceClass
     IsTraceClass (ContinuousLinearMap.adjoint T ∘L T) :=
   hT.adjoint.comp_isTraceClass hT
 
+section Bounds
+
+variable {E F G : Type*}
+variable [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+variable [NormedAddCommGroup F] [InnerProductSpace ℂ F] [CompleteSpace F]
+variable [NormedAddCommGroup G] [InnerProductSpace ℂ G] [CompleteSpace G]
+
+/-- Left composition multiplies the squared Hilbert--Schmidt norm by at most the squared
+operator norm. -/
+theorem hsNormSq_comp_left_le {T : E →L[ℂ] F} (hT : IsHilbertSchmidt T)
+    (A : F →L[ℂ] G) :
+    hsNormSq (A ∘L T) ≤ ‖A‖ ^ 2 * hsNormSq T := by
+  let b := hsBasis ℂ E
+  have hAT := hT.comp_left A
+  rw [hsNormSq_eq hAT b, hsNormSq_eq hT b, ← tsum_mul_left]
+  exact (hAT.summable b).tsum_le_tsum (fun i => by
+    calc
+      ‖(A ∘L T) (b i)‖ ^ 2 = ‖A (T (b i))‖ ^ 2 := by rw [comp_apply]
+      _ ≤ (‖A‖ * ‖T (b i)‖) ^ 2 := by gcongr; exact A.le_opNorm _
+      _ = ‖A‖ ^ 2 * ‖T (b i)‖ ^ 2 := by ring)
+    ((hT.summable b).mul_left (‖A‖ ^ 2))
+
+/-- Right composition satisfies the corresponding squared Hilbert--Schmidt norm bound. -/
+theorem hsNormSq_comp_right_le {T : E →L[ℂ] F} (hT : IsHilbertSchmidt T)
+    (B : G →L[ℂ] E) :
+    hsNormSq (T ∘L B) ≤ ‖B‖ ^ 2 * hsNormSq T := by
+  have hTB := hT.comp_right B
+  rw [← hTB.hsNormSq_adjoint, adjoint_comp]
+  have h := hsNormSq_comp_left_le hT.adjoint (ContinuousLinearMap.adjoint B)
+  rw [hT.hsNormSq_adjoint] at h
+  have hnorm : ‖ContinuousLinearMap.adjoint B‖ = ‖B‖ := by
+    exact (ContinuousLinearMap.adjoint :
+      (G →L[ℂ] E) ≃ₗᵢ⋆[ℂ] (E →L[ℂ] G)).norm_map B
+  rw [hnorm] at h
+  exact h
+
+/-- A quadratic triangle bound for the Hilbert--Schmidt norm. -/
+theorem hsNormSq_add_le {S T : E →L[ℂ] F}
+    (hS : IsHilbertSchmidt S) (hT : IsHilbertSchmidt T) :
+    hsNormSq (S + T) ≤ 2 * hsNormSq S + 2 * hsNormSq T := by
+  let b := hsBasis ℂ E
+  have hST := hS.add hT
+  rw [hsNormSq_eq hST b, hsNormSq_eq hS b, hsNormSq_eq hT b]
+  calc
+    ∑' i, ‖(S + T) (b i)‖ ^ 2 ≤
+        ∑' i, (2 * ‖S (b i)‖ ^ 2 + 2 * ‖T (b i)‖ ^ 2) := by
+      exact (hST.summable b).tsum_le_tsum (fun i => by
+        have htri : ‖(S + T) (b i)‖ ≤ ‖S (b i)‖ + ‖T (b i)‖ := by
+          simpa [add_apply] using norm_add_le (S (b i)) (T (b i))
+        have hsq : ‖(S + T) (b i)‖ ^ 2 ≤
+            (‖S (b i)‖ + ‖T (b i)‖) ^ 2 := by
+          rw [sq, sq]
+          exact mul_self_le_mul_self (norm_nonneg _) htri
+        nlinarith [sq_nonneg (‖S (b i)‖ - ‖T (b i)‖)])
+        (((hS.summable b).mul_left 2).add ((hT.summable b).mul_left 2))
+    _ = 2 * ∑' i, ‖S (b i)‖ ^ 2 + 2 * ∑' i, ‖T (b i)‖ ^ 2 := by
+      rw [Summable.tsum_add ((hS.summable b).mul_left 2) ((hT.summable b).mul_left 2),
+        tsum_mul_left, tsum_mul_left]
+
+theorem hsNormSq_neg_eq {T : E →L[ℂ] F} (hT : IsHilbertSchmidt T) :
+    hsNormSq (-T) = hsNormSq T := by
+  let b := hsBasis ℂ E
+  rw [hsNormSq_eq hT.neg b, hsNormSq_eq hT b]
+  apply tsum_congr
+  intro i
+  simp
+
+theorem hsNormSq_smul_eq {T : E →L[ℂ] F} (hT : IsHilbertSchmidt T) (c : ℂ) :
+    hsNormSq (c • T) = ‖c‖ ^ 2 * hsNormSq T := by
+  let b := hsBasis ℂ E
+  rw [hsNormSq_eq (hT.smul c) b, hsNormSq_eq hT b, ← tsum_mul_left]
+  apply tsum_congr
+  intro i
+  simp only [smul_apply, norm_smul]
+  ring
+
+/-- A quadratic difference bound for the Hilbert--Schmidt norm. -/
+theorem hsNormSq_sub_le {S T : E →L[ℂ] F}
+    (hS : IsHilbertSchmidt S) (hT : IsHilbertSchmidt T) :
+    hsNormSq (S - T) ≤ 2 * hsNormSq S + 2 * hsNormSq T := by
+  rw [sub_eq_add_neg]
+  have h := hsNormSq_add_le hS hT.neg
+  rwa [hsNormSq_neg_eq hT] at h
+
+end Bounds
+
 end ContinuousLinearMap
 
 namespace RHTower
@@ -238,6 +324,113 @@ theorem centralSoninDilationCornerResidual_isHilbertSchmidt
     ContinuousLinearMap.IsHilbertSchmidt (centralSoninDilationCornerResidual a p hp) :=
   (centralSoninDilationCornerResidual_mem_timeBandIdeal a p ha hp).isHilbertSchmidt
 
+theorem norm_one_sub_centralSoninProjection_le_one (a : ℝ) :
+    ‖(1 : SoninL2 →L[ℂ] SoninL2) - centralSoninProjection a‖ ≤ 1 := by
+  rw [centralSoninProjection]
+  rw [← (centralSoninCarrier a).starProjection_orthogonal']
+  exact Submodule.starProjection_norm_le _
+
+theorem norm_centralSoninFormalComplement_le_three (a : ℝ) :
+    ‖centralSoninFormalComplement a‖ ≤ 3 := by
+  dsimp [centralSoninFormalComplement]
+  calc
+    ‖(1 : SoninL2 →L[ℂ] SoninL2) -
+        indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) -
+        fourierCutoff (centralInterval a) (measurableSet_centralInterval a)‖
+        ≤ ‖(1 : SoninL2 →L[ℂ] SoninL2)‖ +
+          ‖indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)‖ +
+          ‖fourierCutoff (centralInterval a) (measurableSet_centralInterval a)‖ := by
+            exact (norm_sub_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
+    _ ≤ 1 + 1 + 1 := by
+      gcongr
+      · simp
+      · rw [indicatorCutoff_eq_physicalForbidden_starProjection]
+        exact Submodule.starProjection_norm_le _
+      · rw [fourierCutoff_eq_fourierForbidden_starProjection]
+        exact Submodule.starProjection_norm_le _
+    _ = 3 := by norm_num
+
+/-- **Uniform scale-independent residual bound.** The Hilbert--Schmidt energy of the exact
+principal-subtracted Sonin dilation residual is controlled solely by the fixed projection
+correction.  In particular, the bound does not grow with the dilation scale `p`. -/
+theorem centralSoninDilationCornerResidual_hsNormSq_le
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
+    ContinuousLinearMap.hsNormSq (centralSoninDilationCornerResidual a p hp) ≤
+      80 * ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a) := by
+  open ContinuousLinearMap in
+    let Q := centralSoninProjection a
+    let Q₀ := centralSoninFormalComplement a
+    let D := dilationSum p hp
+    let C := centralSoninProjectionCorrection a
+    let A : SoninL2 →L[ℂ] SoninL2 := (1 - Q) * D * C
+    let B : SoninL2 →L[ℂ] SoninL2 := C * D * Q₀
+    have hC : IsHilbertSchmidt C := by
+      simpa [C] using centralSoninProjectionCorrection_isHilbertSchmidt a ha
+    have hA : IsHilbertSchmidt A := by
+      exact hC.comp_left ((1 - Q) * D)
+    have hB : IsHilbertSchmidt B := by
+      exact hC.comp_right (D * Q₀)
+    have hEq : centralSoninDilationCornerResidual a p hp = A - B := by
+      have hCeq : C = Q - Q₀ := by
+        rfl
+      have hgeneral : crossBoundary Q D - crossBoundary Q₀ D =
+          (1 - Q) * D * (Q - Q₀) - (Q - Q₀) * D * Q₀ := by
+        simp only [crossBoundary]
+        noncomm_ring
+      change centralSoninDilationCornerResidual a p hp =
+        (1 - Q) * D * C - C * D * Q₀
+      rw [hCeq]
+      simpa [centralSoninDilationCornerResidual,
+        centralSoninPrincipalDilationCorner, Q, Q₀, D] using hgeneral
+    have hQ : ‖(1 : SoninL2 →L[ℂ] SoninL2) - Q‖ ≤ 1 := by
+      simpa [Q] using norm_one_sub_centralSoninProjection_le_one a
+    have hQ₀ : ‖Q₀‖ ≤ 3 := by
+      simpa [Q₀] using norm_centralSoninFormalComplement_le_three a
+    have hD : ‖D‖ ≤ 2 := by
+      dsimp [D]
+      apply (dilationSum p hp).opNorm_le_bound (by norm_num)
+      intro f
+      rw [dilationSum_apply]
+      calc
+        ‖dilation p (zero_lt_one.trans hp) f +
+            dilation p⁻¹ (inv_pos.mpr (zero_lt_one.trans hp)) f‖
+            ≤ ‖dilation p (zero_lt_one.trans hp) f‖ +
+              ‖dilation p⁻¹ (inv_pos.mpr (zero_lt_one.trans hp)) f‖ := norm_add_le _ _
+        _ = 2 * ‖f‖ := by
+          rw [(dilation p (zero_lt_one.trans hp)).norm_map,
+            (dilation p⁻¹ (inv_pos.mpr (zero_lt_one.trans hp))).norm_map]
+          ring
+    have hLD : ‖(1 - Q) * D‖ ≤ 2 := by
+      calc
+        ‖(1 - Q) * D‖ ≤ ‖1 - Q‖ * ‖D‖ := norm_mul_le _ _
+        _ ≤ 1 * 2 := mul_le_mul hQ hD (norm_nonneg _) (by norm_num)
+        _ = 2 := by norm_num
+    have hDQ₀ : ‖D * Q₀‖ ≤ 6 := by
+      calc
+        ‖D * Q₀‖ ≤ ‖D‖ * ‖Q₀‖ := norm_mul_le _ _
+        _ ≤ 2 * 3 := mul_le_mul hD hQ₀ (norm_nonneg _) (by norm_num)
+        _ = 6 := by norm_num
+    have hAbound : hsNormSq A ≤ 4 * hsNormSq C := by
+      calc
+        hsNormSq A ≤ ‖(1 - Q) * D‖ ^ 2 * hsNormSq C :=
+          hsNormSq_comp_left_le hC ((1 - Q) * D)
+        _ ≤ 4 * hsNormSq C := by
+          apply mul_le_mul_of_nonneg_right _ (hsNormSq_nonneg C)
+          nlinarith [norm_nonneg ((1 - Q) * D)]
+    have hBbound : hsNormSq B ≤ 36 * hsNormSq C := by
+      calc
+        hsNormSq B ≤ ‖D * Q₀‖ ^ 2 * hsNormSq C :=
+          hsNormSq_comp_right_le hC (D * Q₀)
+        _ ≤ 36 * hsNormSq C := by
+          apply mul_le_mul_of_nonneg_right _ (hsNormSq_nonneg C)
+          nlinarith [norm_nonneg (D * Q₀)]
+    rw [hEq]
+    calc
+      hsNormSq (A - B) ≤ 2 * hsNormSq A + 2 * hsNormSq B :=
+        hsNormSq_sub_le hA hB
+      _ ≤ 2 * (4 * hsNormSq C) + 2 * (36 * hsNormSq C) := by gcongr
+      _ = 80 * hsNormSq C := by ring
+
 /-- Every actual prime-power residual block is Hilbert--Schmidt. -/
 theorem centralSoninPrimePowerResidual_isHilbertSchmidt
     (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
@@ -249,6 +442,35 @@ theorem centralSoninWeightedPrimePowerResidual_isHilbertSchmidt
     (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
     ContinuousLinearMap.IsHilbertSchmidt (centralSoninWeightedPrimePowerResidual a pk) :=
   (centralSoninWeightedPrimePowerResidual_mem_timeBandIdeal a ha pk).isHilbertSchmidt
+
+/-- The weighted prime-power residual energy is bounded by the fixed correction energy times
+the square of its logarithmic Euler coefficient. -/
+theorem centralSoninWeightedPrimePowerResidual_hsNormSq_le
+    (a : ℝ) (ha : 0 < a) (pk : Nat.Primes × ℕ) :
+    ContinuousLinearMap.hsNormSq (centralSoninWeightedPrimePowerResidual a pk) ≤
+      (80 * ContinuousLinearMap.hsNormSq (centralSoninProjectionCorrection a)) *
+        ‖soninLogPrimePowerCoefficient pk‖ ^ 2 := by
+  open ContinuousLinearMap in
+    have hR := centralSoninPrimePowerResidual_isHilbertSchmidt a ha pk
+    rw [centralSoninWeightedPrimePowerResidual, hsNormSq_smul_eq hR]
+    have hbound := centralSoninDilationCornerResidual_hsNormSq_le a
+      (soninPrimePowerScale pk) ha (one_lt_soninPrimePowerScale pk)
+    simp only [centralSoninPrimePowerResidual]
+    nlinarith [sq_nonneg ‖soninLogPrimePowerCoefficient pk‖]
+
+/-- **All-prime Hilbert--Schmidt energy summability.** The actual logarithmically weighted,
+principal-subtracted Sonin residuals have summable Hilbert--Schmidt energies over every prime
+power `p^(k+2)`.  This is the quantitative convergence input for the all-prime block assembly. -/
+theorem summable_centralSoninWeightedPrimePowerResidual_hsNormSq
+    (a : ℝ) (ha : 0 < a) :
+    Summable (fun pk : Nat.Primes × ℕ =>
+      ContinuousLinearMap.hsNormSq (centralSoninWeightedPrimePowerResidual a pk)) := by
+  open ContinuousLinearMap in
+    apply Summable.of_nonneg_of_le
+      (fun pk => hsNormSq_nonneg (centralSoninWeightedPrimePowerResidual a pk))
+      (centralSoninWeightedPrimePowerResidual_hsNormSq_le a ha)
+    exact summable_norm_soninLogPrimePowerCoefficient_sq.mul_left
+      (80 * hsNormSq (centralSoninProjectionCorrection a))
 
 /-- Every finite regularized prime-power section is Hilbert--Schmidt, with no operator-ideal
 hypothesis left to supply. -/

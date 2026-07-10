@@ -255,6 +255,25 @@ theorem differentialLinearPolynomial_isPrimitive
     differentialPolynomialLeft_X, differentialPolynomialRight_X]
   ring
 
+/-- A differential polynomial all of whose supported monomials have total jet-degree one is
+primitive for additive comultiplication. -/
+theorem isPrimitive_of_support_degree_eq_one
+    {ι C : Type*} [Field C] {P : DifferentialPolynomial ι C}
+    (hP : ∀ ⦃s : (ι × ℕ) →₀ ℕ⦄, s ∈ P.support →
+      s.sum (fun _ n => n) = 1) : IsPrimitiveDifferentialPolynomial P := by
+  classical
+  unfold IsPrimitiveDifferentialPolynomial
+  rw [P.as_sum]
+  simp only [map_sum]
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro s hs
+  obtain ⟨j, hj⟩ := (Finsupp.sum_eq_one_iff s).mp (hP hs)
+  rw [hj]
+  rcases j with ⟨i, n⟩
+  simp [MvPolynomial.monomial_eq]
+  ring
+
 /-- Scale every formal jet variable by the same scalar. -/
 def differentialPolynomialScale
     {ι C : Type*} [CommRing C] (a : C) :

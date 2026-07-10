@@ -26,12 +26,15 @@ The root-moving (transverse) content is the **nonlinear** part of `P(t+z)` in `z
 - **Under RH** (`ρ=½+iγ`): `(log Ξ)''(t) = −Σ_γ (t−γ)^{-2} < 0` — **real, everywhere-negative** (→`−∞` at each zero). So `log|ξ(½+it)|` is **concave** on ℝ.
 - **An off-line FE-quartet** `{β±iγ,1−β±iγ}` (`a:=|½−β|>0`, `τ:=t−γ`) contributes (the FE pairing makes it real):
   `(½−β+iτ)^{-2}+(β−½+iτ)^{-2} = 2(a²−τ²)/(a²+τ²)²`, doubled by the conjugate pair — **positive for `|t−γ|<a`**: a **local convex (anti-smoothing) window** of half-width `a` centred at the off-line height.
-> **Therefore `RH ⟹ log|ξ(½+it)|` concave (`(log Ξ)''≤0`); an off-line zero forces a convex window.**
+> **Therefore `RH ⟹ log|ξ(½+it)|` concave (`(log Ξ)''≤0`).  An off-line quartet contributes a
+> positive curvature window, but the remaining divisor can shield that contribution; no converse
+> is claimed.**  The formally proved terminal detector is only
+> `∃t, Xi'(t)^2 < Xi(t)Xi''(t) ⟹ ¬RH`.
 
 This is exactly the **first Laguerre inequality** `Ξ'²−ΞΞ''≥0` ⟺ `J_2(X;t)` hyperbolic ⟺ `det H_2=P_0P_2−P_1²≥0` — the **leading member of #104's Hankel hierarchy** (`RH ⟺ det H_d≥0 ∀d,t`). Known necessary-for-RH (Csordas–Norfolk–Varga; the Laguerre inequalities). **The full crux is the `d→∞` Laguerre–Turán/Hankel hierarchy** — concavity is necessary, not sufficient (a single inequality ≠ LP-membership).
 
 ## §4 The local de Bruijn reading (ties Finding 3b)
-`e^{½z²·(log Ξ)''(t)}` is a **local de Bruijn deformation** with local time `½(log Ξ)''(t)`. RH ⟺ `(log Ξ)''<0` ∀t ⟺ the local dBN time is **everywhere smoothing**; an off-line zero = a **local anti-smoothing window** `|t−γ|<a` (the convex bump above). This is the **local/pointwise** form of the **global** de Bruijn flow (Finding 3b: `Λ_dBN≤0`=RH); the global `Λ_dBN≥0` (Rodgers–Tao) = the free half, here the statement that the *aggregate* local times never push past threshold. Connects §8 of c5-jensen (RH crux = near-zero/small-`|ζ|`, not large-`|ζ|`) — **derived**: the danger is the curvature near zeros, the large `|ζ|` (peaks) being multiplier-mode and harmless.
+`e^{½z²·(log Ξ)''(t)}` is a **local de Bruijn deformation** with local time `½(log Ξ)''(t)`. RH implies that the local dBN time is **everywhere smoothing**.  An off-line quartet supplies a local anti-smoothing *contribution* on `|t−γ|<a`; it need not make the total curvature positive because the other zeros contribute simultaneously. This is the **local/pointwise** form of the **global** de Bruijn flow (Finding 3b: `Λ_dBN≤0`=RH). Connects §8 of c5-jensen (RH crux = near-zero/small-`|ζ|`, not large-`|ζ|`) — **derived**: the danger is the transverse curvature near zeros, while a sign reversal of the aggregate curvature is a sufficient RH refutation certificate, not a necessary consequence of one off-line zero.
 
 ## §5 Door-2 — the line, re-drawn
 - **Demoted (not the obstruction):** the large-values/magnitude estimate (Halász/Montgomery/Bondarenko–Seip) — it measures the LP-multiplier (scaling+translation) modes. **Removed as the C5 dividing line.**
@@ -39,7 +42,7 @@ This is exactly the **first Laguerre inequality** `Ξ'²−ΞΞ''≥0` ⟺ `J_2(
 - **The open crux** = the **uniform-in-`d` Laguerre–Turán/Hankel hierarchy** (`det H_d≥0 ∀d,t`, #104). Door-2 line: does the uniform hierarchy need the **joint support-`≤d` near-resonance** (Baker/integer-gap, native) or a local-zero-density parent? The demotion of large values **narrows** the question to the transverse hierarchy — the no-margin (#89–91), now with the large-value red herring removed.
 
 ## §6 What is and isn't claimed
-- **New (here):** the LP-symmetry-mode decomposition that **demotes large values as a multiplier artifact** (resolving the c5-jensen §7 puzzle structurally); the explicit off-line-quartet curvature `2(a²−τ²)/(a²+τ²)²` and its **local anti-smoothing window**; the unification (Theorem-M endpoint + Finding 3b global dBN + #104 hierarchy + #93 translation mode) into one mode picture.
+- **New (here):** the LP-symmetry-mode decomposition that **demotes large values as a multiplier artifact** (resolving the c5-jensen §7 puzzle structurally); the explicit off-line-quartet curvature `2(a²−τ²)/(a²+τ²)²` and its positive local contribution; the unification (Theorem-M endpoint + Finding 3b global dBN + #104 hierarchy + #93 translation mode) into one mode picture.
 - **Classical / corpus (cited, not claimed):** the Laguerre–Turán inequalities and `log|ξ|`-concavity as necessary-for-RH (Csordas–Norfolk–Varga); `RH ⟺ det H_d≥0 ∀d` (#104, GORZ/Pólya–Jensen); the de Bruijn flow (Finding 3b).
 - **NOT claimed:** RH; that concavity is sufficient (it is not); a BRIDGE/native verdict on the full hierarchy (still the open apex). *(Novelty of "`log|ξ(½+it)|` concave ⟺ first Laguerre inequality" not externally checked — no web search; treat as classical.)*
 
@@ -97,7 +100,8 @@ The decomposition is a **gauge–curvature split** of the displacement space (de
 ## VERIFICATION + terminalization — 2026-06-19 (Professor, author self-verification; peer cross-check welcome)
 Independently re-verified the PROVED content before banking (`computations/2026-06-19-phase-cancellation-crux-vetting.py`):
 - **§3 off-line-quartet curvature** `(½−β+iτ)^{−2}+(β−½+iτ)^{−2}=2(a²−τ²)/(a²+τ²)²` (a=|½−β|) — exact (|LHS−RHS|≤1e−18);
-  positive ⟺ `|τ|<a` (the convex anti-smoothing window). ✓
+  positive ⟺ `|τ|<a` (the quartet's anti-smoothing contribution, not necessarily the sign of the
+  full divisor sum). ✓
 - **RH-concavity** `(logΞ)''(t)=Σ_ρ(½+it−ρ)^{−2}<0` — confirmed real-negative on a γ-range (t=5,20,50). ✓
 - **§7 affine confinement** — `z↦az+b` (a>0) scales every gap by `a`, never closes one ⟹ order-preserving ⟹
   the scaling+translation (`𝔾_a⋊𝔾_m`) modes cannot collide roots at ANY d (no limit hand-wave). ✓ (elementary, true)
