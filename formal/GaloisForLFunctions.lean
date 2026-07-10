@@ -81,6 +81,7 @@ import GaloisForLFunctions.MultiplierDichotomy
 import GaloisForLFunctions.CrossPrimeCurvature
 import GaloisForLFunctions.OrbitBalance
 import GaloisForLFunctions.OrbitResidueVector
+import GaloisForLFunctions.PrincipalPartDifferentialOperator
 import GaloisForLFunctions.SimplicialConstraintTower
 import GaloisForLFunctions.C5JensenPrimeKernel
 import GaloisForLFunctions.C5JensenPerturbation

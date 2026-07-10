@@ -23,6 +23,7 @@ open Complex
 /-- The Arakelov `w`-coordinate of a point `ρ`: `w_ρ = 1 - 1/ρ`. -/
 def arakelovW (ρ : ℂ) : ℂ := 1 - ρ⁻¹
 
+/-- The `w`-coordinate as a single fraction: `w_ρ = (ρ-1)/ρ` for `ρ ≠ 0`. -/
 @[aesop safe]
 theorem arakelovW_eq_div (ρ : ℂ) (h0 : ρ ≠ 0) : arakelovW ρ = (ρ - 1) / ρ := by
   rw [arakelovW]; field_simp

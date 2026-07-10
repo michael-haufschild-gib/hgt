@@ -60,4 +60,33 @@ theorem Relation.exists_auxiliaryFunction_iteratedDeriv_ne_zero_lt_card
   rw [hfun]
   exact hzero
 
+/-- The local zero multiplicity of a nonzero Baker auxiliary function is strictly smaller than its
+number of exponential monomials. -/
+theorem Relation.auxiliaryFunction_analyticOrderAt_lt_card
+    (R : Relation) {L : ℕ} (η : R.Column L → 𝓞 R.CoefficientField) (hη : η ≠ 0)
+    (z : ℂ) :
+    analyticOrderAt (R.auxiliaryFunction η) z < Fintype.card (R.Column L) := by
+  obtain ⟨k, hk⟩ := R.exists_auxiliaryFunction_iteratedDeriv_ne_zero_lt_card η hη z
+  have hf : AnalyticAt ℂ (R.auxiliaryFunction η) z := by
+    unfold Relation.auxiliaryFunction
+    fun_prop
+  by_contra hnot
+  have hle : (Fintype.card (R.Column L) : ℕ∞) ≤
+      analyticOrderAt (R.auxiliaryFunction η) z := le_of_not_gt hnot
+  have hall := (natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero hf).mp hle
+  exact hk (hall k k.isLt)
+
+/-- The prescribed kernel equations give multiplicity at least `T` at every selected sample. -/
+theorem Relation.auxiliaryFunction_analyticOrderAt_ge (R : Relation) (c : ℤ) (hc : c ≠ 0)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    {L S T : ℕ} (η : R.Column L → 𝓞 R.CoefficientField)
+    (hker : Matrix.mulVec (R.auxiliaryMatrix c hint pivot L S T) η = 0)
+    (sample : Fin S) :
+    T ≤ analyticOrderAt (R.auxiliaryFunction η) (sample : ℕ) := by
+  rw [natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero]
+  · intro k hk
+    exact R.auxiliaryFunction_iteratedDeriv_eq_zero c hc hint pivot η hker sample k hk
+  · unfold Relation.auxiliaryFunction
+    fun_prop
+
 end GaloisForLFunctions.RHTower.BakerProof

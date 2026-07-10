@@ -123,6 +123,39 @@ def soninPrimePowerCrossOverlap (a : ℝ) (α β : Nat.Primes × ℕ) :
   centralSoninWeightedPrimePowerResidual a α ∘L
     ContinuousLinearMap.adjoint (centralSoninWeightedPrimePowerResidual a β)
 
+/-- The same cross overlap before inserting the nonzero logarithmic Euler coefficients. -/
+def soninPrimePowerResidualCrossOverlap (a : ℝ) (α β : Nat.Primes × ℕ) :
+    SoninL2 →L[ℂ] SoninL2 :=
+  centralSoninPrimePowerResidual a α ∘L
+    ContinuousLinearMap.adjoint (centralSoninPrimePowerResidual a β)
+
+/-- Weighting multiplies the residual cross overlap by the expected product of coefficients. -/
+theorem soninPrimePowerCrossOverlap_eq_smul (a : ℝ) (α β : Nat.Primes × ℕ) :
+    soninPrimePowerCrossOverlap a α β =
+      (soninLogPrimePowerCoefficient α * star (soninLogPrimePowerCoefficient β)) •
+        soninPrimePowerResidualCrossOverlap a α β := by
+  have hadj : ContinuousLinearMap.adjoint
+      (centralSoninWeightedPrimePowerResidual a β) =
+      star (soninLogPrimePowerCoefficient β) •
+        ContinuousLinearMap.adjoint (centralSoninPrimePowerResidual a β) := by
+    change star (soninLogPrimePowerCoefficient β • centralSoninPrimePowerResidual a β) = _
+    rw [star_smul]
+    rfl
+  rw [soninPrimePowerCrossOverlap, centralSoninWeightedPrimePowerResidual, hadj]
+  apply ContinuousLinearMap.ext
+  intro x
+  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+    soninPrimePowerResidualCrossOverlap, map_smul, smul_smul]
+  rw [mul_comm]
+
+/-- The Euler weights introduce no artificial vanishing: weighted and unweighted cross
+overlaps are nonzero simultaneously. -/
+theorem soninPrimePowerCrossOverlap_ne_zero_iff (a : ℝ) (α β : Nat.Primes × ℕ) :
+    soninPrimePowerCrossOverlap a α β ≠ 0 ↔
+      soninPrimePowerResidualCrossOverlap a α β ≠ 0 := by
+  rw [soninPrimePowerCrossOverlap_eq_smul]
+  simp [soninLogPrimePowerCoefficient_ne_zero]
+
 theorem soninPrimePowerCrossOverlap_isHilbertSchmidt
     (a : ℝ) (ha : 0 < a) (α β : Nat.Primes × ℕ) :
     ContinuousLinearMap.IsHilbertSchmidt (soninPrimePowerCrossOverlap a α β) := by
@@ -398,5 +431,12 @@ theorem soninAllPrimeMixedSecondInvariant_pos_of_crossOverlap_ne_zero
     lt_of_le_of_ne (ContinuousLinearMap.hsNormSq_nonneg _) (Ne.symm hne)
   exact hgsub.tsum_pos
     (fun w => ContinuousLinearMap.hsNormSq_nonneg _) z hpos
+
+theorem soninAllPrimeMixedSecondInvariant_pos_of_residualCrossOverlap_ne_zero
+    (a : ℝ) (ha : 0 < a) (z : ↥(soninPrimePowerDiagonalSetᶜ))
+    (hz : soninPrimePowerResidualCrossOverlap a z.1.1 z.1.2 ≠ 0) :
+    0 < soninAllPrimeMixedSecondInvariant a :=
+  soninAllPrimeMixedSecondInvariant_pos_of_crossOverlap_ne_zero a ha z
+    ((soninPrimePowerCrossOverlap_ne_zero_iff a z.1.1 z.1.2).mpr hz)
 
 end RHTower
