@@ -32,9 +32,10 @@ and
 
 `||(1-Q_a)E_pQ_a||_ess=p^(-1/2)`.
 
-Those equalities use an explicit Calkin partial-isometry computation. They are not claimed as part
-of the current Lean endpoint. The companion module `SoninEulerQuadraticCorner.lean` does formalize
-the sharp lower half: for every compact `K`,
+Those equalities use an explicit Calkin partial-isometry computation. The companion module
+`SoninEulerCalkinPartialIsometry.lean` now formalizes the exact initial/final shell projections and
+the Calkin partial-isometry law, while `SoninEulerQuadraticCorner.lean` formalizes the sharp lower
+half: for every compact `K`,
 
 `1 <= ||(1-Q_a)(U_p+U_p⁻¹)Q_a-K||`,
 
@@ -70,6 +71,13 @@ The companion Calkin-complement module additionally proves:
 - `isCompactOperator_soninIntersectionProjection_sub_complement`
 - `isCompactOperator_centralSoninProjection_sub_complement`
 - `isCompactOperator_evenCentralSoninProjection_sub_complement`
+
+The companion Calkin partial-isometry module additionally proves:
+
+- `evenCentralSoninQuadraticCorner_adjoint_mul_compactEq_shell`
+- `evenCentralSoninQuadraticCorner_mul_adjoint_compactEq_shell`
+- `evenTwoPolarizationShell_isCalkinProjection`
+- `evenCentralSoninQuadraticCorner_isCalkinPartialIsometry`
 
 The proof is internal to the even carrier. It constructs an orthonormal sequence of symmetric
 shell indicators, projects it into the two-constraint Sonin carrier, proves that the correction
@@ -124,10 +132,11 @@ not encode the full `{infinity,p}` space and the `theta_p`/`iota'_p` cancellatio
 identifications are not used as assumptions in the formal source theorem: its carrier is the actual
 unitary image of the exact even Sonin carrier. General Schatten ideals are not represented in the
 current Lean layer, so the consequence that a noncompact operator lies in no finite Schatten class
-remains a paper-level corollary. The toolchain also has no ready Calkin quotient or essential-norm
-API, so the exact norm-one partial-isometry identity remains paper-level. The module
-`SoninProjectionCalkin.lean` now formalizes its projection identity
-`Q_a = 1-A_a-R_a` modulo compact operators on the actual even carrier. The separate module
+remains a paper-level corollary. The toolchain has no ready essential-norm reader, so the exact
+numerical norm-one corollary remains paper-level. The operator identity itself is now formal:
+`SoninProjectionCalkin.lean` proves `Q_a = 1-A_a-R_a` modulo compact operators on the actual even
+carrier, and `SoninEulerCalkinPartialIsometry.lean` identifies both shell projections and proves
+the mixed Gram entry is a partial isometry modulo compacts. The separate module
 `SoninEulerQuadraticCorner.lean` formalizes the sharp lower distance from compact operators for both
 the one-scale corner and every ordered quadratic product.
 
@@ -145,7 +154,8 @@ the one-scale corner and every ordered quadratic product.
 - [x] 0 -> 1: fixed-cutoff even carrier, operator normalization, and degenerate parameters isolated.
 - [x] 1 -> 2: corrected-shell proof completed on paper.
 - [x] 2 -> 3: analytic theorem and prime specialization formalized unconditionally in Lean.
-- [ ] Strengthened 2 -> 3: the exact projection-complement identity is formalized; the remaining
-  work is the cutoff/dilation compact-modulo multiplication and its essential-norm reader.
+- [x] Strengthened 2 -> 3: the projection complement, cutoff/dilation multiplication, exact shell
+  projections, and Calkin partial-isometry law are formalized. Only the numerical essential-norm
+  reader remains outside the current Lean API.
 - [ ] 3 -> 4: requires the separate `B_lambda` entire-function identification and an independent
   publication audit; the concrete source-unitary transport is complete.

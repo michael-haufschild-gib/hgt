@@ -79,6 +79,7 @@ import GaloisForLFunctions.ZeroEstimateOrder
 import GaloisForLFunctions.MultiplierDichotomy
 import GaloisForLFunctions.CrossPrimeCurvature
 import GaloisForLFunctions.OrbitBalance
+import GaloisForLFunctions.SimplicialConstraintTower
 import GaloisForLFunctions.C5JensenPrimeKernel
 import GaloisForLFunctions.C5JensenPerturbation
 import GaloisForLFunctions.FunctionFieldDegeneration

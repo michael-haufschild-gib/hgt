@@ -1,8 +1,8 @@
 # Mixed Sonin Calkin Gram entries are shell partial isometries
 
 - **ID:** sonin-mixed-calkin-partial-isometry-law
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 2-fully-proven; formalized companion issued
+- **Type:** THEOREM (paper), with Lean certificate
 - **Status banner:** `[NOVELTY UNVERIFIED]` The proof is complete. The result resolves the explicit
   multiplication-law conjecture in `sonin-two-scale-quadratic-corner-noncompact.md`; scientific
   priority remains subject to an independent audit of Sonin/prolate and Wiener--Hopf operator
@@ -200,13 +200,15 @@ and
 `G(p,q)G(p,q)^* =_K Sigma(a*p/m,a*p)`.
 
 The reusable exact two-projection resolvent formula and the compact congruence
-`Q_a =_K 1-A_a-R_a` are now formalized in `SoninProjectionCalkin.lean`, including restriction to
-the actual even carrier. The remaining target is the cutoff/dilation covariance and the two mixed
-Gram compact-modulo products. No Calkin quotient or essential-norm API is required.
+`Q_a =_K 1-A_a-R_a` are formalized in `SoninProjectionCalkin.lean`, including restriction to the
+actual even carrier. The cutoff/dilation covariance, both mixed Gram compact-modulo products, the
+shell Calkin-projection laws, and the final partial-isometry theorem are formalized in
+`SoninEulerCalkinPartialIsometry.lean`. No Calkin quotient is required.
 
 ## Gates
 
 - [x] 0 -> 1: exact mixed Calkin element and shell endpoints isolated
 - [x] 1 -> 2: initial/final projection formulas proved on paper
-- [ ] 2 -> 3: formalize both compact-modulo identities on the actual even Sonin carrier
+- [x] 2 -> 3: both compact-modulo identities and the partial-isometry endpoint are formalized on
+  the actual even Sonin carrier
 - [ ] 3 -> 4: independent operator-algebra literature audit and standalone exposition

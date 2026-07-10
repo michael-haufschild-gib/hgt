@@ -9,10 +9,9 @@ This file states the uncompromised U0 target:
 * the actual Böttcher coordinate `phiMero b` on a faithful escape carrier;
 * exactly the nonexceptional parameter range `b ≠ 0, -2`.
 
-The theorem is still conditional on the one remaining provider: for each nonexceptional parameter,
-construct a faithful escape carrier together with the Kummer inputs consumed by
-`U0CardTheorems.u0_phi_independence_all_parameters`.  That provider is the real analytic/topological
-work left by the Stage-2 card; this module packages the final theorem surface without hiding it.
+The Kummer-provider formulation below is retained as a reusable reduction.  The provider is discharged
+without hypotheses in `U0AllNonexceptionalDisconnected`, where the connected and disconnected window
+constructions are assembled separately.
 -/
 import GaloisForLFunctions.U0.U0CardTheorems
 
@@ -37,7 +36,7 @@ def CanonicalPhiU0IndependenceAt (b : ℂ) : Prop :=
       (algebraMap (analyticSubring U) (meroField U)
         (u0AnSub (hU_esc.trans (U0CardTheorems.escapeOpen_subset_U0Ext b))))
 
-/-- The single remaining provider for the true all-nonexceptional U0 theorem.
+/-- A legacy provider interface for the all-nonexceptional U0 theorem.
 
 For every `b ≠ 0, -2`, it supplies a faithful escape carrier and the finite Kummer-input data for
 the canonical Böttcher coordinate `phiMero b` on that carrier. -/
@@ -50,10 +49,10 @@ def CanonicalPhiU0KummerProvider : Prop :=
 
 /-- **All nonexceptional canonical U0-Böttcher independence.**
 
-Assuming the one remaining all-nonexceptional carrier/Kummer provider, every parameter except the
+Assuming an all-nonexceptional carrier/Kummer provider, every parameter except the
 monomial and Chebyshev exceptions satisfies the genuine canonical conclusion
 `u₀ ⟂ phiMero b` over `ℂ(z)` on a faithful escape carrier. -/
-theorem u0_phi_independence_all_nonexceptional_canonical
+theorem u0_phi_independence_all_nonexceptional_canonical_of_provider
     (hprovider : CanonicalPhiU0KummerProvider) :
     ∀ b : ℂ, b ≠ 0 → b ≠ (-2 : ℂ) → CanonicalPhiU0IndependenceAt b := by
   intro b hb0 hb2

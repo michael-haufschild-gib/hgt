@@ -1,8 +1,8 @@
 # u0 ⊥ phi_b — All Nonexceptional Quadratic Parameters
 
 - **ID:** u0-phi-independence-all-parameters
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM [PROVED HERE]
+- **Stage:** 3-formalized
+- **Type:** THEOREM [LEAN]
 - **Source cards:**
   - `u0-phi-independence.md` for `b in M \ {0,-2}`
   - `u0-phi-independence-disconnected.md` for `b notin M`
@@ -93,6 +93,44 @@ Closest checked sources:
 No exact prior result has been found for algebraic independence of the monomial-fiber
 Bottcher `c`-velocity `u0` from every nonexceptional quadratic inverse Bottcher coordinate.
 
+## Lean Certificate
+
+The formal statement is
+
+`U0AllNonexceptional.u0_phi_independence_all_nonexceptional_canonical`:
+
+for every `c : ℂ` with `c ≠ 0` and `c ≠ -2`, there is an open, preconnected,
+nonempty, infinite carrier `U ⊆ escapeOpen c` on which the actual canonical germ
+`Bottcher.phiMero c` and `u0AnSub` satisfy `NoRelation (RatFunc ℂ)`.  This is the
+stronger fixed-parameter base field `ℂ(z)`, hence implies the stated
+`Qbar(c,z)` conclusion.
+
+The proof is split by parameter topology.
+
+- `U0AllNonexceptional.u0_phi_independence_connected_canonical` uses the
+  unconditional global connected Böttcher branch and an aligned escaping radial ray
+  to join the canonical far carrier to a unit-circle window.
+- `U0AllNonexceptional.u0_phi_independence_disconnected_canonical` proves that the
+  escaping critical point is a nondegenerate Green saddle, extracts a first
+  unit-circle crossing in `{G_c > G_c(0)}`, and uses the analytic inverse of a
+  surjective tower section on a compact Green band.  On the far carrier this inverse
+  is literally `bottcherCoord c`, not an auxiliary Kummer root.
+- Both cases feed `u0_window_independence_of_transcendental_engine` and the
+  unit-circle natural-boundary contradiction.
+
+Formal modules:
+
+- `formal/GaloisForLFunctions/U0/U0AllNonexceptionalConnected.lean`
+- `formal/GaloisForLFunctions/U0/U0AllNonexceptionalDisconnected.lean`
+- umbrella import: `formal/GaloisForLFunctions/U0.lean`
+
+Verification:
+
+- `lake build GaloisForLFunctions.U0` — PASS
+- `scripts/formal_tools.py lint` — PASS
+- `#print axioms` for the connected, disconnected, and combined capstones reports
+  only `propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Significance
 
 This theorem converts the failed `c1 -> 0` descent obstruction in inverse-Bottcher
@@ -124,4 +162,5 @@ The disconnected card received 4/4 promotion support on 2026-06-24:
 - [x] 0 -> 1 in-progress: connected/disconnected cases split and proof gaps isolated.
 - [x] 1 -> 2 fully-proven: connected proof plus disconnected Green-crossing proof,
   4/4 team vote for the final disconnected gate.
-- [ ] 2 -> 3 formalized: Lean formalization not started.
+- [x] 2 -> 3 formalized: unconditional canonical theorem compiled, umbrella build
+  green, formal lint passed, and axioms checked.
