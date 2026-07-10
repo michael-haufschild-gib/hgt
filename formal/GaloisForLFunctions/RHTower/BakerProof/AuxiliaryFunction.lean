@@ -100,6 +100,13 @@ noncomputable def Relation.integralCoeffEmbedding (R : Relation) :
     𝓞 R.CoefficientField →+* ℂ :=
   R.coeffEmbedding.comp (algebraMap (𝓞 R.CoefficientField) R.CoefficientField)
 
+theorem Relation.integralCoeffEmbedding_injective (R : Relation) :
+    Function.Injective R.integralCoeffEmbedding := by
+  intro x y hxy
+  apply Subtype.ext
+  apply R.coeffEmbedding.injective
+  simpa [Relation.integralCoeffEmbedding] using hxy
+
 /-- The finite exponential polynomial attached to a Siegel-kernel coefficient vector. -/
 noncomputable def Relation.auxiliaryFunction (R : Relation) {L : ℕ}
     (η : R.Column L → 𝓞 R.CoefficientField) (z : ℂ) : ℂ :=
@@ -127,11 +134,7 @@ theorem Relation.auxiliaryFunction_ne_zero (R : Relation) {L : ℕ}
     have he : e k = m := e.apply_symm_apply m
     change R.integralCoeffEmbedding (η (e k)) = 0 at hk
     rw [he] at hk
-    have hkK : algebraMap (𝓞 R.CoefficientField) R.CoefficientField (η m) = 0 := by
-      apply R.coeffEmbedding.injective
-      simpa [Relation.integralCoeffEmbedding] using hk
-    apply Subtype.ext
-    exact hkK
+    exact R.integralCoeffEmbedding_injective (by simpa using hk)
   intro haux
   apply hsum
   funext z

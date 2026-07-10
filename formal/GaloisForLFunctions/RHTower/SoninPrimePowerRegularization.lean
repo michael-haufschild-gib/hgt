@@ -23,6 +23,10 @@ theorem soninPrimePowerTailEnergy_nonneg (pk : Nat.Primes × ℕ) :
     0 ≤ soninPrimePowerTailEnergy pk :=
   pow_nonneg (inv_nonneg.mpr (Nat.cast_nonneg _)) _
 
+theorem soninPrimePowerTailEnergy_pos (pk : Nat.Primes × ℕ) :
+    0 < soninPrimePowerTailEnergy pk := by
+  exact pow_pos (inv_pos.mpr (Nat.cast_pos.mpr pk.1.prop.pos)) _
+
 /-- The regularized all-prime tail has finite square energy:
 `sum_p sum_(k>=2) p^-k < infinity`. -/
 theorem summable_soninPrimePowerTailEnergy :
@@ -116,6 +120,13 @@ theorem one_lt_soninPrimePowerScale (pk : Nat.Primes × ℕ) :
 square-energy carrier divided by the prime-power exponent. -/
 def soninLogPrimePowerCoefficient (pk : Nat.Primes × ℕ) : ℂ :=
   ((Real.sqrt (soninPrimePowerTailEnergy pk) / (pk.2 + 2 : ℝ) : ℝ) : ℂ)
+
+/-- Every retained logarithmic prime-power coefficient is nonzero. -/
+theorem soninLogPrimePowerCoefficient_ne_zero (pk : Nat.Primes × ℕ) :
+    soninLogPrimePowerCoefficient pk ≠ 0 := by
+  rw [soninLogPrimePowerCoefficient, Complex.ofReal_ne_zero]
+  exact div_ne_zero (Real.sqrt_ne_zero'.mpr (soninPrimePowerTailEnergy_pos pk))
+    (by positivity)
 
 theorem norm_soninLogPrimePowerCoefficient_sq_le (pk : Nat.Primes × ℕ) :
     ‖soninLogPrimePowerCoefficient pk‖ ^ 2 ≤ soninPrimePowerTailEnergy pk := by

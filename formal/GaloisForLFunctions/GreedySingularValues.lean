@@ -56,8 +56,8 @@ exhausted (or if no eigenvector exists, which cannot happen for positive compact
 `S`). -/
 noncomputable def svVec (S : H →L[ℂ] H) : ℕ → H
   | n =>
-    if orthSup S (fun m => if hm : m < n then svVec S m else 0) n = 0 then 0
-    else if h : ∃ x : H, IsGreedyStep S (fun m => if hm : m < n then svVec S m else 0) n x
+    if orthSup S (fun m => if _hm : m < n then svVec S m else 0) n = 0 then 0
+    else if h : ∃ x : H, IsGreedyStep S (fun m => if _hm : m < n then svVec S m else 0) n x
     then h.choose else 0
 termination_by n => n
 
@@ -67,18 +67,19 @@ noncomputable def svVal (S : H →L[ℂ] H) (n : ℕ) : ℝ := orthSup S (svVec 
 
 omit [CompleteSpace H] in
 theorem svVal_eq_orthSup_prev (S : H →L[ℂ] H) (n : ℕ) :
-    svVal S n = orthSup S (fun m => if hm : m < n then svVec S m else 0) n :=
-  orthSup_congr S fun m hm => (dif_pos hm).symm
+    svVal S n = orthSup S (fun m => if _hm : m < n then svVec S m else 0) n :=
+  orthSup_congr S fun m hm => by simp only [dif_pos hm]
 
 omit [CompleteSpace H] in
 /-- Transfer a greedy step stated for the guarded family to the full greedy family. -/
 theorem isGreedyStep_of_prev {S : H →L[ℂ] H} {n : ℕ} {x : H}
-    (h : IsGreedyStep S (fun m => if hm : m < n then svVec S m else 0) n x) :
+    (h : IsGreedyStep S (fun m => if _hm : m < n then svVec S m else 0) n x) :
     IsGreedyStep S (svVec S) n x := by
   obtain ⟨hu, ho, he⟩ := h
   refine ⟨hu, fun m hm => ?_, ?_⟩
   · have h2 := ho m hm
-    rwa [dif_pos hm] at h2
+    simp only [dif_pos hm] at h2
+    exact h2
   · rw [show orthSup S (svVec S) n
       = orthSup S (fun m => if hm : m < n then svVec S m else 0) n
       from svVal_eq_orthSup_prev S n]
@@ -216,7 +217,7 @@ theorem svVal_tendsto_zero {S : H →L[ℂ] H} (hcpt : IsCompactOperator S)
     have hmem : ∀ n, S (svVec S n) ∈ closure (⇑S '' Metric.closedBall 0 1) := by
       intro n
       refine subset_closure ⟨svVec S n, ?_, rfl⟩
-      rw [Metric.mem_closedBall_zero_iff]
+      rw [mem_closedBall_zero_iff]
       exact le_of_eq (hstep n).1
     obtain ⟨a, -, φ, hφ, hconv⟩ := hK.isSeqCompact.subseq_of_frequently_in
       (Filter.Eventually.frequently (Filter.Eventually.of_forall hmem))

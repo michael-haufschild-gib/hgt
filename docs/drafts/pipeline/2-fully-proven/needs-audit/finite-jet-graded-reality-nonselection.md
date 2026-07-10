@@ -4,108 +4,132 @@
 - **Stage:** 2-fully-proven / needs independent audit
 - **Type:** THEOREM (paper) / finite-passport no-go
 - **Date:** 2026-07-10
-- **Scientific status:** `[NOVELTY UNVERIFIED]` — the explicit construction appears absent from the
-  local corpus and survived the parent-theory attack below.  Its proof is elementary entire-function
-  theory, so scientific novelty is not claimed without a broader literature audit and independent
-  expert review.
-- **Statement:** For every finite jet depth `N` and every `0<b<1/2`, there is a real even entire
-  function of exact order one, with no nonzero period and with zeros at `±ib`, whose residue-filled
-  negative logarithmic derivative germs at the two partner zeros have identical Taylor coefficients
-  through order `N` but are not equal as germs.  After functional-equation normalization, the two
-  zeros lie at `1/2±b`, strictly inside the critical strip and off the critical axis.  Consequently
-  FE symmetry, Schwarz reality, critical-strip location, order-one growth, and aperiodicity cannot
-  turn any fixed finite completed-flux jet into a critical-axis selector.
+- **Scientific status:** `[NOVELTY UNVERIFIED]` — the quartet-flat construction appears absent from
+  the local corpus and survives the parent-theory attack below.  Its proof uses elementary
+  entire-function theory and Hermite-flat multiplication, so scientific novelty is not claimed
+  without a broad literature audit and independent expert review.
+- **Statement:** For every finite jet depth `N`, there is a real even entire function of exact order
+  one, with no nonzero period, whose functional-equation normalization has a nonreal off-axis zero
+  quartet strictly inside the critical strip and has no real zeros.  At one zero, the
+  residue-filled negative-logarithmic-derivative germs based at its functional-equation and Schwarz
+  partners have identical Taylor coefficients through order `N` but are not equal as germs.
+  Consequently FE symmetry, Schwarz reality, critical-strip location, absence of real zeros,
+  order-one growth, and aperiodicity cannot turn any fixed finite completed-flux jet into a
+  critical-axis selector.
 
 ## Why this is the correct attack
 
-`CompletedFluxGradedReality.lean` proves that the complete coefficient sequence detects the critical
-line.  That alone leaves open a dangerous simplification: perhaps a universal finite depth already
-suffices once functional symmetry, Schwarz reality, order-one growth, and aperiodicity are imposed.
-The theorem below rules this out constructively.  The obstruction is not merely that the required
-depth is unknown; it is unbounded in the strongest natural symmetry envelope short of the Euler
-source itself.
+`CompletedFluxGradedReality.lean` proves that the complete coefficient sequence detects the
+critical line.  That leaves open a dangerous simplification: perhaps a universal finite depth
+suffices once the elementary global features of `xi` are imposed.  The theorem below rules this
+out constructively, including the known fact that the actual nontrivial zeros are not real.  The
+missing selector must use a genuinely global Euler constraint, not a fixed finite passport guarded
+only by the standard entire-function envelope.
 
 ## Construction
 
-Fix `N` and `0<b<1/2`.  Choose an odd integer `M>N`, put
+Fix `N` and put
 
 \[
-\lambda=\frac{\pi}{2b},\qquad \alpha=ib,\qquad
-P_M(z)=1+(z^2+b^2)^M,\qquad
-F_M(z)=\cosh(\lambda z)\,P_M(z).
+a=b=\frac14,\qquad
+\alpha=a+ib=\frac{1+i}{4},\qquad
+\lambda=\frac{\pi}{2b}=2\pi,\qquad
+M=2N+1.
 \]
 
-Then `F_M` is even and real entire:
+Define
 
 \[
-F_M(-z)=F_M(z),\qquad
-F_M(\bar z)=\overline{F_M(z)}.
+B(z)=\cosh(\lambda(z-a))\cosh(\lambda(z+a)),
 \]
 
-Since `λα=iπ/2` and `P_M(±ib)=1`, the two points `±α` are simple nonreal zeros
-of `F_M`.
+\[
+Q(z)=(z^2-\alpha^2)(z^2-\bar\alpha^2),\qquad
+P_M(z)=1+Q(z)^M,\qquad
+F_M(z)=B(z)P_M(z).
+\]
 
-For a simple zero `a`, define the residue-filled negative-logarithmic-derivative germ
+Both `B` and `P_M` are real even entire functions.  The four points
 
 \[
-G_a(x)=
+\alpha,\quad -\alpha,\quad \bar\alpha,\quad -\bar\alpha
+\]
+
+are simple zeros of `B`: at each point exactly one shifted `cosh` factor has argument congruent
+to \(\pi i/2\) modulo \(\pi i\), while the other factor is nonzero.  Since `Q` vanishes at all four
+points and `P_M=1` there, they remain simple zeros of `F_M`.
+
+The base factor has the exact imaginary period
+
+\[
+B(z+2ib)=B(z).
+\]
+
+In particular, the two centers
+
+\[
+c=-\alpha,\qquad d=-\bar\alpha=c+2ib
+\]
+
+have identical residue-filled logarithmic-flux germs for `B`.
+
+## Exact delayed partner defect
+
+For a simple zero `w` of an entire function `F`, write
+
+\[
+G_w^F(x)=
 \begin{cases}
 -1,&x=0,\\[2mm]
--x\dfrac{F_M'(a+x)}{F_M(a+x)},&x\ne0.
+-x\dfrac{F'(w+x)}{F(w+x)},&x\ne0.
 \end{cases}
 \]
 
-The singularity at `x=0` is removable.  Evenness of `F_M` gives the exact identity
+The multiplier contribution at a quartet point `w` is
 
 \[
-G_{-\alpha}(x)=G_\alpha(-x).                                      \tag{1}
+C_w(x)=-x\frac{P_M'(w+x)}{P_M(w+x)}.
 \]
 
-Thus equality of the two partner jets through a given order is equivalent to vanishing of the odd
-Taylor coefficients of `G_α` through that order.
-
-## Exact jet calculation
-
-Split the germ into its `cosh` and polynomial parts:
+If \(q_w=Q'(w)\), then \(Q(w+x)=q_wx+O(x^2)\), and hence
 
 \[
-G_\alpha(x)
-=-\lambda x\coth(\lambda x)
--x\frac{P_M'(\alpha+x)}{P_M(\alpha+x)}.                         \tag{2}
+C_w(x)=-M q_w^M x^M+O(x^{M+1}).                              \tag{1}
 \]
 
-The first term is even.  For the second term, write
+Thus every multiplier correction vanishes to exact order `M`.  At the two partner centers,
+putting \(\Delta=\alpha^2-\bar\alpha^2\ne0\), direct differentiation gives
 
 \[
-u(x)=(\alpha+x)^2+b^2=x(2\alpha+x).
+q_c=-2\alpha\Delta,\qquad q_d=2\bar\alpha\Delta.
 \]
 
-Then
+Because `M` is odd,
 
 \[
--x\frac{P_M'(\alpha+x)}{P_M(\alpha+x)}
-=-\frac{2M\,x(\alpha+x)u(x)^{M-1}}{1+u(x)^M}.                  \tag{3}
+q_c^M-q_d^M
+=-(2\Delta)^M(\alpha^M+\bar\alpha^M).                         \tag{2}
 \]
 
-Because `u(x)=2αx+O(x^2)`, expression (3) has a zero of exact order `M`, with leading
-coefficient
+The argument of \(\alpha\) is \(\pi/4\).  For every odd `M`,
+\(\cos(M\pi/4)=\pm\sqrt2/2\), so
 
 \[
--2M\alpha(2\alpha)^{M-1}=-M(2\alpha)^M\ne0.                   \tag{4}
+\alpha^M+\bar\alpha^M=2\operatorname{Re}(\alpha^M)\ne0.
 \]
 
-There are therefore no polynomial-factor contributions below order `M`.  At order `M` the
-coefficient is nonzero; since `M` is odd, it is an odd Taylor coefficient.  Combining (1)--(4):
+Equations (1)--(2), together with the exact equality of the two base germs, yield
 
 \[
-[x^n]G_{-\alpha}=[x^n]G_\alpha\quad(0\le n<M),
+[x^n]G_c^{F_M}=[x^n]G_d^{F_M}\quad(0\le n<M),
 \qquad
-[x^M]G_{-\alpha}\ne[x^M]G_\alpha.                             \tag{5}
+[x^M]G_c^{F_M}\ne[x^M]G_d^{F_M}.                             \tag{3}
 \]
 
-As `M>N`, the partner germs agree through the prescribed depth `N` and disagree later.
+Since `M=2N+1>N`, the partner germs agree through the prescribed depth and disagree at a later odd
+order.
 
-## Functional-equation normalization
+## Functional-equation normalization and the zero-free real axis
 
 Put
 
@@ -113,70 +137,79 @@ Put
 X_M(s)=F_M\!\left(-i\left(s-\tfrac12\right)\right).
 \]
 
-The even and real symmetries of `F_M` become
+Real even symmetry becomes
 
 \[
 X_M(1-s)=X_M(s),\qquad X_M(\bar s)=\overline{X_M(s)}.
 \]
 
-The zeros `±α` become
+The quartet above becomes
 
 \[
-\rho_- =\tfrac12-b,
-\qquad
-\rho_+ =\tfrac12+b=1-\rho_-.
+\frac14+\frac{i}{4},\quad
+\frac34-\frac{i}{4},\quad
+\frac14-\frac{i}{4},\quad
+\frac34+\frac{i}{4}.
 \]
 
-They are real, so Schwarz fixes each, while the functional equation exchanges them.  Because
-`0<b<1/2`, both lie strictly inside `0<Re s<1`, and neither lies on `Re s=1/2`.  The affine coordinate
-change sends a Taylor coefficient of order `n` to a nonzero scalar multiple of the corresponding
-coefficient in (5); hence equality through `N` and failure at `M` are preserved.  Equivalently, the
-one-base graded-reality equations hold through order `N` at `ρ_-` and fail at the odd order `M`.
+All four points lie strictly inside \(0<\operatorname{Re}s<1\), and none is on the critical line or
+the real axis.  For the selected zero \(\rho=1/4+i/4\), the FE partner \(1-\rho\) maps to
+\(c=-\alpha\), and the Schwarz partner \(\bar\rho\) maps to \(d=-\bar\alpha\).  The affine local
+coordinate multiplies every order-`n` coefficient in (3) by the same nonzero scalar
+\((-i)^n\), so finite agreement and the order-`M` failure are preserved.
+
+There are no real zeros of `X_M`.  Indeed, a real `s` corresponds to \(z=iy\).  Neither shifted
+`cosh` factor can vanish there because its argument has nonzero real part.  Moreover
+
+\[
+Q(iy)=(-y^2-\alpha^2)(-y^2-\bar\alpha^2)
+=|y^2+\alpha^2|^2>0,
+\]
+
+so \(P_M(iy)=1+Q(iy)^M>0\).  Hence \(F_M(iy)\ne0\) for every real `y`.
 
 ## Exact order and aperiodicity
 
-The polynomial factor does not change the order of `cosh(λz)`, so `F_M` and `X_M` have exact
-entire order one.
+The product `B` has exact entire order one, and multiplication by the nonconstant polynomial
+`P_M` does not change that order.  The affine change of variable preserves exact order.
 
-To prove aperiodicity, suppose `F_M(z+h)=F_M(z)` for every `z`.  Along positive real `x`,
+Suppose \(F_M(z+h)=F_M(z)\) for every `z`.  Along positive real `x`,
 
 \[
-\frac{\cosh(\lambda(x+h))}{\cosh(\lambda x)}\longrightarrow e^{\lambda h},
+\frac{B(x+h)}{B(x)}\longrightarrow e^{2\lambda h},
 \qquad
 \frac{P_M(x+h)}{P_M(x)}\longrightarrow1.
 \]
 
-Periodicity therefore gives `e^(λh)=1`, so `h=2πik/λ` for some integer `k`.  Such an `h` is a
-period of `cosh(λz)`; cancelling this factor away from its discrete zero set and using the identity
-theorem gives `P_M(z+h)=P_M(z)`.  A nonconstant polynomial has no nonzero period: the leading term of
-`P_M(z+h)-P_M(z)` below its cancelled top degree is `deg(P_M)·lc(P_M)·h·z^{deg(P_M)-1}`.
-Thus `h=0`.  The affine change of variables preserves aperiodicity, so `X_M` also has no nonzero
-period.
+Therefore \(e^{2\lambda h}=1\), so \(h=\pi i k/\lambda=2ibk\) for some integer `k`.  Every such
+`h` is a period of `B`.  Cancelling `B` away from its discrete zero set and applying the
+identity theorem gives \(P_M(z+h)=P_M(z)\).  A nonconstant polynomial has no nonzero period: the
+coefficient of \(z^{d-1}\) in \(P_M(z+h)-P_M(z)\) is \(d\,\mathrm{lc}(P_M)\,h\), where `d` is its
+degree.  Thus `h=0`, so `F_M` and `X_M` are aperiodic.
 
 ## Consequence
 
-There is no universal `N` for which the first `N` completed-flux coefficients select the critical
-line in the class of aperiodic, order-one, FE-even, Schwarz-real entire functions even when the
-tested zero is required to lie strictly inside the critical strip.  Any successful finite-depth
-theorem for `xi` must therefore consume genuinely arithmetic Euler-source structure not present in
-this envelope.  A source theorem using only FE, Schwarz, strip location, growth, and aperiodicity is
-provably insufficient.
+There is no universal `N` for which the first `N` completed-flux coefficients select the
+critical line in the class of aperiodic, order-one, FE-even, Schwarz-real entire functions, even
+when the tested zero is nonreal and strictly inside the critical strip and the whole real axis is
+zero-free.  Any successful finite-depth theorem for `xi` must consume genuinely arithmetic
+Euler-source structure not present in this envelope.
 
-This does not rule out a finite theorem that uses a global Euler invariant.  It rules out a finite
-local passport whose only global guards are the five conditions above.
+This does not rule out a finite theorem using a global Euler invariant.  It rules out a finite local
+passport whose global guards are only the six conditions above.
 
 ## Parent-theory and literature attack
 
-- The mechanism is high-order Hermite interpolation by multiplication with an even polynomial
-  flat at the selected zero pair.  That mechanism is classical in spirit and prevents a confident
-  novelty claim based only on the explicit formula.
+- The mechanism is high-order Hermite interpolation by multiplication with a real even polynomial
+  flat on a zero quartet.  That mechanism is classical in spirit and prevents a confident novelty
+  claim based only on the explicit formula.
 - Classical Laguerre--Pólya theory already requires an infinite hierarchy of conditions in general,
-  and finite initial inequalities are not known to characterize real-rootedness without additional
+  and finite initial inequalities do not characterize real-rootedness without additional
   restrictive hypotheses.
 - Initial exact-phrase and mechanism searches across AMS, Project Euclid, and arXiv results located
   classical Laguerre inequalities and specialized coefficient criteria, but not this simultaneous
-  FE/Schwarz/order-one/aperiodic finite-jet nonselection theorem.  That negative search is not a
-  completed literature gate.
+  FE/Schwarz/critical-strip/nonreal-zero/order-one/aperiodic finite-jet nonselection theorem.  That
+  negative search is not a completed literature gate.
 
 ## Lean formalization status
 
@@ -188,16 +221,17 @@ that the germ and its reflection have identical iterated derivatives through ord
 at order `2N+1`.
 
 The exact module and exact Lake target build pass.  The load-bearing declarations use only
-`propext`, `Classical.choice`, and `Quot.sound`.  The global scaled-`cosh` realization, its exact
-entire order, critical-strip coordinate conversion, and aperiodicity argument remain paper-only;
-therefore the card correctly remains at stage 2 rather than being promoted to stage 3.
+`propext`, `Classical.choice`, and `Quot.sound`.  The real-even quartet multiplier, shifted
+`cosh` base, critical-strip normalization, global zero-free real-axis statement, exact order, and
+aperiodicity remain paper-only; therefore the card remains at stage 2.
 
 ## Gates
 
 - [x] 0 → 1: the finite-passport claim was stated and attacked by an explicit family
-- [x] 1 → 2: symmetry, zeros, exact jet contact, later failure, order, and aperiodicity were proved
-- [ ] independent mathematical audit of the scaled coordinate conversion and aperiodicity argument
-- [x] formalize the polynomial-flatness and completed-germ coefficient theorem in Lean
-- [ ] 2 → 3: formalize the global scaled-`cosh` realization, exact order, strip location, and
-  aperiodicity theorem
+- [x] 1 → 2: symmetry, quartet zeros, exact jet contact, later failure, real-axis zero-freeness,
+  order, and aperiodicity were proved
+- [ ] independent mathematical audit of the quartet coefficient calculation, coordinate conversion,
+  zero-free real-axis argument, and aperiodicity proof
+- [x] formalize the one-pair polynomial-flatness and completed-germ coefficient theorem in Lean
+- [ ] 2 → 3: formalize the real-even quartet multiplier and global shifted-`cosh` realization
 - [ ] literature and parent-theory audit sufficient for any scientific-novelty promotion
