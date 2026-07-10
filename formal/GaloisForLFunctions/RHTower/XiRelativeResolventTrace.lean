@@ -119,6 +119,7 @@ theorem summable_xiRelativeResolventTerm {z : ℂ} (hz : XiC z ≠ 0) :
   have haz : xiSpectralPoint q - z ≠ 0 := sub_ne_zero.mpr (Ne.symm hzq)
   rw [inv_eq_one_div]
   field_simp [ha, haz]
+  ring
 
 /-- Logarithmic derivative of the canonical product as the absolutely summable centered relative
 resolvent trace. -/
@@ -133,10 +134,14 @@ theorem logDeriv_xiCanonicalProduct_eq_relativeResolventTrace
       weierstrassE1 (z / xiSpectralPoint q) ≠ 0 := by
     rw [weierstrassE1]
     apply mul_ne_zero
-    · rw [sub_ne_zero]
-      intro h
+    · intro hzero
+      have hdiv : z / xiSpectralPoint q = 1 := (sub_eq_zero.mp hzero).symm
       apply hza q
-      field_simp [xiSpectralPoint_ne_zero q] at h ⊢
+      calc
+        z = z / xiSpectralPoint q * xiSpectralPoint q :=
+          (div_mul_cancel₀ z (xiSpectralPoint_ne_zero q)).symm
+        _ = 1 * xiSpectralPoint q := by rw [hdiv]
+        _ = xiSpectralPoint q := one_mul _
     · exact Complex.exp_ne_zero _
   have hsum : Summable (fun q : XiZeroCopy =>
       logDeriv (fun w : ℂ => weierstrassE1 (w / xiSpectralPoint q)) z) := by
@@ -175,6 +180,7 @@ theorem logDeriv_xiCanonicalProduct_eq_relativeResolventTrace
       rw [xiRelativeResolventTerm]
       rw [inv_eq_one_div]
       field_simp [ha, haz]
+      ring
 
 /-- **Exact target identity.**  The centered Xi logarithmic derivative is the canonical relative
 resolvent trace.  The subtraction, convergence, and equality are unconditional and contain no
@@ -185,6 +191,170 @@ theorem logDeriv_XiC_eq_relativeResolventTrace {z : ℂ} (hz : XiC z ≠ 0) :
   change logDeriv (fun w => XiC 0 * xiCanonicalProduct w) z = _
   rw [logDeriv_const_mul z (XiC 0) XiC_zero_ne]
   exact logDeriv_xiCanonicalProduct_eq_relativeResolventTrace hz
+
+/-- The inverse square of the centered spectral coordinate, indexed with the exact multiplicity
+of the Xi divisor. -/
+def xiZeroCopyReciprocalSquare (q : XiZeroCopy) : ℂ :=
+  (xiSpectralPoint q)⁻¹ ^ 2
+
+theorem xiZeroCopyReciprocalSquare_eq (q : XiZeroCopy) :
+    xiZeroCopyReciprocalSquare q = xiCentralReciprocalSquare (q.1 : ℂ) := by
+  rw [xiZeroCopyReciprocalSquare, xiCentralReciprocalSquare, xiSpectralPoint]
+  have hb : (q.1 : ℂ) - 1 / 2 ≠ 0 := sub_ne_zero.mpr (xi_divisor_support_ne_half q.1)
+  field_simp [hb, Complex.I_ne_zero]
+  rw [Complex.I_sq]
+  ring
+
+theorem summable_xiZeroCopyReciprocalSquare :
+    Summable xiZeroCopyReciprocalSquare := by
+  refine Summable.of_norm_bounded xiSpectralPoint_inv_sq_summable (fun q => ?_)
+  simp [xiZeroCopyReciprocalSquare, norm_pow, norm_inv, one_div, inv_pow]
+
+/-- The reciprocal-square resolvent term obtained after pairing a centered zero with its
+functional-equation reflection. -/
+def xiReciprocalSquareResolventTerm (z : ℂ) (q : XiZeroCopy) : ℂ :=
+  xiZeroCopyReciprocalSquare q /
+    (1 - z ^ 2 * xiZeroCopyReciprocalSquare q)
+
+theorem pair_xiRelativeResolventTerm (z : ℂ) (q : XiZeroCopy)
+    (hzp : z ≠ xiSpectralPoint q) (hzn : z ≠ -xiSpectralPoint q) :
+    xiRelativeResolventTerm z q +
+      xiRelativeResolventTerm z (xiZeroCopyReflectEquiv q) =
+        -2 * z * xiReciprocalSquareResolventTerm z q := by
+  have ha := xiSpectralPoint_ne_zero q
+  have hp : xiSpectralPoint q - z ≠ 0 := sub_ne_zero.mpr (Ne.symm hzp)
+  have hn : -xiSpectralPoint q - z ≠ 0 := sub_ne_zero.mpr (Ne.symm hzn)
+  have hapz : xiSpectralPoint q + z ≠ 0 := by
+    intro h
+    apply hzn
+    linear_combination h
+  have hsq : xiSpectralPoint q ^ 2 - z ^ 2 ≠ 0 := by
+    rw [sq_sub_sq]
+    exact mul_ne_zero hapz hp
+  rw [xiRelativeResolventTerm, xiRelativeResolventTerm,
+    xiSpectralPoint_reflect, xiReciprocalSquareResolventTerm,
+    xiZeroCopyReciprocalSquare]
+  field_simp [ha, hp, hn, hsq]
+  ring
+
+theorem summable_xiReciprocalSquareResolventTerm {z : ℂ} (hz : XiC z ≠ 0) :
+    Summable (xiReciprocalSquareResolventTerm z) := by
+  by_cases hz0 : z = 0
+  · subst z
+    apply summable_xiZeroCopyReciprocalSquare.congr
+    intro q
+    simp [xiReciprocalSquareResolventTerm]
+  · have hR := summable_xiRelativeResolventTerm hz
+    have hRref : Summable (fun q =>
+        xiRelativeResolventTerm z (xiZeroCopyReflectEquiv q)) :=
+      (xiZeroCopyReflectEquiv.summable_iff).mpr hR
+    have hpair := hR.add hRref
+    have hscale := hpair.mul_left ((-2 * z)⁻¹)
+    apply hscale.congr
+    intro q
+    have hzp : z ≠ xiSpectralPoint q := by
+      intro h
+      exact hz ((XiC_eq_zero_iff_exists_xiZeroCopy z).mpr ⟨q, h.symm⟩)
+    have hzn : z ≠ -xiSpectralPoint q := by
+      intro h
+      exact hz ((XiC_eq_zero_iff_exists_xiZeroCopy z).mpr
+        ⟨xiZeroCopyReflectEquiv q, by rw [xiSpectralPoint_reflect, ← h]⟩)
+    rw [pair_xiRelativeResolventTerm z q hzp hzn]
+    field_simp [hz0]
+
+/-- **Paired target identity.**  Reflection symmetry converts the centered relative resolvent into
+the reciprocal-square resolvent whose Taylor coefficients are the central reciprocal moments.
+This is an identity of the Xi divisor; it is not an operator-spectrum assertion. -/
+theorem xiRelativeResolventTrace_eq_reciprocalSquareResolvent
+    {z : ℂ} (hz : XiC z ≠ 0) :
+    xiRelativeResolventTrace z =
+      -z * ∑' q : XiZeroCopy, xiReciprocalSquareResolventTerm z q := by
+  by_cases hz0 : z = 0
+  · subst z
+    simp [xiRelativeResolventTrace, xiRelativeResolventTerm]
+  · have hR := summable_xiRelativeResolventTerm hz
+    have hRref : Summable (fun q =>
+        xiRelativeResolventTerm z (xiZeroCopyReflectEquiv q)) :=
+      (xiZeroCopyReflectEquiv.summable_iff).mpr hR
+    have hg := summable_xiReciprocalSquareResolventTerm hz
+    have hreindex : (∑' q, xiRelativeResolventTerm z (xiZeroCopyReflectEquiv q)) =
+        xiRelativeResolventTrace z := by
+      rw [xiRelativeResolventTrace]
+      exact xiZeroCopyReflectEquiv.tsum_eq (xiRelativeResolventTerm z)
+    have hpair :
+        (∑' q, (xiRelativeResolventTerm z q +
+          xiRelativeResolventTerm z (xiZeroCopyReflectEquiv q))) =
+          -2 * z * ∑' q, xiReciprocalSquareResolventTerm z q := by
+      rw [← tsum_mul_left]
+      apply tsum_congr
+      intro q
+      have hzp : z ≠ xiSpectralPoint q := by
+        intro h
+        exact hz ((XiC_eq_zero_iff_exists_xiZeroCopy z).mpr ⟨q, h.symm⟩)
+      have hzn : z ≠ -xiSpectralPoint q := by
+        intro h
+        exact hz ((XiC_eq_zero_iff_exists_xiZeroCopy z).mpr
+          ⟨xiZeroCopyReflectEquiv q, by rw [xiSpectralPoint_reflect, ← h]⟩)
+      exact pair_xiRelativeResolventTerm z q hzp hzn
+    rw [hR.tsum_add hRref, hreindex] at hpair
+    change xiRelativeResolventTrace z + xiRelativeResolventTrace z = _ at hpair
+    rw [← two_mul] at hpair
+    calc
+      xiRelativeResolventTrace z =
+          (-2 * z * ∑' q, xiReciprocalSquareResolventTerm z q) / 2 := by
+        rw [← hpair]
+        ring
+      _ = -z * ∑' q, xiReciprocalSquareResolventTerm z q := by ring
+
+/-- Every coefficient of the reciprocal-square resolvent is absolutely summable over the
+multiplicity-copy Xi divisor. -/
+theorem summable_xiZeroCopyReciprocalSquare_pow (n : ℕ) :
+    Summable (fun q : XiZeroCopy => xiZeroCopyReciprocalSquare q ^ (n + 1)) := by
+  apply Summable.of_norm
+  rw [summable_sigma_of_nonneg (fun _ => norm_nonneg _)]
+  constructor
+  · intro ρ
+    exact (hasSum_fintype _).summable
+  · have hweighted := (xi_central_reciprocal_moment_summable n).norm
+    apply hweighted.congr
+    intro ρ
+    rw [tsum_fintype]
+    simp only [xiZeroCopyReciprocalSquare_eq, norm_pow, Finset.sum_const,
+      Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+    have hnonneg : 0 ≤ (MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) :=
+      le_of_lt (xi_divisor_pos_on_support ρ)
+    have hcast :
+        (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)).toNat : ℝ) =
+          ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by
+      exact_mod_cast Int.toNat_of_nonneg hnonneg
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (by exact_mod_cast hnonneg)]
+    rw [norm_pow, hcast]
+
+/-- The coefficient sum of the paired relative resolvent is exactly the existing central
+reciprocal moment, with divisor multiplicity retained and no enumeration chosen. -/
+theorem tsum_xiZeroCopyReciprocalSquare_pow (n : ℕ) :
+    (∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q ^ (n + 1)) =
+      xiCentralReciprocalMoment n := by
+  have hcopy := summable_xiZeroCopyReciprocalSquare_pow n
+  rw [hcopy.tsum_sigma]
+  rw [xiCentralReciprocalMoment]
+  apply tsum_congr
+  intro ρ
+  rw [tsum_fintype]
+  simp only [xiZeroCopyReciprocalSquare_eq, Finset.sum_const, Finset.card_univ,
+    Fintype.card_fin, nsmul_eq_mul]
+  have hnonneg : 0 ≤ (MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) :=
+    le_of_lt (xi_divisor_pos_on_support ρ)
+  have hcastR :
+      (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)).toNat : ℝ) =
+        ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ) := by
+    exact_mod_cast Int.toNat_of_nonneg hnonneg
+  have hcast :
+      (((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)).toNat : ℂ) =
+        ((((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) : ℝ)) : ℂ) := by
+    exact_mod_cast hcastR
+  rw [hcast]
 
 end
 

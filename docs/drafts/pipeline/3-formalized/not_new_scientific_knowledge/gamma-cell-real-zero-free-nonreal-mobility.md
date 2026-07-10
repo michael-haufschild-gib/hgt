@@ -2,7 +2,7 @@
 
 - **ID:** gamma-cell-real-zero-free-nonreal-mobility
 - **Stage:** 3-formalized
-- **Type:** POSITIVE STRUCTURE THEOREM (Lean) / selector-boundary theorem
+- **Type:** POSITIVE STRUCTURE THEOREM (Lean) / exact actor-classification theorem
 - **Scientific status:** `[BRIDGE]`, not new scientific knowledge.  The exact conjunction is a
   useful sharpening, but the mechanism is the routine action of a reciprocal degree-zero
   Dirichlet polynomial on a gamma-completed Dirichlet series.
@@ -43,17 +43,26 @@ The theorem combines, in one member:
 4. no zero anywhere on the real open strip;
 5. an explicit nonreal off-line strip zero.
 
-The class is closed under the displayed positive reciprocal-quartic action:
+More generally, the nonzero integral multiplicative degree-zero class acts on `GammaFECell`:
 
-`GammaFECell f -> GammaFECell (f * dzoQuartic)`.
+`GammaFECell f ∧ IntegralMultiplicativeFEClass g ∧ (∃ s, g s ≠ 0)`
 
-Thus the useful positive object is the action orbit, not merely a failed implication.  The next
-constraint must distinguish the primitive all-prime source from its degree-zero multiplicative
-decorations; real-axis zero-freeness does not make that distinction.
+`-> GammaFECell (f * g)`.
+
+This is an exact actor classification: an integral multiplicative degree-zero member acts on every
+gamma-cell member if and only if it is nonzero somewhere.  The displayed reciprocal quartic is one
+explicit actor.
+
+Thus the useful positive object is the action orbit.  The next constraint is a section or invariant
+that singles out the primitive all-prime source inside that orbit.  Real-axis zero-freeness is
+constant on too much of the orbit to supply that section.
 
 ## Lean certificate
 
 - `dzoQuartic_mem_gammaFECell`
+- `gammaFECell_exists_ne_zero`
+- `gammaFECell_mul_integralFEClass_of_exists_ne_zero`
+- `integralFEClass_acts_on_gammaFECell_iff`
 - `gammaFECell_mul_dzoQuartic`
 - `zetaDzoQuartic_mem_gammaFECell`
 - `zetaDzoQuartic_nonreal_offline_strip_zero`
@@ -65,11 +74,10 @@ The exact module build passes.  The listed declarations depend only on `propext`
 
 ## Research consequence
 
-The positive replacement for the no-go is a construction problem:
+The actor classification exposes a positive construction problem:
 
-> Find a source-native primitive normalization that is fixed by the exact Euler data but is not
-> preserved by multiplication with nonconstant degree-zero reciprocal factors.
+> Construct a source-native primitive section, fixed by the exact Euler data, whose value changes
+> under every nonconstant degree-zero reciprocal actor.
 
-A condition invariant under the degree-zero action cannot see the distinction between zeta and the
-displayed real-zero-free nonreal-mobile member.  A condition that merely restates the coefficients
-of zeta is tautological.  The live target lies between these extremes.
+The live constraint is transverse to the degree-zero action orbits and sensitive to source
+primitiveness, while remaining strictly weaker than a restatement of zeta's coefficients.

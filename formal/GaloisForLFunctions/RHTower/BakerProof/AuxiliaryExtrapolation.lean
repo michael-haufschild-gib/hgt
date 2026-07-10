@@ -60,6 +60,29 @@ theorem initialSamplePoints_boundary_factor_lower {S q : ℕ} {radius : ℝ}
           _ ≤ ‖w‖ - ‖z‖ := sub_le_sub_left hzNorm _
           _ ≤ ‖w - z‖ := norm_sub_norm_le w z
 
+/-- Closed upper bound for the node polynomial at a later natural sample. -/
+theorem initialSamplePoints_sample_factor_upper (S q sample : ℕ) :
+    ‖∏ z ∈ initialSamplePoints S, ((sample : ℂ) - z) ^ q‖ ≤
+      ((sample + S : ℕ) : ℝ) ^ (q * S) := by
+  rw [norm_prod]
+  simp_rw [norm_pow]
+  calc
+    ∏ z ∈ initialSamplePoints S, ‖(sample : ℂ) - z‖ ^ q ≤
+        ∏ _z ∈ initialSamplePoints S, ((sample + S : ℕ) : ℝ) ^ q := by
+      apply Finset.prod_le_prod
+      · intro z hz
+        positivity
+      · intro z hz
+        gcongr
+        calc
+          ‖(sample : ℂ) - z‖ ≤ ‖(sample : ℂ)‖ + ‖z‖ := norm_sub_le _ _
+          _ ≤ (sample : ℝ) + S := by
+            rw [Complex.norm_natCast]
+            exact add_le_add le_rfl (norm_le_card_of_mem_initialSamplePoints hz)
+          _ = ((sample + S : ℕ) : ℝ) := by norm_num
+    _ = ((sample + S : ℕ) : ℝ) ^ (q * S) := by
+      rw [Finset.prod_const, card_initialSamplePoints, pow_mul]
+
 /-- Direct finite-sum growth bound for a shifted component on a closed disc. -/
 noncomputable def Relation.auxiliaryComponentAnalyticBound (R : Relation) (c : ℤ)
     (pivot : Fin R.n) (ν : R.NonPivot pivot → ℕ) {L : ℕ}
@@ -112,6 +135,52 @@ theorem Relation.auxiliaryComponentAnalyticBound_le_of_coefficient_house_le
         (mul_le_mul_of_nonneg_left hcoeff
           (Finset.prod_nonneg fun i hi => pow_nonneg (house_nonneg _) _))
         (Real.exp_nonneg _)
+
+/-- Closed analytic boundary bound in terms of the column count, direction height, coefficient
+height, and the fixed prime-log weight. -/
+theorem Relation.auxiliaryComponentAnalyticBound_le_closed
+    (R : Relation) (c : ℤ) (pivot : Fin R.n) (ν : R.NonPivot pivot → ℕ)
+    {L : ℕ} (η : R.Column L → 𝓞 R.CoefficientField) (radius Hη : ℝ)
+    (hη : ∀ m, house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤ Hη)
+    (hHη : 0 ≤ Hη) (hradius : 0 ≤ radius) :
+    R.auxiliaryComponentAnalyticBound c pivot ν η radius ≤
+      ((L ^ R.n : ℕ) : ℝ) *
+        ((2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+          Real.exp ((L * R.primeLogWeight) * radius)) := by
+  calc
+    R.auxiliaryComponentAnalyticBound c pivot ν η radius ≤
+        ∑ m : R.Column L, (∏ i : R.NonPivot pivot,
+          house (R.scaledDirection c pivot m i) ^ ν i) * Hη *
+            Real.exp (‖R.frequency m‖ * radius) :=
+      R.auxiliaryComponentAnalyticBound_le_of_coefficient_house_le
+        c pivot ν η radius Hη hη
+    _ ≤ ∑ _m : R.Column L,
+        (2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+          Real.exp ((L * R.primeLogWeight) * radius) := by
+      apply Finset.sum_le_sum
+      intro m hm
+      have hdir := R.scaledDirection_house_prod_pow_le c pivot m ν
+      have hexp : Real.exp (‖R.frequency m‖ * radius) ≤
+          Real.exp ((L * R.primeLogWeight) * radius) := by
+        apply Real.exp_le_exp.mpr
+        exact mul_le_mul_of_nonneg_right (R.norm_frequency_le m) hradius
+      calc
+        (∏ i : R.NonPivot pivot,
+          house (R.scaledDirection c pivot m i) ^ ν i) * Hη *
+            Real.exp (‖R.frequency m‖ * radius) ≤
+            (2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+              Real.exp (‖R.frequency m‖ * radius) := by
+          exact mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right hdir hHη) (Real.exp_nonneg _)
+        _ ≤ (2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+              Real.exp ((L * R.primeLogWeight) * radius) := by
+          apply mul_le_mul_of_nonneg_left hexp
+          exact mul_nonneg (pow_nonneg (by
+            unfold Relation.scaledCoefficientHouseSum
+            exact mul_nonneg (mul_nonneg (by norm_num) (Nat.cast_nonneg _))
+              (Finset.sum_nonneg fun i hi => house_nonneg _)) _) hHη
+    _ = _ := by
+      simp [nsmul_eq_mul]
 
 theorem Relation.norm_auxiliaryComponent_le_analyticBound
     (R : Relation) (c : ℤ) (pivot : Fin R.n) (ν : R.NonPivot pivot → ℕ)
@@ -224,5 +293,127 @@ theorem Relation.auxiliaryComponent_eq_zero_one_step_explicit
   · exact initialSamplePoints_boundary_factor_lower hradius
   · exact hsample
   · exact hsmall
+
+/-- One-step extrapolation with the analytic and conjugate estimates reduced to closed scalar
+bounds.  The remaining inequality contains only the construction parameters and fixed invariants of
+the reduced relation. -/
+theorem Relation.auxiliaryComponent_eq_zero_one_step_closed
+    (R : Relation) (c : ℤ) (hc : c ≠ 0)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    {L S T : ℕ} (η : R.Column L → 𝓞 R.CoefficientField)
+    (hker : Matrix.mulVec (R.auxiliaryMatrix c hint pivot L S T) η = 0)
+    (ν : R.NonPivot pivot → ℕ) (q : ℕ) (hνq : ∀ i, ν i + q < T)
+    (Hη : ℝ)
+    (hη : ∀ m, house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤ Hη)
+    (hHη : 0 ≤ Hη)
+    {radius : ℝ} (hradius : (S : ℝ) < radius)
+    (sample : ℕ) (hsample : (sample : ℂ) ∈ Metric.closedBall 0 radius)
+    (hsmall :
+      (‖∏ z ∈ initialSamplePoints S, ((sample : ℂ) - z) ^ q‖ *
+        ((((L ^ R.n : ℕ) : ℝ) *
+          ((2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+            Real.exp ((L * R.primeLogWeight) * radius))) /
+          (radius - S) ^ (q * S))) *
+        (((L ^ R.n : ℕ) : ℝ) *
+          ((2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+            (R.primeProduct : ℝ) ^ (L * sample))) ^
+          (Module.finrank ℚ R.CoefficientField - 1) < 1) :
+    R.auxiliaryComponent c pivot ν η sample = 0 := by
+  apply R.auxiliaryComponent_eq_zero_one_step_explicit
+    c hc hint pivot η hker ν q hνq hradius sample hsample
+  have hradius0 : 0 ≤ radius :=
+    le_trans (Nat.cast_nonneg S) hradius.le
+  have hA := R.auxiliaryComponentAnalyticBound_le_closed
+    c pivot ν η radius Hη hη hHη hradius0
+  have hH := R.auxiliaryComponentHouseBound_le_closed
+    c pivot ν η sample Hη hη hHη
+  have hA0 : 0 ≤ R.auxiliaryComponentAnalyticBound c pivot ν η radius := by
+    unfold Relation.auxiliaryComponentAnalyticBound
+    exact Finset.sum_nonneg fun m hm =>
+      mul_nonneg (mul_nonneg
+        (Finset.prod_nonneg fun i hi => pow_nonneg (norm_nonneg _) _)
+        (norm_nonneg _)) (Real.exp_nonneg _)
+  have hH0 := R.auxiliaryComponentHouseBound_nonneg c pivot ν η sample
+  have hden : 0 < (radius - S) ^ (q * S) :=
+    pow_pos (sub_pos.mpr hradius) _
+  have hdiv := div_le_div_of_nonneg_right hA hden.le
+  have hpow := pow_le_pow_left₀ hH0 hH
+    (Module.finrank ℚ R.CoefficientField - 1)
+  calc
+    (‖∏ z ∈ initialSamplePoints S, ((sample : ℂ) - z) ^ q‖ *
+        (R.auxiliaryComponentAnalyticBound c pivot ν η radius /
+          (radius - S) ^ (q * S))) *
+      R.auxiliaryComponentHouseBound c pivot ν η sample ^
+        (Module.finrank ℚ R.CoefficientField - 1) ≤
+      (‖∏ z ∈ initialSamplePoints S, ((sample : ℂ) - z) ^ q‖ *
+        ((((L ^ R.n : ℕ) : ℝ) *
+          ((2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+            Real.exp ((L * R.primeLogWeight) * radius))) /
+          (radius - S) ^ (q * S))) *
+      R.auxiliaryComponentHouseBound c pivot ν η sample ^
+        (Module.finrank ℚ R.CoefficientField - 1) := by
+      apply mul_le_mul_of_nonneg_right
+      · exact mul_le_mul_of_nonneg_left hdiv (norm_nonneg _)
+      · exact pow_nonneg hH0 _
+    _ ≤ (‖∏ z ∈ initialSamplePoints S, ((sample : ℂ) - z) ^ q‖ *
+        ((((L ^ R.n : ℕ) : ℝ) *
+          ((2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+            Real.exp ((L * R.primeLogWeight) * radius))) /
+          (radius - S) ^ (q * S))) *
+        (((L ^ R.n : ℕ) : ℝ) *
+          ((2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+            (R.primeProduct : ℝ) ^ (L * sample))) ^
+          (Module.finrank ℚ R.CoefficientField - 1) := by
+      apply mul_le_mul_of_nonneg_left hpow
+      exact mul_nonneg (norm_nonneg _)
+        (div_nonneg (hA0.trans hA) hden.le)
+    _ < 1 := hsmall
+
+/-- Fully scalar one-step extrapolation.  The node product is replaced by its closed natural-sample
+bound, leaving no finite sums or products in the smallness hypothesis. -/
+theorem Relation.auxiliaryComponent_eq_zero_one_step_scalar
+    (R : Relation) (c : ℤ) (hc : c ≠ 0)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    {L S T : ℕ} (η : R.Column L → 𝓞 R.CoefficientField)
+    (hker : Matrix.mulVec (R.auxiliaryMatrix c hint pivot L S T) η = 0)
+    (ν : R.NonPivot pivot → ℕ) (q : ℕ) (hνq : ∀ i, ν i + q < T)
+    (Hη : ℝ)
+    (hη : ∀ m, house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤ Hη)
+    (hHη : 0 ≤ Hη)
+    {radius : ℝ} (hradius : (S : ℝ) < radius)
+    (sample : ℕ) (hsample : (sample : ℂ) ∈ Metric.closedBall 0 radius)
+    (hsmall :
+      (((sample + S : ℕ) : ℝ) ^ (q * S) *
+        ((((L ^ R.n : ℕ) : ℝ) *
+          ((2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+            Real.exp ((L * R.primeLogWeight) * radius))) /
+          (radius - S) ^ (q * S))) *
+        (((L ^ R.n : ℕ) : ℝ) *
+          ((2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+            (R.primeProduct : ℝ) ^ (L * sample))) ^
+          (Module.finrank ℚ R.CoefficientField - 1) < 1) :
+    R.auxiliaryComponent c pivot ν η sample = 0 := by
+  apply R.auxiliaryComponent_eq_zero_one_step_closed
+    c hc hint pivot η hker ν q hνq Hη hη hHη hradius sample hsample
+  have hA := R.auxiliaryComponentAnalyticBound_le_closed
+    c pivot ν η radius Hη hη hHη
+      (le_trans (Nat.cast_nonneg S) hradius.le)
+  have hA0 : 0 ≤ R.auxiliaryComponentAnalyticBound c pivot ν η radius := by
+    unfold Relation.auxiliaryComponentAnalyticBound
+    exact Finset.sum_nonneg fun m hm =>
+      mul_nonneg (mul_nonneg
+        (Finset.prod_nonneg fun i hi => pow_nonneg (norm_nonneg _) _)
+        (norm_nonneg _)) (Real.exp_nonneg _)
+  have hH := R.auxiliaryComponentHouseBound_le_closed
+    c pivot ν η sample Hη hη hHη
+  have hH0 := R.auxiliaryComponentHouseBound_nonneg c pivot ν η sample
+  have hden : 0 ≤ (radius - S) ^ (q * S) :=
+    (pow_pos (sub_pos.mpr hradius) _).le
+  apply lt_of_le_of_lt _ hsmall
+  apply mul_le_mul_of_nonneg_right
+  · apply mul_le_mul_of_nonneg_right
+    · exact initialSamplePoints_sample_factor_upper S q sample
+    · exact div_nonneg (hA0.trans hA) hden
+  · exact pow_nonneg (hH0.trans hH) _
 
 end GaloisForLFunctions.RHTower.BakerProof

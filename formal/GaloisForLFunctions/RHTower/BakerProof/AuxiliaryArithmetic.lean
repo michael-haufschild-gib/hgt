@@ -128,6 +128,53 @@ theorem Relation.auxiliaryComponentHouseBound_le_of_coefficient_house_le
           mul_le_mul_of_nonneg_left hB hprod
     _ = _ := rfl
 
+/-- Closed conjugate bound in the four numerical quantities used by Baker extrapolation: column
+count, direction height, coefficient height, and sample growth. -/
+theorem Relation.auxiliaryComponentHouseBound_le_closed
+    (R : Relation) (c : ℤ) (pivot : Fin R.n) (ν : R.NonPivot pivot → ℕ)
+    {L : ℕ} (η : R.Column L → 𝓞 R.CoefficientField) (sample : ℕ) (Hη : ℝ)
+    (hη : ∀ m, house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤ Hη)
+    (hHη : 0 ≤ Hη) :
+    R.auxiliaryComponentHouseBound c pivot ν η sample ≤
+      ((L ^ R.n : ℕ) : ℝ) *
+        ((2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+          (R.primeProduct : ℝ) ^ (L * sample)) := by
+  calc
+    R.auxiliaryComponentHouseBound c pivot ν η sample ≤
+        ∑ m : R.Column L, (∏ i : R.NonPivot pivot,
+          house (R.scaledDirection c pivot m i) ^ ν i) * Hη *
+            house (R.sampleFactor
+              (⟨sample, Nat.lt_add_one sample⟩ : Fin (sample + 1)) m) :=
+      R.auxiliaryComponentHouseBound_le_of_coefficient_house_le
+        c pivot ν η sample Hη hη
+    _ ≤ ∑ _m : R.Column L,
+        (2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+          (R.primeProduct : ℝ) ^ (L * sample) := by
+      apply Finset.sum_le_sum
+      intro m hm
+      have hdir := R.scaledDirection_house_prod_pow_le c pivot m ν
+      have hsample := R.sampleFactor_house_le
+        (⟨sample, Nat.lt_add_one sample⟩ : Fin (sample + 1)) m
+      calc
+        (∏ i : R.NonPivot pivot,
+          house (R.scaledDirection c pivot m i) ^ ν i) * Hη *
+            house (R.sampleFactor
+              (⟨sample, Nat.lt_add_one sample⟩ : Fin (sample + 1)) m) ≤
+            (2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+              house (R.sampleFactor
+                (⟨sample, Nat.lt_add_one sample⟩ : Fin (sample + 1)) m) := by
+          exact mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right hdir hHη) (house_nonneg _)
+        _ ≤ (2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) * Hη *
+              (R.primeProduct : ℝ) ^ (L * sample) := by
+          apply mul_le_mul_of_nonneg_left hsample
+          exact mul_nonneg (pow_nonneg (by
+            unfold Relation.scaledCoefficientHouseSum
+            exact mul_nonneg (mul_nonneg (by norm_num) (Nat.cast_nonneg _))
+              (Finset.sum_nonneg fun i hi => house_nonneg _)) _) hHη
+    _ = _ := by
+      simp [nsmul_eq_mul]
+
 theorem Relation.auxiliaryComponentHouseBound_nonneg (R : Relation) (c : ℤ)
     (pivot : Fin R.n) (ν : R.NonPivot pivot → ℕ) {L : ℕ}
     (η : R.Column L → 𝓞 R.CoefficientField) (sample : ℕ) :

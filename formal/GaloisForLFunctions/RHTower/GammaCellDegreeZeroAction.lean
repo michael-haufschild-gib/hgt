@@ -65,7 +65,7 @@ theorem gammaFECell_exists_ne_zero {f : ℂ → ℂ} (hf : GammaFECell f) :
   · have hsumm := ha_summ 2 (by norm_num)
     have hle := hsumm.abscissaOfAbsConv_le
     rw [htop] at hle
-    simpa using hle
+    simp at hle
 
 /-- The degree-zero functional equation becomes a symmetric completion after multiplication by
 `Q^(s-1/2)`. -/
@@ -84,9 +84,9 @@ theorem integralFEClass_gamma_completion {g : ℂ → ℂ}
   ring
 
 /-- **Positive degree-zero action theorem.** Every nonzero member of the exact integral
-multiplicative degree-zero class acts on `GammaFECell` by multiplication.  Nonzeroness excludes the
-collapsed branch of the degree-zero structure theorem; the surviving coefficient stream is finite,
-so its summability premise is discharged rather than assumed. -/
+multiplicative degree-zero class acts on `GammaFECell` by multiplication.  Nonzeroness selects the
+finite-support branch of the degree-zero structure theorem, so its summability premise follows
+automatically. -/
 theorem gammaFECell_mul_integralFEClass_of_exists_ne_zero {f g : ℂ → ℂ}
     (hf : GammaFECell f) (hg : IntegralMultiplicativeFEClass g)
     (hgne : ∃ s : ℂ, g s ≠ 0) :
@@ -133,8 +133,8 @@ theorem gammaFECell_mul_integralFEClass_of_exists_ne_zero {f g : ℂ → ℂ}
               rw [hγf_fe s hs hs1, hg_fe s]
         _ = _ := by ring
 
-/-- **Exact action boundary.** A degree-zero member acts by multiplication on every gamma-cell
-member exactly when it is not the collapsed zero member. -/
+/-- **Exact actor classification.** The universal multiplicative actors on the gamma cell are
+precisely the nonzero members of the integral multiplicative degree-zero class. -/
 theorem integralFEClass_acts_on_gammaFECell_iff {g : ℂ → ℂ}
     (hg : IntegralMultiplicativeFEClass g) :
     (∃ s : ℂ, g s ≠ 0) ↔

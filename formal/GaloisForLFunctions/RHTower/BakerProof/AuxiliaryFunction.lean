@@ -19,6 +19,32 @@ namespace GaloisForLFunctions.RHTower.BakerProof
 noncomputable def Relation.frequency (R : Relation) {L : ℕ} (m : R.Column L) : ℂ :=
   ∑ i, ((m i : ℕ) : ℂ) * ((Real.log (R.p i) : ℝ) : ℂ)
 
+/-- The fixed logarithmic weight of the prime family in a reduced relation. -/
+noncomputable def Relation.primeLogWeight (R : Relation) : ℝ :=
+  ∑ i, Real.log (R.p i)
+
+/-- Frequencies in an exponent box of width `L` have norm at most `L` times the fixed prime-log
+weight. -/
+theorem Relation.norm_frequency_le (R : Relation) {L : ℕ} (m : R.Column L) :
+    ‖R.frequency m‖ ≤ L * R.primeLogWeight := by
+  have hfreq : R.frequency m =
+      ((∑ i, ((m i : ℕ) : ℝ) * Real.log (R.p i) : ℝ) : ℂ) := by
+    unfold Relation.frequency
+    push_cast
+    rfl
+  rw [hfreq, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (Finset.sum_nonneg fun i hi =>
+      mul_nonneg (Nat.cast_nonneg _) (R.p_prime i).log_pos.le)]
+  unfold Relation.primeLogWeight
+  calc
+    ∑ i, ((m i : ℕ) : ℝ) * Real.log (R.p i) ≤
+        ∑ i, (L : ℝ) * Real.log (R.p i) := by
+      apply Finset.sum_le_sum
+      intro i hi
+      exact mul_le_mul_of_nonneg_right (by exact_mod_cast (m i).isLt.le)
+        (R.p_prime i).log_pos.le
+    _ = L * ∑ i, Real.log (R.p i) := by rw [Finset.mul_sum]
+
 /-- Distinct exponent vectors have distinct logarithmic frequencies.  A collision would give an
 integer linear relation among the logarithms of the distinct primes in `R`, contradicting the
 unconditional integer fragment of Baker's statement. -/

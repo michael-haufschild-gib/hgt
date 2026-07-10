@@ -42,6 +42,71 @@ theorem Relation.scaledDirection_isIntegral (R : Relation) (c : ℤ)
   exact (hint pivot).mul (isIntegral_natCast_coefficientField R (m i)) |>.sub
     ((isIntegral_natCast_coefficientField R (m pivot)).mul (hint i))
 
+/-- The total coefficient house used to control every eliminated direction uniformly. -/
+noncomputable def Relation.scaledCoefficientHouseSum (R : Relation) (c : ℤ) : ℝ :=
+  ∑ i, house (R.scaledCoeff c i)
+
+/-- Every eliminated direction has house at most linear in the exponent-box width. -/
+theorem Relation.scaledDirection_house_le (R : Relation) (c : ℤ) (pivot : Fin R.n)
+    {L : ℕ} (m : R.Column L) (i : Fin R.n) :
+    house (R.scaledDirection c pivot m i) ≤
+      2 * L * R.scaledCoefficientHouseSum c := by
+  have hp : house (R.scaledCoeff c pivot) ≤ R.scaledCoefficientHouseSum c := by
+    unfold Relation.scaledCoefficientHouseSum
+    exact Finset.single_le_sum (fun j hj => house_nonneg _) (Finset.mem_univ pivot)
+  have hi : house (R.scaledCoeff c i) ≤ R.scaledCoefficientHouseSum c := by
+    unfold Relation.scaledCoefficientHouseSum
+    exact Finset.single_le_sum (fun j hj => house_nonneg _) (Finset.mem_univ i)
+  have hmi : ((m i : ℕ) : ℝ) ≤ L := by
+    exact_mod_cast (m i).isLt.le
+  have hmp : ((m pivot : ℕ) : ℝ) ≤ L := by
+    exact_mod_cast (m pivot).isLt.le
+  rw [Relation.scaledDirection]
+  calc
+    house (R.scaledCoeff c pivot * (m i : ℕ) -
+        (m pivot : ℕ) * R.scaledCoeff c i) ≤
+        house (R.scaledCoeff c pivot * (m i : ℕ)) +
+          house (-((m pivot : ℕ) * R.scaledCoeff c i)) := by
+      simpa [sub_eq_add_neg] using house_add_le
+        (R.scaledCoeff c pivot * ((m i : ℕ) : R.CoefficientField))
+        (-(((m pivot : ℕ) : R.CoefficientField) * R.scaledCoeff c i))
+    _ = (m i : ℕ) * house (R.scaledCoeff c pivot) +
+          (m pivot : ℕ) * house (R.scaledCoeff c i) := by
+      rw [mul_comm (R.scaledCoeff c pivot)]
+      rw [house_nat_mul]
+      rw [show house (-(((m pivot : ℕ) : R.CoefficientField) * R.scaledCoeff c i)) =
+          house (((m pivot : ℕ) : R.CoefficientField) * R.scaledCoeff c i) by
+        simp [house]]
+      rw [house_nat_mul]
+    _ ≤ L * R.scaledCoefficientHouseSum c +
+          L * R.scaledCoefficientHouseSum c := by
+      apply add_le_add
+      · exact mul_le_mul hmi hp (house_nonneg _) (Nat.cast_nonneg _)
+      · exact mul_le_mul hmp hi (house_nonneg _) (Nat.cast_nonneg _)
+    _ = 2 * L * R.scaledCoefficientHouseSum c := by ring
+
+/-- The complete shifted-direction monomial is controlled by the total multiindex degree. -/
+theorem Relation.scaledDirection_house_prod_pow_le (R : Relation) (c : ℤ)
+    (pivot : Fin R.n) {L : ℕ} (m : R.Column L) (ν : R.NonPivot pivot → ℕ) :
+    (∏ i : R.NonPivot pivot,
+      house (R.scaledDirection c pivot m i) ^ ν i) ≤
+      (2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) := by
+  calc
+    (∏ i : R.NonPivot pivot,
+      house (R.scaledDirection c pivot m i) ^ ν i) ≤
+        ∏ i : R.NonPivot pivot,
+          (2 * L * R.scaledCoefficientHouseSum c) ^ ν i := by
+      apply Finset.prod_le_prod
+      · intro i hi
+        exact pow_nonneg (house_nonneg _) _
+      · intro i hi
+        exact pow_le_pow_left₀ (house_nonneg _)
+          (R.scaledDirection_house_le c pivot m i) _
+    _ = (2 * L * R.scaledCoefficientHouseSum c) ^ (∑ i, ν i) := by
+      simpa using Finset.prod_pow_eq_pow_sum
+        (Finset.univ : Finset (R.NonPivot pivot)) ν
+          (2 * L * R.scaledCoefficientHouseSum c)
+
 /-- The algebraic prime-power evaluation factor at an integer sample. -/
 noncomputable def Relation.sampleFactor (R : Relation) {L S : ℕ}
     (sample : Fin S) (m : R.Column L) : R.CoefficientField :=
@@ -52,6 +117,42 @@ theorem Relation.sampleFactor_isIntegral (R : Relation) {L S : ℕ}
   apply IsIntegral.prod
   intro i hi
   exact (isIntegral_natCast_coefficientField R (R.p i)).pow _
+
+/-- The fixed product of all primes in a reduced relation. -/
+def Relation.primeProduct (R : Relation) : ℕ := ∏ i, R.p i
+
+/-- The house of an integer sample factor is its ordinary real value. -/
+theorem Relation.sampleFactor_house_eq (R : Relation) {L S : ℕ}
+    (sample : Fin S) (m : R.Column L) :
+    house (R.sampleFactor sample m) =
+      ∏ i, ((R.p i : ℕ) : ℝ) ^ ((m i : ℕ) * (sample : ℕ)) := by
+  rw [show R.sampleFactor sample m =
+      ((∏ i, (R.p i) ^ ((m i : ℕ) * (sample : ℕ)) : ℕ) : R.CoefficientField) by
+    simp [Relation.sampleFactor]]
+  rw [show ((∏ i, (R.p i) ^ ((m i : ℕ) * (sample : ℕ)) : ℕ) :
+      R.CoefficientField) =
+      (((∏ i, (R.p i) ^ ((m i : ℕ) * (sample : ℕ)) : ℕ) : ℤ) :
+        R.CoefficientField) by norm_num]
+  rw [house_intCast]
+  simp
+  positivity
+
+/-- Sample-factor houses grow at most like the fixed prime product to `L * sample`. -/
+theorem Relation.sampleFactor_house_le (R : Relation) {L S : ℕ}
+    (sample : Fin S) (m : R.Column L) :
+    house (R.sampleFactor sample m) ≤
+      (R.primeProduct : ℝ) ^ (L * (sample : ℕ)) := by
+  rw [R.sampleFactor_house_eq sample m]
+  unfold Relation.primeProduct
+  push_cast
+  rw [← Finset.prod_pow]
+  apply Finset.prod_le_prod
+  · intro i hi
+    positivity
+  · intro i hi
+    norm_cast
+    exact Nat.pow_le_pow_right (R.p_prime i).pos
+      (Nat.mul_le_mul_right (sample : ℕ) (m i).isLt.le)
 
 /-- One coefficient of the derivative/sample constraint matrix. -/
 noncomputable def Relation.auxiliaryEntry (R : Relation) (c : ℤ) (pivot : Fin R.n)
@@ -82,6 +183,13 @@ noncomputable def Relation.auxiliaryHeight (R : Relation) (c : ℤ)
   ∑ row : R.Row pivot S T, ∑ m : R.Column L,
     house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField)
       (R.auxiliaryMatrix c hint pivot L S T row m))
+
+theorem Relation.auxiliaryHeight_nonneg (R : Relation) (c : ℤ)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    (L S T : ℕ) : 0 ≤ R.auxiliaryHeight c hint pivot L S T := by
+  unfold Relation.auxiliaryHeight
+  exact Finset.sum_nonneg fun row hrow =>
+    Finset.sum_nonneg fun m hm => house_nonneg _
 
 theorem Relation.auxiliaryEntry_house_le_height (R : Relation) (c : ℤ)
     (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
@@ -132,6 +240,20 @@ noncomputable def Relation.auxiliaryCoefficientBound (R : Relation) (c : ℤ)
       ((Fintype.card (R.Row pivot S T) : ℝ) /
         ((Fintype.card (R.Column L) : ℝ) -
           (Fintype.card (R.Row pivot S T) : ℝ)))
+
+theorem Relation.auxiliaryCoefficientBound_nonneg (R : Relation) (c : ℤ)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    (L S T : ℕ) : 0 ≤ R.auxiliaryCoefficientBound c hint pivot L S T := by
+  have hc1 : 0 ≤ GelfondSchneiderSiegel.c₁ R.CoefficientField := by
+    unfold GelfondSchneiderSiegel.c₁ GelfondSchneiderSiegel.c₂
+    exact mul_nonneg (Nat.cast_nonneg _)
+      (mul_nonneg (le_trans (by norm_num) (le_max_left 1 _))
+        (le_trans (by norm_num) (GelfondSchneiderSiegel.one_le_supOfBasis _)))
+  unfold Relation.auxiliaryCoefficientBound
+  apply mul_nonneg hc1
+  apply Real.rpow_nonneg
+  exact mul_nonneg (mul_nonneg hc1 (Nat.cast_nonneg _))
+    (R.auxiliaryHeight_nonneg c hint pivot L S T)
 
 /-- **Baker auxiliary Siegel bridge.**  If the derivative/sample system has fewer rows than exponent
 columns, it has a nonzero algebraic-integer coefficient vector annihilating every row, with the

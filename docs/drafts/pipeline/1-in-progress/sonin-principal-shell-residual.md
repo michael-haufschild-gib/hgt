@@ -124,17 +124,56 @@ An ordinary determinant of the block-diagonal residual introduces extra powers a
 reproduce the logarithmic Euler series term-by-term. Calling either assembled residual operator
 the Xi determinant would be false.
 
+`[PROVED IN LEAN]` Taking the scalar logarithm of the finite-place Hardy--Titchmarsh Gram before
+the residual Gram assembly restores the unsquared Euler modes exactly:
+
+`log |1-p^(-1/2-is)|^2 = -2 Re sum_(m>=1) p^(-m/2-ims)/m`.
+
+For finite unordered place sets these logarithmic metrics satisfy an exact disjoint-union descent
+law. There is no all-prime pointwise sum: even after deleting `m=1`, the `m=2` central mode is
+`-1/p`, so its absolute prime sum diverges. This rules out a naive global sum of local operator
+logarithms and forces a completed prime--archimedean or relative construction.
+
+`SoninRelativeGramDefect.lean` now restores the missing linear interface. If `P` is the formal
+principal corner, `R` the actual Hilbert--Schmidt residual, and `c` a logarithmic Euler
+coefficient, then Lean proves
+
+`(P+cR)^*(P+cR)-P^*P = c P^*R + conj(c) R^*P + |c|^2 R^*R`.
+
+The full relative defect and its linear cross term are unconditionally Hilbert--Schmidt; the
+quadratic remainder is trace class. Thus the coefficient-squaring obstruction belongs to the
+residual-only Gram, not to the actual principal-relative Sonin geometry. The unresolved issue is
+now precise: an ordinary trace is not automatically defined on the Hilbert--Schmidt linear cross
+term.
+
+`[PROVED IN LEAN, TARGET SIDE]` The centered Xi divisor supplies a regulator-independent target
+relative trace
+
+`sum_q (a_q^(-1) - (a_q-z)^(-1)) = logDeriv XiC(z)`.
+
+The subtraction makes the terms inverse-square summable without choosing a zero enumeration or
+exhaustion. Pairing `a_q` with `-a_q` converts it into the reciprocal-square resolvent; every
+coefficient is exactly the existing `xiCentralReciprocalMoment`, with divisor multiplicity.
+Under `s=1/2+zI` the same trace is exactly `-I` times the completed flux `-xi'/xi`, and in the open
+strip it has the already proved continued-prime plus archimedean/boundary decomposition. This is a
+fixed constraint identity, not a Hilbert--Polya spectrum or a generated flow.
+
 ## RH interface
 
-`[OPEN CORE]` For the source-built positive trace-class operator
-`T_mix(a) = C_a^*C_a`, construct the principal-shell relative trace functional and prove
+`[OPEN CORE]` Construct a canonical scalar relative trace of the principal/residual **linear cross
+term** and prove
 
-`relativeTrace(T_mix(a), principalShell; p) = Re(xiCentralTraceHankel p)`
+`soninRelativeTrace(z) = xiRelativeResolventTrace(z)`.
 
-for every real polynomial `p`. The existing Lean theorem
-`xiCentralTraceHankelNonnegative_iff_riemannHypothesis` would then yield RH. No zero divisor may
-be used in the source construction. The residual second moment and `I₂` are now exact inputs to
-that relative functional, not substitutes for it.
+Equivalently, its reciprocal-square coefficients must be `xiCentralReciprocalMoment n`; the
+existing finite moment expansion then supplies `xiCentralTraceHankel`. No zero divisor may be used
+in the Sonin source construction. `T_mix=C_a^*C_a` and `I₂` remain valid quadratic invariants but
+cannot substitute for this linear principal-relative scalarization.
+
+`[ROUTE VERDICT]` The residual-only determinant route is dead. The principal-relative route is
+alive and sharply falsifiable: if the Hilbert--Schmidt linear cross term has no canonical
+completed prime--archimedean scalarization, the Sonin route stops here. If it does, the exact Xi
+resolvent and Hankel target are already formalized.
 
 ## Gates
 
@@ -153,9 +192,16 @@ that relative functional, not substitutes for it.
   formalized.
 - [x] Full semilocal two-place Gram coupling proved nonzero and noncompact; a relative
   principal-shell trace is forced.
+- [x] Finite-place logarithmic metric and unordered descent law formalized; naive all-prime
+  logarithmic summation disproved by the prime-square harmonic obstruction.
+- [x] Principal-relative Gram defect exposed with terms linear in the unsquared Euler coefficient;
+  the defect and linear cross term are unconditionally Hilbert--Schmidt.
+- [x] Regulator-independent Xi relative resolvent trace constructed, paired to the exact central
+  reciprocal moments, and identified with the completed prime--archimedean flux.
 - [ ] One concrete principal-subtracted cross-prime overlap proved nonzero.
-- [ ] Trace moments identified with `xiCentralTraceHankel` from source data.
-- [ ] Regularized determinant or resolvent trace identified with Xi.
+- [ ] Canonical scalarization of the Sonin Hilbert--Schmidt linear cross term constructed.
+- [ ] Sonin source scalarization identified with the Xi relative resolvent without using the Xi
+  divisor in its construction.
 
 ## Classification
 
