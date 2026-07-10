@@ -35,6 +35,11 @@ For an injective finite prime family `p_i`, the literal source theorem is
 
 `sqrt(sum_i 1/p_i) <= ||sum_i C_(p_i)-K||`.              (3)
 
+If arbitrary prime coefficients `c_p` have all finite source sections uniformly bounded modulo
+compacts by `B`, Lean further proves
+
+`Summable (p |-> ||c_p||^2/p)`.                          (4)
+
 ## Constraint mechanism
 
 Lean constructs a single common exterior shell `a<|x|<b` satisfying simultaneously
@@ -76,6 +81,8 @@ The module proves:
 - `norm_unitaryPush`
 - `finiteEulerCoefficientL2Norm_le_norm_finiteArchimedeanPrimeEulerCorners_sub_compact`
 - `finitePrimeReciprocalL2Norm_le_norm_archimedeanEulerCorners_sub_compact`
+- `summable_primeEulerCoefficientEnergy_of_uniform_sub_compact_bound`
+- `exists_finitePrime_archimedeanEulerCorner_sub_compact_norm_gt`
 - `exists_finitePrime_archimedeanEulerCorner_norm_gt`
 
 The shell selector is constructed from the finite family itself. The proof does not expose a Prop
@@ -89,9 +96,17 @@ finite all-prime Euler sums are unbounded in the Calkin quotient, with a lower b
 
 Lean formalizes (3) for every injective finite prime family and combines it with
 `Nat.Primes.not_summable_one_div`. The endpoint
-`exists_finitePrime_archimedeanEulerCorner_norm_gt` proves that for every `M>=0` there is a finite
-prime family whose canonical source corner sum has norm greater than `M` modulo compacts. A specific
+`exists_finitePrime_archimedeanEulerCorner_sub_compact_norm_gt` proves that for every `M>=0` there
+is a finite prime family whose canonical source corner sum remains at norm greater than `M` after
+subtracting any compact operator. The ordinary operator-norm endpoint follows at `K=0`. A specific
 ordered exhaustion by all primes and the sharper `sqrt(log log X)` rate remain paper-level.
+
+For general coefficients, the endpoint
+`summable_primeEulerCoefficientEnergy_of_uniform_sub_compact_bound` converts a uniform finite-section
+bound modulo compact operators into the necessary weighted condition `sum_p ||c_p||^2/p<infinity`.
+Thus phase cancellation alone cannot evade the obstruction: it must be accompanied by weighted
+amplitude decay or by a construction not represented as uniformly bounded canonical finite
+sections.
 
 ## Dual gate
 
@@ -108,5 +123,5 @@ ordered exhaustion by all primes and the sharper `sqrt(log log X)` rate remain p
 
 - [x] 0 -> 1: quantitative finite-family statement and one-shell mechanism isolated
 - [x] 1 -> 2: paper proof and all-prime consequence completed
-- [x] 2 -> 3: hypothesis-free even, positive Euler, source, and finite-prime forms formalized
+- [x] 2 -> 3: hypothesis-free even, Euler, source, finite-prime, and weighted coefficient forms formalized
 - [ ] 3 -> 4: complete the parent-theory audit and formalize a specific ordered prime exhaustion

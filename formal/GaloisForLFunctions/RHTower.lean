@@ -517,6 +517,7 @@ import GaloisForLFunctions.RHTower.ZeroResonanceIndependence
 import GaloisForLFunctions.RHTower.XiConvergenceExponent
 import GaloisForLFunctions.RHTower.CentralReciprocalMoments
 import GaloisForLFunctions.RHTower.TraceHankelConverse
+import GaloisForLFunctions.RHTower.XiTraceHankelCriterion
 import GaloisForLFunctions.RHTower.ReBoundAffine
 import GaloisForLFunctions.RHTower.GammalessStripRigidity
 import GaloisForLFunctions.RHTower.BohrCoefficientUniqueness

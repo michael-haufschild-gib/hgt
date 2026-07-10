@@ -34,6 +34,13 @@ In particular, for finite prime sets `F`,
 Thus the unsmoothed all-prime positive Euler boundary sum cannot remain bounded modulo compact
 operators; along `p<=X` its essential norm has at least square-root prime-harmonic growth.
 
+More generally, if coefficients `c_p` have all finite sections uniformly bounded modulo compacts
+by `B`, then
+
+`sum_p |c_p|^2/p <= B^2`;                                      (4)
+
+in particular `(c_p)` must belong to the weighted space `l2(1/p)`.
+
 ## Proof
 
 The empty family is immediate, so assume `m>=1`.
@@ -151,6 +158,11 @@ diverges, the Calkin norms of the canonical finite all-prime sums are unbounded.
 the classical prime-harmonic asymptotic gives a lower growth of order `sqrt(log log X)` along
 `p<=X`.
 
+For arbitrary prime coefficients, suppose every injective finite prime family admits a compact
+perturbation after which the corresponding corner sum has norm at most `B`. Apply (2) to that
+compact perturbation. Every finite weighted energy sum is at most `B^2`; the nonnegative-series
+criterion then gives (4).
+
 ## Attack and exact scope
 
 - `[PROVED]` The narrow-shell construction handles the empty, singleton, and arbitrary finite
@@ -193,9 +205,13 @@ The final endpoints are
 `finiteEulerCoefficientL2Norm_le_norm_finiteEvenPositiveEulerCorners_sub_compact`,
 `finiteEulerCoefficientL2Norm_le_norm_finiteArchimedeanPrimeEulerCorners_sub_compact`, and
 `finitePrimeReciprocalL2Norm_le_norm_archimedeanEulerCorners_sub_compact`. The endpoint
-`exists_finitePrime_archimedeanEulerCorner_norm_gt` combines the finite-prime theorem with
-mathlib's divergence of the reciprocal-prime sum to produce arbitrarily large canonical source
-corner sums modulo compacts.
+`summable_primeEulerCoefficientEnergy_of_uniform_sub_compact_bound` formalizes the weighted
+`l2(1/p)` necessity. The endpoint
+`exists_finitePrime_archimedeanEulerCorner_sub_compact_norm_gt` combines the finite-prime theorem
+with mathlib's divergence of the reciprocal-prime sum to produce canonical source corner sums
+whose distance from every compact operator exceeds any prescribed bound. The weaker endpoint
+`exists_finitePrime_archimedeanEulerCorner_norm_gt` follows by taking the compact operator to be
+zero.
 
 A specified increasing enumeration of all primes and the sharper `sqrt(log log X)` rate are not
 encoded.
@@ -204,5 +220,5 @@ encoded.
 
 - [x] 0 -> 1: exact quantitative claim and simultaneous-shell mechanism isolated
 - [x] 1 -> 2: complete proof, boundary cases, and parent-theory attack
-- [x] 2 -> 3: compact-distance, Euler, concrete source, and finite-prime forms formalized
+- [x] 2 -> 3: compact-distance, Euler, source, finite-prime, and weighted coefficient forms formalized
 - [ ] 3 -> 4: independent literature and significance audit

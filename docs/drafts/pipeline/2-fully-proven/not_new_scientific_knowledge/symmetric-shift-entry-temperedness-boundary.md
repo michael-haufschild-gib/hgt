@@ -1,9 +1,9 @@
 # Symmetric shifts: critical-line entry survives Euler products but crosses the tempered boundary
 
 - **ID:** symmetric-shift-entry-temperedness-boundary
-- **Stage:** 2-fully-proven/needs-audit
-- **Type:** THEOREM / NO-GO (paper) -- proof complete, significance and novelty audit open
-- **Statement:** `[PROVED HERE; CANDIDATE NEW SCIENTIFIC KNOWLEDGE; NOVELTY UNVERIFIED]` A symmetric
+- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Type:** THEOREM / NO-GO (paper) -- scientifically non-new bridge
+- **Statement:** `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` A symmetric
   real shift of any self-dual completed Euler product preserves the functional equation and the
   Euler product while splitting every critical-line zero into a reflected off-line pair. In the
   Euler factors the same displacement appears exactly as opposite local modulus slopes. Hence
@@ -169,14 +169,18 @@ and more defensible statement that any general entry obstruction must distinguis
 Euler data (and/or fixed archimedean data) from partial-Ramanujan Euler products; otherwise the
 symmetric-shift family is a counterexample.
 
-## Novelty risks and open core
+## Scientific-novelty verdict and open core
+
+`[NOT NEW SCIENTIFIC KNOWLEDGE]` Symmetric shifted products are standard nonunitary twists, and the
+functional-equation, divisor-translation, local-slope, and partial-Ramanujan statements follow by
+inspection. The source-target interpretation is useful route triage, but fails the parent-theory
+and anti-theatre gates.
 
 - Symmetric shifted products and nonunitary twists are standard constructions.
 - The functional-equation calculation and local-slope identity are elementary once the family is
   written down.
-- The candidate new content is the exact no-go formulation for critical-line entry and its
-  topological consequence: coefficientwise Euler continuity permits entry, whereas the intrinsic
-  absolute-convergence Euler topology detects a jump.
+- The topological wording does not upgrade the elementary shifted-product calculation to new
+  scientific knowledge.
 - `[OPEN CORE]` Prove or refute a genuine tempered-entry theorem: in a natural class of fully
   tempered completed Euler products with fixed archimedean data, can a nonconstant deformation move
   a divisor point transversely? A positive theorem here would be significant; the present shifted

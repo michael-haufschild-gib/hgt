@@ -132,6 +132,11 @@ theorem evalRealPolynomial_conj (p : Polynomial ℝ) (z : ℂ) :
   simpa [evalRealPolynomial, Polynomial.aeval_def] using
     (Polynomial.aeval_conj p z)
 
+theorem evalRealPolynomial_ofReal (p : Polynomial ℝ) (x : ℝ) :
+    evalRealPolynomial p (x : ℂ) = ((Polynomial.eval x p : ℝ) : ℂ) := by
+  simpa [evalRealPolynomial, Polynomial.aeval_def] using
+    (Polynomial.aeval_ofReal (K := ℂ) p x)
+
 /-- A coefficientwise norm majorant for a real polynomial on a complex disk. -/
 def evalRealPolynomialNormBound (p : Polynomial ℝ) (R : ℝ) : ℝ :=
   ∑ k ∈ Finset.range (p.natDegree + 1), ‖p.coeff k‖ * R ^ k

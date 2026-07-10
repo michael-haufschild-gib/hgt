@@ -1,11 +1,11 @@
 # Euler-region Pick inertia exactly counts off-line zeros
 
 - **ID:** euler-pick-inertia-offline-zero-count
-- **Stage:** 2-fully-proven/needs-audit
-- **Type:** THEOREM (paper) -- novelty audit open
+- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Type:** THEOREM (paper) -- scientifically non-new bridge
 - **Source:** `shifted-xi-kernel-transverse-index-filtration.md`; localization of negative squares
   to an Euler-convergent uniqueness region
-- **Statement:** `[PROVED HERE; CANDIDATE NEW SCIENTIFIC KNOWLEDGE; NOVELTY UNVERIFIED]` For every
+- **Statement:** `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` For every
   nonexceptional `omega>0`, the number of zeta zeros in `Re rho>1/2+omega`, including multiplicity
   and the value infinity, is the limiting negative inertia of an explicit nested sequence of Pick
   matrices whose entries use xi only at points with real part greater than one. Consequently every
@@ -213,7 +213,13 @@ points, and certified Euler-product intervals.
   would give a zero-free half-strip, but `(P)` remains an unconditional identity whether RH is true
   or false.
 
-## Novelty and significance audit
+## Scientific-novelty verdict
+
+`[NOT NEW SCIENTIFIC KNOWLEDGE]` The exact formula is a routine synthesis of Suzuki's shifted
+quotient, Krein--Langer generalized-Schur factorization, and the classical locality of negative
+squares. Restricting a holomorphic kernel to an Euler-region uniqueness set and sampling it on a
+dense sequence introduces no new mathematical mechanism. The finite Pick witness is the defining
+finite-matrix manifestation of a negative square. This card is a useful bridge only.
 
 - Suzuki (2012) introduced this exact `Theta_omega` and proved the Boolean meromorphic-inner
   criterion for zero-free shifted half-planes.
@@ -227,12 +233,8 @@ points, and certified Euler-product intervals.
   pole carrier by Sylvester inertia, but explicitly leaves the carrier-from-xi/source correspondence
   open. The new content here is that `Theta_omega` supplies an actual xi kernel and that the complete
   index can be sampled entirely in the Euler-convergent uniqueness region.
-- The searched sources did not state the exact Euler-region Pick-inertia limit `(P)`, its
-  cardinal/infinite form, or the fact that a fixed dense sequence entirely inside the absolute
-  Euler-convergence region recovers the transverse divisor count.
-- Significance: `(P)` gives a new exact interface between prime data and off-line-zero position. It
-  does not itself prove a new zero-free region, so publication significance depends on whether the
-  Euler matrices admit structural estimates unavailable in Suzuki's innerness formulation.
+- Absence of the exact arithmetic wording from searched sources does not rescue novelty because the
+  parent theorem derives it immediately.
 
 ## Open core
 
