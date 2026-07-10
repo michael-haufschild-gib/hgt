@@ -142,6 +142,13 @@ theorem killedFrom_of_add_pushSum_nonpos :
           simp [pushSum] at hfinal ⊢
           linarith)⟩
 
+/-- If the final accumulated depth is nonpositive, survival is impossible; the first-passage
+`KilledFrom` witness is constructed internally. -/
+theorem not_survivesFrom_of_add_pushSum_nonpos {depthSq : ℝ} {pushes : List ℝ}
+    (hdepth : 0 < depthSq) (hfinal : depthSq + pushSum pushes ≤ 0) :
+    ¬ SurvivesFrom depthSq pushes := fun hsurv =>
+  survivesFrom_not_killedFrom hsurv (killedFrom_of_add_pushSum_nonpos hdepth hfinal)
+
 /-- A crude deterministic discrepancy bound: if the total variation of future
 pushes is smaller than the current squared depth, first passage cannot occur. -/
 theorem survivesFrom_of_pushBudget_lt :
@@ -165,6 +172,13 @@ theorem survivesFrom_of_pushBudget_lt :
         linarith
       exact ⟨hnext, ih htail_budget⟩
 
+/-- A push-budget gap rules out first-passage killing directly; the intermediate
+`SurvivesFrom` predicate is constructed internally. -/
+theorem not_killedFrom_of_pushBudget_lt {depthSq : ℝ} {pushes : List ℝ}
+    (hbudget : pushBudget pushes < depthSq) :
+    ¬ KilledFrom depthSq pushes :=
+  survivesFrom_not_killedFrom (survivesFrom_of_pushBudget_lt hbudget)
+
 /-- Future pushes seen by a birth in a finite tower segment. -/
 def futurePushes (pushes : List ℝ) (birth : CascadeBirth) : List ℝ :=
   pushes.drop birth.time
@@ -174,6 +188,12 @@ def BirthSurvives (pushes : List ℝ) (birth : CascadeBirth) : Prop :=
 
 def BirthKilled (pushes : List ℝ) (birth : CascadeBirth) : Prop :=
   KilledFrom birth.depthSq (futurePushes pushes birth)
+
+/-- A birth whose future push budget is below its squared depth cannot be killed. -/
+theorem not_birthKilled_of_pushBudget_lt {pushes : List ℝ} {birth : CascadeBirth}
+    (hbudget : pushBudget (futurePushes pushes birth) < birth.depthSq) :
+    ¬ BirthKilled pushes birth :=
+  not_killedFrom_of_pushBudget_lt hbudget
 
 /-- Births that survive all future pushes in the finite tower segment. -/
 def survivingBirths (pushes : List ℝ) (births : List CascadeBirth) : List CascadeBirth := by

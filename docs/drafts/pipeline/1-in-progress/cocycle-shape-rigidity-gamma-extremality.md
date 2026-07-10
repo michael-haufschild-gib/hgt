@@ -1452,3 +1452,97 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
   free zero orbits, proved their complete gauge trivialization and exact absence of a projective
   multiplier, and formalized factorization of every scalar gauge-invariant detector through orbit
   shape. Only the new module was compiled and axiom-audited; no project-wide lint or full build ran.
+
+## Wave 42 — the scalar weld class cannot reduce the germ gauge
+
+204. **Prime-character attack.** `[BRIDGE / REJECTED]` A common gauge on a prime-indexed family
+     leaves pairwise prime ratios, but the canonical analytic ratio is the susceptibility character
+     `p^(1-2 Re rho)`. It stores the target location directly; as a continuous character of the
+     prime-log weld it is an exponential parameter, hence a hidden-flow/RH reformulation rather
+     than an arithmetic constraint forcing the location.
+205. **Full automorphism test.** `[PROVED HERE + Lean]` The existing upper symplectic shear is joined
+     by the lower shear `(x,y) -> (x,x+y)`, which preserves every weld area form. These two fixed
+     automorphisms are enough to test every proposed scalar orientation.
+206. **No marked direction or scalar reader.** `[PROVED HERE + Lean]` A generator-plane vector fixed
+     by both shears is zero. A real linear functional invariant under both shears vanishes on the
+     two coordinate generators and is therefore zero. The conclusion holds for every conversion
+     rate, including the degenerate zero class.
+207. **Class-line exhaustion.** `[PROVED HERE + Lean]` Transport through the existing additive
+     equivalence `weldClassLineEquiv` removes the rate coordinate: every natural marked vector and
+     scalar reader attached to an arbitrary weld class vanishes. Even a reader family allowed to
+     depend on the entire weld-class line is identically zero. Complete proof:
+     `../2-fully-proven/new/weld-germ-orientation-no-go.md`.
+208. **Combined scalar no-go.** `[PROVED NATIVE CONSEQUENCE]` Wave 41 kills invariants of the local
+     scalar FE/Schwarz arrows; wave 42 kills a natural scalar gauge reduction from the global weld
+     area. Thus the scalar route is exhausted from both sides. The weld class cannot repair the
+     germ-gluing blindness by supplying an orientation.
+209. **New open core.** `[OPEN CORE]` Work before the class-to-area collapse. Retain prime labels in
+     a module with a lattice, filtration, or pairing whose gauge-preservation law is derived from
+     the completed Euler datum. The obstruction must be non-character-valued: a freely chosen
+     prime-log character either inserts arithmetic data or re-encodes the zero location.
+
+## Log (cont. 44)
+
+- 2026-07-10 — wave 42: subjected the proposed weld-to-germ orientation to the full symplectic
+  automorphism group, proved the absence of natural marked vectors and scalar readers for every
+  weld class and every class-dependent reader family, and combined it with wave 41 to close the
+  scalar descent route. Only the new module and exact target were checked; no broad lint ran.
+
+## Wave 43 — order-zero admissibility is exactly scalar germ gauge
+
+210. **Existing filtration re-read.** `[PROVED INFRASTRUCTURE]` The differential-order filtration
+     already supplies a marked scalar identity line and a principal-symbol quotient. The next open
+     core is not to invent a filtration but to determine what an actual germ gauge can do inside it.
+211. **Prop interface discharged exactly.** `[PROVED HERE + Lean]` Real scalar gauge families embed
+     faithfully as cochains `g -> (0,r_g)`. They are automatically order zero, and conversely every
+     `IsOrderZeroAffineCochain` is uniquely of this form. The admissibility Prop hides no additional
+     cochain directions.
+212. **Scalar primitive eliminated.** `[PROVED HERE + Lean]` For every nonzero rate, no arbitrary
+     real scalar gauge family has boundary equal to the affine weld cocycle. Every prime
+     specialization is hypothesis-free.
+213. **Complex germ gauges eliminated at the size level.** `[PROVED HERE + Lean]` The canonical
+     logarithmic-norm readout of any complex scalar gauge family remains in the scalar order-zero
+     line and cannot trivialize a nonzero or prime weld. Complete proof:
+     `../2-fully-proven/new/scalar-germ-gauge-weld-obstruction.md`.
+214. **Local/global separation.** `[PROVED INTERFACE CONSEQUENCE]` Wave 41 supplies local complex
+     normalizing scalars on both fixed and free orbit shapes; wave 43 proves that no scalar choices
+     over all weld labels extend to a global weld primitive. Scalar coherence is impossible, not
+     merely unconstructed.
+215. **New open core.** `[OPEN CORE]` If a free completed zero orbit is to contradict the filtered
+     weld, it must force a positive-order cochain whose principal symbol is exactly the derivation
+     count `weldDerivSymbol`; scalar rescalings cannot do it. Derive or falsify that implication from
+     the completed prime-action on the divisor jet, without a carrier or logarithm branch.
+
+## Log (cont. 45)
+
+- 2026-07-10 — wave 43: identified the entire order-zero cochain interface with actual scalar germ
+  gauges, removed its admissibility hypothesis, ruled out real and complex-size scalar primitives
+  at every prime, and isolated the positive-order symbol as the only possible global bridge. Only
+  the new module and exact target were checked.
+
+## Wave 44 — the forced positive-order primitive is locally boundary-blind
+
+216. **Pinned positive-order realization.** `[PROVED INFRASTRUCTURE]` The natural local defect of an
+     action on a torsion presentation is the commutator `sigma*A-A*sigma`; its Fitting boundary
+     class vanishes identically.
+217. **Full affine correction.** `[PROVED HERE + Lean]` Add arbitrary target factors `A*Hr`, source
+     factors `Hl*A`, and arbitrary multiples of the local divisor equation on both sides. The
+     combined defect still has zero Fitting boundary for every finite square presentation over any
+     commutative ring.
+218. **Universal nonrepresentation.** `[PROVED HERE + Lean]` Every nonzero Fitting boundary class is
+     outside the entire commutator-plus-two-sided-factor affine family. Complete proof:
+     `../2-fully-proven/new/pinned-affine-weld-boundary-no-go.md`.
+219. **Filtered-weld consequence.** `[PROVED SYNTHESIS]` Wave 43 forces any possible weld primitive
+     beyond scalar gauge to carry the derivation-count symbol. Wave 44 proves that realizing this
+     positive-order part as a pinned commutator cannot activate a live local boundary, even after
+     the full affine correction. Both natural pinned coefficient levels are closed.
+220. **New open core.** `[OPEN CORE]` Define intrinsic nonlocality as a constraint class whose local
+     restrictions are all commutator/factor-zero but whose completed boundary is nonzero. Do not
+     realize it by constructing a carrier, cutoff evolution, or limiting transport.
+
+## Log (cont. 46)
+
+- 2026-07-10 — wave 44: combined commutator blindness with both source- and target-factor gauge
+  blindness, formalized the universal pinned-affine vanishing and converse nonrepresentation
+  theorem, and closed the natural local realization of the forced positive-order weld primitive.
+  Only the new module and exact target were checked.

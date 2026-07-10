@@ -53,6 +53,14 @@ theorem killedFrom_of_prefix_nonpos :
       simp only [pushSum] at hsum
       linarith
 
+/-- A nonpositive prefix rules out survival through the full push list; the first-passage
+`KilledFrom` certificate is constructed internally. -/
+theorem not_survivesFrom_of_prefix_nonpos
+    (l₁ : List ℝ) {l₂ : List ℝ} {d : ℝ}
+    (hd : 0 < d) (hsum : d + pushSum l₁ ≤ 0) :
+    ¬ SurvivesFrom d (l₁ ++ l₂) := fun hsurv =>
+  survivesFrom_not_killedFrom hsurv (killedFrom_of_prefix_nonpos l₁ hd hsum)
+
 /-- A dip below the birth's depth inside any prefix of its future pushes
 kills the birth. -/
 theorem birthKilled_of_prefix_dip {pushes : List ℝ} {birth : CascadeBirth}

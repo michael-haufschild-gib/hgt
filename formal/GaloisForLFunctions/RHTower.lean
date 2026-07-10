@@ -126,6 +126,7 @@ import GaloisForLFunctions.RHTower.SeamSpectrumDensity
 import GaloisForLFunctions.RHTower.SeamWeldCommutator
 import GaloisForLFunctions.RHTower.WeldAffineTrivialization
 import GaloisForLFunctions.RHTower.WeldOrderFiltration
+import GaloisForLFunctions.RHTower.ScalarGermGaugeWeldObstruction
 import GaloisForLFunctions.RHTower.WeldBoundedSpectralGauge
 import GaloisForLFunctions.RHTower.WeldPolarizationDirection
 import GaloisForLFunctions.RHTower.WeldGermOrientationNoGo
@@ -343,6 +344,8 @@ import GaloisForLFunctions.RHTower.RelativeTorsor
 import GaloisForLFunctions.RHTower.SigmaDivisorExhaustion
 import GaloisForLFunctions.RHTower.FittingSeamBoundary
 import GaloisForLFunctions.RHTower.SoninSeamDefect
+import GaloisForLFunctions.RHTower.PinnedAffineWeldBoundaryNoGo
+import GaloisForLFunctions.RHTower.PinnedAffineDefectQuotient
 import GaloisForLFunctions.RHTower.CutoffCochain
 import GaloisForLFunctions.RHTower.ShearedSeamGaugeTrivialization
 import GaloisForLFunctions.RHTower.FESemilinearShearExhaustion
@@ -511,6 +514,7 @@ import GaloisForLFunctions.RHTower.QuietFlankGrowth
 import GaloisForLFunctions.RHTower.VariablePerronKink
 import GaloisForLFunctions.RHTower.PerronBoundaryCharge
 import GaloisForLFunctions.RHTower.PerronCarrierFlankMass
+import GaloisForLFunctions.RHTower.DirichletPolyPerronMass
 import GaloisForLFunctions.RHTower.SoninPerronSupportTransfer
 import GaloisForLFunctions.RHTower.PerronMellinSeamResidue
 import GaloisForLFunctions.RHTower.CanonicalPerronMellinSeam

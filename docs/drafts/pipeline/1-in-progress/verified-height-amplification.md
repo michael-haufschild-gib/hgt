@@ -142,3 +142,103 @@ do not supply them.  No strict explicit `T_1` has yet cleared the proof gate.
 
 - 2026-07-10 -- created directly in 1-in-progress for the verified-height
   amplification research program.
+
+## 2026-07-10 second attack: the boundary-discriminant reduction
+
+### Exact count envelope
+
+Let
+
+```text
+M(T) = T/(2*pi) * log(T/(2*pi*e)).
+```
+
+Bellotti--Wong's explicit zero-count theorem gives
+
+```text
+N(T) <= M(T) + E(T),
+E(T) = 0.10076 log T + 0.24460 log log T + 8.08292       (T >= e).
+```
+
+Consequently the Platt--Trudgian integer `N_0=12,363,153,437,138`
+would imply RH through any explicit `T_1>T_0` satisfying
+
+```text
+M(T_1) + E(T_1) < N_0 + 2.                                  (A)
+```
+
+Indeed, `(A)` gives `N(T_1)-N(T_0)<=1`, while a zero off the
+critical line contributes the distinct reflected pair at one ordinate.  This is
+the cleanest non-enumerative sufficient criterion found in this attack.
+
+It does not yet promote.  At `T=T_0`, condition `(A)` is equivalent to an
+endpoint phase being within two units of the one-sided explicit envelope.  The
+published certificate gives the integer `N_0`, but it does not publish a
+one-sided phase estimate sharp enough to establish `(A)`.  Thus the global
+`N(T)` envelope does not remove the endpoint datum; it rewrites the missing
+winding margin.
+
+### Collision degeneracy
+
+Write the completed critical trace in the `t` variable.  A reflected off-line
+pair at `t=Gamma +/- i*delta` contributes
+
+```text
+q_delta(t) = (t-Gamma)^2 + delta^2,
+```
+
+whereas its collision limit on the critical line is the allowed double zero
+
+```text
+q_0(t) = (t-Gamma)^2.
+```
+
+On any verified compact set with `t <= Gamma-h`, `h>0`, direct algebra gives
+
+```text
+|q_delta'/q_delta - q_0'/q_0| <= 2*delta^2/h^3,
+|log|q_delta| - log|q_0||     <= delta^2/h^2.
+```
+
+Hence the off-line pair and a double on-line zero become quadratically
+indistinguishable to every bounded log-derivative or log-modulus reader below
+the proposed first counterexample.  Since RH does not include simplicity, the
+double on-line collision is an admissible RH configuration.  This kills every
+continuous scalar boundary reader unless it comes with a source-built positive
+gap; the quantized local count survives, but then one is back at `(A)` or an
+argument-principle margin.
+
+### Source-level endpoint target
+
+If `T_0` is not itself a zero, simplicity of all verified zeros and their count
+fix the sign of the Hardy trace at `T_0` once the initial sign is fixed.  If the
+endpoint is a zero, the corresponding datum is the one-sided sign together with
+its simple crossing.  Neither case gives a quantitative magnitude.  A new
+theorem must first supply an effective central special-value separation of the
+form
+
+```text
+0 < L(T_0) <= |Z(T_0)|.
+```
+
+That central value alone need not cover the full horizontal strip.  A sufficient
+version is
+
+```text
+0 < m_0 <= min_(0<=sigma<=1) |xi(sigma+i*T_0)|,
+```
+
+or a finite chain of overlapping source-built local margins joining the
+critical line to the known zero-free flanks.  The margin must be obtained from
+the infinite Euler/archimedean constraint rather than a new evaluation.  An
+explicit derivative envelope then gives a positive continuation radius.
+Hölder hypertranscendence is qualitative and supplies no such special-value
+measure.  Standard transcendence theorems also do not control the required
+Dirichlet-phase sums at the algebraic integer height `T_0`.
+
+The live object is therefore the distance of the completed Euler germ at
+`T_0` from its divisor discriminant: analytically a minimum modulus, in the
+Krein chart a smallest spectral gap, and topologically the margin preventing a
+double on-line collision from resolving into an off-line pair.  Producing an
+explicit positive source-built lower bound for that one quantity would clear
+the requested height gate.  No such bound has been proved here.

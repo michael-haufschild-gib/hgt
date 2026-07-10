@@ -82,6 +82,16 @@ theorem dlogTail_self (F : ℂ → ℂ) : DlogTail F F := by
   refine ⟨0, fun s _ => ?_⟩
   rw [sub_self, norm_zero]; exact hε
 
+/-- **Concrete tail-blindness for a finite Euler bundle.**  FE--Schwarz symmetry, eventual
+nonvanishing, and logarithmic-derivative tail matching are all constructed for `feBundle P`, so
+the generic tail-blindness theorem has no auxiliary interface premise left. -/
+theorem not_forcesRHParity_feBundle_dlogTail {P : Finset ℕ}
+    (hP : ∀ p ∈ P, 1 < p) :
+    ¬ ForcesRHParity (fun f =>
+      FESchwarz f ∧ EventuallyNonvanishing f ∧ DlogTail (feBundle P) f) :=
+  not_forcesRHParity_of_dlogTail (feBundle P)
+    (feBundle_fESchwarz P) (eventuallyNonvanishing_feBundle P hP) (dlogTail_self (feBundle P))
+
 /-! ### §3 The combined charged witness -/
 
 /-- **The shadow class plants off-line charge from any nonvanishing base member.**  Given a member

@@ -231,4 +231,71 @@ theorem anneal_seam_L_transport_of_emCarrier_close_gamma_ratio {N M : ℕ}
     (carrierFloorOn_of_gamma_ratio_domination N hdom)
     hg₁ hg₂ hG₁ hG₂ hp₁ hp₂ hP₁ hP₂ hpP hpM hPline hMline
 
+/-- **Finite-side rung transport from pointwise Dirichlet domination.**  The carrier-floor Prop is
+replaced by its concrete pointwise inequality. -/
+theorem xi_rung_of_finite_side_of_emCarrier_close_pointwise_domination {N M : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ}
+    {a : ℂ} {r₀ R ε₁ δ : ℝ}
+    (hMpos : 1 ≤ M) (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      0 < z.re ∧ z.re < 1)
+    (hE : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖zetaChi z * dirichletPoly N (1 - z)‖ + (ε₁ + δ) < ‖dirichletPoly N z‖)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (Metric.ball a R)) (hh0 : ∀ z ∈ Metric.ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (Metric.ball a R)) (hh0' : ∀ z ∈ Metric.ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ Metric.ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ Metric.ball a R,
+      completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])
+    (hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z) :
+    2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z :=
+  xi_rung_of_finite_side_of_emCarrier_close_floor k hMpos h0 hrR hchartStrip hE hclose
+    (carrierFloorOn_of_pointwise_domination N hdom)
+    hm₁ hcl₁ hstrip hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hL hfin
+
+/-- **Finite-side rung transport from the explicit Gamma-ratio inequality.** -/
+theorem xi_rung_of_finite_side_of_emCarrier_close_gamma_ratio {N M : ℕ} (k : ℕ)
+    {t₁ t₂ : Finset ℂ} {m₁ m₂ : ℂ → ℕ} {h h' : ℂ → ℂ}
+    {a : ℂ} {r₀ R ε₁ δ : ℝ}
+    (hMpos : 1 ≤ M) (h0 : 0 ≤ r₀) (hrR : r₀ < R)
+    (hchartStrip : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      0 < z.re ∧ z.re < 1)
+    (hE : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      ‖emCarrier M z - gN N z‖ ≤ δ)
+    (hdom : ∀ z ∈ chartRA a r₀ R ∪ chartLA a r₀ R,
+      Real.pi ^ (z.re - 1 / 2) * ‖Complex.Gamma ((1 - z) / 2)‖ /
+          ‖Complex.Gamma (z / 2)‖ * ‖dirichletPoly N (1 - z)‖ + (ε₁ + δ) <
+        ‖dirichletPoly N z‖)
+    (hm₁ : ∀ z ∈ t₁, (m₁ z : ℕ∞) = analyticOrderAt xi z)
+    (hcl₁ : ∀ z ∈ t₁, lineReflect z ∈ t₁)
+    (hstrip : ∀ z ∈ t₂, 0 < z.re ∧ z.re < 1)
+    (hm₂ : ∀ z ∈ t₂, (m₂ z : ℕ∞) = analyticOrderAt (completedGN N) z)
+    (hcl₂ : ∀ z ∈ t₂, lineReflect z ∈ t₂)
+    (hρ₁ : ∀ w ∈ t₁, ‖w - a‖ ≤ r₀) (hρ₂ : ∀ w ∈ t₂, ‖w - a‖ ≤ r₀)
+    (hh : AnalyticOnNhd ℂ h (Metric.ball a R)) (hh0 : ∀ z ∈ Metric.ball a R, h z ≠ 0)
+    (hh' : AnalyticOnNhd ℂ h' (Metric.ball a R)) (hh0' : ∀ z ∈ Metric.ball a R, h' z ≠ 0)
+    (hfact₁ : ∀ z ∈ Metric.ball a R, xi z = (∏ w ∈ t₁, (z - w) ^ m₁ w) * h z)
+    (hfact₂ : ∀ z ∈ Metric.ball a R,
+      completedGN N z = (∏ w ∈ t₂, (z - w) ^ m₂ w) * h' z)
+    (hL : ∑ z ∈ t₁.filter (fun z => z.re = 1 / 2), m₁ z
+        ≡ ∑ z ∈ t₂.filter (fun z => z.re = 1 / 2), m₂ z [MOD 2 ^ (k + 1)])
+    (hfin : 2 ^ k ∣ ∑ z ∈ t₂.filter (fun z => 1 / 2 < z.re), m₂ z) :
+    2 ^ k ∣ ∑ z ∈ t₁.filter (fun z => 1 / 2 < z.re), m₁ z :=
+  xi_rung_of_finite_side_of_emCarrier_close_floor k hMpos h0 hrR hchartStrip hE hclose
+    (carrierFloorOn_of_gamma_ratio_domination N hdom)
+    hm₁ hcl₁ hstrip hm₂ hcl₂ hρ₁ hρ₂ hh hh0 hh' hh0' hfact₁ hfact₂ hL hfin
+
 end RHTower

@@ -52,6 +52,23 @@ theorem weldLowerShear_preserves_area (θ : ℝ) :
     θ * (x.1 * y.2 - x.2 * y.1)
   ring
 
+/-- The weld area also selects no natural nonzero marked vector in its generator plane. -/
+theorem weldNaturalMarkedVector_eq_zero (θ : ℝ) (v : ℝ × ℝ)
+    (natural : ∀ P : (ℝ × ℝ) ≃ₗ[ℝ] (ℝ × ℝ),
+      PreservesBilin (weldAreaForm θ) P.toLinearMap → P v = v) :
+    v = 0 := by
+  have hUpper := natural weldUpperShear (weldUpperShear_preserves_area θ)
+  have hv₂ : v.2 = 0 := by
+    have hfst := congrArg Prod.fst hUpper
+    change v.1 + v.2 = v.1 at hfst
+    linarith
+  have hLower := natural weldLowerShear (weldLowerShear_preserves_area θ)
+  have hv₁ : v.1 = 0 := by
+    have hsnd := congrArg Prod.snd hLower
+    change v.1 + v.2 = v.2 at hsnd
+    linarith
+  exact Prod.ext hv₁ hv₂
+
 /-- **No natural scalar reader of a weld area.**  A linear functional invariant under every
 area-preserving change of weld generators is zero.  Only the two unipotent shears are needed. -/
 theorem weldNaturalScalarReader_eq_zero (θ : ℝ)
@@ -101,6 +118,22 @@ theorem weldClassLineNaturalScalarReader_eq_zero (c : WeldClassLine)
   apply natural P
   rwa [harea]
 
+/-- Class-coordinate-free form of the marked-vector no-go. -/
+theorem weldClassLineNaturalMarkedVector_eq_zero (c : WeldClassLine) (v : ℝ × ℝ)
+    (natural : ∀ P : (ℝ × ℝ) ≃ₗ[ℝ] (ℝ × ℝ),
+      PreservesBilin (weldClassLineToArea c) P.toLinearMap → P v = v) :
+    v = 0 := by
+  let θ : ℝ := weldClassLineEquiv.symm c
+  have hc : c = weldClassHom.rangeRestrict θ := by
+    change c = weldClassLineEquiv (weldClassLineEquiv.symm c)
+    exact (weldClassLineEquiv.apply_symm_apply c).symm
+  have harea : weldClassLineToArea c = weldAreaForm θ := by
+    rw [hc, weldClassLineToArea_apply]
+  apply weldNaturalMarkedVector_eq_zero θ v
+  intro P hP
+  apply natural P
+  rwa [harea]
+
 /-- A proposed scalar reader allowed to depend on the entire weld class, natural under every
 automorphism of the corresponding area form. -/
 structure WeldClassLineNaturalScalarReaderFamily where
@@ -124,4 +157,3 @@ theorem no_nonzero_weldClassLineNaturalScalarReaderFamily :
   exact hR R.reader_eq_zero
 
 end GaloisForLFunctions.RHTower
-
