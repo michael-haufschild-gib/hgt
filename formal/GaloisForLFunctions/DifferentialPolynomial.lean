@@ -255,6 +255,135 @@ theorem differentialLinearPolynomial_isPrimitive
     differentialPolynomialLeft_X, differentialPolynomialRight_X]
   ring
 
+/-- Scale every formal jet variable by the same scalar. -/
+def differentialPolynomialScale
+    {ι C : Type*} [CommRing C] (a : C) :
+    DifferentialPolynomial ι C →ₐ[C] DifferentialPolynomial ι C :=
+  MvPolynomial.aeval fun p => MvPolynomial.C a * MvPolynomial.X p
+
+@[simp]
+theorem differentialPolynomialScale_X
+    {ι C : Type*} [CommRing C] (a : C) (i : ι) (n : ℕ) :
+    differentialPolynomialScale a (MvPolynomial.X (i, n)) =
+      MvPolynomial.C a * MvPolynomial.X (i, n) := by
+  simp [differentialPolynomialScale]
+
+/-- Fold the left and right copies of the doubled jet ring onto the same variables. -/
+def differentialPolynomialFold
+    {ι C : Type*} [CommRing C] :
+    DifferentialPolynomial (Sum ι ι) C →ₐ[C] DifferentialPolynomial ι C :=
+  MvPolynomial.aeval fun p => MvPolynomial.X (Sum.elim id id p.1, p.2)
+
+@[simp]
+theorem differentialPolynomialFold_X_left
+    {ι C : Type*} [CommRing C] (i : ι) (n : ℕ) :
+    differentialPolynomialFold (C := C) (MvPolynomial.X (Sum.inl i, n)) =
+      MvPolynomial.X (i, n) := by
+  simp [differentialPolynomialFold]
+
+@[simp]
+theorem differentialPolynomialFold_X_right
+    {ι C : Type*} [CommRing C] (i : ι) (n : ℕ) :
+    differentialPolynomialFold (C := C) (MvPolynomial.X (Sum.inr i, n)) =
+      MvPolynomial.X (i, n) := by
+  simp [differentialPolynomialFold]
+
+theorem differentialPolynomialFold_left
+    {ι C : Type*} [CommRing C] (P : DifferentialPolynomial ι C) :
+    differentialPolynomialFold (C := C) (differentialPolynomialLeft (κ := ι) P) = P := by
+  induction P using MvPolynomial.induction_on with
+  | C c => simp
+  | add P Q hP hQ => simpa using congrArg₂ (· + ·) hP hQ
+  | mul_X P p hP =>
+      rcases p with ⟨i, n⟩
+      simp [hP]
+
+theorem differentialPolynomialFold_right
+    {ι C : Type*} [CommRing C] (P : DifferentialPolynomial ι C) :
+    differentialPolynomialFold (C := C) (differentialPolynomialRight (ι := ι) P) = P := by
+  induction P using MvPolynomial.induction_on with
+  | C c => simp
+  | add P Q hP hQ => simpa using congrArg₂ (· + ·) hP hQ
+  | mul_X P p hP =>
+      rcases p with ⟨i, n⟩
+      simp [hP]
+
+/-- Folding the additive comultiplication is uniform scaling by two. -/
+theorem differentialPolynomialFold_comultiplication
+    {ι C : Type*} [CommRing C] (P : DifferentialPolynomial ι C) :
+    differentialPolynomialFold (C := C) (differentialAddComultiplication P) =
+      differentialPolynomialScale (2 : C) P := by
+  induction P using MvPolynomial.induction_on with
+  | C c => simp [differentialPolynomialScale, differentialPolynomialFold]
+  | add P Q hP hQ => simpa using congrArg₂ (· + ·) hP hQ
+  | mul_X P p hP =>
+      rcases p with ⟨i, n⟩
+      simp only [map_mul, hP, differentialAddComultiplication_X, map_add,
+        differentialPolynomialFold_X_left, differentialPolynomialFold_X_right,
+        differentialPolynomialScale_X]
+      rw [map_ofNat]
+      ring
+
+/-- Every primitive polynomial satisfies the characteristic-zero rigidity equation
+`P(2X) = 2 P(X)`. -/
+theorem primitive_scale_two
+    {ι C : Type*} [CommRing C] {P : DifferentialPolynomial ι C}
+    (hP : IsPrimitiveDifferentialPolynomial P) :
+    differentialPolynomialScale (2 : C) P = 2 * P := by
+  rw [← differentialPolynomialFold_comultiplication P, hP, map_add,
+    differentialPolynomialFold_left, differentialPolynomialFold_right]
+  ring
+
+theorem differentialPolynomialScale_monomial
+    {ι C : Type*} [CommRing C] (a c : C) (s : (ι × ℕ) →₀ ℕ) :
+    differentialPolynomialScale a (MvPolynomial.monomial s c) =
+      MvPolynomial.monomial s (c * a ^ (s.sum fun _ n => n)) := by
+  rw [differentialPolynomialScale, MvPolynomial.aeval_monomial]
+  rw [show (algebraMap C (DifferentialPolynomial ι C)) c = MvPolynomial.C c by rfl]
+  rw [show s.prod (fun i k => (MvPolynomial.C a * MvPolynomial.X i) ^ k) =
+      MvPolynomial.C (a ^ (s.sum fun _ n => n)) *
+        s.prod (fun i k => MvPolynomial.X i ^ k) by
+    simp only [Finsupp.prod]
+    simp_rw [mul_pow]
+    rw [Finset.prod_mul_distrib]
+    simp_rw [← MvPolynomial.C_pow]
+    rw [← map_prod, Finset.prod_pow_eq_pow_sum]
+    rfl]
+  rw [MvPolynomial.monomial_eq]
+  rw [map_mul]
+  ring
+
+theorem coeff_differentialPolynomialScale
+    {ι C : Type*} [CommRing C] (a : C) (P : DifferentialPolynomial ι C)
+    (s : (ι × ℕ) →₀ ℕ) :
+    MvPolynomial.coeff s (differentialPolynomialScale a P) =
+      MvPolynomial.coeff s P * a ^ (s.sum fun _ n => n) := by
+  classical
+  rw [P.as_sum, map_sum]
+  simp_rw [differentialPolynomialScale_monomial]
+  rw [MvPolynomial.coeff_sum]
+  by_cases h : MvPolynomial.coeff s P = 0 <;> simp [h]
+
+/-- In characteristic zero, every monomial occurring in a primitive differential polynomial has
+total jet-degree exactly one. Thus additive differential polynomials have no constant or nonlinear
+terms. -/
+theorem primitive_support_degree_eq_one
+    {ι C : Type*} [Field C] [CharZero C] {P : DifferentialPolynomial ι C}
+    (hP : IsPrimitiveDifferentialPolynomial P) {s : (ι × ℕ) →₀ ℕ}
+    (hs : s ∈ P.support) : s.sum (fun _ n => n) = 1 := by
+  have hc : MvPolynomial.coeff s P ≠ 0 := MvPolynomial.mem_support_iff.mp hs
+  have heq := congrArg (MvPolynomial.coeff s) (primitive_scale_two hP)
+  rw [coeff_differentialPolynomialScale] at heq
+  rw [show (2 : DifferentialPolynomial ι C) = MvPolynomial.C (2 : C) by
+    exact (map_ofNat MvPolynomial.C 2).symm] at heq
+  rw [MvPolynomial.coeff_C_mul] at heq
+  have hpow : (2 : C) ^ (s.sum fun _ n => n) = 2 := by
+    exact mul_left_cancel₀ hc (heq.trans (mul_comm _ _))
+  have hnat : 2 ^ (s.sum fun _ n => n) = 2 ^ 1 := by
+    apply Nat.cast_injective (R := C)
+    simpa using hpow
+  exact Nat.pow_right_injective (by omega : 1 < 2) hnat
+
 end
 
 end GaloisForLFunctions
