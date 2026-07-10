@@ -219,6 +219,49 @@ sum_p |c_1(p)|^2 < infinity
 forces equality, with multiplicity, of every off-critical zero and pole of the two functions. No
 agreement hypothesis at `p^2,p^3,...` is required for this off-line conclusion.
 
+### Euler Hilbert-corona filtration
+
+For `v>=0`, let
+
+```text
+H_v={c=(c(p))_p : sum_p |c(p)|^2 p^(-2v)<infinity}.
+```
+
+If the prime-trace discrepancy belongs to `H_v`, Cauchy--Schwarz gives absolute convergence of its
+prime Dirichlet series in `Re s>1/2+v`. The higher prime powers are already holomorphic in
+`Re s>1/2` by temperedness. Therefore the quotient has no divisor point with
+
+```text
+|Re rho-1/2|>v.                                             (7)
+```
+
+Consequently, for every `v`, the divisor layer outside the closed `v`-band factors through the
+weighted Hilbert-corona class
+
+```text
+[c_1] in product_p C / H_v.
+```
+
+At `v=0`, the complete off-line divisor is constant on every affine `ell^2(primes)` coset of the
+prime-trace sequence. Equivalently:
+
+```text
+different off-line divisor  ==>  prime traces differ by a non-ell^2 sequence.
+```
+
+This is an infinite Euler invariant, not a statistic of finitely many primes and not a local
+condition at a zero. The filtration also resolves horizontal position: changing a point at distance
+`a` forces the discrepancy to lie outside `H_v` for every `v<a`.
+
+For a family `{L_t}`, an entry from distances `a_n` therefore requires
+
+```text
+sum_p |c_1(t_n,t_*)(p)|^2 p^(-2v)=infinity
+```
+
+for every fixed `v<a_n`. In particular, no path contained in a single prime-trace `ell^2` affine
+class can create, remove, or merge an off-line divisor pair.
+
 ### Uniform-amplitude law (`q=infinity`)
 
 If `|c(p,k)|<=C p^(ktheta)`, then `sigma_infinity<=theta`, and `(P)` gives
@@ -287,10 +330,14 @@ realizability would prove the uncertainty law optimal.
 - Farmer (2021) is recovered from the tempered prime-trace theorem at `q=infinity`, zero amplitude
   exponent, and `delta_1<1/2`; the new candidate content is the position-sensitive and `ell^q`
   interpolation beyond that endpoint.
-- Farmer--Pitale--Ryan--Schmidt (2026) use square-mean closeness of prime coefficients together with
-  higher-prime-power or lift hypotheses to prove equality of the functions. The prime-trace-only
-  theorem here makes the weaker but unconditional conclusion that the off-line divisors coincide;
-  the exact energy-versus-horizontal-distance inequality was not located there.
+- Farmer--Pitale--Ryan--Schmidt (2026) use square-mean closeness of prime coefficients and, outside
+  the fully Ramanujan case, higher-prime-power or lift hypotheses to prove equality of the
+  functions. In their fully Ramanujan case, their prime-coefficient
+  square-mean condition already includes an unweighted `ell^2` prime-trace discrepancy and yields
+  equality of the entire functions. Therefore the `v=0` Hilbert-corona corollary above is known in a
+  stronger form and is not new scientific knowledge. Only the weighted horizontal filtration and
+  the support--amplitude--position interpolation remain candidates, and both still face the
+  objection that they are short consequences of absolute convergence plus Holder.
 - The `q=2` energy law is the most significant surviving form: it gives a necessary divergence
   scale for any Euler-side surgery of an off-line zero, even with changes at every prime.
 - The theorem remains in `needs-audit`; a standard explicit-formula or Dirichlet-series result

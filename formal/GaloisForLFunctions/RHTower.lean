@@ -516,6 +516,7 @@ import GaloisForLFunctions.RHTower.EntireHasLog
 import GaloisForLFunctions.RHTower.ZeroResonanceIndependence
 import GaloisForLFunctions.RHTower.XiConvergenceExponent
 import GaloisForLFunctions.RHTower.CentralReciprocalMoments
+import GaloisForLFunctions.RHTower.TraceHankelConverse
 import GaloisForLFunctions.RHTower.ReBoundAffine
 import GaloisForLFunctions.RHTower.GammalessStripRigidity
 import GaloisForLFunctions.RHTower.BohrCoefficientUniqueness
@@ -529,6 +530,7 @@ import GaloisForLFunctions.RHTower.DiscreteSteinhaus
 import GaloisForLFunctions.RHTower.HardyTitchmarshEulerConcrete
 import GaloisForLFunctions.RHTower.FiniteEulerCalkinIndependence
 import GaloisForLFunctions.RHTower.SummableEulerCalkinInjectivity
+import GaloisForLFunctions.RHTower.SoninEulerFiniteL2Lower
 import GaloisForLFunctions.RHTower.ThueMorseMellinFlatness
 import GaloisForLFunctions.RHTower.ThueMorseFlankEnergyDischarge
 import GaloisForLFunctions.RHTower.QuietFlankGrowth

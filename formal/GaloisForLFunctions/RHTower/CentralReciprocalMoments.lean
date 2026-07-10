@@ -239,6 +239,14 @@ theorem xi_eq_zero_of_mem_divisor_support
     simp
   exact (Function.mem_support.mp ρ.2) hdiv
 
+/-- The xi divisor multiplicity is a positive integer at every point of its support. -/
+theorem xi_divisor_pos_on_support
+    (ρ : ↥(MeromorphicOn.divisor xi Set.univ).support) :
+    0 < (MeromorphicOn.divisor xi Set.univ) (ρ : ℂ) := by
+  have hnonneg := xi_divisor_nonneg Set.univ (ρ : ℂ)
+  have hne := Function.mem_support.mp ρ.2
+  omega
+
 /-- Every xi zero belongs to the actual xi divisor support. -/
 theorem mem_xi_divisor_support_of_eq_zero {ρ : ℂ} (hzero : xi ρ = 0) :
     ρ ∈ (MeromorphicOn.divisor xi Set.univ).support := by

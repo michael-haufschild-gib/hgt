@@ -304,19 +304,23 @@ The formal endpoints are
 `one_le_norm_evenCentralSoninQuadraticCorner_sub_compact`,
 `evenCentralSoninQuadraticCorner_not_isCompactOperator`,
 `evenCentralPositiveEulerQuadraticCorner_eq_smul`, and
-`evenCentralPositiveEulerQuadraticCorner_not_isCompactOperator`.
+`evenCentralPositiveEulerQuadraticCorner_not_isCompactOperator`. The concrete source endpoints are
+`archimedeanPrimeEulerQuadraticCorner_eq_unitaryPush` and
+`archimedeanPrimeEulerQuadraticCorner_not_isCompactOperator`.
 
 Mathlib in this toolchain has the closed subspace of compact operators but no ready Calkin quotient
 or essential-norm API. Thus Lean proves the sharp lower bound against **every** compact perturbation.
 The matching upper bound `<=1`, obtained on paper from the one-scale Calkin partial-isometry formula,
-and the concrete Hardy--Titchmarsh transport of the quadratic product remain to be encoded.
+remains to be encoded. The concrete Hardy--Titchmarsh quadratic operator and its noncompactness are
+formalized, while its exact essential-norm value remains paper-level.
 
 ## Gates
 
 - [x] 0 -> 1: exact two-scale operator and common-interior-shell mechanism isolated
 - [x] 1 -> 2: complete paper proof above
 - [ ] 2 -> 3: the sharp compact-distance lower bound and positive Euler noncompactness are formalized;
-  the matching Calkin upper bound and concrete Hardy--Titchmarsh quadratic transport remain
+  the matching Calkin upper bound remains, while concrete Hardy--Titchmarsh quadratic noncompactness
+  is encoded
 - [ ] 3 -> 4: primary-literature novelty audit and standalone exposition
 
 ## Next conjecture

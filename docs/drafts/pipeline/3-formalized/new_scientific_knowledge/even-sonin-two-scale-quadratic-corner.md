@@ -67,6 +67,8 @@ The module proves:
 - `evenCentralSoninQuadraticCorner_not_isCompactOperator`
 - `evenCentralPositiveEulerQuadraticCorner_eq_smul`
 - `evenCentralPositiveEulerQuadraticCorner_not_isCompactOperator`
+- `archimedeanPrimeEulerQuadraticCorner_eq_unitaryPush`
+- `archimedeanPrimeEulerQuadraticCorner_not_isCompactOperator`
 
 Every shell, projection correction, weak-limit argument, and compact-perturbation bound is
 constructed in the theorem. There is no proposition-valued placeholder for the paired-shell limit.
@@ -82,8 +84,9 @@ to obtain
 `||L_p^*L_q||_ess=1`
 
 by Calkin submultiplicativity. This toolchain does not currently expose a ready Calkin quotient or
-essential-norm API. The upper bound and the concrete Hardy--Titchmarsh transport of the quadratic
-product are therefore paper-level, not claimed as formalized here.
+essential-norm API. The upper bound is therefore paper-level. The concrete Hardy--Titchmarsh
+quadratic operator, its exact unitary-push identity, and its noncompactness are formalized; its sharp
+essential-norm value remains paper-level.
 
 ## Dual gate
 
@@ -100,5 +103,6 @@ product are therefore paper-level, not claimed as formalized here.
 
 - [x] 0 -> 1: ordered two-scale operator and simultaneous-preimage mechanism isolated
 - [x] 1 -> 2: paper proof of the sharp lower bound and exact essential norm completed
-- [x] 2 -> 3: compact-distance lower bound and positive Euler noncompactness formalized
+- [x] 2 -> 3: compact-distance lower bound, positive Euler scaling, and concrete
+  Hardy--Titchmarsh quadratic noncompactness formalized
 - [ ] 3 -> 4: encode the Calkin upper bound and complete an independent publication audit
