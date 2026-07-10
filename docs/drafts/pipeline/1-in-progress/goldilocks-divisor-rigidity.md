@@ -912,9 +912,11 @@ open cell (σ_a ≥ 1/2, infinite order) is thereby reduced to ONE explicit anal
 other inputs machine-checked.
 
 **Lean:** `GammalessStripRigidity.lean` — `gammaless_strip_rigidity` (entire + symmetric +
-right-half-plane bound + admissible strip growth ⟹ constant, growth as explicit residual) and
-`lseries_bounded_on_halfplane` (convergent Dirichlet series ⟹ uniformly bounded on its
-half-plane — the edges-are-free lemma).
+right-half-plane bound + admissible strip growth ⟹ constant), `lseries_bounded_on_halfplane`
+(convergent Dirichlet series ⟹ uniformly bounded on its half-plane), and the completed discharge
+`gammaless_lseries_orderOne_constant`: the standard order-one envelope implies the required
+double-exponential strip bound by `orderOneGrowth_phragmenLindelof_strip`, so both analytic
+interfaces are constructed for order-one symmetric Dirichlet carriers.
 
 **Forward moves (not termini):**
 1. Prove the admissible bound `c < π/(2σ_a−1)` FROM integrality — this IS INT-ORDER; the strip is

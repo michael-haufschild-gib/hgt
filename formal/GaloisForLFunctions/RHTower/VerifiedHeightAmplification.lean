@@ -28,6 +28,18 @@ open Complex
 def RHVerifiedThrough (T : ℝ) : Prop :=
   ∀ ⦃ρ : ℂ⦄, xi ρ = 0 → 0 < ρ.re → ρ.re < 1 → 0 < ρ.im → ρ.im ≤ T → ρ.re = 1 / 2
 
+/-- **The verified-height interface has an unconditional base.**  At every nonpositive height there
+is no positive-ordinate zero to check, so `RHVerifiedThrough T` holds vacuously.  In particular this
+discharges the initial-height hypothesis of the amplification theorems at `T = 0`; only their new
+zero census remains. -/
+theorem rhVerifiedThrough_of_nonpos {T : ℝ} (hT : T ≤ 0) : RHVerifiedThrough T := by
+  intro ρ _ _ _ him0 himT
+  exfalso
+  linarith
+
+theorem rhVerifiedThrough_zero : RHVerifiedThrough 0 :=
+  rhVerifiedThrough_of_nonpos le_rfl
+
 /-- Strip zeros in the half-open height increment `(H, U]`. -/
 def stripZeroIncrement (H U : ℝ) : Set ℂ :=
   {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ 0 < ρ.im ∧ H < ρ.im ∧ ρ.im ≤ U ∧ xi ρ = 0}

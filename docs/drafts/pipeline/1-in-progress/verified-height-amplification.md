@@ -678,3 +678,32 @@ The proposed absolutely summable extension is retired for the same reason.  New 
 must produce a proved, significant invariant of the infinite or multiplicative Euler data, survive
 a broad primary-literature and parent-theory audit, and must not treat project-local formalization as
 scientific novelty.
+
+## 2026-07-10 primary-certificate audit
+
+The Platt--Trudgian source was checked directly rather than inferred from the theorem statement.
+Their Theorem 1 gives the exact endpoint
+
+```text
+T_0 = 3,000,175,332,800
+```
+
+and the exact count `12,363,153,437,138`.  The computational section says that the method evaluated
+the completed zeta function on the half-line, counted sign changes, and used Turing's method to
+certify that all expected zeros were accounted for.  It also states explicitly that the run did not
+isolate most zeros beyond the precision needed to see a sign change, did not build the high-precision
+zero database used in the earlier computation, and had nowhere to store that many zeros.
+
+A full source inspection found no published value or lower bound for
+
+```text
+min_(0 <= sigma <= 1) |xi(sigma+i T_0)|,
+```
+
+no endpoint phase/winding margin, no one-sided boundary sign with magnitude, and no public data or
+code link from which such a margin can be reconstructed.  Therefore the endpoint-minimum-modulus and
+one-zero-count-envelope attacks genuinely require a new certificate datum; they are not blocked only
+by an unread table in the paper.
+
+Primary source: D. J. Platt and T. S. Trudgian, *The Riemann hypothesis is true up to
+`3·10^12`*, arXiv:2004.09765, DOI 10.1112/blms.12460.

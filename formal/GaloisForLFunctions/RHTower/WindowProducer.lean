@@ -198,6 +198,18 @@ def WindowLinePackage (T : ℝ) : Prop :=
       (∀ u : ℝ, ts 0 ≤ u → u ≤ ts s → linePoint u ∈ ball a R) ∧
       (∑ z ∈ t₂, m₂ z ≤ s)
 
+/-- **The line-package interface has an unconditional base window.**  A nonpositive height has no
+right-half box zeros, so its per-zero analytic package is vacuous.  This exposes the same genuine
+base case already available for `WindowCertificate`, without asking callers to manufacture any
+auxiliary carrier data. -/
+theorem windowLinePackage_of_nonpos {T : ℝ} (hT : T ≤ 0) : WindowLinePackage T := by
+  intro ρ hρ
+  rw [boxZeros_eq_empty_of_nonpos hT] at hρ
+  exact (Set.notMem_empty ρ hρ).elim
+
+theorem windowLinePackage_zero : WindowLinePackage 0 :=
+  windowLinePackage_of_nonpos le_rfl
+
 /-- An on-line ball cover produces the line-package interface vacuously.  Each candidate
 right-half zero in the box is covered by a ball whose ξ-zeros are on the critical line, so no such
 candidate exists; the per-zero package has an empty domain. -/

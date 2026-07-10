@@ -27,6 +27,8 @@ Supply the previously missing target-free analytic interface for a positivity at
 - `xiCentralReciprocalMoment_conj`
 - `xiCentralReciprocalMoment_im_eq_zero`
 - `mem_xi_divisor_support_of_eq_zero`
+- `xi_eq_zero_of_mem_divisor_support`
+- `xi_divisor_pos_on_support`
 - `xi_divisor_support_re_mem_open_unit`
 - `xi_divisor_support_im_ne_zero`
 - `xiCentralReciprocalSquare_im_eq_zero_iff`

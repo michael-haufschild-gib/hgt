@@ -137,6 +137,12 @@ theorem lineHolography_of_rhLadder {k : ℕ} (hlad : RHLadder k) : LineHolograph
     rw [hm0]
     exact dvd_zero _
 
+/-- **The first line-holography interface is unconditional.**  Level zero asks only divisibility by
+`1`; the unconditional base rung therefore supplies every reflection-closed presentation with its
+level-two deck/line identity. -/
+theorem lineHolography_zero : LineHolography 0 :=
+  lineHolography_of_rhLadder rhLadder_zero
+
 /-- **Holography ⟹ rung (the extraction).**  Around a hypothetical right-half zero, pick a
 generic line center whose pair circle carries no other off-line zero; the two nested
 presentations through that center — just inside and just outside the pair circle — have

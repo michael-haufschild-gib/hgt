@@ -19,7 +19,10 @@
   `quiet_crossing_rigidity`, `quiet_crossing_rigidity_constant`. All
   `[propext, Classical.choice, Quot.sound]`; umbrella build green; lint green. Companion module
   `GammalessStripRigidity.lean` (P–L reduction, threshold `π/(2σ_a−1)`; edges-free lemma
-  `lseries_bounded_on_halfplane`, consumed here).
+  `lseries_bounded_on_halfplane`; `orderOneGrowth_phragmenLindelof_strip` proves that the standard
+  order-one envelope automatically supplies the residual strip-growth premise;
+  `gammaless_lseries_orderOne_constant` combines both discharges into a hypothesis-free analytic
+  closure for order-one symmetric Dirichlet carriers).
 - **Proof mechanism (residue-free):** the second difference of the smoothed count
   `A₁(x) = Σ aₙ max(x−n,0)` at knots `n, n±½` isolates `aₙ/2`; its Perron numerator
   `N(s) = (n+½)^{s+1} + (n−½)^{s+1} − 2n^{s+1}` vanishes at both kernel poles `s = 0, −1`, so the
@@ -56,3 +59,6 @@
   `discrete_crossing_duality` (Stage B, interface-walk Hex theorem, written from scratch) +
   `rectangle_crossing_duality` (Stage C, mesh + monochromatic-chain + polygonal path builder) —
   the wave-5 curtain duality is machine-checked; all axiom-clean, zero warnings.
+- 2026-07-10 — the finite-order/order-one specialization of the companion Phragmén–Lindelöf route
+  is now unconditional in Lean: order-one growth constructs the strip-growth `IsBigO` law, while
+  absolute convergence constructs the right-half-plane bound.

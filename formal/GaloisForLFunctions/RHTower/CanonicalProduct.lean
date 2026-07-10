@@ -110,4 +110,84 @@ theorem canonicalProductE1_analytic (a : ℕ → ℂ) (ha : ∀ n, a n ≠ 0)
   exact hball (‖x‖ + 1) (by positivity) x (by
     rw [mem_ball_zero_iff]; linarith [norm_nonneg x])
 
+/-- The genus-one canonical product over an arbitrary index type.  This form is suited to a
+divisor with multiplicity: the index can be the sigma type of support points and their finite
+multiplicity copies, without choosing an enumeration of the support. -/
+noncomputable def canonicalProductE1Indexed {ι : Type*} (a : ι → ℂ) (z : ℂ) : ℂ :=
+  ∏' i, weierstrassE1 (z / a i)
+
+/-- Square-summability of the reciprocal zero norms gives locally-uniform convergence of the
+arbitrarily indexed genus-one product. -/
+theorem canonicalProductE1Indexed_hasProdLocallyUniformlyOn {ι : Type*}
+    (a : ι → ℂ) (ha : ∀ i, a i ≠ 0)
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) :
+    HasProdLocallyUniformlyOn (fun i z => weierstrassE1 (z / a i))
+      (canonicalProductE1Indexed a) Set.univ := by
+  have hball : ∀ S : ℝ, 0 < S →
+      HasProdLocallyUniformlyOn (fun i z => weierstrassE1 (z / a i))
+        (canonicalProductE1Indexed a) (Metric.ball 0 S) := by
+    intro S hSpos
+    set f : ι → ℂ → ℂ := fun i z => weierstrassE1 (z / a i) - 1 with hf
+    have hu : Summable (fun i => S ^ 2 * (1 / ‖a i‖ ^ 2)) := hsum.mul_left _
+    have hev : ∀ᶠ i in cofinite, S ≤ ‖a i‖ := by
+      have htend : Tendsto (fun i => 1 / ‖a i‖ ^ 2) cofinite (𝓝 0) :=
+        hsum.tendsto_cofinite_zero
+      have hlt : ∀ᶠ i in cofinite, 1 / ‖a i‖ ^ 2 < 1 / S ^ 2 :=
+        htend.eventually_lt_const (by positivity)
+      filter_upwards [hlt] with i hi
+      have haipos : 0 < ‖a i‖ :=
+        (norm_nonneg _).lt_of_ne (Ne.symm (norm_ne_zero_iff.mpr (ha i)))
+      have hsq : S ^ 2 < ‖a i‖ ^ 2 := lt_of_one_div_lt_one_div (pow_pos haipos 2) hi
+      exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
+    have hbound : ∀ᶠ i in cofinite, ∀ z ∈ Metric.ball (0 : ℂ) S,
+        ‖f i z‖ ≤ S ^ 2 * (1 / ‖a i‖ ^ 2) := by
+      filter_upwards [hev] with i hi z hz
+      have hzS : ‖z‖ < S := mem_ball_zero_iff.mp hz
+      have haipos : 0 < ‖a i‖ := lt_of_lt_of_le hSpos hi
+      have hzlt : ‖z‖ < ‖a i‖ := lt_of_lt_of_le hzS hi
+      have hdiv : ‖z / a i‖ = ‖z‖ / ‖a i‖ := norm_div z (a i)
+      have hle1 : ‖z / a i‖ ≤ 1 := by
+        rw [hdiv]
+        exact le_of_lt ((div_lt_one haipos).mpr hzlt)
+      calc
+        ‖f i z‖ = ‖weierstrassE1 (z / a i) - 1‖ := by simp only [hf]
+        _ ≤ ‖z / a i‖ ^ 2 := weierstrassE1_sub_one_norm_le hle1
+        _ = ‖z‖ ^ 2 * (1 / ‖a i‖ ^ 2) := by rw [hdiv, div_pow, div_eq_mul_one_div]
+        _ ≤ S ^ 2 * (1 / ‖a i‖ ^ 2) :=
+          mul_le_mul_of_nonneg_right
+            (pow_le_pow_left₀ (norm_nonneg z) (le_of_lt hzS) 2) (by positivity)
+    have hcts : ∀ i, ContinuousOn (f i) (Metric.ball (0 : ℂ) S) := by
+      intro i
+      have : Continuous (f i) := by simp only [hf, weierstrassE1]; fun_prop
+      exact this.continuousOn
+    have hpl := Summable.hasProdLocallyUniformlyOn_one_add isOpen_ball hu hbound hcts
+    convert hpl using 1
+    · ext i z
+      simp only [hf]
+      ring
+    · funext z
+      exact tprod_congr (fun i => by simp only [hf]; ring)
+  apply hasProdLocallyUniformlyOn_of_forall_compact isOpen_univ
+  intro K _ hKcompact
+  obtain ⟨S, hSpos, hKS⟩ : ∃ S : ℝ, 0 < S ∧ K ⊆ Metric.ball (0 : ℂ) S :=
+    hKcompact.isBounded.subset_ball_lt 0 0
+  exact ((hball S hSpos).mono hKS).hasProdUniformlyOn_of_isCompact hKcompact
+
+/-- An arbitrarily indexed genus-one product with square-summable reciprocal zero norms is
+entire. -/
+theorem canonicalProductE1Indexed_analytic {ι : Type*}
+    (a : ι → ℂ) (ha : ∀ i, a i ≠ 0)
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) :
+    AnalyticOnNhd ℂ (canonicalProductE1Indexed a) Set.univ := by
+  have hpl := canonicalProductE1Indexed_hasProdLocallyUniformlyOn a ha hsum
+  have hdiff : ∀ᶠ s : Finset ι in atTop,
+      DifferentiableOn ℂ (fun z => ∏ i ∈ s, weierstrassE1 (z / a i)) Set.univ := by
+    exact Eventually.of_forall fun s => (Differentiable.fun_finsetProd fun i _ => by
+      simp only [weierstrassE1]
+      fun_prop).differentiableOn
+  exact (show TendstoLocallyUniformlyOn
+      (fun s : Finset ι => fun z => ∏ i ∈ s, weierstrassE1 (z / a i))
+      (canonicalProductE1Indexed a) atTop Set.univ from hpl).differentiableOn
+        hdiff isOpen_univ |>.analyticOnNhd isOpen_univ
+
 end RHTower
