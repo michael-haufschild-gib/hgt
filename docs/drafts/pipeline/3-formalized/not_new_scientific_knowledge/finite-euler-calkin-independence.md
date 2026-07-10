@@ -2,10 +2,10 @@
 
 - **ID:** finite-euler-calkin-independence
 - **Stage:** 3-formalized
-- **Type:** `[NEW SOURCE THEOREM]`
+- **Type:** `[BRIDGE / FORMALIZATION; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lean endpoint:** `formal/GaloisForLFunctions/RHTower/FiniteEulerCalkinIndependence.lean`
-- **Parents:** `even-sonin-euler-corner-noncompact.md`,
-  `../not-new/one-prime-euler-fredholm-seam.md`
+- **Parents:** `../new_scientific_knowledge/even-sonin-euler-corner-noncompact.md`,
+  `one-prime-euler-fredholm-seam.md`
 
 ## Statement
 
@@ -112,20 +112,17 @@ Thus nonlinear/product archimedean compensation is outside this theorem and rema
 Platt--Trudgian verified range. It constrains the architecture of a future source index: cancellation
 cannot come from a finite additive counterterm in the positive Euler-metric span.
 
-## Dual gate
+## Scientific-novelty verdict
 
-- **NOVEL:** The one-prime theorem only proves that each generator is nonzero in the Calkin
-  quotient. Pairwise noncompactness does not imply finite linear independence. The new shell
-  separation proves the full independence statement on the exact even Sonin carrier and its literal
-  source transport. A targeted primary-source search found the quasi-inner product theorem and the
-  semilocal Sonin-space literature, but no statement of this finite additive Calkin independence.
-- **SIGNIFICANT:** The result identifies an infinite-dimensional essential finite-place direction,
-  rather than a single obstructed prime. It rules out every finite additive cancellation among the
-  positive Euler metric corners and therefore isolates the genuinely nonlinear or infinite
-  renormalization problem.
+`[NOT NEW SCIENTIFIC KNOWLEDGE]` The separating-shell argument gives a useful exact theorem and a
+verified source-specific Lean API, but its parent mechanism is standard localization / limit-operator
+reasoning: isolate the least active dilation on a separated shell and test it on a weakly-null
+sequence. The literal Sonin and Hardy--Titchmarsh transports do not turn that established mechanism
+into a new scientific principle.
 
-The novelty claim is scoped to the exact theorem above; it is not a claim that no related dilation
-independence result exists in general operator theory.
+The result remains valuable as a bridge. It records that finite additive Euler-metric cancellation
+is unavailable in this model and isolates the nonlinear or infinite renormalization problem. That is
+project architecture and formalization value, not a claim of novelty in the scientific literature.
 
 ## Literature boundary
 
@@ -152,4 +149,3 @@ independence result exists in general operator theory.
 - [x] 1 -> 2: separating-shell proof completed.
 - [x] 2 -> 3: ambient, even-carrier, and concrete Hardy--Titchmarsh source theorems formalized.
 - [ ] 3 -> 4: requires independent expert novelty review and a standalone paper exposition.
-

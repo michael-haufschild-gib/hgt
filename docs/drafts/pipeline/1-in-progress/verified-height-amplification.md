@@ -664,3 +664,17 @@ operator or phase-ratio action on a specified polarization, prove the required c
 membership after the archimedean compensation, and prove that its integer index is unchanged by any
 additional fixed reflection orbit but changes under one free orbit.  Only after that index is made
 effective relative to the certified finite divisor can it yield a strict verified-range extension.
+
+## 2026-07-10 scientific-novelty correction
+
+`[NOT NEW SCIENTIFIC KNOWLEDGE]` The ninth attack's finite Calkin-independence theorem remains a
+valid Lean theorem and a useful source bridge, but the label `[NEW SOURCE THEOREM]` above is
+withdrawn as a scientific-novelty claim.  Its separating-shell proof is an instance of established
+localization / limit-operator reasoning, and the Sonin and Hardy--Titchmarsh transports do not make
+that parent mechanism new to the scientific literature.  The canonical classification is now
+`../3-formalized/not_new_scientific_knowledge/finite-euler-calkin-independence.md`.
+
+The proposed absolutely summable extension is retired for the same reason.  New work in this lane
+must produce a proved, significant invariant of the infinite or multiplicative Euler data, survive
+a broad primary-literature and parent-theory audit, and must not treat project-local formalization as
+scientific novelty.

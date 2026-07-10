@@ -32,7 +32,7 @@ Gamma/boundary factor, without a finite prime packet, cutoff, or separately solv
 
 ## Honest boundary
 
-This would be an actual arithmetic-to-completed germ attachment.  It still does not turn the germ
+This is an actual arithmetic-to-completed germ attachment.  It still does not turn the germ
 into a nonzero pinned-affine quotient class or establish the positivity statement equivalent to RH.
 
 ## Proof
@@ -54,5 +54,7 @@ coefficientwise identity for every natural order.
 - Archimedean removability: `archimedeanBoundaryFluxGermAt_analyticAt_zero`
 - Germ attachment: `completedFluxGermAt_eq_prime_add_archimedean_eventually`
 - All-order attachment: `completedFluxTaylorCoeff_eq_prime_add_archimedean`
+- Paired FE compatibility: `infinitePrimeFluxTaylorCoeff_reflection_defect_eq_archimedean`
+- Central odd cancellation: `infinitePrimeFluxTaylorCoeff_central_odd_eq_neg_archimedean`
 - Build: `lake build GaloisForLFunctions.RHTower.CompletedFluxPrimeArchDecomposition` PASS
 - Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`

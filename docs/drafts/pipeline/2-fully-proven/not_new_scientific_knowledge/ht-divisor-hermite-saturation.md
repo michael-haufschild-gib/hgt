@@ -2,7 +2,7 @@
 
 - **ID:** ht-divisor-hermite-saturation
 - **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) — `[PROVED HERE]`
+- **Type:** THEOREM (paper) — `[BRIDGE]`; scientifically not new
 - **Source:** whole-class hypertranscendence program; `finite-jet-nonidentifiability-ht`;
   `asymptotic-flat-ht-invisibility`; exponential-perturbation literature; Weierstrass interpolation
 - **Statement:** Let `S subset C` be discrete, let `m : S -> N`, and let `g` be a nonzero meromorphic
@@ -35,9 +35,9 @@ by zero-free multiplicative gauges, so the prescribed divisor is fixed identical
 - `[BRIDGE]` Exponential perturbations `f exp(h)` are a known theme (Bank; Huang-Ng).
 - `[BRIDGE]` A one-parameter exponential gauge has at most one DA member when its exponent is HT;
   this is the rank-one coset selection theorem formalized separately.
-- `[PROVED HERE]` Nesting the selection theorem with a Weierstrass product yields simultaneous
-  saturation of a complete divisor and infinitely many local Hermite conditions.
-- `[PROVED HERE]` The identity theorem proves that the discrete/sitewise-finite channel is the sharp
+- `[BRIDGE]` Nesting the selection theorem with a Weierstrass product yields simultaneous saturation
+  of a complete divisor and infinitely many local Hermite conditions.
+- `[BRIDGE]` The identity theorem proves that the discrete/sitewise-finite channel is the sharp
   boundary: an accumulation set of value constraints or one full germ collapses the fiber.
 
 ## Candidate competition and eliminations
@@ -50,8 +50,9 @@ by zero-free multiplicative gauges, so the prescribed divisor is fixed identical
    construction.
 4. Exponential-gauge affine-coset classification — `[BRIDGE]`; after erasing the vocabulary it is
    the preimage-of-a-subgroup theorem plus the logarithmic derivative.
-5. Full divisor plus discrete Hermite fiber — survives. It needs differential-field selection and
-   global analytic interpolation together; neither parent alone states the observation theorem.
+5. Full divisor plus discrete Hermite fiber — rejected as scientific novelty. It is a clean
+   cross-parent corollary, but once posed its proof is routine from differential-field selection and
+   Weierstrass interpolation.
 
 ## Lemma 1 — one-exception exponential pencil `[PROVED HERE, BRIDGE]`
 
@@ -91,7 +92,7 @@ and their multiplicities are those prescribed through `W`; the choice of `t` mak
 This lemma is already stronger than multiplying `1/Gamma` by a polynomial: the prescribed set may
 be any infinite discrete set and the required orders may be unbounded along it.
 
-## Main theorem — divisor-Hermite saturation `[PROVED HERE]`
+## Main theorem — divisor-Hermite saturation `[PROVED HERE, BRIDGE]`
 
 Let `S`, `m`, and `g` be as in the statement. Choose the HT entire function `H` from Lemma 2 with
 
@@ -141,34 +142,14 @@ Thus "arbitrary discrete sites, arbitrary finite order at each site" is the maxi
 local observation channel. The theorem saturates that entire channel while also fixing the complete
 global divisor.
 
-## Novelty x significance gate
+## Scientific-novelty verdict
 
-### Novelty
-
-- The finite-jet and finite-linear-observation results already in the repository do not reach an
-  infinite discrete observation table or fix the full divisor.
-- Targeted corpus and web searches found Bank/Huang-Ng perturbation results and Marques-style
-  interpolation constructions, but not the simultaneous fixed-divisor plus arbitrary discrete
-  Hermite-fiber theorem.
-- The affine-coset selection lemma has been explicitly downgraded to `[BRIDGE]`; novelty is not
-  claimed for exponential perturbation or coset geometry.
-- The surviving delta is the nested cross-parent theorem and its sharp maximal-channel statement.
-- Global bibliographic novelty beyond the checked corpus and targeted source pass remains a
-  publication-stage audit item.
-
-### Significance
-
-- The observation channel is global and infinite, not a finite-oracle variant.
-- It closes an entire family of proposed invariants: divisor, zero/pole pattern, multiplicities,
-  plus any amount of sitewise-finite discrete local data.
-- The identity-theorem converse identifies the exact boundary rather than merely giving another
-  abundance construction.
-- It changes the whole-HT research map: future native invariants must use relations across a
-  uniqueness set, full germs, nonlocal continuation, growth, or structure not factored through this
-  saturated channel.
-
-The project-level dual gate passes: the exact combined theorem was absent from the checked corpus
-and targeted sources, and it removes a broad, sharply delimited class of candidate HT invariants.
+The scientific-novelty gate fails. The statement is useful and the observation channel is global,
+but the proof is a routine composition of established differential-field closure, exponential
+perturbation, Weierstrass products, and the identity theorem. Absence from the checked corpus is not
+evidence of scientific novelty, and a capable assistant can derive the result once the exact
+formulation is supplied. Retain only as a gatekeeper bridge: future native invariants must use data
+not factored through this saturated observation channel.
 
 ## Formal status
 
@@ -187,7 +168,7 @@ misgrading the bridge formalization as a formalization of the new theorem.
 ## Gates
 
 - [x] 0 -> 1: well-posed observation fiber, deterministic attack, parent reductions
-- [x] 1 -> 2: complete proof, sharp boundary, dual-gate audit
+- [x] 1 -> 2: complete proof and sharp boundary; scientific-novelty gate explicitly failed
 - [ ] 2 -> 3: formalize the concrete meromorphic/entire specialization and the two nested
   Weierstrass-gauge applications
 - [ ] 3 -> 4: comprehensive bibliography and standalone paper
@@ -206,6 +187,6 @@ misgrading the bridge formalization as a formalization of the new theorem.
 
 ## Log
 
-- 2026-07-10 — deterministic candidate competition; proved the divisor-Hermite saturation theorem;
-  separated the formalized affine-coset `[BRIDGE]` from the new analytic claim; no numerical or
-  random-search discovery.
+- 2026-07-10 — deterministic candidate competition; proved the divisor-Hermite saturation theorem,
+  then downgraded it to `[BRIDGE]` because it is a routine cross-parent corollary rather than new
+  scientific knowledge; no numerical or random-search discovery.

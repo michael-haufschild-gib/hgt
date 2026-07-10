@@ -1,13 +1,20 @@
 # Summable Euler corners are Calkin-injective
 
 - **ID:** summable-euler-calkin-injectivity
-- **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE -> LEAN TARGET]`
-- **Parent:** `../3-formalized/new/finite-euler-calkin-independence.md`
+- **Stage:** 5-failed
+- **Type:** `[RETIRED: NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Parent:** `../3-formalized/not_new_scientific_knowledge/finite-euler-calkin-independence.md`
 - **Source:** increasing prime-scale positive Euler metric corners on the concrete Sonin /
   Hardy--Titchmarsh carrier
 
-## Conjectured theorem
+## Retirement verdict
+
+The proposed `ell^1` extension is a standard continuity-and-localization consequence of the finite
+separating-shell mechanism. Even a complete Lean proof would be new only to this project's formal
+API, not new to scientific research. It therefore fails the scientific-novelty gate and is retired
+from the active research lane.
+
+## Former theorem target
 
 Let `r : N -> R` be strictly increasing with `r_n>1`, let `c : N -> C` be absolutely
 summable and not identically zero, and let `a>0`. Then the operator-norm convergent sum
@@ -22,7 +29,7 @@ Equivalently, the map from `ell^1` coefficient sequences to the Calkin quotient 
 increasing dilation corners is injective. The same should hold for positive Euler metric corners
 and, by unitary transport, on the concrete archimedean Hardy--Titchmarsh line.
 
-## Proof under attack
+## Established reduction
 
 Let `k` be the least index with `c_k != 0`. Strict increase gives a gap
 `r_k < r_(k+1)`. Choose `b>a` so close to `a` that
@@ -42,7 +49,7 @@ A_k (sum_n c_n D_(r_n)) g_m = c_k U_(r_k) g_m
 
 for every shell cell `g_m`. The existing corrected-shell noncompactness theorem then applies.
 
-## Attack obligations
+## Formalization obligations if ever needed as infrastructure
 
 - [ ] Prove operator-norm summability from `Summable (fun n => ||c_n||)` and the uniform
   `||U_r+U_r*|| <= 2` bound.
@@ -50,9 +57,9 @@ for every shell cell `g_m`. The existing corrected-shell noncompactness theorem 
 - [ ] Commute the continuous observer, evaluation, and dilation identities through the `tsum`.
 - [ ] Prove ambient and exact even-carrier noncompactness.
 - [ ] Transport the summable positive Euler corner series to the concrete Hardy--Titchmarsh line.
-- [ ] Run a primary-source novelty audit before promotion.
+- [ ] Do not promote this result as new scientific knowledge.
 
-## Significance target
+## Infrastructure value only
 
 If proved, this excludes not only finite additive counterterms but every absolutely convergent
 infinite additive renormalization of the canonical positive Euler metric corners. A surviving
@@ -65,4 +72,3 @@ The theorem would not apply to the Euler coefficients in their raw divergent ord
 `ell^1` weighting is supplied. It would not exclude Connes--Consani multiplicative quasi-inner
 products or a conditionally convergent/global functional-equation regularization. It would still
 not locate zeta zeros or move the verified range by itself.
-
