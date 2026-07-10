@@ -1659,3 +1659,59 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
   outside every finite prime span. This closes every bounded-support jet cancellation and supplies
   the first explicit fixed class on the completed side. Only the touched module and exact target
   were checked.
+
+## Wave 48 — finite quotient completeness reverses the attachment verdict
+
+243. **Weighted moment existence and uniqueness.** `[BRIDGE FORMALIZED]` Any `k` distinct characters
+     with nonzero weights give a bijection from `k` amplitudes to the first `k` moments. Positive
+     injective natural labels discharge distinctness for the negative prime-log frequencies, and
+     complex prime amplitudes are nonzero at every base point.
+244. **Finite-order prime blindness.** `[PROVED HERE + Lean]` Every coefficient vector in the
+     order-`k` local divisor-jet algebra has a unique realization by any fixed square packet of `k`
+     distinct positive prime derivative germs. Finite-prime independence therefore supplies a
+     basis, not a separation from archimedean differential data.
+245. **One-slot quotient classified.** `[PROVED HERE + Lean]` For the presentation `A=X^k`, the
+     descended boundary `PinnedAffineDefectQuotient -> C[X]/(X^k)` is bijective. Its kernel is
+     exactly the pinned-affine subgroup: the one-slot commutator vanishes and every remaining
+     correction is precisely an `X^k` multiple. Every finite quotient class consequently has a
+     unique representation by the fixed square prime packet.
+246. **Earlier survivor verdict reversed.** `[FALSIFIED ROUTE]` No finite-order pinned-affine class
+     can distinguish prime evaluation from an archimedean differential functional. In particular,
+     attaching the derivation to a larger finite quotient cannot create arithmetic content; the
+     prime packet spans that quotient completely.
+247. **All-orders intersection theorem.** `[PROVED HERE + Lean]` If one finite prime-log packet agrees
+     at every order with any eventually-zero differential moment sequence, then both are zero.
+     Degrees `d,...,d+k-1` kill the prime amplitudes by a single shifted Vandermonde system, after
+     which the full equality kills the differential sequence. The derivation sequence
+     `delta_(n,1)` is now a corollary, not a special calculation.
+248. **Constraint-side residue.** `[PROVED NATIVE DICHOTOMY]` Every finite truncation admits a unique
+     prime realization, while no single finite packet realizes a nonzero finite-order differential
+     sequence at all orders. The separating datum is cross-order compatibility itself. Choosing a
+     new packet at each order is exactly the cutoff-carrier construction forbidden by the mission.
+249. **Node-polynomial witness.** `[PROVED HERE + Lean]` For any nonempty family of negative real
+     frequencies, the polynomial `Q(X)=prod_i(X-f_i)` vanishes at every node while `Q'(0)>0`.
+     Therefore `k` negative evaluation characters cannot represent coefficient extraction at
+     degree one through order `k`; distinctness of the nodes is not needed.
+250. **Exact first omitted-order failure.** `[PROVED HERE + Lean]` For distinct positive labels,
+     Vandermonde gives a unique packet matching the derivation moments in degrees `0,...,k-1`.
+     The node-polynomial witness proves that this same packet fails at degree `k`. Thus each finite
+     quotient succeeds exactly up to its own order and has an unavoidable next-order defect.
+251. **Carrier test made algebraic.** `[PROVED CONSTRAINT CONSEQUENCE]` Repairing the defect by solving
+     a new `k+1` packet changes all interpolation coefficients. Repeating that operation is a
+     cutoff carrier in disguise; it is not an order-independent arithmetic source.
+252. **New open core.** `[OPEN CORE]` Extract from the fixed Euler--Gamma datum one order-independent
+     coefficient sequence and its functional-equation reflection law. Prove that the same
+     arithmetic coefficients satisfy all truncations simultaneously, or identify a single
+     arithmetic obstruction whose restrictions are the nonzero next-order defects. Neither the
+     coefficients nor their support may be solved afresh at each order or chosen from a target zero.
+
+## Log (cont. 50)
+
+- 2026-07-10 — wave 48: proved weighted finite-moment existence and uniqueness, upgraded the local
+  polynomial calculation to a bijective classification of the entire one-slot pinned-affine
+  quotient, and showed every finite class has a unique prime-jet expansion. This reverses the
+  earlier finite-jet survivor interpretation. The complementary all-orders theorem proves trivial
+  intersection between finite prime packets and finite-order differential sequences. The sharper
+  node-polynomial theorem proves the unique order-`k` interpolation fails at the first omitted
+  order, making the cutoff-carrier diagnosis exact. The live datum is one fixed cross-order
+  compatibility law. Only the edited module and exact target are checked.

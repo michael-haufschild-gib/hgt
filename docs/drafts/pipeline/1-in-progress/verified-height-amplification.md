@@ -321,3 +321,53 @@ constraint such that
 The estimates must be analytic consequences of the source, not a new zero
 enumeration.  Until those two numerical inequalities are proved, no strict
 `T_1` is promoted and the Platt--Trudgian lower limit has not been increased.
+
+## 2026-07-10 fourth attack: divisor-orbit extension without height or jets
+
+### Heightless formulation
+
+Replace the interval statement by an extension problem for the certified divisor.  Let `D_0` be the
+finite effective divisor formed by all certified positive critical-line zeros, with their exact
+multiplicities.  The question is:
+
+```text
+Can the completed zeta source constraint force every admissible extension of D_0
+to add a fixed reflection orbit before it can add a free reflection orbit?
+```
+
+A fixed orbit is represented by a critical-line zero.  A free orbit is the four-point orbit of a
+generic off-line, off-real zero under the functional-equation and Schwarz reflections.  This
+formulation has no preferred height variable and asks directly whether the source selects orbit
+type.
+
+### Exact finite-divisor falsifier
+
+`[PROVED IN LEAN]` The finite divisor itself does not select.  For every finite set of positive
+critical-line representatives with arbitrary multiplicities, every finite exact Euler head, every
+fresh positive critical-line representative, and every prescribed generic off-line point of the
+open strip, there are two FE/Schwarz carriers that preserve all old multiplicities exactly.  One
+adds the fresh simple fixed orbit; the other adds the prescribed simple free orbit.  The theorem is
+`RHTower.finiteDivisorPrefix_orbitNonselection` in
+`FiniteDivisorPrefixNonselection.lean`.
+
+The construction uses only products and analytic orders.  It contains no derivative, Taylor datum,
+local expansion, or jet.  It strengthens the earlier empty-prefix falsifier
+`finiteEulerClass_no_height_amplification`: even the complete exact finite verified divisor does not
+help inside the FE/Schwarz plus finite-Euler class.
+
+`[BRIDGE]` This is not a new zeta theorem and does not move the numerical bound.  Its proof is finite
+polynomial packing, so it fails the novelty half of the dual gate if presented as new knowledge.  It
+is retained as a formal no-go theorem because it removes an entire class of proposed amplifiers.
+
+### Revised open core
+
+`[FALSIFIED]` Finite verified divisor data, even with all multiplicities and any finite exact Euler
+head, cannot force the orbit type of an extension.  The earlier first-jet discriminant is not the
+active route.
+
+`[OPEN CORE]` Construct a global source-to-divisor selection law for the completed infinite Euler and
+archimedean constraint whose value changes under multiplication by a free-orbit quartic but not under
+adjoining an allowed fixed orbit.  Such a law must be genuinely infinite: it cannot factor through a
+finite divisor prefix, finitely many Euler factors, finitely many moments, or finite local data.  A
+quantitative lower-bound theorem would follow only after this law is made effective for the published
+certificate.

@@ -306,6 +306,82 @@ theorem existsUnique_finitePrimeDerivativeJet_jetClass {k : ℕ}
     have hj := (jetClass_eq_zero_iff_coeff_lt_eq_zero ℂ k).mp hzero j j.isLt
     simpa only [Polynomial.coeff_sub] using sub_eq_zero.mp hj
 
+/-- For the one-slot presentation, the descended Fitting boundary loses no information: its kernel
+is exactly the pinned-affine subgroup. -/
+theorem pinnedAffineBoundaryHom_oneSlot_injective
+    (R : Type*) [CommRing R] (m : ℕ) :
+    Function.Injective
+      (pinnedAffineBoundaryHom m (oneSlotTorsionPresentation R m)
+        (oneSlotTorsionPresentation_det R m)) := by
+  intro q r hqr
+  apply sub_eq_zero.mp
+  let x := q - r
+  have hx : pinnedAffineBoundaryHom m (oneSlotTorsionPresentation R m)
+      (oneSlotTorsionPresentation_det R m) x = 0 := by
+    dsimp [x]
+    rw [map_sub, hqr, sub_self]
+  change x = 0
+  revert hx
+  refine QuotientAddGroup.induction_on x ?_
+  intro Delta hDelta
+  rw [QuotientAddGroup.eq_zero_iff]
+  have hclass : fittingBoundaryClass m (oneSlotTorsionPresentation R m) Delta = 0 := by
+    simpa using hDelta
+  have hjet : jetClass R m (Delta 0 0) = 0 := by
+    simpa [fittingBoundaryClass, fittingBoundaryTrace, oneSlotTorsionPresentation,
+      Matrix.adjugate_fin_one, Matrix.trace_fin_one] using hclass
+  have hdiv : (X : Polynomial R) ^ m ∣ Delta 0 0 :=
+    Polynomial.X_pow_dvd_iff.mpr ((jetClass_eq_zero_iff_coeff_lt_eq_zero R m).mp hjet)
+  obtain ⟨Q, hQ⟩ := hdiv
+  refine ⟨0, 0, oneSlotPolynomialDefect R Q, 0, 0, ?_⟩
+  apply Matrix.ext
+  intro i j
+  fin_cases i
+  fin_cases j
+  simpa [pinnedAffineWeldDefect, commutatorDefect, oneSlotTorsionPresentation,
+    oneSlotPolynomialDefect] using hQ
+
+/-- Every one-slot local divisor jet is the boundary of a pinned-affine quotient class. -/
+theorem pinnedAffineBoundaryHom_oneSlot_surjective
+    (R : Type*) [CommRing R] (m : ℕ) :
+    Function.Surjective
+      (pinnedAffineBoundaryHom m (oneSlotTorsionPresentation R m)
+        (oneSlotTorsionPresentation_det R m)) := by
+  intro z
+  obtain ⟨P, rfl⟩ := Ideal.Quotient.mk_surjective z
+  refine ⟨QuotientAddGroup.mk (oneSlotPolynomialDefect R P), ?_⟩
+  exact fittingBoundaryClass_oneSlotPolynomial_eq R m P
+
+/-- **One-slot quotient classification.** The universal pinned-affine defect quotient is detected
+exactly by the local divisor-jet algebra; the descended boundary is a bijection. -/
+theorem pinnedAffineBoundaryHom_oneSlot_bijective
+    (R : Type*) [CommRing R] (m : ℕ) :
+    Function.Bijective
+      (pinnedAffineBoundaryHom m (oneSlotTorsionPresentation R m)
+        (oneSlotTorsionPresentation_det R m)) :=
+  ⟨pinnedAffineBoundaryHom_oneSlot_injective R m,
+    pinnedAffineBoundaryHom_oneSlot_surjective R m⟩
+
+/-- **Complete finite one-slot classification.** At every order and base point, any fixed square
+packet of distinct positive prime germs represents every pinned-affine quotient class uniquely. -/
+theorem existsUnique_finitePrimeDerivativeJet_pinnedAffineClass {k : ℕ}
+    (p : Fin k → ℕ) (hp : ∀ i, 0 < p i) (hpinj : Function.Injective p)
+    (rho : ℂ) (q : PinnedAffineDefectQuotient k (oneSlotTorsionPresentation ℂ k)) :
+    ∃! a : Fin k → ℂ, finitePrimeDerivativeJetPinnedAffineClass p a rho = q := by
+  let boundary := pinnedAffineBoundaryHom k (oneSlotTorsionPresentation ℂ k)
+    (oneSlotTorsionPresentation_det ℂ k)
+  have hboundary := pinnedAffineBoundaryHom_oneSlot_bijective ℂ k
+  obtain ⟨a, ha, hua⟩ :=
+    existsUnique_finitePrimeDerivativeJet_jetClass p hp hpinj rho (boundary q)
+  refine ⟨a, hboundary.1 ?_, ?_⟩
+  · simpa [boundary, finitePrimeDerivativeJetPinnedAffineClass,
+      fittingBoundaryClass_oneSlotPolynomial_eq] using ha
+  · intro b hb
+    apply hua
+    have hmap := congrArg boundary hb
+    simpa [boundary, finitePrimeDerivativeJetPinnedAffineClass,
+      fittingBoundaryClass_oneSlotPolynomial_eq] using hmap
+
 /-- **All-orders intersection theorem.** A finite packet of distinct positive prime characters and
 an eventually-zero differential moment sequence can agree at every order only when both vanish.
 This is the exact fixed-constraint complement to finite-order blindness. -/
@@ -349,6 +425,182 @@ theorem finitePrimeMoments_eq_eventuallyZero_iff {k d : ℕ}
 /-- Moments of coefficient extraction at derivative order one: the derivation sends `X` to `1` and
 all other monomials to zero at the origin. -/
 def archimedeanDerivationMoment (n : ℕ) : ℂ := if n = 1 then 1 else 0
+
+/-! ## Exact first failure of finite prime interpolation -/
+
+/-- The monic polynomial whose nodes are a finite family of real frequencies. -/
+def negativeNodePolynomial {k : ℕ} (f : Fin k → ℝ) : Polynomial ℝ :=
+  ∏ i : Fin k, (X - C (f i))
+
+@[simp]
+theorem negativeNodePolynomial_eval_node {k : ℕ} (f : Fin k → ℝ) (i : Fin k) :
+    (negativeNodePolynomial f).eval (f i) = 0 := by
+  classical
+  rw [negativeNodePolynomial]
+  change (Polynomial.evalRingHom (f i)) (∏ j : Fin k, (X - C (f j))) = 0
+  rw [map_prod]
+  exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
+
+/-- If every node is negative, the node polynomial has strictly positive derivative at zero. -/
+theorem negativeNodePolynomial_derivative_eval_zero_pos {k : ℕ} (hk : 0 < k)
+    (f : Fin k → ℝ) (hf : ∀ i, f i < 0) :
+    0 < (negativeNodePolynomial f).derivative.eval 0 := by
+  classical
+  rw [negativeNodePolynomial, Polynomial.derivative_prod_finset,
+    Polynomial.eval_finsetSum]
+  apply Finset.sum_pos
+  · intro i _
+    simp only [Polynomial.derivative_sub, Polynomial.derivative_X,
+      Polynomial.derivative_C, sub_zero, mul_one]
+    change 0 < (Polynomial.evalRingHom 0) (∏ j ∈ Finset.univ.erase i, (X - C (f j)))
+    rw [map_prod]
+    apply Finset.prod_pos
+    intro j _
+    simpa using neg_pos.mpr (hf j)
+  · haveI : Nonempty (Fin k) := Fintype.card_pos_iff.mp (by simpa using hk)
+    exact Finset.univ_nonempty
+
+/-- Moment agreement through the degree of a polynomial makes weighted evaluation equal coefficient
+extraction at degree one. -/
+theorem weighted_eval_eq_coeff_one_of_moments {k : ℕ} (hk : 0 < k)
+    (f a : Fin k → ℂ) (P : Polynomial ℂ) (hdeg : P.natDegree ≤ k)
+    (hmom : ∀ n, n ≤ k → (∑ i : Fin k, a i * f i ^ n) = if n = 1 then 1 else 0) :
+    (∑ i : Fin k, a i * P.eval (f i)) = P.coeff 1 := by
+  have hdeg' : P.natDegree < k + 1 := Nat.lt_succ_of_le hdeg
+  simp_rw [Polynomial.eval_eq_sum_range' hdeg']
+  calc
+    (∑ i : Fin k, a i * ∑ n ∈ Finset.range (k + 1), P.coeff n * f i ^ n) =
+        ∑ n ∈ Finset.range (k + 1), P.coeff n * ∑ i : Fin k, a i * f i ^ n := by
+      simp_rw [Finset.mul_sum]
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro i _
+      apply Finset.sum_congr rfl
+      intro n _
+      ring
+    _ = ∑ n ∈ Finset.range (k + 1), P.coeff n * (if n = 1 then 1 else 0) := by
+      apply Finset.sum_congr rfl
+      intro n hn
+      rw [hmom n (Nat.le_of_lt_succ (Finset.mem_range.mp hn))]
+    _ = P.coeff 1 := by
+      rw [Finset.sum_eq_single 1]
+      · simp
+      · intro n _ hne
+        simp [hne]
+      · intro hnot
+        exact (hnot (Finset.mem_range.mpr (by omega))).elim
+
+/-- The node polynomial has degree equal to the number of nodes, with no distinctness hypothesis. -/
+theorem negativeNodePolynomial_natDegree {k : ℕ} (f : Fin k → ℝ) :
+    (negativeNodePolynomial f).natDegree = k := by
+  classical
+  rw [negativeNodePolynomial, Polynomial.natDegree_prod_of_monic]
+  · simp
+  · intro i _
+    exact Polynomial.monic_X_sub_C _
+
+/-- No `k` negative evaluation nodes represent coefficient extraction at degree one through order
+`k`.  The node polynomial vanishes at every evaluation node, but its degree-one coefficient is
+strictly positive. -/
+theorem no_negativeFiniteMoments_eq_derivation_through_card {k : ℕ} (hk : 0 < k)
+    (f : Fin k → ℝ) (hf : ∀ i, f i < 0) (a : Fin k → ℂ) :
+    ¬ ∀ n : ℕ, n ≤ k →
+      (∑ i : Fin k, a i * (f i : ℂ) ^ n) = if n = 1 then 1 else 0 := by
+  classical
+  intro hmom
+  let Qr : Polynomial ℝ := negativeNodePolynomial f
+  let Q : Polynomial ℂ := ∏ i : Fin k, (X - C (f i : ℂ))
+  have hQmap : Q = Qr.map Complex.ofRealHom := by
+    dsimp [Q, Qr, negativeNodePolynomial]
+    rw [Polynomial.map_prod]
+    apply Finset.prod_congr rfl
+    intro i _
+    simp
+  have hQdeg : Q.natDegree ≤ k := by
+    rw [hQmap, Polynomial.natDegree_map_eq_of_injective Complex.ofReal_injective]
+    change (negativeNodePolynomial f).natDegree ≤ k
+    rw [negativeNodePolynomial_natDegree]
+  have hweighted := weighted_eval_eq_coeff_one_of_moments hk
+    (fun i => (f i : ℂ)) a Q hQdeg hmom
+  have hleft : (∑ i : Fin k, a i * Q.eval (f i : ℂ)) = 0 := by
+    apply Finset.sum_eq_zero
+    intro i _
+    have hroot : Q.eval (f i : ℂ) = 0 := by
+      dsimp [Q]
+      change (Polynomial.evalRingHom (f i : ℂ))
+        (∏ j : Fin k, (X - C (f j : ℂ))) = 0
+      rw [map_prod]
+      exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
+    rw [hroot, mul_zero]
+  have hcoeffZero : Q.coeff 1 = 0 := by
+    rw [hleft] at hweighted
+    exact hweighted.symm
+  have hderivPos := negativeNodePolynomial_derivative_eval_zero_pos hk f hf
+  have hcoeffRPos : 0 < Qr.coeff 1 := by
+    have heq : Qr.derivative.eval 0 = Qr.coeff 1 := by
+      rw [← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_derivative]
+      norm_num
+    rw [← heq]
+    exact hderivPos
+  have hcoeffNe : Q.coeff 1 ≠ 0 := by
+    rw [hQmap, Polynomial.coeff_map]
+    exact Complex.ofReal_ne_zero.mpr hcoeffRPos.ne'
+  exact hcoeffNe hcoeffZero
+
+/-- No `k` positive prime-log characters realize the archimedean derivation through order `k`.
+Distinctness is unnecessary for this obstruction. -/
+theorem no_finitePrimeMoments_eq_archimedeanDerivation_through_card {k : ℕ}
+    (hk : 0 < k) (p : Fin k → ℕ) (hp : ∀ i, 1 < p i) (a : Fin k → ℂ) :
+    ¬ ∀ n : ℕ, n ≤ k →
+      (∑ i : Fin k, a i * (-(Real.log (p i) : ℂ)) ^ n) =
+        archimedeanDerivationMoment n := by
+  simpa [archimedeanDerivationMoment] using
+    no_negativeFiniteMoments_eq_derivation_through_card hk
+      (fun i => -Real.log (p i))
+      (fun i => neg_lt_zero.mpr (Real.log_pos (by exact_mod_cast hp i))) a
+
+/-- Any packet matching the derivation through orders `< k` necessarily fails at the first omitted
+order `k`. -/
+theorem finitePrimeDerivationInterpolation_nextOrder_ne {k : ℕ}
+    (hk : 0 < k) (p : Fin k → ℕ) (hp : ∀ i, 1 < p i) (a : Fin k → ℂ)
+    (hmatch : ∀ j : Fin k,
+      (∑ i : Fin k, a i * (-(Real.log (p i) : ℂ)) ^ (j : ℕ)) =
+        archimedeanDerivationMoment (j : ℕ)) :
+    (∑ i : Fin k, a i * (-(Real.log (p i) : ℂ)) ^ k) ≠
+      archimedeanDerivationMoment k := by
+  intro hnext
+  apply no_finitePrimeMoments_eq_archimedeanDerivation_through_card hk p hp a
+  intro n hn
+  rcases hn.eq_or_lt with rfl | hnk
+  · exact hnext
+  · exact hmatch ⟨n, hnk⟩
+
+/-- Distinct positive prime-log nodes have a unique interpolation of the first `k` derivation
+moments. -/
+theorem existsUnique_finitePrimeDerivationInterpolation {k : ℕ}
+    (p : Fin k → ℕ) (hp : ∀ i, 1 < p i) (hpinj : Function.Injective p) :
+    ∃! a : Fin k → ℂ, ∀ j : Fin k,
+      (∑ i : Fin k, a i * (-(Real.log (p i) : ℂ)) ^ (j : ℕ)) =
+        archimedeanDerivationMoment (j : ℕ) := by
+  simpa using existsUnique_weightedFiniteMoments
+    (fun i => -(Real.log (p i) : ℂ)) (fun _ => (1 : ℂ))
+    (neg_log_nat_injective p (fun i => Nat.zero_lt_one.trans (hp i)) hpinj)
+    (fun _ => one_ne_zero) (fun j => archimedeanDerivationMoment (j : ℕ))
+
+/-- **Exact finite/all-orders boundary.** There is a unique prime packet matching the derivation at
+all orders `< k`, and that same packet provably fails at order `k`. -/
+theorem existsUnique_finitePrimeDerivationInterpolation_with_nextOrderDefect {k : ℕ}
+    (hk : 0 < k) (p : Fin k → ℕ) (hp : ∀ i, 1 < p i) (hpinj : Function.Injective p) :
+    ∃! a : Fin k → ℂ,
+      (∀ j : Fin k,
+        (∑ i : Fin k, a i * (-(Real.log (p i) : ℂ)) ^ (j : ℕ)) =
+          archimedeanDerivationMoment (j : ℕ)) ∧
+      (∑ i : Fin k, a i * (-(Real.log (p i) : ℂ)) ^ k) ≠
+        archimedeanDerivationMoment k := by
+  obtain ⟨a, ha, hua⟩ := existsUnique_finitePrimeDerivationInterpolation p hp hpinj
+  refine ⟨a, ⟨ha, finitePrimeDerivationInterpolation_nextOrder_ne hk p hp a ha⟩, ?_⟩
+  intro b hb
+  exact hua b hb.1
 
 /-- **Finite-prime/archimedean separation.**  No finite packet of distinct positive prime
 evaluation characters can equal the archimedean derivation moment sequence.  The proof uses only

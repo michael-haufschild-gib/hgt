@@ -1,10 +1,10 @@
 # Completed prime-flux attachment to the canonical Fitting seam
 
 - **ID:** completed-prime-flux-fitting-attachment
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** RHTower `WeldZeroGenerator` + `CanonicalCutoffTorsionSeam`
-- **Statement:** `[CONJECTURE]` At every zero `ρ` of `ξ` in the open critical strip, if `m = ordρ(ξ)`, then the continued infinite-prime flux `−ζ′/ζ` has normalized punctured limit `−1`, and this value is exactly the constant jet defining the canonical non-split Fitting boundary in `ℚ[X]/(X^m)`.
+- **Statement:** `[PROVED HERE]` At every zero `ρ` of `ξ` in the open critical strip, if `m = ordρ(ξ)`, then the continued infinite-prime flux `−ζ′/ζ` has normalized punctured limit `−1`, and this value is exactly the constant jet defining the canonical non-split Fitting boundary in `ℚ[X]/(X^m)`.
 
 ## Goal
 
@@ -18,8 +18,8 @@ hypothesis from the arithmetic local model.
 ## Gates
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
-- [ ] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3  formalized: Lean theorem `infinitePrimeFlux_fitting_attachment_of_mem_strip`, `lake build` green, axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Approach
@@ -44,3 +44,4 @@ non-split seam without replacing it by a split diagonal presentation.
 ## Log
 
 - 2026-07-10 — created in 1-in-progress; local `ξ` residue theorem typechecked in scratch.
+- 2026-07-10 — formalized in `CompletedPrimeFluxFittingAttachment.lean`; exact module build and axiom audit passed.  The same module proves pointwise iff-classifications for `HasNontrivialFittingBoundary`, `BoundaryCoeffWitness`, and `HasDeterminantTransverseDefect`.
