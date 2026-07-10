@@ -349,6 +349,8 @@ import GaloisForLFunctions.RHTower.PinnedAffineWeldBoundaryNoGo
 import GaloisForLFunctions.RHTower.PinnedAffineDefectQuotient
 import GaloisForLFunctions.RHTower.PinnedAffineConstantSourceBlindness
 import GaloisForLFunctions.RHTower.PinnedAffinePrimeJetRigidity
+import GaloisForLFunctions.RHTower.FEPairedPrimeJetRigidity
+import GaloisForLFunctions.RHTower.FEPairedPrimeJetBarycentricRigidity
 import GaloisForLFunctions.RHTower.CutoffCochain
 import GaloisForLFunctions.RHTower.ShearedSeamGaugeTrivialization
 import GaloisForLFunctions.RHTower.FESemilinearShearExhaustion
@@ -401,6 +403,7 @@ import GaloisForLFunctions.RHTower.QuadrantRamifiedCover
 import GaloisForLFunctions.RHTower.GoldilocksTrichotomy
 import GaloisForLFunctions.RHTower.QuadrantSeamConservation
 import GaloisForLFunctions.RHTower.LittlewoodXi
+import GaloisForLFunctions.RHTower.ExponentialTypeZeroDensity
 import GaloisForLFunctions.RHTower.DivisorBound
 import GaloisForLFunctions.RHTower.DpolyHelpers
 import GaloisForLFunctions.RHTower.Mollifier
@@ -516,6 +519,7 @@ import GaloisForLFunctions.RHTower.PeriodicSpectrumRigidity
 import GaloisForLFunctions.RHTower.DiscreteSteinhaus
 import GaloisForLFunctions.RHTower.HardyTitchmarshEulerConcrete
 import GaloisForLFunctions.RHTower.ThueMorseMellinFlatness
+import GaloisForLFunctions.RHTower.ThueMorseFlankEnergyDischarge
 import GaloisForLFunctions.RHTower.QuietFlankGrowth
 import GaloisForLFunctions.RHTower.VariablePerronKink
 import GaloisForLFunctions.RHTower.PerronBoundaryCharge

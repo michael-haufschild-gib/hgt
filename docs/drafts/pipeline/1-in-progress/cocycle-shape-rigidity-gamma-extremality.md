@@ -1697,8 +1697,8 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
      The node-polynomial witness proves that this same packet fails at degree `k`. Thus each finite
      quotient succeeds exactly up to its own order and has an unavoidable next-order defect.
 251. **Carrier test made algebraic.** `[PROVED CONSTRAINT CONSEQUENCE]` Repairing the defect by solving
-     a new `k+1` packet changes all interpolation coefficients. Repeating that operation is a
-     cutoff carrier in disguise; it is not an order-independent arithmetic source.
+     a new `k+1` packet must change at least one existing interpolation coefficient. Repeating that
+     operation is a cutoff carrier in disguise; it is not an order-independent arithmetic source.
 252. **New open core.** `[OPEN CORE]` Extract from the fixed Euler--Gamma datum one order-independent
      coefficient sequence and its functional-equation reflection law. Prove that the same
      arithmetic coefficients satisfy all truncations simultaneously, or identify a single
@@ -1715,3 +1715,36 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
   node-polynomial theorem proves the unique order-`k` interpolation fails at the first omitted
   order, making the cutoff-carrier diagnosis exact. The live datum is one fixed cross-order
   compatibility law. Only the edited module and exact target are checked.
+
+## Wave 49 — the first omitted-order defect has a fixed sign
+
+253. **Exact defect formula.** `[PROVED HERE + Lean]` If a `k`-node packet matches the derivation
+     moments below order `k`, then
+     `M_k-delta_(k,1)=-Q_k'(0)`, where `Q_k(X)=prod_i(X+log p_i)`. This strengthens mere
+     nonvanishing to an exact algebraic identity.
+254. **Prime orientation.** `[PROVED HERE + Lean]` For positive prime labels every factor of
+     `Q_k'(0)` is positive, hence the first omitted-order defect has strictly negative real part.
+     Every finite interpolation fails in the same orientation; there is no sign cancellation
+     hidden among finite supports.
+255. **No restriction-compatible repair.** `[PROVED HERE + Lean]` An order-`k` matching packet cannot
+     be extended to an order-`k+1` matching packet by keeping the old coefficients and appending one
+     new coefficient. The zeroth moment forces the appended coefficient to zero, while the exact
+     order-`k` defect remains negative. At least one old coefficient must change.
+256. **Completed-flux attachment audited.** `[BRIDGE / DEMOTED]` The newly formalized normalized
+     `-zeta'/zeta` residue is `-1` at every strip zero, while the separately defined canonical cutoff
+     seam has boundary `[-1]`. No morphism connects them: normalization forces the first scalar and
+     the cutoff presentation defines the second. The card is retained under `3-formalized/not-new`
+     as local residue infrastructure, not promoted as an attachment.
+257. **New open core.** `[OPEN CORE]` The fixed Euler--Gamma constraint must explain the uniformly
+     negative defect without changing earlier coefficients. A genuine arithmetic source cannot be
+     the inverse system of finite Vandermonde solutions, since adjacent solutions are formally
+     incompatible under restriction. Find a non-finite-support relation whose coefficient law is
+     fixed before any zero, order, or cutoff is selected.
+
+## Log (cont. 51)
+
+- 2026-07-10 — wave 49: computed the exact first omitted-order defect and its strictly negative
+  prime orientation, then formalized the impossibility of coefficient-preserving support extension.
+  This upgrades the carrier diagnosis from interpretation to theorem. The concurrent normalized
+  prime-flux/Fitting scalar coincidence was audited and demoted: it compares two forced `-1` values
+  but constructs no arithmetic-to-Fitting map.

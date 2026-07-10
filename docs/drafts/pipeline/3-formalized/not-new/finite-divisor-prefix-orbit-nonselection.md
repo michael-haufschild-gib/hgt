@@ -48,4 +48,4 @@ finite divisor data and not a jet, but a global source-to-divisor selection law.
 
 ## Log
 
-- 2026-07-10 — Paper proof and Lean formalization completed; classified as formalized/not-new after the anti-theatre and dual-gate checks.
+- 2026-07-10 — Paper proof and Lean formalization completed; direct and umbrella builds, axiom audit, and formal lint pass. Classified as formalized/not-new after the anti-theatre and dual-gate checks.

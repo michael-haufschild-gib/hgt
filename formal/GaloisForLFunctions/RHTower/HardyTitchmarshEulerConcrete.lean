@@ -331,4 +331,93 @@ theorem archimedeanPrimeEulerCorner_natPrime_not_isCompactOperator
   archimedeanPrimeEulerCorner_not_isCompactOperator a (p : ℝ) ha (by
     exact_mod_cast hp.one_lt)
 
+/-! ### The one-prime Fredholm seam -/
+
+/-- Every physical one-prime Euler local factor is invertible.  The coefficient
+`p⁻¹ᐟ²` has norm strictly below one, so the inverse is its norm-convergent geometric series. -/
+theorem evenPrimeLocalFactor_isUnit (p : ℝ) (hp : 1 < p) :
+    IsUnit (evenPrimeLocalFactor p hp) := by
+  rw [evenPrimeLocalFactor]
+  refine isUnit_one_sub_of_norm_lt_one
+    (x := ((Real.sqrt p : ℂ)⁻¹) •
+      ((evenDilationUnitary p (zero_lt_one.trans hp)).symm :
+        evenSubspace →L[ℂ] evenSubspace)) ?_
+  have hp0 : 0 < p := zero_lt_one.trans hp
+  have hsqrt0 : 0 < Real.sqrt p := Real.sqrt_pos.2 hp0
+  have hsqrtSq : (Real.sqrt p) ^ 2 = p := by
+    rw [sq, Real.mul_self_sqrt hp0.le]
+  have hsqrt1 : 1 < Real.sqrt p := by nlinarith
+  have hc : ‖(Real.sqrt p : ℂ)⁻¹‖ < 1 := by
+    norm_cast
+    rw [norm_inv, Real.norm_eq_abs, abs_of_pos hsqrt0]
+    exact inv_lt_one_of_one_lt₀ hsqrt1
+  calc
+    ‖((Real.sqrt p : ℂ)⁻¹) •
+        ((evenDilationUnitary p (zero_lt_one.trans hp)).symm :
+          evenSubspace →L[ℂ] evenSubspace)‖
+        ≤ ‖(Real.sqrt p : ℂ)⁻¹‖ *
+            ‖((evenDilationUnitary p (zero_lt_one.trans hp)).symm :
+              evenSubspace →L[ℂ] evenSubspace)‖ :=
+            ContinuousLinearMap.opNorm_smul_le _ _
+    _ ≤ ‖(Real.sqrt p : ℂ)⁻¹‖ * 1 := by
+      gcongr
+      exact (evenDilationUnitary p
+        (zero_lt_one.trans hp)).symm.toLinearIsometry.norm_toContinuousLinearMap_le
+    _ < 1 := by simpa using hc
+
+/-- The concrete spectral local factor is invertible: unitary transport preserves the inverse
+constructed on the even physical carrier. -/
+theorem archimedeanPrimeLocalFactor_isUnit (p : ℝ) (hp : 1 < p) :
+    IsUnit (archimedeanPrimeLocalFactor p) := by
+  rw [← hardyTitchmarshLocalFactor_archimedean_eq p hp,
+    hardyTitchmarshLocalFactor]
+  obtain ⟨v, hv⟩ := evenPrimeLocalFactor_isUnit p hp
+  refine ⟨{
+    val := unitaryPush archimedeanDualHardyTitchmarshUnitary v
+    inv := unitaryPush archimedeanDualHardyTitchmarshUnitary (↑(v⁻¹))
+    val_inv := ?_
+    inv_val := ?_ }, ?_⟩
+  · rw [← unitaryPush_mul]
+    simp
+  · rw [← unitaryPush_mul]
+    simp
+  · simp [hv]
+
+/-- The positive one-prime Euler Gram is invertible. -/
+theorem archimedeanPrimeEulerGram_isUnit (p : ℝ) (hp : 1 < p) :
+    IsUnit (archimedeanPrimeEulerGram p) := by
+  rw [archimedeanPrimeEulerGram]
+  exact (archimedeanPrimeLocalFactor_isUnit p hp).star.mul
+    (archimedeanPrimeLocalFactor_isUnit p hp)
+
+/-- **One-prime Fredholm obstruction.**  Although the Euler Gram is invertible, its commutator
+with the canonical archimedean Hardy--Titchmarsh carrier projection is not compact.  Indeed,
+compactness of the commutator would make its lower corner compact, contradicting the concrete
+noncompact Euler-corner theorem.  Thus the standard Toeplitz/Fredholm index mechanism is already
+outside its compact-commutator domain at one prime. -/
+theorem archimedeanPrimeEuler_projectionCommutator_not_isCompactOperator
+    (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
+    ¬ IsCompactOperator
+      (archimedeanBoundaryCarrierProjection a * archimedeanPrimeEulerGram p -
+        archimedeanPrimeEulerGram p * archimedeanBoundaryCarrierProjection a :
+          ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2) := by
+  let Q := archimedeanBoundaryCarrierProjection a
+  let G := archimedeanPrimeEulerGram p
+  have hQ : IsIdempotentElem Q := by
+    dsimp [Q, archimedeanBoundaryCarrierProjection,
+      hardyTitchmarshCarrierProjection]
+    exact (hardyTitchmarshBoundaryCarrier
+      archimedeanDualHardyTitchmarshUnitary a).isIdempotentElem_starProjection
+  intro hcomm
+  have hleft := hcomm.clm_comp (1 - Q)
+  have hcornerComm : IsCompactOperator ((1 - Q) * (Q * G - G * Q) :
+      ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2) := by
+    simpa only [ContinuousLinearMap.mul_apply, Function.comp_apply] using hleft
+  have hcorner : IsCompactOperator (crossBoundary Q G :
+      ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2) := by
+    rw [crossBoundary_eq_corner_commutator hQ]
+    exact hcornerComm.neg
+  exact archimedeanPrimeEulerCorner_not_isCompactOperator a p ha hp (by
+    simpa [Q, G, archimedeanPrimeEulerCorner] using hcorner)
+
 end RHTower

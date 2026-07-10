@@ -5,13 +5,17 @@ import GaloisForLFunctions.RHTower.RHLadderTheory
 import GaloisForLFunctions.RHTower.CompletedLogDerivStrip
 
 /-!
-# Completed prime flux attached to the canonical Fitting seam
+# Normalized prime-flux residue and canonical Fitting seam scalar
 
 The infinite von Mangoldt source is `-ζ'/ζ` on `Re s > 1`; its meromorphic continuation has
 normalized residue `-1` at every zero in the open critical strip, with no simple-zero hypothesis.
-At the actual `xi` multiplicity depth, this is exactly the constant jet defining the canonical
-non-split Fitting boundary.  Thus nontriviality of the canonical boundary and determinant-transverse
-defect are classified pointwise by `xi ρ = 0`, rather than carried as independent hypotheses.
+At the actual `xi` multiplicity depth, the separately defined canonical cutoff seam also has
+constant boundary jet `[-1]`.
+
+This file proves both statements and the resulting scalar coincidence.  It does **not** construct a
+map from the Euler source into the Fitting quotient: normalization forces the analytic scalar to be
+`-1`, while the canonical seam was defined with boundary `-1`.  The coincidence is bridge
+infrastructure, not a completed attachment or an RH-facing compatibility theorem.
 -/
 
 open Complex Set Metric Filter Topology
@@ -288,8 +292,9 @@ theorem infinitePrimeFlux_frequency_mem_primeLogLattice {n : ℕ}
     Real.log n ∈ GaloisForLFunctions.RHTower.primeLogLattice :=
   GaloisForLFunctions.RHTower.vonMangoldt_freq_mem_primeLogLattice hn
 
-/-- The infinite prime-flux residue and the canonical non-split Fitting boundary are the same `-1`. -/
-theorem infinitePrimeFlux_fitting_attachment_of_mem_strip
+/-- The normalized infinite prime-flux residue and the separately defined canonical non-split
+Fitting boundary have the same scalar value `-1`.  No morphism between the two objects is asserted. -/
+theorem infinitePrimeFlux_fitting_scalar_coincidence_of_mem_strip
     {ρ : ℂ} (hstrip : 0 < ρ.re ∧ ρ.re < 1) (hzero : xi ρ = 0) :
     Tendsto
         (fun z : ℂ => (z - ρ) * infinitePrimeFlux z /

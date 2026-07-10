@@ -41,6 +41,15 @@ vanishes at every prime frequency `-log p_i`, but `Q_k'(0)>0`.  If the packet al
 `k`, weighted evaluation of `Q_k` would equal coefficient extraction `Q_k'(0)`, forcing the positive
 number `Q_k'(0)` to be zero.  No asymptotic or infinite object is needed to locate the first defect.
 
+The defect is computed exactly.  Writing `M_k` for the packet's first omitted moment,
+
+`M_k - delta_(k,1) = -Q_k'(0) < 0`.
+
+Thus every finite interpolation fails with the same real orientation.  Moreover, the order-`k`
+packet cannot be extended to order `k+1` merely by appending one coefficient: the zeroth moment
+would force the appended coefficient to vanish, leaving the strictly negative order-`k` defect
+unrepaired.  At least one previously chosen coefficient must change.
+
 ## Proof
 
 For frequencies `f_i=-log(p_i)` and nonzero weights `w_i=p_i^(-rho)`, the first `k` moments are the
@@ -75,6 +84,10 @@ equality then forces the differential sequence itself to vanish.
 - `[PROVED SHARP BOUNDARY]` A square packet succeeds through exactly the finite quotient it spans
   and necessarily fails at the first omitted order.  The obstruction does not require the prime
   labels to be distinct; distinctness is needed only for uniqueness below the boundary.
+- `[PROVED ORIENTATION]` The first omitted-order defect is the negative positive number
+  `-Q_k'(0)`, not merely a nonzero complex scalar.
+- `[PROVED INCOHERENCE]` Consecutive finite interpolants cannot be compatible under the natural
+  restriction that forgets the new prime coordinate.
 - `[NO FLOW]` The separating datum is one all-orders equality, not a cutoff family, limit, carrier,
   evolution parameter, or propagation rule.
 
@@ -99,9 +112,14 @@ equality then forces the differential sequence itself to vanish.
 - `negativeNodePolynomial_derivative_eval_zero_pos` supplies the positive polynomial witness.
 - `no_finitePrimeMoments_eq_archimedeanDerivation_through_card` proves that `k` prime nodes cannot
   match the derivation through degree `k`, without a distinctness hypothesis.
+- `finitePrimeDerivationInterpolation_nextOrderDefect_eq` computes the exact signed defect
+  `-Q_k'(0)`.
+- `finitePrimeDerivationInterpolation_nextOrderDefect_re_neg` proves its real part is strictly
+  negative for positive prime labels.
+- `no_finitePrimeDerivationInterpolation_coefficientPreserving_extension` proves that a matching
+  order-`k` packet cannot be extended by appending a coefficient while preserving the old ones.
 - `existsUnique_finitePrimeDerivationInterpolation_with_nextOrderDefect` combines finite
-  Vandermonde existence and uniqueness with the node-polynomial obstruction: the unique matching
-  packet through degree `k-1` fails at degree `k`.
+  Vandermonde existence and uniqueness with the exact signed node-polynomial obstruction.
 - `no_finitePrimeMoments_eq_archimedeanDerivationMoment` is now a corollary for the derivation moment
   `delta_(n,1)`, rather than an isolated calculation.
 
@@ -115,7 +133,8 @@ The implementation is
 prime--archimedean weld relation simultaneously.  Any argument confined to a finite local quotient
 is now proved incapable of distinguishing the two sectors.  More sharply, every separately solved
 order-`k` packet acquires a nonzero defect at order `k`; choosing a new packet to repair that defect
-is precisely the cutoff-carrier construction forbidden by the mission.
+must alter old coefficients and is precisely the cutoff-carrier construction forbidden by the
+mission.
 
 The next theorem must therefore state an order-independent compatibility law on a single arithmetic
 source and show that functional-equation reflection turns its failure into a nonzero pinned-affine
