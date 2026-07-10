@@ -85,6 +85,7 @@ import GaloisForLFunctions.C5JensenPerturbation
 import GaloisForLFunctions.FunctionFieldDegeneration
 import GaloisForLFunctions.DifferentialABP
 import GaloisForLFunctions.DifferentialIndependence
+import GaloisForLFunctions.DifferenceDifferential
 import GaloisForLFunctions.PTInvolution
 import GaloisForLFunctions.PeriodRigidity
 import GaloisForLFunctions.RankThreePeriods

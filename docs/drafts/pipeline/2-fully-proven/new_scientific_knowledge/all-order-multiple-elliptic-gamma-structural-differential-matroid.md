@@ -561,18 +561,20 @@ placeholder hypotheses.
 
 ## Stronger structural boundary
 
-The simplex skeleton is not essential. The same induction works for any finite pure
+The simplex skeleton is not essential. The same induction works for any finite
 downward-closed face complex in which every nonmaximal face has two distinct immediate coface
 directions, provided maximal-face orbits are atomic and the same joint-constant and one-slice
-hypotheses hold. A useful intrinsic sufficient condition is that the maximal faces form a pure
-ridge-thick complex: every
+hypotheses hold. Purity is unnecessary: first glue all maximal faces by nested-star induction on
+their inclusion antichain, then descend through nonmaximal faces by cardinality. A useful intrinsic
+sufficient condition for two-thickness is that the maximal faces form a pure ridge-thick complex: every
 codimension-one face lies in at least two maximal faces. Lower-codimension faces obtain two
 directions inside one maximal face, while ridges obtain them from the two incident maximal faces.
 
 The resulting operator module is the localized Stanley--Reisner ring of that complex, not merely
 the `(r-2)`-skeleton of a simplex. This generalization is recorded separately as
-`simplicial-constraint-tower-stanley-reisner-matroid`. Its key pure/ridge-thick implication is
-already an unconditional Lean theorem in `GaloisForLFunctions.SimplicialConstraintTower`.
+`simplicial-constraint-tower-stanley-reisner-matroid`. Its pure/ridge-thick implication and the
+nonpure maximal-antichain termination step are already unconditional Lean theorems in
+`GaloisForLFunctions.SimplicialConstraintTower`.
 
 ## Significance gate
 
@@ -591,6 +593,8 @@ input, not a surrogate for the special-function theorem:
 ```text
 exists_two_coface_directions_of_pure_ridgeThick
 ridgeThick_uniformFacets
+twoThick_of_pure_ridgeThick
+exists_fresh_vertex_of_facetAntichain_star_nontrivial
 ```
 
 The remaining formal dependency chain is substantive:
@@ -600,14 +604,18 @@ The remaining formal dependency chain is substantive:
    definition and its first preservation theorems now exist in
    `GaloisForLFunctions.DifferentialIndependence`;
 2. several-automorphism parameterized Picard--Vessiot rings and the additive simultaneous
-   telescoping theorem, including constant extension and descent;
+   telescoping theorem, including constant extension and descent; the commuting
+   difference-differential field interface, differential-operator commutation, cocycle
+   compatibility, and common-primitive consequence are now proved in
+   `GaloisForLFunctions.DifferenceDifferential`, while the converse existence theorem remains;
 3. meromorphic periodicity, nondiscrete-period constant collapse, elliptic curves, elliptic
    function fields, tensor-product injectivity, and specialization; continuous constancy under a
    dense additive period subgroup and differentiable constancy under arbitrarily small nonzero
    periods and meromorphic-normal-form constancy under those periods are now proved in
-   `GaloisForLFunctions.PeriodRigidity`. A rank-three subgroup of `C` need only be nondiscrete; the
-   remaining steps are to construct the small periods from rank three and package the meromorphic
-   fixed field in normal form;
+   `GaloisForLFunctions.PeriodRigidity`. A rank-three subgroup of `C` need only be nondiscrete.
+   `GaloisForLFunctions.RankThreePeriods` proves nondiscreteness from three `Q`-linearly independent
+   periods, constructs small nonzero periods, and proves normal-form meromorphic constancy. The
+   remaining analytic step is to package the actual meromorphic fixed field in normal form;
 4. theta logarithmic derivatives, elliptic gamma, the multiple-elliptic-gamma hierarchy, and their
    exact functional equations;
 5. elliptic principal parts and the non-torsion orbit-residue obstruction;
@@ -633,7 +641,8 @@ the formal lint passes, and `#print axioms` reports only Lean's standard logical
 - [x] adversarial paper-proof audit of every all-order implication
 - [x] primary-source audit of the several-automorphism simultaneous telescoper
 - [x] adversarial paper audit of the generic order-one atomic parent
-- [x] pure ridge-thick generalization isolated and its two-coface lemma formalized in Lean
+- [x] arbitrary finite two-thick generalization isolated; pure ridge-thick sufficiency and nonpure
+  maximal-antichain termination formalized in Lean
 - [ ] independent proof audit
 - [ ] independent specialist priority audit
 - [ ] full unconditional Lean formalization of the concrete theorem

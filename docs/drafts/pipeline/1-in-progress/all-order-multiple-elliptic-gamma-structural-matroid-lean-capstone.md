@@ -74,8 +74,21 @@ complex-differentiable function invariant under a sequence of nonzero periods te
 constant; this covers nondiscrete period groups whose closure is not all of `ℂ`. The remaining
 meromorphic step is also proved for `MeromorphicNFOn`: translation invariance preserves
 meromorphic order, isolated poles cannot recur along periods tending to zero, and the resulting
-pole-free function reduces to the differentiable theorem. What remains is the rank-three
-small-period construction and normal-form field packaging.
+pole-free function reduces to the differentiable theorem.
+
+`formal/GaloisForLFunctions/RankThreePeriods.lean` proves that the integer span of three
+`Q`-linearly independent complex periods is nondiscrete, extracts nonzero periods converging to
+zero, and composes this with normal-form meromorphic rigidity. Thus the analytic joint-constant
+collapse used by the paired system is now unconditional in Lean. Normal-form function-field
+packaging remains.
+
+`formal/GaloisForLFunctions/DifferenceDifferential.lean` defines several commuting field
+automorphisms which fix the coefficient field and commute with the derivation. It proves that
+constant-coefficient differential operators commute with all difference defects, that compatible
+primitive systems satisfy the pairwise cocycle equations, and that one differential-linear
+relation yields one common primitive in every simultaneous telescoping equation. The converse
+existence theorem from differential dependence still requires the parameterized
+Picard--Vessiot/Ostrowski--Kolchin layer and constant descent.
 
 This is the first real dependency of the strengthened theorem. It is not evidence that the
 analytic capstone is already formalized.
@@ -88,7 +101,9 @@ analytic capstone is already formalized.
 - [x] continuous dense-period subcase implemented and built
 - [x] differentiable small-period constancy theorem implemented and built
 - [x] meromorphic-normal-form small-period constancy theorem implemented and built
-- [ ] differential algebra foundation
+- [x] rank-three nondiscreteness, small-period extraction, and meromorphic constancy implemented
+- [x] commuting difference-differential field and common-telescoper algebraic interface implemented
+- [ ] complete differential algebra foundation, including differential transcendence degree
 - [ ] multi-automorphism parameterized Picard--Vessiot foundation
 - [ ] unconditional simultaneous telescoping
 - [ ] meromorphic and elliptic function-field foundation
@@ -108,3 +123,8 @@ analytic capstone is already formalized.
   proof standard.
 - 2026-07-10 -- Formalized the pure ridge-thick two-coface theorem and the uniform-skeleton
   instance as the first dependency of the stronger constraint-tower theorem.
+- 2026-07-10 -- Corrected rank-three density to nondiscreteness and formalized the exact
+  small-period meromorphic constant collapse.
+- 2026-07-10 -- Formalized the multi-automorphism difference-differential interface and the
+  common-primitive consequence of a differential-linear relation; the hard converse PPV theorem
+  remains open.
