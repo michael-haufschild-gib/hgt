@@ -219,6 +219,14 @@ theorem boxZeros_empty_of_windowLinePackage {T : ℝ}
     (h : WindowLinePackage T) : boxZeros T = ∅ :=
   boxZeros_empty_of_emCarrier_sign_certificates h
 
+/-- An on-line ball cover empties the right-half window directly; the vacuous
+`WindowLinePackage` interface is constructed internally. -/
+theorem boxZeros_empty_of_ball_online_cover {T : ℝ}
+    (h : ∀ ρ ∈ boxZeros T, ∃ a R, ρ ∈ ball a R ∧
+      ∀ p ∈ ball a R, xi p = 0 → p.re = 1 / 2) :
+    boxZeros T = ∅ :=
+  boxZeros_empty_of_windowLinePackage (windowLinePackage_of_ball_online_cover h)
+
 /-- **The cofinal producer, ladder form**: line-data packages on a cofinal family of heights
 force every rung. -/
 theorem rhLadder_of_cofinal_windowLinePackages {k : ℕ}
@@ -235,5 +243,15 @@ theorem rh_of_cofinal_windowLinePackages
     (h : ∀ N : ℝ, ∃ T, N ≤ T ∧ WindowLinePackage T) : RiemannHypothesis := by
   rw [rh_iff_forall_ladder]
   exact fun _ => rhLadder_of_cofinal_windowLinePackages h
+
+/-- **RH from on-line ball covers, without a window-package or ladder interface.**  If every
+right-half candidate in every height window lies in a ball whose `xi`-zeros are all on the
+critical line, then every rung follows and hence RH holds. -/
+theorem rh_of_ball_online_covers
+    (h : ∀ T : ℝ, ∀ ρ ∈ boxZeros T, ∃ a R, ρ ∈ ball a R ∧
+      ∀ p ∈ ball a R, xi p = 0 → p.re = 1 / 2) :
+    RiemannHypothesis := by
+  rw [rh_iff_forall_ladder]
+  exact fun k => rhLadder_of_ball_online_covers k h
 
 end RHTower

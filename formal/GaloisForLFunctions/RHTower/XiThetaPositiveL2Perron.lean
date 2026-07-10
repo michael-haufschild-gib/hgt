@@ -173,6 +173,27 @@ theorem xiThetaPositiveSourcePerronCharge_tendsto_zero
   zeroSupportedSourcePerronCharge_tendsto_zero xiThetaPositiveSourceL2
     xiThetaPositiveSourceL2_hasAELowerSupport hn hδ0 hδn hgap
 
+/-- **Exact theta-source seam splitting from pointwise carrier masses.**  The concrete positive
+theta source discharges lower support, vertical `L²` energy constructs its canonical cross-line
+defect, and horizontal mass constructs boundary escape. -/
+theorem xiThetaCoefficient_eq_sourceCharge_add_canonicalSeamResidue_of_carrierL2StripMassAt
+    {F : ℂ → ℂ} {c δ B : ℝ} {coeff : ℕ → ℂ} {n M : ℕ}
+    (henergy : HasPerronCarrierFlankL2EnergyAt F M B)
+    (hhorizontal : HasPerronCarrierHorizontalMassAt F c M)
+    (hc0 : 0 < c) (hsum : LSeriesSummable coeff c) (hF : Differentiable ℂ F)
+    (hFeq : ∀ s : ℂ, c ≤ s.re → F s = LSeries coeff s)
+    (hn : 1 ≤ n) (hM : 2 ≤ M) (hδ0 : 0 < δ) (hδ1 : δ < 1)
+    (hδn : δ < (n : ℝ)) :
+    coeff n * (δ : ℂ) =
+      negativeMellinSourcePerronCharge xiThetaPositiveSourceL2 0
+          xiThetaPositiveSourceL2_hasAELowerSupport M n δ +
+        perronMellinSeamResidue
+          (canonicalCrossLineMellinDefect F xiThetaPositiveSourceL2 0
+            xiThetaPositiveSourceL2_hasAELowerSupport) M n δ :=
+  coefficient_eq_sourceCharge_add_canonicalSeamResidue_of_carrierL2StripMassAt
+    xiThetaPositiveSourceL2_hasAELowerSupport henergy hhorizontal hc0 hsum hF hFeq
+      hn hM hδ0 hδ1 hδn
+
 /-- **Canonical theta-seam coefficient recovery.**  If a Dirichlet carrier has the completed
 vertical `L²` energy and horizontal escape required by the Perron contour, its canonical defect
 relative to the actual positive theta source recovers every coefficient beyond unit radius.  The

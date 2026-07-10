@@ -187,6 +187,41 @@ theorem carrierFloorOn_closedBall_of_center (N : ℕ) {ρ₀ : ℂ} {R t₀ t₁
   · rw [← dirichletPoly_eq_dpoly2]; exact hcenter
   · rw [hsum]; exact hbudget
 
+/-- **Raw EM domination on a ball from one center floor.**  Ball spreading constructs the LOW
+interface internally, leaving only the center value, variation, reflection, EM-error, and
+finite-carrier-closeness inequalities. -/
+theorem raw_domination_of_emCarrier_close_center_ball
+    {N M : ℕ} {ρ₀ : ℂ} {R t₀ t₁ ε₁ δ : ℝ}
+    (hR : 0 ≤ R)
+    (hcenter : t₀ < ‖dirichletPoly N ρ₀‖)
+    (hbudget :
+      (∑ n ∈ Finset.Icc 1 N, Real.log n * (n : ℝ) ^ (-(ρ₀.re - R))) * R ≤ t₀ - t₁)
+    (hrefl : ∀ z ∈ closedBall ρ₀ R,
+      ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ t₁ - (ε₁ + δ))
+    (hE : ∀ z ∈ closedBall ρ₀ R, ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ closedBall ρ₀ R, ‖emCarrier M z - gN N z‖ ≤ δ) :
+    ∀ z ∈ closedBall ρ₀ R,
+      ‖z‖ * (M : ℝ) ^ (-z.re) / z.re + ‖emCarrier M z - gN N z‖ < ‖gN N z‖ :=
+  raw_domination_of_emCarrier_close_floor hE hclose
+    (carrierFloorOn_closedBall_of_center N hR hcenter hbudget hrefl)
+
+/-- **Completed-carrier domination on a ball from one center floor.**  No AFE or LOW Prop remains
+once the concrete center-floor and EM estimates are supplied. -/
+theorem completed_domination_of_emCarrier_close_center_ball
+    {N M : ℕ} (hM : 1 ≤ M) {ρ₀ : ℂ} {R t₀ t₁ ε₁ δ : ℝ}
+    (hR : 0 ≤ R)
+    (hstrip : ∀ z ∈ closedBall ρ₀ R, 0 < z.re ∧ z.re < 1)
+    (hcenter : t₀ < ‖dirichletPoly N ρ₀‖)
+    (hbudget :
+      (∑ n ∈ Finset.Icc 1 N, Real.log n * (n : ℝ) ^ (-(ρ₀.re - R))) * R ≤ t₀ - t₁)
+    (hrefl : ∀ z ∈ closedBall ρ₀ R,
+      ‖zetaChi z * dirichletPoly N (1 - z)‖ ≤ t₁ - (ε₁ + δ))
+    (hE : ∀ z ∈ closedBall ρ₀ R, ‖z‖ * (M : ℝ) ^ (-z.re) / z.re ≤ ε₁)
+    (hclose : ∀ z ∈ closedBall ρ₀ R, ‖emCarrier M z - gN N z‖ ≤ δ) :
+    ∀ z ∈ closedBall ρ₀ R, ‖xi z - completedGN N z‖ < ‖completedGN N z‖ :=
+  completed_domination_of_emCarrier_close_floor hM hstrip hE hclose
+    (carrierFloorOn_closedBall_of_center N hR hcenter hbudget hrefl)
+
 /-- **Both circle-gate floor data from one center floor.** The single center floor produces
 `CarrierFloorOn` on the annulus charts `chartRA ∪ chartLA` AND on the two boundary circles
 `sphere r₀ ∪ sphere R` simultaneously — the exact pair the circle-data pinning gate

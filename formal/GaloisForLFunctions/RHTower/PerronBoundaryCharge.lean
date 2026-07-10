@@ -259,5 +259,14 @@ theorem HasPerronStripMassAt.hasPerronBoundaryChargeAt
             setIntegral_le_integral hleftInt (Eventually.of_forall fun _ => norm_nonneg _)
       _ ≤ L := hleftBound
 
+/-- **Right-edge Perron bound directly from strip mass.**  The strip-mass producer constructs
+boundary charge internally, so the charge Prop is absent from the public theorem. -/
+theorem perron_right_integral_norm_le_of_stripMassAt
+    {F : ℂ → ℂ} {c : ℝ} {n M : ℕ} {δ L : ℝ}
+    (hF : Differentiable ℂ F) (hE : Differentiable ℂ (perronEAt n δ))
+    (hmass : HasPerronStripMassAt F c n δ M L) :
+    ‖∫ y : ℝ, perronContourIntegrand F n δ (↑c + ↑y * I)‖ ≤ L :=
+  perron_right_integral_norm_le_of_boundaryChargeAt hF hE
+    (HasPerronStripMassAt.hasPerronBoundaryChargeAt hF hE hmass)
 
 end RHTower

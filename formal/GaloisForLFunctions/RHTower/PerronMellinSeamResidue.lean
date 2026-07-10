@@ -426,6 +426,27 @@ theorem coefficient_eq_sourceCharge_add_seamResidue_of_defectAt
   simpa only [negativeMellinSourcePerronCharge, perronMellinSeamResidue,
     T, D, E, smul_add] using hrepr
 
+/-- **One-depth coefficient splitting from horizontal carrier mass.**  The weighted horizontal
+mass constructs boundary escape internally, so the escape Prop disappears from the public
+statement. -/
+theorem coefficient_eq_sourceCharge_add_seamResidue_of_defectAt_carrierHorizontalMassAt
+    {F : ℂ → ℂ} {g : SoninL2} {τ c δ : ℝ} {coeff : ℕ → ℂ}
+    {Δ : ℕ → SoninL2} {n M : ℕ}
+    (hsupp : HasAELowerSupport (fun t => g t) τ)
+    (hdef : HasCrossLineMellinDefectAt F g τ hsupp Δ M)
+    (hhorizontal : HasPerronCarrierHorizontalMassAt F c M)
+    (hc0 : 0 < c) (hsum : LSeriesSummable coeff c) (hF : Differentiable ℂ F)
+    (hFeq : ∀ s : ℂ, c ≤ s.re → F s = LSeries coeff s)
+    (hn : 1 ≤ n) (hM : 2 ≤ M) (hδ0 : 0 < δ) (hδ1 : δ < 1)
+    (hδn : δ < (n : ℝ)) :
+    coeff n * (δ : ℂ) =
+      negativeMellinSourcePerronCharge g τ hsupp M n δ +
+        perronMellinSeamResidue Δ M n δ :=
+  coefficient_eq_sourceCharge_add_seamResidue_of_defectAt hsupp hdef
+    (hasPerronBoundaryEscapeAt_of_carrierHorizontalMassAt
+      hhorizontal hc0 hsum hF hFeq hn hδ0 hδn)
+    hc0 hsum hF hFeq hn hM hδ0 hδ1 hδn
+
 /-- **Exact coefficient charge splitting.**  At every depth with boundary escape, the arithmetic
 coefficient charge is the sum of the lower-supported source charge and the seam residue. -/
 theorem coefficient_eq_sourceCharge_add_seamResidue
@@ -443,6 +464,24 @@ theorem coefficient_eq_sourceCharge_add_seamResidue
         perronMellinSeamResidue Δ M n δ :=
   coefficient_eq_sourceCharge_add_seamResidue_of_defectAt hsupp (hdef M) hescape
     hc0 hsum hF hFeq hn hM hδ0 hδ1 hδn
+
+/-- **All-depth coefficient splitting from horizontal carrier mass.**  The cross-line defect may
+be supplied at every depth, but boundary escape is no longer an independent interface. -/
+theorem coefficient_eq_sourceCharge_add_seamResidue_of_carrierHorizontalMassAt
+    {F : ℂ → ℂ} {g : SoninL2} {τ c δ : ℝ} {coeff : ℕ → ℂ}
+    {Δ : ℕ → SoninL2} {n M : ℕ}
+    (hsupp : HasAELowerSupport (fun t => g t) τ)
+    (hdef : HasCrossLineMellinDefect F g τ hsupp Δ)
+    (hhorizontal : HasPerronCarrierHorizontalMassAt F c M)
+    (hc0 : 0 < c) (hsum : LSeriesSummable coeff c) (hF : Differentiable ℂ F)
+    (hFeq : ∀ s : ℂ, c ≤ s.re → F s = LSeries coeff s)
+    (hn : 1 ≤ n) (hM : 2 ≤ M) (hδ0 : 0 < δ) (hδ1 : δ < 1)
+    (hδn : δ < (n : ℝ)) :
+    coeff n * (δ : ℂ) =
+      negativeMellinSourcePerronCharge g τ hsupp M n δ +
+        perronMellinSeamResidue Δ M n δ :=
+  coefficient_eq_sourceCharge_add_seamResidue_of_defectAt_carrierHorizontalMassAt
+    hsupp (hdef M) hhorizontal hc0 hsum hF hFeq hn hM hδ0 hδ1 hδn
 
 /-- **Arithmetic tail recovery by the seam.**  If `n-δ` lies beyond the reciprocal Sonin cutoff,
 the Perron--Mellin seam residue converges exactly to `δ * coeff n`.  No geometric norm bound on the

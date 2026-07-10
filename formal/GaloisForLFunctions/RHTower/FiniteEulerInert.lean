@@ -217,3 +217,61 @@ theorem finiteEulerClass_not_forcesRHParity (P : Finset ℕ) (hP : ∀ p ∈ P, 
   exact fun hcat => hcat (plantsArbitrary_imp_carriesCharge (finiteEulerClass_isSoft P hP))
 
 end RHTower
+
+namespace RHTower
+
+open Complex
+
+/-- **No height amplification from a finite Euler head.**  For every nonnegative height `H`, every
+larger height `U`, and every finite bundle of genuine local Euler factors, there is a member of the
+finite-Euler-decorated functional-equation class that has no zero in the upper open critical strip
+through height `H`, but has an off-critical-line zero strictly between heights `H` and `U`.
+
+The witness is the finite Euler bundle times a `V₄`-orbit quartic centered at real part `1/4` and
+height `(H + U) / 2`.  The bundle is zero-free on the strip, while the quartic's only upper-half-plane
+zeros are its two reflected points at that chosen height. -/
+theorem finiteEulerClass_no_height_amplification
+    (P : Finset ℕ) (hP : ∀ p ∈ P, 1 < p) {H U : ℝ}
+    (hH0 : 0 ≤ H) (hHU : H < U) :
+    ∃ f : ℂ → ℂ,
+      FiniteEulerClass P f ∧
+      (∀ z : ℂ, 0 < z.re → z.re < 1 → 0 < z.im → z.im ≤ H → f z ≠ 0) ∧
+      ∃ ρ : ℂ,
+        0 < ρ.im ∧ H < ρ.im ∧ ρ.im < U ∧ 0 < ρ.re ∧ ρ.re < 1 ∧
+          ρ.re ≠ 1 / 2 ∧ f ρ = 0 := by
+  let c : ℝ := (H + U) / 2
+  let ρ : ℂ := (1 / 4 : ℂ) + (c : ℂ) * I
+  let f : ℂ → ℂ := fun s => feBundle P s * orbitQuartic ρ s
+  have hHc : H < c := by dsimp [c]; linarith
+  have hcU : c < U := by dsimp [c]; linarith
+  refine ⟨f, ?_, ?_, ρ, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact ⟨orbitQuartic ρ, fESchwarz_orbitQuartic ρ, fun s => rfl⟩
+  · intro z hz0 hz1 hzim hzimH hfz
+    have hb : feBundle P z ≠ 0 := feBundle_ne_zero_on_strip P hP hz0 hz1
+    have hq : orbitQuartic ρ z = 0 := (mul_eq_zero.mp hfz).resolve_left hb
+    simp only [orbitQuartic, mul_eq_zero, sub_eq_zero] at hq
+    rcases hq with hzr | hrest
+    · subst z
+      have : ρ.im = c := by simp [ρ]
+      linarith
+    · rcases hrest with hbc | hzr
+      · rcases hbc with hzr | hzr
+        · subst z
+          have : (1 - ρ).im = -c := by simp [ρ]
+          linarith
+        · subst z
+          have : ((starRingEnd ℂ) ρ).im = -c := by simp [ρ]
+          linarith
+      · subst z
+        have : (1 - (starRingEnd ℂ) ρ).im = c := by simp [ρ]
+        linarith
+  · simp [ρ]
+    linarith
+  · simp [ρ, hHc]
+  · simp [ρ, hcU]
+  · norm_num [ρ]
+  · norm_num [ρ]
+  · norm_num [ρ]
+  · simp [f, orbitQuartic]
+
+end RHTower

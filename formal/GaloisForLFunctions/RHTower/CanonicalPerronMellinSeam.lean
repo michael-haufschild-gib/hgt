@@ -90,6 +90,45 @@ theorem eventually_memLp_negativeLine_of_flankL2Energy
     (hF.continuous.comp (by fun_prop)).aestronglyMeasurable
   exact (memLp_two_iff_integrable_sq_norm hmeas).2 hM.1
 
+/-- One-depth vertical `L²` energy gives the exact `MemLp` datum used by the canonical seam. -/
+theorem memLp_negativeLine_of_flankL2EnergyAt
+    {F : ℂ → ℂ} {M : ℕ} {B : ℝ} (hF : Differentiable ℂ F)
+    (henergy : HasPerronCarrierFlankL2EnergyAt F M B) :
+    MemLp (fun t : ℝ => F (↑(-(M : ℝ)) + ↑t * I)) 2 volume := by
+  have hmeas : AEStronglyMeasurable
+      (fun t : ℝ => F (↑(-(M : ℝ)) + ↑t * I)) :=
+    (hF.continuous.comp (by fun_prop)).aestronglyMeasurable
+  exact (memLp_two_iff_integrable_sq_norm hmeas).2 henergy.1
+
+/-- Vertical `L²` energy constructs the canonical one-depth cross-line defect, eliminating the
+defect Prop from callers. -/
+theorem hasCrossLineMellinDefectAt_canonical_of_flankL2EnergyAt
+    {F : ℂ → ℂ} {g : SoninL2} {τ : ℝ}
+    (hsupp : HasAELowerSupport (fun t => g t) τ) {M : ℕ} {B : ℝ}
+    (hF : Differentiable ℂ F) (henergy : HasPerronCarrierFlankL2EnergyAt F M B) :
+    HasCrossLineMellinDefectAt F g τ hsupp
+      (canonicalCrossLineMellinDefect F g τ hsupp) M :=
+  hasCrossLineMellinDefectAt_canonical hsupp
+    (memLp_negativeLine_of_flankL2EnergyAt hF henergy)
+
+/-- **Exact canonical seam splitting from the two carrier masses.**  Vertical `L²` energy builds
+the cross-line defect and horizontal mass builds boundary escape, so neither interface is exposed. -/
+theorem coefficient_eq_sourceCharge_add_canonicalSeamResidue_of_carrierL2StripMassAt
+    {F : ℂ → ℂ} {g : SoninL2} {τ c δ B : ℝ} {coeff : ℕ → ℂ}
+    {n M : ℕ} (hsupp : HasAELowerSupport (fun t => g t) τ)
+    (henergy : HasPerronCarrierFlankL2EnergyAt F M B)
+    (hhorizontal : HasPerronCarrierHorizontalMassAt F c M)
+    (hc0 : 0 < c) (hsum : LSeriesSummable coeff c) (hF : Differentiable ℂ F)
+    (hFeq : ∀ s : ℂ, c ≤ s.re → F s = LSeries coeff s)
+    (hn : 1 ≤ n) (hM : 2 ≤ M) (hδ0 : 0 < δ) (hδ1 : δ < 1)
+    (hδn : δ < (n : ℝ)) :
+    coeff n * (δ : ℂ) =
+      negativeMellinSourcePerronCharge g τ hsupp M n δ +
+        perronMellinSeamResidue (canonicalCrossLineMellinDefect F g τ hsupp) M n δ :=
+  coefficient_eq_sourceCharge_add_seamResidue_of_defectAt_carrierHorizontalMassAt
+    hsupp (hasCrossLineMellinDefectAt_canonical_of_flankL2EnergyAt hsupp hF henergy)
+    hhorizontal hc0 hsum hF hFeq hn hM hδ0 hδ1 hδn
+
 /-- **Canonical seam coefficient recovery.**  Flank `L²` energy constructs the cross-line defect
 internally; its normalized Perron coordinate converges to the Dirichlet coefficient beyond the
 source radius.  No defect or coherence Prop remains. -/

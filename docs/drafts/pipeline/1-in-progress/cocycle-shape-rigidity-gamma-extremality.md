@@ -1416,3 +1416,39 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
 - 2026-07-10 — wave 40: attacked the integral Tate proposal against prior Lean work and the novelty
   gate, identified it with the existing fixed-point-free pairing parity theorem, and retired the RH
   interface as circular. The correct algebra remains formalized; the scientific claim is downgraded.
+
+## Wave 41 — the two ordered scalar identifications are gauge-trivial
+
+198. **Correct local object.** `[PROVED HERE + Lean]` At a critical-line two-point orbit, FE and
+     Schwarz are two arrows between the same complex germ lines. Their relative composite is an
+     anti-linear involution `z -> a*conj(z)` with `a*conj(a)=1`.
+199. **Fixed-orbit Hilbert-90 collapse.** `[PROVED HERE + Lean]` Every such coefficient is killed by
+     an explicit complex basis gauge (`b=1+a` unless `a=-1`, when `b=i`). A compatible basis at the
+     partner germ simultaneously normalizes both FE and Schwarz coefficients to one. In particular
+     the leading-jet phase `(-1)^m` is not an invariant without an independently supplied real
+     orientation.
+200. **Free-orbit flat-square collapse.** `[PROVED HERE + Lean]` On a free four-point orbit, choose
+     vertex bases along three edges of the FE/Schwarz square. Exact commutation normalizes the fourth
+     edge; the would-be projective multiplier is identically one. A nontrivial multiplier would be
+     inserted projective data, not a residue of the completed scalar equations.
+201. **Detector exhaustion.** `[PROVED HERE + Lean]` Every scalar detector invariant under the
+     natural germ-basis gauges is constant on fixed-orbit data and constant on free-orbit data.
+     Hence it factors through a Boolean carrying only fixed/free orbit shape. Comparing the two
+     scalar identifications yields no refinement of orbit cardinality. Complete proof:
+     `../2-fully-proven/new/fe-schwarz-germ-gluing-gauge-trivialization.md`.
+202. **Dual-gate verdict.** `[PROVED NATIVE NO-GO]` Rank-one Hilbert 90 is standard infrastructure;
+     the new branch-level result is the exhaustive application to both FE/Schwarz orbit shapes and
+     to every gauge-invariant scalar detector. It closes the precise ordered-gluing interface left
+     by wave 40.
+203. **New open core.** `[OPEN CORE]` Derive from the completed arithmetic datum a nontrivial
+     reduction of the complex germ-basis gauge group—a prime grading together with a lattice,
+     filtration, or pairing—which is not merely the integral orbit-parity residue. Higher rank
+     without such a reduction remains gauge data, while the bare prime character
+     `p -> p^(1-2 Re rho)` merely encodes the target location and is a hidden-flow/RH reformulation.
+
+## Log (cont. 43)
+
+- 2026-07-10 — wave 41: classified the separate scalar FE and Schwarz gluing arrows on fixed and
+  free zero orbits, proved their complete gauge trivialization and exact absence of a projective
+  multiplier, and formalized factorization of every scalar gauge-invariant detector through orbit
+  shape. Only the new module was compiled and axiom-audited; no project-wide lint or full build ran.

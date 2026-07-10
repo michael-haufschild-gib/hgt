@@ -61,6 +61,18 @@ theorem defectFactorsThrough_of_m_zero
     (S : TorsionSeamPresentation Sigma n R 0) (p : Sigma) : S.DefectFactorsThrough p :=
   ⟨0, S.Delta p, by simp⟩
 
+/-- At the unit divisor `m = 0`, every seam boundary class vanishes; the intermediate
+factor-through Prop is discharged by the canonical factorization. -/
+theorem boundaryClass_eq_zero_of_m_zero
+    (S : TorsionSeamPresentation Sigma n R 0) (p : Sigma) : S.boundaryClass p = 0 :=
+  boundaryClass_eq_zero_of_defectFactorsThrough S (defectFactorsThrough_of_m_zero S p)
+
+/-- At the unit divisor `m = 0`, every boundary trace is divisible by `X⁰`; no fake-defect
+interface remains. -/
+theorem boundaryTraceDivisible_of_m_zero
+    (S : TorsionSeamPresentation Sigma n R 0) (p : Sigma) : S.BoundaryTraceDivisible p :=
+  boundaryTraceDivisible_of_defectFactorsThrough S (defectFactorsThrough_of_m_zero S p)
+
 /-- No defect is non-fake at `m = 0`. -/
 theorem no_defectNonmember_of_m_zero
     (S : TorsionSeamPresentation Sigma n R 0) (p : Sigma) : ¬ S.DefectNonmember p :=

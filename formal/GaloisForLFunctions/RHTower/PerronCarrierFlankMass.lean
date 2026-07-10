@@ -298,6 +298,35 @@ theorem HasPerronCarrierFlankL2EnergyAt.hasPerronCarrierFlankMassAt
       · exact Real.sqrt_nonneg _
       · exact le_trans (Real.sqrt_nonneg _) henergy.2
 
+/-- **Pointwise Perron charge from vertical `L²` energy.**  The weighted flank-mass Prop is
+constructed internally by Cauchy--Schwarz, leaving only the concrete energy and boundary-escape
+data. -/
+theorem hasPerronBoundaryChargeAt_of_escape_of_carrierFlankL2EnergyAt
+    {F : ℂ → ℂ} {c δ B : ℝ} {n M : ℕ}
+    (hF : Differentiable ℂ F) (hn : 1 ≤ n) (hM : 2 ≤ M)
+    (hδ0 : 0 < δ) (hδn : δ < (n : ℝ))
+    (hescape : HasPerronBoundaryEscapeAt F c n δ M)
+    (henergy : HasPerronCarrierFlankL2EnergyAt F M B) :
+    HasPerronBoundaryChargeAt F c n δ M
+      (4 * perronSupportScaleAt n δ ^ (1 - (M : ℝ)) * (B * Real.sqrt Real.pi)) :=
+  hasPerronBoundaryChargeAt_of_escape_of_carrierFlankMassAt hF hn hM hδ0 hδn hescape
+    (HasPerronCarrierFlankL2EnergyAt.hasPerronCarrierFlankMassAt hF henergy)
+
+/-- **Right-edge Perron bound from vertical `L²` energy.**  Both the intermediate flank-mass and
+boundary-charge interfaces are discharged. -/
+theorem perron_right_integral_norm_le_of_escape_of_carrierFlankL2EnergyAt
+    {F : ℂ → ℂ} {c δ B : ℝ} {n M : ℕ}
+    (hF : Differentiable ℂ F) (hn : 1 ≤ n) (hM : 2 ≤ M)
+    (hδ0 : 0 < δ) (hδn : δ < (n : ℝ))
+    (hescape : HasPerronBoundaryEscapeAt F c n δ M)
+    (henergy : HasPerronCarrierFlankL2EnergyAt F M B) :
+    ‖∫ y : ℝ, perronContourIntegrand F n δ (↑c + ↑y * I)‖ ≤
+      4 * perronSupportScaleAt n δ ^ (1 - (M : ℝ)) * (B * Real.sqrt Real.pi) :=
+  perron_right_integral_norm_le_of_boundaryChargeAt hF
+    (perronEAt_differentiable hn hδ0 hδn)
+    (hasPerronBoundaryChargeAt_of_escape_of_carrierFlankL2EnergyAt
+      hF hn hM hδ0 hδn hescape henergy)
+
 /-- Normalization transporting an `L²` majorant into the project's flank majorant. -/
 def perronFlankL2Constant : ℝ := 2 * Real.sqrt Real.pi / Real.pi
 
@@ -732,6 +761,51 @@ theorem HasPerronCarrierHorizontalMassAt.hasPerronHorizontalEscapeAt
     exact le_add_of_nonneg_right (norm_nonneg _)
   · apply squeeze_zero_norm (fun k => ?_) huT
     exact le_add_of_nonneg_left (norm_nonneg _)
+
+/-- **Boundary escape from horizontal carrier mass.**  The intermediate horizontal-escape Prop is
+constructed internally from the weighted strip mass. -/
+theorem hasPerronBoundaryEscapeAt_of_carrierHorizontalMassAt
+    {F : ℂ → ℂ} {a : ℕ → ℂ} {c δ : ℝ} {n M : ℕ}
+    (hmass : HasPerronCarrierHorizontalMassAt F c M)
+    (hc0 : 0 < c) (hsum : LSeriesSummable a c) (hF : Differentiable ℂ F)
+    (hFeq : ∀ s : ℂ, c ≤ s.re → F s = LSeries a s)
+    (hn : 1 ≤ n) (hδ0 : 0 < δ) (hδn : δ < (n : ℝ)) :
+    HasPerronBoundaryEscapeAt F c n δ M :=
+  hasPerronBoundaryEscapeAt_of_horizontalEscape hc0 hsum hF hFeq hn hδ0 hδn
+    (HasPerronCarrierHorizontalMassAt.hasPerronHorizontalEscapeAt
+      hF hc0 hn hδ0 hδn hmass)
+
+/-- **Pointwise Perron charge from the two carrier masses.**  Vertical `L²` energy supplies flank
+mass and horizontal weighted mass supplies boundary escape; neither intermediate interface appears. -/
+theorem hasPerronBoundaryChargeAt_of_carrierL2StripMassAt
+    {F : ℂ → ℂ} {a : ℕ → ℂ} {c δ B : ℝ} {n M : ℕ}
+    (henergy : HasPerronCarrierFlankL2EnergyAt F M B)
+    (hhorizontal : HasPerronCarrierHorizontalMassAt F c M)
+    (hc0 : 0 < c) (hsum : LSeriesSummable a c) (hF : Differentiable ℂ F)
+    (hFeq : ∀ s : ℂ, c ≤ s.re → F s = LSeries a s)
+    (hn : 1 ≤ n) (hM : 2 ≤ M) (hδ0 : 0 < δ) (hδn : δ < (n : ℝ)) :
+    HasPerronBoundaryChargeAt F c n δ M
+      (4 * perronSupportScaleAt n δ ^ (1 - (M : ℝ)) * (B * Real.sqrt Real.pi)) :=
+  hasPerronBoundaryChargeAt_of_escape_of_carrierFlankL2EnergyAt hF hn hM hδ0 hδn
+    (hasPerronBoundaryEscapeAt_of_carrierHorizontalMassAt
+      hhorizontal hc0 hsum hF hFeq hn hδ0 hδn)
+    henergy
+
+/-- **Interface-free pointwise Perron contour bound from the two carrier masses.**  The flank-mass,
+horizontal-escape, boundary-escape, and boundary-charge Props are all constructed internally. -/
+theorem perron_right_integral_norm_le_of_carrierL2StripMassAt
+    {F : ℂ → ℂ} {a : ℕ → ℂ} {c δ B : ℝ} {n M : ℕ}
+    (henergy : HasPerronCarrierFlankL2EnergyAt F M B)
+    (hhorizontal : HasPerronCarrierHorizontalMassAt F c M)
+    (hc0 : 0 < c) (hsum : LSeriesSummable a c) (hF : Differentiable ℂ F)
+    (hFeq : ∀ s : ℂ, c ≤ s.re → F s = LSeries a s)
+    (hn : 1 ≤ n) (hM : 2 ≤ M) (hδ0 : 0 < δ) (hδn : δ < (n : ℝ)) :
+    ‖∫ y : ℝ, perronContourIntegrand F n δ (↑c + ↑y * I)‖ ≤
+      4 * perronSupportScaleAt n δ ^ (1 - (M : ℝ)) * (B * Real.sqrt Real.pi) :=
+  perron_right_integral_norm_le_of_boundaryChargeAt hF
+    (perronEAt_differentiable hn hδ0 hδn)
+    (hasPerronBoundaryChargeAt_of_carrierL2StripMassAt
+      henergy hhorizontal hc0 hsum hF hFeq hn hM hδ0 hδn)
 
 /-- Eventual coefficient-independent horizontal carrier mass at every negative-integer depth. -/
 def HasPerronCarrierHorizontalMass (F : ℂ → ℂ) (c : ℝ) : Prop :=
