@@ -88,6 +88,7 @@ import GaloisForLFunctions.DifferentialABP
 import GaloisForLFunctions.DifferentialIndependence
 import GaloisForLFunctions.DifferenceDifferential
 import GaloisForLFunctions.DifferentialPolynomial
+import GaloisForLFunctions.DifferentialPolynomialOver
 import GaloisForLFunctions.DifferentialHopfIdeal
 import GaloisForLFunctions.DifferentialHopfPrimitive
 import GaloisForLFunctions.PTInvolution

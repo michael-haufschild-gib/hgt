@@ -28,7 +28,7 @@ is a positive compact source operator.
 
 ## Schatten strengthening
 
-`[PROVED ON PAPER; CONSTRUCTIVE LEAN CERTIFICATE FORMALIZED]` The resolvent proof of the Sonin projection formula
+`[PROVED IN LEAN FOR THE LOWER-CORNER RESIDUAL]` The resolvent proof of the Sonin projection formula
 contains a stronger ideal statement. The projection correction
 
 `C_a = Q_a-(1-A_a-R_a)`
@@ -36,9 +36,16 @@ contains a stronger ideal statement. The projection correction
 is a finite sum of bounded two-sided multiples of the mixed finite time-band blocks `A_a R_a`
 and `R_a A_a`. These blocks are Hilbert--Schmidt integral operators: after Fourier conjugation
 their kernels are the bounded Fourier kernel restricted to a finite rectangle. The
-Hilbert--Schmidt ideal is two-sided, so `C_a` is Hilbert--Schmidt. Expanding every replacement of
-`Q_a` by `1-A_a-R_a` in the Gram-shell calculation shows that `K_(a,p)` is Hilbert--Schmidt.
-Therefore `T_(a,p)=K_(a,p)^*K_(a,p)` is trace class.
+Hilbert--Schmidt ideal is two-sided, so `C_a` is Hilbert--Schmidt. The exact lower-corner residual
+
+`R_(a,p) = (1-Q_a)(U_p+U_p^(-1))Q_a
+             -(1-Q_(0,a))(U_p+U_p^(-1))Q_(0,a)`
+
+with `Q_(0,a)=1-A_a-R_a` is therefore Hilbert--Schmidt, and
+`R_(a,p)^*R_(a,p)` is trace class. The separate even Gram residual `K_(a,p)` above remains proved
+compact and self-adjoint; upgrading that particular Gram-shell difference to the same semantic
+Hilbert--Schmidt interface is not needed for the all-prime construction below and remains a
+distinct strengthening.
 
 `SoninTimeBandIdeal.lean` now retains this factorization rather than erasing it after compactness:
 
@@ -52,16 +59,21 @@ Therefore `T_(a,p)=K_(a,p)^*K_(a,p)` is trace class.
 - `centralSoninDilationCornerResidualEnergy_mem_traceIdeal` places `R_(a,p)^*R_(a,p)` in that class
   and proves its quadratic form nonnegative.
 
-Mathlib does not currently expose general Hilbert--Schmidt or trace-class predicates for
-continuous operators on arbitrary Hilbert spaces. The repository's `HilbertSchmidt.lean` treats
-countable matrix kernels only. The remaining semantic formalization obligation is to prove that
-the square-integrable functional-field generators used by `FiniteTimeBandFourierCompact.lean`
-have the standard Hilbert--Schmidt norm and that the constructive product ideal maps to the
-standard trace class. No membership hypothesis remains on the actual Sonin correction or corner.
+`SoninTimeBandHilbertSchmidt.lean` completes the semantic bridge:
+
+- `isHilbertSchmidt_kernelOperator` proves that every `L²` field of continuous functionals induces
+  an actual `ContinuousLinearMap.IsHilbertSchmidt` operator;
+- the finite time--band Fourier generators are Hilbert--Schmidt, hence every member of
+  `IsSoninTimeBandIdeal` is Hilbert--Schmidt;
+- `C_a` and `R_(a,p)` have unconditional Hilbert--Schmidt theorems;
+- the constructive product certificate maps to the Hilbert-space trace-class factorization
+  interface, so `R_(a,p)^*R_(a,p)` is unconditionally trace class;
+- the quantitative ideal inequalities give the scale-independent estimate
+  `||R_(a,p)||_HS^2 <= 80 ||C_a||_HS^2` for every `p>1`.
 
 ## All-prime assembly
 
-`[PROVED ARITHMETIC ASSEMBLY; GEOMETRIC DIRECT SUM OPEN]` The all-prime object must begin after removal of the linear prime shell. The raw
+`[PROVED IN LEAN]` The all-prime object begins after removal of the linear prime shell. The raw
 positive Euler coefficient is `p^(-1/2)`, whose squared prime energy is `sum_p 1/p` and diverges,
 exactly as the formal finite-family Calkin lower bound proves. The regularized prime-power tail
 
@@ -72,16 +84,30 @@ formalizes this double summability, constructs the square-root amplitudes, and p
 countable diagonal kernel is Hilbert--Schmidt. It also formalizes that the deleted linear prime
 energy is not summable.
 
-This is a coefficient carrier, not yet an Euler Fredholm determinant: an ordinary determinant of
-the prime-power diagonal introduces extra powers and does not reproduce the logarithmic Euler
-series term-by-term. The remaining construction is a Hilbert direct sum or convergent
-Hilbert--Schmidt series of the **actual** `K_(a,p)` residual blocks over this coefficient carrier,
-followed by the correct regularized linear/logarithmic functional. Calling the coefficient
-diagonal itself the Xi determinant would be false.
+`SoninAllPrimeResidualKernel.lean` performs the geometric assembly from the **actual** weighted
+lower-corner residual blocks. Its index is
+`(prime power) × (canonical Sonin Hilbert-basis index)`, and different prime powers occupy
+orthogonal diagonal blocks. The uniform residual bound and logarithmic coefficient summability
+prove that the complete kernel is Hilbert--Schmidt. The kernel is then represented as a bounded
+operator on the corresponding `ℓ²` space. Its Gram operator `K_a^*K_a` is trace class,
+self-adjoint, and has nonnegative quadratic form. Its kernel trace is exactly the
+Hilbert--Schmidt energy of `K_a`.
+
+The self-dual unit-cutoff specialization `a=1` removes the remaining positivity premise and free
+scale from the Lean interface. `soninCanonicalAllPrimeResidualEnergyOperator` is an unconditional
+positive self-adjoint trace-class operator. The factorized polynomial functional
+`soninCanonicalAllPrimeTraceHankel p = ||K_1 p(K_1^*K_1)||_HS^2` is therefore unconditionally
+nonnegative for every real polynomial `p`.
+
+This is not yet an Euler Fredholm determinant: an ordinary determinant of the prime-power block
+diagonal introduces extra powers and does not reproduce the logarithmic Euler series
+term-by-term. Calling the assembled operator itself the Xi determinant would be false. The open
+problem is now the correct source-built trace-moment or regularized logarithmic functional.
 
 ## RH interface
 
-`[OPEN CORE]` Construct the source-built positive trace-class operator `T_Sonin`, then prove
+`[OPEN CORE]` For the source-built positive trace-class operator
+`T_Sonin = K_a^*K_a`, prove
 
 `Tr(T_Sonin p(T_Sonin)^2) = Re(xiCentralTraceHankel p)`
 
@@ -89,17 +115,25 @@ for every real polynomial `p`. The existing Lean theorem
 `xiCentralTraceHankelNonnegative_iff_riemannHypothesis` would then yield RH. No zero divisor may
 be used in the construction of `T_Sonin`.
 
+Equivalently, at the unit cutoff it is enough to prove
+
+`soninCanonicalAllPrimeTraceHankel p = xiCentralTraceHankel p`
+
+for every real polynomial `p`. Positivity on the left is already unconditional; the equality is
+the entire remaining RH-bearing content.
+
 ## Gates
 
 - [x] Canonical principal shell and residual isolated.
 - [x] Compactness, self-adjointness, and positivity of the squared residual formalized.
 - [x] Actual projection and lower-corner residuals carry constructive finite-time-band
   Schatten-two certificates; their energy carries a product/trace-ideal certificate.
-- [ ] Standard general `L^2` Hilbert--Schmidt semantics and norm identity connected to those
+- [x] Standard general `L^2` Hilbert--Schmidt semantics and norm identity connected to those
   certificates.
 - [x] Regularized all-prime prime-power coefficient carrier constructed and proved
   Hilbert--Schmidt.
-- [ ] Actual Sonin residual blocks assembled over the coefficient carrier.
+- [x] Actual Sonin residual blocks assembled over the coefficient carrier as a Hilbert--Schmidt
+  operator with positive self-adjoint trace-class Gram operator.
 - [ ] Trace moments identified with `xiCentralTraceHankel` from source data.
 - [ ] Regularized determinant or resolvent trace identified with Xi.
 

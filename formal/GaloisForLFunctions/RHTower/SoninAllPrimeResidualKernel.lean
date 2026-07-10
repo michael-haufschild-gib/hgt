@@ -188,6 +188,55 @@ theorem trace_soninAllPrimeResidualEnergyKernel_re_nonneg
   rw [trace_soninAllPrimeResidualEnergyKernel a ha, Complex.ofReal_re]
   exact HilbertSchmidt.hsNormSq_nonneg _
 
+/-- The factor `K_a T_a^n` used to evaluate a polynomial against the positive energy
+`T_a=K_aᴴK_a`.  At `n=0` this is `K_a`; for positive `n` it is the corresponding kernel
+composition. -/
+def soninAllPrimePolynomialPowerKernel (a : ℝ) (n : ℕ) :
+    SoninAllPrimeIndex × SoninAllPrimeIndex → ℂ :=
+  if n = 0 then soninAllPrimeResidualKernel a
+  else HilbertSchmidt.hsComp (soninAllPrimeResidualKernel a)
+    (HilbertSchmidt.hsPow (soninAllPrimeResidualEnergyKernel a) (n - 1))
+
+theorem soninAllPrimePolynomialPowerKernel_isHS
+    (a : ℝ) (ha : 0 < a) (n : ℕ) :
+    HilbertSchmidt.IsHS (soninAllPrimePolynomialPowerKernel a n) := by
+  by_cases hn : n = 0
+  · simp [soninAllPrimePolynomialPowerKernel, hn, soninAllPrimeResidualKernel_isHS a ha]
+  · rw [soninAllPrimePolynomialPowerKernel, if_neg hn]
+    exact HilbertSchmidt.isHS_hsComp (soninAllPrimeResidualKernel_isHS a ha)
+      (HilbertSchmidt.isHS_hsPow (soninAllPrimeResidualEnergyKernel_isHS a ha) (n - 1))
+
+/-- The source-built factor `K_a p(T_a)`.  Its Hilbert--Schmidt energy is the factorized form of
+`Tr(T_a p(T_a)^2)` and is defined without an Xi zero divisor. -/
+def soninAllPrimePolynomialProbeKernel (a : ℝ) (p : Polynomial ℝ) :
+    SoninAllPrimeIndex × SoninAllPrimeIndex → ℂ :=
+  ∑ n ∈ p.support,
+    ((p.coeff n : ℝ) : ℂ) • soninAllPrimePolynomialPowerKernel a n
+
+theorem soninAllPrimePolynomialProbeKernel_isHS
+    (a : ℝ) (ha : 0 < a) (p : Polynomial ℝ) :
+    HilbertSchmidt.IsHS (soninAllPrimePolynomialProbeKernel a p) := by
+  rw [soninAllPrimePolynomialProbeKernel]
+  apply HilbertSchmidt.isHS_sum p.support
+  intro n hn
+  exact (soninAllPrimePolynomialPowerKernel_isHS a ha n).smul ((p.coeff n : ℝ) : ℂ)
+
+/-- The Sonin all-prime trace-Hankel quadratic functional in factorized form. -/
+def soninAllPrimeTraceHankel (a : ℝ) (p : Polynomial ℝ) : ℂ :=
+  (HilbertSchmidt.hsNormSq (soninAllPrimePolynomialProbeKernel a p) : ℂ)
+
+/-- Every source-built Sonin trace-Hankel test is real. -/
+theorem soninAllPrimeTraceHankel_im_eq_zero (a : ℝ) (p : Polynomial ℝ) :
+    (soninAllPrimeTraceHankel a p).im = 0 := by
+  simp [soninAllPrimeTraceHankel]
+
+/-- **Unconditional source positivity.** Every real-polynomial trace-Hankel test of the assembled
+positive all-prime Sonin operator is nonnegative. -/
+theorem soninAllPrimeTraceHankel_re_nonneg (a : ℝ) (p : Polynomial ℝ) :
+    0 ≤ (soninAllPrimeTraceHankel a p).re := by
+  rw [soninAllPrimeTraceHankel, Complex.ofReal_re]
+  exact HilbertSchmidt.hsNormSq_nonneg _
+
 /-- The Hilbert space on which the assembled all-prime kernel acts. -/
 abbrev SoninAllPrimeL2 := lp (fun _ : SoninAllPrimeIndex => ℂ) 2
 
@@ -241,5 +290,51 @@ theorem soninAllPrimeResidualEnergyOperator_re_inner_nonneg
         (soninAllPrimeResidualOperator a ha x)))
   rw [ContinuousLinearMap.adjoint_inner_right]
   exact inner_self_nonneg (𝕜 := ℂ) (E := SoninAllPrimeL2)
+
+/-! ### Self-dual unit-cutoff specialization -/
+
+/-- The unit-cutoff all-prime residual operator.  The value `a=1` removes the free scale in the
+Fourier normalization where the physical and frequency cutoffs use the same coordinate. -/
+def soninCanonicalAllPrimeResidualOperator :
+    SoninAllPrimeL2 →L[ℂ] SoninAllPrimeL2 :=
+  soninAllPrimeResidualOperator 1 zero_lt_one
+
+/-- The unit-cutoff all-prime residual is unconditionally Hilbert--Schmidt. -/
+theorem soninCanonicalAllPrimeResidualOperator_isHilbertSchmidt :
+    ContinuousLinearMap.IsHilbertSchmidt soninCanonicalAllPrimeResidualOperator :=
+  soninAllPrimeResidualOperator_isHilbertSchmidt 1 zero_lt_one
+
+/-- The unit-cutoff positive energy operator. -/
+def soninCanonicalAllPrimeResidualEnergyOperator :
+    SoninAllPrimeL2 →L[ℂ] SoninAllPrimeL2 :=
+  soninAllPrimeResidualEnergyOperator 1 zero_lt_one
+
+/-- The unit-cutoff positive energy operator is unconditionally trace class. -/
+theorem soninCanonicalAllPrimeResidualEnergyOperator_isTraceClass :
+    ContinuousLinearMap.IsTraceClass soninCanonicalAllPrimeResidualEnergyOperator :=
+  soninAllPrimeResidualEnergyOperator_isTraceClass 1 zero_lt_one
+
+/-- The unit-cutoff positive energy operator is self-adjoint. -/
+theorem adjoint_soninCanonicalAllPrimeResidualEnergyOperator :
+    ContinuousLinearMap.adjoint soninCanonicalAllPrimeResidualEnergyOperator =
+      soninCanonicalAllPrimeResidualEnergyOperator :=
+  adjoint_soninAllPrimeResidualEnergyOperator 1 zero_lt_one
+
+/-- The unit-cutoff positive energy operator has nonnegative quadratic form. -/
+theorem soninCanonicalAllPrimeResidualEnergyOperator_re_inner_nonneg
+    (x : SoninAllPrimeL2) :
+    0 ≤ Complex.re
+      (inner ℂ x (soninCanonicalAllPrimeResidualEnergyOperator x)) :=
+  soninAllPrimeResidualEnergyOperator_re_inner_nonneg 1 zero_lt_one x
+
+/-- The unit-cutoff source trace-Hankel functional. -/
+def soninCanonicalAllPrimeTraceHankel (p : Polynomial ℝ) : ℂ :=
+  soninAllPrimeTraceHankel 1 p
+
+/-- The unit-cutoff source trace-Hankel functional is unconditionally nonnegative on every real
+polynomial test. -/
+theorem soninCanonicalAllPrimeTraceHankel_re_nonneg (p : Polynomial ℝ) :
+    0 ≤ (soninCanonicalAllPrimeTraceHankel p).re :=
+  soninAllPrimeTraceHankel_re_nonneg 1 p
 
 end RHTower

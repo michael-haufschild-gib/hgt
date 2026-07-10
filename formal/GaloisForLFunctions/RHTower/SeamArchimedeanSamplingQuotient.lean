@@ -108,6 +108,73 @@ theorem weightedGapFunctional_not_factors_through_maskedSamples
       _ = 0 := hzero
   exact (ne_of_gt (weightedGapFunctional_gapTent_pos hw hw_nonneg hw_pos)) htent
 
+/-! ## Quantitative nonlinear ambiguity -/
+
+/-- If two tests have the same samples, every nonlinear reconstruction makes an error at least
+half their functional-value separation on one of the two tests. -/
+theorem nonlinear_reconstruction_error_ge_half_difference
+    {X Y : Type*} (S : X → Y) (A : X → ℝ) (F : Y → ℝ) {φ ψ : X}
+    (hsame : S φ = S ψ) :
+    |A φ - A ψ| / 2 ≤
+      max |A φ - F (S φ)| |A ψ - F (S ψ)| := by
+  rw [hsame]
+  have htriangle :
+      |A φ - A ψ| ≤ |A φ - F (S ψ)| + |A ψ - F (S ψ)| := by
+    calc
+      |A φ - A ψ| = |(A φ - F (S ψ)) - (A ψ - F (S ψ))| := by ring_nf
+      _ ≤ |A φ - F (S ψ)| + |A ψ - F (S ψ)| := abs_sub _ _
+  have hleft : |A φ - F (S ψ)| ≤
+      max |A φ - F (S ψ)| |A ψ - F (S ψ)| := le_max_left _ _
+  have hright : |A ψ - F (S ψ)| ≤
+      max |A φ - F (S ψ)| |A ψ - F (S ψ)| := le_max_right _ _
+  linarith
+
+/-- For an odd functional, a sampling-indistinguishable pair `φ,-φ` forces nonlinear
+reconstruction error at least `|A φ|`. -/
+theorem nonlinear_reconstruction_error_ge_kernel_value
+    {X Y : Type*} [Neg X] (S : X → Y) (A : X → ℝ) (F : Y → ℝ) {φ : X}
+    (hsame : S φ = S (-φ)) (hodd : A (-φ) = -A φ) :
+    |A φ| ≤ max |A φ - F (S φ)| |A (-φ) - F (S (-φ))| := by
+  have h := nonlinear_reconstruction_error_ge_half_difference S A F hsame
+  have habs : |A φ - A (-φ)| / 2 = |A φ| := by
+    rw [hodd, sub_neg_eq_add, ← two_mul, abs_mul,
+      abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
+    ring
+  rw [habs] at h
+  exact h
+
+/-- The canonical gap tent gives a positive quantitative error floor for every nonlinear
+reconstruction from the masked samples. -/
+theorem weightedGapFunctional_nonlinear_error_ge_gapTent
+    {ι : Type*} {active : ι → Prop} [DecidablePred active]
+    {site : ι → ℝ} {a b : ℝ} {w : ℝ → ℝ}
+    (hgap : ∀ i, active i → site i ∉ Ioo a b)
+    (hw : Continuous w) (hw_nonneg : ∀ u ∈ Icc a b, 0 ≤ w u)
+    (hw_pos : ∃ u ∈ Ioo a b, 0 < w u)
+    (F : (ι → ℝ) → ℝ) :
+    weightedGapFunctional a b w (gapTent a b) ≤
+      max
+        |weightedGapFunctional a b w (gapTent a b) -
+          F (maskedSamples active site (gapTent a b))|
+        |weightedGapFunctional a b w (-gapTent a b) -
+          F (maskedSamples active site (-gapTent a b))| := by
+  have hzero : maskedSamples active site (gapTent a b) = 0 :=
+    maskedSamples_gapTent hgap
+  have hnegzero : maskedSamples active site (-gapTent a b) = 0 := by
+    funext i
+    by_cases hi : active i
+    · simp [maskedSamples, hi, gapTent_eq_zero_of_not_mem (hgap i hi)]
+    · simp [maskedSamples, hi]
+  have hsame : maskedSamples active site (gapTent a b) =
+      maskedSamples active site (-gapTent a b) := hzero.trans hnegzero.symm
+  have hodd : weightedGapFunctional a b w (-gapTent a b) =
+      -weightedGapFunctional a b w (gapTent a b) := by
+    simp only [weightedGapFunctional, Pi.neg_apply, neg_mul, intervalIntegral.integral_neg]
+  have h := nonlinear_reconstruction_error_ge_kernel_value
+    (maskedSamples active site) (weightedGapFunctional a b w) F hsame hodd
+  rw [abs_of_pos (weightedGapFunctional_gapTent_pos hw hw_nonneg hw_pos)] at h
+  exact h
+
 /-! ## The completed-zeta theta specialization -/
 
 /-- Evaluation of a real test function on the prime-power logarithmic sample set. -/
@@ -219,6 +286,26 @@ theorem archimedeanThetaSeamFunctionalOn_not_factors_through_maskedSamples
     ¬ ∃ F : (ι → ℝ) → ℝ, ∀ φ : ℝ → ℝ, Continuous φ →
       archimedeanThetaSeamFunctionalOn a b φ = F (maskedSamples active site φ) := by
   apply weightedGapFunctional_not_factors_through_maskedSamples hgap
+    archimedeanThetaDensity_continuous
+  · intro u _
+    exact (archimedeanThetaDensity_pos u).le
+  · refine ⟨(a + b) / 2, ?_, archimedeanThetaDensity_pos _⟩
+    constructor <;> linarith
+
+/-- Every nonlinear reconstruction from samples outside a gap has worst-case error at least the
+actual positive theta pairing of the canonical tent. -/
+theorem archimedeanThetaSeamFunctionalOn_nonlinear_error_ge_gapTent
+    {ι : Type*} {active : ι → Prop} [DecidablePred active]
+    {site : ι → ℝ} {a b : ℝ} (hab : a < b)
+    (hgap : ∀ i, active i → site i ∉ Ioo a b)
+    (F : (ι → ℝ) → ℝ) :
+    archimedeanThetaSeamFunctionalOn a b (gapTent a b) ≤
+      max
+        |archimedeanThetaSeamFunctionalOn a b (gapTent a b) -
+          F (maskedSamples active site (gapTent a b))|
+        |archimedeanThetaSeamFunctionalOn a b (-gapTent a b) -
+          F (maskedSamples active site (-gapTent a b))| := by
+  apply weightedGapFunctional_nonlinear_error_ge_gapTent hgap
     archimedeanThetaDensity_continuous
   · intro u _
     exact (archimedeanThetaDensity_pos u).le

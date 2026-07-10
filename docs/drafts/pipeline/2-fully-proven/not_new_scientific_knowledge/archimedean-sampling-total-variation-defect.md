@@ -5,8 +5,8 @@
 - **Type:** THEOREM (paper)
 - **Grade:** BRIDGE / quantitative strengthening; not new scientific knowledge
 - **Source:** `../../3-formalized/not_new_scientific_knowledge/archimedean-theta-seam-sampling-quotient.md`;
-  `../../../../formal/GaloisForLFunctions/RHTower/XiThetaCriticalTrace.lean`;
-  `../../../../formal/GaloisForLFunctions/RHTower/XiThetaSourceSeam.lean`;
+  `../../../../../formal/GaloisForLFunctions/RHTower/XiThetaCriticalTrace.lean`;
+  `../../../../../formal/GaloisForLFunctions/RHTower/XiThetaSourceSeam.lean`;
   Riesz--Markov representation and regularity of finite Radon measures
 - **Statement:** In the canonical order-zero completion `T = C_0(R)` with the supremum norm,
   sampling a positive absolutely continuous archimedean measure on a closed null set has exact
@@ -188,8 +188,10 @@ the relative loss at the maximal possible value.
 - [x] 0 -> 1 in-progress: defect and norm are well posed; the order-zero duality selects the norm.
 - [x] 1 -> 2 fully-proven: exact general proof, nonlinear minimax form, theta specialization,
   explicit lower bound, and completion/even-symmetry law are complete.
-- [ ] 2 -> 3 formalized: formalize the Radon-measure ideal-norm theorem and instantiate it with the
-  existing theta integrability/reflection API.
+- [ ] 2 -> 3 formalized: the nonlinear two-test ambiguity bound and its actual-theta gap
+  specialization are formalized as `nonlinear_reconstruction_error_ge_half_difference` and
+  `archimedeanThetaSeamFunctionalOn_nonlinear_error_ge_gapTent`; the exact Radon-measure ideal-norm
+  theorem and completed total-variation equality remain to be formalized.
 - [ ] 3 -> 4 publication-ready: not applicable as a standalone novelty claim.
 
 ## Log
@@ -197,3 +199,5 @@ the relative loss at the maximal possible value.
 - 2026-07-10 -- Created from the quantitative follow-up to the generalized archimedean sampling
   quotient.  Rejected `H^1` and `W^{1,1}` as unearned canonical choices; selected the order-zero
   `C_0` norm through Riesz--Markov and proved the exact maximal defect and symmetry law.
+- 2026-07-10 -- Formalized the general nonlinear ambiguity inequality and the source-specific theta
+  tent error floor.  The exact `C_0`/total-variation equality remains a paper theorem at stage 2.

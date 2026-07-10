@@ -35,6 +35,16 @@ For a continuous weight `w` that is nonnegative on `[a,b]` and positive somewher
 
 Then `S(g_(a,b)) = 0`, `A_w(g_(a,b)) > 0`, and there is no map `F`—linearity not assumed—with `A_w = F composed with S` on continuous real test functions.
 
+Quantitatively, for every nonlinear `F`, the indistinguishable pair `g_(a,b),-g_(a,b)` forces
+
+`max(|A_w(g)-F(S(g))|, |A_w(-g)-F(S(-g))|) >= A_w(g) > 0`.
+
+The generic Lean theorem `nonlinear_reconstruction_error_ge_half_difference` proves the sharper
+abstract ambiguity bound `|A(phi)-A(psi)|/2` for every pair with identical samples;
+`weightedGapFunctional_nonlinear_error_ge_gapTent` and
+`archimedeanThetaSeamFunctionalOn_nonlinear_error_ge_gapTent` are its gap and actual-theta
+specializations.
+
 For the completed-zeta source,
 
 `w_theta(u) = exp(u/4) (evenKernel(0, exp u)-1) > 0`.
@@ -47,6 +57,8 @@ Taking sites `log(n+1)` and the gaps `(log(N+1), log(N+2))` proves nonfactorizat
 2. The tent is continuous and nonnegative, and it is strictly positive at every point of `(a,b)`.  Multiplication by `w` is nonnegative on `[a,b]` and strictly positive at an interior point, so its interval integral is positive.
 3. If `A_w = F composed with S`, then `S(g_(a,b))=S(0)` forces `A_w(g_(a,b))=A_w(0)=0`, contradicting positivity.
 4. For consecutive integer logarithms, strict monotonicity of `exp` would turn an intervening sample into an integer strictly between `N+1` and `N+2`, which is impossible.
+5. For any reconstruction value at the common sample vector of `g` and `-g`, the triangle
+   inequality forces one of the two errors to be at least `|A(g)-A(-g)|/2=A(g)`.
 
 ## Scientific status
 
@@ -59,3 +71,8 @@ Taking sites `log(n+1)` and the gaps `(log(N+1), log(N+2))` proves nonfactorizat
 - 2026-07-10 — Created in stage 1 from the all-no-go audit.  Selected the canonical gap `(log 2, log 3)` and `xiThetaLogSource` as the actual archimedean source.
 - 2026-07-10 — Paper proof completed and formalized in `SeamArchimedeanSamplingQuotient.lean`.  Focused Lean check passed; the two capstones use only `propext`, `Classical.choice`, and `Quot.sound`; formal lint passed.
 - 2026-07-10 — Generalized the Lean theorem from the single interval `(log 2, log 3)` to arbitrary masked sites, arbitrary gaps, and arbitrary positive continuous weights.  Added the all-consecutive-positive-integer-log theta theorem; retained the original prime-power declarations as compatibility specializations.
+- 2026-07-10 — Added a formal quantitative nonlinear ambiguity theorem.  Every reconstruction has
+  error at least half the functional separation of two sample-indistinguishable tests; the theta
+  tent and its negative give the positive lower bound `archimedeanThetaSeamFunctionalOn ... tent`.
+  The exact order-zero total-variation norm is recorded separately in
+  `archimedean-sampling-total-variation-defect.md`.
