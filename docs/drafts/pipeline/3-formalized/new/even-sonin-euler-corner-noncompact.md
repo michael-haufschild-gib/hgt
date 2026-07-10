@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Paper source:** `../../2-fully-proven/new/sonin-euler-metric-corner-noncompact.md`
-- **Lean endpoint:** `formal/GaloisForLFunctions/RHTower/SoninEvenCarrier.lean`
+- **Lean endpoint:** `formal/GaloisForLFunctions/RHTower/HardyTitchmarshEulerConcrete.lean`
 
 ## Statement
 
@@ -34,6 +34,14 @@ The endpoint module proves:
 - `evenCentralPositiveEulerCorner_eq_smul`
 - `evenCentralPositiveEulerCorner_not_isCompactOperator`
 - `evenCentralPrimePositiveEulerCorner_not_isCompactOperator`
+- `archimedeanDualHardyTitchmarshUnitary_evenDilation`
+- `archimedeanPrimeLocalFactor_ae`
+- `hardyTitchmarshLocalFactor_archimedean_eq`
+- `archimedeanPrimeEulerWeight_eq_norm_sq`
+- `archimedeanPrimeEulerGram_ae`
+- `archimedeanPrimeEulerCorner_pullback`
+- `archimedeanPrimeEulerCorner_not_isCompactOperator`
+- `archimedeanPrimeEulerCorner_natPrime_not_isCompactOperator`
 
 The proof is internal to the even carrier. It constructs an orthonormal sequence of symmetric
 shell indicators, projects it into the two-constraint Sonin carrier, proves that the correction
@@ -55,6 +63,16 @@ The imported analytic chain supplies every premise:
   symmetric shell sequence, and asymptotically null Fourier constraint.
 - `L2FourierReflection.lean` proves Fourier/reflection compatibility, allowing every operator and
   witness to be restricted to `L²(ℝ)^ev`.
+- `L2MellinUnitary.lean` constructs Mellin--Plancherel from multiplicative Haar `L²`, including the
+  exact `2π` normalization and the dilation-to-`p^(is)` intertwining identity.
+- `EvenL2LogUnitary.lean` constructs the exact Jacobian unitary from even physical `L²(dx)` to
+  additive logarithmic `L²(dt)`.
+- `HardyTitchmarshBetaInfinity.lean` constructs multiplication by
+  `Gamma_R(1/2+is)` as a unitary into `L²(ds/|Gamma_R(1/2+is)|²)` and transports the prime phases.
+- `HardyTitchmarshSourceTransport.lean` builds the source-image carrier projection, local-factor
+  Gram, corner pullback, and preservation of noncompactness under unitary transport.
+- `HardyTitchmarshEulerConcrete.lean` composes these maps into the concrete archimedean dual
+  Hardy--Titchmarsh unitary and proves the pointwise local-factor and `M_(w_p)` formulas.
 
 ## Verification
 
@@ -66,12 +84,19 @@ The imported analytic chain supplies every premise:
 
 ## Exact boundary
 
-This card formalizes the unconditional analytic theorem on the exact even Sonin carrier. It does
-not encode the Connes--Consani--Moscovici dual Hardy--Titchmarsh unitary, the identification with
-their entire-function carrier `B_lambda`, or the multiplication-operator transport for the local
-Euler weight. Those source identifications remain in the fully-proven paper card. General Schatten
-ideals are also not represented in the current Lean layer, so the consequence that a noncompact
-operator lies in no finite Schatten class remains a paper-level corollary.
+This card formalizes both the unconditional analytic theorem on the exact even Sonin carrier and
+its concrete archimedean dual Hardy--Titchmarsh transport. Lean constructs the logarithmic
+Jacobian, Mellin--Plancherel normalization, `beta_infinity`, weighted critical-line space, prime
+phase multipliers, pointwise local factor, positive Euler multiplier `M_(w_p)`, source-image
+projection, exact pullback, and source noncompactness.
+
+It does not separately construct the de Branges entire-function object `B_lambda` or prove that
+the source-image carrier equals an independently defined entire-function realization. It also does
+not encode the full `{infinity,p}` space and the `theta_p`/`iota'_p` cancellation square. Those
+identifications are not used as assumptions in the formal source theorem: its carrier is the actual
+unitary image of the exact even Sonin carrier. General Schatten ideals are not represented in the
+current Lean layer, so the consequence that a noncompact operator lies in no finite Schatten class
+remains a paper-level corollary.
 
 ## Dual gate
 
@@ -87,4 +112,5 @@ operator lies in no finite Schatten class remains a paper-level corollary.
 - [x] 0 -> 1: fixed-cutoff even carrier, operator normalization, and degenerate parameters isolated.
 - [x] 1 -> 2: corrected-shell proof completed on paper.
 - [x] 2 -> 3: analytic theorem and prime specialization formalized unconditionally in Lean.
-- [ ] 3 -> 4: requires source-unitary formalization and independent publication audit.
+- [ ] 3 -> 4: requires the separate `B_lambda` entire-function identification and an independent
+  publication audit; the concrete source-unitary transport is complete.

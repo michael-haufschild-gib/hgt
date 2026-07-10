@@ -88,38 +88,6 @@ end UnitaryTransport
 
 /-! The physical one-prime factor and its Gram operator on the even Sonin model. -/
 
-/-- The normalized dilation restricted to the even Hilbert space. -/
-def evenDilationUnitary (a : ℝ) (ha : 0 < a) :
-    evenSubspace ≃ₗᵢ[ℂ] evenSubspace where
-  toFun f := ⟨dilation a ha f, dilation_mapsTo_evenSubspace a ha f.property⟩
-  invFun f :=
-    ⟨dilation a⁻¹ (inv_pos.mpr ha) f,
-      dilation_mapsTo_evenSubspace a⁻¹ (inv_pos.mpr ha) f.property⟩
-  left_inv f := by
-    apply Subtype.ext
-    exact dilation_inv_dilation a ha f
-  right_inv f := by
-    apply Subtype.ext
-    exact dilation_dilation_inv a ha f
-  map_add' f g := by
-    apply Subtype.ext
-    exact map_add _ _ _
-  map_smul' c f := by
-    apply Subtype.ext
-    exact map_smul _ _ _
-  norm_map' f := by
-    exact (dilation a ha).norm_map f
-
-@[simp] theorem coe_evenDilationUnitary_apply
-    (a : ℝ) (ha : 0 < a) (f : evenSubspace) :
-    (((evenDilationUnitary a ha f : evenSubspace) : SoninL2)) = dilation a ha f := rfl
-
-@[simp] theorem evenDilationUnitary_symm_apply
-    (a : ℝ) (ha : 0 < a) (f : evenSubspace) :
-    (evenDilationUnitary a ha).symm f =
-      ⟨dilation a⁻¹ (inv_pos.mpr ha) f,
-        dilation_mapsTo_evenSubspace a⁻¹ (inv_pos.mpr ha) f.property⟩ := rfl
-
 /-- `U_p + U_p^*` on the even physical model. -/
 def evenDilationUnitarySum (p : ℝ) (hp : 1 < p) :
     evenSubspace →L[ℂ] evenSubspace :=

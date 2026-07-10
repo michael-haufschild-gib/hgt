@@ -214,13 +214,33 @@ available for this unsmoothed source operator.
   Schatten ideal. Any surviving determinant seam now needs genuinely additional smoothing, not a
   reinterpretation of the source norm.
 
+## Lean realization
+
+The analytic theorem and the concrete archimedean source transport are formalized without an
+intertwining hypothesis. The source stack is:
+
+- `L2MellinUnitary.lean`: multiplicative-Haar Mellin--Plancherel with exact `2π` normalization;
+- `EvenL2LogUnitary.lean`: the even-`L²(dx)` logarithmic Jacobian unitary;
+- `HardyTitchmarshBetaInfinity.lean`: the unitary `beta_infinity` into
+  `L²(ds/|Gamma_R(1/2+is)|²)`;
+- `HardyTitchmarshSourceTransport.lean`: source-image projection, Gram, corner pullback, and
+  unitary invariance of noncompactness;
+- `HardyTitchmarshEulerConcrete.lean`: the composed dual Hardy--Titchmarsh unitary, pointwise
+  `1-p^(-1/2-is)` local factor, literal `M_(w_p)` Gram, and source corner theorem.
+
+The final endpoints are `archimedeanPrimeEulerCorner_pullback`,
+`archimedeanPrimeEulerCorner_not_isCompactOperator`, and
+`archimedeanPrimeEulerCorner_natPrime_not_isCompactOperator`. The formal carrier projection is the
+orthogonal projection onto the actual unitary image of the exact even Sonin carrier. Lean does not
+yet define a separate de Branges entire-function object `B_lambda` and identify that independent
+object with the image carrier, nor does it encode the full semilocal `theta_p`/`iota'_p` square.
+
 ## Gates
 
 - [x] 0 -> 1: actual source operator, actual Sonin projection, and degenerate cases isolated.
 - [x] 1 -> 2: noncompactness proved by the two-projection correction formula and shell Weyl sequence.
-- [ ] 2 -> 3: the complete analytic theorem on the exact even Sonin carrier is now formalized in
-  `SoninEvenCarrier.lean`, with its own stage-3 card
-  `../../3-formalized/new/even-sonin-euler-corner-noncompact.md`. This source-level card stays at
-  stage 2 until Lean encodes the Connes--Consani--Moscovici dual Hardy--Titchmarsh unitary, its
-  `B_lambda` carrier identification, and the local Euler multiplication-operator transport.
+- [x] 2 -> 3: the complete analytic theorem and concrete archimedean dual Hardy--Titchmarsh
+  unitary transport are formalized through `HardyTitchmarshEulerConcrete.lean`, with stage-3 card
+  `../../3-formalized/new/even-sonin-euler-corner-noncompact.md`. The source-image projection,
+  pointwise local Euler multiplier, exact pullback, and noncompactness are all encoded.
 - [ ] 3 -> 4: requires standalone analytic exposition and an independent source/literature audit.

@@ -376,3 +376,483 @@ and the frequency lattice (the prime side) is what would enforce the bound — a
   build the `R > 1` hypothesis turned out redundant (the case split derives it) and was removed —
   the formalization strengthened the statement. §32's pinned target is machine-checked; the 0/1
   stratum (§27) is now formally closed via `landau_entire_summable` + divergence at σ = 0.
+
+## Wave 9 — Thue–Morse refutes Cobham-rigidity; integer sublane CLOSED; the two machines compose
+
+33. **AUTOMATIC-COBHAM-RIGIDITY is REFUTED — by Thue–Morse itself `[SEARCH]`.** The signed
+    kernel relations `t(2n) = t(n)`, `t(2n+1) = −t(n)` make the parity split's principal terms
+    CANCEL: `F(s) = 1 − Σ_{j≥1} binom(−s,j) 2^{−s−j} F(s+j)` — no `(1−2^{−s}B)⁻¹` inversion, no
+    pole lattice; iterating continues `F` to an ENTIRE function. Thue–Morse is 2-automatic,
+    non-periodic, ±1. The intrusion mechanism (§30) reads the UNSIGNED kernel matrix; the signed
+    linear representation can degenerate the spectrum to `{0}`. §31's structure conjecture dies
+    with it (Thue–Morse lies outside the pushforward-periodic algebra; non-regular escapes such
+    as §29's exist too).
+34. **Integer sublane CLOSED — verdict.** Every finer-than-positivity conjecture of waves 7–8
+    (JET-QUANT, PERIODIC-DICHOTOMY, COBHAM-RIGIDITY, the lattice structure core) died to explicit
+    classical-adjacent examples within one attack each: this terrain is the automatic/regular
+    Dirichlet series literature — left of the wall. What the branch keeps: **positivity is the
+    single theorem-grade entirety obstruction** (Landau — machine-checked here), INT-ORDER ≤ 1
+    stays as background conjecture only. Do not re-enter this sublane.
+35. **Divisor-tier no-go (counting cannot close it).** Two-sided polynomial vertical bounds +
+    finite order give only `O(log T)` divisor points per dyadic box — but sparse VERTICAL
+    divisors (zeros at `σ₀ + i2^k`, poles mirrored) have Γ-level box counts while being no
+    horizontal progression. The divisor tier is carrier-forced, like T2; pure growth/counting
+    arguments can never force the Γ-shape.
+36. **The composition Q-COC — the two banked machines finally meet.** `[TARGET — provable-looking;
+    Lean generalization pinned]` In `quiet_crossing_conductor_support` the FE datum enters ONLY
+    through its size `H(M) = CJ·Q₀^{1+2M}` on the shifted flank `Re s = −M` (tree line ~120).
+    Generalize the datum to an abstract cocycle `h` with flank bound
+    `‖h(−M+it)‖ ≤ H(M)·(2+|t|)^m` (the `(2+|t|)^m` absorbed into the quiet budget
+    `q_k = o(T_k^{2−m})`): conclusion `‖aₙ‖ ≲ H(M)·(n−½)^{1−M}`, i.e.
+    **support radius of the carrier = `limsup H(M)^{1/(M−1)}` = exponential of the cocycle's
+    flank-growth rate.** Consistency: `H = Q₀^{1+2M}` recovers support `≤ Q₀²`; Γ-data
+    (`H ~ e^{M log M}`) gives no bound — exactly why completed L-functions have infinite support.
+37. **Consequence: the divisor tier closes conditionally.** A cocycle with sparse-vertical
+    divisor + conductor exponent has `H(M) ≤ e^{aM}·O(1)` ⟹ support radius `≤ e^a` FINITE ⟹ `F`
+    a Dirichlet polynomial ⟹ (banked degree-0 classification, machine-checked) its cocycle is a
+    pure conductor datum — whose divisor is NOT sparse-vertical: CONTRADICTION. So, conditional
+    on one quiet height sequence: **realizable finite-order poly-vertical cocycles with
+    subexponential-beyond-conductor flank growth are exactly the conductor data; every
+    non-conductor divisor forces Γ-scale (`e^{cM log M}`) flank growth.** The Selberg degree
+    dichotomy (degree 0 vs Γ-degree ≥ 1) is DERIVED from the quiet-crossing machine, not
+    postulated — the shape axiom's first tier falls out of the composition. Remaining shape
+    freedom = the realizable ladder of flank-growth profiles between `e^{aM}` and Γ-scale.
+
+## Log (cont. 11)
+- 2026-07-10 — wave 9: Cobham-rigidity refuted (Thue–Morse signed cancellation); integer sublane
+  closed with verdict "positivity is the only theorem-grade obstruction"; divisor-tier counting
+  no-go; Q-COC composition discovered — support radius = exp(flank rate); degree dichotomy
+  derived conditionally. Next execution: generalize QuietCrossingConductor.lean to abstract
+  flank datum H(M) (Q-COC), per §36.
+
+## Wave 10 — Q-COC corrected and promoted as a one-sided growth-to-support theorem
+
+38. **The proposed equality is false as stated.** A valid flank majorant `H(M)` can be inflated
+    arbitrarily, and the zero carrier satisfies majorants of every exponential rate. Therefore
+    `support radius = limsup H(M)^(1/(M-1))` is not an invariant statement. The surviving theorem is
+    one-sided. The fixed-knot proof first gives the scale `n-1/2`; varying the knot width removes
+    that artifact exactly.
+39. **Q-COC `[PROVED HERE]`.** If the quiet-crossing contour has a uniform left-rectangle bound
+    `|F(s)|<=H(M)` at depth `M`, then
+    `|a_n/2|<=2 H(M)(n-1/2)^(1-M)`. More generally, the knots `n+delta,n,n-delta` isolate
+    `delta*a_n` and replace the left-edge scale by `n-delta`. Hence an eventual envelope
+    `H(M)<=C R^M` kills every coefficient with `R<n`; equivalently `a_n!=0` implies the exact bound
+    `n<=R`. Constant flank growth recovers degree zero; `H(M)=C_J B Q_0^(1+2M)` recovers support
+    `n<=Q_0^2`; Gamma-scale growth has infinite geometric radius and correctly escapes. Complete proof:
+    `../2-fully-proven/new/quiet-flank-growth-support-radius.md`.
+40. **Intrinsic version and remaining core.** Minimize `R` over all admissible geometric flank
+    envelopes before treating it as a cocycle invariant. Even then the theorem gives only an upper
+    support bound. The RH-facing missing arrow is unchanged but sharper: manufacture the quiet
+    sequence (or equivalent contour-smallness) for the target completed carrier, or derive finite
+    intrinsic flank radius from a non-Gamma divisor constraint.
+
+## Log (cont. 12)
+- 2026-07-10 — wave 10: attacked and removed the non-invariant equality in Q-COC; proved the
+  arbitrary-flank contour estimate, then varied the Perron knot width to obtain the exact support
+  bound `n<=R`; formalized the reusable ratio-test/Prop-interface endgame in
+  `QuietFlankGrowth.lean`. No umbrella build was run.
+
+41. **Variable-knot source formalized.** `[PROVED Lean]` `VariablePerronKink.lean` constructs
+    `K_{n,delta}`, proves its zeros at `0,-1`, the entire regularization, the uniform norm bound, and
+    the exact smoothed identity `secondDifference = delta*a_n`. The fixed kernel is definitionally
+    the `delta=1/2` specialization. The only remaining Q-COC formal layer is the generic rectangle
+    producer from an abstract left-flank envelope to `HasVariableQuietFlankCoefficientBound`.
+
+## Wave 11 — boundary charge replaces uniform quietness
+
+42. **The common-height quantifier was spurious.** `[PROVED HERE]` The rectangle proof only needs,
+    for each depth `M` and knot width `delta`, some exhaustion along which the two horizontal edge
+    integrals vanish. It never compares exhaustions at different depths. Thus `exists T, forall M`
+    is replaced by the strictly weaker proof interface `forall M,delta, exists T_{M,delta}`.
+43. **Native object: normalized Perron boundary charge.** `[PROVED HERE + Lean]` At `(M,delta)`,
+    package right-edge convergence, vanishing top/bottom charges, and a left charge bounded by
+    `2*pi*H(M)*(n-delta)^(1-M)`. Cauchy's rectangle identity gives the coefficient Prop directly;
+    if `H(M)<=C*R^M`, then `a_n!=0` implies the exact support bound `n<=R`. Complete proof:
+    `../2-fully-proven/new/perron-boundary-charge-support.md`; formal module:
+    `formal/GaloisForLFunctions/RHTower/PerronBoundaryCharge.lean`.
+44. **Strip-mass producer.** `[PROVED Lean]` Integrability of the right edge, integrability in the
+    height variable of the top-plus-bottom edge norms, and an L1 left-edge bound produce the
+    boundary charge by choosing `T_k in [k,k+1]` where the horizontal mass tends to zero. Finite
+    two-dimensional strip mass is sufficient by Tonelli. Uniform quietness is now only one
+    producer, not the theorem's hypothesis.
+45. **Next invariant.** `[PROVED HERE + Lean]` The kernel-dependent charge factors through two
+    coefficient-independent carrier quantities: geometric negative-line `L2` energy and finite
+    weighted horizontal mass. They dominate every `E_{n,delta}`, manufacture the quiet exhaustion,
+    and preserve the exact support radius. Exact common-source cross-line coherence does produce the
+    negative energy, but wave 13 proves that combining it with horizontal mass forces finite
+    Dirichlet support. Thus the infinite-support target needs a defect-bearing seam law, not exact
+    trace identification.
+
+## Log (cont. 13)
+- 2026-07-10 — wave 11: formalized the exact variable Perron integral; replaced uniform
+  quiet-crossing by depth-dependent boundary charge; composed charge through the coefficient Prop
+  to exact support; formalized the continuous-integrable strip-mass producer. The remaining object
+  is a coefficient-independent weighted mass of the carrier. No umbrella build.
+
+## Wave 12 — carrier masses replace kernel-dependent escape
+
+46. **Left growth is a carrier invariant.** `[PROVED HERE + Lean]` The universal estimate
+    `|E_{n,delta}(-M+it)| <= 4(n-delta)^(1-M)/(1+t^2)` shows that the quantitative contour datum is
+    exactly the coefficient-independent mass
+    `A_M(F)=integral |F(-M+it)|/(1+t^2)dt`.
+47. **Hilbert-source producer.** `[PROVED HERE + Lean]` Vertical `L2` energy `B_M(F)` gives
+    `A_M(F)<=sqrt(pi)B_M(F)` by Holder. A geometric envelope for `B_M` therefore yields the same
+    exact arithmetic support radius.
+48. **Horizontal mass removes quiet heights.** `[PROVED HERE + Lean]` An explicit uniform strip
+    envelope gives quadratic height decay for `E_{n,delta}`. Finite weighted horizontal carrier
+    mass selects the necessary height exhaustion; absolute Dirichlet convergence supplies the right
+    edge automatically.
+49. **Coefficient-independent capstone.** `[PROVED HERE + Lean]`
+    `coefficient_index_le_exact_flank_radius_of_carrierL2StripMass` consumes only geometric
+    negative-line `L2` energy and finite weighted horizontal carrier mass, then proves
+    `a_n != 0 -> n<=R`.
+
+## Log (cont. 14)
+- 2026-07-10 — wave 12: separated Perron growth from escape; formalized carrier-only flank and
+  horizontal masses, the L2-to-L1 producer, automatic right convergence, and the exact-support
+  capstone. The remaining source theorem is now coefficient-free. No umbrella build.
+
+## Wave 13 — exact source/carrier coherence is too rigid
+
+50. **The physical Sonin gap produces every negative source moment.** `[PROVED HERE + Lean]` If
+    `f` lies in the even Sonin carrier at cutoff `q>0`, then `g=logEvenUnitary(f)` vanishes almost
+    everywhere below `log q`. Hence
+    `||exp(-Mt)g||_2 <= q^(-M)||g||_2`. The normalized Fourier--Mellin unitary preserves this bound.
+51. **Native seam constraint.** `[PROVED Lean]` `HasCoherentNegativeMellinTraces F g tau` says that
+    every negative integer line of one analytic `F` agrees almost everywhere with the normalized
+    transform of `exp(-Mt)g`. This Prop discharges `HasPerronCarrierFlankL2Energy` with exact radius
+    `q^(-1)`.
+52. **Cross-support transfer.** `[PROVED HERE + Lean]` Coherence plus finite horizontal carrier mass
+    forces `a_n!=0 -> n<=q^(-1)` for every coefficient in the right-half-plane Dirichlet expansion.
+    Therefore the coefficient support is finite at every `q>0`; if `q>1`, analytic continuation
+    forces `F=0` identically.
+53. **Naive weld refuted.** `[FALSIFIED]` A nonzero infinite-support Dirichlet carrier can retain
+    finite horizontal mass while every negative line is exactly the weighted transform of one
+    lower-supported Sonin source. The formal theorem
+    `not_coherent_of_infinite_coefficient_support` rules this out for every positive cutoff.
+54. **Defect law selected.** `[PROVED HERE + Lean]` Wave 14 constructs an additive `L2` cross-line
+    defect and proves that its coefficient-indexed Perron pairings, rather than its full norm,
+    carry the infinite arithmetic tail. Complete obstruction proof:
+    `../2-fully-proven/new/sonin-perron-support-transfer.md`.
+
+## Log (cont. 15)
+
+- 2026-07-10 — wave 13: formalized logarithmic lower support, negative Mellin source moments,
+  normalized traces, and cross-line coherence; composed them with coefficient-independent Perron
+  mass. The resulting reciprocal support theorem refutes exact coherence for every infinite-support
+  carrier. Targeted module build only; no umbrella build.
+
+## Wave 14 — the cross-line seam has arithmetic coordinates
+
+55. **Additive seam object.** `[PROVED Lean]` `HasCrossLineMellinDefect F g tau Delta` replaces exact
+    trace equality by `F(-M+it)=T_M(g)(t)+Delta_M(t)` almost everywhere. Exact coherence is the
+    zero-defect specialization.
+56. **Exact boundary transport.** `[PROVED HERE + Lean]` If the left integrand is integrable and
+    the horizontal edges escape, the full negative-line Perron integral equals the full right-line
+    integral. The variable Perron kernel is an `L2` test vector with norm at most
+    `4*sqrt(pi)*(n-delta)^(1-M)`.
+57. **Coefficient charge splitting.** `[PROVED HERE + Lean]` At every escaping depth,
+    `delta*a_n = sourceCharge_(M,n,delta) + seamResidue_(M,n,delta)`. If
+    `q^(-1)<n-delta`, the source charge tends to zero geometrically.
+58. **Arithmetic tail recovery.** `[PROVED HERE + Lean]` The knot-normalized seam coordinate
+    `delta^(-1)*seamResidue` converges to `a_n`. A nonzero coefficient gives an eventually nonzero
+    seam witness. Any two admissible knot widths yield asymptotically equal coordinates.
+59. **Defect choice was spurious.** `[PROVED HERE + Lean]` Wave 15 proves that the additive `L2`
+    seam is unique and canonically constructed from the carrier line; existing flank energy
+    discharges its eventual existence. Complete proof:
+    `../2-fully-proven/new/perron-mellin-seam-residue.md`.
+
+## Log (cont. 16)
+
+- 2026-07-10 — wave 14: replaced the falsified exact-coherence weld by an additive seam defect;
+  formalized exact left/right boundary transport, source-charge decay, coefficient recovery,
+  persistent seam witnesses, and knot-width invariance. Targeted module build only; no umbrella
+  build.
+
+## Wave 15 — the seam is canonical and source-gauge invariant
+
+60. **Local uniqueness.** `[PROVED HERE + Lean]` At a fixed depth and source trace, two additive
+    `L2` seam defects satisfying the same a.e. decomposition are equal as `L2` classes. The defect is
+    forced, not selected.
+61. **Canonical construction.** `[PROVED HERE + Lean]` Whenever `F(-M+i·)` lies in `L2`, define
+    `Delta_M^can=[F(-M+i·)]-T_M(g)`. The existing `HasPerronCarrierFlankL2Energy` Prop plus
+    differentiability supplies this membership eventually, so `HasEventuallyCrossLineMellinDefect`
+    is discharged internally.
+62. **Hypothesis-free seam recovery.** `[PROVED HERE + Lean]` The normalized Perron coordinate of
+    `Delta^can` converges to `a_n` beyond the reciprocal source cutoff using only flank energy,
+    horizontal mass, and the right Dirichlet identity. No defect/coherence Prop remains.
+63. **Source-gauge invariance.** `[PROVED HERE + Lean]` Canonical defects relative to any two Sonin
+    sources give asymptotically equal coefficient coordinates beyond both source radii. The `L2`
+    representatives change; the arithmetic seam class does not.
+64. **Completed/raw audit.** `[OPEN CORE]` The real target mismatch is now exposed. `xi` has the
+    archimedean vertical decay but its right edge is `archFactor*LSeries`; raw eta has the arithmetic
+    edge but no established deep-line mass. Construct an archimedean-completed Perron coordinate
+    that extracts an explicit coefficient plus computable Gamma/boundary charge. Complete proof:
+    `../2-fully-proven/new/canonical-perron-mellin-seam.md`.
+
+## Log (cont. 17)
+
+- 2026-07-10 — wave 15: weakened all-depth defects to the eventual interface, proved local
+  uniqueness, constructed the canonical defect from flank energy, eliminated the defect Prop from
+  coefficient recovery, and proved two-source gauge invariance. Targeted module build only; no
+  umbrella build.
+
+## Wave 16 — completed coefficient extraction and the scalar decompletion wall
+
+65. **Second-order balance fails.** `[FALSIFIED]` Multiplying the existing Perron kernel by the
+    boundary multiplier `s-1` lowers vertical decay from `O(|t|^-2)` to `O(|t|^-1)`. The current
+    Bochner-integral Perron interface cannot consume it.
+66. **Minimal third-order repair.** `[PROVED HERE + Lean]` The balanced physical weight
+    `max(1-u,0)(3u-1)/2` has Mellin transform `(s-1)/(s(s+1)(s+2))`. Four symmetric knots at
+    `n+-delta/2,n+-3delta/2` annihilate every off-target quadratic contribution and extract exactly
+    `3delta^2*a_n/4` for `0<delta<2/3`.
+67. **Entire boundary decompletion.** `[PROVED HERE + Lean]`
+    `D_infty=2*dslope(Gamma_R^(-1),0)` is entire and satisfies
+    `archFactor*D_infty=s-1` off the Gamma divisor. It composes directly with a completed Dirichlet
+    expansion; no seam-defect or coherence Prop is introduced.
+68. **Concrete xi charge.** `[PROVED HERE + Lean]` The completed zeta carrier paired with
+    `D_infty*E3` has exact right-edge charge `3delta^2/4` at every coefficient index.
+69. **Scalar decompletion obstruction.** `[PROVED HERE + Lean]` Any pointwise scalar probe solving
+    `archFactor*K=s-1` is forced to equal `D_infty`, and
+    `xi*D_infty=(s-1)zeta`. Exact scalar extraction cancels the Gamma decay. Additional polynomial
+    smoothing can repair integrability but cannot preserve completed-carrier flank mass. Complete
+    proof: `../2-fully-proven/new/archimedean-balanced-third-perron.md`.
+70. **Non-diagonal frontier.** `[OPEN CORE]` The next completed extractor must couple the
+    archimedean and finite-prime variables non-diagonally, or prove raw pole-cancelled carrier mass
+    by another mechanism. Pointwise scalar decompletion is now ruled out as the missing weld.
+
+## Log (cont. 18)
+
+- 2026-07-10 — wave 16: attacked the apparent `(s-1)` repair, isolated its loss of `L1`, raised the
+  smoothing order minimally, formalized the exact four-knot completed charge, and proved the
+  uniqueness/loss-of-Gamma obstruction. Targeted module checks only; no umbrella build.
+
+## Wave 17 — the actual completed source is a two-sided theta seam
+
+71. **Target source exposed.** `[PROVED Lean]` The existing mathlib construction gives
+    `completedRiemannZeta_0(s)=mellin(F,s/2)/2` for the modified even theta kernel `F`. The critical
+    logarithmic normalization is `h(u)=exp(u/4)F(exp u)`.
+72. **Constraint fixed point.** `[PROVED HERE + Lean]` The theta reciprocal law becomes the exact
+    reflection constraint `h(-u)=h(u)`. The positive theta series proves `h(u)!=0` for every
+    `u!=0`.
+73. **Canonical half-source split.** `[PROVED HERE + Lean]` With
+    `h_+=1_(0,infinity)h`, the full source satisfies `h(u)=h_+(u)+h_+(-u)` pointwise. The positive
+    half directly discharges `HasAELowerSupport h_+ 0`; the reflected half is exactly the
+    negative-half truncation.
+74. **Full-source support obstruction.** `[PROVED HERE + Lean]` The actual completed source has no
+    finite lower-support threshold. Thus it cannot be passed wholesale to the Sonin support
+    transfer. The reflected half is nonzero and forced by completion, not optional defect data.
+    Complete proof: `../2-fully-proven/new/xi-theta-source-seam.md`.
+75. **Next open coordinate.** `[OPEN CORE]` Build a bounded non-diagonal coefficient reader on
+    `h_+` and compute the exact negative-line charge of `h_+(-u)`. The Blaschke candidate exists but
+    has archimedean condition number growing like `sinh(pi n)`.
+
+## Log (cont. 19)
+
+- 2026-07-10 — wave 17: formalized the actual completed theta source, proved evenness and two-sided
+  nonvanishing, split it into a lower-supported half plus exact reflection, discharged the half
+  support Prop, and ruled out lower support for the full target. Targeted module build only; no
+  umbrella build.
+
+## Wave 18 — finite theta readers expose exponential conditioning
+
+76. **Exact finite reader.** `[SEARCH + Lean infrastructure]` The normalized right-half-plane
+    Blaschke probe `Q_(n,N)` equals `1` at `n^2` and annihilates every other square `m^2` with
+    `1<=m<=N`.
+77. **Boundary localization.** `[PROVED Lean]` Each Blaschke factor has unit modulus on the imaginary
+    boundary, so every amplification cost lies in the interpolation normalizers.
+78. **Exponential lower bound.** `[PROVED HERE + Lean]` The `floor(n/2)` lower-band factors each
+    contribute at least `5/3`; consequently
+    `||Q_(n,N)(0)|| >= 2(5/3)^floor(n/2)` for `N>=n>=2`.
+79. **Novelty gate retained.** `[BRIDGE]` The finite interpolation algebra is formal infrastructure,
+    not a new-knowledge claim. The live theorem remains the optimal infinite norm
+    `sqrt(2/pi)sinh(pi n)` and, critically, the transform that makes its Hardy pairing a coordinate
+    of the completed Mellin source.
+
+## Log (cont. 20)
+
+- 2026-07-10 — wave 18: formalized finite theta-square Blaschke readers, exact interpolation,
+  imaginary-boundary unit factors, and exponential conditioning. Targeted module build only; no
+  umbrella build.
+
+## Wave 19 — the completed trace selects log translations, and truncation creates a moving boundary
+
+80. **Transform bridge adjudicated.** `[PROVED HERE + Lean]` On the critical line,
+    `completedRiemannZeta_0(1/2+it)=Fourier(h)(t/(4*pi))/2`. Mellin convergence of the strong theta
+    FE-pair directly discharges integrability of `h`, `h_+`, and its reflection; no analytic Prop is
+    introduced.
+81. **Positive cosine trace.** `[PROVED HERE + Lean]` Reflection gives
+    `Fourier(h)(w)=Fourier(h_+)(w)+Fourier(h_+)(-w)`. Since `h_+` is real,
+    `completedRiemannZeta_0(1/2+it)=Re(Fourier(h_+)(t/(4*pi)))` exactly. The apparent real-part loss
+    is not claimed non-injective: half-line cosine transforms may retain the source.
+82. **Blaschke consumer retired.** `[FALSIFIED]` The square-rate Blaschke probe reads a Laplace
+    variable in `exp(-pi*m^2*x)`, while the completed trace is Fourier after `x=exp(u)`. The actual
+    atoms are `2*exp(u/4-pi*m^2*exp(u))`, not exponentials in `u`. The finite probe remains correct
+    infrastructure but does not act on the completed trace.
+83. **Log-translation coordinate.** `[PROVED HERE + Lean]` Every square atom is
+    `m^(-1/2)*psi(u+2*log(m))` for the common mother `psi(u)=2*exp(u/4-pi*exp(u))`. Thus Fourier in
+    `u` diagonalizes the relevant full-line translations.
+84. **Moving-boundary seam.** `[PROVED HERE + Lean]` Positive truncation fails to commute with a
+    forward translation by `a`: the exact commutator is the translated profile restricted to
+    `(-a,0]`. Its Fourier coordinate is exactly a translation phase times the Fourier transform of
+    the mother profile restricted to `(0,a]`. For the `m`-th square atom this produces an explicit
+    finite-window boundary charge on an interval of length `2*log(m)`. Complete proof:
+    `../2-fully-proven/new/xi-theta-critical-log-translation-seam.md`.
+85. **New open core.** `[OPEN CORE]` Decide whether the nested finite-window transforms
+    `Fourier(1_(0,2log(m)]*psi)` admit a stable triangular coefficient reader and then compose that
+    reader with the balanced Perron seam. The obstruction is now a concrete index-dependent boundary
+    charge, not reciprocal-Gamma scalar decompletion and not a hypothetical Hardy pairing.
+
+## Log (cont. 21)
+
+- 2026-07-10 — wave 19: proved the exact critical Fourier and positive cosine trace, discharged the
+  source integrability interfaces, falsified the Laplace/Blaschke consumer by variable comparison,
+  and formalized square atoms as log-translates with their exact truncation commutator and
+  finite-window Fourier boundary coordinate. Targeted module checks only; no umbrella build.
+
+## Wave 20 — the correct theta reader is superexponentially conditioned
+
+86. **Physical atom mass.** `[PROVED HERE + Lean]` The strict positive-half square atom
+    `a_m(u)=1_(0,infinity)(u)*2*exp(u/4-pi*m^2*exp(u))` satisfies
+    `a_m(u)<=2*exp(-pi*m^2)*exp(-2u)`. Hence its logarithmic `L1` mass is at most
+    `exp(-pi*m^2)`.
+87. **Completed critical samples stay small.** `[PROVED HERE + Lean]` Every Fourier sample obeys
+    `|Fourier(a_m)(w)|<=exp(-pi*m^2)` uniformly in the critical frequency. Completion does not
+    recover the physical scale at finitely many sample points.
+88. **Finite-sampler obstruction.** `[PROVED HERE + Lean]` Any finite weighted sampler normalized by
+    `sum_j c_j*Fourier(a_m)(w_j)=1` has total weight
+    `sum_j |c_j|>=exp(pi*m^2)`.
+89. **Continuous-reader obstruction.** `[PROVED HERE + Lean]` Any continuous linear functional on
+    logarithmic `L1` satisfying `R_m(a_m)=1` has operator norm at least `exp(pi*m^2)`. Thus the
+    correct transform is more severely conditioned than the retired Blaschke reader's
+    `exp(pi*m)` scale. Complete proof:
+    `../2-fully-proven/new/xi-theta-reader-superexponential-conditioning.md`.
+90. **Stable triangular candidate refuted.** `[FALSIFIED]` The nested windows admit uniformly bounded
+    finite-sample or `L1`-continuous coefficient readers. Exact recovery remains possible only via
+    an unbounded boundary asymptotic or a stronger analytic topology.
+91. **New open core.** `[OPEN CORE]` Construct an intrinsic completed-carrier norm that offsets the
+    physical `exp(-pi*m^2)` decay and simultaneously controls the balanced Perron charge, without
+    inserting reciprocal-Gamma or `exp(pi*m^2)` decompletion by definition.
+
+## Log (cont. 22)
+
+- 2026-07-10 — wave 20: attacked the stable nested-window reader, proved superexponential decay of
+  each correct positive theta atom in both physical `L1` and every critical Fourier sample, and
+  derived matching lower bounds for finite-sample and continuous `L1` reader condition numbers.
+  Targeted module verification only; no umbrella build.
+
+## Wave 21 — the heat reader survives as a composite fixed-index constraint
+
+92. **Conditioning attack corrected.** `[FALSIFIED]` The lower bound `exp(pi*m^2)` by itself kills
+    the Perron route. Perron fixes `m` before contour depth tends to infinity, so any finite
+    `m`-dependent constant may be paid. The theorem rules out uniform weak-topology readers, not a
+    fixed-index reader.
+93. **Exact heat reparametrization.** `[PROVED HERE + Lean]` Removing the critical logarithmic weight
+    and applying `y=exp(u)-1` sends the `m`-th physical square atom to
+    `exp(-pi*m^2)*exp(-pi*m^2*y)` pointwise for `y>0`.
+94. **Condition number explained.** `[PROVED HERE + Lean]` Multiplication by `exp(pi*m^2)` removes
+    exactly the `x=1` boundary shift and recovers the ordinary heat atom `exp(-pi*m^2*y)`. The
+    superexponential cost is a geometric boundary normalization, not a new reciprocal-Gamma wall.
+95. **Blaschke route reopened in composite form.** `[PROVED ATOM BRIDGE]` The direct pairing of the
+    critical Fourier trace with a Laplace reader remains false, but the chain inverse log-Fourier ->
+    positive source -> heat reparametrization -> boundary denormalization reaches the exact atom
+    family consumed by half-plane Hardy readers. Complete proof:
+    `../2-fully-proven/new/xi-theta-heat-reparametrization.md`.
+96. **Intrinsic heat Hilbert topology.** `[PROVED HERE + Lean]` The nonlinear heat map satisfies
+    `integral_(y>0)|T(f)(y)|^2=(1/4)integral_(u>0)exp(u/2)|f(u)|^2`. Thus it is one half of an
+    isometry from a coefficient-independent Jacobian-weighted source space to ordinary heat `L2`;
+    no change-of-measure Prop remains.
+97. **New open core.** `[OPEN CORE]` Build the infinite square-rate Paley-Wiener reader in these
+    explicit Hilbert spaces without an existence Prop, and transport its reflected contribution
+    through the balanced Perron seam. Live card: `theta-composite-heat-reader.md`.
+
+## Log (cont. 23)
+
+- 2026-07-10 — wave 21: attacked the interpretation of the conditioning theorem, restored the
+  fixed-index route, formalized the exact log-source to shifted-heat atom map, and identified the
+  exp(pi*m^2) reader cost with the physical `x=1` boundary shift, and proved the exact
+  Jacobian-weighted `L2` identity for the composite heat map. Targeted verification only; no
+  umbrella build.
+
+## Wave 22 — the infinite reader is forced singular at the compactified heat boundary
+
+98. **Compactified heat nodes.** `[PROVED HERE + Lean]` The square-rate nodes
+    `x_m=exp(-pi*m^2)` are positive and converge to zero.
+99. **Holomorphic moment-reader obstruction.** `[PROVED HERE + Lean]` If a symbol is holomorphic on
+    a connected compactified domain containing zero and all nodes, and vanishes at every `x_m`
+    except possibly `x_n`, then the isolated-zero principle forces it to vanish at `x_n` too.
+    Hence no such symbol realizes the infinite Kronecker-delta reader.
+100. **Finite Lagrange limit refuted.** `[FALSIFIED]` Finite polynomial readers can converge locally
+    uniformly on a connected compactified domain to a holomorphic delta symbol retaining all
+    infinite node constraints. Such a limit would contradict the preceding obstruction.
+101. **Forced boundary singularity.** `[PROVED NEW]` Every exact infinite reader represented by a
+    connected-domain compactified moment symbol must be singular or nonanalytic at `x=0`. Under
+    `z=-(1/pi)log(x)`, that boundary is moved to infinity and the nodes become `m^2`; the rate-plane
+    Hardy/Blaschke category is therefore structurally selected rather than optional. Complete proof:
+    `../2-fully-proven/new/xi-theta-heat-node-singularity.md`.
+102. **New open core.** `[OPEN CORE]` Construct the singular rate-plane reader and its source-side `L2`
+    representative, then compute the reflected balanced-Perron charge.
+
+## Log (cont. 24)
+
+- 2026-07-10 — wave 22: attacked three reader categories, ruled out the analytic compactified-moment
+  category by an isolated-zero theorem, and localized the unavoidable singularity exactly at the
+  compactified heat boundary. Targeted verification only; no umbrella build.
+
+## Wave 23 — explicit infinite square-rate reader and exact boundary energy
+
+103. **Canonical rate-plane symbol.** `[PROVED HERE + Lean]` The closed form
+     `B(z)=sin(pi*sqrt(z))/sinh(pi*sqrt(z))` vanishes at every positive square. Its derivative at
+     `n^2` is nonzero.
+104. **Infinite delta interpolation.** `[PROVED HERE + Lean]` Inverse-slope normalization of the
+     removable difference quotient at `n^2` gives one at `n^2` and zero at every other square, with
+     no finite cutoff and no reader-existence Prop. Rescaling by `s/pi` gives the same result at the
+     physical heat rates `pi*m^2`. Complete proof:
+     `../2-fully-proven/new/xi-theta-square-rate-reader-symbol.md`.
+105. **Boundary inner identity.** `[PROVED HERE + Lean]` On the punctured imaginary boundary the sine
+     and hyperbolic-sine terms have equal norm, so `|B(it)|=1`. The normalized reader has the exact
+     Cauchy profile forced by the node slope.
+106. **Exact condition number.** `[PROVED HERE + Lean]` The dimensionless boundary energy is
+     `(4/pi)*sinh(pi*n)^2`; after restoring the physical rate it is `4*sinh(pi*n)^2`. Hence the
+     standard normalized boundary norm is exactly `sqrt(2/pi)*sinh(pi*n)`, matching the value that
+     was previously only predicted. Complete proof:
+     `../2-fully-proven/new/xi-theta-square-rate-boundary-energy.md`.
+107. **Interfaces discharged.** `[PROVED]` Infinite symbol existence, finite-cutoff dependence,
+     boundary integrability, and boundary-norm hypotheses are eliminated. The compactified symbol
+     obstruction and the rate-plane construction now meet exactly: the singular compactified
+     boundary is the inner boundary at rate infinity.
+108. **New open core.** `[OPEN CORE]` Prove analytic right-half-plane membership and uniform interior
+     Hardy control, construct the Paley-Wiener `L2` representative, and compute its reflected
+     balanced-Perron charge.
+
+## Log (cont. 25)
+
+- 2026-07-10 — wave 23: constructed the exact infinite square-rate reader symbol, proved its simple
+  node normalization at every physical theta heat rate, proved the punctured-boundary inner identity,
+  and derived the exact normalized boundary condition number. Targeted verification only; no
+  umbrella build.
+
+## Wave 24 — the H2 and Paley-Wiener reader is canonical on paper
+
+109. **Selected-zero factorization.** `[PROVED PAPER]` Factoring the physical inner product as
+     `B_phys=b_n*B_n` rewrites the reader as
+     `R_n(s)=-B_n(s)/(B_phys'(lambda_n)(s+lambda_n))`, where `B_n` is inner.
+110. **Uniform interior control.** `[PROVED PAPER]` The factorization gives a Cauchy majorant on every
+     right-half-plane line and bounds the full Hardy supremum by the proved boundary energy.
+     Dominated convergence at the boundary gives equality.
+111. **Exact Hardy norm.** `[PROVED PAPER]` In the standard `1/(2pi)` normalization,
+     `||R_n||_H2=sqrt(2/pi)*sinh(pi*n)`.
+112. **Canonical source reader.** `[PROVED PAPER]` Define `r_n=PW^(-1)(R_n)` under the unitary Laplace
+     Paley-Wiener map. Then `r_n` has the same exact norm and pairs to the Kronecker delta against
+     every heat exponential `exp(-pi*m^2*y)`. Fixed multiplication by `exp(pi*n^2)` reads the
+     boundary-shifted theta atoms. Complete proof:
+     `../2-fully-proven/new/xi-theta-square-rate-hardy-reader.md`.
+113. **New open core.** `[OPEN CORE]` Express the resulting fixed-index reader directly on the
+     completed critical cosine trace and compute its reflected contribution through the balanced
+     third-order Perron seam. The Lean-only gap is the missing half-plane H2/Paley-Wiener unitary API.
+
+## Log (cont. 26)
+
+- 2026-07-10 — wave 24: factored the selected Blaschke zero, proved uniform interior Hardy control
+  and the exact H2 norm on paper, and defined the canonical source-side L2 reader by inverse
+  Paley-Wiener. No umbrella build.

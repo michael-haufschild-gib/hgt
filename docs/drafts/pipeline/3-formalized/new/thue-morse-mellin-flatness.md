@@ -78,3 +78,24 @@ Construct the positive infinite binary product as the monotone limit of the fini
 that its omitted tail lies in `[0,1]`. The capstone then yields the entire Mellin transform with no
 new analytic hypotheses; the remaining scientific layer is the matching lower flatness estimate,
 which determines the exact type.
+
+## Concrete infinite-product update
+
+- 2026-07-10 — `thueMorseFactor` and `thueMorseKernel` now construct the actual positive infinite
+  binary product in Lean. Summability of the exponential defects proves `Multipliable`; monotonicity
+  of the finite prefix products proves that the infinite product is nonnegative, at most one, and
+  bounded above by every finite prefix.
+- `[PROVED]` `thueMorseMellinKernel_bound` instantiates `IsThueMorseKernelBound` for the concrete
+  infinite product.
+- `[PROVED]` measurability, a global norm bound by one, local integrability on `(0,infinity)`, and
+  big-O of `exp(-x)` at infinity are discharged in Lean.
+- `[PROVED]` `thueMorseMellinKernel_mellin_analyticOnNhd` proves that the Mellin transform of the
+  concrete infinite product is analytic on the whole complex plane.
+- `[OPEN CORE]` The formal series identity connecting this product to the shifted signed
+  Thue--Morse Dirichlet series is not yet present.
+- `[OPEN CORE]` The matching lower flatness estimate and exact Hadamard order-two type remain
+  paper-only.
+
+The earlier scope item saying that the infinite product had not been constructed is superseded by
+this update. The targeted module build still passes at `8475/8475`, and the four added principal
+claims have axiom set `{propext, Classical.choice, Quot.sound}`.

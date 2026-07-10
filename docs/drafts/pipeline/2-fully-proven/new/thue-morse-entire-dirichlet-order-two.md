@@ -285,3 +285,14 @@ natural boundary or a finite abscissa singularity.
   `2^(m(m-1)/2)`, natural-to-real exponent discharge, whole-plane Mellin convergence, and analytic
   capstone are axiom-clean. The stage-2 card remains here because the infinite product construction,
   matching lower bound, and exact order/type theorem are not yet in Lean.
+
+## Concrete formalization update
+
+- 2026-07-10 — the actual positive infinite product is now constructed in Lean, not merely exposed
+  through a domination interface. Its factor family is multipliable for every `x>0`; the resulting
+  product is dominated by every finite prefix, is measurable and locally integrable, and retains
+  the `exp(-x)` tail.
+- `thueMorseMellinKernel_mellin_analyticOnNhd` therefore formalizes the whole-plane analyticity of
+  the concrete product's Mellin transform.
+- The stage-2 status remains correct for this card: the formal coefficient-series identity, the
+  lower radial estimate, and the exact order/type theorem have not yet crossed the Lean gate.

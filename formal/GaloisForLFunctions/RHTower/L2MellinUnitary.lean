@@ -41,12 +41,12 @@ def lpCompMeasurePreservingEquiv (e : α ≃ᵐ β) (he : MeasurePreserving e μ
     change Lp.compMeasurePreserving e.symm he.symm
       (Lp.compMeasurePreserving e he g) = g
     rw [← Lp.compMeasurePreserving_comp_apply g he he.symm]
-    simpa using Lp.compMeasurePreserving_id_apply g
+    simp
   right_inv g := by
     change Lp.compMeasurePreserving e he
       (Lp.compMeasurePreserving e.symm he.symm g) = g
     rw [← Lp.compMeasurePreserving_comp_apply g he.symm he]
-    simpa using Lp.compMeasurePreserving_id_apply g
+    simp
 
 /-! ### Logarithmic coordinates -/
 
@@ -359,6 +359,16 @@ theorem mellin_positiveScale (a : ℝ) (f : Lp ℂ 2 multiplicativeHaar) :
 def mellinCharacter (p s : ℝ) : ℂ :=
   Complex.exp (((Real.log p * s : ℝ) : ℂ) * Complex.I)
 
+@[simp] theorem norm_mellinCharacter (p s : ℝ) : ‖mellinCharacter p s‖ = 1 := by
+  simp [mellinCharacter, Complex.norm_exp]
+
+theorem star_mellinCharacter (p s : ℝ) :
+    starRingEnd ℂ (mellinCharacter p s) = (mellinCharacter p s)⁻¹ := by
+  unfold mellinCharacter
+  rw [← Complex.exp_conj]
+  simp
+  rw [Complex.exp_neg]
+
 theorem mellinCharacter_eq_cpow (p : ℝ) (hp : 0 < p) (s : ℝ) :
     mellinCharacter p s = (p : ℂ) ^ (Complex.I * (s : ℂ)) := by
   rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr hp.ne')]
@@ -398,15 +408,15 @@ theorem mellinCharacterMulUnitary_ae (p : ℝ) (f : Lp (α := ℝ) ℂ 2) :
     (Real.log p * spectralNormalization) f] with s hs
   rw [hs, fourierPhase_log_normalized]
 
-/-- The concrete Mellin intertwining identity `M(U_p f) = p^(i s) M(f)`. -/
-theorem mellin_positiveDilation (p : ℝ) (hp : 0 < p)
-    (f : Lp ℂ 2 multiplicativeHaar) :
+/-- The concrete Mellin intertwining identity `M(U_p f) = p^(i s) M(f)` at log-scale `log p`.
+For `p > 0`, `positiveScaleEquiv_log_apply` identifies this scale with `x ↦ p*x`. -/
+theorem mellin_positiveDilation (p : ℝ) (f : Lp ℂ 2 multiplicativeHaar) :
     mellinUnitary (positiveScaleUnitary (Real.log p) f) =
       mellinCharacterMulUnitary p (mellinUnitary f) := by
   exact mellin_positiveScale (Real.log p) f
 
 /-- Operator-level pullback: the `p^(i s)` multiplier conjugates to positive scaling. -/
-theorem conjugateOperator_mellinCharacter (p : ℝ) (hp : 0 < p) :
+theorem conjugateOperator_mellinCharacter (p : ℝ) :
     RHTower.conjugateOperator mellinUnitary.toContinuousLinearEquiv
       (mellinCharacterMulUnitary p).toLinearIsometry.toContinuousLinearMap =
     (positiveScaleUnitary (Real.log p)).toLinearIsometry.toContinuousLinearMap := by
@@ -417,7 +427,7 @@ theorem conjugateOperator_mellinCharacter (p : ℝ) (hp : 0 < p) :
     positiveScaleUnitary (Real.log p) f
   apply mellinUnitary.injective
   rw [mellinUnitary.apply_symm_apply]
-  exact (mellin_positiveDilation p hp f).symm
+  exact (mellin_positiveDilation p f).symm
 
 end MellinL2
 end RHTower

@@ -199,6 +199,38 @@ theorem dilation_mapsTo_evenSubspace (a : ℝ) (ha : 0 < a) :
   apply (mem_evenSubspace_iff _).mpr
   rw [l2Reflection_dilation, (mem_evenSubspace_iff f).mp hf]
 
+/-- Normalized dilation as a unitary on the even Hilbert space. -/
+def evenDilationUnitary (a : ℝ) (ha : 0 < a) :
+    evenSubspace ≃ₗᵢ[ℂ] evenSubspace where
+  toFun f := ⟨dilation a ha f, dilation_mapsTo_evenSubspace a ha f.property⟩
+  invFun f :=
+    ⟨dilation a⁻¹ (inv_pos.mpr ha) f,
+      dilation_mapsTo_evenSubspace a⁻¹ (inv_pos.mpr ha) f.property⟩
+  left_inv f := by
+    apply Subtype.ext
+    exact dilation_inv_dilation a ha f
+  right_inv f := by
+    apply Subtype.ext
+    exact dilation_dilation_inv a ha f
+  map_add' f g := by
+    apply Subtype.ext
+    exact map_add _ _ _
+  map_smul' c f := by
+    apply Subtype.ext
+    exact map_smul _ _ _
+  norm_map' f := by
+    exact (dilation a ha).norm_map f
+
+@[simp] theorem coe_evenDilationUnitary_apply
+    (a : ℝ) (ha : 0 < a) (f : evenSubspace) :
+    (((evenDilationUnitary a ha f : evenSubspace) : SoninL2)) = dilation a ha f := rfl
+
+@[simp] theorem evenDilationUnitary_symm_apply
+    (a : ℝ) (ha : 0 < a) (f : evenSubspace) :
+    (evenDilationUnitary a ha).symm f =
+      ⟨dilation a⁻¹ (inv_pos.mpr ha) f,
+        dilation_mapsTo_evenSubspace a⁻¹ (inv_pos.mpr ha) f.property⟩ := rfl
+
 theorem l2Reflection_dilationSum (p : ℝ) (hp : 1 < p) (f : SoninL2) :
     l2Reflection (dilationSum p hp f) = dilationSum p hp (l2Reflection f) := by
   rw [dilationSum_apply, map_add, l2Reflection_dilation, l2Reflection_dilation,

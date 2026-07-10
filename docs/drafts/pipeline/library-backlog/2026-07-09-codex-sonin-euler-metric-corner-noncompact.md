@@ -13,9 +13,13 @@
 Record the source-specific theorem beyond the earlier raw-support no-go.
 
 1. Proposition 4.8 of Connes--Consani--Moscovici realizes every semilocal Sonin space on one
-   entire-function set `B_lambda` with place-dependent norms. Relative to the pinned archimedean norm,
-   adjoining `p` multiplies the critical-line measure by
+   entire-function set `B_lambda` with place-dependent norms. On the archimedean-weighted critical
+   line, let `Pi^B_{lambda,infinity}` be the orthogonal projection onto the boundary image in the
+   pinned archimedean norm. Adjoining `p` changes the metric by
    `w_p(s)=|1-p^(-1/2-is)|^2`.
+   Precisely, `w_p` is the Radon--Nikodym/Gram operator `(iota'_p)^*iota'_p`; the finite Euler factor
+   cancels in `upsilon_{infinity,p} theta_p = iota'_p upsilon_infinity`, so it is not a residual
+   multiplier in that identity.
 2. Let `Q_lambda` be the orthogonal projection onto the actual archimedean Sonin intersection
    `ker(time cutoff) intersect ker(Fourier cutoff)`. For every `lambda>0` and prime `p`,
    `(1-Q_lambda)(U_p+U_p^*)Q_lambda` is noncompact.
@@ -23,11 +27,18 @@ Record the source-specific theorem beyond the earlier raw-support no-go.
    a bounded projection correction from exterior high-frequency shell modes to exact Sonin vectors.
    One dilation then moves the shell inside the physical cutoff with asymptotically unit norm.
 4. Under the dual Hardy--Titchmarsh unitary, the theorem becomes noncompactness of
-   `(1-P_lambda)M_{w_p}P_lambda` on the common entire-function carrier. Hence the positive Euler metric
-   corner is in no Schatten ideal and has no unsmoothed trace/determinant/Fitting boundary.
+   `(1-Pi^B_{lambda,infinity})M_{w_p}Pi^B_{lambda,infinity}` on the boundary image in the
+   archimedean-weighted critical-line space. Hence the positive Euler metric corner is in no finite
+   Schatten class and has no unsmoothed trace/determinant/Fitting boundary.
 5. Scope the result to the pinned archimedean metric and forward weight `w_p`. It does not yet decide
    every `S`-dependent orthogonal projection, the inverse weight, a two-prime product of corners, or the
    formal prolate naturality defect.
+
+The formal endpoint is
+`formal/GaloisForLFunctions/RHTower/HardyTitchmarshEulerConcrete.lean`, recorded by
+`docs/drafts/pipeline/3-formalized/new/even-sonin-euler-corner-noncompact.md`. Lean constructs the
+source unitary, the pointwise local factor and `M_{w_p}`, the source-image projection, the exact
+pullback, and the noncompactness theorem.
 
 ## Suggested grade
 
