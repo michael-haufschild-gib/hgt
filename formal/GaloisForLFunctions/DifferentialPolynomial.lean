@@ -384,6 +384,37 @@ theorem primitive_support_degree_eq_one
     simpa using hpow
   exact Nat.pow_right_injective (by omega : 1 < 2) hnat
 
+/-- A primitive differential polynomial over a characteristic-zero field is literally a finite
+constant-coefficient linear combination of formal jets. The finite index type is its support, so
+the representation carries no global finiteness assumption on the original family. -/
+theorem primitive_eq_finite_jet_linear_sum
+    {ι C : Type*} [Field C] [CharZero C] {P : DifferentialPolynomial ι C}
+    (hP : IsPrimitiveDifferentialPolynomial P) :
+    ∃ j : (↥P.support) → (ι × ℕ),
+      P = ∑ s ∈ (Finset.univ : Finset ↥P.support),
+        MvPolynomial.C (MvPolynomial.coeff s.1 P) * MvPolynomial.X (j s) := by
+  classical
+  have hdeg : ∀ s : ↥P.support, s.1.sum (fun _ n => n) = 1 :=
+    fun s => primitive_support_degree_eq_one hP s.2
+  let j : (↥P.support) → (ι × ℕ) := fun s =>
+    Classical.choose ((Finsupp.sum_eq_one_iff s.1).mp (hdeg s))
+  have hj : ∀ s : ↥P.support, s.1 = Finsupp.single (j s) 1 := fun s =>
+    Classical.choose_spec ((Finsupp.sum_eq_one_iff s.1).mp (hdeg s))
+  refine ⟨j, ?_⟩
+  calc
+    P = ∑ s ∈ P.support, MvPolynomial.monomial s (MvPolynomial.coeff s P) := P.as_sum
+    _ = ∑ s ∈ P.support.attach,
+        MvPolynomial.monomial s.1 (MvPolynomial.coeff s.1 P) := by
+      exact (Finset.sum_attach P.support fun s =>
+        MvPolynomial.monomial s (MvPolynomial.coeff s P)).symm
+    _ = ∑ s ∈ (Finset.univ : Finset ↥P.support),
+        MvPolynomial.C (MvPolynomial.coeff s.1 P) * MvPolynomial.X (j s) := by
+      rw [Finset.univ_eq_attach]
+      apply Finset.sum_congr rfl
+      intro s hs
+      rw [hj s]
+      simp [MvPolynomial.monomial_eq]
+
 end
 
 end GaloisForLFunctions

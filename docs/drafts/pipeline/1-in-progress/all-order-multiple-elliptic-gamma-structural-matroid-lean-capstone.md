@@ -90,6 +90,15 @@ relation yields one common primitive in every simultaneous telescoping equation.
 existence theorem from differential dependence still requires the parameterized
 Picard--Vessiot/Ostrowski--Kolchin layer and constant descent.
 
+`formal/GaloisForLFunctions/DifferentialPolynomial.lean` now constructs the constant-coefficient
+differential polynomial ring as a polynomial ring on formal jets, proves that jet evaluation
+commutes with derivation, and gives relation ideals their differential structure. It also defines
+the additive Hopf comultiplication. The characteristic-zero primitive classification is complete:
+folding `P(X+Y)` along `Y=X` gives `P(2X)=2P(X)`, coefficient comparison forces every supported
+monomial to have total jet-degree one, and every primitive is reconstructed as an explicit finite
+constant-coefficient sum of jets. The remaining algebraic-group core is the existence direction:
+a nonzero proper differential Hopf relation ideal must contain a nonzero primitive.
+
 This is the first real dependency of the strengthened theorem. It is not evidence that the
 analytic capstone is already formalized.
 
@@ -103,6 +112,7 @@ analytic capstone is already formalized.
 - [x] meromorphic-normal-form small-period constancy theorem implemented and built
 - [x] rank-three nondiscreteness, small-period extraction, and meromorphic constancy implemented
 - [x] commuting difference-differential field and common-telescoper algebraic interface implemented
+- [x] differential-polynomial relation ideals and characteristic-zero primitive classification
 - [ ] complete differential algebra foundation, including differential transcendence degree
 - [ ] multi-automorphism parameterized Picard--Vessiot foundation
 - [ ] unconditional simultaneous telescoping
@@ -128,3 +138,7 @@ analytic capstone is already formalized.
 - 2026-07-10 -- Formalized the multi-automorphism difference-differential interface and the
   common-primitive consequence of a differential-linear relation; the hard converse PPV theorem
   remains open.
+- 2026-07-10 -- Formalized additive differential-polynomial Hopf structure and proved without
+  project axioms that every primitive polynomial in characteristic zero is a finite
+  constant-coefficient linear combination of jets. The next open core is primitive existence in a
+  nonzero proper differential Hopf ideal, followed by the PPV Galois-correspondence application.
