@@ -253,9 +253,9 @@ concrete source carrier has the exact norm
   and the dilation-side essential norm is independent of both scales.
 - `[PROVED]` The result is quadratic and multiplicative in the corners, not another finite additive
   Calkin-independence theorem.
-- `[OPEN CORE]` It does not determine whether a signed sum of several quadratic products can become
-  compact. Entrywise nonvanishing of a Calkin Gram matrix is weaker than its matrix-level
-  nondegeneracy.
+- `[RESOLVED BY CHILD]` The matrix-level gap is closed for every injective finite prime family by
+  `sonin-prime-quadratic-calkin-matrix-injectivity.md`: an arbitrary complex matrix combination of
+  the prime Gram entries is compact if and only if its coefficient matrix is zero.
 - `[OPEN CORE]` It does not treat the inverse metric `w_p^(-1)`, a conditionally renormalized
   all-prime product, or the full archimedean/finite-place phase-ratio compensation.
 
@@ -323,14 +323,15 @@ formalized, while its exact essential-norm value remains paper-level.
   is encoded
 - [ ] 3 -> 4: primary-literature novelty audit and standalone exposition
 
-## Next conjecture
+## Resolved multiplication law
 
-`[CONJECTURE]` The cross element `pi(L_p)^*pi(L_q)` is itself a partial isometry for every
-`p,q>1`, with initial and final projections determined by the overlap of the physical and Fourier
-shells at scales `p` and `q`. The exact norm theorem proves that this element reaches the maximal
-norm allowed by its two norm-one factors, but equality in submultiplicativity alone does not imply
-the partial-isometry relation. The next substantive question is the full Calkin multiplication law,
-not the formally automatic positivity of finite Gram sums.
+`[PROVED BY CHILD]` The cross element `pi(L_p)^*pi(L_q)` is a partial isometry for every `p,q>1`.
+If `m=min(p,q)`, its initial projection is the sum of the physical and Fourier shell projections
+from `a*q/m` to `a*q`, and its final projection is the corresponding sum from `a*p/m` to `a*p`.
+See `sonin-mixed-calkin-partial-isometry-law.md`.
+
+The remaining multiplication question starts at three mixed Gram factors, where the intermediate
+shell-overlap projection depends on three scales and need not collapse to one Gram entry.
 
 ## Log
 

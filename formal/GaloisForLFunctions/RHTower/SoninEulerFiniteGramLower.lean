@@ -4,7 +4,7 @@ import GaloisForLFunctions.Core
 /-!
 # Finite prime Sonin Gram systems modulo compact operators
 
-Finite prime-indexed Sonin dilation corners admit paired exterior preimages of one narrow interior
+Finite prime-indexed Sonin dilation corners have paired exterior preimages of one narrow interior
 shell.  Their limiting compression table is controlled by prime ratios.  Unique factorization then
 removes every off-diagonal ratio collision, while the diagonal collisions form an invertible tail
 transform.  The resulting quadratic Gram family is linearly independent modulo compact operators.
@@ -180,7 +180,7 @@ theorem scaledEvenShellBand_subset_Icc_of_upper
 /-- An inward image of an interior shell lies in the physical forbidden space whenever its upper
 edge is below the cutoff after scaling. -/
 theorem inwardDilatedEvenShell_mem_centralPhysicalForbidden_of_upper
-    (a c d s : ℝ) (ha : 0 < a) (hc : 0 < c) (hcd : c < d) (hs : 0 < s)
+    (a c d s : ℝ) (hc : 0 < c) (hcd : c < d) (hs : 0 < s)
     (hds : d < s * a) (m : ℕ) :
     inwardDilatedEvenShell c d s hc hcd hs m ∈ centralPhysicalForbidden a := by
   rw [centralPhysicalForbidden]
@@ -257,7 +257,7 @@ theorem centralSoninDilationCorner_inverseDilatedEvenShell_tendsto_ratio_of_le
     intro m
     exact centralSoninProjection_eq_zero_of_mem_physicalForbidden a
       (inwardDilatedEvenShell_mem_centralPhysicalForbidden_of_upper
-        a c d (q / p) ha hc hcd
+        a c d (q / p) hc hcd
           (div_pos (zero_lt_one.trans hq) (zero_lt_one.trans hp)) hdt m)
   have hDg : ∀ m, D (g m) = t m + w m := by
     intro m
@@ -389,7 +389,7 @@ def finitePairedEvenSoninInput
 def finiteSoninRatioOutput
     {n : ℕ} (c d : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
     (hc : 0 < c) (hcd : c < d) (j k : Fin n) (m : ℕ) : evenSubspace :=
-  if h : r k ≤ r j then
+  if _h : r k ≤ r j then
     inwardDilatedEvenShellEven c d (r j / r k) hc hcd
       (div_pos (zero_lt_one.trans (hr j)) (zero_lt_one.trans (hr k))) m
   else 0
@@ -1221,5 +1221,125 @@ theorem finitePrimeEvenDilationGram_isCompactOperator_iff
     simpa [finiteEvenDilationGramCombination] using
       (isCompactOperator_zero : IsCompactOperator
         (0 : evenSubspace →L[ℂ] evenSubspace))
+
+def finiteEulerGramRescale
+    {n : ℕ} (r : Fin n → ℝ) (A : Matrix (Fin n) (Fin n) ℂ) :
+    Matrix (Fin n) (Fin n) ℂ :=
+  fun i j => A i j * star (-((Real.sqrt (r i) : ℂ)⁻¹)) *
+    (-((Real.sqrt (r j) : ℂ)⁻¹))
+
+def finiteEvenPositiveEulerGramCombination
+    {n : ℕ} (a : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
+    (A : Matrix (Fin n) (Fin n) ℂ) : evenSubspace →L[ℂ] evenSubspace :=
+  ∑ i, ∑ j, A i j • evenCentralPositiveEulerQuadraticCorner
+    a (r i) (r j) (hr i) (hr j)
+
+theorem finiteEvenPositiveEulerGramCombination_eq_dilation
+    {n : ℕ} (a : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
+    (A : Matrix (Fin n) (Fin n) ℂ) :
+    finiteEvenPositiveEulerGramCombination a r hr A =
+      finiteEvenDilationGramCombination a r hr (finiteEulerGramRescale r A) := by
+  classical
+  unfold finiteEvenPositiveEulerGramCombination finiteEvenDilationGramCombination
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [evenCentralPositiveEulerQuadraticCorner_eq_smul]
+  simp only [finiteEulerGramRescale, smul_smul]
+  congr 1
+  ring
+
+theorem finiteEulerGramRescale_ne_zero
+    {n : ℕ} (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
+    (A : Matrix (Fin n) (Fin n) ℂ) (hA : A ≠ 0) :
+    finiteEulerGramRescale r A ≠ 0 := by
+  intro hzero
+  apply hA
+  ext i j
+  have hij := congrFun (congrFun hzero i) j
+  change A i j * star (-((Real.sqrt (r i) : ℂ)⁻¹)) *
+      (-((Real.sqrt (r j) : ℂ)⁻¹)) = 0 at hij
+  rcases mul_eq_zero.mp hij with hleft | hj
+  · rcases mul_eq_zero.mp hleft with hAij | hi
+    · exact hAij
+    · exfalso
+      apply (star_ne_zero.mpr ?_) hi
+      simp [Real.sqrt_ne_zero'.mpr (zero_lt_one.trans (hr i))]
+  · exfalso
+    have hs : (Real.sqrt (r j) : ℂ) ≠ 0 := by
+      exact_mod_cast (Real.sqrt_ne_zero'.mpr (zero_lt_one.trans (hr j)))
+    exact (neg_ne_zero.mpr (inv_ne_zero hs)) hj
+
+/-- Positive Euler scaling preserves the full finite prime quadratic Calkin injection. -/
+theorem finitePrimeEvenPositiveEulerGram_not_isCompactOperator_of_ne_zero
+    {n : ℕ} (a : ℝ) (ha : 0 < a) (p : Fin n → ℕ)
+    (hp : ∀ i, (p i).Prime) (hinj : Function.Injective p)
+    (A : Matrix (Fin n) (Fin n) ℂ) (hA : A ≠ 0) :
+    ¬ IsCompactOperator
+      (finiteEvenPositiveEulerGramCombination a (fun i => (p i : ℝ))
+        (fun i => by
+          change (1 : ℝ) < (p i : ℝ)
+          exact_mod_cast (hp i).one_lt) A) := by
+  rw [finiteEvenPositiveEulerGramCombination_eq_dilation]
+  exact finitePrimeEvenDilationGram_not_isCompactOperator_of_ne_zero
+    a ha p hp hinj (finiteEulerGramRescale (fun i => (p i : ℝ)) A)
+      (finiteEulerGramRescale_ne_zero (fun i => (p i : ℝ))
+        (fun i => by
+          change (1 : ℝ) < (p i : ℝ)
+          exact_mod_cast (hp i).one_lt) A hA)
+
+theorem unitaryPush_fintype_sum
+    {ι H K : Type*} [Fintype ι]
+    [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    [NormedAddCommGroup K] [InnerProductSpace ℂ K]
+    (u : H ≃ₗᵢ[ℂ] K) (T : ι → H →L[ℂ] H) :
+    unitaryPush u (∑ i, T i) = ∑ i, unitaryPush u (T i) := by
+  classical
+  induction (Finset.univ : Finset ι) using Finset.induction_on with
+  | empty => simp [unitaryPush]
+  | @insert i s hi ih =>
+      simp only [Finset.sum_insert hi, unitaryPush_add, ih]
+
+def finiteArchimedeanPrimeEulerGramCombination
+    {n : ℕ} (a : ℝ) (r : Fin n → ℝ) (A : Matrix (Fin n) (Fin n) ℂ) :
+    ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2 :=
+  ∑ i, ∑ j, A i j • archimedeanPrimeEulerQuadraticCorner a (r i) (r j)
+
+theorem finiteArchimedeanPrimeEulerGramCombination_eq_unitaryPush
+    {n : ℕ} (a : ℝ) (r : Fin n → ℝ) (hr : ∀ i, 1 < r i)
+    (A : Matrix (Fin n) (Fin n) ℂ) :
+    finiteArchimedeanPrimeEulerGramCombination a r A =
+      unitaryPush archimedeanDualHardyTitchmarshUnitary
+        (finiteEvenPositiveEulerGramCombination a r hr A) := by
+  classical
+  unfold finiteArchimedeanPrimeEulerGramCombination finiteEvenPositiveEulerGramCombination
+  rw [unitaryPush_fintype_sum]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [unitaryPush_fintype_sum]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [unitaryPush_smul, archimedeanPrimeEulerQuadraticCorner_eq_unitaryPush]
+
+/-- **Concrete source quadratic Calkin injectivity.** Every nonzero finite matrix combination of
+literal prime Euler Gram corners on the Hardy--Titchmarsh line is noncompact. -/
+theorem finitePrimeArchimedeanEulerGram_not_isCompactOperator_of_ne_zero
+    {n : ℕ} (a : ℝ) (ha : 0 < a) (p : Fin n → ℕ)
+    (hp : ∀ i, (p i).Prime) (hinj : Function.Injective p)
+    (A : Matrix (Fin n) (Fin n) ℂ) (hA : A ≠ 0) :
+    ¬ IsCompactOperator
+      (finiteArchimedeanPrimeEulerGramCombination a (fun i => (p i : ℝ)) A) := by
+  let r : Fin n → ℝ := fun i => (p i : ℝ)
+  let hr : ∀ i, 1 < r i := fun i => by
+    change (1 : ℝ) < (p i : ℝ)
+    exact_mod_cast (hp i).one_lt
+  rw [finiteArchimedeanPrimeEulerGramCombination_eq_unitaryPush a r hr A]
+  intro hcompact
+  apply finitePrimeEvenPositiveEulerGram_not_isCompactOperator_of_ne_zero
+    a ha p hp hinj A hA
+  have hpull := IsCompactOperator.unitaryPush
+    archimedeanDualHardyTitchmarshUnitary.symm _ hcompact
+  simpa [unitaryPush_symm_unitaryPush] using hpull
 
 end RHTower

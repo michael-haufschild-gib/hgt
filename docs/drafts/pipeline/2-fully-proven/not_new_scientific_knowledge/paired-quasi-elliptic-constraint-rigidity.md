@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / not new scientific knowledge
 - **Type:** CLASSIFICATION BRIDGE / ANTI-NOVELTY RESULT
 - **Scientific status:** `[BRIDGE — NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Statement:** The apparent class of one-pole paired quasi-elliptic primitives collapses exactly to nonzero scalar multiples plus constants of the elliptic-gamma logarithmic derivative. Its spectrum theorem is therefore a reformulation of the elliptic-gamma theorem, not a broader discovery.
+- **Statement:** The apparent class of one-pole paired quasi-elliptic primitives collapses exactly to nonzero scalar multiples of translates, plus constants, of the elliptic-gamma logarithmic derivative. Its spectrum theorem is therefore a reformulation of the elliptic-gamma theorem, not a broader discovery.
 
 ## Setup: a constraint-defined class
 
@@ -42,19 +42,37 @@ Let
 
 with the same normalization of theta functions used by the elliptic gamma functional equations. Then every simple paired quasi-elliptic primitive is of the form
 
-`F=r Psi+C`
+`F=r Psi(z+a)+C`
 
-for a nonzero `r in C` and `C in C`; necessarily
+for a nonzero `r in C`, some `a in C`, and `C in C`; necessarily
 
-`U_tau=r lambda_tau`, `U_sigma=r lambda_sigma`.
+`U_tau=r lambda_tau(z+a)`, `U_sigma=r lambda_sigma(z+a)`.
 
-Indeed, let `r_tau` be the residue of the unique pole of `U_tau`. The functions `U_tau` and `r_tau lambda_tau` have the same pole divisor and residues. Their difference is entire, 1-periodic, and has constant `tau`-increment. Its derivative is an entire elliptic function and hence constant; 1-periodicity forces that constant to vanish. Thus
+Indeed, let `p_tau` be the unique pole class of `U_tau` and `r_tau` its residue. The functions `U_tau` and `r_tau lambda_tau(z-p_tau)` have the same pole divisor and residues. Their difference is entire, `1`-periodic, and has constant `tau`-increment. Its derivative is an entire elliptic function and hence constant; `1`-periodicity forces that constant to vanish. Thus
 
-`U_tau=r_tau lambda_tau+a`.
+`U_tau=r_tau lambda_tau(z-p_tau)+a_0`.
 
-The same argument gives `U_sigma=r_sigma lambda_sigma+b`. The common quasi-period `c` is the residue times the standard theta quasi-period, so compatibility forces `r_tau=r_sigma=:r`. Now `W=F-r Psi` is 1-periodic and has constant increments `Delta_sigma W=a`, `Delta_tau W=b`. Its derivative has periods `1,tau,sigma`; their group is nondiscrete, so `delta W` is constant, and 1-periodicity forces `delta W=0`. Hence `W` is constant and `a=b=0`.
+The same argument gives
 
-The abstract class therefore contains no functions beyond scalar-affine copies of the elliptic-gamma logarithmic derivative.
+`U_sigma=r_sigma lambda_sigma(z-p_sigma)+b_0`.
+
+The common quasi-period `c` is the residue times the standard theta quasi-period, so compatibility forces `r_tau=r_sigma=:r`.
+
+The unconditional theorem `triptic-orbit-residue-reciprocity` identifies the two one-point orbit divisors. Hence
+
+`p_tau-p_sigma in Lambda_tau+Lambda_sigma=H`.
+
+Choose `a in C` satisfying
+
+`-a=p_tau mod Lambda_tau`, `-a=p_sigma mod Lambda_sigma`.
+
+After using the constant quasi-periods of the theta logarithmic derivatives, the preceding formulas become
+
+`U_tau=r lambda_tau(z+a)+a_1`, `U_sigma=r lambda_sigma(z+a)+b_1`.
+
+Now `W=F-r Psi(z+a)` is `1`-periodic and has constant increments `Delta_sigma W=a_1`, `Delta_tau W=b_1`. Its derivative has periods `1,tau,sigma`; their group is nondiscrete, so `delta W` is constant, and `1`-periodicity forces `delta W=0`. Hence `W` is constant and `a_1=b_1=0`.
+
+The abstract class therefore contains no functions beyond translated scalar-affine copies of the elliptic-gamma logarithmic derivative.
 
 ## Consequent spectrum theorem `[PROVED, BUT NOT INDEPENDENT]`
 
@@ -234,7 +252,7 @@ Formalizing the analytic theorem would presently be theatre: the local tree has 
 - [x] Exact theorem and constraint-defined class stated.
 - [x] Paper proof written without numerical discovery.
 - [x] Exact spectrum strengthened to the complete finite-shift matroid.
-- [ ] Independent significance: failed because the one-pole class equals scalar-affine elliptic-gamma logarithmic derivatives.
+- [ ] Independent significance: failed because the one-pole class equals translated scalar-affine elliptic-gamma logarithmic derivatives.
 - [x] Exact/equivalent/stronger preliminary literature search across primary adjacent sources.
 - [x] Elliptic gamma recovered as a consequential corollary rather than used as the definition.
 - [ ] Independent expert audit of the paired telescoping descent remains relevant to the elliptic-gamma theorem.
@@ -243,4 +261,5 @@ Formalizing the analytic theorem would presently be theatre: the local tree has 
 
 - 2026-07-10 - Extracted from the elliptic-gamma calculation after the proof was found to use only paired noncommensurable quasi-elliptic constraints and a one-pole orbit separator.
 - 2026-07-10 - Proved constraint uniqueness, exact rank-three DA spectrum, and the complete finite-shift differential-dependence matroid for the abstract class.
-- 2026-07-10 - Demoted after the anti-rediscovery gate: the one-pole hypotheses force the increments to be scalar theta logarithmic derivatives and the primitive to be a scalar-affine elliptic-gamma logarithmic derivative. The apparent class was only a renaming.
+- 2026-07-10 - Demoted after the anti-rediscovery gate: the one-pole hypotheses force the increments to be translated scalar theta logarithmic derivatives and the primitive to be a translated scalar-affine elliptic-gamma logarithmic derivative. The apparent class was only a renaming.
+- 2026-07-10 - Corrected the collapse statement to include a common argument translate. Cross-curve orbit-residue reciprocity aligns the two pole classes modulo `H`; the exact spectrum and anti-novelty verdict are unchanged.

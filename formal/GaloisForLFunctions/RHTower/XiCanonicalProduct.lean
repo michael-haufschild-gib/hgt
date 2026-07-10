@@ -105,6 +105,47 @@ theorem xiCanonicalProduct_eq_zero (q : XiZeroCopy) :
   refine ⟨q, ?_⟩
   rw [div_self (xiSpectralPoint_ne_zero q), weierstrassE1_one]
 
+/-- The canonical product has exactly the prescribed divisor-copy locations as its zeros. -/
+theorem xiCanonicalProduct_eq_zero_iff_exists (z : ℂ) :
+    xiCanonicalProduct z = 0 ↔ ∃ q : XiZeroCopy, xiSpectralPoint q = z := by
+  constructor
+  · intro hz
+    by_contra hnone
+    have haway : ∀ q : XiZeroCopy, z ≠ xiSpectralPoint q := by
+      intro q heq
+      exact hnone ⟨q, heq.symm⟩
+    exact (canonicalProductE1Indexed_ne_zero xiSpectralPoint
+      xiSpectralPoint_ne_zero xiSpectralPoint_inv_sq_summable haway) hz
+  · rintro ⟨q, rfl⟩
+    exact xiCanonicalProduct_eq_zero q
+
+/-- The actual zeros of `XiC` are exactly the centered spectral locations supplied by the
+Xi divisor, including at least one multiplicity copy at each support point. -/
+theorem XiC_eq_zero_iff_exists_xiZeroCopy (z : ℂ) :
+    XiC z = 0 ↔ ∃ q : XiZeroCopy, xiSpectralPoint q = z := by
+  constructor
+  · intro hz
+    have hzero : xi (1 / 2 + z * I) = 0 := by simpa only [XiC] using hz
+    have hmem := mem_xi_divisor_support_of_eq_zero hzero
+    let ρ : XiDivisorSupport := ⟨1 / 2 + z * I, hmem⟩
+    have hpos := xi_divisor_pos_on_support ρ
+    have hn : 0 < Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)) := by
+      omega
+    let q : XiZeroCopy := ⟨ρ, ⟨0, hn⟩⟩
+    refine ⟨q, ?_⟩
+    dsimp only [q, ρ, xiSpectralPoint]
+    rw [sub_eq_add_neg]
+    ring_nf
+    rw [I_sq]
+    ring
+  · rintro ⟨q, rfl⟩
+    exact XiC_xiSpectralPoint_eq_zero q
+
+/-- The canonical product and `XiC` have the same zero set. -/
+theorem xiCanonicalProduct_eq_zero_iff_XiC_eq_zero (z : ℂ) :
+    xiCanonicalProduct z = 0 ↔ XiC z = 0 := by
+  rw [xiCanonicalProduct_eq_zero_iff_exists, XiC_eq_zero_iff_exists_xiZeroCopy]
+
 end
 
 end RHTower

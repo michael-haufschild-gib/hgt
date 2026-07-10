@@ -1,14 +1,16 @@
 # Prime Sonin quadratic corners are matrix-injective modulo compacts
 
 - **ID:** sonin-prime-quadratic-calkin-matrix-injectivity
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** THEOREM / QUADRATIC OBSTRUCTION
 - **Date:** 2026-07-10
-- **Status banner:** `[CONJECTURE]` The shell proof below survives the paper attack. Lean realization
-  and an independent operator-theory/Sonin literature audit remain open.
+- **Status banner:** `[NOVELTY UNVERIFIED]` The theorem, quantitative coefficient readers, positive
+  Euler specialization, and literal Hardy--Titchmarsh source transport are proved in Lean. An
+  independent operator-theory/Sonin literature audit remains open.
 - **Parents:**
-  `../2-fully-proven/new_scientific_knowledge/sonin-two-scale-quadratic-corner-noncompact.md`;
-  `../2-fully-proven/new_scientific_knowledge/sonin-finite-calkin-l2-lower-bound.md`
+  `sonin-two-scale-quadratic-corner-noncompact.md`;
+  `sonin-finite-calkin-l2-lower-bound.md`
+- **Lean target:** `formal/GaloisForLFunctions/RHTower/SoninEulerFiniteGramLower.lean`
 
 ## Claim
 
@@ -97,8 +99,9 @@ operator-norm inequality and the two limits give (2), hence (1).
 - `[PARENT-THEORY WARNING]` Once (3) is known, the finite-dimensional matrix argument is elementary.
   Scientific content, if any, is the actual-Sonin realization of the ratio-poset compression and
   the arithmetic removal of all nontrivial ratio collisions.
-- `[OPEN CORE]` Build the shell selector and (3) in Lean, then discharge the ratio-rigidity interface
-  for literal prime families rather than leaving it as a hypothesis.
+- `[PROVED IN LEAN]` The shell selector and (3) are constructed without exposed geometric
+  hypotheses. Prime-ratio rigidity is discharged from literal primality and injectivity by unique
+  factorization; it is not left as a Prop interface.
 
 ## Novelty and significance
 
@@ -110,9 +113,32 @@ operator-norm inequality and the two limits give (2), hence (1).
   can enter the compact ideal. Any viable repair must be genuinely infinite, nonlinear, smoothed,
   or use a different polarization.
 
+## Lean realization
+
+`formal/GaloisForLFunctions/RHTower/SoninEulerFiniteGramLower.lean` formalizes:
+
+- the finite ratio-separating interior shell;
+- the full active-ratio limit table (3) on the actual even Sonin carrier;
+- exact orthogonality of unequal active ratio shells;
+- the finite Gram compression limit;
+- prime product and prime ratio rigidity;
+- the off-diagonal coefficient lower bound and diagonal-tail lower bound against every compact
+  perturbation;
+- `G_A` compact if and only if `A=0`;
+- preservation under positive Euler scaling;
+- unitary transport to the literal archimedean Hardy--Titchmarsh prime Euler Gram operators.
+
+The principal endpoints are:
+
+- `norm_matrixEntry_le_norm_finitePrimeEvenDilationGram_sub_compact`;
+- `norm_finitePrimeDiagonalTail_le_norm_finitePrimeEvenDilationGram_sub_compact`;
+- `finitePrimeEvenDilationGram_isCompactOperator_iff`;
+- `finitePrimeEvenPositiveEulerGram_not_isCompactOperator_of_ne_zero`;
+- `finitePrimeArchimedeanEulerGram_not_isCompactOperator_of_ne_zero`.
+
 ## Gates
 
 - [x] 0 -> 1: exact matrix theorem and ratio-poset mechanism isolated
-- [ ] 1 -> 2: complete paper proof with every shell inequality written explicitly
-- [ ] 2 -> 3: Lean formalization and concrete positive-Euler/source transport
+- [x] 1 -> 2: complete paper proof and degeneracy attack
+- [x] 2 -> 3: Lean formalization and concrete positive-Euler/source transport
 - [ ] 3 -> 4: independent primary-literature and expert priority audit

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper) / OPEN-PROBLEM CANDIDATE
 - **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — provisional pending independent expert scrutiny
 - **Statement:** For multiplicatively independent elliptic nomes, the elliptic gamma function is hypertranscendental; its additive logarithmic-derivative defects and multiplicative shift quotients have exact DA spectrum equal to the rank-three period group; and the differential transcendence degree of any finite defect or quotient family is the number of distinct nonzero shift cosets.
-- **Abstraction audit:** `paired-quasi-elliptic-constraint-rigidity` collapses under its one-pole hypotheses to scalar-affine copies of `Psi`; it is retained as an anti-novelty bridge, not claimed as an independent structural parent.
+- **Abstraction audit:** `paired-quasi-elliptic-constraint-rigidity` collapses under its one-pole hypotheses to translated scalar-affine copies of `Psi`; it is retained as an anti-novelty bridge, not claimed as an independent structural parent.
 
 ## Setup
 
@@ -85,7 +85,7 @@ This would settle the `r=1` multiplicatively independent case left open in Kato,
 
 The separate card `multiple-elliptic-gamma-generic-spectrum` propagates this order-one theorem through Nishizawa's hierarchy. It proves that every higher multiple elliptic gamma function with `1,tau_0,...,tau_r` rationally independent is HT, and that its logarithmic derivative has exact DA spectrum `Z`. Thus the present theorem is the only non-elementary base case of a generic all-orders resolution.
 
-The proof can be written in quasi-elliptic constraint language, but the natural one-pole abstraction is not broader: a one-pole quasi-elliptic function is a scalar theta logarithmic derivative plus a constant, and compatibility collapses its paired primitive back to a scalar-affine copy of `Psi`. The scientific claim on this card is therefore the elliptic-gamma theorem itself.
+The proof can be written in quasi-elliptic constraint language, but the natural one-pole abstraction is not broader: a one-pole quasi-elliptic function is a translated scalar theta logarithmic derivative plus a constant, and cross-curve compatibility collapses its paired primitive back to a translated scalar-affine copy of `Psi`. The scientific claim on this card is therefore the elliptic-gamma theorem itself.
 
 ## Proof
 
@@ -267,6 +267,7 @@ After identifying a nontorsion translation orbit with `Z`, these are exactly the
 - [x] Transported the exact spectrum and matroid formula to elliptic-gamma shift quotients via logarithmic derivatives.
 - [x] Significance gate: resolves an explicit open non-rational elliptic-gamma case and realizes an exact rank-three DA spectrum.
 - [x] Multi-operator telescoping descent written at paper-proof level.
+- [x] Hardouin--Singer Appendix 6.2 checked directly: existence of multi-automorphism parameterized PV rings, preservation of joint constants over a differentially closed constant field, differential Galois groups, and the fixed-field theorem support the paired unipotent argument.
 - [x] Scalar-extension descent written at paper-proof level by product specialization.
 - [x] Exact/equivalent/stronger preliminary literature gate completed across primary sources and citation descendants.
 - [x] Rediscovery gate completed across multiple elliptic gamma, elliptic summability, elliptic difference Galois theory, and older Picard--Vessiot parents.
@@ -281,3 +282,4 @@ After identifying a nontorsion translation orbit with `Z`, these are exactly the
 - 2026-07-10 - Transported the classification to the multiplicative quotients `Gamma(z+h)/Gamma(z)`, giving the same exact spectrum and finite-family matroid directly for the elliptic gamma function.
 - 2026-07-10 - Adversarial audit repaired an omitted field-comparison step: `K` and `C(z)` are incomparable, but the common compositum `K(z)` is DA over both, which supplies the required transitivity and preserves differential transcendence degree.
 - 2026-07-10 - Repaired the paired-telescoping statement to require no new constants in the fraction field, not merely in a solution domain, and made the simultaneous identity `sum L_i(y_i)=g` explicit.
+- 2026-07-10 - Re-audited the paired lemma against Hardouin--Singer Sections 3.1 and 6.2; the several-automorphism PV construction and constant-field requirements match the proof. Independent expert scrutiny remains open.

@@ -190,4 +190,70 @@ theorem canonicalProductE1Indexed_analytic {ι : Type*}
       (canonicalProductE1Indexed a) atTop Set.univ from hpl).differentiableOn
         hdiff isOpen_univ |>.analyticOnNhd isOpen_univ
 
+/-- At every fixed point, the centered genus-one factors form an absolutely summable series.
+This rules out an infinite-product zero unless an individual factor vanishes. -/
+theorem canonicalProductE1Indexed_sub_one_norm_summable {ι : Type*}
+    (a : ι → ℂ) (ha : ∀ i, a i ≠ 0)
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) (z : ℂ) :
+    Summable (fun i => ‖weierstrassE1 (z / a i) - 1‖) := by
+  let S : ℝ := ‖z‖ + 1
+  have hSpos : 0 < S := by dsimp [S]; positivity
+  have hu : Summable (fun i => S ^ 2 * (1 / ‖a i‖ ^ 2)) := hsum.mul_left _
+  have hev : ∀ᶠ i in cofinite, S ≤ ‖a i‖ := by
+    have htend : Tendsto (fun i => 1 / ‖a i‖ ^ 2) cofinite (𝓝 0) :=
+      hsum.tendsto_cofinite_zero
+    have hlt : ∀ᶠ i in cofinite, 1 / ‖a i‖ ^ 2 < 1 / S ^ 2 :=
+      htend.eventually_lt_const (by positivity)
+    filter_upwards [hlt] with i hi
+    have haipos : 0 < ‖a i‖ :=
+      (norm_nonneg _).lt_of_ne (Ne.symm (norm_ne_zero_iff.mpr (ha i)))
+    have hsq : S ^ 2 < ‖a i‖ ^ 2 := lt_of_one_div_lt_one_div (pow_pos haipos 2) hi
+    exact le_of_lt (lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) hsq)
+  refine hu.of_norm_bounded_eventually ?_
+  filter_upwards [hev] with i hi
+  rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
+  have hzS : ‖z‖ < S := by dsimp [S]; linarith
+  have haipos : 0 < ‖a i‖ := lt_of_lt_of_le hSpos hi
+  have hzlt : ‖z‖ < ‖a i‖ := lt_of_lt_of_le hzS hi
+  have hdiv : ‖z / a i‖ = ‖z‖ / ‖a i‖ := norm_div z (a i)
+  have hle1 : ‖z / a i‖ ≤ 1 := by
+    rw [hdiv]
+    exact le_of_lt ((div_lt_one haipos).mpr hzlt)
+  calc
+    ‖weierstrassE1 (z / a i) - 1‖ ≤ ‖z / a i‖ ^ 2 :=
+      weierstrassE1_sub_one_norm_le hle1
+    _ = ‖z‖ ^ 2 * (1 / ‖a i‖ ^ 2) := by rw [hdiv, div_pow, div_eq_mul_one_div]
+    _ ≤ S ^ 2 * (1 / ‖a i‖ ^ 2) :=
+      mul_le_mul_of_nonneg_right
+        (pow_le_pow_left₀ (norm_nonneg z) (le_of_lt hzS) 2) (by positivity)
+
+/-- The arbitrarily indexed canonical product has no accidental zeros: away from every
+prescribed zero `a i`, its value is nonzero. -/
+theorem canonicalProductE1Indexed_ne_zero {ι : Type*}
+    (a : ι → ℂ) (ha : ∀ i, a i ≠ 0)
+    (hsum : Summable (fun i => 1 / ‖a i‖ ^ 2)) {z : ℂ}
+    (hz : ∀ i, z ≠ a i) :
+    canonicalProductE1Indexed a z ≠ 0 := by
+  rw [canonicalProductE1Indexed]
+  let f : ι → ℂ := fun i => weierstrassE1 (z / a i) - 1
+  have hfnorm : Summable (fun i => ‖f i‖) := by
+    simpa only [f] using canonicalProductE1Indexed_sub_one_norm_summable a ha hsum z
+  have hfne : ∀ i, 1 + f i ≠ 0 := by
+    intro i
+    simp only [f]
+    rw [show 1 + (weierstrassE1 (z / a i) - 1) = weierstrassE1 (z / a i) by ring]
+    rw [weierstrassE1]
+    apply mul_ne_zero
+    · rw [sub_ne_zero]
+      intro h
+      have hdiv : z / a i = 1 := h.symm
+      exact hz i ((div_eq_one_iff_eq (ha i)).mp hdiv)
+    · exact Complex.exp_ne_zero _
+  have heq : (fun i => 1 + f i) = (fun i => weierstrassE1 (z / a i)) := by
+    funext i
+    simp only [f]
+    ring
+  rw [← heq]
+  exact tprod_one_add_ne_zero_of_summable hfne hfnorm
+
 end RHTower

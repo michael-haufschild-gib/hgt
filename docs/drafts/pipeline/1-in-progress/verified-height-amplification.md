@@ -707,3 +707,46 @@ by an unread table in the paper.
 
 Primary source: D. J. Platt and T. S. Trudgian, *The Riemann hypothesis is true up to
 `3·10^12`*, arXiv:2004.09765, DOI 10.1112/blms.12460.
+
+## 2026-07-10 correction: the global count-envelope gate is numerically decidable
+
+The statement in the second attack that condition `(A)` still requires an unpublished endpoint
+phase is incorrect once the Platt--Trudgian integer is used as the exact value `N(T_0)=N_0`.  The
+quantity
+
+```text
+F(T_0)=M(T_0)+E(T_0)
+```
+
+is explicit, so
+
+```text
+F(T_0)<N_0+2                                                (A_0)
+```
+
+is a finite certified real-arithmetic proposition.  The exact count already fixes the corresponding
+endpoint phase through the Riemann--von Mangoldt formula; no separate phase sample is logically
+needed to decide `(A_0)`.
+
+Moreover, for `T>2*pi`,
+
+```text
+M'(T) = (1/(2*pi)) log(T/(2*pi)),
+E'(T) = 0.10076/T + 0.24460/(T log T),
+```
+
+so `F` is strictly increasing.  Therefore:
+
+1. if `(A_0)` holds strictly, continuity gives a unique `T_* > T_0` with
+   `F(T_*)=N_0+2`; every explicit rational `T_1` in `(T_0,T_*)` satisfies `(A)` and yields a strict
+   verified-height amplification;
+2. if `(A_0)` fails, this particular global envelope cannot amplify the endpoint, because `F` only
+   increases.
+
+`[OPEN ARITHMETIC CERTIFICATE]` Decide `(A_0)` with rigorous interval arithmetic and, if positive,
+certify one explicit rational `T_1`.  This is not a new analytic theorem and would still require a
+scientific-novelty audit, but it could move the published numerical lower bound.  It is intentionally
+not evaluated in the present no-computation research pass.
+
+This correction does not affect the separate minimum-modulus route: that route still lacks an
+endpoint magnitude.  It removes the endpoint-magnitude claim only from the count-envelope route.
