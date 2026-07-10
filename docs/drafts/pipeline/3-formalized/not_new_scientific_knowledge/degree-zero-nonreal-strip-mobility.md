@@ -1,13 +1,14 @@
 # An integral multiplicative FE polynomial with only nonreal off-line zeros
 
 - **ID:** degree-zero-nonreal-strip-mobility
-- **Stage:** 2-fully-proven / needs independent audit
-- **Type:** THEOREM / sharp carrier counterexample
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / sharp constraint-class counterexample
 - **Date:** 2026-07-10
-- **Scientific status:** `[NOVELTY UNVERIFIED]`.  The construction is elementary but strengthens
-  the existing degree-zero mobility theorem by simultaneously imposing a zero-free real axis and
-  excluding critical-line zeros.  No scientific-novelty claim is made before a broad degree-zero
-  L-function and self-reciprocal-polynomial literature audit.
+- **Scientific status:** `[BRIDGE]`, not new scientific knowledge.  The construction strengthens
+  the project boundary by simultaneously imposing a zero-free real axis and excluding
+  critical-line zeros, but it is an elementary reciprocal-polynomial specialization and does not
+  survive the parent-theory novelty gate.
+- **Lean:** `formal/GaloisForLFunctions/RHTower/DegreeZeroNonrealOffline.lean`.
 
 ## Statement
 
@@ -156,16 +157,33 @@ Riemann zeta function; it has no real zeros anywhere.
 - The witness is still a single-prime column and therefore vertically periodic.  It does not refute
   a constraint that uses the genuinely infinite, aperiodic all-prime Euler source.
 - The construction is a scaled reciprocal quartic.  Its algebra is classical in spirit, so the
-  exact theorem may be a routine degree-zero L-function example rather than new scientific
-  knowledge.  Its research value is currently as a sharp falsifier for insufficient RH constraint
-  classes.
+  exact theorem is a routine degree-zero L-function example rather than new scientific knowledge.
+  Its research value is as a sharp falsifier for insufficient RH constraint classes.
+
+## Lean certificate
+
+The formal module proves:
+
+- `dzoQuartic_fe` — the exact functional equation;
+- `dzoQuarticCoeff_multiplicative`, `dzoQuarticCoeff_integral`, and
+  `LSeries_dzoQuarticCoeff` — the integral multiplicative Dirichlet realization;
+- `dzoQuartic_ρ_eq_zero`, `ρdzoQuartic_mem_right_strip`, and
+  `ρdzoQuartic_not_real` — the explicit nonreal right-half-strip zero;
+- `dzoQuartic_order_one` — simplicity of that zero;
+- `dzoQuartic_ofReal_re_pos` and `dzoQuartic_ofReal_ne_zero` — positivity and
+  zero-freeness on the full real axis;
+- `dzoQuartic_mem_class` — direct membership in `IntegralMultiplicativeFEClass` with
+  conductor `256`.
+
+The exact module build passes.  The listed public theorems depend only on `propext`,
+`Classical.choice`, and `Quot.sound`.
 
 ## Gates
 
 - [x] 0 → 1: reciprocal quartic, arithmetic support, and target zero identified
 - [x] 1 → 2: FE, multiplicativity, zero classification, strip location, simplicity, and real-axis
   zero-freeness proved on paper
-- [ ] independent audit of the `t`-root bounds and complex-exponential coordinate
-- [ ] 2 → 3: formalize the exact function, coefficient stream, FE, simple nonreal strip zero, and
-  zero-free real axis in Lean
-- [ ] literature and parent-theory audit sufficient for scientific-novelty promotion
+- [x] independent algebra audit via the Lean certificates
+- [x] 2 → 3: exact function, coefficient stream, FE, simple nonreal strip zero, real-axis
+  positivity, and degree-zero class membership formalized
+- [x] parent-theory gate: downgraded to `[BRIDGE]`; no scientific-novelty promotion

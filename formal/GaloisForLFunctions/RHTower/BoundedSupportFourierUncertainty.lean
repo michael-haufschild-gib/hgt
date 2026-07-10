@@ -344,6 +344,43 @@ lemma fourier_eq_zero_of_ae_zero_off_bounded {f : ℝ → ℂ} {a b : ℝ} (hf :
   rw [← fourierLaplace_neg_two_pi_I_eq_fourier hf]
   exact hline_zero w
 
+/-- A compactly supported integrable function whose Fourier transform vanishes almost
+everywhere on one nonempty open interval has identically zero Fourier transform. -/
+lemma fourier_eq_zero_of_ae_zero_on_Ioo {f : ℝ → ℂ} {a c d : ℝ}
+    (hf : Integrable f)
+    (hs : ∀ᵐ x ∂volume, x ∉ Icc (-a) a → f x = 0)
+    (hcd : c < d)
+    (hF : ∀ᵐ w ∂volume, w ∈ Ioo c d → FourierTransform.fourier f w = 0) :
+    ∀ w, FourierTransform.fourier f w = 0 := by
+  let U : Set ℝ := Ioo c d
+  have hcont : Continuous (FourierTransform.fourier f) :=
+    VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar
+      (innerSL ℝ).continuous₂ hf
+  have hF_restrict : FourierTransform.fourier f =ᵐ[volume.restrict U] 0 := by
+    refine (ae_restrict_iff' measurableSet_Ioo).2 ?_
+    filter_upwards [hF] with w hw hmem
+    exact hw hmem
+  have hF_on : EqOn (FourierTransform.fourier f) 0 U :=
+    Measure.eqOn_open_of_ae_eq hF_restrict isOpen_Ioo
+      hcont.continuousOn continuous_zero.continuousOn
+  let w₀ : ℝ := (c + d) / 2
+  have hw₀ : w₀ ∈ U := by
+    constructor <;> dsimp [w₀] <;> linarith
+  have hline_eventually :
+      (fun w : ℝ => fourierLaplace f ((-2 * Real.pi * w : ℝ) * I)) =ᶠ[nhds w₀] 0 := by
+    filter_upwards [isOpen_Ioo.mem_nhds hw₀] with w hw
+    rw [fourierLaplace_neg_two_pi_I_eq_fourier hf]
+    exact hF_on hw
+  have hline_zero : ∀ w : ℝ,
+      fourierLaplace f ((-2 * Real.pi * w : ℝ) * I) = 0 := by
+    intro w
+    exact (AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq
+      (fourierLaplace_fourierLine_analytic hf hs) analyticOnNhd_const
+      isPreconnected_univ (mem_univ w₀) hline_eventually) (mem_univ w)
+  intro w
+  rw [← fourierLaplace_neg_two_pi_I_eq_fourier hf]
+  exact hline_zero w
+
 open scoped ComplexConjugate in
 lemma conj_fourier_ofReal {r : ℝ → ℝ} (_hr : Integrable r) (w : ℝ) :
     conj (FourierTransform.fourier (fun x ↦ (r x : ℂ)) w) =
@@ -476,6 +513,22 @@ lemma ae_eq_zero_of_real_fourier_eq_zero {r : ℝ → ℝ} (hr : Integrable r)
       ENNReal.toReal_ofReal (negPart_nonneg _)] using hx
   simpa only [Pi.zero_apply] using (show r x = 0 by
     rw [← posPart_sub_negPart (r x), hparts, sub_self])
+
+/-- Fourier injectivity for integrable complex functions, in the exact pointwise-zero form used
+after analytic continuation from an interval. -/
+theorem integrable_ae_eq_zero_of_fourier_eq_zero {f : ℝ → ℂ} (hf : Integrable f)
+    (hFzero : ∀ w, FourierTransform.fourier f w = 0) :
+    f =ᵐ[volume] 0 := by
+  have hReF : ∀ w, FourierTransform.fourier (fun x ↦ ((f x).re : ℂ)) w = 0 :=
+    fun w ↦ (fourier_re_im_eq_zero_of_fourier_eq_zero hf hFzero w).1
+  have hImF : ∀ w, FourierTransform.fourier (fun x ↦ ((f x).im : ℂ)) w = 0 :=
+    fun w ↦ (fourier_re_im_eq_zero_of_fourier_eq_zero hf hFzero w).2
+  have hRe := ae_eq_zero_of_real_fourier_eq_zero hf.re hReF
+  have hIm := ae_eq_zero_of_real_fourier_eq_zero hf.im hImF
+  filter_upwards [hRe, hIm] with x hxRe hxIm
+  apply Complex.ext
+  · simpa using hxRe
+  · simpa using hxIm
 
 /-- An integrable complex-valued function and its Fourier integral cannot both have bounded
 essential support unless the function vanishes almost everywhere. -/

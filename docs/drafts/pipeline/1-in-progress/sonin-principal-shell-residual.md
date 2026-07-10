@@ -84,43 +84,57 @@ formalizes this double summability, constructs the square-root amplitudes, and p
 countable diagonal kernel is Hilbert--Schmidt. It also formalizes that the deleted linear prime
 energy is not summable.
 
-`SoninAllPrimeResidualKernel.lean` performs the geometric assembly from the **actual** weighted
-lower-corner residual blocks. Its index is
-`(prime power) × (canonical Sonin Hilbert-basis index)`, and different prime powers occupy
-orthogonal diagonal blocks. The uniform residual bound and logarithmic coefficient summability
-prove that the complete kernel is Hilbert--Schmidt. The kernel is then represented as a bounded
-operator on the corresponding `ℓ²` space. Its Gram operator `K_a^*K_a` is trace class,
-self-adjoint, and has nonnegative quadratic form. Its kernel trace is exactly the
-Hilbert--Schmidt energy of `K_a`.
+`SoninAllPrimeResidualKernel.lean` first performs an auxiliary block-diagonal assembly from the
+**actual** weighted lower-corner residual blocks. It proves the complete residual energy is
+Hilbert--Schmidt and gives an unconditional positive trace-class Gram. This diagonal operator is
+not the canonical arithmetic assembly: declaring distinct prime powers orthogonal erases every
+mixed prime word.
 
-The self-dual unit-cutoff specialization `a=1` removes the remaining positivity premise and free
-scale from the Lean interface. `soninCanonicalAllPrimeResidualEnergyOperator` is an unconditional
-positive self-adjoint trace-class operator. The factorized polynomial functional
-`soninCanonicalAllPrimeTraceHankel p = ||K_1 p(K_1^*K_1)||_HS^2` is therefore unconditionally
-nonnegative for every real polynomial `p`.
+`SoninCoupledPrimeResidual.lean` constructs the canonical common-domain column
 
-This is not yet an Euler Fredholm determinant: an ordinary determinant of the prime-power block
-diagonal introduces extra powers and does not reproduce the logarithmic Euler series
-term-by-term. Calling the assembled operator itself the Xi determinant would be false. The open
-problem is now the correct source-built trace-moment or regularized logarithmic functional.
+`C_a : SoninL2 -> ℓ²((prime power) × Sonin basis)`, `C_a x = (A_α x)_α`.
+
+The already proved sum `sum_α ||A_α||_HS² < infinity` proves `C_a` Hilbert--Schmidt with no new
+convergence hypothesis. Its Gram
+
+`T_mix(a) = C_a^* C_a`
+
+is positive, self-adjoint, and trace class through its explicit rectangular Hilbert--Schmidt
+factorization. The exact infinite second-moment identity is now proved:
+
+`Re Tr(T_mix(a)^2) = sum_(α,β) ||A_α A_β^*||_HS²`.
+
+The double family is summable. Splitting its diagonal gives the convergent nonnegative invariant
+
+`I₂(a) = sum_(α != β) ||A_α A_β^*||_HS²`,
+
+and Lean proves `Re Tr(T_mix(a)^2) = diagonalSecondMoment(a) + I₂(a)`. It also proves that one
+nonzero off-diagonal residual overlap implies `I₂(a)>0`. The logarithmic Euler coefficients are
+all nonzero, so this gate is exactly the unweighted geometric statement
+`R_α R_β^* != 0`; no coefficient hypothesis remains.
+
+The semilocal Hardy--Titchmarsh square supplies the complementary structural fact. For every two
+places `p,q>1`, the full place-adjoining Gram product is invertible, nonzero, and noncompact on
+the common weighted line. In contrast, every principal-subtracted cross overlap is
+Hilbert--Schmidt and compact. Therefore the residual coupled moment cannot by itself be the full
+semilocal/Weil functional. The deleted principal shell must re-enter through a relative trace,
+regularized logarithmic derivative, or an equivalent semilocal comparison.
+
+An ordinary determinant of the block-diagonal residual introduces extra powers and does not
+reproduce the logarithmic Euler series term-by-term. Calling either assembled residual operator
+the Xi determinant would be false.
 
 ## RH interface
 
 `[OPEN CORE]` For the source-built positive trace-class operator
-`T_Sonin = K_a^*K_a`, prove
+`T_mix(a) = C_a^*C_a`, construct the principal-shell relative trace functional and prove
 
-`Tr(T_Sonin p(T_Sonin)^2) = Re(xiCentralTraceHankel p)`
+`relativeTrace(T_mix(a), principalShell; p) = Re(xiCentralTraceHankel p)`
 
 for every real polynomial `p`. The existing Lean theorem
 `xiCentralTraceHankelNonnegative_iff_riemannHypothesis` would then yield RH. No zero divisor may
-be used in the construction of `T_Sonin`.
-
-Equivalently, at the unit cutoff it is enough to prove
-
-`soninCanonicalAllPrimeTraceHankel p = xiCentralTraceHankel p`
-
-for every real polynomial `p`. Positivity on the left is already unconditional; the equality is
-the entire remaining RH-bearing content.
+be used in the source construction. The residual second moment and `I₂` are now exact inputs to
+that relative functional, not substitutes for it.
 
 ## Gates
 
@@ -134,6 +148,12 @@ the entire remaining RH-bearing content.
   Hilbert--Schmidt.
 - [x] Actual Sonin residual blocks assembled over the coefficient carrier as a Hilbert--Schmidt
   operator with positive self-adjoint trace-class Gram operator.
+- [x] Canonical common-domain column operator and positive trace-class coupled Gram constructed.
+- [x] Exact infinite mixed second-moment formula and convergent off-diagonal invariant `I₂`
+  formalized.
+- [x] Full semilocal two-place Gram coupling proved nonzero and noncompact; a relative
+  principal-shell trace is forced.
+- [ ] One concrete principal-subtracted cross-prime overlap proved nonzero.
 - [ ] Trace moments identified with `xiCentralTraceHankel` from source data.
 - [ ] Regularized determinant or resolvent trace identified with Xi.
 

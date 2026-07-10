@@ -39,8 +39,12 @@ BakerLinearIndependence`; do not replace it with a stronger unproved interface o
 been reduced to a nonzero minimal relation of arity at least three inside one finite number field.
 The multivariate integral auxiliary matrix, nonzero Siegel kernel, distinct-frequency theorem,
 nonzero auxiliary exponential polynomial, and its initial high-order sample vanishing are formalized.
-The remaining core starts at analytic extrapolation beyond the samples built into the matrix, then
-passes through determinant nonvanishing and the algebraic-norm contradiction.
+The shifted component family `G_ν`, its triangular derivative law, its canonical algebraic-integer
+values at natural samples, the explicit conjugate house bound, and the asymmetric norm-product
+discreteness theorem are also formalized.  Thus the arithmetic half of extrapolation is closed: a
+sufficiently small distinguished value now becomes an exact new zero without any Prop interface.
+The remaining core is the sharp analytic small-value estimate and its iteration beyond the samples
+built into the matrix, followed by the final zero estimate.
 
 ## Log
 
@@ -55,3 +59,10 @@ passes through determinant nonvanishing and the algebraic-norm contradiction.
   nonzero; the matrix kernel forces all derivatives below `T` to vanish at each of the `S` samples.
   Targeted Lean 4.30 build and formal lint pass, and every new declaration has only the standard
   `propext`, `Classical.choice`, and `Quot.sound` axiom footprint.
+- 2026-07-10 -- added the local multiplicity upper bound for the nonzero auxiliary function; named
+  Baker's shifted component functions; proved the triangular derivative/shift identity and the
+  propagation of kernel equations to component derivatives.  Every component value at a natural
+  sample is now the distinguished embedding of a canonical algebraic integer.  Proved the exact
+  asymmetric discreteness criterion using the field norm: distinguished norm times the remaining
+  conjugate house power below one forces the component to vanish.  The explicit finite house bound
+  is wired into that criterion.  Targeted build, formal lint, and axiom audit pass.

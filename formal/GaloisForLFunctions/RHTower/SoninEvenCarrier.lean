@@ -430,6 +430,26 @@ theorem evenShellVectorEven_orthonormal (a b : ℝ) (ha : 0 < a) (hab : a < b) :
   exact (evenShellVector_orthonormal a b ha hab).codRestrict evenSubspace
     (evenShellVector_mem_evenSubspace a b ha hab)
 
+/-- The even Sonin carrier is concretely nontrivial, witnessed by a normalized shell vector. -/
+theorem evenSubspace_nontrivial : Nontrivial evenSubspace := by
+  let x : evenSubspace := evenShellVectorEven 1 2 (by norm_num) (by norm_num) 0
+  have hxnorm : ‖x‖ = 1 := by
+    exact (evenShellVectorEven_orthonormal 1 2 (by norm_num) (by norm_num)).norm_eq_one 0
+  have hx : x ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hxnorm
+    norm_num at hxnorm
+  exact ⟨x, 0, hx⟩
+
+/-- The even Sonin carrier is infinite-dimensional, witnessed by its infinite orthonormal shell
+family. -/
+theorem evenSubspace_not_finiteDimensional : ¬ FiniteDimensional ℂ evenSubspace := by
+  intro hfd
+  letI : FiniteDimensional ℂ evenSubspace := hfd
+  exact Module.Finite.not_linearIndependent_of_infinite
+    (evenShellVectorEven 1 2 (by norm_num) (by norm_num))
+    (evenShellVectorEven_orthonormal 1 2 (by norm_num) (by norm_num)).linearIndependent
+
 /-- The ambiently restricted dilation corner is the intrinsic lower corner of the restricted
 Sonin projection and restricted dilation sum. -/
 theorem evenCentralSoninDilationCorner_eq_crossBoundary

@@ -121,6 +121,25 @@ square-energy carrier divided by the prime-power exponent. -/
 def soninLogPrimePowerCoefficient (pk : Nat.Primes × ℕ) : ℂ :=
   ((Real.sqrt (soninPrimePowerTailEnergy pk) / (pk.2 + 2 : ℝ) : ℝ) : ℂ)
 
+/-- Exact unsquared Euler form of the retained logarithmic coefficient. -/
+theorem soninLogPrimePowerCoefficient_eq_sqrtInvPow_div (pk : Nat.Primes × ℕ) :
+    soninLogPrimePowerCoefficient pk =
+      (((Real.sqrt (pk.1 : ℝ))⁻¹ ^ (pk.2 + 2) /
+        (pk.2 + 2 : ℝ) : ℝ) : ℂ) := by
+  rw [soninLogPrimePowerCoefficient]
+  congr 1
+  congr 1
+  let r : ℝ := (Real.sqrt (pk.1 : ℝ))⁻¹
+  have hp : 0 < (pk.1 : ℝ) := by exact_mod_cast pk.1.prop.pos
+  have hr : 0 ≤ r := inv_nonneg.mpr (Real.sqrt_nonneg _)
+  have hr2 : r ^ 2 = ((pk.1 : ℝ)⁻¹) := by
+    dsimp [r]
+    rw [inv_pow, Real.sq_sqrt hp.le]
+  have henergy : soninPrimePowerTailEnergy pk = r ^ (2 * (pk.2 + 2)) := by
+    rw [soninPrimePowerTailEnergy, ← hr2, pow_mul]
+  rw [henergy, show 2 * (pk.2 + 2) = (pk.2 + 2) * 2 by omega, pow_mul]
+  rw [Real.sqrt_sq_eq_abs, abs_of_nonneg (pow_nonneg hr _)]
+
 /-- Every retained logarithmic prime-power coefficient is nonzero. -/
 theorem soninLogPrimePowerCoefficient_ne_zero (pk : Nat.Primes × ℕ) :
     soninLogPrimePowerCoefficient pk ≠ 0 := by
@@ -142,6 +161,34 @@ theorem summable_norm_soninLogPrimePowerCoefficient_sq :
     Summable (fun pk : Nat.Primes × ℕ => ‖soninLogPrimePowerCoefficient pk‖ ^ 2) :=
   Summable.of_nonneg_of_le (fun _ => sq_nonneg _)
     norm_soninLogPrimePowerCoefficient_sq_le summable_soninPrimePowerTailEnergy
+
+/-- The logarithmic coefficients are square-summable but not absolutely summable.  The
+prime-square slice `(p, 0)` is exactly `1/(2p)`, so deleting only the linear `m = 1` shell does
+not make the unsquared logarithmic Euler metric summable over all primes.  This excludes a naive
+global sum of local operator logarithms; the logarithmic object must remain semilocal/relative or
+undergo a further canonical subtraction. -/
+theorem not_summable_norm_soninLogPrimePowerCoefficient :
+    ¬ Summable (fun pk : Nat.Primes × ℕ => ‖soninLogPrimePowerCoefficient pk‖) := by
+  intro h
+  have hslice : Summable (fun p : Nat.Primes =>
+      ‖soninLogPrimePowerCoefficient (p, 0)‖) :=
+    h.comp_injective (fun p q hpq => by simpa using congrArg Prod.fst hpq)
+  have hhalf : Summable (fun p : Nat.Primes => (1 / (2 * (p : ℝ)))) := by
+    apply hslice.congr
+    intro p
+    rw [soninLogPrimePowerCoefficient, Complex.norm_real, Real.norm_eq_abs]
+    have hp : 0 < (p : ℝ) := by exact_mod_cast p.prop.pos
+    have henergy : soninPrimePowerTailEnergy (p, 0) = ((p : ℝ)⁻¹) ^ 2 := rfl
+    rw [henergy, Real.sqrt_sq_eq_abs, abs_of_pos (inv_pos.mpr hp)]
+    norm_num
+    rw [abs_of_pos (div_pos (inv_pos.mpr hp) (by norm_num : (0 : ℝ) < 2))]
+    field_simp
+  have hone : Summable (fun p : Nat.Primes => (1 / (p : ℝ))) := by
+    apply (hhalf.mul_left 2).congr
+    intro p
+    have hp0 : (p : ℝ) ≠ 0 := by exact_mod_cast p.prop.ne_zero
+    field_simp
+  exact Nat.Primes.not_summable_one_div hone
 
 /-- The actual principal-subtracted Sonin block at prime-power scale `p^(k+2)`. -/
 def centralSoninPrimePowerResidual

@@ -15,6 +15,7 @@ The commuting square `υ_{∞,p} ∘ θ_p = ι'_p ∘ υ_∞` holds with `θ_p` 
 factor: the finite Euler factor cancels against the local factor transported by `υ_∞`.
 -/
 import GaloisForLFunctions.RHTower.HardyTitchmarshEulerConcrete
+import Mathlib.Analysis.Normed.Operator.Compact.FiniteDimension
 
 noncomputable section
 
@@ -316,6 +317,49 @@ theorem adjoint_semilocalForwardMap_comp_self (p : ℝ) (hp : 1 < p) :
     archimedeanPrimeEulerGram p f
   rw [LinearIsometryEquiv.symm_apply_apply]
   rfl
+
+/-- Every ordered product of two semilocal place-adjoining Gram operators is nonzero.  Thus
+different finite places interact on the common archimedean/Sonin carrier; treating their Gram
+blocks as orthogonal is not compatible with the semilocal square. -/
+theorem archimedeanPrimeEulerGram_mul_ne_zero
+    (p q : ℝ) (hp : 1 < p) (hq : 1 < q) :
+    archimedeanPrimeEulerGram p * archimedeanPrimeEulerGram q ≠ 0 := by
+  letI : Nontrivial ArchimedeanWeightedL2 := archimedeanWeightedL2_nontrivial
+  exact ((archimedeanPrimeEulerGram_isUnit p hp).mul
+    (archimedeanPrimeEulerGram_isUnit q hq)).ne_zero
+
+/-- The same nonvanishing expressed directly through the Gram operators of the two semilocal
+forward maps. -/
+theorem semilocalForwardMap_gram_mul_ne_zero
+    (p q : ℝ) (hp : 1 < p) (hq : 1 < q) :
+    (ContinuousLinearMap.adjoint (semilocalForwardMap p hp) ∘L semilocalForwardMap p hp) *
+      (ContinuousLinearMap.adjoint (semilocalForwardMap q hq) ∘L semilocalForwardMap q hq) ≠ 0 := by
+  rw [adjoint_semilocalForwardMap_comp_self, adjoint_semilocalForwardMap_comp_self]
+  exact archimedeanPrimeEulerGram_mul_ne_zero p q hp hq
+
+/-- The two-place semilocal Gram product is not merely nonzero but noncompact.  Consequently the
+Hilbert--Schmidt residual coupling cannot by itself equal the full semilocal interaction: a
+principal-shell relative trace or equivalent renormalized comparison is structurally necessary. -/
+theorem archimedeanPrimeEulerGram_mul_not_isCompactOperator
+    (p q : ℝ) (hp : 1 < p) (hq : 1 < q) :
+    ¬ IsCompactOperator (archimedeanPrimeEulerGram p * archimedeanPrimeEulerGram q) := by
+  intro hcompact
+  let T := archimedeanPrimeEulerGram p * archimedeanPrimeEulerGram q
+  have hunit : IsUnit T := (archimedeanPrimeEulerGram_isUnit p hp).mul
+    (archimedeanPrimeEulerGram_isUnit q hq)
+  obtain ⟨u, hu⟩ := hunit
+  let R : ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2 := (↑(u⁻¹) : _)
+  have hRT : R * T = 1 := by
+    rw [← hu]
+    change (↑(u⁻¹ * u) : ArchimedeanWeightedL2 →L[ℂ] ArchimedeanWeightedL2) = 1
+    simp
+  have hcomp : IsCompactOperator (R * T) := by
+    simpa [ContinuousLinearMap.mul_apply, Function.comp_def] using hcompact.clm_comp R
+  have hid : IsCompactOperator (id : ArchimedeanWeightedL2 → ArchimedeanWeightedL2) := by
+    rw [hRT] at hcomp
+    simpa using hcomp
+  exact archimedeanWeightedL2_not_finiteDimensional
+    (isCompactOperator_id_iff_finiteDimensional.mp hid)
 
 /-! ### The semilocal dual Hardy--Titchmarsh unitary and the square -/
 

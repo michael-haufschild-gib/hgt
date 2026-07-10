@@ -76,5 +76,56 @@ theorem simplePolePairDifferentialOperator_ne_finiteOrbitCoboundary
   exact single_sub_single_ne_finiteOrbitCoboundary_of_orbit_ne q x y
     (simplePoleDifferentialOperator_ne_zero hL hc) hxy E
 
+/-- The sum of the differential principal parts of a finite family of pole
+pairs sharing a base pole. -/
+def simplePolePairDifferentialOperatorFamily
+    {I G C : Type*} [AddCommGroup G] [Field C]
+    (s : Finset I) (L : I → Polynomial C) (c : I → C)
+    (x : G) (y : I → G) : G →₀ (ℕ →₀ C) :=
+  ∑ i ∈ s, simplePolePairDifferentialOperator (L i) (c i) x (y i)
+
+/-- **Simultaneous differential orbital-residue obstruction.** In a finite
+family of pole pairs with a common base pole, any indexed pole which lies on
+an orbit disjoint from the base and from every other indexed pole certifies
+that the whole family is not a finite translation coboundary, provided its
+differential operator and residue are nonzero. -/
+theorem simplePolePairDifferentialOperatorFamily_ne_finiteOrbitCoboundary
+    {I G C : Type*} [DecidableEq I] [AddCommGroup G] [Field C] [CharZero C]
+    (q x : G) (s : Finset I) (L : I → Polynomial C) (c : I → C) (y : I → G)
+    {i₀ : I} (hi₀ : i₀ ∈ s) (hL : L i₀ ≠ 0) (hc : c i₀ ≠ 0)
+    (hbase : (y i₀ : G ⧸ AddSubgroup.zmultiples q) ≠
+      (x : G ⧸ AddSubgroup.zmultiples q))
+    (hsep : ∀ j ∈ s, j ≠ i₀ →
+      (y i₀ : G ⧸ AddSubgroup.zmultiples q) ≠
+        (y j : G ⧸ AddSubgroup.zmultiples q))
+    (E : G →₀ (ℕ →₀ C)) :
+    simplePolePairDifferentialOperatorFamily s L c x y ≠ finiteOrbitCoboundary q E := by
+  intro h
+  have hv := congrArg (orbitResidueVector q) h
+  rw [orbitResidueVector_finiteOrbitCoboundary] at hv
+  have heval := congrArg
+    (fun D : (G ⧸ AddSubgroup.zmultiples q) →₀ (ℕ →₀ C) =>
+      D (y i₀ : G ⧸ AddSubgroup.zmultiples q) ((L i₀).natDegree + 1)) hv
+  rw [simplePolePairDifferentialOperatorFamily, orbitResidueVector,
+    Finsupp.mapDomain_finsetSum] at heval
+  simp only [Finsupp.zero_apply] at heval
+  rw [Finsupp.finsetSum_apply s _ (y i₀ : G ⧸ AddSubgroup.zmultiples q),
+    Finsupp.finsetSum_apply s _ ((L i₀).natDegree + 1)] at heval
+  simp only [simplePolePairDifferentialOperator, Finsupp.mapDomain_sub,
+    Finsupp.mapDomain_single, Finsupp.sub_apply, Finsupp.single_apply] at heval
+  rw [Finset.sum_eq_single i₀] at heval
+  · simp only [if_neg hbase.symm, if_true, Finsupp.zero_apply,
+      zero_sub, neg_eq_zero] at heval
+    rw [simplePoleDifferentialOperator_coeff_succ_natDegree] at heval
+    exact mul_ne_zero
+      (mul_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hL)
+        (mul_ne_zero (pow_ne_zero _ (by norm_num))
+          (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)))) hc heval
+  · intro j hjs hjne
+    rw [if_neg hbase.symm, if_neg (hsep j hjs hjne).symm]
+    simp
+  · intro hnot
+    exact (hnot hi₀).elim
+
 end
 end GaloisForLFunctions

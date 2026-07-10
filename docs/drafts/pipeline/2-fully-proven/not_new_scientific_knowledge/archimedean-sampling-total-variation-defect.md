@@ -34,6 +34,19 @@ with the total-variation norm.  It is also the supremum-norm completion of the s
 supported test core.  The theorem below has the same supremum when the witnesses are restricted to
 smooth compactly supported tests.
 
+The literal theta density does have a canonical class in complex `L2(R)`, but this does not produce
+a Hilbert sampling problem: point evaluation does not descend through almost-everywhere equivalence.
+The Lean theorem `no_l2_pointEvaluator_on_representatives` proves that no map from `L2(R)` can recover
+`f(x)` from the `L2` class of every representative, even before linearity or boundedness is required.
+
+The Weil-distribution completion does not currently repair this non-circularly.  Suzuki's
+unconditional space `H0` is a completion of test functions in a source-defined norm and its image
+`K0` is an `L2` closure.  The identification with the point-evaluable de Branges/model-space
+realization is proved under RH; the paper explicitly distinguishes the Weil completion as a Hilbert
+space of equivalence classes from an RKHS.  Therefore that identification cannot be used as the
+unconditional point-sampling norm in an RH proof.  See Masatoshi Suzuki,
+*On the Hilbert space derived from the Weil distribution*, arXiv:2301.00421v3, Theorems 1.1 and 5.6.
+
 ## General theorem
 
 Let `X` be a locally compact normal space, let `mu` be a finite positive Radon measure on `X`, and
@@ -182,6 +195,17 @@ the relative loss at the maximal possible value.
   nearby points—for example, a Sobolev/RKHS or Hilbert norm canonically selected by the actual Weil
   quadratic form, de Branges space, or Connes trace construction.  Choosing an arbitrary `H^s`
   norm would not clear the canonicality gate.
+- `[PROVED ROUTE GATE]` Ambient `L2` is impossible because point sampling is not defined on its
+  equivalence classes.  The currently available Weil/de Branges identification is RH-conditional,
+  so importing its point-evaluable realization into an RH proof would be circular.
+- `[PROVED PHASE TRANSITION]` On every finite-exponential-type entire carrier, the prime logarithms
+  are a uniqueness set (`eq_zero_of_exponentialType_of_primeLog_zeros`). Hence any bounded sampling
+  operator realizing those values is injective and its kernel-projection Hilbert defect is exactly
+  zero. The maximal `C0` defect therefore does not survive analytic finite-type completion.
+- `[OPEN RANGE QUESTION]` Zero kernel defect means only adjoint-range closure. The remaining
+  quantitative invariant is stable synthesis—actual membership in `Ran(S*)`, or equivalently a
+  closed-range/frame statement for a concrete source-selected sampling operator—not a positive
+  lower bound for `||P_(ker S) h_theta||`.
 
 ## Gates
 

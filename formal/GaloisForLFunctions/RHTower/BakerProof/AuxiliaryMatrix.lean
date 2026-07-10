@@ -122,14 +122,28 @@ theorem Relation.auxiliaryMatrix_ne_zero (R : Relation) (c : ℤ)
     Fintype.card (R.Row pivot S T) = S * T ^ (R.n - 1) := by
   simp [Relation.Row, Relation.NonPivot]
 
+/-- The explicit Siegel-lemma house bound for every coefficient of an auxiliary kernel vector. -/
+noncomputable def Relation.auxiliaryCoefficientBound (R : Relation) (c : ℤ)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    (L S T : ℕ) : ℝ :=
+  GelfondSchneiderSiegel.c₁ R.CoefficientField *
+    (GelfondSchneiderSiegel.c₁ R.CoefficientField *
+      (Fintype.card (R.Column L) : ℝ) * R.auxiliaryHeight c hint pivot L S T) ^
+      ((Fintype.card (R.Row pivot S T) : ℝ) /
+        ((Fintype.card (R.Column L) : ℝ) -
+          (Fintype.card (R.Row pivot S T) : ℝ)))
+
 /-- **Baker auxiliary Siegel bridge.**  If the derivative/sample system has fewer rows than exponent
-columns, it has a nonzero algebraic-integer coefficient vector annihilating every row. -/
+columns, it has a nonzero algebraic-integer coefficient vector annihilating every row, with the
+explicit coefficient-height bound required by extrapolation. -/
 theorem Relation.exists_auxiliary_coefficients (R : Relation) (c : ℤ)
     (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
     (L S T : ℕ) (hL : 0 < L) (hS : 0 < S) (hT : 0 < T)
     (hcard : Fintype.card (R.Row pivot S T) < Fintype.card (R.Column L)) :
     ∃ η : R.Column L → 𝓞 R.CoefficientField, η ≠ 0 ∧
-      Matrix.mulVec (R.auxiliaryMatrix c hint pivot L S T) η = 0 := by
+      Matrix.mulVec (R.auxiliaryMatrix c hint pivot L S T) η = 0 ∧
+      ∀ m, house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤
+        R.auxiliaryCoefficientBound c hint pivot L S T := by
   let A := R.auxiliaryMatrix c hint pivot L S T
   have hrow : 0 < Fintype.card (R.Row pivot S T) :=
     Fintype.card_pos_iff.mpr ⟨⟨⟨0, hS⟩, fun _ => ⟨0, hT⟩⟩⟩
@@ -137,7 +151,8 @@ theorem Relation.exists_auxiliary_coefficients (R : Relation) (c : ℤ)
     GelfondSchneiderSiegel.exists_ne_zero_int_vec_house_le R.CoefficientField A
       (R.auxiliaryMatrix_ne_zero c hint pivot L S T hL hS hT) hrow hcard rfl
       (R.auxiliaryEntry_house_le_height c hint pivot L S T) rfl
-  exact ⟨η, hη, hker⟩
+  refine ⟨η, hη, hker, ?_⟩
+  simpa [Relation.auxiliaryCoefficientBound] using hbound
 
 /-- The fully discharged construction: the common integral scale and the nonzero auxiliary
 coefficient vector are both produced from the reduced relation itself. -/
@@ -147,14 +162,16 @@ theorem Relation.exists_scaled_auxiliary_coefficients (R : Relation) (pivot : Fi
     ∃ c : ℤ, c ≠ 0 ∧
       ∃ (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i))
         (η : R.Column L → 𝓞 R.CoefficientField),
-        η ≠ 0 ∧ Matrix.mulVec (R.auxiliaryMatrix c hint pivot L S T) η = 0 := by
+        η ≠ 0 ∧ Matrix.mulVec (R.auxiliaryMatrix c hint pivot L S T) η = 0 ∧
+          ∀ m, house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤
+            R.auxiliaryCoefficientBound c hint pivot L S T := by
   obtain ⟨c, hc, hint⟩ := R.exists_common_integer_scale
   have hint' : ∀ i, IsIntegral ℤ (R.scaledCoeff c i) := by
     simpa [Relation.scaledCoeff] using hint
   have hcard' : Fintype.card (R.Row pivot S T) < Fintype.card (R.Column L) := by
     simpa using hcard
-  obtain ⟨η, hη, hker⟩ :=
+  obtain ⟨η, hη, hker, hbound⟩ :=
     R.exists_auxiliary_coefficients c hint' pivot L S T hL hS hT hcard'
-  exact ⟨c, hc, hint', η, hη, hker⟩
+  exact ⟨c, hc, hint', η, hη, hker, hbound⟩
 
 end GaloisForLFunctions.RHTower.BakerProof

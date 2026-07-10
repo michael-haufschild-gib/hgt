@@ -87,8 +87,25 @@ augmentation lemma to coefficient-valued residue vectors on every orbit of an ar
 translation action. Every finite translation coboundary has zero residue on every orbit, while a
 lone nonzero coefficient or two opposite coefficients on distinct orbits cannot be a coboundary.
 This is the exact finite principal-part obstruction required after a meromorphic elliptic function
-has been mapped to its fixed-order Laurent coefficients. That meromorphic principal-part map and
-the theta realization are still missing.
+has been mapped to its fixed-order Laurent coefficients.
+
+`formal/GaloisForLFunctions/PrincipalPartDifferentialOperator.lean` computes the action of an
+arbitrary nonzero constant-coefficient differential operator on a simple-pole principal part. In
+characteristic zero the highest resulting Laurent coefficient is the original residue multiplied
+by a nonzero factorial and the operator's leading coefficient. Consequently two opposite simple
+poles on distinct translation orbits remain noncoboundary after every nonzero differential
+operator. The finite-family strengthening is also formal: if one indexed pole orbit is disjoint
+from the common base orbit and every other indexed pole orbit, its nonzero operator term prevents
+the entire simultaneous family from being a coboundary. This is the exact local obstruction used
+in the defect-matroid independence argument, not only the one-defect spectrum argument.
+
+`formal/GaloisForLFunctions/EllipticOrbitQuotient.lean` now identifies the orbit quotient of
+`G/H` under translation by `q` with the subgroup condition in `G`: two representatives have
+distinct orbit classes exactly when their difference is outside `H ⊔ ℤq`. In particular, the
+paper's elliptic nonresonance condition `h ∉ Λ + ℤq` is formally equivalent to distinctness of
+the pole classes represented by `0` and `-h`. Thus the lattice-to-orbit-residue passage is no
+longer an informal step. The meromorphic principal-part map and theta realization are still
+missing.
 
 `formal/GaloisForLFunctions/DifferenceDifferential.lean` defines several commuting field
 automorphisms which fix the coefficient field and commute with the derivation. It proves that
@@ -158,6 +175,9 @@ analytic capstone is already formalized.
 - [x] commuting affine primitive actions and invariant nontrivial relation ideal implemented
 - [x] maximal proper affine differential ideal and simple universal quotient implemented
 - [x] coefficient-valued multi-orbit finite coboundary obstruction implemented
+- [x] nonzero differential operators preserve the top simple-pole obstruction
+- [x] simultaneous distinct-orbit differential pole families are noncoboundaries
+- [x] lattice-plus-shift nonresonance identified with distinct elliptic translation orbits
 - [x] differential-polynomial relation ideals and characteristic-zero primitive classification
 - [x] characteristic-zero additive differential Hopf-ideal primitive-existence theorem
 - [ ] complete differential algebra foundation, including differential transcendence degree
@@ -210,3 +230,12 @@ analytic capstone is already formalized.
   actions. Finite coboundaries vanish orbitwise, and one nonzero principal-part coefficient or two
   opposite coefficients on distinct orbits are formally excluded. The remaining analytic task is
   to construct the elliptic meromorphic principal-part map and realize the theta defects in it.
+- 2026-07-10 -- Formalized the exact lattice/orbit bridge and the differential-operator stability
+  of the principal-part obstruction. The generic hypothesis `h ∉ Λ + ℤq` now yields distinct pole
+  orbits in Lean, and every nonzero constant-coefficient differential operator preserves a
+  noncoboundary top Laurent coefficient. Exact targeted builds pass without project axioms.
+- 2026-07-10 -- Strengthened the local obstruction from one defect to an arbitrary finite family.
+  A single nonzero operator attached to a pole class distinct from the base and every other class
+  forces the complete family outside the finite coboundary image. Combined with the nested orbit
+  quotient theorem, pairwise distinct nonzero classes modulo `Λ + ℤq` now give the simultaneous
+  obstruction required by the exact differential-transcendence-rank proof.

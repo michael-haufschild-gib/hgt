@@ -59,6 +59,24 @@ def archimedeanDualHardyTitchmarshUnitary :
     evenSubspace ≃ₗᵢ[ℂ] ArchimedeanWeightedL2 :=
   archimedeanMellinUnitary.trans betaInfinityUnitary
 
+/-- The weighted Hardy--Titchmarsh line is nontrivial because it is unitarily equivalent to
+the concretely nontrivial even Sonin carrier. -/
+theorem archimedeanWeightedL2_nontrivial : Nontrivial ArchimedeanWeightedL2 := by
+  letI : Nontrivial evenSubspace := evenSubspace_nontrivial
+  exact Equiv.nontrivial archimedeanDualHardyTitchmarshUnitary.symm.toEquiv
+
+/-- The weighted Hardy--Titchmarsh line is infinite-dimensional by unitary transport of the
+infinite orthonormal Sonin shell family. -/
+theorem archimedeanWeightedL2_not_finiteDimensional :
+    ¬ FiniteDimensional ℂ ArchimedeanWeightedL2 := by
+  intro hfd
+  letI : FiniteDimensional ℂ ArchimedeanWeightedL2 := hfd
+  letI : FiniteDimensional ℂ evenSubspace :=
+    FiniteDimensional.of_injective
+      archimedeanDualHardyTitchmarshUnitary.toLinearEquiv.toLinearMap
+      archimedeanDualHardyTitchmarshUnitary.injective
+  exact evenSubspace_not_finiteDimensional inferInstance
+
 theorem archimedeanDualHardyTitchmarshUnitary_evenDilation
     (p : ℝ) (hp : 0 < p) (f : evenSubspace) :
     archimedeanDualHardyTitchmarshUnitary (evenDilationUnitary p hp f) =

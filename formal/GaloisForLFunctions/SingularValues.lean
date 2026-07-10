@@ -74,8 +74,8 @@ theorem singVal_antitone (T : H →L[ℂ] H) : Antitone (singVal T) := fun _ _ h
 theorem norm_apply_svVec_sq (T : H →L[ℂ] H) (n : ℕ) :
     ‖T (svVec (energyOp T) n)‖ ^ 2
       = svVal (energyOp T) n * ‖svVec (energyOp T) n‖ ^ 2 := by
-  rw [← re_inner_energyOp_self T, apply_svVec, inner_smul_right, inner_self_eq_norm_sq_to_K]
-  norm_cast
+  rw [← re_inner_energyOp_self T, apply_svVec, inner_smul_right, RCLike.mul_re]
+  simp [inner_self_eq_norm_sq_to_K, ← Complex.ofReal_pow]
 
 /-- The tail bound: `‖T x‖ ≤ sₙ·‖x‖` for `x` orthogonal to the first `n` greedy vectors. -/
 theorem norm_apply_le_singVal_of_orth (T : H →L[ℂ] H) {x : H} (n : ℕ)
@@ -186,7 +186,7 @@ theorem tsum_ennreal_svVal_eq (hcpt : IsCompactOperator T) :
     have hgn : ENNReal.ofReal (svVal (energyOp T) n) ≠ 0 := by
       simp only [ne_eq, ENNReal.ofReal_eq_zero, not_le]
       exact lt_of_le_of_ne (svVal_nonneg _ n) (Ne.symm hn)
-    exact ⟨⟨n, hgn⟩, Subtype.ext hun.symm⟩
+    exact ⟨⟨n, hgn⟩, Subtype.ext hun⟩
   · rintro ⟨n, hn⟩
     simp only [Function.mem_support, ne_eq, ENNReal.ofReal_eq_zero, not_le] at hn
     have hne0 : svVal (energyOp T) n ≠ 0 := ne_of_gt hn
