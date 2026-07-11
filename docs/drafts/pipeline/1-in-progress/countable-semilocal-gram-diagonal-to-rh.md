@@ -495,3 +495,37 @@ compressions exhaust the target, or prove estimates with genuine degree-to-heigh
 completed source operator and its off-diagonal covariance is canceled before trace.  Proving that
 its Schur complement is nonnegative after identifying it with the target form would merely restate
 the target-width contraction/RH criterion.
+
+`[LEAN PROGRESS]` The damped covariance itself, strict positivity of its entries, its diagonal law,
+and the exact bound
+
+```text
+phi(2t)<=sqrt(2)exp(-t)
+```
+
+are now formalized in `SoninSemilocalTwoPlaceAssociation.lean`.  The finite-matrix PSD theorem still
+uses the Gamma Fourier integral on paper; it does not yet supply the missing additive source
+identity.
+## Gauss-paired covariance depth attack
+
+The leading Gauss-paired interpretation does not by itself supply the required Hilbert--Schmidt
+feature map.  Connes--Consani prove that for `m` finite primes the completed local-ratio product is
+quasi-inner, but quasi-inner means only that its Hardy off-diagonal is compact.  Their Gauss
+factorization gives paired channel defects of infinitesimal order `1/(2m)`; the existing
+`gauss-paired-quasi-inner-channel-schatten-depth-law.md` records the sharper project audit that the
+channel direct sum has critical weak-Schatten exponent `2m` (the exact endpoint residue remains in
+`needs-audit`).  Thus no fixed Schatten class contains the unsmoothed cofinal channel system.
+
+`[ATTACK RESULT]` The Gauss-paired quantized differential performs the correct finite trace
+additivity, but its raw channel carrier cannot be `G_(d,j)`: as the prime cutoff grows it moves
+farther from `S_2`, not closer.  A successful use must prove one of two genuinely new analytic
+statements:
+
+1. a source-defined cancellation in the full multiplicative product defect that improves the
+   channel direct sum to a uniform Hilbert--Schmidt/trace-class relative object; or
+2. a test/resolvent smoothing, uniform in the growing prime set and compatible with the Gamma
+   half-weight, that reaches the same ideal before taking the finite-degree Gram.
+
+This leaves the Gamma-damped covariance `(4)` as a model for the required decay, not as an
+identified suboperator of the present Gauss-paired construction.  The exact open core is now a
+uniform covariance-cancellation/Schatten theorem, followed by the finite-degree Xi moment identity.

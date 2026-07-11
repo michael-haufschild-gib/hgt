@@ -152,3 +152,56 @@ theorem bottcherVelocity_formalADE_descends {n : ℕ}
   formal_mahler_descent coeff_bottcherVelocitySeries_mem_bot hP hann
 
 end GaloisForLFunctions
+
+namespace GaloisForLFunctions
+
+open Classical in
+/-- The derivative of the velocity series is the lacunary `0/1` series `∑_j X^{2^{j+1}−1}`:
+coefficient `1` exactly at the predecessors of the dyadic powers. -/
+theorem coeff_deriv_bottcherVelocitySeries (k : ℕ) :
+    PowerSeries.coeff k (d⁄dX ℂ bottcherVelocitySeries)
+      = if ∃ m : ℕ, k + 1 = 2 ^ (m + 1) then 1 else 0 := by
+  rw [PowerSeries.coeff_derivative]
+  by_cases hp : ∃ m : ℕ, k + 1 = 2 ^ (m + 1)
+  · obtain ⟨m, hm⟩ := hp
+    rw [hm, coeff_bottcherVelocitySeries_pow m, if_pos ⟨m, rfl⟩]
+    have hne : ((2 ^ (m + 1) : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by positivity)
+    have hcast : ((k : ℂ) + 1) = ((2 ^ (m + 1) : ℕ) : ℂ) := by
+      push_cast [← hm]
+      ring
+    rw [hcast, inv_mul_cancel₀ hne]
+  · rw [coeff_bottcherVelocitySeries_of_ne (k + 1) (fun m hm => hp ⟨m, hm⟩), if_neg hp,
+      zero_mul]
+
+/-- **The derivative of the velocity series is irrational**: its support consists of the
+predecessors of the dyadic powers, whose gaps double. -/
+theorem deriv_bottcherVelocitySeries_not_rational (p q : Polynomial ℂ) (hq : q ≠ 0) :
+    (q : ℂ⟦X⟧) * d⁄dX ℂ bottcherVelocitySeries ≠ (p : ℂ⟦X⟧) := by
+  refine powerSeries_not_rational_of_gaps (fun g M => ?_) p q hq
+  refine ⟨2 ^ (max g M + 1) - 1, ?_, ?_, ?_⟩
+  · have h1 : M ≤ max g M := le_max_right _ _
+    have h2 : max g M < 2 ^ max g M := Nat.lt_two_pow_self
+    have h3 : 2 ^ max g M ≤ 2 ^ (max g M + 1) :=
+      Nat.pow_le_pow_right (by norm_num) (Nat.le_succ _)
+    omega
+  · rw [coeff_deriv_bottcherVelocitySeries,
+      if_pos ⟨max g M, by
+        have h2 : 1 ≤ 2 ^ (max g M + 1) := Nat.one_le_two_pow
+        omega⟩]
+    exact one_ne_zero
+  · intro k hk1 hk2
+    rw [coeff_deriv_bottcherVelocitySeries]
+    rw [if_neg]
+    rintro ⟨m, hm⟩
+    have h1le : 1 ≤ 2 ^ (max g M + 1) := Nat.one_le_two_pow
+    have hplt : 2 ^ (m + 1) < 2 ^ (max g M + 1) := by omega
+    have hlt : m + 1 < max g M + 1 :=
+      (Nat.pow_lt_pow_iff_right (by norm_num : 1 < 2)).mp hplt
+    have hle : 2 ^ (m + 1) ≤ 2 ^ max g M :=
+      Nat.pow_le_pow_right (by norm_num) (by omega)
+    have hg : g < 2 ^ max g M :=
+      lt_of_le_of_lt (le_max_left g M) Nat.lt_two_pow_self
+    have hpow : 2 ^ (max g M + 1) = 2 * 2 ^ max g M := by ring
+    omega
+
+end GaloisForLFunctions

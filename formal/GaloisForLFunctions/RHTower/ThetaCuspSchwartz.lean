@@ -9,7 +9,7 @@ half-Gaussians gives a summable discrete majorant and an `exp(-x)` bound for eve
 the positive half-line.  Reflection supplies the negative half-line.
 -/
 
-open Filter Topology Set Polynomial
+open Filter Topology Set Polynomial MeasureTheory
 open scoped ContDiff SchwartzMap
 
 noncomputable section
@@ -84,18 +84,15 @@ theorem thetaCuspGaussianConstant_nonneg (P : ℝ[X]) :
   unfold thetaCuspGaussianConstant
   exact mul_nonneg (thetaCuspCoeffMass_nonneg P) (Real.exp_pos _).le
 
-/-- Every zero-constant polynomial atom has a summable half-Gaussian bound after multiplication
+/-- Every positive-index polynomial atom has a summable half-Gaussian bound after multiplication
 by `exp x` on the positive logarithmic half-line. -/
-theorem exp_mul_abs_thetaCuspPolynomialAtom_le
-    (P : ℝ[X]) (hP0 : P.coeff 0 = 0) {x : ℝ} (hx : 0 ≤ x) (n : ℕ) :
+theorem exp_mul_abs_thetaCuspPolynomialAtom_le_of_pos
+    (P : ℝ[X]) {x : ℝ} (hx : 0 ≤ x) {n : ℕ} (hn : 0 < n) :
     Real.exp x * |thetaCuspPolynomialAtom P n x| ≤
       thetaCuspGaussianConstant P *
         Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2) := by
-  cases n with
-  | zero =>
-      have heval : eval 0 P = 0 := by rw [← coeff_zero_eq_eval_zero, hP0]
-      simpa [thetaCuspPolynomialAtom, heval] using thetaCuspGaussianConstant_nonneg P
-  | succ n =>
+  obtain ⟨n, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
+  focus
       let q : ℕ := n + 1
       let y : ℝ := (q : ℝ) * Real.exp x
       have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
@@ -170,6 +167,17 @@ theorem exp_mul_abs_thetaCuspPolynomialAtom_le
             Real.exp (-(Real.pi / 2) * (q : ℝ) ^ 2) := by
           rfl
 
+/-- Zero constant term extends the positive-index bound across the zero atom. -/
+theorem exp_mul_abs_thetaCuspPolynomialAtom_le
+    (P : ℝ[X]) (hP0 : P.coeff 0 = 0) {x : ℝ} (hx : 0 ≤ x) (n : ℕ) :
+    Real.exp x * |thetaCuspPolynomialAtom P n x| ≤
+      thetaCuspGaussianConstant P *
+        Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2) := by
+  rcases n with _ | n
+  · have heval : eval 0 P = 0 := by rw [← coeff_zero_eq_eval_zero, hP0]
+    simpa [thetaCuspPolynomialAtom, heval] using thetaCuspGaussianConstant_nonneg P
+  · exact exp_mul_abs_thetaCuspPolynomialAtom_le_of_pos P hx (Nat.succ_pos n)
+
 theorem summable_thetaCuspHalfGaussian :
     Summable (fun n : ℕ => Real.exp (-(Real.pi / 2) * (n : ℝ) ^ 2)) := by
   simpa using summable_pow_mul_exp_neg_nat_sq 0 (by positivity : 0 < Real.pi / 2)
@@ -184,6 +192,84 @@ theorem thetaCuspDerivativeExpConstant_nonneg (m : ℕ) :
   unfold thetaCuspDerivativeExpConstant
   exact mul_nonneg (thetaCuspGaussianConstant_nonneg _)
     (tsum_nonneg fun _ => (Real.exp_pos _).le)
+
+/-- Constant in the positive-half `exp(-x)` bound for a derivative of the raw theta tail. -/
+def thetaCuspTailDerivativeExpConstant (m : ℕ) : ℝ :=
+  thetaCuspGaussianConstant (thetaCuspTailDerivativePolynomial m) *
+    ∑' n : ℕ, Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ 2)
+
+theorem thetaCuspTailDerivativeExpConstant_nonneg (m : ℕ) :
+    0 ≤ thetaCuspTailDerivativeExpConstant m := by
+  unfold thetaCuspTailDerivativeExpConstant
+  exact mul_nonneg (thetaCuspGaussianConstant_nonneg _)
+    (tsum_nonneg fun _ => (Real.exp_pos _).le)
+
+/-- Every derivative of the raw positive theta tail decays exponentially at `+∞`. -/
+theorem abs_thetaCuspTailDerivative_le_exp_neg
+    (m : ℕ) {x : ℝ} (hx : 0 ≤ x) :
+    |thetaCuspTailDerivative m x| ≤
+      thetaCuspTailDerivativeExpConstant m * Real.exp (-x) := by
+  let P : ℝ[X] := thetaCuspTailDerivativePolynomial m
+  let a : ℕ → ℝ := fun n => thetaCuspPolynomialAtom P (n + 1) x
+  let g : ℕ → ℝ := fun n => Real.exp (-(Real.pi / 2) * ((n + 1 : ℕ) : ℝ) ^ 2)
+  have ha : Summable a := by
+    simpa [a, P, thetaCuspTailDerivative] using summable_thetaCuspTailDerivative m x
+  have hg0 : Summable g := by
+    exact (summable_nat_add_iff 1).mpr summable_thetaCuspHalfGaussian
+  have hag : Summable (fun n => Real.exp x * |a n|) :=
+    ha.norm.mul_left (Real.exp x)
+  have hg : Summable (fun n => thetaCuspGaussianConstant P * g n) := hg0.mul_left _
+  have hterm (n : ℕ) : Real.exp x * |a n| ≤ thetaCuspGaussianConstant P * g n := by
+    dsimp [a, g, P]
+    exact exp_mul_abs_thetaCuspPolynomialAtom_le_of_pos _ hx (Nat.succ_pos n)
+  have hsum : Real.exp x * |∑' n, a n| ≤
+      thetaCuspGaussianConstant P * ∑' n, g n := by
+    calc
+      Real.exp x * |∑' n, a n| ≤ Real.exp x * ∑' n, |a n| := by
+        gcongr
+        exact norm_tsum_le_tsum_norm ha.norm
+      _ = ∑' n, Real.exp x * |a n| := by rw [tsum_mul_left]
+      _ ≤ ∑' n, thetaCuspGaussianConstant P * g n :=
+        hag.tsum_le_tsum hterm hg
+      _ = thetaCuspGaussianConstant P * ∑' n, g n := by rw [tsum_mul_left]
+  rw [thetaCuspTailDerivative]
+  change |∑' n, a n| ≤ _
+  calc
+    |∑' n, a n| = Real.exp (-x) * (Real.exp x * |∑' n, a n|) := by
+      rw [← mul_assoc, ← Real.exp_add]
+      simp
+    _ ≤ Real.exp (-x) * (thetaCuspGaussianConstant P * ∑' n, g n) := by
+      gcongr
+    _ = thetaCuspTailDerivativeExpConstant m * Real.exp (-x) := by
+      simp [thetaCuspTailDerivativeExpConstant, P, g]
+      ring
+
+theorem integrableOn_thetaCuspTailDerivative_Ioi (m : ℕ) :
+    IntegrableOn (thetaCuspTailDerivative m) (Ioi 0) := by
+  let C := thetaCuspTailDerivativeExpConstant m
+  have hdom : IntegrableOn (fun x : ℝ => C * Real.exp (-x)) (Ioi 0) :=
+    (integrableOn_exp_neg_Ioi 0).const_mul C
+  apply hdom.mono
+  · exact (differentiable_thetaCuspTailDerivative m).continuous.aestronglyMeasurable.restrict
+  · filter_upwards with x hx
+    rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    exact abs_thetaCuspTailDerivative_le_exp_neg m hx.le
+
+theorem thetaCuspTailDerivative_tendsto_atTop_zero (m : ℕ) :
+    Tendsto (thetaCuspTailDerivative m) atTop (𝓝 0) := by
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  have hle : ∀ᶠ x : ℝ in atTop,
+      ‖thetaCuspTailDerivative m x‖ ≤
+        thetaCuspTailDerivativeExpConstant m * Real.exp (-x) := by
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
+    rw [Real.norm_eq_abs]
+    exact abs_thetaCuspTailDerivative_le_exp_neg m hx
+  have hmajor : Tendsto
+      (fun x : ℝ => thetaCuspTailDerivativeExpConstant m * Real.exp (-x))
+      atTop (𝓝 0) := by
+    simpa using Real.tendsto_exp_neg_atTop_nhds_zero.const_mul
+      (thetaCuspTailDerivativeExpConstant m)
+  exact squeeze_zero' (Eventually.of_forall fun x => norm_nonneg _) hle hmajor
 
 /-- Every derivative of the full theta-cusp source has a uniform exponential bound on the
 positive logarithmic half-line. -/

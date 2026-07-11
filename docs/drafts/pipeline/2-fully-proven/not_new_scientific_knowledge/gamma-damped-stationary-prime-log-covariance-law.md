@@ -157,3 +157,18 @@ congruence.  It selects multiplication by the exact local symbol and its Euler G
 semilocal trace operator.  A promotion theorem must derive `(1)` from the Gauss-paired local ratios,
 Sonin projection, or conductor graph; merely observing that `(1)` uses only `phi` and prime-log
 coordinates would not satisfy the source-selection gate.
+
+## Lean progress
+
+`SoninSemilocalTwoPlaceAssociation.lean` now formalizes the exact kernel, strict positivity of every
+entry, its diagonal identity, and the exponential upper bound:
+
+```text
+semilocalArchimedeanDampedCovarianceKernel
+semilocalArchimedeanDampedCovarianceKernel_pos
+semilocalArchimedeanDampedCovarianceKernel_self
+semilocalArchimedeanCharacteristic_two_mul_le_sqrtTwo_mul_exp_neg
+```
+
+The full finite-matrix positive-definiteness statement still uses the classical Gamma Fourier
+integral on paper; that spectral-measure identity is not yet represented in the Lean module.

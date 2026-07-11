@@ -95,4 +95,54 @@ theorem semilocalArchimedeanCharacteristic_hankelDet_neg
   simpa [semilocalArchimedeanCharacteristic] using
     sub_neg.mpr (semilocalArchimedeanCharacteristic_two_mul_lt_sq ht)
 
+/-- The diagonally damped stationary Gamma covariance candidate.  On the paper-level Gamma
+spectral model this is the Gram kernel of
+`sqrt(phi(2t)) * exp(i t s)` in the archimedean cyclic `L²` space. -/
+def semilocalArchimedeanDampedCovarianceKernel (t u : ℝ) : ℝ :=
+  Real.sqrt (semilocalArchimedeanCharacteristic (2 * t)) *
+    Real.sqrt (semilocalArchimedeanCharacteristic (2 * u)) *
+      semilocalArchimedeanCharacteristic (t - u)
+
+/-- Every scalar entry of the damped stationary Gamma covariance is strictly positive. -/
+theorem semilocalArchimedeanDampedCovarianceKernel_pos (t u : ℝ) :
+    0 < semilocalArchimedeanDampedCovarianceKernel t u := by
+  unfold semilocalArchimedeanDampedCovarianceKernel
+  have hchar (x : ℝ) : 0 < semilocalArchimedeanCharacteristic x := by
+    exact Real.rpow_pos_of_pos (Real.cosh_pos x) (-(1 : ℝ) / 2)
+  exact mul_pos (mul_pos (Real.sqrt_pos.2 (hchar (2 * t)))
+    (Real.sqrt_pos.2 (hchar (2 * u)))) (hchar (t - u))
+
+/-- The covariance diagonal is exactly the doubled-frequency Gamma characteristic. -/
+theorem semilocalArchimedeanDampedCovarianceKernel_self (t : ℝ) :
+    semilocalArchimedeanDampedCovarianceKernel t t =
+      semilocalArchimedeanCharacteristic (2 * t) := by
+  unfold semilocalArchimedeanDampedCovarianceKernel
+  have hchar : 0 ≤ semilocalArchimedeanCharacteristic (2 * t) :=
+    (Real.rpow_pos_of_pos (Real.cosh_pos (2 * t)) (-(1 : ℝ) / 2)).le
+  rw [sub_self]
+  simp only [semilocalArchimedeanCharacteristic, Real.cosh_zero, Real.one_rpow, mul_one]
+  simpa [pow_two] using Real.sq_sqrt hchar
+
+/-- Exact exponential upper bound for the Gamma covariance diagonal. -/
+theorem semilocalArchimedeanCharacteristic_two_mul_le_sqrtTwo_mul_exp_neg (t : ℝ) :
+    semilocalArchimedeanCharacteristic (2 * t) ≤
+      Real.sqrt 2 * Real.exp (-t) := by
+  have hexp : Real.exp (2 * t) / 2 ≤ Real.cosh (2 * t) := by
+    rw [Real.cosh_eq]
+    have := Real.exp_pos (-(2 * t))
+    linarith
+  have hpow := Real.rpow_le_rpow_of_nonpos
+    (by positivity : 0 < Real.exp (2 * t) / 2) hexp
+      (by norm_num : (-(1 : ℝ) / 2) ≤ 0)
+  dsimp [semilocalArchimedeanCharacteristic]
+  refine hpow.trans_eq ?_
+  rw [Real.div_rpow (Real.exp_pos _).le (by norm_num : (0 : ℝ) ≤ 2)]
+  rw [← Real.exp_mul]
+  rw [show (-(1 : ℝ) / 2) = -(1 / 2 : ℝ) by ring]
+  rw [Real.rpow_neg (by norm_num : (0 : ℝ) ≤ 2)]
+  rw [← Real.sqrt_eq_rpow]
+  rw [div_inv_eq_mul]
+  rw [show 2 * t * -(1 / 2 : ℝ) = -t by ring]
+  ring
+
 end RHTower
