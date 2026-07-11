@@ -158,6 +158,43 @@ The normalization of the CCM vector is immaterial here: their determinant conver
 nonzero scalar and a factor `exp(alpha_lambda+i beta_lambda z)`. One first selects the scalar and
 phase minimizing the `L2` difference, then applies `(5)`.
 
+### Positive quadratic alternative to the strong residual
+
+The strong residual target `(11)` is sufficient but not necessary. Let `epsilon_0<epsilon_1` be the
+lowest two even eigenvalues of the true restricted Weil operator, let
+
+```text
+delta_lambda
+ =<A_lambda g_lambda,g_lambda>-epsilon_0(lambda),
+Gap_lambda=epsilon_1(lambda)-epsilon_0(lambda).
+```
+
+`ccm-rayleigh-excess-determinant-transfer.md` proves
+
+```text
+inf_(|c|=1)||g_lambda-c xi_lambda||_2^2
+ <=2 delta_lambda/Gap_lambda.                          (12a)
+```
+
+Therefore the form-level estimate
+
+```text
+lambda^(2a) delta_lambda/Gap_lambda ->0
+for every a<1/2                                       (12b)
+```
+
+also proves the projective Mellin target `(5)`. In particular,
+
+```text
+delta_lambda/Gap_lambda=O(lambda^(-1))                 (12c)
+```
+
+is enough. This is the better-matched open target: by the exterior-tail quotient identity, the
+Rayleigh value is quadratic in the discarded tail, whereas the strong residual is linear and can
+lose a square root of the prolate concentration deficit. A certified lower bound
+`L_lambda<=epsilon_0(lambda)` may replace the unknown ground value if
+`(r_lambda-L_lambda)/Gap_lambda=O(lambda^(-1))`.
+
 ## Interaction with the logarithmic boundary theorem
 
 For every finite cutoff satisfying the CCM simple-even hypothesis, `(2)` is the determinant of a
@@ -252,6 +289,10 @@ This theorem is one link in an existing chain, not a new standalone route.
 3. `constrained-prolate-fixed-mode-spectral-ladder.md` proves the complete fixed-depth constrained
    ladder, including the `lambda^8` adjacent separation and the exact Hermite/CCM Gram--Schmidt
    limits. These are falsifiable local spectral fingerprints for any true-Weil comparison.
+   `constrained-prolate-fourier-parity-floor-separation.md` adds the complementary sign sector: the
+   zero-integral positive-Fourier floor is smaller than the negative-Fourier floor by
+   `C lambda^(-4)`, with exact constants `8/11` and `8/13`. A true-Weil bilinear transfer preserving
+   this ratio supplies the required cofinal even dominance positively.
 4. `ccm-weil-exterior-tail-quotient-gate.md` identifies the aperture vector with the negative
    exterior tail modulo the global Weil radical. `ccm-poisson-tail-l2-unboundedness.md` then proves
    quantitatively that the successful tail estimate must use the special prolate source in a
@@ -268,6 +309,8 @@ This theorem is one link in an existing chain, not a new standalone route.
 5. `ccm-galerkin-cofinal-diagonal-transfer.md` proves that fixed-aperture form-core convergence and
    a diagonal choice of Galerkin dimensions transfer any continuous determinant limit to finite
    CCM determinants. No estimate uniform in the aperture and Galerkin dimension is needed.
+   `ccm-rayleigh-excess-determinant-transfer.md` proves that the continuous ground-vector
+   comparison itself needs only the quadratic Rayleigh-excess ratio `(12b)`, not a strong residual.
 6. `finite-prime-logarithmic-boundary-transfer.md` proves the final cofinal boundary theorem. For
    the CCM family its metric gate is already zero by finite self-adjointness; only the locally
    uniform divisor-carrying analytic gate remains.
@@ -278,6 +321,24 @@ This theorem is one link in an existing chain, not a new standalone route.
 8. `ccm-cofinal-weil-spectral-floor-criterion.md` proves that any cofinal `o(1)` theorem for the
    true continuous Weil floor already implies RH. Such an eigenvalue theorem belongs to the exact
    Weil-positivity branch and must not be misreported as merely preliminary to `(14)`.
+9. `critical-center-euler-unit-trace-hankel-instability.md`, now backed by the unconditional Lean
+   theorems in `CriticalDiscSchwarzCompleteness`, `CriticalDiscEulerOrbitDensity`,
+   `CriticalTraceMomentGerm`, and `TraceHankelAnalyticInstability`, proves that a fixed-divisor
+   compact-open regular-germ fibre is one finite Euler-unit orbit closure and that trace-Hankel
+   positivity is nowhere thick there. Therefore the source proof of `(14)` must live on a pointed
+   global incidence lift retaining the weighted all-prime tail, the archimedean completion, and the
+   distinguished divisor/trace moments.
+10. `ccm-finite-prime-parity-hankel-carrier.md` constructs the CCM instance of that lift. Its parity
+    margin is an exact cocycle pairing the finite von Mangoldt coefficient vector with the
+    radial-prolate autocorrelation samples `c_phi(log n)`, plus the archimedean Hankel term. The
+    cofinal topology must control these pairings before projecting to the locally uniform
+    characteristic-function limit.
+11. `ccm-prime-source-ground-incidence-response.md` identifies the operator-level incidence tensor.
+    The true Weil floor is concave in the finite prime-power coefficient vector; its gradient is the
+    ground autocorrelation at each prime power, its Hessian is the negative reduced-resolvent Gram
+    form, and the derivative of the CCM Mellin characteristic function is the Mellin transform of
+    that same reduced-resolvent response. This is the precise coupling from weighted source tail to
+    divisor/trace moments.
 
 The resulting exact open target should be stated projectively. After removing the explicit
 nonvanishing exponential in `(2)`, put
@@ -368,8 +429,22 @@ large-aperture simple-evenness nor supplies the locally uniform determinant limi
   parity-separated min--max theory, an oscillation/no-crossing theorem, source transversality, or
   projective comparison. The exact screw kernel leaves the Dirichlet/Perron--Frobenius class beyond
   an explicit aperture.
+- `[AVAILABLE PARITY SELECTOR]` The constrained source model already has a simple positive-Fourier
+  floor separated from the negative-Fourier floor by `C lambda^(-4)`. The open theorem is to
+  preserve that quantitative ordering under the radial-prolate Weil-tail comparison.
+- `[REQUIRED POINTED INCIDENCE TOPOLOGY]` Carry the actual weighted prime coefficients,
+  archimedean kernel, radial-prolate autocorrelation samples, and normalized divisor/trace moments
+  in one global state. Compact-open germ convergence is the final quotient topology, not the
+  topology in which the source-side parity and Rayleigh estimates can be proved.
+- `[AVAILABLE SOURCE-TO-DIVISOR RESPONSE LAW]` At fixed aperture, prime coefficient perturbations
+  feed the characteristic function through the true ground-state reduced resolvent. The remaining
+  estimate is cofinal control of this incidence tensor at the actual von Mangoldt point in the
+  growing Mellin topology.
 - `[OPEN CORE]` Prove `(11)` using the exterior-tail Weil quotient identity and the constrained
   prolate fixed-mode gap ladder.
+- `[PREFERRED OPEN CORE]` Prove the quadratic form estimate `(12b)`, preferably through a
+  source-specific lower bound and Schur complement. This matches the bilinear exterior-tail
+  identity and is strictly better aligned than the strong residual route.
 - `[AVAILABLE SOURCE DOMAIN]` The genuine zero-extended prolate source lies in the maximal
   zeta-multiplier graph domain, so the proof can work with the actual source rather than a Schwartz
   fiction.

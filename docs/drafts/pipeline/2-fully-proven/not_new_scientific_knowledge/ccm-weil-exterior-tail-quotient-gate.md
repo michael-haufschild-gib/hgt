@@ -161,8 +161,13 @@ Nor does the ambient coherent-growth example describe the leading tail of the sp
 `ccm-endpoint-oscillation-poisson-tail-bound.md` proves that its `1/y` Fourier endpoint term sums as
 the uniformly bounded sawtooth series and reduces the lower-tail norm to explicit endpoint jets.
 The zero-integral two-mode source also has central Poisson correction of exact deficit order. The
-remaining question is whether those endpoint-jet bounds control the **Weil-form residual** below the
-constrained gap; an `L2` tail bound alone does not provide that comparison.
+remaining positive target is to turn those endpoint-jet bounds into a **bilinear Rayleigh-excess**
+estimate relative to the true even gap.
+
+The preferred comparison is quadratic rather than a strong residual.
+`ccm-rayleigh-excess-determinant-transfer.md` shows that it is enough to control the prolate seed's
+Rayleigh excess by `O(lambda^(-1))` times the true even gap. This matches `(3)` exactly: both the
+seed Rayleigh value and its comparison error can be expressed bilinearly through exterior tails.
 
 ## Cofinal RH boundary
 
@@ -206,11 +211,10 @@ Three candidate transfers were separated.
    graph/sampling topology; ambient additive `L2` supplies only one component.
 2. `[AVAILABLE DOMAIN]` Qualitative maximal graph-domain membership of the zero-extended fixed prolate
    contrasts. This is `ccm-bv-muntz-graph-domain-extension.md`.
-3. `[OPEN CORE]` A quantitative source-specific graph-norm or Weil-sampling estimate for those
-   contrasts. Unboundedness of `E` does not rule this out because the sequence is highly rigid.
-4. `[OPEN CORE]` A Schur--Feshbach comparison of the true Weil form with the constrained prolate
-   ladder, with off-diagonal coupling little-o of each minuscule ladder gap. This still needs the
-   determinant/divisor transfer in `(10)`.
+3. `[OPEN CORE]` A quantitative source-specific bilinear Weil-tail estimate for those contrasts.
+4. `[PREFERRED OPEN CORE]` A Schur--Feshbach lower bound and true even-gap estimate making the seed
+   Rayleigh excess `O(lambda^(-1))` relative to that gap. The Rayleigh transfer card then supplies
+   the projective determinant rate in `(10)`.
 
 ## Novelty and significance verdict
 

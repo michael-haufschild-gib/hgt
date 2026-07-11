@@ -41,8 +41,10 @@ itself.
 - [x] singular linear corona--residue incidence classified
 - [x] higher-dimensional singular refinement reduced to divisor reconstruction
 - [x] final noncircularity audit completed
-- [ ] Lean formalization of the new critical-centre completeness theorem; this is not required for
-  the negative route verdict and would not itself prove RH
+- [x] critical-centre FE--Schwarz completeness, nonlinear Euler-unit orbit density, the one-point
+  continuous quotient, normalized trace-moment inversion, and analytic Hankel-cone instability are
+  now formalized unconditionally in Lean; this strengthens the negative route verdict but does not
+  itself prove RH
 
 ## 1. Exact source and exact target
 

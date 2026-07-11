@@ -159,6 +159,11 @@ parity sectors, rather than an order cone. The divided-difference commutator, an
 a source-specific transversality law, or the projective comparison with `k_lambda` are all
 structurally compatible mechanisms.
 
+`constrained-prolate-fourier-parity-floor-separation.md` now supplies the positive source model for
+that mechanism: after the zero-integral constraint, the positive-Fourier floor lies below the
+negative-Fourier floor by `C lambda^(-4)`. A bilinear Weil-tail comparison preserving this ordering
+would prove large-aperture even dominance without any order-preserving semigroup.
+
 ## Pipeline position
 
 The theorem is complementary to

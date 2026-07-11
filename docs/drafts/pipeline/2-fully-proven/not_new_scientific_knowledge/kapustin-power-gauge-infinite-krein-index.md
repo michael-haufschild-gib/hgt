@@ -1,8 +1,8 @@
 # Kapustin power gauges require a noncompact full-sector polarization
 
 - **ID:** `kapustin-power-gauge-infinite-krein-index`
-- **Stage:** 2-fully-proven/new_scientific_knowledge
-- **Type:** THEOREM (paper), `[PROVED HERE; CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Stage:** 2-fully-proven/not_new_scientific_knowledge
+- **Type:** THEOREM (paper), `[PROVED HERE; BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** V. V. Kapustin, *Hilbert--Pólya Operators in Krein Spaces*, Siberian
   Mathematical Journal 65 (2024), 72--75
 - **Statement:** Every explicit power gauge `phi_beta(s)=s^(-beta)` in Kapustin's theorem gives a
@@ -209,9 +209,12 @@ index faithfully equals the number of zeros beyond the shifted line.
 - **Literature search.** Searches through July 2026 located Kapustin's 2021/2022 precursor and 2024
   Krein-space paper, but no source stating this weight asymptotic or the resulting two-sided infinite
   index.
-- **Novelty.** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` The analytic ingredients are classical Stirling
-  asymptotics and elementary Krein geometry.  The source-specific inertia theorem and its
-  finite-rank-polarization consequence were not located in the parent literature.
+- **Novelty.** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` The analytic ingredients are classical
+  Stirling asymptotics and elementary Krein geometry.  More decisively, the universal bridge
+  `kapustin-carrier-bilateral-polarization-law.md` derives two-sided infinite index for every bounded
+  analytic gauge from established Toeplitz-kernel theory.  The
+  power-gauge calculation is therefore a useful explicit specialization, not a separate scientific
+  discovery.
 - **Significance.** The theorem separates an exact zeta spectral carrier from a faithful RH defect
   carrier and gives the exact operator inequality every Hilbertization of the explicit 2024 gauge
   family must satisfy.  It replaces a finite-defect search by a noncompact full-sector polarization
@@ -226,14 +229,17 @@ index faithfully equals the number of zeros beyond the shifted line.
   the theorem.
 - [ ] 3 -> 4: independent expert check and broader admissible-gauge classification remain.
 
-## Open core
+## Route disposition
 
-`[CONJECTURE]` Every admissible Kapustin gauge has either a sign-changing weight of infinite negative
-index or else contains, in its inner/outer factorization, an infinite-rank boundary phase whose
-Toeplitz order compensates the reciprocal-gamma phase.  In the first branch, every Hilbertization
-must obey the full-sector lower bound `(4)`.  In the second, that compensating factor itself is the
-source-selected positive polarization to construct.  The power-gauge theorem proves the first branch
-only for the explicit family and does not establish this universal dichotomy.
+The universal sign theorem in `kapustin-carrier-bilateral-polarization-law.md` closes the gauge
+classification: every nonzero bounded analytic Kapustin gauge lies in the sign-changing branch.
+The remaining target is no longer another gauge.  The attempted pointed global incidence metric
+built from the weighted all-prime coefficient tail, archimedean completion, and distinguished
+divisor/trace moments is classified and retired in
+`../../5-failed/kapustin-source-incidence-polarization.md`: regular-germ continuous readings are
+orbit-blind, `M_0` weighted-tail readings decouple, and divisor-faithful metric positivity is exactly
+RH.  Reopening requires a new pre-divisor quantized source incidence that obeys `(4)` and canonically
+produces the Hilbert metric before the Xi divisor is reconstructed.
 
 ## References
 

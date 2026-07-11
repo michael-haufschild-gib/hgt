@@ -121,7 +121,46 @@ If `(11)` is established and the reflection action forces the boundary class to 
 on fixed contours, RH follows. The hard theorem is therefore not “there is an index”; it is the
 source derivation and polarization of this exact boundary symbol.
 
-## 4. Symbols already excluded
+## 4. Corpus reconciliation
+
+The positive specification `(11)` is not a previously absent project target. The research corpus
+already supplies almost every categorical component:
+
+| Positive requirement | Existing theorem or construction | Exact status |
+|---|---|---|
+| finite Euler--Gamma bulk has no divisor charge | `weld-tower-free.md` | formalized coherent root tower; all finite welds are monodromy-free |
+| regular finite-unit quotient is only the divisor | `prime-euler-unit-tangent-completeness.md` | candidate-new paper theorem; finite Euler-unit tangents are complete |
+| a connecting homomorphism reaches deck charges | `weld-charge-connecting-map.md` | formalized; every abstract deck charge is realized by an explicit weld cohomology class |
+| a nonliftable algebraic boundary carrier exists | `mplus-torsion-seam-extension.md` | formalized torsion presentation, Fitting boundary, and coefficient/nonmembership witness |
+| finite source member carries exact Xi multiplicity | `sem-integral-fitting-charge.md` | formalized attached integral defect reads `ord_rho(Xi)` at every modulus |
+| evident unit and phase symbols lift | `marcinkiewicz-tail-residue-yoneda-splitting.md` | paper theorem; their K-theory boundary is zero |
+| canonical singular residue pairing classified | `singular-corona-residue-incidence-trilemma.md` | paper theorem; it is zero, RH-equivalent, or loses quantization |
+| all prime-grade monodromy retains exactly the divisor | `prime-grade-monodromy-divisor-mobius-equivalence.md` | paper theorem; faithful divisor coordinates, no joint incidence |
+
+The corpus therefore already proves the positive architectural statement:
+
+```text
+a successful charge must be an integral, nonliftable,
+determinant-transverse seam boundary retained before scalar extension.          (12)
+```
+
+The exact missing theorem is narrower:
+
+```text
+actual completed arithmetic/analytic seam defect
+  -> presentation-invariant integral boundary
+  = attached SEM multiplicity model,                              (13)
+```
+
+with the first arrow constructed without a zero list or divisor-fed carrier. After `(13)`, a
+source law must force the reflected boundary support onto the fixed line without merely re-reading
+multiplicity.
+
+Thus the AF/topological-phase pivot does not open a new project route. It independently lands on the
+same torsion-seam boundary already isolated by the corpus. Under the mandate to explore far from
+existing RH routes, `(13)` should not be pursued in this lane.
+
+## 5. Symbols already excluded
 
 The evident symbols do not satisfy the positive specification.
 
@@ -134,7 +173,7 @@ The evident symbols do not satisfy the positive specification.
 Thus `u_Gamma` must be a genuinely joint source--completion symbol whose failure to lift is created
 by the infinite weld. It cannot be the unit, a phase orbit, or a renamed zero residue.
 
-## 5. Physical reading
+## 6. Physical reading
 
 In topological-matter language, `(11)` is a bulk--boundary correspondence:
 
@@ -142,7 +181,7 @@ In topological-matter language, `(11)` is a bulk--boundary correspondence:
 finite prime bulk data
   -> singular infinite-volume boundary symbol
   -> nonliftability index
-  -> divisor multiplicity.                                   (12)
+  -> divisor multiplicity.                                   (14)
 ```
 
 The “external clock” is optional in this formulation. If a crossed product by a clock action is
@@ -154,7 +193,7 @@ source-selected infinite-volume GNS sector not quasi-equivalent to the finite va
 sector index satisfying the same contour additivity as `(10)`. This is a separate carrier category,
 not a counterexample to the AF theorem.
 
-## 6. RH verdict
+## 7. RH verdict
 
 The result does not prove RH, but it replaces the no-go with an exact construction problem:
 
@@ -162,13 +201,13 @@ The result does not prove RH, but it replaces the no-go with an exact constructi
 Build u_Gamma from the completed source,
 prove it does not lift,
 compute its boundary index,
-prove the reflection-polarized support is the critical line.  (13)
+prove the reflection-polarized support is the critical line.  (15)
 ```
 
 A successful operator-algebraic pivot must deliver `(13)`. Any finite or thermodynamic theorem
 that produces only a zero bulk charge has not yet constructed the required object.
 
-## 7. Lean surface
+## 8. Lean surface
 
 `formal/GaloisForLFunctions/PrimeQuasiLocalCharge.lean` now proves the finite positive implication
 
@@ -181,7 +220,7 @@ It uses the actual Kronecker determinant and integer winding APIs. The boundary-
 K-theory is not available in the current Lean environment. No abstract K-theory axiom has been
 introduced.
 
-## 8. Parent boundary
+## 9. Parent boundary
 
 The finite-ancestor statement is the parameterized form of continuity of operator K-theory for AF
 inductive limits. The boundary carrier theorem is exactness of the six-term K-theory sequence.
@@ -195,6 +234,7 @@ knowledge.
 - [x] every singular extension charge assigned a nonliftable quotient carrier
 - [x] boundary nonzero iff lift obstruction proved
 - [x] exact Xi index specification stated
+- [x] reconciled against existing formal weld, torsion-seam, SEM, and corona surfaces
 - [x] lifted unit and phase symbols excluded
 - [x] finite positive theorem formalized in Lean
 - [ ] construct `u_Gamma` from the completed source without divisor input

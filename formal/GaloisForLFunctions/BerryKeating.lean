@@ -11,7 +11,9 @@ used in the Hilbert-Polya/Berry-Keating reading:
 * on the critical line `s = 1/2 + iγ`, it is exactly the real value
   `1/4 + γ^2`, hence at least `1/4`;
 * for a point with nonzero imaginary part away from the critical line, `u(s)`
-  has nonzero imaginary part.
+  has nonzero imaginary part;
+* the Kapustin spectral coordinate `1/u(s)` is real exactly on the critical
+  line, once the real-axis degeneracy `Im(s)=0` is excluded.
 
 This is only scalar complex arithmetic. It does not construct a Hilbert-Polya
 operator, prove self-adjointness, identify spectra, or prove RH.
@@ -89,6 +91,60 @@ theorem berryKeatingU_nonreal_of_offCritical_nonzero_im (s : ℂ)
     apply hcrit
     linarith
   · exact him
+
+/-- The spectral coordinate used by Kapustin's Krein-self-adjoint realization:
+every nontrivial zeta zero `ρ` contributes the point `1 / (ρ(1-ρ))`. -/
+def kapustinEigenvalue (s : ℂ) : ℂ := (berryKeatingU s)⁻¹
+
+@[simp] theorem kapustinEigenvalue_apply (s : ℂ) :
+    kapustinEigenvalue s = (s * (1 - s))⁻¹ := rfl
+
+/-- The Kapustin spectral coordinate retains the functional-equation pairing. -/
+@[aesop safe]
+theorem kapustinEigenvalue_sigma (s : ℂ) :
+    kapustinEigenvalue (sigma s) = kapustinEigenvalue s := by
+  rw [kapustinEigenvalue, kapustinEigenvalue, berryKeatingU_sigma]
+
+/-- Exact imaginary part of the reciprocal Berry--Keating coordinate. -/
+theorem kapustinEigenvalue_im (s : ℂ) :
+    (kapustinEigenvalue s).im =
+      -((1 - 2 * s.re) * s.im) / Complex.normSq (berryKeatingU s) := by
+  rw [kapustinEigenvalue, Complex.inv_im, berryKeatingU_im]
+
+/-- Off the critical line, a point with nonzero ordinate gives a genuinely
+nonreal Kapustin eigenvalue. -/
+@[aesop safe]
+theorem kapustinEigenvalue_nonreal_of_offCritical_nonzero_im (s : ℂ)
+    (hcrit : s.re ≠ 1 / 2) (him : s.im ≠ 0) :
+    (kapustinEigenvalue s).im ≠ 0 := by
+  have huim := berryKeatingU_nonreal_of_offCritical_nonzero_im s hcrit him
+  rw [kapustinEigenvalue, Complex.inv_im]
+  have hu0 : berryKeatingU s ≠ 0 := by
+    intro h
+    rw [h] at huim
+    exact huim rfl
+  exact div_ne_zero (neg_ne_zero.mpr huim) (Complex.normSq_pos.mpr hu0).ne'
+
+/-- Away from the real axis, reality of `1/(s(1-s))` is exactly the critical
+line condition.  This is the scalar endpoint behind the Kapustin
+Hilbert--Pólya proposal. -/
+theorem kapustinEigenvalue_im_eq_zero_iff (s : ℂ) (him : s.im ≠ 0) :
+    (kapustinEigenvalue s).im = 0 ↔ s.re = 1 / 2 := by
+  constructor
+  · intro hreal
+    by_contra hcrit
+    exact kapustinEigenvalue_nonreal_of_offCritical_nonzero_im s hcrit him hreal
+  · intro hcrit
+    rw [kapustinEigenvalue, Complex.inv_im, (berryKeatingU_on_critical s hcrit).1]
+    simp
+
+/-- Equivalent conjugation-fixed form consumed by the spectral theorem: a
+Hilbert-symmetric eigenvalue must be fixed by complex conjugation, hence its
+non-real source point lies on the critical line. -/
+theorem conj_kapustinEigenvalue_eq_iff (s : ℂ) (him : s.im ≠ 0) :
+    (starRingEnd ℂ) (kapustinEigenvalue s) = kapustinEigenvalue s ↔
+      s.re = 1 / 2 := by
+  rw [Complex.conj_eq_iff_im, kapustinEigenvalue_im_eq_zero_iff s him]
 
 end
 

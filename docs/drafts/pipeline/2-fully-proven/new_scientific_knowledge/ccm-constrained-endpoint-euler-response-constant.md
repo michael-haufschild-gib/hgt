@@ -1,0 +1,265 @@
+# Exact gap-scale Euler response of the constrained CCM endpoint layer
+
+- **ID:** `ccm-constrained-endpoint-euler-response-constant`
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper)
+- **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`,
+  provisional pending independent proof and exact parent-literature comparison
+- **Parent sources:** Slepian--Pollak finite-Fourier theory, Fuchs fixed-mode concentration
+  asymptotics, Slepian's full fixed-mode PSWF expansions, and
+  `constrained-prolate-two-mode-ground-state.md`
+- **Statement:** For the normalized vanishing-integral `h_0`--`h_4` CCM source, the prime-dilation
+  quadratic response of its leading lower endpoint tail is asymptotic to
+  `(4*pi/33)(-zeta'(2)/zeta(2))` times the `h_4` concentration deficit.
+
+## Setup
+
+For `c>0`, let
+
+```text
+(Q_c f)(x)=integral_(-1)^1 sin(c(x-y))/(pi*(x-y)) f(y)dy             (1)
+```
+
+on `L2(-1,1)`. Let `psi_(m,c)` be a real normalized eigenfunction with simple eigenvalue
+`nu_m(c)`, and choose the fixed-mode branch continuously. In the CCM normalization put
+
+```text
+c=2*pi*lambda^2,
+e_(m,lambda)(x)=lambda^(-1/2) psi_(m,c)(x/lambda),
+d_m(lambda)=1-nu_m(2*pi*lambda^2).                                  (2)
+```
+
+Thus `e_(m,lambda)` is normalized on `[-lambda,lambda]`. For the positive compressed-Fourier
+sector used by CCM, write
+
+```text
+e_0=e_(0,lambda),   e_1=e_(4,lambda),
+d_0=1-chi_0^2,      d_1=1-chi_4^2,
+ell_j=integral_R e_j,
+g_lambda=(ell_1 e_0-ell_0 e_1)/sqrt(ell_0^2+ell_1^2).               (3)
+```
+
+The source `g_lambda` has unit norm and zero integral.
+
+## Exact endpoint-response identity
+
+`[PROVED HERE]` For every simple prolate branch,
+
+```text
+d/dc log(nu_m(c))=2*|psi_(m,c)(1)|^2/c.                             (4)
+```
+
+Equivalently, in the scaled CCM variable,
+
+```text
+|e_(m,lambda)(lambda)|^2
+ =-d_m'(lambda)/(4*(1-d_m(lambda))).                                (5)
+```
+
+### Proof
+
+Let
+
+```text
+(F_c f)(x)=integral_(-1)^1 exp(i*c*x*y)f(y)dy.
+```
+
+Direct calculation gives
+
+```text
+Q_c=(c/(2*pi)) F_c^* F_c.                                          (6)
+```
+
+Hellmann--Feynman and differentiation of the kernel in `(1)` give
+
+```text
+nu_m'(c)
+ =1/pi * integral integral
+    psi_(m,c)(x)psi_(m,c)(y)cos(c(x-y))dxdy
+ =1/pi * |integral psi_(m,c)(x)exp(i*c*x)dx|^2.                     (7)
+```
+
+The finite-Fourier eigenrelation says
+
+```text
+F_c psi_(m,c)=mu_m(c)psi_(m,c).
+```
+
+Evaluation at `x=1` and `(6)` give
+
+```text
+|integral psi_(m,c)(x)exp(i*c*x)dx|^2
+ =|mu_m(c)|^2 |psi_(m,c)(1)|^2
+ =(2*pi/c)nu_m(c)|psi_(m,c)(1)|^2.                                 (8)
+```
+
+Equations `(7)`--`(8)` prove `(4)`. Scaling the endpoint by `lambda^(-1/2)` and using
+`dc/dlambda=4*pi*lambda` proves `(5)`.
+
+## Fixed-mode endpoint asymptotic
+
+The classical fixed-mode prolate expansion, in its differentiable Poincare form, gives for every
+fixed `m`
+
+```text
+d_m(lambda)
+ =A_m lambda^(2m+1) exp(-4*pi*lambda^2)
+    *(1+O(lambda^(-2))),
+
+d_m'(lambda)/d_m(lambda)
+ =-8*pi*lambda+(2m+1)/lambda+O(lambda^(-3)),                        (9)
+```
+
+with `A_m>0`. The first line is the Fuchs asymptotic already used in the constrained-prolate cards;
+the differentiated expansion is supplied by the classical full fixed-mode PSWF expansion, not by
+formal differentiation of an isolated `~` statement.
+
+Combining `(5)` and `(9)` proves
+
+```text
+|e_(m,lambda)(lambda)|^2/(lambda*d_m(lambda)) -> 2*pi.              (10)
+```
+
+## Endpoint constant for the constrained source
+
+For `m=0,4`, `(9)` implies
+
+```text
+d_0/d_1=O(lambda^(-8)),
+e_0(lambda)/e_1(lambda)=O(lambda^(-4)).                             (11)
+```
+
+The exact constrained-prolate theorem gives
+
+```text
+ell_0^2/(ell_0^2+ell_1^2)->8/11.                                   (12)
+```
+
+Equations `(3)`, `(10)`--`(12)` therefore yield
+
+```text
+|g_lambda(lambda)|^2/(lambda*d_1(lambda)) ->16*pi/11.               (13)
+```
+
+The leading lower exterior term in the Poisson endpoint expansion is
+
+```text
+a_lambda T_(L_lambda)(s),
+a_lambda=g_lambda(lambda)/(pi*sqrt(lambda)),
+L_lambda=2*pi*lambda^2,
+T_L(s)=e^(-s/2)S(L e^s).                                           (14)
+```
+
+Hence
+
+```text
+|a_lambda|^2/d_1(lambda) ->16/(11*pi).                              (15)
+```
+
+## Exact all-prime response constant
+
+Let `N_lambda=floor(lambda^2)` and define the prime-dilation quadratic response of the leading
+endpoint layer by
+
+```text
+R_lambda
+ =sum_(2<=n<=N_lambda) Lambda(n)n^(-1/2)
+    integral_0^infinity
+      [a_lambda T_(L_lambda)(s)]
+      [a_lambda T_(L_lambda)(s+log n)]ds.                           (16)
+```
+
+The cofinal sawtooth incidence theorem proves
+
+```text
+sum_(2<=n<=N_lambda) Lambda(n)n^(-1/2)
+  integral_0^infinity T_(L_lambda)(s)T_(L_lambda)(s+log n)ds
+ ->pi^2/12 * (-zeta'(2)/zeta(2)).                                  (17)
+```
+
+Multiplying `(15)` and `(17)` gives the claimed exact limit:
+
+```text
+R_lambda/d_1(lambda)
+ ->(4*pi/33)*(-zeta'(2)/zeta(2)).                                  (18)
+```
+
+Every quantity on the right is positive.
+
+## Positive consequence for the CCM route
+
+The leading exterior prime layer is now calibrated at the same exponential scale as the
+constrained positive-sector gap:
+
+```text
+leading prime endpoint response = explicit positive constant*d_1+o(d_1).             (19)
+```
+
+Thus the true-Weil comparison must preserve and combine three `d_1`-scale quantities rather than
+merely bound an unspecified small tail:
+
+```text
+the Euler response in (18)
+  + the archimedean endpoint response
+  + the subleading/interior prime-incidence response.                                (20)
+```
+
+A proof that the sum in `(20)` equals a positive constant times `d_1`, with a remainder
+`o(d_1)`, would prove that the CCM seed has cofinally vanishing positive Weil Rayleigh quotient.
+Together with a matching true-gap or floor argument, this feeds respectively the determinant or
+direct cofinal-Weil branch. Equation `(18)` supplies the first exact arithmetic coefficient in that
+comparison.
+
+The theorem does **not** identify the full exterior Weil form with `(16)`. The archimedean term,
+the upper exterior tail, the subleading endpoint jets, and the passage from the model seed to the
+true Weil ground state remain separate obligations.
+
+## Novelty audit
+
+### Parent overlap
+
+- Slepian--Pollak and Fuchs supply `(4)` in equivalent normalization and the fixed-mode asymptotic
+  input `(9)`.
+- `constrained-prolate-two-mode-ground-state.md` supplies the `8/11` coefficient.
+- `ccm-cofinal-prime-sawtooth-incidence-law.md` supplies the cofinal Euler scalar.
+
+### Candidate-new residue
+
+No checked parent source couples all three ingredients to obtain the constrained endpoint constant
+`16/(11*pi)` or the all-prime response constant `(18)`. The statement survives vocabulary erasure
+as a new exact asymptotic for a constrained prolate endpoint under a growing arithmetic dilation
+quadratic form.
+
+### Significance
+
+The constant lives at the first unresolved comparison scale of the CCM route and can affect the
+sign of the true Weil Rayleigh quotient. Provisional significance: `7/10`. This is enough for
+candidate-new placement, but not for final novelty certification without an independent proof and
+page-level audit of the fixed-mode endpoint literature.
+
+## References
+
+- D. Slepian, H. O. Pollak, *Prolate spheroidal wave functions, Fourier analysis and uncertainty I*,
+  Bell System Technical Journal 40 (1961), 43--63.
+- W. H. J. Fuchs, *On the eigenvalues of an integral equation arising in the theory of band-limited
+  signals*, J. Math. Anal. Appl. 9 (1964), 317--330.
+- D. Slepian, *Some Asymptotic Expansions for Prolate Spheroidal Wave Functions*, J. Math. Phys. 44
+  (1965), 99--140.
+- A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
+
+## Lean decision
+
+The formal tree has no sinc-kernel operator, parameter derivative, normalized prolate branch, or
+Fuchs asymptotic. Formalizing Hellmann--Feynman in isolation would not certify `(18)`. No Lean file
+is added.
+
+## Gates
+
+- [x] exact endpoint-response identity proved
+- [x] fixed-mode endpoint scale derived
+- [x] constrained endpoint coefficient derived
+- [x] growing all-prime response constant derived
+- [ ] independent proof of the differentiated fixed-mode normalization
+- [ ] exact archimedean endpoint response
+- [ ] subleading/interior incidence remainder `o(d_1)`
+- [ ] true Weil Rayleigh-excess or cofinal-floor transfer
