@@ -1,13 +1,14 @@
 # Signed archimedean Gamma products obey an orbit-charge phase law
 
 - **ID:** `signed-archimedean-gamma-orbit-charge-phase-law`
-- **Stage:** 1-in-progress / complete proof under audit
+- **Stage:** 1-in-progress / neutral boundary open
 - **Type:** THEOREM (paper) / GENERAL HYPERTRANSCENDENCE LANDSCAPE
-- **Scientific status:** `[PROVED PENDING AUDIT] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PARTIALLY PROVED] [OPEN CORE] [NOVELTY UNVERIFIED]`
 - **Statement:** A signed finite Gamma product with positive commensurable scales is differentially
   algebraic exactly when every shift-orbit charge vanishes; otherwise it is hypertranscendental.
-  Its upper projective differential boundary has Bohr rank at most one, so every holomorphic
-  recurrent object differentially algebraic over its field has finite rational phase rank.
+  For nonzero total charge its projective boundary is one point. `[CONJECTURE]` For neutral total
+  charge its upper projective differential boundary has Bohr rank at most one; this would force
+  finite rational phase rank for every holomorphic recurrent object DA over its field.
 
 ## 1. Signed products
 
@@ -245,7 +246,7 @@ B(s)=c s^a(1+o(1)),  a in Z.                               (24)
 
 ### Finite-transseries boundary lemma
 
-`[PROVED HERE]` Let
+`[OPEN CORE]` Let
 
 ```text
 (P_1(G),...,P_r(G)),  P_j in L[X],                          (25)
@@ -273,7 +274,7 @@ may be rational functions of `exp(beta s)` and can have moving poles. ADE coeffi
 be cleared before translation, so the limits in `(26)` are holomorphic exponential polynomials on
 the whole strip.
 
-### Proof
+### Candidate proof and exact gap
 
 After a common denominator, projectively replace the tuple by polynomials
 
@@ -303,19 +304,44 @@ They lie in a compact two-torus, so a subsequence makes every required finite po
 local-variable part of `(29)` converges to `exp(k beta s)`; powers of `(s+iT_n)/(iT_n)` tend to one
 locally uniformly. This gives an exponential-polynomial limit.
 
-If the selected layer vanishes at the limiting phase, descend to the first nonvanishing layer. Such
-a layer exists. In the HT case, `G` and its formal transseries are differentially transcendental
-because their logarithmic derivatives are; hence no nonzero polynomial tuple `(28)` can vanish to
-all formal orders after a nonzero scaling of `G`. In the DA case, `(9)` reduces the assertion to
-the ordinary Laurent--exponential field `C(s,exp(beta s))`, where uniqueness of finite exponential
-sums gives the same conclusion. The first surviving layer yields a nonzero limit vector, proving
-`(26)`--`(27)`.
+For a fixed limiting phase, formal differential transcendence shows that not every layer can
+vanish: in the HT case, scaling `G` fixes `L`, so the formal `G` is transcendental over the formal
+image of `L`; in the DA case `(9)` reduces the assertion to the ordinary Laurent--exponential
+field. This excludes cancellation at one fixed phase.
+
+It does not yet justify the required sequential descent. A higher layer may vanish at the limiting
+phase while its value at the moving phase decays at a rate coupled to a power of `T_n`; several
+such layers can then cancel after normalization. To prove `(26)`, one must show that this coupled
+descent terminates at a finite algebraic layer, rather than leaving a beyond-all-orders Stirling
+remainder as the first nonzero boundary term. That is the exact open lemma:
+
+> **Neutral finite-carrier lemma.** Every nonzero tuple `(25)` and every sequence `T_n->infinity`
+> admit a subsequence and scalar normalization for which a nonzero limit exists in the finite
+> exponential space `span_C{exp(k beta s):0<=k<=N}`.
+
+A proof must control moving phase zeros uniformly; fixed-phase formal transcendence alone is
+insufficient. Until this lemma is proved, `(26)`--`(27)` and every neutral-case consequence below
+remain conjectural.
+
+The beyond-all-orders alternative is genuine rather than rhetorical. Exponentially improved Gamma
+asymptotics contain Stokes terms on the lattice `exp(+-2 pi i s/H)`. Thus a complete proof must
+either exclude their promotion by a moving phase cancellation or prove the stronger positive
+carrier statement
+
+```text
+neutral boundary support subset
+  {k beta + (2 pi i/H) ell : k,ell in Z}.                  (31a)
+```
+
+`[CONJECTURE]` Equation `(31a)` is the **archimedean--Stokes carrier law**: every neutral signed
+Gamma boundary must expose either the recurrent `beta` direction or an explicit common-scale
+Stokes direction. It converts the cancellation gap into a carrier classification problem.
 
 ## 7. Recurrent finite-phase theorem
 
 Let `f` be holomorphic and vertically Bohr uniformly almost periodic on a vertical strip. Then
 
-`[PROVED HERE]`
+`[PROVED HERE for M!=0] [CONJECTURE for M=0]`
 
 ```text
 f DA over K_G  ->  rank_Q Gamma_B(f)<infinity.              (31)
@@ -343,67 +369,121 @@ R_beta=C[exp(beta s),exp(-beta s)].                         (32)
 ```
 
 Its frequency group is `beta Z`, of rational rank zero or one. The solution contributes only
-finitely many further rationally independent frequencies. This proves `(31)` and the divisor
-statement.
+finitely many further rationally independent frequencies. Conditional on the neutral
+finite-carrier lemma, this proves the neutral instance of `(31)` and the divisor statement.
+
+### Quantitative carrier budget
+
+`[PROVED for M!=0] [CONDITIONAL ON THE NEUTRAL FINITE-CARRIER LEMMA for M=0]`
+
+The proof retains the numerical bound from the relative implicit-ADE frequency theorem. Choose a
+minimal limiting ADE of order `n`, and let `m` be the size of a finite regular-sample atlas for its
+joint hull. Put
+
+```text
+delta_G=0  if M!=0,
+delta_G=rank_Q(beta Z) in {0,1}  if M=0.                   (33)
+```
+
+Then
+
+```text
+rank_Q Gamma_B(f) <= delta_G+2m(n+1).                     (34)
+```
+
+Indeed, the nonzero-charge boundary equation is autonomous, while the neutral boundary equation
+has coefficients in `R_beta`; their coefficient-frequency ranks are respectively `0` and
+`delta_G`. The relative theorem bounds the additional solution rank by `2m(n+1)`.
+
+Let
+
+```text
+Lambda_N=<log p:p<=N prime>_Z.                             (35)
+```
+
+Unique factorization gives `rank_Q Lambda_N=pi(N)`. Therefore any recurrent output whose
+Bohr-frequency group contains `Lambda_N` and which is DA over `K_G` must satisfy
+
+```text
+pi(N) <= delta_G+2m(n+1).                                 (36)
+```
+
+This is the positive **phase-budget law**. A cofinal construction over a fixed signed-Gamma field
+must make its differential order, its regular-state atlas, or both grow so that
+
+```text
+m(n+1) >= (pi(N)-delta_G)/2.                               (37)
+```
+
+Equivalently, if order and atlas complexity stay bounded, the remaining prime directions must
+already be present in a separate coefficient, operator, test-space, determinant, or divisor
+carrier. The theorem specifies the resource a successful architecture must supply; it is not a
+categorical rejection of any named RH criterion.
 
 ## 8. The law
 
-The exact positive classification is:
+The exact positive classification under the stated status split is:
 
 ```text
 all orbit charges zero
   -> explicit DA exponential-rational carrier;
 
 some orbit charge nonzero, total charge nonzero
-  -> HT carrier with one-point projective boundary;
+  -> [PROVED] HT carrier with one-point projective boundary;
 
 some orbit charge nonzero, total charge zero
-  -> HT carrier with projective boundary frequency rank <=1. (33)
+  -> [PROVED] HT and [CONJECTURE] projective boundary frequency rank <=1. (38)
 ```
 
-Thus finite signed archimedean Gamma data can carry at most one recurrent phase direction. It may
-weight, reflect, or rotate an arithmetic carrier, but an infinite prime-frequency module must be
-supplied separately.
+`[PROVED when M!=0; CONJECTURE when M=0]` Finite signed archimedean Gamma data carries at most one
+recurrent phase direction. It may weight, reflect, or rotate an arithmetic carrier, but an infinite
+prime-frequency module must be supplied separately.
 
 ### Sharp neutral example
 
 The rank-one alternative occurs already for
 
 ```text
-G_*(s)=Gamma(2s)/Gamma(s)^2.                                (34)
+G_*(s)=Gamma(2s)/Gamma(s)^2.                                (39)
 ```
 
 The duplication formula gives
 
 ```text
-G_*(s)=2^(2s-1)/sqrt(pi) * Gamma(s+1/2)/Gamma(s).           (35)
+G_*(s)=2^(2s-1)/sqrt(pi) * Gamma(s+1/2)/Gamma(s).           (40)
 ```
 
 The two common-scale orbit charges are `+1` at `1/2+Z` and `-1` at `Z`. They are nonzero, so `G_*`
 is HT, while their total is zero. Moreover
 
 ```text
-G_*(s)~(1/(2sqrt(pi))) exp((log 4)s)s^(1/2).                (36)
+G_*(s)~(1/(2sqrt(pi))) exp((log 4)s)s^(1/2).                (41)
 ```
 
 After normalization along upper translates, subsequences converge to nonzero multiples of
-`exp((log 4)s)`. The boundary frequency group is therefore exactly `(log 4)Z`, proving that the
-rank-one bound cannot be replaced by a universal one-point statement.
+`exp((log 4)s)`. The boundary frequency group is therefore exactly `(log 4)Z`. Thus the positive
+rank-one alternative is attained, rather than being merely an upper bound.
 
 ## 9. Positive requirements for RH architectures
 
+The nonzero-total-charge requirements below are proved. Their neutral-total-charge versions are
+conditional on the neutral finite-carrier lemma.
+
 1. **Connes / Hilbert--Polya / de Branges.** A finite Gamma ratio in a determinant or scattering
    factor supplies at most one recurrent boundary phase. The operator or canonical system must
-   carry the infinite arithmetic character module independently.
+   carry the infinite arithmetic character module independently, or its state complexity must obey
+   the growth law `(37)`.
 2. **Nyman--Beurling / Weil positivity.** Archimedean ratios may define weights and reflection
    phases, while the cofinal test spaces must retain unbounded prime-frequency dimension.
 3. **Li criteria.** Finite Gamma normalization changes at most a finite-rank boundary carrier. The
    unbounded coefficient hierarchy must preserve an explicit infinite arithmetic module.
 4. **Finite-prime approximants.** Retaining primes through `N` requires at least `pi(N)` phase
-   dimensions. No fixed finite signed Gamma completion changes that lower bound, including inside a
-   `1/log N` overlap layer.
+   dimensions in total. A fixed finite signed Gamma completion supplies at most `delta_G<=1`; the
+   remaining phase budget must occur in a separate carrier or in unbounded order/atlas complexity
+   as quantified by `(37)`, including inside a `1/log N` overlap layer.
 
-This is an implementation law, not a categorical rejection of an RH-equivalent criterion.
+This is a positive implementation law: a route is viable only after it names the carrier paying
+the phase budget and proves that the completed constraint preserves that carrier cofinally.
 
 ## 10. Attacks and boundaries
 
@@ -411,19 +491,23 @@ This is an implementation law, not a categorical rejection of an RH-equivalent c
    residues, and the formal shift theorem already contain it. Candidate novelty is restricted to
    the projective boundary-rank classification and recurrent finite-phase consequence.
 2. **Total charge is not the HT test.** Nonzero orbit charges may sum to zero. Those neutral products
-   are still HT; they form the new rank-one boundary case.
-3. **Two scalar cluster phases do not mean rank two.** The phase `exp(i Im(gamma)log T)` affects only
-   constants in subsequential limits. Local-variable dependence comes only from `exp(beta s)`, so
-   the Bohr rank is at most one.
-4. **The one-point strengthening is false.** The neutral HT product `(34)` has a genuine rank-one
-   exponential boundary with frequency `log 4`.
-5. **Negative slopes are excluded.** Reflection converts them to positive-slope Gamma ratios plus
+   are still HT; `[CONJECTURE]` they form the rank-one boundary case.
+3. **Two scalar cluster phases need not mean rank two.** At every algebraic Stirling layer, the phase
+   `exp(i Im(gamma)log T)` affects only constants and local-variable dependence comes only from
+   `exp(beta s)`. The open issue is whether moving cancellation can promote a Stokes layer.
+4. **The rank-one alternative occurs.** The neutral HT product `(39)` realizes a genuine rank-one
+   exponential boundary with frequency `log 4`; it does not prove the universal neutral bound.
+5. **Moving phase cancellation is the open boundary.** Fixed-phase formal transcendence does not
+   by itself control phase zeros approached at `T_n`-dependent algebraic rates. A proof must force a
+   finite exponential layer to survive, or identify the positive Stokes carrier that necessarily
+   replaces it.
+6. **Negative slopes are excluded.** Reflection converts them to positive-slope Gamma ratios plus
    trigonometric factors. That finite-phase extension is plausible but is not silently claimed.
-6. **Incommensurable positive scales are excluded.** They have no common rational shift equation and
+7. **Incommensurable positive scales are excluded.** They have no common rational shift equation and
    require a genuine multi-valuation replacement.
-7. **Meromorphic recurrent outputs are excluded.** The present theorem assumes holomorphic Bohr
+8. **Meromorphic recurrent outputs are excluded.** The present theorem assumes holomorphic Bohr
    almost periodicity; moving poles require a spherical differential hull.
-8. **Finite rank is not finite Fourier support.** The conclusion concerns the rational span of
+9. **Finite rank is not finite Fourier support.** The conclusion concerns the rational span of
    frequencies, not the number of Fourier terms.
 
 ## 11. Parent and novelty audit
@@ -436,12 +520,12 @@ This is an implementation law, not a categorical rejection of an RH-equivalent c
 - Difference Galois theory classifies differential algebraicity of many first-order shift-equation
   solutions; the DA/HT part should be presumed known or routine until an exact comparison says
   otherwise.
-- Preliminary searches did not locate the three-level orbit-charge/projective-boundary law `(33)`
+- Preliminary searches did not locate the three-level orbit-charge/projective-boundary law `(38)`
   or its arbitrary recurrent-source consequence `(31)`.
 
-The candidate scientific content is the fact that neutral HT Gamma ratios acquire only a rank-one
-projective boundary rather than an infinite recurrent hull, and that this boundary rank controls
-every HAP element DA over the full differential field.
+The candidate scientific content, still `[CONJECTURE]`, is that neutral HT Gamma ratios acquire
+only a rank-one projective boundary rather than an infinite recurrent hull, and that this boundary
+rank controls every HAP element DA over the full differential field.
 
 Primary adjacent sources:
 
@@ -452,6 +536,10 @@ Primary adjacent sources:
 - S. Chen, M. F. Singer, *Residues and telescopers for bivariate rational functions*, Adv. Appl.
   Math. 49 (2012), 111--133.
 - NIST DLMF, Sections 5.5 and 5.11, Gamma multiplication and asymptotic expansions.
+- G. Nemes, *Error bounds and exponential improvements for the asymptotic expansions of the gamma
+  function and its reciprocal*, Proc. R. Soc. Edinburgh Sect. A 145 (2015), 571--596, DOI
+  `10.1017/S0308210513001558`. Its explicit exponentially improved remainders exhibit the
+  `exp(+-2 pi i z)` Stokes lattice that must be controlled in the neutral open core.
 
 ## 12. Lean status
 
@@ -465,8 +553,9 @@ formalize the claim. Stage 3 requires the whole theorem unconditionally in Lean.
 - [x] common-scale orbit normal form proved
 - [x] exact orbit-charge DA/HT dichotomy proved
 - [x] nonzero-total-charge one-point boundary proved
-- [x] neutral finite-transseries boundary lemma written
-- [x] recurrent finite-phase theorem written
+- [ ] neutral finite-carrier lemma proved
+- [x] recurrent finite-phase theorem proved for nonzero total charge
+- [ ] recurrent finite-phase theorem proved for neutral total charge
 - [ ] independent audit of the neutral boundary lemma
 - [ ] full parent-literature and priority audit
 - [ ] complete unconditional Lean formalization

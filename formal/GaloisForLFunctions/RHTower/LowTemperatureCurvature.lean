@@ -114,10 +114,9 @@ theorem lowTemperaturePairDispersion_tendsto
           (fun β : ℝ => lowTemperaturePairTerm c E E₁ E₂ β (i₁, i₂)) =
             fun _ => K := by
         funext β
-        simp only [lowTemperaturePairTerm, Prod.fst, Prod.snd, hE1, hE2, sub_self,
-          neg_zero, zero_mul, Real.exp_zero, mul_one]
+        simp only [lowTemperaturePairTerm, hE1, hE2, sub_self]
         dsimp [K, lowTemperatureDetLeading]
-        simp only [mul_zero, neg_zero, Real.exp_zero, mul_one]
+        simp only [mul_zero, Real.exp_zero, mul_one]
         ring
       rw [heqfun]
       simp [g]
@@ -132,8 +131,7 @@ theorem lowTemperaturePairDispersion_tendsto
             (fun β : ℝ => lowTemperaturePairTerm c E E₁ E₂ β (i₂, i₁)) =
               fun _ => K := by
           funext β
-          simp only [lowTemperaturePairTerm, Prod.fst, Prod.snd, hE1, hE2, sub_self,
-            neg_zero, zero_mul, Real.exp_zero, mul_one]
+          simp only [lowTemperaturePairTerm, hE1, hE2]
           dsimp [K, lowTemperatureDetLeading]
           rw [show -β * ((E₂ + E₁) - (E₁ + E₂)) = 0 by ring, Real.exp_zero]
           ring
@@ -186,7 +184,7 @@ theorem lowTemperaturePairDispersion_tendsto
         simp [g, hpairs]
       · by_cases h2 : z = (i₂, i₁)
         · subst z
-          simp [g, hpairs, h1]
+          simp [g, h1]
         · simp [g, h1, h2]
     rw [hg]
     have hleft : HasSum (fun z : ι × ι => if z = (i₁, i₂) then K else 0) K :=
@@ -198,7 +196,9 @@ theorem lowTemperaturePairDispersion_tendsto
     tendsto_const_nhds
   have hscaled := hc.mul htsum
   rw [hsumg] at hscaled
-  convert hscaled using 1 <;> norm_num [K] <;> ring
+  convert hscaled using 1
+  norm_num [K]
+  ring
 
 /-- The curvature coefficient is the quotient of the determinant coefficient by the cube of the
 ground-state second-moment coefficient. -/
@@ -246,6 +246,6 @@ theorem lowTemperatureCurvatureProfile_tendsto_zero
   funext β
   dsimp [lowTemperatureCurvatureProfile]
   congr 1
-  ring
+  ring_nf
 
 end RHTower

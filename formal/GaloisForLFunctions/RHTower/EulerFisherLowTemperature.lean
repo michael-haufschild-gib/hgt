@@ -322,4 +322,213 @@ theorem lowTemperaturePairTerm_euler_eq
   rw [hexp, div_eq_mul_inv, div_eq_mul_inv]
   ring
 
+/-- The norms of the first-two-level-rescaled Euler pair summands decrease once `β ≥ 2`. -/
+theorem lowTemperatureEulerPairTerm_norm_le_at_two
+    {β : ℝ} (hβ : 2 ≤ β)
+    (z : (Nat.Primes × ℕ) × (Nat.Primes × ℕ)) :
+    ‖lowTemperaturePairTerm eulerPrimePowerCoefficient eulerPrimePowerEnergy
+        (Real.log 2) (Real.log 3) β z‖ ≤
+      ‖lowTemperaturePairTerm eulerPrimePowerCoefficient eulerPrimePowerEnergy
+        (Real.log 2) (Real.log 3) 2 z‖ := by
+  rcases z with ⟨i, j⟩
+  by_cases hij : i = j
+  · subst j
+    simp [lowTemperaturePairTerm]
+  · have hgap : 0 ≤ (eulerPrimePowerEnergy i + eulerPrimePowerEnergy j) -
+        (Real.log 2 + Real.log 3) := by
+      by_cases hi : i = eulerGroundMode
+      · subst i
+        have hj : j ≠ eulerGroundMode := fun h => hij h.symm
+        have hEi : eulerPrimePowerEnergy eulerGroundMode = Real.log 2 :=
+          (eulerPrimePowerEnergy_eq_log_two_iff eulerGroundMode).2 rfl
+        have hEj := log_three_le_eulerPrimePowerEnergy_of_ne_ground j hj
+        linarith
+      · have hEi := log_three_le_eulerPrimePowerEnergy_of_ne_ground i hi
+        have hEj := log_two_le_eulerPrimePowerEnergy j
+        linarith
+    have hexp :
+        Real.exp (-β * ((eulerPrimePowerEnergy i + eulerPrimePowerEnergy j) -
+            (Real.log 2 + Real.log 3))) ≤
+          Real.exp (-2 * ((eulerPrimePowerEnergy i + eulerPrimePowerEnergy j) -
+            (Real.log 2 + Real.log 3))) := by
+      rw [Real.exp_le_exp]
+      nlinarith
+    dsimp only [lowTemperaturePairTerm]
+    simp only [norm_mul, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    gcongr
+
+/-- Freezing the first-two-level-rescaled Euler pair summands at `β = 2` gives a summable
+Tannery majorant. -/
+theorem summable_lowTemperatureEulerPairTerm_norm_at_two :
+    Summable (fun z : (Nat.Primes × ℕ) × (Nat.Primes × ℕ) =>
+      ‖lowTemperaturePairTerm eulerPrimePowerCoefficient eulerPrimePowerEnergy
+        (Real.log 2) (Real.log 3) 2 z‖) := by
+  have hs := summable_abs_eulerPairDispersionTerm 2 (by norm_num)
+  have hscaled := hs.mul_left
+    ‖Real.exp ((2 : ℝ) * (Real.log 2 + Real.log 3))‖
+  apply hscaled.congr
+  intro z
+  rw [lowTemperaturePairTerm_euler_eq]
+  simp only [norm_mul, Real.norm_eq_abs]
+
+/-- Exact first-two-level selection for the rescaled Euler pair dispersion. -/
+theorem eulerPairDispersion_scaled_tendsto :
+    Tendsto (fun β : ℝ => (2 : ℝ)⁻¹ *
+        ∑' z, lowTemperaturePairTerm eulerPrimePowerCoefficient eulerPrimePowerEnergy
+          (Real.log 2) (Real.log 3) β z)
+      atTop (𝓝 ((Real.log 2) ^ 2 * (Real.log 3) ^ 2 *
+        (Real.log 3 - Real.log 2) ^ 2)) := by
+  let bound : (Nat.Primes × ℕ) × (Nat.Primes × ℕ) → ℝ := fun z =>
+    ‖lowTemperaturePairTerm eulerPrimePowerCoefficient eulerPrimePowerEnergy
+      (Real.log 2) (Real.log 3) 2 z‖
+  have h23 : Real.log 2 < Real.log 3 :=
+    Real.strictMonoOn_log (by norm_num) (by norm_num) (by norm_num)
+  have h := lowTemperaturePairDispersion_tendsto
+    eulerPrimePowerCoefficient eulerPrimePowerEnergy
+    eulerGroundMode eulerFirstExcitedMode (Real.log 2) (Real.log 3) bound
+    h23 eulerPrimePowerEnergy_eq_log_two_iff
+    log_three_le_eulerPrimePowerEnergy_of_ne_ground
+    eulerPrimePowerEnergy_eq_log_three_iff
+    (by simpa [bound] using summable_lowTemperatureEulerPairTerm_norm_at_two)
+    (by
+      filter_upwards [eventually_ge_atTop (2 : ℝ)] with β hβ
+      intro z
+      exact lowTemperatureEulerPairTerm_norm_le_at_two hβ z)
+  have hc1 : eulerPrimePowerCoefficient eulerGroundMode = 1 := by
+    simp [eulerPrimePowerCoefficient, eulerGroundMode, lowPrimeTwo]
+  have hc2 : eulerPrimePowerCoefficient eulerFirstExcitedMode = 1 := by
+    simp [eulerPrimePowerCoefficient, eulerFirstExcitedMode, lowPrimeThree]
+  simpa [lowTemperatureDetLeading, hc1, hc2] using h
+
+/-- Exact determinant asymptotic for the Euler Fisher spectrum:
+`6^β (M₂ M₄ - M₃²)` converges to the `2,3` prime-gap coefficient. -/
+theorem eulerPrimePowerMoment_det_scaled_tendsto :
+    Tendsto (fun β : ℝ => (6 : ℝ) ^ β *
+      (fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 2 *
+          fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 4 -
+        fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 3 ^ 2))
+      atTop (𝓝 ((Real.log 2) ^ 2 * (Real.log 3) ^ 2 *
+        (Real.log 3 - Real.log 2) ^ 2)) := by
+  apply eulerPairDispersion_scaled_tendsto.congr'
+  filter_upwards [eventually_ge_atTop (2 : ℝ)] with β hβ
+  have hβone : 1 < β := by linarith
+  have h2 := summable_abs_eulerPrimePower_moment 2 β hβone
+  have h3 := summable_abs_eulerPrimePower_moment 3 β hβone
+  have h4 := summable_abs_eulerPrimePower_moment 4 β hβone
+  have hQabs := summable_abs_eulerPairDispersionTerm β hβone
+  have hQ : Summable (eulerPairDispersionTerm β) :=
+    Summable.of_norm (by simpa [Real.norm_eq_abs] using hQabs)
+  have hpair :
+      (∑' z, lowTemperaturePairTerm eulerPrimePowerCoefficient eulerPrimePowerEnergy
+          (Real.log 2) (Real.log 3) β z) =
+        Real.exp (β * (Real.log 2 + Real.log 3)) *
+          ∑' z, eulerPairDispersionTerm β z := by
+    rw [← hQ.tsum_mul_left]
+    exact tsum_congr (lowTemperaturePairTerm_euler_eq β)
+  have hdisp := two_mul_fisherWeightedTsumMoment_det
+    (eulerPrimePowerWeight β) eulerPrimePowerEnergy h2 h3 h4
+  have hdisp' :
+      2 * (fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 2 *
+          fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 4 -
+        fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 3 ^ 2) =
+        ∑' z, eulerPairDispersionTerm β z := by
+    simpa [eulerPairDispersionTerm] using hdisp
+  have hlog : Real.log 2 + Real.log 3 = Real.log 6 := by
+    rw [← Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (by norm_num : (3 : ℝ) ≠ 0)]
+    norm_num
+  have hexp : Real.exp (β * (Real.log 2 + Real.log 3)) = (6 : ℝ) ^ β := by
+    rw [hlog, Real.rpow_def_of_pos (by norm_num)]
+    congr 1
+    ring
+  rw [hpair, ← hdisp', hexp]
+  ring
+
+/-- Exact low-temperature curvature coefficient.  After multiplication by `(3/4)^β`, the
+magnitude of the Euler Fisher scalar curvature converges to the positive `2,3` prime-gap
+constant. -/
+theorem eulerFisherScalarCurvature_neg_scaled_tendsto :
+    Tendsto (fun β : ℝ => ((3 : ℝ) / 4) ^ β *
+        (-eulerFisherScalarCurvature β))
+      atTop (𝓝 ((Real.log 3) ^ 2 * (Real.log 3 - Real.log 2) ^ 2 /
+        (Real.log 2) ^ 4)) := by
+  let M : ℝ → ℝ := fun β =>
+    (2 : ℝ) ^ β * fisherWeightedTsumMoment
+      (eulerPrimePowerWeight β) eulerPrimePowerEnergy 2
+  let D : ℝ → ℝ := fun β =>
+    (6 : ℝ) ^ β *
+      (fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 2 *
+          fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 4 -
+        fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 3 ^ 2)
+  have hM : Tendsto M atTop (𝓝 ((Real.log 2) ^ 2)) := by
+    simpa [M] using eulerPrimePowerMoment_scaled_tendsto 2
+  have hD : Tendsto D atTop (𝓝 ((Real.log 2) ^ 2 * (Real.log 3) ^ 2 *
+      (Real.log 3 - Real.log 2) ^ 2)) := by
+    simpa [D] using eulerPrimePowerMoment_det_scaled_tendsto
+  have hA : (Real.log 2) ^ 2 ≠ 0 := by
+    exact pow_ne_zero 2 (ne_of_gt (Real.log_pos (by norm_num)))
+  have hquot := hD.div (hM.pow 3) (pow_ne_zero 3 hA)
+  have hconst :
+      ((Real.log 2) ^ 2 * (Real.log 3) ^ 2 *
+          (Real.log 3 - Real.log 2) ^ 2) / ((Real.log 2) ^ 2) ^ 3 =
+        (Real.log 3) ^ 2 * (Real.log 3 - Real.log 2) ^ 2 /
+          (Real.log 2) ^ 4 := by
+    field_simp [ne_of_gt (Real.log_pos (by norm_num : (1 : ℝ) < 2))]
+  rw [hconst] at hquot
+  apply hquot.congr'
+  filter_upwards [eventually_ge_atTop (2 : ℝ)] with β hβ
+  have hβone : 1 < β := by linarith
+  let m2 := fisherWeightedTsumMoment
+    (eulerPrimePowerWeight β) eulerPrimePowerEnergy 2
+  let det :=
+    fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 2 *
+        fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 4 -
+      fisherWeightedTsumMoment (eulerPrimePowerWeight β) eulerPrimePowerEnergy 3 ^ 2
+  have hm2 : m2 ≠ 0 := ne_of_gt (eulerPrimePowerMoment_two_pos β hβone)
+  have htwo : ((2 : ℝ) ^ β) ^ 3 = (8 : ℝ) ^ β := by
+    rw [Real.rpow_pow_comm (by norm_num : (0 : ℝ) ≤ 2)]
+    norm_num
+  have hratio : (6 : ℝ) ^ β / (8 : ℝ) ^ β = ((3 : ℝ) / 4) ^ β := by
+    rw [← Real.div_rpow (by norm_num : (0 : ℝ) ≤ 6) (by norm_num : (0 : ℝ) ≤ 8)]
+    norm_num
+  dsimp [M, D]
+  rw [eulerFisherScalarCurvature]
+  simp only [neg_div, neg_neg]
+  rw [mul_pow, htwo]
+  rw [← hratio]
+  field_simp
+
+/-- The cold end of the actual Euler Fisher surface is a curvature singularity: its scalar
+curvature tends to `-∞`. -/
+theorem eulerFisherScalarCurvature_tendsto_atBot :
+    Tendsto eulerFisherScalarCurvature atTop atBot := by
+  let C : ℝ := (Real.log 3) ^ 2 * (Real.log 3 - Real.log 2) ^ 2 /
+    (Real.log 2) ^ 4
+  let S : ℝ → ℝ := fun β => ((3 : ℝ) / 4) ^ β *
+    (-eulerFisherScalarCurvature β)
+  have hC : 0 < C := by
+    exact eulerLowTemperatureCurvatureCoefficient_pos
+  have hS : Tendsto S atTop (𝓝 C) := by
+    simpa [S, C] using eulerFisherScalarCurvature_neg_scaled_tendsto
+  have hlog : 0 < Real.log ((4 : ℝ) / 3) :=
+    Real.log_pos (by norm_num)
+  have hgrow : Tendsto (fun β : ℝ => ((4 : ℝ) / 3) ^ β) atTop atTop := by
+    have hlin : Tendsto (fun β : ℝ => Real.log ((4 : ℝ) / 3) * β) atTop atTop :=
+      tendsto_id.const_mul_atTop hlog
+    have hexp := Real.tendsto_exp_atTop.comp hlin
+    simpa [Function.comp_def, Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 4 / 3)]
+      using hexp
+  have hprod : Tendsto (fun β : ℝ => ((4 : ℝ) / 3) ^ β * S β) atTop atTop :=
+    hgrow.atTop_mul_pos hC hS
+  have hmag : Tendsto (fun β : ℝ => -eulerFisherScalarCurvature β) atTop atTop := by
+    apply hprod.congr'
+    filter_upwards with β
+    dsimp [S]
+    rw [← mul_assoc, ← Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 4 / 3)
+      (by norm_num : (0 : ℝ) ≤ 3 / 4)]
+    norm_num
+  have hneg := tendsto_neg_atTop_atBot.comp hmag
+  convert hneg using 1
+  funext β
+  simp
+
 end RHTower

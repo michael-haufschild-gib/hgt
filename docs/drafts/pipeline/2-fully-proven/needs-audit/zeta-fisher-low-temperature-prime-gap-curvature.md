@@ -1,7 +1,7 @@
 # Zeta Fisher low-temperature prime-gap curvature
 
 - **ID:** `zeta-fisher-low-temperature-prime-gap-curvature`
-- **Stage:** 2-fully-proven / needs scientific-novelty audit
+- **Stage:** 2-fully-proven / Lean analytic core formalized / needs scientific-novelty audit
 - **Type:** CANDIDATE THEOREM / QUANTUM-GRAVITY SUPERSPACE GEOMETRY
 - **Scientific status:** `[NOVELTY UNVERIFIED]`
 - **Source:** the globally negative zeta Fisher superspace and its Euler prime-power dispersion
@@ -216,6 +216,55 @@ critical/clock end beta->1+: complete, asymptotically AdS2/Poincare;
 ground-prime end beta->infinity: incomplete, finite-distance curvature singularity.
 ```
 
+## Lean formalization `[FORMALIZED CORE]`
+
+The universal countable-spectrum theorem and the actual Euler specialization are formalized in:
+
+```text
+formal/GaloisForLFunctions/RHTower/LowTemperatureCurvature.lean
+formal/GaloisForLFunctions/RHTower/EulerFisherLowTemperature.lean
+```
+
+Lean proves without new axioms:
+
+```text
+lowTemperatureMoment_tendsto
+lowTemperaturePairDispersion_tendsto
+lowTemperatureCurvatureProfile_tendsto_atBot
+lowTemperatureCurvatureProfile_critical
+lowTemperatureCurvatureProfile_tendsto_zero
+
+eulerPrimePowerMoment_scaled_tendsto
+eulerPrimePowerMoment_det_scaled_tendsto
+eulerFisherScalarCurvature_neg_scaled_tendsto
+eulerFisherScalarCurvature_tendsto_atBot
+```
+
+Thus `(1)`, `(2)`, `(3)`, and the divergence assertion in `(4)` are formalized for the actual
+Euler prime-power spectrum.  The logarithmic-rate limit in `(4)` and the radial-distance
+asymptotic `(5)` remain paper-proved but are not yet in Lean.  Focused builds and the repository
+formal lint pass.  The theorem family uses only the standard Mathlib axioms `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+## Carrier verdict after the finite-Gamma boundary law
+
+The finite archimedean Gamma-product theorem supplies one upper projective valuation direction,
+whereas this theorem shows that the ordinary cold scalar geometry retains only the first two
+prime-power levels.  Combined with the one-point quotient on every fixed-divisor regular-germ
+fibre, the positive requirement is:
+
+```text
+an RH-sensitive superspace carrier must remain nontrivial after
+  (i) fixed-divisor Euler-orbit closure,
+  (ii) finite-Gamma projectivization, and
+  (iii) bottom-two-level Boltzmann selection.
+```
+
+Consequently the carrier must be a pointed global incidence object with unbounded prime-phase
+rank, archimedean transport, and distinguished divisor/trace moments.  The Fisher scalar curvature
+is a geometric diagnostic of the clock end, not that carrier itself.  This does not reopen any of
+Routes A--D.
+
 ## Anti-theatre attack
 
 - The theorem does not constrain zeta zeros and is not an RH reformulation.
@@ -231,5 +280,8 @@ ground-prime end beta->infinity: incomplete, finite-distance curvature singulari
 
 - [x] 0 -> 1: exact scaled limits, source-pure mechanism, and falsification tests stated
 - [x] 1 -> 2: complete paper proof with dominated-convergence majorants
-- [ ] 2 -> 3: Lean theorem family and axiom audit
+- [x] 2 -> 3 core: universal two-level law, actual Euler scaled limits, curvature coefficient,
+  curvature divergence, and axiom audit completed in Lean
+- [ ] 2 -> 3 completion: formalize the logarithmic-rate and radial-distance asymptotics; run the
+  corresponding axiom audit
 - [ ] 3 -> 4: primary-source novelty audit and standalone exposition
