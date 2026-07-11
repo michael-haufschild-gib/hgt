@@ -358,5 +358,242 @@ theorem riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants
   have hre : ρ.re = 1 / 2 := by linarith [him, hzIm]
   exact (ne_of_gt (mem_rightHalf.mp hρ)) hre
 
+/-- Under RH every zero of the centered completed zeta function lies on its real axis.  This is the
+coordinate form used to expose the vacuous reverse implication in the bounded-clock criterion. -/
+theorem xiC_zero_im_eq_zero_of_riemannHypothesis
+    (hRH : RiemannHypothesis) {z : ℂ} (hz : XiC z = 0) : z.im = 0 := by
+  have hright := rh_iff_xi_ne_zero_right.mp hRH
+  by_contra hne
+  rcases lt_or_gt_of_ne hne with hneg | hpos
+  · let s : ℂ := 1 / 2 + z * Complex.I
+    have hre : s.re = 1 / 2 - z.im := by
+      dsimp [s]
+      simp [Complex.mul_re]
+      ring
+    have hs : s ∈ rightHalf := by
+      rw [mem_rightHalf, hre]
+      linarith
+    exact hright s hs (by simpa only [s, XiC] using hz)
+  · let s : ℂ := 1 / 2 + (-z) * Complex.I
+    have hre : s.re = 1 / 2 + z.im := by
+      dsimp [s]
+      simp [Complex.mul_re]
+    have hs : s ∈ rightHalf := by
+      rw [mem_rightHalf, hre]
+      linarith
+    have hzneg : XiC (-z) = 0 := by rw [XiC_even, hz]
+    exact hright s hs (by simpa only [s, XiC] using hzneg)
+
+/-- **Positive transverse-clock unboundedness law.**  For any locally uniform approximation of
+`XiC`, if the approximants have full two-sided vertical zero lattices whose centres converge, then
+their positive periods cannot remain uniformly bounded.  No assumption that the limit centre is
+already a zero is needed: the `k = 0` lattice points and local uniform convergence force that
+automatically.
+
+In the original `s` coordinate these are horizontal zero clocks.  Thus the unconditional residue
+of the bounded-clock route is an escape theorem, not a bounded source construction. -/
+theorem xiC_transverse_clock_escape
+    {Fn : ℕ → ℂ → ℂ} (hconv : TendstoLocallyUniformly Fn XiC atTop)
+    {z : ℂ} {zn : ℕ → ℂ} {Tn : ℕ → ℝ}
+    (hzn : Tendsto zn atTop (𝓝 z)) (hTpos : ∀ n, 0 < Tn n)
+    (hper : ∀ n, ∀ k : ℤ, Fn n (zn n + (k * Tn n) * Complex.I) = 0) :
+    ∀ B : ℝ, ∃ n : ℕ, B < Tn n := by
+  intro B
+  by_contra hbounded
+  push Not at hbounded
+  have hnotVertical : ¬ ∀ t : ℝ, XiC (z + (t : ℂ) * Complex.I) = 0 := by
+    intro hall
+    exact xiC_no_vertical_zero_progression z zero_lt_one fun k => by
+      simpa using hall (k : ℝ)
+  obtain ⟨T, hTpos', -, hprog⟩ := bounded_periodic_zero_limit
+    (Ω := Set.univ) (fun w _ t => Set.mem_univ (w + (t : ℂ) * Complex.I))
+    (hconv.tendstoLocallyUniformlyOn) XiC_analytic.continuousOn
+    (Set.mem_univ z) hzn (fun _ => Set.mem_univ _) hTpos hbounded hper hnotVertical
+  exact xiC_no_vertical_zero_progression z hTpos' hprog
+
+/-- **Cofinal transverse-clock decompactification.**  Exact positive vertical zero clocks in any
+locally uniform approximation to `XiC`, with centres converging in `ℂ`, have periods tending to
+`+∞`.  Indeed, failure of convergence to `+∞` supplies an infinite bounded subsequence, contradicting
+`xiC_transverse_clock_escape` for the corresponding locally uniform subsequence.
+
+In the original `s` coordinate this says that every exact horizontal zero clock attached to a
+convergent zero fibre must decompactify cofinally. -/
+theorem xiC_transverse_clock_tendsto_atTop
+    {Fn : ℕ → ℂ → ℂ} (hconv : TendstoLocallyUniformly Fn XiC atTop)
+    {z : ℂ} {zn : ℕ → ℂ} {Tn : ℕ → ℝ}
+    (hzn : Tendsto zn atTop (𝓝 z)) (hTpos : ∀ n, 0 < Tn n)
+    (hper : ∀ n, ∀ k : ℤ, Fn n (zn n + (k * Tn n) * Complex.I) = 0) :
+    Tendsto Tn atTop atTop := by
+  rw [Filter.tendsto_atTop]
+  intro B
+  by_contra hB
+  have hfreqLt : ∃ᶠ n in atTop, Tn n < B := by
+    exact (not_eventually.mp hB).mono fun n hn => lt_of_not_ge hn
+  obtain ⟨φ, hφmono, hφlt⟩ := Filter.extraction_forall_of_frequently
+    (fun _ => hfreqLt)
+  have hφtends : Tendsto φ atTop atTop := hφmono.tendsto_atTop
+  have hconv' : TendstoLocallyUniformly (fun m => Fn (φ m)) XiC atTop := by
+    intro u hu x
+    obtain ⟨s, hs, H⟩ := hconv u hu x
+    exact ⟨s, hs, hφtends.eventually H⟩
+  obtain ⟨m, hm⟩ := xiC_transverse_clock_escape hconv'
+    (hzn.comp hφtends) (fun m => hTpos (φ m))
+    (fun m k => hper (φ m) k) B
+  exact (not_lt_of_ge (hφlt m).le) hm
+
+/-- Existence of an eventually-entire locally uniform approximation satisfying one uniform
+finite-stage bounded vertical-clock dichotomy.  This is the exact abstract source obligation of
+the route, without an additional provenance restriction. -/
+def BoundedVerticalClockApproximationCertificate : Prop :=
+  ∃ (B : ℝ) (Fn : ℕ → ℂ → ℂ),
+    TendstoLocallyUniformly Fn XiC atTop ∧
+    (∀ᶠ n in atTop, Differentiable ℂ (Fn n)) ∧
+    ∀ᶠ n in atTop, BoundedVerticalClockDichotomy B (Fn n)
+
+/-- The exact abstract bounded-clock source obligation is equivalent to RH.  The forward direction
+is the finite-stage transfer theorem.  Under RH, the constant `XiC` family satisfies the clock
+dichotomy through its real-zero branch, so the reverse direction is vacuous on off-real fibres. -/
+theorem boundedVerticalClockApproximationCertificate_iff_riemannHypothesis :
+    BoundedVerticalClockApproximationCertificate ↔ RiemannHypothesis := by
+  constructor
+  · rintro ⟨B, Fn, hconv, hFn, hclock⟩
+    exact riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants
+      hconv hFn hclock
+  · intro hRH
+    refine ⟨1, fun _ => XiC, ?_, ?_, ?_⟩
+    · intro u hu x
+      refine ⟨Set.univ, Filter.univ_mem, ?_⟩
+      filter_upwards
+      intro n y hy
+      exact refl_mem_uniformity hu
+    · exact Eventually.of_forall fun _ => XiC_differentiable
+    · apply Eventually.of_forall
+      intro n z hz
+      exact Or.inl (xiC_zero_im_eq_zero_of_riemannHypothesis hRH hz)
+
+/-- Compact-local form of the bounded clock dichotomy. -/
+def LocalBoundedVerticalClockDichotomy (B R : ℝ) (f : ℂ → ℂ) : Prop :=
+  ∀ z ∈ closedBall (0 : ℂ) R, f z = 0 → z.im = 0 ∨
+    ∃ T : ℝ, 0 < T ∧ T ≤ B ∧ ∀ k : ℤ, f (z + (k * T) * Complex.I) = 0
+
+/-- Compact-local bounded clock dichotomies suffice for RH; no condition is imposed on spurious
+approximant zeros escaping to infinity. -/
+theorem riemannHypothesis_of_locally_bounded_vertical_clock_dichotomy_approximants
+    {Fn : ℕ → ℂ → ℂ}
+    (hconv : TendstoLocallyUniformly Fn XiC atTop)
+    (hFn : ∀ᶠ n in atTop, Differentiable ℂ (Fn n))
+    (hclock : ∀ R : ℝ, ∃ B : ℝ,
+      ∀ᶠ n in atTop, LocalBoundedVerticalClockDichotomy B R (Fn n)) :
+    RiemannHypothesis := by
+  have hXiCZeroReal : ∀ z : ℂ, XiC z = 0 → z.im = 0 := by
+    intro z hz
+    by_contra hzim
+    obtain ⟨φ, zn, hφmono, hzn, hzeros⟩ :=
+      exists_XiC_zero_approximating_subsequence hconv hFn hz
+    have hφtends : Tendsto φ atTop atTop := hφmono.tendsto_atTop
+    let R : ℝ := dist z 0 + 1
+    obtain ⟨B, hclockR⟩ := hclock R
+    have hclockφ : ∀ᶠ n in atTop,
+        LocalBoundedVerticalClockDichotomy B R (Fn (φ n)) :=
+      hφtends.eventually hclockR
+    have hsmall : ∀ᶠ n in atTop, dist (zn n) z < |z.im| / 2 :=
+      eventually_atTop.2 ((Metric.tendsto_atTop.mp hzn) (|z.im| / 2)
+        (half_pos (abs_pos.mpr hzim)))
+    have hznIm : ∀ᶠ n in atTop, (zn n).im ≠ 0 := by
+      filter_upwards [hsmall] with n hn
+      intro hzeroIm
+      have himdist : |z.im| ≤ dist (zn n) z := by
+        calc
+          |z.im| = |(z - zn n).im| := by simp [hzeroIm]
+          _ ≤ ‖z - zn n‖ := Complex.abs_im_le_norm _
+          _ = dist (zn n) z := by rw [dist_comm, dist_eq_norm]
+      nlinarith [abs_pos.mpr hzim]
+    have hnear : ∀ᶠ n in atTop, dist (zn n) z < 1 :=
+      eventually_atTop.2 ((Metric.tendsto_atTop.mp hzn) 1 zero_lt_one)
+    have hznBall : ∀ᶠ n in atTop, zn n ∈ closedBall (0 : ℂ) R := by
+      filter_upwards [hnear] with n hn
+      rw [Metric.mem_closedBall]
+      calc
+        dist (zn n) 0 ≤ dist (zn n) z + dist z 0 := dist_triangle _ _ _
+        _ ≤ R := by dsimp [R]; linarith
+    obtain ⟨N, hN⟩ := eventually_atTop.1 (hclockφ.and (hznIm.and hznBall))
+    let ψ : ℕ → ℕ := fun n => φ (n + N)
+    let w : ℕ → ℂ := fun n => zn (n + N)
+    have hψtends : Tendsto ψ atTop atTop :=
+      hφtends.comp (tendsto_add_atTop_nat N)
+    have hconv' : TendstoLocallyUniformly (fun n => Fn (ψ n)) XiC atTop := by
+      intro u hu x
+      obtain ⟨t, ht, H⟩ := hconv u hu x
+      exact ⟨t, ht, hψtends.eventually H⟩
+    have hw : Tendsto w atTop (𝓝 z) := hzn.comp (tendsto_add_atTop_nat N)
+    have hwzero : ∀ n, Fn (ψ n) (w n) = 0 := fun n => hzeros (n + N)
+    have hclockw : ∀ n, ∃ T : ℝ, 0 < T ∧ T ≤ B ∧
+        ∀ k : ℤ, Fn (ψ n) (w n + (k * T) * Complex.I) = 0 := by
+      intro n
+      have hgood := hN (n + N) (by omega)
+      rcases hgood.1 (w n) hgood.2.2 (hwzero n) with honline | hperiod
+      · exact False.elim (hgood.2.1 honline)
+      · exact hperiod
+    choose Tn hTpos hTle hper using hclockw
+    have hnotVertical : ¬ ∀ t : ℝ, XiC (z + (t : ℂ) * Complex.I) = 0 := by
+      intro hall
+      exact xiC_no_vertical_zero_progression z zero_lt_one fun k => by
+        simpa using hall (k : ℝ)
+    obtain ⟨T, hTpos', -, hprog⟩ := bounded_periodic_zero_limit
+      (Ω := Set.univ) (fun q _ t => Set.mem_univ (q + (t : ℂ) * Complex.I))
+      (hconv'.tendstoLocallyUniformlyOn) XiC_analytic.continuousOn
+      (Set.mem_univ z) hw (fun _ => Set.mem_univ _) hTpos hTle hper hnotVertical
+    exact xiC_no_vertical_zero_progression z hTpos' hprog
+  rw [rh_iff_xi_ne_zero_right]
+  intro ρ hρ hzero
+  let z : ℂ := (ρ - 1 / 2) * (-Complex.I)
+  have hXiC : XiC z = 0 := by
+    rw [XiC]
+    have harg : (1 : ℂ) / 2 + z * Complex.I = ρ := by
+      dsimp only [z]
+      rw [mul_assoc]
+      have hI : (-Complex.I) * Complex.I = (1 : ℂ) := by
+        rw [neg_mul, Complex.I_mul_I]
+        ring
+      rw [hI, mul_one]
+      ring
+    rw [harg, hzero]
+  have him : z.im = 0 := hXiCZeroReal z hXiC
+  have hzIm : z.im = 1 / 2 - ρ.re := by simp [z]
+  have hre : ρ.re = 1 / 2 := by linarith [him, hzIm]
+  exact (ne_of_gt (mem_rightHalf.mp hρ)) hre
+
+/-- Existence of an eventually-entire locally uniform approximation satisfying a bounded vertical
+clock dichotomy on every fixed compact ball, with the bound allowed to depend on the ball.  This is
+the strongest abstract source obligation retained by the route. -/
+def LocalBoundedVerticalClockApproximationCertificate : Prop :=
+  ∃ Fn : ℕ → ℂ → ℂ,
+    TendstoLocallyUniformly Fn XiC atTop ∧
+    (∀ᶠ n in atTop, Differentiable ℂ (Fn n)) ∧
+    ∀ R : ℝ, ∃ B : ℝ,
+      ∀ᶠ n in atTop, LocalBoundedVerticalClockDichotomy B R (Fn n)
+
+/-- Even the compact-local weakening is exactly RH.  The forward implication is the local transfer
+theorem.  Under RH the constant `XiC` family satisfies every compact-local dichotomy through the
+real-zero branch, so the reverse implication adds no source information. -/
+theorem localBoundedVerticalClockApproximationCertificate_iff_riemannHypothesis :
+    LocalBoundedVerticalClockApproximationCertificate ↔ RiemannHypothesis := by
+  constructor
+  · rintro ⟨Fn, hconv, hFn, hclock⟩
+    exact riemannHypothesis_of_locally_bounded_vertical_clock_dichotomy_approximants
+      hconv hFn hclock
+  · intro hRH
+    refine ⟨fun _ => XiC, ?_, ?_, ?_⟩
+    · intro u hu x
+      refine ⟨Set.univ, Filter.univ_mem, ?_⟩
+      filter_upwards
+      intro n y hy
+      exact refl_mem_uniformity hu
+    · exact Eventually.of_forall fun _ => XiC_differentiable
+    · intro R
+      refine ⟨1, Eventually.of_forall ?_⟩
+      intro n z hzR hz
+      exact Or.inl (xiC_zero_im_eq_zero_of_riemannHypothesis hRH hz)
+
 
 end RHTower

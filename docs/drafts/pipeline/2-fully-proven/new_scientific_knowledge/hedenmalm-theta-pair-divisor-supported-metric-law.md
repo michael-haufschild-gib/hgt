@@ -381,6 +381,39 @@ is especially fragile.  The paper proof is complete, but the claim remains
 `[NOVELTY UNVERIFIED]` until a specialist literature audit confirms that no contemporaneous note
 contains the same pullback-form argument.
 
+## Lean status
+
+`formal/GaloisForLFunctions/RHTower/XiDivisorSupportedMetric.lean` now constructs the complete
+atomic metric class occurring after the Bochner--Schwartz support step. A weight is a nonnegative
+function on the actual analytic-multiplicity copies of the Xi divisor together with a proof that
+it vanishes at every nonreal centered spectral point. Lean proves unconditionally that its
+polarization is Hermitian, symmetrizes multiplication by the centered spectral coordinate, and
+has `XiC` in both radicals.
+
+For every actual Xi zero `alpha`, the module proves the exact weighted sampling identity
+
+```text
+q_c(u_alpha,u_alpha)
+  = (sum of c over the multiplicity fiber at alpha) * ||XiC'(alpha)||^2.
+```
+
+It follows in Lean that every nonreal-zero eigenfunction is null, and that strict positivity on
+every theta eigenfunction implies both RH and `XiC'(alpha) != 0` at every zero. The exact converse
+criterion is also formalized: conservativity is equivalent to positive mass on every zero fiber
+plus simplicity. No RH, positivity, or source-conservativity assertion is introduced as an
+assumption inside these results.
+
+`formal/GaloisForLFunctions/SchwartzTranslation.lean` supplies the first missing upstream layer
+that mathlib did not package: additive translation as a continuous linear action on Schwartz
+space, with its group and inverse laws and exact commutation with every directional derivative.
+
+The remaining formal gap is to prove strong differentiability of this translation orbit in the
+Schwartz topology, derive simultaneous-translation invariance from momentum symmetry, apply a
+formal Bochner--Schwartz representation theorem, and force the representing measure onto the real
+Xi zero set. Mathlib supplies Schwartz space, Fourier transform, tempered distributions, and
+measures of temperate growth, but does not currently supply that assembled Bochner--Schwartz
+theorem.
+
 ## Gates
 
 - [x] latest direct Hilbert--Polya parent identified and read at theorem level
@@ -397,4 +430,8 @@ contains the same pullback-form argument.
 - [x] exact RH-bearing conservativity statement isolated
 - [ ] independent specialist novelty audit
 - [ ] source-derived conservative atomic metric
-- [ ] Lean formalization
+- [x] Lean positive atomic real-divisor metric class
+- [x] Lean exact weighted eigenfunction sampling and conservativity criterion
+- [x] Lean conservativity implies RH plus simplicity
+- [x] Lean continuous linear Schwartz translations, group law, and derivative commutation
+- [ ] Lean Schwartz translation-invariance to Bochner--Schwartz classification bridge

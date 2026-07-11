@@ -1,7 +1,7 @@
 # Faithful facet-separation dimension controls compressed HT relation geometry
 
 - **ID:** `faithful-facet-separation-dimension-ht-realization`
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper) / HT CONSTRAINT-DIMENSION GEOMETRY
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Statement:** Every faithful complex hyperplane representation of the facet complements of a
@@ -220,20 +220,32 @@ ffsDim(Delta_wedge)=4.                                      (19)
 ```
 
 The compressed theorem now gives an exact four-variable non-Gamma HT system for the required
-nonpure two-thick geometry, improving the universal seven-coordinate construction.
+nonpure two-thick geometry, improving the universal seven-coordinate construction.  The value four
+is the exact cost of **faithful single-hyperplane separation**, not the intrinsic analytic cost of
+the relation complex.  The separate periodic-pencil theorem allows complement vertices on
+different parallel leaves and proves
+
+```text
+htDim(Delta_wedge)=ppDim(Delta_wedge)=2<ffsDim(Delta_wedge)=4.             (20)
+```
+
+Thus this card computes one geometric stratum in a strictly finer dimension hierarchy.
 
 ## Geometric meaning and RH-facing boundary
 
-The geometry now has three proven levels:
+The geometry now has four proven levels:
 
 - scalar analytic dimension one supports only pure principal Stanley--Reisner geometry;
-- the explicit nonpure two-thick complex has faithful linear realization dimension four;
+- the explicit nonpure two-thick complex has intrinsic and periodic-pencil dimension two;
+- the same complex has faithful single-hyperplane realization dimension four;
 - every finite complex has finite faithful dimension bounded by its number of facets.
 
-Hypertranscendental sources provide freedom; the hyperplane arrangement determines which relation
-geometry that freedom can carry. For RH this supplies a positive requirement, not a carrier: any
-prime/Euler HT route with nonpure relation geometry must exhibit its extra analytic coordinates. A
-prime/Euler versus archimedean/completion split is a possible interpretation, not a theorem here.
+Hypertranscendental sources provide freedom; period-quotient geometry determines which relation
+complex that freedom can carry.  Hyperplanes are one stratum, not the intrinsic invariant.  For RH
+this supplies a positive requirement, not a carrier: any prime/Euler HT route with nonpure relation
+geometry must exhibit at least two analytic directions or an equivalent transverse period-pencil
+quotient.  A prime/Euler versus archimedean/completion split is a possible interpretation, not a
+theorem here.
 
 ## Novelty and parent boundary
 

@@ -52,6 +52,16 @@ Delta_ell(u)
   +||P_a H_ell Q_a||_(S_2)^2.                            (5)
 ```
 
+There is a simpler one-sided realization. Since `Q_u` projects the output variable onto `[0,u)`,
+
+```text
+Delta_ell(u)=||Q_uH_ell||_(S_2)^2.                       (5a)
+```
+
+Indeed, on the line `x+y=t`, the strip `0<=x<u` has length `min(t,u)`, exactly the weight in `(6)`.
+Thus the three-block relative trace and the one-sided output-boundary trace are identical for every
+Hankel kernel.
+
 Then
 
 ```text
@@ -88,6 +98,30 @@ Delta_ell(2a)
 
 Thus the relative trace is exactly a local corner plus a projection-commutator energy. This is the
 form directly compatible with semilocal cutoff and relative-trace constructions.
+
+The local corner is lower order. Indeed, if `u=2a`, then
+
+```text
+||Q_aH_ell Q_a||_(S_2)^2
+ =integral_0^u t|ell(t)|^2dt,                            (8b)
+```
+
+and therefore
+
+```text
+1/u ||Q_aH_ell Q_a||_(S_2)^2
+ <=integral_0^u |ell(t)|^2dt ->0.                        (8c)
+```
+
+Combining `(8a)` and `(10)` below gives the pure commutator-density identity
+
+```text
+lim_(a->0+) 1/(2a)||[P_a,H_ell]||_(S_2)^2
+ =||ell||_2^2.                                           (8d)
+```
+
+Thus no first-order residue charge lives in the shrinking local corner. The entire charge crosses
+the cutoff interface.
 
 ## 2. Relative-trace density is residue energy
 
@@ -168,8 +202,21 @@ infinitesimal boundary relative trace.
 ## 5. Positive CCM/Connes obligation
 
 Let `D_Xi` be the closed anti-causal logarithmic-source Hankel operator. A successful semilocal
-construction need not prove `D_Xi` or its full two-sided cut-down Hilbert--Schmidt. It must instead
-construct, from the Euler--Gamma source, the three positive boundary-block traces in `(5)` and prove
+construction need not prove `D_Xi` or its full two-sided cut-down Hilbert--Schmidt.
+
+For a densely defined operator `T`, define its extended Hilbert--Schmidt norm to be the norm of the
+unique Hilbert--Schmidt operator extending `T` when such an extension exists, and `+infinity`
+otherwise. Density makes the extension unique. Equation `(5a)` therefore gives the unconditional
+source-side definition
+
+```text
+Delta_Xi(u)=||Q_uD_Xi||_(S_2,ext)^2 in [0,+infinity].    (17a)
+```
+
+No zero list, residue expansion, or trace-class assumption enters `(17a)`. The closed Xi source
+graph constructs the extended relative trace; finiteness is part of the desired estimate.
+
+A successful semilocal construction must prove
 
 ```text
 Delta_Xi(u)<=4(1-exp(-u))+o(u)       as u->0+.           (18)
@@ -179,8 +226,8 @@ Equivalently it may prove the quotient bound in `(17)`. This is a relative trace
 
 ```text
 closed orbit-sensitive Xi graph
-  + two-sided boundary cutoff
-  + trace-class boundary blocks
+  + one-sided output boundary cutoff
+  + extended Hilbert--Schmidt trace
   + nonexpansive relative-trace density
   -> RH.                                                   (19)
 ```
@@ -188,6 +235,16 @@ closed orbit-sensitive Xi graph
 The carrier is strictly smaller than full Hankel trace class and strictly stronger than bounded
 graph convergence. It is also native to the CCM semilocal framework, whose established trace
 formulas are relative compression formulas.
+
+By `(8d)`, the exact RH-bearing estimate can also be written
+
+```text
+limsup_(a->0+) 1/(2a)||[P_a,D_Xi]||_(S_2,ext)^2<=4.      (19a)
+```
+
+The extended value is `+infinity` if the commutator has no Hilbert--Schmidt extension. Equation
+`(19a)` makes the required source theorem a cutoff-commutator density bound rather than an absolute
+operator trace.
 
 ## 6. Rational-orbit attack
 
@@ -209,11 +266,14 @@ kernel shadow would not certify the source construction in `(18)`, so no Lean fi
 ## Gates
 
 - [x] three positive boundary blocks isolated
+- [x] equivalent one-sided output-boundary Hilbert--Schmidt trace
 - [x] exact `min(t,u)` relative-trace kernel
 - [x] equivalent local-corner plus projection-commutator formula
+- [x] local corner proved negligible at first order
+- [x] residue energy identified with pure cutoff-commutator density
 - [x] relative-trace density equals residue energy
 - [x] incoming pole relative trace computed exactly
 - [x] RH-equivalent nonexpansive density criterion
-- [ ] construct the boundary-block traces directly from the Xi source graph
+- [x] extended relative trace constructed directly from the closed Xi source graph
 - [ ] prove the relative-trace estimate `(18)`
 - [ ] RH

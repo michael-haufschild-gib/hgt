@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWeilHilbertCore
+import GaloisForLFunctions.SchwartzTranslation
 
 /-!
 # Positive metrics supported on the real Xi divisor

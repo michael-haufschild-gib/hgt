@@ -799,6 +799,14 @@ Delta_ell(u)
   +||P_a H_ell Q_a||_(S_2)^2.                           (12z24)
 ```
 
+For a Hankel kernel the same quantity is simply
+
+```text
+Delta_ell(u)=||Q_uH_ell||_(S_2)^2,                      (12z24a)
+```
+
+because the output strip `0<=x<u` has line-section length `min(t,u)` on `x+y=t`.
+
 Only `ell in L2` is required. Direct first-quadrant geometry gives
 
 ```text
@@ -817,6 +825,29 @@ Delta_ell(2a)
 
 This is precisely a local-corner plus cutoff-commutator relative trace.
 
+Moreover the local corner is `o(a)`:
+
+```text
+1/(2a)||Q_aH_ell Q_a||_(S_2)^2 ->0,
+
+lim_(a->0+)1/(2a)||[P_a,H_ell]||_(S_2)^2=||ell||_2^2.   (12z25c)
+```
+
+Hence all first-order transverse charge is interface flux. The shrinking local Gamma corner does
+not contribute to the limiting density.
+
+The construction is now unconditional on the Xi source. For the closed anti-causal operator
+`D_Xi`, define
+
+```text
+Delta_Xi(u)=||Q_uD_Xi||_(S_2,ext)^2,                    (12z25b)
+```
+
+where the value is the norm of its unique Hilbert--Schmidt extension, if one exists, and
+`+infinity` otherwise. The dense source domain makes this extended value canonical. Thus no
+separate trace-construction theorem remains: proving `(12z27)` simultaneously proves finiteness
+and the correct bound.
+
 Thus the residue energy is a boundary relative-trace density even when the full Hankel operator is
 not Hilbert--Schmidt. For the incoming pole,
 
@@ -830,10 +861,163 @@ The exact positive CCM target is therefore
 limsup_(u->0+) Delta_Xi(u)/Delta_pole(u)<=1.             (12z27)
 ```
 
+Equivalently,
+
+```text
+limsup_(a->0+)1/(2a)||[P_a,D_Xi]||_(S_2,ext)^2<=4.       (12z28)
+```
+
 By `(12z21)`, `(12z27)` forces `kappa_off=0` and RH. This is smaller than a global trace-class
 theorem and matches the relative-compression form of the semilocal Connes trace formula. What must
 be constructed from the exact source are the three boundary-block traces and their first-order
 density, not an absolute trace of the whole continuation operator.
+
+### L. Cofinal weak boundary-strip transfer
+
+The carrier synthesis in `docs/prompts/notes.md` now has an exact operator transfer theorem. Let
+`C_Xi` be a graph core of `D_Xi`. It is enough to construct finite-stage completed Euler--Gamma
+operators
+
+```text
+A_(N,u) in S_2
+```
+
+such that, for every `f in C_Xi`,
+
+```text
+A_(N,u)f -> Q_uD_Xi f weakly,                           (12z29)
+```
+
+and, uniformly in the cofinal limit,
+
+```text
+limsup_(N->infinity)||A_(N,u)||_(S_2)^2
+ <=4(1-e^(-u))+r(u),       r(u)=o(u).                   (12z30)
+```
+
+Indeed, a subsequence attaining the lower Hilbert--Schmidt norm limit has a weak `S_2` limit.
+Evaluation on `f` is weakly continuous, so `(12z29)` identifies that limit with `Q_uD_Xi` on the
+core. Graph-core approximation extends the identity to `D(D_Xi)`, and weak lower semicontinuity
+gives
+
+```text
+Delta_Xi(u)
+ <=liminf_(N->infinity)||A_(N,u)||_(S_2)^2
+ <=4(1-e^(-u))+r(u).                                   (12z31)
+```
+
+Thus `(12z27)` and RH follow. Full operator convergence, determinant convergence, and full trace
+class are unnecessary on this branch. The finite construction is nevertheless forced to carry
+three positive data simultaneously:
+
+```text
+cofinal Euler source on the Xi graph core
+  + rational-gauge-sensitive source--divisor pointing
+  + uniform one-sided boundary-strip budget
+  -> four-unit Xi density
+  -> RH.                                                (12z32)
+```
+
+This is the singular-completion alternative allowed by the divisor-winding law in the notes: the
+charge is transported by the source-defined graph limit and its boundary strip, not manufactured
+by an unmarked compact limit. The complete bridge proof is in
+`ccm-boundary-strip-weak-compactness-transfer-law.md`.
+
+### M. Translation-covariant transfer has insufficient multiplicity capacity
+
+The simplest possible pole-to-divisor contraction is now excluded exactly. If a bounded operator
+`T` on `L2(0,infinity)` commutes with every unilateral right shift and
+
+```text
+T ell_pole=ell_D,
+ell_D(t)=2 sum_j m_j e^(-(a_j+i gamma_j)t),             (12z33)
+```
+
+then Laplace--Hardy commutant theory forces the unique multiplier
+
+```text
+phi_D(z)=(z+1/2)sum_j m_j/(z+a_j+i gamma_j).            (12z34)
+```
+
+Its high-frequency feedthrough is
+
+```text
+lim_(x->infinity)phi_D(x)=kappa(D)=sum_jm_j,
+```
+
+and therefore
+
+```text
+||T||=||phi_D||_infinity>=kappa(D).                     (12z35)
+```
+
+Every nonempty conjugation-closed right-half zeta packet has `kappa(D)>=2`, since nontrivial strip
+zeros are nonreal and Schwarz conjugation preserves the right half. Hence no scalar norm-one
+shift-covariant operator can transport the incoming pole to an off-line FE--Schwarz packet.
+
+This does not close the CCM route. It proves positively that the transverse multiplicity must be
+carried by what global scale covariance omits:
+
+```text
+cutoff-dependent noncommutation
+  + additional channel arity
+  + or a singular pointed graph relation.               (12z36)
+```
+
+The current construction uses the pointed graph and the aperture projections. Accordingly the
+boundary commutator in `(12z28)` is not an optional reformulation: it is the only surviving scalar
+place where the missing multiplicity capacity can reside. The bridge proof is in
+`ccm-shift-covariant-pole-divisor-capacity-law.md`.
+
+### N. The real-spectrum boundary-strip shortcut collapses to RH
+
+Let `F_(lambda,N)` be a dephased CCM finite spectral factor under the simple-even hypothesis. It is
+even, Cartwright, and real-rooted. Its logarithmic derivative is analytic of Smirnov class in the
+upper half-plane. Hence, on the maximal Hardy multiplication domain,
+
+```text
+P_-M_(-2F'_(lambda,N)/F_(lambda,N))=0.                  (12z37)
+```
+
+The Smirnov maximum principle proves `(12z37)`: whenever the product has an `L2` boundary value,
+it belongs to `H2_+`, including the domain cancellations at real spectral poles.
+
+For Xi, the corresponding closed anti-causal operator satisfies
+
+```text
+D_Xi=0  iff  RH.                                        (12z38)
+```
+
+The forward implication follows because every right-half zero supplies a nonzero rank-one upper
+pole coordinate; the reverse implication is `(12z37)` applied to the all-real centered divisor.
+Therefore any graph-core convergence
+
+```text
+0=Q_uD_(lambda_j,N_j) -> Q_uD_Xi                       (12z39)
+```
+
+already proves RH. The weak boundary-strip transfer is not an easier last mile for the real finite
+CCM determinants. It is useful only for a finite-stage family that carries genuine transverse
+charge, in which case its four-unit budget is the horizontal-control theorem.
+
+The finite-prime theta-cusp screen supplies a source-pure, pointed family converging locally
+uniformly and zero-preservingly to Xi, but its positive kernels need not have real-zero Fourier
+transforms. Applying `(12z30)` to their logarithmic graphs would therefore restate the remaining
+zero-fibre control rather than prove it.
+
+The new periodic-pencil intrinsic-dimension theorem does not alter this verdict. Its lower bound
+counts analytic variables in an exact nonpure Stanley--Reisner HT realization; the two Hardy
+polarizations in `(12z17)` are not such a `C^2` realization. A periodic-pencil CCM branch first
+needs a proved nonpure source--divisor relation complex and its exact annihilator. At present that
+is a labelled conjectural design, not an input.
+
+Thus the independent boundary-strip shortcut is closed. The live CCM endpoints return to the two
+primary cofinal certificates:
+
+```text
+true restricted-Weil floor ->0,
+or normalized finite-Weil determinants ->Xi divisor-faithfully.          (12z40)
+```
 
 ## Gates
 
@@ -873,7 +1057,19 @@ density, not an absolute trace of the whole continuation operator.
 - [x] transverse integer index coupled to the trace slope by `E>4*kappa`
 - [x] incoming Euler pole identified as the exact saturated unit `(kappa,E)=(1,4)`
 - [x] full trace-class demand reduced to a positive three-block boundary relative trace
+- [x] relative trace reduced to one output-boundary Hilbert--Schmidt norm
+- [x] extended relative trace constructed canonically from the closed Xi source operator
 - [x] exact `min(t,u)` kernel and pole density `4` proved
+- [x] first-order density localized entirely in the cutoff commutator
+- [x] weak Hilbert--Schmidt graph-core transfer of every finite-stage four-unit budget proved
+- [x] arithmetic source, pointed incidence, and boundary metric assembled into one positive carrier
+- [x] scalar shift-covariant pole-to-divisor contractions excluded by exact multiplicity capacity
+- [x] cutoff noncommutation or extra channel arity forced as the surviving positive carrier
+- [x] real-spectrum finite logarithmic graphs proved transverse-zero
+- [x] graph-core convergence from CCM real spectra proved RH-equivalent
+- [x] periodic-pencil analytic dimension separated from Hardy polarization count
+- [ ] construct the canonical finite-stage boundary-strip operators `A_(N,u)`
+- [ ] prove their uniform four-unit budget `(12z30)`
 - [ ] construct a positive reference splitting `(10)`
 - [ ] prove the infinite-carrier contraction `(11)`
 - [ ] or construct a source-defined Gram factorization of `(12c)` and an index-faithful aperture
@@ -882,7 +1078,6 @@ density, not an absolute trace of the whole continuation operator.
 - [ ] prove a cofinal lower bound for the true ground-state separating margin
 - [ ] transport complete orbit-sensitive Euler-Pick inertia into the screw spaces
 - [ ] prove its distinguished pole-to-divisor renormalization is nonexpansive in the charged graph
-- [ ] construct the three boundary-block traces `(12z24)` directly from the Xi source graph
 - [ ] prove the relative-trace density bound `(12z27)`
 - [ ] prove absence of negative spectral birth `(5a)`
 - [ ] invoke the cofinal floor criterion to prove RH

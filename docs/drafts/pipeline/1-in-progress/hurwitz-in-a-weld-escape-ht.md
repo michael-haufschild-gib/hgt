@@ -418,3 +418,164 @@ Proof structure:
 3. The local-orbit descent is the right proof shape: when `exp(-2*pi*i*s)` has at least three distinct powers, the monodromy orbit gives the full quadratic line; in the order-two case the orbit still gives the `T^1` coefficient and the local exponent filtration recovers the missing `T^2` coefficient. The resulting `T^1` identity descends column by column; each row is exactly a rational-tail interpolation equation, so the tail lemma kills the remaining quadratic and linear coefficients.
 
 This is still not full HT: degree `>=3` relations remain open. But the first uniform nonlinear gate in the Hurwitz weld model is now closed without computation and without an RH-equivalent target.
+
+## 2026-07-11 FULL CLOSURE — multi-branch-point deformation kills every degree at once
+
+Status: **the card's open core is closed.** The graded rank lemma, the G-product null spaces,
+the rational-tail machinery, and the Zariski-density gate are all bypassed by one structural
+move: **delocalize the monodromy.** Every previous attack localized at a single branch point
+`a = -n`, where the deformation direction is a single point of the rational normal curve and
+same-grade monomials collide. Using loops at `N+1` DIFFERENT branch points simultaneously gives
+`N+1` distinct points on the rational normal curve — a Vandermonde system — and the affine orbit
+of the ladder becomes the whole of `C^{N+1}` at every base point. No collision analysis survives
+to be needed.
+
+### Theorem A (ladder independence) `[PROVED HERE]`
+
+Let `Re(s) > 1` and `s notin Q`. For every `N >= 0` there is no nonzero
+`P in C(a)[Y_0,...,Y_N]` with
+
+`P(a; zeta(s,a), zeta(s+1,a), ..., zeta(s+N,a)) = 0`  for all `a` in the upper half-plane `U`.
+
+Equivalently, the shift ladder `{zeta(s+k,a)}_{k>=0}` is algebraically independent over `C(a)`.
+
+### Theorem B (hypertranscendence in `a`) `[PROVED HERE]`
+
+Under the same hypotheses, `a |-> zeta(s,a)` satisfies no algebraic differential equation over
+`C(a)`: via the escape identity `partial_a^k zeta(s,a) = (-1)^k (s)_k zeta(s+k,a)` any algebraic
+ODE of order `N` becomes a ladder relation; the change of variables `Y_k -> (-1)^k (s)_k Y_k` is
+invertible because `(s)_k != 0` (`s notin Z_{<=0}`), so Theorem A forces the zero ODE.
+
+### Proof of Theorem A
+
+Notation: `F_k(a) = zeta(s+k,a) = sum_{m>=0} (m+a)^{-s-k}` (principal branches; the series
+converges locally uniformly on `C \ (-infty,0]`, so each `F_k` is holomorphic there, in
+particular on `U`). Suppose `P != 0`; clear denominators so `P in C[a][Y_0..Y_N]`. Fix `M = N`
+and define the **deformation family**: for `c = (c_0,...,c_M) in C^{M+1}`
+
+`F_k^c(a) := F_k(a) + sum_{n=0}^{M} (c_n - 1) (a+n)^{-s-k}`,   holomorphic on `U`,  `F^1 = F`.
+
+Write `q = exp(-2 pi i s)`.
+
+**Claim 1 (deformation invariance).** For every `(m_0,...,m_M) in N^{M+1}`:
+`P(a; F^{(q^{m_0},...,q^{m_M})}(a)) = 0` on `U`.
+
+Induction on `m_0 + ... + m_M`; base case is the hypothesis. Step: assume the relation for `c`,
+increment coordinate `n <= M`. Substitute `a = -n + e^z` and work on the half-plane
+`D = {Re z < -log 2}` (so `x = e^z` has `0 < |x| < 1/2 <=` distance to every other branch
+point) and its sub-strip `D+ = D ∩ {0 < Im z < pi}` (there `Im x > 0`, so `a in U`).
+
+(i) On `D+`, for each `k`:
+`F_k^c(-n+e^z) = c_n e^{-(s+k)z} + T_{n,k}^c(e^z)`,
+where `T_{n,k}^c(x) = sum_{m>=0, m != n} (m-n)^{-s-k} (1 + x/(m-n))^{-s-k}
++ sum_{n'<=M, n' != n} (c_{n'}-1) (n'-n)^{-s-k} (1 + x/(n'-n))^{-s-k}`.
+This uses: `(e^z)^{-s-k} = e^{-(s+k)z}` for `Im z in (-pi, pi]`; the principal-branch product
+split `(w+x)^c = w^c (1+x/w)^c` for real `w != 0` and `Im x > 0` (arg addition stays in the
+principal window: for `w < 0` the arg sum is `pi + (negative small)`); and absorption of the
+`n' = n` deformation term into `c_n e^{-(s+k)z}`.
+
+(ii) `G(z) := P(-n+e^z; (c_n e^{-(s+k)z} + T_{n,k}^c(e^z))_k)` is holomorphic on `D`: each
+`T_{n,k}^c` is holomorphic on `{|x| < 1/2}` (every base `1 + x/(m-n)` stays in the right
+half-plane; Weierstrass M-test against `sum ||(m-n)^{-s-k}||`), the singular exponentials are
+entire, and polynomial coefficients are entire. `G = 0` on the open sub-strip `D+` by (i) and
+the induction hypothesis; `D` is connected; hence `G = 0` on all of `D` (identity theorem).
+
+(iii) `D` is `2 pi i`-shift-invariant, and `G(z + 2 pi i)` equals the same expression with
+`c_n` replaced by `q c_n`: the tails and coefficients depend on `z` only through `e^z`
+(periodic), while `e^{-(s+k)(z+2 pi i)} = e^{-2 pi i s} e^{-(s+k)z}` (the integer part of the
+exponent drops out — the SAME multiplier `q` on every rung; this is the diagonal monodromy of
+the weld). Hence the `c'`-relation, `c' = (..., q c_n, ...)`, holds on `D`.
+
+(iv) Restrict to `D+` and reverse (i): `P(a; F^{c'}(a)) = 0` on the open set
+`V_n = {-n + x : 0 < |x| < 1/2, Im x > 0} subset U`. The function `a |-> P(a; F^{c'}(a))` is
+holomorphic on the connected set `U` and vanishes on `V_n`, hence on all of `U`. Induction
+closes. ∎
+
+**Claim 2.** `s notin Q` implies `m |-> q^m` is injective on `N`, so `Q_set = {q^m}` is
+infinite. (`q^{m} = q^{m'}` forces `exp(-2 pi i s (m-m')) = 1`, i.e. `s(m-m') in Z`.)
+
+**Claim 3 (grid to all of `C^{M+1}`).** Fix `a in U`. `Lambda(c) := P(a; F^c(a))` is a
+polynomial in `(c_0,...,c_M)` vanishing on `Q_set^{M+1}` (Claims 1–2); a polynomial vanishing
+on a product of infinite sets is identically zero. So `P(a; F^lambda(a)) = 0` for ALL
+`lambda in C^{M+1}` and all `a in U`.
+
+**Claim 4 (Vandermonde surjectivity — the density gate, closed).** Fix `a in U`. The affine
+map `lambda |-> (F_k^lambda(a))_{k<=N}` from `C^{M+1}` to `C^{N+1}` is ONTO: its linear part
+has matrix `W_{k,n} = (a+n)^{-s-k} = (a+n)^{-s} u_n^k` with `u_n = (a+n)^{-1}` pairwise
+distinct and `(a+n)^{-s} != 0`, so (with `M = N`) `det W^T = prod_n (a+n)^{-s} ·
+prod_{n<n'} (u_{n'} - u_n) != 0`. The deformation directions at the `N+1` branch points are
+`N+1` DISTINCT points of the rational normal curve — this is where delocalization dissolves
+the single-point collision problem. Hence `P(a; y) = 0` for every `y in C^{N+1}`.
+
+**Claim 5 (kill).** For each monomial index `beta`, the coefficient `p_beta in C[a]` vanishes
+at every `a in U`, hence `p_beta = 0`. So `P = 0`, contradiction. ∎
+
+### Theorem A' (coefficient upgrade) `[PROVED HERE — paper level]`
+
+The same proof runs verbatim with coefficients in the field `M_0` of meromorphic functions on
+`C \ {0,-1,-2,...}` that are single-valued there (write each coefficient as a ratio of
+holomorphic functions on this domain and clear denominators; single-valuedness = the
+`2 pi i`-periodicity used in step (iii); the puncture `x = 0` is never hit since `x = e^z`).
+`M_0` contains `C(a)`, `e^a`, `Gamma(a)`, `psi(a)` and all polygammas — i.e. the whole
+INTEGER ladder `zeta(m,a)`, `m in Z_{>=2}`. Consequence: **the irrational ladder is
+algebraically independent over the field generated by the integer ladder** — the weld
+separates the `s notin Q` rungs from the Hoelder/polygamma (DA-side) rungs. No mixed relation
+exists.
+
+### Corollary (rational non-integer `s`) `[PROVED HERE]`
+
+For `s = p/r` in lowest terms, `r >= 2`: `q` is a primitive `r`-th root of unity, the grid has
+`r` points per coordinate, and the same argument kills every relation of total `Y`-degree
+`< r`. (Consistent with and complementary to the banked all-N quadratic theorem, which covers
+degree `<= 2` for ALL non-integer `s` including half-integers.) The residual object for
+rational `s` — the `q`-invariant relation ideal at degree `>= r` — is genuinely open.
+
+### Where the previous machinery stands
+
+- Degree-1 distinct-exponent argument, the `N=2` density shadow, the all-N quadratic gate
+  (rational-tail lemma + row descent): all SUBSUMED for `s notin Q` by Theorem A; they remain
+  the only results covering `s in Q \ Z` (degree <= 2), and the rational-tail lemma is the
+  natural tool for the rational-`s` residual above.
+- The 0-backlog card `hurwitz-degree3-pochhammer-obstacle.md` (G-product null spaces, zeta-value
+  transcendence lemma): SUPERSEDED — its open lemma is not needed on any route to HT for
+  `s notin Q`.
+- The monodromy-line lemma (single-point orbit) was the correct object seen through a keyhole:
+  its Zariski-density gate is exactly Claim 4, provable only after delocalizing to many branch
+  points.
+
+### Literature verdict (promotion gate, 2026-07-11)
+
+- Hilbert's problem / Mordukhai-Boltovskoi 1914 / Ostrowski 1920 (Math. Z. 8, 241–298; English
+  translation+commentary arXiv:2211.02088): the TWO-variable function `sum x^n n^{-s}` satisfies
+  no algebraic PDE jointly in `(x,s)`. This does not contain the fixed-`s` one-variable
+  statement (its relations have coefficients polynomial in both variables; a fixed
+  transcendental `s`-value is outside its quantifier).
+- Fractional-polylog monodromy: known (Costin–Garoufalidis, Resurgence of the fractional
+  polylogarithms). LINEAR independence of polylogs/hyperlogarithms with shifts: known
+  (Deneufchatel–Duchamp–Minh–Solomon; arXiv:2202.13931). The fixed-`s` ALGEBRAIC independence
+  of the Hurwitz shift ladder over `C(a)` was not located in any pass (this session's three
+  searches, the 2026-06-24 audit, the cold GPT-5.1 probe which called it open).
+- Verdict: method classical in flavor (abelian ray monodromy + Vandermonde), theorem apparently
+  unrecorded. Novelty MEDIUM, significance for the branch HIGH (the founding weld model is now
+  a fully proven HT instance, with a reusable delocalization engine).
+
+### What this OPENS (next generative moves)
+
+1. **Root-of-unity monodromy object** (rational non-integer `s`): the relation ideal is
+   constrained to the `mu_r`-invariant subring; conjecture `[CONJECTURE]`: still zero, and the
+   banked rational-tail lemma is the right second-generation tool (tail data breaks what the
+   finite orbit cannot).
+2. **Joint multi-base ladders** `[CONJECTURE]`: for `s, s'` with `1, s, s'` Q-linearly
+   independent, the deformation multipliers `(q_s^m, q_{s'}^m)` are Zariski-dense in a
+   2-torus, and the doubled Vandermonde should give algebraic independence of the JOINT ladder
+   `{zeta(s+k,a)} ∪ {zeta(s'+k,a)}`. New object: the subtorus of multiplicative relations
+   among weld multipliers as THE invariant of a multi-weld.
+3. **The engine, axiomatized**: "abelian ray monodromy + one singular direction per branch
+   point on a rational normal curve" is a portable schema — candidate next instances: Lerch
+   `Phi(z,s,a)` in `a`; fractional polylog ladder in `z` at fixed `s notin Q` (branch points
+   `0,1` only — needs the multi-point trick at derived singularities); Barnes `zeta_2(s,a,w)`
+   in `a` (double ladder).
+
+- 2026-07-11 — Fable: card CLOSED at all degrees for `s notin Q` by delocalized monodromy +
+  Vandermonde; literature gate run (no exact match found); Lean formalization of Theorem A
+  against genuine `hzeta` started (deformation bridge + grid + Vandermonde endgame).

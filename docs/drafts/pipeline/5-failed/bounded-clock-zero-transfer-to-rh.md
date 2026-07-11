@@ -1,9 +1,9 @@
-# Bounded-clock zero transfer to RH
+# Bounded-clock zero transfer to RH (retired)
 
 - **ID:** `bounded-clock-zero-transfer-to-rh`
-- **Stage:** 1-in-progress
+- **Stage:** 5-failed
 - **Type:** THEOREM (Lean) / TOP-DOWN RH TRANSFER
-- **Scientific status:** `[PROVED HERE] [BRIDGE] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[TRANSFER PROVED] [ROUTE RETIRED: CIRCULAR CERTIFICATE] [BRIDGE]`
 - **Statement:** Locally uniform approximants whose off-real zero fibres ride positive vertical
   arithmetic progressions with a uniform upper bound on their periods force the limit divisor to
   have the same periodicity.  Applied vertically in the centered `XiC` coordinate, the positive
@@ -70,14 +70,27 @@ bounded-clock approximant zero fibres
 ```
 
 This is not a restatement of RH through positivity, a Hermitian determinant, or a zero-side norm.
-Its antecedent is an approximation-stable source constraint on the divisor-generating clocks.
+For a fixed, independently defined prime/theta approximant family, its antecedent is an
+approximation-stable source constraint on the divisor-generating clocks.  Without that provenance
+restriction, however, the existential approximation certificate is equivalent to RH: under RH the
+constant family `F_n=XiC` satisfies the real-zero branch.  Thus the abstract certificate alone is a
+criterion, not an independent route.
 
 The theorem `xiC_no_vertical_zero_progression` discharges the positive limiting-period branch
 unconditionally: a negative integer step eventually maps to `Re(s)>=1`, where `xi` is nonzero.
-The theorem `riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants` carries the full
-source-level composition with no no-arithmetic-progression or limiting-zero-sequence premise.  The
-older `riemannHypothesis_of_bounded_clock_zero_approximants` remains as the lower-level sequence
-interface.  The vertical-continuum branch is discharged internally.
+The theorem `riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants` carries the global
+source-level composition.  The sharper
+`riemannHypothesis_of_locally_bounded_vertical_clock_dichotomy_approximants` needs the dichotomy
+only on each fixed compact ball, with a bound allowed to depend on the ball; spurious zeros escaping
+to infinity are irrelevant.  Neither theorem has a no-arithmetic-progression or
+limiting-zero-sequence premise.  The older `riemannHypothesis_of_bounded_clock_zero_approximants`
+remains as the lower-level sequence interface.
+
+The unconditional theorem `xiC_transverse_clock_tendsto_atTop` gives the converse source pressure:
+whenever exact transverse-clock zero fibres of any locally uniform approximants have centres
+converging in `C`, their periods tend to `+infinity`.  Mere unboundedness is not the conclusion;
+every bounded subsequence is excluded.  This is the divisor-level form of clock
+decompactification.
 
 ## Lean status
 
@@ -91,28 +104,40 @@ interface.  The vertical-continuum branch is discharged internally.
 - `riemannHypothesis_of_bounded_clock_zero_approximants`;
 - `exists_XiC_zero_approximating_subsequence`;
 - `BoundedVerticalClockDichotomy`;
-- `riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants`.
+- `riemannHypothesis_of_bounded_vertical_clock_dichotomy_approximants`;
+- `xiC_transverse_clock_escape`;
+- `xiC_transverse_clock_tendsto_atTop`;
+- `BoundedVerticalClockApproximationCertificate`;
+- `boundedVerticalClockApproximationCertificate_iff_riemannHypothesis`;
+- `LocalBoundedVerticalClockDichotomy`;
+- `riemannHypothesis_of_locally_bounded_vertical_clock_dichotomy_approximants`.
 
 The file compiles with the project toolchain and is imported by the RHTower umbrella.
 
-## Exact open source obligation
+## Route verdict
 
-The sole remaining theorem is now the finite-stage predicate itself: construct a completed
-approximant family `F_n` converging locally uniformly to `XiC` and prove
+The bounded-clock hypothesis is not a non-circular RH mechanism.  Lean proves both abstract
+existential forms equivalent to RH:
 
 ```text
-eventually BoundedVerticalClockDichotomy B F_n
+BoundedVerticalClockApproximationCertificate <-> RH,
+LocalBoundedVerticalClockApproximationCertificate <-> RH.
 ```
 
-for some finite `B`.  These are bounded vertical clocks in the `XiC` variable, equivalently
-bounded horizontal clocks in the original `s` variable.  Unscreened finite-prime Euler columns do
-not supply this orientation: their clocks are vertical in `s`.  The known theta cusp screen couples
-the columns and supplies no horizontal zero-fibre clock law either.
+The compact-local weakening does not change the verdict.  Under RH the constant family `F_n=XiC`
+satisfies every clock dichotomy through its real-zero branch.  Conversely, the Hurwitz transfer
+proves RH.  Adding an informal provenance adjective does not alter the mathematical hypothesis,
+and no natural prime or theta construction supplies the transverse clock orientation anyway.
 
-The next top-down question is therefore exact:
+The positive theorem survives independently:
 
-> Is there a source-pure completion whose off-real zeros carry a bounded transverse
-> (horizontal-`s`) clock, while its remaining zeros are forced onto the real `XiC` axis?
+```text
+exact transverse clocks in any genuine locally uniform approximation of XiC
+  -> their periods tend to +infinity.
+```
 
-No finite-prime resolvent, theta derivative, or screen-convergence lemma is requested unless it
-proves that zero-fibre dichotomy.
+Thus every genuine transverse clock decompactifies cofinally.  The reusable part of the route is
+the Hurwitz/compactness machinery, not the bounded-clock antecedent.  Source-side successors must
+replace exact bounded periodicity by an independently controlled defect, such as the already
+formalized compact-local reflected prime energy, or quantify a decompactifying source law without
+repackaging real-zero localization.
