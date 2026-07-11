@@ -12,6 +12,8 @@ import GaloisForLFunctions.U0.MahlerHahnCarrier
 import GaloisForLFunctions.U0.MahlerTwoVariable
 import GaloisForLFunctions.U0.MahlerLayerEmbedding
 import GaloisForLFunctions.U0.MahlerSaturatedField
+import GaloisForLFunctions.U0.SecondVelocityJet
+import GaloisForLFunctions.U0.VelocityPairIndependence
 import GaloisForLFunctions.U0.PolyAsymptotics
 import GaloisForLFunctions.U0.U0Series
 import GaloisForLFunctions.U0.U0NaturalBoundary

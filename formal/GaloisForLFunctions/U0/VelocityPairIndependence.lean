@@ -466,11 +466,12 @@ theorem secondJet_transcendental_over_velocity
       rw [show velocityPolyEval (N i) = velocityEmbed
         (algebraMap (Polynomial MahlerBase) (RatFunc MahlerBase) (N i)) from
         (velocityEmbed_algebraMap (N i)).symm]
-      rw [hNspec i hi]
-      have hsm : (D : Polynomial MahlerBase) • f i =
+      have hcombined : algebraMap (Polynomial MahlerBase) (RatFunc MahlerBase) (N i) =
           algebraMap (Polynomial MahlerBase) (RatFunc MahlerBase)
-            (D : Polynomial MahlerBase) * f i := Algebra.smul_def _ _
-      rw [hsm, map_mul, hf i]
+            (D : Polynomial MahlerBase) * f i :=
+        (hNspec i hi).trans (Algebra.smul_def (R := Polynomial MahlerBase)
+          (A := RatFunc MahlerBase) _ _)
+      rw [hcombined, map_mul, hf i]
       ring
     rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum, hqsum, mul_zero]
   have hW'0 : W' ≠ 0 := by
@@ -484,19 +485,24 @@ theorem secondJet_transcendental_over_velocity
       rfl
     have hNi₀ : N i₀ ≠ 0 := by
       intro h0
-      have := hNspec i₀ hi₀
-      rw [h0, map_zero] at this
-      have hD0 : (D : Polynomial MahlerBase) ≠ 0 := nonZeroDivisors.ne_zero D.prop
-      have : (D : Polynomial MahlerBase) • f i₀ = 0 := this.symm
-      have hsm : (D : Polynomial MahlerBase) • f i₀ =
+      have hcombined : algebraMap (Polynomial MahlerBase) (RatFunc MahlerBase) (N i₀) =
           algebraMap (Polynomial MahlerBase) (RatFunc MahlerBase)
-            (D : Polynomial MahlerBase) * f i₀ := Algebra.smul_def _ _
-      rw [hsm] at this
-      rcases mul_eq_zero.mp this with hl | hr
-      · exact hD0 ((map_eq_zero_iff _
-          (IsFractionRing.injective (Polynomial MahlerBase)
-            (RatFunc MahlerBase))).mp hl)
-      · exact hfi₀ hr
+            (D : Polynomial MahlerBase) * f i₀ :=
+        (hNspec i₀ hi₀).trans (Algebra.smul_def (R := Polynomial MahlerBase)
+          (A := RatFunc MahlerBase) _ _)
+      rw [h0, map_zero] at hcombined
+      have hD0 : (D : Polynomial MahlerBase) ≠ 0 := nonZeroDivisors.ne_zero D.prop
+      have halgD : algebraMap (Polynomial MahlerBase) (RatFunc MahlerBase)
+          (D : Polynomial MahlerBase) ≠ 0 :=
+        (map_ne_zero_iff _ (IsFractionRing.injective (Polynomial MahlerBase)
+          (RatFunc MahlerBase))).mpr hD0
+      apply hfi₀
+      calc f i₀ = (algebraMap (Polynomial MahlerBase) (RatFunc MahlerBase)
+            (D : Polynomial MahlerBase))⁻¹ *
+            (algebraMap (Polynomial MahlerBase) (RatFunc MahlerBase)
+              (D : Polynomial MahlerBase) * f i₀) := by
+            rw [← mul_assoc, inv_mul_cancel₀ (G₀ := RatFunc MahlerBase) halgD, one_mul]
+        _ = 0 := by rw [← hcombined, mul_zero]
     intro h0
     apply hNi₀
     have hcoe : W'.coeff i₀ = N i₀ := by
@@ -508,6 +514,99 @@ theorem secondJet_transcendental_over_velocity
       rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl, mul_one]
     rw [← hcoe, h0, Polynomial.coeff_zero]
   exact velocity_theta_pair_ne_zero hW'0 heval'
+
+/-! ## The packaged pair statement -/
+
+theorem toMvTwo_section :
+    toMvTwo.comp (MvPolynomial.eval₂Hom
+        ((Polynomial.C.comp Polynomial.C :
+          MahlerBase →+* Polynomial (Polynomial MahlerBase)))
+        (fun i : Fin 2 => if i = 0 then Polynomial.C Polynomial.X else Polynomial.X)) =
+      RingHom.id (MvPolynomial (Fin 2) MahlerBase) := by
+  apply MvPolynomial.ringHom_ext
+  · intro r
+    rw [RingHom.comp_apply, RingHom.id_apply, MvPolynomial.eval₂Hom_C, RingHom.comp_apply]
+    rw [show toMvTwo (Polynomial.C (Polynomial.C r)) =
+      Polynomial.eval₂ (MvPolynomial.C : MahlerBase →+* MvPolynomial (Fin 2) MahlerBase)
+        (MvPolynomial.X 0) (Polynomial.C r) from Polynomial.eval₂_C _ _]
+    rw [Polynomial.eval₂_C]
+  · intro i
+    rw [RingHom.comp_apply, RingHom.id_apply, MvPolynomial.eval₂Hom_X']
+    fin_cases i
+    · beta_reduce
+      simp only [Fin.mk_zero]
+      rw [if_true]
+      rw [show toMvTwo (Polynomial.C Polynomial.X) =
+        Polynomial.eval₂ (MvPolynomial.C :
+          MahlerBase →+* MvPolynomial (Fin 2) MahlerBase)
+          (MvPolynomial.X 0) Polynomial.X from Polynomial.eval₂_C _ _]
+      rw [Polynomial.eval₂_X]
+    · beta_reduce
+      simp only [Fin.mk_one]
+      rw [if_neg (by norm_num)]
+      exact Polynomial.eval₂_X _ _
+
+/-- Evaluation through the two-variable correspondence, with the first variable pinned at
+the velocity. -/
+theorem toMvTwo_eval (y : HahnSeries ℚ (RatFunc ℂ)) :
+    (MvPolynomial.eval₂Hom (monoRatEval 1 one_pos)
+        ![toMahlerCarrier velocityJet, y]).comp toMvTwo =
+      Polynomial.eval₂RingHom velocityPolyEval y := by
+  apply Polynomial.ringHom_ext
+  · intro a
+    rw [RingHom.comp_apply,
+      show toMvTwo (Polynomial.C a) =
+        Polynomial.eval₂ (MvPolynomial.C :
+          MahlerBase →+* MvPolynomial (Fin 2) MahlerBase) (MvPolynomial.X 0) a from
+        Polynomial.eval₂_C _ _]
+    rw [show (Polynomial.eval₂RingHom velocityPolyEval y) (Polynomial.C a) =
+      velocityPolyEval a from Polynomial.eval₂_C _ _]
+    induction a using Polynomial.induction_on' with
+    | add p q hp hq => rw [Polynomial.eval₂_add, map_add, hp, hq, map_add]
+    | monomial n e =>
+      rw [show (Polynomial.monomial n e : Polynomial MahlerBase) =
+        Polynomial.C e * Polynomial.X ^ n from by
+        rw [Polynomial.C_mul_X_pow_eq_monomial]]
+      rw [Polynomial.eval₂_mul, Polynomial.eval₂_C, Polynomial.eval₂_pow,
+        Polynomial.eval₂_X, map_mul, map_pow, MvPolynomial.eval₂Hom_C,
+        MvPolynomial.eval₂Hom_X', map_mul, map_pow, velocityPolyEval_C,
+        velocityPolyEval_X]
+      rw [show (![toMahlerCarrier velocityJet, y] : Fin 2 →
+        HahnSeries ℚ (RatFunc ℂ)) 0 = toMahlerCarrier velocityJet from rfl]
+  · rw [RingHom.comp_apply,
+      show toMvTwo Polynomial.X = MvPolynomial.X 1 from Polynomial.eval₂_X _ _,
+      MvPolynomial.eval₂Hom_X']
+    rw [show (Polynomial.eval₂RingHom velocityPolyEval y) Polynomial.X = y from
+      Polynomial.eval₂_X _ _]
+    rfl
+
+/-- **Algebraic independence of the first two Böttcher parameter velocities over the base
+field, in the graded carrier**: no nonzero two-variable polynomial over `ℂ(t)` vanishes at
+the pair `(A, B)`. -/
+theorem velocity_pair_algebraicIndependent
+    {P : MvPolynomial (Fin 2) MahlerBase} (hP : P ≠ 0) :
+    MvPolynomial.eval₂ (monoRatEval 1 one_pos)
+      ![toMahlerCarrier velocityJet, toMahlerCarrier secondJet] P ≠ 0 := by
+  intro heq
+  set W : Polynomial (Polynomial MahlerBase) := MvPolynomial.eval₂Hom
+    ((Polynomial.C.comp Polynomial.C :
+      MahlerBase →+* Polynomial (Polynomial MahlerBase)))
+    (fun i : Fin 2 => if i = 0 then Polynomial.C Polynomial.X else Polynomial.X) P
+    with hWdef
+  have hWP : toMvTwo W = P := by
+    rw [hWdef, ← RingHom.comp_apply, toMvTwo_section, RingHom.id_apply]
+  have hW0 : W ≠ 0 := fun h0 => hP (by rw [← hWP, h0, map_zero])
+  apply secondJet_transcendental_over_velocity hW0
+  have hbr : ((MvPolynomial.eval₂Hom (monoRatEval 1 one_pos)
+      ![toMahlerCarrier velocityJet, toMahlerCarrier secondJet]).comp toMvTwo) W =
+      Polynomial.eval₂ velocityPolyEval (toMahlerCarrier secondJet) W := by
+    rw [toMvTwo_eval]
+    rfl
+  rw [← hbr]
+  show MvPolynomial.eval₂ (monoRatEval 1 one_pos)
+    ![toMahlerCarrier velocityJet, toMahlerCarrier secondJet] (toMvTwo W) = 0
+  rw [hWP]
+  exact heq
 
 end
 

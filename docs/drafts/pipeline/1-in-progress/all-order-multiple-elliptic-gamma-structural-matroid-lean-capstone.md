@@ -456,6 +456,11 @@ analytic capstone is already formalized.
 - [x] bidirectional meromorphic transport under multiplication by the nome
 - [x] global meromorphicity on `C*` and of the aligned additive pullback on `C`
 - [x] native nonnegative meromorphic order of the comparison at the half-period
+- [x] nonnegative comparison order on the full theta divisor and global pole-freeness
+- [x] canonical comparison is entire, doubly periodic, and constant
+- [x] constructed theta boundary equals analytic theta log derivative up to a constant
+- [x] additive elliptic-gamma kernel and both polarized theta hierarchy equations
+- [x] exact mixed gamma-face/theta-defect identity on the regular locus
 - [x] elliptic finite-pole realization for arbitrary meromorphic elliptic coboundary primitives
 - [x] unconditional differentiated theta-defect noncoboundary against every elliptic primitive
 - [x] unconditional finite-family theta-defect noncoboundary for separated shift classes
@@ -670,3 +675,18 @@ analytic capstone is already formalized.
   nonnegative `meromorphicOrderAt`; applied at the half-period, it closes removability there. The
   remaining theta bridge is transport of this nonnegative order over the complete period lattice
   and elliptic constancy.
+- 2026-07-11 -- Closed the constraint-and-divisor uniqueness bridge. Analytic nome transport proves
+  the constructed theta kernel is analytic exactly off the full nome orbit; lattice transport of
+  the cancelled principal part proves the comparison has no poles anywhere. Its canonical
+  meromorphic normal form is entire and doubly periodic, compact fundamental-domain reduction
+  makes it bounded, and Liouville forces it constant. Therefore the constructed theta boundary
+  equals the analytic Jacobi logarithmic derivative up to one parameter-dependent constant, and
+  every translated defect agrees exactly. `EllipticThetaLogGlobalAnalytic` and
+  `EllipticThetaLogComparisonRigidity` build without project axioms.
+- 2026-07-11 -- Pulled the actual normally convergent elliptic-gamma double kernel into additive
+  coordinates. `EllipticGammaAdditiveLogKernel` proves both polarized hierarchy equations; the
+  second face carries the exact half-parameter recentering forced by the two theta coordinates.
+  Combining the first hierarchy equation with comparison rigidity proves that every mixed
+  external-translation/structural face is exactly the analytic theta logarithmic-derivative defect
+  on the regular locus. The remaining order-one gap is now field-level atomicity for the gamma
+  primitive, not identification of its boundary or its pole obstruction.

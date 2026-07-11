@@ -27,7 +27,10 @@
   the local orbit of the actual zeta Euler source under finite degree-one Euler-factor modifications
   has dense finite-unit gauge closure, even after the modifications are paired with their FE
   reflections and restricted to real parameters preserving Schwarz symmetry.  Every continuous
-  local invariant of that gauge action is constant.
+  local invariant of that gauge action is constant.  The density holds globally on the entire
+  off-line fundamental quadrant as well: after the global pole divisor is fixed, the finite-unit
+  orbit is dense in the full affine space of regular completed-flux fields.  Thus the maximal
+  continuous compact-open quotient is the divisor itself.
 
 ## Goal
 
@@ -49,8 +52,9 @@ This is a static source-orbit theorem, not a flow or limiting construction.
 - [x] preliminary literature audit: exact and equivalent searches, stronger/general parent
   searches, and English/French/German/Russian terminology searches completed; independent expert
   review remains required
-- [x] significance gate: excludes every continuous local source constraint at the actual
-  zeta Euler point, including the FE--Schwarz-symmetric orbit
+- [x] significance gate: excludes every continuous local or whole-fundamental-quadrant regular-flux
+  source constraint at the actual zeta Euler point, including the FE--Schwarz-symmetric orbit;
+  the complete continuous global quotient is the divisor
 - [x] provisional novelty verdict: `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - [ ] 2 -> 3: not selected for Lean before the scientific audit; the full proof requires analytic
   functionals and a sectorial Blaschke theorem not currently exposed by the project API
@@ -436,6 +440,101 @@ This is the symmetry-compatible form relevant to an off-line zero quartet: no lo
 compatibility of the regular completed-flux germ survives the exact elementary symmetries and all
 finite Euler-unit changes.
 
+## Global fundamental-quadrant completeness
+
+The bounded-domain theorem strengthens to the whole off-line fundamental region.  Put
+
+```text
+S_+ = {s : 1/2 < Re s < 1},
+Q_+ = {s : 1/2 < Re s < 1, Im s > 0}.
+```
+
+Both spaces carry the compact-open holomorphic topology.  For every finite prime set `S`, the
+cofinite complex span of the FE tangents `u_p`, `p notin S`, is dense in `O(S_+)`.  More strongly,
+their cofinite real span is dense in the underlying real space `O(Q_+)`.
+
+For the complex statement, let `L` be a continuous complex-linear functional on `O(S_+)`
+annihilating the retained `u_p`.  Compact-open continuity gives a compact carrier `K subset S_+`.
+The FE Lambert transform from the bounded-domain proof depends only on the four positive numbers
+
+```text
+min_(s in K) Re s,
+min_(s in K) Re(1-s),
+max_(s in K) |Im s|,
+dist(K, boundary S_+).
+```
+
+The first, second, and fourth are strictly positive, and the third is finite, because `K` is compact
+in `S_+`.  The same sectorial Blaschke argument and Mobius inversion therefore give
+
+```text
+L(P(s))=L(P(1-s))
+```
+
+for every polynomial `P`.  Enlarge `K` to a compact rectangle `K_0 subset S_+`.  The two compact
+sets `K_0` and `1-K_0` are disjoint and polynomially separable.  Polynomial approximation of `P`
+on `K_0` and `0` on `1-K_0` forces `L(P)=0`.  Polynomials are dense in `O(S_+)`, since `S_+` is
+convex, so `L=0`.  Complex Hahn--Banach proves density.
+
+For the real statement, let `ell : O(Q_+) -> R` be continuous, real-linear, and zero on all
+retained `u_p`.  Write `ell=Re L` with `L` complex-linear and carried by a compact
+`K subset Q_+`.  On entire test functions form the Schwarz-reflected analytic functional `L#`,
+carried by `conj(K)`.  Schwarz reality of every `u_p` gives
+
+```text
+(L+L#)(u_p)=2 Re L(u_p)=0.
+```
+
+The FE Lambert argument applies to `L+L#`, because `K union conj(K)` is compact in the right strip.
+It yields
+
+```text
+L+L# = R_*(L+L#),                  R(s)=1-s.
+```
+
+The left functional is carried in the right strip by `K union conj(K)`; the right functional is
+carried in the left strip by `(1-K) union (1-conj(K))`.  Enlarge the four carriers to pairwise
+disjoint compact rectangles inside the four open FE--Schwarz quadrants.  Their union has connected
+complement.  Runge separation forces `L+L#=0`.  Now `L=-L#` is carried both by the disjoint upper
+and lower compacts `K` and `conj(K)`, so the same separation gives `L=0`.  Entire functions are
+dense in `O(Q_+)`; hence `ell=0`.  Real Hahn--Banach proves the claimed density.
+
+Let `G_(Q_+)` be the real additive group generated on `Q_+` by sufficiently small FE--Schwarz
+finite Euler-unit flux increments.  Repetition of a small increment again gives
+
+```text
+N Delta_(p,c/N) -> c u_p
+```
+
+on every compact subset of `Q_+`.  The global completeness theorem therefore gives
+
+```text
+closure(G_(Q_+)) = O(Q_+)                         (real topology).
+```
+
+This has a global divisor consequence.  Fix a locally finite pole divisor `Delta` in `Q_+`, with
+the negative integer residues appropriate to logarithmic fluxes.  The meromorphic fluxes having
+principal divisor `Delta` form an affine space over `O(Q_+)`: two such fluxes differ by a
+holomorphic function.  Finite Euler units preserve `Delta`, and their orbit is dense in that entire
+affine fiber.  Therefore the maximal Hausdorff quotient visible to continuous global
+compact-open invariants is precisely the pole divisor:
+
+```text
+meromorphic completed flux on Q_+  |->  its divisor on Q_+.
+```
+
+Equivalently, every continuous finite-unit invariant is constant after the full divisor, including
+all zero positions and multiplicities, is fixed.  The arbitrary symmetric order-one realizer class
+has the same quotient: centered real odd polynomial gauges are dense on `Q_+` by Runge
+approximation on the four symmetry quadrants followed by FE--Schwarz averaging.
+
+The strengthened conclusion is global rather than pointwise.  No continuous compatibility among
+the regular germs at several zeros, or across the whole off-line fundamental quadrant, separates
+the completed Euler source from arbitrary entire FE/Schwarz-real order-one realizers once their
+divisors agree.  The surviving source condition must therefore be an arithmetic-tail condition on
+the incidence pair `(coefficient field, global divisor)`, not a continuous functional of the
+continued regular flux field anywhere in the strip.
+
 ## Comparison with arbitrary symmetric order-one realizers
 
 The arbitrary-realizer class has the same local topological closure for an elementary reason.
@@ -613,6 +712,12 @@ The theorem therefore passes the preliminary parent and rediscovery gates as a *
 candidate rather than a confirmed novelty.  Independent specialists may still identify an older
 generalized-exponential theorem subsuming it; if so, it must be downgraded immediately.
 
+The global strip/quadrant strengthening introduces no separate parent mechanism: continuous
+functionals on compact-open holomorphic spaces have compact carriers, so the bounded-carrier proof
+extends to the unbounded convex domains and the divisor quotient follows from dense translation in
+each affine principal-part fiber.  Its scientific weight is the stronger classification of what
+the candidate completeness theorem excludes, not an independent novelty claim.
+
 Primary and authoritative parents checked include:
 
 1. B. N. Khabibullin and E. G. Kudasheva, *Completeness of exponential systems in spaces of
@@ -638,5 +743,7 @@ therefore every RH-bearing source constraint
 
 This is stronger than finite-jet openness, trivial-source completeness, and rational-gauge
 divisor-blindness.  It says that the elementary symmetries do not leave any continuous local
-invariant after the principal part is fixed.  The surviving object is forced to
-be a pointed arithmetic-at-infinity incidence class rather than a local completed-flux equation.
+invariant after the principal part is fixed, nor any continuous global regular-flux invariant after
+the complete off-line divisor is fixed.  The surviving object is forced to be an
+arithmetic-at-infinity incidence class of `(source, global divisor)` rather than a local or
+whole-strip completed-flux equation.
