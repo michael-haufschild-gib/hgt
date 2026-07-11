@@ -2,5 +2,6 @@ import GaloisForLFunctions.HTGeometry.WedgeTwoThick
 import GaloisForLFunctions.HTGeometry.StanleyReisnerFacetIdeal
 import GaloisForLFunctions.HTGeometry.PrimeLogHerglotz
 import GaloisForLFunctions.HTGeometry.PrimeLogTranslationGeometry
+import GaloisForLFunctions.HTGeometry.PrimeLogDifferentialLinearIndependence
 
 /-! # Hypertranscendental constraint geometry -/

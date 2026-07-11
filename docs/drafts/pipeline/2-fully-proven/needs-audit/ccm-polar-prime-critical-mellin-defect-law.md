@@ -4,12 +4,17 @@
 - **Stage:** 2-fully-proven / needs-audit
 - **Type:** THEOREM (paper) / SOURCE-CORRECTION AND CARRIER LAW
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [ERRATUM CANDIDATE] [NOT AN RH PROOF]`
+- **Lean status:** `[PARTIALLY FORMALIZED]` — the unconditional finite-dimensional kernel,
+  signature, zero-frequency multiplier, and algebraic Mellin cancellation are verified in
+  `formal/GaloisForLFunctions/RHTower/PolarPrimeMellinDefect.lean`; the Stieltjes and Laplace
+  identities remain paper-level
 - **Parent source:** Suzuki, *Weil's quadratic form via the screw function*, arXiv:2606.09096,
   equations (2.5), (2.7), and (2.11)
 - **Statement:** The exact finite-aperture Fourier symbol contains an aperture-dependent rank-two
   polar multiplier. Its value at zero cancels the full prime-number-theorem main term, leaving
-  exactly a critical Mellin integral of the Chebyshev error. Consequently no argument based only
-  on the leading prime mass can determine the sign or force real characteristic crossings.
+  exactly a critical Mellin integral of the Chebyshev error. Consequently every valid sign or
+  characteristic-crossing theorem is forced to carry that critical Mellin defect in addition to
+  the leading prime mass.
 
 ## 1. Exact sign and polar multiplier
 
@@ -94,6 +99,27 @@ It is positive rank one on the even sector and negative rank one on the odd sect
 factor is therefore an exact bilateral boundary carrier, not a scalar constant and not a
 globally positive reference multiplier.
 
+### Lean verification of the finite-dimensional core
+
+The module
+`formal/GaloisForLFunctions/RHTower/PolarPrimeMellinDefect.lean` verifies, without project axioms:
+
+```text
+polarKernel_eq_rankTwo
+polarQuadraticForm_eq_rankTwo
+polarEnergy_eq_signature
+polarEnergy_nonneg_of_sinhFeature_eq_zero
+polarEnergy_nonpos_of_coshFeature_eq_zero
+polarMultiplier_zero
+polarMultiplier_zero_pos
+criticalMellinDefect_cancellation
+```
+
+Thus Lean checks the exact `(+,-)` two-channel signature, the positive zero-frequency sign for
+positive aperture, and the cancellation obtained after supplying the Abel-summation identity.
+The formal theorem deliberately does not claim a construction of the von Mangoldt Stieltjes
+measure, the zeta logarithmic derivative, or the infinite Laplace transform `(22)`.
+
 ## 3. Critical Mellin defect at zero
 
 Put
@@ -126,8 +152,9 @@ quantity is the endpoint-renormalized Mellin transform of the prime-number-theor
 critical exponent `1/2`.
 
 The ordinary prime number theorem gives only `E(X)=o(X)`, which does not determine the sign or
-limit of `(13)`. In particular, the truncated symbol cannot be proved negative at zero by the
-asymptotic `S(X)~2sqrt(X)`; that asymptotic discards the term of the same leading size in `(4)`.
+limit of `(13)`. A sign theorem at zero must therefore control the endpoint-renormalized critical
+Mellin transform in `(13)`; the asymptotic `S(X)~2sqrt(X)` omits the polar term of the same leading
+size in `(4)`.
 
 ## 4. Exact autocorrelation carrier
 
@@ -251,8 +278,9 @@ knowledge.
 - [x] critical Mellin defect identity proved
 - [x] exact autocorrelation Stieltjes carrier isolated
 - [x] Laplace source identified with the rational-plus-Euler logarithmic derivative
-- [x] false leading-mass crossing argument excluded
+- [x] necessary critical-defect carrier law stated positively
+- [x] unconditional finite-dimensional core formalized in Lean and axiom-audited
 - [ ] independent source/author audit of the printed sign
-- [ ] Lean formalization after source audit
+- [ ] formalize the Stieltjes partial-summation and Laplace-source layers
 - [ ] control the full compressed symbol on `PW_a`
 - [ ] RH

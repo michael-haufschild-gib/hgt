@@ -154,6 +154,62 @@ Subtracting these identities yields
 
 Therefore `R_sigma(g,k)=R_tau(g,k)`. Since `g` and `k` were arbitrary, the two labelled divisors are equal.
 
+## Mixed-value augmentation law `[PROVED HERE] [BRIDGE]`
+
+The common divisor also remembers the constant mixed-difference value.  For
+
+```text
+D=sum_g L_g(delta)[g] in C[delta][G],
+```
+
+define its simple-residue augmentation by
+
+```text
+aug_0(D)=sum_g L_g(0).                                      (A1)
+```
+
+If `C=Delta_tau Delta_sigma F`, then
+
+```text
+aug_0(R_trip(F))=-C/(2 pi i).                               (A2)
+```
+
+Indeed, `U_tau=Delta_sigma F` is `1`-periodic and obeys
+
+```text
+U_tau(z+tau)-U_tau(z)=C.
+```
+
+Integrate `U_tau(z)dz` counterclockwise around a fundamental parallelogram with edges `1` and
+`tau`.  The two `tau`-parallel edge integrals cancel by `1`-periodicity.  The translated
+unit-edge integral differs from the original by `C`, so the full boundary integral is `-C`.
+The residue theorem gives total residue `-C/(2 pi i)`, which is exactly the left side of (A2).
+The same calculation for `U_sigma=Delta_tau F` gives the identical value on the other elliptic
+boundary, consistently with reciprocity.
+
+For the multiplicative object below, suppose
+
+```text
+C_Y(z)=c exp(2 pi i n z),    c in C*, n in Z.               (A3)
+```
+
+Then the common integer orbit divisor satisfies the exact charge law
+
+```text
+deg(D_Y)=-n.                                                 (A4)
+```
+
+To see this, apply (A2) to `F=delta Y/Y`.  Its mixed difference is
+`delta C_Y/C_Y=2 pi i n`, while the simple residues of the two boundary logarithmic derivatives
+are exactly the zero and pole orders defining `D_Y`.
+
+Thus a global mixed-cocycle value and the total local orbit charge determine one another.  A
+nonzero Fourier degree `n` forces nonzero common boundary charge `-n`; conversely, degree zero of
+the common divisor forces the exponential character in (A3) to have `n=0`.  The one-curve
+factor-of-automorphy/degree calculation is classical theta-function theory.  Its simultaneous
+realization by the same labelled divisor on both noncommensurable elliptic boundaries is the
+triptic reciprocity content.
+
 ### Second proof through the hypertranscendental normal form
 
 Let `Psi=delta log Gamma(z;tau,sigma)`. The two one-orientation principal-part normal forms give
@@ -390,7 +446,7 @@ This is qualitatively stronger than proving one more named special function hype
 4. Reciprocity itself is unconditional. Only completeness, the exact DA/HT criterion, and the annihilator/matroid consequences depend on the independently unaudited paired telescoping theorem behind elliptic-gamma atomicity.
 5. Scientific priority remains provisional until experts in elliptic difference Galois theory and gamma gerbes inspect both proof and literature.
 
-## Lean route
+## Lean formalization boundary
 
 Formalizing the finite group-algebra equality would certify only the last formal step. The analytic content requires elliptic principal parts, non-torsion translation orbits, two elliptic function fields, and the atomic theorem, none of which exist in the local Lean tree. Formalization now would be theatre.
 

@@ -420,6 +420,23 @@ integrable `|XiC|^2` with zero integral, its support lies in that set and the me
 the sum of its point masses there. The countability proof is extracted from local finiteness of
 the actual global Xi divisor and sigma-compactness of the complex plane.
 
+`formal/GaloisForLFunctions/SchwartzProduct.lean` supplies the jointly continuous pointwise
+Schwartz algebra that mathlib did not package. It proves explicit defining-seminorm product bounds,
+joint continuity of multiplication, continuous complex conjugation, and joint continuity of
+`f * conjugate(g)`.
+
+`formal/GaloisForLFunctions/SchwartzSpectralMeasureForm.lean` formalizes the constructive half of
+the Bochner--Schwartz classification. Every positive measure of temperate growth now produces,
+without further hypotheses, a jointly continuous nonnegative Hermitian Schwartz form through the
+Fourier integral in `(9)`. Lean proves directly that momentum is symmetric for this form and that
+the form is invariant under simultaneous translation.
+
+`formal/GaloisForLFunctions/RHTower/XiSchwartzSpectralMeasure.lean` joins that construction to the
+Xi support theorem. If an actual Schwartz source has Fourier transform `XiC` on the real axis,
+integrability of `|XiC|^2` against every temperate spectral measure follows automatically from
+Schwartz decay. Nullity of the source then forces the complete atomic decomposition `(11)`; no
+integrability or support premise remains in this adapter.
+
 The remaining formal gap is the central Schwartz-kernel plus Bochner--Schwartz existence theorem
 taking an arbitrary positive continuous translation-invariant Schwartz form to its positive
 tempered spectral measure, together with the construction of the theta source as an actual
@@ -449,4 +466,8 @@ but neither the required Schwartz kernel theorem nor this assembled representati
 - [x] Lean momentum symmetry implies simultaneous-translation invariance
 - [x] Lean zero Xi energy forces support on the closed real Xi divisor
 - [x] Lean countability and atomic decomposition of the supported measure
+- [x] Lean jointly continuous Schwartz multiplication and conjugate multiplication
+- [x] Lean every positive temperate measure constructs the required continuous positive form
+- [x] Lean the constructed spectral form symmetrizes momentum and is translation invariant
+- [x] Lean the Schwartz-Xi null-source adapter discharges integrability and yields atomicity
 - [ ] Lean Schwartz translation-invariance to Bochner--Schwartz classification bridge

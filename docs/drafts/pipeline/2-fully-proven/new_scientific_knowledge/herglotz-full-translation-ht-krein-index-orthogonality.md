@@ -83,17 +83,33 @@ dimensional target makes (H3) surjective. `QED`
 ### 2. Uncountable shifts by finite-dimensional transversality
 
 Fix a finite support of `R_0` expanded differential monomials of jet order `r`, let `q` be the
-largest degree of their polynomial coefficients in `z`, and fix `h^0 in Conf_m(C)`.  Choose `N`
+largest degree of their polynomial coefficients in `z`, put
+
+`K=R_0(q+1)`,
+
+and fix `h^0 in Conf_m(C)`.  Choose `N`
 distinct evaluation points `z_a` high enough that every `x_(a,i)=z_a+h_i^0` lies in the upper
 half-plane, the full packet is pairwise distinct, and no point equals `i`.  These properties persist
 on a relatively compact real neighborhood `U` of `h^0`.
 
-For `X=C^(m(r+1))`, let `B subset X^N` be the locus where the `N by R_0` monomial-evaluation matrix
-loses rank.  The projective-incidence count gives
+For `X=C^(m(r+1))`, form the `N by K` matrix whose columns are indexed by a monomial `M_beta` and a
+coefficient degree `0<=d<=q`, with `(a,(beta,d))` entry
 
-`codim_C B>=N-q-R_0+1`.                                       (H6)
+`z_a^d M_beta(x_a)`.
 
-Choose `N>m+q+R_0-1`; every Whitney stratum of `B` then has real codimension greater than
+Let `B subset X^N` be its rank-defect locus.  A projective coefficient vector is a nonzero tuple of
+polynomials `c_beta(z)` of degree at most `q`.  For at most `q` evaluation indices `a` can every
+`c_beta(z_a)` vanish: one nonzero coefficient polynomial has at most `q` roots.  At each remaining
+index, `sum_beta c_beta(z_a)M_beta` is a nonzero polynomial in the row jet variables because the
+`M_beta` are distinct monomials.  Hence the projective incidence variety has codimension at least
+
+`N-q-(K-1)`,
+
+and projection gives
+
+`codim_C B>=N-q-K+1=N-q-R_0(q+1)+1`.                         (H6)
+
+Choose `N>m+q+K-1`; every Whitney stratum of `B` then has real codimension greater than
 `dim_R U=2m`.
 
 Apply (H3) to the full `Nm` node packet at `h^0`.  Choose finitely many bounded real directions

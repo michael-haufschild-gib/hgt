@@ -13,6 +13,7 @@ import GaloisForLFunctions.AutonomousSeparant
 import GaloisForLFunctions.AutonomousDifferentialAlgebraic
 import GaloisForLFunctions.LinearSystemDescent
 import GaloisForLFunctions.FormalMahlerDescent
+import GaloisForLFunctions.GapSeriesIrrational
 import GaloisForLFunctions.ArchimedeanBendLaw
 import GaloisForLFunctions.TaylorDerivativeCoefficient
 import GaloisForLFunctions.ExponentialGaugeSelection

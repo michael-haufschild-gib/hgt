@@ -177,6 +177,15 @@ theorem spectralMeasureForm_momentumSymmetric
   simp only [map_mul, Complex.conj_ofReal]
   ring
 
+/-- The spectral form is invariant under simultaneous translation of both Schwartz arguments. -/
+theorem spectralMeasureForm_translate_pair_invariant
+    (μ : Measure ℝ) [μ.HasTemperateGrowth]
+    (u v : 𝓢(ℝ, ℂ)) (a : ℝ) :
+    spectralMeasureForm μ (translateCLM ℂ a u) (translateCLM ℂ a v) =
+      spectralMeasureForm μ u v :=
+  (spectralMeasureForm μ).translate_pair_invariant
+    (spectralMeasureForm_momentumSymmetric μ) u v a
+
 end
 
 end SchwartzMap

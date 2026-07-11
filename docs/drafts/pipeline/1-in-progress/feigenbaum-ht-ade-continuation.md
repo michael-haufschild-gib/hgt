@@ -1,4 +1,4 @@
-# Feigenbaum g is Hypertranscendental
+# Feigenbaum dyadic values and the hypertranscendence question
 
 - **ID:** feigenbaum-ht-ade-continuation
 - **Stage:** 1-in-progress
@@ -60,20 +60,61 @@ It forces the following values.
    Here `g^[k]` denotes the `k`-fold compositional iterate.  The induction uses
    `alpha^n lambda^n=(-1)^n`; evenness removes that sign before one more use of (V1).
 
-Relations (V2)--(V5) are value identities.  They do not imply differential algebraicity or
+3. **Postcritical derivative-product law `[PROVED HERE] [FORMALIZED] [CANDIDATE NEW SCIENTIFIC
+   KNOWLEDGE]`.** Assume the critical point is quadratic, so `g'(0)=0` and `g''(0)!=0`. Then for
+   every `n>=0`,
+
+   ```text
+   product_(j=1)^(2^n-1) g'(g^[j](0))=(-alpha)^n.            (V6)
+   ```
+
+   To prove it, write `g^[2^n]=h_n o g` with `h_n=g^[2^n-1]`.  The second-order chain rule at
+   zero and (V4) give
+
+   ```text
+   h_n'(1) g''(0)=lambda^n alpha^(2n) g''(0).
+   ```
+
+   Cancellation of the nonzero quadratic jet yields
+
+   ```text
+   h_n'(1)=lambda^n alpha^(2n)=(-alpha)^n,
+   ```
+
+   while the ordinary iterate chain rule identifies `h_n'(1)` with the product in (V6).
+   Consequently, for the real normalized fixed point,
+
+   ```text
+   sum_(j=1)^(2^n-1) log|g'(g^[j](0))|=n log alpha,
+   |product_(j=1)^(2^n-1) g'(g^[j](0))|
+      =(2^n)^(log(alpha)/log(2)).                             (V7)
+   ```
+
+   Thus `alpha` is exactly the dyadic polynomial-growth exponent of the postcritical derivative
+   product.  The corresponding Lyapunov average is `n log(alpha)/(2^n-1)` and tends to zero.
+
+Relations (V2)--(V7) are value identities.  They do not imply differential algebraicity or
 hypertranscendence and are not evidence for either conclusion without an additional theorem about
 relations among the resulting values.
 
 The algebraic content (V2), (V4), and (V5) is formalized in
 `GaloisForLFunctions.FeigenbaumValueRelations` as `feigenbaum_critical_value`,
-`feigenbaum_dyadic_iterate`, and `feigenbaum_dyadic_critical_value`.  The dyadic theorems are
-axiom-clean apart from Lean's standard `propext` and quotient soundness; the critical-value theorem
-uses no axioms.
+`feigenbaum_dyadic_iterate`, `feigenbaum_dyadic_critical_value`,
+`feigenbaum_quadratic_postcritical_deriv`, and
+`feigenbaum_quadratic_postcritical_product`.  The derivative-product theorem has its own stage-3
+card at
+`../3-formalized/new_scientific_knowledge/feigenbaum-postcritical-derivative-product-law.md`.
+The dyadic and derivative-product theorems are axiom-clean apart from Lean's standard `propext`,
+`Classical.choice`, and quotient soundness; the critical-value theorem uses no axioms.
 
 Primary normalization source: M. Campanino, H. Epstein, D. Ruelle, *On Feigenbaum's Functional
 Equation*, IHES/P/80/32 (1980), equations (7)--(8) and the theorem on page 6.  The quadratic values
 (V2)--(V3) are `[SEARCH]`.  Exact searches did not locate the all-`n` dyadic formula (V4), so its
-scientific novelty remains unverified rather than asserted.
+scientific novelty remains unverified rather than asserted.  Focused searches for the exact
+postcritical product (V6) and its exponent interpretation (V7) located the functional equation,
+standard iterate-multiplier facts, and literature on zero Lyapunov exponent and multifractality,
+but no statement of (V6) or (V7).  Their novelty label remains provisional pending specialist
+review.
 
 ## Required inputs (to verify before promoting)
 

@@ -69,3 +69,11 @@ RHTower.exists_prime_reflected_localFactor_modulus_neutral
 - [x] prime reflected-factor specialization
 - [x] scalar theta-screen modulus route excluded
 - [ ] construct a two-direction source-divisor coupling
+
+## Positive common-clock sequel (2026-07-11)
+
+The independent-phase flexibility disappears when all prime phases come from one vertical clock.
+`PrimeEulerCommonClockRigidity.lean` proves that cofinal primewise reflected-modulus neutrality with
+phase `tau*log p` forces the strip displacement to vanish. Thus the positive resource missing from
+the scalar local theorem is cross-prime clock synchronization. See
+`common-clock-primewise-reflection-rigidity.md`.

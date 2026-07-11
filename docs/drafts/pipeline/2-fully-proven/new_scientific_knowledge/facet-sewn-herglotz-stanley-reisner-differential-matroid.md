@@ -57,6 +57,47 @@ formula, whose zeros and poles lie in
 A **34** (2001), 7411--7421, DOI `10.1088/0305-4470/34/36/320`.  The Barnes case is the analogous
 finite-period Weierstrass product.
 
+### Exact prime-log moment values `[PROVED] [BRIDGE]`
+
+The source carries an intrinsic sequence of finite values
+
+```text
+M_k(u)=sum_(p prime) 2^(-p) exp(u_p) (log p)^k,    k>=0.     (S2)
+```
+
+Every moment is finite when `u` is bounded above.  For each nonzero real polynomial
+`P(X)=sum_i c_i X^i`, the complete Hankel value is strictly positive:
+
+```text
+sum_(i,j) c_i c_j M_(i+j)(u)
+  =sum_(p prime) 2^(-p) exp(u_p) P(log p)^2 > 0.             (S3)
+```
+
+The strict inequality follows because all weights are positive and a nonzero polynomial cannot
+vanish at every distinct prime logarithm.  Equivalently, every finite leading Hankel determinant
+is positive, with the exact Cauchy--Binet value
+
+```text
+det(M_(i+j))_(0<=i,j<r)
+ =sum_(S subset primes, |S|=r)
+    product_(p in S) 2^(-p)exp(u_p)
+    product_({p,q} subset S) (log p-log q)^2.                (S4)
+```
+
+The weights have exponential moments of every order because
+`sum_p 2^(-p)exp(u_p)p^t<infinity`.  Standard Stieltjes moment determinacy therefore makes the
+complete sequence `(M_k(u))` recover the positive pole--residue measure
+
+```text
+mu_u=sum_p 2^(-p)exp(u_p) delta_(log p).                     (S5)
+```
+
+In particular, the moment values recover every pole, every residue, and then every gauge value
+`u_p=log(2^p mu_u({log p}))`.  This is a positive source-reconstruction law: the unpointed
+differential relation geometry is universal, while the complete moment values canonically point
+the particular Herglotz source.  Equations (S2)--(S5) are standard positive-moment parent theory
+specialized to this source; no independent scientific novelty is claimed for them.
+
 Introduce one complex coordinate `z_A` for every facet `A`, and put
 
 ```text
@@ -73,6 +114,18 @@ T_v(z_A)=z_A          if v notin A.
 ```
 
 These are genuine translations of the poly-upper-half-plane and commute with `delta`.  Set
+
+```text
+Gamma_Delta=Q(i)+sum_(v in V) Z omega_v subset C.             (S6)
+```
+
+This is a countable additive set.  Although the source theorem above supplies freedom for all
+complex translates, the realization proof uses only differential-algebraic independence of finite
+distinct translate tuples with shifts in `Gamma_Delta`.  Thus its Lean completion does not require
+an uncountable-shift parametric-transversality theorem: fixed-tuple Cauchy-jet avoidance followed by
+a countable Baire intersection suffices.
+
+Set
 
 ```text
 Y_A=g(z_A),                 F=sum_(A in Fac(Delta)) Y_A.       (1)
@@ -138,10 +191,11 @@ Restrict the product domain to a diagonal affine line
 z_A=z+gamma_A.                                               (8)
 ```
 
-The constants `gamma_A` can be chosen to satisfy two conditions simultaneously.  First, at least
-one nonzero coefficient of `Q` remains a nonzero polynomial in `z` after (8).  Indeed, for any
-chosen nonzero coefficient `c`, the substitutions for which `c(z+gamma_A)_A` vanishes identically
-form a proper algebraic subset: at `z=0`, choose `gamma` with `c(gamma) != 0`.  Second, all the
+The constants `gamma_A` can be chosen in `Q(i)` to satisfy two conditions simultaneously.  First,
+at least one nonzero coefficient of `Q` remains a nonzero polynomial in `z` after (8).  Indeed, for
+any chosen nonzero coefficient `c`, the substitutions for which `c(z+gamma_A)_A` vanishes
+identically form a proper algebraic subset.  A nonzero polynomial over `C` cannot vanish on the
+whole grid `Q(i)^Fac(Delta)`, so this proper subset does not exhaust that grid.  Second, all the
 finitely many numbers
 
 ```text
@@ -149,14 +203,16 @@ gamma_A+sum_(v in A)n_v omega_v                              (9)
 ```
 
 appearing in the relation are distinct.  For different facets this only excludes finitely many
-affine hyperplanes in the `gamma_A`; within one facet, equality in (9) would contradict the
-`Q`-linear independence of the `omega_v`.
+affine hyperplanes in the `gamma_A`, which likewise cannot exhaust the infinite rational grid;
+within one facet, equality in (9) would contradict the `Q`-linear independence of the `omega_v`.
+Every number in (9) then lies in `Gamma_Delta`.
 
 Under (8), `delta` becomes `d/dz`.  Because the arguments (9) are distinct, distinct differential
 monomials of `Q` remain distinct, and the first choice ensures that the specialized differential
 polynomial is nonzero.  The assumed relation therefore specializes, on a sufficiently high upper
-half-plane, to a nonzero differential relation over `C(z)` among finitely many distinct complex
-translates of `g`.  This contradicts the defining translation freeness of `g`.  Hence (6) is
+half-plane, to a nonzero differential relation over `C(z)` among finitely many distinct
+`Gamma_Delta`-translates of `g`.  This contradicts the restricted translation freeness of `g`.
+Hence (6) is
 jointly differentially algebraically independent over `D`. `QED`
 
 ### Lemma 2: the exact operator kernel
@@ -308,7 +364,7 @@ relation geometry" with the following positive universality law:
 > with every finite simplicial relation geometry, including every mixture of facet dimensions and
 > minimal-circuit degrees.
 
-This forces a positive requirement on any RH route built from HT relation complexes:
+This forces a positive requirement on any RH construction built from HT relation complexes:
 
 > **Arithmetic source-selection requirement.** An RH-capable HT construction must carry a
 > distinguished source-sensitive marking that selects its relation complex and its positivity
@@ -319,7 +375,7 @@ This forces a positive requirement on any RH route built from HT relation comple
 This is a logical consequence, not an RH no-go.  Hypertranscendence supplies capacity; the
 arithmetic source must supply selection.  Candidate markings include an Euler-factor residue
 orientation, a canonical positive measure or kernel cone, a functional-equation polarization, or a
-prime-indexed compatibility class.  A successful route must prove that its marking is intrinsic and
+prime-indexed compatibility class.  A successful construction must prove that its marking is intrinsic and
 cannot be changed by the rational gauge freedoms already exhibited in the Herglotz theorem.
 
 The result therefore does not furnish a carrier for `zeta`.  It identifies what a carrier theorem
@@ -335,8 +391,10 @@ must positively add: a canonical pointing of the otherwise universal constraint 
    directly here by facet-orbit freeness and the exact restriction embedding (15).
 4. Two-thickness is unnecessary for this direct construction.  It is retained in the explicit
    example because it closes the realization gate of the abstract constraint-tower bridge.
-5. The diagonal-specialization proof would fail without full complex-translation freeness of `g`,
-   or if the vertex step sizes admitted integer collisions.  Both hypotheses are explicit.
+5. The diagonal-specialization proof would fail without full nonlinear complex-translation
+   freeness of `g`, or if the vertex step sizes admitted integer collisions.  The prime-log source
+   now has unconditional differential-linear freeness for every finite complex-translation packet;
+   nonlinear freeness remains the exact analytic gap.
 6. The scientific limitation is naturality, not correctness: arbitrary combinatorics are sewn from
    independent facet coordinates.  The next research object must explain canonical source
    selection rather than construct further arbitrary complexes.
@@ -373,6 +431,12 @@ The current Lean tree contains genuine supporting components, but not this theor
   nowhere-dense relation loci to existence of a generic gauge;
 - `GaloisForLFunctions.MeromorphicTranslationDifferentialOperator` proves that translations commute
   with differential jets and constant-coefficient differential operators.
+- `GaloisForLFunctions.HTGeometry.PrimeLogTranslationGeometry` proves the exact prime-log Sidon
+  difference law, at-most-one collision for distinct complex translates, and infinitely many
+  private poles for every member of a finite translate packet;
+- `GaloisForLFunctions.HTGeometry.PrimeLogDifferentialLinearIndependence` proves exact meromorphic
+  order `-1` at every translated source pole and unconditional nonvanishing of every nontrivial
+  finite constant-coefficient differential combination of distinct translates.
 
 The following theorem-specific obligations determine Lean completion.  Items 2 and 4 are now
 formalized; the other three and the final assembly remain:
@@ -382,8 +446,12 @@ formalized; the other three and the final assembly remain:
    Herglotz positivity, locally uniform convergence and holomorphy off the pole carrier, and an
    exact simple-pole theorem at every `log p` with explicit nonzero residue.  It also proves
    positivity and local finiteness of the support, `Q`-linear independence, and exclusion from
-   every finite rational span.  The finite-dimensional Cauchy-jet surjectivity/transversality
-   proof of full complex-translation freeness remains;
+   every finite rational span.  The exact Sidon/private-pole geometry and the resulting full
+   differential-linear independence of finite complex-translation packets are formalized in the
+   two modules above.  For this realization theorem, the remaining source obligation is the
+   finite-dimensional Cauchy-jet avoidance theorem for each fixed tuple in the countable set
+   `Gamma_Delta`, followed by the already-formal Baire intersection.  The stronger uncountable
+   full-complex parametric-transversality theorem is not required;
 2. `[FORMALIZED]` the arbitrary finite-complex facet-prime identity and its preservation under an
    arbitrary localization are proved in
    `GaloisForLFunctions.HTGeometry.StanleyReisnerFacetIdeal`;
@@ -414,6 +482,8 @@ unconditionally.
 - [x] prime-log Herglotz source, positivity, global absolute summability, locally uniform
   convergence and holomorphy off the pole set, exact simple poles, local finiteness, and infinite
   rational support rank formalized unconditionally in Lean
+- [x] exact prime-log Sidon collision geometry, infinite private-pole supply, and finite-packet
+  constant-coefficient differential-linear independence formalized unconditionally in Lean
 - [ ] complete unconditional Lean formalization before stage 3
 
 ## Log
