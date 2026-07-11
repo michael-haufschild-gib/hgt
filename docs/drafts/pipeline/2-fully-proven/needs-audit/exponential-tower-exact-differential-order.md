@@ -3,7 +3,7 @@
 - **ID:** `exponential-tower-exact-differential-order`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED] [SUBSUMED]` by `../new_scientific_knowledge/asymptotically-exponential-algebraic-cascade-unit-cost.md`
+- **Scientific status:** `[PROVED] [SUBSUMED]` by `../not_new_scientific_knowledge/asymptotically-exponential-algebraic-cascade-unit-cost.md`
 - **Lane:** general hypertranscendence; canonical DA boundary family
 - **Statement:** Every `n`-fold composition of real affine-exponential maps `f_j(w)=a_j+b_j exp(c_j w)` with `b_j,c_j>0` has minimal ADE order and positive-lower-order composition depth exactly `n`.
 

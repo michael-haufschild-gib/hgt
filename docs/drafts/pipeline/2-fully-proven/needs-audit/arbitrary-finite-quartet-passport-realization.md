@@ -210,8 +210,19 @@ analytic-unit mechanism and the full finite-product flatness order.  In particul
   strictly positive real on the imaginary axis, formalizing the algebraic core of the global positive
   repair.
 
-The arbitrary-location CRT interpolation, global positivity repair, order-one envelope, and
-quasi-period separation remain paper-only.
+`formal/GaloisForLFunctions/RHTower/FiniteHermiteCRT.lean` now formalizes the finite polynomial CRT,
+the sign/Schwarz averaging, and a representative whose degree is strictly below the product modulus.
+The capstone
+`exists_real_even_polynomial_iterateDerivative_eval_eq_degree_lt_modulus` supplies exactly the
+real-even, Schwarz-real, degree-controlled interpolant used in the proof.
+
+`formal/GaloisForLFunctions/RHTower/FiniteFluxPassport.lean` strengthens the local conclusion:
+every polynomial residue-filled flux passport with constant term `-1` is realized by an entire
+simple-zero exponential germ.  The successor theorem
+`finite-completed-flux-passport-surjectivity.md` uses this to realize every finite graded-real
+passport and an arbitrary transverse first separating coefficient.
+
+The global positivity domination and order-one envelope remain paper-only.
 
 ## Parent-theory and novelty gate
 
@@ -229,6 +240,6 @@ quasi-period separation remain paper-only.
 - [x] 1 -> 2: CRT realization, positivity repair, flux-prefix equality, full-germ separation, exact order,
   and aperiodicity have complete proofs above.
 - [ ] independent audit of the invariant CRT averaging and quasi-period argument.
-- [ ] 2 -> 3: formalize the finite CRT with involutions, imaginary-axis positivity repair, and global
-  envelope.
+- [ ] 2 -> 3: the degree-bounded equivariant CRT and packet positivity are formalized; formalize the
+  global positivity domination and order-one envelope.
 - [ ] complete literature and parent-theory audit before any scientific-novelty promotion.

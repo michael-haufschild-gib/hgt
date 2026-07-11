@@ -131,6 +131,21 @@ Applying the theorem to the full jet family gives the exact contrapositive neede
 all finite simultaneous jet telescopers implies differential algebraic independence. This closes
 the algebraic several-automorphism dependence-to-telescoping gate without a PPV construction.
 
+`formal/GaloisForLFunctions/AutomorphismFamilyOstrowski.lean` proves that pairwise commutativity is
+not needed. The same simultaneous single-base-element conclusion and all-jet criterion hold for an
+arbitrary family of compatible automorphisms, even an infinite noncommuting family. The elliptic
+gamma shifts are therefore a commuting specialization of a strictly stronger formal theorem.
+
+`formal/GaloisForLFunctions/MeromorphicDifferentialField.lean` reuses the genuine meromorphic germ
+field `Bottcher.meroField U`, differentiates analytic germs on an open set, proves the additive and
+Leibniz laws, and extends the derivation through the fraction field by the quotient rule.
+`formal/GaloisForLFunctions/MeromorphicTranslation.lean` then lifts every translation
+`z ↦ z + q` to a field automorphism of `meroField univ` and proves that it commutes with this
+derivation. Thus the concrete global meromorphic difference-differential carrier now exists. The
+remaining field-level tasks are to identify the common fixed field of a generic rank-three
+translation family with the constants and to realize theta and elliptic-gamma elements and their
+divisors in the carrier.
+
 `formal/GaloisForLFunctions/DifferentialPolynomialOver.lean` supplies the total differential
 polynomial derivation over a nonconstant differential base: coefficients are differentiated while
 formal jets are shifted. Evaluation intertwines this derivation, so the relation ideal over the
@@ -198,6 +213,10 @@ analytic capstone is already formalized.
 - [ ] complete differential algebra foundation, including differential transcendence degree
 - [x] unconditional multi-automorphism dependence-to-telescoping foundation
 - [x] unconditional simultaneous telescoping and all-jet independence contrapositive
+- [x] arbitrary noncommuting automorphism-family strengthening
+- [x] genuine meromorphic fraction field with quotient-rule derivation
+- [x] complex translations lifted as differential-field automorphisms
+- [ ] rank-three translation fixed field identified with constants in the germ carrier
 - [ ] meromorphic and elliptic function-field foundation
 - [ ] theta and multiple-elliptic-gamma definitions and hierarchy
 - [ ] orbit-principal-part obstruction
@@ -260,3 +279,11 @@ analytic capstone is already formalized.
   contrapositive all build unconditionally. The remaining capstone gap is analytic realization:
   meromorphic function fields, theta and multiple elliptic gamma, principal-part extraction, and
   the hierarchy/rank assembly.
+- 2026-07-11 -- Removed pairwise commutativity from the dependence-to-telescoping theorem entirely.
+  The arbitrary-family and all-jet differential versions build in Lean; the elliptic-gamma paired
+  shift theorem is now a specialization rather than the natural endpoint of the algebraic method.
+- 2026-07-11 -- Reused the existing analytic-germ fraction field to construct the actual global
+  meromorphic differential field. Translation precomposition now lifts to a fraction-field
+  automorphism and is formally proved to commute with the quotient-rule derivation. This removes
+  the carrier/existence part of the analytic gap; fixed-field identification and theta divisor
+  realization remain.

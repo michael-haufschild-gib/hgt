@@ -93,7 +93,7 @@ The bound is sharp: `F(z)=exp(exp z)` has `cd_+(F)>=2` and satisfies the homogen
 
 Write `E_1(z)=exp z` and `E_(k+1)(z)=exp(E_k(z))`.
 
-`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PROVED]` More generally, if `f_j(w)=a_j+b_j exp(c_j w)` with real `a_j` and `b_j,c_j>0`, then
+`[BRIDGE] [PROVED]` More generally, if `f_j(w)=a_j+b_j exp(c_j w)` with real `a_j` and `b_j,c_j>0`, then
 
 `ord_DA(f_n o ... o f_1)=cd_+(f_n o ... o f_1)=n`.
 
@@ -103,7 +103,7 @@ In particular, for every `n>=1`,
 
 Thus every affine-exponential covering layer costs exactly one unit of minimal algebraic-differential order throughout a nontrivial parameter family. In particular, the candidate inequality, if true, is sharp in every order.
 
-The affine parameter-family proof is separated in `2-fully-proven/needs-audit/exponential-tower-exact-differential-order.md`. The stronger theorem in `2-fully-proven/new_scientific_knowledge/asymptotically-exponential-algebraic-cascade-unit-cost.md` uses the Briot--Bouquet classification and Clunie growth separation to cover every transcendental entire autonomous order-one DA function. The lemmas below record the normalized tower core.
+The affine parameter-family proof is separated in `2-fully-proven/needs-audit/exponential-tower-exact-differential-order.md`. The stronger bridge theorem in `2-fully-proven/not_new_scientific_knowledge/asymptotically-exponential-algebraic-cascade-unit-cost.md` uses the Briot--Bouquet classification and Clunie growth separation to cover every transcendental entire autonomous order-one DA function. Reinhart's Schanuel-function minimal-order theorem removes the scientific-novelty claim for that class. The lemmas below record the normalized tower core.
 
 ### Algebraic-independence lemma
 
@@ -173,8 +173,8 @@ Finally, the displayed composition of `E_n` into `n` exponential factors gives `
 2. `[SEARCH]` Finite-order second-order ADE solutions are pseudo-prime; the new case above concerns the allowed infinite-order stratum and uses the sharp homogeneous growth ceiling.
 3. `[PROVED]` Dropping positive lower order invalidates the growth proof. Polya permits finite-order composites with zero-order outer factor. This does not falsify `cd_+`, because a zero-lower-order factor is excluded from the counted decompositions.
 4. `[OPEN CORE]` For a general order-`n` ADE, the needed upper bound is essentially Hayman's conjectural `exp_(n-1)(polynomial)` growth ceiling. The depth law cannot simply assume that conjecture under a new name.
-5. `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PROVED]` For every transcendental entire autonomous order-one DA function `f`, `ord_DA(f^[n])=cd_+(f^[n])=n`. The entire Briot--Bouquet class is exhausted by Laurent polynomials in an exponential.
-6. `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PROVED]` For every such map with a repelling fixed point, the canonical Poincare approximants have minimal orders exactly `1,2,3,...` and converge locally uniformly to an HT Poincare function.
+5. `[BRIDGE] [PROVED]` For every transcendental entire autonomous order-one DA function `f`, `ord_DA(f^[n])=cd_+(f^[n])=n`. The entire Briot--Bouquet class is exhausted by Laurent polynomials in an exponential, and Reinhart's Schanuel-function theorem is a close minimal-order parent.
+6. `[BRIDGE] [PROVED]` For every such map with a repelling fixed point, the canonical Poincare approximants have minimal orders exactly `1,2,3,...` and converge locally uniformly to an HT Poincare function.
 7. `[ANTI-THEATRE]` The Boolean OR law is a source-known bridge and is not the scientific claim. The general inequality remains conjectural; only the stated sharp classes and recession mechanism are promoted.
 
 ### Valiron boundary: resolved non-falsifier
@@ -193,7 +193,7 @@ The completed xi function has finite order, so Polya already forces any nontrivi
 - **Significance gate:** the exact law holds for the complete autonomous order-one entire DA class and yields a canonical DA-to-HT limit with linearly diverging constraint order.
 - **Parent-theory gate:** Otsubo 1980, Bergweiler 1995, and the Fernandes 2021 iteration/HT survey checked. They do not contain minimal-order divergence or the exact observability law.
 - **Literature gate:** passed for the two separated class theorems after full-text parent checks and metadata/corpus searches. It remains open for the unrestricted conjecture `cd_+(F)<=ord_DA(F)`.
-- **Scientific label:** the separated class theorem and Poincare recession theorem are `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`; the unrestricted inequality remains `[NOVELTY UNVERIFIED] [CONJECTURE]`.
+- **Scientific label:** the separated autonomous class theorem and Poincare recession theorem are `[BRIDGE] [PROVED]` after the Reinhart/Wang--Sontag parent audit; the unrestricted inequality and the complete nonautonomous first-order theorem remain `[NOVELTY UNVERIFIED] [CONJECTURE]`.
 
 ## Next move
 

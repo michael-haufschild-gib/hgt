@@ -3,7 +3,7 @@
 - **ID:** `poincare-constraint-order-recession`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
-- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[BRIDGE] [PROVED]`; downgraded after parent audit of the exact-order input
 - **Lane:** general hypertranscendence; constraint-limit mechanism
 - **Statement:** For any transcendental entire solution of an autonomous first-order ADE with a repelling fixed point, the canonical DA approximants to its Poincare function have minimal ADE orders exactly `1,2,3,...`, while their locally uniform limit is HT.
 
@@ -29,7 +29,7 @@ Classical Poincare linearization gives local uniform convergence on `C`:
 
 ## Theorem
 
-`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PROVED HERE]` For every `n>=1`,
+`[BRIDGE] [PROVED HERE]` For every `n>=1`,
 
 `ord_DA(g_n)=n`,
 
@@ -103,10 +103,10 @@ For zeta, finite Euler products are an obvious but separately owned candidate ap
 
 - **Proof gate:** complete, conditional only on the proved unit-cost cascade theorem, affine invariance, classical Poincare convergence, and Bergweiler's HT theorem.
 - **Significance gate:** gives an exact quantitative mechanism, for the complete autonomous order-one entire class, by which a canonical DA sequence exits every finite differential order and lands on an HT limit.
-- **Parent-theory gate:** Bergweiler 1995 checked in full; it contains the convergence and HT endpoint but not minimal-order recession.
-- **Literature gate:** checked against Bergweiler's paper, its cited-by corpus, the 2021 Fernandes survey, Crossref, OpenAlex, arXiv, and searches for Poincare/Schroder approximants with minimal differential order. No exact order sequence or constraint-order recession theorem was found.
+- **Parent-theory gate:** Bergweiler contains the convergence and HT endpoint. Reinhart's Schanuel-function minimal-order theorem is a close parent for the exact order of the autonomous iterates used here. Affine invariance then transfers that order to the canonical approximants. The assembled recession statement is useful, but it is a routine bridge once those parents are combined.
+- **Literature gate:** the earlier audit missed Reinhart's access-restricted dissertation and therefore overstated the residual novelty of the quantitative input.
 - **Rediscovery gate:** the project corpus contains no prior quantitative Poincare approximation result of this form.
-- **Scientific label:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`; publication priority remains to be independently verified.
+- **Scientific label:** `[BRIDGE] [PROVED]`; no scientific-priority claim.
 
 ## Gates
 
@@ -125,3 +125,4 @@ For zeta, finite Euler products are an obvious but separately owned candidate ap
 3. H. Poincare, *Sur une classe nouvelle des transcendantes uniformes*, J. Math. Pures Appl. (4) 6 (1890), 313--365.
 4. G. Fernandes, *A survey on the hypertranscendence of the solutions of the Schroder's, Bottcher's and Abel's equations*, arXiv:2102.12168 (2021).
 5. A. E. Eremenko, *Meromorphic solutions of algebraic differential equations*, Russian Math. Surveys 37:4 (1982), 61--95.
+6. G. M. Reinhart, *Schanuel Functions and Algebraic Differential Equations*, PhD dissertation, University of Illinois (1993).

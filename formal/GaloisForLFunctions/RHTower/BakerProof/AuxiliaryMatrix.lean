@@ -349,6 +349,22 @@ theorem Relation.auxiliaryHeightClosed_nonneg (R : Relation) (c : ℤ) (L S T : 
         (Finset.sum_nonneg fun i hi => house_nonneg _)) _)
       (pow_nonneg (Nat.cast_nonneg _) _))
 
+theorem Relation.one_le_auxiliaryHeightClosed
+    (R : Relation) (c : ℤ) (hc : c ≠ 0)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n)
+    {L S T : ℕ} (hL : 0 < L) (hS : 0 < S) (hT : 0 < T) :
+    1 ≤ R.auxiliaryHeightClosed c L S T := by
+  have hcountNat : 0 < (S * T ^ (R.n - 1)) * L ^ R.n :=
+    mul_pos (mul_pos hS (pow_pos hT _)) (pow_pos hL _)
+  have hcount : (1 : ℝ) ≤ (((S * T ^ (R.n - 1)) * L ^ R.n : ℕ) : ℝ) := by
+    exact_mod_cast hcountNat
+  have hD := R.one_le_scaledDirectionHouseBound c hc hint pivot hL
+  have hP : (1 : ℝ) ≤ R.primeProduct := by
+    exact_mod_cast R.one_le_primeProduct
+  unfold Relation.auxiliaryHeightClosed
+  exact one_le_mul_of_one_le_of_one_le hcount
+    (one_le_mul_of_one_le_of_one_le (one_le_pow₀ hD) (one_le_pow₀ hP))
+
 /-- Closed height estimate for the entire auxiliary matrix. -/
 theorem Relation.auxiliaryHeight_le_closed
     (R : Relation) (c : ℤ) (hc : c ≠ 0)
@@ -380,6 +396,13 @@ theorem Relation.siegelConstant_nonneg (R : Relation) :
   exact mul_nonneg (Nat.cast_nonneg _)
     (mul_nonneg (le_trans (by norm_num) (le_max_left 1 _))
       (le_trans (by norm_num) (GelfondSchneiderSiegel.one_le_supOfBasis _)))
+
+theorem Relation.one_le_siegelConstant (R : Relation) :
+    1 ≤ GelfondSchneiderSiegel.c₁ R.CoefficientField := by
+  unfold GelfondSchneiderSiegel.c₁ GelfondSchneiderSiegel.c₂
+  exact one_le_mul_of_one_le_of_one_le (Nat.one_le_cast.mpr Module.finrank_pos)
+    (one_le_mul_of_one_le_of_one_le (le_max_left 1 _)
+      (GelfondSchneiderSiegel.one_le_supOfBasis _))
 
 /-- The explicit Siegel-lemma house bound for every coefficient of an auxiliary kernel vector. -/
 noncomputable def Relation.auxiliaryCoefficientBound (R : Relation) (c : ℤ)
@@ -421,6 +444,41 @@ theorem Relation.auxiliaryCoefficientBoundClosed_nonneg
   exact mul_nonneg
     (mul_nonneg R.siegelConstant_nonneg (Nat.cast_nonneg _))
     (R.auxiliaryHeightClosed_nonneg c L S T)
+
+/-- If the column count is at least twice the row count, the real exponent in the closed Siegel
+budget is at most one. -/
+theorem Relation.auxiliaryCoefficientBoundClosed_le_linear
+    (R : Relation) (c : ℤ) (L S T : ℕ)
+    (hrow : 0 < S * T ^ (R.n - 1))
+    (hdouble : 2 * (S * T ^ (R.n - 1)) ≤ L ^ R.n)
+    (hheight : 1 ≤ R.auxiliaryHeightClosed c L S T) :
+    R.auxiliaryCoefficientBoundClosed c L S T ≤
+      GelfondSchneiderSiegel.c₁ R.CoefficientField *
+        (GelfondSchneiderSiegel.c₁ R.CoefficientField *
+          ((L ^ R.n : ℕ) : ℝ) * R.auxiliaryHeightClosed c L S T) := by
+  let rows := S * T ^ (R.n - 1)
+  let cols := L ^ R.n
+  have hrowsCols : rows < cols := by omega
+  have hden : (0 : ℝ) < (cols : ℝ) - (rows : ℝ) := by
+    exact sub_pos.mpr (by exact_mod_cast hrowsCols)
+  have hratio : ((rows : ℝ) / ((cols : ℝ) - (rows : ℝ))) ≤ 1 := by
+    rw [div_le_one hden]
+    have hdR : (2 : ℝ) * (rows : ℝ) ≤ (cols : ℝ) := by
+      exact_mod_cast hdouble
+    linarith
+  have hcols : (1 : ℝ) ≤ cols := by
+    exact_mod_cast (show 0 < cols by omega)
+  have hbase : 1 ≤ GelfondSchneiderSiegel.c₁ R.CoefficientField *
+      (cols : ℝ) * R.auxiliaryHeightClosed c L S T :=
+    one_le_mul_of_one_le_of_one_le
+      (one_le_mul_of_one_le_of_one_le R.one_le_siegelConstant hcols) hheight
+  unfold Relation.auxiliaryCoefficientBoundClosed
+  change GelfondSchneiderSiegel.c₁ R.CoefficientField *
+      (GelfondSchneiderSiegel.c₁ R.CoefficientField * (cols : ℝ) *
+        R.auxiliaryHeightClosed c L S T) ^
+          ((rows : ℝ) / ((cols : ℝ) - (rows : ℝ))) ≤ _
+  apply mul_le_mul_of_nonneg_left _ R.siegelConstant_nonneg
+  simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le hbase hratio
 
 theorem Relation.auxiliaryCoefficientBound_le_closed
     (R : Relation) (c : ℤ) (hc : c ≠ 0)

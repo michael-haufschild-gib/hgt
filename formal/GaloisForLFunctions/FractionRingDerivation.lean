@@ -24,7 +24,7 @@ noncomputable section
 
 /-- The square-zero graph algebra homomorphism attached to a derivation. -/
 def derivationGraphAlgHom
-    {K A F : Type*} [Field K] [CommRing A] [Field F]
+    {K A F : Type*} [CommRing K] [CommRing A] [Field F]
     [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
     (D : Derivation K A F) : A →ₐ[K] TrivSqZeroExt F F where
   toFun a := (algebraMap A F a, D a)
@@ -45,20 +45,20 @@ def derivationGraphAlgHom
     · simp
 
 @[simp] theorem derivationGraphAlgHom_fst
-    {K A F : Type*} [Field K] [CommRing A] [Field F]
+    {K A F : Type*} [CommRing K] [CommRing A] [Field F]
     [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
     (D : Derivation K A F) (a : A) :
     (derivationGraphAlgHom D a).fst = algebraMap A F a := rfl
 
 @[simp] theorem derivationGraphAlgHom_snd
-    {K A F : Type*} [Field K] [CommRing A] [Field F]
+    {K A F : Type*} [CommRing K] [CommRing A] [Field F]
     [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
     (D : Derivation K A F) (a : A) :
     (derivationGraphAlgHom D a).snd = D a := rfl
 
 /-- Non-zero-divisors map to units under the derivation graph. -/
 theorem derivationGraphAlgHom_isUnit_nonZeroDivisor
-    {K A F : Type*} [Field K] [CommRing A] [IsDomain A] [Field F]
+    {K A F : Type*} [CommRing K] [CommRing A] [IsDomain A] [Field F]
     [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
     [IsFractionRing A F]
     (D : Derivation K A F) (s : nonZeroDivisors A) :
@@ -70,7 +70,7 @@ theorem derivationGraphAlgHom_isUnit_nonZeroDivisor
 /-- The graph homomorphism extended through the fraction-field
 localization. -/
 def fractionRingDerivationGraphLift
-    {K A F : Type*} [Field K] [CommRing A] [IsDomain A] [Field F]
+    {K A F : Type*} [CommRing K] [CommRing A] [IsDomain A] [Field F]
     [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
     [IsFractionRing A F]
     (D : Derivation K A F) : F →+* TrivSqZeroExt F F :=
@@ -78,7 +78,7 @@ def fractionRingDerivationGraphLift
 
 /-- The graph lift agrees with the original derivation graph on `A`. -/
 theorem fractionRingDerivationGraphLift_algebraMap
-    {K A F : Type*} [Field K] [CommRing A] [IsDomain A] [Field F]
+    {K A F : Type*} [CommRing K] [CommRing A] [IsDomain A] [Field F]
     [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
     [IsFractionRing A F]
     (D : Derivation K A F) (a : A) :
@@ -91,7 +91,7 @@ theorem fractionRingDerivationGraphLift_algebraMap
 /-- The first coordinate of the graph lift is the identity of the fraction
 field. -/
 theorem fractionRingDerivationGraphLift_fst
-    {K A F : Type*} [Field K] [CommRing A] [IsDomain A] [Field F]
+    {K A F : Type*} [CommRing K] [CommRing A] [IsDomain A] [Field F]
     [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
     [IsFractionRing A F]
     (D : Derivation K A F) (z : F) :
@@ -110,7 +110,7 @@ theorem fractionRingDerivationGraphLift_fst
 /-- The second coordinate of the graph lift is the extension of the
 derivation to the fraction field. -/
 def fractionRingDerivation
-    {K A F : Type*} [Field K] [CommRing A] [IsDomain A] [Field F]
+    {K A F : Type*} [CommRing K] [CommRing A] [IsDomain A] [Field F]
     [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
     [IsFractionRing A F]
     (D : Derivation K A F) : Derivation K F F :=
@@ -147,7 +147,7 @@ def fractionRingDerivation
       simp [smul_eq_mul, mul_comm])
 
 @[simp] theorem fractionRingDerivation_apply
-    {K A F : Type*} [Field K] [CommRing A] [IsDomain A] [Field F]
+    {K A F : Type*} [CommRing K] [CommRing A] [IsDomain A] [Field F]
     [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
     [IsFractionRing A F]
     (D : Derivation K A F) (z : F) :
@@ -156,7 +156,7 @@ def fractionRingDerivation
 
 /-- The fraction-field extension restricts to the original derivation. -/
 theorem fractionRingDerivation_algebraMap
-    {K A F : Type*} [Field K] [CommRing A] [IsDomain A] [Field F]
+    {K A F : Type*} [CommRing K] [CommRing A] [IsDomain A] [Field F]
     [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
     [IsFractionRing A F]
     (D : Derivation K A F) (a : A) :
@@ -166,5 +166,36 @@ theorem fractionRingDerivation_algebraMap
     derivationGraphAlgHom_snd]
 
 end
+
+end GaloisForLFunctions
+
+namespace GaloisForLFunctions
+
+/-- Two derivations on a fraction field are equal when they agree on the
+source domain. -/
+theorem fractionRing_derivation_ext
+    {K A F : Type*} [CommRing K] [CommRing A] [IsDomain A] [Field F]
+    [Algebra K A] [Algebra A F] [Algebra K F] [IsScalarTower K A F]
+    [IsFractionRing A F]
+    (D₁ D₂ : Derivation K F F)
+    (h : ∀ a : A, D₁ (algebraMap A F a) = D₂ (algebraMap A F a)) :
+    D₁ = D₂ := by
+  ext z
+  obtain ⟨⟨a, s⟩, hz⟩ := IsLocalization.surj (nonZeroDivisors A) z
+  have h₁ := congrArg D₁ hz
+  have h₂ := congrArg D₂ hz
+  simp only [Derivation.leibniz, smul_eq_mul] at h₁ h₂
+  have hs : algebraMap A F s.1 ≠ 0 :=
+    IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors s.2
+  have hd : algebraMap A F s.1 * (D₁ z - D₂ z) = 0 := by
+    rw [h a, h s.1] at h₁
+    calc
+      algebraMap A F s.1 * (D₁ z - D₂ z) =
+          (z * D₂ (algebraMap A F s.1) + algebraMap A F s.1 * D₁ z) -
+            (z * D₂ (algebraMap A F s.1) + algebraMap A F s.1 * D₂ z) := by ring
+      _ = D₂ (algebraMap A F a) - D₂ (algebraMap A F a) := by rw [h₁, h₂]
+      _ = 0 := sub_self _
+  have hz' : D₁ z - D₂ z = 0 := (mul_eq_zero.mp hd).resolve_left hs
+  exact sub_eq_zero.mp hz'
 
 end GaloisForLFunctions

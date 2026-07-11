@@ -176,13 +176,33 @@ term solely from its `S2` theorem would be invalid. A Sonin realization must pro
 trace-class/smoothing structure or use the compact-support semilocal test-functional of the trace
 formula.
 
+`[PROVED IN LEAN, SONIN SCALARIZATION]` `SoninSemilocalRelativeTrace.lean` supplies that additional
+structure. The principal/residual linear cross is paired with the exact Sonin projection correction,
+which is independently Hilbert--Schmidt. Their product is trace class, and its operator trace is
+the basis-independent Hilbert--Schmidt pairing. For a finitely supported function on the full
+positive prime-power carrier `(p,m)`, including `m=1`, Lean defines an additive semilocal Sonin
+relative trace by a finite `Finsupp.sum`. Thus the deleted principal shell re-enters without any
+global summability claim: compact support makes the trace finite and independent of prime ordering.
+Unit Sonin scale gives a parameter-free canonical functional.
+
+The local density now factors exactly as
+
+`soninSemilocalLogPrimePowerCoefficient(p,m) * soninSemilocalGeometricTraceResponse(a,p,m)`.
+
+The response is the coefficient-free Hilbert--Schmidt pairing of the projection correction with
+the unweighted principal/residual cross. It is real. Consequently all arithmetic coefficient data
+have been separated from one explicit geometric normalization problem.
+
 ## RH interface
 
-`[OPEN CORE]` Realize the already constructed prime--archimedean source trace as the semilocal
-trace of the principal/residual **linear cross term** after canonical test-function smoothing, and
-prove
+`[OPEN CORE]` Prove that the canonical finite-support Sonin trace density realizes the
+prime--archimedean test-functional, and hence that its Mellin transform satisfies
 
 `soninRelativeTrace(z) = xiRelativeResolventTrace(z)`.
+
+After the exact density factorization, this reduces mode-by-mode to determining the explicit
+`soninSemilocalGeometricTraceResponse(1,p,m)` and proving that it has the normalization required by
+the local logarithmic metric. No convergence or trace-class hypothesis remains in this comparison.
 
 Equivalently, its reciprocal-square coefficients must be `xiCentralReciprocalMoment n`; the
 existing finite moment expansion then supplies `xiCentralTraceHankel`. No zero divisor may be used
@@ -190,10 +210,9 @@ in the Sonin source construction. `T_mix=C_a^*C_a` and `I₂` remain valid quadr
 cannot substitute for this linear principal-relative scalarization.
 
 `[ROUTE VERDICT]` The residual-only determinant route and an unsmoothed trace on the raw
-Hilbert--Schmidt cross term are dead. The semilocal principal-relative route remains alive: the
-regulator-independent arithmetic source trace and its Xi identity are now proved, but the Sonin
-operator must realize it through compact-support semilocal smoothing rather than a fictitious
-trace on all of `S2`.
+Hilbert--Schmidt cross term are dead. The semilocal principal-relative route remains alive: both
+the regulator-independent arithmetic source trace and a genuine finite-support Sonin operator
+trace now exist. Their equality is the single remaining source-specific identity.
 
 ## Gates
 
@@ -222,10 +241,14 @@ trace on all of `S2`.
   `LSeries`, continued without a cutoff, and identified with the Xi relative resolvent.
 - [x] Hilbert--Schmidt-only trace scalarization excluded by an explicit `S2` kernel with divergent
   diagonal series.
+- [x] Full positive-mode compact-support Sonin trace constructed by pairing the linear cross with
+  the exact Hilbert--Schmidt projection correction; trace class and finite-site additivity proved.
+- [x] Local trace density factored into the exact unsquared Euler coefficient and a real,
+  coefficient-free geometric response.
 - [ ] One concrete principal-subtracted cross-prime overlap proved nonzero.
-- [ ] Compact-support semilocal smoothing operator on the Sonin carrier constructed and proved to
-  make the linear cross term trace class.
-- [ ] Its operator trace identified with `continuedPrimeArchSourceRelativeTrace`.
+- [ ] Sonin trace density identified with the prime--archimedean compact-support density.
+- [ ] Mellin transform of the Sonin finite-support trace identified with
+  `continuedPrimeArchSourceRelativeTrace`.
 
 ## Classification
 

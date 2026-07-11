@@ -3,7 +3,7 @@
 - **ID:** `asymptotically-exponential-algebraic-cascade-unit-cost`
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
-- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[BRIDGE] [PROVED]`; downgraded after Schanuel-function parent audit
 - **Lane:** general hypertranscendence; finite DA boundary and infinite-depth obstruction
 - **Statement:** Every layer in a finite composition of transcendental entire autonomous first-order DA maps contributes exactly one unit of minimal ADE order; in particular `ord_DA(f^[n])=n` for every such `f`.
 
@@ -29,7 +29,7 @@ Examples include:
 
 ## Theorem
 
-`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PROVED HERE]` Let `f_1,...,f_n` be algebraic exponential-cover maps of finite positive lower order and set
+`[BRIDGE] [PROVED HERE]` Let `f_1,...,f_n` be algebraic exponential-cover maps of finite positive lower order and set
 
 `F_k=f_k o ... o f_1`, for `1<=k<=n`.
 
@@ -113,7 +113,7 @@ The displayed factorization gives `cd_+(F_n)>=n`, since each factor has positive
 
 ## Complete autonomous order-one corollary
 
-`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PROVED HERE]` Let `f` be any transcendental entire solution of an autonomous first-order algebraic differential equation
+`[BRIDGE] [PROVED HERE]` Let `f` be any transcendental entire solution of an autonomous first-order algebraic differential equation
 
 `P(f,f')=0`, with `P in C[X,Y]` nonzero.
 
@@ -151,10 +151,10 @@ Its possible future RH value is architectural: if an Euler--archimedean object c
 
 - **Proof gate:** complete on paper; the only external inputs are Gold'berg's first-order finite-order theorem and Polya's composition growth estimate.
 - **Significance gate:** exact all-order equality for the complete class of transcendental entire autonomous first-order DA functions, quantitatively strengthening Bergweiler's uniform-incoherence theorem on this boundary.
-- **Parent-theory gate:** Otsubo's Liouville-chain theorem gives only a coarse converse bound between Liouville length and ADE order. Bergweiler (1995) proves that the iterates of a transcendental entire function cannot all satisfy one fixed ADE. Neither result proves unbounded minimal order, exact linear growth, or output-jet observability.
-- **Literature gate:** checked against Otsubo (1980), Bergweiler (1995), the 2021 Fernandes survey of differential algebra and iteration, the sources cited there, Crossref, OpenAlex, arXiv, and the project corpus. The located results concern Liouville-chain length, coherent families, or HT of functional-equation solutions; no minimal-order divergence or exact unit-cost theorem was found.
+- **Parent-theory gate:** Reinhart's 1993 dissertation proves that the minimum ADE order of a Schanuel function is controlled by the number of algebraically independent functions needed in its construction, extending Babakhanian's exponential-tower result. Every function in the autonomous corollary is a Laurent polynomial in an exponential, and every finite iterate is a Schanuel function. Together with Clunie independence, this is a closer parent than Otsubo or Bergweiler and removes the scientific-novelty claim.
+- **Literature gate:** the earlier search missed Reinhart because the dissertation is access-restricted and surfaced only through its repository abstract. Wang--Sontag's general order-versus-observable-dimension theorem is a second parent for the state-space proof.
 - **Rediscovery gate:** no prior project card or formal result states the algebraic product-cascade observability lemma or the exact order law.
-- **Scientific label:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`; publication priority remains to be independently verified.
+- **Scientific label:** `[BRIDGE] [PROVED]`; exact autonomous specialization retained as a useful project theorem, not claimed as new science.
 
 ## Gates
 
@@ -177,3 +177,5 @@ Its possible future RH value is architectural: if an Euler--archimedean object c
 6. G. Fernandes, *A survey on the hypertranscendence of the solutions of the Schroder's, Bottcher's and Abel's equations*, in *Transcendence in Algebra, Combinatorics, Geometry and Number Theory* (2021); arXiv:2102.12168.
 7. A. E. Eremenko, *Meromorphic solutions of algebraic differential equations*, Russian Math. Surveys 37:4 (1982), 61--95, especially the Briot--Bouquet classification in Section 7.
 8. J. Clunie, *The composition of entire and meromorphic functions*, in *Mathematical Essays Dedicated to A. J. Macintyre* (1970), 75--92.
+9. G. M. Reinhart, *Schanuel Functions and Algebraic Differential Equations*, PhD dissertation, University of Illinois (1993).
+10. Y. Wang and E. D. Sontag, *Orders of Input/Output Differential Equations and State-Space Dimensions*, SIAM J. Control Optim. 33 (1995), 1102--1126.
