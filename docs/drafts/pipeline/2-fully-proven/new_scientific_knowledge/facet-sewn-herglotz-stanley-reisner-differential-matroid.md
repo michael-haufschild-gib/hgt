@@ -374,16 +374,19 @@ The current Lean tree contains genuine supporting components, but not this theor
 - `GaloisForLFunctions.MeromorphicTranslationDifferentialOperator` proves that translations commute
   with differential jets and constant-coefficient differential operators.
 
-The following theorem-specific obligations are still unformalized:
+The following theorem-specific obligations determine Lean completion.  Items 2 and 4 are now
+formalized; the other three and the final assembly remain:
 
 1. the actual meromorphic series (S1), its normal convergence and pole divisor, and the
    finite-dimensional Cauchy-jet surjectivity/transversality proof of full translation freeness;
-2. the arbitrary finite-complex localized facet-prime identity (10), not only the uniform
-   squarefree-Veronese special case already present elsewhere;
+2. `[FORMALIZED]` the arbitrary finite-complex facet-prime identity and its preservation under an
+   arbitrary localization are proved in
+   `GaloisForLFunctions.HTGeometry.StanleyReisnerFacetIdeal`;
 3. the differential Smith-normal-form rank lemma (14) instantiated in an actual differential
    field of meromorphic functions;
-4. the explicit six-vertex facet family (16), its exact minimal nonfaces (17), nonpurity, and
-   two-thickness;
+4. `[FORMALIZED]` the explicit six-vertex facet family (16), its exact minimal nonfaces (17),
+   nonpurity, facet-antichain property, and two-thickness are proved in
+   `GaloisForLFunctions.HTGeometry.WedgeTwoThick`;
 5. the analytic-algebraic assembly yielding (4) for every finite operator family.
 
 Formalizing an abstract interface that assumes any of these five items would be useful
@@ -401,6 +404,8 @@ unconditionally.
 - [x] former no-go replaced by finite constraint universality and source selection
 - [x] preliminary parent-theory and exact literature audit
 - [x] complete paper proof
+- [x] arbitrary finite-complex localized facet-prime identity formalized unconditionally in Lean
+- [x] explicit nonpure two-thick six-vertex geometry formalized unconditionally in Lean
 - [ ] complete unconditional Lean formalization before stage 3
 
 ## Log

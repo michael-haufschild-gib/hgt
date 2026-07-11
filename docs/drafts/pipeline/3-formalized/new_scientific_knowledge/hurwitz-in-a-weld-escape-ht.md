@@ -1,8 +1,8 @@
 # Hurwitz ζ(s,a) in a: the weld as exponent-escape up the s-ladder
 
 - **ID:** hurwitz-in-a-weld-escape-ht
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE THEOREM (partial) + minimal weld-model for 𝓜⁺
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean) — full HT-in-a of the Hurwitz ladder for `s ∉ ℚ`; minimal weld-model for 𝓜⁺
 - **Source:** Turing, 2026-06-24. Entropy draw (seed 1410371457939118431): object=Hurwitz-zeta, move=revisualise, domains=tensegrity+renormalization.
 
 ## The object and the weld
@@ -54,8 +54,11 @@ Conjecture: induction on (d,w) down this triangle forces every c_α≡0, closing
 
 - [x] weld, escape, leading-singularity identities verified numerically
 - [x] Steps 1–3 (graded-homogeneity + per-grade coefficient-sum ≡0)
-- [ ] Step 4: subleading triangular induction ⟹ each c_α≡0 (OPEN — the actual content)
-- [ ] literature check: is generic-s Hurwitz/Lerch HT-in-a already known? (integer s = Hölder-descent via polygamma ψ^{(s−1)})
+- [x] Step 4 CLOSED (2026-07-11), superseded by the delocalized-monodromy proof — all degrees
+  at once, `s ∉ ℚ` (see "FULL CLOSURE" section)
+- [x] literature check (2026-07-11): fixed-`s` ladder independence not located; Ostrowski 1920 /
+  Mordukhai-Boltovskoi 1914 cover only the joint two-variable PDE statement (see verdict section)
+- [x] Lean formalization, unconditional and axiom-clean (2026-07-11): see Formalization section
 
 ## Novelty / significance (self-graded, critical)
 
@@ -579,3 +582,45 @@ rational `s` — the `q`-invariant relation ideal at degree `>= r` — is genuin
 - 2026-07-11 — Fable: card CLOSED at all degrees for `s notin Q` by delocalized monodromy +
   Vandermonde; literature gate run (no exact match found); Lean formalization of Theorem A
   against genuine `hzeta` started (deformation bridge + grid + Vandermonde endgame).
+
+## Formalization (2026-07-11) — unconditional, axiom-clean, arbitrary degree
+
+The full Theorem A is formalized against the genuine `hzeta s a = Σ' m, (m+a)^{-s}`:
+
+- `formal/GaloisForLFunctions/Hurwitz/LadderDeformation.lean` — the deformation family
+  `dzeta c k a = hzeta (s+k) a + Σ_{n≤M} (c_n − 1)(n+a)^{-(s+k)}`; `hzeta` and the family are
+  differentiable on the upper half-plane (`hzeta_differentiableOn`, per-point M-test).
+- `formal/GaloisForLFunctions/Hurwitz/LadderDeformationBridge.lean` — the one-point monodromy
+  move `relA_move`: in the `z = log(a+n)` coordinate the deformed ladder is
+  `c_n e^{-(s+k)z} + (periodic analytic)`, the relation extends to the half-plane
+  `Re z < -log 2` by the identity theorem, the shift `z ↦ z+2πi` multiplies `c_n` by
+  `q = e^{-2πis}`, and the updated relation propagates back to the whole upper half-plane.
+  `relA_grid` iterates the move over the full grid `(q^{m_0},…,q^{m_M})`.
+- `formal/GaloisForLFunctions/Hurwitz/LadderIndependence.lean` — the endgame: `mv_grid_zero`
+  (multivariate polynomial vanishing on a product of infinite sets is zero),
+  `monoScalar_pow_injective` (`s ∉ ℚ` ⟹ the grid is infinite per coordinate),
+  `ladder_matrix_surjective` (the transposed-Vandermonde × diagonal factorization of
+  `W_{k,n} = (n+a)^{-(s+k)}`), and the capstones:
+
+  **`HurwitzLadder.hurwitz_ladder_independence`** — hypotheses `1 < Re s` and
+  `∀ r : ℚ, (r:ℂ) ≠ s` only: any `P : MvPolynomial (Fin (N+1)) (Polynomial ℂ)` with
+  `P(a; hzeta s a, …, hzeta (s+N) a) = 0` on the upper half-plane is zero. NO degree bound.
+
+  **`HurwitzLadder.hurwitz_ladder_independence_near_ray`** — same conclusion with the
+  relation hypothesis only on one punctured upper half-disc at a single branch point `-n₀`.
+
+- Card wrappers registered in `FullyProvenNewTargets`:
+  `HurwitzLadderFullIndependenceTarget` / `hurwitz_ladder_full_independence` and the near-ray
+  forms.
+- Axioms: `[propext, Classical.choice, Quot.sound]` on every theorem; Hurwitz area build and
+  `formal lint --check-generated` green. The Lean statement subsumes the degree-≤2 capstone
+  `hurwitz_allN_hzeta_unconditional` for `s ∉ ℚ`; the old quadratic machinery remains the only
+  coverage of `s ∈ ℚ ∖ ℤ`.
+- The escape identity `∂_a hzeta = -s·hzeta(s+1,·)` (hence the ODE-form corollary, Theorem B)
+  is paper-level; formalizing it needs termwise differentiation of the `hzeta` series
+  (mathlib `SmoothSeries` machinery) — natural next Lean brick.
+
+- 2026-07-11 — Fable: Theorem A formalized unconditionally at arbitrary degree (three new
+  modules, 15 theorems, axiom-clean); card promoted 1-in-progress → 3-formalized
+  (new_scientific_knowledge). Backlog card `hurwitz-degree3-pochhammer-obstacle` retired as
+  superseded.

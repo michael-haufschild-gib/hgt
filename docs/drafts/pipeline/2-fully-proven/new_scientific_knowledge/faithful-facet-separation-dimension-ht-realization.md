@@ -123,11 +123,11 @@ form and the leading-jet argument for every nonzero diagonal operator prove (6).
 For every finite complex,
 
 ```text
-ffsDim(Delta)<=|Fac(Delta)|.                                 (11)
+ffsDim(Delta)<=min(|V|,|Fac(Delta)|).                        (11)
 ```
 
-Choose `Q`-linearly independent nonzero numbers `(eta_v)`. In the space with one coordinate per
-facet, set
+For the facet-count bound, choose `Q`-linearly independent nonzero numbers `(eta_v)`. In the space
+with one coordinate per facet, set
 
 ```text
 (a_v)_A=eta_v if v in A, and 0 otherwise,
@@ -136,7 +136,14 @@ ell_A=the A-coordinate projection.                           (12)
 
 The zero patterns and facetwise independence are immediate. If `sum_v q_v a_v=0`, each facet
 coordinate and independence of the `eta_v` kill every `q_v` belonging to that facet; essentiality
-kills all coefficients. This proves (11) and recovers the original one-coordinate-per-facet system.
+kills all coefficients. This gives `ffsDim(Delta)<=|Fac(Delta)|` and recovers the original
+one-coordinate-per-facet system.
+
+For the vertex-count bound, work in `C^V` and set `a_v=e_v`. For every facet `A`, choose numbers
+`theta_(A,v)`, `v in A`, that are `Q`-linearly independent, and define `ell_A(e_v)` to be
+`theta_(A,v)` on `A` and zero off `A`. The coordinate vectors are `Q`-linearly independent, the
+zero pattern is exact, and the nonzero facet values are independent. Hence
+`ffsDim(Delta)<=|V|`, completing (11).
 
 ## The nonpure two-thick wedge has dimension four `[PROVED HERE]`
 

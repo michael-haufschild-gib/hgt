@@ -84,17 +84,25 @@ determinants have real zeros or that a specified prolate source has small Raylei
 
 ## Exact Paley--Wiener Toeplitz formulation
 
-Suzuki's Fourier formula for the restricted Weil form is
+The corrected finite-aperture Fourier formula for the restricted Weil form is
 
 ```text
 QW_a(v,v)=1/(2*pi) integral_R w_a(t)|hat(v)(t)|^2dt,             (6)
 
-w_a(t)=log|t|-log(2*pi)
+w_a(t)=Re psi(1/4+i*t/2)-log pi
  -2 sum_(n<=exp(2a))Lambda(n)/sqrt(n)*cos(t*log n)
- +hat(r_a'')(t).                                                (7)
+ +P_a(t),
+
+P_a(t)
+ =[2sinh(a)cos(2a*t)+4t*cosh(a)sin(2a*t)]/(t^2+1/4).            (7)
 ```
 
-Here `v` is supported in `[-a,a]`; hence `hat(v)` belongs to the Paley--Wiener space `PW_a`.
+Here `P_a` is the Fourier transform of
+`2cosh(x/2)1_(-2a,2a)(x)`, the aperture-truncated polar factor. The distributional formulas
+contain `-r''`; this corrects the opposite printed sign in Suzuki's equation (2.7). The proof and
+the exact critical Mellin defect are in `ccm-polar-prime-critical-mellin-defect-law.md`.
+
+The function `v` is supported in `[-a,a]`; hence `hat(v)` belongs to the Paley--Wiener space `PW_a`.
 Let `P_(PW_a)` denote its orthogonal projection. The bounded-below restricted Weil operator is the
 Toeplitz compression
 
@@ -130,25 +138,124 @@ because a negative vector may lie outside every fixed prolate trial subspace.
 
 ## Three competing positive mechanisms
 
-### A. Paley--Wiener Toeplitz contraction
+### A. Paley--Wiener lower-frame theorem
 
-`[CONJECTURE]` Split the exact symbol `(7)` as
-
-```text
-w_a=d_a-k_a,                                                    (10)
-```
-
-where `d_a` is a positive reference symbol after the exact constant/radical mode has been removed
-and `k_a` is the complete prime-incidence part. Prove on `PW_a`
+`[PROVED BRIDGE]` The exact positive reference splitting is now constructed, with a different
+orientation from the earlier tentative `d_a-k_a` decomposition. The digamma increment is a
+countable sum of positive resolvent squares, each prime cosine is a positive translation-difference
+square minus its scalar mass, and the polar block has one positive even and one negative odd
+channel. On the even sector this gives
 
 ```text
-||D_a^(-1/2)K_a D_a^(-1/2)||<=1+eta_a,
-eta_a*||D_a||->0,                                               (11)
+T_a^+=B_a^*B_a-mu_a I,                                        (10)
+
+mu_a=2sum_(n<=exp(2a))Lambda(n)n^(-1/2)-m(0),                  (10a)
 ```
 
-where `D_a=P_(PW_a)M_(d_a)P_(PW_a)` and similarly for `K_a`. Then `(11)` gives `(9)`.
-The load-bearing point is that `K_a` must retain the truncated-divisor weighted infinite
-radial carrier; a finite-prime or finite-rank contraction is insufficient.
+where `B_a` jointly carries every Gamma resolvent channel, every visible prime-shift difference,
+and the distinguished even polar boundary moment. The exact construction is proved in
+`ccm-polar-euler-frame-minus-level-law.md`.
+
+The remaining theorem is the sharp lower-frame bound
+
+```text
+||B_a v||^2>=mu_a||v||^2
+for every even aperture vector v.                              (11)
+```
+
+This is exactly positivity of the true restricted Weil form, hence the RH core; the splitting does
+not prove `(11)`. Its gain is structural: no prime direction, Gamma channel, or polar boundary mode
+is hidden in an indefinite scalar symbol.
+
+The leading frame gap cannot prove `(11)`. For every fixed nonzero
+`f in C_c^infinity(0,L)`, the even two-edge vector
+
+```text
+v_a(x)=f(a-|x|)
+```
+
+satisfies
+
+```text
+||B_a v_a||^2/[mu_a||v_a||^2]->1.                              (11a)
+```
+
+The prime number theorem makes the rescaled prime cross-boundary measure converge to
+`exp(-r/2)dr`; its leading rank-one form cancels the positive polar moment exactly. This holds on
+an infinite-dimensional profile space, not only for a prolate seed. The theorem is proved in
+`ccm-universal-boundary-laplace-frame-saturation-law.md`.
+
+Therefore a source-defined left inverse for `B_a` must be asymptotically extremal on the entire
+boundary-profile space and control the subleading signed measure `dR`. The existing Möbius Schur
+contraction cannot supply that inverse by bounded causal functional calculus: it is unchanged by
+symmetric orbit insertion and acquires the missing divisor information only through the
+noncommuting meromorphic contour seam. The live positive mechanism is a divisor-sensitive
+left-inverse/factorization whose sharp norm is measured after that seam.
+
+The same two-edge family is an effective noncompact detector. For any fixed off-line quartet
+`w=delta+iT`, its contribution along a generic fixed profile has leading term
+
+```text
+4exp(2a delta) Re(exp(2iaT)A_f(w)^2),                           (11b)
+```
+
+while an all-line reference divisor contributes a uniformly bounded amount. A cofinal phase
+sequence makes `(11b)` tend to `-infinity`. The result extends to a finite horizontally isolated
+rightmost layer and is proved in `two-edge-boundary-quartet-amplification-law.md`.
+
+This does not yet globalize to the zeta divisor. An off-line divisor need not have an attained or
+horizontally isolated maximal displacement. The corresponding positive detector theorem is a full
+indicator/spectral-synthesis statement: without selecting a rightmost zero, an off-line completed
+divisor must force negative liminf on some cofinal two-edge boundary family. Single-zero dominance
+cannot be used.
+
+The nonattained-layer problem nevertheless has an exact scalar carrier. For the cumulative defect
+`R` in `ccm-polar-prime-critical-mellin-defect-law.md`, put
+
+```text
+omega_R=limsup_(h->infinity) log(1+|R(h)|)/h.                   (11c)
+```
+
+Its Laplace transform is the rational-plus-Euler logarithmic derivative. Holomorphic continuation
+therefore proves
+
+```text
+Re rho<=1/2+omega_R for every nontrivial zero rho,
+RH iff omega_R=0.                                             (11d)
+```
+
+Under RH the classical von Koch error gives the stronger polynomial bound `R(h)=O(h^3)`.
+Conversely, any subexponential bound on `R` excludes all transverse poles at once, without a
+rightmost-zero hypothesis. The proof is in `ccm-critical-mellin-defect-abscissa-rh-law.md`.
+
+Thus a boundary proof can globalize either by establishing negative liminf of the full two-edge
+divisor sum under RH failure, or positively by proving zero exponential type of `R`. The latter is
+the sharper source-side target, but it is already an exact RH criterion; prime-number-theorem
+control stops at `omega_R<=1/2`.
+
+The causal Möbius coordinate reaches the same boundary and no farther for free. If
+
+```text
+m_0(t)=sum_(n<=e^t)mu(n)/n,
+```
+
+then the proved strong limit gives only `m_0 in L2`. Moving its Hardy transform from `s=1` toward
+the critical line requires
+
+```text
+exp(alpha*t)m_0(t) in L2 for every alpha<1/2.                  (11e)
+```
+
+One weight `alpha` excludes zeros from `Re s>1-alpha`, and the full half-unit tower `(11e)` is
+equivalent to RH. This is proved in `mobius-half-unit-exponential-moment-rh-law.md`. Hence the
+unweighted Möbius Schur contraction cannot yield `omega_R=0` by a bounded left translation. The
+positive source theorem must construct a cutoff-dependent synthesis on the nested weighted domains
+`D_alpha`, retaining the meromorphic residue graph as `alpha` approaches `1/2`.
+
+At positive source shift `omega`, the absolutely convergent Euler formula supplies only the safe
+weighted range `alpha<2omega`. Reaching the critical line from `s=1+2omega` requires
+`alpha<1/2+2omega`. The missing continuation width is therefore exactly `1/2` at every stage. The
+safe range collapses to zero as `omega->0`; it does not approach the required half-unit tower.
 
 ### B. No-negative-birth theorem
 
@@ -569,6 +676,49 @@ Therefore the complete coupled causal source converges strongly to `e^(-t)`. Fai
 convergence and failure of constant-channel graph membership are no longer open explanations.
 The RH content is exactly the noncommutation of this strong limit with the meromorphic contour
 transfer: crossed poles create the anti-causal residue seam.
+
+The causal and Euler-Pick coordinates are now identified exactly, so no unknown comparison map
+remains between them. Put
+
+```text
+Phi_omega(z)=xi(1+z)/xi(1+2omega+z),
+
+A_omega(z)=pi^(-omega)
+ Gamma((1+2omega+z)/2)/Gamma((1+z)/2)
+ *(1+2omega+z)(2omega+z)/((1+z)z(1+omega+z)).           (12z5a)
+```
+
+Then `(12z)` is precisely
+
+```text
+L F_omega(z)+1/((1+omega)z zeta(1+2omega))
+ =A_omega(z)Phi_omega(z).                                (12z5b)
+```
+
+Under the affine map `j_omega(z)=i(1/2+omega+z)`, one has
+
+```text
+Phi_omega(z)=Theta_omega(j_omega(z)),                    (12z5c)
+
+K_omega(z,v)
+ =(1-Phi_omega(z)conjugate(Phi_omega(v)))
+  /(1+2omega+z+conjugate(v)).                            (12z5d)
+```
+
+The negative index of `(12z5d)` is exactly the number of zeros with
+`Re rho>1/2+omega`. Thus the signed causal vector already contains the complete shifted-Xi
+quotient after an explicit archimedean-polar scalar conjugacy. The missing upgrade is now exact:
+scalar Schur contractivity and one-vector Hardy control must become complete positivity of every
+finite matrix `(K_omega(z_j,z_k))`, cofinally as `omega` decreases to zero. At `omega=0`,
+`Phi_0=1` and `K_0=0`; retaining only the strong endpoint loses the entire transverse filtration.
+The proof and scope are recorded in `ccm-causal-pick-affine-conjugacy-law.md`.
+
+This also fixes the role of the two new HT constraint-dimension theorems. For fixed `omega`,
+`(12z5b)` is an invertible scalar meromorphic coordinate change, not a proved nonpure
+Stanley--Reisner realization. Scalar principalization therefore forbids attributing the missing
+incidence to a hidden one-clock nonpure prime matroid. The actual positive carrier is the cofinal
+`omega`-filtration, the complete Pick-section family, and its residue-index jumps; a periodic-pencil
+interpretation would require an additional proof of an exact relation complex.
 
 ### G. The continuation graph must carry inverse-horizontal charge
 
@@ -1005,11 +1155,16 @@ uniformly and zero-preservingly to Xi, but its positive kernels need not have re
 transforms. Applying `(12z30)` to their logarithmic graphs would therefore restate the remaining
 zero-fibre control rather than prove it.
 
-The new periodic-pencil intrinsic-dimension theorem does not alter this verdict. Its lower bound
-counts analytic variables in an exact nonpure Stanley--Reisner HT realization; the two Hardy
-polarizations in `(12z17)` are not such a `C^2` realization. A periodic-pencil CCM branch first
-needs a proved nonpure source--divisor relation complex and its exact annihilator. At present that
-is a labelled conjectural design, not an input.
+The periodic-pencil intrinsic-dimension and scalar-principalization theorems do not alter this
+verdict, but together they classify the only two legitimate uses of relation geometry here. Their
+lower bound counts analytic variables in an exact nonpure Stanley--Reisner HT realization; the two
+Hardy polarizations in `(12z17)` are not such a `C^2` realization. Moreover componentwise channel
+multiplicity, constant finite internal monodromy, and every DA-gauge-flat finite cocycle still force
+the one-variable structural ideal to be pure and principal. Therefore a periodic-pencil CCM branch
+first needs a proved nonpure source--divisor relation complex and its exact annihilator, and then
+must positively expose a second analytic variable, a non-DA-flat cocycle, an infinite-dimensional
+internal action with new differential transcendence, or a non-additive action. At present that is a
+labelled conjectural design, not an input.
 
 Thus the independent boundary-strip shortcut is closed. The live CCM endpoints return to the two
 primary cofinal certificates:
@@ -1056,25 +1211,59 @@ quasi-analyticity, boundary-shell prime peeling, or a Wiener--Hopf factorization
 indices are fixed by the Euler--Gamma source. The exact conjecture and its kill conditions are in
 `ccm-prime-shift-screw-null-unique-continuation.md`.
 
-The periodic-pencil theorem supplies only a conditional fourth language. If the boundary-shell
-relations are first proved to have an exact nonpure Stanley--Reisner annihilator, then at least two
-genuine analytic directions are forced. No such relation-complex identification is currently
-proved for `(12z41)`.
+The two HT constraint-dimension theorems supply a sharp route bifurcation, not an automatic fourth
+mechanism. If the boundary-shell relations are first proved to have an exact nonpure
+Stanley--Reisner annihilator, then at least two genuine analytic directions are forced; ordinary
+Hardy-channel doubling and DA-flat finite internal state cannot supply them. If the construction
+stays one-clock, additive, and DA-flat, its exact full-matroid relation geometry is instead forced
+into the pure principal stratum. In that branch the missing RH information must be carried by the
+pointed source--divisor incidence, the aperture seam, and the two-sided boundary compatibility,
+not by nonpure prime combinatorics. Equation `(12z41)` currently supplies one scalar
+pseudodifferential compatibility relation, not a proved full Stanley--Reisner matroid, so no
+nonpure relation-complex identification is available.
 
-Two scalar regularity shortcuts are already closed. Iterating the order-`log|D|` archimedean
-ellipticity reaches only the intersection of logarithmic Sobolev domains, which still contains
-every compactly supported smooth function and is not quasi-analytic. Moreover the full-line symbol
+One scalar regularity shortcut is closed. Iterating the order-`log|D|` archimedean ellipticity
+reaches only the intersection of logarithmic Sobolev domains, which still contains every compactly
+supported smooth function and is not quasi-analytic.
+
+The earlier crossing argument used an incomplete full-line symbol and is retracted. The
+untruncated polar kernel `2cosh(t/2)` is not tempered; on the aperture it contributes exactly the
+multiplier `P_a` in `(7)`. Thus the correct characteristic symbol is
 
 ```text
-M_a(xi)=m_infinity(xi)
- -2sum_(n<e^(2a))Lambda(n)n^(-1/2)cos(xi log n)          (12z43)
+W_a(xi)=Re psi(1/4+i*xi/2)-log pi
+ -2sum_(n<=e^(2a))Lambda(n)n^(-1/2)cos(xi log n)
+ +P_a(xi).                                                (12z43)
 ```
 
-is negative at `xi=0` for large `a` but tends to `+infinity` with `|xi|`; the prime sum is of size
-`e^a`, while `m_infinity(xi)=log|xi|+O(1)`. Hence `(12z43)` has real characteristic crossings
-cofinally. A zero-free scalar Wiener--Hopf factorization cannot work. The surviving object is a
-singular finite-interval factorization retaining those crossings and proving a nonvanishing
-boundary Evans determinant, or a source-selected matrix relation.
+At zero, `P_a(0)=8sinh(a)` cancels the prime-number-theorem main term. Writing
+`X=e^(2a)` and `E(X)=sum_(n<=X)Lambda(n)-X` gives the exact residue
+
+```text
+W_a(0)=m(0)+2-4/sqrt(X)
+ -2E(X)/sqrt(X)-integral_1^X E(t)t^(-3/2)dt.             (12z43a)
+```
+
+The sign is therefore a critical Mellin defect, not a consequence of the leading prime mass. The
+corrected symbol tends to `+infinity` as `|xi|->infinity`, so its real zero set is finite but may be
+empty. The surviving object is either a zero-free finite-interval factorization retaining the
+rank-two polar block or a singular factorization retaining every crossing and proving a
+nonvanishing boundary Evans relation.
+
+At fixed `a` the possibly empty real crossing set is finite. After factoring its multiplicity polynomial `p_a`
+from `(12z43)` by a bounded rational factor, the remaining multiplier `c_a` is real-zero-free and
+invertible. Every interior null solution therefore transforms to
+
+```text
+v=c_a(D)u,       p_a(D)v=0,                             (12z44)
+```
+
+so `v` is a finite exponential polynomial generated exactly by the real characteristic crossings;
+in the zero-free branch its interior trace is zero. The inverse multiplier is nonlocal, so the
+exterior trace of `v` remains part of the data. The remaining CCM theorem is a two-sided boundary
+factorization/Evans relation with no nonzero compatible pair, retaining the rank-two polar block,
+any finite packet, exterior trace, support, mean-zero condition, and anchors `(12z41a)`. The reduction is proved in
+`ccm-characteristic-crossing-interior-mode-reduction-law.md`.
 
 ## Gates
 
@@ -1125,14 +1314,25 @@ boundary Evans determinant, or a source-selected matrix relation.
 - [x] real-spectrum finite logarithmic graphs proved transverse-zero
 - [x] graph-core convergence from CCM real spectra proved RH-equivalent
 - [x] periodic-pencil analytic dimension separated from Hardy polarization count
+- [x] one-clock principal branch separated from nonpure curved/infinite-dimensional branch
 - [x] finite-stage boundary-strip shortcut retired as an independent CCM completion
 - [x] exact finite-aperture prime-shift screw null equation isolated
 - [x] affine loss under differentiation repaired by two exact anchors
 - [x] logarithmic-elliptic quasi-analytic shortcut excluded
-- [x] zero-free scalar Wiener--Hopf shortcut excluded by real characteristic crossings
+- [x] exact rank-two polar multiplier restored to the finite-aperture symbol
+- [x] polar--prime main-term cancellation reduced to the critical Mellin defect
+- [x] false coarse crossing argument retracted
+- [x] interior null equation reduced to a finite characteristic-mode packet
+- [ ] decide the corrected symbol's zero-free versus crossing branch
 - [ ] prove or refute source-specific unique continuation for `(12z41)`
-- [ ] construct a positive reference splitting `(10)`
-- [ ] prove the infinite-carrier contraction `(11)`
+- [x] construct the exact positive frame-minus-level splitting `(10)`
+- [x] prove universal infinite-dimensional boundary-frame saturation `(11a)`
+- [x] prove two-edge amplification of every fixed off-line quartet `(11b)`
+- [x] encode all nonattained transverse layers by the defect abscissa `(11c)`
+- [x] classify causal Möbius transport as a cofinal half-unit weighted-domain tower `(11e)`
+- [x] identify the causal Möbius quotient with the Euler-region shifted-Xi Pick carrier `(12z5)`
+- [ ] prove the zero-type recession `omega_R=0`
+- [ ] prove the infinite-carrier lower-frame bound `(11)`
 - [ ] or construct a source-defined Gram factorization of `(12c)` and an index-faithful aperture
       transport
 - [ ] or construct a positive relative-background kernel and prove `(12l)`

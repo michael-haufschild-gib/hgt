@@ -83,7 +83,7 @@ theorem exists_strictMono_separatingShellUpper
     exact hbu.trans_le hub
   nlinarith
 
-set_option maxHeartbeats 1000000 in
+set_option maxHeartbeats 4000000 in
 theorem scaledEvenShellCutoff_summableDilationCombination_apply
     {a b : ℝ} (r : ℕ → ℝ) (hr : ∀ j, 1 < r j)
     (hmono : StrictMono r) (c : ℕ → ℂ) (hc : Summable fun j => ‖c j‖)
@@ -204,7 +204,7 @@ def summableEvenDilationCorner
   crossBoundary (evenCentralSoninProjection a)
     (summableEvenDilationCombination r hr c)
 
-set_option maxHeartbeats 600000 in
+set_option maxHeartbeats 2400000 in
 /-- Summable Calkin injectivity persists on the actual even Sonin carrier. -/
 theorem summableEvenDilationCorner_not_isCompactOperator
     {a : ℝ} (r : ℕ → ℝ) (hr : ∀ j, 1 < r j) (hmono : StrictMono r)
@@ -254,7 +254,7 @@ theorem summableEvenDilationCorner_not_isCompactOperator
         evenSubspace) : SoninL2) = _
     simp only [summableEvenDilationCorner, crossBoundary,
       ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply,
-      ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply]
+      ContinuousLinearMap.sub_apply]
     rw [summableEvenDilationCombination_coe_apply r hr c hc]
     rw [summableEvenDilationCombination_coe_apply r hr c hc]
     change W (centralSoninProjection a (E f)) -
@@ -277,12 +277,12 @@ theorem summable_norm_eulerScaled
     (r : ℕ → ℝ) (hr : ∀ j, 1 < r j) (c : ℕ → ℂ)
     (hc : Summable fun j => ‖c j‖) :
     Summable fun j => ‖c j * (-((Real.sqrt (r j) : ℂ)⁻¹))‖ := by
-  apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hc
+  refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) ?_ hc
   intro j
   rw [norm_mul, norm_neg, norm_inv, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (Real.sqrt_pos.2 (zero_lt_one.trans (hr j)))]
   have hsqrt : 1 ≤ Real.sqrt (r j) :=
-    (Real.one_le_sqrt (by linarith [hr j])).mpr (by linarith [hr j])
+    Real.one_le_sqrt.mpr (by linarith [hr j])
   have hinv : (Real.sqrt (r j))⁻¹ ≤ 1 :=
     (inv_le_one₀ (Real.sqrt_pos.2 (zero_lt_one.trans (hr j)))).mpr hsqrt
   nlinarith [norm_nonneg (c j)]

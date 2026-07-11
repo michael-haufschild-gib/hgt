@@ -59,6 +59,7 @@ import GaloisForLFunctions.Bottcher.Q62WeylDischarge
 import GaloisForLFunctions.Q62RootTower
 import GaloisForLFunctions.Hurwitz.MixedClose
 import GaloisForLFunctions.Hurwitz.AllNComplete
+import GaloisForLFunctions.Hurwitz.LadderIndependence
 import GaloisForLFunctions.U0.U0TowerBridge
 import GaloisForLFunctions.U0.U0PhiFourCapstone
 import GaloisForLFunctions.U0.U0PhiLargeCapstone
@@ -5176,3 +5177,45 @@ theorem gapA_fixedPointAnalyticContract_backwardOrbit_card :
   exact Bottcher.exists_fixedPoint_backwardOrbitDense_of_gapAFixedPointAnalyticContract hgap
 
 end FullyProvenNewTargets
+
+/-- Full-ladder algebraic-independence target for `hurwitz-in-a-weld-escape-ht.md`.
+
+For `Re s > 1` and `s ∉ ℚ`, a polynomial relation of ANY total degree among the genuine
+Hurwitz ladder values `hzeta (s+k) a` (`0 ≤ k ≤ N`), with coefficients in `ℂ[a]`, holding on
+the upper half-plane, has zero coefficients.  Via the escape identity
+`∂_a^k ζ(s,a) = (-1)^k (s)_k ζ(s+k,a)` this is the hypertranscendence of `a ↦ ζ(s,a)` over
+`ℂ(a)`: the monodromy deformation at the branch points `a = 0, -1, …, -N` spans the whole
+value space by a Vandermonde factorization, so no relation survives. -/
+def HurwitzLadderFullIndependenceTarget (N : ℕ) (s : ℂ) : Prop :=
+  1 < s.re →
+  (∀ r : ℚ, (r : ℂ) ≠ s) →
+  ∀ P : MvPolynomial (Fin (N + 1)) (Polynomial ℂ),
+    (∀ a : ℂ, 0 < a.im →
+      MvPolynomial.eval₂ (Polynomial.evalRingHom a)
+        (fun k : Fin (N + 1) => HurwitzZetaShift.hzeta (s + ((k : ℕ) : ℂ)) a) P = 0) →
+    P = 0
+
+/-- Formal wrapper for the full-ladder algebraic independence (arbitrary degree,
+`s ∉ ℚ`). -/
+theorem hurwitz_ladder_full_independence (N : ℕ) (s : ℂ) :
+    HurwitzLadderFullIndependenceTarget N s := by
+  intro hs1 hsQ P hrel
+  exact HurwitzLadder.hurwitz_ladder_independence hs1 hsQ N P hrel
+
+/-- Near-ray form of the full-ladder independence target: the relation hypothesis is only
+required on one punctured upper half-disc at a single branch point `-n₀`. -/
+def HurwitzLadderFullIndependenceNearRayTarget (N n₀ : ℕ) (s : ℂ) : Prop :=
+  1 < s.re →
+  (∀ r : ℚ, (r : ℂ) ≠ s) →
+  ∀ P : MvPolynomial (Fin (N + 1)) (Polynomial ℂ),
+    (∀ x : ℂ, ‖x‖ < 1 / 2 → 0 < x.im →
+      MvPolynomial.eval₂ (Polynomial.evalRingHom (-(n₀ : ℂ) + x))
+        (fun k : Fin (N + 1) => HurwitzZetaShift.hzeta (s + ((k : ℕ) : ℂ)) (-(n₀ : ℂ) + x))
+        P = 0) →
+    P = 0
+
+/-- Formal wrapper for the near-ray form of the full-ladder independence. -/
+theorem hurwitz_ladder_full_independence_near_ray (N n₀ : ℕ) (s : ℂ) :
+    HurwitzLadderFullIndependenceNearRayTarget N n₀ s := by
+  intro hs1 hsQ P hrel
+  exact HurwitzLadder.hurwitz_ladder_independence_near_ray hs1 hsQ N n₀ P hrel

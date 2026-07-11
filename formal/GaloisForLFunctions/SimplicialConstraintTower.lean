@@ -173,6 +173,109 @@ theorem twoThick_of_pure_ridgeThick
   exact exists_two_coface_directions_of_pure_ridgeThick hpure hthick
     ⟨F, hFfacets, hJF⟩ hJlt
 
+/-! ### Rank-one facet principalization -/
+
+/-- The facets obtained by deleting one vertex from a set `U` of ambient vertices. -/
+def deletionFacets (V U : Finset α) : Set (Finset α) :=
+  {F | ∃ u ∈ U, F = V.erase u}
+
+/-- A facet family has one-variable period codimension when every facet misses at most one
+ambient vertex. This is the exact combinatorial output of the HT period-rank argument. -/
+def FacetComplementRankOne (V : Finset α) (facets : Set (Finset α)) : Prop :=
+  ∀ ⦃F⦄, F ∈ facets → F ⊆ V ∧ (V \ F).card ≤ 1
+
+/-- Rank-one facet complements force the simplex-or-deletion-family classification. In the
+non-simplex case the omitted vertices form a nonempty block `U`. -/
+theorem facetAntichain_eq_singleton_or_deletionFacets
+    {V : Finset α} {facets : Set (Finset α)}
+    (hne : facets.Nonempty) (hanti : FacetAntichain facets)
+    (hrank : FacetComplementRankOne V facets) :
+    facets = {V} ∨
+      ∃ U : Finset α, U.Nonempty ∧ U ⊆ V ∧ facets = deletionFacets V U := by
+  classical
+  by_cases hV : V ∈ facets
+  · left
+    ext F
+    constructor
+    · intro hF
+      have hFV : F ⊆ V := (hrank hF).1
+      exact Set.mem_singleton_iff.mpr (hanti hF hV hFV)
+    · intro hF
+      exact Set.mem_singleton_iff.mp hF ▸ hV
+  · right
+    let U : Finset α := V.filter fun u => V.erase u ∈ facets
+    have hUsub : U ⊆ V := filter_subset _ _
+    have hfacets : facets = deletionFacets V U := by
+      ext F
+      constructor
+      · intro hF
+        have hFV : F ⊆ V := (hrank hF).1
+        have hdiff_ne : (V \ F).Nonempty := by
+          rw [sdiff_nonempty]
+          intro hVF
+          have hFVeq : F = V := Finset.Subset.antisymm hFV hVF
+          exact hV (hFVeq ▸ hF)
+        obtain ⟨u, hu⟩ := hdiff_ne
+        have hdiff : V \ F = {u} := by
+          ext x
+          constructor
+          · intro hx
+            have hxu := card_le_one.mp (hrank hF).2 x hx u hu
+            simp [hxu]
+          · intro hx
+            have hxu : x = u := by simpa using hx
+            exact hxu ▸ hu
+        have huV : u ∈ V := (mem_sdiff.mp hu).1
+        have hFerase : F = V.erase u := by
+          apply Finset.Subset.antisymm
+          · exact fun x hx =>
+              mem_erase.mpr ⟨fun hxu => (mem_sdiff.mp hu).2 (hxu ▸ hx), hFV hx⟩
+          · intro x hx
+            have hxV : x ∈ V := (mem_erase.mp hx).2
+            by_contra hxF
+            have hxsdiff : x ∈ V \ F := mem_sdiff.mpr ⟨hxV, hxF⟩
+            have hxu : x = u := by simpa [hdiff] using hxsdiff
+            exact (mem_erase.mp hx).1 hxu
+        have huU : u ∈ U := by
+          rw [mem_filter]
+          exact ⟨huV, hFerase ▸ hF⟩
+        exact ⟨u, huU, hFerase⟩
+      · rintro ⟨u, huU, rfl⟩
+        exact (mem_filter.mp huU).2
+    have hUne : U.Nonempty := by
+      obtain ⟨F, hF⟩ := hne
+      rw [hfacets] at hF
+      obtain ⟨u, huU, -⟩ := hF
+      exact ⟨u, huU⟩
+    exact ⟨U, hUne, hUsub, hfacets⟩
+
+/-- The faces of a deletion family are exactly the ambient subsets which omit at least one
+vertex of `U`. -/
+theorem isFaceOf_deletionFacets_iff {V U J : Finset α} :
+    IsFaceOf (deletionFacets V U) J ↔ J ⊆ V ∧ ¬ U ⊆ J := by
+  constructor
+  · rintro ⟨F, ⟨u, huU, rfl⟩, hJF⟩
+    refine ⟨hJF.trans (erase_subset u V), ?_⟩
+    intro hUJ
+    exact (mem_erase.mp (hJF (hUJ huU))).1 rfl
+  · rintro ⟨hJV, hUnotJ⟩
+    rw [Finset.not_subset] at hUnotJ
+    obtain ⟨u, huU, huJ⟩ := hUnotJ
+    refine ⟨V.erase u, ⟨u, huU, rfl⟩, ?_⟩
+    exact fun x hx => mem_erase.mpr ⟨fun hxu => huJ (hxu ▸ hx), hJV hx⟩
+
+/-- A deletion family has one unique minimal forbidden block: `U` itself is a nonface, and every
+ambient nonface contains `U`. This is the combinatorial principalization statement. -/
+theorem deletionFacets_unique_minimalNonface {V U : Finset α} (hUsub : U ⊆ V) :
+    (¬ IsFaceOf (deletionFacets V U) U) ∧
+      ∀ J, J ⊆ V → ¬ IsFaceOf (deletionFacets V U) J → U ⊆ J := by
+  constructor
+  · rw [isFaceOf_deletionFacets_iff]
+    simp [hUsub]
+  · intro J hJV hJ
+    by_contra hUnotJ
+    exact hJ ((isFaceOf_deletionFacets_iff).2 ⟨hJV, hUnotJ⟩)
+
 end
 
 end GaloisForLFunctions

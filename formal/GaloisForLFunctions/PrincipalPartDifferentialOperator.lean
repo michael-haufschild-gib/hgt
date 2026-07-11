@@ -56,6 +56,51 @@ theorem simplePoleDifferentialOperator_ne_zero
       (mul_ne_zero (pow_ne_zero _ (by norm_num))
         (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)))) hc hcoeff
 
+/-- The sum of differential principal parts of a finite family of simple poles. -/
+def simplePoleDifferentialOperatorFamily
+    {I G C : Type*} [AddCommGroup G] [Field C]
+    (s : Finset I) (L : I → Polynomial C) (c : I → C) (x : I → G) :
+    G →₀ (ℕ →₀ C) :=
+  ∑ i ∈ s, Finsupp.single (x i) (simplePoleDifferentialOperator (L i) (c i))
+
+/-- **Separated simple-pole differential obstruction.** If one member of a finite family lies on
+a translation orbit disjoint from every other member, then any nonzero constant-coefficient
+differential operator on that pole gives a nonzero orbit residue. Hence the whole family cannot be
+a finite translation coboundary. -/
+theorem simplePoleDifferentialOperatorFamily_ne_finiteOrbitCoboundary
+    {I G C : Type*} [DecidableEq I] [AddCommGroup G] [Field C] [CharZero C]
+    (q : G) (s : Finset I) (L : I → Polynomial C) (c : I → C) (x : I → G)
+    {i₀ : I} (hi₀ : i₀ ∈ s) (hL : L i₀ ≠ 0) (hc : c i₀ ≠ 0)
+    (hsep : ∀ j ∈ s, j ≠ i₀ →
+      (x i₀ : G ⧸ AddSubgroup.zmultiples q) ≠
+        (x j : G ⧸ AddSubgroup.zmultiples q))
+    (E : G →₀ (ℕ →₀ C)) :
+    simplePoleDifferentialOperatorFamily s L c x ≠ finiteOrbitCoboundary q E := by
+  intro h
+  have hv := congrArg (orbitResidueVector q) h
+  rw [orbitResidueVector_finiteOrbitCoboundary] at hv
+  have heval := congrArg
+    (fun D : (G ⧸ AddSubgroup.zmultiples q) →₀ (ℕ →₀ C) =>
+      D (x i₀ : G ⧸ AddSubgroup.zmultiples q) ((L i₀).natDegree + 1)) hv
+  rw [simplePoleDifferentialOperatorFamily, orbitResidueVector,
+    Finsupp.mapDomain_finsetSum] at heval
+  simp only [Finsupp.zero_apply] at heval
+  rw [Finsupp.finsetSum_apply s _ (x i₀ : G ⧸ AddSubgroup.zmultiples q),
+    Finsupp.finsetSum_apply s _ ((L i₀).natDegree + 1)] at heval
+  simp only [Finsupp.mapDomain_single, Finsupp.single_apply] at heval
+  rw [Finset.sum_eq_single i₀] at heval
+  · simp only [if_true] at heval
+    rw [simplePoleDifferentialOperator_coeff_succ_natDegree] at heval
+    exact mul_ne_zero
+      (mul_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hL)
+        (mul_ne_zero (pow_ne_zero _ (by norm_num))
+          (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)))) hc heval
+  · intro j hjs hjne
+    rw [if_neg (hsep j hjs hjne).symm]
+    simp
+  · intro hnot
+    exact (hnot hi₀).elim
+
 /-- The formal principal-part field of two opposite simple poles after applying `L`. -/
 def simplePolePairDifferentialOperator
     {G C : Type*} [AddCommGroup G] [Field C]

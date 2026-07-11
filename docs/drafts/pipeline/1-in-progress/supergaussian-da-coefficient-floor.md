@@ -111,7 +111,7 @@ Suppose the coefficients are eventually nonzero, put `b_n=-log|a_n|`, and assume
 
 Then the series is HT over `C(z)` for every possible choice of coefficient phases. Mahler's integer normalization turns a hypothetical ADE into integral coefficient identities. Each such identity must have two grouped convolution atoms whose logarithmic magnitudes differ by only `O(log N)`, while the log-superlacunary condition makes the minimizing atom unique with an `omega(log N)` gap.
 
-The complete unconditional paper proof is recorded in `2-fully-proven/needs-audit/log-superlacunary-taylor-magnitude-hypertranscendence.md`. It remains under scientific-novelty audit and is not Lean-formalized. This closes a phase-uniform, arbitrary-complex, full-support stratum of `(SG)` without coefficient arithmetic.
+The complete unconditional paper proof is recorded in `2-fully-proven/new_scientific_knowledge/log-superlacunary-taylor-magnitude-hypertranscendence.md`. It remains under scientific-novelty audit and is not Lean-formalized. This closes a phase-uniform, arbitrary-complex, full-support stratum of `(SG)` without coefficient arithmetic.
 
 ### Transcendental Taylor log-ratio `[PROVED HERE] [NOVELTY AUDIT]`
 
@@ -127,7 +127,7 @@ The stronger necessary DA law is arithmetic: if a DA full-support series has a f
 
 along an infinite subsequence. This is obtained by pigeonholing the bounded pair of convolution atoms that an integer ADE must keep at its Archimedean bend.
 
-The complete unconditional paper proof is recorded in `2-fully-proven/needs-audit/da-taylor-log-ratio-algebraicity-resonance-law.md`. It remains under scientific-novelty audit and is not Lean-formalized. This closes every transcendental finite-ratio phase fiber in `(SG)` and supplies a necessary characteristic of the remaining algebraic-ratio DA candidates.
+The complete unconditional paper proof is recorded in `2-fully-proven/new_scientific_knowledge/da-taylor-log-ratio-algebraicity-resonance-law.md`. It remains under scientific-novelty audit and is not Lean-formalized. This closes every transcendental finite-ratio phase fiber in `(SG)` and supplies a necessary characteristic of the remaining algebraic-ratio DA candidates.
 
 Together with the log-superlacunary theorem, this gives the DA extended-ratio spectrum: whenever an eventually full-support DA entire series has a limit of `b_(n+1)/b_n` in `[1,infinity]`, that limit is either `1` or a finite algebraic real greater than `1`.
 
@@ -167,7 +167,7 @@ This closes the first genuinely resonant stratum. Distinct bounded convolution p
 
 at the first nonzero moment `j`. This is still `omega(log n)` and therefore too large for an ADE bend. The perturbation is negligible relative to `lambda^n`, and the adjacent logarithmic ratio still tends to `lambda`.
 
-The complete unconditional paper proof is recorded in `2-fully-proven/needs-audit/hierarchical-resonance-breaking-taylor-magnitude-hypertranscendence.md`. It remains under scientific-novelty audit and is not Lean-formalized.
+The complete unconditional paper proof is recorded in `2-fully-proven/new_scientific_knowledge/hierarchical-resonance-breaking-taylor-magnitude-hypertranscendence.md`. It remains under scientific-novelty audit and is not Lean-formalized.
 
 ### Stretched-exponential ratio-one magnitudes `[PROVED HERE] [NOVELTY AUDIT]`
 
@@ -181,7 +181,7 @@ Two new ingredients close this stratum. First, eventual strict convexity makes t
 
 `C exp(n^alpha)n^(-j(1-alpha))=omega(log n)`.
 
-Thus both atoms at a hypothetical ADE bend are confined to fixed offsets, where finite-difference separation contradicts the mandatory `O(log N)` gap. The complete unconditional paper proof is recorded in `2-fully-proven/needs-audit/stretched-exponential-taylor-log-magnitude-hypertranscendence.md`. It remains under scientific-novelty audit and is not Lean-formalized.
+Thus both atoms at a hypothetical ADE bend are confined to fixed offsets, where finite-difference separation contradicts the mandatory `O(log N)` gap. The complete unconditional paper proof is recorded in `2-fully-proven/new_scientific_knowledge/stretched-exponential-taylor-log-magnitude-hypertranscendence.md`. It remains under scientific-novelty audit and is not Lean-formalized.
 
 ### Canonical curvature resonance and log-Weibull magnitudes `[PROVED HERE] [NOVELTY AUDIT]`
 
@@ -203,7 +203,7 @@ For every `gamma>1`, this proves phase-uniform HT for
 
 `-log|a_n|=exp((log n)^gamma)`.
 
-These log-Weibull profiles grow faster than every polynomial but slower than every `exp(n^alpha)`, `alpha>0`. Thus the result supplies a new continuum of phase-uniform HT profiles strictly inside the asymptotic gap between the polynomial degree-floor regime and the previously proved stretched-exponential regime. The complete paper proof is in `2-fully-proven/needs-audit/rapid-convex-curvature-resonance-hypertranscendence.md`; novelty remains unverified and no Lean formalization is claimed.
+These log-Weibull profiles grow faster than every polynomial but slower than every `exp(n^alpha)`, `alpha>0`. Thus the result supplies a new continuum of phase-uniform HT profiles strictly inside the asymptotic gap between the polynomial degree-floor regime and the previously proved stretched-exponential regime. The complete paper proof is in `2-fully-proven/new_scientific_knowledge/rapid-convex-curvature-resonance-hypertranscendence.md`; novelty remains unverified and no Lean formalization is claimed.
 
 ### Polynomial log-magnitudes impose an ADE degree floor `[PROVED HERE] [NOVELTY AUDIT]`
 
@@ -221,7 +221,7 @@ If an integer ADE had total `Y`-degree `D<beta`, convexity would confine both at
 
 `C n^(beta-j)(1+o(1)) >= C n^(beta-D)=omega(log n)`,
 
-a contradiction. The complete unconditional paper proof is recorded in `2-fully-proven/needs-audit/polynomial-taylor-log-magnitude-ade-degree-floor.md`. It is a degree floor, not a full HT theorem, and its scientific significance remains provisional.
+a contradiction. The complete unconditional paper proof is recorded in `2-fully-proven/new_scientific_knowledge/polynomial-taylor-log-magnitude-ade-degree-floor.md`. It is a degree floor, not a full HT theorem, and its scientific significance remains provisional.
 
 For `beta>2`, the same analysis now gives the exact necessary escape law for every ADE, without assuming `D<beta`. At the recurring bend there is one fixed bounded multiplicity-difference polynomial `Q` with
 
@@ -235,7 +235,7 @@ The full coefficient identity forces more than recurrence along a subsequence. F
 
 ` <= q^M exp(-c q^eta)`
 
-for some `c,eta>0`, with every `delta_A(q)` bounded. Thus the exceptional DA phase tail must lie in exponentially shrinking neighborhoods of fixed bounded-window Prouhet hypersurfaces at every scale. The complete proof is in `2-fully-proven/needs-audit/polynomial-taylor-prouhet-phase-lock.md`; scientific novelty remains unverified.
+for some `c,eta>0`, with every `delta_A(q)` bounded. Thus the exceptional DA phase tail must lie in exponentially shrinking neighborhoods of fixed bounded-window Prouhet hypersurfaces at every scale. The complete proof is in `2-fully-proven/new_scientific_knowledge/polynomial-taylor-prouhet-phase-lock.md`; scientific novelty remains unverified.
 
 ### Sub-curvature roughness destroys the polynomial escape `[PROVED HERE] [NOVELTY AUDIT]`
 
@@ -261,7 +261,46 @@ Nevertheless, conditioning on one bounded-density variable gives, for every fixe
 
 Borel--Cantelli and a countable intersection force every fixed stencil defect to be `omega(log n)`. The polynomial main term still provides degree, source-sum, and convex offset confinement, so the Archimedean bend is impossible. The magnitude event is selected before the phases; the result is therefore phase-uniform, not a random-phase genericity statement.
 
-The complete proof is in `2-fully-proven/needs-audit/rough-subleading-polynomial-taylor-magnitude-hypertranscendence.md`. It shows that high-moment Prouhet escape is unstable under asymptotically invisible roughness, but it does not settle the exactly smooth profile `b_n=n^beta`. Novelty remains unverified and no Lean formalization is claimed.
+The complete proof is in `2-fully-proven/new_scientific_knowledge/rough-subleading-polynomial-taylor-magnitude-hypertranscendence.md`. It shows that high-moment Prouhet escape is unstable under asymptotically invisible roughness, but it does not settle the exactly smooth profile `b_n=n^beta`. Novelty remains unverified and no Lean formalization is claimed.
+
+### Torsion-language-universal phase fibers `[PROVED HERE] [NOVELTY AUDIT]`
+
+Call a phase tail torsion-language universal (TLU) when every finite word over every finite
+root-of-unity alphabet occurs arbitrarily far out. Such tails exist deterministically. Two theorems
+close the smooth polynomial and critical Gaussian escapes on every TLU fiber:
+
+- For every `B>0` and real `beta>2`, the series with `a_n=exp(-B n^beta)u_n` and TLU phases `u` is
+  HT. The recurrent Prouhet lock of the smooth polynomial profile is destroyed by choosing a
+  root-of-unity alphabet finer than the ADE degree: the bounded phase window relation must then
+  vanish on a complete finite character table, forcing every grouped weight polynomial to vanish.
+  Proof in `2-fully-proven/new_scientific_knowledge/torsion-universal-phase-polynomial-magnitude-hypertranscendence.md`.
+- At the critical Gaussian exponent `beta=2`, bounded confinement fails (the dominant face is an
+  infinite summable discrete-Gaussian face), and the same conclusion follows by Fourier separation
+  of the complete summable offset face. Proof in
+  `2-fully-proven/new_scientific_knowledge/gaussian-torsion-language-hypertranscendence.md`.
+
+### Asymptotically exact geometric magnitudes: TLU closure and the level-exactness law `[PROVED HERE] [NOVELTY AUDIT]`
+
+The log-ratio algebraicity law left one named magnitude-side escape: for algebraic `lambda>1` the
+exact geometric profile `b_n=A lambda^n` realizes every required logarithmic shift resonance
+exactly and passes all magnitude-only laws. Two phase-side theorems now reach it:
+
+- **Geometric TLU hypertranscendence.** For every `lambda>1` (algebraic included), `A>0`, and
+  convergent `(c_n)`, the profile `b_n=A lambda^n+c_n` with TLU phases forces HT. The dominant ADE
+  face is locked: its normalized weight-valuation vector converges independently of phases, TLU
+  words exactify the bend inequality into identical face vanishing, and a character table finer
+  than the ADE degree kills the face.
+- **Level-exactness for periodic phases.** On the exact profile `b_n=A lambda^n+c` with eventually
+  periodic phases, every valuation level of every integer-ADE coefficient identity vanishes
+  identically. Bends must be exact ties cancelling level by level; singleton levels are
+  impossible, so `lambda` is algebraic with exact Laurent ties, and the whole periodic fiber
+  reduces to exact solvability of the `lambda`-graded tropicalization of one integer ADE — a
+  purely algebraic residual question, all analysis discharged.
+
+Both proofs are in
+`2-fully-proven/needs-audit/geometric-taylor-magnitude-torsion-language-hypertranscendence.md`.
+The finite exactification engine and the polynomial level-vanishing step are Lean-formalized in
+`GaloisForLFunctions.TorsionFaceExactification`.
 
 ## Constraint attack
 
@@ -281,7 +320,7 @@ The log-superlacunary theorem contradicts this law by additive isolation. The ex
 
 > `[CONJECTURE — persistent-bend obstruction]` An integer differential recurrence cannot sustain logarithmic-width convolution bends at every sufficiently large coefficient index for an eventually full-support sequence with `b_n/n^2->infinity`.
 
-This is stronger than a support-gap theorem: all coefficients may be nonzero. It must prove that near-equal convolution valuations cannot persist, rather than merely locate a unique monomial. The unresolved range is now more precise. Comparable adjacent `b_n` are not enough to sustain bends, every admissibly rapid convex profile with shift-separated curvature is excluded, and polynomial leading profiles become phase-uniformly HT after almost every bounded-density perturbation below their curvature scale. In the exact smooth polynomial case, every surviving ADE is forced into one fixed recurrent Prouhet lock of multiplicity at least `ceil(beta)`, and its phases satisfy an exponentially accurate local polynomial-weight relation at every scale. Torsion-language universality now destroys every such finite Prouhet face for all `beta>2`; at the critical Gaussian exponent `beta=2`, the same conclusion follows by Fourier separation of the complete summable offset face. The open content is the remaining structured-phase class: whether a non-universal phase tail can sustain the required Prouhet or Gaussian cancellation indefinitely.
+This is stronger than a support-gap theorem: all coefficients may be nonzero. It must prove that near-equal convolution valuations cannot persist, rather than merely locate a unique monomial. The unresolved range is now more precise. Comparable adjacent `b_n` are not enough to sustain bends, every admissibly rapid convex profile with shift-separated curvature is excluded, and polynomial leading profiles become phase-uniformly HT after almost every bounded-density perturbation below their curvature scale. In the exact smooth polynomial case, every surviving ADE is forced into one fixed recurrent Prouhet lock of multiplicity at least `ceil(beta)`, and its phases satisfy an exponentially accurate local polynomial-weight relation at every scale. Torsion-language universality now destroys every such finite Prouhet face for all `beta>2`; at the critical Gaussian exponent `beta=2`, the same conclusion follows by Fourier separation of the complete summable offset face. On asymptotically exact geometric profiles the TLU fiber is closed for every ratio `lambda>1`, algebraic included, and on the exact geometric profile the eventually-periodic fiber is reduced to exact solvability of the `lambda`-graded level system: every bend must be an exact tie whose level polynomial vanishes identically. The open content is the remaining structured-phase class: whether a non-universal, non-periodic phase tail can sustain the required Prouhet or Gaussian cancellation indefinitely, and whether the exact `lambda`-graded level system of a nonzero integer ADE is ever solvable.
 
 ### Jet-face reformulation
 
@@ -380,3 +419,6 @@ Valiron's 1925 paper and Strelitz's 1983 synthesis have now been inspected in fu
 - 2026-07-11 — Proved instability of the polynomial Prouhet escape: for `beta>3` and `1<alpha<beta-2`, almost every magnitude profile `b_n=n^beta+n^alphaU_n` forces HT for every phase, although the perturbation does not alter the leading value, slope, or curvature asymptotics.
 - 2026-07-11 — Classified the exact smooth polynomial escape: for `beta>2`, every integer ADE forces one fixed recurrent bounded Prouhet pair whose Laurent difference has multiplicity `mu` at `1` with `ceil(beta)<=mu<=D`.
 - 2026-07-11 — Propagated the recurrent Prouhet lock to phases: on every coefficient-index residue class, a DA tail must satisfy a fixed bounded-window polynomial-weight phase relation with error `q^M exp(-c q^eta)` at every sufficiently large scale.
+- 2026-07-11 — Closed the algebraic-ratio geometric escape on torsion-universal phase fibers: `b_n=A lambda^n+c_n` with convergent `c_n` and TLU phases is HT for every `lambda>1`, by the locked-face exactification mechanism.
+- 2026-07-11 — Proved the level-exactness law: exact geometric magnitudes with eventually periodic phases force every valuation level of every integer-ADE coefficient identity to vanish identically; the periodic fiber is now a purely algebraic `lambda`-graded solvability question.
+- 2026-07-11 — Formalized the finite exactification engine (character-table vanishing forces zero weights) and the polynomial level-vanishing step axiom-clean in `GaloisForLFunctions.TorsionFaceExactification`.

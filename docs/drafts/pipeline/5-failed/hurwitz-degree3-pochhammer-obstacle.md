@@ -129,3 +129,14 @@ Harder than the G-product argument — requires transcendence theory, not just l
   (Pochhammer not G-product). Corrected: G-products have null space starting at W=5.
   Python computation confirms ranks; W=5 null vector identified analytically.
   Subleading fix identified via G_0·G_2 - 2G_1² ≠ 0 argument.
+
+## 2026-07-11 RETIRED — superseded before execution
+
+The target (degree-3 exclusion for generic `s`) is proven, for ALL degrees and all `s ∉ ℚ`, by
+the delocalized-monodromy + Vandermonde argument in
+`3-formalized/new_scientific_knowledge/hurwitz-in-a-weld-escape-ht.md` (Lean:
+`HurwitzLadder.hurwitz_ladder_independence`). The G-product null-space analysis and the open
+ζ-value product-nonvanishing lemma are NOT needed on any surviving route for `s ∉ ℚ`. The
+sole regime this card's tools could still address is rational non-integer `s` at degree
+`≥ denominator(s)`, where the monodromy grid is finite; if that residual is attacked, start
+from the rational-tail lemma (`AllNTailIndependence`), not from G-products.

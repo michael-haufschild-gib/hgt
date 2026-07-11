@@ -56,6 +56,11 @@ ppDim(Delta)=min{d:a periodic-pencil facet separation exists}.            (5)
 This differs from faithful facet-separation dimension: a facet complement need not lie in one
 hyperplane.  It may occupy different parallel leaves of one periodic pencil.
 
+The companion theorem `periodic-pencil-matrix-rank-formula.md` removes the existential
+quantification: `ppDim` is the minimum of `rank_C M+epsilon_Q(M)` over PP-admissible
+facet-evaluation matrices, where the correction is one exactly when `ker M` contains a nonzero
+rational vector.
+
 ## Periodic-pencil realization theorem `[PROVED HERE]`
 
 If `ppDim(Delta)=d`, there are an entire function `F` on `C^d`, translations
@@ -224,7 +229,7 @@ Every faithful facet separation in dimension `d` gives a periodic-pencil separat
 nonzero facet values.  Complement values are zero and (3) holds.  Therefore
 
 ```text
-ppDim(Delta)<=ffsDim(Delta)<=|Fac(Delta)|.                   (22)
+ppDim(Delta)<=ffsDim(Delta)<=min(|V|,|Fac(Delta)|).          (22)
 ```
 
 The first inequality can be strict because distinct parallel leaves in (4) are analytically
@@ -374,14 +379,19 @@ The periodic-pencil realization gives
 htDim(Delta)<=ppDim(Delta).                                  (30)
 ```
 
-The scalar purity theorem proves that a one-variable full Stanley--Reisner HT system has only pure
-codimension-one facet geometry and a principal structural ideal.  Since `Delta_wedge` is nonpure,
+The exact dimension-one phase law (D1), proved above, shows that `htDim(Delta)=1` exactly when every
+facet complement has cardinality at most one.  The edge facets of `Delta_wedge` have complements
+of cardinality four, so
 
 ```text
 htDim(Delta_wedge)>=2.                                      (31)
 ```
 
-Combining (29)--(31) with the separately proved faithful value gives the strict dimension law
+The companion paper proof
+`faithful-facet-separation-dimension-ht-realization.md` proves the faithful value four: its explicit
+four-dimensional coordinates give the upper bound, while for `L=span_C{a_3,a_4,a_5}` any faithful
+realization in dimension at most three has a contradiction whether `dim L>=2` or `dim L<=1`.
+Combining that theorem with (29)--(31) gives the strict dimension law
 
 ```text
 htDim(Delta_wedge)=ppDim(Delta_wedge)=2

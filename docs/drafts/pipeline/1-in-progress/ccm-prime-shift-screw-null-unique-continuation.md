@@ -134,24 +134,42 @@ periodic-pencil theorem forces at least two genuine analytic directions and cons
 dimension-two HT realization. One direction would carry the Euler shift module and the other the
 reflected boundary relation.
 
-This mechanism is conditional on first proving the exact relation complex. Two Hardy
-polarizations of one variable do not satisfy that hypothesis by themselves.
+This mechanism is conditional on first proving the exact relation complex. The scalar
+principalization theorem shows that neither two Hardy polarizations of one variable, arbitrary
+componentwise channel multiplicity, constant finite internal monodromy, nor a DA-gauge-flat finite
+cocycle satisfies that cost by itself. A nonpure branch must positively carry a second analytic
+variable, a non-DA-flat cocycle, an infinite-dimensional action with new differential
+transcendence, or a non-additive action.
 
-### D. Singular finite-interval Wiener--Hopf factorization `[OPEN CORE]`
+`[PROVED ROUTE CLASSIFICATION]` There is a complementary one-clock branch. If a CCM realization
+does satisfy the exact full Stanley--Reisner matroid hypothesis while remaining scalar/additive and
+DA-flat finite-state, its relation ideal is forced to be pure and principal. Its off-line detector
+must then reside in the source pointing, aperture support seam, divisor marking, or boundary
+compatibility rather than in nonpure prime incidence. The present equation `(4)` is consistent with
+that branch: it is one scalar pseudodifferential compatibility constraint. It is not presently
+proved to be the full annihilator of a Stanley--Reisner system, so neither branch may import more
+than this classification.
 
-Let `m_infinity` be the real even Fourier symbol of `K_infinity`. The full-line symbol associated
-with the interior equation is
+### D. Exact finite-interval Wiener--Hopf factorization `[OPEN CORE]`
+
+The untruncated polar part `2cosh(t/2)` is not tempered and therefore has no ordinary real Fourier
+multiplier by itself. On the aperture, however, only `|t|<2a` occurs. Its exact truncated
+multiplier is
 
 ```text
-M_a(xi)
- =m_infinity(xi)
-  -2 sum_(2<=n<exp(2a)) Lambda(n)n^(-1/2)cos(xi log n).  (9)
+P_a(xi)
+ =[2sinh(a)cos(2a xi)+4xi cosh(a)sin(2a xi)]/(xi^2+1/4).
+
+W_a(xi)
+ =Re psi(1/4+i xi/2)-log pi
+  -2 sum_(2<=n<=exp(2a)) Lambda(n)n^(-1/2)cos(xi log n)
+  +P_a(xi).                                             (9)
 ```
 
 Equation `(4)` is equivalent to a support-separated relation
 
 ```text
-M_a(D)u=r,
+W_a(D)u=r,
 supp u subset [-a,a],
 supp r subset (-infinity,-a] union [a,infinity).        (10)
 ```
@@ -159,31 +177,58 @@ supp r subset (-infinity,-a] union [a,infinity).        (10)
 This is a finite-interval Wiener--Hopf problem, not a global multiplier equation. The two anchors
 `(4a)` remain part of the boundary data and cannot be recovered from `(10)` alone.
 
-`[PROVED ATTACK]` For every sufficiently large `a`, `M_a` has real characteristic zeros. Indeed,
+`[PROVED CORRECTION]` The prime main term does not force a real characteristic crossing. Put
+`X=exp(2a)` and
 
 ```text
-M_a(0)
- =m_infinity(0)
-  -2 sum_(n<exp(2a))Lambda(n)n^(-1/2) ->-infinity,       (11)
+E(X)=sum_(n<=X)Lambda(n)-X.
 ```
 
-since partial summation with the prime number theorem gives
+Then `P_a(0)=8sinh(a)`, and exact partial summation gives
 
 ```text
-sum_(n<X)Lambda(n)n^(-1/2)~2sqrt(X).                    (12)
+W_a(0)
+ =m(0)+2-4/sqrt(X)
+  -2E(X)/sqrt(X)-integral_1^X E(t)t^(-3/2)dt.           (11)
 ```
 
-For fixed `a`, the prime cosine polynomial in `(9)` is bounded, while the Gamma symbol satisfies
+Thus the polar `4sqrt(X)` term cancels the prime `4sqrt(X)` term exactly. The ordinary prime number
+theorem does not determine the sign of `(11)`. The earlier symbol without `P_a` was not the exact
+finite-aperture symbol and its claimed cofinal crossings are retracted. The correction and its
+rank-two parity signature are proved in `ccm-polar-prime-critical-mellin-defect-law.md`.
+
+For fixed `a`, the corrected prime and polar terms are bounded and decay or oscillate at infinity,
+while the Gamma symbol satisfies
 
 ```text
-m_infinity(xi)=log|xi|+O(1) ->+infinity.                (13)
+W_a(xi)=log|xi|+O_a(1) ->+infinity.                     (12)
 ```
 
-Continuity and evenness therefore give at least one pair of real zeros. The scalar symbol is not
-bounded away from zero, so a canonical zero-free scalar Wiener--Hopf factorization cannot prove
-injectivity. A surviving factorization must retain the real characteristic crossings and prove
-that their finite-interval boundary Evans determinant never vanishes, or replace the scalar symbol
-by a source-selected matrix relation.
+The real zero set is therefore finite, but may be empty. The route splits exactly: either prove a
+zero-free aperture factorization that retains the rank-two polar block, or retain every real
+crossing and prove that its finite-interval boundary Evans relation has no nonzero compatible pair.
+
+`[PROVED BRIDGE]` Factoring the possibly empty real characteristic set out
+by
+
+```text
+b_a(xi)=p_a(xi)/(1+xi^2)^L,
+W_a=b_a c_a,                                             (13)
+```
+
+with `c_a` real-zero-free and invertible, sends every interior solution `u` to
+`v=c_a(D)u` satisfying
+
+```text
+p_a(D)v=0.                                              (14)
+```
+
+Thus `v` is a finite exponential polynomial with one Jordan chain for each real characteristic
+crossing; when the set is empty, its interior trace vanishes. Because the inverse multiplier is
+nonlocal, the exterior trace of `v` remains part of the boundary data. The remaining theorem is
+that the corrected inverse multiplier, exterior trace, two-sided support condition, mean-zero
+condition, and two affine anchors admit no nonzero compatible Evans pair. The complete reduction is in
+`ccm-characteristic-crossing-interior-mode-reduction-law.md`.
 
 ## 4. Attacks
 
@@ -200,8 +245,9 @@ by a source-selected matrix relation.
    weaker at each fixed aperture but cofinally equivalent to RH.
 5. **Fixed-prime induction is insufficient.** The visible number of prime rays grows with `a`; any
    estimate whose constants deteriorate without a controlled cofinal law cannot prove `(5)`.
-6. **Zero-free scalar factorization is false.** Equations `(11)`--`(13)` force real characteristic
-   crossings at large aperture. They must be carried, not divided away.
+6. **The polar boundary block is compulsory.** It is rank two after aperture compression and has
+   opposite even/odd signatures. Omitting it destroys the leading polar--prime cancellation and
+   creates spurious characteristic crossings.
 
 ## 5. Promotion and kill conditions
 
@@ -226,11 +272,16 @@ is proved non-quasi-analytic and the boundary-shell equations admit a free datum
 - [x] three distinct mechanisms generated
 - [x] invalid Fourier, analyticity, and fixed-prime shortcuts excluded
 - [x] pure logarithmic ellipticity proved non-quasi-analytic
-- [x] scalar truncated symbol proved to have real characteristic crossings cofinally
-- [x] zero-free scalar Wiener--Hopf factorization excluded
+- [x] exact aperture-dependent polar multiplier restored
+- [x] polar--prime main-term cancellation and critical Mellin defect proved
+- [x] coarse cofinal-crossing argument retracted
+- [x] interior null space reduced to the finite real-characteristic packet
+- [x] one-clock principal relation branch separated from nonpure periodic-pencil escape
 - [ ] prove a local logarithmic-elliptic regularity theorem
 - [ ] prove or refute quasi-analyticity
 - [ ] prove or refute boundary-shell support peeling
-- [ ] construct the singular finite-interval Evans determinant or a matrix factorization
+- [ ] decide the zero-free versus characteristic-crossing branch for the corrected symbol
+- [ ] construct the finite-interval factorization/Evans relation or a matrix factorization
+- [ ] eliminate or finitely parameterize the exterior trace of the zero-free multiplier
 - [ ] prove `ker G_a=0` for every aperture
 - [ ] RH

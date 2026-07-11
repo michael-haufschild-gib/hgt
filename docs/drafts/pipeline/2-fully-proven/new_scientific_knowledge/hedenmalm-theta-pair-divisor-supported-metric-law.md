@@ -405,14 +405,26 @@ assumption inside these results.
 
 `formal/GaloisForLFunctions/SchwartzTranslation.lean` supplies the first missing upstream layer
 that mathlib did not package: additive translation as a continuous linear action on Schwartz
-space, with its group and inverse laws and exact commutation with every directional derivative.
+space, with its group and inverse laws, exact commutation with every directional derivative,
+strong continuity, and strong differentiability of every translation orbit in the Schwartz
+topology.
 
-The remaining formal gap is to prove strong differentiability of this translation orbit in the
-Schwartz topology, derive simultaneous-translation invariance from momentum symmetry, apply a
-formal Bochner--Schwartz representation theorem, and force the representing measure onto the real
-Xi zero set. Mathlib supplies Schwartz space, Fourier transform, tempered distributions, and
-measures of temperate growth, but does not currently supply that assembled Bochner--Schwartz
-theorem.
+`formal/GaloisForLFunctions/SchwartzSesquilinear.lean` packages jointly continuous sesquilinear
+forms on complex Schwartz space. Lean proves directly that momentum symmetry makes the derivative
+of every simultaneous-translation matrix coefficient vanish, and hence forces exact simultaneous
+translation invariance. No differentiability assumption on the form is added.
+
+`formal/GaloisForLFunctions/RHTower/XiSchwartzMetricSupport.lean` formalizes the downstream
+measure step. The real Xi zero set is closed and countable; if a representing measure has
+integrable `|XiC|^2` with zero integral, its support lies in that set and the measure is exactly
+the sum of its point masses there. The countability proof is extracted from local finiteness of
+the actual global Xi divisor and sigma-compactness of the complex plane.
+
+The remaining formal gap is the central Schwartz-kernel plus Bochner--Schwartz existence theorem
+taking an arbitrary positive continuous translation-invariant Schwartz form to its positive
+tempered spectral measure, together with the construction of the theta source as an actual
+Schwartz object whose formal Fourier transform is `XiC`. Mathlib supplies the component theories
+but neither the required Schwartz kernel theorem nor this assembled representation theorem.
 
 ## Gates
 
@@ -433,5 +445,8 @@ theorem.
 - [x] Lean positive atomic real-divisor metric class
 - [x] Lean exact weighted eigenfunction sampling and conservativity criterion
 - [x] Lean conservativity implies RH plus simplicity
-- [x] Lean continuous linear Schwartz translations, group law, and derivative commutation
+- [x] Lean continuous linear Schwartz translations and strong orbit differentiability
+- [x] Lean momentum symmetry implies simultaneous-translation invariance
+- [x] Lean zero Xi energy forces support on the closed real Xi divisor
+- [x] Lean countability and atomic decomposition of the supported measure
 - [ ] Lean Schwartz translation-invariance to Bochner--Schwartz classification bridge

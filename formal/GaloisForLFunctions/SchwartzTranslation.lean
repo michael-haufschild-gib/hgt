@@ -12,7 +12,8 @@ momentum-symmetry identity for a continuous Schwartz form into simultaneous-tran
 invariance.
 -/
 
-open Function
+open Function Filter
+open scoped Topology
 
 namespace SchwartzMap
 
@@ -68,6 +69,19 @@ theorem lineDerivOp_translateCLM (a m : E) (f : 𝓢(E, F)) :
   have hcomp := (f.hasFDerivAt (x + a)).comp x hshift
   have hfderiv := hcomp.fderiv
   change (fderiv ℝ (f ∘ fun y : E => y + a) x) m = fderiv ℝ f (x + a) m
+  rw [hfderiv]
+  rfl
+
+/-- In one dimension, ordinary Schwartz differentiation commutes with translation. -/
+theorem derivCLM_translateCLM (a : ℝ) (f : 𝓢(ℝ, ℂ)) :
+    derivCLM ℂ ℂ (translateCLM ℂ a f) = translateCLM ℂ a (derivCLM ℂ ℂ f) := by
+  ext x
+  change deriv (fun y : ℝ => f (y + a)) x = deriv f (x + a)
+  have hshift : HasFDerivAt (fun y : ℝ => y + a) (ContinuousLinearMap.id ℝ ℝ) x := by
+    simpa only [id_eq] using (hasFDerivAt_id (𝕜 := ℝ) x).add_const a
+  have hcomp := (f.hasFDerivAt (x + a)).comp x hshift
+  have hfderiv := hcomp.fderiv
+  change (fderiv ℝ (f ∘ fun y : ℝ => y + a) x) 1 = (fderiv ℝ f (x + a)) 1
   rw [hfderiv]
   rfl
 
@@ -346,5 +360,82 @@ theorem seminorm_translateDifferenceQuotientError_le
   · intro x
     exact weighted_iteratedDeriv_translateDifferenceQuotientError_le
       f a h x k n hh0 hh1
+
+/-- The translation difference-quotient error converges to zero in the actual Schwartz topology,
+not merely pointwise or in one fixed seminorm. -/
+theorem tendsto_translateDifferenceQuotientError_zero
+    (f : 𝓢(ℝ, ℂ)) (a : ℝ) :
+    Tendsto (fun h : ℝ => translateDifferenceQuotientError a h f)
+      (𝓝[≠] 0) (𝓝 0) := by
+  rw [(schwartz_withSeminorms ℂ ℝ ℂ).tendsto_nhds]
+  rintro ⟨k, n⟩ ε hε
+  let C : ℝ := (2 + |a|) ^ k *
+    (2 ^ k * ((Finset.Iic (k, n + 2)).sup
+      (fun p => SchwartzMap.seminorm ℂ p.1 p.2)) f)
+  have habs : Tendsto (fun h : ℝ => |h|) (𝓝[≠] 0) (𝓝 0) := by
+    have hc : Continuous (fun h : ℝ => |h|) := by fun_prop
+    have hc0 : ContinuousAt (fun h : ℝ => |h|) 0 := hc.continuousAt
+    change Tendsto (fun h : ℝ => |h|) (𝓝 0) (𝓝 |(0 : ℝ)|) at hc0
+    simpa only [abs_zero] using hc0.mono_left inf_le_left
+  have hCzero : Tendsto (fun h : ℝ => C * |h|) (𝓝[≠] 0) (𝓝 0) := by
+    simpa using habs.const_mul C
+  have hsmall : ∀ᶠ h : ℝ in 𝓝[≠] 0, |h| < 1 :=
+    habs.eventually_lt_const zero_lt_one
+  have hCsmall : ∀ᶠ h : ℝ in 𝓝[≠] 0, C * |h| < ε :=
+    hCzero.eventually_lt_const hε
+  have hne : ∀ᶠ h : ℝ in 𝓝[≠] 0, h ≠ 0 := by
+    filter_upwards [self_mem_nhdsWithin] with h hh
+    simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hh
+  filter_upwards [hne, hsmall, hCsmall] with h hh0 hh1 hCε
+  simp only [schwartzSeminormFamily_apply, sub_zero]
+  exact lt_of_le_of_lt
+    (seminorm_translateDifferenceQuotientError_le f a h k n hh0 (le_of_lt hh1)) hCε
+
+/-- Strong differentiability of the translation orbit in Schwartz space.  The derivative at
+parameter `a` is the translated ordinary derivative. -/
+theorem tendsto_translateDifferenceQuotient
+    (f : 𝓢(ℝ, ℂ)) (a : ℝ) :
+    Tendsto (fun h : ℝ => translateDifferenceQuotient a h f)
+      (𝓝[≠] 0) (𝓝 (translateCLM ℂ a (derivCLM ℂ ℂ f))) := by
+  have herr := tendsto_translateDifferenceQuotientError_zero f a
+  let d : 𝓢(ℝ, ℂ) := translateCLM ℂ a (derivCLM ℂ ℂ f)
+  have hconst : Tendsto (fun _h : ℝ => d) (𝓝[≠] 0) (𝓝 d) := tendsto_const_nhds
+  have hadd := herr.add hconst
+  simpa only [translateDifferenceQuotientError, d, sub_add_cancel, zero_add] using hadd
+
+/-- Strong continuity of the translation orbit in the translation parameter. -/
+theorem tendsto_translateCLM_add_zero (f : 𝓢(ℝ, ℂ)) (a : ℝ) :
+    Tendsto (fun h : ℝ => translateCLM ℂ (a + h) f)
+      (𝓝 0) (𝓝 (translateCLM ℂ a f)) := by
+  let d : 𝓢(ℝ, ℂ) := translateCLM ℂ a (derivCLM ℂ ℂ f)
+  have hDQ : Tendsto (fun h : ℝ => translateDifferenceQuotient a h f)
+      (𝓝[≠] 0) (𝓝 d) := by
+    simpa only [d] using tendsto_translateDifferenceQuotient f a
+  have hid : Tendsto (fun h : ℝ => h) (𝓝[≠] 0) (𝓝 0) :=
+    tendsto_id.mono_left inf_le_left
+  have hsmul : Tendsto (fun h : ℝ => h • translateDifferenceQuotient a h f)
+      (𝓝[≠] 0) (𝓝 0) := by
+    simpa using hid.smul hDQ
+  have hne : ∀ᶠ h : ℝ in 𝓝[≠] 0, h ≠ 0 := by
+    filter_upwards [self_mem_nhdsWithin] with h hh
+    simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hh
+  have heq : (fun h : ℝ => translateCLM ℂ (a + h) f - translateCLM ℂ a f) =ᶠ[𝓝[≠] 0]
+      (fun h : ℝ => h • translateDifferenceQuotient a h f) := by
+    filter_upwards [hne] with h hh
+    rw [translateDifferenceQuotient, smul_smul, mul_inv_cancel₀ hh, one_smul]
+  have hsub : Tendsto
+      (fun h : ℝ => translateCLM ℂ (a + h) f - translateCLM ℂ a f)
+      (𝓝[≠] 0) (𝓝 0) := Tendsto.congr' heq.symm hsmul
+  have hconst : Tendsto (fun _h : ℝ => translateCLM ℂ a f)
+      (𝓝[≠] 0) (𝓝 (translateCLM ℂ a f)) := tendsto_const_nhds
+  have hpunctured : Tendsto (fun h : ℝ => translateCLM ℂ (a + h) f)
+      (𝓝[≠] 0) (𝓝 (translateCLM ℂ a f)) := by
+    have hadd := hsub.add hconst
+    simpa only [sub_add_cancel, zero_add] using hadd
+  rw [← nhdsNE_sup_pure 0]
+  apply tendsto_sup.mpr
+  constructor
+  · exact hpunctured
+  · simpa using tendsto_pure_nhds (fun h : ℝ => translateCLM ℂ (a + h) f) 0
 
 end SchwartzMap
