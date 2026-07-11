@@ -30,13 +30,15 @@ u(0+)=u(+infinity)=0.                                     (2)
 Put `t=exp x` and
 
 ```text
-k(x)=VarTheta_00(i exp(2x)),
+k(x)=2 VarTheta_00(i exp(2x)),
 Phi(x)=-log k(x),
 D=-i partial_x,
 L=-i(partial_x+Phi'(x))=k D k^(-1).                       (3)
 ```
 
-The theta source is positive and has double-exponential decay in both directions.  In particular,
+The factor `2` corrects the normalization of the displayed theta-Mellin formula in the June 2026
+preprint.  It changes `Phi` only by an additive constant and therefore leaves `L` unchanged.  The
+theta source is positive and has double-exponential decay in both directions.  In particular,
 `k` is a nonzero Schwartz function and
 
 ```text
@@ -237,7 +239,73 @@ The positive implementation law is:
 > differential metrics cannot be repaired; the missing theorem is conservativity of a
 > source-defined divisor-supported incidence form.
 
-## 6. Why this does not prove RH
+## 6. Exact eigenfunction sampling and the simplicity floor `[PROVED HERE]`
+
+Let `u_alpha` be twice Hedenmalm's displayed eigenfunction for any complex zero `alpha` of `Xi`,
+written in the logarithmic coordinate.  Eigenfunctions are defined only up to nonzero scalar, and
+this normalization matches `(5)`.  The first-order reduction in his proof is
+
+```text
+(D+alpha)u_alpha=-i k.                                    (26)
+```
+
+With the Fourier convention in `(5)`, the momentum operator has symbol `-xi`.  Hence
+
+```text
+hat u_alpha(xi)=-i Xi(xi)/(alpha-xi).                     (27)
+```
+
+The apparent singularity at a real zero `xi=alpha` is removable.  Therefore:
+
+1. if `alpha` is nonreal, `hat u_alpha(gamma)=0` at every real zero `gamma` of `Xi`;
+2. if `alpha` is real, then
+
+   ```text
+   hat u_alpha(gamma)=0                  for gamma!=alpha,
+   hat u_alpha(alpha)=i Xi'(alpha).                       (28)
+   ```
+
+Insert `(28)` into `(11)`.  For every real zero `alpha`,
+
+```text
+q_1(u_alpha,u_alpha)=c_alpha |Xi'(alpha)|^2,               (29)
+```
+
+while every nonreal-zero eigenfunction has zero norm.  Distinct real-zero eigenfunctions are
+orthogonal.
+
+### Nondegeneracy corollary
+
+The form `(11)` is positive definite on the finite span of all theta eigenfunctions if and only if
+
+```text
+every Xi zero is real,
+every Xi zero is simple,
+c_gamma>0 at every zero.                                  (30)
+```
+
+Indeed, an off-line zero is killed by the first clause above, and a multiple real zero has
+`Xi'(alpha)=0` and is killed by `(29)`.  Conversely, under `(30)`, a finite linear combination of
+distinct eigenfunctions has squared norm
+
+```text
+sum_alpha c_alpha |a_alpha|^2 |Xi'(alpha)|^2,              (31)
+```
+
+which vanishes only when every coefficient `a_alpha` vanishes.
+
+Thus a nondegenerate source-core metric for the Hedenmalm pair is not merely an RH certificate.  In
+this category it certifies
+
+```text
+RH + simplicity of every nontrivial zeta zero.             (32)
+```
+
+Hedenmalm notes that the boundary-value problem has one eigenfunction at each eigenvalue and that
+this gives weak support for simplicity.  Equations `(27)`--`(32)` give the exact metric reason:
+multiplicity is invisible to a positive order-zero divisor measure and forces degeneracy.
+
+## 7. Why this does not prove RH
 
 Positive atomic measures supported on the already-real zeros exist.  They give semidefinite forms,
 but a complex-zero eigenfunction, if one exists, lies in their radical by pair symmetry.  The
@@ -248,14 +316,15 @@ Thus the remaining assertion is exactly
 
 ```text
 q_2(Lu_alpha,Lu_alpha)>0
-for every nonzero theta eigenfunction u_alpha.             (26)
+for every nonzero theta eigenfunction u_alpha.             (33)
 ```
 
-Under pair symmetry, `(26)` excludes every nonreal `alpha` and proves RH.  Defining `mu` by first
-listing the real zeros is target-fed and does not prove `(26)`.  A viable construction must derive
-the atomic metric and its conservativity from the completed Euler source.
+Under pair symmetry, `(33)` excludes every nonreal `alpha`, excludes multiple real zeros, and proves
+RH plus simplicity.  Defining `mu` by first listing the real zeros is target-fed and does not prove
+`(33)`.  A viable construction must derive the atomic metric and its conservativity from the
+completed Euler source.
 
-## 7. Carrier consequence
+## 8. Carrier consequence
 
 The finite-Gamma boundary law proves that finite-degree archimedean completion contributes only one
 projective valuation direction.  The present theorem says that the missing Hilbert metric is not
@@ -265,7 +334,7 @@ Therefore a source-pure implementation must couple
 ```text
 all-prime phase carrier
   + theta/Gamma completion
-  + divisor-supported Fourier rigging.                    (27)
+  + divisor-supported Fourier rigging.                    (34)
 ```
 
 At cutoff `N`, the arithmetic side must still transport at least `pi(N)` marked prime directions.
@@ -273,7 +342,7 @@ The divisor measure in `(11)` is a separate pointed quotient and cannot manufact
 directions.  This is precisely the carrier shape demanded by the completed Euler--divisor
 incidence-stack conjecture.
 
-## 8. Attacks and exact boundary
+## 9. Attacks and exact boundary
 
 1. **Hedenmalm's theorem is not contradicted.**  His proposed form is defined on a finite span of
    zero eigenfunctions.  The classification applies when the pullback extends to a
@@ -286,13 +355,14 @@ incidence-stack conjecture.
 4. **Nonlocal does not mean arbitrary.**  Pair symmetry fixes the nonlocal metric completely up to
    positive weights on the real divisor atoms.
 5. **Known real zeros are insufficient.**  Choosing weights on them creates a semidefinite
-   target-fed form.  Source-derived conservativity `(26)` is the RH-bearing statement.
+   target-fed form.  Source-derived conservativity `(33)` is the RH-and-simplicity-bearing
+   statement.
 6. **A domain escape is explicit.**  One may avoid the theorem only by using a form without a
    continuous translation-stable source-core pullback.  Such an architecture must prove that its
    restricted domain is source-defined, complete, and contains every theta eigenfunction before
    invoking self-adjointness.
 
-## 9. Parent and novelty audit
+## 10. Parent and novelty audit
 
 The direct parent is H. Hedenmalm, *Spectral interpretation of Riemann zeta zeros*, arXiv:2606.17494
 (June 2026).  That paper proves the theta boundary-value characterization and proposes finding a
@@ -321,6 +391,8 @@ contains the same pullback-form argument.
 - [x] bounded/absolutely-continuous metrics excluded
 - [x] scalar weighted `L^2` metrics excluded
 - [x] every finite-order local differential metric excluded
+- [x] exact Fourier samples of every theta eigenfunction computed
+- [x] nondegeneracy identified with RH plus simplicity
 - [x] source-core boundary separated from target-defined zero spans
 - [x] exact RH-bearing conservativity statement isolated
 - [ ] independent specialist novelty audit

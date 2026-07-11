@@ -216,8 +216,16 @@ logarithmic cross-term summation, and finite-aperture center estimate.
 
 ## Lean decision
 
-The formal tree has no archimedean multiplier or radial PSWF defect-measure interface. No Lean file
-is added before independent paper audit.
+`formal/GaloisForLFunctions/ConstrainedProlateExteriorWeil.lean` now formalizes both universal
+series coefficients used by the paper theorem. In particular, Lean proves absolute convergence,
+`D_arch > 0`, the stronger explicit bound `4/11 <= D_arch`, and strict negativity of the signed
+lower-order prime coefficient in `(13)`. These results are unconditional and assume no Weil-operator
+positivity, spectral floor, gap bound, or RH-equivalent statement.
+
+The full asymptotic law `(14)` is not yet formalized. The tree still lacks concrete interfaces for
+the radial PSWF defect measure, the archimedean multiplier form, and the finite-aperture prime form.
+The card therefore remains at paper-proven stage: the formal module establishes its exact constants
+and their signs, but does not replace the missing analytic realization by abstract assumptions.
 
 ## Gates
 

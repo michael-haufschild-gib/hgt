@@ -179,6 +179,27 @@ sets of gauges is comeager and eliminates the support for every complex shift tu
 Finally intersect over the countable collection of integers `m,r` and finite expanded-monomial
 supports.  The resulting set is `G_full(W)`.  This proves the theorem.
 
+### Formalization of the Baire passage
+
+The topological backbone of steps 3–6 — that once each relation locus is shown to be nowhere dense
+(closed with empty interior) in the Baire gauge space, the generic gauge avoids all countably many of
+them — is formalized axiom-clean in `GaloisForLFunctions.BaireGenericAvoidance`:
+
+```text
+dense_setOf_forall_notMem_of_isNowhereDense :
+  (forall n, IsNowhereDense (S n)) -> Dense {x | forall n, x notin S n}
+dense_setOf_forall_notMem_of_isClosed_interior_empty :   -- cards' hypothesis form
+  (forall n, IsClosed (S n)) -> (forall n, interior (S n) = empty)
+    -> Dense {x | forall n, x notin S n}
+exists_forall_notMem_of_isNowhereDense :                 -- nonempty gauge exists
+  ... -> exists x, forall n, x notin S n
+```
+
+The comeager conclusion `G_full(W)` is the `Dense` set above with `S n` ranging over the enumerated
+relation loci. The non-formal input is exactly the analytic hypothesis of steps 3–5 (codimension
+amplification, submersion, parametric transversality) that each `S n` is closed with empty interior;
+the passage to a dense/comeager avoidance set is then this pure-topology lemma.
+
 ## Attacks and boundaries
 
 1. **Why the countable proof was insufficient.**  A relation can occur at an isolated irrational or

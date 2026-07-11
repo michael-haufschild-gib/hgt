@@ -3,7 +3,7 @@
 - **ID:** `exponential-fock-prime-toeplitz-rvm-carrier-conjecture`
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / DIRECT HILBERT--POLYA CARRIER
-- **Scientific status:** `[CONJECTURE] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[CONJECTURE] [NOVELTY UNVERIFIED] [DEPRIORITIZED AS HP BOTTLENECK]`
 - **Statement:** A rapidly increasing radial Fock weight with adapted radius `tau(x) asymp exp(-ax)`
   turns the normalized critical-prime incidence into a positive compact Toeplitz operator.  Its
   eigenvalues should satisfy `lambda_n~C_a(log n)/n`; the signed doubling would then be a
@@ -21,6 +21,14 @@ s_n asymp (log n)/n                                        (1)
 
 proved in `xi-determinant-logarithmic-singular-value-law.md` to be necessary for every exact compact
 Hilbert--Polya realization.
+
+### Direct-route priority update
+
+`prime-indexed-rvm-trace-class-hp-normal-form.md` now constructs this ideal and the full smooth
+Riemann--von Mangoldt law exactly on the marked prime Hilbert space.  Therefore the Toeplitz Weyl
+law below is no longer load-bearing for the direct Hilbert--Polya route.  If proved, it would give
+an additional analytic RKHS realization and might help couple prime evaluation to the theta trace;
+failure would not kill the prime-indexed trace-class normal form.
 
 ## Rapid analytic carrier
 
@@ -180,8 +188,10 @@ infinite marked prime phase
 + self-adjoint genus-one RVM-scale spectrum.               (17)
 ```
 
-The remaining Hilbert--Polya theorem would be an incidence identity relating the signed prime
-Toeplitz determinant in `(14)` to the theta trace in `(16)`, not another carrier construction.
+For this optional RKHS realization, the remaining Hilbert--Polya theorem would be an incidence
+identity relating the signed prime Toeplitz determinant in `(14)` to the theta trace in `(16)`.
+The main direct route instead asks for the source-defined trace-class correction `K` in the
+prime-indexed RVM normal form.
 
 ## Candidate moves and attacks
 
@@ -230,8 +240,8 @@ exponential radial weights must be checked in the exact rapid-weight class.
 
 ## Exact open core
 
-`[OPEN CORE]` Prove the two-sided eigenvalue counting law `(13)` for the prime-supported normalized
-Toeplitz operator `(5)`.  The first falsifiable subclaims are:
+`[OPTIONAL OPEN CORE]` Prove the two-sided eigenvalue counting law `(13)` for the prime-supported
+normalized Toeplitz operator `(5)`.  The first falsifiable subclaims are:
 
 1. `[PROVED]` the exponential radial weight admits the diagonal kernel estimate required for the
    compact embedding;

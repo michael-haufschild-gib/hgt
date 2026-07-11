@@ -1,15 +1,17 @@
 # Signed archimedean Gamma products obey an orbit-charge phase law
 
 - **ID:** `signed-archimedean-gamma-orbit-charge-phase-law`
-- **Stage:** 1-in-progress / neutral polynomial-jet carrier established; full carrier extension open
+- **Stage:** 2-fully-proven / full literature audit open
 - **Type:** THEOREM (paper) / GENERAL HYPERTRANSCENDENCE LANDSCAPE
-- **Scientific status:** `[PARTIALLY PROVED] [OPEN CORE]`
+- **Scientific status:** `[PROVED] [NOVELTY UNVERIFIED]`
 - **Statement:** A signed finite Gamma product with positive commensurable scales is differentially
   algebraic exactly when every shift-orbit charge vanishes; otherwise it is hypertranscendental.
   Nonzero total charge carries a one-point projective boundary. Neutral total charge carries
-  log-resonant polynomial jets in addition to compact phase, and exponentially improved asymptotics
-  supply a cyclic Stokes coordinate. `[OPEN CORE]` Prove that these phase--jet--Stokes coordinates
-  exhaust the boundary carrier of the full differential field.
+  log-resonant polynomial jets in addition to compact phase. For the full one-phase field generated
+  by `Gamma(s+i theta)/Gamma(s)`, polynomial gcd and Bezout primitivity prove the boundary chain
+  `K_theta -> C[z] -> C`. For every neutral signed product, a directional Vandermonde resolves the
+  simultaneous exponential and logarithmic phases into an exponential-polynomial jet carrier.
+  Flat and Stokes corrections are projectively scalar.
 
 ## 1. Signed products
 
@@ -310,18 +312,18 @@ vanish: in the HT case, scaling `G` fixes `L`, so the formal `G` is transcendent
 image of `L`; in the DA case `(9)` reduces the assertion to the ordinary Laurent--exponential
 field. This excludes cancellation at one fixed phase.
 
-It does not yet justify the required sequential descent. A higher layer may vanish at the limiting
+This argument does not justify the required sequential descent. A higher layer may vanish at the limiting
 phase while its value at the moving phase decays at a rate coupled to a power of `T_n`; several
 such layers can then cancel after normalization. To prove `(26)`, one must show that this coupled
 descent terminates at a finite algebraic layer, rather than leaving a beyond-all-orders Stirling
-remainder as the first nonzero boundary term. That is the exact open lemma:
+remainder as the first nonzero boundary term. The resulting proposed lemma was:
 
 > **Neutral finite-carrier lemma.** Every nonzero tuple `(25)` and every sequence `T_n->infinity`
 > admit a subsequence and scalar normalization for which a nonzero limit exists in the finite
 > exponential space `span_C{exp(k beta s):0<=k<=N}`.
 
-A proof would have had to control moving phase zeros uniformly; fixed-phase formal transcendence
-alone is insufficient. In fact `(26)`--`(27)` are false as stated.
+Fixed-phase formal transcendence alone is insufficient, and `(26)`--`(27)` are false as stated. The
+proved replacement is the polynomial phase-jet carrier `(31a)`--`(31d)` below.
 
 For `theta>0`, put
 
@@ -341,34 +343,58 @@ This is a neutral HT ratio with `beta=0` and `gamma=i theta`. The Gamma-ratio ex
 The right side is nonconstant, whereas `(27)` with `beta=0` allowed only constants. More strongly,
 for every `m>=1`, the element `(G_theta-A_theta)^m` has normalized limit equal to the `m`th power of
 the affine function in `(30b)`. The complete proof is in
-`../2-fully-proven/not_new_scientific_knowledge/neutral-gamma-ratio-polynomial-jet-boundary-law.md`.
+`../not_new_scientific_knowledge/neutral-gamma-ratio-polynomial-jet-boundary-law.md`.
 
-That companion theorem also classifies arbitrary height sequences: phase error and inverse height
-blow up to one nonzero affine coordinate. Consequently every finite tuple with coefficients in
-`C(G_theta)` has a constant functional-projective boundary, and every HAP solution of an ADE with
-such coefficients satisfies an autonomous ADE. The remaining open core begins only when rational
-`s`-weights and the full logarithmic-derivative field are admitted.
-
-The beyond-all-orders alternative is genuine rather than rhetorical. Exponentially improved Gamma
-asymptotics contain Stokes terms on the lattice `exp(+-2 pi i s/H)`. Thus a complete proof must
-either exclude their promotion by a moving phase cancellation or prove the stronger positive
-carrier statement
+That companion theorem classifies arbitrary height sequences for coefficients in `C(G_theta)`.
+The full differential-field extension is now proved in
+`neutral-gamma-ratio-full-differential-boundary-depth-law.md`.
+Writing `G_theta=uU`, its perturbative amplitude field `E=L(U)` is quasianalytic by formal HT.
+Every finite tuple becomes polynomial in the single phase `u` over `E`; dividing its common gcd
+leaves a Bezout-primitive tuple, which must survive at finite algebraic height order. Hence
 
 ```text
-neutral boundary support subset
-  {k beta + (2 pi i/H) ell : k,ell in Z}.                  (31a)
+C(s)<G_theta> -> C[z] -> C.                               (31a)
 ```
 
-`[CONJECTURE]` The corrected **phase--jet--Stokes carrier law** says that every neutral signed Gamma
-boundary must expose a recurrent `beta` direction, a finite polynomial jet, or an explicit
-common-scale Stokes direction. The counterexample `(30b)` proves that the middle alternative is
-indispensable.
+This proves positively that exponentially small Stokes corrections are common projective scalars
+in the one-phase field. The general neutral product also admits a complete proof. Write
+
+```text
+gamma=a+i theta,
+v=s^a,
+u=s^(i theta),
+w=exp(beta s),
+G=A w u v U,  hat U in 1+s^(-1)C[[s^(-1)]].              (31b)
+```
+
+Put `E=L(v,U)`. Formal HT of `Psi` makes the asymptotic map on `L` injective. Scaling the differential
+indeterminate `G` while fixing the DA phases `w,u,v` makes analytic and formal `U` transcendental
+over `L(w,u,v)`. Hence `E` is an injective upper power-Poincare field. Its generalized power
+monomials are disjoint from the exponential monomials `w^k` and the imaginary-power monomials `u^l`,
+so evaluation embeds `E[W,U_0]` by `(W,U_0)|->(w,u)`. Since `G=A w u v U`,
+
+```text
+K_G=L(G) subset E(w,u).                                    (31c)
+```
+
+Apply the proved bridge
+`../not_new_scientific_knowledge/quasianalytic-exponential-log-phase-jet-law.md`.
+Every finite tuple in `K_G` has a nonzero functional-projective limit in
+
+```text
+C[s,exp(beta s),exp(-beta s)],                             (31d)
+```
+
+and its polynomial recession lies in `R_beta`. The bridge's directional Vandermonde is the positive
+phase-ideal resolution: along the actual translation direction, a nonzero finite phase polynomial
+has a uniformly nonzero jet of bounded order. Therefore all flat and Stokes corrections remain
+projectively scalar for every neutral signed product, not only for the one-ratio example.
 
 ## 7. Recurrent finite-phase theorem
 
 Let `f` be holomorphic and vertically Bohr uniformly almost periodic on a vertical strip. Then
 
-`[PROVED HERE for M!=0] [OPEN for M=0]`
+`[PROVED HERE for all M]`
 
 ```text
 f DA over K_G  ->  rank_Q Gamma_B(f)<infinity.              (31)
@@ -393,15 +419,14 @@ and translating can produce polynomial coefficients, not coefficients in
 R_beta=C[exp(beta s),exp(-beta s)].                         (32)
 ```
 
-The required positive replacement is a two-stage theorem: first prove that every translated
-coefficient tuple lands in the phase--jet--Stokes carrier, then take its projective recession until
-the polynomial and Stokes directions leave a nonzero tuple over `R_beta`. The relative implicit-ADE
-frequency theorem would then finish. The first stage is proved for `G_theta` in the companion card;
-its uniform extension to the full field `K_G` is open.
+The required positive replacement is the two-stage theorem `(31c)`--`(31d)`: every translated
+coefficient tuple lands in a finite exponential-polynomial carrier, then polynomial recession leaves
+a nonzero tuple over `R_beta`. The relative implicit-ADE frequency theorem finishes and gives finite
+rational rank.
 
 ### Quantitative carrier budget
 
-`[PROVED for M!=0] [OPEN TWO-STAGE BOUNDARY ARGUMENT for M=0]`
+`[PROVED for all M]`
 
 For `M!=0`, the proof retains the numerical bound from the autonomous implicit-ADE frequency
 theorem. Choose a minimal limiting ADE of order `n`, and let `m` be the size of a finite
@@ -411,7 +436,7 @@ regular-sample atlas for its hull. Then
 rank_Q Gamma_B(f) <=2m(n+1).                               (33)
 ```
 
-Conditional on the corrected neutral two-stage theorem, put
+For `M=0`, put
 
 ```text
 delta_G=rank_Q(beta Z) in {0,1};                           (34)
@@ -459,13 +484,13 @@ some orbit charge nonzero, total charge nonzero
   -> [PROVED] HT carrier with one-point projective boundary;
 
 some orbit charge nonzero, total charge zero
-  -> [PROVED] HT; boundary may carry beta phase, polynomial jets, and Stokes valuation. (39)
+  -> [PROVED] HT carrier with beta phase and finite polynomial jets. (39)
 ```
 
-`[PROVED when M!=0; OPEN when M=0]` Finite signed archimedean Gamma data carries three distinct
-boundary resources: the recurrent compact phase generated by `beta`, unbounded polynomial jet depth,
-and the cyclic upper Stokes valuation generated by `2 pi/H`. The positive invariant must record all
-three rather than collapsing Stokes decay into compact character rank.
+`[PROVED]` Finite signed archimedean Gamma data carries recurrent compact phase and noncompact
+polynomial jet depth. The cyclic Stokes scale is projectively scalar after phase-jet normalization
+and therefore supplies neither residual boundary depth nor compact character rank. The exact neutral
+invariant is the finite directional phase jet, whose terminal character group is `beta Z`.
 
 ### Sharp neutral example
 
@@ -494,8 +519,7 @@ rank-one alternative is attained, rather than being merely an upper bound.
 
 ## 9. Positive requirements for RH architectures
 
-The nonzero-total-charge requirements below are proved. The neutral case now requires the corrected
-two-stage phase--jet--Stokes theorem; the polynomial-jet alternative is proved by `(30b)`.
+The nonzero-total-charge and neutral requirements below are proved.
 
 1. **Connes / Hilbert--Polya / de Branges.** A finite Gamma ratio in a determinant or scattering
    factor supplies at most one recurrent boundary phase. The operator or canonical system must
@@ -520,18 +544,20 @@ the phase budget and proves that the completed constraint preserves that carrier
    the projective boundary-rank classification and recurrent finite-phase consequence.
 2. **Total charge is not the HT test.** Nonzero orbit charges may sum to zero. Those neutral products
    are still HT and can activate polynomial jets of every degree.
-3. **Two scalar cluster phases need not mean rank two.** At every algebraic Stirling layer, the phase
-   `exp(i Im(gamma)log T)` affects only constants and local-variable dependence comes only from
-   `exp(beta s)`. The open issue is whether moving cancellation can promote a Stokes layer.
+3. **Two scalar cluster phases form a directional-jet problem.** The logarithmic and exponential
+   phases can meet on a nonprincipal common-zero locus, but their restriction to the actual
+   translation direction has a uniformly finite nonzero Vandermonde jet.
 4. **The rank-one alternative occurs.** The neutral HT product `(40)` realizes a genuine rank-one
    exponential boundary with frequency `log 4`; it does not prove the universal neutral bound.
 5. **Moving phase cancellation activates jets.** Equation `(30b)` proves that a frozen logarithmic
-   phase can turn first-order cancellation into a nonconstant affine local coordinate. A complete
-   classification must determine when the jet tower terminates before a Stokes layer.
+   phase can turn first-order cancellation into a nonconstant affine local coordinate. The
+   directional Vandermonde proves finite termination for every finite signed product.
 6. **Negative slopes are excluded.** Reflection converts them to positive-slope Gamma ratios plus
    trigonometric factors. That finite-phase extension is plausible but is not silently claimed.
-7. **Incommensurable positive scales are excluded.** They have no common rational shift equation and
-   require a genuine multi-valuation replacement.
+7. **Incommensurable positive scales are excluded.** Their boundary normal form is still finite
+   phase--jet once asymptotic injectivity is known, but they have no common rational shift equation.
+   The exact missing input is the orbit-free formal HT theorem in
+   `../../1-in-progress/incommensurable-gamma-orbit-free-quasianalyticity.md`.
 8. **Meromorphic recurrent outputs are excluded.** The present theorem assumes holomorphic Bohr
    almost periodicity; moving poles require a spherical differential hull.
 9. **Finite rank is not finite Fourier support.** The conclusion concerns the rational span of
@@ -547,12 +573,12 @@ the phase budget and proves that the completed constraint preserves that carrier
 - Difference Galois theory classifies differential algebraicity of many first-order shift-equation
   solutions; the DA/HT part should be presumed known or routine until an exact comparison says
   otherwise.
-- Preliminary searches did not locate the corrected phase--jet--Stokes classification `(39)` or a
-  theorem deriving the neutral recurrent-source consequence `(31)` from such a boundary tower.
+- Preliminary searches did not locate the one-phase full-field chain `(31a)`, its Bezout
+  perturbative-survival mechanism, or the directional phase-jet classification `(31b)`--`(39)`.
 
 The former rank-one conjecture is refuted by `(30b)`. Candidate scientific content has shifted to
-the proved vanishing-order/jet-degree law for `G_theta` and the open finite-depth
-phase--jet--Stokes classification for arbitrary neutral ratios.
+the proved full-field polynomial boundary and the directional finite phase-jet classification for
+arbitrary neutral products.
 
 Primary adjacent sources:
 
@@ -563,10 +589,8 @@ Primary adjacent sources:
 - S. Chen, M. F. Singer, *Residues and telescopers for bivariate rational functions*, Adv. Appl.
   Math. 49 (2012), 111--133.
 - NIST DLMF, Sections 5.5 and 5.11, Gamma multiplication and asymptotic expansions.
-- G. Nemes, *Error bounds and exponential improvements for the asymptotic expansions of the gamma
-  function and its reciprocal*, Proc. R. Soc. Edinburgh Sect. A 145 (2015), 571--596, DOI
-  `10.1017/S0308210513001558`. Its explicit exponentially improved remainders exhibit the
-  `exp(+-2 pi i z)` Stokes lattice that must be controlled in the neutral open core.
+- `../not_new_scientific_knowledge/quasianalytic-one-phase-bezout-boundary-law.md`,
+  the general one-phase bridge behind `(31a)`.
 
 ## 12. Lean status
 
@@ -582,9 +606,12 @@ formalize the claim. Stage 3 requires the whole theorem unconditionally in Lean.
 - [x] nonzero-total-charge one-point boundary proved
 - [x] former neutral finite-carrier lemma refuted by an exact Gamma-ratio family
 - [x] all-degree polynomial jet alternative proved for `G_theta`
-- [ ] general phase--jet--Stokes carrier law proved
+- [x] full one-phase neutral differential-field boundary proved
+- [x] general directional phase-jet carrier law proved
 - [x] recurrent finite-phase theorem proved for nonzero total charge
-- [ ] recurrent finite-phase theorem proved for neutral total charge
-- [ ] independent audit of the neutral boundary lemma
+- [x] recurrent finite-phase theorem proved for the full one-phase neutral field
+- [x] recurrent finite-phase theorem proved for general neutral total charge
+- [ ] independent audit of the one-phase Bezout boundary theorem
+- [ ] independent audit of the directional Vandermonde boundary theorem
 - [ ] full parent-literature and priority audit
 - [ ] complete unconditional Lean formalization

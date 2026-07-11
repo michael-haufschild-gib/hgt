@@ -177,6 +177,13 @@ finite expanded-monomial supports.  The resulting set is comeager in `E_(A,nu)` 
 every differential polynomial relation over `C(z)` for every finite tuple of distinct complex
 shifts.
 
+The pure-topology passage of this step — countably many nowhere-dense relation loci in the Baire
+constraint space `E_(A,nu)` yield a dense/comeager complement of gauges avoiding all of them — is the
+same backbone formalized axiom-clean in `GaloisForLFunctions.BaireGenericAvoidance`
+(`dense_setOf_forall_notMem_of_isClosed_interior_empty`), applied here inside the closed real Fréchet
+subspace `E_(A,nu)` (itself a Baire space); the analytic input is that each locus is closed with
+empty interior via the equivariant codimension count of steps 3–4.
+
 ### 6. Divisor, symmetry, and passport
 
 The exponential gauge is zero-free, so `F_g` has exactly the divisor of `W`.  Both factors satisfy

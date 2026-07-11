@@ -29,6 +29,27 @@ epsilon_0(lambda_j)->0.                                         (2)
 By `ccm-cofinal-weil-spectral-floor-criterion.md`, `(2)` implies the full Weil criterion and RH.
 It is not a preliminary estimate.
 
+## Quantized form of the target
+
+`ccm-aperture-morse-index-conservation-law.md` replaces the vanishing-error language by the exact
+integer carrier
+
+```text
+kappa(lambda)=Tr 1_(-infinity,0)(A_lambda).                 (2a)
+```
+
+This finite number is nondecreasing with aperture, starts at zero, and satisfies
+
+```text
+RH
+ <-> kappa(lambda)=0 for every lambda
+ <-> ker(G_lambda)=0 for every lambda,                     (2b)
+```
+
+where `G_lambda` is Suzuki's compact continuous-kernel screw operator. Thus the positive theorem is
+conservation of a quantized aperture charge. A negative eigenvalue cannot be made harmless by
+shrinking its magnitude through the logarithmic boundary layer.
+
 ## Positive no-negative-birth formulation
 
 Let
@@ -167,7 +188,35 @@ source vector.
 
 ## Exact next lemma
 
-Prove the source-free Toeplitz inequality
+There are now two exact, source-compatible versions of the next lemma.
+
+The aperture version is the injectivity law
+
+```text
+ker(G_a)=0 for every a>0.                                  (12a)
+```
+
+The Euler-resolvent version uses
+
+```text
+A_w(alpha)=w/(w^2+alpha^2),
+B_w(alpha)=alpha/(w^2+alpha^2),
+Re w>1/2.                                                  (12b)
+```
+
+`critical-logderivative-two-channel-weil-resolvent-law.md` proves the unconditional identity
+
+```text
+(L(w)+conjugate(L(v)))/(w+conjugate(v))
+ =q_W(A_w,A_v)+q_W(B_w,B_v),                              (12c)
+```
+
+where `L(w)=d/dw log xi(1/2+w)`. It also proves that this two-channel family is complete for RH.
+Hence the source-side alternative is to construct a compatible Gram factorization of every finite
+matrix in `(12c)` from the absolutely convergent Euler--Gamma formula in `Re w>1/2`.
+
+Equivalently, in the original Paley--Wiener coordinates one may still prove the source-free
+Toeplitz inequality
 
 ```text
 <T_a F,F>
@@ -176,8 +225,32 @@ for every even F in PW_a,
 eta_a->0.                                                       (12)
 ```
 
-Equation `(12)` is exactly `(5)`. Its proof must be uniform on the entire even unit sphere and
-must use the complete prime/source incidence, including the high radial divisor tail.
+Equation `(12)` is exactly `(5)`. But `(12a)` and `(12c)` show the sharper positive architecture:
+
+```text
+Euler two-channel Gram positivity
+  -> index-preserving transport into the growing screw spaces
+  -> no finite-aperture kernel birth
+  -> conserved zero Morse charge
+  -> RH.                                                     (12d)
+```
+
+The transport must be uniform on the entire relevant closure and must use the complete
+prime/source incidence, including the high radial divisor tail. Matching finitely many resolvent
+entries does not preserve inertia.
+
+The proved neutral signed-Gamma boundary law makes the carrier requirement quantitative. At prime
+cutoff `N`, any recurrent DA realization must allocate
+
+```text
+pi(N)
+ <=delta_beta+2m(n+1)+rank_Q A_N,                          (12e)
+```
+
+with `delta_beta in {0,1}` and `A_N` the complementary arithmetic module. Hence the Gram/aperture
+transport in `(12d)` must visibly carry `A_N` unless its differential-state complexity grows
+cofinally. Gamma logarithmic phases, polynomial jets, and Stokes corrections cannot be counted as
+that module.
 
 ## Gates
 
@@ -187,7 +260,12 @@ must use the complete prime/source incidence, including the high radial divisor 
 - [x] fixed-source upper bounds separated from global lower bounds
 - [x] three possible global mechanisms compared
 - [x] exact Paley--Wiener Toeplitz compression identified
+- [x] finite-aperture Morse charge isolated and proved monotone
+- [x] RH reduced to compact screw injectivity at every aperture
+- [x] complete two-channel Euler--Weil resolvent family constructed
 - [ ] construct a positive reference splitting `(10)`
 - [ ] prove the infinite-carrier contraction `(11)`
-- [ ] deduce negative-part evacuation `(5)`
+- [ ] or construct a source-defined Gram factorization of `(12c)` and an index-faithful aperture
+      transport
+- [ ] prove absence of negative spectral birth `(5a)`
 - [ ] invoke the cofinal floor criterion to prove RH

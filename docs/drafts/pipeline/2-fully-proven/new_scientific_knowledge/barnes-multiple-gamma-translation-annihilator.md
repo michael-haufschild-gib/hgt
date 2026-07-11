@@ -136,6 +136,24 @@ Its terms translate `phi_j` through
 
 Distinct exponent vectors give distinct classes modulo `omega_j Z`: an equality of two such classes would be a nontrivial integer relation among `omega_1,...,omega_N`. The atomic scaled-digamma theorem therefore makes the nonzero combination `Q phi_j` hypertranscendental, a contradiction. Hence every annihilator is divisible by `x_1...x_N`.
 
+### Formalization of the reverse-inclusion criterion
+
+The algebraic backbone of the reverse inclusion — that `P` lies in the principal annihilator ideal
+`(x_1 ... x_N)` iff every pairwise-coprime ladder operator `x_j = T_j - 1` divides `P`, so that
+`x_1...x_N` failing to divide `P` yields a distinguished index `j` with `x_j` not dividing `P` — is
+formalized axiom-clean in `GaloisForLFunctions.CoprimeProductAnnihilator`:
+
+```text
+mem_span_prod_iff_forall_dvd_of_pairwise_isRelPrime :
+  P in Ideal.span {prod_j f j}  <->  forall j, f j | P
+```
+
+for any finite family `f` of pairwise `IsRelPrime` elements of a commutative ring (via mathlib's
+`prod_dvd_of_isRelPrime`). Instantiated at `f j = T_j - 1` in the Laurent ring `R_N` this is exactly
+the ideal-membership step of the reverse inclusion; the ring-specific input is the pairwise
+coprimality of the `T_j - 1`, and the analytic input is the hypertranscendence making `Q phi_j`
+non-DA.
+
 ## Mixed-difference threshold `[PROVED HERE]`
 
 For nonnegative integers `a_1,...,a_N`, not all zero,

@@ -265,7 +265,7 @@ analytic ADE would pass to the full sectorial expansion, so analytic `Psi` is HT
 `G_theta` would have DA logarithmic derivative, `G_theta` is HT.
 
 This HT proof is the one-ratio specialization of
-`signed-archimedean-gamma-orbit-charge-phase-law.md` and is not claimed as new.
+`../needs-audit/signed-archimedean-gamma-orbit-charge-phase-law.md` and is not claimed as new.
 
 ## 8. The positive boundary law
 
