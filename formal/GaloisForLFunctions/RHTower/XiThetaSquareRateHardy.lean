@@ -92,7 +92,8 @@ theorem thetaHeatRateReaderSymbol_differentiableOn_rightHalfPlane {n : ℕ} (hn 
 
 /-! ## Euler product and the selected-zero Cauchy majorant -/
 
-private def thetaSquareBlaschkeFinite (N : ℕ) (z : ℂ) : ℂ :=
+/-- The finite Euler--Blaschke product over the first `N` square nodes. -/
+def thetaSquareBlaschkeFinite (N : ℕ) (z : ℂ) : ℂ :=
   ∏ j ∈ Finset.range N,
     ((1 : ℂ) - z / ((j : ℂ) + 1) ^ 2) /
       ((1 : ℂ) + z / ((j : ℂ) + 1) ^ 2)
@@ -123,7 +124,8 @@ private lemma norm_thetaSquareBlaschkeFactor_le_one {z : ℂ} (hz : 0 ≤ z.re) 
     add_re, add_im, zero_add]
   nlinarith
 
-private lemma tendsto_euler_sinh_prod (z : ℂ) :
+/-- Euler's product for complex hyperbolic sine, in the normalization used by the square reader. -/
+theorem tendsto_euler_sinh_prod (z : ℂ) :
     Tendsto
       (fun N : ℕ => (Real.pi : ℂ) * z *
         ∏ j ∈ Finset.range N, ((1 : ℂ) + z ^ 2 / ((j : ℂ) + 1) ^ 2))
@@ -163,7 +165,8 @@ private lemma tendsto_euler_sinh_prod (z : ℂ) :
   rw [hseq, hlim] at h
   exact h
 
-private lemma tendsto_thetaSquareBlaschkeFinite {z : ℂ} (hz : 0 < z.re) :
+/-- The finite square-node Blaschke products converge throughout the open right half-plane. -/
+theorem tendsto_thetaSquareBlaschkeFinite {z : ℂ} (hz : 0 < z.re) :
     Tendsto (fun N => thetaSquareBlaschkeFinite N z) atTop
       (𝓝 (thetaSquareBlaschkeSymbol z)) := by
   have hz0 : z ≠ 0 := by

@@ -123,7 +123,8 @@ theorem integral_sq_norm_thetaHeatRateReaderFourierProfile
   field_simp
   norm_num
 
-private theorem norm_l2_sq_complex (K : Lp (α := ℝ) ℂ 2) :
+/-- Squared `L²(ℝ,ℂ)` norm as the integral of the squared pointwise norm. -/
+theorem norm_l2_sq_complex (K : Lp (α := ℝ) ℂ 2) :
     ‖K‖ ^ 2 = ∫ x : ℝ, ‖K x‖ ^ 2 := by
   rw [Lp.norm_def, toReal_eLpNorm (Lp.aestronglyMeasurable K),
     lpNorm_eq_integral_norm_rpow_toReal (p := (2 : ENNReal)) (by norm_num) (by norm_num)

@@ -81,13 +81,13 @@ Hardy/Nevanlinna boundary control to find a good boundary approach, anchor the I
 and cross the boundary using a uniform analytic-ODE existence radius.
 
 The useful content is the reusable lemma and the warning that boundary-limit IVP data are illegitimate.
-The unproven frontier conjecture about `f in H^∞` alone has been split to
-`../../1-in-progress/hinf-alone-da-natural-boundary-frontier.md`.
+The former frontier about `f in H^infinity` alone is now closed, and strengthened to arbitrarily long
+fixed bounded jets, in `finite-hardy-jet-da-natural-boundary-saturation.md`.
 
 ## Superseded crux notes
 
 These notes record the earlier proof gaps. The active disposition is the NOT-NEW / BRIDGE classification
-above, with the open `f in H^∞` frontier split to its own card.
+above; the former fixed-depth frontier is closed by the repeated-`E_2` counterexamples cited above.
 
 - **Source check (gate 0->1):** the source check was not used to certify novelty; the theorem is classified
   as a bridge lemma.
@@ -105,9 +105,9 @@ above, with the open `f in H^∞` frontier split to its own card.
   is GUARANTEED by H^∞: all f^{(j)} bounded ⟹ no poles in D), then no movable singularity
   hits D, and local uniqueness extends to global.
 
-- **H^∞ for all derivatives:** superseded by the finite order-`n` jet statement below. The stronger
-  weakening to "only f ∈ H^∞" is tracked in
-  `../../1-in-progress/hinf-alone-da-natural-boundary-frontier.md`.
+- **H^infinity for all derivatives:** superseded by the finite order-`n` jet statement below.  The stronger
+  weakening to any fixed derivative depth is false by the explicit repeated-`E_2` primitives in
+  `finite-hardy-jet-da-natural-boundary-saturation.md`.
 
 ## Connection to transcendental-composition-ht
 
@@ -294,10 +294,9 @@ Nothing in the continuation argument touches f^{(n+1)}, f^{(n+2)}, … — and i
 **Sharpened theorem:** f DA with minimal irreducible annihilator P of order n, and **f, f′, …, f^{(n)} ∈ H^∞(D)**
 ⟹ ∂D is not a natural boundary ⟹ f HT.
 
-## Split-out frontier conjecture
+## Closed frontier
 
-The unproven conjecture "does `f in H^∞` alone suffice?" has been split into its own in-progress card:
-
-`../../1-in-progress/hinf-alone-da-natural-boundary-frontier.md`
-
-This theorem card keeps only the bounded order-`n` jet bridge lemma.
+The conjecture "does `f in H^infinity` alone suffice?" is false.  The explicit repeated-`E_2`
+primitives in `finite-hardy-jet-da-natural-boundary-saturation.md` are DA, have arbitrarily long
+fixed bounded jets, and retain the unit circle as a natural boundary.  This theorem card therefore
+keeps the sharp order-adaptive bounded-jet bridge lemma.
