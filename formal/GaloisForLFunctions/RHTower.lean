@@ -350,6 +350,7 @@ import GaloisForLFunctions.RHTower.LambertRayRecovery
 import GaloisForLFunctions.RHTower.SectorPrimeZeroUniqueness
 import GaloisForLFunctions.RHTower.CompactCarrierFourierBorel
 import GaloisForLFunctions.RHTower.CompactCarrierLambert
+import GaloisForLFunctions.RHTower.CompactCarrierSectorUniqueness
 import GaloisForLFunctions.RHTower.DenseSpanDuality
 import GaloisForLFunctions.RHTower.LandauShadowNoGo
 import GaloisForLFunctions.RHTower.JointReadingNoGo

@@ -172,6 +172,21 @@ C(s)
 
 Moreover `L(s)>0` and `C(s)!=0` throughout the open strip.
 
+The coefficient has the simpler completed-source form
+
+```text
+C(s) = (1/2) pi^((s-1)/2) Gamma((1-s)/2).              (9a)
+```
+
+Indeed `sin(pi s/2)Gamma(s/2)=pi/Gamma(1-s/2)`, and the duplication formula at
+`(1-s)/2` gives
+
+```text
+Gamma((1-s)/2) Gamma(1-s/2)=2^s sqrt(pi) Gamma(1-s).
+```
+
+Substitution into (9) proves (9a).
+
 ### Proof
 
 Insert (5) into `|f_s(theta)|^2`.  On each side of zero there are four types of term.
@@ -241,6 +256,54 @@ zeta(s)=0
   iff
 the subleading heat-aperture echo in (7) vanishes.      (11)
 ```
+
+On the critical line, `1-conj(s)=s`, so (9a) identifies the two echo coefficients exactly as
+
+```text
+conj(C(s)) zeta(s)
+  = (1/2) pi^(-s/2) Gamma(s/2) zeta(s),
+
+C(s) conj(zeta(s))
+  = conjugate((1/2) pi^(-s/2) Gamma(s/2) zeta(s)).      (11a)
+```
+
+Thus the screen echo is literally one half of the completed zeta amplitude and its conjugate.  Off
+the line, the echo instead multiplies the zeta value at `s` by the archimedean factor at the
+different parameter `1-conj(s)`.  This is the exact completion mismatch that the superselection
+descent must resolve.
+
+## Canonical nonzero tangent at every echo defect
+
+Define the regularized local germ
+
+```text
+R_s(theta)
+  = f_s(theta)-Gamma(1-s)(-i theta)^(s-1).
+```
+
+Jonquiere's expansion gives
+
+```text
+R_s(theta)
+  = zeta(s)+i zeta(s-1) theta+O_s(theta^2).             (11b)
+```
+
+`[PROVED]` If `1/2<Re(s)<1` and `zeta(s)=0`, then
+
+```text
+R_s(0)=0,
+R_s'(0)=i zeta(s-1)!=0.                                (11c)
+```
+
+To prove nonvanishing, put `w=s-1`.  Then `-1/2<Re(w)<0`.  The functional equation expresses
+`zeta(w)` as a product of nonzero elementary Gamma/trigonometric factors and `zeta(1-w)`, where
+`Re(1-w)>1`.  The Euler product makes the last factor nonzero, and `w` is not a negative even
+integer, so no trivial zero occurs.  Hence `zeta(s-1)!=0`.
+
+This tangent is source-built, nonzero even at a multiple zero in the spectral parameter, and does
+not divide by `zeta'(s)`.  It closes the nonvanishing part of an on-shell defect construction.  What
+remains unproved is that this additive tangent acts as a normal correspondence between the two
+reflected prime superselection sectors.
 
 This is not point sampling of an `L2` boundary class.  The entire function `E_s(x)` for `x>0` is a
 strictly positive, absolutely convergent quadratic measurement of the full density.  The zeta

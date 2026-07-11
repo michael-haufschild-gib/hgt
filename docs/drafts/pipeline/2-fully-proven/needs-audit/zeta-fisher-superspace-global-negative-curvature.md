@@ -1,13 +1,15 @@
 # The zeta Fisher superspace has globally negative curvature and a Poincare critical boundary
 
 - **ID:** `zeta-fisher-superspace-global-negative-curvature`
-- **Stage:** 1-in-progress
-- **Type:** NOVELTY UNVERIFIED / THEOREM (paper target)
+- **Stage:** 2-fully-proven / Lean core verified
+- **Type:** THEOREM / NOVELTY DEFERRED
 - **Source:** user inner-metric/scale-factor conjecture; `critical-line-fisher-signature-wall`;
   `moonshot-arithmetic-bulk-hyperbolic`; separate from RHTower Routes A--D
 - **Statement:** On the physical half-plane `beta>1`, the two-dimensional zeta Fisher metric
   `g=(log zeta)''(beta)(d beta^2+d tau^2)` has strictly negative scalar curvature everywhere and
   converges to the Poincare metric at `beta=1`, with scalar curvature tending to `-2`.
+- **Lean:** `formal/GaloisForLFunctions/RHTower/FisherCurvatureMoment.lean`;
+  `formal/GaloisForLFunctions/RHTower/EulerFisherCurvature.lean`
 
 ## Goal
 
@@ -21,10 +23,13 @@ the critical wall.
 
 - [x] 0 -> 1 in-progress: metric, curvature formula, Euler cumulant measure, strictness mechanism,
   Poincare limit, and RH interpretation are explicit.
-- [ ] 1 -> 2 fully-proven: all differentiations, convergence, curvature identities, strict
+- [x] 1 -> 2 fully-proven: all differentiations, convergence, curvature identities, strict
   Cauchy--Schwarz, and boundary asymptotics written as a complete proof.
-- [ ] 2 -> 3 formalized: Lean proves the positive-measure moment determinant and its strict form;
-  formalize the zeta Euler-cumulant specialization as far as the current analytic library permits.
+- [ ] 2 -> 3 formalized: Lean proves the finite and infinite pairwise-dispersion identities,
+  absolute convergence of the actual Euler prime-power moments, strict determinant positivity,
+  and negativity of the scalar-curvature expression. The remaining formal gap is identifying this
+  expression with the differential-geometric scalar curvature of the conformal metric and proving
+  the Poincare asymptotic inside Lean.
 - [ ] 3 -> 4 publication-ready: pass exact information-geometry, thermodynamic-geometry,
   number-theory, and AdS2 literature audits.
 
@@ -55,6 +60,26 @@ In particular, the Fisher scale factor is
 ```text
 G(beta)=F''(beta)=M_2(beta)>0.                        (2)
 ```
+
+For completeness, fix a compact interval `beta>=1+epsilon`. After `j` differentiations, the
+absolute value of the `(p,k)` term is
+
+```text
+(k log p)^j p^(-k beta)/k
+  <= (log(p^k))^j (p^k)^(-(1+epsilon)).              (1a)
+```
+
+The map `(p,k)->p^k` is injective for prime `p` and positive `k`. The right side is therefore a
+subseries of
+
+```text
+sum_(n>=1) (log n)^j n^(-(1+epsilon)),               (1b)
+```
+
+which converges by comparison with a `p`-series. The same bound is uniform on the interval, so the
+Weierstrass test justifies termwise differentiation through order four. Lean proves the stronger
+absolute-summability statement for every natural `j` using the abscissa of absolute convergence of
+the logarithmically differentiated zeta Dirichlet series.
 
 On the two-dimensional temperature--clock superspace use
 
@@ -176,8 +201,20 @@ curvature; negative curvature alone is RH-blind.
   thermodynamic-geometry theorem. Scientific-novelty promotion is withheld pending a serious
   parent-theory and literature audit after the proof is complete.
 
+## 7. Bitter-end RH verdict
+
+The geometric theorem does not extend to an RH proof. The terminal obstruction is proved in
+`prime-fisher-superspace-unimodular-phase-blindness`: fixed unimodular Euler phases leave the entire
+Born/Fisher geometry unchanged, while the scalar Helson-zeta divisor can be prescribed away from
+the critical line. Thus the scale factor controls normalized magnitudes but not the phase-sensitive
+distributional scalar section. A new completed Euler--Gamma no-bulk-source constraint is required.
+
 ## Log
 
 - 2026-07-11 — opened from the scale-factor/external-clock conjecture. Isolated the curvature
   determinant `M_2 M_4-M_3^2`, the positive Euler prime-power measure, strict Cauchy--Schwarz, and
   the Poincare scalar-curvature limit `-2`.
+- 2026-07-11 — completed the paper proof. Lean proved the infinite dispersion identity, actual
+  Euler prime-power absolute convergence, strict determinant positivity, and negative curvature
+  expression for every `beta>1`. The metric-only RH route was then terminated by unimodular-phase
+  blindness.

@@ -30,21 +30,28 @@ def compactCarrierLambertTransform
     (L : C(K, ℂ) →L[ℂ] ℂ) (s : C(K, ℂ)) (z : ℂ) : ℂ :=
   L (compactLambertKernel s z)
 
-/-- A uniform positive lower bound for `Re (z s)` forces the compact
-exponential test strictly inside the unit ball. -/
+/-- A uniform lower bound for `Re (z s)` gives the exact exponential
+contraction estimate on the compact test. -/
+theorem norm_compactExponentialTest_le_exp_neg_of_re
+    (s : C(K, ℂ)) (z : ℂ) (d : ℝ)
+    (hre : ∀ k, d ≤ (z * s k).re) :
+    ‖compactExponentialTest s z‖ ≤ Real.exp (-d) := by
+  apply (ContinuousMap.norm_le (compactExponentialTest s z) (Real.exp_nonneg _)).2
+  intro k
+  rw [compactExponentialTest_apply, Complex.norm_exp]
+  apply Real.exp_le_exp.mpr
+  have hk := hre k
+  simp only [neg_mul, Complex.neg_re]
+  linarith
+
+/-- A positive lower bound forces the compact exponential test strictly
+inside the unit ball. -/
 theorem norm_compactExponentialTest_lt_one_of_re_pos
     (s : C(K, ℂ)) (z : ℂ) (d : ℝ) (hd : 0 < d)
     (hre : ∀ k, d ≤ (z * s k).re) :
-    ‖compactExponentialTest s z‖ < 1 := by
-  have hnorm : ‖compactExponentialTest s z‖ ≤ Real.exp (-d) := by
-    apply (ContinuousMap.norm_le (compactExponentialTest s z) (Real.exp_nonneg _)).2
-    intro k
-    rw [compactExponentialTest_apply, Complex.norm_exp]
-    apply Real.exp_le_exp.mpr
-    have hk := hre k
-    simp only [neg_mul, Complex.neg_re]
-    linarith
-  exact hnorm.trans_lt (Real.exp_lt_one_iff.mpr (by linarith))
+    ‖compactExponentialTest s z‖ < 1 :=
+  (norm_compactExponentialTest_le_exp_neg_of_re s z d hre).trans_lt
+    (Real.exp_lt_one_iff.mpr (by linarith))
 
 /-- The compact Lambert kernel is the norm-convergent sum
 `Σ n q^n`, weighted by `n`. -/
@@ -73,10 +80,10 @@ theorem compactLambertKernel_analyticAt
   have hinv0 : AnalyticAt ℂ (Ring.inverse : C(K, ℂ) → C(K, ℂ))
       (1 - compactExponentialTest s z) := by
     convert analyticAt_inverse (𝕜 := ℂ) u using 1
-    exact hu
   have hinv : AnalyticAt ℂ
       (fun w => Ring.inverse (1 - compactExponentialTest s w)) z := by
-    simpa [Function.comp_def] using hinv0.comp hsub
+    simpa [Function.comp_def] using hinv0.comp
+      (f := fun w => 1 - compactExponentialTest s w) (x := z) hsub
   unfold compactLambertKernel
   exact hqAn.mul (hinv.pow 2)
 
@@ -88,6 +95,42 @@ theorem compactCarrierLambertTransform_analyticAt
     AnalyticAt ℂ (compactCarrierLambertTransform L s) z := by
   simpa [compactCarrierLambertTransform, Function.comp_def] using
     (L.analyticAt _).comp (compactLambertKernel_analyticAt s z hq)
+
+/-- A scalar geometric majorant bounds the compact Lambert kernel uniformly.
+This form is convenient for sector pullbacks because the majorant depends only
+on a common contraction ratio `r`. -/
+theorem norm_compactLambertKernel_le_geometricMajorant
+    (s : C(K, ℂ)) (z : ℂ) (r : ℝ) (hr0 : 0 ≤ r) (hr1 : r < 1)
+    (hqr : ‖compactExponentialTest s z‖ ≤ r) :
+    ‖compactLambertKernel s z‖ ≤ ∑' n : ℕ, (n : ℝ) * r ^ n := by
+  let q : C(K, ℂ) := compactExponentialTest s z
+  have hq1 : ‖q‖ < 1 := hqr.trans_lt hr1
+  have hsum := compactLambertKernel_hasSum s z hq1
+  have hnormsum : Summable (fun n : ℕ => ‖(n : C(K, ℂ)) * q ^ n‖) := by
+    simpa [q] using
+      (summable_norm_pow_mul_geometric_of_norm_lt_one (R := C(K, ℂ)) 1 hq1)
+  have hrnorm : ‖r‖ < 1 := by simpa [Real.norm_eq_abs, abs_of_nonneg hr0] using hr1
+  have hmajor : Summable (fun n : ℕ => (n : ℝ) * r ^ n) := by
+    have h := summable_norm_pow_mul_geometric_of_norm_lt_one (R := ℝ) 1 hrnorm
+    simpa [Real.norm_eq_abs, abs_of_nonneg hr0] using h
+  rw [← hsum.tsum_eq]
+  refine (norm_tsum_le_tsum_norm hnormsum).trans
+    (hnormsum.tsum_le_tsum (fun n => ?_) hmajor)
+  have hqpow : ‖q ^ n‖ ≤ ‖q‖ ^ n := by
+    rcases n with _ | n
+    · apply (ContinuousMap.norm_le (1 : C(K, ℂ)) zero_le_one).2
+      intro k
+      simp
+    · exact norm_pow_le' q (Nat.succ_pos n)
+  calc
+    ‖(n : C(K, ℂ)) * q ^ n‖ ≤ ‖(n : C(K, ℂ))‖ * ‖q ^ n‖ := norm_mul_le _ _
+    _ ≤ ‖(n : C(K, ℂ))‖ * ‖q‖ ^ n :=
+      mul_le_mul_of_nonneg_left hqpow (norm_nonneg _)
+    _ ≤ (n : ℝ) * r ^ n := by
+      gcongr
+      · apply (ContinuousMap.norm_le (n : C(K, ℂ)) (Nat.cast_nonneg n)).2
+        intro k
+        simp
 
 /-- Powers of the compact exponential test multiply its scalar parameter. -/
 theorem compactExponentialTest_pow
@@ -216,6 +259,20 @@ theorem positiveLambertDerivative_primeLog_eq_zero_of_annihilates
     (hann : L (compactPrimeEulerUnitTangent s p) = 0) :
     positiveLambertDerivative (compactFourierBorel L s) (Real.log p) = 0 := by
   rw [positiveLambertDerivative_compactFourierBorel L s _ hq]
+  have hlog : (Real.log p : ℂ) ≠ 0 := by
+    exact_mod_cast (Real.log_ne_zero_of_pos_of_ne_one (by positivity : (0 : ℝ) < p)
+      (by exact_mod_cast (show p ≠ 1 by omega)))
+  have hscaled : (Real.log p : ℂ) * L (compactLambertKernel s (Real.log p)) = 0 := by
+    simpa [compactPrimeEulerUnitTangent] using hann
+  exact (mul_eq_zero.mp hscaled).resolve_left hlog
+
+/-- The same annihilation statement in the compact-carrier Lambert-transform
+normalization used by sectorial uniqueness. -/
+theorem compactCarrierLambertTransform_primeLog_eq_zero_of_annihilates
+    (L : C(K, ℂ) →L[ℂ] ℂ) (s : C(K, ℂ)) {p : ℕ} (hp : 2 ≤ p)
+    (hann : L (compactPrimeEulerUnitTangent s p) = 0) :
+    compactCarrierLambertTransform L s (Real.log p) = 0 := by
+  unfold compactCarrierLambertTransform
   have hlog : (Real.log p : ℂ) ≠ 0 := by
     exact_mod_cast (Real.log_ne_zero_of_pos_of_ne_one (by positivity : (0 : ℝ) < p)
       (by exact_mod_cast (show p ≠ 1 by omega)))
