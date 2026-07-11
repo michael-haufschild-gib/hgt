@@ -504,7 +504,8 @@ Primary sources:
 - the absence of a meromorphic finite-pole solution of
   `g(z + 1) - g(z) = -1 / z²`, hence the rational branch obstruction;
 - `Re ψ(σ + it) → +∞` and `1 / ψ(σ + it) → 0` for `σ ≥ 0`;
-- the two-jet projective boundary `Γ(σ + it) / Γ'(σ + it) → 0` for `σ > 0`;
+- the two-jet projective boundary `Γ(σ + it) / Γ'(σ + it) → 0` and the order-two jet
+  boundary `Γ'(σ + it) / Γ''(σ + it) → 0` for `σ > 0`;
 - the finite projective-relation limit lemma used by the recurrence collapse.
 
 The remaining formal work is the full Laurent shift field, Poincare asymptotic field, general

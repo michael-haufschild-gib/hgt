@@ -4,12 +4,13 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE, `[OPEN ANALYTIC SUBCLAIM]`
 - **Scientific status:** `[CONJECTURE] [NOT AN RH PROOF]`
-- **Parent theories:** Dunster's uniform radial Bessel expansion, one-dimensional nonstationary
-  phase, and the von Mangoldt divisor identity
+- **Parent theories:** `ccm-limiting-radial-first-row-weber-bound.md`,
+  `ccm-exact-radial-nonstationary-sector-bound.md`, Dunster's uniform radial Bessel expansion, and
+  the von Mangoldt divisor identity
 - **Statement:** After removing the solved diagonal divisibility spectrum, the positive target is
   a uniform theorem proving that the complete off-diagonal radial prime charge is `o(d_1)`. Its
   only stationary sector is the first row
-  `-2 sum_(k>=2)log(k)G_lambda(1,k)`. The leading Dunster model predicts the summable bound
+  `-2 sum_(k>=2)log(k)G_lambda(1,k)`. The limiting-model theorem proves the summable bound
   `G_lambda(1,k)=O(d_1*c^(-1/2)k^(-2))`, including the endpoint-coalescing transition
   `k` of order `c=2*pi*lambda^2`; the exact PSWF remainder theorem needed to promote this bound is
   open.
@@ -47,7 +48,7 @@ closed-form tail.
 
 ## Uniform nonstationary Gram bound
 
-`[CONJECTURE; PROVED FOR THE LEADING DUNSTER BESSEL MODEL]` There is a constant `C` such that, for
+`[PROVED in ccm-exact-radial-nonstationary-sector-bound.md]` There is a constant `C` such that, for
 all sufficiently large `lambda` and all
 distinct integers `j,k>=2`,
 
@@ -56,7 +57,7 @@ distinct integers `j,k>=2`,
  <=C*d_1(lambda)/(c*j*k*|j-k|).                                  (4)
 ```
 
-### Leading-model proof and exact missing estimate
+### Phase-preserving exact proof
 
 Dunster's radial expansion and the constrained `m=4` dominance give, uniformly for `x>=1` and
 `r>=2`,
@@ -90,16 +91,16 @@ The sum phase has an even larger derivative. One integration by parts in each **
 product** from `(5)`, using `(7)` and the integrable amplitude derivative, gives `(4)` for that
 model.
 
-The exact missing estimate is error stability through the infinite index sum. Dunster's published
-envelope bound is pointwise uniform and is sufficient for every fixed pair, but it does not by
-itself attach the extra factor `|j-k|^(-1)` to the product of two remainder terms. One must either
-derive an oscillatory representation of the error, prove a two-parameter differentiated remainder
-bound, or sum the error sector by a separate Hilbert-space almost-orthogonality theorem. Until then,
-`(4)` for the exact radial PSWF remains conjectural.
+For `j,k>=2`, both radial arguments are at least two. Dunster's exterior Liouville--Green
+expansion `(2.19)`--`(2.22)`, rather than the pole-uniform Bessel envelope alone, retains the two
+oscillatory branches and their differentiated Olver remainders uniformly to infinity. Applying
+the integration-by-parts argument above to that exact phase-preserving representation proves `(4)`.
+The complete proof and symbol bounds are recorded in
+`ccm-exact-radial-nonstationary-sector-bound.md`.
 
 ## Summed nonstationary sector
 
-Conditionally on `(4)`, the elementary Hilbert-kernel estimate
+The elementary Hilbert-kernel estimate
 
 ```text
 sum_(j>=2;j!=k) 1/(j*k*|j-k|)
@@ -144,7 +145,7 @@ and conjectural estimate `(9)` would prove
 N_(lambda,infinity)=O(d_1(lambda)/c)=o(d_1(lambda)).              (13)
 ```
 
-Thus, once exact error stability is proved, the only unresolved raw radial prime contribution is
+Thus the only unresolved raw radial prime contribution is
 the first-row series
 
 ```text
@@ -186,9 +187,11 @@ k asymptotic to c=2*pi*lambda^2.                                  (17)
 
 This is the same scale as the finite-prime cutoff in the CCM parity carrier.
 
-## Leading-model first-row vanishing profile
+## Imported leading-model first-row vanishing theorem
 
-`[DERIVED IN THE BULK AND TRANSITION REGIMES; UNIFORM MATCHING REMAINS OPEN]` Put
+The complete proof is recorded separately in
+`ccm-limiting-radial-first-row-weber-bound.md`. Its mechanism and exact transfer target are
+retained here because they determine the open remainder norm. Put
 
 ```text
 rho(x)=sqrt(x^2-1).
@@ -260,10 +263,71 @@ integral_0^infinity z J_0(z)exp(i*u*z^2/2)dz
 ```
 
 therefore supplies exactly the missing factor `1/u=c/k`. This identifies an explicit Weber
-transition kernel, rather than merely a coalescing scale. Formal endpoint integration by parts for
-`k/c->infinity` gives the same factor. A rigorous partition with constants uniform in both `c` and
-`k`, including removal of the Abel regulator, is still required before summing all transition
-regimes. Its target is
+transition kernel, rather than merely a coalescing scale. Endpoint integration by parts for
+`k/c->infinity` gives the same factor.
+
+### Uniform model estimate
+
+The regimes match without an asymptotic gap. In the variable `r=rho(x)`, define
+
+```text
+M_c(k)=c/sqrt(k) integral_0^infinity r/(1+r^2) J_0(c*r)
+       J_0(c*sqrt(k^2*r^2+k^2-1))dr.                         (23c)
+```
+
+There is an absolute constant `C` such that, for `c>=2` and every integer `k>=2`,
+
+```text
+|M_c(k)|<=C/(sqrt(c)*k^2).                                   (23d)
+```
+
+Use the standard Bessel symbol decomposition
+
+```text
+J_0(t)=exp(i*t)a_+(t)+exp(-i*t)a_-(t),
+|d^r/dt^r a_+-(t)|<=C_r*t^(-1/2-r),   t>=1,                  (23e)
+```
+
+and leave `J_0` unexpanded below unit argument.
+
+If `2<=k<=c`, split at `r=2/c`. The endpoint piece is bounded absolutely by
+`C*c^(-3/2)/k`, which is at most the right side of `(23d)`. On the remaining interval the
+difference phase
+
+```text
+phi_k(r)=r-sqrt(k^2*r^2+k^2-1)
+```
+
+has exactly one critical point `r=1/k`, with
+
+```text
+|phi_k''(1/k)|=(k^2-1)/k asymptotic to k.                     (23f)
+```
+
+After the prefactor in `(23c)` is included, the amplitude at this point is `O(k^(-3/2))`.
+The stationary-phase lemma gives `O(c^(-1/2)k^(-2))`. On the complement, one integration by
+parts using the monotonicity of `phi_k'` gives the same bound. The sum phase has no critical point
+and is smaller. The differentiated amplitudes are `O(r^(-2))` after the measure in `(23c)` is
+included, so the boundary at infinity vanishes.
+
+If `k>=c`, the critical point lies in `r<=1/c`. There set `z=c*r` and then `w=z^2`. The second
+Bessel phase satisfies
+
+```text
+d/dw sqrt(k^2*w+c^2*(k^2-1))
+ =k^2/(2*sqrt(k^2*w+c^2*(k^2-1))) asymptotic to k/c            (23g)
+```
+
+for bounded `z`. The factor `z dz=dw/2` removes the apparent stationary endpoint. Integration by
+parts in `w`, together with the large-argument symbol bound for the second Bessel factor, gives
+
+```text
+C/(c^(3/2)*k) * c/k=C/(sqrt(c)*k^2).                           (23h)
+```
+
+For `r>=1/c`, both phases are nonstationary because `1/k<=1/c`; the same symbol integration by
+parts gives `(23h)`. A dyadic partition makes the estimate uniform at infinity. This proves
+`(23d)`. Consequently,
 
 ```text
 sum_(k>=2)log(k)G_lambda^model(1,k)
@@ -316,13 +380,13 @@ The formal tree has no radial PSWF or stationary-phase infrastructure. No Lean f
 ## Gates
 
 - [x] uniform nonstationary estimate proved for the leading Bessel model
-- [ ] transfer the estimate to Dunster's exact uniform remainder
-- [ ] sum the exact `j,k>=2` weighted sector
+- [x] transfer the estimate through Dunster's phase-preserving exterior remainder
+- [x] sum the exact `j,k>=2` weighted sector
 - [x] diagonal charge imported and separated
 - [x] isolate the exceptional first-row series for the exact finite radial charge
 - [x] coalescing scale `k/c` identified
 - [x] derive the fixed-index and `k/c` transition vanishing scales
-- [ ] prove one uniform summable bound for the complete leading Dunster model
+- [x] prove one uniform summable bound for the complete leading Dunster model
 - [ ] transfer summable vanishing to the exact PSWF remainder
 - [ ] combine with exact Poisson central correction
 - [ ] true Weil Rayleigh-excess and parity transfer

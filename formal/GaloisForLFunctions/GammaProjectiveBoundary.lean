@@ -2,6 +2,7 @@ import GaloisForLFunctions.GammaDifferentialFE
 import GaloisForLFunctions.MeromorphicPoleOrbitBoundary
 import GaloisForLFunctions.OrbitBalanceAdditive
 import GaloisForLFunctions.RHTower.DigammaAsymptotic
+import GaloisForLFunctions.RHTower.TrigammaVertical
 
 open Filter Finset
 
@@ -150,6 +151,79 @@ theorem Gamma_div_deriv_vertical_tendsto_zero {σ : ℝ} (hσ : 0 < σ) :
   change (Complex.digamma z)⁻¹ = Complex.Gamma z / deriv Complex.Gamma z
   rw [Complex.digamma_def, logDeriv_apply]
   field_simp
+
+/-- Trigamma tends to zero on every upper vertical line in the open right half-plane. -/
+theorem deriv_digamma_vertical_tendsto_zero {σ : ℝ} (hσ : 0 < σ) :
+    Tendsto (fun t : ℝ =>
+      deriv Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds 0) := by
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  apply squeeze_zero' (Filter.Eventually.of_forall fun _ => norm_nonneg _)
+  · filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+    exact RHTower.norm_deriv_digamma_vertical_le hσ ht
+  · have hinv : Tendsto (fun t : ℝ => t⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
+    have h1 : Tendsto (fun t : ℝ => 1 / t ^ 2) atTop (nhds 0) := by
+      simpa [one_div, inv_pow] using hinv.pow 2
+    have h2 : Tendsto (fun t : ℝ => Real.pi / (2 * t)) atTop (nhds 0) := by
+      convert hinv.const_mul (Real.pi / 2) using 1
+      · funext t
+        ring
+      · simp
+    simpa using h1.add h2
+
+/-- The order-two Gamma jet has the next projective boundary relation:
+`Γ'(σ+it) / Γ''(σ+it) → 0` for `σ > 0`.
+
+This combines the order-two Bell identity `Γ'' = Γ(ψ² + ψ')`, reciprocal-digamma decay, and
+vertical trigamma decay. -/
+theorem deriv_Gamma_div_second_vertical_tendsto_zero {σ : ℝ} (hσ : 0 < σ) :
+    Tendsto (fun t : ℝ =>
+      deriv Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I) /
+        iteratedDeriv 2 Complex.Gamma ((σ : ℂ) + (t : ℂ) * Complex.I))
+      atTop (nhds 0) := by
+  let z : ℝ → ℂ := fun t => (σ : ℂ) + (t : ℂ) * Complex.I
+  let ψ : ℝ → ℂ := fun t => Complex.digamma (z t)
+  let ψ' : ℝ → ℂ := fun t => deriv Complex.digamma (z t)
+  have hinv : Tendsto (fun t => (ψ t)⁻¹) atTop (nhds 0) := by
+    simpa [ψ, z] using inv_digamma_vertical_tendsto_zero hσ.le
+  have hderiv : Tendsto ψ' atTop (nhds 0) := by
+    simpa [ψ', z] using deriv_digamma_vertical_tendsto_zero hσ
+  have hcorr : Tendsto (fun t => ψ' t * (ψ t)⁻¹ ^ 2) atTop (nhds 0) := by
+    simpa using hderiv.mul (hinv.pow 2)
+  have hden : Tendsto (fun t => 1 + ψ' t * (ψ t)⁻¹ ^ 2) atTop (nhds 1) := by
+    simpa using tendsto_const_nhds.add hcorr
+  have hmodel : Tendsto (fun t => (ψ t)⁻¹ / (1 + ψ' t * (ψ t)⁻¹ ^ 2))
+      atTop (nhds 0) := by
+    simpa using hinv.div hden (by norm_num : (1 : ℂ) ≠ 0)
+  apply hmodel.congr'
+  have hre := re_digamma_vertical_tendsto_atTop hσ.le
+  filter_upwards [hre.eventually_gt_atTop 0,
+    hden.eventually_ne (by norm_num : (1 : ℂ) ≠ 0)] with t ht hdenne
+  have hzre : (z t).re = σ := by simp [z]
+  have hpoles : ∀ p : ℕ, z t ≠ -(p : ℂ) := by
+    intro p heq
+    have hreEq := congrArg Complex.re heq
+    simp [hzre] at hreEq
+    linarith [Nat.cast_nonneg (α := ℝ) p]
+  have hG : Complex.Gamma (z t) ≠ 0 := Complex.Gamma_ne_zero hpoles
+  have hpsi : ψ t ≠ 0 := by
+    intro hzero
+    have : (Complex.digamma (z t)).re = 0 := by simp [ψ, hzero]
+    rw [this] at ht
+    linarith
+  have hBell := iteratedDeriv_two_Gamma_eq_logDeriv (z t) hpoles
+  have hlog : deriv Complex.Gamma (z t) / Complex.Gamma (z t) = ψ t := by
+    simp [ψ, Complex.digamma_def, logDeriv_apply]
+  have hlog' : deriv (fun w => deriv Complex.Gamma w / Complex.Gamma w) (z t) = ψ' t := by
+    rw [show (fun w => deriv Complex.Gamma w / Complex.Gamma w) = Complex.digamma by
+      funext w
+      rw [Complex.digamma_def, logDeriv_apply]]
+  rw [hlog, hlog'] at hBell
+  have hderivG : deriv Complex.Gamma (z t) = ψ t * Complex.Gamma (z t) :=
+    (div_eq_iff hG).mp hlog
+  change (ψ t)⁻¹ / (1 + ψ' t * (ψ t)⁻¹ ^ 2) =
+    deriv Complex.Gamma (z t) / iteratedDeriv 2 Complex.Gamma (z t)
+  rw [hBell, hderivG]
+  field_simp [hG, hpsi, hdenne]
 
 /-- Finite projective coefficient limits turn translated finite relations into
 constant-coefficient limiting relations.
