@@ -222,3 +222,95 @@ open core cannot be solved by a finite Fejer kernel, a finite Gram matrix of ver
 other stationary finite positive trigonometric weight.  A survivor must use prime-dependent
 nonstationary weights, or an infinite renormalized Schur complement that removes the constant mode
 without converting the secondary charge into a relative-density statistic.
+
+## Route C verdict after the shift-pair and static-leakage attacks
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` The exact charge carrier is now identified.  For the
+uncancelled pair
+
+```text
+Xi(c-u), Xi(c+u),
+```
+
+the local intersection multiplicity at a same-ordinate zero pair `(rho,sigma)` is
+`m_rho m_sigma`.  Twice the positive-real-`u` intersection mass is exactly `O_I`.  The complete
+proof is in
+`../2-fully-proven/not_new_scientific_knowledge/euler-shift-pair-incidence-resultant.md`.
+
+This construction also proves why the reduced shifted quotient is not the charge carrier.  At an
+exceptional shift it cancels `min(m_rho,m_sigma)`, while the resultant carries the product
+`m_rho m_sigma`.  At `u=0`, the reduced diagonal intersection mass is `m(m-1)`, so the natural total
+positive incidence cycle carries the conserved statistic `O_I+M_I`, not `O_I` alone.
+
+`[PROVED BRIDGE; ROUTE CLOSED AS A STATIC MECHANISM]` Norm continuity of the anti-causal leakage at
+`omega=0` does not exclude a persistent off-line zero.  In the rank-one Blaschke model with
+transverse displacement `a`,
+
+```text
+rank L_(a,omega)=1,       ||L_(a,omega)||=omega/a,
+```
+
+for every `0<omega<a`.  The leakage converges to zero in norm as `omega` decreases to zero while its
+rank remains one.  Its unit jump occurs at the moving crossing `omega=a`, so using that jump to
+exclude entry requires an additional deformation of `a`; it is not a static theorem about the fixed
+Xi source.  See
+`../2-fully-proven/not_new_scientific_knowledge/shifted-hardy-leakage-static-continuity-no-go.md`.
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` Poincare--Lelong now constructs the infinite
+uncancelled current without enumerating the zero divisor:
+
+```text
+J_Xi=dd^c log|Xi(c-u)| wedge dd^c log|Xi(c+u)|.
+```
+
+A cutoff-independent thin-slice limit along `Im u=0`, `Re u>0` gives `Omega_E` exactly.  The
+construction uses only the completed function, but it supplies no sign or mass bound.
+
+`[OPEN CORE]` Route C now has one precise surviving demand: prove directly from the fixed
+Euler--Gamma--theta source that the positive-real-shift mass of this canonical current is zero or
+`<2` on a genuinely new window.  The current construction is closed; the one-sided source estimate
+is all of the remaining scientific content.
+The full route verdict is `../../../reports/rhtower_route_c_verdict_1107.md`.
+The paper-level pipeline verdict is
+`../2-fully-proven/not_new_scientific_knowledge/route-c-horizontal-charge-interim-verdict.md`.
+
+## Reopening move: infinitesimal leakage rather than bare continuity
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` The rank-one static-continuity attack does not close
+all leakage mechanisms.  For a fixed same-ordinate collection of transverse layers `a_j>0` with
+multiplicities `m_j`, let `L_omega` be the local shifted Hardy leakage.  Then
+
+```text
+omega^(-1)L_omega -> T_A
+```
+
+in operator norm.  After Paley--Wiener identification, `T_A` is the positive Laplace--Hankel
+operator
+
+```text
+K_A(x,y)=2 sum_j m_j exp(-a_j(x+y)),
+trace(T_A)=sum_j m_j/a_j,
+||T_A||>=max_j m_j/a_j.
+```
+
+The proof and the unique power-scaling classification are in
+`../2-fully-proven/not_new_scientific_knowledge/infinitesimal-hardy-leakage-horizontal-layer-resolvent.md`.
+For zeta, every right-hand displacement satisfies `0<a_j<1/2`, so one layer already forces
+`||T_A||>2`.  The bare leakage tends to zero, but its first-order coefficient retains and amplifies
+the off-line channel.
+
+`[ATTACK]` Positivity holds only after an ordinate has been isolated.  The global logarithmic
+leakage derivative mixes different ordinates through oscillatory exponential modes, and selecting a
+fixed ordinate by first reading a pole would be conclusion-fed.  Thus the new open object is not the
+finite Gram operator itself but an Euler-source construction of its ordinate-diagonal projection.
+
+`[OPEN CORE]` Construct, before divisor expansion, a positive source operator `D_E` whose fibers are
+the same-ordinate first-order leakage blocks `T_A`, and prove the absolute source bound
+
+```text
+||D_E(I)||<=2
+```
+
+on a genuinely new window.  Equivalently, prove that the source-defined global first-order leakage
+has no ordinate fiber with norm greater than `2`.  This is a stricter target than continuity at
+`omega=0` and a different realization of the positive-real thin slice of `J_Xi`; it remains open.

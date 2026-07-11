@@ -1,0 +1,38 @@
+Route D certified Turing height extension
+Date: 2026-07-11
+Host: user-supplied RunPod
+Libraries: Arb 2.17.0, FLINT 2.5.2
+Arithmetic: Arb ball arithmetic; 192-bit zero count; 256-bit zero isolation
+
+Compile:
+  gcc -Wall -Wextra -Werror -O2 \
+    computations/2026-07-11-route-d-turing-height-extension-arb.c \
+    -lflint-arb -lflint -lmpfr -lgmp -lpthread \
+    -o /tmp/route_d_extension_cert
+
+Output:
+T1=3000175332800.43359375000000000000000000000000000000000000000000000000000000000000000000000
+N_T1=12363153437139.0000000000000000000000000000000000000000000000000000000000000000000000000000
+zero_N0_plus_1=0.5000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 + [3000175332800.286524182413025478326707081851708198936873971352041023810581745375833376428202901696507 +/- 3.80e-65]*I
+zero_N0_plus_2=0.5000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 + [3000175332800.434527689105328273081765501600923663114740853282724213190790269688442533139617031447943 +/- 3.80e-65]*I
+N_T1_exactly_N0_plus_1=true
+first_new_zero_below_T1=true
+second_new_zero_above_T1=true
+certificate_pass=true
+
+Interpretation:
+  Platt--Trudgian proved N(T0)=N0=12363153437138 and that all zeros through
+  T0=3000175332800 are simple and on the critical line. Arb's Turing-method
+  count proves N(T1)=N0+1 at the exact dyadic endpoint
+
+    T1 = T0 + 111/256 = 3000175332800.43359375.
+
+  A new off-line zero would have a distinct critical-line reflection at the
+  same ordinate, so the increment would be at least two. The increment is
+  exactly one; therefore the single new zero lies on the critical line and RH
+  is verified through T1.
+
+Independent boundary check:
+  Arb isolates zero N0+1 below T1 and zero N0+2 above T1. These calls use the
+  same documented Turing-method zero-isolation machinery but are not needed
+  for the one-zero reflection proof once the direct count is certified.

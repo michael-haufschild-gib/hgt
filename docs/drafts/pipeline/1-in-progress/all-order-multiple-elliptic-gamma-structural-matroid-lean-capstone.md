@@ -464,7 +464,8 @@ analytic capstone is already formalized.
 - [x] elliptic finite-pole realization for arbitrary meromorphic elliptic coboundary primitives
 - [x] unconditional differentiated theta-defect noncoboundary against every elliptic primitive
 - [x] unconditional finite-family theta-defect noncoboundary for separated shift classes
-- [ ] generic order-one atomic theorem
+- [x] generic order-one differential-linear atomic theorem for the actual product, including finite
+  separated families and the free `C[delta]` matroid corollary
 - [ ] abstract all-order independence induction
 - [ ] Stanley--Reisner differential-rank theorem
 - [ ] concrete additive and multiplicative capstones
@@ -746,3 +747,120 @@ noncoboundary input for Ostrowski descent.
 
 All named capstones in these modules build under the repository toolchain. Their `#print axioms`
 output is exactly `propext`, `Classical.choice`, and `Quot.sound`; the formal lint gate passes.
+
+## Differential-linear atomicity and the finite order-one matroid
+
+The previously named compatibility gap is now closed unconditionally.
+
+`formal/GaloisForLFunctions/MeromorphicFractionJets.lean` recursively constructs entire
+numerator/denominator pairs for every differential jet of a global meromorphic fraction and proves
+that their pointwise quotients are the ordinary iterated derivatives on the regular locus.
+`MeromorphicPuncturedRepresentation.lean` packages this as a punctured-local representation
+relation, proves closure under sums and scalar multiplication, and proves closure under every
+constant-coefficient operator `L in C[delta]`.
+
+`formal/GaloisForLFunctions/MeromorphicTranslationDifferentialOperator.lean` proves that additive
+translation commutes with every meromorphic-field jet and every `L in C[delta]`.
+`MeromorphicThetaDefectPunctured.lean` identifies the actual field theta defect and all its
+constant-coefficient derivatives with the literal pointwise differentiated theta defect on every
+punctured neighborhood. `MeromorphicPuncturedTranslationEquality.lean` proves the general
+field-to-function denominator-clearing theorem: a fraction-field translation-coboundary identity
+forces the corresponding quotient-function identity punctured-locally at every point.
+
+These interfaces turn the actual gamma mixed face into the theorem
+
+```text
+ellipticGammaExternalLogDerivDefect_differentialOperator_ne_ellipticFraction
+```
+
+in `EllipticGammaExternalDefectDifferentialAtomic.lean`: for every nonzero
+`L in C[delta]`,
+
+```text
+L(delta)(T_h psi - psi)
+```
+
+is outside every `(1,tau)`-elliptic meromorphic quotient of entire functions. This is the full
+cyclic differential-linear atomicity statement, not only the undifferentiated separation theorem.
+
+`MeromorphicThetaFamilyPoleOrbitBoundaryLocal.lean` upgrades the existing separated theta-family
+obstruction to punctured-local equality. Consequently
+`EllipticGammaExternalDefectFamilyDifferentialAtomic.lean` proves that for any finite family of
+external shifts separated modulo `Z + Z tau + Z sigma`, every combination
+
+```text
+sum_i L_i(delta)(T_{h_i} psi - psi)
+```
+
+with at least one nonzero `L_i` remains outside the elliptic fraction field. Its corollary
+
+```text
+ellipticGammaExternalDifferentialFamilySum_eq_zero_iff
+```
+
+states that the combination vanishes exactly when every `L_i` vanishes. Thus the separated actual
+elliptic-gamma external defects form a free `C[delta]`-family; equivalently, their order-one
+structural differential matroid is the free matroid on the separated shift classes.
+
+The exact family build succeeds. `#print axioms` for the jet bridge, punctured-local transport,
+single-generator atomicity, finite-family elliptic exclusion, and free-matroid corollary reports
+only `propext`, `Classical.choice`, and `Quot.sound`. The formal lint gate passes. The repository
+root build is presently blocked by pre-existing errors in `ExponentialGaugeSelection.lean`; the
+entire new dependency cone builds independently and the root import file contains all new modules.
+
+The remaining scientific gate is no longer order-one atomicity. It is the all-order hierarchy
+lift: identify the face classes of each genuine multiple elliptic-gamma order with finite families
+of these verified order-one atoms, prove the exact localized simplicial relations and no additional
+relations, then pass from differential-linear independence of defects to the advertised additive
+differential-transcendence-rank and multiplicative product formulas.
+
+## Constructed all-order multiple-elliptic-gamma hierarchy
+
+The all-order hierarchy is now represented by an actual convergent special-function kernel rather
+than an assumed family of functional equations.
+
+`formal/GaloisForLFunctions/MultipleEllipticGammaLogKernel.lean` defines, for an arbitrary finite
+nome index type `I`, the forward and backward product arguments on `N^I`. The backward logarithmic
+atom carries the parity factor `(-1)^|I|`; this is the unique sign for which deleting one coordinate
+produces the next lower-order kernel. For every chosen coordinate `q`, it proves exact finite
+fiberwise telescoping. The boundary is precisely the parity-correct kernel on `I \ {q}`, plus two
+explicit terminal tails.
+
+`formal/GaloisForLFunctions/FinitePiProductSummability.lean` proves the required all-dimensional
+majorant theorem: a finite product of nonnegative summable sequences is summable over the finite
+Cartesian power. `MultipleEllipticGammaLogConvergence.lean` applies it to the forward and backward
+multi-geometric arguments, proves absolute summability after the logarithmic atom, and defines the
+actual convergent kernel
+
+```text
+multipleEllipticGammaLogKernel : (I -> C) -> C -> C.
+```
+
+`formal/GaloisForLFunctions/MultipleEllipticGammaHierarchy.lean` proves terminal-tail vanishing,
+Fubini decomposition along every coordinate, and the unconditional all-order identity
+
+```text
+K_I(p; p_q x) - K_I(p; x) = K_(I\{q})(p|_(I\{q}); x).
+```
+
+`MultipleEllipticGammaAdditiveHierarchy.lean` pulls this kernel back by the standard exponential
+coordinate and proves, for arbitrary finite `I` and upper-half-plane parameters,
+
+```text
+Psi_I(z + tau_q) - Psi_I(z) = Psi_(I\{q})(z).
+```
+
+This formula is constructed from the infinite product atoms with absolute convergence and Fubini;
+it is not a hierarchy axiom or recursive wrapper. It specializes at two nomes to the earlier
+elliptic-gamma logarithmic kernel and at one nome to the theta logarithmic kernel, with the correct
+alternating parity.
+
+The exact hierarchy build succeeds. `#print axioms` for finite telescoping, absolute summability,
+the convergent multiplicative hierarchy, and the additive hierarchy reports only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+The remaining realization work is to package the all-order forward/backward infinite products as
+entire functions, identify the parity-dependent product or quotient as the genuine multiple
+elliptic gamma, and prove its meromorphic-field logarithmic derivative equals this kernel. The
+subsequent matroid lift must then formalize the face-filtration independence and localized
+Stanley--Reisner rank theorem; the hierarchy equations themselves are no longer an open input.

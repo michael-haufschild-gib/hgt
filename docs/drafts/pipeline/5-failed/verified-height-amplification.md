@@ -1,8 +1,8 @@
 # Verified-height amplification for a first off-line zeta zero
 
 - **ID:** verified-height-amplification
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 5-failed
+- **Type:** `[RETIRED: REDUCES TO THE TARGET OR TO ENUMERATION]`
 - **Source:** user research prompt; Platt--Trudgian verified-height theorem
 - **Statement:** `[CONJECTURE]` There is an explicit `T_1 > T_0`, with
   `T_0 = 3,000,175,332,800`, for which the published verification below
@@ -750,3 +750,322 @@ not evaluated in the present no-computation research pass.
 
 This correction does not affect the separate minimum-modulus route: that route still lacks an
 endpoint magnitude.  It removes the endpoint-magnitude claim only from the count-envelope route.
+
+## 2026-07-11 final Route D verdict
+
+### Medalist lens
+
+The native Route D object is not the height variable.  It is the first possible atomic change of
+reflection-orbit type after the certified divisor prefix.  Every successful amplifier must prevent a
+free orbit from entering while allowing an arbitrary future fixed orbit.  A continuous window reader,
+a finite source summary, or an asymptotic relative-density statistic cannot make that distinction at
+absolute multiplicity two.
+
+### Surviving theorem and its limit
+
+`[PROVED; BRIDGE]` Let `F(T)=M(T)+E(T)` be any continuous strictly increasing explicit upper envelope
+for `N(T)` on `[T_0,infinity)`, and let the certified count be `N(T_0)=N_0`.  If
+
+```text
+F(T_0) < N_0+2,
+```
+
+then continuity supplies `T_1>T_0` with `F(T_1)<N_0+2`; integrality gives
+`N(T_1)-N(T_0)<=1`, and reflection excludes a free orbit in `(T_0,T_1]`.  If instead
+`F(T_0)>=N_0+2`, monotonicity proves that this envelope cannot certify any strict extension.  Thus the
+Bellotti--Wong envelope route is exactly an endpoint-slack test, not a new source-to-divisor law.
+
+The Platt--Trudgian count and the Bellotti--Wong formula make that endpoint inequality decidable by
+rigorous real arithmetic.  Under the present no-computation constraint it is deliberately not
+evaluated.  Even a positive evaluation would be a new certified numerical bound obtained by combining
+known theorems, not new scientific knowledge under the parent-theory gate.
+
+### Dual-gate audit
+
+- `[PROVED IN LEAN; BRIDGE]` The one-zero and equivariant-collar implications are exact consumers of a
+  local count, but they do not produce that count.
+- `[PROVED IN LEAN; BRIDGE]` A finite Euler head and an arbitrary exact finite certified divisor do
+  not select the next reflection-orbit type.
+- `[PROVED ON PAPER; BRIDGE]` Bounded-support residual Weil tests cannot annihilate the unknown simple
+  critical-line tail; that tail is a uniqueness set for finite-exponential-type Mellin transforms.
+- `[PROVED; BRIDGE]` Cofinite Euler-tail rigidity selects the completed function but supplies no sign,
+  index, or local count for its divisor.
+- `[OPEN CORE]` No theorem derived directly from the completed infinite Euler--Gamma source supplies
+  an absolute off-line count `<2`, a source-to-divisor orbit selector, or a uniform localization
+  margin above `T_0`.
+
+No Route D claim produced in this program passes both NOVEL and SIGNIFICANT.  Accordingly no card is
+promoted to `2-fully-proven/new_scientific_knowledge`, and no new Route D theorem is placed in
+`3-formalized/new_scientific_knowledge`.  Promoting a reduction, a finite arithmetic check, or a Lean
+interface would violate the scientific-novelty gate.
+
+### Final classification
+
+`[FINAL VERDICT]` Route D is **not a primary RH generator** with the present mathematics.  It is a
+rigorous consumer and falsification laboratory: once another route supplies a source-built absolute
+count, orbit-selection law, or explicit uniform margin, Route D can convert it efficiently into a
+strict verified-height extension and ultimately an unconditional Lean theorem.  Without one of those
+inputs, Route D neither proves RH nor creates new scientific knowledge, and the card correctly remains
+in `1-in-progress` rather than being promoted or retired.
+
+A future reactivation must arrive with all three items already mathematical, not merely interfaced:
+
+1. an explicit `T_1>T_0`;
+2. a completed-source proof of `N(T_1)-N(T_0)<=1` or an equivalent absolute free-orbit exclusion; and
+3. a complete paper proof suitable for narrow Lean formalization with the external verified-prefix
+   certificate isolated as an input.
+
+## 2026-07-11 certified endpoint-envelope falsification
+
+The user authorized the previously excluded arithmetic check on a remote RunPod.  Two independent
+MPFR evaluations with directed rounding were used: a 256-bit evaluation of
+
+```text
+M(T) = T/(2*pi) * (log(T/(2*pi))-1)
+```
+
+and a 512-bit evaluation of the algebraically equivalent expression containing an independently
+enclosed `e`.  With
+
+```text
+T_0 = 3,000,175,332,800,
+N_0 = 12,363,153,437,138,
+F(T) = M(T) + 0.10076 log T + 0.24460 log log T + 8.08292,
+```
+
+the 512-bit certificate is
+
+```text
+F(T_0) in
+[12363153437148.023401580621417225055461234264425486198633997161465353298354590902524895940594434686325498,
+ 12363153437148.023401580621417225055461234264425486198633997161465353298354590902524895940594434686325499],
+
+N_0+2-F(T_0) in
+[-8.023401580621417225055461234264425486198633997161465353298354590902524895940594434686325499,
+ -8.023401580621417225055461234264425486198633997161465353298354590902524895940594434686325498].
+```
+
+Hence
+
+```text
+F(T_0) > N_0+2
+```
+
+by more than `8.0234`.  Because `F` is strictly increasing for `T>2*pi`, every `T_1>T_0` satisfies
+
+```text
+F(T_1) > F(T_0) > N_0+2.
+```
+
+`[PROVED; CERTIFIED COMPUTATION; BRIDGE]` The Bellotti--Wong global zero-count envelope cannot amplify
+the Platt--Trudgian endpoint by the one-new-zero budget.  This is now a falsified Route D branch, not
+an open arithmetic certificate.  The reproducible certificate is
+`computations/2026-07-11-route-d-count-envelope-mpfr.c`, with captured output in the adjacent `.txt`
+file.
+
+`[SCIENTIFIC-NOVELTY VERDICT]` The certificate decides a finite specialization of published bounds.
+It neither creates new scientific knowledge nor changes the verified RH height.  It sharpens the
+remaining Route D core: any count-based amplifier must use a genuinely local increment estimate or a
+source-built argument-principle margin, not a monotone global upper envelope for `N(T)`.
+
+### Quantitative replacement threshold
+
+The same interval computation gives
+
+```text
+N_0+2-M(T_0) in
+[3.775672128481673224984731719363664100672159533632891071743717,
+ 3.775672128481673224984731719363664100672159533632891071743718].
+```
+
+Therefore any replacement global upper envelope `M(T)+E_new(T)` of the same monotone form must prove
+
+```text
+E_new(T_0) < 3.775672128481674
+```
+
+before it can supply even an infinitesimal strict height extension by this argument.  The current
+Bellotti--Wong error is greater than `11.799073709103090`.  The required improvement is thus structural,
+not a rounding refinement.  A local increment bound can evade this global headroom obstruction; a
+second global bound with comparable additive constants cannot.
+
+## 2026-07-11 tenth attack: certified Turing one-zero amplification
+
+The user authorized computation on a remote RunPod after the global-envelope branch was falsified.
+Arb 2.17.0 supplies a rigorous `acb_dirichlet_zeta_nzeros` implementation of Turing's method.  At the
+exact dyadic endpoint
+
+```text
+T_1 = T_0 + 111/256
+    = 768044885196911/256
+    = 3,000,175,332,800.43359375,
+```
+
+192-bit ball arithmetic returns the exact count
+
+```text
+N(T_1) = 12,363,153,437,139 = N_0+1.
+```
+
+`[PROVED; CERTIFIED COMPUTATION]` Platt--Trudgian give `N(T_0)=N_0` and place every zero through
+`T_0` on the critical line.  The increment `(T_0,T_1]` therefore contains exactly one zero counted
+with multiplicity.  An off-line zero would bring its distinct reflection `1-conj(rho)` at the same
+ordinate, forcing an increment of at least two.  Hence the unique new zero is on the critical line,
+and RH is verified through `T_1`.
+
+Arb independently isolates the two adjacent nontrivial zeros:
+
+```text
+Im rho_(N_0+1) =
+  [3000175332800.286524182413025478326707081851708198936873971352041023810581745375833376428202901696507
+   +/- 3.80e-65],
+
+Im rho_(N_0+2) =
+  [3000175332800.434527689105328273081765501600923663114740853282724213190790269688442533139617031447943
+   +/- 3.80e-65].
+```
+
+Thus the dyadic endpoint lies rigorously between them.  The source and output are
+`computations/2026-07-11-route-d-turing-height-extension-arb.c` and the adjacent `.txt`; the complete
+paper-level proof is banked in
+`2-fully-proven/not_new_scientific_knowledge/verified-height-one-zero-turing-extension.md`.
+
+### Corrected Route D verdict
+
+`[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` Route D is a successful **computational consumer**: an exact
+Turing count plus the formal one-zero reflection theorem gives a genuine strict height extension.
+The result fails the scientific-novelty gate because the mechanism is published zero counting plus
+an elementary symmetry argument.  It does not solve the noncomputational source-to-divisor problem.
+
+The remaining research route is now sharply separated from computation:
+
+1. **computational Route D:** live and effective; it can continue extending the verified height by
+   rigorously counting more zeros, but this is enumeration rather than new scientific knowledge;
+2. **noncomputational Route D:** still open; it requires a completed-source local increment bound or
+   argument-principle margin that does not evaluate further zeros.
+
+No Lean promotion is made for the numerical certificate.  The generic implication is already
+formalized as `rhVerifiedThrough_amplify_of_increment_ncard_le_one`; the Arb Turing count is an
+external certified input, not a Lean theorem.
+
+## 2026-07-11 eleventh attack: pointwise local-count literature and margin closure
+
+### The exact headroom test survives every global-envelope update
+
+Write
+
+```text
+H_0 := N_0+2-M(T_0).
+```
+
+The certified MPFR enclosure above proves
+
+```text
+H_0 < 3.775673.
+```
+
+Bellotti--Wong's June 2026 Corollary 1.3 gives, for every `T>=1`, each of the two
+unconditional alternatives
+
+```text
+|N(T)-M(T)| <= 0.0946 log T + 5.746,
+|N(T)-M(T)| <= 0.0970 log T + 4.954.
+```
+
+These improve earlier global estimates in some height ranges, but neither can amplify this endpoint.
+Indeed `e<3` gives
+
+```text
+e^20 < 3^20 = 3,486,784,401 < T_0,
+```
+
+hence `log T_0>20`.  Therefore the two error terms at `T_0` are respectively larger than
+
+```text
+0.0946*20+5.746 = 7.638,
+0.0970*20+4.954 = 6.894.
+```
+
+Both exceed `H_0`.  Their associated upper envelopes are increasing at this height, so neither can
+prove `N(T_1)<N_0+2` for any `T_1>T_0`.  Thus even the strongest newer global bound found in the
+primary-source audit misses the one-zero budget by a factor greater than `1.8`; no endpoint
+rounding or constant-choice optimization can repair it.
+
+Primary source: C. Bellotti and P.-J. Wong, *Counting zeros of Artin L-functions*, Corollary 1.3,
+[arXiv:2606.31441](https://arxiv.org/abs/2606.31441).
+
+### Why the short-interval papers do not specialize to the prescribed endpoint
+
+The explicit short-gap results of Simonic--Trudgian--Turnage-Butterbaugh bound moments of
+`S(t+h)-S(t)` over a macroscopic interval and deduce positive-proportion statements.  Zhao's 2026
+strengthening likewise proves positive-proportion `r`-gap results and measure estimates for extreme
+values of `S(t+h)-S(t)`.  These are genuinely local in scale (`h` can be comparable with
+`1/log T`) but not pointwise in the base height.  Their conclusions permit any prescribed height,
+including `T_0`, to lie in the exceptional set.  A single first off-line orbit has zero relative
+density and therefore cannot contradict a density or positive-proportion theorem.
+
+The pointwise Bellotti--Wong short-interval corollary instead bounds `N(T+1)-N(T)` by combining the
+main term with two independent absolute bounds for `S`.  At `T_0` its upper bound is of order
+`log T_0`, not `<2`.  Shrinking the interval removes the main-term contribution but does not remove
+the two endpoint argument errors.  Consequently it also does not provide the required prescribed
+one-zero increment.
+
+Primary sources:
+
+- A. Simonic, T. Trudgian, and C. Turnage-Butterbaugh, *Some explicit and unconditional results on
+  gaps between zeroes of the Riemann zeta-function*,
+  [arXiv:2010.10675](https://arxiv.org/abs/2010.10675).
+- T. Zhao, *Density results for r-gaps between zeros of the Riemann zeta-function*,
+  [arXiv:2603.17334](https://arxiv.org/abs/2603.17334).
+- C. Bellotti and P.-J. Wong, *Improved estimates for the argument and zero-counting function of the
+  Riemann zeta-function*, Corollaries 1.5--1.6,
+  [arXiv:2412.15470](https://arxiv.org/abs/2412.15470).
+
+### The repository consumer trichotomy
+
+`[PROVED; PROJECT-LOCAL CLASSIFICATION]` Every Route D implication actually formalized or proved in
+this repository belongs to one of the following three certificate classes.
+
+1. **Integer-count consumers.**  The one-zero and equivariant-collar theorems require an exact local
+   count or a cardinality bound `<=1`.
+2. **Boundary-index consumers.**  Argument-principle, winding, homotopy, and Rouche transfers require
+   a zero-free boundary together with either an evaluated winding or a strict boundary domination
+   margin.
+3. **Analytic-collar consumers.**  Minimum-modulus and derivative propagation require a positive
+   anchor `a<=|F(s_0)|` (or a cofactor anchor after removing a known zero) and an upper derivative or
+   sup-norm bound; the explicit radius is proportional to that positive anchor.
+
+This is a classification of the proved Route D machinery, not a theorem that no future method can
+exist.  It is nevertheless terminal for the present candidate: an upper growth estimate alone is
+not one of the missing lower/index data, moment and density estimates do not specialize to `T_0`,
+and Turing's method supplies the integer only after new sign/phase evaluations or zero isolation.
+That last option is exactly the successful Arb computation already split into its own stage-2 card.
+
+### Terminal verdict for the original candidate
+
+`[RETIRED: REDUCES TO THE TARGET OR TO ENUMERATION]` The conjectural card asked for a **new
+non-computational analytic theorem** that turns the published prefix into an explicit strict height
+extension.  After eleven attacks, the alternatives have separated cleanly:
+
+- direct Turing enumeration succeeds and has already produced the strict endpoint
+  `T_0+111/256`, but is established computational zero verification and not new scientific
+  knowledge;
+- every proved noncomputational consumer still needs an exact local count, an evaluated winding, or
+  a positive endpoint/boundary anchor;
+- the best current global and pointwise published bounds do not meet the one-zero threshold;
+- average, density, and positive-proportion bounds cannot control the prescribed first interval;
+- finite-source and bounded-support substitutes have exact countermodels or uniqueness
+  obstructions; and
+- invoking the full completed Euler--Gamma source without producing one of the three data above is
+  merely a restatement of the missing local RH assertion.
+
+The existential proposition that some future analytic theorem could prove a larger verified height
+is not declared false.  The **research route represented by this card** is retired because it has no
+independent source-producing mechanism left: its successful branch is enumeration, and its
+noncomputational branch reduces to the datum it was meant to generate.  Reopening requires a new
+completed-source theorem that is not another interface to count, winding, or margin.
+
+No claim from this closure passes the NOVEL x SIGNIFICANT gate.  Accordingly there is no Route D
+card in `2-fully-proven/new_scientific_knowledge` and no Route D promotion to
+`3-formalized/new_scientific_knowledge`.  The computational result remains correctly banked as
+`2-fully-proven/not_new_scientific_knowledge/verified-height-one-zero-turing-extension.md`.

@@ -75,6 +75,31 @@ transition, raw dilation, Euler metric, and formal prolate objects:
    replacement. For the pinned archimedean norm, its corner across the **actual** Sonin projection is
    noncompact for every `lambda>0` and every prime `p`. The proof constructs high-frequency shell modes
    that are asymptotically Sonin while one dilation moves the full shell across the physical cutoff.
+6. The normalized cyclic grading nevertheless has a strict source-defined low-mode sign. For every
+   finite nonempty prime set `P`, `semilocal-all-even-jacobi-prolate-residue-tower.md` proves an
+   alternating nonzero ground-state residue in every positive even Jacobi degree. Its first member is
+   `a_0(P)^2<1/2` and
+
+   `<e_0^P,(N_PJ_P-J_PN_infinity)e_2^infinity>
+      =2(1/2-a_0(P)^2)/sqrt(3/2)>0`.
+
+   Thus the formal naturality defect is explicitly nonzero on the normalized polynomial core. This
+   does not yet imply that its exact Sonin corner is nonzero or Schatten.
+7. The inverse-metric and polar-unitarization fallbacks are also closed. By
+   `sonin-euler-inverse-polar-corner-noncompact.md`, noncompactness of the positive Euler metric corner
+   forces noncompactness of the inverse metric and both square-root corners. Hence the exact bounded
+   Sonin identification `theta_p` cannot be converted by polar decomposition into a unitary map that
+   preserves the Sonin sector modulo compacts.
+8. The formal domain problem has been reduced to a genuine extension problem. The card
+   `semilocal-jacobi-linear-growth-prolate-domain-gate.md` proves explicit two-sided comparison
+   `a_n(S)asymp a_n(infinity)asymp n`, so the parity-block prolate off-diagonals grow quadratically.
+   Their reciprocal series converges. Thus the elementary Jacobi Carleman divergence criterion does
+   not supply essential self-adjointness; a source-selected boundary condition is indispensable.
+9. The raw determinant variant is closed independently of compactness estimates. By
+   `semilocal-prolate-defect-triangular-determinant-blindness.md`, the pulled-back grading defect lowers
+   the cyclic polynomial filtration strictly. Every finite truncation is nilpotent with determinant
+   one; any compact extension is quasinilpotent, and any trace-class extension has Fredholm
+   determinant one. Resolvent mixing is therefore essential, not optional regularization.
 
 For any cutoff-compatible place transition `J_{T,S}`, Lean now proves the exact structural identity
 
@@ -88,7 +113,9 @@ construction must derive and restrict the admissible gauge group rather than dec
 `[OPEN CORE]` Promote `W_{lambda,S}` and `Omega_{S,lambda}` from their formal cyclic core to controlled
 closed operators, construct domain-compatible Sonin idempotents, prove `Delta_{S,lambda}` is in a stated
 Schatten class, and construct a presentation-invariant determinant boundary. Then compute its two-place
-cross-effect. Until these steps, the low-coefficient test is not well-typed for the Sonin source.
+cross-effect. The positive degree-two-to-degree-zero polynomial-core residue is now known, so the first
+unresolved map is precisely its survival under exact Sonin compression. Until that step, the
+low-coefficient test is not a Sonin-sector invariant.
 
 ## Gates
 
@@ -113,14 +140,27 @@ cross-effect. Until these steps, the low-coefficient test is not well-typed for 
   gauge subtraction kills it.
 - This cannot substitute the positive Euler norm-change operator for `Omega`: its actual-Sonin corner
   is noncompact, hence outside every Schatten class.
+- This cannot repair the norm-change operator by inversion or polar square root: those actual-Sonin
+  corners are noncompact as well.
+- This cannot take an ordinary or Fredholm determinant of the raw prolate naturality defect: its
+  strict filtration lowering makes every such determinant trivial whenever defined.
 - This cannot grade success by detecting an off-line zero. The witness must be invariantly defined at
   the trace-ideal/determinant-line level; a low coefficient of `tr(adj(A) Delta)` is admissible only
   after a stable finite-projective presentation has been constructed.
+- A chosen self-adjoint extension is not automatically source data. If a prolate parity block is
+  limit-circle, Krein's resolvent formula makes changes of boundary condition rank one; the resulting
+  perturbation determinant can therefore acquire an extension-dependent scalar factor. Before any
+  determinant is called canonical, either prove essential self-adjointness or derive a compatible
+  boundary condition from the semilocal Fourier/Sonin structure and prove invariance under the
+  remaining extension freedom.
 
 ## Approach
 
 1. Put the formal `W_{lambda,S}` on a common invariant core and prove a closed or self-adjoint
-   realization with explicit domain behavior under `eta_S`.
+   realization with explicit domain behavior under `eta_S`. The Jacobi coefficients are now known to
+   have quadratic prolate growth, but the easy Carleman criterion is unavailable.
+   Determine the limit-point/limit-circle alternative for both parity blocks. In the limit-circle
+   case, derive the boundary condition from source symmetries rather than selecting an angle.
 2. Construct the Sonin idempotents and prove
    `(1-Q_{lambda,S}) Omega_{S,lambda} Q_{lambda,infinity}` lies in a stated trace ideal.
 3. Extract a stable determinant-line or finite-projective presentation `A_lambda`, derive its admissible

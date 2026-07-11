@@ -250,7 +250,7 @@ theorem constantCoeffDifferentialOperator_congr_nhdsNE
   classical
   have hall : ∀ n ∈ L.support,
       iteratedDeriv n φ =ᶠ[𝓝[≠] z] iteratedDeriv n ψ :=
-    fun n _ => Filter.EventuallyEq.nhdsNE_iteratedDeriv h n
+    fun n _ => EventuallyEq.nhdsNE_iteratedDeriv h n
   have hall' : ∀ᶠ w in 𝓝[≠] z, ∀ n ∈ L.support,
       iteratedDeriv n φ w = iteratedDeriv n ψ w :=
     (Filter.eventually_all_finset L.support).2 hall
@@ -268,6 +268,46 @@ theorem HasPuncturedMeromorphicRep.congr_fun
   obtain ⟨a, b, f, g, hb, hf, hg, hfa, hgb, hxf, hxev⟩ := hx
   exact ⟨a, b, f, g, hb, hf, hg, hfa, hgb, hxf,
     fun z => (hxev z).trans (h z)⟩
+
+end
+
+end GaloisForLFunctions
+
+namespace GaloisForLFunctions
+
+open Bottcher
+
+noncomputable section
+
+local instance puncturedRepClosureDomain :
+    IsDomain (analyticSubring (Set.univ : Set ℂ)) :=
+  Bottcher.isDomain_analyticSubring Set.univ isOpen_univ
+    isPreconnected_univ Set.univ_nonempty
+
+local instance puncturedRepClosureComplexAlgebraAnalytic :
+    Algebra ℂ (analyticSubring Set.univ) := (constToAnalytic Set.univ).toAlgebra
+
+local instance puncturedRepClosureComplexAlgebraMero : Algebra ℂ (meroField Set.univ) :=
+  ((algebraMap (analyticSubring Set.univ) (meroField Set.univ)).comp
+    (constToAnalytic Set.univ)).toAlgebra
+
+local instance puncturedRepClosureDifferential :
+    Differential (meroField (Set.univ : Set ℂ)) :=
+  meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
+
+/-- Every punctured-local meromorphic representative is stable under an arbitrary
+constant-coefficient differential operator. -/
+theorem HasPuncturedMeromorphicRep.differentialOperatorApply
+    {x : meroField Set.univ} {φ : ℂ → ℂ}
+    (hx : HasPuncturedMeromorphicRep x φ) (L : Polynomial ℂ) :
+    HasPuncturedMeromorphicRep (differentialOperatorApply L x)
+      (constantCoeffDifferentialOperator L φ) := by
+  obtain ⟨a, b, f, g, hb, hf, hg, hfa, hgb, hxf, hxev⟩ := hx
+  rw [hxf]
+  apply (hasPuncturedMeromorphicRep_differentialOperatorApply_fraction
+    hb hf hg hfa hgb L).congr_fun
+  intro z
+  exact constantCoeffDifferentialOperator_congr_nhdsNE L (hxev z)
 
 end
 
