@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven / needs scientific-novelty audit
 - **Type:** THEOREM (paper) / GENERAL HT LAW / ASYMPTOTIC-SCALE CONSTRAINT
 - **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [SIGNIFICANT]`
-- **Statement:** A geometric logarithmic Taylor-magnitude scale becomes phase-uniformly hypertranscendental whenever every exact Laurent relation at the leading ratio is separated by more than logarithmic size at a lower asymptotic scale.
+- **Statement:** Under uniform geometric growth, differential algebraicity forces one fixed balanced integer shift relation to recur within logarithmic width infinitely often. If every fixed shift relation is instead superlogarithmically separated, the Taylor-magnitude profile forces hypertranscendence for every coefficient phase. For an algebraic geometric leading scale, all surviving relations compress to one canonical lower-scale residue.
 
 ## Goal
 
@@ -30,15 +30,31 @@ This is intrinsic to the magnitude profile. It does not refer to a chosen asympt
 
 ## Master theorem `[PROVED HERE] [NOVELTY UNVERIFIED]`
 
-Let `(b_n)` be eventually positive. Suppose that for some `A>0` and `lambda>1`,
+Let `(b_n)` be eventually positive and suppose
 
-`b_n/(A lambda^n) -> 1`,                                                     `(EG)`
+`liminf_(n->infinity) b_(n+1)/b_n > 1`                                     `(UG)`
 
 and that `(b_n)` is logarithmically shift-separated. Then every eventually full-support series
 
 `f(z)=sum_(n>=0) a_nz^n`, `|a_n|=exp(-b_n)`
 
 is entire and HT over `C(z)`, for every possible choice of coefficient phases.
+
+## Uniform-geometric DA resonance law `[PROVED HERE] [NOVELTY UNVERIFIED]`
+
+Let `(b_n)` be eventually positive and satisfy `(UG)`. If an eventually full-support series
+
+`f(z)=sum_(n>=0) a_nz^n`, `|a_n|=exp(-b_n)`
+
+is DA over `C(z)`, then there exist a nonzero integer Laurent polynomial
+
+`Q(T)=sum_r d_rT^r in Z[T,T^(-1)]`, with `Q(1)=0`,
+
+a constant `C>0`, and an unbounded sequence of integers `(q_k)` such that
+
+`|Delta_Q b(q_k)| <= C log q_k`.                                           `(DR)`
+
+Thus a DA Taylor-magnitude profile with uniform geometric growth must carry one fixed bounded additive relation which returns to logarithmic width infinitely often. The polynomial `Q` is not allowed to vary with the scale.
 
 ## Logarithmic resonance-breaking condition
 
@@ -66,13 +82,17 @@ have eventually nonzero coefficients satisfying
 
 `-log|a_n| = b_n := A lambda^n+h_n`                                         `(1)`
 
-for every sufficiently large `n`. Then `(b_n)` satisfies `(EG)` and `(LSS)`, so `f` is entire and HT over `C(z)` for every possible choice of coefficient phases.
+for every sufficiently large `n`. Then `(b_n)` satisfies `(UG)` and `(LSS)`, so `f` is entire and HT over `C(z)` for every possible choice of coefficient phases.
 
 If `lambda` is transcendental, `(RB2)` is vacuous because no nonzero integer Laurent polynomial vanishes at `lambda`; taking `h_n=0` recovers the exact-geometric special case of the stronger Taylor log-ratio algebraicity law.
 
 ## Canonical algebraic-ratio resonance residue `[PROVED HERE]`
 
-Suppose `lambda>1` is algebraic, let `m_lambda(T) in Z[T]` be its primitive minimal polynomial, and let `S` denote the forward shift. For any profile satisfying `(EG)`, define
+Suppose `lambda>1` is algebraic, let `m_lambda(T) in Z[T]` be its primitive minimal polynomial, and let `S` denote the forward shift. For a profile satisfying
+
+`b_n/(A lambda^n)->1` for some `A>0`,                                      `(EG)`
+
+define
 
 `Res_lambda(b):=m_lambda(S)b`.                                               `(RR)`
 
@@ -154,7 +174,11 @@ All higher terms and the remainder are smaller because `q^(-(1-alpha))->0`; choo
 
 ## Proof of the master theorem
 
-A finite Taylor prefix is irrelevant: subtract it and divide by a power of `z`. Thus work on a full tail satisfying `(EG)` and `(LSS)`. Condition `(EG)` makes the coefficients decay faster than every exponential, so `f` is entire.
+A finite Taylor prefix is irrelevant: subtract it and divide by a power of `z`. Thus work on a full tail satisfying `(UG)` and `(LSS)`. Choose `mu>1` and `n_0` such that
+
+`b_(n+1) >= mu b_n`                                                         `(G)`
+
+for all `n>=n_0`. Hence `b_n` grows at least geometrically, so `b_n/n->infinity` and `f` is entire.
 
 Suppose for contradiction that `f` is DA. By Mahler's integer-normalization theorem it satisfies
 
@@ -180,17 +204,13 @@ The balanced-survival theorem proved in `log-superlacunary-taylor-magnitude-hype
 
 for a fixed `C=C_P`. This is the balanced-survival lemma: after grouping top-degree monomials by their fixed source-sum shift, a nonzero symmetric integer weight polynomial remains; on each coordinate-sum residue class some fixed-offset diagonal is not identically zero.
 
-Since
+The witness in (9) has valuation at most `D b_(q+C_0)`, where `q=floor(N/D)` and `C_0` depends only on `P`. If `D>=2`, a lower-degree atom has a source index at least `N/(D-1)-O_P(1)`. Its distance above `q+C_0` tends linearly to infinity, so repeated use of `(G)` makes its valuation exceed the witness by a factor tending exponentially to infinity. When `D=1`, degree-zero atoms disappear for large `N`.
 
-`b_n/(A lambda^n) -> 1`,                                                     `(10)`
-
-the geometric term controls coarse minimization. A lower-degree atom has a source index at least `N/(D-1)-O_P(1)` when `D>=2`, and so its valuation exceeds that of (9) by an exponential factor. When `D=1`, degree-zero atoms disappear for large `N`.
-
-Likewise, a degree-`D` atom with largest source index more than a sufficiently large fixed distance above `floor(N/D)` has valuation larger than the balanced witness. The fixed source-sum constraint then bounds every source index below as well. Hence every valuation minimizer has the form
+Choose a fixed `C_1>C_0` so large that `mu^(C_1-C_0)>2D`. Any degree-`D` atom whose largest source index exceeds `q+C_1` has valuation at least `b_(q+C_1+1)>2D b_(q+C_0)`, hence exceeds the witness by at least `D b_(q+C_0)`. The fixed source-sum constraint then bounds every source index below as well. Hence every valuation minimizer has the form
 
 `k_i=q+r_i`, `q=floor(N/D)`, `|r_i|<=C'`                                    `(11)`
 
-for a constant `C'=C'_P`. Every lower-degree or nonbalanced atom is separated from the balanced minimum by at least a positive multiple of `lambda^q`, hence by `omega(log N)`.
+for a constant `C'=C'_P`. Moreover, since `(G)` gives `b_(q-C')/log N->infinity`, every lower-degree or nonbalanced atom is separated from the balanced minimum by `omega(log N)`.
 
 ### 2. Shift separation forbids every bounded bend
 
@@ -204,9 +224,23 @@ For each residue class of `N modulo D`, only finitely many bounded patterns can 
 
 The balanced-survival lemma makes (7) nonzero for every sufficiently large `N`. The superlogarithmic unique-minimum gap contradicts the Archimedean tropical bend law at all such indices. Therefore no ADE exists and `f` is HT. `square`
 
+## Proof of the uniform-geometric DA resonance law
+
+Apply the integer normalization and generic coefficient extraction used in the master theorem to an ADE for `f`. The balanced-survival lemma supplies a nonzero degree-`D` bounded-offset atom at every sufficiently large coefficient index. The coarse comparison in Step 1 of the master proof uses only `(UG)`, so every lower-degree or nonbalanced atom lies `omega(log N)` above the balanced minimum.
+
+The Archimedean tropical bend law therefore forces, for every sufficiently large `N`, two distinct degree-`D` bounded-offset atoms whose valuations differ by `O_P(log N)`. Write their source indices as `q+r_i`, where `q=floor(N/D)` and all offsets range over one fixed finite set. The difference of their multiplicity vectors gives a nonzero integer Laurent polynomial
+
+`Q_N(T)=sum_r d_(N,r)T^r`.
+
+Both atoms have degree `D`, so `sum_r d_(N,r)=0`, equivalently `Q_N(1)=0`. After restricting to one residue class of `N modulo D`, only finitely many ordered pairs of bounded-offset patterns occur. One pair therefore recurs along an unbounded sequence. Its fixed nonzero polynomial `Q` satisfies
+
+`|Delta_Q b(q_k)|=O_P(log q_k)`,
+
+because `N_k=Dq_k+O_P(1)`. Enlarging the implied constant gives `(DR)`. `square`
+
 ## Proof of the hierarchical verification theorem
 
-Let `b_n=A lambda^n+h_n`. Condition `(RB1)` gives `(EG)`. Fix a nonzero integer Laurent polynomial `Q(T)=sum_r d_rT^r`. Then
+Let `b_n=A lambda^n+h_n`. Condition `(RB1)` gives `(EG)`, and hence `(UG)`. Fix a nonzero integer Laurent polynomial `Q(T)=sum_r d_rT^r`. Then
 
 `Delta_Q b(n)=A lambda^n Q(lambda)+sum_r d_r h_(n+r)`.                       `(13)`
 
@@ -232,15 +266,15 @@ which divided by `log n` tends to infinity. In particular `(RB2)` holds for ever
 
 ## General law exposed
 
-The result identifies a hierarchy rather than a single growth threshold:
+The necessary and sufficient directions isolate a hierarchy rather than a single growth threshold:
 
-> A magnitude profile is phase-uniformly HT when every bounded additive relation surviving at its leading asymptotic scale is broken by a lower scale before the separation falls to `O(log N)`.
+> In the uniform-geometric regime, DA requires one fixed balanced additive relation to return to `O(log N)` infinitely often. If every fixed relation stays at `omega(log N)`, the profile is phase-uniformly HT. Lower asymptotic scales matter exactly through whether they preserve or break those resonances.
 
 Log-superlacunarity has no leading relations because the largest differing index dominates. A transcendental geometric scale has no Laurent-polynomial relations. The present theorem permits exact leading relations and kills them at the next asymptotic layer. This is the first genuinely resonant stratum of the coefficient-floor program closed by the bend method.
 
 ## Consequence for the super-Gaussian program
 
-The profile (1) satisfies `b_n/n^2->infinity`, so it lies in the super-Gaussian class. The remaining open range cannot be described merely by adjacent comparability or even by leading-scale algebraic resonance. A DA counterexample would need logarithmically close bounded convolution relations that persist through every asymptotic layer visible in the coefficient magnitudes.
+The profile (1) satisfies `b_n/n^2->infinity`, so it lies in the super-Gaussian class. More generally, every DA profile in the uniform-geometric part of that class must have one recurrent fixed resonance `(DR)`. The remaining open range cannot be described merely by adjacent comparability or even by leading-scale algebraic resonance. A DA counterexample would need logarithmically close bounded convolution relations that persist through every asymptotic layer visible in the coefficient magnitudes.
 
 ## Exact RH-route scope
 
@@ -267,6 +301,7 @@ No Lean formalization is claimed. Complete formalization requires Mahler normali
 
 - [x] Exact theorem stated.
 - [x] Complete unconditional paper proof.
+- [x] Fixed-recurrence necessary law for every DA uniform-geometric profile.
 - [x] Rational-ratio resonant example proved HT for every phase.
 - [x] Significance gate: an asymptotically negligible second scale destroys every finite leading resonance.
 - [ ] Exact parent-theory and literature novelty gates.
@@ -275,3 +310,4 @@ No Lean formalization is claimed. Complete formalization requires Mahler normali
 ## Log
 
 - 2026-07-11 — Proved hierarchical resonance breaking for `A lambda^n+B exp(n^alpha)`, `0<alpha<1`, and isolated persistence through every asymptotic layer as the remaining DA escape.
+- 2026-07-11 — Strengthened the master theorem from exact geometric asymptotics to uniform eventual geometric growth and proved the converse DA law: one fixed balanced integer shift defect must return to `O(log n)` along an infinite subsequence.

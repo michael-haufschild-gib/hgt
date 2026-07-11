@@ -160,3 +160,4 @@ No complete Lean formalization is claimed. The theorem depends on Ostrowski's an
 ## Log
 
 - 2026-07-11 — Proved arbitrary fixed-modulus HT realization and the exact `exp(z)` versus phase-twisted HT same-Newton-profile pair.
+- 2026-07-11 — Strengthened blindness inside the HT stratum: one stretched-exponential magnitude fiber contains uncountably many order-zero HT functions with pairwise distinct zero divisors.

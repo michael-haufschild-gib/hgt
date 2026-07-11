@@ -346,6 +346,11 @@ import GaloisForLFunctions.RHTower.CarrierCountConstraint
 import GaloisForLFunctions.RHTower.EulerTruncationRigidity
 import GaloisForLFunctions.RHTower.EulerUnitTangent
 import GaloisForLFunctions.RHTower.PrimeLambertMobiusInversion
+import GaloisForLFunctions.RHTower.LambertRayRecovery
+import GaloisForLFunctions.RHTower.SectorPrimeZeroUniqueness
+import GaloisForLFunctions.RHTower.CompactCarrierFourierBorel
+import GaloisForLFunctions.RHTower.CompactCarrierLambert
+import GaloisForLFunctions.RHTower.DenseSpanDuality
 import GaloisForLFunctions.RHTower.LandauShadowNoGo
 import GaloisForLFunctions.RHTower.JointReadingNoGo
 import GaloisForLFunctions.RHTower.SigmaDivisorJet
@@ -540,6 +545,7 @@ import GaloisForLFunctions.RHTower.XiLaguerrePolya
 import GaloisForLFunctions.RHTower.TraceHankelConverse
 import GaloisForLFunctions.RHTower.XiTraceHankelCriterion
 import GaloisForLFunctions.RHTower.TraceHankelSequenceCone
+import GaloisForLFunctions.RHTower.TraceHankelAnalyticInstability
 import GaloisForLFunctions.RHTower.ReBoundAffine
 import GaloisForLFunctions.RHTower.GammalessStripRigidity
 import GaloisForLFunctions.RHTower.BohrCoefficientUniqueness

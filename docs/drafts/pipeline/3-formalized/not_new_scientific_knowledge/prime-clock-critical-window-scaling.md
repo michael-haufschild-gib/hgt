@@ -1,8 +1,8 @@
 # Prime-clock critical-window scaling law
 
 - **ID:** `prime-clock-critical-window-scaling`
-- **Stage:** 2-fully-proven (paper), Lean completion pending
-- **Type:** THEOREM (paper) / `[NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Source:** finite-cutoff form of the reflected infinite prime-clock superspace, separate from the
   live routes in `docs/reports/rhtower_status_1107.md`
 - **Statement:** The reflected coherent-sector transition has the sharp finite-size window
@@ -23,12 +23,15 @@ the proposed quantum phase space.
 
 - [x] 0 → 1 in-progress: finite energy, scaling variable, candidate profile, and Mertens input fixed.
 - [x] 1 → 2 fully-proven: complete paper proof below.
-- [ ] 2 → 3 formalized: the exact hyperbolic identity, two-sided finite-window bounds,
+- [x] 2 → 3 formalized: the exact hyperbolic identity, two-sided finite-window bounds,
   susceptibility asymptotic (8), sharp subcritical convergence, supercritical divergence, and a
-  nondegenerate critical-scale sandwich are in `PrimeClockFiniteScaling.lean`; only the exact
-  nonlinear profile (7) remains.
-- [ ] 3 → 4 publication-ready: requires full Lean proof and a broader parent-literature/rediscovery
-  audit. The preliminary exact-formula search found no instance of this crossover law.
+  nondegenerate critical-scale sandwich are in `PrimeClockFiniteScaling.lean`. The exact nonlinear
+  profile at every fixed critical coordinate `epsilon_N = c/log N` is now in
+  `PrimeClockCriticalProfile.lean`, including the uniform perturbation from fixed `c` to arbitrary
+  `c_N -> c`.
+- [ ] 3 → 4 publication-ready: closed. The dual novelty/significance gate fails because the weighted
+  prime test-function asymptotic is an existing analytic-number-theory pattern; the hyperbolic
+  profile is a specialization and the coherent-state interpretation is a bridge.
 
 ## Finite prime universe
 
@@ -189,10 +192,23 @@ orthogonal.
 `[BRIDGE]` The result is RH-blind by itself. It explains the geometry of the selector but does not
 show that `Xi` zeros inhabit its critical window.
 
-`[NOVELTY UNVERIFIED]` The proof uses classical Mertens theory and weak convergence, but the exact
-prime coherent-sector crossover profile was not found in preliminary searches across coherent-state,
-orthogonality-catastrophe, prime-zeta, and finite-size-scaling literature. Scientific novelty remains
-provisional until the formal proof and a specialist literature audit are complete.
+`[NOT NEW SCIENTIFIC KNOWLEDGE]` The coherent-state interpretation is project-specific, but the
+mathematical theorem is a direct weighted-test-function consequence of Mertens theory. Lemma 5.2 of
+*Applications of analytic newvectors for GL(n)* evaluates sums of the same form
+
+```text
+(1/log C) sum_p (log p)/p * f(log p/log C)
+```
+
+by Stieltjes integration, integration by parts, and logarithmic change of variables, with an
+`O(1/log X)` error. Taking the test function to be the removable hyperbolic profile yields the core
+limit here. The exact formula may be a new presentation, but it is not a significant new theorem.
+
+Parent comparison:
+
+- https://link.springer.com/article/10.1007/s00208-021-02207-5, Lemma 5.2 and its proof;
+- classical prime Mertens input `sum_{p<=x} log(p)/p = log x + O(1)`, also recorded in
+  https://link.springer.com/article/10.1007/s11139-025-01238-9, equation (31).
 
 ## Lean status
 
@@ -211,12 +227,31 @@ provisional until the formal proof and a specialist literature audit are complet
 - `tendsto_primeClockCutoffEnergy_atTop_of_scaled_tendsto_atTop`;
 - `primeClockCutoffEnergy_critical_scaled_sandwich`.
 
+`formal/GaloisForLFunctions/RHTower/PrimeClockCriticalProfile.lean` additionally proves:
+
+- continuity of the removable profile integrand
+  `primeClockScalingProfileIntegrand c u = 4 sinh(cu)^2/u`;
+- the explicit Abel decomposition against the bounded Mertens discrepancy;
+- an `O(1/log N)` bound for that discrepancy contribution;
+- the exact fixed-coordinate limit
+  `tendsto_primeClockCutoffEnergy_critical_profile`:
+
+  ```text
+  E_N(c/log N) -> primeClockUniversalProfile(c)
+               = 4 integral_0^1 sinh(cu)^2/u du.
+  ```
+
 The repository already contains the required explicit Mertens bound in
-`RHTower.Mertens.mertens_first_prime`. Lean now derives (8), the sharp `1/log N` trichotomy, and the
-critical-scale two-sided bounds from it. The remaining Lean task is the bounded-discrepancy measure
-limit for the exact nonlinear test family in (4)--(7), not any unproved number-theoretic input.
+`RHTower.Mertens.mertens_first_prime`. Lean now derives (8), the sharp `1/log N` trichotomy, the
+critical-scale two-sided bounds, and the full nonlinear profile for fixed `c`. The remaining Lean
+task is complete, including uniform dependence on a moving critical coordinate `c_N -> c`.
 
 ## Log
 
 - 2026-07-11 — exact energy identity and lower bound formalized; complete Mertens-measure proof of the
   universal `1/log N` crossover profile written on paper; novelty retained as unverified.
+- 2026-07-11 — exact fixed-coordinate nonlinear profile formalized in
+  `PrimeClockCriticalProfile.lean`.
+- 2026-07-11 — moving-coordinate uniformity formalized; parent-literature audit found the underlying
+  weighted prime test-function asymptotic already in use. Classified as a formalized bridge, not new
+  scientific knowledge.

@@ -53,6 +53,18 @@ is HT over `C(z)`, independently of all coefficient phases.
 
 This strictly strengthens the exact geometric profile `b_n=A lambda^n`: arbitrary subleading fluctuations are allowed as long as the successive ratio converges to the same transcendental limit.
 
+## Corollary: DA extended log-ratio spectrum `[PROVED HERE]`
+
+Let `f` be an eventually full-support DA entire series with eventually positive `b_n=-log|a_n|`. If the extended limit
+
+`lim b_(n+1)/b_n in [1,infinity]`
+
+exists, then it belongs to
+
+`{1} union (RealAlgebraicNumbers intersect (1,infinity))`.                  `(S)`
+
+Indeed, a finite limit greater than one is algebraic by the theorem. The limit `infinity` is impossible by the log-superlacunary phase-uniform HT theorem. Thus the only nonalgebraic boundary value left by a convergent ratio is `1`.
+
 ## Proof
 
 A finite Taylor prefix is irrelevant to DA status and to `(LR)`, so work on a full nonzero tail.
