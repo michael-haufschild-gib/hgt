@@ -127,4 +127,33 @@ theorem primeEulerUnitFETangent_half (p : ℕ) :
   have hhalf : (1 : ℂ) - 1 / 2 = 1 / 2 := by ring
   rw [hhalf, sub_self]
 
+/-- The actual-source prime tangent is Schwarz real. -/
+theorem primeEulerUnitTangent_conj {p : ℕ} (hp : 2 ≤ p) (s : ℂ) :
+    primeEulerUnitTangent p (starRingEnd ℂ s) =
+      starRingEnd ℂ (primeEulerUnitTangent p s) := by
+  have harg : Complex.arg (p : ℂ) ≠ Real.pi := by
+    rw [Complex.natCast_arg]
+    exact ne_of_lt Real.pi_pos
+  have hpow : (p : ℂ) ^ (-(starRingEnd ℂ s)) =
+      starRingEnd ℂ ((p : ℂ) ^ (-s)) := by
+    have h := Complex.conj_cpow (p : ℂ) (-s) harg
+    have hc := congrArg (starRingEnd ℂ) h
+    simpa using hc.symm
+  unfold primeEulerUnitTangent
+  rw [hpow]
+  rw [map_div₀ (starRingEnd ℂ), map_mul, map_pow, map_sub, map_one]
+  have hlog : (starRingEnd ℂ) (Real.log p : ℂ) = (Real.log p : ℂ) :=
+    RCLike.conj_ofReal _
+  rw [hlog]
+
+/-- The FE-paired actual-source tangent is Schwarz real. -/
+theorem primeEulerUnitFETangent_conj {p : ℕ} (hp : 2 ≤ p) (s : ℂ) :
+    primeEulerUnitFETangent p (starRingEnd ℂ s) =
+      starRingEnd ℂ (primeEulerUnitFETangent p s) := by
+  unfold primeEulerUnitFETangent
+  rw [primeEulerUnitTangent_conj hp]
+  have hreflect : 1 - starRingEnd ℂ s = starRingEnd ℂ (1 - s) := by simp
+  rw [hreflect, primeEulerUnitTangent_conj hp]
+  rw [map_sub]
+
 end RHTower

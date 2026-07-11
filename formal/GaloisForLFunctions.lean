@@ -88,6 +88,7 @@ import GaloisForLFunctions.C5JensenPerturbation
 import GaloisForLFunctions.FunctionFieldDegeneration
 import GaloisForLFunctions.DifferentialABP
 import GaloisForLFunctions.DifferentialIndependence
+import GaloisForLFunctions.DifferentialMatroidGluing
 import GaloisForLFunctions.DifferenceDifferential
 import GaloisForLFunctions.DifferentialPolynomial
 import GaloisForLFunctions.DifferentialPolynomialOver

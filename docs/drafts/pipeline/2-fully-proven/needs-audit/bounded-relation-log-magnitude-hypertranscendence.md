@@ -384,6 +384,14 @@ rational `p`-adic valuations, Lindemann--Weierstrass, the rational approximation
 series convergence argument. The theorem cannot move to stage 3 until the complete unconditional
 chain is formalized.
 
+The current Lean API contains Hermite--Lindemann for one nonzero algebraic exponent and several
+prime-log Baker interfaces, but not the required Lindemann--Weierstrass linear independence of
+`exp(alpha_i)` for an arbitrary finite family of distinct algebraic `alpha_i`. It also has no
+generic formal-power-series ADE coefficient-extraction/polarization theorem or the needed
+differential-algebraic transitivity over constant-field descent. Formalizing isolated private-prime
+valuation lemmas would therefore create support wrappers without formalizing the theorem and is not
+undertaken.
+
 ## Gates
 
 - [x] 0 -> 1: bounded-relation invariant, exact theorem, and attack mechanism stated.

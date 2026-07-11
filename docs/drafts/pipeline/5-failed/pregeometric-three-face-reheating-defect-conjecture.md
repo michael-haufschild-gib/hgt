@@ -1,15 +1,30 @@
-# Pregeometric three-face reheating-defect conjecture
+# Retired pregeometric three-face reheating-defect conjecture
 
 - **ID:** `pregeometric-three-face-reheating-defect-conjecture`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE; greenfield higher-coherence route
-- **Scientific status:** `[CONJECTURE] [NOVELTY UNVERIFIED]`; no RH implication proved
+- **Stage:** 5-failed
+- **Type:** `[RETIRED: REDISCOVERY / PROJECT COLLISION]`
+- **Scientific status:** `[FAILED IDEATION ROUTE]`; no RH implication proved
 - **Source:** user scalar-field / pre-Big-Bang ideation, 2026-07-11
 - **Statement:** The completed zeta source should be reconstructed as a static three-face constraint
   object whose singular, archimedean, and prime-factorized faces are pairwise compatible but possess
   a source-canonical ternary coherence defect. The support of that defect is conjectured to equal the
   completed zeta divisor, while a positive Real structure is conjectured to confine its support to
   the fixed locus `Re(s)=1/2`.
+
+## Terminal collision verdict
+
+`[RETIRED]` The branch fails the requested outlandishness gate and supplies no new mechanism.
+
+- the symmetric shifted family `xi(s+a)xi(s-a)` is already fully developed in
+  `symmetric-shift-entry-temperedness-boundary.md`;
+- cross-effects and multi-face signatures already occur in the semilocal Sonin and higher-face
+  research lanes;
+- the heightwise indecomposability lemma is elementary primary decomposition, not a new source law;
+- identifying the defect support with the zeta divisor merely reinstates the source-to-divisor open
+  core already isolated in the prime-aperture screen and Route D work.
+
+The card is retained only as a failed-route firewall. Its formulas and categorical vocabulary must
+not be presented as outlandish or scientifically new.
 
 ## Goal
 

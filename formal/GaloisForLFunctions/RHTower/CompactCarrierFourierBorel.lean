@@ -52,6 +52,38 @@ theorem compactExponentialTest_analyticOnNhd (s : C(K, ℂ)) :
   have hc := he.compContinuousLinearMap (u := S)
   simpa [compactExponentialTest, S, Function.comp_def] using hc
 
+/-- The first scalar derivative of the compact exponential test at zero is
+the negative carrier coordinate. -/
+theorem compactExponentialTest_hasDerivAt_zero (s : C(K, ℂ)) :
+    HasDerivAt (compactExponentialTest s) (-s) 0 := by
+  let S : ℂ →L[ℂ] C(K, ℂ) :=
+    -(ContinuousLinearMap.smulRight (ContinuousLinearMap.id ℂ ℂ) s)
+  have hexp : HasFDerivAt (NormedSpace.exp : C(K, ℂ) → C(K, ℂ))
+      (ContinuousLinearMap.id ℂ C(K, ℂ)) 0 := by
+    have h := (NormedSpace.exp_hasFPowerSeriesAt_zero
+      (𝕂 := ℂ) (𝔸 := C(K, ℂ))).hasFDerivAt
+    convert h using 1
+    ext x : 1
+    rw [continuousMultilinearCurryFin1_apply]
+    have hx := NormedSpace.expSeries_apply_eq
+      (𝕂 := ℂ) (𝔸 := C(K, ℂ)) x 1
+    simpa using hx.symm
+  have hexpS : HasFDerivAt (NormedSpace.exp : C(K, ℂ) → C(K, ℂ))
+      (ContinuousLinearMap.id ℂ C(K, ℂ)) (S 0) := by
+    simpa [S] using hexp
+  have hcomp := hexpS.comp 0 S.hasFDerivAt
+  have hfun : compactExponentialTest s =
+      (NormedSpace.exp : C(K, ℂ) → C(K, ℂ)) ∘ S := by
+    funext z
+    simp [compactExponentialTest, S, Function.comp_def]
+  have hFD : HasFDerivAt (compactExponentialTest s) S 0 := by
+    rw [hfun]
+    simpa using hcomp
+  have hS1 : S 1 = -s := by
+    ext k
+    simp [S]
+  exact hFD.hasDerivAt.congr_deriv hS1
+
 /-- A compactly carried Fourier--Borel transform is entire. -/
 theorem compactFourierBorel_analyticOnNhd
     (L : C(K, ℂ) →L[ℂ] ℂ) (s : C(K, ℂ)) :

@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper); route gate
 - **Scientific status:** `[BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Source:** `../../1-in-progress/prime-aperture-unitary-screen-conjecture.md`; Helson zeta
+- **Source:** `../../5-failed/prime-aperture-unitary-screen-conjecture.md`; Helson zeta
   prescribed-divisor theorems
 - **Statement:** Completely multiplicative unimodular phase twists preserve the full prime density
   matrix up to a tensor product of one-prime unitaries, and therefore preserve every

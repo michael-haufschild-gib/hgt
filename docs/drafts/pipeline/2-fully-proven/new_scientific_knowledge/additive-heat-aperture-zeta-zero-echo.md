@@ -301,9 +301,9 @@ To prove nonvanishing, put `w=s-1`.  Then `-1/2<Re(w)<0`.  The functional equati
 integer, so no trivial zero occurs.  Hence `zeta(s-1)!=0`.
 
 This tangent is source-built, nonzero even at a multiple zero in the spectral parameter, and does
-not divide by `zeta'(s)`.  It closes the nonvanishing part of an on-shell defect construction.  What
-remains unproved is that this additive tangent acts as a normal correspondence between the two
-reflected prime superselection sectors.
+not divide by `zeta'(s)`.  It closes the nonvanishing question but not the RH route.  The terminal
+route theorem computes its primewise covariance defect and proves that it is a normal reflected
+intertwiner only on the critical line; requiring that property at every zero is exactly RH.
 
 This is not point sampling of an `L2` boundary class.  The entire function `E_s(x)` for `x>0` is a
 strictly positive, absolutely convergent quadratic measurement of the full density.  The zeta
@@ -344,10 +344,10 @@ side:
 - its finite part gives the completed intensity after the canonical archimedean weight.
 
 It does not close the **wall-localization** half.  A hypothetical off-line zero with
-`1/2<Re(s)<1` would also remove the subleading echo.  The superselection theorem says that the
-reflected sector is disjoint there, but no theorem yet proves that disappearance of the heat echo
-must create a reflected-sector morphism.  That zero-to-sector descent is the remaining RH-hard
-statement.
+`1/2<Re(s)<1` would also remove the subleading echo while leaving the reflected sector disjoint.
+The separate terminal theorem
+`heat-echo-superselection-descent-is-rh.md` proves that asking disappearance of the heat echo to
+create a reflected-sector morphism is exactly RH, not an independent intermediate statement.
 
 ## Fake tests
 
@@ -385,10 +385,10 @@ result, and the zeta coefficient appears in a new observable role.  Because the 
 once the correct observable is found, independent expert comparison remains mandatory before
 publication.
 
-The significance gate passes: unlike a restatement of analytic continuation, the
-theorem constructs an everywhere finite positive observable from the normalizable prime state and
-reads a zeta zero from its asymptotic channel structure.  It materially changes the open problem
-from “construct the joint measurement” to “prove zero-to-superselection-sector descent.”
+The significance gate passes: unlike a restatement of analytic continuation, the theorem
+constructs an everywhere finite positive observable from the normalizable prime state and reads a
+zeta zero from its asymptotic channel structure.  It survives as a measurement theorem; its former
+use as a zero-to-superselection descent route is retired.
 
 ## Gates
 

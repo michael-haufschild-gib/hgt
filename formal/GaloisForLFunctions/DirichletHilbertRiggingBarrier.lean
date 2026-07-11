@@ -1,4 +1,5 @@
 import Mathlib.Analysis.PSeries
+import Mathlib.Analysis.InnerProductSpace.Basic
 
 /-!
 # The diagonal Hilbert-rigging barrier for Dirichlet superpositions
@@ -17,6 +18,8 @@ in a diagonal Pontryagin/Krein superspace, does not alter this underlying Hilber
 noncomputable section
 
 namespace GaloisForLFunctions
+
+open Filter
 
 /-- Magnitude of the `n`th Dirichlet coefficient, indexed from `n+1`. -/
 def dirichletMagnitude (sigma : ℝ) (n : ℕ) : ℝ :=
@@ -69,6 +72,28 @@ theorem summable_dirichletMagnitude_iff (sigma : ℝ) :
   rw [heq]
   exact Real.summable_one_div_nat_add_rpow 1 sigma
 
+/-- The all-ones summation source has infinite Sobolev order relative to the arithmetic clock
+`H e_n = log n e_n`: no finite power of the clock supplies a square-summable dual weight. -/
+theorem nat_log_pow_recip_not_summable (k : ℕ) :
+    ¬ Summable (fun n : ℕ => (1 / (Real.log (n : ℝ)) ^ k : ℝ)) := by
+  intro hlog
+  have hgrowth : ∀ᶠ x : ℝ in atTop, ‖Real.log x ^ k‖ ≤ 1 * ‖x‖ :=
+    Real.isLittleO_pow_log_id_atTop.bound one_pos
+  have hnat : ∀ᶠ n : ℕ in atTop, ‖Real.log (n : ℝ) ^ k‖ ≤ 1 * ‖(n : ℝ)‖ :=
+    tendsto_natCast_atTop_atTop.eventually hgrowth
+  have hharm : Summable (fun n : ℕ => (1 / (n : ℝ) : ℝ)) := by
+    apply Summable.of_norm_bounded_eventually hlog
+    rw [Nat.cofinite_eq_atTop]
+    filter_upwards [hnat, eventually_gt_atTop 1] with n hn hn1
+    have hnpos : 0 < (n : ℝ) := by exact_mod_cast (lt_trans Nat.zero_lt_one hn1)
+    have hlogpos : 0 < Real.log (n : ℝ) := Real.log_pos (by exact_mod_cast hn1)
+    have hpowpos : 0 < Real.log (n : ℝ) ^ k := pow_pos hlogpos _
+    have hle : Real.log (n : ℝ) ^ k ≤ (n : ℝ) := by
+      simpa [Real.norm_of_nonneg (pow_nonneg hlogpos.le k), Real.norm_of_nonneg hnpos.le] using hn
+    rw [Real.norm_of_nonneg (one_div_nonneg.mpr hnpos.le)]
+    exact one_div_le_one_div_of_le hpowpos hle
+  exact Real.not_summable_one_div_natCast hharm
+
 /-- **Sharp rigging barrier.** A positive diagonal Hilbert scale can make both the Dirichlet state
 and the all-ones summation covector normal if and only if `sigma > 1`. -/
 theorem admitsDiagonalHilbertRigging_iff (sigma : ℝ) :
@@ -98,5 +123,56 @@ theorem admitsDiagonalHilbertRigging_iff (sigma : ℝ) :
       rw [← Real.rpow_add hn]
       congr 1
       ring
+
+section Bessel
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+
+/-- A uniform Bessel bound for a countable family of Hilbert-space modes. -/
+def HasBesselBound (u : ℕ → E) (B : ℝ) : Prop :=
+  ∀ (s : Finset ℕ) (x : E),
+    ∑ i ∈ s, ‖inner ℂ (u i) x‖ ^ 2 ≤ B * ‖x‖ ^ 2
+
+/-- A Bessel family can have unit response against one vector on only finitely much total mass. -/
+theorem card_le_of_bessel_unit_response
+    (u : ℕ → E) (B : ℝ) (hB : HasBesselBound u B)
+    (s : Finset ℕ) (y : E) (hy : ∀ i ∈ s, inner ℂ (u i) y = 1) :
+    (s.card : ℝ) ≤ B * ‖y‖ ^ 2 := by
+  calc
+    (s.card : ℝ) = ∑ i ∈ s, (1 : ℝ) := by simp
+    _ = ∑ i ∈ s, ‖inner ℂ (u i) y‖ ^ 2 := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [hy i hi]
+      norm_num
+    _ ≤ B * ‖y‖ ^ 2 := hB s y
+
+/-- **Non-diagonal normality barrier.** No infinite Bessel family admits a bounded Hilbert vector
+whose inner product with every mode is one. Hence abandoning diagonal weights is insufficient if
+the coefficient modes must still form a stably synthesizable quantum frame. -/
+theorem no_bessel_family_with_unit_response
+    (u : ℕ → E) (B : ℝ) (hB : HasBesselBound u B) :
+    ¬ ∃ y : E, ∀ i, inner ℂ (u i) y = 1 := by
+  rintro ⟨y, hy⟩
+  obtain ⟨N : ℕ, hN⟩ := exists_nat_gt (B * ‖y‖ ^ 2)
+  have hle := card_le_of_bessel_unit_response u B hB (Finset.range N) y
+    (fun i _hi => hy i)
+  simp only [Finset.card_range] at hle
+  exact (not_le_of_gt hN) hle
+
+/-- A Bessel family cannot have the same nonzero matrix coefficient against every mode. This is
+the orthogonal-complement engine behind density of the graph of the unbounded summation relation. -/
+theorem bessel_constant_response_eq_zero
+    (u : ℕ → E) (B : ℝ) (hB : HasBesselBound u B)
+    (y : E) (c : ℂ) (hy : ∀ i, inner ℂ (u i) y = c) :
+    c = 0 := by
+  by_contra hc
+  apply no_bessel_family_with_unit_response u B hB
+  refine ⟨c⁻¹ • y, ?_⟩
+  intro i
+  rw [inner_smul_right, hy i]
+  exact inv_mul_cancel₀ hc
+
+end Bessel
 
 end GaloisForLFunctions

@@ -1,14 +1,16 @@
-# Prime-aperture superselection-screen conjecture
+# Prime-aperture superselection screen — terminal route record
 
 - **ID:** `prime-aperture-unitary-screen-conjecture`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE; superselection/source-realization route
-- **Scientific status:** `[CONJECTURE]`; no novelty claim and no RH claim proved
+- **Stage:** 5-failed
+- **Type:** TERMINAL RH ROUTE RECORD
+- **Scientific status:** `[CLOSED AS AN RH ROUTE]`; the screen and heat detector survive as separate
+  theorems, but their proposed descent is RH-equivalent
 - **Source:** user screen/interference proposal, 2026-07-11
 - **Statement:** The critical line is the singular superselection screen of the full prime-density
-  spectral states: reflected prime descriptions share a representation sector only there, and
-  distinct heights there are mutually disjoint sectors.  The completed zeta divisor is conjectured
-  to be the defect support of a source-constructed, fiberwise completion observable on that screen.
+  spectral states, and the additive heat aperture detects the zeta divisor.  These two proved facts
+  do not combine into an RH proof: the assertion that every heat-echo defect produces a normal
+  reflected-sector defect is exactly RH, and the canonical nonzero tangent fails the required
+  covariance at every hypothetical off-line zero.
 
 ## Goal
 
@@ -309,8 +311,8 @@ Sigma_P = {z in T_P : H^*(M_P tensor L_z) != 0},
 
 equivalently the rank-drop locus of the determinant-of-cohomology section.
 
-The target is a compatible wall/recollement pro-object `M_infinity` over all finite prime sets, with the
-archimedean theta/Gamma place included in the transition and duality data, such that
+The retired target was a compatible wall/recollement pro-object `M_infinity` over all finite prime
+sets, with the archimedean theta/Gamma place included in the transition and duality data, such that
 
 ```text
 Div(xi) = delta^*(Sigma_infinity),
@@ -318,11 +320,10 @@ Sigma_infinity = Supp H^*(R lim M_P),
 Sigma_infinity subset U_infinity.
 ```
 
-The right-half Hilbert completion supplies the particle bulk. Its reflected conjugate dual supplies
-the wave bulk. The derived pro-object is their interface category. The first identity must be
-proved from the completed Euler--Gamma source and cannot use the zeta divisor as input. The final
-inclusion must follow from polarization, geometric origin, and compatibility of the derived limit;
-it cannot be imposed as an axiom. Together they imply RH.
+This formulation is now refuted in its standard derived meaning.  Moreover a finite
+torsion-translated subtorus is not contained in the unitary real form; only its intersection with
+the arithmetic diagonal is localized by the finite-screen lemma.  Thus neither displayed support
+identity follows from the finite parent theorem.
 
 ## Why ordinary diffraction is insufficient
 
@@ -375,18 +376,19 @@ Pulling one defining monomial equation back along `delta_P` gives a vertical ari
 progression, or the empty set. A fixed finite union therefore has `O(T)` intersections up to
 height `T`, while the Riemann--von Mangoldt formula gives `N(T) asymp T log T`.
 
-Consequently the requested object cannot have one fixed finite dimension `n`. The mathematically
-coherent reading is a system whose dimension and number of prime slits tend to infinity. The zeta
-zeros must be new cohomology created by the derived infinite limit, because every finite Euler
-aperture is zero-free in the open critical strip.
-
-This identifies the interference as a non-Mittag--Leffler phenomenon:
+Consequently a fixed finite-dimensional screen cannot reproduce the zeta divisor.  The former claim
+that the zeros could therefore be new `R^1 lim` cohomology was incorrect:
 
 ```text
-finite prime complexes: acyclic in the strip,
-derived all-prime limit: possible R^1 lim cohomology,
-zeta zeros: proposed support of that derived defect.
+finite specialized prime complexes: acyclic in the strip,
+ordinary derived inverse limit: zero,
+possible surviving object: only a separately defined base-change or nonclosed-range defect.
 ```
+
+The theorem
+[acyclic-finite-fibers-derived-limit-zero.md](../2-fully-proven/not_new_scientific_knowledge/acyclic-finite-fibers-derived-limit-zero.md)
+proves this correction.  A singular completion may still fail to commute with specialization, but
+then finite-stage perfectness and polarization do not automatically control its support.
 
 ## Candidate construction
 
@@ -400,16 +402,17 @@ They are acyclic for `0<Re(s)<1`. Their torsion records the finite Euler factor.
 gives the face maps. This alone is insufficient: the raw inverse system only knows the
 absolute-convergence Euler product and has no canonical continuation through `Re(s)=1`.
 
-`[CONJECTURE]` The archimedean theta/Poisson completion promotes these finite Koszul faces to
-geometric-origin polarizable complexes `M_P` and supplies a self-duality
+`[RETIRED]` The proposed archimedean theta/Poisson promotion of these finite Koszul faces to
+geometric-origin polarizable complexes `M_P` was supposed to supply a self-duality
 
 ```text
 M_P(z) ~= dual(M_P(conj(z)^(-1))).
 ```
 
-The completed determinant of the derived restricted product then pulls back to `xi(s)`. The finite
-polarizations give unitary-translated jump components. A strict pro-polarization theorem would
-prevent the `R^1 lim` support from escaping the closed unitary screen.
+No such promotion or determinant was constructed.  Even if it were, finite polarizations give
+unitary-translated jump components, not support contained in the unitary torus.  The raw specialized
+derived limit is zero, so a live replacement must define a global singular completion before
+specialization and prove a new base-change and off-unitary coercivity theorem.
 
 ## Attacks
 
@@ -519,9 +522,31 @@ sampling of the normalizable wave state. A source-selected RKHS or rigged/derive
 category is indispensable, and importing an RH-conditional de Branges realization would be
 circular.
 
-## Exact open core
+### Joint-algebra extension
 
-`[OPEN CORE 1: HEAT-ECHO-TO-SECTOR DESCENT]` The additive heat aperture already constructs the
+`[REFUTED]` The heat aperture cannot be adjoined as an ordinary sector-preserving observable in the
+natural particle representation.  If `D=l-infinity(N)` is the particle diagonal and `x>0`, then
+
+```text
+W*(D,H_x)=B(l2(N)).
+```
+
+Indeed `P_m H_x P_n` is a nonzero scalar multiple of every matrix unit `E_(mn)`.  The theorem is
+recorded in
+[additive-heat-diagonal-generates-full-operator-algebra.md](../2-fully-proven/not_new_scientific_knowledge/additive-heat-diagonal-generates-full-operator-algebra.md).
+Thus the naive joint algebra has scalar center and destroys the particle superselection
+decomposition.
+
+## Retired open cores
+
+The terminal theorem
+[heat-echo-superselection-descent-is-rh.md](../5-failed/heat-echo-superselection-descent-is-rh.md)
+proves that the first core below is not an intermediate lemma: it is equivalent to RH.  It also
+computes the canonical tangent's primewise covariance defect and shows that the tangent is nonzero
+but noncovariant at every hypothetical off-line zero.  The remaining proposed realizations do not
+supply an independent descent and are retired with this route.
+
+`[RETIRED CORE 1: HEAT-ECHO-TO-SECTOR DESCENT]` The additive heat aperture already constructs the
 source zero detector on `1/2<Re(s)<1`.  Lift its missing subleading channel to a fiberwise object
 `D_t` in the singular GNS sector of `mu_(1/2+it)`.  Prove both directions needed for a genuine
 divisor lift:
@@ -539,7 +564,7 @@ xi(1/2+it)=0.
 The first implication contains the RH-hard content.  Defining `D_t` only for points already on the
 line, or setting its determinant equal to `xi(1/2+it)`, does not address hypothetical off-line zeros.
 
-`[OPEN CORE 2: ADDITIVE--MULTIPLICATIVE COMPLETION LOCK]` The product-Poisson state is constructed
+`[RETIRED CORE 2: ADDITIVE--MULTIPLICATIVE COMPLETION LOCK]` The product-Poisson state is constructed
 from multiplicative prime data.  The fixed external phase reference must come from the additive
 theta/Poisson structure on the same integers.  Construct their joint object before analytic zeros
 are read.  It must distinguish the untwisted source from a Helson phase twist through the exact
@@ -559,25 +584,24 @@ almost periodic in height.  Completed `xi(1/2+it)` instead decays to zero.  Henc
 must contain a noncompact archimedean component or be unbounded, distributional, singular, or
 derived; no bounded refinement of the prime density alone can work.
 
-`[OPEN CORE 3: FIBERWISE FAITHFULNESS]` The height sectors are mutually singular.  Integrating them
+`[RETIRED CORE 3: FIBERWISE FAITHFULNESS]` The height sectors are mutually singular.  Integrating them
 against a normal trace would again be blind to isolated or density-zero off-line defects.  The
 completion object must therefore be fiberwise faithful: a kernel, signed index, determinant line,
 or derived multiplicity that cannot average away a single sector.  It must not be manufactured from
 the zero divisor.
 
-`[SECONDARY REALIZATION: PRO-POLARIZATION]` One possible implementation remains the compatible
-finite-prime complexes `M_P` built from Euler faces and the theta/Gamma completion.  If pursued, one
-must prove both that their determinant pulls back to `xi` without importing zeros and that the
-finite-stage unitary support theorem survives the non-Mittag--Leffler derived limit:
+`[RETIRED SECONDARY REALIZATION: PRO-POLARIZATION]` The compatible finite-prime complexes `M_P`
+cannot create a defect by an ordinary derived limit of their acyclic specializations:
 
 ```text
-Supp H^*(R lim M_P) subset (S^1)^Primes.
+R lim_P (specialized M_P)=0.
 ```
 
-This would realize Open Cores 1--3, but it is no longer the definition of the wall.  The product
-Poisson theorem already constructs the wall and shows that ordinary duality gives too little.
+A different Route A may still start from a global singular completion and study failure of
+specialization or a translation-unitary theta convolution defect.  That is a new route and must not
+be credited to the retired finite-acyclic pro-object.
 
-`[OPEN CORE 4: FAKE REJECTION]` Prove that the proposed category admits the zeta local data but
+`[RETIRED CORE 4: FAKE REJECTION]` Prove that the proposed category admits the zeta local data but
 rejects nonunitarily shifted self-dual Euler products before any zero is inspected.
 
 ## Parent-theory boundary
@@ -616,8 +640,8 @@ rejects nonunitarily shifted self-dual Euler products before any zero is inspect
 
 ## Current verdict
 
-`[LIVE, SHARPLY DELIMITED; NOT AN RH PROOF]` The screen proposal has mathematical substance, but its
-original formulation was wrong.
+`[CLOSED AS AN RH ROUTE]` The screen proposal produced two substantive but logically independent
+objects.
 
 What is now closed:
 
@@ -629,7 +653,7 @@ What is now closed:
    strip; and
 6. zeta zeros are exactly the loss of its subleading heat-coherence echo.
 
-What is not closed is the one implication that would prove RH:
+The attempted connecting implication is
 
 ```text
 missing source heat echo
@@ -637,11 +661,11 @@ missing source heat echo
 nonzero reflected-sector defect.
 ```
 
-Superselection then forces the sector onto `Re(s)=1/2`, but superselection alone does not make the
-implication true.  A hypothetical off-line zero would already delete the heat echo while the two
-reflected sectors remain disjoint.  The route is therefore live only at this echo-to-sector descent;
-another uncertainty inequality, density invariant, trace average, bounded screen observable, or
-scalar functional-equation identity does not advance it.
+Superselection would then force the sector onto `Re(s)=1/2`, but the terminal theorem proves that
+this implication is precisely RH.  A hypothetical off-line zero deletes the heat echo while the
+two reflected sectors remain disjoint, and every currently constructed source object remains
+consistent.  The canonical tangent `zeta(s-1)` is nonzero there but its covariance defect vanishes
+only on the critical line.  Thus no independent mechanism performs the required category change.
 
 ## Lean surface
 
@@ -661,11 +685,12 @@ not advance the echo-to-sector open core.
 
 ## Gates
 
-- [x] 0 -> 1: precise screen, slit, phase, jump-locus, infinite-dimensional necessity, fake tests,
+- [x] precise screen, slit, phase, jump-locus, infinite-dimensional necessity, fake tests,
   superselection recut, and noncircular source condition isolated
-- [ ] 1 -> 2: zero-to-sector descent and a fiberwise completion defect proved with no divisor input
-- [ ] 2 -> 3: full construction and RH implication formalized unconditionally in Lean
-- [ ] 3 -> 4: independent proof, parent-theory, literature, and novelty review
+- [x] positive additive heat detector constructed and its zero echo proved
+- [x] desired zero-to-sector descent proved equivalent to RH
+- [x] canonical nonzero tangent tested and shown to fail sector covariance off the line
+- [x] route retired to 5-failed; no tautological Lean wrapper added
 
 ## References for the parent boundary
 

@@ -14,7 +14,7 @@ noncomputable section
 
 namespace RHTower
 
-open Complex Metric Set Filter Topology
+open Complex Metric Set Filter Topology ComplexConjugate
 
 /-- The real moment sequence read from the even Taylor coefficients at the
 origin.  On a Schwarz-real even germ these are its actual real coefficients. -/
@@ -161,5 +161,64 @@ theorem eventually_remoteEvenPerturbation_uniformly_close
             rw [div_pow]
             field_simp
   exact hbound.trans_lt hN
+
+/-- Remote perturbation preserves evenness. -/
+theorem remoteEvenPerturbation_even
+    {f : ℂ → ℂ} (hf : ∀ z, f (-z) = f z) (N : ℕ) :
+    ∀ z, remoteEvenPerturbation f N (-z) = remoteEvenPerturbation f N z := by
+  intro z
+  unfold remoteEvenPerturbation
+  rw [hf]
+  have heven : (-z) ^ (4 * N) = z ^ (4 * N) := by
+    calc
+      (-z) ^ (4 * N) = ((-z) ^ 4) ^ N := by rw [pow_mul]
+      _ = (z ^ 4) ^ N := by congr 1; ring
+      _ = z ^ (4 * N) := by rw [pow_mul]
+  rw [heven]
+
+/-- Remote perturbation preserves Schwarz reality. -/
+theorem remoteEvenPerturbation_schwarz
+    {f : ℂ → ℂ} (hf : ∀ z, conj (f (conj z)) = f z) (N : ℕ) :
+    ∀ z, conj (remoteEvenPerturbation f N (conj z)) =
+      remoteEvenPerturbation f N z := by
+  intro z
+  unfold remoteEvenPerturbation
+  rw [map_sub, hf, map_mul, map_pow]
+  simp
+
+/-- Remote perturbation preserves analyticity on every set. -/
+theorem remoteEvenPerturbation_analyticOnNhd
+    {f : ℂ → ℂ} {U : Set ℂ} (hf : AnalyticOnNhd ℂ f U) (N : ℕ) :
+    AnalyticOnNhd ℂ (remoteEvenPerturbation f N) U := by
+  intro z hz
+  unfold remoteEvenPerturbation
+  exact (hf z hz).sub (analyticAt_const.mul (analyticAt_id.pow (4 * N)))
+
+/-- Full analytic nowhere-thickness witness preserving both symmetries. -/
+theorem exists_close_even_schwarz_traceHankel_failure
+    {f : ℂ → ℂ} {r₀ r₁ B ε : ℝ}
+    (hr₀ : 0 ≤ r₀) (hr₀1 : r₀ < 1) (hr01 : r₀ < r₁)
+    (hf : DiffContOnCl ℂ f (ball 0 r₁))
+    (hB : ∀ z ∈ sphere (0 : ℂ) r₁, ‖f z‖ ≤ B)
+    (hB0 : 0 ≤ B) (hε : 0 < ε)
+    (heven : ∀ z, f (-z) = f z)
+    (hschwarz : ∀ z, conj (f (conj z)) = f z) :
+    ∃ g : ℂ → ℂ,
+      AnalyticOnNhd ℂ g (ball 0 r₁) ∧
+      (∀ z, g (-z) = g z) ∧
+      (∀ z, conj (g (conj z)) = g z) ∧
+      (∀ z ∈ closedBall (0 : ℂ) r₀, ‖g z - f z‖ < ε) ∧
+      ¬ AnalyticTraceHankelNonnegative g := by
+  obtain ⟨N, hclose⟩ := eventually_remoteEvenPerturbation_uniformly_close
+    hr₀ hr₀1 hr01 hf hB hB0 hε
+  have hr₁ : 0 < r₁ := lt_of_le_of_lt hr₀ hr01
+  have hfat : AnalyticAt ℂ f 0 :=
+    (hf.differentiableOn.analyticOnNhd isOpen_ball) 0 (by simpa [mem_ball] using hr₁)
+  refine ⟨remoteEvenPerturbation f N,
+    remoteEvenPerturbation_analyticOnNhd
+      (hf.differentiableOn.analyticOnNhd isOpen_ball) N,
+    remoteEvenPerturbation_even heven N,
+    remoteEvenPerturbation_schwarz hschwarz N,
+    hclose, remoteEvenPerturbation_not_traceHankel hfat N⟩
 
 end RHTower
