@@ -3,6 +3,7 @@ import GaloisForLFunctions.MeromorphicPoleOrbitBoundary
 import GaloisForLFunctions.OrbitBalanceAdditive
 import GaloisForLFunctions.RHTower.DigammaAsymptotic
 import GaloisForLFunctions.RHTower.TrigammaVertical
+import GaloisForLFunctions.RHTower.WindingAmplitude
 
 open Filter Finset
 
@@ -123,6 +124,104 @@ theorem inv_digamma_vertical_tendsto_zero {σ : ℝ} (hσ : 0 ≤ σ) :
     exact Filter.Eventually.of_forall (fun _ => Complex.re_le_norm _)
   rw [tendsto_zero_iff_norm_tendsto_zero]
   simpa only [norm_inv] using hnorm.inv_tendsto_atTop
+
+/-- A fixed constant for the logarithmic upper bound on vertical digamma growth. -/
+def digammaVerticalLogConstant : ℝ := 2 + 2 * Real.pi + Real.log 2
+
+/-- Digamma has at most logarithmic norm growth on every upper vertical line in the open right
+half-plane.  The real-part asymptotic and imaginary-part bound are both unconditional. -/
+theorem norm_digamma_vertical_le_log {σ t : ℝ}
+    (hσ : 0 < σ) (ht1 : 1 ≤ t) (hσt : σ ≤ t) :
+    ‖Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤
+      Real.log t + digammaVerticalLogConstant := by
+  have ht : 0 < t := zero_lt_one.trans_le ht1
+  let ψ := Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+  let L : ℝ := (1 / 2) * Real.log (σ ^ 2 + t ^ 2)
+  let E : ℝ := 1 / t ^ 2 + Real.pi / (2 * t)
+  have hre := RHTower.re_digamma_vertical_bound_uncond hσ.le ht
+  have him := RHTower.im_digamma_vertical_bound hσ.le ht
+  have ht_inv : 1 / t ≤ 1 := by
+    exact (div_le_one ht).2 ht1
+  have ht_sq : 1 ≤ t ^ 2 := one_le_pow₀ ht1
+  have hE : E ≤ 1 + Real.pi := by
+    dsimp [E]
+    have h1 : 1 / t ^ 2 ≤ 1 := (div_le_one (sq_pos_of_pos ht)).2 ht_sq
+    have h2 : Real.pi / (2 * t) ≤ Real.pi := by
+      apply (div_le_iff₀ (mul_pos (by norm_num) ht)).2
+      nlinarith [Real.pi_pos]
+    linarith
+  have hbase : 1 ≤ σ ^ 2 + t ^ 2 := by nlinarith [sq_nonneg σ, ht_sq]
+  have hL0 : 0 ≤ L := by
+    dsimp [L]
+    exact mul_nonneg (by norm_num) (Real.log_nonneg hbase)
+  have hquad : σ ^ 2 + t ^ 2 ≤ 2 * t ^ 2 := by nlinarith
+  have hlogquad : Real.log (σ ^ 2 + t ^ 2) ≤ Real.log 2 + 2 * Real.log t := by
+    calc
+      Real.log (σ ^ 2 + t ^ 2) ≤ Real.log (2 * t ^ 2) :=
+        Real.log_le_log (by positivity) hquad
+      _ = Real.log 2 + 2 * Real.log t := by
+        rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (pow_ne_zero 2 ht.ne'), Real.log_pow]
+        norm_num
+  have hlog2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+  have hL : L ≤ Real.log t + Real.log 2 := by
+    dsimp [L]
+    nlinarith [Real.log_nonneg ht1, hlog2]
+  have hreabs : |ψ.re| ≤ L + E := by
+    have hdiff : |ψ.re - L| ≤ E := by simpa [ψ, L, E] using hre
+    calc
+      |ψ.re| = |(ψ.re - L) + L| := by congr 1; ring
+      _ ≤ |ψ.re - L| + |L| := abs_add_le _ _
+      _ ≤ E + L := by rw [abs_of_nonneg hL0]; linarith
+      _ = L + E := by ring
+  have himabs : |ψ.im| ≤ 1 + Real.pi := by
+    rw [abs_of_nonneg him.1]
+    linarith [him.2, Real.pi_pos]
+  calc
+    ‖ψ‖ ≤ |ψ.re| + |ψ.im| := Complex.norm_le_abs_re_add_abs_im ψ
+    _ ≤ (L + E) + (1 + Real.pi) := add_le_add hreabs himabs
+    _ ≤ Real.log t + digammaVerticalLogConstant := by
+      dsimp [digammaVerticalLogConstant]
+      linarith
+
+/-- Every fixed power of a shifted logarithm is negligible compared with the vertical height. -/
+theorem tendsto_log_add_const_pow_div (C : ℝ) (k : ℕ) :
+    Tendsto (fun t : ℝ => (Real.log t + C) ^ k / t) atTop (nhds 0) := by
+  have hi : ∀ i ∈ Finset.range (k + 1), Tendsto
+      (fun t : ℝ => (k.choose i * C ^ (k - i)) * Real.log t ^ i / t)
+      atTop (nhds 0) := by
+    intro i hi
+    have h := Real.tendsto_pow_log_div_mul_add_atTop 1 0 i one_ne_zero
+    have hc := h.const_mul (k.choose i * C ^ (k - i))
+    convert hc using 1
+    · funext t
+      ring
+    · simp
+  have hsum := tendsto_finsetSum (Finset.range (k + 1)) hi
+  have hsum0 : Tendsto
+      (fun t : ℝ => ∑ i ∈ Finset.range (k + 1),
+        (k.choose i * C ^ (k - i)) * Real.log t ^ i / t) atTop (nhds 0) := by
+    simpa using hsum
+  apply hsum0.congr'
+  filter_upwards [] with t
+  rw [← Finset.sum_div, add_pow]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i hi
+  ring
+
+/-- Every fixed logarithmic power kills the universal vertical polygamma error. -/
+theorem tendsto_log_add_const_pow_mul_verticalError (C : ℝ) (k : ℕ) :
+    Tendsto (fun t : ℝ => (Real.log t + C) ^ k *
+      (1 / t ^ 2 + Real.pi / (2 * t))) atTop (nhds 0) := by
+  have h := tendsto_log_add_const_pow_div C k
+  have hinv : Tendsto (fun t : ℝ => t⁻¹) atTop (nhds 0) := tendsto_inv_atTop_zero
+  have h1 := h.mul hinv
+  have h2 := h.const_mul (Real.pi / 2)
+  have hsum := h1.add h2
+  convert hsum using 1
+  · funext t
+    field_simp
+  · simp
 
 /-- The two-coordinate Gamma jet has the projective upper-vertical boundary `[0 : 1]`:
 `Γ(σ+it) / Γ'(σ+it) → 0` for every `σ > 0`.

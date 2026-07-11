@@ -45,6 +45,9 @@ norm_projectiveRemainder_sq
 shiftedForm_projectiveDecomposition
 projectiveRemainder_sq_le_rayleighExcess_div_gap
 one_sub_norm_inner_sq_le_rayleighExcess_div_gap
+exists_unitScalar_norm_sub_sq_le_two_projectiveDefect
+exists_unitScalar_norm_sub_sq_le_two_rayleighExcess_div_gap
+exists_unitScalar_observable_sq_le
 ```
 
 The coercivity hypothesis is the source-pure form of the true even spectral gap. No finite-
@@ -56,6 +59,8 @@ dimensional eigenvalue enumeration or RH-strength positivity assumption is hidde
 - [x] projective defect identity formalized
 - [x] shifted eigenform decomposition formalized
 - [x] Rayleigh-excess/gap estimate formalized
+- [x] phase-aligned distance bound with the sharp square-root rate formalized
+- [x] continuous-observable transfer formalized, ready for Mellin evaluation norms
 - [x] producing target builds and axiom audit passes
 - [ ] instantiate the theorem with the true restricted Weil operator
 - [ ] formalize the growing Mellin evaluation bound

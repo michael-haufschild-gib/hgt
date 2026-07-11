@@ -165,7 +165,7 @@ must prove
 Together with simple-evenness, `(17)` is precisely the source theorem needed for projective
 ground-vector and determinant transfer.
 
-The fixed-mode ladder suggests a stronger, source-pure sufficient pair:
+The fixed-mode ladder suggests the stronger pair
 
 ```text
 epsilon_0(lambda)>=-C*d_1(lambda),
@@ -179,10 +179,12 @@ Indeed `(16)` and `(18)` give
  =O(lambda^(-8)),                                                (19)
 ```
 
-which is far stronger than `(17)`. The first inequality in `(18)` permits a negative true floor
-and is therefore not cofinal Weil positivity in disguise. The second asks the true restricted-Weil
-form to retain the already-proved adjacent `lambda^8` constrained-prolate separation, with the
-universal logarithmic multiplier common to the radial modes.
+which is far stronger than `(17)`. However, the first inequality in `(18)` already squeezes
+`epsilon_0(lambda)->0`, because the negative allowance `C*d_1(lambda)` tends to zero and the seed
+Rayleigh value tends to zero. By `ccm-cofinal-weil-spectral-floor-criterion.md`, it proves RH
+directly. It must therefore be classified as the direct spectral-floor core, not as a preliminary
+determinant estimate. The collapse is recorded in
+`ccm-rayleigh-transfer-collapses-to-spectral-floor.md`.
 
 Equation `(14)` is not a positivity theorem for the complete restricted Weil operator: the
 ground lower bound and true gap in `(17)` remain open.
@@ -228,4 +230,4 @@ is added before independent paper audit.
 - [ ] independent normalization and cross-term audit
 - [ ] certify a true ground-energy lower bound
 - [ ] compare the explicit seed value with the true even gap
-- [ ] prove the sufficient negative-floor and `lambda^8` gap pair `(18)`
+- [ ] prove the direct RH-sufficient negative-floor theorem in `(18)`

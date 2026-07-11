@@ -1,10 +1,18 @@
 # CCM pointed-incidence Rayleigh transfer
 
 - **ID:** `ccm-pointed-incidence-rayleigh-transfer`
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 5-failed / retired as an independent determinant lane
+- **Type:** RETIRED ROUTE
 - **Source:** Route B finite-Weil characteristic-determinant lane
 - **Statement:** The actual radial-prolate CCM source has cofinal even-sector Rayleigh excess at most `O(lambda^(-1))` times the true restricted-Weil gap, and the corresponding true ground state is simple and even.
+
+## Retirement verdict
+
+`ccm-rayleigh-transfer-collapses-to-spectral-floor.md` proves that this target, together with the
+two vanishing fixed-depth CCM trial levels already available, forces the true lowest even Weil
+eigenvalue to tend to zero. The cofinal spectral-floor criterion then proves RH without using the
+determinant. Thus the statement is not false, but it is retired as an independent last mile: its
+first unresolved theorem already contains the full direct RH burden.
 
 ## Goal
 
