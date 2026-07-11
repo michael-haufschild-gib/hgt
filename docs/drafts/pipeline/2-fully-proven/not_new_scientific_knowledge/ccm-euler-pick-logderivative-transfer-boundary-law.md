@@ -159,6 +159,59 @@ kernel cancels the background term while remaining positive.
 
 ## 4. Exact spectral-discrepancy representation of the phase
 
+First separate the periodic scaling background. With `a=log(lambda)`, its regularized determinant
+is
+
+```text
+D_(0,a)(z)=1-exp(-2iaz),
+D_(0,a)(-iw)=1-exp(-2aw).                                    (14a)
+```
+
+Hence
+
+```text
+L_(0,a)(w)
+ =d/dw log D_(0,a)(-iw)
+ =2a/(exp(2aw)-1).                                           (14b)
+```
+
+This background kernel is not positive at finite aperture. For
+
+```text
+w=x+i*pi/(2a),       x>0,
+```
+
+one has `exp(2aw)=-exp(2ax)`, so `L_(0,a)(w)<0` and its diagonal Pick value is negative.
+
+Nevertheless it vanishes exponentially on the exact source region. If `Re w,Re v>=sigma>0`, then
+
+```text
+|L_(0,a)(w)|<=2a/(exp(2a sigma)-1),
+
+|K_(0,a)(w,v)|
+ <=2a/(sigma*(exp(2a sigma)-1))->0.                          (14c)
+```
+
+Thus the periodic background is finite-aperture indefinite but cofinally invisible on every
+compact subset of `Re w>0`.
+
+The determinant factorization
+
+```text
+D_(lambda,N)=D_(0,a) R_(lambda,N)                            (14d)
+```
+
+gives an additive kernel split
+
+```text
+K_D=K_(0,a)+K_(R,lambda,N),                                 (14e)
+```
+
+where `K_R` is formed from `d/dw log R_(lambda,N)(-iw)`. Consequently a successful relative route
+may prove local convergence and asymptotic positivity for `K_R`; the universal background error
+then disappears by `(14c)`. Exact finite-aperture positivity of the periodic factor is neither
+true nor required.
+
 For `gamma>=0`, define the paired-zero kernel
 
 ```text
@@ -267,7 +320,8 @@ Let
 d_j=2pi*j/L,       -N<=j<=N,
 L=2log(lambda),
 xi=sum_j xi_j V_j,
-sum_j xi_j=1.                                                (22)
+c_j=L^(-1/2)xi_j,
+sum_j c_j=1.                                                 (22)
 ```
 
 The CCM finite-dimensional determinant identity gives the relative determinant
@@ -275,29 +329,106 @@ The CCM finite-dimensional determinant identity gives the relative determinant
 ```text
 R_(lambda,N)(z)
  =det_reg(D_log^(lambda,N)-z)/det_reg(D_log^(lambda)-z)
- =L^(-1/2) sum_(j=-N)^N xi_j/(d_j-z).                        (23)
+ =sum_(j=-N)^N c_j/(d_j-z).                                  (23)
 ```
 
 The aperture phase cancels exactly in this ratio. Moreover:
 
 > **Relative Herglotz criterion.** `R_(lambda,N)` maps the upper half-plane to its closure if and
-> only if `xi_j>=0` for every `j`.
+> only if `c_j>=0` for every `j`, equivalently `xi_j>=0` for every `j`.
 
 Indeed, for `z=x+iy`, `y>0`,
 
 ```text
 Im R_(lambda,N)(z)
- =L^(-1/2) y sum_j xi_j/((d_j-x)^2+y^2).                    (24)
+ =y sum_j c_j/((d_j-x)^2+y^2).                              (24)
 ```
 
-Nonnegative coefficients make `(20)` nonnegative. Conversely, if `xi_k<0`, take `x=d_k` and let
-`y` decrease to zero. The `k`-th term is `L^(-1/2)xi_k/y`, while all other terms are `O(y)` away
+Nonnegative coefficients make `(24)` nonnegative. Conversely, if `c_k<0`, take `x=d_k` and let
+`y` decrease to zero. The `k`-th term is `c_k/y`, while all other terms are `O(y)` away
 from coincident poles, so the imaginary part becomes negative. This proves the equivalence.
 
 Consequently ordinary Herglotz interlacing between the perturbed spectrum and the periodic
 background is available exactly when the finite-Weil ground vector is a nonnegative measure in the
 periodic Fourier basis. Self-adjointness in the modified Weil metric proves reality of the zeros,
 but does not prove this coefficient sign condition.
+
+Herglotz interlacing of `R_(lambda,N)` must not be confused with positivity of its logarithmic
+derivative kernel. If `xi_j!=0`, then `R_(lambda,N)` has a simple pole at `z=d_j`. Therefore
+
+```text
+M_R(w)=d/dw log R_(lambda,N)(-iw)
+      =-1/(w-id_j)+O(1)                                    (24a)
+```
+
+near `w=id_j`. Taking `w=epsilon+id_j` with `epsilon>0` small makes `Re M_R(w)<0`, so the diagonal
+value of the Pick kernel of `M_R` is negative. Thus that kernel is never positive on the full right
+half-plane when a genuine base eigenvalue is canceled.
+
+The positive route must recombine the relative displacement with the periodic background as in
+`(14e)`, or prove only the cofinal Euler-region limit after `(14c)` has made the background
+negligible. Exact finite-stage positivity of the relative logarithmic derivative is impossible.
+
+### Cofinal scalar-Herglotz interlacing is incompatible with the Xi limit
+
+The coefficient-sign condition cannot remain the positive mechanism in a successful cofinal CCM
+limit. Let `R_n` be a cofinal sequence of relative determinants `(23)` and assume
+
+```text
+c_(n,j)>=0 for every n,j.                                   (24b)
+```
+
+Put
+
+```text
+H_n(w)=i R_n(-iw).                                          (24c)
+```
+
+Because `R_n` is Herglotz on the upper half-plane and has real coefficients, `H_n` has strictly
+positive real part on `Re w>0`. Fix a real `w_0>1/2` and normalize
+
+```text
+h_n(w)=H_n(w)/H_n(w_0),       h_n(w_0)=1.                   (24d)
+```
+
+Suppose the relative logarithmic derivatives supplied the required source limit:
+
+```text
+H_n'(w)/H_n(w)
+ ->L(w)=xi'(1/2+w)/xi(1/2+w)
+locally uniformly on Re w>1/2.                             (24e)
+```
+
+The half-plane `Re w>1/2` is simply connected and `xi(1/2+w)` is zero-free there. Choose the
+logarithms in `(24d)` to vanish at `w_0`. Integrating `(24e)` along paths from `w_0` gives
+
+```text
+h_n(w)->xi(1/2+w)/xi(1/2+w_0)                              (24f)
+```
+
+locally uniformly. The limit therefore has nonnegative real part, and the harmonic minimum
+principle makes its real part strictly positive.
+
+This is impossible. Harnack's inequality on the shifted right half-plane implies that every
+positive-real function normalized at `w_0` has at most linear growth on the positive real axis:
+
+```text
+h(x)=O_(w_0)(x),       x->infinity.                         (24g)
+```
+
+On the other hand, Stirling's formula and `zeta(x+1/2)->1` give
+
+```text
+log xi(1/2+x)
+ =x/2*log x+O(x),       x->infinity,                        (24h)
+```
+
+which violates `(24g)`. Hence `(24b)` and `(24e)` cannot both hold.
+
+> **Signed-coordinate necessity law.** Every successful CCM relative-determinant limit must leave
+> the nonnegative Fourier-coordinate cone cofinally, or replace the scalar relative determinant by
+> a genuinely operator-valued covariance. Ordinary Herglotz interlacing cannot transport the Xi
+> logarithmic derivative.
 
 This gives a concrete positive relative-background mechanism:
 
@@ -335,6 +466,10 @@ order/degree, or genuinely infinite-dimensional state visibly carries the new pr
 A scalar phase subtraction removes exponential type but does not by itself transport arithmetic
 incidence.
 
+Within the bounded scalar autonomous class this is exhaustive. Outside it, growing state arity, an
+exact global constraint, or a separately justified noncompact carrier are additional positive
+locations for the same resource; none is silently counted as bounded scalar Kolchin capacity.
+
 ## 8. Exact scope
 
 - `[PROVED]` Even real-rooted order-one spectral factors have the positive kernel `(2)`.
@@ -342,9 +477,16 @@ incidence.
 - `[PROVED]` The CCM aperture phase changes the kernel by the exact negative Cauchy term `(14)`.
 - `[PROVED]` The phase is exactly subtraction of the Weyl continuum in `(17)`; positive
   renormalization is equivalent to resolvent-square positivity of that spectral discrepancy.
+- `[PROVED]` The periodic background kernel is finite-aperture indefinite but decays exponentially
+  on compact subsets of the Euler half-plane.
 - `[PROVED]` The current Mellin strip and the Euler Pick half-plane meet only at their boundary.
 - `[PROVED]` The phase-canceling relative determinant is Herglotz exactly when all periodic Fourier
   coordinates of the finite-Weil ground vector are nonnegative.
+- `[PROVED]` Its logarithmic-derivative kernel is nevertheless finite-stage indefinite whenever a
+  periodic eigenvalue is genuinely canceled; positivity must be recombined or cofinal.
+- `[PROVED]` Cofinal nonnegative Fourier coordinates are incompatible with relative
+  logarithmic-derivative convergence to Xi; the successful carrier must be signed or
+  operator-valued.
 - `[NOT PROVED]` The CCM factors are not shown to satisfy `(8)`.
 - `[NOT PROVED]` No positive background renormalization of `(14)` is constructed.
 - `[NOT PROVED]` No divisor-preserving determinant limit is constructed.
@@ -365,10 +507,11 @@ No Lean file is added.
 - [x] Euler-half-plane logarithmic-derivative transfer theorem
 - [x] exact CCM aperture-phase defect
 - [x] exact two-channel spectral-discrepancy representation
+- [x] periodic-background kernel isolated and proved cofinally negligible
 - [x] half-strip boundary identified
 - [x] exact scalar relative-Herglotz/interlacing criterion
+- [x] scalar Herglotz interlacing ruled out as a cofinal Xi carrier
 - [x] four-currency carrier budget attached
-- [ ] prove or refute cofinal nonnegativity of the CCM ground coordinates
 - [ ] construct positive relative-background renormalization
 - [ ] or prove dephased Euler-half-plane convergence
 - [ ] or prove divisor-preserving determinant convergence

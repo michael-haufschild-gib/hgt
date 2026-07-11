@@ -6,7 +6,11 @@
 - **Source:** `../2-fully-proven/not_new_scientific_knowledge/infinitesimal-euler-leakage-cauchy-energy-threshold.md`;
   `../2-fully-proven/not_new_scientific_knowledge/suzuki-tail-is-exact-summatory-error-transform.md`;
   `../2-fully-proven/not_new_scientific_knowledge/shifted-euler-error-floor-mobius-tail-coupling.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/euler-pole-four-unit-anti-causal-budget-law.md`
+  `../2-fully-proven/not_new_scientific_knowledge/euler-pole-four-unit-anti-causal-budget-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/mobius-channel-critical-mass-escape-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/mobius-critical-exponential-boundary-layer-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/coupled-floor-mobius-complementary-shift-incidence-law.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/finite-euler-exact-differential-order-aperture-law.md`
 - **Target:** Prove directly from the completed Euler--Gamma source that the first-order
   anti-causal profile `ell_E` satisfies
 
@@ -324,6 +328,104 @@ The project already contains most of the functional-analytic shell required by a
     proves pointwise convergence. Its own header correctly leaves compact-local convergence, the
     cofinal screen, and zero-fibre energy open. No claim from that lane supplies `(1)` yet.
 
+11. **The Möbius half has a canonical contractive channel realization.** After the unitary
+    logarithmic change of variables, define
+
+    ```text
+    (C_omega f)_d
+     =sqrt(1/zeta(1+2omega)) mu(d)d^(-1/2-omega)
+       V_(log d)f.
+    ```
+
+    The squarefree Dirichlet-series identity gives the exact norm
+
+    ```text
+    ||C_omega f||^2=1/zeta(2+4omega)||f||^2.             (12c)
+    ```
+
+    As `omega` decreases to zero, every fixed divisor coordinate vanishes while the total norm
+    tends to `||f||^2/zeta(2)`. Thus the critical arithmetic mass escapes through cofinally large
+    divisor channels. Every fixed compact synthesis annihilates it. A faithful synthesis must be
+    noncompact or cutoff-dependent in a way that explicitly tracks the growing tail.
+
+12. **The remaining synthesis is exactly the coupled difficulty.** If
+
+    ```text
+    phi_omega(t)=1_(t>=0)e^(-t/2)g_omega^(1)(e^(-t)),
+    ```
+
+    then the causal source has the locally finite factorization
+
+    ```text
+    U h_omega^(1)
+     =sum_(d,m>=1)
+       mu(d)d^(-1/2-omega)m^(-1/2+omega)
+       V_(log d+log m)phi_omega.                          (12d)
+    ```
+
+    The Möbius analysis in `(12d)` is channel-contracting after normalization, but the coherent
+    power-sum synthesis is not an `l2` row. The archimedean moment zero and the compensating
+    Möbius tail must regularize this synthesis jointly. This is the exact place where the desired
+    contraction remains unproved.
+
+13. **The escaping mass has an exact critical aperture.** Normalize the squared divisor-channel
+    norms in `(12c)` to a probability law and set `Y_omega=2omega log d`. Its Laplace transform is
+
+    ```text
+    E exp(-uY_omega)
+     =zeta(1+2omega(1+u))zeta(2+4omega)
+       /(zeta(2+4omega(1+u))zeta(1+2omega)),
+    ```
+
+    which tends to `1/(1+u)`. Hence
+
+    ```text
+    2omega log d => Exp(1).                               (12e)
+    ```
+
+    A divisor aperture `D_omega=exp(c/(2omega))` retains the precise norm fraction
+    `1-exp(-c)`. Full norm transport requires `omega log D_omega -> infinity`. Therefore a proposed
+    cancellation proved only in a fixed window, or even on `log d=o(1/omega)`, controls
+    asymptotically none of the Möbius input mass.
+
+14. **The floor and tail are complementary shift incidences.** Let `P_d` be the orthogonal
+    projection of `L2(R_+)` onto `[log d,infinity)`. For `delta>0`, set
+
+    ```text
+    q_delta(t)=e^(-delta t),
+    k_(omega,delta)(t)
+      =e^(-(1+omega+delta)t)R_omega(e^t).
+    ```
+
+    Then the exact coupled error is
+
+    ```text
+    e^(-(1+omega+delta)t)E_omega(e^t)
+     =sum_(d>=1)mu(d)d^(-1-2omega)
+       (
+         d^(-delta)V_(log d)k_(omega,delta)
+         -(1/(1+omega))(I-P_d)q_delta
+       ).                                                 (12f)
+    ```
+
+    Both series converge absolutely in `L2`. At `delta=0`, the two branches have the same
+    coefficient `mu(d)d^(-1-2omega)` and are selected by the complementary incidences `P_d` and
+    `I-P_d`, but the common upper input becomes `1`, outside `L2`; indeed
+    `||q_delta||^2=1/(2delta)`. Thus the exact coupling is a boundary form. The archimedean
+    completion must renormalize this single boundary mode into `ell_pole` while retaining the
+    lower/upper incidence. This is the concrete covariance/synthesis map still missing from
+    `(12b)`.
+
+15. **Finite Euler observability has exact scalar order.** For a cutoff prime set `S`, every
+    first-order-faithful rational readout of the local exponential coordinates has differential
+    aperture `#S`, including the Euler flux, product, inverse anchor, and finite diagonal
+    determinant. The equality remains true over `C(s)<Gamma>`. The formal tree already proves the
+    nonsingular weighted-Vandermonde differential in
+    `RHTower.eulerSourceJetJacobian_bijective`; it does not yet contain the
+    rational-function Jacobian criterion and meromorphic evaluation-field infrastructure needed
+    to promote this to the complete minimal-ADE-order theorem. Adding an aperture wrapper around
+    the existing bijectivity result would not formalize the missing algebraic independence.
+
 The audit therefore isolates one zeta-specific construction theorem, with two inseparable clauses:
 
 ```text
@@ -364,19 +466,66 @@ finite-prime autonomous ADE implementation retaining `{log p:p<=N}` must additio
 Kolchin jet capacity at least `ceil(pi(N)/2)`; otherwise `(16)` must live in one of the genuinely
 infinite/global carriers listed by the singular Kolchin-frequency theorem.
 
+On the rational first-order-faithful Euler face, the stronger exact differential-aperture theorem
+applies. For every finite prime set `S`, the Euler logarithmic flux, Euler product, inverse anchor,
+and finite diagonal determinant obey
+
+```text
+ap_C(E_S)=ap_C(Z_S)=ap_C(A_S)=#S,
+ap_(C(s)<Gamma>)(E_S)=#S.                                (17)
+```
+
+Thus the canonical cutoff has
+
+```text
+ap(E_(S_N))=pi(N).                                       (18)
+```
+
+In this class each prime costs exactly one scalar differential order; the earlier Kolchin
+half-rank inequality is only the general singular fallback. Consequently a scalar rational
+readout of the finite transfer `(16)` must have order exactly `pi(N)` whenever it remains
+first-order sensitive to every Euler coordinate. Determinant formation and Gamma completion may
+package the coordinates, but cannot reduce this order.
+
 For nonautonomous implementations the sharper coefficient--state conservation law applies.  If
 `Gamma(a)` is the coefficient-hull frequency module and `kappa_rel` is the relative Kolchin
 capacity of the solution fiber, then
 
 ```text
 A_N=V_N/(V_N intersection Gamma(a)),
-dim_Q A_N<=2 kappa_rel.                                  (17)
+dim_Q A_N<=2 kappa_rel.                                  (19)
 ```
 
 Consequently every new prime direction must be paid exactly once through growing differential
 order, growing algebraic degree/jet capacity, coefficient-side frequency, or genuinely
 infinite-dimensional state.  This is an admissibility condition on a construction of `(16)`, not
 a substitute for its nonexpansive estimate.
+
+The bounded-syntax theorem makes the scalar clause uniform. If `P_N` has order `n_N` and degree
+`d_N`, then
+
+```text
+rank_Q Gamma(f_N)<=2B(n_N,d_N).
+```
+
+Faithful cofinal prime transport therefore forces
+
+```text
+max(n_N,d_N) -> infinity,
+```
+
+unless the missing capacity is visibly stored in growing arity, coefficient-side frequency,
+infinite-dimensional state, a global constraint, or a separately justified noncompact carrier.
+The mass-escape law `(12c)` identifies the last alternative concretely for the Möbius source: its
+critical norm survives only in cofinally large divisor coordinates.
+
+Together, `(17)`--`(19)` impose a sharper design condition on the missing synthesis/covariance.
+At cutoff `N` it must expose a first-order-faithful prime incidence of aperture `pi(N)` before the
+archimedean boundary renormalization. If it is scalarized earlier, its differential order is
+exactly `pi(N)`; if its scalar syntax stays bounded, the same `pi(N)` coordinates must remain
+visible in the operator domain, coefficient hull, determinant/divisor object, or another genuinely
+non-scalar state. The source-defined contraction cannot quotient them away before taking the
+cofinal strong limit.
 
 Only after this operator is constructed is there a legitimate Lean target.  Formalizing
 `(1) -> RH` with `(1)` as a hypothesis would be a wrapper around the existing energy criterion.

@@ -538,6 +538,12 @@ uniform convergence of these sources to the all-integer theta-cusp state on ever
 logarithmic interval.  These declarations are unconditional and begin with the actual source rather
 than an abstract approximation interface.
 
+`formal/GaloisForLFunctions/RHTower/ThetaCuspMellinPole.lean` defines the actual finite Euler
+denominator `product_(p<=N)(1-exp(-s log p))`.  It proves that every prime factor has analytic order
+one at `s=0`, that the full denominator has exact order `pi(N)`, and that its reciprocal has
+meromorphic order `-pi(N)`.  Thus the exact cusp pole order is formalized, rather than represented
+by a finite-dimensional count.
+
 The formal tree still lacks smooth compact-local convergence of all derivatives, the exact
 order-`pi(N)` Mellin cusp pole, the finite product resolvent and its logarithmic derivative,
 exponentially weighted cutoff convergence, the cofinal pointed screen, and the entire Rouché
@@ -552,7 +558,7 @@ open theorem.
 - [x] exact smooth-integer resolvent-series action on the theta seed
 - [x] compact-local uniform convergence to the all-integer source
 - [ ] compact-local convergence of every positive derivative order
-- [ ] Mellin cusp pole of exact order `pi(N)`
+- [x] Mellin cusp pole of exact order `pi(N)`
 - [ ] bounded finite-prime resolvent and von Mangoldt logarithmic derivative
 - [ ] cofinal pointed screen and exponentially weighted convergence
 - [ ] entire transform and Rouché divisor transfer

@@ -370,6 +370,35 @@ without choosing a phase convention: prove that `(12n)` is nonnegative on the co
 two-channel resolvent-square cone and converges there to the Xi kernel. Reality of the discrete
 spectrum alone does not control this signed discrepancy.
 
+The relative logarithmic kernel has an exact finite-stage charge. By
+`ccm-relative-logderivative-coordinate-negative-index-law.md`, if
+
+```text
+J_(lambda,N)={j:the j-th Fourier coordinate of the ground vector is nonzero},
+```
+
+then
+
+```text
+ind_- K_(R,lambda,N)=#J_(lambda,N).                       (12o)
+```
+
+Moreover every locally uniform divisor-carrying determinant limit has, for some fixed
+`delta>0`,
+
+```text
+#J_(lambda,N)
+ >=2 floor(delta*log(lambda)/pi)+1.                       (12p)
+```
+
+Thus the relative negative charge grows at least linearly in logarithmic aperture in every
+successful determinant implementation. The periodic background or operator covariance must cancel
+that charge index-for-index. Since the background kernel tends to zero on fixed compact subsets of
+the Euler half-plane, the realizing negative directions must escape fixed compact strict-margin
+node families through growing matrix size, boundary/infinite-node escape, or the near-radical
+mechanism. A fixed scalar Herglotz ratio cannot do this; cofinal nonnegative Fourier coordinates are
+incompatible with Xi logarithmic-derivative growth.
+
 ## Gates
 
 - [x] determinant transfer collapsed to the direct floor criterion
@@ -386,6 +415,7 @@ spectrum alone does not control this signed discrepancy.
 - [x] exact degree-one Euler position commutator constructed
 - [x] exact compressed position/Euler leakage Gram identity constructed
 - [x] dephased finite-spectrum Euler-Pick transfer and aperture-phase defect isolated
+- [x] relative coordinate negative index and logarithmic cofinal charge floor proved
 - [ ] construct a positive reference splitting `(10)`
 - [ ] prove the infinite-carrier contraction `(11)`
 - [ ] or construct a source-defined Gram factorization of `(12c)` and an index-faithful aperture

@@ -535,6 +535,7 @@ import GaloisForLFunctions.RHTower.ReflectionCocycleArchimedean
 import GaloisForLFunctions.RHTower.CocycleExponentRigidity
 import GaloisForLFunctions.RHTower.ThetaHalfPlaneBound
 import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource
+import GaloisForLFunctions.RHTower.ThetaCuspMellinPole
 import GaloisForLFunctions.RHTower.LandauSummabilityTransfer
 import GaloisForLFunctions.RHTower.QuietCrossingCocycle
 import GaloisForLFunctions.RHTower.QuietCrossingCocycleTPoly
