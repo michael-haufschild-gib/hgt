@@ -85,12 +85,71 @@ block by the logarithmic derivative residue `2m`; all higher exponential-polynom
 `O(omega^2)` after the common limit `Theta_0=1`.  The finite sum permits termwise convergence on
 every compact `t`-interval and in `L^2` because every `a_j` is positive.  This proves `(1)`--`(2)`.
 
-## Theorem B: positive Cauchy energy
+## Theorem B: the infinitesimal source is exactly von Mangoldt--Gamma
+
+Put `s=1/2-iz`.  On `Re s>1`,
+
+```text
+partial_omega Theta_omega(z)|_(omega=0)
+ = -2 Xi'(s)/Xi(s)
+ = -2/s-2/(s-1)+log pi-psi(s/2)
+   +2 sum_(n>=1) Lambda(n)n^(-s).                         (3)
+```
+
+The same fact is visible directly in Suzuki's causal source coefficients
+
+```text
+c_omega(n)=n^omega product_(p|n)(1-p^(-2omega)):
+
+partial_omega c_omega(n)|_(omega=0)=2 Lambda(n).          (4)
+```
+
+### Proof
+
+Logarithmic differentiation of
+
+```text
+Theta_omega(z)=Xi(s-omega)/Xi(s+omega)
+```
+
+at zero gives the first equality in `(3)`.  Insert
+
+```text
+Xi(s)=s(s-1)pi^(-s/2)Gamma(s/2)zeta(s)/2
+```
+
+and `-zeta'/zeta=sum_n Lambda(n)n^(-s)` to obtain the second equality.
+
+For `(4)`, if `n=p^k`, the unique vanishing factor at `omega=0` has derivative `2log p`, while the
+derivative of `n^omega` is multiplied by that factor's zero.  Hence the derivative is
+`2log p=2Lambda(p^k)`.  If `n` has at least two distinct prime divisors, the product vanishes to
+order at least two and its first derivative is zero; for `n=1` it is also zero.  This is exactly
+`2Lambda(n)` in every case.
+
+Thus the first-order causal source is completely explicit and positive on its arithmetic
+prime-power part.  The anti-causal profile `(2)` is the boundary-continuation defect of this fixed
+source, not an additional freely chosen object.
+
+The second Euler tangent is equally explicit:
+
+```text
+partial_omega^2 c_omega(n)|_(omega=0)
+ =4 (Lambda * Lambda)(n),                                (5)
+```
+
+where `*` is Dirichlet convolution.  Indeed the logarithm of
+`zeta(s-omega)/zeta(s+omega)` is odd in `omega`, so the second derivative of the quotient at zero
+is the square of its first derivative.  Comparing absolutely convergent Dirichlet series on
+`Re s>1` proves `(5)`.  Equivalently, direct expansion shows that a prime power `p^k` contributes
+`4(k-1)(log p)^2`, an integer with two distinct prime supports contributes the two ordered
+von-Mangoldt factorizations, and more than two distinct prime supports contribute zero.
+
+## Theorem C: positive Cauchy energy
 
 Define
 
 ```text
-E_Xi^off=integral_0^infinity |ell_1(t)|^2 dt.             (3)
+E_Xi^off=integral_0^infinity |ell_1(t)|^2 dt.             (6)
 ```
 
 Then
@@ -98,34 +157,111 @@ Then
 ```text
 E_Xi^off
  = 4 sum_(j,k) m_j m_k
-     (a_j+a_k)/((a_j+a_k)^2+(gamma_j-gamma_k)^2).        (4)
+     (a_j+a_k)/((a_j+a_k)^2+(gamma_j-gamma_k)^2).        (7)
 ```
 
-Every summand in `(4)` is strictly positive.  In particular,
+Every summand in `(7)` is strictly positive.  In particular,
 
 ```text
-E_Xi^off >= 2 sum_j m_j^2/a_j.                           (5)
+E_Xi^off >= 2 sum_j m_j^2/a_j.                           (8)
 ```
 
 ### Proof
 
-Expand the square in `(3)` and integrate each finite exponential term:
+Expand the square in `(6)` and integrate each finite exponential term:
 
 ```text
 integral_0^infinity
  exp(-(a_j+a_k)t) exp(-i(gamma_j-gamma_k)t) dt
- = 1/(a_j+a_k+i(gamma_j-gamma_k)).                       (6)
+ = 1/(a_j+a_k+i(gamma_j-gamma_k)).                       (9)
 ```
 
-The term with indices `(k,j)` is the conjugate of `(6)`.  Summing the ordered pairs therefore
-replaces `(6)` by its real part and gives `(4)`.  Since `a_j+a_k>0`, every displayed real part is
+The term with indices `(k,j)` is the conjugate of `(9)`.  Summing the ordered pairs therefore
+replaces `(9)` by its real part and gives `(7)`.  Since `a_j+a_k>0`, every displayed real part is
 strictly positive.  Retaining only `j=k` gives
 
 ```text
 4m_j^2 (2a_j)/(2a_j)^2=2m_j^2/a_j,
 ```
 
-which proves `(5)`.
+which proves `(8)`.
+
+## Theorem D: source-side Toeplitz curvature construction
+
+Let `U_omega=M_(Theta_omega)` on boundary `L^2`, and write its causal and anti-causal columns as
+
+```text
+T_omega=P_+ U_omega|H^2_+,
+L_omega=P_- U_omega|H^2_+.
+```
+
+Since `|Theta_omega|=1` almost everywhere,
+
+```text
+I-T_omega^*T_omega=L_omega^*L_omega.                    (10)
+```
+
+For the finite right-half divisor of Theorem A, the normalized leakage has an operator-norm limit
+`D=lim_(omega->0+) omega^(-1)L_omega`.  Therefore
+
+```text
+C_E
+ :=lim_(omega->0+) omega^(-2)(I-T_omega^*T_omega)
+ =D^*D>=0.                                               (11)
+```
+
+After Paley--Wiener identification, `D` has Hankel kernel `ell_1(x+y)`, and `C_E` has kernel
+
+```text
+C_E(y,z)
+ =integral_0^infinity
+    conjugate(ell_1(x+y)) ell_1(x+z) dx.                 (12)
+```
+
+In particular,
+
+```text
+C_E(0,0)=E_Xi^off.                                      (13)
+```
+
+### Proof
+
+For `f in H^2_+`, unitarity of multiplication gives
+
+```text
+||f||^2=||T_omega f||^2+||L_omega f||^2.
+```
+
+Polarization proves `(10)`.  Divide by `omega^2` and use the operator-norm convergence of
+`omega^(-1)L_omega` to obtain `(11)`.  The kernel-composition formula gives `(12)`, and setting
+`y=z=0` gives `(13)`.
+
+Thus the positive energy has a construction from the completed shifted source before a divisor
+expansion: it is the boundary corner of the second-order loss of causal Toeplitz isometry.  The
+first two Euler tangents `(4)`--`(5)` show that this curvature is the Schur defect between the
+one-prime von-Mangoldt tangent and the two-prime Dirichlet-convolution tangent.
+
+## Theorem E: contractivity alone cannot bound the curvature corner
+
+The universal Toeplitz contraction
+
+```text
+0<=I-T_omega^*T_omega<=I
+```
+
+does not imply any finite upper bound for `C_E(0,0)`.  In the one-layer model of multiplicity `m`,
+
+```text
+C_E(0,0)=2m^2/a,
+```
+
+which tends to infinity as the fixed displacement `a` decreases to zero, although every
+`T_omega` remains a contraction.
+
+This is not a contradiction: evaluation of the limiting integral kernel at the boundary corner is
+not a bounded functional of the operator norm.  Consequently the open `<=4` theorem must use an
+arithmetic regularity or boundary law of the Euler--Gamma source.  Positivity of the Schur defect,
+unimodularity of `Theta_omega`, and Toeplitz contractivity do not supply it.
 
 ## Corollary: absolute strip threshold
 
@@ -138,22 +274,22 @@ For the Riemann Xi function every nontrivial right-half zero satisfies
 Therefore the existence of even one off-line zero implies
 
 ```text
-E_Xi^off>4.                                               (7)
+E_Xi^off>4.                                              (14)
 ```
 
 Consequently, whenever the global first-order anti-causal profile is defined in `L^2`,
 
 ```text
-E_Xi^off<=4  ->  no right-half zero  ->  RH.              (8)
+E_Xi^off<=4  ->  no right-half zero  ->  RH.             (15)
 ```
 
 If the infinite right-half divisor does not define an `L^2` profile, assign
-`E_Xi^off=+infinity`; it cannot satisfy the bound in `(8)`.
+`E_Xi^off=+infinity`; it cannot satisfy the bound in `(15)`.
 
 ## Route C consequence
 
 Different ordinates do not create destructive interference in the unweighted first-order profile
-energy.  The Cauchy Gram kernel in `(4)` is entrywise positive, and its diagonal alone has the
+energy.  The Cauchy Gram kernel in `(7)` is entrywise positive, and its diagonal alone has the
 critical-strip threshold.  Thus an ordinate-by-ordinate projection is unnecessary for an absolute
 exclusion theorem.
 
@@ -164,13 +300,13 @@ The remaining arithmetic statement can be written entirely before a residue expa
 3. prove that the resulting profile has squared `L^2` norm at most `4`.
 
 `[OPEN CORE]` Prove this bound from the completed Euler--Gamma--theta source without assuming an
-inner/Herglotz condition or reconstructing the Xi divisor.  Equations `(4)`--`(8)` prove the
+inner/Herglotz condition or reconstructing the Xi divisor.  Equations `(7)`--`(15)` prove the
 consequence of such a bound, not the source bound itself.
 
 ## Scientific-novelty verdict
 
-`[NOT NEW SCIENTIFIC KNOWLEDGE]` After the residue profile is given, `(4)` is the elementary Gram
-matrix of finitely many decaying exponentials and `(7)` is the classical zero-free-strip width
+`[NOT NEW SCIENTIFIC KNOWLEDGE]` After the residue profile is given, `(7)` is the elementary Gram
+matrix of finitely many decaying exponentials and `(14)` is the classical zero-free-strip width
 inserted into its diagonal.  The result is a useful noncancellation bridge but fails the
 parent-theory and anti-theatre gates.
 

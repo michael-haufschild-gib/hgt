@@ -314,3 +314,337 @@ the same-ordinate first-order leakage blocks `T_A`, and prove the absolute sourc
 on a genuinely new window.  Equivalently, prove that the source-defined global first-order leakage
 has no ordinate fiber with norm greater than `2`.  This is a stricter target than continuity at
 `omega=0` and a different realization of the positive-real thin slice of `J_Xi`; it remains open.
+
+## Global repair: Cauchy energy removes ordinate-phase cancellation
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` The first-order anti-causal profile can be treated
+globally without first projecting to one ordinate.  For a finite right-half divisor
+
+```text
+rho_j=1/2+a_j+i gamma_j
+```
+
+with multiplicities `m_j`, the normalized wrong-support profile is
+
+```text
+ell_1(t)=2 sum_j m_j exp(-(a_j+i gamma_j)t),   t>0.
+```
+
+Its unweighted energy is the positive Cauchy Gram form
+
+```text
+E_off=integral_0^infinity |ell_1(t)|^2 dt
+     =4 sum_(j,k) m_j m_k
+        (a_j+a_k)/((a_j+a_k)^2+(gamma_j-gamma_k)^2).
+```
+
+Every ordered-pair contribution is positive after conjugate pairing.  In particular,
+
+```text
+E_off>=2 sum_j m_j^2/a_j.
+```
+
+Since every zeta displacement has `0<a_j<1/2`, one off-line zero forces `E_off>4`.  The complete
+proof is in
+`../2-fully-proven/not_new_scientific_knowledge/infinitesimal-euler-leakage-cauchy-energy-threshold.md`.
+This removes the oscillatory-cancellation objection to a global first-order detector.
+
+`[PARENT-THEORY ATTACK]` The Cauchy Gram calculation is standard exponential-sum theory.  Suzuki's
+source kernel already gives fixed-`omega` innerness criteria; differentiating at `omega=0` returns
+`-2 Xi'/Xi`, whose Euler part is the von-Mangoldt prime-power source.  Therefore the profile and its
+energy are an exact RH encoding unless an independent source estimate is proved.
+
+`[OPEN CORE]` Define the first-order wrong-support profile directly as the boundary-continuation
+defect of Suzuki's explicit Euler--Gamma kernel and prove
+
+```text
+integral_0^infinity |ell_E(t)|^2 dt <= 4.
+```
+
+No ordinate localization is now required.  The bound itself, not the positive detector, is the
+remaining arithmetic theorem.  It may not be obtained from innerness of `Theta_omega`, from a
+zero-residue expansion, or from an RH-equivalent `L^2` tail criterion.
+
+## Finite-divisor source construction closed: second-order Toeplitz Schur curvature
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` The global first-order energy now has a construction
+from the completed shifted source before any zero or residue expansion.  Let
+
+```text
+T_omega=P_+ M_(Theta_omega)|H^2_+,
+L_omega=P_- M_(Theta_omega)|H^2_+.
+```
+
+Boundary unimodularity gives the exact finite-`omega` identity
+
+```text
+I-T_omega^*T_omega=L_omega^*L_omega.
+```
+
+For a finite right-half divisor, `omega^(-1)L_omega` converges to the first-order leakage `D`, and
+therefore
+
+```text
+C_E=lim_(omega->0+) omega^(-2)(I-T_omega^*T_omega)=D^*D>=0.
+```
+
+In logarithmic Paley--Wiener coordinates, the kernel of `C_E` is
+
+```text
+C_E(y,z)=integral_0^infinity
+  conjugate(ell_1(x+y)) ell_1(x+z) dx,
+```
+
+so the previously defined energy is exactly the boundary corner `C_E(0,0)`.  The Euler tangents are
+
+```text
+partial_omega c_omega(n)|_0=2 Lambda(n),
+partial_omega^2 c_omega(n)|_0=4 (Lambda*Lambda)(n).
+```
+
+Thus `C_E` is the Schur defect between the one-prime von-Mangoldt tangent and the two-prime
+Dirichlet-convolution tangent.  The full proof is in
+`../2-fully-proven/not_new_scientific_knowledge/infinitesimal-euler-leakage-cauchy-energy-threshold.md`.
+
+`[PROVED NO-GO]` Toeplitz contractivity does not bound the corner.  In the one-layer model,
+`C_E(0,0)=2m^2/a`, which is unbounded as `a->0`, while every `T_omega` remains a contraction.  Corner
+evaluation is not continuous in operator norm.
+
+`[OPEN CORE]` Prove the zeta-specific boundary regularity estimate
+
+```text
+C_E(0,0)<=4
+```
+
+directly from the explicit Euler--Gamma source.  Finite-divisor construction, positivity, phase
+cancellation, and prime-support identification are now closed.  The global extended-form limit and
+its arithmetic corner bound remain; the bound cannot follow from generic Hardy--Toeplitz theory.
+
+## Finite-tangent escape closed: distinct-prime-support filtration
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` Higher transverse derivatives do not introduce an
+independent source constraint.  For
+
+```text
+zeta(s-omega)/zeta(s+omega)=sum_n c_omega(n)n^(-s),
+```
+
+let `nu(n)` be the number of distinct prime divisors of `n`.  Then `c_omega(n)` vanishes at zero to
+exact order `nu(n)`, with
+
+```text
+partial_omega^(nu(n)) c_omega(n)|_0
+ =2^(nu(n)) nu(n)! product_(p|n) log p.
+```
+
+Thus the `k`th tangent is supported on integers with at most `k` distinct prime supports.  At the
+completed-function level,
+
+```text
+log(F(s-omega)/F(s+omega))
+ =-2 sum_(j>=0) omega^(2j+1)/(2j+1)!
+   partial_s^(2j+1) log F(s),
+```
+
+so every finite tangent is a Bell polynomial in the odd logarithmic derivatives of the original
+source.  The full proof is in
+`../2-fully-proven/not_new_scientific_knowledge/shifted-euler-quotient-finite-tangent-prime-support-filtration.md`.
+
+`[ROUTE CONSEQUENCE]` Taking more finite `omega` derivatives cannot by itself create the missing
+all-prime rigidity.  It only increases the bounded prime-interaction grade.  Route C must now use a
+nonperturbative law of the full shifted family, an infinite interaction-grade completion with a
+proved boundary estimate, or the direct zeta-specific bound `C_E(0,0)<=4`.
+
+## Bare nonperturbative shift cocycle closed by flatness
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` The full shifted quotient obeys
+
+```text
+R_(omega+eta)(s)=R_omega(s-eta)R_eta(s+omega),
+R_omega(s)=F(s-omega)/F(s+omega).
+```
+
+For zeta, its positive Euler coefficient streams satisfy the twisted convolution law
+
+```text
+c_(omega+eta)
+ =(n |-> n^eta c_omega(n))
+  * (n |-> n^(-omega)c_eta(n)).
+```
+
+All three-factor associations telescope to the same ratio, so the uncompressed cocycle curvature is
+identically zero.  The proof is in
+`../2-fully-proven/not_new_scientific_knowledge/shifted-euler-quotient-twisted-cocycle-flatness.md`.
+
+`[ROUTE CONSEQUENCE]` The full all-prime family is nonperturbative and coefficient-positive on the
+Euler side, but its bare algebraic cocycle is an exact coboundary.  The only nontrivial curvature is
+created by Hardy compression:
+
+```text
+I-T_omega^*T_omega=L_omega^*L_omega.
+```
+
+Thus cocycle associativity and Euler coefficient positivity do not bound `C_E(0,0)`.  A live
+full-shift route must prove a boundary regularity law for the compressed cocycle.
+
+## Generic compressed-cocycle theory closed by a self-dual quartet
+
+`[PROVED COUNTEREXAMPLE; NOT NEW SCIENTIFIC KNOWLEDGE]` For `0<a<1/2` and `gamma>0`, the polynomial
+
+```text
+F_(a,gamma)(s)
+ =(((s-1/2)-a)^2+gamma^2)
+  (((s-1/2)+a)^2+gamma^2)
+```
+
+has functional equation `F(1-s)=F(s)`, Schwarz symmetry, all four zeros in the open critical strip,
+a unimodular centered shifted quotient, the exact full-shift cocycle, and contractive Toeplitz
+compressions.  Its normalized wrong-support profile is
+
+```text
+ell_(a,gamma)(t)=4exp(-at)cos(gamma t),
+```
+
+so
+
+```text
+C_(a,gamma)(0,0)=4/a+4a/(a^2+gamma^2)>8
+```
+
+and the corner is unbounded as `a->0`.  The full proof is in
+`../2-fully-proven/not_new_scientific_knowledge/self-dual-quartet-defeats-generic-shift-curvature-bound.md`.
+
+`[ROUTE CONSEQUENCE]` Generic self-dual entire-function theory, critical-strip geometry,
+unimodularity, full-shift cocycle flatness, Toeplitz contractivity, and Schur-defect positivity cannot
+prove `C_E(0,0)<=4`.  The surviving Route C theorem must use the exact infinite Euler product and
+explicit gamma/theta completion in a quantitative compressed-boundary law absent from this quartet.
+
+## Euler positivity does not imply variation diminution
+
+`[PROVED COUNTEREXAMPLE; NOT NEW SCIENTIFIC KNOWLEDGE]` On a fixed prime orbit, write
+`x=p^omega>1`.  The positive local coefficients of the shifted Euler quotient are
+
+```text
+a_0=1,
+a_k=x^k-x^(k-2)  for k>=1.
+```
+
+Their first PF2 minor is
+
+```text
+a_1^2-a_0a_2=x^(-2)-1<0.
+```
+
+Thus even one local orbit is not PF2, hence not PF-infinity.  The proof is in
+`../2-fully-proven/not_new_scientific_knowledge/shifted-euler-prime-orbit-pf2-failure.md`.
+
+`[ROUTE CONSEQUENCE]` Positive shifted-Euler coefficients do not automatically make Suzuki's
+prime-dilation mixture variation-diminishing and cannot by themselves force an eventual one-sign
+archimedean tail.  Any remaining exact-source theorem must prove a quantitative prime--gamma/theta
+cancellation law rather than invoke coefficient positivity alone.
+
+## Archimedean one-sign shortcut closed
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` For `0<omega<1/2`, Suzuki's integrated
+archimedean kernel satisfies
+
+```text
+g_omega^(1)(x)
+ ~-B_omega/(1/2-omega)x^(omega-1)   as x->0+,
+
+g_omega^(1)(x)
+ ~ A_omega/omega(1-x)^omega         as x->1-,
+```
+
+with `A_omega,B_omega>0`.  It is therefore negative near zero and positive near one.  The proof is
+in
+`../2-fully-proven/not_new_scientific_knowledge/suzuki-archimedean-primitive-forced-sign-change.md`.
+
+`[ROUTE CONSEQUENCE]` The archimedean kernel itself has no one-sign law, while the positive Euler
+weights fail PF2.  The surviving exact-source problem is now a quantitative cancellation theorem
+for the complete all-prime dilation mixture against this forced gamma-kernel sign change.  Neither
+side separately supplies the required sign or curvature bound.
+
+## Positive Euler main term is annihilated by completion
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` Let
+
+```text
+C_omega(s)=zeta(s-omega)/zeta(s+omega),
+G_omega(s)=gamma(s-omega)/gamma(s+omega).
+```
+
+The positive Euler series `C_omega` has residue `1/zeta(1+2omega)>0` at `s=1+omega`, but
+`G_omega` has a simple zero there.  Their product is finite:
+
+```text
+lim_(s->1+omega)G_omega(s)C_omega(s)
+ =Xi(1)/Xi(1+2omega).
+```
+
+Equivalently, Suzuki's kernel and its integrated primitive have the exact vanishing moments
+
+```text
+integral_0^1 g_omega(x)x^(1+omega)dx/x=0,
+integral_0^1 g_omega^(1)(x)x^(1+omega)dx/x=0.
+```
+
+The proof is in
+`../2-fully-proven/not_new_scientific_knowledge/suzuki-euler-pole-archimedean-moment-annihilation.md`.
+
+`[ROUTE CONSEQUENCE]` The completed source annihilates the dominant positive Euler/Tauberian main
+term.  After this cancellation, the next singularity frontier is the shifted nontrivial divisor.
+A live proof must control the fully canceled remainder by a source inequality; extracting its next
+pole simply reconstructs the zero set.
+
+## Exact surviving arithmetic carrier: shifted-Euler summatory error
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` Let
+
+```text
+A_omega(X)=sum_(n<=X)c_omega(n),
+M_omega(X)=X^(1+omega)/((1+omega)zeta(1+2omega)),
+E_omega=A_omega-M_omega.
+```
+
+The zero `(1+omega)` moment of Suzuki's integrated gamma kernel gives the exact Stieltjes identity
+
+```text
+h_omega^(1)(x)
+ =x^(-1) integral_((0,x]) g_omega^(1)(t/x)dE_omega(t).
+```
+
+The positive average term `M_omega` contributes exactly zero.  The proof is in
+`../2-fully-proven/not_new_scientific_knowledge/suzuki-tail-is-exact-summatory-error-transform.md`.
+
+`[ROUTE CONSEQUENCE]` The only surviving arithmetic datum inside Suzuki's one-sign criterion is the
+fully pole-subtracted all-prime discrepancy `E_omega`.  Any estimate obtained from its next Mellin
+pole is divisor-fed.  A live theorem must control this signed error transform without first locating
+shifted zeros.
+
+## Final elementary arithmetic split: floor discrepancy plus Möbius tail
+
+`[PROVED BRIDGE; NOT NEW SCIENTIFIC KNOWLEDGE]` For `0<omega<1/2`, the surviving summatory error has
+the exact decomposition
+
+```text
+E_omega(X)
+ =sum_(d<=X)mu(d)d^(-omega)R_omega(X/d)
+  -X^(1+omega)/(1+omega)
+   sum_(d>X)mu(d)d^(-1-2omega),
+```
+
+where
+
+```text
+R_omega(Y)=sum_(m<=Y)m^omega-Y^(1+omega)/(1+omega).
+```
+
+Each piece is only `O_omega(X^(1-omega))` under absolute values.  The proof is in
+`../2-fully-proven/not_new_scientific_knowledge/shifted-euler-error-floor-mobius-tail-coupling.md`.
+
+`[ROUTE CONSEQUENCE]` Separate floor-error bounds, separate Möbius-tail bounds, and their triangle
+inequality cannot control Suzuki's signed error transform.  A pointwise
+`X^(1/2-omega+epsilon)` bound would suffice, but generalized-totient theory warns that raw floor
+fluctuations may be larger and later canceled by the transform.  The remaining source theorem is a
+coupled transformed cancellation, not necessarily a pointwise half-power estimate for `E_omega`.

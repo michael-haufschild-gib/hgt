@@ -78,17 +78,54 @@ For this profile the Newton lines are
 
 and the transition between `n` and `n+1` occurs at `t=log(n+1)`. The DA and HT realizations therefore have literally the same complete logarithmic Newton diagram; only the coefficient phases differ.
 
+## Theorem 3: one HT magnitude fiber carries uncountably many divisors `[PROVED HERE] [BRIDGE]`
+
+There is an uncountable family of order-zero HT entire functions with identical coefficient moduli, identical complete Newton geometry, and pairwise distinct zero divisors.
+
+### Proof
+
+Use the phase-uniform stretched-exponential law and put
+
+`rho_n=exp(-exp(sqrt n))`.
+
+For `theta in R/(2pi Z)`, define
+
+`F_theta(z)=rho_0 exp(i theta)+sum_(n>=1)rho_nz^n`.                          `(5)`
+
+Every `F_theta` is HT over `C(z)`, because the theorem `stretched-exponential-taylor-log-magnitude-hypertranscendence.md` applies for every phase sequence. All members have the same coefficient moduli and hence the same maximum-term and Newton data.
+
+The coefficient formula for entire-function order gives
+
+`ord(F_theta)=limsup_(n->infinity) n log n / exp(sqrt n)=0`.                 `(6)`
+
+Suppose `F_theta` and `F_phi` had the same zero divisor. Hadamard factorization for order-zero entire functions would make their quotient a nonzero constant: two genus-zero canonical products with the same zeros differ only by their constant factors. Thus
+
+`F_theta=c F_phi`.
+
+Comparison of any coefficient with `n>=1` gives `c=1`, while comparison of the constant coefficients gives `exp(i theta)=exp(i phi)`. Hence `theta=phi` in `R/(2pi Z)`.
+
+Distinct phases therefore give distinct zero divisors. Since the phase circle is uncountable, so is the divisor family. `square`
+
+Consequently even the combined data
+
+`(HT status, all Taylor moduli, complete Newton geometry, order, type)`
+
+do not determine the zero divisor inside the HT stratum itself.
+
 ## Consequences for the super-Gaussian attack
 
 1. **Newton trapping cannot imply DA or recurrence.** A fixed algebraic locus for exponent gaps and normalized magnitudes has no access to phase transcendence.
 2. **Newton geometry alone cannot supply the coefficient-floor theorem.** The DA hypothesis must enter through exact complex coefficient identities or an equivalent phase-sensitive consequence. Convex geometry and maximum-term asymptotics can organize those identities but cannot replace them. This does not rule out a proof that combines `(SG)` with such ADE-specific information.
 3. **The algebraically independent super-Gaussian example is HT.** Taking `rho_n=exp(-n^3)` gives an HT entire series whose logarithmic coefficient data are exactly `n^3`, so every Newton transition is adjacent and every plateau width is exactly `6n` for `n>=1`. Thus exceptionally simple Newton geometry is compatible with genuine hypertranscendence.
+4. **HT plus magnitudes still does not determine divisors.** Theorem 3 removes the possible reply that the DA/HT bit could be added back to Newton data: it is constant throughout an uncountable same-modulus family with pairwise different divisors.
 
 The last item should not be confused with a counterexample to the super-Gaussian DA coefficient-floor conjecture: it lies on the predicted HT side.
 
 ## Exact RH-route scope
 
 This theorem excludes only universal implementations of heat, Wiman--Valiron, or coefficient-Newton routes whose proposed DA/HT decision, across all entire functions, factors through Taylor coefficient magnitudes, maximum terms, active indices, transition radii, or plateau widths. The profile `1/n!` already has both a DA and an HT realization, so no universal classifier can factor through those data alone.
+
+Theorem 3 gives a stronger divisor-level factorization no-go: no implementation can recover an exact zero divisor from HT status plus Taylor magnitudes or any Newton data derived from them. Those invariants are identical on an uncountable family of pairwise different divisors.
 
 It does not refute the restricted super-Gaussian conjecture: it produces an HT realization of every super-Gaussian profile, but it does not produce a DA realization of such a profile. A proof of the restricted conjecture must still use what an assumed ADE forces beyond the shared modulus data.
 

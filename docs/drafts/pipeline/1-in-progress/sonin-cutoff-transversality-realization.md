@@ -100,6 +100,80 @@ transition, raw dilation, Euler metric, and formal prolate objects:
    the cyclic polynomial filtration strictly. Every finite truncation is nilpotent with determinant
    one; any compact extension is quasinilpotent, and any trace-class extension has Fredholm
    determinant one. Resolvent mixing is therefore essential, not optional regularization.
+10. Exact Sonin compression does not erase every smoothed grading residue. The card
+    `sonin-small-cutoff-ground-row-survival.md` projects the defect to the semilocal ground state and
+    smooths on the right by `(N_infinity+1)^(-1)`. The result is a canonical nonzero rank-one
+    trace-class corner for every sufficiently small positive cutoff. This proves local survival, but
+    its pulled-back Fredholm determinant is still one. Its trace norm tends to zero as the cutoff
+    tends to infinity, so it supplies no uniform cofinal large-cutoff obstruction.
+11. The live prolate-resolvent corner now has an exact source factorization. By
+    `sonin-relative-resolvent-sylvester-factorization.md`, after pullback through `theta_S` it is
+
+    `R_(S,complement)(z) H_S-H_S R_(infinity,Sonin)(z)`,
+
+    where `H_S=(1-Q_infinity)G_SQ_infinity` is the noncompact Euler cyclic-density corner. Thus
+    trace-class restricted resolvents are sufficient to regularize the corner, while vanishing is
+    equivalent to an exact restricted spectral intertwiner. The analytic unknowns are now the
+    source-selected extensions, reduction by the Sonin spaces, resolvent Schatten class, and spectral
+    separation--not the algebraic form of the corner.
+12. A cofinal analytic control is now complete at one prime. The card
+    `transported-prolate-relative-resolvent-corner.md` transports the unique archimedean self-adjoint
+    prolate operator through `theta_p`. For every cutoff and nonreal resolvent parameter, its cyclic
+    relative-resolvent Sonin corner is nonzero and trace class. Nonvanishing follows because the
+    noncompact Euler corner cannot be supported on the finite positive-exception subspace of the
+    Sonin spectrum, while the infinite negative Sonin spectrum is disjoint from the positive
+    complementary spectrum. This proves that the analytic survival package is consistent, but the
+    transported grading is `theta_pN_infinitytheta_p^(-1)`, not `N_p`; it is an isospectral control,
+    not the arithmetic semilocal prolate operator.
+13. The arithmetic remainder is one formal grading deformation. The card
+    `semilocal-prolate-control-deformation.md` defines
+
+    `K_p=N_p-theta_pN_infinitytheta_p^(-1)`
+
+    gives the formal identity
+
+    `W_(lambda,p)^cyc=W_(lambda,p)^theta+lambda^2K_p`.
+
+    If a common closed graph realization exists, the genuine cyclic relative-resolvent corner is the
+    cofinally nonzero trace-class control corner minus the single second-resolvent correction
+    `lambda^2(1-Q_p)R_cycK_pR_thetaeta_pQ_infinity`.
+14. No unitary transport can remove that deformation. By
+    `semilocal-prolate-unitary-transport-trilemma.md`, a unitary intertwining both scaling and grading
+    would preserve the ground-state scaling norm `a_0^2`, contradicting
+    `a_0(p)^2<1/2=a_0(infinity)^2`. More strongly, no single unitary intertwines the two formal
+    prolate families at two distinct positive parameters. The genuine semilocal realization must be a
+    new extension; it cannot inherit the archimedean family by a better unitary gauge.
+15. The deformation has no bounded-perturbation realization. The candidate-new theorem
+    `semilocal-grading-deformation-unbounded.md` proves
+
+    `|<p_0,[N_infinity,G_p]p_(2k)>| asymp_p k^(1/4)`.
+
+    Metric self-adjointness of `theta_p^(-1)N_ptheta_p` then rules out every bounded operator `K`
+    satisfying `theta_p^(-1)N_ptheta_p=N_infinity+K` on `Dom N_infinity`. Thus the genuine operator
+    cannot be obtained from the transported control by a bounded perturbation; graph-resolvent
+    control is the first remaining analytic possibility. The ground row has the sharp smoothing
+    threshold `alpha>3/4` for `(N_infinity+1)^(-alpha)`.
+16. The natural domains do not furnish even a perturbation core. The candidate-new theorem
+    `semilocal-prolate-core-disjointness.md` proves that in canonical spectral coordinates the cyclic
+    core `C[s]` and transported core `w_pC[s]` intersect only at zero. After pullback, the cyclic
+    ground `G_pp_0` lies in `Dom((N+1)^alpha)` exactly for `alpha<1/4`, so it is outside the
+    transported number-form domain. A new graph/boundary relation is required before the formal
+    `K_p` difference or second resolvent identity is well typed.
+17. The direct cyclic transport `eta_P` has a distinct common form geometry. The bridge card
+    `semilocal-number-form-equivalence.md` proves
+
+    `Dom(N_P^(1/2))=Dom(N_infinity^(1/2))`
+
+    with explicit equivalent forms, using the distance-to-polynomial-filtration identity. Hence the
+    genuine cyclic prolate forms share a canonical energy domain and a bounded self-adjoint energy
+    representative. This does not produce an `L^2` self-adjoint prolate operator; it moves the open
+    core to a gap/boundary theorem compatible with the exact Sonin projection.
+18. Bare self-adjoint extension exists. The bridge card
+    `semilocal-prolate-extension-rank-two-ambiguity.md` proves that each real parity-block Jacobi
+    minimal operator has deficiency indices `(0,0)` or `(1,1)`. Hence an extension always exists, and
+    changing a parity-preserving extension changes the full resolvent by rank at most two. Schatten
+    membership is therefore boundary-independent up to finite rank, but determinant scalars can vary.
+    The remaining extension problem is canonical Sonin-compatible selection, not existence.
 
 For any cutoff-compatible place transition `J_{T,S}`, Lean now proves the exact structural identity
 
@@ -115,7 +189,12 @@ closed operators, construct domain-compatible Sonin idempotents, prove `Delta_{S
 Schatten class, and construct a presentation-invariant determinant boundary. Then compute its two-place
 cross-effect. The positive degree-two-to-degree-zero polynomial-core residue is now known, so the first
 unresolved map is precisely its survival under exact Sonin compression. Until that step, the
-low-coefficient test is not a Sonin-sector invariant.
+low-coefficient test is not a cofinal Sonin-sector invariant. A rank-one number-resolvent shadow now
+survives exact Sonin compression at sufficiently small cutoff, so the unresolved issue is specifically
+prolate-resolvent closure, determinant nontriviality, and persistence to arbitrarily large cutoffs.
+The transported control now proves persistence and trace class at every cutoff for one prime, so the
+remaining operator-theoretic unknown is specifically the deformation from
+`theta_pN_infinitytheta_p^(-1)` to the genuine cyclic grading `N_p`.
 
 ## Gates
 
@@ -142,6 +221,8 @@ low-coefficient test is not a Sonin-sector invariant.
   is noncompact, hence outside every Schatten class.
 - This cannot repair the norm-change operator by inversion or polar square root: those actual-Sonin
   corners are noncompact as well.
+- This cannot replace `theta_p` by another unitary transport intertwining both source scaling and
+  grading, or the full prolate family: strict first-Jacobi contraction forbids it.
 - This cannot take an ordinary or Fredholm determinant of the raw prolate naturality defect: its
   strict filtration lowering makes every such determinant trivial whenever defined.
 - This cannot grade success by detecting an off-line zero. The witness must be invariantly defined at
@@ -159,10 +240,19 @@ low-coefficient test is not a Sonin-sector invariant.
 1. Put the formal `W_{lambda,S}` on a common invariant core and prove a closed or self-adjoint
    realization with explicit domain behavior under `eta_S`. The Jacobi coefficients are now known to
    have quadratic prolate growth, but the easy Carleman criterion is unavailable.
-   Determine the limit-point/limit-circle alternative for both parity blocks. In the limit-circle
-   case, derive the boundary condition from source symmetries rather than selecting an angle.
+   Determine the limit-point/limit-circle alternative for both parity blocks. Existence is automatic;
+   in the limit-circle case, derive the boundary condition from source symmetries rather than selecting
+   an angle.
+   Equivalently, start from the closed transported control and prove relative control of
+   the formal difference `K_p=N_p-theta_pN_infinitytheta_p^(-1)`. A bounded realization is now
+   refuted, so the estimate must begin with a newly constructed common graph domain.
+   In parallel, use the common `eta_P` energy domain and decide whether its bounded indefinite-form
+   representative admits a source-selected `L^2` realization.
 2. Construct the Sonin idempotents and prove
    `(1-Q_{lambda,S}) Omega_{S,lambda} Q_{lambda,infinity}` lies in a stated trace ideal.
+   For the relative-resolvent variant, use the proved Sylvester factorization: establish trace-class
+   restricted resolvents and rule out an intertwiner between the semilocal complementary spectrum and
+   the archimedean Sonin spectrum.
 3. Extract a stable determinant-line or finite-projective presentation `A_lambda`, derive its admissible
    gauge transformations, and prove the boundary is invariant under them. Only then compute the
    row-replacement determinant form

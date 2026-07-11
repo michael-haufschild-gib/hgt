@@ -440,7 +440,8 @@ analytic capstone is already formalized.
 - [x] exact meromorphic-order classification of the two theta-defect pole lattices
 - [x] exact differentiated theta-defect pole support for every nonzero `C[delta]` operator
 - [ ] meromorphic and elliptic function-field foundation
-- [ ] theta and multiple-elliptic-gamma definitions and hierarchy
+- [x] theta and genuine parity-dependent all-order multiple-elliptic-gamma products, global
+  meromorphic-field logarithmic derivatives, and every coordinate-deletion hierarchy equation
 - [x] exact finite telescoping of the elliptic-gamma logarithmic-derivative double kernel
 - [x] terminal-tail vanishing in both elliptic-gamma nome directions
 - [x] absolute summability and Fubini decomposition of the full double kernel
@@ -864,3 +865,41 @@ entire functions, identify the parity-dependent product or quotient as the genui
 elliptic gamma, and prove its meromorphic-field logarithmic derivative equals this kernel. The
 subsequent matroid lift must then formalize the face-filtration independence and localized
 Stanley--Reisner rank theorem; the hierarchy equations themselves are no longer an open input.
+
+## Genuine all-order products and global field hierarchy
+
+The remaining realization gap stated above is now closed.
+
+`formal/GaloisForLFunctions/MultipleEllipticGammaProduct.lean` defines the forward and backward
+infinite factors for an arbitrary finite parameter set, proves locally uniform convergence on the
+whole additive plane, and proves that both products are entire and nonzero. It defines the genuine
+parity-dependent multiple elliptic gamma: for an even number of nomes the backward product occurs
+in the denominator, while for an odd number it occurs in the numerator. This parity is forced by
+the hierarchy and gives the standard alternating multiple-gamma product. The logarithmic
+derivative of the product is proved, on its regular locus, to equal the convergent all-order kernel.
+
+`formal/GaloisForLFunctions/MeromorphicMultipleEllipticGamma.lean` embeds both entire products in
+the global analytic germ domain, constructs the parity-dependent product or quotient as a nonzero
+global meromorphic-field element, defines its quotient-rule logarithmic derivative, and gives an
+explicit entire numerator/product-denominator fraction for that derivative.
+
+`formal/GaloisForLFunctions/MultipleEllipticGammaFieldHierarchy.lean` clears those fractions,
+proves the pointwise kernel identity on a common nonempty regular neighborhood, and promotes it by
+analytic continuation to the unconditional field identity
+
+```text
+T_(tau_q) Psi_I - Psi_I = Psi_(I\{q})
+```
+
+for the logarithmic derivatives of the genuine products, simultaneously for every finite index
+set and every coordinate. No regular-locus assumption remains in the theorem statement.
+
+The exact dependency cone builds. `#print axioms` for local uniform product convergence, product
+logarithmic-derivative identification, nonzero meromorphic realization, explicit field fraction,
+and the global all-order field hierarchy reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+The special-function existence and hierarchy gates are therefore complete. The remaining theorem
+is algebraic-differential: lift the verified order-one free defect matroid through these actual
+field hierarchy equations, formalize the nested-star/one-slice face-filtration induction, and prove
+the localized Stanley--Reisner differential-rank and multiplicative transfer capstones.

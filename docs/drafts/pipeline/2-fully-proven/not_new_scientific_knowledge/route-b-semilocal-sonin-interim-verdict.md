@@ -54,6 +54,72 @@ polynomial filtration. All finite truncations are nilpotent with determinant one
 extension is quasinilpotent, and any trace-class extension has Fredholm determinant one. The new
 alternating residue tower proves nonvanishing but cannot evade this determinant blindness.
 
+`[SMALL-CUTOFF TRACE-CLASS SURVIVAL PROVED]` Projecting the grading defect to the semilocal ground
+state and smoothing by `(N_infinity+1)^(-1)` gives a canonical nonzero rank-one corner across the
+exact Sonin projections for every sufficiently small positive cutoff. This proves that Sonin
+compression need not erase the normalized residue. The construction is a grading-resolvent bridge,
+not a closed prolate resolvent; its determinant is still trivial, and its trace norm tends to zero
+along the cofinal large-cutoff direction.
+
+`[RELATIVE-RESOLVENT CORE FACTORIZED]` After pullback through the exact Sonin isomorphism, the live
+corner is the Sylvester transform
+
+`R_(P,complement)(z)H_P-H_PR_(infinity,Sonin)(z)`
+
+of the noncompact Euler cyclic-density corner. Trace-class restricted resolvents would regularize it
+automatically. Its vanishing is equivalent to an exact spectral intertwiner and is impossible under
+disjoint restricted spectra. The remaining work is therefore a concrete extension, Schatten, and
+spectral-separation theorem.
+
+`[COFINAL TRANSPORTED CONTROL CLOSED]` For each one-prime enlargement, transporting the unique
+archimedean self-adjoint prolate operator through `theta_p` gives a closed isospectral control whose
+cyclic relative-resolvent Sonin corner is nonzero and trace class for every cutoff and every nonreal
+resolvent parameter. This proves that exact Sonin compression, cofinal cutoff size, and trace-class
+prolate smoothing can coexist. It does not realize the arithmetic candidate: its grading is the
+transport of `N_infinity`, not the semilocal cyclic grading `N_p`.
+
+`[ARITHMETIC REMAINDER ISOLATED FORMALLY]` The genuine formal candidate differs from the transported
+control at the expression level by
+
+`lambda^2K_p`, `K_p=N_p-theta_pN_infinitytheta_p^(-1)`.
+
+The natural cyclic and transported cores intersect only at zero, so this is not yet an operator
+perturbation identity. If a new common graph realization is constructed, its relative-resolvent Sonin
+corner is the proved nonzero trace-class control corner plus one correction involving `K_p`.
+
+`[UNITARY TRANSPORT CLOSED]` No unitary can simultaneously intertwine semilocal scaling and Jacobi
+grading, because it would preserve the ground-state scaling norm `a_0^2`, contradicting strict
+semilocal contraction. No single unitary can intertwine the two prolate families at two distinct
+parameters either. The genuine cyclic prolate operator must be a new extension, not a regauged
+archimedean copy.
+
+`[PROVED ON PAPER; CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` The remaining formal grading deformation has
+no bounded-perturbation realization. The proof obtains the quantitative estimate
+
+`|<p_0,[N_infinity,G_p]p_(2k)>| asymp_p k^(1/4)`
+
+from the all-even transform law and a prime-frequency saddle `p^(2m)asymp k`. Metric
+self-adjointness then rules out a bounded `K` with pulled-back grading `N_infinity+K`. Hence bounded perturbation of the transported control
+is closed. The estimate is sharp up to constants and gives the exact ground-row smoothing threshold
+`alpha>3/4`; only sufficiently strong relative form, graph, or two-resolvent control remains live.
+
+`[NATURAL CORES AND FORMS DISJOINT]` In the canonical one-prime spectral model, the cyclic core is
+`C[s]` and the transported core is `w_pC[s]`; their intersection is zero. After pullback the cyclic
+ground state has Jacobi regularity exactly below `1/4` and is outside the transported number-form
+domain. A new common graph or boundary relation is required before any `K_p` resolvent correction is
+well typed.
+
+`[DIRECT CYCLIC FORM DOMAIN CLOSED]` Under the different cyclic transition `eta_P`, the two measures
+are uniformly equivalent and use the same polynomial filtration. Their number-form domains therefore
+coincide with equivalent norms. The genuine cyclic prolate constraint has a canonical bounded
+self-adjoint representative on this common energy completion. What remains is a source-selected gap
+or boundary theorem producing an `L^2` closed operator compatible with the Sonin sector.
+
+`[SELF-ADJOINT EXTENSION EXISTS; CANONICITY OPEN]` Each real parity-block Jacobi minimal operator has
+deficiency indices `(0,0)` or `(1,1)`, so a self-adjoint extension always exists. Resolvents of two
+parity-preserving choices differ by rank at most two. Schatten membership is stable under the choice,
+but determinant factors need not be; the source still has to select or neutralize the boundary angle.
+
 Therefore Route B has two different verdicts:
 
 1. **As an explicit-formula operator-construction project:** closed as SEARCH/BRIDGE; formalization and

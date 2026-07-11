@@ -134,3 +134,18 @@ theorem eventually_univGermEval_ne_zero
 end
 
 end GaloisForLFunctions
+
+namespace GaloisForLFunctions
+
+/-- Evaluation respects addition in the global analytic subring. -/
+@[simp] theorem univGermEval_analyticSubring_add (z : ℂ)
+    (a b : Bottcher.analyticSubring (Set.univ : Set ℂ)) :
+    univGermEval z ((a + b : Bottcher.analyticSubring Set.univ) :
+      Germ (𝓟 Set.univ) ℂ) =
+      univGermEval z (a : Germ (𝓟 Set.univ) ℂ) +
+        univGermEval z (b : Germ (𝓟 Set.univ) ℂ) := by
+  change univGermEval z
+      ((a : Germ (𝓟 Set.univ) ℂ) + (b : Germ (𝓟 Set.univ) ℂ)) = _
+  exact map_add (univGermEval z) _ _
+
+end GaloisForLFunctions

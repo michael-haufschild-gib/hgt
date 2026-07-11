@@ -133,6 +133,62 @@ theorem multipleEllipticGammaLogDerivMero_eq_forward_parity
       hcard, if_false]
     exact Differential.logDeriv_mul _ _ hmapF hmapB
 
+/-- Entire cross numerator of the all-order logarithmic derivative. -/
+def multipleEllipticGammaLogDerivNumeratorAnalytic
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) : analyticSubring Set.univ :=
+  if Even (Fintype.card ι) then
+    analyticSubringDeriv isOpen_univ (multipleEllipticGammaForwardAnalytic τ hτ) *
+        multipleEllipticGammaBackwardAnalytic τ hτ -
+      multipleEllipticGammaForwardAnalytic τ hτ *
+        analyticSubringDeriv isOpen_univ (multipleEllipticGammaBackwardAnalytic τ hτ)
+  else
+    analyticSubringDeriv isOpen_univ (multipleEllipticGammaForwardAnalytic τ hτ) *
+        multipleEllipticGammaBackwardAnalytic τ hτ +
+      multipleEllipticGammaForwardAnalytic τ hτ *
+        analyticSubringDeriv isOpen_univ (multipleEllipticGammaBackwardAnalytic τ hτ)
+
+/-- Entire product denominator of the all-order logarithmic derivative. -/
+def multipleEllipticGammaLogDerivDenominatorAnalytic
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) : analyticSubring Set.univ :=
+  multipleEllipticGammaForwardAnalytic τ hτ *
+    multipleEllipticGammaBackwardAnalytic τ hτ
+
+theorem multipleEllipticGammaLogDerivDenominatorAnalytic_ne_zero
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) :
+    multipleEllipticGammaLogDerivDenominatorAnalytic τ hτ ≠ 0 := by
+  exact mul_ne_zero (multipleEllipticGammaForwardAnalytic_ne_zero τ hτ)
+    (multipleEllipticGammaBackwardAnalytic_ne_zero τ hτ)
+
+/-- Concrete one-fraction presentation of the actual all-order logarithmic derivative. -/
+theorem multipleEllipticGammaLogDerivMero_eq_div
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) :
+    multipleEllipticGammaLogDerivMero τ hτ =
+      algebraMap (analyticSubring Set.univ) (meroField Set.univ)
+          (multipleEllipticGammaLogDerivNumeratorAnalytic τ hτ) /
+        algebraMap (analyticSubring Set.univ) (meroField Set.univ)
+          (multipleEllipticGammaLogDerivDenominatorAnalytic τ hτ) := by
+  letI := meroFieldDifferential isOpen_univ isPreconnected_univ Set.univ_nonempty
+  have hmap_ne {a : analyticSubring Set.univ} (ha : a ≠ 0) :
+      algebraMap (analyticSubring Set.univ) (meroField Set.univ) a ≠ 0 :=
+    fun hz => ha ((IsFractionRing.injective (analyticSubring Set.univ)
+      (meroField Set.univ)) (by simpa using hz))
+  have hF := hmap_ne (multipleEllipticGammaForwardAnalytic_ne_zero τ hτ)
+  have hB := hmap_ne (multipleEllipticGammaBackwardAnalytic_ne_zero τ hτ)
+  rw [multipleEllipticGammaLogDerivMero_eq_forward_parity]
+  by_cases hcard : Even (Fintype.card ι)
+  · simp only [hcard, if_true, analyticLogDerivMero, Differential.logDeriv]
+    simp_rw [meroFieldDifferential_algebraMap]
+    simp only [multipleEllipticGammaLogDerivNumeratorAnalytic,
+      multipleEllipticGammaLogDerivDenominatorAnalytic, hcard, if_true,
+      map_sub, map_mul]
+    field_simp [hF, hB]
+  · simp only [hcard, if_false, analyticLogDerivMero, Differential.logDeriv]
+    simp_rw [meroFieldDifferential_algebraMap]
+    simp only [multipleEllipticGammaLogDerivNumeratorAnalytic,
+      multipleEllipticGammaLogDerivDenominatorAnalytic, hcard, if_false,
+      map_add, map_mul]
+    field_simp [hF, hB]
+
 end
 
 end GaloisForLFunctions

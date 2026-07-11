@@ -103,6 +103,92 @@ Every admissible infinite Taylor-modulus profile has an HT phase realization. In
 
 The proof combines algebraically independent phases with Ostrowski's finite-basis theorem and is recorded in `2-fully-proven/not_new_scientific_knowledge/fixed-taylor-modulus-newton-geometry-ht-blindness.md`. Thus Newton geometry can organize an ADE attack but can never replace the exact complex coefficient identities of the assumed ADE.
 
+### Log-superlacunary full-support magnitudes `[PROVED HERE] [NOVELTY AUDIT]`
+
+Suppose the coefficients are eventually nonzero, put `b_n=-log|a_n|`, and assume
+
+`b_(n+1)/b_n -> infinity`.
+
+Then the series is HT over `C(z)` for every possible choice of coefficient phases. Mahler's integer normalization turns a hypothetical ADE into integral coefficient identities. Each such identity must have two grouped convolution atoms whose logarithmic magnitudes differ by only `O(log N)`, while the log-superlacunary condition makes the minimizing atom unique with an `omega(log N)` gap.
+
+The complete unconditional paper proof is recorded in `2-fully-proven/needs-audit/log-superlacunary-taylor-magnitude-hypertranscendence.md`. It remains under scientific-novelty audit and is not Lean-formalized. This closes a phase-uniform, arbitrary-complex, full-support stratum of `(SG)` without coefficient arithmetic.
+
+### Transcendental Taylor log-ratio `[PROVED HERE] [NOVELTY AUDIT]`
+
+Let `rho>1` be transcendental. If the coefficients are eventually nonzero, `b_n=-log|a_n|` is eventually positive, and
+
+`b_(n+1)/b_n -> rho`,
+
+then the series is HT over `C(z)` for every coefficient-phase sequence. Arbitrary subleading fluctuations are allowed.
+
+The stronger necessary DA law is arithmetic: if a DA full-support series has a finite log-ratio limit `rho>1`, then `rho` must be algebraic. Moreover some nonzero integer Laurent polynomial `Q` with `Q(1)=Q(rho)=0` has shift defect
+
+`|sum_r d_r b_(n_k+r)|=O(log n_k)`
+
+along an infinite subsequence. This is obtained by pigeonholing the bounded pair of convolution atoms that an integer ADE must keep at its Archimedean bend.
+
+The complete unconditional paper proof is recorded in `2-fully-proven/needs-audit/da-taylor-log-ratio-algebraicity-resonance-law.md`. It remains under scientific-novelty audit and is not Lean-formalized. This closes every transcendental finite-ratio phase fiber in `(SG)` and supplies a necessary characteristic of the remaining algebraic-ratio DA candidates.
+
+### Hierarchically resonance-broken geometric magnitudes `[PROVED HERE] [NOVELTY AUDIT]`
+
+The actual general law is this. Let `h_n=o(lambda^n)` for some `lambda>1`. Suppose that every nonzero bounded integer relation
+
+`sum_r d_r lambda^r=0`
+
+is broken at the lower scale by
+
+`|sum_r d_r h_(n+r)|/log n -> infinity`.
+
+Then every eventually full-support profile
+
+`-log|a_n|=A lambda^n+h_n`
+
+forces HT over `C(z)` for every phase sequence. If `lambda` is transcendental, there are no leading Laurent relations and the condition is vacuous. For every `lambda>1`, including rational and algebraic ratios, the choice
+
+`h_n=B exp(n^alpha)`, `B>0`, `0<alpha<1`,
+
+satisfies the condition.
+
+This closes the first genuinely resonant stratum. Distinct bounded convolution patterns may satisfy an exact Laurent-polynomial relation at the leading `lambda^n` scale. When they do, their difference at the stretched-exponential lower scale has asymptotic size
+
+`exp(n^alpha)n^(-j(1-alpha))`,
+
+at the first nonzero moment `j`. This is still `omega(log n)` and therefore too large for an ADE bend. The perturbation is negligible relative to `lambda^n`, and the adjacent logarithmic ratio still tends to `lambda`.
+
+The complete unconditional paper proof is recorded in `2-fully-proven/needs-audit/hierarchical-resonance-breaking-taylor-magnitude-hypertranscendence.md`. It remains under scientific-novelty audit and is not Lean-formalized.
+
+### Stretched-exponential ratio-one magnitudes `[PROVED HERE] [NOVELTY AUDIT]`
+
+For `B>0` and `0<alpha<1`, every eventually full-support profile
+
+`-log|a_n|=B exp(n^alpha)`
+
+forces HT over `C(z)` for every phase sequence. Here the adjacent logarithmic ratio tends to `1`, so neither the log-superlacunary theorem nor the log-ratio algebraicity law applies.
+
+Two new ingredients close this stratum. First, eventual strict convexity makes the least active top-degree source-sum shift win; within it, any unbounded imbalance costs more than a fixed surviving balanced pattern. Second, every nonzero fixed integer difference has first nonvanishing moment asymptotic
+
+`C exp(n^alpha)n^(-j(1-alpha))=omega(log n)`.
+
+Thus both atoms at a hypothetical ADE bend are confined to fixed offsets, where finite-difference separation contradicts the mandatory `O(log N)` gap. The complete unconditional paper proof is recorded in `2-fully-proven/needs-audit/stretched-exponential-taylor-log-magnitude-hypertranscendence.md`. It remains under scientific-novelty audit and is not Lean-formalized.
+
+### Polynomial log-magnitudes impose an ADE degree floor `[PROVED HERE] [NOVELTY AUDIT]`
+
+For the unresolved polynomial profiles
+
+`-log|a_n|=B n^beta`, `beta>1`,
+
+the anti-bend method does not prove arbitrary-order HT: sufficiently high finite differences can fall to logarithmic size or below. It does prove the exact complexity bound
+
+`deg_Z^ADE(f) >= ceil(beta)`
+
+for every DA realization and every phase sequence.
+
+If an integer ADE had total `Y`-degree `D<beta`, convexity would confine both atoms at its bend to fixed-offset, degree-`D` patterns in the least active source-sum shift. Newton's identities force two distinct `D`-element patterns to differ in some power moment `j<=D`; their valuation gap is then
+
+`C n^(beta-j)(1+o(1)) >= C n^(beta-D)=omega(log n)`,
+
+a contradiction. The complete unconditional paper proof is recorded in `2-fully-proven/needs-audit/polynomial-taylor-log-magnitude-ade-degree-floor.md`. It is a degree floor, not a full HT theorem, and its scientific significance remains provisional.
+
 ## Constraint attack
 
 Write `v_n=-log|a_n|`, with `v_n=+infinity` when `a_n=0`. Condition `(SG)` says that the finite values of `v_n` escape every quadratic scale. For a fixed ADE
@@ -111,11 +197,17 @@ Write `v_n=-log|a_n|`, with `v_n=+infinity` when `a_n=0`. Condition `(SG)` says 
 
 coefficient extraction produces finitely many convolution patterns with polynomial weights in the indices. On the lower convex envelope of `(n,v_n)`, a coefficient of total index `N` is governed tropically by the least sum of finitely many `v_j` subject to a fixed additive constraint.
 
-The target structural lemma is:
+Mahler's normalization first removes a false obstruction: even if the original ADE has arbitrary complex constants, a DA formal series satisfies some ADE with rational-integral coefficients. Thus recurrence weights cannot be Liouville-small. After grouping identical coefficient monomials, each nonzero weight is an integer of at least unit modulus.
 
-> `[CONJECTURE — finite tropical curvature]` A nonzero polynomial differential recurrence cannot support an infinite complex sequence whose lower Newton envelope has slope increments escaping every linear scale. After all exact cancellations forced by the differential polynomial are removed, some finite convolution pattern bounds the envelope by `O(n^2)`.
+The resulting proved necessary law is:
 
-This is stronger than a support-gap theorem: all coefficients may be nonzero. It must control cancellations among equal-valuation convolution terms, not merely locate a unique monomial.
+> `[PROVED — Archimedean tropical bend law]` At every sufficiently large nonvacuous coefficient index of an integer-normalized ADE, two distinct grouped convolution atoms have logarithmic magnitudes within `O_P(log N)`.
+
+The log-superlacunary theorem contradicts this law by additive isolation. The exact target that would close the whole conjecture is now:
+
+> `[CONJECTURE — persistent-bend obstruction]` An integer differential recurrence cannot sustain logarithmic-width convolution bends at every sufficiently large coefficient index for an eventually full-support sequence with `b_n/n^2->infinity`.
+
+This is stronger than a support-gap theorem: all coefficients may be nonzero. It must prove that near-equal convolution valuations cannot persist, rather than merely locate a unique monomial. The unresolved range is now more precise. Comparable adjacent `b_n` are not enough to sustain bends, leading-scale algebraic resonance is not enough, an asymptotically negligible stretched-exponential layer can destroy every finite leading relation, and even a pure ratio-one stretched-exponential profile is excluded by convex confinement. A counterexample or proof must therefore address profiles whose bounded convolution relations remain exact or logarithmically close through arbitrarily high finite-difference depth.
 
 ### Jet-face reformulation
 
@@ -159,7 +251,7 @@ The tempting shortcut "proper algebraic transition locus implies P-recursive coe
 1. **Valiron's order-zero third-order solution does not kill the claim.** Its theta-product construction lies at the quadratic logarithmic scale; it shows why differential order three is the first live stratum, not that quadratic type zero is attainable.
 2. **Ordinary order is too coarse.** Order zero includes both the Valiron quadratic scale and the strictly smaller `(QL0)` class.
 3. **Lipshitz-Rubel gaps are adjacent but not sufficient.** Their theorem constrains lacunary support. `(SG)` permits full support and asks about coefficient magnitude.
-4. **Arithmetic recurrence arguments do not extend formally.** With arbitrary complex constants, polynomial evaluations in the recurrence may be Liouville-small. A proof must use analytic/differential structure or exact cancellation geometry rather than an unlicensed Diophantine lower bound.
+4. **Arbitrary complex equation constants are not the obstruction.** Mahler's normalization supplies an ADE with rational-integral coefficients, so grouped recurrence weights are integers and cannot be Liouville-small. The genuine arbitrary-phase obstruction is that two or more distinct coefficient monomials may have nearly equal magnitudes and cancel. The proved bend law isolates the exact scale: any DA recurrence must supply such a tie within `O(log N)` at every large nonvacuous index.
 5. **Linear recurrences cannot yield a counterexample.** Finite-width polynomial recurrence propagation forces a factorial-scale nonzero subsequence. Any counterexample must be genuinely nonlinear DA, not merely D-finite of high order.
 6. **Closure operations checked so far do not yield a counterexample.** Affine rescaling, differentiation, integration, algebraic operations, and polynomial composition preserve the quadratic logarithmic scale of the known theta-type order-zero DA examples rather than lowering it to type zero.
 7. **Divisor sparsity alone is not the whole invariant at the critical scale.** Bank records Wittich's HT geometric divisor `(lambda^n)` and Valiron's DA inversion-symmetrized divisor `(lambda^n+lambda^(-n))`. Both have logarithmic zero density of constant scale. The open zero-density floor concerns the strictly sparser regime `n(r)=o(log r)`; any proof must still account for algebraic symmetry of the divisor rather than counting alone.
@@ -202,3 +294,9 @@ Valiron's 1925 paper and Strelitz's 1983 synthesis have now been inspected in fu
 - 2026-07-11 — Falsified the shortcut from algebraically trapped transition clusters to P-recursive coefficients. The live trapped-cluster branch now requires a new ADE-specific lower-face compatibility law.
 - 2026-07-11 — Strengthened the counterexample to an HT series and proved general fixed-modulus Newton blindness: exact Taylor magnitudes can be held fixed while DA/HT status changes through phases alone.
 - 2026-07-11 — Completed the relevant Valiron, Strelitz, and Bank primary-source audit. Their exact theorems stop at the order-two wall, the critical geometric-density example, and special Gamma-ray/polynomial-zero configurations; none closes the arbitrary `n(r)=o(log r)` case.
+- 2026-07-11 — Proved the phase-uniform log-superlacunary full-support stratum and the Archimedean tropical bend law. Mahler normalization eliminates Liouville-small equation weights; the open core is persistent near-ties between distinct coefficient convolutions in the non-superincreasing super-Gaussian range.
+- 2026-07-11 — Proved a second phase-uniform full-support stratum with `-log|a_n|=A rho^n` for transcendental `rho>1`. Constant adjacent ratios do not rescue DA; the remaining escape requires persistent bounded additive relations or near-relations in the logarithmic magnitudes.
+- 2026-07-11 — Closed the first algebraically resonant phase-uniform stratum: `b_n=A lambda^n+B exp(sqrt n)` is HT-forcing for every `lambda>1`. The smaller scale breaks every bounded relation left by the leading geometric scale.
+- 2026-07-11 — Extracted the intrinsic Archimedean shift-defect law: an exponentially balanced profile with every nonzero fixed integer shift defect `omega(log n)` forces HT for every phase. For algebraic leading ratio, all resonances compress to the canonical residue `m_lambda(S)b`.
+- 2026-07-11 — Entered the ratio-one regime: proved that `b_n=B exp(n^alpha)`, `0<alpha<1`, forces HT for every phase by least-shift selection, convex bounded confinement, and fixed-difference separation.
+- 2026-07-11 — At the polynomial boundary, proved the quantitative residue that survives: `b_n=B n^beta` forces every integer ADE to have total dependent-variable degree at least `ceil(beta)`; full HT remains open once the ADE degree reaches the moment-cancellation depth.

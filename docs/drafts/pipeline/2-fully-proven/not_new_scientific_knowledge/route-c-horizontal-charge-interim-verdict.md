@@ -7,7 +7,16 @@
 - **Source:** `../../1-in-progress/euler-horizontal-charge-separator.md`;
   `euler-shift-pair-incidence-resultant.md`;
   `shifted-hardy-leakage-static-continuity-no-go.md`;
-  `infinitesimal-hardy-leakage-horizontal-layer-resolvent.md`
+  `infinitesimal-hardy-leakage-horizontal-layer-resolvent.md`;
+  `infinitesimal-euler-leakage-cauchy-energy-threshold.md`;
+  `shifted-euler-quotient-finite-tangent-prime-support-filtration.md`;
+  `shifted-euler-quotient-twisted-cocycle-flatness.md`;
+  `self-dual-quartet-defeats-generic-shift-curvature-bound.md`;
+  `shifted-euler-prime-orbit-pf2-failure.md`;
+  `suzuki-archimedean-primitive-forced-sign-change.md`;
+  `suzuki-euler-pole-archimedean-moment-annihilation.md`;
+  `suzuki-tail-is-exact-summatory-error-transform.md`;
+  `shifted-euler-error-floor-mobius-tail-coupling.md`
 - **Statement:** The uncancelled Poincare--Lelong pair current constructs the exact horizontal
   charge without zero factorization, but its positivity records the collision-conserved total
   incidence and gives no absolute off-diagonal bound.  Bare static leakage continuity also fails.
@@ -152,6 +161,49 @@ ordinates appear as oscillatory exponential modes and the positivity of a single
 available.  Extracting the ordinate-diagonal block from the Euler source without first reading the
 divisor is the live construction problem.
 
+That obstruction can itself be removed at first order.  If the global normalized wrong-support
+profile is
+
+```text
+ell_1(t)=2 sum_j m_j exp(-(a_j+i gamma_j)t),
+```
+
+then
+
+```text
+integral_0^infinity |ell_1(t)|^2 dt
+ =4 sum_(j,k) m_j m_k
+   (a_j+a_k)/((a_j+a_k)^2+(gamma_j-gamma_k)^2).
+```
+
+Every term is positive, and one zeta zero with `0<a_j<1/2` forces this energy to exceed `4`.
+Therefore no ordinate projection is needed for the global exclusion target.  What remains is the
+Euler-side construction and the absolute energy bound, not phase cancellation.
+
+The source construction is also closed at finite shift.  If
+
+```text
+T_omega=P_+M_(Theta_omega)|H^2_+,
+L_omega=P_-M_(Theta_omega)|H^2_+,
+```
+
+then unimodularity gives
+
+```text
+I-T_omega^*T_omega=L_omega^*L_omega.
+```
+
+After division by `omega^2`, the finite-divisor limit is the positive curvature `C_E=D^*D`, and
+its boundary corner is the energy above.  The first two Euler coefficients are `2Lambda` and
+`4(Lambda*Lambda)`, so this is the Schur defect between the one-prime tangent and the two-prime
+tangent.  Generic Toeplitz contractivity does not bound the corner: one layer gives
+`C_E(0,0)=2m^2/a`, unbounded as `a` tends to zero.
+
+Passing to a higher finite transverse derivative also creates no independent rigidity.  The
+`k`th Euler tangent is supported on integers with at most `k` distinct prime divisors, and the
+completed tangent is a Bell polynomial in the odd logarithmic derivatives of `Xi`.  Every fixed
+order is therefore a bounded interaction-grade reorganization of the same source.
+
 ## 6. Exhaustion of the closed source mechanisms
 
 The current pipeline proves:
@@ -161,8 +213,18 @@ The current pipeline proves:
 3. finite positive stationary phase detectors retain the prime pole at `s=1`;
 4. reduced leakage loses exceptional-shift product multiplicity;
 5. norm continuity at `omega=0` permits a persistent off-line channel;
-6. the uncancelled current exists canonically but total positivity is collision-blind; and
-7. a residue or divisor expansion of `(3)` merely reconstructs the target.
+6. the uncancelled current exists canonically but total positivity is collision-blind;
+7. a residue or divisor expansion of `(3)` merely reconstructs the target; and
+8. every finite transverse tangent remains in a bounded distinct-prime-support grade; and
+9. the uncompressed full-shift cocycle is an exact flat ratio coboundary; and
+10. a self-dual critical-strip quartet satisfies all generic compressed-cocycle axioms while its
+    curvature corner is arbitrarily large; and
+11. positive shifted-Euler coefficients fail PF2 already on one prime orbit; and
+12. Suzuki's archimedean primitive has opposite endpoint signs for `0<omega<1/2`; and
+13. the archimedean completion annihilates the positive leading Euler pole exactly; and
+14. the completed Suzuki tail is exactly a transform of the pole-subtracted shifted-Euler
+    summatory error; and
+15. separate floor-discrepancy and Möbius-tail bounds stop at `X^(1-omega)`.
 
 These statements close the listed unnormalized and closed-current mechanisms.  They do not close
 the infinitesimal ordinate-diagonal mechanism above and do not prove a logical impossibility theorem
@@ -197,6 +259,16 @@ leakage `D_E(I)` and prove
 The finite-layer theorem proves that `(9)` excludes every right-hand layer in `I`.  The missing
 step is not the threshold calculation; it is the non-conclusion-fed source construction and bound.
 
+A stronger global formulation, avoiding ordinate localization, is to prove for the source-built
+Toeplitz curvature
+
+```text
+C_E(0,0)=integral_0^infinity |ell_E(t)|^2 dt <= 4.       (10)
+```
+
+The positive Cauchy-energy theorem proves that `(10)` implies RH.  Construction and positivity of
+`C_E` do not prove `(10)`; it requires a zeta-specific arithmetic boundary estimate.
+
 ## 8. Scientific-novelty verdict
 
 No result in this Route C closure is promoted as new scientific knowledge.
@@ -204,6 +276,15 @@ No result in this Route C closure is promoted as new scientific knowledge.
 - Local product multiplicity and Poincare--Lelong intersection currents are standard complex
   analytic intersection theory.
 - The rank-one leakage formula is standard Hardy/model-space theory.
+- The first-order Cauchy energy is a standard Gram calculation for decaying exponentials.
+- The finite-tangent prime-support filtration is elementary Euler-factor Taylor theory.
+- The full-shift cocycle and its flatness are telescoping quotient identities.
+- The generic-theory falsifier is an elementary degree-four self-dual polynomial.
+- The Euler positivity falsifier is a two-by-two local Toeplitz minor.
+- The archimedean sign change is a direct integration of Suzuki's published asymptotics.
+- The main-term annihilation is Suzuki's published pole-clearing Mellin factorization.
+- The summatory-error identity is Stieltjes summation after that vanishing moment.
+- The final arithmetic split is the standard Möbius divisor switch and integral comparison.
 - The charge-transfer identity is elementary multiplicity algebra.
 - The remaining condition `(8)` is an exact RH-bearing target, not a proved estimate.
 
