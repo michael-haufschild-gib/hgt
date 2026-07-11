@@ -88,6 +88,28 @@ If the minimum is attained at least twice, its gap is zero. If `(2)` has only on
 
 This is the exact phase-sensitive replacement for the false inference from Newton trapping to recurrence. Phases can cancel near-equal atoms, but no phase choice can cancel one atom that beats the entire remaining recurrence by a superlogarithmic valuation gap.
 
+### Formalization of the bend inequality
+
+The load-bearing archimedean inequality — an integer-weighted zero-sum `sum c_nu a^nu = 0` cannot
+have one atom strictly dominating the modulus-sum of the others — is formalized axiom-clean in
+`GaloisForLFunctions.ArchimedeanBendLaw`:
+
+```text
+norm_term_le_of_sum_eq_zero :
+  (sum i in s, (c i) * x i = 0) -> ‖(c i0) * x i0‖ <= sum i in s.erase i0, ‖(c i) * x i‖
+sum_ne_zero_of_dominant :
+  c i0 != 0 -> (sum i in s.erase i0, ‖(c i) * x i‖ < ‖x i0‖) -> sum i in s, (c i) * x i != 0
+```
+
+for integer weights `c : ι -> Z` and complex atoms `x : ι -> C` (using `‖(c i0 : C)‖ >= 1` for the
+nonzero integer weight).  This is the exact contradiction driving the theorem: when the log-magnitudes
+`b_n` are superlacunary, the valuation minimizer strictly dominates, so `sum_ne_zero_of_dominant`
+refutes the coefficient identity `(4)`, forcing HT.  The same inequality is the shared engine of the
+sibling Taylor-magnitude cards (stretched-exponential, rough-subleading, polynomial, rapid-convex);
+the analytic content of each card enters only to verify its strict-dominance hypothesis.  Not yet
+formalized: Mahler's integer-normalization `(1)`, the generic-coefficient expansion `(2)`–`(3)`, and
+the per-card valuation-gap estimates that supply the dominance hypothesis.
+
 ## Main theorem `[PROVED HERE] [NOVELTY UNVERIFIED]`
 
 Assume that, eventually,

@@ -1,4 +1,4 @@
-import Mathlib.Analysis.SpecialFunctions.Gamma.BohrMollerup
+import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 
 /-!
 # Gauss multiplication for the Gamma function (up to constant)
@@ -94,7 +94,7 @@ theorem logGamma_shiftScale_convexOn {n : ℕ} (hn : 0 < n) (k : ℕ) :
     positivity
   · intro x _
     show Real.log (Real.Gamma ((n : ℝ)⁻¹ • x + (k : ℝ) / n)) = Real.log (Real.Gamma ((x + k) / n))
-    rw [smul_eq_mul, show (n : ℝ)⁻¹ * x + (k : ℝ) / n = (x + k) / n by field_simp; ring]
+    rw [smul_eq_mul, show (n : ℝ)⁻¹ * x + (k : ℝ) / n = (x + k) / n by field_simp]
 
 /-- The Gauss product is log-convex on `s > 0`. -/
 theorem multGammaProd_log_convexOn {n : ℕ} (hn : 0 < n) :
@@ -110,8 +110,7 @@ theorem multGammaProd_log_convexOn {n : ℕ} (hn : 0 < n) :
       Finset.prod_pos fun k _ => Real.Gamma_pos_of_pos (arg_pos hn hs k)
     have hnpow : (0 : ℝ) < (n : ℝ) ^ s := Real.rpow_pos_of_pos hnR s
     rw [Function.comp_apply, multGammaProd, Real.log_mul (ne_of_gt hprodpos) (ne_of_gt hnpow),
-      Real.log_prod _ _ (fun k _ => (Real.Gamma_pos_of_pos (arg_pos hn hs k)).ne'),
-      Real.log_rpow hnR]
+      Real.log_prod (fun k _ => (Real.Gamma_pos_of_pos (arg_pos hn hs k)).ne'), Real.log_rpow hnR]
   -- convexity of the sum by induction, plus the linear term
   have hsum : ConvexOn ℝ (Set.Ioi (0 : ℝ))
       (fun s => ∑ k ∈ Finset.range n, Real.log (Real.Gamma ((s + k) / n))) := by
@@ -139,17 +138,89 @@ theorem multGammaProd_eq {n : ℕ} (hn : 0 < n) {s : ℝ} (hs : 0 < s) :
     · -- log-convexity of the normalized product
       have hconv := multGammaProd_log_convexOn hn
       have hEq : Set.EqOn (Real.log ∘ fun s => multGammaProd n s / C)
-          (fun s => (Real.log ∘ multGammaProd n) s - Real.log C) (Set.Ioi 0) := by
+          (fun s => (Real.log ∘ multGammaProd n) s + (-Real.log C)) (Set.Ioi 0) := by
         intro x hx
         simp only [Function.comp_apply]
-        rw [Real.log_div (ne_of_gt (multGammaProd_pos hn hx)) (ne_of_gt hP1)]
-      exact (hconv.sub_const (Real.log C)).congr hEq.symm
+        rw [Real.log_div (ne_of_gt (multGammaProd_pos hn hx)) (ne_of_gt hP1), sub_eq_add_neg]
+      exact (hconv.add_const (-Real.log C)).congr hEq.symm
     · rw [multGammaProd_functional hn hy, mul_div_assoc]
     · exact div_pos (multGammaProd_pos hn hy) hP1
     · rw [div_self (ne_of_gt hP1)]
-  have := hnorm hs
-  simp only at this
-  rw [eq_comm, ← this, div_mul_cancel₀]
-  exact ne_of_gt hP1
+  have hval := hnorm hs
+  have hCne : C ≠ 0 := ne_of_gt hP1
+  simp only [] at hval
+  rw [← hval]
+  field_simp
+
+/-- **Gauss multiplication in standard form (up to constant).**  For `n ≥ 1` and `s > 0`,
+`∏_{k<n} Γ((s+k)/n) = C_n · n^{-s} · Γ(s)`, exhibiting a scaled Gamma factor as a nonzero constant
+times a real exponential `n^{-s}` times common-scale Gamma factors — the §2 orbit normal-form step. -/
+theorem gauss_multiplication {n : ℕ} (hn : 0 < n) {s : ℝ} (hs : 0 < s) :
+    (∏ k ∈ Finset.range n, Real.Gamma ((s + k) / n))
+      = multGammaProd n 1 * (n : ℝ) ^ (-s) * Real.Gamma s := by
+  have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+  have h := multGammaProd_eq hn hs
+  rw [multGammaProd] at h
+  rw [Real.rpow_neg (le_of_lt hnR)]
+  have hns : (n : ℝ) ^ s ≠ 0 := ne_of_gt (Real.rpow_pos_of_pos hnR s)
+  field_simp
+  linear_combination h
+
+open Complex in
+/-- **Gauss multiplication, complex meromorphic form (reciprocal, up to constant).**  The
+reciprocal-Gamma product `∏_{k<n} Γ((s+k)/n)⁻¹` (entire) equals `C_n⁻¹ · n^s · Γ(s)⁻¹` for every
+complex `s`, by analytic continuation from the real positive case.  This is the §2 orbit normal form
+in the meromorphic category the card uses. -/
+theorem gauss_multiplication_complex {n : ℕ} (hn : 0 < n) (s : ℂ) :
+    (∏ k ∈ Finset.range n, (Complex.Gamma ((s + k) / n))⁻¹)
+      = (multGammaProd n 1 : ℂ)⁻¹ * (n : ℂ) ^ s * (Complex.Gamma s)⁻¹ := by
+  have hnne : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hn.ne'
+  have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+  have hFdiff : Differentiable ℂ
+      (fun s : ℂ => ∏ k ∈ Finset.range n, (Complex.Gamma ((s + k) / n))⁻¹) := by
+    have heq : (fun s : ℂ => ∏ k ∈ Finset.range n, (Complex.Gamma ((s + k) / n))⁻¹)
+        = ∏ k ∈ Finset.range n, (fun s : ℂ => (Complex.Gamma ((s + k) / n))⁻¹) := by
+      funext s; simp [Finset.prod_apply]
+    rw [heq]
+    exact Differentiable.finsetProd fun k _ =>
+      Complex.differentiable_one_div_Gamma.comp
+        ((differentiable_id.add (differentiable_const _)).div_const _)
+  have hGdiff : Differentiable ℂ
+      (fun s : ℂ => (multGammaProd n 1 : ℂ)⁻¹ * (n : ℂ) ^ s * (Complex.Gamma s)⁻¹) :=
+    ((differentiable_const _).mul
+      (fun x => differentiableAt_id.const_cpow (Or.inl hnne))).mul Complex.differentiable_one_div_Gamma
+  have hF := analyticOnNhd_univ_iff_differentiable.mpr hFdiff
+  have hG := analyticOnNhd_univ_iff_differentiable.mpr hGdiff
+  have h3 : Filter.Tendsto ((↑) : ℝ → ℂ) (nhdsWithin 1 {1}ᶜ) (nhdsWithin 1 {1}ᶜ) := by
+    rw [tendsto_nhdsWithin_iff]
+    refine ⟨tendsto_nhdsWithin_of_tendsto_nhds continuous_ofReal.continuousAt, ?_⟩
+    exact eventually_nhdsWithin_iff.mpr (Filter.Eventually.of_forall fun t ht => by
+      simpa using Complex.ofReal_ne_one.mpr ht)
+  have hkey : (fun s : ℂ => ∏ k ∈ Finset.range n, (Complex.Gamma ((s + k) / n))⁻¹)
+      = fun s : ℂ => (multGammaProd n 1 : ℂ)⁻¹ * (n : ℂ) ^ s * (Complex.Gamma s)⁻¹ := by
+    refine AnalyticOnNhd.eq_of_frequently_eq hF hG (h3.frequently ?_)
+    refine ((Filter.Eventually.filter_mono nhdsWithin_le_nhds) ?_).frequently
+    refine (eventually_gt_nhds zero_lt_one).mp (Filter.Eventually.of_forall fun t ht => ?_)
+    -- real positive agreement
+    have hreal := gauss_multiplication hn ht
+    have hprodR : (∏ k ∈ Finset.range n, (Real.Gamma ((t + k) / n))⁻¹)
+        = (multGammaProd n 1)⁻¹ * (n : ℝ) ^ t * (Real.Gamma t)⁻¹ := by
+      rw [Finset.prod_inv_distrib, hreal, Real.rpow_neg (le_of_lt hnR)]
+      field_simp
+    have hcastarg : ∀ k : ℕ, ((t : ℂ) + (k : ℂ)) / (n : ℂ) = (((t + k) / n : ℝ) : ℂ) := by
+      intro k; push_cast; ring
+    have hLHS : (∏ k ∈ Finset.range n, (Complex.Gamma (((t : ℂ) + (k : ℂ)) / (n : ℂ)))⁻¹)
+        = ((∏ k ∈ Finset.range n, (Real.Gamma ((t + k) / n))⁻¹ : ℝ) : ℂ) := by
+      rw [Complex.ofReal_prod]
+      refine Finset.prod_congr rfl fun k _ => ?_
+      rw [hcastarg k, Complex.Gamma_ofReal, Complex.ofReal_inv]
+    have hRHS : (multGammaProd n 1 : ℂ)⁻¹ * (n : ℂ) ^ (t : ℂ) * (Complex.Gamma (t : ℂ))⁻¹
+        = (((multGammaProd n 1)⁻¹ * (n : ℝ) ^ t * (Real.Gamma t)⁻¹ : ℝ) : ℂ) := by
+      rw [Complex.Gamma_ofReal]
+      push_cast [Complex.ofReal_cpow (le_of_lt hnR)]
+      ring
+    rw [hLHS, hRHS]
+    exact_mod_cast hprodR
+  exact congrFun hkey s
 
 end GaloisForLFunctions

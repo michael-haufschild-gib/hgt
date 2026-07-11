@@ -5,7 +5,8 @@
 - **Type:** `[CONJECTURE; RH-BEARING DIRECT HILBERT--POLYA ATTACK]`
 - **Source:** `../2-fully-proven/not_new_scientific_knowledge/infinitesimal-euler-leakage-cauchy-energy-threshold.md`;
   `../2-fully-proven/not_new_scientific_knowledge/suzuki-tail-is-exact-summatory-error-transform.md`;
-  `../2-fully-proven/not_new_scientific_knowledge/shifted-euler-error-floor-mobius-tail-coupling.md`
+  `../2-fully-proven/not_new_scientific_knowledge/shifted-euler-error-floor-mobius-tail-coupling.md`;
+  `../2-fully-proven/not_new_scientific_knowledge/euler-pole-four-unit-anti-causal-budget-law.md`
 - **Target:** Prove directly from the completed Euler--Gamma source that the first-order
   anti-causal profile `ell_E` satisfies
 
@@ -264,6 +265,77 @@ The second theorem is not in the current corpus. Existing quiet-crossing rigidit
 degree-one Gamma boundary, and sparse-Euler divisor rigidity requires a comparison Euler product
 not supplied by finite-exception factorization.
 
+## 4B. Wide corpus and Lean audit `[COMPLETED 2026-07-11]`
+
+The project already contains most of the functional-analytic shell required by a proof.
+
+1. **Exact incoming vector and norm.** `EulerPoleBoundaryBudget.lean` defines the canonical
+   `L2(R)` vector represented by `2 exp(-t/2)` on `t>0` and proves
+
+   ```text
+   ||eulerPoleBoundaryProfileL2||^2=4.                    (12a)
+   ```
+
+   This reuses the exact Cauchy inner product in `XiThetaSquareRateLaplace.lean`.
+
+2. **Closed causal support under strong `L2` convergence.** The continuous restriction map
+   `negativeHalfLineRestrictionL2` and
+   `hasAELowerSupport_zero_iff_negativeHalfLineRestrictionL2_eq_zero` in
+   `XiThetaSquareRateCausalSource.lean` already prove the required closed-support mechanism.
+
+3. **A complete finite-to-boundary prototype.** The theta square-rate files prove finite causal
+   source construction, pointwise boundary convergence, a common Cauchy majorant, dominated
+   convergence of squared differences, strong `L2` convergence, and preservation of causal
+   support. This is exactly the topology pattern required here. Its decisive input is that every
+   finite factor is Blaschke-contracting on the right half-plane. Prime Euler factors do not have
+   that property, so the selected-factor estimate cannot simply be renamed.
+
+4. **Exact source continuation.** `XiRelativeResolventFlux.lean` proves that the continued
+   von-Mangoldt plus archimedean trace equals the Xi relative resolvent away from natural poles.
+   This supplies the target identification but not convergence of a finite-prime exhaustion at the
+   critical boundary.
+
+5. **Canonical two-line defect.** `CanonicalPerronMellinSeam.lean` constructs a unique additive
+   cross-line `L2` defect whenever the carrier line has finite flank energy; it also proves
+   source-gauge invariance and coefficient recovery. Thus the seam need not be postulated once the
+   missing energy estimate is known.
+
+6. **Correct doubled geometry.** `SeamKreinStructure.lean` proves the reciprocity graph is
+   Lagrangian for the signed doubled form and that one-particle prime reflection is unbounded.
+   Therefore the transfer belongs in a doubled domain/closure defect, exactly as `(9e)` requires.
+
+7. **Arithmetic algebra already present.** `MertensFirst.lean`, `Mollifier.lean`,
+   `MollifierDetection.lean`, and `PrimeLambertMobiusInversion.lean` formalize von-Mangoldt divisor
+   swaps and absolute Mobius inversions. They do not formalize the shifted coefficient
+   `c_omega`, the coupled error `E_omega`, or Suzuki's signed archimedean kernel.
+
+8. **Infinite-dimensional carrier exists but is not the transfer.** The all-prime Sonin residual
+   and coupled-column modules construct Hilbert--Schmidt all-prime operators and positive
+   trace-class energies retaining cross-prime overlaps. Their known missing theorem is an
+   identification with the Xi boundary object; they do not couple the Euler-pole channel to
+   `(9e)` and therefore do not prove `(1)`.
+
+9. **Downstream cofinal RH transfer is complete.** `PrimeEnergyZeroTransfer.lean` proves that
+   locally uniform Xi approximants with sub-log-square zero-fibre prime energy imply RH. It is a
+   consumer after the present boundary theorem, not a producer of its norm bound.
+
+10. **A second direct finite-prime source is under concurrent development.** The current
+    `ThetaCuspFinitePrimeSource.lean` constructs smooth-integer finite-prime theta-cusp states and
+    proves pointwise convergence. Its own header correctly leaves compact-local convergence, the
+    cofinal screen, and zero-fibre energy open. No claim from that lane supplies `(1)` yet.
+
+The audit therefore isolates one zeta-specific construction theorem, with two inseparable clauses:
+
+```text
+construct source-defined operators S_N on one common doubled graph domain,
+||S_N||<=1,
+S_N ell_pole -> ell_E strongly in L2(0,infinity).          (12b)
+```
+
+Strong convergence and the formalized norm `(12a)` then give `(1)`. The exact coupled
+floor-discrepancy/Mobius-tail formula must supply both the contractive majorant and the convergence;
+the rest of the closure, support, seam, and RH-transfer chain is already in the corpus.
+
 ## 5. Open core
 
 `[OPEN CORE]` Construct the critical distributional limit of `(3)` as one closed Hilbert-space
@@ -272,6 +344,39 @@ bound on the contour jump `(9e)`, not merely the causal residual `(9b)`. Equival
 the pointed two-continuation projection identity `(10)` or the source sum rule `(11)` without using
 a zero-free half-plane beyond `Re s>1`, an RH-equivalent Nyman closure statement, or a divisor
 expansion.
+
+The exact incoming budget is now known.  At every finite prime cutoff the only anti-causal channel
+of the completed logarithmic tangent is the uncancelled Euler pole `s=1`, with profile
+
+```text
+ell_pole(t)=2 exp(-t/2),       ||ell_pole||_2^2=4.         (15)
+```
+
+The all-prime continuation cancels `(15)` and replaces it by `ell_E`.  Therefore the requested
+bound is exactly the construction of a source-defined nonexpansive pole-to-divisor transfer
+
+```text
+ell_E=S_E ell_pole,             ||S_E||<=1.               (16)
+```
+
+The coupled derivative `2(psi-X)` is the arithmetic coordinate of this replacement.  Any
+finite-prime autonomous ADE implementation retaining `{log p:p<=N}` must additionally expose
+Kolchin jet capacity at least `ceil(pi(N)/2)`; otherwise `(16)` must live in one of the genuinely
+infinite/global carriers listed by the singular Kolchin-frequency theorem.
+
+For nonautonomous implementations the sharper coefficient--state conservation law applies.  If
+`Gamma(a)` is the coefficient-hull frequency module and `kappa_rel` is the relative Kolchin
+capacity of the solution fiber, then
+
+```text
+A_N=V_N/(V_N intersection Gamma(a)),
+dim_Q A_N<=2 kappa_rel.                                  (17)
+```
+
+Consequently every new prime direction must be paid exactly once through growing differential
+order, growing algebraic degree/jet capacity, coefficient-side frequency, or genuinely
+infinite-dimensional state.  This is an admissibility condition on a construction of `(16)`, not
+a substitute for its nonexpansive estimate.
 
 Only after this operator is constructed is there a legitimate Lean target.  Formalizing
 `(1) -> RH` with `(1)` as a hypothesis would be a wrapper around the existing energy criterion.

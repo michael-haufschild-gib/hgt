@@ -528,10 +528,35 @@ The normalization is already authoritative in
 value is one half of the unrenormalized theta-source Fourier transform.  Thus no normalization
 wrapper is needed.
 
-The formal tree does not define the smooth-integer dilation source `E_N`, its order-`pi(N)` Mellin
-cusp pole, exponentially weighted cutoff convergence, or the Rouché divisor transfer in `(28)`.
-Formalizing only the final abstract convergence implication would be wrapper bloat.  A meaningful
-stage-3 target begins with the finite-prime source and the cusp-screen construction themselves.
+`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeSource.lean` now defines the normalized
+polynomial--Gaussian seed `h`, proves the exact scaling-generator identity
+`h=(D_times^2+D_times)g_0`, proves the normalized logarithmic-translation formula `(17f)`, defines
+the finite-prime source as the absolutely convergent sum over `(N+1)`-smooth integers, and proves
+the exact absolutely convergent smooth-integer resolvent-series identity `k_N=R_N(1/2)a` on the
+seed.  It also proves
+uniform convergence of these sources to the all-integer theta-cusp state on every compact
+logarithmic interval.  These declarations are unconditional and begin with the actual source rather
+than an abstract approximation interface.
+
+The formal tree still lacks smooth compact-local convergence of all derivatives, the exact
+order-`pi(N)` Mellin cusp pole, the finite product resolvent and its logarithmic derivative,
+exponentially weighted cutoff convergence, the cofinal pointed screen, and the entire Rouché
+divisor transfer in `(28)`.  The zero-fibre energy estimate `(30)` remains the separate RH-bearing
+open theorem.
+
+### Lean gates
+
+- [x] normalized polynomial--Gaussian seed and scaling-generator identity
+- [x] physical dilation as normalized logarithmic translation
+- [x] absolutely convergent finite-prime smooth-integer source
+- [x] exact smooth-integer resolvent-series action on the theta seed
+- [x] compact-local uniform convergence to the all-integer source
+- [ ] compact-local convergence of every positive derivative order
+- [ ] Mellin cusp pole of exact order `pi(N)`
+- [ ] bounded finite-prime resolvent and von Mangoldt logarithmic derivative
+- [ ] cofinal pointed screen and exponentially weighted convergence
+- [ ] entire transform and Rouché divisor transfer
+- [ ] sub-log-square reflected energy on every approximant zero
 
 ## Gates
 

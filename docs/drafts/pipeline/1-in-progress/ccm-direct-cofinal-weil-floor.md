@@ -312,6 +312,64 @@ commutator vanishes, so the exact degree-one source is the polarized leakage Gra
 is to put these two leakage maps on a common closed graph, identify their relative trace with the
 semilocal logarithmic functional, and prove the completed Gamma--prime square/contraction.
 
+### D. Euler-Pick boundary transport
+
+There is a fourth exact interface which bypasses a direct lower bound on `(7)` but does not bypass
+the cofinal carrier. Under the CCM simple-even hypothesis, remove the canonical aperture phase and
+write
+
+```text
+F_(lambda,N)(z)
+ =i lambda^(iz)det_reg(D_log^(lambda,N)-z),
+G_(lambda,N)(w)=F_(lambda,N)(-iw).                       (12j)
+```
+
+Every `F_(lambda,N)` is even with only real zeros. Therefore, with
+`L_(lambda,N)=G_(lambda,N)'/G_(lambda,N)`,
+
+```text
+K_(lambda,N)(w,v)
+ =(L_(lambda,N)(w)+conjugate(L_(lambda,N)(v)))
+   /(w+conjugate(v))>=0                                  (12k)
+```
+
+on `Re w>0`. By `ccm-euler-pick-logderivative-transfer-boundary-law.md`, the source convergence
+
+```text
+L_(lambda_j,N_j)(w)->xi'(1/2+w)/xi(1/2+w)
+locally uniformly on Re w>1/2                            (12l)
+```
+
+would pass `(12k)` to the complete two-channel Euler kernel and prove RH.
+
+The dephasing is load-bearing. The canonical determinant in the `w` coordinate has logarithmic
+derivative `-log(lambda)+L_(lambda,N)`, so its Pick kernel is
+
+```text
+K_(lambda,N)(w,v)-2log(lambda)/(w+conjugate(v)).          (12m)
+```
+
+Thus self-adjoint finite spectra do not automatically make the normalized source kernel positive.
+The existing Mellin convergence lives in `|Re w|<1/2`, whereas `(12l)` lives in `Re w>1/2`.
+A successful Pick implementation must construct a positive relative-background renormalization
+of `(12m)` or carry the dephased logarithmic derivatives across that exact boundary. This is the
+kernel analogue of the divisor-preserving determinant theorem, not a finite-spectrum shortcut.
+
+The phase has an exact two-channel spectral meaning. If `gamma_k(lambda,N)>0` are the positive
+zeros of the dephased determinant, then the signed discrepancy
+
+```text
+nu_(lambda,N)
+ =sum_k delta_(gamma_k(lambda,N))
+   -(log(lambda)/pi)d gamma                              (12n)
+```
+
+has Gram transform `(12m)`: the subtracted continuum is exactly the Cauchy background
+`2log(lambda)/(w+conjugate(v))`. Hence the positive relative-background theorem can be stated
+without choosing a phase convention: prove that `(12n)` is nonnegative on the complete
+two-channel resolvent-square cone and converges there to the Xi kernel. Reality of the discrete
+spectrum alone does not control this signed discrepancy.
+
 ## Gates
 
 - [x] determinant transfer collapsed to the direct floor criterion
@@ -327,9 +385,11 @@ semilocal logarithmic functional, and prove the completed Gamma--prime square/co
 - [x] three-grade principal--relative carrier forced by the formalized Sonin corpus
 - [x] exact degree-one Euler position commutator constructed
 - [x] exact compressed position/Euler leakage Gram identity constructed
+- [x] dephased finite-spectrum Euler-Pick transfer and aperture-phase defect isolated
 - [ ] construct a positive reference splitting `(10)`
 - [ ] prove the infinite-carrier contraction `(11)`
 - [ ] or construct a source-defined Gram factorization of `(12c)` and an index-faithful aperture
       transport
+- [ ] or construct a positive relative-background kernel and prove `(12l)`
 - [ ] prove absence of negative spectral birth `(5a)`
 - [ ] invoke the cofinal floor criterion to prove RH

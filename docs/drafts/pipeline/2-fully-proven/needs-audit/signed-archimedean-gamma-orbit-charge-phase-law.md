@@ -620,9 +620,28 @@ Formalized so far (axiom-clean; `propext, Classical.choice, Quot.sound` only):
   exactly `rank_ℚ Λ_N = π(N)`, the lower-bound side of the phase-budget inequality `(37)`. The upper
   bound `π(N) ≤ δ_G + 2m(n+1)` still needs the ADE/Bohr-hull machinery.
 
-Still missing (no partial wrapper): Gauss multiplication `(6)` in meromorphic ratio form for general
-`d`, discrete shift residues `(13)`, the formal transseries / Adamczewski--Dreyfus--Hardouin shift
-dichotomy behind `(8)`, the directional Vandermonde phase-jet carrier `(31b)`–`(31d)`, and the
+- **Gauss multiplication `(6)`, real and complex.** `GammaMultiplication.lean` proves the general
+  finite-`n` Gauss multiplication (up to its multiplicative constant), which mathlib only had for
+  `n = 2` (it flags general `n` as a TODO). Real form `gauss_multiplication`: for `n ≥ 1`, `s > 0`,
+  `∏_{k<n} Γ((s+k)/n) = C_n · n^{-s} · Γ(s)` (`C_n = P(1)`), by the Bohr–Mollerup route
+  (`multGammaProd_functional` = Gamma functional equation via product telescoping,
+  `multGammaProd_log_convexOn` = log-convexity, then `eq_Gamma_of_log_convex`). Complex meromorphic
+  form `gauss_multiplication_complex`: `∏_{k<n} Γ((s+k)/n)⁻¹ = C_n⁻¹ · n^s · Γ(s)⁻¹` for all `s ∈ ℂ`,
+  by analytic continuation (`AnalyticOnNhd.eq_of_frequently_eq`) from the real case — the §2 orbit
+  normal form in exactly the meromorphic category the card uses. All axiom-clean.
+
+- **Discrete shift-residue obstruction `(13)`.** `DiscreteResidue.lean` proves
+  `discreteResidue_shiftCoboundary_eq_zero`: modeling a fixed-order principal-part datum along one
+  orbit as `P : α →₀ M` (pole location `↦` coefficient) with period shift `e : α ≃ α`, the discrete
+  residue `∑ P` of a shift-coboundary `equivMapDomain e Q − Q` vanishes (the finite sum is
+  shift-invariant). The contrapositive `not_shiftCoboundary_of_discreteResidue_ne_zero` is the exact
+  step forcing hypertranscendence when some orbit charge `M_c ≠ 0`: a datum with nonzero discrete
+  residue is not rationally shift-summable. Generalizes `OrbitBalance` (integer orbit) to any orbit
+  and coefficient group. Axiom-clean.
+
+Still missing (no partial wrapper): the formal transseries / Adamczewski--Dreyfus--Hardouin shift
+dichotomy behind `(8)` (which combines the discrete-residue obstruction above with the formal
+Stirling expansion), the directional Vandermonde phase-jet carrier `(31b)`–`(31d)`, and the
 holomorphic Bohr-frequency hull behind `(31)`–`(38)`. Stage 3 requires the whole theorem
 unconditionally in Lean.
 

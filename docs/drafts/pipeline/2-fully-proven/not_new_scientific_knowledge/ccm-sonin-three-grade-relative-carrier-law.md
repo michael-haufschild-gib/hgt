@@ -123,6 +123,24 @@ principal Calkin shell and A_N
   + the finite signed-Gamma alien-charge channel.          (8)
 ```
 
+The principal arithmetic term must remain channel-resolved through the positive factorization.
+`ccm-coherent-euler-logarithm-square-exclusion-law.md` proves that coherently summing the Euler
+logarithm and then completing one square creates exponentially large prime--prime boundary energy
+even on a packet whose actual prime commutator form is zero. Hence the completed carrier must either
+separate the prime directions before squaring or retain an exact operator-valued covariance which
+cancels those off-diagonal terms.
+
+Nor can singular finite-state dynamics absorb the channel count for free. If an autonomous
+implicit ADE carrier retains all rates through cutoff `N`, then
+
+```text
+kappa(P_N)>=ceil(pi(N)/2),                                (8a)
+```
+
+by `singular-autonomous-ade-kolchin-frequency-law.md`. Thus the positive alternatives are a
+cofinally growing jet variety or an explicitly infinite-dimensional/nonautonomous carrier such as
+the principal--relative Sonin extension itself.
+
 Equivalently, it must construct a closed extension or graph carrier `E_a` with
 
 ```text
@@ -268,6 +286,7 @@ relative carrier or contraction is constructed.
 - [x] ambient weighted-shift/semilocal-log transport proved
 - [x] exact projection-compressed degree-one Gram identity proved
 - [x] trace-defect/leakage alternative isolated
+- [x] coherent-square exclusion and singular jet-capacity floor attached
 - [ ] construct the closed principal--relative carrier `E_a`
 - [ ] construct the genuine degree-one semilocal relative functional and trace-defect cocycle on `E_a`
 - [ ] construct the cofinal contractions `C_a`

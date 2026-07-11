@@ -8,6 +8,7 @@ import GaloisForLFunctions.EulerFirewall
 import GaloisForLFunctions.NamedTranscendental
 import GaloisForLFunctions.Hypertranscendence
 import GaloisForLFunctions.HypertranscendencePolynomial
+import GaloisForLFunctions.ArchimedeanBendLaw
 import GaloisForLFunctions.ExponentialGaugeSelection
 import GaloisForLFunctions.BaireGenericAvoidance
 import GaloisForLFunctions.GammaTranscendental
@@ -15,6 +16,7 @@ import GaloisForLFunctions.GammaDifferentialFE
 import GaloisForLFunctions.GammaProjectiveBoundary
 import GaloisForLFunctions.SignedGammaSharpExample
 import GaloisForLFunctions.PrimeLogPhaseBudget
+import GaloisForLFunctions.GammaMultiplication
 import GaloisForLFunctions.RHTower.ConstrainedProlateOperator
 import GaloisForLFunctions.RHTower.ConstrainedProlateConstrainedSpectrum
 import GaloisForLFunctions.RHTower.ConstrainedProlateSignedSpectrum
@@ -89,6 +91,7 @@ import GaloisForLFunctions.ZeroEstimateOrder
 import GaloisForLFunctions.MultiplierDichotomy
 import GaloisForLFunctions.CrossPrimeCurvature
 import GaloisForLFunctions.OrbitBalance
+import GaloisForLFunctions.DiscreteResidue
 import GaloisForLFunctions.OrbitBalanceAugmentation
 import GaloisForLFunctions.OrbitResidueVector
 import GaloisForLFunctions.PrincipalPartDifferentialOperator
