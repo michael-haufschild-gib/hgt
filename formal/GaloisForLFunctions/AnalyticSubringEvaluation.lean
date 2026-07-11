@@ -66,6 +66,26 @@ theorem univGerm_ext {f g : Germ (𝓟 (Set.univ : Set ℂ)) ℂ}
   induction a.1 using Quotient.inductionOn with
   | _ f => rfl
 
+/-- Evaluation respects multiplication in the global analytic subring. -/
+@[simp] theorem univGermEval_analyticSubring_mul (z : ℂ)
+    (a b : analyticSubring (Set.univ : Set ℂ)) :
+    univGermEval z ((a * b : analyticSubring Set.univ) : Germ (𝓟 Set.univ) ℂ) =
+      univGermEval z (a : Germ (𝓟 Set.univ) ℂ) *
+        univGermEval z (b : Germ (𝓟 Set.univ) ℂ) := by
+  change univGermEval z
+      ((a : Germ (𝓟 Set.univ) ℂ) * (b : Germ (𝓟 Set.univ) ℂ)) = _
+  exact map_mul (univGermEval z) _ _
+
+/-- Evaluation respects subtraction in the global analytic subring. -/
+@[simp] theorem univGermEval_analyticSubring_sub (z : ℂ)
+    (a b : analyticSubring (Set.univ : Set ℂ)) :
+    univGermEval z ((a - b : analyticSubring Set.univ) : Germ (𝓟 Set.univ) ℂ) =
+      univGermEval z (a : Germ (𝓟 Set.univ) ℂ) -
+        univGermEval z (b : Germ (𝓟 Set.univ) ℂ) := by
+  change univGermEval z
+      ((a : Germ (𝓟 Set.univ) ℂ) - (b : Germ (𝓟 Set.univ) ℂ)) = _
+  exact map_sub (univGermEval z) _ _
+
 /-- Local equality of two global analytic germs implies equality in the analytic subring. -/
 theorem analyticSubring_eq_of_eventually_eval_eq
     {a b : analyticSubring (Set.univ : Set ℂ)} {z₀ : ℂ}

@@ -116,7 +116,11 @@ The arbitrary-order super-Gaussian coefficient conjecture is equivalent to the f
 
 Equivalently, a DA entire function with `n_f(r)=o(log r)` must be a polynomial.
 
-The equivalence uses this theorem together with the elementary fact that a zero-free entire function satisfying (1) is constant: its logarithm is entire, and Borel-Caratheodory plus Cauchy's estimates force that logarithm to be constant.
+The equivalence uses this theorem together with the following elementary lemma. If a zero-free entire function `F` satisfies (1), write `F=exp(g)` with `g` entire. Then
+
+`max_(|z|<=R) Re g(z)=log M_F(R)=o((log R)^2)`.
+
+Borel-Caratheodory on the concentric disks of radii `R` and `2R` gives `M_g(R)=o((log R)^2)`. Cauchy's estimate then gives `g^(k)(0)=0` for every `k>=1`, so `g` and `F` are constant. Thus a nonpolynomial function in (1) necessarily has an infinite canonical divisor, and the two conjectural formulations are exact.
 
 ## Literature boundary
 
