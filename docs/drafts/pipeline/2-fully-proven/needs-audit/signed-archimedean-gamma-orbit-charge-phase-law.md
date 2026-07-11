@@ -554,10 +554,12 @@ the phase budget and proves that the completed constraint preserves that carrier
    directional Vandermonde proves finite termination for every finite signed product.
 6. **Negative slopes are excluded.** Reflection converts them to positive-slope Gamma ratios plus
    trigonometric factors. That finite-phase extension is plausible but is not silently claimed.
-7. **Incommensurable positive scales are excluded.** Their boundary normal form is still finite
-   phase--jet once asymptotic injectivity is known, but they have no common rational shift equation.
-   The exact missing input is the orbit-free formal HT theorem in
-   `../../1-in-progress/incommensurable-gamma-orbit-free-quasianalyticity.md`.
+7. **Arbitrary positive scales have a proved carrier extension.** The separate arbitrary-scale
+   theorem
+   `./incommensurable-gamma-orbit-free-quasianalyticity.md` replaces a common shift by the product
+   of all matching commuting differences. Its scaled alien character selects the rational or HT
+   branch exactly. The present card retains the commensurable hypothesis only for its canonical
+   one-orbit notation and quantitative boundary bookkeeping.
 8. **Meromorphic recurrent outputs are excluded.** The present theorem assumes holomorphic Bohr
    almost periodicity; moving poles require a spherical differential hull.
 9. **Finite rank is not finite Fourier support.** The conclusion concerns the rational span of
@@ -594,10 +596,29 @@ Primary adjacent sources:
 
 ## 12. Lean status
 
-The tree contains individual Gamma recurrences and basic archimedean factors, but not Gauss
-multiplication in the needed meromorphic form, discrete shift residues, formal transseries,
-differential hypertranscendence, or holomorphic Bohr-frequency hulls. No partial wrapper would
-formalize the claim. Stage 3 requires the whole theorem unconditionally in Lean.
+Formalized so far (axiom-clean; `propext, Classical.choice, Quot.sound` only):
+
+- **Sharp neutral example `(40)`–`(41)`.** `formal/GaloisForLFunctions/SignedGammaSharpExample.lean`
+  proves `sharpNeutralGammaRatio`: for `Gamma s != 0`,
+  `Gamma(2s)/Gamma(s)^2 = 2^(2s-1)/sqrt(pi) * Gamma(s+1/2)/Gamma(s)`, i.e. the Legendre-duplication
+  reduction of `G_*` to its single common-scale orbit pair, exhibiting the two signed orbit charges
+  `+1` (on `Gamma(s+1/2)`, class `1/2 + Z`) and `-1` (on `Gamma(s)`, class `Z`) explicitly. This is
+  the exact `(41)` step; mathlib supplies the duplication input `Complex.Gamma_mul_Gamma_add_half`.
+- **DA/HT vocabulary.** `Hypertranscendence.lean` (`DifferentiallyAlgebraic`, `Hypertranscendental`,
+  `differentiallyAlgebraic_of_algebraic`) and `HypertranscendencePolynomial.lean`
+  (`differentiallyAlgebraic_polynomial`, `differentiallyAlgebraic_const`) give the target predicates
+  and the "adding a polynomial preserves DA" base cases used implicitly in `(9)`–`(10)`.
+- **One-point projective boundary ingredient `(§5)`.** `GammaProjectiveBoundary.lean` already proves
+  the two-jet projective boundary `Gamma/Gamma' -> 0` on upper vertical lines (the parent
+  `finite-archimedean-gamma-product-boundary-law` mechanism the `M != 0` case invokes).
+- Basic archimedean Gamma factors and recurrences: `ArchimedeanGamma.lean`, `GammaWeierstrass.lean`,
+  `GammaDifferentialFE.lean`.
+
+Still missing (no partial wrapper): Gauss multiplication `(6)` in meromorphic ratio form for general
+`d`, discrete shift residues `(13)`, the formal transseries / Adamczewski--Dreyfus--Hardouin shift
+dichotomy behind `(8)`, the directional Vandermonde phase-jet carrier `(31b)`–`(31d)`, and the
+holomorphic Bohr-frequency hull behind `(31)`–`(38)`. Stage 3 requires the whole theorem
+unconditionally in Lean.
 
 ## Gates
 

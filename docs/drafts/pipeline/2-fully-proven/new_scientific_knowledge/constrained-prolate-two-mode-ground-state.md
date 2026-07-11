@@ -431,11 +431,20 @@ de Branges, or log-derivative argument would also suffice if it carries the full
 
 ## Lean decision
 
-The abstract ingredients—finite-dimensional interlacing and constrained Rayleigh quotients—are
-standard. The scientifically relevant statement uses an infinite diagonal tail, compact-operator
-spectral discreteness, Fuchs asymptotics, and prolate-to-Hermite convergence. Formalizing only a
-finite matrix shadow would certify none of the new content. No Lean promotion is claimed until the
-repository has an operator/asymptotic interface capable of expressing the full uniform tail theorem.
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateOperator.lean` now constructs the concrete
+operator layer on the project's actual Fourier `L2` model. It proves that `P_a F P_a` preserves the
+even carrier, is compact and self-adjoint, and that its concentration and leakage operators are
+positive. The constrained carrier is exactly the intersection of the time-limited range of `P_a`
+with the orthogonal complement of the central indicator; Lean proves this is equivalent to being
+fixed by `P_a` and having integral zero. The compressed leakage is positive, is identity minus a
+compact operator, and has quadratic form
+`||f||^2-||P_a F P_a f||^2`. These theorems are unconditional.
+
+The scientifically new asymptotic theorem `(4)`--`(7)` is not yet formalized. Its remaining inputs
+are the signed prolate spectral decomposition selecting the `4j` sector, Fuchs fixed-index
+asymptotics with normalization, prolate-to-Hermite convergence, and the uniform infinite-tail
+secular estimate. The card therefore remains paper-proven; the concrete operator substrate is now
+present, but no finite-matrix or hypothesis-only shadow is counted as promotion.
 
 ## Gates
 

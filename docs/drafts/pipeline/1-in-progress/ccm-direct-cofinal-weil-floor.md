@@ -252,6 +252,21 @@ transport in `(12d)` must visibly carry `A_N` unless its differential-state comp
 cofinally. Gamma logarithmic phases, polynomial jets, and Stokes corrections cannot be counted as
 that module.
 
+The stronger orbit-charge dichotomy and
+`ccm-compressed-prime-shift-arithmetic-complement-law.md` identify this module exactly. If `D` is
+the rational phase space carried by the finite signed-Gamma completion, then
+
+```text
+A_N=V_N/(V_N intersection D),
+V_N=span_Q{log p:p<=N}.                                  (12f)
+```
+
+The compressed weighted shifts `T_(A,log p)` are linearly independent whenever `log N<A`, and
+their operator quotient by the image of `V_N intersection D` is canonically isomorphic to `A_N`.
+Thus the CCM source already possesses the forced complementary carrier. The remaining theorem is
+not to invent arithmetic state: it is to factor the completed form positively while preserving the
+inertia of this explicit quotient through the cofinal aperture limit.
+
 ## Gates
 
 - [x] determinant transfer collapsed to the direct floor criterion
@@ -263,6 +278,7 @@ that module.
 - [x] finite-aperture Morse charge isolated and proved monotone
 - [x] RH reduced to compact screw injectivity at every aperture
 - [x] complete two-channel Euler--Weil resolvent family constructed
+- [x] exact arithmetic-complement operator carrier `A_N` constructed
 - [ ] construct a positive reference splitting `(10)`
 - [ ] prove the infinite-carrier contraction `(11)`
 - [ ] or construct a source-defined Gram factorization of `(12c)` and an index-faithful aperture

@@ -182,15 +182,19 @@ must possess:
 This is the orbit-free continuation of the discrete-residue law. A common shift is a proof device
 inside one class, not part of the invariant itself.
 
-## 7. What this theorem does not yet prove
+## 7. How the charge selects the HT carrier
 
 `R_G!=0` proves that the formal trigamma tail is nonzero and resurgently charged. It does not by
-itself prove hypertranscendence. Differentially algebraic resurgent series can also possess Borel
-poles. The remaining theorem must show that the particular infinite scaled character `(9)` is
-incompatible with an ADE over `C(s)`, or derive formal HT from a several-shift Galois theorem.
+itself prove hypertranscendence, because differentially algebraic resurgent series can also possess
+Borel poles.
 
-Thus this card proves the vanishing classification required by the incommensurable open card, but
-not its nonzero-character HT implication.
+The proved arbitrary-scale classification in
+`../needs-audit/incommensurable-gamma-orbit-free-quasianalyticity.md` supplies the independent
+dichotomy: the product of the finitely many matching shift differences sends `hat Tau` to `C(s)`,
+so finite-shift peeling forces `hat Tau` to be rational or HT. The present character then selects
+the branch exactly: `R_G!=0` excludes rationality and therefore forces HT. Thus the positive roles
+are separate and complete: this card detects the intrinsic charge; the peeling theorem identifies
+the two possible carriers.
 
 ## 8. Parent and novelty audit
 

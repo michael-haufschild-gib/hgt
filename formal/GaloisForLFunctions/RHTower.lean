@@ -551,6 +551,7 @@ import GaloisForLFunctions.RHTower.XiCanonicalProduct
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.RHTower.LocallyUniformZeroTransfer
 import GaloisForLFunctions.RHTower.HermitianDeterminantRH
+import GaloisForLFunctions.RHTower.PrimeEnergyZeroTransfer
 import GaloisForLFunctions.RHTower.ApertureShiftCutoff
 import GaloisForLFunctions.RHTower.RayleighScalarShift
 import GaloisForLFunctions.RHTower.RayleighGapProjective
@@ -579,6 +580,7 @@ import GaloisForLFunctions.RHTower.SoninEulerFiniteGramLower
 import GaloisForLFunctions.RHTower.SoninProjectionCalkin
 import GaloisForLFunctions.RHTower.SoninEulerCalkinPartialIsometry
 import GaloisForLFunctions.RHTower.ConstrainedProlateOperator
+import GaloisForLFunctions.RHTower.ConstrainedProlateSignedSpectrum
 import GaloisForLFunctions.RHTower.SoninEulerTripleShellOverlap
 import GaloisForLFunctions.RHTower.SoninEulerCrossShellOverlap
 import GaloisForLFunctions.RHTower.SoninTimeBandIdeal

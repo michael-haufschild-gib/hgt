@@ -282,10 +282,22 @@ B_(w,a)(z)
        -(1-e^(-(w+iz)a))/(w+iz))/i.                       (25)
 ```
 
-The hard truncations belong to the logarithmic form domain: their Fourier transforms are
-`O((1+|t|)^(-1))`, so the high-frequency integral with weight `log(2+|t|)` is finite. Standard
-mollification at `-a,0,a` approximates them by `C_c^infinity(-a-epsilon,a+epsilon)` in the form
-norm. Hence strict signs obtained below are valid restricted-Weil signs.
+The hard truncations have Fourier transforms `O((1+|t|)^(-1))`, so their logarithmic Fourier
+energy is finite. To avoid assuming that this condition alone characterizes Suzuki's closed form
+domain, smooth the jumps at `-a,0,a` on intervals of width `epsilon`. The difference has the scaled
+form `h_epsilon(x)=h(x/epsilon)` on finitely many such intervals, and hence
+
+```text
+integral_R log(2+|t|)|hat(h_epsilon)(t)|^2dt
+ =O(epsilon log(1/epsilon))->0.                            (25a)
+```
+
+At fixed aperture the prime-shift part is a finite sum of `L2` correlations, and the regular
+remainder is bounded on the compact difference set; both also converge under this smoothing.
+Suzuki's exact Fourier/form formula therefore shows that the smoothed
+`C_c^infinity(-a-epsilon,a+epsilon)` vectors converge in form value to the hard truncations. Hence
+every strict sign obtained below is realized by a genuine restricted-Weil core vector after an
+arbitrarily small aperture enlargement.
 
 ## Explicit aperture-transport theorem
 

@@ -289,9 +289,11 @@ must exhibit; they do not reject any RH-equivalent criterion by name.
 5. **One phase is load-bearing.** `E[u]` is Euclidean. Several independent logarithmic phases produce
    a multivariate coefficient ideal which need not be principal; ideal resolution is a genuine new
    problem there.
-6. **Incommensurable scales require orbit-free quasianalyticity.** Their Stirling normal form still
-   has finitely many exponential/logarithmic phase monomials, but the common-shift discrete-residue
-   proof of formal HT is unavailable. The boundary theorem applies once injectivity is supplied.
+6. **Arbitrary positive scales now have an injective asymptotic carrier.** The arbitrary-scale
+   alien-charge theorem uses all matching commuting shift differences, rather than a common shift,
+   to prove the rational-or-HT dichotomy and uses the scaled residue character to select the branch.
+   Thus the boundary theorem applies to incommensurable products under its neutral/recurrent
+   hypotheses; only its multivariate phase bookkeeping remains outside this one-phase card.
 7. **Negative slopes require a trigonometric phase extension.** Reflection introduces explicit
    exponential coordinates not contained in the present `E(u)`.
 8. **Depth is not degree.** Individual elements realize jets of every degree; boundary depth two

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.SoninEulerCalkinPartialIsometry
+import GaloisForLFunctions.GreedySingularValues
 import Mathlib.Analysis.InnerProductSpace.Positive
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 
@@ -20,7 +21,7 @@ spectral-gap estimate, Weil positivity, or RH statement is assumed.
 noncomputable section
 
 open MeasureTheory Set
-open scoped InnerProduct InnerProductSpace
+open scoped ComplexOrder InnerProduct InnerProductSpace
 
 namespace RHTower
 
@@ -140,6 +141,39 @@ lemma norm_evenIndicatorCutoff_le (a : ℝ) (f : evenSubspace) :
   exact (physicalForbidden (centralInterval a)
     (measurableSet_centralInterval a)).norm_starProjection_apply_le f
 
+/-- The symmetric physical cutoff remains an idempotent projection after restriction to the
+even carrier. -/
+theorem evenIndicatorCutoff_idempotent (a : ℝ) :
+    IsIdempotentElem (evenIndicatorCutoff a) := by
+  rw [isIdempotentElem_iff]
+  apply ContinuousLinearMap.ext
+  intro f
+  apply Subtype.ext
+  change indicatorCutoff (centralInterval a) (measurableSet_centralInterval a)
+      (indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) f) = _
+  have h := indicatorCutoff_idempotent (centralInterval a) (measurableSet_centralInterval a)
+  exact DFunLike.congr_fun (show
+    indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) ∘L
+        indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) =
+      indicatorCutoff (centralInterval a) (measurableSet_centralInterval a) by
+      simpa only [ContinuousLinearMap.mul_def] using h) (f : SoninL2)
+
+/-- The paper's even time-limited carrier: the range of the physical aperture projection. -/
+def evenTimeLimitedSubspace (a : ℝ) : Submodule ℂ evenSubspace :=
+  LinearMap.range (evenIndicatorCutoff a).toLinearMap
+
+noncomputable instance evenTimeLimitedSubspace_completeSpace (a : ℝ) :
+    CompleteSpace (evenTimeLimitedSubspace a) := by
+  exact (ContinuousLinearMap.IsIdempotentElem.isClosed_range
+    (evenIndicatorCutoff_idempotent a)).completeSpace_coe
+
+/-- Membership in the time-limited carrier is equivalent to being fixed by the aperture cutoff. -/
+theorem mem_evenTimeLimitedSubspace_iff (a : ℝ) (f : evenSubspace) :
+    f ∈ evenTimeLimitedSubspace a ↔ evenIndicatorCutoff a f = f := by
+  exact LinearMap.IsIdempotentElem.mem_range_iff
+    (ContinuousLinearMap.IsIdempotentElem.toLinearMap
+      (evenIndicatorCutoff_idempotent a))
+
 theorem norm_evenTimeBandFourier_le (a : ℝ) (f : evenSubspace) :
     ‖evenTimeBandFourier a f‖ ≤ ‖f‖ := by
   rw [evenTimeBandFourier_eq_mul]
@@ -197,31 +231,31 @@ def evenCentralIndicator (a : ℝ) : evenSubspace :=
     · rw [Set.indicator_of_notMem hx,
         Set.indicator_of_notMem (mt (neg_mem_centralInterval_iff a x).1 hx)]⟩
 
-noncomputable instance constrainedProlateConstraintSpan_completeSpace (a : ℝ) :
-    CompleteSpace (Submodule.span ℂ {evenCentralIndicator a}) :=
-  FiniteDimensional.complete ℂ _
-
-/-- The zero-integral constraint, expressed by its exact Riesz vector. -/
+/-- The paper's actual constrained carrier: even, supported in the aperture, and orthogonal to the
+Riesz vector of the integral functional. -/
 def constrainedProlateSubspace (a : ℝ) : Submodule ℂ evenSubspace :=
-  (Submodule.span ℂ {evenCentralIndicator a})ᗮ
-
-noncomputable instance constrainedProlateSubspace_hasOrthogonalProjection (a : ℝ) :
-    (constrainedProlateSubspace a).HasOrthogonalProjection := by
-  unfold constrainedProlateSubspace
-  infer_instance
+  evenTimeLimitedSubspace a ⊓
+    (Submodule.span ℂ {evenCentralIndicator a})ᗮ
 
 noncomputable instance constrainedProlateSubspace_completeSpace (a : ℝ) :
     CompleteSpace (constrainedProlateSubspace a) := by
-  unfold constrainedProlateSubspace
-  infer_instance
+  unfold constrainedProlateSubspace evenTimeLimitedSubspace
+  exact ((ContinuousLinearMap.IsIdempotentElem.isClosed_range
+    (evenIndicatorCutoff_idempotent a)).inter
+      (Submodule.isClosed_orthogonal _)).completeSpace_coe
+
+noncomputable instance constrainedProlateSubspace_hasOrthogonalProjection (a : ℝ) :
+    (constrainedProlateSubspace a).HasOrthogonalProjection := by infer_instance
 
 theorem mem_constrainedProlateSubspace_iff (a : ℝ) (f : evenSubspace) :
     f ∈ constrainedProlateSubspace a ↔
+      evenIndicatorCutoff a f = f ∧
       ∫ x : ℝ in centralInterval a, (f : SoninL2) x = 0 := by
-  rw [constrainedProlateSubspace, Submodule.mem_orthogonal_singleton_iff_inner_left]
-  rw [inner_eq_zero_symm]
-  change inner ℂ
-    (indicatorConstLp 2 (measurableSet_centralInterval a) measure_Icc_lt_top.ne (1 : ℂ))
+  rw [constrainedProlateSubspace, Submodule.mem_inf, mem_evenTimeLimitedSubspace_iff,
+    Submodule.mem_orthogonal_singleton_iff_inner_right]
+  change evenIndicatorCutoff a f = f ∧
+    inner ℂ
+      (indicatorConstLp 2 (measurableSet_centralInterval a) measure_Icc_lt_top.ne (1 : ℂ))
       (f : SoninL2) = 0 ↔ _
   rw [MeasureTheory.L2.inner_indicatorConstLp_one]
 
@@ -269,6 +303,25 @@ theorem constrainedProlateLeakage_isPositive (a : ℝ) :
   exact (evenProlateLeakage_isPositive a).orthogonalProjection_comp
     (constrainedProlateSubspace a)
 
+/-- On the actual constrained carrier, the compressed quadratic form is exactly the physical
+Fourier leakage.  Orthogonal compression changes the vector output but not its pairing with a
+constrained test vector. -/
+theorem constrainedProlateLeakage_inner_eq (a : ℝ)
+    (f : constrainedProlateSubspace a) :
+    inner ℂ (constrainedProlateLeakage a f) f =
+      ((‖f‖ ^ 2 - ‖evenTimeBandFourier a (f : evenSubspace)‖ ^ 2 : ℝ) : ℂ) := by
+  rw [constrainedProlateLeakage_eq_compression]
+  change inner ℂ
+      ((constrainedProlateSubspace a).orthogonalProjection
+        (evenProlateLeakage a (f : evenSubspace))) f = _
+  rw [(constrainedProlateSubspace a).inner_orthogonalProjection_eq_of_mem_right]
+  exact evenProlateLeakage_inner_eq a (f : evenSubspace)
+
+theorem constrainedProlateLeakage_inner_nonneg (a : ℝ)
+    (f : constrainedProlateSubspace a) :
+    0 ≤ inner ℂ (constrainedProlateLeakage a f) f :=
+  (constrainedProlateLeakage_isPositive a).inner_nonneg_left f
+
 theorem constrainedProlateLeakage_sub_identity_isCompact (a : ℝ) (ha : 0 < a) :
     IsCompactOperator (constrainedProlateLeakage a -
       (1 : constrainedProlateSubspace a →L[ℂ] constrainedProlateSubspace a)) := by
@@ -280,5 +333,215 @@ theorem constrainedProlateLeakage_sub_identity_isCompact (a : ℝ) (ha : 0 < a) 
     abel
   rwa [heq]
 
-end RHTower
+/-! ## Unconditional concentration spectrum -/
 
+/-- Every output of the compressed Fourier block lies in the physical aperture range. -/
+theorem evenTimeBandFourier_mem_timeLimited (a : ℝ) (f : evenSubspace) :
+    evenTimeBandFourier a f ∈ evenTimeLimitedSubspace a := by
+  change evenTimeBandFourier a f ∈ LinearMap.range (evenIndicatorCutoff a).toLinearMap
+  refine ⟨evenFourierTransform (evenIndicatorCutoff a f), ?_⟩
+  rw [evenTimeBandFourier_eq_mul]
+  rfl
+
+theorem evenProlateConcentration_mem_timeLimited (a : ℝ) (f : evenSubspace) :
+    evenProlateConcentration a f ∈ evenTimeLimitedSubspace a := by
+  rw [evenProlateConcentration_eq_sq]
+  exact evenTimeBandFourier_mem_timeLimited a _
+
+/-- The decreasing greedy eigenvalue sequence of the concrete compact positive concentration
+operator.  These are the squared concentration values, with multiplicity. -/
+noncomputable def evenProlateConcentrationValue (a : ℝ) (n : ℕ) : ℝ :=
+  ContinuousLinearMap.svVal (evenProlateConcentration a) n
+
+/-- The corresponding greedy concentration modes. A mode is zero exactly at exhausted stages. -/
+noncomputable def evenProlateConcentrationMode (a : ℝ) (n : ℕ) : evenSubspace :=
+  ContinuousLinearMap.svVec (evenProlateConcentration a) n
+
+theorem evenProlateConcentrationValue_nonneg (a : ℝ) (n : ℕ) :
+    0 ≤ evenProlateConcentrationValue a n :=
+  ContinuousLinearMap.svVal_nonneg _ n
+
+theorem evenProlateConcentrationValue_antitone (a : ℝ) :
+    Antitone (evenProlateConcentrationValue a) :=
+  ContinuousLinearMap.svVal_antitone _
+
+/-- The eigen-equation holds unconditionally, including exhausted zero modes. -/
+theorem evenProlateConcentration_apply_mode (a : ℝ) (n : ℕ) :
+    evenProlateConcentration a (evenProlateConcentrationMode a n) =
+      (evenProlateConcentrationValue a n : ℂ) • evenProlateConcentrationMode a n :=
+  ContinuousLinearMap.apply_svVec _ n
+
+theorem evenProlateConcentrationMode_orthogonal_of_ne
+    (a : ℝ) {m n : ℕ} (hmn : m ≠ n) :
+    inner ℂ (evenProlateConcentrationMode a m)
+      (evenProlateConcentrationMode a n) = 0 :=
+  ContinuousLinearMap.inner_svVec_svVec_of_ne _ hmn
+
+/-- Every live greedy mode has unit norm. -/
+theorem norm_evenProlateConcentrationMode_of_value_ne_zero
+    (a : ℝ) (ha : 0 < a) {n : ℕ}
+    (hn : evenProlateConcentrationValue a n ≠ 0) :
+    ‖evenProlateConcentrationMode a n‖ = 1 := by
+  exact ContinuousLinearMap.norm_svVec_of_ne_zero
+    (isCompactOperator_evenProlateConcentration a ha)
+    (evenProlateConcentration_isPositive a).isSymmetric
+    (fun x => (evenProlateConcentration_isPositive a).re_inner_nonneg_right x) hn
+
+/-- Compactness forces the concentration eigenvalues to vanish. -/
+theorem evenProlateConcentrationValue_tendsto_zero (a : ℝ) (ha : 0 < a) :
+    Filter.Tendsto (evenProlateConcentrationValue a) Filter.atTop (nhds 0) := by
+  exact ContinuousLinearMap.svVal_tendsto_zero
+    (isCompactOperator_evenProlateConcentration a ha)
+    (evenProlateConcentration_isPositive a).isSymmetric
+    (fun x => (evenProlateConcentration_isPositive a).re_inner_nonneg_right x)
+
+/-- Every nonzero concentration mode is automatically supported in the physical aperture. -/
+theorem evenProlateConcentrationMode_mem_timeLimited_of_value_ne_zero
+    (a : ℝ) {n : ℕ} (hn : evenProlateConcentrationValue a n ≠ 0) :
+    evenProlateConcentrationMode a n ∈ evenTimeLimitedSubspace a := by
+  let μ : ℂ := (evenProlateConcentrationValue a n : ℂ)
+  have hμ : μ ≠ 0 := Complex.ofReal_ne_zero.mpr hn
+  have hout := evenProlateConcentration_mem_timeLimited a
+    (evenProlateConcentrationMode a n)
+  have heig := evenProlateConcentration_apply_mode a n
+  have hscaled : μ⁻¹ • evenProlateConcentration a
+      (evenProlateConcentrationMode a n) ∈ evenTimeLimitedSubspace a :=
+    (evenTimeLimitedSubspace a).smul_mem μ⁻¹ hout
+  rw [heig] at hscaled
+  change μ⁻¹ • μ • evenProlateConcentrationMode a n ∈
+    evenTimeLimitedSubspace a at hscaled
+  rw [inv_smul_smul₀ hμ] at hscaled
+  exact hscaled
+
+theorem norm_evenProlateConcentration_le (a : ℝ) (f : evenSubspace) :
+    ‖evenProlateConcentration a f‖ ≤ ‖f‖ := by
+  rw [evenProlateConcentration_eq_sq]
+  exact (norm_evenTimeBandFourier_le a _).trans
+    (norm_evenTimeBandFourier_le a f)
+
+theorem norm_evenProlateConcentration_le_one (a : ℝ) :
+    ‖evenProlateConcentration a‖ ≤ 1 := by
+  apply ContinuousLinearMap.opNorm_le_bound _ zero_le_one
+  intro f
+  simpa using norm_evenProlateConcentration_le a f
+
+theorem evenProlateConcentrationValue_le_one (a : ℝ) (n : ℕ) :
+    evenProlateConcentrationValue a n ≤ 1 := by
+  calc
+    evenProlateConcentrationValue a n
+        ≤ ‖evenProlateConcentration a‖ :=
+      ContinuousLinearMap.orthSup_le_opNorm _ _ _
+    _ ≤ 1 := norm_evenProlateConcentration_le_one a
+
+/-- The leakage deficits corresponding to the concrete decreasing concentration spectrum. -/
+noncomputable def evenProlateLeakageValue (a : ℝ) (n : ℕ) : ℝ :=
+  1 - evenProlateConcentrationValue a n
+
+theorem evenProlateLeakageValue_nonneg (a : ℝ) (n : ℕ) :
+    0 ≤ evenProlateLeakageValue a n :=
+  sub_nonneg.mpr (evenProlateConcentrationValue_le_one a n)
+
+theorem evenProlateLeakageValue_monotone (a : ℝ) :
+    Monotone (evenProlateLeakageValue a) := by
+  intro m n hmn
+  exact sub_le_sub_left (evenProlateConcentrationValue_antitone a hmn) 1
+
+theorem evenProlateLeakageValue_tendsto_one (a : ℝ) (ha : 0 < a) :
+    Filter.Tendsto (evenProlateLeakageValue a) Filter.atTop (nhds 1) := by
+  simpa [evenProlateLeakageValue] using
+    (tendsto_const_nhds.sub (evenProlateConcentrationValue_tendsto_zero a ha))
+
+/-- The concentration modes diagonalize the full even leakage operator with complementary
+eigenvalues. -/
+theorem evenProlateLeakage_apply_mode (a : ℝ) (n : ℕ) :
+    evenProlateLeakage a (evenProlateConcentrationMode a n) =
+      (evenProlateLeakageValue a n : ℂ) • evenProlateConcentrationMode a n := by
+  rw [evenProlateLeakage, ContinuousLinearMap.sub_apply,
+    ContinuousLinearMap.one_apply, evenProlateConcentration_apply_mode]
+  simp only [evenProlateLeakageValue, Complex.ofReal_sub, Complex.ofReal_one]
+  module
+
+/-! ## Spectrum after the exact zero-integral compression -/
+
+noncomputable def constrainedProlateConcentrationValue (a : ℝ) (n : ℕ) : ℝ :=
+  ContinuousLinearMap.svVal (H := constrainedProlateSubspace a)
+    (constrainedProlateConcentration a) n
+
+noncomputable def constrainedProlateMode (a : ℝ) (n : ℕ) :
+    constrainedProlateSubspace a :=
+  ContinuousLinearMap.svVec (H := constrainedProlateSubspace a)
+    (constrainedProlateConcentration a) n
+
+theorem constrainedProlateConcentrationValue_nonneg (a : ℝ) (n : ℕ) :
+    0 ≤ constrainedProlateConcentrationValue a n :=
+  ContinuousLinearMap.svVal_nonneg (H := constrainedProlateSubspace a) _ n
+
+theorem constrainedProlateConcentrationValue_antitone (a : ℝ) :
+    Antitone (constrainedProlateConcentrationValue a) :=
+  ContinuousLinearMap.svVal_antitone (H := constrainedProlateSubspace a) _
+
+/-- The constrained greedy modes satisfy the exact concentration eigen-equation. -/
+theorem constrainedProlateConcentration_apply_mode (a : ℝ) (n : ℕ) :
+    constrainedProlateConcentration a (constrainedProlateMode a n) =
+      (constrainedProlateConcentrationValue a n : ℂ) • constrainedProlateMode a n :=
+  ContinuousLinearMap.apply_svVec (H := constrainedProlateSubspace a) _ n
+
+theorem constrainedProlateMode_orthogonal_of_ne
+    (a : ℝ) {m n : ℕ} (hmn : m ≠ n) :
+    inner ℂ (constrainedProlateMode a m) (constrainedProlateMode a n) = 0 :=
+  ContinuousLinearMap.inner_svVec_svVec_of_ne (H := constrainedProlateSubspace a) _ hmn
+
+set_option maxHeartbeats 800000 in
+theorem norm_constrainedProlateMode_of_value_ne_zero
+    (a : ℝ) (ha : 0 < a) {n : ℕ}
+    (hn : constrainedProlateConcentrationValue a n ≠ 0) :
+    ‖constrainedProlateMode a n‖ = 1 := by
+  let S : constrainedProlateSubspace a →L[ℂ] constrainedProlateSubspace a :=
+    constrainedProlateConcentration a
+  have hcpt : IsCompactOperator S :=
+    isCompactOperator_constrainedProlateConcentration a ha
+  have hpos : ContinuousLinearMap.IsPositive (𝕜 := ℂ)
+      (E := constrainedProlateSubspace a) S :=
+    constrainedProlateConcentration_isPositive a
+  change ‖ContinuousLinearMap.svVec (H := constrainedProlateSubspace a) S n‖ = 1
+  have hn' : ContinuousLinearMap.svVal (H := constrainedProlateSubspace a) S n ≠ 0 := hn
+  exact ContinuousLinearMap.norm_svVec_of_ne_zero
+    (H := constrainedProlateSubspace a) hcpt hpos.isSymmetric
+    (fun x => hpos.re_inner_nonneg_right x) hn'
+
+/-- The constrained concentration spectrum has no nonzero accumulation point. -/
+set_option maxHeartbeats 800000 in
+theorem constrainedProlateConcentrationValue_tendsto_zero (a : ℝ) (ha : 0 < a) :
+    Filter.Tendsto (constrainedProlateConcentrationValue a) Filter.atTop (nhds 0) := by
+  let S : constrainedProlateSubspace a →L[ℂ] constrainedProlateSubspace a :=
+    constrainedProlateConcentration a
+  have hcpt : IsCompactOperator S :=
+    isCompactOperator_constrainedProlateConcentration a ha
+  have hpos : ContinuousLinearMap.IsPositive (𝕜 := ℂ)
+      (E := constrainedProlateSubspace a) S :=
+    constrainedProlateConcentration_isPositive a
+  change Filter.Tendsto
+    (ContinuousLinearMap.svVal (H := constrainedProlateSubspace a) S)
+      Filter.atTop (nhds 0)
+  exact ContinuousLinearMap.svVal_tendsto_zero
+    (H := constrainedProlateSubspace a) hcpt hpos.isSymmetric
+    (fun x => hpos.re_inner_nonneg_right x)
+
+noncomputable def constrainedProlateLeakageValue (a : ℝ) (n : ℕ) : ℝ :=
+  1 - constrainedProlateConcentrationValue a n
+
+/-- The same constrained modes diagonalize leakage with complementary eigenvalues. -/
+theorem constrainedProlateLeakage_apply_mode (a : ℝ) (n : ℕ) :
+    constrainedProlateLeakage a (constrainedProlateMode a n) =
+      (constrainedProlateLeakageValue a n : ℂ) • constrainedProlateMode a n := by
+  rw [constrainedProlateLeakage, ContinuousLinearMap.sub_apply,
+    ContinuousLinearMap.one_apply, constrainedProlateConcentration_apply_mode]
+  simp only [constrainedProlateLeakageValue, Complex.ofReal_sub, Complex.ofReal_one]
+  module
+
+theorem constrainedProlateLeakageValue_tendsto_one (a : ℝ) (ha : 0 < a) :
+    Filter.Tendsto (constrainedProlateLeakageValue a) Filter.atTop (nhds 1) := by
+  simpa [constrainedProlateLeakageValue] using
+    (tendsto_const_nhds.sub (constrainedProlateConcentrationValue_tendsto_zero a ha))
+
+end RHTower

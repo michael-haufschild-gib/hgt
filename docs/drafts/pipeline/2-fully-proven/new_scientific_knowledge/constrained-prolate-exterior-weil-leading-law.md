@@ -222,8 +222,11 @@ series coefficients used by the paper theorem. In particular, Lean proves absolu
 lower-order prime coefficient in `(13)`. These results are unconditional and assume no Weil-operator
 positivity, spectral floor, gap bound, or RH-equivalent statement.
 
-The full asymptotic law `(14)` is not yet formalized. The tree still lacks concrete interfaces for
-the radial PSWF defect measure, the archimedean multiplier form, and the finite-aperture prime form.
+The full asymptotic law `(14)` is not yet formalized. The tree now has the concrete compact,
+self-adjoint constrained prolate leakage operator in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateOperator.lean`, but still lacks concrete
+interfaces for its radial PSWF defect measure, the archimedean multiplier form, and the
+finite-aperture prime form.
 The card therefore remains at paper-proven stage: the formal module establishes its exact constants
 and their signs, but does not replace the missing analytic realization by abstract assumptions.
 
