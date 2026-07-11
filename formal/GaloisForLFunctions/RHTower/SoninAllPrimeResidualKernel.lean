@@ -211,8 +211,9 @@ theorem soninAllPrimePolynomialPowerKernel_isHS
       (HilbertSchmidt.isHS_hsPow (soninAllPrimeResidualEnergyKernel_isHS a ha) (n - 1))
 
 /-- The source Gram entry between the two factors `K_a T_a^m` and `K_a T_a^n`.
-The missing Xi weld is precisely the assertion that, at the canonical cutoff, this entry
-depends only on `m+n` and equals the corresponding centered reciprocal moment. -/
+`SoninAllPrimeHankelCollapse` proves unconditionally that this depends only on `m+n`.  The
+remaining Xi weld is the arithmetic assertion that the resulting source moment equals the
+corresponding centered reciprocal moment. -/
 def soninAllPrimePolynomialGramEntry (a : ℝ) (m n : ℕ) : ℂ :=
   HilbertSchmidt.hsInner (soninAllPrimePolynomialPowerKernel a m)
     (soninAllPrimePolynomialPowerKernel a n)

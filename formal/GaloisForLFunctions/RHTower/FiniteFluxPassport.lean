@@ -112,7 +112,7 @@ theorem simpleZeroExponentialRealizer_analyticAt (P : Polynomial ℂ) (z : ℂ) 
 theorem deriv_simpleZeroExponentialRealizer_zero_ne (P : Polynomial ℂ) :
     deriv (simpleZeroExponentialRealizer P) 0 ≠ 0 := by
   rw [(hasDerivAt_simpleZeroExponentialRealizer P 0).deriv]
-  simpa using Complex.exp_ne_zero (P.eval 0)
+  simpa only [zero_mul, add_zero] using Complex.exp_ne_zero (P.eval 0)
 
 /-- Away from the removable center, the polynomial passport is the actual negative normalized
 logarithmic derivative of the realized simple-zero germ. -/

@@ -146,6 +146,29 @@ remaining field-level tasks are to identify the common fixed field of a generic 
 translation family with the constants and to realize theta and elliptic-gamma elements and their
 divisors in the carrier.
 
+`formal/GaloisForLFunctions/MeromorphicTranslationFixedField.lean` now closes the first of those
+tasks. A fraction of entire analytic germs fixed by arbitrarily small nonzero translations has
+zero quotient-rule Wronskian: translation invariance kills its difference quotients wherever the
+denominator is nonzero, and analytic continuation makes the Wronskian vanish globally. The
+quotient is then locally constant and the identity theorem makes it globally constant. Combining
+this with `exists_small_rankThree_periods` proves that the common fixed field of the full integer
+span of three `Q`-linearly independent complex translations is exactly the embedded complex
+constant field. No fixed-field assumption remains at the global meromorphic carrier level.
+
+`formal/GaloisForLFunctions/MeromorphicTheta.lean` embeds the actual Jacobi theta function and its
+`z`-derivative as analytic germs and defines their logarithmic derivative in the meromorphic
+fraction field. The exact translation laws are formal field identities:
+
+```text
+phi(z + 1)   = phi(z),
+phi(z + tau) = phi(z) - 2*pi*i.
+```
+
+Thus theta existence, analyticity, nonvanishing as a field denominator, and its two basic
+functional equations are no longer assumptions. What remains for order-one atomicity is the
+theta zero-divisor theorem, simple-pole residue extraction for `theta'/theta`, and its transport to
+the finite orbit-residue obstruction already formalized abstractly.
+
 `formal/GaloisForLFunctions/DifferentialPolynomialOver.lean` supplies the total differential
 polynomial derivation over a nonconstant differential base: coefficients are differentiated while
 formal jets are shifted. Evaluation intertwines this derivation, so the relation ideal over the
@@ -216,7 +239,9 @@ analytic capstone is already formalized.
 - [x] arbitrary noncommuting automorphism-family strengthening
 - [x] genuine meromorphic fraction field with quotient-rule derivation
 - [x] complex translations lifted as differential-field automorphisms
-- [ ] rank-three translation fixed field identified with constants in the germ carrier
+- [x] rank-three translation fixed field identified with constants in the germ carrier
+- [x] Jacobi theta and logarithmic derivative realized in the meromorphic carrier
+- [x] theta `1`-periodicity and `tau`-quasiperiodicity proved as field identities
 - [ ] meromorphic and elliptic function-field foundation
 - [ ] theta and multiple-elliptic-gamma definitions and hierarchy
 - [ ] orbit-principal-part obstruction
@@ -287,3 +312,11 @@ analytic capstone is already formalized.
   automorphism and is formally proved to commute with the quotient-rule derivation. This removes
   the carrier/existence part of the analytic gap; fixed-field identification and theta divisor
   realization remain.
+- 2026-07-11 -- Proved the exact fixed-field theorem in the genuine carrier. Any meromorphic germ
+  fixed by arbitrarily small nonzero translations is constant; hence the common fixed field of a
+  generic rank-three translation lattice is precisely `C`. The remaining analytic obstruction is
+  theta and elliptic-gamma realization with its orbitwise principal parts.
+- 2026-07-11 -- Embedded the genuine Jacobi theta function, its derivative, and logarithmic
+  derivative in the meromorphic fraction field. Proved its period-one invariance and the exact
+  `tau`-shift defect `-2*pi*i`. The next missing order-one input is now solely divisor-level:
+  theta's simple zero class and the induced simple-pole orbit residues of its log derivative.

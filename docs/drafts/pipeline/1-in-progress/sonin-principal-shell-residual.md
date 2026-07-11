@@ -90,6 +90,19 @@ Hilbert--Schmidt and gives an unconditional positive trace-class Gram. This diag
 not the canonical arithmetic assembly: declaring distinct prime powers orthogonal erases every
 mixed prime word.
 
+`SoninAllPrimeHankelCollapse.lean` removes one apparent part of the Xi weld.  For the literal
+block operator `K_a` and `T_a=K_a^*K_a`, associativity of the infinite Hilbert--Schmidt matrix
+product is proved through the `ℓ²` operator realization, and Lean proves
+
+`<K_a T_a^m, K_a T_a^n>_HS = Tr(T_a^(m+n+1))`.
+
+Hence the source Gram is already Hankel: it depends only on `m+n` without any Xi or RH input.
+The remaining residual-operator identification is one-dimensional, namely whether this single
+positive trace-moment sequence equals the centered Xi reciprocal-moment sequence.  This collapse
+does not repair the arithmetic mismatch below: block orthogonalization still deletes mixed prime
+words, and powers of `T_a` still square and iterate residual coefficients rather than restore the
+linear logarithmic Euler source.
+
 `SoninCoupledPrimeResidual.lean` constructs the canonical common-domain column
 
 `C_a : SoninL2 -> ℓ²((prime power) × Sonin basis)`, `C_a x = (A_α x)_α`.
@@ -193,26 +206,41 @@ The response is the coefficient-free Hilbert--Schmidt pairing of the projection 
 the unweighted principal/residual cross. It is real. Consequently all arithmetic coefficient data
 have been separated from one explicit geometric normalization problem.
 
+`[PROVED IN LEAN, DECISIVE OBSTRUCTION]` That normalization is false. The formal-principal corner
+has operator norm at most `24`, the residual has a scale-independent Hilbert--Schmidt bound, and
+the projection correction is fixed. Cauchy--Schwarz therefore gives a scale-independent bound on
+
+`|soninSemilocalGeometricTraceResponse(a,p,m)|`.
+
+The von-Mangoldt source would require this response to equal
+`log(p^m)=m log p`, which is unbounded already along `p=2`, `m -> infinity`. Lean proves both
+`not_soninSemilocalFluxNormalization` and the existence of a compact-support prime-power test on
+which the canonical finite Sonin pairing differs from the finite von-Mangoldt source. The pairing
+is a legitimate trace-class scalar, but it is not the semilocal source trace.
+
 ## RH interface
 
-`[OPEN CORE]` Prove that the canonical finite-support Sonin trace density realizes the
-prime--archimedean test-functional, and hence that its Mellin transform satisfies
+`[OPEN CORE]` Construct the genuine compact-support semilocal test operator whose trace realizes
+the prime--archimedean test-functional, and prove that its Mellin transform satisfies
 
 `soninRelativeTrace(z) = xiRelativeResolventTrace(z)`.
 
-After the exact density factorization, this reduces mode-by-mode to determining the explicit
-`soninSemilocalGeometricTraceResponse(1,p,m)` and proving that it has the normalization required by
-the local logarithmic metric. No convergence or trace-class hypothesis remains in this comparison.
+It cannot be obtained by pairing the bounded principal/residual Gram response with the fixed
+projection correction: that construction has now been disproved. The missing operator must retain
+the logarithmic scale length intrinsically, as the semilocal trace-formula test operator does,
+rather than add it by normalization. The next construction target is therefore the log-coordinate
+convolution/test operator and its trace against the physical--Fourier Sonin defect.
 
 Equivalently, its reciprocal-square coefficients must be `xiCentralReciprocalMoment n`; the
 existing finite moment expansion then supplies `xiCentralTraceHankel`. No zero divisor may be used
 in the Sonin source construction. `T_mix=C_a^*C_a` and `I₂` remain valid quadratic invariants but
 cannot substitute for this linear principal-relative scalarization.
 
-`[ROUTE VERDICT]` The residual-only determinant route and an unsmoothed trace on the raw
-Hilbert--Schmidt cross term are dead. The semilocal principal-relative route remains alive: both
-the regulator-independent arithmetic source trace and a genuine finite-support Sonin operator
-trace now exist. Their equality is the single remaining source-specific identity.
+`[ROUTE VERDICT]` The residual-only determinant route, an unsmoothed trace on the raw
+Hilbert--Schmidt cross term, and the projection-correction Hilbert--Schmidt pairing are dead. The
+broader semilocal Sonin route remains alive only through a genuine log-coordinate test operator:
+the regulator-independent arithmetic source trace exists, but the current finite Sonin trace is
+proved not to equal it. This is a construction gap, not a normalization hypothesis.
 
 ## Gates
 
@@ -226,6 +254,8 @@ trace now exist. Their equality is the single remaining source-specific identity
   Hilbert--Schmidt.
 - [x] Actual Sonin residual blocks assembled over the coefficient carrier as a Hilbert--Schmidt
   operator with positive self-adjoint trace-class Gram operator.
+- [x] Its two-index polynomial Gram proved intrinsically Hankel and collapsed to the single
+  positive trace-moment sequence `Tr(T_a^(r+1))`.
 - [x] Canonical common-domain column operator and positive trace-class coupled Gram constructed.
 - [x] Exact infinite mixed second-moment formula and convergent off-diagonal invariant `I₂`
   formalized.
@@ -245,8 +275,11 @@ trace now exist. Their equality is the single remaining source-specific identity
   the exact Hilbert--Schmidt projection correction; trace class and finite-site additivity proved.
 - [x] Local trace density factored into the exact unsquared Euler coefficient and a real,
   coefficient-free geometric response.
+- [x] Projection-correction scalarization disproved as a source trace by its uniformly bounded
+  response versus the unbounded required response `log(p^m)`.
 - [ ] One concrete principal-subtracted cross-prime overlap proved nonzero.
-- [ ] Sonin trace density identified with the prime--archimedean compact-support density.
+- [ ] Genuine log-coordinate semilocal test operator constructed on the Sonin carrier.
+- [ ] Its trace density identified with the prime--archimedean compact-support density.
 - [ ] Mellin transform of the Sonin finite-support trace identified with
   `continuedPrimeArchSourceRelativeTrace`.
 

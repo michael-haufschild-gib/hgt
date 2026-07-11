@@ -10,6 +10,8 @@ at least one full power of `t` lower.  This strict scale gap drives the final sm
 
 open scoped Classical
 open NumberField
+open Filter
+open Topology
 
 namespace GaloisForLFunctions.RHTower.BakerProof.BakerParameters
 
@@ -64,6 +66,37 @@ noncomputable def firstStepGrowthMajorant (R : Relation) (c : ℤ) (t : ℕ) : �
       (Hη * (R.primeProduct : ℝ) ^ (L * S))) ^
         (Module.finrank ℚ R.CoefficientField - 1)
 
+/-- The algebraic base raised to the number-field degree in the normal form of the first-step
+majorant. -/
+noncomputable def firstStepNormalBase (R : Relation) (c : ℤ) (t : ℕ) : ℝ :=
+  let L := exponentWidth R.n t
+  let S := sampleCount R.n t
+  let T := derivativeCutoff R.n t
+  GelfondSchneiderSiegel.c₁ R.CoefficientField ^ 2 *
+    (((L ^ R.n : ℕ) : ℝ) ^ 2) *
+    (((S * T ^ (R.n - 1)) * L ^ R.n : ℕ) : ℝ) *
+    (2 * L * R.scaledCoefficientHouseSum c) ^ ((R.n - 1) * T) *
+    (R.primeProduct : ℝ) ^ (L * S)
+
+/-- Fixed coefficient multiplying the dominant scale in the final exponential majorant. -/
+noncomputable def growthExponentConstant (R : Relation) : ℝ :=
+  let d := Module.finrank ℚ R.CoefficientField - 1
+  R.primeLogWeight + (d + 1) * (2 * R.n + 2) + d
+
+/-- The complete first-step majorant for a shifted component of total multiindex degree `v`. -/
+noncomputable def shiftedFirstStepGrowthMajorant
+    (R : Relation) (c : ℤ) (t v : ℕ) : ℝ :=
+  let L := exponentWidth R.n t
+  let d := Module.finrank ℚ R.CoefficientField - 1
+  (2 * L * R.scaledCoefficientHouseSum c) ^ (v * (d + 1)) *
+    firstStepGrowthMajorant R c t
+
+/-- Fixed exponential coefficient after uniformly allowing every shifted component in the lower
+half of the multiindex box. -/
+noncomputable def shiftedGrowthExponentConstant (R : Relation) : ℝ :=
+  let d := Module.finrank ℚ R.CoefficientField - 1
+  growthExponentConstant R + ((R.n - 1) * (d + 1) : ℕ)
+
 theorem firstStepGrowth_nonneg (R : Relation) (c : ℤ) (t : ℕ) :
     0 ≤ firstStepGrowth R c t := by
   unfold firstStepGrowth
@@ -93,6 +126,197 @@ theorem firstStepGrowthMajorant_nonneg (R : Relation) (c : ℤ) (t : ℕ) :
     (mul_nonneg (Nat.cast_nonneg _) (mul_nonneg hH (Real.exp_nonneg _)))
     (pow_nonneg (mul_nonneg (Nat.cast_nonneg _)
       (mul_nonneg hH (pow_nonneg (Nat.cast_nonneg _) _))) _)
+
+theorem firstStepNormalBase_nonneg (R : Relation) (c : ℤ) (t : ℕ) :
+    0 ≤ firstStepNormalBase R c t := by
+  have hC : 0 ≤ R.scaledCoefficientHouseSum c := by
+    unfold Relation.scaledCoefficientHouseSum
+    exact Finset.sum_nonneg fun i hi => house_nonneg _
+  unfold firstStepNormalBase
+  dsimp only
+  exact mul_nonneg
+    (mul_nonneg
+      (mul_nonneg
+        (mul_nonneg (pow_nonneg R.siegelConstant_nonneg 2)
+          (pow_nonneg (Nat.cast_nonneg _) 2))
+        (Nat.cast_nonneg _))
+      (pow_nonneg (mul_nonneg (mul_nonneg (by norm_num) (Nat.cast_nonneg _)) hC) _))
+    (pow_nonneg (Nat.cast_nonneg _) _)
+
+theorem growthExponentConstant_nonneg (R : Relation) :
+    0 ≤ growthExponentConstant R := by
+  have hlog : 0 ≤ R.primeLogWeight := by
+    unfold Relation.primeLogWeight
+    exact Finset.sum_nonneg fun i hi => (R.p_prime i).log_pos.le
+  unfold growthExponentConstant
+  dsimp only
+  positivity
+
+/-- Exact normal form: one analytic exponential and two ordinary natural powers. -/
+theorem firstStepGrowthMajorant_eq_normalForm (R : Relation) (c : ℤ) (t : ℕ) :
+    let L := exponentWidth R.n t
+    let S := sampleCount R.n t
+    let radius := extrapolationRadius R.n t
+    let d := Module.finrank ℚ R.CoefficientField - 1
+    firstStepGrowthMajorant R c t =
+      Real.exp ((L * R.primeLogWeight) * radius) *
+        firstStepNormalBase R c t ^ (d + 1) *
+        ((R.primeProduct : ℝ) ^ (L * S)) ^ d := by
+  dsimp only
+  unfold firstStepGrowthMajorant firstStepNormalBase linearCoefficientBudget
+    Relation.auxiliaryHeightClosed
+  dsimp only
+  rw [pow_succ']
+  simp only [mul_pow]
+  ring
+
+/-- Every fixed real multiple of a polynomial in a natural variable is eventually bounded by the
+ordinary real exponential. -/
+theorem eventually_const_mul_natCast_pow_le_exp (C : ℝ) (k : ℕ) :
+    ∀ᶠ t : ℕ in atTop, C * (t : ℝ) ^ k ≤ Real.exp t := by
+  have hratio : ∀ᶠ t : ℕ in atTop,
+      C ≤ Real.exp (t : ℝ) / (t : ℝ) ^ k :=
+    ((Real.tendsto_exp_div_pow_atTop k).comp
+      (tendsto_natCast_atTop_atTop (R := ℝ))).eventually_ge_atTop C
+  filter_upwards [hratio, eventually_ge_atTop 1] with t ht ht1
+  have htpos : (0 : ℝ) < t := by exact_mod_cast ht1
+  exact (le_div_iff₀ (pow_pos htpos _)).mp ht
+
+theorem rowColumnCount_cast_eq (n t : ℕ) :
+    ((((sampleCount n t * derivativeCutoff n t ^ (n - 1)) *
+        exponentWidth n t ^ n : ℕ) : ℝ)) =
+      (2 ^ (n - 1) : ℝ) *
+        (t : ℝ) ^ (4 * n + (8 * n) * (n - 1) + (8 * n - 2) * n) := by
+  simp only [sampleCount, derivativeCutoff, extrapolationOrder, exponentWidth,
+    Nat.cast_mul, Nat.cast_pow, mul_pow, ← pow_mul]
+  rw [pow_add, pow_add]
+  ring
+
+theorem columnCountSq_cast_eq (n t : ℕ) :
+    ((((exponentWidth n t ^ n : ℕ) : ℝ)) ^ 2) =
+      (t : ℝ) ^ ((8 * n - 2) * n * 2) := by
+  simp only [exponentWidth, Nat.cast_pow, ← pow_mul]
+
+theorem directionBase_eq_const_mul_pow (R : Relation) (c : ℤ) (t : ℕ) :
+    (2 : ℝ) * exponentWidth R.n t * R.scaledCoefficientHouseSum c =
+      (2 * R.scaledCoefficientHouseSum c) *
+        (t : ℝ) ^ (8 * R.n - 2) := by
+  simp [exponentWidth]
+  ring
+
+/-- The algebraic normal-form base is eventually controlled by an exponential whose exponent keeps
+the exact derivative and sample scales visible. -/
+theorem eventually_firstStepNormalBase_le_exp_raw
+    (R : Relation) (hn : 3 ≤ R.n) (c : ℤ) :
+    ∀ᶠ t : ℕ in atTop,
+      firstStepNormalBase R c t ≤
+        Real.exp (3 * (t : ℝ) +
+          (t : ℝ) * ((R.n - 1) * derivativeCutoff R.n t) +
+          (t : ℝ) * (exponentWidth R.n t * sampleCount R.n t)) := by
+  have hc1 := eventually_const_mul_natCast_pow_le_exp
+    (GelfondSchneiderSiegel.c₁ R.CoefficientField ^ 2) 0
+  have hL := eventually_const_mul_natCast_pow_le_exp
+    1 ((8 * R.n - 2) * R.n * 2)
+  have hRC := eventually_const_mul_natCast_pow_le_exp
+    (2 ^ (R.n - 1) : ℝ)
+    (4 * R.n + (8 * R.n) * (R.n - 1) + (8 * R.n - 2) * R.n)
+  have hD := eventually_const_mul_natCast_pow_le_exp
+    (2 * R.scaledCoefficientHouseSum c) (8 * R.n - 2)
+  have hP := eventually_const_mul_natCast_pow_le_exp (R.primeProduct : ℝ) 0
+  filter_upwards [hc1, hL, hRC, hD, hP] with t hc1t hLt hRCt hDt hPt
+  have hL' : ((((exponentWidth R.n t ^ R.n : ℕ) : ℝ)) ^ 2) ≤ Real.exp t := by
+    rw [columnCountSq_cast_eq]
+    simpa using hLt
+  have hRC' : ((((sampleCount R.n t * derivativeCutoff R.n t ^ (R.n - 1)) *
+      exponentWidth R.n t ^ R.n : ℕ) : ℝ)) ≤ Real.exp t := by
+    rw [rowColumnCount_cast_eq]
+    exact hRCt
+  have hD' : (2 : ℝ) * exponentWidth R.n t * R.scaledCoefficientHouseSum c ≤
+      Real.exp t := by
+    rw [directionBase_eq_const_mul_pow]
+    exact hDt
+  have hP' : (R.primeProduct : ℝ) ≤ Real.exp t := by
+    simpa using hPt
+  have hc1' : GelfondSchneiderSiegel.c₁ R.CoefficientField ^ 2 ≤ Real.exp t := by
+    simpa using hc1t
+  have hC : 0 ≤ R.scaledCoefficientHouseSum c := by
+    unfold Relation.scaledCoefficientHouseSum
+    exact Finset.sum_nonneg fun i hi => house_nonneg _
+  have hD0 : 0 ≤ (2 : ℝ) * exponentWidth R.n t * R.scaledCoefficientHouseSum c :=
+    mul_nonneg (mul_nonneg (by norm_num) (Nat.cast_nonneg _)) hC
+  unfold firstStepNormalBase
+  dsimp only
+  calc
+    GelfondSchneiderSiegel.c₁ R.CoefficientField ^ 2 *
+        (((exponentWidth R.n t ^ R.n : ℕ) : ℝ) ^ 2) *
+        (((sampleCount R.n t * derivativeCutoff R.n t ^ (R.n - 1)) *
+          exponentWidth R.n t ^ R.n : ℕ) : ℝ) *
+        (2 * exponentWidth R.n t * R.scaledCoefficientHouseSum c) ^
+          ((R.n - 1) * derivativeCutoff R.n t) *
+        (R.primeProduct : ℝ) ^
+          (exponentWidth R.n t * sampleCount R.n t) ≤
+      Real.exp t * Real.exp t * Real.exp t *
+        (Real.exp t) ^ ((R.n - 1) * derivativeCutoff R.n t) *
+        (Real.exp t) ^ (exponentWidth R.n t * sampleCount R.n t) := by
+      gcongr
+    _ = Real.exp (3 * (t : ℝ) +
+          (t : ℝ) * ((R.n - 1) * derivativeCutoff R.n t) +
+          (t : ℝ) * (exponentWidth R.n t * sampleCount R.n t)) := by
+      rw [← Real.exp_nat_mul, ← Real.exp_nat_mul]
+      rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+      congr 1
+      simp only [Nat.cast_mul, Nat.cast_sub (by omega : 1 ≤ R.n), Nat.cast_one]
+      ring
+
+theorem rawExponent_le_dominant {n t : ℕ} (hn : 3 ≤ n) (ht : 1 ≤ t) :
+    3 * t + t * ((n - 1) * derivativeCutoff n t) +
+        t * (exponentWidth n t * sampleCount n t) ≤
+      (2 * n + 2) * t ^ (12 * n - 1) := by
+  let N := t ^ (12 * n - 1)
+  have hNexp : 1 ≤ 12 * n - 1 := by omega
+  have htN : t ≤ N := by
+    simpa [N] using pow_le_pow_right₀ ht hNexp
+  have hderivEq : t * ((n - 1) * derivativeCutoff n t) =
+      (2 * (n - 1)) * t ^ (8 * n + 1) := by
+    unfold derivativeCutoff extrapolationOrder
+    rw [pow_succ']
+    ring
+  have hderivPow : t ^ (8 * n + 1) ≤ N := by
+    exact pow_le_pow_right₀ ht (by omega)
+  have hderiv : t * ((n - 1) * derivativeCutoff n t) ≤
+      (2 * (n - 1)) * N := by
+    rw [hderivEq]
+    exact Nat.mul_le_mul_left _ hderivPow
+  have hsampleEq : t * (exponentWidth n t * sampleCount n t) = N := by
+    unfold exponentWidth sampleCount
+    rw [← pow_add]
+    calc
+      t * t ^ ((8 * n - 2) + 4 * n) =
+          t ^ (((8 * n - 2) + 4 * n) + 1) := by rw [pow_succ']
+      _ = N := by simp only [N]; congr 1; omega
+  have hcoef : 3 + 2 * (n - 1) + 1 = 2 * n + 2 := by omega
+  calc
+    3 * t + t * ((n - 1) * derivativeCutoff n t) +
+        t * (exponentWidth n t * sampleCount n t) ≤
+      3 * N + (2 * (n - 1)) * N + N := by
+        exact add_le_add (add_le_add (Nat.mul_le_mul_left 3 htN) hderiv) hsampleEq.le
+    _ = (3 + 2 * (n - 1) + 1) * N := by ring
+    _ = (2 * n + 2) * N := by rw [hcoef]
+
+theorem eventually_firstStepNormalBase_le_exp_dominant
+    (R : Relation) (hn : 3 ≤ R.n) (c : ℤ) :
+    ∀ᶠ t : ℕ in atTop,
+      firstStepNormalBase R c t ≤
+        Real.exp ((2 * R.n + 2) * (t ^ (12 * R.n - 1) : ℕ)) := by
+  filter_upwards [eventually_firstStepNormalBase_le_exp_raw R hn c,
+    eventually_ge_atTop 1] with t hraw ht
+  apply hraw.trans
+  apply Real.exp_le_exp.mpr
+  have hnat := rawExponent_le_dominant hn ht
+  have hnsub : (R.n : ℝ) - 1 = ((R.n - 1 : ℕ) : ℝ) := by
+    simpa using (Nat.cast_sub (R := ℝ) (by omega : 1 ≤ R.n)).symm
+  rw [hnsub]
+  exact_mod_cast hnat
 
 /-- The polynomial parameter family always gives fewer matrix rows than columns once the reduced
 relation has arity at least three. -/
@@ -225,6 +449,116 @@ theorem exponentWidth_mul_sampleCount {n t : ℕ} (hn : 3 ≤ n) :
   congr 1
   omega
 
+/-- The complete positive first-step budget is eventually bounded by a fixed exponential constant
+times the subdominant scale `t^(12n-1)`. -/
+theorem eventually_firstStepGrowthMajorant_le_exp_dominant
+    (R : Relation) (hn : 3 ≤ R.n) (c : ℤ) :
+    ∀ᶠ t : ℕ in atTop,
+      firstStepGrowthMajorant R c t ≤
+        Real.exp (growthExponentConstant R * (t ^ (12 * R.n - 1) : ℕ)) := by
+  have hPev := eventually_const_mul_natCast_pow_le_exp (R.primeProduct : ℝ) 0
+  filter_upwards [eventually_firstStepNormalBase_le_exp_dominant R hn c,
+    hPev, eventually_ge_atTop 1] with t hX hPt ht
+  let L := exponentWidth R.n t
+  let S := sampleCount R.n t
+  let radius := extrapolationRadius R.n t
+  let d := Module.finrank ℚ R.CoefficientField - 1
+  let N := t ^ (12 * R.n - 1)
+  have hP : (R.primeProduct : ℝ) ≤ Real.exp t := by simpa using hPt
+  have hLR : L * radius = N := by
+    exact exponentWidth_mul_extrapolationRadius hn
+  have hLS : t * (L * S) = N := by
+    dsimp only [L, S, N]
+    rw [exponentWidth_mul_sampleCount hn]
+    calc
+      t * t ^ (12 * R.n - 2) = t ^ ((12 * R.n - 2) + 1) := by rw [pow_succ']
+      _ = t ^ (12 * R.n - 1) := by congr 1; omega
+  have hanalytic : Real.exp ((L * R.primeLogWeight) * radius) =
+      Real.exp (R.primeLogWeight * N) := by
+    congr 1
+    have hLRR : (L : ℝ) * (radius : ℝ) = (N : ℝ) := by exact_mod_cast hLR
+    calc
+      (L : ℝ) * R.primeLogWeight * (radius : ℝ) =
+          R.primeLogWeight * ((L : ℝ) * radius) := by ring
+      _ = R.primeLogWeight * N := by rw [hLRR]
+  have hPM : (R.primeProduct : ℝ) ^ (L * S) ≤
+      (Real.exp t) ^ (L * S) :=
+    pow_le_pow_left₀ (Nat.cast_nonneg _) hP _
+  have hX0 := firstStepNormalBase_nonneg R c t
+  rw [firstStepGrowthMajorant_eq_normalForm]
+  rw [hanalytic]
+  calc
+    Real.exp (R.primeLogWeight * N) * firstStepNormalBase R c t ^ (d + 1) *
+        ((R.primeProduct : ℝ) ^ (L * S)) ^ d ≤
+      Real.exp (R.primeLogWeight * N) *
+        (Real.exp ((2 * R.n + 2) * N)) ^ (d + 1) *
+        (((Real.exp t) ^ (L * S)) ^ d) := by
+      gcongr
+    _ = Real.exp (growthExponentConstant R * N) := by
+      rw [← Real.exp_nat_mul, ← pow_mul, ← Real.exp_nat_mul]
+      rw [← Real.exp_add, ← Real.exp_add]
+      congr 1
+      have hLSR : (t : ℝ) * (L * S : ℕ) = (N : ℝ) := by exact_mod_cast hLS
+      have hterm : (L : ℝ) * (S : ℝ) * (d : ℝ) * (t : ℝ) = (d : ℝ) * N := by
+        calc
+          (L : ℝ) * S * d * t = d * (t * (L * S : ℕ)) := by
+            push_cast
+            ring
+          _ = d * N := by rw [hLSR]
+      unfold growthExponentConstant
+      dsimp only [d]
+      push_cast
+      rw [hterm]
+      ring
+
+/-- Geometric Schwarz decay at scale `t^(12n)` dominates every fixed exponential at the strictly
+smaller scale `t^(12n-1)`. -/
+theorem eventually_decay_mul_exp_dominant_lt_one (R : Relation) (hn : 3 ≤ R.n) :
+    ∀ᶠ t : ℕ in atTop,
+      ((2 : ℝ) / 3) ^ (t ^ (12 * R.n)) *
+        Real.exp (growthExponentConstant R * (t ^ (12 * R.n - 1) : ℕ)) < 1 := by
+  have hdecayT : Tendsto
+      (fun t : ℕ => ((2 : ℝ) / 3) ^ t * Real.exp (growthExponentConstant R))
+      atTop (𝓝 0) := by
+    simpa using (tendsto_pow_atTop_nhds_zero_of_lt_one
+      (by norm_num : (0 : ℝ) ≤ (2 : ℝ) / 3)
+      (by norm_num : (2 : ℝ) / 3 < 1)).mul_const
+        (Real.exp (growthExponentConstant R))
+  have hbase : ∀ᶠ t : ℕ in atTop,
+      ((2 : ℝ) / 3) ^ t * Real.exp (growthExponentConstant R) < 1 :=
+    (tendsto_order.1 hdecayT).2 1 (by norm_num)
+  filter_upwards [hbase, eventually_ge_atTop 1] with t ht ht1
+  let N := t ^ (12 * R.n - 1)
+  have hNpos : 0 < N := pow_pos (by omega) _
+  have hpow : (((2 : ℝ) / 3) ^ t * Real.exp (growthExponentConstant R)) ^ N < 1 :=
+    pow_lt_one₀ (mul_nonneg (pow_nonneg (by norm_num) _)
+      (Real.exp_nonneg _)) ht hNpos.ne'
+  have hscale : t ^ (12 * R.n) = t * N := by
+    dsimp only [N]
+    calc
+      t ^ (12 * R.n) = t ^ ((12 * R.n - 1) + 1) := by congr 1; omega
+      _ = t * t ^ (12 * R.n - 1) := by rw [pow_succ']
+  have hexp : Real.exp (growthExponentConstant R * (N : ℕ)) =
+      (Real.exp (growthExponentConstant R)) ^ N := by
+    rw [← Real.exp_nat_mul]
+    congr 1
+    ring
+  rw [hscale, pow_mul, hexp, ← mul_pow]
+  exact hpow
+
+/-- The scalar smallness premise required for the first extrapolation step holds for all sufficiently
+large parameter bases. -/
+theorem eventually_firstStepSmallness (R : Relation) (hn : 3 ≤ R.n) (c : ℤ) :
+    ∀ᶠ t : ℕ in atTop,
+      ((2 : ℝ) / 3) ^
+          (extrapolationOrder R.n t * sampleCount R.n t) *
+        firstStepGrowthMajorant R c t < 1 := by
+  filter_upwards [eventually_firstStepGrowthMajorant_le_exp_dominant R hn c,
+    eventually_decay_mul_exp_dominant_lt_one R hn] with t hgrowth hdecay
+  rw [extrapolationOrder_mul_sampleCount]
+  exact lt_of_le_of_lt
+    (mul_le_mul_of_nonneg_left hgrowth (pow_nonneg (by norm_num) _)) hdecay
+
 /-- The first sample beyond the interpolation set lies in the Schwarz disc. -/
 theorem firstNewSample_mem_closedBall {n t : ℕ} (ht : 2 ≤ t) :
     ((sampleCount n t : ℕ) : ℂ) ∈
@@ -356,6 +690,29 @@ theorem Relation.exists_parameterized_auxiliary_coefficients_of_scale
   refine ⟨η, hη, hker, fun m => (hbound m).trans ?_⟩
   exact R.auxiliaryCoefficientBound_le_closed c hc hint pivot
     (exponentWidth R.n t) (sampleCount R.n t) (derivativeCutoff R.n t) hL hcard
+
+/-- For a fixed integral coefficient scale, some parameter base produces a nonzero auxiliary kernel
+whose main component vanishes at the first sample beyond the interpolation set. -/
+theorem Relation.exists_parameterized_firstNewSample_zero_of_scale
+    (R : Relation) (hn : 3 ≤ R.n) (c : ℤ) (hc : c ≠ 0)
+    (hint : ∀ i, IsIntegral ℤ (R.scaledCoeff c i)) (pivot : Fin R.n) :
+    ∃ t : ℕ, 4 ≤ t ∧
+      ∃ η : R.Column (exponentWidth R.n t) → 𝓞 R.CoefficientField,
+        η ≠ 0 ∧
+          Matrix.mulVec (R.auxiliaryMatrix c hint pivot
+            (exponentWidth R.n t) (sampleCount R.n t) (derivativeCutoff R.n t)) η = 0 ∧
+          (∀ m, house ((algebraMap (𝓞 R.CoefficientField) R.CoefficientField) (η m)) ≤
+            R.auxiliaryCoefficientBoundClosed c
+              (exponentWidth R.n t) (sampleCount R.n t) (derivativeCutoff R.n t)) ∧
+          R.auxiliaryComponent c pivot (fun _ => 0) η (sampleCount R.n t) = 0 := by
+  obtain ⟨t, hsmall, ht⟩ :=
+    ((eventually_firstStepSmallness R hn c).and (eventually_ge_atTop 4)).exists
+  obtain ⟨η, hη, hker, hbound⟩ :=
+    Relation.exists_parameterized_auxiliary_coefficients_of_scale
+      R hn c hc hint pivot t (by omega)
+  refine ⟨t, ht, η, hη, hker, hbound, ?_⟩
+  exact Relation.firstNewSample_eq_zero_of_decay_growth_lt_one
+    R hn c hc hint pivot t ht η hker hbound hsmall
 
 /-- The parameter family discharges every dimension and positivity premise of the Siegel-kernel
 construction, including its explicit coefficient-house estimate. -/

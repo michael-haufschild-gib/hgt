@@ -137,7 +137,7 @@ is algebraic over `f`. On a branch over infinity determined by either `t -> infi
 
 `[CONJECTURE]` For every transcendental entire DA function `f`, the sequence `ord_DA(f^[n])` is unbounded, where `f^[n]` is the `n`-th compositional iterate. Bergweiler's 1995 incoherence theorem proves only that the iterates do not all satisfy one common ADE; bounded minimal order with varying equations is not excluded by that theorem. The present result proves the stronger exact law `ord_DA(f^[n])=n` for every autonomous first-order entire `f`.
 
-`[OPEN CORE]` Pass from autonomous order one to nonautonomous order one and autonomous higher order. The Eremenko classification and the one-dimensional algebraic product cascade no longer apply directly.
+`[RESOLVED ELSEWHERE]` The complete nonautonomous order-one extension is proved in `../needs-audit/universal-first-order-entire-cascade-unit-cost.md` using Wiman observability charge and a terminal-linear Bell determinant induction. The remaining open core is autonomous and nonautonomous higher order.
 
 An infinite cascade in this class has no finite ADE budget. This gives a constructive boundary mechanism for HT functions: HT appears as the failure of every finite constraint order to observe an unbounded tower of independent finite-cover states.
 

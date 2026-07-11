@@ -273,7 +273,7 @@ The theorem is wholly about general HT structure. Only after it is proved could 
 - [x] Replace the invalid generic filtered lift by the terminal-linear Bell induction.
 - [x] 1 -> 2: complete paper proof with no open dependency.
 - [x] Targeted literature and citation-descendant search after proof.
-- [ ] Independent expert priority check.
+- [ ] Independent expert priority and proof check.
 - [ ] Lean only after novelty and numerical-precertification instructions can be reconciled.
 
 ## Primary references checked

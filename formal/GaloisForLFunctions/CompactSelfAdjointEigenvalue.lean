@@ -242,3 +242,66 @@ theorem exists_eigenvector_orthSup {S : H →L[ℂ] H} (hcpt : IsCompactOperator
   rw [this, Submodule.coe_smul, hμ_val]
 
 end ContinuousLinearMap
+
+namespace ContinuousLinearMap
+
+variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+
+/-- **The signed exhaustion step.**  Without positivity, the constrained norm of a compact
+self-adjoint operator beyond finitely many eigenvectors is still realized by a unit eigenvector
+orthogonal to them, with eigenvalue of absolute value `orthSup`. -/
+theorem exists_signed_eigenvector_orthSup {S : H →L[ℂ] H} (hcpt : IsCompactOperator S)
+    (hsym : S.IsSymmetric) (v : ℕ → H) (n : ℕ)
+    (hv : ∀ m < n, ∃ c : ℝ, S (v m) = (c : ℂ) • v m)
+    (hne : orthSup S v n ≠ 0) :
+    ∃ x : H, ‖x‖ = 1 ∧ (∀ m < n, inner ℂ (v m) x = 0)
+      ∧ ∃ c : ℝ, |c| = orthSup S v n ∧ S x = (c : ℂ) • x := by
+  set W : Submodule ℂ H := (Submodule.span ℂ (v '' Set.Iio n))ᗮ with hW
+  have hmemW : ∀ y : H, y ∈ W ↔ ∀ m < n, inner ℂ (v m) y = 0 := by
+    intro y
+    rw [hW, Submodule.mem_orthogonal_span_iff]
+    constructor
+    · intro h m hm
+      exact h (v m) ⟨m, hm, rfl⟩
+    · rintro h u ⟨m, hm, rfl⟩
+      exact h m hm
+  have hWinv : ∀ y ∈ W, S y ∈ W := by
+    intro y hy
+    rw [hmemW] at hy ⊢
+    intro m hm
+    obtain ⟨c, hc⟩ := hv m hm
+    have h1 : inner ℂ (v m) (S y) = inner ℂ (S (v m)) y := (hsym (v m) y).symm
+    rw [h1, hc, inner_smul_left, hy m hm, mul_zero]
+  set Sw : W →L[ℂ] W := S.restrict hWinv with hSw
+  have hSw_apply : ∀ w : W, (Sw w : H) = S (w : H) := fun w => rfl
+  have hSw_compact : IsCompactOperator Sw := hcpt.restrict' hWinv
+  have hSw_symm : Sw.IsSymmetric := hsym.restrict_invariant hWinv
+  have hSw_norm : ‖Sw‖ = orthSup S v n := by
+    refine le_antisymm ?_ ?_
+    · refine opNorm_le_bound _ (orthSup_nonneg S v n) fun w => ?_
+      have h1 : ‖Sw w‖ = ‖S (w : H)‖ := by
+        rw [show ‖Sw w‖ = ‖(Sw w : H)‖ from rfl, hSw_apply]
+      rw [h1, show ‖w‖ = ‖(w : H)‖ from rfl]
+      exact norm_le_orthSup_mul_norm S v n ((hmemW _).mp w.2)
+    · refine orthSup_le S v n fun y hy1 hy2 => ?_
+      have hyW : y ∈ W := (hmemW y).mpr hy2
+      calc ‖S y‖ = ‖Sw ⟨y, hyW⟩‖ := by
+            rw [show ‖Sw ⟨y, hyW⟩‖ = ‖(Sw ⟨y, hyW⟩ : H)‖ from rfl, hSw_apply]
+        _ ≤ ‖Sw‖ * ‖(⟨y, hyW⟩ : W)‖ := Sw.le_opNorm _
+        _ ≤ ‖Sw‖ * 1 := by
+            gcongr
+            exact hy1
+        _ = ‖Sw‖ := mul_one _
+  have hSw0 : Sw ≠ 0 := by
+    intro h
+    apply hne
+    rw [← hSw_norm, h]
+    exact norm_zero (E := ↥W →L[ℂ] ↥W)
+  obtain ⟨μ, ξ, hμ_norm, hξ_unit, hξ_eig⟩ :=
+    exists_unit_eigenvector_norm hSw_compact hSw_symm hSw0
+  refine ⟨(ξ : H), hξ_unit, (hmemW _).mp ξ.2, μ, hμ_norm.trans hSw_norm, ?_⟩
+  have h2 := congrArg (Subtype.val : W → H) hξ_eig
+  rw [hSw_apply] at h2
+  rw [h2, Submodule.coe_smul]
+
+end ContinuousLinearMap

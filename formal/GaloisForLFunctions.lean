@@ -110,6 +110,8 @@ import GaloisForLFunctions.ElementaryOstrowski
 import GaloisForLFunctions.AutomorphismFamilyOstrowski
 import GaloisForLFunctions.MeromorphicDifferentialField
 import GaloisForLFunctions.MeromorphicTranslation
+import GaloisForLFunctions.MeromorphicTranslationFixedField
+import GaloisForLFunctions.MeromorphicTheta
 import GaloisForLFunctions.MoritaGamma
 import GaloisForLFunctions.FamilyCrossResonance
 import GaloisForLFunctions.SingleEvenFrequency
@@ -120,6 +122,7 @@ import GaloisForLFunctions.BoundaryReflection
 import GaloisForLFunctions.SeamNonSplitting
 import GaloisForLFunctions.HilbertSchmidtCompact
 import GaloisForLFunctions.HilbertSchmidtMatrix
+import GaloisForLFunctions.HilbertSchmidtAlgebra
 import GaloisForLFunctions.HilbertSchmidtTrace
 import GaloisForLFunctions.CompactSelfAdjointEigenvalue
 import GaloisForLFunctions.GreedySingularValues
@@ -127,3 +130,4 @@ import GaloisForLFunctions.SingularValues
 import GaloisForLFunctions.OperatorAbsoluteValue
 import GaloisForLFunctions.SVDExpansion
 import GaloisForLFunctions.PolarDecomposition
+import GaloisForLFunctions.LidskiiSelfAdjoint

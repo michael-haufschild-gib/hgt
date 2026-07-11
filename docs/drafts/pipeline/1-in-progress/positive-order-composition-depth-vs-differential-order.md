@@ -193,11 +193,11 @@ The completed xi function has finite order, so Polya already forces any nontrivi
 - **Significance gate:** the exact law holds for the complete autonomous order-one entire DA class and yields a canonical DA-to-HT limit with linearly diverging constraint order.
 - **Parent-theory gate:** Otsubo 1980, Bergweiler 1995, and the Fernandes 2021 iteration/HT survey checked. They do not contain minimal-order divergence or the exact observability law.
 - **Literature gate:** passed for the two separated class theorems after full-text parent checks and metadata/corpus searches. It remains open for the unrestricted conjecture `cd_+(F)<=ord_DA(F)`.
-- **Scientific label:** the separated autonomous class theorem and Poincare recession theorem are `[BRIDGE] [PROVED]` after the Reinhart/Wang--Sontag parent audit; the unrestricted inequality and the complete nonautonomous first-order theorem remain `[NOVELTY UNVERIFIED] [CONJECTURE]`.
+- **Scientific label:** the separated autonomous class theorem and Poincare recession theorem are `[BRIDGE] [PROVED]` after the Reinhart/Wang--Sontag parent audit. The complete nonautonomous first-order theorem is `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PROVED HERE] [NEEDS AUDIT]`; the unrestricted inequality remains `[NOVELTY UNVERIFIED] [CONJECTURE]`.
 
 ## Next move
 
-Attack iteration-order divergence for nonautonomous first-order DA entire maps and autonomous higher-order maps. Oscillatory and multiple-tract autonomous order-one maps are already absorbed by the Briot--Bouquet classification and Clunie growth separation. The unrestricted depth inequality remains blocked by the absence of a general order-`n` growth ceiling.
+Audit the terminal-linear Bell induction for the complete nonautonomous first-order theorem. For higher-order inner functions, scalar additivity is now falsified by the Gaussian primitive: `ord_DA(exp o G)=2` although `ord_DA(exp)+ord_DA(G)=3`. The derivative-shadow bridge is recorded in `2-fully-proven/not_new_scientific_knowledge/autonomous-cap-derivative-shadow-law.md`; the new open residue is derivative-shadow recovery for nonautonomous entire caps. The unrestricted depth inequality remains blocked by the absence of a general order-`n` growth ceiling.
 
 ## Gates
 

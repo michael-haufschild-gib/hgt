@@ -554,6 +554,7 @@ import GaloisForLFunctions.RHTower.SoninPrincipalShellResidual
 import GaloisForLFunctions.RHTower.SoninPrimePowerRegularization
 import GaloisForLFunctions.RHTower.SoninTimeBandHilbertSchmidt
 import GaloisForLFunctions.RHTower.SoninAllPrimeResidualKernel
+import GaloisForLFunctions.RHTower.SoninAllPrimeHankelCollapse
 import GaloisForLFunctions.RHTower.SoninCoupledPrimeResidual
 import GaloisForLFunctions.RHTower.SoninCalkinNormBound
 import GaloisForLFunctions.RHTower.SoninEulerEssentialNorm
@@ -566,6 +567,7 @@ import GaloisForLFunctions.RHTower.HilbertSchmidtTraceObstruction
 import GaloisForLFunctions.RHTower.SoninRelativeGramDefect
 import GaloisForLFunctions.RHTower.SoninSemilocalRelativeTrace
 import GaloisForLFunctions.RHTower.SoninSemilocalFluxSource
+import GaloisForLFunctions.RHTower.SoninSemilocalTraceObstruction
 import GaloisForLFunctions.RHTower.XiRelativeResolventTrace
 import GaloisForLFunctions.RHTower.XiRelativeResolventFlux
 import GaloisForLFunctions.RHTower.SoninDeBrangesCarrier
@@ -596,3 +598,5 @@ import GaloisForLFunctions.RHTower.ThetaBlaschkeProbe
 import GaloisForLFunctions.RHTower.HilbertSchmidtOperatorBridge
 import GaloisForLFunctions.RHTower.SchattenTwoIdentity
 import GaloisForLFunctions.RHTower.TraceNormBound
+import GaloisForLFunctions.RHTower.TraceNorm
+import GaloisForLFunctions.RHTower.ModulusSlopeField

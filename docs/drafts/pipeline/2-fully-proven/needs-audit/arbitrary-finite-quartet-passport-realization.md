@@ -222,7 +222,13 @@ simple-zero exponential germ.  The successor theorem
 `finite-completed-flux-passport-surjectivity.md` uses this to realize every finite graded-real
 passport and an arbitrary transverse first separating coefficient.
 
-The global positivity domination and order-one envelope remain paper-only.
+`formal/GaloisForLFunctions/RHTower/ImaginaryAxisPositiveRepair.lean` now closes the global repair
+step: the strict degree gap makes the quotient tend to zero at both ends, compactifies its range,
+and yields one scalar for which the repaired polynomial is strictly positive real on the complete
+imaginary axis.  Its packet capstone simultaneously certifies divisibility by every prescribed
+quartet power, so all local multiplicities are retained.
+
+The order-one envelope and aperiodicity remain paper-only.
 
 ## Parent-theory and novelty gate
 
@@ -240,6 +246,6 @@ The global positivity domination and order-one envelope remain paper-only.
 - [x] 1 -> 2: CRT realization, positivity repair, flux-prefix equality, full-germ separation, exact order,
   and aperiodicity have complete proofs above.
 - [ ] independent audit of the invariant CRT averaging and quasi-period argument.
-- [ ] 2 -> 3: the degree-bounded equivariant CRT and packet positivity are formalized; formalize the
-  global positivity domination and order-one envelope.
+- [ ] 2 -> 3: the degree-bounded equivariant CRT, packet positivity, and global scalar repair are
+  formalized; formalize the order-one envelope and aperiodicity.
 - [ ] complete literature and parent-theory audit before any scientific-novelty promotion.

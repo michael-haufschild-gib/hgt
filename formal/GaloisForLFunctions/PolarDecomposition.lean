@@ -314,3 +314,132 @@ theorem norm_polarMap_absOp_apply (hcpt : IsCompactOperator T) (x : H) :
   rw [h1, ← norm_absOp_apply]
 
 end ContinuousLinearMap
+
+namespace ContinuousLinearMap
+
+variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+variable {T : H →L[ℂ] H}
+
+/-- Pairing a basis vector against a reconstructed element reads off the coordinate. -/
+theorem inner_polarBasis_repr_symm (hcpt : IsCompactOperator T)
+    (c : lp (fun _ : ↥(polarSet T hcpt) => ℂ) 2) (slot : ↥(polarSet T hcpt)) :
+    inner ℂ ((slot : H)) ((polarBasis T hcpt).repr.symm c) = c slot := by
+  have h1 := HilbertBasis.repr_apply_apply (polarBasis T hcpt)
+    ((polarBasis T hcpt).repr.symm c) slot
+  rw [LinearIsometryEquiv.apply_symm_apply] at h1
+  rw [show ((slot : H)) = polarBasis T hcpt slot
+    from (congrFun (polarBasis_coe T hcpt) slot).symm]
+  exact h1.symm
+
+/-- The adjoint of the polar map carries the right singular vectors back:
+`U† fₙ = eₙ`. -/
+theorem adjoint_polarMap_apply_svdVec (hcpt : IsCompactOperator T) {n : ℕ}
+    (hn : singVal T n ≠ 0) :
+    ContinuousLinearMap.adjoint (polarMap T hcpt) (svdVec T n)
+      = svVec (energyOp T) n := by
+  refine ext_inner_right ℂ fun y => ?_
+  rw [adjoint_inner_left, polarMap_apply]
+  have h1 := inner_polarBasis_repr_symm hcpt (polarLp T hcpt y)
+    ⟨svdVec T n, polarSet_subset T hcpt ⟨n, hn, rfl⟩⟩
+  exact h1.trans (polarCoeff_apply_of_eq hcpt y hn rfl)
+
+/-- **The reverse polar factorization**: `U† ∘L T = |T|`. -/
+theorem adjoint_polarMap_comp_eq_absOp (hcpt : IsCompactOperator T) :
+    ContinuousLinearMap.adjoint (polarMap T hcpt) ∘L T = absOp T := by
+  classical
+  obtain ⟨w, b, hAw, hb⟩ := exists_svVec_extension hcpt
+  have hdense : Dense (↑(Submodule.span ℂ w) : Set H) := by
+    refine Submodule.dense_iff_topologicalClosure_eq_top.mpr ?_
+    have hd := b.dense_span
+    rwa [hb, Subtype.range_coe] at hd
+  refine ContinuousLinearMap.ext_on hdense ?_
+  intro v hv
+  by_cases hvA : v ∈ svVec (energyOp T) '' {n | svVal (energyOp T) n ≠ 0}
+  · obtain ⟨n, hn, rfl⟩ := hvA
+    have hsn : singVal T n ≠ 0 := fun h => hn (by rw [← singVal_sq T n, h]; ring)
+    rw [comp_apply, apply_svVec_eq_smul_svdVec, map_smul,
+      adjoint_polarMap_apply_svdVec hcpt hsn, absOp_apply_svVec]
+  · have horthw : ∀ u ∈ w, ∀ z ∈ w, u ≠ z → inner ℂ u z = 0 := by
+      have hw_orth : Orthonormal ℂ (Subtype.val : w → H) := hb ▸ b.orthonormal
+      rw [orthonormal_subtype_iff_ite] at hw_orth
+      intro u hu z hz huz
+      have h2 := hw_orth u hu z hz
+      rwa [if_neg huz] at h2
+    have horth : ∀ m, inner ℂ (svVec (energyOp T) m) v = 0 := by
+      intro m
+      rcases eq_or_ne (svVal (energyOp T) m) 0 with h0 | hne0
+      · rw [svVec_eq_zero_of_svVal_eq_zero (energyOp T) h0]
+        exact inner_zero_left _
+      · have hmem : svVec (energyOp T) m ∈ w := hAw ⟨m, hne0, rfl⟩
+        refine horthw _ hmem _ hv fun h => hvA ?_
+        rw [← h]
+        exact ⟨m, hne0, rfl⟩
+    have hTv : T v = 0 := apply_eq_zero_of_forall_inner_svVec_energyOp hcpt horth
+    have hAv : absOp T v = 0 := by
+      have h1 : ‖absOp T v‖ = ‖T v‖ := norm_absOp_apply T v
+      rw [hTv, norm_zero] at h1
+      exact norm_eq_zero.mp h1
+    rw [comp_apply, hTv, map_zero, hAv]
+
+/-- `U†U` fixes the greedy family. -/
+theorem adjoint_polarMap_polarMap_apply_svVec (hcpt : IsCompactOperator T) {n : ℕ}
+    (hμ : svVal (energyOp T) n ≠ 0) :
+    ContinuousLinearMap.adjoint (polarMap T hcpt) (polarMap T hcpt (svVec (energyOp T) n))
+      = svVec (energyOp T) n := by
+  have hsn : singVal T n ≠ 0 := fun h => hμ (by rw [← singVal_sq T n, h]; ring)
+  rw [polarMap_apply_svVec hcpt hsn, adjoint_polarMap_apply_svdVec hcpt hsn]
+
+/-- `U†U` kills the joint orthogonal complement of the greedy family. -/
+theorem adjoint_polarMap_polarMap_apply_eq_zero_of_orth (hcpt : IsCompactOperator T) {x : H}
+    (hx : ∀ n, inner ℂ (svVec (energyOp T) n) x = 0) :
+    ContinuousLinearMap.adjoint (polarMap T hcpt) (polarMap T hcpt x) = 0 := by
+  rw [polarMap_apply_eq_zero_of_orth hcpt hx, map_zero]
+
+/-- `U†U` is self-adjoint. -/
+theorem adjoint_adjoint_polarMap_comp_polarMap (hcpt : IsCompactOperator T) :
+    ContinuousLinearMap.adjoint
+        (ContinuousLinearMap.adjoint (polarMap T hcpt) ∘L polarMap T hcpt)
+      = ContinuousLinearMap.adjoint (polarMap T hcpt) ∘L polarMap T hcpt := by
+  rw [adjoint_comp, adjoint_adjoint]
+
+/-- **`U†U` is the orthogonal projection onto the closed span of the greedy family**: it is a
+self-adjoint idempotent fixing each greedy vector and killing their joint orthogonal
+complement. -/
+theorem adjoint_polarMap_comp_polarMap_idempotent (hcpt : IsCompactOperator T) :
+    (ContinuousLinearMap.adjoint (polarMap T hcpt) ∘L polarMap T hcpt)
+        ∘L (ContinuousLinearMap.adjoint (polarMap T hcpt) ∘L polarMap T hcpt)
+      = ContinuousLinearMap.adjoint (polarMap T hcpt) ∘L polarMap T hcpt := by
+  classical
+  obtain ⟨w, b, hAw, hb⟩ := exists_svVec_extension hcpt
+  have hdense : Dense (↑(Submodule.span ℂ w) : Set H) := by
+    refine Submodule.dense_iff_topologicalClosure_eq_top.mpr ?_
+    have hd := b.dense_span
+    rwa [hb, Subtype.range_coe] at hd
+  refine ContinuousLinearMap.ext_on hdense ?_
+  intro v hv
+  by_cases hvA : v ∈ svVec (energyOp T) '' {n | svVal (energyOp T) n ≠ 0}
+  · obtain ⟨n, hn, rfl⟩ := hvA
+    simp only [comp_apply]
+    rw [adjoint_polarMap_polarMap_apply_svVec hcpt hn,
+      adjoint_polarMap_polarMap_apply_svVec hcpt hn]
+  · have horthw : ∀ u ∈ w, ∀ z ∈ w, u ≠ z → inner ℂ u z = 0 := by
+      have hw_orth : Orthonormal ℂ (Subtype.val : w → H) := hb ▸ b.orthonormal
+      rw [orthonormal_subtype_iff_ite] at hw_orth
+      intro u hu z hz huz
+      have h2 := hw_orth u hu z hz
+      rwa [if_neg huz] at h2
+    have horth : ∀ m, inner ℂ (svVec (energyOp T) m) v = 0 := by
+      intro m
+      rcases eq_or_ne (svVal (energyOp T) m) 0 with h0 | hne0
+      · rw [svVec_eq_zero_of_svVal_eq_zero (energyOp T) h0]
+        exact inner_zero_left _
+      · have hmem : svVec (energyOp T) m ∈ w := hAw ⟨m, hne0, rfl⟩
+        refine horthw _ hmem _ hv fun h => hvA ?_
+        rw [← h]
+        exact ⟨m, hne0, rfl⟩
+    have hUv : ContinuousLinearMap.adjoint (polarMap T hcpt) (polarMap T hcpt v) = 0 :=
+      adjoint_polarMap_polarMap_apply_eq_zero_of_orth hcpt horth
+    simp only [comp_apply]
+    rw [hUv, map_zero, map_zero]
+
+end ContinuousLinearMap

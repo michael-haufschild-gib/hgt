@@ -162,6 +162,25 @@ it vanishes at every prescribed point, and hence has no nonzero period.  Thus `F
   candidate content is the exact surjectivity statement with simultaneous off-line quartets,
   complete admissible passports, global axis positivity, exact order one, and aperiodicity.
 
+## Positive all-orders residue
+
+Let `G_n={a in C : a=(-1)^n conj(a)}` and let `Pi_N=prod_(n<=N) G_n`.  The theorem proves that every
+finite projection `Pi_N`, at every prescribed finite off-line quartet packet, is geometrically
+saturated by the guarded exact-order-one model class.  The transition maps `Pi_(N+1)->Pi_N` forget
+only the next coefficient, and every transverse next coefficient is also realizable.
+
+The surviving RH object is therefore the inverse-limit constraint for the one fixed completed
+Euler source:
+
+`(completedFluxTaylorCoeff(rho,n))_n in prod_n G_n`.
+
+This is not an extra flow or a limiting family of constructed functions.  It is simultaneous
+all-orders membership of one arithmetic germ in the graded-real fixed locus.  The existing Lean
+theorem `rh_iff_forall_strip_zero_completedFluxSourceGradedRealAt` identifies this fixed-locus
+constraint with RH after the prime--archimedean source decomposition.  Thus the next generative move
+is to prove that the actual Euler source selects the inverse-limit fixed locus, rather than to add
+another finite passport condition.
+
 ## Lean interfaces
 
 - `[FORMALIZATION]` `FiniteHermiteCRT.lean` supplies arbitrary finite Hermite interpolation, its
@@ -174,7 +193,12 @@ it vanishes at every prescribed point, and hence has no nonzero period.  Thus `F
   `P |-> -1-X P'`, proves its surjectivity onto every polynomial passport with constant `-1`, and
   proves that `x exp(P(x))` is an entire simple-zero realization whose actual normalized
   logarithmic derivative equals that passport away from the removable center.
-- `[OPEN FORMAL INTERFACE]` Formalize the global positive-domination lemma and the order-one envelope.
+- `[FORMALIZATION]` `ImaginaryAxisPositiveRepair.lean` proves the global positive-domination
+  theorem from the strict degree gap, realizes the quartet packet as a monic degree-`4 sum M_i`
+  polynomial, and produces one scalar repair which is strictly positive real on the whole
+  imaginary axis while preserving every quartet multiplicity.
+- `[OPEN FORMAL INTERFACE]` Formalize the order-one `cosh` envelope, its zero-free imaginary axis,
+  and the zero-lattice aperiodicity argument.
 
 ## Gates
 
@@ -183,6 +207,6 @@ it vanishes at every prescribed point, and hence has no nonzero period.  Thus `F
 - [x] 1 -> 2: the coordinate conversion, symmetry-assigned unit jets, degree-bounded CRT,
   positivity repair, exact separator, exact order, and aperiodicity have complete proofs above.
 - [ ] independent audit of the coordinate conversion and the global period argument.
-- [ ] 2 -> 3: the passport map and degree-controlled equivariant CRT are formalized; formalize the
-  global positivity domination and order-one envelope.
+- [ ] 2 -> 3: the passport map, degree-controlled equivariant CRT, packet polynomial, and global
+  positivity domination are formalized; formalize the order-one envelope and aperiodicity.
 - [ ] complete the literature and parent-theory audit before any scientific-novelty promotion.
